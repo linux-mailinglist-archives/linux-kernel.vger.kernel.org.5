@@ -2,103 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D2327750B0
-	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 04:08:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C73B775179
+	for <lists+linux-kernel@lfdr.de>; Wed,  9 Aug 2023 05:42:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230195AbjHICHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 8 Aug 2023 22:07:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53616 "EHLO
+        id S229980AbjHIDmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 8 Aug 2023 23:42:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229881AbjHICHt (ORCPT
+        with ESMTP id S229463AbjHIDmK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 8 Aug 2023 22:07:49 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E481C1BCE
-        for <linux-kernel@vger.kernel.org>; Tue,  8 Aug 2023 19:07:48 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RLD3P62PCz4f3q2n
-        for <linux-kernel@vger.kernel.org>; Wed,  9 Aug 2023 10:07:45 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP2 (Coremail) with SMTP id Syh0CgBXem7v9NJkFAkTAQ--.60414S4;
-        Wed, 09 Aug 2023 10:07:46 +0800 (CST)
-From:   Kemeng Shi <shikemeng@huaweicloud.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, baolin.wang@linux.alibaba.com,
-        mgorman@techsingularity.net, david@redhat.com, willy@infradead.org
-Cc:     shikemeng@huaweicloud.com
-Subject: [PATCH 2/2] mm/page_alloc: remove unnecessary parameter batch of nr_pcp_free
-Date:   Wed,  9 Aug 2023 18:07:54 +0800
-Message-Id: <20230809100754.3094517-3-shikemeng@huaweicloud.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20230809100754.3094517-1-shikemeng@huaweicloud.com>
-References: <20230809100754.3094517-1-shikemeng@huaweicloud.com>
+        Tue, 8 Aug 2023 23:42:10 -0400
+Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0D3D21718;
+        Tue,  8 Aug 2023 20:42:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version:
+        Content-Type; bh=uAI03z7nuqrRXQTXLmImIyVAYwiBH9IDECMGmfL5IxI=;
+        b=HPMm25zaRUk3pNfO+ue+f/Y+PjYMbmaEkybyoItezahiCocmC+w/7djirgqlW/
+        zMhWSNDpoav5cNYOPKTnzqaTCTZtyMzTOhjp88pkb/p+RpipB2OOZ+VZSGWHk7Ti
+        zBKXwf0E0CGsr14kwQ9VJJIUJcO1GWw7nSgs63gaL+F/s=
+Received: from localhost.localdomain (unknown [39.144.137.205])
+        by zwqz-smtp-mta-g4-1 (Coremail) with SMTP id _____wAHzaXvCtNkLjZuCg--.12136S2;
+        Wed, 09 Aug 2023 11:41:36 +0800 (CST)
+From:   xingtong_wu@163.com
+To:     andriy.shevchenko@linux.intel.com
+Cc:     ilpo.jarvinen@linux.intel.com, hdegoede@redhat.com,
+        markgross@kernel.org, xingtong.wu@siemens.com, lee@kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gerd.haeussler.ext@siemens.com, tobias.schaffner@siemens.com,
+        lkp@intel.com
+Subject: [PATCH v3 0/2] fix logical errors for BX-59A
+Date:   Mon,  3 Aug 2043 01:35:14 +0800
+Message-Id: <20430802173515.2363-1-xingtong_wu@163.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <ZNEUHo0fR280O4mN@smile.fi.intel.com>
+References: <ZNEUHo0fR280O4mN@smile.fi.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgBXem7v9NJkFAkTAQ--.60414S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7ZFyDGF47KFykZrW8Jw13Jwb_yoW8JFW8pF
-        93Kwn7KFWkWwn8G39rJF4qk34jka1rKFZ3K3yfW345XF13CryIkFyIyryDWF18KrykCFs7
-        CrZ5t34rZa1UXaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUPab4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M2
-        8IrcIa0xkI8VA2jI8067AKxVWUXwA2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK
-        0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4
-        x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJr0_GcWl84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2
-        z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4
-        xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v2
-        6r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6I
-        AqYI8I648v4I1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAq
-        x4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r
-        43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF
-        7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxV
-        WUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjTR
-        QNVDUUUUU
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-CM-TRANSID: _____wAHzaXvCtNkLjZuCg--.12136S2
+X-Coremail-Antispam: 1Uf129KBjvdXoW7XF43uw18tw17Ar4DJr1fJFb_yoWxCrc_Cr
+        WIvwn7Ar4YqrZrZ3409F13Jryaka4UXr18ArnrtFyag343Ar1DKr1jkrWrWry7Wa45Cr9Y
+        yayDWaySkw13JjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUeiZ27UUUUU==
+X-Originating-IP: [39.144.137.205]
+X-CM-SenderInfo: p0lqw35rqjs4rx6rljoofrz/1tbiMxHG0FXmF6EdOwAAsX
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L4,SPF_HELO_NONE,
+        SPF_PASS,T_DATE_IN_FUTURE_Q_PLUS autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We get batch from pcp and just pass it to nr_pcp_free immediately. Get
-batch from pcp inside nr_pcp_free to remove unnecessary parameter batch.
+From: "xingtong.wu" <xingtong.wu@siemens.com>
 
-Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
----
- mm/page_alloc.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+changes since v2:
+ - Collect tag "Reviewed-by" in changelog
+ - Delete blank line between tags block "Closes" and "Signed-off-by"
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 1ddcb2707d05..bb1d14e806ad 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -2376,10 +2376,10 @@ static bool free_unref_page_prepare(struct page *page, unsigned long pfn,
- 	return true;
- }
- 
--static int nr_pcp_free(struct per_cpu_pages *pcp, int high, int batch,
--		       bool free_high)
-+static int nr_pcp_free(struct per_cpu_pages *pcp, int high, bool free_high)
- {
- 	int min_nr_free, max_nr_free;
-+	int batch = READ_ONCE(pcp->batch);
- 
- 	/* Free everything if batch freeing high-order pages. */
- 	if (unlikely(free_high))
-@@ -2446,9 +2446,7 @@ static void free_unref_page_commit(struct zone *zone, struct per_cpu_pages *pcp,
- 
- 	high = nr_pcp_high(pcp, zone, free_high);
- 	if (pcp->count >= high) {
--		int batch = READ_ONCE(pcp->batch);
--
--		free_pcppages_bulk(zone, nr_pcp_free(pcp, high, batch, free_high), pcp, pindex);
-+		free_pcppages_bulk(zone, nr_pcp_free(pcp, high, free_high), pcp, pindex);
- 	}
- }
- 
+changes since v1:
+ - Improve the changelog to make things clear
+
+These are rather simple patches fixing logical errors in Siemens
+IPC drivers.
+
+xingtong.wu (2):
+  platform/x86/siemens: simatic-ipc: fix logical error for BX-59A
+  platform/x86/siemens: simatic-ipc-batt: fix logical error for BX-59A
+
+ drivers/platform/x86/siemens/simatic-ipc-batt.c | 3 ++-
+ drivers/platform/x86/siemens/simatic-ipc.c      | 2 +-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
 -- 
-2.30.0
+2.25.1
 
