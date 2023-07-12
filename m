@@ -2,119 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0F9F75115D
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 21:38:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3031751168
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 21:40:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232539AbjGLTiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 15:38:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34218 "EHLO
+        id S232587AbjGLTky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 15:40:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232529AbjGLTiQ (ORCPT
+        with ESMTP id S231594AbjGLTkw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 15:38:16 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E55991FE4
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 12:38:15 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-6687466137bso5156209b3a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 12:38:15 -0700 (PDT)
+        Wed, 12 Jul 2023 15:40:52 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E27841FCC
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 12:40:50 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-666ed230c81so6588391b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 12:40:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689190695; x=1691782695;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RAqGktah/O0GFdZ50GvGMkJOQPo1Bdaik/QUjfLnP24=;
-        b=WJeDPc4KW7qUMZDwMdPPhOaka2bROkoS7mx53G29NSbD7Ho7yYmc5DWWptBlgYfTxt
-         zfnMq/SKO0HNNKGCdxkL8LGfDh8GBN4fT+3wlM5EicocAxeHR2tEZAF2/cm0pfSJy9FT
-         wV8sXOdOas0qgOoZS4s634XJxtQ+bfVqhwB9hqn2W5sYFiOWciiKaBqgS0W1rs634cwy
-         08zTJVZyeXy5/rzp7F3HUNoTICYiFnQQettEA/0tjHc11Tjn9tHJlE9VF7TvACuuc108
-         qj57ut4ZCiACpGnOJ6DiE2jA2keRXkY9lDe2lxK8yeSwDdhAUENDv6WxlBOOIrcUKfrJ
-         PAzA==
+        d=chromium.org; s=google; t=1689190850; x=1691782850;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=oKkVuxbSi0CUL6FUPjiEUvcs0jSwNv6Pa5wNqVjCz+o=;
+        b=U10sdQCf25tsKjhtnvKdjSo5c9fUt5hUc+oLBU7wWgEfHdXHZAOnAg9GP6Ms+vxI3I
+         K3uPAG6uqamlpHDr66P/WPjdX1Ya538Ku+wwaygboVCNWSczkLolW+EDR628t++wSHI9
+         XgiGOMr3wpxGXMmJULfHiq3n3iJyaJk6c6f5s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689190695; x=1691782695;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RAqGktah/O0GFdZ50GvGMkJOQPo1Bdaik/QUjfLnP24=;
-        b=J9KHpvy3MHVWIevldZpaI4TI0ZY1A/3hhuI4VmVnKYyd4t4KdCaeLbnAIcwKb87r02
-         XtzkXws2EEfyco6FZk4uHu2qoxmNGn6KTjWv1r5WrOby2N9sNI07yfWKABSau6714uny
-         SN+gk1hXbyGChCvlT7r7flfFeQt/3U21PlUHkOy+94R9VjlrRQWJ92oOdk4mCZnBRMis
-         gdVWbn8DTuGIGRRp778/BagwEt4DNJ/2A06WyxxBySLQDJ7PRBLORH7T9QgysEZrrUOr
-         ysZq0J+9Ett4nVGJGq8u7ldBAnnxod0oh0z6iHoREf8P2lzD59TKvcYyCBw2nglVKMFO
-         co3g==
-X-Gm-Message-State: ABy/qLZGtwbxulyMEaQYJw2jCXX8jk//EEX7vxXDUU+VjC+WTA91Ko6d
-        0W8dQvhnWQgR4sRDi3OjgeEt5g==
-X-Google-Smtp-Source: APBJJlGMOcbAwwVpsCYEnmiXNjwnmO20wsWdfSSDUrRNsz5IVZWYyjz+0agcO2l6LoBeRiJr0STtHg==
-X-Received: by 2002:a05:6a00:148b:b0:681:6169:e403 with SMTP id v11-20020a056a00148b00b006816169e403mr19538672pfu.8.1689190695254;
-        Wed, 12 Jul 2023 12:38:15 -0700 (PDT)
-Received: from p14s ([2604:3d09:148c:c800:70ea:7145:ddf8:7208])
-        by smtp.gmail.com with ESMTPSA id v11-20020aa7808b000000b00669c99d05fasm3907344pff.150.2023.07.12.12.38.13
+        d=1e100.net; s=20221208; t=1689190850; x=1691782850;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=oKkVuxbSi0CUL6FUPjiEUvcs0jSwNv6Pa5wNqVjCz+o=;
+        b=UiIz0cdynpw7u99Er9TxuSmS71RHkJurJmQiHeIqadszSimclz29kT+WymwHUh0fwY
+         Btv8XMgkMtlPGbXeLTFulOVQ7w+BIMxkpQQAhH0CNSJuzZLJZibzildFkV0BYR1aztE4
+         bnftObhBhiTX8Dw4zz1pGJV1d32EZEc+s1OpJpsp8vmwZ2HCZeZGN6o3LAgVcGWUi8F1
+         PdYKZzk7Y1syMSPslxCsVZJnxA+akMTLZS2xMCgWpLWnumK8l3b9qG1KMSjtZAauTmQN
+         trOdPGYi1DJhUjT1MXx3b5SeAXTlhpVhkKi5y4gYzNsrUCoE227yKpMhtBCRVb++dT2/
+         qXcg==
+X-Gm-Message-State: ABy/qLYxbkvHQJJhZXy0uqqwiLAM55hzvuv/SXQWWHznoAYiUhvDCuE4
+        sdWjAKrD+6QI0dtOLto/3cW4rA==
+X-Google-Smtp-Source: APBJJlGVIRoSzhnTlb+O3s1gI1yV1DmH1e3TpCnR9JeXgMT/R1cYIfQBaDbBHqYvIcVdnyAZgSbwwg==
+X-Received: by 2002:a05:6a20:5483:b0:127:3c6e:fc83 with SMTP id i3-20020a056a20548300b001273c6efc83mr25019305pzk.42.1689190850429;
+        Wed, 12 Jul 2023 12:40:50 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id v15-20020a62a50f000000b00640dbbd7830sm4102091pfm.18.2023.07.12.12.40.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Jul 2023 12:38:14 -0700 (PDT)
-Date:   Wed, 12 Jul 2023 13:38:12 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Tinghan Shen <tinghan.shen@mediatek.com>
-Cc:     Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-Subject: Re: [PATCH v14 10/12] remoteproc: mediatek: Report watchdog crash to
- all cores
-Message-ID: <ZK8BJOXcBjjLXUlu@p14s>
-References: <20230707052612.27521-1-tinghan.shen@mediatek.com>
- <20230707052612.27521-11-tinghan.shen@mediatek.com>
+        Wed, 12 Jul 2023 12:40:49 -0700 (PDT)
+Date:   Wed, 12 Jul 2023 12:40:49 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     Laurent Vivier <laurent@vivier.eu>,
+        Norbert Lange <nolange79@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        containers@lists.linux-foundation.org, jan.kiszka@siemens.com,
+        jannh@google.com, avagin@gmail.com, dima@arista.com,
+        James.Bottomley@hansenpartnership.com
+Subject: Re: [PATCH v8 1/1] ns: add binfmt_misc to the user namespace
+Message-ID: <202307121239.1EB4D324@keescook>
+References: <8eb5498d-89f6-e39e-d757-404cc3cfaa5c@vivier.eu>
+ <20230630083852.3988-1-norbert.lange@andritz.com>
+ <e8161622-beb0-d8d5-6501-f0bee76a372d@vivier.eu>
+ <20230630-hufen-herzallerliebst-fde8e7aecba0@brauner>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20230707052612.27521-11-tinghan.shen@mediatek.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230630-hufen-herzallerliebst-fde8e7aecba0@brauner>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 07, 2023 at 01:26:10PM +0800, Tinghan Shen wrote:
-> Once the SCP watchdog timeout happened, trigger the rproc recovery flow on
-> all cores.
+On Fri, Jun 30, 2023 at 11:06:59AM +0200, Christian Brauner wrote:
+> On Fri, Jun 30, 2023 at 10:52:22AM +0200, Laurent Vivier wrote:
+> > Hi Norbert,
+> > 
+> > Le 30/06/2023 à 10:38, Norbert Lange a écrit :
+> > > Any news on this? What remains to be done, who needs to be harrassed?
+> > > 
+> > > Regards, Norbert
+> > 
+> > Christian was working on a new version but there is no update for 1 year.
+> > 
+> > [PATCH v2 1/2] binfmt_misc: cleanup on filesystem umount
+> > https://lkml.org/lkml/2021/12/16/406
+> > [PATCH v2 2/2] binfmt_misc: enable sandboxed mounts
+> > https://lkml.org/lkml/2021/12/16/407
+> > 
+> > And personally I don't have the time to work on this.
 > 
+> I've actually rebased this a few weeks ago:
+> https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git/log/?h=vfs.binfmt_misc
+> It has Acks, it's done. The only thing back then was Kees had wanted to
+> take this but never did. I'll ping him.
 
-You are missing the most important part... "Why" is this needed?  Without it I
-don't know what is going on and can't review your work.
+Hi! Can you resend this now that the merge window is closed? I looked at
+it in your tree and it seems okay. I remain a bit nervous about exposing
+it to unpriv access, but I'd like to give it a try. It'd be very useful!
 
-> Signed-off-by: Tinghan Shen <tinghan.shen@mediatek.com>
-> ---
->  drivers/remoteproc/mtk_scp.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/remoteproc/mtk_scp.c b/drivers/remoteproc/mtk_scp.c
-> index 9fed5161f094..7e786aaf04e1 100644
-> --- a/drivers/remoteproc/mtk_scp.c
-> +++ b/drivers/remoteproc/mtk_scp.c
-> @@ -80,8 +80,14 @@ EXPORT_SYMBOL_GPL(scp_put);
->  
->  static void scp_wdt_handler(struct mtk_scp *scp, u32 scp_to_host)
->  {
-> +	struct mtk_scp_of_cluster *scp_cluster = platform_get_drvdata(scp->cluster_pdev);
-> +	struct mtk_scp *scp_node;
-> +
->  	dev_err(scp->dev, "SCP watchdog timeout! 0x%x", scp_to_host);
-> -	rproc_report_crash(scp->rproc, RPROC_WATCHDOG);
-> +
-> +	/* report watchdog timeout to all cores */
-> +	list_for_each_entry(scp_node, &scp_cluster->mtk_scp_list, elem)
-> +		rproc_report_crash(scp_node->rproc, RPROC_WATCHDOG);
->  }
->  
->  static void scp_init_ipi_handler(void *data, unsigned int len, void *priv)
-> -- 
-> 2.18.0
-> 
+-Kees
+
+-- 
+Kees Cook
