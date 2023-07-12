@@ -2,98 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82E47751264
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 23:13:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F1D875125E
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 23:13:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232992AbjGLVMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 17:12:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37812 "EHLO
+        id S233146AbjGLVMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 17:12:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232877AbjGLVMV (ORCPT
+        with ESMTP id S232888AbjGLVMV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 12 Jul 2023 17:12:21 -0400
-Received: from out-12.mta1.migadu.com (out-12.mta1.migadu.com [IPv6:2001:41d0:203:375::c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2892F2696
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 14:11:44 -0700 (PDT)
+Received: from out-14.mta1.migadu.com (out-14.mta1.migadu.com [IPv6:2001:41d0:203:375::e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F10DF26A0
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 14:11:45 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1689196303;
+        t=1689196304;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Ry7U36vaXDdBTb0o6BnFM/rdvkZja/IMfv3muX44WIU=;
-        b=H/PcQLzUY9PMMaDMDJwLi0XXcTGO8YvVfT6XKsh1JXOymc2y7ZVnR56snJOlO9Xb/Yz3l4
-        bRwbeCnPM3wz2EPPnP2d5RVd4IhMeXJvhurNnxpGX0g2cOGsDM/v89gyyMQcqGokab5lzL
-        7glFmafusrUIz1iPlOtVxrZ1QJ7bs+E=
+        bh=5eXxZII/AY+4X/BxaYnmkLZzUciXf9EGOnTBvq8dyQQ=;
+        b=JmsjQ2ajsBYN3QOblqtRMGTF5kTXZyMU6AdekvlvzukOKlyd/dutSqxvKv5t5RWAgQWpgM
+        7Gv9ZJdbcozKP4osvPilzfhGaThul1hTjIWDql/qV8P4XoZuQN6CWcA8f/LNhh9yW5ZmMw
+        gB+thTgZixIl8jLYzHr+5vwIp8lR1hs=
 From:   Kent Overstreet <kent.overstreet@linux.dev>
 To:     linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
-        Coly Li <colyli@suse.de>,
-        Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 14/20] closures: closure_wait_event()
-Date:   Wed, 12 Jul 2023 17:11:09 -0400
-Message-Id: <20230712211115.2174650-15-kent.overstreet@linux.dev>
+Cc:     Kent Overstreet <kent.overstreet@linux.dev>
+Subject: [PATCH 15/20] closures: closure_nr_remaining()
+Date:   Wed, 12 Jul 2023 17:11:10 -0400
+Message-Id: <20230712211115.2174650-16-kent.overstreet@linux.dev>
 In-Reply-To: <20230712211115.2174650-1-kent.overstreet@linux.dev>
 References: <20230712211115.2174650-1-kent.overstreet@linux.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kent Overstreet <kent.overstreet@gmail.com>
+Factor out a new helper, which returns the number of events outstanding.
 
-Like wait_event() - except, because it uses closures and closure
-waitlists it doesn't have the restriction on modifying task state inside
-the condition check, like wait_event() does.
-
-Signed-off-by: Kent Overstreet <kent.overstreet@gmail.com>
-Acked-by: Coly Li <colyli@suse.de>
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- include/linux/closure.h | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ include/linux/closure.h | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/include/linux/closure.h b/include/linux/closure.h
-index 0ec9e7bc8d..36b4a83f9b 100644
+index 36b4a83f9b..722a586bb2 100644
 --- a/include/linux/closure.h
 +++ b/include/linux/closure.h
-@@ -374,4 +374,26 @@ static inline void closure_call(struct closure *cl, closure_fn fn,
- 	continue_at_nobarrier(cl, fn, wq);
+@@ -172,6 +172,11 @@ void __closure_wake_up(struct closure_waitlist *list);
+ bool closure_wait(struct closure_waitlist *list, struct closure *cl);
+ void __closure_sync(struct closure *cl);
+ 
++static inline unsigned closure_nr_remaining(struct closure *cl)
++{
++	return atomic_read(&cl->remaining) & CLOSURE_REMAINING_MASK;
++}
++
+ /**
+  * closure_sync - sleep until a closure a closure has nothing left to wait on
+  *
+@@ -180,7 +185,7 @@ void __closure_sync(struct closure *cl);
+  */
+ static inline void closure_sync(struct closure *cl)
+ {
+-	if ((atomic_read(&cl->remaining) & CLOSURE_REMAINING_MASK) != 1)
++	if (closure_nr_remaining(cl) != 1)
+ 		__closure_sync(cl);
  }
  
-+#define __closure_wait_event(waitlist, _cond)				\
-+do {									\
-+	struct closure cl;						\
-+									\
-+	closure_init_stack(&cl);					\
-+									\
-+	while (1) {							\
-+		closure_wait(waitlist, &cl);				\
-+		if (_cond)						\
-+			break;						\
-+		closure_sync(&cl);					\
-+	}								\
-+	closure_wake_up(waitlist);					\
-+	closure_sync(&cl);						\
-+} while (0)
-+
-+#define closure_wait_event(waitlist, _cond)				\
-+do {									\
-+	if (!(_cond))							\
-+		__closure_wait_event(waitlist, _cond);			\
-+} while (0)
-+
- #endif /* _LINUX_CLOSURE_H */
 -- 
 2.40.1
 
