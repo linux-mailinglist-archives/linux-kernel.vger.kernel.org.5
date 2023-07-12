@@ -2,234 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2261E751273
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 23:14:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D5FD751248
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 23:12:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233015AbjGLVOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 17:14:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37818 "EHLO
+        id S232817AbjGLVMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 17:12:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232977AbjGLVN7 (ORCPT
+        with ESMTP id S232614AbjGLVLm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 17:13:59 -0400
-Received: from out-36.mta1.migadu.com (out-36.mta1.migadu.com [IPv6:2001:41d0:203:375::24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91CB31FD2
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 14:12:24 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1689196308;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+ZhmCl+n4yHEwTa1THztHgqHnTTx5bTorYdBdx9eWUk=;
-        b=ar1/5lc8IAM7Z8BzOkLoU2YlkHGHAS4kG+QX0/lExGk2OoopvseIafuYmBhl6W1Zx04myh
-        UrotI8xhx5WzEasXrp5tb/o83g6LqYA7F97RfuOWZzOD0DukizF0612so6eQyI/eC2mleu
-        VRzaexEyVeM+X9m529dxxdoNvTHItdc=
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Wed, 12 Jul 2023 17:11:42 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BA851FE1
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 14:11:35 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C239761927
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 21:11:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC5CFC433C8;
+        Wed, 12 Jul 2023 21:11:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1689196294;
+        bh=PHl5qh/qxxGlTC0XjJhdkl2ipWNr3R3ahSZOS12eZ3c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AUK8hmyTUlB/6AUlNyb21Ll+Fm383HFAEgO5vyXkT3WvSkRrlxr1r8aawPh5l6iZA
+         e4qhabyCvPDR8QEvSdkGa2gsJXuTH0NFG0g5C68N2DQwOphOTs4uX/T6246+arUOyP
+         s9jpXqafiGNWvb+8N8y/POvnLULPaQYWzwLvPl14=
+Date:   Wed, 12 Jul 2023 23:11:31 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Luca Boccassi <bluca@debian.org>
+Cc:     Daniel =?iso-8859-1?Q?P=2E_Berrang=E9?= <berrange@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>, lennart@poettering.net,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
         linux-kernel@vger.kernel.org
-Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
-        Kent Overstreet <kent.overstreet@linux.dev>
-Subject: [PATCH 20/20] lib/generic-radix-tree.c: Add peek_prev()
-Date:   Wed, 12 Jul 2023 17:11:15 -0400
-Message-Id: <20230712211115.2174650-21-kent.overstreet@linux.dev>
-In-Reply-To: <20230712211115.2174650-1-kent.overstreet@linux.dev>
-References: <20230712211115.2174650-1-kent.overstreet@linux.dev>
+Subject: Re: [RFC PATCH v2] x86/boot: add .sbat section to the bzImage
+Message-ID: <2023071212-eaten-doodle-6132@gregkh>
+References: <20230712132840.GKZK6qiK70m1O90jFL@fat_crate.local>
+ <ZK6zdsIbnQFUmK69@redhat.com>
+ <2023071200-unopposed-unbuckled-cde8@gregkh>
+ <CAMw=ZnTVRaqRmtz+sDj7AeAS7xivSu+56UgKbzmuW9+K6TTx1A@mail.gmail.com>
+ <2023071239-progress-molasses-3b3d@gregkh>
+ <CAMw=ZnRheXk7W_r-32bGymbHKdXc7aKUpwGAOX+k7DJkN+DiCQ@mail.gmail.com>
+ <2023071229-dusk-repacking-da3a@gregkh>
+ <CAMw=ZnSmZTBs+bJsQ_Y2CVO8K3OTuHOZDKW4cbxKpGbo4Vgs7Q@mail.gmail.com>
+ <2023071226-crafty-deviator-12e2@gregkh>
+ <CAMw=ZnRjnxWnmoFuw2prxFS55vAGQ1hpfKeHYFfG5Oa0LB_jYA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMw=ZnRjnxWnmoFuw2prxFS55vAGQ1hpfKeHYFfG5Oa0LB_jYA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kent Overstreet <kent.overstreet@gmail.com>
+On Wed, Jul 12, 2023 at 09:41:23PM +0100, Luca Boccassi wrote:
+> > Pointing to an external document that is thousands of lines long,
+> > talking about bootloaders, is NOT a good way to get people to want to
+> > accept a kernel patch :)
+> 
+> Then how about just asking for that? "Hello submitter, please send a
+> v2 with a detailed summary of the problem being solved for those of us
+> who are not familiar with it, thank you"
 
-This patch adds genradix_peek_prev(), genradix_iter_rewind(), and
-genradix_for_each_reverse(), for iterating backwards over a generic
-radix tree.
-
-Signed-off-by: Kent Overstreet <kent.overstreet@gmail.com>
-Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
----
- include/linux/generic-radix-tree.h | 61 +++++++++++++++++++++++++++++-
- lib/generic-radix-tree.c           | 59 +++++++++++++++++++++++++++++
- 2 files changed, 119 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/generic-radix-tree.h b/include/linux/generic-radix-tree.h
-index f6cd0f909d..c74b737699 100644
---- a/include/linux/generic-radix-tree.h
-+++ b/include/linux/generic-radix-tree.h
-@@ -117,6 +117,11 @@ static inline size_t __idx_to_offset(size_t idx, size_t obj_size)
- 
- #define __genradix_cast(_radix)		(typeof((_radix)->type[0]) *)
- #define __genradix_obj_size(_radix)	sizeof((_radix)->type[0])
-+#define __genradix_objs_per_page(_radix)			\
-+	(PAGE_SIZE / sizeof((_radix)->type[0]))
-+#define __genradix_page_remainder(_radix)			\
-+	(PAGE_SIZE % sizeof((_radix)->type[0]))
-+
- #define __genradix_idx_to_offset(_radix, _idx)			\
- 	__idx_to_offset(_idx, __genradix_obj_size(_radix))
- 
-@@ -180,7 +185,25 @@ void *__genradix_iter_peek(struct genradix_iter *, struct __genradix *, size_t);
- #define genradix_iter_peek(_iter, _radix)			\
- 	(__genradix_cast(_radix)				\
- 	 __genradix_iter_peek(_iter, &(_radix)->tree,		\
--			      PAGE_SIZE / __genradix_obj_size(_radix)))
-+			__genradix_objs_per_page(_radix)))
-+
-+void *__genradix_iter_peek_prev(struct genradix_iter *, struct __genradix *,
-+				size_t, size_t);
-+
-+/**
-+ * genradix_iter_peek - get first entry at or below iterator's current
-+ *			position
-+ * @_iter:	a genradix_iter
-+ * @_radix:	genradix being iterated over
-+ *
-+ * If no more entries exist at or below @_iter's current position, returns NULL
-+ */
-+#define genradix_iter_peek_prev(_iter, _radix)			\
-+	(__genradix_cast(_radix)				\
-+	 __genradix_iter_peek_prev(_iter, &(_radix)->tree,	\
-+			__genradix_objs_per_page(_radix),	\
-+			__genradix_obj_size(_radix) +		\
-+			__genradix_page_remainder(_radix)))
- 
- static inline void __genradix_iter_advance(struct genradix_iter *iter,
- 					   size_t obj_size)
-@@ -203,6 +226,25 @@ static inline void __genradix_iter_advance(struct genradix_iter *iter,
- #define genradix_iter_advance(_iter, _radix)			\
- 	__genradix_iter_advance(_iter, __genradix_obj_size(_radix))
- 
-+static inline void __genradix_iter_rewind(struct genradix_iter *iter,
-+					  size_t obj_size)
-+{
-+	if (iter->offset == 0 ||
-+	    iter->offset == SIZE_MAX) {
-+		iter->offset = SIZE_MAX;
-+		return;
-+	}
-+
-+	if ((iter->offset & (PAGE_SIZE - 1)) == 0)
-+		iter->offset -= PAGE_SIZE % obj_size;
-+
-+	iter->offset -= obj_size;
-+	iter->pos--;
-+}
-+
-+#define genradix_iter_rewind(_iter, _radix)			\
-+	__genradix_iter_rewind(_iter, __genradix_obj_size(_radix))
-+
- #define genradix_for_each_from(_radix, _iter, _p, _start)	\
- 	for (_iter = genradix_iter_init(_radix, _start);	\
- 	     (_p = genradix_iter_peek(&_iter, _radix)) != NULL;	\
-@@ -220,6 +262,23 @@ static inline void __genradix_iter_advance(struct genradix_iter *iter,
- #define genradix_for_each(_radix, _iter, _p)			\
- 	genradix_for_each_from(_radix, _iter, _p, 0)
- 
-+#define genradix_last_pos(_radix)				\
-+	(SIZE_MAX / PAGE_SIZE * __genradix_objs_per_page(_radix) - 1)
-+
-+/**
-+ * genradix_for_each_reverse - iterate over entry in a genradix, reverse order
-+ * @_radix:	genradix to iterate over
-+ * @_iter:	a genradix_iter to track current position
-+ * @_p:		pointer to genradix entry type
-+ *
-+ * On every iteration, @_p will point to the current entry, and @_iter.pos
-+ * will be the current entry's index.
-+ */
-+#define genradix_for_each_reverse(_radix, _iter, _p)		\
-+	for (_iter = genradix_iter_init(_radix,	genradix_last_pos(_radix));\
-+	     (_p = genradix_iter_peek_prev(&_iter, _radix)) != NULL;\
-+	     genradix_iter_rewind(&_iter, _radix))
-+
- int __genradix_prealloc(struct __genradix *, size_t, gfp_t);
- 
- /**
-diff --git a/lib/generic-radix-tree.c b/lib/generic-radix-tree.c
-index 7dfa88282b..41f1bcdc44 100644
---- a/lib/generic-radix-tree.c
-+++ b/lib/generic-radix-tree.c
-@@ -1,4 +1,5 @@
- 
-+#include <linux/atomic.h>
- #include <linux/export.h>
- #include <linux/generic-radix-tree.h>
- #include <linux/gfp.h>
-@@ -212,6 +213,64 @@ void *__genradix_iter_peek(struct genradix_iter *iter,
- }
- EXPORT_SYMBOL(__genradix_iter_peek);
- 
-+void *__genradix_iter_peek_prev(struct genradix_iter *iter,
-+				struct __genradix *radix,
-+				size_t objs_per_page,
-+				size_t obj_size_plus_page_remainder)
-+{
-+	struct genradix_root *r;
-+	struct genradix_node *n;
-+	unsigned level, i;
-+
-+	if (iter->offset == SIZE_MAX)
-+		return NULL;
-+
-+restart:
-+	r = READ_ONCE(radix->root);
-+	if (!r)
-+		return NULL;
-+
-+	n	= genradix_root_to_node(r);
-+	level	= genradix_root_to_depth(r);
-+
-+	if (ilog2(iter->offset) >= genradix_depth_shift(level)) {
-+		iter->offset = genradix_depth_size(level);
-+		iter->pos = (iter->offset >> PAGE_SHIFT) * objs_per_page;
-+
-+		iter->offset -= obj_size_plus_page_remainder;
-+		iter->pos--;
-+	}
-+
-+	while (level) {
-+		level--;
-+
-+		i = (iter->offset >> genradix_depth_shift(level)) &
-+			(GENRADIX_ARY - 1);
-+
-+		while (!n->children[i]) {
-+			size_t objs_per_ptr = genradix_depth_size(level);
-+
-+			iter->offset = round_down(iter->offset, objs_per_ptr);
-+			iter->pos = (iter->offset >> PAGE_SHIFT) * objs_per_page;
-+
-+			if (!iter->offset)
-+				return NULL;
-+
-+			iter->offset -= obj_size_plus_page_remainder;
-+			iter->pos--;
-+
-+			if (!i)
-+				goto restart;
-+			--i;
-+		}
-+
-+		n = n->children[i];
-+	}
-+
-+	return &n->data[iter->offset & (PAGE_SIZE - 1)];
-+}
-+EXPORT_SYMBOL(__genradix_iter_peek_prev);
-+
- static void genradix_free_recurse(struct genradix_node *n, unsigned level)
- {
- 	if (level) {
--- 
-2.40.1
-
+That is what our documentation states that the submitter should have
+already done:
+	https://www.kernel.org/doc/html/latest/process/submitting-patches.html#describe-your-changes
