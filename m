@@ -2,151 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94F96750F36
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 19:04:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68AC6750F46
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 19:07:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232922AbjGLREO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 13:04:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57518 "EHLO
+        id S232967AbjGLRHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 13:07:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232609AbjGLREL (ORCPT
+        with ESMTP id S231758AbjGLRHF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 13:04:11 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0950C1BD6
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 10:04:10 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id d75a77b69052e-4036bd4fff1so13681cf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 10:04:09 -0700 (PDT)
+        Wed, 12 Jul 2023 13:07:05 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B138E19A7;
+        Wed, 12 Jul 2023 10:07:04 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2b703cbfaf5so117532781fa.1;
+        Wed, 12 Jul 2023 10:07:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689181449; x=1691773449;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AqtCYATG8ChMapzp5kNLa9Py9zbnEsVcqTU7Ga9LoGc=;
-        b=OqdAti8OKkViVwVuE8lSLXuosWAZC4YxyaEzBVjKFo6TVWyxahb0+Hswoyt1XV482L
-         w8pxK2aWUUBMLj4T7NywMW3+OpubE1uliG+eQFEjzQaG7QRN5ky835S29FcwAb1EmI1R
-         6/afyR0w9CQSJqZyqvndjhAf0bKkxSE2SvMpHkGqk5kCCfDdtwo38tUKxCMyWj/kitw7
-         UA8WIl+e7xIjlqIOZho234gBXDEtuVYh4CKKHOMINX5G0LotYdDP5yqvVXXSrFXaqsyA
-         fvbCwzAqPGDVL4GrHTSHm8+Wf+sMcvW27MR5zixM2vThLjHJBDhAsxgpRPlKtxyd90pX
-         QcIA==
+        d=gmail.com; s=20221208; t=1689181623; x=1691773623;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FE5KwK6xtbJwjxewxFtWZgkPMU4+i3I7JpZZxSBsN4A=;
+        b=I2UcMynPls0dwldfCvndqaeg/Ab3Ry7stGdckHltSYfHU4A3xXoS54lkGsjdXMXlve
+         5bgK7vzoerqhgjb0dUDBYOz6TWqov11sMF3c2hqlcXkeFp/M54mQZOfe90aGcCoEJACj
+         XjgALzq/xWEQ+rkFCzZoLVbMZsQWyxoGZsypVTEAXqsOC96LlYtDIZqAvk7Or++6T4bo
+         DaFlW0IqUPGjE7+jar7uG6XiDED21uNPoA6loJ7R91GXHXULsAm5Eo3ZQMpnIGiOlz5K
+         rQFw9TyBCbAQ4HuQDoA+X0B7IQocWp0Ue7PBGcgx7V0xDWq31pj4xJZREg+yM7kU78ya
+         J9SA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689181449; x=1691773449;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AqtCYATG8ChMapzp5kNLa9Py9zbnEsVcqTU7Ga9LoGc=;
-        b=Z5VRijXePY3yq9o3fkxk9eTHrJJTFIpIBx3FaLGATq+cjj3OyUc2O/1JWfQcycWYrv
-         7U1/ivbBjfwKp3Ovfg7+tiC4CmHYIGFuV8kFD9f/XDB/YtIeZAOQxo4A2ay7FBx6+dS6
-         CFI7vOTnRQ2qj5r2hPgwfVvqe2X22eDGgHRkyDQnfTxhT3dUUtp4U/fQ2R0F7pPUW6GE
-         3fzFTIXM9F2fDchmCp0GSt+eZFtW64h/QHkgkPzyShNP2+9yqbyzkWGQxJtQDz638n0v
-         qk3RInfNr32WOvEBcK8Vd0yPMHzXTX4gaZsmRgICntCljzpwOsAPyBPG25JINA2ho0L3
-         0xcQ==
-X-Gm-Message-State: ABy/qLarK+wvUhnDyLi7db8FuJmsb7daARdlOSezy7w2zivVpEQI3rmI
-        0w987lG8YfT2jX/rKce/zMYSX0t2dp7jGkW4gf+HUkiHFtd0kuZx8Io=
-X-Google-Smtp-Source: APBJJlFi8FpP+M9rLTGg/d93Gu+4o83eJViGV5QjH1U0xG4l7m9dxCrVG8t2hJhKXb2BrrEQEjKHZx9hSpIhKmCwRik=
-X-Received: by 2002:a05:622a:1805:b0:3ef:3361:75d5 with SMTP id
- t5-20020a05622a180500b003ef336175d5mr281741qtc.11.1689181449011; Wed, 12 Jul
- 2023 10:04:09 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689181623; x=1691773623;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FE5KwK6xtbJwjxewxFtWZgkPMU4+i3I7JpZZxSBsN4A=;
+        b=PSUjKU/qvG7p5IkqBjPt9mmUAOIz6aWYinsTyf38JNnYbjKHVRa245TxJ7QpKmP26/
+         jf4mT6LAkgvvRtd/XyWSZ35DCDs8Ny71lytsiD9HhrmC8xho0e/M9YdutznSgawWFSn2
+         uwFUzUz/fjVKMVHShHb3AzIQWMTbeRiTw2rUI0InWnz4lC2VcARGkKMBBoNh+PiSIS/g
+         uuRuC7+x5G50/l26EhJLhhjkJh1IWOPWnfmSdezH+Yy2XYQLzaN72c+EZydTk0K2C7T6
+         V+fsUGXezsOYu9/OGWCVWk3JvjDFHkpwMJXAHNoQMRMXywf4OB90QXF3Rd4KfRFeTJX6
+         VxJw==
+X-Gm-Message-State: ABy/qLbBztHUCSfBzj7mVjv7C9MnrlESERE4TNBFkPcB8z1MdDt1+3bu
+        bCddPAVqbvqCh/TINIvxqlc=
+X-Google-Smtp-Source: APBJJlE/iL1XcNM0oII5gni/wrAbTIUN+TnAxxUWdLc/w1rOTECLURpXdUouZp8t0yEnE5O9OH4NVg==
+X-Received: by 2002:a2e:9958:0:b0:2b6:dec9:2812 with SMTP id r24-20020a2e9958000000b002b6dec92812mr17074978ljj.33.1689181622542;
+        Wed, 12 Jul 2023 10:07:02 -0700 (PDT)
+Received: from [192.168.26.149] (031011218106.poznan.vectranet.pl. [31.11.218.106])
+        by smtp.googlemail.com with ESMTPSA id j11-20020a2e3c0b000000b002b6ee0ff9bbsm1015556lja.67.2023.07.12.10.07.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 Jul 2023 10:07:02 -0700 (PDT)
+Message-ID: <2beb9364-7b5d-4cf7-9003-2d70122731c3@gmail.com>
+Date:   Wed, 12 Jul 2023 19:07:00 +0200
 MIME-Version: 1.0
-References: <cover.1689024635.git.anupnewsmail@gmail.com> <ba55bf712cc27494635ca0bb23a21b42529c9327.1689024635.git.anupnewsmail@gmail.com>
- <CAP-5=fUqKZkuODXTez+Dk+RqTmh+NaeRBun65onG-yByUJOnVA@mail.gmail.com>
-In-Reply-To: <CAP-5=fUqKZkuODXTez+Dk+RqTmh+NaeRBun65onG-yByUJOnVA@mail.gmail.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 12 Jul 2023 10:03:57 -0700
-Message-ID: <CAP-5=fW0DT+JkU07K8brv2O_T6=hTM3SQMoji0o2rnsF6w+Y_Q@mail.gmail.com>
-Subject: Re: [PATCH v3 2/6] scripts: python: Extact necessary information from
- process event
-To:     Anup Sharma <anupnewsmail@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH] ARM: dts: BCM5301X: Extend RAM to full 256MB for Linksys
+ EA6500 V2
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Christian Marangi <ansuelsmth@gmail.com>
+Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        =?UTF-8?Q?Ren=c3=a9_Kjellerup?= <rk.katana.steel@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Aleksey Nasibulin <alealexpro100@ya.ru>, stable@vger.kernel.org
+References: <20230712014017.28123-1-ansuelsmth@gmail.com>
+ <fc94da45-aba8-4e69-a1a0-c1d58a90c68c@lunn.ch>
+Content-Language: en-US
+From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+In-Reply-To: <fc94da45-aba8-4e69-a1a0-c1d58a90c68c@lunn.ch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 10:01=E2=80=AFAM Ian Rogers <irogers@google.com> wr=
-ote:
->
-> On Mon, Jul 10, 2023 at 4:10=E2=80=AFPM Anup Sharma <anupnewsmail@gmail.c=
-om> wrote:
-> >
-> > The script takes in a sample event dictionary(param_dict) and retrieves
-> > relevant data such as time stamp, PID, TID, thread name. Also start tim=
-e
-> > is defined.
-> >
-> > Signed-off-by: Anup Sharma <anupnewsmail@gmail.com>
-> > ---
-> >  .../perf/scripts/python/firefox-gecko-converter.py  | 13 ++++++++++++-
-> >  1 file changed, 12 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/tools/perf/scripts/python/firefox-gecko-converter.py b/too=
-ls/perf/scripts/python/firefox-gecko-converter.py
-> > index 5b342641925c..765f1775cee5 100644
-> > --- a/tools/perf/scripts/python/firefox-gecko-converter.py
-> > +++ b/tools/perf/scripts/python/firefox-gecko-converter.py
-> > @@ -21,8 +21,19 @@ sys.path.append(os.environ['PERF_EXEC_PATH'] + \
-> >  from perf_trace_context import *
-> >  from Core import *
-> >
->
-> It'd be nice to have a comment here, perhaps:
-> # The time stamp from the first of the time ordered events.
->
-> > +start_time =3D None
-> > +
-> >  def trace_end():
-> >         pass
-> >
-> >  def process_event(param_dict):
-> > -       pass
-> > +       global start_time
-> > +       # Extract relevant information from the event parameters. The e=
-vent parameters
-> > +       # are in a dictionary:
-> > +       time_stamp =3D (param_dict['sample']['time'] // 1000) / 1000
-> > +       pid =3D param_dict['sample']['pid']
-> > +       tid =3D param_dict['sample']['tid']
-> > +       thread_name =3D param_dict['comm']
-> > +
-> > +       # Assume that start time is the time of the first event.
-> > +       start_time =3D time_stamp if not start_time else start_time
->
-> I appreciate that this is one line, but it takes some getting your
-> head around that start_time is being assigned to itself in the common
-> case. I think this would be more readable as:
->
-> if not start_time:
->   start_time =3D time_stamp
+On 12.07.2023 17:23, Andrew Lunn wrote:
+>> --- a/arch/arm/boot/dts/broadcom/bcm4708-linksys-ea6500-v2.dts
+>> +++ b/arch/arm/boot/dts/broadcom/bcm4708-linksys-ea6500-v2.dts
+>> @@ -19,7 +19,8 @@ chosen {
+>>   
+>>   	memory@0 {
+>>   		device_type = "memory";
+>> -		reg = <0x00000000 0x08000000>;
+>> +		reg = <0x00000000 0x08000000>,
+>> +		      <0x88000000 0x08000000>;
+> 
+> So there is a hole in the middle? Does this require any special
+> CONFIG_ option to support sparse memory?
 
-I believe the events are guaranteed time ordered in perf script. The
-ordered_event logic handles this, but I likely haven't got a full
-grasp on all the corners of it. You can always assert the behavior
-(comments with guarantees :-) ):
+This is how RAM is mapped on all known Northstar devices. Using two
+blocks.
 
-assert start_time <=3D time_stamp, "Events aren't time ordered"
+I've heard there is a way to design Northstar SoC board to have all RAM
+in one region but thay requires disabling something (I don't remember
+what) and in practice to vendor decided to do that.
 
-Thanks,
-Ian
-
-> Thanks,
-> Ian
->
-> > --
-> > 2.34.1
-> >
+AFAIK no extra CONFIG_* option is needed to make Linux map multiple RAM
+regions.
