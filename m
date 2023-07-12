@@ -2,207 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29EE4751108
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 21:13:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C10D6751109
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 21:13:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232203AbjGLTNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 15:13:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52416 "EHLO
+        id S232461AbjGLTNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 15:13:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbjGLTNX (ORCPT
+        with ESMTP id S232446AbjGLTNo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 15:13:23 -0400
-Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69B0012F
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 12:13:22 -0700 (PDT)
-Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-63588812c7aso5513786d6.0
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 12:13:22 -0700 (PDT)
+        Wed, 12 Jul 2023 15:13:44 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 836791FC7
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 12:13:43 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-3159acfc48cso896993f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 12:13:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689189222; x=1689794022;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2QHVO7BLuBhdhHKLquYTQM6WPJRF2zzEP1Lh58ULoUg=;
+        b=X5THPtP/o3bSxe7TyAsA7WCM8sLDROd6YZyUh53cQiL5zZvuTlU/shPlowSv6/ahO5
+         67ZGcnpToEmvPKaLlSsvcBS/ZkNhDxTz4AmjZoqvZUKm/vhajm+z+koBm5Fl/5cMmT5q
+         FLG+y/20nJdQHIW8TZljbM2xmQ/M3cpwhhv9oXV/sg5tgQIY0TjKpBM5O1p47f6ya2F6
+         OYYCr1Yy/UOS591fpvj7e7DXdpnB41Rd88SMclAZMdVZWcU5EENWnEXTZZFb3bcl2h8x
+         W643qQ+jn0FT0qp3pM1WbfLYGzn075Hqyv8lVNxFbvqkj6aRXjouAPoPlOpU2zvSwcbV
+         uf7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689189201; x=1691781201;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=A693YwQHKAudPYIHxBFeOCKIJbNKDFtDtRrMBaZ9+TE=;
-        b=MtXvfKv4Q7Yla8VZ+A4/FaZcyYIWcH86NmHKR0sycyjIi7doFnz4QeVlvCASLm5cn8
-         Yuf4C4EvwvH9Yq/GGK6GOBr88pTAockcjbV0EiKBEyYvckUYVf4rnlXr5UGfJFAqXC9t
-         bi8aAIpNh74jAQpnLaFMNm74qZbg97FGM/GjmNcwqYx8RWOUaA6dRtgMkYbT1GnuMcH4
-         BtuY/Xu/F+MtkaFAZLSGJUGC4YWWhl7gLD7CRhCvo7qEHdxiW4ARRx2senVDXNy/G1vj
-         r+rQA5BL8tluzFXrWj+vBGdtmXCKCm6rB6i0NPR+WNUe4dmTqAikKiPanOVFTv06wUJw
-         UXUQ==
-X-Gm-Message-State: ABy/qLZ3xBvvZIVgBx02hnfY6n/vSoCWxvqMFEhAA+lWk20RQEcVpQa2
-        Ivgf4v1+N/UkIyuvLJhmATg=
-X-Google-Smtp-Source: APBJJlFIpV/N98o3QrTjIK/VqkmQyrRIA4v/B5H8Ud7DKNE/TGpprJCASfbSuxveQAaOAJ7TqQU2SQ==
-X-Received: by 2002:a0c:c545:0:b0:636:1275:8419 with SMTP id y5-20020a0cc545000000b0063612758419mr3226886qvi.13.1689189201314;
-        Wed, 12 Jul 2023 12:13:21 -0700 (PDT)
-Received: from maniforge ([2620:10d:c091:400::5:3a6e])
-        by smtp.gmail.com with ESMTPSA id y3-20020a0cd983000000b0062df126ca11sm2412923qvj.21.2023.07.12.12.13.20
+        d=1e100.net; s=20221208; t=1689189222; x=1689794022;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2QHVO7BLuBhdhHKLquYTQM6WPJRF2zzEP1Lh58ULoUg=;
+        b=CbKf7tq9+4zxzAWF+4vRXQoW9QXHjnfVuDOlBooViZoUi69qWqF9a3/rubPA94mwn4
+         C2WoRlDdjMlPbvOhw0/3zBaIw9jqUctWb0nnx8flXWncshIINewe8XbkSZrcZza4Bjlj
+         xfYUg9DogOD03Tokp7tp3p7QnSM4eTOFRxpFzwW3a1Z7q/bzkXHrGt5EZ6x+deuVyVXr
+         CFHHvMNgVjy85v2dsJhxMP78KoUWxBNsqjaEqPTQWgyRp8AF91SgGntr8yCjNAXiieRX
+         cna0/cyd9hujWstEM7Y4qfUwRMiqwUtOec3jd5YnSIOz29Jrt7QF6lswxnwUetzkm7SY
+         jXvw==
+X-Gm-Message-State: ABy/qLZF6tcg8DBJxPNxOiVfvCboELw8XPkUtn5Hi2ZE2qSiyZ3vaIpl
+        0hndGezhJfckL+Q+vGxW12M=
+X-Google-Smtp-Source: APBJJlHdlJ6lu/yHbOb/wtnZacEcBnt6ZjRG6zPJF8Mr3ONmlp/q4gsnHtJpxCyWarn9DZr5Fp3Hsg==
+X-Received: by 2002:a5d:4941:0:b0:313:ddde:6ecd with SMTP id r1-20020a5d4941000000b00313ddde6ecdmr256553wrs.1.1689189221727;
+        Wed, 12 Jul 2023 12:13:41 -0700 (PDT)
+Received: from ivan-HLYL-WXX9.. ([141.136.93.92])
+        by smtp.gmail.com with ESMTPSA id t4-20020a5d4604000000b00313e59cb371sm5848063wrq.12.2023.07.12.12.13.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Jul 2023 12:13:20 -0700 (PDT)
-Date:   Wed, 12 Jul 2023 14:13:18 -0500
-From:   David Vernet <void@manifault.com>
-To:     "Gautham R. Shenoy" <gautham.shenoy@amd.com>
-Cc:     linux-kernel@vger.kernel.org, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, kprateek.nayak@amd.com,
-        aaron.lu@intel.com, clm@meta.com, tj@kernel.org,
-        roman.gushchin@linux.dev, kernel-team@meta.com
-Subject: Re: [PATCH v2 5/7] sched: Implement shared runqueue in CFS
-Message-ID: <20230712191318.GA12207@maniforge>
-References: <20230710200342.358255-1-void@manifault.com>
- <20230710200342.358255-6-void@manifault.com>
- <ZK5BdysC0lxKQ/gE@BLR-5CG11610CF.amd.com>
+        Wed, 12 Jul 2023 12:13:41 -0700 (PDT)
+From:   Ivan Orlov <ivan.orlov0322@gmail.com>
+To:     perex@perex.cz, tiwai@suse.com
+Cc:     Ivan Orlov <ivan.orlov0322@gmail.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ALSA: pcmtest: Extend error injection, decrease buffer filling overhead
+Date:   Wed, 12 Jul 2023 23:13:25 +0400
+Message-Id: <20230712191325.8791-1-ivan.orlov0322@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZK5BdysC0lxKQ/gE@BLR-5CG11610CF.amd.com>
-User-Agent: Mutt/2.2.10 (2023-03-25)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 11:30:23AM +0530, Gautham R. Shenoy wrote:
-> Hello David,
-> 
-> On Mon, Jul 10, 2023 at 03:03:40PM -0500, David Vernet wrote:
-> 
-> [..snip..]
-> 
-> > ---
-> 
-> > +
-> > +static struct task_struct *shared_runq_pop_task(struct rq *rq)
-> > +{
-> > +	unsigned long flags;
-> > +	struct task_struct *p;
-> > +	struct shared_runq *shared_runq;
-> > +
-> > +	shared_runq = rq_shared_runq(rq);
-> > +	if (list_empty(&shared_runq->list))
-> > +		return NULL;
-> > +
-> > +	spin_lock_irqsave(&shared_runq->lock, flags);
-> > +	p = list_first_entry_or_null(&shared_runq->list, struct task_struct,
-> > +				     shared_runq_node);
-> 
-> 
-> Apologies for the bikeshedding comment : Here you are attempting to
-> remove the task from the "head", while in shared_runq_push_task below,
-> you are adding a task to the tail. Which is the usual queue
-> semantics. Then why call them shared_runq_pop_task() and
-> shared_runq_push_task() ?
-> 
-> Can we name them __shared_runq_enqueue_task() and
-> __shared_runq_pick_next_task() instead ?
+Extend 'pcmtest' virtual driver with 'open' callback error injection
+functionality, as it already can inject errors into other PCM callbacks.
 
-Hello Gautham,
+Fix the driver to use already defined variables where it is possible.
 
-So this was previously discussed in [0]. I'm fine with changing the
-names if that's others' preferences as well. I think what we have now is
-nice in that push and pop are list operations whereas enqueue / dequeue
-are scheduler operations, but yeah, push / pop are more-so stack than
-queue ops. Using __ to make the list ops "private" is fine with me.
+Additionally, decrease the buffer filling overhead with conditional
+reminder calculation in the 'inc_buf_pos' inline function.
 
-[0]: https://lore.kernel.org/lkml/20230622105841.GH4253@hirez.programming.kicks-ass.net/
+Signed-off-by: Ivan Orlov <ivan.orlov0322@gmail.com>
+---
+ sound/drivers/pcmtest.c | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
 
-> > +	if (p && is_cpu_allowed(p, cpu_of(rq)))
-> > +		list_del_init(&p->shared_runq_node);
-> > +	else
-> > +		p = NULL;
-> > +	spin_unlock_irqrestore(&shared_runq->lock, flags);
-> > +
-> > +	return p;
-> > +}
-> > +
-> > +static void shared_runq_push_task(struct rq *rq, struct task_struct *p)
-> > +{
-> > +	unsigned long flags;
-> > +	struct shared_runq *shared_runq;
-> > +
-> > +	shared_runq = rq_shared_runq(rq);
-> > +	spin_lock_irqsave(&shared_runq->lock, flags);
-> > +	list_add_tail(&p->shared_runq_node, &shared_runq->list);
-> > +	spin_unlock_irqrestore(&shared_runq->lock, flags);
-> > +}
-> > +
-> >  static void shared_runq_enqueue_task(struct rq *rq, struct task_struct *p,
-> >  				     int enq_flags)
-> > -{}
-> > +{
-> > +	bool task_migrated = enq_flags & ENQUEUE_MIGRATED;
-> > +	bool task_wakeup = enq_flags & ENQUEUE_WAKEUP;
-> > +
-> > +	/*
-> > +	 * Only enqueue the task in the shared runqueue if:
-> > +	 *
-> > +	 * - SWQUEUE is enabled
-> > +	 * - The task is on the wakeup path
-> > +	 * - The task wasn't purposefully migrated to the current rq by
-> > +	 *   select_task_rq()
-> > +	 * - The task isn't pinned to a specific CPU
-> > +	 */
-> > +	if (!task_wakeup || task_migrated || p->nr_cpus_allowed == 1)
-> > +		return;
-> > +
-> > +	shared_runq_push_task(rq, p);
-> > +}
-> >  
-> >  static int shared_runq_pick_next_task(struct rq *rq, struct rq_flags *rf)
-> >  {
-> > -	return 0;
-> > +	struct task_struct *p = NULL;
-> > +	struct rq *src_rq;
-> > +	struct rq_flags src_rf;
-> > +	int ret;
-> > +
-> > +	p = shared_runq_pop_task(rq);
-> > +	if (!p)
-> > +		return 0;
-> > +
-> > +	rq_unpin_lock(rq, rf);
-> > +	raw_spin_rq_unlock(rq);
-> > +
-> > +	src_rq = task_rq_lock(p, &src_rf);
-> > +
-> > +	if (task_on_rq_queued(p) && !task_on_cpu(rq, p)) {
-> > +		update_rq_clock(src_rq);
-> > +		src_rq = move_queued_task(src_rq, &src_rf, p, cpu_of(rq));
-> > +	}
-> > +
-> > +	if (src_rq->cpu != rq->cpu)
-> > +		ret = 1;
-> > +	else
-> > +		ret = -1;
-> 
-> 
-> So if src_rq->cpu != rq->cpu, then the task has _not_ been moved to
-> rq. But you return 1.
-> 
-> While in the else case, since src_rq->cpu == rq->cpu, the task has
-> been successfully moved to rq. But you are returning -1,
-> 
-> If newidle_balance() were to interpret this return value as the number
-> of tasks pulled, then, shouldn't it be the other way around ?
+diff --git a/sound/drivers/pcmtest.c b/sound/drivers/pcmtest.c
+index 291e7fe47893..08e14b5eb772 100644
+--- a/sound/drivers/pcmtest.c
++++ b/sound/drivers/pcmtest.c
+@@ -65,6 +65,7 @@ static int inject_delay;
+ static bool inject_hwpars_err;
+ static bool inject_prepare_err;
+ static bool inject_trigger_err;
++static bool inject_open_err;
+ 
+ static short fill_mode = FILL_MODE_PAT;
+ 
+@@ -88,6 +89,9 @@ module_param(inject_prepare_err, bool, 0600);
+ MODULE_PARM_DESC(inject_prepare_err, "Inject EINVAL error in the 'prepare' callback");
+ module_param(inject_trigger_err, bool, 0600);
+ MODULE_PARM_DESC(inject_trigger_err, "Inject EINVAL error in the 'trigger' callback");
++module_param(inject_open_err, bool, 0600);
++MODULE_PARM_DESC(inject_open_err, "Inject EBUSY error in the 'open' callback");
++
+ 
+ struct pcmtst {
+ 	struct snd_pcm *pcm;
+@@ -140,7 +144,8 @@ static inline void inc_buf_pos(struct pcmtst_buf_iter *v_iter, size_t by, size_t
+ {
+ 	v_iter->total_bytes += by;
+ 	v_iter->buf_pos += by;
+-	v_iter->buf_pos %= bytes;
++	if (v_iter->buf_pos >= bytes)
++		v_iter->buf_pos %= bytes;
+ }
+ 
+ /*
+@@ -196,10 +201,10 @@ static void check_buf_block_ni(struct pcmtst_buf_iter *v_iter, struct snd_pcm_ru
+ 	u8 current_byte;
+ 
+ 	for (i = 0; i < v_iter->b_rw; i++) {
+-		current_byte = runtime->dma_area[buf_pos_n(v_iter, channels, i % channels)];
++		ch_num = i % channels;
++		current_byte = runtime->dma_area[buf_pos_n(v_iter, channels, ch_num)];
+ 		if (!current_byte)
+ 			break;
+-		ch_num = i % channels;
+ 		if (current_byte != patt_bufs[ch_num].buf[(v_iter->total_bytes / channels)
+ 							  % patt_bufs[ch_num].len]) {
+ 			v_iter->is_buf_corrupted = true;
+@@ -239,7 +244,7 @@ static void fill_block_pattern_n(struct pcmtst_buf_iter *v_iter, struct snd_pcm_
+ 
+ 	for (i = 0; i < v_iter->b_rw; i++) {
+ 		ch_num = i % channels;
+-		runtime->dma_area[buf_pos_n(v_iter, channels, i % channels)] =
++		runtime->dma_area[buf_pos_n(v_iter, channels, ch_num)] =
+ 			patt_bufs[ch_num].buf[(v_iter->total_bytes / channels)
+ 					      % patt_bufs[ch_num].len];
+ 		inc_buf_pos(v_iter, 1, runtime->dma_bytes);
+@@ -364,6 +369,9 @@ static int snd_pcmtst_pcm_open(struct snd_pcm_substream *substream)
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct pcmtst_buf_iter *v_iter;
+ 
++	if (inject_open_err)
++		return -EBUSY;
++
+ 	v_iter = kzalloc(sizeof(*v_iter), GFP_KERNEL);
+ 	if (!v_iter)
+ 		return -ENOMEM;
+-- 
+2.34.1
 
-Yeah, good call. Will incorporate this into v3.
-
-> > +
-> > +	task_rq_unlock(src_rq, p, &src_rf);
-> > +
-> > +	raw_spin_rq_lock(rq);
-> > +	rq_repin_lock(rq, rf);
-> > +
-> > +	return ret;
-> >  }
-> >  
-> 
-> --
-> Thanks and Regards
-> gautham.
