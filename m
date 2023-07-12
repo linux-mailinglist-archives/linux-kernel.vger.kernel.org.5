@@ -2,64 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD3FF7511D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 22:30:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 280BC7511FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 22:46:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230434AbjGLUah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 16:30:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51192 "EHLO
+        id S231724AbjGLUqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 16:46:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230352AbjGLUaf (ORCPT
+        with ESMTP id S231580AbjGLUqb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 16:30:35 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD891FF5;
-        Wed, 12 Jul 2023 13:30:30 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-307d20548adso60579f8f.0;
-        Wed, 12 Jul 2023 13:30:30 -0700 (PDT)
+        Wed, 12 Jul 2023 16:46:31 -0400
+Received: from mail-oa1-x2f.google.com (mail-oa1-x2f.google.com [IPv6:2001:4860:4864:20::2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFEF4A2;
+        Wed, 12 Jul 2023 13:46:30 -0700 (PDT)
+Received: by mail-oa1-x2f.google.com with SMTP id 586e51a60fabf-1b06a46e1a9so5903664fac.2;
+        Wed, 12 Jul 2023 13:46:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689193828; x=1691785828;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+        d=gmail.com; s=20221208; t=1689194790; x=1691786790;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=7uMes6uDF6XuF/NpG5MMnC6PxQAgXxLxueUoAbhH/NI=;
-        b=LZFRlPPBc/guaxqCU/S9PgvkWJYMqqVDnXoSugrlxkAWwOO8LdS1MXT1a+CpDO9sG4
-         K6SOELMi/oK5s102zZDqItwsWLKIX+SiDPqrJzOv5zHPjJlIkCwCa1/+ePrF6Hi/Pov1
-         G0slFifu7sNallh+LfCz20Xutw1wdVf8J0G5upP8H6AYJof/SkYwXszfk8OrM0G1XXhj
-         gd5/1FzcKWznY+Heq4nL0uWGr2VKYQRuCx9tT5/txd6yyQwmBd2ahD9pln/j6sQD96Zv
-         G/uosjjqrMmGoDLApLOR9HnD8FIX6bfewRdPedWHG1T6TFem7/OoM8PKaE4sLBXD8liX
-         bITw==
+        bh=hjYp/GGGt1suSt9XKydx09ugNwhwrtHkiMgpJkM/lOc=;
+        b=ncfNislj9zkZDbzfooNQKCoi3fZ/tNoj/jW86RpRgvnL/xWidIpWcLH6ayF7AetyXO
+         qAHUWsEqwvY/NGG3fsTp3T5S1FjT/PNbxOToVwEQ82BTZcQAerhxx85WCv+6o+sVl5oF
+         XmOVP70uv/1ZWlrvgrOlOXDPHUprmR+TjTvWD8V9/i5t9gafRdk/jZI6bg0k1+FuwnIr
+         KDe5lzQr+yOdL9AFvjfJwOFbG9AxD/BxnV7lqt9o4cpBP1ytub13wm+8xwY46e7QiBIF
+         FJcf4gGhW5HVpz9WAXW8y74oeWD0SGnqtQNxrrbAWkLXZPuzgApTeQiyIVeFFzaghT2V
+         I36Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689193828; x=1691785828;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+        d=1e100.net; s=20221208; t=1689194790; x=1691786790;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7uMes6uDF6XuF/NpG5MMnC6PxQAgXxLxueUoAbhH/NI=;
-        b=EPkt6Oxg8J9jX+9u9JEQ6jhWo37pDUeNsY8Kz9jLzOZbobxHArWJnZbUqBW5pb3aP6
-         WUKiPLbqrpLUNNiFRjAE61qbt+RhiHZq59iwaVKOf6l1Pufu90FC3jSPFMquHZhNToI0
-         1vAJ3COsdi1AWpGaZ5+nFBYHANTE4qilX/yzqkxEzYcn/h0AAKJhfisEJyfKIGo0jShR
-         LEPhXfeWUlPzliYOuANIB5n2qhAtiy7Gm8KrynFoTW0SOJ5haCH0TJ2iOG/Ca/KpXJH6
-         rXJxBZfHtXocAathdjtcVBdqzMpwdvt/AntytOGMxMkzBpx3JyPiCXUvELU4Ni9ZTVQr
-         JFjQ==
-X-Gm-Message-State: ABy/qLYH+GnBWmejvwEAQJ8sKY870Uo0vZWwgO+/o/JG36fkCxdc6n4j
-        H8F/lnC5u0dLWbcN1AtLYgRZ5dtnal4kKA==
-X-Google-Smtp-Source: APBJJlHVliw/iyNYPUMYmjK4WDaJ/6IY+AIcV/d5ZHeZMbGmE6FXN4HIMFOHXZAfOSkfDh26Lx63Jw==
-X-Received: by 2002:a5d:43ca:0:b0:2d1:3eb9:c3c2 with SMTP id v10-20020a5d43ca000000b002d13eb9c3c2mr16310115wrr.54.1689193828415;
-        Wed, 12 Jul 2023 13:30:28 -0700 (PDT)
-Received: from localhost (cpc1-brnt4-2-0-cust862.4-2.cable.virginm.net. [86.9.131.95])
-        by smtp.gmail.com with ESMTPSA id c17-20020a056000105100b0031433d8af0dsm5982383wrx.18.2023.07.12.13.30.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Jul 2023 13:30:27 -0700 (PDT)
-Date:   Wed, 12 Jul 2023 21:30:27 +0100
-From:   Stafford Horne <shorne@gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux OpenRISC <linux-openrisc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] OpenRISC fix for 6.5
-Message-ID: <ZK8NY+xAAHRTSEPc@antec>
+        bh=hjYp/GGGt1suSt9XKydx09ugNwhwrtHkiMgpJkM/lOc=;
+        b=SEvN85z8Nv2N0O/UDfShCwl3KMfGOaODmaeWHNs9vlF9Zw2Ys+90yGB2Vt3ME48/o/
+         NbjqiqM9okdfYrtVW590iFeHx7xHCPaYzcf4npmA6YSZKanomHmaBxhEmLtLVFUH+LdT
+         rKTvli+xYBp3Jfx5iYjg2yllAxLwmWs9rczyyLpZz63pJPlHH2m5Y9rwsg77NK/Ffh8H
+         7uUpNOwEnzj0AQhRMdP3y7Z9IBJGdX9I56rPevbCiJbQjaMwHMepHh2e844fhsGQ/uro
+         lMiHN7qUT1m0G5YbsBLYItq811XOH7OhVCJif0TJXNwoJhCGI8nXsJDMI60ylKl305YY
+         fk9g==
+X-Gm-Message-State: ABy/qLYG996LjYsYng+LR+OmonI9bDvfLFK3wIEGAVTZGhbWoIvFlqd1
+        7ODE6pvx65a/IIwkJsavG6Y=
+X-Google-Smtp-Source: APBJJlGB8IZyS5AEyRlG5pMJgxfMJIQfz18Bl/ywWLjb12fdCb0ahZIw7N3RXMtz/5OOeQxQTXct2g==
+X-Received: by 2002:a05:6870:e313:b0:1b7:8950:f583 with SMTP id z19-20020a056870e31300b001b78950f583mr297915oad.33.1689194789797;
+        Wed, 12 Jul 2023 13:46:29 -0700 (PDT)
+Received: from [192.168.54.90] (static.220.238.itcsa.net. [190.15.220.238])
+        by smtp.gmail.com with ESMTPSA id ds53-20020a0568705b3500b001a6d15fc52fsm2397384oab.4.2023.07.12.13.46.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 Jul 2023 13:46:29 -0700 (PDT)
+Message-ID: <4b92e8be-32c8-0ac4-723f-59f2fc42e6b3@gmail.com>
+Date:   Wed, 12 Jul 2023 17:33:12 -0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 2/9] rust: sync: add `Arc::{from_raw, into_raw}`
+Content-Language: en-US
+To:     Alice Ryhl <aliceryhl@google.com>, rust-for-linux@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>, Miguel Ojeda <ojeda@kernel.org>
+Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=c3=b6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+        Wedson Almeida Filho <walmeida@microsoft.com>
+References: <20230711093303.1433770-1-aliceryhl@google.com>
+ <20230711093303.1433770-3-aliceryhl@google.com>
+From:   Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+In-Reply-To: <20230711093303.1433770-3-aliceryhl@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -68,35 +83,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus,
+On 7/11/23 06:32, Alice Ryhl wrote:
+> From: Wedson Almeida Filho <walmeida@microsoft.com>
+> 
+> These methods can be used to turn an `Arc` into a raw pointer and back,
+> in a way that preserves the metadata for fat pointers.
+> 
+> This is done using the unstable ptr_metadata feature [1]. However, it
+> could also be done using the unstable pointer_byte_offsets feature [2],
+> which is likely to have a shorter path to stabilization than
+> ptr_metadata.
+> 
+> Link: https://github.com/rust-lang/rust/issues/81513 [1]
+> Link: https://github.com/rust-lang/rust/issues/96283 [2]
+> Signed-off-by: Wedson Almeida Filho <walmeida@microsoft.com>
+> Co-developed-by: Alice Ryhl <aliceryhl@google.com>
+> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
+> Reviewed-by: Gary Guo <gary@garyguo.net>
+> ---
+> [...]
 
-Please consider for pull,
-
-The following changes since commit 45a3e24f65e90a047bef86f927ebdc4c710edaa1:
-
-  Linux 6.4-rc7 (2023-06-18 14:06:27 -0700)
-
-are available in the Git repository at:
-
-  https://github.com/openrisc/linux.git tags/for-linus
-
-for you to fetch changes up to dceaafd668812115037fc13a1893d068b7b880f5:
-
-  openrisc: Union fpcsr and oldmask in sigcontext to unbreak userspace ABI (2023-07-10 22:03:26 +0100)
-
-----------------------------------------------------------------
-OpenRISC fix for 6.5
-
-One fix:
-
- - During the 6.4 cycle my fpu support work broke ABI compatibility in
-   the sigcontext struct. This was noticed by musl libc developers after
-   the release. This fix restores the ABI.
-
-----------------------------------------------------------------
-Stafford Horne (1):
-      openrisc: Union fpcsr and oldmask in sigcontext to unbreak userspace ABI
-
- arch/openrisc/include/uapi/asm/sigcontext.h | 6 ++++--
- arch/openrisc/kernel/signal.c               | 4 ++--
- 2 files changed, 6 insertions(+), 4 deletions(-)
+Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
