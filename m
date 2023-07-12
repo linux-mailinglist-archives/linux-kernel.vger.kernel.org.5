@@ -2,259 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2406E751001
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 19:52:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAD0D751005
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 19:52:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229640AbjGLRwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 13:52:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50872 "EHLO
+        id S232527AbjGLRws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 13:52:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232389AbjGLRwT (ORCPT
+        with ESMTP id S232442AbjGLRwo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 13:52:19 -0400
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FEB7199E
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 10:52:17 -0700 (PDT)
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com [209.85.160.197])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id F11023F18D
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 17:52:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1689184336;
-        bh=l5M3IqZkSZTNpK4Rgfb/490i8YL19SZAjTybhYdRe5U=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=aVYAbYEuV2irmhFAeWeYjMUqUbKudG2X+uLWMGUSYXIAyBpQbEixscRVY4bmLWqeX
-         Vqwr6MMwRjhqtehikBe9qH7BEag578gVDIVCqOt95MRwl5Ceb2UJUabm9Bv6+NI5Jp
-         YyaGyWXcOFXjUM8489sTiio3T568j41TLLWB9SNXVb697Lj4OG6lr68xM9kEgEFNls
-         UcKqaLwgr8YtVfWo+ORw7P1Fr4j7VAK3Ci6fTXDVtNHF0v+1I5BZoarWmsVfWIwIUi
-         cOCRuEPTQnJyDSfcMUBdIsa7//h4pH/RaLyR10aLlLkRsunF3YlurjQJ1ZG92vPrT6
-         3+MalCvRRFXGA==
-Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-403ad49c647so39865081cf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 10:52:15 -0700 (PDT)
+        Wed, 12 Jul 2023 13:52:44 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 987C81FDE
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 10:52:43 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id d75a77b69052e-403b622101bso24471cf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 10:52:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689184363; x=1691776363;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jM9bdOrQaPaBEpJgo9Tqz6y2K8+tG7zdCt8BktRJpJo=;
+        b=hVhHcKmDYYcq31tgzpNRob1VHBPNpT1S6Ss6aaAdNzk12rMfcRRvMj/BCUIH4cKEfR
+         utRpq9C8WQ5N6mnRRkTlefEEaahp7ZTQbVN9XnCwBtw38qxJTuRLNgipu4ebiANTwC5b
+         0ICzVyS/naI0l5gpgwEbAbS8m3YFlaAtTiH6znnFWQZOKEWvBVfpEOgLUfuA45YPqzq5
+         YkRtKz+ND6g0vjvW0ImkjQJTXH//5/EsrGq2ySvI49kJM4uqHK0hU43x0qRLX8Wxv83s
+         M0B9Ks7jAbMgV3HI6voGQjZwBioDmtToB44QbRW8DVOkV7IrbvGyja3ianMJd6MApBxN
+         ml+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689184335; x=1691776335;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=l5M3IqZkSZTNpK4Rgfb/490i8YL19SZAjTybhYdRe5U=;
-        b=PoSPS8WBQAGsQTffglTWVD7XuTiC4LM2d1Dox38OLs72VJNq/9M8iOLUlH7+ODSr6k
-         XnA92OpGPzwRTbwTmxY0RCZjT31te7lrt6fSTs7gUUJLVerckUx7uB4k2I7njmqoSrZy
-         KTvQ4cK2ySMLOjxf9YA4NxUbBGZJGhvN8GGD8c12WJBef8SzcEmA7Fx60fbsILPGpBqA
-         1ywN1HmY6z1TfeKrPwry2KeORnskvy8q1wOg7PBrO7AgIwk7zKu0LK110hAhMY1OWf3l
-         tHwVHRfu0bDfj2eBgm+8QWB3PpHDvyBN3mujx5LkK1GBlruy1LcmbtgXzQAIP7KWKwbL
-         WCzQ==
-X-Gm-Message-State: ABy/qLbf2SX5JZ6+5BHOcm9vnmToYwQgapebUNsTwL+Hk4hrDM9nEYd1
-        0yYHB4/9S0wc573Wj7BVvpf6PWl8aYxbUqgRT0w6zZxgi3BKedjzcLYKA16+WB2UT6I2vjtfC1Q
-        e0TKDixHaVNz6grMOB7MltywHHcPL0yxqi9PpsHISSS5XzMfhhIFS+nYJYA==
-X-Received: by 2002:a05:622a:54e:b0:402:d15e:2982 with SMTP id m14-20020a05622a054e00b00402d15e2982mr23069244qtx.25.1689184335028;
-        Wed, 12 Jul 2023 10:52:15 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlG3uMj4FGxQKvZ4HRowGrH0Fv5CI+N5D+ut6hhpgRCwd5Z3AsHez8thKYRxHUQtDfruIfQQPmR8RGBKrnRhhxg=
-X-Received: by 2002:a05:622a:54e:b0:402:d15e:2982 with SMTP id
- m14-20020a05622a054e00b00402d15e2982mr23069219qtx.25.1689184334781; Wed, 12
- Jul 2023 10:52:14 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689184363; x=1691776363;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jM9bdOrQaPaBEpJgo9Tqz6y2K8+tG7zdCt8BktRJpJo=;
+        b=DXHMuzh3LCet9CFEKqmNbi5OWoI1OdggYv42vgrZHhli8i4BL1M93rTj1G9Mi/TARh
+         PwjaXGtZz+UG+hOd67Hxa+mznfWD0SCOVNm7tlY5dqfbJyNRM98Ac99Hv8QE78kaWRVq
+         TzwJv2lOrTFauq8uEpL9ahbb1M3mWarJDGeHDmQ5VLTSqiYj85Y8Pw+UK14EfzuZ8Cnl
+         DRsnh9Dn7ljhZ4qB+Vq6gVWdC0LvQrzWopg7Psz9gci5spYX+RfOUpRR8PzNDTF3OCtU
+         bzwXa/FdEtyWnVlmhTR0klc9QfQnoslHLh8cgkARbz2xLhJvw6Bz7tXzoygOoKtRezAw
+         DfGA==
+X-Gm-Message-State: ABy/qLZBDFhPzncrjXsbfZ1DwWssEOTIKo7AmxHSftxoQ1Rv89b337yw
+        zR3vAVQoa8GBUBE+g4fpvNZUaxx9vaep6oryNNKQlw==
+X-Google-Smtp-Source: APBJJlHaYXEfRmzu+bv8B6OWFOU1nFEd32JbQY9BYrwEvxiAqRK40ckZP5eOSp3wk6r3t+v7uLcBs+vuiLRlcg0Akbg=
+X-Received: by 2002:ac8:5981:0:b0:403:aa88:cf7e with SMTP id
+ e1-20020ac85981000000b00403aa88cf7emr260453qte.29.1689184362598; Wed, 12 Jul
+ 2023 10:52:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230712092007.31013-1-xingyu.wu@starfivetech.com> <20230712092007.31013-4-xingyu.wu@starfivetech.com>
-In-Reply-To: <20230712092007.31013-4-xingyu.wu@starfivetech.com>
-From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
-Date:   Wed, 12 Jul 2023 19:51:58 +0200
-Message-ID: <CAJM55Z8TwKUzPjg4LdjrgV98D_oLr3ZBervOKwXHx+K9-Ddjew@mail.gmail.com>
-Subject: Re: [PATCH v7 3/9] dt-bindings: clock: Add StarFive JH7110
- Image-Signal-Process clock and reset generator
-To:     Xingyu Wu <xingyu.wu@starfivetech.com>
-Cc:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Conor Dooley <conor@kernel.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Hal Feng <hal.feng@starfivetech.com>,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
+References: <20230628102949.2598096-1-john.g.garry@oracle.com>
+ <20230628102949.2598096-5-john.g.garry@oracle.com> <CAP-5=fXa24_LEiyni0Ncyfa5hKwC1GE6y-zi2u8M98M9SwHX+g@mail.gmail.com>
+ <CAP-5=fUs=u3PKYP3mVDdzNB8+=GAHaEXG3SGfWJpMELYYqO_hA@mail.gmail.com>
+ <d59b6e7c-cead-24d4-a9cb-6552b3154d84@oracle.com> <CAP-5=fUu6xgVDQT4tq=vmRLDMe3ddMLywP11uOLvKSu8Lc6BjQ@mail.gmail.com>
+ <897dcf1d-6a04-33d3-9c4f-ea9d1706cdad@oracle.com>
+In-Reply-To: <897dcf1d-6a04-33d3-9c4f-ea9d1706cdad@oracle.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 12 Jul 2023 10:52:31 -0700
+Message-ID: <CAP-5=fX+rz928LtFs2MWYUH=6Mcvz0XQcLRkO-n9BnVnX4RYWw@mail.gmail.com>
+Subject: Re: [PATCH RFC 4/9] perf jevents: Add sys_events_find_events_table()
+To:     John Garry <john.g.garry@oracle.com>
+Cc:     acme@kernel.org, namhyung@kernel.org, jolsa@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        renyu.zj@linux.alibaba.com, shangxiaojing@huawei.com,
+        kjain@linux.ibm.com, kan.liang@linux.intel.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 12 Jul 2023 at 11:22, Xingyu Wu <xingyu.wu@starfivetech.com> wrote:
+On Wed, Jul 12, 2023 at 3:55=E2=80=AFAM John Garry <john.g.garry@oracle.com=
+> wrote:
 >
-> Add bindings for the Image-Signal-Process clock and reset
-> generator (ISPCRG) on the JH7110 RISC-V SoC by StarFive Ltd.
 >
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> >>>> MetricExpr: "cpu_core@instructions@ / cpu_core@cycles@",
+> >> I did not know that it was possible to state that an event is for a
+> >> specific PMU type in this fashion - is this feature new? Does it work
+> >> only for known terms, like cycles and instructions?
+> > It has been in metrics a long time (I didn't choose that @ was the /
+> > replacement =F0=9F=98=84 ). It should work for all events.
+> >
+>
+> Good to know.
+>
+> >>>> The @ is used to avoid parsing confusion with / meaning divide. The
+> >>>> PMUs for the events are explicitly listed here. We could say the PMU
+> >>>> is implied but then it gets complex for uncore events, for metrics
+> >>>> that mix core and uncore events.
+> >> So this works ok for IPC and CPU PMUs as we want the same event for ma=
+ny
+> >> PMU types and naturally it would have the same name.
+> >>
+> >> I am still not sure that sys event metrics need to specify a PMU.
+> > There was a similar thought for hybrid metrics. The PMU could be
+> > implied from the PMU of the metric. I think there can be confusion
+> > from an implied PMU, for example the cycles event without a PMU will
+> > open two events on a hybrid CPU. If we imply the PMU then it can mean
+> > just 1 PMU, but if the PMU doesn't have the event presumably it means
+> > the multiple PMU behavior.
+> >
+> > In parse-events there is existing logic to wildcard events but to
+> > ignore those that don't match a given PMU. This is used to support the
+> > --cputype option in builtin-stat.c, there is a similar option for
+> > builtin-list.c. We can use this so that events in a metric only match
+> > the PMU of the metric. Currently there are core metrics but whose
+> > events are all uncore like:
+> > https://urldefense.com/v3/__https://git.kernel.org/pub/scm/linux/kernel=
+/git/perf/perf-tools-next.git/tree/tools/perf/pmu-events/arch/x86/alderlake=
+/adl-metrics.json?h=3Dperf-tools-next*n1802__;Iw!!ACWV5N9M2RV99hQ!MjhanGd4A=
+VsAl6d8weFktNHgeOptrgeBDyooXlpeW-J1TQ0e2BwzvqO4BTFEjs_gRzuWTPfnhW_jLx1pIJc$
+> >
+> > So we'd need to move these metrics to be on the appropriate uncore
+> > PMU. Supporting >1 PMU
+>
+> To be crystal clear, when you say ">1 PMU", do you mean ">1 PMU instance
+> of the same type" or ">1 PMU type"?
 
-Reviewed-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+So I'm meaning that if you have a MetricExpr where the events are from
+>1 PMU, for example memory bandwidth coming from uncore PMUs and then
+instructions from a core PMU, and you do something like a ratio
+between these two.
 
-> Signed-off-by: Xingyu Wu <xingyu.wu@starfivetech.com>
-> ---
->  .../clock/starfive,jh7110-ispcrg.yaml         | 87 +++++++++++++++++++
->  .../dt-bindings/clock/starfive,jh7110-crg.h   | 18 ++++
->  .../dt-bindings/reset/starfive,jh7110-crg.h   | 16 ++++
->  3 files changed, 121 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/clock/starfive,jh7110-ispcrg.yaml
+>   in a metric wouldn't work though as it would
+> > appear the event was missing. Having the metric specify the PMU avoids
+> > these problems, but is verbose.
 >
-> diff --git a/Documentation/devicetree/bindings/clock/starfive,jh7110-ispcrg.yaml b/Documentation/devicetree/bindings/clock/starfive,jh7110-ispcrg.yaml
-> new file mode 100644
-> index 000000000000..3b8b85be5cd0
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/clock/starfive,jh7110-ispcrg.yaml
-> @@ -0,0 +1,87 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/clock/starfive,jh7110-ispcrg.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: StarFive JH7110 Image-Signal-Process Clock and Reset Generator
-> +
-> +maintainers:
-> +  - Xingyu Wu <xingyu.wu@starfivetech.com>
-> +
-> +properties:
-> +  compatible:
-> +    const: starfive,jh7110-ispcrg
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    items:
-> +      - description: ISP Top core
-> +      - description: ISP Top Axi
-> +      - description: NOC ISP Bus
-> +      - description: external DVP
-> +
-> +  clock-names:
-> +    items:
-> +      - const: isp_top_core
-> +      - const: isp_top_axi
-> +      - const: noc_bus_isp_axi
-> +      - const: dvp_clk
-> +
-> +  resets:
-> +    items:
-> +      - description: ISP Top core
-> +      - description: ISP Top Axi
-> +      - description: NOC ISP Bus
-> +
-> +  '#clock-cells':
-> +    const: 1
-> +    description:
-> +      See <dt-bindings/clock/starfive,jh7110-crg.h> for valid indices.
-> +
-> +  '#reset-cells':
-> +    const: 1
-> +    description:
-> +      See <dt-bindings/reset/starfive,jh7110-crg.h> for valid indices.
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +    description:
-> +      ISP domain power
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - clock-names
-> +  - resets
-> +  - '#clock-cells'
-> +  - '#reset-cells'
-> +  - power-domains
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/starfive,jh7110-crg.h>
-> +    #include <dt-bindings/power/starfive,jh7110-pmu.h>
-> +    #include <dt-bindings/reset/starfive,jh7110-crg.h>
-> +
-> +    ispcrg: clock-controller@19810000 {
-> +        compatible = "starfive,jh7110-ispcrg";
-> +        reg = <0x19810000 0x10000>;
-> +        clocks = <&syscrg JH7110_SYSCLK_ISP_TOP_CORE>,
-> +                 <&syscrg JH7110_SYSCLK_ISP_TOP_AXI>,
-> +                 <&syscrg JH7110_SYSCLK_NOC_BUS_ISP_AXI>,
-> +                 <&dvp_clk>;
-> +        clock-names = "isp_top_core", "isp_top_axi",
-> +                      "noc_bus_isp_axi", "dvp_clk";
-> +        resets = <&syscrg JH7110_SYSRST_ISP_TOP>,
-> +                 <&syscrg JH7110_SYSRST_ISP_TOP_AXI>,
-> +                 <&syscrg JH7110_SYSRST_NOC_BUS_ISP_AXI>;
-> +        #clock-cells = <1>;
-> +        #reset-cells = <1>;
-> +        power-domains = <&pwrc JH7110_PD_ISP>;
-> +    };
-> diff --git a/include/dt-bindings/clock/starfive,jh7110-crg.h b/include/dt-bindings/clock/starfive,jh7110-crg.h
-> index 6c8e8b4cf1f6..39acf30db491 100644
-> --- a/include/dt-bindings/clock/starfive,jh7110-crg.h
-> +++ b/include/dt-bindings/clock/starfive,jh7110-crg.h
-> @@ -252,4 +252,22 @@
+> The message I'm getting - correct me if I am wrong - is that you would
+> still prefer the PMU specified per event in metric expr, right? We don't
+> do that exactly for sys PMU metrics today - we specify "Unit" instead, li=
+ke:
 >
->  #define JH7110_STGCLK_END                      29
+> MetricExpr: "sys_pmu_bar_event_foo1 + sys_pmu_bar_event_foo2"
+> Compat: "baz"
+> Unit:"sys_pmu_bar"
 >
-> +/* ISPCRG clocks */
-> +#define JH7110_ISPCLK_DOM4_APB_FUNC            0
-> +#define JH7110_ISPCLK_MIPI_RX0_PXL             1
-> +#define JH7110_ISPCLK_DVP_INV                  2
-> +#define JH7110_ISPCLK_M31DPHY_CFG_IN           3
-> +#define JH7110_ISPCLK_M31DPHY_REF_IN           4
-> +#define JH7110_ISPCLK_M31DPHY_TX_ESC_LAN0      5
-> +#define JH7110_ISPCLK_VIN_APB                  6
-> +#define JH7110_ISPCLK_VIN_SYS                  7
-> +#define JH7110_ISPCLK_VIN_PIXEL_IF0            8
-> +#define JH7110_ISPCLK_VIN_PIXEL_IF1            9
-> +#define JH7110_ISPCLK_VIN_PIXEL_IF2            10
-> +#define JH7110_ISPCLK_VIN_PIXEL_IF3            11
-> +#define JH7110_ISPCLK_VIN_P_AXI_WR             12
-> +#define JH7110_ISPCLK_ISPV2_TOP_WRAPPER_C      13
-> +
-> +#define JH7110_ISPCLK_END                      14
-> +
->  #endif /* __DT_BINDINGS_CLOCK_STARFIVE_JH7110_CRG_H__ */
-> diff --git a/include/dt-bindings/reset/starfive,jh7110-crg.h b/include/dt-bindings/reset/starfive,jh7110-crg.h
-> index 4e96ab81dd8e..2c5d9dcefffa 100644
-> --- a/include/dt-bindings/reset/starfive,jh7110-crg.h
-> +++ b/include/dt-bindings/reset/starfive,jh7110-crg.h
-> @@ -179,4 +179,20 @@
+> And so you prefer something like the following, right?
+> MetricExpr: "sys_pmu_foo@bar1@ + sys_pmu_foo@bar2@"
 >
->  #define JH7110_STGRST_END                      23
->
-> +/* ISPCRG resets */
-> +#define JH7110_ISPRST_ISPV2_TOP_WRAPPER_P      0
-> +#define JH7110_ISPRST_ISPV2_TOP_WRAPPER_C      1
-> +#define JH7110_ISPRST_M31DPHY_HW               2
-> +#define JH7110_ISPRST_M31DPHY_B09_AON          3
-> +#define JH7110_ISPRST_VIN_APB                  4
-> +#define JH7110_ISPRST_VIN_PIXEL_IF0            5
-> +#define JH7110_ISPRST_VIN_PIXEL_IF1            6
-> +#define JH7110_ISPRST_VIN_PIXEL_IF2            7
-> +#define JH7110_ISPRST_VIN_PIXEL_IF3            8
-> +#define JH7110_ISPRST_VIN_SYS                  9
-> +#define JH7110_ISPRST_VIN_P_AXI_RD             10
-> +#define JH7110_ISPRST_VIN_P_AXI_WR             11
-> +
-> +#define JH7110_ISPRST_END                      12
-> +
->  #endif /* __DT_BINDINGS_RESET_STARFIVE_JH7110_CRG_H__ */
-> --
-> 2.25.1
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> If so, I think that is ok - I just want to get rid of Unit and Compat.
+
+I think we're agreeing :-) I think Unit may be useful, say on Intel
+hybrid I want the tma_fround_bound metric on just cpu_atom. Currently
+the use of Unit is messy for metrics, ie uncore metrics are associated
+with core PMUs, and what to do with a MetricExpr with >1 PMU. I think
+we're learning from trying. I'm just hoping the migration to a sysfs
+style layout will still be possible, as I can see lots of upside in
+terms of testing, 1 approach, etc.
+
+Thanks,
+Ian
+
+> Thanks,
+> John
