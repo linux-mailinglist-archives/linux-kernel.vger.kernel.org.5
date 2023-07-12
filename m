@@ -2,97 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5269751004
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 19:52:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3AFA751008
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 19:53:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232461AbjGLRwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 13:52:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51238 "EHLO
+        id S231398AbjGLRx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 13:53:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232444AbjGLRwn (ORCPT
+        with ESMTP id S232562AbjGLRxU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 13:52:43 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4A0C1FE9
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 10:52:41 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-992b27e1c55so881660966b.2
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 10:52:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689184360; x=1691776360;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=THpXRSD84BFEVMh1tTi6CFXtfk/3GttF/ObmaoMABLI=;
-        b=IpzE5GIVwvuhpr+Tz7D6OHQYx3hut1aaGtL8IiHboZVbn9LvPPJD0Ui/IwnGZCYyd5
-         R3XRag9x1JuwxaSj9U3rQ1C5ghQ2CsQnwn0uxLsGeuPDT4tbYk6NSCK4WyJhB9uyGjB7
-         166SpJyWXk03BFtQp76kiiiCIyHUAz3D3zhuF6CUhvBydDInIiHR4PcGMM6lZzDvLypM
-         Ob0s1m1792Pg7kMnxEyQFJfLDpbXoY6Oom3X3yoj7j61XTB2AOW/m5wbsNXA9ZWUoDza
-         mxxdwLXxyWi8o4HfbY7nnDuEjtm1lB6HcpMFdf0ovLyi/xphiCrG9XPq2U8JE32CeoSm
-         /fGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689184360; x=1691776360;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=THpXRSD84BFEVMh1tTi6CFXtfk/3GttF/ObmaoMABLI=;
-        b=IocT5M5sjOHiltXPeEdhXkeR26a4k2cxgNkE0+ivnHGL1lsXAzHq0TWsfeLtDIAtPF
-         R+kSOtnkZd1HovhYqrAP6Hf82ILXK7BQhVQjPxaRUyip9kr5SXFwG9SPFBQ/amlFBaVa
-         11VMedMdRswxwye2Vhgn3oTcL15EaoduOMudyEXWzwh+8nJqcD2pJiOO3opPmTN+BS2b
-         Zo6eKsW/1WtrkhZIqN4xItHfcrB4cpUgWUuxT0mFAnyj2z4q3riFIrikFkehd9hXh5ka
-         ZIOdGZycaQv/S3hx4BdtPAduAKEmcMhLCIp5wTe3uaRAhlX0vnn24SUm+TiqpvYxieWM
-         Me7A==
-X-Gm-Message-State: ABy/qLYMM96iTMUaU1ik8az7GxvpZnsHzqq3f5cMBw8ldrxVe0qWI91o
-        +y0IBDhGBS4iBETVnjuZKWKsWg==
-X-Google-Smtp-Source: APBJJlHoK39LUke3/rD5zGAO5qmIiTsuplS6lqV24JZHne610LDYaifMCMtJiJ1PE4NRGnQ0F4gXcw==
-X-Received: by 2002:a17:906:3956:b0:988:6e75:6b3d with SMTP id g22-20020a170906395600b009886e756b3dmr16439999eje.33.1689184360343;
-        Wed, 12 Jul 2023 10:52:40 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id ov4-20020a170906fc0400b00992b50fbbe9sm2877626ejb.90.2023.07.12.10.52.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 Jul 2023 10:52:39 -0700 (PDT)
-Message-ID: <66ca5498-04be-cfb3-c6fb-92481e505bc2@linaro.org>
-Date:   Wed, 12 Jul 2023 19:52:38 +0200
+        Wed, 12 Jul 2023 13:53:20 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25D851FE4
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 10:53:18 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-82-193.bstnma.fios.verizon.net [173.48.82.193])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 36CHqwKl004990
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 12 Jul 2023 13:52:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1689184380; bh=iYK3lUF2GbPPt1xA1PwWleN6r/7tba+hiPLcX61WWlU=;
+        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+        b=VUztdmxBOWM7Tx/fAekc5Iqt2n4UQL1FhP9NCmyLYSAlDHD+8iuhuoA6NOJ6H1Gh9
+         C/gQ64YeLxytLkLOzZdCJlYTrX6OfxGA9ghmECZAVWiLCvhgzJsfXPANMfJmRnWIhT
+         AEAnZuRI8AOcSvP6W3qsiBnoedbQkMVwSTB6k6Kkh4ho7sQEFujK3eug3t8Zg+A5d/
+         XooRfZ91K8cNpJdH6oW3zKrddfNdGlHeoTJnYMHCHHAzFI1ECHgdubsuL2oKua8LW9
+         WU6V4RUsDRn26NqK3S/vOB/G3NonVNFMi/xpQrWOBTsh5gfcIDBHVcZYEhcWBVoEb9
+         HBF4O6Z4i53FQ==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 332E615C0280; Wed, 12 Jul 2023 13:52:58 -0400 (EDT)
+Date:   Wed, 12 Jul 2023 13:52:58 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     brauner@kernel.org, Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ext4: fix decoding of raw_inode timestamps
+Message-ID: <20230712175258.GB3677745@mit.edu>
+References: <20230712150251.163790-1-jlayton@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 1/3] dt-bindings: iio: proximity: Add Murata IRS-D200
-Content-Language: en-US
-To:     Waqar Hameed <waqar.hameed@axis.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     kernel@axis.com, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1689174736.git.waqar.hameed@axis.com>
- <3b9b284effa7d63c5c3c022f0d51312052bbe62c.1689174736.git.waqar.hameed@axis.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <3b9b284effa7d63c5c3c022f0d51312052bbe62c.1689174736.git.waqar.hameed@axis.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230712150251.163790-1-jlayton@kernel.org>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/07/2023 17:12, Waqar Hameed wrote:
-> Murata IRS-D200 is a PIR sensor for human detection. It uses the I2C bus
-> for communication with interrupt support. Add devicetree bindings
-> requiring the compatible string, I2C slave address (reg), power supply
-> and interrupts.
+On Wed, Jul 12, 2023 at 11:02:49AM -0400, Jeff Layton wrote:
+> When we covert a timestamp from raw disk format, we need to consider it
+> to be signed, as the value may represent a date earlier than 1970. This
+> fixes generic/258 on ext4.
 > 
-> Signed-off-by: Waqar Hameed <waqar.hameed@axis.com>
-> ---
+> Cc: Jan Kara <jack@suse.cz>
+> Fixes: f2ddb05870fb ("ext4: convert to ctime accessor functions")
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
 
+Acked-by: Theodore Ts'o <tytso@mit.edu>
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Thanks for the fix!
 
-Best regards,
-Krzysztof
+It had been on my list to checking to see if the ext4 kunit tests
+would pass, since Jan had mentioned that he had done the work to make
+sure the ext4 kunit test would compile, but he hadn't gotten around to
+try run the kunit test.  Unfortunately, I hadn't gotten to it.
 
+I *think* the ext4 kunit tests should have caught this as well; out of
+curiosity, have you tried running the ext4 kunit tests either before
+or after this patch?  If so, what were your findings?
+
+Cheers,
+
+					- Ted
