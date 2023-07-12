@@ -2,111 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B36217512B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 23:36:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 283907512BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 23:43:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231398AbjGLVgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 17:36:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51106 "EHLO
+        id S231658AbjGLVnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 17:43:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjGLVgV (ORCPT
+        with ESMTP id S229480AbjGLVnP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 17:36:21 -0400
-Received: from nicole.computer-surgery.co.uk (mail.computer-surgery.co.uk [82.69.253.61])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44D6ACF;
-        Wed, 12 Jul 2023 14:36:20 -0700 (PDT)
-Received: from [10.94.89.22] (helo=buckle.internal.gammascience.co.uk)
-        by nicole.computer-surgery.co.uk with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <rgammans@gammascience.co.uk>)
-        id 1qJhVR-0001li-Vi; Wed, 12 Jul 2023 22:36:18 +0100
-From:   Roger Gammans <rgammans@gammascience.co.uk>
-To:     Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        linux-bluetooth@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Roger Gammans <rgammans@gammascience.co.uk>
-Subject: [PATCH v2] Bluetooth: btusb: Add support for another MediaTek 7922 VID/PID
-Date:   Wed, 12 Jul 2023 22:36:02 +0100
-Message-Id: <20230712213602.15280-1-rgammans@gammascience.co.uk>
-X-Mailer: git-send-email 2.39.2
+        Wed, 12 Jul 2023 17:43:15 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADA371BEF;
+        Wed, 12 Jul 2023 14:43:14 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id ca18e2360f4ac-785cbc5bfd2so344368339f.2;
+        Wed, 12 Jul 2023 14:43:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689198194; x=1691790194;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=qRm3jgos2zmvvlEHIgv8GCkkPRupEusUu4b46dYKwrg=;
+        b=H83t0gRvoc47tAmQYeQxdd5H/bNzm6YLCmV/TIcLz4DdzRYKTSX50Mn58YkWAQvUzf
+         rh7lDSWUFgELfLP/8fFYMOJ73WTPWDQgX1NW7anpi/eR0TrhJiDP808UQ6ONTKe9ZwX5
+         g85cYeUuTIsCqz08/6215paIiNnMZONkpdAUqd0c8ddCKOuzk8gfgr7mILTlhXZAvdV/
+         jPovjbsCTYQV2jaCUFME+QpN+lDH0jOjbsfmA2CK+w2zlo31IuPMmNg5POvQ2IZ1PN/N
+         8zY0AkwKFP+CJAg4LUIITkwunSMi7k3fwzJWwo3V6BsEZIDl0d1hZdnPSP3In77faFEG
+         b75Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689198194; x=1691790194;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qRm3jgos2zmvvlEHIgv8GCkkPRupEusUu4b46dYKwrg=;
+        b=RkhU+S2kWb3AidbGSkNB+6/0LWo2XXkY+MqOd4D7COrS9EgDGW3BUrPngJMQhnJfK8
+         njJb2/dVkFtXSmWO0Dsi6MR1nM9xiuyA7L5wsbT6UMbuSxybmvhnY7xGxMoRFUEMoEG6
+         teWgsvWSEi3pQxG4qxCPio8SDnZBdVwIAayOCKjwoRbHRN6sJC/bZLa4HMUOwH+Uhn69
+         teNjqBZLmN0T0EbyuGTK2ziCmNyY7urPgral2SOmGiY/qqqAXUxsbzahek3dGE31ejVM
+         nUJeKfQkbn2TJaRp1O6POOiPn/eC4qylh/6fS727c2Z91q9qQfDxZLG4JPEinLnKVb2V
+         ZK2A==
+X-Gm-Message-State: ABy/qLYTejVNuZsrVBmIFTD3r+rOLnMghGyCshYALsU9JpNKD9tqmPza
+        lSh34a0Q+zHhRUcqlaHCueI=
+X-Google-Smtp-Source: APBJJlGeEFuMaM0W/FQocan8VJSxWKEFeS2eB3uQiJVXfzJJbo7NZK6n5vQ/OdQmNpSvWeYJiXJu6w==
+X-Received: by 2002:a6b:7012:0:b0:786:cc36:360c with SMTP id l18-20020a6b7012000000b00786cc36360cmr34008ioc.8.1689198193917;
+        Wed, 12 Jul 2023 14:43:13 -0700 (PDT)
+Received: from azeems-kspp.c.googlers.com.com (54.70.188.35.bc.googleusercontent.com. [35.188.70.54])
+        by smtp.gmail.com with ESMTPSA id o27-20020a056602125b00b00777b94e8efasm1592778iou.18.2023.07.12.14.43.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Jul 2023 14:43:13 -0700 (PDT)
+From:   Azeem Shaikh <azeemshaikh38@gmail.com>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Kees Cook <keescook@chromium.org>
+Cc:     linux-hardening@vger.kernel.org,
+        Azeem Shaikh <azeemshaikh38@gmail.com>,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jean Delvare <jdelvare@suse.com>
+Subject: [PATCH v2] hwmon: (pmbus/max20730) Remove strlcpy occurences
+Date:   Wed, 12 Jul 2023 21:43:07 +0000
+Message-ID: <20230712214307.2424810-1-azeemshaikh38@gmail.com>
+X-Mailer: git-send-email 2.41.0.255.g8b1d071c50-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This one is found on the Dell Inspiron 2-in-1 7435
+strlcpy() reads the entire source buffer first.
+This read may exceed the destination size limit.
+This is both inefficient and can lead to linear read
+overflows if a source string is not NUL-terminated [1].
+In an effort to remove strlcpy() completely [2], replace
+strlcpy() here with direct assignment.
 
-The information in /sys/kernel/debug/usb/devices about the Bluetooth
-device is listed as the below.
+strlcpy in this file is used to copy fixed-length strings which can be
+completely avoided by direct assignment and is safe to do so. strlen()
+is used to return the length of @tbuf.
 
-T:  Bus=03 Lev=01 Prnt=01 Port=02 Cnt=01 Dev#=  2 Spd=480  MxCh= 0
-D:  Ver= 2.10 Cls=ef(misc ) Sub=02 Prot=01 MxPS=64 #Cfgs=  1
-P:  Vendor=0489 ProdID=e0f1 Rev= 1.00
-S:  Manufacturer=MediaTek Inc.
-S:  Product=Wireless_Device
-S:  SerialNumber=000000000
-C:* #Ifs= 3 Cfg#= 1 Atr=e0 MxPwr=100mA
-A:  FirstIf#= 0 IfCount= 3 Cls=e0(wlcon) Sub=01 Prot=01
-I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=125us
-E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
-I:  If#= 1 Alt= 6 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  63 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  63 Ivl=1ms
-I:* If#= 2 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=(none)
-E:  Ad=8a(I) Atr=03(Int.) MxPS=  64 Ivl=125us
-E:  Ad=0a(O) Atr=03(Int.) MxPS=  64 Ivl=125us
-I:  If#= 2 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=(none)
-E:  Ad=8a(I) Atr=03(Int.) MxPS= 512 Ivl=125us
-E:  Ad=0a(O) Atr=03(Int.) MxPS= 512 Ivl=125us
+[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy
+[2] https://github.com/KSPP/linux/issues/89
 
-
-Signed-off-by: Roger Gammans <rgammans@gammascience.co.uk>
+Signed-off-by: Azeem Shaikh <azeemshaikh38@gmail.com>
 ---
- drivers/bluetooth/btusb.c | 3 +++
- 1 file changed, 3 insertions(+)
+v2:
+ * Includes driver name in commit header.
+ * Removes unrelated change tbuf{ 0 } -> tbuf{}.
+ * Fixes bug where @tbuf was being passed instead of @result.
 
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index 2a8e2bb038f5..bda50d84c886 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -622,6 +622,9 @@ static const struct usb_device_id blacklist_table[] = {
- 	{ USB_DEVICE(0x0489, 0xe0e4), .driver_info = BTUSB_MEDIATEK |
- 						     BTUSB_WIDEBAND_SPEECH |
- 						     BTUSB_VALID_LE_STATES },
-+	{ USB_DEVICE(0x0489, 0xe0f1), .driver_info = BTUSB_MEDIATEK |
-+						     BTUSB_WIDEBAND_SPEECH |
-+						     BTUSB_VALID_LE_STATES },
- 	{ USB_DEVICE(0x0489, 0xe0f2), .driver_info = BTUSB_MEDIATEK |
- 						     BTUSB_WIDEBAND_SPEECH |
- 						     BTUSB_VALID_LE_STATES },
--- 
-2.39.2
+v1:
+ * https://lore.kernel.org/all/20230712144429.2845940-1-azeemshaikh38@gmail.com/
+
+ drivers/hwmon/pmbus/max20730.c |   64 +++++++++++++++++++++--------------------
+ 1 file changed, 33 insertions(+), 31 deletions(-)
+
+diff --git a/drivers/hwmon/pmbus/max20730.c b/drivers/hwmon/pmbus/max20730.c
+index 7bcf27995033..1de34da177c9 100644
+--- a/drivers/hwmon/pmbus/max20730.c
++++ b/drivers/hwmon/pmbus/max20730.c
+@@ -114,6 +114,7 @@ static ssize_t max20730_debugfs_read(struct file *file, char __user *buf,
+ 	const struct pmbus_driver_info *info;
+ 	const struct max20730_data *data;
+ 	char tbuf[DEBUG_FS_DATA_MAX] = { 0 };
++	char *result = tbuf;
+ 	u16 val;
+
+ 	info = pmbus_get_driver_info(psu->client);
+@@ -148,13 +149,13 @@ static ssize_t max20730_debugfs_read(struct file *file, char __user *buf,
+ 			>> MAX20730_MFR_DEVSET1_TSTAT_BIT_POS;
+
+ 		if (val == 0)
+-			len = strlcpy(tbuf, "2000\n", DEBUG_FS_DATA_MAX);
++			result = "2000\n";
+ 		else if (val == 1)
+-			len = strlcpy(tbuf, "125\n", DEBUG_FS_DATA_MAX);
++			result = "125\n";
+ 		else if (val == 2)
+-			len = strlcpy(tbuf, "62.5\n", DEBUG_FS_DATA_MAX);
++			result = "62.5\n";
+ 		else
+-			len = strlcpy(tbuf, "32\n", DEBUG_FS_DATA_MAX);
++			result = "32\n";
+ 		break;
+ 	case MAX20730_DEBUGFS_INTERNAL_GAIN:
+ 		val = (data->mfr_devset1 & MAX20730_MFR_DEVSET1_RGAIN_MASK)
+@@ -163,35 +164,35 @@ static ssize_t max20730_debugfs_read(struct file *file, char __user *buf,
+ 		if (data->id == max20734) {
+ 			/* AN6209 */
+ 			if (val == 0)
+-				len = strlcpy(tbuf, "0.8\n", DEBUG_FS_DATA_MAX);
++				result = "0.8\n";
+ 			else if (val == 1)
+-				len = strlcpy(tbuf, "3.2\n", DEBUG_FS_DATA_MAX);
++				result = "3.2\n";
+ 			else if (val == 2)
+-				len = strlcpy(tbuf, "1.6\n", DEBUG_FS_DATA_MAX);
++				result = "1.6\n";
+ 			else
+-				len = strlcpy(tbuf, "6.4\n", DEBUG_FS_DATA_MAX);
++				result = "6.4\n";
+ 		} else if (data->id == max20730 || data->id == max20710) {
+ 			/* AN6042 or AN6140 */
+ 			if (val == 0)
+-				len = strlcpy(tbuf, "0.9\n", DEBUG_FS_DATA_MAX);
++				result = "0.9\n";
+ 			else if (val == 1)
+-				len = strlcpy(tbuf, "3.6\n", DEBUG_FS_DATA_MAX);
++				result = "3.6\n";
+ 			else if (val == 2)
+-				len = strlcpy(tbuf, "1.8\n", DEBUG_FS_DATA_MAX);
++				result = "1.8\n";
+ 			else
+-				len = strlcpy(tbuf, "7.2\n", DEBUG_FS_DATA_MAX);
++				result = "7.2\n";
+ 		} else if (data->id == max20743) {
+ 			/* AN6042 */
+ 			if (val == 0)
+-				len = strlcpy(tbuf, "0.45\n", DEBUG_FS_DATA_MAX);
++				result = "0.45\n";
+ 			else if (val == 1)
+-				len = strlcpy(tbuf, "1.8\n", DEBUG_FS_DATA_MAX);
++				result = "1.8\n";
+ 			else if (val == 2)
+-				len = strlcpy(tbuf, "0.9\n", DEBUG_FS_DATA_MAX);
++				result = "0.9\n";
+ 			else
+-				len = strlcpy(tbuf, "3.6\n", DEBUG_FS_DATA_MAX);
++				result = "3.6\n";
+ 		} else {
+-			len = strlcpy(tbuf, "Not supported\n", DEBUG_FS_DATA_MAX);
++			result = "Not supported\n";
+ 		}
+ 		break;
+ 	case MAX20730_DEBUGFS_BOOT_VOLTAGE:
+@@ -199,26 +200,26 @@ static ssize_t max20730_debugfs_read(struct file *file, char __user *buf,
+ 			>> MAX20730_MFR_DEVSET1_VBOOT_BIT_POS;
+
+ 		if (val == 0)
+-			len = strlcpy(tbuf, "0.6484\n", DEBUG_FS_DATA_MAX);
++			result = "0.6484\n";
+ 		else if (val == 1)
+-			len = strlcpy(tbuf, "0.8984\n", DEBUG_FS_DATA_MAX);
++			result = "0.8984\n";
+ 		else if (val == 2)
+-			len = strlcpy(tbuf, "1.0\n", DEBUG_FS_DATA_MAX);
++			result = "1.0\n";
+ 		else
+-			len = strlcpy(tbuf, "Invalid\n", DEBUG_FS_DATA_MAX);
++			result = "Invalid\n";
+ 		break;
+ 	case MAX20730_DEBUGFS_OUT_V_RAMP_RATE:
+ 		val = (data->mfr_devset2 & MAX20730_MFR_DEVSET2_VRATE)
+ 			>> MAX20730_MFR_DEVSET2_VRATE_BIT_POS;
+
+ 		if (val == 0)
+-			len = strlcpy(tbuf, "4\n", DEBUG_FS_DATA_MAX);
++			result = "4\n";
+ 		else if (val == 1)
+-			len = strlcpy(tbuf, "2\n", DEBUG_FS_DATA_MAX);
++			result = "2\n";
+ 		else if (val == 2)
+-			len = strlcpy(tbuf, "1\n", DEBUG_FS_DATA_MAX);
++			result = "1\n";
+ 		else
+-			len = strlcpy(tbuf, "Invalid\n", DEBUG_FS_DATA_MAX);
++			result = "Invalid\n";
+ 		break;
+ 	case MAX20730_DEBUGFS_OC_PROTECT_MODE:
+ 		ret = (data->mfr_devset2 & MAX20730_MFR_DEVSET2_OCPM_MASK)
+@@ -230,13 +231,13 @@ static ssize_t max20730_debugfs_read(struct file *file, char __user *buf,
+ 			>> MAX20730_MFR_DEVSET2_SS_BIT_POS;
+
+ 		if (val == 0)
+-			len = strlcpy(tbuf, "0.75\n", DEBUG_FS_DATA_MAX);
++			result = "0.75\n";
+ 		else if (val == 1)
+-			len = strlcpy(tbuf, "1.5\n", DEBUG_FS_DATA_MAX);
++			result = "1.5\n";
+ 		else if (val == 2)
+-			len = strlcpy(tbuf, "3\n", DEBUG_FS_DATA_MAX);
++			result = "3\n";
+ 		else
+-			len = strlcpy(tbuf, "6\n", DEBUG_FS_DATA_MAX);
++			result = "6\n";
+ 		break;
+ 	case MAX20730_DEBUGFS_IMAX:
+ 		ret = (data->mfr_devset2 & MAX20730_MFR_DEVSET2_IMAX_MASK)
+@@ -287,10 +288,11 @@ static ssize_t max20730_debugfs_read(struct file *file, char __user *buf,
+ 				"%d.%d\n", ret / 10000, ret % 10000);
+ 		break;
+ 	default:
+-		len = strlcpy(tbuf, "Invalid\n", DEBUG_FS_DATA_MAX);
++		result = "Invalid\n";
+ 	}
+
+-	return simple_read_from_buffer(buf, count, ppos, tbuf, len);
++	len = strlen(result);
++	return simple_read_from_buffer(buf, count, ppos, result, len);
+ }
+
+ static const struct file_operations max20730_fops = {
+--
+2.41.0.255.g8b1d071c50-goog
+
 
