@@ -2,168 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73F35751052
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 20:11:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7963751054
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 20:11:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231896AbjGLSLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 14:11:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59920 "EHLO
+        id S233072AbjGLSLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 14:11:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229910AbjGLSLF (ORCPT
+        with ESMTP id S232720AbjGLSLN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 14:11:05 -0400
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2439D11B
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 11:11:04 -0700 (PDT)
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com [209.85.222.198])
+        Wed, 12 Jul 2023 14:11:13 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DA181BF6;
+        Wed, 12 Jul 2023 11:11:12 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id C25F73F171
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 18:11:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1689185462;
-        bh=jZV4lxXU1ZB6Js3u/270T4FZAtmvDEeFk82+tjv5Ytg=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=k+dhtSXXEJf3TwV8UMej0Qy7H1jmmXmM2SgJiEaEx2ygj/Zv16HoFWaMDpSaK9nyy
-         /+u3uJ/y/yT63x+/16hxibe3kYD5hTcZL0+MrqmzZcc1+0xDrX6qeHuI4xQSmRt2bK
-         3iXWre/neluC+inZuf8TVDBM2QoyHnD9MWt5nYEGPCh4CYxJUCRzD9n+IM13SznXp+
-         EmG4njcrJgVKP9gMkLvIpBpLCMuvhSBgXym9CCDZ2Dv3cRKPpW2AAwveLdfTSriNOx
-         5lBIlVUX8Q3RldOV3R8zBIvAigUHj35tnBj0ijl55iFkK0a3W3KLQlWUtFEm6Gtvga
-         6MuVRBAmlKUSw==
-Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-7623a4864c2so948641785a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 11:11:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689185462; x=1691777462;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jZV4lxXU1ZB6Js3u/270T4FZAtmvDEeFk82+tjv5Ytg=;
-        b=lhb6kdQyeXYPGnlHLuI0fK9/dRkM2P3b1PyuDf4fQq9yBxbPLW6V9aDE3CRnfaP3XY
-         OvWlT/BwfAW3Mra7cJ2+nzO3VR4aGN4RS8+NgvsY/BZrrPNoYEKXHN6Z3urpueYM9WXR
-         2VkpDnuQ7cQw65q2+WqlhpTL8AgvloKlt2a2BCO6GlsdwhkuyrTt23jIONqptNKyYrT/
-         0Br1lcfXDHuF38UfOj9XotT8gjNZTk8poMfgYvCl5KnNrb19tzPhrIuHatGTGUvfmYWi
-         GgIZ789R796U4+QjGBfWerpCXiP4tnZNcD4qswoSy/IahRNixqIXi3uHc9RkT5bs2SSN
-         0xxg==
-X-Gm-Message-State: ABy/qLYOUO9VahzgAogjArSAcUzlYtNowbwjOBLsFqwGFvpreW3AikUI
-        4tTN7X2jQlImtINRCk4VLr4hKBcz6OvErVO4jqxqEh6wiB9Bq/mEgbfgwGxAzJr05CsO4sSIFnl
-        k2+T/2MPVmHeGfBXLTMFylT4MmjMVnJC6bUDJYWXjA/VA5gdO+ZGMn1tq9g==
-X-Received: by 2002:a05:622a:144d:b0:403:b395:b3c0 with SMTP id v13-20020a05622a144d00b00403b395b3c0mr9913188qtx.3.1689185461751;
-        Wed, 12 Jul 2023 11:11:01 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlHEi6ZnXrU4jchYntQmVhlI+BbvJ58VQ34IJb9Ptwwjd3rb28kvuNYpTLkLgpIcX7In9qBHKfW1YR3dXyt8LFc=
-X-Received: by 2002:a05:622a:144d:b0:403:b395:b3c0 with SMTP id
- v13-20020a05622a144d00b00403b395b3c0mr9913166qtx.3.1689185461476; Wed, 12 Jul
- 2023 11:11:01 -0700 (PDT)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 900F8618BF;
+        Wed, 12 Jul 2023 18:11:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8820C433CC;
+        Wed, 12 Jul 2023 18:11:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689185471;
+        bh=md16UXiz1GpqNsTJoRJ0ef7Vy1yKmHuNjtAKI4WEaXA=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=mhFFHJgPREKia8kCFwCEiKafU251CX5GYE5LqijBDg+dm+e72t5vAmLdYnHsl9XKc
+         SFQlLgzU8RWnx/4PoEjdq6iSLFjYHHDR3SLRXQ/stR2bVu4CihWqET20bWwiVb4alP
+         rKZfvOdQMmDyEiSqEaVSAewxP93NSMZ4Dr4DAXd8mZrYMpgSf38vtiQwgNj3g/5LGD
+         Rb8OgSZvyJr7yreNyql42EjQ9YqGu+zEAjUtvdlSfdBPGgRzLrXNnyOX5M/s86l6W7
+         5w8yW3OeqXI8FaD1ZEx6sgthc2drs4aS7AWR5gtTAe8S525qiMVA071l/kXAh3ng1x
+         gkbtcsPXVyMFw==
+From:   =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To:     Song Shuai <suagrfillet@gmail.com>, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu, rostedt@goodmis.org,
+        mhiramat@kernel.org, mark.rutland@arm.com, guoren@kernel.org,
+        suagrfillet@gmail.com, bjorn@rivosinc.com, jszhang@kernel.org,
+        conor.dooley@microchip.com, Pu Lehui <pulehui@huawei.com>,
+        palmer@rivosinc.com
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, songshuaishuai@tinylab.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH V11 0/5] riscv: Optimize function trace
+In-Reply-To: <20230627111612.761164-1-suagrfillet@gmail.com>
+References: <20230627111612.761164-1-suagrfillet@gmail.com>
+Date:   Wed, 12 Jul 2023 20:11:08 +0200
+Message-ID: <87jzv5q9tv.fsf@all.your.base.are.belong.to.us>
 MIME-Version: 1.0
-References: <20230712092007.31013-1-xingyu.wu@starfivetech.com> <20230712092007.31013-9-xingyu.wu@starfivetech.com>
-In-Reply-To: <20230712092007.31013-9-xingyu.wu@starfivetech.com>
-From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
-Date:   Wed, 12 Jul 2023 20:10:45 +0200
-Message-ID: <CAJM55Z_DVgYuLBXMb=_V5nmYDCGnzty2TCJ5FLwNXHFRdaVi4Q@mail.gmail.com>
-Subject: Re: [PATCH v7 8/9] riscv: dts: starfive: jh7110: Add DVP and HDMI TX
- pixel external clocks
-To:     Xingyu Wu <xingyu.wu@starfivetech.com>
-Cc:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Conor Dooley <conor@kernel.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Hal Feng <hal.feng@starfivetech.com>,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 12 Jul 2023 at 11:22, Xingyu Wu <xingyu.wu@starfivetech.com> wrote:
->
-> Add DVP and HDMI TX pixel external fixed clocks and the rates are
-> 74.25MHz and 297MHz.
->
-> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+Song Shuai <suagrfillet@gmail.com> writes:
 
-Reviewed-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+[...]
 
-> Signed-off-by: Xingyu Wu <xingyu.wu@starfivetech.com>
-> ---
->  .../dts/starfive/jh7110-starfive-visionfive-2.dtsi   |  8 ++++++++
->  arch/riscv/boot/dts/starfive/jh7110.dtsi             | 12 ++++++++++++
->  2 files changed, 20 insertions(+)
->
-> diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-> index fa0061eb33a7..de0f40a8be93 100644
-> --- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-> +++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-> @@ -38,6 +38,10 @@ gpio-restart {
->         };
->  };
->
-> +&dvp_clk {
-> +       clock-frequency = <74250000>;
-> +};
-> +
->  &gmac0_rgmii_rxin {
->         clock-frequency = <125000000>;
->  };
-> @@ -54,6 +58,10 @@ &gmac1_rmii_refin {
->         clock-frequency = <50000000>;
->  };
->
-> +&hdmitx0_pixelclk {
-> +       clock-frequency = <297000000>;
-> +};
-> +
->  &i2srx_bclk_ext {
->         clock-frequency = <12288000>;
->  };
-> diff --git a/arch/riscv/boot/dts/starfive/jh7110.dtsi b/arch/riscv/boot/dts/starfive/jh7110.dtsi
-> index ec2e70011a73..e9c1e4ad71a2 100644
-> --- a/arch/riscv/boot/dts/starfive/jh7110.dtsi
-> +++ b/arch/riscv/boot/dts/starfive/jh7110.dtsi
-> @@ -197,6 +197,12 @@ opp-1500000000 {
->                         };
->         };
->
-> +       dvp_clk: dvp-clock {
-> +               compatible = "fixed-clock";
-> +               clock-output-names = "dvp_clk";
-> +               #clock-cells = <0>;
-> +       };
-> +
->         gmac0_rgmii_rxin: gmac0-rgmii-rxin-clock {
->                 compatible = "fixed-clock";
->                 clock-output-names = "gmac0_rgmii_rxin";
-> @@ -221,6 +227,12 @@ gmac1_rmii_refin: gmac1-rmii-refin-clock {
->                 #clock-cells = <0>;
->         };
->
-> +       hdmitx0_pixelclk: hdmitx0-pixel-clock {
-> +               compatible = "fixed-clock";
-> +               clock-output-names = "hdmitx0_pixelclk";
-> +               #clock-cells = <0>;
-> +       };
-> +
->         i2srx_bclk_ext: i2srx-bclk-ext-clock {
->                 compatible = "fixed-clock";
->                 clock-output-names = "i2srx_bclk_ext";
-> --
-> 2.25.1
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> Add WITH_DIRECT_CALLS support [3] (patch 3, 4)
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+We've had some offlist discussions, so here's some input for a wider
+audience! Most importantly, this is for Palmer, so that this series is
+not merged until a proper BPF trampoline fix is in place.
+
+Note that what's currently usable from BPF trampoline *works*. It's
+when this series is added that it breaks.
+
+TL;DR This series adds DYNAMIC_FTRACE_WITH_DIRECT_CALLS, which enables
+fentry/fexit BPF trampoline support. Unfortunately the
+fexit/BPF_TRAMP_F_SKIP_FRAME parts of the RV BPF trampoline breaks
+with this addition, and need to be addressed *prior* merging this
+series. An easy way to reproduce, is just calling any of the kselftest
+tests that uses fexit patching.
+
+The issue is around the nop seld, and how a call is done; The nop sled
+(patchable-function-entry) size changed from 16B to 8B in commit
+6724a76cff85 ("riscv: ftrace: Reduce the detour code size to half"), but
+BPF code still uses the old 16B. So it'll work for BPF programs, but not
+for regular kernel functions.
+
+An example:
+
+  | ffffffff80fa4150 <bpf_fentry_test1>:
+  | ffffffff80fa4150:       0001                    nop
+  | ffffffff80fa4152:       0001                    nop
+  | ffffffff80fa4154:       0001                    nop
+  | ffffffff80fa4156:       0001                    nop
+  | ffffffff80fa4158:       1141                    add     sp,sp,-16
+  | ffffffff80fa415a:       e422                    sd      s0,8(sp)
+  | ffffffff80fa415c:       0800                    add     s0,sp,16
+  | ffffffff80fa415e:       6422                    ld      s0,8(sp)
+  | ffffffff80fa4160:       2505                    addw    a0,a0,1
+  | ffffffff80fa4162:       0141                    add     sp,sp,16
+  | ffffffff80fa4164:       8082                    ret
+
+is patched to:
+
+  | ffffffff80fa4150:  f70c0297                     auipc   t0,-150208512
+  | ffffffff80fa4154:  eb0282e7                     jalr    t0,t0,-336
+
+The return address to bpf_fentry_test1 is stored in t0 at BPF
+trampoline entry. Return to the *parent* is in ra. The trampline has
+to deal with this.
+
+For BPF_TRAMP_F_SKIP_FRAME/CALL_ORIG, the BPF trampoline will skip too
+many bytes, and not correctly handle parent calls.
+
+Further; The BPF trampoline currently has a different way of patching
+the nops for BPF programs, than what ftrace does. That should be changed
+to match what ftrace does (auipc/jalr t0).
+
+To summarize:
+ * Align BPF nop sled with patchable-function-entry: 8B.
+ * Adapt BPF trampoline for 8B nop sleds.
+ * Adapt BPF trampoline t0 return, ra parent scheme.
+=20
+
+Cheers,
+Bj=C3=B6rn
+
+
