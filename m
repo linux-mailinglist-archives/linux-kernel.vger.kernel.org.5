@@ -2,92 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 121087514D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 01:57:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA2977514D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 01:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232699AbjGLX5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 19:57:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57336 "EHLO
+        id S233096AbjGLX5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 19:57:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231853AbjGLX5G (ORCPT
+        with ESMTP id S233082AbjGLX5k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 19:57:06 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73ADF1FC8
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 16:57:04 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id 5614622812f47-3a1c162cdfeso121060b6e.2
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 16:57:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1689206224; x=1691798224;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=aYROqSK0oGJBA8nxTpmL+2rtwtyb8ppjHpWlTiycuKo=;
-        b=AZTKaFYYXON4rgsnRbf3f/htNSktLIa7GziRaeoZhHru0aYHY04rcSunBeh8mzMsgm
-         eu7l9CedpWX3IP0/3g0x/1pegm3t7l8KywxFZiQFuffX6Dh6/e+JZCzwvgtTTKBFlBoG
-         fIwMbca317JWpsuBHvDBG/TdYvbf+VF72ppTA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689206224; x=1691798224;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aYROqSK0oGJBA8nxTpmL+2rtwtyb8ppjHpWlTiycuKo=;
-        b=UrMzXCbEhMdk+v8TFGcAJ0TdwIe5znWb01RIIWKxSZKMGlxpJBoK2lSl/oECrhazfF
-         xOytnN00koMGAmXDDafQ6OZJxTT194KP8McVMzXyzW8t8rMkPaxEfPFVyN9huK8TWpZi
-         3sjLkZ9Byxt+fma1q9FroO0bDNf209bR4HYUNV3AkiyQ+9rHDbbZsBDjBvGCJ8uZ4eF8
-         0nmylBYoQ5+iT94WE5g2kKc0v4skiofK1aN0GlxpaKq7oGfpq0z3zd8otTvoaRwjJqHh
-         RuI1S+h5ED8+419EFw6BJgpt4+3861z0RuDYccQK3sTQE9+ffKsSM0lIcGvXoHw3gt6V
-         QRyQ==
-X-Gm-Message-State: ABy/qLa94nGs60s/sUS04oEeBpnqCtWSmEkXKOCa7eGtpLUP+FNfZ1Ji
-        JjmXhUjeysQeDHuWhvVaNo76MA==
-X-Google-Smtp-Source: APBJJlGkuv3xzrFZa1CbUFIQB39M3wGoMPlRAgtPPH6QwfuF1YKCuvoHZyltzxMVwxohnGxyvw0gqA==
-X-Received: by 2002:a05:6808:130e:b0:3a4:2460:2b9a with SMTP id y14-20020a056808130e00b003a424602b9amr5257820oiv.34.1689206223773;
-        Wed, 12 Jul 2023 16:57:03 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id g19-20020aa78753000000b00663b712bfbdsm4163550pfo.57.2023.07.12.16.57.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Jul 2023 16:57:03 -0700 (PDT)
-Date:   Wed, 12 Jul 2023 16:57:02 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Azeem Shaikh <azeemshaikh38@gmail.com>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        linux-hardening@vger.kernel.org, linux-um@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Haowen Bai <baihaowen@meizu.com>
-Subject: Re: [PATCH] um: Remove strlcpy declaration
-Message-ID: <202307121657.9B32681D6@keescook>
-References: <20230703160641.1790935-1-azeemshaikh38@gmail.com>
+        Wed, 12 Jul 2023 19:57:40 -0400
+Received: from out-38.mta0.migadu.com (out-38.mta0.migadu.com [IPv6:2001:41d0:1004:224b::26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 843601720;
+        Wed, 12 Jul 2023 16:57:39 -0700 (PDT)
+Date:   Wed, 12 Jul 2023 19:57:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1689206257;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ntdiH/9sZyPkX/RAlGtOauWZ/h52hcGnhVXlBm1OLYc=;
+        b=FaqRzEurnql+rDFATLUYd/x9WAFOzSdHEuehQScMYfjIAqc3d1FAiOHkdy47VU+Nv5Y0w8
+        kiTq+YqHDxKpNWR26v0707KjUtWeTjYjOBEXpkdds2y0JqiDQhYpNi2qRCmtzCBPpPrctC
+        ws/HVv/J5q+UyVNpXv1b3bYgCRzSFAU=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Kent Overstreet <kent.overstreet@linux.dev>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+        dchinner@redhat.com, sandeen@redhat.com, willy@infradead.org,
+        josef@toxicpanda.com, tytso@mit.edu, bfoster@redhat.com,
+        jack@suse.cz, andreas.gruenbacher@gmail.com, brauner@kernel.org,
+        peterz@infradead.org, akpm@linux-foundation.org,
+        dhowells@redhat.com, snitzer@kernel.org
+Subject: Re: [GIT PULL] bcachefs
+Message-ID: <20230712235731.l47sxuhfeonygciv@moria.home.lan>
+References: <20230626214656.hcp4puionmtoloat@moria.home.lan>
+ <20230706155602.mnhsylo3pnief2of@moria.home.lan>
+ <20230712025459.dbzcjtkb4zem4pdn@moria.home.lan>
+ <20230712221012.GA11431@frogsfrogsfrogs>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230703160641.1790935-1-azeemshaikh38@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <20230712221012.GA11431@frogsfrogsfrogs>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 03, 2023 at 04:06:41PM +0000, Azeem Shaikh wrote:
-> strlcpy() reads the entire source buffer first.
-> This read may exceed the destination size limit.
-> This is both inefficient and can lead to linear read
-> overflows if a source string is not NUL-terminated [1].
-> In an effort to remove strlcpy() completely [2], replace
-> strlcpy() here with strscpy().
-> No return values were used, so direct replacement is safe.
+On Wed, Jul 12, 2023 at 03:10:12PM -0700, Darrick J. Wong wrote:
+> On Tue, Jul 11, 2023 at 10:54:59PM -0400, Kent Overstreet wrote:
+> >  - Also: not directly related to upstreaming, but relevant for the
+> >    community: we talked about getting together a meeting with some of
+> >    the btrfs people to gather design input, ideas, and lessons learned.
 > 
-> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy
-> [2] https://github.com/KSPP/linux/issues/89
+> Please invite me too! :)
 > 
-> Signed-off-by: Azeem Shaikh <azeemshaikh38@gmail.com>
+> Granted XFS doesn't do multi-device support (for large values of
+> 'multi') but now that I've spent 6 years of my life concentrating on
+> repairability for XFS, I might have a few things to say about bcachefs.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Absolutely!
 
--- 
-Kees Cook
+Maybe we could start brainstorming ideas to cover now, on the list? I
+honestly know XFS so little (I've read code here and there, but I don't
+know much about the high level structure) that I wouldn't know where to
+start.
+
+Filesystems are such a huge world of "oh, that would've made my life so
+much easier if I'd had that idea at the right time..."
+
+> That is if I can shake off the torrent of syzbot crap long enough to
+> read anything in bcachefs.git. :(
+
+:(
