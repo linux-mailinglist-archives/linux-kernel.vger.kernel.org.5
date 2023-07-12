@@ -2,113 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96E497510D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 21:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F7F57510EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 21:04:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232382AbjGLTAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 15:00:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48032 "EHLO
+        id S231418AbjGLTES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 15:04:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbjGLTAc (ORCPT
+        with ESMTP id S229693AbjGLTER (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 15:00:32 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CBEB1BF8;
-        Wed, 12 Jul 2023 12:00:31 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 050C3618CE;
-        Wed, 12 Jul 2023 19:00:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEB81C433C8;
-        Wed, 12 Jul 2023 19:00:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1689188430;
-        bh=C75X2BnyEWDXBPD/0Zfk2U9UagD2+DsJ0ryNEGmeRYc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kkxIXB1mjYsJzX/NO5wASfnLQjv3gxKU/O7ohYn38fe9Ls155Kge8I3xZGDCp/Hna
-         khFKdJ1mUtbXr22HE9R0HLg+2RilUQAUAC+SEKT9lzFZXRSYCVUBvtDcLHZFYqsgbv
-         HX1DK7bqMtC69K2ji+7JS373MAlvfvSxSSahzBaw=
-Date:   Wed, 12 Jul 2023 21:00:27 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Thorsten Leemhuis <linux@leemhuis.info>
-Cc:     stable@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Sasha Levin <sashal@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [RFC PATCH v1 0/3] docs: stable-kernel-rules: add delayed
- backporting option and a few tweaks
-Message-ID: <2023071215-able-mushy-c889@gregkh>
-References: <cover.1689008220.git.linux@leemhuis.info>
- <2023071002-phrasing-tranquil-49d6@gregkh>
- <a97a37bf-86b5-cd8e-a8ce-00e38720cee4@leemhuis.info>
- <2023071221-blade-reactive-0707@gregkh>
- <d8403c45-3561-4759-f6c2-d18afa5e323a@leemhuis.info>
+        Wed, 12 Jul 2023 15:04:17 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03B3F1BFA
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 12:04:15 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-98e39784a85so244011366b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 12:04:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689188653; x=1691780653;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FauWl7DRmaS4EWqEqay7OHBkZJyoOucL4P2xHDWxbM8=;
+        b=ezwTngG7VxeHvvCX++13XqINlY0NqFhR+moIfGhzy1JTYqrO8AE+EImDZ5AMw2Bhu0
+         +FkqXW1XOsBM1Pjf/BlwICLue/dyvxIv0odz6wf4p051rK/0v/v386TBNkZJVmTSLwKP
+         CxGRPi18NgWS165zaaFpvjK9I9gyt6s5gt3lOPE61mE/igeGk6wgaA8RbSXC1K7EwMf8
+         wXE9X9f6VHPp2pJhC3hMVAcur4cJdU80ygWJK/sTIvhG61XFy2/60QdPPTWqk+EReLD+
+         2RHP7tQWSrjveQsZACwSe6g+xetSYaTpVc6WYW8TY05mSsh5TbohtVrqXd0yRCMMCPh2
+         51CA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689188653; x=1691780653;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FauWl7DRmaS4EWqEqay7OHBkZJyoOucL4P2xHDWxbM8=;
+        b=hvOLJxYB/wVozJyNwu3pjmJyQ+2ighOJen2uuhPeg4IH0VMw8HfzMaTMDhZb84Z+sq
+         eg3TpwwQr0yH35Yck+FgIwbWa+HjuksJ0bGz2dhQ8uSOgyufhRLDF3jT+Iv68mTaBLGp
+         BW7XN3mPbk+qFFpVaAJcccHdtTLsBBBR3sCXnOaJrWyudKssoiGylRKxxbbyl38bS1N2
+         F7TNNrxA7o2WPZaVNuNwdez46R0WhaS+ke77o2dVOSO3/Q0xNFoAtex4vObntFGCfE01
+         bSi2o4jkIHVEakC7GfYMBYQjNHODmCKOJf+39kNdzBGdYovMEufqN0yU1byH6fFSQXTj
+         INDw==
+X-Gm-Message-State: ABy/qLZX7vwPFQBICwas0Lqn+x4zqe4bRvuv7qR/Tq8xZKzQkpGiR1Pv
+        usTRE8MoneGTRGr9DH7aDpKksg==
+X-Google-Smtp-Source: APBJJlGtJVTaQVjyZ6U4JtNmHH6WKvZLMQlVVdZiniKMe4dI+94+ohEbe3ADkaiXupckQHO3EB2eEA==
+X-Received: by 2002:a17:906:5d12:b0:98e:3dac:6260 with SMTP id g18-20020a1709065d1200b0098e3dac6260mr4154949ejt.13.1689188653508;
+        Wed, 12 Jul 2023 12:04:13 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id cx18-20020a170906c81200b00992e14af9c3sm2929794ejb.143.2023.07.12.12.04.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 Jul 2023 12:04:13 -0700 (PDT)
+Message-ID: <7cde682e-0c0e-95c1-a37d-64eef9bc3792@linaro.org>
+Date:   Wed, 12 Jul 2023 21:04:10 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d8403c45-3561-4759-f6c2-d18afa5e323a@leemhuis.info>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v4 7/7] MAINTAINERS: Added maintainer details
+Content-Language: en-US
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Pankaj Gupta <pankaj.gupta@nxp.com>, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, clin@suse.com,
+        conor+dt@kernel.org, pierre.gondois@arm.com, ping.bai@nxp.com,
+        xiaoning.wang@nxp.com, wei.fang@nxp.com, peng.fan@nxp.com,
+        haibo.chen@nxp.com, festevam@gmail.com, linux-imx@nxp.com,
+        davem@davemloft.net, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gaurav.jain@nxp.com,
+        alexander.stein@ew.tq-group.com, sahil.malhotra@nxp.com,
+        aisheng.dong@nxp.com, V.Sethi@nxp.com
+References: <20230712121219.2654234-1-pankaj.gupta@nxp.com>
+ <20230712121219.2654234-8-pankaj.gupta@nxp.com>
+ <6d712362-a0f9-7395-fbc0-e6a51eee9bcb@infradead.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <6d712362-a0f9-7395-fbc0-e6a51eee9bcb@infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 07:02:34PM +0200, Thorsten Leemhuis wrote:
-> On 12.07.23 17:16, Greg KH wrote:
-> > On Wed, Jul 12, 2023 at 11:30:30AM +0200, Thorsten Leemhuis wrote:
-> >> While working on the latter I noticed one more thing:
-> >>
-> >> ```
-> >>     .. warning::
-> >>        The -stable-rc tree is a snapshot in time of the stable-queue
-> >> tree and
-> >>        will change frequently, hence will be rebased often. It should
-> >> only be
-> >>        used for testing purposes (e.g. to be consumed by CI systems).
-> >> ```
-> > [...]
-> >> I'll thus likely
-> >> change the text to something like this,
-> >> unless I'm missing something or someone has a better idea:
-> >> ```
-> >>   .. warning::
-> >>      The branches in the -stable-rc tree are rebased each time a new -rc
-> >>      is released, as they are created by taking the latest release and
-> >>      applying the patches from the stable-queue on top.
-> > 
-> > Yes, that is true, but they are also rebased sometimes in intermediate
-> > places, before a -rc is released, just to give CI systems a chance to
-> > test easier.
-> > 
-> > These are ONLY for CI systems to use, nothing else should be touching
-> > them.  So I think the current text is correct, what am I missing?
+On 12/07/2023 16:57, Randy Dunlap wrote:
+> Hi--
 > 
-> That I misunderstood things and forgot about the "rebased sometimes in
-> intermediate places" aspect I once knew about. Sorry. I'll leave the
-> text as it is then.
+> On 7/12/23 05:12, Pankaj Gupta wrote:
+>> MAINTAINERS: Added maintainer details for se-fw driver.
+>>
+>> Signed-off-by: Pankaj Gupta <pankaj.gupta@nxp.com>
+>> ---
+>>  MAINTAINERS | 10 ++++++++++
+>>  1 file changed, 10 insertions(+)
+>>
+>> diff --git a/MAINTAINERS b/MAINTAINERS
+>> index 3be1bdfe8ecc..654c1628417d 100644
+>> --- a/MAINTAINERS
+>> +++ b/MAINTAINERS
+>> @@ -13620,6 +13620,16 @@ F:	mm/
+>>  F:	tools/mm/
+>>  F:	tools/testing/selftests/mm/
+>>  
 > 
-> Nevertheless makes me wonder: is that strategy wise in times when some
-> ordinary users and some distributions are building kernels straight from
-> git repos instead of tarballs? I'm one of those, as I distribute
-> stable-rc packages for Fedora here:
-> https://copr.fedorainfracloud.org/groups/g/kernel-vanilla/coprs/
+> Nope, this is not in alphabetical order. The MAINTAINERS file
+> is to be kept in alphabetical order.
 
-As we keep the patches in quilt, not git, it's the best we can do.  The
--rc releases are never a straight-line if we have to do multiple ones,
-we remove patches in the middle, add them at the end or beginning, and
-sometimes even change existing ones.
+Still close choice. At least it was not added to the end of the file. :)
 
-All of this is stuff that a linear history tool like git can't really
-model well, so we keep a quilt series of the patches in git for anyone
-that want to generate the tree themselves, and we provide the -rc git
-tree for those that don't want to generate it and can live with the
-constant rebasing.
+Best regards,
+Krzysztof
 
-thanks,
-
-greg k-h
