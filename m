@@ -2,199 +2,403 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EED6751028
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 19:59:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D400D75102C
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 20:00:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233028AbjGLR70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 13:59:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54554 "EHLO
+        id S232677AbjGLSAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 14:00:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232594AbjGLR6z (ORCPT
+        with ESMTP id S232542AbjGLSAN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 13:58:55 -0400
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A3F02111;
-        Wed, 12 Jul 2023 10:58:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689184734; x=1720720734;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=dbpoyLBM4MOVMkbE5mkYvh8zhu8e1+DhwsVB6C7E3YI=;
-  b=Jc7I5K373LCIeTeNSM9bHtRdYNWpaCk3D3K1AH8lXl6pcjwfGTDTtqBn
-   ZEzxBAn8YeZo/xYjw/K3cvfj2vK5YLNblbC+uPtj0OdZaEeAkuMn+49e4
-   hxbqANF9XSgikoNjZs1+e2BwY4V+L1UUHSsY/gbDYTavfagrAJjMvkXLc
-   HJHrsDKomX7nuT1boSvvUEIPCwnzGsuIeGUTSXVxmmoL/9iTJwkgVjuML
-   nrqRXUYb1JjEOyx8lt9EwARQXQxxnQLoYgPXs/PvNTJXOJEP7BUUE4Y4s
-   lqD3L2W24cP22pPd5JlODpkiTow73WPh9MDmWnRB4gq8zQIwlrwNOXKUW
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10769"; a="345276065"
-X-IronPort-AV: E=Sophos;i="6.01,200,1684825200"; 
-   d="scan'208";a="345276065"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2023 10:58:53 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10769"; a="835257734"
-X-IronPort-AV: E=Sophos;i="6.01,200,1684825200"; 
-   d="scan'208";a="835257734"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by fmsmga002.fm.intel.com with ESMTP; 12 Jul 2023 10:58:53 -0700
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Wed, 12 Jul 2023 10:58:52 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Wed, 12 Jul 2023 10:58:52 -0700
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.41) by
- edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Wed, 12 Jul 2023 10:58:52 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JqIpwmPbMcx0wqVNcoMqCFrMVfWC/PRrD3t/Ikf0h2Z6wdtCSYY7v74JC0bEpJ3+YBQ62YNC16M/59rUN+Qa5FU42nn6zuvH7fleyYo86RkNDRoy9J39sYRZq2dU4I+oL2dmjGoG1Jj8Ijb1RdrLEcLAhsl0eEIwRC6lnTmUHu3+NaztfAlLmF7a5cnKw1oqfNosurXPzA1L76PKtd/1Bm61AZelQEKiw/vQcR7H3Boy1RiZ3q3+8rQdK8fh6mRYL6WxCi+wcJU3AAz2mabgWBGjUk21BqtfmAme9Tk7hx8b/VrtYvi6vN6fck+NaaxKcD+WlN9sQ/3mXT73yE/L+Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TfL/cWInh4mB0BDtlFehtIN0HTfLdkTHqVU47WMQ+0c=;
- b=K7/O2bSKnxjSADIzLLsTOcWg/zKCY2AJPWRiCoBr53yRPEY9M1sFWFdn4Ql/Piokipf8C+51EAofyPTXc4SJEvAp2oH7Z4Jao9z/AVSN4gU5hC419TMuaufvpOV5He34QhfkHwQkHxkH79BsmXUtRChWMthid1li74fseoAHAoewWnOD3Ep4qct6rnb4oEy8k3bM6NgAB0jFTZQx9QK5qCgom0zToDcCwxm4ePInDb/Yt/Q107hsTql23gy5G+9pYkuQDzQOAD+NkakLMsRNCA5Tm1zKMYCZ+iKaC9VpzG7Adj0q+UQ8azX1JKte+2TytGPYZok09Y44B3QCViMOYA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH7PR11MB5984.namprd11.prod.outlook.com (2603:10b6:510:1e3::15)
- by SN7PR11MB7137.namprd11.prod.outlook.com (2603:10b6:806:2a0::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6565.26; Wed, 12 Jul
- 2023 17:58:50 +0000
-Received: from PH7PR11MB5984.namprd11.prod.outlook.com
- ([fe80::ef38:9181:fb78:b528]) by PH7PR11MB5984.namprd11.prod.outlook.com
- ([fe80::ef38:9181:fb78:b528%7]) with mapi id 15.20.6588.017; Wed, 12 Jul 2023
- 17:58:50 +0000
-Message-ID: <56681a68-a2cc-6bd1-3e29-dfc02bc07add@intel.com>
-Date:   Wed, 12 Jul 2023 10:58:47 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Betterbird/102.12.0
-Subject: Re: [PATCH v2] dmaengine: idxd: Clear PRS disable flag when disabling
- IDXD device
-To:     Fenghua Yu <fenghua.yu@intel.com>, Vinod Koul <vkoul@kernel.org>
-CC:     <dmaengine@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Tony Zhu <tony.zhu@intel.com>
-References: <20230712174220.3434989-1-fenghua.yu@intel.com>
-Content-Language: en-US
-From:   Dave Jiang <dave.jiang@intel.com>
-In-Reply-To: <20230712174220.3434989-1-fenghua.yu@intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR03CA0120.namprd03.prod.outlook.com
- (2603:10b6:a03:333::35) To PH7PR11MB5984.namprd11.prod.outlook.com
- (2603:10b6:510:1e3::15)
+        Wed, 12 Jul 2023 14:00:13 -0400
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 649F412F
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 11:00:12 -0700 (PDT)
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com [209.85.160.200])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 83E573F71D
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 18:00:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1689184808;
+        bh=ycPioG3gIzpzoZSQ8GeUHr/0JGk1P2Rb0KrP1ftWmew=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=Zo6gazK0sBHJJPzDLFWk71gSwrv9t+m0/y4nvyGUnJumsnwSWxFZVZk/uOL7xqzAN
+         gR93y8PKNAQJeFt1Uhedwwe7sFsSWjABbR+SBLGqNeOZZ3A3b3cFxRH8IkkjBsJ9I1
+         zWs7P6Xfg8217t2wvESYwtfpMAlL1zcorkTH3a2D1CG1tMAeHT0CUYZDQUwL3rtkqg
+         VzL9vju3tpkBiizgKEdEeWpLSSpTz4W9LgsVizDhw+VqI8g8bXa1+tDG2DmCNzcHBB
+         HkqeiW1Ap4tDGnKnshsCKyY3ER/1Nw+GWvEEYZRVdnnoO6WTwq7v1uJL/PMmeLNgun
+         mDBoxPcs/niAg==
+Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-403ab5a9a83so41540991cf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 11:00:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689184806; x=1691776806;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ycPioG3gIzpzoZSQ8GeUHr/0JGk1P2Rb0KrP1ftWmew=;
+        b=KB2/9d+fM7Y37PF7GoZu/EF6iwTPamBiI+XtOuHWr75lvrJqkq1UgWMUjqswYaoZx0
+         V0COnIG0vMFJtYwfgzRFHz5B321OuRzN0tlq/I1D8/eLEt1KfPi7k8pYcsfzKvcYg7eo
+         ms8U8Lp0bS31SUWVOse0RFWnzks0s9t+tSsSqXAW/DFEXGhtvo5dNqc7eyV0ilSVEZkU
+         zdt0WG01nmp1VByLsQuwxUdW1ipXKdwfKoZn/lbdfWzwC3EtspgY7Y4xCAYN5/ySJe07
+         34uY9su45/mVuuaxsaQr87zsTVuF3lKyYA7ygDyyaZ+w0Ajtvy0f70hOMwzczAy2nR10
+         3g2g==
+X-Gm-Message-State: ABy/qLYeT35JcuZcJvNqPJSqwuHGsfi8pzuxmNSQKmvNv8+xoqdweQ31
+        3JnbqixzAroZPN0umYD80AquZudawaM+5EVPCZ/34OE5nnreAstZ+ild5Z8iY5NL1hupvD+uLeo
+        cttaT3eB/8ARpnQS7joD9qZYvPcYeIU/w5F6NcCFQTHcfLhMKVgknNaL2Wg==
+X-Received: by 2002:ac8:5bd1:0:b0:403:a7a5:7314 with SMTP id b17-20020ac85bd1000000b00403a7a57314mr14857056qtb.37.1689184806483;
+        Wed, 12 Jul 2023 11:00:06 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGYV6FIqP+ozA9BZRYd3XOP3zXm8Fcuab2twwHiW4vKDUDKXJwLdlgN5hdwEU/eWFrjQpyUXchw9A8wesZnR9I=
+X-Received: by 2002:ac8:5bd1:0:b0:403:a7a5:7314 with SMTP id
+ b17-20020ac85bd1000000b00403a7a57314mr14857028qtb.37.1689184806211; Wed, 12
+ Jul 2023 11:00:06 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR11MB5984:EE_|SN7PR11MB7137:EE_
-X-MS-Office365-Filtering-Correlation-Id: b26b2397-eba5-4a8b-5895-08db8301a598
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: RaD/e5RFk/l/qgk/Qngkqj+732y50vM/QGGb1WqXsIDrlAF8YlePLimZz8bNI50QUOoloyF6+jtxd2iIrm07DA3f2hafv2TiKEtufW3SP1kLKtGehhb8n5lPNQn4AgI56GZQN3+WpOKOZ+AnbiJQAW3DjwfnMKW4aNi1BHzX1pPcg8GC4luS5mPU9AlAQYGE8OvNpW6Fn5DPN5IfUnNGOBDZ5JpujkhgKxYO1xwRvYfqBQO6W/c/y1EEVL0//WpyoZFQmaW+LB9WQSsbhE6LZ37XHpJHQ1atw7uPrgIQwJl4fhM2e0aTQ7rgoy3+kKE0UWl8rFKWg4HFQZtHUfjrIgE13c1L+Mvgg72x1WAjJ3sK1i5kj/1O3MgmJ7axksjXzPqDhI0Nb0qpfi0A+EKkkSjd+s8TzEiRv7szaoZ3TVXE0jUoWfr2kpFfblKsF+GRr4C+IMXM+h2Qv8iY10Yf9CVngOnKiYuzBxjAy9k/TveHVx5cJbppgJv8HwDSc9MsuF/iFUc1OexJSiPgcppb9ZnscV/uWNZ4nXdOmmGCUkfuy5AHLru/VvMvzA3u28uP+TlPb1pgO5crazmXa0zuZD0tnoaJqhO15Y4P7cQ1KDKAMTxB0OKIliXgMNm4GsQSp5B/uU/QLoDZot3okfBxMQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR11MB5984.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(376002)(366004)(346002)(136003)(396003)(451199021)(5660300002)(2906002)(6512007)(82960400001)(38100700002)(83380400001)(186003)(2616005)(26005)(31696002)(86362001)(6506007)(8676002)(53546011)(107886003)(36756003)(44832011)(316002)(110136005)(54906003)(6486002)(478600001)(31686004)(66946007)(8936002)(66556008)(6666004)(66476007)(4326008)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dlhzYkhTUXByOTFBWFhPSWxscjcyZVJ5enZUWUxQeWdIcC9jdVoyVVVDN0dT?=
- =?utf-8?B?L3pFWW12RDFjSktaUEMzK2tPVnArTTlLM1RaUW1LSGwxNHhLeFNZTkIxSWg3?=
- =?utf-8?B?RDFDdTg2WGttQUtIckd5MklGK3dtQUNlRjZUaDBIYXg4Y3RWUWZsS2tKOVh0?=
- =?utf-8?B?YTFONk0xQ0crZUd6WWtLZGowQWM4VmpLZHdLOGQrdGFuejRrVzBiYjhybkov?=
- =?utf-8?B?ZTV5V0lhR09QMXpITzhYQjRFWHJEd0pGY0NGcHlJU3NYMXI1Wk5FWjg0UDNv?=
- =?utf-8?B?d3lBcHI0YitFcGkzbk0vMjdKcWJqalZBVlNtWHhmb05haGd3QkZEQ0NDRU1B?=
- =?utf-8?B?OTJ0NlhUeXZ6dStmUlVqM2F5QmFCc1JjZ3FIQzhRUFNpbjd1VllpNHpkRjRB?=
- =?utf-8?B?R2o2NjNPeUNlRmlsTVdsSmZLeXJYaFNPTENUUTNmOUYwZFhzTGNiaXV0ekV4?=
- =?utf-8?B?OWw2cmIwdWR5dGJlYUNraWVYeVlMYjV6UFpFQzgvTThxaEhqaVlubC9veEhS?=
- =?utf-8?B?M01YdjFWQzZhcWRxdXNtN2RSbHllanNlb2MwQTluNW0ySlVHZGdxU3lmTjJp?=
- =?utf-8?B?aE9DZVQvR3habnFpVjR0NEo0cXFEazVNV1J1VVZ2QWlZNndmUDg0OWN4S1I5?=
- =?utf-8?B?UU13SGlzKzlUdVJLcGdiQmRSWTBYOG1XcW50eGFJaURDMTF3WlR0Sm9iVUFl?=
- =?utf-8?B?RGlWc3NMdmgxQ25yV0lRSC80c0JlWnFoRHlZT3JIdUNyRFNYVGtwaTIxcGFr?=
- =?utf-8?B?ZmtCUWU1a255YmJCdkNZczA0V2xVc01lWkFmYjFodlVpOGlmMXQ5ZG8yS2hn?=
- =?utf-8?B?NGpUd2dVbXBiclU0OERGNzg3UHovQlJpTnlNVFNrRGwvd2U4clByZTdUZndR?=
- =?utf-8?B?VkJRNHZ5TTR1ek4zUHczaVpCbm9WSmZvTHpqWVBGMjhXUkZ1bTZ0UFQzbkM0?=
- =?utf-8?B?ZWNlclNxNHhLcXR6Uk1MY0Q0aVJxNFBnVUpUZ1JnOSs2OXlVS2szOHZHSExl?=
- =?utf-8?B?MGk1ZFo2bFVCTWx5VXNISGdWTE9XckxVbE43cEJLblF1TUFNeTQ1MmpyMGVv?=
- =?utf-8?B?K2ZucTU0ZDlYSGQ0VVQwZ3c3MGtNSVFTczEvSWN1WTdYSjkySlVzT3Vtdytq?=
- =?utf-8?B?Tm9uejJSem0vTkpKbWU3VDhPcFYwck04S2lvTzV3azQzK3k5Sy9sQWg1YVYv?=
- =?utf-8?B?eGhBUEZydjhQZVFzRjJjOFE5QnJSSGUwbXFXNlh2aUE5dE0wUjlYVEtManBz?=
- =?utf-8?B?RlBrc0xTZ3JXeUk3S1pHY1RXSjA1citCWDYycGRTOXpRWkZjbUtRcWtlaXhp?=
- =?utf-8?B?eVo3QnN2a093dnAvK0VmZCtFMHhMaUg0dXJRN01EcHVZUkdzbkE3b3d0cTBG?=
- =?utf-8?B?b3F6c0dkdjFiZ25aWUhxUjZFejREaWx1VnU5V0Q3U3BqczNjeGZYSHQ0a1NB?=
- =?utf-8?B?QnhPNFd6cENwak1RNUo4NWh1RjE1a1grTWxiWGtjR21RUGxxRERCSXRJdnY2?=
- =?utf-8?B?OEtkenY4elZtL05aMnVVMmlyVFU0cUNmajdUMzJOV2lqVHRjZ3U4c2RtczZw?=
- =?utf-8?B?U0JXaFBTOStNMnlVR3NBdjZobTY3MzNybk9CY1NqZGU1c2hzVWd5cW9lZEts?=
- =?utf-8?B?alRFeEZkQ2cwT3MvZGYzQ3BWRDBCU2hvdE5leGlTb1JreG90VUZ5dnNBdDl2?=
- =?utf-8?B?ay9OMEh6RkxEWjh5NWVkNWs2aHdZbjY4V2JUNzFHSG41RTI3WlNYQ0pRWnMx?=
- =?utf-8?B?Rno1RGlaNHJtbkFkYnJPeE1GbWpqR1g1TFhIQ3lESDJJa3ZVWUNHR1NrSlA1?=
- =?utf-8?B?MFllZkpMa3ZQaC8rN1VHRGMyMmt0cXQ3a2ZjZXVMdFdrTzRaaWI1WjFCbkZh?=
- =?utf-8?B?T0h3R01tMjUzUXhJUWxHVFVZUVp2ZWhyaFFmVFVNeU9vM1l6b0xjZlBnZlhG?=
- =?utf-8?B?cUZSSkhCNkxwT3lCV1J5d3Vvd2w0YjZoZ3JHZzB2Z0JIZ1doUGtuZDloUFUv?=
- =?utf-8?B?MHlhUXV5NVVYdHJubkZINUlqVFkwRGxyQlpQZ3ZLakNZNU04dEFTTERUdHJt?=
- =?utf-8?B?ZjlEREFXdU0wamlKZGc3SXZTN0NhVjdrWDJDaEc1bHBpYU5QakNha0JXS1FN?=
- =?utf-8?B?Sk1ha21QeFYzTk9tR0NBc2U0RUFyeEw3YXQwcTRwK3h2MGFpdE1zY29CVDdw?=
- =?utf-8?B?bUE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: b26b2397-eba5-4a8b-5895-08db8301a598
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB5984.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jul 2023 17:58:50.1391
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: TMNBskngVXxGlzn4ymusVPWJ9GxcDkLj6tsUw858N7n5zEbtVG/K/KAFbJHaYZXc4QsPdfkvAEq5eSVKzlhpmw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB7137
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20230712092007.31013-1-xingyu.wu@starfivetech.com> <20230712092007.31013-5-xingyu.wu@starfivetech.com>
+In-Reply-To: <20230712092007.31013-5-xingyu.wu@starfivetech.com>
+From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Date:   Wed, 12 Jul 2023 19:59:49 +0200
+Message-ID: <CAJM55Z8uv35BSH-RFg6bv8HO-uX0G774wgH+bqEoJBui=QTGkA@mail.gmail.com>
+Subject: Re: [PATCH v7 4/9] clk: starfive: Add StarFive JH7110
+ Image-Signal-Process clock driver
+To:     Xingyu Wu <xingyu.wu@starfivetech.com>
+Cc:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Conor Dooley <conor@kernel.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Hal Feng <hal.feng@starfivetech.com>,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/12/23 10:42, Fenghua Yu wrote:
-> Disabling IDXD device doesn't reset Page Request Service (PRS)
-> disable flag to its initial value 0. This may cause user confusion
-> because once PRS is disabled user will see PRS still remains the
-> previous setting (i.e. disabled) via sysfs interface even after the
-> device is disabled.
-> 
-> To eliminate the confusion, reset PRS disable flag when the device
-> is disabled.
-> 
-> Tested-by: Tony Zhu <tony.zhu@intel.com>
-> Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
-
-Should there be a Fixes tag?
+On Wed, 12 Jul 2023 at 11:22, Xingyu Wu <xingyu.wu@starfivetech.com> wrote:
+>
+> Add driver for the StarFive JH7110 Image-Signal-Process clock controller.
+> And these clock controllers should power on and enable the clocks from
+> SYSCRG first before registering.
+>
+> Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
+> Signed-off-by: Xingyu Wu <xingyu.wu@starfivetech.com>
 > ---
-> v2:
-> - Fix Tony's email typo
-> 
->   drivers/dma/idxd/device.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/dma/idxd/device.c b/drivers/dma/idxd/device.c
-> index 5abbcc61c528..71dfb2c13066 100644
-> --- a/drivers/dma/idxd/device.c
-> +++ b/drivers/dma/idxd/device.c
-> @@ -387,6 +387,7 @@ static void idxd_wq_disable_cleanup(struct idxd_wq *wq)
->   	clear_bit(WQ_FLAG_DEDICATED, &wq->flags);
->   	clear_bit(WQ_FLAG_BLOCK_ON_FAULT, &wq->flags);
->   	clear_bit(WQ_FLAG_ATS_DISABLE, &wq->flags);
-> +	clear_bit(WQ_FLAG_PRS_DISABLE, &wq->flags);
+>  drivers/clk/starfive/Kconfig                  |   8 +
+>  drivers/clk/starfive/Makefile                 |   1 +
+>  .../clk/starfive/clk-starfive-jh7110-isp.c    | 232 ++++++++++++++++++
+>  drivers/clk/starfive/clk-starfive-jh7110.h    |   6 +
+>  4 files changed, 247 insertions(+)
+>  create mode 100644 drivers/clk/starfive/clk-starfive-jh7110-isp.c
+>
+> diff --git a/drivers/clk/starfive/Kconfig b/drivers/clk/starfive/Kconfig
+> index eb1023b5e95a..13b4d08cbcd2 100644
+> --- a/drivers/clk/starfive/Kconfig
+> +++ b/drivers/clk/starfive/Kconfig
+> @@ -47,3 +47,11 @@ config CLK_STARFIVE_JH7110_STG
+>         help
+>           Say yes here to support the System-Top-Group clock controller
+>           on the StarFive JH7110 SoC.
+> +
+> +config CLK_STARFIVE_JH7110_ISP
+> +       tristate "StarFive JH7110 Image-Signal-Process clock support"
+> +       depends on CLK_STARFIVE_JH7110_SYS && JH71XX_PMU
+> +       default m if ARCH_STARFIVE
+> +       help
+> +         Say yes here to support the Image-Signal-Process clock controller
+> +         on the StarFive JH7110 SoC.
+> diff --git a/drivers/clk/starfive/Makefile b/drivers/clk/starfive/Makefile
+> index b81e97ee2659..76fb9f8d628b 100644
+> --- a/drivers/clk/starfive/Makefile
+> +++ b/drivers/clk/starfive/Makefile
+> @@ -7,3 +7,4 @@ obj-$(CONFIG_CLK_STARFIVE_JH7100_AUDIO) += clk-starfive-jh7100-audio.o
+>  obj-$(CONFIG_CLK_STARFIVE_JH7110_SYS)  += clk-starfive-jh7110-sys.o
+>  obj-$(CONFIG_CLK_STARFIVE_JH7110_AON)  += clk-starfive-jh7110-aon.o
+>  obj-$(CONFIG_CLK_STARFIVE_JH7110_STG)  += clk-starfive-jh7110-stg.o
+> +obj-$(CONFIG_CLK_STARFIVE_JH7110_ISP)  += clk-starfive-jh7110-isp.o
+> diff --git a/drivers/clk/starfive/clk-starfive-jh7110-isp.c b/drivers/clk/starfive/clk-starfive-jh7110-isp.c
+> new file mode 100644
+> index 000000000000..7e51447060fe
+> --- /dev/null
+> +++ b/drivers/clk/starfive/clk-starfive-jh7110-isp.c
+> @@ -0,0 +1,232 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * StarFive JH7110 Image-Signal-Process Clock Driver
+> + *
+> + * Copyright (C) 2022-2023 StarFive Technology Co., Ltd.
+> + */
+> +
+> +#include <linux/clk.h>
+> +#include <linux/clk-provider.h>
+> +#include <linux/io.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/pm_runtime.h>
+> +#include <linux/reset.h>
+> +
+> +#include <dt-bindings/clock/starfive,jh7110-crg.h>
+> +
+> +#include "clk-starfive-jh7110.h"
+> +
+> +/* external clocks */
+> +#define JH7110_ISPCLK_ISP_TOP_CORE             (JH7110_ISPCLK_END + 0)
+> +#define JH7110_ISPCLK_ISP_TOP_AXI              (JH7110_ISPCLK_END + 1)
+> +#define JH7110_ISPCLK_NOC_BUS_ISP_AXI          (JH7110_ISPCLK_END + 2)
+> +#define JH7110_ISPCLK_DVP_CLK                  (JH7110_ISPCLK_END + 3)
+> +#define JH7110_ISPCLK_EXT_END                  (JH7110_ISPCLK_END + 4)
+> +
+> +static struct clk_bulk_data jh7110_isp_top_clks[] = {
+> +       { .id = "isp_top_core" },
+> +       { .id = "isp_top_axi" }
+> +};
+> +
+> +static const struct jh71x0_clk_data jh7110_ispclk_data[] = {
+> +       /* syscon */
+> +       JH71X0__DIV(JH7110_ISPCLK_DOM4_APB_FUNC, "dom4_apb_func", 15,
+> +                   JH7110_ISPCLK_ISP_TOP_AXI),
+> +       JH71X0__DIV(JH7110_ISPCLK_MIPI_RX0_PXL, "mipi_rx0_pxl", 8,
+> +                   JH7110_ISPCLK_ISP_TOP_CORE),
+> +       JH71X0__INV(JH7110_ISPCLK_DVP_INV, "dvp_inv", JH7110_ISPCLK_DVP_CLK),
+> +       /* vin */
+> +       JH71X0__DIV(JH7110_ISPCLK_M31DPHY_CFG_IN, "m31dphy_cfg_in", 16,
+> +                   JH7110_ISPCLK_ISP_TOP_CORE),
+> +       JH71X0__DIV(JH7110_ISPCLK_M31DPHY_REF_IN, "m31dphy_ref_in", 16,
+> +                   JH7110_ISPCLK_ISP_TOP_CORE),
+> +       JH71X0__DIV(JH7110_ISPCLK_M31DPHY_TX_ESC_LAN0, "m31dphy_tx_esc_lan0", 60,
+> +                   JH7110_ISPCLK_ISP_TOP_CORE),
+> +       JH71X0_GATE(JH7110_ISPCLK_VIN_APB, "vin_apb", 0,
+> +                   JH7110_ISPCLK_DOM4_APB_FUNC),
+> +       JH71X0__DIV(JH7110_ISPCLK_VIN_SYS, "vin_sys", 8, JH7110_ISPCLK_ISP_TOP_CORE),
+> +       JH71X0_GATE(JH7110_ISPCLK_VIN_PIXEL_IF0, "vin_pixel_if0", 0,
+> +                   JH7110_ISPCLK_MIPI_RX0_PXL),
+> +       JH71X0_GATE(JH7110_ISPCLK_VIN_PIXEL_IF1, "vin_pixel_if1", 0,
+> +                   JH7110_ISPCLK_MIPI_RX0_PXL),
+> +       JH71X0_GATE(JH7110_ISPCLK_VIN_PIXEL_IF2, "vin_pixel_if2", 0,
+> +                   JH7110_ISPCLK_MIPI_RX0_PXL),
+> +       JH71X0_GATE(JH7110_ISPCLK_VIN_PIXEL_IF3, "vin_pixel_if3", 0,
+> +                   JH7110_ISPCLK_MIPI_RX0_PXL),
+> +       JH71X0__MUX(JH7110_ISPCLK_VIN_P_AXI_WR, "vin_p_axi_wr", 2,
+> +                   JH7110_ISPCLK_MIPI_RX0_PXL,
+> +                   JH7110_ISPCLK_DVP_INV),
+> +       /* ispv2_top_wrapper */
+> +       JH71X0_GMUX(JH7110_ISPCLK_ISPV2_TOP_WRAPPER_C, "ispv2_top_wrapper_c", 0, 2,
+> +                   JH7110_ISPCLK_MIPI_RX0_PXL,
+> +                   JH7110_ISPCLK_DVP_INV),
+> +};
+> +
+> +static inline int jh7110_isp_top_rst_init(struct jh71x0_clk_priv *priv)
+> +{
+> +       struct reset_control *top_rsts;
+> +
+> +       /* The resets should be shared and other ISP modules will use its. */
+> +       top_rsts = devm_reset_control_array_get_shared(priv->dev);
+> +       if (IS_ERR(top_rsts))
+> +               return dev_err_probe(priv->dev, PTR_ERR(top_rsts),
+> +                                    "failed to get top resets\n");
+> +
+> +       return reset_control_deassert(top_rsts);
+> +}
+> +
+> +static struct clk_hw *jh7110_ispclk_get(struct of_phandle_args *clkspec, void *data)
+> +{
+> +       struct jh71x0_clk_priv *priv = data;
+> +       unsigned int idx = clkspec->args[0];
+> +
+> +       if (idx < JH7110_ISPCLK_END)
+> +               return &priv->reg[idx].hw;
+> +
+> +       return ERR_PTR(-EINVAL);
+> +}
+> +
+> +#ifdef CONFIG_PM
+> +static int jh7110_ispcrg_suspend(struct device *dev)
+> +{
+> +       struct top_sysclk *top = dev_get_drvdata(dev);
+> +
+> +       clk_bulk_disable_unprepare(top->top_clks_num, top->top_clks);
+> +
+> +       return 0;
+> +}
+> +
+> +static int jh7110_ispcrg_resume(struct device *dev)
+> +{
+> +       struct top_sysclk *top = dev_get_drvdata(dev);
+> +
+> +       return clk_bulk_prepare_enable(top->top_clks_num, top->top_clks);
+> +}
+> +#endif
+> +
+> +static const struct dev_pm_ops jh7110_ispcrg_pm_ops = {
+> +       SET_RUNTIME_PM_OPS(jh7110_ispcrg_suspend, jh7110_ispcrg_resume, NULL)
+> +};
+> +
+> +static int jh7110_ispcrg_probe(struct platform_device *pdev)
+> +{
+> +       struct jh71x0_clk_priv *priv;
+> +       struct top_sysclk *top;
+> +       unsigned int idx;
+> +       int ret;
+> +
+> +       priv = devm_kzalloc(&pdev->dev,
+> +                           struct_size(priv, reg, JH7110_ISPCLK_END),
+> +                           GFP_KERNEL);
+> +       if (!priv)
+> +               return -ENOMEM;
+> +
+> +       top = devm_kzalloc(&pdev->dev, sizeof(*top), GFP_KERNEL);
+> +       if (!top)
+> +               return -ENOMEM;
+> +
+> +       spin_lock_init(&priv->rmw_lock);
+> +       priv->dev = &pdev->dev;
+> +       priv->base = devm_platform_ioremap_resource(pdev, 0);
+> +       if (IS_ERR(priv->base))
+> +               return PTR_ERR(priv->base);
+> +
+> +       top->top_clks = jh7110_isp_top_clks;
+> +       top->top_clks_num = ARRAY_SIZE(jh7110_isp_top_clks);
+> +       ret = devm_clk_bulk_get(priv->dev, top->top_clks_num, top->top_clks);
+> +       if (ret)
+> +               return dev_err_probe(priv->dev, ret, "failed to get main clocks\n");
+> +       dev_set_drvdata(priv->dev, top);
+> +
+> +       /* enable power domain and clocks */
+> +       pm_runtime_enable(priv->dev);
+> +       ret = pm_runtime_get_sync(priv->dev);
+> +       if (ret < 0)
+> +               return dev_err_probe(priv->dev, ret, "failed to turn on power\n");
+> +
+> +       ret = jh7110_isp_top_rst_init(priv);
+> +       if (ret)
+> +               goto err_exit;
+> +
+> +       for (idx = 0; idx < JH7110_ISPCLK_END; idx++) {
+> +               u32 max = jh7110_ispclk_data[idx].max;
+> +               struct clk_parent_data parents[4] = {};
+> +               struct clk_init_data init = {
+> +                       .name = jh7110_ispclk_data[idx].name,
+> +                       .ops = starfive_jh71x0_clk_ops(max),
+> +                       .parent_data = parents,
+> +                       .num_parents =
+> +                               ((max & JH71X0_CLK_MUX_MASK) >> JH71X0_CLK_MUX_SHIFT) + 1,
+> +                       .flags = jh7110_ispclk_data[idx].flags,
+> +               };
+> +               struct jh71x0_clk *clk = &priv->reg[idx];
+> +               unsigned int i;
+> +               const char *fw_name[JH7110_ISPCLK_EXT_END - JH7110_ISPCLK_END] = {
+> +                       "isp_top_core",
+> +                       "isp_top_axi",
+> +                       "noc_bus_isp_axi",
+> +                       "dvp_clk"
+> +               };
+> +
+> +               for (i = 0; i < init.num_parents; i++) {
+> +                       unsigned int pidx = jh7110_ispclk_data[idx].parents[i];
+> +
+> +                       if (pidx < JH7110_ISPCLK_END)
+> +                               parents[i].hw = &priv->reg[pidx].hw;
+> +                       else
+> +                               parents[i].fw_name = fw_name[pidx - JH7110_ISPCLK_END];
+> +               }
+> +
+> +               clk->hw.init = &init;
+> +               clk->idx = idx;
+> +               clk->max_div = max & JH71X0_CLK_DIV_MASK;
+> +
+> +               ret = devm_clk_hw_register(&pdev->dev, &clk->hw);
+> +               if (ret)
+> +                       goto err_exit;
+> +       }
+> +
+> +       ret = devm_of_clk_add_hw_provider(&pdev->dev, jh7110_ispclk_get, priv);
+> +       if (ret)
+> +               goto err_exit;
+> +
+> +       ret = jh7110_reset_controller_register(priv, "rst-isp", 3);
+> +       if (ret)
+> +               goto err_exit;
+> +
+> +       return 0;
+> +
+> +err_exit:
+> +       pm_runtime_put_sync(priv->dev);
+> +       pm_runtime_disable(priv->dev);
+> +       return ret;
+> +}
+> +
+> +static int jh7110_ispcrg_remove(struct platform_device *pdev)
+> +{
+> +       pm_runtime_put_sync(&pdev->dev);
+> +       pm_runtime_disable(&pdev->dev);
+> +
+> +       return 0;
+> +}
+> +
+> +static const struct of_device_id jh7110_ispcrg_match[] = {
+> +       { .compatible = "starfive,jh7110-ispcrg" },
+> +       { /* sentinel */ }
+> +};
+> +MODULE_DEVICE_TABLE(of, jh7110_ispcrg_match);
+> +
+> +static struct platform_driver jh7110_ispcrg_driver = {
+> +       .probe = jh7110_ispcrg_probe,
+> +       .remove = jh7110_ispcrg_remove,
+> +       .driver = {
+> +               .name = "clk-starfive-jh7110-isp",
+> +               .of_match_table = jh7110_ispcrg_match,
+> +               .pm = &jh7110_ispcrg_pm_ops,
+> +       },
+> +};
+> +module_platform_driver(jh7110_ispcrg_driver);
+> +
+> +MODULE_AUTHOR("Xingyu Wu <xingyu.wu@starfivetech.com>");
+> +MODULE_DESCRIPTION("StarFive JH7110 Image-Signal-Process clock driver");
+> +MODULE_LICENSE("GPL");
+> diff --git a/drivers/clk/starfive/clk-starfive-jh7110.h b/drivers/clk/starfive/clk-starfive-jh7110.h
+> index f29682b8d400..5425fd89394a 100644
+> --- a/drivers/clk/starfive/clk-starfive-jh7110.h
+> +++ b/drivers/clk/starfive/clk-starfive-jh7110.h
+> @@ -4,6 +4,12 @@
+>
+>  #include "clk-starfive-jh71x0.h"
+>
+> +/* top clocks of ISP/VOUT domain from SYSCRG */
+> +struct top_sysclk {
+> +       struct clk_bulk_data *top_clks;
+> +       int top_clks_num;
+> +};
+> +
 
-I wonder if it's better if we just do wq->flags = 0? I don't see any 
-bits we need to preserve. Do you?
+When reviewing this I was very confused what data the vout and isp
+clocks need to share. But as far as I can tell they don't actually
+share any data, it's just that they both need a struct like this. I
+guess that's ok to put here, but it should really be prefixed with
+jh7110_ like the function below. Eg. struct jh7110_top_clks { .. }
 
->   	memset(wq->name, 0, WQ_NAME_SIZE);
->   	wq->max_xfer_bytes = WQ_DEFAULT_MAX_XFER;
->   	idxd_wq_set_max_batch_size(idxd->data->type, wq, WQ_DEFAULT_MAX_BATCH);
+With that fixed:
+Reviewed-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+
+>  int jh7110_reset_controller_register(struct jh71x0_clk_priv *priv,
+>                                      const char *adev_name,
+>                                      u32 adev_id);
+> --
+> 2.25.1
+>
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
