@@ -2,396 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D293B7511EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 22:41:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E32777511F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 22:41:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229618AbjGLUlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 16:41:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55032 "EHLO
+        id S231960AbjGLUll convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 12 Jul 2023 16:41:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231828AbjGLUlG (ORCPT
+        with ESMTP id S232314AbjGLUli (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 16:41:06 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 340FB1FC0
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 13:41:03 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1b895a06484so35355ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 13:41:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689194462; x=1691786462;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=vTQ8Q2thfWAfcL5Ck5oeBseIeiNj0gT5+ucM2ZzcSW8=;
-        b=E7KBfQ+ADb+vOC9lwKfy4GUPzNoADOdXa1tyUiOMFGAbEqDesg/7DPyIpZ04rRG7SS
-         CI9Pxxm0DFCqsHFxySFgF2dscOX9++DJ7MGSAjAqFHOqPZgaixGZBm/9WKShJNt9fE9x
-         zfmNnNzud93xdBIjvhYbLR2XoaN5mGeNfskAZjJhEypJ55Ni/Lk/oIVcm96605h4guWA
-         IdSR7+H3NSpHOImmI1UK2ApZDe63UQBySTEbIR7SqPSPAgWQaldLuwG515ON+gR6X2zh
-         7JBO6tQDN88HFs91cQ2YmfiTamIT4PHQrRw4PNdhDhBhh6m/m/UQkz9ZdV+ITDgnk4MA
-         PmOQ==
+        Wed, 12 Jul 2023 16:41:38 -0400
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F6F019B9
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 13:41:36 -0700 (PDT)
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-5774335bb2aso80292147b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 13:41:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689194462; x=1691786462;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vTQ8Q2thfWAfcL5Ck5oeBseIeiNj0gT5+ucM2ZzcSW8=;
-        b=HsAThxxgFyTe8kP8Coq+ZptqXeZzVbakeKtgOORliD53dYFVASeUAb8QmwRhC/CEiu
-         8C+WPWYA32nu4EQa6aLmJN7ACfcNJqLGC4LFa2FcS3qx9xE//Bi5aHSZ+odkFnW9GByU
-         vNzkkUIxlgZArJC9mFEpoPUPxSAOspuRGZ/i15CjW7PUxJSHSRXUzsTqCcXIprCFagv8
-         Q5uhClTtJplolMVSQP5iU6zieLDERf698Pqmu90parh8unFgjKbvE99V/yovP90erRwL
-         u37oFzGUhRcKAayu/dsFLYr5L6ASTpoIhs85M9e19RqT++Lk1OXmz2I/wxTg2T3a/GK7
-         W2wQ==
-X-Gm-Message-State: ABy/qLaUlV4jaC++0cSeszegFuwKu311GhyVV6i9iCqyR8SOQGuKTXka
-        pwfQ0rl5vY4F6MMN8XBVV7TUQA==
-X-Google-Smtp-Source: APBJJlHwE0pVMBV73p3yQVDBY+sz7V2ACI+xlVqOGxoxCpaCEw8GFmGebdDC8OiamYOddWM0OJatOg==
-X-Received: by 2002:a17:902:ed44:b0:1b8:a3a0:d9b3 with SMTP id y4-20020a170902ed4400b001b8a3a0d9b3mr15434979plb.47.1689194462561;
-        Wed, 12 Jul 2023 13:41:02 -0700 (PDT)
-Received: from p14s ([2604:3d09:148c:c800:70ea:7145:ddf8:7208])
-        by smtp.gmail.com with ESMTPSA id p16-20020a170902b09000b001b8422f1000sm4386306plr.201.2023.07.12.13.41.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Jul 2023 13:41:02 -0700 (PDT)
-Date:   Wed, 12 Jul 2023 14:40:59 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Tinghan Shen <tinghan.shen@mediatek.com>
-Cc:     Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-Subject: Re: [PATCH v14 05/12] remoteproc: mediatek: Introduce cluster on
- single-core SCP
-Message-ID: <ZK8P25K2RaxdAKHh@p14s>
-References: <20230707052612.27521-1-tinghan.shen@mediatek.com>
- <20230707052612.27521-6-tinghan.shen@mediatek.com>
+        d=1e100.net; s=20221208; t=1689194495; x=1691786495;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0WUYKlpGhb0kJhf/+AumZoaOJjlTSMOB9Jdpi/GF+90=;
+        b=kMSUGB+AZV7w79y8nTDXIgfeyxw1/UWUIs8IanU5ob3Ki0E8pU8mFjkz4poQil2kpv
+         lWcsWvVerPouKkwBvb8SgBSILJXpN5XKq9L87aFL/c2P2RDx+DOMW9RqNNVpHQAn2UIG
+         lQn/2WpZfphbJKplYRS8hZSYDFyiPgb4rtxMCNmWAj030XPsIsMvNjo5dDLHxn9OpHPk
+         nRJ8nPkcLkhqoZVzmTvncDsTKk2T0orEm0s+Xw12feiGGqtbm+MR9tLU5s7REHk8qcy4
+         CQlc2ME06Gp079zysFvcBg/NjlHCFP3/6HG3jT3aKDal1LOtA3XSLV/y7GcdGjfKYZ70
+         I5oQ==
+X-Gm-Message-State: ABy/qLYf1PqU/VEeeAv75G6HYXB2K9YGaqLL+eFw/gK0QXKbWXqp2ctr
+        n+h2zkmJfPBgsZW05dcVzTt8DgZe+h8G5g==
+X-Google-Smtp-Source: APBJJlFBSVL13qedPpP4RmURQwCgBDQzQ+VuYtlLETuac1BZxiZumf2SNzGan1jii1VFqlfQXRFi/A==
+X-Received: by 2002:a0d:d40c:0:b0:56d:3d83:15cb with SMTP id w12-20020a0dd40c000000b0056d3d8315cbmr17059654ywd.44.1689194495448;
+        Wed, 12 Jul 2023 13:41:35 -0700 (PDT)
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com. [209.85.128.181])
+        by smtp.gmail.com with ESMTPSA id k63-20020a0dfa42000000b005773babc3cdsm1375653ywf.83.2023.07.12.13.41.35
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 Jul 2023 13:41:35 -0700 (PDT)
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-5774335bb2aso80291947b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 13:41:35 -0700 (PDT)
+X-Received: by 2002:a0d:fa44:0:b0:577:cd0:681f with SMTP id
+ k65-20020a0dfa44000000b005770cd0681fmr19302553ywf.26.1689194494878; Wed, 12
+ Jul 2023 13:41:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230707052612.27521-6-tinghan.shen@mediatek.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20230712120002.GIZK6Vwga6DlJqdjEh@fat_crate.local>
+ <ZK6hLZcuAH9jXKuL@redhat.com> <20230712132840.GKZK6qiK70m1O90jFL@fat_crate.local>
+ <ZK6zdsIbnQFUmK69@redhat.com> <2023071200-unopposed-unbuckled-cde8@gregkh>
+ <CAMw=ZnTVRaqRmtz+sDj7AeAS7xivSu+56UgKbzmuW9+K6TTx1A@mail.gmail.com>
+ <2023071239-progress-molasses-3b3d@gregkh> <CAMw=ZnRheXk7W_r-32bGymbHKdXc7aKUpwGAOX+k7DJkN+DiCQ@mail.gmail.com>
+ <2023071229-dusk-repacking-da3a@gregkh> <CAMw=ZnSmZTBs+bJsQ_Y2CVO8K3OTuHOZDKW4cbxKpGbo4Vgs7Q@mail.gmail.com>
+ <2023071226-crafty-deviator-12e2@gregkh>
+In-Reply-To: <2023071226-crafty-deviator-12e2@gregkh>
+From:   Luca Boccassi <bluca@debian.org>
+Date:   Wed, 12 Jul 2023 21:41:23 +0100
+X-Gmail-Original-Message-ID: <CAMw=ZnRjnxWnmoFuw2prxFS55vAGQ1hpfKeHYFfG5Oa0LB_jYA@mail.gmail.com>
+Message-ID: <CAMw=ZnRjnxWnmoFuw2prxFS55vAGQ1hpfKeHYFfG5Oa0LB_jYA@mail.gmail.com>
+Subject: Re: [RFC PATCH v2] x86/boot: add .sbat section to the bzImage
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     =?UTF-8?Q?Daniel_P=2E_Berrang=C3=A9?= <berrange@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>, lennart@poettering.net,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From an overall perspective this patchset looks good.  Now that we can clearly
-see what is going on there are a few things to improve on.  Please see below. 
+On Wed, 12 Jul 2023 at 21:07, Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Wed, Jul 12, 2023 at 08:35:14PM +0100, Luca Boccassi wrote:
+> > On Wed, 12 Jul 2023 at 20:05, Greg KH <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > On Wed, Jul 12, 2023 at 07:59:12PM +0100, Luca Boccassi wrote:
+> > > > On Wed, 12 Jul 2023 at 17:57, Greg KH <gregkh@linuxfoundation.org> wrote:
+> > > > >
+> > > > > On Wed, Jul 12, 2023 at 05:23:18PM +0100, Luca Boccassi wrote:
+> > > > > > On Wed, 12 Jul 2023 at 16:43, Greg KH <gregkh@linuxfoundation.org> wrote:
+> > > > > > >
+> > > > > > > On Wed, Jul 12, 2023 at 03:06:46PM +0100, Daniel P. Berrangé wrote:
+> > > > > > > > On Wed, Jul 12, 2023 at 03:28:40PM +0200, Borislav Petkov wrote:
+> > > > > > > > > On Wed, Jul 12, 2023 at 01:48:45PM +0100, Daniel P. Berrangé wrote:
+> > > > > > > > > > That doesn't make it useless, as the 3rd/4th/5th fields in the SBAT
+> > > > > > > > > > file are just human targetted metadata. The validation process just
+> > > > > > > > > > works off the 1st/2nd field.
+> > > > > > > > >
+> > > > > > > > > It's a good thing I asked - feels like I'm just scratching the surface
+> > > > > > > > > on what this thing actually is and the commit message is not explaining
+> > > > > > > > > any of that.
+> > > > > > > > >
+> > > > > > > > > First, second field, that's what, "linux,1"?
+> > > > > > > >
+> > > > > > > > Each sbat CSV file line has following fields:
+> > > > > > > >
+> > > > > > > >   component_name: the name we're comparing
+> > > > > > > >   component_generation: the generation number for the comparison
+> > > > > > > >   vendor_name: human readable vendor name
+> > > > > > > >   vendor_package_name: human readable package name
+> > > > > > > >   vendor_version: human readable package version (maybe machine parseable too, not specified here)
+> > > > > > > >   vendor_url: url to look stuff up, contact, whatever.
+> > > > > > > >
+> > > > > > > > So 'linux' is 'component_name' and '1' is component_generation
+> > > > > > > >
+> > > > > > > > > > From a functional POV, it doesn't have to be unique identified,
+> > > > > > > > > > as it is just a human targetted metadata field. A friendly git
+> > > > > > > > > > version as from 'git describe' is more appropriate than a build
+> > > > > > > > > > ID sha.
+> > > > > > > > >
+> > > > > > > > > So can you explain what exactly that version is supposed to describe?
+> > > > > > > > > Exact kernel sources the kernel was built from? Or a random, increasing
+> > > > > > > > > number which tools can use to mark as bad?
+> > > > > > > >
+> > > > > > > > AFAICT beyond being "human readable package version", it is a fairly
+> > > > > > > > arbitrary decision. A release version number for formal releases, or
+> > > > > > > > a 'git describe' version string for git snapshots both satisfy the
+> > > > > > > > versioning requirement IMHO.
+> > > > > > > >
+> > > > > > > > > How do you prevent people from binary-editing that section? Secure boot
+> > > > > > > > > does that because that changes the signed kernel image?
+> > > > > > > >
+> > > > > > > > The PE files are signed by the vendor who builds them, using their
+> > > > > > > > SecureBoot signing key. The data covered by the signature includes
+> > > > > > > > the '.sbat' section.
+> > > > > > > >
+> > > > > > > > IOW, if you binary edit the section, the SecureBoot signature
+> > > > > > > > verification fails and the kernel won't be booted.
+> > > > > > > >
+> > > > > > > > > > > And then why does it have to be a separate section? All those
+> > > > > > > > > > > requirements need to be written down.
+> > > > > > > > >
+> > > > > > > > > You missed this question.
+> > > > > > > >
+> > > > > > > > That's simply what the spec defines as the approach.
+> > > > > > > >
+> > > > > > > > The PE file format used by EFI applications has multiple
+> > > > > > > > sections and the spec has declare that the '.sbat' section
+> > > > > > > > is where this data shall live.
+> > > > > > > >
+> > > > > > > > > > The first line just identifies the file format and should
+> > > > > > > > > > never change:
+> > > > > > > > > >
+> > > > > > > > > >   sbat,1,SBAT Version,sbat,1,https://github.com/rhboot/shim/blob/main/SBAT.md
+> > > > > > > > >
+> > > > > > > > > Why do you even need it then?
+> > > > > > > >
+> > > > > > > > First it identifies the data format, and second if a
+> > > > > > > > problem is ever discovered with the  SBAT concept,
+> > > > > > > > a fixed approach can be indicated by changing to
+> > > > > > > > 'sbat,2,.....' and thus have the effect of revoking
+> > > > > > > > use of any binaries which declare the 'sbat,1,....'
+> > > > > > > > version. Pretty unlikely this will happen, but a useful
+> > > > > > > > backup plan/safety net.
+> > > > > > > >
+> > > > > > > > > > The second line identifies the kernel generation
+> > > > > > > > > >
+> > > > > > > > > >   linux,1,The Linux Developers,linux,6.5.0-rc1,https://linux.org
+> > > > > > > > > >
+> > > > > > > > > > The first field 'linux' should never change once decided upon, as it is
+> > > > > > > > > > the name of the upstream project's EFI component - in this case the
+> > > > > > > > > > linux kernel.
+> > > > > > > > > >
+> > > > > > > > > > The second field '1' is the most important one, as it is the mechanism
+> > > > > > > > > > through which revokation takes places, and the only one a human upstream
+> > > > > > > > > > maintainer should manually change.
+> > > > > > > > >
+> > > > > > > > > Hold on, how often are those things going to change? And who's going to
+> > > > > > > > > change them? I sure hope we won't start getting patches constantly
+> > > > > > > > > updating those numbers?
+> > > > > > > >
+> > > > > > > > It is hard to predict the future, but my gut feeling is very infrequently.
+> > > > > > >
+> > > > > > > Have you looked at the past as proof of this?
+> > > > > >
+> > > > > > I can't quite think of relevant bugs, in the recent past. Are you
+> > > > > > aware of past instances of kernel module signature verification being
+> > > > > > broken? Or userspace being allowed to do arbitrary kernel memory
+> > > > > > manipulation before ExitBootServices?
+> > > > >
+> > > > > Yes.
+> > > >
+> > > > Then you already know the answer w.r.t. frequency
+> > >
+> > > I have a clue, yes.  But given that others do not that are proposing
+> > > this, that's quite worrying.
+> >
+> > Not really, as that's not the purpose. As the documentation clearly
+> > states, the purpose is to have a revocation mechanism that won't
+> > exhaust nvram space.
+>
+> How do you know that the list of issues will not exhaust it, if you
+> don't know how many issues are found?
+>
+> Take the time and look over the past 10 years and get an idea of what
+> you are dealing with here please.
+>
+> Also note that "single identifiers for individual issues" do NOT work
+> for kernel fixes (and arguably do not work for any other software
+> project either) as they fail to properly describe things.
+>
+> Think about Meltdown, one "identifier" of a CVE, and hundreds of
+> patches.  What if you happened to not backport one of them?
+>
+> Same goes for the issue reported last week or so, tens of fixes, over
+> multiple stable kernel releases, for one "identifier", how would you
+> have classified that?
+>
+> Anyway, I've been over this loads before, giving whole talks about this,
+> there's a reason the kernel developers don't mess with CVEs (i.e.
+> individual identifiers), they fail to work.
 
-On Fri, Jul 07, 2023 at 01:26:05PM +0800, Tinghan Shen wrote:
-> This is the preliminary step for probing multi-core SCP.
-> The initialization procedure for remoteproc is similar for both
-> single-core and multi-core architectures and is reusing to avoid
-> redundant code.
-> 
-> Rewrite the probing flow of single-core SCP to adapt with the 'cluster'
-> concept needed by probing the multi-core SCP. The main differences
-> are,
-> - the SCP core object(s) is maintained at the cluster list instead of at
->   the platform device driver data property.
-> - save the cluster information at the platform device driver data property.
-> - In order to keep the compatibility of exported SCP APIs which getting
->   the SCP core object by SCP node phandle, move the SCP core object
->   pointers to the platform device platform data property.
-> 
-> The registers of config and l1tcm are shared for multi-core
-> SCP. Reuse the mapped addresses for all cores.
-> 
-> Signed-off-by: Tinghan Shen <tinghan.shen@mediatek.com>
-> ---
->  drivers/remoteproc/mtk_common.h |   2 +
->  drivers/remoteproc/mtk_scp.c    | 151 +++++++++++++++++++++++---------
->  2 files changed, 112 insertions(+), 41 deletions(-)
-> 
-> diff --git a/drivers/remoteproc/mtk_common.h b/drivers/remoteproc/mtk_common.h
-> index c0905aec3b4b..56395e8664cb 100644
-> --- a/drivers/remoteproc/mtk_common.h
-> +++ b/drivers/remoteproc/mtk_common.h
-> @@ -128,6 +128,8 @@ struct mtk_scp {
->  	size_t dram_size;
->  
->  	struct rproc_subdev *rpmsg_subdev;
-> +
-> +	struct list_head elem;
->  };
->  
->  /**
-> diff --git a/drivers/remoteproc/mtk_scp.c b/drivers/remoteproc/mtk_scp.c
-> index 48e759c2d486..3a8c8bcfa46b 100644
-> --- a/drivers/remoteproc/mtk_scp.c
-> +++ b/drivers/remoteproc/mtk_scp.c
-> @@ -23,6 +23,14 @@
->  #define MAX_CODE_SIZE 0x500000
->  #define SECTION_NAME_IPI_BUFFER ".ipi_buffer"
->  
-> +struct mtk_scp_of_cluster {
-> +	void __iomem *reg_base;
-> +	void __iomem *l1tcm_base;
-> +	size_t l1tcm_size;
-> +	phys_addr_t l1tcm_phys;
-> +	struct list_head mtk_scp_list;
-> +};
-> +
->  /**
->   * scp_get() - get a reference to SCP.
->   *
-> @@ -51,7 +59,7 @@ struct mtk_scp *scp_get(struct platform_device *pdev)
->  		return NULL;
->  	}
->  
-> -	return platform_get_drvdata(scp_pdev);
-> +	return *(struct mtk_scp **)dev_get_platdata(&scp_pdev->dev);
->  }
->  EXPORT_SYMBOL_GPL(scp_get);
->  
-> @@ -809,14 +817,14 @@ static void scp_unmap_memory_region(struct mtk_scp *scp)
->  static int scp_register_ipi(struct platform_device *pdev, u32 id,
->  			    ipi_handler_t handler, void *priv)
->  {
-> -	struct mtk_scp *scp = platform_get_drvdata(pdev);
-> +	struct mtk_scp *scp = *(struct mtk_scp **)dev_get_platdata(&pdev->dev);
->  
->  	return scp_ipi_register(scp, id, handler, priv);
->  }
->  
->  static void scp_unregister_ipi(struct platform_device *pdev, u32 id)
->  {
-> -	struct mtk_scp *scp = platform_get_drvdata(pdev);
-> +	struct mtk_scp *scp = *(struct mtk_scp **)dev_get_platdata(&pdev->dev);
->  
->  	scp_ipi_unregister(scp, id);
->  }
-> @@ -824,7 +832,7 @@ static void scp_unregister_ipi(struct platform_device *pdev, u32 id)
->  static int scp_send_ipi(struct platform_device *pdev, u32 id, void *buf,
->  			unsigned int len, unsigned int wait)
->  {
-> -	struct mtk_scp *scp = platform_get_drvdata(pdev);
-> +	struct mtk_scp *scp = *(struct mtk_scp **)dev_get_platdata(&pdev->dev);
->  
->  	return scp_ipi_send(scp, id, buf, len, wait);
->  }
-> @@ -854,7 +862,8 @@ static void scp_remove_rpmsg_subdev(struct mtk_scp *scp)
->  	}
->  }
->  
-> -static int scp_probe(struct platform_device *pdev)
-> +static struct mtk_scp *scp_rproc_init(struct platform_device *pdev,
-> +				      struct mtk_scp_of_cluster *scp_cluster)
->  {
->  	struct device *dev = &pdev->dev;
->  	struct device_node *np = dev->of_node;
-> @@ -866,52 +875,42 @@ static int scp_probe(struct platform_device *pdev)
->  
->  	ret = rproc_of_parse_firmware(dev, 0, &fw_name);
->  	if (ret < 0 && ret != -EINVAL)
-> -		return ret;
-> +		return ERR_PTR(ret);
->  
->  	rproc = devm_rproc_alloc(dev, np->name, &scp_ops, fw_name, sizeof(*scp));
-> -	if (!rproc)
-> -		return dev_err_probe(dev, -ENOMEM, "unable to allocate remoteproc\n");
-> +	if (!rproc) {
-> +		dev_err(dev, "unable to allocate remoteproc\n");
-> +		return ERR_PTR(-ENOMEM);
-> +	}
->  
->  	scp = rproc->priv;
->  	scp->rproc = rproc;
->  	scp->dev = dev;
->  	scp->data = of_device_get_match_data(dev);
-> -	platform_set_drvdata(pdev, scp);
-> +	platform_device_add_data(pdev, &scp, sizeof(scp));
+There is no 'single identifier for individual issues' nor CVE involved
+here. The purpose of the generation id (which is per EFI component,
+not per bug) is to let the boot process know whether an EFI component
+should be accepted or rejected, in a way that doesn't exhaust nvram.
+Issues are not individually singled out, and there is no direct
+correlation with CVEs. It doesn't matter how many fixes there are, or
+how many bugs, if a generation of a component is vulnerable in any way
+that matters, then it gets denied.
 
-Using platform_device_add_data() doesn't work because it creates a duplicate
-copy of @scp.  To fix this I suggest to:
+The only thing that matters is, "if we had infinite space in DBX and
+sensible ways to service it and nvram didn't wear down, would we
+blocklist this component version" - if the answer is no, then nothing
+happens. If the answer is yes, then the counter goes up.
 
-1. Change mtk_scp_of_cluster::l2tcm_lock to mtk_scp_of_cluster::cluster_lock
-2. Add a struct mtk_scp_of_cluster *cluster to struct mtk_scp
-3. Don't call platform_set_drvdata(pdev, scp_cluster) in scp_probe()
-4. Above do scp->cluster = scp_cluster and call platform_set_drvdata(pdev, scp)
-instead of platform_device_add_data().
-5. Every time you are modifying scp->cluster, scp->cluster->cluster_lock must be
-held.
+> > > > > And no, I will not provide examples for obvious reasons.
+> > > >
+> > > > Security-through-obscurity? Nice!
+> > >
+> > > That's not what this is, please see the many places this is explained
+> > > in detail.  If you wish to discuss how the kernel security team handles
+> > > known security fixes, we can do so on a relevant thread (i.e. not this
+> > > one.)
+> > >
+> > > > > > > > I can't say I recall any specific Linux bugs that would warrant it, but
+> > > > > > > > those involved in Linux/Bootloade/SecureBoot world can probably answer
+> > > > > > > > this better than me. IIUC, the scope of bugs relevent to this is quite
+> > > > > > > > narrow.
+> > > > > > >
+> > > > > > > Really?  I know a lot of people who would disagree...
+> > > > > >
+> > > > > > They'd better have some convincing reasons
+> > > > > >
+> > > > > > > > > > If there is discovered a flaw in Linux that allows the Secure Boot chain
+> > > > > > > > > > to be broken (eg some flaw allowed linux to be exploited as a mechanism
+> > > > > > > > > > to load an unsigned binary), then this 'generation' number would need
+> > > > > > > > > > to be incremented when a fix is provided in upstream Linux trees.
+> > > > > > > > >
+> > > > > > > > > Oh boy, there it is. And then when those fixes need to be backported to
+> > > > > > > > > stable, then those patches updating that number would need to be
+> > > > > > > > > backported too. I can already see the mess on the horizon.
+> > > > > > > >
+> > > > > > > > If applicable, yes.
+> > > > > > >
+> > > > > > > And how are you going to determine this?
+> > > > > >
+> > > > > > Same as it's done for the bootloaders - does it enable a secure boot
+> > > > > > bypass -> yes/no
+> > > > >
+> > > > > And how are you going to determine this?  Seriously, please explain the
+> > > > > auditing you are going to do here and who is going to maintain it and
+> > > > > fund the effort?
+> > > >
+> > > > Same way it is determined for Shim, Grub, sd-boot, Windows BootMngr,
+> > > > etc - maintainers doing their jobs, researchers poking at them, or if
+> > > > we are particularly unlucky by live exploits in the wild. I'm not
+> > > > exactly sure where the confusion comes from, none of this is novel.
+> > >
+> > > But why does any of this matter at all?  Just use the kernel version
+> > > (which is already in the image), and be done with it.  We always
+> > > increment it so all should be fine.
+> >
+> > No, all will not be fine, because stable branches exist, so it would
+> > not be _one_ kernel version but N, with monotonically increasing
+> > values of N. That doesn't work, and the reason for that are explained
+> > in the protocol documentation that was linked in the initial mail.
+>
+> Pointing to an external document that is thousands of lines long,
+> talking about bootloaders, is NOT a good way to get people to want to
+> accept a kernel patch :)
 
-> +
-> +	scp->reg_base = scp_cluster->reg_base;
-> +	scp->l1tcm_base = scp_cluster->l1tcm_base;
-> +	scp->l1tcm_size = scp_cluster->l1tcm_size;
-> +	scp->l1tcm_phys = scp_cluster->l1tcm_phys;
-
-
-Fields reg_base, l1tcm_base, l1tcm_size and l1tcm_phy don't belong in the
-mtk_scp struct anymore but in the mtk_scp_of_cluster struct.  With the above
-changes they should be available in the same way.
-
-Thanks,
-Mathieu
-
->  
->  	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "sram");
->  	scp->sram_base = devm_ioremap_resource(dev, res);
-> -	if (IS_ERR(scp->sram_base))
-> -		return dev_err_probe(dev, PTR_ERR(scp->sram_base),
-> -				     "Failed to parse and map sram memory\n");
-> +	if (IS_ERR(scp->sram_base)) {
-> +		dev_err(dev, "Failed to parse and map sram memory\n");
-> +		return ERR_CAST(scp->sram_base);
-> +	}
->  
->  	scp->sram_size = resource_size(res);
->  	scp->sram_phys = res->start;
->  
-> -	/* l1tcm is an optional memory region */
-> -	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "l1tcm");
-> -	scp->l1tcm_base = devm_ioremap_resource(dev, res);
-> -	if (IS_ERR(scp->l1tcm_base)) {
-> -		ret = PTR_ERR(scp->l1tcm_base);
-> -		if (ret != -EINVAL) {
-> -			return dev_err_probe(dev, ret, "Failed to map l1tcm memory\n");
-> -		}
-> -	} else {
-> -		scp->l1tcm_size = resource_size(res);
-> -		scp->l1tcm_phys = res->start;
-> -	}
-> -
-> -	scp->reg_base = devm_platform_ioremap_resource_byname(pdev, "cfg");
-> -	if (IS_ERR(scp->reg_base))
-> -		return dev_err_probe(dev, PTR_ERR(scp->reg_base),
-> -				     "Failed to parse and map cfg memory\n");
-> -
->  	ret = scp->data->scp_clk_get(scp);
->  	if (ret)
-> -		return ret;
-> +		return ERR_PTR(ret);
->  
->  	ret = scp_map_memory_region(scp);
->  	if (ret)
-> -		return ret;
-> +		return ERR_PTR(ret);
->  
->  	mutex_init(&scp->send_lock);
->  	for (i = 0; i < SCP_IPI_MAX; i++)
-> @@ -938,11 +937,7 @@ static int scp_probe(struct platform_device *pdev)
->  		goto remove_subdev;
->  	}
->  
-> -	ret = rproc_add(rproc);
-> -	if (ret)
-> -		goto remove_subdev;
-> -
-> -	return 0;
-> +	return scp;
->  
->  remove_subdev:
->  	scp_remove_rpmsg_subdev(scp);
-> @@ -953,15 +948,13 @@ static int scp_probe(struct platform_device *pdev)
->  		mutex_destroy(&scp->ipi_desc[i].lock);
->  	mutex_destroy(&scp->send_lock);
->  
-> -	return ret;
-> +	return ERR_PTR(ret);
->  }
->  
-> -static void scp_remove(struct platform_device *pdev)
-> +static void scp_free(struct mtk_scp *scp)
->  {
-> -	struct mtk_scp *scp = platform_get_drvdata(pdev);
->  	int i;
->  
-> -	rproc_del(scp->rproc);
->  	scp_remove_rpmsg_subdev(scp);
->  	scp_ipi_unregister(scp, SCP_IPI_INIT);
->  	scp_unmap_memory_region(scp);
-> @@ -970,6 +963,82 @@ static void scp_remove(struct platform_device *pdev)
->  	mutex_destroy(&scp->send_lock);
->  }
->  
-> +static int scp_cluster_init(struct platform_device *pdev)
-> +{
-> +	struct mtk_scp_of_cluster *scp_cluster = platform_get_drvdata(pdev);
-> +	struct list_head *cluster = &scp_cluster->mtk_scp_list;
-> +	struct mtk_scp *scp;
-> +	int ret;
-> +
-> +	scp = scp_rproc_init(pdev, scp_cluster);
-> +	if (IS_ERR(scp))
-> +		return PTR_ERR(scp);
-> +
-> +	ret = rproc_add(scp->rproc);
-> +	if (ret) {
-> +		dev_err(dev, "Failed to add rproc\n");
-> +		scp_free(scp);
-> +		return ret;
-> +	}
-> +
-> +	list_add_tail(&scp->elem, cluster);
-> +
-> +	return 0;
-> +}
-> +
-> +static int scp_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct mtk_scp_of_cluster *scp_cluster;
-> +	struct resource *res;
-> +	int ret;
-> +
-> +	scp_cluster = devm_kzalloc(dev, sizeof(*scp_cluster), GFP_KERNEL);
-> +	if (!scp_cluster)
-> +		return -ENOMEM;
-> +
-> +	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "cfg");
-> +	scp_cluster->reg_base = devm_ioremap_resource(dev, res);
-> +	if (IS_ERR(scp_cluster->reg_base))
-> +		return dev_err_probe(dev, PTR_ERR(scp_cluster->reg_base),
-> +				     "Failed to parse and map cfg memory\n");
-> +
-> +	/* l1tcm is an optional memory region */
-> +	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "l1tcm");
-> +	scp_cluster->l1tcm_base = devm_ioremap_resource(dev, res);
-> +	if (IS_ERR(scp_cluster->l1tcm_base)) {
-> +		ret = PTR_ERR(scp_cluster->l1tcm_base);
-> +		if (ret != -EINVAL)
-> +			return dev_err_probe(dev, ret, "Failed to map l1tcm memory\n");
-> +
-> +		scp_cluster->l1tcm_base = NULL;
-> +	} else {
-> +		scp_cluster->l1tcm_size = resource_size(res);
-> +		scp_cluster->l1tcm_phys = res->start;
-> +	}
-> +
-> +	INIT_LIST_HEAD(&scp_cluster->mtk_scp_list);
-> +	platform_set_drvdata(pdev, scp_cluster);
-> +
-> +	ret = scp_cluster_init(pdev);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return 0;
-> +}
-> +
-> +static void scp_remove(struct platform_device *pdev)
-> +{
-> +	struct mtk_scp_of_cluster *scp_cluster = platform_get_drvdata(pdev);
-> +	struct mtk_scp *scp, *temp;
-> +
-> +	list_for_each_entry_safe_reverse(scp, temp, &scp_cluster->mtk_scp_list, elem) {
-> +		list_del(&scp->elem);
-> +		rproc_del(scp->rproc);
-> +		scp_free(scp);
-> +	}
-> +}
-> +
->  static const struct mtk_scp_of_data mt8183_of_data = {
->  	.scp_clk_get = mt8183_scp_clk_get,
->  	.scp_before_load = mt8183_scp_before_load,
-> -- 
-> 2.18.0
-> 
+Then how about just asking for that? "Hello submitter, please send a
+v2 with a detailed summary of the problem being solved for those of us
+who are not familiar with it, thank you"
