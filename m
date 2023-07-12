@@ -2,82 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA2977514D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 01:57:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D3DC7514D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 01:57:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233096AbjGLX5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 19:57:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57730 "EHLO
+        id S233122AbjGLX5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 19:57:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233082AbjGLX5k (ORCPT
+        with ESMTP id S231853AbjGLX5k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 12 Jul 2023 19:57:40 -0400
-Received: from out-38.mta0.migadu.com (out-38.mta0.migadu.com [IPv6:2001:41d0:1004:224b::26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 843601720;
-        Wed, 12 Jul 2023 16:57:39 -0700 (PDT)
-Date:   Wed, 12 Jul 2023 19:57:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1689206257;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ntdiH/9sZyPkX/RAlGtOauWZ/h52hcGnhVXlBm1OLYc=;
-        b=FaqRzEurnql+rDFATLUYd/x9WAFOzSdHEuehQScMYfjIAqc3d1FAiOHkdy47VU+Nv5Y0w8
-        kiTq+YqHDxKpNWR26v0707KjUtWeTjYjOBEXpkdds2y0JqiDQhYpNi2qRCmtzCBPpPrctC
-        ws/HVv/J5q+UyVNpXv1b3bYgCRzSFAU=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
-        dchinner@redhat.com, sandeen@redhat.com, willy@infradead.org,
-        josef@toxicpanda.com, tytso@mit.edu, bfoster@redhat.com,
-        jack@suse.cz, andreas.gruenbacher@gmail.com, brauner@kernel.org,
-        peterz@infradead.org, akpm@linux-foundation.org,
-        dhowells@redhat.com, snitzer@kernel.org
-Subject: Re: [GIT PULL] bcachefs
-Message-ID: <20230712235731.l47sxuhfeonygciv@moria.home.lan>
-References: <20230626214656.hcp4puionmtoloat@moria.home.lan>
- <20230706155602.mnhsylo3pnief2of@moria.home.lan>
- <20230712025459.dbzcjtkb4zem4pdn@moria.home.lan>
- <20230712221012.GA11431@frogsfrogsfrogs>
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC8161FC9
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 16:57:38 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id 46e09a7af769-6b9610b8a64so68593a34.3
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 16:57:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1689206258; x=1691798258;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=w48DGD9rzIYkzJBQTh6OIxxXx9CGgucCjaW9OKrfELw=;
+        b=dZNheAfiCySsh2SaF2XcW+MMtkBXzAtYE1bKH9YhwIV5aznEQU+CjZeCa77zb9yIk6
+         qG+SrhnIMvWxK7E7LJBxvt7kKYojgedSKLDV175irtZzmYSzdjxrNR/orOxNwsksjvXf
+         GDMRbGW9fLNbDSM+t3gp6eKGlvp16V9gJTJZ6uT9KJBkGxPNxs9avkoNwrmJ6V9aLc6T
+         WfD5p0qtqYKkvHFwuvXwBDY0D/CSjiNJn7J8dSA2CKs095u3oYzL0q4Cvz5tIaiRrOT3
+         gRxMAUo38ckigMsyz9+7UyLvXeSyTkAho0dZS5xKm5199rXgmqJgmB2X2XuqQVPPGFxq
+         1MDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689206258; x=1691798258;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=w48DGD9rzIYkzJBQTh6OIxxXx9CGgucCjaW9OKrfELw=;
+        b=PzzIRwLdmfg95hz88RU5XCK/abiMCTn+hFjxKvqKZe+IO8BCLqacw/aAt9NqnBeQIj
+         ZSlUviXTfjQ32J4VyvBJfeHr/vStRypzt9XjHd5hzu+FaG/yVIsrGFfOQdsEz7JbtZoQ
+         c3CgMQUuHPST+TU4q4kpP5Sag7weqWA9sh80/n/bLMsRu3n0EjF3QQRK53bIRIHwOYKf
+         fjVZGNH4dCVCxACAx/3ocEofrqGsvMdVCSUoWWFyLX+VGz0Z9fHBJ5CiCwA5sWJ5tKqx
+         8B1m3j0HZI0jmFK2yiDRKqL0pR+nPJ7IU6ppScTDsPxYAkxUHn5DKk6URaYSImIb3X53
+         Zg+Q==
+X-Gm-Message-State: ABy/qLYaFHmf4N1a1usP8YQMSzdlh5Esd+7FBxD21+0ASbK5ZoCBHrIz
+        uZyPehbgEHnyNKfxKTmYLX312w==
+X-Google-Smtp-Source: APBJJlHj3zv5+y0d8YqMlYnepQ1WLcvsZHbqObTNCneoz62gOcAbi9uLTi3aOdJ7p2PueOx0bKfwWQ==
+X-Received: by 2002:a05:6870:7309:b0:1b3:c39a:7c34 with SMTP id q9-20020a056870730900b001b3c39a7c34mr397690oal.25.1689206258019;
+        Wed, 12 Jul 2023 16:57:38 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-25-194.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.25.194])
+        by smtp.gmail.com with ESMTPSA id i14-20020a17090acf8e00b0026596b8f33asm8834060pju.40.2023.07.12.16.57.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Jul 2023 16:57:37 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1qJjiB-000gjk-N4;
+        Wed, 12 Jul 2023 20:57:35 -0300
+Date:   Wed, 12 Jul 2023 20:57:35 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Mina Almasry <almasrymina@google.com>
+Cc:     David Ahern <dsahern@kernel.org>,
+        Samiullah Khawaja <skhawaja@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jesper Dangaard Brouer <jbrouer@redhat.com>,
+        brouer@redhat.com, Alexander Duyck <alexander.duyck@gmail.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
+        pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        hariprasad <hkelam@marvell.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Shayne Chen <shayne.chen@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Kalle Valo <kvalo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        logang@deltatee.com, Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: Memory providers multiplexing (Was: [PATCH net-next v4 4/5]
+ page_pool: remove PP_FLAG_PAGE_FRAG flag)
+Message-ID: <ZK8978wUKKP3/zIW@ziepe.ca>
+References: <ZK1FbjG+VP/zxfO1@ziepe.ca>
+ <20230711090047.37d7fe06@kernel.org>
+ <04187826-8dad-d17b-2469-2837bafd3cd5@kernel.org>
+ <20230711093224.1bf30ed5@kernel.org>
+ <CAHS8izNHkLF0OowU=p=mSNZss700HKAzv1Oxqu2bvvfX_HxttA@mail.gmail.com>
+ <20230711133915.03482fdc@kernel.org>
+ <2263ae79-690e-8a4d-fca2-31aacc5c9bc6@kernel.org>
+ <CAHS8izP=k8CqUZk7bGUx4ctm4m2kRC2MyEJv+N4+b0cHVkTQmA@mail.gmail.com>
+ <ZK6kOBl4EgyYPtaD@ziepe.ca>
+ <CAHS8izNuda2DXKTFAov64F7J2_BbMPaqJg1NuMpWpqGA20+S_Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230712221012.GA11431@frogsfrogsfrogs>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <CAHS8izNuda2DXKTFAov64F7J2_BbMPaqJg1NuMpWpqGA20+S_Q@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 03:10:12PM -0700, Darrick J. Wong wrote:
-> On Tue, Jul 11, 2023 at 10:54:59PM -0400, Kent Overstreet wrote:
-> >  - Also: not directly related to upstreaming, but relevant for the
-> >    community: we talked about getting together a meeting with some of
-> >    the btrfs people to gather design input, ideas, and lessons learned.
-> 
-> Please invite me too! :)
-> 
-> Granted XFS doesn't do multi-device support (for large values of
-> 'multi') but now that I've spent 6 years of my life concentrating on
-> repairability for XFS, I might have a few things to say about bcachefs.
+On Wed, Jul 12, 2023 at 01:16:00PM -0700, Mina Almasry wrote:
 
-Absolutely!
+> The proposal was that the uapi in step #1 allocates a region of GPU
+> memory, and sets up a p2pdma provider for this region of memory.
 
-Maybe we could start brainstorming ideas to cover now, on the list? I
-honestly know XFS so little (I've read code here and there, but I don't
-know much about the high level structure) that I wouldn't know where to
-start.
+Honestly that feels too hacky, which is why I've said a few times
+you'd actually need to integrate p2p pages into a DRM driver properly.
 
-Filesystems are such a huge world of "oh, that would've made my life so
-much easier if I'd had that idea at the right time..."
+> 2. The p2pdma semantics seem to be global to the pci device. I.e., 1
+> GPU can export 1 p2pdma resource at a time (the way I'm reading the
+> API).
 
-> That is if I can shake off the torrent of syzbot crap long enough to
-> read anything in bcachefs.git. :(
+All of this is just a reflection that you are trying to use it in a
+wrong hacky way. The driver is supposed to create a p2p registration
+for its entire BAR at startup. Not on demand and not in fragments.
 
-:(
+Jason
