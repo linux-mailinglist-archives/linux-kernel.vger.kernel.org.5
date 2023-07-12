@@ -2,88 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8F9B7510C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 20:53:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71CD67510C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 20:54:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231893AbjGLSxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 14:53:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45998 "EHLO
+        id S231975AbjGLSyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 14:54:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbjGLSxu (ORCPT
+        with ESMTP id S229610AbjGLSyf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 14:53:50 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 208811993;
-        Wed, 12 Jul 2023 11:53:48 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-51452556acdso5092881a12.2;
-        Wed, 12 Jul 2023 11:53:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689188027; x=1691780027;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LLqzrNbP1vGUJ3OFTl9cGZWimtLx1fVpXRCMSqCEbU4=;
-        b=XA3Vl02j1f2uF3B1CdoVQFPL4RysVR28DRd+2vH7sNUPUxLbMXAeJZITMlSMUT7SxB
-         3bPK2zPxQqSSuiH45o2fRp4L8v/8fwS8TiZs2WOwg2C2dH3Va8iBoxsEsrhm+5QlBetZ
-         Nh0LoETIXcy/FDyovB3cJUK4NMILYflp4j7/7he5QwY+l3RcdPYxnq8vnG2n7XyDbeMv
-         6wHHLDeDfZalZRBBmVivhLeWf5oYhRUIRKD/BD8Zm3SO7+dwwzFFmKvZO8A7JzeDciN0
-         JSyFICkrZuyIGhpVH01BqprI/2qzYEzneOLCPyw5rgxqX3mL2NmAFDWOi5jE9PdkQVjV
-         jybQ==
+        Wed, 12 Jul 2023 14:54:35 -0400
+Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com [209.85.210.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B33C1BF8
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 11:54:34 -0700 (PDT)
+Received: by mail-ot1-f69.google.com with SMTP id 46e09a7af769-6b75210454eso8394088a34.2
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 11:54:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689188027; x=1691780027;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LLqzrNbP1vGUJ3OFTl9cGZWimtLx1fVpXRCMSqCEbU4=;
-        b=KZrPugSbiLiwBOz6oHtgMJYu/Pmr74/B7UM7pVeC9Al97yMVZEymUWMHRF+P5AG8Wp
-         jk1AcWMMNke4S077SpfUC4Kn2Z5nQvsmLyN+Mzx+czXUXa+Dxg2CUhu13lGRJHxcZANL
-         vRqW9vC39yzk4SzOR2OSA75K0OcjVjAovC1MNXm2yVm9CQ2VZde54Ww81TiklUMoz5gH
-         xfePKvQnV1Ik4mxhxE5PW4Csc9OlmVeHYy7vn9pjisCUBipo5mH00Wcq1cdN/dE8qLcI
-         zYI9jltBO9f7AhBY3nAAy3xNTMhul4BM2rcbwHo7/Wv2YkJYANongXWrkf8ERoDVqQud
-         oYuQ==
-X-Gm-Message-State: ABy/qLYcevDi5qhYe+qEln0KpvaLuY+WPOmDNrmK+K4z8Fzb5TtcGNHt
-        CtFF4tJxAv3ZyJmzvx4jFY0=
-X-Google-Smtp-Source: APBJJlGIkjpzhylvj82gBarRk2ZFBgxt8s1WVJGnekOFZMFvTh1pJi8sPb1j+dLb3cb6kYfOD8SF1Q==
-X-Received: by 2002:a17:90b:3b41:b0:263:43c6:69ac with SMTP id ot1-20020a17090b3b4100b0026343c669acmr14503536pjb.44.1689188027373;
-        Wed, 12 Jul 2023 11:53:47 -0700 (PDT)
-Received: from google.com ([2620:15c:9d:2:a606:1b1e:7f66:3ee0])
-        by smtp.gmail.com with ESMTPSA id 30-20020a17090a191e00b002640b7073cfsm11079277pjg.14.2023.07.12.11.53.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Jul 2023 11:53:46 -0700 (PDT)
-Date:   Wed, 12 Jul 2023 11:53:43 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@linaro.org>
-Subject: Re: [PATCH v2] Input: bcm-keypad - Correct dev_err_probe() error
-Message-ID: <ZK72t3wtm8BhYCL0@google.com>
-References: <20230711072449.43569-1-krzysztof.kozlowski@linaro.org>
+        d=1e100.net; s=20221208; t=1689188073; x=1691780073;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iZMH+f/qQs35ft7PcSxeJWZ8yv3i3Olk8Bn6x6Aux/0=;
+        b=c+ICq5CoXZxNO0v0G8NQRLyOKlxhX0DaqvKtQFcK+h1UavilUzge0sf9pufeVL0PJS
+         wCvaRXtDZuhW2pBYdKphK2P+Sju4OOrOYpiyKzwwPc8FNvSPzuHc4JYobKlFSO1wuhYt
+         T5vVY+t+QXHvr3xKD1YcbEtEiOneQDu0DoF5Yhqk44lBVNHhs2qwYoc3MlPo4rQ13nsT
+         0F11LnIIYbPsHbG6dyXulh6uABcNZNT9hR0h4loH267Gtf5ZRygeLQOYOF+1CIxHXljJ
+         R6zXdC6U1dV4DwHee2alaIK1bg00THUNa+4TXEeOAAeko4ffHVhVV6JU+CTW6+HNWga8
+         PXzw==
+X-Gm-Message-State: ABy/qLaP1RkHV4KU7iVCybVm4HsgHN11Qq7DoP6Rv1DWL6KMqIhv3Fdc
+        tQmNO/VCom4rnJQVb7k3yxx0qviEHldYRTfeeBn1E/pOHDE3
+X-Google-Smtp-Source: APBJJlFsJIcb0rdx4JjgRS1wq5NhoTjU9MPmFzmv1EP3Vle1AIKr62xgl7dheKEiVE6GkXdOnIQBkcJkfp2R0puLgy6N5pzwWkeT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230711072449.43569-1-krzysztof.kozlowski@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FSL_HELO_FAKE,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6830:2056:b0:6af:a3de:5d26 with SMTP id
+ f22-20020a056830205600b006afa3de5d26mr6113119otp.7.1689188073476; Wed, 12 Jul
+ 2023 11:54:33 -0700 (PDT)
+Date:   Wed, 12 Jul 2023 11:54:33 -0700
+In-Reply-To: <000000000000881d0606004541d1@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001416bb06004ebf53@google.com>
+Subject: Re: [syzbot] [fs?] INFO: task hung in pipe_release (4)
+From:   syzbot <syzbot+f527b971b4bdc8e79f9e@syzkaller.appspotmail.com>
+To:     bpf@vger.kernel.org, brauner@kernel.org, davem@davemloft.net,
+        dhowells@redhat.com, dsahern@kernel.org, edumazet@google.com,
+        kuba@kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        pabeni@redhat.com, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 11, 2023 at 09:24:49AM +0200, Krzysztof Kozlowski wrote:
-> Pass proper PTR_ERR as dev_err_probe() argument.
-> 
-> Fixes: a2c795b696b2 ("Input: bcm-keypad - simplify with dev_err_probe()")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> Closes: https://lore.kernel.org/r/202306261505.wTjCXRIO-lkp@intel.com/
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+syzbot has bisected this issue to:
 
-Applied, thank you.
+commit 7ac7c987850c3ec617c778f7bd871804dc1c648d
+Author: David Howells <dhowells@redhat.com>
+Date:   Mon May 22 12:11:22 2023 +0000
 
--- 
-Dmitry
+    udp: Convert udp_sendpage() to use MSG_SPLICE_PAGES
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15853bcaa80000
+start commit:   3f01e9fed845 Merge tag 'linux-watchdog-6.5-rc2' of git://w..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=17853bcaa80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=13853bcaa80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=150188feee7071a7
+dashboard link: https://syzkaller.appspot.com/bug?extid=f527b971b4bdc8e79f9e
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12a86682a80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1520ab6ca80000
+
+Reported-by: syzbot+f527b971b4bdc8e79f9e@syzkaller.appspotmail.com
+Fixes: 7ac7c987850c ("udp: Convert udp_sendpage() to use MSG_SPLICE_PAGES")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
