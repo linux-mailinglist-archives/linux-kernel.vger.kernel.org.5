@@ -2,117 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17D65751113
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 21:19:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3A0E751122
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 21:24:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232509AbjGLTTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 15:19:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54454 "EHLO
+        id S231703AbjGLTYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 15:24:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230108AbjGLTTO (ORCPT
+        with ESMTP id S229775AbjGLTYc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 15:19:14 -0400
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 711FA198A;
-        Wed, 12 Jul 2023 12:19:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689189553; x=1720725553;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=erSspT/giTSCdU16BhFoAH7WAi6laQ6iA2u5zYWC5ak=;
-  b=QHnCpdE6VH4DihqE+8KDaAc03BHYLz0LGMtNEQLxVkdJ0wA5hnAIA+2k
-   n46QJfQxQjaHL7lwtjK0wvszOiFoX5d4a/gy6IjumS/52+FJYkAY4r44l
-   CljVD5TKyYXQ1M8OVbVXzD6iBQi70dXJQoZ+gwM9XxySca2ugM4X0XtBZ
-   zmeU/FAMn01md8N/KcRbBvKraUQ58aCbLgUH8sXLdtHiBNywji1L7rVLD
-   q25vx4F7ZGl+n1wT1NzSgZh7LepCICToHl+KbLXxSylDwvWPsUX1mUwBX
-   M5qqzn1bjaGOf62S9z/wnPQqFCljDAAtqwY58t3TCvVGxPkpboZFqIzpj
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10769"; a="362448803"
-X-IronPort-AV: E=Sophos;i="6.01,200,1684825200"; 
-   d="scan'208";a="362448803"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2023 12:19:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10769"; a="895731592"
-X-IronPort-AV: E=Sophos;i="6.01,200,1684825200"; 
-   d="scan'208";a="895731592"
-Received: from averypay-mobl1.amr.corp.intel.com (HELO [10.212.212.40]) ([10.212.212.40])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2023 12:19:12 -0700
-Message-ID: <c29cb23b-d14c-4449-2881-5b2d3f9e7a74@linux.intel.com>
-Date:   Wed, 12 Jul 2023 12:19:12 -0700
+        Wed, 12 Jul 2023 15:24:32 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEEF91FC1
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 12:24:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=O16k4ERFhKKBwUEBI7XcEyTdhUjgEwm/QTrfI/pamUE=; b=eUDq5XQTO9lRKZbSyieaL+36WO
+        w/WxepjZ6f4zvhD7UgIQ0aOrMhjuHihrgfNRcWZYNTvUiY21JQAUwWIm6xmJAeEd6ioBloO33La6Q
+        tI85cz/rOmfh+PJh5+7JdtpcAu/nlLorCmVoSzT5SjjpXruEuTbXXfNMmVgIdKMaIQ+O6xQMO/DBr
+        5b4ryxSDVd6VsgeeqVRKy0sCoO8E1Gh1d3PxoIdHbuYxcx825DlG2el8RhXWewXO5/lRMtQkznes9
+        fxnK+U+KAA8eEwTKXXt07aOBNPdsNkW5+U/n76cvArGWWzQxiDObF6xbp4y2wzj5tOmNYHaqLiVbU
+        7I6tqIew==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44032)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qJfRo-0004P0-0d;
+        Wed, 12 Jul 2023 20:24:24 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qJfRl-0005Kz-El; Wed, 12 Jul 2023 20:24:21 +0100
+Date:   Wed, 12 Jul 2023 20:24:21 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     shijie001@208suo.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ARM: mm: Fix warnings in context.c
+Message-ID: <ZK795eVoadj/wARO@shell.armlinux.org.uk>
+References: <tencent_B7B25B0AACAECB0523A2B09F270CF97BFF07@qq.com>
+ <60fb2068b0ee6ce2a67333c81ccd2f6b@208suo.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [PATCH 01/10] x86/tdx: Zero out the missing RSI in TDX_HYPERCALL
- macro
-Content-Language: en-US
-To:     Kai Huang <kai.huang@intel.com>, peterz@infradead.org,
-        kirill.shutemov@linux.intel.com, linux-kernel@vger.kernel.org
-Cc:     dave.hansen@intel.com, tglx@linutronix.de, bp@alien8.de,
-        mingo@redhat.com, hpa@zytor.com, x86@kernel.org, seanjc@google.com,
-        pbonzini@redhat.com, kvm@vger.kernel.org, isaku.yamahata@intel.com
-References: <cover.1689151537.git.kai.huang@intel.com>
- <2d821f2c32e6cdca252a80451f38429ef49b6984.1689151537.git.kai.huang@intel.com>
-From:   Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <2d821f2c32e6cdca252a80451f38429ef49b6984.1689151537.git.kai.huang@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <60fb2068b0ee6ce2a67333c81ccd2f6b@208suo.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/12/23 1:55 AM, Kai Huang wrote:
-> In the TDX_HYPERCALL asm, after the TDCALL instruction returns from the
-> untrusted VMM, the registers that the TDX guest shares to the VMM need
-> to be cleared to avoid speculative execution of VMM-provided values.
+On Wed, Jul 12, 2023 at 05:06:32PM +0800, shijie001@208suo.com wrote:
+> The following checkpatch warning is removed:
+> WARNING: Use #include <linux/mmu_context.h> instead of <asm/mmu_context.h>
 > 
-> RSI is specified in the bitmap of those registers, but it is missing
-> when zeroing out those registers in the current TDX_HYPERCALL.
-> 
-> It was there when it was originally added in commit 752d13305c78
-> ("x86/tdx: Expand __tdx_hypercall() to handle more arguments"), but was
-> later removed in commit 1e70c680375a ("x86/tdx: Do not corrupt
-> frame-pointer in __tdx_hypercall()"), which was correct because %rsi is
-> later restored in the "pop %rsi".  However a later commit 7a3a401874be
-> ("x86/tdx: Drop flags from __tdx_hypercall()") removed that "pop %rsi"
-> but forgot to add the "xor %rsi, %rsi" back.
-> 
-> Fix by adding it back.
-> 
-> Fixes: 7a3a401874be ("x86/tdx: Drop flags from __tdx_hypercall()")
-> Signed-off-by: Kai Huang <kai.huang@intel.com>
+> Signed-off-by: Jie Shi <shijie001@208suo.com>
 > ---
-
-Looks fine to me.
-
-Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-
->  arch/x86/coco/tdx/tdcall.S | 1 +
->  1 file changed, 1 insertion(+)
+>  arch/arm/mm/context.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/arch/x86/coco/tdx/tdcall.S b/arch/x86/coco/tdx/tdcall.S
-> index b193c0a1d8db..2eca5f43734f 100644
-> --- a/arch/x86/coco/tdx/tdcall.S
-> +++ b/arch/x86/coco/tdx/tdcall.S
-> @@ -195,6 +195,7 @@ SYM_FUNC_END(__tdx_module_call)
->  	xor %r10d, %r10d
->  	xor %r11d, %r11d
->  	xor %rdi,  %rdi
-> +	xor %rsi,  %rsi
->  	xor %rdx,  %rdx
->  
->  	/* Restore callee-saved GPRs as mandated by the x86_64 ABI */
+> diff --git a/arch/arm/mm/context.c b/arch/arm/mm/context.c
+> index 4204ffa2d104..c84ad6c786e7 100644
+> --- a/arch/arm/mm/context.c
+> +++ b/arch/arm/mm/context.c
+> @@ -13,7 +13,7 @@
+>  #include <linux/smp.h>
+>  #include <linux/percpu.h>
+> 
+> -#include <asm/mmu_context.h>
+> +#include <linux/mmu_context.h>
+>  #include <asm/smp_plat.h>
+>  #include <asm/thread_notify.h>
+>  #include <asm/tlbflush.h>
+> 
+
+Probably haven't noticed, but linux/ includes are all grouped together,
+and asm/ includes are all grouped together. Please keep that.
+
+Also, is it really a necessary change, when arch/arm/mm/context.c is
+only implementing the interfaces provided by asm/mmu_context.h? I think
+the warning is wrong in this case and should never be fixed as things
+currently stand.
 
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
