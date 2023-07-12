@@ -2,102 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84CBB75112B
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 21:25:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DA4E75112E
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 21:26:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232229AbjGLTZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 15:25:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55738 "EHLO
+        id S232130AbjGLT0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 15:26:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231602AbjGLTZi (ORCPT
+        with ESMTP id S231144AbjGLT0G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 15:25:38 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 506781FC1
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 12:25:37 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9891c73e0fbso250394566b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 12:25:37 -0700 (PDT)
+        Wed, 12 Jul 2023 15:26:06 -0400
+Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FEE61FC1;
+        Wed, 12 Jul 2023 12:26:05 -0700 (PDT)
+Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-57764a6bf8cso84174327b3.3;
+        Wed, 12 Jul 2023 12:26:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689189936; x=1691781936;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qlC2xd+LWkAw6VtZI/SCBHO2xi/vQf/CwDed84n3xeQ=;
-        b=lTzQAFm0UwnXd24PWylRYpcU0F457aHyP9KciWJkMJEWnnNM1CDllzQ4uWcH8EfUQv
-         cbZrg8V55iXV0C8nY+uTF7hJl5aPxJnjV9T0geZilx5Ca0xXAKbU8yDrCIYeYYezeCTD
-         LnK9GtarHRZDKWRyLhJztJPJDs+bfLXXFymXnErXhGDmgjYgkmbbsy/yjPESTQGA3IC6
-         vPSBfHKsAR+Iq642bz+6uTsci/xNYrGfUkpeK2n05ltckLJGjCXRJl8BxhYPr4qqUNuo
-         TvOd0aQSG1GkKzUTsXpwujhkrVkL1VFqLHYH/P+us70BQ1E3IzzJGKKGQjUMsylhYQgF
-         MJQw==
+        d=gmail.com; s=20221208; t=1689189964; x=1691781964;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=k3NLC7atfJJsYoIzJOjRPYIOxthVMt03n8zToq5Ub4E=;
+        b=jIla5nm+kACeRc+UraotMgVfcbmtdX9GwY5VRaIBkEkWPY3pt3FzaVQHXs9YMLQxZI
+         GarJgLxvGDjevNEr7RLpxGvpJ5+ltqEDgegwPmlo6T3oFU61s+pR30IZkdDieosK9wdS
+         iiSmlXsAq/V7C8Fqb6PDpSK+24NXqIZOIjodYagtAlZPBDEVSkAoQO7lIVtGic2MIhQ4
+         yrrNUEsElywTo8MtMkPXzr7VK/LKV9CZQSbZgk82qoF3V5eFOoXIhc1pPkjCUDFa0sNf
+         QomTc1hb1mkbau105cZ1AeRKMUKcrMVnqruOMu5x7Ucqz0WbnWb4tmy11LkICwqnKDiT
+         /dkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689189936; x=1691781936;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qlC2xd+LWkAw6VtZI/SCBHO2xi/vQf/CwDed84n3xeQ=;
-        b=aOm7i/WxQejKkht2iRxUHxBkk/8LrJrCIt/yvRGyksITDJuPPixLilMpT4u8waHScr
-         6z4fuGgNaOOd+Z7MbLYZOh4LipfflZloILUQ5yAiWvUfjsSHR8fgfxZhpnntqAnzlprs
-         GG6GC6qggfVOYdASX8mQ5Q/5dK+72zs4S5AO9FJnv25j2s2xfaqEOKb3L4H94Z203u3T
-         XIaXbG0HCcqiqwj6J63pl5QXpcx3KKuhBt1sEXXzlqE/qEZO9lgyVd7oo1QtVudI71uG
-         smJsyqfyBTg8eCHvgEOaRh3khACYa3i10LES2fHinptSpScl3jElv0EureLZcEBkGSws
-         19PQ==
-X-Gm-Message-State: ABy/qLZ8pAjOFcLk8//ZEQHg/Ev5b8yQgTD+nWCum6BqwIJusOMS8lkG
-        2r2+ngJrVM4Q/Wdh5O0X1k4x5A==
-X-Google-Smtp-Source: APBJJlGsZdGD7bEjsV+5Ybs5t0WWeawP39YFnwraXzAZG+K1Jg6V4qqvtL+9S5NUbMA6Ge3qBEZgnA==
-X-Received: by 2002:a17:906:1053:b0:992:8d96:4de3 with SMTP id j19-20020a170906105300b009928d964de3mr4213382ejj.24.1689189935773;
-        Wed, 12 Jul 2023 12:25:35 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id b19-20020a170906661300b009920e9a3a73sm2929510ejp.115.2023.07.12.12.25.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 Jul 2023 12:25:35 -0700 (PDT)
-Message-ID: <aa05bcd6-140d-d951-2c7f-c09abf7f49f7@linaro.org>
-Date:   Wed, 12 Jul 2023 21:25:33 +0200
+        d=1e100.net; s=20221208; t=1689189964; x=1691781964;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=k3NLC7atfJJsYoIzJOjRPYIOxthVMt03n8zToq5Ub4E=;
+        b=aFHtQ0IA+gNXlDni6VmaRHVmYNr2Z2KomIZPcEPMZhRnlM5rf8JYBZ0XKjDGSYRQIv
+         B4018iKdj/OsfjuaFw5D3NPxoI7uC9LKc7iDIxc1l+HA+l2TMw2YQVsOuAxRJrfgJ0JD
+         w8Jj3QLQvXsDNQOaMqkDTUj5WprMLVwrQbhYFmW17a0u09NQNVxgJwRRxVvFPuo7Q4D+
+         Fkkjw37U/1pj6Q2yyrmsO1eqygIGQYmZp7n36h9BrpaiCBvxfUnUnRET54RgbWWcWpXK
+         QFPKOJHy82VNtx3FpB3xFRSXaT+Hl4tIVdcuENQVqir7+h3d8OkuQEnkiQg08H6ygH41
+         fwKw==
+X-Gm-Message-State: ABy/qLYBfe5RIgpP7FsCJYXLX45MU4h4mbozifs54pCyu7lGM3VSffCz
+        89BAASVIqsl3qt1Fxbrh6HjD781opxam2mN09pPQOh8XaZozng==
+X-Google-Smtp-Source: APBJJlGvTEroD7+OVZ6alFtQq/nLKt30xH0xv5++6k9See/OnfymBucoDonuQ4Oy8u8/k1Fl4JwVSz1K1S50lY8gG+A=
+X-Received: by 2002:a0d:e8d3:0:b0:570:8856:5dbc with SMTP id
+ r202-20020a0de8d3000000b0057088565dbcmr20120192ywe.41.1689189964551; Wed, 12
+ Jul 2023 12:26:04 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 4/4] ARM: multi_v7_defconfig: Add SCMI regulator support
-Content-Language: en-US
-To:     p.paillet@foss.st.com, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        Alexander Stein <alexander.stein@ew.tq-group.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Etienne Carriere <etienne.carriere@foss.st.com>
-References: <20230712142432.1885162-1-p.paillet@foss.st.com>
- <20230712142432.1885162-5-p.paillet@foss.st.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230712142432.1885162-5-p.paillet@foss.st.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230712144429.2845940-1-azeemshaikh38@gmail.com>
+ <3034082b-4ec8-2a8d-35a2-2551e9feef34@roeck-us.net> <202307121100.A6E650B@keescook>
+In-Reply-To: <202307121100.A6E650B@keescook>
+From:   Azeem Shaikh <azeemshaikh38@gmail.com>
+Date:   Wed, 12 Jul 2023 15:25:53 -0400
+Message-ID: <CADmuW3WfOwAD2MLmNkua5d3Tzjh3RWDSjZomQ_Tu6ucJ+B+bqA@mail.gmail.com>
+Subject: Re: [PATCH] hwmon: Remove strlcpy occurences
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        linux-hardening@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jean Delvare <jdelvare@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/07/2023 16:24, p.paillet@foss.st.com wrote:
-> From: Pascal Paillet <p.paillet@foss.st.com>
-> 
-> Enable ARM SCMI regulator support.
-> 
+On Wed, Jul 12, 2023 at 2:04=E2=80=AFPM Kees Cook <keescook@chromium.org> w=
+rote:
+>
+> On Wed, Jul 12, 2023 at 08:16:39AM -0700, Guenter Roeck wrote:
+> > On 7/12/23 07:44, Azeem Shaikh wrote:
+> > > [...]
+> > > +   len =3D strlen(result);
+> > >     return simple_read_from_buffer(buf, count, ppos, tbuf, len);
+> >
+> > This still copies tbuf, meaning all those constant strings won't actual=
+ly
+> > be reported.
+>
+> Ah dang, thanks for catching that. Yeah, "tbuf" should be replaced by
+> "result" in the simple_read_from_buffer().
+>
 
-This we see from the diff. Please explain why, e.g. which boards use it.
-
-Best regards,
-Krzysztof
-
+Thanks for review folks, will send out a v2 shortly.
