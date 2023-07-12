@@ -2,85 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBE52751082
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 20:28:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C51FB75108E
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 20:32:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232721AbjGLS15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 14:27:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38870 "EHLO
+        id S233027AbjGLScF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 14:32:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233050AbjGLS1z (ORCPT
+        with ESMTP id S232948AbjGLSb4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 14:27:55 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D341CDC;
-        Wed, 12 Jul 2023 11:27:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=u0DMZJiVIf563aqVx60BkXx3lve5bk9ZgOTpPvU5Mu0=; b=EoK+8bj1c8leE24XB6sfrjwrsO
-        Af4oBayvGsRkwBvQmKmyZRkTUug4T5dPHblMRemI0875e+dzC2CVMgL9EO9DesFx4y88EgBTXqOJd
-        cGC0WyVn+NSfhKEKrqri6eginv0tON5ut4P3TXarqd5krV6Y1HtP4gGgjAhE6Iha0h+wfTqKX7NVl
-        NA10OSiuCRvhJGN1yKiBtKoZ9cusy/DMfficR0YYNMRrZSSWHg2yuCPazfyuETExvIXJCCKccwxTn
-        /ibjxC35fSDl1xxM05sJY6PJTba6Hqp6Kv7njid7grNibyue+pGqL53uK+hUd0zhz0YOHKRyCFaNQ
-        kyHMCvrQ==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qJeZ6-000tN5-0m;
-        Wed, 12 Jul 2023 18:27:52 +0000
-Date:   Wed, 12 Jul 2023 11:27:52 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Minjie Du <duminjie@vivo.com>
-Cc:     Jiri Slaby <jirislaby@kernel.org>,
-        Nick Kossifidis <mickflemm@gmail.com>,
-        Kalle Valo <kvalo@kernel.org>,
-        "open list:ATHEROS ATH5K WIRELESS DRIVER" 
-        <linux-wireless@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        opensource.kernel@vivo.com
-Subject: Re: [PATCH v1] drivers: wireless: ath5k: fix parameter check in
- ath5k_debug_init_device
-Message-ID: <ZK7wqH86hEswxGo6@bombadil.infradead.org>
-References: <20230712124259.15096-1-duminjie@vivo.com>
+        Wed, 12 Jul 2023 14:31:56 -0400
+Received: from smtp-fw-52004.amazon.com (smtp-fw-52004.amazon.com [52.119.213.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05827DC;
+        Wed, 12 Jul 2023 11:31:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1689186715; x=1720722715;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=NUM+SsTWU9wvHoPzLXfvOsVyQM5ZYPYAOL7pyHpyzkM=;
+  b=NqvxwxwUkq6h6SY59/00ZVcvTXfK0G6ZUHrVhoTaClKEWhWtmjO0hrNj
+   eVX8lmFhSzzl0urPd+frxxxUxlQXiJiA1iz/85fE/eQaZwuidJ1pOp4w2
+   HLWZZxcPTFbK2uTy6jV8ly7qnoYWo287Am+PGV5Y2dg6t3XEm8BKEM4VS
+   c=;
+X-IronPort-AV: E=Sophos;i="6.01,200,1684800000"; 
+   d="scan'208";a="142361311"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-iad-1a-m6i4x-bbc6e425.us-east-1.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-52004.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2023 18:31:53 +0000
+Received: from EX19MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-iad-1a-m6i4x-bbc6e425.us-east-1.amazon.com (Postfix) with ESMTPS id 423CB806BF;
+        Wed, 12 Jul 2023 18:31:52 +0000 (UTC)
+Received: from EX19D002ANA003.ant.amazon.com (10.37.240.141) by
+ EX19MTAUWB001.ant.amazon.com (10.250.64.248) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Wed, 12 Jul 2023 18:31:51 +0000
+Received: from b0f1d8753182.ant.amazon.com (10.106.83.21) by
+ EX19D002ANA003.ant.amazon.com (10.37.240.141) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Wed, 12 Jul 2023 18:31:47 +0000
+From:   Takahiro Itazuri <itazur@amazon.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, <x86@kernel.org>,
+        "H . Peter Anvin" <hpa@zytor.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Takahiro Itazuri <zulinx86@gmail.com>,
+        Takahiro Itazuri <itazur@amazon.com>
+Subject: [PATCH] KVM: pass through CPUID 0x80000005
+Date:   Wed, 12 Jul 2023 19:31:36 +0100
+Message-ID: <20230712183136.85561-1-itazur@amazon.com>
+X-Mailer: git-send-email 2.38.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230712124259.15096-1-duminjie@vivo.com>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.106.83.21]
+X-ClientProxiedBy: EX19D033UWA002.ant.amazon.com (10.13.139.10) To
+ EX19D002ANA003.ant.amazon.com (10.37.240.141)
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 08:42:59PM +0800, Minjie Du wrote:
-> Make IS_ERR() judge the debugfs_create_dir() function return
-> in ath5k_debug_init_device().
-> 
-> Signed-off-by: Minjie Du <duminjie@vivo.com>
-> ---
->  drivers/net/wireless/ath/ath5k/debug.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/wireless/ath/ath5k/debug.c b/drivers/net/wireless/ath/ath5k/debug.c
-> index 4b41160e5..08058b3f7 100644
-> --- a/drivers/net/wireless/ath/ath5k/debug.c
-> +++ b/drivers/net/wireless/ath/ath5k/debug.c
-> @@ -982,7 +982,7 @@ ath5k_debug_init_device(struct ath5k_hw *ah)
->  	ah->debug.level = ath5k_debug;
->  
->  	phydir = debugfs_create_dir("ath5k", ah->hw->wiphy->debugfsdir);
-> -	if (!phydir)
-> +	if (IS_ERR(phydir))
+Pass CPUID 0x80000005 (L1 cache and TLB info).
 
-Please use IS_ERR_OR_NULL() instead.
+CPUID 0x80000006 (L2 cache and TLB and L3 cache info) has been returned
+since commit 43d05de2bee7 ("KVM: pass through CPUID(0x80000006)").
+Enumerating both 0x80000005 and 0x80000006 with KVM_GET_SUPPORTED_CPUID
+would be better than reporting either, and 0x80000005 could be helpful
+for VMM to pass it to KVM_SET_CPUID{,2} for the same reason with
+0x80000006..
 
-With that change added:
+Signed-off-by: Takahiro Itazuri <itazur@amazon.com>
+---
 
-Acked-by: Luis Chamberlain <mcgrof@kernel.org>
+Discussion was made a bit on
+https://lore.kernel.org/all/20230712170258.75355-1-itazur@amazon.com/.
+If there is any reason that leaf 0x80000005 should not be enumerated or
+dropping leaf 0x80000006 is preferred, please feel free to share your
+thoughts.
 
-  Luis
+---
+ arch/x86/kvm/cpuid.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+index 0c9660a07b23..54a5b256c484 100644
+--- a/arch/x86/kvm/cpuid.c
++++ b/arch/x86/kvm/cpuid.c
+@@ -1152,6 +1152,9 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
+ 		cpuid_entry_override(entry, CPUID_8000_0001_EDX);
+ 		cpuid_entry_override(entry, CPUID_8000_0001_ECX);
+ 		break;
++	case 0x80000005:
++		/*  Pass host L1 cache and TLB info. */
++		break;
+ 	case 0x80000006:
+ 		/* Drop reserved bits, pass host L2 cache and TLB info. */
+ 		entry->edx &= ~GENMASK(17, 16);
+-- 
+2.38.0
+
