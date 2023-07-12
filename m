@@ -2,68 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0DD975138E
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 00:31:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CD84751392
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 00:31:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231774AbjGLWbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 18:31:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38076 "EHLO
+        id S232096AbjGLWbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 18:31:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbjGLWbB (ORCPT
+        with ESMTP id S229572AbjGLWbh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 18:31:01 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD5751FDB
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 15:30:59 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-66f5faba829so71291b3a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 15:30:59 -0700 (PDT)
+        Wed, 12 Jul 2023 18:31:37 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26BBB1FDB;
+        Wed, 12 Jul 2023 15:31:36 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-55adfa61199so131285a12.2;
+        Wed, 12 Jul 2023 15:31:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=purestorage.com; s=google2022; t=1689201059; x=1691793059;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=W2qLW+xWqeaBsuAVO/VoywBcaG7QxYi7fmeCIr0WMwc=;
-        b=TbQFUtFLbwU7TDPC8QxhPhGpJi0BPb1ijwjnED4ENxZrQK0QcvRhzSXO1UBIRb+cbc
-         iBeZHfOYaGwQvwgNRk92icFO3THYf9uL3lDy2herG3jIqW6ysLTRNxoygV2F1cP9L+HU
-         Adks0CR7uNndBox8FZ0v1Gcm3uFiEfW2ejnCnB0I7+wvCFNqAicCbkKMtwLjRQ/UHY4Q
-         XoHkPW7Pcu96brvv/+Ex5coZFgFGvNrOF+tE2V1HJOaPe/x0sXo4Z/cbXE7Wc+1nz0RH
-         qzS4UfZ9PPaJIFyTJjMSbvregi/NwMCyTBmQRJ8ZnFSnPKtLysY9djTmbn7fHTSgoPay
-         VOlA==
+        d=gmail.com; s=20221208; t=1689201095; x=1691793095;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=qCpvGyW7ZNtzKpBm2Ry0x2qGxhjvzST5Bf86BqgznXA=;
+        b=KHsoBgFNhngzZ+1XI0HfDDPczhjyvQZMxkyeCW532jV+dpvmTISH8pxMzBXTzY2VMv
+         0GOFXFF3czKZl7IYWVBjWCsmAG31URAjWou4msKKQgdAPo3MuaUtZDGyz3iQmaA6LKF7
+         m8MIl1dtM9VRCrsi0OnumUM1v+hTPFLHeKySR8Fdwpp/qymtg+J16kTeNwUsSUagsxKM
+         yCQ2h7AM1uZm7LP8hp4vEqoKNvw0Pi1/8Sj4Gg9yCRDHTnjX6t2vIdYNjruqbHEcQfWu
+         ykBxbabQv1Gp7zg4Btj5zQc6uFIDnifVZEULqgCa72IRqH0dJOFcf9FYq3UCM/NbXBP8
+         j33A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689201059; x=1691793059;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=W2qLW+xWqeaBsuAVO/VoywBcaG7QxYi7fmeCIr0WMwc=;
-        b=YFEnywHuN+dldcLrc02TuEORuE6nF3UI8rw5ucEoCvhaYfF+7LT139DuMI4/yiFdWS
-         hQP3/v2SL5Gw1/+AYlWQbfpBPAHZakv96NScx5zGrRZSJMU9XIlSV+9r7KytyYobQZdN
-         fJT5Ais48WDsqtkJ8cRrhpSmauZFNyU3UXwxoODTg3F/9T54OuoKhGxheT9DQUQ0fB5z
-         h1TMMejmeulqSWc26+UJn5u+1lF5sfVXQ+FTpMxer+fdVPZpZrBGuUxj0f1LPDVee49F
-         epoylzPyKkBunk0Wj5/IGSABkPEnOX3zIyltcic/ITKLm65j58oHdarW4MhAuBukvFQZ
-         rKiA==
-X-Gm-Message-State: ABy/qLar4MiyikcR27kKN1EdyT9Ywy9Fq+FfimRI6VBYZxC7lMmuoPAs
-        rE8sYJ8QiRJXR/rkmwQn1cVP8vn2ljFOPerVwn4=
-X-Google-Smtp-Source: APBJJlFfCtb8Ua3vLi2bAFf5ko/mxmUMbaSJkh1sMI0yr5Q4addHn/tSt0rMeTlSvqNpd835KjomSA==
-X-Received: by 2002:a05:6a00:24ca:b0:67d:22a6:2f54 with SMTP id d10-20020a056a0024ca00b0067d22a62f54mr19804032pfv.31.1689201059241;
-        Wed, 12 Jul 2023 15:30:59 -0700 (PDT)
-Received: from gaia.lab.kspace.sh (c-98-207-191-243.hsd1.ca.comcast.net. [98.207.191.243])
-        by smtp.googlemail.com with ESMTPSA id d7-20020aa78147000000b0067ea048cf83sm4045714pfn.186.2023.07.12.15.30.58
+        d=1e100.net; s=20221208; t=1689201095; x=1691793095;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qCpvGyW7ZNtzKpBm2Ry0x2qGxhjvzST5Bf86BqgznXA=;
+        b=GML2O/ByfTI5GxWV9Ufkzk/N68/Azx09nYGd/n7sqBn0dJoqxAPq/i9i9CmJ8mRNKq
+         UFwC5dnl5uwIl4PDbVbcsJt9jNqFWdSYDFs2q7St5kp4FZvgu96CUtYj/1nuOIJzZIAb
+         6trouAlimmgFHvjTD2AWk5sDdKyiKBvzDtxIFOjT/SXfGROXaWFcBWgdykcoQVcN7fPH
+         aZtVm66BwXPmr0nex4y7vL9UOKDDRfYbhE5VxHLE3IPYRqbm+vfDzYgsUmuMc1DLcEre
+         CunmiyynpYhS3MCtZ1MND5FWfRkDC4qtod1UIbB4gD735R+PW1+RN2mXsIrlog32YInr
+         VT6w==
+X-Gm-Message-State: ABy/qLaGKOAXrK5FpH6YKn/IeEdC/lFRJ0e+oyB4P9IhWmUkNbuIwoOT
+        DdDpLcDyldiSmn6RkKU7hKQ=
+X-Google-Smtp-Source: APBJJlF6okL7Dglm5S6RpST3VlKIYHaPb/KgL/WI8M8bciN3EtB5A+GR1rnB0ASkVIGOKLFR21m7fw==
+X-Received: by 2002:a17:902:d4d1:b0:1b8:a234:7617 with SMTP id o17-20020a170902d4d100b001b8a2347617mr23278580plg.5.1689201095479;
+        Wed, 12 Jul 2023 15:31:35 -0700 (PDT)
+Received: from localhost (ec2-54-67-115-33.us-west-1.compute.amazonaws.com. [54.67.115.33])
+        by smtp.gmail.com with ESMTPSA id s10-20020a170902b18a00b001b9dfa8d884sm4466924plr.226.2023.07.12.15.31.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Jul 2023 15:30:58 -0700 (PDT)
-From:   Mohamed Khalfella <mkhalfella@purestorage.com>
-To:     mkhalfella@purestorage.com
-Cc:     stable@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-kernel@vger.kernel.org (open list:TRACING),
-        linux-trace-kernel@vger.kernel.org (open list:TRACING)
-Subject: [PATCH] tracing/histograms: Add histograms to hist_vars if they have referenced variables
-Date:   Wed, 12 Jul 2023 22:30:21 +0000
-Message-Id: <20230712223021.636335-1-mkhalfella@purestorage.com>
-X-Mailer: git-send-email 2.34.1
+        Wed, 12 Jul 2023 15:31:35 -0700 (PDT)
+Date:   Wed, 12 Jul 2023 22:31:34 +0000
+From:   Bobby Eshleman <bobbyeshleman@gmail.com>
+To:     Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@sberdevices.ru, oxffffaa@gmail.com
+Subject: Re: [RFC PATCH v5 13/17] vsock: enable setting SO_ZEROCOPY
+Message-ID: <ZK8pxrbkrH2bEgw7@bullseye>
+References: <20230701063947.3422088-1-AVKrasnov@sberdevices.ru>
+ <20230701063947.3422088-14-AVKrasnov@sberdevices.ru>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230701063947.3422088-14-AVKrasnov@sberdevices.ru>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR,URIBL_BLOCKED
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,121 +82,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hist triggers can have referenced variables without having direct
-variables fields. This can be the case if referenced variables are added
-for trigger actions. In this case the newly added references will not
-have field variables. Not taking such referenced variables into
-consideration can result in a bug where it would be possible to remove
-hist trigger with variables being refenced. This will result in a bug
-that is easily reproducable like so
+On Sat, Jul 01, 2023 at 09:39:43AM +0300, Arseniy Krasnov wrote:
+> For AF_VSOCK, zerocopy tx mode depends on transport, so this option must
+> be set in AF_VSOCK implementation where transport is accessible (if
+> transport is not set during setting SO_ZEROCOPY: for example socket is
+> not connected, then SO_ZEROCOPY will be enabled, but once transport will
+> be assigned, support of this type of transmission will be checked).
+> 
+> To handle SO_ZEROCOPY, AF_VSOCK implementation uses SOCK_CUSTOM_SOCKOPT
+> bit, thus handling SOL_SOCKET option operations, but all of them except
+> SO_ZEROCOPY will be forwarded to the generic handler by calling
+> 'sock_setsockopt()'.
+> 
+> Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+> ---
+>  Changelog:
+>  v4 -> v5:
+>   * This patch is totally reworked. Previous version added check for
+>     PF_VSOCK directly to 'net/core/sock.c', thus allowing to set
+>     SO_ZEROCOPY for AF_VSOCK type of socket. This new version catches
+>     attempt to set SO_ZEROCOPY in 'af_vsock.c'. All other options
+>     except SO_ZEROCOPY are forwarded to generic handler. Only this
+>     option is processed in 'af_vsock.c'. Handling this option includes
+>     access to transport to check that MSG_ZEROCOPY transmission is
+>     supported by the current transport (if it is set, if not - transport
+>     will be checked during 'connect()').
+> 
+>  net/vmw_vsock/af_vsock.c | 44 ++++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 42 insertions(+), 2 deletions(-)
+> 
+> diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+> index da22ae0ef477..8acc77981d01 100644
+> --- a/net/vmw_vsock/af_vsock.c
+> +++ b/net/vmw_vsock/af_vsock.c
+> @@ -1406,8 +1406,18 @@ static int vsock_connect(struct socket *sock, struct sockaddr *addr,
+>  			goto out;
+>  		}
+>  
+> -		if (vsock_msgzerocopy_allow(transport))
+> +		if (!vsock_msgzerocopy_allow(transport)) {
+> +			/* If this option was set before 'connect()',
+> +			 * when transport was unknown, check that this
+> +			 * feature is supported here.
+> +			 */
+> +			if (sock_flag(sk, SOCK_ZEROCOPY)) {
+> +				err = -EOPNOTSUPP;
+> +				goto out;
+> +			}
+> +		} else {
+>  			set_bit(SOCK_SUPPORT_ZC, &sk->sk_socket->flags);
+> +		}
+>  
+>  		err = vsock_auto_bind(vsk);
+>  		if (err)
+> @@ -1643,7 +1653,7 @@ static int vsock_connectible_setsockopt(struct socket *sock,
+>  	const struct vsock_transport *transport;
+>  	u64 val;
+>  
+> -	if (level != AF_VSOCK)
+> +	if (level != AF_VSOCK && level != SOL_SOCKET)
+>  		return -ENOPROTOOPT;
+>  
+>  #define COPY_IN(_v)                                       \
+> @@ -1666,6 +1676,34 @@ static int vsock_connectible_setsockopt(struct socket *sock,
+>  
+>  	transport = vsk->transport;
+>  
+> +	if (level == SOL_SOCKET) {
+> +		if (optname == SO_ZEROCOPY) {
+> +			int zc_val;
+> +
+> +			/* Use 'int' type here, because variable to
+> +			 * set this option usually has this type.
+> +			 */
+> +			COPY_IN(zc_val);
+> +
+> +			if (zc_val < 0 || zc_val > 1) {
+> +				err = -EINVAL;
+> +				goto exit;
+> +			}
+> +
+> +			if (transport && !vsock_msgzerocopy_allow(transport)) {
+> +				err = -EOPNOTSUPP;
+> +				goto exit;
+> +			}
+> +
+> +			sock_valbool_flag(sk, SOCK_ZEROCOPY,
+> +					  zc_val ? true : false);
+> +			goto exit;
+> +		}
+> +
+> +		release_sock(sk);
+> +		return sock_setsockopt(sock, level, optname, optval, optlen);
+> +	}
+> +
+>  	switch (optname) {
+>  	case SO_VM_SOCKETS_BUFFER_SIZE:
+>  		COPY_IN(val);
+> @@ -2321,6 +2359,8 @@ static int vsock_create(struct net *net, struct socket *sock,
+>  		}
+>  	}
+>  
+> +	set_bit(SOCK_CUSTOM_SOCKOPT, &sk->sk_socket->flags);
+> +
 
-$ cd /sys/kernel/tracing
-$ echo 'synthetic_sys_enter char[] comm; long id' >> synthetic_events
-$ echo 'hist:keys=common_pid.execname,id.syscall:vals=hitcount:comm=common_pid.execname' >> events/raw_syscalls/sys_enter/trigger
-$ echo 'hist:keys=common_pid.execname,id.syscall:onmatch(raw_syscalls.sys_enter).synthetic_sys_enter($comm, id)' >> events/raw_syscalls/sys_enter/trigger
-$ echo '!hist:keys=common_pid.execname,id.syscall:vals=hitcount:comm=common_pid.execname' >> events/raw_syscalls/sys_enter/trigger
+I found that because datagrams have !ops->setsockopt this bit causes
+setsockopt() to fail (the related logic can be found in
+__sys_setsockopt). Maybe we should only set this for connectibles?
 
-[  100.263533] ==================================================================
-[  100.264634] BUG: KASAN: slab-use-after-free in resolve_var_refs+0xc7/0x180
-[  100.265520] Read of size 8 at addr ffff88810375d0f0 by task bash/439
-[  100.266320]
-[  100.266533] CPU: 2 PID: 439 Comm: bash Not tainted 6.5.0-rc1 #4
-[  100.267277] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.0-20220807_005459-localhost 04/01/2014
-[  100.268561] Call Trace:
-[  100.268902]  <TASK>
-[  100.269189]  dump_stack_lvl+0x4c/0x70
-[  100.269680]  print_report+0xc5/0x600
-[  100.270165]  ? resolve_var_refs+0xc7/0x180
-[  100.270697]  ? kasan_complete_mode_report_info+0x80/0x1f0
-[  100.271389]  ? resolve_var_refs+0xc7/0x180
-[  100.271913]  kasan_report+0xbd/0x100
-[  100.272380]  ? resolve_var_refs+0xc7/0x180
-[  100.272920]  __asan_load8+0x71/0xa0
-[  100.273377]  resolve_var_refs+0xc7/0x180
-[  100.273888]  event_hist_trigger+0x749/0x860
-[  100.274505]  ? kasan_save_stack+0x2a/0x50
-[  100.275024]  ? kasan_set_track+0x29/0x40
-[  100.275536]  ? __pfx_event_hist_trigger+0x10/0x10
-[  100.276138]  ? ksys_write+0xd1/0x170
-[  100.276607]  ? do_syscall_64+0x3c/0x90
-[  100.277099]  ? entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[  100.277771]  ? destroy_hist_data+0x446/0x470
-[  100.278324]  ? event_hist_trigger_parse+0xa6c/0x3860
-[  100.278962]  ? __pfx_event_hist_trigger_parse+0x10/0x10
-[  100.279627]  ? __kasan_check_write+0x18/0x20
-[  100.280177]  ? mutex_unlock+0x85/0xd0
-[  100.280660]  ? __pfx_mutex_unlock+0x10/0x10
-[  100.281200]  ? kfree+0x7b/0x120
-[  100.281619]  ? ____kasan_slab_free+0x15d/0x1d0
-[  100.282197]  ? event_trigger_write+0xac/0x100
-[  100.282764]  ? __kasan_slab_free+0x16/0x20
-[  100.283293]  ? __kmem_cache_free+0x153/0x2f0
-[  100.283844]  ? sched_mm_cid_remote_clear+0xb1/0x250
-[  100.284550]  ? __pfx_sched_mm_cid_remote_clear+0x10/0x10
-[  100.285221]  ? event_trigger_write+0xbc/0x100
-[  100.285781]  ? __kasan_check_read+0x15/0x20
-[  100.286321]  ? __bitmap_weight+0x66/0xa0
-[  100.286833]  ? _find_next_bit+0x46/0xe0
-[  100.287334]  ? task_mm_cid_work+0x37f/0x450
-[  100.287872]  event_triggers_call+0x84/0x150
-[  100.288408]  trace_event_buffer_commit+0x339/0x430
-[  100.289073]  ? ring_buffer_event_data+0x3f/0x60
-[  100.292189]  trace_event_raw_event_sys_enter+0x8b/0xe0
-[  100.295434]  syscall_trace_enter.constprop.0+0x18f/0x1b0
-[  100.298653]  syscall_enter_from_user_mode+0x32/0x40
-[  100.301808]  do_syscall_64+0x1a/0x90
-[  100.304748]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[  100.307775] RIP: 0033:0x7f686c75c1cb
-[  100.310617] Code: 73 01 c3 48 8b 0d 65 3c 10 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa b8 21 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 35 3c 10 00 f7 d8 64 89 01 48
-[  100.317847] RSP: 002b:00007ffc60137a38 EFLAGS: 00000246 ORIG_RAX: 0000000000000021
-[  100.321200] RAX: ffffffffffffffda RBX: 000055f566469ea0 RCX: 00007f686c75c1cb
-[  100.324631] RDX: 0000000000000001 RSI: 0000000000000001 RDI: 000000000000000a
-[  100.328104] RBP: 00007ffc60137ac0 R08: 00007f686c818460 R09: 000000000000000a
-[  100.331509] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000009
-[  100.334992] R13: 0000000000000007 R14: 000000000000000a R15: 0000000000000007
-[  100.338381]  </TASK>
+Best,
+Bobby
 
-We hit the bug because when second hist trigger has was created
-has_hist_vars() returned false because hist trigger did not have
-variables. As a result of that save_hist_vars() was not called to add
-the trigger to trace_array->hist_vars. Later on when we attempted to
-remove the first histogram find_any_var_ref() failed to detect it is
-being used because it did not find the second trigger in hist_vars list.
-
-With this change we wait until trigger actions are created so we can take
-into consideration if hist trigger has variable references. Also, now we
-check the return value of save_hist_vars() and fail trigger creation if
-save_hist_vars() fails.
-
-Signed-off-by: Mohamed Khalfella <mkhalfella@purestorage.com>
-Cc: stable@vger.kernel.org
----
- kernel/trace/trace_events_hist.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-index b97d3ad832f1..c8c61381eba4 100644
---- a/kernel/trace/trace_events_hist.c
-+++ b/kernel/trace/trace_events_hist.c
-@@ -6663,13 +6663,15 @@ static int event_hist_trigger_parse(struct event_command *cmd_ops,
- 	if (get_named_trigger_data(trigger_data))
- 		goto enable;
- 
--	if (has_hist_vars(hist_data))
--		save_hist_vars(hist_data);
--
- 	ret = create_actions(hist_data);
- 	if (ret)
- 		goto out_unreg;
- 
-+	if (has_hist_vars(hist_data) || hist_data->n_var_refs) {
-+		if (save_hist_vars(hist_data))
-+			goto out_unreg;
-+	}
-+
- 	ret = tracing_map_init(hist_data->map);
- 	if (ret)
- 		goto out_unreg;
--- 
-2.34.1
-
+>  	vsock_insert_unbound(vsk);
+>  
+>  	return 0;
+> -- 
+> 2.25.1
+> 
