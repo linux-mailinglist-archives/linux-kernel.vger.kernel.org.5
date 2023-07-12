@@ -2,67 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C481751334
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 00:06:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4503975133A
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 00:08:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231918AbjGLWGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 18:06:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58088 "EHLO
+        id S232142AbjGLWIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 18:08:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbjGLWGb (ORCPT
+        with ESMTP id S229572AbjGLWIg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 18:06:31 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1006CB0;
-        Wed, 12 Jul 2023 15:06:31 -0700 (PDT)
+        Wed, 12 Jul 2023 18:08:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48014A2;
+        Wed, 12 Jul 2023 15:08:35 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 82F1F6195D;
-        Wed, 12 Jul 2023 22:06:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FD4AC433C8;
-        Wed, 12 Jul 2023 22:06:26 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D89E56194D;
+        Wed, 12 Jul 2023 22:08:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB1F9C433C8;
+        Wed, 12 Jul 2023 22:08:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689199589;
-        bh=3LvTkwHC1aXilpylTHfuT9Dd/jYCCcQvi0STTcj3u4Y=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=NbdF1saEXJmhy492uWVuPKrKChNGckdheEAFhSTAsQzFx1+WrcGPDEvfLb3PjcMuz
-         X4kYsdx3USScMgN6LmCQgu2Bnkb7ZnfRxG7A1E49+NwBBTCW6NhmDKlH3JQ1h33/pC
-         3zIVyQiWD7mntC/nSyTJrU/0KA4wFcyRvm5sHb1OhnsbIRB2Lb1HRXbQL2NuAl0a1x
-         vKGGW4RBiI7ZCYmfuFbIurvN+L11MyQ/PIIDGoUS6BNWWaBhbRGsdVh3gA1DyRBK4V
-         TA/YKNfMqvMKkqZvagtdmTGRjC10W3JoN389G48dPYkJn034zDrp3sgVyKMabGVQlr
-         7xaJAOPh15G1A==
-From:   Mark Brown <broonie@kernel.org>
-To:     Russell King <linux@armlinux.org.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-        Saravana Kannan <saravanak@google.com>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Aidan MacDonald <aidanmacdonald.0x0@gmail.com>,
-        "Isaac J. Manjarres" <isaacmanjarres@google.com>
-Cc:     Amit Pundir <amit.pundir@linaro.org>,
-        John Stultz <jstultz@google.com>, stable@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        kernel-team@android.com,
-        Russell King <rmk+kernel@arm.linux.org.uk>,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20230711193059.2480971-1-isaacmanjarres@google.com>
-References: <20230711193059.2480971-1-isaacmanjarres@google.com>
-Subject: Re: [PATCH v1] regmap-irq: Fix out-of-bounds access when
- allocating config buffers
-Message-Id: <168919958636.823990.7053808708980391423.b4-ty@kernel.org>
-Date:   Wed, 12 Jul 2023 23:06:26 +0100
+        s=k20201202; t=1689199714;
+        bh=n1sLIZMWC53t14JryI8HLSMlrC0CKeIy7qfgbIH/v5w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kpbE/4043LTfs6VPKcXbvySW9/Tyr/KIdeXibYO3ElLPe/e83KPC/JbmUWWfgtUAM
+         TnHdpJBvbAbXRwqmzAS+O77QBsCw9pwOwHi37lTcZcGH+ennzbP5G2kIbCFVvhJi0G
+         Rg7Gdz1hqQ8MmdkOY+tuzb+nYdOLJbR8VZthvh9A4xa2gbnlY22irQxgKvJBDS2DFx
+         wD4c3UBY8t8br+drO7yXstNENqgqivPyFfINJgtRdn1G6s9trTzSkY5cWl2C5iXkIJ
+         YZRAT53p8p7f8RljUefxQ7DAmkSU2NOA/ox6CpYmwzDNk0gBlVcqNrcmNppZGSfDoj
+         LTkFMWqLPmqYg==
+Date:   Wed, 12 Jul 2023 15:08:32 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     j@jannau.net
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] kbuild: rpm-pkg: Add dtbs support
+Message-ID: <20230712220832.GA669032@dev-arch.thelio-3990X>
+References: <20230712-kbuild_rpm_dtbs-v1-1-99693e8faaaf@jannau.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-099c9
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230712-kbuild_rpm_dtbs-v1-1-99693e8faaaf@jannau.net>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,45 +57,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 11 Jul 2023 12:30:58 -0700, Isaac J. Manjarres wrote:
-> When allocating the 2D array for handling IRQ type registers in
-> regmap_add_irq_chip_fwnode(), the intent is to allocate a matrix
-> with num_config_bases rows and num_config_regs columns.
+On Wed, Jul 12, 2023 at 08:42:20AM +0200, Janne Grunau via B4 Relay wrote:
+> From: Janne Grunau <j@jannau.net>
 > 
-> This is currently handled by allocating a buffer to hold a pointer for
-> each row (i.e. num_config_bases). After that, the logic attempts to
-> allocate the memory required to hold the register configuration for
-> each row. However, instead of doing this allocation for each row
-> (i.e. num_config_bases allocations), the logic erroneously does this
-> allocation num_config_regs number of times.
+> Based on the dtbs support in builddeb. Both Fedora and openSUSE kernel
+> rpm install their dtbs in "/boot/dtb-${KERNELRELEASE}". There seems no
+> other popular rpm based distributions which would benefit from dtbs
+> support and are not derived from those two.
 > 
-> [...]
+> Signed-off-by: Janne Grunau <j@jannau.net>
 
-Applied to
+Seems reasonable to me. I verified this works for at least arm64 and
+x86_64.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git for-next
+$ rpm -qlp rpmbuild/RPMS/aarch64/kernel-6.5.0_rc1_next_20230712_00001_g5899d64b0f1b-1.aarch64.rpm | grep -q '^/boot/dtb'
+/boot/dtb-6.5.0-rc1-next-20230712-00001-g5899d64b0f1b
+/boot/dtb-6.5.0-rc1-next-20230712-00001-g5899d64b0f1b/allwinner
+/boot/dtb-6.5.0-rc1-next-20230712-00001-g5899d64b0f1b/allwinner/sun50i-a100-allwinner-perf1.dtb
+...
 
-Thanks!
+$ rpm -qlp rpmbuild/RPMS/x86_64/kernel-6.5.0_rc1_next_20230712_00001_g5899d64b0f1b-1.x86_64.rpm | grep -q '^/boot/dtb'
 
-[1/1] regmap-irq: Fix out-of-bounds access when allocating config buffers
-      commit: 963b54df82b6d6206d7def273390bf3f7af558e1
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Tested-by: Nathan Chancellor <nathan@kernel.org>
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+> ---
+>  scripts/package/mkspec | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/scripts/package/mkspec b/scripts/package/mkspec
+> index 8049f0e2c110..a170b0c0a93f 100755
+> --- a/scripts/package/mkspec
+> +++ b/scripts/package/mkspec
+> @@ -28,6 +28,14 @@ else
+>  	M=DEL
+>  fi
+>  
+> +# Only some architectures with OF support have the dtbs_install target
+> +if grep -q CONFIG_OF_EARLY_FLATTREE=y include/config/auto.conf && \
+> +   [ -d "${srctree}/arch/${SRCARCH}/boot/dts" ]; then
+> +	D=
+> +else
+> +	D=DEL
+> +fi
+> +
+>  __KERNELRELEASE=$(echo $KERNELRELEASE | sed -e "s/-/_/g")
+>  EXCLUDES="$RCS_TAR_IGNORE --exclude=*vmlinux* --exclude=*.mod \
+>  --exclude=*.o --exclude=*.ko --exclude=*.cmd --exclude=Documentation \
+> @@ -38,6 +46,8 @@ EXCLUDES="$RCS_TAR_IGNORE --exclude=*vmlinux* --exclude=*.mod \
+>  # Labels:
+>  #  $S: this line is enabled only when building source package
+>  #  $M: this line is enabled only when CONFIG_MODULES is enabled
+> +#  $D: this line is enabled only when CONFIG_OF_EARLY_FLATTREE is enabled and
+> +#      the arch has a dts directory
+>  sed -e '/^DEL/d' -e 's/^\t*//' <<EOF
+>  	Name: kernel
+>  	Summary: The Linux Kernel
+> @@ -103,6 +113,7 @@ $S
+>  	%endif
+>  $M	$MAKE %{?_smp_mflags} INSTALL_MOD_PATH=%{buildroot} modules_install
+>  	$MAKE %{?_smp_mflags} INSTALL_HDR_PATH=%{buildroot}/usr headers_install
+> +$D	$MAKE %{?_smp_mflags} INSTALL_DTBS_PATH=%{buildroot}/boot/dtb-${KERNELRELEASE} dtbs_install
+>  	cp System.map %{buildroot}/boot/System.map-$KERNELRELEASE
+>  	cp .config %{buildroot}/boot/config-$KERNELRELEASE
+>  $S$M	rm -f %{buildroot}/lib/modules/$KERNELRELEASE/build
+> 
+> ---
+> base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
+> change-id: 20230712-kbuild_rpm_dtbs-d055a3780bbe
+> 
+> Best regards,
+> -- 
+> Janne Grunau <j@jannau.net>
+> 
