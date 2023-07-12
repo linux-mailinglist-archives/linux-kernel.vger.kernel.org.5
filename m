@@ -2,74 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE093751371
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 00:15:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F885751374
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 00:16:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232550AbjGLWPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 18:15:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34128 "EHLO
+        id S232558AbjGLWQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 18:16:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231593AbjGLWPO (ORCPT
+        with ESMTP id S229596AbjGLWQo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 18:15:14 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 817351989;
-        Wed, 12 Jul 2023 15:15:13 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-666eba6f3d6so51193b3a.3;
-        Wed, 12 Jul 2023 15:15:13 -0700 (PDT)
+        Wed, 12 Jul 2023 18:16:44 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D7C0199D
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 15:16:43 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2b74209fb60so7588961fa.0
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 15:16:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689200113; x=1691792113;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=OKJc2fatUXMEZdd+ElYGgHoN33D4VFsq7p5npBSUovw=;
-        b=jtgur3J7ero92tOAWWdixESrF4rX3Nlrc1aFdImGDCCM1RGpYjIzt/+RkpTipF0XjF
-         04PxicYwZ7nqRzVHn8hT2dK5kbaRXF4X0T+ciRFOwuU3qLfU4RLdhVK5kVzbLCRYitrL
-         KwzWYCAqUqgJPnxiAg6m0T9fPa1/q2kt0q86pvE6laMhCUcdTWU+Cc15n/7iO6J+hUsA
-         L2oicEYPrqenURms5GKloP06w+IEzHXjK0u0hVa7vpiZRtXXg0IVft9cvOUd17IVCRmw
-         OiOgz5Wrdvs6IUcQeqSD0wDoki8YJaNZBJqshG4bWFjrVHBjNvNY3yQbsosE679bB9KF
-         rwRA==
+        d=linaro.org; s=google; t=1689200202; x=1691792202;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4LdmsOnFTqS1Cie5iiFkXBonoGBgUOcV5X4qo5inNSI=;
+        b=CoJkBcDv6qjh66tX8On+ZG9yy/znVU3orvRevnsiqBzLKhhW51dADllqNXcF59L7/m
+         Ggl+MJ8RJ62VQhpBLucODKkGchAerPNL+j4FDxvGdPORaHdCnAO+7ae0pCX6zn+Cekw9
+         s6cUEATgylR0xi5980ecookYizWP7E8oaDpDOiLZenh13rA3LdvCP7OsttleF84yuhEd
+         YEl9YKpC3eu7ZgRL37D6GKNDaXo4A07RC9QmTYvuxUbZa6W40ovt0Q/FH0kCLyE4N2ks
+         UH78zrhTY9QVMx1m74azikM2+ofGMkwZ4EV5B2rYTDDuVQGx7Acv0DeMKscv874AFhuP
+         Ns9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689200113; x=1691792113;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OKJc2fatUXMEZdd+ElYGgHoN33D4VFsq7p5npBSUovw=;
-        b=GMk9GQZqfVa5BWClTmAp/YWRSI3W1NjmnjQMzDyf4eBLfrTcTOFemhhvuDNrEEMvZI
-         m18QA0Sz9ao9aYr0tn0FWRPhIEbjaNvrHUACnd1ym3oqfcAPrBjBOVOQWJVc6ei70jV3
-         iPaym69Ztx9m9jVJ7tDhsHgXjsvxD4NuCUOpJMn4nM2RMXpbP+DI6rDmlXxzN5bqwseC
-         dUeApp2tBgHL9C6/79KveIhfA3hzoaES2vHn0q/CZSCJLmVxPn7GHlejhIjEaoE+XW16
-         CVqaShf9rHkxjFmMgzKn22OUxt4yg0dzFX58ARbE8KRjakDzp76+P+fz4yg800lkbuOL
-         th2g==
-X-Gm-Message-State: ABy/qLYNRWIMLOo3fafHzurO3BLnF8R5BHcCjDe2c/KImKSnQfTg9gtw
-        jHaNAJHD67m7SkXX8UdkCsc=
-X-Google-Smtp-Source: APBJJlGVJ42v2aXC6QZ2slKUnQyyKVs+Nqfk3QCi0v9/KbgtsJRj62hGE7dGbBBT71+5i7L5IOc1vw==
-X-Received: by 2002:a05:6a20:9484:b0:115:a2f4:6284 with SMTP id hs4-20020a056a20948400b00115a2f46284mr14738935pzb.16.1689200112750;
-        Wed, 12 Jul 2023 15:15:12 -0700 (PDT)
-Received: from localhost ([192.55.54.50])
-        by smtp.gmail.com with ESMTPSA id 17-20020a170902c11100b001b9ecee9f81sm4434217pli.129.2023.07.12.15.15.11
+        d=1e100.net; s=20221208; t=1689200202; x=1691792202;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4LdmsOnFTqS1Cie5iiFkXBonoGBgUOcV5X4qo5inNSI=;
+        b=kkz5at3jFH/8QGvXH0UCuco7NRN9RuxChSrtSY82fCHJSMOB5ZBdnBEUMESNXBh8oS
+         coSg/np15ottyGbrCaivoMCESb1VPd1nPohB9QNOnCeCAQ4qht2G/5bbwmxtTGq+99Tn
+         Iu6mFcU2haK8/KpDvA09ODB1GLePHqjx8d8j1+7QSiR9WVVM09IieZQgNawYQj0tL/FK
+         c5dMM0pYwlfV3PD/I1MtUaFRi57GrEWZj1FRZcvOxrZ1K197fTQngLZnbkHnjT4VUWuZ
+         1xV0D0aOP6UinXKuo7MXBv7S44SFOFktKxcMAfyJvKC2ioRLxWdGMBq6q4UrmEJTyTdx
+         8qNQ==
+X-Gm-Message-State: ABy/qLYOyPsp+4dJLUGhPlCVMMSTCjkbRq2r64SdBSrhwkXZWyzAYl4q
+        J9ZzwT5DUFwjr4kBOHi2utetzg==
+X-Google-Smtp-Source: APBJJlGPiDIpavgNBQktJlQgrh6mHSCi/gmzFVU6mnV5+zb2pOmDldtlWtvKO66E1xXuAb0aFKgFnQ==
+X-Received: by 2002:a2e:9904:0:b0:2b7:7e:e95e with SMTP id v4-20020a2e9904000000b002b7007ee95emr17196988lji.45.1689200201796;
+        Wed, 12 Jul 2023 15:16:41 -0700 (PDT)
+Received: from [127.0.1.1] ([85.235.12.238])
+        by smtp.gmail.com with ESMTPSA id b19-20020a2e8953000000b002b6e00a3e19sm1177774ljk.132.2023.07.12.15.16.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Jul 2023 15:15:12 -0700 (PDT)
-Date:   Wed, 12 Jul 2023 15:15:10 -0700
-From:   Isaku Yamahata <isaku.yamahata@gmail.com>
-To:     Kai Huang <kai.huang@intel.com>
-Cc:     peterz@infradead.org, kirill.shutemov@linux.intel.com,
-        linux-kernel@vger.kernel.org, dave.hansen@intel.com,
-        tglx@linutronix.de, bp@alien8.de, mingo@redhat.com, hpa@zytor.com,
-        x86@kernel.org, seanjc@google.com, pbonzini@redhat.com,
-        kvm@vger.kernel.org, isaku.yamahata@intel.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com,
-        isaku.yamahata@gmail.com
-Subject: Re: [PATCH 09/10] x86/virt/tdx: Wire up basic SEAMCALL functions
-Message-ID: <20230712221510.GG3894444@ls.amr.corp.intel.com>
-References: <cover.1689151537.git.kai.huang@intel.com>
- <41b7e5503a3e6057dc168b3c5a9693651c501d22.1689151537.git.kai.huang@intel.com>
+        Wed, 12 Jul 2023 15:16:41 -0700 (PDT)
+From:   Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH v4 0/2] (no cover subject)
+Date:   Thu, 13 Jul 2023 00:16:40 +0200
+Message-Id: <20230713-seama-partitions-v4-0-69e577453d40@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <41b7e5503a3e6057dc168b3c5a9693651c501d22.1689151537.git.kai.huang@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAEgmr2QC/33NSw6CMBQF0K2Yjq3ph7bUkfswDl6hQBOlpCVEQ
+ 9i7LRM0Eof3fc6dUbTB2YjOhxkFO7nofJ9CcTygqoO+tdjVKSNGGCeCSBwtPAAPEEY3ptuIjWS
+ EUmW0LgVKbwaixSZAX3X5cbvPyyHYxj3Xvust5c7F0YfXWj/RPP3TNFFMsCiJhIbaAip1ubseg
+ j/50KKsTWwTFBE7AkuCrnmhG1ILML8C/xTUjsCTIAE019QU0pgvYVmWN8mtWDJSAQAA
+To:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>
+Cc:     linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Linus Walleij <linus.walleij@linaro.org>
+X-Mailer: b4 0.12.3
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,202 +84,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 08:55:23PM +1200,
-Kai Huang <kai.huang@intel.com> wrote:
+This type of firmware partition appear in some devices in
+NAND flash, so we need to be able to tag the partitions
+with the appropriate type.
 
-> Intel Trust Domain Extensions (TDX) protects guest VMs from malicious
-> host and certain physical attacks.  A CPU-attested software module
-> called 'the TDX module' runs inside a new isolated memory range as a
-> trusted hypervisor to manage and run protected VMs.
-> 
-> TDX introduces a new CPU mode: Secure Arbitration Mode (SEAM).  This
-> mode runs only the TDX module itself or other code to load the TDX
-> module.
-> 
-> The host kernel communicates with SEAM software via a new SEAMCALL
-> instruction.  This is conceptually similar to a guest->host hypercall,
-> except it is made from the host to SEAM software instead.  The TDX
-> module establishes a new SEAMCALL ABI which allows the host to
-> initialize the module and to manage VMs.
-> 
-> The SEAMCALL ABI is very similar to the TDCALL ABI and leverages much
-> TDCALL infrastructure.  Wire up basic functions to make SEAMCALLs for
-> the basic TDX support: __seamcall(), __seamcall_ret() and
-> __seamcall_saved_ret() which is for TDH.VP.ENTER leaf function.
+The origin of the "SEAttle iMAge" is unknown.
 
-Hi.  __seamcall_saved_ret() uses struct tdx_module_arg as input and output.  For
-KVM TDH.VP.ENTER case, those arguments are already in unsigned long
-kvm_vcpu_arch::regs[].  It's silly to move those values twice.  From
-kvm_vcpu_arch::regs to tdx_module_args.  From tdx_module_args to real registers.
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+Changes in v4:
+- Drop the false tagging of #address-cells etc
+- Link to v3: https://lore.kernel.org/r/20230707-seama-partitions-v3-0-6aa9391b46bb@linaro.org
 
-If TDH.VP.ENTER is the only user of __seamcall_saved_ret(), can we make it to
-take unsigned long kvm_vcpu_argh::regs[NR_VCPU_REGS]?  Maybe I can make the
-change with TDX KVM patch series.
+Changes in v3:
+- Drop reference from partitions.yaml again
+- Drop select: false
+- Use unevaluatedProperties
+- Link to v2: https://lore.kernel.org/r/20230705-seama-partitions-v2-0-9d349f0d5ab7@linaro.org
 
-Thanks,
+Changes in v2:
+- Make the binding clearly childless
+- Link to v1: https://lore.kernel.org/r/20230506-seama-partitions-v1-0-5806af1e4ac7@linaro.org
 
+---
+Linus Walleij (2):
+      dt-bindings: mtd: Add SEAMA partition bindings
+      ARM: dts: bcm5301x: Add SEAMA compatibles
 
-> To start to support TDX, create a new arch/x86/virt/vmx/tdx/tdx.c for
-> TDX host kernel support.  Add a new Kconfig option CONFIG_INTEL_TDX_HOST
-> to opt-in TDX host kernel support (to distinguish with TDX guest kernel
-> support).  So far only KVM uses TDX.  Make the new config option depend
-> on KVM_INTEL.
-> 
-> Signed-off-by: Kai Huang <kai.huang@intel.com>
-> ---
->  arch/x86/Kconfig                 | 12 +++++++
->  arch/x86/Makefile                |  2 ++
->  arch/x86/include/asm/tdx.h       |  7 +++++
->  arch/x86/virt/Makefile           |  2 ++
->  arch/x86/virt/vmx/Makefile       |  2 ++
->  arch/x86/virt/vmx/tdx/Makefile   |  2 ++
->  arch/x86/virt/vmx/tdx/seamcall.S | 54 ++++++++++++++++++++++++++++++++
->  7 files changed, 81 insertions(+)
->  create mode 100644 arch/x86/virt/Makefile
->  create mode 100644 arch/x86/virt/vmx/Makefile
->  create mode 100644 arch/x86/virt/vmx/tdx/Makefile
->  create mode 100644 arch/x86/virt/vmx/tdx/seamcall.S
-> 
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index 53bab123a8ee..191587f75810 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -1952,6 +1952,18 @@ config X86_SGX
->  
->  	  If unsure, say N.
->  
-> +config INTEL_TDX_HOST
-> +	bool "Intel Trust Domain Extensions (TDX) host support"
-> +	depends on CPU_SUP_INTEL
-> +	depends on X86_64
-> +	depends on KVM_INTEL
-> +	help
-> +	  Intel Trust Domain Extensions (TDX) protects guest VMs from malicious
-> +	  host and certain physical attacks.  This option enables necessary TDX
-> +	  support in the host kernel to run confidential VMs.
-> +
-> +	  If unsure, say N.
-> +
->  config EFI
->  	bool "EFI runtime service support"
->  	depends on ACPI
-> diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-> index b39975977c03..ec0e71d8fa30 100644
-> --- a/arch/x86/Makefile
-> +++ b/arch/x86/Makefile
-> @@ -252,6 +252,8 @@ archheaders:
->  
->  libs-y  += arch/x86/lib/
->  
-> +core-y += arch/x86/virt/
-> +
->  # drivers-y are linked after core-y
->  drivers-$(CONFIG_MATH_EMULATION) += arch/x86/math-emu/
->  drivers-$(CONFIG_PCI)            += arch/x86/pci/
-> diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
-> index 9b0ad0176e58..a82e5249d079 100644
-> --- a/arch/x86/include/asm/tdx.h
-> +++ b/arch/x86/include/asm/tdx.h
-> @@ -74,5 +74,12 @@ static inline long tdx_kvm_hypercall(unsigned int nr, unsigned long p1,
->  	return -ENODEV;
->  }
->  #endif /* CONFIG_INTEL_TDX_GUEST && CONFIG_KVM_GUEST */
-> +
-> +#ifdef CONFIG_INTEL_TDX_HOST
-> +u64 __seamcall(u64 fn, struct tdx_module_args *args);
-> +u64 __seamcall_ret(u64 fn, struct tdx_module_args *args);
-> +u64 __seamcall_saved_ret(u64 fn, struct tdx_module_args *args);
-> +#endif	/* CONFIG_INTEL_TDX_HOST */
-> +
->  #endif /* !__ASSEMBLY__ */
->  #endif /* _ASM_X86_TDX_H */
-> diff --git a/arch/x86/virt/Makefile b/arch/x86/virt/Makefile
-> new file mode 100644
-> index 000000000000..1e36502cd738
-> --- /dev/null
-> +++ b/arch/x86/virt/Makefile
-> @@ -0,0 +1,2 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +obj-y	+= vmx/
-> diff --git a/arch/x86/virt/vmx/Makefile b/arch/x86/virt/vmx/Makefile
-> new file mode 100644
-> index 000000000000..feebda21d793
-> --- /dev/null
-> +++ b/arch/x86/virt/vmx/Makefile
-> @@ -0,0 +1,2 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +obj-$(CONFIG_INTEL_TDX_HOST)	+= tdx/
-> diff --git a/arch/x86/virt/vmx/tdx/Makefile b/arch/x86/virt/vmx/tdx/Makefile
-> new file mode 100644
-> index 000000000000..46ef8f73aebb
-> --- /dev/null
-> +++ b/arch/x86/virt/vmx/tdx/Makefile
-> @@ -0,0 +1,2 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +obj-y += seamcall.o
-> diff --git a/arch/x86/virt/vmx/tdx/seamcall.S b/arch/x86/virt/vmx/tdx/seamcall.S
-> new file mode 100644
-> index 000000000000..650a40843afe
-> --- /dev/null
-> +++ b/arch/x86/virt/vmx/tdx/seamcall.S
-> @@ -0,0 +1,54 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#include <linux/linkage.h>
-> +#include <asm/frame.h>
-> +
-> +#include "tdxcall.S"
-> +
-> +/*
-> + * __seamcall() - Host-side interface functions to SEAM software
-> + *                (the P-SEAMLDR or the TDX module).
-> + *
-> + * __seamcall() function ABI:
-> + *
-> + * @fn   (RDI)  - SEAMCALL Leaf number, moved to RAX
-> + * @args (RSI)  - struct tdx_module_args for input
-> + *
-> + * Return (via RAX) TDX_SEAMCALL_VMFAILINVALID if the SEAMCALL itself
-> + * fails, or the completion status of the SEAMCALL leaf function.
-> + */
-> +SYM_FUNC_START(__seamcall)
-> +	TDX_MODULE_CALL host=1 ret=0 saved=0
-> +SYM_FUNC_END(__seamcall)
-> +
-> +/*
-> + * __seamcall_ret() - Host-side interface functions to SEAM software
-> + *                    (the P-SEAMLDR or the TDX module).
-> + *
-> + * __seamcall_ret() function ABI:
-> + *
-> + * @fn   (RDI)  - SEAMCALL Leaf number, moved to RAX
-> + * @args (RSI)  - struct tdx_module_args for input and output
-> + *
-> + * Return (via RAX) TDX_SEAMCALL_VMFAILINVALID if the SEAMCALL itself
-> + * fails, or the completion status of the SEAMCALL leaf function.
-> + */
-> +SYM_FUNC_START(__seamcall_ret)
-> +	TDX_MODULE_CALL host=1 ret=1 saved=0
-> +SYM_FUNC_END(__seamcall_ret)
-> +
-> +/*
-> + * __seamcall_saved_ret() - Host-side interface functions to SEAM software
-> + *                          (the P-SEAMLDR or the TDX module) with extra
-> + *                          "callee-saved" registers as input/output.
-> + *
-> + * __seamcall_saved_ret() function ABI:
-> + *
-> + * @fn   (RDI)          - SEAMCALL Leaf number, moved to RAX
-> + * @args (RSI)          - struct tdx_module_args for input and output
-> + *
-> + * Return (via RAX) TDX_SEAMCALL_VMFAILINVALID if the SEAMCALL itself
-> + * fails, or the completion status of the SEAMCALL leaf function.
-> + */
-> +SYM_FUNC_START(__seamcall_saved_ret)
-> +	TDX_MODULE_CALL host=1 ret=1 saved=0
-> +SYM_FUNC_END(__seamcall_saved_ret)
-> -- 
-> 2.41.0
-> 
+ .../devicetree/bindings/mtd/partitions/seama.yaml  | 44 ++++++++++++++++++++++
+ arch/arm/boot/dts/bcm47094-dlink-dir-885l.dts      |  1 +
+ arch/arm/boot/dts/bcm47094-dlink-dir-890l.dts      |  1 +
+ 3 files changed, 46 insertions(+)
+---
+base-commit: 035cd1416934ef7ae5374272d3c9e378c3d7049c
+change-id: 20230506-seama-partitions-b620117b9985
 
+Best regards,
 -- 
-Isaku Yamahata <isaku.yamahata@gmail.com>
+Linus Walleij <linus.walleij@linaro.org>
+
