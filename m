@@ -2,143 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBF31750EE6
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 18:46:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE29F750EF7
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 18:49:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232557AbjGLQqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 12:46:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46458 "EHLO
+        id S233270AbjGLQtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 12:49:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229668AbjGLQp5 (ORCPT
+        with ESMTP id S229636AbjGLQtd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 12:45:57 -0400
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23E9611B
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 09:45:56 -0700 (PDT)
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id D73F868AFE; Wed, 12 Jul 2023 18:45:47 +0200 (CEST)
-Date:   Wed, 12 Jul 2023 18:45:46 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Linux regressions mailing list <regressions@lists.linux.dev>,
-        Pankaj Raghav <p.raghav@samsung.com>,
-        Keith Busch <kbusch@kernel.org>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>, Sagi Grimberg <sagi@grimberg.me>,
-        "Clemens S." <cspringsguth@gmail.com>,
-        Martin Belanger <martin.belanger@dell.com>,
-        Chaitanya Kulkarni <kch@nvidia.com>,
-        John Meneghini <jmeneghi@redhat.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux NVMe <linux-nvme@lists.infradead.org>,
-        Kanchan Joshi <joshi.k@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>,
-        =?utf-8?B?67CV7KeE7ZmY?= <jh.i.park@samsung.com>
-Subject: Re: Fwd: Need NVME QUIRK BOGUS for SAMSUNG MZ1WV480HCGL-000MV
- (Samsung SM-953 Datacenter SSD)
-Message-ID: <20230712164546.GA31434@lst.de>
-References: <d18d2a08-9d24-0209-c2cf-baf60bbf5048@gmail.com> <ZJsKBkPqoWzYyngS@kbusch-mbp.dhcp.thefacebook.com> <6f333133-2cc4-406a-d6c2-642ac6ccabca@leemhuis.info> <CGME20230710155902eucas1p2b464a29adc35e983c73b00d18ab5344c@eucas1p2.samsung.com> <ZKwqvTMPVmhnkZjS@kbusch-mbp.dhcp.thefacebook.com> <f0fdf86e-4293-8e07-835d-b5a866252068@samsung.com> <462e0e1e-98ea-0f3c-4aaa-8d44f0a8e664@leemhuis.info> <20230711120609.GB27050@lst.de> <CAHk-=whXh9sgLo24RO02JjfD0m3HE5NADRPWoEd+dW6bruFhVA@mail.gmail.com>
+        Wed, 12 Jul 2023 12:49:33 -0400
+Received: from out203-205-221-209.mail.qq.com (out203-205-221-209.mail.qq.com [203.205.221.209])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 553931994;
+        Wed, 12 Jul 2023 09:49:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1689180568;
+        bh=TN+gHkELlE+b7fR0rsA8ykrqd1Qxd9ihZcJeUSe8JKc=;
+        h=From:To:Cc:Subject:Date;
+        b=ozT6paZYQObN7vfys5Y0IfELpbYRfsM5bjx+QwU/Qy7jE74sFmDefv/gTudUR2UVl
+         lYKb7M4s7OsyoN945BIAGCx+bhH8HJ8iKUWT0FTXAa9UA3jcOmje4OvLxIFT45gz/T
+         C1fbUxTkLi2uJ/G4xJlV8TM++J/AbB6287I95MAU=
+Received: from KernelDevBox.byted.org ([180.184.103.200])
+        by newxmesmtplogicsvrszc5-0.qq.com (NewEsmtp) with SMTP
+        id B8689CAB; Thu, 13 Jul 2023 00:46:06 +0800
+X-QQ-mid: xmsmtpt1689180366tk232dq7r
+Message-ID: <tencent_E2C71605D88087940237AA9A44CC8D436D06@qq.com>
+X-QQ-XMAILINFO: OdIVOfqOaVcrAHz5k0LvYgpFo53uVrs3ixagjYrz1delAqK0lUOiGT7kYeLTw5
+         vwsPOASdUqbt5Op4YVNUFvBGi81Oi9ornl5eYajOYw7Yfw2Xm4KNgtmhrCY6d3M2hVxIfDwHb8XW
+         tNtRkbodUq3NsYvpeep1uwtO3xu1KPCHtKc8cY54+woRimhn/od0OqA+L2LKjNkAi3Wm9MpoFo0X
+         VydP7sMl45lSOaE9zxcnVN15jFKYVoMlMKyBPi3ZS7q451HPutjru0hqZF+pyBlQ8f6Ux1cbCJBZ
+         8EZHUO/4NqC8G8pUMndEAUVjRhIWzyvoQa0Ms1ddjThNtWcPBs+rHKG2q3qQUEq7Tk26XUG1NQkD
+         Ltd1roAH3wMdTU8T14BNts+9Q2bBrzI1LNHh3Bk2jkqv7vcq9vRL/WMeBLoTfO4CtZVYciYh82nv
+         vOu1s8yny1dlNOBkI2XS+KT2SHDprA2yo0W5bbsRg/MEVNhva79Yb7k7zzCsqSJ+bQvb+yPgNHIC
+         J4vpRq2qbK+966Ogg0rAN/NkKeQGCchNMvRHu6pZwLMD2gmKdn0/NHqRNi2cNm9XB5r0UR81QRq1
+         4jl2BP2LXaOTZ6WScRlEFhgtM5/JIhlxzxItl0vcpNIeJnSpViO8yIXG78AjNQIILvBUO1YjPmSH
+         DwmsZDnsQrvtrmusl1COI7BoUnm3aAXY/SYRUg2R9HkEArnyiuKAwIfTPn1sZfhTmYDaRmoAqysM
+         5WBhXX8evrxPQdoeiogt/4Ps2m5u7P1pZpsjn/GAkGqcxovSaYQNf5mF45W84kHTzQcqQj8ywp93
+         8bcvEDGNsV7LJDUcYd05ytWcTTTTDaUNxwa6l00ftGnvH8qL0TVhqD1hAbydDNM4qRdngB+c8sba
+         RO6pfIBVLLwJ2N9z+yvifFaKK+JVd4FH5JqIX2LzF3Kh1wwl8279wtI+B/jfTIMHx7ZC5PSzhM4n
+         2B+Rq0oFZHnGTEnl648gAruKmPGCbuNZYxT8iYq0w=
+X-QQ-XMRINFO: MSVp+SPm3vtS1Vd6Y4Mggwc=
+From:   Zhang Shurong <zhang_shurong@foxmail.com>
+To:     song@kernel.org
+Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zhang Shurong <zhang_shurong@foxmail.com>
+Subject: [PATCH] md: fix potential OOB in multipath_remove_disk()
+Date:   Thu, 13 Jul 2023 00:46:05 +0800
+X-OQ-MSGID: <20230712164605.3902883-1-zhang_shurong@foxmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=whXh9sgLo24RO02JjfD0m3HE5NADRPWoEd+dW6bruFhVA@mail.gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_NONE,RDNS_DYNAMIC,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 11, 2023 at 09:47:00AM -0700, Linus Torvalds wrote:
-> Anybody who expected unique ID's is frankly completely incompetent.
-> People should have *known* not to do this.
+If rddev->raid_disk is greater than mddev->raid_disks, there will be
+an out-of-bounds in multipath_remove_disk. We have already found
+similar reports as follows:
 
-Except that storage software really does rely on them.  Not your
-laptop (or mine) but all kinds of data center software.  Where these
-IDs have worked fine for decades.  It just turns out nvme has the
-misfortune of trying to deal with both that and cheap consumer crap.
+1) commit d17f744e883b ("md-raid10: fix KASAN warning")
+2) commit 1ebc2cec0b7d ("dm raid: fix KASAN warning in raid5_remove_disk")
 
-> and we have NEVER EVER seen devices with reliably unique IDs. Really.
+Fix this bug by checking whether the "number" variable is
+valid.
 
-Sorry, but that's bullshit. 
+Signed-off-by: Zhang Shurong <zhang_shurong@foxmail.com>
+---
+ drivers/md/md-multipath.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-> iow, the code even checks for and *notices* that there are duplicate
-> IDs, and what does it do? It then errors out.
-
-Yes.  Because we have applications which will lose data if they
-suddently get the wrong device.  
-
-> I think the code should *default* to "unreliable uuid", and then if
-> you're sure it's actually ok, then you use it. Then some rare
-> enterprise user with multipathing  - who is going to be very very
-> careful about which device to use anyway - can use the "approved
-> list".
-
-That doesn't scale either.
-
-> Or "Oh, I noticed a non-unique UUID, let me generate one for you based
-> on physical location".
-> 
-> But this "my disk doesn't work in v6.0 and later because some clown
-> added a duplicate check that shouldn't be there" is not a good thing
-> to then try to make excuses for.
-
-Well, let's try something like this (co-developed with Sagi) that
-allows it for non-multipath PCIe devices, hich covers the quirks
-we've added so far, but also add a big fat warning, because we know
-people rely on the /dev/disk/by-id/ links.  Probably not on these
-devices, but who knows.
-
-diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index 47d7ba2827ff29..37b6fa74666204 100644
---- a/drivers/nvme/host/core.c
-+++ b/drivers/nvme/host/core.c
-@@ -3431,10 +3431,40 @@ static int nvme_init_ns_head(struct nvme_ns *ns, struct nvme_ns_info *info)
- 
- 	ret = nvme_global_check_duplicate_ids(ctrl->subsys, &info->ids);
- 	if (ret) {
--		dev_err(ctrl->device,
--			"globally duplicate IDs for nsid %d\n", info->nsid);
-+		/*
-+		 * We've found two different namespaces on two different
-+		 * subsystems that report the same ID.  This is pretty nasty
-+		 * for anything that actually requires unique device
-+		 * identification.  In the kernel we need this for multipathing,
-+		 * and in user space the /dev/disk/by-id/ links rely on it.
-+		 *
-+		 * If the device also claims to be multi-path capable back off
-+		 * here now and refuse the probe the second device as this is a
-+		 * recipe for data corruption.  If not this is probably a
-+		 * cheap consumer device if on the PCIe bus, so let the user
-+		 * proceed and use the shiny toy, but warn that with changing
-+		 * probing order (which due to our async probing could just be
-+		 * device taking longer to startup) the other device could show
-+		 * up at any time.
-+		 */
- 		nvme_print_device_info(ctrl);
--		return ret;
-+		if ((ns->ctrl->ops->flags & NVME_F_FABRICS) || /* !PCIe */
-+		    ((ns->ctrl->subsys->cmic & NVME_CTRL_CMIC_MULTI_CTRL) &&
-+		     info->is_shared)) {
-+			dev_err(ctrl->device,
-+				"ignoring nsid %d because of duplicate IDs\n",
-+				info->nsid);
-+			return ret;
-+		}
+diff --git a/drivers/md/md-multipath.c b/drivers/md/md-multipath.c
+index 92c45be203d7..7b6aadd8c1fb 100644
+--- a/drivers/md/md-multipath.c
++++ b/drivers/md/md-multipath.c
+@@ -245,7 +245,11 @@ static int multipath_remove_disk(struct mddev *mddev, struct md_rdev *rdev)
+ 	struct mpconf *conf = mddev->private;
+ 	int err = 0;
+ 	int number = rdev->raid_disk;
+-	struct multipath_info *p = conf->multipaths + number;
++	struct multipath_info *p;
 +
-+		dev_err(ctrl->device,
-+			"clearing duplicate IDs for nsid %d\n", info->nsid);
-+		dev_err(ctrl->device,
-+			"use of /dev/disk/by-id/ may cause data corruption\n");
-+		memset(&info->ids.nguid, 0, sizeof(info->ids.nguid));
-+		memset(&info->ids.uuid, 0, sizeof(info->ids.uuid));
-+		memset(&info->ids.eui64, 0, sizeof(info->ids.eui64));
-+		ctrl->quirks |= NVME_QUIRK_BOGUS_NID;
- 	}
++	if (unlikely(number >= mddev->raid_disks))
++		return 0;
++	p = conf->multipaths + number;
  
- 	mutex_lock(&ctrl->subsys->lock);
+ 	print_multipath_conf(conf);
+ 
+-- 
+2.30.2
+
