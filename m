@@ -2,123 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65599751103
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 21:11:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64008751107
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 21:12:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232401AbjGLTLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 15:11:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51258 "EHLO
+        id S232441AbjGLTMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 15:12:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230381AbjGLTLh (ORCPT
+        with ESMTP id S230381AbjGLTMX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 15:11:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A44181FC3
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 12:10:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689189051;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=q45SoRMuLgunlP8L7mZ4yYklFc9J8ZjnlV0HAlFrluA=;
-        b=FvtSAKP/W0rluk3vy56TimDf2Qni7XOh5q48UldEydX5Cf/BmsggFGMCY94SDKEUgy7A9+
-        CGZPlRXNPT2KZhG5Euz9vPA7VWt9c2uq/A+V+nvmyfw2pZGUEPok7CsHfAvPFm7ZXhgsFQ
-        It1bsnMe8emNIf1fKPi3N26ENukUBPg=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-363-oI-dg_M4P4CXYKtj2ZY4Bg-1; Wed, 12 Jul 2023 15:10:50 -0400
-X-MC-Unique: oI-dg_M4P4CXYKtj2ZY4Bg-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-3fbefe1b402so45723335e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 12:10:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689189049; x=1691781049;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=q45SoRMuLgunlP8L7mZ4yYklFc9J8ZjnlV0HAlFrluA=;
-        b=bT3OxuIE9o8LlxqPt+PtBEEX0soqTySb6ZYnNpgZgB5wfT5Kg9LpH3SGhXVdPsr/iU
-         lfbSEPDP9LqblNLTBmHnZOEyFMVBS68z3K6iBKY8mKEYSgowezO7ahJH5YB+y06B4Uf2
-         C2i3NLL0Dqt2TGNkj7jsigJpxXjM7gXow6oIJESksDrEPdjgKyOxpqry5ajfUd4v5XWW
-         5BRqd2iJVqXwBOK+A0YeCLxVy6dTjSoFnAfzfBQZPZUavfvxMjWIXl7wPk/sqB2SL2GS
-         o5MKNUDsfXLoSAfbiOzhuyQo4R3lab65dLYktbopNDAOqiF421VXq3lW12QwcPpBdz6F
-         0VBg==
-X-Gm-Message-State: ABy/qLaCWe6WUDNnsn3S/0o/kWfU5vFQqeTkPxYOVHN++9JQX26wzRfQ
-        TL4AHTnDYbWz9P4x/HIZSaM5WUCNSOCw5OcDRl8E6pYSqxWdrKq2NmNNRn2sZ0uBQEbtS8qEji5
-        ExBCkomMxKvkIE4/FW/7WrnnT
-X-Received: by 2002:a7b:c019:0:b0:3fb:a62d:1992 with SMTP id c25-20020a7bc019000000b003fba62d1992mr16262195wmb.0.1689189049322;
-        Wed, 12 Jul 2023 12:10:49 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlG7+RfJW8rL+kAwaM2CugjDDuPQVV8Tbi86e3qb2YFzqDwqbvHOu/X6/+h7PYfnyGjOw9KBjA==
-X-Received: by 2002:a7b:c019:0:b0:3fb:a62d:1992 with SMTP id c25-20020a7bc019000000b003fba62d1992mr16262181wmb.0.1689189048992;
-        Wed, 12 Jul 2023 12:10:48 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c707:3700:3eea:ace6:5bde:4478? (p200300cbc70737003eeaace65bde4478.dip0.t-ipconnect.de. [2003:cb:c707:3700:3eea:ace6:5bde:4478])
-        by smtp.gmail.com with ESMTPSA id o29-20020a05600c511d00b003fa9a00d74csm409177wms.3.2023.07.12.12.10.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 Jul 2023 12:10:48 -0700 (PDT)
-Message-ID: <60f2ef09-53b2-6bf8-9cd0-3b639ac7b765@redhat.com>
-Date:   Wed, 12 Jul 2023 21:10:47 +0200
+        Wed, 12 Jul 2023 15:12:23 -0400
+Received: from dilbert.mork.no (dilbert.mork.no [IPv6:2a01:4f9:c010:a439::d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 295FA199E;
+        Wed, 12 Jul 2023 12:12:21 -0700 (PDT)
+Received: from canardo.dyn.mork.no ([IPv6:2a01:799:964:4b04:3697:f6ff:fe5d:314])
+        (authenticated bits=0)
+        by dilbert.mork.no (8.17.1.9/8.17.1.9) with ESMTPSA id 36CJC4sB582186
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=OK);
+        Wed, 12 Jul 2023 20:12:05 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mork.no; s=b;
+        t=1689189119; bh=bAuupQqEj0rLd6YFhbA1xsWbLkHvKMPgSN/mA/Dnmbg=;
+        h=From:To:Cc:Subject:References:Date:Message-ID:From;
+        b=LWOE7r2s2p+WKjdWpcXHmtG8608u2duj7xx2SmOOArmvae5/9nitz75cEHWvEqLa0
+         2ur751xWyR9lEcSU4vIEzYKA37YQZWWKJX7fvzfQvClrFLcsB+y5QkLYdr6tH/99OD
+         n62xiCHH5iEpAkwx9NyQfxgd2si6uc8bTiPMHG+Y=
+Received: from miraculix.mork.no ([IPv6:2a01:799:964:4b0a:9af7:269:d286:bcf0])
+        (authenticated bits=0)
+        by canardo.dyn.mork.no (8.17.1.9/8.17.1.9) with ESMTPSA id 36CJBxHN2295209
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=OK);
+        Wed, 12 Jul 2023 21:11:59 +0200
+Received: (nullmailer pid 603544 invoked by uid 1000);
+        Wed, 12 Jul 2023 19:11:59 -0000
+From:   =?utf-8?Q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>
+To:     Pintu Agarwal <pintu.ping@gmail.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        linux-fsdevel@kvack.org, ezequiel@collabora.com,
+        Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: Re: MTD: Lots of mtdblock warnings on bootup logs
+Organization: m
+References: <CAOuPNLizjBp_8ceKq=RLznXdsHD-+N55RoPh_D7_Mpkg7M-BwQ@mail.gmail.com>
+        <877cr5yzjc.fsf@miraculix.mork.no>
+        <CAOuPNLhUtVtrOQQ1Z_rA0NAerG5PSfA26=hoenuCtCBDvz1CJA@mail.gmail.com>
+Date:   Wed, 12 Jul 2023 21:11:59 +0200
+In-Reply-To: <CAOuPNLhUtVtrOQQ1Z_rA0NAerG5PSfA26=hoenuCtCBDvz1CJA@mail.gmail.com>
+        (Pintu Agarwal's message of "Wed, 12 Jul 2023 23:55:41 +0530")
+Message-ID: <87sf9tx7uo.fsf@miraculix.mork.no>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH][next] selftests/mm: mkdirty: Fix incorrect position of
- #endif
-Content-Language: en-US
-To:     Colin Ian King <colin.i.king@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230712134648.456349-1-colin.i.king@gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20230712134648.456349-1-colin.i.king@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Virus-Scanned: clamav-milter 1.0.1 at canardo
+X-Virus-Status: Clean
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12.07.23 15:46, Colin Ian King wrote:
-> The #endif is the wrong side of a } causing a build failure when
-> __NR_userfaultfd is not defined. Fix this by moving the #end to
-> enclose the }
-> 
-> Fixes: 9eac40fc0cc7 ("selftests/mm: mkdirty: test behavior of (pte|pmd)_mkdirty on VMAs without write permissions")
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-> ---
->   tools/testing/selftests/mm/mkdirty.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/mm/mkdirty.c b/tools/testing/selftests/mm/mkdirty.c
-> index 6d71d972997b..301abb99e027 100644
-> --- a/tools/testing/selftests/mm/mkdirty.c
-> +++ b/tools/testing/selftests/mm/mkdirty.c
-> @@ -321,8 +321,8 @@ static void test_uffdio_copy(void)
->   munmap:
->   	munmap(dst, pagesize);
->   	free(src);
-> -#endif /* __NR_userfaultfd */
->   }
-> +#endif /* __NR_userfaultfd */
->   
->   int main(void)
->   {
+Pintu Agarwal <pintu.ping@gmail.com> writes:
 
-Ouch, thanks!
+> You mean, if someone is using "mount .. /dev/mtdblock*" then only we
+> get these warnings ?
+> Or, if someone is trying to access the node using open("/dev/mtdblock*") .
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+open() will cause a warning.
 
--- 
-Cheers,
+> But in this case, there should be only 1,2,3 entries but here I am
+> seeing for all the NAND partitions.
+> Or, is it possible that systemd-udevd is trying to access these nodes ?
 
-David / dhildenb
+Maybe?  Something trying to figure out the contents of all block devices
+perhaps?=20
 
+> Can we use ubiblock for mount ubifs (rw) volumes, or here we have to
+> use mtdblock ?
+> We have a mixture of squashfs (ro) and ubifs (rw) ubi volumes.
+> Currently, we are using the ubiblock way of mounting for squashfs but
+> mtdblock mounting for ubifs.
+
+I don't think it's safe to use mtdblock on NAND.  WHich is what the
+warning is about.
+
+
+Bj=C3=B8rn
