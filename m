@@ -2,81 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3AFA751008
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 19:53:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A39C275100F
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 19:53:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231398AbjGLRx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 13:53:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51940 "EHLO
+        id S232938AbjGLRxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 13:53:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232562AbjGLRxU (ORCPT
+        with ESMTP id S232636AbjGLRxj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 13:53:20 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25D851FE4
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 10:53:18 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-82-193.bstnma.fios.verizon.net [173.48.82.193])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 36CHqwKl004990
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 12 Jul 2023 13:52:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1689184380; bh=iYK3lUF2GbPPt1xA1PwWleN6r/7tba+hiPLcX61WWlU=;
-        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-        b=VUztdmxBOWM7Tx/fAekc5Iqt2n4UQL1FhP9NCmyLYSAlDHD+8iuhuoA6NOJ6H1Gh9
-         C/gQ64YeLxytLkLOzZdCJlYTrX6OfxGA9ghmECZAVWiLCvhgzJsfXPANMfJmRnWIhT
-         AEAnZuRI8AOcSvP6W3qsiBnoedbQkMVwSTB6k6Kkh4ho7sQEFujK3eug3t8Zg+A5d/
-         XooRfZ91K8cNpJdH6oW3zKrddfNdGlHeoTJnYMHCHHAzFI1ECHgdubsuL2oKua8LW9
-         WU6V4RUsDRn26NqK3S/vOB/G3NonVNFMi/xpQrWOBTsh5gfcIDBHVcZYEhcWBVoEb9
-         HBF4O6Z4i53FQ==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 332E615C0280; Wed, 12 Jul 2023 13:52:58 -0400 (EDT)
-Date:   Wed, 12 Jul 2023 13:52:58 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     brauner@kernel.org, Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ext4: fix decoding of raw_inode timestamps
-Message-ID: <20230712175258.GB3677745@mit.edu>
-References: <20230712150251.163790-1-jlayton@kernel.org>
+        Wed, 12 Jul 2023 13:53:39 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8B0619BA;
+        Wed, 12 Jul 2023 10:53:37 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-3143b88faebso8180500f8f.3;
+        Wed, 12 Jul 2023 10:53:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689184416; x=1691776416;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Jy7TMx25OOcOwHTgIEstLTCYZ1iR7it/Mc/2+XGG40M=;
+        b=h8D94D46435ovzfgyMBFeIF3u81woZEWgoieagwrfcbFRdfbma8LFIBRR6dM8BvxWJ
+         aDgVnEnLH2bGvcs9qX2k+KcTSHDzY4dmtLcG02EMR9FiRuH9AyIFBWay2B9UDvYR04kS
+         jRSvY9tcrG8tITd1qQxJyJI2cw0kCv932MRzt35JGrc0febcO1FybDXeTKLIHUs3xTz6
+         QT14y26cZjHAbbBcQTN3v47dfMIMczWMMlVy2fGb53sZehQ3cMnU8WjPDLs/9SAfdxiD
+         hujh2Drbl5nuAti2rOBdk2E1dzdU6PZ9a7E20Iet08WGeMShend1n58Yh6b3gMrwzpQV
+         mq6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689184416; x=1691776416;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Jy7TMx25OOcOwHTgIEstLTCYZ1iR7it/Mc/2+XGG40M=;
+        b=CcCbJq1hgZim3cVxrmz3C070qaCMZChyL03S/zHp+vLr/jNpkCd/L+rRqARZCrsrDn
+         UXP/3+RCXVQ/2euhnAT1ScjcpVDbZzNtfh94y3iZXotx/D1VnVPFXBjtONsg4AbRDqJt
+         Eex3zxYel6qf41gpWXXf+6ZHhCtZhui6vL8n/1XX+CEtiJu+wK9UgSEEWw+4i/xJoToc
+         HPnuyJ5lpkZ1GaNg1pfLxjtlm2bgSmzeTMtCcKu9jNUeYSlFRb4V7d6VqZ8aX+Dhzzw1
+         ax3xoE2XY/YwY9lLcuaaSiQUr94GiTTRiDd2m8YbZn6jos4pnmGR1p1e0x6CyH3k9sTk
+         SLTg==
+X-Gm-Message-State: ABy/qLYaeq822f5EGTP2Sp6CfR1Rq77XTHxsXg1P+DbnpcAh+OXNofqR
+        UD2dbcCxqc8mt3h0/y10igg=
+X-Google-Smtp-Source: APBJJlGe4Oadz97d6MAqk6U26mnQpsHKnU2Pf6ColWhf9rdTpZ7fTGemU/U0qaeoXEhSrRE8pqouPQ==
+X-Received: by 2002:adf:e501:0:b0:314:2732:e81e with SMTP id j1-20020adfe501000000b003142732e81emr18810569wrm.8.1689184416024;
+        Wed, 12 Jul 2023 10:53:36 -0700 (PDT)
+Received: from jernej-laptop.localnet (82-149-1-233.dynamic.telemach.net. [82.149.1.233])
+        by smtp.gmail.com with ESMTPSA id x6-20020a5d6506000000b003143b14848dsm5656142wru.102.2023.07.12.10.53.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Jul 2023 10:53:35 -0700 (PDT)
+From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Samuel Holland <samuel@sholland.org>,
+        Mark Brown <broonie@kernel.org>
+Cc:     linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] pinctrl: sunxi: Add some defensiveness for regulators array
+Date:   Wed, 12 Jul 2023 19:53:34 +0200
+Message-ID: <2688812.mvXUDI8C0e@jernej-laptop>
+In-Reply-To: <20230712-pinctrl-sunxi-boudns-v1-1-85f37de79b9f@kernel.org>
+References: <20230712-pinctrl-sunxi-boudns-v1-1-85f37de79b9f@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230712150251.163790-1-jlayton@kernel.org>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 11:02:49AM -0400, Jeff Layton wrote:
-> When we covert a timestamp from raw disk format, we need to consider it
-> to be signed, as the value may represent a date earlier than 1970. This
-> fixes generic/258 on ext4.
+Dne sreda, 12. julij 2023 ob 19:19:59 CEST je Mark Brown napisal(a):
+> The sunxi pinctrl has a fixed size array it uses to store regulators used
+> in the driver. There is currently nothing that ensures that the number of
+> elements in the array is large enough to map the regulators defined by the
+> individual SoCs. While this is currently the case having an explicit check
+> in there will make life easier for anyone debugging memory issues that
+> manifest in the driver so let's add one.
 > 
-> Cc: Jan Kara <jack@suse.cz>
-> Fixes: f2ddb05870fb ("ext4: convert to ctime accessor functions")
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> Signed-off-by: Mark Brown <broonie@kernel.org>
 
-Acked-by: Theodore Ts'o <tytso@mit.edu>
+Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
 
-Thanks for the fix!
+Best regards,
+Jernej
 
-It had been on my list to checking to see if the ext4 kunit tests
-would pass, since Jan had mentioned that he had done the work to make
-sure the ext4 kunit test would compile, but he hadn't gotten around to
-try run the kunit test.  Unfortunately, I hadn't gotten to it.
+> ---
+>  drivers/pinctrl/sunxi/pinctrl-sunxi.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/pinctrl/sunxi/pinctrl-sunxi.c
+> b/drivers/pinctrl/sunxi/pinctrl-sunxi.c index 1dc1882cbdd7..1d1cd3d6d379
+> 100644
+> --- a/drivers/pinctrl/sunxi/pinctrl-sunxi.c
+> +++ b/drivers/pinctrl/sunxi/pinctrl-sunxi.c
+> @@ -848,6 +848,9 @@ static int sunxi_pmx_request(struct pinctrl_dev
+> *pctldev, unsigned offset) char supply[16];
+>  	int ret;
+> 
+> +	if (WARN_ON_ONCE(bank_offset >= ARRAY_SIZE(pctl->regulators)))
+> +		return -EINVAL;
+> +
+>  	if (reg) {
+>  		refcount_inc(&s_reg->refcount);
+>  		return 0;
+> 
+> ---
+> base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
+> change-id: 20230711-pinctrl-sunxi-boudns-95bf5da3d075
+> 
+> Best regards,
 
-I *think* the ext4 kunit tests should have caught this as well; out of
-curiosity, have you tried running the ext4 kunit tests either before
-or after this patch?  If so, what were your findings?
 
-Cheers,
 
-					- Ted
+
