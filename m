@@ -2,73 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 211BB751495
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 01:40:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4594175149B
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 01:43:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231573AbjGLXkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 19:40:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48764 "EHLO
+        id S232023AbjGLXny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 19:43:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231298AbjGLXkx (ORCPT
+        with ESMTP id S231992AbjGLXnw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 19:40:53 -0400
-Received: from mail-oa1-x34.google.com (mail-oa1-x34.google.com [IPv6:2001:4860:4864:20::34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C289E5C
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 16:40:51 -0700 (PDT)
-Received: by mail-oa1-x34.google.com with SMTP id 586e51a60fabf-1b078b34df5so60054fac.2
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 16:40:51 -0700 (PDT)
+        Wed, 12 Jul 2023 19:43:52 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F10851986
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 16:43:50 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-553ad54d3c6so155565a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 16:43:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=purestorage.com; s=google2022; t=1689205250; x=1691797250;
+        d=chromium.org; s=google; t=1689205430; x=1691797430;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=gX10h/u2AgEKQyI33m5MeDdClug4BRazkNImVUptCuk=;
-        b=fwTU2bLGr7Sk+sKJD1ewW671eMhXay4oAa1T3Er6P0BwrI6gCXNWhwwv9QOMBVCLFI
-         TFlkISyQzRlJU9ur4/mXxQ38KDlNXjPb0G+/1cD2zdTUAYP5FNtGeGzmRG7SJXzbaEt+
-         pVJAKZ6IHsRtL0ndsNj2ASJ1X47/D8wGeTiDYhxBUQt9Z9ooyIlIkGYN0AipJodyxsP/
-         48TElYA+FrnP9A3Bikz32B9SxHqfIQb4MvooCpNfdqgZGOIv3H4ySmZjCqEJGfqyPAi/
-         mgaPYbQLsFBE79LUdZcsIQH4c5uDSDf9J6+MJ4ghjyhEP+zXlpRp6qMjiZ0aj10mvUUh
-         Q9MQ==
+        bh=4IwbsLNMZjoBI8pt2zzSuSleIDve//tt+1qPzYCGebU=;
+        b=knCtFMbN4WML7vj766sEtY8KvxapiU2by8fS/mxlg7A9NlKY6gTDWsRrCG++Ao3uMm
+         ljImTF0tep7vUF7b0Z0u3jKnOC2ANSzndhehbtN5RBZysfVoKdrkWIncAOlr9TCKczBv
+         mRX/2KHZE8O62zUYUxwD6QwApWqpHXBsZvMKs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689205250; x=1691797250;
+        d=1e100.net; s=20221208; t=1689205430; x=1691797430;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=gX10h/u2AgEKQyI33m5MeDdClug4BRazkNImVUptCuk=;
-        b=W4O81h/K7bJk6PF2BVptDXJzdiZMrYGEoKs9j3Too2qViab9O07J/qtwURY4Omvc+m
-         +GL+J1hNdCiwpOnFYW3i0R2LBzmLwFpTpUOsGRV4cGvpUW//5nNE5Dto4CZnyP8RGo8R
-         WRiSAj7h+9Fxx07X4CA1eXtmuQZc7cYEMt5N1Isn+iEuxvV+PF9mlHffCmoJvYe5IImk
-         x3KMZrVOc6WDoYYndpPktuBaqGZwx+4k84iqYsSiYQpTD9Q5O1fyT9CS14rSCOChHpoP
-         ADU60P+ahnDrYjHmic7JWcQJ1+vRuNusV16doy0RSOG+qnYDJq4Yl8qwfz85r3TxfOKe
-         oQvQ==
-X-Gm-Message-State: ABy/qLZIQeTZqPkTrB00AjHaIAO0CATEPmdCI+cqElLQz0HIs80/7BCn
-        Yck+31eVm/UvWVWUxn9uQjuntw==
-X-Google-Smtp-Source: APBJJlEPB6IkUH0IphZLgS++VMmg/0wihL5I3IzhQWj/WdLcmXqOlQ68mI8W/UKLavpRhWSGy69Hbw==
-X-Received: by 2002:a05:6871:20f:b0:1b0:5fc0:e2b5 with SMTP id t15-20020a056871020f00b001b05fc0e2b5mr170509oad.53.1689205250432;
-        Wed, 12 Jul 2023 16:40:50 -0700 (PDT)
-Received: from medusa.lab.kspace.sh (c-98-207-191-243.hsd1.ca.comcast.net. [98.207.191.243])
-        by smtp.googlemail.com with ESMTPSA id t5-20020a17090a3b4500b0023fcece8067sm4559014pjf.2.2023.07.12.16.40.49
+        bh=4IwbsLNMZjoBI8pt2zzSuSleIDve//tt+1qPzYCGebU=;
+        b=j/Ag3TFSsn8+wy0R8DFKp32S8tBwcW50kVlkfAy5dy5qAMVUR7hiJPQp0vn00FIuCe
+         lXh33QP/qRjxbN5/U23SutcfCuQjEHSRceG1P+5/9lg8fuZZuH9rgV1xNwKGYkHYVcPM
+         ZqYUFh8zLyqZi3rvusEXbYe7MQjqm/Wt4AE4LOL4FDdiNclNh0VFzw4nZOk3BoVMt8vP
+         VMVIumlzkH9mFQazjX3oF2axPBpiYpKCIvMXRCgBmxXv2lLjW5AUocgkTpsovo2x5In2
+         D5TQK/+/yI8G4LVtpUZZ4grkK4JitUSXZO7fMMvXQmZyYQWx53M2jIE08Odv6vk/03ww
+         GMYQ==
+X-Gm-Message-State: ABy/qLbMpW4Sa7bgYSLM+NtBZxz5nhjUradNYsXE0USGhiEeX6Fuba2x
+        KbkDAXQI6iIrnbJ6M7H05jxn1w==
+X-Google-Smtp-Source: APBJJlG2587sgWGWzoLeo2iZEAvVs8nrf1/dt7I567aIm5zKF1zfvqFb6t3P/L2tTUZYA0qQ3fY3mA==
+X-Received: by 2002:a17:903:2288:b0:1b8:a3a6:df9c with SMTP id b8-20020a170903228800b001b8a3a6df9cmr32020plh.60.1689205430441;
+        Wed, 12 Jul 2023 16:43:50 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id t9-20020a170902e84900b001b83e5ec666sm4561085plg.6.2023.07.12.16.43.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Jul 2023 16:40:50 -0700 (PDT)
-Date:   Wed, 12 Jul 2023 16:40:47 -0700
-From:   Mohamed Khalfella <mkhalfella@purestorage.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     stable@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
-        "open list:TRACING" <linux-kernel@vger.kernel.org>,
-        "open list:TRACING" <linux-trace-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Tom Zanussi <zanussi@kernel.org>
-Subject: Re: [PATCH] tracing/histograms: Add histograms to hist_vars if they
- have referenced variables
-Message-ID: <20230712234047.GA3521501@medusa>
-References: <20230712223021.636335-1-mkhalfella@purestorage.com>
- <20230712190723.26ebadea@gandalf.local.home>
+        Wed, 12 Jul 2023 16:43:49 -0700 (PDT)
+Date:   Wed, 12 Jul 2023 16:43:49 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Azeem Shaikh <azeemshaikh38@gmail.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-hardening@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] perf: Replace strlcpy with strscpy
+Message-ID: <202307121643.096BAB33@keescook>
+References: <20230703165817.2840457-1-azeemshaikh38@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230712190723.26ebadea@gandalf.local.home>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR,URIBL_BLOCKED
+In-Reply-To: <20230703165817.2840457-1-azeemshaikh38@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,17 +77,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-07-12 19:07:23 -0400, Steven Rostedt wrote:
-> And Of course you send this to me right after I send a pull request with
-> fixes to Linus :-p
+On Mon, Jul 03, 2023 at 04:58:16PM +0000, Azeem Shaikh wrote:
+> strlcpy() reads the entire source buffer first.
+> This read may exceed the destination size limit.
+> This is both inefficient and can lead to linear read
+> overflows if a source string is not NUL-terminated [1].
+> In an effort to remove strlcpy() completely [2], replace
+> strlcpy() here with strscpy().
+> No return values were used, so direct replacement is safe.
 > 
-> Thanks for the patch. I just did a quick test, and sure enough I can
-> reproduce the bug, and your patch makes the bug go away.
+> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy
+> [2] https://github.com/KSPP/linux/issues/89
 > 
-> I run this through my full test suite, and then send Linus another pull
-> request.
-Thanks for the quick response!
-> 
-> Thanks!
-> 
-> -- Steve
+> Signed-off-by: Azeem Shaikh <azeemshaikh38@gmail.com>
+
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
+-- 
+Kees Cook
