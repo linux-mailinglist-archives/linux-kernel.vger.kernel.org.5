@@ -2,164 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 430227513B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 00:41:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 390C97513B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 00:42:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231520AbjGLWlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 18:41:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42816 "EHLO
+        id S230179AbjGLWmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 18:42:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231694AbjGLWlN (ORCPT
+        with ESMTP id S232554AbjGLWmC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 18:41:13 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53E771BF9;
-        Wed, 12 Jul 2023 15:41:12 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-51f7fb9a944so2762879a12.3;
-        Wed, 12 Jul 2023 15:41:12 -0700 (PDT)
+        Wed, 12 Jul 2023 18:42:02 -0400
+Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0AF91BE4
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 15:42:00 -0700 (PDT)
+Received: by mail-ua1-x931.google.com with SMTP id a1e0cc1a2514c-7943bfaed0dso16397241.0
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 15:42:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689201671; x=1691793671;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=eMb7+57MCTn9xpGa2NO3n4GpLHy5O1Cdz+1zInhJgXo=;
-        b=hDnNASBDETagnUQnVxkxBFWkcqjT5nLsQbk8SVEzig9Dgm1j141nubaJHSvGwY6ZDB
-         jhdtLPhPzkwhIimIdSr3gLRIyH1uFpy1ehSB2xIJB/ndFiyJd8j2XwPgOcATnemf31Gr
-         xSzYNbPI0BXkdb+jJbrcc1IOisQ+dZynC1i3a0gKkvBTNXtUlWHlvC8dlktGDuDdHLrJ
-         yDvAXHiqIYX3+gSK7QpyVLUfZyegDLpR30+4ONNND4QSC3Gu0mEXbjw/u2D13wq4cRCV
-         5/k6/9fFSRfgT1mW9tv/EggxRWde+muGqQjnTYT8TNvkrJ2tMAUfy7j4FUNPfsEeA54q
-         qnuQ==
+        d=google.com; s=20221208; t=1689201720; x=1691793720;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mz/xfQs228JkD+EmKHVt4aMZuBD4Ky+nWhlpQiowkyI=;
+        b=3JuEXg+yPSc6oD9k/gVHY9JmrXpcmYz2DdmUKfAenXycWth8Ys52+0sfJNBJqhx+JA
+         POfjtfGzT4R2YWrxkgajUcAHuZwh0tHTbms8ZnyvNuUeIHHVBkyqjnNmi7pVjn+1p2XO
+         FT+BJijgfx1i+WKA7jlT7PyuiJDtM4V2bSpZ2ORkcz5BPrprzhZVrwTkYbGJtevpuwWu
+         +4s8IYxiO+jzUiXLxbNo6SvC/rtIpPMvBFlxMxrSFT5yrglpO/RRHqDNwsQ7XIWt3Mrm
+         6q7/TIQmwLLzR3bbJ6UgAadSF6ClWCYMawulX/tcO2I2umBPB5clyz54VDHR+jYWjASk
+         +o/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689201671; x=1691793671;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=eMb7+57MCTn9xpGa2NO3n4GpLHy5O1Cdz+1zInhJgXo=;
-        b=GVaBVIzOlDl9BQZMNoQeWVEGX4BjwBpqWKFL9aPuDsP7+kzbApnxlzxX08Qbw9tfAy
-         ArX0qF0pc/Mpe0odlNZHrZljd0+wcJeUxwVrPjr19gIhzw26EKtkcrXY2ACZ4OmU+985
-         4bO7FqR1u2pTFX7U5GAji1c0FOhDh5etlUNBWSxEYH+xlodIpWVIN+O6/NRptbNNAUlk
-         t8al83Umkd2SQHDvQUK+ONiT94w9kZ91NZqz5SvQ3MRBcG9AtgKQtvWVNX1zVKadY+If
-         oFQV8nQfU8AQCSz+o2PA5JChEtJsnM+Xz/x4pb5U3YjXZvHpLwTMo5+xP24YDOxvozPD
-         eWDA==
-X-Gm-Message-State: ABy/qLZ2xiUTxs4BIqF7wwoeEyf6i76pjpcaknIsi/2Td0gzIVamYZA1
-        KjAJxtlhmfZJoXMj+LGyl0M=
-X-Google-Smtp-Source: APBJJlEgx9lMpclN99xRaDzVqXMUYXut2IEHd/vu8uCtDM5Tpo8yQi5ANjeGuD//rUg2d2dIQATCzw==
-X-Received: by 2002:a05:6402:68e:b0:51e:17d:a1c3 with SMTP id f14-20020a056402068e00b0051e017da1c3mr89998edy.32.1689201670590;
-        Wed, 12 Jul 2023 15:41:10 -0700 (PDT)
-Received: from localhost.localdomain (snat-11.cgn.sat-an.net. [176.222.226.11])
-        by smtp.gmail.com with ESMTPSA id s20-20020a056402015400b0051a2c7f5b0fsm3364949edu.88.2023.07.12.15.41.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Jul 2023 15:41:10 -0700 (PDT)
-From:   Jakub Vanek <linuxtardis@gmail.com>
-To:     Thinh.Nguyen@synopsys.com, gregkh@linuxfoundation.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Jakub Vanek <linuxtardis@gmail.com>, stable@vger.kernel.org,
-        Mauro Ribeiro <mauro.ribeiro@hardkernel.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v2] Revert "usb: dwc3: core: Enable AutoRetry feature in the controller"
-Date:   Thu, 13 Jul 2023 00:40:37 +0200
-Message-Id: <20230712224037.24948-1-linuxtardis@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        d=1e100.net; s=20221208; t=1689201720; x=1691793720;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mz/xfQs228JkD+EmKHVt4aMZuBD4Ky+nWhlpQiowkyI=;
+        b=HZjq7+0iE4Rm9ObQLH9/UOzxsE3Npzso4GAKpZKusIZA8WkzRhgYmZnwR5PxpfmuCs
+         /HEXcaW/KZinmJmjGNS2QfiLMs+fLMAweeHq6bVprSKaUlwIskYgsH+2wosasrvlux3S
+         evjQcPWDg9DcNmbwgsOx8E/OPaDRIQzwNfQeZpDSrNTL0HRzIZhgyv0WHsGhwVQ56kt5
+         9cujv2ZIwpJIFYF6Mm+TH3hTAdLkl4HHkctQjKPbGt7z4egnJanULcld7JEPMzHqPBh0
+         i1jODQDKWnZ2hRcfjyJ0pm8Vbo3D18Q+lde7GnJ4gsPD1ptBVgkzqZAV4rEQljJB8yBJ
+         J3Vg==
+X-Gm-Message-State: ABy/qLat5o5aQw3GaguNnoTxPp6LqBGmnMLpwTyH2vj7j3b7eF1v7AYv
+        IBGgKAVg+6rx2NcTj+qeDSsDZGYd9/3wHvzJm3bG3Q==
+X-Google-Smtp-Source: APBJJlHG9tuCdU7vOjJOYos5RKoNNv0/pCxlxo2gIMlFQovsMtvJLWra+WgillnY1AK2C/ycTstYjvsR47Bt+BOekOU=
+X-Received: by 2002:a67:b407:0:b0:443:4eca:f7f0 with SMTP id
+ x7-20020a67b407000000b004434ecaf7f0mr99255vsl.11.1689201719631; Wed, 12 Jul
+ 2023 15:41:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230711050445.GA19323@lst.de> <ZK1FbjG+VP/zxfO1@ziepe.ca>
+ <20230711090047.37d7fe06@kernel.org> <04187826-8dad-d17b-2469-2837bafd3cd5@kernel.org>
+ <20230711093224.1bf30ed5@kernel.org> <CAHS8izNHkLF0OowU=p=mSNZss700HKAzv1Oxqu2bvvfX_HxttA@mail.gmail.com>
+ <20230711133915.03482fdc@kernel.org> <2263ae79-690e-8a4d-fca2-31aacc5c9bc6@kernel.org>
+ <CAHS8izP=k8CqUZk7bGUx4ctm4m2kRC2MyEJv+N4+b0cHVkTQmA@mail.gmail.com>
+ <20f6cbda-e361-9a81-de51-b395ec13841a@amd.com> <ZK6ktnwIjXIobFIM@ziepe.ca> <4f6e62e0-b4c2-9fca-6964-28cfea902de0@amd.com>
+In-Reply-To: <4f6e62e0-b4c2-9fca-6964-28cfea902de0@amd.com>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Wed, 12 Jul 2023 15:41:47 -0700
+Message-ID: <CAHS8izPK4DZ-7JKuxh712tjuh1zpB+Stu6aSdC6vbN3YWHLfMg@mail.gmail.com>
+Subject: Re: Memory providers multiplexing (Was: [PATCH net-next v4 4/5]
+ page_pool: remove PP_FLAG_PAGE_FRAG flag)
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, David Ahern <dsahern@kernel.org>,
+        Samiullah Khawaja <skhawaja@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jesper Dangaard Brouer <jbrouer@redhat.com>,
+        brouer@redhat.com, Alexander Duyck <alexander.duyck@gmail.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
+        pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        hariprasad <hkelam@marvell.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Shayne Chen <shayne.chen@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Kalle Valo <kvalo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Jonathan Lemon <jonathan.lemon@gmail.com>, logang@deltatee.com,
+        Bjorn Helgaas <bhelgaas@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit b138e23d3dff90c0494925b4c1874227b81bddf7.
+On Wed, Jul 12, 2023 at 6:35=E2=80=AFAM Christian K=C3=B6nig
+<christian.koenig@amd.com> wrote:
+>
+> Am 12.07.23 um 15:03 schrieb Jason Gunthorpe:
+> > On Wed, Jul 12, 2023 at 09:55:51AM +0200, Christian K=C3=B6nig wrote:
+> >
+> >>> Anyone see any glaring issues with this approach? I plan on trying to
+> >>> implement a PoC and sending an RFC v2.
+> >> Well we already have DMA-buf as user API for this use case, which is
+> >> perfectly supported by RDMA if I'm not completely mistaken.
+> >>
+> >> So what problem do you try to solve here actually?
+> > In a nutshell, netdev's design currently needs struct pages to do DMA
+> > to it's packet buffers.
+> >
+> > So it cannot consume the scatterlist that dmabuf puts out
+> >
+> > RDMA doesn't need struct pages at all, so it is fine.
+> >
+> > If Mina can go down the path of changing netdev to avoid needing
+> > struct pages then no changes to DRM side things.
+> >
+> > Otherwise a P2P struct page and a co-existance with netmem on a
+> > ZONE_DEVICE page would be required. :\
+>
+> Uff, depending on why netdev needs struct page (I think I have a good
+> idea why) this isn't really going to work generically either way.
+>
+> What we maybe able to do is to allow copy_file_range() between DMA-buf
+> file descriptor and a TCP socket.
+>
+> If I'm not completely mistaken that should then end up in DMA-bufs
+> file_operations->copy_file_range callback (maybe with some minor change
+> to allows this).
+>
+> The DMA-buf framework could then forward this to the exporter of the
+> memory which owns the backing memory could then do the necessary steps.
+>
 
-AutoRetry has been found to cause some issues. This feature allows
-the controller in host mode (further referred to as the xHC) to send
-non-terminating/burst retry ACKs (Retry=1 and Nump!=0) instead of
-terminating retry ACKs (Retry=1 and Nump=0) to devices when
-a transaction error occurs.
+I may be missing something, but the way it works on our end for
+receive is that we give a list of buffers (dma_addr + length + other
+metadata) to the network card, and the network card writes incoming
+packets to these dma_addrs and gives us an rx completion pointing to
+the data it DMA'd. Usually the network card does something like an
+alloc_page() + dma_map_page() and provides the to the network card.
+Transmit path works similarly. Not sure that adding copy_file_range()
+support to dma-buf enables this in some way.
 
-Unfortunately, some USB devices fail to retry transactions when
-the xHC sends them a burst retry ACK. When this happens, the xHC
-enters a strange state. After the affected transfer times out,
-the xHCI driver tries to resume normal operation of the xHC
-by sending it a Stop Endpoint command. However, the xHC fails
-to respond to it, and the xHCI driver gives up. [1]
-This fact is reported via dmesg:
-
-[sda] tag#29 uas_eh_abort_handler 0 uas-tag 1 inflight: CMD IN
-[sda] tag#29 CDB: opcode=0x28 28 00 00 69 42 80 00 00 48 00
-xhci-hcd: xHCI host not responding to stop endpoint command
-xhci-hcd: xHCI host controller not responding, assume dead
-xhci-hcd: HC died; cleaning up
-
-Some users observed this problem on an Odroid HC2 with the JMS578
-USB3-to-SATA bridge. The issue can be triggered by starting
-a read-heavy workload on an attached SSD. After a while, the host
-controller would die and the SSD would disappear from the system. [1]
-
-Further analysis by Synopsys determined that controller revisions
-other than the one in Odroid HC2 are also affected by this.
-The recommended solution was to disable AutoRetry altogether.
-This change does not have a noticeable performance impact. [2]
-
-Fixes: b138e23d3dff ("usb: dwc3: core: Enable AutoRetry feature in the controller")
-Link: https://lore.kernel.org/r/a21f34c04632d250cd0a78c7c6f4a1c9c7a43142.camel@gmail.com/ [1]
-Link: https://lore.kernel.org/r/20230711214834.kyr6ulync32d4ktk@synopsys.com/ [2]
-Cc: stable@vger.kernel.org
-Cc: Mauro Ribeiro <mauro.ribeiro@hardkernel.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Suggested-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Signed-off-by: Jakub Vanek <linuxtardis@gmail.com>
----
-V1 -> V2: Updated to disable AutoRetry everywhere based on Synopsys feedback
-          Reworded the changelog a bit to make it clearer
-
- drivers/usb/dwc3/core.c | 16 ----------------
- drivers/usb/dwc3/core.h |  3 ---
- 2 files changed, 19 deletions(-)
-
-diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
-index f6689b731718..a4e079d37566 100644
---- a/drivers/usb/dwc3/core.c
-+++ b/drivers/usb/dwc3/core.c
-@@ -1209,22 +1209,6 @@ static int dwc3_core_init(struct dwc3 *dwc)
- 		dwc3_writel(dwc->regs, DWC3_GUCTL1, reg);
- 	}
- 
--	if (dwc->dr_mode == USB_DR_MODE_HOST ||
--	    dwc->dr_mode == USB_DR_MODE_OTG) {
--		reg = dwc3_readl(dwc->regs, DWC3_GUCTL);
--
--		/*
--		 * Enable Auto retry Feature to make the controller operating in
--		 * Host mode on seeing transaction errors(CRC errors or internal
--		 * overrun scenerios) on IN transfers to reply to the device
--		 * with a non-terminating retry ACK (i.e, an ACK transcation
--		 * packet with Retry=1 & Nump != 0)
--		 */
--		reg |= DWC3_GUCTL_HSTINAUTORETRY;
--
--		dwc3_writel(dwc->regs, DWC3_GUCTL, reg);
--	}
--
- 	/*
- 	 * Must config both number of packets and max burst settings to enable
- 	 * RX and/or TX threshold.
-diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
-index 8b1295e4dcdd..a69ac67d89fe 100644
---- a/drivers/usb/dwc3/core.h
-+++ b/drivers/usb/dwc3/core.h
-@@ -256,9 +256,6 @@
- #define DWC3_GCTL_GBLHIBERNATIONEN	BIT(1)
- #define DWC3_GCTL_DSBLCLKGTNG		BIT(0)
- 
--/* Global User Control Register */
--#define DWC3_GUCTL_HSTINAUTORETRY	BIT(14)
--
- /* Global User Control 1 Register */
- #define DWC3_GUCTL1_DEV_DECOUPLE_L1L2_EVT	BIT(31)
- #define DWC3_GUCTL1_TX_IPGAP_LINECHECK_DIS	BIT(28)
--- 
-2.25.1
-
+--=20
+Thanks,
+Mina
