@@ -2,130 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72119750F20
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 18:59:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D28B5750F21
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 18:59:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232443AbjGLQ7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 12:59:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54662 "EHLO
+        id S232569AbjGLQ7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 12:59:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjGLQ7g (ORCPT
+        with ESMTP id S229446AbjGLQ7n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 12:59:36 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56C8A11D;
-        Wed, 12 Jul 2023 09:59:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Vz/tOg41P4p1d33Hb8aHe1RPyw3zTJIf/VyvOU8uRdA=; b=B5sZqLvcv1fs7TOkzddJpdkOfo
-        KKKXcNlCOnXL9bS79Kf7OZdI1p3kkotJMseOlP0AFexJdVi7vArRqD6+R3AuiDHBi6KTehsaXh9Tk
-        mfvi4Hv7ZL9LLW1TfN6cLgbP0amq7v9TPFLVIWPXf+IwjnRseWE7UbxG0RdMXxSGotpdi0TKAPtPi
-        fSprwJGGEgVRBX2jJkUsRk+Sq7TjjHuOuMC3+HbAuKQyWAgu7gdL2u/gYaRKgipwTfrtJvFBncPwz
-        MyIN8MuXAEBSZ5q9BLGEESlCJGoS6Ona8z5giw3aeN7DICCPcDpyIVkMfmUiK4pFeVn+DUyFT0hVw
-        UTaZnUjg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qJdBI-00GtYT-NQ; Wed, 12 Jul 2023 16:59:12 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        Wed, 12 Jul 2023 12:59:43 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A3481BFA;
+        Wed, 12 Jul 2023 09:59:42 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4C29030036B;
-        Wed, 12 Jul 2023 18:59:12 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 2B76B27E80242; Wed, 12 Jul 2023 18:59:12 +0200 (CEST)
-Date:   Wed, 12 Jul 2023 18:59:12 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Kai Huang <kai.huang@intel.com>
-Cc:     kirill.shutemov@linux.intel.com, linux-kernel@vger.kernel.org,
-        dave.hansen@intel.com, tglx@linutronix.de, bp@alien8.de,
-        mingo@redhat.com, hpa@zytor.com, x86@kernel.org, seanjc@google.com,
-        pbonzini@redhat.com, kvm@vger.kernel.org, isaku.yamahata@intel.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH 07/10] x86/tdx: Extend TDX_MODULE_CALL to support more
- TDCALL/SEAMCALL leafs
-Message-ID: <20230712165912.GA3100142@hirez.programming.kicks-ass.net>
-References: <cover.1689151537.git.kai.huang@intel.com>
- <ecfd84af9186aa5368acb40a2740afbf1d0d1b5d.1689151537.git.kai.huang@intel.com>
- <20230712165336.GA3115257@hirez.programming.kicks-ass.net>
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B2C7761879;
+        Wed, 12 Jul 2023 16:59:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C69A6C433C8;
+        Wed, 12 Jul 2023 16:59:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689181181;
+        bh=HQtXkMg12Bx/r1+2FzstJ+bpGVWpL35U0D2HToug0qI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TbFnCeQ0k4sYSwBow+wy/0KN6BCCfYiinHy1ICWWBFz4isQyRq/qWecNr861xSpdH
+         FCnO+FW37zj66bmQni5dmPYpoCchqBMJQwde5Co3EYHS9AWTWIFpgvNaP/gzFmfcLw
+         E59Wp7SItpJ0QExhK3b6kh30OgjJ1cq1h316Jd4D7qPtzOso2nJAsmZM+IL1fTCW8p
+         rjEGTxddmM/qTfTX2Q4jQ1w9aZUzSeEEK4YEA/NJ8Nv5IU7DCUchrtvo1QeVJtu8I9
+         DFV4vDFpyJZDGjX/65ZCv/iFdlJhWhN7FByCOcnBt+2gBJIGFE7fRsQFiBqmVaw6Ow
+         J/2Mkpzn9jsRQ==
+Date:   Wed, 12 Jul 2023 18:59:38 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
+        lkp@intel.com, linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: [linus:master] [rcu/nocb]  7625926086:
+ WARNING:at_kernel/rcu/tree_nocb.h:#rcu_nocb_try_bypass
+Message-ID: <ZK7b+vIJpOZhndbm@lothringen>
+References: <202307111535.4823c255-oliver.sang@intel.com>
+ <ZK1983kQCrN+zCqs@lothringen>
+ <842683bc-5859-48be-8ca5-17a1e4bf3f39@paulmck-laptop>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230712165336.GA3115257@hirez.programming.kicks-ass.net>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <842683bc-5859-48be-8ca5-17a1e4bf3f39@paulmck-laptop>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 06:53:37PM +0200, Peter Zijlstra wrote:
-> On Wed, Jul 12, 2023 at 08:55:21PM +1200, Kai Huang wrote:
+On Tue, Jul 11, 2023 at 09:41:58AM -0700, Paul E. McKenney wrote:
+> On Tue, Jul 11, 2023 at 06:06:11PM +0200, Frederic Weisbecker wrote:
+> Heh!
 > 
+> The purpose was to see if this lock was ever contended.  I guess we now
+> have an answer, which is "Yes, but rarely."
 > 
-> > @@ -72,7 +142,46 @@
-> >  	movq %r9,  TDX_MODULE_r9(%rsi)
-> >  	movq %r10, TDX_MODULE_r10(%rsi)
-> >  	movq %r11, TDX_MODULE_r11(%rsi)
-> > -	.endif
-> > +	.endif	/* \ret */
-> > +
-> > +	.if \saved
-> > +	.if \ret && \host
-> > +	/*
-> > +	 * Clear registers shared by guest for VP.ENTER to prevent
-> > +	 * speculative use of guest's values, including those are
-> > +	 * restored from the stack.
-> > +	 *
-> > +	 * See arch/x86/kvm/vmx/vmenter.S:
-> > +	 *
-> > +	 * In theory, a L1 cache miss when restoring register from stack
-> > +	 * could lead to speculative execution with guest's values.
-> > +	 *
-> > +	 * Note: RBP/RSP are not used as shared register.  RSI has been
-> > +	 * restored already.
-> > +	 *
-> > +	 * XOR is cheap, thus unconditionally do for all leafs.
-> > +	 */
-> > +	xorq %rcx, %rcx
-> > +	xorq %rdx, %rdx
-> > +	xorq %r8,  %r8
-> > +	xorq %r9,  %r9
-> > +	xorq %r10, %r10
-> > +	xorq %r11, %r11
+> It looks like the victim commit increased the size of the ->nocb_lock
+> critical section, just enough to make this happen sometimes.
 > 
-> > +	xorq %r12, %r12
-> > +	xorq %r13, %r13
-> > +	xorq %r14, %r14
-> > +	xorq %r15, %r15
-> > +	xorq %rbx, %rbx
-> 
-> ^ those are an instant pop below, seems daft to clear them.
+> Removing the WARN_ON_ONCE() seems appropriate, especially given that
+> this only happens when shrinking.
 
-Also, please use the 32bit variant:
+Ok, I'll check that.
 
-	xorl	%ecx, %ecx
+> Should we add something that monitors that lock's contention?  It is
+> often the case that lock contention rises over time as new features and
+> optimizations are added.
 
-saves a RAX prefix each.
+I'm not sure. Should we keep the current ->nocb_lock_contended based engine
+to report contention somehow somewhere? Also does it behave better than our
+current spinlock slow path implementations?
 
-> > +	xorq %rdi, %rdi
-> > +	.endif	/* \ret && \host */
-> > +
-> > +	/* Restore callee-saved GPRs as mandated by the x86_64 ABI */
-> > +	popq	%r15
-> > +	popq	%r14
-> > +	popq	%r13
-> > +	popq	%r12
-> > +	popq	%rbx
-> > +	.endif	/* \saved */
-> >  
-> >  	FRAME_END
-> >  	RET
-> > -- 
-> > 2.41.0
-> > 
+Thanks.
