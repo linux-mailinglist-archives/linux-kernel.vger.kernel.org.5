@@ -2,241 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 687087511BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 22:16:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 321327511C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 22:17:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232292AbjGLUQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 16:16:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47098 "EHLO
+        id S232370AbjGLURG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 16:17:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjGLUQQ (ORCPT
+        with ESMTP id S229512AbjGLURE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 16:16:16 -0400
-Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D9CC1FE4
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 13:16:14 -0700 (PDT)
-Received: by mail-vs1-xe2b.google.com with SMTP id ada2fe7eead31-440ad576d87so28159137.1
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 13:16:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689192973; x=1691784973;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/ZSa4NetAP62hVIVyvAbNH/+emK9xW+vVSDSphd0g5Y=;
-        b=f3Ii093FW9+oc2F8zRSaiEu5EyBxsVuk08e/GPtsqsSeShWLCXC1bZxIOmmMmcmq1X
-         oK6yGMz/yKUAxH6edgErEdCMXXNog2fkqOIotGgFfIVUj0iCgmVT+v8LC5kpCquThfT7
-         s7k5uUiWkhgOwmaUx18/OOTEOwqIkO3nmFoBTk4Dexu9TnDZDg74BS662UfijW794wbe
-         4mv5gp2rm0Aw88kz4kO6NM+04OR7peKtJVIioaYBTxh1ruVx+TUQsaXoyF64QJDSCbCU
-         fJTbKpPR0YESffxmDzel4+2Y9WS8i4XOsqrufpBhzDjq1QWzp4YaNmCPgw4rBSNvB9NK
-         5lvw==
+        Wed, 12 Jul 2023 16:17:04 -0400
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1B011FE4
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 13:17:03 -0700 (PDT)
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-579ef51428eso86225237b3.2
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 13:17:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689192973; x=1691784973;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/ZSa4NetAP62hVIVyvAbNH/+emK9xW+vVSDSphd0g5Y=;
-        b=kEBY2O8y3rltx67OtdSf0L4OWGI8Oo/arJLZrmK/h2b0TG770dYoMHzxFa5nwTo04c
-         sK7axe80PAgbES7PVk7eBdaS0uVLIyjU6B4m8DTfZTtF9SSwbUeyc/lR/4ipwZYMbZwR
-         PpJNxEXbACcE19rW/LCkxAfn0FFPB2cmaeeBdbdYcMfKuwZnG16u09R55Rw+ajM33V9D
-         4km81viCildJ5N0iredxS8fa3Bsmy3KSmL8vubmnG4sR2MDkaZirMkIKl4Nyae/ujnc2
-         etIVa1bsBASWimC4c/WyJMDSjsquc0nSOgBh/W2HxRt9cn2I8KKKHq5/wisSqB++E+2j
-         ef2Q==
-X-Gm-Message-State: ABy/qLaJwnWrkZvkOzgF4sDP/hSyQUKpAbUaymfmNltwV80RqJz4Ph1w
-        wfPT4nevQo0iBnmbZ35mx9Ka0p8KZNn+x8quw+Ohtg==
-X-Google-Smtp-Source: APBJJlEZodLxymYp6zmTXbF705s1wpVAmKh0FiHChRMpwA1Y+RhEAUbnIuR5QMDX6deaSzma4SHNwgy0sovv8EPmhPw=
-X-Received: by 2002:a67:af0b:0:b0:445:208:2d62 with SMTP id
- v11-20020a67af0b000000b0044502082d62mr12673636vsl.23.1689192973170; Wed, 12
- Jul 2023 13:16:13 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689193023; x=1691785023;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Q4/hT9iYswIxEKI2hIMtLu+Jf2pBiry/HIZV8WkntV0=;
+        b=RHQdySqndNzPdRmHs0SUKtI1TapS/6Azjrb0IcVz0QBccbzM0vtanKeNtSJ9PSXVKc
+         nQHG2NiSB6zomrkH6XBVhi0z5jQD6PUIWMaFxd6ryznWVnDbr10FQH3H0lBtyTkP7dGn
+         SdDdgwcbH8cHIUg1DCUCBYz9fmtboLuoQaQdCXyofvFSsoiVcZEZxxbIwIupcrqHg10Q
+         pqdLlt+qJ6Sl2+zM4+jxZYYtqXgNfB9tF41jq8nVcfOP3BgHZy18kZaP+hYbIWHLODgD
+         CnxrQEJ9GTziSnBzxM71RSOJ3pOx7YQ3x6tU9x16tIlUby7ZZcg/AuiGMfV+quujaJ5G
+         aHjg==
+X-Gm-Message-State: ABy/qLZDBFNx1Hw+jwciKTAWR26sldehmWJ9Z1Jf0c5QmIf8Nzsh7fKk
+        /mTi/bTntb2lrhVQT0BaOOks1Z/jGMA3lg==
+X-Google-Smtp-Source: APBJJlGDmqt6baUYQtX49ckZsDtGZUq3ee5f+yBxl//q+syIBLG+FyfOUG3bYpB34dp8eEqI9Z7Pzg==
+X-Received: by 2002:a0d:de45:0:b0:576:7f76:ee59 with SMTP id h66-20020a0dde45000000b005767f76ee59mr23889785ywe.23.1689193022889;
+        Wed, 12 Jul 2023 13:17:02 -0700 (PDT)
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com. [209.85.128.174])
+        by smtp.gmail.com with ESMTPSA id l10-20020a81d54a000000b0056ffdec590csm1355285ywj.41.2023.07.12.13.17.01
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 Jul 2023 13:17:01 -0700 (PDT)
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-579ef51428eso86224987b3.2
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 13:17:01 -0700 (PDT)
+X-Received: by 2002:a81:6646:0:b0:56f:fa68:2e34 with SMTP id
+ a67-20020a816646000000b0056ffa682e34mr21446531ywc.35.1689193021607; Wed, 12
+ Jul 2023 13:17:01 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230710215906.49514550@kernel.org> <20230711050445.GA19323@lst.de>
- <ZK1FbjG+VP/zxfO1@ziepe.ca> <20230711090047.37d7fe06@kernel.org>
- <04187826-8dad-d17b-2469-2837bafd3cd5@kernel.org> <20230711093224.1bf30ed5@kernel.org>
- <CAHS8izNHkLF0OowU=p=mSNZss700HKAzv1Oxqu2bvvfX_HxttA@mail.gmail.com>
- <20230711133915.03482fdc@kernel.org> <2263ae79-690e-8a4d-fca2-31aacc5c9bc6@kernel.org>
- <CAHS8izP=k8CqUZk7bGUx4ctm4m2kRC2MyEJv+N4+b0cHVkTQmA@mail.gmail.com> <ZK6kOBl4EgyYPtaD@ziepe.ca>
-In-Reply-To: <ZK6kOBl4EgyYPtaD@ziepe.ca>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Wed, 12 Jul 2023 13:16:00 -0700
-Message-ID: <CAHS8izNuda2DXKTFAov64F7J2_BbMPaqJg1NuMpWpqGA20+S_Q@mail.gmail.com>
-Subject: Re: Memory providers multiplexing (Was: [PATCH net-next v4 4/5]
- page_pool: remove PP_FLAG_PAGE_FRAG flag)
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     David Ahern <dsahern@kernel.org>,
-        Samiullah Khawaja <skhawaja@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        brouer@redhat.com, Alexander Duyck <alexander.duyck@gmail.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
-        pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        hariprasad <hkelam@marvell.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Felix Fietkau <nbd@nbd.name>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Shayne Chen <shayne.chen@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Kalle Valo <kvalo@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        logang@deltatee.com, Bjorn Helgaas <bhelgaas@google.com>
+References: <20230712132840.GKZK6qiK70m1O90jFL@fat_crate.local>
+ <ZK6zdsIbnQFUmK69@redhat.com> <2023071200-unopposed-unbuckled-cde8@gregkh>
+ <CAMw=ZnTVRaqRmtz+sDj7AeAS7xivSu+56UgKbzmuW9+K6TTx1A@mail.gmail.com>
+ <2023071239-progress-molasses-3b3d@gregkh> <CAMw=ZnRheXk7W_r-32bGymbHKdXc7aKUpwGAOX+k7DJkN+DiCQ@mail.gmail.com>
+ <2023071229-dusk-repacking-da3a@gregkh> <CAMw=ZnSmZTBs+bJsQ_Y2CVO8K3OTuHOZDKW4cbxKpGbo4Vgs7Q@mail.gmail.com>
+ <20230712194202.GNZK8CCj4yacgFMgfB@fat_crate.local> <CAMw=ZnSa-NqfbEd9vchEwHwdUujNAXo=gb3dfd=HDw4W37RNjQ@mail.gmail.com>
+ <20230712200108.GOZK8GhJTkpuIDI4Rg@fat_crate.local>
+In-Reply-To: <20230712200108.GOZK8GhJTkpuIDI4Rg@fat_crate.local>
+From:   Luca Boccassi <bluca@debian.org>
+Date:   Wed, 12 Jul 2023 21:16:50 +0100
+X-Gmail-Original-Message-ID: <CAMw=ZnSBv=R5A9Yn5n-N+_QMaaUipVGxEJA1JWv__S3z5MmHrA@mail.gmail.com>
+Message-ID: <CAMw=ZnSBv=R5A9Yn5n-N+_QMaaUipVGxEJA1JWv__S3z5MmHrA@mail.gmail.com>
+Subject: Re: [RFC PATCH v2] x86/boot: add .sbat section to the bzImage
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        =?UTF-8?Q?Daniel_P=2E_Berrang=C3=A9?= <berrange@redhat.com>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>, lennart@poettering.net,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 6:01=E2=80=AFAM Jason Gunthorpe <jgg@ziepe.ca> wrot=
-e:
+On Wed, 12 Jul 2023 at 21:01, Borislav Petkov <bp@alien8.de> wrote:
 >
-> On Tue, Jul 11, 2023 at 08:42:24PM -0700, Mina Almasry wrote:
+> On Wed, Jul 12, 2023 at 08:56:36PM +0100, Luca Boccassi wrote:
+> > Everything < 3 is revoked _and_ the generation id in the stable branch
+> > is _not_ bumped, because it's still vulnerable and so that branch is
+> > effectively dead and unbootable on any system with secure boot
+> > enabled. This is a revocation mechanism, not a bug tracking mechanism.
+> > There's no mix-and-matching.
 >
-> > 1. The device memory driver would be the p2pdma provider. It would
-> > expose a user API which allocates a device memory region, calls
-> > pci_p2pdma_add_resource() and pci_p2pmem_publish() on it, and returns
-> > a reference to it to the userspace.
->
-> This is not quite right, if you convert any of the GPU drivers to use
-> P2PDMA you are going to need to restructure the p2pmem stuff to
-> seperate the genalloc. The GPU driver must continue to be the owner
-> and allocator of the MMIO memory it already controls, we can't have
-> two allocators working in parallel.
->
-> The genalloc stuff supports the special NVMe use case, I don't know of
-> anything else that would like to work that way.
->
+> No, this is a mess waiting to happen.
 
-I think maybe you misunderstood the proposal. AFAICT the genalloc
-stuff works for us, although there are other issues with p2pdma that I
-need to solve.
+That's not very convincing. You are aware that this mechanism exists
+and is already used by other EFI components, yes?
 
-The proposal was that the uapi in step #1 allocates a region of GPU
-memory, and sets up a p2pdma provider for this region of memory. From
-the perspective of the GPU, the memory is allocated, and in use by the
-user. The p2pdma provider uses genalloc to give out 4K regions with
-struct pages to in-kernel allocators from this memory region. Why
-would that not work? Looking at the code, that seems to be how p2pdma
-works today. The p2pdma provider does p2pdma_add_resource() on a chunk
-of its memory, and the genalloc allocates memory from that chunk?
-
-The actual issues I see with this approach are:
-
-1. There is no way for the p2pdma provider to relinquish back the
-memory it has provided via pci_p2pdma_add_resource(), in the case that
-the user crashed or would like to free the GPU buffer. I would need to
-add a pci_p2pdma_remove_resource(). Would that be  acceptable?
-
-2. The p2pdma semantics seem to be global to the pci device. I.e., 1
-GPU can export 1 p2pdma resource at a time (the way I'm reading the
-API). This is not usable for my use case. I would need multiple users
-to be able to use the uapi in step #1 simultaneously. I would need the
-same pci device to export different p2pdma resources simultaneously
-and the p2pdma clients would need to be able to import some of the
-resources. I would likely need to add an api like this:
-
-diff --git a/include/linux/pci-p2pdma.h b/include/linux/pci-p2pdma.h
-index 8318a97c9c61..c9d754713fdc 100644
---- a/include/linux/pci-p2pdma.h
-+++ b/include/linux/pci-p2pdma.h
-@@ -19,6 +19,33 @@ struct scatterlist;
- #ifdef CONFIG_PCI_P2PDMA
- int pci_p2pdma_add_resource(struct pci_dev *pdev, int bar, size_t size,
-                u64 offset);
-+
-+/* Adds a resource similar to pci_p2pdma_add_resource, and returns a file
-+ * handle referring to this resource. Multiple such resources can be expor=
-ted
-+ * by the same pci device.
-+ */
-+struct file *pci_p2pdma_add_resource_with_handle(struct pci_dev *pdev,
-+               int bar,
-+               size_t size,
-+               u64 offset);
-+
-+/* Remove a resource added via pci_p2pdma_add_resource_with_handle() */
-+struct file *pci_p2pdma_remove_resource_with_handle(
-+               struct file *p2pdma_resource_file);
-+
-+/* Allocates memory from a resource created using
-+ * pci_p2pdma_add_resource_with_handle()
-+ */
-+void *pci_alloc_p2pmem_from_handle(struct file *p2pdma_resource_file,
-+               size_t size);
-+
-+/* Frees p2pmem to a resource created using
-+ * pci_p2pdma_add_resource_with_handle()
-+ */
-+void pci_free_p2pmem_to_handle(struct pci_dev *p2pdma_resource_file,
-+               void *addr,
-+               size_t size);
-+
-
-Looking for feedback from anyone knowledgeable, but the p2pdma
-maintainers as well if possibl.
-
-> > 2. The NIC driver would be the p2pdma client and orchestrator. It
-> > would expose a user API which binds an rxq to a pci device. Prior to
-> > the bind the user API would check that the pci device has published
-> > p2p memory (pci_has_p2pmem()), and check the the p2p mem is accessible
-> > to the driver (pci_p2pdma_distance() I think), etc.
+> > Nah, it belongs in both places. Please read the documentation and
+> > spend at least some time trying to understand the actual problem being
 >
-> This doesn't fit the programming model for GPUs at all. You don't want
-> to get packets landing in random GPU memory that a kernel side
-> allocator selects, you want packets landing in GPU memory owned by a
-> specific process that owns the TCP connection.
->
+> You want to have this patch in the tree - the commit message should
+> explain why it is needed and not point to some documentation somewhere.
 
-I think this comment is maybe a side effect of the misunderstanding.
-In the proposal, the user allocates a GPU buffer using the API in step
-#1, and then binds the memory to the NIC rx queue using the API
-specified in step #2. We use flow steering & RSS to steer this user's
-TCP traffic to the buffer owned by them.
+Then why not just ask for that, instead of making convoluted
+assumptions based on nothing of substance?
 
-> This is why DMABUF is used here as it gives a handle to the GPU
-> memory. What you want is to get the P2P pages either directly from the
-> DMABUF or via pin_user_pages() on the DMABUF's mmap.
+> > solved before commenting - or don't comment at all, that's fine too.
 >
-> > AFAICT, all the concerns brought up in this thread are sidestepped by
-> > using p2pdma. I need not allocate struct pages in the core dma-buf
-> > code anymore (or anywhere), and I need not allocate pgmaps. I would
-> > just re-use the p2pdma support.
+> Here's a comment for ya:
 >
-> Well, as I said it is going to be a big ask to P2P enable any of the
-> DRM drivers.
->
-> And you still have the netmem vs zone_device struct page conflict to
-> figure out
->
-> But it is alot closer to reasonable than this RFC.
->
-> Jason
+> Naked-by: Borislav Petkov (AMD) <bp@alien8.de>
 
---=20
-Thanks,
-Mina
+So very mature. No wonder kernel maintainers and the LKML are
+universally loved and praised.
