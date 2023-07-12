@@ -2,123 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1D6F750EFE
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 18:52:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1570C750F0B
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 18:54:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231678AbjGLQwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 12:52:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49886 "EHLO
+        id S232997AbjGLQx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 12:53:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbjGLQwO (ORCPT
+        with ESMTP id S232600AbjGLQxz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 12:52:14 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 834E212E
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 09:52:12 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b6f943383eso117145241fa.2
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 09:52:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1689180730; x=1691772730;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=oAuCX7b/d1hbHKp+310Sb1Zp5QGgY2qfzYziff3Pm1c=;
-        b=U5ONKyp89d8LjT1vJe3usI67MT+9QxOmfVCOnV8Qu1V72IlaDhrnb03Zsqn440Rr4M
-         B2fBHx4diBfDXv+wMUC7thn/86QRjglRTgYGshZRHvXSfInKy4w8SLCg8k7tPgXo0aOw
-         FTpHc/9OLYlhJB4h56Lq2MX4SsudXF3Dy0Ws4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689180730; x=1691772730;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oAuCX7b/d1hbHKp+310Sb1Zp5QGgY2qfzYziff3Pm1c=;
-        b=lOwXESlyR+hNpO05aiJ4xjEj2KjIPtTKnXC9zq15/DIThjYe6UlqJIB4fR3yVAfk54
-         tZEew7kD4qdmTi7ZHo34We0nzduXSNicKYf4ZLx/5E/X4EyK6Xer4auvnwUrOLaFnfaP
-         qXftqr26ugT5GKQ91wDeII6iHC7caCKEUrp6vUP/SMr7F2PTvD7312ai+GbYJM7UpLE0
-         CP5EfHrKqyojEymVlN35L8afnG5FRH+Jl+6ugU+PauTaVc/WJDFWqA1Bh8p3gq/+PQrJ
-         4V7ICyOQkP5YdYYTnfdrREapg6vSeqr62wut38h4G+J5GnPnqMOsMOfSpRsMPncFIlrK
-         f63w==
-X-Gm-Message-State: ABy/qLb01U1RV8nGILsPuM1KuUIVkPxYda1r4yh3qBzXfcRkC9jMrkDG
-        GjgwH/GQFczF9MqU+ZNutX5gmk+QHF5ukXn7CR6gxZZz
-X-Google-Smtp-Source: APBJJlHnwaz0xGYZNm0qGtRj1Mhs32bW1hItlp4CGkLgB1ZWtC8z0gooPyWIPvvAdK9dx284+cy/UQ==
-X-Received: by 2002:a05:651c:120c:b0:2b5:80e0:f18e with SMTP id i12-20020a05651c120c00b002b580e0f18emr17796281lja.3.1689180730711;
-        Wed, 12 Jul 2023 09:52:10 -0700 (PDT)
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
-        by smtp.gmail.com with ESMTPSA id e16-20020a2e9310000000b002b6cb40e9aasm1014444ljh.103.2023.07.12.09.52.09
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 Jul 2023 09:52:09 -0700 (PDT)
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-4fb94b1423eso11058965e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 09:52:09 -0700 (PDT)
-X-Received: by 2002:a05:6512:3090:b0:4f8:4512:c844 with SMTP id
- z16-20020a056512309000b004f84512c844mr19547117lfd.48.1689180728994; Wed, 12
- Jul 2023 09:52:08 -0700 (PDT)
+        Wed, 12 Jul 2023 12:53:55 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71A2712E;
+        Wed, 12 Jul 2023 09:53:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=HHorMwySluudpbrm2kHEFECtUNJWABsOsPm2V3H84B4=; b=a5FZQOMxmxJy9IfEQ5SA3svsng
+        PI6+f2Lz6iwIDyI7KPVa7oKtuLASYXiVsCOxohgD9xia5150VCwZ8AqN4raTfa4ypwusB0YgCxtXx
+        Z3brASfbg1U8tbyYqifWCpyCpj+TRHPFCmFSR70vrkF96TZoM120DDKRKFVXZFcka+dOj+OHjkfBP
+        fcsT1KuUhep/jKrt+M5rN7GcDeBnWqIucpgz6pJit/VAv0xNytjKIULwuWHiunUS8sqLoimwrNj0N
+        PHz5I+i3S6/nY5wITsJTdZ8QTIxHXUuszU1ro7vuY5UX92iuLgZS//eYBpdnn7e187HlwAH0TKV4T
+        BIIDYtaQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qJd5v-00GtJ8-BO; Wed, 12 Jul 2023 16:53:39 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 24BEC3002CE;
+        Wed, 12 Jul 2023 18:53:37 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 0E7072464A14A; Wed, 12 Jul 2023 18:53:37 +0200 (CEST)
+Date:   Wed, 12 Jul 2023 18:53:36 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Kai Huang <kai.huang@intel.com>
+Cc:     kirill.shutemov@linux.intel.com, linux-kernel@vger.kernel.org,
+        dave.hansen@intel.com, tglx@linutronix.de, bp@alien8.de,
+        mingo@redhat.com, hpa@zytor.com, x86@kernel.org, seanjc@google.com,
+        pbonzini@redhat.com, kvm@vger.kernel.org, isaku.yamahata@intel.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH 07/10] x86/tdx: Extend TDX_MODULE_CALL to support more
+ TDCALL/SEAMCALL leafs
+Message-ID: <20230712165336.GA3115257@hirez.programming.kicks-ass.net>
+References: <cover.1689151537.git.kai.huang@intel.com>
+ <ecfd84af9186aa5368acb40a2740afbf1d0d1b5d.1689151537.git.kai.huang@intel.com>
 MIME-Version: 1.0
-References: <d18d2a08-9d24-0209-c2cf-baf60bbf5048@gmail.com>
- <ZJsKBkPqoWzYyngS@kbusch-mbp.dhcp.thefacebook.com> <6f333133-2cc4-406a-d6c2-642ac6ccabca@leemhuis.info>
- <CGME20230710155902eucas1p2b464a29adc35e983c73b00d18ab5344c@eucas1p2.samsung.com>
- <ZKwqvTMPVmhnkZjS@kbusch-mbp.dhcp.thefacebook.com> <f0fdf86e-4293-8e07-835d-b5a866252068@samsung.com>
- <462e0e1e-98ea-0f3c-4aaa-8d44f0a8e664@leemhuis.info> <20230711120609.GB27050@lst.de>
- <CAHk-=whXh9sgLo24RO02JjfD0m3HE5NADRPWoEd+dW6bruFhVA@mail.gmail.com> <20230712164546.GA31434@lst.de>
-In-Reply-To: <20230712164546.GA31434@lst.de>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 12 Jul 2023 09:51:52 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whA9rmvNfo=8iKmtimayiA2Aus4XvPwcDrA53G2rfGP0w@mail.gmail.com>
-Message-ID: <CAHk-=whA9rmvNfo=8iKmtimayiA2Aus4XvPwcDrA53G2rfGP0w@mail.gmail.com>
-Subject: Re: Fwd: Need NVME QUIRK BOGUS for SAMSUNG MZ1WV480HCGL-000MV
- (Samsung SM-953 Datacenter SSD)
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Linux regressions mailing list <regressions@lists.linux.dev>,
-        Pankaj Raghav <p.raghav@samsung.com>,
-        Keith Busch <kbusch@kernel.org>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>, Sagi Grimberg <sagi@grimberg.me>,
-        "Clemens S." <cspringsguth@gmail.com>,
-        Martin Belanger <martin.belanger@dell.com>,
-        Chaitanya Kulkarni <kch@nvidia.com>,
-        John Meneghini <jmeneghi@redhat.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux NVMe <linux-nvme@lists.infradead.org>,
-        Kanchan Joshi <joshi.k@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>,
-        =?UTF-8?B?67CV7KeE7ZmY?= <jh.i.park@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ecfd84af9186aa5368acb40a2740afbf1d0d1b5d.1689151537.git.kai.huang@intel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 12 Jul 2023 at 09:45, Christoph Hellwig <hch@lst.de> wrote:
->
-> On Tue, Jul 11, 2023 at 09:47:00AM -0700, Linus Torvalds wrote:
->
-> > and we have NEVER EVER seen devices with reliably unique IDs. Really.
->
-> Sorry, but that's bullshit.
+On Wed, Jul 12, 2023 at 08:55:21PM +1200, Kai Huang wrote:
 
-Christoph, you are *literally* involved in a discussion where this is the case.
 
-What you call "bullshit" is what everybody else here calls REALITY.
+> @@ -72,7 +142,46 @@
+>  	movq %r9,  TDX_MODULE_r9(%rsi)
+>  	movq %r10, TDX_MODULE_r10(%rsi)
+>  	movq %r11, TDX_MODULE_r11(%rsi)
+> -	.endif
+> +	.endif	/* \ret */
+> +
+> +	.if \saved
+> +	.if \ret && \host
+> +	/*
+> +	 * Clear registers shared by guest for VP.ENTER to prevent
+> +	 * speculative use of guest's values, including those are
+> +	 * restored from the stack.
+> +	 *
+> +	 * See arch/x86/kvm/vmx/vmenter.S:
+> +	 *
+> +	 * In theory, a L1 cache miss when restoring register from stack
+> +	 * could lead to speculative execution with guest's values.
+> +	 *
+> +	 * Note: RBP/RSP are not used as shared register.  RSI has been
+> +	 * restored already.
+> +	 *
+> +	 * XOR is cheap, thus unconditionally do for all leafs.
+> +	 */
+> +	xorq %rcx, %rcx
+> +	xorq %rdx, %rdx
+> +	xorq %r8,  %r8
+> +	xorq %r9,  %r9
+> +	xorq %r10, %r10
+> +	xorq %r11, %r11
 
-The fact that *some* devices have serial numbers in no way implies
-that all of them do.
+> +	xorq %r12, %r12
+> +	xorq %r13, %r13
+> +	xorq %r14, %r14
+> +	xorq %r15, %r15
+> +	xorq %rbx, %rbx
 
-And if you think that they all do, you are the problem. Literally in this case.
+^ those are an instant pop below, seems daft to clear them.
 
-So you had better really internalize this "there are no reliable
-serial numbers in general". Because it's simply a FACT.
-
-> Well, let's try something like this (co-developed with Sagi) that
-> allows it for non-multipath PCIe devices, which covers the quirks
-> we've added so far, but also add a big fat warning, because we know
-> people rely on the /dev/disk/by-id/ links.  Probably not on these
-> devices, but who knows.
-
-Looks sane to me.
-
-          Linus
+> +	xorq %rdi, %rdi
+> +	.endif	/* \ret && \host */
+> +
+> +	/* Restore callee-saved GPRs as mandated by the x86_64 ABI */
+> +	popq	%r15
+> +	popq	%r14
+> +	popq	%r13
+> +	popq	%r12
+> +	popq	%rbx
+> +	.endif	/* \saved */
+>  
+>  	FRAME_END
+>  	RET
+> -- 
+> 2.41.0
+> 
