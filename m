@@ -2,101 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D095751071
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 20:25:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EA9F751076
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 20:26:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232306AbjGLSZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 14:25:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36664 "EHLO
+        id S232515AbjGLSZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 14:25:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232049AbjGLSZN (ORCPT
+        with ESMTP id S232049AbjGLSZ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 14:25:13 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90E6C1FD6
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 11:25:11 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3fbc59de0e2so75268765e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 11:25:11 -0700 (PDT)
+        Wed, 12 Jul 2023 14:25:57 -0400
+Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9436F1BEC;
+        Wed, 12 Jul 2023 11:25:54 -0700 (PDT)
+Received: by mail-vs1-xe31.google.com with SMTP id ada2fe7eead31-440b53841a4so1752176137.3;
+        Wed, 12 Jul 2023 11:25:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689186310; x=1691778310;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=3sbg1EWek1f7W/2sEFdDkon2yGXDKs3LeHwQc8htLNA=;
-        b=u8aDDgJFfGEOW7j1I1qdOkKlFoZchHnPUIS3J/GLni+iE4cR2YOajIuM2YRggaMC3h
-         6uA+XGjpRU7QP6aouW5YmWbpBuZCQF2ldrWfpqO9Ew1w/LIuKxq8F3GbV8Zhrxs8nXl4
-         giEnU1DfTzop+e0rFO03HZXrtvwLkWdAb2RuY4XOjw9vNqoIBdtxuEXU0BnULXqYmP4U
-         Oimb1G3d+Q5baKbh7pd9aifjI0pwed+KjiSigPr72D7tN9UKyMpziFYkT7jOYjjjDz1B
-         fOiCtrbqpGCNKsRFD3/fhrpcZT3vvQhLrW171/TOrO0takiyd7/CC5iHf5HZW5CSYtrf
-         PADg==
+        d=gmail.com; s=20221208; t=1689186353; x=1691778353;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9sOcI2jxuVJp353RgogKNfvCVFy7OwS+eMp4jITy9DY=;
+        b=kggsOn6JcSO57G7NFHcUbcsHJOaMIK5tz1Mxw/dr95Sj8bB41AgzwvX0PcQm9Uwm3V
+         zYtTkNvklyoK++BatlmLLgCo9PlvV6NeJVRKWjcVw+IUlCTAXDBt0lWS4QBpuZT3ooAO
+         pSQCpdXFq2/T7F735GQEuInuPJdHTDtWkl4toBR1TAJ5zxgB8Nikggw88ts1nhxp/RCL
+         /bC+p0sVVo8jiztLH2xJbvkYdWWFTw9GKmgnJOSWHwI/2YWajkOEJ6WvpF0mrn1Ssbxc
+         eQr2kziE3zttEIVWwlNKTA1nnKGRiX28DUQj1iCrtnc2B1okbRMzZLuJiuNW0ZL+o4kp
+         WoZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689186310; x=1691778310;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3sbg1EWek1f7W/2sEFdDkon2yGXDKs3LeHwQc8htLNA=;
-        b=Kf1Ji22sgX3XnYAa59KhHj+icYW28+wb+/+kjD8mu4EbEd3kI+pcVwCNLDnnOpjuXR
-         FNcJleGqnQOPIjzeeWnJO8cZyPqNeRTodxvt/aHW8LZyxZMcdVt3xmuG2ZcfLdDWsVXh
-         +Mn6+FPbnk0ISWPHsmx3YBPE/ez20nAWrtittQsrL/y4rQUihI21wh3Q/A7r1Lhm+T0K
-         mz1S1yXkhDp4uE1k6YOf1fW/xKKq84xxCj9e5MsW3exyQ3sQKEh+ajKl7azzzsBJp0f7
-         FEVGCsfcDa8+ZaVGzejfdPuPowkhC24BfikE0y8dvV6c10Kt5BNwk5s4nDIbF45Imxcg
-         MQvQ==
-X-Gm-Message-State: ABy/qLbbbPJI+rDf+N9DTMoVNEKMXAY91pM4jlFto4HhAU5kkQH3vpm9
-        ukXlCoTNrAcsFHc/4DSy+BDl1XHlPil3+05RgjFmmOpsm4xLguSG3i8=
-X-Google-Smtp-Source: APBJJlHn5AONiwSv5nuU8XvbEPnAsG7pZFEtpPxaReRewRtCSYUfxoBuL8tsflJhEhaBeE2wBZwKV+fpBuDDMvHrooQ=
-X-Received: by 2002:a5d:4603:0:b0:315:ad1a:5abc with SMTP id
- t3-20020a5d4603000000b00315ad1a5abcmr2917667wrq.5.1689186310079; Wed, 12 Jul
- 2023 11:25:10 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689186353; x=1691778353;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9sOcI2jxuVJp353RgogKNfvCVFy7OwS+eMp4jITy9DY=;
+        b=hYm09VOWIbQxttLZ0PVKeyGyGwi/iQOhc0oawY/3tjG8NkYgpJ1s8+ipo7QYb8dwjl
+         z5u48JUqyndiFawAuksOY0rIx1lkOPBvBQ3hDhP8QPTzcU3Ll2Kc1pXcDAipCv+A74Y6
+         I4uD5ZtoAJ4qLpoUTZJf6CdT8TjH53XEHveSeUtW0O7EILcrOJ7ejKJCLRs9E8Y/3jH3
+         CU2aeAdFrWgl1zkERzU0cM9Wqr1khQhh/mHj/C0fNVNhtC5L4RJuvfImda3D1u97wTmS
+         4InBmjGPiDxMKjcidM+yL8iRK1TrUORf6wiuGkE9ceEYKvjyAgz1VxnX5jYuwRgI1nPn
+         24fA==
+X-Gm-Message-State: ABy/qLYIAuze3xq132a0ZAMqRHXw47J2u6DN1t4+DenfSuCywuRzoqwD
+        yQbYxBlO+RPibu7FILqbpvN9ojY3KG5YIT5dotc=
+X-Google-Smtp-Source: APBJJlHyRxqI+3+chJwIFnAoBNpNOha/JYdUdI8l5xO8mEtpGJFTnFIwYDBcfPZI75Pja6vysb+v/1GzB2oqO6hPIdw=
+X-Received: by 2002:a67:eb84:0:b0:443:7572:598b with SMTP id
+ e4-20020a67eb84000000b004437572598bmr6648863vso.13.1689186353314; Wed, 12 Jul
+ 2023 11:25:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1689148711.git.quic_schowdhu@quicinc.com> <f3ab03c1afadd72ad166d2e421844cfca072f90e.1689148711.git.quic_schowdhu@quicinc.com>
-In-Reply-To: <f3ab03c1afadd72ad166d2e421844cfca072f90e.1689148711.git.quic_schowdhu@quicinc.com>
-From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Date:   Wed, 12 Jul 2023 23:54:58 +0530
-Message-ID: <CAH=2NtwYbhd6kS7dSYBXJsgW0pcMz8PxgX_BCmFcAiAVYNUzvg@mail.gmail.com>
-Subject: Re: [PATCH V1 3/3] MAINTAINERS: Add the header file entry for
- Embedded USB debugger(EUD)
-To:     Souradeep Chowdhury <quic_schowdhu@quicinc.com>
-Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        gregkh@linuxfoundation.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Sibi Sankar <quic_sibis@quicinc.com>,
-        Rajendra Nayak <quic_rjendra@quicinc.com>
+References: <CAOuPNLizjBp_8ceKq=RLznXdsHD-+N55RoPh_D7_Mpkg7M-BwQ@mail.gmail.com>
+ <877cr5yzjc.fsf@miraculix.mork.no>
+In-Reply-To: <877cr5yzjc.fsf@miraculix.mork.no>
+From:   Pintu Agarwal <pintu.ping@gmail.com>
+Date:   Wed, 12 Jul 2023 23:55:41 +0530
+Message-ID: <CAOuPNLhUtVtrOQQ1Z_rA0NAerG5PSfA26=hoenuCtCBDvz1CJA@mail.gmail.com>
+Subject: Re: MTD: Lots of mtdblock warnings on bootup logs
+To:     =?UTF-8?Q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        linux-fsdevel@kvack.org, ezequiel@collabora.com,
+        Miquel Raynal <miquel.raynal@bootlin.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 12 Jul 2023 at 13:58, Souradeep Chowdhury
-<quic_schowdhu@quicinc.com> wrote:
->
-> Add the entry for Embedded USB Debugger(EUD) header file which contains
-> interface definitions for the EUD notifier chain.
->
-> Signed-off-by: Souradeep Chowdhury <quic_schowdhu@quicinc.com>
-> ---
->  MAINTAINERS | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 3be1bdfe8ecc..6d395cc6f45c 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -17288,6 +17288,7 @@ L:      linux-arm-msm@vger.kernel.org
->  S:     Maintained
->  F:     Documentation/ABI/testing/sysfs-driver-eud
->  F:     Documentation/devicetree/bindings/soc/qcom/qcom,eud.yaml
-> +F:     drivers/usb/misc/qcom_eud_notifier.h
->  F:     drivers/usb/misc/qcom_eud.c
+Dear Bjorn and Miquel,
 
-You can simplify it to 'drivers/usb/misc/qcom_eud*' instead, for
-avoiding repeatedly changing this when new files are added in future.
+Thank you so much for your help!
+Please see my reply inline.
+
+On Wed, 12 Jul 2023 at 19:58, Bj=C3=B8rn Mork <bjorn@mork.no> wrote:
+>
+> Pintu Agarwal <pintu.ping@gmail.com> writes:
+>
+> > Kernel: 5.15 ; arm64 ; NAND + ubi + squashfs
+> > We have some RAW partitions and one UBI partition (with ubifs/squashfs =
+volumes).
+> >
+> > We are seeing large numbers of these logs on the serial console that
+> > impact the boot time.
+> > [....]
+> > [    9.667240][    T9] Creating 58 MTD partitions on "1c98000.nand":
+> > [....]
+> > [   39.975707][  T519] mtdblock: MTD device 'uefi_a' is NAND, please
+> > consider using UBI block devices instead.
+> > [   39.975707][  T519] mtdblock: MTD device 'uefi_b' is NAND, please
+> > consider using UBI block devices instead.
+> > [....]
+> >
+> > This was added as part of this commit:
+> > https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit=
+/drivers/mtd/mtdblock.c?h=3Dv5.15.120&id=3Df41c9418c5898c01634675150696da29=
+0fb86796
+> > https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit=
+/drivers/mtd/mtdblock.c?h=3Dv5.15.120&id=3De07403a8c6be01857ff75060b2df9a1a=
+a8320fe5
+>
+> You have 5.15.what exactly?  commit f41c9418c5898 was added in v5.15.46.
+> Your log looks like it is missing.
+>
+My exact Kernel version is: 5.15.78
+And I see that the below commit is also present:
+commit f41c9418c5898c01634675150696da290fb86796
+mtdblock: warn if opened on NAND
+
+> FWIW, commit f41c9418c5898 was supposed to fix exactly that problem with
+> commit e07403a8c6be01.
+>
+> But to catch actual mounts it will still warn if the mtdblock device is
+> opened.  This can obviously cause false positives if you e.g have some
+> script reading from the mtdblock devices.  If you are running v5.15.46 or
+> later then there *is* something accessing those devices. You'll have to
+> figure out what it is and stop it to avoid the warning.
+>
+You mean, if someone is using "mount .. /dev/mtdblock*" then only we
+get these warnings ?
+Or, if someone is trying to access the node using open("/dev/mtdblock*") .
+
+But in this case, there should be only 1,2,3 entries but here I am
+seeing for all the NAND partitions.
+Or, is it possible that systemd-udevd is trying to access these nodes ?
+
+Can we use ubiblock for mount ubifs (rw) volumes, or here we have to
+use mtdblock ?
+We have a mixture of squashfs (ro) and ubifs (rw) ubi volumes.
+Currently, we are using the ubiblock way of mounting for squashfs but
+mtdblock mounting for ubifs.
+
+>> CONFIG_MTD_BLOCK=3Dy
+>> CONFIG_MTD_UBI_BLOCK=3Dy
+>>
+> If you don't need both, then yes.
+
+We actually need both of them because of several dependencies.
+
+There are few applications that are trying to read content from /proc/mtd.
+Is this also a problem if we disable MTD_BLOCK ?
+
 
 Thanks,
-Bhupesh
+Pintu
