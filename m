@@ -2,123 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF4177512B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 23:34:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B36217512B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 23:36:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231924AbjGLVem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 17:34:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50696 "EHLO
+        id S231398AbjGLVgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 17:36:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231901AbjGLVek (ORCPT
+        with ESMTP id S229512AbjGLVgV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 17:34:40 -0400
-Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 418FE1FD6
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 14:34:34 -0700 (PDT)
-Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-76547539775so1277385a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 14:34:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689197673; x=1691789673;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nD2UHBnDUTT495iUHIZR2679LgJRZ//qU2Zi+uGyIVE=;
-        b=MXhSnUtFz2wxuW06onRo1c6SgRibBWw03flHAsiCbZdWVbW7uagvzcjdLFzL4iZ5d5
-         avmBDXQn17tNroJC1XPHIhBGHRoIHnH7yEzTis2YU8+brrDde6AaKa6Sew8Cq/C0E1N5
-         cuyCj4F3Zjxmuz9+oVpntgeKCTHRwgXSGPanIV3MQBjafE8Mka/PAYO6mK4j0bths4mV
-         +8FJ3sY3okLaSkdu/Cd0DHuUVnclt0Dufmb/tvHaN1ehhhCOdrVK4psDs5lk9WzCC0/B
-         KHJLEJr65xFY5asZErb4Y5YyV6+JzF9Z/xLQRuxgCTk7t9/lgPWCQgUSPRZygluNWGHG
-         aTDw==
-X-Gm-Message-State: ABy/qLZ3Bt2H525WWOXstztLX81ZUUsnNznxWpfKlg1aUROeHgkcFIHs
-        XmQI532ol3fVNNKLEimddoM=
-X-Google-Smtp-Source: APBJJlFdYfKVnrscOwnimxA8jm43UHALuhOoJC0+XdaXxBUzMy3bSrTFSleX2LkTAMfhXBMLCuXdbA==
-X-Received: by 2002:a05:620a:1913:b0:767:7db3:9a32 with SMTP id bj19-20020a05620a191300b007677db39a32mr22374944qkb.3.1689197673089;
-        Wed, 12 Jul 2023 14:34:33 -0700 (PDT)
-Received: from maniforge ([24.1.27.177])
-        by smtp.gmail.com with ESMTPSA id p10-20020a05620a132a00b00767cc1463e9sm2430907qkj.75.2023.07.12.14.34.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Jul 2023 14:34:32 -0700 (PDT)
-Date:   Wed, 12 Jul 2023 16:34:30 -0500
-From:   David Vernet <void@manifault.com>
-To:     Abel Wu <wuyun.abel@bytedance.com>
-Cc:     linux-kernel@vger.kernel.org, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, gautham.shenoy@amd.com,
-        kprateek.nayak@amd.com, aaron.lu@intel.com, clm@meta.com,
-        tj@kernel.org, roman.gushchin@linux.dev, kernel-team@meta.com
-Subject: Re: [PATCH v2 4/7] sched/fair: Add SHARED_RUNQ sched feature and
- skeleton calls
-Message-ID: <20230712213430.GE12207@maniforge>
-References: <20230710200342.358255-1-void@manifault.com>
- <20230710200342.358255-5-void@manifault.com>
- <6111b87c-b68c-2ba9-ac60-333af67082fd@bytedance.com>
+        Wed, 12 Jul 2023 17:36:21 -0400
+Received: from nicole.computer-surgery.co.uk (mail.computer-surgery.co.uk [82.69.253.61])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44D6ACF;
+        Wed, 12 Jul 2023 14:36:20 -0700 (PDT)
+Received: from [10.94.89.22] (helo=buckle.internal.gammascience.co.uk)
+        by nicole.computer-surgery.co.uk with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <rgammans@gammascience.co.uk>)
+        id 1qJhVR-0001li-Vi; Wed, 12 Jul 2023 22:36:18 +0100
+From:   Roger Gammans <rgammans@gammascience.co.uk>
+To:     Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        linux-bluetooth@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Roger Gammans <rgammans@gammascience.co.uk>
+Subject: [PATCH v2] Bluetooth: btusb: Add support for another MediaTek 7922 VID/PID
+Date:   Wed, 12 Jul 2023 22:36:02 +0100
+Message-Id: <20230712213602.15280-1-rgammans@gammascience.co.uk>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6111b87c-b68c-2ba9-ac60-333af67082fd@bytedance.com>
-User-Agent: Mutt/2.2.10 (2023-03-25)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 04:39:03PM +0800, Abel Wu wrote:
-> On 7/11/23 4:03 AM, David Vernet wrote:
-> > @@ -6467,6 +6489,9 @@ static void dequeue_task_fair(struct rq *rq, struct task_struct *p, int flags)
-> >   dequeue_throttle:
-> >   	util_est_update(&rq->cfs, p, task_sleep);
-> >   	hrtick_update(rq);
-> > +
-> > +	if (sched_feat(SHARED_RUNQ))
-> > +		shared_runq_dequeue_task(p);
-> 
-> Would disabling SHARED_RUNQ causing task list nodes left
-> in the shared stateful runqueue?
+This one is found on the Dell Inspiron 2-in-1 7435
 
-Hi Abel,
+The information in /sys/kernel/debug/usb/devices about the Bluetooth
+device is listed as the below.
 
-Yes, good call, there will be some stale tasks. The obvious way to get
-around that would of course be to always call
-shared_runq_dequeue_task(p) on the __dequeue_entity() path, but it would
-be silly to tax a hot path in the scheduler in support of a feature
-that's disabled by default.
+T:  Bus=03 Lev=01 Prnt=01 Port=02 Cnt=01 Dev#=  2 Spd=480  MxCh= 0
+D:  Ver= 2.10 Cls=ef(misc ) Sub=02 Prot=01 MxPS=64 #Cfgs=  1
+P:  Vendor=0489 ProdID=e0f1 Rev= 1.00
+S:  Manufacturer=MediaTek Inc.
+S:  Product=Wireless_Device
+S:  SerialNumber=000000000
+C:* #Ifs= 3 Cfg#= 1 Atr=e0 MxPwr=100mA
+A:  FirstIf#= 0 IfCount= 3 Cls=e0(wlcon) Sub=01 Prot=01
+I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=125us
+E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+I:  If#= 1 Alt= 6 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+E:  Ad=83(I) Atr=01(Isoc) MxPS=  63 Ivl=1ms
+E:  Ad=03(O) Atr=01(Isoc) MxPS=  63 Ivl=1ms
+I:* If#= 2 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=(none)
+E:  Ad=8a(I) Atr=03(Int.) MxPS=  64 Ivl=125us
+E:  Ad=0a(O) Atr=03(Int.) MxPS=  64 Ivl=125us
+I:  If#= 2 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=(none)
+E:  Ad=8a(I) Atr=03(Int.) MxPS= 512 Ivl=125us
+E:  Ad=0a(O) Atr=03(Int.) MxPS= 512 Ivl=125us
 
-At first I was thinking that the only issue would be some overhead in
-clearing stale tasks once it was re-enabled, but that we'd be OK because
-of this check in shared_runq_pick_next_task():
 
-  298         if (task_on_rq_queued(p) && !task_on_cpu(rq, p)) {
-  299                 update_rq_clock(src_rq);
-  300                 src_rq = move_queued_task(src_rq, &src_rf, p, cpu_of(rq));
-  301         }
+Signed-off-by: Roger Gammans <rgammans@gammascience.co.uk>
+---
+ drivers/bluetooth/btusb.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-So we wouldn't migrate tasks that weren't actually suitable. But that's
-obviously wrong. It's not safe to keep stale tasks in that list for (at
-least) two reasons.
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index 2a8e2bb038f5..bda50d84c886 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -622,6 +622,9 @@ static const struct usb_device_id blacklist_table[] = {
+ 	{ USB_DEVICE(0x0489, 0xe0e4), .driver_info = BTUSB_MEDIATEK |
+ 						     BTUSB_WIDEBAND_SPEECH |
+ 						     BTUSB_VALID_LE_STATES },
++	{ USB_DEVICE(0x0489, 0xe0f1), .driver_info = BTUSB_MEDIATEK |
++						     BTUSB_WIDEBAND_SPEECH |
++						     BTUSB_VALID_LE_STATES },
+ 	{ USB_DEVICE(0x0489, 0xe0f2), .driver_info = BTUSB_MEDIATEK |
+ 						     BTUSB_WIDEBAND_SPEECH |
+ 						     BTUSB_VALID_LE_STATES },
+-- 
+2.39.2
 
-- A task could exit (which would be easy to fix by just adding a dequeue
-  call in task_dead_fair())
-- We could have a double-add if a task is re-enqueued in the list after
-  having been previously enqueued, but then never dequeued due to the
-  timing of disabling SHARED_RUNQ.
-
-Not sure what the best solution is here. We could always address this by
-draining the list when the feature is disabled, but there's not yet a
-mechanism to hook in a callback to be invoked when a scheduler feature
-is enabled/disabled. It shouldn't be too hard to add that, assuming
-other sched folks are amenable to it. It should just be a matter of
-adding another __SCHED_FEAT_NR-sized table of NULL-able callbacks that
-are invoked on enable / disable state change, and which can be specified
-in a new SCHED_FEAT_CALLBACK or something macro.
-
-Peter -- what do you think?
-
-Thanks,
-David
