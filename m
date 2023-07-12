@@ -2,54 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B63D375104B
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 20:10:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3144A75104F
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 20:10:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233083AbjGLSKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 14:10:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58948 "EHLO
+        id S233041AbjGLSKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 14:10:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbjGLSKD (ORCPT
+        with ESMTP id S233044AbjGLSKQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 14:10:03 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E897A11B;
-        Wed, 12 Jul 2023 11:10:02 -0700 (PDT)
+        Wed, 12 Jul 2023 14:10:16 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47F5F1FEC;
+        Wed, 12 Jul 2023 11:10:11 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7F181618BB;
-        Wed, 12 Jul 2023 18:10:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BDC7C433CA;
-        Wed, 12 Jul 2023 18:10:01 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DA398618BB;
+        Wed, 12 Jul 2023 18:10:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CD66C433C8;
+        Wed, 12 Jul 2023 18:10:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689185401;
-        bh=sdyW3dQUYfcOOwn72IgmGceZwhcx/rq4v6X3m3VdThY=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=pC+UrgNB7r/lke03yqUS07ZCD8LKdbBW/h0Yx1Buoy5DFdxRBYrrNfwdz6qHNEVXL
-         8eyYrFO1CBbwTnjp88hFM1hgOYUyCgEcCXnP4Fln9MMmBTck+cLZ/Gfd6EQZpvx+sP
-         iyy49W9HjyfeLFR8/Sk9f2gQ8j5bkXBK7VT2GaOWZaLKMHdhf11crnOT08UCWbREtW
-         dVBoBEJDIlG/CRDvYQ13jAYxVUroyrIj3yCo0eZcJSZRTHZ3ifHdNvTjBV9l/iJjY9
-         hkbXTDImfYrb95rq3nw7PcOWGMu9NDYwS/6kyLaFD9CilXA6TWPqTX/qg3ltau6EFS
-         q2uiER4XFftfw==
-Message-ID: <4c29c4e8f88509b2f8e8c08197dba8cfeb07c045.camel@kernel.org>
-Subject: Re: [PATCH] ext4: fix decoding of raw_inode timestamps
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     brauner@kernel.org, Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Wed, 12 Jul 2023 14:09:59 -0400
-In-Reply-To: <20230712175258.GB3677745@mit.edu>
-References: <20230712150251.163790-1-jlayton@kernel.org>
-         <20230712175258.GB3677745@mit.edu>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        s=k20201202; t=1689185410;
+        bh=Memgf9GzvMAFY5lRq6V3EGilVkjuiQ+UqIuIcVYoRyM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nACLBqgy2+0iE6VajuxT2NGv0Fbt6dazbiBuiISdDf2Sj9Q79EpBpd4dIJtPb9Unw
+         3l8uk2phOE7OlSsNYg8jraXExFO8jDnIgZAdx1mNneMiBTQgS7P92bz3aG9y4Fosvx
+         doeANFH8S2rYeXeNV2TpsvMMMBZuKpP9ByE0ZhuDem4Ac1L1YR+Lh9Vjel5vM7AqdG
+         nvPiErKmxdtp9HImBNYFJ3m3xJnByso01/enDqUNWXY3T72s+i/NStZEv07Gd0Z7yD
+         PgLLn6TDPsFl5+A+FFB6frvbL4U7QI5OqWBYbARV31cTFvzK7QyHfzvqEttOfvOE2q
+         Oe47fn21BDp6w==
+Date:   Wed, 12 Jul 2023 19:10:05 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Sean Nyekjaer <sean@geanix.com>
+Cc:     l.goehrs@pengutronix.de, a.fatoum@pengutronix.de,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        dantuguf14105@gmail.com, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 8/9] dt-bindings: arm: stm32: add extra SiP compatible
+ for oct,stm32mp157c-osd32-red
+Message-ID: <20230712-purge-untangled-b7b333c69c0c@spud>
+References: <20230712124248.2400862-1-sean@geanix.com>
+ <20230712124248.2400862-8-sean@geanix.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="DFDDwRwhxkcH4vx8"
+Content-Disposition: inline
+In-Reply-To: <20230712124248.2400862-8-sean@geanix.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -58,34 +65,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-07-12 at 13:52 -0400, Theodore Ts'o wrote:
-> On Wed, Jul 12, 2023 at 11:02:49AM -0400, Jeff Layton wrote:
-> > When we covert a timestamp from raw disk format, we need to consider it
-> > to be signed, as the value may represent a date earlier than 1970. This
-> > fixes generic/258 on ext4.
-> >=20
-> > Cc: Jan Kara <jack@suse.cz>
-> > Fixes: f2ddb05870fb ("ext4: convert to ctime accessor functions")
-> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
->=20
-> Acked-by: Theodore Ts'o <tytso@mit.edu>
->=20
-> Thanks for the fix!
->=20
-> It had been on my list to checking to see if the ext4 kunit tests
-> would pass, since Jan had mentioned that he had done the work to make
-> sure the ext4 kunit test would compile, but he hadn't gotten around to
-> try run the kunit test.  Unfortunately, I hadn't gotten to it.
->=20
-> I *think* the ext4 kunit tests should have caught this as well; out of
-> curiosity, have you tried running the ext4 kunit tests either before
-> or after this patch?  If so, what were your findings?
->=20
-> Cheers,
->=20
-> 					- Ted
 
-No, I haven't. I'm running fstests on it now. Is there a quickstart for
-running those tests?
---=20
-Jeff Layton <jlayton@kernel.org>
+--DFDDwRwhxkcH4vx8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Jul 12, 2023 at 02:42:46PM +0200, Sean Nyekjaer wrote:
+> Add binding support for the Octavo OSD32MP1-RED development board.
+>=20
+> General features:
+>  - STM32MP157C
+>  - 512MB DDR3
+>  - CAN-FD
+>  - HDMI
+>  - USB-C OTG
+>  - UART
+>=20
+> Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+
+Cheers,
+Conor.
+
+--DFDDwRwhxkcH4vx8
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZK7sfAAKCRB4tDGHoIJi
+0qKLAP4rpJCjMYjqTCHRUmXdQpHseHtotcoK9EOzKAYk8HxXxgD/U+fZlV7lWQqn
+K/FMuttJ7rGWrP0k6Ljtzj972RqJBwQ=
+=1dgn
+-----END PGP SIGNATURE-----
+
+--DFDDwRwhxkcH4vx8--
