@@ -2,150 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EA9F751076
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 20:26:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E1C875106E
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 20:25:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232515AbjGLSZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 14:25:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37136 "EHLO
+        id S231703AbjGLSY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 14:24:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232049AbjGLSZ5 (ORCPT
+        with ESMTP id S229649AbjGLSY4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 14:25:57 -0400
-Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9436F1BEC;
-        Wed, 12 Jul 2023 11:25:54 -0700 (PDT)
-Received: by mail-vs1-xe31.google.com with SMTP id ada2fe7eead31-440b53841a4so1752176137.3;
-        Wed, 12 Jul 2023 11:25:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689186353; x=1691778353;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9sOcI2jxuVJp353RgogKNfvCVFy7OwS+eMp4jITy9DY=;
-        b=kggsOn6JcSO57G7NFHcUbcsHJOaMIK5tz1Mxw/dr95Sj8bB41AgzwvX0PcQm9Uwm3V
-         zYtTkNvklyoK++BatlmLLgCo9PlvV6NeJVRKWjcVw+IUlCTAXDBt0lWS4QBpuZT3ooAO
-         pSQCpdXFq2/T7F735GQEuInuPJdHTDtWkl4toBR1TAJ5zxgB8Nikggw88ts1nhxp/RCL
-         /bC+p0sVVo8jiztLH2xJbvkYdWWFTw9GKmgnJOSWHwI/2YWajkOEJ6WvpF0mrn1Ssbxc
-         eQr2kziE3zttEIVWwlNKTA1nnKGRiX28DUQj1iCrtnc2B1okbRMzZLuJiuNW0ZL+o4kp
-         WoZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689186353; x=1691778353;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9sOcI2jxuVJp353RgogKNfvCVFy7OwS+eMp4jITy9DY=;
-        b=hYm09VOWIbQxttLZ0PVKeyGyGwi/iQOhc0oawY/3tjG8NkYgpJ1s8+ipo7QYb8dwjl
-         z5u48JUqyndiFawAuksOY0rIx1lkOPBvBQ3hDhP8QPTzcU3Ll2Kc1pXcDAipCv+A74Y6
-         I4uD5ZtoAJ4qLpoUTZJf6CdT8TjH53XEHveSeUtW0O7EILcrOJ7ejKJCLRs9E8Y/3jH3
-         CU2aeAdFrWgl1zkERzU0cM9Wqr1khQhh/mHj/C0fNVNhtC5L4RJuvfImda3D1u97wTmS
-         4InBmjGPiDxMKjcidM+yL8iRK1TrUORf6wiuGkE9ceEYKvjyAgz1VxnX5jYuwRgI1nPn
-         24fA==
-X-Gm-Message-State: ABy/qLYIAuze3xq132a0ZAMqRHXw47J2u6DN1t4+DenfSuCywuRzoqwD
-        yQbYxBlO+RPibu7FILqbpvN9ojY3KG5YIT5dotc=
-X-Google-Smtp-Source: APBJJlHyRxqI+3+chJwIFnAoBNpNOha/JYdUdI8l5xO8mEtpGJFTnFIwYDBcfPZI75Pja6vysb+v/1GzB2oqO6hPIdw=
-X-Received: by 2002:a67:eb84:0:b0:443:7572:598b with SMTP id
- e4-20020a67eb84000000b004437572598bmr6648863vso.13.1689186353314; Wed, 12 Jul
- 2023 11:25:53 -0700 (PDT)
+        Wed, 12 Jul 2023 14:24:56 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64FEE1BE3;
+        Wed, 12 Jul 2023 11:24:55 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EAADE6189F;
+        Wed, 12 Jul 2023 18:24:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6E98C433C8;
+        Wed, 12 Jul 2023 18:24:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689186294;
+        bh=oiL8B5T0SF7z89hecNy7VIEQawHKk0jVhieQ+mQfndw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=BDqP0+ogAMJEpRGdPK3N+vTGpYBYsDyQIiifRNqv1xyWIUnXS3Whnp/ZJcxMD2PzU
+         vcnya0Umb/RBkCNhcsI3/lriYJj1y6EGBvV5eX2jPXEIOkzioX0cNlCIN0euhDdDaE
+         b2YxwZstHOlImIXjFY4e4F21Lar4uil/Z7OADLfv/z9ijlutaAr8203dJOk3nuB6iR
+         w6+P6iDVfAWyy80OnY//7/8FR/CaJ6DLY05pnt9FizZSo/4BPZnJphQ6FZkugVA0bE
+         +dWjugeNq6++3Boy/w1UrlQ+9hi0z7+vOVo3teNTLZksBtxctr7D8Di8S6bHl1i+HW
+         Alz75aGcJBmPg==
+Date:   Wed, 12 Jul 2023 12:25:45 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Jan Kara <jack@suse.com>
+Cc:     linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH][next] udf: Fix -Wstringop-overflow warnings
+Message-ID: <ZK7wKS0NgZPfqrZu@work>
 MIME-Version: 1.0
-References: <CAOuPNLizjBp_8ceKq=RLznXdsHD-+N55RoPh_D7_Mpkg7M-BwQ@mail.gmail.com>
- <877cr5yzjc.fsf@miraculix.mork.no>
-In-Reply-To: <877cr5yzjc.fsf@miraculix.mork.no>
-From:   Pintu Agarwal <pintu.ping@gmail.com>
-Date:   Wed, 12 Jul 2023 23:55:41 +0530
-Message-ID: <CAOuPNLhUtVtrOQQ1Z_rA0NAerG5PSfA26=hoenuCtCBDvz1CJA@mail.gmail.com>
-Subject: Re: MTD: Lots of mtdblock warnings on bootup logs
-To:     =?UTF-8?Q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        linux-fsdevel@kvack.org, ezequiel@collabora.com,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Bjorn and Miquel,
+Use unsigned type in call to macro mint_t(). This avoids confusing the
+compiler about possible negative values that would cause the value in
+_len_ to wrap around.
 
-Thank you so much for your help!
-Please see my reply inline.
+Fixes the following -Wstringop-warnings seen when building ARM
+architecture with allyesconfig (GCC 13):
+fs/udf/directory.c: In function 'udf_copy_fi':
+include/linux/fortify-string.h:57:33: warning: '__builtin_memcpy' specified bound between 2147483648 and 4294967295 exceeds maximum object size 2147483647 [-Wstringop-overflow=]
+   57 | #define __underlying_memcpy     __builtin_memcpy
+      |                                 ^
+include/linux/fortify-string.h:648:9: note: in expansion of macro '__underlying_memcpy'
+  648 |         __underlying_##op(p, q, __fortify_size);                        \
+      |         ^~~~~~~~~~~~~
+include/linux/fortify-string.h:693:26: note: in expansion of macro '__fortify_memcpy_chk'
+  693 | #define memcpy(p, q, s)  __fortify_memcpy_chk(p, q, s,                  \
+      |                          ^~~~~~~~~~~~~~~~~~~~
+fs/udf/directory.c:99:9: note: in expansion of macro 'memcpy'
+   99 |         memcpy(&iter->fi, iter->bh[0]->b_data + off, len);
+      |         ^~~~~~
+include/linux/fortify-string.h:57:33: warning: '__builtin_memcpy' specified bound between 2147483648 and 4294967295 exceeds maximum object size 2147483647 [-Wstringop-overflow=]
+   57 | #define __underlying_memcpy     __builtin_memcpy
+      |                                 ^
+include/linux/fortify-string.h:648:9: note: in expansion of macro '__underlying_memcpy'
+  648 |         __underlying_##op(p, q, __fortify_size);                        \
+      |         ^~~~~~~~~~~~~
+include/linux/fortify-string.h:693:26: note: in expansion of macro '__fortify_memcpy_chk'
+  693 | #define memcpy(p, q, s)  __fortify_memcpy_chk(p, q, s,                  \
+      |                          ^~~~~~~~~~~~~~~~~~~~
+fs/udf/directory.c:99:9: note: in expansion of macro 'memcpy'
+   99 |         memcpy(&iter->fi, iter->bh[0]->b_data + off, len);
+      |         ^~~~~~
+  AR      fs/udf/built-in.a
 
-On Wed, 12 Jul 2023 at 19:58, Bj=C3=B8rn Mork <bjorn@mork.no> wrote:
->
-> Pintu Agarwal <pintu.ping@gmail.com> writes:
->
-> > Kernel: 5.15 ; arm64 ; NAND + ubi + squashfs
-> > We have some RAW partitions and one UBI partition (with ubifs/squashfs =
-volumes).
-> >
-> > We are seeing large numbers of these logs on the serial console that
-> > impact the boot time.
-> > [....]
-> > [    9.667240][    T9] Creating 58 MTD partitions on "1c98000.nand":
-> > [....]
-> > [   39.975707][  T519] mtdblock: MTD device 'uefi_a' is NAND, please
-> > consider using UBI block devices instead.
-> > [   39.975707][  T519] mtdblock: MTD device 'uefi_b' is NAND, please
-> > consider using UBI block devices instead.
-> > [....]
-> >
-> > This was added as part of this commit:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit=
-/drivers/mtd/mtdblock.c?h=3Dv5.15.120&id=3Df41c9418c5898c01634675150696da29=
-0fb86796
-> > https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit=
-/drivers/mtd/mtdblock.c?h=3Dv5.15.120&id=3De07403a8c6be01857ff75060b2df9a1a=
-a8320fe5
->
-> You have 5.15.what exactly?  commit f41c9418c5898 was added in v5.15.46.
-> Your log looks like it is missing.
->
-My exact Kernel version is: 5.15.78
-And I see that the below commit is also present:
-commit f41c9418c5898c01634675150696da290fb86796
-mtdblock: warn if opened on NAND
+This helps with the ongoing efforts to globally enable
+-Wstringop-overflow.
 
-> FWIW, commit f41c9418c5898 was supposed to fix exactly that problem with
-> commit e07403a8c6be01.
->
-> But to catch actual mounts it will still warn if the mtdblock device is
-> opened.  This can obviously cause false positives if you e.g have some
-> script reading from the mtdblock devices.  If you are running v5.15.46 or
-> later then there *is* something accessing those devices. You'll have to
-> figure out what it is and stop it to avoid the warning.
->
-You mean, if someone is using "mount .. /dev/mtdblock*" then only we
-get these warnings ?
-Or, if someone is trying to access the node using open("/dev/mtdblock*") .
+Link: https://github.com/KSPP/linux/issues/329
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ fs/udf/directory.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-But in this case, there should be only 1,2,3 entries but here I am
-seeing for all the NAND partitions.
-Or, is it possible that systemd-udevd is trying to access these nodes ?
+diff --git a/fs/udf/directory.c b/fs/udf/directory.c
+index 1c775e072b2f..93153665eb37 100644
+--- a/fs/udf/directory.c
++++ b/fs/udf/directory.c
+@@ -95,7 +95,7 @@ static int udf_copy_fi(struct udf_fileident_iter *iter)
+ 	}
+ 
+ 	off = iter->pos & (blksize - 1);
+-	len = min_t(int, sizeof(struct fileIdentDesc), blksize - off);
++	len = min_t(u32, sizeof(struct fileIdentDesc), blksize - off);
+ 	memcpy(&iter->fi, iter->bh[0]->b_data + off, len);
+ 	if (len < sizeof(struct fileIdentDesc))
+ 		memcpy((char *)(&iter->fi) + len, iter->bh[1]->b_data,
+-- 
+2.34.1
 
-Can we use ubiblock for mount ubifs (rw) volumes, or here we have to
-use mtdblock ?
-We have a mixture of squashfs (ro) and ubifs (rw) ubi volumes.
-Currently, we are using the ubiblock way of mounting for squashfs but
-mtdblock mounting for ubifs.
-
->> CONFIG_MTD_BLOCK=3Dy
->> CONFIG_MTD_UBI_BLOCK=3Dy
->>
-> If you don't need both, then yes.
-
-We actually need both of them because of several dependencies.
-
-There are few applications that are trying to read content from /proc/mtd.
-Is this also a problem if we disable MTD_BLOCK ?
-
-
-Thanks,
-Pintu
