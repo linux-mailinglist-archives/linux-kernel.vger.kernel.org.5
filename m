@@ -2,88 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D887975123B
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 23:10:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B97CB751244
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 23:11:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232556AbjGLVKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 17:10:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35598 "EHLO
+        id S232626AbjGLVLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 17:11:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232276AbjGLVKb (ORCPT
+        with ESMTP id S232475AbjGLVLi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 17:10:31 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F7AE1FD2;
-        Wed, 12 Jul 2023 14:10:26 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B094D61948;
-        Wed, 12 Jul 2023 21:10:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 13700C433C8;
-        Wed, 12 Jul 2023 21:10:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689196225;
-        bh=pnILiufobU/rJ+Z0/NTDzLS7q4G7kDmRf8YJsF2aebQ=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=fRB7cg+aXjkRRk5O5DXiWb1yf4WvqPqulJDZdR4N9lR1D1ZDUmTSp/44lqq/G7zAN
-         WmQ3BnJvj5xgIbvbpihHI7qlHoqCEGcwvE29piDoCBnC/QyFVvVvvo3+qUeHwRsIsS
-         PnBVeCwg6RaUQeWcj8rFHB3pRGzyjyf0QDz2T0mWx1bzsU/aLNzSP25jvoNTMjPPdC
-         0Jx5t/dadr+HicCMBXxYhDYkxFSYYQyv6oxUSwJuxGE+XKyTj+jwYftbHoXWwANTcm
-         Ck9gwtLNYcfrP66mDPiUf7cTvwkuoMnPD/u8gbTs32+Mkq5wwgplXZ+3ov9k8xGDQg
-         kA/diKzP/GHbg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id F06D1E52508;
-        Wed, 12 Jul 2023 21:10:23 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Wed, 12 Jul 2023 17:11:38 -0400
+Received: from out-32.mta1.migadu.com (out-32.mta1.migadu.com [IPv6:2001:41d0:203:375::20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 675C21FDB
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 14:11:32 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1689196288;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=u9jA0zpqdPJBbT5wB3LqkWWTOFZva2WMc7PqpBsNmzQ=;
+        b=tSLj/iB1E2XayW0N3mOTONapZTzp/4UfRR0E5j3/6A3V2t4u7ivSoQSbHNb+svKCKD4FCe
+        I8rMoF/S3ae3TCwK/RkwpG8Vqd7x2yTIOckqVCWwGAg+uIL1WvDnBVcA85Ni7O7x8SlDqQ
+        yn6dVoHYjl4guXv28aEzEkCOvrpjdYc=
+From:   Kent Overstreet <kent.overstreet@linux.dev>
+To:     linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Kent Overstreet <kent.overstreet@linux.dev>
+Subject: [PATCH 00/20] bcachefs prereqs patch series
+Date:   Wed, 12 Jul 2023 17:10:55 -0400
+Message-Id: <20230712211115.2174650-1-kent.overstreet@linux.dev>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v3] Bluetooth: hci_debugfs: Use kstrtobool() instead of
- strtobool()
-From:   patchwork-bot+bluetooth@kernel.org
-Message-Id: <168919622398.11357.7686000886124475699.git-patchwork-notify@kernel.org>
-Date:   Wed, 12 Jul 2023 21:10:23 +0000
-References: <58247d1b8105739f0371030a93fb28ea3dbedc57.1673687451.git.christophe.jaillet@wanadoo.fr>
-In-Reply-To: <58247d1b8105739f0371030a93fb28ea3dbedc57.1673687451.git.christophe.jaillet@wanadoo.fr>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     akpm@linux-foundation.org, marcel@holtmann.org,
-        johan.hedberg@gmail.com, luiz.dentz@gmail.com,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-bluetooth@vger.kernel.org
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Here's the latest iteration of the bcachefs prereqs patch series, now
+hoping to go in for 6.6.
 
-This patch was applied to bluetooth/bluetooth-next.git (master)
-by Luiz Augusto von Dentz <luiz.von.dentz@intel.com>:
+https://lore.kernel.org/linux-bcachefs/20230712195719.y4msidsr7suu55gl@moria.home.lan/T/
 
-On Tue, 11 Jul 2023 19:41:10 +0200 you wrote:
-> strtobool() is the same as kstrtobool().
-> However, the latter is more used within the kernel.
-> 
-> In order to remove strtobool() and slightly simplify kstrtox.h, switch to
-> the other function name.
-> 
-> While at it, include the corresponding header file (<linux/kstrtox.h>)
-> 
-> [...]
+This is now slimmed down as much has I can. I've droped the lockdep
+patches, at the cost of dropping lockdep support for btree node locks.
+Six locks and mean_and_variance are now in fs/bcachefs/. My
+copy_folio_from_iter_atomic() patch has been dropped in favor of the
+iov_iter patch from Matthew, which he said he'd likely send for -rc4, so
+will already be in by the time of the actual bcachefs pull request.
 
-Here is the summary with links:
-  - [v3] Bluetooth: hci_debugfs: Use kstrtobool() instead of strtobool()
-    https://git.kernel.org/bluetooth/bluetooth-next/c/34ffc92ed051
+Christopher James Halse Rogers (1):
+  stacktrace: Export stack_trace_save_tsk
 
-You are awesome, thank you!
+Kent Overstreet (18):
+  sched: Add task_struct->faults_disabled_mapping
+  fs: factor out d_mark_tmpfile()
+  block: Add some exports for bcachefs
+  block: Allow bio_iov_iter_get_pages() with bio->bi_bdev unset
+  block: Bring back zero_fill_bio_iter
+  block: Don't block on s_umount from __invalidate_super()
+  lib/string_helpers: string_get_size() now returns characters wrote
+  lib: Export errname
+  locking/osq: Export osq_(lock|unlock)
+  bcache: move closures to lib/
+  MAINTAINERS: Add entry for closures
+  closures: closure_wait_event()
+  closures: closure_nr_remaining()
+  closures: Add a missing include
+  MAINTAINERS: Add entry for generic-radix-tree
+  lib/generic-radix-tree.c: Don't overflow in peek()
+  lib/generic-radix-tree.c: Add a missing include
+  lib/generic-radix-tree.c: Add peek_prev()
+
+Matthew Wilcox (Oracle) (1):
+  iov_iter: Handle compound highmem pages in
+    copy_page_from_iter_atomic()
+
+ MAINTAINERS                                   | 15 ++++
+ block/bdev.c                                  |  2 +-
+ block/bio.c                                   | 18 +++--
+ block/blk-core.c                              |  1 +
+ block/blk.h                                   |  1 -
+ drivers/md/bcache/Kconfig                     | 10 +--
+ drivers/md/bcache/Makefile                    |  4 +-
+ drivers/md/bcache/bcache.h                    |  2 +-
+ drivers/md/bcache/super.c                     |  1 -
+ drivers/md/bcache/util.h                      |  3 +-
+ fs/dcache.c                                   | 12 ++-
+ fs/super.c                                    | 40 +++++++---
+ include/linux/bio.h                           |  7 +-
+ include/linux/blkdev.h                        |  1 +
+ .../md/bcache => include/linux}/closure.h     | 46 ++++++++---
+ include/linux/dcache.h                        |  1 +
+ include/linux/fs.h                            |  1 +
+ include/linux/generic-radix-tree.h            | 68 ++++++++++++++++-
+ include/linux/sched.h                         |  1 +
+ include/linux/string_helpers.h                |  4 +-
+ init/init_task.c                              |  1 +
+ kernel/locking/osq_lock.c                     |  2 +
+ kernel/stacktrace.c                           |  2 +
+ lib/Kconfig                                   |  3 +
+ lib/Kconfig.debug                             |  9 +++
+ lib/Makefile                                  |  2 +
+ {drivers/md/bcache => lib}/closure.c          | 36 +++++----
+ lib/errname.c                                 |  1 +
+ lib/generic-radix-tree.c                      | 76 ++++++++++++++++++-
+ lib/iov_iter.c                                | 43 +++++++----
+ lib/string_helpers.c                          | 10 ++-
+ 31 files changed, 333 insertions(+), 90 deletions(-)
+ rename {drivers/md/bcache => include/linux}/closure.h (93%)
+ rename {drivers/md/bcache => lib}/closure.c (88%)
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.40.1
 
