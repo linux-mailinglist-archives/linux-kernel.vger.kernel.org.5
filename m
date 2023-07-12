@@ -2,108 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CEEB750FAC
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 19:32:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B937750FB4
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 19:34:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232371AbjGLRcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 13:32:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39820 "EHLO
+        id S233062AbjGLReU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 13:34:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229757AbjGLRcX (ORCPT
+        with ESMTP id S232869AbjGLReT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 13:32:23 -0400
-Received: from smtp.smtpout.orange.fr (smtp-15.smtpout.orange.fr [80.12.242.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACEB51980
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 10:32:21 -0700 (PDT)
-Received: from [192.168.1.18] ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id JdhIqzHAhwgkxJdhIqnn4N; Wed, 12 Jul 2023 19:32:19 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1689183139;
-        bh=nj3VwYwdD9E/FLl0FSv5Oeoycz38oa7+CVNBRYtk6gU=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=sIzK5kFXCameantP8myCFIMUhAIs/kwm/GR8eKV5928Vt0RObj7xF/amNA1itdYK7
-         dEyyK0DKI47Hp8FEx7tXsngViYyReKRKDsVAavP49/crWjQH+mqZBQGdeAFMsRuWvn
-         VX0aMBo16mXA7g16tUlBvhQ5dPgbFK6SytFWdfMgA9bolS+nivWCs5Laq4kBkDpGGf
-         JJi5eF9DbEZizZCB8xaslWsRS0/UdNSNzptUXhx0RVTFw2ojxBd6nL9qSJ5oI/oeCc
-         jy36eyHMSJXxC6znJNfGmOUouWa3E7qd+jlSCAW+4Dsz1AcjSga8JyEUGDrLtzAmf9
-         cEeH9y50i5qTQ==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Wed, 12 Jul 2023 19:32:19 +0200
-X-ME-IP: 86.243.2.178
-Message-ID: <036435eb-40c2-548a-1cfd-93a364f95634@wanadoo.fr>
-Date:   Wed, 12 Jul 2023 19:32:15 +0200
+        Wed, 12 Jul 2023 13:34:19 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37F991980
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 10:34:17 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4fb41682472so10913387e87.2
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 10:34:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shruggie-ro.20221208.gappssmtp.com; s=20221208; t=1689183255; x=1691775255;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=THupXVrcQgstmKZ7g3sWCpKEqGRDMCR0S1cuPxvrmm0=;
+        b=CEkTls9NpLa7QXntC+qxjwisHZSsRQgQwgxURUxzFeBcv9LvOyTjJworuQN7WatsWZ
+         2K8NdX0u0LbxZ2lR1yUo79lVYV7Up0UpO2i2X/Rw8KhfiAEoAlYYFuDPvs0u48lBYlby
+         Hr1UZ63ywo5FibwhwcS7qoubUmXWRJA5tgVIa0eFHOuV/v7sNq3UfNSWZ7LHxLcnsYO7
+         4av0aEY16DDYWnZRJoM4szLJmn5o+qjXQ6Ny2xJEot+VxVVdx7Lp4Q3D7xvuoXEsOoCE
+         +AVENbJNR+oens7/f65Ii+msEkHaRKqN92l7wvCOx7qSEv3ZeIceedllAlVUezPkND2D
+         psnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689183255; x=1691775255;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=THupXVrcQgstmKZ7g3sWCpKEqGRDMCR0S1cuPxvrmm0=;
+        b=aC1XwkF8dt4owmi1+VUUUSWiD9mhSXJmrLW1z61+vmosfL+/1Y132z6sbS41tj2rwa
+         ofhK2qlZBkFZmS0NwCxlBZMMcsv0qRZDOJh0H888u9Yaj+LiG10iJ4055HWxPiLxzIPR
+         4xbs0AgFB6kSNUDxu3A7fcntfM47Pe9+pndNUwBpwH0lcuFAU5hjjBBM4sfGsE7/e1WV
+         quqCHtiJZQrriTjrpaZCX0X7GP29UmBsbRsX0+7NswobCPD/4ZiQlnAcD2Riur00YTp2
+         7Hlk8mavnY2pEt8To8se4Gvx3PV/lfCfcr5s5MJWmgfxr8X3ZsPfLUJHQPdg+JhlH5rL
+         5wkA==
+X-Gm-Message-State: ABy/qLYOzZ/t3O6+tcvX8u2bFgLhA0PYWgGy733g8c02tfHeryKMSU2C
+        JbntNjEHLhRxKm8YNYZ2DaFPVh0Y8bgsQJsVF2e/Qw==
+X-Google-Smtp-Source: APBJJlHvVk6KQIaeMx+Y8djfpAYOUtMArgWEG07w/d6ONkJCrU9E2j1ZpgldQFTViBw1jnRhyDheAmQQeSboRoBB5SI=
+X-Received: by 2002:a05:6512:3287:b0:4fb:89f2:278e with SMTP id
+ p7-20020a056512328700b004fb89f2278emr17145159lfe.68.1689183255338; Wed, 12
+ Jul 2023 10:34:15 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH] KVM: x86: Fix errors in vmcs12.c
-To:     shijie001@208suo.com, tglx@linutronix.de, mingo@redhat.com
-Cc:     Hpa <hpa@zytor.com>, Kvm <kvm@vger.kernel.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>
-References: <tencent_833CA5C82FF883DD2261815EDE19C9858D0A@qq.com>
- <eec40752bc900473f65ad8f94d160106@208suo.com>
-Content-Language: fr, en-US
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <eec40752bc900473f65ad8f94d160106@208suo.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230706081554.1616839-1-alex@shruggie.ro> <20230706081554.1616839-2-alex@shruggie.ro>
+ <9c37e2d5-a430-4a0f-b6b9-5de0dc14033f@lunn.ch>
+In-Reply-To: <9c37e2d5-a430-4a0f-b6b9-5de0dc14033f@lunn.ch>
+From:   Alexandru Ardelean <alex@shruggie.ro>
+Date:   Wed, 12 Jul 2023 20:34:03 +0300
+Message-ID: <CAH3L5Qp_887Jg4QN8qo1QQWJGhyLmvafKKTBRF-Yu3nkLE0G+g@mail.gmail.com>
+Subject: Re: [PATCH 2/2] dt-bindings: net: phy: vsc8531: document
+ 'vsc8531,clkout-freq-mhz' property
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        olteanv@gmail.com, marius.muresan@mxt.ro
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 12/07/2023 à 10:40, shijie001@208suo.com a écrit :
-> The following checkpatch errors are removed:
-> ERROR: space prohibited before open square bracket '['
-> ERROR: Macros with complex values should be enclosed in parentheses
-> 
-> Signed-off-by: Jie Shi <shijie001@208suo.com>
-> ---
->   arch/x86/kvm/vmx/vmcs12.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/vmx/vmcs12.c b/arch/x86/kvm/vmx/vmcs12.c
-> index 106a72c923ca..da239ca58f90 100644
-> --- a/arch/x86/kvm/vmx/vmcs12.c
-> +++ b/arch/x86/kvm/vmx/vmcs12.c
-> @@ -4,10 +4,10 @@
->   #include "vmcs12.h"
-> 
->   #define VMCS12_OFFSET(x) offsetof(struct vmcs12, x)
-> -#define FIELD(number, name)    [ROL16(number, 6)] = VMCS12_OFFSET(name)
-> +#define FIELD(number, name)[ROL16(number, 6)] = VMCS12_OFFSET(name)
+On Sat, Jul 8, 2023 at 9:25=E2=80=AFPM Andrew Lunn <andrew@lunn.ch> wrote:
+>
+> On Thu, Jul 06, 2023 at 11:15:54AM +0300, Alexandru Ardelean wrote:
+> > For VSC8351 and similar PHYs, a new property was added to generate a cl=
+ock
+> > signal on the CLKOUT pin.
+> > This change documents the change in the device-tree bindings doc.
+> >
+> > Signed-off-by: Alexandru Ardelean <alex@shruggie.ro>
+> > ---
+> >  Documentation/devicetree/bindings/net/mscc-phy-vsc8531.txt | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> >
+> > diff --git a/Documentation/devicetree/bindings/net/mscc-phy-vsc8531.txt=
+ b/Documentation/devicetree/bindings/net/mscc-phy-vsc8531.txt
+> > index 0a3647fe331b..133bdd644618 100644
+> > --- a/Documentation/devicetree/bindings/net/mscc-phy-vsc8531.txt
+> > +++ b/Documentation/devicetree/bindings/net/mscc-phy-vsc8531.txt
+> > @@ -31,6 +31,10 @@ Optional properties:
+> >                         VSC8531_LINK_100_ACTIVITY (2),
+> >                         VSC8531_LINK_ACTIVITY (0) and
+> >                         VSC8531_DUPLEX_COLLISION (8).
+> > +- vsc8531,clkout-freq-mhz : For VSC8531 and similar PHYs, this will ou=
+tput
+> > +                       a clock signal on the CLKOUT pin of the chip.
+> > +                       The supported values are 25, 50 & 125 Mhz.
+> > +                       Default value is no clock signal on the CLKOUT =
+pin.
+>
+> It is possible this could cause regressions. The bootloader could
+> turned the clock on, and then Linux leaves it alone. Now, it will get
+> turned off unless a DT property is added.
+>
+> I prefer to explicitly have the property, so there is no dependency on
+> the bootloader, so lets leave it like this. But if we do get
+> regressions reported, this might need to change.
 
-Hi,
+Well, we could also need add a "mscc,clkout-freq-mhz =3D <0>" handling
+where the CLKOUT pin gets disabled explicitly (if needed, after the
+bootloade), for some weird corner cases.
+Though, to-be-honest, I can't think of any (remotely) reasonable ones.
 
-Written this way, this is really counter-intuitive.
-I think that the checkpatch warning should be ignored in this case.
+It would definitely be simple to just make sure that Linux does not do
+any changes if this property isn't present.
 
->   #define FIELD64(number, name)                        \
->       FIELD(number, name),                        \
-> -    [ROL16(number##_HIGH, 6)] = VMCS12_OFFSET(name) + sizeof(u32)
-> +    [ROL16(number##_HIGH, 6)] = (VMCS12_OFFSET(name) + sizeof(u32))
+If you're on board about having this as-is, I will keep it; and spin a
+V2 just with 'vsc8531,clkout-freq-mhz ' -> 'mscc,clkout-freq-mhz' as
+Rob requested.
 
-This does not silence the checkpatch warning.
-I think that the checkpatch warning should also be ignored in this case.
+Thanks
+Alex
 
-> 
->   const unsigned short vmcs12_field_offsets[] = {
->       FIELD(VIRTUAL_PROCESSOR_ID, virtual_processor_id),
-> 
-
-checkpatch output should always be taken with a grain of salt.
-It just runs some heuristics on what looks improvable, but it is not THE 
-law.
-
-It is just a tool that can help in many cases, but not all.
-
-Here, I think that the code is better as-is.
-
-
-CJ
+>
+>    Andrew
