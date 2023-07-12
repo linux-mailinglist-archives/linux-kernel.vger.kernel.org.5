@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A343A751447
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 01:14:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5AA9751448
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 01:14:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232586AbjGLXOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 19:14:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34048 "EHLO
+        id S230054AbjGLXO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 19:14:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233254AbjGLXO0 (ORCPT
+        with ESMTP id S232262AbjGLXO2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 19:14:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE7A32735
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 16:14:12 -0700 (PDT)
+        Wed, 12 Jul 2023 19:14:28 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34F982D4A
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 16:14:15 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 39F2861947
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 23:14:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12058C433C8;
-        Wed, 12 Jul 2023 23:14:09 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9514361986
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 23:14:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36783C433C7;
+        Wed, 12 Jul 2023 23:14:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689203651;
-        bh=+Z6ywkEJvnphopT/QGsfd/IJAkbLCsUDhcJqjaaKGG4=;
+        s=k20201202; t=1689203654;
+        bh=kN7Q6TJPWhd01UrZwm4+vTZv1EOlCbd/ekAQgk9Q93c=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=Li3s5/6LQTS2OZN0nGWiN4kCc7iwbuY8owtzce2OJvfe5xH+IfiGQ0WiNbnnGiQO2
-         ylHkjwE9Te/6a0HE3r0qUvPbEbMegOFzBakihXlF+59JtKda7T8k1nH+eI+TowxenA
-         yCfoc+bRCigHhtoXaTNvmswUXJ4JE06buj3OH3XWH9I8djXn5JQOOctzDaG8r9WQHI
-         Gz3wYDX3VM4QizMoYmWKDdy7CX3Z/Va0zDyyBs3epObOtfdOEsV474bXpSLChmmc3X
-         wiTGLuAOAANjP+ssUCkx/miMF0kSxqi4rPhI3vE+jBOqz7PY2F42HNr+mADsxKpcth
-         t7L9ovHHjw22g==
+        b=rWQEJEivsSk6CTDFC7Z+KHcYysw+oLo8b103kbDfOS9WcPySkiwbDiN5f5KSj0pGE
+         tdzLGg+Hwqyx/WwF7ZjGq+8v9qLfWDs3TXl3u9V1r5DF4WsNIc48YvNKDgf0lanl3R
+         s/gWISWZC3vDTUO7upY5zs72+XsxHn1mclnUoOj4beV5WjebF7luIyBrHkjWlP6O5B
+         W4xB8kTyhIx01q33wsGzcIY24FdvMoqnHDQpP6Vp6cUQaJ98Iq/kUUGTDfu5H2WgtV
+         wDs87BOwg0oQ9vLk6SuHMX8eT6bxcGhd3aXes0nPtgp0HYuzT4KLgxgamNBOLRuEtp
+         MZx8u3pPAgF6w==
 From:   Mark Brown <broonie@kernel.org>
-Date:   Thu, 13 Jul 2023 00:13:51 +0100
-Subject: [PATCH 02/10] ASoC: ad1980: Update to use maple tree register
+Date:   Thu, 13 Jul 2023 00:13:52 +0100
+Subject: [PATCH 03/10] ASoC: adau1372: Update to use maple tree register
  cache
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230713-asoc-ad-maple-v1-2-7d2f35d42b5f@kernel.org>
+Message-Id: <20230713-asoc-ad-maple-v1-3-7d2f35d42b5f@kernel.org>
 References: <20230713-asoc-ad-maple-v1-0-7d2f35d42b5f@kernel.org>
 In-Reply-To: <20230713-asoc-ad-maple-v1-0-7d2f35d42b5f@kernel.org>
 To:     Liam Girdwood <lgirdwood@gmail.com>,
@@ -49,19 +49,19 @@ To:     Liam Girdwood <lgirdwood@gmail.com>,
 Cc:     patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
         linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
 X-Mailer: b4 0.13-dev-099c9
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1083; i=broonie@kernel.org;
- h=from:subject:message-id; bh=+Z6ywkEJvnphopT/QGsfd/IJAkbLCsUDhcJqjaaKGG4=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBkrzO1WTlQ0/4e8YXAZI6/9T6m8yzgdXs7P47mf
- vMa4rv1jZKJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZK8ztQAKCRAk1otyXVSH
- 0G8SB/9ENzzCSc2z19fXPMWn4wVI/GzE+Ukwx4isxQcyPEBdZ49FvLl+10ETpw+NHz8833i5lIV
- 6418+YUqJEv0GDbmI0qeUhs7VuFvOn+KL9GmZpgMAfT+lH6OgCsTz/WQPj2zJ3s3JBeZDB3VYXY
- oedtQOn0B14Xzgcw6/mmHrdNsuZ7dPGynsoq9gabOGtV3VSAtoutPTVeVV1FEVeWT8bnheFl4wW
- Gq6jpxLwqslgjacbx1LELl4KtfLyjCrdg9eQr8/+sPyY0FEwkkk64vvJvKS9Vd6GtFF4OtIrA5o
- 7YgIzvBowqvBqq3Au9nif9NjPKqfua14H8XyWZPaXHbkVsSJ
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1138; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=kN7Q6TJPWhd01UrZwm4+vTZv1EOlCbd/ekAQgk9Q93c=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBkrzO1KqolmtERSVYJzcgTWk3E6LU4Zkx2yQfGc
+ WUADF6r8HGJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZK8ztQAKCRAk1otyXVSH
+ 0JyJB/4z9Pv2qfbbzQqA5kCF0sJCwwmsIcMbHzjeKZ1HIfSTwVaxROgcEMiob7c464mqIrfC/uM
+ 2LXePFR2T5h8UJzFVXChi6EWBx6vCvPOCm219+i7HLqwrTvOb7LXtWp7ChTL3aJ2ijTlxvKIUCo
+ 0qKi8ZWy1h+o6IHy1SoEFm29XAft+RG+2g+ehjnkd+vAo76QIR54dCxnXayQOsppg6NWRnb3/Lr
+ rO5jGLIbTQvdVewdKrxrVTwd9skTPdOR5myBYe8M9wrA5Xdadw+8TrxLZd96LX14BXft6TDReci
+ 1zbQ477M9BrNDbtRKx+31sozssDTXxq3mWlaZI7VRHlIA+Kd
 X-Developer-Key: i=broonie@kernel.org; a=openpgp;
  fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -77,26 +77,26 @@ v6.5 it has also acquired the ability to generate multi-register writes in
 sync operations, bringing performance up to parity with the rbtree cache
 there.
 
-Update the ad1980 driver to use the more modern data structure.
+Update the adau1382 driver to use the more modern data structure.
 
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ad1980.c | 2 +-
+ sound/soc/codecs/adau1372.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/ad1980.c b/sound/soc/codecs/ad1980.c
-index 5e777d7fd5d9..3c1ae13c1aae 100644
---- a/sound/soc/codecs/ad1980.c
-+++ b/sound/soc/codecs/ad1980.c
-@@ -92,7 +92,7 @@ static const struct regmap_config ad1980_regmap_config = {
- 	.reg_stride = 2,
- 	.val_bits = 16,
- 	.max_register = 0x7e,
+diff --git a/sound/soc/codecs/adau1372.c b/sound/soc/codecs/adau1372.c
+index d9bde7eb043a..98380a7ce64d 100644
+--- a/sound/soc/codecs/adau1372.c
++++ b/sound/soc/codecs/adau1372.c
+@@ -1056,7 +1056,7 @@ const struct regmap_config adau1372_regmap_config = {
+ 	.reg_defaults = adau1372_reg_defaults,
+ 	.num_reg_defaults = ARRAY_SIZE(adau1372_reg_defaults),
+ 	.volatile_reg = adau1372_volatile_register,
 -	.cache_type = REGCACHE_RBTREE,
 +	.cache_type = REGCACHE_MAPLE,
+ };
+ EXPORT_SYMBOL_GPL(adau1372_regmap_config);
  
- 	.volatile_reg = regmap_ac97_default_volatile,
- 	.readable_reg = ad1980_readable_reg,
 
 -- 
 2.39.2
