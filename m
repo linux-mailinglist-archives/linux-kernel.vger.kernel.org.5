@@ -2,184 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA517751422
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 01:08:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A97D751437
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 01:12:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232383AbjGLXIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 19:08:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51940 "EHLO
+        id S233226AbjGLXMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 19:12:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233190AbjGLXHx (ORCPT
+        with ESMTP id S232936AbjGLXMN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 19:07:53 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 988372130;
-        Wed, 12 Jul 2023 16:07:27 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Wed, 12 Jul 2023 19:12:13 -0400
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E92AC173F;
+        Wed, 12 Jul 2023 16:12:09 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 598C5120024;
+        Thu, 13 Jul 2023 02:12:07 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 598C5120024
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
+        s=mail; t=1689203527;
+        bh=tkzvlUgbyspJS7/IueSbjXgYZDr8iyqjh7w6gb0meyY=;
+        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+        b=aYc1mDh8PRtrUIEZIZAn34HIDLXjfJ9PwfZ85IU07vQ2iNtviLWOu0yHLUTLs6pWv
+         dmwwQYMs5ythH9OEC5Fl1xsaM2saMoVCMJuFf6yFg/pprpTyoDJ3yfM+WWnp/2zORQ
+         tPLbQaGdnl1Bp3ObsDvzGugWksFiO3tol0gH67ObSqdJK3OjngK/mySKgFhQuiXdOc
+         VBpXhkunM1l1C7KIQnYtvEzrX1Tr0tU9jQUOpO2xcUN9WlcZV24wnJ14HFEC8tSH39
+         cq/YCrBdnDw/vyW3Avhe8d8ULewaRvVunrZtEwbtQaKcTPcwN949L2eeSX4vKP1KG5
+         f6O4RHMA+ChFw==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 230CE61987;
-        Wed, 12 Jul 2023 23:07:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA62DC433C7;
-        Wed, 12 Jul 2023 23:07:25 +0000 (UTC)
-Date:   Wed, 12 Jul 2023 19:07:23 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Mohamed Khalfella <mkhalfella@purestorage.com>
-Cc:     stable@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-kernel@vger.kernel.org (open list:TRACING),
-        linux-trace-kernel@vger.kernel.org (open list:TRACING),
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Tom Zanussi <zanussi@kernel.org>
-Subject: Re: [PATCH] tracing/histograms: Add histograms to hist_vars if they
- have referenced variables
-Message-ID: <20230712190723.26ebadea@gandalf.local.home>
-In-Reply-To: <20230712223021.636335-1-mkhalfella@purestorage.com>
-References: <20230712223021.636335-1-mkhalfella@purestorage.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Thu, 13 Jul 2023 02:12:07 +0300 (MSK)
+Received: from localhost.localdomain (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Thu, 13 Jul 2023 02:11:47 +0300
+From:   George Stark <gnstark@sberdevices.ru>
+To:     <jic23@kernel.org>, <lars@metafoo.de>, <neil.armstrong@linaro.org>,
+        <khilman@baylibre.com>, <jbrunet@baylibre.com>,
+        <martin.blumenstingl@googlemail.com>,
+        <andriy.shevchenko@linux.intel.com>, <nuno.sa@analog.com>,
+        <gnstark@sberdevices.ru>
+CC:     <linux-iio@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-amlogic@lists.infradead.org>, <kernel@sberdevices.ru>
+Subject: [PATCH v6 0/6] meson saradc: add iio channels to read channel 7 mux inputs
+Date:   Thu, 13 Jul 2023 02:10:41 +0300
+Message-ID: <20230712231157.261245-1-gnstark@sberdevices.ru>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 178587 [Jul 12 2023]
+X-KSMG-AntiSpam-Version: 5.9.59.0
+X-KSMG-AntiSpam-Envelope-From: GNStark@sberdevices.ru
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 521 521 0c3391dd6036774f2e1052158c81e48587b96e95, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, lore.kernel.org:7.1.1;sberdevices.ru:7.1.1,5.0.1;www.spinics.net:7.1.1;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;100.64.160.123:7.1.2;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1, FromAlignment: s, {Tracking_white_helo}, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2023/07/12 21:25:00
+X-KSMG-LinksScanning: Clean, bases: 2023/07/12 20:30:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/07/12 10:49:00 #21602221
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 12 Jul 2023 22:30:21 +0000
-Mohamed Khalfella <mkhalfella@purestorage.com> wrote:
+Changelog:
 
-> Hist triggers can have referenced variables without having direct
-> variables fields. This can be the case if referenced variables are added
-> for trigger actions. In this case the newly added references will not
-> have field variables. Not taking such referenced variables into
-> consideration can result in a bug where it would be possible to remove
-> hist trigger with variables being refenced. This will result in a bug
-> that is easily reproducable like so
-> 
-> $ cd /sys/kernel/tracing
-> $ echo 'synthetic_sys_enter char[] comm; long id' >> synthetic_events
-> $ echo 'hist:keys=common_pid.execname,id.syscall:vals=hitcount:comm=common_pid.execname' >> events/raw_syscalls/sys_enter/trigger
-> $ echo 'hist:keys=common_pid.execname,id.syscall:onmatch(raw_syscalls.sys_enter).synthetic_sys_enter($comm, id)' >> events/raw_syscalls/sys_enter/trigger
-> $ echo '!hist:keys=common_pid.execname,id.syscall:vals=hitcount:comm=common_pid.execname' >> events/raw_syscalls/sys_enter/trigger
-> 
-> [  100.263533] ==================================================================
-> [  100.264634] BUG: KASAN: slab-use-after-free in resolve_var_refs+0xc7/0x180
-> [  100.265520] Read of size 8 at addr ffff88810375d0f0 by task bash/439
-> [  100.266320]
+v1->v2:
+split refactoring patch [1] into 4 smaller patches, fix comment style
 
-And Of course you send this to me right after I send a pull request with
-fixes to Linus :-p
+[1] https://lore.kernel.org/lkml/20230621062715.455652-2-gnstark@sberdevices.ru/
 
-Thanks for the patch. I just did a quick test, and sure enough I can
-reproduce the bug, and your patch makes the bug go away.
+v2->v3:
+remove patch 'meson saradc: unite iio channel array definitions' [1] after discussion
 
-I run this through my full test suite, and then send Linus another pull
-request.
+patch 'meson saradc: add enum for iio channel array indexes'
+  - change enum items prefix from INDEX_ to NUM_ since name 'channel index' is
+  more relevant to channel array index in iio world and with 2 tables our array index is
+  not always equal to channel number
+  - resolve conflicts after deleting [1]
+  - update commit message, previous patch [2]
+  - return channel number for temp channel. It wasn't used and isn't used currently
+  but may need later
 
-Thanks!
+patch meson saradc: support reading from channel 7 mux inputs
+  - resolve conflicts after deleting [1]
+  - update commit message, previous patch [3]
+  - add routine find_channel_by_num to get channel by channel number
 
--- Steve
+[1] https://lore.kernel.org/lkml/20230623022334.791026-4-gnstark@sberdevices.ru/
+[2] https://lore.kernel.org/lkml/20230623022334.791026-5-gnstark@sberdevices.ru/
+[3] https://lore.kernel.org/lkml/20230623022334.791026-7-gnstark@sberdevices.ru/
 
+v3->v4:
+add new patch 'iio: adc: meson: remove unused timestamp channel' [1]
 
-> [  100.266533] CPU: 2 PID: 439 Comm: bash Not tainted 6.5.0-rc1 #4
-> [  100.267277] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.0-20220807_005459-localhost 04/01/2014
-> [  100.268561] Call Trace:
-> [  100.268902]  <TASK>
-> [  100.269189]  dump_stack_lvl+0x4c/0x70
-> [  100.269680]  print_report+0xc5/0x600
-> [  100.270165]  ? resolve_var_refs+0xc7/0x180
-> [  100.270697]  ? kasan_complete_mode_report_info+0x80/0x1f0
-> [  100.271389]  ? resolve_var_refs+0xc7/0x180
-> [  100.271913]  kasan_report+0xbd/0x100
-> [  100.272380]  ? resolve_var_refs+0xc7/0x180
-> [  100.272920]  __asan_load8+0x71/0xa0
-> [  100.273377]  resolve_var_refs+0xc7/0x180
-> [  100.273888]  event_hist_trigger+0x749/0x860
-> [  100.274505]  ? kasan_save_stack+0x2a/0x50
-> [  100.275024]  ? kasan_set_track+0x29/0x40
-> [  100.275536]  ? __pfx_event_hist_trigger+0x10/0x10
-> [  100.276138]  ? ksys_write+0xd1/0x170
-> [  100.276607]  ? do_syscall_64+0x3c/0x90
-> [  100.277099]  ? entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-> [  100.277771]  ? destroy_hist_data+0x446/0x470
-> [  100.278324]  ? event_hist_trigger_parse+0xa6c/0x3860
-> [  100.278962]  ? __pfx_event_hist_trigger_parse+0x10/0x10
-> [  100.279627]  ? __kasan_check_write+0x18/0x20
-> [  100.280177]  ? mutex_unlock+0x85/0xd0
-> [  100.280660]  ? __pfx_mutex_unlock+0x10/0x10
-> [  100.281200]  ? kfree+0x7b/0x120
-> [  100.281619]  ? ____kasan_slab_free+0x15d/0x1d0
-> [  100.282197]  ? event_trigger_write+0xac/0x100
-> [  100.282764]  ? __kasan_slab_free+0x16/0x20
-> [  100.283293]  ? __kmem_cache_free+0x153/0x2f0
-> [  100.283844]  ? sched_mm_cid_remote_clear+0xb1/0x250
-> [  100.284550]  ? __pfx_sched_mm_cid_remote_clear+0x10/0x10
-> [  100.285221]  ? event_trigger_write+0xbc/0x100
-> [  100.285781]  ? __kasan_check_read+0x15/0x20
-> [  100.286321]  ? __bitmap_weight+0x66/0xa0
-> [  100.286833]  ? _find_next_bit+0x46/0xe0
-> [  100.287334]  ? task_mm_cid_work+0x37f/0x450
-> [  100.287872]  event_triggers_call+0x84/0x150
-> [  100.288408]  trace_event_buffer_commit+0x339/0x430
-> [  100.289073]  ? ring_buffer_event_data+0x3f/0x60
-> [  100.292189]  trace_event_raw_event_sys_enter+0x8b/0xe0
-> [  100.295434]  syscall_trace_enter.constprop.0+0x18f/0x1b0
-> [  100.298653]  syscall_enter_from_user_mode+0x32/0x40
-> [  100.301808]  do_syscall_64+0x1a/0x90
-> [  100.304748]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-> [  100.307775] RIP: 0033:0x7f686c75c1cb
-> [  100.310617] Code: 73 01 c3 48 8b 0d 65 3c 10 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa b8 21 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 35 3c 10 00 f7 d8 64 89 01 48
-> [  100.317847] RSP: 002b:00007ffc60137a38 EFLAGS: 00000246 ORIG_RAX: 0000000000000021
-> [  100.321200] RAX: ffffffffffffffda RBX: 000055f566469ea0 RCX: 00007f686c75c1cb
-> [  100.324631] RDX: 0000000000000001 RSI: 0000000000000001 RDI: 000000000000000a
-> [  100.328104] RBP: 00007ffc60137ac0 R08: 00007f686c818460 R09: 000000000000000a
-> [  100.331509] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000009
-> [  100.334992] R13: 0000000000000007 R14: 000000000000000a R15: 0000000000000007
-> [  100.338381]  </TASK>
-> 
-> We hit the bug because when second hist trigger has was created
-> has_hist_vars() returned false because hist trigger did not have
-> variables. As a result of that save_hist_vars() was not called to add
-> the trigger to trace_array->hist_vars. Later on when we attempted to
-> remove the first histogram find_any_var_ref() failed to detect it is
-> being used because it did not find the second trigger in hist_vars list.
-> 
-> With this change we wait until trigger actions are created so we can take
-> into consideration if hist trigger has variable references. Also, now we
-> check the return value of save_hist_vars() and fail trigger creation if
-> save_hist_vars() fails.
-> 
-> Signed-off-by: Mohamed Khalfella <mkhalfella@purestorage.com>
-> Cc: stable@vger.kernel.org
-> ---
->  kernel/trace/trace_events_hist.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-> index b97d3ad832f1..c8c61381eba4 100644
-> --- a/kernel/trace/trace_events_hist.c
-> +++ b/kernel/trace/trace_events_hist.c
-> @@ -6663,13 +6663,15 @@ static int event_hist_trigger_parse(struct event_command *cmd_ops,
->  	if (get_named_trigger_data(trigger_data))
->  		goto enable;
->  
-> -	if (has_hist_vars(hist_data))
-> -		save_hist_vars(hist_data);
-> -
->  	ret = create_actions(hist_data);
->  	if (ret)
->  		goto out_unreg;
->  
-> +	if (has_hist_vars(hist_data) || hist_data->n_var_refs) {
-> +		if (save_hist_vars(hist_data))
-> +			goto out_unreg;
-> +	}
-> +
->  	ret = tracing_map_init(hist_data->map);
->  	if (ret)
->  		goto out_unreg;
+patch 'iio: adc: meson: move enums declaration before'
+	update commit message, previous patch [2]
+patch 'iio: adc: meson: move meson_sar_adc_set_chan7_mux'
+	update commit message, previous patch [3]
+patch 'iio: adc: meson: add enum for iio channel numbers'
+	update commit message, previous patch [4]
+patch 'iio: adc: meson: add channel labels'
+	update commit message, previous patch [5]
+	change sprintf(label, "%s\n", "temp-sensor") to sprintf(label, "temp-sensor\n")
+patch 'iio: adc: meson: support reading from channel 7 mux'
+	rewrite enum meson_sar_adc_chan7_mux_sel definition and
+		read_label routine proposed by Andy [7], previous patch [6]
+
+[1] https://lore.kernel.org/lkml/20230705160413.000062e7@Huawei.com/
+[2] https://lore.kernel.org/lkml/20230627224017.1724097-2-gnstark@sberdevices.ru/
+[3] https://lore.kernel.org/lkml/20230627224017.1724097-3-gnstark@sberdevices.ru/
+[4] https://lore.kernel.org/lkml/20230627224017.1724097-4-gnstark@sberdevices.ru/
+[5] https://lore.kernel.org/lkml/20230627224017.1724097-5-gnstark@sberdevices.ru/
+[6] https://lore.kernel.org/lkml/20230627224017.1724097-6-gnstark@sberdevices.ru/
+[7] https://lore.kernel.org/lkml/ZJwGCNA+ZURri24i@smile.fi.intel.com/
+
+v4->v5:
+patch 'iio: adc: meson: move enums declaration before variables declaration'
+	update commit message, previous patch [1]
+patch 'iio: adc: meson: move meson_sar_adc_set_chan7_mux routine upper'
+	update commit message, previous patch [2]
+patch 'iio: adc: meson: add channel labels'
+	update commit message, previous patch [3]
+patch 'iio: adc: meson: support reading from channel 7 mux inputs'
+	update commit message, previous patch [4]
+
+[1] https://lore.kernel.org/lkml/20230707153322.114302-3-gnstark@sberdevices.ru/
+[2] https://www.spinics.net/lists/linux-iio/msg80226.html
+[3] https://www.spinics.net/lists/linux-iio/msg80227.html
+[4] https://www.spinics.net/lists/linux-iio/msg80230.html
+
+v5->v6:
+patch 'iio: adc: meson: move enums declaration before variables declaration'
+	update commit message, previous patch [1]
+patch 'iio: adc: meson: support reading from channel 7 mux inputs'
+	update commit message, previous patch [2]
+[1] https://www.spinics.net/lists/linux-iio/msg80315.html
+[2] https://www.spinics.net/lists/linux-iio/msg80314.html
+
+George Stark (6):
+  iio: adc: meson: remove unused timestamp channel
+  iio: adc: meson: move enums declaration before variables declaration
+  iio: adc: meson: move meson_sar_adc_set_chan7_mux routine upper
+  iio: adc: meson: add enum for iio channel numbers
+  iio: adc: meson: add channel labels
+  iio: adc: meson: support reading from channel 7 mux inputs
+
+ drivers/iio/adc/meson_saradc.c | 173 +++++++++++++++++++++++++--------
+ 1 file changed, 134 insertions(+), 39 deletions(-)
+
+-- 
+2.38.4
 
