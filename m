@@ -2,74 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54C19751383
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 00:25:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0DD975138E
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 00:31:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231398AbjGLWZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 18:25:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37276 "EHLO
+        id S231774AbjGLWbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 18:31:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbjGLWZa (ORCPT
+        with ESMTP id S229572AbjGLWbB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 18:25:30 -0400
+        Wed, 12 Jul 2023 18:31:01 -0400
 Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F704199E;
-        Wed, 12 Jul 2023 15:25:29 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-6689430d803so79225b3a.0;
-        Wed, 12 Jul 2023 15:25:29 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD5751FDB
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 15:30:59 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-66f5faba829so71291b3a.3
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 15:30:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689200728; x=1691792728;
+        d=purestorage.com; s=google2022; t=1689201059; x=1691793059;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=p16HJUeFjh0Up2EuZ/dd2QVMrO3mMIhcqelMbrELgUs=;
-        b=AS3vGV8GaYrFYrEl8H7hKOjmb4Es0czMAC6TL+m1BtL8qPw1sXJihYI42F4fQzasCr
-         9C/y54pmvfVY9HMvfXgQdtw4Dg9mHXrMPvs5VDa9hXep9esXb/RyZvxjNfMvsYcmnTMJ
-         ocpZaEc7VznJX4Es9MCc/gosChAkNclEWfsQ1LzguTrGQsuHe8ivx1aoV4U52w3gRZd1
-         qZsRONMzbiDqyWR73A3DZ3K7r1Was6iNreseQs4VmEeXtoGKGC18Wefn0FQ+w4mhF049
-         sjq6dTthUjmgvqR6YZ9s3TqubH7fPlMeM6m33OUtbuIclNjP+ZtOTBA0A25zi/fln4hk
-         NM+Q==
+        bh=W2qLW+xWqeaBsuAVO/VoywBcaG7QxYi7fmeCIr0WMwc=;
+        b=TbQFUtFLbwU7TDPC8QxhPhGpJi0BPb1ijwjnED4ENxZrQK0QcvRhzSXO1UBIRb+cbc
+         iBeZHfOYaGwQvwgNRk92icFO3THYf9uL3lDy2herG3jIqW6ysLTRNxoygV2F1cP9L+HU
+         Adks0CR7uNndBox8FZ0v1Gcm3uFiEfW2ejnCnB0I7+wvCFNqAicCbkKMtwLjRQ/UHY4Q
+         XoHkPW7Pcu96brvv/+Ex5coZFgFGvNrOF+tE2V1HJOaPe/x0sXo4Z/cbXE7Wc+1nz0RH
+         qzS4UfZ9PPaJIFyTJjMSbvregi/NwMCyTBmQRJ8ZnFSnPKtLysY9djTmbn7fHTSgoPay
+         VOlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689200728; x=1691792728;
+        d=1e100.net; s=20221208; t=1689201059; x=1691793059;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=p16HJUeFjh0Up2EuZ/dd2QVMrO3mMIhcqelMbrELgUs=;
-        b=c566o7bRynKlnlN+P4cEbyz6vzHUeMRGU4RFWkENyNcViDSAWEVfwBYD8u98AmjpN9
-         eE/JVDeQ/xyrNM9/eXqkE9chQRMDx3OCctW89SYBd2cDrOMr6/gXmxYHLUlUAw1Ighmd
-         NwObLRZb/uQxVR2R/0Orl5NNmChJRLw6KLjOquJ30o+4DTXOTW/GqzsiuFCjfP/Tm24G
-         82UqidNEUdaV0MgQRd+ULivx9YuDH7yChEug46NrKwGGLM+3G+y+Cz9ylLXBsiDcUFwH
-         uf5k6Pp2pGMzKRcfDnr8Vg+A326E1p/Xltns0VPzdtQVlUHXwgyE9knwhCyYQIODAot2
-         2Psg==
-X-Gm-Message-State: ABy/qLYKIX/gsSuYZNTLyqMOCZ17NcFSOX2CmuBOMJJMtGpFfzgVs8HL
-        T2WDvNQtIt2rg/KpmSxxTew=
-X-Google-Smtp-Source: APBJJlG3beF7ERt/uLgX1UHxkuEN/pg8U+e7c3SJSiwKs5FaMN/c4UXTKiygCxqrZPeQl6oKY+i78g==
-X-Received: by 2002:a05:6a00:23ca:b0:668:8596:7524 with SMTP id g10-20020a056a0023ca00b0066885967524mr21229199pfc.20.1689200727294;
-        Wed, 12 Jul 2023 15:25:27 -0700 (PDT)
-Received: from localhost ([2a00:79e1:abd:4a00:69d1:d8aa:25be:a2b6])
-        by smtp.gmail.com with ESMTPSA id i23-20020aa78b57000000b00662610cf7a8sm4174893pfd.172.2023.07.12.15.25.26
+        bh=W2qLW+xWqeaBsuAVO/VoywBcaG7QxYi7fmeCIr0WMwc=;
+        b=YFEnywHuN+dldcLrc02TuEORuE6nF3UI8rw5ucEoCvhaYfF+7LT139DuMI4/yiFdWS
+         hQP3/v2SL5Gw1/+AYlWQbfpBPAHZakv96NScx5zGrRZSJMU9XIlSV+9r7KytyYobQZdN
+         fJT5Ais48WDsqtkJ8cRrhpSmauZFNyU3UXwxoODTg3F/9T54OuoKhGxheT9DQUQ0fB5z
+         h1TMMejmeulqSWc26+UJn5u+1lF5sfVXQ+FTpMxer+fdVPZpZrBGuUxj0f1LPDVee49F
+         epoylzPyKkBunk0Wj5/IGSABkPEnOX3zIyltcic/ITKLm65j58oHdarW4MhAuBukvFQZ
+         rKiA==
+X-Gm-Message-State: ABy/qLar4MiyikcR27kKN1EdyT9Ywy9Fq+FfimRI6VBYZxC7lMmuoPAs
+        rE8sYJ8QiRJXR/rkmwQn1cVP8vn2ljFOPerVwn4=
+X-Google-Smtp-Source: APBJJlFfCtb8Ua3vLi2bAFf5ko/mxmUMbaSJkh1sMI0yr5Q4addHn/tSt0rMeTlSvqNpd835KjomSA==
+X-Received: by 2002:a05:6a00:24ca:b0:67d:22a6:2f54 with SMTP id d10-20020a056a0024ca00b0067d22a62f54mr19804032pfv.31.1689201059241;
+        Wed, 12 Jul 2023 15:30:59 -0700 (PDT)
+Received: from gaia.lab.kspace.sh (c-98-207-191-243.hsd1.ca.comcast.net. [98.207.191.243])
+        by smtp.googlemail.com with ESMTPSA id d7-20020aa78147000000b0067ea048cf83sm4045714pfn.186.2023.07.12.15.30.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Jul 2023 15:25:26 -0700 (PDT)
-From:   Rob Clark <robdclark@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        Rob Clark <robdclark@chromium.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] drm/msm: Fix hw_fence error path cleanup
-Date:   Wed, 12 Jul 2023 15:25:23 -0700
-Message-ID: <20230712222523.7404-1-robdclark@gmail.com>
-X-Mailer: git-send-email 2.41.0
+        Wed, 12 Jul 2023 15:30:58 -0700 (PDT)
+From:   Mohamed Khalfella <mkhalfella@purestorage.com>
+To:     mkhalfella@purestorage.com
+Cc:     stable@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-kernel@vger.kernel.org (open list:TRACING),
+        linux-trace-kernel@vger.kernel.org (open list:TRACING)
+Subject: [PATCH] tracing/histograms: Add histograms to hist_vars if they have referenced variables
+Date:   Wed, 12 Jul 2023 22:30:21 +0000
+Message-Id: <20230712223021.636335-1-mkhalfella@purestorage.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,64 +71,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
+Hist triggers can have referenced variables without having direct
+variables fields. This can be the case if referenced variables are added
+for trigger actions. In this case the newly added references will not
+have field variables. Not taking such referenced variables into
+consideration can result in a bug where it would be possible to remove
+hist trigger with variables being refenced. This will result in a bug
+that is easily reproducable like so
 
-In an error path where the submit is free'd without the job being run,
-the hw_fence pointer is simply a kzalloc'd block of memory.  In this
-case we should just kfree() it, rather than trying to decrement it's
-reference count.  Fortunately we can tell that this is the case by
-checking for a zero refcount, since if the job was run, the submit would
-be holding a reference to the hw_fence.
+$ cd /sys/kernel/tracing
+$ echo 'synthetic_sys_enter char[] comm; long id' >> synthetic_events
+$ echo 'hist:keys=common_pid.execname,id.syscall:vals=hitcount:comm=common_pid.execname' >> events/raw_syscalls/sys_enter/trigger
+$ echo 'hist:keys=common_pid.execname,id.syscall:onmatch(raw_syscalls.sys_enter).synthetic_sys_enter($comm, id)' >> events/raw_syscalls/sys_enter/trigger
+$ echo '!hist:keys=common_pid.execname,id.syscall:vals=hitcount:comm=common_pid.execname' >> events/raw_syscalls/sys_enter/trigger
 
-Fixes: f94e6a51e17c ("drm/msm: Pre-allocate hw_fence")
-Signed-off-by: Rob Clark <robdclark@chromium.org>
+[  100.263533] ==================================================================
+[  100.264634] BUG: KASAN: slab-use-after-free in resolve_var_refs+0xc7/0x180
+[  100.265520] Read of size 8 at addr ffff88810375d0f0 by task bash/439
+[  100.266320]
+[  100.266533] CPU: 2 PID: 439 Comm: bash Not tainted 6.5.0-rc1 #4
+[  100.267277] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.0-20220807_005459-localhost 04/01/2014
+[  100.268561] Call Trace:
+[  100.268902]  <TASK>
+[  100.269189]  dump_stack_lvl+0x4c/0x70
+[  100.269680]  print_report+0xc5/0x600
+[  100.270165]  ? resolve_var_refs+0xc7/0x180
+[  100.270697]  ? kasan_complete_mode_report_info+0x80/0x1f0
+[  100.271389]  ? resolve_var_refs+0xc7/0x180
+[  100.271913]  kasan_report+0xbd/0x100
+[  100.272380]  ? resolve_var_refs+0xc7/0x180
+[  100.272920]  __asan_load8+0x71/0xa0
+[  100.273377]  resolve_var_refs+0xc7/0x180
+[  100.273888]  event_hist_trigger+0x749/0x860
+[  100.274505]  ? kasan_save_stack+0x2a/0x50
+[  100.275024]  ? kasan_set_track+0x29/0x40
+[  100.275536]  ? __pfx_event_hist_trigger+0x10/0x10
+[  100.276138]  ? ksys_write+0xd1/0x170
+[  100.276607]  ? do_syscall_64+0x3c/0x90
+[  100.277099]  ? entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+[  100.277771]  ? destroy_hist_data+0x446/0x470
+[  100.278324]  ? event_hist_trigger_parse+0xa6c/0x3860
+[  100.278962]  ? __pfx_event_hist_trigger_parse+0x10/0x10
+[  100.279627]  ? __kasan_check_write+0x18/0x20
+[  100.280177]  ? mutex_unlock+0x85/0xd0
+[  100.280660]  ? __pfx_mutex_unlock+0x10/0x10
+[  100.281200]  ? kfree+0x7b/0x120
+[  100.281619]  ? ____kasan_slab_free+0x15d/0x1d0
+[  100.282197]  ? event_trigger_write+0xac/0x100
+[  100.282764]  ? __kasan_slab_free+0x16/0x20
+[  100.283293]  ? __kmem_cache_free+0x153/0x2f0
+[  100.283844]  ? sched_mm_cid_remote_clear+0xb1/0x250
+[  100.284550]  ? __pfx_sched_mm_cid_remote_clear+0x10/0x10
+[  100.285221]  ? event_trigger_write+0xbc/0x100
+[  100.285781]  ? __kasan_check_read+0x15/0x20
+[  100.286321]  ? __bitmap_weight+0x66/0xa0
+[  100.286833]  ? _find_next_bit+0x46/0xe0
+[  100.287334]  ? task_mm_cid_work+0x37f/0x450
+[  100.287872]  event_triggers_call+0x84/0x150
+[  100.288408]  trace_event_buffer_commit+0x339/0x430
+[  100.289073]  ? ring_buffer_event_data+0x3f/0x60
+[  100.292189]  trace_event_raw_event_sys_enter+0x8b/0xe0
+[  100.295434]  syscall_trace_enter.constprop.0+0x18f/0x1b0
+[  100.298653]  syscall_enter_from_user_mode+0x32/0x40
+[  100.301808]  do_syscall_64+0x1a/0x90
+[  100.304748]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+[  100.307775] RIP: 0033:0x7f686c75c1cb
+[  100.310617] Code: 73 01 c3 48 8b 0d 65 3c 10 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa b8 21 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 35 3c 10 00 f7 d8 64 89 01 48
+[  100.317847] RSP: 002b:00007ffc60137a38 EFLAGS: 00000246 ORIG_RAX: 0000000000000021
+[  100.321200] RAX: ffffffffffffffda RBX: 000055f566469ea0 RCX: 00007f686c75c1cb
+[  100.324631] RDX: 0000000000000001 RSI: 0000000000000001 RDI: 000000000000000a
+[  100.328104] RBP: 00007ffc60137ac0 R08: 00007f686c818460 R09: 000000000000000a
+[  100.331509] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000009
+[  100.334992] R13: 0000000000000007 R14: 000000000000000a R15: 0000000000000007
+[  100.338381]  </TASK>
+
+We hit the bug because when second hist trigger has was created
+has_hist_vars() returned false because hist trigger did not have
+variables. As a result of that save_hist_vars() was not called to add
+the trigger to trace_array->hist_vars. Later on when we attempted to
+remove the first histogram find_any_var_ref() failed to detect it is
+being used because it did not find the second trigger in hist_vars list.
+
+With this change we wait until trigger actions are created so we can take
+into consideration if hist trigger has variable references. Also, now we
+check the return value of save_hist_vars() and fail trigger creation if
+save_hist_vars() fails.
+
+Signed-off-by: Mohamed Khalfella <mkhalfella@purestorage.com>
+Cc: stable@vger.kernel.org
 ---
- drivers/gpu/drm/msm/msm_fence.c      |  6 ++++++
- drivers/gpu/drm/msm/msm_gem_submit.c | 14 +++++++++++++-
- 2 files changed, 19 insertions(+), 1 deletion(-)
+ kernel/trace/trace_events_hist.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/msm_fence.c b/drivers/gpu/drm/msm/msm_fence.c
-index 96599ec3eb78..1a5d4f1c8b42 100644
---- a/drivers/gpu/drm/msm/msm_fence.c
-+++ b/drivers/gpu/drm/msm/msm_fence.c
-@@ -191,6 +191,12 @@ msm_fence_init(struct dma_fence *fence, struct msm_fence_context *fctx)
+diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+index b97d3ad832f1..c8c61381eba4 100644
+--- a/kernel/trace/trace_events_hist.c
++++ b/kernel/trace/trace_events_hist.c
+@@ -6663,13 +6663,15 @@ static int event_hist_trigger_parse(struct event_command *cmd_ops,
+ 	if (get_named_trigger_data(trigger_data))
+ 		goto enable;
  
- 	f->fctx = fctx;
+-	if (has_hist_vars(hist_data))
+-		save_hist_vars(hist_data);
+-
+ 	ret = create_actions(hist_data);
+ 	if (ret)
+ 		goto out_unreg;
  
-+	/*
-+	 * Until this point, the fence was just some pre-allocated memory,
-+	 * no-one should have taken a reference to it yet.
-+	 */
-+	WARN_ON(kref_read(&fence->refcount));
-+
- 	dma_fence_init(&f->base, &msm_fence_ops, &fctx->spinlock,
- 		       fctx->context, ++fctx->last_fence);
- }
-diff --git a/drivers/gpu/drm/msm/msm_gem_submit.c b/drivers/gpu/drm/msm/msm_gem_submit.c
-index 3f1aa4de3b87..9d66498cdc04 100644
---- a/drivers/gpu/drm/msm/msm_gem_submit.c
-+++ b/drivers/gpu/drm/msm/msm_gem_submit.c
-@@ -86,7 +86,19 @@ void __msm_gem_submit_destroy(struct kref *kref)
- 	}
- 
- 	dma_fence_put(submit->user_fence);
--	dma_fence_put(submit->hw_fence);
-+
-+	/*
-+	 * If the submit is freed before msm_job_run(), then hw_fence is
-+	 * just some pre-allocated memory, not a reference counted fence.
-+	 * Once the job runs and the hw_fence is initialized, it will
-+	 * have a refcount of at least one, since the submit holds a ref
-+	 * to the hw_fence.
-+	 */
-+	if (kref_read(&submit->hw_fence->refcount) == 0) {
-+		kfree(submit->hw_fence);
-+	} else {
-+		dma_fence_put(submit->hw_fence);
++	if (has_hist_vars(hist_data) || hist_data->n_var_refs) {
++		if (save_hist_vars(hist_data))
++			goto out_unreg;
 +	}
- 
- 	put_pid(submit->pid);
- 	msm_submitqueue_put(submit->queue);
++
+ 	ret = tracing_map_init(hist_data->map);
+ 	if (ret)
+ 		goto out_unreg;
 -- 
-2.41.0
+2.34.1
 
