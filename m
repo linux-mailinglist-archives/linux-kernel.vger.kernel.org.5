@@ -2,92 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C3CA751423
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 01:08:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA517751422
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 01:08:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232267AbjGLXIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 19:08:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55750 "EHLO
+        id S232383AbjGLXIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 19:08:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233289AbjGLXH7 (ORCPT
+        with ESMTP id S233190AbjGLXHx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 19:07:59 -0400
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 676C1268D;
-        Wed, 12 Jul 2023 16:07:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689203258; x=1720739258;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=zF/TXZw6hOm08VrKmM6zI6uDz3q9AB/6cG/sj6SO8/Q=;
-  b=aQ35bKgZcelOnc+imrUyyFKdEZiwY5g54N1ZRi/9TkX3ReAuW7wsdOlJ
-   vHu/KuRuFG6+6ODHjUtkQteh8v1a9dM2lui7OBRWp48RdN11m0Vxu0zUh
-   RGSfSGIgiWjWvqYfChrrwwtBPv0DtBjgwult2FsKOWEGIQfVoxxbYpjOz
-   j3Zyb/39XrNQRSCC8b0u4MMoJnnveiEzNb6+z3CNuTEtHsxbn2AFrlIIG
-   zvMFioGHKpdrZLi8DUqXEr62KtSLfXuxZN3PoztxFJZT3pMKxG06Z93WA
-   8aZBmqBSAqBDJwAx/j5dQ5mXbawASg5hN5oYXjl80eeSsuakv8ACIXQPD
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10769"; a="451388411"
-X-IronPort-AV: E=Sophos;i="6.01,200,1684825200"; 
-   d="scan'208";a="451388411"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2023 16:07:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10769"; a="751351909"
-X-IronPort-AV: E=Sophos;i="6.01,200,1684825200"; 
-   d="scan'208";a="751351909"
-Received: from nlsegerl-mobl1.amr.corp.intel.com (HELO spandruv-desk1.amr.corp.intel.com) ([10.212.182.248])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2023 16:07:19 -0700
-Message-ID: <39172b7b3016a7f850cbffe752cb8ccdb986623d.camel@linux.intel.com>
-Subject: Re: [PATCH v2 3/3] doc: TPMI: Add debugfs documentation
-From:   srinivas pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     hdegoede@redhat.com, markgross@kernel.org,
-        ilpo.jarvinen@linux.intel.com, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Wed, 12 Jul 2023 16:07:19 -0700
-In-Reply-To: <ZK7DYuyo88efUje+@smile.fi.intel.com>
-References: <20230711220949.71881-1-srinivas.pandruvada@linux.intel.com>
-         <20230711220949.71881-4-srinivas.pandruvada@linux.intel.com>
-         <ZK7DYuyo88efUje+@smile.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 (3.42.4-2.fc35) 
+        Wed, 12 Jul 2023 19:07:53 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 988372130;
+        Wed, 12 Jul 2023 16:07:27 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 230CE61987;
+        Wed, 12 Jul 2023 23:07:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA62DC433C7;
+        Wed, 12 Jul 2023 23:07:25 +0000 (UTC)
+Date:   Wed, 12 Jul 2023 19:07:23 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Mohamed Khalfella <mkhalfella@purestorage.com>
+Cc:     stable@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-kernel@vger.kernel.org (open list:TRACING),
+        linux-trace-kernel@vger.kernel.org (open list:TRACING),
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Tom Zanussi <zanussi@kernel.org>
+Subject: Re: [PATCH] tracing/histograms: Add histograms to hist_vars if they
+ have referenced variables
+Message-ID: <20230712190723.26ebadea@gandalf.local.home>
+In-Reply-To: <20230712223021.636335-1-mkhalfella@purestorage.com>
+References: <20230712223021.636335-1-mkhalfella@purestorage.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-07-12 at 18:14 +0300, Andy Shevchenko wrote:
-> On Tue, Jul 11, 2023 at 03:09:49PM -0700, Srinivas Pandruvada wrote:
-> > Describe fields in the TPMI debugfs folder.
+On Wed, 12 Jul 2023 22:30:21 +0000
+Mohamed Khalfella <mkhalfella@purestorage.com> wrote:
+
+> Hist triggers can have referenced variables without having direct
+> variables fields. This can be the case if referenced variables are added
+> for trigger actions. In this case the newly added references will not
+> have field variables. Not taking such referenced variables into
+> consideration can result in a bug where it would be possible to remove
+> hist trigger with variables being refenced. This will result in a bug
+> that is easily reproducable like so
 > 
-> ...
+> $ cd /sys/kernel/tracing
+> $ echo 'synthetic_sys_enter char[] comm; long id' >> synthetic_events
+> $ echo 'hist:keys=common_pid.execname,id.syscall:vals=hitcount:comm=common_pid.execname' >> events/raw_syscalls/sys_enter/trigger
+> $ echo 'hist:keys=common_pid.execname,id.syscall:onmatch(raw_syscalls.sys_enter).synthetic_sys_enter($comm, id)' >> events/raw_syscalls/sys_enter/trigger
+> $ echo '!hist:keys=common_pid.execname,id.syscall:vals=hitcount:comm=common_pid.execname' >> events/raw_syscalls/sys_enter/trigger
 > 
-> > +What:          /sys/kernel/debug/tpmi-<n>/pfs_dump
-> > +Date:          December 2023
-> 
-> November ?
-> 
-Changed.
+> [  100.263533] ==================================================================
+> [  100.264634] BUG: KASAN: slab-use-after-free in resolve_var_refs+0xc7/0x180
+> [  100.265520] Read of size 8 at addr ffff88810375d0f0 by task bash/439
+> [  100.266320]
+
+And Of course you send this to me right after I send a pull request with
+fixes to Linus :-p
+
+Thanks for the patch. I just did a quick test, and sure enough I can
+reproduce the bug, and your patch makes the bug go away.
+
+I run this through my full test suite, and then send Linus another pull
+request.
+
+Thanks!
+
+-- Steve
 
 
-Thanks,
-Srinivas
-
-> > +KernelVersion: 6.6
+> [  100.266533] CPU: 2 PID: 439 Comm: bash Not tainted 6.5.0-rc1 #4
+> [  100.267277] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.0-20220807_005459-localhost 04/01/2014
+> [  100.268561] Call Trace:
+> [  100.268902]  <TASK>
+> [  100.269189]  dump_stack_lvl+0x4c/0x70
+> [  100.269680]  print_report+0xc5/0x600
+> [  100.270165]  ? resolve_var_refs+0xc7/0x180
+> [  100.270697]  ? kasan_complete_mode_report_info+0x80/0x1f0
+> [  100.271389]  ? resolve_var_refs+0xc7/0x180
+> [  100.271913]  kasan_report+0xbd/0x100
+> [  100.272380]  ? resolve_var_refs+0xc7/0x180
+> [  100.272920]  __asan_load8+0x71/0xa0
+> [  100.273377]  resolve_var_refs+0xc7/0x180
+> [  100.273888]  event_hist_trigger+0x749/0x860
+> [  100.274505]  ? kasan_save_stack+0x2a/0x50
+> [  100.275024]  ? kasan_set_track+0x29/0x40
+> [  100.275536]  ? __pfx_event_hist_trigger+0x10/0x10
+> [  100.276138]  ? ksys_write+0xd1/0x170
+> [  100.276607]  ? do_syscall_64+0x3c/0x90
+> [  100.277099]  ? entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> [  100.277771]  ? destroy_hist_data+0x446/0x470
+> [  100.278324]  ? event_hist_trigger_parse+0xa6c/0x3860
+> [  100.278962]  ? __pfx_event_hist_trigger_parse+0x10/0x10
+> [  100.279627]  ? __kasan_check_write+0x18/0x20
+> [  100.280177]  ? mutex_unlock+0x85/0xd0
+> [  100.280660]  ? __pfx_mutex_unlock+0x10/0x10
+> [  100.281200]  ? kfree+0x7b/0x120
+> [  100.281619]  ? ____kasan_slab_free+0x15d/0x1d0
+> [  100.282197]  ? event_trigger_write+0xac/0x100
+> [  100.282764]  ? __kasan_slab_free+0x16/0x20
+> [  100.283293]  ? __kmem_cache_free+0x153/0x2f0
+> [  100.283844]  ? sched_mm_cid_remote_clear+0xb1/0x250
+> [  100.284550]  ? __pfx_sched_mm_cid_remote_clear+0x10/0x10
+> [  100.285221]  ? event_trigger_write+0xbc/0x100
+> [  100.285781]  ? __kasan_check_read+0x15/0x20
+> [  100.286321]  ? __bitmap_weight+0x66/0xa0
+> [  100.286833]  ? _find_next_bit+0x46/0xe0
+> [  100.287334]  ? task_mm_cid_work+0x37f/0x450
+> [  100.287872]  event_triggers_call+0x84/0x150
+> [  100.288408]  trace_event_buffer_commit+0x339/0x430
+> [  100.289073]  ? ring_buffer_event_data+0x3f/0x60
+> [  100.292189]  trace_event_raw_event_sys_enter+0x8b/0xe0
+> [  100.295434]  syscall_trace_enter.constprop.0+0x18f/0x1b0
+> [  100.298653]  syscall_enter_from_user_mode+0x32/0x40
+> [  100.301808]  do_syscall_64+0x1a/0x90
+> [  100.304748]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> [  100.307775] RIP: 0033:0x7f686c75c1cb
+> [  100.310617] Code: 73 01 c3 48 8b 0d 65 3c 10 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa b8 21 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 35 3c 10 00 f7 d8 64 89 01 48
+> [  100.317847] RSP: 002b:00007ffc60137a38 EFLAGS: 00000246 ORIG_RAX: 0000000000000021
+> [  100.321200] RAX: ffffffffffffffda RBX: 000055f566469ea0 RCX: 00007f686c75c1cb
+> [  100.324631] RDX: 0000000000000001 RSI: 0000000000000001 RDI: 000000000000000a
+> [  100.328104] RBP: 00007ffc60137ac0 R08: 00007f686c818460 R09: 000000000000000a
+> [  100.331509] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000009
+> [  100.334992] R13: 0000000000000007 R14: 000000000000000a R15: 0000000000000007
+> [  100.338381]  </TASK>
 > 
-> ...
+> We hit the bug because when second hist trigger has was created
+> has_hist_vars() returned false because hist trigger did not have
+> variables. As a result of that save_hist_vars() was not called to add
+> the trigger to trace_array->hist_vars. Later on when we attempted to
+> remove the first histogram find_any_var_ref() failed to detect it is
+> being used because it did not find the second trigger in hist_vars list.
 > 
-> > +Date:          December 2023
+> With this change we wait until trigger actions are created so we can take
+> into consideration if hist trigger has variable references. Also, now we
+> check the return value of save_hist_vars() and fail trigger creation if
+> save_hist_vars() fails.
 > 
-> > +Date:          December 2023
+> Signed-off-by: Mohamed Khalfella <mkhalfella@purestorage.com>
+> Cc: stable@vger.kernel.org
+> ---
+>  kernel/trace/trace_events_hist.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
 > 
+> diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+> index b97d3ad832f1..c8c61381eba4 100644
+> --- a/kernel/trace/trace_events_hist.c
+> +++ b/kernel/trace/trace_events_hist.c
+> @@ -6663,13 +6663,15 @@ static int event_hist_trigger_parse(struct event_command *cmd_ops,
+>  	if (get_named_trigger_data(trigger_data))
+>  		goto enable;
+>  
+> -	if (has_hist_vars(hist_data))
+> -		save_hist_vars(hist_data);
+> -
+>  	ret = create_actions(hist_data);
+>  	if (ret)
+>  		goto out_unreg;
+>  
+> +	if (has_hist_vars(hist_data) || hist_data->n_var_refs) {
+> +		if (save_hist_vars(hist_data))
+> +			goto out_unreg;
+> +	}
+> +
+>  	ret = tracing_map_init(hist_data->map);
+>  	if (ret)
+>  		goto out_unreg;
 
