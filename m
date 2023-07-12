@@ -2,41 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD33E751321
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 00:01:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42C46751320
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 00:01:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232329AbjGLWBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 18:01:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55038 "EHLO
+        id S232278AbjGLWBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 18:01:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232159AbjGLWBC (ORCPT
+        with ESMTP id S232126AbjGLWBB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 18:01:02 -0400
+        Wed, 12 Jul 2023 18:01:01 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 130B21FE3;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A30A1FE1;
         Wed, 12 Jul 2023 15:01:00 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A22FD61965;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9A9C861961;
         Wed, 12 Jul 2023 22:00:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EABF8C433CA;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E91ECC433CB;
         Wed, 12 Jul 2023 22:00:58 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.96)
         (envelope-from <rostedt@goodmis.org>)
-        id 1qJhtJ-000QjM-1c;
+        id 1qJhtJ-000Qjt-2F;
         Wed, 12 Jul 2023 18:00:57 -0400
-Message-ID: <20230712220057.311944701@goodmis.org>
+Message-ID: <20230712220057.519974644@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Wed, 12 Jul 2023 17:50:47 -0400
+Date:   Wed, 12 Jul 2023 17:50:48 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         stable@vger.kernel.org, Zheng Yejian <zhengyejian1@huawei.com>
-Subject: [for-linus][PATCH 3/5] ring-buffer: Fix deadloop issue on reading trace_pipe
+Subject: [for-linus][PATCH 4/5] ftrace: Fix possible warning on checking all pages used in
+ ftrace_process_locs()
 References: <20230712215044.496021196@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -51,125 +52,128 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Zheng Yejian <zhengyejian1@huawei.com>
 
-Soft lockup occurs when reading file 'trace_pipe':
+As comments in ftrace_process_locs(), there may be NULL pointers in
+mcount_loc section:
+ > Some architecture linkers will pad between
+ > the different mcount_loc sections of different
+ > object files to satisfy alignments.
+ > Skip any NULL pointers.
 
-  watchdog: BUG: soft lockup - CPU#6 stuck for 22s! [cat:4488]
-  [...]
-  RIP: 0010:ring_buffer_empty_cpu+0xed/0x170
-  RSP: 0018:ffff88810dd6fc48 EFLAGS: 00000246
-  RAX: 0000000000000000 RBX: 0000000000000246 RCX: ffffffff93d1aaeb
-  RDX: ffff88810a280040 RSI: 0000000000000008 RDI: ffff88811164b218
-  RBP: ffff88811164b218 R08: 0000000000000000 R09: ffff88815156600f
-  R10: ffffed102a2acc01 R11: 0000000000000001 R12: 0000000051651901
-  R13: 0000000000000000 R14: ffff888115e49500 R15: 0000000000000000
-  [...]
-  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  CR2: 00007f8d853c2000 CR3: 000000010dcd8000 CR4: 00000000000006e0
-  DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-  DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-  Call Trace:
-   __find_next_entry+0x1a8/0x4b0
-   ? peek_next_entry+0x250/0x250
-   ? down_write+0xa5/0x120
-   ? down_write_killable+0x130/0x130
-   trace_find_next_entry_inc+0x3b/0x1d0
-   tracing_read_pipe+0x423/0xae0
-   ? tracing_splice_read_pipe+0xcb0/0xcb0
-   vfs_read+0x16b/0x490
-   ksys_read+0x105/0x210
-   ? __ia32_sys_pwrite64+0x200/0x200
-   ? switch_fpu_return+0x108/0x220
-   do_syscall_64+0x33/0x40
-   entry_SYSCALL_64_after_hwframe+0x61/0xc6
+After commit 20e5227e9f55 ("ftrace: allow NULL pointers in mcount_loc"),
+NULL pointers will be accounted when allocating ftrace pages but skipped
+before adding into ftrace pages, this may result in some pages not being
+used. Then after commit 706c81f87f84 ("ftrace: Remove extra helper
+functions"), warning may occur at:
+  WARN_ON(pg->next);
 
-Through the vmcore, I found it's because in tracing_read_pipe(),
-ring_buffer_empty_cpu() found some buffer is not empty but then it
-cannot read anything due to "rb_num_of_entries() == 0" always true,
-Then it infinitely loop the procedure due to user buffer not been
-filled, see following code path:
+To fix it, only warn for case that no pointers skipped but pages not used
+up, then free those unused pages after releasing ftrace_lock.
 
-  tracing_read_pipe() {
-    ... ...
-    waitagain:
-      tracing_wait_pipe() // 1. find non-empty buffer here
-      trace_find_next_entry_inc()  // 2. loop here try to find an entry
-        __find_next_entry()
-          ring_buffer_empty_cpu();  // 3. find non-empty buffer
-          peek_next_entry()  // 4. but peek always return NULL
-            ring_buffer_peek()
-              rb_buffer_peek()
-                rb_get_reader_page()
-                  // 5. because rb_num_of_entries() == 0 always true here
-                  //    then return NULL
-      // 6. user buffer not been filled so goto 'waitgain'
-      //    and eventually leads to an deadloop in kernel!!!
-  }
-
-By some analyzing, I found that when resetting ringbuffer, the 'entries'
-of its pages are not all cleared (see rb_reset_cpu()). Then when reducing
-the ringbuffer, and if some reduced pages exist dirty 'entries' data, they
-will be added into 'cpu_buffer->overrun' (see rb_remove_pages()), which
-cause wrong 'overrun' count and eventually cause the deadloop issue.
-
-To fix it, we need to clear every pages in rb_reset_cpu().
-
-Link: https://lore.kernel.org/linux-trace-kernel/20230708225144.3785600-1-zhengyejian1@huawei.com
+Link: https://lore.kernel.org/linux-trace-kernel/20230712060452.3175675-1-zhengyejian1@huawei.com
 
 Cc: stable@vger.kernel.org
-Fixes: a5fb833172eca ("ring-buffer: Fix uninitialized read_stamp")
+Fixes: 706c81f87f84 ("ftrace: Remove extra helper functions")
+Suggested-by: Steven Rostedt <rostedt@goodmis.org>
 Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- kernel/trace/ring_buffer.c | 24 +++++++++++++++---------
- 1 file changed, 15 insertions(+), 9 deletions(-)
+ kernel/trace/ftrace.c | 45 +++++++++++++++++++++++++++++--------------
+ 1 file changed, 31 insertions(+), 14 deletions(-)
 
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index 834b361a4a66..14d8001140c8 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -5242,28 +5242,34 @@ unsigned long ring_buffer_size(struct trace_buffer *buffer, int cpu)
+diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+index 3740aca79fe7..05c0024815bf 100644
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -3305,6 +3305,22 @@ static int ftrace_allocate_records(struct ftrace_page *pg, int count)
+ 	return cnt;
  }
- EXPORT_SYMBOL_GPL(ring_buffer_size);
  
-+static void rb_clear_buffer_page(struct buffer_page *page)
++static void ftrace_free_pages(struct ftrace_page *pages)
 +{
-+	local_set(&page->write, 0);
-+	local_set(&page->entries, 0);
-+	rb_init_page(page->page);
-+	page->read = 0;
++	struct ftrace_page *pg = pages;
++
++	while (pg) {
++		if (pg->records) {
++			free_pages((unsigned long)pg->records, pg->order);
++			ftrace_number_of_pages -= 1 << pg->order;
++		}
++		pages = pg->next;
++		kfree(pg);
++		pg = pages;
++		ftrace_number_of_groups--;
++	}
 +}
 +
- static void
- rb_reset_cpu(struct ring_buffer_per_cpu *cpu_buffer)
+ static struct ftrace_page *
+ ftrace_allocate_pages(unsigned long num_to_init)
  {
-+	struct buffer_page *page;
-+
- 	rb_head_page_deactivate(cpu_buffer);
+@@ -3343,17 +3359,7 @@ ftrace_allocate_pages(unsigned long num_to_init)
+ 	return start_pg;
  
- 	cpu_buffer->head_page
- 		= list_entry(cpu_buffer->pages, struct buffer_page, list);
--	local_set(&cpu_buffer->head_page->write, 0);
--	local_set(&cpu_buffer->head_page->entries, 0);
--	local_set(&cpu_buffer->head_page->page->commit, 0);
--
--	cpu_buffer->head_page->read = 0;
-+	rb_clear_buffer_page(cpu_buffer->head_page);
-+	list_for_each_entry(page, cpu_buffer->pages, list) {
-+		rb_clear_buffer_page(page);
+  free_pages:
+-	pg = start_pg;
+-	while (pg) {
+-		if (pg->records) {
+-			free_pages((unsigned long)pg->records, pg->order);
+-			ftrace_number_of_pages -= 1 << pg->order;
+-		}
+-		start_pg = pg->next;
+-		kfree(pg);
+-		pg = start_pg;
+-		ftrace_number_of_groups--;
+-	}
++	ftrace_free_pages(start_pg);
+ 	pr_info("ftrace: FAILED to allocate memory for functions\n");
+ 	return NULL;
+ }
+@@ -6471,9 +6477,11 @@ static int ftrace_process_locs(struct module *mod,
+ 			       unsigned long *start,
+ 			       unsigned long *end)
+ {
++	struct ftrace_page *pg_unuse = NULL;
+ 	struct ftrace_page *start_pg;
+ 	struct ftrace_page *pg;
+ 	struct dyn_ftrace *rec;
++	unsigned long skipped = 0;
+ 	unsigned long count;
+ 	unsigned long *p;
+ 	unsigned long addr;
+@@ -6536,8 +6544,10 @@ static int ftrace_process_locs(struct module *mod,
+ 		 * object files to satisfy alignments.
+ 		 * Skip any NULL pointers.
+ 		 */
+-		if (!addr)
++		if (!addr) {
++			skipped++;
+ 			continue;
++		}
+ 
+ 		end_offset = (pg->index+1) * sizeof(pg->records[0]);
+ 		if (end_offset > PAGE_SIZE << pg->order) {
+@@ -6551,8 +6561,10 @@ static int ftrace_process_locs(struct module *mod,
+ 		rec->ip = addr;
+ 	}
+ 
+-	/* We should have used all pages */
+-	WARN_ON(pg->next);
++	if (pg->next) {
++		pg_unuse = pg->next;
++		pg->next = NULL;
 +	}
  
- 	cpu_buffer->tail_page = cpu_buffer->head_page;
- 	cpu_buffer->commit_page = cpu_buffer->head_page;
+ 	/* Assign the last page to ftrace_pages */
+ 	ftrace_pages = pg;
+@@ -6574,6 +6586,11 @@ static int ftrace_process_locs(struct module *mod,
+  out:
+ 	mutex_unlock(&ftrace_lock);
  
- 	INIT_LIST_HEAD(&cpu_buffer->reader_page->list);
- 	INIT_LIST_HEAD(&cpu_buffer->new_pages);
--	local_set(&cpu_buffer->reader_page->write, 0);
--	local_set(&cpu_buffer->reader_page->entries, 0);
--	local_set(&cpu_buffer->reader_page->page->commit, 0);
--	cpu_buffer->reader_page->read = 0;
-+	rb_clear_buffer_page(cpu_buffer->reader_page);
++	/* We should have used all pages unless we skipped some */
++	if (pg_unuse) {
++		WARN_ON(!skipped);
++		ftrace_free_pages(pg_unuse);
++	}
+ 	return ret;
+ }
  
- 	local_set(&cpu_buffer->entries_bytes, 0);
- 	local_set(&cpu_buffer->overrun, 0);
 -- 
 2.40.1
