@@ -2,126 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A040751085
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 20:30:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B60975109A
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 20:35:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232824AbjGLSae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 14:30:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39560 "EHLO
+        id S231651AbjGLSfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 14:35:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231398AbjGLSac (ORCPT
+        with ESMTP id S229845AbjGLSe7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 14:30:32 -0400
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 116DD1BE3
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 11:30:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689186631; x=1720722631;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=fPp8zZ1VnUgCzIKJepUSPqEsO12CcekIzz9au6juf8Q=;
-  b=fgSVaYC3KZcOKZJmwVgycyKM7O7nkzO9TLASvo6BmaG+muyOTx9qCG1n
-   9Qaeg7I2ip893OvGn+q5OTkLuGTNye10Ebu2tjQjrFWBEtN2jlguyJSPN
-   LUWxLYKDNaxGIgEjBHtRweqQbdnmDMKnBUKV/3ZxVLTnB7Bmf1iSh4yfz
-   5JHEA9t8Xb/acbq7tJNAnCc8WQHhR9gbqRjhuzCOYWXlLF94DIntLiAdq
-   2X2hPYX/WqwsFfVPBTtftCZLgZx4KhSSiHA7Wua87/KJu/bMYEeFCke08
-   brC87S30d5dxt//Ggy3XrE1iV511b+86Big/fVJl8q52NouiWDoSsXyVJ
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10769"; a="354886817"
-X-IronPort-AV: E=Sophos;i="6.01,200,1684825200"; 
-   d="scan'208";a="354886817"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2023 11:30:30 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10769"; a="671965220"
-X-IronPort-AV: E=Sophos;i="6.01,200,1684825200"; 
-   d="scan'208";a="671965220"
-Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
-  by orsmga003.jf.intel.com with ESMTP; 12 Jul 2023 11:30:29 -0700
-Date:   Wed, 12 Jul 2023 11:33:11 -0700
-From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        linux-kernel@vger.kernel.org, yu.c.chen@intel.com,
-        tim.c.chen@intel.com
-Subject: Re: [PATCH] sched/topology: remove unneeded do while loop in
- cpu_attach_domain()
-Message-ID: <20230712183310.GA27117@ranerica-svr.sc.intel.com>
-References: <20230617081926.2035113-1-linmiaohe@huawei.com>
- <20230620141120.GA2016469@hirez.programming.kicks-ass.net>
- <53a9ec35-8332-755c-40ed-54315ffb0d78@huawei.com>
- <20230621131159.GA23663@ranerica-svr.sc.intel.com>
- <20230621185749.GA24063@ranerica-svr.sc.intel.com>
- <268d9d61-ce17-cda6-7a21-148b518ac323@huawei.com>
+        Wed, 12 Jul 2023 14:34:59 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BFFB1BD4
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 11:34:58 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2b708e49059so116685091fa.3
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 11:34:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689186896; x=1691778896;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+GzutrRFtmSU6fzBKaUewkpDtpBuMaVFLdW34axBPA0=;
+        b=DClzVT7qREqcVjVYmsoLrEnuZF9BMmvoXVMKYNgUzWPCRjGO2MbKpLxJqo1l8dwS7I
+         CeuIb3EjFsSNKtwsi2Aq6g3wGzxsFZh1J1BPJEII9280JmS1dDe4fSonLCvAHgBTnIDm
+         Qigwfzq9iOL7+zdi0JYELggx3+TTeRDDPbANB16In+cBUHtD/7KzziP3qsCPRwFE+FMH
+         Oaly9pYnpkm835hu8KPEnpvURRNyX8EuP5NqnyxvaCDGn/Jlt4qOkzDjfDPibq+Afun4
+         SSqVhD4Fz6xMzKGt6i36nYaPHskHn6wNi2nl2lwWHVzy/eq3ufISMcymESBG0P2pXO6g
+         wtAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689186896; x=1691778896;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+GzutrRFtmSU6fzBKaUewkpDtpBuMaVFLdW34axBPA0=;
+        b=JZNmFjk4vP4SVbE07pxNsPCMDwERH4kpT4d6iDF0PSSQ4q0VDs5Hfc95ShLlWkAm3z
+         j++0pxnp9Hn1BF92EwA0Vh69hKOTP7iaJicM3ypVyLG+LDJDupnaJ/t6A6qMtdDmDd4r
+         2l+eo3ptSd5NXpw4jTB44ddPiPMRVQ6SVvvb3H90u1rYTZLBzdWWu6Z+3Y1TOoh+VLSo
+         Y/rK552XSECdMAodK6bws5xt3vB+D4oRYd6DgMOUmI1cLwntRTr2y90vvc1Fs5s/J0OK
+         kqK/msrx4GxVfLIiEmtpl4F3B0sabrLQBkxSQAYrX+26szX5habK2n0wTloTJzuhZ560
+         RgeQ==
+X-Gm-Message-State: ABy/qLZAPzLWCtpvOB+DO987+F/C5P7HL7PcYiiAONIz2SQn6nEDXl2J
+        uCzIit7hrNiR66N/GMVPaJ4g5g==
+X-Google-Smtp-Source: APBJJlEJeg/IiAx2/1j3q/3LKk2HeS8zGD4t9IyLZ7QzqeUG1dSeOLnvKQHJsyi6PYys7SXlbvMMeg==
+X-Received: by 2002:a2e:7a16:0:b0:2b5:7a87:a85a with SMTP id v22-20020a2e7a16000000b002b57a87a85amr8825214ljc.13.1689186896477;
+        Wed, 12 Jul 2023 11:34:56 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id p27-20020a170906141b00b00977eec7b7e8sm2885172ejc.68.2023.07.12.11.34.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 Jul 2023 11:34:56 -0700 (PDT)
+Message-ID: <6e13acf6-3e23-f9bf-5c3f-368e79802a8d@linaro.org>
+Date:   Wed, 12 Jul 2023 20:34:53 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <268d9d61-ce17-cda6-7a21-148b518ac323@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v4 1/7] dt-bindings: arm: fsl: add se-fw binding doc
+Content-Language: en-US
+To:     Conor Dooley <conor@kernel.org>,
+        Pankaj Gupta <pankaj.gupta@nxp.com>
+Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        clin@suse.com, conor+dt@kernel.org, pierre.gondois@arm.com,
+        ping.bai@nxp.com, xiaoning.wang@nxp.com, wei.fang@nxp.com,
+        peng.fan@nxp.com, haibo.chen@nxp.com, festevam@gmail.com,
+        linux-imx@nxp.com, davem@davemloft.net, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gaurav.jain@nxp.com,
+        alexander.stein@ew.tq-group.com, sahil.malhotra@nxp.com,
+        aisheng.dong@nxp.com, V.Sethi@nxp.com
+References: <20230712121219.2654234-1-pankaj.gupta@nxp.com>
+ <20230712121219.2654234-2-pankaj.gupta@nxp.com>
+ <20230712-step-dimple-31746cd3a640@spud>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230712-step-dimple-31746cd3a640@spud>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 25, 2023 at 09:59:36AM +0800, Miaohe Lin wrote:
-> On 2023/6/22 2:57, Ricardo Neri wrote:
-> > On Wed, Jun 21, 2023 at 06:11:59AM -0700, Ricardo Neri wrote:
-> >> On Wed, Jun 21, 2023 at 10:53:57AM +0800, Miaohe Lin wrote:
-> >>> On 2023/6/20 22:11, Peter Zijlstra wrote:
-> >>>> On Sat, Jun 17, 2023 at 04:19:26PM +0800, Miaohe Lin wrote:
-> >>>>> When sg != sd->groups, the do while loop would cause deadloop here. But
-> >>>>> that won't occur because sg is always equal to sd->groups now. Remove
-> >>>>> this unneeded do while loop.
-> >>>>
-> >>>> This Changelog makes no sense to me.. Yes, as is the do {} while loop is
-> >>>> dead code, but it *should* have read like:
-> >>>>
-> >>>> 	do {
-> >>>> 		sg->flags = 0;
-> >>>> 		sg = sg->next;
-> >>>> 	} while (sg != sd->groups);
-> >>
-> >> Yes, I agree that this is the correct solution.
-> > 
-> > I take this back. I think we should do this:
-> > 
-> > @@ -758,19 +758,14 @@ cpu_attach_domain(struct sched_domain *sd, struct root_domain *rd, int cpu)
-> >  		sd = sd->parent;
-> >  		destroy_sched_domain(tmp);
-> >  		if (sd) {
-> > -			struct sched_group *sg = sd->groups;
-> > -
-> >  			/*
-> >  			 * sched groups hold the flags of the child sched
-> >  			 * domain for convenience. Clear such flags since
-> >  			 * the child is being destroyed.
-> >  			 */
-> > -			do {
-> > -				sg->flags = 0;
-> > -			} while (sg != sd->groups);
-> > +			sd->groups->flags = 0;
-> >  
-> >  			sd->child = NULL;
-> > -		}
-> >  	}
-> >  
-> >  	sched_domain_debug(sd, cpu);
-> > 
-> > A comment from Chenyu made got me thinking that we should only clear the
-> > flags of the local group as viewed from the parent domain. This is because
-> > the domain being degenerated defines the flags of such group only.
+On 12/07/2023 20:26, Conor Dooley wrote:
+> Hey,
 > 
-> This looks better to my patch. Thanks.
+> On Wed, Jul 12, 2023 at 05:42:13PM +0530, Pankaj Gupta wrote:
+>> The NXP's i.MX EdgeLock Enclave, a HW IP creating an embedded
+>> secure enclave within the SoC boundary to enable features like
+>> - HSM
+>> - SHE
+>> - V2X
+>>
+>> Communicates via message unit with linux kernel. This driver
+>> is enables communication ensuring well defined message sequence
+>> protocol between Application Core and enclave's firmware.
+>>
+>> Driver configures multiple misc-device on the MU, for multiple
+>> user-space applications can communicate on single MU.
+>>
+>> It exists on some i.MX processors. e.g. i.MX8ULP, i.MX93 etc.
+>>
+>> Signed-off-by: Pankaj Gupta <pankaj.gupta@nxp.com>
+>> ---
+>>  .../bindings/arm/freescale/fsl,se-fw.yaml     | 121 ++++++++++++++++++
+>>  1 file changed, 121 insertions(+)
+>>  create mode 100644 Documentation/devicetree/bindings/arm/freescale/fsl,se-fw.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/arm/freescale/fsl,se-fw.yaml b/Documentation/devicetree/bindings/arm/freescale/fsl,se-fw.yaml
+>> new file mode 100644
+>> index 000000000000..7567da0b4c21
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/arm/freescale/fsl,se-fw.yaml
+>> @@ -0,0 +1,121 @@
+>> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/arm/freescale/fsl,se-fw.yaml#
+> 
+> I think on v3 you were asked to use a filename that matches the
+> compatibles?
+> 
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: NXP i.MX EdgeLock Enclave Firmware (ELEFW)
+>> +
+>> +maintainers:
+>> +  - Pankaj Gupta <pankaj.gupta@nxp.com>
+> 
+>> +  value, i.e., supported SoC(s) are imx8ulp, imx93.
+> 
+>> +
+>> +properties:
+>> +  compatible:
+>> +    enum:
+>> +      - fsl,imx-ele
+> 
+> This looks like a generic compatible, not a specific one, but you use it
+> on the imx8ulp. I would have expected that you would have something like
+> "fsl,imx8ulp-ele" for that.
 
-Are you planning on posting a v2? Maybe I missed it.
+Yeah, this one looks generic, so not what we expect.
+
 > 
+>> +      - fsl,imx93-ele
+> 
+> 
+>> +
+>> +  mboxes:
+>> +    description:
+>> +      A list of phandles of TX MU channels followed by a list of phandles of
+>> +      RX MU channels. The number of expected tx and rx channels is 1 TX, and
+>> +      1 RX channels. 
+
+Don't repeat constraints in free form text. This is obvious from the
+items below.
+
+
+Best regards,
+Krzysztof
+
