@@ -2,109 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 244AF750EBF
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 18:40:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E80D7750EC2
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 18:41:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232475AbjGLQku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 12:40:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42326 "EHLO
+        id S229829AbjGLQlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 12:41:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229829AbjGLQks (ORCPT
+        with ESMTP id S232762AbjGLQlH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 12:40:48 -0400
+        Wed, 12 Jul 2023 12:41:07 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B04971BFA
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 09:40:46 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B58D9E69;
+        Wed, 12 Jul 2023 09:41:00 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4645A6182F
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 16:40:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81DFDC433C7;
-        Wed, 12 Jul 2023 16:40:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689180045;
-        bh=Xaf8786M4BZAwaCyMWvrzMpoT9EgT4/vGgm/mwozBhY=;
-        h=From:Date:Subject:To:Cc:From;
-        b=FoUMILZTUGT93NMepLj+HQE3ZA+gIw4aWQZwKOfqAiQb/HIg3MrCao+26mP40W5Y2
-         3pHznD6kNRZPTHwIly9/LvPPBgz+O8xji+pIsrZDR84LaYTPgUXPH3jCNGfd+drIzb
-         CT11iKApGA1hTvL33vy6LJ1Zk4NSpFdYceLTxFq3ZpMrHz3cXd/58eh8QLFAx/PbWc
-         XgGnTUvDGE80qz71+7LikWYc/wvUGsivF9JeboSBoY3tkuYnT6ZoaPHtqUiRMjxmL8
-         QPLAOx0EnnLzlq4Z8JuM84ljWBbMBGbqos6NMCdGYCI9hCS8xDUe8JAPbEhlG6pCl9
-         xCfmEIHQwyZMg==
-From:   Mark Brown <broonie@kernel.org>
-Date:   Wed, 12 Jul 2023 17:40:39 +0100
-Subject: [PATCH] mfd: wcd934x: Update to use maple tree register cache
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3E91361830;
+        Wed, 12 Jul 2023 16:41:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DE92C433C8;
+        Wed, 12 Jul 2023 16:40:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1689180059;
+        bh=B/5PsCg3B8TWEnV/7QCpalAnjklbQnYY+T5WlsDJH1k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wJnM3kLZpdT368vjbI5B8SYo0XZgzh89IyOahuQvEIR1ikwLd04ZuNqJGjyN+ssLV
+         Ovi1HEwydr81yQRensEKlGEnAEHcn+22PtxVxaemRcm9ir9xZuaTi5jsdJE66Z4C3L
+         NM7y/okdtTCy1k8kwY32uQv/dY9IwIs20DoVPaB4=
+Date:   Wed, 12 Jul 2023 18:40:57 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Souradeep Chowdhury <quic_schowdhu@quicinc.com>
+Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Sibi Sankar <quic_sibis@quicinc.com>,
+        Rajendra Nayak <quic_rjendra@quicinc.com>
+Subject: Re: [PATCH V1 0/3] Add notifier call chain to Embedded USB
+ Debug(EUD) driver
+Message-ID: <2023071218-woven-oversleep-444f@gregkh>
+References: <cover.1689148711.git.quic_schowdhu@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230712-mfd-wcd934x-maple-v1-1-0d7aba4b0077@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAIbXrmQC/x2NywrCQAwAf6XkbKAmblF/RTzsI7UL7loS0ULpv
- 7v1OAzDrGCiWQyu3Qoqn2z5VRscDx3EydeHYE6NgXrifiDGMib8xnTh04LFz0/BsyPHTjhQHKB
- 1wZtgUF/jtJfF21t0F7PKmJf/7Hbfth8Q4e/PfAAAAA==
-To:     Lee Jones <lee@kernel.org>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
-X-Mailer: b4 0.13-dev-099c9
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1263; i=broonie@kernel.org;
- h=from:subject:message-id; bh=Xaf8786M4BZAwaCyMWvrzMpoT9EgT4/vGgm/mwozBhY=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBkrteKrccIvCvIXTXxhxq0ROJWKfeYX+K/dWjTA
- FEJ8QUBvMGJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZK7XigAKCRAk1otyXVSH
- 0Nq1B/9nCMAt1/e1zpJzHWUF9levm8FBmUGZKLIq/YaHNrDOb9FNXGX76lrPCkZM3JO4qtZll1f
- 1NfsgpT1u+wvKKMHTMYvzN22YVw1BN6B5qyBLVBQWjXoBgpa/sOZfYcUImxUFqPkAulL61VTsRh
- rgUxCwZLXAH8SiZ+HzYTkX6GYmN6Ex/DibixbsKZ5tFmAFAHCK/33FTJbWUKuPjjpMwgv2IYiG+
- 9Hhm6GvymzeCxvd5Q7V4B5k1QeB09/62WvbDxRnk6C5ZgKitL7vm/cOZRu0woAS9xEp2cO2prgE
- P5N8CylJI5+wCsVWE27fchH+XSUF8hOHnboT7buqG7UbqVVH
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1689148711.git.quic_schowdhu@quicinc.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The maple tree register cache is based on a much more modern data structure
-than the rbtree cache and makes optimisation choices which are probably
-more appropriate for modern systems than those made by the rbtree cache. In
-v6.5 it has also acquired the ability to generate multi-register writes in
-sync operations, bringing performance up to parity with the rbtree cache
-there.
+On Wed, Jul 12, 2023 at 01:52:37PM +0530, Souradeep Chowdhury wrote:
+> This patch series adds the notifier chain to the Embedded USB Debug(EUD) driver.
+> The notifier chain is used to check the role switch status of EUD. Since EUD can
+> function only in device mode, other modules trying to do role-switch on the same
+> port have to first check the EUD status by calling this notifier chain and based
+> on the status proceed or block their role-switching step. The modules can call
+> the notifier through the call eud_notifier_call_chain and pass their own
+> role switch state as the argument. This chain will also be able to handle the
+> scenario of multiple modules switching roles on the same port since this can
+> create a priority and ordering among them for conflict resolution.
 
-Update the wcd934x to use the more modern data structure.
+You are adding a new api that no one is actually using, so why would we
+accept this at all?
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
+And how can we actually review it without any real users?
 
+thanks,
 
-Signed-off-by: Mark
----
- drivers/mfd/wcd934x.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mfd/wcd934x.c b/drivers/mfd/wcd934x.c
-index 6b942d5270c1..7b9873b72c37 100644
---- a/drivers/mfd/wcd934x.c
-+++ b/drivers/mfd/wcd934x.c
-@@ -112,7 +112,7 @@ static const struct regmap_range_cfg wcd934x_ranges[] = {
- static struct regmap_config wcd934x_regmap_config = {
- 	.reg_bits = 16,
- 	.val_bits = 8,
--	.cache_type = REGCACHE_RBTREE,
-+	.cache_type = REGCACHE_MAPLE,
- 	.max_register = 0xffff,
- 	.can_multi_write = true,
- 	.ranges = wcd934x_ranges,
-
----
-base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
-change-id: 20230623-mfd-wcd934x-maple-852535e3b2c6
-
-Best regards,
--- 
-Mark Brown <broonie@kernel.org>
-
+greg k-h
