@@ -2,112 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92F0E75118C
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 21:56:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8506675118D
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 21:57:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232180AbjGLT4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 15:56:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40162 "EHLO
+        id S232688AbjGLT5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 15:57:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231177AbjGLT4v (ORCPT
+        with ESMTP id S230504AbjGLT45 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 15:56:51 -0400
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB2B81FDB
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 12:56:49 -0700 (PDT)
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-5701810884aso77871567b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 12:56:49 -0700 (PDT)
+        Wed, 12 Jul 2023 15:56:57 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FB011FE4
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 12:56:56 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-57a43b50c2fso59035667b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 12:56:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689191815; x=1691783815;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=2BtXsjfKyBZZ4hGpVoJMLLIXywElgntexK2sVj3vQno=;
+        b=sK8Qv7jgQFBakMmJ76L4YwA9bGaXfKDlEpXmENSJ0IEZGo2dC+BmgF3N3EInITTrUE
+         Iok6sB9ubdOYOq2TAsfOVa+3Hm6cFze9Abo4hMHfjKfXNl+9NS//kwmXOV6tj0cUv3sh
+         05ZYyZhcZjT7LR3qUxIbJhO0D6YaxWxoxPeWpsGphNLAtWPqT2ymZHXgK9TwZSuqBHLt
+         +9/Gpa/LwODCRC4pANti+N5Y/1o6wU10fIlBnKMX7BH0d9X5MDtsY4C8ps+6/GwK+OJy
+         MS1a/JxHHWixAuD8GqIwTg2wq5sPthIN4NFiZtinDB/kc9ouymP0mFWHsTtrvrc3+HLf
+         B1Kg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689191809; x=1691783809;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rwqNcY338V9nHktVTi28zn400a3uIFcG1sGwe2sZX8g=;
-        b=gvHhdU1ef1fAD4YhHFqtElhbo7WxEQNhEL7lpruEKhmqi91qoOVGzyTAP5jxXfTRpI
-         WlogzCrfbExydg4kgS8C9vnUpW5X+QdtF4qx8zgCmMYQuNNHmMrOPnjJgdpS7v2PdoH1
-         jVFOeLTNkFuBSwcSY584xLccVyqnu5BVNh/WCL5R6zl6LnO6a5n9PpVoP0+OylPZwrlI
-         LrWLei/ZKD42z09FFhdLeeNmczMaCzzDnZEb+HINulTq+8dYG3vpCXNgprESuZARvFNl
-         0pQWmgzAT1aFXk4QdxHff9UHrMWtThYQjPL4pwwa6kMgWuzg1tQULsium1c9LlWkwfvq
-         Wd/g==
-X-Gm-Message-State: ABy/qLZSr4vNX2gsiWfL8z4oGn/oQSmgHbhStuWtWbQVIv4RgOpATV4M
-        CTyZZtFqi1vCMpiy4iVCaX4ggENwkfVjLQ==
-X-Google-Smtp-Source: APBJJlGo0TBVHGKjp8KRQBHibf1qgpWPjroIZ19P+e/MQO3J1fwyPADaz44ZuwSeeJ1b4VW0QT3Mdg==
-X-Received: by 2002:a81:5a8b:0:b0:56f:fbc6:3b0 with SMTP id o133-20020a815a8b000000b0056ffbc603b0mr22301815ywb.14.1689191808948;
-        Wed, 12 Jul 2023 12:56:48 -0700 (PDT)
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com. [209.85.219.174])
-        by smtp.gmail.com with ESMTPSA id s126-20020a0dd084000000b0057a918d6644sm1340706ywd.128.2023.07.12.12.56.48
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 Jul 2023 12:56:48 -0700 (PDT)
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-c5f98fc4237so6838063276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 12:56:48 -0700 (PDT)
-X-Received: by 2002:a0d:d5c7:0:b0:579:ecfd:bb90 with SMTP id
- x190-20020a0dd5c7000000b00579ecfdbb90mr19465127ywd.1.1689191807709; Wed, 12
- Jul 2023 12:56:47 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230712120002.GIZK6Vwga6DlJqdjEh@fat_crate.local>
- <ZK6hLZcuAH9jXKuL@redhat.com> <20230712132840.GKZK6qiK70m1O90jFL@fat_crate.local>
- <ZK6zdsIbnQFUmK69@redhat.com> <2023071200-unopposed-unbuckled-cde8@gregkh>
- <CAMw=ZnTVRaqRmtz+sDj7AeAS7xivSu+56UgKbzmuW9+K6TTx1A@mail.gmail.com>
- <2023071239-progress-molasses-3b3d@gregkh> <CAMw=ZnRheXk7W_r-32bGymbHKdXc7aKUpwGAOX+k7DJkN+DiCQ@mail.gmail.com>
- <2023071229-dusk-repacking-da3a@gregkh> <CAMw=ZnSmZTBs+bJsQ_Y2CVO8K3OTuHOZDKW4cbxKpGbo4Vgs7Q@mail.gmail.com>
- <20230712194202.GNZK8CCj4yacgFMgfB@fat_crate.local>
-In-Reply-To: <20230712194202.GNZK8CCj4yacgFMgfB@fat_crate.local>
-From:   Luca Boccassi <bluca@debian.org>
-Date:   Wed, 12 Jul 2023 20:56:36 +0100
-X-Gmail-Original-Message-ID: <CAMw=ZnSa-NqfbEd9vchEwHwdUujNAXo=gb3dfd=HDw4W37RNjQ@mail.gmail.com>
-Message-ID: <CAMw=ZnSa-NqfbEd9vchEwHwdUujNAXo=gb3dfd=HDw4W37RNjQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v2] x86/boot: add .sbat section to the bzImage
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        =?UTF-8?Q?Daniel_P=2E_Berrang=C3=A9?= <berrange@redhat.com>,
-        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>, lennart@poettering.net,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        linux-kernel@vger.kernel.org
+        d=1e100.net; s=20221208; t=1689191815; x=1691783815;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2BtXsjfKyBZZ4hGpVoJMLLIXywElgntexK2sVj3vQno=;
+        b=PcPyMODmbrMGN66MN7VefDG40SfGWmifHfH874BHI1NDAWrDgCeu0Ytk5getCtlTfK
+         LwCOUEge0slFP/h43MUPs0LBJ/QNMm4zwhNLCwrw4eEr+BbCNcFQcHvpMvIcdUGKioRa
+         Zm8KDQ3wt6/gKthwYWT686W+JJsOHAFgI9FwGe4MoRsXzFxXuPnxeGSbo/RzAo3xYAFS
+         73kuvj+7oAEyALDBeVdpnMhPgLZq7O+ZkJHpgky6pIffLJyhmLljyOUWH3BdmCBqT7mc
+         biGkG2S93rKwk4HXNblX9DflrbOPWdidBhPRmcVvRLBvm5Wr/FIxZS1xir1ngqP6leIR
+         ACUQ==
+X-Gm-Message-State: ABy/qLYtVAzObYSxmfHI9AsqKX32oOyxyGS+1Kxu3acpRo6+tjpSsC5k
+        EmPpDW1NBSl7Mvp4jvVRigWPETPhQaI=
+X-Google-Smtp-Source: APBJJlF9Q/vZpfBREpRg5ypLsgVDhpX4u3umnCxJNyVvelWjyn/NUiGUk739RK0xqeWTgDRuQ+qE9rOKyNk=
+X-Received: from surenb-desktop.mtv.corp.google.com ([2620:15c:211:201:cf1c:cfa6:8f82:4b58])
+ (user=surenb job=sendgmr) by 2002:a81:b603:0:b0:56c:e0c5:de88 with SMTP id
+ u3-20020a81b603000000b0056ce0c5de88mr160708ywh.1.1689191815286; Wed, 12 Jul
+ 2023 12:56:55 -0700 (PDT)
+Date:   Wed, 12 Jul 2023 12:56:52 -0700
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.41.0.455.g037347b96a-goog
+Message-ID: <20230712195652.969194-1-surenb@google.com>
+Subject: [PATCH 1/1] mm: fix a lockdep issue in vma_assert_write_locked
+From:   Suren Baghdasaryan <surenb@google.com>
+To:     akpm@linux-foundation.org
+Cc:     Liam.Howlett@oracle.com, linux-mm@kvack.org, willy@infradead.org,
+        ldufour@linux.ibm.com, michel@lespinasse.org, jglisse@google.com,
+        vbabka@suse.cz, paulmck@kernel.org, brauner@kernel.org,
+        linux-kernel@vger.kernel.org,
+        Suren Baghdasaryan <surenb@google.com>,
+        "Liam R . Howlett" <liam.howlett@oracle.com>,
+        syzbot+339b02f826caafd5f7a8@syzkaller.appspotmail.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 12 Jul 2023 at 20:42, Borislav Petkov <bp@alien8.de> wrote:
->
-> On Wed, Jul 12, 2023 at 08:35:14PM +0100, Luca Boccassi wrote:
-> > No, all will not be fine, because stable branches exist, so it would
-> > not be _one_ kernel version but N, with monotonically increasing
-> > values of N. That doesn't work, and the reason for that are explained
-> > in the protocol documentation that was linked in the initial mail.
->
-> Lemme give Peter's example from earlier today:
->
-> Bugfix A -> number 2
-> Bugfix B -> number 3
->
-> Tree backports only Bugfix B. Which number do you use?
->
-> And so on and so on.
+__is_vma_write_locked() can be used only when mmap_lock is write-locked
+to guarantee vm_lock_seq and mm_lock_seq stability during the check.
+Therefore it asserts this condition before further checks. Because of
+that it can't be used unless the user expects the mmap_lock to be
+write-locked. vma_assert_locked() can't assume this before ensuring
+that VMA is not read-locked.
+Change the order of the checks in vma_assert_locked() to check if the
+VMA is read-locked first and only then assert if it's not write-locked.
 
-Everything < 3 is revoked _and_ the generation id in the stable branch
-is _not_ bumped, because it's still vulnerable and so that branch is
-effectively dead and unbootable on any system with secure boot
-enabled. This is a revocation mechanism, not a bug tracking mechanism.
-There's no mix-and-matching.
+Fixes: 50b88b63e3e4 ("mm: handle userfaults under VMA lock")
+Reported-by: Liam R. Howlett <liam.howlett@oracle.com>
+Closes: https://lore.kernel.org/all/20230712022620.3yytbdh24b7i4zrn@revolver/
+Reported-by: syzbot+339b02f826caafd5f7a8@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/all/0000000000002db68f05ffb791bc@google.com/
+Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+---
+ include/linux/mm.h | 16 ++++++----------
+ 1 file changed, 6 insertions(+), 10 deletions(-)
 
-> Patch your own trees - this doesn't belong upstream.
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 9687b48dfb1b..e3b022a66343 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -668,6 +668,7 @@ static inline void vma_end_read(struct vm_area_struct *vma)
+ 	rcu_read_unlock();
+ }
+ 
++/* WARNING! Can only be used if mmap_lock is expected to be write-locked */
+ static bool __is_vma_write_locked(struct vm_area_struct *vma, int *mm_lock_seq)
+ {
+ 	mmap_assert_write_locked(vma->vm_mm);
+@@ -707,22 +708,17 @@ static inline bool vma_try_start_write(struct vm_area_struct *vma)
+ 	return true;
+ }
+ 
+-static inline void vma_assert_locked(struct vm_area_struct *vma)
++static inline void vma_assert_write_locked(struct vm_area_struct *vma)
+ {
+ 	int mm_lock_seq;
+ 
+-	if (__is_vma_write_locked(vma, &mm_lock_seq))
+-		return;
+-
+-	lockdep_assert_held(&vma->vm_lock->lock);
+-	VM_BUG_ON_VMA(!rwsem_is_locked(&vma->vm_lock->lock), vma);
++	VM_BUG_ON_VMA(!__is_vma_write_locked(vma, &mm_lock_seq), vma);
+ }
+ 
+-static inline void vma_assert_write_locked(struct vm_area_struct *vma)
++static inline void vma_assert_locked(struct vm_area_struct *vma)
+ {
+-	int mm_lock_seq;
+-
+-	VM_BUG_ON_VMA(!__is_vma_write_locked(vma, &mm_lock_seq), vma);
++	if (!rwsem_is_locked(&vma->vm_lock->lock))
++		vma_assert_write_locked(vma);
+ }
+ 
+ static inline void vma_mark_detached(struct vm_area_struct *vma, bool detached)
+-- 
+2.41.0.455.g037347b96a-goog
 
-Nah, it belongs in both places. Please read the documentation and
-spend at least some time trying to understand the actual problem being
-solved before commenting - or don't comment at all, that's fine too.
