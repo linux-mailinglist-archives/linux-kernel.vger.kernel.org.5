@@ -2,89 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D5D17514BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 01:46:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D4267514C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 01:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233393AbjGLXqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 19:46:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52364 "EHLO
+        id S232286AbjGLXre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 19:47:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230399AbjGLXql (ORCPT
+        with ESMTP id S230134AbjGLXrb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 19:46:41 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0772210C
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 16:46:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=L9tpokstGVrz15ke9uYakgX1lrcBxGQZF3ESE7tsLVc=; b=wX/onM/q/YJk+q9YGE7Jd26ImD
-        PYh1ZhkbW5P8BaRgEDUo45GtGZqijTJLoFBd0nNxCdExNd/rwml69azHcesqEZjfvisV4zVU/3VDI
-        E2lfuCnbUvcAw0ZrwLBMs8MtCU5ESdWzVUXz2F3oQOvEel0KxL+6T6ZWUqoS1LW/s7xx1oL7t3xoC
-        YFk8nK1CvD7VZUXaa3Fr62inMVojAXbWxryNZoCkwNYRBb4nZ7waX1q+qxI5sJS3hEFapR8abl4PR
-        5GAlm58GghKP7nccRd53OkfJjRarsaLWnGv+pYRl3t04d36f3Wnjfbfm1yruxUe58ekLfqlKxPFZt
-        YKLc2gig==;
-Received: from [2601:1c2:980:9ec0::2764]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qJjXN-001Vzs-33;
-        Wed, 12 Jul 2023 23:46:25 +0000
-Message-ID: <e3a637af-ed6f-cd18-9423-bdb34ae60f3b@infradead.org>
-Date:   Wed, 12 Jul 2023 16:46:25 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH RESEND] erofs: DEFLATE compression support
-Content-Language: en-US
-To:     Gao Xiang <hsiangkao@linux.alibaba.com>,
-        linux-erofs@lists.ozlabs.org
-Cc:     LKML <linux-kernel@vger.kernel.org>
-References: <20230712233026.118706-1-hsiangkao@linux.alibaba.com>
- <20230712233347.122544-1-hsiangkao@linux.alibaba.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230712233347.122544-1-hsiangkao@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 12 Jul 2023 19:47:31 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF3D2139
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 16:47:25 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1b896096287so1065255ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 16:47:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689205645; x=1691797645;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=o7nUtvGiaimaAY0cZqfNqB77rOB1r7Cx9gcJevlv5Iw=;
+        b=dH1TkkwIH2N3rOv98vFjMjLNR2RzgZXxmQvbeFRMHxFC/oiz1qxPNuXga6xPpLXjvo
+         YYscOCfrhUcI5vrQ/IQMdHShU3Li7MRlpxpTNq2PYQ1OGj0vjymqubLgQztkxs62pGRu
+         lI2TpohTkYwtrRZDNkPZtSruf4F91iAda7vn8NPbIIgULXidctMeUZ1xMWpEzKmLk7FZ
+         M70o/gYhexV2rzlWbmYOnVs+QnfrwDR01qu9qCiM+3iZd8SgFUgMpEp+3gNndOhmRBow
+         +T0Ua51N+3qQ9sqijHhfoCPVp91c54/Dwki66c4p7n54uLSffPzfXMsVk7z4RbS3TD72
+         nHgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689205645; x=1691797645;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=o7nUtvGiaimaAY0cZqfNqB77rOB1r7Cx9gcJevlv5Iw=;
+        b=F8vfS2SJqFz/v6p1BSUB4t7Kj4N4JwavbScp3D3aUUrJpbVJFHP0Rp1xvlWo7V3AVh
+         qXYARc8oITyKCLXqG8crgTG0dk2RdPGHGMtEsG5D67e4QlwZAH6VeFtaLMY+qy3CpyzL
+         9/HRkQwPjCYo5Tnh6VRlFu+BudouI6iul0tR/e1j83vnr3bCX8ntgVFNnyNxzqgaRW7q
+         sdGEje7fBLWI6wyRwLZ/pDOsGchNZa4bzYwLJ17YxQ7p6jaq9LzLMUfHIh01/vls28dR
+         Qoa1H23UfgCjpICGziZ9lr+nQobNhCKz/Ghcz5QdhMbmqi4jT6Sj9CXfGXjDmK0renXz
+         KA0g==
+X-Gm-Message-State: ABy/qLaHdleYp/pY8xdb63COFQacfebF9h6VLtNXv+2vpyuXiC4xz2NX
+        AH98u+JQIOAznjXGflr3vWmuqvSnYaE=
+X-Google-Smtp-Source: APBJJlG8AVJYisMIvs4i+GAPybPJ3kflUqvW2Anjys1LU6hiE7fvf1/XgKFKGN5opvdzCvacxKCsy6n5hhs=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:d2cd:b0:1af:f80f:185d with SMTP id
+ n13-20020a170902d2cd00b001aff80f185dmr545plc.4.1689205645373; Wed, 12 Jul
+ 2023 16:47:25 -0700 (PDT)
+Date:   Wed, 12 Jul 2023 16:47:24 -0700
+In-Reply-To: <4b621470-8c58-264b-1e8b-75cec73cd7b0@gmail.com>
+Mime-Version: 1.0
+References: <20230602005859.784190-1-seanjc@google.com> <168667299355.1927151.1998349801097712999.b4-ty@google.com>
+ <abf509a2-ebfd-7b5f-4f7a-fdd4ef60c1de@amazon.com> <ZIoQDbte/uAiit9N@google.com>
+ <4b621470-8c58-264b-1e8b-75cec73cd7b0@gmail.com>
+Message-ID: <ZK87jGkrc9/LVsWz@google.com>
+Subject: Re: [PATCH] KVM: x86/mmu: Add "never" option to allow sticky
+ disabling of nx_huge_pages
+From:   Sean Christopherson <seanjc@google.com>
+To:     Like Xu <like.xu.linux@gmail.com>
+Cc:     Luiz Capitulino <luizcap@amazon.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Li RongQing <lirongqing@baidu.com>,
+        Yong He <zhuangel570@gmail.com>,
+        Robert Hoo <robert.hoo.linux@gmail.com>,
+        Kai Huang <kai.huang@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi--
+On Wed, Jul 12, 2023, Like Xu wrote:
+> On 2023/6/15 03:07, Sean Christopherson wrote:
+> > On Wed, Jun 14, 2023, Luiz Capitulino wrote:
+> > > > Applied to kvm-x86 mmu.  I kept the default as "auto" for now, as that can go on
+> > > > top and I don't want to introduce that change this late in the cycle.  If no one
+> > > > beats me to the punch (hint, hint ;-) ), I'll post a patch to make "never" the
+> > > > default for unaffected hosts so that we can discuss/consider that change for 6.6.
+> > > 
+> > > Thanks Sean, I agree with the plan. I could give a try on the patch if you'd like.
+> > 
+> > Yes please, thanks!
+> 
+> As a KVM/x86 *feature*, playing with splitting and reconstructing large
+> pages have other potential user scenarios, e.g. for performance test
+> comparisons in a easier approach, not just for itlb_multihit mitigation.
 
-On 7/12/23 16:33, Gao Xiang wrote:
-> diff --git a/fs/erofs/Kconfig b/fs/erofs/Kconfig
-> index f259d92c9720..d7b5327215f0 100644
-> --- a/fs/erofs/Kconfig
-> +++ b/fs/erofs/Kconfig
-> @@ -99,6 +99,21 @@ config EROFS_FS_ZIP_LZMA
->  
->  	  If unsure, say N.
->  
-> +config EROFS_FS_ZIP_DEFLATE
-> +	bool "EROFS DEFLATE compressed data support"
-> +	depends on EROFS_FS_ZIP
-> +	select ZLIB_INFLATE
-> +	help
-> +	  Saying Y here includes support for reading EROFS file systems
-> +	  containing DEFLATE compressed data.  It gives better compression
-> +	  ratios than the default LZ4 format, whileas it costs more CPU
+Enabling and disabling dirty logging is a far better tool for that, as it gives
+userspace much more explicit control over what pages are are split/reconstituted,
+and when.
+ 
+> On unaffected machines (ICX and later), nx_huge_pages is already "N",
+> and turning it into "never" doesn't help materially in the mitigation
+> implementation, but loses flexibility.
 
-	                                      while
-or	  although
-or	  but
+I'm becoming more and more convinced that losing the flexibility is perfectly
+acceptable.  There's a very good argument to be made that mitigating DoS attacks
+from the guest kernel should be done several levels up, e.g. by refusing to create
+VMs for a customer that is bringing down hosts.  As Jim has a pointed out, plugging
+the hole only works if you are 100% confident there are no other holes, and will
+never be other holes.
 
-> +	  overhead.
-> +
-> +	  DEFLATE support is an experimental feature for now and so most
-> +	  file systems will be readable without selecting this option.
-> +
-> +	  If unsure, say N.
+> IMO, the real issue here is that the kernel thread "kvm-nx-lpage-
+> recovery" is created unconditionally. We also need to be aware of the
+> existence of this commit 084cc29f8bbb ("KVM: x86/MMU: Allow NX huge
+> pages to be disabled on a per-vm basis").
+> 
+> One of the technical proposals is to defer kvm_vm_create_worker_thread()
+> to kvm_mmu_create() or kvm_init_mmu(), based on
+> kvm->arch.disable_nx_huge_pages, even until guest paging mode is enabled
+> on the first vcpu.
+> 
+> Is this step worth taking ?
 
--- 
-~Randy
+IMO, no.  In hindsight, adding KVM_CAP_VM_DISABLE_NX_HUGE_PAGES was likely a
+mistake; requiring CAP_SYS_BOOT makes it annoyingly difficult to safely use the
+capability.  My preference at this point is to make changes to the NX hugepage
+mitigation only when there is a substantial benefit to an already-deployed usecase.
