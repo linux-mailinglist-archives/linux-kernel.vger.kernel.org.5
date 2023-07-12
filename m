@@ -2,62 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15B55751363
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 00:12:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E206975133E
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 00:11:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232452AbjGLWMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 18:12:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60622 "EHLO
+        id S232370AbjGLWLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 18:11:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232420AbjGLWMQ (ORCPT
+        with ESMTP id S229572AbjGLWLh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 18:12:16 -0400
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D90C1C0
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 15:12:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689199934; x=1720735934;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=AXuCFZ7a/7670YV5vRY/iDSe0Xk86wjQk/YTfI6HqNc=;
-  b=MXbwZt2Zj5Uor8iLnQPEFQ/mXQwS0RQLYd7MSZLLCqGVG/05FiMQ1999
-   B/HAbWwHaCUNxz0TYXoqJ40r8pqlnxQ+dnZnv+4jOHI8s3OT3l9eO4NuC
-   5V0Z/fg7soOek0TWxpjhJV881qAnCzsVy0Z5im2MWDu7K9zVx08QprqAQ
-   qcQXe2SAR2s51cnRcS7+Q4cFk1L7durq+ysZdqx5LlxwrXc1AqVRieGgr
-   hCjAwfJwhyql9LRVCqreEil4CDOhHXGu6QcKefEVin9mh8EYOQzeBdVP0
-   euCg/w0gcPhUXAA0KVKA/T831ux8zDHV8ciEA/AIQ3iaGMo49IwOYpjzZ
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10769"; a="431165951"
-X-IronPort-AV: E=Sophos;i="6.01,200,1684825200"; 
-   d="scan'208";a="431165951"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2023 15:12:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10769"; a="895759840"
-X-IronPort-AV: E=Sophos;i="6.01,200,1684825200"; 
-   d="scan'208";a="895759840"
-Received: from lkp-server01.sh.intel.com (HELO c544d7fc5005) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 12 Jul 2023 15:12:08 -0700
-Received: from kbuild by c544d7fc5005 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qJi47-00060z-2C;
-        Wed, 12 Jul 2023 22:12:07 +0000
-Date:   Thu, 13 Jul 2023 06:11:23 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars:testing/fam01-next20230712 2/7]
- arch/sparc/mm/init_64.c:3057:31: error: array subscript -1 is outside array
- bounds of 'char[]'
-Message-ID: <202307130628.xn3HZQKC-lkp@intel.com>
+        Wed, 12 Jul 2023 18:11:37 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9177CC0
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 15:11:35 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1b9ed206018so31175ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 15:11:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689199895; x=1691791895;
+        h=mime-version:user-agent:message-id:in-reply-to:date:references
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=sjZpZfw6zMe+zVTA1zNJcRXQWvdmc1Ro3Swndjb5BXM=;
+        b=thDxK8pxeHdDVdSEwFlckAHU+nH9DfDSHvR8IbWZC6Oi+bhPHZjuqjdyv87US11sBj
+         X2I0oAxR35+oX4+MAxQ45K4ZR6CJUISfCZEWsMSjkoqlaugz8Djd0+IwtpLUUoL7q3ks
+         YHDe5ZIcPvGummnrmMuG1KiBwV9gWY/ac3PbzNJxA5m+jdwSec8vbfR35QrzSwqVZQOs
+         fRFgNXADaiWpODBmfQvLKc+16osI5gvrdVphp+23o8HaQH/FwE7dKNdjB1C2xrYZ2nd4
+         f+Y0NlNasV6tNAZ+LfrsMrb20juk+bl0/8MeKxumxPF1IyJIXl16KdurwInqmOwR7/K0
+         D4ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689199895; x=1691791895;
+        h=mime-version:user-agent:message-id:in-reply-to:date:references
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sjZpZfw6zMe+zVTA1zNJcRXQWvdmc1Ro3Swndjb5BXM=;
+        b=E3KMWKfSYxhDLEQi0PpZYJV1LbIIJD+uj4s23G+ODxGfcrZg5wLjn54RqLRLGTBAVm
+         oLOqgEqjFR2y6JbRNpP4eac+6kn2S7HAr0SkOdySwHBkZtDuKp8WT/zCVSw1c5og0Xr8
+         5FrMa1CrFeRW7qUrjtGA4tqkIDgeyxomfUyf5l/+zkw/EhOjxOWnD65lXvTSyRSgzK6M
+         n1XartYuEZiX2iCjKmBWnKaBjwQ7ftdfPWRbnsUMZAmI2L6O6yFSH2yKzektvePBwvZj
+         U0kVAM/vonn+kO/DE5zRRXf6LOfVK9/bhYR2kG9wwp7lcKh8jDDxuDppD/jPB94k4Wb8
+         NyqQ==
+X-Gm-Message-State: ABy/qLaSTWxLJ2J6CSNrCPwmIxpPnDrA0/hWLnnZ8O3hBP/OaXk47nxu
+        /CuURrT1yXtpPKLoHGJwTotk/g==
+X-Google-Smtp-Source: APBJJlFwXK91c9zYUg1Dpl3t6/Er1YjRVqGLR7+7r+vBSGr3fHGAvpAopYDUOtWT5HQhzj0Y68Zumw==
+X-Received: by 2002:a17:902:e54b:b0:1b8:5216:bfd2 with SMTP id n11-20020a170902e54b00b001b85216bfd2mr296365plf.11.1689199894909;
+        Wed, 12 Jul 2023 15:11:34 -0700 (PDT)
+Received: from bsegall-glaptop.localhost (c-73-158-249-138.hsd1.ca.comcast.net. [73.158.249.138])
+        by smtp.gmail.com with ESMTPSA id s3-20020a170902a50300b001afd821c057sm4460754plq.58.2023.07.12.15.11.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Jul 2023 15:11:34 -0700 (PDT)
+From:   Benjamin Segall <bsegall@google.com>
+To:     Phil Auld <pauld@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH v6 2/2] Sched/fair: Block nohz tick_stop when cfs
+ bandwidth in use
+References: <20230712133357.381137-1-pauld@redhat.com>
+        <20230712133357.381137-3-pauld@redhat.com>
+Date:   Wed, 12 Jul 2023 15:11:32 -0700
+In-Reply-To: <20230712133357.381137-3-pauld@redhat.com> (Phil Auld's message
+        of "Wed, 12 Jul 2023 09:33:57 -0400")
+Message-ID: <xm264jm8g4q3.fsf@google.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Type: text/plain
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,84 +84,209 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git testing/fam01-next20230712
-head:   88351e5cbaffd248445e625adc8f97b5850eac0a
-commit: 33815aa60d00d90040db22c11152fea0bd69532b [2/7] Makefile: Enable -Warray-bounds
-config: sparc-allyesconfig (https://download.01.org/0day-ci/archive/20230713/202307130628.xn3HZQKC-lkp@intel.com/config)
-compiler: sparc64-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230713/202307130628.xn3HZQKC-lkp@intel.com/reproduce)
+Phil Auld <pauld@redhat.com> writes:
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307130628.xn3HZQKC-lkp@intel.com/
+> CFS bandwidth limits and NOHZ full don't play well together.  Tasks
+> can easily run well past their quotas before a remote tick does
+> accounting.  This leads to long, multi-period stalls before such
+> tasks can run again. Currently, when presented with these conflicting
+> requirements the scheduler is favoring nohz_full and letting the tick
+> be stopped. However, nohz tick stopping is already best-effort, there
+> are a number of conditions that can prevent it, whereas cfs runtime
+> bandwidth is expected to be enforced.
+>
+> Make the scheduler favor bandwidth over stopping the tick by setting
+> TICK_DEP_BIT_SCHED when the only running task is a cfs task with
+> runtime limit enabled. We use cfs_b->hierarchical_quota to
+> determine if the task requires the tick.
+>
+> Add check in pick_next_task_fair() as well since that is where
+> we have a handle on the task that is actually going to be running.
+>
+> Add check in sched_can_stop_tick() to cover some edge cases such
+> as nr_running going from 2->1 and the 1 remains the running task.
+>
+> Add sched_feat HZ_BW (off by default) to control the tick_stop
+> behavior.
 
-All errors (new ones prefixed by >>):
+I think this looks good now.
+Reviewed-By: Ben Segall <bsegall@google.com>
 
-   arch/sparc/mm/init_64.c: In function 'arch_hugetlb_valid_size':
-   arch/sparc/mm/init_64.c:355:24: error: variable 'hv_pgsz_idx' set but not used [-Werror=unused-but-set-variable]
-     355 |         unsigned short hv_pgsz_idx;
-         |                        ^~~~~~~~~~~
-   arch/sparc/mm/init_64.c: At top level:
-   arch/sparc/mm/init_64.c:2630:6: error: no previous prototype for 'vmemmap_free' [-Werror=missing-prototypes]
-    2630 | void vmemmap_free(unsigned long start, unsigned long end,
-         |      ^~~~~~~~~~~~
-   In function 'kernel_lds_init',
-       inlined from 'report_memory' at arch/sparc/mm/init_64.c:3069:2:
->> arch/sparc/mm/init_64.c:3057:31: error: array subscript -1 is outside array bounds of 'char[]' [-Werror=array-bounds]
-    3057 |         code_resource.end   = compute_kern_paddr(_etext - 1);
-         |                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   In file included from arch/sparc/include/asm/sections.h:6,
-                    from include/linux/interrupt.h:21,
-                    from include/linux/kernel_stat.h:9,
-                    from include/linux/cgroup.h:26,
-                    from include/linux/hugetlb.h:10,
-                    from arch/sparc/mm/init_64.c:16:
-   include/asm-generic/sections.h: In function 'report_memory':
-   include/asm-generic/sections.h:35:32: note: at offset -1 into object '_etext' of size [0, 9223372036854775807]
-      35 | extern char _text[], _stext[], _etext[];
-         |                                ^~~~~~
-   In function 'kernel_lds_init',
-       inlined from 'report_memory' at arch/sparc/mm/init_64.c:3069:2:
-   arch/sparc/mm/init_64.c:3059:31: error: array subscript -1 is outside array bounds of 'char[]' [-Werror=array-bounds]
-    3059 |         data_resource.end   = compute_kern_paddr(_edata - 1);
-         |                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/asm-generic/sections.h: In function 'report_memory':
-   include/asm-generic/sections.h:36:32: note: at offset -1 into object '_edata' of size [0, 9223372036854775807]
-      36 | extern char _data[], _sdata[], _edata[];
-         |                                ^~~~~~
-   In function 'kernel_lds_init',
-       inlined from 'report_memory' at arch/sparc/mm/init_64.c:3069:2:
-   arch/sparc/mm/init_64.c:3061:31: error: array subscript -1 is outside array bounds of 'char[]' [-Werror=array-bounds]
-    3061 |         bss_resource.end    = compute_kern_paddr(_end - 1);
-         |                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/asm-generic/sections.h: In function 'report_memory':
-   include/asm-generic/sections.h:41:13: note: at offset -1 into object '_end' of size [0, 9223372036854775807]
-      41 | extern char _end[];
-         |             ^~~~
-   cc1: all warnings being treated as errors
-
-
-vim +3057 arch/sparc/mm/init_64.c
-
-f6d4fb5cc0475c3 bob picco 2014-03-03  3053  
-f6d4fb5cc0475c3 bob picco 2014-03-03  3054  static void __init kernel_lds_init(void)
-f6d4fb5cc0475c3 bob picco 2014-03-03  3055  {
-f6d4fb5cc0475c3 bob picco 2014-03-03  3056  	code_resource.start = compute_kern_paddr(_text);
-f6d4fb5cc0475c3 bob picco 2014-03-03 @3057  	code_resource.end   = compute_kern_paddr(_etext - 1);
-f6d4fb5cc0475c3 bob picco 2014-03-03  3058  	data_resource.start = compute_kern_paddr(_etext);
-f6d4fb5cc0475c3 bob picco 2014-03-03  3059  	data_resource.end   = compute_kern_paddr(_edata - 1);
-f6d4fb5cc0475c3 bob picco 2014-03-03  3060  	bss_resource.start  = compute_kern_paddr(__bss_start);
-f6d4fb5cc0475c3 bob picco 2014-03-03  3061  	bss_resource.end    = compute_kern_paddr(_end - 1);
-f6d4fb5cc0475c3 bob picco 2014-03-03  3062  }
-f6d4fb5cc0475c3 bob picco 2014-03-03  3063  
-
-:::::: The code at line 3057 was first introduced by commit
-:::::: f6d4fb5cc0475c36437a618db31cbb7f2bf7c282 sparc64 - add mem to iomem resource
-
-:::::: TO: bob picco <bpicco@meloft.net>
-:::::: CC: David S. Miller <davem@davemloft.net>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>
+> Signed-off-by: Phil Auld <pauld@redhat.com>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Vincent Guittot <vincent.guittot@linaro.org>
+> Cc: Juri Lelli <juri.lelli@redhat.com>
+> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> Cc: Valentin Schneider <vschneid@redhat.com>
+> Cc: Ben Segall <bsegall@google.com>
+> Cc: Frederic Weisbecker <frederic@kernel.org>
+> ---
+> v6: restore check for fair_sched_class
+>
+> v5: Reworked checks to use newly-fixed cfs_b->hierarchical_quota to
+> check for bw
+> constraints. 
+>
+> v4: Made checks for runtime_enabled hierarchical. 
+>
+> v3: Moved sched_cfs_bandwidth_active() prototype to sched.h outside of
+> guards to
+> silence -Wmissing-prototypes.
+>
+> v2:  Ben pointed out that the bit could get cleared in the dequeue path
+> if we migrate a newly enqueued task without preempting curr. Added a
+> check for that edge case to sched_can_stop_tick. Removed the call to
+> sched_can_stop_tick from sched_fair_update_stop_tick since it was
+> redundant.
+>
+>  kernel/sched/core.c     | 26 ++++++++++++++++++++++
+>  kernel/sched/fair.c     | 49 +++++++++++++++++++++++++++++++++++++++++
+>  kernel/sched/features.h |  2 ++
+>  kernel/sched/sched.h    |  1 +
+>  4 files changed, 78 insertions(+)
+>
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index f80697a79baf..8a2ed4c0b709 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -1194,6 +1194,20 @@ static void nohz_csd_func(void *info)
+>  #endif /* CONFIG_NO_HZ_COMMON */
+>  
+>  #ifdef CONFIG_NO_HZ_FULL
+> +static inline bool __need_bw_check(struct rq *rq, struct task_struct *p)
+> +{
+> +	if (rq->nr_running != 1)
+> +		return false;
+> +
+> +	if (p->sched_class != &fair_sched_class)
+> +		return false;
+> +
+> +	if (!task_on_rq_queued(p))
+> +		return false;
+> +
+> +	return true;
+> +}
+> +
+>  bool sched_can_stop_tick(struct rq *rq)
+>  {
+>  	int fifo_nr_running;
+> @@ -1229,6 +1243,18 @@ bool sched_can_stop_tick(struct rq *rq)
+>  	if (rq->nr_running > 1)
+>  		return false;
+>  
+> +	/*
+> +	 * If there is one task and it has CFS runtime bandwidth constraints
+> +	 * and it's on the cpu now we don't want to stop the tick.
+> +	 * This check prevents clearing the bit if a newly enqueued task here is
+> +	 * dequeued by migrating while the constrained task continues to run.
+> +	 * E.g. going from 2->1 without going through pick_next_task().
+> +	 */
+> +	if (sched_feat(HZ_BW) && __need_bw_check(rq, rq->curr)) {
+> +		if (cfs_task_bw_constrained(rq->curr))
+> +			return false;
+> +	}
+> +
+>  	return true;
+>  }
+>  #endif /* CONFIG_NO_HZ_FULL */
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index d9b3d4617e16..acd9f317aad1 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -6140,6 +6140,46 @@ static void __maybe_unused unthrottle_offline_cfs_rqs(struct rq *rq)
+>  	rcu_read_unlock();
+>  }
+>  
+> +bool cfs_task_bw_constrained(struct task_struct *p)
+> +{
+> +	struct cfs_rq *cfs_rq = task_cfs_rq(p);
+> +
+> +	if (!cfs_bandwidth_used())
+> +		return false;
+> +
+> +	if (cfs_rq->runtime_enabled ||
+> +	    tg_cfs_bandwidth(cfs_rq->tg)->hierarchical_quota != RUNTIME_INF)
+> +		return true;
+> +
+> +	return false;
+> +}
+> +
+> +#ifdef CONFIG_NO_HZ_FULL
+> +/* called from pick_next_task_fair() */
+> +static void sched_fair_update_stop_tick(struct rq *rq, struct task_struct *p)
+> +{
+> +	int cpu = cpu_of(rq);
+> +
+> +	if (!sched_feat(HZ_BW) || !cfs_bandwidth_used())
+> +		return;
+> +
+> +	if (!tick_nohz_full_cpu(cpu))
+> +		return;
+> +
+> +	if (rq->nr_running != 1)
+> +		return;
+> +
+> +	/*
+> +	 *  We know there is only one task runnable and we've just picked it. The
+> +	 *  normal enqueue path will have cleared TICK_DEP_BIT_SCHED if we will
+> +	 *  be otherwise able to stop the tick. Just need to check if we are using
+> +	 *  bandwidth control.
+> +	 */
+> +	if (cfs_task_bw_constrained(p))
+> +		tick_nohz_dep_set_cpu(cpu, TICK_DEP_BIT_SCHED);
+> +}
+> +#endif
+> +
+>  #else /* CONFIG_CFS_BANDWIDTH */
+>  
+>  static inline bool cfs_bandwidth_used(void)
+> @@ -6182,9 +6222,17 @@ static inline struct cfs_bandwidth *tg_cfs_bandwidth(struct task_group *tg)
+>  static inline void destroy_cfs_bandwidth(struct cfs_bandwidth *cfs_b) {}
+>  static inline void update_runtime_enabled(struct rq *rq) {}
+>  static inline void unthrottle_offline_cfs_rqs(struct rq *rq) {}
+> +bool cfs_task_bw_constrained(struct task_struct *p)
+> +{
+> +	return false;
+> +}
+>  
+>  #endif /* CONFIG_CFS_BANDWIDTH */
+>  
+> +#if !defined(CONFIG_CFS_BANDWIDTH) || !defined(CONFIG_NO_HZ_FULL)
+> +static inline void sched_fair_update_stop_tick(struct rq *rq, struct task_struct *p) {}
+> +#endif
+> +
+>  /**************************************************
+>   * CFS operations on tasks:
+>   */
+> @@ -8098,6 +8146,7 @@ done: __maybe_unused;
+>  		hrtick_start_fair(rq, p);
+>  
+>  	update_misfit_status(p, rq);
+> +	sched_fair_update_stop_tick(rq, p);
+>  
+>  	return p;
+>  
+> diff --git a/kernel/sched/features.h b/kernel/sched/features.h
+> index ee7f23c76bd3..6fdf1fdf6b17 100644
+> --- a/kernel/sched/features.h
+> +++ b/kernel/sched/features.h
+> @@ -101,3 +101,5 @@ SCHED_FEAT(LATENCY_WARN, false)
+>  
+>  SCHED_FEAT(ALT_PERIOD, true)
+>  SCHED_FEAT(BASE_SLICE, true)
+> +
+> +SCHED_FEAT(HZ_BW, false)
+> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> index 63822c9238cc..d6d346bc78aa 100644
+> --- a/kernel/sched/sched.h
+> +++ b/kernel/sched/sched.h
+> @@ -465,6 +465,7 @@ extern void init_cfs_bandwidth(struct cfs_bandwidth *cfs_b, struct cfs_bandwidth
+>  extern void __refill_cfs_bandwidth_runtime(struct cfs_bandwidth *cfs_b);
+>  extern void start_cfs_bandwidth(struct cfs_bandwidth *cfs_b);
+>  extern void unthrottle_cfs_rq(struct cfs_rq *cfs_rq);
+> +extern bool cfs_task_bw_constrained(struct task_struct *p);
+>  
+>  extern void init_tg_rt_entry(struct task_group *tg, struct rt_rq *rt_rq,
+>  		struct sched_rt_entity *rt_se, int cpu,
