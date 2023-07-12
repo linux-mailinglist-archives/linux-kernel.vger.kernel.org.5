@@ -2,115 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB74A75116A
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 21:41:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FA6475116D
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 21:42:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231488AbjGLTlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 15:41:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35312 "EHLO
+        id S232441AbjGLTmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 15:42:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232401AbjGLTlA (ORCPT
+        with ESMTP id S229473AbjGLTma (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 15:41:00 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20A7A1FE1
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 12:40:59 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-3144bf65ce9so18274f8f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 12:40:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689190857; x=1691782857;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Sn10iQHpwGY+eYGAiAUXJ1C6Kcrs3fREJAIA3a7Sc2c=;
-        b=Q/P8GG+cWA78JR5k1cstSyKnHaJzP4ItRvLyr0QhJPyoiEfzasZanFiDqRzttm+7Tw
-         DQrHTrZBRun235hJiz+Gt4q3gHHCqY0H21jaAudNhs0XhM9ecTUVY9iUSrFSBxY3GclX
-         ohuZPJSyuzoWqGGXYc+j7pQJGB87T+IYqZn6SxSYicbwvI0Rb5D/nYTug5yM/505fNKK
-         pkhlEvOxp2wAF0SF75lPXX72uKYU266GkavjhsDJQIly+mjtGPQJ/nj43Ebe04ZSO/ql
-         ObaUoQVHKvQm29NWnWGNQJC5q8EcRzUziCTYD+Pp0RwdBGcok6YKq1Y81e6SbAdZkoM7
-         vORg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689190857; x=1691782857;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Sn10iQHpwGY+eYGAiAUXJ1C6Kcrs3fREJAIA3a7Sc2c=;
-        b=Xuy49R05PqTFq75VfmwYs7LysY+mHB8zelQkzNBGseMQVpogPQ7Oz/zM2X+FOlO2vi
-         Jfkn3Btc9f84zIu0oAmSiS0NoT/HUSJ2Rgi2VsWMzKxvY6egOBJdQBm9tTB90+EpLJ5v
-         6rv4wN/v4sw7kskzqBkEhbLI2e5YMwLCLeGToQyFhx5jDN28q8fpyeepk1U3HNPcPuFD
-         bFF+nN7PfL+g6OaiLs1MF2FEishNqzMCziGN0voBh4e9BxUXfwJf32uY7HNyz6VB0BES
-         o6RzoJw/5IIEIF9PeWKU5XRQ7tEsiD4YOCtLBGdMlBs7CtZPO9Y4unQ/69sZ5VW15QNg
-         ymFA==
-X-Gm-Message-State: ABy/qLZshPTD22VN0H3m1XLew0HOOCoW2uplM69HWJNsQHIo6vx34lJs
-        9WJyUEELABf1JEEBOEOAu9YmEw==
-X-Google-Smtp-Source: APBJJlFo2j+JdHiM2R3wbxMQhoIkgOQ4zvhrGZ02phohM7r1Y1i+edtFEiZsiP/0XTEBiWS2HjMbSA==
-X-Received: by 2002:adf:e7c2:0:b0:313:f07b:8025 with SMTP id e2-20020adfe7c2000000b00313f07b8025mr17795819wrn.47.1689190857663;
-        Wed, 12 Jul 2023 12:40:57 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id v22-20020aa7d9d6000000b0051bfc85afaasm3180698eds.86.2023.07.12.12.40.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 Jul 2023 12:40:57 -0700 (PDT)
-Message-ID: <a1ddbc5c-0e41-84b2-4281-7303cc3040f8@linaro.org>
-Date:   Wed, 12 Jul 2023 21:40:55 +0200
+        Wed, 12 Jul 2023 15:42:30 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5B6E1989
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 12:42:28 -0700 (PDT)
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 245CA1EC06A9;
+        Wed, 12 Jul 2023 21:42:27 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1689190947;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=MqG9ghzNC1L1Rt66JyPet71PESTc6oNMjVZeBIyo1Pk=;
+        b=UvrZuWtinVHKGmPGQfm/+hpAsPvdT4zy2Bklrnpbjt8rO6IP/hVR+R/EUJguPmrOyvBaEi
+        cYujG9TYNxK2jw4TsPTmZ+ZXucm1vjKmP1pJxr3bK6WOTn0u6tXxkj1TU1XNeq0LlFSMwi
+        +LOrzDEJdj5qxxDqxuK3Aah5zqx2zbk=
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id XIjqmpvKzZxU; Wed, 12 Jul 2023 19:42:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1689190944; bh=MqG9ghzNC1L1Rt66JyPet71PESTc6oNMjVZeBIyo1Pk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eO1RdkWKAydo7z+EfExIXDOZNDN2knbljM4Z3e27vbcfmD1zRY1rUbn7UBwW5KYnf
+         NuajpBE5k4UV6k3m0t1qkygOyzMbLvhLbCI0lWoNPUDUgbCiRe57t0ry0OdDWszkKd
+         Z0RlBKOdq9mQlGC9IdxGBFSPXjaNGqeBfkq1IaosBR5WrU32f75P2wK32iglA4jNfK
+         E0plgWlMx7jtIz2HAclYarsoMQtY7kDO7KRLXcIPVUnVrUyiZKJ0nJbFb24IV5koay
+         uOGyqTVhvB8Kg2WX2ixRP17gQXvIlwKLmP76Fl9wLEvu0ClHfuWTz4cOy6AKjOLYw7
+         p5zFoL+Ml9pqqF/i82krZnMaGb+p9XOLx9+ishGOTnrCQrQ/aapK87L4jLMHNNQOyu
+         pDM9vetTROijDxIeWGuQaphiaiD9L5gjY5hjBO83ldF9M/EphAp16EdWPV2YnW+nTW
+         v+VvlU6gJwM4AVdxaCeuC6DNz44bHJUTfPHC1eFTVvNkxUZt/LJyNVMcovdsjVNhPh
+         lV9jQVM517uOQdsybx0g4ZeCvPlO6OjwiM6seOUaLxy8VJ5ox1lLy8oFHJrX2zkjnY
+         rNVA9dCAAfdVnyAqA/TsqDRXpZb0Bj6zF/r++rw6bWqjSTA+4GBIUsChdpWVO4m1qY
+         nv6cToorVeDl07a5GL7alryE=
+Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 05F6340E0034;
+        Wed, 12 Jul 2023 19:42:07 +0000 (UTC)
+Date:   Wed, 12 Jul 2023 21:42:02 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Luca Boccassi <bluca@debian.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Daniel =?utf-8?B?UC4gQmVycmFuZ8Op?= <berrange@redhat.com>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>, lennart@poettering.net,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v2] x86/boot: add .sbat section to the bzImage
+Message-ID: <20230712194202.GNZK8CCj4yacgFMgfB@fat_crate.local>
+References: <20230712120002.GIZK6Vwga6DlJqdjEh@fat_crate.local>
+ <ZK6hLZcuAH9jXKuL@redhat.com>
+ <20230712132840.GKZK6qiK70m1O90jFL@fat_crate.local>
+ <ZK6zdsIbnQFUmK69@redhat.com>
+ <2023071200-unopposed-unbuckled-cde8@gregkh>
+ <CAMw=ZnTVRaqRmtz+sDj7AeAS7xivSu+56UgKbzmuW9+K6TTx1A@mail.gmail.com>
+ <2023071239-progress-molasses-3b3d@gregkh>
+ <CAMw=ZnRheXk7W_r-32bGymbHKdXc7aKUpwGAOX+k7DJkN+DiCQ@mail.gmail.com>
+ <2023071229-dusk-repacking-da3a@gregkh>
+ <CAMw=ZnSmZTBs+bJsQ_Y2CVO8K3OTuHOZDKW4cbxKpGbo4Vgs7Q@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [Patch RESEND 1/4] memory: tegra: sort tegra234_mc_clients table
- as per register offsets
-Content-Language: en-US
-To:     Sumit Gupta <sumitg@nvidia.com>, treding@nvidia.com,
-        jonathanh@nvidia.com, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-Cc:     bbasu@nvidia.com, talho@nvidia.com,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Ashish Mhetre <amhetre@nvidia.com>
-References: <20230621134400.23070-1-sumitg@nvidia.com>
- <20230621134400.23070-2-sumitg@nvidia.com>
- <abdff39a-5306-b431-ae28-1e1a03c0a555@linaro.org>
- <ac9e9e2a-00b8-c9e7-00c7-215cba139a39@nvidia.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <ac9e9e2a-00b8-c9e7-00c7-215cba139a39@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAMw=ZnSmZTBs+bJsQ_Y2CVO8K3OTuHOZDKW4cbxKpGbo4Vgs7Q@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/07/2023 18:48, Sumit Gupta wrote:
-> 
-> 
-> On 10/07/23 15:38, Krzysztof Kozlowski wrote:
->> External email: Use caution opening links or attachments
->>
->>
->> On 21/06/2023 15:43, Sumit Gupta wrote:
->>> Sort the MC client entries in "tegra234_mc_clients" table as per the
->>> override and security register offsets. This will help to avoid
->>> creating duplicate entries.
->>
->> If person cannot search for existing symbol before adding new entry, I
->> doubt that sorting would solve it. OTOH, this patch makes backporting
->> changes trickier, so I don't think this is good approach. Are all other
->> Tegra files ordered in this matter?
->>
->>
->> Best regards,
->> Krzysztof
->>
-> 
-> They are in order for previous T194 SoC.
-> For T234 also, initially the entries were in order.
+On Wed, Jul 12, 2023 at 08:35:14PM +0100, Luca Boccassi wrote:
+> No, all will not be fine, because stable branches exist, so it would
+> not be _one_ kernel version but N, with monotonically increasing
+> values of N. That doesn't work, and the reason for that are explained
+> in the protocol documentation that was linked in the initial mail.
 
-OK. This has an impact on backports, thus I would be happy to see some
-acks or reviews from other developers of this code, that this change
-actually helps them by making code more readable and maintainable.
+Lemme give Peter's example from earlier today:
 
-Best regards,
-Krzysztof
+Bugfix A -> number 2
+Bugfix B -> number 3
 
+Tree backports only Bugfix B. Which number do you use?
+
+And so on and so on. 
+
+Patch your own trees - this doesn't belong upstream.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
