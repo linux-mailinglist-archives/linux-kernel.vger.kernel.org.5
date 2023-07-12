@@ -2,122 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D4267514C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 01:47:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 863C37514C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 01:52:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232286AbjGLXre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 19:47:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53518 "EHLO
+        id S231492AbjGLXwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 19:52:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230134AbjGLXrb (ORCPT
+        with ESMTP id S229881AbjGLXwp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 19:47:31 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF3D2139
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 16:47:25 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1b896096287so1065255ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 16:47:25 -0700 (PDT)
+        Wed, 12 Jul 2023 19:52:45 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D153A1BF2
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 16:52:43 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1b9d80e33fbso1213025ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 16:52:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689205645; x=1691797645;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=o7nUtvGiaimaAY0cZqfNqB77rOB1r7Cx9gcJevlv5Iw=;
-        b=dH1TkkwIH2N3rOv98vFjMjLNR2RzgZXxmQvbeFRMHxFC/oiz1qxPNuXga6xPpLXjvo
-         YYscOCfrhUcI5vrQ/IQMdHShU3Li7MRlpxpTNq2PYQ1OGj0vjymqubLgQztkxs62pGRu
-         lI2TpohTkYwtrRZDNkPZtSruf4F91iAda7vn8NPbIIgULXidctMeUZ1xMWpEzKmLk7FZ
-         M70o/gYhexV2rzlWbmYOnVs+QnfrwDR01qu9qCiM+3iZd8SgFUgMpEp+3gNndOhmRBow
-         +T0Ua51N+3qQ9sqijHhfoCPVp91c54/Dwki66c4p7n54uLSffPzfXMsVk7z4RbS3TD72
-         nHgg==
+        d=chromium.org; s=google; t=1689205963; x=1691797963;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=EK3bP9StwfGqXNuskzFyO16EhMwkltUyoXwDFC2U/i8=;
+        b=G8O/g2xzAW/pvRSJNe08rpvHCLh9Rj27H5GLixWV6psuOyVJqW5T04A4YVbbXfZvyL
+         wzENG5vsVfiC9E0G62q5mRjqtSouoGnFtquDq1p4FINeGv3rsbM//iddE2xzON3D8VQI
+         NomPURKgkxiDekEYqkCQn72w6ecJ7IwVFkX8A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689205645; x=1691797645;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=o7nUtvGiaimaAY0cZqfNqB77rOB1r7Cx9gcJevlv5Iw=;
-        b=F8vfS2SJqFz/v6p1BSUB4t7Kj4N4JwavbScp3D3aUUrJpbVJFHP0Rp1xvlWo7V3AVh
-         qXYARc8oITyKCLXqG8crgTG0dk2RdPGHGMtEsG5D67e4QlwZAH6VeFtaLMY+qy3CpyzL
-         9/HRkQwPjCYo5Tnh6VRlFu+BudouI6iul0tR/e1j83vnr3bCX8ntgVFNnyNxzqgaRW7q
-         sdGEje7fBLWI6wyRwLZ/pDOsGchNZa4bzYwLJ17YxQ7p6jaq9LzLMUfHIh01/vls28dR
-         Qoa1H23UfgCjpICGziZ9lr+nQobNhCKz/Ghcz5QdhMbmqi4jT6Sj9CXfGXjDmK0renXz
-         KA0g==
-X-Gm-Message-State: ABy/qLaHdleYp/pY8xdb63COFQacfebF9h6VLtNXv+2vpyuXiC4xz2NX
-        AH98u+JQIOAznjXGflr3vWmuqvSnYaE=
-X-Google-Smtp-Source: APBJJlG8AVJYisMIvs4i+GAPybPJ3kflUqvW2Anjys1LU6hiE7fvf1/XgKFKGN5opvdzCvacxKCsy6n5hhs=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:d2cd:b0:1af:f80f:185d with SMTP id
- n13-20020a170902d2cd00b001aff80f185dmr545plc.4.1689205645373; Wed, 12 Jul
- 2023 16:47:25 -0700 (PDT)
-Date:   Wed, 12 Jul 2023 16:47:24 -0700
-In-Reply-To: <4b621470-8c58-264b-1e8b-75cec73cd7b0@gmail.com>
-Mime-Version: 1.0
-References: <20230602005859.784190-1-seanjc@google.com> <168667299355.1927151.1998349801097712999.b4-ty@google.com>
- <abf509a2-ebfd-7b5f-4f7a-fdd4ef60c1de@amazon.com> <ZIoQDbte/uAiit9N@google.com>
- <4b621470-8c58-264b-1e8b-75cec73cd7b0@gmail.com>
-Message-ID: <ZK87jGkrc9/LVsWz@google.com>
-Subject: Re: [PATCH] KVM: x86/mmu: Add "never" option to allow sticky
- disabling of nx_huge_pages
-From:   Sean Christopherson <seanjc@google.com>
-To:     Like Xu <like.xu.linux@gmail.com>
-Cc:     Luiz Capitulino <luizcap@amazon.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Li RongQing <lirongqing@baidu.com>,
-        Yong He <zhuangel570@gmail.com>,
-        Robert Hoo <robert.hoo.linux@gmail.com>,
-        Kai Huang <kai.huang@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20221208; t=1689205963; x=1691797963;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EK3bP9StwfGqXNuskzFyO16EhMwkltUyoXwDFC2U/i8=;
+        b=Vp8g2aSOLkb/aj+QSSIyRMoDESYVQJfdwTLS58lA9zeh/lFk8tc2EzKOwrvEjtH3Yr
+         04o4NqD/Zp7B5RXRaTjjjh8MW1+1JulDDyVTMOwATmLmlQSvVFlUG8CkVDYG4iZVQOgO
+         /VSzzJVOt3yNXFffBs4SpB30xVdbX2kQcSvlosELryGKBzSDnIR9qLfXx53f0fHq83Om
+         HWKxn/zM4iO2iDBYWYxCJQ5KmqHKMAB228HEYSM7leW4QhSFUISvOkIdkJcWJWc0RO5H
+         leVj58Xvrapka4LvOpwrs+fO+DtxkFWxyO5uFEKx2KKaND5LZ/n9fui3YoECZA+c2mAd
+         rebw==
+X-Gm-Message-State: ABy/qLbQC1NchkeAXJo9G6tVU9o5Te4OX6/5f09ab9mYD7pNU0ZiaTE8
+        mT4t2VWgAkb2AQaHizsGaQCNh1lMi6ffkcIMqGY=
+X-Google-Smtp-Source: APBJJlHf4uJppKcWVPSIjYNjEbX2YaZ+ggECGEXpDxmZPoiZXS+nrPC0VGttlX6aGa/c96/ZEDVelw==
+X-Received: by 2002:a17:902:a401:b0:1b9:d310:e85b with SMTP id p1-20020a170902a40100b001b9d310e85bmr22589plq.68.1689205963284;
+        Wed, 12 Jul 2023 16:52:43 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id u2-20020a170902a60200b001b9da42cd7dsm4488027plq.279.2023.07.12.16.52.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Jul 2023 16:52:42 -0700 (PDT)
+Date:   Wed, 12 Jul 2023 16:52:42 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     'Azeem Shaikh' <azeemshaikh38@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] kobject: Replace strlcpy with strscpy
+Message-ID: <202307121651.04D1758@keescook>
+References: <20230703180528.3709258-1-azeemshaikh38@gmail.com>
+ <ad25bb8552704028860cf7a419c54fa3@AcuMS.aculab.com>
+ <CADmuW3XOcGDBszYw80Dy03DXk3T25k8FNUrJWLKU9tL2znzanw@mail.gmail.com>
+ <0aaa9355aa714e608091af2a5fca1373@AcuMS.aculab.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0aaa9355aa714e608091af2a5fca1373@AcuMS.aculab.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 12, 2023, Like Xu wrote:
-> On 2023/6/15 03:07, Sean Christopherson wrote:
-> > On Wed, Jun 14, 2023, Luiz Capitulino wrote:
-> > > > Applied to kvm-x86 mmu.  I kept the default as "auto" for now, as that can go on
-> > > > top and I don't want to introduce that change this late in the cycle.  If no one
-> > > > beats me to the punch (hint, hint ;-) ), I'll post a patch to make "never" the
-> > > > default for unaffected hosts so that we can discuss/consider that change for 6.6.
-> > > 
-> > > Thanks Sean, I agree with the plan. I could give a try on the patch if you'd like.
+On Tue, Jul 11, 2023 at 08:14:30AM +0000, David Laight wrote:
+> From: Azeem Shaikh
+> > Sent: 10 July 2023 19:07
 > > 
-> > Yes please, thanks!
-> 
-> As a KVM/x86 *feature*, playing with splitting and reconstructing large
-> pages have other potential user scenarios, e.g. for performance test
-> comparisons in a easier approach, not just for itlb_multihit mitigation.
+> > On Mon, Jul 10, 2023 at 9:13 AM David Laight <David.Laight@aculab.com> wrote:
+> > >
+> > > >       int len;
+> > > >
+> > > > -     len = strlcpy(&env->buf[env->buflen], subsystem, buffer_size);
+> > > > -     if (len >= buffer_size) {
+> > > > +     len = strscpy(&env->buf[env->buflen], subsystem, buffer_size);
+> > > > +     if (len < 0) {
+> > > >               pr_warn("init_uevent_argv: buffer size of %d too small, needed %d\n",
+> > > >                       buffer_size, len);
+> > > >               return -ENOMEM;
+> > >
+> > > The size in the error message is now wrong.
+> > 
+> > Thanks for catching this.
+> > 
+> > > It has to be said that mostly all the strings that get copied
+> > > in the kernel are '\0' terminated - so maybe it is all moot.
+> > > OTOH printing (at least some of) the string that didn't fit
+> > > is a lot more useful than its length.
+> > 
+> > How about printing out strlen(subsystem) along with the entire value
+> > of @subsystem? So that the warn reads:
+> > 
+> > pr_warn("init_uevent_argv: buffer size of %d too small for %s, needed
+> > %d\n", buffer_size, subsystem, strlen(subsystem));
+> > 
+> > Does that seem better?
 
-Enabling and disabling dirty logging is a far better tool for that, as it gives
-userspace much more explicit control over what pages are are split/reconstituted,
-and when.
- 
-> On unaffected machines (ICX and later), nx_huge_pages is already "N",
-> and turning it into "never" doesn't help materially in the mitigation
-> implementation, but loses flexibility.
+Yeah, that'll retain the intention of the warning. It shouldn't really
+even be possible to hit that warning, so I don't think we need to worry
+about the "extra" call to strlen().
 
-I'm becoming more and more convinced that losing the flexibility is perfectly
-acceptable.  There's a very good argument to be made that mitigating DoS attacks
-from the guest kernel should be done several levels up, e.g. by refusing to create
-VMs for a customer that is bringing down hosts.  As Jim has a pointed out, plugging
-the hole only works if you are 100% confident there are no other holes, and will
-never be other holes.
+> Not with the justification for not using strlcpy() :-)
 
-> IMO, the real issue here is that the kernel thread "kvm-nx-lpage-
-> recovery" is created unconditionally. We also need to be aware of the
-> existence of this commit 084cc29f8bbb ("KVM: x86/MMU: Allow NX huge
-> pages to be disabled on a per-vm basis").
-> 
-> One of the technical proposals is to defer kvm_vm_create_worker_thread()
-> to kvm_mmu_create() or kvm_init_mmu(), based on
-> kvm->arch.disable_nx_huge_pages, even until guest paging mode is enabled
-> on the first vcpu.
-> 
-> Is this step worth taking ?
+What?
 
-IMO, no.  In hindsight, adding KVM_CAP_VM_DISABLE_NX_HUGE_PAGES was likely a
-mistake; requiring CAP_SYS_BOOT makes it annoyingly difficult to safely use the
-capability.  My preference at this point is to make changes to the NX hugepage
-mitigation only when there is a substantial benefit to an already-deployed usecase.
+-Kees
+
+-- 
+Kees Cook
