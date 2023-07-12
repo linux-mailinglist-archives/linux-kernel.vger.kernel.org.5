@@ -2,185 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52AF2751198
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 22:00:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B39375119B
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 22:00:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232615AbjGLUAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 16:00:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42256 "EHLO
+        id S232452AbjGLUAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 16:00:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231609AbjGLUAB (ORCPT
+        with ESMTP id S229775AbjGLUAx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 16:00:01 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAA411FE3
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 13:00:00 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-bad0c4f6f50so1775668276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 13:00:00 -0700 (PDT)
+        Wed, 12 Jul 2023 16:00:53 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 437881FE6
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 13:00:52 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-cada5e4e40cso270165276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 13:00:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689192000; x=1691784000;
+        d=google.com; s=20221208; t=1689192051; x=1691784051;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=BZWsn10ms8/KyUVvyBQaw1fP00pVGmdzjm0GtqTpp8w=;
-        b=G9KVBr/xC76jZ0gBOBcTP8kNEVHvgN9xWi85yFTfhLVrIFu6u0sB6iudDAZvFrR2to
-         tskuPI3BkJZyJ77e8SfCUomRWoOxTE7f56NN70C4Ws51PtPrZsYyxDxIH4fw+/xchSlf
-         uVisrnwJkH7asa+TmzyNAnA098Lz5WGfP5TtpRl55rXrHPOxKjkjfbMHkLrGDxS2F/QW
-         0Fvkl7MYCfVafx/Nj7DPhUnBDEfBhn9gHlFMcLqmVw3kg4LQs05UBUGbnA8XYxlpDwc+
-         xJA47KsNOc3EFqpS6DME6UoTdFNRuN4Di3N1NJlvTZbFCoR68CHfoSRPzcimjVxXsrpa
-         T+zA==
+        bh=gTJiVQesou1SgmF7llvKQyMv+UdaLm0f7p83u13+5xg=;
+        b=1wEQWwA1pT2jGY0r7ydRYYJYo3V9/IHs7e9LWlLMS8rqAIlHAy3gLDGdi9lrycSGtu
+         kpzHYZAx47OXFAz2Hbyg14x2k+M0yMr0b4uMoPEX05dfQpUORe1SXIj4IzeZG5GDe8UZ
+         8PFbNrU0z3u8nYBMJDaLPONQrTSA9TE9raToi4W0eh0cckJtVQsdD0hZJpZbsOZhIW+Z
+         z+He6VNaEXeiiUEXCdYwiwbvg7nE+1yGeZhs7c+VuSDCTi06q/WKoioCfNytNcdrj/IF
+         yiqH6K3sk1shOUigIhNCaMQlG7VWam1yHEQmhSJ8uj142nj1xzERbsz+HzJFaJGKPhbp
+         RzbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689192000; x=1691784000;
+        d=1e100.net; s=20221208; t=1689192051; x=1691784051;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BZWsn10ms8/KyUVvyBQaw1fP00pVGmdzjm0GtqTpp8w=;
-        b=W0MVoXVzrSNUQXkYjrm9f5gX75SpQhN79lYAZhO9D4MdrFyXF0szkxDrACbFIx11eo
-         P4kXolrjykcQfIz9J9HDS6d2guHl5qJcDGz24BaTDWz3wdvV79Bna3JWRSH7kgRH4U6Q
-         t9CSAxXC6A8RObfrZvB66J9u9UhGQAeNC3RamnCpTNaNhTeVWbBRsR/hcMs2su+i5Spz
-         BWTc/eOmCkBz49ydvHqABZMGcxv/aQhvt6ZD3iFcRu3rbqg1afugqd1TtCFHshBJsMmu
-         TSCa4pWF857ghAvhgwACQrPx9YhYj76kwIgR3uOgkvg/r6INFWpFHZ35ADWSqgnI1G9K
-         dtEg==
-X-Gm-Message-State: ABy/qLY/I6z4jiINFlvwmL5sIOjbXJ9Y3bLzvmwEOuNPGgXTETpyqOKV
-        TH+b4RR3PU7TqEjKV3F8ByBr7JcJ0795KeInNpMu6Q==
-X-Google-Smtp-Source: APBJJlF9Ojs6VjU+N27lAb9ArLwGqCR0gUGwIq/k2ipwhW0+gkaLA081VvdviLE35rAMEaLJ8VUEE8Aj+StkILNOzGs=
-X-Received: by 2002:a25:c541:0:b0:c75:593f:d4ab with SMTP id
- v62-20020a25c541000000b00c75593fd4abmr3790697ybe.22.1689191999748; Wed, 12
- Jul 2023 12:59:59 -0700 (PDT)
+        bh=gTJiVQesou1SgmF7llvKQyMv+UdaLm0f7p83u13+5xg=;
+        b=jeVV4Ii1i0dA27uHNv/JChXBNECFIPybfwEmI00STYCva3yvYFCrV/zus2O12s3099
+         3sa7GHb31g3027vGRKQoI29kEgMg/38ZzhMxwkIZbVmoT7iFU9XxO8VtSzfOt/jdEyn3
+         dtZXCVpvNvAZgXy+amRvDltrDg6qyQ82mG2rGqrswYxXKpejhLOsl3dcCQHccOu/E5TU
+         7csLoMAAte6ZqAuRc39SLN4+/aQ/TNRjUhI0Rp9uRMpBWtg2sA9ZA+nVd+zABcoX71/x
+         zWYD4VRUYSqfmk1DdQxIi7PnJ951rzsCgvqp5pegcDU4jwhBKtNO5dGa5oY3iJPMLC6V
+         v62A==
+X-Gm-Message-State: ABy/qLbu7xmxAcGbgPQyF70JXMUw0e/cqo/JzJOkYRUz293eW2IGnDL3
+        AJtYrvUa234LRtHKTidfO0UE8Px91u1ILrLpoCNG+Q==
+X-Google-Smtp-Source: APBJJlH29LWXVQfDA//ZifgMVnhAvikiS3IILs0UlpGo8FjXZuugWhPwijyqz1ggKx7dcrqXF8BQvMC6CdDB/MFmYnY=
+X-Received: by 2002:a25:5f06:0:b0:cab:4a58:2535 with SMTP id
+ t6-20020a255f06000000b00cab4a582535mr1307273ybb.17.1689192051154; Wed, 12 Jul
+ 2023 13:00:51 -0700 (PDT)
 MIME-Version: 1.0
-References: <0000000000002db68f05ffb791bc@google.com> <0000000000005b75ce05ffbd34bc@google.com>
- <CAJuCfpFGVvtK61Cgd0pN9GRRaw7kRcEUVSG3kceQxtNtPoeaGA@mail.gmail.com>
-In-Reply-To: <CAJuCfpFGVvtK61Cgd0pN9GRRaw7kRcEUVSG3kceQxtNtPoeaGA@mail.gmail.com>
+References: <20230712195652.969194-1-surenb@google.com>
+In-Reply-To: <20230712195652.969194-1-surenb@google.com>
 From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Wed, 12 Jul 2023 12:59:48 -0700
-Message-ID: <CAJuCfpHPdA8RpBb5sFFnX7uiZO72cp3VqmaHmhSZCFX0GjO4oQ@mail.gmail.com>
-Subject: Re: [syzbot] [fs?] WARNING in handle_userfault
-To:     syzbot <syzbot+339b02f826caafd5f7a8@syzkaller.appspotmail.com>
-Cc:     brauner@kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        viro@zeniv.linux.org.uk
+Date:   Wed, 12 Jul 2023 13:00:40 -0700
+Message-ID: <CAJuCfpEX2fpHpJYzgBp8-3nbySUo758wuKt_fqUrs6_eM75LbA@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mm: fix a lockdep issue in vma_assert_write_locked
+To:     akpm@linux-foundation.org
+Cc:     Liam.Howlett@oracle.com, linux-mm@kvack.org, willy@infradead.org,
+        ldufour@linux.ibm.com, michel@lespinasse.org, jglisse@google.com,
+        vbabka@suse.cz, paulmck@kernel.org, brauner@kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+339b02f826caafd5f7a8@syzkaller.appspotmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 8:17=E2=80=AFAM Suren Baghdasaryan <surenb@google.c=
-om> wrote:
+On Wed, Jul 12, 2023 at 12:56=E2=80=AFPM Suren Baghdasaryan <surenb@google.=
+com> wrote:
 >
-> On Wed, Jul 5, 2023 at 6:16=E2=80=AFAM syzbot
-> <syzbot+339b02f826caafd5f7a8@syzkaller.appspotmail.com> wrote:
-> >
-> > syzbot has found a reproducer for the following issue on:
-> >
-> > HEAD commit:    e1f6a8eaf1c2 Add linux-next specific files for 20230705
-> > git tree:       linux-next
-> > console+strace: https://syzkaller.appspot.com/x/log.txt?x=3D13ec5228a80=
-000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D347a3e7e531=
-c1809
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=3D339b02f826caa=
-fd5f7a8
-> > compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binu=
-tils for Debian) 2.35.2
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D1716aeaca=
-80000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D12e882e2a80=
-000
-> >
-> > Downloadable assets:
-> > disk image: https://storage.googleapis.com/syzbot-assets/2d0435d8ff5d/d=
-isk-e1f6a8ea.raw.xz
-> > vmlinux: https://storage.googleapis.com/syzbot-assets/d28b2df82094/vmli=
-nux-e1f6a8ea.xz
-> > kernel image: https://storage.googleapis.com/syzbot-assets/fb4e5bfa0a0f=
-/bzImage-e1f6a8ea.xz
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the co=
-mmit:
-> > Reported-by: syzbot+339b02f826caafd5f7a8@syzkaller.appspotmail.com
-> >
-> > kvm_intel: L1TF CPU bug present and SMT on, data leak possible. See CVE=
--2018-3646 and https://www.kernel.org/doc/html/latest/admin-guide/hw-vuln/l=
-1tf.html for details.
-> > ------------[ cut here ]------------
-> > WARNING: CPU: 0 PID: 5028 at include/linux/mmap_lock.h:71 mmap_assert_w=
-rite_locked include/linux/mmap_lock.h:71 [inline]
-> > WARNING: CPU: 0 PID: 5028 at include/linux/mmap_lock.h:71 __is_vma_writ=
-e_locked include/linux/mm.h:712 [inline]
-> > WARNING: CPU: 0 PID: 5028 at include/linux/mmap_lock.h:71 vma_assert_lo=
-cked include/linux/mm.h:753 [inline]
-> > WARNING: CPU: 0 PID: 5028 at include/linux/mmap_lock.h:71 assert_fault_=
-locked include/linux/mm.h:786 [inline]
-> > WARNING: CPU: 0 PID: 5028 at include/linux/mmap_lock.h:71 handle_userfa=
-ult+0x149b/0x27a0 fs/userfaultfd.c:440
-> > Modules linked in:
-> > CPU: 0 PID: 5028 Comm: syz-executor359 Not tainted 6.4.0-next-20230705-=
-syzkaller #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS=
- Google 05/27/2023
-> > RIP: 0010:mmap_assert_write_locked include/linux/mmap_lock.h:71 [inline=
-]
-> > RIP: 0010:__is_vma_write_locked include/linux/mm.h:712 [inline]
-> > RIP: 0010:vma_assert_locked include/linux/mm.h:753 [inline]
-> > RIP: 0010:assert_fault_locked include/linux/mm.h:786 [inline]
-> > RIP: 0010:handle_userfault+0x149b/0x27a0 fs/userfaultfd.c:440
-> > Code: ff 49 8d bc 24 a0 01 00 00 31 f6 e8 2f b9 23 08 31 ff 41 89 c5 89=
- c6 e8 c3 a2 87 ff 45 85 ed 0f 85 83 ed ff ff e8 95 a6 87 ff <0f> 0b e9 77 =
-ed ff ff e8 89 a6 87 ff 49 8d bc 24 a0 01 00 00 be ff
-> > RSP: 0000:ffffc90003a4fb68 EFLAGS: 00010293
-> > RAX: 0000000000000000 RBX: ffffc90003a4fd88 RCX: 0000000000000000
-> > RDX: ffff8880133bbb80 RSI: ffffffff81fd6ddb RDI: 0000000000000005
-> > RBP: 0000000000000200 R08: 0000000000000005 R09: 0000000000000000
-> > R10: 0000000000000000 R11: 0000000000000001 R12: ffff88807d8e4280
-> > R13: 0000000000000000 R14: ffff888021cb9110 R15: ffff888021cb9100
-> > FS:  000055555738f300(0000) GS:ffff8880b9800000(0000) knlGS:00000000000=
-00000
-> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: 0000000020b7d800 CR3: 0000000029d0e000 CR4: 00000000003526f0
-> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > Call Trace:
-> >  <TASK>
-> >  do_anonymous_page mm/memory.c:4151 [inline]
-> >  do_pte_missing mm/memory.c:3671 [inline]
-> >  handle_pte_fault mm/memory.c:4949 [inline]
-> >  __handle_mm_fault+0x35ff/0x3cc0 mm/memory.c:5089
-> >  handle_mm_fault+0x3c2/0xa20 mm/memory.c:5254
-> >  do_user_addr_fault+0x2ed/0x13a0 arch/x86/mm/fault.c:1365
-> >  handle_page_fault arch/x86/mm/fault.c:1509 [inline]
-> >  exc_page_fault+0x98/0x170 arch/x86/mm/fault.c:1565
-> >  asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:570
-> > RIP: 0033:0x7faa694e34d5
-> > Code: 52 89 c2 01 f6 29 f2 83 fa 05 0f 87 0a 02 00 00 48 63 14 97 48 01=
- fa ff e2 0f 1f 40 00 4c 89 d2 66 c1 e9 03 83 c0 01 0f b7 c9 <48> 89 14 cd =
-00 d8 b7 20 83 f8 20 75 b6 48 8b 84 24 f0 00 00 00 f3
-> > RSP: 002b:00007ffefcb0d8e0 EFLAGS: 00010202
-> > RAX: 0000000000000001 RBX: 0000000000000000 RCX: 0000000000000000
-> > RDX: 0000860000109120 RSI: 0000000000000000 RDI: 00007faa69564020
-> > RBP: 0000000000000006 R08: 0000830000789120 R09: 00000000aaaaaaab
-> > R10: 0000870000109120 R11: 00008f0000309120 R12: 00008b0000889120
-> > R13: 0000000000000000 R14: 00008e0000309120 R15: 00007ffefcb0de40
-> >  </TASK>
-> >
+> __is_vma_write_locked() can be used only when mmap_lock is write-locked
+> to guarantee vm_lock_seq and mm_lock_seq stability during the check.
+> Therefore it asserts this condition before further checks. Because of
+> that it can't be used unless the user expects the mmap_lock to be
+> write-locked. vma_assert_locked() can't assume this before ensuring
+> that VMA is not read-locked.
+> Change the order of the checks in vma_assert_locked() to check if the
+> VMA is read-locked first and only then assert if it's not write-locked.
 >
-> Sorry, this is my code. Missed that __is_vma_write_locked() generates
-> assertion. Will post a fix shortly.
+> Fixes: 50b88b63e3e4 ("mm: handle userfaults under VMA lock")
+> Reported-by: Liam R. Howlett <liam.howlett@oracle.com>
+> Closes: https://lore.kernel.org/all/20230712022620.3yytbdh24b7i4zrn@revol=
+ver/
+> Reported-by: syzbot+339b02f826caafd5f7a8@syzkaller.appspotmail.com
+> Closes: https://lore.kernel.org/all/0000000000002db68f05ffb791bc@google.c=
+om/
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
 
-Fix is posted at
-https://lore.kernel.org/all/20230712195652.969194-1-surenb@google.com/
+Should have mentioned that this patch is for mm-unstable.
 
+> ---
+>  include/linux/mm.h | 16 ++++++----------
+>  1 file changed, 6 insertions(+), 10 deletions(-)
 >
-> >
-> > ---
-> > If you want syzbot to run the reproducer, reply with:
-> > #syz test: git://repo/address.git branch-or-commit-hash
-> > If you attach or paste a git patch, syzbot will apply it before testing=
-.
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index 9687b48dfb1b..e3b022a66343 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -668,6 +668,7 @@ static inline void vma_end_read(struct vm_area_struct=
+ *vma)
+>         rcu_read_unlock();
+>  }
+>
+> +/* WARNING! Can only be used if mmap_lock is expected to be write-locked=
+ */
+>  static bool __is_vma_write_locked(struct vm_area_struct *vma, int *mm_lo=
+ck_seq)
+>  {
+>         mmap_assert_write_locked(vma->vm_mm);
+> @@ -707,22 +708,17 @@ static inline bool vma_try_start_write(struct vm_ar=
+ea_struct *vma)
+>         return true;
+>  }
+>
+> -static inline void vma_assert_locked(struct vm_area_struct *vma)
+> +static inline void vma_assert_write_locked(struct vm_area_struct *vma)
+>  {
+>         int mm_lock_seq;
+>
+> -       if (__is_vma_write_locked(vma, &mm_lock_seq))
+> -               return;
+> -
+> -       lockdep_assert_held(&vma->vm_lock->lock);
+> -       VM_BUG_ON_VMA(!rwsem_is_locked(&vma->vm_lock->lock), vma);
+> +       VM_BUG_ON_VMA(!__is_vma_write_locked(vma, &mm_lock_seq), vma);
+>  }
+>
+> -static inline void vma_assert_write_locked(struct vm_area_struct *vma)
+> +static inline void vma_assert_locked(struct vm_area_struct *vma)
+>  {
+> -       int mm_lock_seq;
+> -
+> -       VM_BUG_ON_VMA(!__is_vma_write_locked(vma, &mm_lock_seq), vma);
+> +       if (!rwsem_is_locked(&vma->vm_lock->lock))
+> +               vma_assert_write_locked(vma);
+>  }
+>
+>  static inline void vma_mark_detached(struct vm_area_struct *vma, bool de=
+tached)
+> --
+> 2.41.0.455.g037347b96a-goog
+>
