@@ -2,400 +2,774 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E145F75137A
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 00:17:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33BA775137B
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 00:18:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232565AbjGLWRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 18:17:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35488 "EHLO
+        id S232599AbjGLWSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 18:18:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232234AbjGLWRV (ORCPT
+        with ESMTP id S232802AbjGLWSC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 18:17:21 -0400
-Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DB511FE4
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 15:17:02 -0700 (PDT)
-Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-40292285362so858211cf.3
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 15:17:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689200221; x=1691792221;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3/Xv2apMfa6m8F+1/kXfhmuiQkDcgshUcqNdJeVSfv8=;
-        b=ctoNxSlnuMeAlmW0du/Oboz9TQ2C4vEHXwqU8cMR6Jnu4lMkWQXZs873YK12MAGps2
-         gE9ufMfhSDxECroz3QTKpitQ8svWbRSA3SK2vp6URW/D5jniTlMfRBGzf17XDL57WG2F
-         oFXoSw294rdyQkiddhohBuU8YQ15UeOT2xodDGztK74hzJnN/6cjRmZMauUCEFG24pXs
-         k/PF3SGWbNTM1h8Fm4tk5MB2t9vJ19deobUPrFLIZwM5MUYbZSYbLSiSL9/vHMECu+A3
-         Fa5ifm0Z2pCAaLBoL+CbviAhmC5Ue7Zn7n8iSavQrz61o8dFootXrx6OwlriDlx3pRSV
-         Qc+g==
-X-Gm-Message-State: ABy/qLa5q6NjT818jDIgufa6sL6hsRHq3OQAHtSUb6CYJlLl/JmoUEgr
-        eETUcx7oHfa9JqWIzNbZDgc=
-X-Google-Smtp-Source: APBJJlETXtC9x+ZkMcT926GyJA66qoQEbqq8RVD8Z9jYh/Xj8lDa8zeJmPtvHJyyjDjPEq6NE9Nz7w==
-X-Received: by 2002:ac8:5ccf:0:b0:403:b02b:d4ed with SMTP id s15-20020ac85ccf000000b00403b02bd4edmr10064455qta.66.1689200220694;
-        Wed, 12 Jul 2023 15:17:00 -0700 (PDT)
-Received: from maniforge ([24.1.27.177])
-        by smtp.gmail.com with ESMTPSA id f10-20020ac8068a000000b004036ec58b11sm2567949qth.84.2023.07.12.15.16.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Jul 2023 15:17:00 -0700 (PDT)
-Date:   Wed, 12 Jul 2023 17:16:57 -0500
-From:   David Vernet <void@manifault.com>
-To:     Abel Wu <wuyun.abel@bytedance.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, gautham.shenoy@amd.com,
-        kprateek.nayak@amd.com, aaron.lu@intel.com, clm@meta.com,
-        tj@kernel.org, roman.gushchin@linux.dev, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 5/7] sched: Implement shared runqueue in CFS
-Message-ID: <20230712221657.GF12207@maniforge>
-References: <20230710200342.358255-1-void@manifault.com>
- <20230710200342.358255-6-void@manifault.com>
- <93260dd9-818a-7f98-e030-635e0dc8cad8@bytedance.com>
+        Wed, 12 Jul 2023 18:18:02 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FAF41BEC
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 15:17:45 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 26DE86194C
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 22:17:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76549C433C7;
+        Wed, 12 Jul 2023 22:17:43 +0000 (UTC)
+Date:   Wed, 12 Jul 2023 18:17:40 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Beau Belgrave <beaub@linux.microsoft.com>,
+        Florent Revest <revest@chromium.org>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Zheng Yejian <zhengyejian1@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Subject: [GIT PULL] tracing: Fixes for v6.5-rc1
+Message-ID: <20230712181740.7c5fb0c8@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <93260dd9-818a-7f98-e030-635e0dc8cad8@bytedance.com>
-User-Agent: Mutt/2.2.10 (2023-03-25)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 06:47:26PM +0800, Abel Wu wrote:
-> Hi David, interesting patch!
 
-Hi Abel,
+Linus,
 
-Thanks for the helpful review!
+Tracing fixes and clean ups:
 
-> On 7/11/23 4:03 AM, David Vernet wrote:
-> > 
-> > diff --git a/include/linux/sched.h b/include/linux/sched.h
-> > index 1292d38d66cc..5c05a3da3d50 100644
-> > --- a/include/linux/sched.h
-> > +++ b/include/linux/sched.h
-> > @@ -770,6 +770,8 @@ struct task_struct {
-> >   	unsigned long			wakee_flip_decay_ts;
-> >   	struct task_struct		*last_wakee;
-> > +	struct list_head		shared_runq_node;
-> > +
-> >   	/*
-> >   	 * recent_used_cpu is initially set as the last CPU used by a task
-> >   	 * that wakes affine another task. Waker/wakee relationships can
-> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > index 1451f5aa82ac..3ad437d4ea3d 100644
-> > --- a/kernel/sched/core.c
-> > +++ b/kernel/sched/core.c
-> > @@ -4503,6 +4503,7 @@ static void __sched_fork(unsigned long clone_flags, struct task_struct *p)
-> >   #ifdef CONFIG_SMP
-> >   	p->wake_entry.u_flags = CSD_TYPE_TTWU;
-> >   	p->migration_pending = NULL;
-> > +	INIT_LIST_HEAD(&p->shared_runq_node);
-> >   #endif
-> >   	init_sched_mm_cid(p);
-> >   }
-> > @@ -9842,6 +9843,7 @@ void __init sched_init_smp(void)
-> >   	init_sched_rt_class();
-> >   	init_sched_dl_class();
-> > +	init_sched_fair_class_late();
-> >   	sched_smp_initialized = true;
-> >   }
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index f7967be7646c..ff2491387201 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -139,18 +139,163 @@ static int __init setup_sched_thermal_decay_shift(char *str)
-> >   }
-> >   __setup("sched_thermal_decay_shift=", setup_sched_thermal_decay_shift);
-> > +/**
-> > + * struct shared_runq - Per-LLC queue structure for enqueuing and pulling
-> > + * waking tasks.
-> > + *
-> > + * WHAT
-> > + * ====
-> > + *
-> > + * This structure enables the scheduler to be more aggressively work
-> > + * conserving, by placing waking tasks on a per-LLC FIFO queue that can then be
-> > + * pulled from when another core in the LLC is going to go idle.
-> > + *
-> > + * struct rq stores a pointer to its LLC's shared_runq via struct cfs_rq.
-> > + * Waking tasks are enqueued in a shared_runq at the end of
-> > + * enqueue_task_fair(), and are opportunistically pulled from the shared_runq
-> > + * in newidle_balance(). Tasks enqueued in a shared_runq may be scheduled prior
-> > + * to being pulled from the shared_runq, in which case they're simply dequeued
-> > + * from the shared_runq. A waking task is only enqueued to a shared_runq when
-> > + * it was _not_ manually migrated to the current runqueue by
-> > + * select_task_rq_fair().
-> > + *
-> > + * There is currently no task-stealing between shared_runqs in different LLCs,
-> > + * which means that shared_runq is not fully work conserving. This could be
-> > + * added at a later time, with tasks likely only being stolen across
-> > + * shared_runqs on the same NUMA node to avoid violating NUMA affinities.
-> > + *
-> > + * HOW
-> > + * ===
-> > + *
-> > + * An shared_runq is comprised of a list, and a spinlock for synchronization.
-> > + * Given that the critical section for a shared_runq is typically a fast list
-> > + * operation, and that the shared_runq is localized to a single LLC, the
-> > + * spinlock will typically only be contended on workloads that do little else
-> > + * other than hammer the runqueue.
-> 
-> Would there be scalability issues on large LLCs?
+- Fix some missing-prototype warnings
 
-See the next patch in the series [0] where we shard the per-LLC shared
-runqueues to avoid contention.
+- Fix user events struct args (did not include size of struct)
+  When creating a user event, the "struct" keyword is to denote
+  that the size of the field will be passed in. But the parsing
+  failed to handle this case.
 
-[0]: https://lore.kernel.org/lkml/20230710200342.358255-7-void@manifault.com/
+- Add selftest to struct sizes for user events
 
-> 
-> > + *
-> > + * WHY
-> > + * ===
-> > + *
-> > + * As mentioned above, the main benefit of shared_runq is that it enables more
-> > + * aggressive work conservation in the scheduler. This can benefit workloads
-> > + * that benefit more from CPU utilization than from L1/L2 cache locality.
-> > + *
-> > + * shared_runqs are segmented across LLCs both to avoid contention on the
-> > + * shared_runq spinlock by minimizing the number of CPUs that could contend on
-> > + * it, as well as to strike a balance between work conservation, and L3 cache
-> > + * locality.
-> > + */
-> > +struct shared_runq {
-> > +	struct list_head list;
-> > +	spinlock_t lock;
-> > +} ____cacheline_aligned;
-> > +
-> >   #ifdef CONFIG_SMP
-> > +static struct shared_runq *rq_shared_runq(struct rq *rq)
-> > +{
-> > +	return rq->cfs.shared_runq;
-> > +}
-> > +
-> > +static struct task_struct *shared_runq_pop_task(struct rq *rq)
-> > +{
-> > +	unsigned long flags;
-> > +	struct task_struct *p;
-> > +	struct shared_runq *shared_runq;
-> > +
-> > +	shared_runq = rq_shared_runq(rq);
-> > +	if (list_empty(&shared_runq->list))
-> > +		return NULL;
-> > +
-> > +	spin_lock_irqsave(&shared_runq->lock, flags);
-> > +	p = list_first_entry_or_null(&shared_runq->list, struct task_struct,
-> > +				     shared_runq_node);
-> > +	if (p && is_cpu_allowed(p, cpu_of(rq)))
-> > +		list_del_init(&p->shared_runq_node);
-> > +	else
-> > +		p = NULL;
-> > +	spin_unlock_irqrestore(&shared_runq->lock, flags);
-> > +
-> > +	return p;
-> > +}
-> > +
-> > +static void shared_runq_push_task(struct rq *rq, struct task_struct *p)
-> > +{
-> > +	unsigned long flags;
-> > +	struct shared_runq *shared_runq;
-> > +
-> > +	shared_runq = rq_shared_runq(rq);
-> > +	spin_lock_irqsave(&shared_runq->lock, flags);
-> > +	list_add_tail(&p->shared_runq_node, &shared_runq->list);
-> > +	spin_unlock_irqrestore(&shared_runq->lock, flags);
-> > +}
-> > +
-> >   static void shared_runq_enqueue_task(struct rq *rq, struct task_struct *p,
-> >   				     int enq_flags)
-> > -{}
-> > +{
-> > +	bool task_migrated = enq_flags & ENQUEUE_MIGRATED;
-> > +	bool task_wakeup = enq_flags & ENQUEUE_WAKEUP;
-> > +
-> > +	/*
-> > +	 * Only enqueue the task in the shared runqueue if:
-> > +	 *
-> > +	 * - SWQUEUE is enabled
-> > +	 * - The task is on the wakeup path
-> > +	 * - The task wasn't purposefully migrated to the current rq by
-> > +	 *   select_task_rq()
-> > +	 * - The task isn't pinned to a specific CPU
-> > +	 */
-> > +	if (!task_wakeup || task_migrated || p->nr_cpus_allowed == 1)
-> > +		return;
-> > +
-> > +	shared_runq_push_task(rq, p);
-> > +}
-> >   static int shared_runq_pick_next_task(struct rq *rq, struct rq_flags *rf)
-> >   {
-> > -	return 0;
-> > +	struct task_struct *p = NULL;
-> > +	struct rq *src_rq;
-> > +	struct rq_flags src_rf;
-> > +	int ret;
-> > +
-> > +	p = shared_runq_pop_task(rq);
-> > +	if (!p)
-> > +		return 0;
-> > +
-> > +	rq_unpin_lock(rq, rf);
-> > +	raw_spin_rq_unlock(rq);
-> 
-> It would be better use the rq_unlock(rq, rf) for simplicity.
-> But it's absolutely OK if you want to keep as it is to be
-> correspond with the below lock&repin part :)
+- Fix sample code for direct trampolines.
+  The sample code for direct trampolines attached to handle_mm_fault().
+  But the prototype changed and the direct trampoline sample code
+  was not updated. Direct trampolines needs to have the arguments correct
+  otherwise it can fail or crash the system.
 
-Yeah, personally I'd prefer to keep the style the consistent between
-here and below.
+- Remove unused ftrace_regs_caller_ret() prototype.
 
-> > +
-> > +	src_rq = task_rq_lock(p, &src_rf);
-> > +
-> > +	if (task_on_rq_queued(p) && !task_on_cpu(rq, p)) {
-> 
-> IMHO it should be:
-> 
-> 	if (task_on_rq_queued(p) && !task_on_cpu(src_rq, p)) {
+- Quiet false positive of FORTIFY_SOURCE
+  Due to backward compatibility, the structure used to save stack traces
+  in the kernel had a fixed size of 8. This structure is exported to
+  user space via the tracing format file. A change was made to allow
+  more than 8 functions to be recorded, and user space now uses the
+  size field to know how many functions are actually in the stack.
+  But the structure still has size of 8 (even though it points into
+  the ring buffer that has the required amount allocated to hold a
+  full stack. This was fine until the fortifier noticed that the
+  memcpy(&entry->caller, stack, size) was greater than the 8 functions
+  and would complain at runtime about it. Hide this by using a pointer
+  to the stack location on the ring buffer instead of using the address
+  of the entry structure caller field.
 
-Agreed, will change in v3.
+- Fix a deadloop in reading trace_pipe that was caused by a mismatch
+  between ring_buffer_empty() returning false which then asked to
+  read the data, but the read code uses rb_num_of_entries() that
+  returned zero, and causing a infinite "retry".
 
-> > +		update_rq_clock(src_rq);
-> > +		src_rq = move_queued_task(src_rq, &src_rf, p, cpu_of(rq));
-> > +	}
-> > +
-> > +	if (src_rq->cpu != rq->cpu)
-> 
-> Why not just 'if (src_rq != rq)'?
+- Fix a warning caused by not using all pages allocated to store
+  ftrace functions, where this can happen if the linker inserts a bunch of
+  "NULL" entries, causing the accounting of how many pages needed
+  to be off.
 
-Ack, will change.
 
-> 
-> > +		ret = 1;
-> > +	else
-> > +		ret = -1;
-> 
-> What about making @ret default to -1 and changing to 1 right
-> after move_queued_task()? Both for better readability and align
-> with the behavior of newidle_balance().
+Please pull the latest trace-v6.5-rc1 tree, which can be found at:
 
-Yep. This aligns with Gautham's suggestion in [1] as well. Will combine
-your input for v3.
 
-[1]: https://lore.kernel.org/lkml/ZK5BdysC0lxKQ%2FgE@BLR-5CG11610CF.amd.com/
+  git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
+trace-v6.5-rc1
 
-> 
-> > +
-> > +	task_rq_unlock(src_rq, p, &src_rf);
-> > +
-> > +	raw_spin_rq_lock(rq);
-> > +	rq_repin_lock(rq, rf);
-> 
-> By making it looks more ugly, we can save some cycles..
-> 
-> 	if (src_rq != rq) {
-> 		task_rq_unlock(src_rq, p, &src_rf);
-> 	} else {
-> 		rq_unpin_lock(src_rq, src_rf);
-> 		raw_spin_unlock_irqrestore(&p->pi_lock, src_rf.flags);
-> 		rq_repin_lock(rq, rf);
-> 	}
+Tag SHA1: eb30dc43a7f5fb905bcaf40e7b5c581b78f77443
+Head SHA1: bec3c25c247c4f88a33d79675a09e1644c9a3114
 
-I like it. Thanks for the suggestion. I'll apply for v3.
 
-> > +
-> > +	return ret;
-> >   }
-> >   static void shared_runq_dequeue_task(struct task_struct *p)
-> > -{}
-> > +{
-> > +	unsigned long flags;
-> > +	struct shared_runq *shared_runq;
-> > +
-> > +	if (!list_empty(&p->shared_runq_node)) {
-> > +		shared_runq = rq_shared_runq(task_rq(p));
-> > +		spin_lock_irqsave(&shared_runq->lock, flags);
-> > +		list_del_init(&p->shared_runq_node);
-> > +		spin_unlock_irqrestore(&shared_runq->lock, flags);
-> > +	}
-> > +}
-> >   /*
-> >    * For asym packing, by default the lower numbered CPU has higher priority.
-> > @@ -12854,3 +12999,34 @@ __init void init_sched_fair_class(void)
-> >   #endif /* SMP */
-> >   }
-> > +
-> > +__init void init_sched_fair_class_late(void)
-> > +{
-> > +#ifdef CONFIG_SMP
-> > +	int i;
-> > +	struct shared_runq *shared_runq;
-> > +	struct rq *rq;
-> > +	struct rq *llc_rq;
-> > +
-> > +	for_each_possible_cpu(i) {
-> > +		if (per_cpu(sd_llc_id, i) == i) {
-> > +			llc_rq = cpu_rq(i);
-> > +
-> > +			shared_runq = kzalloc_node(sizeof(struct shared_runq),
-> > +					       GFP_KERNEL, cpu_to_node(i));
-> > +			INIT_LIST_HEAD(&shared_runq->list);
-> > +			spin_lock_init(&shared_runq->lock);
-> > +			llc_rq->cfs.shared_runq = shared_runq;
-> > +		}
-> > +	}
-> > +
-> > +	for_each_possible_cpu(i) {
-> > +		rq = cpu_rq(i);
-> > +		llc_rq = cpu_rq(per_cpu(sd_llc_id, i));
-> > +
-> > +		if (rq == llc_rq)
-> > +			continue;
-> > +		rq->cfs.shared_runq = llc_rq->cfs.shared_runq;
-> > +	}
-> > +#endif /* SMP */
-> > +}
-> > diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> > index 187ad5da5ef6..8b573dfaba33 100644
-> > --- a/kernel/sched/sched.h
-> > +++ b/kernel/sched/sched.h
-> > @@ -576,6 +576,7 @@ struct cfs_rq {
-> >   #endif
-> >   #ifdef CONFIG_SMP
-> > +	struct shared_runq	*shared_runq;
-> 
-> I would suggest moving shared_runq into shared LLC sched domain,
-> which is pointed by sd_llc_shared, as you might finally put the
-> retrieval of shared_runq under RCU critical sections to handle
-> domain re-building cases.
+Arnd Bergmann (1):
+      tracing: arm64: Avoid missing-prototype warnings
 
-Yep, I have plans to take add support for domain re-building in v3.
-I'll see whether it makes sense to put them into the shared LLC sched
-domain, but at first glance it seems like a sane choice.
+Beau Belgrave (2):
+      tracing/user_events: Fix struct arg size match check
+      selftests/user_events: Test struct size match cases
 
-> 
-> Best Regards,
-> 	Abel
+Florent Revest (2):
+      samples: ftrace: Save required argument registers in sample trampolines
+      arm64: ftrace: Add direct call trampoline samples support
 
-Thanks for the review.
+Steven Rostedt (Google) (1):
+      tracing: Stop FORTIFY_SOURCE complaining about stack trace caller
 
-- David
+YueHaibing (1):
+      x86/ftrace: Remove unsued extern declaration ftrace_regs_caller_ret()
 
-> 
-> >   	/*
-> >   	 * CFS load tracking
-> >   	 */
-> > @@ -2440,6 +2441,7 @@ extern void update_max_interval(void);
-> >   extern void init_sched_dl_class(void);
-> >   extern void init_sched_rt_class(void);
-> >   extern void init_sched_fair_class(void);
-> > +extern void init_sched_fair_class_late(void);
-> >   extern void reweight_task(struct task_struct *p, int prio);
+Zheng Yejian (2):
+      ring-buffer: Fix deadloop issue on reading trace_pipe
+      ftrace: Fix possible warning on checking all pages used in ftrace_process_locs()
+
+----
+ arch/arm64/Kconfig                             |  2 ++
+ arch/arm64/include/asm/ftrace.h                |  4 +++
+ arch/arm64/include/asm/syscall.h               |  3 ++
+ arch/arm64/kernel/syscall.c                    |  3 --
+ arch/x86/kernel/ftrace.c                       |  1 -
+ include/linux/ftrace.h                         |  9 ++++++
+ kernel/trace/fgraph.c                          |  1 +
+ kernel/trace/ftrace.c                          | 45 ++++++++++++++++++--------
+ kernel/trace/ftrace_internal.h                 |  5 +--
+ kernel/trace/ring_buffer.c                     | 24 ++++++++------
+ kernel/trace/trace.c                           | 21 ++++++++++--
+ kernel/trace/trace_events_user.c               |  3 ++
+ kernel/trace/trace_kprobe_selftest.c           |  3 ++
+ samples/ftrace/ftrace-direct-modify.c          | 34 +++++++++++++++++++
+ samples/ftrace/ftrace-direct-multi-modify.c    | 40 +++++++++++++++++++++++
+ samples/ftrace/ftrace-direct-multi.c           | 25 ++++++++++++++
+ samples/ftrace/ftrace-direct-too.c             | 40 +++++++++++++++++++----
+ samples/ftrace/ftrace-direct.c                 | 24 ++++++++++++++
+ tools/testing/selftests/user_events/dyn_test.c | 12 +++++++
+ 19 files changed, 262 insertions(+), 37 deletions(-)
+---------------------------
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index 7856c3a3e35a..a2511b30d0f6 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -197,6 +197,8 @@ config ARM64
+ 		    !CC_OPTIMIZE_FOR_SIZE)
+ 	select FTRACE_MCOUNT_USE_PATCHABLE_FUNCTION_ENTRY \
+ 		if DYNAMIC_FTRACE_WITH_ARGS
++	select HAVE_SAMPLE_FTRACE_DIRECT
++	select HAVE_SAMPLE_FTRACE_DIRECT_MULTI
+ 	select HAVE_EFFICIENT_UNALIGNED_ACCESS
+ 	select HAVE_FAST_GUP
+ 	select HAVE_FTRACE_MCOUNT_RECORD
+diff --git a/arch/arm64/include/asm/ftrace.h b/arch/arm64/include/asm/ftrace.h
+index 21ac1c5c71d3..ab158196480c 100644
+--- a/arch/arm64/include/asm/ftrace.h
++++ b/arch/arm64/include/asm/ftrace.h
+@@ -211,6 +211,10 @@ static inline unsigned long fgraph_ret_regs_frame_pointer(struct fgraph_ret_regs
+ {
+ 	return ret_regs->fp;
+ }
++
++void prepare_ftrace_return(unsigned long self_addr, unsigned long *parent,
++			   unsigned long frame_pointer);
++
+ #endif /* ifdef CONFIG_FUNCTION_GRAPH_TRACER  */
+ #endif
+ 
+diff --git a/arch/arm64/include/asm/syscall.h b/arch/arm64/include/asm/syscall.h
+index 4cfe9b49709b..ab8e14b96f68 100644
+--- a/arch/arm64/include/asm/syscall.h
++++ b/arch/arm64/include/asm/syscall.h
+@@ -85,4 +85,7 @@ static inline int syscall_get_arch(struct task_struct *task)
+ 	return AUDIT_ARCH_AARCH64;
+ }
+ 
++int syscall_trace_enter(struct pt_regs *regs);
++void syscall_trace_exit(struct pt_regs *regs);
++
+ #endif	/* __ASM_SYSCALL_H */
+diff --git a/arch/arm64/kernel/syscall.c b/arch/arm64/kernel/syscall.c
+index 5a668d7f3c1f..b1ae2f2eaf77 100644
+--- a/arch/arm64/kernel/syscall.c
++++ b/arch/arm64/kernel/syscall.c
+@@ -75,9 +75,6 @@ static inline bool has_syscall_work(unsigned long flags)
+ 	return unlikely(flags & _TIF_SYSCALL_WORK);
+ }
+ 
+-int syscall_trace_enter(struct pt_regs *regs);
+-void syscall_trace_exit(struct pt_regs *regs);
+-
+ static void el0_svc_common(struct pt_regs *regs, int scno, int sc_nr,
+ 			   const syscall_fn_t syscall_table[])
+ {
+diff --git a/arch/x86/kernel/ftrace.c b/arch/x86/kernel/ftrace.c
+index 01e8f34daf22..12df54ff0e81 100644
+--- a/arch/x86/kernel/ftrace.c
++++ b/arch/x86/kernel/ftrace.c
+@@ -282,7 +282,6 @@ static inline void tramp_free(void *tramp) { }
+ 
+ /* Defined as markers to the end of the ftrace default trampolines */
+ extern void ftrace_regs_caller_end(void);
+-extern void ftrace_regs_caller_ret(void);
+ extern void ftrace_caller_end(void);
+ extern void ftrace_caller_op_ptr(void);
+ extern void ftrace_regs_caller_op_ptr(void);
+diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+index 8e59bd954153..ce156c7704ee 100644
+--- a/include/linux/ftrace.h
++++ b/include/linux/ftrace.h
+@@ -41,6 +41,15 @@ struct ftrace_ops;
+ struct ftrace_regs;
+ struct dyn_ftrace;
+ 
++char *arch_ftrace_match_adjust(char *str, const char *search);
++
++#ifdef CONFIG_HAVE_FUNCTION_GRAPH_RETVAL
++struct fgraph_ret_regs;
++unsigned long ftrace_return_to_handler(struct fgraph_ret_regs *ret_regs);
++#else
++unsigned long ftrace_return_to_handler(unsigned long frame_pointer);
++#endif
++
+ #ifdef CONFIG_FUNCTION_TRACER
+ /*
+  * If the arch's mcount caller does not support all of ftrace's
+diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
+index cd2c35b1dd8f..c83c005e654e 100644
+--- a/kernel/trace/fgraph.c
++++ b/kernel/trace/fgraph.c
+@@ -15,6 +15,7 @@
+ #include <trace/events/sched.h>
+ 
+ #include "ftrace_internal.h"
++#include "trace.h"
+ 
+ #ifdef CONFIG_DYNAMIC_FTRACE
+ #define ASSIGN_OPS_HASH(opsname, val) \
+diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+index 3740aca79fe7..05c0024815bf 100644
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -3305,6 +3305,22 @@ static int ftrace_allocate_records(struct ftrace_page *pg, int count)
+ 	return cnt;
+ }
+ 
++static void ftrace_free_pages(struct ftrace_page *pages)
++{
++	struct ftrace_page *pg = pages;
++
++	while (pg) {
++		if (pg->records) {
++			free_pages((unsigned long)pg->records, pg->order);
++			ftrace_number_of_pages -= 1 << pg->order;
++		}
++		pages = pg->next;
++		kfree(pg);
++		pg = pages;
++		ftrace_number_of_groups--;
++	}
++}
++
+ static struct ftrace_page *
+ ftrace_allocate_pages(unsigned long num_to_init)
+ {
+@@ -3343,17 +3359,7 @@ ftrace_allocate_pages(unsigned long num_to_init)
+ 	return start_pg;
+ 
+  free_pages:
+-	pg = start_pg;
+-	while (pg) {
+-		if (pg->records) {
+-			free_pages((unsigned long)pg->records, pg->order);
+-			ftrace_number_of_pages -= 1 << pg->order;
+-		}
+-		start_pg = pg->next;
+-		kfree(pg);
+-		pg = start_pg;
+-		ftrace_number_of_groups--;
+-	}
++	ftrace_free_pages(start_pg);
+ 	pr_info("ftrace: FAILED to allocate memory for functions\n");
+ 	return NULL;
+ }
+@@ -6471,9 +6477,11 @@ static int ftrace_process_locs(struct module *mod,
+ 			       unsigned long *start,
+ 			       unsigned long *end)
+ {
++	struct ftrace_page *pg_unuse = NULL;
+ 	struct ftrace_page *start_pg;
+ 	struct ftrace_page *pg;
+ 	struct dyn_ftrace *rec;
++	unsigned long skipped = 0;
+ 	unsigned long count;
+ 	unsigned long *p;
+ 	unsigned long addr;
+@@ -6536,8 +6544,10 @@ static int ftrace_process_locs(struct module *mod,
+ 		 * object files to satisfy alignments.
+ 		 * Skip any NULL pointers.
+ 		 */
+-		if (!addr)
++		if (!addr) {
++			skipped++;
+ 			continue;
++		}
+ 
+ 		end_offset = (pg->index+1) * sizeof(pg->records[0]);
+ 		if (end_offset > PAGE_SIZE << pg->order) {
+@@ -6551,8 +6561,10 @@ static int ftrace_process_locs(struct module *mod,
+ 		rec->ip = addr;
+ 	}
+ 
+-	/* We should have used all pages */
+-	WARN_ON(pg->next);
++	if (pg->next) {
++		pg_unuse = pg->next;
++		pg->next = NULL;
++	}
+ 
+ 	/* Assign the last page to ftrace_pages */
+ 	ftrace_pages = pg;
+@@ -6574,6 +6586,11 @@ static int ftrace_process_locs(struct module *mod,
+  out:
+ 	mutex_unlock(&ftrace_lock);
+ 
++	/* We should have used all pages unless we skipped some */
++	if (pg_unuse) {
++		WARN_ON(!skipped);
++		ftrace_free_pages(pg_unuse);
++	}
+ 	return ret;
+ }
+ 
+diff --git a/kernel/trace/ftrace_internal.h b/kernel/trace/ftrace_internal.h
+index 382775edf690..5012c04f92c0 100644
+--- a/kernel/trace/ftrace_internal.h
++++ b/kernel/trace/ftrace_internal.h
+@@ -2,6 +2,9 @@
+ #ifndef _LINUX_KERNEL_FTRACE_INTERNAL_H
+ #define  _LINUX_KERNEL_FTRACE_INTERNAL_H
+ 
++int __register_ftrace_function(struct ftrace_ops *ops);
++int __unregister_ftrace_function(struct ftrace_ops *ops);
++
+ #ifdef CONFIG_FUNCTION_TRACER
+ 
+ extern struct mutex ftrace_lock;
+@@ -15,8 +18,6 @@ int ftrace_ops_test(struct ftrace_ops *ops, unsigned long ip, void *regs);
+ 
+ #else /* !CONFIG_DYNAMIC_FTRACE */
+ 
+-int __register_ftrace_function(struct ftrace_ops *ops);
+-int __unregister_ftrace_function(struct ftrace_ops *ops);
+ /* Keep as macros so we do not need to define the commands */
+ # define ftrace_startup(ops, command)					\
+ 	({								\
+diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+index 834b361a4a66..14d8001140c8 100644
+--- a/kernel/trace/ring_buffer.c
++++ b/kernel/trace/ring_buffer.c
+@@ -5242,28 +5242,34 @@ unsigned long ring_buffer_size(struct trace_buffer *buffer, int cpu)
+ }
+ EXPORT_SYMBOL_GPL(ring_buffer_size);
+ 
++static void rb_clear_buffer_page(struct buffer_page *page)
++{
++	local_set(&page->write, 0);
++	local_set(&page->entries, 0);
++	rb_init_page(page->page);
++	page->read = 0;
++}
++
+ static void
+ rb_reset_cpu(struct ring_buffer_per_cpu *cpu_buffer)
+ {
++	struct buffer_page *page;
++
+ 	rb_head_page_deactivate(cpu_buffer);
+ 
+ 	cpu_buffer->head_page
+ 		= list_entry(cpu_buffer->pages, struct buffer_page, list);
+-	local_set(&cpu_buffer->head_page->write, 0);
+-	local_set(&cpu_buffer->head_page->entries, 0);
+-	local_set(&cpu_buffer->head_page->page->commit, 0);
+-
+-	cpu_buffer->head_page->read = 0;
++	rb_clear_buffer_page(cpu_buffer->head_page);
++	list_for_each_entry(page, cpu_buffer->pages, list) {
++		rb_clear_buffer_page(page);
++	}
+ 
+ 	cpu_buffer->tail_page = cpu_buffer->head_page;
+ 	cpu_buffer->commit_page = cpu_buffer->head_page;
+ 
+ 	INIT_LIST_HEAD(&cpu_buffer->reader_page->list);
+ 	INIT_LIST_HEAD(&cpu_buffer->new_pages);
+-	local_set(&cpu_buffer->reader_page->write, 0);
+-	local_set(&cpu_buffer->reader_page->entries, 0);
+-	local_set(&cpu_buffer->reader_page->page->commit, 0);
+-	cpu_buffer->reader_page->read = 0;
++	rb_clear_buffer_page(cpu_buffer->reader_page);
+ 
+ 	local_set(&cpu_buffer->entries_bytes, 0);
+ 	local_set(&cpu_buffer->overrun, 0);
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 4529e264cb86..20122eeccf97 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -3118,6 +3118,7 @@ static void __ftrace_trace_stack(struct trace_buffer *buffer,
+ 	struct ftrace_stack *fstack;
+ 	struct stack_entry *entry;
+ 	int stackidx;
++	void *ptr;
+ 
+ 	/*
+ 	 * Add one, for this function and the call to save_stack_trace()
+@@ -3161,9 +3162,25 @@ static void __ftrace_trace_stack(struct trace_buffer *buffer,
+ 				    trace_ctx);
+ 	if (!event)
+ 		goto out;
+-	entry = ring_buffer_event_data(event);
++	ptr = ring_buffer_event_data(event);
++	entry = ptr;
++
++	/*
++	 * For backward compatibility reasons, the entry->caller is an
++	 * array of 8 slots to store the stack. This is also exported
++	 * to user space. The amount allocated on the ring buffer actually
++	 * holds enough for the stack specified by nr_entries. This will
++	 * go into the location of entry->caller. Due to string fortifiers
++	 * checking the size of the destination of memcpy() it triggers
++	 * when it detects that size is greater than 8. To hide this from
++	 * the fortifiers, we use "ptr" and pointer arithmetic to assign caller.
++	 *
++	 * The below is really just:
++	 *   memcpy(&entry->caller, fstack->calls, size);
++	 */
++	ptr += offsetof(typeof(*entry), caller);
++	memcpy(ptr, fstack->calls, size);
+ 
+-	memcpy(&entry->caller, fstack->calls, size);
+ 	entry->size = nr_entries;
+ 
+ 	if (!call_filter_check_discard(call, entry, buffer, event))
+diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
+index 4f5e74bbdab2..33cb6af31f39 100644
+--- a/kernel/trace/trace_events_user.c
++++ b/kernel/trace/trace_events_user.c
+@@ -1317,6 +1317,9 @@ static int user_field_set_string(struct ftrace_event_field *field,
+ 	pos += snprintf(buf + pos, LEN_OR_ZERO, " ");
+ 	pos += snprintf(buf + pos, LEN_OR_ZERO, "%s", field->name);
+ 
++	if (str_has_prefix(field->type, "struct "))
++		pos += snprintf(buf + pos, LEN_OR_ZERO, " %d", field->size);
++
+ 	if (colon)
+ 		pos += snprintf(buf + pos, LEN_OR_ZERO, ";");
+ 
+diff --git a/kernel/trace/trace_kprobe_selftest.c b/kernel/trace/trace_kprobe_selftest.c
+index 16548ee4c8c6..3851cd1e6a62 100644
+--- a/kernel/trace/trace_kprobe_selftest.c
++++ b/kernel/trace/trace_kprobe_selftest.c
+@@ -1,4 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
++
++#include "trace_kprobe_selftest.h"
++
+ /*
+  * Function used during the kprobe self test. This function is in a separate
+  * compile unit so it can be compile with CC_FLAGS_FTRACE to ensure that it
+diff --git a/samples/ftrace/ftrace-direct-modify.c b/samples/ftrace/ftrace-direct-modify.c
+index 06d889149012..e5ed08098ff3 100644
+--- a/samples/ftrace/ftrace-direct-modify.c
++++ b/samples/ftrace/ftrace-direct-modify.c
+@@ -2,7 +2,9 @@
+ #include <linux/module.h>
+ #include <linux/kthread.h>
+ #include <linux/ftrace.h>
++#ifndef CONFIG_ARM64
+ #include <asm/asm-offsets.h>
++#endif
+ 
+ extern void my_direct_func1(void);
+ extern void my_direct_func2(void);
+@@ -96,6 +98,38 @@ asm (
+ 
+ #endif /* CONFIG_S390 */
+ 
++#ifdef CONFIG_ARM64
++
++asm (
++"	.pushsection    .text, \"ax\", @progbits\n"
++"	.type		my_tramp1, @function\n"
++"	.globl		my_tramp1\n"
++"   my_tramp1:"
++"	bti	c\n"
++"	sub	sp, sp, #16\n"
++"	stp	x9, x30, [sp]\n"
++"	bl	my_direct_func1\n"
++"	ldp	x30, x9, [sp]\n"
++"	add	sp, sp, #16\n"
++"	ret	x9\n"
++"	.size		my_tramp1, .-my_tramp1\n"
++
++"	.type		my_tramp2, @function\n"
++"	.globl		my_tramp2\n"
++"   my_tramp2:"
++"	bti	c\n"
++"	sub	sp, sp, #16\n"
++"	stp	x9, x30, [sp]\n"
++"	bl	my_direct_func2\n"
++"	ldp	x30, x9, [sp]\n"
++"	add	sp, sp, #16\n"
++"	ret	x9\n"
++"	.size		my_tramp2, .-my_tramp2\n"
++"	.popsection\n"
++);
++
++#endif /* CONFIG_ARM64 */
++
+ #ifdef CONFIG_LOONGARCH
+ 
+ asm (
+diff --git a/samples/ftrace/ftrace-direct-multi-modify.c b/samples/ftrace/ftrace-direct-multi-modify.c
+index 62f6b681999e..292cff2b3f5d 100644
+--- a/samples/ftrace/ftrace-direct-multi-modify.c
++++ b/samples/ftrace/ftrace-direct-multi-modify.c
+@@ -2,7 +2,9 @@
+ #include <linux/module.h>
+ #include <linux/kthread.h>
+ #include <linux/ftrace.h>
++#ifndef CONFIG_ARM64
+ #include <asm/asm-offsets.h>
++#endif
+ 
+ extern void my_direct_func1(unsigned long ip);
+ extern void my_direct_func2(unsigned long ip);
+@@ -103,6 +105,44 @@ asm (
+ 
+ #endif /* CONFIG_S390 */
+ 
++#ifdef CONFIG_ARM64
++
++asm (
++"	.pushsection    .text, \"ax\", @progbits\n"
++"	.type		my_tramp1, @function\n"
++"	.globl		my_tramp1\n"
++"   my_tramp1:"
++"	bti	c\n"
++"	sub	sp, sp, #32\n"
++"	stp	x9, x30, [sp]\n"
++"	str	x0, [sp, #16]\n"
++"	mov	x0, x30\n"
++"	bl	my_direct_func1\n"
++"	ldp	x30, x9, [sp]\n"
++"	ldr	x0, [sp, #16]\n"
++"	add	sp, sp, #32\n"
++"	ret	x9\n"
++"	.size		my_tramp1, .-my_tramp1\n"
++
++"	.type		my_tramp2, @function\n"
++"	.globl		my_tramp2\n"
++"   my_tramp2:"
++"	bti	c\n"
++"	sub	sp, sp, #32\n"
++"	stp	x9, x30, [sp]\n"
++"	str	x0, [sp, #16]\n"
++"	mov	x0, x30\n"
++"	bl	my_direct_func2\n"
++"	ldp	x30, x9, [sp]\n"
++"	ldr	x0, [sp, #16]\n"
++"	add	sp, sp, #32\n"
++"	ret	x9\n"
++"	.size		my_tramp2, .-my_tramp2\n"
++"	.popsection\n"
++);
++
++#endif /* CONFIG_ARM64 */
++
+ #ifdef CONFIG_LOONGARCH
+ #include <asm/asm.h>
+ 
+diff --git a/samples/ftrace/ftrace-direct-multi.c b/samples/ftrace/ftrace-direct-multi.c
+index 5482cf616b43..b4391e08c913 100644
+--- a/samples/ftrace/ftrace-direct-multi.c
++++ b/samples/ftrace/ftrace-direct-multi.c
+@@ -4,7 +4,9 @@
+ #include <linux/mm.h> /* for handle_mm_fault() */
+ #include <linux/ftrace.h>
+ #include <linux/sched/stat.h>
++#ifndef CONFIG_ARM64
+ #include <asm/asm-offsets.h>
++#endif
+ 
+ extern void my_direct_func(unsigned long ip);
+ 
+@@ -66,6 +68,29 @@ asm (
+ 
+ #endif /* CONFIG_S390 */
+ 
++#ifdef CONFIG_ARM64
++
++asm (
++"	.pushsection	.text, \"ax\", @progbits\n"
++"	.type		my_tramp, @function\n"
++"	.globl		my_tramp\n"
++"   my_tramp:"
++"	bti	c\n"
++"	sub	sp, sp, #32\n"
++"	stp	x9, x30, [sp]\n"
++"	str	x0, [sp, #16]\n"
++"	mov	x0, x30\n"
++"	bl	my_direct_func\n"
++"	ldp	x30, x9, [sp]\n"
++"	ldr	x0, [sp, #16]\n"
++"	add	sp, sp, #32\n"
++"	ret	x9\n"
++"	.size		my_tramp, .-my_tramp\n"
++"	.popsection\n"
++);
++
++#endif /* CONFIG_ARM64 */
++
+ #ifdef CONFIG_LOONGARCH
+ 
+ #include <asm/asm.h>
+diff --git a/samples/ftrace/ftrace-direct-too.c b/samples/ftrace/ftrace-direct-too.c
+index a05bc2cc2261..e9804c5307c0 100644
+--- a/samples/ftrace/ftrace-direct-too.c
++++ b/samples/ftrace/ftrace-direct-too.c
+@@ -3,16 +3,18 @@
+ 
+ #include <linux/mm.h> /* for handle_mm_fault() */
+ #include <linux/ftrace.h>
++#ifndef CONFIG_ARM64
+ #include <asm/asm-offsets.h>
++#endif
+ 
+-extern void my_direct_func(struct vm_area_struct *vma,
+-			   unsigned long address, unsigned int flags);
++extern void my_direct_func(struct vm_area_struct *vma, unsigned long address,
++			   unsigned int flags, struct pt_regs *regs);
+ 
+-void my_direct_func(struct vm_area_struct *vma,
+-			unsigned long address, unsigned int flags)
++void my_direct_func(struct vm_area_struct *vma, unsigned long address,
++		    unsigned int flags, struct pt_regs *regs)
+ {
+-	trace_printk("handle mm fault vma=%p address=%lx flags=%x\n",
+-		     vma, address, flags);
++	trace_printk("handle mm fault vma=%p address=%lx flags=%x regs=%p\n",
++		     vma, address, flags, regs);
+ }
+ 
+ extern void my_tramp(void *);
+@@ -34,7 +36,9 @@ asm (
+ "	pushq %rdi\n"
+ "	pushq %rsi\n"
+ "	pushq %rdx\n"
++"	pushq %rcx\n"
+ "	call my_direct_func\n"
++"	popq %rcx\n"
+ "	popq %rdx\n"
+ "	popq %rsi\n"
+ "	popq %rdi\n"
+@@ -70,6 +74,30 @@ asm (
+ 
+ #endif /* CONFIG_S390 */
+ 
++#ifdef CONFIG_ARM64
++
++asm (
++"	.pushsection	.text, \"ax\", @progbits\n"
++"	.type		my_tramp, @function\n"
++"	.globl		my_tramp\n"
++"   my_tramp:"
++"	bti	c\n"
++"	sub	sp, sp, #48\n"
++"	stp	x9, x30, [sp]\n"
++"	stp	x0, x1, [sp, #16]\n"
++"	stp	x2, x3, [sp, #32]\n"
++"	bl	my_direct_func\n"
++"	ldp	x30, x9, [sp]\n"
++"	ldp	x0, x1, [sp, #16]\n"
++"	ldp	x2, x3, [sp, #32]\n"
++"	add	sp, sp, #48\n"
++"	ret	x9\n"
++"	.size		my_tramp, .-my_tramp\n"
++"	.popsection\n"
++);
++
++#endif /* CONFIG_ARM64 */
++
+ #ifdef CONFIG_LOONGARCH
+ 
+ asm (
+diff --git a/samples/ftrace/ftrace-direct.c b/samples/ftrace/ftrace-direct.c
+index 06879bbd3399..20f4a7caa810 100644
+--- a/samples/ftrace/ftrace-direct.c
++++ b/samples/ftrace/ftrace-direct.c
+@@ -3,7 +3,9 @@
+ 
+ #include <linux/sched.h> /* for wake_up_process() */
+ #include <linux/ftrace.h>
++#ifndef CONFIG_ARM64
+ #include <asm/asm-offsets.h>
++#endif
+ 
+ extern void my_direct_func(struct task_struct *p);
+ 
+@@ -63,6 +65,28 @@ asm (
+ 
+ #endif /* CONFIG_S390 */
+ 
++#ifdef CONFIG_ARM64
++
++asm (
++"	.pushsection	.text, \"ax\", @progbits\n"
++"	.type		my_tramp, @function\n"
++"	.globl		my_tramp\n"
++"   my_tramp:"
++"	bti	c\n"
++"	sub	sp, sp, #32\n"
++"	stp	x9, x30, [sp]\n"
++"	str	x0, [sp, #16]\n"
++"	bl	my_direct_func\n"
++"	ldp	x30, x9, [sp]\n"
++"	ldr	x0, [sp, #16]\n"
++"	add	sp, sp, #32\n"
++"	ret	x9\n"
++"	.size		my_tramp, .-my_tramp\n"
++"	.popsection\n"
++);
++
++#endif /* CONFIG_ARM64 */
++
+ #ifdef CONFIG_LOONGARCH
+ 
+ asm (
+diff --git a/tools/testing/selftests/user_events/dyn_test.c b/tools/testing/selftests/user_events/dyn_test.c
+index d6979a48478f..91a4444ad42b 100644
+--- a/tools/testing/selftests/user_events/dyn_test.c
++++ b/tools/testing/selftests/user_events/dyn_test.c
+@@ -217,6 +217,18 @@ TEST_F(user, matching) {
+ 	/* Types don't match */
+ 	TEST_NMATCH("__test_event u64 a; u64 b",
+ 		    "__test_event u32 a; u32 b");
++
++	/* Struct name and size matches */
++	TEST_MATCH("__test_event struct my_struct a 20",
++		   "__test_event struct my_struct a 20");
++
++	/* Struct name don't match */
++	TEST_NMATCH("__test_event struct my_struct a 20",
++		    "__test_event struct my_struct b 20");
++
++	/* Struct size don't match */
++	TEST_NMATCH("__test_event struct my_struct a 20",
++		    "__test_event struct my_struct a 21");
+ }
+ 
+ int main(int argc, char **argv)
