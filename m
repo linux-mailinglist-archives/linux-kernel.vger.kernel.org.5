@@ -2,140 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D37E47510AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 20:42:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C95997510B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 20:45:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232584AbjGLSmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 14:42:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44344 "EHLO
+        id S231573AbjGLSph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 14:45:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232285AbjGLSmF (ORCPT
+        with ESMTP id S231144AbjGLSpg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 14:42:05 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 939B81993
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 11:42:04 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-993a37b79e2so913282866b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 11:42:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689187323; x=1691779323;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1VbqSmbjxd319jc3pHxnfRfT+EF14Ir6yLeHR+Ky6zQ=;
-        b=c4KeNxpUGgtLN1Sca+NB1c/2juC1nEZFZaY5AnB+CAsKREgk4LqoWp3zSmyJXc0TOC
-         oPNsq5n0e7A2+I4kIGBLRASoKFQ8SFQhUjdxT3FQa8+wAPhpTz+pWZDKOqzG1WDvnZw8
-         3ujBwIV2ZMUfZ8VyI5rVIKPVJ4NNqRO1jbED9CsTWu8dwu4y1tXi30qwb6vefwVAWo/k
-         KIv9VSo7Bba6SbynW5PHaymLjfafabanBZzzW9DMGZlQlBtsRWpm+CNjuCsYBK075Frk
-         IkEr4jvbO9LkIN92odv9iurgPzHZtZSZPh1R4kDqMZI65rddpvkvPiEnfCFCWiQUbUHo
-         NiMA==
+        Wed, 12 Jul 2023 14:45:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 187021993
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 11:44:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689187488;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Fk/SxXz3w0D8bOTCCqGLQNFW+lBf3Uls9PLOXYABDMQ=;
+        b=esiEf3k3UQk1bYd1AQoCPmZLwx6y4fD+3JDfKYcaq5114ulmz2ulPRedx5vddlOv3TIuUm
+        +Y6xV5i4MUcjsXfqYEzqPDGir9P2488ehZNSJMw7sRLKOC0kT7cco/eWZ4xzH7KMJtqE3W
+        fGvOPG9qtx+glAaMWEY1TuRsGYCmbqs=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-252-eIrh8qkzONaRtFyblUPJDw-1; Wed, 12 Jul 2023 14:44:47 -0400
+X-MC-Unique: eIrh8qkzONaRtFyblUPJDw-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-993d500699fso337542966b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 11:44:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689187323; x=1691779323;
-        h=content-transfer-encoding:in-reply-to:from:references:to
+        d=1e100.net; s=20221208; t=1689187486; x=1691779486;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1VbqSmbjxd319jc3pHxnfRfT+EF14Ir6yLeHR+Ky6zQ=;
-        b=T2/gMpJFFGEsAL0bJOi/wgiKEviedqjKbV4r1ypMkPNgQCoaUIcsitMoFDftosW/gD
-         l1yI5C2oNVB+jxvPulIiCyzqBlpxa/rlmDl/EnUx/gSKFzzJx9n0Y7hOu/exyKfT/Jn9
-         hka52jeo+twdPtGDW2Hkf/JGl1LDyLTh+u8SccyGuP4rrhcY/eBQMV8wsiPyby6XBS5G
-         PJ4gdsncmJStuQFS+uLsEB2U0zVdZ5ilT2FnHUGU97wltK4hAhLrlCa+ppWC9P1xJWIX
-         GvujE9nmx3hBFFwymLSb9rkDK7pavb9Ao2McPLMEt2QoLsOB3iBUzMBWFXcNKWkPyox7
-         KMHg==
-X-Gm-Message-State: ABy/qLaQBWeMumwPBQ9T+AOJRmVL69sx+BT1O9zmRmwM2mlx0EMkV5Qx
-        iqpZU9XPsQ3FVWuU4tXajS11HA==
-X-Google-Smtp-Source: APBJJlFXEcz3wlImRsK+1uA5uQWbCe/hQkTGM6SGBv1HGhN8yaC0By+YRqnQwD8/1/e2bUyMjNVfew==
-X-Received: by 2002:a17:906:5291:b0:973:e5d9:d6ff with SMTP id c17-20020a170906529100b00973e5d9d6ffmr19468175ejm.66.1689187323009;
-        Wed, 12 Jul 2023 11:42:03 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id ss25-20020a170907039900b0098921e1b064sm2875113ejb.181.2023.07.12.11.42.01
+        bh=Fk/SxXz3w0D8bOTCCqGLQNFW+lBf3Uls9PLOXYABDMQ=;
+        b=aM0Nopoyjf5HN7IV/IWGEognvNn8YIr2bAqirofVSj3nPX8NE15f1NfFYa92amWo2i
+         uKuQ++vyQ9dxdRhUaFazUNB+KFYBXwVV9P1lNdj6NmURGRdRG4AMReF3xjvhEJWd3yFw
+         Kx78O10AAlwPDqomQbFsWw6Ung4h6owANh06RueOKfV+QQW7eA9wf6NGWupgMhZQlBmX
+         wWOM3AlKiuFjo9HsWFDcxEEBEMZ+G6jBr5kcmHZU0P9kl3sfHjU1xseBNcPSZsftCuaI
+         +gSG2f9EzYbjTCROzh0LKIhBKw5tu7CKbkfilAlCL+O4C2kX6RrGZPLfg3XqsA1qAVor
+         mwUA==
+X-Gm-Message-State: ABy/qLbkIs/I5UFDYiqZmZbGl8y4T0zmZt2JduM9mYSa1cwPVXJigPHF
+        axwFewV3wACLRfhCgSFXzAPzrL1pW1t6gkxDFrn8jYmQeRdF6KkKF2pak0a3RMLXAQlezcq9ET3
+        rROWrSZKKGdnoD9FIYAeR4RTT
+X-Received: by 2002:a17:907:389:b0:98f:3485:9c44 with SMTP id ss9-20020a170907038900b0098f34859c44mr18311044ejb.72.1689187485867;
+        Wed, 12 Jul 2023 11:44:45 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlHfjfv8c31BavjqrMf/FfdeJWylPRrzjkbHS42x2kUYkH0l1lhntsRiZIfXe38vpxghzmpBgg==
+X-Received: by 2002:a17:907:389:b0:98f:3485:9c44 with SMTP id ss9-20020a170907038900b0098f34859c44mr18311031ejb.72.1689187485556;
+        Wed, 12 Jul 2023 11:44:45 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id s7-20020a1709064d8700b00993004239a4sm2856348eju.215.2023.07.12.11.44.44
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 Jul 2023 11:42:02 -0700 (PDT)
-Message-ID: <9dd411e0-6cc5-44c1-be56-ecb2ad809a9b@linaro.org>
-Date:   Wed, 12 Jul 2023 20:42:00 +0200
+        Wed, 12 Jul 2023 11:44:44 -0700 (PDT)
+Message-ID: <0b506574-6ce7-3aa9-f582-bf05ddc97699@redhat.com>
+Date:   Wed, 12 Jul 2023 20:44:44 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [EXT] Re: [PATCH v3 1/7] dt-bindings: arm: fsl: add mu binding
- doc
-Content-Language: en-US
-To:     Pankaj Gupta <pankaj.gupta@nxp.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Gaurav Jain <gaurav.jain@nxp.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Daniel Baluta <daniel.baluta@nxp.com>
-References: <20230616181144.646500-1-pankaj.gupta@nxp.com>
- <20230616181144.646500-2-pankaj.gupta@nxp.com>
- <a06dbb80-c9b2-3a57-cbc5-b18432b4029a@linaro.org>
- <PAXPR04MB8638D1504946559095E1CAB69530A@PAXPR04MB8638.eurprd04.prod.outlook.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <PAXPR04MB8638D1504946559095E1CAB69530A@PAXPR04MB8638.eurprd04.prod.outlook.com>
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v4 1/1] platform/x86: asus-wmi: add support for ASUS
+ screenpad
+Content-Language: en-US, nl
+To:     =?UTF-8?Q?Barnab=c3=a1s_P=c5=91cze?= <pobrn@protonmail.com>
+Cc:     acpi4asus-user@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hwmon@vger.kernel.org
+References: <20230630041743.911303-1-luke@ljones.dev>
+ <20230630041743.911303-2-luke@ljones.dev>
+ <974093b4-5dac-dc29-8f86-304eb5c6c19b@redhat.com>
+ <39e6044b960c1099ecc34d76f78aad12496b23e2.camel@ljones.dev>
+ <350cfb54-f435-4482-5a40-18d4358bf747@redhat.com>
+ <MFcnkX194DPlx9DJUNWx43ia7ew825I6K1k8hOoUYImBv390MzOdWngMLTzr5g4iv_9o9x8qE2FqoVcKUcN6s6lHdbIzfj3eDXQLgtU3w9o=@protonmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <MFcnkX194DPlx9DJUNWx43ia7ew825I6K1k8hOoUYImBv390MzOdWngMLTzr5g4iv_9o9x8qE2FqoVcKUcN6s6lHdbIzfj3eDXQLgtU3w9o=@protonmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/07/2023 19:52, Pankaj Gupta wrote:
+Hi,
+
+On 7/12/23 03:07, Barnabás Pőcze wrote:
+> Hi
 > 
 > 
->> -----Original Message-----
->> From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->> Sent: Friday, June 16, 2023 6:51 PM
->> To: Pankaj Gupta <pankaj.gupta@nxp.com>; robh+dt@kernel.org;
->> krzysztof.kozlowski+dt@linaro.org; conor+dt@kernel.org;
->> shawnguo@kernel.org; s.hauer@pengutronix.de; kernel@pengutronix.de;
->> festevam@gmail.com; dl-linux-imx <linux-imx@nxp.com>;
->> devicetree@vger.kernel.org; linux-arm-kernel@lists.infradead.org; Gaurav
->> Jain <gaurav.jain@nxp.com>; linux-kernel@vger.kernel.org; Daniel Baluta
->> <daniel.baluta@nxp.com>
->> Subject: [EXT] Re: [PATCH v3 1/7] dt-bindings: arm: fsl: add mu binding doc
->>
->> Caution: This is an external email. Please take care when clicking links or
->> opening attachments. When in doubt, report the message using the 'Report
->> this email' button
->>
->>
->> On 16/06/2023 20:11, Pankaj Gupta wrote:
->>> The NXP i.MX Message Unit enables two processing elements to
->>> communicate & co-ordinate with each other. This driver is used to
->>> communicate between Application Core and NXP HSM IPs like NXP
->> EdgeLock
->>> Enclave etc.
->>> It exists on some i.MX processors. e.g. i.MX8ULP, i.MX93 etc.
+> 2023. július 11., kedd 11:42 keltezéssel, Hans de Goede <hdegoede@redhat.com> írta:
+> 
+>> [...]
+>>>>
+>>>> If settings below 60 are no good, then the correct way to handle
+>>>> this is to limit the range to 0 - (255-60) and add / substract
+>>>> 60 when setting / getting the brightness.
+>>>>
+>>>> E.g. do something like this:
+>>>>
+>>>> #define SCREENPAD_MIN_BRIGHTNESS        60
+>>>> #define SCREENPAD_MAX_BRIGHTNESS        255
+>>>>
+>>>>         props.max_brightness = SCREENPAD_MAX_BRIGHTNESS -
+>>>> SCREENPAD_MIN_BRIGHTNESS;
+>>>>
+>>>> And in update_screenpad_bl_status() do:
+>>>>
+>>>>         ctrl_param = bd->props.brightness + SCREENPAD_MIN_BRIGHTNESS;
+>>>>
+>>>> And when reading the brightness substract SCREENPAD_MIN_BRIGHTNESS,
+>>>> clamping to a minimum value of 0.
+>>>>
+>>>> This avoids a dead-zone in the brightness range between 0-60 .
 >>>
->>> Signed-off-by: Pankaj Gupta <pankaj.gupta@nxp.com>
+>>> Hi Hans, I think this is the wrong thing to do.
+>>>
+>>> The initial point of that first `brightness = 60;` is only to set it to
+>>> an acceptable brightness on boot. We don't want to prevent the user
+>>> from going below that brightness at all - this is just to ensure the
+>>> screen is visible on boot if the brightness was under that value, and
+>>> it is usually only under that value if it was set to off before
+>>> shutdown/reboot.
+>>>
+>>> It's not to try and put the range between 60-255, it's just to make the
+>>> screen visible on boot if it was off previously. The folks who have
+>>> tested this have found that this is the desired behaviour they expect.
 >>
->> I don't see reply to Daniel's concerns.
+>> I see.
 >>
->> I don't see improvements here based on the previous review you received.
->> It seems you just ignored everything, right?
-> Replied to Daniel's concern.
+>> So if I understand things correctly then 60 is a good default,
+>> but the screen can go darker and still be usable.
+>>
+>> But 1 leads to an unusable screen, so we still need
+>> a SCREENPAD_MIN_BRIGHTNESS to avoid the screen being able
+>> to go so dark that it is no longer usable and then still
+>> move the range a bit, but just not by 60, but by some
+>> other number (something in the 10-30 range I guess?)
+>>
+>> Combined with adding a:
+>>
+>> #define SCREENPAD_DEFAULT_BRIGHTNESS        60
+>>
+>> And at boot when the read back brightness <
+>> SCREENPAD_MIN_BRIGHTNESS set it to SCREENPAD_DEFAULT_BRIGHTNESS.
+>>
+>> We really want to avoid users to be able to set an unusable
+>> low brightness level. As mentioned in the new panel brightness
+>> API proposal:
+>>
+>> https://lore.kernel.org/dri-devel/b61d3eeb-6213-afac-2e70-7b9791c86d2e@redhat.com/
+>>
+>> "3. The meaning of 0 is not clearly defined, it can be either off,
+>>    or minimum brightness at which the display is still readable
+>>   (in a low light environment)"
+>>
+>> and the plan going forward is to:
+>>
+>> "Unlike the /sys/class/backlight/foo/brightness this brightness property
+>> has a clear definition for the value 0. The kernel must ensure that 0
+>> means minimum brightness (so 0 should _never_ turn the backlight off).
+>> If necessary the kernel must enforce a minimum value by adding
+>> an offset to the value seen in the property to ensure this behavior."
+>>
+>> So I really want to see this new backlight driver implement the
+>> new planned behavior for 0 from the start, with 0 meaning minimum
+>> *usable* brightness.
+>>
+>> Regards,
+>>
+>> Hans
 > 
->>
->> Limited review follows up because binding is not in the shape for upstream.
->> Do some internal reviews prior sending it.
-> Done the internal review.
+> 
+> Sorry for hijacking this thread, but then how can I turn backlight off?
 
-I doubt. Your v4 bindings and DTS were not tested. v4 Driver has trivial
-issues.
+Documentation/ABI/stable/sysfs-class-backlight
 
-Best regards,
-Krzysztof
+What:           /sys/class/backlight/<backlight>/bl_power
+Date:           April 2005
+KernelVersion:  2.6.12
+Contact:        Richard Purdie <rpurdie@rpsys.net>
+Description:
+                Control BACKLIGHT power, values are FB_BLANK_* from fb.h
+
+                 - FB_BLANK_UNBLANK (0)   : power on.
+                 - FB_BLANK_POWERDOWN (4) : power off
+
+Although it is better to actually disable video output on the connector,
+this leads to much bigger power savings. Under X, this can typically be
+done by hitting the lock-screen option, e.g. "Windows-logo-key + L" under
+GNOME.
+
+On the console you can do:
+
+echo 1 > /sys/class/graphics/fb0/blank
+
+To really put the panel in low power mode.
+
+
+
+> I quite liked how I was able to turn my laptop display (almost) completely off
+> with the brightness hotkeys / brightness slider in gnome-shell, and I was quite
+> annoyed when this was changed in gnome-settings-daemon and forced the minimum
+> brightness to be 1% of max_brightness.
+
+Right, there are 2 problems with this:
+
+1. Using brightness control to disable the backlight is not reliabl. Many
+backlight control methods only go to some low setting not to completely off.
+This differs from model laptop to model laptop. Also e.g. amdgpu and radeonhd
+have always ensured that brightness never completely turns of the backlight.
+
+The plan going forward is to try and consistently have 0 mean minimum
+backlight and not backlight off, instead of the current some models 0 = off,
+some models 0 is works fine in a not too brightly lit room.
+
+2. Users sometimes turn of the backlight through e.g. the GNOME system menu
+slider and then have no way to turn it back on (on devices without (working)
+brightness hotkeys (they cannot use the slider since they can no longer see it)
+This scenario is a real problem which used to result in quite a few bug reports.
+
+> Also, "minimum brightness at which the display is still readable" is not really
+> well-defined
+
+True, as mentioned above the minimum might only be good enough to
+e.g. read text in a somewhat low lit room, but typically it at
+least leaves things visible enough to allow a user to change
+the brightness to a better setting.
+
+What we don't want is brightness settings so low that the backlight is
+essentially off (does not even show any light in a fully dark room).
+
+> so it can (will) happen that the minimum brightness values don't match,
+> so it is theoretically possible that I cannot set both my laptop panel and external
+> monitor to the same desired brightness level. Or am I missing something?
+
+This already is the case, some monitors may not go as low (or high) as you want,
+some laptops also already don't go as low as you want.
+
+Expecting to be able to match monitor and laptop panel brightness at both
+ends of the brightness range simply is not realistic.
+
+Regards,
+
+Hans
+
 
