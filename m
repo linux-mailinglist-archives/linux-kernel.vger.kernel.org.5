@@ -2,105 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 943C37511FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 22:46:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA3247511DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 22:36:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232537AbjGLUql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 16:46:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57488 "EHLO
+        id S230172AbjGLUgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 16:36:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232475AbjGLUqh (ORCPT
+        with ESMTP id S229649AbjGLUgk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 16:46:37 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18E8AA2;
-        Wed, 12 Jul 2023 13:46:37 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id 46e09a7af769-6b75637076eso6422038a34.2;
-        Wed, 12 Jul 2023 13:46:37 -0700 (PDT)
+        Wed, 12 Jul 2023 16:36:40 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 670361FF0
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 13:36:39 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-51e29ede885so9230986a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 13:36:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689194796; x=1691786796;
+        d=linaro.org; s=google; t=1689194198; x=1691786198;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=ht8m3JpnPLfdwbNyu/YR+stFiN46jyoA/rcch4tcqlw=;
-        b=HZXLcni+Ow6q1V7U79jBQqg0mozLSVlS6mIrhsdQmulgIfFLAdOsMw3OCvtE9j6n9g
-         xH2PjYF51TyP7XNrNxU3yDxwvNQzjOsMjvuDkQHmXZ7Q96oug+DkHrScUgyTNv6ZhFdO
-         G0KFbq4czeMUJYlQKitJCxF3defmyjmEQzkL9kdoS10Gzz9boFFoIGyCfKvGXrbA10sk
-         n1SjeXZo2aCu8hQTjHNKRSGDoi0Ep6GMdE4dTHsejss1GK8jp79rjauA8igLbmncrk5D
-         h/c8dC8Tr2CF0fwCnd3FDGOjzTXGXoxroqXxSPZ/LbpVKOOgQ6nZbs9DyW4EOxgvTjlp
-         0Ukg==
+        bh=qTIfZiBXGeNx2LL2qDkANMIcRNuFQoGE8jZgmUEj/Bs=;
+        b=y+sINyL0AJvDXbwpXs4l+ZyafLmlSiYHCSuzz3gsyTZQVlTGfA6Lz9uFnL2VFF48vy
+         Vn1iVIMiOM8BeOdr+M51utyIo/cJtoKwpOK1R82IJ58PRdl/MGvHLQZHY2PQG6y/l/kp
+         OKlGDzND4jIND6udhfdWG+W2n8X5RfzOIFCT6BzxfMbRuc9dvIpshRmluKdQkD4yaPhG
+         HRyQDDXpxv5+PwrFqZ1MJ+1SscC82BMk7dqtOIT7XiRWlIVC0ZIfrRN0Pfu0B7WvESCF
+         kiTQ2GW/Z89xvc4X+pKKUL3wYq7h0inozKAd2Gx89lUsRhSsuVAhzgClSdvY7uAyA0Fz
+         OUZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689194796; x=1691786796;
+        d=1e100.net; s=20221208; t=1689194198; x=1691786198;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ht8m3JpnPLfdwbNyu/YR+stFiN46jyoA/rcch4tcqlw=;
-        b=SzrsOz1H/W6/1fPZhIN8ol0neg0rVvGZMYlP6dUNqOWb3VGXWYetAwMuNqTSQQRFTt
-         TOmEDMnxLME3xTty6XcqKbksQgJfvO0tUuzvoQPC/Ytaa3EJG+ptEwnR60XZIk8aOIQ9
-         sW7hfaU3kyDjjen1fHEdAcwBMO6pfrMi/0uPcTVujmkJUhn1etXAcRrwXnH10nwktWNo
-         EYb1uz/g6fcfx5Ez/zAm7YXDY5wvsNmbMjnlwyZ64tqqPa6kffqX7KhLcsXOot7eu26H
-         awIPzXRRFdWif5sQ+Io3nx/ookC6jI1it+7PUd/wPqFdq9l0iBmOYw+Vj3SCG+4vtFdm
-         rzLg==
-X-Gm-Message-State: ABy/qLaEqXlRxuBOtnDO/Fea5aptuF5N/tQ7A8mbHWnWqtWsHA36PjDd
-        lU4JX27e0pXaiPGlhADwe+k=
-X-Google-Smtp-Source: APBJJlFBh4EdX43Vi87ClYbGGo4lYoKVRn9LizgIGpKhDitwpjeftap6gzZh0cnr7cXL7OMdDTMRQA==
-X-Received: by 2002:a9d:638e:0:b0:6b9:8feb:4930 with SMTP id w14-20020a9d638e000000b006b98feb4930mr5498091otk.35.1689194796305;
-        Wed, 12 Jul 2023 13:46:36 -0700 (PDT)
-Received: from [192.168.54.90] (static.220.238.itcsa.net. [190.15.220.238])
-        by smtp.gmail.com with ESMTPSA id n9-20020a0568301e8900b006b9aa110e0esm125344otr.76.2023.07.12.13.46.32
+        bh=qTIfZiBXGeNx2LL2qDkANMIcRNuFQoGE8jZgmUEj/Bs=;
+        b=labmoAKKkwq+P9sjvG4kACH/o4QzWl9qZ6F5ZmnIESQZI7TO0lN3wVq5/4T0rO9V7W
+         ZQAZWPEFtoFRiyRW2XqFVcYFnZZPSB4JW8vwk8F0bAbS8bhoLbmt6y5iVMBqv/sjsO8c
+         6mQpewOkBFaa+2mJ9FXYDdsHPZcwJzOMoWN0VexR17bOCvP+mBHuNCxY4RoRsnAZw2UF
+         jx5VtTmMjm/rvQgKE689J/G+/WPsdleHzZNtDGig2FdIpC6zw+0gnQlNJ3RWAVoOzqpY
+         GT2cwhlOAvkB3nl1vf4jgK+ClkMqQ4j2wPIizLJbgSKmw1mKkv6TyeFwfMLI0x+m075T
+         OPiQ==
+X-Gm-Message-State: ABy/qLagyBos7oiwdm5ezZwcvIf82hWDcqbtK+xooSjFDrGTxvD8Y7DZ
+        SQ8HQ0EQTmzBFOemIJGDbC8sWw==
+X-Google-Smtp-Source: APBJJlHhCGGtmxYQDbv6iLN7rNp7N/lmAxjHx0hFv2Tn4xTdwchatR/400eMahUldDdsgzTE8wW+xg==
+X-Received: by 2002:aa7:cd8b:0:b0:51e:1656:bb24 with SMTP id x11-20020aa7cd8b000000b0051e1656bb24mr15088788edv.26.1689194197823;
+        Wed, 12 Jul 2023 13:36:37 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id j20-20020aa7c0d4000000b0051d9ee1c9d3sm3254199edp.84.2023.07.12.13.36.35
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 Jul 2023 13:46:35 -0700 (PDT)
-Message-ID: <449f81fc-42fd-bd8b-6929-8cd2659d8ea0@gmail.com>
-Date:   Wed, 12 Jul 2023 17:34:04 -0300
+        Wed, 12 Jul 2023 13:36:37 -0700 (PDT)
+Message-ID: <006f9599-6aa4-52ac-068a-831893ec6bf8@linaro.org>
+Date:   Wed, 12 Jul 2023 22:36:35 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH 3/9] workqueue: introduce `__INIT_WORK_WITH_KEY`
+Subject: Re: [PATCH 1/2] dt-bindings: net: fsl,fec: Add TX clock controls
 Content-Language: en-US
-To:     Alice Ryhl <aliceryhl@google.com>, rust-for-linux@vger.kernel.org,
-        Tejun Heo <tj@kernel.org>, Miguel Ojeda <ojeda@kernel.org>
-Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=c3=b6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-        Wedson Almeida Filho <walmeida@microsoft.com>
-References: <20230711093303.1433770-1-aliceryhl@google.com>
- <20230711093303.1433770-4-aliceryhl@google.com>
-From:   Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-In-Reply-To: <20230711093303.1433770-4-aliceryhl@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+To:     =?UTF-8?B?VmVzYSBKw6TDpHNrZWzDpGluZW4=?= 
+        <vesa.jaaskelainen@vaisala.com>
+Cc:     Wei Fang <wei.fang@nxp.com>, Shenwei Wang <shenwei.wang@nxp.com>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20230711150808.18714-1-vesa.jaaskelainen@vaisala.com>
+ <20230711150808.18714-2-vesa.jaaskelainen@vaisala.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230711150808.18714-2-vesa.jaaskelainen@vaisala.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/11/23 06:32, Alice Ryhl wrote:
-> From: Wedson Almeida Filho <walmeida@microsoft.com>
+On 11/07/2023 17:08, Vesa Jääskeläinen wrote:
+> With fsl,fec-tx-clock-output one can control if TX clock is routed outside
+> of the chip.
 > 
-> A Rust helper (introduced in a later patch) needs to call
-> `__INIT_WORK` with a passed key, rather than define one in place.
+> With fsl,fec-tx-clk-as-ref-clock one can select if external TX clock is as
+> reference clock.
 > 
-> In order to do that, this moves the initialization code from
-> the `__INIT_WORK` macro into a new `__INIT_WORK_WITH_KEY` macro
-> which takes the key as an extra parameter.
-> 
-> Co-developed-by: Alex Gaynor <alex.gaynor@gmail.com>
-> Signed-off-by: Alex Gaynor <alex.gaynor@gmail.com>
-> Signed-off-by: Wedson Almeida Filho <walmeida@microsoft.com>
-> Co-developed-by: Miguel Ojeda <ojeda@kernel.org>
-> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
-> Acked-by: Tejun Heo <tj@kernel.org>
-> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
+> Signed-off-by: Vesa Jääskeläinen <vesa.jaaskelainen@vaisala.com>
 > ---
-> [...]
+>  .../devicetree/bindings/net/fsl,fec.yaml          | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/net/fsl,fec.yaml b/Documentation/devicetree/bindings/net/fsl,fec.yaml
+> index b494e009326e..c09105878bc6 100644
+> --- a/Documentation/devicetree/bindings/net/fsl,fec.yaml
+> +++ b/Documentation/devicetree/bindings/net/fsl,fec.yaml
+> @@ -166,6 +166,21 @@ properties:
+>      description:
+>        If present, indicates that the hardware supports waking up via magic packet.
+>  
+> +  fsl,fec-tx-clock-output:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description:
+> +      If present, ENETx_TX_CLK output driver is enabled.
+> +      If not present, ENETx_TX_CLK output driver is disabled.
 
-Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+Here...
+
+> +
+> +  fsl,fec-tx-clk-as-ref-clock:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description:
+> +      If present, gets ENETx TX reference clk from the ENETx_TX_CLK pin. In
+> +      this use case, an external OSC provides the clock for both the external
+> +      PHY and the internal controller.
+> +      If not present, ENETx TX reference clock is driven by ref_enetpllx. This
+> +      clock is also output to pins via the IOMUX.ENET_REF_CLKx function.
+
+and here:
+In general, Common Clock Framework and its bindings should be used for
+handling clock providers and consumers. Why it cannot be used for these
+two cases?
+
+
+Best regards,
+Krzysztof
+
