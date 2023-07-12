@@ -2,182 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D51FE750F9C
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 19:24:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E0A1750F9F
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 19:25:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231924AbjGLRYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 13:24:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36178 "EHLO
+        id S233126AbjGLRZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 13:25:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233110AbjGLRYD (ORCPT
+        with ESMTP id S229693AbjGLRZU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 13:24:03 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 691431BF9
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 10:24:02 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id d75a77b69052e-40292285362so53581981cf.3
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 10:24:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1689182641; x=1691774641;
-        h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=V0gX44TE7mjBcf9cu5WInDRa2giGcHQfDuq4xceC3Gg=;
-        b=giHk1mdZSw30NIf2QZN/2ZIujvhFj3evzt8zopzPWEslXz3fks22mhzrpZKVgRsk79
-         0a/0JmMSv7+llJAKa3923QwGimijgV0WorqrdzHvg0735xYE406yoinVgYuoj4TGbVRz
-         NU3KN9EtgQqPP9GJjidS2VToyEBfyK8jivios=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689182641; x=1691774641;
-        h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=V0gX44TE7mjBcf9cu5WInDRa2giGcHQfDuq4xceC3Gg=;
-        b=honQj9ISreOpq7b7koKwRErMst3nO1wPI8Uj9sdNF18Go8H/hg3HhBM9wusWujaWhl
-         h9gpHdd4cl0HpdKvsNzAfoMJtdSTwYlOcLlHnmTEXu345iSH35kVNzy2CU1IOLolsEDZ
-         QDf1U+zePtJkfnI0h1+Yefz1oCj0AKsPzZ6iytJc0hvBzxDtdLZEcR6M7RYqvEJo/+7d
-         6Bsm2CImfVf7Y+MpT2MmXnTVk/Jw7rgxUScBCMIotNHRXqzdn8Xei+tJ/vGfRc+g1bpv
-         KHYap/hW4gq/HDUU7B84U9tFMM93L4h++3iA+VC4ZrMjQtT11i83cKqiFORvUTmA9PBW
-         hbIA==
-X-Gm-Message-State: ABy/qLa2MbcRiOZpLJTKWPMPTr2QFtMjwf4iJXU3XWj7EFLIs1XW+kN0
-        dfY6jzPpkKcFKID5EypUBS4pIg==
-X-Google-Smtp-Source: APBJJlG+8xKZy6g9CpRj1Wj81vgTMsdF00G4jwQaZYlzMFzW0GrTupKfsPfnKM/Fy7sB1ZwOZmFTGA==
-X-Received: by 2002:a05:622a:450:b0:403:b6bf:ee50 with SMTP id o16-20020a05622a045000b00403b6bfee50mr8133345qtx.14.1689182641184;
-        Wed, 12 Jul 2023 10:24:01 -0700 (PDT)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id q14-20020a05622a04ce00b00400a99b8b38sm2392510qtx.78.2023.07.12.10.23.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Jul 2023 10:24:00 -0700 (PDT)
-From:   Florian Fainelli <florian.fainelli@broadcom.com>
-To:     bcm-kernel-feedback-list@broadcom.com,
-        Christian Marangi <ansuelsmth@gmail.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        =?iso-8859-2?q?Rafa=B3_Mi=B3ecki?= <zajec5@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        =?iso-8859-1?b?UmVu6Q==?= Kjellerup <rk.katana.steel@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Aleksey Nasibulin <alealexpro100@ya.ru>, stable@vger.kernel.org
-Subject: Re: [PATCH] ARM: dts: BCM5301X: Extend RAM to full 256MB for Linksys EA6500 V2
-Date:   Wed, 12 Jul 2023 10:23:57 -0700
-Message-Id: <20230712172357.2601721-1-florian.fainelli@broadcom.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230712014017.28123-1-ansuelsmth@gmail.com>
-References: <20230712014017.28123-1-ansuelsmth@gmail.com>
+        Wed, 12 Jul 2023 13:25:20 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B82721991;
+        Wed, 12 Jul 2023 10:25:18 -0700 (PDT)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36CHP7xV029959;
+        Wed, 12 Jul 2023 17:25:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=qcppdkim1;
+ bh=1wPLzPc/1jIaBNBmXpH09hWBnpteM5sX8SPYyixygLI=;
+ b=a4qyYejLLO/sZ+4NhI7185eu3vBqCZAIDMh/qBPd01mhF4hjBlyLyWmUyyOmHy845GCF
+ 8hjReFCl98FiwJwtbLo1Ps47XIlwqKDwyH+eo96zr4m4XJdrkRXntQ3v1Gr+b0CET/vj
+ m1cpONI70Bg2C083CHWRpYHda1TJsgW4QMSKD+2Esdq0QSPUFYnTjW3YPs0XDkH6HovB
+ fodGxIb9+PDoC5zC+EGtc+F5SoJafNzB5wvVFP/eHZm2GmhJduwUlBh+6ifWC064avHE
+ 2zFX89M7EIgH3rDoB1GWlTknGUGUlJ/f/x8QOIr/8RywL+HbM0XMsXxg5SxtnuiYPOJs WQ== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rseqpt706-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 12 Jul 2023 17:25:07 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36CHP6rv015992
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 12 Jul 2023 17:25:06 GMT
+Received: from localhost (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 12 Jul
+ 2023 10:25:05 -0700
+From:   Oza Pawandeep <quic_poza@quicinc.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
+        <jiles@qti.qualcomm.com>
+CC:     Oza Pawandeep <quic_poza@quicinc.com>
+Subject: [PATCH] cpuidle, ACPI: Evaluate LPI arch_flags for broadcast timer
+Date:   Wed, 12 Jul 2023 10:24:58 -0700
+Message-ID: <20230712172458.2507434-1-quic_poza@quicinc.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="00000000000050346506004d7ba6"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: kOT8OYHd8rloGTDw_RX9znpJ5YUDbzEl
+X-Proofpoint-ORIG-GUID: kOT8OYHd8rloGTDw_RX9znpJ5YUDbzEl
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-12_11,2023-07-11_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
+ bulkscore=0 suspectscore=0 phishscore=0 mlxlogscore=242 clxscore=1011
+ impostorscore=0 adultscore=0 malwarescore=0 priorityscore=1501 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2305260000
+ definitions=main-2307120156
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---00000000000050346506004d7ba6
-Content-Transfer-Encoding: 8bit
+Arm® Functional Fixed Hardware Specification defines LPI states,
+which provides an architectural context loss flags field
+that can be used to describe the context that might be lost
+when an LPI state is entered.
 
-From: Florian Fainelli <f.fainelli@gmail.com>
+- Core context Lost
+	- General purpose registers.
+	- Floating point and SIMD registers.
+	- System registers, include the System register based
+	- generic timer for the core.
+	- Debug register in the core power domain.
+	- PMU registers in the core power domain.
+	- Trace register in the core power domain.
+- Trace context loss
+- GICR
+- GICD
 
-On Wed, 12 Jul 2023 03:40:17 +0200, Christian Marangi <ansuelsmth@gmail.com> wrote:
-> From: Aleksey Nasibulin <alealexpro100@ya.ru>
-> 
-> Linksys ea6500-v2 have 256MB of ram. Currently we only use 128MB.
-> Expand the definition to use all the available RAM.
-> 
-> Fixes: 03e96644d7a8 ("ARM: dts: BCM5301X: Add basic DT for Linksys EA6500 V2")
-> Signed-off-by: Aleksey Nasibulin <alealexpro100@ya.ru>
-> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> Cc: stable@vger.kernel.org
-> ---
+Qualcomm's custom CPUs preserves the architectural state,
+including keeping the power domain for local timers active.
+when core is power gated, the local timers are sufficient to
+wake the core up without needing broadcast timer.
 
-Applied to https://github.com/Broadcom/stblinux/commits/devicetree/next, thanks!
---
-Florian
+The patch fixes the evaluation of cpuidle arch_flags,
+and moves only to broadcast timer if core context lost
+is defined in ACPI LPI.
 
---00000000000050346506004d7ba6
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+Signed-off-by: Oza Pawandeep <quic_poza@quicinc.com>
 
-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
-riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
-QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
-UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
-M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
-Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
-14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
-a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
-XzCCBVgwggRAoAMCAQICDBP8P9hKRVySg3Qv5DANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
-RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
-UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE4MTFaFw0yNTA5MTAxMjE4MTFaMIGW
-MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
-BgNVBAoTDUJyb2FkY29tIEluYy4xGTAXBgNVBAMTEEZsb3JpYW4gRmFpbmVsbGkxLDAqBgkqhkiG
-9w0BCQEWHWZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
-AQ8AMIIBCgKCAQEA+oi3jMmHltY4LMUy8Up5+1zjd1iSgUBXhwCJLj1GJQF+GwP8InemBbk5rjlC
-UwbQDeIlOfb8xGqHoQFGSW8p9V1XUw+cthISLkycex0AJ09ufePshLZygRLREU0H4ecNPMejxCte
-KdtB4COST4uhBkUCo9BSy1gkl8DJ8j/BQ1KNUx6oYe0CntRag+EnHv9TM9BeXBBLfmMRnWNhvOSk
-nSmRX0J3d9/G2A3FIC6WY2XnLW7eAZCQPa1Tz3n2B5BGOxwqhwKLGLNu2SRCPHwOdD6e0drURF7/
-Vax85/EqkVnFNlfxtZhS0ugx5gn2pta7bTdBm1IG4TX+A3B1G57rVwIDAQABo4IB3jCCAdowDgYD
-VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
-ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
-CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
-MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
-d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
-hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
-bDAoBgNVHREEITAfgR1mbG9yaWFuLmZhaW5lbGxpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
-BgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUUwwfJ6/F
-KL0fRdVROal/Lp4lAF0wDQYJKoZIhvcNAQELBQADggEBAKBgfteDc1mChZjKBY4xAplC6uXGyBrZ
-kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
-2s1RH00JOkO5SkYdwCHj4DB9B7KEnLatJtD8MBorvt+QxTuSh4ze96Jz3kEIoHMvwGFkgObWblsc
-3/YcLBmCgaWpZ3Ksev1vJPr5n8riG3/N4on8gO5qinmmr9Y7vGeuf5dmZrYMbnb+yCBalkUmZQwY
-NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
-AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
-LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
-/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIOAnyZznxpuAtMyH
-Bw8ID3dYZ1toHC1fql55PlN2FmG5MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
-AQkFMQ8XDTIzMDcxMjE3MjQwMVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
-AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
-MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCFYDpc32AatVIAztv1CHekgIa35JCB+lZf
-+AbRe3Sr0AZFlysI29LwnWLD6tNUy/23NVg+paeMH5OqKmSlNHrN3Hp8JnsnJIPGBA+sSfvxpXJz
-OP7gDTZIYzt2eYu+0Pt2Kr97IFyQ0BoYhEfU8Z5M8nlDS4yiAm1Js196T0276kqipPJ4+TxwnZqg
-fnVnQGvyjm48Wloe3oTjificymA9ouab6fVZIs6X4hqQQ1awLW/pRIaFyrGC7/WkfTNmX8At9e21
-NZJTX0uhJOV2zcbps3LBBE9r4fNHK0FOSlXz3hiUb6GkVA5CEix83I4/IblCuzkNWfgn1aCqRjQ7
-vo9P
---00000000000050346506004d7ba6--
+diff --git a/arch/arm64/include/asm/acpi.h b/arch/arm64/include/asm/acpi.h
+index bd68e1b7f29f..9c335968316c 100644
+--- a/arch/arm64/include/asm/acpi.h
++++ b/arch/arm64/include/asm/acpi.h
+@@ -42,6 +42,24 @@
+ #define ACPI_MADT_GICC_SPE  (offsetof(struct acpi_madt_generic_interrupt, \
+ 	spe_interrupt) + sizeof(u16))
+ 
++/*
++ * Arm® Functional Fixed Hardware Specification Version 1.2.
++ * Table 2: Arm Architecture context loss flags
++ */
++#define CPUIDLE_CORE_CTXT		BIT(0) /* Core context Lost */
++
++#ifndef arch_acpi_lpi_timer_stopped
++static __always_inline bool arch_acpi_lpi_timer_stopped(u32 arch_flags)
++{
++  return arch_flags & CPUIDLE_CORE_CTXT;
++}
++#define arch_acpi_lpi_timer_stopped arch_acpi_lpi_timer_stopped
++#endif
++
++#define CPUIDLE_TRACE_CTXT		BIT(1) /* Trace context loss */
++#define CPUIDLE_GICR_CTXT		BIT(2) /* GICR */
++#define CPUIDLE_GICD_CTXT		BIT(3) /* GICD */
++
+ /* Basic configuration for ACPI */
+ #ifdef	CONFIG_ACPI
+ pgprot_t __acpi_get_mem_attribute(phys_addr_t addr);
+diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
+index 9718d07cc2a2..8ea1f2b3bf96 100644
+--- a/drivers/acpi/processor_idle.c
++++ b/drivers/acpi/processor_idle.c
+@@ -1221,7 +1221,7 @@ static int acpi_processor_setup_lpi_states(struct acpi_processor *pr)
+ 		strscpy(state->desc, lpi->desc, CPUIDLE_DESC_LEN);
+ 		state->exit_latency = lpi->wake_latency;
+ 		state->target_residency = lpi->min_residency;
+-		if (lpi->arch_flags)
++		if (arch_acpi_lpi_timer_stopped(lpi->arch_flags))
+ 			state->flags |= CPUIDLE_FLAG_TIMER_STOP;
+ 		if (i != 0 && lpi->entry_method == ACPI_CSTATE_FFH)
+ 			state->flags |= CPUIDLE_FLAG_RCU_IDLE;
+diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+index d584f94409e1..b24f1cd1cebb 100644
+--- a/include/linux/acpi.h
++++ b/include/linux/acpi.h
+@@ -1471,6 +1471,14 @@ static inline int lpit_read_residency_count_address(u64 *address)
+ }
+ #endif
+ 
++#ifndef arch_acpi_lpi_timer_stopped
++static __always_inline bool arch_acpi_lpi_timer_stopped(u32 arch_flags)
++{
++  return (arch_flags != 0);
++}
++#define arch_acpi_lpi_timer_stopped arch_acpi_lpi_timer_stopped
++#endif
++
+ #ifdef CONFIG_ACPI_PPTT
+ int acpi_pptt_cpu_is_thread(unsigned int cpu);
+ int find_acpi_cpu_topology(unsigned int cpu, int level);
+-- 
+2.25.1
+
