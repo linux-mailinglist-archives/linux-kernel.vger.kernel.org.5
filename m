@@ -2,98 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 094CD750FA7
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 19:26:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0111750FA8
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 19:29:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233247AbjGLR0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 13:26:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37724 "EHLO
+        id S232714AbjGLR26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 13:28:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233272AbjGLR0I (ORCPT
+        with ESMTP id S229757AbjGLR25 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 13:26:08 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BF121BD;
-        Wed, 12 Jul 2023 10:26:06 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8F19461888;
-        Wed, 12 Jul 2023 17:26:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 568FBC433A9;
-        Wed, 12 Jul 2023 17:26:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689182765;
-        bh=pG6AfeQoMQzPU4mvPY+9mXce5KZBxglpwtexIBwtYiM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=XRowKNSn1KVUX3wG5wtCbshtxTkV3qoGx60izDxqap1T6aBFZjWbARoKikKbawfAb
-         b/4/XBiDgUsoGDJl/kH+PMYI7Ocq+m34rE1cf9Cft4bZFJDYlXHDH3x4d2KfC61ds1
-         z83EIvQyIKHcXHo7zh6EhnvADi9C6SoKrC93g2uuHe1Gv1BrjCNNTYRU2tQvgBXEt8
-         omR7EjZhMLN0Mq22Zb/ynOdZMHqTfoswFU+rt3uuIDrkvdEsxdfRAv3gXYb6LWoCWb
-         UlQe5CYSXwHee90E0pe6Q5+XCpF/jslF29tTY9JyZh5xOsgVKOc7v3OKMT0ZfBNrEt
-         NyAN+iJqLP3Kw==
-Date:   Wed, 12 Jul 2023 10:26:03 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Yunsheng Lin <yunshenglin0825@gmail.com>,
-        <davem@davemloft.net>, <pabeni@redhat.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Liang Chen <liangchen.linux@gmail.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH v5 RFC 1/6] page_pool: frag API support for 32-bit arch
- with 64-bit DMA
-Message-ID: <20230712102603.5038980e@kernel.org>
-In-Reply-To: <46ad09d9-6596-cf07-5cab-d6ceb1e36f3c@huawei.com>
-References: <20230629120226.14854-1-linyunsheng@huawei.com>
-        <20230629120226.14854-2-linyunsheng@huawei.com>
-        <20230707170157.12727e44@kernel.org>
-        <3d973088-4881-0863-0207-36d61b4505ec@gmail.com>
-        <20230710113841.482cbeac@kernel.org>
-        <8639b838-8284-05a2-dbc3-7e4cb45f163a@intel.com>
-        <20230711093705.45454e41@kernel.org>
-        <1bec23ff-d38b-3fdf-1bb3-89658c1d465a@intel.com>
-        <46ad09d9-6596-cf07-5cab-d6ceb1e36f3c@huawei.com>
+        Wed, 12 Jul 2023 13:28:57 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C22A31BD
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 10:28:55 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id d75a77b69052e-401d1d967beso24271cf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 10:28:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689182935; x=1691774935;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Jf6jn4Tmh6XLNjLqmxZGPisxyJ73A2eJOVy3NQS6PLk=;
+        b=gImBrw0t0mlBNIdvg2GkS2g94nraaakeN5+Br49MJyHjrMvlJK5XCtmIDFedMbMdd1
+         ujJikBSb04kucgbR5hZkIqpv8jA/t3CMQyLI3K+4QhmH9qGNWSh7w3PpSVGdyYGJoq4G
+         0fhFBjjWSJEY6ebihsAmdhf9vk/S1IcqokulaBoFu/OKxrVTUvvazboA0alD6VQwddug
+         IKGSr5C8Ot53Js+sFpnigfBxJjmby/JwF0ZQU+nLCFtoru0GpULYlm+Hti5PMMOvbuHh
+         uUY/aL8JW0OyCMoLRr3CF3W0Wa6Pz88G+JoaocPc9364U+XPy+DdLnXbWytx/BaVzBFU
+         mP2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689182935; x=1691774935;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Jf6jn4Tmh6XLNjLqmxZGPisxyJ73A2eJOVy3NQS6PLk=;
+        b=OZzhsFtCDzIA+WViV+dmAsR9nTSkiG/ugK1RnFDQuRMWvmmlVfFXhgSpqlBQ4D39jf
+         /18sQGFa/uGE57b01IzVuQ6n20QBWLshkCHiNm/1P3bcA8pYnRwpBH6OGl/ueRY9BEM6
+         EugEGquRnOEFwxfL4MppyTWlabMxeUR1mqVfafx9wLLSSiwsZGDrW1aumnG5X18FFzUZ
+         CRc9sFZoWLN+6UDjCFwd7ORUftcCDZw//KPoZNVwnwafUIPqJvBhw29PsovKvCHjNMDQ
+         rceTR6k+WPLl6P0RrW4T6AhF0yAsZ3RNCAlgdmJ0P8GHJDLUH8KuG6KYUnsSKRY2BjVg
+         9PAQ==
+X-Gm-Message-State: ABy/qLanmbBlFTQpwdaj8yD/8C+VBMwO/VJSoiRvbMBd8drQtPec7hGv
+        EqzQtaJ9skWdz/IVl0JiZOjWF/DC8Kvyn2GHo2CX5A==
+X-Google-Smtp-Source: APBJJlFiEd58mMKPb53D3NFQACKs9rJ08QTBvtKayfJE2Kg/fvO/VuY1W/RjrtlNPXdR7s0pQ4k5iqg4njFJFhYd770=
+X-Received: by 2002:ac8:5e0d:0:b0:3ed:6bde:9681 with SMTP id
+ h13-20020ac85e0d000000b003ed6bde9681mr344009qtx.0.1689182934850; Wed, 12 Jul
+ 2023 10:28:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <cover.1689024635.git.anupnewsmail@gmail.com> <11543b39f97a7e2f9eac76c1233f1b1caa3f2c48.1689024635.git.anupnewsmail@gmail.com>
+In-Reply-To: <11543b39f97a7e2f9eac76c1233f1b1caa3f2c48.1689024635.git.anupnewsmail@gmail.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 12 Jul 2023 10:28:42 -0700
+Message-ID: <CAP-5=fXT3a4JE6u8zXf3=xFbOGTre3WD63SMPrA_iSVpgHjDVA@mail.gmail.com>
+Subject: Re: [PATCH v3 4/6] scripts: python: Add trace end processing and JSON output
+To:     Anup Sharma <anupnewsmail@gmail.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 12 Jul 2023 20:34:12 +0800 Yunsheng Lin wrote:
-> >> C sources can include $path/page_pool.h, headers should generally only
-> >> include $path/page_pool/types.h.  
-> 
-> Does spliting the page_pool.h as above fix the problem about including
-> a ton of static inline functions from "linux/dma-mapping.h" in skbuff.c?
-> 
-> As the $path/page_pool/helpers.h which uses dma_get_cache_alignment()
-> must include the "linux/dma-mapping.h" which has dma_get_cache_alignment()
-> defining as a static inline function.
-> and if skbuff.c include $path/page_pool.h or $path/page_pool/helpers.h,
-> doesn't we still have the same problem? Or do I misunderstand something
-> here?
+On Mon, Jul 10, 2023 at 4:13=E2=80=AFPM Anup Sharma <anupnewsmail@gmail.com=
+> wrote:
+>
+> Inside the trace end function the final output will be dumped
+> to standard output in JSON gecko format. Additionally, constants
+> such as USER_CATEGORY_INDEX, KERNEL_CATEGORY_INDEX, CATEGORIES, and
+> PRODUCT are defined to provide contextual information.
+>
+> Signed-off-by: Anup Sharma <anupnewsmail@gmail.com>
 
-I should have clarified that "types.h" should also include pure
-function declarations (and possibly static line wrappers like
-pure get/set functions which only need locally defined types).
+Acked-by: Ian Rogers <irogers@google.com>
 
-The skbuff.h only needs to include $path/page_pool/types.h, right?
+> ---
+>  .../scripts/python/firefox-gecko-converter.py | 34 ++++++++++++++++++-
+>  1 file changed, 33 insertions(+), 1 deletion(-)
+>
+> diff --git a/tools/perf/scripts/python/firefox-gecko-converter.py b/tools=
+/perf/scripts/python/firefox-gecko-converter.py
+> index 0b8a86bdcab1..39818a603265 100644
+> --- a/tools/perf/scripts/python/firefox-gecko-converter.py
+> +++ b/tools/perf/scripts/python/firefox-gecko-converter.py
+> @@ -24,8 +24,40 @@ from Core import *
+>  thread_map =3D {}
+>  start_time =3D None
+>
+> +# Follow Brendan Gregg's Flamegraph convention: orange for kernel and ye=
+llow for user
+> +CATEGORIES =3D [
+> +    {'name': 'User', 'color': 'yellow', 'subcategories': ['Other']},
+> +    {'name': 'Kernel', 'color': 'orange', 'subcategories': ['Other']}
+> +]
 
-I know that Olek has a plan to remove the skbuff dependency completely
-but functionally / for any future dependencies - this should work?
+A follow up could be to make these command line options, defaulting to
+orange and yellow.
+
+Thanks,
+Ian
+
+> +
+> +# The product name is used by the profiler UI to show the Operating syst=
+em and Processor.
+> +PRODUCT =3D os.popen('uname -op').read().strip()
+> +
+>  def trace_end():
+> -       pass
+> +    thread_array =3D thread_map.values()))
+> +
+> +    result =3D {
+> +        'meta': {
+> +            'interval': 1,
+> +            'processType': 0,
+> +            'product': PRODUCT,
+> +            'stackwalk': 1,
+> +            'debug': 0,
+> +            'gcpoison': 0,
+> +            'asyncstack': 1,
+> +            'startTime': start_time,
+> +            'shutdownTime': None,
+> +            'version': 24,
+> +            'presymbolicated': True,
+> +            'categories': CATEGORIES,
+> +            'markerSchema': []
+> +            },
+> +        'libs': [],
+> +        'threads': thread_array,
+> +        'processes': [],
+> +        'pausedRanges': []
+> +    }
+> +    json.dump(result, sys.stdout, indent=3D2)
+>
+>  def process_event(param_dict):
+>         global start_time
+> --
+> 2.34.1
+>
