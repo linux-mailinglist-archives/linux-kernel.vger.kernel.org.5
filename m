@@ -2,99 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1939750F2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 19:02:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81070750F31
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 19:03:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232266AbjGLRCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 13:02:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56432 "EHLO
+        id S232839AbjGLRDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 13:03:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232138AbjGLRCp (ORCPT
+        with ESMTP id S232776AbjGLRCu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 13:02:45 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E54F01BD5;
-        Wed, 12 Jul 2023 10:02:43 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qJdEc-0005DU-C3; Wed, 12 Jul 2023 19:02:38 +0200
-Message-ID: <d8403c45-3561-4759-f6c2-d18afa5e323a@leemhuis.info>
-Date:   Wed, 12 Jul 2023 19:02:34 +0200
+        Wed, 12 Jul 2023 13:02:50 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA26119A7
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 10:02:48 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2b6f943383eso117355181fa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 10:02:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1689181367; x=1691773367;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OvoEOajiEwYXBD3xzLluGfgCVtGjTJSaHMHQydgzNEE=;
+        b=cqQDuh7KkBC7Bp6ndhg7nXNYsINnQl/XnlT+1UAc8RaZTq+BuxgRGEoG8mqoOpE6js
+         XKPABgipIV5zI1bbzGToaFdttSQ9on3vO/0h7AHhN2349r+/o4nXk2tQ9zir/uj+PMqf
+         7U3DT3YK7cdjRWUEqF0PhnLEVmVuRgxy0mUC0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689181367; x=1691773367;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OvoEOajiEwYXBD3xzLluGfgCVtGjTJSaHMHQydgzNEE=;
+        b=MlOVAnht5toPfNCnVlkDiTTUAMKKnckqIG8wzrjP7B1CHihMqB+ECb5oAcIwZlc0Zf
+         nu+LW8O4tN83rjP7DOCDAXOuYpwL0aJoX/eN4wGyhQt06eKpxS+15QQmk/tdYlQKgPuu
+         4cCfDPlq4lk2TkhtCmnfaRhXPmZkCI+JIAYKLjYjO2DirGJqMeelTKh/iBTtaqcZhG09
+         kICTnFAgv3aU1reCs1bcmnjOMO/1gJeu4Y54t0K2cdO8Jp++W7tcUZCSLBzhqnZ9AzSh
+         zSTpa2b6oH50F1UZ5zLTJXUNTLgiOw4oUQhVRErxmh2ox++wjP3qilzEv89iHOBt26XR
+         ktbA==
+X-Gm-Message-State: ABy/qLYpSNYyFcZVqaGgUGRXJ8JG6CLeC0DcRntNk+tf9dslJ54VFnOT
+        T+T7GesIACFm7+G6lz/Ts5nUjYbh8Tl7cKPE9aKQOA==
+X-Google-Smtp-Source: APBJJlGlT858DQ/NfqPA3OlYGxIXp57HPZH8ded5Q4ToS48ybKGBOA2p1X6hcXClrEz/A6yz7yx5y/8vtOtl4ryFQpk=
+X-Received: by 2002:a2e:8909:0:b0:2b6:9f5d:e758 with SMTP id
+ d9-20020a2e8909000000b002b69f5de758mr19193207lji.9.1689181367032; Wed, 12 Jul
+ 2023 10:02:47 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Content-Language: en-US, de-DE
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Sasha Levin <sashal@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-References: <cover.1689008220.git.linux@leemhuis.info>
- <2023071002-phrasing-tranquil-49d6@gregkh>
- <a97a37bf-86b5-cd8e-a8ce-00e38720cee4@leemhuis.info>
- <2023071221-blade-reactive-0707@gregkh>
-From:   Thorsten Leemhuis <linux@leemhuis.info>
-Subject: Re: [RFC PATCH v1 0/3] docs: stable-kernel-rules: add delayed
- backporting option and a few tweaks
-In-Reply-To: <2023071221-blade-reactive-0707@gregkh>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1689181364;0e7d24e0;
-X-HE-SMSGID: 1qJdEc-0005DU-C3
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20230711233816.2187577-1-dhavale@google.com>
+In-Reply-To: <20230711233816.2187577-1-dhavale@google.com>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Wed, 12 Jul 2023 13:02:35 -0400
+Message-ID: <CAEXW_YQvpiFEaaNoS=Msgi17mU3kZD+q8bNBaHYasMArG9aPig@mail.gmail.com>
+Subject: Re: [PATCH v1] rcu: Fix and improve RCU read lock checks when !CONFIG_DEBUG_LOCK_ALLOC
+To:     Sandeep Dhavale <dhavale@google.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-erofs@lists.ozlabs.org, xiang@kernel.org,
+        Will Shiu <Will.Shiu@mediatek.com>, kernel-team@android.com,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12.07.23 17:16, Greg KH wrote:
-> On Wed, Jul 12, 2023 at 11:30:30AM +0200, Thorsten Leemhuis wrote:
->> While working on the latter I noticed one more thing:
->>
->> ```
->>     .. warning::
->>        The -stable-rc tree is a snapshot in time of the stable-queue
->> tree and
->>        will change frequently, hence will be rebased often. It should
->> only be
->>        used for testing purposes (e.g. to be consumed by CI systems).
->> ```
-> [...]
->> I'll thus likely
->> change the text to something like this,
->> unless I'm missing something or someone has a better idea:
->> ```
->>   .. warning::
->>      The branches in the -stable-rc tree are rebased each time a new -rc
->>      is released, as they are created by taking the latest release and
->>      applying the patches from the stable-queue on top.
-> 
-> Yes, that is true, but they are also rebased sometimes in intermediate
-> places, before a -rc is released, just to give CI systems a chance to
-> test easier.
-> 
-> These are ONLY for CI systems to use, nothing else should be touching
-> them.  So I think the current text is correct, what am I missing?
+On Tue, Jul 11, 2023 at 7:38=E2=80=AFPM Sandeep Dhavale <dhavale@google.com=
+> wrote:
+>
+> Currently if CONFIG_DEBUG_LOCK_ALLOC is not set
+>
+> - rcu_read_lock_held() always returns 1
+> - rcu_read_lock_any_held() may return 0 with CONFIG_PREEMPT_RCU
+>
+> This is inconsistent and it was discovered when trying a fix
+> for problem reported [1] with CONFIG_DEBUG_LOCK_ALLOC is not
+> set and CONFIG_PREEMPT_RCU is enabled. Gist of the problem is
+> that EROFS wants to detect atomic context so it can do inline
+> decompression whenever possible, this is important performance
+> optimization. It turns out that z_erofs_decompressqueue_endio()
+> can be called from blk_mq_flush_plug_list() with rcu lock held
+> and hence fix uses rcu_read_lock_any_held() to decide to use
+> sync/inline decompression vs async decompression.
+>
+> As per documentation, we should return lock is held if we aren't
+> certain. But it seems we can improve the checks for if the lock
+> is held even if CONFIG_DEBUG_LOCK_ALLOC is not set instead of
+> hardcoding to always return true.
+>
+> * rcu_read_lock_held()
+> - For CONFIG_PREEMPT_RCU using rcu_preempt_depth()
+> - using preemptible() (indirectly preempt_count())
+>
+> * rcu_read_lock_bh_held()
+> - For CONFIG_PREEMPT_RT Using in_softirq() (indirectly softirq_cont())
+> - using preemptible() (indirectly preempt_count())
+>
+> Lastly to fix the inconsistency, rcu_read_lock_any_held() is updated
+> to use other rcu_read_lock_*_held() checks.
+>
+> Two of the improved checks are moved to kernel/rcu/update.c because
+> rcupdate.h is included from the very low level headers which do not know
+> what current (task_struct) is so the macro rcu_preempt_depth() cannot be
+> expanded in the rcupdate.h. See the original comment for
+> rcu_preempt_depth() in patch at [2] for more information.
+>
+> [1]
+> https://lore.kernel.org/all/20230621220848.3379029-1-dhavale@google.com/
+> [2]
+> https://lore.kernel.org/all/1281392111-25060-8-git-send-email-paulmck@lin=
+ux.vnet.ibm.com/
+>
+> Reported-by: Will Shiu <Will.Shiu@mediatek.com>
+> Signed-off-by: Sandeep Dhavale <dhavale@google.com>
+> ---
+>  include/linux/rcupdate.h | 12 +++---------
+>  kernel/rcu/update.c      | 21 ++++++++++++++++++++-
+>  2 files changed, 23 insertions(+), 10 deletions(-)
+>
+> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+> index 5e5f920ade90..0d1d1d8c2360 100644
+> --- a/include/linux/rcupdate.h
+> +++ b/include/linux/rcupdate.h
+> @@ -319,14 +319,11 @@ int rcu_read_lock_any_held(void);
+>  # define rcu_lock_acquire(a)           do { } while (0)
+>  # define rcu_lock_release(a)           do { } while (0)
+>
+> -static inline int rcu_read_lock_held(void)
+> -{
+> -       return 1;
+> -}
+> +int rcu_read_lock_held(void);
+>
+>  static inline int rcu_read_lock_bh_held(void)
+>  {
+> -       return 1;
+> +       return !preemptible() || in_softirq();
+>  }
+>
+>  static inline int rcu_read_lock_sched_held(void)
+> @@ -334,10 +331,7 @@ static inline int rcu_read_lock_sched_held(void)
+>         return !preemptible();
+>  }
+>
+> -static inline int rcu_read_lock_any_held(void)
+> -{
+> -       return !preemptible();
+> -}
+> +int rcu_read_lock_any_held(void);
+>
+>  static inline int debug_lockdep_rcu_enabled(void)
+>  {
+> diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
+> index 19bf6fa3ee6a..b34fc5bb96cf 100644
+> --- a/kernel/rcu/update.c
+> +++ b/kernel/rcu/update.c
+> @@ -390,8 +390,27 @@ int rcu_read_lock_any_held(void)
+>  }
+>  EXPORT_SYMBOL_GPL(rcu_read_lock_any_held);
+>
+> -#endif /* #ifdef CONFIG_DEBUG_LOCK_ALLOC */
+> +#else /* #ifdef CONFIG_DEBUG_LOCK_ALLOC */
+>
+> +int rcu_read_lock_held(void)
+> +{
+> +       if (IS_ENABLED(CONFIG_PREEMPT_RCU))
+> +               return rcu_preempt_depth();
+> +       return !preemptible();
+> +}
+> +EXPORT_SYMBOL_GPL(rcu_read_lock_held);
+> +
+> +int rcu_read_lock_any_held(void)
+> +{
+> +       if (rcu_read_lock_held() ||
+> +           rcu_read_lock_bh_held() ||
+> +           rcu_read_lock_sched_held())
+> +               return 1;
+> +       return !preemptible();
 
-That I misunderstood things and forgot about the "rebased sometimes in
-intermediate places" aspect I once knew about. Sorry. I'll leave the
-text as it is then.
+Actually even the original code is incorrect (the lockdep version)
+since preemptible() cannot be relied upon if CONFIG_PREEMPT_COUNT is
+not set. However, that's debug code. In this case, it is a real
+user (the fs code). In non-preemptible kernels, we are always in an
+RCU-sched section. So you can't really see if anyone called your code
+under rcu_read_lock(). The rcu_read_lock/unlock() would be getting
+NOOPed. In such a kernel, it will always tell your code it is in an
+RCU reader. That's not ideal for that erofs code?
 
-Nevertheless makes me wonder: is that strategy wise in times when some
-ordinary users and some distributions are building kernels straight from
-git repos instead of tarballs? I'm one of those, as I distribute
-stable-rc packages for Fedora here:
-https://copr.fedorainfracloud.org/groups/g/kernel-vanilla/coprs/
+Also, per that erofs code:
+        /* Use (kthread_)work and sync decompression for atomic contexts on=
+ly */
+        if (!in_task() || irqs_disabled() || rcu_read_lock_any_held()) {
 
-And the "rebased sometimes in intermediate places" aspect complicated
-things for me (my scripts handle that and apparently I forgot about that
-since I wrote them; uhhps :-/ ).
+I guess you are also assuming that rcu_read_lock_any_held() tells you
+something about atomicity but strictly speaking, it doesn't because
+preemptible RCU readers are preemptible. You can't block but
+preemption is possible so it is not "atomic". Maybe you meant "cannot
+block"?
 
-But whatever, not that important, feel free to ignore this remark. And I
-can see why you are doing it the way you do, too.
+As such this patch looks correct to me, one thing I noticed is that
+you can check rcu_is_watching() like the lockdep-enabled code does.
+That will tell you also if a reader-section is possible because in
+extended-quiescent-states, RCU readers should be non-existent or
+that's a bug.
 
-Thx for you helpful feedback!
+Could you also verify that this patch does not cause bloating of the
+kernel if lockdep is disabled?
 
-Ciao, Thorsten
+thanks,
+
+ - Joel
