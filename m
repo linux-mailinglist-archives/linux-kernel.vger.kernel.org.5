@@ -2,50 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B8E4751236
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 23:10:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8188E75123D
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 23:10:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232167AbjGLVKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 17:10:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35590 "EHLO
+        id S232530AbjGLVKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 17:10:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229669AbjGLVK3 (ORCPT
+        with ESMTP id S229640AbjGLVK3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 12 Jul 2023 17:10:29 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DF721FC9;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ADB41FCC;
         Wed, 12 Jul 2023 14:10:25 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A139261935;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A97386192E;
         Wed, 12 Jul 2023 21:10:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 09C7BC433C9;
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 0FCF7C433C8;
         Wed, 12 Jul 2023 21:10:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1689196224;
-        bh=7YNX2eCqh2XcL5l5EoeyDvmiDKyeZbIUoTDN0iG+R24=;
+        bh=gkJ3RdQJQAVOa+LZoIl/+VCWMq+ZKQ81OiBGIjnFgeg=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=qEm//YgB154Qg7Ihkag/SBCZ6pScgec1W9aZtmRvI8ILxx9LsxlBvW3/C5yYx9zkm
-         /rwVPzLAzFKqwbkg2bN6ZFgtsV9K0l7nHF7X4d/xypyiTilyrW7JPPbol3Gp39KFeE
-         4upFpkYeEhDELWAj82WZ5tCh5YXpoZY1g/QQU2nfcv/xkzPh42ZXIRbJPi/86mkeSD
-         Gy7E3hHQWFCrCEu2xpQywVBi5M1dIDuoktwSyPoIGPabg56yuys0wnGso7X/WP8LI7
-         slz+7h/aAyhQD1vZbfBTkxD3lBK4ztUSZpy7jl6BRgbmXwA3riLxODsG0tfASAUUCC
-         wk767vK93BtIg==
+        b=SK/DUXHqAAe45Bjemju2jwJLutPo2e/K0pp0yjrFxde/xnXwzFwcxCX3OtBSu0/12
+         gQsAfphgzFzbXvuJUGD0qx89cmaHiENemlacv/oiWmJZ6u+wlXnV2jA/dno54M9bDZ
+         q+Kd2oLl+JN8b5LCgSTO9pZXCzb98PAVpTZw4zBkJqLauaUVTfezs1i2gACLfSil83
+         8odxhqKk3jx/t4i0DnHHvtMj9I2FeHegn2a3d3BFN8AWa3bEkAc1bEPT6pgitkOrru
+         7kshMkwxECEOfp8WBjiyb9GE+YQc1VTObbwJmkSh19z4ZZb0R/sOH9A7YGEnJ+3Cqh
+         12XfdGEoHVa8A==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id DF46FE49BBF;
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E8EFFC4167B;
         Wed, 12 Jul 2023 21:10:23 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 1/2] Bluetooth: btusb:  Add VID 0489 & PID e102 for
- MediaTek MT7922 USB Bluetooth chip
+Subject: Re: [PATCH v3 1/2] Bluetooth: btusb: Add new VID/PID 0489/e102 for MT7922
 From:   patchwork-bot+bluetooth@kernel.org
-Message-Id: <168919622391.11357.17334122865962756502.git-patchwork-notify@kernel.org>
+Message-Id: <168919622394.11357.13331236987237504295.git-patchwork-notify@kernel.org>
 Date:   Wed, 12 Jul 2023 21:10:23 +0000
-References: <20230707030442.25330-1-chris.lu@mediatek.com>
-In-Reply-To: <20230707030442.25330-1-chris.lu@mediatek.com>
+References: <20230707062959.30371-1-chris.lu@mediatek.com>
+In-Reply-To: <20230707062959.30371-1-chris.lu@mediatek.com>
 To:     Chris Lu <chris.lu@mediatek.com>
 Cc:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
         sean.wang@mediatek.com, aaron.hou@mediatek.com,
@@ -66,7 +65,7 @@ Hello:
 This series was applied to bluetooth/bluetooth-next.git (master)
 by Luiz Augusto von Dentz <luiz.von.dentz@intel.com>:
 
-On Fri, 7 Jul 2023 11:04:41 +0800 you wrote:
+On Fri, 7 Jul 2023 14:29:58 +0800 you wrote:
 > Add VID 0489 & PID e102 for MediaTek MT7922 USB Bluetooth chip.
 > 
 > The information in /sys/kernel/debug/usb/devices about the Bluetooth
@@ -115,9 +114,9 @@ On Fri, 7 Jul 2023 11:04:41 +0800 you wrote:
 > [...]
 
 Here is the summary with links:
-  - [v2,1/2] Bluetooth: btusb: Add VID 0489 & PID e102 for MediaTek MT7922 USB Bluetooth chip
+  - [v3,1/2] Bluetooth: btusb: Add new VID/PID 0489/e102 for MT7922
     https://git.kernel.org/bluetooth/bluetooth-next/c/159c43e9925e
-  - [v2,2/2] Bluetooth: btusb: Add VID 04ca & PID 3804 for MediaTek MT7922 USB Bluetooth chip
+  - [v3,2/2] Bluetooth: btusb: Add new VID/PID 04ca/3804 for MT7922
     https://git.kernel.org/bluetooth/bluetooth-next/c/b18d35adebf4
 
 You are awesome, thank you!
