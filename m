@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A72175125D
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 23:13:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82E47751264
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 23:13:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232884AbjGLVMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 17:12:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37716 "EHLO
+        id S232992AbjGLVMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 17:12:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232835AbjGLVMN (ORCPT
+        with ESMTP id S232877AbjGLVMV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 17:12:13 -0400
-Received: from out-48.mta1.migadu.com (out-48.mta1.migadu.com [IPv6:2001:41d0:203:375::30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 461E52685
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 14:11:43 -0700 (PDT)
+        Wed, 12 Jul 2023 17:12:21 -0400
+Received: from out-12.mta1.migadu.com (out-12.mta1.migadu.com [IPv6:2001:41d0:203:375::c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2892F2696
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 14:11:44 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1689196302;
+        t=1689196303;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=fVeF8qdGbozu++IPDLbjjHcaqfjIh8LSWsUSOXCTfos=;
-        b=cFBdAGUI4WGMYMyD5ZIqi8uqVLBiG1mhILt6dhQGiDtMmZIkSGIQUNFuRXz7VCGPsTQo9i
-        GiA97XdTwfpkUum+3/ob7kbFuByK5hcAYoa7mn92dBwTlmmZRx+M5jNOVzMyh9KbyABupa
-        b/+9fgWVxkmn3yYqJWHmv3UutkzawsM=
+        bh=Ry7U36vaXDdBTb0o6BnFM/rdvkZja/IMfv3muX44WIU=;
+        b=H/PcQLzUY9PMMaDMDJwLi0XXcTGO8YvVfT6XKsh1JXOymc2y7ZVnR56snJOlO9Xb/Yz3l4
+        bRwbeCnPM3wz2EPPnP2d5RVd4IhMeXJvhurNnxpGX0g2cOGsDM/v89gyyMQcqGokab5lzL
+        7glFmafusrUIz1iPlOtVxrZ1QJ7bs+E=
 From:   Kent Overstreet <kent.overstreet@linux.dev>
 To:     linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
-        Coly Li <colyli@suse.de>
-Subject: [PATCH 13/20] MAINTAINERS: Add entry for closures
-Date:   Wed, 12 Jul 2023 17:11:08 -0400
-Message-Id: <20230712211115.2174650-14-kent.overstreet@linux.dev>
+Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
+        Coly Li <colyli@suse.de>,
+        Kent Overstreet <kent.overstreet@linux.dev>
+Subject: [PATCH 14/20] closures: closure_wait_event()
+Date:   Wed, 12 Jul 2023 17:11:09 -0400
+Message-Id: <20230712211115.2174650-15-kent.overstreet@linux.dev>
 In-Reply-To: <20230712211115.2174650-1-kent.overstreet@linux.dev>
 References: <20230712211115.2174650-1-kent.overstreet@linux.dev>
 MIME-Version: 1.0
@@ -42,43 +43,57 @@ X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-closures, from bcache, are async widgets with a variety of uses.
-bcachefs also uses them, so they're being moved to lib/; mark them as
-maintained.
+From: Kent Overstreet <kent.overstreet@gmail.com>
 
-Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+Like wait_event() - except, because it uses closures and closure
+waitlists it doesn't have the restriction on modifying task state inside
+the condition check, like wait_event() does.
+
+Signed-off-by: Kent Overstreet <kent.overstreet@gmail.com>
 Acked-by: Coly Li <colyli@suse.de>
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 ---
- MAINTAINERS | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ include/linux/closure.h | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 35e1959464..314b55ecd1 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5064,6 +5064,14 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers/core
- F:	Documentation/devicetree/bindings/timer/
- F:	drivers/clocksource/
+diff --git a/include/linux/closure.h b/include/linux/closure.h
+index 0ec9e7bc8d..36b4a83f9b 100644
+--- a/include/linux/closure.h
++++ b/include/linux/closure.h
+@@ -374,4 +374,26 @@ static inline void closure_call(struct closure *cl, closure_fn fn,
+ 	continue_at_nobarrier(cl, fn, wq);
+ }
  
-+CLOSURES
-+M:	Kent Overstreet <kent.overstreet@linux.dev>
-+L:	linux-bcachefs@vger.kernel.org
-+S:	Supported
-+C:	irc://irc.oftc.net/bcache
-+F:	include/linux/closure.h
-+F:	lib/closure.c
++#define __closure_wait_event(waitlist, _cond)				\
++do {									\
++	struct closure cl;						\
++									\
++	closure_init_stack(&cl);					\
++									\
++	while (1) {							\
++		closure_wait(waitlist, &cl);				\
++		if (_cond)						\
++			break;						\
++		closure_sync(&cl);					\
++	}								\
++	closure_wake_up(waitlist);					\
++	closure_sync(&cl);						\
++} while (0)
 +
- CMPC ACPI DRIVER
- M:	Thadeu Lima de Souza Cascardo <cascardo@holoscopio.com>
- M:	Daniel Oliveira Nascimento <don@syst.com.br>
++#define closure_wait_event(waitlist, _cond)				\
++do {									\
++	if (!(_cond))							\
++		__closure_wait_event(waitlist, _cond);			\
++} while (0)
++
+ #endif /* _LINUX_CLOSURE_H */
 -- 
 2.40.1
 
