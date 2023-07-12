@@ -2,137 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89B32750F27
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 19:01:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42BD4750F2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 19:02:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231893AbjGLRB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 13:01:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55676 "EHLO
+        id S232334AbjGLRB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 13:01:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232323AbjGLRBW (ORCPT
+        with ESMTP id S232323AbjGLRBo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 13:01:22 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A269C136
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 10:01:21 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id d75a77b69052e-403b622101bso8071cf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 10:01:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689181281; x=1691773281;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=do8WCqThbZfqwQjMvP5MGRLXecaFpfNRAFM5GCHsjdo=;
-        b=G+kohK0xIgMPHQ3+5ncibyhuTwK6hxATxDANqz12TOSvN0edR3aq0H2AK/C1mm64/j
-         eE6nAjp0TMl4AyeJbNffIsUnLB5yNlQHXm/8EqH2TcxRLRyFIKzqYYGQ3zKcS0lH6MuY
-         PoznUsARm2aJGffc2UtKRQIzEnZNvV7lIJzRXxxu2tY8ROsOdshaYBaqfdgTr8MVSGL4
-         doslZ0IKqW9j2ni0skHG80apYw5V4tZPBEtLptV3C0/p4n8n5M18nhf4KDTQzQGCrla6
-         k4SY6UGSuJga2MV0TI5AXEpEqJJzFYYaIJkASzfJX+gcTq8rKW+FSXLA+K1wWX0Y13SP
-         HPSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689181281; x=1691773281;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=do8WCqThbZfqwQjMvP5MGRLXecaFpfNRAFM5GCHsjdo=;
-        b=YAMgIICHhvd8O01QMN1Qd52QUUt5Za1XHVwT0b31R7ibuF6rH9196LvbsZ4CVq5TvW
-         OVllSFszBu4KbvHiAil5Xdyuycnwn/Gu0qE6PxmfreLgHlQnlJlyP9qq5xdprSn0yH/t
-         0HmbhHvHCIpDlnzSxpQQTlGs/Bg3fLsrjGg+0IlbMmydAwfQ+zE2YbjDG2jdPXQXT69F
-         gYk1Mw5dsgEP9VznBHuaPPb9KnKozK9CJlg4WlnBXCrbyCjDdzggFZP5mVoG1i7xeVw8
-         G+EKC7ZgjrNcG2x5Lc4jl6EDlfojOwmfr8fbCq5pp6jAm6RjqJJrnYeKBWy0l1zKYSIl
-         dT5g==
-X-Gm-Message-State: ABy/qLb8Q5nbq9S1g66Zdxcmbp+A2MmuYS/SjkvdlqMzWeHf7BZeaZzA
-        1uz5KtlieEyn53dCiNKX2WqJilwOozCaMdZKzDjt5w==
-X-Google-Smtp-Source: APBJJlHjptCdg/MHrJtHqTVPJJ5f0n/BrCuENF8jJ6KVPMtOWPHMp+Tj+JC+fFU89bd66LbJ+CNT4N5ukOw36jw+tpU=
-X-Received: by 2002:ac8:59ce:0:b0:3f8:8c06:c53b with SMTP id
- f14-20020ac859ce000000b003f88c06c53bmr360570qtf.0.1689181280722; Wed, 12 Jul
- 2023 10:01:20 -0700 (PDT)
+        Wed, 12 Jul 2023 13:01:44 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 149DF10C7;
+        Wed, 12 Jul 2023 10:01:43 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9A5C761874;
+        Wed, 12 Jul 2023 17:01:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB08CC433C7;
+        Wed, 12 Jul 2023 17:01:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689181302;
+        bh=W61o7LlkQs9LBIYjzHUJMBy72qDnWFS0/a8qJkXf2Fc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=M4J4H42OR/vtD+rw+wG1NQ6vEDrz8rXSySfrrPLrIUeoN4Ct2aPEuAjOwvaWRv3cW
+         aJpJmYYaiUoBOBEWGod9Vj5UcUS9Jpnhrh1jnK7lJ1dZIBIZLevH1E0muun1AfMPp0
+         NZvnUEEWhWG5FZNi/qjgIZUziApMhuQYsmtor+dQ1OXuNc68zMZng55dohedv2dWQJ
+         tRqa+mluwl9C5ERDwSrejHNbTQ+QBu+WlSJW+4t+5NuP9ZZSumjXCBfMYndqKB+FDm
+         NMEnBHPbyEg7iqHtKbHvCZ+yEYper6sgCEWs3nQthxV46vv2CSNymBgVVrX/r3IiWh
+         7tzLiibgRBjjg==
+Date:   Wed, 12 Jul 2023 18:01:36 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     xingyu.wu@starfivetech.com, linux-riscv@lists.infradead.org,
+        devicetree@vger.kernel.org, mturquette@baylibre.com,
+        sboyd@kernel.org, p.zabel@pengutronix.de, kernel@esmil.dk,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, hal.feng@starfivetech.com,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
+Subject: Re: [PATCH v7 0/9] Add STG/ISP/VOUT clock and reset drivers for
+ StarFive JH7110
+Message-ID: <20230712-unsold-impound-02608d701dfb@spud>
+References: <20230712092007.31013-1-xingyu.wu@starfivetech.com>
+ <mhng-d3795910-5414-4555-bf3d-75ebe769ed2b@palmer-ri-x1c9a>
 MIME-Version: 1.0
-References: <cover.1689024635.git.anupnewsmail@gmail.com> <ba55bf712cc27494635ca0bb23a21b42529c9327.1689024635.git.anupnewsmail@gmail.com>
-In-Reply-To: <ba55bf712cc27494635ca0bb23a21b42529c9327.1689024635.git.anupnewsmail@gmail.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 12 Jul 2023 10:01:09 -0700
-Message-ID: <CAP-5=fUqKZkuODXTez+Dk+RqTmh+NaeRBun65onG-yByUJOnVA@mail.gmail.com>
-Subject: Re: [PATCH v3 2/6] scripts: python: Extact necessary information from
- process event
-To:     Anup Sharma <anupnewsmail@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="YXK2FfLMDg7K1UTe"
+Content-Disposition: inline
+In-Reply-To: <mhng-d3795910-5414-4555-bf3d-75ebe769ed2b@palmer-ri-x1c9a>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 10, 2023 at 4:10=E2=80=AFPM Anup Sharma <anupnewsmail@gmail.com=
-> wrote:
->
-> The script takes in a sample event dictionary(param_dict) and retrieves
-> relevant data such as time stamp, PID, TID, thread name. Also start time
-> is defined.
->
-> Signed-off-by: Anup Sharma <anupnewsmail@gmail.com>
-> ---
->  .../perf/scripts/python/firefox-gecko-converter.py  | 13 ++++++++++++-
->  1 file changed, 12 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/perf/scripts/python/firefox-gecko-converter.py b/tools=
-/perf/scripts/python/firefox-gecko-converter.py
-> index 5b342641925c..765f1775cee5 100644
-> --- a/tools/perf/scripts/python/firefox-gecko-converter.py
-> +++ b/tools/perf/scripts/python/firefox-gecko-converter.py
-> @@ -21,8 +21,19 @@ sys.path.append(os.environ['PERF_EXEC_PATH'] + \
->  from perf_trace_context import *
->  from Core import *
->
 
-It'd be nice to have a comment here, perhaps:
-# The time stamp from the first of the time ordered events.
+--YXK2FfLMDg7K1UTe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> +start_time =3D None
-> +
->  def trace_end():
->         pass
->
->  def process_event(param_dict):
-> -       pass
-> +       global start_time
-> +       # Extract relevant information from the event parameters. The eve=
-nt parameters
-> +       # are in a dictionary:
-> +       time_stamp =3D (param_dict['sample']['time'] // 1000) / 1000
-> +       pid =3D param_dict['sample']['pid']
-> +       tid =3D param_dict['sample']['tid']
-> +       thread_name =3D param_dict['comm']
-> +
-> +       # Assume that start time is the time of the first event.
-> +       start_time =3D time_stamp if not start_time else start_time
+On Wed, Jul 12, 2023 at 09:50:37AM -0700, Palmer Dabbelt wrote:
+> On Wed, 12 Jul 2023 02:19:58 PDT (-0700), xingyu.wu@starfivetech.com wrot=
+e:
+> > This patch serises are base on the basic JH7110 SYSCRG/AONCRG
+> > drivers and add new partial clock drivers and reset supports
+> > about System-Top-Group(STG), Image-Signal-Process(ISP)
+> > and Video-Output(VOUT) for the StarFive JH7110 RISC-V SoC. These
+> > clocks and resets could be used by DMA, VIN and Display modules.
 
-I appreciate that this is one line, but it takes some getting your
-head around that start_time is being assigned to itself in the common
-case. I think this would be more readable as:
+> Happy to take it through the RISC-V tree if folks want, but IMO it's
+> probably better aimed at the clock/reset folks.  Either way I'd want to g=
+ive
+> them a chance to ack/review it, so I'm going to drop it from my list.
+>=20
+> Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
 
-if not start_time:
-  start_time =3D time_stamp
+I had a look through it & I am generally happy with it - everything has
+either an R-b from DT folk or Hal on the drivers.
+I was going to propose the same thing as the PLL patchset - if Emil is
+happy with it, then I intend sending Stephen a PR for the drivers &
+bindings.
 
 Thanks,
-Ian
+Conor.
 
-> --
-> 2.34.1
->
+--YXK2FfLMDg7K1UTe
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZK7ccAAKCRB4tDGHoIJi
+0j6sAP42I2NRHZdpOyf2izUoUuaLCqoRMvx4DDBgBCweGvshWAEA7O4i3W5C2V/L
+ndm2wUnu6OPIY1snKnd2INzwEwr2XwA=
+=kp3i
+-----END PGP SIGNATURE-----
+
+--YXK2FfLMDg7K1UTe--
