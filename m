@@ -2,56 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3A0E751122
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 21:24:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84CBB75112B
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 21:25:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231703AbjGLTYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 15:24:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55302 "EHLO
+        id S232229AbjGLTZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 15:25:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229775AbjGLTYc (ORCPT
+        with ESMTP id S231602AbjGLTZi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 15:24:32 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEEF91FC1
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 12:24:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=O16k4ERFhKKBwUEBI7XcEyTdhUjgEwm/QTrfI/pamUE=; b=eUDq5XQTO9lRKZbSyieaL+36WO
-        w/WxepjZ6f4zvhD7UgIQ0aOrMhjuHihrgfNRcWZYNTvUiY21JQAUwWIm6xmJAeEd6ioBloO33La6Q
-        tI85cz/rOmfh+PJh5+7JdtpcAu/nlLorCmVoSzT5SjjpXruEuTbXXfNMmVgIdKMaIQ+O6xQMO/DBr
-        5b4ryxSDVd6VsgeeqVRKy0sCoO8E1Gh1d3PxoIdHbuYxcx825DlG2el8RhXWewXO5/lRMtQkznes9
-        fxnK+U+KAA8eEwTKXXt07aOBNPdsNkW5+U/n76cvArGWWzQxiDObF6xbp4y2wzj5tOmNYHaqLiVbU
-        7I6tqIew==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44032)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qJfRo-0004P0-0d;
-        Wed, 12 Jul 2023 20:24:24 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qJfRl-0005Kz-El; Wed, 12 Jul 2023 20:24:21 +0100
-Date:   Wed, 12 Jul 2023 20:24:21 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     shijie001@208suo.com
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: mm: Fix warnings in context.c
-Message-ID: <ZK795eVoadj/wARO@shell.armlinux.org.uk>
-References: <tencent_B7B25B0AACAECB0523A2B09F270CF97BFF07@qq.com>
- <60fb2068b0ee6ce2a67333c81ccd2f6b@208suo.com>
+        Wed, 12 Jul 2023 15:25:38 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 506781FC1
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 12:25:37 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9891c73e0fbso250394566b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 12:25:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689189936; x=1691781936;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=qlC2xd+LWkAw6VtZI/SCBHO2xi/vQf/CwDed84n3xeQ=;
+        b=lTzQAFm0UwnXd24PWylRYpcU0F457aHyP9KciWJkMJEWnnNM1CDllzQ4uWcH8EfUQv
+         cbZrg8V55iXV0C8nY+uTF7hJl5aPxJnjV9T0geZilx5Ca0xXAKbU8yDrCIYeYYezeCTD
+         LnK9GtarHRZDKWRyLhJztJPJDs+bfLXXFymXnErXhGDmgjYgkmbbsy/yjPESTQGA3IC6
+         vPSBfHKsAR+Iq642bz+6uTsci/xNYrGfUkpeK2n05ltckLJGjCXRJl8BxhYPr4qqUNuo
+         TvOd0aQSG1GkKzUTsXpwujhkrVkL1VFqLHYH/P+us70BQ1E3IzzJGKKGQjUMsylhYQgF
+         MJQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689189936; x=1691781936;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qlC2xd+LWkAw6VtZI/SCBHO2xi/vQf/CwDed84n3xeQ=;
+        b=aOm7i/WxQejKkht2iRxUHxBkk/8LrJrCIt/yvRGyksITDJuPPixLilMpT4u8waHScr
+         6z4fuGgNaOOd+Z7MbLYZOh4LipfflZloILUQ5yAiWvUfjsSHR8fgfxZhpnntqAnzlprs
+         GG6GC6qggfVOYdASX8mQ5Q/5dK+72zs4S5AO9FJnv25j2s2xfaqEOKb3L4H94Z203u3T
+         XIaXbG0HCcqiqwj6J63pl5QXpcx3KKuhBt1sEXXzlqE/qEZO9lgyVd7oo1QtVudI71uG
+         smJsyqfyBTg8eCHvgEOaRh3khACYa3i10LES2fHinptSpScl3jElv0EureLZcEBkGSws
+         19PQ==
+X-Gm-Message-State: ABy/qLZ8pAjOFcLk8//ZEQHg/Ev5b8yQgTD+nWCum6BqwIJusOMS8lkG
+        2r2+ngJrVM4Q/Wdh5O0X1k4x5A==
+X-Google-Smtp-Source: APBJJlGsZdGD7bEjsV+5Ybs5t0WWeawP39YFnwraXzAZG+K1Jg6V4qqvtL+9S5NUbMA6Ge3qBEZgnA==
+X-Received: by 2002:a17:906:1053:b0:992:8d96:4de3 with SMTP id j19-20020a170906105300b009928d964de3mr4213382ejj.24.1689189935773;
+        Wed, 12 Jul 2023 12:25:35 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id b19-20020a170906661300b009920e9a3a73sm2929510ejp.115.2023.07.12.12.25.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 Jul 2023 12:25:35 -0700 (PDT)
+Message-ID: <aa05bcd6-140d-d951-2c7f-c09abf7f49f7@linaro.org>
+Date:   Wed, 12 Jul 2023 21:25:33 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <60fb2068b0ee6ce2a67333c81ccd2f6b@208suo.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 4/4] ARM: multi_v7_defconfig: Add SCMI regulator support
+Content-Language: en-US
+To:     p.paillet@foss.st.com, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        Alexander Stein <alexander.stein@ew.tq-group.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Etienne Carriere <etienne.carriere@foss.st.com>
+References: <20230712142432.1885162-1-p.paillet@foss.st.com>
+ <20230712142432.1885162-5-p.paillet@foss.st.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230712142432.1885162-5-p.paillet@foss.st.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,38 +90,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 05:06:32PM +0800, shijie001@208suo.com wrote:
-> The following checkpatch warning is removed:
-> WARNING: Use #include <linux/mmu_context.h> instead of <asm/mmu_context.h>
+On 12/07/2023 16:24, p.paillet@foss.st.com wrote:
+> From: Pascal Paillet <p.paillet@foss.st.com>
 > 
-> Signed-off-by: Jie Shi <shijie001@208suo.com>
-> ---
->  arch/arm/mm/context.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/mm/context.c b/arch/arm/mm/context.c
-> index 4204ffa2d104..c84ad6c786e7 100644
-> --- a/arch/arm/mm/context.c
-> +++ b/arch/arm/mm/context.c
-> @@ -13,7 +13,7 @@
->  #include <linux/smp.h>
->  #include <linux/percpu.h>
-> 
-> -#include <asm/mmu_context.h>
-> +#include <linux/mmu_context.h>
->  #include <asm/smp_plat.h>
->  #include <asm/thread_notify.h>
->  #include <asm/tlbflush.h>
+> Enable ARM SCMI regulator support.
 > 
 
-Probably haven't noticed, but linux/ includes are all grouped together,
-and asm/ includes are all grouped together. Please keep that.
+This we see from the diff. Please explain why, e.g. which boards use it.
 
-Also, is it really a necessary change, when arch/arm/mm/context.c is
-only implementing the interfaces provided by asm/mmu_context.h? I think
-the warning is wrong in this case and should never be fixed as things
-currently stand.
+Best regards,
+Krzysztof
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
