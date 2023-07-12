@@ -2,82 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E32777511F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 22:41:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BEA07511F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 22:42:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231960AbjGLUll convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 12 Jul 2023 16:41:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55444 "EHLO
+        id S231675AbjGLUm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 16:42:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232314AbjGLUli (ORCPT
+        with ESMTP id S231979AbjGLUmY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 16:41:38 -0400
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F6F019B9
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 13:41:36 -0700 (PDT)
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-5774335bb2aso80292147b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 13:41:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689194495; x=1691786495;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0WUYKlpGhb0kJhf/+AumZoaOJjlTSMOB9Jdpi/GF+90=;
-        b=kMSUGB+AZV7w79y8nTDXIgfeyxw1/UWUIs8IanU5ob3Ki0E8pU8mFjkz4poQil2kpv
-         lWcsWvVerPouKkwBvb8SgBSILJXpN5XKq9L87aFL/c2P2RDx+DOMW9RqNNVpHQAn2UIG
-         lQn/2WpZfphbJKplYRS8hZSYDFyiPgb4rtxMCNmWAj030XPsIsMvNjo5dDLHxn9OpHPk
-         nRJ8nPkcLkhqoZVzmTvncDsTKk2T0orEm0s+Xw12feiGGqtbm+MR9tLU5s7REHk8qcy4
-         CQlc2ME06Gp079zysFvcBg/NjlHCFP3/6HG3jT3aKDal1LOtA3XSLV/y7GcdGjfKYZ70
-         I5oQ==
-X-Gm-Message-State: ABy/qLYf1PqU/VEeeAv75G6HYXB2K9YGaqLL+eFw/gK0QXKbWXqp2ctr
-        n+h2zkmJfPBgsZW05dcVzTt8DgZe+h8G5g==
-X-Google-Smtp-Source: APBJJlFBSVL13qedPpP4RmURQwCgBDQzQ+VuYtlLETuac1BZxiZumf2SNzGan1jii1VFqlfQXRFi/A==
-X-Received: by 2002:a0d:d40c:0:b0:56d:3d83:15cb with SMTP id w12-20020a0dd40c000000b0056d3d8315cbmr17059654ywd.44.1689194495448;
-        Wed, 12 Jul 2023 13:41:35 -0700 (PDT)
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com. [209.85.128.181])
-        by smtp.gmail.com with ESMTPSA id k63-20020a0dfa42000000b005773babc3cdsm1375653ywf.83.2023.07.12.13.41.35
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 Jul 2023 13:41:35 -0700 (PDT)
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-5774335bb2aso80291947b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 13:41:35 -0700 (PDT)
-X-Received: by 2002:a0d:fa44:0:b0:577:cd0:681f with SMTP id
- k65-20020a0dfa44000000b005770cd0681fmr19302553ywf.26.1689194494878; Wed, 12
- Jul 2023 13:41:34 -0700 (PDT)
+        Wed, 12 Jul 2023 16:42:24 -0400
+Received: from smtp.smtpout.orange.fr (smtp-24.smtpout.orange.fr [80.12.242.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD908C0
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 13:42:22 -0700 (PDT)
+Received: from pop-os.home ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id JgfAqVIqQFZ5SJgfBq4nYd; Wed, 12 Jul 2023 22:42:20 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1689194540;
+        bh=v9j0m2cKfHRT+pm9joHgv4l8r7uaiOqt0NGOeHOYA8M=;
+        h=From:To:Cc:Subject:Date;
+        b=sa5XFfPaI2fZWc9fzGFbfzFz57NPBZt7bmu3cVXQNTnJ0tOv812lXxhxWpzLXRB6Z
+         +GZyzSaUURGY6jEncLTqqkyI+Y+At6p3l2z/i8/PJp4icbGp5D6jVNv9vgmb2NNjM/
+         it/DMR3K7AH20nBNYGqsYV0IEVFLALMopwSANLhFydgpkFA6RcoIOsjZn98lj6+hMa
+         Owo2Wb9j6LcpcqBlbeRsfvo2ZsPGvHp+bf1p2HDRxruSAR87CqcQFMNBnURb+2p1Bj
+         rRp/hJRJymKNul+fSK75UYrM8zqGLtI8rdX7qGlfakx1QaIorIzFrXmbQ3ZAP1d73o
+         TqTiDX+rMQNtw==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Wed, 12 Jul 2023 22:42:20 +0200
+X-ME-IP: 86.243.2.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     keescook@chromium.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        linux-arm-msm@vger.kernel.org
+Subject: [PATCH] soc: qcom: smem: Use struct_size()
+Date:   Wed, 12 Jul 2023 22:42:15 +0200
+Message-Id: <f74328551cfab0262ba353f37d047ac74bf616e1.1689194490.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230712120002.GIZK6Vwga6DlJqdjEh@fat_crate.local>
- <ZK6hLZcuAH9jXKuL@redhat.com> <20230712132840.GKZK6qiK70m1O90jFL@fat_crate.local>
- <ZK6zdsIbnQFUmK69@redhat.com> <2023071200-unopposed-unbuckled-cde8@gregkh>
- <CAMw=ZnTVRaqRmtz+sDj7AeAS7xivSu+56UgKbzmuW9+K6TTx1A@mail.gmail.com>
- <2023071239-progress-molasses-3b3d@gregkh> <CAMw=ZnRheXk7W_r-32bGymbHKdXc7aKUpwGAOX+k7DJkN+DiCQ@mail.gmail.com>
- <2023071229-dusk-repacking-da3a@gregkh> <CAMw=ZnSmZTBs+bJsQ_Y2CVO8K3OTuHOZDKW4cbxKpGbo4Vgs7Q@mail.gmail.com>
- <2023071226-crafty-deviator-12e2@gregkh>
-In-Reply-To: <2023071226-crafty-deviator-12e2@gregkh>
-From:   Luca Boccassi <bluca@debian.org>
-Date:   Wed, 12 Jul 2023 21:41:23 +0100
-X-Gmail-Original-Message-ID: <CAMw=ZnRjnxWnmoFuw2prxFS55vAGQ1hpfKeHYFfG5Oa0LB_jYA@mail.gmail.com>
-Message-ID: <CAMw=ZnRjnxWnmoFuw2prxFS55vAGQ1hpfKeHYFfG5Oa0LB_jYA@mail.gmail.com>
-Subject: Re: [RFC PATCH v2] x86/boot: add .sbat section to the bzImage
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     =?UTF-8?Q?Daniel_P=2E_Berrang=C3=A9?= <berrange@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>, lennart@poettering.net,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,218 +56,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 12 Jul 2023 at 21:07, Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Wed, Jul 12, 2023 at 08:35:14PM +0100, Luca Boccassi wrote:
-> > On Wed, 12 Jul 2023 at 20:05, Greg KH <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > On Wed, Jul 12, 2023 at 07:59:12PM +0100, Luca Boccassi wrote:
-> > > > On Wed, 12 Jul 2023 at 17:57, Greg KH <gregkh@linuxfoundation.org> wrote:
-> > > > >
-> > > > > On Wed, Jul 12, 2023 at 05:23:18PM +0100, Luca Boccassi wrote:
-> > > > > > On Wed, 12 Jul 2023 at 16:43, Greg KH <gregkh@linuxfoundation.org> wrote:
-> > > > > > >
-> > > > > > > On Wed, Jul 12, 2023 at 03:06:46PM +0100, Daniel P. Berrangé wrote:
-> > > > > > > > On Wed, Jul 12, 2023 at 03:28:40PM +0200, Borislav Petkov wrote:
-> > > > > > > > > On Wed, Jul 12, 2023 at 01:48:45PM +0100, Daniel P. Berrangé wrote:
-> > > > > > > > > > That doesn't make it useless, as the 3rd/4th/5th fields in the SBAT
-> > > > > > > > > > file are just human targetted metadata. The validation process just
-> > > > > > > > > > works off the 1st/2nd field.
-> > > > > > > > >
-> > > > > > > > > It's a good thing I asked - feels like I'm just scratching the surface
-> > > > > > > > > on what this thing actually is and the commit message is not explaining
-> > > > > > > > > any of that.
-> > > > > > > > >
-> > > > > > > > > First, second field, that's what, "linux,1"?
-> > > > > > > >
-> > > > > > > > Each sbat CSV file line has following fields:
-> > > > > > > >
-> > > > > > > >   component_name: the name we're comparing
-> > > > > > > >   component_generation: the generation number for the comparison
-> > > > > > > >   vendor_name: human readable vendor name
-> > > > > > > >   vendor_package_name: human readable package name
-> > > > > > > >   vendor_version: human readable package version (maybe machine parseable too, not specified here)
-> > > > > > > >   vendor_url: url to look stuff up, contact, whatever.
-> > > > > > > >
-> > > > > > > > So 'linux' is 'component_name' and '1' is component_generation
-> > > > > > > >
-> > > > > > > > > > From a functional POV, it doesn't have to be unique identified,
-> > > > > > > > > > as it is just a human targetted metadata field. A friendly git
-> > > > > > > > > > version as from 'git describe' is more appropriate than a build
-> > > > > > > > > > ID sha.
-> > > > > > > > >
-> > > > > > > > > So can you explain what exactly that version is supposed to describe?
-> > > > > > > > > Exact kernel sources the kernel was built from? Or a random, increasing
-> > > > > > > > > number which tools can use to mark as bad?
-> > > > > > > >
-> > > > > > > > AFAICT beyond being "human readable package version", it is a fairly
-> > > > > > > > arbitrary decision. A release version number for formal releases, or
-> > > > > > > > a 'git describe' version string for git snapshots both satisfy the
-> > > > > > > > versioning requirement IMHO.
-> > > > > > > >
-> > > > > > > > > How do you prevent people from binary-editing that section? Secure boot
-> > > > > > > > > does that because that changes the signed kernel image?
-> > > > > > > >
-> > > > > > > > The PE files are signed by the vendor who builds them, using their
-> > > > > > > > SecureBoot signing key. The data covered by the signature includes
-> > > > > > > > the '.sbat' section.
-> > > > > > > >
-> > > > > > > > IOW, if you binary edit the section, the SecureBoot signature
-> > > > > > > > verification fails and the kernel won't be booted.
-> > > > > > > >
-> > > > > > > > > > > And then why does it have to be a separate section? All those
-> > > > > > > > > > > requirements need to be written down.
-> > > > > > > > >
-> > > > > > > > > You missed this question.
-> > > > > > > >
-> > > > > > > > That's simply what the spec defines as the approach.
-> > > > > > > >
-> > > > > > > > The PE file format used by EFI applications has multiple
-> > > > > > > > sections and the spec has declare that the '.sbat' section
-> > > > > > > > is where this data shall live.
-> > > > > > > >
-> > > > > > > > > > The first line just identifies the file format and should
-> > > > > > > > > > never change:
-> > > > > > > > > >
-> > > > > > > > > >   sbat,1,SBAT Version,sbat,1,https://github.com/rhboot/shim/blob/main/SBAT.md
-> > > > > > > > >
-> > > > > > > > > Why do you even need it then?
-> > > > > > > >
-> > > > > > > > First it identifies the data format, and second if a
-> > > > > > > > problem is ever discovered with the  SBAT concept,
-> > > > > > > > a fixed approach can be indicated by changing to
-> > > > > > > > 'sbat,2,.....' and thus have the effect of revoking
-> > > > > > > > use of any binaries which declare the 'sbat,1,....'
-> > > > > > > > version. Pretty unlikely this will happen, but a useful
-> > > > > > > > backup plan/safety net.
-> > > > > > > >
-> > > > > > > > > > The second line identifies the kernel generation
-> > > > > > > > > >
-> > > > > > > > > >   linux,1,The Linux Developers,linux,6.5.0-rc1,https://linux.org
-> > > > > > > > > >
-> > > > > > > > > > The first field 'linux' should never change once decided upon, as it is
-> > > > > > > > > > the name of the upstream project's EFI component - in this case the
-> > > > > > > > > > linux kernel.
-> > > > > > > > > >
-> > > > > > > > > > The second field '1' is the most important one, as it is the mechanism
-> > > > > > > > > > through which revokation takes places, and the only one a human upstream
-> > > > > > > > > > maintainer should manually change.
-> > > > > > > > >
-> > > > > > > > > Hold on, how often are those things going to change? And who's going to
-> > > > > > > > > change them? I sure hope we won't start getting patches constantly
-> > > > > > > > > updating those numbers?
-> > > > > > > >
-> > > > > > > > It is hard to predict the future, but my gut feeling is very infrequently.
-> > > > > > >
-> > > > > > > Have you looked at the past as proof of this?
-> > > > > >
-> > > > > > I can't quite think of relevant bugs, in the recent past. Are you
-> > > > > > aware of past instances of kernel module signature verification being
-> > > > > > broken? Or userspace being allowed to do arbitrary kernel memory
-> > > > > > manipulation before ExitBootServices?
-> > > > >
-> > > > > Yes.
-> > > >
-> > > > Then you already know the answer w.r.t. frequency
-> > >
-> > > I have a clue, yes.  But given that others do not that are proposing
-> > > this, that's quite worrying.
-> >
-> > Not really, as that's not the purpose. As the documentation clearly
-> > states, the purpose is to have a revocation mechanism that won't
-> > exhaust nvram space.
->
-> How do you know that the list of issues will not exhaust it, if you
-> don't know how many issues are found?
->
-> Take the time and look over the past 10 years and get an idea of what
-> you are dealing with here please.
->
-> Also note that "single identifiers for individual issues" do NOT work
-> for kernel fixes (and arguably do not work for any other software
-> project either) as they fail to properly describe things.
->
-> Think about Meltdown, one "identifier" of a CVE, and hundreds of
-> patches.  What if you happened to not backport one of them?
->
-> Same goes for the issue reported last week or so, tens of fixes, over
-> multiple stable kernel releases, for one "identifier", how would you
-> have classified that?
->
-> Anyway, I've been over this loads before, giving whole talks about this,
-> there's a reason the kernel developers don't mess with CVEs (i.e.
-> individual identifiers), they fail to work.
+Use struct_size() instead of hand-writing it, when allocating a structure
+with a flex array.
 
-There is no 'single identifier for individual issues' nor CVE involved
-here. The purpose of the generation id (which is per EFI component,
-not per bug) is to let the boot process know whether an EFI component
-should be accepted or rejected, in a way that doesn't exhaust nvram.
-Issues are not individually singled out, and there is no direct
-correlation with CVEs. It doesn't matter how many fixes there are, or
-how many bugs, if a generation of a component is vulnerable in any way
-that matters, then it gets denied.
+This is less verbose.
 
-The only thing that matters is, "if we had infinite space in DBX and
-sensible ways to service it and nvram didn't wear down, would we
-blocklist this component version" - if the answer is no, then nothing
-happens. If the answer is yes, then the counter goes up.
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+It will also be helpful if the __counted_by() annotation is added with a
+Coccinelle script such as:
+   https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git/commit/?h=devel/counted_by&id=adc5b3cb48a049563dc673f348eab7b6beba8a9b
+---
+ drivers/soc/qcom/smem.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-> > > > > And no, I will not provide examples for obvious reasons.
-> > > >
-> > > > Security-through-obscurity? Nice!
-> > >
-> > > That's not what this is, please see the many places this is explained
-> > > in detail.  If you wish to discuss how the kernel security team handles
-> > > known security fixes, we can do so on a relevant thread (i.e. not this
-> > > one.)
-> > >
-> > > > > > > > I can't say I recall any specific Linux bugs that would warrant it, but
-> > > > > > > > those involved in Linux/Bootloade/SecureBoot world can probably answer
-> > > > > > > > this better than me. IIUC, the scope of bugs relevent to this is quite
-> > > > > > > > narrow.
-> > > > > > >
-> > > > > > > Really?  I know a lot of people who would disagree...
-> > > > > >
-> > > > > > They'd better have some convincing reasons
-> > > > > >
-> > > > > > > > > > If there is discovered a flaw in Linux that allows the Secure Boot chain
-> > > > > > > > > > to be broken (eg some flaw allowed linux to be exploited as a mechanism
-> > > > > > > > > > to load an unsigned binary), then this 'generation' number would need
-> > > > > > > > > > to be incremented when a fix is provided in upstream Linux trees.
-> > > > > > > > >
-> > > > > > > > > Oh boy, there it is. And then when those fixes need to be backported to
-> > > > > > > > > stable, then those patches updating that number would need to be
-> > > > > > > > > backported too. I can already see the mess on the horizon.
-> > > > > > > >
-> > > > > > > > If applicable, yes.
-> > > > > > >
-> > > > > > > And how are you going to determine this?
-> > > > > >
-> > > > > > Same as it's done for the bootloaders - does it enable a secure boot
-> > > > > > bypass -> yes/no
-> > > > >
-> > > > > And how are you going to determine this?  Seriously, please explain the
-> > > > > auditing you are going to do here and who is going to maintain it and
-> > > > > fund the effort?
-> > > >
-> > > > Same way it is determined for Shim, Grub, sd-boot, Windows BootMngr,
-> > > > etc - maintainers doing their jobs, researchers poking at them, or if
-> > > > we are particularly unlucky by live exploits in the wild. I'm not
-> > > > exactly sure where the confusion comes from, none of this is novel.
-> > >
-> > > But why does any of this matter at all?  Just use the kernel version
-> > > (which is already in the image), and be done with it.  We always
-> > > increment it so all should be fine.
-> >
-> > No, all will not be fine, because stable branches exist, so it would
-> > not be _one_ kernel version but N, with monotonically increasing
-> > values of N. That doesn't work, and the reason for that are explained
-> > in the protocol documentation that was linked in the initial mail.
->
-> Pointing to an external document that is thousands of lines long,
-> talking about bootloaders, is NOT a good way to get people to want to
-> accept a kernel patch :)
+diff --git a/drivers/soc/qcom/smem.c b/drivers/soc/qcom/smem.c
+index b0d59e815c3b..776096b2e965 100644
+--- a/drivers/soc/qcom/smem.c
++++ b/drivers/soc/qcom/smem.c
+@@ -1059,7 +1059,6 @@ static int qcom_smem_probe(struct platform_device *pdev)
+ 	struct reserved_mem *rmem;
+ 	struct qcom_smem *smem;
+ 	unsigned long flags;
+-	size_t array_size;
+ 	int num_regions;
+ 	int hwlock_id;
+ 	u32 version;
+@@ -1071,8 +1070,8 @@ static int qcom_smem_probe(struct platform_device *pdev)
+ 	if (of_property_present(pdev->dev.of_node, "qcom,rpm-msg-ram"))
+ 		num_regions++;
+ 
+-	array_size = num_regions * sizeof(struct smem_region);
+-	smem = devm_kzalloc(&pdev->dev, sizeof(*smem) + array_size, GFP_KERNEL);
++	smem = devm_kzalloc(&pdev->dev, struct_size(smem, regions, num_regions),
++			    GFP_KERNEL);
+ 	if (!smem)
+ 		return -ENOMEM;
+ 
+-- 
+2.34.1
 
-Then how about just asking for that? "Hello submitter, please send a
-v2 with a detailed summary of the problem being solved for those of us
-who are not familiar with it, thank you"
