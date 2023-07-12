@@ -2,151 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3801751077
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 20:26:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6E5275107E
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 20:27:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232635AbjGLS0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 14:26:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37326 "EHLO
+        id S232806AbjGLS1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 14:27:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232557AbjGLS0N (ORCPT
+        with ESMTP id S232720AbjGLS04 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 14:26:13 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E967A1FDE
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 11:26:10 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-55bac17b442so5537747a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 11:26:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1689186370; x=1691778370;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=swX/Btqe9SwlapTlO/DIwSPMFx8s3wfg5niuyYAHqCU=;
-        b=t+rGeMqK4FQu3U7IWvo5hWBuuEiCmmtx6poL/uG/sChia7xNUk3OjXe/eY0quvdn3z
-         J123/5f5oYO/dxIPHh21icK7IG4SZCsW7TDCaFEh6ePd5h+7zV6VrHLvNvZ6HjgB0Rfk
-         pHOSJxec/EaLIYDDUUx2eomAS7CkrSFMGdSkIaQ/NARpCUrZ3kyuLxWk8C4gSvBGzf5e
-         jdQbwdsup+JK10w1xzMP8CDroJIDpy439nDIwXhUfaTYVLJE2wO4xW8/mjUDID4cmm4+
-         gSpw7xE+Mm/fQD0dLPdLrV1xLGdywWVEpYLaWqapHsrYVpGo2y6iBuQFoGOgRilvg6Q3
-         WylQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689186370; x=1691778370;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=swX/Btqe9SwlapTlO/DIwSPMFx8s3wfg5niuyYAHqCU=;
-        b=KPZuWii56DOXVVnKe2UWAxpuRjfabzH62XOJzFCIA0BOttU+NB34AxgE1qTxpBphNo
-         kmRgXpkKKml037VJsAiobYv+uT7Jy7RsC/WIgxx9rQH24Fym6HV9DfA45tkYr4y36kJp
-         DyE8Wvsm3TCwqiruZvySIa5z/bJkZMHo5kKx5WtOPXvfcX8IjRHYnH2DRStwO43TtuA8
-         CfisLCJWoyw9oFRYQXXWf2JwPpSMQ25eYlAqFDOa1R8qrxVQaJtGp/u7RF+Eat/cZQEa
-         rcUYrEyQzgSt9zIlEgPMzvTD2w11sWjT+qvJSoZR+QDPt08Ewy5/Mu0NsH/V7/lMeNc0
-         Iiug==
-X-Gm-Message-State: ABy/qLZRgoKZzqVGgD/zxTxIINQnT5nbDqGY6R8FF1scpVP8iA8/LUdh
-        /GkuePOHx4qHzd0BFg9l3TEaFg==
-X-Google-Smtp-Source: APBJJlHAxMXSUIbZXiuDm3AUa5MRO5PMewMy62zRT6aZ+RDrwQLncLwIngEG+ozHai+hqvZIUWsP4Q==
-X-Received: by 2002:a17:902:ce81:b0:1b8:3e15:40e8 with SMTP id f1-20020a170902ce8100b001b83e1540e8mr5333784plg.56.1689186370368;
-        Wed, 12 Jul 2023 11:26:10 -0700 (PDT)
-Received: from localhost ([50.38.6.230])
-        by smtp.gmail.com with ESMTPSA id q15-20020a170902b10f00b001b9da7ae98bsm4291752plr.122.2023.07.12.11.26.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Jul 2023 11:26:09 -0700 (PDT)
-Date:   Wed, 12 Jul 2023 11:26:09 -0700 (PDT)
-X-Google-Original-Date: Wed, 12 Jul 2023 11:25:23 PDT (-0700)
-Subject:     Re: [PATCH V11 0/5] riscv: Optimize function trace
-In-Reply-To: <87jzv5q9tv.fsf@all.your.base.are.belong.to.us>
-CC:     suagrfillet@gmail.com, Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, rostedt@goodmis.org, mhiramat@kernel.org,
-        Mark Rutland <mark.rutland@arm.com>, guoren@kernel.org,
-        suagrfillet@gmail.com, Bjorn Topel <bjorn@rivosinc.com>,
-        jszhang@kernel.org, Conor Dooley <conor.dooley@microchip.com>,
-        pulehui@huawei.com, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        songshuaishuai@tinylab.org, bpf@vger.kernel.org
-From:   Palmer Dabbelt <palmer@rivosinc.com>
-To:     bjorn@kernel.org
-Message-ID: <mhng-a2c88f43-3cf7-4caa-8e4a-b0fc9d7e4628@palmer-ri-x1c9a>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 12 Jul 2023 14:26:56 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D38651BEC;
+        Wed, 12 Jul 2023 11:26:54 -0700 (PDT)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36C8e7FA025489;
+        Wed, 12 Jul 2023 18:26:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=mtKhEYS2K6X6LBtwPqDWhL1CJqJw4DS1omIajDx5ciM=;
+ b=kdsNgjdUBhmwZnk+aZt4Ujk/GPBTCK1JSvcGs1qbfEfG0k0C5DFS5aahFTePkp85q7XF
+ eM8DdXm1z5VYNHudXdnuG1qObW5tUHywSN61sDIx3uzwlwhfaagtq6237jDS9MnvkTU5
+ dNaTjeqRJoWHDi+azMc2b9hQbhcOYpp0ukEt6oK0AJoqf+DuKhsbvBhgbBtUrT84/+Jp
+ RgBm1OaYv+aOmnpZrP8wH3p2KBKqBINUJ/92aL7G6rbNNgdYgP0hsR4gA8QLj9Njf1KJ
+ BXkt0SAS1hLgfJRfdwbZQiH5pgLishusnE1BFn9ZtD9EUS36cId4phJusmLDc1RBb5Dz oQ== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rser0tce9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 12 Jul 2023 18:26:44 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36CIQhJt019354
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 12 Jul 2023 18:26:43 GMT
+Received: from [10.216.46.65] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 12 Jul
+ 2023 11:26:36 -0700
+Message-ID: <ef29e520-7b9c-f581-e70a-250df80d3821@quicinc.com>
+Date:   Wed, 12 Jul 2023 23:56:33 +0530
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.1
+Subject: Re: [PATCH v9 06/10] usb: dwc3: qcom: Add support to read IRQ's
+ related to multiport
+To:     Johan Hovold <johan@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>
+CC:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "Andy Gross" <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        "Wesley Cheng" <quic_wcheng@quicinc.com>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <quic_pkondeti@quicinc.com>, <quic_ppratap@quicinc.com>,
+        <quic_jackp@quicinc.com>, <quic_harshq@quicinc.com>,
+        <ahalaney@redhat.com>, <quic_shazhuss@quicinc.com>
+References: <20230621043628.21485-1-quic_kriskura@quicinc.com>
+ <20230621043628.21485-7-quic_kriskura@quicinc.com>
+ <ZK6YrLMn9r39zEeB@hovoldconsulting.com>
+Content-Language: en-US
+From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+In-Reply-To: <ZK6YrLMn9r39zEeB@hovoldconsulting.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: ZqQVfb4cm-Gui-6o8lMtobbyBRypXh4P
+X-Proofpoint-ORIG-GUID: ZqQVfb4cm-Gui-6o8lMtobbyBRypXh4P
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-12_13,2023-07-11_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ priorityscore=1501 malwarescore=0 adultscore=0 impostorscore=0 mlxscore=0
+ suspectscore=0 phishscore=0 bulkscore=0 lowpriorityscore=0 mlxlogscore=618
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2305260000 definitions=main-2307120167
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 12 Jul 2023 11:11:08 PDT (-0700), bjorn@kernel.org wrote:
-> Song Shuai <suagrfillet@gmail.com> writes:
->
-> [...]
->
->> Add WITH_DIRECT_CALLS support [3] (patch 3, 4)
->> ==============================================
->
-> We've had some offlist discussions, so here's some input for a wider
-> audience! Most importantly, this is for Palmer, so that this series is
-> not merged until a proper BPF trampoline fix is in place.
->
-> Note that what's currently usable from BPF trampoline *works*. It's
-> when this series is added that it breaks.
->
-> TL;DR This series adds DYNAMIC_FTRACE_WITH_DIRECT_CALLS, which enables
-> fentry/fexit BPF trampoline support. Unfortunately the
-> fexit/BPF_TRAMP_F_SKIP_FRAME parts of the RV BPF trampoline breaks
-> with this addition, and need to be addressed *prior* merging this
-> series. An easy way to reproduce, is just calling any of the kselftest
-> tests that uses fexit patching.
->
-> The issue is around the nop seld, and how a call is done; The nop sled
-> (patchable-function-entry) size changed from 16B to 8B in commit
-> 6724a76cff85 ("riscv: ftrace: Reduce the detour code size to half"), but
-> BPF code still uses the old 16B. So it'll work for BPF programs, but not
-> for regular kernel functions.
->
-> An example:
->
->   | ffffffff80fa4150 <bpf_fentry_test1>:
->   | ffffffff80fa4150:       0001                    nop
->   | ffffffff80fa4152:       0001                    nop
->   | ffffffff80fa4154:       0001                    nop
->   | ffffffff80fa4156:       0001                    nop
->   | ffffffff80fa4158:       1141                    add     sp,sp,-16
->   | ffffffff80fa415a:       e422                    sd      s0,8(sp)
->   | ffffffff80fa415c:       0800                    add     s0,sp,16
->   | ffffffff80fa415e:       6422                    ld      s0,8(sp)
->   | ffffffff80fa4160:       2505                    addw    a0,a0,1
->   | ffffffff80fa4162:       0141                    add     sp,sp,16
->   | ffffffff80fa4164:       8082                    ret
->
-> is patched to:
->
->   | ffffffff80fa4150:  f70c0297                     auipc   t0,-150208512
->   | ffffffff80fa4154:  eb0282e7                     jalr    t0,t0,-336
->
-> The return address to bpf_fentry_test1 is stored in t0 at BPF
-> trampoline entry. Return to the *parent* is in ra. The trampline has
-> to deal with this.
->
-> For BPF_TRAMP_F_SKIP_FRAME/CALL_ORIG, the BPF trampoline will skip too
-> many bytes, and not correctly handle parent calls.
->
-> Further; The BPF trampoline currently has a different way of patching
-> the nops for BPF programs, than what ftrace does. That should be changed
-> to match what ftrace does (auipc/jalr t0).
->
-> To summarize:
->  * Align BPF nop sled with patchable-function-entry: 8B.
->  * Adapt BPF trampoline for 8B nop sleds.
->  * Adapt BPF trampoline t0 return, ra parent scheme.
 
-Thanks for digging into this one, I agree we need to sort out the BPF 
-breakages before we merge this.  Sounds like there's a rabbit hole here, 
-but hopefully we can get it sorted out.
 
-I've dropped this from patchwork and such, as we'll need at least 
-another spin.
+On 7/12/2023 5:42 PM, Johan Hovold wrote:
+> On Wed, Jun 21, 2023 at 10:06:24AM +0530, Krishna Kurapati wrote:
+>> Add support to read Multiport IRQ's related to quad port controller
+>> of SA8295 Device.
+>>
+>> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+>> ---
+>>   drivers/usb/dwc3/dwc3-qcom.c | 108 +++++++++++++++++++++++++++++------
+>>   1 file changed, 91 insertions(+), 17 deletions(-)
+> 
+>> +static int dwc3_qcom_setup_mp_irq(struct platform_device *pdev)
+>> +{
+>> +	struct dwc3_qcom *qcom = platform_get_drvdata(pdev);
+>> +	char irq_name[15];
+> 
+> The interrupt device-name string can not be allocated on the stack or
+> reused as it is stored directly in each irqaction structure.
+> 
+> This can otherwise lead to random crashes when accessing
+> /proc/interrupts:
+> 
+> 	https://lore.kernel.org/lkml/ZK6IV_jJPICX5r53@hovoldconsulting.com/
+> 
+Hi Johan,
 
-> Cheers,
-> Björn
+   Sure, will create a static array of names if possible in global 
+section of file and use it to read interrupts.
+
+   Are you fine with seperating out setup_irq and setup_mp_irq functions 
+? Can you please review comments and suggestion on [1].
+
+[1]: 
+https://lore.kernel.org/all/bf62bdf4-cc9e-ba7b-2078-cfd60f5dd237@quicinc.com/
+
+Regards,
+Krishna,
+
+>> +	int irq;
+>> +	int ret;
+>> +	int i;
+>> +
+>> +	for (i = 0; i < 4; i++) {
+>> +		if (qcom->dp_hs_phy_irq[i])
+>> +			continue;
+>> +
+>> +		sprintf(irq_name, "dp%d_hs_phy_irq", i+1);
+>> +		irq = dwc3_qcom_get_irq(pdev, irq_name, -1);
+>> +		if (irq > 0) {
+>> +			irq_set_status_flags(irq, IRQ_NOAUTOEN);
+>> +			ret = devm_request_threaded_irq(qcom->dev, irq, NULL,
+>> +					qcom_dwc3_resume_irq,
+>> +					IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
+>> +					irq_name, qcom);
+>> +			if (ret) {
+>> +				dev_err(qcom->dev, "%s failed: %d\n", irq_name, ret);
+>> +				return ret;
+>> +			}
+>> +		}
+>> +
+>> +		qcom->dp_hs_phy_irq[i] = irq;
+>> +	}
+> 
+> Johan
