@@ -2,149 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C062D751192
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 21:58:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20E51751194
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 21:59:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231816AbjGLT6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 15:58:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41192 "EHLO
+        id S232714AbjGLT7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 15:59:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230321AbjGLT6O (ORCPT
+        with ESMTP id S232504AbjGLT65 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 15:58:14 -0400
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 017F51FDE;
-        Wed, 12 Jul 2023 12:58:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689191893; x=1720727893;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=FTIt/MjK6M1o3Ym3rIGdTL/PyU4TsEtJRvxtxh04uio=;
-  b=YUzbCnwpoYjyPrC2pmHsC9ONWshqv6stwqqf2RpUDcZTUmEsRBRvzV1C
-   1Fmzku9ZeTY+dPzzbgrV6H1F7uDs/ZAP/OrkzYWoXflx2i/uBRLnl85Yn
-   14xen1eRsuEbXWUoS1ODMHlD2FZVoh8+ZtFK33jxZbWfOgscENWmibBko
-   BiUZV8z9Vw7H2KQmCeMvPSK4fJElSt+V18Kud7QqvSET6LScLvQYP2jWJ
-   B89855uDbV2zEc88hKQafdKVD+Djqv5ZVQuJeqyJd702TQxUSYAUC3Awc
-   kZzy2qpAkzKdrNEUFiLNQFVmQqPQERwVCXxuIXZG0tyC4M/V2h0N2x4nE
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10769"; a="428734625"
-X-IronPort-AV: E=Sophos;i="6.01,200,1684825200"; 
-   d="scan'208";a="428734625"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2023 12:57:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10769"; a="791743195"
-X-IronPort-AV: E=Sophos;i="6.01,200,1684825200"; 
-   d="scan'208";a="791743195"
-Received: from averypay-mobl1.amr.corp.intel.com (HELO [10.212.212.40]) ([10.212.212.40])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2023 12:57:53 -0700
-Message-ID: <5961fe40-7716-c0fe-b399-f3f2bf39b562@linux.intel.com>
-Date:   Wed, 12 Jul 2023 12:57:52 -0700
+        Wed, 12 Jul 2023 15:58:57 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6D1E1FE4
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 12:58:55 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-666ecf9a0ceso4245038b3a.2
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 12:58:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1689191935; x=1691783935;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=IM1dSYo+80BYxXSJlIL/sk/xBjg6Ots+Pol0AVH4Yb0=;
+        b=kN0riAjmUZltvjS1ZZu/cmL9YDBQwpNyRLMnVeyJUsFYI7J0wzmmClyaLlqoVavvmR
+         HX0aXQxW3ZgAMNfjI5b5Zwx9uGTFHByzmco0yjmVtRRTEK4R9DkGvVDg6OGwrOpdcj56
+         K19maljE78z0Ngq7vlqpfwfvl2QxEWWBAC8oo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689191935; x=1691783935;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IM1dSYo+80BYxXSJlIL/sk/xBjg6Ots+Pol0AVH4Yb0=;
+        b=IbCgIXAI7qhgHyW/zXcjkGEcIKfWoEX4FMuhxdX3YGgqWhPRj/Z9LxhH8Xnj2p/dMK
+         kJ4w6+cuxNc1QfeBIBkpVj8CxnzOY610/0Wh/gezJ4c8zsK0NA00JkY9BdvUEyUcUQVg
+         U9bUtJfU38EhP6Ph4InCTr8dTwNAoZhM+VAC/b03aDmh9F0sy9pyxUwmdVIy7J5m75Gk
+         LoXMV8U5ShFf++GGbjk4QEVkWuaqFcj2viy/S+np8KbLyLpatR8b3MikiQ25P8NnNqna
+         oNNrgPXHobAqhOnBrwKB0trtg0HPTnLtj12B2UuFnV+xLWE9t8nEN5OoSGSJMXSP/R6K
+         A6kA==
+X-Gm-Message-State: ABy/qLZJN566a5cN0zqm9OqKIvyn7+7EMu9KU+/sz/7bV8vfKmJHBxGy
+        mnwn+rSAQBvU+juXXPxhKpCtPg==
+X-Google-Smtp-Source: APBJJlE4+AsaRrpGGfmncTL94MB7s8dvZvP4yBy4eC77VHo8u3xCXxW7nvKcyGe+QqgE6q1NDBivMQ==
+X-Received: by 2002:a05:6a20:e685:b0:132:c11d:4582 with SMTP id mz5-20020a056a20e68500b00132c11d4582mr2302449pzb.3.1689191935305;
+        Wed, 12 Jul 2023 12:58:55 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id u22-20020aa78396000000b0068285a7f107sm4080729pfm.177.2023.07.12.12.58.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Jul 2023 12:58:54 -0700 (PDT)
+Date:   Wed, 12 Jul 2023 12:58:54 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-bcachefs@vger.kernel.org,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH 29/32] lib/string_helpers: string_get_size() now returns
+ characters wrote
+Message-ID: <202307121248.36919B223@keescook>
+References: <20230509165657.1735798-1-kent.overstreet@linux.dev>
+ <20230509165657.1735798-30-kent.overstreet@linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [PATCH 03/10] x86/tdx: Move FRAME_BEGIN/END to TDX_MODULE_CALL
- asm macro
-Content-Language: en-US
-To:     Kai Huang <kai.huang@intel.com>, peterz@infradead.org,
-        kirill.shutemov@linux.intel.com, linux-kernel@vger.kernel.org
-Cc:     dave.hansen@intel.com, tglx@linutronix.de, bp@alien8.de,
-        mingo@redhat.com, hpa@zytor.com, x86@kernel.org, seanjc@google.com,
-        pbonzini@redhat.com, kvm@vger.kernel.org, isaku.yamahata@intel.com
-References: <cover.1689151537.git.kai.huang@intel.com>
- <c0206c457f366ab007ab67ca16970cc4fc562877.1689151537.git.kai.huang@intel.com>
-From:   Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <c0206c457f366ab007ab67ca16970cc4fc562877.1689151537.git.kai.huang@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230509165657.1735798-30-kent.overstreet@linux.dev>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/12/23 1:55 AM, Kai Huang wrote:
-> Currently, the TDX_MODULE_CALL asm macro and the __tdx_module_call()
-> take registers directly as input and a 'struct tdx_module_output' as
-> optional output.  This is different from the __tdx_hypercall(), which
-> simply uses a structure to carry all input/output.  There's no point to
-> leave __tdx_module_call() complicated as it is.
+On Tue, May 09, 2023 at 12:56:54PM -0400, Kent Overstreet wrote:
+> From: Kent Overstreet <kent.overstreet@gmail.com>
 > 
-> As a preparation to simplify the __tdx_module_call() to make it look
-> like __tdx_hypercall(), move FRAME_BEGIN/END and RET from the
-> __tdx_module_call() to the TDX_MODULE_CALL assembly macro.  This also
-> allows more implementation flexibility of the assembly inside the
-> TDX_MODULE_CALL macro, e.g., allowing putting an _ASM_EXTABLE() after
-> the main body of the assembly.
-> 
-> This is basically based on Peter's code.
-> 
-> Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Suggested-by: Peter Zijlstra <peterz@infradead.org>
-> Signed-off-by: Kai Huang <kai.huang@intel.com>
-> ---
+> printbuf now needs to know the number of characters that would have been
+> written if the buffer was too small, like snprintf(); this changes
+> string_get_size() to return the the return value of snprintf().
 
-Looks fine to me.
+Unfortunately, snprintf doesn't return characters written, it return
+what it TRIED to write, and can cause a lot of problems[1]. This patch
+would be fine with me if the snprintf was also replaced by scnprintf,
+which will return the actual string length copied (or 0) *not* including
+the trailing %NUL.
 
-Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-
->  arch/x86/coco/tdx/tdcall.S      | 3 ---
->  arch/x86/virt/vmx/tdx/tdxcall.S | 5 +++++
->  2 files changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/x86/coco/tdx/tdcall.S b/arch/x86/coco/tdx/tdcall.S
-> index 2eca5f43734f..e5d4b7d8ecd4 100644
-> --- a/arch/x86/coco/tdx/tdcall.S
-> +++ b/arch/x86/coco/tdx/tdcall.S
-> @@ -78,10 +78,7 @@
->   * Return status of TDCALL via RAX.
->   */
->  SYM_FUNC_START(__tdx_module_call)
-> -	FRAME_BEGIN
->  	TDX_MODULE_CALL host=0
-> -	FRAME_END
-> -	RET
->  SYM_FUNC_END(__tdx_module_call)
+> [...]
+> @@ -126,8 +126,8 @@ void string_get_size(u64 size, u64 blk_size, const enum string_size_units units,
+>  	else
+>  		unit = units_str[units][i];
 >  
->  /*
-> diff --git a/arch/x86/virt/vmx/tdx/tdxcall.S b/arch/x86/virt/vmx/tdx/tdxcall.S
-> index 3524915d8bd9..b5ab919c7fa8 100644
-> --- a/arch/x86/virt/vmx/tdx/tdxcall.S
-> +++ b/arch/x86/virt/vmx/tdx/tdxcall.S
-> @@ -1,5 +1,6 @@
->  /* SPDX-License-Identifier: GPL-2.0 */
->  #include <asm/asm-offsets.h>
-> +#include <asm/frame.h>
->  #include <asm/tdx.h>
->  
->  /*
-> @@ -18,6 +19,7 @@
->   *            TDX module.
->   */
->  .macro TDX_MODULE_CALL host:req
-> +	FRAME_BEGIN
->  	/*
->  	 * R12 will be used as temporary storage for struct tdx_module_output
->  	 * pointer. Since R12-R15 registers are not used by TDCALL/SEAMCALL
-> @@ -91,4 +93,7 @@
->  .Lno_output_struct:
->  	/* Restore the state of R12 register */
->  	pop %r12
-> +
-> +	FRAME_END
-> +	RET
->  .endm
+> -	snprintf(buf, len, "%u%s %s", (u32)size,
+> -		 tmp, unit);
+> +	return snprintf(buf, len, "%u%s %s", (u32)size,
+> +			tmp, unit);
+
+-Kees
+
+[1] https://github.com/KSPP/linux/issues/105
 
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+Kees Cook
