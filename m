@@ -2,99 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE29F750EF7
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 18:49:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72CCA750EE9
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 18:46:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233270AbjGLQtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 12:49:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48496 "EHLO
+        id S229668AbjGLQqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 12:46:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229636AbjGLQtd (ORCPT
+        with ESMTP id S233026AbjGLQqK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 12:49:33 -0400
-Received: from out203-205-221-209.mail.qq.com (out203-205-221-209.mail.qq.com [203.205.221.209])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 553931994;
-        Wed, 12 Jul 2023 09:49:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1689180568;
-        bh=TN+gHkELlE+b7fR0rsA8ykrqd1Qxd9ihZcJeUSe8JKc=;
-        h=From:To:Cc:Subject:Date;
-        b=ozT6paZYQObN7vfys5Y0IfELpbYRfsM5bjx+QwU/Qy7jE74sFmDefv/gTudUR2UVl
-         lYKb7M4s7OsyoN945BIAGCx+bhH8HJ8iKUWT0FTXAa9UA3jcOmje4OvLxIFT45gz/T
-         C1fbUxTkLi2uJ/G4xJlV8TM++J/AbB6287I95MAU=
-Received: from KernelDevBox.byted.org ([180.184.103.200])
-        by newxmesmtplogicsvrszc5-0.qq.com (NewEsmtp) with SMTP
-        id B8689CAB; Thu, 13 Jul 2023 00:46:06 +0800
-X-QQ-mid: xmsmtpt1689180366tk232dq7r
-Message-ID: <tencent_E2C71605D88087940237AA9A44CC8D436D06@qq.com>
-X-QQ-XMAILINFO: OdIVOfqOaVcrAHz5k0LvYgpFo53uVrs3ixagjYrz1delAqK0lUOiGT7kYeLTw5
-         vwsPOASdUqbt5Op4YVNUFvBGi81Oi9ornl5eYajOYw7Yfw2Xm4KNgtmhrCY6d3M2hVxIfDwHb8XW
-         tNtRkbodUq3NsYvpeep1uwtO3xu1KPCHtKc8cY54+woRimhn/od0OqA+L2LKjNkAi3Wm9MpoFo0X
-         VydP7sMl45lSOaE9zxcnVN15jFKYVoMlMKyBPi3ZS7q451HPutjru0hqZF+pyBlQ8f6Ux1cbCJBZ
-         8EZHUO/4NqC8G8pUMndEAUVjRhIWzyvoQa0Ms1ddjThNtWcPBs+rHKG2q3qQUEq7Tk26XUG1NQkD
-         Ltd1roAH3wMdTU8T14BNts+9Q2bBrzI1LNHh3Bk2jkqv7vcq9vRL/WMeBLoTfO4CtZVYciYh82nv
-         vOu1s8yny1dlNOBkI2XS+KT2SHDprA2yo0W5bbsRg/MEVNhva79Yb7k7zzCsqSJ+bQvb+yPgNHIC
-         J4vpRq2qbK+966Ogg0rAN/NkKeQGCchNMvRHu6pZwLMD2gmKdn0/NHqRNi2cNm9XB5r0UR81QRq1
-         4jl2BP2LXaOTZ6WScRlEFhgtM5/JIhlxzxItl0vcpNIeJnSpViO8yIXG78AjNQIILvBUO1YjPmSH
-         DwmsZDnsQrvtrmusl1COI7BoUnm3aAXY/SYRUg2R9HkEArnyiuKAwIfTPn1sZfhTmYDaRmoAqysM
-         5WBhXX8evrxPQdoeiogt/4Ps2m5u7P1pZpsjn/GAkGqcxovSaYQNf5mF45W84kHTzQcqQj8ywp93
-         8bcvEDGNsV7LJDUcYd05ytWcTTTTDaUNxwa6l00ftGnvH8qL0TVhqD1hAbydDNM4qRdngB+c8sba
-         RO6pfIBVLLwJ2N9z+yvifFaKK+JVd4FH5JqIX2LzF3Kh1wwl8279wtI+B/jfTIMHx7ZC5PSzhM4n
-         2B+Rq0oFZHnGTEnl648gAruKmPGCbuNZYxT8iYq0w=
-X-QQ-XMRINFO: MSVp+SPm3vtS1Vd6Y4Mggwc=
-From:   Zhang Shurong <zhang_shurong@foxmail.com>
-To:     song@kernel.org
-Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zhang Shurong <zhang_shurong@foxmail.com>
-Subject: [PATCH] md: fix potential OOB in multipath_remove_disk()
-Date:   Thu, 13 Jul 2023 00:46:05 +0800
-X-OQ-MSGID: <20230712164605.3902883-1-zhang_shurong@foxmail.com>
-X-Mailer: git-send-email 2.30.2
+        Wed, 12 Jul 2023 12:46:10 -0400
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46A4D10C7;
+        Wed, 12 Jul 2023 09:46:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689180369; x=1720716369;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=rXDvBkAUPlbp09GLN3GKPktPhdzuNV5ghtq1N7pdjtA=;
+  b=gvXdGxrL6xwNkTvcrgkf66+4O/6qmVQB2kDjtKzmuZ3AOWRfY36ce4S9
+   m0oLe2NcS1Mhp/dpfyQW8zddUc3gvAy/8tbpUxfoG1kvfhI/fcsd+xPiu
+   kfpl5rg7sqRA7dD0kw2ynDpbaoyi37VWHBXZLHxQgLGbs5MlDNoJnM52L
+   onKjTcAIP037OF4f5XhCX5/M9E/HbmpP2NYWtQeRZCgTrBtv20vXdv5Cl
+   jgdvLaO556vYQaQ/x1956c/SAlcpLTbeapehpaXbLtWeMvc79WWsrJkrJ
+   Q7xnkWU8djSBI+3NinaCt+SPaAez4TRw9yq9WbhUSQpWkDLiY7lRDsPhH
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10769"; a="367563970"
+X-IronPort-AV: E=Sophos;i="6.01,200,1684825200"; 
+   d="scan'208";a="367563970"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2023 09:46:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10769"; a="698923679"
+X-IronPort-AV: E=Sophos;i="6.01,200,1684825200"; 
+   d="scan'208";a="698923679"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga006.jf.intel.com with ESMTP; 12 Jul 2023 09:46:06 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1qJcyb-002BXr-0z;
+        Wed, 12 Jul 2023 19:46:05 +0300
+Date:   Wed, 12 Jul 2023 19:46:05 +0300
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Kalle Valo <kvalo@kernel.org>
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, regressions@lists.linux.dev,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: Closing down the wireless trees for a summer break?
+Message-ID: <ZK7Yzd0VvblA3ONU@smile.fi.intel.com>
+References: <87y1kncuh4.fsf@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_NONE,RDNS_DYNAMIC,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87y1kncuh4.fsf@kernel.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If rddev->raid_disk is greater than mddev->raid_disks, there will be
-an out-of-bounds in multipath_remove_disk. We have already found
-similar reports as follows:
+On Tue, Jun 13, 2023 at 05:22:47PM +0300, Kalle Valo wrote:
 
-1) commit d17f744e883b ("md-raid10: fix KASAN warning")
-2) commit 1ebc2cec0b7d ("dm raid: fix KASAN warning in raid5_remove_disk")
+...
 
-Fix this bug by checking whether the "number" variable is
-valid.
+> [1] https://phb-crystal-ball.sipsolutions.net/
 
-Signed-off-by: Zhang Shurong <zhang_shurong@foxmail.com>
----
- drivers/md/md-multipath.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+How could one use the shut down site?
 
-diff --git a/drivers/md/md-multipath.c b/drivers/md/md-multipath.c
-index 92c45be203d7..7b6aadd8c1fb 100644
---- a/drivers/md/md-multipath.c
-+++ b/drivers/md/md-multipath.c
-@@ -245,7 +245,11 @@ static int multipath_remove_disk(struct mddev *mddev, struct md_rdev *rdev)
- 	struct mpconf *conf = mddev->private;
- 	int err = 0;
- 	int number = rdev->raid_disk;
--	struct multipath_info *p = conf->multipaths + number;
-+	struct multipath_info *p;
-+
-+	if (unlikely(number >= mddev->raid_disks))
-+		return 0;
-+	p = conf->multipaths + number;
- 
- 	print_multipath_conf(conf);
- 
+Also see
+https://www.reddit.com/r/linux/comments/s09as7/looks_like_the_domain_registration_recently/
+http://deb.tandrin.de/phb-crystal-ball.htm
+
+
+
 -- 
-2.30.2
+With Best Regards,
+Andy Shevchenko
+
 
