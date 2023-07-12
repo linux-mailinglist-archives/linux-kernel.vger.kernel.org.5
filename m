@@ -2,53 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 754F875118F
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 21:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C062D751192
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 21:58:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232634AbjGLT5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 15:57:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40714 "EHLO
+        id S231816AbjGLT6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 15:58:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231767AbjGLT52 (ORCPT
+        with ESMTP id S230321AbjGLT6O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 15:57:28 -0400
-Received: from out-40.mta1.migadu.com (out-40.mta1.migadu.com [IPv6:2001:41d0:203:375::28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AF531FDE
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 12:57:26 -0700 (PDT)
-Date:   Wed, 12 Jul 2023 15:57:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1689191844;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2pQ5GL/ruOH1khi5jRBa14gHeuf7KP4TvEzBD/9wQ7w=;
-        b=Jvog2XhfpDQCttYJ3ePh2K4q1Z3NQkF2qHd2jAQhO6A2jJTJIA8CRsQ0JjwZgQ5JRUEtMr
-        vAdLaN+BYho339/avYYi/zm6jNMVGRQqpQdKOuHvEIYYjQgx/duPC0Bz5PSOLQHCb54n26
-        9jIk8zTxZoxxn+flTQBybZu20W/ScNs=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-bcachefs@vger.kernel.org,
-        djwong@kernel.org, dchinner@redhat.com, sandeen@redhat.com,
-        willy@infradead.org, josef@toxicpanda.com, tytso@mit.edu,
-        bfoster@redhat.com, jack@suse.cz, andreas.gruenbacher@gmail.com,
-        brauner@kernel.org, peterz@infradead.org,
-        akpm@linux-foundation.org, dhowells@redhat.com, snitzer@kernel.org
-Subject: Re: [GIT PULL] bcachefs
-Message-ID: <20230712195719.y4msidsr7suu55gl@moria.home.lan>
-References: <20230626214656.hcp4puionmtoloat@moria.home.lan>
- <20230706155602.mnhsylo3pnief2of@moria.home.lan>
- <20230712025459.dbzcjtkb4zem4pdn@moria.home.lan>
- <202307121241.8295B924F@keescook>
+        Wed, 12 Jul 2023 15:58:14 -0400
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 017F51FDE;
+        Wed, 12 Jul 2023 12:58:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689191893; x=1720727893;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=FTIt/MjK6M1o3Ym3rIGdTL/PyU4TsEtJRvxtxh04uio=;
+  b=YUzbCnwpoYjyPrC2pmHsC9ONWshqv6stwqqf2RpUDcZTUmEsRBRvzV1C
+   1Fmzku9ZeTY+dPzzbgrV6H1F7uDs/ZAP/OrkzYWoXflx2i/uBRLnl85Yn
+   14xen1eRsuEbXWUoS1ODMHlD2FZVoh8+ZtFK33jxZbWfOgscENWmibBko
+   BiUZV8z9Vw7H2KQmCeMvPSK4fJElSt+V18Kud7QqvSET6LScLvQYP2jWJ
+   B89855uDbV2zEc88hKQafdKVD+Djqv5ZVQuJeqyJd702TQxUSYAUC3Awc
+   kZzy2qpAkzKdrNEUFiLNQFVmQqPQERwVCXxuIXZG0tyC4M/V2h0N2x4nE
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10769"; a="428734625"
+X-IronPort-AV: E=Sophos;i="6.01,200,1684825200"; 
+   d="scan'208";a="428734625"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2023 12:57:54 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10769"; a="791743195"
+X-IronPort-AV: E=Sophos;i="6.01,200,1684825200"; 
+   d="scan'208";a="791743195"
+Received: from averypay-mobl1.amr.corp.intel.com (HELO [10.212.212.40]) ([10.212.212.40])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2023 12:57:53 -0700
+Message-ID: <5961fe40-7716-c0fe-b399-f3f2bf39b562@linux.intel.com>
+Date:   Wed, 12 Jul 2023 12:57:52 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202307121241.8295B924F@keescook>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Subject: Re: [PATCH 03/10] x86/tdx: Move FRAME_BEGIN/END to TDX_MODULE_CALL
+ asm macro
+Content-Language: en-US
+To:     Kai Huang <kai.huang@intel.com>, peterz@infradead.org,
+        kirill.shutemov@linux.intel.com, linux-kernel@vger.kernel.org
+Cc:     dave.hansen@intel.com, tglx@linutronix.de, bp@alien8.de,
+        mingo@redhat.com, hpa@zytor.com, x86@kernel.org, seanjc@google.com,
+        pbonzini@redhat.com, kvm@vger.kernel.org, isaku.yamahata@intel.com
+References: <cover.1689151537.git.kai.huang@intel.com>
+ <c0206c457f366ab007ab67ca16970cc4fc562877.1689151537.git.kai.huang@intel.com>
+From:   Sathyanarayanan Kuppuswamy 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <c0206c457f366ab007ab67ca16970cc4fc562877.1689151537.git.kai.huang@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,39 +69,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 12:48:31PM -0700, Kees Cook wrote:
-> On Tue, Jul 11, 2023 at 10:54:59PM -0400, Kent Overstreet wrote:
-> >  - Prereq patch series has been pruned down a bit more; also Mike
-> >    Snitzer suggested putting those patches in their own branch:
-> > 
-> >    https://evilpiepirate.org/git/bcachefs.git/log/?h=bcachefs-prereqs
-> > 
-> >    "iov_iter: copy_folio_from_iter_atomic()" was dropped and replaced
-> >    with willy's "iov_iter: Handle compound highmem pages in
-> >    copy_page_from_iter_atomic()"; he said he'd try to send this for -rc4
-> >    since it's technically a bug fix; in the meantime, it'll be getting
-> >    more testing from my users.
-> > 
-> >    The two lockdep patches have been dropped for now; the
-> >    bcachefs-for-upstream branch is switched back to
-> >    lockdep_set_novalidate_class() for btree node locks. 
-> > 
-> >    six locks, mean and variance have been moved into fs/bcachefs/ for
-> >    now; this means there's a new prereq patch to export
-> >    osq_(lock|unlock)
-> > 
-> >    The remaining prereq patches are pretty trivial, with the exception
-> >    of "block: Don't block on s_umount from __invalidate_super()". I
-> >    would like to get a reviewed-by for that patch, and it wouldn't hurt
-> >    for others.
-> > 
-> >    previously posting:
-> >    https://lore.kernel.org/linux-bcachefs/20230509165657.1735798-1-kent.overstreet@linux.dev/T/#m34397a4d39f5988cc0b635e29f70a6170927746f
+
+
+On 7/12/23 1:55 AM, Kai Huang wrote:
+> Currently, the TDX_MODULE_CALL asm macro and the __tdx_module_call()
+> take registers directly as input and a 'struct tdx_module_output' as
+> optional output.  This is different from the __tdx_hypercall(), which
+> simply uses a structure to carry all input/output.  There's no point to
+> leave __tdx_module_call() complicated as it is.
 > 
-> Can you send these prereqs out again, with maintainers CCed
-> appropriately? (I think some feedback from the prior revision needs to
-> be addressed first, though. For example, __flatten already exists, etc.)
+> As a preparation to simplify the __tdx_module_call() to make it look
+> like __tdx_hypercall(), move FRAME_BEGIN/END and RET from the
+> __tdx_module_call() to the TDX_MODULE_CALL assembly macro.  This also
+> allows more implementation flexibility of the assembly inside the
+> TDX_MODULE_CALL macro, e.g., allowing putting an _ASM_EXTABLE() after
+> the main body of the assembly.
+> 
+> This is basically based on Peter's code.
+> 
+> Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Suggested-by: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Kai Huang <kai.huang@intel.com>
+> ---
 
-Thanks for pointing that out, I knew it was in the pipeline :)
+Looks fine to me.
 
-Will do...
+Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+
+>  arch/x86/coco/tdx/tdcall.S      | 3 ---
+>  arch/x86/virt/vmx/tdx/tdxcall.S | 5 +++++
+>  2 files changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/x86/coco/tdx/tdcall.S b/arch/x86/coco/tdx/tdcall.S
+> index 2eca5f43734f..e5d4b7d8ecd4 100644
+> --- a/arch/x86/coco/tdx/tdcall.S
+> +++ b/arch/x86/coco/tdx/tdcall.S
+> @@ -78,10 +78,7 @@
+>   * Return status of TDCALL via RAX.
+>   */
+>  SYM_FUNC_START(__tdx_module_call)
+> -	FRAME_BEGIN
+>  	TDX_MODULE_CALL host=0
+> -	FRAME_END
+> -	RET
+>  SYM_FUNC_END(__tdx_module_call)
+>  
+>  /*
+> diff --git a/arch/x86/virt/vmx/tdx/tdxcall.S b/arch/x86/virt/vmx/tdx/tdxcall.S
+> index 3524915d8bd9..b5ab919c7fa8 100644
+> --- a/arch/x86/virt/vmx/tdx/tdxcall.S
+> +++ b/arch/x86/virt/vmx/tdx/tdxcall.S
+> @@ -1,5 +1,6 @@
+>  /* SPDX-License-Identifier: GPL-2.0 */
+>  #include <asm/asm-offsets.h>
+> +#include <asm/frame.h>
+>  #include <asm/tdx.h>
+>  
+>  /*
+> @@ -18,6 +19,7 @@
+>   *            TDX module.
+>   */
+>  .macro TDX_MODULE_CALL host:req
+> +	FRAME_BEGIN
+>  	/*
+>  	 * R12 will be used as temporary storage for struct tdx_module_output
+>  	 * pointer. Since R12-R15 registers are not used by TDCALL/SEAMCALL
+> @@ -91,4 +93,7 @@
+>  .Lno_output_struct:
+>  	/* Restore the state of R12 register */
+>  	pop %r12
+> +
+> +	FRAME_END
+> +	RET
+>  .endm
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
