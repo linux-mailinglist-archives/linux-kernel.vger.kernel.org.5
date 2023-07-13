@@ -2,116 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A9F675286F
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 18:35:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5453752872
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 18:35:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232467AbjGMQfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 12:35:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46074 "EHLO
+        id S232218AbjGMQfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 12:35:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232003AbjGMQfA (ORCPT
+        with ESMTP id S232637AbjGMQfi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 12:35:00 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BD9C30CA
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 09:34:30 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DC84F61A5E
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 16:34:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 822AAC433C7;
-        Thu, 13 Jul 2023 16:34:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689266069;
-        bh=1LL3CazwAbR5q+97Oy9lUld6Xg/rBqR+FId9AmfTTyg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JMpQ/esdy6yr7ovSPpIj0eLzkhNmdFV7Wzg1UpbupCJWuQaT+pHpg0UOicJlUOITL
-         H5e2KpFl+j84ioj/GK2eXk3IPDWbUecJyKYrOhw4XpWfMW1ldP7K/n6lBFFgCdGJrp
-         BP8WvyPGdrY37TlnaaD8y8nRqHLBNs3+uOR0vrcuEYyOn27YwBKSly+a8eXCgjrq/d
-         ZChllxy5A9OqLXhgM4fHi9YaTIsUMdYd04Kn9VUk1q5/dZ7NZPNObOkTG2+/mIUHmQ
-         nfv2+qiq03Bsjgj07xU26kJsUF15AixKMaJXPoruyagriIvpK+OxOKrvGtQWm834hm
-         bL2iG0tQBc0Ag==
-Date:   Thu, 13 Jul 2023 17:34:24 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Christoph Niedermaier <cniedermaier@dh-electronics.com>
-Cc:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Support Opensource <support.opensource@diasemi.com>,
-        Adam Thomson <Adam.Thomson.Opensource@diasemi.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Marek Vasut <marex@denx.de>,
-        kernel <kernel@dh-electronics.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V5] regulator: da9062: Make the use of IRQ optional
-Message-ID: <8558f2aa-09fd-4cd3-ae1e-c80893e00aa1@sirena.org.uk>
-References: <20230713090328.3879-1-cniedermaier@dh-electronics.com>
- <d8f60e51-2d62-4370-9032-51eda744239d@sirena.org.uk>
- <9629970cc2c3452e83a43660823319e5@dh-electronics.com>
+        Thu, 13 Jul 2023 12:35:38 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 910D92D41
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 09:35:12 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-401d1d967beso2361cf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 09:35:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689266111; x=1691858111;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/0tnBY0Y8/bwKnmLpzTcUU9wCQlG8IWXPXBkGVcnoHw=;
+        b=X6GrHI9lGLYu3yPTrOBHhjvdk9rAw/jNavkyOGvzqP57TvSbvU7RdS9Lh9/UbaI7mA
+         6EG2s+81o3Og/OD4P0mkdjvdI1aX1HX47fi54BRECAEOiXyjF6ZAQfjczHt/Sq6bLIZi
+         DwEMq2zE/ynNCBkmXa8pxFDSKppQ9tLqoyIOeuGnjRRaBfNH83wdC+xdFQeBT3VU4Wbu
+         /XYhC72PCXbWNhFK984knIrhHvZHMYOY4jiydh2QB9XzEwmEJeP6NH1Z/zUUqiMdGoY4
+         TORxYjZgYIo9rELNS74lYjX++IqjbD6BOnlcU8YqDgE3ioHyiZS0JEDFuWU678Z4TbnG
+         igqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689266111; x=1691858111;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/0tnBY0Y8/bwKnmLpzTcUU9wCQlG8IWXPXBkGVcnoHw=;
+        b=SOVmGJsGakwR3iRQFL/23XV7uGV2FJ9g/Ec9fzF0mXFGQhUCRrLS9eWMaNbwz2jN1B
+         O0KKb/+lFrzrTjDt0E8YQzmb1XlROEr8XWb47u9LgJbDA0LSnTji+HElVF+g4ogkciWK
+         JU0ETnH2j8cg7kUgK/hGEpvEOsLxI8EMCVKRPPjDoKJW2QyoDpN+U5XV/SRk+S1UqLug
+         pPae2vy6Weln0zItrozdXtjNjrFNBMZnrC8C7rdSsxoKsDr1yS923TiTsI73FgUNF5qI
+         vg22ZO75gf9Z/La58QXWo5R2LU0dt+k2TMu0mhDBlna18uJ7XnucLOOP2tnkd0ot2hLC
+         tPCQ==
+X-Gm-Message-State: ABy/qLYrguVCUFKNYn9UyQP+SSfxZf7rQfDRTmR0aPIKsIAqMZKLG1NJ
+        pbGywlYbiJZnvrI7EgNOwgdEI4V8658MEA1A1CREUQ==
+X-Google-Smtp-Source: APBJJlHNKfPG76aMpE6PBWeSOZ8u4EIxgpzWc/MltqAh/kYbAk8R7UT9ux0NTmj5EYE3xdx2tInSZNkJ/6BBVhMbzD0=
+X-Received: by 2002:a05:622a:301:b0:403:ac9c:ac2f with SMTP id
+ q1-20020a05622a030100b00403ac9cac2fmr478923qtw.17.1689266111449; Thu, 13 Jul
+ 2023 09:35:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="altLkxuEsntrmcoR"
-Content-Disposition: inline
-In-Reply-To: <9629970cc2c3452e83a43660823319e5@dh-electronics.com>
-X-Cookie: MOUNT TAPE U1439 ON B3, NO RING
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230621063825.268890-1-mshavit@google.com> <20230621063825.268890-3-mshavit@google.com>
+ <ZK9RycgNAVrxe343@Asurada-Nvidia> <CAKHBV26wi+xKnNjo-R+QOcVLPH2KJTFP+mF4CW1xE61nOdF5GA@mail.gmail.com>
+ <ZLAKQw+DzcpSRSyi@nvidia.com> <CAKHBV25YadRVFiag5z5Yc13L093ScWkCjAOCd=VuGm2RUaDyzA@mail.gmail.com>
+In-Reply-To: <CAKHBV25YadRVFiag5z5Yc13L093ScWkCjAOCd=VuGm2RUaDyzA@mail.gmail.com>
+From:   Michael Shavit <mshavit@google.com>
+Date:   Fri, 14 Jul 2023 00:34:35 +0800
+Message-ID: <CAKHBV25+vOroe+prca2ivSH341A8RLHW+shycyKD5z3UWZVgpQ@mail.gmail.com>
+Subject: Re: [PATCH v4 02/13] iommu/arm-smmu-v3: Add smmu_s1_cfg to smmu_master
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Nicolin Chen <nicolinc@nvidia.com>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>, jean-philippe@linaro.org,
+        baolu.lu@linux.intel.com, linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jul 14, 2023 at 12:16=E2=80=AFAM Michael Shavit <mshavit@google.com=
+> wrote:
+> domains a-la aux-domain). With this change, even attach_dev with a DMA
+> or UNMANAGED domain is now just preparing a single entry into this
+> common CD table.
 
---altLkxuEsntrmcoR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Jul 13, 2023 at 03:36:38PM +0000, Christoph Niedermaier wrote:
-> From: Mark Brown [mailto:broonie@kernel.org]
-
-> > Are there any dependencies for this patch?  The fact that I acked it
-> > makes me think there were MFD parts
-
-> It's a patch series. This patch is the last one in this series, that is
-> missing to have the ability to run the DA9061/62 without a connected IRQ
-> pin. The other patches are already upstreamed and yes there are MFD parts,
-> see below:
-
-Oh, dear.  Why weren't they applied, it's not even the confusion there
-was over what Reviewed-by means...
-
-> >> Reported-by: kernel test robot <lkp@intel.com>
-> >> Link: https://lore.kernel.org/oe-kbuild-all/202303082246.GuLdPL0t-lkp@intel.com/
-
-> > I really doubt that the LKP bot ran into an issue due to a system with
-> > this device without an IRQ wired up...
-
-> In V3 of this patch the kernel test robot found an issue. I had really
-> overlooked that. Thanks to LKP. I forgot to replace the irq variable in
-> the function devm_request_threaded_irq(). So it affected the path with
-> IRQ. In V4 I fixed that. In V5 I only rebased it on the current next
-> 20230713 and add Marek's Reviewed-by tag.
-
-That doesn't mean you should include tags like this, it makes it look
-like they reported the commit...
-
---altLkxuEsntrmcoR
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmSwJ48ACgkQJNaLcl1U
-h9Dq2Af+JAGbntNGDLrRx3J0Mp22kYyvYDnvqfOTote2xsxDWunWrXEkSXTDp1LB
-nKTTchli1wMXiQfQjtjGYlgkSu5rfetldWH+W3+pbrBkGg35l9J2Gmn77SPZqDvW
-SZLVrsN2CVwuOods3ZK1kkKw4ZbFE3TC/Y3sQ0B/iK66cv2OEuzTk5Wx3wlvUNhj
-pX/4cq3Y/9vgpp11fr2l5wxhllWZ0jgE413QgTBnUinO89zht6AlgLVnGIrUfuwu
-YA+l4V6jmzTXj1Z+FCQJxKFfnAyOGmUYCHeq2QIgWQ7UxO2FoSXJpt6HiA4H7D64
-rJQtHR6rtylZEgHFHVn7u34JjhWz8w==
-=JMDM
------END PGP SIGNATURE-----
-
---altLkxuEsntrmcoR--
+I have to correct this part, arm-smmu-v3.c's attach_dev()
+implementation does both: it writes to the pasid=3D0 entry of the
+owned_s1_cfg's CD table, and then installs that CD table to the STE.
