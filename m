@@ -2,61 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66151751D38
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 11:30:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79468751CA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 11:05:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233222AbjGMJa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 05:30:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53234 "EHLO
+        id S233019AbjGMJFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 05:05:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232934AbjGMJaY (ORCPT
+        with ESMTP id S233851AbjGMJE4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 05:30:24 -0400
-X-Greylist: delayed 588 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 13 Jul 2023 02:30:20 PDT
-Received: from mx2.securetransport.de (mx2.securetransport.de [IPv6:2a03:4000:13:6c7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8BD221FC7
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 02:30:20 -0700 (PDT)
-Received: from mail.dh-electronics.com (unknown [77.24.89.57])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx2.securetransport.de (Postfix) with ESMTPSA id 7907E5E927;
-        Thu, 13 Jul 2023 11:20:53 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dh-electronics.com;
-        s=dhelectronicscom; t=1689240054;
-        bh=S16vix2PCMZJ04EOz/eaypi8vCJykAo9q+IFd6bxo/0=;
-        h=From:To:CC:Subject:Date:From;
-        b=YOx/GGo5500mkC9YY33XlkwGMkeZPNzyssyh5uEzdqbpOenaeSd2IsGXFj6gRVG6e
-         G5LqJFrjEPcyIiezE/50R/hFEEoA90Actyz0y7psCgoyHo3Cbccj+hvPzCi3rtBgOq
-         qC4+v6POmEV+PEPOoaDVroWCgBBN+Z/MZDlmMYW0bRVXyz3AhHE1QAwsp10GnoIx/1
-         JgHFlARSYqMVaw4GiyQkXwOp/5imiekLRlfyi7tEGHNc0h2XNpvNqnsPp6RZsMcUvS
-         gQBFOxqBYjq98QKVJ9RVvLb9KJamIUBNxbtR+rFH3MVodJkaYzkuFgiU1sOBEWbEBv
-         /QpIDWQaaNULg==
-Received: from DHPWEX01.DH-ELECTRONICS.ORG (10.64.2.30) by
- DHPWEX01.DH-ELECTRONICS.ORG (10.64.2.30) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.16; Thu, 13 Jul 2023 11:20:51 +0200
-Received: from localhost.localdomain (172.16.51.5) by
- DHPWEX01.DH-ELECTRONICS.ORG (10.64.2.30) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.16 via Frontend Transport; Thu, 13 Jul 2023 11:20:50 +0200
-From:   Christoph Niedermaier <cniedermaier@dh-electronics.com>
-To:     <linux-arm-kernel@lists.infradead.org>
-CC:     Christoph Niedermaier <cniedermaier@dh-electronics.com>,
-        "Support Opensource" <support.opensource@diasemi.com>,
-        Adam Thomson <Adam.Thomson.Opensource@diasemi.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Marek Vasut <marex@denx.de>,
-        <kernel@dh-electronics.com>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH V5] regulator: da9062: Make the use of IRQ optional
-Date:   Thu, 13 Jul 2023 11:03:28 +0200
-Message-ID: <20230713090328.3879-1-cniedermaier@dh-electronics.com>
-X-Mailer: git-send-email 2.11.0
-X-klartext: yes
+        Thu, 13 Jul 2023 05:04:56 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 609AE35BC;
+        Thu, 13 Jul 2023 02:03:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=ecb3dsTnizPLwQBPga+sFZir+8eVUnbKQ5zrkRJr7LU=; b=wFg5Y+l4Y9PhmrSvFvL4bww7kC
+        GNLtl27AOL0D7JC0UtgKHSPb/v0OfjZAMNCTbJCYNXqSuUy8AUURrue2CqPamV8D0Gr3yQLladZQE
+        zBHmMaflzleVlKasyUWeJLDOFiA1ol/aK7zpzHeJvapMtEAfuoQ+gsENGTBlcQkEA4ufkIk/3ZCcG
+        wYIYCX6Yq5XONoPgiOKT7QCnPQpGEBRGrJNIFHGxs3bS0LBqWNSZPVDtppjDclMirFP+D1oCxKHzK
+        fNOu7phwNuFSwhCR3ZpNi5hecAoF31kPulw4FX3P51I92lkDzbTRCAE7gUMS0sFDWVpGi+dnr9Ldr
+        RBn+egiQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qJsEW-00HaXc-DP; Thu, 13 Jul 2023 09:03:32 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0265030058D;
+        Thu, 13 Jul 2023 11:03:32 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id DE8D2245CA111; Thu, 13 Jul 2023 11:03:31 +0200 (CEST)
+Date:   Thu, 13 Jul 2023 11:03:31 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Huang, Kai" <kai.huang@intel.com>
+Cc:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Christopherson,, Sean" <seanjc@google.com>,
+        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "sathyanarayanan.kuppuswamy@linux.intel.com" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: Re: [PATCH 09/10] x86/virt/tdx: Wire up basic SEAMCALL functions
+Message-ID: <20230713090331.GD3138667@hirez.programming.kicks-ass.net>
+References: <cover.1689151537.git.kai.huang@intel.com>
+ <41b7e5503a3e6057dc168b3c5a9693651c501d22.1689151537.git.kai.huang@intel.com>
+ <20230712221510.GG3894444@ls.amr.corp.intel.com>
+ <4202b26acdb3fe926dd1a9a46c2c7c35a5d85529.camel@intel.com>
+ <20230713074204.GA3139243@hirez.programming.kicks-ass.net>
+ <d4887818532e1716b5dd8a08819c656ab4e4c5bf.camel@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d4887818532e1716b5dd8a08819c656ab4e4c5bf.camel@intel.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,67 +76,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch makes the use of IRQ optional to make the DA9061/62 usable
-for designs that don't have the IRQ pin connected, because the regulator
-is usable without IRQ.
+On Thu, Jul 13, 2023 at 08:18:09AM +0000, Huang, Kai wrote:
+> On Thu, 2023-07-13 at 09:42 +0200, Peter Zijlstra wrote:
+> > On Thu, Jul 13, 2023 at 03:46:52AM +0000, Huang, Kai wrote:
+> > > On Wed, 2023-07-12 at 15:15 -0700, Isaku Yamahata wrote:
+> > > > > The SEAMCALL ABI is very similar to the TDCALL ABI and leverages much
+> > > > > TDCALL infrastructure.  Wire up basic functions to make SEAMCALLs for
+> > > > > the basic TDX support: __seamcall(), __seamcall_ret() and
+> > > > > __seamcall_saved_ret() which is for TDH.VP.ENTER leaf function.
+> > > > 
+> > > > Hi.  __seamcall_saved_ret() uses struct tdx_module_arg as input and output.  For
+> > > > KVM TDH.VP.ENTER case, those arguments are already in unsigned long
+> > > > kvm_vcpu_arch::regs[].  It's silly to move those values twice.  From
+> > > > kvm_vcpu_arch::regs to tdx_module_args.  From tdx_module_args to real registers.
+> > > > 
+> > > > If TDH.VP.ENTER is the only user of __seamcall_saved_ret(), can we make it to
+> > > > take unsigned long kvm_vcpu_argh::regs[NR_VCPU_REGS]?  Maybe I can make the
+> > > > change with TDX KVM patch series.
+> > > 
+> > > The assembly code assumes the second argument is a pointer to 'struct
+> > > tdx_module_args'.  I don't know how can we change __seamcall_saved_ret() to
+> > > achieve what you said.  We might change the kvm_vcpu_argh::regs[NR_VCPU_REGS] to
+> > > match 'struct tdx_module_args''s layout and manually convert part of "regs" to
+> > > the structure and pass to __seamcall_saved_ret(), but it's too hacky I suppose.
+> > 
+> > I suspect the kvm_vcpu_arch::regs layout is given by hardware; so the
+> > only option would be to make tdx_module_args match that. It's a slightly
+> > unfortunate layout, but meh.
+> > 
+> > Then you can simply do:
+> > 
+> > 	__seamcall_saved_ret(leaf, (struct tdx_module_args *)vcpu->arch->regs);
+> > 
+> > 
+> 
+> I don't think the layout matches hardware, especially I think there's no
+> "hardware layout" for GPRs that are concerned here.  They are just for KVM
+> itself to save guest's registers when the guest exits to KVM, so that KVM can
+> restore them when returning back to the guest.
 
-Signed-off-by: Christoph Niedermaier <cniedermaier@dh-electronics.com>
-Acked-by: Mark Brown <broonie@kernel.org>
-Reviewed-by: Adam Ward <DLG-Adam.Ward.opensource@dm.renesas.com>
-Reviewed-by: Marek Vasut <marex@denx.de>
-Reported-by: kernel test robot <lkp@intel.com>
-Link: https://lore.kernel.org/oe-kbuild-all/202303082246.GuLdPL0t-lkp@intel.com/
----
-Cc: Support Opensource <support.opensource@diasemi.com>
-Cc: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Marek Vasut <marex@denx.de>
-Cc: kernel@dh-electronics.com
-Cc: linux-kernel@vger.kernel.org
-To: linux-arm-kernel@lists.infradead.org
----
-V2: - Rebase on current next 20230209
-    - Add Reviewed-by and Acked-by tags
-V3: - Rebase on current next 20230307
-v4: - Rebase on current next 20230309
-    - Fix a missing variable change reported by kernel test robot
-v5: - Rebase on current next 20230713
-    - Add Marek's Reviewed-by tag
----
- drivers/regulator/da9062-regulator.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+Either way around it should be possible to make them match I suppose.
+Ideally we get the callee-clobbered regs first, but if not, I don't
+think that's too big of a problem.
 
-diff --git a/drivers/regulator/da9062-regulator.c b/drivers/regulator/da9062-regulator.c
-index c28b061eef02..1d354db0c1bd 100644
---- a/drivers/regulator/da9062-regulator.c
-+++ b/drivers/regulator/da9062-regulator.c
-@@ -924,7 +924,7 @@ static int da9062_regulator_probe(struct platform_device *pdev)
- 	struct da9062_regulator *regl;
- 	struct regulator_config config = { };
- 	const struct da9062_regulator_info *rinfo;
--	int irq, n, ret;
-+	int n, ret;
- 	int max_regulators;
- 
- 	switch (chip->chip_type) {
-@@ -1012,12 +1012,11 @@ static int da9062_regulator_probe(struct platform_device *pdev)
- 	}
- 
- 	/* LDOs overcurrent event support */
--	irq = platform_get_irq_byname(pdev, "LDO_LIM");
--	if (irq < 0)
--		return irq;
--	regulators->irq_ldo_lim = irq;
-+	regulators->irq_ldo_lim = platform_get_irq_byname_optional(pdev, "LDO_LIM");
-+	if (regulators->irq_ldo_lim < 0)
-+		return 0;
- 
--	ret = devm_request_threaded_irq(&pdev->dev, irq,
-+	ret = devm_request_threaded_irq(&pdev->dev, regulators->irq_ldo_lim,
- 					NULL, da9062_ldo_lim_event,
- 					IRQF_TRIGGER_LOW | IRQF_ONESHOT,
- 					"LDO_LIM", regulators);
--- 
-2.11.0
 
