@@ -2,99 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E30EE752839
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 18:24:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D7CE75283C
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 18:25:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235168AbjGMQYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 12:24:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38240 "EHLO
+        id S234145AbjGMQZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 12:25:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229682AbjGMQYX (ORCPT
+        with ESMTP id S229682AbjGMQZX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 12:24:23 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEEDBE65;
-        Thu, 13 Jul 2023 09:24:22 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 82F0C61A5E;
-        Thu, 13 Jul 2023 16:24:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B11C0C433C8;
-        Thu, 13 Jul 2023 16:24:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689265461;
-        bh=AZtkSlN6HOFWqWpaw/7rUZ2iYgSQ7gyCFHv5rfl8mdg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=esZu5r4uC08yeLmBddbgsRaBbAqZTAPh5xHgLceETYHVhFqeOZzClIDGta83yxedB
-         BhdMpCh/LPjpfo+7+8FfmKArb6rVILE0zfIB15Nt8bJua/s4X9RqSHjyCB7ch73iB9
-         JxcuWN5D1TzIxw4ymvz6bNG71C6bdempvNTIYT7PGZbXbeGiSFhXjkJgdiIg+GW817
-         Mp1FrZocZ3kH41zEq8XOZK1VulDS6wSseTw8O7Xe+bs5c1koagoKBe/a++lZyA+Wii
-         Tb0K3zhZCzByYbPoe0Ov/puWM363mj2Iwh+Jkrs3nCYbvmt6/3dG8qWpKBLSwPXter
-         2yOuoxbb11fxg==
-Date:   Thu, 13 Jul 2023 11:24:19 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH 1/2] PCI: Reorder some fields in 'struct pci_dev'
-Message-ID: <20230713162419.GA321515@bhelgaas>
+        Thu, 13 Jul 2023 12:25:23 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 830141BD5
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 09:25:21 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id ca18e2360f4ac-780c89d1998so9213439f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 09:25:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1689265521; x=1689870321;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=s0dG2H2xZvUK9eAr8EXN8mj7U0nJs7wY+tkeLzgPXkM=;
+        b=32VlmzFpdfx3czU0/sS6H2Q1IepA9YnCExGVhgPRRTcN8Z1Ojq61LmUdzH21+xdDy8
+         TbBwAZALZwc80QoTq5biUM6oqTH3jyFGld7ZADkH8e17QGbK0ZmXK5e7CXA4CngQTXeh
+         oswHbDHgYJqJkP1SNsQe7GScBtnzl73YxrlFTyi902tOauPrD4ocnPDO4x3qHNtuiLyg
+         fPqZjbYdr/6ra8YFHdHMtRmEuaKrd59Fkr+UzYgAnd8KQ/EBjdtaSLJYNYrT6/gETEzD
+         coGcWioKyiemnq5Bd9RsCcScAesgPg6vJuAPDSmbvmi98zzROpxvoh+GEsSzfcZANTxf
+         FY3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689265521; x=1689870321;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=s0dG2H2xZvUK9eAr8EXN8mj7U0nJs7wY+tkeLzgPXkM=;
+        b=YddovkJSPsBrrxgk7y4Y5m7MZCMC/Vv4ih207WiHOQCDzeC/KMskvO7PWzgVU4ZAiH
+         dvL4ZIUH9ZdzgOM3fhIhB+/8syLtQLxAK0Co/0oCwcwZzCh6CtiKDZ6K2QI4prRlj3Yk
+         vpOb1oUISbS9F0v2XfmRg3pwbTfWehs+PEAeKWdLSYKWNKT7JzrYUYDV3PvhvgcbrhH/
+         NnphPoNXH/SyknStm0XpV5jaNlIJyw5NztKW2FIN887O2DPtKs7LkfJq0lr7oh1l0l4X
+         CLm7wOLSMptZxVwhUKWr9uU36fvErOBYcozvszggLID33+yYkQepy+5acVL8N+ktDTQv
+         ZDnw==
+X-Gm-Message-State: ABy/qLZy55qwGjZN6Um1l8fKwipv2lI65M2oxB72a2mmTqPyaOX8Zh3H
+        0IR8MtMziL28cNp491JuVne5RA==
+X-Google-Smtp-Source: APBJJlHk/JPQdHlGkunnVUkE9IBFVBOBw5KMbzJVTmNlbHGry09SLOSB7Cu7a5Q4MOLgWr/9kQqbfw==
+X-Received: by 2002:a05:6602:3ce:b0:780:c6bb:ad8d with SMTP id g14-20020a05660203ce00b00780c6bbad8dmr2464784iov.0.1689265520844;
+        Thu, 13 Jul 2023 09:25:20 -0700 (PDT)
+Received: from [192.168.1.94] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id j20-20020a02a694000000b0042b2d9fbbecsm1894706jam.119.2023.07.13.09.25.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 Jul 2023 09:25:20 -0700 (PDT)
+Message-ID: <517d0c94-5f08-6f9f-2119-6374a7d7c4b8@kernel.dk>
+Date:   Thu, 13 Jul 2023 10:25:19 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <407b17c3e56764ef2c558898d4ff4c6c04b2d757.1687105455.git.christophe.jaillet@wanadoo.fr>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 4/8] io_uring: add support for futex wake and wait
+Content-Language: en-US
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, andres@anarazel.de
+References: <20230712162017.391843-1-axboe@kernel.dk>
+ <20230712162017.391843-5-axboe@kernel.dk>
+ <20230713111513.GH3138667@hirez.programming.kicks-ass.net>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20230713111513.GH3138667@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 18, 2023 at 06:24:54PM +0200, Christophe JAILLET wrote:
-> Group some bitfield variables to reduce hole.
-> On x86_64, this shrinks the size of 'struct pci_dev' by 16 bytes when
-> compiled with 'allmodconfig'. This goes from 3576 to 3560.
+On 7/13/23 5:15?AM, Peter Zijlstra wrote:
+> On Wed, Jul 12, 2023 at 10:20:13AM -0600, Jens Axboe wrote:
 > 
-> The move related to CONFIG_PCIEASPM depends on the config. But it gives
-> the opportunity to merge to bitfields.
+>> +int io_futex_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
+>> +{
+>> +	struct io_futex *iof = io_kiocb_to_cmd(req, struct io_futex);
+>> +
+>> +	if (unlikely(sqe->addr2 || sqe->buf_index || sqe->addr3))
+>> +		return -EINVAL;
+>> +
+>> +	iof->futex_op = READ_ONCE(sqe->fd);
+>> +	iof->uaddr = u64_to_user_ptr(READ_ONCE(sqe->addr));
+>> +	iof->futex_val = READ_ONCE(sqe->len);
+>> +	iof->futex_mask = READ_ONCE(sqe->file_index);
+>> +	iof->futex_flags = READ_ONCE(sqe->futex_flags);
+>> +	if (iof->futex_flags & FUTEX_CMD_MASK)
+>> +		return -EINVAL;
+>> +
+>> +	return 0;
+>> +}
 > 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> I'm a little confused on the purpose of iof->futex_op, it doesn't appear
+> to be used. Instead iof->futex_flags is used as the ~FUTEX_CMD_MASK part
+> of ops.
+> 
+> The latter actually makes sense since you encode the actual op in the
+> IOURING_OP_ space.
 
-Both patches applies to pci/misc for v6.6, thanks!
+Yep, I think this is also a leftover from when I had it multiplexed a
+bit more. The liburing side got fixed for that, but neglected this bit.
+Good catch. I'll fold the below in.
 
-> ---
->  include/linux/pci.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/include/linux/pci.h b/include/linux/pci.h
-> index c69a2cc1f412..106754757279 100644
-> --- a/include/linux/pci.h
-> +++ b/include/linux/pci.h
-> @@ -366,8 +366,8 @@ struct pci_dev {
->  	pci_power_t	current_state;	/* Current operating state. In ACPI,
->  					   this is D0-D3, D0 being fully
->  					   functional, and D3 being off. */
-> -	unsigned int	imm_ready:1;	/* Supports Immediate Readiness */
->  	u8		pm_cap;		/* PM capability offset */
-> +	unsigned int	imm_ready:1;	/* Supports Immediate Readiness */
->  	unsigned int	pme_support:5;	/* Bitmask of states from which PME#
->  					   can be generated */
->  	unsigned int	pme_poll:1;	/* Poll device's PME status bit */
-> @@ -392,9 +392,9 @@ struct pci_dev {
->  
->  #ifdef CONFIG_PCIEASPM
->  	struct pcie_link_state	*link_state;	/* ASPM link state */
-> +	u16		l1ss;		/* L1SS Capability pointer */
->  	unsigned int	ltr_path:1;	/* Latency Tolerance Reporting
->  					   supported from root to here */
-> -	u16		l1ss;		/* L1SS Capability pointer */
->  #endif
->  	unsigned int	pasid_no_tlp:1;		/* PASID works without TLP Prefix */
->  	unsigned int	eetlp_prefix_path:1;	/* End-to-End TLP Prefix */
-> -- 
-> 2.34.1
+>> +int io_futex_wait(struct io_kiocb *req, unsigned int issue_flags)
+>> +{
+>> +	struct io_futex *iof = io_kiocb_to_cmd(req, struct io_futex);
+>> +	struct io_ring_ctx *ctx = req->ctx;
+>> +	struct io_futex_data *ifd = NULL;
+>> +	struct futex_hash_bucket *hb;
+>> +	unsigned int flags;
+>> +	int ret;
+>> +
+>> +	if (!iof->futex_mask) {
+>> +		ret = -EINVAL;
+>> +		goto done;
+>> +	}
+>> +	if (!futex_op_to_flags(FUTEX_WAIT, iof->futex_flags, &flags)) {
 > 
+> A little confusing since you then implement FUTEX_WAIT_BITSET, but using
+> FUTEX_WAIT ensures this goes -ENOSYS when setting FUTEX_CLOCK_REALTIME,
+> since you handle timeouts through the iouring thing.
+> 
+> Perhaps a comment?
+
+OK, will add a comment on that.
+
+>> +		ret = -ENOSYS;
+>> +		goto done;
+>> +	}
+>> +
+>> +	io_ring_submit_lock(ctx, issue_flags);
+>> +	ifd = io_alloc_ifd(ctx);
+>> +	if (!ifd) {
+>> +		ret = -ENOMEM;
+>> +		goto done_unlock;
+>> +	}
+>> +
+>> +	req->async_data = ifd;
+>> +	ifd->q = futex_q_init;
+>> +	ifd->q.bitset = iof->futex_mask;
+>> +	ifd->q.wake = io_futex_wake_fn;
+>> +	ifd->req = req;
+>> +
+>> +	ret = futex_wait_setup(iof->uaddr, iof->futex_val, flags, &ifd->q, &hb);
+>> +	if (!ret) {
+>> +		hlist_add_head(&req->hash_node, &ctx->futex_list);
+>> +		io_ring_submit_unlock(ctx, issue_flags);
+>> +
+>> +		futex_queue(&ifd->q, hb);
+>> +		return IOU_ISSUE_SKIP_COMPLETE;
+>> +	}
+>> +
+>> +done_unlock:
+>> +	io_ring_submit_unlock(ctx, issue_flags);
+>> +done:
+>> +	if (ret < 0)
+>> +		req_set_fail(req);
+>> +	io_req_set_res(req, ret, 0);
+>> +	kfree(ifd);
+>> +	return IOU_OK;
+>> +}
+> 
+> Other than that, I think these things are indeed transparant wrt the
+> existing futex interface. If we add a flag this shouldn't care.
+
+Not sure I follow, what kind of flag do you want/need?
+
+
+diff --git a/io_uring/futex.c b/io_uring/futex.c
+index df65b8f3593f..bced11c87896 100644
+--- a/io_uring/futex.c
++++ b/io_uring/futex.c
+@@ -18,7 +18,6 @@ struct io_futex {
+ 		u32 __user			*uaddr;
+ 		struct futex_waitv __user	*uwaitv;
+ 	};
+-	int		futex_op;
+ 	unsigned int	futex_val;
+ 	unsigned int	futex_flags;
+ 	unsigned int	futex_mask;
+@@ -173,10 +172,9 @@ int io_futex_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
+ {
+ 	struct io_futex *iof = io_kiocb_to_cmd(req, struct io_futex);
+ 
+-	if (unlikely(sqe->buf_index || sqe->addr3))
++	if (unlikely(sqe->fd || sqe->buf_index || sqe->addr3))
+ 		return -EINVAL;
+ 
+-	iof->futex_op = READ_ONCE(sqe->fd);
+ 	iof->uaddr = u64_to_user_ptr(READ_ONCE(sqe->addr));
+ 	iof->futex_val = READ_ONCE(sqe->len);
+ 	iof->futex_mask = READ_ONCE(sqe->file_index);
+
+-- 
+Jens Axboe
+
