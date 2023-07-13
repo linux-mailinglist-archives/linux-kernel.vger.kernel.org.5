@@ -2,140 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB429751721
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 06:05:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3AF675171F
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 06:05:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233686AbjGMEFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 00:05:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56356 "EHLO
+        id S233608AbjGMEF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 00:05:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233658AbjGMEFd (ORCPT
+        with ESMTP id S229455AbjGMEF1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 00:05:33 -0400
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2113.outbound.protection.outlook.com [40.107.215.113])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 340DB1FDD;
-        Wed, 12 Jul 2023 21:05:32 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jdfFbek/OpuYGHmF81LEbeXav9axeXn/ZPApoCSvRFf8SmR7X7FRIq9mKv5Kd0oPGjh5O0ABG7TyaGwLLwASfNKyJcTFuOPMbrpfR2JyNWRYt0CsskGcdvtbCi7qAzMYyOWFA9/4zVeGJ1o6r0zr9qxpLVGcqC7nPQRMSqu5FQJ91UPRcAPzsG+KVtqqQadbuLlZJazokEAvxDp4d4kNT2G5LA6CzdBL2SLBOUnuA2+5qLz62gka0V3kM+zDK28P8fdbfASSNQL3vwER9dbZdhVaRaoHmDF+c0cHhzhGDSiubGnwFe3nI3upp1EfzOthHDKH8iIQ8c9gL6klFj25NQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0GSkjARFw17A6NM3rLgqAcHTfqDDVxoKbLHpuPFc3Ow=;
- b=hLdG7yefMYFBNXxG6I1mF1fIOCbMDSncU/sDjAQ6DMMBj1K4Jdv+/K3L4aP9G628z0caUINUK2G6WIR/olVsaM68rCouw9RxrfDc1RTzRqbwjF/ZVb3dpr1JKeHmXtdfoguzWS3pwsVtJqgyDZb538e1sj+onOM5f+nj/o4zWHD1Ta1YcVgftn9ZrIwy4WO9r6C9IJ3j8WuEJ5brRxrdgqJeZ9VICLbglXwLJtDtPwggBZ1JLWDsXVQxLTsNPdzgOEqtAZrZSI5OT3yTuF1Xjjtpwi6z7QHpJsVAyasZiKWtj0V6KipkW2/ctfZcztLi+W9M8cfvm0lI868RYPN1eA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0GSkjARFw17A6NM3rLgqAcHTfqDDVxoKbLHpuPFc3Ow=;
- b=EKP3gBFy5OQBnPk/d+sWKmdhdVy7rqIQDUlEZQvA31MlAfsvKXC4dtKdgE+CUF8P67CIUMH2/lIjaqZ5nxwQE1NsavvO3/mz6ht2VEKWvbZZ86MyYHGNK78pVzatVDDq+ofPeU+L5WnS64I8qhIVKzp+5ZYs4AcW0h/x+lC3kZgmsv6nZtq0W277KUeJ7HZosLCCYR7IMIRh9AaYJh3qQ/GxpMvLFtvI9a66CX0eqY/wfuVl2vpwEF+P9/5r82gHQW84o1dYD6ed4w43ktcxB0NboX8PfcoCyWexhQcrgUm3D9ALO+tWxsl9/MSFHF8jRdr4YPHh1tgrreUnLKdmHQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from SG2PR06MB3743.apcprd06.prod.outlook.com (2603:1096:4:d0::18) by
- SEZPR06MB6421.apcprd06.prod.outlook.com (2603:1096:101:184::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.20; Thu, 13 Jul
- 2023 04:05:26 +0000
-Received: from SG2PR06MB3743.apcprd06.prod.outlook.com
- ([fe80::2a86:a42:b60a:470c]) by SG2PR06MB3743.apcprd06.prod.outlook.com
- ([fe80::2a86:a42:b60a:470c%4]) with mapi id 15.20.6588.024; Thu, 13 Jul 2023
- 04:05:26 +0000
-From:   Wang Ming <machel@vivo.com>
-To:     Kalle Valo <kvalo@kernel.org>, Wang Ming <machel@vivo.com>,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     opensource.kernel@vivo.com
-Subject: [PATCH net v1] ath6kl:Fix error checking for debugfs_create_dir()
-Date:   Thu, 13 Jul 2023 12:05:02 +0800
-Message-Id: <20230713040518.13734-1-machel@vivo.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2P153CA0007.APCP153.PROD.OUTLOOK.COM (2603:1096::17) To
- SG2PR06MB3743.apcprd06.prod.outlook.com (2603:1096:4:d0::18)
+        Thu, 13 Jul 2023 00:05:27 -0400
+Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B0A61FD2
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 21:05:23 -0700 (PDT)
+Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-403c6a0f3aaso3020771cf.2
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 21:05:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689221122; x=1691813122;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GajuMt+6Q9tx2blQfMfUh9E0E/uqR27CkP+42hN7Tqs=;
+        b=gDvLB3r3V86ko8I3G39vt7W+qJo+S3sOTVVFqP3XCfCbqjaPg5qCUxk0pT1ZKpssjU
+         fiZYWWXBwJU+Xi64SlLWHhAxcEzNMXvoglzhcLFu+lYSSeVVx60VShxcy6VHPcWz8KpF
+         +F1LJgxdmMG1RfHd1Gag8WxDXBybpgz3u0t9BANn9SrlrkmXnegfGnApn0rdh+grsu+Y
+         1g8dd25RPy4zSOJbv1GZDMvi+3MShTzKTbsg1Z/uI1xSO9Fh6gWWY6HtjiBOdQ4tONwC
+         t+TVyecBjSZ1j2RHyxCbdhvnLYBbh31RYT/930chbQtzcrILNK2IaW4EcKDXIAcshuEk
+         ZctQ==
+X-Gm-Message-State: ABy/qLZ+IuKRbePuu5H2F0VqrEnsdj2fEXF3IAXWFJ74021+ZeL3EcBU
+        LZaNnscVv4u7uCM8+cuIvj0=
+X-Google-Smtp-Source: APBJJlH5v1OSRqsqRlexTyIn2nsZxnDKmUSQVKyFEh7GmRRs22EZf3ya4EGSH0DBMcTuscbv1AoeEg==
+X-Received: by 2002:a05:622a:11:b0:403:2842:4d09 with SMTP id x17-20020a05622a001100b0040328424d09mr595554qtw.26.1689221122338;
+        Wed, 12 Jul 2023 21:05:22 -0700 (PDT)
+Received: from maniforge ([2620:10d:c091:400::5:38a5])
+        by smtp.gmail.com with ESMTPSA id bv11-20020a05622a0a0b00b003fdebf1a634sm2771183qtb.75.2023.07.12.21.05.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Jul 2023 21:05:21 -0700 (PDT)
+Date:   Wed, 12 Jul 2023 23:05:19 -0500
+From:   David Vernet <void@manifault.com>
+To:     Abel Wu <wuyun.abel@bytedance.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, gautham.shenoy@amd.com,
+        kprateek.nayak@amd.com, aaron.lu@intel.com, clm@meta.com,
+        tj@kernel.org, roman.gushchin@linux.dev, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: Re: [PATCH v2 5/7] sched: Implement shared runqueue in CFS
+Message-ID: <20230713040519.GB260054@maniforge>
+References: <20230710200342.358255-1-void@manifault.com>
+ <20230710200342.358255-6-void@manifault.com>
+ <93260dd9-818a-7f98-e030-635e0dc8cad8@bytedance.com>
+ <20230712221657.GF12207@maniforge>
+ <a70eaa87-2afa-a5c7-a463-7199744cefa4@bytedance.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SG2PR06MB3743:EE_|SEZPR06MB6421:EE_
-X-MS-Office365-Filtering-Correlation-Id: bab07618-c226-4665-60df-08db83566320
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: wqHFTj6mLmqAS19WyjSBDLUaUUA5mXA+8zKWZJeKcU729BN0nvPjevS4Tuv7YcqzVA4ED7akrPMd2c0VdGKQAyfY3Vjl0idXsvLJwicCq2wUKJz9sT1U3t21WggbwLQTQ5so1Ru27hk09X+FTYtbkR0eR2HZM/srASLmmKnzuKjK00MuMxFjnhOSCm617fBHVvpQ1468WJstKKQoPLeqXxWbXW2BdhfBnEEtXw98GjNK789JbNl0PypK9JuAp9FuBJPtr00zC617J1m4QsATbc33NgIpzTIt/5d3J+Iz7nyd9VNi6CyzbTJAoeQAEMLjC1H7Hmd1U4oPK5GyiWeVgzjOGepAIn0skOpmQWvWSAQf1RO/eCAx5UyEx9Qole27eXYftiRpeP65f5Al+1jF00E3p2fbtr4HprdNDlhKRpgEzlA19JDFmHXt2YooDm6HEwpSGRgSSI4PbLBvb1YYiev41bJ6qM63td9ju+k95h+D45T+Emc5+MD/m6CsT/GmZhpha9WhTbsPiKwq71bvrfDQT4UmCOMUoyL0oW4+aH9X0hrjkA7wWoaY6nhf0WakaVuoY/S88Yh+4lFEePO1/3podNGw6w6vMJVKo5dx0+p57iRG4yJNkH2jz+Bh8JKEnwhwY82VP+B8Tw61OqwZSg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB3743.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(346002)(366004)(136003)(396003)(376002)(451199021)(4326008)(41300700001)(66556008)(2906002)(66946007)(66476007)(4744005)(38100700002)(5660300002)(38350700002)(8936002)(8676002)(86362001)(316002)(478600001)(52116002)(6666004)(6486002)(6512007)(107886003)(36756003)(26005)(83380400001)(6506007)(1076003)(186003)(110136005)(2616005)(32563001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?dM+wTcMva/T2t880e0JVyZ/qCshRm4eTCmC6nY8qOIqnsR/SsQmh57OkkrKe?=
- =?us-ascii?Q?HvuX3XgDVs3PheK3dp35M2yWbLVwZHHgsxi2/wta6MyhFtlOZOjUWQf9gdnd?=
- =?us-ascii?Q?2DJe+qo3LPjE10nTf1ahkYX7Mx7W4mf5AmG89RzxX14hjIQD32WaqRvjEJoV?=
- =?us-ascii?Q?NmeRc4bdJCJIHzsucrKFRdzpNX4uEMuSf0EC4W8PXLpBddB2nDUtzBLuDamF?=
- =?us-ascii?Q?tx3pnke85igx4UWN01+FScSHxJdJjr8qxyGLJuyBf1LYMhPrNWAkRmfsuHC3?=
- =?us-ascii?Q?Ofn7JAtWmHXO3kWWCw6mFQq70WuDpGpSbDEjbiEVUFEugYY0z5VuIWyNXZrI?=
- =?us-ascii?Q?Tr0tFzll0fZSJEeWoNvii1lI37LHTU6MdbOva2zq77w0XTdg8gxOGoF56+Uz?=
- =?us-ascii?Q?H0YqZ2TnFm6ncJlLB4UXUogUb6Ol41/rkZ7vA2a3kR/ONY6TxA4gsWPPX1ak?=
- =?us-ascii?Q?j3PHaz9BfY53Fz1qbnWfN2cVRJlyoGubvAduMaojRRA6MOE0iFgCxJSH0CdA?=
- =?us-ascii?Q?QoHwQ5mWs0isDaDCjbR7fvSbYrKcimdgRUUsghgnruF1YbwweyyeCQEw1E+N?=
- =?us-ascii?Q?nxC5nlYQN8RfMF3EfDjAcVHbhAbVxnc/lagQqM5b9sJXTOcx3me/nFj8+/h+?=
- =?us-ascii?Q?0mEcfBIx+0DGPSeOONqefjDl+ibKOpw5PzQ8KHPgcEjEJutP25azFkewUpzB?=
- =?us-ascii?Q?h5tm7cS/cKx761DFfF4dXhks5X2Vz8/+BkLuN6cTF6T+Xu4Nhz0HIBjHYARJ?=
- =?us-ascii?Q?rDCP0QJiEdfAaCSGpERK0zOWcwoEMuRvhdf+qkcy4IoJ7Nr//iGhmdiP/stp?=
- =?us-ascii?Q?hj8LChlEY9iULHi5RmMHJCvEw4lEUpuoHKL0eQ7o0Pdnfh+9XTMDjc/T7rLf?=
- =?us-ascii?Q?O6sPG+quonl8ZbGSin27ouMGwbZrKLRf+Wz014ycrqp1OQLRXRFDFgOEk15/?=
- =?us-ascii?Q?bc9xV/Rw3FByCU1G7SxxORO41sPsYZRloAcXfJ4V1oeJJ7eaRnGEtGN7eKNW?=
- =?us-ascii?Q?kJm8VHpi9fSOOAlXSHavr2K/RHvASbYunXSFAOf90OxG4c4Ii7iyIvApJUSp?=
- =?us-ascii?Q?VyYhFC7ZveIt1U/GdSQ3W9S1tZNdWU4t6wA1+RQh9M/PLZe4cWZCv0L6npq6?=
- =?us-ascii?Q?K+fYVPbCujkManjm+tcZn5JaDJDXkTp71d5g+k+9uLzRLpuRr+LXdjw9qwVJ?=
- =?us-ascii?Q?2geXXce2u2IPQo3AYIHYXhGtWeQMuOkWfsyvDu75C9JORnxOAcNF7jDMynbc?=
- =?us-ascii?Q?a+jxRa6/n0z6aIya0LX4gSvoIC5K/kCjpAhHkHAEeRtekORJPxx7zn94wD3V?=
- =?us-ascii?Q?oN8cDqZ9DSqxHjrdR5wGD4VXpz416WCbdcUnQwd3MDsx5F6nnq0+Fyi89BlW?=
- =?us-ascii?Q?x3sQhZ6AWj9VRiJ01ZkBPhApoTmWwTS8yMFmooAJKkaSN9sWicd90iPQx4Q8?=
- =?us-ascii?Q?o1tn9SNNMsOo/7MiDnaWrV0++0q1oJ8eLXpzbJ2A3RwZZq2H2GCgmNGVRaZZ?=
- =?us-ascii?Q?fEuBeQjCxLGKL8SmVkojwM+S7fvolmZmaMvhqKFYYC0JZEDNx3BMlkB6iMfY?=
- =?us-ascii?Q?wW6phpVRa7wuHTAI8ESPrvnfzJyFzievcjvapcnx?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bab07618-c226-4665-60df-08db83566320
-X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB3743.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2023 04:05:25.8259
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KaS6I2uyf7lge5Liy4WWHgDMH4zLzPxsY6hhYBQfRa3PxUo+CAddFQFGCWFh+a9pJMCYIA/Sb5AsvGqZj7+jIw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR06MB6421
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a70eaa87-2afa-a5c7-a463-7199744cefa4@bytedance.com>
+User-Agent: Mutt/2.2.10 (2023-03-25)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The debugfs_create_dir() function returns error pointers,
-it never returns NULL. Most incorrect error checks were fixed,
-but the one in ath6kl_debug_init_fs() was forgotten.
+On Thu, Jul 13, 2023 at 11:43:50AM +0800, Abel Wu wrote:
+> On 7/13/23 6:16 AM, David Vernet wrote:
+> > On Wed, Jul 12, 2023 at 06:47:26PM +0800, Abel Wu wrote:
+> > > > + *
+> > > > + * HOW
+> > > > + * ===
+> > > > + *
+> > > > + * An shared_runq is comprised of a list, and a spinlock for synchronization.
+> > > > + * Given that the critical section for a shared_runq is typically a fast list
+> > > > + * operation, and that the shared_runq is localized to a single LLC, the
+> > > > + * spinlock will typically only be contended on workloads that do little else
+> > > > + * other than hammer the runqueue.
+> > > 
+> > > Would there be scalability issues on large LLCs?
+> > 
+> > See the next patch in the series [0] where we shard the per-LLC shared
+> > runqueues to avoid contention.
+> > 
+> > [0]: https://lore.kernel.org/lkml/20230710200342.358255-7-void@manifault.com/
+> 
+> Sorry, I should have read the cover letter more carefully. By sharding,
+> the LLC is partitioned into several zones, hence contention is relieved.
+> But sharding itself might be tricky. Making the SMT siblings not cross
+> shards, as suggested by Peter, is generally a good thing. But I wonder
+> if there is any workload might benefit from other sharding form.
 
-Fix the remaining error check.
+IMO for now the best thing to do is keep things simple until we observe
+it being a problem in practice. Or to at least plan to address it in a
+follow-on patch set when we add support for a dynamic shard sizing.
+Proper shard sizing is required to do optimal SMT placement anyways, and
+in general will likely have more of an impact on performance.
 
-Signed-off-by: Wang Ming <machel@vivo.com>
+> > > 
+> > > > +
+> > > > +	task_rq_unlock(src_rq, p, &src_rf);
+> > > > +
+> > > > +	raw_spin_rq_lock(rq);
+> > > > +	rq_repin_lock(rq, rf);
+> > > 
+> > > By making it looks more ugly, we can save some cycles..
+> > > 
+> > > 	if (src_rq != rq) {
+> > > 		task_rq_unlock(src_rq, p, &src_rf);
+> > > 	} else {
+> > > 		rq_unpin_lock(src_rq, src_rf);
+> > > 		raw_spin_unlock_irqrestore(&p->pi_lock, src_rf.flags);
+> > > 		rq_repin_lock(rq, rf);
+> > > 	}
+> 
+> I forgot the repin part when src_rq != rq, but I'm sure you already got
+> my point :)
 
-Fixes: 9b9a4f2acac2 ("ath6kl: store firmware logs in skbuffs")
----
- drivers/net/wireless/ath/ath6kl/debug.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Yep, I got your main point which was to avoid the extra dropping and
+acquiring of the same rq spinlock. FYI for posterity / anyone else
+reading, the missing repin isn't sufficient on its own for the src_rq !=
+rq path. We also need to reacquire the rq lock.
 
-diff --git a/drivers/net/wireless/ath/ath6kl/debug.c b/drivers/net/wireless/ath/ath6kl/debug.c
-index 433a047f3747..505af195e299 100644
---- a/drivers/net/wireless/ath/ath6kl/debug.c
-+++ b/drivers/net/wireless/ath/ath6kl/debug.c
-@@ -1793,7 +1793,7 @@ int ath6kl_debug_init_fs(struct ath6kl *ar)
- {
- 	ar->debugfs_phy = debugfs_create_dir("ath6kl",
- 					     ar->wiphy->debugfsdir);
--	if (!ar->debugfs_phy)
-+	if (IS_ERR(ar->debugfs_phy))
- 		return -ENOMEM;
- 
- 	debugfs_create_file("tgt_stats", 0400, ar->debugfs_phy, ar,
--- 
-2.25.1
+Thanks again for the helpful reviews.
 
+- David
