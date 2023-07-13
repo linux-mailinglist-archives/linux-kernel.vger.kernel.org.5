@@ -2,253 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A8FE751C79
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 11:00:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00E06751C8C
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 11:02:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234268AbjGMJAr convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 13 Jul 2023 05:00:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59316 "EHLO
+        id S233484AbjGMJCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 05:02:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234720AbjGMJA0 (ORCPT
+        with ESMTP id S232357AbjGMJCT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 05:00:26 -0400
-Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C04D81BEB;
-        Thu, 13 Jul 2023 02:00:21 -0700 (PDT)
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 01AE882EB;
-        Thu, 13 Jul 2023 17:00:19 +0800 (CST)
-Received: from EXMBX068.cuchost.com (172.16.6.68) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 13 Jul
- 2023 17:00:19 +0800
-Received: from williamqiu-virtual-machine.starfivetech.com (171.223.208.138)
- by EXMBX068.cuchost.com (172.16.6.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.42; Thu, 13 Jul 2023 17:00:18 +0800
-From:   William Qiu <william.qiu@starfivetech.com>
-To:     <devicetree@vger.kernel.org>, <linux-spi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>
-CC:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        William Qiu <william.qiu@starfivetech.com>
-Subject: [PATCH v2 3/3] riscv: dts: starfive: Add spi node for JH7110 SoC
-Date:   Thu, 13 Jul 2023 17:00:15 +0800
-Message-ID: <20230713090015.127541-4-william.qiu@starfivetech.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230713090015.127541-1-william.qiu@starfivetech.com>
-References: <20230713090015.127541-1-william.qiu@starfivetech.com>
+        Thu, 13 Jul 2023 05:02:19 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 147392D43;
+        Thu, 13 Jul 2023 02:01:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=SvFjQgh7iMrGngVir0RKl1OuGXHDDPqcLIw4Qq3ouqo=; b=Z8O9ONkl5y8vJdFIYe/+RdrdE0
+        URpFWy9AVayh4SUvAYwyCgJSzmdK/eGYR+dzAxL8ORuOhVzjb5Q8SDsBSRq/XWEpV7Ctn+oJpthk4
+        3dYqwmZXPs/Lvjewhs5lqdmjGPBcAUkqtYrE+BTqbbe/Zh9cHGZi4QJaD3nUGZ4IGnoi5ZBskicoR
+        1tKJNIZM/WlxMIvDPsvbqKdqMwgE8A4GESceWXs9MmpwkhPD3MCgHEHGmXu3ER0qBQug9pfi/I99u
+        UceBkoaLJh89wEYiPuoF5gGM+ySaIhW9Lp+0G5aAefFFzwxWco3AbQDmjND45FE9eNYzJE/967n0h
+        ele+Q0MQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qJsCG-00HaMu-C1; Thu, 13 Jul 2023 09:01:12 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B7F26300222;
+        Thu, 13 Jul 2023 11:01:10 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 9FB33245CA111; Thu, 13 Jul 2023 11:01:10 +0200 (CEST)
+Date:   Thu, 13 Jul 2023 11:01:10 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Huang, Kai" <kai.huang@intel.com>
+Cc:     "Hansen, Dave" <dave.hansen@intel.com>,
+        "Christopherson,, Sean" <seanjc@google.com>,
+        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "sathyanarayanan.kuppuswamy@linux.intel.com" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: Re: [PATCH 07/10] x86/tdx: Extend TDX_MODULE_CALL to support more
+ TDCALL/SEAMCALL leafs
+Message-ID: <20230713090110.GC3138667@hirez.programming.kicks-ass.net>
+References: <cover.1689151537.git.kai.huang@intel.com>
+ <ecfd84af9186aa5368acb40a2740afbf1d0d1b5d.1689151537.git.kai.huang@intel.com>
+ <20230712171133.GB3115257@hirez.programming.kicks-ass.net>
+ <a36d1f0068154a9acd3fdbed2586dc5b2476e140.camel@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [171.223.208.138]
-X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX068.cuchost.com
- (172.16.6.68)
-X-YovoleRuleAgent: yovoleflag
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a36d1f0068154a9acd3fdbed2586dc5b2476e140.camel@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add spi node for JH7110 SoC.
+On Thu, Jul 13, 2023 at 08:09:33AM +0000, Huang, Kai wrote:
+> On Wed, 2023-07-12 at 19:11 +0200, Peter Zijlstra wrote:
+> > On Wed, Jul 12, 2023 at 08:55:21PM +1200, Kai Huang wrote:
+> > > @@ -65,6 +104,37 @@
+> > >  	.endif
+> > >  
+> > >  	.if \ret
+> > > +	.if \saved
+> > > +	/*
+> > > +	 * Restore the structure from stack to saved the output registers
+> > > +	 *
+> > > +	 * In case of VP.ENTER returns due to TDVMCALL, all registers are
+> > > +	 * valid thus no register can be used as spare to restore the
+> > > +	 * structure from the stack (see "TDH.VP.ENTER Output Operands
+> > > +	 * Definition on TDCALL(TDG.VP.VMCALL) Following a TD Entry").
+> > > +	 * For this case, need to make one register as spare by saving it
+> > > +	 * to the stack and then manually load the structure pointer to
+> > > +	 * the spare register.
+> > > +	 *
+> > > +	 * Note for other TDCALLs/SEAMCALLs there are spare registers
+> > > +	 * thus no need for such hack but just use this for all for now.
+> > > +	 */
+> > > +	pushq	%rax		/* save the TDCALL/SEAMCALL return code */
+> > > +	movq	8(%rsp), %rax	/* restore the structure pointer */
+> > > +	movq	%rsi, TDX_MODULE_rsi(%rax)	/* save %rsi */
+> > > +	movq	%rax, %rsi	/* use %rsi as structure pointer */
+> > > +	popq	%rax		/* restore the return code */
+> > > +	popq	%rsi		/* pop the structure pointer */
+> > 
+> > Urgghh... At least for the \host case you can simply pop %rsi, no?
+> > VP.ENTER returns with 0 there IIRC.
+> 
+> No VP.ENTER doesn't return 0 for RAX.  Firstly, VP.ENTER can return for many
 
-Signed-off-by: William Qiu <william.qiu@starfivetech.com>
----
- .../jh7110-starfive-visionfive-2.dtsi         | 50 ++++++++++
- arch/riscv/boot/dts/starfive/jh7110.dtsi      | 98 +++++++++++++++++++
- 2 files changed, 148 insertions(+)
+No, but it *does* return 0 for: RBX,RSI,RDI,R10-R15.
 
-diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-index fa0061eb33a7..ae3f39c33d3c 100644
---- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-+++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-@@ -143,6 +143,18 @@ &i2c6 {
- 	status = "okay";
- };
- 
-+&spi0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&spi0_pins>;
-+	status = "okay";
-+
-+	spi_dev0: flash@0 {
-+		compatible = "rohm,dh2228fv";
-+		reg = <0>;
-+		spi-max-frequency = <10000000>;
-+	};
-+};
-+
- &sysgpio {
- 	i2c0_pins: i2c0-0 {
- 		i2c-pins {
-@@ -200,6 +212,44 @@ GPOEN_SYS_I2C6_DATA,
- 		};
- 	};
- 
-+	spi0_pins: spi0-0 {
-+		mosi-pins {
-+			pinmux = <GPIOMUX(52, GPOUT_SYS_SPI0_TXD,
-+					      GPOEN_ENABLE,
-+					      GPI_NONE)>;
-+			bias-disable;
-+			input-disable;
-+			input-schmitt-disable;
-+		};
-+
-+		miso-pins {
-+			pinmux = <GPIOMUX(53, GPOUT_LOW,
-+					      GPOEN_DISABLE,
-+					      GPI_SYS_SPI0_RXD)>;
-+			bias-pull-up;
-+			input-enable;
-+			input-schmitt-enable;
-+		};
-+
-+		sck-pins {
-+			pinmux = <GPIOMUX(48, GPOUT_SYS_SPI0_CLK,
-+					      GPOEN_ENABLE,
-+					      GPI_SYS_SPI0_CLK)>;
-+			bias-disable;
-+			input-disable;
-+			input-schmitt-disable;
-+		};
-+
-+		ss-pins {
-+			pinmux = <GPIOMUX(48, GPOUT_SYS_SPI0_FSS,
-+					      GPOEN_ENABLE,
-+					      GPI_SYS_SPI0_FSS)>;
-+			bias-disable;
-+			input-disable;
-+			input-schmitt-disable;
-+		};
-+	};
-+
- 	uart0_pins: uart0-0 {
- 		tx-pins {
- 			pinmux = <GPIOMUX(5, GPOUT_SYS_UART0_TX,
-diff --git a/arch/riscv/boot/dts/starfive/jh7110.dtsi b/arch/riscv/boot/dts/starfive/jh7110.dtsi
-index ec2e70011a73..13da297c18fe 100644
---- a/arch/riscv/boot/dts/starfive/jh7110.dtsi
-+++ b/arch/riscv/boot/dts/starfive/jh7110.dtsi
-@@ -386,6 +386,48 @@ i2c2: i2c@10050000 {
- 			status = "disabled";
- 		};
- 
-+		spi0: spi@10060000 {
-+			compatible = "arm,pl022", "arm,primecell";
-+			reg = <0x0 0x10060000 0x0 0x10000>;
-+			clocks = <&syscrg JH7110_SYSCLK_SPI0_APB>;
-+			clock-names = "apb_pclk";
-+			resets = <&syscrg JH7110_SYSRST_SPI0_APB>;
-+			interrupts = <38>;
-+			arm,primecell-periphid = <0x00041022>;
-+			num-cs = <1>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+		};
-+
-+		spi1: spi@10070000 {
-+			compatible = "arm,pl022", "arm,primecell";
-+			reg = <0x0 0x10070000 0x0 0x10000>;
-+			clocks = <&syscrg JH7110_SYSCLK_SPI1_APB>;
-+			clock-names = "apb_pclk";
-+			resets = <&syscrg JH7110_SYSRST_SPI1_APB>;
-+			interrupts = <39>;
-+			arm,primecell-periphid = <0x00041022>;
-+			num-cs = <1>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+		};
-+
-+		spi2: spi@10080000 {
-+			compatible = "arm,pl022", "arm,primecell";
-+			reg = <0x0 0x10080000 0x0 0x10000>;
-+			clocks = <&syscrg JH7110_SYSCLK_SPI2_APB>;
-+			clock-names = "apb_pclk";
-+			resets = <&syscrg JH7110_SYSRST_SPI2_APB>;
-+			interrupts = <40>;
-+			arm,primecell-periphid = <0x00041022>;
-+			num-cs = <1>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+		};
-+
- 		uart3: serial@12000000 {
- 			compatible = "snps,dw-apb-uart";
- 			reg = <0x0 0x12000000 0x0 0x10000>;
-@@ -473,6 +515,62 @@ i2c6: i2c@12060000 {
- 			status = "disabled";
- 		};
- 
-+		spi3: spi@12070000 {
-+			compatible = "arm,pl022", "arm,primecell";
-+			reg = <0x0 0x12070000 0x0 0x10000>;
-+			clocks = <&syscrg JH7110_SYSCLK_SPI3_APB>;
-+			clock-names = "apb_pclk";
-+			resets = <&syscrg JH7110_SYSRST_SPI3_APB>;
-+			interrupts = <52>;
-+			arm,primecell-periphid = <0x00041022>;
-+			num-cs = <1>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+		};
-+
-+		spi4: spi@12080000 {
-+			compatible = "arm,pl022", "arm,primecell";
-+			reg = <0x0 0x12080000 0x0 0x10000>;
-+			clocks = <&syscrg JH7110_SYSCLK_SPI4_APB>;
-+			clock-names = "apb_pclk";
-+			resets = <&syscrg JH7110_SYSRST_SPI4_APB>;
-+			interrupts = <53>;
-+			arm,primecell-periphid = <0x00041022>;
-+			num-cs = <1>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+		};
-+
-+		spi5: spi@12090000 {
-+			compatible = "arm,pl022", "arm,primecell";
-+			reg = <0x0 0x12090000 0x0 0x10000>;
-+			clocks = <&syscrg JH7110_SYSCLK_SPI5_APB>;
-+			clock-names = "apb_pclk";
-+			resets = <&syscrg JH7110_SYSRST_SPI5_APB>;
-+			interrupts = <54>;
-+			arm,primecell-periphid = <0x00041022>;
-+			num-cs = <1>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+		};
-+
-+		spi6: spi@120a0000 {
-+			compatible = "arm,pl022", "arm,primecell";
-+			reg = <0x0 0x120A0000 0x0 0x10000>;
-+			clocks = <&syscrg JH7110_SYSCLK_SPI6_APB>;
-+			clock-names = "apb_pclk";
-+			resets = <&syscrg JH7110_SYSRST_SPI6_APB>;
-+			interrupts = <55>;
-+			arm,primecell-periphid = <0x00041022>;
-+			num-cs = <1>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+		};
-+
- 		syscrg: clock-controller@13020000 {
- 			compatible = "starfive,jh7110-syscrg";
- 			reg = <0x0 0x13020000 0x0 0x10000>;
--- 
-2.34.1
+So for \host you can simply do:
 
+	pop	%rsi
+	mov	$0, TDX_MODULE_rsi(%rsi)
+
+and call it a day.
