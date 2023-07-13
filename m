@@ -2,72 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C333751999
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 09:16:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EC9975195F
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 09:08:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234188AbjGMHQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 03:16:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41352 "EHLO
+        id S233998AbjGMHIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 03:08:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234010AbjGMHQH (ORCPT
+        with ESMTP id S234136AbjGMHIC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 03:16:07 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10DBA119
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 00:16:06 -0700 (PDT)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36D6pjgD021569;
-        Thu, 13 Jul 2023 07:15:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=qcppdkim1;
- bh=G+SM0xlJQlGGJ7O5RMFvi7gmhLdB2QSrfaYUMEEoKoI=;
- b=apIiJSozVuJwlTs5ltZW63qEKCRTcZV1+3AxxBJf1z4YiinryfsT4yuudwTmFaHCWueZ
- IQJo4gfOaLYwytsjeLWGJGmsv8bwpCEz7NbP78IzDo/j2eoIq4h1DCilczd0Nxz5dgKJ
- vqymTzJvQ/4WHLzd0Km0cTHYhPgtHBzfxvZLa3DWXr4f0zqUOKW+VW+cR92Vjb1W+unK
- tcfaW5uvUIPJLQN3xyZo27g1Cx9uPiNp1/TVaD0Ny6FEbFyR/gzEcrBajKhHD0WJ/Xwn
- CXPe3+rEXzApfh9kq5o+cf9W0y1ucjbYe9xTc2tLa9UdlECty/akgz9P0B84HEeKYIn/ PQ== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rtbmur3wm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 13 Jul 2023 07:15:59 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36D7Fwr2027102
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 13 Jul 2023 07:15:58 GMT
-Received: from hu-nprakash-blr.qualcomm.com (10.80.80.8) by
- nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Thu, 13 Jul 2023 00:09:31 -0700
-From:   Nikhil V <quic_nprakash@quicinc.com>
-To:     <catalin.marinas@arm.com>, <will@kernel.org>
-CC:     Nikhil V <quic_nprakash@quicinc.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <quic_pkondeti@quicinc.com>,
-        <quic_guptap@quicinc.com>, <quic_charante@quicinc.com>
-Subject: [PATCH] arm64: mm: Make hibernation aware of KFENCE
-Date:   Thu, 13 Jul 2023 12:37:57 +0530
-Message-ID: <20230713070757.4093-1-quic_nprakash@quicinc.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 13 Jul 2023 03:08:02 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A22C7211E;
+        Thu, 13 Jul 2023 00:08:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=hdGx1K3RjF5TT01b8U4Kk8AYjp2IPrWjWa8zM6ieITE=; b=JugqstoBFWytUNEtdyZjbsNqKN
+        kg6eSi0xlUBPQzyzpt/3EGI2RiTg6w98eeegWwfxItBXDFEkcV/CBfNG4Goh0Q7jPe9icSD7oStGn
+        +Q7ZfTbcHLCuxSAKJhy/IqJVClovAg+DoEsjXB/pcaJ7wKYmaLpHZCKvw8oQfCq/WRkJWWnKF1Rmp
+        ll2W0Vcwantvht6diGhv2s0QO+n0RvNrOYsFFgBa3+YWIHDDId6xWmHqdioWQbA2lsfivpoY1lD3B
+        5pTjBgwFZIRaoCx6Yqegqa9CDx6CHJ0GSWxo0OttJ9WAz330MqclE6MzFbMVOGc9QWjXww81bDlDb
+        5uqB3Www==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:33956)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qJqQg-0005py-0o;
+        Thu, 13 Jul 2023 08:07:58 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qJqQf-0005uz-Dm; Thu, 13 Jul 2023 08:07:57 +0100
+Date:   Thu, 13 Jul 2023 08:07:57 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Daniel Golle <daniel@makrotopia.org>
+Cc:     netdev@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        =?iso-8859-1?Q?Bj=F8rn?= Mork <bjorn@mork.no>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Greg Ungerer <gerg@kernel.org>
+Subject: Re: [PATCH v2 net-next 4/9] net: ethernet: mtk_eth_soc: increase
+ MAX_DEVS to 3
+Message-ID: <ZK+izTulIcse2aG5@shell.armlinux.org.uk>
+References: <cover.1689012506.git.daniel@makrotopia.org>
+ <2cc8012ec538106c6bcf22a40b647ec342e687a8.1689012506.git.daniel@makrotopia.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: ArvbgUGmIseak7PaXnMRBnZo-9DyaCfi
-X-Proofpoint-ORIG-GUID: ArvbgUGmIseak7PaXnMRBnZo-9DyaCfi
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-13_04,2023-07-11_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 mlxscore=0
- lowpriorityscore=0 priorityscore=1501 suspectscore=0 phishscore=0
- spamscore=0 bulkscore=0 mlxlogscore=765 impostorscore=0 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2305260000 definitions=main-2307130062
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2cc8012ec538106c6bcf22a40b647ec342e687a8.1689012506.git.daniel@makrotopia.org>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,50 +79,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the restore path, swsusp_arch_suspend_exit uses copy_page() to
-over-write memory. However, with features like KFENCE enabled, there could
-be situations where it may have marked some pages as not valid, due to
-which it could be reported as invalid accesses.
+On Thu, Jul 13, 2023 at 03:18:52AM +0100, Daniel Golle wrote:
+> From: Lorenzo Bianconi <lorenzo@kernel.org>
+> 
+> This is a preliminary patch to add MT7988 SoC support since it runs 3
+> macs instead of 2.
+> 
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+> ---
+>  drivers/net/ethernet/mediatek/mtk_eth_soc.c | 6 +++++-
+>  drivers/net/ethernet/mediatek/mtk_eth_soc.h | 4 ++--
+>  2 files changed, 7 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
+> index 7014e0d108b27..7f191e4337dd8 100644
+> --- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
+> +++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
+> @@ -4030,8 +4030,12 @@ static void mtk_sgmii_destroy(struct mtk_eth *eth)
+>  {
+>  	int i;
+>  
+> -	for (i = 0; i < MTK_MAX_DEVS; i++)
+> +	for (i = 0; i < MTK_MAX_DEVS; i++) {
+> +		if (!eth->sgmii_pcs[i])
+> +			continue;
+> +
+>  		mtk_pcs_lynxi_destroy(eth->sgmii_pcs[i]);
+> +	}
 
-Consider a situation where page 'P' was part of the hibernation image.
-Now, when the resume kernel tries to restore the pages, the same page 'P'
-is already in use in the resume kernel and is kfence protected, due to
-which its mapping is removed from linear map. Since restoring pages happens
-with the resume kernel page tables, we would end up accessing 'P' during
-copy and results in kernel pagefault.
+Please instead arrange for mtk_pcs_lynxi_destroy() to be a no-op if it's
+passed a NULL pointer, which makes it easier to use in error paths (it
+means mtk_pcs_lynxi_destroy() can be called without checks - like
+kfree() etc.)
 
-The proposed fix tries to solve this issue by marking PTE as valid for such
-kfence protected pages.
+Since error paths don't get often tested, we need to do as much as
+possible to make error paths trivial.
 
-Co-developed-by: Pavankumar Kondeti <quic_pkondeti@quicinc.com>
-Signed-off-by: Pavankumar Kondeti <quic_pkondeti@quicinc.com>
-Signed-off-by: Nikhil V <quic_nprakash@quicinc.com>
----
- arch/arm64/mm/trans_pgd.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/arch/arm64/mm/trans_pgd.c b/arch/arm64/mm/trans_pgd.c
-index 4ea2eefbc053..e9ad391fc8ea 100644
---- a/arch/arm64/mm/trans_pgd.c
-+++ b/arch/arm64/mm/trans_pgd.c
-@@ -24,6 +24,7 @@
- #include <linux/bug.h>
- #include <linux/mm.h>
- #include <linux/mmzone.h>
-+#include <linux/kfence.h>
- 
- static void *trans_alloc(struct trans_pgd_info *info)
- {
-@@ -41,7 +42,8 @@ static void _copy_pte(pte_t *dst_ptep, pte_t *src_ptep, unsigned long addr)
- 		 * the temporary mappings we use during restore.
- 		 */
- 		set_pte(dst_ptep, pte_mkwrite(pte));
--	} else if (debug_pagealloc_enabled() && !pte_none(pte)) {
-+	} else if ((debug_pagealloc_enabled() ||
-+		   is_kfence_address((void *)addr)) && !pte_none(pte)) {
- 		/*
- 		 * debug_pagealloc will removed the PTE_VALID bit if
- 		 * the page isn't in use by the resume kernel. It may have
 -- 
-2.17.1
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
