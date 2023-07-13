@@ -2,123 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94966751CC6
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 11:08:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55AEF751CD2
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 11:10:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233779AbjGMJId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 05:08:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37494 "EHLO
+        id S233731AbjGMJKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 05:10:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233910AbjGMJHq (ORCPT
+        with ESMTP id S233103AbjGMJJv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 05:07:46 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C3381BEB
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 02:07:41 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-99313a34b2dso68357666b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 02:07:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1689239260; x=1691831260;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+GJI50mwxWlMPNP5cWPxpWEEdZG5lOnOefrq0yW+CGM=;
-        b=3ExRJOSaoELf46cylFsr+j3DBGl9E6ckv1aalbj2EoZKiCzXfv9/GRe/617KC3fXPv
-         SGs217+1UAijm/HBf9Hpw4EFkKL3M+p8xS+qVz4Xb3ioEoNYMj6pIcvZpcuh66V6VqkI
-         lHx4tI/WAojKmz9ubTdQGKpuNdRUQqJV2T2Bwnn6qWWX+yEDmYPqi8qT+unBxhgsAeHL
-         wfXrucMoUj5GpnG4KoyhLC/udnoxbh01SElxynFMW+t1R14Whl8bWUjLjxkl5ocY4S2s
-         ywf4AdBm1J+fQURrWM/Unfc5kO+eKop8kKzfw3eCeUSpjNCvsAo2o4R5npuov0A0KVKB
-         VpWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689239260; x=1691831260;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+GJI50mwxWlMPNP5cWPxpWEEdZG5lOnOefrq0yW+CGM=;
-        b=D41WL0W7rl0XSBOF4aJjQixNhWB5HsnRYmE5BIkFZm61RIVWE5OfND1dF9M2yZ2z2v
-         ZH6i/fY2JATTabEED41EZm5o6CIX3DBKnINVpXKA3FFku0ZhTyZKi6910p5uIQ3xVxHH
-         KReommFuBkSd77qrhY8hGk1xBMNfELEJsJxkF1HSqcw0BN4mqau9y9/Gh6GQ9j9NgOcf
-         rN0sO0rG4ZZ3GNLWMVEUsXIh9+pXNTNMKgEO2V2M/5O7OzijqeALDgNBtz8t/9N5/Lua
-         S8N1SZsk0vJ47Exyed2c7rM3MmajqQ9B+jmlKJkgWm7mLwXTrmLMgdLP/ryDIzNoqXPK
-         Dw1A==
-X-Gm-Message-State: ABy/qLYoHS1IsD9MVFfqBAxQPgGsrR9S03lvKMqzaoMN/GIfikrkM24B
-        kyrljl4ARbc2tzioRLl1rH9qyA==
-X-Google-Smtp-Source: APBJJlFtq9zvjnF5mO4pjUZ+zKNfAotMYWi5ZC/UqAFlKGTWW2MBafd4apjqEfu17W261IuQyV1xFw==
-X-Received: by 2002:a17:906:77cd:b0:993:d9a5:dafe with SMTP id m13-20020a17090677cd00b00993d9a5dafemr1068378ejn.14.1689239259868;
-        Thu, 13 Jul 2023 02:07:39 -0700 (PDT)
-Received: from [127.0.1.1] ([93.5.22.158])
-        by smtp.googlemail.com with ESMTPSA id p18-20020a1709060dd200b00982d0563b11sm3707352eji.197.2023.07.13.02.07.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Jul 2023 02:07:39 -0700 (PDT)
-From:   Alexandre Mergnat <amergnat@baylibre.com>
-Date:   Thu, 13 Jul 2023 11:07:35 +0200
-Subject: [PATCH v2 3/3] arm64: defconfig: enable STARTEK KD070FHFID015
- panel
+        Thu, 13 Jul 2023 05:09:51 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34065272A
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 02:09:28 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qJsJW-0005MX-W9; Thu, 13 Jul 2023 11:08:43 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qJsJW-00E5Is-8v; Thu, 13 Jul 2023 11:08:42 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qJsJV-004WH9-3v; Thu, 13 Jul 2023 11:08:41 +0200
+Date:   Thu, 13 Jul 2023 11:08:40 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Yangtao Li <frank.li@vivo.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 24/58] mmc: sdhci_am654: Convert to platform remove
+ callback returning void
+Message-ID: <20230713090840.dc2ejoz6cieq4dyg@pengutronix.de>
+References: <20230713080807.69999-1-frank.li@vivo.com>
+ <20230713080807.69999-24-frank.li@vivo.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230711-startek_display-v2-3-87bc7bdec6e9@baylibre.com>
-References: <20230711-startek_display-v2-0-87bc7bdec6e9@baylibre.com>
-In-Reply-To: <20230711-startek_display-v2-0-87bc7bdec6e9@baylibre.com>
-To:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     Guillaume La Roque <glaroque@baylibre.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Alexandre Mergnat <amergnat@baylibre.com>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=767; i=amergnat@baylibre.com;
- h=from:subject:message-id; bh=3ewdZnRTwiLei9nYvBO9iEQ33z/6iSvXdTZm6ylJVyY=;
- b=owEBbQKS/ZANAwAKAStGSZ1+MdRFAcsmYgBkr77W/dPGgI/R56qX2ubiKnlfqietIeYs+hZ/DMSo
- Gffi2+KJAjMEAAEKAB0WIQQjG17X8+qqcA5g/osrRkmdfjHURQUCZK++1gAKCRArRkmdfjHURTOND/
- 9LYscCCo3fgVX+6xN9GlW6I6ZPPi6Ffr+zx0PfkKhLYmBl40hljfWl2w/XKWw7AlW7dx0uzYOUumvN
- 1hzrMqBpvv43z1Opcv6mJcUngDCj3JrIv5LijFC3MsKp4jbTD5xKTnnElwPlvt0/CXjD9EW7k/au71
- OEzPUQAY+s+cG756C7t9pYapU891EHu8Xi/F0VbMQ2oh2H/tr/1/P29WyB27acO/KyQVsFAVE61LHW
- 5XuUWIZ6z8bnM5Ped3JDvJP5T+t0UnsR5EkuYba2gIAlK36q1kcTYvnQwVrUD+5iSuATdfCKXtxOsD
- HayOuWQyYfI5U0n6lbS9POMwiC5keCXuKPKbgURY8EiEraLdtxgbp93siaou+jSr8R246YeSaXuUNe
- XpU8JvlqK6iBluxLU9C0NHYndTg5WIKtanUCe96NhsltdjZOx8zA6Me3Rn/ucgZc5SoYKD7NhMOKn+
- 40fCuCIoiz2LQbt56s3fXyAXQgn3+Xn5MKjWbN70mABYNwovpS2EIADcR8JuUIBEoKgC0EhkxtsfjY
- OMHTFBYRIoa3V+WQkig9D+4QcWnvnDUgvlsBdrXi2YN8u+YoQnlD5d/BmJtnoW6h4CxgOuKGLmmHf1
- 7GtmkfUSpDT8KE8jxGaTKWXkOfM6QcATev/MDgS2VryNv5hJHwbxUFtWigoQ==
-X-Developer-Key: i=amergnat@baylibre.com; a=openpgp;
- fpr=231B5ED7F3EAAA700E60FE8B2B46499D7E31D445
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="hpncxr6mfxobixq5"
+Content-Disposition: inline
+In-Reply-To: <20230713080807.69999-24-frank.li@vivo.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Build Startek KD070FHFID015 panel driver. This MIPI-DSI display
-can be used for the mt8365-evk board for example.
 
-Signed-off-by: Alexandre Mergnat <amergnat@baylibre.com>
----
- arch/arm64/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
+--hpncxr6mfxobixq5
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 0777bcae9104..cb24a3d1219b 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -816,6 +816,7 @@ CONFIG_DRM_PANEL_EDP=m
- CONFIG_DRM_PANEL_MANTIX_MLAF057WE51=m
- CONFIG_DRM_PANEL_RAYDIUM_RM67191=m
- CONFIG_DRM_PANEL_SITRONIX_ST7703=m
-+CONFIG_DRM_PANEL_STARTEK_KD070FHFID015=m
- CONFIG_DRM_PANEL_TRULY_NT35597_WQXGA=m
- CONFIG_DRM_PANEL_VISIONOX_VTDR6130=m
- CONFIG_DRM_LONTIUM_LT8912B=m
+On Thu, Jul 13, 2023 at 04:07:33PM +0800, Yangtao Li wrote:
+> The .remove() callback for a platform driver returns an int which makes
+> many driver authors wrongly assume it's possible to do error handling by
+> returning an error code. However the value returned is (mostly) ignored
+> and this typically results in resource leaks. To improve here there is a
+> quest to make the remove callback return void. In the first step of this
+> quest all drivers are converted to .remove_new() which already returns
+> void.
+>=20
+> Trivially convert this driver from always returning zero in the remove
+> callback to the void returning variant.
+>=20
+> Cc: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+> Signed-off-by: Yangtao Li <frank.li@vivo.com>
+> ---
+>  drivers/mmc/host/sdhci_am654.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/drivers/mmc/host/sdhci_am654.c b/drivers/mmc/host/sdhci_am65=
+4.c
+> index 7cdf0f54e3a5..3cfaf7dca274 100644
+> --- a/drivers/mmc/host/sdhci_am654.c
+> +++ b/drivers/mmc/host/sdhci_am654.c
+> @@ -866,7 +866,7 @@ static int sdhci_am654_probe(struct platform_device *=
+pdev)
+>  	return ret;
+>  }
+> =20
+> -static int sdhci_am654_remove(struct platform_device *pdev)
+> +static void sdhci_am654_remove(struct platform_device *pdev)
+>  {
+>  	struct sdhci_host *host =3D platform_get_drvdata(pdev);
+>  	struct sdhci_pltfm_host *pltfm_host =3D sdhci_priv(host);
+> @@ -874,14 +874,13 @@ static int sdhci_am654_remove(struct platform_devic=
+e *pdev)
+> =20
+>  	ret =3D pm_runtime_resume_and_get(&pdev->dev);
+>  	if (ret < 0)
+> -		return ret;
+> +		return;
 
--- 
-2.25.1
+This is changing semantics. You shouldn't ignore errors here. This is
+one of the cases where a driver leaks resources. You need something like
+22f407278ea43df46f90cece6595e5e8a0d5447c here.
 
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--hpncxr6mfxobixq5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmSvvxgACgkQj4D7WH0S
+/k7zlQf/RvEu2cnSVXe7Hmj9SJ6zuFOhSBuFOikWudB536hrocckhd6f3Q5x8nBv
+mZid4zWQ4+EPtyGwpRcMva1jw47HdS/SegY2DHazQxUKBPn18CigK220qnp56gz1
+KXIsOgLqJa+zG6PDAWaL4JVAmmxIGE3SR0N0Oe1MJjp2RDXhLAVqHAMWAmwzlttd
+xofRdoJBrzf0wxbkofT7DHYkwRTKlivRCi3d26Nm0AZgkTyDtDixMoVvuCzkmj08
+EVIifzyeUixWthMwe+165BlJ2xrIhYLUp5U/60ZtZ2KDd+bfBCcu3udFTqAstIEI
+m91KOQcrsbBBbEOpCf463yZvHFyjtA==
+=RTtS
+-----END PGP SIGNATURE-----
+
+--hpncxr6mfxobixq5--
