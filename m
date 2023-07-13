@@ -2,204 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4EE4752333
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 15:17:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AAA5752346
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 15:17:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234717AbjGMNRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 09:17:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50896 "EHLO
+        id S234744AbjGMNRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 09:17:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234491AbjGMNRV (ORCPT
+        with ESMTP id S234732AbjGMNRb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 09:17:21 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 770B6211B;
-        Thu, 13 Jul 2023 06:17:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1689254240; x=1720790240;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=E7sEqqhbrFfmEZwgyxrnHJnRF+eAaOP0Nzd8hDng2VE=;
-  b=DAfx47ovxcH19ExdJONaKhrwsaQ+hCad4Ep+e75tTXyAx8spM/iCWgLe
-   C/BNRwYr2/OYhQgHVSm/hp2ttFEb6wgfADeWOMNISzApTW4FNqIVKhYC6
-   DmWKRoli4kzRsaeOffqJxe6KOSGIK3x9P8nL6V6BDqoAiTmNhwsDsacTo
-   UbDIsvJ+x8rSRaxHeDSK7SjtpG9QsjZYoJr7lTs0KtEYgiSXOr/9vwIeq
-   QaJdAKSjfYRgP8DyOvq7jNxbIMeszoZO6rZTZiGnpO9p51p7hEZ5r6C6A
-   TQqQDMKdrcWKfY+EL3hrrncl8PhUcnJL+Q8bbVNuFMZSzMia+Pxhj30kl
-   Q==;
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="asc'?scan'208";a="220208830"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 13 Jul 2023 06:17:18 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Thu, 13 Jul 2023 06:17:17 -0700
-Received: from wendy (10.10.115.15) by chn-vm-ex02.mchp-main.com
- (10.10.85.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Thu, 13 Jul 2023 06:17:14 -0700
-Date:   Thu, 13 Jul 2023 14:16:43 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     Andrew Jones <ajones@ventanamicro.com>
-CC:     Evan Green <evan@rivosinc.com>, Samuel Ortiz <sameo@rivosinc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        <linux-riscv@lists.infradead.org>,
-        "Hongren (Zenithal) Zheng" <i@zenithal.me>, <linux@rivosinc.com>,
-        Heiko Stuebner <heiko.stuebner@vrull.eu>,
-        Anup Patel <apatel@ventanamicro.com>,
-        <linux-kernel@vger.kernel.org>, Guo Ren <guoren@kernel.org>,
-        Atish Patra <atishp@rivosinc.com>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>,
-        <devicetree@vger.kernel.org>, <sorear@fastmail.com>,
-        Jiatai He <jiatai2021@iscas.ac.cn>
-Subject: Re: [PATCH v4 1/4] RISC-V: Add Bitmanip/Scalar Crypto parsing from DT
-Message-ID: <20230713-bootleg-tray-c5bfe58b5673@wendy>
-References: <20230712084134.1648008-1-sameo@rivosinc.com>
- <20230712084134.1648008-2-sameo@rivosinc.com>
- <20230712-bulldozer-affected-199042dc3afd@wendy>
- <CALs-HsuxxVcwX=mSwktPiEiAFkfK+5qJ6zg1Bzf2t37L=pZWjw@mail.gmail.com>
- <20230713-3f574332a06678f908cee21e@orel>
- <20230713-aggregate-uncut-e16ee9270b14@wendy>
- <20230713-692c967c7a08c15dacbcab10@orel>
+        Thu, 13 Jul 2023 09:17:31 -0400
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A08E2710
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 06:17:25 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:6264:77e5:42e2:477d])
+        by laurent.telenet-ops.be with bizsmtp
+        id LdHN2A00Q3wy6xv01dHNpZ; Thu, 13 Jul 2023 15:17:23 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtp (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qJwC3-001Gqn-0L;
+        Thu, 13 Jul 2023 15:17:22 +0200
+Received: from geert by rox.of.borg with local (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qJwCA-00GWyS-LN;
+        Thu, 13 Jul 2023 15:17:22 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Javier Martinez Canillas <javierm@redhat.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH 0/8] drm: fb-helper/ssd130x: Add support for DRM_FORMAT_R1
+Date:   Thu, 13 Jul 2023 15:17:08 +0200
+Message-Id: <cover.1689252746.git.geert@linux-m68k.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="gTE48Nq7TkHCRHEc"
-Content-Disposition: inline
-In-Reply-To: <20230713-692c967c7a08c15dacbcab10@orel>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---gTE48Nq7TkHCRHEc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+	Hi all,
 
-On Thu, Jul 13, 2023 at 02:45:57PM +0200, Andrew Jones wrote:
-> On Thu, Jul 13, 2023 at 12:27:24PM +0100, Conor Dooley wrote:
+The native display format of ssd1306 OLED displays is monochrome
+light-on-dark (R1).  This patch series adds support for the R1 buffer
+format to both the ssd130x DRM driver and the FB helpers, so monochrome
+applications (including fbdev emulation and the text console) can avoid
+the overhead of back-and-forth conversions between R1 and XR24.
 
-> > +#define __RISCV_ISA_EXT_BUNDLE(_name, _bundled_exts) {	\
-> > +	.name =3D #_name,					\
-> > +	.property =3D #_name,				\
-> > +	.bundle_ids =3D _bundled_exts,			\
-> > +	.bundle_size =3D ARRAY_SIZE(_bundled_exts)	\
-> > +}
-> > +
-> > +static const unsigned int riscv_zk_bundled_exts[] =3D {
-> > +	RISCV_ISA_EXT_ZBKB,
-> > +	RISCV_ISA_EXT_ZBKC,
-> > +	RISCV_ISA_EXT_ZBKX,
-> > +	RISCV_ISA_EXT_ZKND,
-> > +	RISCV_ISA_EXT_ZKNE,
-> > +	RISCV_ISA_EXT_ZKR,
-> > +	RISCV_ISA_EXT_ZKT,
->=20
-> I think RISCV_ISA_EXT_ZKNH also belongs in this bundle,
-> since the spec says zk is the zkn bundle plus zkr and zkt.
->=20
-> > +};
-> > +
-> > +static const unsigned int riscv_zkn_bundled_exts[] =3D {
-> > +	RISCV_ISA_EXT_ZBKB,
-> > +	RISCV_ISA_EXT_ZBKC,
-> > +	RISCV_ISA_EXT_ZBKX,
-> > +	RISCV_ISA_EXT_ZKND,
-> > +	RISCV_ISA_EXT_ZKNE,
-> > +	RISCV_ISA_EXT_ZKNH,
-> > +};
-> > +
-> > +static const unsigned int riscv_zks_bundled_exts[] =3D {
-> > +	RISCV_ISA_EXT_ZBKB,
-> > +	RISCV_ISA_EXT_ZBKC,
-> > +	RISCV_ISA_EXT_ZKSED,
-> > +	RISCV_ISA_EXT_ZKSH
->=20
-> And, per the spec, this one appears to be missing RISCV_ISA_EXT_ZBKX.
+This series is based on drm-misc/for-linux-next with [1] applied, and
+consists of 4 parts:
+  - Patches 1-3 contain miscellaneous fixes,
+  - Patch 4 adds R1 support to the ssd130x DRM driver,
+  - Patches 5-6 update the DRM client and FB helper code to avoid
+    calling drm_mode_legacy_fb_format() where the exact buffer format is
+    already known, to prepare for R1 support,
+  - Patch 7 adds support for R1 to fbdev emulation and the text console,
+  - Patch 8 switches ssd130x to R1 for fbdev emulation and the text
+    console.
 
-Yeah, these do look wrong. I should've cross-checked it.
+This has been tested on an Adafruit FeatherWing 128x32 OLED, connected
+to an OrangeCrab ECP5 FPGA board running a 64 MHz VexRiscv RISC-V
+softcore, using the fbdev text console.
 
-> I found [1] which calls these shorthands "group names", so maybe we should
-> use the term "group" instead of "bundle"?
+Thanks for your comments!
 
-WFM at least.
+P.S. Note that the biggest hurdle was the copious use of the
+     drm_mode_legacy_fb_format() helper in various places.  This helper
+     cannot decide between C1 and R1 without knowledge of the
+     capabilities of the full display pipeline.  Instead of
+     special-casing its return value in three callers, I did so in only
+     one place, and got rid of two of these calls in the call chain.
+     I think Thomas' grand plan is to replace preferred_{bpp,depth} by a
+     preferred fourcc format? That would simplify things a lot...
 
-> I'm tempted to try to directly
-> code that graphic in [1] with something like...
->=20
-> #define Zks_group1 \
-> 	RISCV_ISA_EXT_ZKSED, \
-> 	RISCV_ISA_EXT_ZKSH
->=20
-> #define Zks_group2 \
-> 	RISCV_ISA_EXT_ZBKB, \
-> 	RISCV_ISA_EXT_ZBKC, \
-> 	RISCV_ISA_EXT_ZBKX
->=20
-> #define Zks_group \
-> 	Zks_group1, \
-> 	Zks_group2
->=20
-> #define Zkn_group1 \
-> 	RISCV_ISA_EXT_ZKND, \
-> 	RISCV_ISA_EXT_ZKNE, \
-> 	RISCV_ISA_EXT_ZKNH
->=20
-> #define Zkn_group2 \
-> 	Zks_group2
->=20
-> #define Zkn_group \
-> 	Zkn_group1, \
-> 	Zkn_group2
->=20
-> static const unsigned int riscv_zks_group[] =3D {
-> 	Zks_group,
-> };
->=20
-> static const unsigned int riscv_zkn_group[] =3D {
-> 	Zkn_group,
-> };
->=20
-> static const unsigned int riscv_zk_group[] =3D {
-> 	Zks_group,
-> 	Zkn_group,
-> 	RISCV_ISA_EXT_ZKR,
-> 	RISCV_ISA_EXT_ZKT,
-> };
->=20
-> ...but now that I have, I'm not sure I like the looks of it...
+[1] "[PATCH] drm/ssd130x: Change pixel format used to compute the buffer
+    size"
+    https://lore.kernel.org/all/20230713085859.907127-1-javierm@redhat.com
 
-If you called them RISCV_ISA_EXT_GROUP_ZKN (or similar) it would look a
-lot less out of place IMO. I'd probably drop the "group2" dance & pick a
-better name for "Zks_group2", maybe just do something like
-RISCV_ISA_EXT_GROUP_SCALAR_CRYPTO_BITMANIP? Mouthful, but seemed better
-than trying to be clever with ZBK or something.
+Geert Uytterhoeven (8):
+  drm/ssd130x: Fix pitch calculation in ssd130x_fb_blit_rect()
+  drm/dumb-buffers: Fix drm_mode_create_dumb() for bpp < 8
+  [RFC] drm/ssd130x: Bail out early if data_array is not yet available
+  drm/ssd130x: Add support for DRM_FORMAT_R1
+  drm/client: Convert drm_mode_create_dumb() to drm_mode_addfb2()
+  drm/fb-helper: Pass buffer format via drm_fb_helper_surface_size
+  drm/fb-helper: Add support for DRM_FORMAT_R1
+  drm/ssd130x: Switch preferred_bpp/depth to 1
 
-> [1] https://wiki.riscv.org/display/HOME/Scalar+Cryptography+Instruction+S=
-et+Extension+Group+Names+Diagram
+ drivers/gpu/drm/drm_client.c        | 13 +++---
+ drivers/gpu/drm/drm_dumb_buffers.c  |  3 +-
+ drivers/gpu/drm/drm_fb_helper.c     | 42 ++++++++++++++-----
+ drivers/gpu/drm/drm_fbdev_generic.c |  9 ++---
+ drivers/gpu/drm/solomon/ssd130x.c   | 62 ++++++++++++++++++++---------
+ include/drm/drm_fb_helper.h         |  2 +
+ 6 files changed, 87 insertions(+), 44 deletions(-)
 
+-- 
+2.34.1
 
---gTE48Nq7TkHCRHEc
-Content-Type: application/pgp-signature; name="signature.asc"
+Gr{oetje,eeting}s,
 
------BEGIN PGP SIGNATURE-----
+						Geert
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZK/5OwAKCRB4tDGHoIJi
-0ry5AP99PnMNEOYct0QDkIe2N2+G1CGzJmhUN6A1xqT/KkLs0QD/aE6I9W7tY9lW
-A0LBQi1Gw8uUta0WbR/Ph1YYceZVtAU=
-=6z5J
------END PGP SIGNATURE-----
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
---gTE48Nq7TkHCRHEc--
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
