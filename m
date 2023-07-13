@@ -2,64 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9718752B58
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 22:08:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64217752B59
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 22:08:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231547AbjGMUH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 16:07:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44492 "EHLO
+        id S233624AbjGMUIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 16:08:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231480AbjGMUHz (ORCPT
+        with ESMTP id S231480AbjGMUIT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 16:07:55 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC940E5C
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 13:07:53 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-4fb7589b187so2021300e87.1
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 13:07:53 -0700 (PDT)
+        Thu, 13 Jul 2023 16:08:19 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 283A12D59
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 13:08:16 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4fb8574a3a1so2018973e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 13:08:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shruggie-ro.20221208.gappssmtp.com; s=20221208; t=1689278872; x=1691870872;
+        d=shruggie-ro.20221208.gappssmtp.com; s=20221208; t=1689278894; x=1691870894;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=nmyD6UuJlO+HcBnFreMiVGyFDB5o50ZGx/l9nM/sihU=;
-        b=NeguS5X02pGP4ffeEjjxlNq0me/Gt5VNr/nMw/uHEZ/m18dK11kY/FVwzOqaK/Yqd8
-         QRD+Z/yPsiH+w9NTmGDI7xUmg6xdjgLLrowYVt3izlXLx0BQdYz+ldywX+/6tGSU5tOr
-         RCqfxQEZgtDsVqfJ2osostwY4wQUXGPGIqgsIGNBkVeZP6PAsLT8RdL6NlHUNvU+FbfJ
-         MPdfLcj/KoO2gPZFUbZXDMCH4Je2JiCB9ICff1xRkADbci2rhrsKJOYxcNfzNpI+bRnI
-         xx+QfrRxzXHmuFeqPN0lWADO/1o9DJiUTpsSO3RwdJgtqPnCVbGY+/8kDn14l50EU/+9
-         MCnw==
+        bh=u34z4glnpomRSBgQT4bG9FMnp1Iswj4TV0WEYU0qNmY=;
+        b=bGAOyWilVBc09A647WYrJIumc8/YjY9sDp7NZmrDXwn0qDQePWLh48nO+TUBh17Nyd
+         oAZaLPLVA3isDJw+AFba5SDOaoss9qxBaPUEcpwUyJidSkzjW597ngchDC+z4On+1MLl
+         qpQNF7M4LVHZEjzaIgrfTqO6Er9Rt8vLyUfeakjL8xAe4DyhfkdgzCuH25atPcQ9c9l2
+         U1JOfQeyh41hNp5fDzYnvHyv1M+6E3m4hnOVAQFythTWRv9+El6F/xFe7SVJvMaF81A9
+         3CK6INwNak3gSfnX+PMAEi41qYy7mz1rsh8fWjPvG87glYP8j7fwB1odhk+62U2CXrXL
+         Wjmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689278872; x=1691870872;
+        d=1e100.net; s=20221208; t=1689278894; x=1691870894;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=nmyD6UuJlO+HcBnFreMiVGyFDB5o50ZGx/l9nM/sihU=;
-        b=l75noHGFmnKUBBBLYnudNYqiwn8VUnDa10OlCWPvOPQml1my7y7a7RAh8yKRm8PEBa
-         SBb5p/mVDjKk+ofNQZpkKGTRiXUP/Mke+SMi8neVTRPL5B7pSG/HecIaQv5r+lHVGcCc
-         rt42t5kiIYm6FmvGVTid5MBjANxzVq4ZMSfs/QxvFBfw5Ia7YUYHWOiLHdaMnWf6+ufs
-         o9l1mxdjmwQi9kqJdsGHLYGABaCVeF75jTdQ3DZnVZmxM/b184SnGdoPXpPybymPWF2m
-         fUIhjCXciRyE7rRQhZczOWV5/8g6+oxPhMdC3P13rr8N3PDdUnA425H8BIBEbC8t3LEW
-         CiKQ==
-X-Gm-Message-State: ABy/qLaAgflDcslFizuuLjEpLaqkvdLzsad6EZ8DL67g6U0Cj+AYojTR
-        bn36wIzCklU7cNSlDwa7WQFYBburF9wWUc9F903DJJo2v0BxWL9g
-X-Google-Smtp-Source: APBJJlGNalpJ/skfhn8F06OotfKQQWeVngDgh58gRYDIDKhLspBsOL2+/fmBtlqTSy5WfuUWVzuvCvnbop0wCZZ97eM=
-X-Received: by 2002:a05:6512:3b7:b0:4fb:8987:734e with SMTP id
- v23-20020a05651203b700b004fb8987734emr1728293lfp.68.1689278871467; Thu, 13
- Jul 2023 13:07:51 -0700 (PDT)
+        bh=u34z4glnpomRSBgQT4bG9FMnp1Iswj4TV0WEYU0qNmY=;
+        b=YmVUMIdFoxRtWJZTwoFx09AS8Vy0aHmXHXmr2MkDW/VyO7NCZd2ajpdVXw9KKzdSej
+         S6zdEjLG/+3SvX9pHvSQdHEFQD9mxv9j3GVPXT4J1Fwq9UP+YolspVLMXBQm4Vg+ZQ6r
+         XE9/Gbmv4f5IvLq8KWSBNcS9UGYmVF4qE13lKq0iofQ28pFm9SpqGNvD812EGuaGP515
+         09ly/9KJzBHJINu5LtFyN+S9aqLT/BHCqW3+vonYAEuXIwE2u7bh5IfZ+KBXtbFK2Cs9
+         ZBSgHc0568A5SqcjV362aqCPDN/cq/yMBZlqrgvGaYLHBuYff8SrzeOKv9Z0FO3N4gqn
+         hKog==
+X-Gm-Message-State: ABy/qLZwXYdm83MeTEPU6y0NvTDIKLws5WJygB5pP4vM0/ZlRCT8zmgH
+        zcDG0tH8sJVzPgJkdBK4AiJZvugCj15PWM4nU0kp/w==
+X-Google-Smtp-Source: APBJJlGlntgpNzb8aiVWjVCNIX8MNjnI9Q/oyemXLvfjZeeUxu+YH3q9dZLCcmqm9qyQ/BtiGwjjzA8vEIa/9mrKxiY=
+X-Received: by 2002:ac2:5dd4:0:b0:4fa:a217:1e76 with SMTP id
+ x20-20020ac25dd4000000b004faa2171e76mr1911934lfq.9.1689278894303; Thu, 13 Jul
+ 2023 13:08:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230516122202.954313-1-alex@shruggie.ro>
-In-Reply-To: <20230516122202.954313-1-alex@shruggie.ro>
+References: <20230516164416.11616-1-alex@shruggie.ro>
+In-Reply-To: <20230516164416.11616-1-alex@shruggie.ro>
 From:   Alexandru Ardelean <alex@shruggie.ro>
-Date:   Thu, 13 Jul 2023 23:07:40 +0300
-Message-ID: <CAH3L5QoBqSOBHhoxSrYw6U34gqTPEhi_RB_Cve-YmBzYj3LXAQ@mail.gmail.com>
-Subject: Re: [PATCH][V2] sched/rt: Print curr when RT throttling activated
-To:     linux-kernel@vger.kernel.org
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, tian.xianting@h3c.com,
-        steffen.aschbacher@stihl.de, gregkh@linuxfoundation.org
+Date:   Thu, 13 Jul 2023 23:08:03 +0300
+Message-ID: <CAH3L5QpmPrHZPKVSapPtgDNORb8hj2AhCLGP0Fx7p5ZX++qOOA@mail.gmail.com>
+Subject: Re: [PATCH] drm: adv7511: Fix low refresh rate register for ADV7533/5
+To:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     airlied@gmail.com, daniel@ffwll.ch,
+        Bogdan Togorean <bogdan.togorean@analog.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -71,89 +68,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 16, 2023 at 3:22=E2=80=AFPM Alexandru Ardelean <alex@shruggie.r=
+On Tue, May 16, 2023 at 7:44=E2=80=AFPM Alexandru Ardelean <alex@shruggie.r=
 o> wrote:
 >
-> From: Xianting Tian <tian.xianting@h3c.com>
+> From: Bogdan Togorean <bogdan.togorean@analog.com>
 >
-> We may meet the issue, that one RT thread occupied the cpu by 950ms/1s,
-> The RT thread maybe is a business thread or other unknown thread.
->
-> Currently, it only outputs the print "sched: RT throttling activated"
-> when RT throttling happen. It is hard to know what is the RT thread,
-> For further analysis, we need add more prints.
->
-> This patch is to print current RT task when RT throttling activated,
-> It help us to know what is the RT thread in the first time.
+> For ADV7533 and ADV7535 low refresh rate is selected using
+> bits [3:2] of 0x4a main register.
+> So depending on ADV model write 0xfb or 0x4a register.
 >
 
-Adding Greg on this patch, since it 's been a while.
-And also: ping :)
+Ping on this patch :)
 
-> Tested-by: Alexandru Ardelean <alex@shruggie.ro>
-> Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
+> Signed-off-by: Bogdan Togorean <bogdan.togorean@analog.com>
+> Signed-off-by: Alexandru Ardelean <alex@shruggie.ro>
 > ---
+>  drivers/gpu/drm/i2c/adv7511.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
 >
-> Initial patch submission:
->   https://lore.kernel.org/all/f3265adc26d4416dacf157f61fa60ad6@h3c.com/T/
+> diff --git a/drivers/gpu/drm/i2c/adv7511.c b/drivers/gpu/drm/i2c/adv7511.=
+c
+> index 61aa824d45d2..e016105a8fbe 100644
+> --- a/drivers/gpu/drm/i2c/adv7511.c
+> +++ b/drivers/gpu/drm/i2c/adv7511.c
+> @@ -729,8 +729,13 @@ static void adv7511_encoder_mode_set(struct drm_enco=
+der *encoder,
+>         else
+>                 low_refresh_rate =3D ADV7511_LOW_REFRESH_RATE_NONE;
 >
-> We've been having some issues of our own with some applications + some RT
-> configuration =3D=3D some threads endded up taking too much CPU time.
-> This patch came in quite in handy to see in logs which thread is more
-> problematic.
+> -       regmap_update_bits(adv7511->regmap, 0xfb,
+> -               0x6, low_refresh_rate << 1);
+> +       if (adv7511->type =3D=3D ADV7511)
+> +               regmap_update_bits(adv7511->regmap, 0xfb,
+> +                       0x6, low_refresh_rate << 1);
+> +       else
+> +               regmap_update_bits(adv7511->regmap, 0x4a,
+> +                       0xc, low_refresh_rate << 2);
+> +
+>         regmap_update_bits(adv7511->regmap, 0x17,
+>                 0x60, (vsync_polarity << 6) | (hsync_polarity << 5));
 >
-> We've applied this patch onto a 5.10.116 tree. It did need a bit of
-> re-applying since some context has changed since the initial version (hen=
-ce
-> the V2 tag).
-> Since 5.10.116 (where we used it), it applied nicely to the latest/curren=
-t
-> linux-next tree (hence the Tested-by tag).
->
-> It would be nice to apply this to the mainline kernel and have this handy=
-.
->
->  kernel/sched/rt.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
->
-> diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-> index 00e0e5074115..44b161e42733 100644
-> --- a/kernel/sched/rt.c
-> +++ b/kernel/sched/rt.c
-> @@ -995,7 +995,7 @@ static inline int rt_se_prio(struct sched_rt_entity *=
-rt_se)
->         return rt_task_of(rt_se)->prio;
->  }
->
-> -static int sched_rt_runtime_exceeded(struct rt_rq *rt_rq)
-> +static int sched_rt_runtime_exceeded(struct rt_rq *rt_rq, struct task_st=
-ruct *curr)
->  {
->         u64 runtime =3D sched_rt_runtime(rt_rq);
->
-> @@ -1019,7 +1019,8 @@ static int sched_rt_runtime_exceeded(struct rt_rq *=
-rt_rq)
->                  */
->                 if (likely(rt_b->rt_runtime)) {
->                         rt_rq->rt_throttled =3D 1;
-> -                       printk_deferred_once("sched: RT throttling activa=
-ted\n");
-> +                       printk_deferred_once("sched: RT throttling activa=
-ted (curr: pid %d, comm %s)\n",
-> +                                               curr->pid, curr->comm);
->                 } else {
->                         /*
->                          * In case we did anyway, make it go away,
-> @@ -1074,7 +1075,7 @@ static void update_curr_rt(struct rq *rq)
->                 if (sched_rt_runtime(rt_rq) !=3D RUNTIME_INF) {
->                         raw_spin_lock(&rt_rq->rt_runtime_lock);
->                         rt_rq->rt_time +=3D delta_exec;
-> -                       exceeded =3D sched_rt_runtime_exceeded(rt_rq);
-> +                       exceeded =3D sched_rt_runtime_exceeded(rt_rq, cur=
-r);
->                         if (exceeded)
->                                 resched_curr(rq);
->                         raw_spin_unlock(&rt_rq->rt_runtime_lock);
 > --
 > 2.40.1
 >
