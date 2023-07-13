@@ -2,143 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0EBD7516CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 05:35:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A49F7516C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 05:35:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233669AbjGMDf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 23:35:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47620 "EHLO
+        id S233660AbjGMDe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 23:34:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233381AbjGMDfZ (ORCPT
+        with ESMTP id S233507AbjGMDex (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 23:35:25 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3850D1FF0
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 20:35:22 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id ca18e2360f4ac-78360b822abso6357539f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 20:35:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1689219322; x=1691811322;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2QV7vh1ogKfJf1Qa4ERBfjeAWDEN5HhFP3tvUsoJaZI=;
-        b=YXOvx/QCIwWe/mnLJSqx4+w5eNIQZp13Z42w1IjSiMAnUZ60UNsNEegI7Ntzf/7LHu
-         AWgiBL447GRQUwI/ofnzRDDkSG089pghzB44RTgWz07FnbqRoE7w19nIwW1KZIk9eI8A
-         E91XIUbh/iZH8iS7CppKKWWvZAmeTKWc7UY50=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689219322; x=1691811322;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2QV7vh1ogKfJf1Qa4ERBfjeAWDEN5HhFP3tvUsoJaZI=;
-        b=U00MR2Ejgx5jFi0/ha68cQTusSibb95eaPbvAGWVUuKB+T/MO+hTu8LXfGaHC4CqqR
-         bv0Gq7IoNXU+0n1g6SpfCz60LRHe/nl2jl//A6icUoCl927mLxQUKhJw5FDOZ8VxmRNw
-         x2HvFGX12BR9OhP3ZGrzg5w1h7QQaVjDmHmGEJpyy19PVn+vsOuJFfaoY3B60fJJc6YH
-         sVbR1sLCaTu5BJyXjWqi/oT7NqoeB2Hqay08rTbJSdxHmGnO+TL0RJmIYTfLy+pqrvLn
-         fHSZcXYG/nOcTd1NH9dvoEpb88yOg6VmH0UKudya5SsxrM7Kx53E8Z3eF3edidC2Mdxl
-         8hpQ==
-X-Gm-Message-State: ABy/qLY+BjU5WebrBShytlkoLK+suCg4AqB+jddc/YaeEUqhiRJVlQe/
-        gwLlfvuyF9jNAakUQBhK55qmGRiqhe4HsKlu0q8=
-X-Google-Smtp-Source: APBJJlG3Lp+TAf9GIKs8fFlUp93sUElvn/oYjScOVS+w7lw35OY0/l/UC55aDNRvkWjl9H9DnBT52Q==
-X-Received: by 2002:a92:130f:0:b0:33d:8720:7d98 with SMTP id 15-20020a92130f000000b0033d87207d98mr369206ilt.13.1689219321960;
-        Wed, 12 Jul 2023 20:35:21 -0700 (PDT)
-Received: from mail-io1-f41.google.com (mail-io1-f41.google.com. [209.85.166.41])
-        by smtp.gmail.com with ESMTPSA id c14-20020a02a40e000000b0042b426e353dsm1648800jal.127.2023.07.12.20.35.21
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 Jul 2023 20:35:21 -0700 (PDT)
-Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-7835971026fso6178539f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 20:35:21 -0700 (PDT)
-X-Received: by 2002:a05:6602:18c:b0:786:2125:a034 with SMTP id
- m12-20020a056602018c00b007862125a034mr572395ioo.18.1689219320748; Wed, 12 Jul
- 2023 20:35:20 -0700 (PDT)
+        Wed, 12 Jul 2023 23:34:53 -0400
+Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E8C92102
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 20:34:50 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R411e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0VnFF9Mx_1689219285;
+Received: from 30.97.48.217(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0VnFF9Mx_1689219285)
+          by smtp.aliyun-inc.com;
+          Thu, 13 Jul 2023 11:34:46 +0800
+Message-ID: <042c1a3e-2004-c416-a368-b2f6676bb7c0@linux.alibaba.com>
+Date:   Thu, 13 Jul 2023 11:34:45 +0800
 MIME-Version: 1.0
-References: <20230421021609.7730-1-nancy.lin@mediatek.com>
-In-Reply-To: <20230421021609.7730-1-nancy.lin@mediatek.com>
-From:   Fei Shao <fshao@chromium.org>
-Date:   Thu, 13 Jul 2023 11:34:44 +0800
-X-Gmail-Original-Message-ID: <CAC=S1nj2Mwfbs_fgzcMsauhjaWdj0_0=t2F708i4F=u0oGgo-w@mail.gmail.com>
-Message-ID: <CAC=S1nj2Mwfbs_fgzcMsauhjaWdj0_0=t2F708i4F=u0oGgo-w@mail.gmail.com>
-Subject: Re: [PATCH v2] drm/mediatek: fix uninitialized symbol
-To:     "Nancy.Lin" <nancy.lin@mediatek.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        clang-built-linux@googlegroups.com,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        singo.chang@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH v3 2/2] erofs: boost negative xattr lookup with bloom
+ filter
+To:     Jingbo Xu <jefflexu@linux.alibaba.com>, chao@kernel.org,
+        huyue2@coolpad.com, linux-erofs@lists.ozlabs.org
+Cc:     linux-kernel@vger.kernel.org, alexl@redhat.com
+References: <20230712115123.33712-1-jefflexu@linux.alibaba.com>
+ <20230712115123.33712-3-jefflexu@linux.alibaba.com>
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+In-Reply-To: <20230712115123.33712-3-jefflexu@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 21, 2023 at 10:16=E2=80=AFAM Nancy.Lin <nancy.lin@mediatek.com>=
- wrote:
->
-> fix Smatch static checker warning
->   - uninitialized symbol comp_pdev in mtk_ddp_comp_init.
->
-> Fixes: 0d9eee9118b7 ("drm/mediatek: Add drm ovl_adaptor sub driver for MT=
-8195")
-> Signed-off-by: Nancy.Lin <nancy.lin@mediatek.com>
 
-Reviewed-by: Fei Shao <fshao@chromium.org>
 
-This seems to be unnoticed and I just want to get some attention for
-it. Any action items here?
-
-Regards,
-Fei
-
+On 2023/7/12 19:51, Jingbo Xu wrote:
+> Optimise the negative xattr lookup with bloom filter.
+> 
+> The bit value for the bloom filter map has a reverse semantics for
+> compatibility.  That is, the bit value of 0 indicates existence, while
+> the bit value of 1 indicates the absence of corresponding xattr.
+> 
+> This feature is enabled only when xattr_filter_reserved is non-zero.
+> The on-disk format for the filter map may change in the future, in which
+> case the reserved flag will be set non-zero and we don't need bothering
+> the compatible bits again at that time.  For now disable the optimization
+> if this reserved flag is non-zero.
+> 
+> Signed-off-by: Jingbo Xu <jefflexu@linux.alibaba.com>
 > ---
-> v2: add Fixes tag
-> ---
->  drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/dr=
-m/mediatek/mtk_drm_ddp_comp.c
-> index f114da4d36a9..e987ac4481bc 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-> @@ -546,7 +546,7 @@ unsigned int mtk_drm_find_possible_crtc_by_comp(struc=
-t drm_device *drm,
->  int mtk_ddp_comp_init(struct device_node *node, struct mtk_ddp_comp *com=
-p,
->                       unsigned int comp_id)
->  {
-> -       struct platform_device *comp_pdev;
-> +       struct platform_device *comp_pdev =3D NULL;
->         enum mtk_ddp_comp_type type;
->         struct mtk_ddp_comp_dev *priv;
->  #if IS_REACHABLE(CONFIG_MTK_CMDQ)
-> @@ -588,6 +588,9 @@ int mtk_ddp_comp_init(struct device_node *node, struc=
-t mtk_ddp_comp *comp,
->             type =3D=3D MTK_DSI)
->                 return 0;
->
-> +       if (!comp_pdev)
-> +               return -EPROBE_DEFER;
-> +
->         priv =3D devm_kzalloc(comp->dev, sizeof(*priv), GFP_KERNEL);
->         if (!priv)
->                 return -ENOMEM;
-> --
-> 2.18.0
->
->
+>   fs/erofs/internal.h |  3 +++
+>   fs/erofs/super.c    |  1 +
+>   fs/erofs/xattr.c    | 13 +++++++++++++
+>   3 files changed, 17 insertions(+)
+> 
+> diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
+> index 36e32fa542f0..ebcad25e3750 100644
+> --- a/fs/erofs/internal.h
+> +++ b/fs/erofs/internal.h
+> @@ -151,6 +151,7 @@ struct erofs_sb_info {
+>   	u32 xattr_prefix_start;
+>   	u8 xattr_prefix_count;
+>   	struct erofs_xattr_prefix_item *xattr_prefixes;
+> +	unsigned int xattr_filter_reserved;
+>   #endif
+>   	u16 device_id_mask;	/* valid bits of device id to be used */
+>   
+> @@ -251,6 +252,7 @@ EROFS_FEATURE_FUNCS(fragments, incompat, INCOMPAT_FRAGMENTS)
+>   EROFS_FEATURE_FUNCS(dedupe, incompat, INCOMPAT_DEDUPE)
+>   EROFS_FEATURE_FUNCS(xattr_prefixes, incompat, INCOMPAT_XATTR_PREFIXES)
+>   EROFS_FEATURE_FUNCS(sb_chksum, compat, COMPAT_SB_CHKSUM)
+> +EROFS_FEATURE_FUNCS(xattr_filter, compat, COMPAT_XATTR_FILTER)
+>   
+>   /* atomic flag definitions */
+>   #define EROFS_I_EA_INITED_BIT	0
+> @@ -270,6 +272,7 @@ struct erofs_inode {
+>   	unsigned char inode_isize;
+>   	unsigned int xattr_isize;
+>   
+> +	unsigned long xattr_name_filter;
+>   	unsigned int xattr_shared_count;
+>   	unsigned int *xattr_shared_xattrs;
+>   
+> diff --git a/fs/erofs/super.c b/fs/erofs/super.c
+> index 9d6a3c6158bd..72122323300e 100644
+> --- a/fs/erofs/super.c
+> +++ b/fs/erofs/super.c
+> @@ -388,6 +388,7 @@ static int erofs_read_superblock(struct super_block *sb)
+>   	sbi->xattr_blkaddr = le32_to_cpu(dsb->xattr_blkaddr);
+>   	sbi->xattr_prefix_start = le32_to_cpu(dsb->xattr_prefix_start);
+>   	sbi->xattr_prefix_count = dsb->xattr_prefix_count;
+> +	sbi->xattr_filter_reserved = dsb->xattr_filter_reserved;
+>   #endif
+>   	sbi->islotbits = ilog2(sizeof(struct erofs_inode_compact));
+>   	sbi->root_nid = le16_to_cpu(dsb->root_nid);
+> diff --git a/fs/erofs/xattr.c b/fs/erofs/xattr.c
+> index 40178b6e0688..eb1d1974d4b3 100644
+> --- a/fs/erofs/xattr.c
+> +++ b/fs/erofs/xattr.c
+> @@ -5,6 +5,7 @@
+>    * Copyright (C) 2021-2022, Alibaba Cloud
+>    */
+>   #include <linux/security.h>
+> +#include <linux/xxhash.h>
+>   #include "xattr.h"
+>   
+>   struct erofs_xattr_iter {
+> @@ -87,6 +88,7 @@ static int erofs_init_inode_xattrs(struct inode *inode)
+>   	}
+>   
+>   	ih = it.kaddr + erofs_blkoff(sb, it.pos);
+> +	vi->xattr_name_filter = le32_to_cpu(ih->h_name_filter);
+>   	vi->xattr_shared_count = ih->h_shared_count;
+>   	vi->xattr_shared_xattrs = kmalloc_array(vi->xattr_shared_count,
+>   						sizeof(uint), GFP_KERNEL);
+> @@ -392,7 +394,10 @@ int erofs_getxattr(struct inode *inode, int index, const char *name,
+>   		   void *buffer, size_t buffer_size)
+>   {
+>   	int ret;
+> +	uint32_t bit;
+>   	struct erofs_xattr_iter it;
+> +	struct erofs_inode *vi = EROFS_I(inode);
+> +	struct erofs_sb_info *sbi = EROFS_SB(inode->i_sb);
+>   
+>   	if (!name)
+>   		return -EINVAL;
+> @@ -401,6 +406,14 @@ int erofs_getxattr(struct inode *inode, int index, const char *name,
+>   	if (ret)
+>   		return ret;
+>   
+> +	/* the reserved flag is non-zero if hashing algorithm changes */
+> +	if (erofs_sb_has_xattr_filter(sbi) && !sbi->xattr_filter_reserved) {
+> +		bit = xxh32(name, strlen(name), EROFS_XATTR_FILTER_SEED + index);
+
+should we enable xxh32 by using CONFIG_XXHASH?
+
+Thanks,
+Gao Xiang
+
