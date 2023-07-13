@@ -2,67 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4780F75274C
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 17:34:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE931752732
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 17:34:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235078AbjGMPe5 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 13 Jul 2023 11:34:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37872 "EHLO
+        id S234752AbjGMPeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 11:34:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235119AbjGMPef (ORCPT
+        with ESMTP id S232007AbjGMPdw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 11:34:35 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD442213B
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 08:34:29 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-96-72mzMEKxMcawh9IWZJu5jg-1; Thu, 13 Jul 2023 16:34:27 +0100
-X-MC-Unique: 72mzMEKxMcawh9IWZJu5jg-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 13 Jul
- 2023 16:34:26 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Thu, 13 Jul 2023 16:34:26 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Leon Romanovsky' <leon@kernel.org>,
-        Krister Johansen <kjlx@templeofstupid.com>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Shay Agroskin <shayagr@amazon.com>,
-        Arthur Kiyanovski <akiyano@amazon.com>,
-        David Arinzon <darinzon@amazon.com>,
-        Noam Dagan <ndagan@amazon.com>,
-        Saeed Bishara <saeedb@amazon.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Subject: RE: [PATCH net] net: ena: fix shift-out-of-bounds in exponential
- backoff
-Thread-Topic: [PATCH net] net: ena: fix shift-out-of-bounds in exponential
- backoff
-Thread-Index: AQHZs8j5z2bF0RP/C0e6CLHv2DmaRK+310mw
-Date:   Thu, 13 Jul 2023 15:34:25 +0000
-Message-ID: <20412c4fb06147c3b2e4ae90ed26fdb7@AcuMS.aculab.com>
-References: <20230711013621.GE1926@templeofstupid.com>
- <20230711072603.GI41919@unreal>
-In-Reply-To: <20230711072603.GI41919@unreal>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Thu, 13 Jul 2023 11:33:52 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD6981FD4;
+        Thu, 13 Jul 2023 08:33:51 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 5C41522185;
+        Thu, 13 Jul 2023 15:33:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1689262430; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZnsbM2wbDJKZoJO63kCqa7skAvyrvbFpqW+OFngO6J0=;
+        b=sV1pgtAi27tWlGMws6tV7hf/GEtyL/tfm4WbvICemOjJMuus/p2+X17CiUlFl/l1j+rjgD
+        xKsKyh+PUXOM5Mtqqoc/ExfUrXx6RAHwtZ6Lb7OFEryuzF6O5kA/QwwDb0pnIavlwHUUdU
+        pG3UxM2hej8IJ+lTSLLmhqbB30xUz/0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1689262430;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZnsbM2wbDJKZoJO63kCqa7skAvyrvbFpqW+OFngO6J0=;
+        b=9pXKKiCXJGy/exWne0PvxfT2nb5/QqIeeq771ADv8xv5NQVJ9/i551YInR/xTA9frjX5m8
+        AoqlkLi8oC3II5Bg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 42C8613489;
+        Thu, 13 Jul 2023 15:33:50 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id e3taEF4ZsGTsGAAAMHmgww
+        (envelope-from <chrubis@suse.cz>); Thu, 13 Jul 2023 15:33:50 +0000
+Date:   Thu, 13 Jul 2023 17:34:55 +0200
+From:   Cyril Hrubis <chrubis@suse.cz>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     kernel test robot <oliver.sang@intel.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Matthew Wilcox <willy@infradead.org>, cluster-devel@redhat.com,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Chao Yu <chao@kernel.org>, linux-fsdevel@vger.kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Xiubo Li <xiubli@redhat.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        ltp@lists.linux.it, lkp@intel.com, Jens Axboe <axboe@kernel.dk>,
+        Christian Brauner <brauner@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        Anna Schumaker <anna@kernel.org>, oe-lkp@lists.linux.dev,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hannes Reinecke <hare@suse.de>
+Subject: Re: [LTP] [linus:master] [iomap]  219580eea1: ltp.writev07.fail
+Message-ID: <ZLAZn_SBmoIFG5F5@yuki>
+References: <202307132107.2ce4ea2f-oliver.sang@intel.com>
+ <20230713150923.GA28246@lst.de>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,PDS_BAD_THREAD_QP_64,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230713150923.GA28246@lst.de>
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,25 +87,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky
-> Sent: 11 July 2023 08:26
-...
-> > +#define ENA_MAX_BACKOFF_DELAY_EXP 16U
-> > +
-> >  #define ENA_MIN_ADMIN_POLL_US 100
-> >
-> >  #define ENA_MAX_ADMIN_POLL_US 5000
-> > @@ -536,6 +538,7 @@ static int ena_com_comp_status_to_errno(struct ena_com_admin_queue *admin_queue,
-> >
-> >  static void ena_delay_exponential_backoff_us(u32 exp, u32 delay_us)
-> >  {
-> > +	exp = min_t(u32, exp, ENA_MAX_BACKOFF_DELAY_EXP);
+Hi!
+> I can't reproduce this on current mainline.  Is this a robust failure
+> or flapping test?  Especiall as the FAIL conditions look rather
+> unrelated.
 
-This shouldn't need to be a min_t()
+Actually the test is spot on, the difference is that previously the
+error was returned form the iomap_file_buffered_write() only if we
+failed with the first buffer from the iov, now we always return the
+error and we do not advance the offset.
 
-	David
+The change that broke it:
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+index 063133ec77f4..550525a525c4 100644
+--- a/fs/iomap/buffered-io.c
++++ b/fs/iomap/buffered-io.c
+@@ -864,16 +864,19 @@ iomap_file_buffered_write(struct kiocb *iocb, struct iov_iter *i,
+                .len            = iov_iter_count(i),
+                .flags          = IOMAP_WRITE,
+        };
+-       int ret;
++       ssize_t ret;
 
+        if (iocb->ki_flags & IOCB_NOWAIT)
+                iter.flags |= IOMAP_NOWAIT;
+
+        while ((ret = iomap_iter(&iter, ops)) > 0)
+                iter.processed = iomap_write_iter(&iter, i);
+-       if (iter.pos == iocb->ki_pos)
++
++       if (unlikely(ret < 0))
+                return ret;
+-       return iter.pos - iocb->ki_pos;
++       ret = iter.pos - iocb->ki_pos;
++       iocb->ki_pos += ret;
++       return ret;
+ }
+
+I suppose that we shoudl fix is with something as:
+
+diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+index adb92cdb24b0..bfb39f7bc303 100644
+--- a/fs/iomap/buffered-io.c
++++ b/fs/iomap/buffered-io.c
+@@ -872,11 +872,12 @@ iomap_file_buffered_write(struct kiocb *iocb, struct iov_iter *i,
+        while ((ret = iomap_iter(&iter, ops)) > 0)
+                iter.processed = iomap_write_iter(&iter, i);
+
++       iocb->ki_pos += iter.pos - iocb->ki_pos;
++
+        if (unlikely(ret < 0))
+                return ret;
+-       ret = iter.pos - iocb->ki_pos;
+-       iocb->ki_pos += ret;
+-       return ret;
++
++       return iter.pos - iocb->ki_pos;
+ }
+ EXPORT_SYMBOL_GPL(iomap_file_buffered_write);
+
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
