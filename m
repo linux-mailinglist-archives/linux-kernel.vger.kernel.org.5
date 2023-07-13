@@ -2,167 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EA81751BE2
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 10:41:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17334751BE8
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 10:42:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234551AbjGMIln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 04:41:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43318 "EHLO
+        id S234213AbjGMImV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 04:42:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233495AbjGMIlY (ORCPT
+        with ESMTP id S233346AbjGMImB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 04:41:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D67691FC9
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 01:36:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689237375;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=B/zyYDOKGaV8MGnruif6L2Wtxw0ltAUAK4vKzkv5DiM=;
-        b=IZZiZM1e+uL5bUAP5QJhh/B9WeV2r+UscuOHbTYcvhmi7RymuV3m9MQNlDpBJ7Zhy+qxCZ
-        OlslvEKs1hvhZdDwcq9jjmqycFtDtyuauomVBLHZSUK6MzuiGZEusXL52Ku02z5bazC2lo
-        CUMVPF6GjSt8jOdjNeLV2PNkg5YvF80=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-614-guDyjGzZM-ivuO9C7Yi2Uw-1; Thu, 13 Jul 2023 04:36:06 -0400
-X-MC-Unique: guDyjGzZM-ivuO9C7Yi2Uw-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-993d41cbc31so33057666b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 01:36:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689237365; x=1691829365;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=B/zyYDOKGaV8MGnruif6L2Wtxw0ltAUAK4vKzkv5DiM=;
-        b=EjywIUImAwZaHC6qlt1034yQWnWDTm0biKI63niDv2Yas3WBrNzlfoQxJ6VYJUpWPv
-         PRjbSUm0taajTNoR/qhnIlOahYjR1n7gTQF15GaVVsf4ne90DBOS8KWzFF7tctOT9ztB
-         /qI25C/ixKmOpEaWGZaNLKmqs1zD+qsa/D7S8Oi5fPIpqh0W9aeWCZ+zAHM4nQ1yVta5
-         chWoQ120Qjbb9aYZY3Epj41ORmo4JDnWksvKDaxEl5Aw7liG3sUTydWUkfUxCVwoRaX/
-         9WuUnFyIgqYOp9wqGD1FmtHdUgIMmX4OwZG4uYMCrGBYlgpS38YGw2apJSGiA05VoTe5
-         iyjQ==
-X-Gm-Message-State: ABy/qLZ1sX2lD0XZ6BaiR5NoiFQhHrC5fj7i8xs5xd8CyubGpW36oOph
-        /MspL9I+r/jySkBzv3xzlrOC4upITLSZPLhSjM4wejh3e4XQdaXCRnugV/I0vMwxERda2kVWQN1
-        iOyAqU8/5McxdKX2Wc08sb/BD
-X-Received: by 2002:a17:907:6025:b0:993:22a2:8158 with SMTP id fs37-20020a170907602500b0099322a28158mr718110ejc.61.1689237365692;
-        Thu, 13 Jul 2023 01:36:05 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFcPUOYKw+vXMNwAjEaLD+fvjXA8SdZCLILa+umjBj1Pz7V8D2JdbpT/k9bQktIPUxnOZjJug==
-X-Received: by 2002:a17:907:6025:b0:993:22a2:8158 with SMTP id fs37-20020a170907602500b0099322a28158mr718096ejc.61.1689237365432;
-        Thu, 13 Jul 2023 01:36:05 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id d8-20020a170906370800b009929ab17be0sm3608565ejc.162.2023.07.13.01.36.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 Jul 2023 01:36:04 -0700 (PDT)
-Message-ID: <145850e2-f22e-0afa-7ff1-bc2d07ac3e96@redhat.com>
-Date:   Thu, 13 Jul 2023 10:36:03 +0200
+        Thu, 13 Jul 2023 04:42:01 -0400
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2104.outbound.protection.outlook.com [40.107.92.104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E44A5254;
+        Thu, 13 Jul 2023 01:38:51 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EAg9uHBLerG9G4sakFAHpqLp2lFHATa3McAjTmSrN3D+LApniBs4K7DCAT2WNpsuu/uXvyZSnCfDwzEF/Vzpz86w1Jb7/oi6GoGg9ZPOboy/IBNdI3E7Vtr9iWAh00w0WH587eLPZySubnQ0lujWBe1+ssxpp3ph9vIz4eZNyEQETJ7bWGYjjcwDn4PK+WXCtAO4PLY7a48rzo10KE3szpC7r99e1c4ph83LV/SZej5cC7XbF4WLKLVxNnSbP1t1iJ5ZJzH5pzJhdTR6OUZmMFHA2jWSVKwKlEPUSXOpUcKjX0uoCShRiZ1U5iY4PasRPw9XKllB1xfGUVOcfJF6YQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=mpZFY14jlOY/H3o28bfR5F8srul8P/YUbHP0ZqUB06o=;
+ b=VjldtiTjfy5wUBi0MoKsJ116bzNOmVs3y7NpUgviHDVWbdy6R++ru3ePIk9WOcz6qV31zYtll9oFYYyPZrUH+i/gVfXM31jGWeMUPNx+5M5t0g0nCQsRSvjtN3+u53ORex7apPeL5Z4X3+ay/23cMnsUWcfGadz8gjJLVpObmqq6qKacycAhyc0ALPNlBoGuz49fQOR6qpzYz5osI5PdY43Xbw0aGmTnvd3r62nG/hw8pbOVmEHH6nko3EJ+8iqmj4jZ6VIjwDMahCTpT0jgaZ7jIdRYD+zCJarhsTFxEtAfV0MGuhifbJf1en3siNGRzNc9is3YoRX/X/3ALdi8OA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
+ dkim=pass header.d=corigine.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mpZFY14jlOY/H3o28bfR5F8srul8P/YUbHP0ZqUB06o=;
+ b=weLJF3AM5njgotszid2UsX7i++rebMWJ70EhFEzvodhw7Rhy1BfbbI/ex0ImHk3F74dTi/DYxZ4V16ssolAguQmJdEtAXuVwAlYpVF+WA7941xtSLBD5nrcK2DenMyrQbwN1CRUKsj6vqMw55//JAHae8y6BUz8ZrMZTg+676jU=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=corigine.com;
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
+ by PH7PR13MB5866.namprd13.prod.outlook.com (2603:10b6:510:158::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.20; Thu, 13 Jul
+ 2023 08:38:49 +0000
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::d23a:8c12:d561:470]) by PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::d23a:8c12:d561:470%6]) with mapi id 15.20.6588.024; Thu, 13 Jul 2023
+ 08:38:49 +0000
+Date:   Thu, 13 Jul 2023 09:38:43 +0100
+From:   Simon Horman <simon.horman@corigine.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Kalle Valo <kvalo@kernel.org>, linux-wireless@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org
+Subject: Re: [PATCH net] wifi: airo: avoid uninitialized warning in
+ airo_get_rate()
+Message-ID: <ZK+4E7GMIUtzc9Qw@corigine.com>
+References: <20230709133154.26206-1-rdunlap@infradead.org>
+ <ZK2QeBZKWi0Q6vuW@corigine.com>
+ <fc25d296-b245-9a5d-302f-c313f239569e@infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fc25d296-b245-9a5d-302f-c313f239569e@infradead.org>
+X-ClientProxiedBy: LO4P123CA0348.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:18d::11) To PH0PR13MB4842.namprd13.prod.outlook.com
+ (2603:10b6:510:78::6)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH 2/2] platform/x86: add CMOS battery monitoring for simatic
- IPCs
-To:     Henning Schild <henning.schild@siemens.com>
-Cc:     Mark Gross <markgross@kernel.org>, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, Lee Jones <lee@kernel.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>,
-        linux-watchdog@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        Tobias Schaffner <tobias.schaffner@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>
-References: <20230706154831.19100-1-henning.schild@siemens.com>
- <20230706154831.19100-3-henning.schild@siemens.com>
- <3b1dc0a1-94b0-4fba-07e7-b871dfc08e88@redhat.com>
- <20230713102840.7cb514d5@md1za8fc.ad001.siemens.net>
-Content-Language: en-US, nl
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20230713102840.7cb514d5@md1za8fc.ad001.siemens.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR13MB4842:EE_|PH7PR13MB5866:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5b02bcc4-9301-4b15-79e2-08db837c947d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: dwpGK4Ap9UaaStqk2jPPsiLSO8nm5PymxqO3zw+oZsFpqyvfnX7WWiiEBbx5nq00QN8If1yil090pmVQKwUpeZeRPhNW3LaSWCUyeim5uFqtYhc60zsK2ZFuCN8/sESU7nPY02JAxvCLU4WqjBzoB0ZIPQbwkRY99Az/UkBkeKH1VDTaTSRoJZrrro7xYp0xXALqlAd2PhMWfQ25geIAX/vnvrLKN0XgCLXS5DnM7bE7/wVYvAhyU87kPxnBRQoRvt8N+OCv3YnbmYlR7VFtEyp01RPrf0mAsEBvcOg6B8qWKdRCLvWd43KHH9K8dv16qewBrp5fB76qM+IwfIgcI5wmga5lCI32tCVDPaggZXTFMwf4sD6KMV1tVCm4iF0twMvuwXyV2fP+3MrZIJcPh8zg9QtebWVtGF7v+LtWV6z2sR0SpdM3dnmKDMV8+WXIH/qOfCpPk48ZGw4t+Ahe4uePGavF2R5fSMk60wq7T5NCi0WqDCHOFt1viPOBLrtLFYI/HbypDh4eTwuCxjRNZ5t29ILo9Ef10D4aQiFB2h0BFh7vXADhB2vJbHc/Gxde/b33mk0pdwbhUZSusgfo7PdBCG7gFgBFu2BOLxGdTRdsRLuzfCGTdgM4KC+omPB6cOFpMGPnRQXfEbE6tNkV1Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39840400004)(376002)(346002)(366004)(396003)(136003)(451199021)(44832011)(41300700001)(2906002)(316002)(7416002)(8936002)(8676002)(5660300002)(66556008)(66476007)(6916009)(4326008)(66946007)(53546011)(26005)(6506007)(86362001)(38100700002)(83380400001)(6512007)(6666004)(966005)(6486002)(2616005)(36756003)(54906003)(478600001)(186003)(67856001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?sCGOKe8YgLfSbKY/hRmWFwehti+9QHwy2rH87UMQ65KKC5dZ6YBqE0DcN/Br?=
+ =?us-ascii?Q?N3wv1werG6um3Sx0rvKkZX9guQJrBFuup/b7tThZmCPJQhQKiDUiE4fDyLK8?=
+ =?us-ascii?Q?f48rEWpJiys98FVEFAw1kMe+aAR29cUYHmTdP8c20sjmRr0lx20qbaX2+XhJ?=
+ =?us-ascii?Q?g7DzpLKgd+htCUpYeg3saom1QIFbyu+XGdMEvxQnMecF0ljf1chz0Taby8hy?=
+ =?us-ascii?Q?dyDGZoKKpqY1qFW9edFO75tdd0IpNYfzWRLZBO9EgFR71FZeZjp1nYO6d5A6?=
+ =?us-ascii?Q?YlkmyfAiiLNmY9rAmQKQFawKa7QZ0U45PrSq46q6dJPR+nx4DTz/Ycpcu2Eh?=
+ =?us-ascii?Q?TiH5h4M6eNBpAwuEhBStyLehGPYrKxSRrbdlLbFXPyosXg5abP0QNVwSMveJ?=
+ =?us-ascii?Q?nbrs7fNGTQKkcBU3KQi6gFWiHI9qNnPFhcwtPe2o0WkghU2txj1HR7VSgWmh?=
+ =?us-ascii?Q?hiGvZxfy9vfA71uWSsLTkZXQboOTIs40bZDaZeg2/LuJvqjjQq5NI4lK8AH5?=
+ =?us-ascii?Q?v8l1fMDygn8jZoFK43m6LsdkXq0ZpT2opY6s/rdrUuOkVeDJ5pbrE73V5ruo?=
+ =?us-ascii?Q?RsxAC9WJViYzrqNcJb5ZPy3nYSQCwh7SqjtVr+eIq6ZzYod93W1GEF6SLM/l?=
+ =?us-ascii?Q?dWbWk5DX/xJlIBWCZ5H/iVZL4Lv+K3mgoiUF2LBGc4FaBIUMaZK1E+301aj1?=
+ =?us-ascii?Q?p27bqD8v0gucDWqCN4+bq4br9j1mVWVSpS8iQlYZ2TMaDsLqr42EUis1rSJ6?=
+ =?us-ascii?Q?k2pcc4MNK9GaFVI7c2sp9jGG6D7EF8F2w/366W8B8ctWU86jtNxWGrjeu9pg?=
+ =?us-ascii?Q?X4KA4R7agVG2oaHoT1oZ/ZCPqSHnqlA5yviDwnfMW/noRHt0/U0FSe42Aj2l?=
+ =?us-ascii?Q?FGPBM1puW4kl42JU/uzZiAd+wyuKFYfafkpCNvGjI1o8uOd33ci5wLs5RjT2?=
+ =?us-ascii?Q?I2NpPStfCDosl7i59lcVvLNWJHYqO9uvmEW8E5znjJxVX0V0N8xHHNn8nIWM?=
+ =?us-ascii?Q?CCgzVLEHmH2OXrSXbH6K7VWFQX2mITctQo73K+wfQrQAG1sOjy1stnoOtUx+?=
+ =?us-ascii?Q?9CU/y7iz9OjlLtrtBQRqc0gDMK2RlP28RCHqWT/dS6MPALnNvwF4ddWMDSNX?=
+ =?us-ascii?Q?OP+4HT8c8XCo5bbOLEV8w9qJiWNn9yfiJRyAAYze6rPg2UNLzPy0y2knzWls?=
+ =?us-ascii?Q?qFuX5VDrvy16eMNAF7Y/0EfWnKzoQ+grfQdWhPVsBJE6ZKKHBwExi1WNUwhP?=
+ =?us-ascii?Q?d2SbgRED7vzkYd2ZKK5jjIyeYLz5EzYNcJatzOHjYik/GErgo2Mqyyu+qqVu?=
+ =?us-ascii?Q?ckrcxueaIMkzuIO5nDTWO/dQ8N4+o8mT9EGPdIkO2ojioUC3M1Xlf6Il1sEU?=
+ =?us-ascii?Q?syL4HhAkcCFdY8lbasWpU2k1o+q36uLfUFV27sYud+T/YrLrIBifGNhxlDSk?=
+ =?us-ascii?Q?AkKu6PsSUpfMWr5tETCLmqrY9yQFKvD/PfHTJ2BoJbINiPjWpq3s+5JzCjTs?=
+ =?us-ascii?Q?s63LT63BUL3dagqjenz4ccEYZ0XIK3tfh3HVvKnV54maMwKawtpNGDDlSlLy?=
+ =?us-ascii?Q?vAkd9zTXOf3SPtz8Cju+KhkByXMpMDlYlav7fboA/KIJzPxRY8QawAsoq0MF?=
+ =?us-ascii?Q?mA=3D=3D?=
+X-OriginatorOrg: corigine.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5b02bcc4-9301-4b15-79e2-08db837c947d
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2023 08:38:49.5011
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ImApln75Sn1VC6+REwiRtt409VFYvJIm6v/fUm09J9jIVyOJcDjo7JY17JPFLS2yKPUdWYNVPJIDI7iZd+smeqCEheEhdKHFk+bb/3QSI4U=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR13MB5866
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 7/13/23 10:28, Henning Schild wrote:
-> Am Wed, 12 Jul 2023 20:05:54 +0200
-> schrieb Hans de Goede <hdegoede@redhat.com>:
+On Tue, Jul 11, 2023 at 02:07:57PM -0700, Randy Dunlap wrote:
+> Hi Simon,
 > 
->> <resend with Lee's new email address>
->>
->> Hi,
->>
->> On 7/6/23 17:48, Henning Schild wrote:
->>> Siemens Simatic Industrial PCs can monitor the voltage of the CMOS
->>> battery with two bits that indicate low or empty state. This can be
->>> GPIO or PortIO based.
->>> Here we model that as a hwmon voltage. The core driver does the
->>> PortIO and provides boilerplate for the GPIO versions. Which are
->>> split out to model runtime dependencies while allowing fine-grained
->>> kernel configuration.
->>>
->>> Signed-off-by: Henning Schild <henning.schild@siemens.com>  
->>
->> So I tried to merge this, but it does not apply because:
->>
->> "[PATCH 1/1] leds: simatic-ipc-leds-gpio: add new model BX-21A"
->> https://lore.kernel.org/platform-driver-x86/20230531155457.31632-2-henning.schild@siemens.com/
->>
->> has not been merged yet.
->>
->> I think it would be best to split the:
->>
->> drivers/platform/x86/simatic-ipc.c
->> include/linux/platform_data/x86/simatic-ipc-base.h
->> include/linux/platform_data/x86/simatic-ipc.h
->>
->> bits of
->> https://lore.kernel.org/platform-driver-x86/20230531155457.31632-2-henning.schild@siemens.com/
->>
->> out into its own prep patch named e.g. :
->> "platform/x86: simatic-ipc: add BX-21A model"
->>
->> And then post a new v2 series for
->> "leds: simatic-ipc-leds-gpio: add new model BX-21A"
->> consisting of the prep patch + the actual new LED driver.
->>
->> Then I can do an immutable branch based on 6.5-rc1 with
->> the prep patch in there and send a pull-req to Lee Jones
->> for that, so that he can apply the LED driver patch on
->> top of the immutable branch.
->>
->> This way we can continue with merging all the pending
->> simatic IPC work without being dependent on Lee having
->> time to review the LED driver.
+> On 7/11/23 10:25, Simon Horman wrote:
+> > On Sun, Jul 09, 2023 at 06:31:54AM -0700, Randy Dunlap wrote:
+> >> Quieten a gcc (11.3.0) build error or warning by checking the function
+> >> call status and returning -EBUSY if the function call failed.
+> >> This is similar to what several other wireless drivers do for the
+> >> SIOCGIWRATE ioctl call when there is a locking problem.
+> >>
+> >> drivers/net/wireless/cisco/airo.c: error: 'status_rid.currentXmitRate' is used uninitialized [-Werror=uninitialized]
+> > 
+> > Hi Randy,
+> > 
+> > There seem to be other calls to readStatusRid() in the same file
+> > with similar properties. Perhaps it would be best to fix them too?
+> > 
 > 
-> Sounds like a plan, i will send another version of "leds:
-> simatic-ipc-leds-gpio: add new model BX-21A" with the pdx86 stuff as
-> separate patch.
+> Yes, there are 40+ calls that could have problems.
+> Please see this thread:
+>   https://lore.kernel.org/all/2f6ffd1c-a756-b7b8-bba4-77c2308f26b9@infradead.org/
+> 
+> This is an attempt to shut up the build error/warning, which only occurs after
+> this one function call.
+> 
+> For such an old driver/hardware, I don't plan to do massive surgery
+> to it.
 
-Great.
+Thanks Randy,
 
-> But just to note one thing, we would be registering a platform device
-> before there is a driver for it. ("simatic_ipc_leds_gpio_elkhartlake")
-> I think that is fine>
+given the circumstances I agree this is a reasonable approach.
 
-Yes that really is not an issue, e.g. the ACPI subsystem registers
-a platform device for every device in the ACPI tables and not nearly
-all of them has a driver. Having a platform_device without a driver
-around is not an issue.
-
-Regards,
-
-Hans
-
-
+Reviewed-by: Simon Horman <simon.horman@corigine.com>
