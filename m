@@ -2,66 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 065147518A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 08:12:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DCDF7518A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 08:12:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233845AbjGMGMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 02:12:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43126 "EHLO
+        id S233917AbjGMGMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 02:12:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233014AbjGMGMB (ORCPT
+        with ESMTP id S233014AbjGMGMt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 02:12:01 -0400
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 918EA1980;
-        Wed, 12 Jul 2023 23:11:59 -0700 (PDT)
-X-UUID: 296a8398214411eeb20a276fd37b9834-20230713
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=HSDOINx/Sn+NIa1MmmE5ByGnQg5Uyj5+1bhbNXL8Rno=;
-        b=rlME+XFhRmMrPW/wLQ0oZj+uhrpMB4r8RJdDLOGpZxo1b2qyOco4tnRYqEXjtVLj8GM8ZHmj5zT+VwoVDghhKXZ5uWUYaI1OPOzNpUPBAZnMiannj6SOUveI8ZFYsVQ8zSQtyed3tyuHI+cJCV3evKjpIPG50gxBe6QfLwWQ3tE=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.28,REQID:1623c677-8a17-408b-9e45-e79646facf68,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:0
-X-CID-META: VersionHash:176cd25,CLOUDID:e0a12e0e-c22b-45ab-8a43-3004e9216b56,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:
-        NO,DKR:0,DKP:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
-X-UUID: 296a8398214411eeb20a276fd37b9834-20230713
-Received: from mtkmbs11n2.mediatek.inc [(172.21.101.187)] by mailgw02.mediatek.com
-        (envelope-from <chris.lu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 470992365; Thu, 13 Jul 2023 14:11:53 +0800
-Received: from mtkmbs11n1.mediatek.inc (172.21.101.185) by
- mtkmbs13n1.mediatek.inc (172.21.101.193) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Thu, 13 Jul 2023 14:11:51 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Thu, 13 Jul 2023 14:11:51 +0800
-From:   Chris Lu <chris.lu@mediatek.com>
-To:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Von Dentz <luiz.dentz@gmail.com>
-CC:     Sean Wang <sean.wang@mediatek.com>,
-        Aaron Hou <aaron.hou@mediatek.com>,
-        Steve Lee <steve.lee@mediatek.com>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mediatek <linux-mediatek@lists.infradead.org>,
-        Chris Lu <chris.lu@mediatek.com>
-Subject: [PATCH v5] Bluetooth: btmtk: Fix kernel crash when processing coredump
-Date:   Thu, 13 Jul 2023 14:11:12 +0800
-Message-ID: <20230713061111.25232-1-chris.lu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Thu, 13 Jul 2023 02:12:49 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5044F1992;
+        Wed, 12 Jul 2023 23:12:46 -0700 (PDT)
+X-QQ-mid: bizesmtp91t1689228753t4c3q9ae
+Received: from linux-lab-host.localdomain ( [116.30.126.249])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Thu, 13 Jul 2023 14:12:31 +0800 (CST)
+X-QQ-SSF: 01200000000000D0W000000A0000000
+X-QQ-FEAT: 8bAiRczmfHRwTspAsE5lUh6JC0H57C6KXRJ+mfOM3wtDtmURwWNd7+rwwEIM7
+        elMTkr++KDM6+20L24hFX+YqDHlG3hD1Qxv3oHtmABGD9CuEv1U1WNyizqcVNXqsJW1C7Z+
+        emygNCJBbZZF2QjGEYBtZNdtLc+Wdl5/wAEHgkiiEQeHDFnwLrfcWEeLraqodYI7LgTSAfh
+        N55a2VYKPVKAYjF5kYI8JdJzy+8hrMPBpqAk8ZXZUETdYZFzDEy2zVgDNT2YK+IIHTfY6EK
+        YwKSFiSUNP+94MQ+iYEWzxz6CpLx2plxqiRZURZzfmthtOyh+8meOUJEDX4GJXRWxTZsfN0
+        /xmVQdN5DP9W1eVXdRshb3t4ZfqixRiAYVnIuP/
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 874338276069120476
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     thomas@t-8ch.de
+Cc:     arnd@arndb.de, falcon@tinylab.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, w@1wt.eu
+Subject: Re: [PATCH v3 02/11] tools/nolibc: add new crt.h with _start_c
+Date:   Thu, 13 Jul 2023 14:12:27 +0800
+Message-Id: <20230713061227.43222-1-falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <a00284a6-54b1-498c-92aa-44997fa78403@t-8ch.de>
+References: <a00284a6-54b1-498c-92aa-44997fa78403@t-8ch.de>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,112 +52,159 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There may be a potential kernel crash risk if 'skb->len - MTK_COREDUMP_END_LEN'
-value is less than 0 when doing memcmp in btmtk_process_coredump().
-Check the value is valid before doing memcmp.
+Hi, Thomas
 
-[  215.021695] Unable to handle kernel paging request at virtual address ffffff939fffd3c5
-[  215.021781] Mem abort info:
-[  215.021805]   ESR = 0x96000005
-[  215.021833]   EC = 0x25: DABT (current EL), IL = 32 bits
-[  215.021861]   SET = 0, FnV = 0
-[  215.021875]   EA = 0, S1PTW = 0
-[  215.021886] Data abort info:
-[  215.021899]   ISV = 0, ISS = 0x00000005
-[  215.021912]   CM = 0, WnR = 0
-[  215.021929] swapper pgtable: 4k pages, 39-bit VAs, pgdp=00000000410de000
-[  215.021943] [ffffff939fffd3c5] pgd=0000000000000000, p4d=0000000000000000, pud=0000000000000000
-[  215.021979] Internal error: Oops: 96000005 [#1] PREEMPT SMP
-[  215.022496] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.10.186 #3 (HASH:ad23 4)
-[  215.022511] Hardware name: MediaTek Tomato board (DT)
-[  215.022530] pstate: 80400009 (Nzcv daif +PAN -UAO -TCO BTYPE=--)
-[  215.022556] pc : __pi_memcmp+0xd0/0x1b8
-[  215.022579] lr : btmtk_process_coredump+0xb0/0x5f8 [btmtk]
-[  215.022593] sp : ffffffc010003d40
-[  215.022607] x29: ffffffc010003d40 x28: 0000000000000006
-[  215.022633] x27: ffffffda696350c0 x26: 0000000000000002
-[  215.022659] x25: 00000000000003ff x24: ffffff9360cca804
-[  215.022685] x23: 0000000000000000 x22: ffffff9365638500
-[  215.022710] x21: ffffff9365638700 x20: 0000000000000000
-[  215.022736] x19: ffffff936002e000 x18: 0000000000000000
-[  215.022761] x17: 0000000000000180 x16: ffffffda6881b8b4
-[  215.022787] x15: 0000000000000001 x14: 0000000000002d00
-[  215.022812] x13: 0000000000060000 x12: 0000000000000181
-[  215.022837] x11: 0000000000000006 x10: fffffffffffffffd
-[  215.022862] x9 : 0000000000000006 x8 : 0000000000000003
-[  215.022887] x7 : 0000000000000000 x6 : 0000000000000000
-[  215.022913] x5 : ffffff93656387b8 x4 : 0000000000000000
-[  215.022938] x3 : ffffffc010003c18 x2 : 0000000000000006
-[  215.022963] x1 : ffffffda09d4124a x0 : ffffff939fffd3c5
-[  215.022989] Call trace:
-[  215.023012]  __pi_memcmp+0xd0/0x1b8
-[  215.023053]  btusb_recv_acl_mtk+0x64/0x90 [btusb (HASH:dc6b 5)]
-[  215.023087]  btusb_recv_bulk+0x118/0x170 [btusb (HASH:dc6b 5)]
-[  215.023121]  btusb_bulk_complete+0x8c/0x148 [btusb (HASH:dc6b 5)]
-[  215.023144]  __usb_hcd_giveback_urb+0xbc/0x148
-[  215.023164]  usb_giveback_urb_bh+0xb4/0x190
-[  215.023184]  tasklet_action_common+0x98/0x1a0
-[  215.023201]  tasklet_action+0x2c/0x38
-[  215.023220]  __do_softirq+0xe0/0x38c
-[  215.023241]  invoke_softirq+0x34/0x6c
-[  215.023258]  irq_exit+0x6c/0xb0
-[  215.023279]  __handle_domain_irq+0x98/0xd4
-[  215.023296]  gic_handle_irq+0x5c/0x11c
-[  215.023313]  el1_irq+0xd0/0x180
-[  215.023332]  cpuidle_enter_state+0xac/0x338
-[  215.023349]  cpuidle_enter+0x40/0x70
-[  215.023366]  do_idle+0x150/0x278
-[  215.023384]  cpu_startup_entry+0x2c/0x58
-[  215.023401]  rest_init+0xdc/0xec
-[  215.023419]  arch_call_rest_init+0x18/0x24
-[  215.023435]  start_kernel+0x334/0x400
-[  215.023460] Code: 91002129 eb09010a 9a89810b cb0b0042 (38401403)
-[  215.023478] ---[ end trace 28668fd20c7a90cd ]
+> On 2023-07-12 17:17:39+0800, Zhangjin Wu wrote:
+> > As the environ and _auxv support added for nolibc, the assembly _start
+> > function becomes more and more complex and therefore makes the porting
+> > of nolibc to new architectures harder and harder.
+> > 
+> > To simplify portability, this C version of _start_c() is added to do
+> > most of the assembly start operations in C, which reduces the complexity
+> > a lot and will eventually simplify the porting of nolibc to the new
+> > architectures.
+> > 
+> > The new _start_c() only requires a stack pointer argument, it will find
+> > argv, envp and _auxv for us, and then call main(), finally, it exit()
+> > with main's return status. With this new _start_c(), the future new
+> > architectures only require to add very few assembly instructions.
+> > 
+> > As suggested by Thomas, users may use a different signature of main
+> > (e.g. void main(void)), a _nolibc_main alias is added for main to
+> > silence the warning about potential conflicting types.
+> > 
+> > Suggested-by: Thomas Weißschuh <linux@weissschuh.net>
+> > Link: https://lore.kernel.org/lkml/90fdd255-32f4-4caf-90ff-06456b53dac3@t-8ch.de/
+> > Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+> > ---
+> >  tools/include/nolibc/Makefile |  1 +
+> >  tools/include/nolibc/crt.h    | 59 +++++++++++++++++++++++++++++++++++
+> >  2 files changed, 60 insertions(+)
+> >  create mode 100644 tools/include/nolibc/crt.h
+> > 
+> > diff --git a/tools/include/nolibc/Makefile b/tools/include/nolibc/Makefile
+> > index 64d67b080744..909b6eb500fe 100644
+> > --- a/tools/include/nolibc/Makefile
+> > +++ b/tools/include/nolibc/Makefile
+> > @@ -27,6 +27,7 @@ nolibc_arch := $(patsubst arm64,aarch64,$(ARCH))
+> >  arch_file := arch-$(nolibc_arch).h
+> >  all_files := \
+> >  		compiler.h \
+> > +		crt.h \
+> >  		ctype.h \
+> >  		errno.h \
+> >  		nolibc.h \
+> > diff --git a/tools/include/nolibc/crt.h b/tools/include/nolibc/crt.h
+> > new file mode 100644
+> > index 000000000000..f9db2389acd2
+> > --- /dev/null
+> > +++ b/tools/include/nolibc/crt.h
+> > @@ -0,0 +1,59 @@
+> > +/* SPDX-License-Identifier: LGPL-2.1 OR MIT */
+> > +/*
+> > + * C Run Time support for NOLIBC
+> > + * Copyright (C) 2023 Zhangjin Wu <falcon@tinylab.org>
+> > + */
+> > +
+> > +#ifndef _NOLIBC_CRT_H
+> > +#define _NOLIBC_CRT_H
+> > +
+> > +char **environ __attribute__((weak));
+> > +const unsigned long *_auxv __attribute__((weak));
+> > +
+> > +typedef int (_nolibc_main_fn)(int, char **, char **);
+> 
+> What's the advantage of the typedef over using the pointer type inline?
+>
 
-Fixes: 2822cd0173ad ("Bluetooth: btusb: mediatek: add MediaTek devcoredump support")
-Signed-off-by: Chris Lu <chris.lu@mediatek.com>
-Co-developed-by: Sean Wang <sean.wang@mediatek.com>
-Signed-off-by: Sean Wang <sean.wang@mediatek.com>
----
- drivers/bluetooth/btmtk.c | 12 ++++++------
- drivers/bluetooth/btmtk.h |  1 +
- 2 files changed, 7 insertions(+), 6 deletions(-)
+With the extra comment added, this is not required anymore, will remove
+this typedef.
 
-diff --git a/drivers/bluetooth/btmtk.c b/drivers/bluetooth/btmtk.c
-index 786f775196ae..aaabb732082c 100644
---- a/drivers/bluetooth/btmtk.c
-+++ b/drivers/bluetooth/btmtk.c
-@@ -395,12 +395,12 @@ int btmtk_process_coredump(struct hci_dev *hdev, struct sk_buff *skb)
- 
- 		/* Mediatek coredump data would be more than MTK_COREDUMP_NUM */
- 		if (data->cd_info.cnt > MTK_COREDUMP_NUM &&
--		    skb->len > sizeof(MTK_COREDUMP_END) &&
--		    !memcmp((char *)&skb->data[skb->len - sizeof(MTK_COREDUMP_END)],
--			    MTK_COREDUMP_END, sizeof(MTK_COREDUMP_END) - 1)) {
--			bt_dev_info(hdev, "Mediatek coredump end");
--			hci_devcd_complete(hdev);
--		}
-+		    skb->len > MTK_COREDUMP_END_LEN)
-+			if (!memcmp((char *)&skb->data[skb->len - MTK_COREDUMP_END_LEN],
-+				    MTK_COREDUMP_END, MTK_COREDUMP_END_LEN - 1)) {
-+				bt_dev_info(hdev, "Mediatek coredump end");
-+				hci_devcd_complete(hdev);
-+			}
- 
- 		break;
- 	}
-diff --git a/drivers/bluetooth/btmtk.h b/drivers/bluetooth/btmtk.h
-index 68309dfe076a..56f5502baadf 100644
---- a/drivers/bluetooth/btmtk.h
-+++ b/drivers/bluetooth/btmtk.h
-@@ -24,6 +24,7 @@
- 
- #define MTK_COREDUMP_SIZE		(1024 * 1000)
- #define MTK_COREDUMP_END		"coredump end"
-+#define MTK_COREDUMP_END_LEN		(sizeof(MTK_COREDUMP_END))
- #define MTK_COREDUMP_NUM		255
- 
- enum {
--- 
-2.18.0
+> > +static void exit(int);
+> > +
+> > +void _start_c(long *sp)
+> > +{
+> > +	int argc, i;
+> > +	char **argv;
+> > +	char **envp;
+> > +	/* silence potential warning: conflicting types for 'main' */
+> > +	_nolibc_main_fn _nolibc_main __asm__ ("main");
+> 
+> What about the stackprotector initialization?
+> It would really fit great into this series.
+>
 
+Ok, which gcc version supports stackprotector? seems the test even skip
+on gcc 10, I will find one to verify the code change.
+
+> > +
+> > +	/*
+> > +	 * sp  :  argc          <-- argument count, required by main()
+> > +	 * argv:  argv[0]       <-- argument vector, required by main()
+> > +	 *        argv[1]
+> > +	 *        ...
+> > +	 *        argv[argc-1]
+> > +	 *        null
+> > +	 * envp:  envp[0]       <-- environment variables, required by main() and getenv()
+> > +	 *        envp[1]
+> > +	 *        ...
+> > +	 *        null
+> > +	 * _auxv: auxv[0]       <-- auxiliary vector, required by getauxval()
+> > +	 *        auxv[1]
+> > +	 *        ...
+> > +	 *        null
+> > +	 */
+> > +
+> > +	/* assign argc and argv */
+> > +	argc = sp[0];
+> > +	argv = (void *)(sp + 1);
+> 
+> Bit of a weird mismatch between array syntax and pointer arithmetic.
+>
+
+This 'argc = *sp;' may be better ;-)
+
+> > +
+> > +	/* find envp */
+> > +	envp = argv + argc + 1;
+> > +	environ = envp;
+> 
+> Is envp really needed? Could just be assigned directly to environ.
+>
+
+Ok, let's save one variable, envp is used to be consistent with the
+frequenty declaration of main().
+
+> > +
+> > +	/* find auxv */
+> > +	i = 0;
+> > +	while (envp[i])
+> > +		i++;
+> > +	_auxv = (void *)(envp + i + 1);
+> 
+> Could be simplified a bit:
+> 
+> _auxv = (void *) envp;
+> while (_auxv)
+> 	_auxv++;
+>
+
+Yeah, it is better, but needs a little change.
+
+    _auxv = (void *) envp;
+    while (*_auxv)
+	_auxv++;
+    _auxv++;
+
+Thanks,
+Zhangjin
+
+> > +
+> > +	/* go to application */
+> > +	exit(_nolibc_main(argc, argv, envp));
+> > +}
+> > +
+> > +#endif /* _NOLIBC_CRT_H */
+> > -- 
+> > 2.25.1
+> > 
