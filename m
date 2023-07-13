@@ -2,127 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9BFE7524F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 16:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63E947524E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 16:16:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230170AbjGMOS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 10:18:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34436 "EHLO
+        id S235256AbjGMOQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 10:16:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231940AbjGMOR4 (ORCPT
+        with ESMTP id S234548AbjGMOQZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 10:17:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE5592733
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 07:17:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689257832;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EAEgJXo3oFHhbOe/67unGD8n1ytw1uGix+FjoJLnjGY=;
-        b=Ub2vbIjFz1Pth/3F0vJM1Rngbq6Bmk7RGShTJmabL5eOadCC6mDaTB9M0gLf88OOIfETmt
-        F7Nrzq9LB6zAtQnTTfWhTDc4rMJBBvBkjf2P1RQJMO1Rm61wOVeVjxwHsKf0y/H5G7tTSS
-        e9bN3XEm2Yuunn3XWa55+5B6kXf5WOU=
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
- [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-169-BtqnkWWYP72XLLF69drrkg-1; Thu, 13 Jul 2023 10:16:04 -0400
-X-MC-Unique: BtqnkWWYP72XLLF69drrkg-1
-Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1b890ca6718so3347775ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 07:16:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689257762; x=1691849762;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EAEgJXo3oFHhbOe/67unGD8n1ytw1uGix+FjoJLnjGY=;
-        b=MNKCxo7sAdX0owpggpXg/rzx2MZlof61v/cTTBIwGQxvCAiG1HolAEI8m1HRbLLyif
-         WQMy9Csn5eR/iC2SMN6StVFO7nAR5a3ieLx/xwfhwmpsJ2LKOxNKnaNwZuPwBhoBYAfQ
-         GCW5gFIsO7YglKO0xySRelvo/1H82NWA5Dh8yTCVVAJAe1hdUVtaV+2Y9RUvE7iSEyHI
-         8pTBQgTkQ8SBpMOV/eNQ0mur7lHuj1WoY22Mbx4YpChhlteqc74KVoRgdLUK+Qa5ceeZ
-         YXz63SBwcD5oHWzjRGRPlD+lXYnROuCNMlgRY09OqPC8PIOwbGZClMZwpRTMRcEbHxRD
-         K7Nw==
-X-Gm-Message-State: ABy/qLYAkAGECsHrIUe32LPhXnJS7BJjWWaFsFCjwPEj0DxSPKp6caA/
-        Zt/k7Ps/Rm1A6mZtzpgH78/+DygqDNSmHb0My3P1KwbdC/RhTXa/ZMB1XQm9xd1w5WLHJhjznqH
-        34qOiLrBYxOj9/geBDcHWcs7QZGaFHyvfFqceyiuh
-X-Received: by 2002:a17:902:aa05:b0:1b6:93e8:3ddb with SMTP id be5-20020a170902aa0500b001b693e83ddbmr1092166plb.6.1689257762252;
-        Thu, 13 Jul 2023 07:16:02 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFBoaT6AgcpqEK/+OjOPi7omBjJbJZjmH2NbMZ6kEeX+GmTB19WcUDmjBsTSqAYSC3VtjzZfK2p0sFXLNEHGc0=
-X-Received: by 2002:a17:902:aa05:b0:1b6:93e8:3ddb with SMTP id
- be5-20020a170902aa0500b001b693e83ddbmr1092153plb.6.1689257761981; Thu, 13 Jul
- 2023 07:16:01 -0700 (PDT)
+        Thu, 13 Jul 2023 10:16:25 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B044830D7;
+        Thu, 13 Jul 2023 07:16:12 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C83601570;
+        Thu, 13 Jul 2023 07:16:54 -0700 (PDT)
+Received: from [10.1.30.48] (C02Z41KALVDN.cambridge.arm.com [10.1.30.48])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E9EAF3F73F;
+        Thu, 13 Jul 2023 07:16:10 -0700 (PDT)
+Message-ID: <062255de-90c9-72a5-dc04-714e96837fd2@arm.com>
+Date:   Thu, 13 Jul 2023 15:16:09 +0100
 MIME-Version: 1.0
-References: <20230713135249.153796-1-jlayton@kernel.org>
-In-Reply-To: <20230713135249.153796-1-jlayton@kernel.org>
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-Date:   Thu, 13 Jul 2023 16:15:50 +0200
-Message-ID: <CAHc6FU6QQicrNDKWMQknP9YqKtEhhL0KbDCLACQ=v8P+tPQ5WQ@mail.gmail.com>
-Subject: Re: [PATCH] gfs2: fix timestamp handling on quota inodes
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     brauner@kernel.org, Bob Peterson <rpeterso@redhat.com>,
-        linux-fsdevel@vger.kernel.org, cluster-devel@redhat.com,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH v1 3/9] selftests/mm: Skip soft-dirty tests on arm64
+To:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Mark Brown <broonie@kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Florent Revest <revest@chromium.org>,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org
+References: <20230713135440.3651409-1-ryan.roberts@arm.com>
+ <20230713135440.3651409-4-ryan.roberts@arm.com>
+ <cf3c237e-69c8-dd6e-26fc-fe19de910813@redhat.com>
+ <773cc0a8-24b8-7fcb-2980-7676fc772014@arm.com>
+ <3c566e28-c7ad-7ba8-4583-619266282387@redhat.com>
+ <373e7e67-6ccc-5508-6937-6ea5a3eed5ea@redhat.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <373e7e67-6ccc-5508-6937-6ea5a3eed5ea@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jeff and Christian,
+On 13/07/2023 15:12, David Hildenbrand wrote:
+> On 13.07.23 16:09, David Hildenbrand wrote:
+>> On 13.07.23 16:03, Ryan Roberts wrote:
+>>> On 13/07/2023 14:56, David Hildenbrand wrote:
+>>>> On 13.07.23 15:54, Ryan Roberts wrote:
+>>>>> arm64 does not support the soft-dirty PTE bit. However there are tests
+>>>>> in `madv_populate` and `soft-dirty` which assume it is supported and
+>>>>> cause spurious failures to be reported when preferred behaviour would be
+>>>>> to mark the tests as skipped.
+>>>>>
+>>>>> Unfortunately, the only way to determine if the soft-dirty dirty bit is
+>>>>> supported is to write to a page, then see if the bit is set in
+>>>>> /proc/self/pagemap. But the tests that we want to conditionally execute
+>>>>> are testing precicesly this. So if we introduced this feature check, we
+>>>>> could accedentally turn a real failure (on a system that claims to
+>>>>> support soft-dirty) into a skip.
+>>>>>
+>>>>> So instead, do the check based on architecture; for arm64, we report
+>>>>> that soft-dirty is not supported. This is wrapped up into a utility
+>>>>> function `system_has_softdirty()`, which is used to skip the whole
+>>>>> `soft-dirty` suite, and mark the soft-dirty tests in the `madv_populate`
+>>>>> suite as skipped.
+>>>>>
+>>>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+>>>>> ---
+>>>>>     tools/testing/selftests/mm/madv_populate.c | 18 +++++++++++++-----
+>>>>>     tools/testing/selftests/mm/soft-dirty.c    |  3 +++
+>>>>>     tools/testing/selftests/mm/vm_util.c       | 17 +++++++++++++++++
+>>>>>     tools/testing/selftests/mm/vm_util.h       |  1 +
+>>>>>     4 files changed, 34 insertions(+), 5 deletions(-)
+>>>>>
+>>>>> diff --git a/tools/testing/selftests/mm/madv_populate.c
+>>>>> b/tools/testing/selftests/mm/madv_populate.c
+>>>>> index 60547245e479..5a8c176d7fec 100644
+>>>>> --- a/tools/testing/selftests/mm/madv_populate.c
+>>>>> +++ b/tools/testing/selftests/mm/madv_populate.c
+>>>>> @@ -232,6 +232,14 @@ static bool range_is_not_softdirty(char *start, ssize_t
+>>>>> size)
+>>>>>         return ret;
+>>>>>     }
+>>>>>
+>>>>> +#define ksft_test_result_if_softdirty(cond, ...)    \
+>>>>> +do {                            \
+>>>>> +    if (system_has_softdirty())            \
+>>>>> +        ksft_test_result(cond, __VA_ARGS__);    \
+>>>>> +    else                        \
+>>>>> +        ksft_test_result_skip(__VA_ARGS__);    \
+>>>>> +} while (0)
+>>>>> +
+>>>>>     static void test_softdirty(void)
+>>>>>     {
+>>>>>         char *addr;
+>>>>> @@ -246,19 +254,19 @@ static void test_softdirty(void)
+>>>>>
+>>>>>         /* Clear any softdirty bits. */
+>>>>>         clear_softdirty();
+>>>>> -    ksft_test_result(range_is_not_softdirty(addr, SIZE),
+>>>>> +    ksft_test_result_if_softdirty(range_is_not_softdirty(addr, SIZE),
+>>>>>                  "range is not softdirty\n");
+>>>>>
+>>>>>         /* Populating READ should set softdirty. */
+>>>>>         ret = madvise(addr, SIZE, MADV_POPULATE_READ);
+>>>>> -    ksft_test_result(!ret, "MADV_POPULATE_READ\n");
+>>>>> -    ksft_test_result(range_is_not_softdirty(addr, SIZE),
+>>>>> +    ksft_test_result_if_softdirty(!ret, "MADV_POPULATE_READ\n");
+>>>>> +    ksft_test_result_if_softdirty(range_is_not_softdirty(addr, SIZE),
+>>>>>                  "range is not softdirty\n");
+>>>>>
+>>>>>         /* Populating WRITE should set softdirty. */
+>>>>>         ret = madvise(addr, SIZE, MADV_POPULATE_WRITE);
+>>>>> -    ksft_test_result(!ret, "MADV_POPULATE_WRITE\n");
+>>>>> -    ksft_test_result(range_is_softdirty(addr, SIZE),
+>>>>> +    ksft_test_result_if_softdirty(!ret, "MADV_POPULATE_WRITE\n");
+>>>>> +    ksft_test_result_if_softdirty(range_is_softdirty(addr, SIZE),
+>>>>>                  "range is softdirty\n");
+>>>>
+>>>> We probably want to skip the whole test_*softdirty* test instead of adding this
+>>>> (IMHO suboptimal) ksft_test_result_if_softdirty.
+>>>
+>>> Yeah I thought about doing it that way, but then the output just looks like
+>>> there were fewer tests and they all passed. But thinking about it now, I guess
+>>> the TAP header outputs the number of planned tests and the number of tests
+>>> executed are fewer, so a machine parser would still notice. I just don't like
+>>> that it outputs skipped:0.
+>>>
+>>> But it a lightly held view. Happy to just do:
+>>>
+>>>     if (system_has_softdirty())
+>>>         test_softdirty()
+>>>
+>>> If you insist. ;-)
+>>
+>> diff --git a/tools/testing/selftests/mm/madv_populate.c
+>> b/tools/testing/selftests/mm/madv_populate.c
+>> index 60547245e479..33fda0337b32 100644
+>> --- a/tools/testing/selftests/mm/madv_populate.c
+>> +++ b/tools/testing/selftests/mm/madv_populate.c
+>> @@ -266,12 +266,16 @@ static void test_softdirty(void)
+>>       int main(int argc, char **argv)
+>>    {
+>> +       int nr_tests = 16;
+>>           int err;
+>>              pagesize = getpagesize();
+>>    +       if (system_has_softdirty())
+>> +               nr_tests += 5;
+>> +
+>>           ksft_print_header();
+>> -       ksft_set_plan(21);
+>> +       ksft_set_plan(nr_tests);
+>>              sense_support();
+>>           test_prot_read();
+>> @@ -279,7 +283,8 @@ int main(int argc, char **argv)
+>>           test_holes();
+>>           test_populate_read();
+>>           test_populate_write();
+>> -       test_softdirty();
+>> +       if (system_has_softdirty())
+>> +               test_softdirty();
+>>              err = ksft_get_fail_cnt();
+>>           if (err)
+>>
+>>
+> 
+> Oh, and if you want to have the skip, then you can think about converting
+> test_softdirty() to only perform a single ksft_test_result(), and have a single
+> skip on top.
+> 
+> All cleaner IMHO than ksft_test_result_if_softdirty ;)
 
-On Thu, Jul 13, 2023 at 3:52=E2=80=AFPM Jeff Layton <jlayton@kernel.org> wr=
-ote:
-> While these aren't generally visible from userland, it's best to be
-> consistent with timestamp handling. When adjusting the quota, update the
-> mtime and ctime like we would with a write operation on any other inode,
-> and avoid updating the atime which should only be done for reads.
->
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> ---
->  fs/gfs2/quota.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> Christian,
->
-> Would you mind picking this into the vfs.ctime branch, assuming the GFS2
-> maintainers ack it? Andreas and I had discussed this privately, and I
-> think it makes sense as part of that series.
+I'll do it the way you recommend above. Like I said, its a lightly held opinion,
+and your way looks like less effort. ;-)
 
-Yes, please.
 
-> Thanks,
-> Jeff
->
-> diff --git a/fs/gfs2/quota.c b/fs/gfs2/quota.c
-> index 704192b73605..aa5fd06d47bc 100644
-> --- a/fs/gfs2/quota.c
-> +++ b/fs/gfs2/quota.c
-> @@ -871,7 +871,7 @@ static int gfs2_adjust_quota(struct gfs2_inode *ip, l=
-off_t loc,
->                 size =3D loc + sizeof(struct gfs2_quota);
->                 if (size > inode->i_size)
->                         i_size_write(inode, size);
-> -               inode->i_mtime =3D inode->i_atime =3D current_time(inode)=
-;
-> +               inode->i_mtime =3D inode_set_ctime_current(inode);
->                 mark_inode_dirty(inode);
->                 set_bit(QDF_REFRESH, &qd->qd_flags);
->         }
-> --
-> 2.41.0
->
-
-Reviewed-by: Andreas Gruenbacher <agruenba@redhat.com>
-
-Thanks,
-Andreas
+> 
 
