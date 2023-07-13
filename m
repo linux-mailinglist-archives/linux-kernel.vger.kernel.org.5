@@ -2,126 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A54E57529C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 19:21:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 284D37529C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 19:21:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231567AbjGMRVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 13:21:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49346 "EHLO
+        id S231959AbjGMRVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 13:21:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230026AbjGMRVd (ORCPT
+        with ESMTP id S232670AbjGMRVp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 13:21:33 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C77CC2686;
-        Thu, 13 Jul 2023 10:21:32 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-553a1f13d9fso792418a12.1;
-        Thu, 13 Jul 2023 10:21:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689268892; x=1691860892;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=MoXOEc1aWr3dwI0ksLlYt0n9zn9QMHI6ygtva43knIk=;
-        b=sCbxgIQXcdA0IEPVvuUoCmwowEuiLuUQeLa7QqceEYk4UTV4WZNPnPARSsD5mXWsm3
-         4vBqobcSvHDfjRjnftWhFlN7KGkotHNWnr0tX+qr7sz9q2pKt/RyXEHMhW5emuSQqlXi
-         keYxb9FGC4WS50ZwuKoIPWbdXjAmP8Os+c47l6lM84re/8CiJ2bZ6B92QUYg5tK4sBns
-         DS7cnufKinuAzr2o81wvq3dJXvvPvaXMTtkHSpbJeau1C20i59o9muwBcNSUkGSdgnu2
-         QuEeLZGhq7yy/huBkWNYGRH5Xfe6BlW9Auz6RTrBgpOFo2DJ9cdIUJ/I1PTkDi8jic3a
-         SWtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689268892; x=1691860892;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MoXOEc1aWr3dwI0ksLlYt0n9zn9QMHI6ygtva43knIk=;
-        b=ABekdh3gdPXmg1luPeu+Jt7I8wy788loWkIwLJVJ01PYMo4+fvdpi1ZybILpXp9SoY
-         jkfuPUQEzQtQrfolqBgrPGUWXzzA9tHtycXZjHUqCAEy1QdHygITjmuO2YHBxzDhI0/V
-         rP9+ukHH2NIOHJx/A6kYNsS7kduKuz3XcBfas+N2R6Su0KuUNfPuiaajSZJ8hah74Z9l
-         eFZu3PBbeUyZRn0KqG6xwR1VMSZTf1Ysj37jAJuTy4LWq3Fr4qjWtO+ZszQqbNARktUb
-         mqicN4ztmky0zrmzZhuHlgR8/mox6NxU28YTP6TEFhIf1CZsoiypF3uTPWW6IV497Iyp
-         i+Gg==
-X-Gm-Message-State: ABy/qLZc5sgkmKgkKBLHddIEXraf4LvnVnspvljg3cWFyvPaXU3KVp1b
-        taqJSbjqQHz0afqE192w8b0=
-X-Google-Smtp-Source: APBJJlGjVpPOhdng3VgjRXpoNaR7gSPxF2yyt2gRipzwWJhe5GKw6woKp4YhYuIL1Vy05Dewv4XtdA==
-X-Received: by 2002:a17:90a:d3d0:b0:262:e821:b3f8 with SMTP id d16-20020a17090ad3d000b00262e821b3f8mr1894750pjw.38.1689268892074;
-        Thu, 13 Jul 2023 10:21:32 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id h4-20020a17090adb8400b00262d662c9adsm12047088pjv.53.2023.07.13.10.21.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 Jul 2023 10:21:31 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <3eec9b79-0505-0b15-f7a0-fcc7f4031c85@roeck-us.net>
-Date:   Thu, 13 Jul 2023 10:21:30 -0700
+        Thu, 13 Jul 2023 13:21:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BF652713;
+        Thu, 13 Jul 2023 10:21:43 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 168FF61B06;
+        Thu, 13 Jul 2023 17:21:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C50D3C433C7;
+        Thu, 13 Jul 2023 17:21:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689268902;
+        bh=N5E85XLHguq9VMc/lAhtUJwkW3CfjKC0ALqOBx9bMbY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hVQNPNojdWrmzo6Ws5YJFrydp9YnkwF629nYyfq57wdCnDCNI8dOl1RC3K38p0H4y
+         WHKBjofujR4xjmcUU4ofhjcrHMGZUj0RVA8h6M/eQaxtutrt/xFVQ2gu26sBpiCTBc
+         peb+7RTNskFXqx9r1PCfAY4q2N6dNrzxENjnUcUcg8BR6k8Be8bRH8qkAfuuCsf+a9
+         KkrD2zqfIOB6JWABjaDluHWSmhdgcJ0/ZpsxMhUB3ya2HfHnGPuCRlpYiIu6K8txqB
+         MSb0g3SpeCEb8NCaDDug7+v/2iEmlNltKLC+FK23sKeu+2ugL4BQ9l83nML24G1eML
+         /b3O7/cFKfuLw==
+Date:   Thu, 13 Jul 2023 18:21:35 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Evan Green <evan@rivosinc.com>
+Cc:     Palmer Dabbelt <palmer@rivosinc.com>, linux-doc@vger.kernel.org,
+        Yangyu Chen <cyy@cyyself.name>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Guo Ren <guoren@kernel.org>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        linux-riscv@lists.infradead.org, Jonathan Corbet <corbet@lwn.net>,
+        Xianting Tian <xianting.tian@linux.alibaba.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Simon Hosie <shosie@rivosinc.com>,
+        Li Zhengyu <lizhengyu3@huawei.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexandre Ghiti <alexghiti@rivosinc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Heiko Stuebner <heiko.stuebner@vrull.eu>,
+        Anup Patel <apatel@ventanamicro.com>,
+        linux-kernel@vger.kernel.org,
+        David Laight <David.Laight@aculab.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Andy Chiu <andy.chiu@sifive.com>,
+        Andrew Jones <ajones@ventanamicro.com>
+Subject: Re: [PATCH v2 1/2] RISC-V: Probe for unaligned access speed
+Message-ID: <20230713-unaligned-engaging-af88fa5fd9c8@spud>
+References: <20230705164833.995516-1-evan@rivosinc.com>
+ <20230705164833.995516-2-evan@rivosinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 0/3] Add support for WDIOF_CARDRESET on TI AM65x
-Content-Language: en-US
-To:     huaqian.li@siemens.com, wim@linux-watchdog.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc:     huaqianlee@gmail.com, nm@ti.com, vigneshr@ti.com,
-        kristo@kernel.org, linux-watchdog@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, jan.kiszka@siemens.com,
-        baocheng.su@siemens.com
-References: <20230713095127.1230109-1-huaqian.li@siemens.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-In-Reply-To: <20230713095127.1230109-1-huaqian.li@siemens.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="fnLwWuReRbJ6hyE9"
+Content-Disposition: inline
+In-Reply-To: <20230705164833.995516-2-evan@rivosinc.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/13/23 02:51, huaqian.li@siemens.com wrote:
-> From: Li Hua Qian <huaqian.li@siemens.com>
-> 
-> The watchdog hardware of TI AM65X platform does not support
-> WDIOF_CARDRESET feature, add a reserved memory to save the watchdog
-> reset cause, to know if the board reboot is due to a watchdog reset.
-> 
 
-One thing I keep wondering about: What prevents the Linux kernel from
-treating the special memory area like normal memory ? I would have expected
-some usage note, such as that the memory area must be reported as reserved
-to the kernel, but I don't see anything like that.
+--fnLwWuReRbJ6hyE9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Guenter
+On Wed, Jul 05, 2023 at 09:48:32AM -0700, Evan Green wrote:
 
-> Changes in v3:
-> - Add memory-region back for the reserved memory, and remove reserved
->    memory from the watchdog IO address space.
-> - Add changelog.
-> - Link to v2:
->    https://lore.kernel.org/linux-watchdog/20230711091713.1113010-1-huaqian.li@siemens.com
-> 
-> Changes in v2:
-> - Remove memory-region and memory-size properties, and bind the reserved
->    memory to watchdog IO address space.
-> - Remove the unnecessary rti_wdt_ioctl.
-> - Fix the mail list
-> - Link to v1:
->    https://lore.kernel.org/all/3137d87e56ef75ba0b8a923d407b2fecace6ccbd.camel@siemens.com/
->    v1 had a wrong mail list at the beginning, and the mail thread was
->    messed up.
-> 
-> Li Hua Qian (3):
->    dt-bindings: watchdog: ti,rti-wdt: Add support for WDIOF_CARDRESET
->    arm64: dts: ti: Add reserved memory for watchdog
->    watchdog:rit_wdt: Add support for WDIOF_CARDRESET
-> 
->   .../bindings/watchdog/ti,rti-wdt.yaml         | 12 +++++
->   .../boot/dts/ti/k3-am65-iot2050-common.dtsi   | 10 ++++
->   drivers/watchdog/rti_wdt.c                    | 51 +++++++++++++++++++
->   3 files changed, 73 insertions(+)
-> 
+I got kinda mad about the whole Zicclsm thing, so I decided to take a
+bit before reading the words "aligned access" again.
 
+> diff --git a/Documentation/riscv/hwprobe.rst b/Documentation/riscv/hwprob=
+e.rst
+> index 19165ebd82ba..88d7d64ec0bd 100644
+> --- a/Documentation/riscv/hwprobe.rst
+> +++ b/Documentation/riscv/hwprobe.rst
+> @@ -87,13 +87,12 @@ The following keys are defined:
+>      emulated via software, either in or below the kernel.  These accesse=
+s are
+>      always extremely slow.
+> =20
+> -  * :c:macro:`RISCV_HWPROBE_MISALIGNED_SLOW`: Misaligned accesses are su=
+pported
+> -    in hardware, but are slower than the cooresponding aligned accesses
+> -    sequences.
+> +  * :c:macro:`RISCV_HWPROBE_MISALIGNED_SLOW`: Misaligned accesses are sl=
+ower
+> +    than equivalent byte accesses.  Misaligned accesses may be supported
+> +    directly in hardware, or trapped and emulated by software.
+> =20
+> -  * :c:macro:`RISCV_HWPROBE_MISALIGNED_FAST`: Misaligned accesses are su=
+pported
+> -    in hardware and are faster than the cooresponding aligned accesses
+> -    sequences.
+> +  * :c:macro:`RISCV_HWPROBE_MISALIGNED_FAST`: Misaligned accesses are fa=
+ster
+> +       than equivalent byte accesses.
+
+The indent here for line #2 looks odd. Is that an artifact of the patch?
+
+> diff --git a/arch/riscv/kernel/copy-unaligned.h b/arch/riscv/kernel/copy-=
+unaligned.h
+> new file mode 100644
+> index 000000000000..a4e8b6ad5b6a
+> --- /dev/null
+> +++ b/arch/riscv/kernel/copy-unaligned.h
+> @@ -0,0 +1,13 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (C) 2023 Rivos, Inc.
+> + */
+> +#ifndef __RISCV_KERNEL_COPY_UNALIGNED_H
+> +#define __RISCV_KERNEL_COPY_UNALIGNED_H
+> +
+> +#include <linux/types.h>
+> +
+> +void __copy_words_unaligned(void *dst, const void *src, size_t size);
+> +void __copy_bytes_unaligned(void *dst, const void *src, size_t size);
+
+If we are putting this stuff in headers to call into asm, should we
+prefix it with "riscv", or is __ enough?
+
+> +void check_unaligned_access(int cpu)
+> +{
+> +	u64 c0, c1;
+
+I quite dislike variables like "c0"/"c1", they make things harder to
+read for no real benefit IMO. Would you mind renaming them?
+
+> +	u64 word_cycles;
+> +	u64 byte_cycles;
+> +	int ratio;
+> +	unsigned long j0, j1;
+> +	struct page *page;
+> +	void *dst;
+> +	void *src;
+> +	long speed =3D RISCV_HWPROBE_MISALIGNED_SLOW;
+
+> +static int check_unaligned_access0(void)
+> +{
+> +	check_unaligned_access(0);
+> +	return 0;
+> +}
+
+> +arch_initcall(check_unaligned_access0);
+
+Could you please rename this function to match the actual use?
+So something like s/0/_boot_cpu/?
+
+Otherwise, I like the idea & we discussed the semantics last time around
+and I was happy with them. I don't feel qualified to review the actual
+speed test, so
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+
+--fnLwWuReRbJ6hyE9
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZLAynwAKCRB4tDGHoIJi
+0vafAP9QtNqw2kcNrvo8jD3iX3SWjLnnq86q6AS5Xj38aRqJ+gEA41TCD6hkux31
+urM+gYjkopnUOvXtpkDrq7fN1NIlcQk=
+=YmcG
+-----END PGP SIGNATURE-----
+
+--fnLwWuReRbJ6hyE9--
