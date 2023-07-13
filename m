@@ -2,129 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0AA4752369
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 15:21:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B53AE75239E
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 15:23:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233560AbjGMNVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 09:21:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51780 "EHLO
+        id S235243AbjGMNXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 09:23:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234481AbjGMNUl (ORCPT
+        with ESMTP id S235287AbjGMNW7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 09:20:41 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61830270A;
-        Thu, 13 Jul 2023 06:20:32 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F2C7461077;
-        Thu, 13 Jul 2023 13:20:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA113C433C8;
-        Thu, 13 Jul 2023 13:20:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689254431;
-        bh=/HyMH976r1TkXdXXLMFe5egKFttnbGRT4cnSU1IDGSE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IyX8o5M49S3zdzIxtruMjTRp3CoLKS1Rhzh8MHa3gYd3oaysfgiI9455gtBEoX6/h
-         VbqM0gkLxd4eQvSWW7TISIVbalZNozQIlll8xozP/Mpus0rGu4PKXHlVyyOaDlD8Nm
-         MLz+0GsLu/xdnFlvqHh5WF5qicq294o0Dn9/hQp3R3SN5d/FjQLuMIOEbYVwPvBGkV
-         3pZL3qgJ3VM0f7sHcfQmUY8ueP8p88W4jCtOqXictAbtRiKpiIxS6sBpv5C7XYkSe3
-         I03sippl4hiN2aJerdZ/8LQgvMnUA8TpzL9Fg6A61oDg35Njc6Ts11QAdJ1MBAVhhm
-         G+bK9ll/f7X2A==
-Date:   Thu, 13 Jul 2023 15:20:20 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>
-Cc:     Aleksa Sarai <cyphar@cyphar.com>, Willy Tarreau <w@1wt.eu>,
-        Shuah Khan <shuah@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Chinner <dchinner@redhat.com>,
-        xu xin <cgel.zte@gmail.com>, Al Viro <viro@zeniv.linux.org.uk>,
-        Stefan Roesch <shr@devkernel.io>,
-        Zhihao Cheng <chengzhihao1@huawei.com>,
-        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Janis Danisevskis <jdanis@google.com>,
-        Kees Cook <keescook@chromium.org>, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH] procfs: block chmod on /proc/thread-self/comm
-Message-ID: <20230713-shrimps-sachkenntnis-0343cc776cc2@brauner>
-References: <20230713121907.9693-1-cyphar@cyphar.com>
- <e26a9bab-6443-4a0a-809a-ca1c1b4d28c3@t-8ch.de>
+        Thu, 13 Jul 2023 09:22:59 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BD1835A4;
+        Thu, 13 Jul 2023 06:21:55 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id 5614622812f47-3a3373211a1so599566b6e.0;
+        Thu, 13 Jul 2023 06:21:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689254505; x=1691846505;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nMl5dn5Xz12gXOMX3oC+kNdFlWhzCPfH45LFdGwDg+c=;
+        b=eshePJRxBGfoEbxv/HATy/LbMrzsCDpyAiPdPWKP2+7M1zJL3N5KwDGRakUw3RzP4p
+         q0Cnwz0fdaQ+HyxVhl+a/PdVIYgV40UvVYeo6oku2ew3IT0bTt6UYAHjOIS6Vb6t9Mla
+         Zj8EL/FlPFPvHB5g71aE7gFP3zFqlG9d7Fbu8m/nhV/T9INJD8alH0sgU2iXPleyzim5
+         lINS3JcD7J0TOIOFW4pf/x8/SEpIIASy3dTyyqXfKshxdSJS0TlF/u7bPTHA+oWf2AYl
+         SPCY6gZL7ykEOqi+bfIKlTKf4FRPiV/L6IcHOgev/4QAZK/gwKYWQ5RBFTfBsMThGpXg
+         EmsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689254505; x=1691846505;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nMl5dn5Xz12gXOMX3oC+kNdFlWhzCPfH45LFdGwDg+c=;
+        b=j83XsvWDS/59ZRtQNCcRAswIv16C/Ap9bYQ7j7wfNDDqZJGj+9X6PN0myKyTn4wU/i
+         y8lUrBbzN0IGkqFJIGn14itdBwejbJyGcz7lXonJZl1nmaadHFNEFCxwjdSooeEFarSt
+         I0VBTBUo3tKSKckSLv4oAgiPmUDwXMDtg0SWsjnciMEDu6D9tSVCAaimjZYd8ygMiWVn
+         MECXv/JlFjPyRMpIHomXKdSTxE+LEqSJsjSoGQhSW5+qEP9eCn97FpERdTAePvRLc7eQ
+         AIBcHvlK4CXCfHch8yENA+eInOM8R3OhlYuomglfXxtPR4OnRIBf1XICkzYjiANUcfZq
+         lfrQ==
+X-Gm-Message-State: ABy/qLYY6JcJ8DGyhX42Jaab91F5v99cEz0v9EICy2Nf3tor+kPCGGR2
+        URdZJuZIpI2Xxk5dU5zAEHUPOtkhGiETLimmigA=
+X-Google-Smtp-Source: APBJJlG+0WtfiM+r2sXZzO6HNFK4R91MA9ooy29hXDBdzlOr5q/1lWHuWptQzwph8RqHPwzWZYnIoYS2ozC9kDF6TM8=
+X-Received: by 2002:a05:6358:428e:b0:135:5934:2bba with SMTP id
+ s14-20020a056358428e00b0013559342bbamr2356344rwc.8.1689254505432; Thu, 13 Jul
+ 2023 06:21:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e26a9bab-6443-4a0a-809a-ca1c1b4d28c3@t-8ch.de>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230713130338.31086-1-tzimmermann@suse.de> <20230713130338.31086-19-tzimmermann@suse.de>
+In-Reply-To: <20230713130338.31086-19-tzimmermann@suse.de>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Thu, 13 Jul 2023 15:21:34 +0200
+Message-ID: <CANiq72mbLmMKph8aiz4apNF9n3MtVO-nhM9rEWYApZbSVAO9Qw@mail.gmail.com>
+Subject: Re: [PATCH v2 18/18] fbdev: Document that framebuffer_alloc() returns
+ zero'ed data
+To:     Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     deller@gmx.de, javierm@redhat.com, linux-sh@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, linux-input@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        linux-staging@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org,
+        linux-geode@lists.infradead.org, linux-nvidia@lists.surfsouth.com,
+        linux-hyperv@vger.kernel.org, linux-omap@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, kvm@vger.kernel.org,
+        Miguel Ojeda <ojeda@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 03:01:24PM +0200, Thomas Weißschuh wrote:
-> On 2023-07-13 22:19:04+1000, Aleksa Sarai wrote:
-> > Due to an oversight in commit 1b3044e39a89 ("procfs: fix pthread
-> > cross-thread naming if !PR_DUMPABLE") in switching from REG to NOD,
-> > chmod operations on /proc/thread-self/comm were no longer blocked as
-> > they are on almost all other procfs files.
-> > 
-> > A very similar situation with /proc/self/environ was used to as a root
-> > exploit a long time ago, but procfs has SB_I_NOEXEC so this is simply a
-> > correctness issue.
-> > 
-> > Ref: https://lwn.net/Articles/191954/
-> > Ref: 6d76fa58b050 ("Don't allow chmod() on the /proc/<pid>/ files")
-> > Fixes: 1b3044e39a89 ("procfs: fix pthread cross-thread naming if !PR_DUMPABLE")
-> > Cc: stable@vger.kernel.org # v4.7+
-> > Signed-off-by: Aleksa Sarai <cyphar@cyphar.com>
-> > ---
-> >  fs/proc/base.c                               | 3 ++-
-> >  tools/testing/selftests/nolibc/nolibc-test.c | 4 ++++
-> >  2 files changed, 6 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/fs/proc/base.c b/fs/proc/base.c
-> > index 05452c3b9872..7394229816f3 100644
-> > --- a/fs/proc/base.c
-> > +++ b/fs/proc/base.c
-> > @@ -3583,7 +3583,8 @@ static int proc_tid_comm_permission(struct mnt_idmap *idmap,
-> >  }
-> >  
-> >  static const struct inode_operations proc_tid_comm_inode_operations = {
-> > -		.permission = proc_tid_comm_permission,
-> > +		.setattr	= proc_setattr,
-> > +		.permission	= proc_tid_comm_permission,
-> >  };
-> 
-> Given that this seems to be a recurring theme a more systematic
-> aproach would help.
-> 
-> Something like the following (untested) patch:
-> 
-> diff --git a/fs/proc/base.c b/fs/proc/base.c
-> index 05452c3b9872..b90f2e9cda66 100644
-> --- a/fs/proc/base.c
-> +++ b/fs/proc/base.c
-> @@ -2649,6 +2649,7 @@ static struct dentry *proc_pident_instantiate(struct dentry *dentry,
->  		set_nlink(inode, 2);	/* Use getattr to fix if necessary */
->  	if (p->iop)
->  		inode->i_op = p->iop;
-> +	WARN_ON(!inode->i_op->setattr);
+On Thu, Jul 13, 2023 at 3:03=E2=80=AFPM Thomas Zimmermann <tzimmermann@suse=
+.de> wrote:
+>
+> Most fbdev drivers depend on framebuffer_alloc() to initialize the
+> allocated memory to 0. Document this guarantee.
+>
+> Suggested-by: Miguel Ojeda <ojeda@kernel.org>
+> Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+> Cc: Helge Deller <deller@gmx.de>
 
-Hm, no. This is hacky.
+Thanks for sending this! Maybe this would be best earlier in the
+series, so that later patches make more sense (since they use the
+guarantee), but it is not a big deal.
 
-To fix this properly we will need to wean off notify_change() from
-falling back to simple_setattr() when no i_op->setattr() method is
-defined. To do that we will have to go through every filesystem and port
-all that rely on this fallback to set simple_setattr() explicitly as
-their i_op->setattr() method.
+> + * aligned to sizeof(long). Both, the instance of struct fb_info and
+> + * the driver private data, are cleared to zero.
 
-Christoph and I just discussed this in relation to another patch.
+I think both commas may be best omitted (but I am not a native speaker).
 
-This is a bugfix so it should be as minimal as possible for easy
-backport.
+Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
+
+Cheers,
+Miguel
