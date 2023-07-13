@@ -2,954 +2,370 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44B0E751BB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 10:36:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40DAB751BB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 10:36:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232882AbjGMIgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 04:36:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42004 "EHLO
+        id S234538AbjGMIgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 04:36:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232626AbjGMIfv (ORCPT
+        with ESMTP id S234528AbjGMIgL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 04:35:51 -0400
-Received: from EUR02-AM0-obe.outbound.protection.outlook.com (mail-am0eur02on2061.outbound.protection.outlook.com [40.107.247.61])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0693469D;
-        Thu, 13 Jul 2023 01:28:49 -0700 (PDT)
+        Thu, 13 Jul 2023 04:36:11 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EB56269F;
+        Thu, 13 Jul 2023 01:29:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1689236966; x=1720772966;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=mKbGYSsDnoBIDs7BbE7rxUKpTVtWj2R4gi22texS7wk=;
+  b=gMyqcP8GK4W4gnECXBhgPg5k6VkxdBgdEcOGqyj5wE0GNkIOHOmtcwhM
+   MzJ+8FOblvNUUvkZPSgpFeneuIf+kJjRVLLHbxjCYVI8ZEmtOTuTs86jV
+   9OAnw85MJgXzhTF62ksa7EqbBCyCOxDzK6L3w3Bsq1RQW3Adjqs0vOBab
+   LL88oS3VKVpFG1R4kqnUN9EzJ89mX+fqO7E7pdf6fCuK8XkQGF8ueBhoK
+   Sw6rb9FkHFZv7wvYZfvwJnFvDvj2LVGznAg8e+az4OpQvY0gpL3OQ8BXi
+   HnH3103ITjfQEsCRotRZgTq1RvGAKKVjT4jZZmY+ZTMGLahu7CUC78Rpz
+   Q==;
+X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
+   d="scan'208";a="161163352"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 13 Jul 2023 01:29:25 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Thu, 13 Jul 2023 01:29:17 -0700
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.72) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Thu, 13 Jul 2023 01:29:17 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jC/hGs86g3Ffn2VZWCV7uLUXrnLSGmBufOnfWh7HYOFuAl7Sn9Iy+XKMId69Ux2gfzF42NgzO56JZdhox1f2O+DADjM0IOfRAemzOJSdoQT2OHCjnWEqsWBrGJlcZNHJqmc1dIMRnSl1LnW7NcVa7GxiV9QIiF2wYNiHI1h2Ga0ilTrbtXkHIGcDb3gsK0su39B4h7cgrd/pgDiV1rDmc5K34VtVa2EfSJAkDXhrYRWfvyDjR2BwWVJMSPXarMN90QvC6MmEQWRvhCK0vHVYcUMvIJsoqbF3pSnP3/uOt8lZTSedOBOS+Q91KtvwzvEsXlqZh+cC1WOudFcig1i1eA==
+ b=kebNPcJavaxcUCrF6mKSxfzRpawaZTmDtkrR+4BJkxvulV54nL0wZvReky2HU+qY35eejX1Fw5KOoGfAKj9MIVnYoE6ujfwRlbQ4coyTNNUE1tXgBi6yDEmmIgp61Af1L8p/wtXxgG3uiUraxewxRkfolPluL9JEReiMaBZFSLwXNrPo9mfkbPbvbMetJU/HoQen+7DGGRFjYDYt3Ip/zKeHOOm0cJWnznOx8hog0yXdQ5rQxN1U88dUHmLlzPO/Zzj4UVqxeNIk/xQbOZZ2Yp6fBiNX+kUDGxEI4hbDqYpFz8Z/Rn5zMHilz/l6XGVHJ/NeVv+Evd4gMeHwrPA3vg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xllwFhqS3ICvoO9VNA8+y7N2iUC0YiHjpmCRxDKdq3I=;
- b=YJ+x2MXJHNMi5/i1xRMbzJCiNJkRfXkWEoDgvOylKmaR8rpJG/aNAIRnexojd6ah2teP5OoU/thyTtnSmlEW3dt+0a1JOQr2Wl/k9+dQ+Uikhz5i98Arsec9uZBdo/SZIxiZmBVPplUZLdJZnk7jBhDiV/FgtH+ARnBGLkcVwEPyi+1IDEtyoDf6gO24fj9ts1rj6BNMlp3c1ctnwG5T5Ig6H6wIOey2b4X9WJVu25WGmbf02BOPp33B1FowhzsqVPDmFQCOUS1hkxTGb3YkTdmlqOivgOxCA0yhX1xRMnrgGHeItiMdn8ShM3+vhyHkgSTuZTKjZdTVdESC9A9PrQ==
+ bh=mKbGYSsDnoBIDs7BbE7rxUKpTVtWj2R4gi22texS7wk=;
+ b=LlK1MLTHB9urBrZR4M5j1SY+LsEnuafrLM2mWcA9lGN/qhnUJnAJVuGZZLUtJc7mAPOiZFWDscpUhe09Za/TLn6Uf3gzuJbTr4v0U1zBO63auzNwAYmLCiCAzCumkFB7amGyNRNj+swBwpx8bVhw5tVJ4TP0ZWNViGlnkrzQhF7AMyfVvTEh2+1mh9ZRBQBOkeUrlqKzepLjRHeiiEPYqozevsL0+RQhgGsgYIRsBOQ2Zmz3DoSshiookrAZznd0MrfST3wi02sEO9ikJvmXPoB1qUHlPvqvgCMZascpyFUEwTDstUS5SM5z+8foylMo8PMPgcOnzoe9KoCPcTBbrg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=siemens.com; dmarc=pass action=none header.from=siemens.com;
- dkim=pass header.d=siemens.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=siemens.com;
- s=selector2;
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xllwFhqS3ICvoO9VNA8+y7N2iUC0YiHjpmCRxDKdq3I=;
- b=KgUeEsz/3n8YmpWe1mR0saS3RLCIX80dGgXPq0ZTyNF7pObiz98ForzKADNVcZgAkcCEJRdgS3YmucPh4EnH1oKNdOChUAFKy7czrCxBb727kr0vmCQWl+DXv5kPlEFSg3J51VqkV0am12jPTWsHDlaqIZcQq/YtwNtRaNpm0mDyymWd6nU3jaxEYkJDeC0USfKNubqn2VQbgdEVcK8ynDdn07QtdyraqHcKmHD+EpxJDC+spSJ1Y8pq0ZuZdN4c787FpnWBFJ1OT/hi8I80zsKSfxq64THJC7C6TfycN518DD2ljBmYwZSAPwu35FVGVdBIX8fM1iG0DvltNUAoSw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=siemens.com;
-Received: from PA4PR10MB5780.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:102:269::8)
- by AS8PR10MB7561.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:564::17) with
+ bh=mKbGYSsDnoBIDs7BbE7rxUKpTVtWj2R4gi22texS7wk=;
+ b=KcVxy4mwQ61FkfSffRyj7VmLxKFUaTMWr+1na90f+O13lwqjFCq88S25uLE5Ij4sJx9H2EhX9N9yv17xO7uFCTbcNOS3eL34kOK1URgqgFNCJbbeGQWTSA5hyAoS5VvPSsA6G3AXb5Fsv1rzXGeZD4JNNur3rmsTZxLrQ6ElnrY=
+Received: from DS0PR11MB6541.namprd11.prod.outlook.com (2603:10b6:8:d3::14) by
+ CH3PR11MB8094.namprd11.prod.outlook.com (2603:10b6:610:156::16) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6544.24; Thu, 13 Jul
- 2023 08:28:46 +0000
-Received: from PA4PR10MB5780.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::a171:a3f2:99b7:5f29]) by PA4PR10MB5780.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::a171:a3f2:99b7:5f29%6]) with mapi id 15.20.6588.024; Thu, 13 Jul 2023
- 08:28:46 +0000
-Date:   Thu, 13 Jul 2023 10:28:40 +0200
-From:   Henning Schild <henning.schild@siemens.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Mark Gross <markgross@kernel.org>, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, Lee Jones <lee@kernel.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>,
-        linux-watchdog@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        Tobias Schaffner <tobias.schaffner@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>
-Subject: Re: [PATCH 2/2] platform/x86: add CMOS battery monitoring for
- simatic IPCs
-Message-ID: <20230713102840.7cb514d5@md1za8fc.ad001.siemens.net>
-In-Reply-To: <3b1dc0a1-94b0-4fba-07e7-b871dfc08e88@redhat.com>
-References: <20230706154831.19100-1-henning.schild@siemens.com>
-        <20230706154831.19100-3-henning.schild@siemens.com>
-        <3b1dc0a1-94b0-4fba-07e7-b871dfc08e88@redhat.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR0P281CA0158.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:b3::16) To PA4PR10MB5780.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:102:269::8)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.24; Thu, 13 Jul
+ 2023 08:29:14 +0000
+Received: from DS0PR11MB6541.namprd11.prod.outlook.com
+ ([fe80::decf:e31:9c2a:f242]) by DS0PR11MB6541.namprd11.prod.outlook.com
+ ([fe80::decf:e31:9c2a:f242%4]) with mapi id 15.20.6588.024; Thu, 13 Jul 2023
+ 08:29:14 +0000
+From:   <Durai.ManickamKR@microchip.com>
+To:     <alexandre.belloni@bootlin.com>, <conor@kernel.org>
+CC:     <Hari.PrasathGE@microchip.com>,
+        <Balamanikandan.Gunasundar@microchip.com>,
+        <Manikandan.M@microchip.com>, <Varshini.Rajendran@microchip.com>,
+        <Dharma.B@microchip.com>, <Nayabbasha.Sayed@microchip.com>,
+        <Balakrishnan.S@microchip.com>, <Cristian.Birsan@microchip.com>,
+        <Nicolas.Ferre@microchip.com>, <krzysztof.kozlowski@linaro.org>,
+        <davem@davemloft.net>, <arnd@arndb.de>, <olof@lixom.net>,
+        <soc@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <Kavyasree.Kotagiri@microchip.com>,
+        <Horatiu.Vultur@microchip.com>, <robh+dt@kernel.org>,
+        <andrew@lunn.ch>, <michael@walle.cc>, <Jerry.Ray@microchip.com>,
+        <conor+dt@kernel.org>, <jesper.nilsson@axis.com>,
+        <sergiu.moga@microchip.com>, <andre.przywara@arm.com>,
+        <ada@thorsis.com>
+Subject: Re: [PATCH] ARM: dts: at91: sam9x60: fix the SOC detection
+Thread-Topic: [PATCH] ARM: dts: at91: sam9x60: fix the SOC detection
+Thread-Index: AQHZtKfrfLmmnzcfmU6dzqSNXt9a6q+2eEqAgAANDICAAAMzAIAABl6AgADP/wA=
+Date:   Thu, 13 Jul 2023 08:29:14 +0000
+Message-ID: <1c67907d-bb4a-f193-a434-d477e5a82bda@microchip.com>
+References: <20230712100042.317856-1-durai.manickamkr@microchip.com>
+ <20230712-dweeb-suspend-27d0f7292a2d@spud>
+ <202307121930333019a9d5@mail.local>
+ <20230712-revolving-tactful-67cdb02c664b@spud>
+ <20230712200447118d91bc@mail.local>
+In-Reply-To: <20230712200447118d91bc@mail.local>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microchip.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DS0PR11MB6541:EE_|CH3PR11MB8094:EE_
+x-ms-office365-filtering-correlation-id: bab8c565-6eea-4e1e-0049-08db837b3df2
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 2HqiJ2VE6d/ronM/cAh9TtZbGuuyvUcuAeAgq9uKiPHDaaP36j7l57yJnag2TYioxR2qTIEc8n+N3cpHcQEdzm1SQ2OisXogpxWI99vRYfIw53R5cOUm3LuxTiNgWmuFLtGduf41yjbVFeOLwlwhk1MZl7LmFlH9vIhY3z/hvjx+PodCeeSgD8u0XKn/9r0rBEm/3HhZL3+RHzFAM4jH1bC4uJFQSW8szqDsutMQVqnHshBJeAGhDfUoQmrFQNgZS2+QfZX5AplgQtJgZDXzwhf/oIYrN2Ru/NVwq5npmansQ6jBC5waiiL0Kpo2Xh80XAdXJLybszwZhK/2HHDJS028H0s1HHCpB+tSEDW5cedPBkXlIHGeYxJK6O1UfBMqa1eyZZLer95hwLiyUl4/AnJ7A7wOz3Ifpct97wMXcoPI0olqOp6CzOYQv90yNsidCz0yhScI/ztlu3Axf94vDVSZiiho2Mai2cKzanCpDg9FxR7kPLJMi2TRvSzsNnszD4RwlctiXGAJtSIIv8pLvUc6xlDm47mynbbJpn66cNe3/X1WGyJHoThQRy4j26iDCdcZQPh0iKnVV0ek3FLLM4NTvzLnwfhpOqE6+eQ8fKe5zdCm+8SP5wjqzd2cmIfcNu8EOEUSrTIqtAPzFf+T+g==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB6541.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(346002)(396003)(136003)(366004)(39860400002)(376002)(451199021)(110136005)(54906003)(316002)(91956017)(71200400001)(186003)(66946007)(31686004)(4326008)(6486002)(76116006)(66556008)(66446008)(66476007)(64756008)(478600001)(966005)(41300700001)(6512007)(8676002)(8936002)(7416002)(53546011)(86362001)(31696002)(6506007)(26005)(5660300002)(83380400001)(122000001)(38070700005)(2616005)(36756003)(2906002)(38100700002)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?cEMrbHhFWkRNZkUvNGpVNnp1eXZDR2NXTWZLaDJOS3RKVzgxck54SFRrM1Uw?=
+ =?utf-8?B?eUZHQnZNaHVxTG4xV01LYlhtY09pcTU5eEhuYWd6ZmlSaGh4TDF6OFZiZGww?=
+ =?utf-8?B?Ulg1NFFIK2JwTS9nQ0VORWdWc0F5bE5pTTBmczVwaktwZE45K3RoOGpMbXZ1?=
+ =?utf-8?B?aXlWV05zUlUvaFRoRWxpOHNRdkx1eGV3emlsRjkvbjJpTUQzUEdaK0NKTmhj?=
+ =?utf-8?B?ZHdKbUJIYlJsVmJPUGRvdzdRdndVZjBsV0hmeE80bDlsdUFmaThtdzVPcW9p?=
+ =?utf-8?B?cmZnMjFsV0EyVEZ6T2ZKdm1rMXZzVlFzUVBsT3RIV2krLzFlWEhtR0JVdUhr?=
+ =?utf-8?B?cXBxc2VRWlZyTUhEQmNEYnpTRHlFQWl0QTFwYjVMdUs1cHQ4cjlrRzFaVXJk?=
+ =?utf-8?B?SGtvMjJsYjZVb1BkR2NrNUJkTEEwUUlwSFpjeUhVZEtiTW5PYjgyMS9Za2JG?=
+ =?utf-8?B?cEpEWXdLMVpObzhVNlljSHVseU5jUGExRlRzWmZmTUFSbFFISFlNOHNZU24v?=
+ =?utf-8?B?Z2xWbjVZRUtyQlBkQjNUd1NmVnoyL1N2Z3hUN3ZjcUxqU1o2SWRwcVkrRFVi?=
+ =?utf-8?B?ZGpteDJ0Ym1xNE5SY2RKSmdHTjVVYTl6Q0hZeFN0VUhISndhZCtEMExXeklN?=
+ =?utf-8?B?MjFHL2NramRua1dpellmamhMTDd5OHlMckF0RHN1cFQzQmxpTzlRRzRycGRR?=
+ =?utf-8?B?bGdNM2tTK3hnb2N2bVJnL2wrQnZyK0JXMFFOYk1IZlBvWFRvYWR0MnBWY1Zv?=
+ =?utf-8?B?bzQ2U0pDWVNVc09HTXJrcEh1ZUMrVHVqRXhTa1VHZXNFeE1tQ3hrSUhaQ1hZ?=
+ =?utf-8?B?dVhuYysyS3RJdVFWbTdvSVh6ak1ya1VOQzZQdEFxOTBCTlduYzBCYkt2OTFh?=
+ =?utf-8?B?QVRIT1pFam53NWFlc3grN3RiZzQ3OHFEVkEzb3RMUGFuRHZnazNXaXRubmpl?=
+ =?utf-8?B?aWlrTW5jdVovUGl6eGlXejJGQllsZzRkMzJDcUJEbmJYNGZHV3VRODNXNjdJ?=
+ =?utf-8?B?OHRBNU1iTjN3TEd3MnpPNTZ5NGtyS1ljZTNuQ1NiK1RnUUgxcE90WStSa0lF?=
+ =?utf-8?B?bmFRREUzZ3pFLzdNTkpZNGk0a2JqT2hWZGhEK3pLKzdKSnhucmxnMGlwd2kx?=
+ =?utf-8?B?NDhEMGJQdkFaV2s1ZW9KSU81QmQ1d3pIek84NVVyYndSbmRGVjNmdGVZUU14?=
+ =?utf-8?B?ajJLS1FTWFY4bnZlbmZ3aVhzbmU5T0hJcmloK2YrcWNnWGVMKzA5R3NqbE00?=
+ =?utf-8?B?N1pkSG15VDc4L0wzajhLeklURG45UWRvb3g1WHB3UTRQVDNQbWlMQy9WZlVr?=
+ =?utf-8?B?Q1VDTXprZ3Z1RzMrclBNTngxbGZqRjVKcHJhOXB1STQ5dFM0RG15SEM4cHhE?=
+ =?utf-8?B?NlJOUVZGWTU4SmFsNlJEZXJOaHRCdlZEaVRITDVpME1sT1RJaHExN1FiTGdZ?=
+ =?utf-8?B?cGhBNDNUV0xWblk3ZTAzc3ZLWHkwY0JPS3hLcjU1MFlvSmtGVzdjTTFkRUo1?=
+ =?utf-8?B?dWl1bnVlU0EvbS85SDNydDZzeTh5bEJvMFB0UUtXcDVIby9iSjVUK0xtT1FS?=
+ =?utf-8?B?ZlkwUWFMOUlqZnAxaStTWk9pMjE1NXBZNGhWbXY4RFdqK3Bqd1RWVjBjQi9R?=
+ =?utf-8?B?M3RaWENyVXNJUGpVQXBiU2pOUzlWL3NXOWdwbXQvQTN6TlVBVHJwUXJsNkow?=
+ =?utf-8?B?T1V1djVpNHpmMlJZOUdTZzFFN01IKzVFUXZuN2xoakJSZ3c5dDYzT3RqS0FL?=
+ =?utf-8?B?ekZPV3F3eGFHWU1SZWNrVklGTEJEaXBSd3htMWJSQlNBZW9CQXplUEx3eWJL?=
+ =?utf-8?B?bjRYZWhUblYxQTJycWI0ZXhmQlRkSUFRWG0xZ2RmcWVlekZDK2ZUdTV5RjhU?=
+ =?utf-8?B?eUY0ZCtZR2ZweGV1SjFrcTc1M1dhZXd2RkVmSlRCa2llb2pEYitROUI0aXJ4?=
+ =?utf-8?B?R1RqN0liM0tCYlNIUkMrNzhwTFB5V1BSanUwQVFhaXB4S25KSnRKK1pGQWow?=
+ =?utf-8?B?SU5wQmVtN1FJeGNmRnVJNTlFREFMM3N1b1l6Z213MnBGM1Vab29nYk9ncGRX?=
+ =?utf-8?B?c3ZsQ2Z2b3hrRUJrM25rTFlxb2Rta1k5RjhXZGxmdE50bVkxalpiK0NDSVFV?=
+ =?utf-8?B?UWxlWk9YQ253by82d3hGQ2pMMzdtNkJxbUhTQVpqR2c3bUNnRkxMNFU4aEJI?=
+ =?utf-8?B?U2c9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <5F9C7FE44FF3AE4D98D855EC5909015F@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PA4PR10MB5780:EE_|AS8PR10MB7561:EE_
-X-MS-Office365-Filtering-Correlation-Id: a498c314-f746-4c86-6213-08db837b2cc8
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vtSRWSq0iEJBSMLdgTz7VBi1WWsA6wuvpcqCle7lmKnvdVysK7TwOWoIzFSPsicqTDA8A/FJo/1wSywUzZ/uWZEiBPwwd6o5lqcJMgRWdBUEzO7YFVBKpUxYR17bIBDxML+Z3fPyqFLC3NR7xF4+dpxfFFZ3Y5iAOlrWRgEeXdsJJ77yvRpdBrJezkXB5sdkGtlTamGd9WBswlyUKp3d3C5Q6GRcrW9iGFFhO1jAfkbh6vxu4QeypdnvN//SzMe1jE1A0NgL3uVfdCCr9AR0Yx1yqYwawdVqVeFFFHI1hm+auTgVlyhsBVPbK7jU2u2RQQmTddjE/x0qaf84t7Q7xWGKAnkNd3X5TAV8VXfjlLXhD2jAqBAwMX4OYCrHbJNLU3kFD3c/bbz8B0/MAOUtJfEno6ShhzIe1ggYg3h1aQnv2KMmuRD1lie40YO/DXlRJkw/4xhxLpkAmPFoHUcVPKM0W93hZYYqjX7OYcBWY7ByCytBoNWpeAwwipuopZJxTsa9+snYeu8F599m/TlcEGJSdRXeBT7w7wZnjZXJprA=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR10MB5780.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(376002)(346002)(136003)(39860400002)(396003)(451199021)(478600001)(6666004)(6486002)(54906003)(6506007)(186003)(53546011)(1076003)(9686003)(6512007)(966005)(30864003)(2906002)(41300700001)(66946007)(66476007)(66556008)(6916009)(316002)(5660300002)(8936002)(44832011)(7416002)(4326008)(38100700002)(8676002)(82960400001)(86362001)(83380400001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?pQhg70tluxZSFyobeXaVpvP/McA2wdV4cFGA5LGGwyYLJpUkjRVyVO9A3Ip5?=
- =?us-ascii?Q?5U6vE6HuXAmBSNjvBNggfY+MlHuafmHI7ScftUGvNBistTWhbUIsFHoh2ftH?=
- =?us-ascii?Q?twdbtOYJdvaxpAgYc/rmVh/Ci2Eu1UxsW8GdssshOIze1L86+ZCOo9fzHxIL?=
- =?us-ascii?Q?Mzeamoa38cxc0cDq2SyEX/OD1Wy2xOFM9qPi2EbIJE+UW/RjlHmy9c7abH+x?=
- =?us-ascii?Q?klhZ1WEY4ZIOD+8qPu2XLJNKcOOyF46JoXMfM2O6YW7YR4tEwZ2FuJdRzkN4?=
- =?us-ascii?Q?6dKRpaprVDRsmAn7IpUwkpbF2hhdFax4uBQHZ/JJ8e5RF4lGdtIpMzSpZZUm?=
- =?us-ascii?Q?6d38eqdIrqkJLHFUH7WvHFHT3tXiEhJjDVEgUTZDomPB4d69ep92MPonkA3W?=
- =?us-ascii?Q?9qrYOhkJeyI3PKtu+yxl41lgXL2+K9Sv3dCOJslqqkY2J0/coezOoCFZAWTO?=
- =?us-ascii?Q?PctQE9pC229XAGXE0rncF9eWRy37SSTa+SYAIHV8T9LqK0Sa8uVFrOSXCuEs?=
- =?us-ascii?Q?GUcm6gagjBtctJd6g5r4a2Whjj4eWT73b3AljWHS6VqsUWU/pB5AHjZTAylH?=
- =?us-ascii?Q?0BKHrmb5IQIxPCr9rHhpGtK1J36Sxrbb2T6oCkqz/ikiZOatbaFGK42Kvm5r?=
- =?us-ascii?Q?hj8+LXFBD6Iil8fSug2n30N7x5J0O8kk6s3aZU5Wy4B84lqjeJ47sq5OZ1u+?=
- =?us-ascii?Q?/fPJfzB6oPyGPhslfk6pwCfkJM307OtVdSPka6oqd0umZA6ke7axTUkkDFJH?=
- =?us-ascii?Q?Kt3rKl80kjVbbixSY7G/ilbJMdHLMNS7M8E7fY14A3DeXpn+GfwIxTSjzHEz?=
- =?us-ascii?Q?qznkJKbGvs5z7bPKampfXhEf+YNB0OPwgQy9Clgl4Her63czzR1yBz89r0vn?=
- =?us-ascii?Q?O+wggIIpqaK74kt1b2sTqUycOchfMJtl9Blewx0oH/s6lbx27rfkRArnvQmH?=
- =?us-ascii?Q?vKToWWfYe0THzXZOVimfNZsbyDQnPZ8AAPW7Wg+zz5LzX1cMbo23EkRJzQFM?=
- =?us-ascii?Q?jOg0gLYgT4alayxCFFXJDhPIxCp3ILdK4UQSunl5APavxqXn+im0nAz/bcuE?=
- =?us-ascii?Q?z5Xvfh4pK8f/Rrxsc16nAoLbKzWUTKwTCXmU+ri5XHr3r6ewZEtY6WRGBSP7?=
- =?us-ascii?Q?GAY2CXG99DoSNaaOyhkykWGccSX64hVoQqFoIep+ciTevS/Ffbw9uPxsVOOC?=
- =?us-ascii?Q?GI6eewZvSzJpQi1dFc+8PARVugoViz4FN36tBe5gi3l/9oTgKDjwRTkjKpDk?=
- =?us-ascii?Q?e+Y+WF9BxZCxbng+xMLNjKWjBfwqy/YQHzA5sb/4/Oq2heowng6EGzvfxmR8?=
- =?us-ascii?Q?bIiliHN8OkZ5+i5QujyEeR6gnXpepMf8oRN9pp8DTnr/2pmMbod9TqgIEiSD?=
- =?us-ascii?Q?4bQB62HQU/rSZyAGUu4QTAwNlbR1iFYId4fl9E57ywISGy41NP3KioS4sFNQ?=
- =?us-ascii?Q?r4j4FBks8i2dDesif15AFBjnzytY0qmgZZU4znegVeeva7E0BfsezRkzpqwp?=
- =?us-ascii?Q?zEThphXZya5bX8Jh5xAEaGBpvtL9HMhhIotAku3J311YvQXvYcyE2+ANjq2q?=
- =?us-ascii?Q?TMPNpq8pOPCI5YtGtwZ59h75Pk4N/11pzv3IVbf7i5vdlHPZKsXBsjce2A2A?=
- =?us-ascii?Q?geC9S/3GkvmSyx1QazJ0Z4CJUs5nw33liAZf6XAzgNVlo7cnyr8Hu7Q8a+3v?=
- =?us-ascii?Q?AQKrHA=3D=3D?=
-X-OriginatorOrg: siemens.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a498c314-f746-4c86-6213-08db837b2cc8
-X-MS-Exchange-CrossTenant-AuthSource: PA4PR10MB5780.EURPRD10.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2023 08:28:46.0602
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB6541.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bab8c565-6eea-4e1e-0049-08db837b3df2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Jul 2023 08:29:14.6345
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 38ae3bcd-9579-4fd4-adda-b42e1495d55a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Pe04cwdgiu/oJC7JB3467106BW3oKAJKHfHNq9Don7CHbYdrkE6WwmF3xRteI7y5yJLY3z/jT1ZYYiNEUpDd/NSQFkWGXE7Hfvjt7BdhCzQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR10MB7561
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: /Ohz/hFiW3aaaq7OVVOFO4t7nX1nmXwSU8592S0s96K6tJHvnzTd1X2Yoda6f7cIljIDnK1h5Gx7CntFzgkZYzZbnSiomiE7SZqIjtUWItc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB8094
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Wed, 12 Jul 2023 20:05:54 +0200
-schrieb Hans de Goede <hdegoede@redhat.com>:
-
-> <resend with Lee's new email address>
-> 
-> Hi,
-> 
-> On 7/6/23 17:48, Henning Schild wrote:
-> > Siemens Simatic Industrial PCs can monitor the voltage of the CMOS
-> > battery with two bits that indicate low or empty state. This can be
-> > GPIO or PortIO based.
-> > Here we model that as a hwmon voltage. The core driver does the
-> > PortIO and provides boilerplate for the GPIO versions. Which are
-> > split out to model runtime dependencies while allowing fine-grained
-> > kernel configuration.
-> > 
-> > Signed-off-by: Henning Schild <henning.schild@siemens.com>  
-> 
-> So I tried to merge this, but it does not apply because:
-> 
-> "[PATCH 1/1] leds: simatic-ipc-leds-gpio: add new model BX-21A"
-> https://lore.kernel.org/platform-driver-x86/20230531155457.31632-2-henning.schild@siemens.com/
-> 
-> has not been merged yet.
-> 
-> I think it would be best to split the:
-> 
-> drivers/platform/x86/simatic-ipc.c
-> include/linux/platform_data/x86/simatic-ipc-base.h
-> include/linux/platform_data/x86/simatic-ipc.h
-> 
-> bits of
-> https://lore.kernel.org/platform-driver-x86/20230531155457.31632-2-henning.schild@siemens.com/
-> 
-> out into its own prep patch named e.g. :
-> "platform/x86: simatic-ipc: add BX-21A model"
-> 
-> And then post a new v2 series for
-> "leds: simatic-ipc-leds-gpio: add new model BX-21A"
-> consisting of the prep patch + the actual new LED driver.
-> 
-> Then I can do an immutable branch based on 6.5-rc1 with
-> the prep patch in there and send a pull-req to Lee Jones
-> for that, so that he can apply the LED driver patch on
-> top of the immutable branch.
-> 
-> This way we can continue with merging all the pending
-> simatic IPC work without being dependent on Lee having
-> time to review the LED driver.
-
-Sounds like a plan, i will send another version of "leds:
-simatic-ipc-leds-gpio: add new model BX-21A" with the pdx86 stuff as
-separate patch.
-
-But just to note one thing, we would be registering a platform device
-before there is a driver for it. ("simatic_ipc_leds_gpio_elkhartlake")
-I think that is fine, but would want to be sure that Lee will actually
-merge that driver also for 6.5 so the gap between device and driver
-does not become too big.
-
-regards,
-Henning
-
-> Regards,
-> 
-> Hans
-> 
-> 
-> 
-> 
-> 
-> 
-> 
-> > ---
-> >  drivers/platform/x86/Kconfig                  |  48 ++++
-> >  drivers/platform/x86/Makefile                 |   6 +-
-> >  .../x86/simatic-ipc-batt-apollolake.c         |  51 ++++
-> >  .../x86/simatic-ipc-batt-elkhartlake.c        |  51 ++++
-> >  .../platform/x86/simatic-ipc-batt-f7188x.c    |  70 +++++
-> >  drivers/platform/x86/simatic-ipc-batt.c       | 250
-> > ++++++++++++++++++ drivers/platform/x86/simatic-ipc-batt.h       |
-> > 20 ++ drivers/platform/x86/simatic-ipc.c            |  65 ++++-
-> >  .../platform_data/x86/simatic-ipc-base.h      |   1 +
-> >  9 files changed, 547 insertions(+), 15 deletions(-)
-> >  create mode 100644
-> > drivers/platform/x86/simatic-ipc-batt-apollolake.c create mode
-> > 100644 drivers/platform/x86/simatic-ipc-batt-elkhartlake.c create
-> > mode 100644 drivers/platform/x86/simatic-ipc-batt-f7188x.c create
-> > mode 100644 drivers/platform/x86/simatic-ipc-batt.c create mode
-> > 100644 drivers/platform/x86/simatic-ipc-batt.h
-> > 
-> > diff --git a/drivers/platform/x86/Kconfig
-> > b/drivers/platform/x86/Kconfig index 49c2c4cd8d00..ad15063e1178
-> > 100644 --- a/drivers/platform/x86/Kconfig
-> > +++ b/drivers/platform/x86/Kconfig
-> > @@ -1086,6 +1086,54 @@ config SIEMENS_SIMATIC_IPC
-> >  	  To compile this driver as a module, choose M here: the
-> > module will be called simatic-ipc.
-> >  
-> > +config SIEMENS_SIMATIC_IPC_BATT
-> > +	tristate "CMOS battery driver for Siemens Simatic IPCs"
-> > +	depends on HWMON
-> > +	depends on SIEMENS_SIMATIC_IPC
-> > +	default SIEMENS_SIMATIC_IPC
-> > +	help
-> > +	  This option enables support for monitoring the voltage
-> > of the CMOS
-> > +	  batteries of several Industrial PCs from Siemens.
-> > +
-> > +	  To compile this driver as a module, choose M here: the
-> > module
-> > +	  will be called simatic-ipc-batt.
-> > +
-> > +config SIEMENS_SIMATIC_IPC_BATT_APOLLOLAKE
-> > +	tristate "CMOS Battery monitoring for Simatic IPCs based
-> > on Apollo Lake GPIO"
-> > +	depends on PINCTRL_BROXTON
-> > +	depends on SIEMENS_SIMATIC_IPC_BATT
-> > +	default SIEMENS_SIMATIC_IPC_BATT
-> > +	help
-> > +	  This option enables CMOS battery monitoring for Simatic
-> > Industrial PCs
-> > +	  from Siemens based on Apollo Lake GPIO.
-> > +
-> > +	  To compile this driver as a module, choose M here: the
-> > module
-> > +	  will be called simatic-ipc-batt-apollolake.
-> > +
-> > +config SIEMENS_SIMATIC_IPC_BATT_ELKHARTLAKE
-> > +	tristate "CMOS Battery monitoring for Simatic IPCs based
-> > on Elkhart Lake GPIO"
-> > +	depends on PINCTRL_ELKHARTLAKE
-> > +	depends on SIEMENS_SIMATIC_IPC_BATT
-> > +	default SIEMENS_SIMATIC_IPC_BATT
-> > +	help
-> > +	  This option enables CMOS battery monitoring for Simatic
-> > Industrial PCs
-> > +	  from Siemens based on Elkhart Lake GPIO.
-> > +
-> > +	  To compile this driver as a module, choose M here: the
-> > module
-> > +	  will be called simatic-ipc-batt-elkhartlake.
-> > +
-> > +config SIEMENS_SIMATIC_IPC_BATT_F7188X
-> > +	tristate "CMOS Battery monitoring for Simatic IPCs based
-> > on Nuvoton GPIO"
-> > +	depends on GPIO_F7188X
-> > +	depends on SIEMENS_SIMATIC_IPC_BATT
-> > +	default SIEMENS_SIMATIC_IPC_BATT
-> > +	help
-> > +	  This option enables CMOS battery monitoring for Simatic
-> > Industrial PCs
-> > +	  from Siemens based on Nuvoton GPIO.
-> > +
-> > +	  To compile this driver as a module, choose M here: the
-> > module
-> > +	  will be called simatic-ipc-batt-elkhartlake.
-> > +
-> >  config WINMATE_FM07_KEYS
-> >  	tristate "Winmate FM07/FM07P front-panel keys driver"
-> >  	depends on INPUT
-> > diff --git a/drivers/platform/x86/Makefile
-> > b/drivers/platform/x86/Makefile index 52dfdf574ac2..522da0d1584d
-> > 100644 --- a/drivers/platform/x86/Makefile
-> > +++ b/drivers/platform/x86/Makefile
-> > @@ -131,7 +131,11 @@ obj-$(CONFIG_INTEL_SCU_IPC_UTIL)	+=
-> > intel_scu_ipcutil.o obj-$(CONFIG_X86_INTEL_LPSS)		+=
-> > pmc_atom.o 
-> >  # Siemens Simatic Industrial PCs
-> > -obj-$(CONFIG_SIEMENS_SIMATIC_IPC)	+= simatic-ipc.o
-> > +obj-$(CONFIG_SIEMENS_SIMATIC_IPC)			+=
-> > simatic-ipc.o +obj-$(CONFIG_SIEMENS_SIMATIC_IPC_BATT)
-> > 		+= simatic-ipc-batt.o
-> > +obj-$(CONFIG_SIEMENS_SIMATIC_IPC_BATT_APOLLOLAKE)	+=
-> > simatic-ipc-batt-apollolake.o
-> > +obj-$(CONFIG_SIEMENS_SIMATIC_IPC_BATT_ELKHARTLAKE)	+=
-> > simatic-ipc-batt-elkhartlake.o
-> > +obj-$(CONFIG_SIEMENS_SIMATIC_IPC_BATT_F7188X)		+=
-> > simatic-ipc-batt-f7188x.o # Winmate
-> > obj-$(CONFIG_WINMATE_FM07_KEYS)		+=
-> > winmate-fm07-keys.o diff --git
-> > a/drivers/platform/x86/simatic-ipc-batt-apollolake.c
-> > b/drivers/platform/x86/simatic-ipc-batt-apollolake.c new file mode
-> > 100644 index 000000000000..0503cb89d8f8 --- /dev/null +++
-> > b/drivers/platform/x86/simatic-ipc-batt-apollolake.c @@ -0,0 +1,51
-> > @@ +// SPDX-License-Identifier: GPL-2.0 +/*
-> > + * Siemens SIMATIC IPC driver for CMOS battery monitoring
-> > + *
-> > + * Copyright (c) Siemens AG, 2023
-> > + *
-> > + * Authors:
-> > + *  Henning Schild <henning.schild@siemens.com>
-> > + */
-> > +
-> > +#include <linux/gpio/machine.h>
-> > +#include <linux/gpio/consumer.h>
-> > +#include <linux/kernel.h>
-> > +#include <linux/module.h>
-> > +#include <linux/platform_device.h>
-> > +
-> > +#include "simatic-ipc-batt.h"
-> > +
-> > +struct gpiod_lookup_table simatic_ipc_batt_gpio_table_127e = {
-> > +	.table = {
-> > +		GPIO_LOOKUP_IDX("apollolake-pinctrl.0", 55, NULL,
-> > 0, GPIO_ACTIVE_HIGH),
-> > +		GPIO_LOOKUP_IDX("apollolake-pinctrl.0", 61, NULL,
-> > 1, GPIO_ACTIVE_HIGH),
-> > +		GPIO_LOOKUP_IDX("apollolake-pinctrl.1", 41, NULL,
-> > 2, GPIO_ACTIVE_HIGH),
-> > +		{} /* Terminating entry */
-> > +	},
-> > +};
-> > +
-> > +static int simatic_ipc_batt_apollolake_remove(struct
-> > platform_device *pdev) +{
-> > +	return simatic_ipc_batt_remove(pdev,
-> > &simatic_ipc_batt_gpio_table_127e); +}
-> > +
-> > +static int simatic_ipc_batt_apollolake_probe(struct
-> > platform_device *pdev) +{
-> > +	return simatic_ipc_batt_probe(pdev,
-> > &simatic_ipc_batt_gpio_table_127e); +}
-> > +
-> > +static struct platform_driver simatic_ipc_batt_driver = {
-> > +	.probe = simatic_ipc_batt_apollolake_probe,
-> > +	.remove = simatic_ipc_batt_apollolake_remove,
-> > +	.driver = {
-> > +		.name = KBUILD_MODNAME,
-> > +	},
-> > +};
-> > +
-> > +module_platform_driver(simatic_ipc_batt_driver);
-> > +
-> > +MODULE_LICENSE("GPL v2");
-> > +MODULE_ALIAS("platform:" KBUILD_MODNAME);
-> > +MODULE_SOFTDEP("pre: simatic-ipc-batt
-> > platform:apollolake-pinctrl"); +MODULE_AUTHOR("Henning Schild
-> > <henning.schild@siemens.com>"); diff --git
-> > a/drivers/platform/x86/simatic-ipc-batt-elkhartlake.c
-> > b/drivers/platform/x86/simatic-ipc-batt-elkhartlake.c new file mode
-> > 100644 index 000000000000..ecf5ceb167f9 --- /dev/null
-> > +++ b/drivers/platform/x86/simatic-ipc-batt-elkhartlake.c
-> > @@ -0,0 +1,51 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Siemens SIMATIC IPC driver for CMOS battery monitoring
-> > + *
-> > + * Copyright (c) Siemens AG, 2023
-> > + *
-> > + * Authors:
-> > + *  Henning Schild <henning.schild@siemens.com>
-> > + */
-> > +
-> > +#include <linux/gpio/machine.h>
-> > +#include <linux/gpio/consumer.h>
-> > +#include <linux/kernel.h>
-> > +#include <linux/module.h>
-> > +#include <linux/platform_device.h>
-> > +
-> > +#include "simatic-ipc-batt.h"
-> > +
-> > +struct gpiod_lookup_table simatic_ipc_batt_gpio_table_bx_21a = {
-> > +	.table = {
-> > +		GPIO_LOOKUP_IDX("INTC1020:04", 18, NULL, 0,
-> > GPIO_ACTIVE_HIGH),
-> > +		GPIO_LOOKUP_IDX("INTC1020:04", 19, NULL, 1,
-> > GPIO_ACTIVE_HIGH),
-> > +		GPIO_LOOKUP_IDX("INTC1020:01", 66, NULL, 2,
-> > GPIO_ACTIVE_HIGH),
-> > +		{} /* Terminating entry */
-> > +	},
-> > +};
-> > +
-> > +static int simatic_ipc_batt_elkhartlake_remove(struct
-> > platform_device *pdev) +{
-> > +	return simatic_ipc_batt_remove(pdev,
-> > &simatic_ipc_batt_gpio_table_bx_21a); +}
-> > +
-> > +static int simatic_ipc_batt_elkhartlake_probe(struct
-> > platform_device *pdev) +{
-> > +	return simatic_ipc_batt_probe(pdev,
-> > &simatic_ipc_batt_gpio_table_bx_21a); +}
-> > +
-> > +static struct platform_driver simatic_ipc_batt_driver = {
-> > +	.probe = simatic_ipc_batt_elkhartlake_probe,
-> > +	.remove = simatic_ipc_batt_elkhartlake_remove,
-> > +	.driver = {
-> > +		.name = KBUILD_MODNAME,
-> > +	},
-> > +};
-> > +
-> > +module_platform_driver(simatic_ipc_batt_driver);
-> > +
-> > +MODULE_LICENSE("GPL v2");
-> > +MODULE_ALIAS("platform:" KBUILD_MODNAME);
-> > +MODULE_SOFTDEP("pre: simatic-ipc-batt
-> > platform:elkhartlake-pinctrl"); +MODULE_AUTHOR("Henning Schild
-> > <henning.schild@siemens.com>"); diff --git
-> > a/drivers/platform/x86/simatic-ipc-batt-f7188x.c
-> > b/drivers/platform/x86/simatic-ipc-batt-f7188x.c new file mode
-> > 100644 index 000000000000..a0189b9289f6 --- /dev/null
-> > +++ b/drivers/platform/x86/simatic-ipc-batt-f7188x.c
-> > @@ -0,0 +1,70 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Siemens SIMATIC IPC driver for CMOS battery monitoring
-> > + *
-> > + * Copyright (c) Siemens AG, 2023
-> > + *
-> > + * Authors:
-> > + *  Henning Schild <henning.schild@siemens.com>
-> > + */
-> > +
-> > +#include <linux/gpio/machine.h>
-> > +#include <linux/gpio/consumer.h>
-> > +#include <linux/kernel.h>
-> > +#include <linux/module.h>
-> > +#include <linux/platform_device.h>
-> > +#include <linux/platform_data/x86/simatic-ipc-base.h>
-> > +
-> > +#include "simatic-ipc-batt.h"
-> > +
-> > +struct gpiod_lookup_table simatic_ipc_batt_gpio_table_227g = {
-> > +	.table = {
-> > +		GPIO_LOOKUP_IDX("gpio-f7188x-7", 6, NULL, 0,
-> > GPIO_ACTIVE_HIGH),
-> > +		GPIO_LOOKUP_IDX("gpio-f7188x-7", 5, NULL, 1,
-> > GPIO_ACTIVE_HIGH),
-> > +		GPIO_LOOKUP_IDX("INTC1020:01",  66, NULL, 2,
-> > GPIO_ACTIVE_HIGH),
-> > +		{} /* Terminating entry */
-> > +	},
-> > +};
-> > +
-> > +struct gpiod_lookup_table simatic_ipc_batt_gpio_table_bx_39a = {
-> > +	.table = {
-> > +		GPIO_LOOKUP_IDX("gpio-f7188x-6", 4, NULL, 0,
-> > GPIO_ACTIVE_HIGH),
-> > +		GPIO_LOOKUP_IDX("gpio-f7188x-6", 3, NULL, 1,
-> > GPIO_ACTIVE_HIGH),
-> > +		{} /* Terminating entry */
-> > +	},
-> > +};
-> > +
-> > +static int simatic_ipc_batt_f7188x_remove(struct platform_device
-> > *pdev) +{
-> > +	const struct simatic_ipc_platform *plat =
-> > pdev->dev.platform_data; +
-> > +	if (plat->devmode == SIMATIC_IPC_DEVICE_227G)
-> > +		return simatic_ipc_batt_remove(pdev,
-> > &simatic_ipc_batt_gpio_table_227g); +
-> > +	return simatic_ipc_batt_remove(pdev,
-> > &simatic_ipc_batt_gpio_table_bx_39a); +}
-> > +
-> > +static int simatic_ipc_batt_f7188x_probe(struct platform_device
-> > *pdev) +{
-> > +	const struct simatic_ipc_platform *plat =
-> > pdev->dev.platform_data; +
-> > +	if (plat->devmode == SIMATIC_IPC_DEVICE_227G)
-> > +		return simatic_ipc_batt_probe(pdev,
-> > &simatic_ipc_batt_gpio_table_227g); +
-> > +	return simatic_ipc_batt_probe(pdev,
-> > &simatic_ipc_batt_gpio_table_bx_39a); +}
-> > +
-> > +static struct platform_driver simatic_ipc_batt_driver = {
-> > +	.probe = simatic_ipc_batt_f7188x_probe,
-> > +	.remove = simatic_ipc_batt_f7188x_remove,
-> > +	.driver = {
-> > +		.name = KBUILD_MODNAME,
-> > +	},
-> > +};
-> > +
-> > +module_platform_driver(simatic_ipc_batt_driver);
-> > +
-> > +MODULE_LICENSE("GPL v2");
-> > +MODULE_ALIAS("platform:" KBUILD_MODNAME);
-> > +MODULE_SOFTDEP("pre: simatic-ipc-batt gpio_f7188x
-> > platform:elkhartlake-pinctrl"); +MODULE_AUTHOR("Henning Schild
-> > <henning.schild@siemens.com>"); diff --git
-> > a/drivers/platform/x86/simatic-ipc-batt.c
-> > b/drivers/platform/x86/simatic-ipc-batt.c new file mode 100644
-> > index 000000000000..a83272475b9d --- /dev/null
-> > +++ b/drivers/platform/x86/simatic-ipc-batt.c
-> > @@ -0,0 +1,250 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Siemens SIMATIC IPC driver for CMOS battery monitoring
-> > + *
-> > + * Copyright (c) Siemens AG, 2023
-> > + *
-> > + * Authors:
-> > + *  Gerd Haeussler <gerd.haeussler.ext@siemens.com>
-> > + *  Henning Schild <henning.schild@siemens.com>
-> > + */
-> > +
-> > +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-> > +
-> > +#include <linux/delay.h>
-> > +#include <linux/io.h>
-> > +#include <linux/ioport.h>
-> > +#include <linux/gpio/machine.h>
-> > +#include <linux/gpio/consumer.h>
-> > +#include <linux/hwmon.h>
-> > +#include <linux/hwmon-sysfs.h>
-> > +#include <linux/jiffies.h>
-> > +#include <linux/kernel.h>
-> > +#include <linux/module.h>
-> > +#include <linux/platform_device.h>
-> > +#include <linux/platform_data/x86/simatic-ipc-base.h>
-> > +#include <linux/sizes.h>
-> > +
-> > +#define BATT_DELAY_MS	(1000 * 60 * 60 * 24)	/* 24 h
-> > delay */ +
-> > +#define SIMATIC_IPC_BATT_LEVEL_FULL	3000
-> > +#define SIMATIC_IPC_BATT_LEVEL_CRIT	2750
-> > +#define SIMATIC_IPC_BATT_LEVEL_EMPTY	   0
-> > +
-> > +static struct simatic_ipc_batt {
-> > +	u8 devmode;
-> > +	long current_state;
-> > +	struct gpio_desc *gpios[3];
-> > +	unsigned long last_updated_jiffies;
-> > +} priv;
-> > +
-> > +static long simatic_ipc_batt_read_gpio(void)
-> > +{
-> > +	long r = SIMATIC_IPC_BATT_LEVEL_FULL;
-> > +
-> > +	if (priv.gpios[2]) {
-> > +		gpiod_set_value(priv.gpios[2], 1);
-> > +		msleep(150);
-> > +	}
-> > +
-> > +	if (gpiod_get_value_cansleep(priv.gpios[0]))
-> > +		r = SIMATIC_IPC_BATT_LEVEL_EMPTY;
-> > +	else if (gpiod_get_value_cansleep(priv.gpios[1]))
-> > +		r = SIMATIC_IPC_BATT_LEVEL_CRIT;
-> > +
-> > +	if (priv.gpios[2])
-> > +		gpiod_set_value(priv.gpios[2], 0);
-> > +
-> > +	return r;
-> > +}
-> > +
-> > +#define SIMATIC_IPC_BATT_PORT_BASE	0x404D
-> > +static struct resource simatic_ipc_batt_io_res =
-> > +	DEFINE_RES_IO_NAMED(SIMATIC_IPC_BATT_PORT_BASE, SZ_1,
-> > KBUILD_MODNAME); +
-> > +static long simatic_ipc_batt_read_io(struct device *dev)
-> > +{
-> > +	long r = SIMATIC_IPC_BATT_LEVEL_FULL;
-> > +	struct resource *res = &simatic_ipc_batt_io_res;
-> > +	u8 val;
-> > +
-> > +	if (!request_muxed_region(res->start, resource_size(res),
-> > res->name)) {
-> > +		dev_err(dev, "Unable to register IO resource at
-> > %pR\n", res);
-> > +		return -EBUSY;
-> > +	}
-> > +
-> > +	val = inb(SIMATIC_IPC_BATT_PORT_BASE);
-> > +	release_region(simatic_ipc_batt_io_res.start,
-> > resource_size(&simatic_ipc_batt_io_res)); +
-> > +	if (val & (1 << 7))
-> > +		r = SIMATIC_IPC_BATT_LEVEL_EMPTY;
-> > +	else if (val & (1 << 6))
-> > +		r = SIMATIC_IPC_BATT_LEVEL_CRIT;
-> > +
-> > +	return r;
-> > +}
-> > +
-> > +static long simatic_ipc_batt_read_value(struct device *dev)
-> > +{
-> > +	unsigned long next_update;
-> > +
-> > +	next_update = priv.last_updated_jiffies +
-> > msecs_to_jiffies(BATT_DELAY_MS);
-> > +	if (time_after(jiffies, next_update) ||
-> > !priv.last_updated_jiffies) {
-> > +		switch (priv.devmode) {
-> > +		case SIMATIC_IPC_DEVICE_127E:
-> > +		case SIMATIC_IPC_DEVICE_227G:
-> > +		case SIMATIC_IPC_DEVICE_BX_39A:
-> > +			priv.current_state =
-> > simatic_ipc_batt_read_gpio();
-> > +			break;
-> > +		case SIMATIC_IPC_DEVICE_227E:
-> > +			priv.current_state =
-> > simatic_ipc_batt_read_io(dev);
-> > +			break;
-> > +		}
-> > +		priv.last_updated_jiffies = jiffies;
-> > +		if (priv.current_state <
-> > SIMATIC_IPC_BATT_LEVEL_FULL)
-> > +			dev_warn(dev, "CMOS battery needs to be
-> > replaced.");
-> > +	}
-> > +
-> > +	return priv.current_state;
-> > +}
-> > +
-> > +static int simatic_ipc_batt_read(struct device *dev, enum
-> > hwmon_sensor_types type,
-> > +				 u32 attr, int channel, long *val)
-> > +{
-> > +	switch (attr) {
-> > +	case hwmon_in_input:
-> > +		*val = simatic_ipc_batt_read_value(dev);
-> > +		break;
-> > +	case hwmon_in_lcrit:
-> > +		*val = SIMATIC_IPC_BATT_LEVEL_CRIT;
-> > +		break;
-> > +	default:
-> > +		return -EOPNOTSUPP;
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static umode_t simatic_ipc_batt_is_visible(const void *data, enum
-> > hwmon_sensor_types type,
-> > +					   u32 attr, int channel)
-> > +{
-> > +	if (attr == hwmon_in_input || attr == hwmon_in_lcrit)
-> > +		return 0444;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static const struct hwmon_ops simatic_ipc_batt_ops = {
-> > +	.is_visible = simatic_ipc_batt_is_visible,
-> > +	.read = simatic_ipc_batt_read,
-> > +};
-> > +
-> > +static const struct hwmon_channel_info *simatic_ipc_batt_info[] = {
-> > +	HWMON_CHANNEL_INFO(in, HWMON_I_INPUT | HWMON_I_LCRIT),
-> > +	NULL
-> > +};
-> > +
-> > +static const struct hwmon_chip_info simatic_ipc_batt_chip_info = {
-> > +	.ops = &simatic_ipc_batt_ops,
-> > +	.info = simatic_ipc_batt_info,
-> > +};
-> > +
-> > +int simatic_ipc_batt_remove(struct platform_device *pdev, struct
-> > gpiod_lookup_table *table) +{
-> > +	gpiod_remove_lookup_table(table);
-> > +	return 0;
-> > +}
-> > +EXPORT_SYMBOL_GPL(simatic_ipc_batt_remove);
-> > +
-> > +int simatic_ipc_batt_probe(struct platform_device *pdev, struct
-> > gpiod_lookup_table *table) +{
-> > +	struct simatic_ipc_platform *plat;
-> > +	struct device *dev = &pdev->dev;
-> > +	struct device *hwmon_dev;
-> > +	int err;
-> > +
-> > +	plat = pdev->dev.platform_data;
-> > +	priv.devmode = plat->devmode;
-> > +
-> > +	switch (priv.devmode) {
-> > +	case SIMATIC_IPC_DEVICE_127E:
-> > +	case SIMATIC_IPC_DEVICE_227G:
-> > +	case SIMATIC_IPC_DEVICE_BX_39A:
-> > +	case SIMATIC_IPC_DEVICE_BX_21A:
-> > +		table->dev_id = dev_name(dev);
-> > +		gpiod_add_lookup_table(table);
-> > +		break;
-> > +	case SIMATIC_IPC_DEVICE_227E:
-> > +		goto nogpio;
-> > +	default:
-> > +		return -ENODEV;
-> > +	}
-> > +
-> > +	priv.gpios[0] = devm_gpiod_get_index(dev, "CMOSBattery
-> > empty", 0, GPIOD_IN);
-> > +	if (IS_ERR(priv.gpios[0])) {
-> > +		err = PTR_ERR(priv.gpios[0]);
-> > +		priv.gpios[0] = NULL;
-> > +		goto out;
-> > +	}
-> > +	priv.gpios[1] = devm_gpiod_get_index(dev, "CMOSBattery
-> > low", 1, GPIOD_IN);
-> > +	if (IS_ERR(priv.gpios[1])) {
-> > +		err = PTR_ERR(priv.gpios[1]);
-> > +		priv.gpios[1] = NULL;
-> > +		goto out;
-> > +	}
-> > +
-> > +	if (table->table[2].key) {
-> > +		priv.gpios[2] = devm_gpiod_get_index(dev,
-> > "CMOSBattery meter", 2, GPIOD_OUT_HIGH);
-> > +		if (IS_ERR(priv.gpios[2])) {
-> > +			err = PTR_ERR(priv.gpios[1]);
-> > +			priv.gpios[2] = NULL;
-> > +			goto out;
-> > +		}
-> > +	} else {
-> > +		priv.gpios[2] = NULL;
-> > +	}
-> > +
-> > +nogpio:
-> > +	hwmon_dev = devm_hwmon_device_register_with_info(dev,
-> > KBUILD_MODNAME,
-> > +							 &priv,
-> > +
-> > &simatic_ipc_batt_chip_info,
-> > +							 NULL);
-> > +	if (IS_ERR(hwmon_dev)) {
-> > +		err = PTR_ERR(hwmon_dev);
-> > +		goto out;
-> > +	}
-> > +
-> > +	/* warn about aging battery even if userspace never reads
-> > hwmon */
-> > +	simatic_ipc_batt_read_value(dev);
-> > +
-> > +	return 0;
-> > +out:
-> > +	simatic_ipc_batt_remove(pdev, table);
-> > +
-> > +	return err;
-> > +}
-> > +EXPORT_SYMBOL_GPL(simatic_ipc_batt_probe);
-> > +
-> > +static int simatic_ipc_batt_io_remove(struct platform_device *pdev)
-> > +{
-> > +	return simatic_ipc_batt_remove(pdev, NULL);
-> > +}
-> > +
-> > +static int simatic_ipc_batt_io_probe(struct platform_device *pdev)
-> > +{
-> > +	return simatic_ipc_batt_probe(pdev, NULL);
-> > +}
-> > +
-> > +static struct platform_driver simatic_ipc_batt_driver = {
-> > +	.probe = simatic_ipc_batt_io_probe,
-> > +	.remove = simatic_ipc_batt_io_remove,
-> > +	.driver = {
-> > +		.name = KBUILD_MODNAME,
-> > +	},
-> > +};
-> > +
-> > +module_platform_driver(simatic_ipc_batt_driver);
-> > +
-> > +MODULE_LICENSE("GPL v2");
-> > +MODULE_ALIAS("platform:" KBUILD_MODNAME);
-> > +MODULE_AUTHOR("Henning Schild <henning.schild@siemens.com>");
-> > diff --git a/drivers/platform/x86/simatic-ipc-batt.h
-> > b/drivers/platform/x86/simatic-ipc-batt.h new file mode 100644
-> > index 000000000000..4545cd3e3026
-> > --- /dev/null
-> > +++ b/drivers/platform/x86/simatic-ipc-batt.h
-> > @@ -0,0 +1,20 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +/*
-> > + * Siemens SIMATIC IPC driver for CMOS battery monitoring
-> > + *
-> > + * Copyright (c) Siemens AG, 2023
-> > + *
-> > + * Author:
-> > + *  Henning Schild <henning.schild@siemens.com>
-> > + */
-> > +
-> > +#ifndef _SIMATIC_IPC_BATT_H
-> > +#define _SIMATIC_IPC_BATT_H
-> > +
-> > +int simatic_ipc_batt_probe(struct platform_device *pdev,
-> > +			   struct gpiod_lookup_table *table);
-> > +
-> > +int simatic_ipc_batt_remove(struct platform_device *pdev,
-> > +			    struct gpiod_lookup_table *table);
-> > +
-> > +#endif /* _SIMATIC_IPC_BATT_H */
-> > diff --git a/drivers/platform/x86/simatic-ipc.c
-> > b/drivers/platform/x86/simatic-ipc.c index
-> > 4402cd354104..6d2c94c17414 100644 ---
-> > a/drivers/platform/x86/simatic-ipc.c +++
-> > b/drivers/platform/x86/simatic-ipc.c @@ -21,6 +21,7 @@
-> >  
-> >  static struct platform_device *ipc_led_platform_device;
-> >  static struct platform_device *ipc_wdt_platform_device;
-> > +static struct platform_device *ipc_batt_platform_device;
-> >  
-> >  static const struct dmi_system_id simatic_ipc_whitelist[] = {
-> >  	{
-> > @@ -37,38 +38,71 @@ static struct {
-> >  	u32 station_id;
-> >  	u8 led_mode;
-> >  	u8 wdt_mode;
-> > +	u8 batt_mode;
-> >  } device_modes[] = {
-> > -	{SIMATIC_IPC_IPC127E, SIMATIC_IPC_DEVICE_127E,
-> > SIMATIC_IPC_DEVICE_NONE},
-> > -	{SIMATIC_IPC_IPC227D, SIMATIC_IPC_DEVICE_227D,
-> > SIMATIC_IPC_DEVICE_NONE},
-> > -	{SIMATIC_IPC_IPC227E, SIMATIC_IPC_DEVICE_427E,
-> > SIMATIC_IPC_DEVICE_227E},
-> > -	{SIMATIC_IPC_IPC227G, SIMATIC_IPC_DEVICE_227G,
-> > SIMATIC_IPC_DEVICE_227G},
-> > -	{SIMATIC_IPC_IPC277E, SIMATIC_IPC_DEVICE_NONE,
-> > SIMATIC_IPC_DEVICE_227E},
-> > -	{SIMATIC_IPC_IPC427D, SIMATIC_IPC_DEVICE_427E,
-> > SIMATIC_IPC_DEVICE_NONE},
-> > -	{SIMATIC_IPC_IPC427E, SIMATIC_IPC_DEVICE_427E,
-> > SIMATIC_IPC_DEVICE_427E},
-> > -	{SIMATIC_IPC_IPC477E, SIMATIC_IPC_DEVICE_NONE,
-> > SIMATIC_IPC_DEVICE_427E},
-> > -	{SIMATIC_IPC_IPCBX_39A, SIMATIC_IPC_DEVICE_227G,
-> > SIMATIC_IPC_DEVICE_227G},
-> > -	{SIMATIC_IPC_IPCPX_39A, SIMATIC_IPC_DEVICE_NONE,
-> > SIMATIC_IPC_DEVICE_227G},
-> > -	{SIMATIC_IPC_IPCBX_21A, SIMATIC_IPC_DEVICE_BX_21A,
-> > SIMATIC_IPC_DEVICE_NONE},
-> > +	{SIMATIC_IPC_IPC127E,
-> > +		SIMATIC_IPC_DEVICE_127E, SIMATIC_IPC_DEVICE_NONE,
-> > SIMATIC_IPC_DEVICE_127E},
-> > +	{SIMATIC_IPC_IPC227D,
-> > +		SIMATIC_IPC_DEVICE_227D, SIMATIC_IPC_DEVICE_NONE,
-> > SIMATIC_IPC_DEVICE_NONE},
-> > +	{SIMATIC_IPC_IPC227E,
-> > +		SIMATIC_IPC_DEVICE_427E, SIMATIC_IPC_DEVICE_227E,
-> > SIMATIC_IPC_DEVICE_227E},
-> > +	{SIMATIC_IPC_IPC227G,
-> > +		SIMATIC_IPC_DEVICE_227G, SIMATIC_IPC_DEVICE_227G,
-> > SIMATIC_IPC_DEVICE_227G},
-> > +	{SIMATIC_IPC_IPC277E,
-> > +		SIMATIC_IPC_DEVICE_NONE, SIMATIC_IPC_DEVICE_227E,
-> > SIMATIC_IPC_DEVICE_227E},
-> > +	{SIMATIC_IPC_IPC427D,
-> > +		SIMATIC_IPC_DEVICE_427E, SIMATIC_IPC_DEVICE_NONE,
-> > SIMATIC_IPC_DEVICE_NONE},
-> > +	{SIMATIC_IPC_IPC427E,
-> > +		SIMATIC_IPC_DEVICE_427E, SIMATIC_IPC_DEVICE_427E,
-> > SIMATIC_IPC_DEVICE_NONE},
-> > +	{SIMATIC_IPC_IPC477E,
-> > +		SIMATIC_IPC_DEVICE_NONE, SIMATIC_IPC_DEVICE_427E,
-> > SIMATIC_IPC_DEVICE_NONE},
-> > +	{SIMATIC_IPC_IPCBX_39A,
-> > +		SIMATIC_IPC_DEVICE_227G, SIMATIC_IPC_DEVICE_227G,
-> > SIMATIC_IPC_DEVICE_BX_39A},
-> > +	{SIMATIC_IPC_IPCPX_39A,
-> > +		SIMATIC_IPC_DEVICE_NONE, SIMATIC_IPC_DEVICE_227G,
-> > SIMATIC_IPC_DEVICE_BX_39A},
-> > +	{SIMATIC_IPC_IPCBX_21A,
-> > +		SIMATIC_IPC_DEVICE_BX_21A,
-> > SIMATIC_IPC_DEVICE_NONE, SIMATIC_IPC_DEVICE_BX_21A}, };
-> >  
-> >  static int register_platform_devices(u32 station_id)
-> >  {
-> >  	u8 ledmode = SIMATIC_IPC_DEVICE_NONE;
-> >  	u8 wdtmode = SIMATIC_IPC_DEVICE_NONE;
-> > -	char *pdevname = KBUILD_MODNAME "_leds";
-> > +	u8 battmode = SIMATIC_IPC_DEVICE_NONE;
-> > +	char *pdevname;
-> >  	int i;
-> >  
-> > -	platform_data.devmode = SIMATIC_IPC_DEVICE_NONE;
-> > -
-> >  	for (i = 0; i < ARRAY_SIZE(device_modes); i++) {
-> >  		if (device_modes[i].station_id == station_id) {
-> >  			ledmode = device_modes[i].led_mode;
-> >  			wdtmode = device_modes[i].wdt_mode;
-> > +			battmode = device_modes[i].batt_mode;
-> >  			break;
-> >  		}
-> >  	}
-> >  
-> > +	if (battmode != SIMATIC_IPC_DEVICE_NONE) {
-> > +		pdevname = KBUILD_MODNAME "_batt";
-> > +		if (battmode == SIMATIC_IPC_DEVICE_127E)
-> > +			pdevname = KBUILD_MODNAME
-> > "_batt_apollolake";
-> > +		if (battmode == SIMATIC_IPC_DEVICE_BX_21A)
-> > +			pdevname = KBUILD_MODNAME
-> > "_batt_elkhartlake";
-> > +		if (battmode == SIMATIC_IPC_DEVICE_227G ||
-> > battmode == SIMATIC_IPC_DEVICE_BX_39A)
-> > +			pdevname = KBUILD_MODNAME "_batt_f7188x";
-> > +		platform_data.devmode = battmode;
-> > +		ipc_batt_platform_device =
-> > +			platform_device_register_data(NULL,
-> > pdevname,
-> > +				PLATFORM_DEVID_NONE,
-> > &platform_data,
-> > +				sizeof(struct
-> > simatic_ipc_platform));
-> > +		if (IS_ERR(ipc_batt_platform_device))
-> > +			return PTR_ERR(ipc_batt_platform_device);
-> > +
-> > +		pr_debug("device=%s created\n",
-> > +			 ipc_batt_platform_device->name);
-> > +	}
-> > +
-> >  	if (ledmode != SIMATIC_IPC_DEVICE_NONE) {
-> > +		pdevname = KBUILD_MODNAME "_leds";
-> >  		if (ledmode == SIMATIC_IPC_DEVICE_127E)
-> >  			pdevname = KBUILD_MODNAME
-> > "_leds_gpio_apollolake"; if (ledmode == SIMATIC_IPC_DEVICE_227G)
-> > @@ -144,6 +178,9 @@ static void __exit simatic_ipc_exit_module(void)
-> >  
-> >  	platform_device_unregister(ipc_wdt_platform_device);
-> >  	ipc_wdt_platform_device = NULL;
-> > +
-> > +	platform_device_unregister(ipc_batt_platform_device);
-> > +	ipc_batt_platform_device = NULL;
-> >  }
-> >  
-> >  module_init(simatic_ipc_init_module);
-> > diff --git a/include/linux/platform_data/x86/simatic-ipc-base.h
-> > b/include/linux/platform_data/x86/simatic-ipc-base.h index
-> > 00bf18ecb160..1ba47dd6939e 100644 ---
-> > a/include/linux/platform_data/x86/simatic-ipc-base.h +++
-> > b/include/linux/platform_data/x86/simatic-ipc-base.h @@ -21,6 +21,7
-> > @@ #define SIMATIC_IPC_DEVICE_227E 4
-> >  #define SIMATIC_IPC_DEVICE_227G 5
-> >  #define SIMATIC_IPC_DEVICE_BX_21A 6
-> > +#define SIMATIC_IPC_DEVICE_BX_39A 7
-> >  
-> >  struct simatic_ipc_platform {
-> >  	u8	devmode;  
-> 
-> 
-
+DQpPbiAxMy8wNy8yMyAwMTozNCwgQWxleGFuZHJlIEJlbGxvbmkgd3JvdGU6DQo+IEVYVEVSTkFM
+IEVNQUlMOiBEbyBub3QgY2xpY2sgbGlua3Mgb3Igb3BlbiBhdHRhY2htZW50cyB1bmxlc3MgeW91
+IGtub3cgdGhlIGNvbnRlbnQgaXMgc2FmZQ0KPg0KPiBPbiAxMi8wNy8yMDIzIDIwOjQyOjAwKzAx
+MDAsIENvbm9yIERvb2xleSB3cm90ZToNCj4+PiBUaGVyZSBjYW4gYmUgb25seSBvbmUgZGJndSBv
+biBhIFNvQyBhbmQgaXQgaGFzIHRoZSBjaGlwaWQgcmVnaXN0ZXIuIEl0DQo+Pj4gaGFzIGFsd2F5
+cyBiZWVuIHdyb25nIHRvIGhhdmUgYSBkYmd1IGNvbXBhdGlibGUgb24gdGhlIGZsZXhjb20gdWFy
+dCBhcw0KPj4+IHRoZXkgYXJlIG5vdCBkYmd1Lg0KPj4gQWhoLCB0aGFua3MgZm9yIHRoZSBleHBs
+YW5hdGlvbi4gU291bmRzIGxpa2Ugc3R1ZmYgdGhhdCBtaWdodCBiZSBvYnZpb3VzDQo+PiB0byB0
+aG9zZSB3b3JraW5nIG9uIGFybSBzdHVmZiBhbGwgdGhlIHRpbWUsIGJ1dCBub3QgYWxsIG9mIHRo
+b3NlIENDZWQgb24NCj4+IHRoZSBwYXRjaCA7KQ0KPiBXZWxsLCB0aGlzIGlzIG5vdCByZWFsbHkg
+YXJtIHNwZWNpZmljLCByYXRoZXIgbWljcm9jaGlwIHNwZWNpZmljIDspDQo+DQo+PiBUaGUgY29y
+cmVjdCB0aGluZyB0byBkbyB3b3VsZCBzZWVtIHRvIGJlIHVwZGF0aW5nIHRoZSBkdC1iaW5kaW5n
+IHRvDQo+PiBzb21ldGhpbmcgdGhhdCBwZXJtaXRzIHdoYXQgaXMgbGlzdGVkIGJlbG93LCBvciBq
+dXN0IHJlbW92aW5nIHRoZSBzZWNvbmQNCj4+IGNvbXBhdGlibGUsIHRvIGxlYXZlICJtaWNyb2No
+aXAsc2FtOXg2MC11c2FydCIgaW4gaXNvbGF0aW9uLCBzaW5jZSB0aGF0DQo+PiBpcyBwZXJtaXR0
+ZWQgYWxzby4NCk5vdGVkLCBJIGhvcGUgdXBkYXRpbmcgdGhlIHlhbWwgd291bGQgYmUgcHJvcGVy
+IGFwcHJvYWNoLg0KPj4+IEFueXdheSwgbXkgYWR2aWNlIGhhcyBhbHdheXMgYmVlbiB0aGF0IHlv
+dSBtdXN0IG5vdCBkbyBjaGlwaWQgZGV0ZWN0aW9uDQo+Pj4gb24gYXQ5MSBiZWNhdXNlIHRoZXJl
+IGlzIG5vIHBvaW50IGluIGRvaW5nIGl0IGJlY2F1c2UgeW91IG5lZWQgdG8gaGF2ZQ0KPj4+IGEg
+Y29ycmVjdCBkdHMgdG8gYmUgYWJsZSB0byBmaW5kIHRoZSBkYmd1IGNoaXBpZCByZWdpc3RlciBz
+byB5b3UgZWl0aGVyDQo+Pj4geW91IGFscmVhZHkga25vdyB3aGF0IHlvdSBhcmUgcnVubmluZyBv
+biBvciB5b3UgYXJlIGdvaW5nIHRvIHJlYWQgYm9ndXMNCj4+PiByZWdpc3RlcnMgYW55d2F5Lg0K
+Pj4gSSB3b24ndCBjbGFpbSB0byBoYXZlIGFuIG9waW5pb24gb24gYW55IG9mIHRoYXQsIGJ1dCBz
+b3VuZHMgbGlrZSB5b3UnZA0KPj4gYmUgYmV0dGVyIG9mZiBqdXN0IHJlYWRpbmcgdGhlIGJvYXJk
+L1NvQyBsZXZlbCBjb21wYXRpYmxlcyB0byBmaWd1cmUgb3V0DQo+PiB3aGF0IHlvdSBhcmUgcnVu
+bmluZyBvbi4uLg0KPj4NCj4gWWVhaCwgZXhhY3RseSBteSBwb2ludCENCj4NCj4+IFRoYW5rcywN
+Cj4+IENvbm9yLg0KPj4NCj4+Pj4+IEZpeGVzOiA5OWM4MDgzMzU4NzcgKEFSTTogZHRzOiBhdDkx
+OiBzYW05eDYwOiBBZGQgbWlzc2luZyBmbGV4Y29tIGRlZmluaXRpb25zKQ0KPj4+Pj4gU2lnbmVk
+LW9mZi1ieTogRHVyYWkgTWFuaWNrYW0gS1IgPGR1cmFpLm1hbmlja2Fta3JAbWljcm9jaGlwLmNv
+bT4NCj4+Pj4+IC0tLQ0KPj4+Pj4gICBhcmNoL2FybS9ib290L2R0cy9taWNyb2NoaXAvc2FtOXg2
+MC5kdHNpIHwgMjYgKysrKysrKysrKysrLS0tLS0tLS0tLS0tDQo+Pj4+PiAgIDEgZmlsZSBjaGFu
+Z2VkLCAxMyBpbnNlcnRpb25zKCspLCAxMyBkZWxldGlvbnMoLSkNCj4+Pj4+DQo+Pj4+PiBkaWZm
+IC0tZ2l0IGEvYXJjaC9hcm0vYm9vdC9kdHMvbWljcm9jaGlwL3NhbTl4NjAuZHRzaSBiL2FyY2gv
+YXJtL2Jvb3QvZHRzL21pY3JvY2hpcC9zYW05eDYwLmR0c2kNCj4+Pj4+IGluZGV4IDhiNTM5OTc2
+NzVlNy4uNzNkNTcwYTE3MjY5IDEwMDY0NA0KPj4+Pj4gLS0tIGEvYXJjaC9hcm0vYm9vdC9kdHMv
+bWljcm9jaGlwL3NhbTl4NjAuZHRzaQ0KPj4+Pj4gKysrIGIvYXJjaC9hcm0vYm9vdC9kdHMvbWlj
+cm9jaGlwL3NhbTl4NjAuZHRzaQ0KPj4+Pj4gQEAgLTE3Miw3ICsxNzIsNyBAQCBmbHg0OiBmbGV4
+Y29tQGYwMDAwMDAwIHsNCj4+Pj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0
+YXR1cyA9ICJkaXNhYmxlZCI7DQo+Pj4+Pg0KPj4+Pj4gICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgdWFydDQ6IHNlcmlhbEAyMDAgew0KPj4+Pj4gLSAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIGNvbXBhdGlibGUgPSAibWljcm9jaGlwLHNhbTl4NjAtZGJndSIs
+ICJtaWNyb2NoaXAsc2FtOXg2MC11c2FydCIsICJhdG1lbCxhdDkxc2FtOTI2MC1kYmd1IiwgImF0
+bWVsLGF0OTFzYW05MjYwLXVzYXJ0IjsNCj4+Pj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICBjb21wYXRpYmxlID0gIm1pY3JvY2hpcCxzYW05eDYwLXVzYXJ0IiwgImF0
+bWVsLGF0OTFzYW05MjYwLXVzYXJ0IjsNCj4+Pj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgcmVnID0gPDB4MjAwIDB4MjAwPjsNCj4+Pj4+ICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgaW50ZXJydXB0cyA9IDwxMyBJUlFfVFlQRV9MRVZF
+TF9ISUdIIDc+Ow0KPj4+Pj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICBkbWFzID0gPCZkbWEwDQo+Pj4+PiBAQCAtMjQwLDcgKzI0MCw3IEBAIGZseDU6IGZsZXhjb21A
+ZjAwMDQwMDAgew0KPj4+Pj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3RhdHVz
+ID0gImRpc2FibGVkIjsNCj4+Pj4+DQo+Pj4+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICB1YXJ0NTogc2VyaWFsQDIwMCB7DQo+Pj4+PiAtICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgY29tcGF0aWJsZSA9ICJtaWNyb2NoaXAsc2FtOXg2MC1kYmd1IiwgIm1p
+Y3JvY2hpcCxzYW05eDYwLXVzYXJ0IiwgImF0bWVsLGF0OTFzYW05MjYwLWRiZ3UiLCAiYXRtZWws
+YXQ5MXNhbTkyNjAtdXNhcnQiOw0KPj4+Pj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgIGNvbXBhdGlibGUgPSAibWljcm9jaGlwLHNhbTl4NjAtdXNhcnQiLCAiYXRtZWws
+YXQ5MXNhbTkyNjAtdXNhcnQiOw0KPj4+Pj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICByZWcgPSA8MHgyMDAgMHgyMDA+Ow0KPj4+Pj4gICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICBhdG1lbCx1c2FydC1tb2RlID0gPEFUOTFfVVNBUlRfTU9E
+RV9TRVJJQUw+Ow0KPj4+Pj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICBpbnRlcnJ1cHRzID0gPDE0IElSUV9UWVBFX0xFVkVMX0hJR0ggNz47DQo+Pj4+PiBAQCAtMzcw
+LDcgKzM3MCw3IEBAIGZseDExOiBmbGV4Y29tQGYwMDIwMDAwIHsNCj4+Pj4+ICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIHN0YXR1cyA9ICJkaXNhYmxlZCI7DQo+Pj4+Pg0KPj4+Pj4g
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdWFydDExOiBzZXJpYWxAMjAwIHsNCj4+
+Pj4+IC0gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb21wYXRpYmxlID0g
+Im1pY3JvY2hpcCxzYW05eDYwLWRiZ3UiLCAibWljcm9jaGlwLHNhbTl4NjAtdXNhcnQiLCAiYXRt
+ZWwsYXQ5MXNhbTkyNjAtZGJndSIsICJhdG1lbCxhdDkxc2FtOTI2MC11c2FydCI7DQo+Pj4+PiAr
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29tcGF0aWJsZSA9ICJtaWNy
+b2NoaXAsc2FtOXg2MC11c2FydCIsICJhdG1lbCxhdDkxc2FtOTI2MC11c2FydCI7DQo+Pj4+PiAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJlZyA9IDwweDIwMCAweDIw
+MD47DQo+Pj4+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGludGVy
+cnVwdHMgPSA8MzIgSVJRX1RZUEVfTEVWRUxfSElHSCA3PjsNCj4+Pj4+ICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgZG1hcyA9IDwmZG1hMA0KPj4+Pj4gQEAgLTQxOSw3
+ICs0MTksNyBAQCBmbHgxMjogZmxleGNvbUBmMDAyNDAwMCB7DQo+Pj4+PiAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICBzdGF0dXMgPSAiZGlzYWJsZWQiOw0KPj4+Pj4NCj4+Pj4+ICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHVhcnQxMjogc2VyaWFsQDIwMCB7DQo+Pj4+
+PiAtICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29tcGF0aWJsZSA9ICJt
+aWNyb2NoaXAsc2FtOXg2MC1kYmd1IiwgIm1pY3JvY2hpcCxzYW05eDYwLXVzYXJ0IiwgImF0bWVs
+LGF0OTFzYW05MjYwLWRiZ3UiLCAiYXRtZWwsYXQ5MXNhbTkyNjAtdXNhcnQiOw0KPj4+Pj4gKyAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbXBhdGlibGUgPSAibWljcm9j
+aGlwLHNhbTl4NjAtdXNhcnQiLCAiYXRtZWwsYXQ5MXNhbTkyNjAtdXNhcnQiOw0KPj4+Pj4gICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICByZWcgPSA8MHgyMDAgMHgyMDA+
+Ow0KPj4+Pj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpbnRlcnJ1
+cHRzID0gPDMzIElSUV9UWVBFX0xFVkVMX0hJR0ggNz47DQo+Pj4+PiAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIGRtYXMgPSA8JmRtYTANCj4+Pj4+IEBAIC01NzYsNyAr
+NTc2LDcgQEAgZmx4NjogZmxleGNvbUBmODAxMDAwMCB7DQo+Pj4+PiAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICBzdGF0dXMgPSAiZGlzYWJsZWQiOw0KPj4+Pj4NCj4+Pj4+ICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIHVhcnQ2OiBzZXJpYWxAMjAwIHsNCj4+Pj4+IC0g
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb21wYXRpYmxlID0gIm1pY3Jv
+Y2hpcCxzYW05eDYwLWRiZ3UiLCAibWljcm9jaGlwLHNhbTl4NjAtdXNhcnQiLCAiYXRtZWwsYXQ5
+MXNhbTkyNjAtZGJndSIsICJhdG1lbCxhdDkxc2FtOTI2MC11c2FydCI7DQo+Pj4+PiArICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29tcGF0aWJsZSA9ICJtaWNyb2NoaXAs
+c2FtOXg2MC11c2FydCIsICJhdG1lbCxhdDkxc2FtOTI2MC11c2FydCI7DQo+Pj4+PiAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJlZyA9IDwweDIwMCAweDIwMD47DQo+
+Pj4+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGludGVycnVwdHMg
+PSA8OSBJUlFfVFlQRV9MRVZFTF9ISUdIIDc+Ow0KPj4+Pj4gICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICBkbWFzID0gPCZkbWEwDQo+Pj4+PiBAQCAtNjI1LDcgKzYyNSw3
+IEBAIGZseDc6IGZsZXhjb21AZjgwMTQwMDAgew0KPj4+Pj4gICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgc3RhdHVzID0gImRpc2FibGVkIjsNCj4+Pj4+DQo+Pj4+PiAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICB1YXJ0Nzogc2VyaWFsQDIwMCB7DQo+Pj4+PiAtICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29tcGF0aWJsZSA9ICJtaWNyb2NoaXAs
+c2FtOXg2MC1kYmd1IiwgIm1pY3JvY2hpcCxzYW05eDYwLXVzYXJ0IiwgImF0bWVsLGF0OTFzYW05
+MjYwLWRiZ3UiLCAiYXRtZWwsYXQ5MXNhbTkyNjAtdXNhcnQiOw0KPj4+Pj4gKyAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbXBhdGlibGUgPSAibWljcm9jaGlwLHNhbTl4
+NjAtdXNhcnQiLCAiYXRtZWwsYXQ5MXNhbTkyNjAtdXNhcnQiOw0KPj4+Pj4gICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICByZWcgPSA8MHgyMDAgMHgyMDA+Ow0KPj4+Pj4g
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpbnRlcnJ1cHRzID0gPDEw
+IElSUV9UWVBFX0xFVkVMX0hJR0ggNz47DQo+Pj4+PiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIGRtYXMgPSA8JmRtYTANCj4+Pj4+IEBAIC02NzQsNyArNjc0LDcgQEAg
+Zmx4ODogZmxleGNvbUBmODAxODAwMCB7DQo+Pj4+PiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICBzdGF0dXMgPSAiZGlzYWJsZWQiOw0KPj4+Pj4NCj4+Pj4+ICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIHVhcnQ4OiBzZXJpYWxAMjAwIHsNCj4+Pj4+IC0gICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb21wYXRpYmxlID0gIm1pY3JvY2hpcCxzYW05
+eDYwLWRiZ3UiLCAibWljcm9jaGlwLHNhbTl4NjAtdXNhcnQiLCAiYXRtZWwsYXQ5MXNhbTkyNjAt
+ZGJndSIsICJhdG1lbCxhdDkxc2FtOTI2MC11c2FydCI7DQo+Pj4+PiArICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgY29tcGF0aWJsZSA9ICJtaWNyb2NoaXAsc2FtOXg2MC11
+c2FydCIsICJhdG1lbCxhdDkxc2FtOTI2MC11c2FydCI7DQo+Pj4+PiAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIHJlZyA9IDwweDIwMCAweDIwMD47DQo+Pj4+PiAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGludGVycnVwdHMgPSA8MTEgSVJR
+X1RZUEVfTEVWRUxfSElHSCA3PjsNCj4+Pj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgZG1hcyA9IDwmZG1hMA0KPj4+Pj4gQEAgLTcyMyw3ICs3MjMsNyBAQCBmbHgw
+OiBmbGV4Y29tQGY4MDFjMDAwIHsNCj4+Pj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIHN0YXR1cyA9ICJkaXNhYmxlZCI7DQo+Pj4+Pg0KPj4+Pj4gICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgdWFydDA6IHNlcmlhbEAyMDAgew0KPj4+Pj4gLSAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIGNvbXBhdGlibGUgPSAibWljcm9jaGlwLHNhbTl4NjAt
+ZGJndSIsICJtaWNyb2NoaXAsc2FtOXg2MC11c2FydCIsICJhdG1lbCxhdDkxc2FtOTI2MC1kYmd1
+IiwgImF0bWVsLGF0OTFzYW05MjYwLXVzYXJ0IjsNCj4+Pj4+ICsgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICBjb21wYXRpYmxlID0gIm1pY3JvY2hpcCxzYW05eDYwLXVzYXJ0
+IiwgImF0bWVsLGF0OTFzYW05MjYwLXVzYXJ0IjsNCj4+Pj4+ICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgcmVnID0gPDB4MjAwIDB4MjAwPjsNCj4+Pj4+ICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaW50ZXJydXB0cyA9IDw1IElSUV9UWVBF
+X0xFVkVMX0hJR0ggNz47DQo+Pj4+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIGRtYXMgPSA8JmRtYTANCj4+Pj4+IEBAIC03OTEsNyArNzkxLDcgQEAgZmx4MTogZmxl
+eGNvbUBmODAyMDAwMCB7DQo+Pj4+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBz
+dGF0dXMgPSAiZGlzYWJsZWQiOw0KPj4+Pj4NCj4+Pj4+ICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgIHVhcnQxOiBzZXJpYWxAMjAwIHsNCj4+Pj4+IC0gICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICBjb21wYXRpYmxlID0gIm1pY3JvY2hpcCxzYW05eDYwLWRiZ3Ui
+LCAibWljcm9jaGlwLHNhbTl4NjAtdXNhcnQiLCAiYXRtZWwsYXQ5MXNhbTkyNjAtZGJndSIsICJh
+dG1lbCxhdDkxc2FtOTI2MC11c2FydCI7DQo+Pj4+PiArICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgY29tcGF0aWJsZSA9ICJtaWNyb2NoaXAsc2FtOXg2MC11c2FydCIsICJh
+dG1lbCxhdDkxc2FtOTI2MC11c2FydCI7DQo+Pj4+PiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIHJlZyA9IDwweDIwMCAweDIwMD47DQo+Pj4+PiAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIGludGVycnVwdHMgPSA8NiBJUlFfVFlQRV9MRVZF
+TF9ISUdIIDc+Ow0KPj4+Pj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICBkbWFzID0gPCZkbWEwDQo+Pj4+PiBAQCAtODU5LDcgKzg1OSw3IEBAIGZseDI6IGZsZXhjb21A
+ZjgwMjQwMDAgew0KPj4+Pj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3RhdHVz
+ID0gImRpc2FibGVkIjsNCj4+Pj4+DQo+Pj4+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICB1YXJ0Mjogc2VyaWFsQDIwMCB7DQo+Pj4+PiAtICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgY29tcGF0aWJsZSA9ICJtaWNyb2NoaXAsc2FtOXg2MC1kYmd1IiwgIm1p
+Y3JvY2hpcCxzYW05eDYwLXVzYXJ0IiwgImF0bWVsLGF0OTFzYW05MjYwLWRiZ3UiLCAiYXRtZWws
+YXQ5MXNhbTkyNjAtdXNhcnQiOw0KPj4+Pj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgIGNvbXBhdGlibGUgPSAibWljcm9jaGlwLHNhbTl4NjAtdXNhcnQiLCAiYXRtZWws
+YXQ5MXNhbTkyNjAtdXNhcnQiOw0KPj4+Pj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICByZWcgPSA8MHgyMDAgMHgyMDA+Ow0KPj4+Pj4gICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICBpbnRlcnJ1cHRzID0gPDcgSVJRX1RZUEVfTEVWRUxfSElH
+SCA3PjsNCj4+Pj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZG1h
+cyA9IDwmZG1hMA0KPj4+Pj4gQEAgLTkyNyw3ICs5MjcsNyBAQCBmbHgzOiBmbGV4Y29tQGY4MDI4
+MDAwIHsNCj4+Pj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0YXR1cyA9ICJk
+aXNhYmxlZCI7DQo+Pj4+Pg0KPj4+Pj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+dWFydDM6IHNlcmlhbEAyMDAgew0KPj4+Pj4gLSAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgIGNvbXBhdGlibGUgPSAibWljcm9jaGlwLHNhbTl4NjAtZGJndSIsICJtaWNyb2No
+aXAsc2FtOXg2MC11c2FydCIsICJhdG1lbCxhdDkxc2FtOTI2MC1kYmd1IiwgImF0bWVsLGF0OTFz
+YW05MjYwLXVzYXJ0IjsNCj4+Pj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICBjb21wYXRpYmxlID0gIm1pY3JvY2hpcCxzYW05eDYwLXVzYXJ0IiwgImF0bWVsLGF0OTFz
+YW05MjYwLXVzYXJ0IjsNCj4+Pj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgcmVnID0gPDB4MjAwIDB4MjAwPjsNCj4+Pj4+ICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgaW50ZXJydXB0cyA9IDw4IElSUV9UWVBFX0xFVkVMX0hJR0ggNz47
+DQo+Pj4+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGRtYXMgPSA8
+JmRtYTANCj4+Pj4+IEBAIC0xMDUwLDcgKzEwNTAsNyBAQCBmbHg5OiBmbGV4Y29tQGY4MDQwMDAw
+IHsNCj4+Pj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0YXR1cyA9ICJkaXNh
+YmxlZCI7DQo+Pj4+Pg0KPj4+Pj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdWFy
+dDk6IHNlcmlhbEAyMDAgew0KPj4+Pj4gLSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIGNvbXBhdGlibGUgPSAibWljcm9jaGlwLHNhbTl4NjAtZGJndSIsICJtaWNyb2NoaXAs
+c2FtOXg2MC11c2FydCIsICJhdG1lbCxhdDkxc2FtOTI2MC1kYmd1IiwgImF0bWVsLGF0OTFzYW05
+MjYwLXVzYXJ0IjsNCj4+Pj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICBjb21wYXRpYmxlID0gIm1pY3JvY2hpcCxzYW05eDYwLXVzYXJ0IiwgImF0bWVsLGF0OTFzYW05
+MjYwLXVzYXJ0IjsNCj4+Pj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgcmVnID0gPDB4MjAwIDB4MjAwPjsNCj4+Pj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgaW50ZXJydXB0cyA9IDwxNSBJUlFfVFlQRV9MRVZFTF9ISUdIIDc+Ow0K
+Pj4+Pj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBkbWFzID0gPCZk
+bWEwDQo+Pj4+PiBAQCAtMTA5OSw3ICsxMDk5LDcgQEAgZmx4MTA6IGZsZXhjb21AZjgwNDQwMDAg
+ew0KPj4+Pj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3RhdHVzID0gImRpc2Fi
+bGVkIjsNCj4+Pj4+DQo+Pj4+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB1YXJ0
+MTA6IHNlcmlhbEAyMDAgew0KPj4+Pj4gLSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIGNvbXBhdGlibGUgPSAibWljcm9jaGlwLHNhbTl4NjAtZGJndSIsICJtaWNyb2NoaXAs
+c2FtOXg2MC11c2FydCIsICJhdG1lbCxhdDkxc2FtOTI2MC1kYmd1IiwgImF0bWVsLGF0OTFzYW05
+MjYwLXVzYXJ0IjsNCj4+Pj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICBjb21wYXRpYmxlID0gIm1pY3JvY2hpcCxzYW05eDYwLXVzYXJ0IiwgImF0bWVsLGF0OTFzYW05
+MjYwLXVzYXJ0IjsNCj4+Pj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgcmVnID0gPDB4MjAwIDB4MjAwPjsNCj4+Pj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgaW50ZXJydXB0cyA9IDwxNiBJUlFfVFlQRV9MRVZFTF9ISUdIIDc+Ow0K
+Pj4+Pj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBkbWFzID0gPCZk
+bWEwDQo+Pj4+PiAtLQ0KPj4+Pj4gMi4yNS4xDQo+Pj4+Pg0KPj4+DQo+Pj4NCj4+PiAtLQ0KPj4+
+IEFsZXhhbmRyZSBCZWxsb25pLCBjby1vd25lciBhbmQgQ09PLCBCb290bGluDQo+Pj4gRW1iZWRk
+ZWQgTGludXggYW5kIEtlcm5lbCBlbmdpbmVlcmluZw0KPj4+IGh0dHBzOi8vYm9vdGxpbi5jb20N
+Cj4NCj4NCj4gLS0NCj4gQWxleGFuZHJlIEJlbGxvbmksIGNvLW93bmVyIGFuZCBDT08sIEJvb3Rs
+aW4NCj4gRW1iZWRkZWQgTGludXggYW5kIEtlcm5lbCBlbmdpbmVlcmluZw0KPiBodHRwczovL2Jv
+b3RsaW4uY29tDQo=
