@@ -2,213 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D5A9752A86
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 20:53:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 515D5752A8E
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 20:54:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232532AbjGMSxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 14:53:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47988 "EHLO
+        id S232372AbjGMSyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 14:54:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232453AbjGMSxW (ORCPT
+        with ESMTP id S232502AbjGMSyC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 14:53:22 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FE132D7D
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 11:53:12 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36DIqvvp021174;
-        Thu, 13 Jul 2023 13:52:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1689274377;
-        bh=PNIHPvWhnt80ZYRMyXr53ZSClDYFIhceN99jnzNnQKg=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=CeESNChvpNCLiiUO7eyomMtmBYCAocsyCxVQC2Wlt+39+3PHmVQR9a5bAOnkFu8cS
-         cwEhq4b3tsIvhba15+nwuPGk0Gw0W8ANSic/LX2KWJA3TrEji97OalwNitdBPS0gzw
-         dSQNQ8LXFg0mjHDcifbwbLCua0TXzXBL/YIqmQp4=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36DIqv9L109608
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 13 Jul 2023 13:52:57 -0500
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 13
- Jul 2023 13:52:57 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 13 Jul 2023 13:52:56 -0500
-Received: from fllv0040.itg.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36DIqshA080681;
-        Thu, 13 Jul 2023 13:52:56 -0500
-From:   Andrew Davis <afd@ti.com>
-To:     Russell King <linux@armlinux.org.uk>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Jonas Jensen <jonas.jensen@gmail.com>,
-        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, Andrew Davis <afd@ti.com>
-Subject: [PATCH v3 5/5] ARM: mach-moxart: Move MOXA ART support into Kconfig.platforms
-Date:   Thu, 13 Jul 2023 13:52:52 -0500
-Message-ID: <20230713185252.27797-5-afd@ti.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230713185252.27797-1-afd@ti.com>
-References: <20230713185252.27797-1-afd@ti.com>
+        Thu, 13 Jul 2023 14:54:02 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42CEE2D66
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 11:53:39 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fbf1b82de7so7040605e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 11:53:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689274417; x=1691866417;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Xmc1sE9Mq+D+NHMQWiyH+jo9A18cWBOIkCA/5pe5/a0=;
+        b=AT2yZufGgFU4zc5kdeWcjkY+4EPwoYSGlVdmT5fsMKXBRAjXelkG637w7llP/wqvhk
+         49z+FNYxoKGtvpN8zvIL4YMlKSifYy7TTSip+6EzNNuPHt1rWvzlGzetQXwEtCXcV25B
+         GgXZoEimNeOu38gQjz6iWjiIpE3z2jTcb3Jb+gojFSt7BxlzR+trZPwRrHiv2oJAb19I
+         8Pk96Ytz/SZMxXM6eXtvPY4Kva4qzd52T7d/rbB4vTEqpOrhnxuxQ3Qc4fpTSj68lpd5
+         mrI2P3P0tsWC9Uayb4ohDEL1af0Q/fImjdX5JsIHWJ6tUQJdLVJLJaQi34hVgIzProCG
+         GJMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689274417; x=1691866417;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Xmc1sE9Mq+D+NHMQWiyH+jo9A18cWBOIkCA/5pe5/a0=;
+        b=Nq0wFEx13Skesr+IPcXYi+lIFXNjdvbuWswqdjHjskbhf41eVUSD1rv73Uz2eaTJ20
+         EiK31ClkMNvRYcZwSjNYmKSuXmuVIStLCHwx+WmBL175bNWhrI7v91iWMf+OSnl5B77W
+         VqsmeOZ9BWYwxj0sExOPy0x4EN+Y7jsN731VmpHedG/hBYmM+caym6/AnSk50tVUIwpg
+         v/BwL91uPAC/vy5JkB+VFuycyH2qnFnu+8UYio/LeY7GHpQ2duBjpwln9PJJBVVm+AUm
+         LROL383Fr6HRjLODE5Ab0osNx7KH78nY6d9Y+Cs7C/2LY0AkY0urWBhFzxXyvnrs7AaW
+         7P6A==
+X-Gm-Message-State: ABy/qLZJqcQAHL1E2A+xFe0QbYc+0Zz5Z6uoW0yX42vyiOHZ6sK6ddbO
+        eAH6grx9SBTnxWmwQUykpZxCQg==
+X-Google-Smtp-Source: APBJJlFGcBOC1CQdQzgJvkJuHC7qUoBaELowjSnjyXxtm2hCTolZLj1cIz2922V2EK06GANygH9RJQ==
+X-Received: by 2002:a05:600c:ac6:b0:3fa:9741:5b73 with SMTP id c6-20020a05600c0ac600b003fa97415b73mr395202wmr.10.1689274417049;
+        Thu, 13 Jul 2023 11:53:37 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id l4-20020a1ced04000000b003fbe561f6a3sm19089261wmh.37.2023.07.13.11.53.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 Jul 2023 11:53:36 -0700 (PDT)
+Message-ID: <ebd30cd0-5081-f05d-28f7-5d5b637041e4@linaro.org>
+Date:   Thu, 13 Jul 2023 20:53:34 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] dt-bindings: net: xilinx_gmii2rgmii: Convert to json
+ schema
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Pranavi Somisetty <pranavi.somisetty@amd.com>, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, michal.simek@amd.com, harini.katakam@amd.com,
+        git@amd.com, radhey.shyam.pandey@amd.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20230713103453.24018-1-pranavi.somisetty@amd.com>
+ <f6c11605-56d7-7228-b86d-bc317a8496d0@linaro.org>
+ <a17b0a4f-619d-47dd-b0ad-d5f3c1a558fc@lunn.ch>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <a17b0a4f-619d-47dd-b0ad-d5f3c1a558fc@lunn.ch>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This removes the need for a dedicated Kconfig and empty mach directory.
+On 13/07/2023 17:59, Andrew Lunn wrote:
+>>> +examples:
+>>> +  - |
+>>> +    mdio {
+>>> +        #address-cells = <1>;
+>>> +        #size-cells = <0>;
+>>> +        phy: ethernet-phy@0 {
+>>> +            reg = <0>;
+>>> +        };
+>>
+>> Drop this node, quite obvious.
+> 
+> Dumb question. Isn't it needed since it is referenced by phy-handle =
+> <&phy> below. Without it, the fragment is not valid DT and so the
+> checking tools will fail?
 
-Signed-off-by: Andrew Davis <afd@ti.com>
----
+No, because the example is compiled with silencing missing phandles.
 
-Changes from v1/v2:
- - Rebased on latest master
-
- arch/arm/Kconfig              |  2 --
- arch/arm/Kconfig.platforms    | 28 ++++++++++++++++++++++++++++
- arch/arm/Makefile             |  1 -
- arch/arm/mach-moxart/Kconfig  | 28 ----------------------------
- arch/arm/mach-moxart/Makefile |  4 ----
- arch/arm/mach-moxart/moxart.c |  6 ------
- 6 files changed, 28 insertions(+), 41 deletions(-)
- delete mode 100644 arch/arm/mach-moxart/Kconfig
- delete mode 100644 arch/arm/mach-moxart/Makefile
- delete mode 100644 arch/arm/mach-moxart/moxart.c
-
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index df93b29a5da1a..688d832959a54 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -411,8 +411,6 @@ source "arch/arm/mach-milbeaut/Kconfig"
- 
- source "arch/arm/mach-mmp/Kconfig"
- 
--source "arch/arm/mach-moxart/Kconfig"
--
- source "arch/arm/mach-mstar/Kconfig"
- 
- source "arch/arm/mach-mv78xx0/Kconfig"
-diff --git a/arch/arm/Kconfig.platforms b/arch/arm/Kconfig.platforms
-index 0e6d7172bf61e..4b5fad18ca8b0 100644
---- a/arch/arm/Kconfig.platforms
-+++ b/arch/arm/Kconfig.platforms
-@@ -76,6 +76,34 @@ config MACH_ASM9260
- 	help
- 	  Support for Alphascale ASM9260 based platform.
- 
-+menuconfig ARCH_MOXART
-+	bool "MOXA ART SoC"
-+	depends on ARCH_MULTI_V4
-+	depends on CPU_LITTLE_ENDIAN
-+	select CPU_FA526
-+	select ARM_DMA_MEM_BUFFERABLE
-+	select FARADAY_FTINTC010
-+	select FTTMR010_TIMER
-+	select GPIOLIB
-+	select PHYLIB if NETDEVICES
-+	help
-+	  Say Y here if you want to run your kernel on hardware with a
-+	  MOXA ART SoC.
-+	  The MOXA ART SoC is based on a Faraday FA526 ARMv4 32-bit
-+	  192 MHz CPU with MMU and 16KB/8KB D/I-cache (UC-7112-LX).
-+	  Used on models UC-7101, UC-7112/UC-7110, IA240/IA241, IA3341.
-+
-+if ARCH_MOXART
-+
-+config MACH_UC7112LX
-+	bool "MOXA UC-7112-LX"
-+	depends on ARCH_MOXART
-+	help
-+	  Say Y here if you intend to run this kernel on a MOXA
-+	  UC-7112-LX embedded computer.
-+
-+endif
-+
- config ARCH_RDA
- 	bool "RDA Micro SoCs"
- 	depends on ARCH_MULTI_V7
-diff --git a/arch/arm/Makefile b/arch/arm/Makefile
-index 547e5856eaa0d..32e99aa282bf9 100644
---- a/arch/arm/Makefile
-+++ b/arch/arm/Makefile
-@@ -192,7 +192,6 @@ machine-$(CONFIG_ARCH_LPC18XX)		+= lpc18xx
- machine-$(CONFIG_ARCH_LPC32XX)		+= lpc32xx
- machine-$(CONFIG_ARCH_MESON)		+= meson
- machine-$(CONFIG_ARCH_MMP)		+= mmp
--machine-$(CONFIG_ARCH_MOXART)		+= moxart
- machine-$(CONFIG_ARCH_MV78XX0)		+= mv78xx0
- machine-$(CONFIG_ARCH_MVEBU)		+= mvebu
- machine-$(CONFIG_ARCH_MXC)		+= imx
-diff --git a/arch/arm/mach-moxart/Kconfig b/arch/arm/mach-moxart/Kconfig
-deleted file mode 100644
-index 909c6573ba8b1..0000000000000
---- a/arch/arm/mach-moxart/Kconfig
-+++ /dev/null
-@@ -1,28 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0-only
--menuconfig ARCH_MOXART
--	bool "MOXA ART SoC"
--	depends on ARCH_MULTI_V4
--	depends on CPU_LITTLE_ENDIAN
--	select CPU_FA526
--	select ARM_DMA_MEM_BUFFERABLE
--	select FARADAY_FTINTC010
--	select FTTMR010_TIMER
--	select GPIOLIB
--	select PHYLIB if NETDEVICES
--	help
--	  Say Y here if you want to run your kernel on hardware with a
--	  MOXA ART SoC.
--	  The MOXA ART SoC is based on a Faraday FA526 ARMv4 32-bit
--	  192 MHz CPU with MMU and 16KB/8KB D/I-cache (UC-7112-LX).
--	  Used on models UC-7101, UC-7112/UC-7110, IA240/IA241, IA3341.
--
--if ARCH_MOXART
--
--config MACH_UC7112LX
--	bool "MOXA UC-7112-LX"
--	depends on ARCH_MOXART
--	help
--	  Say Y here if you intend to run this kernel on a MOXA
--	  UC-7112-LX embedded computer.
--
--endif
-diff --git a/arch/arm/mach-moxart/Makefile b/arch/arm/mach-moxart/Makefile
-deleted file mode 100644
-index ded3e38fb98d3..0000000000000
---- a/arch/arm/mach-moxart/Makefile
-+++ /dev/null
-@@ -1,4 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0-only
--# Object file lists.
--
--obj-$(CONFIG_MACH_UC7112LX)	+= moxart.o
-diff --git a/arch/arm/mach-moxart/moxart.c b/arch/arm/mach-moxart/moxart.c
-deleted file mode 100644
-index f1f58c0c0fa1c..0000000000000
---- a/arch/arm/mach-moxart/moxart.c
-+++ /dev/null
-@@ -1,6 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-or-later
--/*
-- * arch/arm/mach-moxart/moxart.c
-- *
-- * (C) Copyright 2013, Jonas Jensen <jonas.jensen@gmail.com>
-- */
--- 
-2.39.2
+Best regards,
+Krzysztof
 
