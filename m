@@ -2,90 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76E9C7524DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 16:15:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9853E7524DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 16:16:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234999AbjGMOPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 10:15:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60822 "EHLO
+        id S235104AbjGMOQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 10:16:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235205AbjGMOOy (ORCPT
+        with ESMTP id S235105AbjGMOPo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 10:14:54 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CAFA30EC;
-        Thu, 13 Jul 2023 07:14:41 -0700 (PDT)
-Received: from dggpeml500012.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4R1xR76DjmzVhlr;
-        Thu, 13 Jul 2023 22:13:23 +0800 (CST)
-Received: from localhost.localdomain (10.67.175.61) by
- dggpeml500012.china.huawei.com (7.185.36.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 13 Jul 2023 22:14:38 +0800
-From:   Zheng Yejian <zhengyejian1@huawei.com>
-To:     <rostedt@goodmis.org>, <mhiramat@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>, <zhengyejian1@huawei.com>
-Subject: [PATCH] traing: Fix memory leak of iter->temp when reading trace_pipe
-Date:   Thu, 13 Jul 2023 22:14:35 +0800
-Message-ID: <20230713141435.1133021-1-zhengyejian1@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 13 Jul 2023 10:15:44 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 221043A85;
+        Thu, 13 Jul 2023 07:15:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689257720; x=1720793720;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=t6/CWbos/88643w3iuRqAiJYN+TLmHJLjYSn3gBi4eg=;
+  b=a8pqdw3JDPJMlhyK6l0Igr8Aos006Cq7giuu52WnY2ZGi/V94SooImKM
+   1fCFUBH1YMWa7A9D8Bc4aoQ80lvkYKI7JzclVoZyEY0XMjWkBL+4pIcKJ
+   x4zvociAeqEPFd5Xx5rVitjoMnDeQNYYDJADj/y3LC1pN7nHZL3/P+LP5
+   goP/GvT5B6WlrTtk3V0HTZolRry9HAkyBgn9BqPUqT0jX7u8s7s3xB2qS
+   9qyG1BOSZpkfN2S9HfZjhh2MyCJ+c2l+jYOL48TZVKm02rxMU3uTditTF
+   fei1sHixozj2oUC2j8G1v6M5Uyj1J/u2R/Zv2307wO5vRhEQgVtSsa0vJ
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="345513060"
+X-IronPort-AV: E=Sophos;i="6.01,203,1684825200"; 
+   d="scan'208";a="345513060"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2023 07:15:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="725315229"
+X-IronPort-AV: E=Sophos;i="6.01,203,1684825200"; 
+   d="scan'208";a="725315229"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga007.fm.intel.com with ESMTP; 13 Jul 2023 07:15:17 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1qJx6B-002PjM-3C;
+        Thu, 13 Jul 2023 17:15:15 +0300
+Date:   Thu, 13 Jul 2023 17:15:15 +0300
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Johannes Berg <johannes@sipsolutions.net>
+Cc:     Kalle Valo <kvalo@kernel.org>, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        regressions@lists.linux.dev, Jakub Kicinski <kuba@kernel.org>
+Subject: Re: Closing down the wireless trees for a summer break?
+Message-ID: <ZLAG85HEMH0MeW1G@smile.fi.intel.com>
+References: <87y1kncuh4.fsf@kernel.org>
+ <ZK7Yzd0VvblA3ONU@smile.fi.intel.com>
+ <87wmz43xy4.fsf@kernel.org>
+ <d1f9ca04bb055dc07f2a7f9f07f774e08913cf00.camel@sipsolutions.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.175.61]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500012.china.huawei.com (7.185.36.15)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d1f9ca04bb055dc07f2a7f9f07f774e08913cf00.camel@sipsolutions.net>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kmemleak reports:
-  unreferenced object 0xffff88814d14e200 (size 256):
-    comm "cat", pid 336, jiffies 4294871818 (age 779.490s)
-    hex dump (first 32 bytes):
-      04 00 01 03 00 00 00 00 08 00 00 00 00 00 00 00  ................
-      0c d8 c8 9b ff ff ff ff 04 5a ca 9b ff ff ff ff  .........Z......
-    backtrace:
-      [<ffffffff9bdff18f>] __kmalloc+0x4f/0x140
-      [<ffffffff9bc9238b>] trace_find_next_entry+0xbb/0x1d0
-      [<ffffffff9bc9caef>] trace_print_lat_context+0xaf/0x4e0
-      [<ffffffff9bc94490>] print_trace_line+0x3e0/0x950
-      [<ffffffff9bc95499>] tracing_read_pipe+0x2d9/0x5a0
-      [<ffffffff9bf03a43>] vfs_read+0x143/0x520
-      [<ffffffff9bf04c2d>] ksys_read+0xbd/0x160
-      [<ffffffff9d0f0edf>] do_syscall_64+0x3f/0x90
-      [<ffffffff9d2000aa>] entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+On Thu, Jul 13, 2023 at 01:05:45PM +0200, Johannes Berg wrote:
+> On Thu, 2023-07-13 at 13:30 +0300, Kalle Valo wrote:
+> > Andy Shevchenko <andriy.shevchenko@intel.com> writes:
+> > > On Tue, Jun 13, 2023 at 05:22:47PM +0300, Kalle Valo wrote:
 
-when reading file 'trace_pipe', 'iter->temp' is allocated or relocated
-in trace_find_next_entry() but not freed before 'trace_pipe' is closed.
+...
 
-To fix it, free 'iter->temp' in tracing_release_pipe().
+> > > > [1] https://phb-crystal-ball.sipsolutions.net/
+> > > 
+> > > How could one use the shut down site?
+> > 
+> > What do you mean? At least from Finland it Works for me:
+> 
+> That did in fact not work yesterday for some time as I was doing some
+> maintenance :)
 
-Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
----
- kernel/trace/trace.c | 1 +
- 1 file changed, 1 insertion(+)
+Good to know!
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 4529e264cb86..94cfaa884578 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -6764,6 +6764,7 @@ static int tracing_release_pipe(struct inode *inode, struct file *file)
- 
- 	free_cpumask_var(iter->started);
- 	kfree(iter->fmt);
-+	kfree(iter->temp);
- 	mutex_destroy(&iter->mutex);
- 	kfree(iter);
- 
 -- 
-2.25.1
+With Best Regards,
+Andy Shevchenko
+
 
