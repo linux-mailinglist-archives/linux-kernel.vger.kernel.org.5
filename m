@@ -2,103 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C4ED751A3E
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 09:48:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91EF0751A43
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 09:48:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232550AbjGMHsH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 13 Jul 2023 03:48:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59668 "EHLO
+        id S232619AbjGMHsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 03:48:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232674AbjGMHsB (ORCPT
+        with ESMTP id S232641AbjGMHsa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 03:48:01 -0400
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23A7D1BD
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 00:48:00 -0700 (PDT)
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-cb4de3bd997so91240276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 00:48:00 -0700 (PDT)
+        Thu, 13 Jul 2023 03:48:30 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07454210C
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 00:48:29 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-94ea38c90ccso13485866b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 00:48:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689234507; x=1691826507;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Ndfusz0Ew/9H13cssvGl1gKVP/EEjfBAeT0WImx1s0A=;
+        b=r86uCzU4iB9lwWfEiS3ussRwFswjnDBQ/4gqjlxMOjWzH0Qb0gutW0d7sO2ZClx3MH
+         Nkp/hMES+SBk6ONcS1O+oiwR0ZN+EzAamjTpQFa/bshMv7toMl/kUNL/z63avF85f4ME
+         O4o3FlENc8fFDD4ZG3sz9B5G76S8gxgZjFvrkZrmiovm5aSXG6XVi9sFOiUEs+MqD7ZJ
+         kqgVth3NRWPaw3H2HIBCCu6I5GWSylphAhgs+ocJ7yPS76THPgJPKR34X4iJ/E3x9cvG
+         N224oIuLyaf1+59M8Dh5tNjslYce4MXpAHz39f10gPtS7v8HuWfrVbUowBm5bIop0fX6
+         N0nA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689234479; x=1691826479;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QoVtxTNWvg008uuVWjLTiXVz9X1mSZwOKq6tuE+zDB0=;
-        b=iJo0328oiORRIQRYRl54/7EHz7TdmfXtCLpQxTA0op0HOq5P32TQ+rtWbBKTGmzb9X
-         ZKtVdP0lleHXneE6K4Vomc4M/jfCGk3i1b/7Hsdf9J1Q5ciBJE9dQxeFwmJAxPLq4oyI
-         bsyjFQgOzPcvbi4oE9yNhYhLerrIO51rxrDza9D/NsGNeqO3xgAQ/o7OXMvXnOwWiNkg
-         tI2mpZUHXuyAqmBiMue7cbAC3rpTGc114M3r/yabKGaGg1munRDqQQ72IXmeC//7YB2c
-         xXoSPSQr+LwrslfZVMkuxihNDSbzO8crpTEnVtzehm4BuY6gEq3G6BldOOGtB+fuGG+W
-         64+Q==
-X-Gm-Message-State: ABy/qLaPHGB8GUFeIpTzA9ICScauxl+8RvaXxPOkku5VVbbcEAVxhleT
-        rr9Cfzh7rcCPiXTnogHpHW04V7D1zBx8V5kQ
-X-Google-Smtp-Source: APBJJlHzAQg/t9Yo73CIMHZyCd8qKIqqG5T6IwpU0M9Yrr3xbm+MfCcok0jWjSJB+MaRDNL4VJOwDA==
-X-Received: by 2002:a81:8348:0:b0:56d:2e66:4a3f with SMTP id t69-20020a818348000000b0056d2e664a3fmr4884696ywf.0.1689234479128;
-        Thu, 13 Jul 2023 00:47:59 -0700 (PDT)
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com. [209.85.219.177])
-        by smtp.gmail.com with ESMTPSA id g71-20020a81524a000000b0057a67df3308sm1608361ywb.101.2023.07.13.00.47.58
-        for <linux-kernel@vger.kernel.org>
+        d=1e100.net; s=20221208; t=1689234507; x=1691826507;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ndfusz0Ew/9H13cssvGl1gKVP/EEjfBAeT0WImx1s0A=;
+        b=RDnACOx+Za4XBGPdoA0Nz5WReLzZNcH/a8jC91JFJ+fjgS2jazrNAAcczbhYCK+Qsz
+         OQsCeRLwv8QjRYdrgZh3xHIaF03y6aR6e7ijDfLXv2LDEqRdmxcWvya1T6ep0KtrD61/
+         x5GjX/Ai7whLg0dDIidvxcSvD1/VQ1Cjl3q4QmcDkA2drf8u+g5vZiW4azvZE5GD+UHL
+         CXQx/L7LMMSpEUu21jMs6jiZ+bclOOWBOTHnvy6u9dVRSMU9AwznELFYzkKyV9YvgmJB
+         gfwhbhiBDirBQKhdRtXJBTMd2mWEWnuQOYb5lXu0fAiNjWHMaTPXLe2goi/6LjcxhNbA
+         ReTg==
+X-Gm-Message-State: ABy/qLaoSBraSqdVu9NmnY1e5wusP15LNbTSgk9KrMZgM136KI8xQMhg
+        2/9vDqxKtgQ6MHV6Pk2cVmo=
+X-Google-Smtp-Source: APBJJlEs0yP+8wV22mQSkfnFKKtblVhfWleoA3i5vfhb5PjHGzu5pzzz4JLYc7xq8e4txGbm5yHuPw==
+X-Received: by 2002:a17:906:738c:b0:993:eed1:8f0 with SMTP id f12-20020a170906738c00b00993eed108f0mr589227ejl.3.1689234507219;
+        Thu, 13 Jul 2023 00:48:27 -0700 (PDT)
+Received: from [10.10.19.213] ([178.160.196.94])
+        by smtp.gmail.com with ESMTPSA id b21-20020a1709065e5500b009934855d8f1sm3607892eju.34.2023.07.13.00.48.26
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 Jul 2023 00:47:58 -0700 (PDT)
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-cb37a0ea5b3so237915276.0
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 00:47:58 -0700 (PDT)
-X-Received: by 2002:a25:ae5d:0:b0:bd6:a97e:3597 with SMTP id
- g29-20020a25ae5d000000b00bd6a97e3597mr4667504ybe.30.1689234478607; Thu, 13
- Jul 2023 00:47:58 -0700 (PDT)
+        Thu, 13 Jul 2023 00:48:27 -0700 (PDT)
+Message-ID: <07697618-de3b-a27a-4dfe-f9d99c42c219@gmail.com>
+Date:   Thu, 13 Jul 2023 11:48:14 +0400
 MIME-Version: 1.0
-References: <20230712173916.168805-1-Liam.Howlett@oracle.com>
-In-Reply-To: <20230712173916.168805-1-Liam.Howlett@oracle.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 13 Jul 2023 09:47:45 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdXeZvCfW-gqQ2gsZ_84AthVw+vNmD3FxaLK3=mSKoV-pQ@mail.gmail.com>
-Message-ID: <CAMuHMdXeZvCfW-gqQ2gsZ_84AthVw+vNmD3FxaLK3=mSKoV-pQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] maple_tree: Fix 32 bit mas_next testing
-To:     "Liam R. Howlett" <Liam.Howlett@oracle.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        maple-tree@lists.infradead.org, linux-mm@kvack.org,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH] ALSA: pcmtest: Extend error injection, decrease buffer
+ filling overhead
+Content-Language: en-US
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+References: <20230712191325.8791-1-ivan.orlov0322@gmail.com>
+ <87351sgxgr.wl-tiwai@suse.de>
+From:   Ivan Orlov <ivan.orlov0322@gmail.com>
+In-Reply-To: <87351sgxgr.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 7:39 PM Liam R. Howlett <Liam.Howlett@oracle.com> wrote:
-> The test setup of mas_next is dependent on node entry size to create a 2
-> level tree, but the tests did not account for this in the expected value
-> when shifting beyond the scope of the tree.
->
-> Fix this by setting up the test to succeed depending on the node
-> entries which is dependent on the 32/64 bit setup.
->
-> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Link: https://lore.kernel.org/linux-mm/CAMuHMdV4T53fOw7VPoBgPR7fP6RYqf=CBhD_y_vOg53zZX_DnA@mail.gmail.com/
+On 7/13/23 10:03, Takashi Iwai wrote:
+> On Wed, 12 Jul 2023 21:13:25 +0200,
+> Ivan Orlov wrote:
+>>
+>> Extend 'pcmtest' virtual driver with 'open' callback error injection
+>> functionality, as it already can inject errors into other PCM callbacks.
+>>
+>> Fix the driver to use already defined variables where it is possible.
+>>
+>> Additionally, decrease the buffer filling overhead with conditional
+>> reminder calculation in the 'inc_buf_pos' inline function.
+>>
+>> Signed-off-by: Ivan Orlov <ivan.orlov0322@gmail.com>
+> 
+> Please avoid mixing different changes in a single patch.
+> 
+> This patch does three completely different things, and they should be
+> split.
+> 
+> - New inject_open_err parameter
+> - Optimization of inc_buf_pos()
+> - Optimization of check_buf_block_ni() and fill_block_pattern_n()
+> 
+> The latter two could be put in a single patch as minor optimizations,
+> but the introduction of a new option doesn't fit with the rest.
+> 
+> 
+> thanks,
+> 
+> Takashi
 
-s/Link/Closes/
+Hi Takashi,
 
-> Fixes: 120b116208a0 ("maple_tree: reorganize testing to restore module testing")
-> Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
+Thank you for the review. I'll split the patch and send the changes again.
 
-On ARAnyM:
-
-    TEST STARTING
-
-    maple_tree: 3804524 of 3804524 tests passed
-
-Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Kind regards,
+Ivan Orlov
