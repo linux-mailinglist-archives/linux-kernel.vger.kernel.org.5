@@ -2,120 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EC9975195F
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 09:08:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB4B875196A
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 09:10:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233998AbjGMHIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 03:08:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34916 "EHLO
+        id S234161AbjGMHKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 03:10:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234136AbjGMHIC (ORCPT
+        with ESMTP id S230281AbjGMHKb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 03:08:02 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A22C7211E;
-        Thu, 13 Jul 2023 00:08:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=hdGx1K3RjF5TT01b8U4Kk8AYjp2IPrWjWa8zM6ieITE=; b=JugqstoBFWytUNEtdyZjbsNqKN
-        kg6eSi0xlUBPQzyzpt/3EGI2RiTg6w98eeegWwfxItBXDFEkcV/CBfNG4Goh0Q7jPe9icSD7oStGn
-        +Q7ZfTbcHLCuxSAKJhy/IqJVClovAg+DoEsjXB/pcaJ7wKYmaLpHZCKvw8oQfCq/WRkJWWnKF1Rmp
-        ll2W0Vcwantvht6diGhv2s0QO+n0RvNrOYsFFgBa3+YWIHDDId6xWmHqdioWQbA2lsfivpoY1lD3B
-        5pTjBgwFZIRaoCx6Yqegqa9CDx6CHJ0GSWxo0OttJ9WAz330MqclE6MzFbMVOGc9QWjXww81bDlDb
-        5uqB3Www==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:33956)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qJqQg-0005py-0o;
-        Thu, 13 Jul 2023 08:07:58 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qJqQf-0005uz-Dm; Thu, 13 Jul 2023 08:07:57 +0100
-Date:   Thu, 13 Jul 2023 08:07:57 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Daniel Golle <daniel@makrotopia.org>
-Cc:     netdev@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        =?iso-8859-1?Q?Bj=F8rn?= Mork <bjorn@mork.no>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Greg Ungerer <gerg@kernel.org>
-Subject: Re: [PATCH v2 net-next 4/9] net: ethernet: mtk_eth_soc: increase
- MAX_DEVS to 3
-Message-ID: <ZK+izTulIcse2aG5@shell.armlinux.org.uk>
-References: <cover.1689012506.git.daniel@makrotopia.org>
- <2cc8012ec538106c6bcf22a40b647ec342e687a8.1689012506.git.daniel@makrotopia.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2cc8012ec538106c6bcf22a40b647ec342e687a8.1689012506.git.daniel@makrotopia.org>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        Thu, 13 Jul 2023 03:10:31 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B0EA119;
+        Thu, 13 Jul 2023 00:10:29 -0700 (PDT)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36D61Otg013396;
+        Thu, 13 Jul 2023 07:10:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id; s=qcppdkim1;
+ bh=DE5Ui7Pw5qDglMLW1EMA7/HYCBRaPwY9cFGB1D8V3EE=;
+ b=By0ur8OJO5SgFYh6ApoNzudBc5ULBxwk862fLrZJYVz05OposiNZYfhauXsddmJTjhDM
+ 6iCmHSr0YenH4eKv0byvNPhwBnPEyom46Yytvp8oOx2BHMlAl6cUNH1HHLaAnk5qu+Bt
+ neNuUMv5XFmq7Fu/VujICLUp/oxlDTBefNMLxXb26HUde9vG5lKn60XVesTh2ftlq7EF
+ bOH/2BsMJLK6BJnzqIjIVi/+959hDCArc7eViidieCy3z+QdgD2W0c2HEa5SSH97+hht
+ 0Mnxu6IZqeamZjju7rTl3FFF5ChsWjb09u6BqJdQxVAWRVV0EIcAaX0JraOBGLaTKHcg 3g== 
+Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rtbmur3hx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 13 Jul 2023 07:10:25 +0000
+Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+        by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 36D7AMdo030162;
+        Thu, 13 Jul 2023 07:10:22 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTPS id 3rq0vkymgy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Thu, 13 Jul 2023 07:10:22 +0000
+Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36D7ALUB030146;
+        Thu, 13 Jul 2023 07:10:21 GMT
+Received: from hu-sgudaval-hyd.qualcomm.com (hu-krichai-hyd.qualcomm.com [10.213.110.112])
+        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 36D7ALNK030144;
+        Thu, 13 Jul 2023 07:10:21 +0000
+Received: by hu-sgudaval-hyd.qualcomm.com (Postfix, from userid 4058933)
+        id C5F5447AD; Thu, 13 Jul 2023 12:40:20 +0530 (+0530)
+From:   Krishna chaitanya chundru <quic_krichai@quicinc.com>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     helgaas@kernel.org, linux-pci@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_vbadigan@quicinc.com, quic_nitegupt@quicinc.com,
+        quic_skananth@quicinc.com, quic_ramkri@quicinc.com,
+        krzysztof.kozlowski@linaro.org,
+        Krishna chaitanya chundru <quic_krichai@quicinc.com>
+Subject: [PATCH v4 0/9] PCI: EPC: Add support to wake up host from D3 states
+Date:   Thu, 13 Jul 2023 12:40:09 +0530
+Message-Id: <1689232218-28265-1-git-send-email-quic_krichai@quicinc.com>
+X-Mailer: git-send-email 2.7.4
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: nVnAlYQ2ebnUAzvlwW-vG-JKWsWCWYE6
+X-Proofpoint-ORIG-GUID: nVnAlYQ2ebnUAzvlwW-vG-JKWsWCWYE6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-13_04,2023-07-11_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
+ lowpriorityscore=0 priorityscore=1501 suspectscore=0 phishscore=0
+ spamscore=0 bulkscore=0 mlxlogscore=463 impostorscore=0 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2305260000 definitions=main-2307130061
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 03:18:52AM +0100, Daniel Golle wrote:
-> From: Lorenzo Bianconi <lorenzo@kernel.org>
-> 
-> This is a preliminary patch to add MT7988 SoC support since it runs 3
-> macs instead of 2.
-> 
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
-> ---
->  drivers/net/ethernet/mediatek/mtk_eth_soc.c | 6 +++++-
->  drivers/net/ethernet/mediatek/mtk_eth_soc.h | 4 ++--
->  2 files changed, 7 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-> index 7014e0d108b27..7f191e4337dd8 100644
-> --- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-> +++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-> @@ -4030,8 +4030,12 @@ static void mtk_sgmii_destroy(struct mtk_eth *eth)
->  {
->  	int i;
->  
-> -	for (i = 0; i < MTK_MAX_DEVS; i++)
-> +	for (i = 0; i < MTK_MAX_DEVS; i++) {
-> +		if (!eth->sgmii_pcs[i])
-> +			continue;
-> +
->  		mtk_pcs_lynxi_destroy(eth->sgmii_pcs[i]);
-> +	}
+Here we propose this patch series to add support in PCI endpoint
+driver to wake up host from D3 states.
 
-Please instead arrange for mtk_pcs_lynxi_destroy() to be a no-op if it's
-passed a NULL pointer, which makes it easier to use in error paths (it
-means mtk_pcs_lynxi_destroy() can be called without checks - like
-kfree() etc.)
+As endpoint cannot send any data/MSI when the D-state is in
+D3cold or D3hot. Endpoint needs to bring the device back to D0
+to send any kind of data.
 
-Since error paths don't get often tested, we need to do as much as
-possible to make error paths trivial.
+For this endpoint needs to send inband PME the device is in D3 state or
+toggle wake when the device is D3 cold and vaux is not supplied.
+
+As EPF doestn't know the D-state of the PCI, added a notify op whenever
+device state changes.
+
+Based on the D-state the EPF driver decides to wake host either by
+toggling wake or by sending PME.
+
+When the MHI state is in M3 MHI driver will wakeup the host using the
+wakeup op.
+
+---
+Changes from v3:
+	- changed the bool return type to int for waking the host in mhi ep driver
+	 as suggested by dan and bjorn.
+	- Changed commit logs as suggested by bjorn.
+Changes from v2:
+        - Addressed review comments made by mani.
+Changes from v1:
+        - Moved from RFC patch to regular patch
+        - Inclueded EPF patch and added a new op patch to notify D-state change.
+---
+
+Krishna chaitanya chundru (9):
+  PCI: endpoint: Add D-state change notifier support
+  PCI: qcom-ep: Add support for D-state change notification
+  PCI: epf-mhi: Add support for handling D-state notify from EPC
+  PCI: qcom-ep: Update the D-state log
+  PCI: endpoint: Add wakeup host API to EPC core
+  PCI: dwc: Add wakeup host op to pci_epc_ops
+  PCI: qcom-ep: Add wake up host op to dw_pcie_ep_ops
+  PCI: epf-mhi: Add wakeup host op
+  bus: mhi: ep: wake up host if the MHI state is in M3
+
+ Documentation/PCI/endpoint/pci-endpoint.rst     | 11 +++++
+ drivers/bus/mhi/ep/main.c                       | 27 ++++++++++++
+ drivers/pci/controller/dwc/pcie-designware-ep.c | 12 +++++
+ drivers/pci/controller/dwc/pcie-designware.h    |  3 ++
+ drivers/pci/controller/dwc/pcie-qcom-ep.c       | 36 ++++++++++++++-
+ drivers/pci/endpoint/functions/pci-epf-mhi.c    | 27 ++++++++++++
+ drivers/pci/endpoint/pci-epc-core.c             | 58 +++++++++++++++++++++++++
+ include/linux/mhi_ep.h                          |  4 ++
+ include/linux/pci-epc.h                         | 12 +++++
+ include/linux/pci-epf.h                         |  1 +
+ 10 files changed, 190 insertions(+), 1 deletion(-)
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+2.7.4
+
