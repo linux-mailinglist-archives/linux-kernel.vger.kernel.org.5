@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6419C75168D
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 04:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99C1E751694
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 04:58:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233173AbjGMC5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 22:57:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34260 "EHLO
+        id S233481AbjGMC6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 22:58:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232992AbjGMC53 (ORCPT
+        with ESMTP id S232553AbjGMC6j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 22:57:29 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3E8B2111
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 19:57:22 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4fb77f21c63so405667e87.2
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 19:57:22 -0700 (PDT)
+        Wed, 12 Jul 2023 22:58:39 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F8B71BD5
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 19:58:37 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-3fbf1b82d9cso1225635e9.2
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 19:58:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google; t=1689217041; x=1691809041;
+        d=cloudflare.com; s=google; t=1689217116; x=1691809116;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pcUmUBG+buBnUUKxuWUBu0zne1uUM8qt3ZmnplNd4A0=;
-        b=Y9DJJuADk71eDXSadrloLIiCwbXwFq8kNypgpNrRju8dSohFo5Q2QT0ycfwAVeEi6Z
-         EsZpLzUm6hqJ3/+RD3KCEle4WDsUwsdzmXQ95Zpqf7WAf2Fck6khwamv5FB8iOzUdV0+
-         NQoDR0YmxBLKUJD360IuxaXZVju52JtbKkRPA=
+        bh=IecoBnL3XyIII1YUKthdlwZVWgMfN+WSwTXEvMXpAAc=;
+        b=bLR9ff/iU7Qh+jYE5Hn0f3gU2ARjNAMtUeyivM+ysA2pnw47A422RZCp0PF5iVK3HY
+         G8/1qL75M5iMrTsnguDtEph+B5emY4Jkw0NU9RQCPy1XixnI0qlo58yx352pmzdGbshz
+         kWEzy2c/1gjGeYvjAvlFu8SVweO8HUAtitkjk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689217041; x=1691809041;
+        d=1e100.net; s=20221208; t=1689217116; x=1691809116;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=pcUmUBG+buBnUUKxuWUBu0zne1uUM8qt3ZmnplNd4A0=;
-        b=KjI0JDRTQlRmpBTri0u5GDgeh3BFes1VwNW6THFj+OIglgQR2mcOvcWdjLzYUgyr+X
-         59ypVhStWR21R/j10Mg9VKOL3cHmE4DYK/oFGaG1X2tYMH8QTDob2VSHwsRD0QfD2D5L
-         vgRgLjXzsHTdASn6RJBbPcVt2c2WFd3gz3Ly8AL5WKlltdg7vhI9xZ/U9ztGcJaa7NaE
-         pwwRT8K4TNQh1Np1Bkg1wquSgeKxN1efXElV0j1kaaRrKqqx26gPfkCn3Rzg6o0y2vbW
-         J5vO1q/MyTwDahb3X5u6M0HU3QmBc19mWZyXuMkbQmPfj0k06BBFvwVw3KAl/NbJv7pQ
-         6RqQ==
-X-Gm-Message-State: ABy/qLae7B6F/86uTcXmvDE9CpZNhU8lJj+1i/bkGkNTLdiEd9cze4HJ
-        aSGb8ZiGbrLo2llafcDSH9oBs8R+lVqu936AyKXj6Q==
-X-Google-Smtp-Source: APBJJlE+O7SBAT8v1uNDMsel9LXU+DtkEW7eASpe1Wa9Bu9QxDrdmQ7vy+KRfijZhAcIeSitIctrjmWQkiP4MSaT9wE=
-X-Received: by 2002:a05:6512:2315:b0:4f8:5cde:a44f with SMTP id
- o21-20020a056512231500b004f85cdea44fmr127793lfu.10.1689217040774; Wed, 12 Jul
- 2023 19:57:20 -0700 (PDT)
+        bh=IecoBnL3XyIII1YUKthdlwZVWgMfN+WSwTXEvMXpAAc=;
+        b=ZGLNJQypzlW1XAQh3z1A4FBCJDAkFvZHZ2yrxUA8cjsjAB3NsMZMBs166ouB57NArr
+         6cHjf6ne1WvZ9uGjtq6qquutpA1X1azke4eVTiB3BeDxCNWC45I9l6af7OINlkw7Kusz
+         qvdZh+5jm49JGVavjj4pNTEXGUrHhQWjJmVkjUU4S73aHqYzYV4zSFq+M32dmQ1vSkS8
+         fgiPb5Jd9QaUFEhDM0N8hJFL9LutIDx5lItScM2T2IMn1/euTnHb4U8WQxE5bR8O6Swt
+         Q0m6t2EksN602TV29MoQJuu4nEbP0I4CTyDcyw4sQL5rs69gJsBs1hhIDjOs6VrH+VE2
+         tuyQ==
+X-Gm-Message-State: ABy/qLbEMXzOCiKXFIHL6i6fRZE84rXcOIbd7hlcgLMtAiWysPBiJtOr
+        McwTY1b8S+JY5H1vQiiZ2hi7RxoF+VSijrpD5fQcpA==
+X-Google-Smtp-Source: APBJJlGVhS6tKsbr3XIES5awjUbaNGuOx7Qq542j4rQlwD5LnuxNB+cbv0XEii9+a7gRE4k1BZmvKCEvi4y3QQ/+xs0=
+X-Received: by 2002:adf:eeca:0:b0:314:183f:7ac0 with SMTP id
+ a10-20020adfeeca000000b00314183f7ac0mr204705wrp.43.1689217115974; Wed, 12 Jul
+ 2023 19:58:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <ZK9ZiNMsJX8+1F3N@debian.debian> <CAF=yD-Lb2k02TLaCQHwFSG=eQrWCnvqHVaWuK2viGqiCdwAxwg@mail.gmail.com>
-In-Reply-To: <CAF=yD-Lb2k02TLaCQHwFSG=eQrWCnvqHVaWuK2viGqiCdwAxwg@mail.gmail.com>
+References: <ZK9ZiNMsJX8+1F3N@debian.debian> <CACGkMEsy+dFK+BnTg_9K59VX-PzHW_fpwY3SRpUxg-MRyD5HWA@mail.gmail.com>
+In-Reply-To: <CACGkMEsy+dFK+BnTg_9K59VX-PzHW_fpwY3SRpUxg-MRyD5HWA@mail.gmail.com>
 From:   Yan Zhai <yan@cloudflare.com>
-Date:   Wed, 12 Jul 2023 21:57:09 -0500
-Message-ID: <CAO3-PboOR43DM=dYQH+12_5QZuNySFwvd3GfKmDz_FN6U7UH_w@mail.gmail.com>
+Date:   Wed, 12 Jul 2023 21:58:25 -0500
+Message-ID: <CAO3-PboQ1WL4wu+znnrF4kEdNnx42xPNJ_+Oc88bEejW2J-A+Q@mail.gmail.com>
 Subject: Re: [PATCH net] gso: fix GSO_DODGY bit handling for related protocols
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To:     Jason Wang <jasowang@redhat.com>
 Cc:     "open list:NETWORKING [TCP]" <netdev@vger.kernel.org>,
         kernel-team@cloudflare.com, Eric Dumazet <edumazet@google.com>,
         "David S. Miller" <davem@davemloft.net>,
@@ -62,25 +62,25 @@ Cc:     "open list:NETWORKING [TCP]" <netdev@vger.kernel.org>,
         Xin Long <lucien.xin@gmail.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Andrew Melnychenko <andrew@daynix.com>,
-        Jason Wang <jasowang@redhat.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
         open list <linux-kernel@vger.kernel.org>,
         "open list:SCTP PROTOCOL" <linux-sctp@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 9:02=E2=80=AFPM Willem de Bruijn
-<willemdebruijn.kernel@gmail.com> wrote:
+On Wed, Jul 12, 2023 at 9:11=E2=80=AFPM Jason Wang <jasowang@redhat.com> wr=
+ote:
 >
-> On Wed, Jul 12, 2023 at 9:55=E2=80=AFPM Yan Zhai <yan@cloudflare.com> wro=
+> On Thu, Jul 13, 2023 at 9:55=E2=80=AFAM Yan Zhai <yan@cloudflare.com> wro=
 te:
 > >
 > > SKB_GSO_DODGY bit indicates a GSO packet comes from an untrusted source=
@@ -101,27 +101,18 @@ d
 > > ("[TCP]: Reset gso_segs if packet is dodgy") both didn't remove the DOD=
 GY
 > > bit after recomputing gso_segs.
+>
+> If we try to fix two issues, we'd better use separate patches.
+>
 > >
 > > This change fixes the GSO_UDP_L4 handling case, and remove the DODGY bi=
 t
 > > at other places.
->
-> These two things should not be conflated.
->
-> Only the USO fix is strictly needed to fix the reported issue.
->
-It's my OCD of wanting to avoid a cover letter for two patches...
-Let's address just this UDP issue then this time. The removal of DODGY
-is in fact more suitable as RFC for small improvements.
-
+> >
 > > Fixes: 90017accff61 ("sctp: Add GSO support")
 > > Fixes: 3820c3f3e417 ("[TCP]: Reset gso_segs if packet is dodgy")
 > > Fixes: 1fd54773c267 ("udp: allow header check for dodgy GSO_UDP_L4 pack=
 ets.")
->
-> Link: https://lore.kernel.org/all/CAJPywTKDdjtwkLVUW6LRA2FU912qcDmQOQGt2W=
-aDo28KzYDg+A@mail.gmail.com/
->
 > > Signed-off-by: Yan Zhai <yan@cloudflare.com>
 > >
 > > ---
@@ -164,12 +155,6 @@ k_buff *skb,
 > > -               return __udp_gso_segment(skb, features, false);
 > > -
 > >         mss =3D skb_shinfo(skb)->gso_size;
->
-> Why move the block below this line?
->
-if we move the dodgy handling into __udp_gso_segment then it does not
-need to move below this line.
-
 > > +
 > > +       if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4) {
 > > +               if (skb_gso_ok(skb, features | NETIF_F_GSO_ROBUST)) {
@@ -184,22 +169,13 @@ tual gso_segs */
 > > +                       goto out;
 > > +               } else {
 > > +                       return __udp_gso_segment(skb, features, false);
+>
+> I think it's better and cleaner to move those changes in
+> __udp_gso_segment() as Willem suggests.
+>
 > > +               }
 > > +       }
 > > +
->
-> The validation should take place inside __udp_gso_segment.
->
-> Revert the previous patch to always enter that function for USO packets:
->
->        if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4)
->                 return __udp_gso_segment(skb, features, false);
->
-> And in that function decide to return NULL after validation.
->
-Good call, that's indeed better. Thanks
-
->
 > >         if (unlikely(skb->len <=3D mss))
 > >                 goto out;
 > >
@@ -229,6 +205,26 @@ _UP(skb->len - sizeof(*uh),
   mss);
 > > +                               skb_shinfo(skb)->gso_type &=3D ~SKB_GSO=
 _DODGY;
+>
+> Any reason you want to remove the DODGY here? Is this an optimization?
+> We will lose the chance to recognize/validate it elsewhere.
+>
+It is intended as a small optimization. And this is in fact the piece
+I am not fully confident about: after validating the gso_segs at a
+trusted location (i.e. assuming the kernel is the trusted computing
+base), do we need to validate it somewhere else? For example, in our
+scenario, we have a tun/tap device in a net namespace, so the packet
+going out will enter from the tap, get forwarded through an veth, and
+then a vlan backed by a real ethernet interface. If the bit is carried
+over, then at each egress of these devices, we need to enter the GSO
+code, which feels pretty redundant as long as the packet does not
+leave kernel space. WDYT?
+
+thanks
+
+
+> Thanks
+>
 > > +
 > > +                               segs =3D NULL;
 > > +                               goto out;
@@ -258,7 +254,7 @@ f *skb,
 > > --
 > > 2.30.2
 > >
-
+>
 
 
 --=20
