@@ -2,55 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51A53752B65
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 22:10:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED18F752B62
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 22:10:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233753AbjGMUKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 16:10:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45676 "EHLO
+        id S233670AbjGMUK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 16:10:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233557AbjGMUKY (ORCPT
+        with ESMTP id S233601AbjGMUKY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 13 Jul 2023 16:10:24 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 271BB2709;
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27219270A;
         Thu, 13 Jul 2023 13:10:23 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A698761B5F;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AD31661B60;
         Thu, 13 Jul 2023 20:10:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 120C9C433CC;
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 1A348C433C9;
         Thu, 13 Jul 2023 20:10:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1689279022;
-        bh=lOcxPAn7eW8rV5VQ5ki2zUL6NoKylKlp4dLBNIixKAE=;
+        bh=Vd69UnBMvNxkGVnrm8VAbe2niEVf8MQoM3flkrP2Mwg=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=uBS5rfT+Db8Tt5JpaNjmHcNM3Zrb2s9NRMvWHmIEbjv0L5mGLw82jDpcU9c7TeFEG
-         m1UvrV9Kij7FzvP8/gqs8/eWehrz1nHRow9wsD6W/mveKARl0mezBxXEcAOU/gMhtT
-         8IlRBJZym1IXnIgsSrbMKi34H5B9iFKlmKeDOiW2MetIIlzRqQXRTb7aJdkAreQeZb
-         1GBRnyCutOTvXsu0/tSTHIx4B795Dn5R5HYb9rOfG54sdlEChu5M8fcN6XY42pCk4V
-         upTI/SHICikH2tX5wt8rxgv//ym443lq4/ZRj9QZzDslT05cFiVMeJph1ZC209jc1S
-         XqL6CMbjfI0Ig==
+        b=ry31bvQCUMTGpltWNCWm+i8gT81OJgHFD8sWLHgzlbFDYVabFOBCS7PvY5kc1yqtU
+         H8N1k0zNorxr6GndVvVu0horqnrCgj9hQ9rWviIEvFBIC/4ZMjmpm9vrzg/87rYXyg
+         oIfxDB7O+j25GSrP/cXOjmuv+a1OHlWLqu+U2lto6YCqILbgrijX1uIn7a6x+bdi/D
+         6UYUn8aQTLRDEZgl77sE90a2ABAJfLn9vrshP0YaaeIlP7qxPA4CWOMpxYVmgBtSpt
+         CbBkneDhpVKI5QCN1HQoPypUne3syXGfnAU9HZA+4y4HK7+9CU93AAspCu2a569me3
+         xMnDsMsDAHBVg==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E7077E29F42;
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id EEE8CE4D006;
         Thu, 13 Jul 2023 20:10:21 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v6] Bluetooth: btmtk: Fix kernel crash when processing
- coredump
+Subject: Re: [PATCH v2] Bluetooth: btusb: Add support for another MediaTek 7922
+ VID/PID
 From:   patchwork-bot+bluetooth@kernel.org
-Message-Id: <168927902193.26469.1216998273378842695.git-patchwork-notify@kernel.org>
+Message-Id: <168927902197.26469.16922399141053596083.git-patchwork-notify@kernel.org>
 Date:   Thu, 13 Jul 2023 20:10:21 +0000
-References: <20230713071105.26248-1-chris.lu@mediatek.com>
-In-Reply-To: <20230713071105.26248-1-chris.lu@mediatek.com>
-To:     Chris Lu <chris.lu@mediatek.com>
-Cc:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
-        sean.wang@mediatek.com, aaron.hou@mediatek.com,
-        steve.lee@mediatek.com, linux-bluetooth@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org
+References: <20230712213602.15280-1-rgammans@gammascience.co.uk>
+In-Reply-To: <20230712213602.15280-1-rgammans@gammascience.co.uk>
+To:     Roger Gammans <rgammans@gammascience.co.uk>
+Cc:     luiz.dentz@gmail.com, johan.hedberg@gmail.com, marcel@holtmann.org,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -66,79 +64,57 @@ Hello:
 This patch was applied to bluetooth/bluetooth-next.git (master)
 by Luiz Augusto von Dentz <luiz.von.dentz@intel.com>:
 
-On Thu, 13 Jul 2023 15:11:06 +0800 you wrote:
-> There may be a potential kernel crash risk if 'skb->len
-> - MTK_COREDUMP_END_LEN' value is less than 0 when doing
-> memcmp in btmtk_process_coredump().
-> Check the value is valid before doing memcmp.
+On Wed, 12 Jul 2023 22:36:02 +0100 you wrote:
+> This one is found on the Dell Inspiron 2-in-1 7435
 > 
-> [215.021695] Unable to handle kernel paging request at
->              virtual address ffffff939fffd3c5
-> [215.021781] Mem abort info:
-> [215.021805]   ESR = 0x96000005
-> [215.021833]   EC = 0x25: DABT (current EL), IL = 32 bits
-> [215.021861]   SET = 0, FnV = 0
-> [215.021875]   EA = 0, S1PTW = 0
-> [215.021886] Data abort info:
-> [215.021899]   ISV = 0, ISS = 0x00000005
-> [215.021912]   CM = 0, WnR = 0
-> [215.021929] swapper pgtable: 4k pages, 39-bit VAs,
->              pgdp=00000000410de000
-> [215.021943] [ffffff939fffd3c5] pgd=0000000000000000,
->              p4d=0000000000000000, pud=0000000000000000
-> [215.021979] Internal error: Oops: 96000005 [#1] PREEMPT SMP
-> [215.022496] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.10.186#3
->              (HASH:ad23 4)
-> [215.022511] Hardware name: MediaTek Tomato board (DT)
-> [215.022530] pstate: 80400009 (Nzcv daif +PAN -UAO -TCO BTYPE=--)
-> [215.022556] pc : __pi_memcmp+0xd0/0x1b8
-> [215.022579] lr : btmtk_process_coredump+0xb0/0x5f8 [btmtk]
-> [215.022593] sp : ffffffc010003d40
-> [215.022607] x29: ffffffc010003d40 x28: 0000000000000006
-> [215.022633] x27: ffffffda696350c0 x26: 0000000000000002
-> [215.022659] x25: 00000000000003ff x24: ffffff9360cca804
-> [215.022685] x23: 0000000000000000 x22: ffffff9365638500
-> [215.022710] x21: ffffff9365638700 x20: 0000000000000000
-> [215.022736] x19: ffffff936002e000 x18: 0000000000000000
-> [215.022761] x17: 0000000000000180 x16: ffffffda6881b8b4
-> [215.022787] x15: 0000000000000001 x14: 0000000000002d00
-> [215.022812] x13: 0000000000060000 x12: 0000000000000181
-> [215.022837] x11: 0000000000000006 x10: fffffffffffffffd
-> [215.022862] x9 : 0000000000000006 x8 : 0000000000000003
-> [215.022887] x7 : 0000000000000000 x6 : 0000000000000000
-> [215.022913] x5 : ffffff93656387b8 x4 : 0000000000000000
-> [215.022938] x3 : ffffffc010003c18 x2 : 0000000000000006
-> [215.022963] x1 : ffffffda09d4124a x0 : ffffff939fffd3c5
-> [215.022989] Call trace:
-> [215.023012]  __pi_memcmp+0xd0/0x1b8
-> [215.023053]  btusb_recv_acl_mtk+0x64/0x90 [btusb (HASH:dc6b 5)]
-> [215.023087]  btusb_recv_bulk+0x118/0x170 [btusb (HASH:dc6b 5)]
-> [215.023121]  btusb_bulk_complete+0x8c/0x148 [btusb (HASH:dc6b 5)]
-> [215.023144]  __usb_hcd_giveback_urb+0xbc/0x148
-> [215.023164]  usb_giveback_urb_bh+0xb4/0x190
-> [215.023184]  tasklet_action_common+0x98/0x1a0
-> [215.023201]  tasklet_action+0x2c/0x38
-> [215.023220]  __do_softirq+0xe0/0x38c
-> [215.023241]  invoke_softirq+0x34/0x6c
-> [215.023258]  irq_exit+0x6c/0xb0
-> [215.023279]  __handle_domain_irq+0x98/0xd4
-> [215.023296]  gic_handle_irq+0x5c/0x11c
-> [215.023313]  el1_irq+0xd0/0x180
-> [215.023332]  cpuidle_enter_state+0xac/0x338
-> [215.023349]  cpuidle_enter+0x40/0x70
-> [215.023366]  do_idle+0x150/0x278
-> [215.023384]  cpu_startup_entry+0x2c/0x58
-> [215.023401]  rest_init+0xdc/0xec
-> [215.023419]  arch_call_rest_init+0x18/0x24
-> [215.023435]  start_kernel+0x334/0x400
-> [215.023460] Code: 91002129 eb09010a 9a89810b cb0b0042 (38401403)
-> [215.023478] ---[ end trace 28668fd20c7a90cd ]
+> The information in /sys/kernel/debug/usb/devices about the Bluetooth
+> device is listed as the below.
+> 
+> T:  Bus=03 Lev=01 Prnt=01 Port=02 Cnt=01 Dev#=  2 Spd=480  MxCh= 0
+> D:  Ver= 2.10 Cls=ef(misc ) Sub=02 Prot=01 MxPS=64 #Cfgs=  1
+> P:  Vendor=0489 ProdID=e0f1 Rev= 1.00
+> S:  Manufacturer=MediaTek Inc.
+> S:  Product=Wireless_Device
+> S:  SerialNumber=000000000
+> C:* #Ifs= 3 Cfg#= 1 Atr=e0 MxPwr=100mA
+> A:  FirstIf#= 0 IfCount= 3 Cls=e0(wlcon) Sub=01 Prot=01
+> I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=125us
+> E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
+> I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
+> I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
+> I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
+> I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
+> I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
+> I:  If#= 1 Alt= 6 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
+> E:  Ad=83(I) Atr=01(Isoc) MxPS=  63 Ivl=1ms
+> E:  Ad=03(O) Atr=01(Isoc) MxPS=  63 Ivl=1ms
+> I:* If#= 2 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=(none)
+> E:  Ad=8a(I) Atr=03(Int.) MxPS=  64 Ivl=125us
+> E:  Ad=0a(O) Atr=03(Int.) MxPS=  64 Ivl=125us
+> I:  If#= 2 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=(none)
+> E:  Ad=8a(I) Atr=03(Int.) MxPS= 512 Ivl=125us
+> E:  Ad=0a(O) Atr=03(Int.) MxPS= 512 Ivl=125us
 > 
 > [...]
 
 Here is the summary with links:
-  - [v6] Bluetooth: btmtk: Fix kernel crash when processing coredump
-    https://git.kernel.org/bluetooth/bluetooth-next/c/2ba6216b8b37
+  - [v2] Bluetooth: btusb: Add support for another MediaTek 7922 VID/PID
+    https://git.kernel.org/bluetooth/bluetooth-next/c/ce13b87737a8
 
 You are awesome, thank you!
 -- 
