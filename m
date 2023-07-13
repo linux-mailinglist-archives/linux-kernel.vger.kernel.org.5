@@ -2,57 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF217752145
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 14:28:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35EAE752148
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 14:30:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234748AbjGMM2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 08:28:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49798 "EHLO
+        id S234750AbjGMMaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 08:30:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234287AbjGMM21 (ORCPT
+        with ESMTP id S234287AbjGMMaN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 08:28:27 -0400
+        Thu, 13 Jul 2023 08:30:13 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1C5119B;
-        Thu, 13 Jul 2023 05:28:26 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 140B519B4
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 05:30:13 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 85B66610E7;
-        Thu, 13 Jul 2023 12:28:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4401C433C7;
-        Thu, 13 Jul 2023 12:28:23 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9D169610A6
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 12:30:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED282C433C8;
+        Thu, 13 Jul 2023 12:30:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689251305;
-        bh=8f8B420S2iez6Nmhlz8hkDDgDQ2+6nOB0mFrfGPMq6c=;
+        s=k20201202; t=1689251412;
+        bh=sQcZxsFkCNWRLdgruhrDdD5aFaAy2pxE5uSPrI77aTo=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GX1xK+lkiknPcbIVSTtjKp7sNrQf8Bk5hqaCJYa3bnt+geSrHWjFnoHsrBUKh6ZbC
-         /TK94u7I3SMgGYHawfX9CIMUscmzybc4kBak3nkM102nS9BIQ/o2ey/gBZtnXF1LoY
-         JjlbHjAJZpPuaFOwzopcXiZ7Pf9KLbm8KveUMJlwxbc8p3NdgKu+sIfo6to+qhRBnX
-         UBALvHEtr7eAjNnFUhufEZZsinz2y0SQGaxD+GAts1UQwW5YlI+zdF49VQ5qeR1NMe
-         wNpAzDb/2wkq2gu37qQbiEnzyF3B9u1OSRVN+SUhqFRLfbp1sMaNOiPbVxD5GzuIP3
-         PNcRlVksAXw1A==
-Date:   Thu, 13 Jul 2023 13:28:20 +0100
+        b=ktW+Ju2UrctbF+/WRUqnjneRfiEc5NxcNmlMz80Xitk23Pt+GfTfyrDhcuPNVI8Y7
+         bj/DPiPF9VV3qWFYLru+84wSreNLdMpdsH79exF2q+6ieP0jtySMMRFu860x7ns48k
+         HRvrMLiKPzuUm1fUt/oa0Qv70w8ibMybUiZX9eyS6/7droAu15gWbxg0lX2b6lOwY4
+         1piXUTS82Hvs9fMqjN2Ho3CFs4QgnCRrNgn5YiXpGQJyzT0HLmXDOiFHMifsr0lYml
+         AkeP+h0OG0vYSnMpu3uODplu/yoMp3/qNjAjNN82TFIybUdW+GTODSQfimK+wr6MDx
+         RqTsSdifg9w5w==
+Date:   Thu, 13 Jul 2023 13:30:04 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     William Qiu <william.qiu@starfivetech.com>
-Cc:     devicetree@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH v2 2/3] dt-bindings: spi: constrain minItems of clocks
- and clock-names
-Message-ID: <c5ad1e1c-58f4-4833-b9c7-8876c1a0dc27@sirena.org.uk>
-References: <20230713090015.127541-1-william.qiu@starfivetech.com>
- <20230713090015.127541-3-william.qiu@starfivetech.com>
+To:     Christoph Niedermaier <cniedermaier@dh-electronics.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Support Opensource <support.opensource@diasemi.com>,
+        Adam Thomson <Adam.Thomson.Opensource@diasemi.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Marek Vasut <marex@denx.de>, kernel@dh-electronics.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V5] regulator: da9062: Make the use of IRQ optional
+Message-ID: <d8f60e51-2d62-4370-9032-51eda744239d@sirena.org.uk>
+References: <20230713090328.3879-1-cniedermaier@dh-electronics.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="NdTpCj8USvWVeToK"
+        protocol="application/pgp-signature"; boundary="ZhH88YA9AlDlO1Kf"
 Content-Disposition: inline
-In-Reply-To: <20230713090015.127541-3-william.qiu@starfivetech.com>
+In-Reply-To: <20230713090328.3879-1-cniedermaier@dh-electronics.com>
 X-Cookie: MOUNT TAPE U1439 ON B3, NO RING
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
@@ -65,32 +62,38 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---NdTpCj8USvWVeToK
+--ZhH88YA9AlDlO1Kf
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Jul 13, 2023 at 05:00:14PM +0800, William Qiu wrote:
+On Thu, Jul 13, 2023 at 11:03:28AM +0200, Christoph Niedermaier wrote:
 
-> The SPI controller only need apb_pclk clock to work properly on JH7110 SoC,
-> so there add minItems whose value is equal to 1. Other platforms do not
-> have this constraint.
+> This patch makes the use of IRQ optional to make the DA9061/62 usable
+> for designs that don't have the IRQ pin connected, because the regulator
+> is usable without IRQ.
 
-Presumably this means that this is some variant of the usual pl022 IP,
-or that the clock is in fact present but is not modelled in your DT?
+Are there any dependencies for this patch?  The fact that I acked it
+makes me think there were MFD parts
 
---NdTpCj8USvWVeToK
+> Reported-by: kernel test robot <lkp@intel.com>
+> Link: https://lore.kernel.org/oe-kbuild-all/202303082246.GuLdPL0t-lkp@intel.com/
+
+I really doubt that the LKP bot ran into an issue due to a system with
+this device without an IRQ wired up...
+
+--ZhH88YA9AlDlO1Kf
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmSv7eMACgkQJNaLcl1U
-h9A7eAf/USoycBJ8F/DS9P8f6DPSfiP5R4ajKsnjatuVuVfv7CtwU6QvKsBs+HXu
-sAfE7Ig2/LZNZJcmQohmMe5Iu3lcHZLQpbjhLVD25aDsWojcsz2KCg8/wXKoi8xG
-jdpYPYlfeS8nwDOKyyOCUti0aTx8wWRB42AFcnv4FQ0E/wTYjI23wyreGcjZDbwb
-+2i4KkIBIAfJmes1pBxZ9VTUgbj/1NFeeotZCK1kfMog5dffc5bNCwna2ZmwlVUd
-Zn3M2C7p2SlSytkklg4UBSaKF/hLj9FxVSwMEj3zNW3ueQ0go69khO3NdsFRPGV+
-81J//IT4oLSxCrgbu0t5913MDarLIQ==
-=fvSe
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmSv7kwACgkQJNaLcl1U
+h9Dk3ggAg42Bxb1YqW/uFXFf0VSUCOZdV+qHuNXMF7MYWR1SDSIbF327ZXEVDkPy
+uRj/SNhpGYK/cNCEjyvnPlvNJdHVPuXgwIWG1N427HDUuFErvdqxCA9OBSYHyVRO
+v0TwUTgwdCRKS/pvO1qcQff7uQ2ZFOU20rKSSRAWtd0roR//eQzeAZzHeSB6ZACU
+bLz8xhFG1j6dATPltyHN33pj7p2xkprS8sULZKYNyyudPeqGkuUT0OAz6vRMFfxt
+Wv2/JlIUUE4OrGEc88h8mXyHFmPTLyFvcDIzzo39LxXXdvfxLvZjLpa+Igrh/2Q2
++gcv/M/rLPd8lBUtoFuw7KvwY75F6A==
+=1tcM
 -----END PGP SIGNATURE-----
 
---NdTpCj8USvWVeToK--
+--ZhH88YA9AlDlO1Kf--
