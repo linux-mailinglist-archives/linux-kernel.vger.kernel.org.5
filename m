@@ -2,169 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A28B0752DF2
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 01:28:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C6FA752DF3
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 01:28:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233960AbjGMX2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 19:28:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58234 "EHLO
+        id S234373AbjGMX2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 19:28:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231303AbjGMX2O (ORCPT
+        with ESMTP id S231303AbjGMX2y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 19:28:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AF1426B3
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 16:27:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689290846;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MMEnf8rXxOUbhCoMjSDXkxxMaYDWouwwWK2L8mM+xTY=;
-        b=PcjdwTIk15zmrkA0wf2cmB/fmJIK0+ZJ/NupIjP3Vt/hM37FcLiYGNbdyQFKh1ZB+paFSv
-        8IWdOm+WN7woPSDA2SFazLqbiuT+uu5x1ZBZM/hTY9WEd67A/KiRGAcpi/dlPORPbNib24
-        oMmLcc304zRJ2TDsMdiBbsWuy2fg9GY=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-573-D7yz2JQ4MiSjr_yOG0uqWw-1; Thu, 13 Jul 2023 19:27:23 -0400
-X-MC-Unique: D7yz2JQ4MiSjr_yOG0uqWw-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Thu, 13 Jul 2023 19:28:54 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B34E269F;
+        Thu, 13 Jul 2023 16:28:53 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 88C47800B35;
-        Thu, 13 Jul 2023 23:27:22 +0000 (UTC)
-Received: from lorien.usersys.redhat.com (unknown [10.22.34.106])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E02EA492B01;
-        Thu, 13 Jul 2023 23:27:21 +0000 (UTC)
-Date:   Thu, 13 Jul 2023 19:27:19 -0400
-From:   Phil Auld <pauld@redhat.com>
-To:     Benjamin Segall <bsegall@google.com>
-Cc:     linux-kernel@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mel Gorman <mgorman@suse.de>,
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C790261B9A;
+        Thu, 13 Jul 2023 23:28:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22CB0C433C7;
+        Thu, 13 Jul 2023 23:28:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689290932;
+        bh=NDO2P9+RW636wRRXRtr7gwSzDOuhmqm37GP4lCYn9IY=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=dGIlaA5ACD0zbItZfFo5zQ6YW8m63CwBqa6iBL/EIvMwzkmxhHy+Vt3QD8Lfj7jv6
+         +fHfJHVFhTJdNfg5s5cdqxNKOIRV7F7i8HYgG/43RP555xzqsSgDENBiG7OgYpNryt
+         T4cKkUq0aiidOcxwlqsNmggDCaHZ6gHu4q5trruYmW7pRd6WVa6oau9CYZrDizqRyn
+         U4z+XzLF3eaHAqJqMD1hLDIgzF2Md6RtjNXqlwJg/lNjSqEKy7kov61csq8rWYh6nB
+         nrqqJW5OO/Gjv6m2PDxGNl1tXJkRwpzr8ff+GZi1TaqQ5k0rLy/U9s7+ZlxJWP0k3b
+         ts0UG7Hq1otEQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id A2BA4CE009E; Thu, 13 Jul 2023 16:28:51 -0700 (PDT)
+Date:   Thu, 13 Jul 2023 16:28:51 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Sandeep Dhavale <dhavale@google.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        Gao Xiang <hsiangkao@linux.alibaba.com>,
         Frederic Weisbecker <frederic@kernel.org>,
-        Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH v2 1/2] sched, cgroup: Restore meaning to
- hierarchical_quota
-Message-ID: <20230713232719.GA32912@lorien.usersys.redhat.com>
-References: <20230712133357.381137-1-pauld@redhat.com>
- <20230712133357.381137-2-pauld@redhat.com>
- <xm268rbkg4tg.fsf@google.com>
- <20230713132306.GA13342@lorien.usersys.redhat.com>
- <xm26zg3zefl7.fsf@google.com>
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-erofs@lists.ozlabs.org, xiang@kernel.org,
+        Will Shiu <Will.Shiu@mediatek.com>, kernel-team@android.com,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH v1] rcu: Fix and improve RCU read lock checks when
+ !CONFIG_DEBUG_LOCK_ALLOC
+Message-ID: <906e7981-9da2-4b3d-b200-aad7c8057bef@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <f1c60dcb-e32f-7b7e-bf0d-5dec999e9299@linux.alibaba.com>
+ <CAEXW_YSODXRfgkR0D2G-x=0uZdsqvF3kZL+LL3DcRX-5CULJ1Q@mail.gmail.com>
+ <894a3b64-a369-7bc6-c8a8-0910843cc587@linux.alibaba.com>
+ <CAEXW_YSM1yik4yWTgZoxCS9RM6TbsL26VCVCH=41+uMA8chfAQ@mail.gmail.com>
+ <58b661d0-0ebb-4b45-a10d-c5927fb791cd@paulmck-laptop>
+ <CAB=BE-QSaRKvVQg28wu6zVoO9RwiHZgXJzUaEMdbtpieVLmT8A@mail.gmail.com>
+ <39923da8-16a1-43a8-99f1-5e13508e4ee4@paulmck-laptop>
+ <CAB=BE-QNFhOD=xe09hiZOLmDN7XQxnaxyMz1X=4EeU7SFKaRKA@mail.gmail.com>
+ <32b8c9d5-37da-4508-b524-fc0fd326c432@paulmck-laptop>
+ <CAB=BE-SwUTDkVvd5s3-NjEzBTqoZnHFdZg0OU-YVK+h3rxnEuw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <xm26zg3zefl7.fsf@google.com>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAB=BE-SwUTDkVvd5s3-NjEzBTqoZnHFdZg0OU-YVK+h3rxnEuw@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 01:12:04PM -0700 Benjamin Segall wrote:
-> Phil Auld <pauld@redhat.com> writes:
-> 
-> > On Wed, Jul 12, 2023 at 03:09:31PM -0700 Benjamin Segall wrote:
-> >> Phil Auld <pauld@redhat.com> writes:
-> >> 
-> >> > In cgroupv2 cfs_b->hierarchical_quota is set to -1 for all task
-> >> > groups due to the previous fix simply taking the min.  It should
-> >> > reflect a limit imposed at that level or by an ancestor. Even
-> >> > though cgroupv2 does not require child quota to be less than or
-> >> > equal to that of its ancestors the task group will still be
-> >> > constrained by such a quota so this should be shown here. Cgroupv1
-> >> > continues to set this correctly.
-> >> >
-> >> > In both cases, add initialization when a new task group is created
-> >> > based on the current parent's value (or RUNTIME_INF in the case of
-> >> > root_task_group). Otherwise, the field is wrong until a quota is
-> >> > changed after creation and __cfs_schedulable() is called.
-> >> >
-> >> > Fixes: c53593e5cb69 ("sched, cgroup: Don't reject lower cpu.max on ancestors")
-> >> > Signed-off-by: Phil Auld <pauld@redhat.com>
-> >> > Reviewed-by: Ben Segall <bsegall@google.com>
-> >> > Cc: Ingo Molnar <mingo@redhat.com>
-> >> > Cc: Peter Zijlstra <peterz@infradead.org>
-> >> > Cc: Vincent Guittot <vincent.guittot@linaro.org>
-> >> > Cc: Juri Lelli <juri.lelli@redhat.com>
-> >> > Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> >> > Cc: Valentin Schneider <vschneid@redhat.com>
-> >> > Cc: Ben Segall <bsegall@google.com>
-> >> > Cc: Frederic Weisbecker <frederic@kernel.org>
-> >> > Cc: Tejun Heo <tj@kernel.org>
-> >> > ---
-> >> >
-> >> > v2: Improve comment about how setting hierarchical_quota correctly
-> >> >
-> >> > helps the scheduler. Remove extra parens.
-> >> >  kernel/sched/core.c  | 13 +++++++++----
-> >> >  kernel/sched/fair.c  |  7 ++++---
-> >> >  kernel/sched/sched.h |  2 +-
-> >> >  3 files changed, 14 insertions(+), 8 deletions(-)
-> >> >
-> >> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> >> > index a68d1276bab0..f80697a79baf 100644
-> >> > --- a/kernel/sched/core.c
-> >> > +++ b/kernel/sched/core.c
-> >> > @@ -9904,7 +9904,7 @@ void __init sched_init(void)
-> >> >  		ptr += nr_cpu_ids * sizeof(void **);
-> >> >  
-> >> >  		root_task_group.shares = ROOT_TASK_GROUP_LOAD;
-> >> > -		init_cfs_bandwidth(&root_task_group.cfs_bandwidth);
-> >> > +		init_cfs_bandwidth(&root_task_group.cfs_bandwidth, NULL);
-> >> >  #endif /* CONFIG_FAIR_GROUP_SCHED */
-> >> >  #ifdef CONFIG_RT_GROUP_SCHED
-> >> >  		root_task_group.rt_se = (struct sched_rt_entity **)ptr;
-> >> > @@ -11038,11 +11038,16 @@ static int tg_cfs_schedulable_down(struct task_group *tg, void *data)
-> >> >  
-> >> >  		/*
-> >> >  		 * Ensure max(child_quota) <= parent_quota.  On cgroup2,
-> >> > -		 * always take the min.  On cgroup1, only inherit when no
-> >> > -		 * limit is set:
-> >> > +		 * always take the non-RUNTIME_INF min.  On cgroup1, only
-> >> > +		 * inherit when no limit is set. In cgroup2 this is used
-> >> > +		 * by the scheduler to determine if a given CFS task has a
-> >> > +		 * bandwidth constraint at some higher level.
-> >> >  		 */
-> >> 
-> >> It's still used for determining this on cgroup1 (and the cgroup1 code
-> >> still works for that), right?
-> >>
+On Thu, Jul 13, 2023 at 04:08:29PM -0700, Sandeep Dhavale wrote:
 > >
-> > It would, except that the enforcement of child quota <= parent quota
-> > means that cfs_rq->runtime_enabled will be set and we'll hit that first
-> > on cgroup1.  So we don't really use it for this determination in
-> > cgroup1.
+> > Sorry, but the current lockdep-support functions need to stay focused
+> > on lockdep.  They are not set up for general use, as we already saw
+> > with rcu_is_watching().
+> >
+> Ok, understood.
 > 
-> cgroup1 tg_cfs_schedulable_down only constricts child quota when it's
-> set. You can set quota=RUNTIME_INF on any cgroup, no matter what its
-> parent is. (The schedulable constraint is a little silly)
+> > If you get a z_erofs_wq_needed() (or whatever) upstream, and if it turns
+> > out that there is an RCU-specific portion that has clean semantics,
+> > then I would be willing to look at pulling that portion into RCU.
+> > Note "look at" as opposed to "unconditionally agree to".  ;-)
+> > > > I have no official opinion myself, but there are quite a few people
+> > > ...
+> > >
+> > > Regarding erofs trying to detect this, I understand few people can
+> > > have different
+> > > opinions. Not scheduling a thread while being in a thread context itself
+> > > is reasonable in my opinion which also has shown performance gains.
+> >
+> > You still haven't quantified the performance gains.  Presumably they
+> > are most compelling with large numbers of small buffers to be decrypted.
 > 
+> Maybe you missed one of the replies. Link [1] shows the scheduling overhead
+> for kworker vs high pri kthread. I think we can all see that there is non-zero
+> cost associated with always scheduling vs inline decompression.
 
-Aargh :)   I had "In both cases this ..." there before I talked myself out
-of it.
+Heh!  A reply I was not CCed on back in February.  ;-)
 
-I'll update this one.
+But data like that included directly in the commit log, gathered
+specifically for that commit log's patch, would be very helpful.
 
+> > But why not just make a z_erofs_wq_needed() or similar in your own
+> > code, and push it upstream?  If the performance gains really are so
+> > compelling, one would hope that some sort of reasonable arrangement
+> > could be arrived at.
+> >
+> Yes, we will incorporate additional checks in erofs.
 
+Sounds good to me!
 
-Cheers,
-Phil
+							Thanx, Paul
 
-
-
--- 
-
+> Thanks,
+> Sandeep.
+> 
+> [1] https://lore.kernel.org/linux-erofs/20230208093322.75816-1-hsiangkao@linux.alibaba.com/
