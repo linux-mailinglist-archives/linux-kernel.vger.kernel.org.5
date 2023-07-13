@@ -2,110 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77958752518
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 16:27:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF56F752520
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 16:30:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229953AbjGMO1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 10:27:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41824 "EHLO
+        id S230083AbjGMOaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 10:30:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229949AbjGMO1I (ORCPT
+        with ESMTP id S229523AbjGMOaM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 10:27:08 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 801E72680
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 07:27:06 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3fbd33a57dcso7523775e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 07:27:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689258425; x=1691850425;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=PxQyfBDyp9L0H87NjuF/C5shA0jZRwDe5Ep7LksUpGA=;
-        b=lyyADvTRTCZYjkS+hGu8ZcpekL7ubco8ddA/U4p8sXAvMjxU/scSqXN8fMoPf/acrs
-         ymDzktU59IXkgLBWFyZro3HgIQnOeqyOvZBtqdi0BCVggDQLkcFxQ/PrjLTC+rsb1gn2
-         AZUFlZZAnec8s/iFK7WxxAopdSOGf70TeeevRikuhtPLb6/asiVHQFXbF5ycjdNIPzej
-         CVkpoxn68D59mep2SZJZFoLUWqVZVWDSYrdrkSQ/zFZ3D5tt7ksNEYgRrPecUzKqFaQA
-         23QqTczfiuJLk+NJlwsOGLQ3HaOmy3Hgeyv1rpcKo7P38SPejXaL+zyjm9o7wGcrVdCo
-         KWdQ==
+        Thu, 13 Jul 2023 10:30:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 379E51734
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 07:29:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689258562;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kWheRexL9/dCgbw7jig9WF+1nd9uSSsREdM3sWtNnIk=;
+        b=cb9jSeXP+7BcZ84TYofpyu82IXdAo/lzOrrJXyqVySQsbCGcbVHVLgZIsuk8VKx9G4BLWP
+        sIkFQ0UNtuug7DlXzSM6MzmysOY38YGnjU3eQCZUS7eMtH9gM1LiJTEswrZMV7BNqDqS7/
+        S2jpOSaYQlSAADicu+WMsLQNzZOAtSU=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-599-y2wvcyquPTOTjUrQ97Bk9Q-1; Thu, 13 Jul 2023 10:29:18 -0400
+X-MC-Unique: y2wvcyquPTOTjUrQ97Bk9Q-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-3142665f122so461696f8f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 07:29:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689258425; x=1691850425;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PxQyfBDyp9L0H87NjuF/C5shA0jZRwDe5Ep7LksUpGA=;
-        b=TYwVW9IWIukC0FUQCgu/xdamqDXVkB3qw19gO5dgAWgMOGPti8dlNIyJnkE+7RAdS8
-         56rvrv+XVePSN528jcTqp/mszEjGCt3L5buC/5Cw74AiORJLePsaRAUwr+3UHBG0e5T7
-         eg28k0756Ojmb+UyzQx46pV4BPFYWMfTq0tpemKUfyNRexYXRAcjIf0KvvhJphTsoZFh
-         xWTb0j+/Tx6+utMEQVWEeJz5ccBZ+UsvUSlXtw5qDUqjtZR+TX8Sqa+lX8awEk2fn/50
-         /T3b3zg7pR2X8R5hayCq75o/Axu4RtQO7bTn06yokJil2hQXlPQf1WsBOoNfBu1cI8C6
-         TA3A==
-X-Gm-Message-State: ABy/qLYyQ2R/QEcK4k9hCo4JerFP31LC+LCqbFjZu1F71QcBRRWN1bVt
-        1GoiL4ywdfv1ezsoDCMiU3VqTA==
-X-Google-Smtp-Source: APBJJlFEgqEOG5VUSLROkOBtduudA0q3XdNXVLgqDcYk1NQxcfJmrHVM1leqhzyFg1ZhYct7U868Eg==
-X-Received: by 2002:a7b:ca5a:0:b0:3f7:3991:e12e with SMTP id m26-20020a7bca5a000000b003f73991e12emr1661543wml.1.1689258425056;
-        Thu, 13 Jul 2023 07:27:05 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id p11-20020a1c740b000000b003fbe36a4ce6sm18432534wmc.10.2023.07.13.07.27.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Jul 2023 07:27:03 -0700 (PDT)
-Date:   Thu, 13 Jul 2023 17:26:59 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Linke Li <lilinke99@foxmail.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>, Linke Li <lilinke99@gmail.com>
-Subject: Re: [PATCH] isofs: fix undefined behavior in iso_date()
-Message-ID: <c00d9b0f-69d7-4243-bf3d-cfa5cb18e495@kadam.mountain>
-References: <tencent_4D921A8D1F69E70C85C28875DC829E28EC09@qq.com>
- <79582844-3178-451c-822e-a692bfd27e9c@moroto.mountain>
- <aa811b76ac704140bfa98884c8d6f51e@AcuMS.aculab.com>
+        d=1e100.net; s=20221208; t=1689258556; x=1691850556;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kWheRexL9/dCgbw7jig9WF+1nd9uSSsREdM3sWtNnIk=;
+        b=MEek22hRn+Lv70Ofp91QdZ7UmNp3NY5Fn5SGxei4BmRhgsIs7CjChxTd9PgLhf6j/j
+         SHMQK4U1nsuftXd4Q3HZoPTXwfSaJuC7uM3G6jktpBaA/EiehC/yqS0kMYBSshaEkX5f
+         h+3sFQpD/46NS1A0/NC2dyLsztN3Y7ujJ2CtbnwcRrCRK4Kr9LNYWU+Wosmf2v7ww/Ce
+         1cIzXg8+zxkj2vHmzPjJsP5mj8Ksa926juilY6Sg+pJbAQE7EDzu5sfFhOZBhUPIGnTo
+         tYoFkJeZoMCX9KiVd9EvyCTbdCPZhMklyze8EocUXBij1GvLbTPb74eR/l43RIqrbJWM
+         8T1g==
+X-Gm-Message-State: ABy/qLZAbBGukXzkF4rxAaSVY1lNH8ZIAR9/98eAE0ljj3A3um4RCCFb
+        NONPIdJvC5PYsCu/A8/tzlCLW1IRsxQA7Xslnmf71oIzbcFlYCRNFAAKvp8GTtvE+FcvLhL1iT3
+        TLVIr+xsBCV5O6MH8a5QxcUNl
+X-Received: by 2002:a5d:5185:0:b0:30f:d1e3:22b7 with SMTP id k5-20020a5d5185000000b0030fd1e322b7mr2068827wrv.6.1689258556556;
+        Thu, 13 Jul 2023 07:29:16 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlFCo+2nmgVTcBRc9JOJoYST2pj1+6ivlrd1rEq1VKgGw7EbnCrodlPYzOGiJn5LwTkY0iPvLw==
+X-Received: by 2002:a5d:5185:0:b0:30f:d1e3:22b7 with SMTP id k5-20020a5d5185000000b0030fd1e322b7mr2068802wrv.6.1689258556128;
+        Thu, 13 Jul 2023 07:29:16 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c717:6100:2da7:427e:49a5:e07? (p200300cbc71761002da7427e49a50e07.dip0.t-ipconnect.de. [2003:cb:c717:6100:2da7:427e:49a5:e07])
+        by smtp.gmail.com with ESMTPSA id q10-20020adff50a000000b003144bfbd0b3sm8156598wro.37.2023.07.13.07.29.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 Jul 2023 07:29:15 -0700 (PDT)
+Message-ID: <aacd934b-9249-cb84-5efa-bf331e78688f@redhat.com>
+Date:   Thu, 13 Jul 2023 16:29:14 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aa811b76ac704140bfa98884c8d6f51e@AcuMS.aculab.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v1 3/9] selftests/mm: Skip soft-dirty tests on arm64
+Content-Language: en-US
+To:     Ryan Roberts <ryan.roberts@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Mark Brown <broonie@kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Florent Revest <revest@chromium.org>,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org
+References: <20230713135440.3651409-1-ryan.roberts@arm.com>
+ <20230713135440.3651409-4-ryan.roberts@arm.com>
+ <cf3c237e-69c8-dd6e-26fc-fe19de910813@redhat.com>
+ <773cc0a8-24b8-7fcb-2980-7676fc772014@arm.com>
+ <3c566e28-c7ad-7ba8-4583-619266282387@redhat.com>
+ <556d05f0-7103-1079-fce1-1fb6bd40b17c@arm.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <556d05f0-7103-1079-fce1-1fb6bd40b17c@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 02:11:02PM +0000, David Laight wrote:
-> From: Dan Carpenter
-> > Sent: 10 July 2023 10:57
-> > 
-> > It looks like maybe there is an issue with "year" as well.
-> > 
-> > fs/isofs/util.c
-> >     19  int iso_date(u8 *p, int flag)
-> >     20  {
-> >     21          int year, month, day, hour, minute, second, tz;
-> >     22          int crtime;
-> >     23
-> >     24          year = p[0];
-> >                        ^^^^^
-> > year is 0-255.
-> ....
-> >     32
-> >     33          if (year < 0) {
-> >                     ^^^^^^^^
-> > But this checks year for < 0 which is impossible.  Should it be:
-> > 
-> > 	year = (signed char)p[0];?
+On 13.07.23 16:14, Ryan Roberts wrote:
+> On 13/07/2023 15:09, David Hildenbrand wrote:
+>> On 13.07.23 16:03, Ryan Roberts wrote:
+>>> On 13/07/2023 14:56, David Hildenbrand wrote:
+>>>> On 13.07.23 15:54, Ryan Roberts wrote:
+>>>>> arm64 does not support the soft-dirty PTE bit. However there are tests
+>>>>> in `madv_populate` and `soft-dirty` which assume it is supported and
+>>>>> cause spurious failures to be reported when preferred behaviour would be
+>>>>> to mark the tests as skipped.
+>>>>>
+>>>>> Unfortunately, the only way to determine if the soft-dirty dirty bit is
+>>>>> supported is to write to a page, then see if the bit is set in
+>>>>> /proc/self/pagemap. But the tests that we want to conditionally execute
+>>>>> are testing precicesly this. So if we introduced this feature check, we
+>>>>> could accedentally turn a real failure (on a system that claims to
+>>>>> support soft-dirty) into a skip.
+>>>>>
+>>>>> So instead, do the check based on architecture; for arm64, we report
+>>>>> that soft-dirty is not supported. This is wrapped up into a utility
+>>>>> function `system_has_softdirty()`, which is used to skip the whole
+>>>>> `soft-dirty` suite, and mark the soft-dirty tests in the `madv_populate`
+>>>>> suite as skipped.
+>>>>>
+>>>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+>>>>> ---
+>>>>>     tools/testing/selftests/mm/madv_populate.c | 18 +++++++++++++-----
+>>>>>     tools/testing/selftests/mm/soft-dirty.c    |  3 +++
+>>>>>     tools/testing/selftests/mm/vm_util.c       | 17 +++++++++++++++++
+>>>>>     tools/testing/selftests/mm/vm_util.h       |  1 +
+>>>>>     4 files changed, 34 insertions(+), 5 deletions(-)
+>>>>>
+>>>>> diff --git a/tools/testing/selftests/mm/madv_populate.c
+>>>>> b/tools/testing/selftests/mm/madv_populate.c
+>>>>> index 60547245e479..5a8c176d7fec 100644
+>>>>> --- a/tools/testing/selftests/mm/madv_populate.c
+>>>>> +++ b/tools/testing/selftests/mm/madv_populate.c
+>>>>> @@ -232,6 +232,14 @@ static bool range_is_not_softdirty(char *start, ssize_t
+>>>>> size)
+>>>>>         return ret;
+>>>>>     }
+>>>>>
+>>>>> +#define ksft_test_result_if_softdirty(cond, ...)    \
+>>>>> +do {                            \
+>>>>> +    if (system_has_softdirty())            \
+>>>>> +        ksft_test_result(cond, __VA_ARGS__);    \
+>>>>> +    else                        \
+>>>>> +        ksft_test_result_skip(__VA_ARGS__);    \
+>>>>> +} while (0)
+>>>>> +
+>>>>>     static void test_softdirty(void)
+>>>>>     {
+>>>>>         char *addr;
+>>>>> @@ -246,19 +254,19 @@ static void test_softdirty(void)
+>>>>>
+>>>>>         /* Clear any softdirty bits. */
+>>>>>         clear_softdirty();
+>>>>> -    ksft_test_result(range_is_not_softdirty(addr, SIZE),
+>>>>> +    ksft_test_result_if_softdirty(range_is_not_softdirty(addr, SIZE),
+>>>>>                  "range is not softdirty\n");
+>>>>>
+>>>>>         /* Populating READ should set softdirty. */
+>>>>>         ret = madvise(addr, SIZE, MADV_POPULATE_READ);
+>>>>> -    ksft_test_result(!ret, "MADV_POPULATE_READ\n");
+>>>>> -    ksft_test_result(range_is_not_softdirty(addr, SIZE),
+>>>>> +    ksft_test_result_if_softdirty(!ret, "MADV_POPULATE_READ\n");
+>>>>> +    ksft_test_result_if_softdirty(range_is_not_softdirty(addr, SIZE),
+>>>>>                  "range is not softdirty\n");
+>>>>>
+>>>>>         /* Populating WRITE should set softdirty. */
+>>>>>         ret = madvise(addr, SIZE, MADV_POPULATE_WRITE);
+>>>>> -    ksft_test_result(!ret, "MADV_POPULATE_WRITE\n");
+>>>>> -    ksft_test_result(range_is_softdirty(addr, SIZE),
+>>>>> +    ksft_test_result_if_softdirty(!ret, "MADV_POPULATE_WRITE\n");
+>>>>> +    ksft_test_result_if_softdirty(range_is_softdirty(addr, SIZE),
+>>>>>                  "range is softdirty\n");
+>>>>
+>>>> We probably want to skip the whole test_*softdirty* test instead of adding this
+>>>> (IMHO suboptimal) ksft_test_result_if_softdirty.
+>>>
+>>> Yeah I thought about doing it that way, but then the output just looks like
+>>> there were fewer tests and they all passed. But thinking about it now, I guess
+>>> the TAP header outputs the number of planned tests and the number of tests
+>>> executed are fewer, so a machine parser would still notice. I just don't like
+>>> that it outputs skipped:0.
+>>>
+>>> But it a lightly held view. Happy to just do:
+>>>
+>>>      if (system_has_softdirty())
+>>>          test_softdirty()
+>>>
+>>> If you insist. ;-)
+>>
+>> diff --git a/tools/testing/selftests/mm/madv_populate.c
+>> b/tools/testing/selftests/mm/madv_populate.c
+>> index 60547245e479..33fda0337b32 100644
+>> --- a/tools/testing/selftests/mm/madv_populate.c
+>> +++ b/tools/testing/selftests/mm/madv_populate.c
+>> @@ -266,12 +266,16 @@ static void test_softdirty(void)
+>>   
+>>   int main(int argc, char **argv)
+>>   {
+>> +       int nr_tests = 16;
+>>          int err;
+>>   
+>>          pagesize = getpagesize();
+>>   
+>> +       if (system_has_softdirty())
+>> +               nr_tests += 5;
 > 
-> Or not?
-> 
-> What happens in 2027 ?
-> I bet the value has to be treated an unsigned.
+> This is the opposite of the point I was trying to make; If there are 21 tests in
+> a suite, I'd like to know that there are 21 tests, 16 of which passed and 5 of
+> which were skipped. This will hide the 5 from the test report.
 
-Yeah.  Good point.  We could delete that if statement and pull the whole
-function in a tab.
+Well, these test are impossible on that architecture, which is IMHO 
+different to some kind of "impossible in the configuration" like "no 
+swap", "no hugetlb", "no THP available".
 
-regards,
-dan carpenter
+-- 
+Cheers,
+
+David / dhildenb
 
