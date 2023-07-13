@@ -2,108 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D60D75194A
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 09:04:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 567D275194F
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 09:06:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233898AbjGMHEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 03:04:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33124 "EHLO
+        id S230281AbjGMHGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 03:06:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233560AbjGMHEv (ORCPT
+        with ESMTP id S233212AbjGMHGh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 03:04:51 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BB1B172C
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 00:04:50 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R1lwb1zwvzBL4kD
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 15:04:47 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689231887; x=1691823888; bh=hOv6olFChRQtE64fY6wHJgjor0+
-        nEFlIexqOHv6IHq0=; b=POJi/Bs/j4j78irF1yptP0eaf3Yr1RmAcOnF9ZTcwr2
-        CpD8QMugKELPSoaFAHYn7QtIjsBUq81+Uk6aEZojZ4f06VmUsIFXRYfr18EwZnIR
-        ybhp5VxInvKqcIFu+ELpHJSPEWML71RqFpOTszqAlI0SJ26X/WIOyRd8m6XOXQtY
-        YE+VryewE8zDCl56pO/D0KeyX9EjJKBK5HP9T7gfVdJW7lz2wF1faY1TfSEwRqLN
-        HY0SiFA48iHofy5Cm2CXQaMhM/xNOOOaWMcuII1A3mefSliuFrJiWl2W4AatFBxg
-        aVMrjoCHmkaoNjlVbnzDd1uPT4jPAAIBbKITUm60wpQ==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id XPYjxSAlcu-u for <linux-kernel@vger.kernel.org>;
-        Thu, 13 Jul 2023 15:04:47 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R1lwZ6zCvzBJDhy;
-        Thu, 13 Jul 2023 15:04:46 +0800 (CST)
+        Thu, 13 Jul 2023 03:06:37 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FD8E119;
+        Thu, 13 Jul 2023 00:06:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=eQ/LFkDYElioH91NZhzdrHW+i+w8b59jw0PilkxQn5U=; b=lok/Ty9gc+9ceqLx7wvXtFv4rj
+        NcCmCJexavQzqRQK1jk3M91UyOXRxJAb0t31cX5gxm9+VTka2hy5fwCxh+9Qs0XFK2G2hBbxShT53
+        1JiywOFMbtrTNXjEOy1slQBlPx0/HI+GLzjK9nosTOaESycmRTBqtKLvIMxzl0qKjfcwLspvQDnhD
+        htd+j4B4ffQbhTi/TP+yiUK8VfC8IMr3KXkuQs2SYaGPICq4x/Na1ZIiceeB0wbtuvNADSzAVl6My
+        gtENuGSPDHKsR+sLiwU67Abe+AN0ooXMTV2NGFV6utVKMcfcwJI+0V/FI4ks4yrIfb6kEbu4hmXaj
+        x1YVl2ZA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:60704)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qJqPE-0005oa-06;
+        Thu, 13 Jul 2023 08:06:28 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qJqP6-0005us-Ga; Thu, 13 Jul 2023 08:06:20 +0100
+Date:   Thu, 13 Jul 2023 08:06:20 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Daniel Golle <daniel@makrotopia.org>
+Cc:     netdev@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        =?iso-8859-1?Q?Bj=F8rn?= Mork <bjorn@mork.no>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Greg Ungerer <gerg@kernel.org>
+Subject: Re: [PATCH v2 net-next 3/9] net: ethernet: mtk_eth_soc: add
+ MTK_NETSYS_V1 capability bit
+Message-ID: <ZK+ibBKWFRniQ8rK@shell.armlinux.org.uk>
+References: <cover.1689012506.git.daniel@makrotopia.org>
+ <a2022fd2db0f7ed54ab07bb93b04aa9fc59033b5.1689012506.git.daniel@makrotopia.org>
 MIME-Version: 1.0
-Date:   Thu, 13 Jul 2023 15:04:46 +0800
-From:   hanyu001@208suo.com
-To:     jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Fwd: [PATCH] scsi: ibmvscsi_tgt: Convert snprintf() to sysfs_emit()
-In-Reply-To: <tencent_9B65D1CAD7CE9FE3086C542B55428F8B110A@qq.com>
-References: <tencent_9B65D1CAD7CE9FE3086C542B55428F8B110A@qq.com>
-User-Agent: Roundcube Webmail
-Message-ID: <0969a39dca88032a93ce9c619e707d7d@208suo.com>
-X-Sender: hanyu001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a2022fd2db0f7ed54ab07bb93b04aa9fc59033b5.1689012506.git.daniel@makrotopia.org>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Coccinnelle reports a warning
-Warning: Use scnprintf or sprintf
+On Thu, Jul 13, 2023 at 03:18:23AM +0100, Daniel Golle wrote:
+> From: Lorenzo Bianconi <lorenzo@kernel.org>
+> 
+> Introduce MTK_NETSYS_V1 bit in the device capabilities for
+> MT7621/MT7622/MT7623/MT7628/MT7629 SoCs.
+> Use !MTK_NETSYS_V1 instead of MTK_NETSYS_V2 in the driver codebase.
+> This is a preliminary patch to introduce support for MT7988 SoC.
 
-WARNING: use scnprintf or sprintf
-WARNING: use scnprintf or sprintf
-WARNING: use scnprintf or sprintf
-Signed-off-by: ztt <1549089851@qq.com>
----
-  drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c | 6 +++---
-  1 file changed, 3 insertions(+), 3 deletions(-)
+Rather than using capability bits for versions, would it make more
+sense to use an integer for this, so you can do:
 
-diff --git a/drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c 
-b/drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c
-index 385f812b8793..f9dad598380d 100644
---- a/drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c
-+++ b/drivers/scsi/ibmvscsi_tgt/ibmvscsi_tgt.c
-@@ -3616,13 +3616,13 @@ static void ibmvscsis_remove(struct vio_dev 
-*vdev)
-  static ssize_t system_id_show(struct device *dev,
-                    struct device_attribute *attr, char *buf)
-  {
--    return snprintf(buf, PAGE_SIZE, "%s\n", system_id);
-+    return scnprintf(buf, PAGE_SIZE, "%s\n", system_id);
-  }
+	if (eth->soc->netsys_version >= 2) {
+		version 2 and later stuff
+	} else {
+		previous version stuff
+	}
 
-  static ssize_t partition_number_show(struct device *dev,
-                       struct device_attribute *attr, char *buf)
-  {
--    return snprintf(buf, PAGE_SIZE, "%x\n", partition_number);
-+    return scnprintf(buf, PAGE_SIZE, "%x\n", partition_number);
-  }
+?
 
-  static ssize_t unit_address_show(struct device *dev,
-@@ -3630,7 +3630,7 @@ static ssize_t unit_address_show(struct device 
-*dev,
-  {
-      struct scsi_info *vscsi = container_of(dev, struct scsi_info, dev);
+I'm just thinking ahead to when we end up with stuff that v1 and v2
+need but v3 and later don't.
 
--    return snprintf(buf, PAGE_SIZE, "%x\n", 
-vscsi->dma_dev->unit_address);
-+    return scnprintf(buf, PAGE_SIZE, "%x\n", 
-vscsi->dma_dev->unit_address);
-  }
-
-  static int ibmvscsis_get_system_info(void)
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
