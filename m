@@ -2,170 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 775CB752548
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 16:35:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BEA275254C
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 16:37:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229516AbjGMOfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 10:35:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48548 "EHLO
+        id S229761AbjGMOhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 10:37:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231372AbjGMOfN (ORCPT
+        with ESMTP id S229611AbjGMOhT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 10:35:13 -0400
-Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E6712691;
-        Thu, 13 Jul 2023 07:34:56 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R691e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0VnIKFjW_1689258886;
-Received: from 30.27.122.43(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0VnIKFjW_1689258886)
-          by smtp.aliyun-inc.com;
-          Thu, 13 Jul 2023 22:34:50 +0800
-Message-ID: <894a3b64-a369-7bc6-c8a8-0910843cc587@linux.alibaba.com>
-Date:   Thu, 13 Jul 2023 22:34:45 +0800
+        Thu, 13 Jul 2023 10:37:19 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 204781991
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 07:37:18 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2b743161832so11888251fa.1
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 07:37:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1689259036; x=1691851036;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xPi8Rde664k4OWrsk/yjT4y4yqazwgh3DlNB+1+OPRk=;
+        b=0AQf6ugszcZPVHY7DwMOiA13w29AGJT5OPOCp2OF+zN86xFPJowoWVjL2xiRvqqsF4
+         iRhdMPVvNexvHD9CqLBb8eCGnaaKkW4wpq53MqDi5jxJozA0WNMu8hOWmnOYernj/2IY
+         bA11DqM9IxQv+R+PEm3OGM0M+gif2kxsEXVDNCcMwueZMbQsM4olsXNKpoxlDar+VA32
+         Ly+ry+Ijehrjp3+zB0RYGXAUltkLzxTBJWwLGm9GOtvyE3WEU77BnO1o0I7xV1DLS2Vb
+         tOhAxVRH6x/drXN9EfOv+1gRTFAlCncCJw7GD9Fz2KAjLUSEsihFKlsjacvPKmTEWOBJ
+         eKkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689259036; x=1691851036;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xPi8Rde664k4OWrsk/yjT4y4yqazwgh3DlNB+1+OPRk=;
+        b=VwkdJjTVX48AY6FRXDyok8wE9egkg6H4EcS42Iw6Z6zRJKxlK9Nf/KSwvac5teVAj4
+         RCDR5bRkxEt+6+ry7bJabutQjRZPMpAuhGYeT18OF8AXa+VA7+kRxIGECw3wi4nsSipt
+         oTTvtcOzRJcYTR3iTpEnPFX+ft7Xctomd4pYaa9tMH8J0Sj3zOZQMi+qsVncntZAj+Kt
+         JPc1pZ48yrPEYxkATCUFAjzOKUo2lhM+olEIf/hj2H0VhXDxpMv+2pY0YNmEw5LOAaDJ
+         A5EQv/6u7EHhup+9SrZl8KMSZ7vfqgy+/f3V143KPk21MqSeRjMwNXcm4vuO3+qtBMBZ
+         8R4g==
+X-Gm-Message-State: ABy/qLbgWzE1p+gQa65YmtDMFaHRXaCqFtfoCmKW5WrWpSyzgYWZmqVf
+        ovzGN2mefJejLjb3dIDy7PaaPK2vCOfJT3zORZpLjg==
+X-Google-Smtp-Source: APBJJlGb+Hl5Ue9NsHUBSVMKchaqyoYb8Q3XGAg4ZgImreaHHxSMI8h/aNdlV3mV0Si2/cGZyFd6CFDg1CxrvDIwX2w=
+X-Received: by 2002:a2e:9dd0:0:b0:2b6:df15:f6ad with SMTP id
+ x16-20020a2e9dd0000000b002b6df15f6admr1529183ljj.18.1689259036279; Thu, 13
+ Jul 2023 07:37:16 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH v1] rcu: Fix and improve RCU read lock checks when
- !CONFIG_DEBUG_LOCK_ALLOC
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     paulmck@kernel.org, Sandeep Dhavale <dhavale@google.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-erofs@lists.ozlabs.org, xiang@kernel.org,
-        Will Shiu <Will.Shiu@mediatek.com>, kernel-team@android.com,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20230711233816.2187577-1-dhavale@google.com>
- <CAEXW_YQvpiFEaaNoS=Msgi17mU3kZD+q8bNBaHYasMArG9aPig@mail.gmail.com>
- <CAB=BE-Rm0ycTZXj=wHW_FBCCKbswG+dh3L+o1+CUW=Pg_oWnyw@mail.gmail.com>
- <20230713003201.GA469376@google.com>
- <161f1615-3d85-cf47-d2d5-695adf1ca7d4@linux.alibaba.com>
- <0d9e7b4d-6477-47a6-b3d2-2c9d9b64903d@paulmck-laptop>
- <f124e041-6a82-2069-975c-4f393e5c4137@linux.alibaba.com>
- <87292a44-cc02-4d95-940e-e4e31d0bc6f2@paulmck-laptop>
- <f1c60dcb-e32f-7b7e-bf0d-5dec999e9299@linux.alibaba.com>
- <CAEXW_YSODXRfgkR0D2G-x=0uZdsqvF3kZL+LL3DcRX-5CULJ1Q@mail.gmail.com>
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-In-Reply-To: <CAEXW_YSODXRfgkR0D2G-x=0uZdsqvF3kZL+LL3DcRX-5CULJ1Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <8b57db8d-1d3a-883e-eb8f-ddf15f19d823@gmail.com>
+In-Reply-To: <8b57db8d-1d3a-883e-eb8f-ddf15f19d823@gmail.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Thu, 13 Jul 2023 16:37:04 +0200
+Message-ID: <CAMRc=MdDmsUUwZqKFt6vMaL9iuRT-44XvLJrEbr9vZTxOJR1Mg@mail.gmail.com>
+Subject: Re: [PATCH] mmc: davinci: Make SDIO irq truly optional
+To:     Julien Delbergue <j.delbergue.foss@gmail.com>
+Cc:     ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 13, 2023 at 11:31=E2=80=AFAM Julien Delbergue
+<j.delbergue.foss@gmail.com> wrote:
+>
+> The following error is printed on Logic PD's DA850 EVM:
+>   davinci_mmc 1c40000.mmc: error -ENXIO: IRQ index 1 not found
+>
+> Depending on the board, the SDIO interrupt may not be present, so use
+> the correct function to reflect that and prevent logging an error.
+>
+> Signed-off-by: Julien Delbergue <j.delbergue.foss@gmail.com>
+> ---
+>  drivers/mmc/host/davinci_mmc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/mmc/host/davinci_mmc.c b/drivers/mmc/host/davinci_mm=
+c.c
+> index 7138dfa065bf..fb686c0d171c 100644
+> --- a/drivers/mmc/host/davinci_mmc.c
+> +++ b/drivers/mmc/host/davinci_mmc.c
+> @@ -1257,7 +1257,7 @@ static int davinci_mmcsd_probe(struct platform_devi=
+ce *pdev)
+>
+>         host->use_dma =3D use_dma;
+>         host->mmc_irq =3D irq;
+> -       host->sdio_irq =3D platform_get_irq(pdev, 1);
+> +       host->sdio_irq =3D platform_get_irq_optional(pdev, 1);
+>
+>         if (host->use_dma) {
+>                 ret =3D davinci_acquire_dma_channels(host);
+> --
+> 2.34.1
 
-
-On 2023/7/13 22:07, Joel Fernandes wrote:
-> On Thu, Jul 13, 2023 at 12:59 AM Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
->> On 2023/7/13 12:52, Paul E. McKenney wrote:
->>> On Thu, Jul 13, 2023 at 12:41:09PM +0800, Gao Xiang wrote:
->>>>
->>>>
->>
->> ...
->>
->>>>
->>>> There are lots of performance issues here and even a plumber
->>>> topic last year to show that, see:
->>>>
->>>> [1] https://lore.kernel.org/r/20230519001709.2563-1-tj@kernel.org
->>>> [2] https://lore.kernel.org/r/CAHk-=wgE9kORADrDJ4nEsHHLirqPCZ1tGaEPAZejHdZ03qCOGg@mail.gmail.com
->>>> [3] https://lore.kernel.org/r/CAB=BE-SBtO6vcoyLNA9F-9VaN5R0t3o_Zn+FW8GbO6wyUqFneQ@mail.gmail.com
->>>> [4] https://lpc.events/event/16/contributions/1338/
->>>> and more.
->>>>
->>>> I'm not sure if it's necessary to look info all of that,
->>>> andSandeep knows more than I am (the scheduling issue
->>>> becomes vital on some aarch64 platform.)
->>>
->>> Hmmm...  Please let me try again.
->>>
->>> Assuming that this approach turns out to make sense, the resulting
->>> patch will need to clearly state the performance benefits directly in
->>> the commit log.
->>>
->>> And of course, for the approach to make sense, it must avoid breaking
->>> the existing lockdep-RCU debugging code.
->>>
->>> Is that more clear?
->>
->> Personally I'm not working on Android platform any more so I don't
->> have a way to reproduce, hopefully Sandeep could give actually
->> number _again_ if dm-verity is enabled and trigger another
->> workqueue here and make a comparsion why the scheduling latency of
->> the extra work becomes unacceptable.
->>
-> 
-> Question from my side, are we talking about only performance issues or
-> also a crash? It appears z_erofs_decompress_pcluster() takes
-> mutex_lock(&pcl->lock);
-> 
-> So if it is either in an RCU read-side critical section or in an
-> atomic section, like the softirq path, then it may
-> schedule-while-atomic or trigger RCU warnings.
-> 
-> z_erofs_decompressqueue_endio
-> -> z_erofs_decompress_kickoff
->   ->z_erofs_decompressqueue_work
->    ->z_erofs_decompress_queue
->     -> z_erofs_decompress_pcluster
->      -> mutex_lock
-> 
-
-Why does the softirq path not trigger a workqueue instead? why here
-it triggers "schedule-while-atomic" in the softirq context?
-
-> Per Sandeep in [1], this stack happens under RCU read-lock in:
-> 
-> #define __blk_mq_run_dispatch_ops(q, check_sleep, dispatch_ops) \
-> [...]
->                  rcu_read_lock();
->                  (dispatch_ops);
->                  rcu_read_unlock();
-> [...]
-> 
-> Coming from:
-> blk_mq_flush_plug_list ->
->                             blk_mq_run_dispatch_ops(q,
->                                  __blk_mq_flush_plug_list(q, plug));
-> 
-> and __blk_mq_flush_plug_list does this:
->            q->mq_ops->queue_rqs(&plug->mq_list);
-> 
-> This somehow ends up calling the bio_endio and the
-> z_erofs_decompressqueue_endio which grabs the mutex.
-> 
-> So... I have a question, it looks like one of the paths in
-> __blk_mq_run_dispatch_ops() uses SRCU.  Where are as the alternate
-> path uses RCU. Why does this alternate want to block even if it is not
-> supposed to? Is the real issue here that the BLK_MQ_F_BLOCKING should
-> be set? It sounds like you want to block in the "else" path even
-> though BLK_MQ_F_BLOCKING is not set:
-
-BLK_MQ_F_BLOCKING is not a flag that a filesystem can do anything with.
-That is block layer and mq device driver stuffs. filesystems cannot set
-this value.
-
-As I said, as far as I understand, previously,
-.end_io() can only be called without RCU context, so it will be fine,
-but I don't know when .end_io() can be called under some RCU context
-now.
-
-
-Thanks,
-Gao Xiang
+Acked-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
