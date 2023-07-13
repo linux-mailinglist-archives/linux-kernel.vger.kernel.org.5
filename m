@@ -2,162 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F01D4752A0D
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 19:53:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C428B752A11
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 19:55:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231132AbjGMRxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 13:53:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33538 "EHLO
+        id S231421AbjGMRzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 13:55:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229764AbjGMRxO (ORCPT
+        with ESMTP id S229953AbjGMRzk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 13:53:14 -0400
-Received: from bee.tesarici.cz (bee.tesarici.cz [77.93.223.253])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3968271F;
-        Thu, 13 Jul 2023 10:53:12 -0700 (PDT)
-Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by bee.tesarici.cz (Postfix) with ESMTPSA id 5EE5814DBB9;
-        Thu, 13 Jul 2023 19:53:09 +0200 (CEST)
-Authentication-Results: mail.tesarici.cz; dmarc=fail (p=none dis=none) header.from=tesarici.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tesarici.cz; s=mail;
-        t=1689270789; bh=bPL0dJQsO71F+7x2c6oBcd15kYFwAiWbA6uxbyrkpGE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=EkihYalIeEcrIel7VgAhcpVNo9/pboyyZekjWK0jOnc5F1ahW2sgtlX2s4G3xz2aa
-         7/pVJP13bkUSQtOnx/qTC561TvfhmkpEWgCjkNF0dnKtNeOHHWOPNueuVhTFgK2ELk
-         wUOXEGu3hH49hYFoW2UWlnrBscc4Wib4CIVTdHzIxE5HMHeeuN7aydOSwzOTqbpdDv
-         gD5Bsyr0BRxuvTKvkDlRDW5xFxEeTF4ZsC7VFVRP05INsvS0TzW3gxx20lzeEnkYdG
-         ce/RvNC6zV5zfoC3oip2w9zTQ1heZ9+LR1nTdovemvPME96D6qgBeJM/SIEWJ77vyR
-         +exPMHF3hrfBg==
-Date:   Thu, 13 Jul 2023 19:53:07 +0200
-From:   Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
-To:     Petr Tesarik <petrtesarik@huaweicloud.com>
-Cc:     Stefano Stabellini <sstabellini@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Juergen Gross <jgross@suse.com>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Petr Tesarik <petr.tesarik.ext@huawei.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        James Seo <james@equiv.tech>,
-        James Clark <james.clark@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        xen-devel@lists.xenproject.org (moderated list:XEN HYPERVISOR ARM),
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM PORT),
-        linux-kernel@vger.kernel.org (open list),
-        linux-mips@vger.kernel.org (open list:MIPS),
-        iommu@lists.linux.dev (open list:XEN SWIOTLB SUBSYSTEM),
-        Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: Re: [PATCH v4 3/8] swiotlb: separate memory pool data from other
- allocator data
-Message-ID: <20230713195307.08d68b01@meshulam.tesarici.cz>
-In-Reply-To: <e309b4a88ffb306c88a3b3cfe5e57483d73d20bc.1689261692.git.petr.tesarik.ext@huawei.com>
-References: <cover.1689261692.git.petr.tesarik.ext@huawei.com>
-        <e309b4a88ffb306c88a3b3cfe5e57483d73d20bc.1689261692.git.petr.tesarik.ext@huawei.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-suse-linux-gnu)
+        Thu, 13 Jul 2023 13:55:40 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BBDC2724
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 10:55:39 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-55ae2075990so628390a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 10:55:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1689270939; x=1691862939;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Lcuq+6kjo4mMWqUyVwg1wc/5NDWoQqDRDI/cikwpMs0=;
+        b=l+RUf9Sk1CRCyytEozXVY9Zh9d+5T2wtWB6i64A9tVvsjRLq53C8QWmIkid+xfjOBm
+         FVrc/hxHiBHVvJNqbXXjO7H0OSyHNWJLO0Lw5POjXgWqFhp3PJ1BWCnQoJDZOqKaTXcM
+         clsQhopvW5e8UTjlJT5c40ztVAWNyqOutqXWA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689270939; x=1691862939;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Lcuq+6kjo4mMWqUyVwg1wc/5NDWoQqDRDI/cikwpMs0=;
+        b=khHv0rd4H9UMyx5KR2Lm8uy96fNR3Oqg8scz08ta0BC6TC7MWmbLPYCU/HS1tHI9zD
+         RZvHmJGUd/u4vsHMZXCt10a/dUa0bUGNKJOw1QihsvEI5MPkk3uC+v/UayXS8NJi5fp+
+         782ZWF90Z+zKdA7+o/Khh/AYitYH3VmZIvOU5ZWpapludV1VxmtsUBwThXVKk8+LChN1
+         ADAvbNzc/NPBWGEfLfGJ2lq2uVxBKdDExvLsRKHnVHH39zp7JjYqdYukw3C/Tpx/0qo2
+         SaQhfuwZu6VA08r9wDWBCS1MZ1L4NX0Rq4jI/iDLP0VpJP7f72qYOpVFrmzFPxfJ9cwc
+         hxFw==
+X-Gm-Message-State: ABy/qLZ6eSBKWWLxqH37Voq12s3Mxek+Q1RrdAl14rcwIVZu70ahAn1R
+        KzVnJXwoj3l04tnAcOTiq2Dt0A==
+X-Google-Smtp-Source: APBJJlFYHuKuEyqMWU/5SUeyvRpObuEo7v28zKwULVZ+sKf0xVgPOHJPiIADeKbsuK6TyNC7Pu4/aw==
+X-Received: by 2002:a17:90a:cb04:b0:263:3386:9da8 with SMTP id z4-20020a17090acb0400b0026333869da8mr1265390pjt.49.1689270939075;
+        Thu, 13 Jul 2023 10:55:39 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id w4-20020a17090a6b8400b00263fd82106asm6166532pjj.35.2023.07.13.10.55.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Jul 2023 10:55:38 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Arnd Bergmann <arnd@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@arndb.de>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andi Shyti <andi.shyti@linux.intel.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] sparc: mark __arch_xchg() as __always_inline
+Date:   Thu, 13 Jul 2023 10:55:24 -0700
+Message-Id: <168927092021.199206.6500280471313894142.b4-ty@chromium.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230628094938.2318171-1-arnd@kernel.org>
+References: <20230628094938.2318171-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 13 Jul 2023 17:23:14 +0200
-Petr Tesarik <petrtesarik@huaweicloud.com> wrote:
 
-> From: Petr Tesarik <petr.tesarik.ext@huawei.com>
+On Wed, 28 Jun 2023 11:49:18 +0200, Arnd Bergmann wrote:
+> An otherwise correct change to the atomic operations uncovered an
+> existing bug in the sparc __arch_xchg() function, which is calls
+> __xchg_called_with_bad_pointer() when its arguments are unknown at
+> compile time:
 > 
-> Carve out memory pool specific fields from struct io_tlb_mem. The original
-> struct now contains shared data for the whole allocator, while the new
-> struct io_tlb_pool contains data that is specific to one memory pool of
-> (potentially) many.
+> ERROR: modpost: "__xchg_called_with_bad_pointer" [lib/atomic64_test.ko] undefined!
 > 
-> Allocate both structures together for restricted DMA pools to keep the
-> error cleanup path simple.
-> 
-> Signed-off-by: Petr Tesarik <petr.tesarik.ext@huawei.com>
-> ---
->  include/linux/device.h  |   2 +-
->  include/linux/swiotlb.h |  47 +++++++----
->  kernel/dma/swiotlb.c    | 181 +++++++++++++++++++++++++---------------
->  3 files changed, 147 insertions(+), 83 deletions(-)
-> 
-> diff --git a/include/linux/device.h b/include/linux/device.h
-> index bbaeabd04b0d..d9754a68ba95 100644
-> --- a/include/linux/device.h
-> +++ b/include/linux/device.h
-> @@ -625,7 +625,7 @@ struct device_physical_location {
->   * @dma_pools:	Dma pools (if dma'ble device).
->   * @dma_mem:	Internal for coherent mem override.
->   * @cma_area:	Contiguous memory area for dma allocations
-> - * @dma_io_tlb_mem: Pointer to the swiotlb pool used.  Not for driver use.
-> + * @dma_io_tlb_mem: Software IO TLB allocator.  Not for driver use.
->   * @archdata:	For arch-specific additions.
->   * @of_node:	Associated device tree node.
->   * @fwnode:	Associated device node supplied by platform firmware.
-> diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
-> index 39313c3a791a..d669e11e2827 100644
-> --- a/include/linux/swiotlb.h
-> +++ b/include/linux/swiotlb.h
-> @@ -62,8 +62,7 @@ dma_addr_t swiotlb_map(struct device *dev, phys_addr_t phys,
->  #ifdef CONFIG_SWIOTLB
->  
->  /**
-> - * struct io_tlb_mem - IO TLB Memory Pool Descriptor
-> - *
-> + * struct io_tlb_pool - IO TLB memory pool descriptor
->   * @start:	The start address of the swiotlb memory pool. Used to do a quick
->   *		range check to see if the memory was in fact allocated by this
->   *		API.
-> @@ -73,15 +72,36 @@ dma_addr_t swiotlb_map(struct device *dev, phys_addr_t phys,
->   * @vaddr:	The vaddr of the swiotlb memory pool. The swiotlb memory pool
->   *		may be remapped in the memory encrypted case and store virtual
->   *		address for bounce buffer operation.
-> - * @nslabs:	The number of IO TLB blocks (in groups of 64) between @start and
-> - *		@end. For default swiotlb, this is command line adjustable via
-> - *		setup_io_tlb_npages.
-> + * @nslabs:	The number of IO TLB slots between @start and @end. For the
-> + *		default swiotlb, this can be adjusted with a boot parameter,
-> + *		see setup_io_tlb_npages().
-> + * @used:	The number of used IO TLB slots.
-> + * @late_alloc:	%true if allocated using the page allocator.
-> + * @nareas:	Number of areas in the pool.
-> + * @area_nslabs: Number of slots in each area.
-> + * @areas:	Array of memory area descriptors.
-> + * @slots:	Array of slot descriptors.
-> + */
-> +struct io_tlb_pool {
-> +	phys_addr_t start;
-> +	phys_addr_t end;
-> +	void *vaddr;
-> +	unsigned long nslabs;
-> +	unsigned long used;
+> [...]
 
-Oops. This member should not be re-introduced here after I removed it
-with commit efa76afdde16...
+Applied, thanks!
 
-I'm going to fix this in a v5, but I don't think it's critical enough
-to make an immediate resend.
+[1/1] sparc: mark __arch_xchg() as __always_inline
+      https://git.kernel.org/kees/c/ec7633de404e
 
-Petr T
+Best regards,
+-- 
+Kees Cook
+
