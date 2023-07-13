@@ -2,102 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B53AE75239E
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 15:23:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADF047523A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 15:24:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235243AbjGMNXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 09:23:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56556 "EHLO
+        id S235327AbjGMNYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 09:24:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235287AbjGMNW7 (ORCPT
+        with ESMTP id S235528AbjGMNXd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 09:22:59 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BD1835A4;
-        Thu, 13 Jul 2023 06:21:55 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id 5614622812f47-3a3373211a1so599566b6e.0;
-        Thu, 13 Jul 2023 06:21:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689254505; x=1691846505;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nMl5dn5Xz12gXOMX3oC+kNdFlWhzCPfH45LFdGwDg+c=;
-        b=eshePJRxBGfoEbxv/HATy/LbMrzsCDpyAiPdPWKP2+7M1zJL3N5KwDGRakUw3RzP4p
-         q0Cnwz0fdaQ+HyxVhl+a/PdVIYgV40UvVYeo6oku2ew3IT0bTt6UYAHjOIS6Vb6t9Mla
-         Zj8EL/FlPFPvHB5g71aE7gFP3zFqlG9d7Fbu8m/nhV/T9INJD8alH0sgU2iXPleyzim5
-         lINS3JcD7J0TOIOFW4pf/x8/SEpIIASy3dTyyqXfKshxdSJS0TlF/u7bPTHA+oWf2AYl
-         SPCY6gZL7ykEOqi+bfIKlTKf4FRPiV/L6IcHOgev/4QAZK/gwKYWQ5RBFTfBsMThGpXg
-         EmsA==
+        Thu, 13 Jul 2023 09:23:33 -0400
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0696A4236
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 06:22:36 -0700 (PDT)
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com [209.85.160.199])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id D5BB53F0C3
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 13:21:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1689254512;
+        bh=enRX6hWC2iaemXY8CE1QlIdDJtfFUqCURuPciqCUAP8=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=qZY3YhuDCTtOSku0swNWMEKJuSxXPIh+eysklS9YSmT64SL++ITeP9rsw72MONVnO
+         WHCZlCOKJCtNhw2htsQBsG/xVkjElQy+yVfuKeAuZpbt7OgY+Qx3Catc0KIDLarRBC
+         jz/j5q36QlFPofB5IFwE5pusN3tu49lvBIBMQb0CUYzHWQKiEQWxJQthj9jUyMiqqx
+         e1gbrNLiDaFybMeehxzww3B+1RMOFoIexFVgYc23FEYlpHm6Puk5GFIXiEdh+JyDN4
+         NgzXOEj6BH2BwQSZctVtba7HZJjY67GFw2htQQFfSnq30u+QUT+6raQX7KXYHpUcmT
+         ByLKYJcTFZs5A==
+Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-403b066c6e7so9512841cf.2
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 06:21:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689254505; x=1691846505;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nMl5dn5Xz12gXOMX3oC+kNdFlWhzCPfH45LFdGwDg+c=;
-        b=j83XsvWDS/59ZRtQNCcRAswIv16C/Ap9bYQ7j7wfNDDqZJGj+9X6PN0myKyTn4wU/i
-         y8lUrBbzN0IGkqFJIGn14itdBwejbJyGcz7lXonJZl1nmaadHFNEFCxwjdSooeEFarSt
-         I0VBTBUo3tKSKckSLv4oAgiPmUDwXMDtg0SWsjnciMEDu6D9tSVCAaimjZYd8ygMiWVn
-         MECXv/JlFjPyRMpIHomXKdSTxE+LEqSJsjSoGQhSW5+qEP9eCn97FpERdTAePvRLc7eQ
-         AIBcHvlK4CXCfHch8yENA+eInOM8R3OhlYuomglfXxtPR4OnRIBf1XICkzYjiANUcfZq
-         lfrQ==
-X-Gm-Message-State: ABy/qLYY6JcJ8DGyhX42Jaab91F5v99cEz0v9EICy2Nf3tor+kPCGGR2
-        URdZJuZIpI2Xxk5dU5zAEHUPOtkhGiETLimmigA=
-X-Google-Smtp-Source: APBJJlG+0WtfiM+r2sXZzO6HNFK4R91MA9ooy29hXDBdzlOr5q/1lWHuWptQzwph8RqHPwzWZYnIoYS2ozC9kDF6TM8=
-X-Received: by 2002:a05:6358:428e:b0:135:5934:2bba with SMTP id
- s14-20020a056358428e00b0013559342bbamr2356344rwc.8.1689254505432; Thu, 13 Jul
- 2023 06:21:45 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689254512; x=1691846512;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=enRX6hWC2iaemXY8CE1QlIdDJtfFUqCURuPciqCUAP8=;
+        b=aYnsKPcMnUG6JKFDAslDWH8NkekBft5CGazP01Ot+PHoXijs7674Fps07egfciDIqU
+         I6sbBiCxNJI3kgBbykaP7BsGVnNEOLB6nEP6KqJInDos3cmI6FSt/rgE3mgxXxq0Puht
+         z+m08junaYlVRKClqCeNb9oTxQje2QDtFS73WXi82NWkPqHhOVpoj0NoLaKODc2/+Wbj
+         GRl1/xnwzNLvqKMST6nb2y4Ez9W3GyLtgxkDYpg7U1rn7gwQY9vxiVNCNaiXAnOJ0xio
+         JSOR4d0GW7klwWUkgcCsM4+y6c7/K/mQ43s+qQrlr0cHyK6o3P/0SDA5Xaorb8fFaZms
+         j4Yw==
+X-Gm-Message-State: ABy/qLZh7HvUc1adui9eVMC6rBodhR21u58XynrUF2GgvhkQ7PYqCbfN
+        zVS2YsvNPART1SmaVGW9csV52nD+msLLihH6I4HizjiNqcQHG1uuXAJpGKueT50xtTWMsRM0hfv
+        DjPlhCqsRbPiPFA66w7b0fDnOxrbBuNVK1xHJ+wMs7IO0VJBEqna93H3l3w==
+X-Received: by 2002:a05:622a:104a:b0:3ec:490b:ce6e with SMTP id f10-20020a05622a104a00b003ec490bce6emr2001180qte.48.1689254512001;
+        Thu, 13 Jul 2023 06:21:52 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlFJMIRJnzg3ozLNbx0GZublHY6dW4PSuFNYeS/2iDDTUQp4OX+srNMRFZPrJS2XCDeDowhX2Cfv7yQDvY2KNO0=
+X-Received: by 2002:a05:622a:104a:b0:3ec:490b:ce6e with SMTP id
+ f10-20020a05622a104a00b003ec490bce6emr2001156qte.48.1689254511797; Thu, 13
+ Jul 2023 06:21:51 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230713130338.31086-1-tzimmermann@suse.de> <20230713130338.31086-19-tzimmermann@suse.de>
-In-Reply-To: <20230713130338.31086-19-tzimmermann@suse.de>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Thu, 13 Jul 2023 15:21:34 +0200
-Message-ID: <CANiq72mbLmMKph8aiz4apNF9n3MtVO-nhM9rEWYApZbSVAO9Qw@mail.gmail.com>
-Subject: Re: [PATCH v2 18/18] fbdev: Document that framebuffer_alloc() returns
- zero'ed data
-To:     Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     deller@gmx.de, javierm@redhat.com, linux-sh@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, linux-input@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        linux-staging@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org,
-        linux-geode@lists.infradead.org, linux-nvidia@lists.surfsouth.com,
-        linux-hyperv@vger.kernel.org, linux-omap@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, kvm@vger.kernel.org,
-        Miguel Ojeda <ojeda@kernel.org>
+References: <20230704064610.292603-1-xingyu.wu@starfivetech.com> <20230704064610.292603-7-xingyu.wu@starfivetech.com>
+In-Reply-To: <20230704064610.292603-7-xingyu.wu@starfivetech.com>
+From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Date:   Thu, 13 Jul 2023 15:21:35 +0200
+Message-ID: <CAJM55Z8VequKy59P5zKrVOr7WPRbUqq4CUHrk8aDO+3qpkzm2Q@mail.gmail.com>
+Subject: Re: [RESEND PATCH v6 6/7] riscv: dts: starfive: jh7110: Add syscon nodes
+To:     Xingyu Wu <xingyu.wu@starfivetech.com>
+Cc:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Conor Dooley <conor@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Hal Feng <hal.feng@starfivetech.com>,
+        William Qiu <william.qiu@starfivetech.com>,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 3:03=E2=80=AFPM Thomas Zimmermann <tzimmermann@suse=
-.de> wrote:
+On Tue, 4 Jul 2023 at 08:49, Xingyu Wu <xingyu.wu@starfivetech.com> wrote:
 >
-> Most fbdev drivers depend on framebuffer_alloc() to initialize the
-> allocated memory to 0. Document this guarantee.
+> From: William Qiu <william.qiu@starfivetech.com>
 >
-> Suggested-by: Miguel Ojeda <ojeda@kernel.org>
-> Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
-> Cc: Helge Deller <deller@gmx.de>
+> Add stg_syscon/sys_syscon/aon_syscon/PLL nodes for JH7110 SoC.
+>
+> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+> Co-developed-by: Xingyu Wu <xingyu.wu@starfivetech.com>
+> Signed-off-by: Xingyu Wu <xingyu.wu@starfivetech.com>
+> Signed-off-by: William Qiu <william.qiu@starfivetech.com>
+> ---
+>  arch/riscv/boot/dts/starfive/jh7110.dtsi | 22 ++++++++++++++++++++++
+>  1 file changed, 22 insertions(+)
+>
+> diff --git a/arch/riscv/boot/dts/starfive/jh7110.dtsi b/arch/riscv/boot/dts/starfive/jh7110.dtsi
+> index 4c5fdb905da8..11dd4c9d64b0 100644
+> --- a/arch/riscv/boot/dts/starfive/jh7110.dtsi
+> +++ b/arch/riscv/boot/dts/starfive/jh7110.dtsi
+> @@ -353,6 +353,11 @@ i2c2: i2c@10050000 {
+>                         status = "disabled";
+>                 };
+>
+> +               stg_syscon: syscon@10240000 {
+> +                       compatible = "starfive,jh7110-stg-syscon", "syscon";
+> +                       reg = <0x0 0x10240000 0x0 0x1000>;
+> +               };
+> +
+>                 uart3: serial@12000000 {
+>                         compatible = "snps,dw-apb-uart";
+>                         reg = <0x0 0x12000000 0x0 0x10000>;
+> @@ -457,6 +462,17 @@ syscrg: clock-controller@13020000 {
+>                         #reset-cells = <1>;
+>                 };
+>
+> +               sys_syscon: syscon@13030000 {
+> +                       compatible = "starfive,jh7110-sys-syscon", "syscon", "simple-mfd";
+> +                       reg = <0x0 0x13030000 0x0 0x1000>;
+> +
+> +                       pllclk: clock-controller {
 
-Thanks for sending this! Maybe this would be best earlier in the
-series, so that later patches make more sense (since they use the
-guarantee), but it is not a big deal.
+Maybe call the handle "pll", so the references can be just <&pll 0>,
+<&pll 1> and <&pll 2> if you choose to drop the JH7110_PLLCLK_PLL?_OUT
+defines.
 
-> + * aligned to sizeof(long). Both, the instance of struct fb_info and
-> + * the driver private data, are cleared to zero.
+In any case:
+Reviewed-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
 
-I think both commas may be best omitted (but I am not a native speaker).
-
-Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
-
-Cheers,
-Miguel
+> +                               compatible = "starfive,jh7110-pll";
+> +                               clocks = <&osc>;
+> +                               #clock-cells = <1>;
+> +                       };
+> +               };
+> +
+>                 sysgpio: pinctrl@13040000 {
+>                         compatible = "starfive,jh7110-sys-pinctrl";
+>                         reg = <0x0 0x13040000 0x0 0x10000>;
+> @@ -486,6 +502,12 @@ aoncrg: clock-controller@17000000 {
+>                         #reset-cells = <1>;
+>                 };
+>
+> +               aon_syscon: syscon@17010000 {
+> +                       compatible = "starfive,jh7110-aon-syscon", "syscon";
+> +                       reg = <0x0 0x17010000 0x0 0x1000>;
+> +                       #power-domain-cells = <1>;
+> +               };
+> +
+>                 aongpio: pinctrl@17020000 {
+>                         compatible = "starfive,jh7110-aon-pinctrl";
+>                         reg = <0x0 0x17020000 0x0 0x10000>;
+> --
+> 2.25.1
+>
