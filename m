@@ -2,90 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7AE07527A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 17:46:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70E947527A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 17:47:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233364AbjGMPqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 11:46:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48092 "EHLO
+        id S229861AbjGMPrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 11:47:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229691AbjGMPqh (ORCPT
+        with ESMTP id S232700AbjGMPrF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 11:46:37 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 62823270B;
-        Thu, 13 Jul 2023 08:46:35 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A68F71570;
-        Thu, 13 Jul 2023 08:47:17 -0700 (PDT)
-Received: from [10.1.30.48] (C02Z41KALVDN.cambridge.arm.com [10.1.30.48])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C5A0F3F73F;
-        Thu, 13 Jul 2023 08:46:33 -0700 (PDT)
-Message-ID: <803bb28b-b25c-510d-bc70-b6726f750538@arm.com>
-Date:   Thu, 13 Jul 2023 16:46:32 +0100
+        Thu, 13 Jul 2023 11:47:05 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F2F826AE;
+        Thu, 13 Jul 2023 08:47:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0504561087;
+        Thu, 13 Jul 2023 15:47:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2B4AC433C8;
+        Thu, 13 Jul 2023 15:47:01 +0000 (UTC)
+Date:   Thu, 13 Jul 2023 11:47:00 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Zheng Yejian <zhengyejian1@huawei.com>
+Subject: [PATCH 2/2] tracing: Add free_trace_iter_content() helper function
+Message-ID: <20230713114700.450e7a17@gandalf.local.home>
+In-Reply-To: <20230713114510.04c452ca@gandalf.local.home>
+References: <20230713114510.04c452ca@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH v1 9/9] selftests/mm: Run all tests from run_vmtests.sh
-To:     Mark Brown <broonie@kernel.org>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Florent Revest <revest@chromium.org>,
-        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org
-References: <20230713135440.3651409-1-ryan.roberts@arm.com>
- <20230713135440.3651409-10-ryan.roberts@arm.com>
- <d77c6592-09f4-036d-ad00-a7a28de1da3f@redhat.com>
- <2b586ba2-7522-a823-afd6-7b4d978f18c2@arm.com>
- <97742685-e026-417b-8c8f-938330027636@sirena.org.uk>
- <8d2e75e7-0d38-6e6c-a02a-b66a18515dfb@arm.com>
- <5b4fcf62-98c3-458e-a0e7-8e86ec354cb9@sirena.org.uk>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <5b4fcf62-98c3-458e-a0e7-8e86ec354cb9@sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/07/2023 16:43, Mark Brown wrote:
-> On Thu, Jul 13, 2023 at 04:36:18PM +0100, Ryan Roberts wrote:
->> On 13/07/2023 16:30, Mark Brown wrote:
-> 
->>> The results parsers I'm aware of like the LAVA one will DTRT with nested
->>> kselftests since that's required to pull see individual test cases run
->>> by a single binary so it's the common case to see at least one level of
->>> nesting.
-> 
->> That's good to hear. But bear in mind that run_vmtests.sh does not use TAP. So
->> you end up with a single top-level test who's result is reported with
->> run_kselftest.sh's TAP output. Then you have a second level (run_vmtests.sh)
->> using custom reporting, then _some_ of the tests invoked use TAP so you
->> sometimes have TAP at level 3. But those tests at level 2 that don't do their
->> own TAP output probably won't be parsed by LAVA?
-> 
-> I think that should mostly mean that all the tests that don't
-> individually produce KTAP output get ignored by parsers and those which
-> do produce KTAP output will be seen as nesting one level up from where
-> they are (ie, the individual cases will run directly from vmtest),
-> though there's likely to be confusion about expected run numbers for
-> things that actually pay attention to that.
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-I suspect it wouldn't be technically dififcult to add a --tap option to
-run_vmtests.sh, which would switch the output format to TAP. If people are amenable.
+As the trace iterator is created and used by various interfaces, the clean
+up of it needs to be consistent. Create a free_trace_iter_content() helper
+function that frees the content of the iterator and use that to clean it
+up in all places that it is used.
 
-> 
->> Since you agreed to put this into the CI, I was going to call this part "your
->> problem" ;-)
-> 
-> It'll run, the results are a different story. :P
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ kernel/trace/trace.c | 40 ++++++++++++++++++++++++++++------------
+ 1 file changed, 28 insertions(+), 12 deletions(-)
+
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 1c370ffbe062..3f38250637e2 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -4815,6 +4815,25 @@ static const struct seq_operations tracer_seq_ops = {
+ 	.show		= s_show,
+ };
+ 
++/*
++ * Note, as iter itself can be allocated and freed in different
++ * ways, this function is only used to free its content, and not
++ * the iterator itself. The only requirement to all the allocations
++ * is that it must zero all fields (kzalloc), as freeing works with
++ * ethier allocated content or NULL.
++ */
++static void free_trace_iter_content(struct trace_iterator *iter)
++{
++	/* The fmt is either NULL, allocated or points to static_fmt_buf */
++	if (iter->fmt != static_fmt_buf)
++		kfree(iter->fmt);
++
++	kfree(iter->temp);
++	kfree(iter->buffer_iter);
++	mutex_destroy(&iter->mutex);
++	free_cpumask_var(iter->started);
++}
++
+ static struct trace_iterator *
+ __tracing_open(struct inode *inode, struct file *file, bool snapshot)
+ {
+@@ -4922,8 +4941,7 @@ __tracing_open(struct inode *inode, struct file *file, bool snapshot)
+ 
+  fail:
+ 	mutex_unlock(&trace_types_lock);
+-	kfree(iter->temp);
+-	kfree(iter->buffer_iter);
++	free_trace_iter_content(iter);
+ release:
+ 	seq_release_private(inode, file);
+ 	return ERR_PTR(-ENOMEM);
+@@ -5002,11 +5020,7 @@ static int tracing_release(struct inode *inode, struct file *file)
+ 
+ 	mutex_unlock(&trace_types_lock);
+ 
+-	mutex_destroy(&iter->mutex);
+-	free_cpumask_var(iter->started);
+-	kfree(iter->fmt);
+-	kfree(iter->temp);
+-	kfree(iter->buffer_iter);
++	free_trace_iter_content(iter);
+ 	seq_release_private(inode, file);
+ 
+ 	return 0;
+@@ -6709,7 +6723,12 @@ static int tracing_open_pipe(struct inode *inode, struct file *filp)
+ 	}
+ 
+ 	trace_seq_init(&iter->seq);
+-	iter->trace = tr->current_trace;
++
++	iter->trace = kzalloc(sizeof(*iter->trace), GFP_KERNEL);
++	if (!iter->trace)
++		goto fail;
++
++	*iter->trace = *tr->current_trace;
+ 
+ 	if (!alloc_cpumask_var(&iter->started, GFP_KERNEL)) {
+ 		ret = -ENOMEM;
+@@ -6763,10 +6782,7 @@ static int tracing_release_pipe(struct inode *inode, struct file *file)
+ 
+ 	mutex_unlock(&trace_types_lock);
+ 
+-	free_cpumask_var(iter->started);
+-	kfree(iter->fmt);
+-	kfree(iter->temp);
+-	mutex_destroy(&iter->mutex);
++	free_trace_iter_content(iter);
+ 	kfree(iter);
+ 
+ 	trace_array_put(tr);
+-- 
+2.40.1
 
