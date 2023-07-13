@@ -2,84 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35693752109
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 14:18:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91AFE7523FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 15:36:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234294AbjGMMSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 08:18:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40732 "EHLO
+        id S234671AbjGMNgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 09:36:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234656AbjGMMSH (ORCPT
+        with ESMTP id S235076AbjGMNgo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 08:18:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F7A926B5
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 05:17:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689250638;
+        Thu, 13 Jul 2023 09:36:44 -0400
+X-Greylist: delayed 2401 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 13 Jul 2023 06:36:37 PDT
+Received: from mout-p-103.mailbox.org (mout-p-103.mailbox.org [IPv6:2001:67c:2050:0:465::103])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F81C2D40;
+        Thu, 13 Jul 2023 06:36:36 -0700 (PDT)
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [10.196.197.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-103.mailbox.org (Postfix) with ESMTPS id 4R1tvC4NGRz9sn9;
+        Thu, 13 Jul 2023 14:19:03 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cyphar.com; s=MBO0001;
+        t=1689250743;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=I9Ye8KfETUuRbXwbLJ8cBLC8vHqrIxM24kzSIqos1xM=;
-        b=Raoswb7HfYaQ7uIolIbOkh73VOgUkd6DJkgYPRp99e+vODWbwsN0gi/Txp9pCf4y4IP2wQ
-        2qnWkXGRh16AWmH1pieCyaL7Hqv5XnLGQX+tPnmJR0tkygaIF9+7UZV0R05JcpneeCZU64
-        zT7pEksbM91Tt1kGziYRX9GrhtH3Slo=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-635-7Chm2BpON_GL14t_YIGKgg-1; Thu, 13 Jul 2023 08:17:16 -0400
-X-MC-Unique: 7Chm2BpON_GL14t_YIGKgg-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3fbffd088a9so3414865e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 05:17:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689250635; x=1691842635;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=I9Ye8KfETUuRbXwbLJ8cBLC8vHqrIxM24kzSIqos1xM=;
-        b=ZKGXD4EgolomK4LXbW0tgTMbysX1+q4vAkzZYfhOaV/hxHZzlhU807aKewgMre6rmg
-         SSN/UXt/10hjvs/aTRdadl2Gp2PJPfmPaStabBNxaBg2CrreCKnhLN3suP2w9HWf2ldy
-         pRil1rjhe/f0EFi1nUbl30Ke/U9V5lBFrK1+lI6ry1fj61zkQK1A6vC2V5tYTyYmUtvN
-         Mp8SCrH3b6wFh8+1GIv9foywOWoTepzbNbOxFYsCcIkBNj/wem9ILaC2uhGUk4xDkGB7
-         2+eHxFtsK0zgyn240AxmsVGIVgXM8vZiJ4iqlgh2iL/+3y55AkqiwD3umjIlGB2M7tDL
-         02OA==
-X-Gm-Message-State: ABy/qLYdjmhFgSpwJ4LS4qiiXgw8vKBYSZaRoaXkObNeNgrK/a2Bzgh8
-        Im1dF1GhLusODx0AGap3XVEFghUW4GA+IFWpmwYz3457V2wD9bTV9tgqcFfc5188YNOnfayREjt
-        B1Zyf5PsDnBgIUQz9DZv9apgF
-X-Received: by 2002:a05:600c:20c4:b0:3fb:e054:903f with SMTP id y4-20020a05600c20c400b003fbe054903fmr1237408wmm.36.1689250635418;
-        Thu, 13 Jul 2023 05:17:15 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlH4K1xzW6AnUhVBZ0m3bhe20kl+YjcL/Vw7G0f9UZ/hZUDowjjuFLDR26UZuruzxrGYqelQkQ==
-X-Received: by 2002:a05:600c:20c4:b0:3fb:e054:903f with SMTP id y4-20020a05600c20c400b003fbe054903fmr1237397wmm.36.1689250635215;
-        Thu, 13 Jul 2023 05:17:15 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c717:6100:2da7:427e:49a5:e07? (p200300cbc71761002da7427e49a50e07.dip0.t-ipconnect.de. [2003:cb:c717:6100:2da7:427e:49a5:e07])
-        by smtp.gmail.com with ESMTPSA id z14-20020a05600c220e00b003fbacc853ccsm7630178wml.18.2023.07.13.05.17.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 Jul 2023 05:17:14 -0700 (PDT)
-Message-ID: <68392d51-ef9d-e687-f659-983bf2ba237b@redhat.com>
-Date:   Thu, 13 Jul 2023 14:17:13 +0200
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=xpxD6jJvH2NdvxBxxbA/xwwWPK026oBkIsxvhSiVppQ=;
+        b=J67hj0asCAtelzLhPQXRrS+E99al7I+BMNtQLJqGszQMeBH8Oi6tEK67X9nMQw4qlX7wnP
+        +LA3S4+9ltR61EsvICm2rmjjJXhQ3MkQ89Ht0WK+0Y2DpXvYW0cThade6zZUIV/YXFgiJD
+        3X888cF2MvyASCky3OlN1BCR1QiJprtt/kc5/V+OD2qO2Dsbhq6GtGsv5sozeysXT4uFdv
+        RexNELuNQXxbzZjT3OAHIVJrVyE0Z2GrrCDmMnlJ+EPOH+ntjEukAwcxeynzUATx00+/ec
+        O1KjlREZGDtSYA82dFoqVAaaphuq3Hv/WOjIPJKcrjfKmzjiwIYCZKXlsDEZ+A==
+From:   Aleksa Sarai <cyphar@cyphar.com>
+To:     Willy Tarreau <w@1wt.eu>, Shuah Khan <shuah@kernel.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Chinner <dchinner@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>, xu xin <cgel.zte@gmail.com>,
+        Zhihao Cheng <chengzhihao1@huawei.com>,
+        Chao Yu <chao@kernel.org>,
+        "Liam R. Howlett" <Liam.Howlett@Oracle.com>,
+        Janis Danisevskis <jdanis@google.com>,
+        Kees Cook <keescook@chromium.org>
+Cc:     Aleksa Sarai <cyphar@cyphar.com>, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH] procfs: block chmod on /proc/thread-self/comm
+Date:   Thu, 13 Jul 2023 22:17:50 +1000
+Message-ID: <20230713121752.8039-1-cyphar@cyphar.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH] arm64/mm: Add pte_rdonly() helper
-Content-Language: en-US
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-kernel@vger.kernel.org
-References: <20230713092004.693749-1-anshuman.khandual@arm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20230713092004.693749-1-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,48 +62,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13.07.23 11:20, Anshuman Khandual wrote:
-> This replaces open coding PTE_RDONLY check with a new helper pte_rdonly().
-> No functional change is intended here.
-> 
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
-> This applies on v6.5-rc1
-> 
->   arch/arm64/include/asm/pgtable.h | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-> index 171d6d7f8087..72c2e8431360 100644
-> --- a/arch/arm64/include/asm/pgtable.h
-> +++ b/arch/arm64/include/asm/pgtable.h
-> @@ -103,6 +103,7 @@ static inline pteval_t __phys_to_pte_val(phys_addr_t phys)
->   #define pte_young(pte)		(!!(pte_val(pte) & PTE_AF))
->   #define pte_special(pte)	(!!(pte_val(pte) & PTE_SPECIAL))
->   #define pte_write(pte)		(!!(pte_val(pte) & PTE_WRITE))
-> +#define pte_rdonly(pte)		(!!(pte_val(pte) & PTE_RDONLY))
->   #define pte_user(pte)		(!!(pte_val(pte) & PTE_USER))
->   #define pte_user_exec(pte)	(!(pte_val(pte) & PTE_UXN))
->   #define pte_cont(pte)		(!!(pte_val(pte) & PTE_CONT))
-> @@ -120,7 +121,7 @@ static inline pteval_t __phys_to_pte_val(phys_addr_t phys)
->   	(__boundary - 1 < (end) - 1) ? __boundary : (end);			\
->   })
->   
-> -#define pte_hw_dirty(pte)	(pte_write(pte) && !(pte_val(pte) & PTE_RDONLY))
-> +#define pte_hw_dirty(pte)	(pte_write(pte) && !pte_rdonly(pte))
->   #define pte_sw_dirty(pte)	(!!(pte_val(pte) & PTE_DIRTY))
->   #define pte_dirty(pte)		(pte_sw_dirty(pte) || pte_hw_dirty(pte))
->   
+Due to an oversight in commit 1b3044e39a89 ("procfs: fix pthread
+cross-thread naming if !PR_DUMPABLE") in switching from REG to NOD,
+chmod operations on /proc/thread-self/comm were no longer blocked as
+they are on almost all other procfs files.
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+A very similar situation with /proc/self/environ was used to as a root
+exploit a long time ago, but procfs has SB_I_NOEXEC so this is simply a
+correctness issue.
 
+Ref: https://lwn.net/Articles/191954/
+Ref: 6d76fa58b050 ("Don't allow chmod() on the /proc/<pid>/ files")
+Fixes: 1b3044e39a89 ("procfs: fix pthread cross-thread naming if !PR_DUMPABLE")
+Cc: stable@vger.kernel.org # v4.7+
+Signed-off-by: Aleksa Sarai <cyphar@cyphar.com>
+---
+ fs/proc/base.c                               | 3 ++-
+ tools/testing/selftests/nolibc/nolibc-test.c | 4 ++++
+ 2 files changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/fs/proc/base.c b/fs/proc/base.c
+index 05452c3b9872..7394229816f3 100644
+--- a/fs/proc/base.c
++++ b/fs/proc/base.c
+@@ -3583,7 +3583,8 @@ static int proc_tid_comm_permission(struct mnt_idmap *idmap,
+ }
+ 
+ static const struct inode_operations proc_tid_comm_inode_operations = {
+-		.permission = proc_tid_comm_permission,
++		.setattr	= proc_setattr,
++		.permission	= proc_tid_comm_permission,
+ };
+ 
+ /*
+diff --git a/tools/testing/selftests/nolibc/nolibc-test.c b/tools/testing/selftests/nolibc/nolibc-test.c
+index 486334981e60..08f0969208eb 100644
+--- a/tools/testing/selftests/nolibc/nolibc-test.c
++++ b/tools/testing/selftests/nolibc/nolibc-test.c
+@@ -580,6 +580,10 @@ int run_syscall(int min, int max)
+ 		CASE_TEST(chmod_net);         EXPECT_SYSZR(proc, chmod("/proc/self/net", 0555)); break;
+ 		CASE_TEST(chmod_self);        EXPECT_SYSER(proc, chmod("/proc/self", 0555), -1, EPERM); break;
+ 		CASE_TEST(chown_self);        EXPECT_SYSER(proc, chown("/proc/self", 0, 0), -1, EPERM); break;
++		CASE_TEST(chmod_self_comm);   EXPECT_SYSER(proc, chmod("/proc/self/comm", 0777), -1, EPERM); break;
++		CASE_TEST(chmod_tid_comm);    EXPECT_SYSER(proc, chmod("/proc/thread-self/comm", 0777), -1, EPERM); break;
++		CASE_TEST(chmod_self_environ);EXPECT_SYSER(proc, chmod("/proc/self/environ", 0777), -1, EPERM); break;
++		CASE_TEST(chmod_tid_environ); EXPECT_SYSER(proc, chmod("/proc/thread-self/environ", 0777), -1, EPERM); break;
+ 		CASE_TEST(chroot_root);       EXPECT_SYSZR(euid0, chroot("/")); break;
+ 		CASE_TEST(chroot_blah);       EXPECT_SYSER(1, chroot("/proc/self/blah"), -1, ENOENT); break;
+ 		CASE_TEST(chroot_exe);        EXPECT_SYSER(proc, chroot("/proc/self/exe"), -1, ENOTDIR); break;
 -- 
-Cheers,
-
-David / dhildenb
+2.41.0
 
