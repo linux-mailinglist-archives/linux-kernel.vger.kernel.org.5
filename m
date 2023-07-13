@@ -2,68 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D53E2751DDF
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 11:55:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6356A751DF2
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 11:57:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233714AbjGMJyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 05:54:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39680 "EHLO
+        id S232476AbjGMJ5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 05:57:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234609AbjGMJy3 (ORCPT
+        with ESMTP id S229890AbjGMJ5r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 05:54:29 -0400
-Received: from mail-ua1-x92f.google.com (mail-ua1-x92f.google.com [IPv6:2607:f8b0:4864:20::92f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5602E2699
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 02:54:25 -0700 (PDT)
-Received: by mail-ua1-x92f.google.com with SMTP id a1e0cc1a2514c-794b8fe8cc4so1224283241.0
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 02:54:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1689242064; x=1691834064;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ez7jO3FwSNuyNsnYNkkVbBkbWTziZ+QozPC9B1QClXc=;
-        b=TwWySFX65K4Kk5BaFFcJGCBnpYrBPYSB55nVGuUvT/7/6WOOFdDxXv5/qrBHW6mDkz
-         iykBZ1oenDPsmZYWVD5U5/2y6TEv3r9cpW+Bz3uL+saGdI+0RNnZ5e90TpsvuLTt8znN
-         FFTjM2QbiT74BVpbVut07WDKRZH4mVHRyEoOY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689242064; x=1691834064;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ez7jO3FwSNuyNsnYNkkVbBkbWTziZ+QozPC9B1QClXc=;
-        b=cmbtOy2YEduiJb7EO06kWMdLDVg2JYniIVy6arKgZ36n2iXlfTyjfCLcHsMTLRrbZ/
-         vF6Gzx2xmLBuR7OClNYfzC1sbRLShK76HgTL9G5SlAj+fxOzLh+nINEiGOujTlwlIaAd
-         b+hSq223MlSrqMkx8S++9+kPLGqPdqb/VhPl5vL+RzPxYD4Sniy/VqnL43UHUuL56MWL
-         r2TDRJQEjMeiq1YCu279TSRfCN6fjq/y+cKgBYw2PXGbuiSaF3k9VUxUvwS8rEwKHcf6
-         44NPAzYfoPGwtODaVDPRVkFXQMYc9lrtJV6EHLb73Ts95D0ZoUYvVB/WqPp8wUGPhbfW
-         AuvA==
-X-Gm-Message-State: ABy/qLaUZMuRhUztLpgAh6RX+Lpcb8RyEL2y9nNce6dDKs6uOdN+jMZz
-        ywYkAWU7uAkTFABcAlAY+i6mMlVdyRncKycGqQpxeGZwVZGm057XfOE=
-X-Google-Smtp-Source: APBJJlG0g9o4LrYXn9i6KRU1GfTejJ2FCgLiKAmk2lqQULqSb0JVk97uYqtYXThV3P31Unv3MseiH1FrhSYUrYFZ+z0=
-X-Received: by 2002:a1f:a10a:0:b0:481:588d:90e4 with SMTP id
- k10-20020a1fa10a000000b00481588d90e4mr188535vke.7.1689242064326; Thu, 13 Jul
- 2023 02:54:24 -0700 (PDT)
+        Thu, 13 Jul 2023 05:57:47 -0400
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02B0C11D;
+        Thu, 13 Jul 2023 02:57:45 -0700 (PDT)
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 875E182CA;
+        Thu, 13 Jul 2023 17:57:43 +0800 (CST)
+Received: from EXMBX061.cuchost.com (172.16.6.61) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 13 Jul
+ 2023 17:57:43 +0800
+Received: from [192.168.125.128] (183.27.98.46) by EXMBX061.cuchost.com
+ (172.16.6.61) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 13 Jul
+ 2023 17:57:42 +0800
+Message-ID: <66ec4805-a0bf-0590-55ef-39f8f974023d@starfivetech.com>
+Date:   Thu, 13 Jul 2023 17:54:30 +0800
 MIME-Version: 1.0
-References: <20230713090152.140060-1-angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20230713090152.140060-1-angelogioacchino.delregno@collabora.com>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Thu, 13 Jul 2023 17:54:13 +0800
-Message-ID: <CAGXv+5FFO3pDM=2eDscGnRVj34+8t6L02nt7OvPEO_FV8_POVQ@mail.gmail.com>
-Subject: Re: [PATCH v5 00/10] MediaTek DisplayPort: support eDP and aux-bus
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     chunkuang.hu@kernel.org, p.zabel@pengutronix.de, airlied@gmail.com,
-        daniel@ffwll.ch, matthias.bgg@gmail.com,
-        dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel@collabora.com,
-        nfraprado@collabora.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v7 2/9] clk: starfive: Add StarFive JH7110
+ System-Top-Group clock driver
+Content-Language: en-US
+To:     Emil Renner Berthing <emil.renner.berthing@canonical.com>
+CC:     <linux-riscv@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        "Michael Turquette" <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "Philipp Zabel" <p.zabel@pengutronix.de>,
+        Conor Dooley <conor@kernel.org>,
+        "Emil Renner Berthing" <kernel@esmil.dk>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Hal Feng <hal.feng@starfivetech.com>,
+        <linux-kernel@vger.kernel.org>, <linux-clk@vger.kernel.org>
+References: <20230712092007.31013-1-xingyu.wu@starfivetech.com>
+ <20230712092007.31013-3-xingyu.wu@starfivetech.com>
+ <CAJM55Z-FsYSo1mnN_++RE_Ksu58q5LbNYuXNF8tA84ixg=h5Ag@mail.gmail.com>
+From:   Xingyu Wu <xingyu.wu@starfivetech.com>
+In-Reply-To: <CAJM55Z-FsYSo1mnN_++RE_Ksu58q5LbNYuXNF8tA84ixg=h5Ag@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [183.27.98.46]
+X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX061.cuchost.com
+ (172.16.6.61)
+X-YovoleRuleAgent: yovoleflag
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,224 +68,246 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 5:01=E2=80=AFPM AngeloGioacchino Del Regno
-<angelogioacchino.delregno@collabora.com> wrote:
->
-> Changes in v5:
->  - Added .wait_hpd_asserted() callback for aux-bus
->  - Avoid enabling and registering HPD interrupt + handlers for
->    eDP case only (keeps HPD interrupts enabled for full DP case)
->  - Support not always-on eDP panels (boot with regulator off,
->    suspend with regulator off) for power saving in PM suspend.
+On 2023/7/13 1:50, Emil Renner Berthing wrote:
+> On Wed, 12 Jul 2023 at 11:22, Xingyu Wu <xingyu.wu@starfivetech.com> wrote:
+>>
+>> From: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+>>
+>> Add driver for the StarFive JH7110 System-Top-Group clock controller.
+>>
+>> Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
+> 
+> Reviewed-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
 
-This still doesn't work when the DRM driver is builtin, and the panel
-driver is a module. This is still with regulator-always-on.
+Hi Emil,
 
-From what I can tell from the kernel logs, the DRM driver is not waiting
-for eDP panel to probe (which sort of makes sense?), and simply uses
-the default EDID. When the panel does probe, nothing triggers the DRM
-driver to update its connector.
+Thanks. I already added you as the commit author of this patch, so I will not
+add the Reviewed-by tag for you.
 
-[drm:drm_helper_probe_single_connector_modes] [CONNECTOR:32:eDP-1]
-[drm:drm_helper_probe_single_connector_modes] [CONNECTOR:32:eDP-1]
-status updated from unknown to connected
-[drm:drm_mode_debug_printmodeline] Modeline "640x480": 60 25175 640
-656 752 800 480 490 492 525 0x40 0xa
-[drm:drm_mode_prune_invalid] Not using 640x480 mode: CLOCK_HIGH
-[drm:drm_mode_debug_printmodeline] Modeline "800x600": 56 36000 800
-824 896 1024 600 601 603 625 0x40 0x5
-[drm:drm_mode_prune_invalid] Not using 800x600 mode: CLOCK_HIGH
-[drm:drm_mode_debug_printmodeline] Modeline "800x600": 60 40000 800
-840 968 1056 600 601 605 628 0x40 0x5
-[drm:drm_mode_prune_invalid] Not using 800x600 mode: CLOCK_HIGH
-[drm:drm_mode_debug_printmodeline] Modeline "848x480": 60 33750 848
-864 976 1088 480 486 494 517 0x40 0x5
-[drm:drm_mode_prune_invalid] Not using 848x480 mode: CLOCK_HIGH
-[drm:drm_mode_debug_printmodeline] Modeline "1024x768": 60 65000 1024
-1048 1184 1344 768 771 777 806 0x40 0xa
-[drm:drm_mode_prune_invalid] Not using 1024x768 mode: CLOCK_HIGH
-[drm:drm_helper_probe_single_connector_modes] [CONNECTOR:34:DP-1]
-[drm:drm_helper_probe_single_connector_modes] [CONNECTOR:34:DP-1]
-status updated from unknown to disconnected
-[drm:drm_helper_probe_single_connector_modes] [CONNECTOR:34:DP-1] disconnec=
-ted
-[drm:drm_client_modeset_probe] No connectors reported connected with modes
-[drm:drm_client_modeset_probe] connector 32 enabled? yes
-[drm:drm_client_modeset_probe] connector 34 enabled? no
-[drm:drm_client_firmware_config.constprop.0.isra.0] Not using firmware
-configuration
-[drm:drm_client_modeset_probe] looking for cmdline mode on connector 32
-[drm:drm_client_modeset_probe] looking for preferred mode on connector 32 0
-[drm:drm_client_modeset_probe] found mode none
-[drm:drm_client_modeset_probe] picking CRTCs for 4096x4096 config
-mediatek-drm mediatek-drm.12.auto:
-[drm:__drm_fb_helper_initial_config_and_unlock] test CRTC 0 primary
-plane
-mediatek-drm mediatek-drm.12.auto: [drm] Cannot find any crtc or sizes
-mediatek-drm mediatek-drm.12.auto: [drm:drm_dp_dpcd_probe] aux_mtk_dp:
-0x00000 AUX -> (ret=3D  1) 14
-mediatek-drm mediatek-drm.12.auto: [drm:drm_dp_dpcd_read] aux_mtk_dp:
-0x00000 AUX -> (ret=3D 15) 14 0a 84 41 00 00 01 80 02 00 00 00 0f 09 80
-mediatek-drm mediatek-drm.12.auto: [drm:drm_dp_dpcd_probe] aux_mtk_dp:
-0x00000 AUX -> (ret=3D  1) 14
-mediatek-drm mediatek-drm.12.auto: [drm:drm_dp_dpcd_read] aux_mtk_dp:
-0x02200 AUX -> (ret=3D 15) 14 0a 84 41 00 00 01 80 02 00 00 00 0f 01 80
-mediatek-drm mediatek-drm.12.auto: [drm:drm_dp_read_dpcd_caps]
-aux_mtk_dp: Base DPCD: 14 0a 84 41 00 00 01 80 02 00 00 00 0f 09 80
-mediatek-drm mediatek-drm.12.auto: [drm:drm_dp_read_dpcd_caps]
-aux_mtk_dp: DPCD: 14 0a 84 41 00 00 01 80 02 00 00 00 0f 01 80
-mediatek-drm mediatek-drm.12.auto: [drm:drm_dp_dpcd_probe] aux_mtk_dp:
-0x00000 AUX -> (ret=3D  1) 14
-mediatek-drm mediatek-drm.12.auto: [drm:drm_dp_dpcd_read] aux_mtk_dp:
-0x00021 AUX -> (ret=3D  1) 00
-panel-simple-dp-aux aux-1c500000.edp-tx: Detected BOE NE135FBM-N41 v8.1 (0x=
-095f)
+Best regards,
+Xingyu Wu
 
-If the panel is also built-in, then the eDP panel probe happens between
-the drm driver adding components and binding to them, and everything seems
-to work OK.
+> 
+>> Co-developed-by: Xingyu Wu <xingyu.wu@starfivetech.com>
+>> Signed-off-by: Xingyu Wu <xingyu.wu@starfivetech.com>
+>> Signed-off-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+>> ---
+>>  drivers/clk/starfive/Kconfig                  |   8 +
+>>  drivers/clk/starfive/Makefile                 |   1 +
+>>  .../clk/starfive/clk-starfive-jh7110-stg.c    | 173 ++++++++++++++++++
+>>  3 files changed, 182 insertions(+)
+>>  create mode 100644 drivers/clk/starfive/clk-starfive-jh7110-stg.c
+>>
+>> diff --git a/drivers/clk/starfive/Kconfig b/drivers/clk/starfive/Kconfig
+>> index 5d2333106f13..eb1023b5e95a 100644
+>> --- a/drivers/clk/starfive/Kconfig
+>> +++ b/drivers/clk/starfive/Kconfig
+>> @@ -39,3 +39,11 @@ config CLK_STARFIVE_JH7110_AON
+>>         help
+>>           Say yes here to support the always-on clock controller on the
+>>           StarFive JH7110 SoC.
+>> +
+>> +config CLK_STARFIVE_JH7110_STG
+>> +       tristate "StarFive JH7110 System-Top-Group clock support"
+>> +       depends on CLK_STARFIVE_JH7110_SYS
+>> +       default m if ARCH_STARFIVE
+>> +       help
+>> +         Say yes here to support the System-Top-Group clock controller
+>> +         on the StarFive JH7110 SoC.
+>> diff --git a/drivers/clk/starfive/Makefile b/drivers/clk/starfive/Makefile
+>> index f3df7d957b1e..b81e97ee2659 100644
+>> --- a/drivers/clk/starfive/Makefile
+>> +++ b/drivers/clk/starfive/Makefile
+>> @@ -6,3 +6,4 @@ obj-$(CONFIG_CLK_STARFIVE_JH7100_AUDIO) += clk-starfive-jh7100-audio.o
+>>
+>>  obj-$(CONFIG_CLK_STARFIVE_JH7110_SYS)  += clk-starfive-jh7110-sys.o
+>>  obj-$(CONFIG_CLK_STARFIVE_JH7110_AON)  += clk-starfive-jh7110-aon.o
+>> +obj-$(CONFIG_CLK_STARFIVE_JH7110_STG)  += clk-starfive-jh7110-stg.o
+>> diff --git a/drivers/clk/starfive/clk-starfive-jh7110-stg.c b/drivers/clk/starfive/clk-starfive-jh7110-stg.c
+>> new file mode 100644
+>> index 000000000000..dafcb7190592
+>> --- /dev/null
+>> +++ b/drivers/clk/starfive/clk-starfive-jh7110-stg.c
+>> @@ -0,0 +1,173 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * StarFive JH7110 System-Top-Group Clock Driver
+>> + *
+>> + * Copyright (C) 2022 Emil Renner Berthing <kernel@esmil.dk>
+>> + * Copyright (C) 2022 StarFive Technology Co., Ltd.
+>> + */
+>> +
+>> +#include <linux/clk-provider.h>
+>> +#include <linux/io.h>
+>> +#include <linux/platform_device.h>
+>> +
+>> +#include <dt-bindings/clock/starfive,jh7110-crg.h>
+>> +
+>> +#include "clk-starfive-jh7110.h"
+>> +
+>> +/* external clocks */
+>> +#define JH7110_STGCLK_OSC                      (JH7110_STGCLK_END + 0)
+>> +#define JH7110_STGCLK_HIFI4_CORE               (JH7110_STGCLK_END + 1)
+>> +#define JH7110_STGCLK_STG_AXIAHB               (JH7110_STGCLK_END + 2)
+>> +#define JH7110_STGCLK_USB_125M                 (JH7110_STGCLK_END + 3)
+>> +#define JH7110_STGCLK_CPU_BUS                  (JH7110_STGCLK_END + 4)
+>> +#define JH7110_STGCLK_HIFI4_AXI                        (JH7110_STGCLK_END + 5)
+>> +#define JH7110_STGCLK_NOCSTG_BUS               (JH7110_STGCLK_END + 6)
+>> +#define JH7110_STGCLK_APB_BUS                  (JH7110_STGCLK_END + 7)
+>> +#define JH7110_STGCLK_EXT_END                  (JH7110_STGCLK_END + 8)
+>> +
+>> +static const struct jh71x0_clk_data jh7110_stgclk_data[] = {
+>> +       /* hifi4 */
+>> +       JH71X0_GATE(JH7110_STGCLK_HIFI4_CLK_CORE, "hifi4_clk_core", 0,
+>> +                   JH7110_STGCLK_HIFI4_CORE),
+>> +       /* usb */
+>> +       JH71X0_GATE(JH7110_STGCLK_USB0_APB, "usb0_apb", 0, JH7110_STGCLK_APB_BUS),
+>> +       JH71X0_GATE(JH7110_STGCLK_USB0_UTMI_APB, "usb0_utmi_apb", 0, JH7110_STGCLK_APB_BUS),
+>> +       JH71X0_GATE(JH7110_STGCLK_USB0_AXI, "usb0_axi", 0, JH7110_STGCLK_STG_AXIAHB),
+>> +       JH71X0_GDIV(JH7110_STGCLK_USB0_LPM, "usb0_lpm", 0, 2, JH7110_STGCLK_OSC),
+>> +       JH71X0_GDIV(JH7110_STGCLK_USB0_STB, "usb0_stb", 0, 4, JH7110_STGCLK_OSC),
+>> +       JH71X0_GATE(JH7110_STGCLK_USB0_APP_125, "usb0_app_125", 0, JH7110_STGCLK_USB_125M),
+>> +       JH71X0__DIV(JH7110_STGCLK_USB0_REFCLK, "usb0_refclk", 2, JH7110_STGCLK_OSC),
+>> +       /* pci-e */
+>> +       JH71X0_GATE(JH7110_STGCLK_PCIE0_AXI_MST0, "pcie0_axi_mst0", 0,
+>> +                   JH7110_STGCLK_STG_AXIAHB),
+>> +       JH71X0_GATE(JH7110_STGCLK_PCIE0_APB, "pcie0_apb", 0, JH7110_STGCLK_APB_BUS),
+>> +       JH71X0_GATE(JH7110_STGCLK_PCIE0_TL, "pcie0_tl", 0, JH7110_STGCLK_STG_AXIAHB),
+>> +       JH71X0_GATE(JH7110_STGCLK_PCIE1_AXI_MST0, "pcie1_axi_mst0", 0,
+>> +                   JH7110_STGCLK_STG_AXIAHB),
+>> +       JH71X0_GATE(JH7110_STGCLK_PCIE1_APB, "pcie1_apb", 0, JH7110_STGCLK_APB_BUS),
+>> +       JH71X0_GATE(JH7110_STGCLK_PCIE1_TL, "pcie1_tl", 0, JH7110_STGCLK_STG_AXIAHB),
+>> +       JH71X0_GATE(JH7110_STGCLK_PCIE_SLV_MAIN, "pcie_slv_main", CLK_IS_CRITICAL,
+>> +                   JH7110_STGCLK_STG_AXIAHB),
+>> +       /* security */
+>> +       JH71X0_GATE(JH7110_STGCLK_SEC_AHB, "sec_ahb", 0, JH7110_STGCLK_STG_AXIAHB),
+>> +       JH71X0_GATE(JH7110_STGCLK_SEC_MISC_AHB, "sec_misc_ahb", 0, JH7110_STGCLK_STG_AXIAHB),
+>> +       /* stg mtrx */
+>> +       JH71X0_GATE(JH7110_STGCLK_GRP0_MAIN, "mtrx_grp0_main", CLK_IS_CRITICAL,
+>> +                   JH7110_STGCLK_CPU_BUS),
+>> +       JH71X0_GATE(JH7110_STGCLK_GRP0_BUS, "mtrx_grp0_bus", CLK_IS_CRITICAL,
+>> +                   JH7110_STGCLK_NOCSTG_BUS),
+>> +       JH71X0_GATE(JH7110_STGCLK_GRP0_STG, "mtrx_grp0_stg", CLK_IS_CRITICAL,
+>> +                   JH7110_STGCLK_STG_AXIAHB),
+>> +       JH71X0_GATE(JH7110_STGCLK_GRP1_MAIN, "mtrx_grp1_main", CLK_IS_CRITICAL,
+>> +                   JH7110_STGCLK_CPU_BUS),
+>> +       JH71X0_GATE(JH7110_STGCLK_GRP1_BUS, "mtrx_grp1_bus", CLK_IS_CRITICAL,
+>> +                   JH7110_STGCLK_NOCSTG_BUS),
+>> +       JH71X0_GATE(JH7110_STGCLK_GRP1_STG, "mtrx_grp1_stg", CLK_IS_CRITICAL,
+>> +                   JH7110_STGCLK_STG_AXIAHB),
+>> +       JH71X0_GATE(JH7110_STGCLK_GRP1_HIFI, "mtrx_grp1_hifi", CLK_IS_CRITICAL,
+>> +                   JH7110_STGCLK_HIFI4_AXI),
+>> +       /* e24_rvpi */
+>> +       JH71X0_GDIV(JH7110_STGCLK_E2_RTC, "e2_rtc", 0, 24, JH7110_STGCLK_OSC),
+>> +       JH71X0_GATE(JH7110_STGCLK_E2_CORE, "e2_core", 0, JH7110_STGCLK_STG_AXIAHB),
+>> +       JH71X0_GATE(JH7110_STGCLK_E2_DBG, "e2_dbg", 0, JH7110_STGCLK_STG_AXIAHB),
+>> +       /* dw_sgdma1p */
+>> +       JH71X0_GATE(JH7110_STGCLK_DMA1P_AXI, "dma1p_axi", 0, JH7110_STGCLK_STG_AXIAHB),
+>> +       JH71X0_GATE(JH7110_STGCLK_DMA1P_AHB, "dma1p_ahb", 0, JH7110_STGCLK_STG_AXIAHB),
+>> +};
+>> +
+>> +static struct clk_hw *jh7110_stgclk_get(struct of_phandle_args *clkspec, void *data)
+>> +{
+>> +       struct jh71x0_clk_priv *priv = data;
+>> +       unsigned int idx = clkspec->args[0];
+>> +
+>> +       if (idx < JH7110_STGCLK_END)
+>> +               return &priv->reg[idx].hw;
+>> +
+>> +       return ERR_PTR(-EINVAL);
+>> +}
+>> +
+>> +static int jh7110_stgcrg_probe(struct platform_device *pdev)
+>> +{
+>> +       struct jh71x0_clk_priv *priv;
+>> +       unsigned int idx;
+>> +       int ret;
+>> +
+>> +       priv = devm_kzalloc(&pdev->dev, struct_size(priv, reg, JH7110_STGCLK_END),
+>> +                           GFP_KERNEL);
+>> +       if (!priv)
+>> +               return -ENOMEM;
+>> +
+>> +       spin_lock_init(&priv->rmw_lock);
+>> +       priv->dev = &pdev->dev;
+>> +       priv->base = devm_platform_ioremap_resource(pdev, 0);
+>> +       if (IS_ERR(priv->base))
+>> +               return PTR_ERR(priv->base);
+>> +
+>> +       for (idx = 0; idx < JH7110_STGCLK_END; idx++) {
+>> +               u32 max = jh7110_stgclk_data[idx].max;
+>> +               struct clk_parent_data parents[4] = {};
+>> +               struct clk_init_data init = {
+>> +                       .name = jh7110_stgclk_data[idx].name,
+>> +                       .ops = starfive_jh71x0_clk_ops(max),
+>> +                       .parent_data = parents,
+>> +                       .num_parents =
+>> +                               ((max & JH71X0_CLK_MUX_MASK) >> JH71X0_CLK_MUX_SHIFT) + 1,
+>> +                       .flags = jh7110_stgclk_data[idx].flags,
+>> +               };
+>> +               struct jh71x0_clk *clk = &priv->reg[idx];
+>> +               const char *fw_name[JH7110_STGCLK_EXT_END - JH7110_STGCLK_END] = {
+>> +                       "osc",
+>> +                       "hifi4_core",
+>> +                       "stg_axiahb",
+>> +                       "usb_125m",
+>> +                       "cpu_bus",
+>> +                       "hifi4_axi",
+>> +                       "nocstg_bus",
+>> +                       "apb_bus"
+>> +               };
+>> +               unsigned int i;
+>> +
+>> +               for (i = 0; i < init.num_parents; i++) {
+>> +                       unsigned int pidx = jh7110_stgclk_data[idx].parents[i];
+>> +
+>> +                       if (pidx < JH7110_STGCLK_END)
+>> +                               parents[i].hw = &priv->reg[pidx].hw;
+>> +                       else if (pidx < JH7110_STGCLK_EXT_END)
+>> +                               parents[i].fw_name = fw_name[pidx - JH7110_STGCLK_END];
+>> +               }
+>> +
+>> +               clk->hw.init = &init;
+>> +               clk->idx = idx;
+>> +               clk->max_div = max & JH71X0_CLK_DIV_MASK;
+>> +
+>> +               ret = devm_clk_hw_register(&pdev->dev, &clk->hw);
+>> +               if (ret)
+>> +                       return ret;
+>> +       }
+>> +
+>> +       ret = devm_of_clk_add_hw_provider(&pdev->dev, jh7110_stgclk_get, priv);
+>> +       if (ret)
+>> +               return ret;
+>> +
+>> +       return jh7110_reset_controller_register(priv, "rst-stg", 2);
+>> +}
+>> +
+>> +static const struct of_device_id jh7110_stgcrg_match[] = {
+>> +       { .compatible = "starfive,jh7110-stgcrg" },
+>> +       { /* sentinel */ }
+>> +};
+>> +MODULE_DEVICE_TABLE(of, jh7110_stgcrg_match);
+>> +
+>> +static struct platform_driver jh7110_stgcrg_driver = {
+>> +       .probe = jh7110_stgcrg_probe,
+>> +       .driver = {
+>> +               .name = "clk-starfive-jh7110-stg",
+>> +               .of_match_table = jh7110_stgcrg_match,
+>> +       },
+>> +};
+>> +module_platform_driver(jh7110_stgcrg_driver);
+>> +
+>> +MODULE_AUTHOR("Xingyu Wu <xingyu.wu@starfivetech.com>");
+>> +MODULE_AUTHOR("Emil Renner Berthing <kernel@esmil.dk>");
+>> +MODULE_DESCRIPTION("StarFive JH7110 System-Top-Group clock driver");
+>> +MODULE_LICENSE("GPL");
+>> --
+>> 2.25.1
+>>
+>>
+>> _______________________________________________
+>> linux-riscv mailing list
+>> linux-riscv@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
-
-ChenYu
-
-> Changes in v4:
->  - Set data lanes to idle to prevent stalls if bootloader didn't
->    properly close the eDP port
->  - Now using the .done_probing() callback for AUX bus to prevent
->    probe deferral loops in case the panel-edp driver is a module
->    as previously seen with another bridge driver (ANX7625) on
->    some other SoCs (MT8192 and others)
->  - Rebased over next-20230706
->  - Dropped Chen-Yu's T-b tag on last patch as some logic changed
->    (before, I wasn't using the .done_probing() callback).
->
-> Changes in v3:
->  - Added DPTX AUX block initialization before trying to communicate
->    to stop relying on the bootloader keeping it initialized before
->    booting Linux.
->  - Fixed commit description for patch [09/09] and removed commented
->    out code (that slipped from dev phase.. sorry!).
->
-> This series adds "real" support for eDP in the mtk-dp DisplayPort driver.
->
-> Explaining the "real":
-> Before this change, the DisplayPort driver did support eDP to some
-> extent, but it was treating it entirely like a regular DP interface
-> which is partially fine, after all, embedded DisplayPort *is* actually
-> DisplayPort, but there might be some differences to account for... and
-> this is for both small performance improvements and, more importantly,
-> for correct functionality in some systems.
->
-> Functionality first:
->
-> One of the common differences found in various boards implementing eDP
-> and machines using an eDP panel is that many times the HPD line is not
-> connected. This *must* be accounted for: at startup, this specific IP
-> will raise a HPD interrupt (which should maybe be ignored... as it does
-> not appear to be a "real" event...) that will make the eDP panel to be
-> detected and to actually work but, after a suspend-resume cycle, there
-> will be no HPD interrupt (as there's no HPD line in my case!) producing
-> a functionality issue - specifically, the DP Link Training fails because
-> the panel doesn't get powered up, then it stays black and won't work
-> until rebooting the machine (or removing and reinserting the module I
-> think, but I haven't tried that).
->
-> Now for.. both:
-> eDP panels are *e*DP because they are *not* removable (in the sense that
-> you can't unplug the cable without disassembling the machine, in which
-> case, the machine shall be powered down..!): this (correct) assumption
-> makes us able to solve some issues and to also gain a little performance
-> during PM operations.
->
-> What was done here is:
->  - Caching the EDID if the panel is eDP: we're always going to read the
->    same data everytime, so we can just cache that (as it's small enough)
->    shortening PM resume times for the eDP driver instance;
->  - Always return connector_status_connected if it's eDP: non-removable
->    means connector_status_disconnected can't happen during runtime...
->    this also saves us some time and even power, as we won't have to
->    perform yet another power cycle of the HW;
->  - Added aux-bus support!
->    This makes us able to rely on panel autodetection from the EDID,
->    avoiding to add more and more panel timings to panel-edp and, even
->    better, allowing to use one panel node in devicetrees for multiple
->    variants of the same machine since, at that point, it's not important
->    to "preventively know" what panel we have (eh, it's autodetected...!).
->
-> This was tested on a MT8195 Cherry Tomato Chromebook (panel-edp on aux-bu=
-s)
->
->
-> P.S.: For your own testing commodity, here's a reference devicetree:
->
-> pp3300_disp_x: regulator-pp3300-disp-x {
->         compatible =3D "regulator-fixed";
->         regulator-name =3D "pp3300_disp_x";
->         regulator-min-microvolt =3D <3300000>;
->         regulator-max-microvolt =3D <3300000>;
->         enable-active-high;
->         gpio =3D <&pio 55 GPIO_ACTIVE_HIGH>;
->         pinctrl-names =3D "default";
->         pinctrl-0 =3D <&panel_fixed_pins>;
-> };
->
-> &edp_tx {
->         status =3D "okay";
->
->         pinctrl-names =3D "default";
->         pinctrl-0 =3D <&edptx_pins_default>;
->
->         ports {
->                 #address-cells =3D <1>;
->                 #size-cells =3D <0>;
->
->                 port@0 {
->                         reg =3D <0>;
->                         edp_in: endpoint {
->                                 remote-endpoint =3D <&dp_intf0_out>;
->                         };
->                 };
->
->                 port@1 {
->                         reg =3D <1>;
->                         edp_out: endpoint {
->                                 data-lanes =3D <0 1 2 3>;
->                                 remote-endpoint =3D <&panel_in>;
->                         };
->                 };
->         };
->
->         aux-bus {
->                 panel: panel {
->                         compatible =3D "edp-panel";
->                         power-supply =3D <&pp3300_disp_x>;
->                         backlight =3D <&backlight_lcd0>;
->                         port {
->                                 panel_in: endpoint {
->                                         remote-endpoint =3D <&edp_out>;
->                                 };
->                         };
->                 };
->         };
-> };
->
-> AngeloGioacchino Del Regno (10):
->   drm/mediatek: dp: Move AUX and panel poweron/off sequence to function
->   drm/mediatek: dp: Change logging to dev for mtk_dp_aux_transfer()
->   drm/mediatek: dp: Use devm variant of drm_bridge_add()
->   drm/mediatek: dp: Move AUX_P0 setting to
->     mtk_dp_initialize_aux_settings()
->   drm/mediatek: dp: Enable event interrupt only when bridge attached
->   drm/mediatek: dp: Avoid mutex locks if audio is not supported/enabled
->   drm/mediatek: dp: Move PHY registration to new function
->   drm/mediatek: dp: Add support for embedded DisplayPort aux-bus
->   drm/mediatek: dp: Add .wait_hpd_asserted() for AUX bus
->   drm/mediatek: dp: Don't register HPD interrupt handler for eDP case
->
->  drivers/gpu/drm/mediatek/Kconfig  |   1 +
->  drivers/gpu/drm/mediatek/mtk_dp.c | 335 ++++++++++++++++++++----------
->  2 files changed, 224 insertions(+), 112 deletions(-)
->
-> --
-> 2.40.1
->
