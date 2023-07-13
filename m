@@ -2,423 +2,652 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD360752184
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 14:46:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A1E47521A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 14:48:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234799AbjGMMqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 08:46:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55688 "EHLO
+        id S234829AbjGMMsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 08:48:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234370AbjGMMqK (ORCPT
+        with ESMTP id S234816AbjGMMrs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 08:46:10 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A99942700
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 05:46:00 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-99364ae9596so102734066b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 05:46:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1689252359; x=1691844359;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=+EZO6Jnw8j7zUQccmE0/fnfg5lwRrVGqsp9XYuFgm/U=;
-        b=WFOKjESB8wdmjdbQ3HT5s60YvJMKkHvvaPuSExmdAbUSdwCstnV2psygDqhPrGK4a2
-         WlaRowldu4HLZQSwQJF2sdisBOBEFVb6eqCrihudNsNnn+6yKpemGby+Xr56/TZo9WuU
-         kMTqSYvYvtWlSLni8JoMcfg/d6sytcKu0UQ9V2ecoH5/9RQEaKSGMeIZYM7rkTcL1FxI
-         AAyim2RFVNryCtnViKEYqZxkQzCm2duu1MCrwJxEQq3XxwP79dR/1X2utWB1qABHVWmy
-         UjaLkkixIVH2aN1CJ139PF76D+MjOju/7Zt2WeKIIAtS+vy8R6OafOiBgxyufrsEcwEO
-         8p6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689252359; x=1691844359;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+EZO6Jnw8j7zUQccmE0/fnfg5lwRrVGqsp9XYuFgm/U=;
-        b=A2u11pIZG1KqbX3Y6aUGbPGnFCmIk1MkLECbuxTZ9FeQOHv8eESgDc2Le7DdmSwOUX
-         jfouT1Z8lHDxrBcUNwSMWlz5ciL9DykZhM/hQoFJDxbK+CSVHevZO+Wolq6XgXd6bEfQ
-         uSsy10qLNPcE7H5kJiV7EjsIK4bh7eRuVtUPzX3Xgjaz77pFufC4a3KVhO7SqZaDVZRd
-         liH/eZQGrxfTHtnxE++nrFytHCQD91ExcrI2vlse/xSdITPDsn/f5E+dkNfIsOPOIGjP
-         oWoGxDX7qHMZcTdJBeXVLb3uFWSJwguqMVSRm3OB9DkJThp9mhepeGSCotfl1p5ksJW7
-         SRBg==
-X-Gm-Message-State: ABy/qLbcvcN5wdPNleFi1Yvc/g8DweQv9NJGDCXAzTrt49HJNpj+AwiI
-        IrOrRZJZhFBa0WdUDchUFIvhig==
-X-Google-Smtp-Source: APBJJlGXPJIZX4/ksP8kKyrFld9z9m00hbugQ86EU54ijoO2HHRlSthfP5YF32pkB7b6uLMpycQ/Lg==
-X-Received: by 2002:a17:906:cf8e:b0:992:566b:7d57 with SMTP id um14-20020a170906cf8e00b00992566b7d57mr1188523ejb.61.1689252358542;
-        Thu, 13 Jul 2023 05:45:58 -0700 (PDT)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id rl6-20020a170907216600b009937dbabbdasm3900308ejb.217.2023.07.13.05.45.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Jul 2023 05:45:58 -0700 (PDT)
-Date:   Thu, 13 Jul 2023 14:45:57 +0200
-From:   Andrew Jones <ajones@ventanamicro.com>
-To:     Conor Dooley <conor.dooley@microchip.com>
-Cc:     Evan Green <evan@rivosinc.com>, Samuel Ortiz <sameo@rivosinc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv@lists.infradead.org,
-        "Hongren (Zenithal) Zheng" <i@zenithal.me>, linux@rivosinc.com,
-        Heiko Stuebner <heiko.stuebner@vrull.eu>,
-        Anup Patel <apatel@ventanamicro.com>,
-        linux-kernel@vger.kernel.org, Guo Ren <guoren@kernel.org>,
-        Atish Patra <atishp@rivosinc.com>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
-        devicetree@vger.kernel.org, sorear@fastmail.com,
-        Jiatai He <jiatai2021@iscas.ac.cn>
-Subject: Re: [PATCH v4 1/4] RISC-V: Add Bitmanip/Scalar Crypto parsing from DT
-Message-ID: <20230713-692c967c7a08c15dacbcab10@orel>
-References: <20230712084134.1648008-1-sameo@rivosinc.com>
- <20230712084134.1648008-2-sameo@rivosinc.com>
- <20230712-bulldozer-affected-199042dc3afd@wendy>
- <CALs-HsuxxVcwX=mSwktPiEiAFkfK+5qJ6zg1Bzf2t37L=pZWjw@mail.gmail.com>
- <20230713-3f574332a06678f908cee21e@orel>
- <20230713-aggregate-uncut-e16ee9270b14@wendy>
+        Thu, 13 Jul 2023 08:47:48 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F9852D65;
+        Thu, 13 Jul 2023 05:47:23 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 47E8E22199;
+        Thu, 13 Jul 2023 12:46:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1689252415; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FO3+JkPmT20d72dCNMN9k/Hj+RKDu7qBF2+SBlXHfJM=;
+        b=GYnrMathgpnisXdpJeV/FQPXohVRDGetYrkpwfoKZ1EPWbyIRy+nUm4kC+gUSIGqrO7uIo
+        COsLDfH+73GLXZGLTOPZa7iufOkTIXTf5Zn7nOsr95iqnN1Icr62RBAAhDmxkE1AU9yxjg
+        paSDRViirUeU4QR9xc1InbEiIUklpqU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1689252415;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FO3+JkPmT20d72dCNMN9k/Hj+RKDu7qBF2+SBlXHfJM=;
+        b=12GjiFVRb5w1WEVJ3+eoiEmQLOHVnc87lbL7NO8xtdMyknlQw/JsHHmOSnG806dYsvmAfK
+        +o99j1Vahl0Wi9CQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D3A1C133D6;
+        Thu, 13 Jul 2023 12:46:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id xGCxMj7yr2TLNQAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Thu, 13 Jul 2023 12:46:54 +0000
+Message-ID: <b0ff727a-e4bf-ed25-56fe-62860f198dce@suse.cz>
+Date:   Thu, 13 Jul 2023 14:46:54 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230713-aggregate-uncut-e16ee9270b14@wendy>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v4] Randomized slab caches for kmalloc()
+Content-Language: en-US
+To:     "GONG, Ruiqi" <gongruiqi@huaweicloud.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        David Rientjes <rientjes@google.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Christoph Lameter <cl@linux.com>, Tejun Heo <tj@kernel.org>,
+        Dennis Zhou <dennis@kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>
+Cc:     Roman Gushchin <roman.gushchin@linux.dev>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Lobakin <aleksander.lobakin@intel.com>,
+        Pedro Falcato <pedro.falcato@gmail.com>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Markus Elfring <Markus.Elfring@web.de>,
+        Wang Weiyang <wangweiyang2@huawei.com>,
+        Xiu Jianfeng <xiujianfeng@huawei.com>, linux-mm@kvack.org,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gongruiqi1@huawei.com, Julian Pidancet <julian.pidancet@oracle.com>
+References: <20230626031835.2279738-1-gongruiqi@huaweicloud.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20230626031835.2279738-1-gongruiqi@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 12:27:24PM +0100, Conor Dooley wrote:
-> On Thu, Jul 13, 2023 at 10:46:14AM +0200, Andrew Jones wrote:
-> > On Wed, Jul 12, 2023 at 10:43:33AM -0700, Evan Green wrote:
-> > > On Wed, Jul 12, 2023 at 3:39 AM Conor Dooley <conor.dooley@microchip.com> wrote:
-> > > > On Wed, Jul 12, 2023 at 10:41:17AM +0200, Samuel Ortiz wrote:
-> > > > > From: "Hongren (Zenithal) Zheng" <i@zenithal.me>
-> > > > >
-> > > > > Parse Zb/Zk related string from DT and output them to cpuinfo.
-> > > >
-> > > > One thing that has sprung to mind is that this is not limited to DT
-> > > > anymore, since the information could in theory come from ACPI too.
-> > > > Ditto the title I guess.
-> > > >
-> > > > > It is worth noting that the Scalar Crypto extension defines "zk" as a
-> > > > > shorthand for the Zkn, Zkr and Zkt extensions. Since the Zkn one also
-> > > > > implies the Zbkb, Zbkc and Zbkx extensions, simply passing the valid
-> > > > > "zk" extension name through a DT will enable all of the  Zbkb, Zbkc,
-> > > > > Zbkx, Zkn, Zkr and Zkt extensions.
-> > > > >
-> > > > > Also, since there currently is no mechanism to merge all enabled
-> > > > > extensions, the generated cpuinfo output could be relatively large.
-> > > > > For example, setting the "riscv,isa" DT property to "rv64imafdc_zk_zks"
-> > > > > will generate the following cpuinfo output:
-> > > > > "rv64imafdc_zbkb_zbkc_zbkx_zknd_zkne_zknh_zkr_zksed_zksh_zkt".
-> > > >
-> > > > On that note, I've created another version of what checking for
-> > > > supersets could look like, since it'll be needed either by my series or
-> > > > this one, depending on what gets merged first. I've yet to test the
-> > > > dedicated extensions part of it, but I wanted to get this out before I
-> > > > went looking at other fixes in the area.
-> > > >
-> > > > Evan, since it was you that commented on this stuff last time around,
-> > > > could you take another look? I'm still not keen on the "subset_of"
-> > > > arrays, but they're an improvement on what I had last time around for
-> > > > sure.
-> > > >
-> > > 
-> > > This looks alright to me. At the risk of getting into bikeshedding
-> > > territory, the only awkward bit of it is it composes the extensions in
-> > > sort of the opposite way you'd expect. I tend to think of Zks as being
-> > > comprised of {zbkb, zbkc, zksed, zksh},
-> > 
-> > This is also the way I think of it, so, FWIW, I prefer the approach below,
-> > where bundles are expanded.
+
+On 6/26/23 05:18, GONG, Ruiqi wrote:
+> When exploiting memory vulnerabilities, "heap spraying" is a common
+> technique targeting those related to dynamic memory allocation (i.e. the
+> "heap"), and it plays an important role in a successful exploitation.
+> Basically, it is to overwrite the memory area of vulnerable object by
+> triggering allocation in other subsystems or modules and therefore
+> getting a reference to the targeted memory location. It's usable on
+> various types of vulnerablity including use after free (UAF), heap out-
+> of-bound write and etc.
 > 
-> I took the patch Evan sent me off-list & have spun it into a "real"
-> patch. I did some minor changes (c99 loop, __init marking) to match what
-> the code was already doing and expanded it to work for the new property
-> stuff.
-> I'm not sure that match_isa_ext() needs to be a function, given the
-> single user - it might be better refactored to drop the outer if & return
-> whether a match was found.
-> If done that would allow sharing the same function between isa string and
-> dedicated property parsing. I left it intact for now. Might also be
-> worth adding kerneldoc for that struct.
+> There are (at least) two reasons why the heap can be sprayed: 1) generic
+> slab caches are shared among different subsystems and modules, and
+> 2) dedicated slab caches could be merged with the generic ones.
+> Currently these two factors cannot be prevented at a low cost: the first
+> one is a widely used memory allocation mechanism, and shutting down slab
+> merging completely via `slub_nomerge` would be overkill.
+
+Interesting :) Here's a recent patch to make slub_nomerge a default:
+https://lore.kernel.org/all/20230629221910.359711-1-julian.pidancet@oracle.com/
+
+In v1, Kees said he's been running with that for ages:
+https://lore.kernel.org/all/202306281358.E6E6C2759@keescook/
+
+So it's not universally accepted in the kernel hardening community?
+
+> To efficiently prevent heap spraying, we propose the following approach:
+> to create multiple copies of generic slab caches that will never be
+> merged, and random one of them will be used at allocation. The random
+> selection is based on the address of code that calls `kmalloc()`, which
+> means it is static at runtime (rather than dynamically determined at
+> each time of allocation, which could be bypassed by repeatedly spraying
+> in brute force). In other words, the randomness of cache selection will
+> be with respect to the code address rather than time, i.e. allocations
+> in different code paths would most likely pick different caches,
+> although kmalloc() at each place would use the same cache copy whenever
+> it is executed. In this way, the vulnerable object and memory allocated
+> in other subsystems and modules will (most probably) be on different
+> slab caches, which prevents the object from being sprayed.
 > 
-> -- >8 --
-> From 8300b98e487e57d192bc9581c6a3639c40c52623 Mon Sep 17 00:00:00 2001
-> From: Evan Green <evan@rivosinc.com>
-> Date: Wed, 12 Jul 2023 10:36:15 -0700
-> Subject: [PATCH] RISC-V: Add support Scalar Crypto using "bundled extensions"
+> Meanwhile, the static random selection is further enhanced with a
+> per-boot random seed, which prevents the attacker from finding a usable
+> kmalloc that happens to pick the same cache with the vulnerable
+> subsystem/module by analyzing the open source code. In other words, with
+> the per-boot seed, the random selection is static during each time the
+> system starts and runs, but not across different system startups.
 > 
-> The Scalar Crypto specification defines Zk as a shorthand for the
-> Zkn, Zkr and Zkt extensions. The same follows for both Zkn, Zks and Zbk,
-> which are all shorthands for various other extensions. The detailed
-> breakdown can be found in their dt-binding entries.
+> The overhead of performance has been tested on a 40-core x86 server by
+> comparing the results of `perf bench all` between the kernels with and
+> without this patch based on the latest linux-next kernel, which shows
+> minor difference. A subset of benchmarks are listed below:
 > 
-> Since Zkn also implies the Zbkb, Zbkc and Zbkx extensions, simply passing
-> "zk" through a DT should enable all of Zbkb, Zbkc, Zbkx, Zkn, Zkr and Zkt.
-> For example, setting the "riscv,isa" DT property to "rv64imafdc_zk"
-> should generate the following cpuinfo output:
-> "rv64imafdc_zicntr_zicsr_zifencei_zihpm_zbkb_zbkc_zbkx_zknd_zkne_zknh_zkr_zkt"
+>                 sched/  sched/  syscall/       mem/       mem/
+>              messaging    pipe     basic     memcpy     memset
+>                  (sec)   (sec)     (sec)   (GB/sec)   (GB/sec)
 > 
-> riscv_isa_ext_data grows a pair of new members, to permit setting the
-> relevant bits for "bundled" extensions, both while parsing the ISA string
-> and the new dedicated extension properties
+> control1         0.019   5.459     0.733  15.258789  51.398026
+> control2         0.019   5.439     0.730  16.009221  48.828125
+> control3         0.019   5.282     0.735  16.009221  48.828125
+> control_avg      0.019   5.393     0.733  15.759077  49.684759
 > 
-> Co-developed-by: Conor Dooley <conor.dooley@microchip.com>
-> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+> experiment1      0.019   5.374     0.741  15.500992  46.502976
+> experiment2      0.019   5.440     0.746  16.276042  51.398026
+> experiment3      0.019   5.242     0.752  15.258789  51.398026
+> experiment_avg   0.019   5.352     0.746  15.678608  49.766343
+> 
+> The overhead of memory usage was measured by executing `free` after boot
+> on a QEMU VM with 1GB total memory, and as expected, it's positively
+> correlated with # of cache copies:
+> 
+>            control  4 copies  8 copies  16 copies
+> 
+> total       969.8M    968.2M    968.2M     968.2M
+> used         20.0M     21.9M     24.1M      26.7M
+> free        936.9M    933.6M    931.4M     928.6M
+> available   932.2M    928.8M    926.6M     923.9M
+> 
+> Co-developed-by: Xiu Jianfeng <xiujianfeng@huawei.com>
+> Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
+> Signed-off-by: GONG, Ruiqi <gongruiqi@huaweicloud.com>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
 > ---
-> There's basically none of the original patch left, so I have dropped the
-> co-developed-bys and signed-off-bys from before. It does need one from
-> you now though Evan!
-> ---
->  arch/riscv/include/asm/hwcap.h | 13 +++++
->  arch/riscv/kernel/cpufeature.c | 94 ++++++++++++++++++++++++++++------
->  2 files changed, 92 insertions(+), 15 deletions(-)
 > 
-> diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwcap.h
-> index b7b58258f6c7..f74308633e45 100644
-> --- a/arch/riscv/include/asm/hwcap.h
-> +++ b/arch/riscv/include/asm/hwcap.h
-> @@ -58,6 +58,17 @@
->  #define RISCV_ISA_EXT_ZICSR		40
->  #define RISCV_ISA_EXT_ZIFENCEI		41
->  #define RISCV_ISA_EXT_ZIHPM		42
-> +#define RISCV_ISA_EXT_ZBC              43
-> +#define RISCV_ISA_EXT_ZBKB             44
-> +#define RISCV_ISA_EXT_ZBKC             45
-> +#define RISCV_ISA_EXT_ZBKX             46
-> +#define RISCV_ISA_EXT_ZKND             47
-> +#define RISCV_ISA_EXT_ZKNE             48
-> +#define RISCV_ISA_EXT_ZKNH             49
-> +#define RISCV_ISA_EXT_ZKR              50
-> +#define RISCV_ISA_EXT_ZKSED            51
-> +#define RISCV_ISA_EXT_ZKSH             52
-> +#define RISCV_ISA_EXT_ZKT              53
+> v4:
+>   - Set # of cache copies to 16 and remove config selection.
+>   - Shorten "kmalloc-random-" to "kmalloc-rnd-".
+>   - Update commit log and config's help paragraph.
+>   - Fine-tune PERCPU_DYNAMIC_SIZE_SHIFT to 12 instead of 13 (enough to
+>     pass compilation with allmodconfig and CONFIG_SLUB_TINY=n).
+>   - Some cleanup and typo fixing.
+> 
+> v3:
+>   - Replace SLAB_RANDOMSLAB with the new existing SLAB_NO_MERGE flag.
+>   - Shorten long code lines by wrapping and renaming.
+>   - Update commit message with latest perf benchmark and additional
+>     theorectical explanation.
+>   - Remove "RFC" from patch title and make it a formal patch
+>   - Link: https://lore.kernel.org/all/20230616111843.3677378-1-gongruiqi@huaweicloud.com/
+> 
+> v2:
+>   - Use hash_64() and a per-boot random seed to select kmalloc() caches.
+>   - Change acceptable # of caches from [4,16] to {2,4,8,16}, which is
+>     more compatible with hashing.
+>   - Supplement results of performance and memory overhead tests.
+>   - Link: https://lore.kernel.org/all/20230508075507.1720950-1-gongruiqi1@huawei.com/
+> 
+> v1:
+>   - Link: https://lore.kernel.org/all/20230315095459.186113-1-gongruiqi1@huawei.com/
+> 
+>  include/linux/percpu.h  | 12 ++++++++---
+>  include/linux/slab.h    | 25 ++++++++++++++++++----
+>  mm/Kconfig              | 16 ++++++++++++++
+>  mm/kfence/kfence_test.c |  6 ++++--
+>  mm/slab.c               |  2 +-
+>  mm/slab.h               |  2 +-
+>  mm/slab_common.c        | 47 ++++++++++++++++++++++++++++++++++++-----
+>  7 files changed, 94 insertions(+), 16 deletions(-)
+> 
+> diff --git a/include/linux/percpu.h b/include/linux/percpu.h
+> index 42125cf9c506..7692b5559098 100644
+> --- a/include/linux/percpu.h
+> +++ b/include/linux/percpu.h
+> @@ -34,6 +34,12 @@
+>  #define PCPU_BITMAP_BLOCK_BITS		(PCPU_BITMAP_BLOCK_SIZE >>	\
+>  					 PCPU_MIN_ALLOC_SHIFT)
 >  
->  #define RISCV_ISA_EXT_MAX		64
->  
-> @@ -77,6 +88,8 @@ struct riscv_isa_ext_data {
->  	const unsigned int id;
->  	const char *name;
->  	const char *property;
-> +	const unsigned int *bundle_ids;
-> +	const unsigned int bundle_size;
->  };
->  
->  extern const struct riscv_isa_ext_data riscv_isa_ext[];
-> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
-> index ccbe27b3060b..d999d73554f0 100644
-> --- a/arch/riscv/kernel/cpufeature.c
-> +++ b/arch/riscv/kernel/cpufeature.c
-> @@ -105,6 +105,39 @@ static bool riscv_isa_extension_check(int id)
->  	.id = _id,				\
->  }
->  
-> +#define __RISCV_ISA_EXT_BUNDLE(_name, _bundled_exts) {	\
-> +	.name = #_name,					\
-> +	.property = #_name,				\
-> +	.bundle_ids = _bundled_exts,			\
-> +	.bundle_size = ARRAY_SIZE(_bundled_exts)	\
-> +}
-> +
-> +static const unsigned int riscv_zk_bundled_exts[] = {
-> +	RISCV_ISA_EXT_ZBKB,
-> +	RISCV_ISA_EXT_ZBKC,
-> +	RISCV_ISA_EXT_ZBKX,
-> +	RISCV_ISA_EXT_ZKND,
-> +	RISCV_ISA_EXT_ZKNE,
-> +	RISCV_ISA_EXT_ZKR,
-> +	RISCV_ISA_EXT_ZKT,
-
-I think RISCV_ISA_EXT_ZKNH also belongs in this bundle,
-since the spec says zk is the zkn bundle plus zkr and zkt.
-
-> +};
-> +
-> +static const unsigned int riscv_zkn_bundled_exts[] = {
-> +	RISCV_ISA_EXT_ZBKB,
-> +	RISCV_ISA_EXT_ZBKC,
-> +	RISCV_ISA_EXT_ZBKX,
-> +	RISCV_ISA_EXT_ZKND,
-> +	RISCV_ISA_EXT_ZKNE,
-> +	RISCV_ISA_EXT_ZKNH,
-> +};
-> +
-> +static const unsigned int riscv_zks_bundled_exts[] = {
-> +	RISCV_ISA_EXT_ZBKB,
-> +	RISCV_ISA_EXT_ZBKC,
-> +	RISCV_ISA_EXT_ZKSED,
-> +	RISCV_ISA_EXT_ZKSH
-
-And, per the spec, this one appears to be missing RISCV_ISA_EXT_ZBKX.
-
-I found [1] which calls these shorthands "group names", so maybe we should
-use the term "group" instead of "bundle"? I'm tempted to try to directly
-code that graphic in [1] with something like...
-
-#define Zks_group1 \
-	RISCV_ISA_EXT_ZKSED, \
-	RISCV_ISA_EXT_ZKSH
-
-#define Zks_group2 \
-	RISCV_ISA_EXT_ZBKB, \
-	RISCV_ISA_EXT_ZBKC, \
-	RISCV_ISA_EXT_ZBKX
-
-#define Zks_group \
-	Zks_group1, \
-	Zks_group2
-
-#define Zkn_group1 \
-	RISCV_ISA_EXT_ZKND, \
-	RISCV_ISA_EXT_ZKNE, \
-	RISCV_ISA_EXT_ZKNH
-
-#define Zkn_group2 \
-	Zks_group2
-
-#define Zkn_group \
-	Zkn_group1, \
-	Zkn_group2
-
-static const unsigned int riscv_zks_group[] = {
-	Zks_group,
-};
-
-static const unsigned int riscv_zkn_group[] = {
-	Zkn_group,
-};
-
-static const unsigned int riscv_zk_group[] = {
-	Zks_group,
-	Zkn_group,
-	RISCV_ISA_EXT_ZKR,
-	RISCV_ISA_EXT_ZKT,
-};
-
-...but now that I have, I'm not sure I like the looks of it...
-
-[1] https://wiki.riscv.org/display/HOME/Scalar+Cryptography+Instruction+Set+Extension+Group+Names+Diagram
-
-Thanks,
-drew
-
-> +};
+> +#ifdef CONFIG_RANDOM_KMALLOC_CACHES
+> +#define PERCPU_DYNAMIC_SIZE_SHIFT      12
+> +#else
+> +#define PERCPU_DYNAMIC_SIZE_SHIFT      10
+> +#endif
 > +
 >  /*
->   * The canonical order of ISA extension names in the ISA string is defined in
->   * chapter 27 of the unprivileged specification.
-> @@ -167,7 +200,20 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
->  	__RISCV_ISA_EXT_DATA(zihpm, RISCV_ISA_EXT_ZIHPM),
->  	__RISCV_ISA_EXT_DATA(zba, RISCV_ISA_EXT_ZBA),
->  	__RISCV_ISA_EXT_DATA(zbb, RISCV_ISA_EXT_ZBB),
-> +	__RISCV_ISA_EXT_DATA(zbc, RISCV_ISA_EXT_ZBC),
-> +	__RISCV_ISA_EXT_DATA(zbkb, RISCV_ISA_EXT_ZBKB),
-> +	__RISCV_ISA_EXT_DATA(zbkc, RISCV_ISA_EXT_ZBKC),
-> +	__RISCV_ISA_EXT_DATA(zbkx, RISCV_ISA_EXT_ZBKX),
->  	__RISCV_ISA_EXT_DATA(zbs, RISCV_ISA_EXT_ZBS),
-> +	__RISCV_ISA_EXT_BUNDLE(zk, riscv_zk_bundled_exts),
-> +	__RISCV_ISA_EXT_BUNDLE(zkn, riscv_zkn_bundled_exts),
-> +	__RISCV_ISA_EXT_DATA(zknd, RISCV_ISA_EXT_ZKND),
-> +	__RISCV_ISA_EXT_DATA(zkne, RISCV_ISA_EXT_ZKNE),
-> +	__RISCV_ISA_EXT_DATA(zknh, RISCV_ISA_EXT_ZKNH),
-> +	__RISCV_ISA_EXT_DATA(zkr, RISCV_ISA_EXT_ZKR),
-> +	__RISCV_ISA_EXT_BUNDLE(zks, riscv_zks_bundled_exts),
-> +	__RISCV_ISA_EXT_DATA(zksed, RISCV_ISA_EXT_ZKSED),
-> +	__RISCV_ISA_EXT_DATA(zksh, RISCV_ISA_EXT_ZKSH),
->  	__RISCV_ISA_EXT_DATA(smaia, RISCV_ISA_EXT_SMAIA),
->  	__RISCV_ISA_EXT_DATA(ssaia, RISCV_ISA_EXT_SSAIA),
->  	__RISCV_ISA_EXT_DATA(sscofpmf, RISCV_ISA_EXT_SSCOFPMF),
-> @@ -179,6 +225,26 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
+>   * Percpu allocator can serve percpu allocations before slab is
+>   * initialized which allows slab to depend on the percpu allocator.
+> @@ -41,7 +47,7 @@
+>   * for this.  Keep PERCPU_DYNAMIC_RESERVE equal to or larger than
+>   * PERCPU_DYNAMIC_EARLY_SIZE.
+>   */
+> -#define PERCPU_DYNAMIC_EARLY_SIZE	(20 << 10)
+> +#define PERCPU_DYNAMIC_EARLY_SIZE	(20 << PERCPU_DYNAMIC_SIZE_SHIFT)
 >  
->  const size_t riscv_isa_ext_count = ARRAY_SIZE(riscv_isa_ext);
+>  /*
+>   * PERCPU_DYNAMIC_RESERVE indicates the amount of free area to piggy
+> @@ -55,9 +61,9 @@
+>   * intelligent way to determine this would be nice.
+>   */
+>  #if BITS_PER_LONG > 32
+> -#define PERCPU_DYNAMIC_RESERVE		(28 << 10)
+> +#define PERCPU_DYNAMIC_RESERVE		(28 << PERCPU_DYNAMIC_SIZE_SHIFT)
+>  #else
+> -#define PERCPU_DYNAMIC_RESERVE		(20 << 10)
+> +#define PERCPU_DYNAMIC_RESERVE		(20 << PERCPU_DYNAMIC_SIZE_SHIFT)
+>  #endif
 >  
-> +static void inline __init match_isa_ext(const struct riscv_isa_ext_data *ext, const char *name,
-> +					const char *name_end, struct riscv_isainfo *isainfo)
-> +{
-> +	if ((name_end - name == strlen(ext->name)) &&
-> +	     !strncasecmp(name, ext->name, name_end - name)) {
-> +		/*
-> +		 * If this is a bundle, enable all the ISA extensions that
-> +		 * comprise the bundle.
-> +		 */
-> +		if (ext->bundle_size) {
-> +			for (int i = 0; i < ext->bundle_size; i++) {
-> +				if (riscv_isa_extension_check(ext->bundle_ids[i]))
-> +					set_bit(ext->bundle_ids[i], isainfo->isa);
-> +			}
-> +		} else if (riscv_isa_extension_check(ext->id)) {
-> +			set_bit(ext->id, isainfo->isa);
-> +		}
-> +	}
-> +}
+>  extern void *pcpu_base_addr;
+> diff --git a/include/linux/slab.h b/include/linux/slab.h
+> index 791f7453a04f..747fc2587b56 100644
+> --- a/include/linux/slab.h
+> +++ b/include/linux/slab.h
+> @@ -18,6 +18,7 @@
+>  #include <linux/types.h>
+>  #include <linux/workqueue.h>
+>  #include <linux/percpu-refcount.h>
+> +#include <linux/hash.h>
+>  
+>  
+>  /*
+> @@ -342,6 +343,13 @@ static inline unsigned int arch_slab_minalign(void)
+>  #define SLAB_OBJ_MIN_SIZE      (KMALLOC_MIN_SIZE < 16 ? \
+>                                 (KMALLOC_MIN_SIZE) : 16)
+>  
+> +#ifdef CONFIG_RANDOM_KMALLOC_CACHES
+> +#define RANDOM_KMALLOC_CACHES_NR	16 // # of cache copies
+> +#define RANDOM_KMALLOC_CACHES_BITS	4  // =log2(_NR), for hashing
+> +#else
+> +#define RANDOM_KMALLOC_CACHES_NR	1
+> +#endif
 > +
->  static void __init riscv_parse_isa_string(unsigned long *this_hwcap, struct riscv_isainfo *isainfo,
->  					  unsigned long *isa2hwcap, const char *isa)
->  {
-> @@ -310,14 +376,6 @@ static void __init riscv_parse_isa_string(unsigned long *this_hwcap, struct risc
->  		if (*isa == '_')
->  			++isa;
+>  /*
+>   * Whenever changing this, take care of that kmalloc_type() and
+>   * create_kmalloc_caches() still work as intended.
+> @@ -351,7 +359,9 @@ static inline unsigned int arch_slab_minalign(void)
+>   * kmem caches can have both accounted and unaccounted objects.
+>   */
+>  enum kmalloc_cache_type {
+> -	KMALLOC_NORMAL = 0,
+> +	KMALLOC_RANDOM_START = 0,
+> +	KMALLOC_RANDOM_END = KMALLOC_RANDOM_START + RANDOM_KMALLOC_CACHES_NR - 1,
+> +	KMALLOC_NORMAL = KMALLOC_RANDOM_END,
+>  #ifndef CONFIG_ZONE_DMA
+>  	KMALLOC_DMA = KMALLOC_NORMAL,
+>  #endif
+> @@ -383,14 +393,21 @@ kmalloc_caches[NR_KMALLOC_TYPES][KMALLOC_SHIFT_HIGH + 1];
+>  	(IS_ENABLED(CONFIG_ZONE_DMA)   ? __GFP_DMA : 0) |	\
+>  	(IS_ENABLED(CONFIG_MEMCG_KMEM) ? __GFP_ACCOUNT : 0))
+
+I'd rather keep KMALLOC_NORMAL as 0, including the usual name, and then
+create 15 extra caches (see the diff later).
+
 >  
-> -#define SET_ISA_EXT_MAP(name, bit)						\
-> -		do {								\
-> -			if ((ext_end - ext == strlen(name)) &&			\
-> -			     !strncasecmp(ext, name, strlen(name)) &&		\
-> -			     riscv_isa_extension_check(bit))			\
-> -				set_bit(bit, isainfo->isa);			\
-> -		} while (false)							\
-> -
->  		if (unlikely(ext_err))
->  			continue;
->  		if (!ext_long) {
-> @@ -329,10 +387,8 @@ static void __init riscv_parse_isa_string(unsigned long *this_hwcap, struct risc
->  			}
->  		} else {
->  			for (int i = 0; i < riscv_isa_ext_count; i++)
-> -				SET_ISA_EXT_MAP(riscv_isa_ext[i].name,
-> -						riscv_isa_ext[i].id);
-> +				match_isa_ext(&riscv_isa_ext[i], ext, ext_end, isainfo);
->  		}
-> -#undef SET_ISA_EXT_MAP
+> -static __always_inline enum kmalloc_cache_type kmalloc_type(gfp_t flags)
+> +extern unsigned long random_kmalloc_seed;
+> +
+> +static __always_inline enum kmalloc_cache_type kmalloc_type(gfp_t flags, unsigned long caller)
+>  {
+>  	/*
+>  	 * The most common case is KMALLOC_NORMAL, so test for it
+>  	 * with a single branch for all the relevant flags.
+>  	 */
+>  	if (likely((flags & KMALLOC_NOT_NORMAL_BITS) == 0))
+> +#ifdef CONFIG_RANDOM_KMALLOC_CACHES
+> +		return KMALLOC_RANDOM_START + hash_64(caller ^ random_kmalloc_seed,
+> +						      RANDOM_KMALLOC_CACHES_BITS);
+> +#else
+>  		return KMALLOC_NORMAL;
+> +#endif
+>  
+>  	/*
+>  	 * At least one of the flags has to be set. Their priorities in
+> @@ -577,7 +594,7 @@ static __always_inline __alloc_size(1) void *kmalloc(size_t size, gfp_t flags)
+>  
+>  		index = kmalloc_index(size);
+>  		return kmalloc_trace(
+> -				kmalloc_caches[kmalloc_type(flags)][index],
+> +				kmalloc_caches[kmalloc_type(flags, _RET_IP_)][index],
+>  				flags, size);
 >  	}
+>  	return __kmalloc(size, flags);
+> @@ -593,7 +610,7 @@ static __always_inline __alloc_size(1) void *kmalloc_node(size_t size, gfp_t fla
+>  
+>  		index = kmalloc_index(size);
+>  		return kmalloc_node_trace(
+> -				kmalloc_caches[kmalloc_type(flags)][index],
+> +				kmalloc_caches[kmalloc_type(flags, _RET_IP_)][index],
+>  				flags, node, size);
+>  	}
+>  	return __kmalloc_node(size, flags, node);
+> diff --git a/mm/Kconfig b/mm/Kconfig
+> index a3c95338cd3a..e9dc606c9317 100644
+> --- a/mm/Kconfig
+> +++ b/mm/Kconfig
+> @@ -337,6 +337,22 @@ config SLUB_CPU_PARTIAL
+>  	  which requires the taking of locks that may cause latency spikes.
+>  	  Typically one would choose no for a realtime system.
+>  
+> +config RANDOM_KMALLOC_CACHES
+> +	default n
+> +	depends on SLUB
+
+I'd make it depend also on !SLUB_TINY to limit configs to sane combinations.
+
+> +	bool "Random slab caches for normal kmalloc"
+
+s/Random/Randomize/ ?
+
+> +	help
+> +	  A hardening feature that creates multiple copies of slab caches for
+> +	  normal kmalloc allocation and makes kmalloc randomly pick one based
+> +	  on code address, which makes the attackers unable to spray vulnerable
+
+"unable" may be too strong word. more difficult?
+
+> +	  memory objects on the heap for the purpose of exploiting memory
+> +	  vulnerabilities.
+> +
+> +	  Currently the number of copies is set to 16, a reasonably large value
+> +	  that effectively diverges the memory objects allocated for different
+> +	  subsystems or modules into different caches, at the expense of about
+> +	  7 MB of memory overhead.
+
+Ok you measured 7MB, but in a specific situation. Could be more than that
+depending on number of CPUs, and the workload. Hm I guess all we could
+honestly say is there will be some system and workload-specific memory and
+cpu overhead.
+
+>  endmenu # SLAB allocator options
+>  
+>  config SHUFFLE_PAGE_ALLOCATOR
+> diff --git a/mm/kfence/kfence_test.c b/mm/kfence/kfence_test.c
+> index 9e008a336d9f..7f5ffb490328 100644
+> --- a/mm/kfence/kfence_test.c
+> +++ b/mm/kfence/kfence_test.c
+> @@ -212,7 +212,8 @@ static void test_cache_destroy(void)
+>  
+>  static inline size_t kmalloc_cache_alignment(size_t size)
+>  {
+> -	return kmalloc_caches[kmalloc_type(GFP_KERNEL)][__kmalloc_index(size, false)]->align;
+> +	enum kmalloc_cache_type type = kmalloc_type(GFP_KERNEL, _RET_IP_);
+
+We're just getting an ->align there so it's not useful to pass an actual
+_RET_IP_, we could just pass 0 there. If it was performance critical, have
+another kmalloc_type_norandom() variant, but it's not.
+
+> +	return kmalloc_caches[type][__kmalloc_index(size, false)]->align;
 >  }
 >  
-> @@ -436,18 +492,26 @@ static int __init riscv_fill_hwcap_from_ext_list(unsigned long *isa2hwcap)
->  		}
+>  /* Must always inline to match stack trace against caller. */
+> @@ -282,8 +283,9 @@ static void *test_alloc(struct kunit *test, size_t size, gfp_t gfp, enum allocat
 >  
->  		for (int i = 0; i < riscv_isa_ext_count; i++) {
-> +			const struct riscv_isa_ext_data ext = riscv_isa_ext[i];
+>  		if (is_kfence_address(alloc)) {
+>  			struct slab *slab = virt_to_slab(alloc);
+> +			enum kmalloc_cache_type type = kmalloc_type(GFP_KERNEL, _RET_IP_);
+>  			struct kmem_cache *s = test_cache ?:
+> -					kmalloc_caches[kmalloc_type(GFP_KERNEL)][__kmalloc_index(size, false)];
+> +				kmalloc_caches[type][__kmalloc_index(size, false)];
+>  
+>  			/*
+>  			 * Verify that various helpers return the right values
+> diff --git a/mm/slab.c b/mm/slab.c
+> index 88194391d553..9ad3d0f2d1a5 100644
+> --- a/mm/slab.c
+> +++ b/mm/slab.c
+> @@ -1670,7 +1670,7 @@ static size_t calculate_slab_order(struct kmem_cache *cachep,
+>  			if (freelist_size > KMALLOC_MAX_CACHE_SIZE) {
+>  				freelist_cache_size = PAGE_SIZE << get_order(freelist_size);
+>  			} else {
+> -				freelist_cache = kmalloc_slab(freelist_size, 0u);
+> +				freelist_cache = kmalloc_slab(freelist_size, 0u, _RET_IP_);
+>  				if (!freelist_cache)
+>  					continue;
+>  				freelist_cache_size = freelist_cache->size;
+> diff --git a/mm/slab.h b/mm/slab.h
+> index 6a5633b25eb5..4ebe3bdfc17c 100644
+> --- a/mm/slab.h
+> +++ b/mm/slab.h
+> @@ -282,7 +282,7 @@ void setup_kmalloc_cache_index_table(void);
+>  void create_kmalloc_caches(slab_flags_t);
+>  
+>  /* Find the kmalloc slab corresponding for a certain size */
+> -struct kmem_cache *kmalloc_slab(size_t, gfp_t);
+> +struct kmem_cache *kmalloc_slab(size_t size, gfp_t flags, unsigned long caller);
+>  
+>  void *__kmem_cache_alloc_node(struct kmem_cache *s, gfp_t gfpflags,
+>  			      int node, size_t orig_size,
+> diff --git a/mm/slab_common.c b/mm/slab_common.c
+> index fe436d35f333..6f385956ef07 100644
+> --- a/mm/slab_common.c
+> +++ b/mm/slab_common.c
+> @@ -678,6 +678,11 @@ kmalloc_caches[NR_KMALLOC_TYPES][KMALLOC_SHIFT_HIGH + 1] __ro_after_init =
+>  { /* initialization for https://bugs.llvm.org/show_bug.cgi?id=42570 */ };
+>  EXPORT_SYMBOL(kmalloc_caches);
+>  
+> +#ifdef CONFIG_RANDOM_KMALLOC_CACHES
+> +unsigned long random_kmalloc_seed __ro_after_init;
+> +EXPORT_SYMBOL(random_kmalloc_seed);
+> +#endif
 > +
->  			if (of_property_match_string(cpu_node, "riscv,isa-extensions",
-> -						     riscv_isa_ext[i].property) < 0)
-> +						     ext.property) < 0)
->  				continue;
+>  /*
+>   * Conversion table for small slabs sizes / 8 to the index in the
+>   * kmalloc array. This is necessary for slabs < 192 since we have non power
+> @@ -720,7 +725,7 @@ static inline unsigned int size_index_elem(unsigned int bytes)
+>   * Find the kmem_cache structure that serves a given size of
+>   * allocation
+>   */
+> -struct kmem_cache *kmalloc_slab(size_t size, gfp_t flags)
+> +struct kmem_cache *kmalloc_slab(size_t size, gfp_t flags, unsigned long caller)
+>  {
+>  	unsigned int index;
 >  
-> -			if (!riscv_isa_extension_check(riscv_isa_ext[i].id))
-> +			if (ext.bundle_size) {
-> +				for (int j = 0; j < ext.bundle_size; j++) {
-> +					if (riscv_isa_extension_check(ext.bundle_ids[i]))
-> +						set_bit(ext.bundle_ids[j], this_isa);
-> +				}
-> +			} else if (riscv_isa_extension_check(ext.id)) {
-> +				set_bit(ext.id, this_isa);
-> +			} else {
->  				continue;
-> +			}
+> @@ -735,7 +740,7 @@ struct kmem_cache *kmalloc_slab(size_t size, gfp_t flags)
+>  		index = fls(size - 1);
+>  	}
 >  
->  			/* Only single letter extensions get set in hwcap */
->  			if (strnlen(riscv_isa_ext[i].name, 2) == 1)
->  				this_hwcap |= isa2hwcap[riscv_isa_ext[i].id];
-> -
-> -			set_bit(riscv_isa_ext[i].id, this_isa);
+> -	return kmalloc_caches[kmalloc_type(flags)][index];
+> +	return kmalloc_caches[kmalloc_type(flags, caller)][index];
+>  }
+>  
+>  size_t kmalloc_size_roundup(size_t size)
+> @@ -753,7 +758,7 @@ size_t kmalloc_size_roundup(size_t size)
+>  		return PAGE_SIZE << get_order(size);
+>  
+>  	/* The flags don't matter since size_index is common to all. */
+> -	c = kmalloc_slab(size, GFP_KERNEL);
+> +	c = kmalloc_slab(size, GFP_KERNEL, _RET_IP_);
+
+Also would pass 0 instead of _RET_IP_, the object_size doesn't depend on it.
+
+>  	return c ? c->object_size : 0;
+>  }
+>  EXPORT_SYMBOL(kmalloc_size_roundup);
+> @@ -776,12 +781,36 @@ EXPORT_SYMBOL(kmalloc_size_roundup);
+>  #define KMALLOC_RCL_NAME(sz)
+>  #endif
+>  
+> +#ifdef CONFIG_RANDOM_KMALLOC_CACHES
+> +#define __KMALLOC_RANDOM_CONCAT(a, b) a ## b
+> +#define KMALLOC_RANDOM_NAME(N, sz) __KMALLOC_RANDOM_CONCAT(KMA_RAND_, N)(sz)
+> +#define KMA_RAND_1(sz)                  .name[KMALLOC_RANDOM_START +  0] = "kmalloc-rnd-01-" #sz,
+> +#define KMA_RAND_2(sz)  KMA_RAND_1(sz)  .name[KMALLOC_RANDOM_START +  1] = "kmalloc-rnd-02-" #sz,
+> +#define KMA_RAND_3(sz)  KMA_RAND_2(sz)  .name[KMALLOC_RANDOM_START +  2] = "kmalloc-rnd-03-" #sz,
+> +#define KMA_RAND_4(sz)  KMA_RAND_3(sz)  .name[KMALLOC_RANDOM_START +  3] = "kmalloc-rnd-04-" #sz,
+> +#define KMA_RAND_5(sz)  KMA_RAND_4(sz)  .name[KMALLOC_RANDOM_START +  4] = "kmalloc-rnd-05-" #sz,
+> +#define KMA_RAND_6(sz)  KMA_RAND_5(sz)  .name[KMALLOC_RANDOM_START +  5] = "kmalloc-rnd-06-" #sz,
+> +#define KMA_RAND_7(sz)  KMA_RAND_6(sz)  .name[KMALLOC_RANDOM_START +  6] = "kmalloc-rnd-07-" #sz,
+> +#define KMA_RAND_8(sz)  KMA_RAND_7(sz)  .name[KMALLOC_RANDOM_START +  7] = "kmalloc-rnd-08-" #sz,
+> +#define KMA_RAND_9(sz)  KMA_RAND_8(sz)  .name[KMALLOC_RANDOM_START +  8] = "kmalloc-rnd-09-" #sz,
+> +#define KMA_RAND_10(sz) KMA_RAND_9(sz)  .name[KMALLOC_RANDOM_START +  9] = "kmalloc-rnd-10-" #sz,
+> +#define KMA_RAND_11(sz) KMA_RAND_10(sz) .name[KMALLOC_RANDOM_START + 10] = "kmalloc-rnd-11-" #sz,
+> +#define KMA_RAND_12(sz) KMA_RAND_11(sz) .name[KMALLOC_RANDOM_START + 11] = "kmalloc-rnd-12-" #sz,
+> +#define KMA_RAND_13(sz) KMA_RAND_12(sz) .name[KMALLOC_RANDOM_START + 12] = "kmalloc-rnd-13-" #sz,
+> +#define KMA_RAND_14(sz) KMA_RAND_13(sz) .name[KMALLOC_RANDOM_START + 13] = "kmalloc-rnd-14-" #sz,
+> +#define KMA_RAND_15(sz) KMA_RAND_14(sz) .name[KMALLOC_RANDOM_START + 14] = "kmalloc-rnd-15-" #sz,
+> +#define KMA_RAND_16(sz) KMA_RAND_15(sz) .name[KMALLOC_RANDOM_START + 15] = "kmalloc-rnd-16-" #sz,
+> +#else // CONFIG_RANDOM_KMALLOC_CACHES
+> +#define KMALLOC_RANDOM_NAME(N, sz)
+> +#endif
+> +
+>  #define INIT_KMALLOC_INFO(__size, __short_size)			\
+>  {								\
+>  	.name[KMALLOC_NORMAL]  = "kmalloc-" #__short_size,	\
+>  	KMALLOC_RCL_NAME(__short_size)				\
+>  	KMALLOC_CGROUP_NAME(__short_size)			\
+>  	KMALLOC_DMA_NAME(__short_size)				\
+> +	KMALLOC_RANDOM_NAME(RANDOM_KMALLOC_CACHES_NR, __short_size)	\
+>  	.size = __size,						\
+>  }
+
+With W=1 I've got warnings here as it tried to init 16th cache with both
+random and non-random name. This lead me to the renumbering of the enum and
+the diff below.
+
+>  
+> @@ -890,6 +919,11 @@ new_kmalloc_cache(int idx, enum kmalloc_cache_type type, slab_flags_t flags)
+>  		flags |= SLAB_CACHE_DMA;
+>  	}
+>  
+> +#ifdef CONFIG_RANDOM_KMALLOC_CACHES
+> +	if (type >= KMALLOC_RANDOM_START && type <= KMALLOC_RANDOM_END)
+> +		flags |= SLAB_NO_MERGE;
+> +#endif
+> +
+>  	if (minalign > ARCH_KMALLOC_MINALIGN) {
+>  		aligned_size = ALIGN(aligned_size, minalign);
+>  		aligned_idx = __kmalloc_index(aligned_size, false);
+> @@ -923,7 +957,7 @@ void __init create_kmalloc_caches(slab_flags_t flags)
+>  	/*
+>  	 * Including KMALLOC_CGROUP if CONFIG_MEMCG_KMEM defined
+>  	 */
+> -	for (type = KMALLOC_NORMAL; type < NR_KMALLOC_TYPES; type++) {
+> +	for (type = KMALLOC_RANDOM_START; type < NR_KMALLOC_TYPES; type++) {
+>  		for (i = KMALLOC_SHIFT_LOW; i <= KMALLOC_SHIFT_HIGH; i++) {
+>  			if (!kmalloc_caches[type][i])
+>  				new_kmalloc_cache(i, type, flags);
+> @@ -941,6 +975,9 @@ void __init create_kmalloc_caches(slab_flags_t flags)
+>  				new_kmalloc_cache(2, type, flags);
 >  		}
+>  	}
+> +#ifdef CONFIG_RANDOM_KMALLOC_CACHES
+> +	random_kmalloc_seed = get_random_u64();
+> +#endif
 >  
->  		of_node_put(cpu_node);
-> -- 
-> 2.40.1
-> 
-> 
+>  	/* Kmalloc array is now usable */
+>  	slab_state = UP;
+> @@ -976,7 +1013,7 @@ void *__do_kmalloc_node(size_t size, gfp_t flags, int node, unsigned long caller
+>  		return ret;
+>  	}
+>  
+> -	s = kmalloc_slab(size, flags);
+> +	s = kmalloc_slab(size, flags, caller);
+>  
+>  	if (unlikely(ZERO_OR_NULL_PTR(s)))
+>  		return s;
+
+Here's the renumbering diff. It assumes SLUB_TINY would be excluded as
+suggested, otherwise more adjustment would be needed for KMALLOC_RECLAIM.
+
+----8<----
+diff --git a/include/linux/slab.h b/include/linux/slab.h
+index 96fdfd96b708..2f6337361515 100644
+--- a/include/linux/slab.h
++++ b/include/linux/slab.h
+@@ -347,10 +347,10 @@ static inline unsigned int arch_slab_minalign(void)
+                                (KMALLOC_MIN_SIZE) : 16)
+ 
+ #ifdef CONFIG_RANDOM_KMALLOC_CACHES
+-#define RANDOM_KMALLOC_CACHES_NR	16 // # of cache copies
++#define RANDOM_KMALLOC_CACHES_NR	15 // # of extra cache copies
+ #define RANDOM_KMALLOC_CACHES_BITS	4  // =log2(_NR), for hashing
+ #else
+-#define RANDOM_KMALLOC_CACHES_NR	1
++#define RANDOM_KMALLOC_CACHES_NR	0
+ #endif
+ 
+ /*
+@@ -362,15 +362,15 @@ static inline unsigned int arch_slab_minalign(void)
+  * kmem caches can have both accounted and unaccounted objects.
+  */
+ enum kmalloc_cache_type {
+-	KMALLOC_RANDOM_START = 0,
+-	KMALLOC_RANDOM_END = KMALLOC_RANDOM_START + RANDOM_KMALLOC_CACHES_NR - 1,
+-	KMALLOC_NORMAL = KMALLOC_RANDOM_END,
++	KMALLOC_NORMAL = 0,
+ #ifndef CONFIG_ZONE_DMA
+ 	KMALLOC_DMA = KMALLOC_NORMAL,
+ #endif
+ #ifndef CONFIG_MEMCG_KMEM
+ 	KMALLOC_CGROUP = KMALLOC_NORMAL,
+ #endif
++	KMALLOC_RANDOM_START = KMALLOC_NORMAL,
++	KMALLOC_RANDOM_END = KMALLOC_RANDOM_START + RANDOM_KMALLOC_CACHES_NR,
+ #ifdef CONFIG_SLUB_TINY
+ 	KMALLOC_RECLAIM = KMALLOC_NORMAL,
+ #else
+diff --git a/mm/slab_common.c b/mm/slab_common.c
+index a1a111ca229c..0479037b2959 100644
+--- a/mm/slab_common.c
++++ b/mm/slab_common.c
+@@ -784,22 +784,21 @@ EXPORT_SYMBOL(kmalloc_size_roundup);
+ #ifdef CONFIG_RANDOM_KMALLOC_CACHES
+ #define __KMALLOC_RANDOM_CONCAT(a, b) a ## b
+ #define KMALLOC_RANDOM_NAME(N, sz) __KMALLOC_RANDOM_CONCAT(KMA_RAND_, N)(sz)
+-#define KMA_RAND_1(sz)                  .name[KMALLOC_RANDOM_START +  0] = "kmalloc-rnd-01-" #sz,
+-#define KMA_RAND_2(sz)  KMA_RAND_1(sz)  .name[KMALLOC_RANDOM_START +  1] = "kmalloc-rnd-02-" #sz,
+-#define KMA_RAND_3(sz)  KMA_RAND_2(sz)  .name[KMALLOC_RANDOM_START +  2] = "kmalloc-rnd-03-" #sz,
+-#define KMA_RAND_4(sz)  KMA_RAND_3(sz)  .name[KMALLOC_RANDOM_START +  3] = "kmalloc-rnd-04-" #sz,
+-#define KMA_RAND_5(sz)  KMA_RAND_4(sz)  .name[KMALLOC_RANDOM_START +  4] = "kmalloc-rnd-05-" #sz,
+-#define KMA_RAND_6(sz)  KMA_RAND_5(sz)  .name[KMALLOC_RANDOM_START +  5] = "kmalloc-rnd-06-" #sz,
+-#define KMA_RAND_7(sz)  KMA_RAND_6(sz)  .name[KMALLOC_RANDOM_START +  6] = "kmalloc-rnd-07-" #sz,
+-#define KMA_RAND_8(sz)  KMA_RAND_7(sz)  .name[KMALLOC_RANDOM_START +  7] = "kmalloc-rnd-08-" #sz,
+-#define KMA_RAND_9(sz)  KMA_RAND_8(sz)  .name[KMALLOC_RANDOM_START +  8] = "kmalloc-rnd-09-" #sz,
+-#define KMA_RAND_10(sz) KMA_RAND_9(sz)  .name[KMALLOC_RANDOM_START +  9] = "kmalloc-rnd-10-" #sz,
+-#define KMA_RAND_11(sz) KMA_RAND_10(sz) .name[KMALLOC_RANDOM_START + 10] = "kmalloc-rnd-11-" #sz,
+-#define KMA_RAND_12(sz) KMA_RAND_11(sz) .name[KMALLOC_RANDOM_START + 11] = "kmalloc-rnd-12-" #sz,
+-#define KMA_RAND_13(sz) KMA_RAND_12(sz) .name[KMALLOC_RANDOM_START + 12] = "kmalloc-rnd-13-" #sz,
+-#define KMA_RAND_14(sz) KMA_RAND_13(sz) .name[KMALLOC_RANDOM_START + 13] = "kmalloc-rnd-14-" #sz,
+-#define KMA_RAND_15(sz) KMA_RAND_14(sz) .name[KMALLOC_RANDOM_START + 14] = "kmalloc-rnd-15-" #sz,
+-#define KMA_RAND_16(sz) KMA_RAND_15(sz) .name[KMALLOC_RANDOM_START + 15] = "kmalloc-rnd-16-" #sz,
++#define KMA_RAND_1(sz)                  .name[KMALLOC_RANDOM_START +  1] = "kmalloc-rnd-01-" #sz,
++#define KMA_RAND_2(sz)  KMA_RAND_1(sz)  .name[KMALLOC_RANDOM_START +  2] = "kmalloc-rnd-02-" #sz,
++#define KMA_RAND_3(sz)  KMA_RAND_2(sz)  .name[KMALLOC_RANDOM_START +  3] = "kmalloc-rnd-03-" #sz,
++#define KMA_RAND_4(sz)  KMA_RAND_3(sz)  .name[KMALLOC_RANDOM_START +  4] = "kmalloc-rnd-04-" #sz,
++#define KMA_RAND_5(sz)  KMA_RAND_4(sz)  .name[KMALLOC_RANDOM_START +  5] = "kmalloc-rnd-05-" #sz,
++#define KMA_RAND_6(sz)  KMA_RAND_5(sz)  .name[KMALLOC_RANDOM_START +  6] = "kmalloc-rnd-06-" #sz,
++#define KMA_RAND_7(sz)  KMA_RAND_6(sz)  .name[KMALLOC_RANDOM_START +  7] = "kmalloc-rnd-07-" #sz,
++#define KMA_RAND_8(sz)  KMA_RAND_7(sz)  .name[KMALLOC_RANDOM_START +  8] = "kmalloc-rnd-08-" #sz,
++#define KMA_RAND_9(sz)  KMA_RAND_8(sz)  .name[KMALLOC_RANDOM_START +  9] = "kmalloc-rnd-09-" #sz,
++#define KMA_RAND_10(sz) KMA_RAND_9(sz)  .name[KMALLOC_RANDOM_START + 10] = "kmalloc-rnd-10-" #sz,
++#define KMA_RAND_11(sz) KMA_RAND_10(sz) .name[KMALLOC_RANDOM_START + 11] = "kmalloc-rnd-11-" #sz,
++#define KMA_RAND_12(sz) KMA_RAND_11(sz) .name[KMALLOC_RANDOM_START + 12] = "kmalloc-rnd-12-" #sz,
++#define KMA_RAND_13(sz) KMA_RAND_12(sz) .name[KMALLOC_RANDOM_START + 13] = "kmalloc-rnd-13-" #sz,
++#define KMA_RAND_14(sz) KMA_RAND_13(sz) .name[KMALLOC_RANDOM_START + 14] = "kmalloc-rnd-14-" #sz,
++#define KMA_RAND_15(sz) KMA_RAND_14(sz) .name[KMALLOC_RANDOM_START + 15] = "kmalloc-rnd-15-" #sz,
+ #else // CONFIG_RANDOM_KMALLOC_CACHES
+ #define KMALLOC_RANDOM_NAME(N, sz)
+ #endif
+@@ -957,7 +956,7 @@ void __init create_kmalloc_caches(slab_flags_t flags)
+ 	/*
+ 	 * Including KMALLOC_CGROUP if CONFIG_MEMCG_KMEM defined
+ 	 */
+-	for (type = KMALLOC_RANDOM_START; type < NR_KMALLOC_TYPES; type++) {
++	for (type = KMALLOC_NORMAL; type < NR_KMALLOC_TYPES; type++) {
+ 		for (i = KMALLOC_SHIFT_LOW; i <= KMALLOC_SHIFT_HIGH; i++) {
+ 			if (!kmalloc_caches[type][i])
+ 				new_kmalloc_cache(i, type, flags);
 
 
