@@ -2,127 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A33E752BC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 22:39:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB0BC752BC4
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 22:40:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234088AbjGMUje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 16:39:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58930 "EHLO
+        id S230027AbjGMUke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 16:40:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231360AbjGMUjd (ORCPT
+        with ESMTP id S229976AbjGMUkb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 16:39:33 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AAF01FD6;
-        Thu, 13 Jul 2023 13:39:32 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6D5C861B43;
-        Thu, 13 Jul 2023 20:39:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABC1AC433C8;
-        Thu, 13 Jul 2023 20:39:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689280770;
-        bh=bcGCwRJVwrgQUmowpebv9sF2MjE/I2LXNBy02Hig+sk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rcfugwaVYPELK2MrNRSx1ol4j53EGpoLc200cGY57A6R/HfhrpbktcU4PxE6Iqtu+
-         sQw6kTkRNBWbwj9j/jbsiR5rWTOUuMBeD9kNScMy7QIuyFniTsw+CWYdpqcqe9/NcF
-         RDGDp04aRybvBEiSrAxAx+GETRHGBYlF1UXRBX6mTteq61Qx3d5WnolNFNs0ivtZOS
-         7Y68fMqEdQt08f8+NJDJwuTCFzwgiAYVhIW4WK1UAZK537A/gKhXRU8OHTw8yWC2bg
-         vDvKkwxhvrYw5X+cIdpHKkhUWG8un420SxdISXhX12RwOYDFcAXHcp7MbQdJ5BK3h6
-         Knpqv23eRuZaw==
-Date:   Thu, 13 Jul 2023 21:39:25 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     =?iso-8859-1?B?Ik7tY29sYXMgRi4gUi4gQS4i?= Prado 
-        <nfraprado@collabora.com>, Jaroslav Kysela <perex@perex.cz>,
-        kernel@collabora.com,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Shuah Khan <shuah@kernel.org>, Takashi Iwai <tiwai@suse.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 2/2] kselftest/alsa: pcm-test: Decrease stream duration
- from 4 to 2 seconds
-Message-ID: <66c81c16-737d-4ec6-b590-a6b1070b991b@sirena.org.uk>
-References: <443f697b-fecf-6e8e-0b76-65257aff7da8@perex.cz>
- <9069ad0c-d166-4620-a3de-a36ab233cab0@sirena.org.uk>
- <5c2d5213-5299-44f1-9611-26002c8a5d3a@notapiano>
- <87352krcz5.wl-tiwai@suse.de>
- <f5cab2c2-1638-4d19-aff3-d46ed34b857e@sirena.org.uk>
- <87wmzwptu0.wl-tiwai@suse.de>
- <06b8bfde-e4f1-48ea-aa3e-35d2fe5df046@sirena.org.uk>
- <87wmz8i746.wl-tiwai@suse.de>
- <87ef1544-c1aa-4cce-82f2-60c6f1c2b1c8@sirena.org.uk>
- <87ilaofb9s.wl-tiwai@suse.de>
+        Thu, 13 Jul 2023 16:40:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 705842D57
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 13:39:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689280788;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=60cvdq5oE5S+4O6Au451icacUmsO1NSy6BojUatczSw=;
+        b=Bc6diOoYvYo6XfLxRQUiVpiVOi4J0kWKyAuaoPo/GmRa+59AgR256XL1+XxA3vUYlA9uoP
+        w2EcaNE/KdRIASsDsJ6rdTM4Q37ppYtuWlsWBT7rNIX7LY6o0qmv6cQztIewu6v4DmQrGm
+        g2wqPW+/2BJJEhREewa1abJ4vpsXpZ8=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-142-V3zAvz5_M1WEyXD9VxBtzQ-1; Thu, 13 Jul 2023 16:39:47 -0400
+X-MC-Unique: V3zAvz5_M1WEyXD9VxBtzQ-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-31429e93f26so793925f8f.2
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 13:39:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689280781; x=1691872781;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=60cvdq5oE5S+4O6Au451icacUmsO1NSy6BojUatczSw=;
+        b=SZvo1edF6WKBZWkUfPC7xH0tLK9B2LUz0VcNcUfmdeI4+WMW31VzUgf0YJaCaUXmNL
+         q78VZNB/IKLqui0lugksQhG9/hDX79kHS1zRpFx64DiUfXTCoYujt3HxEyaBIsI6Itsm
+         5eqErIcOA9UUG+L51srluUwlxgWn3UD1ny+N8zHS66AvCX2Ju9Xy9Y3qJwWMDpZmGba6
+         r8b2ZcZkYgTzHhRj4Hp7QP3+aX7m8Ob5wqKsFHbjaUFVHVhWMkfrRtQQeotVyV0RSNGR
+         xl8zbcBHhYoZsrQD0ba57rlQ09AEyuzHiqTt0v4DSQm/VtooTwXhYPcx5Xwns15qtDZJ
+         vUxA==
+X-Gm-Message-State: ABy/qLaYEmw0aEYP4dk59IFF6cZMl3714QyMd2mgdEfbuIKV2BHdJhh+
+        DTtGgZOQuJQr6+eRgJSY2LbXXIvE9d3flAV/966WgQwwv7YLhlUM8wb33efbntabBJ0iYm3VU/2
+        xYQLzj9VsaVDNH+HTxVo/8Oru
+X-Received: by 2002:a5d:4c45:0:b0:313:dec6:a2fb with SMTP id n5-20020a5d4c45000000b00313dec6a2fbmr2313927wrt.6.1689280781807;
+        Thu, 13 Jul 2023 13:39:41 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlFFORkyeOUbDVeCk6/Rec0el8E984aDlWqPlT5aBOLVgslLk9PjkmZ56QEqC94+4S/3bliG7Q==
+X-Received: by 2002:a5d:4c45:0:b0:313:dec6:a2fb with SMTP id n5-20020a5d4c45000000b00313dec6a2fbmr2313909wrt.6.1689280781522;
+        Thu, 13 Jul 2023 13:39:41 -0700 (PDT)
+Received: from [192.168.95.46] ([213.55.224.225])
+        by smtp.gmail.com with ESMTPSA id l18-20020a5d6752000000b0031434cebcd8sm8843845wrw.33.2023.07.13.13.39.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 Jul 2023 13:39:41 -0700 (PDT)
+Message-ID: <33e7d819-ac81-2a14-3cfa-c7a470dc4ceb@redhat.com>
+Date:   Thu, 13 Jul 2023 22:39:39 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="rajlGC2kTISHyIRr"
-Content-Disposition: inline
-In-Reply-To: <87ilaofb9s.wl-tiwai@suse.de>
-X-Cookie: MOUNT TAPE U1439 ON B3, NO RING
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [RFC PATCH v2] x86/boot: add .sbat section to the bzImage
+Content-Language: de-CH
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        bluca@debian.org, lennart@poettering.net,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        =?UTF-8?Q?Daniel_P=2e_Berrang=c3=a9?= <berrange@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-efi@vger.kernel.org
+References: <20230711154449.1378385-1-eesposit@redhat.com>
+ <ZK/9MlTh435FP5Ji@gambale.home> <ZLABozIRVGmwuIBf@gambale.home>
+From:   Emanuele Giuseppe Esposito <eesposit@redhat.com>
+In-Reply-To: <ZLABozIRVGmwuIBf@gambale.home>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Ard,
 
---rajlGC2kTISHyIRr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Ok in case I'll cc you. Thanks a lot!
 
-On Thu, Jul 13, 2023 at 10:47:43AM +0200, Takashi Iwai wrote:
-> Mark Brown wrote:
+Emanuele
 
-> > # default.time3.0.0.0.PLAYBACK - 44.1kHz stereo large periods
-> > # default.time3.0.0.0.PLAYBACK hw_params.RW_INTERLEAVED.S16_LE.44100.2.16383.131064 sw_params.131064
-> > not ok 10 default.time3.0.0.0.PLAYBACK
-> > # time mismatch: expected 2000ms got 2229
+Am 13/07/2023 um 15:52 schrieb Ard Biesheuvel:
+> (add linux-efi@ cc)
+> 
+> On Thu, Jul 13, 2023 at 03:33:38PM +0200, Ard Biesheuvel wrote:
+>> Hello Emanuele,
+>>
+>> Please cc the linux-efi@ mailing list and myself on EFI related patches.
+>>
+>> First of all, I think the tone of the discussion is way out of hand on
+>> both sides of the debate. Please keep it civil and courteous
 
-> > reliably (the actual time drifts by a few ms).  The other boards I've
-> > got coverage of seem fine, and I didn't check any broader CI yet.
-
-> Interesting.  With the current patch, we rather extended the margin in
-> proportion; formerly 4 sec +/- 0.1s, now 2 sec +/- 0.1s.  And it
-> exceeded out of sudden.
-
-Right.
-
-> I guess this rather caught a problem of the driver itself.
-
-Well, there's doubtless something driver/hardware related going on but
-I'm not sure if it's a problem there or not.  The results from the 4s
-runtime were:
-
-# default.time3.0.0.0.PLAYBACK - 44.1kHz stereo large periods
-# default.time3.0.0.0.PLAYBACK hw_params.RW_INTERLEAVED.S16_LE.44100.2.16383.131064 sw_params.131064
-ok 10 default.time3.0.0.0.PLAYBACK
-
-so the same buffer sizes and so on, and the period size is only 10ms
-unless I miscalculated which should be quite a long way off from the
-100ms of margin we give ourselves.  It does seem a little suspect that
-it's the large periods test that's falling over though.
-
---rajlGC2kTISHyIRr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmSwYPwACgkQJNaLcl1U
-h9AAjAf9G1zzfng/beUy+UkABu6GsH4CgzFwfSum/wi7FgrnLo8yNYSH8M5RU/qf
-dxoSuJF2Jf7glSBeBxFI+1lBUoEI0YmTuYez1QFQcdaOybZ1R0SgfrPFZ9sj6+14
-vdSgMfk98QkgcnU0V0HHnUrSNkXP6Nd2y9hkukv6tTzEsICWnBLC8w4WS3qu92fQ
-Z65B7dti1tOCTydBPjirhzybNy8qm3xOgw+tdIBPvEM1HMgSSYcZQIm3r2Mk3+EK
-fEjhT0ol+azg2AvW/V78L/JaaeapItkoWfvB8VtI3IWFt1JjbjL0l3PoXQR4ZNGy
-Pc4j3nYqATnS6J9OsLLgMBWzYKt6xg==
-=9JRd
------END PGP SIGNATURE-----
-
---rajlGC2kTISHyIRr--
