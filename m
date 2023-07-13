@@ -2,134 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 328DB751863
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 07:57:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08CC4751867
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 07:58:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233953AbjGMF51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 01:57:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35234 "EHLO
+        id S233978AbjGMF6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 01:58:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233809AbjGMF50 (ORCPT
+        with ESMTP id S233982AbjGMF6b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 01:57:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 248E32101
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 22:57:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9F4C461A1B
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 05:57:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88018C433C8;
-        Thu, 13 Jul 2023 05:57:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1689227843;
-        bh=q9r7XL80n84mZRG4PdZ0AdqE+56ebbBdWajAjngC5A8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WpwksOFfZ76NAFPXnmei8z70xdfDaIKdLVMBAYNN22wjjZlXvvBLo6lAjEWQUZv5A
-         BHToA1aR6mUvDYof73pZQZ6tpDmb1As2JaOn+UZ1OrrFCIzki+1BreX8lH1aHehHjk
-         drTpwemmCubIBahWBdVTgKtwCVwqHk4hg+7hAP2s=
-Date:   Thu, 13 Jul 2023 07:57:17 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "Gangurde, Abhijit" <abhijit.gangurde@amd.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Gupta, Nipun" <Nipun.Gupta@amd.com>,
-        "Agarwal, Nikhil" <nikhil.agarwal@amd.com>,
-        "Gupta, Puneet (DCG-ENG)" <puneet.gupta@amd.com>,
-        "git (AMD-Xilinx)" <git@amd.com>,
-        "Simek, Michal" <michal.simek@amd.com>,
-        "Jansen Van Vuuren, Pieter" <pieter.jansen-van-vuuren@amd.com>
-Subject: Re: [PATCH 3/4] cdx: create sysfs resource files
-Message-ID: <2023071303-encore-emporium-b847@gregkh>
-References: <20230711121027.936487-1-abhijit.gangurde@amd.com>
- <20230711121027.936487-4-abhijit.gangurde@amd.com>
- <2023071148-grievance-gulf-0841@gregkh>
- <DM4PR12MB776565FAF9F3797643C9AFA78F36A@DM4PR12MB7765.namprd12.prod.outlook.com>
- <2023071231-drinking-unskilled-3c00@gregkh>
- <DM4PR12MB7765AEF30AA787C246852C0C8F37A@DM4PR12MB7765.namprd12.prod.outlook.com>
+        Thu, 13 Jul 2023 01:58:31 -0400
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D3392113;
+        Wed, 12 Jul 2023 22:58:30 -0700 (PDT)
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-31441bc0092so450166f8f.1;
+        Wed, 12 Jul 2023 22:58:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689227908; x=1691819908;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+bPmkmx8MFyLGshNfOTsNG6N5oeRGXLvF/oFTCyPJq4=;
+        b=AjW7Y2TuU2dHKdWm9tCiniEPo5cSMaJ57j2mcOFpzzZa23/19R27YKEaRwq2svPGGx
+         dJqIir9sGPYy2opBPk0oA2E2QC/09h/xvYPhSMx6sC4N+ts9Jm7NBN3HOqx1aF8eAr1M
+         lCxi4AfOT2uJI5Ms/E6HX/jZNb6RxYtx4d64aQ6bSJF2GReweeruiKl/1jK7njYBuvQ+
+         Sh2oAgfNLCg8mfmt4O2ExIqXqDASSs7Gv3NV+ydr26x/znr4EVrFz8P1x4JEGjepYwm4
+         fLx3zcMV+PjCn92+Nwrfm9DBar6MQ9IMoF2+5qyCj71sUWLcEFYVh8B+TcaIP5LUzUBo
+         a3jg==
+X-Gm-Message-State: ABy/qLbM5zOoSBvQH4Pvc1y61mPA807KOkUT6REb5miaXg1XHPRDaiDp
+        p2MJcBlx98QB+FcHXZffJs0=
+X-Google-Smtp-Source: APBJJlGywdVjlMxH8FW+tpHfr3aHIWUvGko8KkL2E4xGwYdfcc/spEFfb7ByYHax3buSwCv+vzkh9g==
+X-Received: by 2002:a5d:42cb:0:b0:311:142d:5d97 with SMTP id t11-20020a5d42cb000000b00311142d5d97mr495644wrr.31.1689227908407;
+        Wed, 12 Jul 2023 22:58:28 -0700 (PDT)
+Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
+        by smtp.gmail.com with ESMTPSA id f1-20020a5d50c1000000b0031438e42599sm6931032wrt.82.2023.07.12.22.58.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 Jul 2023 22:58:27 -0700 (PDT)
+Message-ID: <eb40223b-94fa-0ddc-2612-7fd57b4c6736@kernel.org>
+Date:   Thu, 13 Jul 2023 07:58:27 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM4PR12MB7765AEF30AA787C246852C0C8F37A@DM4PR12MB7765.namprd12.prod.outlook.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2] drivers: wireless: ath5k: fix parameter check in
+ ath5k_debug_init_device()
+Content-Language: en-US
+To:     Minjie Du <duminjie@vivo.com>,
+        Nick Kossifidis <mickflemm@gmail.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kalle Valo <kvalo@kernel.org>,
+        "open list:ATHEROS ATH5K WIRELESS DRIVER" 
+        <linux-wireless@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Cc:     opensource.kernel@vivo.com
+References: <20230713033647.2109-1-duminjie@vivo.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+In-Reply-To: <20230713033647.2109-1-duminjie@vivo.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 05:36:25AM +0000, Gangurde, Abhijit wrote:
-> [AMD Official Use Only - General]
+On 13. 07. 23, 5:36, Minjie Du wrote:
+> Make IS_ERR_OR_NULL() judge the debugfs_create_dir() function return
+> in ath5k_debug_init_device().
 > 
-> > > > > Resource files provides the basic MMIO regions info to the
-> > > > > user-space. Also, resources<x> devices can be used to mmap the
-> > > > > MMIO regions in the user-space.
-> > > > >
-> > > > > Co-developed-by: Puneet Gupta <puneet.gupta@amd.com>
-> > > > > Signed-off-by: Puneet Gupta <puneet.gupta@amd.com>
-> > > > > Co-developed-by: Nipun Gupta <nipun.gupta@amd.com>
-> > > > > Signed-off-by: Nipun Gupta <nipun.gupta@amd.com>
-> > > > > Signed-off-by: Abhijit Gangurde <abhijit.gangurde@amd.com>
-> > > > > Reviewed-by: Pieter Jansen van Vuuren <pieter.jansen-van-
-> > > > vuuren@amd.com>
-> > > > > Tested-by: Nikhil Agarwal <nikhil.agarwal@amd.com>
-> > > > > ---
-> > > > >  Documentation/ABI/testing/sysfs-bus-cdx |  15 +++
-> > > > >  drivers/cdx/cdx.c                       | 139 +++++++++++++++++++++++-
-> > > > >  include/linux/cdx/cdx_bus.h             |  10 ++
-> > > > >  3 files changed, 163 insertions(+), 1 deletion(-)
-> > > > >
-> > > > > diff --git a/Documentation/ABI/testing/sysfs-bus-cdx
-> > > > b/Documentation/ABI/testing/sysfs-bus-cdx
-> > > > > index d9e00058471d..6ca47b6442ce 100644
-> > > > > --- a/Documentation/ABI/testing/sysfs-bus-cdx
-> > > > > +++ b/Documentation/ABI/testing/sysfs-bus-cdx
-> > > > > @@ -76,3 +76,18 @@ Description:
-> > > > >             For example::
-> > > > >
-> > > > >               # echo 1 > /sys/bus/cdx/devices/.../remove
-> > > > > +
-> > > > > +What:              /sys/bus/cdx/devices/.../resource
-> > > > > +Date:              July 2023
-> > > > > +Contact:   puneet.gupta@amd.com
-> > > > > +Description:
-> > > > > +           The resource file contains host addresses of CDX device
-> > > > > +           resources. Each line of the resource file describes a region
-> > > > > +           with start, end, and flag fields.
-> > > >
-> > > > If you documented what this file looked like here, it would be obvious
-> > > > that this is not an acceptable sysfs file in any sense of the word.
-> > > >
-> > > > Please do so, and then fix the patch to not do that at all.
-> > >
-> > > Similar interface exist for pci and we intended to keep it same way. Could you
-> > please elaborate on this.
-> > >
-> > > # cat /sys/bus/pci/devices/0000\:01\:00.0/resource
-> > > 0x0000000092100000 0x00000000921fffff 0x000000000014220c
-> > > 0x0000000000000000 0x0000000000000000 0x0000000000000000
-> >
-> > Please don't propagate incorrect decisions in the past.
-> >
-> > Why do you need all of these "resources" in userspace?  What tool is
-> > going to read and parse them and do something with them?
-> >
-> > This really violates the "one value per file" sysfs rule, you are going
-> > to have to have a huge reason why this is not applicable here, AND you
-> > are going to have to document it very very well and get everyone to
-> > agree with it.
+> Signed-off-by: Minjie Du <duminjie@vivo.com>
+> Acked-by: Luis Chamberlain <mcgrof@kernel.org>
+> ---
+> v1-v2:
+> use IS_ERR_OR_NULL() instead of IS_ERR()
+> ---
+>   drivers/net/wireless/ath/ath5k/debug.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> We don't have any strong reason apart from that this is being used by some
-> test and debug applications. Will drop this one now and revisit later by
-> complying to the specifications.
+> diff --git a/drivers/net/wireless/ath/ath5k/debug.c b/drivers/net/wireless/ath/ath5k/debug.c
+> index 4b41160e5..7c8823759 100644
+> --- a/drivers/net/wireless/ath/ath5k/debug.c
+> +++ b/drivers/net/wireless/ath/ath5k/debug.c
+> @@ -982,7 +982,7 @@ ath5k_debug_init_device(struct ath5k_hw *ah)
+>   	ah->debug.level = ath5k_debug;
+>   
+>   	phydir = debugfs_create_dir("ath5k", ah->hw->wiphy->debugfsdir);
+> -	if (!phydir)
+> +	if (IS_ERR_OR_NULL(phydir))
+>   		return;
 
-If it's only for debug stuff, then use debugfs, that's what it is there
-for.
+And actually, in this case, remove the check completely (as per docs).
 
 thanks,
+-- 
+js
+suse labs
 
-greg k-h
