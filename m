@@ -2,146 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 322827525D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 16:59:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E165C7525D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 16:58:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232353AbjGMO7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 10:59:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34866 "EHLO
+        id S232427AbjGMO6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 10:58:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbjGMO7K (ORCPT
+        with ESMTP id S232297AbjGMO6b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 10:59:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 744812D41
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 07:58:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689260286;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=y0dYxeJTcn6CE5ZGh7Qp5yxnvIz4CH3khVO+7kKHvyM=;
-        b=MOyjQDvOCoUQRUU03Qdpclag8ogyaOm/t11R9SkPReP0WN6mCyG2B5Dg7O1nwCzDSawe7J
-        6VbBQilEik94XjyHAlWOFPobKsCNS3tn6Z66KMNO2SpqtiYhDAMmYwdHVzT/hkggwNQ37Q
-        uZyb4mINZA+uhj8AgT9DMPd6Jj6HvAQ=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-394-tpL6yDtbO82Pp2zGVuuNjg-1; Thu, 13 Jul 2023 10:58:02 -0400
-X-MC-Unique: tpL6yDtbO82Pp2zGVuuNjg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Thu, 13 Jul 2023 10:58:31 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 512962D6A
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 07:58:25 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BC07E101CAA9;
-        Thu, 13 Jul 2023 14:58:01 +0000 (UTC)
-Received: from p1.luc.cera.cz.com (unknown [10.45.224.91])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E302340C2063;
-        Thu, 13 Jul 2023 14:57:59 +0000 (UTC)
-From:   Ivan Vecera <ivecera@redhat.com>
-To:     netdev@vger.kernel.org
-Cc:     Simon Horman <simon.horman@corigine.com>,
-        Rafal Romanowski <rafal.romanowski@intel.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, Ma Yuying <yuma@redhat.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        intel-wired-lan@lists.osuosl.org (moderated list:INTEL ETHERNET DRIVERS),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net-next v3 2/2] i40e: Wait for pending VF reset in VF set callbacks
-Date:   Thu, 13 Jul 2023 16:57:55 +0200
-Message-ID: <20230713145755.1629442-2-ivecera@redhat.com>
-In-Reply-To: <20230713145755.1629442-1-ivecera@redhat.com>
-References: <20230713145755.1629442-1-ivecera@redhat.com>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AE31F61861
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 14:58:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53B49C433C8;
+        Thu, 13 Jul 2023 14:58:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1689260304;
+        bh=iX5N4lE4KxY1+QurnpsBhAWrrYlJ3UK4/HtyY/Fl9r4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=2bsQGyG72H86hiUhtA+0fbARJwTDmdBtfogG0HfwCJcJzTo/H0Z4NF41T9OJyJhME
+         EJ6O+EI/ZGegyF5aA41yrWNJIJEpmXq2INifT+P2ByzxnjzkAHjt5W78gnLq155K3H
+         VYJ8NgPv4WN5Ymc6Uw2Dn+00hqFlJsTqjVGMj0p8=
+Date:   Thu, 13 Jul 2023 16:58:20 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Emanuele Giuseppe Esposito <eesposit@redhat.com>, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>, bluca@debian.org,
+        lennart@poettering.net, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Daniel P =?iso-8859-1?Q?=2E_Berrang=E9?= <berrange@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v2] x86/boot: add .sbat section to the bzImage
+Message-ID: <2023071329-persevere-pursuant-e631@gregkh>
+References: <20230711154449.1378385-1-eesposit@redhat.com>
+ <2023071237-private-overhang-7f86@gregkh>
+ <875y6o429i.fsf@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <875y6o429i.fsf@redhat.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 028daf80117376 ("i40e: Fix attach VF to VM issue") fixed
-a race between i40e_ndo_set_vf_mac() and i40e_reset_vf() during
-an attachment of VF device to VM. This issue is not related to
-setting MAC address only but also VLAN assignment to particular
-VF because the newer libvirt sets configured MAC address as well
-as an optional VLAN. The same behavior is also for i40e's
-.ndo_set_vf_rate and .ndo_set_vf_spoofchk where the callbacks
-just check if the VF was initialized but not wait for the finish
-of pending reset.
+On Thu, Jul 13, 2023 at 10:57:45AM +0200, Vitaly Kuznetsov wrote:
+> FWIW,
+> 
+> this was an RFC to answer a fairly straitforward question: is upstream
+> Linux interested in / is a suitable place for having SBAT revocation
+> mechanism or not.
 
-Reproducer:
-[root@host ~]# virsh attach-interface guest hostdev --managed 0000:02:02.0 --mac 52:54:00:b4:aa:bb
-error: Failed to attach interface
-error: Cannot set interface MAC/vlanid to 52:54:00:b4:aa:bb/0 for ifname enp2s0f0 vf 0: Resource temporarily unavailable
+As Peter said, there was no questions in this patch, so how were we to
+know that this was something that you all were asking?
 
-Fix this issue by using i40e_check_vf_init_timeout() helper to check
-whether a reset of particular VF was finished in i40e's
-.ndo_set_vf_vlan, .ndo_set_vf_rate and .ndo_set_vf_spoofchk callbacks.
+Also, you need to provide lots of information in the changelog itself
+about whatever "SBAT" is, as that is not anything that anyone should be
+forced to look up (links go dead over time.)
 
-Tested-by: Ma Yuying <yuma@redhat.com>
-Signed-off-by: Ivan Vecera <ivecera@redhat.com>
----
- .../net/ethernet/intel/i40e/i40e_virtchnl_pf.c   | 16 +++++-----------
- 1 file changed, 5 insertions(+), 11 deletions(-)
+> We can, of course, iron out the details whether it
+> should be "linux.org"/"linux.com"/"lore.kernel.org/lkml/" or
+> "linux.onion" and where to put objcopy call, whether to silence its
+> output or not but these are rather implemntation details.
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
-index b203465357af..398fb4854cbe 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
-@@ -4468,13 +4468,11 @@ int i40e_ndo_set_vf_port_vlan(struct net_device *netdev, int vf_id,
- 	}
- 
- 	vf = &pf->vf[vf_id];
--	vsi = pf->vsi[vf->lan_vsi_idx];
--	if (!test_bit(I40E_VF_STATE_INIT, &vf->vf_states)) {
--		dev_err(&pf->pdev->dev, "VF %d still in reset. Try again.\n",
--			vf_id);
-+	if (!i40e_check_vf_init_timeout(vf)) {
- 		ret = -EAGAIN;
- 		goto error_pvid;
- 	}
-+	vsi = pf->vsi[vf->lan_vsi_idx];
- 
- 	if (le16_to_cpu(vsi->info.pvid) == vlanprio)
- 		/* duplicate request, so just return success */
-@@ -4618,13 +4616,11 @@ int i40e_ndo_set_vf_bw(struct net_device *netdev, int vf_id, int min_tx_rate,
- 	}
- 
- 	vf = &pf->vf[vf_id];
--	vsi = pf->vsi[vf->lan_vsi_idx];
--	if (!test_bit(I40E_VF_STATE_INIT, &vf->vf_states)) {
--		dev_err(&pf->pdev->dev, "VF %d still in reset. Try again.\n",
--			vf_id);
-+	if (!i40e_check_vf_init_timeout(vf)) {
- 		ret = -EAGAIN;
- 		goto error;
- 	}
-+	vsi = pf->vsi[vf->lan_vsi_idx];
- 
- 	ret = i40e_set_bw_limit(vsi, vsi->seid, max_tx_rate);
- 	if (ret)
-@@ -4791,9 +4787,7 @@ int i40e_ndo_set_vf_spoofchk(struct net_device *netdev, int vf_id, bool enable)
- 	}
- 
- 	vf = &(pf->vf[vf_id]);
--	if (!test_bit(I40E_VF_STATE_INIT, &vf->vf_states)) {
--		dev_err(&pf->pdev->dev, "VF %d still in reset. Try again.\n",
--			vf_id);
-+	if (!i40e_check_vf_init_timeout(vf)) {
- 		ret = -EAGAIN;
- 		goto out;
- 	}
--- 
-2.41.0
+It's a sign that this change was not thought out at all, as the
+follow-up questions, and lack of answers, showed in detail.
 
+> I don't
+> particularly see why anyone would need to get additional sign-offs to
+> just ask a question (which I don actually think was asked before!) and
+> IMO an RFC/patch is usually the best way to do so.
+
+Again, no questions were asked.
+
+And when I asked questions, no one knowledgable answered them (hint, we
+release more than 3 kernels a year...)
+
+> Following the discussion, it seems that at least x86 maintainer[s] are
+> opposed to the very idea of having SBAT revocation mechanism integrated
+> upstream because it's hard to meaningfully define what epoch is.
+
+You all did not even consider how this might work with our existing
+release process OR how we handle security fixes today.  In fact, you
+totally ignored it, and didn't even do some basic research into our past
+history to see how this new feature would actually work had it been
+present 10 years ago.
+
+You need to convince us "of course we would be foolish to not accept
+this patch because you properly researched it, documented it, and tied
+it all into our existing release and security and other policies and
+proceedures".  But none of that happened here, so we would be foolish to
+ACCEPT this patch, right?
+
+Turn it around, what would you do if you got this patch in your inbox to
+review and you were responsible for doing kernel releases and security
+fixes?
+
+> This is
+> OK (which doesn't mean we all agree to that) but as there's real need to
+> revoke "bad" (in UEFI SecureBoot sense) kernels, distros will likely
+> come up with their custom, downstream only ways to do it. Without an
+> upstream reference, however, they may come up with very differently
+> looking SBAT sections, this may or may not be problematic in the future,
+> who knows.
+
+You all haven't even properly defined what "bad" means!  Or who would
+determine it!  Or how it would work with our decades-old release process
+that has evolved over time.  Or how it would tie into our existing
+security fixing policies and processes.
+
+In fact, it is a complete end-run around all of that, with only a "trust
+us, we will update the number when we want to" statement.  Also
+without even defining who "us" is.
+
+And if a security policy doesn't even define who is going to be
+determining the security policy at all, is it a security policy you want
+in Linux?
+
+thanks,
+
+greg k-h
