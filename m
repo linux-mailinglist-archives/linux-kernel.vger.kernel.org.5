@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95E59751759
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 06:21:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0DDB75175A
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 06:22:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233869AbjGMEVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 00:21:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33048 "EHLO
+        id S233837AbjGMEV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 00:21:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233787AbjGMEVX (ORCPT
+        with ESMTP id S233838AbjGMEV1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 00:21:23 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0200D26B9
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 21:21:14 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-68336d06620so307344b3a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 21:21:14 -0700 (PDT)
+        Thu, 13 Jul 2023 00:21:27 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC914270F
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 21:21:17 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id 5614622812f47-3a04e5baffcso281647b6e.3
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 21:21:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689222074; x=1691814074;
+        d=gmail.com; s=20221208; t=1689222077; x=1691814077;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=T5CtvWZNM/arT1DeaLF8JN33bJjE1wRpWQ+2TM1opec=;
-        b=i+W/NFohhvOCvKpcJMP9qgQqqgnP2EXS+qk6DRkcwUUbYvBlyO+0QzIrnCeCsGQzeG
-         cYvSyZ09QP9qbQQXIlMXW8GJC9lCe0pdff6yWizEWhJGTSkLi4FfqcLNSlrIhbSp8wXZ
-         h0fGuGyJO0H/0xTNTKH5YJCZnp3LI+99cDo9UlXjpTtxpQq0Q7rVV340Iv1F+/Q8nHSh
-         aOTaBulsJzrhGj0kdl84YslsnY5LBVi0yVEhoS5Yq9IlgP8hnE79x8MaMNWqPTBDzDR3
-         70+Pn244J5aXK8AMhsA4BKwrtQ+ItypDMjw2JTBzWvaf7nbZi/QZhOpx9etOSHV+dYxI
-         Tr7w==
+        bh=x4zzHPL0k6H0MdOKWy9H+XqQmDxwRKjupee59FsBT9w=;
+        b=LBEyRpU8G6PNHITLYWQWY9IyEPJyBkyQ5+FvSpkPn/XDu4Dao59DBpPH/zWMmJUshw
+         lq0kdCLAyTLvXPRb/y+83fvqbRcDI/W+LuQaPuNH3C+pY8AU4jRsRBWwzik8OP0E5MYJ
+         PLiAqFM/MrZKLDfuQYnYD93VG+rfaatGql8SPpIviN7wELQguFKteyX1AeorHVMmxNPn
+         Dez/e+bAAstVLLoChOoqn9Uzy/cGstHq6rZ1lRNBHeKGx45FkUpllKlYAJDdihR1tDxk
+         aA2G7wm5jd0vkB34MMv+IA+CCV9qlxehsMStgJw+N7ZnVOnzXTdoq5hxDAEmnVkUZ8Pj
+         TUKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689222074; x=1691814074;
+        d=1e100.net; s=20221208; t=1689222077; x=1691814077;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=T5CtvWZNM/arT1DeaLF8JN33bJjE1wRpWQ+2TM1opec=;
-        b=VmrPwYjimUPz4NZYcbbX1V14pDoNxPd7Hh+JCorHUKOIe2bJagyac/CJlfCs5sMAOq
-         65mtoxP9xrM7jNbMDg+kcPg+bbs1JlYacFYhhZ7Id2D6wzwYSvTHNqqJ08t91eWxqq7q
-         40DdiqUgOULJaBDjK9UTdLsPw31URMqjGqqzrbhDioJYKbfVaoeIPRY1mDo8XTYY0B9P
-         MKhwosEIxdQzmdSL0LsXaxdBSdWUItX39WrtaUSQqSqSnatBk/UGBVlI+4HaKnUiOSh8
-         XIWU9kbH3fhYlQJTEdexpvOh9B2YdDfiw5LBD3VAgk3Z6WA9HoQvlYrrQ1MffZczN8pM
-         3faA==
-X-Gm-Message-State: ABy/qLZMOZGfW4RlAt1uuTxMw9PnyFD3ttRwaXPjV2OFXDt5wHzyx+zu
-        UZSBNUkguaH3lSXaM+mkDcY=
-X-Google-Smtp-Source: APBJJlHjxNeh9XNM9Xg49rVHdiHhgRhHwEZjBVTmC7d2ywHYqshe0HtbWG6bkIYM6hqzf+06oaFONQ==
-X-Received: by 2002:a05:6a00:851:b0:668:9fb6:b311 with SMTP id q17-20020a056a00085100b006689fb6b311mr723443pfk.32.1689222074040;
-        Wed, 12 Jul 2023 21:21:14 -0700 (PDT)
+        bh=x4zzHPL0k6H0MdOKWy9H+XqQmDxwRKjupee59FsBT9w=;
+        b=acAnTfycF/NEKusufq/KfqC6ZQfluAr0IXcKttuukiDjU5+0V49nSZfRVsVCiSTWcq
+         zmkt23YUnd2BWXU6sPfFkKPGrDHUA48cv8FDMEY0ZsK9IORRHvnfVA8F4RIqVfEAUVHE
+         o+CpQsqPULY+ssB/gNz4EAsav4fU14bfj+hHNRr21F24DJCe0x4RovzzwIbDJ8oCTLhT
+         rZRQHPOv4v2hC1THlb4ztjPR5Ue/N1udpCWaizUk7U47V1e6gesFsvY57CuhJkTWyzWZ
+         fvyG3ki/CVo+mtFQjis5/TOuyMd4bvCLGizOxMWs0+qFgv1A0DjhK1cWEnDfS+eGFtD/
+         9AfQ==
+X-Gm-Message-State: ABy/qLaRLGSyRO7a+2CQ66JYqKxKnMMzNnONbMIoj2xZtUiS0W/0wIL+
+        zzebKKFCpC2e+2G3DRC9LFaCU+BtouzhG+5cji1YZA==
+X-Google-Smtp-Source: APBJJlFywht9zcExknT1dtSzacVpV7iePijCw8nKXr7IhX52uQwv585dT1T9ycEkrhz/WrX75xHfuw==
+X-Received: by 2002:a05:6808:573:b0:3a3:6536:dd89 with SMTP id j19-20020a056808057300b003a36536dd89mr525184oig.49.1689222076949;
+        Wed, 12 Jul 2023 21:21:16 -0700 (PDT)
 Received: from fedora.. ([1.245.179.104])
-        by smtp.gmail.com with ESMTPSA id u18-20020aa78392000000b006827c26f147sm4346601pfm.138.2023.07.12.21.21.11
+        by smtp.gmail.com with ESMTPSA id u18-20020aa78392000000b006827c26f147sm4346601pfm.138.2023.07.12.21.21.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Jul 2023 21:21:13 -0700 (PDT)
+        Wed, 12 Jul 2023 21:21:16 -0700 (PDT)
 From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
 To:     Minchan Kim <minchan@kernel.org>,
         Sergey Senozhatsky <senozhatsky@chromium.org>
@@ -57,9 +57,9 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
         Mike Rapoport <rppt@kernel.org>,
         Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Subject: [RFC PATCH v2 07/21] mm/zsmalloc: convert obj_to_location() and its users to use zsdesc
-Date:   Thu, 13 Jul 2023 13:20:22 +0900
-Message-ID: <20230713042037.980211-8-42.hyeyoo@gmail.com>
+Subject: [RFC PATCH v2 08/21] mm/zsmalloc: convert obj_malloc() to use zsdesc
+Date:   Thu, 13 Jul 2023 13:20:23 +0900
+Message-ID: <20230713042037.980211-9-42.hyeyoo@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230713042037.980211-1-42.hyeyoo@gmail.com>
 References: <20230713042037.980211-1-42.hyeyoo@gmail.com>
@@ -75,221 +75,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert obj_to_location() to take zsdesc and also convert its users
-to use zsdesc.
-
 Signed-off-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
 ---
- mm/zsmalloc.c | 75 ++++++++++++++++++++++++++-------------------------
- 1 file changed, 38 insertions(+), 37 deletions(-)
+ mm/zsmalloc.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
-index 4c0563fce3d0..be9762a49237 100644
+index be9762a49237..06227da86afc 100644
 --- a/mm/zsmalloc.c
 +++ b/mm/zsmalloc.c
-@@ -860,16 +860,16 @@ static __maybe_unused struct zsdesc *get_next_zsdesc(struct zsdesc *zsdesc)
- }
- 
- /**
-- * obj_to_location - get (<page>, <obj_idx>) from encoded object value
-+ * obj_to_location - get (<zsdesc>, <obj_idx>) from encoded object value
-  * @obj: the encoded object value
-- * @page: page object resides in zspage
-+ * @zsdesc: zsdesc object resides in zspage
-  * @obj_idx: object index
-  */
--static void obj_to_location(unsigned long obj, struct page **page,
-+static void obj_to_location(unsigned long obj, struct zsdesc **zsdesc,
- 				unsigned int *obj_idx)
+@@ -1412,12 +1412,12 @@ EXPORT_SYMBOL_GPL(zs_huge_class_size);
+ static unsigned long obj_malloc(struct zs_pool *pool,
+ 				struct zspage *zspage, unsigned long handle)
  {
- 	obj >>= OBJ_TAG_BITS;
--	*page = pfn_to_page(obj >> OBJ_INDEX_BITS);
-+	*zsdesc = pfn_zsdesc(obj >> OBJ_INDEX_BITS);
- 	*obj_idx = (obj & OBJ_INDEX_MASK);
- }
- 
-@@ -1298,13 +1298,13 @@ void *zs_map_object(struct zs_pool *pool, unsigned long handle,
- 			enum zs_mapmode mm)
- {
- 	struct zspage *zspage;
--	struct page *page;
-+	struct zsdesc *zsdesc;
- 	unsigned long obj, off;
- 	unsigned int obj_idx;
- 
- 	struct size_class *class;
- 	struct mapping_area *area;
--	struct page *pages[2];
-+	struct zsdesc *zsdescs[2];
- 	void *ret;
- 
- 	/*
-@@ -1317,8 +1317,8 @@ void *zs_map_object(struct zs_pool *pool, unsigned long handle,
- 	/* It guarantees it can get zspage from handle safely */
- 	spin_lock(&pool->lock);
- 	obj = handle_to_obj(handle);
--	obj_to_location(obj, &page, &obj_idx);
--	zspage = get_zspage(page);
-+	obj_to_location(obj, &zsdesc, &obj_idx);
-+	zspage = get_zspage(zsdesc_page(zsdesc));
- 
- 	/*
- 	 * migration cannot move any zpages in this zspage. Here, pool->lock
-@@ -1337,17 +1337,17 @@ void *zs_map_object(struct zs_pool *pool, unsigned long handle,
- 	area->vm_mm = mm;
- 	if (off + class->size <= PAGE_SIZE) {
- 		/* this object is contained entirely within a page */
--		area->vm_addr = kmap_atomic(page);
-+		area->vm_addr = zsdesc_kmap_atomic(zsdesc);
- 		ret = area->vm_addr + off;
- 		goto out;
- 	}
- 
- 	/* this object spans two pages */
--	pages[0] = page;
--	pages[1] = get_next_page(page);
--	BUG_ON(!pages[1]);
-+	zsdescs[0] = zsdesc;
-+	zsdescs[1] = get_next_zsdesc(zsdesc);
-+	BUG_ON(!zsdescs[1]);
- 
--	ret = __zs_map_object(area, (struct zsdesc **)pages, off, class->size);
-+	ret = __zs_map_object(area, zsdescs, off, class->size);
- out:
- 	if (likely(!ZsHugePage(zspage)))
- 		ret += ZS_HANDLE_SIZE;
-@@ -1359,7 +1359,7 @@ EXPORT_SYMBOL_GPL(zs_map_object);
- void zs_unmap_object(struct zs_pool *pool, unsigned long handle)
- {
- 	struct zspage *zspage;
--	struct page *page;
-+	struct zsdesc *zsdesc;
- 	unsigned long obj, off;
- 	unsigned int obj_idx;
- 
-@@ -1367,8 +1367,8 @@ void zs_unmap_object(struct zs_pool *pool, unsigned long handle)
- 	struct mapping_area *area;
- 
- 	obj = handle_to_obj(handle);
--	obj_to_location(obj, &page, &obj_idx);
--	zspage = get_zspage(page);
-+	obj_to_location(obj, &zsdesc, &obj_idx);
-+	zspage = get_zspage(zsdesc_page(zsdesc));
- 	class = zspage_class(pool, zspage);
- 	off = offset_in_page(class->size * obj_idx);
- 
-@@ -1376,13 +1376,13 @@ void zs_unmap_object(struct zs_pool *pool, unsigned long handle)
- 	if (off + class->size <= PAGE_SIZE)
- 		kunmap_atomic(area->vm_addr);
- 	else {
--		struct page *pages[2];
-+		struct zsdesc *zsdescs[2];
- 
--		pages[0] = page;
--		pages[1] = get_next_page(page);
--		BUG_ON(!pages[1]);
-+		zsdescs[0] = zsdesc;
-+		zsdescs[1] = get_next_zsdesc(zsdesc);
-+		BUG_ON(!zsdescs[1]);
- 
--		__zs_unmap_object(area, (struct zsdesc **)pages, off, class->size);
-+		__zs_unmap_object(area, zsdescs, off, class->size);
- 	}
- 	local_unlock(&zs_map_area.lock);
- 
-@@ -1524,23 +1524,24 @@ static void obj_free(int class_size, unsigned long obj)
- {
+-	int i, nr_page, offset;
++	int i, nr_zsdesc, offset;
+ 	unsigned long obj;
  	struct link_free *link;
- 	struct zspage *zspage;
--	struct page *f_page;
-+	struct zsdesc *f_zsdesc;
- 	unsigned long f_offset;
- 	unsigned int f_objidx;
+ 	struct size_class *class;
+ 
+-	struct page *m_page;
++	struct zsdesc *m_zsdesc;
+ 	unsigned long m_offset;
  	void *vaddr;
  
--	obj_to_location(obj, &f_page, &f_objidx);
-+
-+	obj_to_location(obj, &f_zsdesc, &f_objidx);
- 	f_offset = offset_in_page(class_size * f_objidx);
--	zspage = get_zspage(f_page);
-+	zspage = get_zspage(zsdesc_page(f_zsdesc));
+@@ -1426,14 +1426,14 @@ static unsigned long obj_malloc(struct zs_pool *pool,
+ 	obj = get_freeobj(zspage);
  
--	vaddr = kmap_atomic(f_page);
-+	vaddr = zsdesc_kmap_atomic(f_zsdesc);
- 	link = (struct link_free *)(vaddr + f_offset);
+ 	offset = obj * class->size;
+-	nr_page = offset >> PAGE_SHIFT;
++	nr_zsdesc = offset >> PAGE_SHIFT;
+ 	m_offset = offset_in_page(offset);
+-	m_page = get_first_page(zspage);
++	m_zsdesc = get_first_zsdesc(zspage);
  
- 	/* Insert this object in containing zspage's freelist */
+-	for (i = 0; i < nr_page; i++)
+-		m_page = get_next_page(m_page);
++	for (i = 0; i < nr_zsdesc; i++)
++		m_zsdesc = get_next_zsdesc(m_zsdesc);
+ 
+-	vaddr = kmap_atomic(m_page);
++	vaddr = zsdesc_kmap_atomic(m_zsdesc);
+ 	link = (struct link_free *)vaddr + m_offset / sizeof(*link);
+ 	set_freeobj(zspage, link->next >> OBJ_TAG_BITS);
  	if (likely(!ZsHugePage(zspage)))
- 		link->next = get_freeobj(zspage) << OBJ_TAG_BITS;
- 	else
--		f_page->index = 0;
-+		f_zsdesc->next = NULL;
- 	set_freeobj(zspage, f_objidx);
- 
+@@ -1446,7 +1446,7 @@ static unsigned long obj_malloc(struct zs_pool *pool,
  	kunmap_atomic(vaddr);
-@@ -1583,7 +1584,7 @@ EXPORT_SYMBOL_GPL(zs_free);
- static void zs_object_copy(struct size_class *class, unsigned long dst,
- 				unsigned long src)
- {
--	struct page *s_page, *d_page;
-+	struct zsdesc *s_zsdesc, *d_zsdesc;
- 	unsigned int s_objidx, d_objidx;
- 	unsigned long s_off, d_off;
- 	void *s_addr, *d_addr;
-@@ -1592,8 +1593,8 @@ static void zs_object_copy(struct size_class *class, unsigned long dst,
+ 	mod_zspage_inuse(zspage, 1);
  
- 	s_size = d_size = class->size;
+-	obj = location_to_obj(m_page, obj);
++	obj = location_to_obj(zsdesc_page(m_zsdesc), obj);
  
--	obj_to_location(src, &s_page, &s_objidx);
--	obj_to_location(dst, &d_page, &d_objidx);
-+	obj_to_location(src, &s_zsdesc, &s_objidx);
-+	obj_to_location(dst, &d_zsdesc, &d_objidx);
- 
- 	s_off = offset_in_page(class->size * s_objidx);
- 	d_off = offset_in_page(class->size * d_objidx);
-@@ -1604,8 +1605,8 @@ static void zs_object_copy(struct size_class *class, unsigned long dst,
- 	if (d_off + class->size > PAGE_SIZE)
- 		d_size = PAGE_SIZE - d_off;
- 
--	s_addr = kmap_atomic(s_page);
--	d_addr = kmap_atomic(d_page);
-+	s_addr = zsdesc_kmap_atomic(s_zsdesc);
-+	d_addr = zsdesc_kmap_atomic(d_zsdesc);
- 
- 	while (1) {
- 		size = min(s_size, d_size);
-@@ -1630,17 +1631,17 @@ static void zs_object_copy(struct size_class *class, unsigned long dst,
- 		if (s_off >= PAGE_SIZE) {
- 			kunmap_atomic(d_addr);
- 			kunmap_atomic(s_addr);
--			s_page = get_next_page(s_page);
--			s_addr = kmap_atomic(s_page);
--			d_addr = kmap_atomic(d_page);
-+			s_zsdesc = get_next_zsdesc(s_zsdesc);
-+			s_addr = zsdesc_kmap_atomic(s_zsdesc);
-+			d_addr = zsdesc_kmap_atomic(d_zsdesc);
- 			s_size = class->size - written;
- 			s_off = 0;
- 		}
- 
- 		if (d_off >= PAGE_SIZE) {
- 			kunmap_atomic(d_addr);
--			d_page = get_next_page(d_page);
--			d_addr = kmap_atomic(d_page);
-+			d_zsdesc = get_next_zsdesc(d_zsdesc);
-+			d_addr = zsdesc_kmap_atomic(d_zsdesc);
- 			d_size = class->size - written;
- 			d_off = 0;
- 		}
-@@ -1904,7 +1905,7 @@ static int zs_page_migrate(struct page *newpage, struct page *page,
- 	struct zs_pool *pool;
- 	struct size_class *class;
- 	struct zspage *zspage;
--	struct page *dummy;
-+	struct zsdesc *dummy;
- 	void *s_addr, *d_addr, *addr;
- 	unsigned int offset;
- 	unsigned long handle;
+ 	return obj;
+ }
 -- 
 2.41.0
 
