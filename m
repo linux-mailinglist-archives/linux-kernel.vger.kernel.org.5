@@ -2,64 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F33EC75187E
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 08:02:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C09D6751886
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 08:03:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234017AbjGMGB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 02:01:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37584 "EHLO
+        id S233952AbjGMGDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 02:03:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234001AbjGMGBu (ORCPT
+        with ESMTP id S233845AbjGMGD2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 02:01:50 -0400
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 153CD1FDE
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 23:01:49 -0700 (PDT)
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-3fc03aa6e04so2304255e9.2
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 23:01:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689228107; x=1691820107;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9l+kGMflekFsEW8vlm5HTrA0Hh42ODE4b7HvnoBst8Y=;
-        b=PNwyKS0G2QtZhcNyhCvJZR1334SEgEHt9PO380nAh09OUI3v+VIp6gRcgPMqrz2pkK
-         pYUmma0eaNWuh3uNC2vpMql6kReFKtf/1LLYWB9sv7LO5NmJCm7zZDoB48nzdnbQhYIz
-         a6u+hobi1lj4LZKbfDpiJwircLdSbZug/Lo13n+env7QvgqVj7XR1t+21FOuFEHUKg/M
-         KbeE8Sib/ybWpsNr26jTSs8SZfZ6NHenONe2x3isNjy9UVxTpyad7W8cHWj/QNHnlCxi
-         NTbm3pqO9ch7kRqmUxekGRA6jZqGJt8/bxKiqL+ohNSGrDqLaq1fvCje7JwqZBzQBD32
-         JMjQ==
-X-Gm-Message-State: ABy/qLb4cMAVAVySJt+vAclcfrZZmA+BXtixR0N9HV8Be2J10prx3d0k
-        2r0qwgesWu018pTFieJNbe4=
-X-Google-Smtp-Source: APBJJlFcWHq7EaJmNEH8qGvCK0UGloanuAgqe3f/XjU0hEx22fB8zuEs/LRqM7JTb0+f4106V+EO4w==
-X-Received: by 2002:a05:6000:87:b0:314:449e:8536 with SMTP id m7-20020a056000008700b00314449e8536mr511159wrx.10.1689228107304;
-        Wed, 12 Jul 2023 23:01:47 -0700 (PDT)
-Received: from [192.168.1.58] (185-219-167-24-static.vivo.cz. [185.219.167.24])
-        by smtp.gmail.com with ESMTPSA id z22-20020a7bc7d6000000b003fbcdba1a63sm6770164wmk.12.2023.07.12.23.01.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 Jul 2023 23:01:46 -0700 (PDT)
-Message-ID: <a71ee5b3-2d17-e32f-45e1-0c351cdc501b@kernel.org>
-Date:   Thu, 13 Jul 2023 08:01:46 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] TIOCSTI: always enable for CAP_SYS_ADMIN
-Content-Language: en-US
-To:     Samuel Thibault <samuel.thibault@ens-lyon.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Simon Brand <simon.brand@postadigitale.de>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org, Dave@mielke.cc
-References: <20230710002645.v565c7xq5iddruse@begin>
-From:   Jiri Slaby <jirislaby@kernel.org>
-In-Reply-To: <20230710002645.v565c7xq5iddruse@begin>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        Thu, 13 Jul 2023 02:03:28 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D19A213E
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 23:03:02 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 721B022205;
+        Thu, 13 Jul 2023 06:03:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1689228181; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=k3MojbVcIgPhkMJWXOyivxSHkZorYQbjQcXYbfJta8g=;
+        b=Ho5EUXl2R3gG/HOkYXyqUGmQjoY1p0jAzF/fpFtckClR80sCTgn4Kh5//vjD2kQNCl06h/
+        tVKjsG9YFXOi/NJoaBxQ9g3IXUviCqtMmNPqsbFeepZ7NCroF8xusCLpamSm9/P6eWxXfV
+        AjvLDRyDtUdqnBxf4zWqfsYYqErp/bg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1689228181;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=k3MojbVcIgPhkMJWXOyivxSHkZorYQbjQcXYbfJta8g=;
+        b=Tfa6rZRNnuHp0qkjzkTIE5snNcjsz1XUc13wtk9ZTSSEb9bJC9/zIpLo+XdQ6qi7vkXqDf
+        xfoHbtRXgtZ1NVBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 40B48138ED;
+        Thu, 13 Jul 2023 06:03:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id KwXTDpWTr2QFNwAAMHmgww
+        (envelope-from <tiwai@suse.de>); Thu, 13 Jul 2023 06:03:01 +0000
+Date:   Thu, 13 Jul 2023 08:03:00 +0200
+Message-ID: <87351sgxgr.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Ivan Orlov <ivan.orlov0322@gmail.com>
+Cc:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ALSA: pcmtest: Extend error injection, decrease buffer filling overhead
+In-Reply-To: <20230712191325.8791-1-ivan.orlov0322@gmail.com>
+References: <20230712191325.8791-1-ivan.orlov0322@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,24 +69,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10. 07. 23, 2:26, Samuel Thibault wrote:
-> 83efeeeb3d04 ("tty: Allow TIOCSTI to be disabled") broke BRLTTY's
-> ability to simulate keypresses on the console, thus effectively breaking
-> braille keyboards of blind users.
+On Wed, 12 Jul 2023 21:13:25 +0200,
+Ivan Orlov wrote:
 > 
-> This restores the TIOCSTI feature for CAP_SYS_ADMIN processes, which
-> BRLTTY is, thus fixing braille keyboards without re-opening the security
-> issue.
+> Extend 'pcmtest' virtual driver with 'open' callback error injection
+> functionality, as it already can inject errors into other PCM callbacks.
 > 
-> Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
-> Acked-by: Kees Cook <keescook@chromium.org>
-> Fixes: 83efeeeb3d04 ("tty: Allow TIOCSTI to be disabled")
-> Cc: stable@vger.kernel.org
+> Fix the driver to use already defined variables where it is possible.
+> 
+> Additionally, decrease the buffer filling overhead with conditional
+> reminder calculation in the 'inc_buf_pos' inline function.
+> 
+> Signed-off-by: Ivan Orlov <ivan.orlov0322@gmail.com>
 
-Acked-by: Jiri Slaby <jirislaby@kernel.org>
+Please avoid mixing different changes in a single patch.
+
+This patch does three completely different things, and they should be
+split. 
+
+- New inject_open_err parameter
+- Optimization of inc_buf_pos()
+- Optimization of check_buf_block_ni() and fill_block_pattern_n()
+
+The latter two could be put in a single patch as minor optimizations,
+but the introduction of a new option doesn't fit with the rest.
+
 
 thanks,
--- 
-js
-suse labs
 
+Takashi
