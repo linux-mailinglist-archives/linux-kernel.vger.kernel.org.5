@@ -2,58 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 582F37515B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 03:05:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E20A87515B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 03:06:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233273AbjGMBF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 21:05:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54230 "EHLO
+        id S233343AbjGMBGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 21:06:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231836AbjGMBF1 (ORCPT
+        with ESMTP id S231758AbjGMBGK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 21:05:27 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC7BE9E;
-        Wed, 12 Jul 2023 18:05:26 -0700 (PDT)
+        Wed, 12 Jul 2023 21:06:10 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B2159E;
+        Wed, 12 Jul 2023 18:06:10 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 33E12619BD;
-        Thu, 13 Jul 2023 01:05:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F2D6C433C7;
-        Thu, 13 Jul 2023 01:05:25 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DDF8C619B9;
+        Thu, 13 Jul 2023 01:06:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EFE2C433C8;
+        Thu, 13 Jul 2023 01:06:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689210325;
-        bh=JEUoxjasu4MEtpBfYEyLKlXhktabrDJ3YVSK42TmZNQ=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=TmW4P7ENPxcCFiajRH4RFW+is7jtcftlGP1uqxBYokYrsMrUxAU1kEJU37lc+0DPS
-         myemZ/8bBdMVucjEO9Cr27LCMdDgycU+gjBlR48nErxt9/xOGQWP2iHA+dLOl2GdgR
-         noRGfjfHPF4Aj+VktAZSddw3HYJZTHOWQhqpgYraIuJUQT6LfMZk+4RJWPA+3PbW0U
-         YU6rOYBtFOY2uNNQAOt/1kDXGFR7L4xZAu/tEErer9XfZkpDWnEjnGwD+rW+dkeKL3
-         ZvSEDKLXa6/N+invb6MZOsQOO6Jl2DUNKNRhhU3KxNSP2yaY3UygCj9rYETy32qZr8
-         nBr2HVcpWmU2A==
-Message-ID: <2b7bf9b6-c676-c1fb-28c9-b46c7d99459a@kernel.org>
-Date:   Wed, 12 Jul 2023 17:58:42 -0700
+        s=k20201202; t=1689210369;
+        bh=C4zO11G5b5oTT0GgOgcpMDulSVvYyRvx86jsQS9fQTg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=jd5k6fbDdWRMEuLUElYY2tr22GR1I4MLHVTOLYyvTB5NNrK0l11vQR5rPxASPZpjS
+         f/dxxXZgpe5RX66mKDnunwUlPxBF7l8MQKzl0st9F3Q9iwCs9XfvYqyyZd7e0PeRKV
+         8FO8i09hHY65Z3o3PtTNVz/I2aklh4AJA8h5sElP6ruIW8WjDxqVDOGU4rdue63sh1
+         i6mIdkDy4xUAeIfugHgvGh1ftNItn67t+JP+UlHGuugIFDy+/qExVl4mf6abxHZUFz
+         ELA0C6nwB1clTXpEELtpD+/2YHpuL5DwKgA2dooN7xn/EVpOGFMKFo+JLuEqCqjSg+
+         T4vMDYsQ7W5Xw==
+Date:   Wed, 12 Jul 2023 18:06:07 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Zhang Shurong <zhang_shurong@foxmail.com>
+Cc:     pkshih@realtek.com, kvalo@kernel.org,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] wifi: rtw89: debug: fix error code in
+ rtw89_debug_priv_btc_manual_set
+Message-ID: <20230712180607.67f471ab@kernel.org>
+In-Reply-To: <tencent_D22D1FB0000F210538D44A09AA9BB6DAB407@qq.com>
+References: <tencent_D22D1FB0000F210538D44A09AA9BB6DAB407@qq.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH 08/10] serial: arc_uart: simplify flags handling in
- arc_serial_rx_chars()
-Content-Language: en-US
-To:     "Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
-        gregkh@linuxfoundation.org
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vineet Gupta <vgupta@kernel.org>
-References: <20230712081811.29004-1-jirislaby@kernel.org>
- <20230712081811.29004-9-jirislaby@kernel.org>
-From:   Vineet Gupta <vgupta@kernel.org>
-In-Reply-To: <20230712081811.29004-9-jirislaby@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,30 +56,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun,  9 Jul 2023 17:59:06 +0800 Zhang Shurong wrote:
+> Fixes: e3ec7017f6a2 ("rtw89: add Realtek 802.11ax driver")
+> 
+> Signed-off-by: Zhang Shurong <zhang_shurong@foxmail.com>
 
-
-On 7/12/23 01:18, Jiri Slaby (SUSE) wrote:
-> * move the declaration of flg (with the initializer) to the loop, so
->    there is no need to reset it to TTY_NORMAL by an 'else' branch.
-> * use TTY_NORMAL as initializer above, not a magic zero constant
-> * remove the outer 'if' from this construct:
->    if (S & (A | B)) {
->      if (S & A)
->        X;
->      if (S & B)
->        Y;
->    }
-> * drop unlikely() as I doubt it has any benefits here. If it does,
->    provide numbers.
->
-> All four make the code easier to read.
->
-> Signed-off-by: Jiri Slaby (SUSE)<jirislaby@kernel.org>
-> Cc: Vineet Gupta<vgupta@kernel.org>
-
-Thanks for the cleanup.
-
-Acked-by: Vineet Gupta <vgupta@kernel.org>
-
-Th,
--Vineet
+No empty lines between the tags, please.
