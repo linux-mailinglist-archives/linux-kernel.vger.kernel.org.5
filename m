@@ -2,122 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56FC5752468
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 15:57:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A2D475246C
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 15:57:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231705AbjGMN5A convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 13 Jul 2023 09:57:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51454 "EHLO
+        id S231938AbjGMN5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 09:57:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231279AbjGMN46 (ORCPT
+        with ESMTP id S231279AbjGMN5w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 09:56:58 -0400
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD829273C;
-        Thu, 13 Jul 2023 06:56:30 -0700 (PDT)
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.95)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1qJwo0-003uyK-7j; Thu, 13 Jul 2023 15:56:28 +0200
-Received: from p57bd9f0d.dip0.t-ipconnect.de ([87.189.159.13] helo=suse-laptop.fritz.box)
-          by inpost2.zedat.fu-berlin.de (Exim 4.95)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1qJwnz-002qWA-Vd; Thu, 13 Jul 2023 15:56:28 +0200
-Message-ID: <6d04a1b87a9820d8ae23191092665f2dcb17ce19.camel@physik.fu-berlin.de>
-Subject: Re: [PATCH v2 08/18] sh: Assign FB_MODE_IS_UNKNOWN to struct
- fb_videomode.flag
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To:     Thomas Zimmermann <tzimmermann@suse.de>, deller@gmx.de,
-        javierm@redhat.com
-Cc:     linux-sh@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        linux-input@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-fbdev@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org,
-        linux-geode@lists.infradead.org, linux-nvidia@lists.surfsouth.com,
-        linux-hyperv@vger.kernel.org, linux-omap@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, kvm@vger.kernel.org,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>
-Date:   Thu, 13 Jul 2023 15:56:26 +0200
-In-Reply-To: <4622810f8bceb66f212fa09d34b10f0d2d71a35d.camel@physik.fu-berlin.de>
-References: <20230713130338.31086-1-tzimmermann@suse.de>
-         <20230713130338.31086-9-tzimmermann@suse.de>
-         <4622810f8bceb66f212fa09d34b10f0d2d71a35d.camel@physik.fu-berlin.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 
+        Thu, 13 Jul 2023 09:57:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D3B82723
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 06:56:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689256617;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=u7slRFqXzj+fIwUfWpHgJOEMlp6jejIeFSooLIetSLk=;
+        b=QA8bljY/Oh9ruXY/VTWZI6qbC43MAJ10HnkFltaAc0NVA4Nc32Vc+kAis1LOoQteRH/8Ur
+        0bElvL8d5fAAI7V35Y2IbDdK/1sICg//dR0Em0u+AB9i51CdMM93zsn85+ZWhSkItucbfV
+        oh6G4p2kLrvXPURlehQimmttf+tTUpA=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-307-5Ci--DTWMsGFMvmhNG9juw-1; Thu, 13 Jul 2023 09:56:55 -0400
+X-MC-Unique: 5Ci--DTWMsGFMvmhNG9juw-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-3fc0627eafbso3409155e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 06:56:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689256614; x=1691848614;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=u7slRFqXzj+fIwUfWpHgJOEMlp6jejIeFSooLIetSLk=;
+        b=k/ADTqXZlrprZ4ehI/I8wjXwvnFpzZP2cGSBYZeoHesZ9zU678wj7PmNplX7w/NIY+
+         kpLJsebMljRRE5vhazQ/hGJrzaS0IkwPRqrjZgPe9SKuPRjLT4tClYxBQ3D59BltSDlE
+         N8qYQm7+ZVTGvzGfCEbG4lHqioYw/YuQm0CQ3FKNk1xoCbPzjf4dtDMn+2vHE9OnpQ+u
+         UcssEbKt3tdTcdC8Qy/bXIkBrEtdUUHF3YGLZxQLiTYNGr3MoUv5Z9qFEg6jO5iLyWYh
+         OQYE2RbX9krMcuM4tQI1YrbgiQaEfyPccvcQHfQ+rifi2ThNYwMOCLoNNE7GrUA0t9n8
+         jV/g==
+X-Gm-Message-State: ABy/qLauUcRrbfOMf3RXRrs3EUofKuiECy9U1sssSuL4/xi3GTmOxYOD
+        RjWqKJeESr18FuMERkpLq88elQ/cVidDwQC89DNMmoZAitrG8mUZ3ulsLeJmbYtcg6C9wkCC0yG
+        qJEsDgdLg71pXg71qvXLgPzbp
+X-Received: by 2002:a05:600c:5187:b0:3fb:b18a:f32d with SMTP id fa7-20020a05600c518700b003fbb18af32dmr4313873wmb.17.1689256614498;
+        Thu, 13 Jul 2023 06:56:54 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlE118GN9dvVisQic4LNU75RVuVsDjt1KGEsf35PRM3rckhrWuEAXEBr4f3RPD+JkiJS5nwlWA==
+X-Received: by 2002:a05:600c:5187:b0:3fb:b18a:f32d with SMTP id fa7-20020a05600c518700b003fbb18af32dmr4313854wmb.17.1689256614159;
+        Thu, 13 Jul 2023 06:56:54 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c717:6100:2da7:427e:49a5:e07? (p200300cbc71761002da7427e49a50e07.dip0.t-ipconnect.de. [2003:cb:c717:6100:2da7:427e:49a5:e07])
+        by smtp.gmail.com with ESMTPSA id q5-20020a1ce905000000b003fbc9d178a8sm18501864wmc.4.2023.07.13.06.56.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 Jul 2023 06:56:53 -0700 (PDT)
+Message-ID: <cf3c237e-69c8-dd6e-26fc-fe19de910813@redhat.com>
+Date:   Thu, 13 Jul 2023 15:56:52 +0200
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.189.159.13
-X-ZEDAT-Hint: PO
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v1 3/9] selftests/mm: Skip soft-dirty tests on arm64
+Content-Language: en-US
+To:     Ryan Roberts <ryan.roberts@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Mark Brown <broonie@kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Florent Revest <revest@chromium.org>,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org
+References: <20230713135440.3651409-1-ryan.roberts@arm.com>
+ <20230713135440.3651409-4-ryan.roberts@arm.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <20230713135440.3651409-4-ryan.roberts@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas!
-
-On Thu, 2023-07-13 at 15:53 +0200, John Paul Adrian Glaubitz wrote:
-> On Thu, 2023-07-13 at 14:58 +0200, Thomas Zimmermann wrote:
-> > Assign FB_MODE_IS_UNKNOWN to sh7763fb_videomode.flag instead of
-> > FBINFO_FLAG_DEFAULT. Both are 0, so the stored value does not change.
-> > 
-> > FBINFO_FLAG_DEFAULT is a flag for a framebuffer in struct fb_info.
-> > Flags for videomodes are prefixed with FB_MODE_.
-> > 
-> > v2:
-> > 	* assign FB_MODE_IS_UNKNOWN (Adrian)
-> > 
-> > Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
-> > Acked-by: Sam Ravnborg <sam@ravnborg.org>
-> > Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-> > Cc: Rich Felker <dalias@libc.org>
-> > Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-> > ---
-> >  arch/sh/boards/mach-sh7763rdp/setup.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/sh/boards/mach-sh7763rdp/setup.c b/arch/sh/boards/mach-sh7763rdp/setup.c
-> > index 97e715e4e9b3..e25193001ea0 100644
-> > --- a/arch/sh/boards/mach-sh7763rdp/setup.c
-> > +++ b/arch/sh/boards/mach-sh7763rdp/setup.c
-> > @@ -119,7 +119,7 @@ static struct fb_videomode sh7763fb_videomode = {
-> >  	.vsync_len = 1,
-> >  	.sync = 0,
-> >  	.vmode = FB_VMODE_NONINTERLACED,
-> > -	.flag = FBINFO_FLAG_DEFAULT,
-> > +	.flag = FB_MODE_IS_UNKNOWN,
-> >  };
-> >  
-> >  static struct sh7760fb_platdata sh7763fb_def_pdata = {
+On 13.07.23 15:54, Ryan Roberts wrote:
+> arm64 does not support the soft-dirty PTE bit. However there are tests
+> in `madv_populate` and `soft-dirty` which assume it is supported and
+> cause spurious failures to be reported when preferred behaviour would be
+> to mark the tests as skipped.
 > 
-> Acked-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+> Unfortunately, the only way to determine if the soft-dirty dirty bit is
+> supported is to write to a page, then see if the bit is set in
+> /proc/self/pagemap. But the tests that we want to conditionally execute
+> are testing precicesly this. So if we introduced this feature check, we
+> could accedentally turn a real failure (on a system that claims to
+> support soft-dirty) into a skip.
+> 
+> So instead, do the check based on architecture; for arm64, we report
+> that soft-dirty is not supported. This is wrapped up into a utility
+> function `system_has_softdirty()`, which is used to skip the whole
+> `soft-dirty` suite, and mark the soft-dirty tests in the `madv_populate`
+> suite as skipped.
+> 
+> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+> ---
+>   tools/testing/selftests/mm/madv_populate.c | 18 +++++++++++++-----
+>   tools/testing/selftests/mm/soft-dirty.c    |  3 +++
+>   tools/testing/selftests/mm/vm_util.c       | 17 +++++++++++++++++
+>   tools/testing/selftests/mm/vm_util.h       |  1 +
+>   4 files changed, 34 insertions(+), 5 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/mm/madv_populate.c b/tools/testing/selftests/mm/madv_populate.c
+> index 60547245e479..5a8c176d7fec 100644
+> --- a/tools/testing/selftests/mm/madv_populate.c
+> +++ b/tools/testing/selftests/mm/madv_populate.c
+> @@ -232,6 +232,14 @@ static bool range_is_not_softdirty(char *start, ssize_t size)
+>   	return ret;
+>   }
+> 
+> +#define ksft_test_result_if_softdirty(cond, ...)	\
+> +do {							\
+> +	if (system_has_softdirty())			\
+> +		ksft_test_result(cond, __VA_ARGS__);	\
+> +	else						\
+> +		ksft_test_result_skip(__VA_ARGS__);	\
+> +} while (0)
+> +
+>   static void test_softdirty(void)
+>   {
+>   	char *addr;
+> @@ -246,19 +254,19 @@ static void test_softdirty(void)
+> 
+>   	/* Clear any softdirty bits. */
+>   	clear_softdirty();
+> -	ksft_test_result(range_is_not_softdirty(addr, SIZE),
+> +	ksft_test_result_if_softdirty(range_is_not_softdirty(addr, SIZE),
+>   			 "range is not softdirty\n");
+> 
+>   	/* Populating READ should set softdirty. */
+>   	ret = madvise(addr, SIZE, MADV_POPULATE_READ);
+> -	ksft_test_result(!ret, "MADV_POPULATE_READ\n");
+> -	ksft_test_result(range_is_not_softdirty(addr, SIZE),
+> +	ksft_test_result_if_softdirty(!ret, "MADV_POPULATE_READ\n");
+> +	ksft_test_result_if_softdirty(range_is_not_softdirty(addr, SIZE),
+>   			 "range is not softdirty\n");
+> 
+>   	/* Populating WRITE should set softdirty. */
+>   	ret = madvise(addr, SIZE, MADV_POPULATE_WRITE);
+> -	ksft_test_result(!ret, "MADV_POPULATE_WRITE\n");
+> -	ksft_test_result(range_is_softdirty(addr, SIZE),
+> +	ksft_test_result_if_softdirty(!ret, "MADV_POPULATE_WRITE\n");
+> +	ksft_test_result_if_softdirty(range_is_softdirty(addr, SIZE),
+>   			 "range is softdirty\n");
 
-Ah, just one tiny request: Could you change the subject to include the
-board name, i.e.:
-
-	sh: mach-sh7763rdp: Assign FB_MODE_IS_UNKNOWN to struct fb_videomode.flag
-
-?
-
-I wasn't paying close attention to the path of the file being changed when
-I first looked at your patch. Sorry for that.
-
-Adrian
+We probably want to skip the whole test_*softdirty* test instead of 
+adding this (IMHO suboptimal) ksft_test_result_if_softdirty.
 
 -- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+Cheers,
+
+David / dhildenb
+
