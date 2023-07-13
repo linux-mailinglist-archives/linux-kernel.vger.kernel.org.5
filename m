@@ -2,52 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67349752AEF
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 21:29:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACEF0752AF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 21:30:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232391AbjGMT3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 15:29:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33582 "EHLO
+        id S231807AbjGMTaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 15:30:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230249AbjGMT3s (ORCPT
+        with ESMTP id S229953AbjGMTaW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 15:29:48 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04B592680;
-        Thu, 13 Jul 2023 12:29:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1689276584;
-        bh=Xho1RRU1A/ibhnVnCa6aEvzSgVmvXCiwnrryRlLF1wc=;
-        h=From:Date:Subject:To:Cc:From;
-        b=WLHmHuCAc9Bxhf82Qu5ylY+J6JNyIeCoo5z4Bn/bkvsjG5ZFBWa2A2zXmM1C87Rwo
-         pX94ZmRRb8TKu98r0SDwx/Xzm5J3VTTVsMM0H5nvUeXecUX6+907xd9nU4iogCUZX4
-         9Qg/tH+uXTjymkIeryuGu5wlwNQP8+fDyjsFpbpM=
-From:   =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Date:   Thu, 13 Jul 2023 21:29:35 +0200
-Subject: [PATCH v3] nbd: automatically load module on genl access
+        Thu, 13 Jul 2023 15:30:22 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FAAD1989;
+        Thu, 13 Jul 2023 12:30:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=9OIrt/LgsHugPSDybSGY5Tydet8PUGjuftpAsOzUygI=; b=SF2KSfyiyKBIjg1pTzJBc8Wq8R
+        P0fq1t2LK8VL3lH2LxoUt/4IIMfRRoEvMerYDo8Bc3m7Yk4nwboPghuHQYY0XZZi7E4qYVJwJIwkN
+        to7BbbeeDX8S+G9GyRY0CZrCZFmwgeoWWkN11DI7OmFVC/sHsK39eOwIC2pDDC8uNoLc=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qK20q-001Hfz-32; Thu, 13 Jul 2023 21:30:04 +0200
+Date:   Thu, 13 Jul 2023 21:30:04 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Pranavi Somisetty <pranavi.somisetty@amd.com>, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, michal.simek@amd.com, harini.katakam@amd.com,
+        git@amd.com, radhey.shyam.pandey@amd.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] dt-bindings: net: xilinx_gmii2rgmii: Convert to json
+ schema
+Message-ID: <cd0fb281-b621-4d6b-be94-be6095e35328@lunn.ch>
+References: <20230713103453.24018-1-pranavi.somisetty@amd.com>
+ <f6c11605-56d7-7228-b86d-bc317a8496d0@linaro.org>
+ <a17b0a4f-619d-47dd-b0ad-d5f3c1a558fc@lunn.ch>
+ <ebd30cd0-5081-f05d-28f7-5d5b637041e4@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20230713-b4-nbd-genl-v3-1-226cbddba04b@weissschuh.net>
-X-B4-Tracking: v=1; b=H4sIAJ5QsGQC/22OQQ6CMBREr2K69hv6W7C48h6GRVu+tAkW0wJiC
- He3mrgxLt8k82ZWlih6Suy0W1mk2Sc/hAxiv2PW6dAR+DYzwwJFgSjASAimhY5CD0IfpdWVUJW
- qWG4YnQhM1MG63AlT3+fwHunql8/Epcl8jcMNRhdJf8XIOS+KEqVQB+RKAYfeh2k5P8inlKyb3
- CHQ+F5wPo1DfH7uzvhW/n82Y5ZUslRlW1uSpv51Ndu2vQAOXMeQ/QAAAA==
-To:     Josef Bacik <josef@toxicpanda.com>, Jens Axboe <axboe@kernel.dk>
-Cc:     linux-block@vger.kernel.org, nbd@other.debian.org,
-        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1689276583; l=1914;
- i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=Xho1RRU1A/ibhnVnCa6aEvzSgVmvXCiwnrryRlLF1wc=;
- b=YSMNsgom1VNydhyc2/0PBTrm3KK9NElllnflH0x4429UnzwKvfEyztkNwQjdzm4Li+nhO0IvI
- KKKVR2imMcwCqsNjhBAEBOZSHDWNXgqyG3IX4zLXWcQEi+KN3cdxCW8
-X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
- pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ebd30cd0-5081-f05d-28f7-5d5b637041e4@linaro.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,57 +57,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a module alias to nbd.ko that allows the generic netlink core to
-automatically load the module when netlink messages for nbd are
-received.
+On Thu, Jul 13, 2023 at 08:53:34PM +0200, Krzysztof Kozlowski wrote:
+> On 13/07/2023 17:59, Andrew Lunn wrote:
+> >>> +examples:
+> >>> +  - |
+> >>> +    mdio {
+> >>> +        #address-cells = <1>;
+> >>> +        #size-cells = <0>;
+> >>> +        phy: ethernet-phy@0 {
+> >>> +            reg = <0>;
+> >>> +        };
+> >>
+> >> Drop this node, quite obvious.
+> > 
+> > Dumb question. Isn't it needed since it is referenced by phy-handle =
+> > <&phy> below. Without it, the fragment is not valid DT and so the
+> > checking tools will fail?
+> 
+> No, because the example is compiled with silencing missing phandles.
 
-This frees the user from manually having to load the module before using
-nbd functionality via netlink.
-If the system policy allows it this can even be used to load the nbd
-module from containers which would otherwise not have access to the
-necessary module files to do a normal "modprobe nbd".
+Ah, thanks.
 
-For example this avoids the following error when using nbd-client:
+This is a rather odd device, there is no other like it in mainline, so
+i think having that PHY is useful, even if you think it is obvious
+what is going on here.
 
-$ nbd-client localhost 10809 /dev/nbd0
-...
-Error: Couldn't resolve the nbd netlink family, make sure the nbd module is loaded and your nbd driver supports the netlink interface.
-
-Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
----
-Changes in v3:
-- Resend to gain some reviews
-- Expand commit message
-- Drop additional reviewers again
-- Cc Christoph as reviewer, as he recently reviewed NBD stuff
-- Link to v2: https://lore.kernel.org/r/20230223-b4-nbd-genl-v2-1-64585d9ce4b9@weissschuh.net
-
-Changes in v2:
-- Expand Cc list to get some reviews
-- Add concrete commit example to commit message
-- Link to v1: https://lore.kernel.org/lkml/20221110052438.2188-1-linux@weissschuh.net/
----
- drivers/block/nbd.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-index 8576d696c7a2..a346dbd73543 100644
---- a/drivers/block/nbd.c
-+++ b/drivers/block/nbd.c
-@@ -2336,6 +2336,7 @@ static struct genl_family nbd_genl_family __ro_after_init = {
- 	.mcgrps		= nbd_mcast_grps,
- 	.n_mcgrps	= ARRAY_SIZE(nbd_mcast_grps),
- };
-+MODULE_ALIAS_GENL_FAMILY(NBD_GENL_FAMILY_NAME);
- 
- static int populate_nbd_status(struct nbd_device *nbd, struct sk_buff *reply)
- {
-
----
-base-commit: eb26cbb1a754ccde5d4d74527dad5ba051808fad
-change-id: 20230223-b4-nbd-genl-3a74ca638686
-
-Best regards,
--- 
-Thomas Weißschuh <linux@weissschuh.net>
-
+     Andrew
