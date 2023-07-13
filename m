@@ -2,190 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 255C4752D4F
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 01:01:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DD06752D58
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 01:01:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230024AbjGMXBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 19:01:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45204 "EHLO
+        id S233928AbjGMXBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 19:01:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233788AbjGMXAz (ORCPT
+        with ESMTP id S232353AbjGMXBL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 19:00:55 -0400
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04FA7273B;
-        Thu, 13 Jul 2023 16:00:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689289253; x=1720825253;
-  h=message-id:date:subject:to:references:from:in-reply-to:
-   content-transfer-encoding:mime-version;
-  bh=y7IgqqHQM1enRmr6yW6U+rHCX+nj57a5KP0KiGWD2dM=;
-  b=buD4mFIhvZ6+Rn8pNvEsZQaZuqjIL+p3oaSlAsVYOaLMLnz8/0ul5CW6
-   OHFg54pRL63Fegq25U8hmwatr6+1RNWOopFBzpyeFvruZigygHeX0WAXO
-   Iw9VHlzLc9A6AFjcM9fv2XDaJEpa744aW+K6L8x/aHNJLWBWrJeKqWPn5
-   db89OOQEanKX68Mz7ZHqRSsgTcfqbduiRwrM6AslkYv43z5yzKWIpagNV
-   fTDYK4qKsHkE3MClixtjLbxgUY/X8b4r5tD6yy4V4HtQNlvWQakuY43j3
-   t9HN1HE5Fsz3gRqycafyLB2ijCW38Bd3zyilHTETWyzkGbT1cSYkcfKd7
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="344931392"
-X-IronPort-AV: E=Sophos;i="6.01,204,1684825200"; 
-   d="scan'208";a="344931392"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2023 16:00:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="1052816265"
-X-IronPort-AV: E=Sophos;i="6.01,204,1684825200"; 
-   d="scan'208";a="1052816265"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmsmga005.fm.intel.com with ESMTP; 13 Jul 2023 16:00:43 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 13 Jul 2023 16:00:42 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 13 Jul 2023 16:00:42 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Thu, 13 Jul 2023 16:00:42 -0700
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (104.47.73.170)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Thu, 13 Jul 2023 16:00:42 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KWJy19/jRpoHkRXZJuEKJDIdYcaMBFQnza4EfcAkpdfD+dzUfAFH/5QZxO9KWFsuMW5XIWNFC79D62hLrWHQeV++ArR5bXPs5Ct5y6w1P4xJp9ElpvRJoVrixZV9LN1aS9/mowlkmE7U4P0MucDGhTkIdPRLJB4KbNstfoChsiNap4bE+qGa1PVmbDtNI/UCpnOiua8AEIAEBPwUsfeZsj8WpFAdqtRsx/lWhBWWj/ZcEcsIOOv9uNv61hckud+hMgJr/kQp33FjzD1SWaWjre7JLMRi2/E0WPvacVco3YSCSOAH5OPPYn05Zkgi8zy2Xxd5GmoMSrX8UdhQcenDxw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Hm3jcx3BY9Za1UEasINCgmbPkCTIb0JwTaPeJCxyneI=;
- b=jzdToJpLSuWj18y2E9+op+dzaFFjW0IvIXWJClqwFsrVpnH7be23w867Ig5LBNByL3NzllFnHi1+bkh/Fx6SOoqi2lZ8w6Th375LHp2Wde3XMO0uewPhjGEKzcuQmKITqDgt5oJ0ejBxbE09xmgI+FvylBXyFucTketRpCOZa023TM3BmoFwHSkO34BR1/vJmoLBc7j1Q+Ov187tX+hPfqXNbLJhbJl9M/fbibNbwaDmZL/Nzv8ZGe0oHFRtCcJPVcQ9xfayPGhweFexzXIdReF4e5zdyp6E+uVHP9p8fTQ0Az7nisFt7CNExUumyVfsMLxY5hwu72UoJdPWHOFq1w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
- by CO6PR11MB5586.namprd11.prod.outlook.com (2603:10b6:5:35d::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.27; Thu, 13 Jul
- 2023 23:00:40 +0000
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::3b1a:8ccf:e7e4:e9fa]) by SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::3b1a:8ccf:e7e4:e9fa%4]) with mapi id 15.20.6588.017; Thu, 13 Jul 2023
- 23:00:40 +0000
-Message-ID: <1dd10447-b03d-937a-fe55-ff324864c358@intel.com>
-Date:   Thu, 13 Jul 2023 16:00:38 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [PATCH v4 10/19] selftests/resctrl: Express span internally in
- bytes
-Content-Language: en-US
-To:     =?UTF-8?Q?Ilpo_J=c3=a4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        "Shaopeng Tan" <tan.shaopeng@jp.fujitsu.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        <linux-kernel@vger.kernel.org>
-References: <20230713131932.133258-1-ilpo.jarvinen@linux.intel.com>
- <20230713131932.133258-11-ilpo.jarvinen@linux.intel.com>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-In-Reply-To: <20230713131932.133258-11-ilpo.jarvinen@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: MW4PR03CA0261.namprd03.prod.outlook.com
- (2603:10b6:303:b4::26) To SJ2PR11MB7573.namprd11.prod.outlook.com
- (2603:10b6:a03:4d2::10)
+        Thu, 13 Jul 2023 19:01:11 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 904D02127;
+        Thu, 13 Jul 2023 16:01:10 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 05B9961B79;
+        Thu, 13 Jul 2023 23:01:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61080C433C8;
+        Thu, 13 Jul 2023 23:01:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689289269;
+        bh=BvE/6xVatY3gzbwR0vDrqr3MzJ01oINoYu0cSNelaB8=;
+        h=From:Subject:Date:To:Cc:From;
+        b=j9LDsK+FDIrm6x6MxYyXms5zVTjaW1P6LxjzfQKg1pbSvAHLTtuNDrEBEAvQz7a59
+         IEj5BzbSPgpyeqfAqbd+Re3r0d6jbIHKhpnRq3qprdKRfzdD9X103cXf3qX6JZft6A
+         8K/RH8+CdgTcLHSepEL1YlNk2ZQmp4oagzqZSvVyVEd/d4TvlnBEIAX/8mUMo/DIpV
+         2h3UVlHoa/Q76fgIu2dVBLs3sOHMs2qunAcM77C5kvmuuB2TAhiX7+yoiPjn4EbiL6
+         oufcrYQQLmAklyR8BnHSjocZBlFXqdC5grfG/sCfx8gif0JU3ybUeAnX6i/lTGUMEc
+         tKVmtuCgMrfHw==
+From:   Jeff Layton <jlayton@kernel.org>
+Subject: [PATCH v5 0/8] fs: implement multigrain timestamps
+Date:   Thu, 13 Jul 2023 19:00:49 -0400
+Message-Id: <20230713-mgctime-v5-0-9eb795d2ae37@kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|CO6PR11MB5586:EE_
-X-MS-Office365-Filtering-Correlation-Id: a28a2cff-bd28-45c6-ab40-08db83f4facf
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: r/1ItLdeIeis0eRAwu08L7MRIJQbrOh6BHjGYcJ9cxFXmdKr01+pMSVAGWAp9+0FK6RDkpEeanFHuPtYhsOnWA+qbWwE1/gErCSlqN/GhYcHBNLdEkeDWheuYiFTok5/92DaaMLBZad2+/pyxldrHdsNn0JasQX7xBKS+t2c2koCiwWD6b0IDVZIZDV0FXW+GYRgEo1VoBVk7Jdbw1rIdsCzfxXnZq/OPNdS0/Xuzo8UBUNCKO8K/ieTUM/aljFp5ym9/CDZDS3xHVxHpJezEGX4JC9dT6nOsb9/drM5cOHwVJNozmpDVhE+kanFIVB72M8LQVIvjUiBx9AuvrMMFgTMNjgBjqOTD9P8LhZdanXy22s1G2sc0fGW0mWz4edZ+GmBzFV8HNGiZzft+uJURfJZ646M6ZhYvundD7b3RXc38putqfFWDHywq/vNZoDLyavCCeJJzdEZYjGKH330O6GnV/2oTZkRRIgnGbh4xI0kMOJNeRDJjbUZsEEQzNhcplKwZbaTlGS8nrFARaxt/S5gdHphTEfPemR7z8G5IJ5K2zZ39gSFe47Xfho5edD51meHr8MQ6ZBSgrx3kdn620LweWRk0c/KRTTvX9jjYPE9icVx01I8XOlfmMaZvlNeOi9hyx5KmkP9wKnICHEsow==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(346002)(136003)(366004)(376002)(39860400002)(396003)(451199021)(110136005)(41300700001)(44832011)(66476007)(66946007)(66556008)(478600001)(31686004)(5660300002)(2906002)(8676002)(8936002)(316002)(6486002)(6512007)(82960400001)(31696002)(86362001)(26005)(6506007)(53546011)(186003)(2616005)(36756003)(38100700002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZXFYRmV1MVlza1Eza08zUjNqd1VJMFRZeWdQNkVmMWFlMjZBdklyWWl3MFdh?=
- =?utf-8?B?TFRMaXFiUi9RSkJNMHNZdFU2WEF3SFVuY2M2WklyWTg3Z1VzMVMwdnlDcTM0?=
- =?utf-8?B?TWRQV2prQ1Eyd1BOZHNaMytUanlTUXE0aURlOFcwN1VINjU0RENjaGNDcDJN?=
- =?utf-8?B?UTJlOWtuNGN4bi9jUmN0alRWQVBPRlp1Kzk2WlpaYzRNREcweFdQLzNiS01B?=
- =?utf-8?B?anZhZExHZ2tmaU9wRllUenpkOHcycnh0OHp4VVZNZUhaQnAvY0IxSFYrejFx?=
- =?utf-8?B?RU1za2p3eEF1Rndnb3ZKaTkycjBqREdSaSsveTBrdUVwL1hWV2czZzRWMGsx?=
- =?utf-8?B?bU1saDJCYThJTzhwUGphTG5EV1RvemJ4WUYvRlhSNk5qY1E3TytvTkhEU2ZE?=
- =?utf-8?B?bSt4TzNjZW1ZaVFoeGVaRHdQLzdqRENvbzFKYVpPdm5la1Y0YWZGTitYRys5?=
- =?utf-8?B?czI3RGw2ekE5NlhmN0NIK3NkaTdIQWd3ZFBaYnJtNWNIMW5yaFNqNlZ1Szd4?=
- =?utf-8?B?dndvVGZLTDlaTlpSM3dpbmZ5SldoVnh1SkpXYmxtYldxUFJEUEdmUVp2aDRY?=
- =?utf-8?B?cVhzekJHWi9EcEZlcUl3bGE2T1lJbTNYaGxjbC9LVVlyZ2N1ZXVsU2VLeFZP?=
- =?utf-8?B?eW44SC8vWG1zTmt4VXljcUpVT0JpK0N3ck15TXRzVk9Zclh4S2hUUm1hTXdy?=
- =?utf-8?B?MEVhVU5QeW5SVVZOUFdKdTVYTXJqVlk2YlZmOWRCVWZDWm9ueWthZWxmbkxI?=
- =?utf-8?B?aDRFZSt3K21KNm5tOWpiZU9TTHpCb0FnNjVLcm0yS0VFTDBnaHkrRE0vSDlM?=
- =?utf-8?B?V1BUdUVib09zN3ZFRkVEZVJicXJtWG5YY0pQMlQyVFQybEdiamd5WEVYczZX?=
- =?utf-8?B?RngwL3lONmhocm1TMXkxSk5nbWpHcGlFNXI4N2R0N1M2T05YOWZRQjQ4Y00x?=
- =?utf-8?B?T284cjJlSGxQTXI4aEVuaXVOM2h3ckhZL1JKb2VWZ0YwbThRYXY0cXh2dkMz?=
- =?utf-8?B?THZ2dmdVMDZCRC9QbjFPUEJNNlVOTXpoaXIzNVhsNEEvUWdTTS9kdENmWi9E?=
- =?utf-8?B?ejZuSHZRalhiQzExMzEyK2pFQWJxVmdTVVV0dVMwcURMS1lTMGRwalVEK0Rk?=
- =?utf-8?B?RHdtakZPWnFXN0FKSlJjdVpkaFZTekxhUzJPMDZhd0hwbW9SMlB5SEdCSUNq?=
- =?utf-8?B?bjg3SW8vS2x6Q0FYTFhET1VpOEljaXdKRFJSaWJZS3VtdFlVUFFWQ0JiQzcr?=
- =?utf-8?B?ODVKZnRPTkdEUmE3UTdWSmRrT1NSeWdzUkRSSSs2UDAxZFBWSG5kVXc2V25R?=
- =?utf-8?B?aVMwZkRqTWVVRFN5cjRsdGpDWWoyWmF1UTFOcVgvM253d2RsTTZxSnFSNEVJ?=
- =?utf-8?B?dUJhYWcyUUcxd1hqaWVxZ3FUNGNPOTg1czViaTd6anppVTljOWJYWGZtVHNi?=
- =?utf-8?B?RDhsSzNESXJtdEN0WGtoWHgzSXhCZjBlNmVJcDlTYkhCa1gzTWovM1VhRWNu?=
- =?utf-8?B?eGdDQzRlbHJsUDR2aWhjdlpnZm0xcDNoRzl4dDZuUVROWUY3MkNyYTVsblR5?=
- =?utf-8?B?SEg3bGhhOHA0a1pLRURzNUJGZ3FURmozVExuVStsTTVoVzJCM0pEcWwwOFVX?=
- =?utf-8?B?RFh0eWhQeU5VdmJRYmhVL1JORVEwejQxdCtoMmg5WHhRc1lQMlpVcktiTWlu?=
- =?utf-8?B?RUordWlJRmF4RFR3M0NTUXdxN1FVd2p2ZDdwNUh5Y0xFK3loYkFHVHYxSTZO?=
- =?utf-8?B?WFpENlVEVHUwTFRYdkRCQXFXWjJXWTYra0R5NjUvbVVaSm9qN3V0Y0lyWWpi?=
- =?utf-8?B?NTlZWFEwMnZlQXUvTzdXOWJmTU5zNjdxQndOaG1zTTgzR3RhdnN1c3BZOHRx?=
- =?utf-8?B?eHIrcjFwTFBMaEFLNkVmWnJObXdUeEgwVzFSUGdqQ0tsbG0rOW5iSjRKb29C?=
- =?utf-8?B?ZStOK3VXN0ZTSjFSam1OVTlxdHFIOGZ6TThkRjBnQ1d4Y1lGOTJLbzZHbXBI?=
- =?utf-8?B?MFVlRU5KVFY5Yk1yTnRVa0VhUVVVZjFnV084UVVtd1luSDFaSW1OTkk5RzNP?=
- =?utf-8?B?T1hGTXE2cWxJMWRlaE1iNG1lSXd6c0J2S2N5ZU1oRWYybVNmM3BwQTY5ZE40?=
- =?utf-8?B?aGZGWFNzNFcyNHpjeHdTNy91dEVsVTRVOGJZMXN2SXZ5djN2T2dmN0xwbXpn?=
- =?utf-8?B?clE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: a28a2cff-bd28-45c6-ab40-08db83f4facf
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2023 23:00:40.7429
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: sIrEuJsvPF2Mt9oWLnX/vNFXU+8uJCXP0r/4JOtQDBdvOkQJTRq62ym2GgAH61VKhXyoRS458811Di29ShamxPuCo2UfZmM8l6ksi7MG+T8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR11MB5586
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIACGCsGQC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyTHUUlJIzE
+ vPSU3UzU4B8JSMDI2MDc0Nj3dz05JLM3FTdNKNEy7RkYyMTS0MLJaDqgqLUtMwKsEnRsbW1AO6
+ XW1JZAAAA
+To:     Eric Van Hensbergen <ericvh@kernel.org>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>,
+        David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
+        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Martin Brandenburg <martin@omnibond.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Steve French <sfrench@samba.org>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Tom Talpey <tom@talpey.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Richard Weinberger <richard@nod.at>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Dave Chinner <david@fromorbit.com>, v9fs@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        cluster-devel@redhat.com, linux-nfs@vger.kernel.org,
+        ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
+        devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
+        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
+        Jeff Layton <jlayton@kernel.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4474; i=jlayton@kernel.org;
+ h=from:subject:message-id; bh=BvE/6xVatY3gzbwR0vDrqr3MzJ01oINoYu0cSNelaB8=;
+ b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBksIIu4PKEKGnoDdi+GMLN5ufs2UB8ZsDTn9Oqp
+ SYtweP3skyJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZLCCLgAKCRAADmhBGVaC
+ FXJhEADW493xZyCYf/hlVo1POCOZGol0XDpJIN1EQK3h+61XPis26awGDTcXczc9yZK/JvZV7oC
+ VtVStL44kvzeqn7kh1AH/EuLmeazbYMEFTdl5PiizH53xrWmidL26fTjpjn01gvjb9Y5gGXTvuI
+ h0JLInpNr5Hn509RQU2T5/D8WBKVnLWeHB/itiDWCZ1CG8iFNWfgbgC/bpdW2+H0eIDHvr6bUcJ
+ m0mfxwAUL6lA/b/G8kmsdj0YEEWf2bOLzdxZcQPh/MEfkRuKwWqy9d5mFLJlJ5GiheG9qiqOwOA
+ wLz9M0J4e32Di/q+QL/HpihUZOB0jrZB+bRhKxqWD04cFRtTTwE15w/xGAgjvPLe2l+sNzEUxoq
+ nIscPnAScgiRW3Bzq6PUd7ljrtLvvU6Vcgd0HqFcyfn9APLCjnLCckVW7S0ofkRL7oksLIoSGDJ
+ qo/IpJl4X/Mu1LBY//fFZp6QVhp54iwAR+D7VJ3z7wtZSktaXJ9f1o0qcT1Bo254702FlLGvbxf
+ Bkj6FZDMZrSXrx81pjrLvUB8jCQQ13oz7O3kmOzVX4pLmnO9PRLcQLj14velupamDvwexZgudyW
+ jiqR3IwVXCTiN2WgmssqUyuQi+GQ1LKePEwVpDx8izF0VnbQshX6OqMvuRzVcDG29pzQBTc0dy+
+ lAVc/7Mp3vHZu0g==
+X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
+ fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ilpo,
+The VFS always uses coarse-grained timestamps when updating the
+ctime and mtime after a change. This has the benefit of allowing
+filesystems to optimize away a lot metadata updates, down to around 1
+per jiffy, even when a file is under heavy writes.
 
-On 7/13/2023 6:19 AM, Ilpo Järvinen wrote:
-> MBA and MBM tests to use megabytes to represent span. CMT test uses
-> bytes. The difference requires run_benchmark() to size the buffer
-> differently based on the test name, which in turn requires passing the
-> test name into run_benchmark().
-> 
-> Convert MBA and MBM tests to use internally bytes like CMT test to
-> remove the internal inconsistency between the tests. Remove the test
-> dependent buffer sizing from run_benchmark().
+Unfortunately, this coarseness has always been an issue when we're
+exporting via NFSv3, which relies on timestamps to validate caches. A
+lot of changes can happen in a jiffy, so timestamps aren't sufficient to
+help the client decide to invalidate the cache.
 
-If I understand correctly the intention is to always use bytes internally
-and only convert to megabytes when displayed to user space. The above
-implies that this takes care of the conversion but there still seems
-to be places that that do not follow my understanding. For example,
-resctrl_val.c:measure_vals() converts to megabytes before proceeding.
+Even with NFSv4, a lot of exported filesystems don't properly support a
+change attribute and are subject to the same problems with timestamp
+granularity. Other applications have similar issues with timestamps (e.g
+backup applications).
 
-While MBA, MBM, and CMT tests use resctrl_val() for testing it seems
-as though the function still exits with the MBA/MBM data recorded in
-megabytes with the CMT data recorded in bytes. That seems to be why
-show_mba_info() needs no conversion when displaying the data.
+If we were to always use fine-grained timestamps, that would improve the
+situation, but that becomes rather expensive, as the underlying
+filesystem would have to log a lot more metadata updates.
 
-Reinette
+What we need is a way to only use fine-grained timestamps when they are
+being actively queried. The idea is to use an unused bit in the ctime's
+tv_nsec field to mark when the mtime or ctime has been queried via
+getattr. Once that has been marked, the next m/ctime update will use a
+fine-grained timestamp.
+
+This patch series is based on top of Christian's vfs.all branch, which
+has the recent conversion to the new ctime accessors. It should apply
+cleanly on top of linux-next.
+
+While the patchset does work, I'm mostly looking for feedback on the
+core infrastructure API. Does this look reasonable? Am I missing any
+races?
+
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
+base-commit: cf22d118b89a09a0160586412160d89098f7c4c7
+---
+Jeff Layton (8):
+      fs: pass the request_mask to generic_fillattr
+      fs: add infrastructure for multigrain timestamps
+      tmpfs: bump the mtime/ctime/iversion when page becomes writeable
+      tmpfs: add support for multigrain timestamps
+      xfs: XFS_ICHGTIME_CREATE is unused
+      xfs: switch to multigrain timestamps
+      ext4: switch to multigrain timestamps
+      btrfs: convert to multigrain timestamps
+
+ fs/9p/vfs_inode.c               |  4 +-
+ fs/9p/vfs_inode_dotl.c          |  4 +-
+ fs/afs/inode.c                  |  2 +-
+ fs/btrfs/file.c                 | 24 ++--------
+ fs/btrfs/inode.c                |  2 +-
+ fs/btrfs/super.c                |  5 ++-
+ fs/ceph/inode.c                 |  2 +-
+ fs/coda/inode.c                 |  3 +-
+ fs/ecryptfs/inode.c             |  5 ++-
+ fs/erofs/inode.c                |  2 +-
+ fs/exfat/file.c                 |  2 +-
+ fs/ext2/inode.c                 |  2 +-
+ fs/ext4/inode.c                 |  2 +-
+ fs/ext4/super.c                 |  2 +-
+ fs/f2fs/file.c                  |  2 +-
+ fs/fat/file.c                   |  2 +-
+ fs/fuse/dir.c                   |  2 +-
+ fs/gfs2/inode.c                 |  2 +-
+ fs/hfsplus/inode.c              |  2 +-
+ fs/inode.c                      | 98 +++++++++++++++++++++++++++++------------
+ fs/kernfs/inode.c               |  2 +-
+ fs/libfs.c                      |  4 +-
+ fs/minix/inode.c                |  2 +-
+ fs/nfs/inode.c                  |  2 +-
+ fs/nfs/namespace.c              |  3 +-
+ fs/ntfs3/file.c                 |  2 +-
+ fs/ocfs2/file.c                 |  2 +-
+ fs/orangefs/inode.c             |  2 +-
+ fs/proc/base.c                  |  4 +-
+ fs/proc/fd.c                    |  2 +-
+ fs/proc/generic.c               |  2 +-
+ fs/proc/proc_net.c              |  2 +-
+ fs/proc/proc_sysctl.c           |  2 +-
+ fs/proc/root.c                  |  3 +-
+ fs/smb/client/inode.c           |  2 +-
+ fs/smb/server/smb2pdu.c         | 22 ++++-----
+ fs/smb/server/vfs.c             |  3 +-
+ fs/stat.c                       | 59 ++++++++++++++++++++-----
+ fs/sysv/itree.c                 |  3 +-
+ fs/ubifs/dir.c                  |  2 +-
+ fs/udf/symlink.c                |  2 +-
+ fs/vboxsf/utils.c               |  2 +-
+ fs/xfs/libxfs/xfs_shared.h      |  2 -
+ fs/xfs/libxfs/xfs_trans_inode.c |  8 ++--
+ fs/xfs/xfs_iops.c               |  4 +-
+ fs/xfs/xfs_super.c              |  2 +-
+ include/linux/fs.h              | 47 ++++++++++++++++++--
+ mm/shmem.c                      | 16 ++++++-
+ 48 files changed, 248 insertions(+), 129 deletions(-)
+---
+base-commit: cf22d118b89a09a0160586412160d89098f7c4c7
+change-id: 20230713-mgctime-f2a9fc324918
+
+Best regards,
+-- 
+Jeff Layton <jlayton@kernel.org>
+
