@@ -2,108 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 778A575241A
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 15:42:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E470752420
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 15:46:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235166AbjGMNmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 09:42:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44048 "EHLO
+        id S234173AbjGMNqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 09:46:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235139AbjGMNmb (ORCPT
+        with ESMTP id S233984AbjGMNqB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 09:42:31 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF150E4F;
-        Thu, 13 Jul 2023 06:42:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=eqRFjEfnQpKX3SCwpqVqk5MwPZ2HabqrXxJtbeOAy2Y=; b=Xpm1APX1flTFZG414QOtZyFKnZ
-        XZBeRsaIEzyZfvFraA3stqUA2/UbL54AdKEFB+YFck5dODAOwA4k41eWWwLWsgZwoL1ESKsTR+JEB
-        qPXiqSPVl4SVXOItL3fULoS6vqFOJRZkbdE2j9PPZ9qSq5PDb1pocBH6M6GYG3ZDPueKcKm/8/uPg
-        lOGhsoeZM+ARDzp4/K+xXoJlYN9P3BMDpvKX5OnSNFOFq8PDZNz4Zc2ZO1YrEtObG2IUwAVSYIYXJ
-        g43md3NOFX+J50BWHA43iAphI20mVnWgzi+bR/i913Yh0j0WnfUcmaRqX2QPr7bvlBolFXHd79J4X
-        rjzKr0XA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qJwaQ-000Bur-DA; Thu, 13 Jul 2023 13:42:26 +0000
-Date:   Thu, 13 Jul 2023 14:42:26 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Christian Borntraeger <borntraeger@linux.ibm.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        linux-s390 <linux-s390@vger.kernel.org>
-Subject: Re: [PATCH v5 00/38] New page table range API
-Message-ID: <ZK//Qnfhx+ihtvlO@casper.infradead.org>
-References: <20230710204339.3554919-1-willy@infradead.org>
- <8cfc3eef-e387-88e1-1006-2d7d97a09213@linux.ibm.com>
- <ZK1My5hQYC2Kb6G1@casper.infradead.org>
- <56ca93af-67dc-9d10-d27e-00c8d7c20f1b@linux.ibm.com>
+        Thu, 13 Jul 2023 09:46:01 -0400
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC337AA
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 06:45:59 -0700 (PDT)
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com [209.85.208.199])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 756833F71A
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 13:45:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1689255956;
+        bh=OISdSbIRHeqAVpn1Q65It/xjmRXvWdsGR3LrX1oU/l0=;
+        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+         Content-Type:In-Reply-To;
+        b=DWIlbA/+W3+FucN3XVDTARFlTr7FDwNHs9xgTaE7tzZg1uEQbMnA3ke2uL/dHcIMH
+         OaMnGdY3pp12JsjYESaMg2lDieHhx9oOjQosngH21H5baYRLdvo4wwLehsoSt0OL7G
+         td5ZfA8mtsp+DZTkaGlvdGztqB1r3IQOKJe6VoQm4B1xkjBlvYvcs7YXQLc1+T+VZ+
+         cgzjdL/y0hyuH4e0eTshiNNH3SDr6oTofyzoYEUubc4uRYJIBRAYSM/i9ZDuG8uj7T
+         YLmO2Ioc4FUY4QY6MLCL4omgL86IlBvCm0iJyC45W+onUao94Y2i043eh52QgXiFwp
+         xEXVbj4hxbWHw==
+Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-2b70bfcd15aso7298151fa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 06:45:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689255956; x=1691847956;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OISdSbIRHeqAVpn1Q65It/xjmRXvWdsGR3LrX1oU/l0=;
+        b=l0MswT8xKlczkQuSRa4NELeMHnYv8NO2AllsVkvmI3Fcu/jbM7xL9aHsrvdnIi6qzc
+         Y7NTxhYF1diBzngMF6qcNVG2SsbV3yi6rMoxCxvCk79dBsvO6YfyJBTc/9g4v/BWHfA+
+         u5udjGRxrFyeLwaOqaTEn2PsiRHjgQYADG6wdMpmyZsYOLiwrC9SQ5+vG6go9AOi0wvQ
+         YYYrFn4VI2vZdMkzBKPRZHOoYWtbMcxFuQEhnC9V889iUfAD+4cocrO2hkL220ykp03C
+         XarF+AsKk4ERvstjxh5ROAW6mFfIDtYuDrHRJbfjSqLbFYW7dVn9dc1JgXoDkRWL41wB
+         UQzA==
+X-Gm-Message-State: ABy/qLZBdBlV595WF4iBMaBJW8lgRFqSAhcgekSjjM/UcUK5KCP+CNdU
+        FDJkZ6fjiiY0YdaCaX0Xd65uCtVXZ3WdQKsxbxiv5RRJmwHfx/30SzO9RaemcCH/1rSzoYgXAom
+        LbKRSi8Uli21upHQPEDQYY+y0D8uhYXo85+EBZzpPuA==
+X-Received: by 2002:a2e:981a:0:b0:2b6:db9b:aadc with SMTP id a26-20020a2e981a000000b002b6db9baadcmr1584679ljj.32.1689255955960;
+        Thu, 13 Jul 2023 06:45:55 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlE2dpAIUyE2fHjrVG/n8WiIgznzDLplWQKMUeTqw6wLHiRrapaxTb3XySPXwgpFPGrCmMoBkg==
+X-Received: by 2002:a2e:981a:0:b0:2b6:db9b:aadc with SMTP id a26-20020a2e981a000000b002b6db9baadcmr1584640ljj.32.1689255955562;
+        Thu, 13 Jul 2023 06:45:55 -0700 (PDT)
+Received: from localhost (host-95-234-206-203.retail.telecomitalia.it. [95.234.206.203])
+        by smtp.gmail.com with ESMTPSA id x10-20020a1709064a8a00b0098e422d6758sm3974713eju.219.2023.07.13.06.45.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Jul 2023 06:45:55 -0700 (PDT)
+Date:   Thu, 13 Jul 2023 15:45:54 +0200
+From:   Andrea Righi <andrea.righi@canonical.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     torvalds@linux-foundation.org, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
+        joshdon@google.com, brho@google.com, pjt@google.com,
+        derkling@google.com, haoluo@google.com, dvernet@meta.com,
+        dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@meta.com
+Subject: Re: [PATCH 27/34] sched_ext: Implement SCX_KICK_WAIT
+Message-ID: <ZLAAEnd2HOinKrA+@righiandr-XPS-13-7390>
+References: <20230711011412.100319-1-tj@kernel.org>
+ <20230711011412.100319-28-tj@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <56ca93af-67dc-9d10-d27e-00c8d7c20f1b@linux.ibm.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230711011412.100319-28-tj@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 12:42:44PM +0200, Christian Borntraeger wrote:
-> 
-> 
-> Am 11.07.23 um 14:36 schrieb Matthew Wilcox:
-> > On Tue, Jul 11, 2023 at 11:07:06AM +0200, Christian Borntraeger wrote:
-> > > Am 10.07.23 um 22:43 schrieb Matthew Wilcox (Oracle):
-> > > > This patchset changes the API used by the MM to set up page table entries.
-> > > > The four APIs are:
-> > > >       set_ptes(mm, addr, ptep, pte, nr)
-> > > >       update_mmu_cache_range(vma, addr, ptep, nr)
-> > > >       flush_dcache_folio(folio)
-> > > >       flush_icache_pages(vma, page, nr)
-> > > > 
-> > > > flush_dcache_folio() isn't technically new, but no architecture
-> > > > implemented it, so I've done that for them.  The old APIs remain around
-> > > > but are mostly implemented by calling the new interfaces.
-> > > > 
-> > > > The new APIs are based around setting up N page table entries at once.
-> > > > The N entries belong to the same PMD, the same folio and the same VMA,
-> > > > so ptep++ is a legitimate operation, and locking is taken care of for
-> > > > you.  Some architectures can do a better job of it than just a loop,
-> > > > but I have hesitated to make too deep a change to architectures I don't
-> > > > understand well.
-> > > > 
-> > > > One thing I have changed in every architecture is that PG_arch_1 is now a
-> > > > per-folio bit instead of a per-page bit.  This was something that would
-> > > > have to happen eventually, and it makes sense to do it now rather than
-> > > > iterate over every page involved in a cache flush and figure out if it
-> > > > needs to happen.
-> > > 
-> > > I think we do use PG_arch_1 on s390 for our secure page handling and
-> > > making this perf folio instead of physical page really seems wrong
-> > > and it probably breaks this code.
-> > 
-> > Per-page flags are going away in the next few years, so you're going to
-> > need a new design.  s390 seems to do a lot of unusual things.  I wish
-> > you'd talk to the rest of us more.
-> 
-> I understand you point from a logical point of view, but a 4k page frame
-> is also a hardware defined memory region. And I think not only for us.
-> How do you want to implement hardware poisoning for example?
-> Marking the whole folio with PG_hwpoison seems wrong.
+On Mon, Jul 10, 2023 at 03:13:45PM -1000, Tejun Heo wrote:
+...
+> +	for_each_cpu_andnot(cpu, this_rq->scx.cpus_to_wait,
+> +			    cpumask_of(this_cpu)) {
+> +		/*
+> +		 * Pairs with smp_store_release() issued by this CPU in
+> +		 * scx_notify_pick_next_task() on the resched path.
+> +		 *
+> +		 * We busy-wait here to guarantee that no other task can be
+> +		 * scheduled on our core before the target CPU has entered the
+> +		 * resched path.
+> +		 */
+> +		while (smp_load_acquire(&cpu_rq(cpu)->scx.pnt_seq) == pseqs[cpu])
+> +			cpu_relax();
+> +	}
+> +
 
-For hardware poison, we can't use the page for any other purpose any more.
-So one of the 16 types of pointer is for hardware poison.  That doesn't
-seem like it's a solution that could work for secure/insecure pages?
+...
 
-But what I'm really wondering is why you need to transition pages
-between secure/insecure on a 4kB boundary.  What's the downside to doing
-it on a 16kB or 64kB boundary, or whatever size has been allocated?
+> +static inline void scx_notify_pick_next_task(struct rq *rq,
+> +					     const struct task_struct *p,
+> +					     const struct sched_class *active)
+> +{
+> +#ifdef CONFIG_SMP
+> +	if (!scx_enabled())
+> +		return;
+> +	/*
+> +	 * Pairs with the smp_load_acquire() issued by a CPU in
+> +	 * kick_cpus_irq_workfn() who is waiting for this CPU to perform a
+> +	 * resched.
+> +	 */
+> +	smp_store_release(&rq->scx.pnt_seq, rq->scx.pnt_seq + 1);
+> +#endif
+> +}
+
+We can't use smp_load_acquire()/smp_store_release() with a u64 on
+32-bit architectures.
+
+For example, on armhf the build is broken:
+
+In function ‘scx_notify_pick_next_task’,
+    inlined from ‘__pick_next_task’ at /<<PKGBUILDDIR>>/kernel/sched/core.c:6106:4,
+    inlined from ‘pick_next_task’ at /<<PKGBUILDDIR>>/kernel/sched/core.c:6605:9,
+    inlined from ‘__schedule’ at /<<PKGBUILDDIR>>/kernel/sched/core.c:6750:9:
+/<<PKGBUILDDIR>>/include/linux/compiler_types.h:397:45: error: call to ‘__compiletime_assert_597’ declared with attribute error: Need native word sized stores/loads for atomicity.
+  397 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+      |                                             ^
+/<<PKGBUILDDIR>>/include/linux/compiler_types.h:378:25: note: in definition of macro ‘__compiletime_assert’
+  378 |                         prefix ## suffix();                             \
+      |                         ^~~~~~
+/<<PKGBUILDDIR>>/include/linux/compiler_types.h:397:9: note: in expansion of macro ‘_compiletime_assert’
+  397 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+      |         ^~~~~~~~~~~~~~~~~~~
+/<<PKGBUILDDIR>>/include/linux/compiler_types.h:400:9: note: in expansion of macro ‘compiletime_assert’
+  400 |         compiletime_assert(__native_word(t),                            \
+      |         ^~~~~~~~~~~~~~~~~~
+/<<PKGBUILDDIR>>/include/asm-generic/barrier.h:141:9: note: in expansion of macro ‘compiletime_assert_atomic_type’
+  141 |         compiletime_assert_atomic_type(*p);                             \
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/<<PKGBUILDDIR>>/include/asm-generic/barrier.h:172:55: note: in expansion of macro ‘__smp_store_release’
+  172 | #define smp_store_release(p, v) do { kcsan_release(); __smp_store_release(p, v); } while (0)
+      |                                                       ^~~~~~~~~~~~~~~~~~~
+/<<PKGBUILDDIR>>/kernel/sched/ext.h:159:9: note: in expansion of macro ‘smp_store_release’
+  159 |         smp_store_release(&rq->scx.pnt_seq, rq->scx.pnt_seq + 1);
+
+There's probably a better way to fix this, but for now I've temporarily
+solved this using cmpxchg64() - see patch below.
+
+I'm not sure if we already have an equivalent of
+smp_store_release_u64/smp_load_acquire_u64(). Otherwise, it may be worth
+to add them to a more generic place.
+
+-Andrea
+
+diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
+index 051c79fa25f7..5da72b1cf88d 100644
+--- a/kernel/sched/ext.c
++++ b/kernel/sched/ext.c
+@@ -3667,7 +3667,7 @@ static void kick_cpus_irq_workfn(struct irq_work *irq_work)
+ 		 * scheduled on our core before the target CPU has entered the
+ 		 * resched path.
+ 		 */
+-		while (smp_load_acquire(&cpu_rq(cpu)->scx.pnt_seq) == pseqs[cpu])
++		while (smp_load_acquire_u64(&cpu_rq(cpu)->scx.pnt_seq) == pseqs[cpu])
+ 			cpu_relax();
+ 	}
+ 
+diff --git a/kernel/sched/ext.h b/kernel/sched/ext.h
+index 405037a4e6ce..ef4a24d77d30 100644
+--- a/kernel/sched/ext.h
++++ b/kernel/sched/ext.h
+@@ -144,6 +144,40 @@ void __scx_notify_pick_next_task(struct rq *rq,
+ 				 struct task_struct *p,
+ 				 const struct sched_class *active);
+ 
++#ifdef CONFIG_64BIT
++static inline u64 smp_load_acquire_u64(u64 *ptr)
++{
++	return smp_load_acquire(ptr);
++}
++
++static inline void smp_store_release_u64(u64 *ptr, u64 val)
++{
++	smp_store_release(ptr, val);
++}
++#else
++static inline u64 smp_load_acquire_u64(u64 *ptr)
++{
++	u64 prev, next;
++
++	do {
++		prev = *ptr;
++		next = prev;
++	} while (cmpxchg64(ptr, prev, next) != prev);
++
++	return prev;
++}
++
++static inline void smp_store_release_u64(u64 *ptr, u64 val)
++{
++	u64 prev, next;
++
++	do {
++		prev = *ptr;
++		next = val;
++	} while (cmpxchg64(ptr, prev, next) != prev);
++}
++#endif
++
+ static inline void scx_notify_pick_next_task(struct rq *rq,
+ 					     struct task_struct *p,
+ 					     const struct sched_class *active)
+@@ -156,7 +190,7 @@ static inline void scx_notify_pick_next_task(struct rq *rq,
+ 	 * kick_cpus_irq_workfn() who is waiting for this CPU to perform a
+ 	 * resched.
+ 	 */
+-	smp_store_release(&rq->scx.pnt_seq, rq->scx.pnt_seq + 1);
++	smp_store_release_u64(&rq->scx.pnt_seq, rq->scx.pnt_seq + 1);
+ #endif
+ 	if (!static_branch_unlikely(&scx_ops_cpu_preempt))
+ 		return;
+-- 
+2.40.1
 
