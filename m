@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43E75752429
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 15:48:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C80F4752438
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 15:52:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229809AbjGMNse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 09:48:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45838 "EHLO
+        id S230087AbjGMNwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 09:52:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjGMNsc (ORCPT
+        with ESMTP id S230055AbjGMNwo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 09:48:32 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9F911FD6;
-        Thu, 13 Jul 2023 06:48:29 -0700 (PDT)
+        Thu, 13 Jul 2023 09:52:44 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 751DB1992;
+        Thu, 13 Jul 2023 06:52:43 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 253786153D;
-        Thu, 13 Jul 2023 13:48:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27EBEC433C8;
-        Thu, 13 Jul 2023 13:48:25 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EDF7F6103B;
+        Thu, 13 Jul 2023 13:52:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A026C433C8;
+        Thu, 13 Jul 2023 13:52:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689256108;
-        bh=aVFkOdZiMIHWVq2IMmFdy8HY77pkeHTrC64KlWEXfQM=;
+        s=k20201202; t=1689256362;
+        bh=Z+wdPp4bBuT9L1ChT+AHlpXverdOI7n2EbrlbDUz34A=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KW+LnXsT5S4/XdZXg2Un2kQeTTXap5cG0rVSxTcMqCwnkZ0VH8wOYZviKW3+Pw+dG
-         GhtNrnE6pF7HU9UMRkgLvopDXWUio5yGWcLNuswitR9UtV0gLLm6fO476wfyzWhljU
-         npDfKMQI4bRV8cmJAxvIUSCgsBCCKQMWiOGBHTWDxtk4M3taVPmmDVbV0KtK5dwP3l
-         6tFJ30y5QT/TC/UYTn/fFWAyYoSKwudLuYkP26lFQrARkZvKVk9medyApVYoObHSBD
-         fokyi0gTpieaRBqWTl77Uqq1ULCOjWl0SKnWtdZ7aZRENhGDj/+bLwYAhnmVk1wX27
-         FroSouUHpSbWA==
-Date:   Thu, 13 Jul 2023 14:48:23 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     William Qiu <william.qiu@starfivetech.com>,
-        devicetree@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH v2 2/3] dt-bindings: spi: constrain minItems of clocks
- and clock-names
-Message-ID: <5ef17d53-460c-4281-a241-1622a24bac5b@sirena.org.uk>
-References: <20230713090015.127541-1-william.qiu@starfivetech.com>
- <20230713090015.127541-3-william.qiu@starfivetech.com>
- <c5ad1e1c-58f4-4833-b9c7-8876c1a0dc27@sirena.org.uk>
- <e3fd0d3f-3fe4-2e23-2548-ecbd487e9c9f@linaro.org>
+        b=EZOiOP3YZFmh51YhkcCfOxZrjGErPWqe3Xpl4tiS3X+tTndYWqhMu/6gjuvoHMwPS
+         zhAe+a7EQIbGsdRYnPkwkIf0MZOW4P3wV5ubOhXagF083YdxDAuIaJqyQT+7oiEb3E
+         9kOAtYxAHujbx77HMQBk7+3tRCM/+jYsgzztobYBdzF4pk8gi3nJsBsqlBs0BmXxNV
+         RH4N1P5k8E6qDoCoQUGYcz2euZx5FQxveJ+rt0G3Pm6EwILfhucj3grOP/d1y+HZHw
+         djfTWa/6EDiJF+YhV9j+4mbOr5stgOI0dZMh/qFkJ155FEa0kCw5RJdDagGWz67tjQ
+         hiNvxuWfL9N3A==
+Date:   Thu, 13 Jul 2023 15:52:35 +0200
+From:   Ard Biesheuvel <ardb@kernel.org>
+To:     Emanuele Giuseppe Esposito <eesposit@redhat.com>
+Cc:     x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        bluca@debian.org, lennart@poettering.net,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Daniel P =?iso-8859-1?Q?=2E_Berrang=E9?= <berrange@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-efi@vger.kernel.org,
+        ardb@kernel.org
+Subject: Re: [RFC PATCH v2] x86/boot: add .sbat section to the bzImage
+Message-ID: <ZLABozIRVGmwuIBf@gambale.home>
+References: <20230711154449.1378385-1-eesposit@redhat.com>
+ <ZK/9MlTh435FP5Ji@gambale.home>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="dpyDkCLVucMmtixK"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e3fd0d3f-3fe4-2e23-2548-ecbd487e9c9f@linaro.org>
-X-Cookie: MOUNT TAPE U1439 ON B3, NO RING
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+In-Reply-To: <ZK/9MlTh435FP5Ji@gambale.home>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -67,38 +67,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+(add linux-efi@ cc)
 
---dpyDkCLVucMmtixK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Thu, Jul 13, 2023 at 03:33:38PM +0200, Ard Biesheuvel wrote:
+> Hello Emanuele,
+> 
+> Please cc the linux-efi@ mailing list and myself on EFI related patches.
+> 
+> First of all, I think the tone of the discussion is way out of hand on
+> both sides of the debate. Please keep it civil and courteous.
+> 
+> On Tue, Jul 11, 2023 at 11:44:49AM -0400, Emanuele Giuseppe Esposito wrote:
+> > *Important*: this is just an RFC, as I am not expert in this area and
+> > I don't know what's the best way to achieve this.
+> > 
+> > v2:
+> > * add standard "sbat,1,SBAT Version,..." header string
+> > 
+> > The aim of this patch is to add a .sbat section to the linux binary
+> > (https://github.com/rhboot/shim/blob/main/SBAT.md).
+> > We mainly need SBAT in UKIs (Unified Kernel Images), as we might want
+> > to revoke authorizations to specific signed PEs that were initially
+> > considered as trusted. The reason might be for example a security issue
+> > related to a specific linux release.
+> > 
+> > A .sbat is simply a section containing a string with the component name
+> > and a version number. This version number is compared with the value in
+> > OVMF_VARS, and if it's less than the variable, the binary is not trusted,
+> > even if it is correctly signed.
+> > 
+> 
+> Most people will not known what OVMF_VARS is or a PE.
+> 
+> Also, 'version number' is a bit vague, better to stick with existing
+> terminology that makes this more self explanatory: the component that
+> authenticates the kernel image keeps a revocation counter, and refuses
+> to load authentic images whose revocation index is lower than the
+> revocation counter. This approach removes the need for revoking
+> individual image hashes or having to rotate the signing keys when a
+> vulnerability is discovered.
+> 
+> The argument that we need this in the upstream kernel seems to be
+> predicated on the assumption that there is one universal signing
+> authority and revocation domain, but this is not necessarily true. Even
+> if the distros appear to have decided that it is a reasonable choice to
+> deploy the MicroSoft signed shim and the associated components on other
+> systems than Windows-crippled x86 PCs, this is not universally true, and
+> UEFI secure boot can be (and is) deployed in sane ways as well.
+> 
 
-On Thu, Jul 13, 2023 at 02:39:19PM +0200, Krzysztof Kozlowski wrote:
-> On 13/07/2023 14:28, Mark Brown wrote:
-> > On Thu, Jul 13, 2023 at 05:00:14PM +0800, William Qiu wrote:
+Note that by Windows-crippled, I mean x86 PCs built by OEMs who care
+about nothing other than the Windows logo sticker. These PCs often don't
+allow secure boot keys to be modified by the owner of the machine, or
+secure boot to be disabled at all. This is why shim exists, not because
+UEFI secure boot is broken by design.
 
-> >> The SPI controller only need apb_pclk clock to work properly on JH7110 SoC,
-> >> so there add minItems whose value is equal to 1. Other platforms do not
-> >> have this constraint.
-
-> > Presumably this means that this is some variant of the usual pl022 IP,
-
-> Hm, in such case this could mean we need dedicated compatible.
-
-Yes, indeed.
-
---dpyDkCLVucMmtixK
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmSwAKYACgkQJNaLcl1U
-h9BpEgf9EY0uJQAMe4MnptnRo7jvpMoIHgFT017s7FDsYZ5NJtmMdV+t/R0nQUg/
-gVRSsP2/f4GMNQokTmIV0RlLIQMBS7CrTlds5WQ31ok7G9fdsTEv/n5BWikmbCuH
-nFlnrUws6Ag7LUsFR0rFdL/uq/zbFOAMzykz5YLuEXVpdSb9OoPJQOrEBQk6asui
-bmhE12NziQo0hSVP1pLaUxOz8RLw6PqJUBHp8QFQ+5N7dXgtp6ALRHEWftboRZiX
-+RFT/oUiscAXFtGDobmLvCHkPSCbLflxkaXuYUSdZP9AStWND38s9uFV6OE9O2hZ
-U1BGVb2xUcGVvWdal9BSvSnAHxYS4w==
-=sgri
------END PGP SIGNATURE-----
-
---dpyDkCLVucMmtixK--
