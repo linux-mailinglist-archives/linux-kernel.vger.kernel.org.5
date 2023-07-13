@@ -2,114 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91AFE7523FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 15:36:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7198875210D
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 14:18:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234671AbjGMNgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 09:36:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39878 "EHLO
+        id S232542AbjGMMSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 08:18:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235076AbjGMNgo (ORCPT
+        with ESMTP id S234593AbjGMMSj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 09:36:44 -0400
-X-Greylist: delayed 2401 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 13 Jul 2023 06:36:37 PDT
-Received: from mout-p-103.mailbox.org (mout-p-103.mailbox.org [IPv6:2001:67c:2050:0:465::103])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F81C2D40;
-        Thu, 13 Jul 2023 06:36:36 -0700 (PDT)
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [10.196.197.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-103.mailbox.org (Postfix) with ESMTPS id 4R1tvC4NGRz9sn9;
-        Thu, 13 Jul 2023 14:19:03 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cyphar.com; s=MBO0001;
-        t=1689250743;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=xpxD6jJvH2NdvxBxxbA/xwwWPK026oBkIsxvhSiVppQ=;
-        b=J67hj0asCAtelzLhPQXRrS+E99al7I+BMNtQLJqGszQMeBH8Oi6tEK67X9nMQw4qlX7wnP
-        +LA3S4+9ltR61EsvICm2rmjjJXhQ3MkQ89Ht0WK+0Y2DpXvYW0cThade6zZUIV/YXFgiJD
-        3X888cF2MvyASCky3OlN1BCR1QiJprtt/kc5/V+OD2qO2Dsbhq6GtGsv5sozeysXT4uFdv
-        RexNELuNQXxbzZjT3OAHIVJrVyE0Z2GrrCDmMnlJ+EPOH+ntjEukAwcxeynzUATx00+/ec
-        O1KjlREZGDtSYA82dFoqVAaaphuq3Hv/WOjIPJKcrjfKmzjiwIYCZKXlsDEZ+A==
-From:   Aleksa Sarai <cyphar@cyphar.com>
-To:     Willy Tarreau <w@1wt.eu>, Shuah Khan <shuah@kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Chinner <dchinner@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, xu xin <cgel.zte@gmail.com>,
-        Zhihao Cheng <chengzhihao1@huawei.com>,
-        Chao Yu <chao@kernel.org>,
-        "Liam R. Howlett" <Liam.Howlett@Oracle.com>,
-        Janis Danisevskis <jdanis@google.com>,
-        Kees Cook <keescook@chromium.org>
-Cc:     Aleksa Sarai <cyphar@cyphar.com>, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH] procfs: block chmod on /proc/thread-self/comm
-Date:   Thu, 13 Jul 2023 22:17:50 +1000
-Message-ID: <20230713121752.8039-1-cyphar@cyphar.com>
+        Thu, 13 Jul 2023 08:18:39 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46ADC26B5
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 05:18:32 -0700 (PDT)
+Received: from canpemm500002.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R1tss1jW0zrRhC;
+        Thu, 13 Jul 2023 20:17:53 +0800 (CST)
+Received: from [10.174.151.185] (10.174.151.185) by
+ canpemm500002.china.huawei.com (7.192.104.244) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Thu, 13 Jul 2023 20:18:29 +0800
+Subject: Re: [PATCH] mm: remove some useless comments of node_stat_item
+To:     Matthew Wilcox <willy@infradead.org>
+CC:     <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20230713114915.74671-1-linmiaohe@huawei.com>
+ <ZK/ppvBO00rbspa8@casper.infradead.org>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <55c255df-9c7c-744f-e1a1-27602fcb5509@huawei.com>
+Date:   Thu, 13 Jul 2023 20:18:29 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <ZK/ppvBO00rbspa8@casper.infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.151.185]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ canpemm500002.china.huawei.com (7.192.104.244)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Due to an oversight in commit 1b3044e39a89 ("procfs: fix pthread
-cross-thread naming if !PR_DUMPABLE") in switching from REG to NOD,
-chmod operations on /proc/thread-self/comm were no longer blocked as
-they are on almost all other procfs files.
+On 2023/7/13 20:10, Matthew Wilcox wrote:
+> On Thu, Jul 13, 2023 at 07:49:15PM +0800, Miaohe Lin wrote:
+>> Some comments of node_stat_item are not that helpful and even confusing,
+>> so remove them. No functional change intended.
+> 
+> No, that's very useful and important.  Why does it confuse you?
 
-A very similar situation with /proc/self/environ was used to as a root
-exploit a long time ago, but procfs has SB_I_NOEXEC so this is simply a
-correctness issue.
+Thanks for your quick respond.
 
-Ref: https://lwn.net/Articles/191954/
-Ref: 6d76fa58b050 ("Don't allow chmod() on the /proc/<pid>/ files")
-Fixes: 1b3044e39a89 ("procfs: fix pthread cross-thread naming if !PR_DUMPABLE")
-Cc: stable@vger.kernel.org # v4.7+
-Signed-off-by: Aleksa Sarai <cyphar@cyphar.com>
----
- fs/proc/base.c                               | 3 ++-
- tools/testing/selftests/nolibc/nolibc-test.c | 4 ++++
- 2 files changed, 6 insertions(+), 1 deletion(-)
+I just can't figure out what these comments want to tell. Could you help explain these?
 
-diff --git a/fs/proc/base.c b/fs/proc/base.c
-index 05452c3b9872..7394229816f3 100644
---- a/fs/proc/base.c
-+++ b/fs/proc/base.c
-@@ -3583,7 +3583,8 @@ static int proc_tid_comm_permission(struct mnt_idmap *idmap,
- }
- 
- static const struct inode_operations proc_tid_comm_inode_operations = {
--		.permission = proc_tid_comm_permission,
-+		.setattr	= proc_setattr,
-+		.permission	= proc_tid_comm_permission,
- };
- 
- /*
-diff --git a/tools/testing/selftests/nolibc/nolibc-test.c b/tools/testing/selftests/nolibc/nolibc-test.c
-index 486334981e60..08f0969208eb 100644
---- a/tools/testing/selftests/nolibc/nolibc-test.c
-+++ b/tools/testing/selftests/nolibc/nolibc-test.c
-@@ -580,6 +580,10 @@ int run_syscall(int min, int max)
- 		CASE_TEST(chmod_net);         EXPECT_SYSZR(proc, chmod("/proc/self/net", 0555)); break;
- 		CASE_TEST(chmod_self);        EXPECT_SYSER(proc, chmod("/proc/self", 0555), -1, EPERM); break;
- 		CASE_TEST(chown_self);        EXPECT_SYSER(proc, chown("/proc/self", 0, 0), -1, EPERM); break;
-+		CASE_TEST(chmod_self_comm);   EXPECT_SYSER(proc, chmod("/proc/self/comm", 0777), -1, EPERM); break;
-+		CASE_TEST(chmod_tid_comm);    EXPECT_SYSER(proc, chmod("/proc/thread-self/comm", 0777), -1, EPERM); break;
-+		CASE_TEST(chmod_self_environ);EXPECT_SYSER(proc, chmod("/proc/self/environ", 0777), -1, EPERM); break;
-+		CASE_TEST(chmod_tid_environ); EXPECT_SYSER(proc, chmod("/proc/thread-self/environ", 0777), -1, EPERM); break;
- 		CASE_TEST(chroot_root);       EXPECT_SYSZR(euid0, chroot("/")); break;
- 		CASE_TEST(chroot_blah);       EXPECT_SYSER(1, chroot("/proc/self/blah"), -1, ENOENT); break;
- 		CASE_TEST(chroot_exe);        EXPECT_SYSER(proc, chroot("/proc/self/exe"), -1, ENOTDIR); break;
--- 
-2.41.0
+Thanks.
 
