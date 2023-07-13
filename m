@@ -2,197 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26782751838
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 07:36:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B777675183E
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 07:38:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233902AbjGMFgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 01:36:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59502 "EHLO
+        id S233494AbjGMFiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 01:38:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233269AbjGMFgc (ORCPT
+        with ESMTP id S233880AbjGMFhw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 01:36:32 -0400
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on20615.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe5a::615])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1428119
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 22:36:30 -0700 (PDT)
+        Thu, 13 Jul 2023 01:37:52 -0400
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2095.outbound.protection.outlook.com [40.107.96.95])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B025B119;
+        Wed, 12 Jul 2023 22:37:50 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=e/kOgdwz57fToEaTXQhFySRumhQ7FxvagXFAedGQ6xuIj8k6djYmvxQzVJDQN18n0W+yQvGz2lvVFEfhbbjWuELe4KVFUmDxlNu86nzcVxbUB4An5Te7CjpKluut8qpk7rQNATwtlk05wRBjTHl0Pk0y9/Vt1RSio+vqfNa9zHc8yrlQAYr8DPT8mbgKsTF5/bea8Ne5I04KfieCCRGzAYLNthRqBT3VXS61jUfwXUgQoFE8fH9FAJFp2wAvSfg9KzQVIzQkOA9ETyimzw5wkZrJRljTJR1jRaVDBOKhHdhg3t81AgH8O3etU9u10luVFP2RDt9Dd1fMkr1K5kOqSg==
+ b=frAx1imPvdiUcENY5CbfyXPFvZ9KOya+3uydx3LBBkeN/IITF/q5IdWJ70SuRbzF6igVebhgl4MI/O8hGGl8fPLgjjJxSKFB2C7yt4lvQUXPn4GHWqX+ZbN8H2uLwyOEa0oMPwZm2MAyOHBvKAtoAWm/JmdiiRgIBDQUy0rsVwvjH+LgvueyoAiLiLWC3lJk+x6+Ba7DHKMYsVSMouSAtCBsrJZkSjtJN7hCZDGtKbj1t2WLY0BZWV4Y/IM3SNKbaKb0gY3PCIK7jsUHyG89RdoKHJEL6kG9o5/A3xnYALjq0zqtPDHiUIStquIR/WzY+13uKNJ8wb4OybnHRAO3DQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=K7uVdiAIX3LPAdIQNeIKky1S1cviTKUFcyLfIplm5qE=;
- b=aDp4wOmprJIpkL6N+CNmRET8+aroRsNtExqXs3tF41FCOgfkjiUeLNz2hkjpdhAzO2uD+O8ukrv+GWZQ4cHx5IFk/ISmWWXihv3FgLLpvF8RbyyoHsGE56v372GvOpLpO1stRwhL2RIrgGlNt3q424Ve1W2+KybDvyL+/hxMudVZMaadTar9yWSZHKUBgoAid7GQj9Vjm19+LvTjmDYcl49c/38ubhr2056JrqPUdpgN4MZiQaoFj4HtTtxx+95xC6ydZBzq1CKtXUFagrGjjomgnzHVlTxldIH51AQoiezfAAOA221KYCzXumbHGuRVB9sdpmX8OMH1NLZWYZbw0Q==
+ bh=ZFsrFMty1EYeVZfALstKrXwq5InG4/CZ5HnQcFc1UkM=;
+ b=DvKxIZ8ii0101ck0xwG4CRhY938NK6cikb+SmZ86YzW9XpBVKv7sRdMmaDxXj8wLpapVJgKS09LY4KtN+fZSLEh2VZl95fd1KYFfNg0JxRQCC86KEehIUlcwkdGThwHw+iAhwX7ddwA7HNZrMDofAdLCLsRKXxed2n/KZ6HCqXN/hfMeJMCoU9VeydrPVvEdQPlui8qmbTAxYemTQ2SGva6LDJn5ymqamU+Sh/DfauxrArVW2/awXx8Ilj7Bhhu+B8Yxf1DuHScrCh15EP1ljdexdz/Ab0ftnX5ZrfLlOh0kGmswWdHI4Ff0DwQrmFVZzGrineo3/6Q+4rUayGptRQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
+ dkim=pass header.d=corigine.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=K7uVdiAIX3LPAdIQNeIKky1S1cviTKUFcyLfIplm5qE=;
- b=cRjKiznUzqBQL/ceWNhxdOLFHhiRyHEweebITNJXx51AtiUrwEqQPkCvV9b0U39Rpyv1o+nacickykET/CZ2SmsqEs5iBVInRfxcDEf6DQstMeny1qxWDBQ018PhBAcHTs4YuRQXG5Yc06nRtT1klDcR0ZlRiJqfIhyMg0Ekl0A=
-Received: from DM4PR12MB7765.namprd12.prod.outlook.com (2603:10b6:8:102::7) by
- SJ2PR12MB8875.namprd12.prod.outlook.com (2603:10b6:a03:543::13) with
+ bh=ZFsrFMty1EYeVZfALstKrXwq5InG4/CZ5HnQcFc1UkM=;
+ b=Wyc5xK+J+tqMX4WYIA0/ksjbI1qo9Y0LsowzKgaL8+DBh27Jp5XEtEaI5UbCVxMZV+J0wPmBoeW7dFkYVClPhtlCaNel9AtxnnALzzHKm8pGraVH+Wt+fzYSLeF6j7JwDkpSFOboNNxdd9frLjEErTo+oRDjxoDOwdoEyoy67Uk=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=corigine.com;
+Received: from BY3PR13MB4834.namprd13.prod.outlook.com (2603:10b6:a03:36b::10)
+ by PH7PR13MB6171.namprd13.prod.outlook.com (2603:10b6:510:242::18) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6565.30; Thu, 13 Jul
- 2023 05:36:27 +0000
-Received: from DM4PR12MB7765.namprd12.prod.outlook.com
- ([fe80::8d98:f5c2:35b:e9ff]) by DM4PR12MB7765.namprd12.prod.outlook.com
- ([fe80::8d98:f5c2:35b:e9ff%6]) with mapi id 15.20.6565.028; Thu, 13 Jul 2023
- 05:36:26 +0000
-From:   "Gangurde, Abhijit" <abhijit.gangurde@amd.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Gupta, Nipun" <Nipun.Gupta@amd.com>,
-        "Agarwal, Nikhil" <nikhil.agarwal@amd.com>,
-        "Gupta, Puneet (DCG-ENG)" <puneet.gupta@amd.com>,
-        "git (AMD-Xilinx)" <git@amd.com>,
-        "Simek, Michal" <michal.simek@amd.com>,
-        "Jansen Van Vuuren, Pieter" <pieter.jansen-van-vuuren@amd.com>
-Subject: RE: [PATCH 3/4] cdx: create sysfs resource files
-Thread-Topic: [PATCH 3/4] cdx: create sysfs resource files
-Thread-Index: AQHZs/Eml7wv+9Hf8ECAZ85drm3xW6+0mECAgAF+O2CAACfLAIAA7OJA
-Date:   Thu, 13 Jul 2023 05:36:25 +0000
-Message-ID: <DM4PR12MB7765AEF30AA787C246852C0C8F37A@DM4PR12MB7765.namprd12.prod.outlook.com>
-References: <20230711121027.936487-1-abhijit.gangurde@amd.com>
- <20230711121027.936487-4-abhijit.gangurde@amd.com>
- <2023071148-grievance-gulf-0841@gregkh>
- <DM4PR12MB776565FAF9F3797643C9AFA78F36A@DM4PR12MB7765.namprd12.prod.outlook.com>
- <2023071231-drinking-unskilled-3c00@gregkh>
-In-Reply-To: <2023071231-drinking-unskilled-3c00@gregkh>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ActionId=81762e48-3f46-492a-bcb3-6090ed54868e;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ContentBits=0;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Enabled=true;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Method=Standard;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Name=General;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SetDate=2023-07-13T05:18:55Z;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DM4PR12MB7765:EE_|SJ2PR12MB8875:EE_
-x-ms-office365-filtering-correlation-id: e34871f2-5836-4422-9073-08db836319b2
-x-ld-processed: 3dd8961f-e488-4e60-8e11-a82d994e183d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: c7KCL6m0T3LQE0ptQkAmkbypUrg2pmzsD1rfp0940dFTfryg8qLVCKu/RVZ/UtV3y0URbbreHZuIXHXI04jVyU6v4rOlKQaonIiSX8nexna29yB6AjWW/SES9Q+s3Vu1L5iKBB+dvVHLDFoIRL325+5ehSCbas0pMKpZGllk9cgVdjwKorPi7lY5O7f8ZuD7sZ+++69Av+U/Dp8QjSncOI5xp2nWk3yz3K0C6uh2VoJrUoghibp86vTcnyv5RzmjL8EhCcVIlzXI1gbycx13lwBJ2A/yuNaxKJICibeeWcHYmOxLsUZjlfq05ZUe8ce5iO3LimnS77bfk7/VpcEtiZILAkL/C3TMGHSDSphAF59+tWqM4qqPHvYncEFw1KoO1t2yfwTSQMJsrSe4+fpCHjVpDtuXwGIW5X4/AZ0xdb7ru9ETwFk/medadjJpS/ge4oPRxzTO9EaYZPR9FJ0acH0J7woTMeAeNPM2SHRlAJE5BXqopunzfPHRKuBEWbjpCZn2DmygkLk68X/H6jTXOdaKRITpeoHpSn5nlwXrEH7Wx4bMCpHxGHFsw7t5itxLfhFmN770XqoccPGbW6gVFLfN+Qdb5TVmaD+Rz3mekr+gwx/0fJdZxtVRgK5b2w5r
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB7765.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(346002)(136003)(376002)(366004)(396003)(451199021)(186003)(52536014)(26005)(5660300002)(33656002)(6506007)(76116006)(9686003)(6916009)(66446008)(8936002)(2906002)(64756008)(4326008)(83380400001)(41300700001)(316002)(66556008)(66946007)(66476007)(8676002)(478600001)(7696005)(54906003)(71200400001)(55016003)(122000001)(38100700002)(38070700005)(86362001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?WcPta9SvjiKn2mXDY0fXn0iWeqwBk3hLDUUYLQBYtgrH2Mf1jaCRnkGqNdvB?=
- =?us-ascii?Q?sVRQN7GJ8L6+9lTI6eoTkCLBg2Un6HeXquspIq1XCJwn+Dn46XX1e6jmZb4r?=
- =?us-ascii?Q?0P2Y8FcSFu1cJh5fDQJrxmFg0xmb65aHMBZ0w93YScGc6an6wqd25M5+YeYi?=
- =?us-ascii?Q?l9LJNTW5qkfUg1l0uF/A8Vi/gSGkMy8FRSjoNNsTZdFPnPvZKQo4+7jEC5gP?=
- =?us-ascii?Q?BQ/mpaQLl85olCr9c2mH9NkZ4tElo1lABVuQ3kOZ5nQy9kVI3X/0GR0JgTrq?=
- =?us-ascii?Q?7lGsYH3GODCsTK5gaF5s8hhOD4RAkh085BcUBlgwIuJL8XvJIAyVQfgzE0tW?=
- =?us-ascii?Q?mwoKnhUxdLRFo5AOLqUrKx4jk6M1KS2z51K8UjIR8+XsYPpjU8bvNowEHtM5?=
- =?us-ascii?Q?wFVvDzv9NWONDxN95OdH0faGISK57JeSd7MhtEGNsnSGpyKzBesvQoiTl1nQ?=
- =?us-ascii?Q?Zi5YxwGG0CSRAHiYunM2uAf/wHROxtQtYoDi7RA+uIIHt1EJsPoA5wntn5ZN?=
- =?us-ascii?Q?MpQHuiSkmFlq2Ju0aHUfHY8BD+ExjQoaPnp///YhmEqAMArxRV7C5u4TNx8v?=
- =?us-ascii?Q?JjmrAvd7p8iM03kyUroYzZio5am9y1l4LZCEnHFPBDKaXTyCPz4Qq0ibWSHy?=
- =?us-ascii?Q?VpqaixFzQQ9zjC5bkz8HRBVRQNI3CJoaOM0mF4PTNX3OXOmKzO0SYoTLsBe4?=
- =?us-ascii?Q?d0qc9Mp2BOgB218Jo2GbQpnG37DxC6z9DLEgWNh8TVzFL0WaBmFiurG1wLDI?=
- =?us-ascii?Q?aNTikFsrjhjDA6q5XG4c4RMFugiG2+DSbrHnu0VpCnqKLoofsx7Is6e85OHQ?=
- =?us-ascii?Q?I3my+qoy2c2oFwh4f3F8hqfT1E2x2//QV3t8MAmwzlczBLXBG/0DL4JslryE?=
- =?us-ascii?Q?TMJke81f1GYa0K5yrVwn8n7x/ID5fMpO6nF4Y2nWMAHeAQsmXcRAdLPZZDY1?=
- =?us-ascii?Q?Q4iyXOAhkEXhuf90CX1BRktFvxxRnWPAr+EN7SkUhrlOHv+aZgVadDh7Mc7h?=
- =?us-ascii?Q?HCqebTXfObAfhL7xTX3/4z9/dTj6SgcAFz+Y6oHK/UBYHVs77EKN3CcYfYiN?=
- =?us-ascii?Q?qfRtoHwLECAuXY7V8+LDRQyydM+Mx5tyHDLwhgpm43Fhft19vT7gAkLdLbZ/?=
- =?us-ascii?Q?rSz/3fu+d2VJyOT/aA1NpiiJs5Ah4eYTWXxtQM9YCqct5ahStB0mUdI5dnmd?=
- =?us-ascii?Q?YNP+j2YcHm8vWlhhNRoe6dPWDWW3o0hBPCq5JGkg+xkouNNbTtdAjHVHKEiA?=
- =?us-ascii?Q?o2yAL1XJ4MDJUdbmx7sUhBU3lckxldYkr9SKxVLRZl3qSP/mB4w1z6jX59j9?=
- =?us-ascii?Q?cNPmw38ju1B4WPxLtyw1CIQLYaAnmeAWMBGZNx6Q03izum0HSjs8beLtKZpD?=
- =?us-ascii?Q?UiYcqwyVjPBm1hCvIGKPkZ8TICcQ8WnnrqiMrOTg9Pk7+ntFjC6bgUz3QExI?=
- =?us-ascii?Q?FWUxUW2Wf0kvmqgiN8uHQUwO7+Pa6Ihbpfy6Itu7trJ79+yGtaTQUi0eOMS+?=
- =?us-ascii?Q?KhpGkSE4Kut297YGDQzVqTrssSuFCHPas0RMH0SvrErgzfs33Ozg/cAql5tf?=
- =?us-ascii?Q?a49Xm2SJEaJw7og1D80=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6500.36; Thu, 13 Jul
+ 2023 05:37:45 +0000
+Received: from BY3PR13MB4834.namprd13.prod.outlook.com
+ ([fe80::9e79:5a11:b59:4e2e]) by BY3PR13MB4834.namprd13.prod.outlook.com
+ ([fe80::9e79:5a11:b59:4e2e%7]) with mapi id 15.20.6588.022; Thu, 13 Jul 2023
+ 05:37:44 +0000
+Date:   Thu, 13 Jul 2023 06:37:33 +0100
+From:   Simon Horman <simon.horman@corigine.com>
+To:     Devi Priya <quic_devipriy@quicinc.com>
+Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        catalin.marinas@arm.com, will@kernel.org, p.zabel@pengutronix.de,
+        richardcochran@gmail.com, arnd@arndb.de, geert+renesas@glider.be,
+        neil.armstrong@linaro.org, nfraprado@collabora.com,
+        rafal@milecki.pl, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        netdev@vger.kernel.org, quic_saahtoma@quicinc.com
+Subject: Re: [PATCH 4/6] clk: qcom: Add NSS clock Controller driver for
+ IPQ9574
+Message-ID: <ZK+NnWadQcmUDp0A@corigine.com>
+References: <20230711093529.18355-1-quic_devipriy@quicinc.com>
+ <20230711093529.18355-5-quic_devipriy@quicinc.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230711093529.18355-5-quic_devipriy@quicinc.com>
+X-ClientProxiedBy: LO2P123CA0071.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:1::35) To BY3PR13MB4834.namprd13.prod.outlook.com
+ (2603:10b6:a03:36b::10)
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BY3PR13MB4834:EE_|PH7PR13MB6171:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7ccf6407-7c3e-4731-d4d7-08db836347c2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: mVdrHAbGdGOGnakIaHLaV4Hm1OoGa0ZOeayNFI9E8NHEbo/8GuVl7vpN18ncNDI92ddA47yFDC0ZS9MZ4lcGSkMe+txZenaPwsirENThB2lGt2Y+ZifEG+/5Cmt4PK5IIahtRKIcMzc/IQZClSyqoILFn6TYDcPo+MYSo1aK7rXLlcLbJWu7Dp0dfCI74+tXwk0YeRYd91tApLuqqNXSN0s9vzDPVs2zHZZvAEkQAa5iBZLaFmMY6AjxO3Xq/yQ8vwe1uWWxWEaLZJvNwLGnAO2fENnerhquJgAbdGyhom0ZJcKZ83VVfu+3qNn9QclWTOfSrPK59XSDBJU2UcAqlsy+vEGRpFEojfxFzG9ueIGbSNxLmQpa6RyO/lGPK+bHSFqFxB6pxNmL2mBJMyndxadM52uZ5TNOrNiHUwpWf9w7ZDbKIpOgyUfNnzU1tr2LPP5oC5t6xL3pTJmFZRS7oPiomtlOPpsyjcDMmAZ8UlzoKuZ51R1Px+HYTK5Eh6kIFMQyvCFX2N31DIxCFImpe3CQ6U4JW8QIdI5UpfwBIkJ15accS1Qadqo0445pADfvXSQoGi5WJsotCQ8P8RR5QcCNbHzoH2QPQkWCCpJQtOsfaN1trR+GNJ4dOFKgWQ21QbE21GLC1U5sZNXVjwflYkzp43j/S039fYQcpHcjHJM=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY3PR13MB4834.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(346002)(396003)(39840400004)(376002)(366004)(451199021)(36756003)(2616005)(83380400001)(38100700002)(86362001)(6486002)(6666004)(8936002)(44832011)(26005)(7416002)(6506007)(6512007)(8676002)(478600001)(6916009)(316002)(5660300002)(186003)(2906002)(66476007)(66556008)(66946007)(4326008)(41300700001)(67856001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?dVhOgQaRowTAlgMATWlbBh9nr38/GyXbM1+x/Xhrq05oajMqOC+LWbSMZ3pF?=
+ =?us-ascii?Q?OOLFdJ2d0lp3IsQ2u/KladeLQA61k8Cnm58vUSamBBB7ai4pAZgM6QBzKy6N?=
+ =?us-ascii?Q?XyP4W1Fotf2XySk2NLfT1sw3zEASOIb3mYBjFmmKm0MZem9tOFT/QWx0ER8l?=
+ =?us-ascii?Q?j1gjVoBopNbTC2oT2qunqNSTiJ4F27pVl6xZ3tlBRNF5znLB4kbR03lRnNgw?=
+ =?us-ascii?Q?M0s+/+55A0+i8CULZuzhK93wKkOZmzE/8G3uUlDVyWdQagarKqI2QKdcKbte?=
+ =?us-ascii?Q?4X3jzkClk+5tLZ2jZv1fDrd4/aNndgmVZy+Oi32GJpndY7AlNbDvqAEteGV/?=
+ =?us-ascii?Q?JWSQKbObCHsXOvIqEjr7n2V7UUtTwKXnbjupmbALCuSV1pI1uwefQ83IxpCe?=
+ =?us-ascii?Q?I4rE1sfMb/kvzsHLzoZkygvEgTfy25EwyDJL2k+3EmTa+Q8e+2MBHd6zVMMi?=
+ =?us-ascii?Q?qTEn0qlaoYp1zu4FWyYEcl9VQGLE9Dt9v12w/ynu1yd4mEwmBm3vndsxVS8w?=
+ =?us-ascii?Q?XqAmLTY2O9GkD5mW6JR4FcOkj/9a/f4K5SxesMBFeFcoorbZH28cVaG0Esy6?=
+ =?us-ascii?Q?UFA7/2GwlAOsXMVOPKCUR9YFa346KnzhA2OYFjVoliQhpyZ5DbddYkit6PiL?=
+ =?us-ascii?Q?zKMiE73OMWC1qzme+cN3EFhuL9MufMoUI+QVmMcZ5cHjdoYN75Xv+9MTP8GY?=
+ =?us-ascii?Q?JTZPVqfddLMLJDaPfZjs4qQnrHAylu4Uvxg8hAPQSTmw/kwXzKueeTvxVg9B?=
+ =?us-ascii?Q?C5sXCuZ1zlQOmCxQzoyXfr67+/PqyTU9KH/9CPZkNPba9275/8qGhaeKGE6Q?=
+ =?us-ascii?Q?QHQ8oYP1dNVuXurBkjMqfACMaxKLMI0CA481pl9NynGZTmGHLWKUoSeUXZ4W?=
+ =?us-ascii?Q?uePnAE1EcR1cXGodi8fsK3dwwr82nmL03V0BF0XeqP2qwY5yz+nlVUdp4k6Q?=
+ =?us-ascii?Q?ticy5MfF+6ETd8Kf0N3XnA6DPmKQP7lQBjPhYWPtlXsI4qs9ACG8ZIfriuQ/?=
+ =?us-ascii?Q?yYh4RtZIgPMkIQaZJlQ4JyKUQh7BbxelLJpGPXwTHTB9lGLh77bIQM7euK1S?=
+ =?us-ascii?Q?f8TRazBYl+4G9k+O1kCcJ3wIQi005ZHU7fGGPNdB0rkYT4dh1vaX2C1Bdpmt?=
+ =?us-ascii?Q?33rbmuUxTGWCrIPNJem2yIgn0zzEriPrnhqETwHVW/CHtFzUS9Wbwa2m1KID?=
+ =?us-ascii?Q?KuxQj2uMsu+ks/Ajv746xOv0h4itAG4dl1raaIqOoBoFX9B1FnkMl7Xm1lny?=
+ =?us-ascii?Q?kUAMikGIj82Kw7bMyluKuwym9637MHVWDT9uNjSXWzrUD5k39VEhisAYItWV?=
+ =?us-ascii?Q?xCcFJbnoTZ43a82TlMRXMPVMcyD+iL4sglL91Yjifx1TUPB6832sfe06/xiu?=
+ =?us-ascii?Q?XJ5FhcDFPqIrFjZFSQK4q9BtWM8D39e4V0zHycKLd+r8GvpWIXyFe4Y9ef9y?=
+ =?us-ascii?Q?/3gzD1injJLa7lIm8cC71ihaYsf0DPguD4hX11S0RTwose5VS3zoA4GpxJDV?=
+ =?us-ascii?Q?rJEPShfp3okAJOjoucllZs/fyshCyC9kbn5GpU2/UOS9C3Hky9vRumWr03f3?=
+ =?us-ascii?Q?3Sp/JkGUaRGv2m8gbHCkEnE7tiRZnXryFNfvAd9zmTUoEGJ5lKhIYwnLSjFb?=
+ =?us-ascii?Q?Ow=3D=3D?=
+X-OriginatorOrg: corigine.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7ccf6407-7c3e-4731-d4d7-08db836347c2
+X-MS-Exchange-CrossTenant-AuthSource: BY3PR13MB4834.namprd13.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB7765.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e34871f2-5836-4422-9073-08db836319b2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Jul 2023 05:36:25.8665
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2023 05:37:44.3228
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: BliBzrAgYm7xwJRbykZwFohQ0kchJUfMEH90iwL38yV/8ip/lVhM4+bPPNSBkNDzh6kfmD7KjG+D6TztlpDJqA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8875
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: E9wooerfjW3c7RLA87xyX3Kk95ZCOqTOTE2JZM2/6Y9gKrgKgWd6qGaDGzPW2y5mViKhwnJathIzdF5D+dzVlBXHkn3Qmk/3xZvkFT1f2O8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR13MB6171
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[AMD Official Use Only - General]
+On Tue, Jul 11, 2023 at 03:05:27PM +0530, Devi Priya wrote:
+> Add Networking Sub System Clock Controller(NSSCC) driver for ipq9574 based
+> devices.
+> 
+> Signed-off-by: Devi Priya <quic_devipriy@quicinc.com>
 
-> > > > Resource files provides the basic MMIO regions info to the
-> > > > user-space. Also, resources<x> devices can be used to mmap the
-> > > > MMIO regions in the user-space.
-> > > >
-> > > > Co-developed-by: Puneet Gupta <puneet.gupta@amd.com>
-> > > > Signed-off-by: Puneet Gupta <puneet.gupta@amd.com>
-> > > > Co-developed-by: Nipun Gupta <nipun.gupta@amd.com>
-> > > > Signed-off-by: Nipun Gupta <nipun.gupta@amd.com>
-> > > > Signed-off-by: Abhijit Gangurde <abhijit.gangurde@amd.com>
-> > > > Reviewed-by: Pieter Jansen van Vuuren <pieter.jansen-van-
-> > > vuuren@amd.com>
-> > > > Tested-by: Nikhil Agarwal <nikhil.agarwal@amd.com>
-> > > > ---
-> > > >  Documentation/ABI/testing/sysfs-bus-cdx |  15 +++
-> > > >  drivers/cdx/cdx.c                       | 139 ++++++++++++++++++++=
-+++-
-> > > >  include/linux/cdx/cdx_bus.h             |  10 ++
-> > > >  3 files changed, 163 insertions(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/Documentation/ABI/testing/sysfs-bus-cdx
-> > > b/Documentation/ABI/testing/sysfs-bus-cdx
-> > > > index d9e00058471d..6ca47b6442ce 100644
-> > > > --- a/Documentation/ABI/testing/sysfs-bus-cdx
-> > > > +++ b/Documentation/ABI/testing/sysfs-bus-cdx
-> > > > @@ -76,3 +76,18 @@ Description:
-> > > >             For example::
-> > > >
-> > > >               # echo 1 > /sys/bus/cdx/devices/.../remove
-> > > > +
-> > > > +What:              /sys/bus/cdx/devices/.../resource
-> > > > +Date:              July 2023
-> > > > +Contact:   puneet.gupta@amd.com
-> > > > +Description:
-> > > > +           The resource file contains host addresses of CDX device
-> > > > +           resources. Each line of the resource file describes a r=
-egion
-> > > > +           with start, end, and flag fields.
-> > >
-> > > If you documented what this file looked like here, it would be obviou=
-s
-> > > that this is not an acceptable sysfs file in any sense of the word.
-> > >
-> > > Please do so, and then fix the patch to not do that at all.
-> >
-> > Similar interface exist for pci and we intended to keep it same way. Co=
-uld you
-> please elaborate on this.
-> >
-> > # cat /sys/bus/pci/devices/0000\:01\:00.0/resource
-> > 0x0000000092100000 0x00000000921fffff 0x000000000014220c
-> > 0x0000000000000000 0x0000000000000000 0x0000000000000000
->
-> Please don't propagate incorrect decisions in the past.
->
-> Why do you need all of these "resources" in userspace?  What tool is
-> going to read and parse them and do something with them?
->
-> This really violates the "one value per file" sysfs rule, you are going
-> to have to have a huge reason why this is not applicable here, AND you
-> are going to have to document it very very well and get everyone to
-> agree with it.
+...
 
-We don't have any strong reason apart from that this is being used by some
-test and debug applications. Will drop this one now and revisit later by
-complying to the specifications.
+> +static const struct qcom_reset_map nss_cc_ipq9574_resets[] = {
+> +	[NSS_CC_CE_BCR] = { 0x28400, 0 },
+> +	[NSS_CC_CLC_BCR] = { 0x28600, 0 },
+> +	[NSS_CC_EIP197_BCR] = { 0x16004, 0 },
+> +	[NSS_CC_HAQ_BCR] = { 0x28300, 0 },
+> +	[NSS_CC_IMEM_BCR] = { 0xe004, 0 },
+> +	[NSS_CC_MAC_BCR] = { 0x28100, 0 },
+> +	[NSS_CC_PPE_BCR] = { 0x28200, 0 },
+> +	[NSS_CC_UBI_BCR] = { 0x28700, 0 },
+> +	[NSS_CC_UNIPHY_BCR] = { 0x28900, 0 },
+> +	[UBI3_CLKRST_CLAMP_ENABLE] = { 0x28A04, 9 },
+> +	[UBI3_CORE_CLAMP_ENABLE] = { 0x28A04, 8 },
+> +	[UBI2_CLKRST_CLAMP_ENABLE] = { 0x28A04, 7 },
+> +	[UBI2_CORE_CLAMP_ENABLE] = { 0x28A04, 6 },
+> +	[UBI1_CLKRST_CLAMP_ENABLE] = { 0x28A04, 5 },
+> +	[UBI1_CORE_CLAMP_ENABLE] = { 0x28A04, 4 },
+> +	[UBI0_CLKRST_CLAMP_ENABLE] = { 0x28A04, 3 },
+> +	[UBI0_CORE_CLAMP_ENABLE] = { 0x28A04, 2 },
+> +	[NSSNOC_NSS_CSR_ARES] = { 0x28A04, 1 },
+> +	[NSS_CSR_ARES]  { 0x28A04, 0 },
 
-Thanks,
-Abhijit
+Hi Devi,
+
+There appears to be an '=' missing in the line above.
+
+...
