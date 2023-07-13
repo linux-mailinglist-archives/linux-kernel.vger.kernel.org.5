@@ -2,80 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 091F57519CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 09:23:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76D357519CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 09:23:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234327AbjGMHXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 03:23:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44972 "EHLO
+        id S234284AbjGMHX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 03:23:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234285AbjGMHW7 (ORCPT
+        with ESMTP id S234292AbjGMHXM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 03:22:59 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61760213B
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 00:22:57 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3fbc59de0e2so2842435e9.3
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 00:22:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689232976; x=1691824976;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lFUQi6OnF9bs8nJtTX/TRFzCi1Y/q9xnjKXZLWVR1u8=;
-        b=M5zXkBkaxgT+Hex0mKeW8oex+TyLNEeNFdX5fTrR6UyMnTEJZxJqFFvQqQFH9Ct0Z4
-         tiQFbeeMEPR9Yr11FFGwP4iZTQCVsMn21YbtXYSlrGlqdLQhBsKNDALTP3p8dLrbCi+v
-         ZHxPxfF1em4N6bsUpkAhH3kA6xydKv6Q9TIoITSSwzUtF+sjiOe+Z5DpdbAj7EcdSrEA
-         PXNsL84UXIgjumjZXLazeFYanKJkfrnsSDaLbutHv4xi4Cl6pHyk0tLuGegEz2fc9fVn
-         FIDsFqeF4L7FU4roCQ4a2QJXGkhxZci//P8GL9t8ihrtUF69MCxHIGTfM5CfW4IhzmdC
-         p1Eg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689232976; x=1691824976;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lFUQi6OnF9bs8nJtTX/TRFzCi1Y/q9xnjKXZLWVR1u8=;
-        b=gAZu5nSXdi5c5n2u/0dncd4oa//8MLoWrV3vFbj6cL1T39fpv98xZCCjNge8rNMbeg
-         yn06DyMXjT7WuUU+6e4b77fyvYm3vGyUopstHc8OSMh+WEP9oREUirFnceSe0SEYMSBl
-         ldUJ79Vydm7BAYDE/Pbosr3dyS3JFFSwB24l0vniczYi7LMN0KuBqYRvzC1ArAvHfuH8
-         wdKJtn7m6SLCROa+VCoIZNnVlVe8BpCpl7PDlJ3TYzn5QwV7NMLpUPDWZt20Oss5zvQG
-         GkYsVqgN4n0PXR5FNkR/Zn4TJqOptDxcJ/J9GLZw6lqk8i8K4YDoJCYybM0/eqxYsyhg
-         OoVg==
-X-Gm-Message-State: ABy/qLaR5JKvh3CbkBK17lnyHawUbqJwz5Tj0qnbEB0ZGRLtXhZ5GLJj
-        aOMgqSNaPkj+f8gsnQafATyw8A==
-X-Google-Smtp-Source: APBJJlFnSB8t5HOJ82BbWQ3NZaaQFwrdEwGuewAhihdDKEuV+JMDlgd5cfplq6KiK0mtmi1RpYa0sQ==
-X-Received: by 2002:a5d:684a:0:b0:2ce:d84d:388f with SMTP id o10-20020a5d684a000000b002ced84d388fmr726600wrw.40.1689232975910;
-        Thu, 13 Jul 2023 00:22:55 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id w16-20020a5d6810000000b003144b50034esm7071384wru.110.2023.07.13.00.22.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Jul 2023 00:22:55 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Rob Herring <robh@kernel.org>
-Subject: [RESEND PATCH v2 4/4] dt-bindings: remoteproc: qcom,adsp: bring back firmware-name
-Date:   Thu, 13 Jul 2023 09:22:42 +0200
-Message-Id: <20230713072242.11268-5-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230713072242.11268-1-krzysztof.kozlowski@linaro.org>
-References: <20230713072242.11268-1-krzysztof.kozlowski@linaro.org>
+        Thu, 13 Jul 2023 03:23:12 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C47841FD7;
+        Thu, 13 Jul 2023 00:23:06 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5B27761A44;
+        Thu, 13 Jul 2023 07:23:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D45F4C433CC;
+        Thu, 13 Jul 2023 07:22:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689232985;
+        bh=34iBZBeM9o/lETNpx3DmFjAaTAaoREDVy3VCozGSLL0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=h7Xv9wZXb46K03sC3gymRa4ZNwBcdEB+sTKIrCPeNRwJUYF3u/8Dlt2vhH5lVYFDT
+         0VVchOXpgdGrkLgQklYtLV+pLYTLz5vC89tb7vnTTJjVVl5ZV1yGEayqaaAP1RAiqj
+         7ERJE1MIYKbWRGAW9i9c+U3va4a+tTHAI3/oBwAST8WNJaEuf54EAQ+ohjEkCY2WHg
+         Dw+bih96XyVUYfIRXfWIy2LBCmgtFMvfOm6F3sB8pcHO68R0TjnLKvebcBq+LsF6R8
+         a5W2aStzb5LaM31Eim7l91VcfVj5ODfaoo7UThsFaWrZmanF608D8SvgyQECsApa3G
+         x9ylxg67JQB+A==
+Date:   Thu, 13 Jul 2023 12:52:49 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Manivannan Sadhasivam <mani@kernel.org>,
+        Mrinmay Sarkar <quic_msarkar@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, konrad.dybcio@linaro.org,
+        quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com,
+        quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-phy@lists.infradead.org
+Subject: Re: [PATCH v1 0/6] arm64: qcom: sa8775p: add support for PCIe
+Message-ID: <20230713072249.GG3047@thinkpad>
+References: <1688545032-17748-1-git-send-email-quic_msarkar@quicinc.com>
+ <20230705084606.GF11854@thinkpad>
+ <a450e2e8-307d-49e9-d76d-de397b801a96@linaro.org>
+ <20230706111218.GA4808@thinkpad>
+ <878103c6-0dc3-164b-92ce-17ec4f87bff6@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+In-Reply-To: <878103c6-0dc3-164b-92ce-17ec4f87bff6@linaro.org>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,37 +73,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The firmware-name property was moved from common qcom,pas-common.yaml
-binding to each device-specific schema, but the qcom,adsp.yaml was not
-updated.
+On Thu, Jul 06, 2023 at 02:09:09PM +0200, Krzysztof Kozlowski wrote:
+> On 06/07/2023 13:12, Manivannan Sadhasivam wrote:
+> >>> Please note that the dts patches should come before driver patches.
+> >>>
+> >>
+> >> Why? DTS is always independent thus usually put at the end of patchset
+> >> or better separate. It is the first time I hear that DTS should be
+> >> before driver.
+> >>
+> > 
+> > This is what I was suggested by Rob during my initial days and I've been
+> > following this pattern since then. If that's not the case, I have no issues.
+> 
+> I really doubt Rob ever suggested that. He probably suggested that
+> bindings must come before user, but not the DTS.
+> 
 
-Fixes: cee616c68846 ("dt-bindings: remoteproc: qcom: adsp: move memory-region and firmware-name out of pas-common")
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Reviewed-by: Rob Herring <robh@kernel.org>
+Maybe I misunderstood it to be both bindings and dts. Thanks for clarifying.
 
----
+- Mani
 
-Changes since v1:
-1. Use maxItems:1 (Rob)
----
- Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml | 4 ++++
- 1 file changed, 4 insertions(+)
+> Best regards,
+> Krzysztof
+> 
 
-diff --git a/Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml b/Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml
-index b571efe6d550..2edadba91dfc 100644
---- a/Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml
-+++ b/Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml
-@@ -44,6 +44,10 @@ properties:
-     maxItems: 1
-     description: Reference to the reserved-memory for the Hexagon core
- 
-+  firmware-name:
-+    maxItems: 1
-+    description: Firmware name for the Hexagon core
-+
- required:
-   - compatible
-   - memory-region
 -- 
-2.34.1
-
+மணிவண்ணன் சதாசிவம்
