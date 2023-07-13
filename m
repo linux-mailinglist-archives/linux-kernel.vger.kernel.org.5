@@ -2,73 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32AC3751CE8
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 11:12:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7140B751CEA
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 11:13:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234183AbjGMJM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 05:12:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38010 "EHLO
+        id S234083AbjGMJMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 05:12:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233103AbjGMJMF (ORCPT
+        with ESMTP id S232461AbjGMJMa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 05:12:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A2732D7C
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 02:10:55 -0700 (PDT)
+        Thu, 13 Jul 2023 05:12:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 492CB2D46
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 02:11:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689239455;
+        s=mimecast20190719; t=1689239482;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=4W0yrN0Cztq3pwQ9ywn2rhI9G08X2g+8/njUIA/yh2o=;
-        b=VC1P3C6YZufs9jt/ZL3xTxI/3Qx98wtnMgyCQ3zubNJ0VDaNnw2RbFmrXfzHCajEYlAqXC
-        cRyzf0g3gJHugjf5qXeEua+Ajz2Zu6YvBCrYNPpce3U7s4/EfXfoAj5rz3JIdhSdaJ+e0p
-        NfoLazb6GdlUlfxQQM2h8qclW9IV3jw=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=wNbtyQ76nBuBqvvqrZSc6orqqyUgVCDr6u2ACe6GE7E=;
+        b=PNQ3r49etue1L1nWkcmA32Wgbtrrx3V3ighyRlKSQ+IzZODV+sQajlbkTB39awLRfv3Y+F
+        c6pHL/3lopQZxe8AvtiMQjdHa1AWAzrLZ6uYZWrPhRQpdLItdRd7ymlM3la/EQJEYysbCP
+        rTUP2GkDCo2gbCxdm558Es4ATeHzXfw=
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
+ [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-237-pnO3auLYOgCFyP5R0sCFwQ-1; Thu, 13 Jul 2023 05:10:53 -0400
-X-MC-Unique: pnO3auLYOgCFyP5R0sCFwQ-1
-Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2b6c4c018aaso1232671fa.1
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 02:10:53 -0700 (PDT)
+ us-mta-260-0J4GCrBoPreNU32yZttXzw-1; Thu, 13 Jul 2023 05:11:18 -0400
+X-MC-Unique: 0J4GCrBoPreNU32yZttXzw-1
+Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-2b6a4dba654so895801fa.1
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 02:11:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689239452; x=1689844252;
+        d=1e100.net; s=20221208; t=1689239476; x=1691831476;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4W0yrN0Cztq3pwQ9ywn2rhI9G08X2g+8/njUIA/yh2o=;
-        b=T7j7wYiG3MeTeqTo2TDXZL4lmQ4SjH2VK4QqDG7VsZtXKcBwUr6vVw3qeU+vwAPaIQ
-         Q2QAYWrlaQxUn4v2rDeUaqdZf0iK8us4Iqhk/CMlxTxKQ4nnx8mZpAi1j0RTuU301T6V
-         83Fv5+gFb9g1CwTJUnnAUoMODv+Hk7j0lREev/trNBmAWznFo11tx9GxSEYwaDlz6zKr
-         opdavQD+15DVfMIu2VRz1SKjIjZl9b/53YSsrmcxuIq8+FiYmKJp219H0j1B65jXuOwB
-         k/iJozTsmY9Z+jwhWen+C+y2Cwi9V+mXEfJS1W1vO/lgGe0uHD1so8JcUv77URYb1riL
-         VHxg==
-X-Gm-Message-State: ABy/qLbcvoh+sFcqglhVIH08f6zIJVZxdhVmpNdrLR4tvmyXllUyqY9H
-        ynCF1FNwt9O+9jaz0vYVEUktpq2olsiHO5eD4z5zrjWFzWzL9njhNSDxwDPgmzKO90tL0Ix/Wft
-        2e7jgw4zOJs7rXkr/rGWqL6L1vUDFESFvMu8zJ1F+
-X-Received: by 2002:a05:651c:1a29:b0:2b7:3f55:9cb9 with SMTP id by41-20020a05651c1a2900b002b73f559cb9mr846830ljb.5.1689239452445;
-        Thu, 13 Jul 2023 02:10:52 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFTnbNU5Ab6EvMvIcED79oNwfHqmFNcsSHM5EzDOSFj8yh2O3lsaqjAzj2RLA9IWeT11AKCZtA9u/lc82jnsZY=
-X-Received: by 2002:a05:651c:1a29:b0:2b7:3f55:9cb9 with SMTP id
- by41-20020a05651c1a2900b002b73f559cb9mr846805ljb.5.1689239452111; Thu, 13 Jul
- 2023 02:10:52 -0700 (PDT)
+        bh=wNbtyQ76nBuBqvvqrZSc6orqqyUgVCDr6u2ACe6GE7E=;
+        b=FX3NKp6PaZ/JIb/bpc3Tag3bDzUSILHhG8RS5eTNKWxgS76ZihcqFv139sMw3RCFze
+         D4B8+3vjunWS+7o+VuHqrmddPEVsCROwPL9auf+rIgBhs/FQV9ul8S+kO7e8J56moOC+
+         MnxKt92ug4LxvEvB80icQ4HzkjX7RXV+lv45TcR1xLq4hVd4bFibdvRWO9tOCW2u+dCv
+         V1D2VZ/NFUSaBkR8nfgIsxaHKWxMR5DeWg0dpnXU7j/CS+BU8ZGyxclaWRsTAJmJbUvr
+         AUS3VHA0SPH/5yVWFsXccafPlFIA5DQbj9ZOKXkXJbIpnOBfAzdxWYT5euzkyEOZEVjS
+         abXw==
+X-Gm-Message-State: ABy/qLYjEvly/QziSQJSzeU5ocglJjFdb7f96p4EHjh1VWy4k5/FMSg0
+        1RjrmYsAWxPq2tTLO2iyAhTHMKxEXxAqN6HfhUO93fKm8ZC5G+wS9Xns0n8UN0FUnbPTH4bh556
+        YMfrB+7ysLW4JeiKLJPTM7kmvLsnNsf2mPaQaVy49
+X-Received: by 2002:a2e:be10:0:b0:2b7:2ca0:989a with SMTP id z16-20020a2ebe10000000b002b72ca0989amr920198ljq.5.1689239476623;
+        Thu, 13 Jul 2023 02:11:16 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlFw0DuOdoAUA01Xd1FeaBlxKLaI+Rdgpiyi8L3qD/rUV/T0VD7an8HsyTVLGisDJzNOpGN7qGOhAvSEwkaj3i8=
+X-Received: by 2002:a2e:be10:0:b0:2b7:2ca0:989a with SMTP id
+ z16-20020a2ebe10000000b002b72ca0989amr920186ljq.5.1689239476330; Thu, 13 Jul
+ 2023 02:11:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230710072012.54076-1-xujianghui@cdjrlc.com> <0b4bfadaf22077b14fe579c1935058ff@208suo.com>
-In-Reply-To: <0b4bfadaf22077b14fe579c1935058ff@208suo.com>
+References: <20230710032131.52747-1-xujianghui@cdjrlc.com> <decd9e6f68cbebda22d6648fa7b9b737@208suo.com>
+In-Reply-To: <decd9e6f68cbebda22d6648fa7b9b737@208suo.com>
 From:   Karol Herbst <kherbst@redhat.com>
-Date:   Thu, 13 Jul 2023 11:10:41 +0200
-Message-ID: <CACO55ttEnpLTJspqb23RaqNZHms3TM030hZZcFVsBojBskLnDA@mail.gmail.com>
-Subject: Re: [PATCH] drm/nouveau/pci: ERROR: "foo * bar" should be "foo *bar"
+Date:   Thu, 13 Jul 2023 11:11:05 +0200
+Message-ID: <CACO55tut_20kwHC4-0fkkyGrh0sLrRO2e6TVCuUL_q7vuz+tPw@mail.gmail.com>
+Subject: Re: [PATCH] drm/nouveau/nvkm: do not use assignment in if condition
 To:     sunran001@208suo.com
 Cc:     airlied@gmail.com, daniel@ffwll.ch, nouveau@lists.freedesktop.org,
         linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -77,26 +78,32 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Mon, Jul 10, 2023 at 9:23=E2=80=AFAM <sunran001@208suo.com> wrote:
 >
-> Signed-off-by: Ran Sun <sunran001@208suo.com>
+> Assignments in if condition are less readable and error-prone.  Fixes
+> also checkpatch warning:
+>
+> ERROR: do not use assignment in if condition
+>
+> Signed-off-by:Ran Sun <sunran001@208suo.com>
 > ---
->   drivers/gpu/drm/nouveau/nvkm/subdev/pci/gk104.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+>   drivers/gpu/drm/nouveau/nvkm/subdev/i2c/base.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
 >
-> diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/pci/gk104.c
-> b/drivers/gpu/drm/nouveau/nvkm/subdev/pci/gk104.c
-> index 6be87ecffc89..bc51987c5f5f 100644
-> --- a/drivers/gpu/drm/nouveau/nvkm/subdev/pci/gk104.c
-> +++ b/drivers/gpu/drm/nouveau/nvkm/subdev/pci/gk104.c
-> @@ -147,7 +147,7 @@ gk104_pcie_set_link_speed(struct nvkm_pci *pci, enum
-> nvkm_pcie_speed speed)
->   }
+> diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/i2c/base.c
+> b/drivers/gpu/drm/nouveau/nvkm/subdev/i2c/base.c
+> index 976539de4220..054fa42f1d04 100644
+> --- a/drivers/gpu/drm/nouveau/nvkm/subdev/i2c/base.c
+> +++ b/drivers/gpu/drm/nouveau/nvkm/subdev/i2c/base.c
+> @@ -286,7 +286,8 @@ nvkm_i2c_new_(const struct nvkm_i2c_func *func,
+> struct nvkm_device *device,
 >
->   static int
-> -gk104_pcie_init(struct nvkm_pci * pci)
-> +gk104_pcie_init(struct nvkm_pci *pci)
->   {
->       enum nvkm_pcie_speed lnkctl_speed, max_speed, cap_speed;
->       struct nvkm_subdev *subdev =3D &pci->subdev;
+>           if (ccbE.share !=3D DCB_I2C_UNUSED) {
+>               const int id =3D NVKM_I2C_PAD_HYBRID(ccbE.share);
+> -            if (!(pad =3D nvkm_i2c_pad_find(i2c, id)))
+> +            pad =3D nvkm_i2c_pad_find(i2c, id);
+> +            if (!pad)
+>                   ret =3D func->pad_s_new(i2c, id, &pad);
+>               else
+>                   ret =3D 0;
 >
 
 Reviewed-by: Karol Herbst <kherbst@redhat.com>
