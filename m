@@ -2,218 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25640752D32
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 00:49:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4187B752D35
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 00:50:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233189AbjGMWtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 18:49:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40434 "EHLO
+        id S233269AbjGMWuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 18:50:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232564AbjGMWtT (ORCPT
+        with ESMTP id S232564AbjGMWuC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 18:49:19 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C5D02D46
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 15:49:17 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-51ddbf83ff9so5267a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 15:49:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689288556; x=1691880556;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MzcnyZs6D3jZP1/90Em2wdIP94ZrD+KbkxYDRuLwWJE=;
-        b=YbSBSKEGuVEqFb+8L1xB90bbx9PAx1IFGTDlwilLvm19IfKutZMrVwaN1yOaCXRzw5
-         MZUQjJpEWVZM0DR2m5AxleVdTk2ymAh4HpgWCiWdwfTjEVXF/OpyyFu9SpllQ9lrpzdT
-         xyz9Ijr8jA8PvvDfPo4oQpv5DJikjRnpxtuIZp0ll1yB/cHvfRQFiMg+OlFSVqnBDCy6
-         XZDThvtyAqCF75ID6U6JTpxG0+cS19CczfMsQ91gOY/M4t0H+rGN+4TvSNyxeinNxePx
-         0VjKQaZWz00m4npcN3skY9OJrbHcetRubpJbVaAiBp269Hce49FsIai61vXQji+qF6jZ
-         yGAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689288556; x=1691880556;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MzcnyZs6D3jZP1/90Em2wdIP94ZrD+KbkxYDRuLwWJE=;
-        b=cskGDF6FwjbOjHNyu0vP4/jlTr9DQ9V0KEjG/EvPKGf2N+3In8GW8aqDcj1+DiWH06
-         IFyRkhu76R/dwyIvArh67KOYGXykCrDgKa0xk8O00kFwnO+xdgrahXk4cml1NKer9DM+
-         elE2EdRUE3493uUJrqIGMdtBcIKIB3FpLfiD4kzHalRNC+07v5Wa1NmWl57bxlmBOqgL
-         nwaHI6KW+PLGu+PkLNVYvER5I+d5yWq54MC+IE+QmrqU5A8kU6F9bIzrHIoq8AKS9kXq
-         Qtb/qHcJ4b7xErnBiQi+bIS2alkOcVVEGwB+PSNp9C2wEADb5gruszkZO+fUvau7QNcP
-         A8YA==
-X-Gm-Message-State: ABy/qLY37WGIxQYs8Pgco8PFjORI4S90XPr9XrwRKMxiE1oMndE98IuS
-        c22gI98a+bgCZVGVHmcqtQVaYlNyOThmFGWf79cg0g==
-X-Google-Smtp-Source: APBJJlGqtqJFAuAxh5MPiLeVS1ew+4dt62Lqbmv37bwCVq092aGdah1wT/JBThvQYfrLGxPjsNzHlRJYNInGjgUPRpw=
-X-Received: by 2002:a50:9ea7:0:b0:514:92e4:ab9f with SMTP id
- a36-20020a509ea7000000b0051492e4ab9fmr297828edf.7.1689288555839; Thu, 13 Jul
- 2023 15:49:15 -0700 (PDT)
+        Thu, 13 Jul 2023 18:50:02 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63DDF272E;
+        Thu, 13 Jul 2023 15:50:01 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E6CB261ACC;
+        Thu, 13 Jul 2023 22:50:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44269C433C8;
+        Thu, 13 Jul 2023 22:50:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689288600;
+        bh=Gh29Wb2aqyt/xe1iph8cTszJeDxWE0Roznnq+SAGWZ8=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=VaRXLHYhtTyuD9XWDz27Rl2aO8zPRZskUvzqfJAF92vLzrkbA1Y5NUjSzFLaXNttT
+         Mq4/87sYRaDsoqYCB1UmD0lTJcgyIqf4hPkUNLIjRtWgnpKIUa0UlBohIVxoT/5OYe
+         LPI8SNUu5DQHvwaqvAeK9H//rn3lqEkzS3gYi6r7HMk5ldyULLR1XZ+1krSuvNdKrc
+         /Lh8hvIfm6qIJxaosEZ+BIjy/ii59ZQDKRYKds0z6X/Yk8YqaSViWfG2kbymfaijg4
+         WMEA8atAS8c9/yBHT2rmaq+hW5LZOgbfTHrrjdMreRm4OB5BelVlAvW9q8PaLKI/SR
+         JcMinMyrv3cSQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id D646ECE009E; Thu, 13 Jul 2023 15:49:59 -0700 (PDT)
+Date:   Thu, 13 Jul 2023 15:49:59 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Sandeep Dhavale <dhavale@google.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        Gao Xiang <hsiangkao@linux.alibaba.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-erofs@lists.ozlabs.org, xiang@kernel.org,
+        Will Shiu <Will.Shiu@mediatek.com>, kernel-team@android.com,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH v1] rcu: Fix and improve RCU read lock checks when
+ !CONFIG_DEBUG_LOCK_ALLOC
+Message-ID: <32b8c9d5-37da-4508-b524-fc0fd326c432@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <f124e041-6a82-2069-975c-4f393e5c4137@linux.alibaba.com>
+ <87292a44-cc02-4d95-940e-e4e31d0bc6f2@paulmck-laptop>
+ <f1c60dcb-e32f-7b7e-bf0d-5dec999e9299@linux.alibaba.com>
+ <CAEXW_YSODXRfgkR0D2G-x=0uZdsqvF3kZL+LL3DcRX-5CULJ1Q@mail.gmail.com>
+ <894a3b64-a369-7bc6-c8a8-0910843cc587@linux.alibaba.com>
+ <CAEXW_YSM1yik4yWTgZoxCS9RM6TbsL26VCVCH=41+uMA8chfAQ@mail.gmail.com>
+ <58b661d0-0ebb-4b45-a10d-c5927fb791cd@paulmck-laptop>
+ <CAB=BE-QSaRKvVQg28wu6zVoO9RwiHZgXJzUaEMdbtpieVLmT8A@mail.gmail.com>
+ <39923da8-16a1-43a8-99f1-5e13508e4ee4@paulmck-laptop>
+ <CAB=BE-QNFhOD=xe09hiZOLmDN7XQxnaxyMz1X=4EeU7SFKaRKA@mail.gmail.com>
 MIME-Version: 1.0
-References: <cover.1689171160.git.mchehab@kernel.org> <0e5f68ab045965292fee1748254bf9b91db9039a.1689171160.git.mchehab@kernel.org>
-In-Reply-To: <0e5f68ab045965292fee1748254bf9b91db9039a.1689171160.git.mchehab@kernel.org>
-From:   Rae Moar <rmoar@google.com>
-Date:   Thu, 13 Jul 2023 18:49:02 -0400
-Message-ID: <CA+GJov7ejGbgXPJYWKpve8Cz5M5z8G2vHJ0x+LZeK19OGmuX3A@mail.gmail.com>
-Subject: Re: [PATCH RFC 2/2] drm: add documentation for drm_buddy_test kUnit test
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        David Gow <davidgow@google.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?B?TWHDrXJhIENhbmFs?= <mairacanal@riseup.net>,
-        Nikolai Kondrashov <spbnick@gmail.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Arthur Grillo <arthurgrillo@riseup.net>,
-        Kees Cook <keescook@chromium.org>,
-        dri-devel@lists.freedesktop.org, kunit-dev@googlegroups.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, mauro.chehab@intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAB=BE-QNFhOD=xe09hiZOLmDN7XQxnaxyMz1X=4EeU7SFKaRKA@mail.gmail.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 10:29=E2=80=AFAM Mauro Carvalho Chehab
-<mchehab@kernel.org> wrote:
->
-> As an example for the new documentation tool, add a documentation
-> for drm_buddy_test.
->
-> I opted to place this on a completely different directory, in order
-> to make easier to test the feature with:
->
->         $ make SPHINXDIRS=3D"tests" htmldocs
->
-> Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
-> ---
->
-> To avoid mailbombing on a large number of people, only mailing lists were=
- C/C on the cover.
-> See [PATCH RFC 0/2] at: https://lore.kernel.org/all/cover.1689171160.git.=
-mchehab@kernel.org/
->
->  Documentation/index.rst                |  2 +-
->  Documentation/tests/index.rst          |  6 ++++++
->  Documentation/tests/kunit.rst          |  5 +++++
->  drivers/gpu/drm/tests/drm_buddy_test.c | 12 ++++++++++++
->  4 files changed, 24 insertions(+), 1 deletion(-)
->  create mode 100644 Documentation/tests/index.rst
->  create mode 100644 Documentation/tests/kunit.rst
->
-> diff --git a/Documentation/index.rst b/Documentation/index.rst
-> index 9dfdc826618c..80a6ce14a61a 100644
-> --- a/Documentation/index.rst
-> +++ b/Documentation/index.rst
-> @@ -60,7 +60,7 @@ Various other manuals with useful information for all k=
-ernel developers.
->     fault-injection/index
->     livepatch/index
->     rust/index
-> -
-> +   test/index
->
->  User-oriented documentation
->  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D
-> diff --git a/Documentation/tests/index.rst b/Documentation/tests/index.rs=
-t
-> new file mode 100644
-> index 000000000000..bfc39eb5c0aa
-> --- /dev/null
-> +++ b/Documentation/tests/index.rst
-> @@ -0,0 +1,6 @@
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> +Kunit documentation test
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> +
-> +.. toctree::
-> +   kunit
-> diff --git a/Documentation/tests/kunit.rst b/Documentation/tests/kunit.rs=
-t
-> new file mode 100644
-> index 000000000000..6ffc151988a0
-> --- /dev/null
-> +++ b/Documentation/tests/kunit.rst
-> @@ -0,0 +1,5 @@
-> +Kunit tests
-> +-----------
-> +
-> +.. include-test:: drivers/gpu/drm/tests/drm_buddy_test.c
-> +
-> diff --git a/drivers/gpu/drm/tests/drm_buddy_test.c b/drivers/gpu/drm/tes=
-ts/drm_buddy_test.c
-> index 09ee6f6af896..dd6c5afd6cd6 100644
-> --- a/drivers/gpu/drm/tests/drm_buddy_test.c
-> +++ b/drivers/gpu/drm/tests/drm_buddy_test.c
-> @@ -737,6 +737,18 @@ static int drm_buddy_suite_init(struct kunit_suite *=
-suite)
->         return 0;
->  }
->
-> +/**
-> + * KTEST_SUITE: set of tests for drm buddy alloc
-> + * Scope: drm subsystem
-> + * Mega feature: drm
-> + * Feature: buddy_alloc
-> + *
-> + * KTEST_TEST: drm_test_buddy_alloc_%s
-> + * Description: Run DRM buddy allocation %arg[1] test
-> + *
-> + * arg[1].values: limit, range, optimistic, smoke, pathological
-> + */
-> +
+On Thu, Jul 13, 2023 at 11:51:34AM -0700, Sandeep Dhavale wrote:
+> > Thank you for the background.
+> >
+> > > Paul, Joel,
+> > > Shall we fix the rcu_read_lock_*held() regardless of how erofs
+> > > improves the check?
+> >
+> > Help me out here.  Exactly what is broken with rcu_read_lock_*held(),
+> > keeping in mind their intended use for lockdep-based debugging?
+> >
+> Hi Paul,
+> With !CONFIG_DEBUG_ALLOC_LOCK
+> rcu_read_lock_held() -> Always returns 1.
+> rcu_read_lock_any_held()-> returns !preemptible() so may return 0.
+> 
+> Now current usages for rcu_read_lock_*held() are under RCU_LOCKDEP_WARN()
+> which becomes noOP with !CONFIG_DEBUG_ALLOC_LOCK
+> (due to debug_lockdep_rcu_enabled()) so this inconsistency is not causing
+> any problems right now. So my question was about your opinion for fixing this
+> for semantics if it's worth correcting.
+> 
+> Also it would have been better IMO if there was a reliable API
+> for rcu_read_lock_*held() than erofs trying to figure it out at a higher level.
 
-I apologize that the last email included a HTML attachment of the message.
+Sorry, but the current lockdep-support functions need to stay focused
+on lockdep.  They are not set up for general use, as we already saw
+with rcu_is_watching().
 
-Just in case anyone was unable to receive the last email here is a
-copy of the message:
+If you get a z_erofs_wq_needed() (or whatever) upstream, and if it turns
+out that there is an RCU-specific portion that has clean semantics,
+then I would be willing to look at pulling that portion into RCU.
+Note "look at" as opposed to "unconditionally agree to".  ;-)
 
-Hi!
+> > I have no official opinion myself, but there are quite a few people
+> ...
+> 
+> Regarding erofs trying to detect this, I understand few people can
+> have different
+> opinions. Not scheduling a thread while being in a thread context itself
+> is reasonable in my opinion which also has shown performance gains.
 
-This is such a cool patch series. I just have a few comments related
-to the output.
+You still haven't quantified the performance gains.  Presumably they
+are most compelling with large numbers of small buffers to be decrypted.
 
-In the html output the tests are listed as:
-ktest@drm_buddy_test@...
+But why not just make a z_erofs_wq_needed() or similar in your own
+code, and push it upstream?  If the performance gains really are so
+compelling, one would hope that some sort of reasonable arrangement
+could be arrived at.
 
-I wonder if instead of using the file name of "drm_buddy_test" this
-could possibly be the suite name, "drm_buddy", as this is what users
-will call when using kunit.py to run the tests. Although
-"drm_buddy_test" is also the module name so I don't mind it too much.
-But in the future the file name and module name are not guaranteed to
-be the same for other tests.
+							Thanx, Paul
 
-Most preferably, there would be a reference to the kunit suite name,
-file name, and the module name.
-
-This may be difficult to implement as these can all differ. I am
-currently working on the KUnit Attribute framework which saves the
-module name and I am thinking about also saving the file path as a
-future attribute. This could be a helpful framework for the KUnit
-tests specifically.
-
-I am not sure how easy it would be to access c objects/functions using
-this system.
-
-Finally, I was wondering if it is the intention to put a list of all
-KUnit tests that use this new feature into tests/kunit.rst or would
-this be broken up in some way.
-
-Thanks!
--Rae
-
->  static struct kunit_case drm_buddy_tests[] =3D {
->         KUNIT_CASE(drm_test_buddy_alloc_limit),
->         KUNIT_CASE(drm_test_buddy_alloc_range),
-> --
-> 2.40.1
->
+> Thanks,
+> Sandeep.
+> 
+> 
+> 
+> >                                                         Thanx, Paul
+> >
+> > > Thanks,
+> > > Sandeep.
+> > >
+> > > [1] https://lore.kernel.org/linux-erofs/20230208093322.75816-1-hsiangkao@linux.alibaba.com/
+> >
+> > --
+> > To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
+> >
