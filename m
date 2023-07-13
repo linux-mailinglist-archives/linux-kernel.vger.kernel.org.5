@@ -2,175 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D363751691
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 04:58:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A421A751685
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 04:55:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233387AbjGMC6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 22:58:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34730 "EHLO
+        id S232731AbjGMCzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 22:55:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232553AbjGMC6K (ORCPT
+        with ESMTP id S231859AbjGMCzo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 22:58:10 -0400
-X-Greylist: delayed 370 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 12 Jul 2023 19:58:08 PDT
-Received: from mail-m11874.qiye.163.com (mail-m11874.qiye.163.com [115.236.118.74])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A7C6B4;
-        Wed, 12 Jul 2023 19:58:07 -0700 (PDT)
-Received: from localhost.localdomain (unknown [58.22.7.114])
-        by mail-m11874.qiye.163.com (Hmail) with ESMTPA id 65BD03C03B3;
-        Thu, 13 Jul 2023 10:51:53 +0800 (CST)
-From:   William Wu <william.wu@rock-chips.com>
-To:     Thinh.Nguyen@synopsys.com, gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        william.wu@rock-chips.com, frank.wang@rock-chips.com,
-        jianwei.zheng@rock-chips.com, yangbin@rock-chips.com
-Subject: [PATCH] usb: dwc3: gadget: Properly handle miss isoc event
-Date:   Thu, 13 Jul 2023 10:51:49 +0800
-Message-Id: <20230713025149.24276-1-william.wu@rock-chips.com>
-X-Mailer: git-send-email 2.17.1
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-        tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZQkJLHlYfSRhMTExLShpIThlVEwETFh
-        oSFyQUDg9ZV1kYEgtZQVlOQ1VJSVVMVUpKT1lXWRYaDxIVHRRZQVlPS0hVSkpLQ0hJVUpLS1VLWQ
-        Y+
-X-HM-Tid: 0a894d29837a2eb0kusn65bd03c03b3
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PQg6Szo6SD1OOR5PQxkCOAoC
-        NBAKCQpVSlVKTUNCSUpNTEpPSUxNVTMWGhIXVQwSFxcSGhZVDA47CRQYEFYYExILCFUYFBZFWVdZ
-        EgtZQVlOQ1VJSVVMVUpKT1lXWQgBWUFOTkJMNwY+
-X-Spam-Status: No, score=-0.4 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+        Wed, 12 Jul 2023 22:55:44 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 599AF172C
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 19:55:42 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9922d6f003cso41194366b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 19:55:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689216941; x=1691808941;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OqHNrvvkveMwsMIqHlQIoLwl5eBjuqONVWnhr/JLhn4=;
+        b=eN3jdarnvR4nznoLzK5zUTHii6qCOqiXtRfjVHaIKMWuDMIfKvXB9YAaZN0nPQZHS2
+         jmRUIHLQkhWW9BGmgZtsOQHcveti4AuVEW/S9uGGT+wOUTQjND5SbxcxYKfB6RmcaLXs
+         nFyTSF2nebvS9+s1Mtpn5L4RxA/a7tQkd5CKYm7feh2z4QFSNczwcLbKK2VtNoMSKWMb
+         LtDwQ6cDPK/7p39M+mmIm66zaa85bP7YagJQaoj4rWoh9eRqYoLx8l4rn/G0fmDzF4KF
+         VusrS4GtDL5ZTsRL3EUP2R/sgV+Ra/+IBIZI7NjrgpLI1mpU1T1XOKWpgwunTN9EURO3
+         JImQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689216941; x=1691808941;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OqHNrvvkveMwsMIqHlQIoLwl5eBjuqONVWnhr/JLhn4=;
+        b=UIMWDSkQtTWV/MOmKeXmyz7MXKlzWaWkxfXOnZxScUukgO4Ge1rThRJrzx1iTFcHb3
+         MXOda8PbbJ0R2SeQlG048AQ45TcGmrJKZbZHovq0VOiMT90n9I2WxFSmN/a5aGZ0YITk
+         G6M4uD+LfeivKBvRXzyTOZpQf8TwuHpqiUGhBEzQyPKyG9lrWrrR68wHPr1frsPYeoZn
+         UzXS07al/Sl8A4Ns4OWHaqrRWyp4JE7IjRcxZfjUcvnFZcnMbb9JTx7uJK/Xfpy3Xpvt
+         PN0DlM2aeTueTuUzGYuF29OPo46cAWctu3X8Tj23SX8P+KfIgIaR5X4365wr7tA3sfi4
+         6MFg==
+X-Gm-Message-State: ABy/qLZIwZfgxKLnyhhUAT6k2uYqyu+xBGTZ9uETbRAJeE/m53l+fgC9
+        5Q4uGxjPAA69WVDRm1WdC9e+DA==
+X-Google-Smtp-Source: APBJJlGDnMuzqlM3S/oG7hu9iHGq/oNkTsE/4WQGNO7n9X4+zCDTU3xH98c4a1bZOahAZ8hZSg4SVQ==
+X-Received: by 2002:a17:906:2da:b0:994:30bf:5d4f with SMTP id 26-20020a17090602da00b0099430bf5d4fmr191988ejk.43.1689216940902;
+        Wed, 12 Jul 2023 19:55:40 -0700 (PDT)
+Received: from 1.. ([79.115.63.146])
+        by smtp.gmail.com with ESMTPSA id gr19-20020a170906e2d300b0098e2eaec394sm3370236ejb.101.2023.07.12.19.55.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Jul 2023 19:55:40 -0700 (PDT)
+From:   Tudor Ambarus <tudor.ambarus@linaro.org>
+To:     pratyush@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
+        vigneshr@ti.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
+Cc:     Tudor Ambarus <tudor.ambarus@linaro.org>, git@amd.com,
+        michael@walle.cc, linux-mtd@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        amitrkcian2002@gmail.com
+Subject: Re: [PATCH v4 0/2] mtd: spi-nor: Avoid setting SRWD bit in SR
+Date:   Thu, 13 Jul 2023 05:55:34 +0300
+Message-Id: <168921680625.27728.7198640017398565535.b4-ty@linaro.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230630142233.63585-1-amit.kumar-mahapatra@amd.com>
+References: <20230630142233.63585-1-amit.kumar-mahapatra@amd.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1012; i=tudor.ambarus@linaro.org; h=from:subject:message-id; bh=TL4ydUNHMhdqUWLxKqFd7lLy6/tNy8U5gmeJJs96hZs=; b=owEBbQGS/pANAwAKAUtVT0eljRTpAcsmYgBkr2egmxlAykkZMsiy/cyeajbB6rZFaKpesMTmh Yq2b4bhul6JATMEAAEKAB0WIQQdQirKzw7IbV4d/t9LVU9HpY0U6QUCZK9noAAKCRBLVU9HpY0U 6cOvB/0e7UhW/YHvOwuKHQAjeP+VIVQrp+/QzlBBOeTrIbgqWMgMrMM/n5s5McDRv4JpX494XxJ 8TnIk2PifJVaM+qLC3p5UgQsvujGUsFoROBrpKfMxyrGeh4M5Vvg4Xqua1/D+6YDNVfGtEpHptZ 0V2UYr746KcBaa+ckfEtM4dvAm3Ij9Wn3t7UKpE/pTF5XtMQ7keQZ5vz133/vTv2oUp2rr6Q9FU 1Ke7UZ9/9Bno2Ha83CtRqUnOGxGQPoNYKf/kKd88NWp+JYJWq5/TlYd1pUMIztkKH98WP0Llrgv yxPiCp98V49f6xiBvlhnt9us6YmSm8hfwgbJCMc/YWhT5hia
+X-Developer-Key: i=tudor.ambarus@linaro.org; a=openpgp; fpr=280B06FD4CAAD2980C46DDDF4DB1B079AD29CF3D
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If miss isoc event happens, the current code just set
-the req status to -EXDEV and giveback the req to the usb
-gadget driver, and then stop the active transfer with the
-cmd DWC3_DEPCMD_ENDTRANSFER and wait for a XferNotReady
-event to restart a transfer again. However, for isoc
-ep in transfer, it cause to lost the isoc data of the
-req.
+On Fri, 30 Jun 2023 19:52:31 +0530, Amit Kumar Mahapatra wrote:
+> Setting the status register write disable (SRWD) bit in the status
+> register (SR) with WP# signal of the flash not connected or wrongly tied to
+> GND (that includes internal pull-downs), will configure the SR permanently
+> as read-only. To avoid this a boolean type DT property "no-wp" is
+> introduced. If this property is defined, the spi-nor doesn't set the SRWD
+> bit in SR while performing flash protection operation.
+> 
+> [...]
 
-This patch moves the miss isoc req to pending_list in
-order to restart transfer immediately instead of give
-back the req to the usb gadget driver.
+Moved the of_property_read_bool() as suggested by Michael.
+Applied to git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git,
+spi-nor/next branch. Thanks!
 
-Signed-off-by: William Wu <william.wu@rock-chips.com>
----
- drivers/usb/dwc3/gadget.c | 47 +++++++++++++++++++++++++++++++++++++++
- drivers/usb/dwc3/gadget.h | 16 +++++++++++++
- 2 files changed, 63 insertions(+)
+[1/2] dt-bindings: mtd: jedec, spi-nor: Add DT property to avoid setting SRWD bit in status register
+      https://git.kernel.org/mtd/c/cfc2928cb213
+[2/2] mtd: spi-nor: Avoid setting SRWD bit in SR if WP# signal not connected
+      https://git.kernel.org/mtd/c/18d7d01a0a0e
 
-diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
-index 5fd067151fbf..ef295746b241 100644
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -3454,6 +3454,7 @@ static int dwc3_gadget_ep_cleanup_completed_request(struct dwc3_ep *dep,
- 		const struct dwc3_event_depevt *event,
- 		struct dwc3_request *req, int status)
- {
-+	struct dwc3 *dwc = dep->dwc;
- 	int request_status;
- 	int ret;
- 
-@@ -3475,6 +3476,28 @@ static int dwc3_gadget_ep_cleanup_completed_request(struct dwc3_ep *dep,
- 		req->needs_extra_trb = false;
- 	}
- 
-+	/*
-+	 * If MISS ISOC happens, we need to move the req from started_list
-+	 * to cancelled_list, then unmap the req and clear the HWO of trb.
-+	 * Later in the dwc3_gadget_endpoint_trbs_complete(), it will move
-+	 * the req from the cancelled_list to the pending_list, and restart
-+	 * the req for isoc transfer.
-+	 */
-+	if (status == -EXDEV && usb_endpoint_xfer_isoc(dep->endpoint.desc)) {
-+		req->remaining = 0;
-+		req->needs_extra_trb = false;
-+		dwc3_gadget_move_cancelled_request(req, DWC3_REQUEST_STATUS_DEQUEUED);
-+		if (req->trb) {
-+			usb_gadget_unmap_request_by_dev(dwc->sysdev,
-+							&req->request,
-+							req->direction);
-+			req->trb->ctrl &= ~DWC3_TRB_CTRL_HWO;
-+			req->trb = NULL;
-+		}
-+		ret = 0;
-+		goto out;
-+	}
-+
- 	/*
- 	 * The event status only reflects the status of the TRB with IOC set.
- 	 * For the requests that don't set interrupt on completion, the driver
-@@ -3564,6 +3587,7 @@ static bool dwc3_gadget_endpoint_trbs_complete(struct dwc3_ep *dep,
- 		const struct dwc3_event_depevt *event, int status)
- {
- 	struct dwc3		*dwc = dep->dwc;
-+	struct dwc3_request	*req, *tmp;
- 	bool			no_started_trb = true;
- 
- 	dwc3_gadget_ep_cleanup_completed_requests(dep, event, status);
-@@ -3574,6 +3598,29 @@ static bool dwc3_gadget_endpoint_trbs_complete(struct dwc3_ep *dep,
- 	if (!dep->endpoint.desc)
- 		return no_started_trb;
- 
-+	/*
-+	 * If MISS ISOC happens, we need to do the following three steps
-+	 * to restart the reqs in the cancelled_list and pending_list
-+	 * in order.
-+	 * Step1. Move all the reqs from pending_list to the tail of
-+	 *        cancelled_list.
-+	 * Step2. Move all the reqs from cancelled_list to the tail
-+	 *        of pending_list.
-+	 * Step3. Stop and restart an isoc transfer.
-+	 */
-+	if (usb_endpoint_xfer_isoc(dep->endpoint.desc) && status == -EXDEV &&
-+	    !list_empty(&dep->cancelled_list) &&
-+	    !list_empty(&dep->pending_list)) {
-+		list_for_each_entry_safe(req, tmp, &dep->pending_list, list)
-+			dwc3_gadget_move_cancelled_request(req, DWC3_REQUEST_STATUS_DEQUEUED);
-+	}
-+
-+	if (usb_endpoint_xfer_isoc(dep->endpoint.desc) && status == -EXDEV &&
-+	    !list_empty(&dep->cancelled_list)) {
-+		list_for_each_entry_safe(req, tmp, &dep->cancelled_list, list)
-+			dwc3_gadget_move_queued_request(req);
-+	}
-+
- 	if (usb_endpoint_xfer_isoc(dep->endpoint.desc) &&
- 		list_empty(&dep->started_list) &&
- 		(list_empty(&dep->pending_list) || status == -EXDEV))
-diff --git a/drivers/usb/dwc3/gadget.h b/drivers/usb/dwc3/gadget.h
-index 55a56cf67d73..242426b67798 100644
---- a/drivers/usb/dwc3/gadget.h
-+++ b/drivers/usb/dwc3/gadget.h
-@@ -104,6 +104,22 @@ static inline void dwc3_gadget_move_cancelled_request(struct dwc3_request *req,
- 	list_move_tail(&req->list, &dep->cancelled_list);
- }
- 
-+/**
-+ * dwc3_gadget_move_queued_request - move @req to the pending_list
-+ * @req: the request to be moved
-+ *
-+ * Caller should take care of locking. This function will move @req from its
-+ * current list to the endpoint's pending_list.
-+ *
-+ */
-+static inline void dwc3_gadget_move_queued_request(struct dwc3_request *req)
-+{
-+	struct dwc3_ep          *dep = req->dep;
-+
-+	req->status = DWC3_REQUEST_STATUS_QUEUED;
-+	list_move_tail(&req->list, &dep->pending_list);
-+}
-+
- void dwc3_gadget_giveback(struct dwc3_ep *dep, struct dwc3_request *req,
- 		int status);
- 
+Cheers,
 -- 
-2.17.1
-
+Tudor Ambarus <tudor.ambarus@linaro.org>
