@@ -2,165 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20FEF7523DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 15:33:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AC607523E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 15:34:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234755AbjGMNdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 09:33:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37284 "EHLO
+        id S234945AbjGMNeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 09:34:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234650AbjGMNds (ORCPT
+        with ESMTP id S234787AbjGMNeJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 09:33:48 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 763341BF3
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 06:33:46 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F2BBF6153B
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 13:33:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2EE22C433C8;
-        Thu, 13 Jul 2023 13:33:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689255225;
-        bh=5JtshTP1bXLjEstDrWEEMA0R1xCxbgWIzfLe0lAZ+so=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=O9Nvi27nE13QFvWlrcoIQtMe469KDKMVbqYYNkKdYLv6zMyvY5Rdh38i6DNBUlDJR
-         OW7UsXkeZwrhJuNELVYRp3Pn3ZKmNovx12MJe816RwL20jzV0KqdSPWzgztLL5gbuT
-         DxTdRIJdzJFM6nomiCzh7nqbDvZPxWsZ3/i6Kptqlhe0E6wWYFvIn4UYn2oRnWz5WF
-         ETxipSVEYs3mlTqYJUBF4G1o9obqWRN0iq0t8sp7s5Z7Cwru5wgZ/uhtKV0JMNQgCn
-         94OyddAIAlPtujNgpxbkiXCVBogo4kbjIiRCH6KWe+wWRh5njF8ouD9OJzPktzKKsT
-         HhoJmuf9VIDrQ==
-Date:   Thu, 13 Jul 2023 15:33:38 +0200
-From:   Ard Biesheuvel <ardb@kernel.org>
-To:     Emanuele Giuseppe Esposito <eesposit@redhat.com>
-Cc:     x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        bluca@debian.org, lennart@poettering.net,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Daniel P =?iso-8859-1?Q?=2E_Berrang=E9?= <berrange@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v2] x86/boot: add .sbat section to the bzImage
-Message-ID: <ZK/9MlTh435FP5Ji@gambale.home>
-References: <20230711154449.1378385-1-eesposit@redhat.com>
+        Thu, 13 Jul 2023 09:34:09 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C53F1FD6
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 06:34:06 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-98377c5d53eso120162266b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 06:34:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1689255244; x=1691847244;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Lni4UWIKw2Lp7DjCo96CHQnoSYyoodWrf2lKDIVVpbc=;
+        b=BcfyuInp5jBxZzTvOSoWtOTxgq4kzMeUaI/Vi3ghXwRdt6V7XMYOeMvXYPrMT9YvpI
+         wtpSuYNpSjbpK8KC8M+N8XpCKV1KC4XbB9FkTa4vZE6VbRQtGHzZjviZG43Lj9wCCpkZ
+         J1HyRhUQU9dd9GeN50S3jHRYETSB8CavwaQuYkvTL4j+TXu9fqX0n6eoLpRFlrMWGcka
+         3FkxTV6FIJDOzP8WqiFhgb6rguKq7veV5jLgnmAMOxaPMfeeTSbzQVlAy9jVNSBsfbiW
+         bG3uLd7oErowpMqS69XE+Hd5ZYS+WcCsjr3P6wFlfFkg7s25zKhLVTg1RG5lf9VnjH5C
+         S8Xw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689255244; x=1691847244;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Lni4UWIKw2Lp7DjCo96CHQnoSYyoodWrf2lKDIVVpbc=;
+        b=NtumKugHQ7sHCwIPauEgfAiWp9i24BVdRLJEGsF1NLm/2ETstpt+vQ4VoMdWEzko56
+         GSiqVU6xBPILU88+OJo1xNcSbodH4virN1biYAM2hlN7q391cxHREkDY08MIrqOmhRXc
+         IZrCSKLab3PFbA7MPUboM/zTyuWGB8GjJI2OWS06beN28SsR2HuYOYiwjoZ0PDPs0PCW
+         OCdCetb6wipLI0NzsEtYOmbSrcK2T25FQqkqC5dzFb8y1Yx0sVuC1lud65TyelhOYXjk
+         HByfnyLohyakolaY7k6aJ3nDYEkgYne0rJ7sCkiWAaCNkBzL1PhHymJcRfuhScuIfuMj
+         ehdQ==
+X-Gm-Message-State: ABy/qLbglJviC4NF+gYWPK6HiQXu2HbTYVX3MH3bNrOdS8U/ut9aZlK4
+        4A+tR3OiLuYpw3+HEslFEjWKkw==
+X-Google-Smtp-Source: APBJJlGvrRWNt/FFlKe8uKPn1T37JqQamvuvd1xh9hAZXGrxTN6z2+pvgee7FNyh0NbM/6xJ+VJhvQ==
+X-Received: by 2002:a17:906:20a:b0:982:487c:7508 with SMTP id 10-20020a170906020a00b00982487c7508mr1634168ejd.38.1689255244554;
+        Thu, 13 Jul 2023 06:34:04 -0700 (PDT)
+Received: from alex-rivos.ba.rivosinc.com ([93.23.19.53])
+        by smtp.gmail.com with ESMTPSA id d15-20020a170906c20f00b00993017b64a8sm3982733ejz.224.2023.07.13.06.34.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Jul 2023 06:34:04 -0700 (PDT)
+From:   Alexandre Ghiti <alexghiti@rivosinc.com>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-efi@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     Alexandre Ghiti <alexghiti@rivosinc.com>
+Subject: [PATCH v4 0/5] riscv: Introduce KASLR
+Date:   Thu, 13 Jul 2023 15:33:56 +0200
+Message-Id: <20230713133401.116506-1-alexghiti@rivosinc.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230711154449.1378385-1-eesposit@redhat.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Emanuele,
+The following KASLR implementation allows to randomize the kernel mapping:
 
-Please cc the linux-efi@ mailing list and myself on EFI related patches.
+- virtually: we expect the bootloader to provide a seed in the device-tree
+- physically: only implemented in the EFI stub, it relies on the firmware to
+  provide a seed using EFI_RNG_PROTOCOL. arm64 has a similar implementation
+  hence the patch 3 factorizes KASLR related functions for riscv to take
+  advantage.
 
-First of all, I think the tone of the discussion is way out of hand on
-both sides of the debate. Please keep it civil and courteous.
+The new virtual kernel location is limited by the early page table that only
+has one PUD and with the PMD alignment constraint, the kernel can only take
+< 512 positions.
 
-On Tue, Jul 11, 2023 at 11:44:49AM -0400, Emanuele Giuseppe Esposito wrote:
-> *Important*: this is just an RFC, as I am not expert in this area and
-> I don't know what's the best way to achieve this.
-> 
-> v2:
-> * add standard "sbat,1,SBAT Version,..." header string
-> 
-> The aim of this patch is to add a .sbat section to the linux binary
-> (https://github.com/rhboot/shim/blob/main/SBAT.md).
-> We mainly need SBAT in UKIs (Unified Kernel Images), as we might want
-> to revoke authorizations to specific signed PEs that were initially
-> considered as trusted. The reason might be for example a security issue
-> related to a specific linux release.
-> 
-> A .sbat is simply a section containing a string with the component name
-> and a version number. This version number is compared with the value in
-> OVMF_VARS, and if it's less than the variable, the binary is not trusted,
-> even if it is correctly signed.
-> 
+base-commit-tag: v6.5-rc1
 
-Most people will not known what OVMF_VARS is or a PE.
+Changes in v4:
+  * Fix efi_get_kimg macro that returned nothing
+  * Moved new kaslr functions into their own files to avoid zboot link
+    failures, as suggested by Ard
 
-Also, 'version number' is a bit vague, better to stick with existing
-terminology that makes this more self explanatory: the component that
-authenticates the kernel image keeps a revocation counter, and refuses
-to load authentic images whose revocation index is lower than the
-revocation counter. This approach removes the need for revoking
-individual image hashes or having to rotate the signing keys when a
-vulnerability is discovered.
+Changes in v3:
+  * Rebase on top of 6.4-rc2
+  * Make RANDOMIZE_BASE depend on 64bit
+  * Fix efi_icache_sync and efi_get_kimg_min_align which were undefined
+    in x86 (and certainly other archs)
+  * Add patch 4 to fix warning on rv32
 
-The argument that we need this in the upstream kernel seems to be
-predicated on the assumption that there is one universal signing
-authority and revocation domain, but this is not necessarily true. Even
-if the distros appear to have decided that it is a reasonable choice to
-deploy the MicroSoft signed shim and the associated components on other
-systems than Windows-crippled x86 PCs, this is not universally true, and
-UEFI secure boot can be (and is) deployed in sane ways as well.
+Changes in v2:
+  * Rebase on top of 6.3-rc1
+  * Add a riscv cache sync after memcpying the kernel
+  * Add kaslr_offset implementation for KCOV
+  * Add forward declaration to quiet LLVM
 
-Therefore, I don't think it makes sense for the upstream kernel source
-to carry a revocation index. It is ultimately up to the owner of the
-signing key to decide which value gets signed along with the image, and
-this is fundamentally part of the configure/build/release workflow.  No
-distro builds and signs the upstream sources unmodified, so each signed
-release is a fork anyway, making a upstream revocation index almost
-meaningless. Also, while backporting revocation index bumps to -stable
-should not result in any issues, I don't think the associated
-bookkeeping belongs in the hands of the stable tree maintainers. 
+Alexandre Ghiti (5):
+  riscv: Introduce virtual kernel mapping KASLR
+  riscv: Dump out kernel offset information on panic
+  arm64: libstub: Move KASLR handling functions to efi-stub-helper.c
+  libstub: Fix compilation warning for rv32
+  riscv: libstub: Implement KASLR by using generic functions
 
-> 
-> Right now an UKI is built with a .sbat section containing the
-> systemd-stub sbat string (upstream + vendor), we would like to add
-> also a per-component specific string (ie vmlinux has its own sbat,
-> again upstream + vendor, each signed add-on its own and so on).
-> In this way, if a specific kernel version has an issue, we can revoke
-> it without compromising all other UKIs that are using a different
-> kernel with the same stub/initrd/something else.
-> 
+ arch/arm64/include/asm/efi.h                  |   4 +
+ arch/riscv/Kconfig                            |  19 +++
+ arch/riscv/include/asm/efi.h                  |   4 +
+ arch/riscv/include/asm/page.h                 |   3 +
+ arch/riscv/kernel/image-vars.h                |   1 +
+ arch/riscv/kernel/pi/Makefile                 |   2 +-
+ arch/riscv/kernel/pi/cmdline_early.c          |  13 ++
+ arch/riscv/kernel/pi/fdt_early.c              |  30 ++++
+ arch/riscv/kernel/setup.c                     |  25 +++
+ arch/riscv/mm/init.c                          |  36 +++-
+ drivers/firmware/efi/libstub/Makefile         |   3 +-
+ drivers/firmware/efi/libstub/arm64-stub.c     | 117 ++-----------
+ drivers/firmware/efi/libstub/efi-stub-kaslr.c | 159 ++++++++++++++++++
+ drivers/firmware/efi/libstub/efistub.h        |  18 ++
+ drivers/firmware/efi/libstub/riscv-stub.c     |  33 ++--
+ 15 files changed, 342 insertions(+), 125 deletions(-)
+ create mode 100644 arch/riscv/kernel/pi/fdt_early.c
+ create mode 100644 drivers/firmware/efi/libstub/efi-stub-kaslr.c
 
-Whoever builds *and signs* this kernel should be managing the revocation
-metadata. Given that each vendor will have its own linux.<vendor>
-revocation counter anyway, why is it necessary to have an upstream one
-as well?
+-- 
+2.39.2
 
-> Issues with this patch:
-> * the string is added in a file but it is never deleted
-> * if the code is not modified but make is issued again, objcopy will
->   be called again and will fail because .sbat exists already, making
->   compilation fail
-> * minor display issue: objcopy command is printed in the make logs
-> 
-> Signed-off-by: Emanuele Giuseppe Esposito <eesposit@redhat.com>
-> ---
->  arch/x86/boot/Makefile | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/arch/x86/boot/Makefile b/arch/x86/boot/Makefile
-> index 9e38ffaadb5d..6982a50ba0c0 100644
-> --- a/arch/x86/boot/Makefile
-> +++ b/arch/x86/boot/Makefile
-> @@ -83,6 +83,9 @@ cmd_image = $(obj)/tools/build $(obj)/setup.bin $(obj)/vmlinux.bin \
->  
->  $(obj)/bzImage: $(obj)/setup.bin $(obj)/vmlinux.bin $(obj)/tools/build FORCE
->  	$(call if_changed,image)
-> +	@$(kecho) "sbat,1,SBAT Version,sbat,1,https://github.com/rhboot/shim/blob/main/SBAT.md" > linux.sbat
-> +	@$(kecho) "linux,1,The Linux Developers,linux,$(KERNELVERSION),https://linux.org" >> linux.sbat;
-> +	$(OBJCOPY) --set-section-alignment '.sbat=512' --add-section .sbat=linux.sbat $@;
->  	@$(kecho) 'Kernel: $@ is ready' ' (#'$(or $(KBUILD_BUILD_VERSION),`cat .version`)')'
->  
->  OBJCOPYFLAGS_vmlinux.bin := -O binary -R .note -R .comment -S
-> -- 
-> 2.39.1
-> 
