@@ -2,252 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A03B7526E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 17:27:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BFAA7526D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 17:26:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229960AbjGMP1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 11:27:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57262 "EHLO
+        id S234537AbjGMP0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 11:26:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234715AbjGMP0i (ORCPT
+        with ESMTP id S234546AbjGMPZz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 11:26:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B941CE68
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 08:25:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689261945;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YTyQOOC//U8Og4/WA4jzJJru1aS6+IZedvreavXkuvE=;
-        b=Kipij7m9L5OQeNtefXmJ/1n/UjlkA20/Nmfqw3J10l80mh2e5qC0BIbFXVnhxNzKvyVMpM
-        EPdfa2NjdT+feIA9cUemhm9slVQj0w1jAZ6RN8NviqYgDuT7x2eeY4IdADidCo29SXzRYN
-        WaHrZrNK4uE+smGFhUd9/s9FH3vl1e0=
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
- [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-524-nOkRvtoKOUqu8CeuWV5xaQ-1; Thu, 13 Jul 2023 11:25:39 -0400
-X-MC-Unique: nOkRvtoKOUqu8CeuWV5xaQ-1
-Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2b7254099ffso8438311fa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 08:25:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689261938; x=1691853938;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YTyQOOC//U8Og4/WA4jzJJru1aS6+IZedvreavXkuvE=;
-        b=HXrpeo5wfyCc/rmOHeRLJLm8keNe9+qrMmPJIGT9bP79KgBBIiwt+8PhoG1VJ7Pnz9
-         0lUgxB1Vzc9bZeo9IbcCj96yWiViI8FECm9hhKimhPHR7rdSAoBbQcjlpp8dblZ2eGQx
-         ORCN0oREWBKyqus7Fbs8SoGInOG/snvIMNjcP2+YK8KQSDFZXgk9Wk60L7POx084B7v8
-         Vgtad0aIysZ+b+MF9yv0FVycwav+R4pkRcfE9JhJrjuJo8XZDnQTuU4eZQ8PEFvRFTdV
-         O61gpXu+uFlzpsMgSgLyDivysWpm49DecV4BV1uszDG1xbw0S7I5uYWbOHS3kIbgf8si
-         Zbyg==
-X-Gm-Message-State: ABy/qLYGA7oRjXOobbRLOnLqjVSuh0c3/HVXuYMj4II9EX8tmNT/GP0s
-        1+CBJeB93kpUpAOf2+H0hd8ugeBKE3ttAJrn7QhJL0VPUBqxt3wtBU7+tmj4XXuGUpWXP/kgMjj
-        8XaGXRmSfBhCqdiwMo8f6tA3g
-X-Received: by 2002:a2e:98d2:0:b0:2b6:cd12:24f7 with SMTP id s18-20020a2e98d2000000b002b6cd1224f7mr1871070ljj.44.1689261938036;
-        Thu, 13 Jul 2023 08:25:38 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGYa8s8q1BOcKvw6NzmwI8a8tReA9pD5wtqHyEdYGSX1dP/THfRMRenFXA2BpekJVW87YhtUw==
-X-Received: by 2002:a2e:98d2:0:b0:2b6:cd12:24f7 with SMTP id s18-20020a2e98d2000000b002b6cd1224f7mr1871051ljj.44.1689261937629;
-        Thu, 13 Jul 2023 08:25:37 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c717:6100:2da7:427e:49a5:e07? (p200300cbc71761002da7427e49a50e07.dip0.t-ipconnect.de. [2003:cb:c717:6100:2da7:427e:49a5:e07])
-        by smtp.gmail.com with ESMTPSA id k6-20020a05600c0b4600b003fc00702f65sm17464841wmr.46.2023.07.13.08.25.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 Jul 2023 08:25:37 -0700 (PDT)
-Message-ID: <57f4cfe0-2f20-c50a-439f-ee914dde1693@redhat.com>
-Date:   Thu, 13 Jul 2023 17:25:36 +0200
+        Thu, 13 Jul 2023 11:25:55 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8DAC1FD6;
+        Thu, 13 Jul 2023 08:25:47 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6706D61881;
+        Thu, 13 Jul 2023 15:25:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FB4CC433C7;
+        Thu, 13 Jul 2023 15:25:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689261946;
+        bh=7VIAFpE7UhHFxQZU5H0rEJICPl8n8m4rhnC5KAKiqgg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=prE5FLdbBTLejc0h1uZgpzQeMQtg3bhmc/2zA1Cu0h7FIQJXQevO52b8n1RvHbHeY
+         CKEcO2OGbXUln72n8msQ8rMBVXjH9IFy/t3oE286Qt7kBtr7VAE3b7pvrqFeMjeB+2
+         hrj7kIU7Lj/X+K3O0Cok7Wdc7HDIgWi+8EO4pKacFlybhRIBVNWA2sgaxcMBAVDkF+
+         leKgIikWStHYai4U0OZJkkO6PG3ClerhWAWhY7TpqpdGMBaRcqn9blwFmUOw7n8i72
+         t2dbuUs2WRGt5N2CSEyR6rSVPsjzDbo/KUqyzi1ULT4SBXnA2TXY5pRVD8K8HjV8Y2
+         awqbN1w4lkvmQ==
+Date:   Thu, 13 Jul 2023 10:25:44 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Alexander Sverdlin <alexander.sverdlin@nokia.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH v1 1/1] range.h: Move resource API and constant to
+ respective headers
+Message-ID: <20230713152544.GA317144@bhelgaas>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v1 9/9] selftests/mm: Run all tests from run_vmtests.sh
-Content-Language: en-US
-To:     Ryan Roberts <ryan.roberts@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Mark Brown <broonie@kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Florent Revest <revest@chromium.org>,
-        "Liam R. Howlett" <Liam.Howlett@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, Peter Xu <peterx@redhat.com>
-References: <20230713135440.3651409-1-ryan.roberts@arm.com>
- <20230713135440.3651409-10-ryan.roberts@arm.com>
- <d77c6592-09f4-036d-ad00-a7a28de1da3f@redhat.com>
- <2b586ba2-7522-a823-afd6-7b4d978f18c2@arm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <2b586ba2-7522-a823-afd6-7b4d978f18c2@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230710131142.32284-1-andriy.shevchenko@linux.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>
->> Which run_kselftest.sh are you referring to, the one in the parent directory?
+On Mon, Jul 10, 2023 at 04:11:42PM +0300, Andy Shevchenko wrote:
+> range.h works with struct range data type. The resource_size_t
+> is an alien here. Move the related pieces to the respective
+> headers and rename MAX_RESOURCE using pattern ${TYPE}_MAX.
 > 
-> run_kselftest.sh is the uniform way of executing all the kselftests. mm seems to
-> be trying to be special as far as I can see. Certainly if you run the `install`
-> make target, kselftests will create a list of all the tests (including non-mm
-> tests if you have included them in the TARGETS variable) and copy that test list
-> and run_kselftest.sh to the install path along with all the test binaries. Then
-> the user can invoke any of the collections or specific tests in the collections
-> using that tool. It also wraps everything with tap output, runs tests with a
-> timeout, etc.
-> 
-> See Documentation/dev-tools/kselftest.rst
-> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Got it, thanks!
+No objection from me, although I might include more specifics in the
+commit log, e.g., (1) move cap_resource() implementation into its only
+user, and (2) rename and move RESOURCE_SIZE_MAX to limits.h.
 
->>
->> How to invoke it to run these mm tests?
->>
->> (I never dared invoking something different than
->> run_vmtests.sh ;) )
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+
+> ---
+>  arch/mips/cavium-octeon/setup.c | 2 +-
+>  arch/x86/pci/amd_bus.c          | 8 ++++++++
+>  arch/x86/pci/bus_numa.c         | 2 +-
+>  include/linux/limits.h          | 2 ++
+>  include/linux/range.h           | 8 --------
+>  5 files changed, 12 insertions(+), 10 deletions(-)
 > 
-> # single test:
-> $ sudo ./run_kselftest.sh -t mm:<test_name>
+> diff --git a/arch/mips/cavium-octeon/setup.c b/arch/mips/cavium-octeon/setup.c
+> index c5561016f577..1ad2602a0383 100644
+> --- a/arch/mips/cavium-octeon/setup.c
+> +++ b/arch/mips/cavium-octeon/setup.c
+> @@ -1240,7 +1240,7 @@ static int __init octeon_no_pci_init(void)
+>  	 */
+>  	octeon_dummy_iospace = vzalloc(IO_SPACE_LIMIT);
+>  	set_io_port_base((unsigned long)octeon_dummy_iospace);
+> -	ioport_resource.start = MAX_RESOURCE;
+> +	ioport_resource.start = RESOURCE_SIZE_MAX;
+>  	ioport_resource.end = 0;
+>  	return 0;
+>  }
+> diff --git a/arch/x86/pci/amd_bus.c b/arch/x86/pci/amd_bus.c
+> index dd40d3fea74e..631512f7ec85 100644
+> --- a/arch/x86/pci/amd_bus.c
+> +++ b/arch/x86/pci/amd_bus.c
+> @@ -51,6 +51,14 @@ static struct pci_root_info __init *find_pci_root_info(int node, int link)
+>  	return NULL;
+>  }
+>  
+> +static inline resource_size_t cap_resource(u64 val)
+> +{
+> +	if (val > RESOURCE_SIZE_MAX)
+> +		return RESOURCE_SIZE_MAX;
+> +
+> +	return val;
+> +}
+> +
+>  /**
+>   * early_root_info_init()
+>   * called before pcibios_scan_root and pci_scan_bus
+> diff --git a/arch/x86/pci/bus_numa.c b/arch/x86/pci/bus_numa.c
+> index 2752c02e3f0e..e4a525e59eaf 100644
+> --- a/arch/x86/pci/bus_numa.c
+> +++ b/arch/x86/pci/bus_numa.c
+> @@ -101,7 +101,7 @@ void update_res(struct pci_root_info *info, resource_size_t start,
+>  	if (start > end)
+>  		return;
+>  
+> -	if (start == MAX_RESOURCE)
+> +	if (start == RESOURCE_SIZE_MAX)
+>  		return;
+>  
+>  	if (!merge)
+> diff --git a/include/linux/limits.h b/include/linux/limits.h
+> index f6bcc9369010..38eb7f6f7e88 100644
+> --- a/include/linux/limits.h
+> +++ b/include/linux/limits.h
+> @@ -10,6 +10,8 @@
+>  #define SSIZE_MAX	((ssize_t)(SIZE_MAX >> 1))
+>  #define PHYS_ADDR_MAX	(~(phys_addr_t)0)
+>  
+> +#define RESOURCE_SIZE_MAX	((resource_size_t)~0)
+> +
+>  #define U8_MAX		((u8)~0U)
+>  #define S8_MAX		((s8)(U8_MAX >> 1))
+>  #define S8_MIN		((s8)(-S8_MAX - 1))
+> diff --git a/include/linux/range.h b/include/linux/range.h
+> index 7efb6a9b069b..6ad0b73cb7ad 100644
+> --- a/include/linux/range.h
+> +++ b/include/linux/range.h
+> @@ -31,12 +31,4 @@ int clean_sort_range(struct range *range, int az);
+>  
+>  void sort_range(struct range *range, int nr_range);
+>  
+> -#define MAX_RESOURCE ((resource_size_t)~0)
+> -static inline resource_size_t cap_resource(u64 val)
+> -{
+> -	if (val > MAX_RESOURCE)
+> -		return MAX_RESOURCE;
+> -
+> -	return val;
+> -}
+>  #endif
+> -- 
+> 2.40.0.1.gaa8946217a0b
 > 
-> or
-> 
-> # all tests in collection:
-> $ sudo ./run_kselftest.sh -c mm
-> 
-
-Ah, that makes sense. So I guess mm is then one "collection".
-
->>
->> [...]
->>
->>>
->>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->>> ---
->>>    tools/testing/selftests/mm/Makefile       | 79 ++++++++++++-----------
->>>    tools/testing/selftests/mm/run_vmtests.sh | 23 +++++++
->>>    tools/testing/selftests/mm/settings       |  2 +-
->>>    3 files changed, 64 insertions(+), 40 deletions(-)
->>>
->>> diff --git a/tools/testing/selftests/mm/Makefile
->>> b/tools/testing/selftests/mm/Makefile
->>> index 66d7c07dc177..881ed96d96fd 100644
->>> --- a/tools/testing/selftests/mm/Makefile
->>> +++ b/tools/testing/selftests/mm/Makefile
->>> @@ -35,39 +35,39 @@ MAKEFLAGS += --no-builtin-rules
->>>    CFLAGS = -Wall -I $(top_srcdir) $(EXTRA_CFLAGS) $(KHDR_INCLUDES)
->>>    LDLIBS = -lrt -lpthread
->>>    -TEST_GEN_PROGS = cow
->>> -TEST_GEN_PROGS += compaction_test
->>> -TEST_GEN_PROGS += gup_longterm
->>> -TEST_GEN_PROGS += gup_test
->>> -TEST_GEN_PROGS += hmm-tests
->>> -TEST_GEN_PROGS += hugetlb-madvise
->>> -TEST_GEN_PROGS += hugepage-mmap
->>> -TEST_GEN_PROGS += hugepage-mremap
->>> -TEST_GEN_PROGS += hugepage-shm
->>> -TEST_GEN_PROGS += hugepage-vmemmap
->>> -TEST_GEN_PROGS += khugepaged
->>> -TEST_GEN_PROGS += madv_populate
->>> -TEST_GEN_PROGS += map_fixed_noreplace
->>> -TEST_GEN_PROGS += map_hugetlb
->>> -TEST_GEN_PROGS += map_populate
->>> -TEST_GEN_PROGS += memfd_secret
->>> -TEST_GEN_PROGS += migration
->>> -TEST_GEN_PROGS += mkdirty
->>> -TEST_GEN_PROGS += mlock-random-test
->>> -TEST_GEN_PROGS += mlock2-tests
->>> -TEST_GEN_PROGS += mrelease_test
->>> -TEST_GEN_PROGS += mremap_dontunmap
->>> -TEST_GEN_PROGS += mremap_test
->>> -TEST_GEN_PROGS += on-fault-limit
->>> -TEST_GEN_PROGS += thuge-gen
->>> -TEST_GEN_PROGS += transhuge-stress
->>> -TEST_GEN_PROGS += uffd-stress
->>> -TEST_GEN_PROGS += uffd-unit-tests
->>> -TEST_GEN_PROGS += soft-dirty
->>> -TEST_GEN_PROGS += split_huge_page_test
->>> -TEST_GEN_PROGS += ksm_tests
->>> -TEST_GEN_PROGS += ksm_functional_tests
->>> -TEST_GEN_PROGS += mdwe_test
->>> +TEST_GEN_FILES = cow
->>> +TEST_GEN_FILES += compaction_test
->>> +TEST_GEN_FILES += gup_longterm
->>> +TEST_GEN_FILES += gup_test
->>> +TEST_GEN_FILES += hmm-tests
->>> +TEST_GEN_FILES += hugetlb-madvise
->>> +TEST_GEN_FILES += hugepage-mmap
->>> +TEST_GEN_FILES += hugepage-mremap
->>> +TEST_GEN_FILES += hugepage-shm
->>> +TEST_GEN_FILES += hugepage-vmemmap
->>> +TEST_GEN_FILES += khugepaged
->>> +TEST_GEN_FILES += madv_populate
->>> +TEST_GEN_FILES += map_fixed_noreplace
->>> +TEST_GEN_FILES += map_hugetlb
->>> +TEST_GEN_FILES += map_populate
->>> +TEST_GEN_FILES += memfd_secret
->>> +TEST_GEN_FILES += migration
->>> +TEST_GEN_FILES += mkdirty
->>> +TEST_GEN_FILES += mlock-random-test
->>> +TEST_GEN_FILES += mlock2-tests
->>> +TEST_GEN_FILES += mrelease_test
->>> +TEST_GEN_FILES += mremap_dontunmap
->>> +TEST_GEN_FILES += mremap_test
->>> +TEST_GEN_FILES += on-fault-limit
->>> +TEST_GEN_FILES += thuge-gen
->>> +TEST_GEN_FILES += transhuge-stress
->>> +TEST_GEN_FILES += uffd-stress
->>> +TEST_GEN_FILES += uffd-unit-tests
->>> +TEST_GEN_FILES += soft-dirty
->>> +TEST_GEN_FILES += split_huge_page_test
->>> +TEST_GEN_FILES += ksm_tests
->>> +TEST_GEN_FILES += ksm_functional_tests
->>> +TEST_GEN_FILES += mdwe_test
->>
->> IIRC, we recently converted all to TEST_GEN_PROGS. See
->>
->> commit aef6fde75d8c6c1cad4a0e017a8d4cbee2143723
->> Author: Peter Xu <peterx@redhat.com>
->> Date:   Wed Apr 12 12:42:18 2023 -0400
->>
->>      selftests/mm: use TEST_GEN_PROGS where proper
->>          TEST_GEN_PROGS and TEST_GEN_FILES are used randomly in the mm/Makefile to
->>      specify programs that need to build.  Logically all these binaries should
->>      all fall into TEST_GEN_PROGS.
->>          Replace those TEST_GEN_FILES with TEST_GEN_PROGS, so that we can reference
->>      all the tests easily later.
->>
->>
->> Why is that change required, and how does it interact with
->> run_kselftest.sh? (Not clear from you patch description.)
-> 
-> TEST_GEN_PROGS will compile and install the tests and will add them to the list
-> of tests that run_kselftest.sh will run. TEST_GEN_FILES will compile and install
-> the tests but will not add them to the test list.
-> 
-> Note that run_vmtests.sh is added to TEST_PROGS, which means it ends up in the
-> test list. (the lack of "_GEN" means it won't be compiled, but simply copied).
-> 
-> So with this change at the kselftest level, there is a single test in its list;
-> run_vmtests.sh. And all the other tests that were previously in that list are
-> moved into run_vmtests.sh (if they weren't there already).
-
-That sound good to me. (worth adding to the patch description)
-
-Let me CC Peter, so he's aware.
-
--- 
-Cheers,
-
-David / dhildenb
-
