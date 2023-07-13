@@ -2,130 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6CA4752086
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 13:56:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F3AB752090
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 13:57:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234076AbjGML40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 07:56:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54848 "EHLO
+        id S234398AbjGML5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 07:57:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233700AbjGML4Y (ORCPT
+        with ESMTP id S233058AbjGML5J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 07:56:24 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 365971FF7;
-        Thu, 13 Jul 2023 04:56:23 -0700 (PDT)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36DB25AG022881;
-        Thu, 13 Jul 2023 11:56:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=qcppdkim1;
- bh=Fga13ZkFTrt/INQb1lq4ET/V5SdAly1R4pBz1taBb90=;
- b=XbtU+gEO+bTQe/WH7NQNVNjgMgXrygFGowzA+0pT+9uXCcxzG0Jwucw0ZNLoqunUn6Fg
- ouXL1/PdAXWwzv2iz3t3MKSpVekfGee+BHVvuFIA73VeI5TRRFGYevJS16y4Sn6xJmSz
- FuVlEfZb4biNQSEPAX7e2VogmS5ARYSBa1tEg1El1Spo3Vo3vGbPr2Ko1Y5BRqaMpplM
- IXr3DWWqVfhrC4/UsurgzIk2lM2+WbiKjbgp8ss7+RRB4GamENGMmY3E9lFF7p4T1+0U
- WpeabH1id1zbZViSE4cQIqQZUMGUDx5ttBY1yecNpcHqaWd3hfN0CJLETIjHJd80ruZl OQ== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rtg1sg2w5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 13 Jul 2023 11:56:19 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36DBuII0032124
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 13 Jul 2023 11:56:18 GMT
-Received: from win-platform-upstream01.qualcomm.com (10.80.80.8) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+        Thu, 13 Jul 2023 07:57:09 -0400
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2084.outbound.protection.outlook.com [40.107.6.84])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D07592D48;
+        Thu, 13 Jul 2023 04:56:54 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EH1KO8+lagfabXSAkR0uVaxnV8VQ4tZEfexCFDg6vzspcdDN8RHfT2B46Oz9IIv+OlQNoeMWQ7lGHBvxHbZafflFX+b/Ul2iM2HKfWulanH6PEL1lQwhabgR/xLzLrPS7Hk2ZLpjRpxWW2nKl2tFIJrvtE9h/4vTF7fmbr+QmclDQMARJkQm4sMUJpZHdbcGTRw7YOyEgOBHi1pmE7OOl9d2OgPrJeDxYtwpj/oNnFRHdfqEFA086l39g8BO9yeGudy3+GBhVp61s3Lzmq/CW85y5m54neXRyH6h0qWhrPPdCovESi6rGiSxJ+VpF3OMSyMaDLt+TWSxUjew3I/2dg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=u3mFyp/VYjBVmw282+eG2V/tGp60c1ECHjK0ePqsEOo=;
+ b=PxBnbmnsr2VrHL/QXCE6RnZ6ZjjlnQKy+wpBjqpDHbEdPn9YeoR5ptj0zwV0RweMURwDidsvM47vv0AN491+jpV5JD/5fP6lJQlLEgK610RK3UI9TzqcgJu1R8ONmUAtTRDbvMCN6jpBzs9eoOvHFn04eU9IgajUx8jfmGmYifWtOQUuWhpnXrTjMpa40ZeJeCHgd359YUFv7drxSPjEOQzWW1wxagKzsBSJRN5WQq09A47s7fzj+ohuz6YdrVI3HEf7ZM5zwrVb01eBkrt7jyH36n0022dPtDeBOvKj6dDCV1DEi07uO79goVIDZGPu8VsXQHImOWA+ubkcJGrsxQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 194.138.21.76) smtp.rcpttodomain=ucw.cz smtp.mailfrom=siemens.com; dmarc=pass
+ (p=reject sp=reject pct=100) action=none header.from=siemens.com; dkim=none
+ (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=siemens.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=u3mFyp/VYjBVmw282+eG2V/tGp60c1ECHjK0ePqsEOo=;
+ b=WMGrfBiM/opE0sRYfcYOOCrQ3lcC/1CTABnfR8ozmYnoydIKlwDFjkoVJGvwGLWnc0/CiF+xypxXP26ifogIMiCE+1FuEmaHebJishK+EQqXEtfwFgigqxnWxnZ1d2WT765RFt/Nd6ZvGv1fKJfL6TE+KZkMCSVhqxULEtTGlKTfXt7qzkviLjuC4gjrmlO04bkrUdiEfC+0qqOWhA7lWCXrsW7TLjdq+h1Qc63qxubYLV2PUjVrJE5gCTGhMKg862tvARXxq3EvgFVN4BmWBdQ1A+L2ZHkZoWPkLk2Sy2tlTWSN7I85RNRK+JO3prO/Y16ZRnsrrwqVQ2CYEmBClQ==
+Received: from OS6P279CA0142.NORP279.PROD.OUTLOOK.COM (2603:10a6:e10:3a::16)
+ by AS2PR10MB6951.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:579::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.24; Thu, 13 Jul
+ 2023 11:56:51 +0000
+Received: from HE1EUR01FT080.eop-EUR01.prod.protection.outlook.com
+ (2603:10a6:e10:3a:cafe::11) by OS6P279CA0142.outlook.office365.com
+ (2603:10a6:e10:3a::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.24 via Frontend
+ Transport; Thu, 13 Jul 2023 11:56:51 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 194.138.21.76)
+ smtp.mailfrom=siemens.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=siemens.com;
+Received-SPF: Pass (protection.outlook.com: domain of siemens.com designates
+ 194.138.21.76 as permitted sender) receiver=protection.outlook.com;
+ client-ip=194.138.21.76; helo=hybrid.siemens.com; pr=C
+Received: from hybrid.siemens.com (194.138.21.76) by
+ HE1EUR01FT080.mail.protection.outlook.com (10.152.0.252) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6588.24 via Frontend Transport; Thu, 13 Jul 2023 11:56:51 +0000
+Received: from DEMCHDC8WAA.ad011.siemens.net (139.25.226.104) by
+ DEMCHDC8VSA.ad011.siemens.net (194.138.21.76) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Thu, 13 Jul 2023 04:56:15 -0700
-From:   Sridharan S N <quic_sridsn@quicinc.com>
-To:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Sridharan S N <quic_sridsn@quicinc.com>
-Subject: [PATCH 2/2] arm64: dts: qcom: ipq9574: add support for the RDP417 variant
-Date:   Thu, 13 Jul 2023 17:25:44 +0530
-Message-ID: <20230713115544.953998-3-quic_sridsn@quicinc.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230713115544.953998-1-quic_sridsn@quicinc.com>
-References: <20230713115544.953998-1-quic_sridsn@quicinc.com>
+ 15.2.1118.30; Thu, 13 Jul 2023 13:56:50 +0200
+Received: from md1za8fc.ppmd.siemens.net (139.25.69.128) by
+ DEMCHDC8WAA.ad011.siemens.net (139.25.226.104) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.25; Thu, 13 Jul 2023 13:56:50 +0200
+From:   Henning Schild <henning.schild@siemens.com>
+To:     Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        <linux-kernel@vger.kernel.org>, <linux-leds@vger.kernel.org>,
+        <platform-driver-x86@vger.kernel.org>
+CC:     Tobias Schaffner <tobias.schaffner@siemens.com>,
+        "xingtong . wu" <xingtong.wu@siemens.com>,
+        Henning Schild <henning.schild@siemens.com>
+Subject: [PATCH v2 0/2] leds: simatic-ipc-leds-gpio: add new model BX-21A
+Date:   Thu, 13 Jul 2023 13:56:37 +0200
+Message-ID: <20230713115639.16419-1-henning.schild@siemens.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: EjWQCZwVdAdpLS3kvUOMyqXpWx9ISLXT
-X-Proofpoint-ORIG-GUID: EjWQCZwVdAdpLS3kvUOMyqXpWx9ISLXT
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-13_05,2023-07-11_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 mlxlogscore=728 spamscore=0 impostorscore=0 mlxscore=0
- suspectscore=0 adultscore=0 clxscore=1011 priorityscore=1501 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2305260000 definitions=main-2307130105
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [139.25.69.128]
+X-ClientProxiedBy: DEMCHDC8WAA.ad011.siemens.net (139.25.226.104) To
+ DEMCHDC8WAA.ad011.siemens.net (139.25.226.104)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: HE1EUR01FT080:EE_|AS2PR10MB6951:EE_
+X-MS-Office365-Filtering-Correlation-Id: 22c94e3a-d686-4e87-1c1d-08db83983ea2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: zUVLPAbN1zP+wMugSMhTHZkiHsb+gwRBDrpfkS8mVTukbg4OdIU53RX+Y5VDgwqm9X12jE6F8RjFMA99jG7vki6oTvcKYCfZPUuB4NwsR2uZXHMLrLZ7oLRO6VKlAqcW12DKTgp3zMW4T2DO9NAlkw0UMa98r8NiqBkwBMkDJRvNAyQdpBV3Fehu90mbgBX1NwziqHYFWxpQ1vR7LDDj+x8sUOfAtSi3f8zyvx50jOcS1+v2yrrhrWhowT1xPKcfS+rksvFAD7pBFBdkVkH9bY/iHo0RQ91SXjV2a/ROPWRN/juPp00PnygZOm+rNTyD0Ou+ly6f/lYzMZspngV4WCMO/xrmEEgoA5dqnd0yv7P1acc6/qa7osFbCmB5liImm+hPKR/37KDRwwWhBRlhV6JPiBD8yCk+0CCfe97zXkEe2PufdkczDvsR9JxxpwNim8CE2b2UY9xCTtR9gD9ebvCYNRw55gGe8QJceW3kXNkwN1UCekHF7bSjmh37FKpgfOpJMtJpB20vXZRppeFjOm6PnBeB8HaMMmvGBY078oih8EPhWXSgJx6AgkDEYnFP5srdIeYLDFmX1hBo/fO5EbmpEdSZ2lVTuAmd3XiVwZQHd4+vJgoLxVHyqVF9JCaYSzCSK7m/NQCbulLoJv9PjBrqJzY5C74KzrcOPhHBmbIBrMMbxzROLlAMhgFCFPMRDaUg+T9hd5pIS7psKf9r8iJbMi+08yyNMb7zu44W5KO08bWujOmsJRn4SoomhuMK9t2T2ln4XcNIns2Jrk/HUg==
+X-Forefront-Antispam-Report: CIP:194.138.21.76;CTRY:DE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:hybrid.siemens.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(396003)(136003)(346002)(376002)(39860400002)(451199021)(46966006)(36840700001)(40470700004)(2906002)(82310400005)(81166007)(356005)(82740400003)(82960400001)(83380400001)(47076005)(16526019)(956004)(186003)(336012)(2616005)(107886003)(26005)(40480700001)(1076003)(36860700001)(5660300002)(40460700003)(86362001)(8936002)(8676002)(4744005)(36756003)(44832011)(110136005)(478600001)(54906003)(6666004)(41300700001)(70206006)(316002)(4326008)(70586007)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: siemens.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2023 11:56:51.1354
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 22c94e3a-d686-4e87-1c1d-08db83983ea2
+X-MS-Exchange-CrossTenant-Id: 38ae3bcd-9579-4fd4-adda-b42e1495d55a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=38ae3bcd-9579-4fd4-adda-b42e1495d55a;Ip=[194.138.21.76];Helo=[hybrid.siemens.com]
+X-MS-Exchange-CrossTenant-AuthSource: HE1EUR01FT080.eop-EUR01.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS2PR10MB6951
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the initial device tree support for the Reference Design
-Platform(RDP) 417 based on IPQ9574 family of SoC.
+change since v1:
+- split into two patches to separate leds from platform code and ease
+  merging
 
-This patch depends on below patchset:
-https://lore.kernel.org/lkml/20230713105909.14209-2-quic_anusha@quicinc.com/
+These are rather simple patches adding LED support for yet another Simatic
+IPC model.
 
-Signed-off-by: Sridharan S N <quic_sridsn@quicinc.com>
----
- arch/arm64/boot/dts/qcom/Makefile           |  1 +
- arch/arm64/boot/dts/qcom/ipq9574-rdp417.dts | 16 ++++++++++++++++
- 2 files changed, 17 insertions(+)
- create mode 100644 arch/arm64/boot/dts/qcom/ipq9574-rdp417.dts
+Henning Schild (2):
+  platform/x86: simatic-ipc: add another model BX-21A
+  leds: simatic-ipc-leds-gpio: add Elkhart Lake version
 
-diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
-index 337abc4ceb17..9c30344d08c1 100644
---- a/arch/arm64/boot/dts/qcom/Makefile
-+++ b/arch/arm64/boot/dts/qcom/Makefile
-@@ -12,6 +12,7 @@ dtb-$(CONFIG_ARCH_QCOM)	+= ipq6018-cp01-c1.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= ipq8074-hk01.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= ipq8074-hk10-c1.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= ipq8074-hk10-c2.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= ipq9574-rdp417.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= ipq9574-rdp418.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= ipq9574-rdp433.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= ipq9574-rdp449.dtb
-diff --git a/arch/arm64/boot/dts/qcom/ipq9574-rdp417.dts b/arch/arm64/boot/dts/qcom/ipq9574-rdp417.dts
-new file mode 100644
-index 000000000000..9a5d4c3db1f2
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/ipq9574-rdp417.dts
-@@ -0,0 +1,16 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
-+/*
-+ * IPQ9574 RDP417 board device tree source
-+ *
-+ * Copyright (c) 2020-2021 The Linux Foundation. All rights reserved.
-+ * Copyright (c) 2022-2023 Qualcomm Innovation Center, Inc. All rights reserved.
-+ */
-+
-+/dts-v1/;
-+
-+#include "ipq9574-rdp-common.dtsi"
-+
-+/ {
-+	model = "Qualcomm Technologies, Inc. IPQ9574/AP-AL01-C1";
-+	compatible = "qcom,ipq9574-ap-al01-c1", "qcom,ipq9574";
-+};
+ drivers/leds/simple/Kconfig                   | 13 +++++
+ drivers/leds/simple/Makefile                  |  1 +
+ .../leds/simple/simatic-ipc-leds-gpio-core.c  |  4 ++
+ .../simatic-ipc-leds-gpio-elkhartlake.c       | 57 +++++++++++++++++++
+ drivers/platform/x86/simatic-ipc.c            |  3 +
+ .../platform_data/x86/simatic-ipc-base.h      |  3 +-
+ include/linux/platform_data/x86/simatic-ipc.h |  3 +-
+ 7 files changed, 82 insertions(+), 2 deletions(-)
+ create mode 100644 drivers/leds/simple/simatic-ipc-leds-gpio-elkhartlake.c
+
 -- 
-2.34.1
+2.41.0
 
