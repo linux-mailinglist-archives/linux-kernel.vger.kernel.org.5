@@ -2,224 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B43A2751C51
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 10:55:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29884751C68
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 10:59:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234084AbjGMIzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 04:55:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55276 "EHLO
+        id S234641AbjGMI7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 04:59:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233741AbjGMIzK (ORCPT
+        with ESMTP id S234632AbjGMI7O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 04:55:10 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1ED51BB
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 01:55:08 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-caf3a97aa3dso428001276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 01:55:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689238508; x=1691830508;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=mvy/EMrBnpulduSmMNLqJP+nI2s3mvHLILhwx65lZzg=;
-        b=n/4CMkr4qcI041dReHtmELq5ltPXDA8cbnDEnrDVW/N4+L5e3L8ni+CbAxQU/e4eP5
-         s81fZfsz295AJttgBoNxIGX7U2yru2axJ6M4pCLjn7tHYzkeHlvKC/0TD8ek3UphWmVp
-         05dFtg+DPS8skpG2b2VeGgh/Pt+5p38QTvjygKPWS47F5bmcjEH87Js6jWz5+SLT+dPZ
-         PZJPf0M1fHyqW5i/uzrhIrvPn5QbXq9KgS12S/A896e+ZLcYxOz2AkgHYX21oDVgDRQh
-         6NlYsNu4CcVtjDqZ28LpwMt2g4ZdYNNt1tV22wathsGULaafqPHisoq8qZ2VlxDtkLZm
-         u/VA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689238508; x=1691830508;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=mvy/EMrBnpulduSmMNLqJP+nI2s3mvHLILhwx65lZzg=;
-        b=e3WYW/DCbRACSA0W6KVhgyww2f/veLV4bhJ8EUgb9InsFOh3iv5u8zTTTtIjOzXNRC
-         2C2wtczy/rrtQcxS9kd/2KZcEOOOK/+L+jGh4Crq49TuZptmHLQIbMXh5MDTnWECc9kk
-         EIj7msVg06n3gi+Id/ZoqsmvEldU9w48KH3ES5BgAznVxaMJuDunslKdOyuRXgwG2PW8
-         CZ9SkokT4VpwijLuBdeWZPwMUoKLvXgtt9YaxXKZNFGptZjiVm2mZpIB354OzaVMzBLY
-         z3DlX4xFa709EhWszMtcpmIv5D8n7SKmzZdttNw2JLcF1PxVJoc+pEI7g+HQ7UPn1XLs
-         +Ysg==
-X-Gm-Message-State: ABy/qLaYYLn0colKV4xFWRdMR/zHQBdl7ysldmQvG2T6B4XZCWhWlaQJ
-        NNmu7eWdU62jq1XK8cq54pUo1CvywYTKuazEWBvzZg==
-X-Google-Smtp-Source: APBJJlHLk2NajIUnrpoa5kWE3qfd685DCFLowb3S1Uu55NjcG42lVYQrHMU7nHsK/lAXhXD6MXiXp51m+5u94OlNxT0=
-X-Received: by 2002:a0d:c884:0:b0:579:e8de:3580 with SMTP id
- k126-20020a0dc884000000b00579e8de3580mr1101134ywd.9.1689238507937; Thu, 13
- Jul 2023 01:55:07 -0700 (PDT)
+        Thu, 13 Jul 2023 04:59:14 -0400
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2131.outbound.protection.outlook.com [40.107.215.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DC6BE42
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 01:59:13 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Q8iNT035x1iG/n/2EEDWVVnurirdvXje6Mm1KVE7icz+EzE5Ovj01M5cLbVu0oKasAg+4GReE7RWNecqWRF14IBveTL7d2RykoqtXsy2w0N2tWxmpm9AcqkoT8vNZdM/k3SxGBCTCgmXW0b74aX1ShtKWJCeMO1r46ROMWcRVejwMI0eILk3UHqnRIOv69cVzeLYAO/N8s8yb88m/bBr5qkltOjX9W0SdM6iX3Q1uJVmkisPc/yHx6VyidI3y8gDqx4k2KawcnBEA3pqHVTQsHqBl7nge/jNTLS6U4r1Lt5IEuoK+OD9ftD2A/KDB83YpHA9DYSqLDkug30zhukFDA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZybLNZ2lJsTIlCwv9OVrdRsv3EK7P64YMJwpUUL3gaA=;
+ b=FdZUcOXWvgQohYUCduoqHLEprG+xxIsu03eTPVERMzzEn/LTSEPXi/KYil9qoMwhJ8exvSRbcsJIzUYaKDJ+tTCDs7GmFZBD3AaUunBEon9aRVuzLIGuCNoSKkNUJZ5Rl4oWtlekO6FQiQ5uBSxE67aOhDkICtd41wSlO8UAXMZ2j53eO9Il/bZDYMBLRCM5x7BCPwoYZjUeyHoN8cJpMtMweOwq7U6rhaLSr24bYvBFtdmx39kerL8oXB1pQ+xIpc7+ngBLXP1vZa/pK6Oxm8FmkuOWAcdnNHpe3iHoLUVdCEmZMjnk9Jq8zd0O7QCNw8ZHzRc9fnAhDdgKXFRgLw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZybLNZ2lJsTIlCwv9OVrdRsv3EK7P64YMJwpUUL3gaA=;
+ b=Q8aedkKewLu08kC9EnjLT9OlZpX51OvHPy4JOJJgyvnDZICmGr+Eg+lC30urFoBvAiWyut8lFyvZIx1c+IajKJT7JwELrx7eHb1eOxak84D8R4MYOIch/UMPbcc0VaaKDKGynfAD5PRRWAE2KrhnB3oRT3XIRatVerV0quySRTBqzx7Kn1doBQdyo8+niS7TMGL9eHbADc0lEhE+JP0BMVE2O1JnbbiQTtb1wbbFE10wCt48vbI2W4JMqmagovSFFXIfwvuX66S+/8XEQdh9cC7cu7kISIAlI9mjr6FVX3b1laZ+Mm9ZHhfe2kAEGGAzT+e731BdaGDZ3FFb3jApUg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from SG2PR06MB3743.apcprd06.prod.outlook.com (2603:1096:4:d0::18) by
+ KL1PR0601MB4452.apcprd06.prod.outlook.com (2603:1096:820:7d::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6565.32; Thu, 13 Jul
+ 2023 08:59:08 +0000
+Received: from SG2PR06MB3743.apcprd06.prod.outlook.com
+ ([fe80::2a86:a42:b60a:470c]) by SG2PR06MB3743.apcprd06.prod.outlook.com
+ ([fe80::2a86:a42:b60a:470c%4]) with mapi id 15.20.6588.024; Thu, 13 Jul 2023
+ 08:59:08 +0000
+From:   Wang Ming <machel@vivo.com>
+To:     Jon Mason <jdmason@kudzu.us>, Dave Jiang <dave.jiang@intel.com>,
+        Allen Hubbe <allenbh@gmail.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Wang Ming <machel@vivo.com>, Dan Carpenter <error27@gmail.com>,
+        Jiasheng Jiang <jiasheng@iscas.ac.cn>, ntb@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Cc:     opensource.kernel@vivo.com, dan.carpenter@linaro.org
+Subject: [PATCH v3]  ntb: Remove error checking for debugfs_create_dir()
+Date:   Thu, 13 Jul 2023 16:56:06 +0800
+Message-Id: <20230713085621.3380-1-machel@vivo.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR06CA0233.apcprd06.prod.outlook.com
+ (2603:1096:4:ac::17) To SG2PR06MB3743.apcprd06.prod.outlook.com
+ (2603:1096:4:d0::18)
 MIME-Version: 1.0
-References: <1687246361-23607-1-git-send-email-quic_taozha@quicinc.com>
- <1687246361-23607-10-git-send-email-quic_taozha@quicinc.com>
- <2023062024-sincere-tripod-95dc@gregkh> <3aca4a55-0dc7-b34c-d2c0-111a96c33ec3@quicinc.com>
- <e82385f1-de55-4c70-5c5c-35b93a5b2488@arm.com> <d3849c2a-8826-62a7-1749-0d4b3ee47259@quicinc.com>
-In-Reply-To: <d3849c2a-8826-62a7-1749-0d4b3ee47259@quicinc.com>
-From:   Mike Leach <mike.leach@linaro.org>
-Date:   Thu, 13 Jul 2023 09:54:56 +0100
-Message-ID: <CAJ9a7VgRFDFoZgRQ_J62We7vJ2D_yULH18S5FwAnB4S+oi2npA@mail.gmail.com>
-Subject: Re: [PATCH v6 09/13] Add nodes for dsb edge control
-To:     Tao Zhang <quic_taozha@quicinc.com>
-Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Konrad Dybcio <konradybcio@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Jinlong Mao <quic_jinlmao@quicinc.com>,
-        Leo Yan <leo.yan@linaro.org>, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Tingwei Zhang <quic_tingweiz@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
-        Trilok Soni <quic_tsoni@quicinc.com>,
-        Hao Zhang <quic_hazha@quicinc.com>,
-        linux-arm-msm@vger.kernel.org, andersson@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SG2PR06MB3743:EE_|KL1PR0601MB4452:EE_
+X-MS-Office365-Filtering-Correlation-Id: 04db0f89-f25f-48a0-5987-08db837f6ab7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: l+HGcIUb63W2SRCEQ51V7DiScneIrKYyUo5yQWZTjEOU9do6KPw4Pq+DB94yh2PZS+Z8XSId/NfRVlsNnfsx184uGUCcRg/uFGM7eywKjIpjLi6brOXxclwBKesfZ1l7gMCGKiAYjiHLoSrJfhih4/4ol/qm9uKRoQB3pUO4Ncfj3HHo2zyxo6eMy1ClVt+HOBVZ/ghVSUd9wth5bF3obgCFsfxwFd8PDjcXKVfonGmpvRMfAzN3ONgO6dv7FxG1qcSy6MKJ0MwSt0L66FdBjrroYV7r/XINwaO1ls4lHqoouCSayeWy0ZcrhxWgkN9NIV5zvUATbqN6CrYsBRQZkwqTblzAEDhvjnRXdgpMV/y00KZxAZ3zmV/oKZezZfyEB9pbiYUMHOuxgg3VuJmExPOmiDeHuIjIR23QTpPhv9EjiP630vlkP4cQ16nVjWO8r/6svRv93xyq1g38fE7Be+AjaBpbWVnFjpf+smMdzrYcLPnDxRpRJWgqEPe4jWsSUDSWcVUrccGZOG6AmR2usWi2ivskNBP5Ald+9k8GNj+Rptvz44S1X7WzniiXQofot7efzHG+GoosEIsUtpDu6D4XFAvNbeoAJCihFjRLJI5s0l+OcqNwYO3G99T+TCiD
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB3743.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(376002)(396003)(136003)(39860400002)(366004)(451199021)(478600001)(4744005)(66946007)(110136005)(4326008)(2906002)(5660300002)(316002)(41300700001)(8676002)(8936002)(66556008)(66476007)(6512007)(6486002)(26005)(6506007)(1076003)(52116002)(38350700002)(38100700002)(186003)(83380400001)(2616005)(36756003)(86362001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Ki0jQA3hfBHfAYydaa8pmKLYC3lF7n5wZm3HxzlS2Kj/vfUOPjU9gPQOHonz?=
+ =?us-ascii?Q?obCXunfHh+BY4J2IXbQ4v9acwvL1RSPXxj+I1BI/7UrFFTYlrd6zxyYU7uQ3?=
+ =?us-ascii?Q?McLhu1hLShNt52lhyO9BVtNWcpWsm6AsKAyxqorsod2w1HbSxS78NStvQeEr?=
+ =?us-ascii?Q?KfU4rdxvsUbCfCRv6LMao05gM5PNIseYSdY3Chdxkkd5TM4ti/Ydk6cAkEoQ?=
+ =?us-ascii?Q?rdn0Utu++y8CZhHrqlwz1+De19W1aQQllES/ty4NnOothtjb7uCPedyJ6+/H?=
+ =?us-ascii?Q?FPSQ0Hp1/qNhM9gldKrB7HR7Ap0DMwa/IWivLzZ0LxKPGjZL78lecOot4c1B?=
+ =?us-ascii?Q?lOgte5PzJOzKLtOOP2uNaNnbjKbGfYFzj5WWhhlyel4305T8t/O9mTnDW5At?=
+ =?us-ascii?Q?rQEucE5tPAMYAKyXrq/G/MJCwS8B/LerSk4L5V4EmBV2DsS9S2bJAe6KKSw6?=
+ =?us-ascii?Q?MJhcmbmz6aWeKx8TzRIQftskT4KRs+X4/IgIyTKPvIOFh+JlC6iHO8zfsN6K?=
+ =?us-ascii?Q?pGqMPUi7vZeAUH+JzWU5j6zqyDeXoiit44CZxO6VpvPWE/Tes0AX/omSkvMn?=
+ =?us-ascii?Q?zZqLNcK96NpAGaR1VUDhnXNMUcne2uQJq6xRYxWoTbobtZf08YYFJIM5o3gw?=
+ =?us-ascii?Q?ylHCAWvub6qfNdPyqdGZIvis3DZRsoTN9o1CBubQT10MQil1dT3Qcd7jzeYw?=
+ =?us-ascii?Q?EqRvcQhTaKdvG8YJTKjyfp24vqd40jnYV3g1eNLAYoN3NoBOb0aNmZtWuU4y?=
+ =?us-ascii?Q?+0MAbXoFew9Jdk5q4azBZqLOesHYGLdFy4a4k3dlNzQgl3Ph4W8vROo8MXrs?=
+ =?us-ascii?Q?rV5VYYZl1cMj7fVmkXnOH3m8urAvAeiov9JOLsQ9rVb0/cIfUa1TOTZ1Wv5h?=
+ =?us-ascii?Q?lHpxWEyhdYDl7QMXP5AQoZdGySjsKCrAYMK7Q02zirjFCnQABJraaYm9t/q5?=
+ =?us-ascii?Q?DOFum3alp5CwJbjxQX+ejHRLdRk4XduzB5y8QdLFpH+m9IuVGn/j2cQ7ptyj?=
+ =?us-ascii?Q?O2OiFmlNjllcODflGl92VbJd252WzRUDr0FD4S/RbM/cdNDkVz3VUS48Mrc3?=
+ =?us-ascii?Q?N/tv1bkOk39Cmkea15LEtr558ZTY9hFLtoHDJMvEjAcNYx7KbORhoWcw46Z/?=
+ =?us-ascii?Q?2mOqFPMITEY7ps9mXiHitxzeV3caaDWwC3SlvE5+anhSZr3NgDBgBzl9xJ7V?=
+ =?us-ascii?Q?3lphlqESW1qyU8D9dBvbn7S/yGKbHiEXieSa0vZGipr4O2Tcov4LfyA9CY+0?=
+ =?us-ascii?Q?ImJAsZfjnkIB4bxZfmVqVdrhIA7r2iPnpmjemn3W8MplGqQZi195gsoh1/ea?=
+ =?us-ascii?Q?s+t4dDc5NZTBHfzSQCh+mmu7ADr/5G4MD5iPLnQhMvxcXb5UUVOzrNhJpXh2?=
+ =?us-ascii?Q?MUA+PQkHo2M6r0YBLdF0gihSTZgn8qSfTyaHgXbwFr/sUw6TRcfW5OqSDVIx?=
+ =?us-ascii?Q?LYsdumd+606TCFGi6sLyG4MH5xXRnW31mX5k5mnfClFMvLp2XFqsegnVkbyi?=
+ =?us-ascii?Q?Lj7UIOHjES6+6tiWphjDwILpf4BR0esQBUgcAG8REfO4IuaeBrN45mSFztOR?=
+ =?us-ascii?Q?oZX/o3FthHxovaPwEox8t58ylXLwls12hGQJ5hYO?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 04db0f89-f25f-48a0-5987-08db837f6ab7
+X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB3743.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2023 08:59:07.9606
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7RZ2IY5d7zRi8etEga2FSYieCoNyk/h5nVHUzSgwGKPiX6AIw4POJdWqPGCD4THxy3oA2poYsfGexP5NhlcRlQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR0601MB4452
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HI Tao,
+It is expected that most callers should _ignore_ the errors
+return by debugfs_create_dir() in tool_setup_dbgfs()
 
-On Wed, 12 Jul 2023 at 14:53, Tao Zhang <quic_taozha@quicinc.com> wrote:
->
->
-> On 6/20/2023 9:41 PM, Suzuki K Poulose wrote:
-> > On 20/06/2023 09:31, Tao Zhang wrote:
-> >>
-> >> On 6/20/2023 3:37 PM, Greg Kroah-Hartman wrote:
-> >>> On Tue, Jun 20, 2023 at 03:32:37PM +0800, Tao Zhang wrote:
-> >>>> Add the nodes to set value for DSB edge control and DSB edge
-> >>>> control mask. Each DSB subunit TPDM has maximum of n(n<16) EDCR
-> >>>> resgisters to configure edge control. DSB edge detection control
-> >>>> 00: Rising edge detection
-> >>>> 01: Falling edge detection
-> >>>> 10: Rising and falling edge detection (toggle detection)
-> >>>> And each DSB subunit TPDM has maximum of m(m<8) ECDMR registers to
-> >>>> configure mask. Eight 32 bit registers providing DSB interface
-> >>>> edge detection mask control.
-> >>>>
-> >>>> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
-> >>>> ---
-> >>>>   .../ABI/testing/sysfs-bus-coresight-devices-tpdm   |  32 +++++
-> >>>>   drivers/hwtracing/coresight/coresight-tpdm.c       | 143
-> >>>> ++++++++++++++++++++-
-> >>>>   drivers/hwtracing/coresight/coresight-tpdm.h       |  22 ++++
-> >>>>   3 files changed, 196 insertions(+), 1 deletion(-)
-> >>>>
-> >>>> diff --git
-> >>>> a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
-> >>>> b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
-> >>>> index 2a82cd0..34189e4a 100644
-> >>>> --- a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
-> >>>> +++ b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
-> >>>> @@ -60,3 +60,35 @@ Description:
-> >>>>           Bit[3] : Set to 0 for low performance mode.
-> >>>>                    Set to 1 for high performance mode.
-> >>>>           Bit[4:8] : Select byte lane for high performance mode.
-> >>>> +
-> >>>> +What: /sys/bus/coresight/devices/<tpdm-name>/dsb_edge_ctrl
-> >>>> +Date:        March 2023
-> >>>> +KernelVersion    6.5
-> >>>> +Contact:    Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao
-> >>>> Zhang (QUIC) <quic_taozha@quicinc.com>
-> >>>> +Description:
-> >>>> +        Read/Write a set of the edge control registers of the DSB
-> >>>> +        in TPDM.
-> >>>> +
-> >>>> +        Expected format is the following:
-> >>>> +        <integer1> <integer2> <integer3>
-> >>> sysfs is "one value", not 3.  Please never have to parse a sysfs file.
-> >>
-> >> Do you mean sysfs file can only accept "one value"?
-> >>
-> >> I see that more than one value are written to the sysfs file
-> >> "trigout_attach".
-> >>
-> >>>
-> >>>> +static ssize_t dsb_edge_ctrl_show(struct device *dev,
-> >>>> +                       struct device_attribute *attr,
-> >>>> +                       char *buf)
-> >>>> +{
-> >>>> +    struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-> >>>> +    ssize_t size = 0;
-> >>>> +    unsigned long bytes;
-> >>>> +    int i;
-> >>>> +
-> >>>> +    spin_lock(&drvdata->spinlock);
-> >>>> +    for (i = 0; i < TPDM_DSB_MAX_EDCR; i++) {
-> >>>> +        bytes = sysfs_emit_at(buf, size,
-> >>>> +                  "Index:0x%x Val:0x%x\n", i,
-> >>> Again, no, one value, no "string" needed to parse anything.
-> >>
-> >> I also see other sysfs files can be read more than one value in other
-> >> drivers.
-> >>
-> >> Is this "one value" limitation the usage rule of Linux sysfs system?
-> >>
-> >> Or am I misunderstanding what you mean?
-> >
-> > Please fix the other sysfs tunables in the following patches.
->
-> List a new solution for the similar cases below, please see if this
-> design is reasonable?
->
-> 1. Two SysFS files("dsb_edge_ctrl_idx" and "dsb_edge_ctrl_val") will be
-> created in this case.
->
-> 2. First write to the node "dsb_edge_ctrl_idx" to set the index number
-> of the edge detection.
->
-> 3. Then write to the node "dsb_edge_ctrl_val" to set the value of the
-> edge detection.
->
-> For example, if we need need to set "Falling edge detection" to the edge
-> detection #220-#222, we can issue the following commands.
->
-> echo 0xdc > tpdm1/dsb_edge_ctrl_idx
->
-> echo 0x1 > tpdm1/dsb_edge_ctrl_val
->
-> echo 0xdd > tpdm1/dsb_edge_ctrl_idx
->
-> echo 0x1 > tpdm1/dsb_edge_ctrl_val
->
-> echo 0xde > tpdm1/dsb_edge_ctrl_idx
->
-> echo 0x1 > tpdm1/dsb_edge_ctrl_val
->
-> If this design is acceptable, we will rewrite other similar nodes based
-> on this solution.
->
+Signed-off-by: Wang Ming <machel@vivo.com>
+---
+ drivers/ntb/test/ntb_tool.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-This index / value model is used in the coresight drivers so should be
-OK - eg etm4 has cntr_idx / cntrldvr / cntr_val / cntr_ctrl, where
-index selects the counter, and the other val registers are applied to
-that counter.
-
-Mike
-
-> Let me know if you have any concerns or good suggestions for this solution.
->
->
-> Best,
->
-> Tao
->
-> >
-> > Kind regards
-> > Suzuki
-> >
-> >
-
-
-
+diff --git a/drivers/ntb/test/ntb_tool.c b/drivers/ntb/test/ntb_tool.c
+index eeeb4b1c97d2..e0acc11d29ba 100644
+--- a/drivers/ntb/test/ntb_tool.c
++++ b/drivers/ntb/test/ntb_tool.c
+@@ -1495,8 +1495,6 @@ static void tool_setup_dbgfs(struct tool_ctx *tc)
+ 
+ 	tc->dbgfs_dir = debugfs_create_dir(dev_name(&tc->ntb->dev),
+ 					   tool_dbgfs_topdir);
+-	if (!tc->dbgfs_dir)
+-		return;
+ 
+ 	debugfs_create_file("port", 0600, tc->dbgfs_dir,
+ 			    tc, &tool_port_fops);
 -- 
-Mike Leach
-Principal Engineer, ARM Ltd.
-Manchester Design Centre. UK
+2.25.1
+
