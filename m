@@ -2,51 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 081B975153C
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 02:25:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74B027515DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 03:42:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232608AbjGMAZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 20:25:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39144 "EHLO
+        id S233180AbjGMBmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 21:42:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233368AbjGMAZa (ORCPT
+        with ESMTP id S233205AbjGMBmP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 20:25:30 -0400
-Received: from ixit.cz (ip-89-177-23-149.bb.vodafone.cz [89.177.23.149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 182A510EC;
-        Wed, 12 Jul 2023 17:25:28 -0700 (PDT)
-Received: from newone.lan (unknown [10.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id 4F826160C4E;
-        Thu, 13 Jul 2023 02:25:26 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1689207926;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=o99awW2/5nshzVGu2kPPy6jzqmm9Okff9ZDqEfq4a0M=;
-        b=LQigs0oGR4PjrhwnXTBaI5eGF4ZFONXw6AULqTAO2Pg4atckzbtbgT1U9+8m4hAL5Cr+BV
-        UaGG2vI4AcHEZcHOyoRn/ZaPN+6J+DeP6Dq3oM2TOXaYp6bqHsp0lsDNFjO/s+YJ2mQSrh
-        +MgADUZwLfrUidc1tG9WLm7nc+gAJ8I=
-From:   David Heidelberg <david@ixit.cz>
-To:     MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     David Heidelberg <david@ixit.cz>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: [PATCH] dt-bindings: extcon: extcon-usb-gpio: convert to yaml format
-Date:   Thu, 13 Jul 2023 02:25:18 +0200
-Message-Id: <20230713002519.109392-1-david@ixit.cz>
-X-Mailer: git-send-email 2.40.1
+        Wed, 12 Jul 2023 21:42:15 -0400
+X-Greylist: delayed 1801 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 12 Jul 2023 18:42:13 PDT
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:242:246e::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 152991FEE;
+        Wed, 12 Jul 2023 18:42:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+        Resent-Cc:Resent-Message-ID; bh=m3po4FiRsuRaodVf3w1lKGRDQNG5T/ke8/cTCsTCpi0=;
+        t=1689212533; x=1690422133; b=EzF0nwhmzXPInb/EC4kTZO9WQzs1BCBZclq9VKpD7u+Oi+C
+        ZvH7ocEqCvxafHLwgapM6jHGE1C7/X5b+LkEWP9ZEFpBucgRD1dLJP41VsOlEiHJOwK6VKKn/5/8o
+        8U+/Rtyogf2TTB4a1mCM7f7mbL9RT09bfqfliyYl2nQksZm39QY1vrzTknEhcRjGOiSqx5dYISHZF
+        lyns2lU0Asay7cKxhO90vz+Q3WMLZ2r+Ru/ujvw6155gNXNvoW9wpUXLlv7DkQ/Sg0F+rL9oJ2LSu
+        exCiHKSyFXPbRY8W9EzEIMtE4llRHlP/5jTecbZT6D0h3Xkq12sQKvnLS+T3MLCg==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.96)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1qJkC3-0004Hv-1i;
+        Thu, 13 Jul 2023 02:28:27 +0200
+Message-ID: <2d26c0028590a80e7aa80487cbeffd5ca6e6a5ea.camel@sipsolutions.net>
+Subject: Re: [PATCH] USB: disable all RNDIS protocol drivers
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Oliver Neukum <oneukum@suse.com>,
+        Enrico Mioso <mrkiko.rs@gmail.com>,
+        Jan Engelhardt <jengelh@inai.de>, linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Kalle Valo <kvalo@kernel.org>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Maciej =?UTF-8?Q?=C5=BBenczykowski?= <maze@google.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Andrzej Pietrasiewicz <andrzejtp2010@gmail.com>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        =?UTF-8?Q?=C5=81ukasz?= Stelmach <l.stelmach@samsung.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
+        linux-wireless@vger.kernel.org,
+        Ilja Van Sprundel <ivansprundel@ioactive.com>,
+        Joseph Tartaro <joseph.tartaro@ioactive.com>
+Date:   Thu, 13 Jul 2023 02:28:26 +0200
+In-Reply-To: <2023071222-asleep-vacancy-4cfa@gregkh>
+References: <20221123124620.1387499-1-gregkh@linuxfoundation.org>
+         <n9108s34-9rn0-3n8q-r3s5-51r9647331ns@vanv.qr> <ZKM5nbDnKnFZLOlY@rivendell>
+         <2023070430-fragment-remember-2fdd@gregkh>
+         <e5a92f9c-2d56-00fc-5e01-56e7df8dc1c1@suse.com>
+         <6a4a8980912380085ea628049b5e19e38bcd8e1d.camel@sipsolutions.net>
+         <2023071222-asleep-vacancy-4cfa@gregkh>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-malware-bazaar: not-scanned
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RDNS_DYNAMIC,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,92 +77,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: David Heidelberg <david@ixit.cz>
----
- .../bindings/extcon/extcon-usb-gpio.txt       | 21 ---------
- .../bindings/extcon/extcon-usb-gpio.yaml      | 45 +++++++++++++++++++
- 2 files changed, 45 insertions(+), 21 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/extcon/extcon-usb-gpio.txt
- create mode 100644 Documentation/devicetree/bindings/extcon/extcon-usb-gpio.yaml
+On Wed, 2023-07-12 at 18:39 +0200, Greg Kroah-Hartman wrote:
+> On Wed, Jul 12, 2023 at 03:00:55PM +0200, Johannes Berg wrote:
+> > On Wed, 2023-07-12 at 11:22 +0200, Oliver Neukum wrote:
+> > >=20
+> > > On 04.07.23 08:47, Greg Kroah-Hartman wrote:
+> > > > On Mon, Jul 03, 2023 at 11:11:57PM +0200, Enrico Mioso wrote:
+> > > > > Hi all!!
+> > > > >=20
+> > > > > I think the rndis_host USB driver might emit a warning in the dme=
+sg, but disabling the driver wouldn't be a good idea.
+> > > > > The TP-Link MR6400 V1 LTE modem and also some ZTE modems integrat=
+ed in routers do use this protocol.
+> > > > >=20
+> > > > > We may also distinguish between these cases and devices you might=
+ plug in - as they pose different risk levels.
+> > > >=20
+> > > > Again, you have to fully trust the other side of an RNDIS connectio=
+n,
+> > > > any hints on how to have the kernel determine that?
+> >=20
+> > > it is a network protocol. So this statement is kind of odd.
+> > > Are you saying that there are RNDIS messages that cannot be verified
+> > > for some reason, that still cannot be disclosed?
+> >=20
+> > Agree, it's also just a USB device, so no special trickery with DMA,
+> > shared buffers, etc.
+> >=20
+> > I mean, yeah, the RNDIS code is really old and almost certainly has a
+> > severe lack of input validation, but that still doesn't mean it's
+> > fundamentally impossible.
+>=20
+> You all are going to make me have to write some exploits aren't you...
 
-diff --git a/Documentation/devicetree/bindings/extcon/extcon-usb-gpio.txt b/Documentation/devicetree/bindings/extcon/extcon-usb-gpio.txt
-deleted file mode 100644
-index dfc14f71e81f..000000000000
---- a/Documentation/devicetree/bindings/extcon/extcon-usb-gpio.txt
-+++ /dev/null
-@@ -1,21 +0,0 @@
--USB GPIO Extcon device
--
--This is a virtual device used to generate USB cable states from the USB ID pin
--connected to a GPIO pin.
--
--Required properties:
--- compatible: Should be "linux,extcon-usb-gpio"
--
--Either one of id-gpio or vbus-gpio must be present. Both can be present as well.
--- id-gpio: gpio for USB ID pin. See gpio binding.
--- vbus-gpio: gpio for USB VBUS pin.
--
--Example: Examples of extcon-usb-gpio node in dra7-evm.dts as listed below:
--	extcon_usb1 {
--		compatible = "linux,extcon-usb-gpio";
--		id-gpio = <&gpio6 1 GPIO_ACTIVE_HIGH>;
--	}
--
--	&omap_dwc3_1 {
--		extcon = <&extcon_usb1>;
--	};
-diff --git a/Documentation/devicetree/bindings/extcon/extcon-usb-gpio.yaml b/Documentation/devicetree/bindings/extcon/extcon-usb-gpio.yaml
-new file mode 100644
-index 000000000000..b345745013a2
---- /dev/null
-+++ b/Documentation/devicetree/bindings/extcon/extcon-usb-gpio.yaml
-@@ -0,0 +1,45 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/extcon/extcon-usb-gpio.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: USB GPIO Extcon device
-+
-+maintainers:
-+  - Linus Walleij <linus.walleij@linaro.org>
-+
-+description:
-+  This is a virtual device used to generate USB cable states
-+  from the USB ID pin connected to a GPIO pin.
-+
-+properties:
-+  compatible:
-+    const: linux,extcon-usb-gpio
-+
-+  id-gpio:
-+    description: GPIO for USB ID pin.
-+
-+  vbus-gpio:
-+    description: GPIO for USB VBUS pin.
-+
-+required:
-+  - compatible
-+
-+anyOf:
-+  - required:
-+      - id-gpio
-+  - required:
-+      - vbus-gpio
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+    extcon_usb1 {
-+        compatible = "linux,extcon-usb-gpio";
-+        id-gpio = <&gpio6 1 GPIO_ACTIVE_HIGH>;
-+    };
-+
-+...
--- 
-2.40.1
+This is getting a bit childish. Nobody ever said that wasn't possible,
+in fact I did say exactly above that I'm sure since it's old and all it
+lacks input validation. So yeah, I full well believe that you can write
+exploits for it.
 
+All we said is that your statement of "RNDIS is fundamentally unfixable"
+doesn't make a lot of sense. If this were the case, all USB drivers
+would have to "trust the other side" as well, right?
+
+johannes
