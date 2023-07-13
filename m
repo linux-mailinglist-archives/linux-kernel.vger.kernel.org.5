@@ -2,303 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD00F75155A
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 02:34:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4BC275155D
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 02:37:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232341AbjGMAeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 20:34:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41528 "EHLO
+        id S232820AbjGMAho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 20:37:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229808AbjGMAeM (ORCPT
+        with ESMTP id S232516AbjGMAhm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 20:34:12 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B30918E;
-        Wed, 12 Jul 2023 17:34:11 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CAA67619E3;
-        Thu, 13 Jul 2023 00:34:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32C4EC433CD;
-        Thu, 13 Jul 2023 00:34:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689208450;
-        bh=h0GsuVfwe0mSJLf0CUYKSs4tBJsF9ZFlVOYHCDQ2FTM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=GahPxDoylll4i3tp/d3OvcPh8d1ShV9I+8WcM7ZT2D2sLN6p2rKK/m09g2zRz4qcy
-         F2rySwRVdeC9m/VNG8y7Auf5xjQ8GGv7sxGAjv2QnHfsO5P2qPwfEVHDHz4upR1Stb
-         0svGsYKHnp2OnB4tcPiWlEDxQzWwM037lnQ5L+3SmZzdANAN1VFD3JCu1h0EOXahy2
-         jebbI+IQsmVRtyUUQ3Fkwsj2y53ZoC9wenHyp41klp+7y3eG/WWnkmRP3fLSUhA9Gk
-         m47jp8V7hlVaFKOXnHMbs0HZL2xB8/Oj1RPqDKYfLvCFdmDCBJtnDQ5ekkthJ0BbY4
-         WtUWhH+ZPTeKw==
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-51e344efd75so219121a12.1;
-        Wed, 12 Jul 2023 17:34:10 -0700 (PDT)
-X-Gm-Message-State: ABy/qLYKsp7176Jaq1X0/6t09aUmTF5uuvryeSofiQXslGbkBDo2Kq/p
-        r5xqAsLJQ/5Ij5DkFqZpzGOv7MwGAcOgLAekxNU=
-X-Google-Smtp-Source: APBJJlEQ6/L9+3l57KhL+DrBeyOgp7Hj5REivD3lG0Hw7HlvPx05nt5j8UOGP7wiPPCSny/+2qvXQ5HhjYPk4/43tWc=
-X-Received: by 2002:aa7:de0d:0:b0:51e:1c5c:b97f with SMTP id
- h13-20020aa7de0d000000b0051e1c5cb97fmr669974edv.2.1689208448407; Wed, 12 Jul
- 2023 17:34:08 -0700 (PDT)
+        Wed, 12 Jul 2023 20:37:42 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3695D1FFD
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 17:37:41 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-262ea2ff59dso27909a91.0
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 17:37:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689208660; x=1691800660;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=whmdMEUUiwwAHXxRe9EzWuR9AdLwUbEmg7zwFXy9qJc=;
+        b=FgzTxrwqLyTL76VhukozF58uA+839P4HiYDRL89Dt8sJeXMeML/DhHKqqIOrhs355b
+         gyEnp83WHpq/8d3DBwqiiJ/QKZIqwbuu1LiojxTILOPiaIc2VIX+LrvCNnH0RLl/0fIO
+         HPL1oZUgqf+zG/Gd6hFJTOA9RyD5KXoxWsz3Qp1/bT0BPck8Wmo5DAtMss0aqt2dvrK8
+         DdtonNy+lNNjHSBvwV0+Ri2TuYArISLz93iOVdI3CwOcp1BdFxHo6kBS5wL7UTDlrvCQ
+         u9aKWLgppJLtBB/ChS+8ISVz2JfD+2X/znYZGfZ47OSxyi6yvzczGTPwNhgwtjI+Cy6u
+         SAdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689208660; x=1691800660;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=whmdMEUUiwwAHXxRe9EzWuR9AdLwUbEmg7zwFXy9qJc=;
+        b=SwIWcBkFfmak0H1g9ekLhDISmzMD7a0RDsjV3f4PkHj+4qVP8QG8R0vCgUAnHmAFq8
+         wfEFEVBe6HcSRBdL1XfY5ayGUfqi+M/5zm1TtZFms9sy2fpg1BqBiKgbI+d2gBS4PyCD
+         o7yRq8mxpbDo4YrxXPE8dYAGFiSP++S4ay9qHJYkaYDjNki5Kaxf4YGVdXO99X8RdJjg
+         pWoRm6WCedip9RfGBzK/lOlb3OBUoJj5zl/KgR2hzTrOyVFZ2Vg9sKR0qZsMqI+tkhpe
+         y/R+s29mHhat2jRmj7FuntQM0Gu6qAoJTBNTNOq7ezNuHoA70IaCP9aFbQ1Y+QkAy1ow
+         NWGA==
+X-Gm-Message-State: ABy/qLaTWVBEhUPvEb6g+X+rqIsas90VLThplrtUMoQjqzoIYSp9u2QV
+        A5xNuKi5KT72GjGyrboLzmrX/KVMT99FNtyRHIo=
+X-Google-Smtp-Source: APBJJlGnbG449Fe6/pZd3CZuJVbGY/zUB3uf3huj+Ugvl+S32cur8MjE6SOKjXHOZt6k36yxcHwL9QbvvG+64AtViGY=
+X-Received: by 2002:a17:90a:6984:b0:262:edb9:bf44 with SMTP id
+ s4-20020a17090a698400b00262edb9bf44mr15241503pjj.19.1689208660341; Wed, 12
+ Jul 2023 17:37:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230707095415.1449376-1-arnd@kernel.org> <20230707095415.1449376-4-arnd@kernel.org>
-In-Reply-To: <20230707095415.1449376-4-arnd@kernel.org>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Wed, 12 Jul 2023 20:33:57 -0400
-X-Gmail-Original-Message-ID: <CAJF2gTQGCmfMH2S4hns76ttqM8K-4dO-rhkE6vL+w9akajpwvw@mail.gmail.com>
-Message-ID: <CAJF2gTQGCmfMH2S4hns76ttqM8K-4dO-rhkE6vL+w9akajpwvw@mail.gmail.com>
-Subject: Re: [PATCH 4/4] vgacon, arch/*: remove unused screen_info definitions
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Thomas Zimmermann <tzimmermann@suse.de>, javierm@redhat.com,
-        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>,
-        dri-devel@lists.freedesktop.org, Ard Biesheuvel <ardb@kernel.org>,
-        Helge Deller <deller@gmx.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Brian Cain <bcain@quicinc.com>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Rich Felker <dalias@libc.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org
+References: <20230503163313.2640898-1-frieder@fris.de> <20230503163313.2640898-2-frieder@fris.de>
+ <CAJ+vNU2d969V1kTHpH+tPK1fm=Z2DUdKSOjwyzRO=9j43HhKgg@mail.gmail.com>
+In-Reply-To: <CAJ+vNU2d969V1kTHpH+tPK1fm=Z2DUdKSOjwyzRO=9j43HhKgg@mail.gmail.com>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Wed, 12 Jul 2023 19:37:28 -0500
+Message-ID: <CAHCN7xKjO_55aNuJYfC9uyc7Ky9VWHtdZpQarht6df1ZhVTPBA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] drm: bridge: samsung-dsim: Fix i.MX8M enable flow
+ to meet spec
+To:     Tim Harvey <tharvey@gateworks.com>
+Cc:     Frieder Schrempf <frieder@fris.de>,
+        Alexander Stein <alexander.stein@ew.tq-group.com>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>,
+        dri-devel@lists.freedesktop.org, Inki Dae <inki.dae@samsung.com>,
+        linux-kernel@vger.kernel.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>, Marek Vasut <marex@denx.de>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Jonas Karlman <jonas@kwiboo.se>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-csky:
-Acked-by: Guo Ren <guoren@kernel.org>
+On Wed, Jul 12, 2023 at 5:34=E2=80=AFPM Tim Harvey <tharvey@gateworks.com> =
+wrote:
+>
+> On Wed, May 3, 2023 at 9:33=E2=80=AFAM Frieder Schrempf <frieder@fris.de>=
+ wrote:
+> >
+> > From: Frieder Schrempf <frieder.schrempf@kontron.de>
+> >
+> > According to the documentation [1] the proper enable flow is:
+> >
+> > 1. Enable DSI link and keep data lanes in LP-11 (stop state)
+> > 2. Disable stop state to bring data lanes into HS mode
+> >
+> > Currently we do this all at once within enable(), which doesn't
+> > allow to meet the requirements of some downstream bridges.
+> >
+> > To fix this we now enable the DSI in pre_enable() and force it
+> > into stop state using the FORCE_STOP_STATE bit in the ESCMODE
+> > register until enable() is called where we reset the bit.
+> >
+> > We currently do this only for i.MX8M as Exynos uses a different
+> > init flow where samsung_dsim_init() is called from
+> > samsung_dsim_host_transfer().
+> >
+> > [1] https://docs.kernel.org/gpu/drm-kms-helpers.html#mipi-dsi-bridge-op=
+eration
+> >
+> > Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+> > ---
+> > Changes for v2:
+> > * Drop RFC
+> > ---
+> >  drivers/gpu/drm/bridge/samsung-dsim.c | 25 +++++++++++++++++++++++--
+> >  1 file changed, 23 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/bridge/samsung-dsim.c b/drivers/gpu/drm/br=
+idge/samsung-dsim.c
+> > index e0a402a85787..9775779721d9 100644
+> > --- a/drivers/gpu/drm/bridge/samsung-dsim.c
+> > +++ b/drivers/gpu/drm/bridge/samsung-dsim.c
+> > @@ -859,6 +859,10 @@ static int samsung_dsim_init_link(struct samsung_d=
+sim *dsi)
+> >         reg =3D samsung_dsim_read(dsi, DSIM_ESCMODE_REG);
+> >         reg &=3D ~DSIM_STOP_STATE_CNT_MASK;
+> >         reg |=3D DSIM_STOP_STATE_CNT(driver_data->reg_values[STOP_STATE=
+_CNT]);
+> > +
+> > +       if (!samsung_dsim_hw_is_exynos(dsi->plat_data->hw_type))
+> > +               reg |=3D DSIM_FORCE_STOP_STATE;
+> > +
+> >         samsung_dsim_write(dsi, DSIM_ESCMODE_REG, reg);
+> >
+> >         reg =3D DSIM_BTA_TIMEOUT(0xff) | DSIM_LPDR_TIMEOUT(0xffff);
+> > @@ -1340,6 +1344,9 @@ static void samsung_dsim_atomic_pre_enable(struct=
+ drm_bridge *bridge,
+> >                 ret =3D samsung_dsim_init(dsi);
+> >                 if (ret)
+> >                         return;
+> > +
+> > +               samsung_dsim_set_display_mode(dsi);
+> > +               samsung_dsim_set_display_enable(dsi, true);
+> >         }
+> >  }
+> >
+> > @@ -1347,9 +1354,16 @@ static void samsung_dsim_atomic_enable(struct dr=
+m_bridge *bridge,
+> >                                        struct drm_bridge_state *old_bri=
+dge_state)
+> >  {
+> >         struct samsung_dsim *dsi =3D bridge_to_dsi(bridge);
+> > +       u32 reg;
+> >
+> > -       samsung_dsim_set_display_mode(dsi);
+> > -       samsung_dsim_set_display_enable(dsi, true);
+> > +       if (samsung_dsim_hw_is_exynos(dsi->plat_data->hw_type)) {
+> > +               samsung_dsim_set_display_mode(dsi);
+> > +               samsung_dsim_set_display_enable(dsi, true);
+> > +       } else {
+> > +               reg =3D samsung_dsim_read(dsi, DSIM_ESCMODE_REG);
+> > +               reg &=3D ~DSIM_FORCE_STOP_STATE;
+> > +               samsung_dsim_write(dsi, DSIM_ESCMODE_REG, reg);
+> > +       }
+> >
+> >         dsi->state |=3D DSIM_STATE_VIDOUT_AVAILABLE;
+> >  }
+> > @@ -1358,10 +1372,17 @@ static void samsung_dsim_atomic_disable(struct =
+drm_bridge *bridge,
+> >                                         struct drm_bridge_state *old_br=
+idge_state)
+> >  {
+> >         struct samsung_dsim *dsi =3D bridge_to_dsi(bridge);
+> > +       u32 reg;
+> >
+> >         if (!(dsi->state & DSIM_STATE_ENABLED))
+> >                 return;
+> >
+> > +       if (!samsung_dsim_hw_is_exynos(dsi->plat_data->hw_type)) {
+> > +               reg =3D samsung_dsim_read(dsi, DSIM_ESCMODE_REG);
+> > +               reg |=3D DSIM_FORCE_STOP_STATE;
+> > +               samsung_dsim_write(dsi, DSIM_ESCMODE_REG, reg);
+> > +       }
+> > +
+> >         dsi->state &=3D ~DSIM_STATE_VIDOUT_AVAILABLE;
+> >  }
+> >
+> > --
+> > 2.40.0
+> >
+>
+> Hi Frieder,
+>
+> I found this patch to break mipi-dsi display on my board which has:
+>  - FocalTech FT5406 10pt touch controller (with no interrupt)
+>  - Powertip PH800480T013-IDF02 compatible panel
+>  - Toshiba TC358762 compatible DSI to DBI bridge
+>  - ATTINY based regulator used for backlight controller and panel enable
+>
+> I enable this via a dt overlay in a pending patch
+> imx8mm-venice-gw72xx-0x-rpidsi.dtso [1] which works on 6.4 but not
+> 6.5-rc1 which has this patch.
+>
+> The issue appears as:
+> [    6.110585] samsung-dsim 32e60000.dsi: xfer timed out: 29 06 00 00
+> 64 01 05 00 00 00
+> [    6.326588] tc358762 32e60000.dsi.0: error initializing bridge (-110)
+>
+> Instead of
+> [    1.011729] samsung-dsim 32e10000.dsi: supply vddcore not found,
+> using dummy regulator
+> [    1.019829] samsung-dsim 32e10000.dsi: supply vddio not found,
+> using dummy regulator
+> [    5.649928] samsung-dsim 32e10000.dsi:
+> [drm:samsung_dsim_host_attach] Attached tc358762 device
+>
+> I'm curious what board/panel were you needing this for and do you have
+> any ideas why it broke my setup?
+>
+> I'm also curious what board/panel Alexander tested this with and if
+> Adam or Jagan (or others) have tested this with their hardware?
 
-On Fri, Jul 7, 2023 at 5:56=E2=80=AFAM Arnd Bergmann <arnd@kernel.org> wrot=
-e:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> A number of architectures either kept the screen_info definition for
-> historical purposes as it used to be required by the generic VT code, or
-> they copied it from another architecture in order to build the VGA
-> console driver in an allmodconfig build.
->
-> Now that vgacon no longer builds on these architectures, remove the
-> stale definitions.
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  arch/csky/kernel/setup.c          | 12 ------------
->  arch/hexagon/kernel/Makefile      |  2 --
->  arch/hexagon/kernel/screen_info.c |  3 ---
->  arch/nios2/kernel/setup.c         |  5 -----
->  arch/sh/kernel/setup.c            |  5 -----
->  arch/sparc/kernel/setup_32.c      | 13 -------------
->  arch/sparc/kernel/setup_64.c      | 13 -------------
->  arch/xtensa/kernel/setup.c        | 12 ------------
->  8 files changed, 65 deletions(-)
->  delete mode 100644 arch/hexagon/kernel/screen_info.c
->
-> diff --git a/arch/csky/kernel/setup.c b/arch/csky/kernel/setup.c
-> index 106fbf0b6f3b4..51012e90780d6 100644
-> --- a/arch/csky/kernel/setup.c
-> +++ b/arch/csky/kernel/setup.c
-> @@ -8,22 +8,10 @@
->  #include <linux/of_fdt.h>
->  #include <linux/start_kernel.h>
->  #include <linux/dma-map-ops.h>
-> -#include <linux/screen_info.h>
->  #include <asm/sections.h>
->  #include <asm/mmu_context.h>
->  #include <asm/pgalloc.h>
->
-> -#ifdef CONFIG_DUMMY_CONSOLE
-> -struct screen_info screen_info =3D {
-> -       .orig_video_lines       =3D 30,
-> -       .orig_video_cols        =3D 80,
-> -       .orig_video_mode        =3D 0,
-> -       .orig_video_ega_bx      =3D 0,
-> -       .orig_video_isVGA       =3D 1,
-> -       .orig_video_points      =3D 8
-> -};
-> -#endif
-> -
->  static void __init csky_memblock_init(void)
->  {
->         unsigned long lowmem_size =3D PFN_DOWN(LOWMEM_LIMIT - PHYS_OFFSET=
-_OFFSET);
-> diff --git a/arch/hexagon/kernel/Makefile b/arch/hexagon/kernel/Makefile
-> index e73cb321630ec..3fdf937eb572e 100644
-> --- a/arch/hexagon/kernel/Makefile
-> +++ b/arch/hexagon/kernel/Makefile
-> @@ -17,5 +17,3 @@ obj-y +=3D vm_vectors.o
->  obj-$(CONFIG_HAS_DMA) +=3D dma.o
->
->  obj-$(CONFIG_STACKTRACE) +=3D stacktrace.o
-> -
-> -obj-$(CONFIG_VGA_CONSOLE) +=3D screen_info.o
-> diff --git a/arch/hexagon/kernel/screen_info.c b/arch/hexagon/kernel/scre=
-en_info.c
-> deleted file mode 100644
-> index 1e1ceb18bafe7..0000000000000
-> --- a/arch/hexagon/kernel/screen_info.c
-> +++ /dev/null
-> @@ -1,3 +0,0 @@
-> -#include <linux/screen_info.h>
-> -
-> -struct screen_info screen_info;
-> diff --git a/arch/nios2/kernel/setup.c b/arch/nios2/kernel/setup.c
-> index 8582ed9658447..da122a5fa43b2 100644
-> --- a/arch/nios2/kernel/setup.c
-> +++ b/arch/nios2/kernel/setup.c
-> @@ -19,7 +19,6 @@
->  #include <linux/memblock.h>
->  #include <linux/initrd.h>
->  #include <linux/of_fdt.h>
-> -#include <linux/screen_info.h>
->
->  #include <asm/mmu_context.h>
->  #include <asm/sections.h>
-> @@ -36,10 +35,6 @@ static struct pt_regs fake_regs =3D { 0, 0, 0, 0, 0, 0=
-, 0, 0, 0, 0, 0, 0, 0, 0, 0,
->                                         0, 0, 0, 0, 0, 0,
->                                         0};
->
-> -#ifdef CONFIG_VT
-> -struct screen_info screen_info;
-> -#endif
-> -
->  /* Copy a short hook instruction sequence to the exception address */
->  static inline void copy_exception_handler(unsigned int addr)
->  {
-> diff --git a/arch/sh/kernel/setup.c b/arch/sh/kernel/setup.c
-> index b3da2757faaf3..3d80515298d26 100644
-> --- a/arch/sh/kernel/setup.c
-> +++ b/arch/sh/kernel/setup.c
-> @@ -7,7 +7,6 @@
->   *  Copyright (C) 1999  Niibe Yutaka
->   *  Copyright (C) 2002 - 2010 Paul Mundt
->   */
-> -#include <linux/screen_info.h>
->  #include <linux/ioport.h>
->  #include <linux/init.h>
->  #include <linux/initrd.h>
-> @@ -69,10 +68,6 @@ EXPORT_SYMBOL(cpu_data);
->  struct sh_machine_vector sh_mv =3D { .mv_name =3D "generic", };
->  EXPORT_SYMBOL(sh_mv);
->
-> -#ifdef CONFIG_VT
-> -struct screen_info screen_info;
-> -#endif
-> -
->  extern int root_mountflags;
->
->  #define RAMDISK_IMAGE_START_MASK       0x07FF
-> diff --git a/arch/sparc/kernel/setup_32.c b/arch/sparc/kernel/setup_32.c
-> index 34ef7febf0d56..e3b72a7b46d37 100644
-> --- a/arch/sparc/kernel/setup_32.c
-> +++ b/arch/sparc/kernel/setup_32.c
-> @@ -17,7 +17,6 @@
->  #include <linux/initrd.h>
->  #include <asm/smp.h>
->  #include <linux/user.h>
-> -#include <linux/screen_info.h>
->  #include <linux/delay.h>
->  #include <linux/fs.h>
->  #include <linux/seq_file.h>
-> @@ -51,18 +50,6 @@
->
->  #include "kernel.h"
->
-> -struct screen_info screen_info =3D {
-> -       0, 0,                   /* orig-x, orig-y */
-> -       0,                      /* unused */
-> -       0,                      /* orig-video-page */
-> -       0,                      /* orig-video-mode */
-> -       128,                    /* orig-video-cols */
-> -       0,0,0,                  /* ega_ax, ega_bx, ega_cx */
-> -       54,                     /* orig-video-lines */
-> -       0,                      /* orig-video-isVGA */
-> -       16                      /* orig-video-points */
-> -};
-> -
->  /* Typing sync at the prom prompt calls the function pointed to by
->   * romvec->pv_synchook which I set to the following function.
->   * This should sync all filesystems and return, for now it just
-> diff --git a/arch/sparc/kernel/setup_64.c b/arch/sparc/kernel/setup_64.c
-> index 6546ca9d4d3f1..6a4797dec34b4 100644
-> --- a/arch/sparc/kernel/setup_64.c
-> +++ b/arch/sparc/kernel/setup_64.c
-> @@ -15,7 +15,6 @@
->  #include <linux/ptrace.h>
->  #include <asm/smp.h>
->  #include <linux/user.h>
-> -#include <linux/screen_info.h>
->  #include <linux/delay.h>
->  #include <linux/fs.h>
->  #include <linux/seq_file.h>
-> @@ -68,18 +67,6 @@
->  DEFINE_SPINLOCK(ns87303_lock);
->  EXPORT_SYMBOL(ns87303_lock);
->
-> -struct screen_info screen_info =3D {
-> -       0, 0,                   /* orig-x, orig-y */
-> -       0,                      /* unused */
-> -       0,                      /* orig-video-page */
-> -       0,                      /* orig-video-mode */
-> -       128,                    /* orig-video-cols */
-> -       0, 0, 0,                /* unused, ega_bx, unused */
-> -       54,                     /* orig-video-lines */
-> -       0,                      /* orig-video-isVGA */
-> -       16                      /* orig-video-points */
-> -};
-> -
->  static void
->  prom_console_write(struct console *con, const char *s, unsigned int n)
->  {
-> diff --git a/arch/xtensa/kernel/setup.c b/arch/xtensa/kernel/setup.c
-> index aba3ff4e60d85..3f22d0537818d 100644
-> --- a/arch/xtensa/kernel/setup.c
-> +++ b/arch/xtensa/kernel/setup.c
-> @@ -19,7 +19,6 @@
->  #include <linux/init.h>
->  #include <linux/mm.h>
->  #include <linux/proc_fs.h>
-> -#include <linux/screen_info.h>
->  #include <linux/kernel.h>
->  #include <linux/percpu.h>
->  #include <linux/reboot.h>
-> @@ -49,17 +48,6 @@
->  #include <asm/timex.h>
->  #include <asm/traps.h>
->
-> -#if defined(CONFIG_VGA_CONSOLE) || defined(CONFIG_DUMMY_CONSOLE)
-> -struct screen_info screen_info =3D {
-> -       .orig_x =3D 0,
-> -       .orig_y =3D 24,
-> -       .orig_video_cols =3D 80,
-> -       .orig_video_lines =3D 24,
-> -       .orig_video_isVGA =3D 1,
-> -       .orig_video_points =3D 16,
-> -};
-> -#endif
-> -
->  #ifdef CONFIG_BLK_DEV_INITRD
->  extern unsigned long initrd_start;
->  extern unsigned long initrd_end;
-> --
-> 2.39.2
->
+I have used the imx8mm and imx8mn with both an Analog Devices ADV7535
+HDMI bridge, and a ti,sn65dsi83, and the imx8mp with the just the
+adv7535.  I haven't seen any issues with this patch, but I wonder if
+the downstream part for Tim needs to do something with this patch
+installed, or whether or not we should add some sort of dsim flag that
+either does this or skips it.  I would be curious to know if the NXP
+downstream code works with either Frieder's or Tim's.
 
-
---=20
-Best Regards
- Guo Ren
+adam
+>
+> best regards,
+>
+> Tim
+> [1] https://patchwork.kernel.org/project/linux-arm-kernel/patch/202307112=
+21124.2127186-1-tharvey@gateworks.com/
