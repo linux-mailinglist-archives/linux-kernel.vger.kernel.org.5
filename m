@@ -2,153 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D70A7515C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 03:22:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96E427515C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 03:22:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233269AbjGMBWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 21:22:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57230 "EHLO
+        id S233367AbjGMBWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 21:22:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232815AbjGMBWh (ORCPT
+        with ESMTP id S232343AbjGMBWk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 21:22:37 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2083.outbound.protection.outlook.com [40.107.220.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F6A01FDD
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 18:22:34 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FbqYIOgO5HM66qNuRqw4lrxMjrr5PbqJuatLv4PBqH1OnlNwC/xvnbaf+Of/YkcZwHgPwCPxulRTCprsZibxqrlaSpaFS2nPtmM/SyxU3eF8xvklZPMZLJqkwy2htyLqpLCAFoBp0i32j2LVyK0gK+9qUe6+oX8lGziNmxfy++pEZR6A52mhXmQqIEczvfIh4WVRY95y4WZyKTbOnF0Cl8w+eRtWSOlys4nxq6I9M6xAehBfABHuwakcO3ZgXJoI6uYWkVRVpExCRZUah7+/9m0cF4QSrTIYe0cjekIr1SRB1IbGRohF2mIZTFEC57Kb3uJ+aVxyxRGR5RtUWepmHQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=icof62/UXdM64dw5pMxaKgOND+9Dmu92u6L0Eqc/NV8=;
- b=hSSQv4Hrd9gDnxu9T+qn8Tn/40FKGLNaN6v4sORJWQ7RnZItIeWoIJ3j6u3+gWbizHQIT0+yV3pRhX33Sw2k6ESw06f8ojmRRkCj3M9WzERqajCEOihGsPOqqO2D9wAxBGPxy2twAzjXal/bryvUuERFq6qFEZwQGFWM0HAHdICvaykogKy6wxSARpbPMITxwAUvuEN015C+9BU8Ym1utFCkWWMl0fTwjAIic7iEDnUJjET0rUNeT321FPGPEmEAlH54teRm7gDTqgNgu3tDQCbxXE9Xcn+ylJwcXRKAYEQUbEH+xR224SMihiG4AUZ6XgsBSpRS4ExSmIpc9W61tw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=icof62/UXdM64dw5pMxaKgOND+9Dmu92u6L0Eqc/NV8=;
- b=jdPytxRRXlnD8QbIrXfFEZqAO9MlhZz3kJeGSkmYuO2SkGYFuAJdQJ2XLOPsaERY/o+3J8FLRkYTHuoAiv8LE2rc88TlAoZTRBB+tYtSajQfV2FBWBPImeiacjyfsopK5sAiQdJasnetMeGfyclVdK+c4yPC8PGv9XLhmeFNbvjSPSAiHyYNlpnzmt4YXG5M+1uGXYQ5HrtWHq/2ZhoAsQX9uT5Wwb60y+Vc9mGXFxfkUOhRbHVGSaPQZmXDalo8SwuUxUGf0x7yQxMGIF0CBerwLSAqPJRxeEwytljCTnC9jlX1/3F4jbwe411QA86LhRLsJCMW92cZ18vfQNOZ3Q==
-Received: from BN9P220CA0019.NAMP220.PROD.OUTLOOK.COM (2603:10b6:408:13e::24)
- by SJ2PR12MB7989.namprd12.prod.outlook.com (2603:10b6:a03:4c3::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.22; Thu, 13 Jul
- 2023 01:22:32 +0000
-Received: from BN8NAM11FT019.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:13e:cafe::7a) by BN9P220CA0019.outlook.office365.com
- (2603:10b6:408:13e::24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.22 via Frontend
- Transport; Thu, 13 Jul 2023 01:22:32 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- BN8NAM11FT019.mail.protection.outlook.com (10.13.176.158) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6588.24 via Frontend Transport; Thu, 13 Jul 2023 01:22:32 +0000
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Wed, 12 Jul 2023
- 18:22:20 -0700
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail202.nvidia.com
- (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Wed, 12 Jul
- 2023 18:22:19 -0700
-Received: from Asurada-Nvidia (10.127.8.13) by mail.nvidia.com (10.129.68.7)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37 via Frontend
- Transport; Wed, 12 Jul 2023 18:22:19 -0700
-Date:   Wed, 12 Jul 2023 18:22:17 -0700
-From:   Nicolin Chen <nicolinc@nvidia.com>
-To:     Michael Shavit <mshavit@google.com>
-CC:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        "Joerg Roedel" <joro@8bytes.org>, <jean-philippe@linaro.org>,
-        <jgg@nvidia.com>, <baolu.lu@linux.intel.com>,
-        <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 02/13] iommu/arm-smmu-v3: Add smmu_s1_cfg to
- smmu_master
-Message-ID: <ZK9RycgNAVrxe343@Asurada-Nvidia>
-References: <20230621063825.268890-1-mshavit@google.com>
- <20230621063825.268890-3-mshavit@google.com>
+        Wed, 12 Jul 2023 21:22:40 -0400
+Received: from new3-smtp.messagingengine.com (new3-smtp.messagingengine.com [66.111.4.229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C19BB7;
+        Wed, 12 Jul 2023 18:22:39 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id C46AE5801BD;
+        Wed, 12 Jul 2023 21:22:35 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Wed, 12 Jul 2023 21:22:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
+        1689211355; x=1689218555; bh=IGJeeCyYK/qeZ9ru5DjzljIOM8dFRHaIFRq
+        Bi7pUwPA=; b=30k0PyMHklFBe2NGjFDR53g3Yw0SLprh1N1FA8jFawDs3aAdBk2
+        pmPM1Vu4IPK6yE+H11Rhe+YlP+GH7WyzkqnQAvP1zBYPdFZ8Kno2KbI9uoid5cR7
+        z6rHt4PnMfFrBqQUttBfJy6gLAQicxij9CzS8dddcGqykhgy697MbKSRHQYZAXRc
+        frw+Pj1E1/aFGuS0NYSZ0B0fYPHoF3tqvMYnLX7ZQNxkwVlrfe/lbyOS1h3Ow/Qv
+        e8lonp9VzGm0LymiGrAgcCAmqDhlUdAzK3KaHrQvt4h8Js2QXdw2ssYjg0xyoV2W
+        i+Eb6R0+0//6ozwbL6F13o6QkJgfFVtD8Ag==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+        1689211355; x=1689218555; bh=IGJeeCyYK/qeZ9ru5DjzljIOM8dFRHaIFRq
+        Bi7pUwPA=; b=NbsxFBBeaqQSTmaD1m6OsyQ+8OSGVmjMST3ManWnNHhsQ3Dmdws
+        5l5Vz9FYUJJ9XvF5ZJDsiFnvtPjnhM/FVrtzBpdUo23oJB4AeY3dta27/Uv5UpR8
+        vKdrzqZWOIEqj0HHRNNXNhFMvMjulHUCTY5nX8no60kkLW3CP26dxUJCHSe88FME
+        SeqnQL6bHs01snHkZjZUvufmpLMTuRMVZOShYYFlSjgIQxOFOaCzlrS6BkpqdPX9
+        iyFEj7NW4YvZ+1lPoeh87oniJ87jkqCSavL+3COWYoLwv/VHsyANL+jiwFSbvpM+
+        x5c8CzOoKJZTtELpTbd3H4i7ZANqnN7Uy7w==
+X-ME-Sender: <xms:21GvZF3EcQGrCLqS8LkOjV8a5TjW1ODrBIdJXYtPZNYWoeHQzJJUjg>
+    <xme:21GvZMFFjseW6c24gUqPi6Nv0y5bjmGGd3815b5EIZL6c_iUgI6koFbgrm65q7b55
+    67SRDHY-JOp__gXDg>
+X-ME-Received: <xmr:21GvZF5xi23FruCpK8lJBQLQa-fgqANZFMWE7iGBViG0hGIwhXe9Ukx1CPBW_Y83316z4aMi_kH2X1QsjDKXMnXlhRnhhm7ed00V>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrfeefgdeggecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenfg
+    hrlhcuvffnffculdejtddmnecujfgurhepfffhvfevuffkfhggtggugfgjsehtkefstddt
+    tdejnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqne
+    cuggftrfgrthhtvghrnhepieektdefhffhjeejgeejhfekkeejgfegvdeuhfeitdeiueeh
+    hffgvedthedviefgnecuffhomhgrihhnpehqvghmuhdrohhrghenucevlhhushhtvghruf
+    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:21GvZC0lxTf7LOJMsr1zizKgFYUdsaon5V66vdlwfqi4C1aiV74Akg>
+    <xmx:21GvZIEGF2YIwkf9MV2_E4oUTqb-xlTUE21zqRPqAXe-BTwXqd5MJA>
+    <xmx:21GvZD9HeIW9Vc_WsP2hmPh_r_lWJz8oZlEty_wZw_5UXF7xQVUMKg>
+    <xmx:21GvZDkqlo7dP2vXl3W_IrI45kqG_B1wyodWGhG51O-AQ-6nvhGhkA>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 12 Jul 2023 21:22:33 -0400 (EDT)
+Date:   Wed, 12 Jul 2023 19:22:32 -0600
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
+        coreteam@netfilter.org,
+        Network Development <netdev@vger.kernel.org>,
+        David Ahern <dsahern@kernel.org>
+Subject: Re: [PATCH bpf-next v4 2/6] netfilter: bpf: Support
+ BPF_F_NETFILTER_IP_DEFRAG in netfilter link
+Message-ID: <kwiwaeaijj6sxwz5fhtxyoquhz2kpujbsbeajysufgmdjgyx5c@f6lqrd23xr5f>
+References: <cover.1689203090.git.dxu@dxuuu.xyz>
+ <d3b0ff95c58356192ea3b50824f8cdbf02c354e3.1689203090.git.dxu@dxuuu.xyz>
+ <CAADnVQKKfEtZYZxihxvG3aQ34E1m95qTZ=jTD7yd0qvOASpAjQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230621063825.268890-3-mshavit@google.com>
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN8NAM11FT019:EE_|SJ2PR12MB7989:EE_
-X-MS-Office365-Filtering-Correlation-Id: 305874b4-8872-4a0b-9856-08db833fa1d5
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: pgvGn8TZEK3oLLeUU8VC2aVIowUA2R0hrU1wUbAscDb+m+3yedmopxnDHhWBUXqLnwcRaGF7aEFxcwVm7djs9TCO4wgmREk9lrjS0d9TLygmUjgfr8k62gjq+oNI2YUkcDHIJb2M2p/4QTXzuy0+IJYFiMFagFHpiJRHUp8vSYxQQxICLD1JhdNa9fwE4fwXmQUBUlZP+Ya1985aPJwEkCirmU/VTWv8kEzOSGxEtWPolYidFp0NMWBV0srB0oaoOTzmoAkaAE14AIF4TURGdycR2iJHuuQlVg7s4ZFe42ri7+NZwCvTAJT8z7thzvT2mcdygWpC1TW403vxBO6V7tDGC/saR/C9jrwgfWrREppo/apwgWpxpEFpo58Dqx1O2eLHxW2s1de5Ds2zL0SNkEAPdq0k/csigmVz2H1FVDu3Ei+iz2FFUWKZfyQXJpCfDQG6JAJJ6fopDH5M1nOC9xIFs7QNcg5El0iWNmySO7fLH2s/G5KYy+HqwuZem5kmDxgqWhoG1lhaST0WByPgVJ+vMMAHL2wbgwpGYaboUTUO4jP9gKkYWeZL8hj8LT4rYvSzkIO+6k2oYvuxLZilTtxuSmigovd1KjuNKaQP/iNkGUNGe9YoQp0zPov0bNTe0DaGQgmIx12Coqf3wmeGSh/nbVDc4ClZJSWLP7fnLxGUwBpahHeYsTnsTYUyDMF9R4lsrh71mz1lIZgVlyNb+Z2NWxuAzTNmIUlTJV1Fo8eM+kXAdxYVKgLjEpPF2z6o
-X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(396003)(39860400002)(376002)(346002)(136003)(451199021)(46966006)(36840700001)(40470700004)(82310400005)(478600001)(82740400003)(7636003)(356005)(6916009)(4326008)(86362001)(33716001)(54906003)(70586007)(70206006)(316002)(41300700001)(36860700001)(47076005)(55016003)(2906002)(426003)(336012)(8936002)(8676002)(40460700003)(26005)(9686003)(40480700001)(5660300002)(186003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2023 01:22:32.2334
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 305874b4-8872-4a0b-9856-08db833fa1d5
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT019.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB7989
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQKKfEtZYZxihxvG3aQ34E1m95qTZ=jTD7yd0qvOASpAjQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
+Hi Alexei,
 
-On Wed, Jun 21, 2023 at 02:37:14PM +0800, Michael Shavit wrote:
- 
-> Except for Nested domains, arm_smmu_master will own the STEs that are
-> inserted into the arm_smmu_device's STE table.
+On Wed, Jul 12, 2023 at 05:43:49PM -0700, Alexei Starovoitov wrote:
+> On Wed, Jul 12, 2023 at 4:44 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+> > +#if IS_ENABLED(CONFIG_NF_DEFRAG_IPV6)
+> > +       case NFPROTO_IPV6:
+> > +               rcu_read_lock();
+> > +               v6_hook = rcu_dereference(nf_defrag_v6_hook);
+> > +               if (!v6_hook) {
+> > +                       rcu_read_unlock();
+> > +                       err = request_module("nf_defrag_ipv6");
+> > +                       if (err)
+> > +                               return err < 0 ? err : -EINVAL;
+> > +
+> > +                       rcu_read_lock();
+> > +                       v6_hook = rcu_dereference(nf_defrag_v6_hook);
+> > +                       if (!v6_hook) {
+> > +                               WARN_ONCE(1, "nf_defrag_ipv6_hooks bad registration");
+> > +                               err = -ENOENT;
+> > +                               goto out_v6;
+> > +                       }
+> > +               }
+> > +
+> > +               err = v6_hook->enable(link->net);
+> 
+> I was about to apply, but luckily caught this issue in my local test:
+> 
+> [   18.462448] BUG: sleeping function called from invalid context at
+> kernel/locking/mutex.c:283
+> [   18.463238] in_atomic(): 0, irqs_disabled(): 0, non_block: 0, pid:
+> 2042, name: test_progs
+> [   18.463927] preempt_count: 0, expected: 0
+> [   18.464249] RCU nest depth: 1, expected: 0
+> [   18.464631] CPU: 15 PID: 2042 Comm: test_progs Tainted: G
+> O       6.4.0-04319-g6f6ec4fa00dc #4896
+> [   18.465480] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+> BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> [   18.466531] Call Trace:
+> [   18.466767]  <TASK>
+> [   18.466975]  dump_stack_lvl+0x32/0x40
+> [   18.467325]  __might_resched+0x129/0x180
+> [   18.467691]  mutex_lock+0x1a/0x40
+> [   18.468057]  nf_defrag_ipv4_enable+0x16/0x70
+> [   18.468467]  bpf_nf_link_attach+0x141/0x300
+> [   18.468856]  __sys_bpf+0x133e/0x26d0
+> 
+> You cannot call mutex under rcu_read_lock.
 
-I think that the master still owns an STE when attached to a
-nested domain. Though an IOMMU_DOMAIN_NESTED iommu_domain is
-an opaque object to the STE in the guest, the host still has
-a real STE for the nested configuration somewhere -- and it's
-likely still to be owned by the master that's attached to the
-opaque NESTED iommu_domain in the host kernel.
+Whoops, my bad. I think this patch should fix it:
 
-> -static int arm_smmu_alloc_cd_tables(struct arm_smmu_domain *smmu_domain)
-> +static int arm_smmu_init_s1_cfg(struct arm_smmu_master *master,
-> +                               struct arm_smmu_s1_cfg *cfg)
+```
+From 7e8927c44452db07ddd7cf0e30bb49215fc044ed Mon Sep 17 00:00:00 2001
+Message-ID: <7e8927c44452db07ddd7cf0e30bb49215fc044ed.1689211250.git.dxu@dxuuu.xyz>
+From: Daniel Xu <dxu@dxuuu.xyz>
+Date: Wed, 12 Jul 2023 19:17:35 -0600
+Subject: [PATCH] netfilter: bpf: Don't hold rcu_read_lock during
+ enable/disable
 
-We here pass in an s1_cfg ptr because we expect someone else
-rather than the master could own the s1_cfg?
+->enable()/->disable() takes a mutex which can sleep. You can't sleep
+during RCU read side critical section.
 
-But the final codeline by the end of this series seems that
-only master owns an s1_cfg. So perhaps we could re-organize
-the patches to clean this away, as the cfg always comes from
-a master?
+Our refcnt on the module will protect us from ->enable()/->disable()
+from going away while we call it.
 
-> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-> index 68d519f21dbd8..053cc14c23969 100644
-> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-> @@ -688,6 +688,7 @@ struct arm_smmu_master {
->         struct arm_smmu_domain          *domain;
->         struct list_head                domain_head;
->         struct arm_smmu_stream          *streams;
-> +       struct arm_smmu_s1_cfg          owned_s1_cfg;
+Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+---
+ net/netfilter/nf_bpf_link.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-I am a bit confused by this naming. If only master would own
-an s1_cfg, perhaps we can just make it "s1_cfg" and drop the
-s1_cfg pointer in the next patch.
+diff --git a/net/netfilter/nf_bpf_link.c b/net/netfilter/nf_bpf_link.c
+index 77ffbf26ba3d..79704cc596aa 100644
+--- a/net/netfilter/nf_bpf_link.c
++++ b/net/netfilter/nf_bpf_link.c
+@@ -60,9 +60,12 @@ static int bpf_nf_enable_defrag(struct bpf_nf_link *link)
+                        goto out_v4;
+                }
 
-Thanks
-Nicolin
++               rcu_read_unlock();
+                err = v4_hook->enable(link->net);
+                if (err)
+                        module_put(v4_hook->owner);
++
++               return err;
+ out_v4:
+                rcu_read_unlock();
+                return err;
+@@ -92,9 +95,12 @@ static int bpf_nf_enable_defrag(struct bpf_nf_link *link)
+                        goto out_v6;
+                }
+
++               rcu_read_unlock();
+                err = v6_hook->enable(link->net);
+                if (err)
+                        module_put(v6_hook->owner);
++
++               return err;
+ out_v6:
+                rcu_read_unlock();
+                return err;
+@@ -114,11 +120,11 @@ static void bpf_nf_disable_defrag(struct bpf_nf_link *link)
+        case NFPROTO_IPV4:
+                rcu_read_lock();
+                v4_hook = rcu_dereference(nf_defrag_v4_hook);
++               rcu_read_unlock();
+                if (v4_hook) {
+                        v4_hook->disable(link->net);
+                        module_put(v4_hook->owner);
+                }
+-               rcu_read_unlock();
+
+                break;
+ #endif
+@@ -126,11 +132,11 @@ static void bpf_nf_disable_defrag(struct bpf_nf_link *link)
+        case NFPROTO_IPV6:
+                rcu_read_lock();
+                v6_hook = rcu_dereference(nf_defrag_v6_hook);
++               rcu_read_unlock();
+                if (v6_hook) {
+                        v6_hook->disable(link->net);
+                        module_put(v6_hook->owner);
+                }
+-               rcu_read_unlock();
+
+                break;
+        }
+--
+2.41.0
+```
+
+I'll send out a v5 tomorrow morning unless you feel like applying the
+series + this patch today.
+
+> 
+> Please make sure you have all kernel debug flags on in your testing.
+> 
+
+Ack. Will make sure lockdep is on.
+
+
+Thanks,
+Daniel
