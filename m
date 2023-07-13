@@ -2,59 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87849752AAB
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 21:01:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4A43752AB2
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 21:05:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232777AbjGMTBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 15:01:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53006 "EHLO
+        id S231951AbjGMTFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 15:05:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231500AbjGMTB3 (ORCPT
+        with ESMTP id S229916AbjGMTE7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 15:01:29 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 123CB2710
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 12:01:27 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36DJ1GB6099715;
-        Thu, 13 Jul 2023 14:01:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1689274876;
-        bh=EEqhmZjbr+AD9oHJVBD78KIQnCJTNzAP+X4I2+YdZqA=;
-        h=From:To:CC:Subject:Date;
-        b=UdyeaVoyVX6MlrVXpKMqJgrbttTBBhFVdt3C1yopgZ+Pxaef0Eh8A3a7YVJ9IsTKS
-         FoDynRYCbfZxx45elXhKDO74tIkL9AC2Y+MI92GxsVzYgPei0BE2V0aSaYHyziVg5r
-         iF9WFla31ptX3R72T3oTPRQ/LMsUEobJUumXyThk=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36DJ1FfB055925
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 13 Jul 2023 14:01:15 -0500
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 13
- Jul 2023 14:01:15 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 13 Jul 2023 14:01:15 -0500
-Received: from fllv0040.itg.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36DJ1FDi089715;
-        Thu, 13 Jul 2023 14:01:15 -0500
-From:   Andrew Davis <afd@ti.com>
-To:     Russell King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, Andrew Davis <afd@ti.com>
-Subject: [PATCH v2] ARM: multi_v7_defconfig: Enable OMAP audio/display support
-Date:   Thu, 13 Jul 2023 14:01:14 -0500
-Message-ID: <20230713190114.28816-1-afd@ti.com>
-X-Mailer: git-send-email 2.39.2
+        Thu, 13 Jul 2023 15:04:59 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB31F171D
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 12:04:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=Tunyxm7225nRlfSTHxgTZRKdYPHBEXYuY6MWqVIZLtA=; b=v9XsH4mAkY82rUYyHnv9cyZivu
+        eTM5svjbjBnJMSPXncAe6D+e21qhbDQy3561717YRHOWE6LJXq6t2Das0jW3nywXeYg2Nc0Lj4elh
+        Rqz35n6SJy4/VfFnXrB+ysqGYzkGrlIKsPQMPS+jhSe7vqhbglAkHaFZ8eEdkWnGBndF9W8It/QDl
+        +Z3eJvkJ71nZghLJtjS3IEtTRKpGVAwW3auJiCct/mpJbaq8O+iP2FFy1LScGhNAyUvMNv6Y9uWWD
+        qT4qor6+G4MkeIAe1TasFzBO7DPHFLCflul6ixFPPxOu6YQgkDWXcBc4BvhmFMbdwNDYFVfAvtoNV
+        002c3+rw==;
+Received: from [2601:1c2:980:9ec0::2764]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qK1cW-004Chy-22;
+        Thu, 13 Jul 2023 19:04:56 +0000
+Message-ID: <07f0c6ac-f195-e598-4649-e88ad5e76005@infradead.org>
+Date:   Thu, 13 Jul 2023 12:04:54 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v4 20/21] config TEST_DYNAMIC_DEBUG default m
+Content-Language: en-US
+To:     Jim Cromie <jim.cromie@gmail.com>, jbaron@akamai.com,
+        daniel.vetter@ffwll.ch, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org
+Cc:     jani.nikula@intel.com, ville.syrjala@linux.intel.com,
+        seanpaul@chromium.org, robdclark@gmail.com,
+        gregkh@linuxfoundation.org
+References: <20230713163626.31338-1-jim.cromie@gmail.com>
+ <20230713163626.31338-21-jim.cromie@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20230713163626.31338-21-jim.cromie@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,54 +60,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We would like to support some additional OMAP class devices using the
-common multi_v7_defconfig. To start, enable some audio/display related
-modules:
+Hi Jim,
 
-DRM_OMAP/OMAP5_DSS_HDMI: For base DRM display support.
-DRM_TI_TFP410: Used as a display bridge for several EVM's panels.
-DRM_TI_TPD12S015: HDMI encoder on several OMAP/Sitara EVMs.
-SND_SOC_TLV320AIC3X_I2C: For I2C attached TLV320AIC3x codecs.
+On 7/13/23 09:36, Jim Cromie wrote:
+> Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
+> ---
+>  lib/Kconfig.debug | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index d4fbbcc395d2..82d11ac63758 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -2696,13 +2696,14 @@ config TEST_STATIC_KEYS
+>  
+>  config TEST_DYNAMIC_DEBUG
+>  	tristate "Build test-dynamic-debug module"
+> +	default m
 
-Signed-off-by: Andrew Davis <afd@ti.com>
----
+You need to justify such a change, and since it's not required
+for running the system, I don't think it should be 'm'.
 
-Changes from v1:
- - Rebased on v6.5-rc1
+>  	depends on DYNAMIC_DEBUG || DYNAMIC_DEBUG_CORE
+>  	help
+>  	  This module works/demo's the dyndbg's classmap API, by
+>  	  creating 2 classes: a DISJOINT classmap (like DRM.debug)
+>  	  and a LEVELS/VERBOSE classmap (where 2>1).
+>  
+> -	  If unsure, say N.
+> +	  If unsure, say N.  If bored/curious, say M
+>  
+>  config TEST_KMOD
+>  	tristate "kmod stress tester"
 
- arch/arm/configs/multi_v7_defconfig | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
-index f0800f806b5f6..b4bc40f647e76 100644
---- a/arch/arm/configs/multi_v7_defconfig
-+++ b/arch/arm/configs/multi_v7_defconfig
-@@ -714,6 +714,8 @@ CONFIG_ROCKCHIP_INNO_HDMI=y
- CONFIG_DRM_ATMEL_HLCDC=m
- CONFIG_DRM_RCAR_DU=m
- CONFIG_DRM_SUN4I=m
-+CONFIG_DRM_OMAP=m
-+CONFIG_OMAP5_DSS_HDMI=y
- CONFIG_DRM_MSM=m
- CONFIG_DRM_FSL_DCU=m
- CONFIG_DRM_TEGRA=y
-@@ -737,6 +739,8 @@ CONFIG_DRM_SII9234=m
- CONFIG_DRM_SIMPLE_BRIDGE=m
- CONFIG_DRM_TOSHIBA_TC358764=m
- CONFIG_DRM_TOSHIBA_TC358768=m
-+CONFIG_DRM_TI_TFP410=m
-+CONFIG_DRM_TI_TPD12S015=m
- CONFIG_DRM_I2C_ADV7511=m
- CONFIG_DRM_I2C_ADV7511_AUDIO=y
- CONFIG_DRM_STI=m
-@@ -825,6 +829,7 @@ CONFIG_SND_SOC_SGTL5000=m
- CONFIG_SND_SOC_STI_SAS=m
- CONFIG_SND_SOC_TLV320AIC32X4=m
- CONFIG_SND_SOC_TLV320AIC32X4_I2C=m
-+CONFIG_SND_SOC_TLV320AIC3X_I2C=m
- CONFIG_SND_SOC_WM8960=m
- CONFIG_SND_SOC_WM8962=m
- CONFIG_SND_SOC_WM8978=m
 -- 
-2.39.2
-
+~Randy
