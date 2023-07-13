@@ -2,111 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26C12751FE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 13:28:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1804F751FE8
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 13:30:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233757AbjGML2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 07:28:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35750 "EHLO
+        id S233819AbjGMLaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 07:30:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234264AbjGML2I (ORCPT
+        with ESMTP id S233086AbjGMLaG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 07:28:08 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7C6918E;
-        Thu, 13 Jul 2023 04:28:07 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-51e5d9e20ecso713938a12.1;
-        Thu, 13 Jul 2023 04:28:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689247686; x=1691839686;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KqGooZ9sePUQXEjYto5Vlnx9X4OCC5Lb+CkMJuu3W4w=;
-        b=Ib9fT9L1CHJhvYQOkATILlBpEjunv7kugRxcfoh2bAxHcAB1XxT3XfxFI7kYxJ97oR
-         lzD3o160L99zYAHqirdY4deywfV73bqS+SQBbI+J56wPTFd3X1ctecEsbgJcD/lt9+Zk
-         Uo7jv7uBgOuBGnPAaeQ4+8FwNdLT4m5UwybYAHKiPuh1W4uoeQeIHaj/yY2BeY0niXA2
-         wobmb+jL6YRSnjkoQZYXMPbQD4dEh0KqN+1vRtTmNCsGxSSZ74E2hpNgTu+46nIsUg1m
-         KOmEUjDLRe/0LpdwvKvTXEcCE90ZQyYkNRT+DDIlbcjurYXhI5cuj5MRjjUgo1TEtVUm
-         EJ1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689247686; x=1691839686;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KqGooZ9sePUQXEjYto5Vlnx9X4OCC5Lb+CkMJuu3W4w=;
-        b=jgmb1zL/K33ACQhx415Rbqx7mxT4iAtqWuMFe/s69pIvhYIIY67EiUb6dVW3eqvYkj
-         YqPI/3NkASVUzbK1O6z/a1t12KzihC85K3jptgkiL5NeNT6oPiAhNzboHKaplojYECkB
-         Loo91V/IYlYew7PSj+F5uKHDnFAg4JtZnxvoNbmJIaygyMzufmRrGIAr57gHBVVPpaC1
-         gt2sEHCVkNjuFAc6VZ0tfyRDLk88ze0RWCAgLmDSWDHQU1RlWo9srPAPi6B5pV11JHVf
-         Y2FaUAQKKaGR0yOLjOa8qWCKskyPVr2L/9+RSTDnj9AGiaCQe8cxWl/8bWgUiPJRybRa
-         8y9g==
-X-Gm-Message-State: ABy/qLa3FLl9vSTZpCUWsivhSw82/l7BRli5nDsCHNA5q7RaYoCkOBwX
-        Rzb0CkXnskq4/Foh0RnQJiLd99HJ7NSG72lmc/M=
-X-Google-Smtp-Source: APBJJlEPnNOZlGzLpNRTo6ErSuKGOdnoT9/D+9tpLpZIg3Bd8YbgZ6mMMEmppQtq0Y8UUje7ePrQ0KNtnfQ6thOFquc=
-X-Received: by 2002:aa7:d507:0:b0:51e:1a5d:bc8c with SMTP id
- y7-20020aa7d507000000b0051e1a5dbc8cmr1393680edq.42.1689247685814; Thu, 13 Jul
- 2023 04:28:05 -0700 (PDT)
+        Thu, 13 Jul 2023 07:30:06 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7132A18E;
+        Thu, 13 Jul 2023 04:30:05 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0F25261044;
+        Thu, 13 Jul 2023 11:30:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 918FEC433C8;
+        Thu, 13 Jul 2023 11:29:59 +0000 (UTC)
+Date:   Thu, 13 Jul 2023 16:59:48 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Krishna chaitanya chundru <quic_krichai@quicinc.com>
+Cc:     helgaas@kernel.org, linux-pci@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_vbadigan@quicinc.com, quic_nitegupt@quicinc.com,
+        quic_skananth@quicinc.com, quic_ramkri@quicinc.com,
+        krzysztof.kozlowski@linaro.org,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH v8 3/3] PCI: qcom-ep: Add ICC bandwidth voting support
+Message-ID: <20230713112948.GJ3047@thinkpad>
+References: <1689247213-13569-1-git-send-email-quic_krichai@quicinc.com>
+ <1689247213-13569-4-git-send-email-quic_krichai@quicinc.com>
 MIME-Version: 1.0
-References: <20230712194625.never.252-kees@kernel.org>
-In-Reply-To: <20230712194625.never.252-kees@kernel.org>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 13 Jul 2023 14:27:29 +0300
-Message-ID: <CAHp75VcUL+pchLdDk6VJgUrQYemD6pu-Pp3+nyrAr8yt6L+kuA@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: Foolishly claim maintainership of string routines
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Andy Shevchenko <andy@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1689247213-13569-4-git-send-email-quic_krichai@quicinc.com>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 10:46=E2=80=AFPM Kees Cook <keescook@chromium.org> =
-wrote:
->
-> Since the string API is tightly coupled with FORTIFY_SOURCE, I am
-> offering myself up as maintainer for it. Thankfully Andy is already a
-> reviewer and can keep me on the straight and narrow.
+On Thu, Jul 13, 2023 at 04:50:13PM +0530, Krishna chaitanya chundru wrote:
+> Add support for voting interconnect (ICC) bandwidth based
+> on the link speed and width.
+> 
+> This commit is inspired from the basic interconnect support added
+> to pcie-qcom driver in commit c4860af88d0c ("PCI: qcom: Add basic
+> interconnect support").
+> 
+> The interconnect support is kept optional to be backward compatible
+> with legacy devicetrees.
+> 
+> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
 
-Makes sense to me!
-Acked-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+- Mani
+
 > ---
->  MAINTAINERS | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 3be1bdfe8ecc..b639d6123856 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -8672,8 +8672,11 @@ S:       Maintained
->  F:     drivers/input/touchscreen/resistive-adc-touch.c
->
->  GENERIC STRING LIBRARY
-> +M:     Kees Cook <keescook@chromium.org>
->  R:     Andy Shevchenko <andy@kernel.org>
-> -S:     Maintained
-> +L:     linux-hardening@vger.kernel.org
-> +S:     Supported
-> +T:     git git://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git =
-for-next/hardening
->  F:     include/linux/string.h
->  F:     include/linux/string_choices.h
->  F:     include/linux/string_helpers.h
-> --
-> 2.34.1
->
+>  drivers/pci/controller/dwc/pcie-qcom-ep.c | 72 +++++++++++++++++++++++++++++++
+>  1 file changed, 72 insertions(+)
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-qcom-ep.c b/drivers/pci/controller/dwc/pcie-qcom-ep.c
+> index 0fe7f06..cf9fc94 100644
+> --- a/drivers/pci/controller/dwc/pcie-qcom-ep.c
+> +++ b/drivers/pci/controller/dwc/pcie-qcom-ep.c
+> @@ -13,6 +13,7 @@
+>  #include <linux/debugfs.h>
+>  #include <linux/delay.h>
+>  #include <linux/gpio/consumer.h>
+> +#include <linux/interconnect.h>
+>  #include <linux/mfd/syscon.h>
+>  #include <linux/phy/pcie.h>
+>  #include <linux/phy/phy.h>
+> @@ -28,6 +29,7 @@
+>  #define PARF_SYS_CTRL				0x00
+>  #define PARF_DB_CTRL				0x10
+>  #define PARF_PM_CTRL				0x20
+> +#define PARF_PM_STTS				0x24
+>  #define PARF_MHI_CLOCK_RESET_CTRL		0x174
+>  #define PARF_MHI_BASE_ADDR_LOWER		0x178
+>  #define PARF_MHI_BASE_ADDR_UPPER		0x17c
+> @@ -133,6 +135,11 @@
+>  #define CORE_RESET_TIME_US_MAX			1005
+>  #define WAKE_DELAY_US				2000 /* 2 ms */
+>  
+> +#define PCIE_GEN1_BW_MBPS			250
+> +#define PCIE_GEN2_BW_MBPS			500
+> +#define PCIE_GEN3_BW_MBPS			985
+> +#define PCIE_GEN4_BW_MBPS			1969
+> +
+>  #define to_pcie_ep(x)				dev_get_drvdata((x)->dev)
+>  
+>  enum qcom_pcie_ep_link_status {
+> @@ -178,6 +185,8 @@ struct qcom_pcie_ep {
+>  	struct phy *phy;
+>  	struct dentry *debugfs;
+>  
+> +	struct icc_path *icc_mem;
+> +
+>  	struct clk_bulk_data *clks;
+>  	int num_clks;
+>  
+> @@ -253,8 +262,49 @@ static void qcom_pcie_dw_stop_link(struct dw_pcie *pci)
+>  	disable_irq(pcie_ep->perst_irq);
+>  }
+>  
+> +static void qcom_pcie_ep_icc_update(struct qcom_pcie_ep *pcie_ep)
+> +{
+> +	struct dw_pcie *pci = &pcie_ep->pci;
+> +	u32 offset, status, bw;
+> +	int speed, width;
+> +	int ret;
+> +
+> +	if (!pcie_ep->icc_mem)
+> +		return;
+> +
+> +	offset = dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
+> +	status = readw(pci->dbi_base + offset + PCI_EXP_LNKSTA);
+> +
+> +	speed = FIELD_GET(PCI_EXP_LNKSTA_CLS, status);
+> +	width = FIELD_GET(PCI_EXP_LNKSTA_NLW, status);
+> +
+> +	switch (speed) {
+> +	case 1:
+> +		bw = MBps_to_icc(PCIE_GEN1_BW_MBPS);
+> +		break;
+> +	case 2:
+> +		bw = MBps_to_icc(PCIE_GEN2_BW_MBPS);
+> +		break;
+> +	case 3:
+> +		bw = MBps_to_icc(PCIE_GEN3_BW_MBPS);
+> +		break;
+> +	default:
+> +		dev_warn(pci->dev, "using default GEN4 bandwidth\n");
+> +		fallthrough;
+> +	case 4:
+> +		bw = MBps_to_icc(PCIE_GEN4_BW_MBPS);
+> +		break;
+> +	}
+> +
+> +	ret = icc_set_bw(pcie_ep->icc_mem, 0, width * bw);
+> +	if (ret)
+> +		dev_err(pci->dev, "failed to set interconnect bandwidth: %d\n",
+> +			ret);
+> +}
+> +
+>  static int qcom_pcie_enable_resources(struct qcom_pcie_ep *pcie_ep)
+>  {
+> +	struct dw_pcie *pci = &pcie_ep->pci;
+>  	int ret;
+>  
+>  	ret = clk_bulk_prepare_enable(pcie_ep->num_clks, pcie_ep->clks);
+> @@ -277,8 +327,24 @@ static int qcom_pcie_enable_resources(struct qcom_pcie_ep *pcie_ep)
+>  	if (ret)
+>  		goto err_phy_exit;
+>  
+> +	/*
+> +	 * Some Qualcomm platforms require interconnect bandwidth constraints
+> +	 * to be set before enabling interconnect clocks.
+> +	 *
+> +	 * Set an initial peak bandwidth corresponding to single-lane Gen 1
+> +	 * for the pcie-mem path.
+> +	 */
+> +	ret = icc_set_bw(pcie_ep->icc_mem, 0, MBps_to_icc(PCIE_GEN1_BW_MBPS));
+> +	if (ret) {
+> +		dev_err(pci->dev, "failed to set interconnect bandwidth: %d\n",
+> +			ret);
+> +		goto err_phy_off;
+> +	}
+> +
+>  	return 0;
+>  
+> +err_phy_off:
+> +	phy_power_off(pcie_ep->phy);
+>  err_phy_exit:
+>  	phy_exit(pcie_ep->phy);
+>  err_disable_clk:
+> @@ -289,6 +355,7 @@ static int qcom_pcie_enable_resources(struct qcom_pcie_ep *pcie_ep)
+>  
+>  static void qcom_pcie_disable_resources(struct qcom_pcie_ep *pcie_ep)
+>  {
+> +	icc_set_bw(pcie_ep->icc_mem, 0, 0);
+>  	phy_power_off(pcie_ep->phy);
+>  	phy_exit(pcie_ep->phy);
+>  	clk_bulk_disable_unprepare(pcie_ep->num_clks, pcie_ep->clks);
+> @@ -550,6 +617,10 @@ static int qcom_pcie_ep_get_resources(struct platform_device *pdev,
+>  	if (IS_ERR(pcie_ep->phy))
+>  		ret = PTR_ERR(pcie_ep->phy);
+>  
+> +	pcie_ep->icc_mem = devm_of_icc_get(dev, "pcie-mem");
+> +	if (IS_ERR(pcie_ep->icc_mem))
+> +		ret = PTR_ERR(pcie_ep->icc_mem);
+> +
+>  	return ret;
+>  }
+>  
+> @@ -573,6 +644,7 @@ static irqreturn_t qcom_pcie_ep_global_irq_thread(int irq, void *data)
+>  	} else if (FIELD_GET(PARF_INT_ALL_BME, status)) {
+>  		dev_dbg(dev, "Received BME event. Link is enabled!\n");
+>  		pcie_ep->link_status = QCOM_PCIE_EP_LINK_ENABLED;
+> +		qcom_pcie_ep_icc_update(pcie_ep);
+>  		pci_epc_bme_notify(pci->ep.epc);
+>  	} else if (FIELD_GET(PARF_INT_ALL_PM_TURNOFF, status)) {
+>  		dev_dbg(dev, "Received PM Turn-off event! Entering L23\n");
+> -- 
+> 2.7.4
+> 
 
-
---=20
-With Best Regards,
-Andy Shevchenko
+-- 
+மணிவண்ணன் சதாசிவம்
