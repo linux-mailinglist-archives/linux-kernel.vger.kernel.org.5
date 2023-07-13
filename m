@@ -2,166 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A6CB75278C
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 17:43:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2C9C75279A
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 17:44:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235017AbjGMPnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 11:43:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45400 "EHLO
+        id S235089AbjGMPoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 11:44:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbjGMPnU (ORCPT
+        with ESMTP id S234969AbjGMPoL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 11:43:20 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C56142686
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 08:43:18 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-c2cf29195f8so824333276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 08:43:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689262998; x=1689867798;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=91vNV3YrdzSjKOSREPIs1wSiF2NAZ5QLx0dAx8l+9Cs=;
-        b=rDxvl6mZuriokxBHc27a1IvWgQXE5WtWQswiLsM4jHgQP7vkELi7SgUvleLqEdYIIi
-         B9/qrxBoc+4j0fCZdTZIhjUHaRaf40Fse3iVbhOvpxTQxsHQgptK4AL7qbTv6mB/8g98
-         4kd0ufDwOyI8auYr+orVFJKIBCOxqO2WwlCZwsEpqVtWc5lWRgcC3RRHlwfWeecgV38y
-         nGBAe6NgwdEV6LivipYtblUKtzZmvJtqLRDZx3WnJBwQ1N1inP+HXpt4X1iLE6Vq6wY5
-         G7s/7BE9oCLkKLnlY2c7E2dPVpBKOHQ2ES1DRWo6GHXAqteGNAQeb4eyzFFVI9vySks/
-         cdyg==
+        Thu, 13 Jul 2023 11:44:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EBEE273B
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 08:43:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689263008;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VLikHNWVNU/FNpgKCSfkRGEY/lyXivfIFOAmn8fr+kQ=;
+        b=RnRJ9f2hV9KFiM7Xk5Ut3MOs/qpRGiSwWpoy0hme7Itvu49LgZiVbcXGHs4jOPgmH/jItQ
+        aj3E5HLoL2tJ70y3YGtGtdF6tcQo4Txj/FQ5UbUKQAQAIziQbrnuZWh4mcMa4mZQL9FqCP
+        aCvK8yNOpBllCvoi0aKecccHDj7AYEc=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-665-tRcAHoETOw6FckLN5qqehg-1; Thu, 13 Jul 2023 11:43:26 -0400
+X-MC-Unique: tRcAHoETOw6FckLN5qqehg-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-31596170243so622681f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 08:43:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689262998; x=1689867798;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20221208; t=1689263005; x=1691855005;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=91vNV3YrdzSjKOSREPIs1wSiF2NAZ5QLx0dAx8l+9Cs=;
-        b=Zo6ZPt+TloqcbFQm3ywW9WwBXyPB3uCoU6VKPSyurGvcOCbMgJqYQN52K3ZE0OIkeS
-         rDfQrUpSJs+2zgZeJN4UC/FcDKVfgCi81CRz6y3RpBJ1gmRxVUXmbJDwm9loxLqM9phi
-         pauapWZTlj6i7xQj/V5yXwqqK5FpqY9TbWJr8KOKlvbf+QsNA9KRjItwhuV2U3T9HVtC
-         uhqv3BhrNAQUJiwlsO5zNrgWwGmGlU4nHxhQ5MnAqTIjkDgroLdw0J9oGKsnHe3cyOl0
-         xvZmaDwRSaXEXjkGgrfgLaGknEuH+m8t+XxoPyWu9LTQ+oghekRWUh4i4aDWcs3SI/aR
-         i3hw==
-X-Gm-Message-State: ABy/qLYqGYin7ts6n5J4b3vLzQ5B1rI3JTeUcaJ/S4XfLIYjzT/Exlv8
-        3D2AeMgdLu+zx6kjmk6GZqnT8o3mw1SfzflwabaxgA==
-X-Google-Smtp-Source: APBJJlEzqkIycBpd/dk78rxLiZ5DOQgoh2uewJ9I1h61UlwEZbrwkONkI8ayCwX25DFG4WRdWqcFsLGGtlya5l1nooE=
-X-Received: by 2002:a25:c0c8:0:b0:c4f:43d7:7daf with SMTP id
- c191-20020a25c0c8000000b00c4f43d77dafmr1554760ybf.1.1689262997949; Thu, 13
- Jul 2023 08:43:17 -0700 (PDT)
+        bh=VLikHNWVNU/FNpgKCSfkRGEY/lyXivfIFOAmn8fr+kQ=;
+        b=BkedGY1XrvRfKWiwCgErd7VL7mxy89L4b56FnIdPAWTrrgj6T6mlNFEAgqx80ghRuI
+         VV0l1gtjgJrIP4I2en8GUzU1wS9zhh+4AwfXMkHqN1y3ksab9qumGt1jtIy93R0tFzDJ
+         ECRERQaQUa3epJMnE9gBYnq0OexhrNcrjG6Hta6ZqRG4DIcmEH0P2h7pCx/jgsD1mYc8
+         140iTcGNHl0ZjFsNAUpgqWKXZU2Y743o7a05ZCnCnughnUX044lpgY8kei1qtn/tOESv
+         UlRuXGzjf19Q2ZcNxOnpHz+zp9a2VrGYbEQEoTpfHDhNOIP9rbBCl+knm3dAHInFgVgw
+         X4Kw==
+X-Gm-Message-State: ABy/qLZ5thwdG7oTIKIHPjpXPMumAwgB2JP9W7DLWtGUaSDdz+sY22Dt
+        vVmklhIwwlWLRPsG0VpsDmTSPGOTBkKFHYwXCP4derAClC4Hvtf9eFPveGGRlDr81jcJD27/Mb7
+        HHSVzGm858G9UXVYi2x+H8gZo
+X-Received: by 2002:adf:e681:0:b0:313:f4e2:901d with SMTP id r1-20020adfe681000000b00313f4e2901dmr2049831wrm.22.1689263004839;
+        Thu, 13 Jul 2023 08:43:24 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlF1/YUAbO+tUpcHHd06mVmoTHYbiWHrgz1Hqa9kz78W45sfnOZ2occ1rxo5df7lIzOiCn/o3Q==
+X-Received: by 2002:adf:e681:0:b0:313:f4e2:901d with SMTP id r1-20020adfe681000000b00313f4e2901dmr2049814wrm.22.1689263004497;
+        Thu, 13 Jul 2023 08:43:24 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c717:6100:2da7:427e:49a5:e07? (p200300cbc71761002da7427e49a50e07.dip0.t-ipconnect.de. [2003:cb:c717:6100:2da7:427e:49a5:e07])
+        by smtp.gmail.com with ESMTPSA id o7-20020a5d6707000000b002c70ce264bfsm8285044wru.76.2023.07.13.08.43.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 Jul 2023 08:43:24 -0700 (PDT)
+Message-ID: <de39c555-e092-8e57-43a4-7a2c56d1e66c@redhat.com>
+Date:   Thu, 13 Jul 2023 17:43:22 +0200
 MIME-Version: 1.0
-References: <20230712130215.666924-1-amit.pundir@linaro.org>
- <3b677200-a201-680b-391f-fbf73064496a@linaro.org> <CAMi1Hd003r1kJ6e4r2urFtN1BEnCRatLcQ1Q7Eh5wBdj=2WDFA@mail.gmail.com>
-In-Reply-To: <CAMi1Hd003r1kJ6e4r2urFtN1BEnCRatLcQ1Q7Eh5wBdj=2WDFA@mail.gmail.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Thu, 13 Jul 2023 18:43:06 +0300
-Message-ID: <CAA8EJpp6yprRL3qzM9pHt2uJ6sb-nPhwas5qm9aDthegSaw7DQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: display/msm: qcom,sdm845-mdss: add
- memory-region property
-To:     Amit Pundir <amit.pundir@linaro.org>
-Cc:     Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Caleb Connolly <caleb.connolly@linaro.org>,
-        Bryan Donoghue <bryan.odonoghue@linaro.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Krishna Manikandan <quic_mkrishn@quicinc.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        dt <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH 3/3] dax/kmem: Always enroll hotplugged memory for
+ memmap_on_memory
+Content-Language: en-US
+To:     "Verma, Vishal L" <vishal.l.verma@intel.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "osalvador@suse.de" <osalvador@suse.de>,
+        "aneesh.kumar@linux.ibm.com" <aneesh.kumar@linux.ibm.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "lenb@kernel.org" <lenb@kernel.org>
+Cc:     "Huang, Ying" <ying.huang@intel.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>,
+        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>
+References: <20230613-vv-kmem_memmap-v1-0-f6de9c6af2c6@intel.com>
+ <20230613-vv-kmem_memmap-v1-3-f6de9c6af2c6@intel.com>
+ <aadbedeb-424d-a146-392d-d56680263691@redhat.com>
+ <87edleplkn.fsf@linux.ibm.com>
+ <1df12885-9ae4-6aef-1a31-91ecd5a18d24@redhat.com>
+ <5a8e9b1b6c8d6d9e5405ca35abb9be3ed09761c3.camel@intel.com>
+ <ee0c84ff-6d97-3b7c-88a8-dd00797c2999@redhat.com>
+ <6cb5624ebf3039b18f5180262fc6383b402d26ea.camel@intel.com>
+ <80c8654e-21fb-b187-3475-9a1410a53a4e@redhat.com>
+ <b62572356db07ae0c3305ed03916b0ff40b14426.camel@intel.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <b62572356db07ae0c3305ed03916b0ff40b14426.camel@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 13 Jul 2023 at 18:34, Amit Pundir <amit.pundir@linaro.org> wrote:
->
-> On Wed, 12 Jul 2023 at 18:45, Dmitry Baryshkov
-> <dmitry.baryshkov@linaro.org> wrote:
-> >
-> > On 12/07/2023 16:02, Amit Pundir wrote:
-> > > Add and document the reserved memory region property
-> > > in the qcom,sdm845-mdss schema.
-> > >
-> > > Signed-off-by: Amit Pundir <amit.pundir@linaro.org>
-> > > ---
-> > >   .../devicetree/bindings/display/msm/qcom,sdm845-mdss.yaml    | 5 +++++
-> > >   1 file changed, 5 insertions(+)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/display/msm/qcom,sdm845-mdss.yaml b/Documentation/devicetree/bindings/display/msm/qcom,sdm845-mdss.yaml
-> > > index 6ecb00920d7f..3ea1dbd7e317 100644
-> > > --- a/Documentation/devicetree/bindings/display/msm/qcom,sdm845-mdss.yaml
-> > > +++ b/Documentation/devicetree/bindings/display/msm/qcom,sdm845-mdss.yaml
-> > > @@ -39,6 +39,11 @@ properties:
-> > >     interconnect-names:
-> > >       maxItems: 2
-> > >
-> > > +  memory-region:
-> > > +    maxItems: 1
-> > > +    description:
-> > > +      Phandle to a node describing a reserved memory region.
-> > > +
-> >
-> > Please add it to mdss-common.yaml instead
->
-> mdss-common.yaml didn't like this property at all and
-> I ran into a lot of new dtbs_check warnings:
-> https://www.irccloud.com/pastebin/raw/pEYAeaB1
->
-> I need some help in decoding these please.
+On 13.07.23 17:40, Verma, Vishal L wrote:
+> On Thu, 2023-07-13 at 17:23 +0200, David Hildenbrand wrote:
+>> On 13.07.23 17:15, Verma, Vishal L wrote:
+>>> On Thu, 2023-07-13 at 09:23 +0200, David Hildenbrand wrote:
+>>>> On 13.07.23 08:45, Verma, Vishal L wrote:
+>>>>>
+>>>>> I'm taking a shot at implementing the splitting internally in
+>>>>> memory_hotplug.c. The caller (kmem) side does become trivial with this
+>>>>> approach, but there's a slight complication if I don't have the module
+>>>>> param override (patch 1 of this series).
+>>>>>
+>>>>> The kmem diff now looks like:
+>>>>>
+>>>>>       diff --git a/drivers/dax/kmem.c b/drivers/dax/kmem.c
+>>>>>       index 898ca9505754..8be932f63f90 100644
+>>>>>       --- a/drivers/dax/kmem.c
+>>>>>       +++ b/drivers/dax/kmem.c
+>>>>>       @@ -105,6 +105,8 @@ static int dev_dax_kmem_probe(struct dev_dax *dev_dax)
+>>>>>               data->mgid = rc;
+>>>>>        
+>>>>>               for (i = 0; i < dev_dax->nr_range; i++) {
+>>>>>       +               mhp_t mhp_flags = MHP_NID_IS_MGID | MHP_MEMMAP_ON_MEMORY |
+>>>>>       +                                 MHP_SPLIT_MEMBLOCKS;
+>>>>>                       struct resource *res;
+>>>>>                       struct range range;
+>>>>>        
+>>>>>       @@ -141,7 +143,7 @@ static int dev_dax_kmem_probe(struct dev_dax *dev_dax)
+>>>>>                        * this as RAM automatically.
+>>>>>                        */
+>>>>>                       rc = add_memory_driver_managed(data->mgid, range.start,
+>>>>>       -                               range_len(&range), kmem_name, MHP_NID_IS_MGID);
+>>>>>       +                               range_len(&range), kmem_name, mhp_flags);
+>>>>>        
+>>>>>                       if (rc) {
+>>>>>                               dev_warn(dev, "mapping%d: %#llx-%#llx memory add failed\n",
+>>>>>       
+>>>>>
+>>>>
+>>>> Why do we need the MHP_SPLIT_MEMBLOCKS?
+>>>
+>>> I thought we still wanted either an opt-in or opt-out for the kmem
+>>> driver to be able to do memmap_on_memory, in case there were
+>>> performance implications or the lack of 1GiB PUDs. I haven't
+>>> implemented that yet, but I was thinking along the lines of a sysfs
+>>> knob exposed by kmem, that controls setting of this new
+>>> MHP_SPLIT_MEMBLOCKS flag.
+>>
+>> Why is MHP_MEMMAP_ON_MEMORY not sufficient for that?
+>>
+>>
+> Ah I see what you mean now - knob just controls MHP_MEMMAP_ON_MEMORY,
+> and memory_hotplug is free to split to memblocks if it needs to to
+> satisfy that.
 
-I'm not sure what happened there (and it's hard to understand without
-seeing your patch). But after applying your patch to mdss-common.yaml,
-`make dt_binding_check' passes:
+And if you don't want memmap holes in a larger area you're adding (for 
+example to runtime-allocate 1 GiB pages), simply check the size your 
+adding, and if it's, say, less than 1 G, don't set the flag.
 
-diff --git a/Documentation/devicetree/bindings/display/msm/mdss-common.yaml
-b/Documentation/devicetree/bindings/display/msm/mdss-common.yaml
-index ccd7d6417523..924fe383e4a1 100644
---- a/Documentation/devicetree/bindings/display/msm/mdss-common.yaml
-+++ b/Documentation/devicetree/bindings/display/msm/mdss-common.yaml
-@@ -77,6 +77,11 @@ properties:
-     items:
-       - description: MDSS_CORE reset
+But that's probably a corner case use case not worth considering for now.
 
-+  memory-region:
-+    maxItems: 1
-+    description:
-+      Phandle to a node describing a reserved memory region.
-+
- required:
-   - reg
-   - reg-names
+> 
+> That sounds reasonable. Let me give this a try and see if I run into
+> anything else. Thanks David!
 
-
->
-> Regards,
-> Amit Pundir
->
-> >
-> > >   patternProperties:
-> > >     "^display-controller@[0-9a-f]+$":
-> > >       type: object
-> >
-> > --
-> > With best wishes
-> > Dmitry
-> >
-
-
+Sure!
 
 -- 
-With best wishes
-Dmitry
+Cheers,
+
+David / dhildenb
+
