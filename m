@@ -2,152 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE931752732
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 17:34:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 282FE75275B
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 17:36:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234752AbjGMPeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 11:34:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33576 "EHLO
+        id S233786AbjGMPg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 11:36:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232007AbjGMPdw (ORCPT
+        with ESMTP id S229472AbjGMPgZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 11:33:52 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD6981FD4;
-        Thu, 13 Jul 2023 08:33:51 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 5C41522185;
-        Thu, 13 Jul 2023 15:33:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1689262430; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZnsbM2wbDJKZoJO63kCqa7skAvyrvbFpqW+OFngO6J0=;
-        b=sV1pgtAi27tWlGMws6tV7hf/GEtyL/tfm4WbvICemOjJMuus/p2+X17CiUlFl/l1j+rjgD
-        xKsKyh+PUXOM5Mtqqoc/ExfUrXx6RAHwtZ6Lb7OFEryuzF6O5kA/QwwDb0pnIavlwHUUdU
-        pG3UxM2hej8IJ+lTSLLmhqbB30xUz/0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1689262430;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZnsbM2wbDJKZoJO63kCqa7skAvyrvbFpqW+OFngO6J0=;
-        b=9pXKKiCXJGy/exWne0PvxfT2nb5/QqIeeq771ADv8xv5NQVJ9/i551YInR/xTA9frjX5m8
-        AoqlkLi8oC3II5Bg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 42C8613489;
-        Thu, 13 Jul 2023 15:33:50 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id e3taEF4ZsGTsGAAAMHmgww
-        (envelope-from <chrubis@suse.cz>); Thu, 13 Jul 2023 15:33:50 +0000
-Date:   Thu, 13 Jul 2023 17:34:55 +0200
-From:   Cyril Hrubis <chrubis@suse.cz>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Matthew Wilcox <willy@infradead.org>, cluster-devel@redhat.com,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Chao Yu <chao@kernel.org>, linux-fsdevel@vger.kernel.org,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Xiubo Li <xiubli@redhat.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        ltp@lists.linux.it, lkp@intel.com, Jens Axboe <axboe@kernel.dk>,
-        Christian Brauner <brauner@kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        Anna Schumaker <anna@kernel.org>, oe-lkp@lists.linux.dev,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hannes Reinecke <hare@suse.de>
-Subject: Re: [LTP] [linus:master] [iomap]  219580eea1: ltp.writev07.fail
-Message-ID: <ZLAZn_SBmoIFG5F5@yuki>
-References: <202307132107.2ce4ea2f-oliver.sang@intel.com>
- <20230713150923.GA28246@lst.de>
+        Thu, 13 Jul 2023 11:36:25 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D377526AE;
+        Thu, 13 Jul 2023 08:36:20 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1FA231570;
+        Thu, 13 Jul 2023 08:37:03 -0700 (PDT)
+Received: from [10.1.30.48] (C02Z41KALVDN.cambridge.arm.com [10.1.30.48])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3F0553F73F;
+        Thu, 13 Jul 2023 08:36:19 -0700 (PDT)
+Message-ID: <8d2e75e7-0d38-6e6c-a02a-b66a18515dfb@arm.com>
+Date:   Thu, 13 Jul 2023 16:36:18 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230713150923.GA28246@lst.de>
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH v1 9/9] selftests/mm: Run all tests from run_vmtests.sh
+To:     Mark Brown <broonie@kernel.org>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Florent Revest <revest@chromium.org>,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org
+References: <20230713135440.3651409-1-ryan.roberts@arm.com>
+ <20230713135440.3651409-10-ryan.roberts@arm.com>
+ <d77c6592-09f4-036d-ad00-a7a28de1da3f@redhat.com>
+ <2b586ba2-7522-a823-afd6-7b4d978f18c2@arm.com>
+ <97742685-e026-417b-8c8f-938330027636@sirena.org.uk>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <97742685-e026-417b-8c8f-938330027636@sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
-> I can't reproduce this on current mainline.  Is this a robust failure
-> or flapping test?  Especiall as the FAIL conditions look rather
-> unrelated.
+On 13/07/2023 16:30, Mark Brown wrote:
+> On Thu, Jul 13, 2023 at 04:04:44PM +0100, Ryan Roberts wrote:
+> 
+>> So with this change at the kselftest level, there is a single test in its list;
+>> run_vmtests.sh. And all the other tests that were previously in that list are
+>> moved into run_vmtests.sh (if they weren't there already).
+> 
+> The results parsers I'm aware of like the LAVA one will DTRT with nested
+> kselftests since that's required to pull see individual test cases run
+> by a single binary so it's the common case to see at least one level of
+> nesting.
 
-Actually the test is spot on, the difference is that previously the
-error was returned form the iomap_file_buffered_write() only if we
-failed with the first buffer from the iov, now we always return the
-error and we do not advance the offset.
+That's good to hear. But bear in mind that run_vmtests.sh does not use TAP. So
+you end up with a single top-level test who's result is reported with
+run_kselftest.sh's TAP output. Then you have a second level (run_vmtests.sh)
+using custom reporting, then _some_ of the tests invoked use TAP so you
+sometimes have TAP at level 3. But those tests at level 2 that don't do their
+own TAP output probably won't be parsed by LAVA?
 
-The change that broke it:
-
-diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-index 063133ec77f4..550525a525c4 100644
---- a/fs/iomap/buffered-io.c
-+++ b/fs/iomap/buffered-io.c
-@@ -864,16 +864,19 @@ iomap_file_buffered_write(struct kiocb *iocb, struct iov_iter *i,
-                .len            = iov_iter_count(i),
-                .flags          = IOMAP_WRITE,
-        };
--       int ret;
-+       ssize_t ret;
-
-        if (iocb->ki_flags & IOCB_NOWAIT)
-                iter.flags |= IOMAP_NOWAIT;
-
-        while ((ret = iomap_iter(&iter, ops)) > 0)
-                iter.processed = iomap_write_iter(&iter, i);
--       if (iter.pos == iocb->ki_pos)
-+
-+       if (unlikely(ret < 0))
-                return ret;
--       return iter.pos - iocb->ki_pos;
-+       ret = iter.pos - iocb->ki_pos;
-+       iocb->ki_pos += ret;
-+       return ret;
- }
-
-I suppose that we shoudl fix is with something as:
-
-diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-index adb92cdb24b0..bfb39f7bc303 100644
---- a/fs/iomap/buffered-io.c
-+++ b/fs/iomap/buffered-io.c
-@@ -872,11 +872,12 @@ iomap_file_buffered_write(struct kiocb *iocb, struct iov_iter *i,
-        while ((ret = iomap_iter(&iter, ops)) > 0)
-                iter.processed = iomap_write_iter(&iter, i);
-
-+       iocb->ki_pos += iter.pos - iocb->ki_pos;
-+
-        if (unlikely(ret < 0))
-                return ret;
--       ret = iter.pos - iocb->ki_pos;
--       iocb->ki_pos += ret;
--       return ret;
-+
-+       return iter.pos - iocb->ki_pos;
- }
- EXPORT_SYMBOL_GPL(iomap_file_buffered_write);
-
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Since you agreed to put this into the CI, I was going to call this part "your
+problem" ;-)
