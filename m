@@ -2,116 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCAEF752A83
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 20:52:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CAB8752A81
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 20:52:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229620AbjGMSwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 14:52:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47140 "EHLO
+        id S231905AbjGMSwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 14:52:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231926AbjGMSwm (ORCPT
+        with ESMTP id S229620AbjGMSwe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 14:52:42 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88B5E2709;
-        Thu, 13 Jul 2023 11:52:39 -0700 (PDT)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36DIkoAw006900;
-        Thu, 13 Jul 2023 18:52:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
- cc : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=qcppdkim1; bh=w0ZsrTSnOBfStnjIXUJ6185VAcOLGCvpnM2Umu/Mklo=;
- b=DA+YGwdDHG5Qug2ScDMBOWU+TDWDQcYA0Yy4RaZpXbSlwSsnfNhV5qNfVmroQwRiNvOS
- joD6si7BFOV4eknx0kBCrFIMcHC+dZ8ARE+Cj94txz0gXSZilfdryIoWbL4hz2LUFWpJ
- LeivQSGry+2w3+xYPMHBUPUomLCm3K7gbeqPT8ZBcDx9Rc63G4p/BtW78sckFzuybGg4
- WrC1MbuwX4rqoFlAsI/5v/rbDx+4zAWoquE2ZqOF964EEuRjHiBiGB6KLEp8r5Eyir9n
- hWvqYz3sCl34k10P2wiJqyWCc/R9kE3Ou4f7a5w1m5HYokcYxZHMHl91ODU5XFnV5NH3 YA== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rtpuhr09s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 13 Jul 2023 18:52:16 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36DIqFLX017392
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 13 Jul 2023 18:52:15 GMT
-Received: from akhilpo-linux.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Thu, 13 Jul 2023 11:52:11 -0700
-Date:   Fri, 14 Jul 2023 00:22:08 +0530
-From:   Akhil P Oommen <quic_akhilpo@quicinc.com>
-To:     Rob Clark <robdclark@gmail.com>
-CC:     <dri-devel@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>,
-        <freedreno@lists.freedesktop.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        "Daniel Vetter" <daniel@ffwll.ch>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] drm/msm/adreno: Fix snapshot BINDLESS_DATA size
-Message-ID: <3ect6gyn4ylhrkql5isb2x3bbfg55yohhgivszejtvsjxfn6s7@ricinp6rf3i4>
-References: <20230711175409.157800-1-robdclark@gmail.com>
+        Thu, 13 Jul 2023 14:52:34 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6186106;
+        Thu, 13 Jul 2023 11:52:32 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-992b27e1c55so147024566b.2;
+        Thu, 13 Jul 2023 11:52:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689274351; x=1691866351;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Sl0k0wYjl3hwJsFNeGh8bb0d9ZjKonMo+8kUL+KQzvg=;
+        b=UBpllUJ3BxDsNMj+bBPaYGhpjiOyMrQmX1paFEo4geKQVFKE5LvI/M/hYhSCoX1e4I
+         PBP+/zQfzlPEhDcskeChtfb3yImCw0FiomXFN0+2DsuoSkwKC5dTZmt9QohTq9UHsmYr
+         i0WzOAeG+x6UCBD1Y4kNnAOKrQ3SVCxI+GTmFMm5vGWAIYYrTrivn+S7WaLAZU27kKba
+         2WhqmLMn0wJAz/8OdDJWspOA6bmkYDuMR8qvAKNVmJ9Ox+WjoP3IJJkDBKFjug2RZLjL
+         Za515Ipvu39QLXVtFCxAteTrEG46CcL/HzgsbpH8kbAUT8JGb1uYOb9YDPzaL8p0cGEL
+         GM1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689274351; x=1691866351;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Sl0k0wYjl3hwJsFNeGh8bb0d9ZjKonMo+8kUL+KQzvg=;
+        b=Qee10YmIGGmgh8xRjJBNu94s5FaWg0mFKft9/SfsyCyEqIbZJNGtWpckV229wFRR8m
+         lvWe5g3gULzmbPFim57Whjhb+QVAIKeVc1768+Q4uwKCSfJ94tVptGeE2GwrFo2gYQfk
+         LAFlMGmu8wKIdYVRDERzeeyoKugMzKVi6ne9X/X38Ui8jkyOhQ6AOH0MA13dM6uEl+Ec
+         nzivVgKADjGUAnvJyiVsuK2hPYFYid7/yAOnAKhJfWvG93wmxn3eVcQN2wkEDnwx8BzX
+         c3qQRyHOUOUh7JfjFHGFqiUfoKnWiZO7uvpwzPe0/nJ7tb5vARN6MoAm5ah3aIiZd4rq
+         AwQw==
+X-Gm-Message-State: ABy/qLbsKaMlVwHz1jKvDQxikmmEjTdiwgGounzvUmc1RfhVdoZNG3wA
+        2g2oX1b7Oh9vR6BWrHPL5AzSI0AkvA==
+X-Google-Smtp-Source: APBJJlHQxgOEKJ5YQIngpD9uNx7NfD+JRH9Y1qEVbmYZf6w6i6XfkdyT2z0IQ96vgH1UQzkg9Qr2vA==
+X-Received: by 2002:a17:906:d965:b0:992:b020:ce4 with SMTP id rp5-20020a170906d96500b00992b0200ce4mr1974119ejb.51.1689274350804;
+        Thu, 13 Jul 2023 11:52:30 -0700 (PDT)
+Received: from p183 ([46.53.251.182])
+        by smtp.gmail.com with ESMTPSA id x8-20020a170906298800b0098df7d0e096sm4336800eje.54.2023.07.13.11.52.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Jul 2023 11:52:30 -0700 (PDT)
+Date:   Thu, 13 Jul 2023 21:52:28 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     akpm@linux-foundation.org, masahiroy@kernel.org, nathan@kernel.org,
+        ndesaulniers@google.com, nicolas@fjasle.eu
+Cc:     linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
+Subject: [PATCH] kbuild: flatten KBUILD_CFLAGS
+Message-ID: <4f414a87-0c54-44bd-b218-f6f0b22c57ef@p183>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230711175409.157800-1-robdclark@gmail.com>
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: rfpCF3EEy1A_-RnZU5MYwVDSeJFMgYeS
-X-Proofpoint-ORIG-GUID: rfpCF3EEy1A_-RnZU5MYwVDSeJFMgYeS
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-13_07,2023-07-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- clxscore=1011 mlxlogscore=999 spamscore=0 malwarescore=0 bulkscore=0
- impostorscore=0 adultscore=0 phishscore=0 lowpriorityscore=0
- suspectscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307130168
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 11, 2023 at 10:54:07AM -0700, Rob Clark wrote:
-> 
-> From: Rob Clark <robdclark@chromium.org>
-> 
-> The incorrect size was causing "CP | AHB bus error" when snapshotting
-> the GPU state on a6xx gen4 (a660 family).
-> 
-> Closes: https://gitlab.freedesktop.org/drm/msm/-/issues/26
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
-> ---
->  drivers/gpu/drm/msm/adreno/a6xx_gpu_state.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.h b/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.h
-> index 790f55e24533..e788ed72eb0d 100644
-> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.h
-> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.h
-> @@ -206,7 +206,7 @@ static const struct a6xx_shader_block {
->  	SHADER(A6XX_SP_LB_3_DATA, 0x800),
->  	SHADER(A6XX_SP_LB_4_DATA, 0x800),
->  	SHADER(A6XX_SP_LB_5_DATA, 0x200),
-> -	SHADER(A6XX_SP_CB_BINDLESS_DATA, 0x2000),
-> +	SHADER(A6XX_SP_CB_BINDLESS_DATA, 0x800),
->  	SHADER(A6XX_SP_CB_LEGACY_DATA, 0x280),
->  	SHADER(A6XX_SP_UAV_DATA, 0x80),
->  	SHADER(A6XX_SP_INST_TAG, 0x80),
-> -- 
-> 2.41.0
-> 
-Reviewed-by: Akhil P Oommen <quic_akhilpo@quicinc.com>
+Make it slightly easier to see which compiler options are added and
+removed (and not worry about column limit too!).
 
--Akhil
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+---
+
+ Makefile |   22 +++++++++++++++++-----
+ 1 file changed, 17 insertions(+), 5 deletions(-)
+
+--- a/Makefile
++++ b/Makefile
+@@ -555,11 +555,23 @@ LINUXINCLUDE    := \
+ 		$(USERINCLUDE)
+ 
+ KBUILD_AFLAGS   := -D__ASSEMBLY__ -fno-PIE
+-KBUILD_CFLAGS   := -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs \
+-		   -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE \
+-		   -Werror=implicit-function-declaration -Werror=implicit-int \
+-		   -Werror=return-type -Wno-format-security -funsigned-char \
+-		   -std=gnu11
++
++KBUILD_CFLAGS :=
++KBUILD_CFLAGS += -std=gnu11
++KBUILD_CFLAGS += -fshort-wchar
++KBUILD_CFLAGS += -funsigned-char
++KBUILD_CFLAGS += -fno-common
++KBUILD_CFLAGS += -fno-PIE
++KBUILD_CFLAGS += -fno-strict-aliasing
++KBUILD_CFLAGS += -Wall
++KBUILD_CFLAGS += -Wundef
++KBUILD_CFLAGS += -Werror=implicit-function-declaration
++KBUILD_CFLAGS += -Werror=implicit-int
++KBUILD_CFLAGS += -Werror=return-type
++KBUILD_CFLAGS += -Werror=strict-prototypes
++KBUILD_CFLAGS += -Wno-format-security
++KBUILD_CFLAGS += -Wno-trigraphs
++
+ KBUILD_CPPFLAGS := -D__KERNEL__
+ KBUILD_RUSTFLAGS := $(rust_common_flags) \
+ 		    --target=$(objtree)/scripts/target.json \
