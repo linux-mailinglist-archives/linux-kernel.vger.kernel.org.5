@@ -2,190 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AB4E751807
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 07:26:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD05775180D
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 07:28:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233811AbjGMF0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 01:26:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54598 "EHLO
+        id S233902AbjGMF2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 01:28:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232553AbjGMF0L (ORCPT
+        with ESMTP id S232553AbjGMF2E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 01:26:11 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A518B0
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 22:26:10 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id d75a77b69052e-403b07cf5d0so3420661cf.2
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 22:26:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689225969; x=1691817969;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=wY6yIeUd5XkzBxHd4IVhXPW1XkMh9zkeZ+8KULrZkQQ=;
-        b=qhnJNFc9Ui8w3ZntanV9x3uULKUEk3Gr1w8FQK6ywNaBqjjhHZ84BHRj+m/9CQ2T3r
-         8kxUYjUrna+eGdhNFU9cr0Q9K4OFicGwuPEN5eWCLdGoxAU4b+8YRGlty0iqYswmyVHU
-         +xCYkQwgaHIvqamfG7JVhESHM45XU/a95Inqp7f4p+R1SOnxe6Dlas6XPlySwW89xjrR
-         kv5AdE5picQObmafQ6vGg0p/3e5NJcFk82cCmbvQDRQWAbQ9Md8jSv4j/JhwdHCAMY/L
-         UMdNzfqghGKNA+l05uY+A/pNPyYP0tYF1VynCc6GKRUwpRb4g6ywO14FFXhHL1YEghYr
-         //ZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689225969; x=1691817969;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wY6yIeUd5XkzBxHd4IVhXPW1XkMh9zkeZ+8KULrZkQQ=;
-        b=FCOAqdw4FRuU3CEeVt3A3N9f5LzUWScuU2fZZQ/OWvBr28tPpS/csjdtGlFkG/S06D
-         z69eRnZN9M0NCWQb2GJz4wvVbc65TkYax1j/yW8dDMs5WenTZ+htLXXJEvHe30O+F7rr
-         kYTTVf/QoPnmoaJEAN+NqK+N2VjxBAgerfYGukVEdKC4ENKBkzoLIu+uUFips7AeYwaL
-         pvb2YhosaoZIGb3bmmXE1XlL3UqbCU+8HRqUAbNeQCK2OJZ7Og1txZsu7114Y/3xT1e+
-         zW10Mhe43kqQwJQ15mayAGUeQspPSPKNaH9jWwYO2w8XHLxDK3DUMDkJtS+pqHhGS/R8
-         riQw==
-X-Gm-Message-State: ABy/qLaMUr2ajcJ38xMTN+zWLfA8CS/rqdrH8daxROd1IGIsYY5QzapG
-        b0B5UHZIWwgjvYi4LoXYZOI=
-X-Google-Smtp-Source: APBJJlH2UNtTGC8nZZnk8cJsui63PsvCqbA2j22TBkK9asviiVC12PDgkQ98kSuFiNgAamwR3I443Q==
-X-Received: by 2002:ac8:5c4f:0:b0:3fd:ec2e:cd75 with SMTP id j15-20020ac85c4f000000b003fdec2ecd75mr1101874qtj.15.1689225969635;
-        Wed, 12 Jul 2023 22:26:09 -0700 (PDT)
-Received: from [127.0.0.1] ([212.107.28.53])
-        by smtp.gmail.com with ESMTPSA id 28-20020a17090a001c00b00263258fda1bsm11745740pja.46.2023.07.12.22.26.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 Jul 2023 22:26:08 -0700 (PDT)
-From:   Celeste Liu <coelacanthushex@gmail.com>
-X-Google-Original-From: Celeste Liu <CoelacanthusHex@gmail.com>
-Message-ID: <7937b1c9-cde3-29ad-66dd-c95c4f0506ca@gmail.com>
-Date:   Thu, 13 Jul 2023 13:26:00 +0800
+        Thu, 13 Jul 2023 01:28:04 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3766172C;
+        Wed, 12 Jul 2023 22:28:03 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36D4nFdU022118;
+        Thu, 13 Jul 2023 05:27:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=7W5ZMLI5H62QewZy844Y3sbpJSkFJKvuwQNQcimB56o=;
+ b=APc1R5Vyctx0aGLaLPOVki2aKCBi7cQZt6hvRVUJCKM/pLmf2GfKRjFArllrhu+iZa2o
+ YoRkZOdJwwr9RD4j6vRxNsp/PxdTXdlnoTKnsRj1Salz9MHTEKVSc4yX9NF1opfkKylq
+ bG7RmN0MhdoQ9MoqVyeibH/eEWhHVCW/HLcVElyY2zwrrRzsuRCQvWVcAtBM1CsEVT58
+ YMQ5g8XZ4NyPOymg0sTWXa29pAPIC/jkB1EPuHS/akjGBekt5zIL/IiU1rPRDerc4vzS
+ iECIO7ckrLNeYUXoOZQN7wu8UTJpQqHtCSJiQ5HDo+TgzprQVU68Q9C29+DflqdmldJ+ Jw== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rt3f00qb6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 13 Jul 2023 05:27:58 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36D5RvaL027388
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 13 Jul 2023 05:27:57 GMT
+Received: from hu-ipkumar-blr.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Wed, 12 Jul 2023 22:27:52 -0700
+From:   Praveenkumar I <quic_ipkumar@quicinc.com>
+To:     <amitk@kernel.org>, <thara.gopinath@gmail.com>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <rafael@kernel.org>,
+        <daniel.lezcano@linaro.org>, <rui.zhang@intel.com>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <linux-pm@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <quic_varada@quicinc.com>
+Subject: [PATCH v3 0/5] Add IPQ5332 TSENS support
+Date:   Thu, 13 Jul 2023 10:57:27 +0530
+Message-ID: <20230713052732.787853-1-quic_ipkumar@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] riscv: entry: set a0 prior to syscall_handler
-To:     Guo Ren <guoren@kernel.org>
-Cc:     Palmer Dabbelt <palmer@rivosinc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Felix Yan <felixonmars@archlinux.org>,
-        Ruizhe Pan <c141028@gmail.com>,
-        Shiqi Zhang <shiqi@isrc.iscas.ac.cn>
-References: <20230711062202.3542367-1-CoelacanthusHex@gmail.com>
- <CAJF2gTRgXbEfQWiWtZtVNBDhpY2miG_ByHrVZF2fbfu60hCHcQ@mail.gmail.com>
-Content-Language: en-GB-large
-In-Reply-To: <CAJF2gTRgXbEfQWiWtZtVNBDhpY2miG_ByHrVZF2fbfu60hCHcQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: iPzxVr0PERWuPMuekty-BC-OZkMbzGbh
+X-Proofpoint-ORIG-GUID: iPzxVr0PERWuPMuekty-BC-OZkMbzGbh
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-13_02,2023-07-11_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ suspectscore=0 clxscore=1015 lowpriorityscore=0 malwarescore=0 bulkscore=0
+ phishscore=0 mlxscore=0 spamscore=0 adultscore=0 priorityscore=1501
+ mlxlogscore=779 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2305260000 definitions=main-2307130047
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+IPQ5332 uses tsens v2.3.3 IP with combined interrupt for
+upper/lower and critical. IPQ5332 does not have RPM and
+kernel has to take care of TSENS enablement and calibration.
+This patch series adds the sensor enablement and calibration
+support. On top, adds IPQ5332 TSENS support.
 
-On 2023/7/13 08:00, Guo Ren wrote:
-> On Tue, Jul 11, 2023 at 2:22 AM Celeste Liu <coelacanthushex@gmail.com> wrote:
->>
->> When we test seccomp with 6.4 kernel, we found errno has wrong value.
->> If we deny NETLINK_AUDIT with EAFNOSUPPORT, after f0bddf50586d, we will
->> get ENOSYS. We got same result with 9c2598d43510 ("riscv: entry: Save a0
->> prior syscall_enter_from_user_mode()").
->>
->> Compared with x86 and loongarch's implementation of this part of the
->> function, we think that regs->a0 = -ENOSYS should be advanced before
->> syscall_handler to fix this problem. We have written the following patch,
->> which can fix this problem after testing. But we don't know enough about
->> this part of the code to explain the root cause. Hope someone can find
->> a reasonable explanation. And we'd like to reword this commit message
->> according to the explanation in v2
->>
->> Fixes: f0bddf50586d ("riscv: entry: Convert to generic entry")
->> Reported-by: Felix Yan <felixonmars@archlinux.org>
->> Co-developed-by: Ruizhe Pan <c141028@gmail.com>
->> Signed-off-by: Ruizhe Pan <c141028@gmail.com>
->> Co-developed-by: Shiqi Zhang <shiqi@isrc.iscas.ac.cn>
->> Signed-off-by: Shiqi Zhang <shiqi@isrc.iscas.ac.cn>
->> Signed-off-by: Celeste Liu <CoelacanthusHex@gmail.com>
->> Tested-by: Felix Yan <felixonmars@archlinux.org>
->> ---
->>  arch/riscv/kernel/traps.c | 3 +--
->>  1 file changed, 1 insertion(+), 2 deletions(-)
->>
->> diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
->> index f910dfccbf5d2..ccadb5ffd063c 100644
->> --- a/arch/riscv/kernel/traps.c
->> +++ b/arch/riscv/kernel/traps.c
->> @@ -301,6 +301,7 @@ asmlinkage __visible __trap_section void do_trap_ecall_u(struct pt_regs *regs)
->>
->>                 regs->epc += 4;
->>                 regs->orig_a0 = regs->a0;
->> +               regs->a0 = -ENOSYS;
-> Oh, no. You destroyed the a0 for syscall_handler, right? It's not
-> reasonable. Let's see which syscall_handler needs a0=-ENOSYS.
-> 
-> Could you give out more detail on your test case?
-> 
+[v3]:
+	Renamed init function in [v2 1/5] and reordered device nodes
+	according to the address in [v2 3/5]
+[v2]:
+	Dropped [v1 1/6] dt-bindings change and added nvmem-cell-names
+	as part of [v2 2/5] ipq5332 dt-bindings
 
-Our test case is here:
 
-int main() {
-  scmp_filter_ctx ctx;
-  ctx = seccomp_init(SCMP_ACT_ALLOW);
+Praveenkumar I (5):
+  thermal/drivers/tsens: Add TSENS enable and calibration support for V2
+  dt-bindings: thermal: tsens: Add ipq5332 compatible
+  arm64: dts: qcom: ipq5332: Add tsens node
+  arm64: dts: qcom: ipq5332: Add thermal zone nodes
+  thermal/drivers/tsens: Add IPQ5332 support
 
-  seccomp_rule_add_exact(ctx, SCMP_ACT_ERRNO(EAFNOSUPPORT), SCMP_SYS(socket), 2,
-                         SCMP_CMP(0, SCMP_CMP_EQ, AF_NETLINK),
-                         SCMP_CMP(2, SCMP_CMP_EQ, NETLINK_AUDIT));
+ .../bindings/thermal/qcom-tsens.yaml          |  12 ++
+ arch/arm64/boot/dts/qcom/ipq5332.dtsi         | 144 +++++++++++++++
+ drivers/thermal/qcom/tsens-v2.c               | 166 ++++++++++++++++++
+ drivers/thermal/qcom/tsens.c                  |   5 +-
+ drivers/thermal/qcom/tsens.h                  |   5 +-
+ 5 files changed, 330 insertions(+), 2 deletions(-)
 
-  if (seccomp_load(ctx) < 0) {
-    perror("seccomp_load");
-    exit(EXIT_FAILURE);
-  }
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-  int sock_fd1 = socket(AF_NETLINK, SOCK_RAW, NETLINK_GENERIC);
-  if (sock_fd1 < 0) {
-    printf("1st socket syscall failed with return value %d and errno %d (%s), which is unexpected\n",
-           sock_fd1, errno, strerror(errno));
-    seccomp_release(ctx);
-    return 1;
-  }
-  printf("1st socket created successfully, as expected.\n");
-
-  int sock_fd2 = socket(AF_NETLINK, SOCK_RAW, NETLINK_AUDIT);
-  if (sock_fd2 < 0) {
-    printf("2nd socket syscall failed with return value %d and errno %d (%s).\n", sock_fd2, errno,
-           strerror(errno));
-
-    if (errno == EAFNOSUPPORT) {
-      printf("2nd socket syscall failed with EAFNOSUPPORT, as expected.\n");
-      seccomp_release(ctx);
-      return 0;
-    } else {
-      printf("2nd socket syscall failed with unexpected errno, which is unexpected.\n");
-      seccomp_release(ctx);
-      return 1;
-    }
-  }
-  printf("2nd socket created successfully, which is unexpected.\n");
-  seccomp_release(ctx);
-
-  return 2;
-}
-
->>
->>                 riscv_v_vstate_discard(regs);
->>
->> @@ -308,8 +309,6 @@ asmlinkage __visible __trap_section void do_trap_ecall_u(struct pt_regs *regs)
->>
->>                 if (syscall < NR_syscalls)
->>                         syscall_handler(regs, syscall);
->> -               else
->> -                       regs->a0 = -ENOSYS;
->>
->>                 syscall_exit_to_user_mode(regs);
->>         } else {
->> --
->> 2.41.0
->>
-> 
-> 
