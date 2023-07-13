@@ -2,158 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD6B4751FC7
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 13:20:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1420B751FD0
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 13:21:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233992AbjGMLUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 07:20:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59020 "EHLO
+        id S233978AbjGMLV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 07:21:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234225AbjGMLUg (ORCPT
+        with ESMTP id S233053AbjGMLVy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 07:20:36 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0165B198A;
-        Thu, 13 Jul 2023 04:20:28 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F3E1A1570;
-        Thu, 13 Jul 2023 04:21:10 -0700 (PDT)
-Received: from FVFF77S0Q05N.cambridge.arm.com (unknown [10.37.36.116])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 954BC3F740;
-        Thu, 13 Jul 2023 04:20:26 -0700 (PDT)
-Date:   Thu, 13 Jul 2023 12:20:19 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     "Aiqun(Maria) Yu" <quic_aiquny@quicinc.com>
-Cc:     Will Deacon <will@kernel.org>, corbet@lwn.net,
-        catalin.marinas@arm.com, maz@kernel.org, quic_pkondeti@quicinc.com,
-        quic_kaushalk@quicinc.com, quic_satyap@quicinc.com,
-        quic_shashim@quicinc.com, quic_songxue@quicinc.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] arm64: Add the arm64.nolse_atomics command line option
-Message-ID: <ZK_d86ApI1FCHhTL@FVFF77S0Q05N.cambridge.arm.com>
-References: <20230710055955.36551-1-quic_aiquny@quicinc.com>
- <20230710093751.GC32673@willie-the-truck>
- <5cf15f85-0397-96f7-4110-13494551b53b@quicinc.com>
- <20230711082226.GA1554@willie-the-truck>
- <84f0994a-26de-c20a-a32f-ec8fe41df3a3@quicinc.com>
- <20230711102510.GA1809@willie-the-truck>
- <67c2621f-4cad-2495-9785-7737246d3e90@quicinc.com>
- <ZK5X9bXQT7GBxNHj@FVFF77S0Q05N.emea.arm.com>
- <604ac52d-4336-744f-2ab8-44d1c93fbaa8@quicinc.com>
+        Thu, 13 Jul 2023 07:21:54 -0400
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0801F26AE;
+        Thu, 13 Jul 2023 04:21:28 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPA id 11B531BF208;
+        Thu, 13 Jul 2023 11:21:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1689247287;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=iaGYvCgK+q34WSSKPrB7Pwd2mXJV/fa98+tweN5VGpM=;
+        b=FO5o8KINBx1x1L7zhGkRhU8SP3FUAyfCOs7X7oc5mb8/MVXkEecsnsdJBw2FHsTj//zXWx
+        JF2fSPm9nqxFZBGb9/5AQfXTfkVzUIFwIMQ3+3JQ8NU7g00x4gaxx20bWeZw1UDPtudnJC
+        cdfX+WmX/UYI33ykOCFMb0uQp/Cxwr6pw7k3pAuMO0FwYoAxb9y3X0ZCEksDVf+U0xDp0Q
+        ROegZkDmZ9o0YOSgVxwKFckGtsSlOhVTvGGbLAPoblZe2NF/htdfOa9svxJ+rQtYCCxRW9
+        vw4wYqRsy4vLjPqfspqG4VheFVKN5AjaKX1IgbwVc2D4zZpjsTCmXCK5NQl33w==
+From:   Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+To:     James Schulman <james.schulman@cirrus.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+        linux-kernel@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        stable@vger.kernel.org
+Subject: [PATCH] ASoC: cs42l51: fix driver to properly autoload with automatic module loading
+Date:   Thu, 13 Jul 2023 13:21:12 +0200
+Message-ID: <20230713112112.778576-1-thomas.petazzoni@bootlin.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <604ac52d-4336-744f-2ab8-44d1c93fbaa8@quicinc.com>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: thomas.petazzoni@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 10:24:24AM +0800, Aiqun(Maria) Yu wrote:
-> On 7/12/2023 3:36 PM, Mark Rutland wrote:
-> > On Wed, Jul 12, 2023 at 11:09:10AM +0800, Aiqun(Maria) Yu wrote:
-> > > On 7/11/2023 6:25 PM, Will Deacon wrote:
-> > > > On Tue, Jul 11, 2023 at 06:15:49PM +0800, Aiqun(Maria) Yu wrote:
-> > > > > On 7/11/2023 4:22 PM, Will Deacon wrote:
-> > > > > > On Tue, Jul 11, 2023 at 12:02:22PM +0800, Aiqun(Maria) Yu wrote:
-> > > > > > > On 7/10/2023 5:37 PM, Will Deacon wrote:
-> > > > > > > > On Mon, Jul 10, 2023 at 01:59:55PM +0800, Maria Yu wrote:
-> > > > > > > > > In order to be able to disable lse_atomic even if cpu
-> > > > > > > > > support it, most likely because of memory controller
-> > > > > > > > > cannot deal with the lse atomic instructions, use a
-> > > > > > > > > new idreg override to deal with it.
-> > > > > > > > 
-> > > > > > > > This should not be a problem for cacheable memory though, right?
-> > > > > > > > 
-> > > > > > > > Given that Linux does not issue atomic operations to non-cacheable mappings,
-> > > > > > > > I'm struggling to see why there's a problem here.
-> > > > > > > 
-> > > > > > > The lse atomic operation can be issued on non-cacheable mappings as well.
-> > > > > > > Even if it is cached data, with different CPUECTLR_EL1 setting, it can also
-> > > > > > > do far lse atomic operations.
-> > > > > > 
-> > > > > > Please can you point me to the place in the kernel sources where this
-> > > > > > happens? The architecture doesn't guarantee that atomics to non-cacheable
-> > > > > > mappings will work, see "B2.2.6 Possible implementation restrictions on
-> > > > > > using atomic instructions". Linux, therefore, doesn't issue atomics
-> > > > > > to non-cacheable memory.
-> > > > > 
-> > > > > We encounter the issue on third party kernel modules and third party apps
-> > > > > instead of linux kernel itself.
-> > > > 
-> > > > Great, so there's nothing to do in the kernel then!
-> > > > 
-> > > > The third party code needs to be modified not to use atomic instructions
-> > > > with non-cacheable mappings. No need to involve us with that.
-> > > 
-> > > > > This is a tradeoff of performance and stability. Per my understanding,
-> > > > > options can be used to enable the lse_atomic to have the most performance
-> > > > > cared system, and disable the lse_atomic by stability cared most system.
-> > > > 
-> > > > Where do livelock and starvation fit in with "stability"? Disabling LSE
-> > > > atomics for things like qspinlock and the scheduler just because of some
-> > > > badly written third-party code isn't much of a tradeoff.
-> > 
-> > > We also have requirement to have cpus/system fully support lse atomic and
-> > > cpus/system not fully support lse atomic with a generic kernel image.
-> > 
-> > Who *specifically* has this requirement (i.e. what does 'we' mean here)? The
-> 
-> I can use other word to describe the requirement instead of "we".
-> 
-> There is requirements like android google gki. It request different cpu arch
-> system to use same generic kernel Image.
+In commit 2cb1e0259f50 ("ASoC: cs42l51: re-hook of_match_table
+pointer"), 9 years ago, some random guy fixed the cs42l51 after it was
+split into a core part and an I2C part to properly match based on a
+Device Tree compatible string.
 
-GKI requires the system to use the generic kernel image; GKI does not require
-supporting atomics to non-cacheable mappings.
+However, the fix in this commit is wrong: the MODULE_DEVICE_TABLE(of,
+....) is in the core part of the driver, not the I2C part. Therefore,
+automatic module loading based on module.alias, based on matching with
+the DT compatible string, loads the core part of the driver, but not
+the I2C part. And threfore, the i2c_driver is not registered, and the
+codec is not known to the system, nor matched with a DT node with the
+corresponding compatible string.
 
-What I am asking is: who has the requirement to perform atomics to
-non-cacheable mappings?
+In order to fix that, we move the MODULE_DEVICE_TABLE(of, ...) into
+the I2C part of the driver. The cs42l51_of_match[] array is also moved
+as well, as it is not possible to have this definition in one file,
+and the MODULE_DEVICE_TABLE(of, ...) invocation in another file, due
+to how MODULE_DEVICE_TABLE works.
 
-> > upstream kernel does not require that atomics work on non-cacheable memory, and
-> 
-> The same issue the system can be down of lse atomic not supported for
-> cachable memory when there need far atomic.
+Thanks to this commit, the I2C part of the driver now properly
+autoloads, and thanks to its dependency on the core part, the core
+part gets autoloaded as well, resulting in a functional sound card
+without having to manually load kernel modules.
 
-Are you saying that LSE atomics to *cacheable* mappings do not work on your
-system?
+Fixes: 2cb1e0259f50 ("ASoC: cs42l51: re-hook of_match_table pointer")
+Cc: stable@vger.kernel.org
+Signed-off-by: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+---
+ sound/soc/codecs/cs42l51-i2c.c | 6 ++++++
+ sound/soc/codecs/cs42l51.c     | 7 -------
+ sound/soc/codecs/cs42l51.h     | 1 -
+ 3 files changed, 6 insertions(+), 8 deletions(-)
 
-Specifically, when using a Normal Inner-Shareable Inner-Writeback
-Outer-Writeback mapping, do the LSE atomics work or not work?
+diff --git a/sound/soc/codecs/cs42l51-i2c.c b/sound/soc/codecs/cs42l51-i2c.c
+index b2106ff6a7cb..e7db7bcd0296 100644
+--- a/sound/soc/codecs/cs42l51-i2c.c
++++ b/sound/soc/codecs/cs42l51-i2c.c
+@@ -19,6 +19,12 @@ static struct i2c_device_id cs42l51_i2c_id[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, cs42l51_i2c_id);
+ 
++const struct of_device_id cs42l51_of_match[] = {
++	{ .compatible = "cirrus,cs42l51", },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, cs42l51_of_match);
++
+ static int cs42l51_i2c_probe(struct i2c_client *i2c)
+ {
+ 	struct regmap_config config;
+diff --git a/sound/soc/codecs/cs42l51.c b/sound/soc/codecs/cs42l51.c
+index a67cd3ee84e0..a7079ae0ca09 100644
+--- a/sound/soc/codecs/cs42l51.c
++++ b/sound/soc/codecs/cs42l51.c
+@@ -823,13 +823,6 @@ int __maybe_unused cs42l51_resume(struct device *dev)
+ }
+ EXPORT_SYMBOL_GPL(cs42l51_resume);
+ 
+-const struct of_device_id cs42l51_of_match[] = {
+-	{ .compatible = "cirrus,cs42l51", },
+-	{ }
+-};
+-MODULE_DEVICE_TABLE(of, cs42l51_of_match);
+-EXPORT_SYMBOL_GPL(cs42l51_of_match);
+-
+ MODULE_AUTHOR("Arnaud Patard <arnaud.patard@rtp-net.org>");
+ MODULE_DESCRIPTION("Cirrus Logic CS42L51 ALSA SoC Codec Driver");
+ MODULE_LICENSE("GPL");
+diff --git a/sound/soc/codecs/cs42l51.h b/sound/soc/codecs/cs42l51.h
+index a79343e8a54e..125703ede113 100644
+--- a/sound/soc/codecs/cs42l51.h
++++ b/sound/soc/codecs/cs42l51.h
+@@ -16,7 +16,6 @@ int cs42l51_probe(struct device *dev, struct regmap *regmap);
+ void cs42l51_remove(struct device *dev);
+ int __maybe_unused cs42l51_suspend(struct device *dev);
+ int __maybe_unused cs42l51_resume(struct device *dev);
+-extern const struct of_device_id cs42l51_of_match[];
+ 
+ #define CS42L51_CHIP_ID			0x1B
+ #define CS42L51_CHIP_REV_A		0x00
+-- 
+2.41.0
 
-> > saying "The company I work for want this" doesn't change that.
-> > 
-> > AFAICT the system here is architecturally compliant, and what you're relying
-> > upon something that the architecture doesn't guarantee, and Linux doesn't
-> > guarantee.
-> 
-> It is not also only our company's problem:
-> To support the atomic instructions added in the Armv8.1 architecture, CHI-B
-> provides Atomic Transactions. while Atomic Transactions support is also
-> *optional* from CHI-B.
-> 
-> So far atomic cannot fully supported by ARMv8.1 cpu + CHI-B system as well.
-> 
-> from:
-> https://developer.arm.com/documentation/102407/0100/Atomic-operations?lang=en
-> 
-> So only cpu support atomic cannot garantee the system support lse atomic
-> > 
-> > > Same kernel module wanted to be used by lse atomic fully support cpu and not
-> > > fully support cpu/system as well.
-> > 
-> > Which kernel modules *specifically* need to do atomics to non-cacheable memory?
-> The driver want to always do far atomic(no speculatively) and allow a
-> read-modify-write non-interruptible sequence in a single instruction.
-
-That doesn't answer my question (you haven't told me what "the driver" is).
-
-That doesn't explain why you need to use non-cachable memory for this.
-
-Thanks,
-Mark.
