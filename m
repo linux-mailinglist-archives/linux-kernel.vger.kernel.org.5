@@ -2,83 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC312751D0A
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 11:20:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4773F751D0F
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 11:21:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234195AbjGMJUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 05:20:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47362 "EHLO
+        id S234225AbjGMJVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 05:21:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232776AbjGMJUV (ORCPT
+        with ESMTP id S234218AbjGMJVB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 05:20:21 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F22E7B4
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 02:20:19 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3F1851570;
-        Thu, 13 Jul 2023 02:21:02 -0700 (PDT)
-Received: from a077893.arm.com (unknown [10.163.49.144])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 14E5E3F740;
-        Thu, 13 Jul 2023 02:20:16 -0700 (PDT)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     david@redhat.com, Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64/mm: Add pte_rdonly() helper
-Date:   Thu, 13 Jul 2023 14:50:04 +0530
-Message-Id: <20230713092004.693749-1-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 13 Jul 2023 05:21:01 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6DAD1FD2
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 02:20:53 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R1pxZ4XhLzBL4kD
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 17:20:50 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1689240050; x=1691832051; bh=G9hZ118y49/e6QnO3PWztTQoN47
+        CAeEbEM8a42o8+jk=; b=aApArLaxvsRQM/visnft8ugfJFLieIicyfUTbPFs3AM
+        5umvnATtP2SXfDRxgQiA5uJid+f7EipxMk7IiMOj1GsbpoCz8DA7qBh55m6NL007
+        P1BFCD769mfsq66lpJBWbRn3R0nvB5BehzZJGwaDutImJxbLrDT0iqITrnqkDjXC
+        4k7hisK6CtUdCSljv+lrJ5fCinAwnTMKqodWpfIM+zOB37XM7aWQHplG5FAKAX1y
+        Ssx7B2yQxkHX5RkNDx+Pqz1RS3d8oUfhGEOpRTSQhI4K4rqhUw3mPDQik4ySnoFa
+        7e5OUS8ZQB3M3NRRVFaPOosb1ZsepxigG5ytw1QW2cg==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id OK4JxWDsPvJc for <linux-kernel@vger.kernel.org>;
+        Thu, 13 Jul 2023 17:20:50 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R1pxY62g8zBJ96K;
+        Thu, 13 Jul 2023 17:20:49 +0800 (CST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Date:   Thu, 13 Jul 2023 17:20:49 +0800
+From:   hanyu001@208suo.com
+To:     tglx@linutronix.de, peterz@infradead.org, vschneid@redhat.com,
+        dwmw@amazon.co.uk, akpm@linux-foundation.org, npiggin@gmail.com,
+        pauld@redhat.com, vdonnefort@google.com, gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: Fwd: [PATCH] kernel:  convert sysfs snprintf to sysfs_emit
+In-Reply-To: <tencent_48D17833D10F2D6A2DF87986804C357D2506@qq.com>
+References: <tencent_48D17833D10F2D6A2DF87986804C357D2506@qq.com>
+User-Agent: Roundcube Webmail
+Message-ID: <ef672732fbb865f338d88db89fc11062@208suo.com>
+X-Sender: hanyu001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This replaces open coding PTE_RDONLY check with a new helper pte_rdonly().
-No functional change is intended here.
+Fix the following coccicheck warnings:
+drivers/tty/vt/vt.c:3942:8-16:
+WARNING: use scnprintf or sprintf
+drivers/tty/vt/vt.c:3950:8-16:
+WARNING: use scnprintf or sprintf
 
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+./kernel/cpu.c:2920:8-16: WARNING: use scnprintf or sprintf
+./kernel/cpu.c:2907:8-16: WARNING: use scnprintf or sprintf
+
+Signed-off-by: ztt <1549089851@qq.com>
 ---
-This applies on v6.5-rc1
+  kernel/cpu.c | 4 ++--
+  1 file changed, 2 insertions(+), 2 deletions(-)
 
- arch/arm64/include/asm/pgtable.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index ed65aeaa94b5..1a9634236b54 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -2904,7 +2904,7 @@ static ssize_t control_show(struct device *dev,
+  {
+      const char *state = smt_states[cpu_smt_control];
 
-diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-index 171d6d7f8087..72c2e8431360 100644
---- a/arch/arm64/include/asm/pgtable.h
-+++ b/arch/arm64/include/asm/pgtable.h
-@@ -103,6 +103,7 @@ static inline pteval_t __phys_to_pte_val(phys_addr_t phys)
- #define pte_young(pte)		(!!(pte_val(pte) & PTE_AF))
- #define pte_special(pte)	(!!(pte_val(pte) & PTE_SPECIAL))
- #define pte_write(pte)		(!!(pte_val(pte) & PTE_WRITE))
-+#define pte_rdonly(pte)		(!!(pte_val(pte) & PTE_RDONLY))
- #define pte_user(pte)		(!!(pte_val(pte) & PTE_USER))
- #define pte_user_exec(pte)	(!(pte_val(pte) & PTE_UXN))
- #define pte_cont(pte)		(!!(pte_val(pte) & PTE_CONT))
-@@ -120,7 +121,7 @@ static inline pteval_t __phys_to_pte_val(phys_addr_t phys)
- 	(__boundary - 1 < (end) - 1) ? __boundary : (end);			\
- })
- 
--#define pte_hw_dirty(pte)	(pte_write(pte) && !(pte_val(pte) & PTE_RDONLY))
-+#define pte_hw_dirty(pte)	(pte_write(pte) && !pte_rdonly(pte))
- #define pte_sw_dirty(pte)	(!!(pte_val(pte) & PTE_DIRTY))
- #define pte_dirty(pte)		(pte_sw_dirty(pte) || pte_hw_dirty(pte))
- 
--- 
-2.30.2
+-    return snprintf(buf, PAGE_SIZE - 2, "%s\n", state);
++    return scnprintf(buf, PAGE_SIZE - 2, "%s\n", state);
+  }
 
+  static ssize_t control_store(struct device *dev, struct 
+device_attribute *attr,
+@@ -2917,7 +2917,7 @@ static DEVICE_ATTR_RW(control);
+  static ssize_t active_show(struct device *dev,
+                 struct device_attribute *attr, char *buf)
+  {
+-    return snprintf(buf, PAGE_SIZE - 2, "%d\n", sched_smt_active());
++    return scnprintf(buf, PAGE_SIZE - 2, "%d\n", sched_smt_active());
+  }
+  static DEVICE_ATTR_RO(active);
