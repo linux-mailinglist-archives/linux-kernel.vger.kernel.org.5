@@ -2,414 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDCA5752AC9
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 21:13:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6197C752ACE
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 21:13:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231905AbjGMTNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 15:13:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56500 "EHLO
+        id S232862AbjGMTNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 15:13:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229890AbjGMTNc (ORCPT
+        with ESMTP id S229890AbjGMTNx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 15:13:32 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCD871FD8;
-        Thu, 13 Jul 2023 12:13:30 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36DJDIvV093725;
-        Thu, 13 Jul 2023 14:13:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1689275598;
-        bh=XH4Ljo8L46/j+/3v1jXpRnNkBOj15a8CHCxd368zirM=;
-        h=From:To:CC:Subject:Date;
-        b=vIHOlPAniBUptKbBo7NLpAKimcBIv4zdxO9LUpHD1cv6l3DHyZbNgFh5Cd8RYHqz1
-         ig3VHnS8SxUqjJGdU2y0hxV4mS5C4bKcqRHC11lj+qgpuENKb7MVx5iBg4arBuUBC9
-         /Kl7OTk5rz34bumZ/du0pxTz1xO+SwH+wPXyQQcg=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36DJDIQR063235
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 13 Jul 2023 14:13:18 -0500
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 13
- Jul 2023 14:13:18 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 13 Jul 2023 14:13:18 -0500
-Received: from lelv0327.itg.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36DJDHwl023141;
-        Thu, 13 Jul 2023 14:13:17 -0500
-From:   Andrew Davis <afd@ti.com>
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        John Stultz <jstultz@google.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sumit Semwal <sumit.semwal@linaro.org>
-CC:     <linux-media@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <linaro-mm-sig@lists.linaro.org>, <linux-kernel@vger.kernel.org>,
-        Andrew Davis <afd@ti.com>
-Subject: [PATCH v3] misc: sram: Add DMA-BUF Heap exporting of SRAM areas
-Date:   Thu, 13 Jul 2023 14:13:16 -0500
-Message-ID: <20230713191316.116019-1-afd@ti.com>
-X-Mailer: git-send-email 2.39.2
+        Thu, 13 Jul 2023 15:13:53 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 216EB2D6B
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 12:13:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=SlWSwhHe+t/+5CD+8qzJLYQdlCsQhw+Uh2KGkPXB6kM=; b=vg3XLPJFrNw3vBwRCjiW5YxOq2
+        J7z60gNJOjveg32CLIuJ85nynYH5q14lwRsCJUluPBYOWCNDwUUPmAzN1bbzgN4io1hrdAbNn+bet
+        LvHAEgJAI3o+TolSH/sGJ6361Hl5rgpW0e7WaGYCAX2Jmm6BKgnZf+Xvchn5LU/nzwqptkUtfZPrg
+        RIUS2TMNeUwzQXngfHeIGUDygAngNJiGYqLfhn/ym9A0WNBTTT/Qqyl22ZXC/vOOrpOxsQ0i3H5Ne
+        RShtljbjCUdcWFxd8DVqFRYbU1479QbYMDVCzwsl/nd+vfJEiyINMToaackbPhBPrWaqhPUhfEKOJ
+        iAesR+Yw==;
+Received: from [2601:1c2:980:9ec0::2764]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qK1l4-004DOL-2N;
+        Thu, 13 Jul 2023 19:13:46 +0000
+Message-ID: <76995421-a529-ac25-c306-2e4ac2844602@infradead.org>
+Date:   Thu, 13 Jul 2023 12:13:45 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v4 21/21] dyndbg-doc: add classmap info to howto
+Content-Language: en-US
+To:     Jim Cromie <jim.cromie@gmail.com>, jbaron@akamai.com,
+        daniel.vetter@ffwll.ch, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org
+Cc:     jani.nikula@intel.com, ville.syrjala@linux.intel.com,
+        seanpaul@chromium.org, robdclark@gmail.com,
+        gregkh@linuxfoundation.org
+References: <20230713163626.31338-1-jim.cromie@gmail.com>
+ <20230713163626.31338-22-jim.cromie@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20230713163626.31338-22-jim.cromie@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This new export type exposes to userspace the SRAM area as a DMA-BUF Heap,
-this allows for allocations of DMA-BUFs that can be consumed by various
-DMA-BUF supporting devices.
 
-Signed-off-by: Andrew Davis <afd@ti.com>
----
 
-Changes from v2:
- - Make sram_dma_heap_allocate static (kernel test robot)
- - Rebase on v6.5-rc1
+On 7/13/23 09:36, Jim Cromie wrote:
+> Add some basic info on classmap usage and api
+> 
+> Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
+> ---
+>  .../admin-guide/dynamic-debug-howto.rst       | 64 ++++++++++++++++++-
+>  1 file changed, 63 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/admin-guide/dynamic-debug-howto.rst b/Documentation/admin-guide/dynamic-debug-howto.rst
+> index 8dc668cc1216..878750ce8c1d 100644
+> --- a/Documentation/admin-guide/dynamic-debug-howto.rst
+> +++ b/Documentation/admin-guide/dynamic-debug-howto.rst
 
- drivers/misc/Kconfig         |   7 +
- drivers/misc/Makefile        |   1 +
- drivers/misc/sram-dma-heap.c | 245 +++++++++++++++++++++++++++++++++++
- drivers/misc/sram.c          |   6 +
- drivers/misc/sram.h          |  16 +++
- 5 files changed, 275 insertions(+)
- create mode 100644 drivers/misc/sram-dma-heap.c
+> @@ -374,3 +373,66 @@ just a shortcut for ``print_hex_dump(KERN_DEBUG)``.
+>  For ``print_hex_dump_debug()``/``print_hex_dump_bytes()``, format string is
+>  its ``prefix_str`` argument, if it is constant string; or ``hexdump``
+>  in case ``prefix_str`` is built dynamically.
+> +
+> +Dynamic Debug classmaps
+> +=======================
+> +
+> +Dyndbg generally selects *prdbg* callsites using structural info:
+> +module, file, function, line.  Using classmaps, user modules can
+> +organize/select pr_debug()s as they like.
+> +
+> +- classes coordinates/spans multiple modules
+> +- complements the mod,file,func attrs
+> +- keeps pr_debug's 0-off-cost JUMP_LABEL goodness
+> +- isolates from other class'd and un-class'd pr_debugs() 
+> +  (one doesnt mix 2 clients bank accounts)
 
-diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
-index 75e427f124b28..ee34dfb61605f 100644
---- a/drivers/misc/Kconfig
-+++ b/drivers/misc/Kconfig
-@@ -448,6 +448,13 @@ config SRAM
- config SRAM_EXEC
- 	bool
- 
-+config SRAM_DMA_HEAP
-+	bool "Export on-chip SRAM pools using DMA-Heaps"
-+	depends on DMABUF_HEAPS && SRAM
-+	help
-+	  This driver allows the export of on-chip SRAM marked as both pool
-+	  and exportable to userspace using the DMA-Heaps interface.
-+
- config DW_XDATA_PCIE
- 	depends on PCI
- 	tristate "Synopsys DesignWare xData PCIe driver"
-diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
-index f2a4d1ff65d46..5e7516bfaa8de 100644
---- a/drivers/misc/Makefile
-+++ b/drivers/misc/Makefile
-@@ -47,6 +47,7 @@ obj-$(CONFIG_VMWARE_VMCI)	+= vmw_vmci/
- obj-$(CONFIG_LATTICE_ECP3_CONFIG)	+= lattice-ecp3-config.o
- obj-$(CONFIG_SRAM)		+= sram.o
- obj-$(CONFIG_SRAM_EXEC)		+= sram-exec.o
-+obj-$(CONFIG_SRAM_DMA_HEAP)	+= sram-dma-heap.o
- obj-$(CONFIG_GENWQE)		+= genwqe/
- obj-$(CONFIG_ECHO)		+= echo/
- obj-$(CONFIG_CXL_BASE)		+= cxl/
-diff --git a/drivers/misc/sram-dma-heap.c b/drivers/misc/sram-dma-heap.c
-new file mode 100644
-index 0000000000000..c054c04dff33e
---- /dev/null
-+++ b/drivers/misc/sram-dma-heap.c
-@@ -0,0 +1,245 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * SRAM DMA-Heap userspace exporter
-+ *
-+ * Copyright (C) 2019-2022 Texas Instruments Incorporated - https://www.ti.com/
-+ *	Andrew Davis <afd@ti.com>
-+ */
-+
-+#include <linux/dma-mapping.h>
-+#include <linux/err.h>
-+#include <linux/genalloc.h>
-+#include <linux/io.h>
-+#include <linux/mm.h>
-+#include <linux/scatterlist.h>
-+#include <linux/slab.h>
-+#include <linux/dma-buf.h>
-+#include <linux/dma-heap.h>
-+
-+#include "sram.h"
-+
-+struct sram_dma_heap {
-+	struct dma_heap *heap;
-+	struct gen_pool *pool;
-+};
-+
-+struct sram_dma_heap_buffer {
-+	struct gen_pool *pool;
-+	struct list_head attachments;
-+	struct mutex attachments_lock;
-+	unsigned long len;
-+	void *vaddr;
-+	phys_addr_t paddr;
-+};
-+
-+struct dma_heap_attachment {
-+	struct device *dev;
-+	struct sg_table *table;
-+	struct list_head list;
-+};
-+
-+static int dma_heap_attach(struct dma_buf *dmabuf,
-+			   struct dma_buf_attachment *attachment)
-+{
-+	struct sram_dma_heap_buffer *buffer = dmabuf->priv;
-+	struct dma_heap_attachment *a;
-+	struct sg_table *table;
-+
-+	a = kzalloc(sizeof(*a), GFP_KERNEL);
-+	if (!a)
-+		return -ENOMEM;
-+
-+	table = kmalloc(sizeof(*table), GFP_KERNEL);
-+	if (!table) {
-+		kfree(a);
-+		return -ENOMEM;
-+	}
-+	if (sg_alloc_table(table, 1, GFP_KERNEL)) {
-+		kfree(table);
-+		kfree(a);
-+		return -ENOMEM;
-+	}
-+	sg_set_page(table->sgl, pfn_to_page(PFN_DOWN(buffer->paddr)), buffer->len, 0);
-+
-+	a->table = table;
-+	a->dev = attachment->dev;
-+	INIT_LIST_HEAD(&a->list);
-+
-+	attachment->priv = a;
-+
-+	mutex_lock(&buffer->attachments_lock);
-+	list_add(&a->list, &buffer->attachments);
-+	mutex_unlock(&buffer->attachments_lock);
-+
-+	return 0;
-+}
-+
-+static void dma_heap_detatch(struct dma_buf *dmabuf,
-+			     struct dma_buf_attachment *attachment)
-+{
-+	struct sram_dma_heap_buffer *buffer = dmabuf->priv;
-+	struct dma_heap_attachment *a = attachment->priv;
-+
-+	mutex_lock(&buffer->attachments_lock);
-+	list_del(&a->list);
-+	mutex_unlock(&buffer->attachments_lock);
-+
-+	sg_free_table(a->table);
-+	kfree(a->table);
-+	kfree(a);
-+}
-+
-+static struct sg_table *dma_heap_map_dma_buf(struct dma_buf_attachment *attachment,
-+					     enum dma_data_direction direction)
-+{
-+	struct dma_heap_attachment *a = attachment->priv;
-+	struct sg_table *table = a->table;
-+
-+	/*
-+	 * As this heap is backed by uncached SRAM memory we do not need to
-+	 * perform any sync operations on the buffer before allowing device
-+	 * domain access. For this reason we use SKIP_CPU_SYNC and also do
-+	 * not use or provide begin/end_cpu_access() dma-buf functions.
-+	 */
-+	if (!dma_map_sg_attrs(attachment->dev, table->sgl, table->nents,
-+			      direction, DMA_ATTR_SKIP_CPU_SYNC))
-+		return ERR_PTR(-ENOMEM);
-+
-+	return table;
-+}
-+
-+static void dma_heap_unmap_dma_buf(struct dma_buf_attachment *attachment,
-+				   struct sg_table *table,
-+				   enum dma_data_direction direction)
-+{
-+	dma_unmap_sg_attrs(attachment->dev, table->sgl, table->nents,
-+			   direction, DMA_ATTR_SKIP_CPU_SYNC);
-+}
-+
-+static void dma_heap_dma_buf_release(struct dma_buf *dmabuf)
-+{
-+	struct sram_dma_heap_buffer *buffer = dmabuf->priv;
-+
-+	gen_pool_free(buffer->pool, (unsigned long)buffer->vaddr, buffer->len);
-+	kfree(buffer);
-+}
-+
-+static int dma_heap_mmap(struct dma_buf *dmabuf, struct vm_area_struct *vma)
-+{
-+	struct sram_dma_heap_buffer *buffer = dmabuf->priv;
-+	int ret;
-+
-+	/* SRAM mappings are not cached */
-+	vma->vm_page_prot = pgprot_writecombine(vma->vm_page_prot);
-+
-+	ret = vm_iomap_memory(vma, buffer->paddr, buffer->len);
-+	if (ret)
-+		pr_err("Could not map buffer to userspace\n");
-+
-+	return ret;
-+}
-+
-+static int dma_heap_vmap(struct dma_buf *dmabuf, struct iosys_map *map)
-+{
-+	struct sram_dma_heap_buffer *buffer = dmabuf->priv;
-+
-+	iosys_map_set_vaddr(map, buffer->vaddr);
-+
-+	return 0;
-+}
-+
-+static const struct dma_buf_ops sram_dma_heap_buf_ops = {
-+	.attach = dma_heap_attach,
-+	.detach = dma_heap_detatch,
-+	.map_dma_buf = dma_heap_map_dma_buf,
-+	.unmap_dma_buf = dma_heap_unmap_dma_buf,
-+	.release = dma_heap_dma_buf_release,
-+	.mmap = dma_heap_mmap,
-+	.vmap = dma_heap_vmap,
-+};
-+
-+static struct dma_buf *sram_dma_heap_allocate(struct dma_heap *heap,
-+					      unsigned long len,
-+					      unsigned long fd_flags,
-+					      unsigned long heap_flags)
-+{
-+	struct sram_dma_heap *sram_dma_heap = dma_heap_get_drvdata(heap);
-+	struct sram_dma_heap_buffer *buffer;
-+
-+	DEFINE_DMA_BUF_EXPORT_INFO(exp_info);
-+	struct dma_buf *dmabuf;
-+	int ret = 0;
-+
-+	buffer = kzalloc(sizeof(*buffer), GFP_KERNEL);
-+	if (!buffer)
-+		return ERR_PTR(-ENOMEM);
-+	buffer->pool = sram_dma_heap->pool;
-+	INIT_LIST_HEAD(&buffer->attachments);
-+	mutex_init(&buffer->attachments_lock);
-+	buffer->len = len;
-+
-+	buffer->vaddr = (void *)gen_pool_alloc(buffer->pool, buffer->len);
-+	if (!buffer->vaddr) {
-+		ret = -ENOMEM;
-+		goto free_buffer;
-+	}
-+
-+	buffer->paddr = gen_pool_virt_to_phys(buffer->pool, (unsigned long)buffer->vaddr);
-+	if (buffer->paddr == -1) {
-+		ret = -ENOMEM;
-+		goto free_pool;
-+	}
-+
-+	/* create the dmabuf */
-+	exp_info.exp_name = dma_heap_get_name(heap);
-+	exp_info.ops = &sram_dma_heap_buf_ops;
-+	exp_info.size = buffer->len;
-+	exp_info.flags = fd_flags;
-+	exp_info.priv = buffer;
-+	dmabuf = dma_buf_export(&exp_info);
-+	if (IS_ERR(dmabuf)) {
-+		ret = PTR_ERR(dmabuf);
-+		goto free_pool;
-+	}
-+
-+	return dmabuf;
-+
-+free_pool:
-+	gen_pool_free(buffer->pool, (unsigned long)buffer->vaddr, buffer->len);
-+free_buffer:
-+	kfree(buffer);
-+
-+	return ERR_PTR(ret);
-+}
-+
-+static struct dma_heap_ops sram_dma_heap_ops = {
-+	.allocate = sram_dma_heap_allocate,
-+};
-+
-+int sram_add_dma_heap(struct sram_dev *sram,
-+		      struct sram_reserve *block,
-+		      phys_addr_t start,
-+		      struct sram_partition *part)
-+{
-+	struct sram_dma_heap *sram_dma_heap;
-+	struct dma_heap_export_info exp_info;
-+
-+	dev_info(sram->dev, "Exporting SRAM Heap '%s'\n", block->label);
-+
-+	sram_dma_heap = kzalloc(sizeof(*sram_dma_heap), GFP_KERNEL);
-+	if (!sram_dma_heap)
-+		return -ENOMEM;
-+	sram_dma_heap->pool = part->pool;
-+
-+	exp_info.name = kasprintf(GFP_KERNEL, "sram_%s", block->label);
-+	exp_info.ops = &sram_dma_heap_ops;
-+	exp_info.priv = sram_dma_heap;
-+	sram_dma_heap->heap = dma_heap_add(&exp_info);
-+	if (IS_ERR(sram_dma_heap->heap)) {
-+		int ret = PTR_ERR(sram_dma_heap->heap);
-+		kfree(sram_dma_heap);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-diff --git a/drivers/misc/sram.c b/drivers/misc/sram.c
-index 5757adf418b1d..6dd173a2fba8e 100644
---- a/drivers/misc/sram.c
-+++ b/drivers/misc/sram.c
-@@ -120,6 +120,12 @@ static int sram_add_partition(struct sram_dev *sram, struct sram_reserve *block,
- 		ret = sram_add_pool(sram, block, start, part);
- 		if (ret)
- 			return ret;
-+
-+		if (block->export) {
-+			ret = sram_add_dma_heap(sram, block, start, part);
-+			if (ret)
-+				return ret;
-+		}
- 	}
- 	if (block->export) {
- 		ret = sram_add_export(sram, block, start, part);
-diff --git a/drivers/misc/sram.h b/drivers/misc/sram.h
-index 397205b8bf6ff..062bdd25fa068 100644
---- a/drivers/misc/sram.h
-+++ b/drivers/misc/sram.h
-@@ -60,4 +60,20 @@ static inline int sram_add_protect_exec(struct sram_partition *part)
- 	return -ENODEV;
- }
- #endif /* CONFIG_SRAM_EXEC */
-+
-+#ifdef CONFIG_SRAM_DMA_HEAP
-+int sram_add_dma_heap(struct sram_dev *sram,
-+		      struct sram_reserve *block,
-+		      phys_addr_t start,
-+		      struct sram_partition *part);
-+#else
-+static inline int sram_add_dma_heap(struct sram_dev *sram,
-+				    struct sram_reserve *block,
-+				    phys_addr_t start,
-+				    struct sram_partition *part)
-+{
-+	return 0;
-+}
-+#endif /* CONFIG_SRAM_DMA_HEAP */
-+
- #endif /* __SRAM_H */
+          doesn't
+
+> +
+> +  # IOW this doesn't change DRM.debug settings
+> +  #> echo -p > /proc/dynamic_debug/control
+> +
+> +  # change the classes by naming them explicitly (no wildcard here)
+> +  #> echo class DRM_UT_CORE +p > /proc/dynamic_debug/control
+> +
+> +To support DRM.debug (/sys/module/drm/parameters/debug), dyndbg
+> +provides DYNDBG_CLASSMAP_PARAM*.  It maps the categories/classes:
+> +DRM_UT_CORE.. to bits 0..N, allowing to set all classes at once.
+> +
+> +Dynamic Debug Classmap API
+> +==========================
+> +
+> +DYNDBG_CLASSMAP_DEFINE - modules create CLASSMAPs, naming the classes
+> +and type, and mapping the class-names to consecutive _class_ids.  By
+> +doing so, they tell dyndbg that they are using those class_ids, and
+> +authorize dyndbg to manipulate the callsites by their class-names.
+> +
+> +Its expected that client modules will follow the DRM.debug model:
+> +1. define their debug-classes using an enum type, where the enum
+> +symbol and its integer value define both the classnames and class-ids.
+> +2. use or macro-wrap __pr_debug_cls(ENUM_VAL, "hello world\n")
+> +   
+> +There are 2 types of classmaps:
+> +
+> + DD_CLASS_TYPE_DISJOINT_BITS: classes are independent, ala DRM.debug
+
+                                                          a la
+or just                                                   like
+
+> + DD_CLASS_TYPE_LEVEL_NUM: classes are relative (Verbose3 > Verbose2)
+> +
+> +Both these classmap-types use the class-names/ENUM_VALs to validate
+> +commands into >control.
+> +
+> +DYNDBG_CLASSMAP_PARAM - refs a DEFINEd classmap, exposing the set of
+
+Is this:                   refers to a
+?
+
+> +defined classes to manipulation as a group.  This interface enforces
+> +the relatedness of classes of DD_CLASS_TYPE_LEVEL_NUM typed classmaps;
+> +all classes are independent in the >control parser itself.
+> +
+> +DYNDBG_CLASSMAP_USE - drm drivers use the CLASSMAP that drm DEFINEs.
+> +This shares the classmap defn, and authorizes coordinated changes
+
+                            definition,
+
+> +amongst the CLASSMAP DEFINEr and multiple USErs.
+> +
+> +Modules or module-groups (drm & drivers) can define multiple
+> +classmaps, as long as they share the limited 0..62 per-module-group
+> +_class_id range, without overlap.
+> +
+> +``#define DEBUG`` will enable all pr_debugs in scope, including any
+> +class'd ones (__pr_debug_cls(id,fmt..)).  This won't be reflected in
+> +the PARAM readback value, but the pr_debug callsites can be toggled
+> +into agreement with the param.
+> +
+
+thanks.
 -- 
-2.39.2
-
+~Randy
