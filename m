@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08B11751595
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 02:54:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3841751596
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 02:54:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231836AbjGMAyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 20:54:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48434 "EHLO
+        id S232271AbjGMAyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 20:54:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233263AbjGMAyV (ORCPT
+        with ESMTP id S233343AbjGMAy0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 20:54:21 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CE3B2722
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 17:54:02 -0700 (PDT)
+        Wed, 12 Jul 2023 20:54:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CFE7210C
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 17:54:04 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CE1E061A01
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 00:54:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7B57C433CB;
-        Thu, 13 Jul 2023 00:53:59 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1C0EC619E5
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 00:54:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC111C433C8;
+        Thu, 13 Jul 2023 00:54:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689209641;
-        bh=bgb4zzrORARsttsVydsHYK2GR/dBIf7Y05nOGfBm76Q=;
+        s=k20201202; t=1689209643;
+        bh=LxhvrFeL+Gpj7Qmr5b/IyGJ+AVzm6I0kUVJo1JuCt7I=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=E3L0NFRriB2e+qQymmmDygbgT2zGzhTC3pL6IYAPKSSLS6NGAFgy7noyB5qJQSF6I
-         dt9nfEXeWjxZr76nkTjbCfMzozZdGCDN11G3Cpokycjw3Aw8NtJQ/Lo0WUvCqDWpZG
-         8cXNShcC6vK7tOX+5jEIlYvNUw7nyLDchkKI5yaAtrLsKdgrzjrFCcL5jj9mAWv0h4
-         NBdf5LAuqR6uGYJMvKXw5FELQ0XsYx1H2PtypWqtevBzFNE+rA+72xGiBfYGVRJp2M
-         rIYvRN8cmkiSW6T1hDICEAKq6A7s9Wb8utUD/IOJPgv7WbGx023NvbXurHa/OLTjPZ
-         O6Q++DhhpAA2A==
+        b=HJaW3QnwWRiD1OoF8dkDIqNT6oKTmaV2TSAJ3iwONv84fDV/8wNFx4MrKj+vBglmr
+         PUZCc3lPEwCqN8scn9UjLU+kyuturhN1H/0YWLWECxWr9pfiAJaGbbelKS5xnfOtwD
+         TQ8SdVZevWBg7vB4uSevcGKeaaN4Qy059quTviboUHHFDqTw8Z6LVinHFYoi5fWly2
+         5dg20ug43Ow0hx7/QXScCQHGQ4j/tCvMdjwIPOC3z17CahIXym81ilbplL9SIGkTsu
+         NvULdvEp9uNJANusMS8cyM1gMArJrY7vTrEVdiOI0tfmctuiBEIOw6c9Lcdkg+AuZ6
+         y4rmY0IpgzfQA==
 From:   Mark Brown <broonie@kernel.org>
-Date:   Thu, 13 Jul 2023 01:49:27 +0100
-Subject: [PATCH 09/11] mfd: wm8994: Update to use maple tree register cache
+Date:   Thu, 13 Jul 2023 01:49:28 +0100
+Subject: [PATCH 10/11] mfd: wm8997: Update to use maple tree register cache
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230713-mfd-cirrus-maple-v1-9-16dacae402a8@kernel.org>
+Message-Id: <20230713-mfd-cirrus-maple-v1-10-16dacae402a8@kernel.org>
 References: <20230713-mfd-cirrus-maple-v1-0-16dacae402a8@kernel.org>
 In-Reply-To: <20230713-mfd-cirrus-maple-v1-0-16dacae402a8@kernel.org>
 To:     Charles Keepax <ckeepax@opensource.cirrus.com>,
@@ -48,21 +48,21 @@ To:     Charles Keepax <ckeepax@opensource.cirrus.com>,
 Cc:     alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
         linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
 X-Mailer: b4 0.13-dev-099c9
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1602; i=broonie@kernel.org;
- h=from:subject:message-id; bh=bgb4zzrORARsttsVydsHYK2GR/dBIf7Y05nOGfBm76Q=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBkr0sQP16X+5LO03wDeyBuSFRWgtqyxe/bYiSDo
- bVKlVemph6JATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZK9LEAAKCRAk1otyXVSH
- 0JzQB/95CWvUzhmhz2JVDo4P8KEtrsoRWkifqnHg3s2q32MLacOQJgC+/ci/oNb1TcgNNzbU8hj
- 8MYoK+h+RW/L0QofLHS+dip/p/hORXSRo4/oGzIDhSnWm/iA9eLZ/TX//qZxxuloyH0lEgUVIdh
- QLtOVJXJd9SPkWCCDOMp04X8erf7UDTBU2hVPnopZWrjv5B/SqnnGL8N/prP6S68vgVBx9EMkhL
- 7jVNmiyroCbtWQE1JBF0CByz8Q1nz/WaE0jf1Kwv58Chkpd0PXRUAuPwzov6W9n4QN+EVQ0EAp3
- +ZhcjmSYEniPU8RoG5jZtEBhgBhxGf5H5dzyhcLEflJ1gmLA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1123; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=LxhvrFeL+Gpj7Qmr5b/IyGJ+AVzm6I0kUVJo1JuCt7I=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBkr0sRpxscLPqDJrncFL/Ygn/56QtMhdNUuMBPM
+ 6rHWS3o3CWJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZK9LEQAKCRAk1otyXVSH
+ 0KleCACEKH56FWa5rh+8+iXB+UL4K0XsQ7SW5jwr5jsail8gfJoGulRImulX7o3XtO61b0lvGYA
+ eSmpKsHADfZE3X4czRuTzo+rZt3qqdew/bT6k9x22SyG/6MyMvH6+9A3dzM2LfSt2k1f44m+v2b
+ oaiT/Vc1gX7u7CvjJKFfM278apwzkslv+j4tjBPU75ZaB35RC8OGWL/m2rPxEVXrRg+O/YGAgHR
+ FKSNBtyF0LqtInBnlW+F0qRQQ8c7wzcg8+uL34sx1R/Q8HSK+Iza26UYOwooi6SpyUSqD4r5ioS
+ dJFpqlsg9M20odrLblmdI6HuTChLGcWw9HBcc6WTAtZIF7/o
 X-Developer-Key: i=broonie@kernel.org; a=openpgp;
  fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -76,44 +76,26 @@ v6.5 it has also acquired the ability to generate multi-register writes in
 sync operations, bringing performance up to parity with the rbtree cache
 there.
 
-Update the wm8994 driver to use the more modern data structure.
+Update the wm8997 driver to use the more modern data structure.
 
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- drivers/mfd/wm8994-regmap.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/mfd/wm8997-tables.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mfd/wm8994-regmap.c b/drivers/mfd/wm8994-regmap.c
-index cd4fef7df336..ee2ed6773afd 100644
---- a/drivers/mfd/wm8994-regmap.c
-+++ b/drivers/mfd/wm8994-regmap.c
-@@ -1238,7 +1238,7 @@ struct regmap_config wm1811_regmap_config = {
- 	.reg_bits = 16,
- 	.val_bits = 16,
+diff --git a/drivers/mfd/wm8997-tables.c b/drivers/mfd/wm8997-tables.c
+index 3476787c485e..288c57b2d21e 100644
+--- a/drivers/mfd/wm8997-tables.c
++++ b/drivers/mfd/wm8997-tables.c
+@@ -1523,7 +1523,7 @@ const struct regmap_config wm8997_i2c_regmap = {
+ 	.readable_reg = wm8997_readable_register,
+ 	.volatile_reg = wm8997_volatile_register,
  
 -	.cache_type = REGCACHE_RBTREE,
 +	.cache_type = REGCACHE_MAPLE,
- 
- 	.reg_defaults = wm1811_defaults,
- 	.num_reg_defaults = ARRAY_SIZE(wm1811_defaults),
-@@ -1253,7 +1253,7 @@ struct regmap_config wm8994_regmap_config = {
- 	.reg_bits = 16,
- 	.val_bits = 16,
- 
--	.cache_type = REGCACHE_RBTREE,
-+	.cache_type = REGCACHE_MAPLE,
- 
- 	.reg_defaults = wm8994_defaults,
- 	.num_reg_defaults = ARRAY_SIZE(wm8994_defaults),
-@@ -1268,7 +1268,7 @@ struct regmap_config wm8958_regmap_config = {
- 	.reg_bits = 16,
- 	.val_bits = 16,
- 
--	.cache_type = REGCACHE_RBTREE,
-+	.cache_type = REGCACHE_MAPLE,
- 
- 	.reg_defaults = wm8958_defaults,
- 	.num_reg_defaults = ARRAY_SIZE(wm8958_defaults),
+ 	.reg_defaults = wm8997_reg_default,
+ 	.num_reg_defaults = ARRAY_SIZE(wm8997_reg_default),
+ };
 
 -- 
 2.39.2
