@@ -2,116 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AC9F752CF7
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 00:23:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 019C0752CF9
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 00:25:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231465AbjGMWXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 18:23:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58094 "EHLO
+        id S232141AbjGMWZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 18:25:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231880AbjGMWXn (ORCPT
+        with ESMTP id S230445AbjGMWZl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 18:23:43 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EA3D30CD
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 15:23:16 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-666e916b880so819540b3a.2
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 15:23:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=networkplumber-org.20221208.gappssmtp.com; s=20221208; t=1689286988; x=1691878988;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gPJRqg7ajyeL4du6RG8R0w4sPMlBCtxY9hG6485AJxc=;
-        b=tkAIp3Mxs21mO0syOvSfhIJnKbHEVEWbvFyzLoto2x01rHRZ8u1RSlARS0Jjlpqp60
-         mwI0Ec4wbZb4Tb3Gl0z6J1C+dotBmDCo7JoSo5Q46IEFDvJy+Gw2H8Vsh8+z0So4FqQ/
-         0ljRfD3HTiiUR3KT2bc+9DvNkkWRwCSMB1GL6eXyfF/ox2YPReN074r8Y6q63gDBPQUj
-         ibJfaqcG+mnZ6j5SNPPaKgafx/W9hAED42Op91PlcJaZ7h5JlLZ1/P5I/i7xnu4eTbZY
-         SNeV6g82RNy5LBSs826Z7HTv+YPXpWVnyR4UXj7Ci13ol3xKBgDH9gF0D0byBnGA7i4Z
-         yhHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689286988; x=1691878988;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gPJRqg7ajyeL4du6RG8R0w4sPMlBCtxY9hG6485AJxc=;
-        b=HoE8F89hCo3/FTWCRFV95a7WfwkVgHEpIGvW1PjYWLppq/WSI94cgVD2VFySlCKLHp
-         yuLhkuPxrBY1q+qGUXL3M+qcowIp6IlJtOlumY/jRZFOupdoBkzEWqByQLOkHPxxAhsl
-         dWkjZJe+jx8DvUQCQO400uHaSuxBTXe5F6fqzIqocZsnCRLotqIcHWW5FXd1Cx86nl3P
-         2man61o2FuoHEymizt4Byws+qNYrLBlS2u+n5cNn+X1hCkeBJg8gG1YrVfc5LxbcIKxK
-         Z3rCgH2wPRCP6Nr1wg5U2bEEklYdqsLkSp4/Xh+Ch4FQkttPOuSTU6CB+wSQRX+SUaah
-         jVKA==
-X-Gm-Message-State: ABy/qLbZInlhA3YskfJqrINGyxSl+mNUGQ+Bl0tWFBM33hfnyasimkHb
-        cZQ6W18hiIJZotOLvonDswPqCQ==
-X-Google-Smtp-Source: APBJJlFHVWSKYJGwaAF7RyGQ4hb39qQwi3/2ZA1sbjnSW0v8O2cboYPbu0mc5q6Qgzb9OnBBytt9Ag==
-X-Received: by 2002:a05:6a00:1a51:b0:657:f26e:b01a with SMTP id h17-20020a056a001a5100b00657f26eb01amr2433653pfv.26.1689286987833;
-        Thu, 13 Jul 2023 15:23:07 -0700 (PDT)
-Received: from hermes.local (204-195-116-219.wavecable.com. [204.195.116.219])
-        by smtp.gmail.com with ESMTPSA id j20-20020aa79294000000b006833bcc95b0sm2482755pfa.115.2023.07.13.15.23.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Jul 2023 15:23:07 -0700 (PDT)
-Date:   Thu, 13 Jul 2023 15:23:05 -0700
-From:   Stephen Hemminger <stephen@networkplumber.org>
-To:     Ziqi Zhao <astrajoan@yahoo.com>
-Cc:     syzbot+1591462f226d9cbf0564@syzkaller.appspotmail.com,
-        davem@davemloft.net, dvyukov@google.com, edumazet@google.com,
-        ivan.orlov0322@gmail.com, kernel@pengutronix.de, kuba@kernel.org,
-        linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux@rempel-privat.de, mkl@pengutronix.de, netdev@vger.kernel.org,
-        o.rempel@pengutronix.de, pabeni@redhat.com, robin@protonic.nl,
-        skhan@linuxfoundation.org, socketcan@hartkopp.net,
-        syzkaller-bugs@googlegroups.com, syzkaller@googlegroups.com
-Subject: Re: [PATCH] can: j1939: prevent deadlock by changing
- j1939_socks_lock to rwlock
-Message-ID: <20230713152305.153e7aba@hermes.local>
-In-Reply-To: <20230712004750.2476-1-astrajoan@yahoo.com>
-References: <000000000000b57ce3060025aa46@google.com>
-        <20230712004750.2476-1-astrajoan@yahoo.com>
+        Thu, 13 Jul 2023 18:25:41 -0400
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2073.outbound.protection.outlook.com [40.107.7.73])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C0CC1BD5
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 15:25:39 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Nk1fU1KM9x2//O7LoUcelAX/taayqiQqqXV8NYUiAeQ4R4SF9y6bAw2xON2x5919Q45pghPscdFhYTXXN2m3jdyN/jTgQd9ts83ozjxdindI6FdugGsjHWtrzJqHnSCpr+JR+TGUlNH2tYXGlLP0S5YoZsHuCnFHfkTyaNSeYCG0efLbmTkx1JA1brj2pL2Xge/6fgq/NgpZgAaTn53ODMC1+e0pEZKo6vhSYZHQ2TnRYOmc4ieRjvOzHdrnnbn64NzMjYSHEjd3N84zHuQcCHicszMZuCXm2Bbg74Cu99PlqKJdN86WnA8WhUw8g/dGBaLYO+HsmecHdYR/U6C+5g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=o3Ja3XydHohlEjuiC77t2CBkeeAzV0R7OjAAbBbe4OI=;
+ b=ArdsqXoVzdIDKyBCTVOwZijrvkXz+oEnxb+0dcLlAUbfAn/vjX8/8UnSf0jWEMc/4imR3JSwTqFIqnrnflyZLuDdvBUSvMteooyt5CborkO7OZtLwXPtWJZn8T8Hw7olbDzH5AvjJI766nrxxj7rVAGnGB2ozK9QdoL7IBv+U5s6apC5GnaLnmcD9sYF2GkRaa5LhdABOF+DGsBc/rHd1In8YOeGS9/lnM8JiKgL2C9b5YEwyd5n8TgSaTDrqLOB6N5eDQOdK5MzSSZkkK4lZ5nQOOvcQuD1nqu1g+kuNEakocxDofN85nDrloIHtocQfXpGKEr93XLo+teeUiwXRg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=o3Ja3XydHohlEjuiC77t2CBkeeAzV0R7OjAAbBbe4OI=;
+ b=YC9n/jjaEq2vRiElz/mhCbPWUyBPqKUCydALxlQKWWDLIvdcpsTAHoN/u+97hceLIEVNtMx6E1dtR8piejeBTaxf8+9npivtlG2iotsG45vPBOnEGPCDa+PVwzmSOk1qFzlq42a41UpQ1o3gqlkYqWhWxpUddyG594brtitk05A=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR04MB4845.eurprd04.prod.outlook.com (2603:10a6:803:51::30)
+ by AS5PR04MB10043.eurprd04.prod.outlook.com (2603:10a6:20b:67f::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.24; Thu, 13 Jul
+ 2023 22:25:35 +0000
+Received: from VI1PR04MB4845.eurprd04.prod.outlook.com
+ ([fe80::e93e:96cd:99c7:5dca]) by VI1PR04MB4845.eurprd04.prod.outlook.com
+ ([fe80::e93e:96cd:99c7:5dca%5]) with mapi id 15.20.6588.024; Thu, 13 Jul 2023
+ 22:25:35 +0000
+From:   Frank Li <Frank.Li@nxp.com>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        =?UTF-8?q?Krzysztof=20Ha=C5=82asa?= <khalasa@piap.pl>,
+        Wolfram Sang <wsa@kernel.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        patches@opensource.cirrus.com (open list:WOLFSON MICROELECTRONICS
+        DRIVERS),
+        alsa-devel@alsa-project.org (moderated list:SOUND - SOC LAYER / DYNAMIC
+        AUDIO POWER MANAGEM...), linux-kernel@vger.kernel.org (open list)
+Cc:     imx@lists.linux.dev, shengjiu.wang@nxp.com
+Subject: [PATCH 1/1] ASoC: codec: wm8960: add additional probe check for codec identification
+Date:   Thu, 13 Jul 2023 18:25:12 -0400
+Message-Id: <20230713222513.1636591-1-Frank.Li@nxp.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: BYAPR07CA0069.namprd07.prod.outlook.com
+ (2603:10b6:a03:60::46) To VI1PR04MB4845.eurprd04.prod.outlook.com
+ (2603:10a6:803:51::30)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VI1PR04MB4845:EE_|AS5PR04MB10043:EE_
+X-MS-Office365-Filtering-Correlation-Id: 19300ea0-7543-4b18-ebdd-08db83f013cf
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: deQIv60CGCLtsuHwBB68P2RndhdeIgpJAjqxIWMLYHiN8elAVf+5UPYRQhEOhbZhjRltFGRmntIMCOnDFv56QbfLMLWhMTVGKNWPxWdWUWw+UZlzD3/xPukkdnTwgbLYuy6fDriAks5ruQ/sIAjS+fqMGSGy1BcAy0vqEXO/K8IyNtq5yRp7AHcRQU8VPHtbc7OmGavdMAHE8JnjN2ltf4m1IVC8e+lXUw/2pFPiGbRKozFlgO0gol7S2d2BFSICIO6pt195Z+15W06gAyqKiSRvN0q9CcSRoPI8HLyNnq3o+gkb3PpUk+Cd5e8ZfHJEZAwwAEMy1jHet064zWHW6V95bz4Da4mLITS2wnMLps8hk9E5CTsANJLPzGhHmo8C8roZJn4OjmVj3ajvFN2/LB6RZKNUZfkLwrUnO0stN3dg7fedKR8hghsU+d9aWYOaHMreqfY0u5flsFBTzoE7lYVXqoXlUc4bksH05I0MFD34PW/Ciy65s3uyOqJw4sQ1dCZijZqnjpxT12LPOquxG9kJLM/mx3a4t9jan82ORxs/AaMGoiFEXFVvkY3HKmwHjeB4HsF9ZgyGotcLqPc3ry2cUqNEtj6JYrpYUd9Pcc2t3demFHuiowtywMRYGoOww2ETo5UX3KCO6QVVLnF4CQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4845.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(376002)(39860400002)(346002)(366004)(136003)(451199021)(7416002)(8676002)(8936002)(2906002)(2616005)(36756003)(38350700002)(38100700002)(921005)(1076003)(86362001)(5660300002)(26005)(6506007)(186003)(316002)(110136005)(6666004)(52116002)(4326008)(66556008)(66476007)(6486002)(66946007)(41300700001)(6512007)(478600001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?UhrMiNRgabm8CY+R9oAmGPtCyppvCcxthcyC2BbFi0l1Se31VLP0VgKaJkXE?=
+ =?us-ascii?Q?BDd2sW+RwypNgWPgVldeI0kPQRThYAwXFOVC8sYOJYIUGhb2SPZBtViJCpnL?=
+ =?us-ascii?Q?DIPLkIg+I04ZdjxCEOm2z1awKUXdITQnSdACYVNKDxcAoPoQsgM0Wz78Ynts?=
+ =?us-ascii?Q?mRY101QB5IPKGCBZ3TAo+w3b2TxD3MDfgiUmEsjuyYGQFp/orLGHvfmAwRFy?=
+ =?us-ascii?Q?Y+hli5o7ryDe16C+vgL9TsSOgTKjijV+xZ2ulir9LprBU4yGm/kcNI0eS/rX?=
+ =?us-ascii?Q?6Sf3kQ8so3MWh/pOqHhyY5vLXgkYbMkX2XjeTJExe1hUOYX14l8FBYVPoe3d?=
+ =?us-ascii?Q?h/0okT3fosqohT3hyqMaig+I+SN+DkNafyGSanGwYGhAK1JD05A/piso0+KC?=
+ =?us-ascii?Q?NXAlDNDyjWAZRFBeXmh7/lTk1Zv6KCdPoB3EhPDP/nj4cFq+MzmJB9l014aQ?=
+ =?us-ascii?Q?Ui6rKimL6TYz2NSDbKj4rfRFkBea9GF/YMMQkX4g/QkE1ih9efnpmGnKLghW?=
+ =?us-ascii?Q?pXFolwTayE9YGT4XBndtYjuxgDgCVQJM/eua0gwWfm2hdSIbt4qyBtf3gdlo?=
+ =?us-ascii?Q?W9TQcNG1/21MQI3GfTAKHhASsQIoWPYo/LksTjss661GWSBKW677Ioe05Wpl?=
+ =?us-ascii?Q?QiB1N4a/stgqGR03YrSI4JD9cnchxRinnPd9t29nhM05N77omRd9dm+eEkOY?=
+ =?us-ascii?Q?jNJTB3aSsMK0psNC4fidp6pXo1CYDn88kkts6rTpf96TV+u/Wy3sx8R5iYso?=
+ =?us-ascii?Q?mvZVLdpjs70Zpca6q8VrvURF9ZAI8skfCOzXUGLHq353lfJAjwfkekRfekFx?=
+ =?us-ascii?Q?tAhqokTKJjkZMvD4VZd2J2s7RJEdmHssDgf0L1uZJZA/vdAjRJvHbTmXi6jw?=
+ =?us-ascii?Q?BO+yCGYkwG3BH+gWPZPswulqEDl5NaUI0vJ7+xuNlSioaFDtnGdf5J3isqt+?=
+ =?us-ascii?Q?mO08CqjykB6cGX4WEYoSjXKAgsJCqxJORMDpCfyKtU8cR8+RawymKLgE+JJ6?=
+ =?us-ascii?Q?G3g6z8sYDR7F1mrnyA0X82RJH7J5/RiGKt7TPA2Rj6WXhA7gHcvyajtb7ME7?=
+ =?us-ascii?Q?G9CHVcCqv8WwwAchGDMdCDJ+n/EcSnNAyjL1mCyc3TDpCWArfea58u6tJQVe?=
+ =?us-ascii?Q?HVNBwdSJ0Snqq3YIRdyWJWuVnJUYnZOYEthNd9dR77fzqnxviEoBMZr4WqqE?=
+ =?us-ascii?Q?+UCaUVCH6WinTKVcmk5yiSorulx94xFYlCbK1rrCWA/4ir46G+PME5153f/I?=
+ =?us-ascii?Q?tvUIpCdNEvaEjGCxKSeAJNksnK/N30/VKFvCRfIaKoT3HkxYpFW/Md0o6afV?=
+ =?us-ascii?Q?Yk+yW5K6we+7aYRMQ4Q9MnuxNCLsxHk8D9VtUe3rsqxBIo9QuJ65KmfC8a6v?=
+ =?us-ascii?Q?+227KORwIO7fQlBn9Eac5MeFl04Uw1iSlemgfOyHV+A/JK/cfB2984+vWRil?=
+ =?us-ascii?Q?PncaBCtMgH+sgiJaW8MmV1H7f6ajsnZ3a0fShTCyEAZeSRkZqByWSRqYJQZF?=
+ =?us-ascii?Q?jCEigsvB+zBI9uONiQhJhNUYcNjKiChpyAfN0qupb+6mCw7L4Qt28FmqZBNU?=
+ =?us-ascii?Q?UlSf94HRbA5PmvuenwmgFwRil5ImT22XMdwMQhhd?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 19300ea0-7543-4b18-ebdd-08db83f013cf
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB4845.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2023 22:25:35.5569
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: HOD5hmS3I7sBNkRtM3H/3riyv7P5+vikmgkhepbmFMsaKA8OR4Kd2CJdAWkcnTH0wn9o7uIjjQVi5zDgjH6OOA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS5PR04MB10043
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 11 Jul 2023 17:47:50 -0700
-Ziqi Zhao <astrajoan@yahoo.com> wrote:
+The wm8960 codec is not readable, resulting in a NACK for address 0x3d (8-bit).
+This can partially indicate it. For example: wm8962 codec use the same address
+but is readable. This additional probe check will help prevent loading the wm8960
+module incorrectly on wm8962 hardware.
 
-> The following 3 locks would race against each other, causing the
-> deadlock situation in the Syzbot bug report:
-> 
-> - j1939_socks_lock
-> - active_session_list_lock
-> - sk_session_queue_lock
-> 
-> A reasonable fix is to change j1939_socks_lock to an rwlock, since in
-> the rare situations where a write lock is required for the linked list
-> that j1939_socks_lock is protecting, the code does not attempt to
-> acquire any more locks. This would break the circular lock dependency,
-> where, for example, the current thread already locks j1939_socks_lock
-> and attempts to acquire sk_session_queue_lock, and at the same time,
-> another thread attempts to acquire j1939_socks_lock while holding
-> sk_session_queue_lock.
-> 
-> NOTE: This patch along does not fix the unregister_netdevice bug
-> reported by Syzbot; instead, it solves a deadlock situation to prepare
-> for one or more further patches to actually fix the Syzbot bug, which
-> appears to be a reference counting problem within the j1939 codebase.
-> 
-> #syz test:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> 
-> Signed-off-by: Ziqi Zhao <astrajoan@yahoo.com>
-> ---
+Signed-off-by: Frank Li <Frank.Li@nxp.com>
+---
+ sound/soc/codecs/wm8960.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-Reader-writer locks are not the best way to fix a lock hierarchy problem.
-Instead either fix the lock ordering, or use RCU.
+diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
+index 0d167238a369..783c85912c59 100644
+--- a/sound/soc/codecs/wm8960.c
++++ b/sound/soc/codecs/wm8960.c
+@@ -1415,6 +1415,7 @@ static int wm8960_i2c_probe(struct i2c_client *i2c)
+ 	struct wm8960_data *pdata = dev_get_platdata(&i2c->dev);
+ 	struct wm8960_priv *wm8960;
+ 	int ret;
++	u8 val;
+ 
+ 	wm8960 = devm_kzalloc(&i2c->dev, sizeof(struct wm8960_priv),
+ 			      GFP_KERNEL);
+@@ -1436,6 +1437,12 @@ static int wm8960_i2c_probe(struct i2c_client *i2c)
+ 	else if (i2c->dev.of_node)
+ 		wm8960_set_pdata_from_of(i2c, &wm8960->pdata);
+ 
++	ret = i2c_master_recv(i2c, &val, sizeof(val));
++	if (ret >= 0) {
++		dev_err(&i2c->dev, "Not wm8960, wm8960 reg can not read by i2c\n");
++		return -EINVAL;
++	}
++
+ 	ret = wm8960_reset(wm8960->regmap);
+ 	if (ret != 0) {
+ 		dev_err(&i2c->dev, "Failed to issue reset\n");
+-- 
+2.34.1
 
-Other devices don't have this problem, so perhaps the unique locking
-in this device is the problem.
