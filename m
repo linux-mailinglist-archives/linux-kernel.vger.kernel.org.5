@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 324887521FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 14:57:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71AA0752202
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 14:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234663AbjGMM5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 08:57:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36388 "EHLO
+        id S234862AbjGMM5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 08:57:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234712AbjGMM5c (ORCPT
+        with ESMTP id S234869AbjGMM5f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 08:57:32 -0400
+        Thu, 13 Jul 2023 08:57:35 -0400
 Received: from mail-ed1-x54a.google.com (mail-ed1-x54a.google.com [IPv6:2a00:1450:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B71F626B0
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 05:57:29 -0700 (PDT)
-Received: by mail-ed1-x54a.google.com with SMTP id 4fb4d7f45d1cf-51e52b1fb4fso439114a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 05:57:29 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A233D1BEB
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 05:57:33 -0700 (PDT)
+Received: by mail-ed1-x54a.google.com with SMTP id 4fb4d7f45d1cf-51e288d2a40so428793a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 05:57:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689253048; x=1691845048;
+        d=google.com; s=20221208; t=1689253052; x=1691845052;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=G3X9aMNtf+Y4a1BkuoJTavkrfHeiL0YXiMZI9eN5sqI=;
-        b=SdKzR7yTSRRtkPH8PaZdS44fFu2DNGPv2/dy6ooEfMC7KJ2FOiE5d/H6k3NmPaBm4O
-         amJ2UuqzibTpzA8DKvuhZxz1Sss1X4pLbm9EFZq/uOLe3QJvWpnJQrcAsBCpnWPqt4oE
-         g64n0rY7HOaFQe0pg1Uin9savcYzWGMBM2Z7Wum8Xa6yIhZ+HEbUaUKwoPUIKGZlU8RA
-         zlJY9rkKJ3DJKlpadBNHtcnDefxevG7PGdH9J+mbkOQKX7WFxfimK/ImWb0LWPwkwY3z
-         9a8z/PRJDF3l0fJ4S6L5esnKmpUi7uxVMp34zTDhtDoAmSIaJgbArKdR6Y1rfRrFKUte
-         U1lg==
+        bh=jmq0b/Ecy0ZNTUuWhSR14tYQI4JHnYovo+aDrld9UN0=;
+        b=CgGc1u5qyG9QHrPLJIfRm5/iPctCseTN5qUO7jdfNfbBcVi7VSxsjYA0omtf3+hxMV
+         cXIv7arRK7gICiBo+wRZ0QeyQM5TkdW7LR6MVSqklD70rENHC3Kn/OtihQiIfy9xaTzN
+         wW1b3m2v3U+lURK1LCBKW57m2ukspaRu3Y2VcJaSk1BrbVheIGUBDjMQNvUI6bj/s6Gn
+         nguC8zsoqWo8SifiF54s/ew9mLcz7zKfklVijPUvCFpOFSCLihYXTnHFenJclDY06PxO
+         /stMdLKDH8TjLnFVY9UeQTLsN2IhCEKY0G+QXw3TBsoATXET5UrQenfGfZNKL2ULWiKi
+         IhoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689253048; x=1691845048;
+        d=1e100.net; s=20221208; t=1689253052; x=1691845052;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=G3X9aMNtf+Y4a1BkuoJTavkrfHeiL0YXiMZI9eN5sqI=;
-        b=Rgox4YWTHBLUBGkqy2iPczWUqypJXsjZAqZWVK7TGAwlEtjR5rBCzI7GhJszjv9UCK
-         gyb0Dyx/c+3N/BvMH3EWxfxjj4lCIl93d+X5oeYDsdzC2AZFjNmJ/PXS3S3LQUNquBB4
-         Z5rhTy9RXmBg0WB6BcOysGtRHQ2L64fHRW0DvtVsBWdZFMfEnk/jL+7Q+JtieT99K1Y9
-         PZVlSNs3tuJqSUt8eHl87Zt2JQq9jGA22UCiqkWCNJqbcAlhljGmZJQ6Y2TqBcaAEmni
-         rrwAVgxDGKsgJpKQHMoN4JOhJdYpjyaZ4/K6KeRzaURPPN3cVkzq5rJ1jjdUvl7j6mK9
-         I6Nw==
-X-Gm-Message-State: ABy/qLZ6H58jEninRFsdDP8/CtOkl6ezGNkXd2jpjBc0BSlt2epppv/4
-        0vPcpe3144VLJa6ZnR4ib1Si8UzVz+8=
-X-Google-Smtp-Source: APBJJlEzRUl9pOBtatK4TP7+ubEzsIeS9vByW92Acf7+09gdvZcE2hYQqa4F1F4VhS3O4Pv4tFWgxxihdQs=
+        bh=jmq0b/Ecy0ZNTUuWhSR14tYQI4JHnYovo+aDrld9UN0=;
+        b=ZFwwwloSREP5JtZO6JrzwfOSdv+5khZXltKsKgQ3TuRH75dz315QRtcUqenaPEsgVq
+         2HJ46fd1exA1xf69oYfzUPpViPGrN6vSZVuAGSYrx7R6JOwiv754JvlbGXjdYix+kDCB
+         E8go6dpNI9XoYYURiXL7vvo5E2UMBngA0vYknlfNhcY7iRgjuOAUYbbw9c/THz3/4ySp
+         iNyVYQUDKwYXnDW/SsIdU8RFTUhURJyiOLGPV6l/5nNA8yRDLNDf3rnxLjTT90WZztu7
+         phwPWZbHMUwxomQKE/FxwIweMV5lOXoDmLAUJRHHtxCEYAS4TTqDAbsNi2Brjr3M6o5k
+         zsJw==
+X-Gm-Message-State: ABy/qLZ3Rb0YIZnwZNbPiDu932z2HNnIo/Eb9bHOhFDCn3aZsfyM98yP
+        Rfp1wZFqduw5R1ihPna3zCV5YnBOIfs=
+X-Google-Smtp-Source: APBJJlHeRD8uLG+3QTCDR74WA5gMF3fPZWDdb23eDq3tUHkrau4iIYKWhnpbLYG6CkJUYvO244cOyYRq2s0=
 X-Received: from glider.muc.corp.google.com ([2a00:79e0:9c:201:7a88:66b7:31e5:7d85])
- (user=glider job=sendgmr) by 2002:a50:99d3:0:b0:50b:c88a:f7cd with SMTP id
- n19-20020a5099d3000000b0050bc88af7cdmr8273edb.4.1689253048201; Thu, 13 Jul
- 2023 05:57:28 -0700 (PDT)
-Date:   Thu, 13 Jul 2023 14:57:01 +0200
+ (user=glider job=sendgmr) by 2002:a50:f688:0:b0:51e:23e9:5c85 with SMTP id
+ d8-20020a50f688000000b0051e23e95c85mr7587edn.6.1689253052246; Thu, 13 Jul
+ 2023 05:57:32 -0700 (PDT)
+Date:   Thu, 13 Jul 2023 14:57:02 +0200
 In-Reply-To: <20230713125706.2884502-1-glider@google.com>
 Mime-Version: 1.0
 References: <20230713125706.2884502-1-glider@google.com>
 X-Mailer: git-send-email 2.41.0.255.g8b1d071c50-goog
-Message-ID: <20230713125706.2884502-2-glider@google.com>
-Subject: [v2 1/5] lib/bitmap: add bitmap_{set,get}_value_unaligned()
+Message-ID: <20230713125706.2884502-3-glider@google.com>
+Subject: [v2 2/5] lib/test_bitmap: add tests for bitmap_{set,get}_value_unaligned
 From:   Alexander Potapenko <glider@google.com>
 To:     glider@google.com, catalin.marinas@arm.com, will@kernel.org,
         pcc@google.com, andreyknvl@gmail.com,
@@ -71,103 +71,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The two new functions allow setting/getting values of length up to
-BITS_PER_LONG bits at arbitrary position in the bitmap.
+Add basic tests ensuring that values can be added at arbitrary positions
+of the bitmap, including those spanning into the adjacent unsigned
+longs.
 
-Suggested-by: Yury Norov <yury.norov@gmail.com>
 Signed-off-by: Alexander Potapenko <glider@google.com>
 ---
- include/linux/bitmap.h | 63 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 63 insertions(+)
+ lib/test_bitmap.c | 34 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
 
-diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
-index 03644237e1efb..8e36ce07bafd4 100644
---- a/include/linux/bitmap.h
-+++ b/include/linux/bitmap.h
-@@ -77,6 +77,8 @@ struct device;
-  *  bitmap_to_arr64(buf, src, nbits)            Copy nbits from buf to u64[] dst
-  *  bitmap_get_value8(map, start)               Get 8bit value from map at start
-  *  bitmap_set_value8(map, value, start)        Set 8bit value to map at start
-+ *  bitmap_get_value_unaligned(map, start, nbits)  Get value up to BITS_PER_LONG
-+ *  bitmap_set_value_unaligned(map, value, start, nbits)  Set value up to BITS_PER_LONG
-  *
-  * Note, bitmap_zero() and bitmap_fill() operate over the region of
-  * unsigned longs, that is, bits behind bitmap till the unsigned long
-@@ -583,6 +585,35 @@ static inline unsigned long bitmap_get_value8(const unsigned long *map,
- 	return (map[index] >> offset) & 0xFF;
+diff --git a/lib/test_bitmap.c b/lib/test_bitmap.c
+index 187f5b2db4cf1..8ca61f6e7f26e 100644
+--- a/lib/test_bitmap.c
++++ b/lib/test_bitmap.c
+@@ -71,6 +71,17 @@ __check_eq_uint(const char *srcfile, unsigned int line,
+ 	return true;
  }
  
-+/**
-+ * bitmap_get_value_unaligned - get an @nbits-bit value within a memory region
-+ * @map: address to the bitmap memory region
-+ * @start: bit offset of the value; may not be a multiple of 8
-+ * @nbits: number of bits to get
-+ *
-+ * Returns the @nbits-sized value located at the @start bit offset within the
-+ * @map memory region.
-+ */
-+static inline unsigned long bitmap_get_value_unaligned(const unsigned long *map,
-+						       unsigned long start,
-+						       unsigned long nbits)
++static bool __init
++__check_eq_ulong(const char *srcfile, unsigned int line,
++		 const unsigned long exp_ulong, unsigned long x)
 +{
-+	const size_t index = BIT_WORD(start);
-+	const unsigned long offset = start % BITS_PER_LONG;
-+	const unsigned long carry = (offset + nbits) % BITS_PER_LONG;
-+	unsigned long hi, lo, result;
-+
-+	if (offset + nbits <= BITS_PER_LONG) {
-+		result = map[index] >> (BITS_PER_LONG - offset - nbits);
-+		return result & BITMAP_LAST_WORD_MASK(nbits);
++	if (exp_ulong != x) {
++		pr_err("[%s:%u] expected %lu, got %lu\n",
++			srcfile, line, exp_ulong, x);
++		return false;
 +	}
-+
-+	hi = map[index] & BITMAP_LAST_WORD_MASK(BITS_PER_LONG - offset);
-+	lo = map[index + 1] & BITMAP_FIRST_WORD_MASK(BITS_PER_LONG - carry);
-+	lo >>= (BITS_PER_LONG - carry);
-+	return (hi << carry) | lo;
++	return true;
 +}
-+
- /**
-  * bitmap_set_value8 - set an 8-bit value within a memory region
-  * @map: address to the bitmap memory region
-@@ -599,6 +630,38 @@ static inline void bitmap_set_value8(unsigned long *map, unsigned long value,
- 	map[index] |= value << offset;
+ 
+ static bool __init
+ __check_eq_bitmap(const char *srcfile, unsigned int line,
+@@ -186,6 +197,7 @@ __check_eq_str(const char *srcfile, unsigned int line,
+ 	})
+ 
+ #define expect_eq_uint(...)		__expect_eq(uint, ##__VA_ARGS__)
++#define expect_eq_ulong(...)		__expect_eq(ulong, ##__VA_ARGS__)
+ #define expect_eq_bitmap(...)		__expect_eq(bitmap, ##__VA_ARGS__)
+ #define expect_eq_pbl(...)		__expect_eq(pbl, ##__VA_ARGS__)
+ #define expect_eq_u32_array(...)	__expect_eq(u32_array, ##__VA_ARGS__)
+@@ -1222,6 +1234,26 @@ static void __init test_bitmap_const_eval(void)
+ 	BUILD_BUG_ON(~var != ~BIT(25));
  }
  
-+/**
-+ * bitmap_set_value_unaligned - set an @nbits-bit value within a memory region
-+ * @map: address to the bitmap memory region
-+ * @value: the value up to BITS_PER_LONG bits (will be clamped to @nbits)
-+ * @start: bit offset of the value; may not be a multiple of 8
-+ * @nbits: number of bits to set
-+ */
-+static inline void bitmap_set_value_unaligned(unsigned long *map,
-+					      unsigned long value,
-+					      unsigned long start,
-+					      unsigned long nbits)
++static void __init test_set_get_value_unaligned(void)
 +{
-+	const size_t index = BIT_WORD(start);
-+	const unsigned long offset = start % BITS_PER_LONG;
-+	unsigned long mask = BITMAP_LAST_WORD_MASK(nbits);
-+	const unsigned long carry = (offset + nbits) % BITS_PER_LONG;
++	DECLARE_BITMAP(bitmap, BITS_PER_LONG * 2);
++	unsigned long val;
++	int i;
 +
-+	value &= mask;
-+	if (offset + nbits <= BITS_PER_LONG) {
-+		value <<= (BITS_PER_LONG - offset - nbits);
-+		mask <<= (BITS_PER_LONG - offset - nbits);
-+		map[index] &= ~mask;
-+		map[index] |= value;
-+		return;
++	for (i = 0; i < BITS_PER_LONG * 2 - 7; i++) {
++		bitmap_zero(bitmap, BITS_PER_LONG * 2);
++		bitmap_set_value_unaligned(bitmap, 0b10101UL, i, 5);
++		val = bitmap_get_value_unaligned(bitmap, i, 5);
++		expect_eq_ulong(0b10101UL, val);
++		bitmap_set_value_unaligned(bitmap, 0b101UL, i + 5, 3);
++		val = bitmap_get_value_unaligned(bitmap, i + 5, 3);
++		expect_eq_ulong(0b101UL, val);
++		val = bitmap_get_value_unaligned(bitmap, i, 8);
++		expect_eq_ulong(0b10101101UL, val);
 +	}
-+	map[index] &= ~BITMAP_LAST_WORD_MASK(BITS_PER_LONG - offset);
-+	map[index] |= (value >> (carry));
-+	value &= BITMAP_LAST_WORD_MASK(carry);
-+	map[index + 1] &= ~BITMAP_FIRST_WORD_MASK(BITS_PER_LONG - carry);
-+	map[index + 1] |= value << (BITS_PER_LONG - carry);
 +}
 +
- #endif /* __ASSEMBLY__ */
++
+ static void __init selftest(void)
+ {
+ 	test_zero_clear();
+@@ -1249,6 +1281,8 @@ static void __init selftest(void)
+ 	test_for_each_clear_bitrange_from();
+ 	test_for_each_set_clump8();
+ 	test_for_each_set_bit_wrap();
++
++	test_set_get_value_unaligned();
+ }
  
- #endif /* __LINUX_BITMAP_H */
+ KSTM_MODULE_LOADERS(test_bitmap);
 -- 
 2.41.0.255.g8b1d071c50-goog
 
