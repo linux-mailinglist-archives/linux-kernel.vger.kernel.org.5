@@ -2,86 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 850BD751826
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 07:29:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F00FF751829
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 07:32:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233978AbjGMF3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 01:29:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56600 "EHLO
+        id S233945AbjGMFcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 01:32:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233858AbjGMF3s (ORCPT
+        with ESMTP id S232495AbjGMFcI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 01:29:48 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2FF92699
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 22:29:19 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-cada5e4e3f6so253266276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 22:29:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689226140; x=1691818140;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=6NsLfF6Fujd9XILLYMbgVodQt+Dx/UesYM1x/fURW9E=;
-        b=JE8YBwi/Vb1fvQmSlM49rsLmJY5mJbRLi2MuTY5HMXfns7bJ/30EK4wMKwpQrlwicl
-         ahbAbozKz2RH1lKL7/b4xUh0UhJt2nRX7CKoH4eXDuLD4okNEUq7a5C2tZeCgqL43pzg
-         PGy4bZMK9dVK0G8eI6Qf4F/VslhJ9G9BxbKiQ4f08J4BuIhlJ58M/FmoiETBONQitJe4
-         iiHwKgyUj4ktiJ7S6nJzK5Glqxq8r3Q17XSX+vTx0hwdS3IleOKjMj5yYwlGAhNlULDK
-         0TaA4+OLUdK/+2gvG0mdNiajk9ZV5+M6VxH7rVyOeIJzFnRS0BunD6QtBNGtl0gxZq1V
-         bKNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689226140; x=1691818140;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6NsLfF6Fujd9XILLYMbgVodQt+Dx/UesYM1x/fURW9E=;
-        b=Aa7kgQoDpB1qrT6LIWySdOxlqc84Zorv8pjucT7kE+h5O6Qu4dxC0GFRU17D2aTBY7
-         vgHkLhUfkABo7nNez9XwvfP6XxImXsehAMV4FXQoOgeSWfAhBEbtIVRW2gBsUQwiW9mf
-         FNMo8gXjWXuDYkim5RpjHXVQKOUK1fwP9ZftUDsdX2WkYlucvDmgwNWWSk3ajWzYrjj1
-         dTmaTcU4G8nnuf4dEXkbIYMOrZya3vu0jTqdL8VweudPQAKUhdC0rW9V3i83HrRi2sWg
-         vzv6f9PT8qltkc8n8X4ANGdCG0tedymdvoFFvdd20uA2FI6INyF3NYqoUCH9Ot0sjBYx
-         Jkrw==
-X-Gm-Message-State: ABy/qLYO3ejswUonnLar32dmP5VsL6Hbz6lVe5scBMYb3ZTqxed79IU7
-        u5ZrUjJmZVTIZLxZuaJRuaFv
-X-Google-Smtp-Source: APBJJlF5xL9Pu8KTC+WYWfzUmFpYSbM/IIyFYz68lWH9Fp+ePaq8nhmoIMcdHPbeIhb74rX/xN/w/Q==
-X-Received: by 2002:a25:b55:0:b0:c5d:f2af:5a24 with SMTP id 82-20020a250b55000000b00c5df2af5a24mr550636ybl.14.1689226140527;
-        Wed, 12 Jul 2023 22:29:00 -0700 (PDT)
-Received: from thinkpad ([117.207.27.112])
-        by smtp.gmail.com with ESMTPSA id 18-20020aa79112000000b0065016fffc81sm4466025pfh.216.2023.07.12.22.28.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Jul 2023 22:29:00 -0700 (PDT)
-Date:   Thu, 13 Jul 2023 10:58:43 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, vireshk@kernel.org,
-        nm@ti.com, sboyd@kernel.org, myungjoo.ham@samsung.com,
-        kyungmin.park@samsung.com, cw00.choi@samsung.com,
-        andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        quic_asutoshd@quicinc.com, quic_cang@quicinc.com,
-        quic_nitirawa@quicinc.com, quic_narepall@quicinc.com,
-        quic_bhaskarv@quicinc.com, quic_richardp@quicinc.com,
-        quic_nguyenb@quicinc.com, quic_ziqichen@quicinc.com,
-        bmasney@redhat.com, krzysztof.kozlowski@linaro.org
-Subject: Re: [PATCH 11/14] scsi: ufs: host: Add support for parsing OPP
-Message-ID: <20230713052843.GE3047@thinkpad>
-References: <20230712103213.101770-1-manivannan.sadhasivam@linaro.org>
- <20230712103213.101770-14-manivannan.sadhasivam@linaro.org>
- <e6a5129a-db07-977d-2ecd-328a52cbcdc0@linaro.org>
- <20230712163406.GG102757@thinkpad>
- <CAA8EJpovHr1qxepVprk6UvnhKe+nu4VuziyKKgjV3UzommFz6g@mail.gmail.com>
- <20230713040918.jnf5oqiwymrdnrmq@vireshk-i7>
- <20230713050550.GB3047@thinkpad>
- <20230713051235.ob5z3li3lz52xtzm@vireshk-i7>
+        Thu, 13 Jul 2023 01:32:08 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 568DC119;
+        Wed, 12 Jul 2023 22:32:07 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E21E661A15;
+        Thu, 13 Jul 2023 05:32:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E74AC433C8;
+        Thu, 13 Jul 2023 05:32:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689226326;
+        bh=fVVjgsYE+Qoi+R94FE6e7lA0UTa62pQgQ545OxhcM9g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IZVgs6buiRTDdalbv2ZlrRBzrZfqoUiABFLs6WO1uVDx7yut6id1QniuBP9TE75Dr
+         Pbv8EDd9iWXYV6T82XvUowSPK+vsALcfjN8dfgcVMnS0v/KZ/L5jW2ZWMxoqDunz6P
+         pwC5sFon/w+70nR9PFTtkqhFzhjgAOGytaeDZLWJbpwXdElbWea4yRom6ReQ0Fwf6i
+         0x8X4ZmeDoC654H5/Ie7a0h4yTjizDyuJ9c4d8Ew8H5bbt5pHFS3aK/Ve6/2DtCArY
+         39ipOuLlQVqXDYClQhx67gLANhsT0mzDrMwGc08DqeVrDVYw3z9KqPg5GLZpGvNKV0
+         H4S9YFrSwOFGg==
+Date:   Thu, 13 Jul 2023 06:32:01 +0100
+From:   Simon Horman <horms@kernel.org>
+To:     Christian Marangi <ansuelsmth@gmail.com>
+Cc:     Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 2/3] clk: qcom: clk-rcg2: add support for rcg2 freq
+ multi ops
+Message-ID: <ZK+MUW55tWhOX1/i@kernel.org>
+References: <20230531222654.25475-1-ansuelsmth@gmail.com>
+ <20230531222654.25475-3-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230713051235.ob5z3li3lz52xtzm@vireshk-i7>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+In-Reply-To: <20230531222654.25475-3-ansuelsmth@gmail.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -90,29 +61,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 10:42:35AM +0530, Viresh Kumar wrote:
-> On 13-07-23, 10:35, Manivannan Sadhasivam wrote:
-> > We can settle with this custom callback for now. If there are drivers in the
-> > future trying to do the same (skipping 0 freq) then we can generalize.
+On Thu, Jun 01, 2023 at 12:26:53AM +0200, Christian Marangi wrote:
+> Some RCG frequency can be reached by multiple configuration.
 > 
-> Just for completeness, there isn't much to generalize here apart from
-> changing the DT order of clocks. Isn't it ?
+> Add clk_rcg2_fm_ops ops to support these special RCG configurations.
 > 
-
-Even with changing the order, driver has to know the "interesting" clocks
-beforehand. But that varies between platforms (this is a generic driver for
-ufshc platforms).
-
-And I do not know if clocks have any dependency between them, atleast not in
-Qcom platforms. But not sure about others.
-
-- Mani
-
-> The change require for the OPP core makes sense, I will probably just
-> push it anyway.
+> These alternative ops will select the frequency using a CEIL policy.
 > 
-> -- 
-> viresh
+> When the correct frequency is found, the correct config is selected by
+> calculating the final rate (by checking the defined parent and values
+> in the config that is being checked) and deciding based on the one that
+> is less different than the requested one.
+> 
+> These check are skipped if there is just on config for the requested
+> freq.
+> 
+> qcom_find_freq_multi is added to search the freq with the new struct
+> freq_multi_tbl.
+> __clk_rcg2_select_conf is used to select the correct conf by simulating
+> the final clock.
+> If a conf can't be found due to parent not reachable, a WARN is printed
+> and -EINVAL is returned.
+> 
+> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
 
--- 
-மணிவண்ணன் சதாசிவம்
+...
+
+> diff --git a/drivers/clk/qcom/clk-rcg2.c b/drivers/clk/qcom/clk-rcg2.c
+> index 76551534f10d..9a139fc8bbfa 100644
+> --- a/drivers/clk/qcom/clk-rcg2.c
+> +++ b/drivers/clk/qcom/clk-rcg2.c
+> @@ -266,6 +266,112 @@ static int _freq_tbl_determine_rate(struct clk_hw *hw, const struct freq_tbl *f,
+>  	return 0;
+>  }
+>  
+> +static const struct freq_conf *
+> +__clk_rcg2_select_conf(struct clk_hw *hw, const struct freq_multi_tbl *f,
+> +		       unsigned long req_rate)
+> +{
+> +	unsigned long rate_diff, best_rate_diff = ULONG_MAX;
+> +	const struct freq_conf *conf, *best_conf;
+> +	struct clk_rcg2 *rcg = to_clk_rcg2(hw);
+> +	const char *name = clk_hw_get_name(hw);
+> +	unsigned long parent_rate, rate;
+> +	struct clk_hw *p;
+> +	int index, i;
+> +
+> +	/* Exit early if only one config is defined */
+> +	if (f->num_confs == 1)
+> +		return f->confs;
+> +
+> +	/* Search in each provided config the one that is near the wanted rate */
+> +	for (i = 0, conf = f->confs; i < f->num_confs; i++, conf++) {
+> +		index = qcom_find_src_index(hw, rcg->parent_map, conf->src);
+> +		if (index < 0)
+> +			continue;
+> +
+> +		p = clk_hw_get_parent_by_index(hw, index);
+> +		if (!p)
+> +			continue;
+> +
+> +		parent_rate =  clk_hw_get_rate(p);
+> +		rate = calc_rate(parent_rate, conf->n, conf->m, conf->n, conf->pre_div);
+> +
+> +		if (rate == req_rate) {
+> +			best_conf = conf;
+> +			break;
+> +		}
+> +
+> +		rate_diff = abs(req_rate - rate);
+> +		if (rate_diff < best_rate_diff) {
+> +			best_rate_diff = rate_diff;
+> +			best_conf = conf;
+> +		}
+> +	}
+> +
+> +	/*
+> +	 * Very unlikely. Warn if we couldn't find a correct config
+> +	 * due to parent not present.
+> +	 */
+> +	if (unlikely(i == f->num_confs)) {
+> +		WARN(1, "%s: can't find a configuration for rate %lu.",
+> +		     name, req_rate);
+> +		return ERR_PTR(-EINVAL);
+> +	}
+> +
+> +	return best_conf;
+
+Hi Christian,
+
+It's unclear to me if this can actually occur,
+but Sparse warns that best_conf may be uninitialised here.
+
+> +}
+
+...
