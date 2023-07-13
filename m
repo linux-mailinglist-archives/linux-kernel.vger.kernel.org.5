@@ -2,61 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 545CC7516BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 05:23:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25D2C7516BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 05:25:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233659AbjGMDXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 23:23:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43292 "EHLO
+        id S233588AbjGMDZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 23:25:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233606AbjGMDXL (ORCPT
+        with ESMTP id S232486AbjGMDZF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 23:23:11 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 28DE91FD8;
-        Wed, 12 Jul 2023 20:22:54 -0700 (PDT)
-Received: from loongson.cn (unknown [10.2.9.158])
-        by gateway (Coremail) with SMTP id _____8Dx_+sMbq9kaEQEAA--.10908S3;
-        Thu, 13 Jul 2023 11:22:52 +0800 (CST)
-Received: from kvm-1-158.loongson.cn (unknown [10.2.9.158])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxbSMDbq9kz6MrAA--.8174S4;
-        Thu, 13 Jul 2023 11:22:51 +0800 (CST)
-From:   Bibo Mao <maobibo@loongson.cn>
-To:     Huacai Chen <chenhuacai@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     Jianmin Lv <lvjianmin@loongson.cn>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <philmd@linaro.org>
-Subject: [PATCH v4 2/2] irqchip/loongson-eiointc: Simplify irq routing on some platforms
-Date:   Thu, 13 Jul 2023 11:22:43 +0800
-Message-Id: <20230713032243.2046205-3-maobibo@loongson.cn>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20230713032243.2046205-1-maobibo@loongson.cn>
-References: <20230713032243.2046205-1-maobibo@loongson.cn>
+        Wed, 12 Jul 2023 23:25:05 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE26810FC;
+        Wed, 12 Jul 2023 20:25:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689218704; x=1720754704;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=ofASiTrwKEfXVPo4uJcBQlCJ8Iw6L7v5//6zhJmKGLQ=;
+  b=gIkn4OyLvRBR/qQ5cwxUgnwwwfnWRFEAGSCIjXEpW7zqce9aESjobug9
+   33IAz3J9RAbD9zHUQSpg4bnCWwz5Q1wBC33IxJV7vXhxwQG1/wAQK0hYT
+   uUVUN3SUPb0HcPX0vwq3akeNCS/COwLm19o/vG0OUXoEIgdu18jIl3IRS
+   8CSWfa/bBQYXI027q0mVFl+UzAXZ179BtbLILyEmPir13CJ+kMakELAym
+   mdWwPcaupVFGBcQ++ux7iKjeihJmq0kTUwIclZYEE7DyD/ZN0eiwBvOXn
+   9gfSsYIG7XSruZdcqZSz++tFflqAwmpMJTSaVODQKGvjK0+lzH/5TezaS
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10769"; a="345386370"
+X-IronPort-AV: E=Sophos;i="6.01,201,1684825200"; 
+   d="scan'208";a="345386370"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2023 20:25:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10769"; a="751434457"
+X-IronPort-AV: E=Sophos;i="6.01,201,1684825200"; 
+   d="scan'208";a="751434457"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orsmga008.jf.intel.com with ESMTP; 12 Jul 2023 20:25:03 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 12 Jul 2023 20:25:02 -0700
+Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 12 Jul 2023 20:25:02 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Wed, 12 Jul 2023 20:25:02 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.176)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Wed, 12 Jul 2023 20:25:02 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BDSwKtUrlf0v989zrcoR8ZVKcYrzODPDKmpj5aAAz5y2Y9pPFaBwbzpJqgewO9Yun+IEWuyeuYtEnLvB59VwxfJwlDUbIecnCS67J/04RXiLIuLPK6aA0D1YdaZX0gGqO1qnXWprUjkUilGQzHICVSj19AxlRNsKIVAhL3h0y0Q6hfqrG+iijpdzqU1H+KByikWygUMQ9MNCTR6W6O6JMrawce7WEPuVmY2F9SqVeEUqcargd/KOUXu4mrFrNn4Q0a2sTgaRzGRawOjO/POxik6EQpsxz+dwW52glOgoRbnJCCpPAlB8XTbA/7geV2jJkEXraigfwW4qUFZXIcocqw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ofASiTrwKEfXVPo4uJcBQlCJ8Iw6L7v5//6zhJmKGLQ=;
+ b=oT3+8g1+9LNvtgotR4JZIdk1nCMpq2zEUbXBWEHd1XZhZpus/saYJ3YbUYwe6P+n7RtFL4uiemMUjrEewAPS92KzGcwxqMNJRK2MUBIpGYdZ5ZvYRQfvIjnpKxHQXKFjOVpo35FISU+I/IX0AUGw1/DbfWRp0wwmSPHO1NwpyIVy9KIW6jycajDE26QCalc8i9n0OfizYKEsCt3pJ11vVXReuyc+TtZARvjxpYUSyUTaOloVkHAx70aan/v2+seqFVXKNkM1fdXLly7HvyWSbSVC0EBz9koSJDKkrXgAg4ccjRuuiUpgH5MUUwsJ8+hKgCb80PxUV6wrA0209/qA/A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
+ by BL1PR11MB5980.namprd11.prod.outlook.com (2603:10b6:208:387::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.20; Thu, 13 Jul
+ 2023 03:24:55 +0000
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::4f05:6b0b:dbc8:abbb]) by BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::4f05:6b0b:dbc8:abbb%7]) with mapi id 15.20.6588.024; Thu, 13 Jul 2023
+ 03:24:55 +0000
+From:   "Tian, Kevin" <kevin.tian@intel.com>
+To:     Baolu Lu <baolu.lu@linux.intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>
+CC:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        "Robin Murphy" <robin.murphy@arm.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "Jean-Philippe Brucker" <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 9/9] iommu: Use fault cookie to store iopf_param
+Thread-Topic: [PATCH 9/9] iommu: Use fault cookie to store iopf_param
+Thread-Index: AQHZs5ROZ0DTU24O6Ue9hKGIoQNDRq+1H7OAgABWtACAAZVBwA==
+Date:   Thu, 13 Jul 2023 03:24:55 +0000
+Message-ID: <BN9PR11MB527640E6FBD5271E8AF9D59B8C37A@BN9PR11MB5276.namprd11.prod.outlook.com>
+References: <20230711010642.19707-1-baolu.lu@linux.intel.com>
+ <20230711010642.19707-10-baolu.lu@linux.intel.com>
+ <20230711150249.62917dad@jacob-builder>
+ <e26db44c-ec72-085d-13ee-597237ba2134@linux.intel.com>
+In-Reply-To: <e26db44c-ec72-085d-13ee-597237ba2134@linux.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|BL1PR11MB5980:EE_
+x-ms-office365-filtering-correlation-id: a12e9c09-b0e1-47c3-f547-08db8350baa4
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: s+fort7YUBWnxnimHWgRe4l/TXgEsX6hx0QoAc7pmsgpXH7aJJWAQyR8kBSFN17HqT7A+zMP+lKKz6F9SZm7Xj17UThDB+b61HzHVQ1DC+hLn/Bbj+vSQmgZhr8/rDQOcT3okK7G3joWdgcX4ZX45FBd41qH0jPTf1jyZVmC2zBbksjGlW3z5m7XlihmfnPCSszGNS8G939uxEL47SJxbwPKIq60trCBnXz6wSGqC3pQHRuc/N6j6OeQHJztzVihDsT8d4bF3ggFVw1mMXkF0i9yRo5V6kK1aYTCwpsjliB43mBxhowm5qfYUcTYAstMF9IeROBPEYtcuUpeosI8RB0FibH3dJ8a+FkRN+D9yL+ph1Q5rcRNgZWrxdQAKY19kPMYkFcSHuyWq3ilavj1uBNWx2wofhWSxq8K4VC+KiQdAzOF07053x1vLA/lh0t+p4aSzk3x3pPthyokGuCujmGVkBvPrX7LF9bVk7f1ygHX2ncVrCn7KGBczGVjTpEoC39gQ7wPKgXnTEmKqnZiyOBbSdnDFkrIwR1w/P2bS+/5qmTOzBFbfnkGJFRB2Es1BA3c3WqWlseFMATRYp4QLfILKb5Kcfchjlbqh/e9jf+rOkpsk48NhWOK7cH2Ju3f
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(376002)(39860400002)(366004)(396003)(136003)(346002)(451199021)(186003)(86362001)(53546011)(76116006)(66446008)(64756008)(66946007)(66556008)(66476007)(316002)(83380400001)(4326008)(9686003)(26005)(33656002)(6506007)(478600001)(82960400001)(2906002)(7696005)(122000001)(4744005)(54906003)(110136005)(71200400001)(55016003)(38070700005)(38100700002)(41300700001)(7416002)(52536014)(8676002)(8936002)(5660300002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Q25JZ3lHM2dpNUhFQm9pblBvdjNMYWh3elFZTEdvNG9tQlIyajJSeXdTNHIv?=
+ =?utf-8?B?UEpoWkdVM3pFbCtPNHJCajkvL2ZnTFBTeHVJQkFlZnhVbGlaTVhtTmtwc3h0?=
+ =?utf-8?B?Zml0R3B4aWU4QitCWnh6TEl6UExpdTBHc3RQUHpybDcxOFVBRWhld2lBOG5V?=
+ =?utf-8?B?QWUvZEZDR01yeWdmbnhpd1VyRlorRFY2WUplQkx2VXcxSXJFSzd0WWlwdWE1?=
+ =?utf-8?B?ODBJbzV0SGZWS1BTYXZhenVjaGxoMldkeklqRXR5WC9XS0NNNUJ1Q2gvWG1V?=
+ =?utf-8?B?WHNiN2VPUTVxckpadVR6LzRPRWRUbVhqQm1MYnduUEQybFA5V1VBRnJza21L?=
+ =?utf-8?B?MG9kN0kwbzdCYXFOTU9BZktLV2V5cXVRVVhmV1JMeWFvSGlZZ3BCeVlhTy9u?=
+ =?utf-8?B?K0ltcndiVVRDSEIwWE5xM1RDTzRJNjNnZld0MzFjT1BVWWtuamNxN1JqRnBN?=
+ =?utf-8?B?bjBtVjkxRkFJQmJBOUlhTTlJckdPS1BTUTVEWmhHOWo1cTZ2RWc0cEFUekJz?=
+ =?utf-8?B?a3VoVnFlYmxKL1hKcm15dkJnZVI0ays2SXNsSkFHcXBRdVFTOEQwT2xRNXp6?=
+ =?utf-8?B?alZLS0pNN2N1cENNT0kvVzRKQzV0WmVNRy9zSmpQRXRUbUxKamRsbnFFN3A0?=
+ =?utf-8?B?YU5Ba09UNmZDeHQ5ZWxKVkNBOUtmNUdhMTROcmFWNzRzZ1c4SVhGL20yUU1t?=
+ =?utf-8?B?MkM1WCs5bnd2aktWbHQ2OTNOZmZyb3c2c1o0cTEwM2wzeUNac3ZnNms3THRr?=
+ =?utf-8?B?VXJTNFU4K3VGKzMzdEpvNytlWWZVSG1iTHlqSWdUS2hvcjhUaHo1L1pUMG1U?=
+ =?utf-8?B?YlB2MHdxS0FVdXNRcURlNXp1cElSTjd4ZlY1R2ZQa1FBcWR6cURwREg5cUVr?=
+ =?utf-8?B?TUpWeHdXbVhaZjNzUitPSklCWWNGdmEzZ0RTYlRBT2hFcytxa0ptaEk3bVpv?=
+ =?utf-8?B?MHlwdWJ6ZERLUUd1YnJBZm9RdjlkT0Y0OGF2WFI3bStITWhSMG1rekJYNWc5?=
+ =?utf-8?B?TjcxeE8wMm5SNWJES1Y3NUNRM2dweDc3WWlmZHVwTzhGZi9vVHhOV1h0WHVL?=
+ =?utf-8?B?Q2pFeW5ZREJRaFZSajFadCsyZUJ0NHBlZzl1dHVIdlhDYmN4QS9welNjZjBP?=
+ =?utf-8?B?VjlmRkIrYVVDaHlKTmEyZzV1bWc3RmZWWXMrdjQ4L1VGSnd2MG1jalhnYUx0?=
+ =?utf-8?B?eEk2RlhGU1JvK2tWQ016SkwrVUZZOUt6L0pXd0pPNFc3WDQ5aXRwbG4zNXh4?=
+ =?utf-8?B?Z0VCVGJsdU5wdExBRElqVDAyUHpiQ0Z4UlpsYSt3SGV3eWtXek14MDYxR24r?=
+ =?utf-8?B?UUZyMFUyRi9tdm9uMUI3UjI0WG9IRzFMaWZTb1hxZWwvbW9ycXp0TTB6Snor?=
+ =?utf-8?B?Y0J6RzJkSmgxcFd2bG05emtLYkNuSmtHZFY4b2JMdzlrWjViSHVNcERzLzlF?=
+ =?utf-8?B?QTgxdzFRZjI3aXowZDJ5Sll4ZDdNVzY3dlhrN1pYdG5ROXdKNEQzQ1V2OFZ4?=
+ =?utf-8?B?Y3NpbkVCY3pRWUhTMjNaWFNIWFo0cmprRnlxUW1tT1VOUXErQ21qOWNaU2E5?=
+ =?utf-8?B?Ym5rb2tyR1FCRUZmTjdwQ091OTBNaythcFp2N1k1RUVXMUZSNnkzL0d4L3FB?=
+ =?utf-8?B?bTlIcldPTDZ3WGNodGRqYWZlN1JFZUpmQjh1Q1dQMVNsbkwxSm1RUm1Ybmhx?=
+ =?utf-8?B?cmxJb0kvZTg5Nk9MOWplTFhhYVY2WEZKTXNOWm1YeU4wNUQwRHlvdWdKa04x?=
+ =?utf-8?B?ZWtRSlZ2YUd1aE5SVzdXUEo3RG5yckNFNTZpK1Q3U3BEaHJvVTZoVTVBVGkx?=
+ =?utf-8?B?dzh6VkxBcytMOE9oRUVPRGtEQktPSzVrMDNMaTVZazEzSFZ4MFZlM2cwV3Vz?=
+ =?utf-8?B?V2ozVGVONElqU1hOVndGMEZlRFdZNlpHcklUOXpFLzY2bWRXQTcxVkErcW5D?=
+ =?utf-8?B?VUVvUFJTRi8vOEVDQWlsQ25HWlJWa2pyV2RRMjhOdXNCT21CZWNuMzVIREN3?=
+ =?utf-8?B?dFcrRkF1YnJwdTJHdjhuQWhsckhHVllPaVNhdWNUZXducFBQeUkzMzNmZVBn?=
+ =?utf-8?B?T1hlWG5SUjVlRzB4bkZoTUxqbDhoejlsRWx2dWk3VFliVVk0SDJ2UU9UaXV2?=
+ =?utf-8?Q?IvN9nySI8mFvyMrXmwgcNUn4E?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8CxbSMDbq9kz6MrAA--.8174S4
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj93XoWxKFykCr15Gr4xtF1fXFW3CFX_yoW7GFyxpF
-        WUGas0qr48XFW5WrZakw4DZFyayr93X3yDtF4fWa97AFW5uw4UKF1FyFnrZF1jk34UJF1Y
-        yF45XFy8uFn8AagCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUU9Fb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-        xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
-        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
-        tVWrXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7V
-        AKI48JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v2
-        6r1Y6r17MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17
-        CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r4j6ryUMIIF
-        0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIx
-        AIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2
-        KfnxnUUI43ZEXa7IU8EeHDUUUUU==
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a12e9c09-b0e1-47c3-f547-08db8350baa4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Jul 2023 03:24:55.4639
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: dSNfYNNASVm50vEWa2D9AWTmiGglRQ9J3qtkK/b2e+H3k7C1FiKv8uLpmWMB/o3Bd0tbHt6954B8L9XyTfURKw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR11MB5980
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,152 +171,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some LoongArch systems have only one eiointc node such as 3A5000/2K2000
-and qemu virt-machine. If there is only one eiointc node, all cpus can
-access eiointc registers directly; if there is multiple eiointc nodes, each
-cpu can only access eiointc belonging to specified node group, so anysend
-or ipi needs to be used to configure irq routing. IRQ routing is simple on
-such systems with one node, hacking method like anysend is not necessary.
-
-This patch provides simpile IRQ routing method for systems with one eiointc
-node, and is tested on 3A5000 board and qemu virt-machine.
-
-Signed-off-by: Bibo Mao <maobibo@loongson.cn>
----
- drivers/irqchip/irq-loongson-eiointc.c | 80 ++++++++++++++++++++++++--
- 1 file changed, 74 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/irqchip/irq-loongson-eiointc.c b/drivers/irqchip/irq-loongson-eiointc.c
-index 603d323b8f8b..e6be9d6a18c8 100644
---- a/drivers/irqchip/irq-loongson-eiointc.c
-+++ b/drivers/irqchip/irq-loongson-eiointc.c
-@@ -127,6 +127,48 @@ static int eiointc_set_irq_affinity(struct irq_data *d, const struct cpumask *af
- 	return IRQ_SET_MASK_OK;
- }
- 
-+static int eiointc_single_set_irq_affinity(struct irq_data *d,
-+				const struct cpumask *affinity, bool force)
-+{
-+	unsigned int cpu;
-+	unsigned long flags;
-+	uint32_t vector, regaddr, data, coremap;
-+	struct cpumask mask;
-+	struct eiointc_priv *priv = d->domain->host_data;
-+
-+	cpumask_and(&mask, affinity, cpu_online_mask);
-+	cpumask_and(&mask, &mask, &priv->cpuspan_map);
-+	if (cpumask_empty(&mask))
-+		return -EINVAL;
-+
-+	cpu = cpumask_first(&mask);
-+	vector = d->hwirq;
-+	regaddr = EIOINTC_REG_ENABLE + ((vector >> 5) << 2);
-+	data = ~BIT(vector & 0x1F);
-+	coremap = BIT(cpu_logical_map(cpu) % CORES_PER_EIO_NODE);
-+
-+	/*
-+	 * simplify for platform with only one eiointc node
-+	 * access eiointc registers directly rather than
-+	 * use any_send method here
-+	 */
-+	raw_spin_lock_irqsave(&affinity_lock, flags);
-+	iocsr_write32(EIOINTC_ALL_ENABLE & data, regaddr);
-+	/*
-+	 * get irq route info for continuous 4 vectors
-+	 * and set affinity for specified vector
-+	 */
-+	data = iocsr_read32(EIOINTC_REG_ROUTE + (vector & ~3));
-+	data &=  ~(0xff << ((vector & 3) * 8));
-+	data |= coremap << ((vector & 3) * 8);
-+	iocsr_write32(data, EIOINTC_REG_ROUTE + (vector & ~3));
-+	iocsr_write32(EIOINTC_ALL_ENABLE, regaddr);
-+	raw_spin_unlock_irqrestore(&affinity_lock, flags);
-+
-+	irq_data_update_effective_affinity(d, cpumask_of(cpu));
-+	return IRQ_SET_MASK_OK;
-+}
-+
- static int eiointc_index(int node)
- {
- 	int i;
-@@ -238,22 +280,39 @@ static struct irq_chip eiointc_irq_chip = {
- 	.irq_set_affinity	= eiointc_set_irq_affinity,
- };
- 
-+static struct irq_chip eiointc_irq_chipi_single = {
-+	.name			= "EIOINTC-S",
-+	.irq_ack		= eiointc_ack_irq,
-+	.irq_mask		= eiointc_mask_irq,
-+	.irq_unmask		= eiointc_unmask_irq,
-+#ifdef CONFIG_SMP
-+	.irq_set_affinity       = eiointc_single_set_irq_affinity,
-+#endif
-+};
-+
- static int eiointc_domain_alloc(struct irq_domain *domain, unsigned int virq,
- 				unsigned int nr_irqs, void *arg)
- {
- 	int ret;
- 	unsigned int i, type;
- 	unsigned long hwirq = 0;
--	struct eiointc *priv = domain->host_data;
-+	struct eiointc_priv *priv = domain->host_data;
-+	struct irq_chip *chip;
- 
- 	ret = irq_domain_translate_onecell(domain, arg, &hwirq, &type);
- 	if (ret)
- 		return ret;
- 
--	for (i = 0; i < nr_irqs; i++) {
--		irq_domain_set_info(domain, virq + i, hwirq + i, &eiointc_irq_chip,
-+	/*
-+	 * use simple irq routing method on single eiointc node
-+	 */
-+	if ((nr_pics == 1) && (nodes_weight(priv->node_map) == 1))
-+		chip = &eiointc_irq_chipi_single;
-+	else
-+		chip = &eiointc_irq_chip;
-+	for (i = 0; i < nr_irqs; i++)
-+		irq_domain_set_info(domain, virq + i, hwirq + i, chip,
- 					priv, handle_edge_irq, NULL, NULL);
--	}
- 
- 	return 0;
- }
-@@ -310,6 +369,7 @@ static void eiointc_resume(void)
- 	int i, j;
- 	struct irq_desc *desc;
- 	struct irq_data *irq_data;
-+	struct irq_chip *chip;
- 
- 	eiointc_router_init(0);
- 
-@@ -319,7 +379,8 @@ static void eiointc_resume(void)
- 			if (desc && desc->handle_irq && desc->handle_irq != handle_bad_irq) {
- 				raw_spin_lock(&desc->lock);
- 				irq_data = irq_domain_get_irq_data(eiointc_priv[i]->eiointc_domain, irq_desc_get_irq(desc));
--				eiointc_set_irq_affinity(irq_data, irq_data->common->affinity, 0);
-+				chip = irq_data_get_irq_chip(irq_data);
-+				chip->irq_set_affinity(irq_data, irq_data->common->affinity, 0);
- 				raw_spin_unlock(&desc->lock);
- 			}
- 		}
-@@ -497,7 +558,14 @@ static int __init eiointc_of_init(struct device_node *of_node,
- 	priv->node = 0;
- 	priv->domain_handle = of_node_to_fwnode(of_node);
- 
--	ret = eiointc_init(priv, parent_irq, 0);
-+	/*
-+	 * 2k0500 and 2k2000 has only one eiointc node
-+	 * set nodemap as 1 for simple irq routing
-+	 *
-+	 * Fixme: what about future embedded boards with more than 4 cpus?
-+	 * nodemap and node need be added in dts like acpi table
-+	 */
-+	ret = eiointc_init(priv, parent_irq, 1);
- 	if (ret < 0)
- 		goto out_free_priv;
- 
--- 
-2.27.0
-
+PiBGcm9tOiBCYW9sdSBMdSA8YmFvbHUubHVAbGludXguaW50ZWwuY29tPg0KPiBTZW50OiBXZWRu
+ZXNkYXksIEp1bHkgMTIsIDIwMjMgMTE6MTMgQU0NCj4gDQo+IE9uIDIwMjMvNy8xMiA2OjAyLCBK
+YWNvYiBQYW4gd3JvdGU6DQo+ID4gT24gVHVlLCAxMSBKdWwgMjAyMyAwOTowNjo0MiArMDgwMCwg
+THUgQmFvbHU8YmFvbHUubHVAbGludXguaW50ZWwuY29tPg0KPiA+IHdyb3RlOg0KPiA+DQo+ID4+
+IEBAIC0xNTgsNyArMTU4LDcgQEAgaW50IGlvbW11X3F1ZXVlX2lvcGYoc3RydWN0IGlvbW11X2Zh
+dWx0ICpmYXVsdCwNCj4gPj4gc3RydWN0IGRldmljZSAqZGV2KQ0KPiA+PiAgIAkgKiBBcyBsb25n
+IGFzIHdlJ3JlIGhvbGRpbmcgcGFyYW0tPmxvY2ssIHRoZSBxdWV1ZSBjYW4ndCBiZQ0KPiA+PiB1
+bmxpbmtlZA0KPiA+PiAgIAkgKiBmcm9tIHRoZSBkZXZpY2UgYW5kIHRoZXJlZm9yZSBjYW5ub3Qg
+ZGlzYXBwZWFyLg0KPiA+PiAgIAkgKi8NCj4gPj4gLQlpb3BmX3BhcmFtID0gcGFyYW0tPmlvcGZf
+cGFyYW07DQo+ID4+ICsJaW9wZl9wYXJhbSA9IGlvbW11X2dldF9kZXZpY2VfZmF1bHRfY29va2ll
+KGRldiwgMCk7DQo+ID4gSSBhbSBub3Qgc3VyZSBJIHVuZGVyc3RhbmQgaG93IGRvZXMgaXQga25v
+dyB0aGUgY29va2llIHR5cGUgaXMgaW9wZl9wYXJhbQ0KPiA+IGZvciBQQVNJRCAwPw0KPiA+DQo+
+ID4gQmV0d2VlbiBJT1BGIGFuZCBJT01NVUZEIHVzZSBvZiB0aGUgY29va2llLCBjb29raWUgdHlw
+ZXMgYXJlIGRpZmZlcmVudCwNCj4gPiByaWdodD8NCj4gPg0KPiANCj4gVGhlIGZhdWx0IGNvb2tp
+ZSBpcyBtYW5hZ2VkIGJ5IHRoZSBjb2RlIHRoYXQgZGVsaXZlcnMgb3IgaGFuZGxlcyB0aGUNCj4g
+ZmF1bHRzLiBUaGUgc3ZhIGFuZCBJT01NVUZEIHBhdGhzIGFyZSBleGNsdXNpdmUuDQo+IA0KDQp3
+aGF0IGFib3V0IHNpb3Y/IEEgc2lvdi1jYXBhYmxlIGRldmljZSBjYW4gc3VwcG9ydCBzdmEgYW5k
+IGlvbW11ZmQNCnNpbXVsdGFuZW91c2x5Lg0K
