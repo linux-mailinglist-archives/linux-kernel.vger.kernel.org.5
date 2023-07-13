@@ -2,74 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99C1E751694
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 04:58:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E45F751696
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 05:02:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233481AbjGMC6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 22:58:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35158 "EHLO
+        id S232548AbjGMDCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 23:02:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232553AbjGMC6j (ORCPT
+        with ESMTP id S231298AbjGMDCV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 22:58:39 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F8B71BD5
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 19:58:37 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-3fbf1b82d9cso1225635e9.2
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 19:58:37 -0700 (PDT)
+        Wed, 12 Jul 2023 23:02:21 -0400
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54305172C
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 20:02:19 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id d75a77b69052e-4036bd4fff1so108491cf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 20:02:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google; t=1689217116; x=1691809116;
+        d=google.com; s=20221208; t=1689217338; x=1691809338;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=IecoBnL3XyIII1YUKthdlwZVWgMfN+WSwTXEvMXpAAc=;
-        b=bLR9ff/iU7Qh+jYE5Hn0f3gU2ARjNAMtUeyivM+ysA2pnw47A422RZCp0PF5iVK3HY
-         G8/1qL75M5iMrTsnguDtEph+B5emY4Jkw0NU9RQCPy1XixnI0qlo58yx352pmzdGbshz
-         kWEzy2c/1gjGeYvjAvlFu8SVweO8HUAtitkjk=
+        bh=zIFkxB9A0AOt1dYmcYEHChkUZQD7NhokkZtrgkit9BY=;
+        b=g+zVxbL2z6mybLHi+2HTL/WIKOIaFujr2zSdTzumu2druuVWj2hZRlFkUIaOWWNDha
+         KZtni230KYTxUEd2FaScZvv8WFgOaAhNnV0h6dUBTMmgSqIE14nzRchRaQ8dBsfa07F7
+         W7upSvVEbdmjxVA7bCZij7EEV8DahImSa8H1K6hNVZDCb1yQTFmhcyRkmc/whr+5pxIb
+         VIo92thFZ14Y8NZzHKKbVMl6UBsbfvcNMyBISOJjhb0VRCT/Fiy1YBV/XtFJLyo95q8G
+         bhQY8h1fYoVasywlnd4P0r9Db7PaY2dS0ksn1aiDWwb7rV3c+mGhCR1iyyH41FS7fDR9
+         7kPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689217116; x=1691809116;
+        d=1e100.net; s=20221208; t=1689217338; x=1691809338;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=IecoBnL3XyIII1YUKthdlwZVWgMfN+WSwTXEvMXpAAc=;
-        b=ZGLNJQypzlW1XAQh3z1A4FBCJDAkFvZHZ2yrxUA8cjsjAB3NsMZMBs166ouB57NArr
-         6cHjf6ne1WvZ9uGjtq6qquutpA1X1azke4eVTiB3BeDxCNWC45I9l6af7OINlkw7Kusz
-         qvdZh+5jm49JGVavjj4pNTEXGUrHhQWjJmVkjUU4S73aHqYzYV4zSFq+M32dmQ1vSkS8
-         fgiPb5Jd9QaUFEhDM0N8hJFL9LutIDx5lItScM2T2IMn1/euTnHb4U8WQxE5bR8O6Swt
-         Q0m6t2EksN602TV29MoQJuu4nEbP0I4CTyDcyw4sQL5rs69gJsBs1hhIDjOs6VrH+VE2
-         tuyQ==
-X-Gm-Message-State: ABy/qLbEMXzOCiKXFIHL6i6fRZE84rXcOIbd7hlcgLMtAiWysPBiJtOr
-        McwTY1b8S+JY5H1vQiiZ2hi7RxoF+VSijrpD5fQcpA==
-X-Google-Smtp-Source: APBJJlGVhS6tKsbr3XIES5awjUbaNGuOx7Qq542j4rQlwD5LnuxNB+cbv0XEii9+a7gRE4k1BZmvKCEvi4y3QQ/+xs0=
-X-Received: by 2002:adf:eeca:0:b0:314:183f:7ac0 with SMTP id
- a10-20020adfeeca000000b00314183f7ac0mr204705wrp.43.1689217115974; Wed, 12 Jul
- 2023 19:58:35 -0700 (PDT)
+        bh=zIFkxB9A0AOt1dYmcYEHChkUZQD7NhokkZtrgkit9BY=;
+        b=PfCZenQrjl0CgeElzdxYBWbTykwRTngTuKDFZbCt0NNU79ohX3h3a+JgVIrWXpXZuW
+         ITbdBCbCnuNQUF4gAMYqOtiJulRxHBYuIAPBEcYRRJ+cZlTIhZcJCghvMn2BDwvfDt9Q
+         B8YNYuG7yL833ICgfOrKiu+WJFNP3mJrLUmnKPQW/GCjCMwE1NC30cFOYRV2BIfmuY+c
+         3/lt7upvSg0utF4yQB6XfDMX4ByDt4Felo01Iro/wTOAb0ZMlP5176DdAcwJqypODfkv
+         yi+D7A3W5OR26QGuR8DUdx2IM+zbJweSPSDbWaQ0yzniIOxtisk4FhvIWoboW+zlspH1
+         A4og==
+X-Gm-Message-State: ABy/qLaLn2+21z4zooRUtyDO4kBoBlwt3zooQtjJs9K676fqIti5ZyCD
+        /d0mh6idmfmtSkE0rVIN/ojQhMMu9B35J4kxp54GSw==
+X-Google-Smtp-Source: APBJJlG8TaltLxKm9J/vUdjmovKCz8knWSknq9x+hEMuJFHTC9iHbr6YIxHJ/dMRzFqyM5cbmshvaYQGamRnII3hpns=
+X-Received: by 2002:ac8:5bd1:0:b0:3f8:1db6:201c with SMTP id
+ b17-20020ac85bd1000000b003f81db6201cmr398644qtb.13.1689217338380; Wed, 12 Jul
+ 2023 20:02:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <ZK9ZiNMsJX8+1F3N@debian.debian> <CACGkMEsy+dFK+BnTg_9K59VX-PzHW_fpwY3SRpUxg-MRyD5HWA@mail.gmail.com>
-In-Reply-To: <CACGkMEsy+dFK+BnTg_9K59VX-PzHW_fpwY3SRpUxg-MRyD5HWA@mail.gmail.com>
-From:   Yan Zhai <yan@cloudflare.com>
-Date:   Wed, 12 Jul 2023 21:58:25 -0500
-Message-ID: <CAO3-PboQ1WL4wu+znnrF4kEdNnx42xPNJ_+Oc88bEejW2J-A+Q@mail.gmail.com>
-Subject: Re: [PATCH net] gso: fix GSO_DODGY bit handling for related protocols
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     "open list:NETWORKING [TCP]" <netdev@vger.kernel.org>,
-        kernel-team@cloudflare.com, Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        Xin Long <lucien.xin@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Andrew Melnychenko <andrew@daynix.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:SCTP PROTOCOL" <linux-sctp@vger.kernel.org>
+References: <20230712083037.4081444-1-tmricht@linux.ibm.com> <20230712083037.4081444-2-tmricht@linux.ibm.com>
+In-Reply-To: <20230712083037.4081444-2-tmricht@linux.ibm.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 12 Jul 2023 20:02:07 -0700
+Message-ID: <CAP-5=fW3M-RaOF=3wBzyimc1oZwJ9cPndRsvVs0fG9=B+D0FoQ@mail.gmail.com>
+Subject: Re: [PATCH] perf build: Fix broken feature check for clang due to C++
+ standard and changed library packaging
+To:     Thomas Richter <tmricht@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        acme@kernel.org, wangnan0@huawei.com, jolsa@kernel.org,
+        svens@linux.ibm.com, gor@linux.ibm.com, sumanthk@linux.ibm.com,
+        hca@linux.ibm.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,186 +73,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 9:11=E2=80=AFPM Jason Wang <jasowang@redhat.com> wr=
-ote:
+On Wed, Jul 12, 2023 at 1:35=E2=80=AFAM Thomas Richter <tmricht@linux.ibm.c=
+om> wrote:
 >
-> On Thu, Jul 13, 2023 at 9:55=E2=80=AFAM Yan Zhai <yan@cloudflare.com> wro=
-te:
-> >
-> > SKB_GSO_DODGY bit indicates a GSO packet comes from an untrusted source=
-.
-> > The canonical way is to recompute the gso_segs to avoid device driver
-> > issues. Afterwards, the DODGY bit can be removed to avoid re-check at t=
-he
-> > egress of later devices, e.g. packets can egress to a vlan device backe=
-d
-> > by a real NIC.
-> >
-> > Commit 1fd54773c267 ("udp: allow header check for dodgy GSO_UDP_L4
-> > packets.") checks DODGY bit for UDP, but for packets that can be fed
-> > directly to the device after gso_segs reset, it actually falls through
-> > to fragmentation [1].
-> >
-> > Commit 90017accff61 ("sctp: Add GSO support") and commit 3820c3f3e417
-> > ("[TCP]: Reset gso_segs if packet is dodgy") both didn't remove the DOD=
-GY
-> > bit after recomputing gso_segs.
+> Perf build auto-detects features and packages already installed
+> for its build. This is done in directory tools/build/feature. This
+> directory contains small sample programs. When they successfully
+> compile the necessary prereqs in form of libraries and header
+> files are present.
 >
-> If we try to fix two issues, we'd better use separate patches.
+> Such a check is also done for clang. And this check fails.
 >
-> >
-> > This change fixes the GSO_UDP_L4 handling case, and remove the DODGY bi=
-t
-> > at other places.
-> >
-> > Fixes: 90017accff61 ("sctp: Add GSO support")
-> > Fixes: 3820c3f3e417 ("[TCP]: Reset gso_segs if packet is dodgy")
-> > Fixes: 1fd54773c267 ("udp: allow header check for dodgy GSO_UDP_L4 pack=
-ets.")
-> > Signed-off-by: Yan Zhai <yan@cloudflare.com>
-> >
-> > ---
-> > [1]:
-> > https://lore.kernel.org/all/CAJPywTKDdjtwkLVUW6LRA2FU912qcDmQOQGt2WaDo2=
-8KzYDg+A@mail.gmail.com/
-> >
-> > ---
-> >  net/ipv4/tcp_offload.c |  1 +
-> >  net/ipv4/udp_offload.c | 19 +++++++++++++++----
-> >  net/ipv6/udp_offload.c | 19 +++++++++++++++----
-> >  net/sctp/offload.c     |  2 ++
-> >  4 files changed, 33 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/net/ipv4/tcp_offload.c b/net/ipv4/tcp_offload.c
-> > index 8311c38267b5..f9b93708c22e 100644
-> > --- a/net/ipv4/tcp_offload.c
-> > +++ b/net/ipv4/tcp_offload.c
-> > @@ -87,6 +87,7 @@ struct sk_buff *tcp_gso_segment(struct sk_buff *skb,
-> >                 /* Packet is from an untrusted source, reset gso_segs. =
-*/
-> >
-> >                 skb_shinfo(skb)->gso_segs =3D DIV_ROUND_UP(skb->len, ms=
-s);
-> > +               skb_shinfo(skb)->gso_type &=3D ~SKB_GSO_DODGY;
-> >
-> >                 segs =3D NULL;
-> >                 goto out;
-> > diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
-> > index 75aa4de5b731..bd29cf19bb6b 100644
-> > --- a/net/ipv4/udp_offload.c
-> > +++ b/net/ipv4/udp_offload.c
-> > @@ -388,11 +388,22 @@ static struct sk_buff *udp4_ufo_fragment(struct s=
-k_buff *skb,
-> >         if (!pskb_may_pull(skb, sizeof(struct udphdr)))
-> >                 goto out;
-> >
-> > -       if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4 &&
-> > -           !skb_gso_ok(skb, features | NETIF_F_GSO_ROBUST))
-> > -               return __udp_gso_segment(skb, features, false);
-> > -
-> >         mss =3D skb_shinfo(skb)->gso_size;
-> > +
-> > +       if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4) {
-> > +               if (skb_gso_ok(skb, features | NETIF_F_GSO_ROBUST)) {
-> > +                       /* Packet is from an untrusted source, reset ac=
-tual gso_segs */
-> > +                       skb_shinfo(skb)->gso_segs =3D DIV_ROUND_UP(skb-=
->len - sizeof(*uh),
-> > +                                                                mss);
-> > +                       skb_shinfo(skb)->gso_type &=3D ~SKB_GSO_DODGY;
-> > +
-> > +                       segs =3D NULL;
-> > +                       goto out;
-> > +               } else {
-> > +                       return __udp_gso_segment(skb, features, false);
+> Fix this and update to the latest C++ standard and use the
+> new library provided by clang (which contains new packaging)
+> see this link for reference:
+>  https://fedoraproject.org/wiki/Changes/Stop-Shipping-Individual-Componen=
+t-Libraries-In-clang-lib-Package
 >
-> I think it's better and cleaner to move those changes in
-> __udp_gso_segment() as Willem suggests.
+> Output before:
+>  # rm -f ./test-clang.bin; make test-clang.bin; ./test-clang.bin; \
+>         ll test-clang.make.output
+>  g++  -MD -Wall -Werror -o test-clang.bin test-clang.cpp \
+>                 > test-clang.make.output 2>&1 -std=3Dgnu++14 \
+>         -I/usr/include          \
+>         -L/usr/lib64            \
+>         -Wl,--start-group -lclangBasic -lclangDriver    \
+>           -lclangFrontend -lclangEdit -lclangLex        \
+>           -lclangAST -Wl,--end-group                    \
+>         -lLLVM-16       \
+>                         \
+>         > test-clang.make.output 2>&1
+>  make: *** [Makefile:356: test-clang.bin] Error 1
+>  -bash: ./test-clang.bin: No such file or directory
+>  -rw-r--r--. 1 root root 252041 Jul 12 09:56 test-clang.make.output
+>  #
 >
-> > +               }
-> > +       }
-> > +
-> >         if (unlikely(skb->len <=3D mss))
-> >                 goto out;
-> >
-> > diff --git a/net/ipv6/udp_offload.c b/net/ipv6/udp_offload.c
-> > index ad3b8726873e..6857d9f7bd06 100644
-> > --- a/net/ipv6/udp_offload.c
-> > +++ b/net/ipv6/udp_offload.c
-> > @@ -43,11 +43,22 @@ static struct sk_buff *udp6_ufo_fragment(struct sk_=
-buff *skb,
-> >                 if (!pskb_may_pull(skb, sizeof(struct udphdr)))
-> >                         goto out;
-> >
-> > -               if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4 &&
-> > -                   !skb_gso_ok(skb, features | NETIF_F_GSO_ROBUST))
-> > -                       return __udp_gso_segment(skb, features, true);
-> > -
-> >                 mss =3D skb_shinfo(skb)->gso_size;
-> > +
-> > +               if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4) {
-> > +                       if (skb_gso_ok(skb, features | NETIF_F_GSO_ROBU=
-ST)) {
-> > +                               /* Packet is from an untrusted source, =
-reset actual gso_segs */
-> > +                               skb_shinfo(skb)->gso_segs =3D DIV_ROUND=
-_UP(skb->len - sizeof(*uh),
-> > +                                                                      =
-  mss);
-> > +                               skb_shinfo(skb)->gso_type &=3D ~SKB_GSO=
-_DODGY;
+> File test-clang.make.output contains many lines of unreferenced
+> symbols.
 >
-> Any reason you want to remove the DODGY here? Is this an optimization?
-> We will lose the chance to recognize/validate it elsewhere.
+> Output after:
+>  # rm -f ./test-clang.bin; make test-clang.bin; ./test-clang.bin; \
+>         cat test-clang.make.output
+>  g++  -MD -Wall -Werror -o test-clang.bin test-clang.cpp \
+>          > test-clang.make.output 2>&1 -std=3Dgnu++17     \
+>         -I/usr/include          \
+>         -L/usr/lib64            \
+>         -Wl,--start-group -lclang-cpp -Wl,--end-group   \
+>         -lLLVM-16       \
+>                         \
+>         > test-clang.make.output 2>&1
+>  #
 >
-It is intended as a small optimization. And this is in fact the piece
-I am not fully confident about: after validating the gso_segs at a
-trusted location (i.e. assuming the kernel is the trusted computing
-base), do we need to validate it somewhere else? For example, in our
-scenario, we have a tun/tap device in a net namespace, so the packet
-going out will enter from the tap, get forwarded through an veth, and
-then a vlan backed by a real ethernet interface. If the bit is carried
-over, then at each egress of these devices, we need to enter the GSO
-code, which feels pretty redundant as long as the packet does not
-leave kernel space. WDYT?
+> Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
 
-thanks
+Tested-by: Ian Rogers <irogers@google.com>
 
+Thanks!
+Ian
 
-> Thanks
+> ---
+>  tools/build/feature/Makefile | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
 >
-> > +
-> > +                               segs =3D NULL;
-> > +                               goto out;
-> > +                       } else {
-> > +                               return __udp_gso_segment(skb, features,=
- true);
-> > +                       }
-> > +               }
-> > +
-> >                 if (unlikely(skb->len <=3D mss))
-> >                         goto out;
-> >
-> > diff --git a/net/sctp/offload.c b/net/sctp/offload.c
-> > index 502095173d88..3d2b44db0d42 100644
-> > --- a/net/sctp/offload.c
-> > +++ b/net/sctp/offload.c
-> > @@ -65,6 +65,8 @@ static struct sk_buff *sctp_gso_segment(struct sk_buf=
-f *skb,
-> >                 skb_walk_frags(skb, frag_iter)
-> >                         pinfo->gso_segs++;
-> >
-> > +               pinfo->gso_type &=3D ~SKB_GSO_DODGY;
-> > +
-> >                 segs =3D NULL;
-> >                 goto out;
-> >         }
-> > --
-> > 2.30.2
-> >
+> diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
+> index f8db69654791..0b4a6e43c5cc 100644
+> --- a/tools/build/feature/Makefile
+> +++ b/tools/build/feature/Makefile
+> @@ -353,12 +353,10 @@ $(OUTPUT)test-llvm-version.bin:
+>                 > $(@:.bin=3D.make.output) 2>&1
 >
-
-
---=20
-
-Yan
+>  $(OUTPUT)test-clang.bin:
+> -       $(BUILDXX) -std=3Dgnu++14                                 \
+> +       $(BUILDXX) -std=3Dgnu++17                                 \
+>                 -I$(shell $(LLVM_CONFIG) --includedir)          \
+>                 -L$(shell $(LLVM_CONFIG) --libdir)              \
+> -               -Wl,--start-group -lclangBasic -lclangDriver    \
+> -                 -lclangFrontend -lclangEdit -lclangLex        \
+> -                 -lclangAST -Wl,--end-group                    \
+> +               -Wl,--start-group -lclang-cpp -Wl,--end-group   \
+>                 $(shell $(LLVM_CONFIG) --libs Core option)      \
+>                 $(shell $(LLVM_CONFIG) --system-libs)           \
+>                 > $(@:.bin=3D.make.output) 2>&1
+> --
+> 2.41.0
+>
