@@ -2,142 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38568751689
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 04:57:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6419C75168D
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 04:57:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232815AbjGMC5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 22:57:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33962 "EHLO
+        id S233173AbjGMC5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 22:57:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231489AbjGMC5I (ORCPT
+        with ESMTP id S232992AbjGMC53 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 22:57:08 -0400
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2093.outbound.protection.outlook.com [40.107.255.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86B7819BE;
-        Wed, 12 Jul 2023 19:57:07 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nVSh7tQDeLw/xzloBWwov5BOkHbj891BtgO14ZkWamciCh3Cf1a/dFnGEw9Byo4npQeNowK1GWL3RRs4+vXhasLAykjyqOzeeZsxxcgmtoQRaV7qYqAgc8//ZSFxD85kchIUCC0mUoNa+dxGb2P0iSP8mT5J6/FDCJZRvKFMB76UMEgzP5IIlhEAlBbLs+JL+6qayVNlZua5tQ04uijEonlHJi5rfxdjx+CIjGSBuTwgNYTEAjeHHuDOalVsefjXBOX55fr7OB0IpLVeagTMjS1NVM0I0bPtY6Pm35CDFdj5WPg2n36qUllIbiJlr34pbqpTIfjV3ZfZbv0XSAGI0Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=X2yKxQC3vknxryB735YDLKGCaQcm763vg83m0YXmYTk=;
- b=Y5sBcYxC4fLhmxdv81aJo5p6Shgu1igNZjFuRo/7WYbDB6NLLlNq4+wkRkSZiH/qphqk/dTvMZdwT4p6K2Gs1lpbvcPaNFw3TiKDmWudGXHCnD6hV4LATdscVpF9MMHdfk/ELjgonHEFGKHLIxs92u8oxKyrOGxDvzTELQ9bmqNv5vNyK8voyFCFYnBen+biThzyTuKqR16z0UvTlZK9jg5E4xsyWJ9H1I57v9eAb/4TPdDLniHd9qm3dYPX+FH72N58sYvNhzM8lKDStUdy5U/9fOsZaM4rslz5PnOo8p3j5XTuVi/HCqGJwOJeUhv1OSDK9+KqrNK0UM1YN54z+A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=X2yKxQC3vknxryB735YDLKGCaQcm763vg83m0YXmYTk=;
- b=pi57ixCWoaCk1wUk4CJacEEz9smun3iHspf75mMSOvG1ywcLNWzA0YICSogz8BVrg/Xjltcj4A45ks0pNcC57VwM9nzqqig0TunSjLWEFqde/mvIxvNsxOfuHQtTvNXGHsOLU2AyUAwotv5L9WHEdd3cYvoq1gBlKP9vtmora/R7xB2tlybU/rbeVTYxG2EjqhKKNXVZcCgdFSD5mJQogVUe4FXKqiQhAr1JBa2wPVbGmq0216vnmB+yYFjGSBrubDZVBAKGOgVwixI54amAR6rxKf7wv+8fso6H/h4SB/RyPINKB/9OFFJWn8gg4JWqZNOfEH6PsLXv3XX/02J/wg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from SG2PR06MB5288.apcprd06.prod.outlook.com (2603:1096:4:1dc::9) by
- PUZPR06MB5519.apcprd06.prod.outlook.com (2603:1096:301:fc::13) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6588.20; Thu, 13 Jul 2023 02:57:03 +0000
-Received: from SG2PR06MB5288.apcprd06.prod.outlook.com
- ([fe80::f9b8:80b5:844e:f49a]) by SG2PR06MB5288.apcprd06.prod.outlook.com
- ([fe80::f9b8:80b5:844e:f49a%6]) with mapi id 15.20.6565.028; Thu, 13 Jul 2023
- 02:57:03 +0000
-From:   Minjie Du <duminjie@vivo.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Krishna Reddy <vdumpa@nvidia.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-tegra@vger.kernel.org (open list:TEGRA IOMMU DRIVERS),
-        iommu@lists.linux.dev (open list:IOMMU SUBSYSTEM),
-        linux-kernel@vger.kernel.org (open list)
-Cc:     opensource.kernel@vivo.com, Minjie Du <duminjie@vivo.com>
-Subject: [PATCH v2] iommu: remove redundant parameter check in tegra_smmu_debugfs_init()
-Date:   Thu, 13 Jul 2023 10:56:53 +0800
-Message-Id: <20230713025653.1540-1-duminjie@vivo.com>
-X-Mailer: git-send-email 2.39.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: TYAPR01CA0046.jpnprd01.prod.outlook.com
- (2603:1096:404:28::34) To SG2PR06MB5288.apcprd06.prod.outlook.com
- (2603:1096:4:1dc::9)
+        Wed, 12 Jul 2023 22:57:29 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3E8B2111
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 19:57:22 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4fb77f21c63so405667e87.2
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 19:57:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google; t=1689217041; x=1691809041;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pcUmUBG+buBnUUKxuWUBu0zne1uUM8qt3ZmnplNd4A0=;
+        b=Y9DJJuADk71eDXSadrloLIiCwbXwFq8kNypgpNrRju8dSohFo5Q2QT0ycfwAVeEi6Z
+         EsZpLzUm6hqJ3/+RD3KCEle4WDsUwsdzmXQ95Zpqf7WAf2Fck6khwamv5FB8iOzUdV0+
+         NQoDR0YmxBLKUJD360IuxaXZVju52JtbKkRPA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689217041; x=1691809041;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pcUmUBG+buBnUUKxuWUBu0zne1uUM8qt3ZmnplNd4A0=;
+        b=KjI0JDRTQlRmpBTri0u5GDgeh3BFes1VwNW6THFj+OIglgQR2mcOvcWdjLzYUgyr+X
+         59ypVhStWR21R/j10Mg9VKOL3cHmE4DYK/oFGaG1X2tYMH8QTDob2VSHwsRD0QfD2D5L
+         vgRgLjXzsHTdASn6RJBbPcVt2c2WFd3gz3Ly8AL5WKlltdg7vhI9xZ/U9ztGcJaa7NaE
+         pwwRT8K4TNQh1Np1Bkg1wquSgeKxN1efXElV0j1kaaRrKqqx26gPfkCn3Rzg6o0y2vbW
+         J5vO1q/MyTwDahb3X5u6M0HU3QmBc19mWZyXuMkbQmPfj0k06BBFvwVw3KAl/NbJv7pQ
+         6RqQ==
+X-Gm-Message-State: ABy/qLae7B6F/86uTcXmvDE9CpZNhU8lJj+1i/bkGkNTLdiEd9cze4HJ
+        aSGb8ZiGbrLo2llafcDSH9oBs8R+lVqu936AyKXj6Q==
+X-Google-Smtp-Source: APBJJlE+O7SBAT8v1uNDMsel9LXU+DtkEW7eASpe1Wa9Bu9QxDrdmQ7vy+KRfijZhAcIeSitIctrjmWQkiP4MSaT9wE=
+X-Received: by 2002:a05:6512:2315:b0:4f8:5cde:a44f with SMTP id
+ o21-20020a056512231500b004f85cdea44fmr127793lfu.10.1689217040774; Wed, 12 Jul
+ 2023 19:57:20 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SG2PR06MB5288:EE_|PUZPR06MB5519:EE_
-X-MS-Office365-Filtering-Correlation-Id: 69349346-66b0-494f-e595-08db834cd5fe
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Q7WdqSp6GrE9Kh4Gz7+aX7du6kdHes79TSvrV2e8PtEwIcunMn+9vVRARdgZeSCVkQOJcMmNUa6+DbN+OK3NuNLearQyQ5Ji7ETYB7PImE+icXu16ZYp/qx44bGkXGQrapanSGfQXRwRQQ2qLKhwLY3XTXtQ13wkREAatndnOqIRfchRZVcTbTl8KAIP1ghxJZPSsALfDg0EckLFQWfnAsCdNENncWgfB028nJpoORFKfUBXRvHgS3RTvRXypQEQdfzKw6XZE48NPtcYsKibLD9jDdCKQZvR4Ep3LL+ZLsfg7/axQHHls4RJnUgcrplRbfgq6PKNUbIP2Rce8xjpom6+RdBB6jIFU4ZM0YvjZy60fR9os3aTiz85FhZfxyKOpYF4qT7fnkphVviFDe43knD8xtyzsJGaohDtQSpjcB4KxAH+yNk6mnpX9sL1UylVgvJanB7xtmYb9q1KivW4FmB9ooow333081OmzCpprWbrZQpD1ULh6BcxU3r2fWw1nf6Empmcm6DNvzEkWIPTGBwtvM97yGWWlbmpPWU73cV38a/eY2kBMJT+A3oaz9lW7TTmUgC+KVTOrVOrJQozKquRMXcJWES1WL6QXMZq1UmkisCT67PyYWNnalsOW9sB
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB5288.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(346002)(136003)(366004)(39860400002)(376002)(451199021)(110136005)(4744005)(6666004)(52116002)(6486002)(2906002)(478600001)(36756003)(41300700001)(8936002)(8676002)(5660300002)(38350700002)(38100700002)(316002)(66556008)(66946007)(66476007)(4326008)(107886003)(83380400001)(86362001)(2616005)(186003)(26005)(6506007)(1076003)(6512007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Kb2P06fFPnw5SFBIaUt3Qt47HyhGA6OypMdopoJU/cXJJWuAv6O9W/hv1wf4?=
- =?us-ascii?Q?3UI1zuAGn8K7LQm6bOFMINcTVheGbgqGY9rjZzpmv0F/c3Wmi+KoWfyIVVyR?=
- =?us-ascii?Q?EIxfD6KFqnvBXoMOl4xlD7m1yYr+OrLpbbsuB/qFEs3e8IzJr6HS1u1lxdxo?=
- =?us-ascii?Q?u092MEoEp9VSyJvhHdqSPTQRHYPrhzA7lhHGuU49BQ57ytZAE6AgdY/iyDq0?=
- =?us-ascii?Q?MhRujVHWkrbFLc3PkCz46kFMg+p1p9b67+YmCElq4Mwqada1JveG+SMHcBb0?=
- =?us-ascii?Q?Aal0V9GNwWlOmlav4vpZClmoG838rGrATx7qBYHQI+50IETj5fBQW6IuPwwc?=
- =?us-ascii?Q?gjCr1posGx5hhN1KRaoBlRLn4n9ZheydhjPVjvI3hNVR1lPWTJJK5wRM5V3f?=
- =?us-ascii?Q?qssr9GYVe0tsW9MRsdm/PWN0vjvjrv2ERMQznnqWlJyMeKIqivSZXFIcK9lO?=
- =?us-ascii?Q?Z71QAxnoVdGyu1AReZU0CPNA4+KKbcw6l1J7yqAoRmxTFJymebGz40BvHWiP?=
- =?us-ascii?Q?tjOOOsYdNJp+o81Pqn3/9qwgvKtFiNIEfctWGsuk4DQEGg40XoqdYOib1RdN?=
- =?us-ascii?Q?zrthj792XSbPtycZ0b/DJG9fT95sxgoabikpWLuWsHgZeeQb0qNuvWe1YLan?=
- =?us-ascii?Q?I6c2VK+Ck0ct0p9+B2859vd3FctA2ZakXX3svj5Oetlfu73Xvka3Qks/dH5l?=
- =?us-ascii?Q?povXXya5opAIeZLV+nlv7KHLfLtxhac1rqbzbWhjimsZiAEPfuUPKc4q3eee?=
- =?us-ascii?Q?9yN3GQwJ+vJts4wa+uwposp0GHFE9Rh7wHgFKPUr9iwGOHd+6tTbwLbPDhzG?=
- =?us-ascii?Q?DLPLUQX3MlfFCMZu8eXN3A8BDZtL0/bI0hiQFDDhfH+vDX8KAeF6EnPL2+tU?=
- =?us-ascii?Q?brMFL1IjXodGHwm6upSRxPE2gKNvVzkN+ATrrs4sF3olc1Mdpv9d8mmwdGIx?=
- =?us-ascii?Q?OaghtaAu47iHol7w3JyDuVD13sqdzObm4aeHggw+2o1TVQCEIyB1k5B/EAlp?=
- =?us-ascii?Q?UWmurRoG18r9ezEFV5uKY5+FJZ6lnhtGcM8fz3/Mk/6GzVQgFpYM/BMA68yY?=
- =?us-ascii?Q?wAmVqkB7jm2mip23q61DV4R+0qhx6Jh4xD9GRvQ9n6v4Z3fb2tVDfNMu+6kn?=
- =?us-ascii?Q?dxsldJzi2Qlm5EyiePT1BVuVgo+QuFMTRX6BZGZwqVtGeaB818yjsTMtcEYE?=
- =?us-ascii?Q?xG8IAQTWE/Qj3qBDWJ+UXNqDubO12dyGWuzyvQZzKVMrsZzOi3C8g1/1rhfw?=
- =?us-ascii?Q?k0to4VGwXcu9bOCjv6badpicnuJxIF9u7pHdCinmmlH6LuzKrBdzZFpp01F+?=
- =?us-ascii?Q?RwCjtbCKSFpj3/m0YHFYgB349rMUr/dhxhZPdjUcsgM3Iyo8jbrJxehnHEwe?=
- =?us-ascii?Q?5IK1oU4yqzJNnfeGIzhs0Q+q310ksIigmesjYhpOrLb7oQEXNHAPcidQbW/v?=
- =?us-ascii?Q?NFKkPvYylys7cUyX8Of0GqZbz5MDVymYj1D9EsydMFTZjYEXkwXapKAg1yxB?=
- =?us-ascii?Q?ZEZtE+Lak8EmYQLLL7HYtW4lWFSyGUZ9SShimtFP4XTuYNZHzX2TBbFWRvgP?=
- =?us-ascii?Q?AhsnN+ffhsNK9EFRc1XEsP9v7HApqFN9V09rrHgL?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 69349346-66b0-494f-e595-08db834cd5fe
-X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB5288.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2023 02:57:03.7712
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YrNVyikbuCPbCL6WtKyQvPIZ3Fvo85NEXT6luulXot7+e/loIZi9kYNWJMbYLWTBCKPF+Hy8HRAF46cadGg4Fw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PUZPR06MB5519
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <ZK9ZiNMsJX8+1F3N@debian.debian> <CAF=yD-Lb2k02TLaCQHwFSG=eQrWCnvqHVaWuK2viGqiCdwAxwg@mail.gmail.com>
+In-Reply-To: <CAF=yD-Lb2k02TLaCQHwFSG=eQrWCnvqHVaWuK2viGqiCdwAxwg@mail.gmail.com>
+From:   Yan Zhai <yan@cloudflare.com>
+Date:   Wed, 12 Jul 2023 21:57:09 -0500
+Message-ID: <CAO3-PboOR43DM=dYQH+12_5QZuNySFwvd3GfKmDz_FN6U7UH_w@mail.gmail.com>
+Subject: Re: [PATCH net] gso: fix GSO_DODGY bit handling for related protocols
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     "open list:NETWORKING [TCP]" <netdev@vger.kernel.org>,
+        kernel-team@cloudflare.com, Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Xin Long <lucien.xin@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Andrew Melnychenko <andrew@daynix.com>,
+        Jason Wang <jasowang@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:SCTP PROTOCOL" <linux-sctp@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-debugfs_create_file() will simply return early if
- smmu->debugfs is an error pointer.
-Make smmu->debugfs check delete in tegra_smmu_debugfs_init().
+On Wed, Jul 12, 2023 at 9:02=E2=80=AFPM Willem de Bruijn
+<willemdebruijn.kernel@gmail.com> wrote:
+>
+> On Wed, Jul 12, 2023 at 9:55=E2=80=AFPM Yan Zhai <yan@cloudflare.com> wro=
+te:
+> >
+> > SKB_GSO_DODGY bit indicates a GSO packet comes from an untrusted source=
+.
+> > The canonical way is to recompute the gso_segs to avoid device driver
+> > issues. Afterwards, the DODGY bit can be removed to avoid re-check at t=
+he
+> > egress of later devices, e.g. packets can egress to a vlan device backe=
+d
+> > by a real NIC.
+> >
+> > Commit 1fd54773c267 ("udp: allow header check for dodgy GSO_UDP_L4
+> > packets.") checks DODGY bit for UDP, but for packets that can be fed
+> > directly to the device after gso_segs reset, it actually falls through
+> > to fragmentation [1].
+> >
+> > Commit 90017accff61 ("sctp: Add GSO support") and commit 3820c3f3e417
+> > ("[TCP]: Reset gso_segs if packet is dodgy") both didn't remove the DOD=
+GY
+> > bit after recomputing gso_segs.
+> >
+> > This change fixes the GSO_UDP_L4 handling case, and remove the DODGY bi=
+t
+> > at other places.
+>
+> These two things should not be conflated.
+>
+> Only the USO fix is strictly needed to fix the reported issue.
+>
+It's my OCD of wanting to avoid a cover letter for two patches...
+Let's address just this UDP issue then this time. The removal of DODGY
+is in fact more suitable as RFC for small improvements.
 
-Signed-off-by: Minjie Du <duminjie@vivo.com>
----
- drivers/iommu/tegra-smmu.c | 2 --
- 1 file changed, 2 deletions(-)
+> > Fixes: 90017accff61 ("sctp: Add GSO support")
+> > Fixes: 3820c3f3e417 ("[TCP]: Reset gso_segs if packet is dodgy")
+> > Fixes: 1fd54773c267 ("udp: allow header check for dodgy GSO_UDP_L4 pack=
+ets.")
+>
+> Link: https://lore.kernel.org/all/CAJPywTKDdjtwkLVUW6LRA2FU912qcDmQOQGt2W=
+aDo28KzYDg+A@mail.gmail.com/
+>
+> > Signed-off-by: Yan Zhai <yan@cloudflare.com>
+> >
+> > ---
+> > [1]:
+> > https://lore.kernel.org/all/CAJPywTKDdjtwkLVUW6LRA2FU912qcDmQOQGt2WaDo2=
+8KzYDg+A@mail.gmail.com/
+> >
+> > ---
+> >  net/ipv4/tcp_offload.c |  1 +
+> >  net/ipv4/udp_offload.c | 19 +++++++++++++++----
+> >  net/ipv6/udp_offload.c | 19 +++++++++++++++----
+> >  net/sctp/offload.c     |  2 ++
+> >  4 files changed, 33 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/net/ipv4/tcp_offload.c b/net/ipv4/tcp_offload.c
+> > index 8311c38267b5..f9b93708c22e 100644
+> > --- a/net/ipv4/tcp_offload.c
+> > +++ b/net/ipv4/tcp_offload.c
+> > @@ -87,6 +87,7 @@ struct sk_buff *tcp_gso_segment(struct sk_buff *skb,
+> >                 /* Packet is from an untrusted source, reset gso_segs. =
+*/
+> >
+> >                 skb_shinfo(skb)->gso_segs =3D DIV_ROUND_UP(skb->len, ms=
+s);
+> > +               skb_shinfo(skb)->gso_type &=3D ~SKB_GSO_DODGY;
+> >
+> >                 segs =3D NULL;
+> >                 goto out;
+> > diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
+> > index 75aa4de5b731..bd29cf19bb6b 100644
+> > --- a/net/ipv4/udp_offload.c
+> > +++ b/net/ipv4/udp_offload.c
+> > @@ -388,11 +388,22 @@ static struct sk_buff *udp4_ufo_fragment(struct s=
+k_buff *skb,
+> >         if (!pskb_may_pull(skb, sizeof(struct udphdr)))
+> >                 goto out;
+> >
+> > -       if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4 &&
+> > -           !skb_gso_ok(skb, features | NETIF_F_GSO_ROBUST))
+> > -               return __udp_gso_segment(skb, features, false);
+> > -
+> >         mss =3D skb_shinfo(skb)->gso_size;
+>
+> Why move the block below this line?
+>
+if we move the dodgy handling into __udp_gso_segment then it does not
+need to move below this line.
 
-diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
-index 1cbf063cc..2137040b7 100644
---- a/drivers/iommu/tegra-smmu.c
-+++ b/drivers/iommu/tegra-smmu.c
-@@ -1056,8 +1056,6 @@ DEFINE_SHOW_ATTRIBUTE(tegra_smmu_clients);
- static void tegra_smmu_debugfs_init(struct tegra_smmu *smmu)
- {
- 	smmu->debugfs = debugfs_create_dir("smmu", NULL);
--	if (!smmu->debugfs)
--		return;
- 
- 	debugfs_create_file("swgroups", S_IRUGO, smmu->debugfs, smmu,
- 			    &tegra_smmu_swgroups_fops);
--- 
-2.39.0
+> > +
+> > +       if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4) {
+> > +               if (skb_gso_ok(skb, features | NETIF_F_GSO_ROBUST)) {
+> > +                       /* Packet is from an untrusted source, reset ac=
+tual gso_segs */
+> > +                       skb_shinfo(skb)->gso_segs =3D DIV_ROUND_UP(skb-=
+>len - sizeof(*uh),
+> > +                                                                mss);
+> > +                       skb_shinfo(skb)->gso_type &=3D ~SKB_GSO_DODGY;
+> > +
+> > +                       segs =3D NULL;
+> > +                       goto out;
+> > +               } else {
+> > +                       return __udp_gso_segment(skb, features, false);
+> > +               }
+> > +       }
+> > +
+>
+> The validation should take place inside __udp_gso_segment.
+>
+> Revert the previous patch to always enter that function for USO packets:
+>
+>        if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4)
+>                 return __udp_gso_segment(skb, features, false);
+>
+> And in that function decide to return NULL after validation.
+>
+Good call, that's indeed better. Thanks
 
+>
+> >         if (unlikely(skb->len <=3D mss))
+> >                 goto out;
+> >
+> > diff --git a/net/ipv6/udp_offload.c b/net/ipv6/udp_offload.c
+> > index ad3b8726873e..6857d9f7bd06 100644
+> > --- a/net/ipv6/udp_offload.c
+> > +++ b/net/ipv6/udp_offload.c
+> > @@ -43,11 +43,22 @@ static struct sk_buff *udp6_ufo_fragment(struct sk_=
+buff *skb,
+> >                 if (!pskb_may_pull(skb, sizeof(struct udphdr)))
+> >                         goto out;
+> >
+> > -               if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4 &&
+> > -                   !skb_gso_ok(skb, features | NETIF_F_GSO_ROBUST))
+> > -                       return __udp_gso_segment(skb, features, true);
+> > -
+> >                 mss =3D skb_shinfo(skb)->gso_size;
+> > +
+> > +               if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4) {
+> > +                       if (skb_gso_ok(skb, features | NETIF_F_GSO_ROBU=
+ST)) {
+> > +                               /* Packet is from an untrusted source, =
+reset actual gso_segs */
+> > +                               skb_shinfo(skb)->gso_segs =3D DIV_ROUND=
+_UP(skb->len - sizeof(*uh),
+> > +                                                                      =
+  mss);
+> > +                               skb_shinfo(skb)->gso_type &=3D ~SKB_GSO=
+_DODGY;
+> > +
+> > +                               segs =3D NULL;
+> > +                               goto out;
+> > +                       } else {
+> > +                               return __udp_gso_segment(skb, features,=
+ true);
+> > +                       }
+> > +               }
+> > +
+> >                 if (unlikely(skb->len <=3D mss))
+> >                         goto out;
+> >
+> > diff --git a/net/sctp/offload.c b/net/sctp/offload.c
+> > index 502095173d88..3d2b44db0d42 100644
+> > --- a/net/sctp/offload.c
+> > +++ b/net/sctp/offload.c
+> > @@ -65,6 +65,8 @@ static struct sk_buff *sctp_gso_segment(struct sk_buf=
+f *skb,
+> >                 skb_walk_frags(skb, frag_iter)
+> >                         pinfo->gso_segs++;
+> >
+> > +               pinfo->gso_type &=3D ~SKB_GSO_DODGY;
+> > +
+> >                 segs =3D NULL;
+> >                 goto out;
+> >         }
+> > --
+> > 2.30.2
+> >
+
+
+
+--=20
+
+Yan
