@@ -2,123 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51B037517E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 07:09:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1DE77517EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 07:14:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233802AbjGMFJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 01:09:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50296 "EHLO
+        id S233868AbjGMFOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 01:14:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233578AbjGMFJM (ORCPT
+        with ESMTP id S232068AbjGMFOa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 01:09:12 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A7F52114;
-        Wed, 12 Jul 2023 22:09:11 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4R1jM62XMWz4f3m7l;
-        Thu, 13 Jul 2023 13:09:06 +0800 (CST)
-Received: from ubuntu20.huawei.com (unknown [10.67.174.33])
-        by APP2 (Coremail) with SMTP id Syh0CgCHlufvhq9ktQcZNw--.45992S2;
-        Thu, 13 Jul 2023 13:09:06 +0800 (CST)
-From:   "GONG, Ruiqi" <gongruiqi@huaweicloud.com>
-To:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Wang Weiyang <wangweiyang2@huawei.com>,
-        Xiu Jianfeng <xiujianfeng@huawei.com>, gongruiqi1@huawei.com
-Subject: [PATCH] bpf: Add support of skipping the current object for bpf_iter progs
-Date:   Thu, 13 Jul 2023 13:13:23 +0800
-Message-Id: <20230713051323.2867905-1-gongruiqi@huaweicloud.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 13 Jul 2023 01:14:30 -0400
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D70A22114;
+        Wed, 12 Jul 2023 22:14:29 -0700 (PDT)
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-51e344efd75so582988a12.1;
+        Wed, 12 Jul 2023 22:14:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689225268; x=1691817268;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Nfnofkg0FptbzpW86eoHnAne8pvThGCH60cE1/nO4Po=;
+        b=IF7RaZOjyGFDlMX8uCniF3KcGLyeucQ9ZIb8tMY+cg2UMCEifub+MvhZzO7AkXdxGS
+         nChZEFAgWI2O/d4xIMc5I0ofJ1eK/yWhfmK6BkEPdygqEh2QzSBuJ+NoCa9vQ6K0iF2J
+         e9PO3FC86e4NwbXFmnUpeX/tAYQHtq6mVtocjSq0Fsc5J/s+Y57ivy/XrEdyqZdjx4wU
+         cko9nh0fr4JmPH3ZmR2uibZAdHvdCBWvtrTOW1qUMYdoJB+YFAO2FGK3zpv23I1u7c1V
+         DA3P/7qYMUWHYrY5KCj3BfJQzLSX29CgwDS2yJHecZX/mGX8cy7oFWKLM0BM4lBSCwb3
+         t/Og==
+X-Gm-Message-State: ABy/qLY8zPdFuQDtbYkR3T4mzJfaJ+Bb08PGQSjTPyLsTwBAwiD+dnH8
+        0OLahjshw21bFG1zETuqb6M=
+X-Google-Smtp-Source: APBJJlG9IkGuCA9qc29kS3GH6EONHM9XAJOoKE1TgztSufCNLdLnrE2U9qYniDXurrVAwKkNdaGpNg==
+X-Received: by 2002:aa7:c75a:0:b0:51e:22db:897 with SMTP id c26-20020aa7c75a000000b0051e22db0897mr1210925eds.11.1689225268179;
+        Wed, 12 Jul 2023 22:14:28 -0700 (PDT)
+Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
+        by smtp.gmail.com with ESMTPSA id d17-20020aa7d691000000b0051ded17b30bsm3690698edr.40.2023.07.12.22.14.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 Jul 2023 22:14:27 -0700 (PDT)
+Message-ID: <fcb9f467-d579-782a-80f7-68e14e98e1cd@kernel.org>
+Date:   Thu, 13 Jul 2023 07:14:26 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgCHlufvhq9ktQcZNw--.45992S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7WryfCF45ZrWrXF4xAF4ktFb_yoW8Ar17pF
-        s7KF9rCw40vw47uFZFyFs7CryrAwnaq3W7GFWqk3yrKr1UXws8Wrn8GF1aqFyrtryxKr1F
-        vF4I9FWYv345uFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkYb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
-        j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
-        kEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY
-        0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I
-        0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAI
-        cVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcV
-        CF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280
-        aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUbPEf5UUUUU==
-X-CM-SenderInfo: pjrqw2pxltxq5kxd4v5lfo033gof0z/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2] drivers: wireless: ath5k: fix parameter check in
+ ath5k_debug_init_device()
+Content-Language: en-US
+To:     Minjie Du <duminjie@vivo.com>,
+        Nick Kossifidis <mickflemm@gmail.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kalle Valo <kvalo@kernel.org>,
+        "open list:ATHEROS ATH5K WIRELESS DRIVER" 
+        <linux-wireless@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Cc:     opensource.kernel@vivo.com
+References: <20230713033647.2109-1-duminjie@vivo.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+In-Reply-To: <20230713033647.2109-1-duminjie@vivo.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-bpf_seq_read() can accept three different types of seq_ops->show()'s
-return value:
+On 13. 07. 23, 5:36, Minjie Du wrote:
+> Make IS_ERR_OR_NULL() judge the debugfs_create_dir() function return
+> in ath5k_debug_init_device().
+> 
+> Signed-off-by: Minjie Du <duminjie@vivo.com>
+> Acked-by: Luis Chamberlain <mcgrof@kernel.org>
+> ---
+> v1-v2:
+> use IS_ERR_OR_NULL() instead of IS_ERR()
+> ---
+>   drivers/net/wireless/ath/ath5k/debug.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/wireless/ath/ath5k/debug.c b/drivers/net/wireless/ath/ath5k/debug.c
+> index 4b41160e5..7c8823759 100644
+> --- a/drivers/net/wireless/ath/ath5k/debug.c
+> +++ b/drivers/net/wireless/ath/ath5k/debug.c
+> @@ -982,7 +982,7 @@ ath5k_debug_init_device(struct ath5k_hw *ah)
+>   	ah->debug.level = ath5k_debug;
+>   
+>   	phydir = debugfs_create_dir("ath5k", ah->hw->wiphy->debugfsdir);
+> -	if (!phydir)
+> +	if (IS_ERR_OR_NULL(phydir))
 
-  err > 0: skip the obj and reuse seq_num
-  err < 0: abort the whole iter process
-  err == 0 (implicitly): continue
+When can debugfs_create_dir() return NULL?
 
-but bpf_iter_run_prog() is limited to the last two cases. Extend the
-legal return value of bpf_iter progs so that they can skip certain
-objects and then proceed to the followings.
+>   		return;
+>   
+>   	debugfs_create_file("debug", 0600, phydir, ah, &fops_debug);
 
-Signed-off-by: GONG, Ruiqi <gongruiqi@huaweicloud.com>
----
- kernel/bpf/bpf_iter.c | 9 +++++----
- kernel/bpf/verifier.c | 1 +
- 2 files changed, 6 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/bpf/bpf_iter.c b/kernel/bpf/bpf_iter.c
-index 96856f130cbf..1c1d67ec466c 100644
---- a/kernel/bpf/bpf_iter.c
-+++ b/kernel/bpf/bpf_iter.c
-@@ -716,13 +716,14 @@ int bpf_iter_run_prog(struct bpf_prog *prog, void *ctx)
- 		rcu_read_unlock();
- 	}
- 
--	/* bpf program can only return 0 or 1:
--	 *  0 : okay
--	 *  1 : retry the same object
-+	/* bpf program can return:
-+	 *  0 : has shown the object, go next
-+	 *  1 : has skipped the object, go next
-+	 * -1 : encountered error and should terminate
- 	 * The bpf_iter_run_prog() return value
- 	 * will be seq_ops->show() return value.
- 	 */
--	return ret == 0 ? 0 : -EAGAIN;
-+	return ret == 0 ? 0 : (ret == 1 ? 1 : -EAGAIN);
- }
- 
- BPF_CALL_4(bpf_for_each_map_elem, struct bpf_map *, map, void *, callback_fn,
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 930b5555cfd3..cebd3a0b3172 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -14333,6 +14333,7 @@ static int check_return_code(struct bpf_verifier_env *env)
- 		case BPF_MODIFY_RETURN:
- 			return 0;
- 		case BPF_TRACE_ITER:
-+			range = tnum_range(-1, 1);
- 			break;
- 		default:
- 			return -ENOTSUPP;
 -- 
-2.25.1
+js
+suse labs
 
