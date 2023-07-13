@@ -2,64 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A794751F87
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 13:07:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE0B4751F8B
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 13:07:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234313AbjGMLHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 07:07:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52298 "EHLO
+        id S234378AbjGMLHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 07:07:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234300AbjGMLHU (ORCPT
+        with ESMTP id S234325AbjGMLHY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 07:07:20 -0400
-Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D511268D
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 04:07:17 -0700 (PDT)
-Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-57026f4bccaso4805447b3.2
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 04:07:17 -0700 (PDT)
+        Thu, 13 Jul 2023 07:07:24 -0400
+Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B4EC212E
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 04:07:21 -0700 (PDT)
+Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-57712d00cc1so4875897b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 04:07:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689246437; x=1691838437;
+        d=linaro.org; s=google; t=1689246440; x=1691838440;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=aU2GriijjzpEa6tm+ZpH1Tad+2lfsOtGEsi/JQ6xwY0=;
-        b=gkgcpdceytYo7p7HvQANAKnCmKyJhZZ/fait6wzqHSO5H7XATa3VaRtyxQOPjmwZlV
-         g3iCt5Q6M7DUgu5DPDscAxai45NzAeMzKtyMvHgb8fkPBYSUFUKkX+yFkpMEmQFiaJob
-         As206AiDRAovCWXxSqJsZpsrApOsxngEtbTve2nO56mQji3YsgFYfs3vfysekVdFOleQ
-         HpskSqetodx6MSL31Qbd5uQjw6U9AWoeF+CyJi49Mj0mM5w0jN5zLeqYOwdQQjX8avkH
-         //lVznzUStGDxtLlNz5OXlODuZoN95gpMfgY2s/BRGBudXKJOCuq3A6ag3SavCZGrr4+
-         Y1kQ==
+        bh=cIs4kvIJEkr4354hkiVElFaIrSw+1f+1C7JGvLV2E0c=;
+        b=rC5oN/0ZOjlh9nIEKTrSw/4yWn5nZFno0feRyd2ea3PAY1AorYEYC9oZHbq5i3bxR4
+         TPYH6aGWqYrQWNlNkpY/WnJBIGu/NGqhquyDOarBfohVG712czsLTwmREtUEeysno/S7
+         2iROprpkvHjRL63HD7Sb0dyD0proZYDcgKZWW3xFzvkoR2xFKIUAQu7lnORuXoSiLrYF
+         yXygJ8WQFozjgpEX4cGxfJgHo5TN8ctimCNYBKDy7Ft+qxMxJ3sBGFyPMjxoaNvNwlv/
+         7ctlDTCaD95YavNfh5fGx/NxKXoaJDmMJCcfQeE9yzdPC2iRgMqVHxcl6OaKtwWEj4Vu
+         k3pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689246437; x=1691838437;
+        d=1e100.net; s=20221208; t=1689246440; x=1691838440;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=aU2GriijjzpEa6tm+ZpH1Tad+2lfsOtGEsi/JQ6xwY0=;
-        b=V6SVVDJ8MFmkvnESisDqXbvZdXu4Z43s9oYiIPiGIMffUAz0IxqyNDGHI0QGm5cwFN
-         LGE7qYPG0vkZtxJRUB2BO6cfDYLb+4P5oqyOCG3XPgmY+ws913pVWtj1uu+yH/CE23PS
-         cKqamuPoCjkTMd7nSbx/U4kzcN1KB3bVZ4zTjbekyIZOuZ+U7vidqw6TkXG8HFNmHNQo
-         S0wh5QJIVv/Wfum1uhvnwqqf5f0uvlHjdLkI1QKco69+Vjl63cpJKlxP4bewYBAe+nbt
-         6ofL/qU4Fpe9TWRkHcEewGd61Ja6HarH5XQkjVmXrwEBKaW8xcqDce0P0bwHTeLa/HK5
-         qxKA==
-X-Gm-Message-State: ABy/qLaiqFUL9vAKxpaqrTO+rW738YG9S57vjkvEJ95ADnQT7Eabt+x5
-        U5Q7B4MPnz2X5tjbeCo4pCZZg0gGzcsNRSuqPkRwvojcqPZ6Cm27
-X-Google-Smtp-Source: APBJJlEYv523i6IhLoA0BGSmqLFwtWWmWviDwi2Uj2rSfLPtf+V73TVLV4Eo2s3Fl3srNgCVPZJ+QcODzQ1EvGwi38A=
-X-Received: by 2002:a81:92d3:0:b0:581:2887:22be with SMTP id
- j202-20020a8192d3000000b00581288722bemr1578894ywg.37.1689246436829; Thu, 13
- Jul 2023 04:07:16 -0700 (PDT)
+        bh=cIs4kvIJEkr4354hkiVElFaIrSw+1f+1C7JGvLV2E0c=;
+        b=WGNdGXGnnlkhh5ymnuymCo0WcirhM6pSo5zFHTQO4f28tvdUVzlMKezkn9KcwPDu48
+         lgdnHlakBfPUqpv/UePPQ8U/CMRptJM+RKXyZY9v2r3PSPVV4tggnaFLphCKKGBDpWjm
+         xnojFBgWaSfCYVJnwVQv9Y04NN9GApAIvlJzSiJTCdnmV2ucqNdoHyNOTofP6k7nBiLP
+         wKnFwSw5MVpVlyRQLuC+/tjD8K0aJ8TNl4rXQc3wV0Lyl0v55wyNMQZQnXY/Vs5OJBr6
+         2ggYU3CaUl6WwVvLCPPoT//kDJWBiyk3OpWJ5pNPIxj0j6pCtOdnzqAjK3LrVqtnlclX
+         qOxg==
+X-Gm-Message-State: ABy/qLawSZnEmjjSvrYe+VVSRwaKHWwB89d29hbz5cPShQbG11hPfGd1
+        WJAJi8hudwf8++axfMO8x+c0jSf2jInwFthr+9efQ9lq3nao7UL2
+X-Google-Smtp-Source: APBJJlHzloQARqnstuXsXKkbjA0jEn0zvmhh3Yn/4jCscB6SAvEma4YZoW4MGj2Mz5CooecdPjv5GdOq6/GgDKwhMf8=
+X-Received: by 2002:a0d:d94f:0:b0:573:a763:5876 with SMTP id
+ b76-20020a0dd94f000000b00573a7635876mr1140592ywe.51.1689246440589; Thu, 13
+ Jul 2023 04:07:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230712140116.18718-1-wsa+renesas@sang-engineering.com>
-In-Reply-To: <20230712140116.18718-1-wsa+renesas@sang-engineering.com>
+References: <20230704131939.22562-1-frank.li@vivo.com>
+In-Reply-To: <20230704131939.22562-1-frank.li@vivo.com>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 13 Jul 2023 13:06:41 +0200
-Message-ID: <CAPDyKFotzk8wi-a6zpQ4Qm_Cgv_i9bYw1jni+AUoFw4wPry7Gw@mail.gmail.com>
-Subject: Re: [PATCH] mmc: renesas_sdhi: remove outdated indentation
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     linux-renesas-soc@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Date:   Thu, 13 Jul 2023 13:06:44 +0200
+Message-ID: <CAPDyKFpyfNTZrR6h=TEpibkq=uoCiAnNnfos307_TBGEkor7eA@mail.gmail.com>
+Subject: Re: [PATCH 1/3] mmc: mxcmmc: Use devm_platform_get_and_ioremap_resource()
+To:     Yangtao Li <frank.li@vivo.com>
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,13 +66,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 12 Jul 2023 at 16:01, Wolfram Sang
-<wsa+renesas@sang-engineering.com> wrote:
+On Tue, 4 Jul 2023 at 15:19, Yangtao Li <frank.li@vivo.com> wrote:
 >
-> Using tabs to make a structure initialization more readable is not
-> considered helpful. Remove the final appearance from this driver.
+> Convert platform_get_resource(), devm_ioremap_resource() to a single
+> call to devm_platform_get_and_ioremap_resource(), as this is exactly
+> what this function does.
 >
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> Signed-off-by: Yangtao Li <frank.li@vivo.com>
 
 Applied for next, thanks!
 
@@ -82,35 +81,30 @@ Uffe
 
 
 > ---
+>  drivers/mmc/host/mxcmmc.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 >
-> My eyes always stumble over this...
+> diff --git a/drivers/mmc/host/mxcmmc.c b/drivers/mmc/host/mxcmmc.c
+> index 668f865f3efb..f3a72569dd1a 100644
+> --- a/drivers/mmc/host/mxcmmc.c
+> +++ b/drivers/mmc/host/mxcmmc.c
+> @@ -989,7 +989,6 @@ static int mxcmci_probe(struct platform_device *pdev)
 >
->  drivers/mmc/host/renesas_sdhi_core.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
+>         pr_info("i.MX/MPC512x SDHC driver\n");
 >
-> diff --git a/drivers/mmc/host/renesas_sdhi_core.c b/drivers/mmc/host/renesas_sdhi_core.c
-> index 2d5ef9c37d76..10dbdb4abc93 100644
-> --- a/drivers/mmc/host/renesas_sdhi_core.c
-> +++ b/drivers/mmc/host/renesas_sdhi_core.c
-> @@ -983,12 +983,12 @@ int renesas_sdhi_probe(struct platform_device *pdev,
+> -       res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>         irq = platform_get_irq(pdev, 0);
+>         if (irq < 0)
+>                 return irq;
+> @@ -1000,7 +999,7 @@ static int mxcmci_probe(struct platform_device *pdev)
 >
->         }
+>         host = mmc_priv(mmc);
 >
-> -       host->write16_hook      = renesas_sdhi_write16_hook;
-> -       host->clk_enable        = renesas_sdhi_clk_enable;
-> -       host->clk_disable       = renesas_sdhi_clk_disable;
-> -       host->set_clock         = renesas_sdhi_set_clock;
-> -       host->multi_io_quirk    = renesas_sdhi_multi_io_quirk;
-> -       host->dma_ops           = dma_ops;
-> +       host->write16_hook = renesas_sdhi_write16_hook;
-> +       host->clk_enable = renesas_sdhi_clk_enable;
-> +       host->clk_disable = renesas_sdhi_clk_disable;
-> +       host->set_clock = renesas_sdhi_set_clock;
-> +       host->multi_io_quirk = renesas_sdhi_multi_io_quirk;
-> +       host->dma_ops = dma_ops;
->
->         if (sdhi_has_quirk(priv, hs400_disabled))
->                 host->mmc->caps2 &= ~(MMC_CAP2_HS400 | MMC_CAP2_HS400_ES);
+> -       host->base = devm_ioremap_resource(&pdev->dev, res);
+> +       host->base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
+>         if (IS_ERR(host->base)) {
+>                 ret = PTR_ERR(host->base);
+>                 goto out_free;
 > --
-> 2.30.2
+> 2.39.0
 >
