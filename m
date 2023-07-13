@@ -2,74 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9107C75220F
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 15:00:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4507752213
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 15:01:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233464AbjGMNA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 09:00:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38942 "EHLO
+        id S233749AbjGMNBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 09:01:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbjGMNAZ (ORCPT
+        with ESMTP id S229600AbjGMNB3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 09:00:25 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E8F81BF0
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 06:00:21 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3fbc77e76abso5849015e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 06:00:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689253219; x=1691845219;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BlrjL2Qse3Qh0f0nxQtFO3PHH8HvzbeF2y5rIxOXdos=;
-        b=UrH2359fSWdzvyfUZqVcgo6QwELKcnoSTo4ZyfHUcOl/8YTMeWPp0UKTGcBXNHDePv
-         8ibW/AKfM3j3zr4lybJwxbPz5m+Of59qKvYAP9tEQMKzEE3z5tb14lTX6cZRHuAYcP8L
-         GOz5NHfuM8TfPJX56GtaRelExnfN/Y0tLrZ9uN7im5wgt3SXD1qzGYfufHRR5chIhHKC
-         gXB5FxHCCDMm/6DpcSaFt7IpTP5PpCnwFg9+JFvrSia12zvj7t01FLS1wRkcMWMzE4K1
-         lfMXdKlQsYoljqEPP4yXdyMEKOoEenLBPbDKFT2uacGFKgia7PxflhfJfwJt7Q1GtEvY
-         19eA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689253219; x=1691845219;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BlrjL2Qse3Qh0f0nxQtFO3PHH8HvzbeF2y5rIxOXdos=;
-        b=EW0O0T7E3x4LgLpQGVOuSYzd6ACFcEpkkSbc9Lhmr6DW3kgnEFgXirUb65G2Zd4BiW
-         7bvXSUbyTqXHsf9wBvP7cMH7lITQPspkclcVOSibTpSIlHVBy9MNqXL3dWLzPfqAsCeX
-         ck5Q57ffRuG8ClF2qjtH0sJ8k2ODox2RV13o+SvV+XD+Q1OdFHlMmHxuSi09wfFP5Gwx
-         aBLT4wCtdQDNuTtF3DZvJlI9aZ6JeO1Z8aOf2/AQNVpmTp5yq9aYMEEiY/ckFBDhvF1g
-         TFc0xNXCZYwvLQHH9MJgYV2PSaPSCkv/by4lEkx774ftsssghF6gOspohebrdlPhvwAC
-         /c8w==
-X-Gm-Message-State: ABy/qLa3lDZ73cIWEnPOBXPVs0i9PrFWNZRcBnp7KMIeOsaP3rU76uM6
-        +H89I1jQAUtK8LggZJoYjBSL9w==
-X-Google-Smtp-Source: APBJJlGW4qBAshsKSJMXvfuhab1DNGBKrv8tQ12EQpoccoqOHZbA5T6z6/EJeQ0anX2QyFBgyPQqSQ==
-X-Received: by 2002:a1c:f213:0:b0:3f9:b19c:aab4 with SMTP id s19-20020a1cf213000000b003f9b19caab4mr1235107wmc.6.1689253219433;
-        Thu, 13 Jul 2023 06:00:19 -0700 (PDT)
-Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
-        by smtp.googlemail.com with ESMTPSA id o7-20020a5d6707000000b002c70ce264bfsm7924515wru.76.2023.07.13.06.00.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 Jul 2023 06:00:19 -0700 (PDT)
-Message-ID: <6e8b64f1-a285-227c-c335-c0dd0e683b50@linaro.org>
-Date:   Thu, 13 Jul 2023 15:00:18 +0200
+        Thu, 13 Jul 2023 09:01:29 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1A19173B;
+        Thu, 13 Jul 2023 06:01:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=t-8ch.de; s=mail;
+        t=1689253285; bh=yupFDaQfBUJDGYQkoGNGPCB4kwzNRglkYY4WfTsQAWc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QSW/8Nr5ap4LZT45TYM21VhMlU1KpKTveQU/R1eLWHTG7GcTes3d4N4Ugj7E2Dz/X
+         Ov6XIu/ywxhBG9gU8MQm0cIcHEPkyLeeIrSyEsAnPD4BXIvZCGfCE5MuutuFShyQq/
+         EmfmdBx6FGqYTaw1zz+rlCUm/6Ccq06GWTVd5Ads=
+Date:   Thu, 13 Jul 2023 15:01:24 +0200
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>
+To:     Aleksa Sarai <cyphar@cyphar.com>
+Cc:     Willy Tarreau <w@1wt.eu>, Shuah Khan <shuah@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Dave Chinner <dchinner@redhat.com>,
+        xu xin <cgel.zte@gmail.com>, Al Viro <viro@zeniv.linux.org.uk>,
+        Stefan Roesch <shr@devkernel.io>,
+        Zhihao Cheng <chengzhihao1@huawei.com>,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        Janis Danisevskis <jdanis@google.com>,
+        Kees Cook <keescook@chromium.org>, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH] procfs: block chmod on /proc/thread-self/comm
+Message-ID: <e26a9bab-6443-4a0a-809a-ca1c1b4d28c3@t-8ch.de>
+References: <20230713121907.9693-1-cyphar@cyphar.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH 1/2] thermal/of: Add error information printing for
- devm_thermal_of_zone_register()
-Content-Language: en-US
-To:     Yangtao Li <frank.li@vivo.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230711124513.47771-1-frank.li@vivo.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <20230711124513.47771-1-frank.li@vivo.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230713121907.9693-1-cyphar@cyphar.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -78,46 +53,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/07/2023 14:45, Yangtao Li wrote:
-> Ensure that all error handling branches print error information. In this
-> way, when this function fails, the upper-layer functions can directly
-> return an error code without missing debugging information. Otherwise,
-> the error message will be printed redundantly or missing.
+On 2023-07-13 22:19:04+1000, Aleksa Sarai wrote:
+> Due to an oversight in commit 1b3044e39a89 ("procfs: fix pthread
+> cross-thread naming if !PR_DUMPABLE") in switching from REG to NOD,
+> chmod operations on /proc/thread-self/comm were no longer blocked as
+> they are on almost all other procfs files.
 > 
-> Signed-off-by: Yangtao Li <frank.li@vivo.com>
+> A very similar situation with /proc/self/environ was used to as a root
+> exploit a long time ago, but procfs has SB_I_NOEXEC so this is simply a
+> correctness issue.
+> 
+> Ref: https://lwn.net/Articles/191954/
+> Ref: 6d76fa58b050 ("Don't allow chmod() on the /proc/<pid>/ files")
+> Fixes: 1b3044e39a89 ("procfs: fix pthread cross-thread naming if !PR_DUMPABLE")
+> Cc: stable@vger.kernel.org # v4.7+
+> Signed-off-by: Aleksa Sarai <cyphar@cyphar.com>
 > ---
->   drivers/thermal/thermal_of.c | 5 ++++-
->   1 file changed, 4 insertions(+), 1 deletion(-)
+>  fs/proc/base.c                               | 3 ++-
+>  tools/testing/selftests/nolibc/nolibc-test.c | 4 ++++
+>  2 files changed, 6 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/thermal/thermal_of.c b/drivers/thermal/thermal_of.c
-> index 6fb14e521197..8ce231f7639a 100644
-> --- a/drivers/thermal/thermal_of.c
-> +++ b/drivers/thermal/thermal_of.c
-> @@ -583,11 +583,14 @@ struct thermal_zone_device *devm_thermal_of_zone_register(struct device *dev, in
->   
->   	ptr = devres_alloc(devm_thermal_of_zone_release, sizeof(*ptr),
->   			   GFP_KERNEL);
-> -	if (!ptr)
-> +	if (!ptr) {
-> +		dev_err(dev, "Failed to allocate device resource data\n");
->   		return ERR_PTR(-ENOMEM);
-> +	}
->   
->   	tzd = thermal_of_zone_register(dev->of_node, sensor_id, data, ops);
->   	if (IS_ERR(tzd)) {
-> +		dev_err(dev, "Failed to register thermal zone: %d\n", PTR_ERR(tzd));
+> diff --git a/fs/proc/base.c b/fs/proc/base.c
+> index 05452c3b9872..7394229816f3 100644
+> --- a/fs/proc/base.c
+> +++ b/fs/proc/base.c
+> @@ -3583,7 +3583,8 @@ static int proc_tid_comm_permission(struct mnt_idmap *idmap,
+>  }
+>  
+>  static const struct inode_operations proc_tid_comm_inode_operations = {
+> -		.permission = proc_tid_comm_permission,
+> +		.setattr	= proc_setattr,
+> +		.permission	= proc_tid_comm_permission,
+>  };
 
-Not sure if having this error is useful as we already have an error 
-showing up with the thermal_of_zone_register() function
+Given that this seems to be a recurring theme a more systematic
+aproach would help.
 
->   		devres_free(ptr);
->   		return tzd;
->   	}
+Something like the following (untested) patch:
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+diff --git a/fs/proc/base.c b/fs/proc/base.c
+index 05452c3b9872..b90f2e9cda66 100644
+--- a/fs/proc/base.c
++++ b/fs/proc/base.c
+@@ -2649,6 +2649,7 @@ static struct dentry *proc_pident_instantiate(struct dentry *dentry,
+ 		set_nlink(inode, 2);	/* Use getattr to fix if necessary */
+ 	if (p->iop)
+ 		inode->i_op = p->iop;
++	WARN_ON(!inode->i_op->setattr);
+ 	if (p->fop)
+ 		inode->i_fop = p->fop;
+ 	ei->op = p->op;
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+>  /*
+> diff --git a/tools/testing/selftests/nolibc/nolibc-test.c b/tools/testing/selftests/nolibc/nolibc-test.c
+> index 486334981e60..08f0969208eb 100644
+> --- a/tools/testing/selftests/nolibc/nolibc-test.c
+> +++ b/tools/testing/selftests/nolibc/nolibc-test.c
+> @@ -580,6 +580,10 @@ int run_syscall(int min, int max)
+>  		CASE_TEST(chmod_net);         EXPECT_SYSZR(proc, chmod("/proc/self/net", 0555)); break;
+>  		CASE_TEST(chmod_self);        EXPECT_SYSER(proc, chmod("/proc/self", 0555), -1, EPERM); break;
+>  		CASE_TEST(chown_self);        EXPECT_SYSER(proc, chown("/proc/self", 0, 0), -1, EPERM); break;
+> +		CASE_TEST(chmod_self_comm);   EXPECT_SYSER(proc, chmod("/proc/self/comm", 0777), -1, EPERM); break;
+> +		CASE_TEST(chmod_tid_comm);    EXPECT_SYSER(proc, chmod("/proc/thread-self/comm", 0777), -1, EPERM); break;
+> +		CASE_TEST(chmod_self_environ);EXPECT_SYSER(proc, chmod("/proc/self/environ", 0777), -1, EPERM); break;
+> +		CASE_TEST(chmod_tid_environ); EXPECT_SYSER(proc, chmod("/proc/thread-self/environ", 0777), -1, EPERM); break;
 
+I'm not a big fan of this, it abuses the nolibc testsuite to test core
+kernel functionality.
+If this needs to be tested explicitly there is hopefully a better place.
+
+Those existing tests focus on testing functionality provided by nolibc.
+The test chmod_net just got removed because it suffered from the same
+bug as /proc/thread-self/comm.
+
+>  		CASE_TEST(chroot_root);       EXPECT_SYSZR(euid0, chroot("/")); break;
+>  		CASE_TEST(chroot_blah);       EXPECT_SYSER(1, chroot("/proc/self/blah"), -1, ENOENT); break;
+>  		CASE_TEST(chroot_exe);        EXPECT_SYSER(proc, chroot("/proc/self/exe"), -1, ENOTDIR); break;
+> -- 
+> 2.41.0
+> 
