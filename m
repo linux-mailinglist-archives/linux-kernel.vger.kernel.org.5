@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DA8E752204
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 14:58:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 325CD752205
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 14:58:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234930AbjGMM5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 08:57:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36482 "EHLO
+        id S234423AbjGMM6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 08:58:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234872AbjGMM5k (ORCPT
+        with ESMTP id S234891AbjGMM5p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 08:57:40 -0400
+        Thu, 13 Jul 2023 08:57:45 -0400
 Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD27C1BF2
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 05:57:38 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-57745160c1dso5380217b3.2
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 05:57:38 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FCE42702
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 05:57:41 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-579e9b95b86so5507107b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 05:57:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689253058; x=1691845058;
+        d=google.com; s=20221208; t=1689253060; x=1691845060;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=d0jpwRf4aooZIScI07t3xs6wVcncXV8ha+jtsM7z/nQ=;
-        b=nFut6631mjTAOgoR2gmPO5GuPVrlue6cjFmK0Ckm5EHc1cyNxNvCm7zUisrJUudi1Q
-         RaJfyJrG0ZyT23FTrv4ZQ2u3vCeDeY9i+LFL+UjY3Ji2cDc16BUgWsvwdFpI6dmskqxV
-         zN/V0IGNr3ysyGnjLnXraW1y0c5RTebqiT/GgQ57HeRuBFGmUSpeB95fetfLdjYshFGb
-         iiGAtpAwoa74rMDdCjZ1VL4Ta9wx8L6QFix6f8AyL/hxxrU7NhonaHUwja4szt1l38Yq
-         yiTc6BEfBm1Fug9yt3vIEsAw7Abg6UTXnQGxowd/VeOy+l0ArYkwl7tAJuwQQ/E+b8wj
-         Lorg==
+        bh=GOfdDj4t/4l0qN/MzMyGSYQ+xos/zeOUfaRubiCXYXI=;
+        b=fkNAaakhJhj14joU9vjShVN1J78/4ao4j4r/p0M09hqWWrtvYQsGmFffwTbIc+z21k
+         OzoCWRoZ9KXixeBMf8N4Ri/coa/+8/xhR9EKxTNP8sfg3qpJat0FAxgDfcso3YLSRxuh
+         tY3+AZS3TUi6H9CqRMIO6SNQKVGT6MR1mFawBy7pnitaqt3ZGBxlgndqmv2HJtMKJA43
+         U3PMN16S19MICAm06IGvBgzUo76/EVqARHIYt3KZurXU3HFFjt3/XW6jXM66vj5+t1kA
+         5Fj1MEGzbzeQH4Mmxx1jNONJ0i9fxqfaD+AdEi66+pcUHkQ3G3yvhO7pNJTb2WABE3b5
+         KE4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689253058; x=1691845058;
+        d=1e100.net; s=20221208; t=1689253060; x=1691845060;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=d0jpwRf4aooZIScI07t3xs6wVcncXV8ha+jtsM7z/nQ=;
-        b=fq17y5ugWHfWe8NUmTwVSJwx6zkHX2BDTyEvIruw0nh5iCduOv+tB6/d9lR20C77JC
-         nADrGEjjpP2pkP4eqFc0J7hUElALKflto2KmA/udfWLi9dEQ8VUVCfXju5NKIqMlJPVs
-         KqkENuPtue+6NsyhZQCuYZru0NYe6P6vW8QJiQ2vCq70suN5XfHyCBv2cNEbEU/dj6ni
-         7nJrSx4S8IcqELnQNXjZdXwBmJYxLAz/vFxyU8fxsO3xV/jwvK2WR82TAloRDRcnMiR0
-         miHR5e7lKMSMKnAO40lS6Ixb7qV50xrscVZHZ+DSiO8sMRzo4lP5GSEBT21SxoCKPUxb
-         cVGA==
-X-Gm-Message-State: ABy/qLYAuSvi1D5rdccn/Dong7gXtVW+l0m2bbgeoqKfJByl/WWXMZmG
-        AZ/BGw30Q28nCTUnKsMG+NI7RRowZoo=
-X-Google-Smtp-Source: APBJJlGyKCfFzAbGHoR0SCihpjFPmM7wQ7XzBgJh44FxsoaT+NNOt//wauHqSchSc/F7MrH99i2cdZIEd4c=
+        bh=GOfdDj4t/4l0qN/MzMyGSYQ+xos/zeOUfaRubiCXYXI=;
+        b=QsKjDzfRn9yzjcgStmpJJ65+l4S4uYgZV2OuIGQW8kL6rQB/BnmHvPHX+/VidsPD9O
+         LxyvsJla2oCDNtdHc7unkc6zONId2wk4/y89fqRepaOTxM4CzzM4MNG+6Sf7gSDz8V2a
+         DRqhtfB/Azi58ZxPKuVybetbW8Hj5roOE4+3AjFKQP7m+r2i3c0Dpdb0k+Hf/K7g5K8t
+         ejnYffAyY8NY9UVNlvISNyGjooTApw4SO7SVxyo9piksH11JTQ8nNxHHUBKLmrJbxcJd
+         /HSAkzuU4qcwtoYLpCIhU/sLUaSEEv4v1z2B7lNvR0b2q+cGZGavKAgdRo2Ufg3wK6K4
+         Kbjw==
+X-Gm-Message-State: ABy/qLY9IQOeGJd6PH7qRcIoBPsOrt3ljQ/8r3uhLBf2moeJy6CSvr+o
+        Fouzi3+32DFdeBBERN7R/SBaxclkDAw=
+X-Google-Smtp-Source: APBJJlE4gqf8HgUFd5kWo4vVey1n9AXLc59Gq5/Kp0SmJA9jDOWF5opeYPMCBv7jvMQnKUUmiSAL5uMTcOM=
 X-Received: from glider.muc.corp.google.com ([2a00:79e0:9c:201:7a88:66b7:31e5:7d85])
- (user=glider job=sendgmr) by 2002:a05:6902:1c4:b0:cab:9746:ef0e with SMTP id
- u4-20020a05690201c400b00cab9746ef0emr6467ybh.12.1689253058041; Thu, 13 Jul
- 2023 05:57:38 -0700 (PDT)
-Date:   Thu, 13 Jul 2023 14:57:04 +0200
+ (user=glider job=sendgmr) by 2002:a81:8b48:0:b0:570:b1:ca37 with SMTP id
+ e8-20020a818b48000000b0057000b1ca37mr13111ywk.5.1689253060736; Thu, 13 Jul
+ 2023 05:57:40 -0700 (PDT)
+Date:   Thu, 13 Jul 2023 14:57:05 +0200
 In-Reply-To: <20230713125706.2884502-1-glider@google.com>
 Mime-Version: 1.0
 References: <20230713125706.2884502-1-glider@google.com>
 X-Mailer: git-send-email 2.41.0.255.g8b1d071c50-goog
-Message-ID: <20230713125706.2884502-5-glider@google.com>
-Subject: [v2 4/5] arm64: mte: add a test for MTE tags compression
+Message-ID: <20230713125706.2884502-6-glider@google.com>
+Subject: [v2 5/5] arm64: mte: add compression support to mteswap.c
 From:   Alexander Potapenko <glider@google.com>
 To:     glider@google.com, catalin.marinas@arm.com, will@kernel.org,
         pcc@google.com, andreyknvl@gmail.com,
@@ -71,231 +71,239 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ensure that tag sequences containing alternating values are compressed
-to buffers of expected size and correctly decompressed afterwards.
+Define the internal mteswap.h interface:
+ - _mte_alloc_and_save_tags()
+ - _mte_free_saved_tags()
+ - _mte_restore_tags()
+
+, that encapsulates saving tags for a struct page (together with memory
+allocation), restoring tags, and deleting the storage allocated for them.
+
+These functions accept opaque pointers, which may point to 128-byte
+tag buffers, as well as smaller buffers containing compressed tags, or
+have compressed tags stored directly in them.
+
+The existing code from mteswap.c operating with uncompressed tags is split
+away into mteswap_nocomp.c, and the newly introduced mteswap_comp.c
+provides compression with the EA0 algorithm. The latter implementation
+is picked if CONFIG_ARM64_MTE_COMP=y.
+
+Soon after booting Android, tag compression saves ~2.5x memory previously
+spent by mteswap.c on tag allocations. With the growing uptime, the
+savings reach 20x and even more.
 
 Signed-off-by: Alexander Potapenko <glider@google.com>
 ---
- arch/arm64/Kconfig           |  10 ++
- arch/arm64/mm/Makefile       |   1 +
- arch/arm64/mm/test_mtecomp.c | 175 +++++++++++++++++++++++++++++++++++
- 3 files changed, 186 insertions(+)
- create mode 100644 arch/arm64/mm/test_mtecomp.c
+ arch/arm64/mm/Makefile         |  5 ++++
+ arch/arm64/mm/mteswap.c        | 19 ++++++-------
+ arch/arm64/mm/mteswap.h        | 12 ++++++++
+ arch/arm64/mm/mteswap_comp.c   | 50 ++++++++++++++++++++++++++++++++++
+ arch/arm64/mm/mteswap_nocomp.c | 37 +++++++++++++++++++++++++
+ 5 files changed, 112 insertions(+), 11 deletions(-)
+ create mode 100644 arch/arm64/mm/mteswap.h
+ create mode 100644 arch/arm64/mm/mteswap_comp.c
+ create mode 100644 arch/arm64/mm/mteswap_nocomp.c
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 0aa727888e746..9473c1e2e8593 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -2101,6 +2101,16 @@ config ARM64_MTE_COMP
- 	  128-byte tag buffers corresponding to 4K pages can be compressed using
- 	  the EA0 algorithm to save heap memory.
- 
-+config ARM64_MTE_COMP_KUNIT_TEST
-+	tristate "Test tag compression for ARM64 MTE" if !KUNIT_ALL_TESTS
-+	default KUNIT_ALL_TESTS
-+	depends on KUNIT && ARM64_MTE_COMP
-+	help
-+	  Test EA0 compression algorithm enabled by CONFIG_ARM64_MTE_COMP.
-+
-+	  Ensure that tag sequences containing alternating values are compressed
-+	  to buffers of expected size and correctly decompressed afterwards.
-+
- config ARM64_SVE
- 	bool "ARM Scalable Vector Extension support"
- 	default y
 diff --git a/arch/arm64/mm/Makefile b/arch/arm64/mm/Makefile
-index 46778f6dd83c2..170dc62b010b9 100644
+index 170dc62b010b9..46a798e2b67cb 100644
 --- a/arch/arm64/mm/Makefile
 +++ b/arch/arm64/mm/Makefile
-@@ -11,6 +11,7 @@ obj-$(CONFIG_TRANS_TABLE)	+= trans_pgd-asm.o
+@@ -11,6 +11,11 @@ obj-$(CONFIG_TRANS_TABLE)	+= trans_pgd-asm.o
  obj-$(CONFIG_DEBUG_VIRTUAL)	+= physaddr.o
  obj-$(CONFIG_ARM64_MTE)		+= mteswap.o
  obj-$(CONFIG_ARM64_MTE_COMP)	+= mtecomp.o
-+obj-$(CONFIG_ARM64_MTE_COMP_KUNIT_TEST) += test_mtecomp.o
++ifdef CONFIG_ARM64_MTE_COMP
++obj-$(CONFIG_ARM64_MTE)		+= mteswap_comp.o
++else
++obj-$(CONFIG_ARM64_MTE)		+= mteswap_nocomp.o
++endif
+ obj-$(CONFIG_ARM64_MTE_COMP_KUNIT_TEST) += test_mtecomp.o
  KASAN_SANITIZE_physaddr.o	+= n
  
- obj-$(CONFIG_KASAN)		+= kasan_init.o
-diff --git a/arch/arm64/mm/test_mtecomp.c b/arch/arm64/mm/test_mtecomp.c
+diff --git a/arch/arm64/mm/mteswap.c b/arch/arm64/mm/mteswap.c
+index cd508ba80ab1b..e072c1209fbb6 100644
+--- a/arch/arm64/mm/mteswap.c
++++ b/arch/arm64/mm/mteswap.c
+@@ -7,6 +7,8 @@
+ #include <linux/swapops.h>
+ #include <asm/mte.h>
+ 
++#include "mteswap.h"
++
+ static DEFINE_XARRAY(mte_pages);
+ 
+ void *mte_allocate_tag_storage(void)
+@@ -27,20 +29,18 @@ int mte_save_tags(struct page *page)
+ 	if (!page_mte_tagged(page))
+ 		return 0;
+ 
+-	tag_storage = mte_allocate_tag_storage();
++	tag_storage = _mte_alloc_and_save_tags(page);
+ 	if (!tag_storage)
+ 		return -ENOMEM;
+ 
+-	mte_save_page_tags(page_address(page), tag_storage);
+-
+ 	/* page_private contains the swap entry.val set in do_swap_page */
+ 	ret = xa_store(&mte_pages, page_private(page), tag_storage, GFP_KERNEL);
+ 	if (WARN(xa_is_err(ret), "Failed to store MTE tags")) {
+-		mte_free_tag_storage(tag_storage);
++		_mte_free_saved_tags(tag_storage);
+ 		return xa_err(ret);
+ 	} else if (ret) {
+ 		/* Entry is being replaced, free the old entry */
+-		mte_free_tag_storage(ret);
++		_mte_free_saved_tags(ret);
+ 	}
+ 
+ 	return 0;
+@@ -53,10 +53,7 @@ void mte_restore_tags(swp_entry_t entry, struct page *page)
+ 	if (!tags)
+ 		return;
+ 
+-	if (try_page_mte_tagging(page)) {
+-		mte_restore_page_tags(page_address(page), tags);
+-		set_page_mte_tagged(page);
+-	}
++	_mte_restore_tags(tags, page);
+ }
+ 
+ void mte_invalidate_tags(int type, pgoff_t offset)
+@@ -64,7 +61,7 @@ void mte_invalidate_tags(int type, pgoff_t offset)
+ 	swp_entry_t entry = swp_entry(type, offset);
+ 	void *tags = xa_erase(&mte_pages, entry.val);
+ 
+-	mte_free_tag_storage(tags);
++	_mte_free_saved_tags(tags);
+ }
+ 
+ void mte_invalidate_tags_area(int type)
+@@ -78,7 +75,7 @@ void mte_invalidate_tags_area(int type)
+ 	xa_lock(&mte_pages);
+ 	xas_for_each(&xa_state, tags, last_entry.val - 1) {
+ 		__xa_erase(&mte_pages, xa_state.xa_index);
+-		mte_free_tag_storage(tags);
++		_mte_free_saved_tags(tags);
+ 	}
+ 	xa_unlock(&mte_pages);
+ }
+diff --git a/arch/arm64/mm/mteswap.h b/arch/arm64/mm/mteswap.h
 new file mode 100644
-index 0000000000000..67bef6f28dac4
+index 0000000000000..bf25f2b3e75a4
 --- /dev/null
-+++ b/arch/arm64/mm/test_mtecomp.c
-@@ -0,0 +1,175 @@
++++ b/arch/arm64/mm/mteswap.h
+@@ -0,0 +1,12 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#ifndef ARCH_ARM64_MM_MTESWAP_H_
++#define ARCH_ARM64_MM_MTESWAP_H_
++
++#include <linux/mm_types.h>
++
++void *_mte_alloc_and_save_tags(struct page *page);
++void _mte_free_saved_tags(void *tags);
++void _mte_restore_tags(void *tags, struct page *page);
++
++#endif // ARCH_ARM64_MM_MTESWAP_H_
+diff --git a/arch/arm64/mm/mteswap_comp.c b/arch/arm64/mm/mteswap_comp.c
+new file mode 100644
+index 0000000000000..bc2591f8d4f35
+--- /dev/null
++++ b/arch/arm64/mm/mteswap_comp.c
+@@ -0,0 +1,50 @@
 +// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Test cases for EA0, the compression algorithm for MTE tags.
-+ */
 +
++/* MTE tag storage management with EA0 compression. */
++
++#include <asm/mte.h>
 +#include <asm/mtecomp.h>
-+#include <kunit/test.h>
++#include <linux/pagemap.h>
 +#include <linux/slab.h>
-+#include <linux/types.h>
++#include <linux/swap.h>
++#include <linux/swapops.h>
++#include <linux/xarray.h>
 +
-+/*
-+ * Test that ea0_tags_to_ranges() produces a single range for a zero-filled tag
-+ * buffer.
-+ */
-+static void test_tags_to_ranges_zero(struct kunit *test)
++#include "mteswap.h"
++
++void *_mte_alloc_and_save_tags(struct page *page)
 +{
-+	u8 tags[128], dtags[128];
-+	short r_sizes[256];
-+	int r_len = 256;
-+	u8 r_tags[256];
-+
-+	memset(tags, 0, 128);
-+	ea0_tags_to_ranges(tags, r_tags, r_sizes, &r_len);
-+	KUNIT_EXPECT_EQ(test, r_len, 1);
-+	KUNIT_EXPECT_EQ(test, r_tags[0], 0);
-+	KUNIT_EXPECT_EQ(test, r_sizes[0], 256);
-+	ea0_ranges_to_tags(r_tags, r_sizes, r_len, dtags);
-+	KUNIT_EXPECT_EQ(test, memcmp(tags, dtags, 128), 0);
-+}
-+
-+/*
-+ * Test that a small number of different tags is correctly transformed into
-+ * ranges.
-+ */
-+static void test_tags_to_ranges_simple(struct kunit *test)
-+{
-+	u8 tags[128], dtags[128];
-+	const u8 ex_tags[] = { 0xa, 0x0, 0xa, 0xb, 0x0 };
-+	const short ex_sizes[] = { 1, 2, 2, 1, 250 };
-+	short r_sizes[256];
-+	int r_len = 256;
-+	u8 r_tags[256];
-+
-+	memset(tags, 0, 128);
-+	tags[0] = 0xa0;
-+	tags[1] = 0x0a;
-+	tags[2] = 0xab;
-+	ea0_tags_to_ranges(tags, r_tags, r_sizes, &r_len);
-+	KUNIT_EXPECT_EQ(test, r_len, 5);
-+	KUNIT_EXPECT_EQ(test, memcmp(r_tags, ex_tags, sizeof(ex_tags)), 0);
-+	KUNIT_EXPECT_EQ(test, memcmp(r_sizes, ex_sizes, sizeof(ex_sizes)), 0);
-+	ea0_ranges_to_tags(r_tags, r_sizes, r_len, dtags);
-+	KUNIT_EXPECT_EQ(test, memcmp(tags, dtags, 128), 0);
-+}
-+
-+/* Test that repeated 0xa0 byte produces 256 ranges of length 1. */
-+static void test_tags_to_ranges_repeated(struct kunit *test)
-+{
-+	u8 tags[128], dtags[128];
-+	short r_sizes[256];
-+	int r_len = 256;
-+	u8 r_tags[256];
-+
-+	memset(tags, 0xa0, 128);
-+	ea0_tags_to_ranges(tags, r_tags, r_sizes, &r_len);
-+	KUNIT_EXPECT_EQ(test, r_len, 256);
-+	ea0_ranges_to_tags(r_tags, r_sizes, r_len, dtags);
-+	KUNIT_EXPECT_EQ(test, memcmp(tags, dtags, 128), 0);
-+}
-+
-+/* Test that a zero-filled array is compressed into inline storage. */
-+static void test_compress_zero(struct kunit *test)
-+{
-+	u8 tags[128], dtags[128];
++	u8 tags[128];
 +	u64 handle;
 +
-+	memset(tags, 0, 128);
++	mte_save_page_tags(page_address(page), tags);
 +	handle = ea0_compress(tags);
-+	KUNIT_EXPECT_EQ(test, handle & BIT_ULL(63), 0);
-+	/* Tags are stored inline. */
-+	KUNIT_EXPECT_EQ(test, ea0_storage_size(handle), 8);
-+	KUNIT_EXPECT_TRUE(test, ea0_decompress(handle, dtags));
-+	KUNIT_EXPECT_EQ(test, memcmp(tags, dtags, 128), 0);
++	return xa_mk_value(handle);
 +}
 +
-+/*
-+ * Test that a very small number of tag ranges ends up compressed into 8 bytes.
-+ */
-+static void test_compress_simple(struct kunit *test)
++void _mte_free_saved_tags(void *storage)
 +{
-+	u8 tags[128], dtags[128];
-+	u64 handle;
++	unsigned long handle = xa_to_value(storage);
++	int size;
 +
-+	memset(tags, 0, 128);
-+	tags[0] = 0xa0;
-+	tags[1] = 0x0a;
-+	tags[2] = 0xab;
-+
-+	handle = ea0_compress(tags);
-+	KUNIT_EXPECT_EQ(test, handle & BIT_ULL(63), 0);
-+	/* Tags are stored inline. */
-+	KUNIT_EXPECT_EQ(test, ea0_storage_size(handle), 8);
-+	KUNIT_EXPECT_TRUE(test, ea0_decompress(handle, dtags));
-+	KUNIT_EXPECT_EQ(test, memcmp(tags, dtags, 128), 0);
++	if (!handle)
++		return;
++	size = ea0_storage_size(handle);
++	ea0_release_handle(handle);
 +}
 +
-+/*
-+ * Generate a buffer that will contain @nranges of tag ranges, test that it
-+ * compresses into @exp_size bytes and decompresses into the original tag
-+ * sequence.
-+ */
-+static void compress_range_helper(struct kunit *test, int nranges, int exp_size)
++void _mte_restore_tags(void *tags, struct page *page)
 +{
-+	u8 tags[128], dtags[128];
-+	u64 handle;
-+	int i;
++	u64 handle = xa_to_value(tags);
++	u8 tags_decomp[128];
 +
-+	memset(tags, 0, 128);
++	if (!handle)
++		return;
 +
-+	if (nranges > 1) {
-+		nranges--;
-+		for (i = 0; i < nranges / 2; i++)
-+			tags[i] = 0xab;
-+		if (nranges % 2)
-+			tags[nranges / 2] = 0xa0;
-+	}
-+
-+	handle = ea0_compress(tags);
-+	KUNIT_EXPECT_EQ(test, handle & BIT_ULL(63), 0);
-+	KUNIT_EXPECT_EQ(test, ea0_storage_size(handle), exp_size);
-+	KUNIT_EXPECT_TRUE(test, ea0_decompress(handle, dtags));
-+	KUNIT_EXPECT_EQ(test, memcmp(tags, dtags, 128), 0);
-+}
-+
-+/*
-+ * Test that every number of tag ranges is correctly compressed and
-+ * decompressed.
-+ */
-+static void test_compress_ranges(struct kunit *test)
-+{
-+	int i, exp_size;
-+
-+	for (i = 1; i <= 256; i++) {
-+		if (i < 7)
-+			exp_size = 8;
-+		else if (i < 12)
-+			exp_size = 16;
-+		else if (i < 24)
-+			exp_size = 32;
-+		else if (i < 47)
-+			exp_size = 64;
-+		else
-+			exp_size = 128;
-+		compress_range_helper(test, i, exp_size);
++	if (try_page_mte_tagging(page)) {
++		if (!ea0_decompress(handle, tags_decomp))
++			return;
++		mte_restore_page_tags(page_address(page), tags_decomp);
++		set_page_mte_tagged(page);
 +	}
 +}
+diff --git a/arch/arm64/mm/mteswap_nocomp.c b/arch/arm64/mm/mteswap_nocomp.c
+new file mode 100644
+index 0000000000000..efcdac88b342d
+--- /dev/null
++++ b/arch/arm64/mm/mteswap_nocomp.c
+@@ -0,0 +1,37 @@
++// SPDX-License-Identifier: GPL-2.0
 +
-+static struct kunit_case mtecomp_test_cases[] = {
-+	KUNIT_CASE(test_tags_to_ranges_zero),
-+	KUNIT_CASE(test_tags_to_ranges_simple),
-+	KUNIT_CASE(test_tags_to_ranges_repeated),
-+	KUNIT_CASE(test_compress_zero),
-+	KUNIT_CASE(test_compress_simple),
-+	KUNIT_CASE(test_compress_ranges),
-+	{}
-+};
++/* MTE tag storage management without compression support. */
 +
-+static struct kunit_suite mtecomp_test_suite = {
-+	.name = "mtecomp",
-+	.test_cases = mtecomp_test_cases,
-+};
-+kunit_test_suites(&mtecomp_test_suite);
++#include <asm/mte.h>
++#include <linux/pagemap.h>
++#include <linux/slab.h>
++#include <linux/swap.h>
++#include <linux/swapops.h>
++#include <linux/xarray.h>
 +
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Alexander Potapenko <glider@google.com>");
++#include "mteswap.h"
++
++void *_mte_alloc_and_save_tags(struct page *page)
++{
++	void *storage;
++
++	storage = mte_allocate_tag_storage();
++	if (!storage)
++		return NULL;
++
++	mte_save_page_tags(page_address(page), storage);
++	return storage;
++}
++
++void _mte_free_saved_tags(void *storage)
++{
++	mte_free_tag_storage(storage);
++}
++
++void _mte_restore_tags(void *tags, struct page *page)
++{
++	if (try_page_mte_tagging(page)) {
++		mte_restore_page_tags(page_address(page), tags);
++		set_page_mte_tagged(page);
++	}
++}
 -- 
 2.41.0.255.g8b1d071c50-goog
 
