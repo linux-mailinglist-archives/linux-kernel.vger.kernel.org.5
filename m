@@ -2,163 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9315675178D
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 06:35:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1714751782
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 06:33:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233797AbjGMEez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 00:34:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40510 "EHLO
+        id S233707AbjGMEd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 00:33:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233753AbjGMEeu (ORCPT
+        with ESMTP id S232343AbjGMEdZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 00:34:50 -0400
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7902712F;
-        Wed, 12 Jul 2023 21:34:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689222889; x=1720758889;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=cRzfvAiOqEbmCFSTbcVQKw4zrRuJSvtgRbGD2txDVfY=;
-  b=QZiQbnDbditJz2FlouSLe07SDGOxbJwA8LInrh+G1rerwDJ9hygQoJWk
-   mnrrCTJIYtmFPmEvZGniJ+rsuAdt3jo7S1GMjnNUpEZmmZaJ8HEPLaeZv
-   Z1j37JVosdc01gLIrvZwWHBBMlheddhKMjJZ/PWzl9paTHzmCqnCN2BHN
-   kBbu7fM1vaNEcCQwHiaY269MFhaWvbMrnRtR4vUd4DXQOmJQ/FMcJpHDi
-   uQ3Gqs6Sumwo6ec5q06xM/z5VJA0UtlewnKJ5FT7ljKtf1FciLsT4tors
-   1GwxdUE8hPt3HOoQBmn0np873UlZGO67mtSWwfuZlxN9SQE1w1swl/IPG
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10769"; a="344677994"
-X-IronPort-AV: E=Sophos;i="6.01,201,1684825200"; 
-   d="scan'208";a="344677994"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2023 21:34:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10769"; a="866400244"
-X-IronPort-AV: E=Sophos;i="6.01,201,1684825200"; 
-   d="scan'208";a="866400244"
-Received: from allen-box.sh.intel.com ([10.239.159.127])
-  by fmsmga001.fm.intel.com with ESMTP; 12 Jul 2023 21:34:46 -0700
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Kevin Tian <kevin.tian@intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Nicolin Chen <nicolinc@nvidia.com>
-Cc:     iommu@lists.linux.dev, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Lu Baolu <baolu.lu@linux.intel.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Subject: [PATCH v2 2/2] iommu/vt-d: Remove rmrr check in domain attaching device path
-Date:   Thu, 13 Jul 2023 12:32:48 +0800
-Message-Id: <20230713043248.41315-3-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230713043248.41315-1-baolu.lu@linux.intel.com>
-References: <20230713043248.41315-1-baolu.lu@linux.intel.com>
+        Thu, 13 Jul 2023 00:33:25 -0400
+Received: from new2-smtp.messagingengine.com (new2-smtp.messagingengine.com [66.111.4.224])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A70912F;
+        Wed, 12 Jul 2023 21:33:24 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id A651158014A;
+        Thu, 13 Jul 2023 00:33:20 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Thu, 13 Jul 2023 00:33:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
+        1689222800; x=1689230000; bh=v+lGBq+GJvpo2kNvySw6OJjRn6Dau/dhBqQ
+        PgKVw2CQ=; b=Ydxif1r282/SQPhrzrY2GmsMajEwfmQ8a79fOmJp2JCCyCO1H5e
+        EPewr9Zx+Us62Lyk0Uq67G9wzmJ4CGJldD2IU4Y0QlAki+1RznNT1RUL4ppEW468
+        a4zFolkEu8Jd+YOYrLHwzkIX3geDGNQvTaKCRGh3jtv20ZK8sgbzN8UOr4rxTadu
+        xpKwmfmDF8Rhkna2/u7+B5pkOrg7Nh5f1iStoZGT9S/2h12q5BrjLd9FmMvW/mou
+        4FexsgaHFbDOupyzvCR3NCa7Ko/8w00K+IcUVjWgCxtNX1klziRCDEQQP3SQFY8i
+        IvTl24b4Y5X4GDzULEUY/sRyWvZSs7ufpqA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+        1689222800; x=1689230000; bh=v+lGBq+GJvpo2kNvySw6OJjRn6Dau/dhBqQ
+        PgKVw2CQ=; b=fgeaCodm8HH0aE7shD+BHhQYqHpMXe9BsL9VSsSN/WJWSEeBrEC
+        BTk7kBvJrQLLHaQYyNb7zrDFBKLB2THEbzyMh9+9L/Yc5KOv49G46KVti8zYVa46
+        GaKpMMFfWXSmNTraqwyzR7FRS2Ag7G0BGX+XD8Ha1hSJZOWrZglRWBqqOeIqH6bh
+        i5OT0a9PzcDvxVqOExTrfgqW57QvhX2IBLR+7ev+zBf2j2igL9FeujM/Dx+oFQ7I
+        JFNLhQgUonkgeRqvJn2i7UcpcQ2EPY/AST+v8wW7TF5kFYE9Jhv8JTFWVBDbdcsO
+        U7Omy3Fhtv1h8GcVR2+hgUWu/89F4Vvj70g==
+X-ME-Sender: <xms:kH6vZCNvEuQFvMAjH-eqZdA5Z6iqj2kWh2GCbX9JTLDgB7G3kYd1Qg>
+    <xme:kH6vZA_g7MGZi1EGlBsUW_9alzrF2TWPmqvsL7cbHI9yDxizyAG8NSxyI1fEVuCZ1
+    JsQQo6UlHzfyoaMkQ>
+X-ME-Received: <xmr:kH6vZJQ4Xep3pgUvzJa2NYPw0HCQ9lUnWNACwK_oCo_a1lE7gnxhrjgF3gfhrdd5hy0Z3T3GHqZLRuraZbih0MxWyS3FRCH_I-Bt>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrfeefgdekvdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenfg
+    hrlhcuvffnffculdejtddmnecujfgurhepfffhvfevuffkfhggtggugfgjsehtkefstddt
+    tdejnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqne
+    cuggftrfgrthhtvghrnhepieektdefhffhjeejgeejhfekkeejgfegvdeuhfeitdeiueeh
+    hffgvedthedviefgnecuffhomhgrihhnpehqvghmuhdrohhrghenucevlhhushhtvghruf
+    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:kH6vZCt72U-FBVX6tLrqaPeaPoUfUH9z-P6Nj1hqnigQJ_pjsvGDmA>
+    <xmx:kH6vZKfXKXYQo42k5IQHOLv_7RzDdWkSNJgYftSK6yp142O-PgxGzQ>
+    <xmx:kH6vZG14awhZMY8fhJ3e837cipMAXfutZEyzNfuLpCfYkYs8asLuqg>
+    <xmx:kH6vZIcDhoL_pWLsJEg5zCMGqqwT0nqZgobChfCa9hCQiPXfbh_9sA>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 13 Jul 2023 00:33:18 -0400 (EDT)
+Date:   Wed, 12 Jul 2023 22:33:17 -0600
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
+        coreteam@netfilter.org,
+        Network Development <netdev@vger.kernel.org>,
+        David Ahern <dsahern@kernel.org>
+Subject: Re: [PATCH bpf-next v4 2/6] netfilter: bpf: Support
+ BPF_F_NETFILTER_IP_DEFRAG in netfilter link
+Message-ID: <wltfmammaf5g4gumsbna4kmwo6dtd24g472o7kgkug42dhwcy2@32fmd7q6kvg4>
+References: <cover.1689203090.git.dxu@dxuuu.xyz>
+ <d3b0ff95c58356192ea3b50824f8cdbf02c354e3.1689203090.git.dxu@dxuuu.xyz>
+ <CAADnVQKKfEtZYZxihxvG3aQ34E1m95qTZ=jTD7yd0qvOASpAjQ@mail.gmail.com>
+ <kwiwaeaijj6sxwz5fhtxyoquhz2kpujbsbeajysufgmdjgyx5c@f6lqrd23xr5f>
+ <CAADnVQLcAoN5z+HD_44UKgJJc6t5TPW8+Ai9We0qJpau4NtEzA@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <CAADnVQLcAoN5z+HD_44UKgJJc6t5TPW8+Ai9We0qJpau4NtEzA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The core code now prevents devices with RMRR regions from being assigned
-to user space. There is no need to check for this condition in individual
-drivers. Remove it to avoid duplicate code.
+On Wed, Jul 12, 2023 at 06:26:13PM -0700, Alexei Starovoitov wrote:
+> On Wed, Jul 12, 2023 at 6:22 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+> >
+> > Hi Alexei,
+> >
+> > On Wed, Jul 12, 2023 at 05:43:49PM -0700, Alexei Starovoitov wrote:
+> > > On Wed, Jul 12, 2023 at 4:44 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+> > > > +#if IS_ENABLED(CONFIG_NF_DEFRAG_IPV6)
+> > > > +       case NFPROTO_IPV6:
+> > > > +               rcu_read_lock();
+> > > > +               v6_hook = rcu_dereference(nf_defrag_v6_hook);
+> > > > +               if (!v6_hook) {
+> > > > +                       rcu_read_unlock();
+> > > > +                       err = request_module("nf_defrag_ipv6");
+> > > > +                       if (err)
+> > > > +                               return err < 0 ? err : -EINVAL;
+> > > > +
+> > > > +                       rcu_read_lock();
+> > > > +                       v6_hook = rcu_dereference(nf_defrag_v6_hook);
+> > > > +                       if (!v6_hook) {
+> > > > +                               WARN_ONCE(1, "nf_defrag_ipv6_hooks bad registration");
+> > > > +                               err = -ENOENT;
+> > > > +                               goto out_v6;
+> > > > +                       }
+> > > > +               }
+> > > > +
+> > > > +               err = v6_hook->enable(link->net);
+> > >
+> > > I was about to apply, but luckily caught this issue in my local test:
+> > >
+> > > [   18.462448] BUG: sleeping function called from invalid context at
+> > > kernel/locking/mutex.c:283
+> > > [   18.463238] in_atomic(): 0, irqs_disabled(): 0, non_block: 0, pid:
+> > > 2042, name: test_progs
+> > > [   18.463927] preempt_count: 0, expected: 0
+> > > [   18.464249] RCU nest depth: 1, expected: 0
+> > > [   18.464631] CPU: 15 PID: 2042 Comm: test_progs Tainted: G
+> > > O       6.4.0-04319-g6f6ec4fa00dc #4896
+> > > [   18.465480] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+> > > BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> > > [   18.466531] Call Trace:
+> > > [   18.466767]  <TASK>
+> > > [   18.466975]  dump_stack_lvl+0x32/0x40
+> > > [   18.467325]  __might_resched+0x129/0x180
+> > > [   18.467691]  mutex_lock+0x1a/0x40
+> > > [   18.468057]  nf_defrag_ipv4_enable+0x16/0x70
+> > > [   18.468467]  bpf_nf_link_attach+0x141/0x300
+> > > [   18.468856]  __sys_bpf+0x133e/0x26d0
+> > >
+> > > You cannot call mutex under rcu_read_lock.
+> >
+> > Whoops, my bad. I think this patch should fix it:
+> >
+> > ```
+> > From 7e8927c44452db07ddd7cf0e30bb49215fc044ed Mon Sep 17 00:00:00 2001
+> > Message-ID: <7e8927c44452db07ddd7cf0e30bb49215fc044ed.1689211250.git.dxu@dxuuu.xyz>
+> > From: Daniel Xu <dxu@dxuuu.xyz>
+> > Date: Wed, 12 Jul 2023 19:17:35 -0600
+> > Subject: [PATCH] netfilter: bpf: Don't hold rcu_read_lock during
+> >  enable/disable
+> >
+> > ->enable()/->disable() takes a mutex which can sleep. You can't sleep
+> > during RCU read side critical section.
+> >
+> > Our refcnt on the module will protect us from ->enable()/->disable()
+> > from going away while we call it.
+> >
+> > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> > ---
+> >  net/netfilter/nf_bpf_link.c | 10 ++++++++--
+> >  1 file changed, 8 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/net/netfilter/nf_bpf_link.c b/net/netfilter/nf_bpf_link.c
+> > index 77ffbf26ba3d..79704cc596aa 100644
+> > --- a/net/netfilter/nf_bpf_link.c
+> > +++ b/net/netfilter/nf_bpf_link.c
+> > @@ -60,9 +60,12 @@ static int bpf_nf_enable_defrag(struct bpf_nf_link *link)
+> >                         goto out_v4;
+> >                 }
+> >
+> > +               rcu_read_unlock();
+> >                 err = v4_hook->enable(link->net);
+> >                 if (err)
+> >                         module_put(v4_hook->owner);
+> > +
+> > +               return err;
+> >  out_v4:
+> >                 rcu_read_unlock();
+> >                 return err;
+> > @@ -92,9 +95,12 @@ static int bpf_nf_enable_defrag(struct bpf_nf_link *link)
+> >                         goto out_v6;
+> >                 }
+> >
+> > +               rcu_read_unlock();
+> >                 err = v6_hook->enable(link->net);
+> >                 if (err)
+> >                         module_put(v6_hook->owner);
+> > +
+> > +               return err;
+> >  out_v6:
+> >                 rcu_read_unlock();
+> >                 return err;
+> > @@ -114,11 +120,11 @@ static void bpf_nf_disable_defrag(struct bpf_nf_link *link)
+> >         case NFPROTO_IPV4:
+> >                 rcu_read_lock();
+> >                 v4_hook = rcu_dereference(nf_defrag_v4_hook);
+> > +               rcu_read_unlock();
+> >                 if (v4_hook) {
+> >                         v4_hook->disable(link->net);
+> >                         module_put(v4_hook->owner);
+> >                 }
+> > -               rcu_read_unlock();
+> >
+> >                 break;
+> >  #endif
+> > @@ -126,11 +132,11 @@ static void bpf_nf_disable_defrag(struct bpf_nf_link *link)
+> >         case NFPROTO_IPV6:
+> >                 rcu_read_lock();
+> >                 v6_hook = rcu_dereference(nf_defrag_v6_hook);
+> > +               rcu_read_unlock();
+> 
+> No. v6_hook is gone as soon as you unlock it.
 
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
----
- drivers/iommu/intel/iommu.c | 58 -------------------------------------
- 1 file changed, 58 deletions(-)
+I think we're protected here by the try_module_get() on the enable path.
+And we only disable defrag if enabling succeeds. The module shouldn't
+be able to deregister its hooks until we call the module_put() later.
 
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index 5c8c5cdc36cf..43a28bc60ce1 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -2446,30 +2446,6 @@ static int dmar_domain_attach_device(struct dmar_domain *domain,
- 	return 0;
- }
- 
--static bool device_has_rmrr(struct device *dev)
--{
--	struct dmar_rmrr_unit *rmrr;
--	struct device *tmp;
--	int i;
--
--	rcu_read_lock();
--	for_each_rmrr_units(rmrr) {
--		/*
--		 * Return TRUE if this RMRR contains the device that
--		 * is passed in.
--		 */
--		for_each_active_dev_scope(rmrr->devices,
--					  rmrr->devices_cnt, i, tmp)
--			if (tmp == dev ||
--			    is_downstream_to_pci_bridge(dev, tmp)) {
--				rcu_read_unlock();
--				return true;
--			}
--	}
--	rcu_read_unlock();
--	return false;
--}
--
- /**
-  * device_rmrr_is_relaxable - Test whether the RMRR of this device
-  * is relaxable (ie. is allowed to be not enforced under some conditions)
-@@ -2499,34 +2475,6 @@ static bool device_rmrr_is_relaxable(struct device *dev)
- 		return false;
- }
- 
--/*
-- * There are a couple cases where we need to restrict the functionality of
-- * devices associated with RMRRs.  The first is when evaluating a device for
-- * identity mapping because problems exist when devices are moved in and out
-- * of domains and their respective RMRR information is lost.  This means that
-- * a device with associated RMRRs will never be in a "passthrough" domain.
-- * The second is use of the device through the IOMMU API.  This interface
-- * expects to have full control of the IOVA space for the device.  We cannot
-- * satisfy both the requirement that RMRR access is maintained and have an
-- * unencumbered IOVA space.  We also have no ability to quiesce the device's
-- * use of the RMRR space or even inform the IOMMU API user of the restriction.
-- * We therefore prevent devices associated with an RMRR from participating in
-- * the IOMMU API, which eliminates them from device assignment.
-- *
-- * In both cases, devices which have relaxable RMRRs are not concerned by this
-- * restriction. See device_rmrr_is_relaxable comment.
-- */
--static bool device_is_rmrr_locked(struct device *dev)
--{
--	if (!device_has_rmrr(dev))
--		return false;
--
--	if (device_rmrr_is_relaxable(dev))
--		return false;
--
--	return true;
--}
--
- /*
-  * Return the required default domain type for a specific device.
-  *
-@@ -4139,12 +4087,6 @@ static int intel_iommu_attach_device(struct iommu_domain *domain,
- 	struct device_domain_info *info = dev_iommu_priv_get(dev);
- 	int ret;
- 
--	if (domain->type == IOMMU_DOMAIN_UNMANAGED &&
--	    device_is_rmrr_locked(dev)) {
--		dev_warn(dev, "Device is ineligible for IOMMU domain attach due to platform RMRR requirement.  Contact your platform vendor.\n");
--		return -EPERM;
--	}
--
- 	if (info->domain)
- 		device_block_translation(dev);
- 
--- 
-2.34.1
+I think READ_ONCE() would've been more appropriate but I wasn't sure if
+that was ok given nf_defrag_v(4|6)_hook is written to by
+rcu_assign_pointer() and I was assuming symmetry is necessary.
 
+Does that sound right?
+
+Thanks,
+Daniel
