@@ -2,70 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AB55751668
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 04:43:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD62875166B
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 04:46:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233705AbjGMCns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 22:43:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57830 "EHLO
+        id S233055AbjGMCqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 22:46:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233686AbjGMCnq (ORCPT
+        with ESMTP id S229646AbjGMCp6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 22:43:46 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A373172C
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 19:43:45 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-4fb41682472so354054e87.2
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 19:43:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google; t=1689216223; x=1691808223;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZZbsg7ZRrrqBObmRQBVORF/Ql/2GsFEmO5ssSII3RHc=;
-        b=RUpLiH+NZ5kW+xt5BZgJW/XlZMe5ZDORblGpIddVoU/ndInI3cAp4cXSNnFk99OF+M
-         FX+dvM2WvqMDl+DahMoBnRwn2luRoxsY52IcPWv4pRbOUmvg+hZUnq55Z0F2zjJXjzac
-         8DOMUMrGDiHr9oQv5jaCcNZUGSCeUq/RTEN5I=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689216223; x=1691808223;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZZbsg7ZRrrqBObmRQBVORF/Ql/2GsFEmO5ssSII3RHc=;
-        b=Ym17rlYrS2TyHQlqSZQTvaiEvdja8BTl8cLy/C4XZCc0BS5/I4T8OmYHaH1k81vpPS
-         6oNm85mqrzE3DLSwvShqTbK7O8UDOb8eE9bL8aCbd4++rR3CSyx2MdCX5J1fanGi9vNk
-         U/1bCUpKsB/SuiJRttNOOpoh2VOisyYVGmH1JKh2t2P7QGQhFZLQhc8mxAoBFyCt/T31
-         yRVj80NJLb+5aUgScYI2kL1kASGDk3U9qXJY0jovtbVU2z7yEdcXhDqobjy4O8KePWlN
-         SakhBJOkVfb8rZKtNta9YLdXQsY+20UxnL/ryvBxysVY0JX6gz6oPqvGALSrK8GIActi
-         foEg==
-X-Gm-Message-State: ABy/qLanwDxdXBTgWMYyOjLj5UrSc+u96t10p1sz1qxh3J/budUXxnDL
-        2pCWIg3jwal8qD80yRglORn/ywmPUpxu11bpD28ZwA==
-X-Google-Smtp-Source: APBJJlHzJTiOMDWKfml2hr3byYUAUNS3gAF4xGhcgSFBniRgKe3QbH2vHjtMZUo0Oakz6OyMyNC4x4zguuMI5FrLksQ=
-X-Received: by 2002:a19:700e:0:b0:4fa:e7e5:66e0 with SMTP id
- h14-20020a19700e000000b004fae7e566e0mr42962lfc.48.1689216223539; Wed, 12 Jul
- 2023 19:43:43 -0700 (PDT)
+        Wed, 12 Jul 2023 22:45:58 -0400
+Received: from mailbox.box.xen0n.name (mail.xen0n.name [115.28.160.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1ACD19BA;
+        Wed, 12 Jul 2023 19:45:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xen0n.name; s=mail;
+        t=1689216351; bh=gqz1bgvL/lc4UJv2uVXgCnOHv0QDm6yYBsD26lwdwp8=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=BzBBi+C00IuSe07iaacQw/Rel7MGQmTVUDl8U2srpx3+vUC2lgT4eXwe7XZnMj9cH
+         wvOU3eM42Q0ppZyhciwLdOt9zeGR7iuQDV2cI0lCPWNU4Oa2iQ/GL0BNMYnqujb/2z
+         pQMdRBzje3qDwknM47V5k+8tOn/ug4Xo0MfAtvgY=
+Received: from [100.100.34.13] (unknown [220.248.53.61])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id 9684C600DA;
+        Thu, 13 Jul 2023 10:45:50 +0800 (CST)
+Message-ID: <0797812f-20cd-9961-7a46-d8e6fefee788@xen0n.name>
+Date:   Thu, 13 Jul 2023 10:45:50 +0800
 MIME-Version: 1.0
-References: <20230711043453.64095-1-ivan@cloudflare.com> <20230711193612.22c9bc04@kernel.org>
- <CAO3-PbrZHn1syvhb3V57oeXigE_roiHCbzYz5Mi4wiymogTg2A@mail.gmail.com> <20230712104210.3b86b779@kernel.org>
-In-Reply-To: <20230712104210.3b86b779@kernel.org>
-From:   Yan Zhai <yan@cloudflare.com>
-Date:   Wed, 12 Jul 2023 21:43:32 -0500
-Message-ID: <CAO3-PbqtdX+xioiQfOCxVovKVYUgXkrmsfw+1wTYoJiAq=2=ng@mail.gmail.com>
-Subject: Re: [RFC PATCH net-next] tcp: add a tracepoint for tcp_listen_queue_drop
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Ivan Babrou <ivan@cloudflare.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@cloudflare.com,
-        Eric Dumazet <edumazet@google.com>,
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH 02/10] tty: sysrq: switch sysrq handlers from int to u8
+To:     "Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
+        gregkh@linuxfoundation.org
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
         "David S. Miller" <davem@davemloft.net>,
-        Paolo Abeni <pabeni@redhat.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        David Ahern <dsahern@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>
+References: <20230712081811.29004-1-jirislaby@kernel.org>
+ <20230712081811.29004-3-jirislaby@kernel.org>
+Content-Language: en-US
+From:   WANG Xuerui <kernel@xen0n.name>
+In-Reply-To: <20230712081811.29004-3-jirislaby@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,35 +82,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 12:42=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> w=
-rote:
->
-> On Wed, 12 Jul 2023 11:42:26 -0500 Yan Zhai wrote:
-> >   The issue with kfree_skb is not that it fires too frequently (not in
-> > the 6.x kernel now). Rather, it is unable to locate the socket info
-> > when a SYN is dropped due to the accept queue being full. The sk is
-> > stolen upon inet lookup, e.g. in tcp_v4_rcv. This makes it unable to
-> > tell in kfree_skb which socket a SYN skb is targeting (when TPROXY or
-> > socket lookup are used). A tracepoint with sk information will be more
-> > useful to monitor accurately which service/socket is involved.
->
-> No doubt that kfree_skb isn't going to solve all our needs, but I'd
-> really like you to clean up the unnecessary callers on your systems
-> first, before adding further tracepoints. That way we'll have a clear
-> picture of which points can be solved by kfree_skb and where we need
-> further work.
+On 2023/7/12 16:18, Jiri Slaby (SUSE) wrote:
+> The passed parameter to sysrq handlers is a key (a character). So change
+> the type from 'int' to 'u8'. Let it specifically be 'u8' for two
+> reasons:
+> * unsigned: unsigned values come from the upper layers (devices) and the
+>    tty layer assumes unsigned on most places, and
+> * 8-bit: as that what's supposed to be one day in all the layers built
+>    on the top of tty. (Currently, we use mostly 'unsigned char' and
+>    somewhere still only 'char'. (But that also translates to the former
+>    thanks to -funsigned-char.))
+> 
+> Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
+> Cc: Richard Henderson <richard.henderson@linaro.org>
+> Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
+> Cc: Matt Turner <mattst88@gmail.com>
+> Cc: Huacai Chen <chenhuacai@kernel.org>
+> Cc: WANG Xuerui <kernel@xen0n.name>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Nicholas Piggin <npiggin@gmail.com>
+> Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+> Cc: Maxime Ripard <mripard@kernel.org>
+> Cc: Thomas Zimmermann <tzimmermann@suse.de>
+> Cc: David Airlie <airlied@gmail.com>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Jason Wessel <jason.wessel@windriver.com>
+> Cc: Daniel Thompson <daniel.thompson@linaro.org>
+> Cc: Douglas Anderson <dianders@chromium.org>
+> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+> Cc: Len Brown <len.brown@intel.com>
+> Cc: Pavel Machek <pavel@ucw.cz>
+> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> Cc: Frederic Weisbecker <frederic@kernel.org>
+> Cc: Neeraj Upadhyay <quic_neeraju@quicinc.com>
+> Cc: Joel Fernandes <joel@joelfernandes.org>
+> Cc: Josh Triplett <josh@joshtriplett.org>
+> Cc: Boqun Feng <boqun.feng@gmail.com>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+> Cc: Zqiang <qiang.zhang1211@gmail.com>
+> ---
+>   arch/alpha/kernel/setup.c       |  2 +-
+>   arch/loongarch/kernel/sysrq.c   |  2 +-
+>   arch/mips/kernel/sysrq.c        |  2 +-
+>   arch/powerpc/xmon/xmon.c        |  2 +-
+>   arch/sparc/kernel/process_64.c  |  4 ++--
+>   drivers/gpu/drm/drm_fb_helper.c |  2 +-
+>   drivers/tty/sysrq.c             | 40 ++++++++++++++++-----------------
+>   include/linux/sysrq.h           |  2 +-
+>   kernel/debug/debug_core.c       |  2 +-
+>   kernel/power/poweroff.c         |  2 +-
+>   kernel/rcu/tree_stall.h         |  2 +-
+>   11 files changed, 31 insertions(+), 31 deletions(-)
+> 
+> [snip]
+> diff --git a/arch/loongarch/kernel/sysrq.c b/arch/loongarch/kernel/sysrq.c
+> index 366baef72d29..e663c10fa39c 100644
+> --- a/arch/loongarch/kernel/sysrq.c
+> +++ b/arch/loongarch/kernel/sysrq.c
+> @@ -43,7 +43,7 @@ static void sysrq_tlbdump_othercpus(struct work_struct *dummy)
+>   static DECLARE_WORK(sysrq_tlbdump, sysrq_tlbdump_othercpus);
+>   #endif
+>   
+> -static void sysrq_handle_tlbdump(int key)
+> +static void sysrq_handle_tlbdump(u8 key)
+>   {
+>   	sysrq_tlbdump_single(NULL);
+>   #ifdef CONFIG_SMP
+> [snip]
 
-Those are not unnecessary calls, e.g. a lot of those kfree_skb come
-from iptables drops, tcp validation, ttl expires, etc. On a moderately
-loaded server, it is called at a rate of ~10k/sec, which isn't
-terribly awful given that we absorb millions of attack packets at each
-data center. We used to have many consume skb noises at this trace
-point with older versions of kernels, but those have gone ever since
-the better separation between consume and drop.
+Acked-by: WANG Xuerui <git@xen0n.name> # loongarch
 
-That said, accessing sk information is still the critical piece to
-address our use case. Is there any other possible way that we can get
-this information at the accept queue overflow time?
+Thanks!
 
---
-Yan
+-- 
+WANG "xen0n" Xuerui
+
+Linux/LoongArch mailing list: https://lore.kernel.org/loongarch/
+
