@@ -2,72 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C11175239F
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 15:23:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0C627523AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 15:24:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235253AbjGMNXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 09:23:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56544 "EHLO
+        id S235382AbjGMNYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 09:24:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235390AbjGMNXR (ORCPT
+        with ESMTP id S235242AbjGMNYR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 09:23:17 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 45EA0270A;
-        Thu, 13 Jul 2023 06:22:14 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 943C01570;
-        Thu, 13 Jul 2023 06:22:26 -0700 (PDT)
-Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A3EDF3F73F;
-        Thu, 13 Jul 2023 06:21:42 -0700 (PDT)
-Date:   Thu, 13 Jul 2023 14:21:40 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     stanley.chu@mediatek.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, matthias.bgg@gmail.com,
-        angelogioacchino.delregno@collabora.com,
-        linux-scsi@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Abaci Robot <abaci@linux.alibaba.com>
-Subject: Re: [PATCH -next] scsi: ufs: ufs-mediatek: Remove surplus dev_err()
-Message-ID: <20230713132140.azamscgceh6yyy6j@bogus>
-References: <20230712064832.44188-1-yang.lee@linux.alibaba.com>
- <20230713131123.uo5ofltbhvktkevd@bogus>
+        Thu, 13 Jul 2023 09:24:17 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 478E03C01;
+        Thu, 13 Jul 2023 06:23:09 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8557C612FC;
+        Thu, 13 Jul 2023 13:22:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73C62C433C7;
+        Thu, 13 Jul 2023 13:22:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689254550;
+        bh=bOUAPzYMXtdmmDSu2PZbdjTsWvkvo0nimQiCAPr8Yhw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=JhOxNiBdFSDCF2V9/Owve15T7sqX4XOaeLrOvcgSNwS3EOX8VGPBTRWhuKoRbgBd6
+         UZFYLGBzQhDg3neOr3DuwW0ysPNNI3j+3TqncYXQx5UByAPqlrSR9FNQA9+GAO5LFF
+         y0krZvqDmQ5nsqpEiy0GeMLmk+sjw1pb6NYckaT6eXLvP7V99Bmw8ctkemXlii6Yzb
+         LjhV08DNKdnVDxVeYlcOFk53tsOZU4+Jo52jzg8OzM36DdGHFjIQHeCqY+8H+mRPpa
+         fGonogsNanTUNMQAXXtHV+wsT033vaVk2i34k/TuiaojjLu7D980TKd4GHtOwPNXA1
+         kcr1qYNL3l4Gg==
+Date:   Thu, 13 Jul 2023 15:22:24 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>
+Cc:     Aleksa Sarai <cyphar@cyphar.com>, Willy Tarreau <w@1wt.eu>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Chinner <dchinner@redhat.com>,
+        xu xin <cgel.zte@gmail.com>, Al Viro <viro@zeniv.linux.org.uk>,
+        Stefan Roesch <shr@devkernel.io>,
+        Zhihao Cheng <chengzhihao1@huawei.com>,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        Janis Danisevskis <jdanis@google.com>,
+        Kees Cook <keescook@chromium.org>, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH] procfs: block chmod on /proc/thread-self/comm
+Message-ID: <20230713-unerschrocken-kutschieren-9be3c8958b5d@brauner>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230713131123.uo5ofltbhvktkevd@bogus>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 02:11:23PM +0100, Sudeep Holla wrote:
-> On Wed, Jul 12, 2023 at 02:48:32PM +0800, Yang Li wrote:
-> > There is no need to call the dev_err() function directly to print a
-> > custom message when handling an error from either the platform_get_irq()
-> > or platform_get_irq_byname() functions as both are going to display an
-> > appropriate error message in case of a failure.
-> > 
-> > ./drivers/ufs/host/ufs-mediatek.c:864:3-10: line 864 is redundant because platform_get_irq() already prints an error
-> > 
-> > Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> > Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=5846
+> > diff --git a/tools/testing/selftests/nolibc/nolibc-test.c b/tools/testing/selftests/nolibc/nolibc-test.c
+> > index 486334981e60..08f0969208eb 100644
+> > --- a/tools/testing/selftests/nolibc/nolibc-test.c
+> > +++ b/tools/testing/selftests/nolibc/nolibc-test.c
+> > @@ -580,6 +580,10 @@ int run_syscall(int min, int max)
+> >  		CASE_TEST(chmod_net);         EXPECT_SYSZR(proc, chmod("/proc/self/net", 0555)); break;
+> >  		CASE_TEST(chmod_self);        EXPECT_SYSER(proc, chmod("/proc/self", 0555), -1, EPERM); break;
+> >  		CASE_TEST(chown_self);        EXPECT_SYSER(proc, chown("/proc/self", 0, 0), -1, EPERM); break;
+> > +		CASE_TEST(chmod_self_comm);   EXPECT_SYSER(proc, chmod("/proc/self/comm", 0777), -1, EPERM); break;
+> > +		CASE_TEST(chmod_tid_comm);    EXPECT_SYSER(proc, chmod("/proc/thread-self/comm", 0777), -1, EPERM); break;
+> > +		CASE_TEST(chmod_self_environ);EXPECT_SYSER(proc, chmod("/proc/self/environ", 0777), -1, EPERM); break;
+> > +		CASE_TEST(chmod_tid_environ); EXPECT_SYSER(proc, chmod("/proc/thread-self/environ", 0777), -1, EPERM); break;
+
 > 
-> Acked-by: Sudeep Holla <sudeep.holla@arm.com>
-> 
+> I'm not a big fan of this, it abuses the nolibc testsuite to test core
+> kernel functionality.
 
-Sorry for this, I didn't mean to ack this patch, no idea how on earth I
-managed to do that (must be some wrong key combination in my email client)
-but I wanted and meant to ack only this [1]. Sorry for the noise.
-
--- 
-Regards,
-Sudeep
-
-[1] https://lore.kernel.org/r/20230712062853.11007-9-frank.li@vivo.com
+Yes, this should be dropped.
+We need a minimal patch to fix this. This just makes backporting harder
+and any test doesn't need to be backported.
