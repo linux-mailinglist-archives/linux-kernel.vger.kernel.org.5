@@ -2,94 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 583587516AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 05:17:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9B737516AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 05:18:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233466AbjGMDRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 23:17:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40664 "EHLO
+        id S233486AbjGMDSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 23:18:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231592AbjGMDRd (ORCPT
+        with ESMTP id S231592AbjGMDSW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 23:17:33 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FE5B10FC
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 20:17:32 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R1ftL1lm5zBKy7r
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 11:17:30 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689218250; x=1691810251; bh=vy2hpwLqIbN4V8wU9/R2s/5gk++
-        9S9+eXX9ZvB2DiBg=; b=NcdAuoR974e/19vTeBX57gNMOJW+huU5uXZ4cj40BRa
-        ZSyFIDs6VOmtOZmQgt9AQSt4+nsLNLTcLrJvPDpQfenPw5dIXC3kHJXnV7SE5RQP
-        svAYc3Cq2wLHebpEjC23Aq8WLHqwc6TkZKXbdXpjCvye3rMjk5qviwjb1Z+Py/co
-        YGuCAj9JsGBG+p6uog8zalWmA3icbCmEVD8guOQ/k2SMteYFnhkPijXiWIE0/nhK
-        iWSJIYdLBw9VN0+Ei/oBlJVyZwBhC/Y2aMqDNNcr4zkjZfgYYsBROryowrF36aMU
-        OO+kIpoAXSvrOVXN9Ae5r1xNCUxwESyTyI/LzaFivFg==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id WkKBBZ4LsJFZ for <linux-kernel@vger.kernel.org>;
-        Thu, 13 Jul 2023 11:17:30 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R1ftK6NTSzBHXgq;
-        Thu, 13 Jul 2023 11:17:29 +0800 (CST)
+        Wed, 12 Jul 2023 23:18:22 -0400
+Received: from mail-il1-f171.google.com (mail-il1-f171.google.com [209.85.166.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D455510FC;
+        Wed, 12 Jul 2023 20:18:21 -0700 (PDT)
+Received: by mail-il1-f171.google.com with SMTP id e9e14a558f8ab-3463de183b0so846895ab.2;
+        Wed, 12 Jul 2023 20:18:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689218301; x=1691810301;
+        h=date:subject:message-id:references:in-reply-to:cc:to:from
+         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=qawsrB2QjObGFKdtBJBr24bS4klgjaH5RnlsFvFaqdA=;
+        b=FlASqXf7vRR5t3eTnmT7e/V8WHJv239bInW7MXYkyKN8IDb0MXkkL9DE8fwlIqVTp3
+         RXe7cnLfEmmC+YkWvAlca1ij/QbStsSF0+woa8c+b9OeHedWU8fdla8kHhSA/xcvaOE8
+         dp5sYxDBvkyb2WtCVYkG1tqrYFs5V7njTU0zzCG4q8IbwftkUPlFTsqH/2+mH46aPYKZ
+         EUReysGNjY1l6s2NhaN70XW0faywWJugXDHD80cvbP+tI9fwrTVJkJ/aNLyCE2t0MTnT
+         qMxefhnLViZoFaPkPetjGxUg7wMyAco0WTBy9w/jJRmK7OhSRifzPSBt5NMj5+Kt2PLF
+         tXRA==
+X-Gm-Message-State: ABy/qLY1lPqTdVrZLrSZ36c1oWe2AjtLuGgt2Z46eR1apdDQBflSBRQk
+        MU/zhdU/6eWWH63kwN52kw==
+X-Google-Smtp-Source: APBJJlHY6uobXkZ7Ot/PXNS2zXB03TK8FxoMtNQm5K2O57QB9S+kej4dH9EdpogJCIV4sH4ZYuGddw==
+X-Received: by 2002:a92:cf4a:0:b0:345:aba5:3780 with SMTP id c10-20020a92cf4a000000b00345aba53780mr405972ilr.22.1689218301057;
+        Wed, 12 Jul 2023 20:18:21 -0700 (PDT)
+Received: from robh_at_kernel.org ([64.188.179.250])
+        by smtp.gmail.com with ESMTPSA id g2-20020a92d7c2000000b0034579ffe2b1sm1745730ilq.29.2023.07.12.20.18.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Jul 2023 20:18:20 -0700 (PDT)
+Received: (nullmailer pid 2687664 invoked by uid 1000);
+        Thu, 13 Jul 2023 03:18:17 -0000
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8bit
 MIME-Version: 1.0
-Date:   Thu, 13 Jul 2023 11:17:29 +0800
-From:   liubin001@208suo.com
-To:     airlied@gmail.com, daniel@ffwll.ch
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/vmwgfx: "foo* const bar" should be "foo * const bar"\
- that ope- n brace { should be on the previous line
-In-Reply-To: <tencent_4F166AB6DC9C757B0454E3F4875027411F08@qq.com>
-References: <tencent_4F166AB6DC9C757B0454E3F4875027411F08@qq.com>
-User-Agent: Roundcube Webmail
-Message-ID: <7d2a5aba980cd6b7928c15e65fd94086@208suo.com>
-X-Sender: liubin001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+From:   Rob Herring <robh@kernel.org>
+To:     Daniel Golle <daniel@makrotopia.org>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-mediatek@lists.infradead.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Greg Ungerer <gerg@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        devicetree@vger.kernel.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-arm-kernel@lists.infradead.org, Felix Fietkau <nbd@nbd.name>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org,
+        =?utf-8?q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+In-Reply-To: <6c2e9caddfb9427444307d8443f1b231e500787b.1689012506.git.daniel@makrotopia.org>
+References: <cover.1689012506.git.daniel@makrotopia.org>
+ <6c2e9caddfb9427444307d8443f1b231e500787b.1689012506.git.daniel@makrotopia.org>
+Message-Id: <168921829748.2687635.17297461907605978671.robh@kernel.org>
+Subject: Re: [PATCH v2 net-next 2/9] dt-bindings: net: mediatek,net: add
+ mt7988-eth binding
+Date:   Wed, 12 Jul 2023 21:18:17 -0600
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(1)The standard format for declaring a pointer is to add a space bet-
-ween the type name and the * symbol, as well as between the * symbol and 
-the variable name.
-(2) that open brace { should be on the previous line
-Signed-off-by: 	Bin Liu <liubin001@208suo.com>
----
-  drivers/gpu/drm/vmwgfx/vmwgfx_msg.c | 2 +-
-  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_msg.c 
-b/drivers/gpu/drm/vmwgfx/vmwgfx_msg.c
-index 96504a320c2a..b56936f95d31 100644
---- a/drivers/gpu/drm/vmwgfx/vmwgfx_msg.c
-+++ b/drivers/gpu/drm/vmwgfx/vmwgfx_msg.c
-@@ -87,7 +87,7 @@ struct rpc_channel {
+On Thu, 13 Jul 2023 03:17:55 +0100, Daniel Golle wrote:
+> Introduce DT bindings for the MT7988 SoC to mediatek,net.yaml.
+> The MT7988 SoC got 3 Ethernet MACs operating at a maximum of
+> 10 Gigabit/sec supported by 2 packet processor engines for
+> offloading tasks.
+> The first MAC is hard-wired to a built-in switch which exposes
+> four 1000Base-T PHYs as user ports.
+> It also comes with built-in 2500Base-T PHY which can be used
+> with the 2nd GMAC.
+> The 2nd and 3rd GMAC can be connected to external PHYs or provide
+> SFP(+) cages attached via SGMII, 1000Base-X, 2500Base-X, USXGMII,
+> 5GBase-R or 10GBase-KR.
+> 
+> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+> ---
+>  .../devicetree/bindings/net/mediatek,net.yaml | 111 ++++++++++++++++++
+>  1 file changed, 111 insertions(+)
+> 
 
-  #if IS_ENABLED(CONFIG_DRM_VMWGFX_MKSSTATS)
-  /* Kernel mksGuestStats counter names and desciptions; same order as 
-enum mksstat_kern_stats_t */
--static const char* const mksstat_kern_name_desc[MKSSTAT_KERN_COUNT][2] 
-=
-{
-         { "vmw_execbuf_ioctl", "vmw_execbuf_ioctl" },
-         { "vmw_cotable_resize", "vmw_cotable_resize" },
-};
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-+static const char * const mksstat_kern_name_desc[MKSSTAT_KERN_COUNT][2] 
-= {
-      { "vmw_execbuf_ioctl", "vmw_execbuf_ioctl" },
-      { "vmw_cotable_resize", "vmw_cotable_resize" },
-  };
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/net/mediatek,net.yaml:76:9: [error] syntax error: could not find expected ':' (syntax)
+
+dtschema/dtc warnings/errors:
+make[2]: *** Deleting file 'Documentation/devicetree/bindings/net/mediatek,net.example.dts'
+Documentation/devicetree/bindings/net/mediatek,net.yaml:76:9: could not find expected ':'
+make[2]: *** [Documentation/devicetree/bindings/Makefile:26: Documentation/devicetree/bindings/net/mediatek,net.example.dts] Error 1
+make[2]: *** Waiting for unfinished jobs....
+./Documentation/devicetree/bindings/net/mediatek,net.yaml:76:9: could not find expected ':'
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/mediatek,net.yaml: ignoring, error parsing file
+make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1500: dt_binding_check] Error 2
+make: *** [Makefile:234: __sub-make] Error 2
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/6c2e9caddfb9427444307d8443f1b231e500787b.1689012506.git.daniel@makrotopia.org
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
+
