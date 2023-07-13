@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 879C2751D88
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 11:41:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1613751D8B
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 11:41:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234442AbjGMJlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 05:41:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58938 "EHLO
+        id S234488AbjGMJlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 05:41:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234333AbjGMJkr (ORCPT
+        with ESMTP id S234379AbjGMJkx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 05:40:47 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4B3D2698;
-        Thu, 13 Jul 2023 02:40:35 -0700 (PDT)
+        Thu, 13 Jul 2023 05:40:53 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B692C26B8;
+        Thu, 13 Jul 2023 02:40:36 -0700 (PDT)
 Received: from dggpemm500001.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4R1qLv1v51zVjYP;
-        Thu, 13 Jul 2023 17:39:19 +0800 (CST)
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4R1qMg1LkQz18Lnh;
+        Thu, 13 Jul 2023 17:39:59 +0800 (CST)
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
  dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 13 Jul 2023 17:40:32 +0800
+ 15.1.2507.27; Thu, 13 Jul 2023 17:40:33 +0800
 From:   Kefeng Wang <wangkefeng.wang@huawei.com>
 To:     <linux-mm@kvack.org>, Andrew Morton <akpm@linux-foundation.org>,
         <surenb@google.com>
@@ -52,9 +52,9 @@ CC:     Russell King <linux@armlinux.org.uk>,
         <linuxppc-dev@lists.ozlabs.org>, <linux-riscv@lists.infradead.org>,
         <linux-s390@vger.kernel.org>,
         Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH rfc -next 09/10] loongarch: mm: add access_error() helper
-Date:   Thu, 13 Jul 2023 17:53:37 +0800
-Message-ID: <20230713095339.189715-10-wangkefeng.wang@huawei.com>
+Subject: [PATCH rfc -next 10/10] loongarch: mm: try VMA lock-based page fault handling first
+Date:   Thu, 13 Jul 2023 17:53:38 +0800
+Message-ID: <20230713095339.189715-11-wangkefeng.wang@huawei.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230713095339.189715-1-wangkefeng.wang@huawei.com>
 References: <20230713095339.189715-1-wangkefeng.wang@huawei.com>
@@ -74,70 +74,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add access_error() to check whether vma could be accessible or not,
-which will be used __do_page_fault() and later vma locked based page
-fault.
+Attempt VMA lock-based page fault handling first, and fall back
+to the existing mmap_lock-based handling if that fails.
 
 Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 ---
- arch/loongarch/mm/fault.c | 30 ++++++++++++++++++++----------
- 1 file changed, 20 insertions(+), 10 deletions(-)
+ arch/loongarch/Kconfig    |  1 +
+ arch/loongarch/mm/fault.c | 26 ++++++++++++++++++++++++++
+ 2 files changed, 27 insertions(+)
 
+diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
+index 397203e18800..afb0ccabab97 100644
+--- a/arch/loongarch/Kconfig
++++ b/arch/loongarch/Kconfig
+@@ -53,6 +53,7 @@ config LOONGARCH
+ 	select ARCH_SUPPORTS_LTO_CLANG
+ 	select ARCH_SUPPORTS_LTO_CLANG_THIN
+ 	select ARCH_SUPPORTS_NUMA_BALANCING
++	select ARCH_SUPPORTS_PER_VMA_LOCK
+ 	select ARCH_USE_BUILTIN_BSWAP
+ 	select ARCH_USE_CMPXCHG_LOCKREF
+ 	select ARCH_USE_QUEUED_RWLOCKS
 diff --git a/arch/loongarch/mm/fault.c b/arch/loongarch/mm/fault.c
-index 03d06ee184da..cde2ea0119fa 100644
+index cde2ea0119fa..7e54bc48813e 100644
 --- a/arch/loongarch/mm/fault.c
 +++ b/arch/loongarch/mm/fault.c
-@@ -120,6 +120,22 @@ static void __kprobes do_sigsegv(struct pt_regs *regs,
- 	force_sig_fault(SIGSEGV, si_code, (void __user *)address);
+@@ -136,6 +136,17 @@ static inline bool access_error(unsigned int flags, struct pt_regs *regs,
+ 	return false;
  }
  
-+static inline bool access_error(unsigned int flags, struct pt_regs *regs,
-+				unsigned long addr, struct vm_area_struct *vma)
++#ifdef CONFIG_PER_VMA_LOCK
++int arch_vma_check_access(struct vm_area_struct *vma,
++			  struct vm_locked_fault *vmlf)
 +{
-+	if (flags & FAULT_FLAG_WRITE) {
-+		if (!(vma->vm_flags & VM_WRITE))
-+			return true;
-+	} else {
-+		if (!(vma->vm_flags & VM_READ) && addr != exception_era(regs))
-+			return true;
-+		if (!(vma->vm_flags & VM_EXEC) && addr == exception_era(regs))
-+			return true;
-+	}
-+
-+	return false;
++	if (unlikely(access_error(vmlf->fault_flags, vmlf->regs, vmlf->address,
++		     vma)))
++		return -EINVAL;
++	return 0;
 +}
++#endif
 +
  /*
   * This routine handles page faults.  It determines the address,
   * and the problem, and then passes it off to one of the appropriate
-@@ -163,6 +179,8 @@ static void __kprobes __do_page_fault(struct pt_regs *regs,
+@@ -149,6 +160,7 @@ static void __kprobes __do_page_fault(struct pt_regs *regs,
+ 	struct task_struct *tsk = current;
+ 	struct mm_struct *mm = tsk->mm;
+ 	struct vm_area_struct *vma = NULL;
++	struct vm_locked_fault vmlf;
+ 	vm_fault_t fault;
  
- 	if (user_mode(regs))
- 		flags |= FAULT_FLAG_USER;
-+	if (write)
-+		flags |= FAULT_FLAG_WRITE;
+ 	if (kprobe_page_fault(regs, current->thread.trap_nr))
+@@ -183,6 +195,19 @@ static void __kprobes __do_page_fault(struct pt_regs *regs,
+ 		flags |= FAULT_FLAG_WRITE;
  
  	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, address);
++
++	VM_LOCKED_FAULT_INIT(vmlf, mm, address, flags, 0, regs, 0);
++	if (try_vma_locked_page_fault(&vmlf, &fault))
++		goto retry;
++	else if (!(fault | VM_FAULT_RETRY))
++		goto done;
++
++	if (fault_signal_pending(fault, regs)) {
++		if (!user_mode(regs))
++			no_context(regs, address);
++		return;
++	}
++
  retry:
-@@ -172,16 +190,8 @@ static void __kprobes __do_page_fault(struct pt_regs *regs,
+ 	vma = lock_mm_and_find_vma(mm, address, regs);
+ 	if (unlikely(!vma))
+@@ -223,6 +248,7 @@ static void __kprobes __do_page_fault(struct pt_regs *regs,
  
- 	si_code = SEGV_ACCERR;
+ 	mmap_read_unlock(mm);
  
--	if (write) {
--		flags |= FAULT_FLAG_WRITE;
--		if (!(vma->vm_flags & VM_WRITE))
--			goto bad_area;
--	} else {
--		if (!(vma->vm_flags & VM_READ) && address != exception_era(regs))
--			goto bad_area;
--		if (!(vma->vm_flags & VM_EXEC) && address == exception_era(regs))
--			goto bad_area;
--	}
-+	if (access_error(flags, regs, vma))
-+		goto bad_area;
- 
- 	/*
- 	 * If for any reason at all we couldn't handle the fault,
++done:
+ 	if (unlikely(fault & VM_FAULT_ERROR)) {
+ 		if (fault & VM_FAULT_OOM) {
+ 			do_out_of_memory(regs, address);
 -- 
 2.27.0
 
