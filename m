@@ -2,149 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 717E5751FD3
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 13:22:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AD3C751FD5
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 13:23:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233357AbjGMLWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 07:22:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33018 "EHLO
+        id S233484AbjGMLXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 07:23:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233342AbjGMLWd (ORCPT
+        with ESMTP id S233120AbjGMLXk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 07:22:33 -0400
-Received: from esa6.hc3370-68.iphmx.com (esa6.hc3370-68.iphmx.com [216.71.155.175])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3FED2700;
-        Thu, 13 Jul 2023 04:22:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=citrix.com; s=securemail; t=1689247349;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=RgbPseJJX8dAHCFOzz8t+YJrmCqZfNJY14OLm/WZc4Y=;
-  b=NnyDHiHBS/TUowQHaE8RTPkzHtp1vJlgHo9oP8TXS6gEvnbymyFlpsJq
-   KaTodID23AnzFokDVdFLjcm2c/OvmafIXXm2D0SAucgCF2SvRAo7AlMPi
-   V5I6c+737yl6OEIOXR8ibdylN+FNMa+ihaQQOjUTHIYUE68JYoWnjZZsG
-   0=;
-Authentication-Results: esa6.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
-X-SBRS: 4.0
-X-MesageID: 115386809
-X-Ironport-Server: esa6.hc3370-68.iphmx.com
-X-Remote-IP: 162.221.156.123
-X-Policy: $RELAYED
-IronPort-Data: A9a23:MBU+W6oub+qjlPJriJUrfvwJ5fZeBmIFYhIvgKrLsJaIsI4StFCzt
- garIBmCPqyINGv9fI9zPdywpE0E757RnYI1QQU5rCxjQnxA9ZuZCYyVIHmrMnLJJKUvbq7FA
- +Y2MYCccZ9uHhcwgj/3b9ANeFEljfngqoLUUbKCYWYpA1c/Ek/NsDo788YhmIlknNOlNA2Ev
- NL2sqX3NUSsnjV5KQr40YrawP9UlKq04GpwUmAWP6gR5weBziJNVfrzGInqR5fGatgMdgKFb
- 76rIIGRpgvx4xorA9W5pbf3GmVirmn6ZFXmZtJ+AsBOszAazsAA+v9T2Mk0MC+7vw6hjdFpo
- OihgLTrIesf0g8gr8xGO/VQO3kW0aSrY9YrK1Dn2SCY5xWun3cBX5yCpaz5VGEV0r8fPI1Ay
- RAXAG4MbirExMP1+5CcY9BN3fwHNOvsArpK7xmMzRmBZRonaZXKQqGM7t5ExjYgwMtJGJ4yZ
- eJAN2ApNk6ZJUQSZBFOUslWcOSA3xETdxVxrl6PqLVxyG/U1AFri5DmMcbPe8zMTsJQ9qqdj
- jufoj+pXEFCZbRzzxK5zW2ztrOIxBn4XagcLq375NAxgV2ckzl75Bo+CgLg/KjRZlSFc9hHA
- 0UQ+yco/e4++SSDTsH0dw+pvHme+BUbXrJ4EOQ7rgGQw6zbywefGmUACDVGbbQOuMYoSHoq3
- 1mSktXBBDpzvbnTQnWYnp+VtjqxJG4EJGoLZSYYRCME5cXupMc4iRenZtV9FYargdDvXzL92
- TaHqG45nbp7pcoK0biruFPKmTShorDXQQMvoAbaRGSo6kV+foHNT4mp71fcxexNIIaQUh+Ku
- 31ss9CU6+YcDJeMvDaATOUEAPei4PPtGCXRnVN1DbEg8Tq38nKudIwW5ytxTG9qM9wFfTuve
- 0/OpQ5U44F7OHqscL8xYoStBsBsxq/lffz+X+zUf9NIa4J4ZQaB9ScoZlOIx332j0EpgIk7O
- JGGYYCtC2oXDeJsyz/eb/wQ2LkpzQgxwmTcQZ29xBOiuZKCa3qFYbMENkaSdOc/7bPCrAi92
- 8YPaeOJxg9ZXem4ZTPYmbP/NnhTcyJ9X8qv7ZUKKKjaeFEO9Hwd5+H5n7IhQcsmvudutMDhx
- 1DmYmtA6l3BvCiSQemVUUyPeI8DTL4m8yJqZHx3Ygrxs5QwSd3xtflCLvPbaZFirbU+lqAsE
- pHpbu3aWpxypiL7FyPxhHUXhKhrb1yViA2HJEJJixBvLsc7F2QlFjIJFzYDFRXi7QLt76PSW
- 5X6imvmrWMrHmyO9vr+ZvO11E+WtnMAgu90VEagCoANKBS1oNY6dHSp0KJfzyQwxfLrn2vy6
- uprKU1A+bmlT3EdrbElepxoX6/2SrAjTyK27kHQ7KqsNDmyw4ZQ6dYobQp8RhiEDDmc0Pz7N
- Y1oIwTUbKVvcKBi79AtTN6GDMsWu7PSmlOt5l86RSqbNgjzV+sIz7vv9ZAni5ChD4Rx4WOeM
- n9jMPEDZN1l5OuN/IYtGTcY
-IronPort-HdrOrdr: A9a23:zKjUNK/mk0QF6v/OOytuk+DgI+orL9Y04lQ7vn2YSXRuHPBw8P
- re5cjztCWE7gr5N0tBpTntAsW9qDbnhPtICOoqTNCftWvdyQiVxehZhOOIqVDd8m/Fh4pgPM
- 9bAtBD4bbLbGSS4/yU3ODBKadD/OW6
-X-Talos-CUID: 9a23:vyllMGMkBL4mHu5DBihnzglXO4MeUFr09VaLG2ugK2FXcejA
-X-Talos-MUID: 9a23:gpNkmgilDbyps9P4w71ZIMMpCPh3/JTyTxk3kpAstfOUdj5eYDadg2Hi
-X-IronPort-AV: E=Sophos;i="6.01,202,1684814400"; 
-   d="scan'208";a="115386809"
-From:   Andrew Cooper <andrew.cooper3@citrix.com>
-To:     <kai.huang@intel.com>
-CC:     <bp@alien8.de>, <dave.hansen@intel.com>, <hpa@zytor.com>,
-        <isaku.yamahata@intel.com>, <kirill.shutemov@linux.intel.com>,
-        <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <mingo@redhat.com>, <pbonzini@redhat.com>, <peterz@infradead.org>,
-        <sathyanarayanan.kuppuswamy@linux.intel.com>, <seanjc@google.com>,
-        <tglx@linutronix.de>, <x86@kernel.org>
-Subject: Re: [PATCH 07/10] x86/tdx: Extend TDX_MODULE_CALL to support more TDCALL/SEAMCALL leafs
-Date:   Thu, 13 Jul 2023 12:22:15 +0100
-Message-ID: <20230713112215.2577442-1-andrew.cooper3@citrix.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <edf3b6757c7e40abb574f2363e34c8d3722d8846.camel@intel.com>
-References: <edf3b6757c7e40abb574f2363e34c8d3722d8846.camel@intel.com>
+        Thu, 13 Jul 2023 07:23:40 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E191510E2
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 04:23:38 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4f95bf5c493so1034237e87.3
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 04:23:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689247417; x=1691839417;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XdA26b3TlY+qVHFXfPT1loEQBlaITbodxKS5uFmTHFI=;
+        b=p998AEX5zIHGMjonVjUbgh8/6QXiGDq451oj4GhrOMbgxHlwnZ45wSU6N4fOY1nXCq
+         dQ19BR1al1G1NrDLgXCflOyr7ZtXl2BquH+coP6BfC6Cr6/PGdsTeKWrvIaB25vdsonP
+         dcPRwSM48VY60QKLAHO+hhMyD5EV//veREUy0rN2p7nJbnpyhyJ2Fq7O0wVgIISYC2Xi
+         vh0BKVFkYFPaYpn3ffOanHRSVDw+LIGOWSZ62hw3ct6AC3mbVVUjBLr6RpGs12Y350rJ
+         CtixOs+Q6PYq2ZJNoTkwXz054d4lePbxrRwEbiCdBw4LC91TVzhnvYwKdPIaLky4F6tB
+         kX3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689247417; x=1691839417;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XdA26b3TlY+qVHFXfPT1loEQBlaITbodxKS5uFmTHFI=;
+        b=Hm+7MyQm2dt0Nmd561eZWbbXZh7Xhjk7jU4JON++ERkxH5OHer2VtBlKdAh/OBR/4i
+         VAvjlBtmWN+y+91FVEYVhhI9haIuI2hwDG5cpH/FldOSApb+JHg4qYcjl5CoMGnIY2P+
+         NwAuuSWNpKxrRZF+nc+jGOMuxtLJowHi7MMPYvBEoskLFTMavh4AtPAI6/Wj+Ghkm94B
+         erQ22F44res4SozFwOqSsXWwuZ6b+w43BKuGdYYwn5YNOybgeH5jTbn7AEtfYIYXoJfF
+         17D4l7AHfzdJj9IxgmDw0mz5S13sLMvbUfaTx9ActH/6dPySkQ8rC7/6YFo+43mte0WG
+         PsHA==
+X-Gm-Message-State: ABy/qLaJ9cHKHhOW6IZSSxhKLwnwlS8JmPoF772mpjyDRyyn5h0SiJT/
+        acG9ZS413u/CGKAfYuAhKxzKWw==
+X-Google-Smtp-Source: APBJJlFOclpA9UTM6DzH6FOtAA8753K+Xc9Pk5yTtRuLx+RYqFXrAkPPpxbPMKd+GiA3HToh0ficQw==
+X-Received: by 2002:a05:6512:65:b0:4fb:c693:c73b with SMTP id i5-20020a056512006500b004fbc693c73bmr1040777lfo.64.1689247416988;
+        Thu, 13 Jul 2023 04:23:36 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id w16-20020a5d6810000000b003144b50034esm7675296wru.110.2023.07.13.04.23.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 Jul 2023 04:23:36 -0700 (PDT)
+Message-ID: <f6c11605-56d7-7228-b86d-bc317a8496d0@linaro.org>
+Date:   Thu, 13 Jul 2023 13:23:34 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] dt-bindings: net: xilinx_gmii2rgmii: Convert to json
+ schema
+Content-Language: en-US
+To:     Pranavi Somisetty <pranavi.somisetty@amd.com>, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, michal.simek@amd.com, harini.katakam@amd.com
+Cc:     git@amd.com, radhey.shyam.pandey@amd.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20230713103453.24018-1-pranavi.somisetty@amd.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230713103453.24018-1-pranavi.somisetty@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 13 Jul 2023 10:47:44 +0000, Huang, Kai wrote:
-> On Thu, 2023-07-13 at 12:37 +0200, Peter Zijlstra wrote:
-> > On Thu, Jul 13, 2023 at 10:19:49AM +0000, Huang, Kai wrote:
-> > > On Thu, 2023-07-13 at 10:43 +0200, Peter Zijlstra wrote:
-> > > > On Thu, Jul 13, 2023 at 08:02:54AM +0000, Huang, Kai wrote:
-> > > >
-> > > > > Sorry I am ignorant here.  Won't "clearing ECX only" leave high bits of
-> > > > > registers still containing guest's value?
-> > > >
-> > > > architecture zero-extends 32bit stores
-> > >
-> > > Sorry, where can I find this information? Looking at SDM I couldn't find :-(
-> >
-> > Yeah, I couldn't find it in a hurry either, but bpetkov pasted me this
-> > from the AMD document:
-> >
-> >  "In 64-bit mode, the following general rules apply to instructions and their operands:
-> >  “Promoted to 64 Bit”: If an instruction’s operand size (16-bit or 32-bit) in legacy and
-> >  compatibility modes depends on the CS.D bit and the operand-size override prefix, then the
-> >  operand-size choices in 64-bit mode are extended from 16-bit and 32-bit to include 64 bits (with a
-> >  REX prefix), or the operand size is fixed at 64 bits. Such instructions are said to be “Promoted to
-> >  64 bits” in Table B-1. However, byte-operand opcodes of such instructions are not promoted."
-> >
-> > > I _think_ I understand now? In 64-bit mode
-> > >
-> > > 	xor %eax, %eax
-> > >
-> > > equals to
-> > >
-> > > 	xor %rax, %rax
-> > >
-> > > (due to "architecture zero-extends 32bit stores")
-> > >
-> > > Thus using the former (plus using "d" for %r*) can save some memory?
-> >
-> > Yes, 64bit wide instruction get a REX prefix 0x4X (somehow I keep typing
-> > RAX) byte in front to tell it's a 64bit wide op.
-> >
-> >    31 c0                   xor    %eax,%eax
-> >    48 31 c0                xor    %rax,%rax
-> >
-> > The REX byte will show up for rN usage, because then we need the actual
-> > Register Extention part of that prefix irrespective of the width.
-> >
-> >    45 31 d2                xor    %r10d,%r10d
-> >    4d 31 d2                xor    %r10,%r10
-> >
-> > x86 instruction encoding is 'fun' :-)
-> >
-> > See SDM Vol 2 2.2.1.2 if you want to know more about the REX prefix.
->
-> Learned something new.  Appreciate your time! :-)
+On 13/07/2023 12:34, Pranavi Somisetty wrote:
+> Convert the Xilinx GMII to RGMII Converter device tree binding
+> documentation to json schema.
+> This converter is usually used as gem <---> gmii2rgmii <---> external phy
+> and, it's phy-handle should point to the phandle of the external phy.
+> 
+> Signed-off-by: Pranavi Somisetty <pranavi.somisetty@amd.com>
 
-And now for the extra fun...
+...
 
-The Silvermont uarch is 64bit, but only recognises 32bit XORs as zeroing
-idioms.
+> +
+> +description:
+> +  The Gigabit Media Independent Interface (GMII) to Reduced Gigabit Media
+> +  Independent Interface (RGMII) core provides the RGMII between RGMII-compliant
+> +  ethernet physical media devices (PHY) and the Gigabit Ethernet controller.
+> +  This core can be used in all three modes of operation(10/100/1000 Mb/s).
+> +  The Management Data Input/Output (MDIO) interface is used to configure the
+> +  speed of operation. This core can switch dynamically between the three
+> +  different speed modes by configuring the converter register through mdio write.
+> +  The core cannot function without an external phy connected to it.
+> +
+> +properties:
+> +  compatible:
+> +    const: xlnx,gmii-to-rgmii-1.0
+> +
+> +  reg:
+> +    minimum: 0
+> +    maximum: 31
+> +    description: The ID number for the phy, usually a small integer.
 
-So for best performance on as many uarches as possible, you should *always*
-use the 32bit forms, even for %r8-15.
+Drop the "usually small...", it's obvious from constraints.
 
-~Andrew
+> +
+> +  phy-handle: true
+
+Where is this defined?
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - phy-handle
+> +
+> +unevaluatedProperties: false
+
+Either you miss $ref or this should be additionalProperties. I bet it's
+the first problem.
+
+> +
+> +examples:
+> +  - |
+> +    mdio {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +        phy: ethernet-phy@0 {
+> +            reg = <0>;
+> +        };
+
+Drop this node, quite obvious.
+
+> +        gmiitorgmii@8 {
+> +            compatible = "xlnx,gmii-to-rgmii-1.0";
+> +            reg = <8>;
+> +            phy-handle = <&phy>;
+> +        };
+> +    };
+
+Best regards,
+Krzysztof
+
