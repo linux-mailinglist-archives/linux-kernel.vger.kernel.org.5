@@ -2,100 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B25B751F1C
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 12:40:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEF36751F21
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 12:41:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234166AbjGMKkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 06:40:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41892 "EHLO
+        id S232283AbjGMKlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 06:41:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234195AbjGMKj5 (ORCPT
+        with ESMTP id S232129AbjGMKlu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 06:39:57 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAE7A1BFB;
-        Thu, 13 Jul 2023 03:39:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=RGWiHPH2+ZEm4azekOzq5SLUvXL6kF7cN7yMOiGExus=; b=JKZOJ4x1CIfR1NN9pq2Eexy56E
-        ZnRZckblEqHnPJOW4jadEfACb4Gy8pBAtwZqt8PHzXEFledXs9YL2Fg/mhfuIxcvE5/iKCB+o+r84
-        tbDgI90AySN5OzOD+WX/vo2g9dYGv2WkEN/+wQN3MiioW3r0YHbQT8LH8cF8ATC6n5UQlDFDyvuIF
-        ipr5Fl5CMc1PU+UzqJJYO9MKjHiZgz5seo9vLSbxz7hjSsANyIXjUDdBQhqecLDJcPu/BxfKSJb7L
-        GRB687ywBCWH8m+DxGVbkijVHMKe6P87OJ4l/WsEI0+KLr4FiD0nKDSRbp3D9Zd3l3cl9TjCWwJ8L
-        Mi2e0XoQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qJtje-0003cv-Jx; Thu, 13 Jul 2023 10:39:46 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 41B8D300362;
-        Thu, 13 Jul 2023 12:39:46 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 29C9E245CA111; Thu, 13 Jul 2023 12:39:46 +0200 (CEST)
-Date:   Thu, 13 Jul 2023 12:39:46 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Huang, Kai" <kai.huang@intel.com>
-Cc:     "Hansen, Dave" <dave.hansen@intel.com>,
-        "Christopherson,, Sean" <seanjc@google.com>,
-        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Subject: Re: [PATCH 07/10] x86/tdx: Extend TDX_MODULE_CALL to support more
- TDCALL/SEAMCALL leafs
-Message-ID: <20230713103946.GG3139243@hirez.programming.kicks-ass.net>
-References: <cover.1689151537.git.kai.huang@intel.com>
- <ecfd84af9186aa5368acb40a2740afbf1d0d1b5d.1689151537.git.kai.huang@intel.com>
- <20230712165336.GA3115257@hirez.programming.kicks-ass.net>
- <20230712165912.GA3100142@hirez.programming.kicks-ass.net>
- <cc5b4df23273b546225241fae2cbbea52ccb13d3.camel@intel.com>
- <20230713084324.GA3138667@hirez.programming.kicks-ass.net>
- <5cc5ba09636647a076206fae932bbf88f233b8b2.camel@intel.com>
- <a2218af09553f89674d3ba3d59db31d2521745e3.camel@intel.com>
+        Thu, 13 Jul 2023 06:41:50 -0400
+Received: from sender4-op-o15.zoho.com (sender4-op-o15.zoho.com [136.143.188.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB5471BFA;
+        Thu, 13 Jul 2023 03:41:48 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1689244904; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=HWGAHfq2NA0fA/S8+tFTf3PF3oHtqnKv6qYKTziQL6WfHGDgwfo6FWYHzCve15UCS1vMARGO0tiYKZBAzLey3lc+NZ78Z5hc5Tt0w66wd770MMBujs5XgWhkFCufdvgPd8+DYwjSqUmkATWhDpHBHrwAu9H2p8PPXELy8jMYQeA=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1689244904; h=Content-Type:Content-Transfer-Encoding:Date:From:MIME-Version:Message-ID:Subject:To; 
+        bh=lEvsxzz+qJghQc8kzyg734nbqEHR6EFKqv5AJo4kZ2M=; 
+        b=eZeTPbCSWVujqjEwRZ4mKFVhgZGWpNPaerQlwncM2gObQP7K3bbRiwgh53gBVdPbxWH2prQG7mLg5EjEzhzujFJSefxgAZU8vytnz7Rj++Q64fAaFfSZu/5+HP09FtKhaEdZAa4nXp8GcG2zISbc2KGgRzN09YH/BNriJA34y1E=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=linux.beauty;
+        spf=pass  smtp.mailfrom=me@linux.beauty;
+        dmarc=pass header.from=<me@linux.beauty>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1689244904;
+        s=zmail; d=linux.beauty; i=me@linux.beauty;
+        h=Date:Date:From:From:To:To:Message-ID:In-Reply-To:Subject:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-Id:Reply-To:Cc;
+        bh=lEvsxzz+qJghQc8kzyg734nbqEHR6EFKqv5AJo4kZ2M=;
+        b=Zzr/IXD5lIGPVJUexUifXLTNgDhLmOoj/T+3Ub2XCvGUDK7opaP8gSjFThySbeMI
+        R5fJj2Oqo73uPBfuIL7OQq5WrWdhPGOQ5r3ZT8jOSSrvjIXmTp85BlkT1UtTpnBs7Um
+        QHVZWnNa253PfEaKH0Hj7MsqXvgFYNoblIDfKHuM=
+Received: from mail.zoho.com by mx.zohomail.com
+        with SMTP id 1689244901917389.12497445346855; Thu, 13 Jul 2023 03:41:41 -0700 (PDT)
+Date:   Thu, 13 Jul 2023 18:41:41 +0800
+From:   Li Chen <me@linux.beauty>
+To:     "Rob Herring" <robh+dt@kernel.org>,
+        "Frank Rowand" <frowand.list@gmail.com>,
+        "devicetree" <devicetree@vger.kernel.org>,
+        "linux-kernel" <linux-kernel@vger.kernel.org>
+Message-ID: <1894ed7a1a9.f5e49d5d141371.2744760538860302017@linux.beauty>
+In-Reply-To: 
+Subject: [PATCH] of: property: fw_devlink: fixup return value check of
+  strcmp_suffix in parse_gpios
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a2218af09553f89674d3ba3d59db31d2521745e3.camel@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Importance: Medium
+User-Agent: Zoho Mail
+X-Mailer: Zoho Mail
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 10:24:48AM +0000, Huang, Kai wrote:
-> On Thu, 2023-07-13 at 10:19 +0000, Huang, Kai wrote:
-> > On Thu, 2023-07-13 at 10:43 +0200, Peter Zijlstra wrote:
-> > > On Thu, Jul 13, 2023 at 08:02:54AM +0000, Huang, Kai wrote:
-> > > 
-> > > > Sorry I am ignorant here.  Won't "clearing ECX only" leave high bits of
-> > > > registers still containing guest's value?
-> > > 
-> > > architecture zero-extends 32bit stores
-> > 
-> > Sorry, where can I find this information? Looking at SDM I couldn't find :-(
-> > 
-> > 
-> 
-> Hmm.. I think I found it -- it's in SDM vol 1:
-> 
-> 3.4.1.1 General-Purpose Registers in 64-Bit Mode
-> 
-> 32-bit operands generate a 32-bit result, zero-extended to a 64-bit result in
-> the destination general-purpose register.
+From: Li Chen <lchen@ambarella.com>
 
-Yes, that's it.
+This commit addresses an issue where enabling fw_devlink=on was causing
+a PCIe malfunction, resulting in endpoints missing.
+After thorough investigation, it was determined that the root cause was
+an incorrect usage of strcmp_suffix in parse_gpios.
+
+Fixes: d473d32c2fba ("of: property: fw_devlink: do not link ".*,nr-gpios"")
+Signed-off-by: Li Chen <lchen@ambarella.com>
+---
+ drivers/of/property.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/of/property.c b/drivers/of/property.c
+index ddc75cd50825..261eb8f3be08 100644
+--- a/drivers/of/property.c
++++ b/drivers/of/property.c
+@@ -1272,7 +1272,7 @@ DEFINE_SUFFIX_PROP(gpio, "-gpio", "#gpio-cells")
+ static struct device_node *parse_gpios(struct device_node *np,
+ 				       const char *prop_name, int index)
+ {
+-	if (!strcmp_suffix(prop_name, ",nr-gpios"))
++	if (strcmp_suffix(prop_name, ",nr-gpios"))
+ 		return NULL;
+ 
+ 	return parse_suffix_prop_cells(np, prop_name, index, "-gpios",
+-- 
+2.34.1
+
+
