@@ -2,84 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E15E9751D5C
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 11:35:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CF8A751D64
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 11:37:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232360AbjGMJfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 05:35:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56040 "EHLO
+        id S233575AbjGMJhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 05:37:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233296AbjGMJfO (ORCPT
+        with ESMTP id S233356AbjGMJhD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 05:35:14 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D8C72118;
-        Thu, 13 Jul 2023 02:35:05 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 35AFA61AA3;
-        Thu, 13 Jul 2023 09:35:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5CE8C433C7;
-        Thu, 13 Jul 2023 09:35:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689240904;
-        bh=lO59LrWn+BDuGmFHjQkiC0C5iyCqQnSMPxzJYUGFRL4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GhHxt8EHSZe2zoWUNhy5M2KBdzqsZpnKOa5aG2GWTYXPPR14SrlHD4tLHbSKGt3J1
-         deUzhoxj0Zdv9BgSd59b0l+RpUzUtwSYM8GVhYE1biN617Pfxvdq8KD/KMEGcsjHQn
-         RRLdYu/3H5WV46/wJ7tzRWk1YMPGgS7cEv04lPNmSCm0PKdsyv4863+tiCjHF8HZUo
-         vhCcI5sV/l+p0pfKeaJnodqsNwgOm/hGPGYkJFKJKE96RQEoQeOdUwwaPgvYIfhh/A
-         Y4jXoCEBYF6M9RgsmKBHfUv2ivxGoGka1br9Njd+G0e5lQQvgvvcEO6GEXKyYhY7rA
-         lAm4rwZMt5/5A==
-Date:   Thu, 13 Jul 2023 10:34:59 +0100
-From:   Lee Jones <lee@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Pavel Machek <pavel@ucw.cz>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Henning Schild <henning.schild@siemens.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Hans de Goede <hdegoede@redhat.com>,
-        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] leds: simatic-ipc-leds-gpio: restore LEDS_CLASS
- dependency
-Message-ID: <20230713093459.GG10768@google.com>
-References: <20230623152233.2246285-1-arnd@kernel.org>
+        Thu, 13 Jul 2023 05:37:03 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9200D210A
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 02:37:01 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3fbc244d307so4143655e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 02:37:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689241020; x=1691833020;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=LO16C4afbNedSS278cp3vmRjV8M4ZojnE40vSnvuOp8=;
+        b=B/VTM2A2Ff3BsEm+Dbic99+WuEDCVmGDbMJ8LxrF/1GvrqW9fyeUzF0jbT+93kmuRL
+         wBwaRymNlRxHrndKfk4fokF0IpTXckHiFGblNgMTNMwJfDzQNZqpXl+svQw/Vi+NlI+Y
+         vFAUnNn3ul5VB9mhtlPK9iiZHLaTJrlPVXqeFpUuQFvyFmtpvNK9m7h2wdukITeUa9cN
+         b2L0HaL58ZFakpnHHbqUworYJYj4A1+0CDor56dtDOZHaU0GEORvK/xiVza8pcmsDjBj
+         RwHLzPtKtFEPMKnfgMOB+lK8ahwsSyBh92mPftSJRtIUACJOBDvK/7j5sQI9Ow+EAnus
+         J+FA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689241020; x=1691833020;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LO16C4afbNedSS278cp3vmRjV8M4ZojnE40vSnvuOp8=;
+        b=PCl+GXcQh9zIYloRGDr3bFFyV1OzwyHWLShn1SyzwrdMfAq0pmIOqhkiYmL/9IYtuq
+         pLczoQJqwuCW0o1GK6DFKOr83XiHEkxbh0/bEyaVeiO1Ps+GA6Iaqj+uU0VVx/jZQ96S
+         v8q5Y+WOyVHjBiHToBKSA0OFoPPvWNnR9dwlUHrw5l9e/4Z/UyTw9+jSOivts1946hKd
+         byMNg61hDP7096bEIl5nv2vsLry5NmsQPLB2+53lJGnZHJhWtnOmN6ZCIg/3qQzjq/Dm
+         Cga22tX/rRRF7OQCz4oCnBs8DSznInH1DTizJtLZadQ5pU7vsDCJz64DhgCWsEUqJQad
+         KaOw==
+X-Gm-Message-State: ABy/qLanZrUOczeXONafG1vGAeRBZ/jcEnl7Z7HaZ7Dv90fK4OedjHI+
+        JKbpjkzgb3SbM+KiLG9ZGZ/0uA==
+X-Google-Smtp-Source: APBJJlFMBriV29WbzhyFY/CIsPKFOcUSWfGpPjnDXBfv+rkLWEVpKUsGQ5WbYCNvuo4SjnPi7x5rww==
+X-Received: by 2002:a1c:7c05:0:b0:3fb:b56b:470f with SMTP id x5-20020a1c7c05000000b003fbb56b470fmr861224wmc.14.1689241019909;
+        Thu, 13 Jul 2023 02:36:59 -0700 (PDT)
+Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
+        by smtp.googlemail.com with ESMTPSA id c3-20020a5d4f03000000b00311d8c2561bsm7343117wru.60.2023.07.13.02.36.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 Jul 2023 02:36:59 -0700 (PDT)
+Message-ID: <30b4eb6e-5df8-3696-8552-45f523e6ea99@linaro.org>
+Date:   Thu, 13 Jul 2023 11:36:58 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH] thermal: imx8mm: suppress log message on probe deferral
+Content-Language: en-US
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Marek Vasut <marex@denx.de>, Peng Fan <peng.fan@nxp.com>
+Cc:     linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20230708112647.2897294-1-a.fatoum@pengutronix.de>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <20230708112647.2897294-1-a.fatoum@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230623152233.2246285-1-arnd@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 23 Jun 2023, Arnd Bergmann wrote:
-
-> From: Arnd Bergmann <arnd@arndb.de>
+On 08/07/2023 13:26, Ahmad Fatoum wrote:
+> nvmem_cell_read_u32() may return -EPROBE_DEFER if NVMEM supplier has not
+> yet been probed. Future reprobe may succeed, so printing:
 > 
-> A recent rework accidentally lost the dependency on LEDS_CLASS, which
-> leads to a link error when LED support is disbled:
+>    i.mx8mm_thermal 30260000.tmu: Failed to read OCOTP nvmem cell (-517).
 > 
-> x86_64-linux-ld: drivers/leds/simple/simatic-ipc-leds.o: in function `simatic_ipc_leds_probe':
-> simatic-ipc-leds.c:(.text+0x10c): undefined reference to `devm_led_classdev_register_ext'
+> to the log is confusing. Fix this by using dev_err_probe. This also
+> elevates the message from warning to error, which is more correct: The
+> log message is only ever printed in probe error path and probe aborts
+> afterwards, so it really warrants an error-level message.
 > 
-> Add back the dependency that was there originally.
-> 
-> Fixes: a6c80bec3c935 ("leds: simatic-ipc-leds-gpio: Add GPIO version of Siemens driver")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Fixes: 403291648823 ("thermal/drivers/imx: Add support for loading calibration data from OCOTP")
+> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
 > ---
->  drivers/leds/simple/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
 
 Applied, thanks
 
 -- 
-Lee Jones [李琼斯]
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
+
