@@ -2,155 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B11A5751DD4
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 11:54:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2821E751D6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 11:39:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234215AbjGMJxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 05:53:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38572 "EHLO
+        id S234023AbjGMJjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 05:39:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234303AbjGMJxK (ORCPT
+        with ESMTP id S233989AbjGMJjJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 05:53:10 -0400
-X-Greylist: delayed 61 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 13 Jul 2023 02:53:08 PDT
-Received: from mta-65-226.siemens.flowmailer.net (mta-65-226.siemens.flowmailer.net [185.136.65.226])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9D8B26B1
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 02:53:08 -0700 (PDT)
-Received: by mta-65-226.siemens.flowmailer.net with ESMTPSA id 20230713095204a6f84ab03d01ec049b
-        for <linux-kernel@vger.kernel.org>;
-        Thu, 13 Jul 2023 11:52:05 +0200
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; s=fm1;
- d=siemens.com; i=huaqian.li@siemens.com;
- h=Date:From:Subject:To:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding:Cc:References:In-Reply-To;
- bh=F9BzZKCWKnjicxXTDGFSKA38YJKol5g9fotOvc0nOpA=;
- b=AWRaobJSk0xCUdX00rLqIx9GNr2DyNsgU3FhIyW9kihWLDFwqcoQh1oWXePzXHuJZQWHBD
- S3ExjIP9KrX+jCou/BLIV5YPo8t51DpCeNqVLrA4Ib267GE/zqFdb9w7s0ccKZZO4ODtASxD
- oBRzlySY1+5onyzwXpNx9UMPWU/fo=;
-From:   huaqian.li@siemens.com
-To:     wim@linux-watchdog.org, linux@roeck-us.net, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc:     huaqianlee@gmail.com, nm@ti.com, vigneshr@ti.com,
-        kristo@kernel.org, linux-watchdog@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, jan.kiszka@siemens.com,
-        baocheng.su@siemens.com, Li Hua Qian <huaqian.li@siemens.com>
-Subject: [PATCH v3 3/3] watchdog:rit_wdt: Add support for WDIOF_CARDRESET
-Date:   Thu, 13 Jul 2023 17:51:27 +0800
-Message-Id: <20230713095127.1230109-4-huaqian.li@siemens.com>
-In-Reply-To: <20230713095127.1230109-1-huaqian.li@siemens.com>
-References: <20230713095127.1230109-1-huaqian.li@siemens.com>
+        Thu, 13 Jul 2023 05:39:09 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EF182102;
+        Thu, 13 Jul 2023 02:39:07 -0700 (PDT)
+Received: from dggpemm500001.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4R1qKw75b5z18MBd;
+        Thu, 13 Jul 2023 17:38:28 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Thu, 13 Jul 2023 17:39:03 +0800
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+To:     <linux-mm@kvack.org>, Andrew Morton <akpm@linux-foundation.org>,
+        <surenb@google.com>
+CC:     Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        <x86@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <loongarch@lists.linux.dev>,
+        <linuxppc-dev@lists.ozlabs.org>, <linux-riscv@lists.infradead.org>,
+        <linux-s390@vger.kernel.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Subject: [PATCH rfc -next 00/10] mm: convert to generic VMA lock-based page fault
+Date:   Thu, 13 Jul 2023 17:51:55 +0800
+Message-ID: <20230713095155.189443-1-wangkefeng.wang@huawei.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Flowmailer-Platform: Siemens
-Feedback-ID: 519:519-959203:519-21489:flowmailer
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Li Hua Qian <huaqian.li@siemens.com>
+Add a generic VMA lock-based page fault handler in mm core, and convert
+architectures to use it, which eliminate architectures's duplicated codes.
 
-This patch adds the WDIOF_CARDRESET support for the platform watchdog
-whose hardware does not support this feature, to know if the board
-reboot is due to a watchdog reset.
+With it, we can avoid multiple changes in architectures's code if we 
+add new feature or bugfix.
 
-This is done via reserved memory(RAM), which indicates if specific
-info saved, triggering the watchdog reset in last boot.
+This fixes riscv missing change about commit 38b3aec8e8d2 "mm: drop per-VMA
+lock when returning VM_FAULT_RETRY or VM_FAULT_COMPLETED", and in the end,
+we enable this feature on ARM32/Loongarch too.
 
-Signed-off-by: Li Hua Qian <huaqian.li@siemens.com>
----
- drivers/watchdog/rti_wdt.c | 51 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 51 insertions(+)
+This is based on next-20230713, only built test(no loongarch compiler,
+so except loongarch).
 
-diff --git a/drivers/watchdog/rti_wdt.c b/drivers/watchdog/rti_wdt.c
-index ce8f18e93aa9..b9435b972cb9 100644
---- a/drivers/watchdog/rti_wdt.c
-+++ b/drivers/watchdog/rti_wdt.c
-@@ -18,6 +18,8 @@
- #include <linux/pm_runtime.h>
- #include <linux/types.h>
- #include <linux/watchdog.h>
-+#include <linux/of_address.h>
-+#include <linux/of.h>
- 
- #define DEFAULT_HEARTBEAT 60
- 
-@@ -52,6 +54,11 @@
- 
- #define DWDST			BIT(1)
- 
-+#define PON_REASON_SOF_NUM	0xBBBBCCCC
-+#define PON_REASON_MAGIC_NUM	0xDDDDDDDD
-+#define PON_REASON_EOF_NUM	0xCCCCBBBB
-+#define RESERVED_MEM_MIN_SIZE	12
-+
- static int heartbeat = DEFAULT_HEARTBEAT;
- 
- /*
-@@ -198,6 +205,11 @@ static int rti_wdt_probe(struct platform_device *pdev)
- 	struct rti_wdt_device *wdt;
- 	struct clk *clk;
- 	u32 last_ping = 0;
-+	struct device_node *node;
-+	u32 reserved_mem_size;
-+	struct resource res;
-+	u32 *vaddr;
-+	u64 paddr;
- 
- 	wdt = devm_kzalloc(dev, sizeof(*wdt), GFP_KERNEL);
- 	if (!wdt)
-@@ -284,6 +296,45 @@ static int rti_wdt_probe(struct platform_device *pdev)
- 		}
- 	}
- 
-+	node = of_parse_phandle(pdev->dev.of_node, "memory-region", 0);
-+	if (!node) {
-+		dev_dbg(dev, "No memory-region specified.\n");
-+	} else {
-+		ret = of_address_to_resource(node, 0, &res);
-+		if (ret) {
-+			dev_err(dev, "No memory address assigned to the region.\n");
-+			goto err_iomap;
-+		}
-+
-+		/*
-+		 * If reserved memory is defined for watchdog reset cause.
-+		 * Readout the Power-on(PON) reason and pass to bootstatus.
-+		 */
-+		paddr = res.start;
-+		reserved_mem_size = res.end - (res.start - 1);
-+		if (reserved_mem_size < RESERVED_MEM_MIN_SIZE) {
-+			dev_err(dev, "The size of reserved memory is too small.\n");
-+			ret = -EINVAL;
-+			goto err_iomap;
-+		}
-+
-+		vaddr = memremap(paddr, reserved_mem_size, MEMREMAP_WB);
-+		if (vaddr == NULL) {
-+			dev_err(dev, "Failed to map memory-region.\n");
-+			ret = -ENOMEM;
-+			goto err_iomap;
-+		}
-+
-+		if (vaddr[0] == PON_REASON_SOF_NUM &&
-+		    vaddr[1] == PON_REASON_MAGIC_NUM &&
-+		    vaddr[2] == PON_REASON_EOF_NUM) {
-+			dev_dbg(dev, "Watchdog reset cause detected.\n");
-+			wdd->bootstatus |= WDIOF_CARDRESET;
-+		}
-+		memset(vaddr, 0, reserved_mem_size);
-+		memunmap(vaddr);
-+	}
-+
- 	watchdog_init_timeout(wdd, heartbeat, dev);
- 
- 	ret = watchdog_register_device(wdd);
+Kefeng Wang (10):
+  mm: add a generic VMA lock-based page fault handler
+  x86: mm: use try_vma_locked_page_fault()
+  arm64: mm: use try_vma_locked_page_fault()
+  s390: mm: use try_vma_locked_page_fault()
+  powerpc: mm: use try_vma_locked_page_fault()
+  riscv: mm: use try_vma_locked_page_fault()
+  ARM: mm: try VMA lock-based page fault handling first
+  loongarch: mm: cleanup __do_page_fault()
+  loongarch: mm: add access_error() helper
+  loongarch: mm: try VMA lock-based page fault handling first
+
+ arch/arm/Kconfig          |  1 +
+ arch/arm/mm/fault.c       | 15 ++++++-
+ arch/arm64/mm/fault.c     | 28 +++---------
+ arch/loongarch/Kconfig    |  1 +
+ arch/loongarch/mm/fault.c | 92 ++++++++++++++++++++++++---------------
+ arch/powerpc/mm/fault.c   | 54 ++++++++++-------------
+ arch/riscv/mm/fault.c     | 38 +++++++---------
+ arch/s390/mm/fault.c      | 23 +++-------
+ arch/x86/mm/fault.c       | 39 +++++++----------
+ include/linux/mm.h        | 28 ++++++++++++
+ mm/memory.c               | 42 ++++++++++++++++++
+ 11 files changed, 206 insertions(+), 155 deletions(-)
+
 -- 
-2.34.1
+2.27.0
 
