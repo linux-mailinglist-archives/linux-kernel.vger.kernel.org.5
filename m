@@ -2,134 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80FC5751D19
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 11:25:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AFC8751D28
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 11:28:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234280AbjGMJZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 05:25:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49350 "EHLO
+        id S231703AbjGMJ2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 05:28:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbjGMJZd (ORCPT
+        with ESMTP id S233657AbjGMJ1m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 05:25:33 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D94FA1BD7;
-        Thu, 13 Jul 2023 02:25:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=aLfJs3MS+i1Qzrwg9ezBlk9asSjTnp3lzmR8uEU7R9Y=; b=lDQ6s6wGUFFJ7MwDzjY5rytAjZ
-        wIhU1KE2cfZOnghtLSgsRY2LB822iznodWTe678cOcTfA05MFznf2XUBvylx4ipG33WZYq9lOTbk2
-        h0zherga88YGyf7GlgOCnWvYVlx/D8BqyWf4z+oAg453H+Yv4myASzNV2ypiWxsoYw7GWvpEgKUDb
-        Q/08fCyjfhNbvzbAFBO2JS+MMLAOLT05TM9eQjOE0LL2N1f2oofK7z+xUVAfB7tX0E7WJIy9nYWDo
-        xIsmDAawHdiuvI0rX8JT2mWWjiUvlA99EwENksSEAkBpc5iSMN6KYgyu909nncNxKBeKzOuAG+RHS
-        XhGxnAJg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qJsZb-004atD-0A;
-        Thu, 13 Jul 2023 09:25:19 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9DB573001FD;
-        Thu, 13 Jul 2023 11:25:18 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 84DA2245CA117; Thu, 13 Jul 2023 11:25:18 +0200 (CEST)
-Date:   Thu, 13 Jul 2023 11:25:18 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Huang, Kai" <kai.huang@intel.com>
-Cc:     "Hansen, Dave" <dave.hansen@intel.com>,
-        "Christopherson,, Sean" <seanjc@google.com>,
-        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Subject: Re: [PATCH 07/10] x86/tdx: Extend TDX_MODULE_CALL to support more
- TDCALL/SEAMCALL leafs
-Message-ID: <20230713092518.GF3138667@hirez.programming.kicks-ass.net>
-References: <cover.1689151537.git.kai.huang@intel.com>
- <ecfd84af9186aa5368acb40a2740afbf1d0d1b5d.1689151537.git.kai.huang@intel.com>
- <20230712171133.GB3115257@hirez.programming.kicks-ass.net>
- <a36d1f0068154a9acd3fdbed2586dc5b2476e140.camel@intel.com>
- <20230713090110.GC3138667@hirez.programming.kicks-ass.net>
- <4e542a29ba6083981c13c43d0c5e69d24f42f812.camel@intel.com>
+        Thu, 13 Jul 2023 05:27:42 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36F1F273E
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 02:27:14 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-313e742a787so264543f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 02:27:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689240426; x=1691832426;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=kPFy8Pts0LcMar7vgk965ZkrW+eDzYXfD6qlexHCCf4=;
+        b=GjzXsO5pvr5yTnC24wSsLxq4uUHCODJvmTmNBC61pJ+VcxVO+rded2Dqz7N7GQtuHX
+         /CMowCrDZYxDdNVjv1939iL0uzJlRGbIcrZQZxHhjAmfi/mt7CTOwY5CnI3e2x9uzrQv
+         7FGlkCTEtYe2KdVKGXzb9zBanasR2TKajAKWqal9AFMCID9xNosS5IJ1za3fOOrR9D+0
+         vyl/h9hlx9R8nCPGSq9N8BE4DZQOOHe6fNvnLVa8hf+C7IkUIgkATScrdP6uQWL37FTZ
+         vf0EDOGUIZ75T0AKn98LYQJRXDu3PxyA38Jh/ELD0REyhYenvGUJqReXWYVT6SrIq54T
+         qLcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689240426; x=1691832426;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kPFy8Pts0LcMar7vgk965ZkrW+eDzYXfD6qlexHCCf4=;
+        b=XpG25LkLYssYkjIkDXIsIEWPmCody28F1W5SxCwnk30zgb2xYOpfcKcaDu/KqO0+wx
+         52iH9ssiWVr88Ke/ad6DxgyRnmx+KINNr2QxVU5+AiESyrEdLrB4bHUCNBRO0p2am5Zf
+         g1FssvhvwH4sWUwNy4Sd4oJ73RZyjBARDjGR7M/UXXuc/ge0UsfyGVhGuJtHxiAMQIG9
+         wdE6NrpzPfvajwfe/a/TJnPe3rziEsVNJNQ+bgeERkJs+EKOa9DQms9s3nGykfbabHam
+         8nYWqtpuyN2KVpnJk4eXNtJZ1Ch+T1ge5FTbYac0n0cElRF+qp3KSpVK1FJy4tQRU8sS
+         TM7Q==
+X-Gm-Message-State: ABy/qLaVE8pVKjhAzI7FWqKQTD1DehigZ63Qn5wpwtCX5aHMp2Tfh4T2
+        uH+f800mjcJEfRfh87MmQHHBhQ==
+X-Google-Smtp-Source: APBJJlEYX4xUqsyCGASg6QHn74arKnVrzbqutPqoE+n1RDM76O8R2nfw2NapSkpg3xu7aIhhsaWFdw==
+X-Received: by 2002:a5d:618f:0:b0:30f:c050:88dd with SMTP id j15-20020a5d618f000000b0030fc05088ddmr3716529wru.8.1689240426604;
+        Thu, 13 Jul 2023 02:27:06 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id s19-20020a1cf213000000b003fc080acf68sm13920059wmc.34.2023.07.13.02.27.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Jul 2023 02:27:04 -0700 (PDT)
+Date:   Thu, 13 Jul 2023 12:27:00 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Wang Ming <machel@vivo.com>
+Cc:     Jon Mason <jdmason@kudzu.us>, Dave Jiang <dave.jiang@intel.com>,
+        Allen Hubbe <allenbh@gmail.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Dan Carpenter <error27@gmail.com>,
+        Jiasheng Jiang <jiasheng@iscas.ac.cn>, ntb@lists.linux.dev,
+        linux-kernel@vger.kernel.org, opensource.kernel@vivo.com
+Subject: Re: [PATCH v3]  ntb: Remove error checking for debugfs_create_dir()
+Message-ID: <2676117e-cbaf-4c4b-9197-91c796682859@kadam.mountain>
+References: <20230713085621.3380-1-machel@vivo.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4e542a29ba6083981c13c43d0c5e69d24f42f812.camel@intel.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230713085621.3380-1-machel@vivo.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 09:15:49AM +0000, Huang, Kai wrote:
-> On Thu, 2023-07-13 at 11:01 +0200, Peter Zijlstra wrote:
-> > On Thu, Jul 13, 2023 at 08:09:33AM +0000, Huang, Kai wrote:
-> > > On Wed, 2023-07-12 at 19:11 +0200, Peter Zijlstra wrote:
-> > > > On Wed, Jul 12, 2023 at 08:55:21PM +1200, Kai Huang wrote:
-> > > > > @@ -65,6 +104,37 @@
-> > > > >  	.endif
-> > > > >  
-> > > > >  	.if \ret
-> > > > > +	.if \saved
-> > > > > +	/*
-> > > > > +	 * Restore the structure from stack to saved the output registers
-> > > > > +	 *
-> > > > > +	 * In case of VP.ENTER returns due to TDVMCALL, all registers are
-> > > > > +	 * valid thus no register can be used as spare to restore the
-> > > > > +	 * structure from the stack (see "TDH.VP.ENTER Output Operands
-> > > > > +	 * Definition on TDCALL(TDG.VP.VMCALL) Following a TD Entry").
-> > > > > +	 * For this case, need to make one register as spare by saving it
-> > > > > +	 * to the stack and then manually load the structure pointer to
-> > > > > +	 * the spare register.
-> > > > > +	 *
-> > > > > +	 * Note for other TDCALLs/SEAMCALLs there are spare registers
-> > > > > +	 * thus no need for such hack but just use this for all for now.
-> > > > > +	 */
-> > > > > +	pushq	%rax		/* save the TDCALL/SEAMCALL return code */
-> > > > > +	movq	8(%rsp), %rax	/* restore the structure pointer */
-> > > > > +	movq	%rsi, TDX_MODULE_rsi(%rax)	/* save %rsi */
-> > > > > +	movq	%rax, %rsi	/* use %rsi as structure pointer */
-> > > > > +	popq	%rax		/* restore the return code */
-> > > > > +	popq	%rsi		/* pop the structure pointer */
-> > > > 
-> > > > Urgghh... At least for the \host case you can simply pop %rsi, no?
-> > > > VP.ENTER returns with 0 there IIRC.
-> > > 
-> > > No VP.ENTER doesn't return 0 for RAX.  Firstly, VP.ENTER can return for many
-> > 
-> > No, but it *does* return 0 for: RBX,RSI,RDI,R10-R15.
-> > 
-> > So for \host you can simply do:
-> > 
-> > 	pop	%rsi
-> > 	mov	$0, TDX_MODULE_rsi(%rsi)
-> > 
-> > and call it a day.
+On Thu, Jul 13, 2023 at 04:56:06PM +0800, Wang Ming wrote:
+> It is expected that most callers should _ignore_ the errors
+> return by debugfs_create_dir() in tool_setup_dbgfs()
 > 
-> This isn't true for the case that VP.ENTER returns due to a TDVMCALL.  In that
-> case RCX contains the bitmap of shared registers, and RBX/RDX/RDI/RSI/R8-R15
-> contains guest value if the corresponding bit is set in RCX (RBP will be
-> excluded by updating the spec I assume).
-> 
-> Or are you suggesting we need to decode RAX to decide whether the VP.ENTER
-> return is due to TDVMCALL vs other reasons, and act differently?
+> Signed-off-by: Wang Ming <machel@vivo.com>
 
-Urgh, no I had missed there are *TWO* tables for output :/ Who does
-something like that :-(
+Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
 
-So yeah, sucks.
+regards,
+dan carpenter
+
