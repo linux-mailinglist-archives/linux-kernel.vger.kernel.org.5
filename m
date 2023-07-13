@@ -2,134 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20FD3751C01
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 10:45:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6C40751C09
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 10:46:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229455AbjGMIp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 04:45:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47178 "EHLO
+        id S234625AbjGMIqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 04:46:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233893AbjGMIpD (ORCPT
+        with ESMTP id S233535AbjGMIpf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 04:45:03 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91EA526AD
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 01:44:33 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-4fba74870abso838433e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 01:44:33 -0700 (PDT)
+        Thu, 13 Jul 2023 04:45:35 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BD502102
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 01:45:22 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id d75a77b69052e-40371070eb7so181221cf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 01:45:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689237872; x=1691829872;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SzJltP0N9vbWqDkRbI3S5sA4acByDrw2zIcLcbamrWE=;
-        b=fihFzxnSouY7eJl+SOC8Q198uWbB8fOqxCQtcEV/RntbNx45AGqWVlyRgCzQq9b1kk
-         vV+o1XKq5ljuIslE1hbE5J1Q9ikKQCJ2Mse43Cf/42PA4HHGRVHgQQvBF1bIDib0bMAF
-         rW4t3yOBI4XtWv+KwGN7My7lqWy2w3V66ww/JySBK7ORb2bpMff29NTq8Qr9IbwBeuRj
-         Xt4FrJwYXrThovxvL6AweP8v/TPzB33+fE1Hv7cTOWkC6lxptE9NiFDAR1h0LzKTa+iF
-         byCO6v66AZSJj6IS72js7iQQ0VbkwU/mHNk8GJ2IImxHwUcfLYkKD6uQ714o/ZAkji9H
-         mJAQ==
+        d=google.com; s=20221208; t=1689237921; x=1691829921;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0Q79c/OvfP4qr4NBPZHCFLwvY8dzwJlyvbkHoNMl1ds=;
+        b=3bjgVTIt1JTtnkHk+MgnbYdzDKrD/JqGAViWxl4ZRYiEZ3tGle1rnB2YGtKEoQ4IrP
+         rQida9wVL+gFpg4A+H+P5BOX5TtFJEkAqrPlrFhsyyaXWlU60ubx3DVrfbygIz4/+aQ+
+         YnQQkmI+RQQJfbx0PUu6qo5fFf0I+F4fNcwOPvrTE2zuarH5ueitaMv4isrMBe59HTtc
+         yd7zNW2re8vay05D5k8OtZmr52v0067Yjp1iLI4IAePtuyDFht+yQuCNZb0AKqULukuA
+         Lp9wdxmatiUpkqwuzlcUpBE1yRcm3y3ptV9erV5qlVlH6jozJo9oiqCPk8pXbfSPxyar
+         s/WA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689237872; x=1691829872;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SzJltP0N9vbWqDkRbI3S5sA4acByDrw2zIcLcbamrWE=;
-        b=AFF88Oxia28h3Lm/lRn7msBydH8NGtjrrUJkqf5kgaK4v7jqFP3EEh7zg5ZGz3X/zC
-         9TmWhTYUnlTCDqNrw1yOTnj90k2/hmcXZ1CrPUifqhqigGGVa78qgZrJVsCNiutTloQP
-         P4fu+E8cAfC2e9H4ludeoiShfShdTyV5TZFX1Kb70YzWWmgj/26tx8cNK2ihqXfl+SUd
-         2AfXw/GKQCMjp6eC7m35zrHYo4oS4P7AZOb0YlPXbLimv08EqsfVAjsOJpcoNgwVwQP2
-         VBBf1TV35RcFEIJuA3d4fofJfezMvrPNshEiaVD/iyvshEpGFmLiV6PZzod2e3jypE4y
-         zPIA==
-X-Gm-Message-State: ABy/qLYeQa1C4lF5G8CbnHTeKEPZusKM1sT4G47LTrKSs+OBv5iW16vV
-        pZ7tPAt5kASLLTdYYlECLZEAaIQqpP/EQ5V7vdXDkg==
-X-Google-Smtp-Source: APBJJlHALJqskp/z/AnSv5g+cG2G4saX7cXknnKeVpNsyj7DiLrjb6QxwzsioyawQtaJIFmI5uwrSA==
-X-Received: by 2002:a05:6512:2346:b0:4fb:7447:e71a with SMTP id p6-20020a056512234600b004fb7447e71amr705159lfu.63.1689237871805;
-        Thu, 13 Jul 2023 01:44:31 -0700 (PDT)
-Received: from [192.168.1.101] (abyl63.neoplus.adsl.tpnet.pl. [83.9.31.63])
-        by smtp.gmail.com with ESMTPSA id p11-20020ac246cb000000b004fb957ac245sm1041160lfo.59.2023.07.13.01.44.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 Jul 2023 01:44:31 -0700 (PDT)
-Message-ID: <1d0802a7-5ce8-9dbf-4b72-953d53d35718@linaro.org>
-Date:   Thu, 13 Jul 2023 10:44:30 +0200
+        d=1e100.net; s=20221208; t=1689237921; x=1691829921;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0Q79c/OvfP4qr4NBPZHCFLwvY8dzwJlyvbkHoNMl1ds=;
+        b=LN12u4Err5kEOKaSjupc+89gyrNQPyjaL4IoSV1e/E3nTJmysCWHJ0Tll6tzzAwC4l
+         T1yF+tqdkInVeZp0mDj6W2aBdqWF0xg1PLgSKDlxClA+3vDnTRK0eAxSmkdHsyB1MUqy
+         b8qMllzj61rsP+eHvjqoIl14A6sVmz2fDxsZQk7s5CEzFRSeXv/mKvCNs2boKgPVH8TQ
+         i9XWTTnc7P+NXlHrxpCtMdQ1HewmWQS2wwo/nY7/aFQXjghTXmBiWM32sJWp3vIB5oMM
+         HLbyos6TBQOY/+9meUKaWdkIywlXrOlfg1YwK8XRxTtlCxZqhq3wwmd5aug7QCrN9IyK
+         o4Jg==
+X-Gm-Message-State: ABy/qLZT1GJm9yARqQlj0eF0zvzkm1xIrT6ED1+RarsvYmsmaUTb269S
+        coaBzQzZ6y8H8pzyysLvEFTELudmRGWMwu2mxQio8w==
+X-Google-Smtp-Source: APBJJlHXesm+i+xAfOeS9zP/btd2JTeNsiyCDuYNbetw72DcwsPYgQxuCw2/cvFIS2FdMjWEX21pSxBW8kzjGULMJHs=
+X-Received: by 2002:ac8:5b8b:0:b0:403:b6ff:c0b with SMTP id
+ a11-20020ac85b8b000000b00403b6ff0c0bmr515839qta.6.1689237921386; Thu, 13 Jul
+ 2023 01:45:21 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 40/58] mmc: sdhci-msm: Convert to platform remove callback
- returning void
-Content-Language: en-US
-To:     Yangtao Li <frank.li@vivo.com>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        linux-arm-msm@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230713080807.69999-1-frank.li@vivo.com>
- <20230713080807.69999-40-frank.li@vivo.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20230713080807.69999-40-frank.li@vivo.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20230621063825.268890-1-mshavit@google.com> <20230621063825.268890-10-mshavit@google.com>
+In-Reply-To: <20230621063825.268890-10-mshavit@google.com>
+From:   Michael Shavit <mshavit@google.com>
+Date:   Thu, 13 Jul 2023 16:44:45 +0800
+Message-ID: <CAKHBV24gX6nuCeb2O13XPLw7aohi95ReZfqKVtX1X05WM7LZQg@mail.gmail.com>
+Subject: Re: [PATCH v4 09/13] iommu/arm-smmu-v3: Implement set_dev_pasid
+To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>
+Cc:     jean-philippe@linaro.org, nicolinc@nvidia.com, jgg@nvidia.com,
+        baolu.lu@linux.intel.com, linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13.07.2023 10:07, Yangtao Li wrote:
-> The .remove() callback for a platform driver returns an int which makes
-> many driver authors wrongly assume it's possible to do error handling by
-> returning an error code. However the value returned is (mostly) ignored
-> and this typically results in resource leaks. To improve here there is a
-> quest to make the remove callback return void. In the first step of this
-> quest all drivers are converted to .remove_new() which already returns
-> void.
-> 
-> Trivially convert this driver from always returning zero in the remove
-> callback to the void returning variant.
-> 
-> Cc: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> Signed-off-by: Yangtao Li <frank.li@vivo.com>
-> ---
-Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+On Wed, Jun 21, 2023 at 2:44=E2=80=AFPM Michael Shavit <mshavit@google.com>=
+ wrote:
+> +       mutex_lock(&arm_smmu_asid_lock);
+> +       ret =3D arm_smmu_write_ctx_desc(master->smmu, master->s1_cfg, mas=
+ter,
+> +                                     pasid, &smmu_domain->cd);
+> +       if (ret) {
+> +               mutex_unlock(&arm_smmu_asid_lock);
+> +               kfree(attached_domain);
+> +       }
+> +
+> +       spin_lock_irqsave(&smmu_domain->attached_domains_lock, flags);
+> +       list_add(&attached_domain->domain_head, &smmu_domain->attached_do=
+mains);
+> +       spin_unlock_irqrestore(&smmu_domain->attached_domains_lock, flags=
+);
+> +       mutex_unlock(&arm_smmu_asid_lock);
+> +
+> +       return 0;
 
-Konrad
-
->  drivers/mmc/host/sdhci-msm.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
-> index 1c935b5bafe1..80e376802ee0 100644
-> --- a/drivers/mmc/host/sdhci-msm.c
-> +++ b/drivers/mmc/host/sdhci-msm.c
-> @@ -2668,7 +2668,7 @@ static int sdhci_msm_probe(struct platform_device *pdev)
->  	return ret;
->  }
->  
-> -static int sdhci_msm_remove(struct platform_device *pdev)
-> +static void sdhci_msm_remove(struct platform_device *pdev)
->  {
->  	struct sdhci_host *host = platform_get_drvdata(pdev);
->  	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
-> @@ -2687,7 +2687,6 @@ static int sdhci_msm_remove(struct platform_device *pdev)
->  	if (!IS_ERR(msm_host->bus_clk))
->  		clk_disable_unprepare(msm_host->bus_clk);
->  	sdhci_pltfm_free(pdev);
-> -	return 0;
->  }
->  
->  static __maybe_unused int sdhci_msm_runtime_suspend(struct device *dev)
-> @@ -2740,7 +2739,7 @@ static const struct dev_pm_ops sdhci_msm_pm_ops = {
->  
->  static struct platform_driver sdhci_msm_driver = {
->  	.probe = sdhci_msm_probe,
-> -	.remove = sdhci_msm_remove,
-> +	.remove_new = sdhci_msm_remove,
->  	.driver = {
->  		   .name = "sdhci_msm",
->  		   .of_match_table = sdhci_msm_dt_match,
+A small bug in this patch as well: we return 0 when
+arm_smmu_write_ctx_desc() fails instead of the error. Will upload fix
+in v5.
