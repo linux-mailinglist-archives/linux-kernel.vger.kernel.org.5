@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8627175292A
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 18:53:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16C2A75292B
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 18:53:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235356AbjGMQxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 12:53:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33084 "EHLO
+        id S235366AbjGMQxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 12:53:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235143AbjGMQwt (ORCPT
+        with ESMTP id S235416AbjGMQw6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 12:52:49 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 218652701
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 09:52:48 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id 46e09a7af769-6b5d57d7db9so763982a34.3
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 09:52:48 -0700 (PDT)
+        Thu, 13 Jul 2023 12:52:58 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C29321FC0
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 09:52:54 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id e9e14a558f8ab-3463de183b0so3911965ab.2
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 09:52:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689267167; x=1691859167;
-        h=content-transfer-encoding:author:mime-version:message-id:date
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=/TQQu9i4zVTx/pAbl1XLa7p043pJkUqA0em0AaQVe1Q=;
-        b=EOJTZVfBLXbJ+tgLJUJRaAhYQO95hGodf9yyM3ZyJmDrHCRlhC2xTABoIUd+3Cl1Yo
-         XO6MFz+wN+mKMs6tq2jcRQ64XxumnSH7k9awmG8P4d7raV506yyFNuk+QzDmoxlG7chk
-         Xm8c4ZN86UiZ92TA62A3E7CqOGXkzsg58hlso09jztugiWJsrZlajfgdFEImk3AudVEl
-         cx4jXLpbjX+rbI6inQvzyxatK+J3NV0dtyEMl2rdalG0LM16oQKztrzu1e9wqiv4IAZx
-         OywlZGqh1gyC+BOajdMLtm5QuJcdzMOffKpKItqBLM8fiPpYEPx/vCTS+0PA28sPaCRn
-         hNEA==
+        d=linaro.org; s=google; t=1689267174; x=1691859174;
+        h=content-transfer-encoding:author:mime-version:references
+         :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=dcIGYFaQfGqSRzz1TR43A9wAS36o64Mm47YNW9KhJGo=;
+        b=rNKbM43IVbuLmaY5vpRk95N0ouqDf122oy6vp3z+XqzqJdSqzEJE49uA/+LAlaTvzC
+         va80pws1oE2LFizrEocPk3POxluC+DsEHwwhMXkn9kZxztlmon0JerXhq+Rv985t9dfJ
+         izZengGZk7DseJjSpHjHc9HrswDXf08dRy2VywcwJF8q6Qj2EP66+D0f8kQxk+lCznmY
+         Kon7SzME/qoenAAUA7B2HPEHQj2HTWWhYlvOOD1kqMp2ld4hf+6qAnnpwzEdHgCNCd1Z
+         Vr0lmId459CUK8susiATSTB9UXoPJ9XogCq9WhynQ50c7Z23C+gEFoBJiGw+x6n8hdHk
+         yXHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689267167; x=1691859167;
-        h=content-transfer-encoding:author:mime-version:message-id:date
-         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/TQQu9i4zVTx/pAbl1XLa7p043pJkUqA0em0AaQVe1Q=;
-        b=DpQW36g+RNCcxjPuQ9hd/ZfM+VDmTY+VoE9qrwceyRbtw4jJFlLMegr4+d1QZZQR7f
-         4Cfd3SPwdqv11cYXT1HOY5YSbobsjFAieqz7IQUywbI6HTpPPJmWVT7W10uSXMUdMRQl
-         CvYyDL1nc4Le+s346ps2SwBAnHToqztyRsqgqY+x2aHW3bbvR4Dr04ZJKdyqH/4l/Ec+
-         qh6ia7bvcu71l1WDlvZF4/1emgIiTeEVLsf39f6/a4QOtetpuxBSUXukbSuy+iWNkQxD
-         CXMr+Lq6x3gwPenWoy3mO+923vbztdDOSVvFHBFm3fpSd7HwP+pc3JYznaV198gjQPV3
-         uK1w==
-X-Gm-Message-State: ABy/qLaKXO1OaB+Q/2QU+hyxkBkiZojqg7HR5uPxOVSCzEwpPrQma9IZ
-        fWHiQHz/hx8yi6EByNTCDaEy+Q==
-X-Google-Smtp-Source: APBJJlECN8Pkf5oJl1wriKAi9i7oMviETr74ANXnYL6u7bXmI8D7Lz2S54OFWvuw32qLmK8Qci/xoA==
-X-Received: by 2002:a05:6870:c188:b0:19f:5c37:abb9 with SMTP id h8-20020a056870c18800b0019f5c37abb9mr2495348oad.12.1689267167408;
-        Thu, 13 Jul 2023 09:52:47 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689267174; x=1691859174;
+        h=content-transfer-encoding:author:mime-version:references
+         :in-reply-to:message-id:date:subject:cc:to:from:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dcIGYFaQfGqSRzz1TR43A9wAS36o64Mm47YNW9KhJGo=;
+        b=RAoTCuQwq6ObVhspc9qpHLHiO1KgB5MgfZpZs6zCtyL2EQz1uooIjvWgw3GD3qJRYQ
+         KcD/4c7kPcPRvmCEKki7SqGu+TBhNSujcbWXoibST/ZZfz9eyIU9A0j7zFhv1R4rWk1c
+         ttiHgZDjOdxYM5hvsu8F+BSLt3x2U47mLnFxAbUzDWU4h/lxGzr0R8vr4WX4RKE81ZJh
+         YC73Y9buL3ZVTBRdL38lysC5F+w4SacKV+v2Id/Ommo6EaiuFYtgpNWbY37wkP4Wme4H
+         1rlgnhtDuP9jDaOLpyIZIQ241cqK6zpUeJH5fx4ahb04MgrwQRYMr9+uWsNLqPAVqNk2
+         VqrA==
+X-Gm-Message-State: ABy/qLYNeu8oNSDU6kLYPcn+snMZqaLaEn2JRZU2xc+dsQlFbdwmojJE
+        kl/OMshuD4EeSpxeazvZZ4PLdA==
+X-Google-Smtp-Source: APBJJlEXsdTd6Pdgx3SCjb2Ew/A5vqSryB0OA8QHjsU17e1cE61ltYcsbHB9o5es5L+hVdITQ4UnZA==
+X-Received: by 2002:a92:c6c7:0:b0:346:5813:f7f5 with SMTP id v7-20020a92c6c7000000b003465813f7f5mr2120484ilm.12.1689267174022;
+        Thu, 13 Jul 2023 09:52:54 -0700 (PDT)
 Received: from x-wing.lan ([49.207.50.231])
-        by smtp.gmail.com with ESMTPSA id d3-20020a17090abf8300b002633fa95ac2sm12009150pjs.13.2023.07.13.09.52.40
+        by smtp.gmail.com with ESMTPSA id d3-20020a17090abf8300b002633fa95ac2sm12009150pjs.13.2023.07.13.09.52.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Jul 2023 09:52:46 -0700 (PDT)
+        Thu, 13 Jul 2023 09:52:53 -0700 (PDT)
 From:   Amit Pundir <amit.pundir@linaro.org>
 To:     Bjorn Andersson <andersson@kernel.org>,
         Andy Gross <agross@kernel.org>,
@@ -71,10 +72,12 @@ Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
         linux-arm-msm <linux-arm-msm@vger.kernel.org>,
         dt <devicetree@vger.kernel.org>,
         lkml <linux-kernel@vger.kernel.org>
-Subject: [PATCH v5 1/2] dt-bindings: display/msm: mdss-common: add memory-region property
-Date:   Thu, 13 Jul 2023 22:22:37 +0530
-Message-Id: <20230713165238.2814849-1-amit.pundir@linaro.org>
+Subject: [PATCH v5 2/2] arm64: dts: qcom: sdm845-db845c: Mark cont splash memory region as reserved
+Date:   Thu, 13 Jul 2023 22:22:38 +0530
+Message-Id: <20230713165238.2814849-2-amit.pundir@linaro.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230713165238.2814849-1-amit.pundir@linaro.org>
+References: <20230713165238.2814849-1-amit.pundir@linaro.org>
 MIME-Version: 1.0
 Author: Amit Pundir <amit.pundir@linaro.org>
 Content-Transfer-Encoding: 8bit
@@ -88,42 +91,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add and document the reserved memory region property in the
-mdss-common schema.
-
-For now (sdm845-db845c), it points to a framebuffer memory
-region reserved by the bootloader for splash screen.
+Adding a reserved memory region for the framebuffer memory
+(the splash memory region set up by the bootloader).
 
 Signed-off-by: Amit Pundir <amit.pundir@linaro.org>
 ---
-v5: Moving the dt-binding to mdss-common schema with
-    updated commit message and property description.
+v5: Re-sending with updated dt-bindings patch in mdss-common
+    schema.
 
-v4: Adding this new dt-binding patch, in qcom,sdm845-mdss
-    schema, in the v4 of the follow-up patch for
-    sdm845-db845c.
-    https://lore.kernel.org/lkml/20230712130215.666924-2-amit.pundir@linaro.org/
+v4: Re-sending this along with a new dt-bindings patch to
+    document memory-region property in qcom,sdm845-mdss
+    schema and keep dtbs_check happy.
 
- .../devicetree/bindings/display/msm/mdss-common.yaml         | 5 +++++
- 1 file changed, 5 insertions(+)
+v3: Point this reserved region to MDSS.
 
-diff --git a/Documentation/devicetree/bindings/display/msm/mdss-common.yaml b/Documentation/devicetree/bindings/display/msm/mdss-common.yaml
-index ccd7d6417523..84ed2757ded5 100644
---- a/Documentation/devicetree/bindings/display/msm/mdss-common.yaml
-+++ b/Documentation/devicetree/bindings/display/msm/mdss-common.yaml
-@@ -77,6 +77,12 @@ properties:
-     items:
-       - description: MDSS_CORE reset
+v2: Updated commit message.
+
+There was some dicussion on v1 but it didn't go anywhere,
+https://lore.kernel.org/linux-kernel/20230124182857.1524912-1-amit.pundir@linaro.org/T/#u.
+The general consensus is that this memory should be freed and be
+made resuable but that (releasing this piece of memory) has been
+tried before and it is not trivial to return the reserved memory
+node to the system RAM pool in this case.
+
+ arch/arm64/boot/dts/qcom/sdm845-db845c.dts | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
+index d6b464cb61d6..f546f6f57c1e 100644
+--- a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
++++ b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
+@@ -101,6 +101,14 @@ hdmi_con: endpoint {
+ 		};
+ 	};
  
-+  memory-region:
-+    maxItems: 1
-+    description:
-+      Phandle to a node describing a reserved framebuffer memory region.
-+      For example, the splash memory region set up by the bootloader.
++	reserved-memory {
++		/* Cont splash region set up by the bootloader */
++		cont_splash_mem: framebuffer@9d400000 {
++			reg = <0x0 0x9d400000 0x0 0x2400000>;
++			no-map;
++		};
++	};
 +
- required:
-   - reg
-   - reg-names
+ 	lt9611_1v8: lt9611-vdd18-regulator {
+ 		compatible = "regulator-fixed";
+ 		regulator-name = "LT9611_1V8";
+@@ -506,6 +514,7 @@ &i2c14 {
+ };
+ 
+ &mdss {
++	memory-region = <&cont_splash_mem>;
+ 	status = "okay";
+ };
+ 
 -- 
 2.25.1
 
