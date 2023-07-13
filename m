@@ -2,60 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC55B752944
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 18:59:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40A2F752945
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 19:00:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229643AbjGMQ7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 12:59:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37142 "EHLO
+        id S229810AbjGMQ76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 12:59:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjGMQ7C (ORCPT
+        with ESMTP id S229452AbjGMQ75 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 12:59:02 -0400
+        Thu, 13 Jul 2023 12:59:57 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63295268B
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 09:59:01 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFE58268B
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 09:59:55 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 01C8361ADE
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 16:59:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7D1DC433C8;
-        Thu, 13 Jul 2023 16:58:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1689267540;
-        bh=pW1JUGIXdjPSUFzlQ9hxjilOtc9B8ahtl0ZfNBtJcPE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pGe5yb2ylnSGBTLoccMeUrRCek93QPiG0iTs0WXYxi9JJ6uEWNBFmvaw2iaeXucEo
-         lpQ8XRqL9xMjIfWFTZiU8MDFav+S5US96GDtWCUPC3cJBw8uDi31cBK/Hq4H8OVnmo
-         o6Pa0ePDiYfifz338mqYzA8NpMSC6OnzB+ch8SoI=
-Date:   Thu, 13 Jul 2023 18:58:57 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Emanuele Giuseppe Esposito <eesposit@redhat.com>, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>, bluca@debian.org,
-        lennart@poettering.net, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Daniel P =?iso-8859-1?Q?=2E_Berrang=E9?= <berrange@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v2] x86/boot: add .sbat section to the bzImage
-Message-ID: <2023071356-royal-charter-a647@gregkh>
-References: <20230711154449.1378385-1-eesposit@redhat.com>
- <2023071237-private-overhang-7f86@gregkh>
- <875y6o429i.fsf@redhat.com>
- <2023071329-persevere-pursuant-e631@gregkh>
- <87wmz33j36.fsf@redhat.com>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 782AB61AF0
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 16:59:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBFC1C433C9
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 16:59:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689267594;
+        bh=TqUzlchrwXhWN1S5Z6sliL6d9960E2KXgd/K23x2LgM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=azdQ1ugZPoeMI5qSZANJA6Lxx/V6JE58/ySohLcHWmGP4h4naCXlLhhYvL+bQ6eyp
+         hmb+/VEbXL1tjjkOCF3YO8WFJ1bTRfbY79uEDb1xT2O7kcC4OSAF4TaC7bE4CoeAdu
+         X7i1vfurRjXdm+/4bBzE5Ddd4nCi3Y1JTdufCnB/UeKdRKjeL7PCidoQKy4bm5ItGg
+         0vl32hZbHg43dlBzvt6+OCEOiYmhzwLMptPTpeIkSALRMl6EFRXxgIgVtBt8Mby1BI
+         IvaLZSNq8wAXt93+Ux8P4sFTQ9DfBEoGVUq81pCTVJrkKqx+EuBzeUkjuV6T3oGKtP
+         b4STEcjOZA/vw==
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-51e43473ee0so1145919a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 09:59:54 -0700 (PDT)
+X-Gm-Message-State: ABy/qLYB8X5zGXVZJSpbYFumQBQ3dHw5MLzf/Leeiet54u58q9MA4d8W
+        Xo9HeC0A84eJlzcOCzHX8uoErizmPxFNfPU+KXE=
+X-Google-Smtp-Source: APBJJlHHq6Js4fVdWS/uvXkMp8W5udysBEttpg8LjaaxKrtysI0emny2lCbalKT5PSYGULPvocJPPEv3oQKm7THOQRU=
+X-Received: by 2002:a50:ef16:0:b0:51e:5322:a642 with SMTP id
+ m22-20020a50ef16000000b0051e5322a642mr2114442eds.27.1689267593039; Thu, 13
+ Jul 2023 09:59:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87wmz33j36.fsf@redhat.com>
+References: <20230711062202.3542367-1-CoelacanthusHex@gmail.com>
+ <CAJF2gTRgXbEfQWiWtZtVNBDhpY2miG_ByHrVZF2fbfu60hCHcQ@mail.gmail.com> <37a22693-e33c-f64a-e3d7-febed8e9f195@gmail.com>
+In-Reply-To: <37a22693-e33c-f64a-e3d7-febed8e9f195@gmail.com>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Thu, 13 Jul 2023 12:59:40 -0400
+X-Gmail-Original-Message-ID: <CAJF2gTTmKPR-jwEpKFT4qzNqZLQV--RMzSH5LA-EPw8eSVi56g@mail.gmail.com>
+Message-ID: <CAJF2gTTmKPR-jwEpKFT4qzNqZLQV--RMzSH5LA-EPw8eSVi56g@mail.gmail.com>
+Subject: Re: [PATCH] riscv: entry: set a0 prior to syscall_handler
+To:     Celeste Liu <coelacanthushex@gmail.com>
+Cc:     Palmer Dabbelt <palmer@rivosinc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Felix Yan <felixonmars@archlinux.org>,
+        Ruizhe Pan <c141028@gmail.com>,
+        Shiqi Zhang <shiqi@isrc.iscas.ac.cn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -66,94 +72,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 05:51:57PM +0200, Vitaly Kuznetsov wrote:
-> Greg KH <gregkh@linuxfoundation.org> writes:
-> > On Thu, Jul 13, 2023 at 10:57:45AM +0200, Vitaly Kuznetsov wrote:
-> >> I don't
-> >> particularly see why anyone would need to get additional sign-offs to
-> >> just ask a question (which I don actually think was asked before!) and
-> >> IMO an RFC/patch is usually the best way to do so.
+On Thu, Jul 13, 2023 at 11:28=E2=80=AFAM Celeste Liu <coelacanthushex@gmail=
+.com> wrote:
+>
+>
+> On 2023/7/13 08:00, Guo Ren wrote:
+> > On Tue, Jul 11, 2023 at 2:22=E2=80=AFAM Celeste Liu <coelacanthushex@gm=
+ail.com> wrote:
+> >>
+> >> When we test seccomp with 6.4 kernel, we found errno has wrong value.
+> >> If we deny NETLINK_AUDIT with EAFNOSUPPORT, after f0bddf50586d, we wil=
+l
+> >> get ENOSYS. We got same result with 9c2598d43510 ("riscv: entry: Save =
+a0
+> >> prior syscall_enter_from_user_mode()").
+> >>
+> >> Compared with x86 and loongarch's implementation of this part of the
+> >> function, we think that regs->a0 =3D -ENOSYS should be advanced before
+> >> syscall_handler to fix this problem. We have written the following pat=
+ch,
+> >> which can fix this problem after testing. But we don't know enough abo=
+ut
+> >> this part of the code to explain the root cause. Hope someone can find
+> >> a reasonable explanation. And we'd like to reword this commit message
+> >> according to the explanation in v2
+> >>
+> >> Fixes: f0bddf50586d ("riscv: entry: Convert to generic entry")
+> >> Reported-by: Felix Yan <felixonmars@archlinux.org>
+> >> Co-developed-by: Ruizhe Pan <c141028@gmail.com>
+> >> Signed-off-by: Ruizhe Pan <c141028@gmail.com>
+> >> Co-developed-by: Shiqi Zhang <shiqi@isrc.iscas.ac.cn>
+> >> Signed-off-by: Shiqi Zhang <shiqi@isrc.iscas.ac.cn>
+> >> Signed-off-by: Celeste Liu <CoelacanthusHex@gmail.com>
+> >> Tested-by: Felix Yan <felixonmars@archlinux.org>
+> >> ---
+> >>  arch/riscv/kernel/traps.c | 3 +--
+> >>  1 file changed, 1 insertion(+), 2 deletions(-)
+> >>
+> >> diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
+> >> index f910dfccbf5d2..ccadb5ffd063c 100644
+> >> --- a/arch/riscv/kernel/traps.c
+> >> +++ b/arch/riscv/kernel/traps.c
+> >> @@ -301,6 +301,7 @@ asmlinkage __visible __trap_section void do_trap_e=
+call_u(struct pt_regs *regs)
+> >>
+> >>                 regs->epc +=3D 4;
+> >>                 regs->orig_a0 =3D regs->a0;
+> >> +               regs->a0 =3D -ENOSYS;
+> > Oh, no. You destroyed the a0 for syscall_handler, right? It's not
+> > reasonable. Let's see which syscall_handler needs a0=3D-ENOSYS.
+>
+> syscall_handler always use orig_a0, not a0.
+> And I have a mistake in original email, corret one is
+> syscall_enter_from_user_mode not syscall_handler.
+I misunderstood. Yes, a0 would be replaced by orig_a0:
+syscall_enter_from_user_mode_work ->  syscall_rollback
+
+If the syscall was denied by syscall_enter_from_user_mode(), the
+return number is forced to be -ENOSYS. Maybe regs->a0 has already been
+updated by SYSCALL_WORK_SECCOMP. eg:
+
+__seccomp_filter() {
+...
+        case SECCOMP_RET_TRAP:
+                /* Show the handler the original registers. */
+                syscall_rollback(current, current_pt_regs());
+                /* Let the filter pass back 16 bits of data. */
+                force_sig_seccomp(this_syscall, data, false);
+                goto skip;
+
+>
+> > Could you give out more detail on your test case?
 > >
-> > Again, no questions were asked.
+> >>
+> >>                 riscv_v_vstate_discard(regs);
+> >>
+> >> @@ -308,8 +309,6 @@ asmlinkage __visible __trap_section void do_trap_e=
+call_u(struct pt_regs *regs)
+> >>
+> >>                 if (syscall < NR_syscalls)
+> >>                         syscall_handler(regs, syscall);
+> >> -               else
+> >> -                       regs->a0 =3D -ENOSYS;
+> >>
+> >>                 syscall_exit_to_user_mode(regs);
+> >>         } else {
+> >> --
+> >> 2.41.0
+> >>
 > >
-> > And when I asked questions, no one knowledgable answered them (hint, we
-> > release more than 3 kernels a year...)
 > >
-> 
-> I think that getting these questions was actually the main reason to
-> send out the RFC. (Personally, I don't think that stable@ is an
-> insurmountable problem with an epoch-based revocation mechamism as we
-> can e.g. switch module name from "linux" to e.g. "linux-stable-5.14"
-> when screating a stable branch or do something like that but that's not
-> the main/only problem we see here).
+>
 
-There was no "questions" asked about this RFC, so what should we respond
-with except with what we did, "No way this is acceptable, as this was
-not thought through at all"?
 
-> > Turn it around, what would you do if you got this patch in your inbox to
-> > review and you were responsible for doing kernel releases and security
-> > fixes?
-> >
-> 
-> I replied to the thread not to defend the idea as after the discussion
-> it is clear there's a lot to take into consideration if anyone decides
-> to pursue the SBAT idea ever again (and the discussion is now well
-> preserved in the archive!). I replied to disagree with "get sign-offs
-> from senior people before sending RFCs" idea, I believe that asking
-> questions by sending a not-fully-ready patch as "RFC" should not be
-> discouraged. 
-
-On the contrary, this is EXACTLY what needs to happen here.
-
-This developer (I'm not picking on them at all, it's not their fault),
-should be taking advantage of the resources of their company when
-dealing with core, critical, functionality of the kernel.
-
-To just "throw them at the wolves" like Red Hat did, is a total
-disservice to them, AND it wastes the time and resources of the
-community, as it is not our job to train and teach them, it is the job
-of the senior people at your company to do so.
-
-We have a non-zero number of companies that right now who are in the
-"penalty box" because their developers have had a history of throwing
-crud over the wall, or having inexperienced developers submit changes
-that are obviously wrong, which waste the time and energy of the kernel
-community.  For companies that do this, we have instituted the
-requirement that they get review and acceptance of kernel changes from
-the experienced developers within the company BEFORE submitting their
-changes to the community, for the basic fact that this actually saves
-EVERYONE time and energy.
-
-It allows the developer to grow and learn more quickly, it saves the
-energy and time of the reviewers (which is our most valuable resource
-right now) and it provides a solid path forward on the corporate ladder
-of using mentors well, and lifting up your own employees.
-
-I don't think you want us to put Red Hat into this type of policy at
-this point in time, but if you all keep insisting that you can just "let
-loose" inexperienced developers who wish to change the core
-functionality of how we operate, that can easily change.
-
-Remember, this proposed patch directly affects how the kernel is
-released, how the security team works, and how the security of Linux is
-viewed by the world.  Why would you NOT want your experienced developers
-to review such a thing first?  To not want that, means that Red Hat just
-doesn't care about their developers, nor the community, which I sure
-hope is not the case.
-
-So again, yes, I am INSISTING that the next version of this change be
-properly reviewed, vetted, and signed-off-by, by the senior kernel
-developers at your company BEFORE you submit it again for review by
-anyone in the community.  Only that way can I hope that it will be
-something that actually takes into account all of the questions we have
-already had for this proposed 2 line change.
-
-Funnily, I think this proposed patch takes the dubious record for "most
-innocuous looking patch that will directly affect the development
-procedures for the most people", an outstanding record that I hope never
-gets broken :)
-
-thanks,
-
-greg k-h
+--=20
+Best Regards
+ Guo Ren
