@@ -2,131 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EB787516DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 05:44:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDDA27516DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 05:44:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233728AbjGMDoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 23:44:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49482 "EHLO
+        id S233707AbjGMDo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 23:44:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233724AbjGMDo0 (ORCPT
+        with ESMTP id S233698AbjGMDoO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 23:44:26 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A9FD212E
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 20:44:01 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-55ba5fae2e6so302476a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 20:44:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1689219840; x=1689824640;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hVjQTrjhAgBoK60RvPAfIw0EZID7PTIyARw4vx1MjIQ=;
-        b=Zjh5MGD4DgBqKkIZf9kMQ5CF4fyhyzzaQdofJQdXaDG/QC4dbKDnVJvnEaYUFMyGyJ
-         bvVj6rHw4EHTnPfxCGVPBUxeDHwo85sZoAcXSCcRYYTFtbvYLyCB67/ymUrNszWV7Zj8
-         i9fpFUQqnh7zNZObRKZbidiRO5FL2ZHomFRAGzegZ0KO8j0vC77Hk/9XUnwTkBTvqk21
-         4lJDQeJbkiNc0hYJiCujjvan/IVWbSaJPClKrdyHlhU6ufd4VKVkN0y/6zTWxuo+7UwI
-         rIicJKpRb0Lgp8I0U9LY7yJN+l6Q2diSbJwRs9dBxnb1PauJUaLjXQiMKjWvl06e3Cba
-         0MTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689219840; x=1689824640;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hVjQTrjhAgBoK60RvPAfIw0EZID7PTIyARw4vx1MjIQ=;
-        b=W/J/arMNpgcyassj//dl0zR4dKz/7senEypJ3nPtEdWLyHClJ0+PCuvtKjJDuSAU7r
-         jKIOcle/MTu5lE2RoLcRWTU8uCbaIPcMaR1/yZCAvpwWrnU7fyipWBSCohqIgFOzvBRi
-         kiMFDXO4MR3MXm8GwO1Z67ZeeEqxvFS4cthfsBK7QIs4WMly6csd8mH/URGjQxHkALT/
-         z0n5FEVkANqxXYXtotGYVFt4UOh8ccc3sYc3jwidEc1hkcftP4ihnm9IkC7ft2Q0/aBH
-         /xjJ9WJBm5vwUHQ4kjo3TF/fpvWhRczm7b5msBdYxYyNiU3/XUsPJ8WAN6s4wIcBSrBc
-         Nlrw==
-X-Gm-Message-State: ABy/qLYBbiXG9BFjDFCqGnLAYzWr1U0C6pQdXknF18WKYeiaoVW9FXL2
-        o4zXg62CH4wKm74BifvfuQ0lmw==
-X-Google-Smtp-Source: APBJJlHOof2UHVhe+eU54U/aT2RSacobLy7qJyJL2R/eRzPhVtf1XmAWOv8h7kvPJl1Lb4CQtkQNVQ==
-X-Received: by 2002:a05:6a20:7485:b0:11f:39e2:d08c with SMTP id p5-20020a056a20748500b0011f39e2d08cmr356986pzd.30.1689219840158;
-        Wed, 12 Jul 2023 20:44:00 -0700 (PDT)
-Received: from [10.94.58.170] ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id f11-20020a17090274cb00b001b694130c05sm4755621plt.1.2023.07.12.20.43.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 Jul 2023 20:43:59 -0700 (PDT)
-Message-ID: <a70eaa87-2afa-a5c7-a463-7199744cefa4@bytedance.com>
-Date:   Thu, 13 Jul 2023 11:43:50 +0800
+        Wed, 12 Jul 2023 23:44:14 -0400
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D9B42113;
+        Wed, 12 Jul 2023 20:44:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689219848; x=1720755848;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=dSMjRg8ZP7ic8vMjHznYMQB4EEK/y11162LRsTfQBE4=;
+  b=d95wZkD1PVhxrb/Xlxtfbs70t17pHIH1H+Kw8kkMmIZDz1cy7kJtfnai
+   1ja+dC22l7KeLTHKHT0zRUuez8Xo6lGlclqQmiAA8QjYmIoymhRCrcei5
+   0C2iVArJeCobdOdQkVx6sikI6aPp9MpgZI1MgDRr0heSPreuVXKVTdcjl
+   Rd8EXjcJjAYRFUdO/DM5urmeI+1buGvuAT1OmL0Yszy3LZR5pH/5FL0Dk
+   LuA11X3Xpa8qVufSaL+tvrRVGoLFRtam4usE1Rpiw7/XgY/ww9FMSxvM6
+   a/L0lUIzzlwkbVvdSFdnzrQGetk60P5/V0f97LT95rSmjHWwaRjirMyb4
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10769"; a="363945261"
+X-IronPort-AV: E=Sophos;i="6.01,201,1684825200"; 
+   d="scan'208";a="363945261"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2023 20:44:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10769"; a="715788445"
+X-IronPort-AV: E=Sophos;i="6.01,201,1684825200"; 
+   d="scan'208";a="715788445"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.252.187.96]) ([10.252.187.96])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2023 20:43:58 -0700
+Message-ID: <cf793119-591f-19b5-b708-45c6f3eadc79@linux.intel.com>
+Date:   Thu, 13 Jul 2023 11:43:55 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: Re: [PATCH v2 5/7] sched: Implement shared runqueue in CFS
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 9/9] iommu: Use fault cookie to store iopf_param
+To:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>
+References: <20230711010642.19707-1-baolu.lu@linux.intel.com>
+ <20230711010642.19707-10-baolu.lu@linux.intel.com>
+ <20230711150249.62917dad@jacob-builder>
+ <e26db44c-ec72-085d-13ee-597237ba2134@linux.intel.com>
+ <BN9PR11MB527640E6FBD5271E8AF9D59B8C37A@BN9PR11MB5276.namprd11.prod.outlook.com>
 Content-Language: en-US
-To:     David Vernet <void@manifault.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, gautham.shenoy@amd.com,
-        kprateek.nayak@amd.com, aaron.lu@intel.com, clm@meta.com,
-        tj@kernel.org, roman.gushchin@linux.dev, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org
-References: <20230710200342.358255-1-void@manifault.com>
- <20230710200342.358255-6-void@manifault.com>
- <93260dd9-818a-7f98-e030-635e0dc8cad8@bytedance.com>
- <20230712221657.GF12207@maniforge>
-From:   Abel Wu <wuyun.abel@bytedance.com>
-In-Reply-To: <20230712221657.GF12207@maniforge>
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <BN9PR11MB527640E6FBD5271E8AF9D59B8C37A@BN9PR11MB5276.namprd11.prod.outlook.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/13/23 6:16 AM, David Vernet wrote:
-> On Wed, Jul 12, 2023 at 06:47:26PM +0800, Abel Wu wrote:
->>> + *
->>> + * HOW
->>> + * ===
->>> + *
->>> + * An shared_runq is comprised of a list, and a spinlock for synchronization.
->>> + * Given that the critical section for a shared_runq is typically a fast list
->>> + * operation, and that the shared_runq is localized to a single LLC, the
->>> + * spinlock will typically only be contended on workloads that do little else
->>> + * other than hammer the runqueue.
+On 2023/7/13 11:24, Tian, Kevin wrote:
+>> From: Baolu Lu <baolu.lu@linux.intel.com>
+>> Sent: Wednesday, July 12, 2023 11:13 AM
 >>
->> Would there be scalability issues on large LLCs?
+>> On 2023/7/12 6:02, Jacob Pan wrote:
+>>> On Tue, 11 Jul 2023 09:06:42 +0800, Lu Baolu<baolu.lu@linux.intel.com>
+>>> wrote:
+>>>
+>>>> @@ -158,7 +158,7 @@ int iommu_queue_iopf(struct iommu_fault *fault,
+>>>> struct device *dev)
+>>>>    	 * As long as we're holding param->lock, the queue can't be
+>>>> unlinked
+>>>>    	 * from the device and therefore cannot disappear.
+>>>>    	 */
+>>>> -	iopf_param = param->iopf_param;
+>>>> +	iopf_param = iommu_get_device_fault_cookie(dev, 0);
+>>> I am not sure I understand how does it know the cookie type is iopf_param
+>>> for PASID 0?
+>>>
+>>> Between IOPF and IOMMUFD use of the cookie, cookie types are different,
+>>> right?
+>>>
+>>
+>> The fault cookie is managed by the code that delivers or handles the
+>> faults. The sva and IOMMUFD paths are exclusive.
+>>
 > 
-> See the next patch in the series [0] where we shard the per-LLC shared
-> runqueues to avoid contention.
-> 
-> [0]: https://lore.kernel.org/lkml/20230710200342.358255-7-void@manifault.com/
+> what about siov? A siov-capable device can support sva and iommufd
+> simultaneously.
 
-Sorry, I should have read the cover letter more carefully. By sharding,
-the LLC is partitioned into several zones, hence contention is relieved.
-But sharding itself might be tricky. Making the SMT siblings not cross
-shards, as suggested by Peter, is generally a good thing. But I wonder
-if there is any workload might benefit from other sharding form.
+For siov case, the pasid should be global. RID and each pasid are still
+exclusive, so I don't see any problem. Did I overlook anything?
 
->>
->>> +
->>> +	task_rq_unlock(src_rq, p, &src_rf);
->>> +
->>> +	raw_spin_rq_lock(rq);
->>> +	rq_repin_lock(rq, rf);
->>
->> By making it looks more ugly, we can save some cycles..
->>
->> 	if (src_rq != rq) {
->> 		task_rq_unlock(src_rq, p, &src_rf);
->> 	} else {
->> 		rq_unpin_lock(src_rq, src_rf);
->> 		raw_spin_unlock_irqrestore(&p->pi_lock, src_rf.flags);
->> 		rq_repin_lock(rq, rf);
->> 	}
-
-I forgot the repin part when src_rq != rq, but I'm sure you already got
-my point :)
-
-Cheers,
-	Abel
+Best regards,
+baolu
