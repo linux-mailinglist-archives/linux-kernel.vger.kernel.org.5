@@ -2,117 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EADF751EB1
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 12:17:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3C84751EB3
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 12:18:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232739AbjGMKRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 06:17:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57014 "EHLO
+        id S233074AbjGMKSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 06:18:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233603AbjGMKRb (ORCPT
+        with ESMTP id S232144AbjGMKSO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 06:17:31 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE1C3273F
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 03:17:27 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3fbd33a1819so52755e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 03:17:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689243446; x=1691835446;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cgTfpf6IMD+zAdQw7gG1t68xyEykfaw6L7r/eLwpcfM=;
-        b=QXKfcJsGmoR2FM+lAmlHzHe6q7yhlyPrQsB+vj6KfUt6Bb2e8m8BQf+lpKGL7vFgJo
-         /qZh3y1iyMzKappWzYzKoDn2Rxfd+N6uaAr16XWKSmVi+bOYgmEOm/n32Eq/oDdpfOPu
-         pjTEImKYTahfoNfD4b1rE87Fy8swF5uKyvdgAP6bfdgnLbRNQ4wU9Fhb9K00BWInbz5X
-         Dft/1S1COT/pG2C2MPHxeIVnpI7Xx7r2Q2PmXJbQpQEtFq54SC4aoORGeD+J480O/bTo
-         ovGRzW5PUnr/06tkzkmgEVgnzXTGYofZ4L3Elq1nV9Di4/OyJsbGG6q3VLnPhjMfoc6z
-         He5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689243446; x=1691835446;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cgTfpf6IMD+zAdQw7gG1t68xyEykfaw6L7r/eLwpcfM=;
-        b=lQcbv+elxcLHRHQBvq22+SJlLiIGPzrxm+p4uYC4loCeX5QNB66m+9N/6vP6JpwPlb
-         K3QlNHQmMVyAmrNi/2xqaXv/fmMlRrHn8FHxAzoBSSi69iPwr0xDe3KVo3O+MFkOb3ri
-         SIyV2iGw0MBjRvzN77h99phNCrsjdZHq7NrI/aNOjoXc1rF04WO/Q+yJnObIwLKhIn+8
-         HaJ7VOGqzF5UiYPi1m/QOh/CdLZHqtEVs6GLphFP45APwzRbdwPd37PPgbn4HL8+bJ9u
-         HOYnOmy/AUiR81uSnfeVYXuAGutAc74SyrweTVwLx8Lz8OkgqX5AERqpz811IURfowrm
-         r36A==
-X-Gm-Message-State: ABy/qLYCTqyuVer6Jp73ktZ/hc1sDQt/Rd1XCAMh34BRc08uRePRAOTt
-        bIpjbLseC5QggIu7Q3w94iSreKqfsws2l4V+Rv0JhA==
-X-Google-Smtp-Source: APBJJlELuWCfdGb2EDMi3fT5s3Ym2+WxWmUEY6LSu7hPmkiTxSseEO2OPLfVUEJVsYNHI5Mbp/NFKXW02jQC8YiyH48=
-X-Received: by 2002:a05:600c:1c9a:b0:3f6:f4b:d4a6 with SMTP id
- k26-20020a05600c1c9a00b003f60f4bd4a6mr179255wms.7.1689243446227; Thu, 13 Jul
- 2023 03:17:26 -0700 (PDT)
+        Thu, 13 Jul 2023 06:18:14 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6573E1724;
+        Thu, 13 Jul 2023 03:18:12 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id F3B0C60C00;
+        Thu, 13 Jul 2023 10:18:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A1E9C433CD;
+        Thu, 13 Jul 2023 10:18:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689243491;
+        bh=ET0PIk/EJwOtrnFetQCgnV0IGpMF5SKCWlqW+zEctgk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=YMlAn0FKUIcij8cMaBk1sFjGdlftqb544w6tk1470W3FP8qhFxn+egxqkXA5LavAS
+         esTIPGnjOKs03CHA1k5fK0BcLZG62Fd+YJjjeUX9Jx/+xTrTWAxHKlJCXj/+I0fcf6
+         tgt9Hl+9GgifspdfdEgIMhgHCX9v0289T95tYeQ7gFQeNRPmW8uUyl6JLAr/+vh+sU
+         EArTQBAxwB/G70oaog4LkVrUoXGF7PalknTC3Qf4N+/v/qvWOAIvAtxUG8G1VdKaZC
+         SiS90semh7lh/XT8ETTWgIFpxHQAzLQ8xhYpCzly4tEAIDqDQZ178VA/ugu6IOY3u9
+         uYQDvUzquX5OQ==
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-4f122ff663eso927751e87.2;
+        Thu, 13 Jul 2023 03:18:11 -0700 (PDT)
+X-Gm-Message-State: ABy/qLagSoMP+j+D3AolVsy2Lq2p5ZXHYn0FXKC7gGLd5huehqVITJ8i
+        m363FG3oXb6HSwnlDFOh77jGFNVRVq+0GlSBe8Y=
+X-Google-Smtp-Source: APBJJlFBQWCejzkySepLV/mSpZDO69J/ce++jVUzK0IbQmheOsTIP22zHMFDXog7ITY4n68UbN14AQPbrEm/zMas0Pg=
+X-Received: by 2002:a05:6512:3984:b0:4f8:7513:8cb0 with SMTP id
+ j4-20020a056512398400b004f875138cb0mr1040508lfu.2.1689243489214; Thu, 13 Jul
+ 2023 03:18:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <00000000000009408f05e977da5d@google.com> <00000000000085151506005b1491@google.com>
-In-Reply-To: <00000000000085151506005b1491@google.com>
-From:   Aleksandr Nogikh <nogikh@google.com>
-Date:   Thu, 13 Jul 2023 12:17:13 +0200
-Message-ID: <CANp29Y4y1T6T6VBCGxOP2aDSf-2zRBgFOJEbxZT_Figd=gNm0A@mail.gmail.com>
-Subject: Re: [syzbot] [ntfs3?] general protection fault in d_flags_for_inode
-To:     syzbot <syzbot+2f012b85ac8ce9be92e5@syzkaller.appspotmail.com>
-Cc:     almaz.alexandrovich@paragon-software.com, hverkuil-cisco@xs4all.nl,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mchehab@kernel.org, ntfs3@lists.linux.dev,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+References: <20230601072043.24439-1-ltao@redhat.com> <20230705173359.GDZKWphyFbNE8id6Jm@fat_crate.local>
+ <CAO7dBbXdJgpO4Ym=4WME3OOrUhq2MNKpNZmhpsC7pOSugHiKDg@mail.gmail.com>
+ <ZKeTX2aemPbsMiVr@MiWiFi-R3L-srv> <ZKfLYG_4DANc_i5r@suse.de>
+ <20230707085712.GBZKfTaGJXnzhEenxj@fat_crate.local> <20230707152515.42gpfzjgvfwe6rf7@amd.com>
+ <20230707171217.GHZKhHcffp4nn6RgR/@fat_crate.local>
+In-Reply-To: <20230707171217.GHZKhHcffp4nn6RgR/@fat_crate.local>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 13 Jul 2023 12:17:57 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXFBtd6DRzwNbuY5_zc4DThjQWs9itN=qYkED-+6nkoGcw@mail.gmail.com>
+Message-ID: <CAMj1kXFBtd6DRzwNbuY5_zc4DThjQWs9itN=qYkED-+6nkoGcw@mail.gmail.com>
+Subject: Re: [PATCH v2] x86/kexec: Add EFI config table identity mapping for
+ kexec kernel
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Michael Roth <michael.roth@amd.com>,
+        Joerg Roedel <jroedel@suse.de>, Baoquan He <bhe@redhat.com>,
+        Tao Liu <ltao@redhat.com>, thomas.lendacky@amd.com,
+        tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+        x86@kernel.org, hpa@zytor.com, linux-kernel@vger.kernel.org,
+        dyoung@redhat.com, kexec@lists.infradead.org,
+        linux-efi@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-15.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 11:37=E2=80=AFAM syzbot
-<syzbot+2f012b85ac8ce9be92e5@syzkaller.appspotmail.com> wrote:
+On Fri, 7 Jul 2023 at 19:12, Borislav Petkov <bp@alien8.de> wrote:
 >
-> syzbot suspects this issue was fixed by commit:
+> On Fri, Jul 07, 2023 at 10:25:15AM -0500, Michael Roth wrote:
+> > ...
+> > It would be unfortunate if we finally abandoned this path because of the
+> > issue being hit here though. I think the patch posted here is the proper
+> > resolution to the issue being hit, and I'm hoping at this point we've
+> > identified all the similar cases where EFI/setup_data-related structures
+> > were missing explicit mappings. But if we still think it's too much of a
+> > liability to access the EFI config table outside of SEV-enabled guests,
+> > then I can work on re-implementing things based on the above logic.
 >
-> commit c43784c856483dded7956175b5786e27af6d87f1
-> Author: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-> Date:   Thu Dec 8 07:51:32 2022 +0000
+> Replying here to Tom's note too...
 >
->     media: v4l2-mem2mem: use vb2_is_streaming()
+> So, I like the idea of rechecking CPUID. Yes, let's do the sev_status
+> check. As a result, we either fail the guest - no problem - or we boot
+> and we recheck. Thus, we don't run AMD code on !AMD machines, if the HV
+> is not a lying bastard.
 >
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D17e7d1bca8=
-0000
+> Now, if we've gotten a valid setup_data SETUP_EFI entry with a valid
+> pointer to an EFI config table, then that should happen in the generic
+> path - initialize_identity_maps(), for example - like you've done in
+> b57feed2cc26 - not in the kexec code because kexec *happens* to need it.
+>
+> We want to access the EFI config table? Sure, by all means, but make
+> that generic for all code.
+>
 
-No, that's apparently unrelated. Though I don't see where exactly the
-bisection went astray..
-Likely because the reproducer got quite unreliable at older commits
-and we made a few false "git bisect good" commands.
+OK, so in summary, what seems to be happening here is that the SEV
+init code in the decompressor looks for the cc blob table before the
+on-demand mapping code is up, which normally ensures that any RAM
+address is accessible even if it hasn't been mapped explicitly.
 
-We will soon start automatically discarding such bisection results:
-https://github.com/google/syzkaller/pull/4028
+This is why the fix happens to work: the code only maps the array of
+(guid, phys_addr) tuples that describes the list of configuration
+tables that have been provided by the firmware. The actual
+configuration tables themselves could be anywhere in physical memory,
+and without prior knowledge of a particular GUID value, there is no
+way to know the size of the table, and so they cannot be mapped
+upfront like this. However, the cc blob table does not exist on this
+machine, and so whether the EFI config tables themselves are mapped or
+not is irrelevant.
 
-> start commit:   4da34b7d175d Merge tag 'thermal-6.1-rc2' of git://git.ker=
-n..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3Dea03ca4517608=
-0bc
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3D2f012b85ac8ce9b=
-e92e5
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D17834f9a880=
-000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D10edf52688000=
-0
->
-> If the result looks correct, please mark the issue as fixed by replying w=
-ith:
->
-> #syz fix: media: v4l2-mem2mem: use vb2_is_streaming()
+But it does mean the fix is incomplete, and certainly does not belong
+in generic kexec code. If anything, we should be fixing the
+decompressor code to defer the cc blob table check until after the
+demand mapping code is up.
 
->
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisect=
-ion
->
-> --
+If this is problematic, we might instead disable SEV for kexec, and
+rely on the fact that SEV firmware enters with a complete 1:1 map (as
+we seem to be doing currently). If kexec for SEV is needed at some
+point, we can re-enable it by having it provide a mapping for the
+config table array and the cc blob table explicitly.
