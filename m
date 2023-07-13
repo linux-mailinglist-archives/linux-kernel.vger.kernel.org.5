@@ -2,44 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62166751924
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 08:55:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDDD3751926
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 08:55:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234096AbjGMGzA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 13 Jul 2023 02:55:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56370 "EHLO
+        id S229890AbjGMGzJ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 13 Jul 2023 02:55:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231572AbjGMGy6 (ORCPT
+        with ESMTP id S230248AbjGMGzH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 02:54:58 -0400
+        Thu, 13 Jul 2023 02:55:07 -0400
 Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8204119;
-        Wed, 12 Jul 2023 23:54:53 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35F0B119;
+        Wed, 12 Jul 2023 23:55:06 -0700 (PDT)
 Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
           by outpost.zedat.fu-berlin.de (Exim 4.95)
           with esmtps (TLS1.3)
           tls TLS_AES_256_GCM_SHA384
           (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1qJqDo-000ssY-GC; Thu, 13 Jul 2023 08:54:40 +0200
+          id 1qJqE9-000t2O-48; Thu, 13 Jul 2023 08:55:01 +0200
 Received: from p57bd9f0d.dip0.t-ipconnect.de ([87.189.159.13] helo=[192.168.178.81])
           by inpost2.zedat.fu-berlin.de (Exim 4.95)
           with esmtpsa (TLS1.3)
           tls TLS_AES_256_GCM_SHA384
           (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1qJqDo-001Zxi-59; Thu, 13 Jul 2023 08:54:40 +0200
-Message-ID: <5ce9417abb643c2cf1b8a9cc2fc3392503ef5bec.camel@physik.fu-berlin.de>
-Subject: Re: [PATCH] [RFT] sh: mach-r2d: Handle virq offset in cascaded IRL
- demux
+          id 1qJqE8-001Zzm-Q0; Thu, 13 Jul 2023 08:55:01 +0200
+Message-ID: <d76aa3802c8f1ee63f94cc799f1c3b479da1086c.camel@physik.fu-berlin.de>
+Subject: Re: [PATCH] [RFC] sh: highlander: Handle virq offset in cascaded
+ IRL demux
 From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
 To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Guenter Roeck <linux@roeck-us.net>,
         Sergey Shtylyov <s.shtylyov@omp.ru>,
         Yoshinori Sato <ysato@users.sourceforge.jp>,
         Rich Felker <dalias@libc.org>
 Cc:     linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Thu, 13 Jul 2023 08:54:37 +0200
-In-Reply-To: <2c99d5df41c40691f6c407b7b6a040d406bc81ac.1688901306.git.geert+renesas@glider.be>
-References: <2c99d5df41c40691f6c407b7b6a040d406bc81ac.1688901306.git.geert+renesas@glider.be>
+Date:   Thu, 13 Jul 2023 08:54:58 +0200
+In-Reply-To: <4fcb0d08a2b372431c41e04312742dc9e41e1be4.1688908186.git.geert+renesas@glider.be>
+References: <4fcb0d08a2b372431c41e04312742dc9e41e1be4.1688908186.git.geert+renesas@glider.be>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8BIT
 User-Agent: Evolution 3.48.4 
@@ -57,45 +56,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2023-07-09 at 13:15 +0200, Geert Uytterhoeven wrote:
-> When booting rts7751r2dplus_defconfig on QEMU, the system hangs due to
-> an interrupt storm on IRQ 20.  IRQ 20 aka event 0x280 is a cascaded IRL
-> interrupt, which maps to IRQ_VOYAGER, the interrupt used by the Silicon
-> Motion SM501 multimedia companion chip.  As rts7751r2d_irq_demux() does
-> not take into account the new virq offset, the interrupt is no longer
-> translated, leading to an unhandled interrupt.
-> 
-> Fix this by taking into account the virq offset when translating
-> cascaded IRL interrupts.
+On Sun, 2023-07-09 at 15:10 +0200, Geert Uytterhoeven wrote:
+> Take into account the virq offset when translating cascaded IRL
+> interrupts.
 > 
 > Fixes: a8ac2961148e8c72 ("sh: Avoid using IRQ0 on SH3 and SH4")
-> Reported-by: Guenter Roeck <linux@roeck-us.net>
-> Closes: https://lore.kernel.org/r/fbfea3ad-d327-4ad5-ac9c-648c7ca3fe1f@roeck-us.net
 > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 > ---
-> Highlander and Dreamcast probably have the same issue.
-> I'll send patches for these later...
+> Compile-tested only, but the fix is identical to the fix for rts7751r2d.
 > ---
->  arch/sh/boards/mach-r2d/irq.c | 4 ++--
+>  arch/sh/boards/mach-highlander/setup.c | 4 ++--
 >  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/arch/sh/boards/mach-r2d/irq.c b/arch/sh/boards/mach-r2d/irq.c
-> index e34f81e9ae813b8d..c37b40398c5bc83e 100644
-> --- a/arch/sh/boards/mach-r2d/irq.c
-> +++ b/arch/sh/boards/mach-r2d/irq.c
-> @@ -117,10 +117,10 @@ static unsigned char irl2irq[R2D_NR_IRL];
+> diff --git a/arch/sh/boards/mach-highlander/setup.c b/arch/sh/boards/mach-highlander/setup.c
+> index 533393d779c2b97f..a821a1b155473d93 100644
+> --- a/arch/sh/boards/mach-highlander/setup.c
+> +++ b/arch/sh/boards/mach-highlander/setup.c
+> @@ -389,10 +389,10 @@ static unsigned char irl2irq[HL_NR_IRL];
 >  
->  int rts7751r2d_irq_demux(int irq)
+>  static int highlander_irq_demux(int irq)
 >  {
-> -	if (irq >= R2D_NR_IRL || irq < 0 || !irl2irq[irq])
-> +	if (irq >= 16 + R2D_NR_IRL || irq < 16 || !irl2irq[irq - 16])
+> -	if (irq >= HL_NR_IRL || irq < 0 || !irl2irq[irq])
+> +	if (irq >= 16 + HL_NR_IRL || irq < 16 || !irl2irq[irq - 16])
 >  		return irq;
 >  
 > -	return irl2irq[irq];
 > +	return irl2irq[irq - 16];
 >  }
 >  
->  /*
+>  static void __init highlander_init_irq(void)
 
 Applied to my for-linus branch.
 
