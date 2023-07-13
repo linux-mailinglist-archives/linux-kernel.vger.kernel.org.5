@@ -2,196 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B559752CED
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 00:21:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AC9F752CF7
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 00:23:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232990AbjGMWUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 18:20:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54554 "EHLO
+        id S231465AbjGMWXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 18:23:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232273AbjGMWUt (ORCPT
+        with ESMTP id S231880AbjGMWXn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 18:20:49 -0400
-Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64C0F2D7D
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 15:20:12 -0700 (PDT)
-Received: by mail-vs1-xe2f.google.com with SMTP id ada2fe7eead31-443628ee79dso537584137.1
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 15:20:12 -0700 (PDT)
+        Thu, 13 Jul 2023 18:23:43 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EA3D30CD
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 15:23:16 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-666e916b880so819540b3a.2
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 15:23:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1689286783; x=1691878783;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=emRBI8Abl7scFe6bdPSOo0kbBS39KMkpIghscTU2vQs=;
-        b=WSLdlreGa7V6L/Bu4YCP9/K4JT6jb6kcSFUvMcjWWXkVSsbgPqsWhuNHXd8lxyGXz5
-         RTlABDZR2DltkP6c+twiiqyM3PrtM4bwmfdByNVjbznd8Hx6E6sA0cDmeLdjIZvC7U4e
-         iAss/AOfqak6LnTNep3UCHn+ClaKx3QdWDp10=
+        d=networkplumber-org.20221208.gappssmtp.com; s=20221208; t=1689286988; x=1691878988;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gPJRqg7ajyeL4du6RG8R0w4sPMlBCtxY9hG6485AJxc=;
+        b=tkAIp3Mxs21mO0syOvSfhIJnKbHEVEWbvFyzLoto2x01rHRZ8u1RSlARS0Jjlpqp60
+         mwI0Ec4wbZb4Tb3Gl0z6J1C+dotBmDCo7JoSo5Q46IEFDvJy+Gw2H8Vsh8+z0So4FqQ/
+         0ljRfD3HTiiUR3KT2bc+9DvNkkWRwCSMB1GL6eXyfF/ox2YPReN074r8Y6q63gDBPQUj
+         ibJfaqcG+mnZ6j5SNPPaKgafx/W9hAED42Op91PlcJaZ7h5JlLZ1/P5I/i7xnu4eTbZY
+         SNeV6g82RNy5LBSs826Z7HTv+YPXpWVnyR4UXj7Ci13ol3xKBgDH9gF0D0byBnGA7i4Z
+         yhHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689286783; x=1691878783;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=emRBI8Abl7scFe6bdPSOo0kbBS39KMkpIghscTU2vQs=;
-        b=iEUkMv9B+X5IredpAzVcmnSu/noZfTNixuuV1fMZ+07ww4juJYtiDiGtqeRnihlaOm
-         o04KAq4hYzk+y7k15wXrVOE8zszv447X7rf0sJdAoSI5hKr9WKrAAJlmIZ+f4EqZ+QGU
-         ZoRAWQrnmNhD4qzVHIPTQWJoEafeixqj8H/iASjqlkpKJVxQ4I/IMNQoBXENiD7xMC1n
-         qUHjqDq+ETU72I9NbA3Y1msLmY+sJP56RTDk/EiV8h91PfqM5EdCQaVeRMsL/z1C8L9Q
-         bpeQmgU/Yb5cWA2rK6WXfyKjZxjkNq9+3mMK345+Xf1Bd19VQuXiswYgUymx1Iqzc8d3
-         EEkA==
-X-Gm-Message-State: ABy/qLaK94IGPyKirWfueBH7Nh1TbASImvfIR9a0Pg0S7weXecWkTeh7
-        JnrDA6XDMIenfyluHJCv9Kek/w==
-X-Google-Smtp-Source: APBJJlFioXY1G+Bd7UZP0nGF4r1bmLzgVdmUeN76yMd7y382vSKOp/cx1gqzbT+pvX+ZT8jfcrKSuA==
-X-Received: by 2002:a67:f50a:0:b0:444:c35d:4595 with SMTP id u10-20020a67f50a000000b00444c35d4595mr2223600vsn.33.1689286782897;
-        Thu, 13 Jul 2023 15:19:42 -0700 (PDT)
-Received: from stbirv-lnx-2.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id i14-20020a0cf38e000000b006262de12a8csm427623qvk.65.2023.07.13.15.19.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 13 Jul 2023 15:19:42 -0700 (PDT)
-From:   Justin Chen <justin.chen@broadcom.com>
-To:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        bcm-kernel-feedback-list@broadcom.com
-Cc:     florian.fainelli@broadcom.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, opendmb@gmail.com, andrew@lunn.ch,
-        hkallweit1@gmail.com, linux@armlinux.org.uk,
-        richardcochran@gmail.com, sumit.semwal@linaro.org,
-        simon.horman@corigine.com, christian.koenig@amd.com,
-        Justin Chen <justin.chen@broadcom.com>
-Subject: [net-next v9 11/11] MAINTAINERS: ASP 2.0 Ethernet driver maintainers
-Date:   Thu, 13 Jul 2023 15:19:06 -0700
-Message-Id: <1689286746-43609-12-git-send-email-justin.chen@broadcom.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1689286746-43609-1-git-send-email-justin.chen@broadcom.com>
-References: <1689286746-43609-1-git-send-email-justin.chen@broadcom.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000a25597060065baa1"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        MIME_HEADER_CTYPE_ONLY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,T_TVD_MIME_NO_HEADERS autolearn=ham
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1689286988; x=1691878988;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gPJRqg7ajyeL4du6RG8R0w4sPMlBCtxY9hG6485AJxc=;
+        b=HoE8F89hCo3/FTWCRFV95a7WfwkVgHEpIGvW1PjYWLppq/WSI94cgVD2VFySlCKLHp
+         yuLhkuPxrBY1q+qGUXL3M+qcowIp6IlJtOlumY/jRZFOupdoBkzEWqByQLOkHPxxAhsl
+         dWkjZJe+jx8DvUQCQO400uHaSuxBTXe5F6fqzIqocZsnCRLotqIcHWW5FXd1Cx86nl3P
+         2man61o2FuoHEymizt4Byws+qNYrLBlS2u+n5cNn+X1hCkeBJg8gG1YrVfc5LxbcIKxK
+         Z3rCgH2wPRCP6Nr1wg5U2bEEklYdqsLkSp4/Xh+Ch4FQkttPOuSTU6CB+wSQRX+SUaah
+         jVKA==
+X-Gm-Message-State: ABy/qLbZInlhA3YskfJqrINGyxSl+mNUGQ+Bl0tWFBM33hfnyasimkHb
+        cZQ6W18hiIJZotOLvonDswPqCQ==
+X-Google-Smtp-Source: APBJJlFHVWSKYJGwaAF7RyGQ4hb39qQwi3/2ZA1sbjnSW0v8O2cboYPbu0mc5q6Qgzb9OnBBytt9Ag==
+X-Received: by 2002:a05:6a00:1a51:b0:657:f26e:b01a with SMTP id h17-20020a056a001a5100b00657f26eb01amr2433653pfv.26.1689286987833;
+        Thu, 13 Jul 2023 15:23:07 -0700 (PDT)
+Received: from hermes.local (204-195-116-219.wavecable.com. [204.195.116.219])
+        by smtp.gmail.com with ESMTPSA id j20-20020aa79294000000b006833bcc95b0sm2482755pfa.115.2023.07.13.15.23.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Jul 2023 15:23:07 -0700 (PDT)
+Date:   Thu, 13 Jul 2023 15:23:05 -0700
+From:   Stephen Hemminger <stephen@networkplumber.org>
+To:     Ziqi Zhao <astrajoan@yahoo.com>
+Cc:     syzbot+1591462f226d9cbf0564@syzkaller.appspotmail.com,
+        davem@davemloft.net, dvyukov@google.com, edumazet@google.com,
+        ivan.orlov0322@gmail.com, kernel@pengutronix.de, kuba@kernel.org,
+        linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux@rempel-privat.de, mkl@pengutronix.de, netdev@vger.kernel.org,
+        o.rempel@pengutronix.de, pabeni@redhat.com, robin@protonic.nl,
+        skhan@linuxfoundation.org, socketcan@hartkopp.net,
+        syzkaller-bugs@googlegroups.com, syzkaller@googlegroups.com
+Subject: Re: [PATCH] can: j1939: prevent deadlock by changing
+ j1939_socks_lock to rwlock
+Message-ID: <20230713152305.153e7aba@hermes.local>
+In-Reply-To: <20230712004750.2476-1-astrajoan@yahoo.com>
+References: <000000000000b57ce3060025aa46@google.com>
+        <20230712004750.2476-1-astrajoan@yahoo.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000a25597060065baa1
+On Tue, 11 Jul 2023 17:47:50 -0700
+Ziqi Zhao <astrajoan@yahoo.com> wrote:
 
-Add maintainers entry for ASP 2.0 Ethernet driver.
+> The following 3 locks would race against each other, causing the
+> deadlock situation in the Syzbot bug report:
+> 
+> - j1939_socks_lock
+> - active_session_list_lock
+> - sk_session_queue_lock
+> 
+> A reasonable fix is to change j1939_socks_lock to an rwlock, since in
+> the rare situations where a write lock is required for the linked list
+> that j1939_socks_lock is protecting, the code does not attempt to
+> acquire any more locks. This would break the circular lock dependency,
+> where, for example, the current thread already locks j1939_socks_lock
+> and attempts to acquire sk_session_queue_lock, and at the same time,
+> another thread attempts to acquire j1939_socks_lock while holding
+> sk_session_queue_lock.
+> 
+> NOTE: This patch along does not fix the unregister_netdevice bug
+> reported by Syzbot; instead, it solves a deadlock situation to prepare
+> for one or more further patches to actually fix the Syzbot bug, which
+> appears to be a reference counting problem within the j1939 codebase.
+> 
+> #syz test:
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> 
+> Signed-off-by: Ziqi Zhao <astrajoan@yahoo.com>
+> ---
 
-Reviewed-by: Simon Horman <simon.horman@corigine.com>
-Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
-Signed-off-by: Justin Chen <justin.chen@broadcom.com>
----
-v3
-	- Change from gmail to broadcom emails
+Reader-writer locks are not the best way to fix a lock hierarchy problem.
+Instead either fix the lock ordering, or use RCU.
 
- MAINTAINERS | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 99f18f6e8bc6..da9ab7edd507 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -4215,6 +4215,15 @@ F:	drivers/net/mdio/mdio-bcm-unimac.c
- F:	include/linux/platform_data/bcmgenet.h
- F:	include/linux/platform_data/mdio-bcm-unimac.h
- 
-+BROADCOM ASP 2.0 ETHERNET DRIVER
-+M:	Justin Chen <justin.chen@broadcom.com>
-+M:	Florian Fainelli <florian.fainelli@broadcom.com>
-+L:	bcm-kernel-feedback-list@broadcom.com
-+L:	netdev@vger.kernel.org
-+S:	Supported
-+F:	Documentation/devicetree/bindings/net/brcm,asp-v2.0.yaml
-+F:	drivers/net/ethernet/broadcom/asp2/
-+
- BROADCOM IPROC ARM ARCHITECTURE
- M:	Ray Jui <rjui@broadcom.com>
- M:	Scott Branden <sbranden@broadcom.com>
--- 
-2.7.4
-
-
---000000000000a25597060065baa1
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-NhTY3E+cXCB11wty89QStajwXdhGJTYEvUgvsq1h8CwJj9w/38ldAQf5WjhPmApYeJR2ewFrBMCM
-4lHkdRJ6TDc9nXoEkypUfjJkJHe7Eal06tosh6JpAgMBAAGjggHZMIIB1TAOBgNVHQ8BAf8EBAMC
-BaAwgaMGCCsGAQUFBwEBBIGWMIGTME4GCCsGAQUFBzAChkJodHRwOi8vc2VjdXJlLmdsb2JhbHNp
-Z24uY29tL2NhY2VydC9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcnQwQQYIKwYBBQUHMAGG
-NWh0dHA6Ly9vY3NwLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwME0G
-A1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxz
-aWduLmNvbS9yZXBvc2l0b3J5LzAJBgNVHRMEAjAAMEkGA1UdHwRCMEAwPqA8oDqGOGh0dHA6Ly9j
-cmwuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3JsMCMGA1UdEQQc
-MBqBGGp1c3Rpbi5jaGVuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSME
-GDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUIWGeYuaTsnIada5Xx8TR3cheUbgw
-DQYJKoZIhvcNAQELBQADggEBAHNQlMqQOFYPYFO71A+8t+qWMmtOdd2iGswSOvpSZ/pmGlfw8ZvY
-dRTkl27m37la84AxRkiVMes14JyOZJoMh/g7fbgPlU14eBc6WQWkIA6AmNkduFWTr1pRezkjpeo6
-xVmdBLM4VY1TFDYj7S8H2adPuypd62uHMY/MZi+BIUys4uAFA+N3NuUBNjcVZXYPplYxxKEuIFq6
-sDL+OV16G+F9CkNMN3txsym8Nnx5WAYZb6+rBUIhMGz70V05xsHQfzvo2s7f0J1tJ5BoRlPPhL0h
-VOnWA3h71u9TfSsv+PXVm3P21TfOS2uc1hbzEqyENCP4i5XQ0rv0TmPW42GZ0o4xggJtMIICaQIB
-ATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhH
-bG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwj8BKLXNpALfemdRAwDQYJ
-YIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIGwZ7v2bOi6QSSxg1pEoNqfhAyLdmKui+vTI
-dlBMDlbUMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIzMDcxMzIy
-MTk0M1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFl
-AwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATAN
-BgkqhkiG9w0BAQEFAASCAQA1HFDYsgHBTFnKGyeG3kmGivmbJFyAyUVPAlTl93VfV4biypn86/nt
-JtMJaRcHT+/p4jtGoNRPfoRH2/2Ek3brJgTFSNp6Vahk7VoWBNRMIYZyVEFb66K/rcHIm82Pydle
-SRXr4P3zsPnEeyvjYSJvDpbh+0AEsE7wCG5ZZC8g02yQjon2Ct4WEiqJbU5+bXJao5Rv8Pc/2iJF
-K2h29UwAN7IGEZGUWlHWp0cMaO1lDNKAPZdIeoAkDOL246zb/NFb51bmE1mOIyv35ov9wXON+mwn
-shwTs/S6CZTNLeitsL5KblQAFVB+/r0Z33vXrbXPKAAWh7tUW3dHrzmzaIAV
---000000000000a25597060065baa1--
+Other devices don't have this problem, so perhaps the unique locking
+in this device is the problem.
