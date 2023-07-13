@@ -2,55 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D55DB7527CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 17:56:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44BCF7527D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 17:56:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233560AbjGMP4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 11:56:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53402 "EHLO
+        id S235143AbjGMP4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 11:56:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230038AbjGMP4c (ORCPT
+        with ESMTP id S232088AbjGMP4h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 11:56:32 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64B4D26B2
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 08:56:31 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F403661881
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 15:56:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E0B8C433C8;
-        Thu, 13 Jul 2023 15:56:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689263790;
-        bh=Slsgen3/ErcFO5k71NxOCLG/uLcyaEewBHlP+kEAtZM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dUT4Rfp0a8eqdiGeesidGN/muXh61Al5Ufxb0iclgLV3dHNjhkjnD94zL93Ykhmns
-         4HHoNznFLFX8lHPaypELAP6BvTKWZn68kEIFrF0+rTdBCPxlWZ+MqmLYgHLtqvormB
-         rK8JtHjROFJGr1XWYQzOducFl/14IKI2MtZr0RKzR8eEvgq7MbeS8jrvSl0MlrxeM2
-         JdoQmG29eiKosiXq9dVCfItnMRY6bZezXrXt1RC8ZvCPLjEL0ZT5fGpFD6btuvmZLK
-         05zTd2Cb1cuouE1DXZdqYYgxSSQowc4fQQG+LY8x/2LnoxD01RZR0Gr690g2STDPz9
-         fOXcQOpv4CmQA==
-Date:   Thu, 13 Jul 2023 16:56:26 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Lee Jones <lee@kernel.org>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mfd: wcd934x: Update to use maple tree register cache
-Message-ID: <451e01a2-117f-43d5-9115-05c56deef30c@sirena.org.uk>
-References: <20230712-mfd-wcd934x-maple-v1-1-0d7aba4b0077@kernel.org>
- <20230713154346.GG968624@google.com>
+        Thu, 13 Jul 2023 11:56:37 -0400
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8294C26AE;
+        Thu, 13 Jul 2023 08:56:36 -0700 (PDT)
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id AC4A86732D; Thu, 13 Jul 2023 17:56:31 +0200 (CEST)
+Date:   Thu, 13 Jul 2023 17:56:31 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Cyril Hrubis <chrubis@suse.cz>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        kernel test robot <oliver.sang@intel.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Matthew Wilcox <willy@infradead.org>, cluster-devel@redhat.com,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Chao Yu <chao@kernel.org>, linux-fsdevel@vger.kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Xiubo Li <xiubli@redhat.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        ltp@lists.linux.it, lkp@intel.com, Jens Axboe <axboe@kernel.dk>,
+        Christian Brauner <brauner@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        Anna Schumaker <anna@kernel.org>, oe-lkp@lists.linux.dev,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hannes Reinecke <hare@suse.de>
+Subject: Re: [LTP] [linus:master] [iomap]  219580eea1: ltp.writev07.fail
+Message-ID: <20230713155631.GA29281@lst.de>
+References: <202307132107.2ce4ea2f-oliver.sang@intel.com> <20230713150923.GA28246@lst.de> <ZLAZn_SBmoIFG5F5@yuki>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="w0KlgKdOOe6i5GDO"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230713154346.GG968624@google.com>
-X-Cookie: MOUNT TAPE U1439 ON B3, NO RING
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+In-Reply-To: <ZLAZn_SBmoIFG5F5@yuki>
+User-Agent: Mutt/1.5.17 (2007-11-01)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,37 +57,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 13, 2023 at 05:34:55PM +0200, Cyril Hrubis wrote:
+>                 iter.processed = iomap_write_iter(&iter, i);
+> 
+> +       iocb->ki_pos += iter.pos - iocb->ki_pos;
+> +
+>         if (unlikely(ret < 0))
+>                 return ret;
+> -       ret = iter.pos - iocb->ki_pos;
+> -       iocb->ki_pos += ret;
+> -       return ret;
+> +
+> +       return iter.pos - iocb->ki_pos;
 
---w0KlgKdOOe6i5GDO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I don't think this works, as iocb->ki_pos has been updated above.
+What you want is probably the version below.  But so far I can't
+reproduce anything yet..
 
-On Thu, Jul 13, 2023 at 04:43:46PM +0100, Lee Jones wrote:
-> On Wed, 12 Jul 2023, Mark Brown wrote:
-
-> > ---
-> >=20
-> >=20
-> > Signed-off-by: Mark
-
-> Something going on with your helpers?
-
-That's a b4 thing.
-
---w0KlgKdOOe6i5GDO
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmSwHqkACgkQJNaLcl1U
-h9AX5Af/cZURl8iUDg3fmPjpNCqNWxl56JUSUpk1T1UnJ9CYBpFC8L8aW6EgTl2J
-bmsvoyEP0bhpSvXwOz+8EnMszFSliAW/QrJbWxjK9eR10gikJEFCI+KXHwJO7QF3
-ZDx847Nm3mnJ0xlC/bT5NQI7GFTEPSwUcc37wL6etLyKT8JoGSuwP7ic/iS0YLEx
-lfiWJUv3JWwHUMLZoXxoad3VwXHIG9neq7fij+moZtljRQ2gHac7IZ3vxm9KHxVF
-VBJghzKhsuch5Fqit+vak4qTM9kjP1NKCll11hQJo0nzVMkZJN+LzyqdG8INZida
-y5q3oFDBNV5Z97AJXb+V9Xk8soDxsA==
-=lFi4
------END PGP SIGNATURE-----
-
---w0KlgKdOOe6i5GDO--
+diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+index adb92cdb24b009..02aea0174ddbcf 100644
+--- a/fs/iomap/buffered-io.c
++++ b/fs/iomap/buffered-io.c
+@@ -872,7 +872,7 @@ iomap_file_buffered_write(struct kiocb *iocb, struct iov_iter *i,
+ 	while ((ret = iomap_iter(&iter, ops)) > 0)
+ 		iter.processed = iomap_write_iter(&iter, i);
+ 
+-	if (unlikely(ret < 0))
++	if (iter.pos == iocb->ki_pos)
+ 		return ret;
+ 	ret = iter.pos - iocb->ki_pos;
+ 	iocb->ki_pos += ret;
