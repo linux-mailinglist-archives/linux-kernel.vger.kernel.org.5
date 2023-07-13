@@ -2,58 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BAC9751856
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 07:50:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AEEC75185C
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 07:53:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233648AbjGMFu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 01:50:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34124 "EHLO
+        id S233819AbjGMFxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 01:53:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231216AbjGMFu1 (ORCPT
+        with ESMTP id S233743AbjGMFxu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 01:50:27 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBAAC1BD5;
-        Wed, 12 Jul 2023 22:50:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=GFMF1ikSol53pF8uOEYCDZ1uK/JIIE1rXx1j7+aTy1Y=; b=x5xLgY8KePVopF6k6iKAFKM/QG
-        P+4A2RB3luT+Ws8svb8REwmQaHeRbkoCjA9Af2WrJZb8mRuM/yjfryuJsmtFM69Y3IssVptJJTksC
-        RG7x556xM0UQIkcBxlIIN4Zef6sOPTp7Q7twuECA1YqrVG/8ndJnKCf6zs2HF9dS78IC1uh+Xx4Oj
-        t4AIjyGIugFrOD3fIoJWGFZZsKCWJuYJyxdguKPnI5u/yIuAme0Fo3ySGMVufMUWtgEHpKsatIIxP
-        +L1qSalel55POdhvo+0+AVTAhscTS70DCmxARuO5QPwJaRhSPxGTKTjsvNOuWm2FuZ7Luup69oQ2A
-        lQDDfFrg==;
-Received: from [2601:1c2:980:9ec0::2764]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qJpDS-0022Nf-05;
-        Thu, 13 Jul 2023 05:50:14 +0000
-Message-ID: <27105f25-f3f9-0856-86e5-86236ce83dee@infradead.org>
-Date:   Wed, 12 Jul 2023 22:50:12 -0700
+        Thu, 13 Jul 2023 01:53:50 -0400
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 611C81FD4
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 22:53:49 -0700 (PDT)
+Received: by mail-oi1-x22f.google.com with SMTP id 5614622812f47-3a04e5baffcso337627b6e.3
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 22:53:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689227628; x=1691819628;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=G9WcmhiPaDbhClEKCeWjVz4d9o3HB8tMobRvLpjiDVg=;
+        b=B5YypG0ak4I6Rre7Vqs3E1Pr4Ekj9PUrVbecN4P8RA4VkXvK7AVN4d7Bl0r0LXBkrC
+         7UFLElNs0AxAziZt7hH98hh3DZM2pLvypWlCwmD16dwYLHM49KNGaFVGQ6+fM/OY2Uk0
+         TP57kZ+3OhRvgZPry5T13l9pRaPdOA47Hbmp7yzhc2pwDixLqJJSeAXwolDl7LCO3R/L
+         JWXN0kgKaL3+aFNity2FUAGMpq7aV7lN8QzH5F7IKTHpO1jBgCpQrjfQxDidf1rCTQqH
+         YPtM7osnmbwykT0fnqqXaq/IkR3z8G0cJYW0hPoB50TcCAZTe6nsbhvOaHiojkxZRfp4
+         N+nQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689227628; x=1691819628;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=G9WcmhiPaDbhClEKCeWjVz4d9o3HB8tMobRvLpjiDVg=;
+        b=JHqZL3l1Qrof0B1EluUth4AeV28tv94GzFJvYSKTfC+TySyCrbTnGvsfNlKOq4zu34
+         G+Jc9MwYJnkhjJl3tHCGd8t93tX86UtQNVLaDMKONtuSfSVWzZlXuDQX2F/ikOFSxmAh
+         JdNWJ6b1pQP3muYVQWXzhFyvXLOlpfNONCH0g62kD/Ju7yXdgzrvZL4isY8odleurpOu
+         VH7N8HDKVjMhND1P24BWhXIQYV+UtyI1SM6Z5MusI6wf0IRzcxb75G4e82LYTi+3Ekx7
+         qN31B79kPDIWjnUmqc2xkuh3J3fUVlwPKkj2U4Xv9F7hVBVtOPzmb3vUHcwaz7Nbfsvk
+         burw==
+X-Gm-Message-State: ABy/qLY04Y9y0qx+mG3RshQ+cgn3yzRcxT5UNzyHp69hvkoTxNf2rFgO
+        wGZHAVCuuTRFjVRCOIi+u5Mk
+X-Google-Smtp-Source: APBJJlEtSDOcLFFSsaVra3MhJEI2q1v/jqoFG4/1vf56Y3Q/69961njV+QB/qijFLB5voGRWjtEFWg==
+X-Received: by 2002:a05:6808:1153:b0:3a0:3a17:a146 with SMTP id u19-20020a056808115300b003a03a17a146mr839218oiu.57.1689227628648;
+        Wed, 12 Jul 2023 22:53:48 -0700 (PDT)
+Received: from thinkpad ([117.207.27.112])
+        by smtp.gmail.com with ESMTPSA id c2-20020aa78c02000000b00673e652985bsm4552692pfd.118.2023.07.12.22.53.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Jul 2023 22:53:48 -0700 (PDT)
+Date:   Thu, 13 Jul 2023 11:23:29 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, vireshk@kernel.org,
+        nm@ti.com, sboyd@kernel.org, myungjoo.ham@samsung.com,
+        kyungmin.park@samsung.com, cw00.choi@samsung.com,
+        andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        quic_asutoshd@quicinc.com, quic_cang@quicinc.com,
+        quic_nitirawa@quicinc.com, quic_narepall@quicinc.com,
+        quic_bhaskarv@quicinc.com, quic_richardp@quicinc.com,
+        quic_nguyenb@quicinc.com, quic_ziqichen@quicinc.com,
+        bmasney@redhat.com, krzysztof.kozlowski@linaro.org
+Subject: Re: [PATCH 11/14] scsi: ufs: host: Add support for parsing OPP
+Message-ID: <20230713055329.GF3047@thinkpad>
+References: <20230712103213.101770-1-manivannan.sadhasivam@linaro.org>
+ <20230712103213.101770-14-manivannan.sadhasivam@linaro.org>
+ <e6a5129a-db07-977d-2ecd-328a52cbcdc0@linaro.org>
+ <20230712163406.GG102757@thinkpad>
+ <CAA8EJpovHr1qxepVprk6UvnhKe+nu4VuziyKKgjV3UzommFz6g@mail.gmail.com>
+ <20230713040918.jnf5oqiwymrdnrmq@vireshk-i7>
+ <20230713050550.GB3047@thinkpad>
+ <20230713051235.ob5z3li3lz52xtzm@vireshk-i7>
+ <20230713052843.GE3047@thinkpad>
+ <20230713054302.tu6fgd3meb5krsx5@vireshk-i7>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH net v1] bna:Fix error checking for debugfs_create_dir()
-Content-Language: en-US
-To:     Wang Ming <machel@vivo.com>, Rasesh Mody <rmody@marvell.com>,
-        Sudarsana Kalluru <skalluru@marvell.com>,
-        GR-Linux-NIC-Dev@marvell.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Krishna Gudipati <kgudipat@brocade.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     opensource.kernel@vivo.com
-References: <20230713053823.14898-1-machel@vivo.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230713053823.14898-1-machel@vivo.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230713054302.tu6fgd3meb5krsx5@vireshk-i7>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,46 +92,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi--
-
-On 7/12/23 22:38, Wang Ming wrote:
-> The debugfs_create_dir() function returns error pointers,
-> it never returns NULL. Most incorrect error checks were fixed,
-> but the one in bnad_debugfs_init() was forgotten.
+On Thu, Jul 13, 2023 at 11:13:02AM +0530, Viresh Kumar wrote:
+> Okay, sorry about missing one point first. I thought we are adding the
+> clk config callback (which neglects 0 frequencies) to a Qcom only
+> driver and so was okay-ish with that. But now that I realize that this
+> is a generic driver instead (my mistake here), I wonder if it is the
+> right thing to do anymore.
 > 
-> Fix the remaining error check.
+
+That's the pre-opp behavior as well. Reason is, most of the platforms have only
+gate clocks supplied to the ufs controller and cannot change the frequency. Only
+Qcom requires changing the frequency of _some_ clocks, so that's why we have to
+use this hack of skipping 0 freq clocks.
+
+> On 13-07-23, 10:58, Manivannan Sadhasivam wrote:
+> > On Thu, Jul 13, 2023 at 10:42:35AM +0530, Viresh Kumar wrote:
+> > > On 13-07-23, 10:35, Manivannan Sadhasivam wrote:
+> > > > We can settle with this custom callback for now. If there are drivers in the
+> > > > future trying to do the same (skipping 0 freq) then we can generalize.
+> > > 
+> > > Just for completeness, there isn't much to generalize here apart from
+> > > changing the DT order of clocks. Isn't it ?
+> > > 
+> > 
+> > Even with changing the order, driver has to know the "interesting" clocks
+> > beforehand. But that varies between platforms (this is a generic driver for
+> > ufshc platforms).
+> > 
+> > And I do not know if clocks have any dependency between them, atleast not in
+> > Qcom platforms. But not sure about others.
 > 
-> Signed-off-by: Wang Ming <machel@vivo.com>
+> Maybe this requires some sort of callback, per-platform, which gets
+> you these details or the struct dev_pm_opp_config itself (so platforms
+> can choose the callback too, in case order is important).
 > 
-> Fixes: 7afc5dbde091 ("bna: Add debugfs interface.")
 
-Comment from fs/debugfs/inode.c:
+Yeah but that seems overkill since the current config_clks helper satisfies the
+requirement.
 
- * NOTE: it's expected that most callers should _ignore_ the errors returned
- * by this function. Other debugfs functions handle the fact that the "dentry"
- * passed to them could be an error and they don't crash in that case.
- * Drivers should generally work fine even if debugfs fails to init anyway.
+- Mani
 
-so no, drivers should not usually care about debugfs function call results.
-Is there some special case here?
-
-> ---
->  drivers/net/ethernet/brocade/bna/bnad_debugfs.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > The change require for the OPP core makes sense, I will probably just
+> > > push it anyway.
 > 
-> diff --git a/drivers/net/ethernet/brocade/bna/bnad_debugfs.c b/drivers/net/ethernet/brocade/bna/bnad_debugfs.c
-> index 04ad0f2b9677..678a3668a041 100644
-> --- a/drivers/net/ethernet/brocade/bna/bnad_debugfs.c
-> +++ b/drivers/net/ethernet/brocade/bna/bnad_debugfs.c
-> @@ -512,7 +512,7 @@ bnad_debugfs_init(struct bnad *bnad)
->  	if (!bnad->port_debugfs_root) {
->  		bnad->port_debugfs_root =
->  			debugfs_create_dir(name, bna_debugfs_root);
-> -		if (!bnad->port_debugfs_root) {
-> +		if (IS_ERR(bnad->port_debugfs_root)) {
->  			netdev_warn(bnad->netdev,
->  				    "debugfs root dir creation failed\n");
->  			return;
+> I tried to look at this code and I think it is doing the right thing
+> currently, i.e. it matches clk-count with the number of frequencies in
+> opp-hz, which should turn out to be the same in your case. So nothing
+> to change here I guess.
+> 
+> -- 
+> viresh
 
 -- 
-~Randy
+மணிவண்ணன் சதாசிவம்
