@@ -2,169 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40A2F752945
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 19:00:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBF0175294B
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 19:03:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229810AbjGMQ76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 12:59:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37548 "EHLO
+        id S230092AbjGMRDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 13:03:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjGMQ75 (ORCPT
+        with ESMTP id S229980AbjGMRDa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 12:59:57 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFE58268B
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 09:59:55 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 782AB61AF0
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 16:59:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBFC1C433C9
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 16:59:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689267594;
-        bh=TqUzlchrwXhWN1S5Z6sliL6d9960E2KXgd/K23x2LgM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=azdQ1ugZPoeMI5qSZANJA6Lxx/V6JE58/ySohLcHWmGP4h4naCXlLhhYvL+bQ6eyp
-         hmb+/VEbXL1tjjkOCF3YO8WFJ1bTRfbY79uEDb1xT2O7kcC4OSAF4TaC7bE4CoeAdu
-         X7i1vfurRjXdm+/4bBzE5Ddd4nCi3Y1JTdufCnB/UeKdRKjeL7PCidoQKy4bm5ItGg
-         0vl32hZbHg43dlBzvt6+OCEOiYmhzwLMptPTpeIkSALRMl6EFRXxgIgVtBt8Mby1BI
-         IvaLZSNq8wAXt93+Ux8P4sFTQ9DfBEoGVUq81pCTVJrkKqx+EuBzeUkjuV6T3oGKtP
-         b4STEcjOZA/vw==
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-51e43473ee0so1145919a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 09:59:54 -0700 (PDT)
-X-Gm-Message-State: ABy/qLYB8X5zGXVZJSpbYFumQBQ3dHw5MLzf/Leeiet54u58q9MA4d8W
-        Xo9HeC0A84eJlzcOCzHX8uoErizmPxFNfPU+KXE=
-X-Google-Smtp-Source: APBJJlHHq6Js4fVdWS/uvXkMp8W5udysBEttpg8LjaaxKrtysI0emny2lCbalKT5PSYGULPvocJPPEv3oQKm7THOQRU=
-X-Received: by 2002:a50:ef16:0:b0:51e:5322:a642 with SMTP id
- m22-20020a50ef16000000b0051e5322a642mr2114442eds.27.1689267593039; Thu, 13
- Jul 2023 09:59:53 -0700 (PDT)
+        Thu, 13 Jul 2023 13:03:30 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E12DC2700;
+        Thu, 13 Jul 2023 10:03:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689267810; x=1720803810;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=XU4CSxnU4cVeY82reTW8Q0CzJu4o7aUuNfQXk1GU5gA=;
+  b=kdt+w2WSZ9URNRZKiwcdMCUoXv2eOxc8pNpKAmtluDKj0wq0eiXOhSR5
+   jULYpG8hjv8TAdwjdzXrA5z7G6NCeSmUL0X3GpQIlt/JH7jxyEJY+Undf
+   i9ciZlwY2Zv35NQb+Jz96J2LgVmWVCPskST6G/gjaP7fxInE8G5Ggktuv
+   OSRCWt5gxmGr6txLWC4LYoS2hw/Af2fqIc/G08bTN1VNYEAvOZR/aaEEd
+   e30rbRRvaGpse9Z/mFd3toIaYwtrRiJduNDVMYG7IfWnFS60oFXG/x5nn
+   DO2VVCVcpx86PyFjf/4SLcA8hmXFbISBfM0Z+PKdj0CUCFmZ3UHzi+bi9
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="345571759"
+X-IronPort-AV: E=Sophos;i="6.01,203,1684825200"; 
+   d="scan'208";a="345571759"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2023 10:01:43 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="896093125"
+X-IronPort-AV: E=Sophos;i="6.01,203,1684825200"; 
+   d="scan'208";a="896093125"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga005.jf.intel.com with ESMTP; 13 Jul 2023 10:01:32 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qJzh4-002RXp-0i;
+        Thu, 13 Jul 2023 20:01:30 +0300
+Date:   Thu, 13 Jul 2023 20:01:29 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Henning Schild <henning.schild@siemens.com>
+Cc:     Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org,
+        Tobias Schaffner <tobias.schaffner@siemens.com>,
+        "xingtong . wu" <xingtong.wu@siemens.com>
+Subject: Re: [PATCH v2 0/2] leds: simatic-ipc-leds-gpio: add new model BX-21A
+Message-ID: <ZLAt6RDjqyWhN/NU@smile.fi.intel.com>
+References: <20230713115639.16419-1-henning.schild@siemens.com>
 MIME-Version: 1.0
-References: <20230711062202.3542367-1-CoelacanthusHex@gmail.com>
- <CAJF2gTRgXbEfQWiWtZtVNBDhpY2miG_ByHrVZF2fbfu60hCHcQ@mail.gmail.com> <37a22693-e33c-f64a-e3d7-febed8e9f195@gmail.com>
-In-Reply-To: <37a22693-e33c-f64a-e3d7-febed8e9f195@gmail.com>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Thu, 13 Jul 2023 12:59:40 -0400
-X-Gmail-Original-Message-ID: <CAJF2gTTmKPR-jwEpKFT4qzNqZLQV--RMzSH5LA-EPw8eSVi56g@mail.gmail.com>
-Message-ID: <CAJF2gTTmKPR-jwEpKFT4qzNqZLQV--RMzSH5LA-EPw8eSVi56g@mail.gmail.com>
-Subject: Re: [PATCH] riscv: entry: set a0 prior to syscall_handler
-To:     Celeste Liu <coelacanthushex@gmail.com>
-Cc:     Palmer Dabbelt <palmer@rivosinc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Felix Yan <felixonmars@archlinux.org>,
-        Ruizhe Pan <c141028@gmail.com>,
-        Shiqi Zhang <shiqi@isrc.iscas.ac.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230713115639.16419-1-henning.schild@siemens.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 11:28=E2=80=AFAM Celeste Liu <coelacanthushex@gmail=
-.com> wrote:
->
->
-> On 2023/7/13 08:00, Guo Ren wrote:
-> > On Tue, Jul 11, 2023 at 2:22=E2=80=AFAM Celeste Liu <coelacanthushex@gm=
-ail.com> wrote:
-> >>
-> >> When we test seccomp with 6.4 kernel, we found errno has wrong value.
-> >> If we deny NETLINK_AUDIT with EAFNOSUPPORT, after f0bddf50586d, we wil=
-l
-> >> get ENOSYS. We got same result with 9c2598d43510 ("riscv: entry: Save =
-a0
-> >> prior syscall_enter_from_user_mode()").
-> >>
-> >> Compared with x86 and loongarch's implementation of this part of the
-> >> function, we think that regs->a0 =3D -ENOSYS should be advanced before
-> >> syscall_handler to fix this problem. We have written the following pat=
-ch,
-> >> which can fix this problem after testing. But we don't know enough abo=
-ut
-> >> this part of the code to explain the root cause. Hope someone can find
-> >> a reasonable explanation. And we'd like to reword this commit message
-> >> according to the explanation in v2
-> >>
-> >> Fixes: f0bddf50586d ("riscv: entry: Convert to generic entry")
-> >> Reported-by: Felix Yan <felixonmars@archlinux.org>
-> >> Co-developed-by: Ruizhe Pan <c141028@gmail.com>
-> >> Signed-off-by: Ruizhe Pan <c141028@gmail.com>
-> >> Co-developed-by: Shiqi Zhang <shiqi@isrc.iscas.ac.cn>
-> >> Signed-off-by: Shiqi Zhang <shiqi@isrc.iscas.ac.cn>
-> >> Signed-off-by: Celeste Liu <CoelacanthusHex@gmail.com>
-> >> Tested-by: Felix Yan <felixonmars@archlinux.org>
-> >> ---
-> >>  arch/riscv/kernel/traps.c | 3 +--
-> >>  1 file changed, 1 insertion(+), 2 deletions(-)
-> >>
-> >> diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
-> >> index f910dfccbf5d2..ccadb5ffd063c 100644
-> >> --- a/arch/riscv/kernel/traps.c
-> >> +++ b/arch/riscv/kernel/traps.c
-> >> @@ -301,6 +301,7 @@ asmlinkage __visible __trap_section void do_trap_e=
-call_u(struct pt_regs *regs)
-> >>
-> >>                 regs->epc +=3D 4;
-> >>                 regs->orig_a0 =3D regs->a0;
-> >> +               regs->a0 =3D -ENOSYS;
-> > Oh, no. You destroyed the a0 for syscall_handler, right? It's not
-> > reasonable. Let's see which syscall_handler needs a0=3D-ENOSYS.
->
-> syscall_handler always use orig_a0, not a0.
-> And I have a mistake in original email, corret one is
-> syscall_enter_from_user_mode not syscall_handler.
-I misunderstood. Yes, a0 would be replaced by orig_a0:
-syscall_enter_from_user_mode_work ->  syscall_rollback
+On Thu, Jul 13, 2023 at 01:56:37PM +0200, Henning Schild wrote:
+> change since v1:
+> - split into two patches to separate leds from platform code and ease
+>   merging
+> 
+> These are rather simple patches adding LED support for yet another Simatic
+> IPC model.
 
-If the syscall was denied by syscall_enter_from_user_mode(), the
-return number is forced to be -ENOSYS. Maybe regs->a0 has already been
-updated by SYSCALL_WORK_SECCOMP. eg:
+FWIW,
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-__seccomp_filter() {
-...
-        case SECCOMP_RET_TRAP:
-                /* Show the handler the original registers. */
-                syscall_rollback(current, current_pt_regs());
-                /* Let the filter pass back 16 bits of data. */
-                force_sig_seccomp(this_syscall, data, false);
-                goto skip;
+> Henning Schild (2):
+>   platform/x86: simatic-ipc: add another model BX-21A
+>   leds: simatic-ipc-leds-gpio: add Elkhart Lake version
+> 
+>  drivers/leds/simple/Kconfig                   | 13 +++++
+>  drivers/leds/simple/Makefile                  |  1 +
+>  .../leds/simple/simatic-ipc-leds-gpio-core.c  |  4 ++
+>  .../simatic-ipc-leds-gpio-elkhartlake.c       | 57 +++++++++++++++++++
+>  drivers/platform/x86/simatic-ipc.c            |  3 +
+>  .../platform_data/x86/simatic-ipc-base.h      |  3 +-
+>  include/linux/platform_data/x86/simatic-ipc.h |  3 +-
+>  7 files changed, 82 insertions(+), 2 deletions(-)
+>  create mode 100644 drivers/leds/simple/simatic-ipc-leds-gpio-elkhartlake.c
+> 
+> -- 
+> 2.41.0
+> 
 
->
-> > Could you give out more detail on your test case?
-> >
-> >>
-> >>                 riscv_v_vstate_discard(regs);
-> >>
-> >> @@ -308,8 +309,6 @@ asmlinkage __visible __trap_section void do_trap_e=
-call_u(struct pt_regs *regs)
-> >>
-> >>                 if (syscall < NR_syscalls)
-> >>                         syscall_handler(regs, syscall);
-> >> -               else
-> >> -                       regs->a0 =3D -ENOSYS;
-> >>
-> >>                 syscall_exit_to_user_mode(regs);
-> >>         } else {
-> >> --
-> >> 2.41.0
-> >>
-> >
-> >
->
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
---=20
-Best Regards
- Guo Ren
