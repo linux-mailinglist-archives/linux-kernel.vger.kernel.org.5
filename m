@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9FDB7525C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 16:56:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 121937525C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 16:57:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231644AbjGMO44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 10:56:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60974 "EHLO
+        id S232253AbjGMO5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 10:57:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231169AbjGMO4w (ORCPT
+        with ESMTP id S232185AbjGMO5I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 10:56:52 -0400
+        Thu, 13 Jul 2023 10:57:08 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 185082713
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 07:55:59 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A7EF2736
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 07:56:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689260159;
+        s=mimecast20190719; t=1689260163;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=rOmThcBQ38XDQnqrguekPpebm9LB32j86WbUbdRAymk=;
-        b=Dq9u35H0Y80xdKoMwM5mEbpOy45hGuldQ51rqEuKOBgxyAQw61udwklvkdvcrHmjYNnEnQ
-        NWl6EbFJg8EwTU+cF0hLqnobwdQ00widS4dafjim7941kdCHeNBtcSMszG5DNt9b6RDtHT
-        6/lyNO+9dGlQ/emsLgHqnhxToJjIh9Q=
+        bh=tvagZqP7r7JhOH2HSmKVW5dMeNgJcBr/tywkzsCuQEE=;
+        b=A7w+xqn0O/UJ5p9zcT/RyhNdgkV2iHLGUc94tQsJvw+HLWijwypNicycYpfr1+0r9Icsgr
+        HbpC11K+zoPidJw4RCSlYBKJyCEW6gizaTXtKZJER+tUISXa/uz1DTXAHbNUGDHwX2T11/
+        HSgKRIi9Lr0s2UWkVcBZsYrOaqqz/8Q=
 Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-651-j4H8HIhJMpCZyM7rsWcs1g-1; Thu, 13 Jul 2023 10:55:57 -0400
-X-MC-Unique: j4H8HIhJMpCZyM7rsWcs1g-1
+ us-mta-13-nm4gKlnDNE-L9galCwEr3g-1; Thu, 13 Jul 2023 10:55:59 -0400
+X-MC-Unique: nm4gKlnDNE-L9galCwEr3g-1
 Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4FD7A29A9D36;
-        Thu, 13 Jul 2023 14:55:57 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 640A63815F7E;
+        Thu, 13 Jul 2023 14:55:59 +0000 (UTC)
 Received: from t14s.redhat.com (unknown [10.39.192.245])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A4780F66D1;
-        Thu, 13 Jul 2023 14:55:55 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B0225F66D7;
+        Thu, 13 Jul 2023 14:55:57 +0000 (UTC)
 From:   David Hildenbrand <david@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-mm@kvack.org, virtualization@lists.linux-foundation.org,
@@ -45,9 +45,9 @@ Cc:     linux-mm@kvack.org, virtualization@lists.linux-foundation.org,
         "Michael S. Tsirkin" <mst@redhat.com>,
         Jason Wang <jasowang@redhat.com>,
         Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v1 1/4] virtio-mem: remove unsafe unplug in Big Block Mode (BBM)
-Date:   Thu, 13 Jul 2023 16:55:48 +0200
-Message-ID: <20230713145551.2824980-2-david@redhat.com>
+Subject: [PATCH v1 2/4] virtio-mem: convert most offline_and_remove_memory() errors to -EBUSY
+Date:   Thu, 13 Jul 2023 16:55:49 +0200
+Message-ID: <20230713145551.2824980-3-david@redhat.com>
 In-Reply-To: <20230713145551.2824980-1-david@redhat.com>
 References: <20230713145551.2824980-1-david@redhat.com>
 MIME-Version: 1.0
@@ -63,115 +63,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When "unsafe unplug" is enabled, we don't fake-offline all memory ahead of
-actual memory offlining using alloc_contig_range(). Instead, we rely on
-offline_pages() to also perform actual page migration, which might fail
-or take a very long time.
-
-In that case, it's possible to easily run into endless loops that cannot be
-aborted anymore (as offlining is triggered by a workqueue then): For
-example, a single (accidentally) permanently unmovable page in
-ZONE_MOVABLE results in an endless loop. For ZONE_NORMAL, races between
-isolating the pageblock (and checking for unmovable pages) and
-concurrent page allocation are possible and similarly result in endless
-loops.
-
-The idea of the unsafe unplug mode was to make it possible to more
-reliably unplug large memory blocks. However, (a) we really should be
-tackling that differently, by extending the alloc_contig_range()-based
-mechanism; and (b) this mode is not the default and as far as I know,
-it's unused either way.
-
-So let's simply get rid of it.
+Just like we do with alloc_contig_range(), let's convert all unknown
+errors to -EBUSY, but WARN so we can look into the issue. For example,
+offline_pages() could fail with -EINTR, which would be unexpected in our
+case.
 
 Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
- drivers/virtio/virtio_mem.c | 51 +++++++++++++++----------------------
- 1 file changed, 20 insertions(+), 31 deletions(-)
+ drivers/virtio/virtio_mem.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
-index 835f6cc2fb66..ed15d2a4bd96 100644
+index ed15d2a4bd96..1a76ba2bc118 100644
 --- a/drivers/virtio/virtio_mem.c
 +++ b/drivers/virtio/virtio_mem.c
-@@ -38,11 +38,6 @@ module_param(bbm_block_size, ulong, 0444);
- MODULE_PARM_DESC(bbm_block_size,
- 		 "Big Block size in bytes. Default is 0 (auto-detection).");
- 
--static bool bbm_safe_unplug = true;
--module_param(bbm_safe_unplug, bool, 0444);
--MODULE_PARM_DESC(bbm_safe_unplug,
--	     "Use a safe unplug mechanism in BBM, avoiding long/endless loops");
--
- /*
-  * virtio-mem currently supports the following modes of operation:
-  *
-@@ -2111,38 +2106,32 @@ static int virtio_mem_bbm_offline_remove_and_unplug_bb(struct virtio_mem *vm,
- 			 VIRTIO_MEM_BBM_BB_ADDED))
- 		return -EINVAL;
- 
--	if (bbm_safe_unplug) {
--		/*
--		 * Start by fake-offlining all memory. Once we marked the device
--		 * block as fake-offline, all newly onlined memory will
--		 * automatically be kept fake-offline. Protect from concurrent
--		 * onlining/offlining until we have a consistent state.
--		 */
--		mutex_lock(&vm->hotplug_mutex);
--		virtio_mem_bbm_set_bb_state(vm, bb_id,
--					    VIRTIO_MEM_BBM_BB_FAKE_OFFLINE);
+@@ -741,11 +741,15 @@ static int virtio_mem_offline_and_remove_memory(struct virtio_mem *vm,
+ 		 * immediately instead of waiting.
+ 		 */
+ 		virtio_mem_retry(vm);
+-	} else {
+-		dev_dbg(&vm->vdev->dev,
+-			"offlining and removing memory failed: %d\n", rc);
++		return 0;
+ 	}
+-	return rc;
++	dev_dbg(&vm->vdev->dev, "offlining and removing memory failed: %d\n", rc);
 +	/*
-+	 * Start by fake-offlining all memory. Once we marked the device
-+	 * block as fake-offline, all newly onlined memory will
-+	 * automatically be kept fake-offline. Protect from concurrent
-+	 * onlining/offlining until we have a consistent state.
++	 * We don't really expect this to fail, because we fake-offlined all
++	 * memory already. But it could fail in corner cases.
 +	 */
-+	mutex_lock(&vm->hotplug_mutex);
-+	virtio_mem_bbm_set_bb_state(vm, bb_id, VIRTIO_MEM_BBM_BB_FAKE_OFFLINE);
++	WARN_ON_ONCE(rc != -ENOMEM && rc != -EBUSY);
++	return rc == -ENOMEM ? -ENOMEM : -EBUSY;
+ }
  
--		for (pfn = start_pfn; pfn < end_pfn; pfn += PAGES_PER_SECTION) {
--			page = pfn_to_online_page(pfn);
--			if (!page)
--				continue;
-+	for (pfn = start_pfn; pfn < end_pfn; pfn += PAGES_PER_SECTION) {
-+		page = pfn_to_online_page(pfn);
-+		if (!page)
-+			continue;
- 
--			rc = virtio_mem_fake_offline(pfn, PAGES_PER_SECTION);
--			if (rc) {
--				end_pfn = pfn;
--				goto rollback_safe_unplug;
--			}
-+		rc = virtio_mem_fake_offline(pfn, PAGES_PER_SECTION);
-+		if (rc) {
-+			end_pfn = pfn;
-+			goto rollback;
- 		}
--		mutex_unlock(&vm->hotplug_mutex);
- 	}
-+	mutex_unlock(&vm->hotplug_mutex);
- 
- 	rc = virtio_mem_bbm_offline_and_remove_bb(vm, bb_id);
- 	if (rc) {
--		if (bbm_safe_unplug) {
--			mutex_lock(&vm->hotplug_mutex);
--			goto rollback_safe_unplug;
--		}
--		return rc;
-+		mutex_lock(&vm->hotplug_mutex);
-+		goto rollback;
- 	}
- 
- 	rc = virtio_mem_bbm_unplug_bb(vm, bb_id);
-@@ -2154,7 +2143,7 @@ static int virtio_mem_bbm_offline_remove_and_unplug_bb(struct virtio_mem *vm,
- 					    VIRTIO_MEM_BBM_BB_UNUSED);
- 	return rc;
- 
--rollback_safe_unplug:
-+rollback:
- 	for (pfn = start_pfn; pfn < end_pfn; pfn += PAGES_PER_SECTION) {
- 		page = pfn_to_online_page(pfn);
- 		if (!page)
+ /*
 -- 
 2.41.0
 
