@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68D0A751A72
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 09:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78C2D751A73
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 09:55:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233092AbjGMHz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 03:55:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35872 "EHLO
+        id S233059AbjGMHz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 03:55:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233005AbjGMHzP (ORCPT
+        with ESMTP id S233008AbjGMHzP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 13 Jul 2023 03:55:15 -0400
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 973B71BEB
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 00:55:13 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 977F3C000A;
-        Thu, 13 Jul 2023 07:55:11 +0000 (UTC)
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::226])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8766C10FA
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 00:55:14 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 84B76C000B;
+        Thu, 13 Jul 2023 07:55:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1689234912;
+        t=1689234913;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=dgb0TDaQFrhF4fhgxGyhXKcmb2ZUg1BtRv4tanmwvj0=;
-        b=d2380PZ/T0D8ihAea32WccInfIA/F0tXtAa3AHlnsNflXlafeNh2m0xah/j2svPrD1sXMm
-        Jq2ILpCpSrmtOfIUmeKBZD9YuMECIaZDTZyr/J1bVDrKFRGBz+ejTOkN1rqSoTXOKn+fK5
-        6OxQ2Usp5agekkU0ZkGk7ErajcfZ1sfr7M1cXW05ivcE8h5IMiY3MBd4We24zYhNzYT1Qo
-        REeWupyplSTGdIQTYQLC+gqAN1xfKGt2ROE6Lnd+NOydZxwtEEHZFEuotzogbMmH7R/LOH
-        b3mplQPXiTxJgWCQAAAoxvw0jStN/5EG9Pos5mJkpRqY72q8Uw6QAgAr/64gww==
+        bh=RrYa81jVjDuF0o+K2o6QuVvcpzCkZHcHCjfMG1eLeRQ=;
+        b=iLRncOLWdNl3B9tqqtbmNllAd6sz39Cw7tjmi+aFV5uTDKA74L65FZ0OUKfzr22ZLNVaht
+        QA8lDLh0zXdECcElfB/R76uHgzFTRSM0rcWxMakA0d49LP3D2jUEur1/Pdb+QNtZQU0wSe
+        oRl0/yNLvQzZOfmfiqwE1Y74NNi5ESisVrMvLdoYjIDaEVzVpXGG/IdS7clMPbY5+sRSaH
+        Km/WADOkbpYbUoP8VhyPKf2XIziJBZtCe47JzQDriteuThnmGwiPdgCmc+V1lhJ0AI3+V+
+        u1JChlc4GWedht7u9Kimwg4TlPR59p9+Q3DWu4gcqQ2EiRPoGx9lHHuANQS5WQ==
 From:   Miquel Raynal <miquel.raynal@bootlin.com>
 To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -37,9 +37,9 @@ Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
         Robert Marko <robert.marko@sartura.hr>,
         Luka Perkov <luka.perkov@sartura.hr>,
         Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH RESEND v5 2/2] nvmem: core: Expose cells through sysfs
-Date:   Thu, 13 Jul 2023 09:55:07 +0200
-Message-Id: <20230713075508.485072-4-miquel.raynal@bootlin.com>
+Subject: [PATCH RESEND v5 3/3] nvmem: core: Expose cells through sysfs
+Date:   Thu, 13 Jul 2023 09:55:08 +0200
+Message-Id: <20230713075508.485072-5-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230713075508.485072-1-miquel.raynal@bootlin.com>
 References: <20230713075508.485072-1-miquel.raynal@bootlin.com>
@@ -48,8 +48,8 @@ Content-Transfer-Encoding: 8bit
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -91,11 +91,11 @@ kernel drivers anyway.
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/nvmem/core.c | 121 ++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 113 insertions(+), 8 deletions(-)
+ drivers/nvmem/core.c | 101 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 101 insertions(+)
 
 diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index 3f8c7718412b..8b49b12501e2 100644
+index 48659106a1e2..6c04a9cf6919 100644
 --- a/drivers/nvmem/core.c
 +++ b/drivers/nvmem/core.c
 @@ -325,6 +325,43 @@ static umode_t nvmem_bin_attr_is_visible(struct kobject *kobj,
@@ -216,22 +216,10 @@ index 3f8c7718412b..8b49b12501e2 100644
  #else /* CONFIG_NVMEM_SYSFS */
  
  static int nvmem_sysfs_setup_compat(struct nvmem_device *nvmem,
-@@ -998,20 +1093,30 @@ struct nvmem_device *nvmem_register(const struct nvmem_config *config)
+@@ -1006,6 +1101,12 @@ struct nvmem_device *nvmem_register(const struct nvmem_config *config)
  	if (rval)
  		goto err_remove_cells;
  
-+	rval = nvmem_add_cells_from_layout(nvmem);
-+	if (rval)
-+		goto err_remove_cells;
-+
-+	rval = nvmem_add_cells_from_fixed_layout(nvmem);
-+	if (rval)
-+		goto err_remove_cells;
-+
-+	rval = nvmem_add_cells_from_layout(nvmem);
-+	if (rval)
-+		goto err_remove_cells;
-+
 +#ifdef CONFIG_NVMEM_SYSFS
 +	rval = nvmem_populate_sysfs_cells(nvmem);
 +	if (rval)
@@ -241,20 +229,6 @@ index 3f8c7718412b..8b49b12501e2 100644
  	dev_dbg(&nvmem->dev, "Registering nvmem device %s\n", config->name);
  
  	rval = device_add(&nvmem->dev);
- 	if (rval)
- 		goto err_remove_cells;
- 
--	rval = nvmem_add_cells_from_fixed_layout(nvmem);
--	if (rval)
--		goto err_remove_cells;
--
--	rval = nvmem_add_cells_from_layout(nvmem);
--	if (rval)
--		goto err_remove_cells;
--
- 	blocking_notifier_call_chain(&nvmem_notifier, NVMEM_ADD, nvmem);
- 
- 	return nvmem;
 -- 
 2.34.1
 
