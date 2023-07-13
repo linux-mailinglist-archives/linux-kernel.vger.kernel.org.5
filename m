@@ -2,153 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2340752931
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 18:54:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0785752934
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 18:55:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234714AbjGMQyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 12:54:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34694 "EHLO
+        id S234959AbjGMQzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 12:55:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231783AbjGMQyV (ORCPT
+        with ESMTP id S230038AbjGMQzb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 12:54:21 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 183B02701
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 09:54:20 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2b71ae5fa2fso14416561fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 09:54:20 -0700 (PDT)
+        Thu, 13 Jul 2023 12:55:31 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD8551FC0
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 09:55:30 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1b8b318c5a7so7352185ad.3
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 09:55:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1689267258; x=1691859258;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=KGEyliUCXJSU8koPebhUNQWCpCmY8dz3cK7dturAlTQ=;
-        b=fJkh6ygSqYwsccICxbLbXKPisIPjspSAhikqfG3yWmExnzxLuWVC9vUPLJItxLXIKz
-         rGJKKuHkNZnzB0gTzEFcofZPjEyvbu1xtTR0HkctXN4xGRy/Wy/DmfpHErleqYCbc2lx
-         h1V3jm2kXbT9OoGf8Jsi0Nb3fgGdjUCSy6E2A=
+        d=chromium.org; s=google; t=1689267330; x=1691859330;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=mkaGpz0HgmAYOX7U+wy0aaz4NPPSIRJNciFQzG/7LfI=;
+        b=TZwe67oMehoOCnv+us7BR5JF/AE7LNBrg3r4pPZC7R7ZDhK9jO8UgFk1hggi+qRHiC
+         ULJ1W2JSep57OckV9Rxdvk+fD9ZkqtvOm4L9za8ck5FAxDtBDN25sMyCM7JfUKCKKd6+
+         6xNlHm6nOqyTfi2kF55UuYLEAUfJ+gleTI7oI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689267258; x=1691859258;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KGEyliUCXJSU8koPebhUNQWCpCmY8dz3cK7dturAlTQ=;
-        b=cGc7kfE82mDnKqNrAELEoQd0PYh066F2gRZFwIBQSd2KeYrcbVs9hUDwgb59eZdgLv
-         hxqb7psMNiu/ZtQ6h2G3rQv/9zRvUm/SguTLJLIL88ws54uqpTkkNyo3ezlIwdbCLUVL
-         tZqcpfu2qG8wIlrYVfU3WvGxP0NcLwG4c1OWcR+96ag94+ue56YD3Li0vDziPh537IRW
-         3GoIPOqjhqsdvLG0J/vxQvYGwXJ8IbbTg9wu4MKVlq3pjz+5ilhgTCysSwP9vzdVb/xe
-         JkXPsu+01saofchponkMkVA33oTItUJDLlZcrksUV+CTYmlMV520uwHq79JW42JUnoRQ
-         7W3Q==
-X-Gm-Message-State: ABy/qLbSvHoV6YeLeRMeOI8XL2SE6pKL/txkKbfaFQiBa72cinZcYjdy
-        BHjYnOudfaDFIO9yVXfNUnL/XXS35Xj0qtqfWgvIyZIj
-X-Google-Smtp-Source: APBJJlFNcP8sOXDVA3bK4F1mjVWcbvMHl9d8tajtXlRBb7zstvdCbt3jxEY+r9iKikSb3OgsqRg0HA==
-X-Received: by 2002:a2e:808e:0:b0:2b6:df6b:84c0 with SMTP id i14-20020a2e808e000000b002b6df6b84c0mr1767223ljg.25.1689267258365;
-        Thu, 13 Jul 2023 09:54:18 -0700 (PDT)
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
-        by smtp.gmail.com with ESMTPSA id o9-20020a2e7309000000b002b6e9b1e4aesm1572938ljc.78.2023.07.13.09.54.17
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 Jul 2023 09:54:18 -0700 (PDT)
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-4faaaa476a9so1691960e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 09:54:17 -0700 (PDT)
-X-Received: by 2002:a05:6512:b85:b0:4fb:9075:4fca with SMTP id
- b5-20020a0565120b8500b004fb90754fcamr1900310lfv.11.1689267257561; Thu, 13 Jul
- 2023 09:54:17 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689267330; x=1691859330;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mkaGpz0HgmAYOX7U+wy0aaz4NPPSIRJNciFQzG/7LfI=;
+        b=g3ivrM8JeojJUK1TeBnGCmmd6kb+H8QfKexDVAq/cB07eidCDtIELw3ly7lMgHv2p2
+         8HObaswZrvKeNzvXE3r379l+tzTMpKRz4/OdZcKz0Ff21/wmx3WZod35dmBBM85k640N
+         ZmndfPfCHK2D1k6s7PYzf1AybHdKlcYaqCszQ53yUH7EVn7qGsPRAD/My0OAPuFC2SEF
+         Ua22ZjdCzcRxEOXZen5VS+lCoqMY0MR7yJ9xad0wVNoamWWJzjTLcbSnmOa8fjkU+A3C
+         rNviel47uVHkbyutxXCA1m61JQYDwn+i0QnBtLy5bain8lQlTC8LUWiFvX4ZMFiDysuu
+         VXWg==
+X-Gm-Message-State: ABy/qLY7KcipfZp3mO1HTUMvHlOAm2M0JFf3WCFKPh4PArB0X4ncNS09
+        MFFYDFaQgLaldp4SFuaZb4uajw==
+X-Google-Smtp-Source: APBJJlGUMvPiyI11Rk2nFE7Fa7XTV582GqL0E8iCmkPFcMQEFTVDRfoAVDOCrL2Q+fvQpoEFCrkVwA==
+X-Received: by 2002:a17:902:dad2:b0:1b8:b3f7:4872 with SMTP id q18-20020a170902dad200b001b8b3f74872mr2684402plx.28.1689267330307;
+        Thu, 13 Jul 2023 09:55:30 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id jh6-20020a170903328600b001b8b26fa6a9sm6211880plb.19.2023.07.13.09.55.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Jul 2023 09:55:29 -0700 (PDT)
+Date:   Thu, 13 Jul 2023 09:55:29 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Palmer Dabbelt <palmer@rivosinc.com>
+Cc:     Mark Rutland <mark.rutland@arm.com>, arnd@kernel.org,
+        davem@davemloft.net, peterz@infradead.org,
+        Arnd Bergmann <arnd@arndb.de>, linux@roeck-us.net,
+        geert@linux-m68k.org, mingo@kernel.org, andi.shyti@linux.intel.com,
+        andrzej.hajda@intel.com, sparclinux@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] sparc: mark __arch_xchg() as __always_inline
+Message-ID: <202307130954.562F14E@keescook>
+References: <ZJwdZ_cStUp0cXyS@FVFF77S0Q05N>
+ <mhng-0bca249b-95f1-4e3f-b241-f37835e1c623@palmer-ri-x1c9a>
 MIME-Version: 1.0
-References: <CGME20230710155902eucas1p2b464a29adc35e983c73b00d18ab5344c@eucas1p2.samsung.com>
- <ZKwqvTMPVmhnkZjS@kbusch-mbp.dhcp.thefacebook.com> <f0fdf86e-4293-8e07-835d-b5a866252068@samsung.com>
- <462e0e1e-98ea-0f3c-4aaa-8d44f0a8e664@leemhuis.info> <20230711120609.GB27050@lst.de>
- <CAHk-=whXh9sgLo24RO02JjfD0m3HE5NADRPWoEd+dW6bruFhVA@mail.gmail.com>
- <20230712164546.GA31434@lst.de> <CAHk-=whA9rmvNfo=8iKmtimayiA2Aus4XvPwcDrA53G2rfGP0w@mail.gmail.com>
- <20230712165721.GA31965@lst.de> <CAHk-=wgzetYEqj7phbJBE_ZshFq0=k3zWouJ8XyFyERgDX5sZg@mail.gmail.com>
- <20230713114412.GA23427@lst.de>
-In-Reply-To: <20230713114412.GA23427@lst.de>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 13 Jul 2023 09:53:53 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgVArJmE3rB+sHCURUP=oK-mW5-QfVyiRwZV9OLpWwxGg@mail.gmail.com>
-Message-ID: <CAHk-=wgVArJmE3rB+sHCURUP=oK-mW5-QfVyiRwZV9OLpWwxGg@mail.gmail.com>
-Subject: Re: Fwd: Need NVME QUIRK BOGUS for SAMSUNG MZ1WV480HCGL-000MV
- (Samsung SM-953 Datacenter SSD)
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Linux regressions mailing list <regressions@lists.linux.dev>,
-        Pankaj Raghav <p.raghav@samsung.com>,
-        Keith Busch <kbusch@kernel.org>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>, Sagi Grimberg <sagi@grimberg.me>,
-        "Clemens S." <cspringsguth@gmail.com>,
-        Martin Belanger <martin.belanger@dell.com>,
-        Chaitanya Kulkarni <kch@nvidia.com>,
-        John Meneghini <jmeneghi@redhat.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux NVMe <linux-nvme@lists.infradead.org>,
-        Kanchan Joshi <joshi.k@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>,
-        =?UTF-8?B?67CV7KeE7ZmY?= <jh.i.park@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <mhng-0bca249b-95f1-4e3f-b241-f37835e1c623@palmer-ri-x1c9a>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 13 Jul 2023 at 04:44, Christoph Hellwig <hch@lst.de> wrote:
->
-> Please stop putting words in my mouth.  Maybe instead of shouting it
-> would help to actually read the text?
+On Thu, Jul 13, 2023 at 07:00:37AM -0700, Palmer Dabbelt wrote:
+> On Wed, 28 Jun 2023 04:45:43 PDT (-0700), Mark Rutland wrote:
+> > On Wed, Jun 28, 2023 at 11:49:18AM +0200, Arnd Bergmann wrote:
+> > > From: Arnd Bergmann <arnd@arndb.de>
+> > > 
+> > > An otherwise correct change to the atomic operations uncovered an
+> > > existing bug in the sparc __arch_xchg() function, which is calls
+> > > __xchg_called_with_bad_pointer() when its arguments are unknown at
+> > > compile time:
+> > > 
+> > > ERROR: modpost: "__xchg_called_with_bad_pointer" [lib/atomic64_test.ko] undefined!
+> > > 
+> > > This now happens because gcc determines that it's better to not inline the
+> > > function. Avoid this by just marking the function as __always_inline
+> > > to force the compiler to do the right thing here.
+> > > 
+> > > Reported-by: Guenter Roeck <linux@roeck-us.net>
+> > > Link: https://lore.kernel.org/all/c525adc9-6623-4660-8718-e0c9311563b8@roeck-us.net/
+> > > Fixes: d12157efc8e08 ("locking/atomic: make atomic*_{cmp,}xchg optional")
+> > > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> > 
+> > Aha; you saved me writing a patch! :)
+> > 
+> > We should probably do likewise for all the other bits like __cmpxchg(), but
+> > either way:
+> > 
+> > Acked-by: Mark Rutland <mark.rutland@arm.com>
+> 
+> Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
+> 
+> Though I'm not sure that means a whole lot over here ;)
 
-I have read the text. You spout unbelievable garbage. Even in this email:
+I've carried some other sparc stuff before. I can send this to Linus
+with other fixes.
 
-> You said we've never seen devices with reliably IDs, which simply isn't
-> true.  And that doesn't mean I'm saying all devices have reliably IDs,
-> which somehow you're not trying to make me say.
-
-When I say "devices", I obviously mean in general.
-
-You seem to argue against it.
-
-OF COURSE a _single_ device that has shown to have a UUID is likely to
-then repeat that UUID reliably. But that doesn't mean it's true in
-general.
-
-The fact is, any driver subsystem that deals with more than one device
-manufacturer had better not rely on any serial number for uniqueness.
-
-If some device layer does, and there is a device without serial
-numbers, then the bug is squarely on the driver, not the device.
-Because the driver author clearly didn't think things through.
-
-THAT is what I mean by "devices do not EVER reliably have uuids".
-
-I just checked. I have on my desk access to three machines with NVMe
-drives. Of them
-
- (a) one didn't have any UUID at all, didn't report namespaces and the
-"wwid" exposed in /proc is that
-
-        return sysfs_emit(buf, "nvme.%04x-%*phN-%*phN-%08x\n",
-subsys->vendor_id,
-                serial_len, subsys->serial, model_len, subsys->model,
-                head->ns_id);
-
-     thing.
-
-(b) the other two had a NULL uuid and nguid, but seem to have a eui64,
-whatever the hell that is.
-
-So just from my limited test, one in three didn't have any UUID at all.
-
-Deal with it. Stop claiming it's somehow "reliable". Two out of three
-out of a random selection is not "reliable".
-
-And it has never been reliable, judging by those quirks. When we have
-manufacturers like Samsung, Phison, ADATA, Lexar, Sandisk, Micron, and
-Kingston mentioned in the quirk list, we probably have covered most of
-the consumer SSD manufacturers.
-
-It's a sad that NVMe - that started out as a "lean mean low-overhead
-disk interface definition" results in this kind of mess.
-
-           Linus
+-- 
+Kees Cook
