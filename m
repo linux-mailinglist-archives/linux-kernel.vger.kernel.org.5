@@ -2,75 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A95B47520FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 14:15:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 637A4752102
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 14:16:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229455AbjGMMPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 08:15:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38630 "EHLO
+        id S233918AbjGMMQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 08:16:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233181AbjGMMPW (ORCPT
+        with ESMTP id S234024AbjGMMQL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 08:15:22 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E78AC2D42;
-        Thu, 13 Jul 2023 05:14:54 -0700 (PDT)
-Received: from canpemm500002.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4R1tl30qWczLnhW;
-        Thu, 13 Jul 2023 20:11:59 +0800 (CST)
-Received: from huawei.com (10.174.151.185) by canpemm500002.china.huawei.com
- (7.192.104.244) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 13 Jul
- 2023 20:14:19 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <akpm@linux-foundation.org>, <hannes@cmpxchg.org>,
-        <mhocko@kernel.org>, <roman.gushchin@linux.dev>,
-        <shakeelb@google.com>
-CC:     <muchun.song@linux.dev>, <linux-mm@kvack.org>,
-        <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linmiaohe@huawei.com>
-Subject: [PATCH] mm/memcg: fix obsolete comment above MEM_CGROUP_MAX_RECLAIM_LOOPS
-Date:   Thu, 13 Jul 2023 20:14:32 +0800
-Message-ID: <20230713121432.273381-1-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.33.0
+        Thu, 13 Jul 2023 08:16:11 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 326191FEA
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 05:15:45 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id EFFFD1FDAE;
+        Thu, 13 Jul 2023 12:15:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1689250542; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=69I9n2IK3naLFPJAhL5ZT4b7LKGGJ1CwIXBa7kBCt5U=;
+        b=MQCCxB2Vlfl4wRDyy7mk8NCrZoyHLEB6I2HxpmeQgn8e4ut2z2KDRmd4VZrd1H+0jImkaw
+        1tBCvT0JpY8S+P0Iq3SbfO/w1TDlYUW5z6u3B67RF/wabIAeEnecE48LwiMhZefI5M+agi
+        v8mX3H8rOGhC4aQOvyK6jSLksu4fSRc=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BA2C0133D6;
+        Thu, 13 Jul 2023 12:15:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id MjDtK+7qr2TLJQAAMHmgww
+        (envelope-from <jgross@suse.com>); Thu, 13 Jul 2023 12:15:42 +0000
+From:   Juergen Gross <jgross@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
+        sstabellini@kernel.org
+Subject: [GIT PULL] xen: branch for v6.5-rc2
+Date:   Thu, 13 Jul 2023 14:15:42 +0200
+Message-Id: <20230713121542.4854-1-jgross@suse.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.151.185]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- canpemm500002.china.huawei.com (7.192.104.244)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit 5660048ccac8 ("mm: move memcg hierarchy reclaim to generic
-reclaim code"), mem_cgroup_hierarchical_reclaim() is already renamed to
-mem_cgroup_soft_reclaim(). Update the corresponding comment.
+Linus,
 
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
----
- mm/memcontrol.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Please git pull the following tag:
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 3eaeb69ef9f5..93e3cc581b51 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -197,7 +197,7 @@ static struct move_charge_struct {
- };
- 
- /*
-- * Maximum loops in mem_cgroup_hierarchical_reclaim(), used for soft
-+ * Maximum loops in mem_cgroup_soft_reclaim(), used for soft
-  * limit reclaim to prevent infinite loops, if they ever occur.
-  */
- #define	MEM_CGROUP_MAX_RECLAIM_LOOPS		100
--- 
-2.33.0
+ git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git for-linus-6.5-rc2-tag
 
+xen: branch for v6.5-rc2
+
+It contains the following patches:
+
+- a cleanup of the Xe related ELF-notes
+
+- a fix for virtio handling in Xen dom0 when running Xen in a VM
+
+
+Thanks.
+
+Juergen
+
+ arch/x86/xen/xen-head.S     | 37 +++++++++++++++++++++----------------
+ drivers/xen/grant-dma-ops.c |  2 ++
+ 2 files changed, 23 insertions(+), 16 deletions(-)
+
+Jan Beulich (1):
+      x86/Xen: tidy xen-head.S
+
+Petr Pavlu (1):
+      xen/virtio: Fix NULL deref when a bridge of PCI root bus has no parent
