@@ -2,105 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAB5F751ABD
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 10:03:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44C45751AD4
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 10:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233450AbjGMIDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 04:03:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39874 "EHLO
+        id S233972AbjGMIIw convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 13 Jul 2023 04:08:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233379AbjGMICh (ORCPT
+        with ESMTP id S234237AbjGMIIS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 04:02:37 -0400
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 375D1420C;
-        Thu, 13 Jul 2023 01:00:56 -0700 (PDT)
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36D7NZTv002471;
-        Thu, 13 Jul 2023 09:59:52 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=message-id : date :
- mime-version : subject : to : references : from : cc : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=G/5P+GBYTXDjapoJpeo3kbVedPpgVPQ0maCG9CHv5+Q=;
- b=HWz26JpNsdDJbJQoAb+xal5sc8dUbPMpZmAR/YzfV2icOKFol1B4tnKWHatZblUVB8+h
- uRuScfuCSr4bG0QgV3S8E/DnOY9EC5a3kZl9B91ZbRRPhrk9MDijmBHIhXdm+9DLYEJB
- 1/0sCeQUmsVZsiBc9azZcemNaAs3fbScUqJFlmPRoecUmqWfvwdd6EE7BeKV2VI5G9mv
- BOijjoSqYCpU8NnL3CJZJEq2Xmt1SEaizoKqgTd7jd+I7+A4/0q8WpryHJEtR54Id8rB
- v5qU7/jAUzEqZ6LWd17pu4xzRqA/3HIqxlOX0GqHXApIwd2EveX4xIwj5Wipm7Z7vlNb Xw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3rtcud08ue-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 13 Jul 2023 09:59:52 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id AB4FC100058;
-        Thu, 13 Jul 2023 09:59:49 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node3.st.com [10.75.129.71])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A3B922138CC;
-        Thu, 13 Jul 2023 09:59:49 +0200 (CEST)
-Received: from [10.201.22.9] (10.201.22.9) by SHFDAG1NODE3.st.com
- (10.75.129.71) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Thu, 13 Jul
- 2023 09:59:49 +0200
-Message-ID: <050aa1fb-34ab-b9e0-7772-af53ec32d312@foss.st.com>
-Date:   Thu, 13 Jul 2023 09:59:48 +0200
+        Thu, 13 Jul 2023 04:08:18 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E76723AB3;
+        Thu, 13 Jul 2023 01:05:56 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-bff27026cb0so381092276.1;
+        Thu, 13 Jul 2023 01:05:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689235252; x=1691827252;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=y4q6Dp1a5ZPR38LPAzFTuFEyWMCfsyFFquI2ZhIpkvY=;
+        b=B/lj+2o42JAv3JsGI692a1ka/zv9clB1OjCkm6/8l8jGcU6zfCSd18SavbufYi58U5
+         XWB7fMcyiBiPb8+GxiOZf3BA57S10rbqdY+rxSi1Os91B0MWu2Bdzde1NmybMB3Fab3b
+         Sxeoo8YZfQEaqzbz2X1A1nKqQnIsSEFMgxED79AfgtE1i88oysH3qdv8ZG5qJTzJTqGs
+         Hi4mHccqIQxCGqY6xWk9RDWUqAmq1mNc/iErPeD68AV+ru9B/r7o7rirp45KVct66gIy
+         qeJ0hkiLvF0v+gVlPLdFWNO9SS+UPWOoPWa7abR23vs7bN0TAzbCm7P38gAdVYYasL8w
+         c1dA==
+X-Gm-Message-State: ABy/qLbiLkOCoTgphdc49laBklhVLoNHyuAK/KlyuVVTGjUyfF83vrjU
+        k8ljMBoEgnXFONYZ6XrCTeI7fDP+HRcYT6Ql
+X-Google-Smtp-Source: APBJJlFPvPGB407G/vKiABXt8xkOSY6tb2cMiLPtL0GI6hj6OTBl+w2Hlr8Ng6k2HnOgFRjTdHfrEA==
+X-Received: by 2002:a0d:db4e:0:b0:577:18a9:fde9 with SMTP id d75-20020a0ddb4e000000b0057718a9fde9mr1072357ywe.43.1689235251802;
+        Thu, 13 Jul 2023 01:00:51 -0700 (PDT)
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com. [209.85.219.177])
+        by smtp.gmail.com with ESMTPSA id c11-20020a81df0b000000b0054fba955474sm1637948ywn.17.2023.07.13.01.00.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 Jul 2023 01:00:51 -0700 (PDT)
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-bfe6ea01ff5so374156276.3;
+        Thu, 13 Jul 2023 01:00:51 -0700 (PDT)
+X-Received: by 2002:a25:2fd5:0:b0:c70:d138:51b2 with SMTP id
+ v204-20020a252fd5000000b00c70d13851b2mr778725ybv.25.1689235251043; Thu, 13
+ Jul 2023 01:00:51 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.0
-Subject: Re: [PATCH 2/7] crypto: stm32 - add new algorithms support
-To:     Linus Walleij <linus.walleij@linaro.org>
-References: <20230706073719.1156288-1-thomas.bourgoin@foss.st.com>
- <20230706073719.1156288-3-thomas.bourgoin@foss.st.com>
- <CACRpkdaHn8fhZtuhU4sXHK1xoxO3-xYg_Xb=3=bX8i-uJM9KDA@mail.gmail.com>
- <a584c152-329e-9c79-ec62-795485302a55@foss.st.com>
- <CACRpkdYStm_dxo-FMo4Kdw_Lm3iG+xppf7O5W6cxtoiRy1DOsw@mail.gmail.com>
-From:   Thomas BOURGOIN <thomas.bourgoin@foss.st.com>
-CC:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Lionel Debieve <lionel.debieve@foss.st.com>,
-        <linux-crypto@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-In-Reply-To: <CACRpkdYStm_dxo-FMo4Kdw_Lm3iG+xppf7O5W6cxtoiRy1DOsw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.201.22.9]
-X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE3.st.com
- (10.75.129.71)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-13_04,2023-07-11_01,2023-05-22_02
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230705081856.13734-1-frank.li@vivo.com> <168909383153.208679.15343948792914219046.b4-ty@kernel.org>
+ <c3373ebe-2f52-bed7-7f59-98e1268c9af2@linux-m68k.org> <ZK6O2b88Nz6J2JeN@matsya>
+In-Reply-To: <ZK6O2b88Nz6J2JeN@matsya>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 13 Jul 2023 10:00:37 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXiyk6NSGJWwby9VoP98=g0xu-SRAkDtxYqA-DcnOLmrQ@mail.gmail.com>
+Message-ID: <CAMuHMdXiyk6NSGJWwby9VoP98=g0xu-SRAkDtxYqA-DcnOLmrQ@mail.gmail.com>
+Subject: Re: [PATCH 1/5] dmaengine: qcom: gpi: Use devm_platform_get_and_ioremap_resource()
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Yangtao Li <frank.li@vivo.com>, linux-arm-msm@vger.kernel.org,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-phy@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi Vinod,
 
-On 7/13/23 00:56, Linus Walleij wrote:
-> Yes this fixes the bug and the tests pass fine 😄
+On Wed, Jul 12, 2023 at 1:30 PM Vinod Koul <vkoul@kernel.org> wrote:
+> On 12-07-23, 11:33, Geert Uytterhoeven wrote:
+> > On Tue, 11 Jul 2023, Vinod Koul wrote:
+> > > On Wed, 05 Jul 2023 16:18:52 +0800, Yangtao Li wrote:
+> > > > Convert platform_get_resource(), devm_ioremap_resource() to a single
+> > > > call to devm_platform_get_and_ioremap_resource(), as this is exactly
+> > > > what this function does.
+> > >
+> > > Applied, thanks!
+> > >
+> > > [1/5] dmaengine: qcom: gpi: Use devm_platform_get_and_ioremap_resource()
+> > >      commit: d9313d9f1fbc14cae5147c5130bea54aa76ad65f
+> > > [2/5] dmaengine: qcom_hidma: Use devm_platform_get_and_ioremap_resource()
+> > >      commit: a189107deb574fd08018bbf2fe5cd86450a54b13
+> > > [3/5] dmaengine: qcom: hidma_mgmt: Use devm_platform_get_and_ioremap_resource()
+> > >      commit: fe6c2622473f3756a09bd6c42cffca6fbdce391c
+> > > [4/5] dmaengine: shdmac: Convert to devm_platform_ioremap_resource()
+> > >      commit: 0976421c5a339b1b1a89cfba4471a6de761130ed
+> > > [5/5] dmaengine: stm32-dma: Use devm_platform_get_and_ioremap_resource()
+> > >      commit: b402a7eeaa35aaa3300a4ba6bd5b381112ae183c
+> >
+> > I noticed all your new dmaengine[1] and phy[2] commits contain a
+> > "Message-ID:" tag.  Presumable you added a git hook for that?
+>
+> Thanks for pointing that out, yes something is messed up for me.
+>
+> > However, the standard way is to add a Link: tag pointing to lore
+> > instead, cfr. [3].
+>
+> Yep and if you look at the dmaengine and phy commits for 6.4 they have
+> "Link" in them, so something is not working, let me fix that up.
 
-Great news
+Sorry, hadn't noticed that, so I assumed you were a new user ;-)
 
-> I wonder why SHA1 was affected? Same codepath?
+I saw you have already updated your branches, but FTR, the issue
+was caused by a new version of git, which broke the hook, cfr. commit
+2bb19e740e9b3eb4 ("Documentation: update git configuration for Link:
+tag") in v6.5-rc1.
 
-Yes the number of CSR to save is the same for SHA256 and SHA1. You can 
-look at the 'Context swapping' chapter (47.3.3) in the reference manual 
-for UX500. There is a note at the end telling that you do not have to 
-save all 54 register if you do HASH operation, only 38 are necessary :
-  > If the context swap does not involve HMAC operations, registers 
-cs_rk0 to cs_rk7 and
-> cs_rh0 to cs_rh7 can be ignored
-Best regards,
+Gr{oetje,eeting}s,
 
-Thomas
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
