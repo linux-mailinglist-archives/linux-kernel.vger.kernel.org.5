@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DB5E751A8D
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 09:58:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31F33751A8E
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 09:58:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233674AbjGMH6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 03:58:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38056 "EHLO
+        id S233357AbjGMH6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 03:58:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233770AbjGMH6R (ORCPT
+        with ESMTP id S232548AbjGMH6U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 03:58:17 -0400
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73B882686
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 00:58:15 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 7E27E20002;
-        Thu, 13 Jul 2023 07:58:13 +0000 (UTC)
+        Thu, 13 Jul 2023 03:58:20 -0400
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4258E1724
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 00:58:18 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 77B091BF20D;
+        Thu, 13 Jul 2023 07:58:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1689235094;
+        t=1689235097;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=/j1cYBXUPPHHjAdNDFI/2LZU5KH9fYfzMh0905FV+0E=;
-        b=Xua6698gxPHhfxpm8jBScSZC6VdSezcvi9oEr8ijucxiHbVRC6W67THwHNTmly1aF0uYcy
-        cJ0pG7KdjZvWo3fOJ9/Mr0Ue4kXGDbuFYmD1BlRa9R07m5zIKBp9sk5Fbca/1T0MDPCU/b
-        W3xf4PKXKpBgJFXeJ+ONb2hkOs8DVl+XSmEGlbrO5xnCjQKce55woT8sEULH6d4BgmABuf
-        /LTO9OQJmjWOBt2URuGnNb0TRkMlKC7cqd9lU89PVemlD9iLa+2Hf9AakrBUuLd3q2XJK/
-        zKby0uhDDgCsPM5n08XHliCLaTDvKZcHk4Bke9Ua3jczngJpa6OeieQZtPOCRA==
+        bh=YcZSU7fWFWYPuYRC5H+q0VcT3fSmOy61ISNXR8KDvgo=;
+        b=m0Agc5wR/CP7sFKeaVWce/caxtfPbh15rQGFIyEWDLTIPolP4Why/S1kbbOFpSkK2txgFA
+        uZbzVmU1dOgnsXX1Ww0XKq/pTDuNItZ5tZGAo8dpAjkhFo04PCDM56WZNPDreXNqrj9NiA
+        pGbxDVEKijmys2QscN3bH0RnvDsxrMmk7F5wgU/AluA0qjZsid5Qif/az6wlrnqi1haIHu
+        p1jHCevCA9W6tH3yJAW+8C5gn9ht71z5CuJOP1ssSMWHzKcSRzyn1LmCnIuCXWl6GI7Xwu
+        a1RKBYRPwFLY5awuqJkUAPUDe9hWw5rQ73aESHImpeL+TrYDxIYYtJVYTVJIwQ==
 From:   Miquel Raynal <miquel.raynal@bootlin.com>
 To:     Yangtao Li <frank.li@vivo.com>,
         Miquel Raynal <miquel.raynal@bootlin.com>,
         Richard Weinberger <richard@nod.at>,
         Vignesh Raghavendra <vigneshr@ti.com>
 Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 05/18] mtd: rawnand: omap2: Use devm_platform_get_and_ioremap_resource()
-Date:   Thu, 13 Jul 2023 09:58:12 +0200
-Message-Id: <20230713075812.486278-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH 04/18] mtd: rawnand: sh_flctl: Use devm_platform_get_and_ioremap_resource()
+Date:   Thu, 13 Jul 2023 09:58:16 +0200
+Message-Id: <20230713075816.486307-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230707040622.78174-5-frank.li@vivo.com>
+In-Reply-To: <20230707040622.78174-4-frank.li@vivo.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'189175e0c3554434416e75d7687011ef6c185159'
+X-linux-mtd-patch-commit: b'4eef841d29fac5fc8500668d1498a1ab8f9a91ce'
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,7 +56,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-07-07 at 04:06:09 UTC, Yangtao Li wrote:
+On Fri, 2023-07-07 at 04:06:08 UTC, Yangtao Li wrote:
 > Convert platform_get_resource(), devm_ioremap_resource() to a single
 > call to devm_platform_get_and_ioremap_resource(), as this is exactly
 > what this function does.
