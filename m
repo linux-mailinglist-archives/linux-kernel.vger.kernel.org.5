@@ -2,73 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B50A752058
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 13:46:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C6E1752059
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 13:47:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234132AbjGMLqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 07:46:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49900 "EHLO
+        id S234270AbjGMLrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 07:47:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232882AbjGMLqp (ORCPT
+        with ESMTP id S234133AbjGMLrG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 07:46:45 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3FDBB4;
-        Thu, 13 Jul 2023 04:46:44 -0700 (PDT)
-Received: from dggpemm500001.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4R1t8R3SfQzVjcT;
-        Thu, 13 Jul 2023 19:45:27 +0800 (CST)
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 13 Jul 2023 19:46:40 +0800
-Message-ID: <699d421a-b8cf-a338-5736-acc25f671c57@huawei.com>
-Date:   Thu, 13 Jul 2023 19:46:40 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.1
-Subject: Re: [PATCH rfc -next 00/10] mm: convert to generic VMA lock-based
- page fault
-Content-Language: en-US
-To:     <linux-mm@kvack.org>, Andrew Morton <akpm@linux-foundation.org>,
-        <surenb@google.com>
-CC:     Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thu, 13 Jul 2023 07:47:06 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB15F1980
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 04:47:04 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-4fba86f069bso1052139e87.3
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 04:47:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1689248823; x=1691840823;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=QkC/3t6yahhwYAX2k86ggdtjKfFNk+a6lEAlP8/kgtI=;
+        b=XAKsv4MoO/pKibEQ1G2CxsRmfD4VxbDZYvIirjY6OXu8ih4sjnTABAP2qIo5bTi/QD
+         SHFBqh/cuCdWLLorn87tm9mdBEO3tFDBINMZBhaRv/sSKTWvZQ00GwJG0l0DVPQ5etLW
+         pUrf64TZuPnwMe1Xadtq7tOKmmCJeuzF94VxWwrJ6lPrTBNevvDfLzBfGsl3vm5yud/9
+         xGls/5rypS0CrWc0LgHmAZy8sKQPiD5bVYStR5VB9s9ab6xeWbUqrqLfBGGLsnWb0UzF
+         ekNn1bl8z9lJGkYkNLyHscniyNBZij/Xj9bKz/r0y+lJRLguC1gcAx33nnZW8phrdHtU
+         CUSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689248823; x=1691840823;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QkC/3t6yahhwYAX2k86ggdtjKfFNk+a6lEAlP8/kgtI=;
+        b=fU5tOUXvghp+8nC6d4xYrrNIzptXK+6yQqyXJmF1JCMgJt9tB59Lk5Xcj2AEXv/Y2r
+         sDZ5ktZZSwtU3OUS4Ic/I2sanjjwNB6vK8V8TqpZOdnhk6waKpUQbHSKfKz0YH10ZnfV
+         LWHFJ1nWJOlOgYTpaV89lyqEaFepABeuJzu42BBBeVsIsJMU6/WS8DzdcEe46rbDnwRV
+         cQ4suAML4V2YkbfKUoFvADCbMvoNcVvsXzGyr8bzjQxQ9pdvygdoD5fcrX3K8vmT/zdW
+         9//TlEsAJiqkywT3yPkXYfZZ63947fVkbF0CLCZbAmm5WwFIAgNBkFaWg079MI9TNrYF
+         t2qw==
+X-Gm-Message-State: ABy/qLaDZ8O50Mv1ff3MR1WoZX4kqTVQc53JGIuCHjxrcw+li3aMmMAT
+        uBnG9WHUGLRqT27oAdslLFSfgw==
+X-Google-Smtp-Source: APBJJlF6RRZg1uMcOi0ji+OK2OsaBE+8f5isAdIDj2SLfzUC25uBdhHZhXHCZHvkywy8/uPhboxaTA==
+X-Received: by 2002:a05:6512:4002:b0:4f9:69e9:4fa6 with SMTP id br2-20020a056512400200b004f969e94fa6mr1149012lfb.23.1689248823117;
+        Thu, 13 Jul 2023 04:47:03 -0700 (PDT)
+Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
+        by smtp.gmail.com with ESMTPSA id y26-20020a056402135a00b0051e0c0d0a8bsm4166887edw.7.2023.07.13.04.47.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Jul 2023 04:47:02 -0700 (PDT)
+Date:   Thu, 13 Jul 2023 13:47:01 +0200
+From:   Andrew Jones <ajones@ventanamicro.com>
+To:     Anup Patel <apatel@ventanamicro.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Atish Patra <atishp@atishpatra.org>,
         Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        <x86@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <loongarch@lists.linux.dev>,
-        <linuxppc-dev@lists.ozlabs.org>, <linux-riscv@lists.infradead.org>,
-        <linux-s390@vger.kernel.org>
-References: <20230713095155.189443-1-wangkefeng.wang@huawei.com>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-In-Reply-To: <20230713095155.189443-1-wangkefeng.wang@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Samuel Ortiz <sameo@rivosinc.com>, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/7] RISC-V: KVM: Sort ISA extensions alphabetically in
+ ONE_REG interface
+Message-ID: <20230713-8e31c6213e0d7359898b7c17@orel>
+References: <20230712161047.1764756-1-apatel@ventanamicro.com>
+ <20230712161047.1764756-6-apatel@ventanamicro.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230712161047.1764756-6-apatel@ventanamicro.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -77,44 +79,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please ignore this one...
+On Wed, Jul 12, 2023 at 09:40:45PM +0530, Anup Patel wrote:
+> Let us sort isa extensions alphabetically in kvm_isa_ext_arr[] and
+> kvm_riscv_vcpu_isa_disable_allowed() so that future insertions are
+> more predictable.
+> 
+> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+> ---
+>  arch/riscv/kvm/vcpu_onereg.c | 13 +++++++------
+>  1 file changed, 7 insertions(+), 6 deletions(-)
+>
 
-On 2023/7/13 17:51, Kefeng Wang wrote:
-> Add a generic VMA lock-based page fault handler in mm core, and convert
-> architectures to use it, which eliminate architectures's duplicated codes.
-> 
-> With it, we can avoid multiple changes in architectures's code if we
-> add new feature or bugfix.
-> 
-> This fixes riscv missing change about commit 38b3aec8e8d2 "mm: drop per-VMA
-> lock when returning VM_FAULT_RETRY or VM_FAULT_COMPLETED", and in the end,
-> we enable this feature on ARM32/Loongarch too.
-> 
-> This is based on next-20230713, only built test(no loongarch compiler,
-> so except loongarch).
-> 
-> Kefeng Wang (10):
->    mm: add a generic VMA lock-based page fault handler
->    x86: mm: use try_vma_locked_page_fault()
->    arm64: mm: use try_vma_locked_page_fault()
->    s390: mm: use try_vma_locked_page_fault()
->    powerpc: mm: use try_vma_locked_page_fault()
->    riscv: mm: use try_vma_locked_page_fault()
->    ARM: mm: try VMA lock-based page fault handling first
->    loongarch: mm: cleanup __do_page_fault()
->    loongarch: mm: add access_error() helper
->    loongarch: mm: try VMA lock-based page fault handling first
-> 
->   arch/arm/Kconfig          |  1 +
->   arch/arm/mm/fault.c       | 15 ++++++-
->   arch/arm64/mm/fault.c     | 28 +++---------
->   arch/loongarch/Kconfig    |  1 +
->   arch/loongarch/mm/fault.c | 92 ++++++++++++++++++++++++---------------
->   arch/powerpc/mm/fault.c   | 54 ++++++++++-------------
->   arch/riscv/mm/fault.c     | 38 +++++++---------
->   arch/s390/mm/fault.c      | 23 +++-------
->   arch/x86/mm/fault.c       | 39 +++++++----------
->   include/linux/mm.h        | 28 ++++++++++++
->   mm/memory.c               | 42 ++++++++++++++++++
->   11 files changed, 206 insertions(+), 155 deletions(-)
-> 
+Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
