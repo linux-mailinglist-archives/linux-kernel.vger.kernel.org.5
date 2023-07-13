@@ -2,98 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAF09752538
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 16:34:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F32B75253A
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 16:34:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230267AbjGMOeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 10:34:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47192 "EHLO
+        id S231196AbjGMOeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 10:34:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230512AbjGMOeA (ORCPT
+        with ESMTP id S230511AbjGMOeS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 10:34:00 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 382E02702;
-        Thu, 13 Jul 2023 07:33:57 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 84081612FB;
-        Thu, 13 Jul 2023 14:33:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56B13C433C7;
-        Thu, 13 Jul 2023 14:33:55 +0000 (UTC)
-Date:   Thu, 13 Jul 2023 10:33:53 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Zheng Yejian <zhengyejian1@huawei.com>
-Cc:     <mhiramat@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] traing: Fix memory leak of iter->temp when reading
- trace_pipe
-Message-ID: <20230713103353.29cae218@gandalf.local.home>
-In-Reply-To: <20230713141435.1133021-1-zhengyejian1@huawei.com>
-References: <20230713141435.1133021-1-zhengyejian1@huawei.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Thu, 13 Jul 2023 10:34:18 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 034A61734;
+        Thu, 13 Jul 2023 07:34:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=1cn7Q6I73HV7gvnlU7oQKxFR3wKoCxsTSAluUNEqkHc=; b=sOgaJ6qdj54VtOsq1KfsidmtDT
+        DSiGDNgH4inaB2oU94f3BPqpXBg9phkOiRHg0PNO9Wzexpsofd1PT1A++mo2wAg1AqHEk5lgRwKVN
+        jN6xyeGp3xCPzyP7EW1aiESBfhNcch5zQuAS8e/kjm3DrtGgre231nG1T+EA0PWNUsoAVQb6/+WqR
+        JPwVj+zA/nGBCHTUuJVmxK0px6hKgwf8gMCDPD6pIpz8b8NwOGXDJorzzBuSlgJWDiHQSfwTmLREJ
+        HSeK9beUgz7cDtl5p0iYlCzalxv30mST4xUQlMpX5L/41GqnpgN+BhltBjIFHUnmX9vH3fWtHpl/I
+        FDQSYCpg==;
+Received: from [2601:1c2:980:9ec0::2764]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qJxOT-003ZqM-0i;
+        Thu, 13 Jul 2023 14:34:09 +0000
+Message-ID: <d83f5767-a98f-a258-f0c4-e7228345b93f@infradead.org>
+Date:   Thu, 13 Jul 2023 07:34:08 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: =?UTF-8?B?UmU6IOWbnuWkjTogW1BBVENIIG5ldCB2MV0gYm5hOkZpeCBlcnJvciBj?=
+ =?UTF-8?Q?hecking_for_debugfs=5fcreate=5fdir=28=29?=
+Content-Language: en-US
+To:     =?UTF-8?B?546L5piOLei9r+S7tuW6leWxguaKgOacr+mDqA==?= 
+        <machel@vivo.com>
+Cc:     Rasesh Mody <rmody@marvell.com>,
+        Sudarsana Kalluru <skalluru@marvell.com>,
+        "GR-Linux-NIC-Dev@marvell.com" <GR-Linux-NIC-Dev@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Krishna Gudipati <kgudipat@brocade.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20230713053823.14898-1-machel@vivo.com>
+ <27105f25-f3f9-0856-86e5-86236ce83dee@infradead.org>
+ <SG2PR06MB37438F03D13983B7F603E43DBD37A@SG2PR06MB3743.apcprd06.prod.outlook.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <SG2PR06MB37438F03D13983B7F603E43DBD37A@SG2PR06MB3743.apcprd06.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 13 Jul 2023 22:14:35 +0800
-Zheng Yejian <zhengyejian1@huawei.com> wrote:
 
-> kmemleak reports:
->   unreferenced object 0xffff88814d14e200 (size 256):
->     comm "cat", pid 336, jiffies 4294871818 (age 779.490s)
->     hex dump (first 32 bytes):
->       04 00 01 03 00 00 00 00 08 00 00 00 00 00 00 00  ................
->       0c d8 c8 9b ff ff ff ff 04 5a ca 9b ff ff ff ff  .........Z......
->     backtrace:
->       [<ffffffff9bdff18f>] __kmalloc+0x4f/0x140
->       [<ffffffff9bc9238b>] trace_find_next_entry+0xbb/0x1d0
->       [<ffffffff9bc9caef>] trace_print_lat_context+0xaf/0x4e0
->       [<ffffffff9bc94490>] print_trace_line+0x3e0/0x950
->       [<ffffffff9bc95499>] tracing_read_pipe+0x2d9/0x5a0
->       [<ffffffff9bf03a43>] vfs_read+0x143/0x520
->       [<ffffffff9bf04c2d>] ksys_read+0xbd/0x160
->       [<ffffffff9d0f0edf>] do_syscall_64+0x3f/0x90
->       [<ffffffff9d2000aa>] entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+
+On 7/13/23 02:05, 王明-软件底层技术部 wrote:
+> Ok, so I think we should delete the check operation. What do you think? If it is consistent, I will submit it again
+> : )
+
+Yes, that's the idea. Thanks.
+
+> Ming
+> -----邮件原件-----
+> 发件人: Randy Dunlap <rdunlap@infradead.org> 
+> 发送时间: 2023年7月13日 13:50
+> 收件人: 王明-软件底层技术部 <machel@vivo.com>; Rasesh Mody <rmody@marvell.com>; Sudarsana Kalluru <skalluru@marvell.com>; GR-Linux-NIC-Dev@marvell.com; David S. Miller <davem@davemloft.net>; Eric Dumazet <edumazet@google.com>; Jakub Kicinski <kuba@kernel.org>; Paolo Abeni <pabeni@redhat.com>; Krishna Gudipati <kgudipat@brocade.com>; netdev@vger.kernel.org; linux-kernel@vger.kernel.org
+> 抄送: opensource.kernel <opensource.kernel@vivo.com>
+> 主题: Re: [PATCH net v1] bna:Fix error checking for debugfs_create_dir()
 > 
-> when reading file 'trace_pipe', 'iter->temp' is allocated or relocated
-> in trace_find_next_entry() but not freed before 'trace_pipe' is closed.
+> [Some people who received this message don't often get email from rdunlap@infradead.org. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
 > 
-> To fix it, free 'iter->temp' in tracing_release_pipe().
+> Hi--
 > 
-> Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
-
-Why is it that every time I send a pull request to Linus, I get another fix???
-
-Anyway, Linus, hold off. I'll send a v3 with this included as well.
-
--- Steve
-
-> ---
->  kernel/trace/trace.c | 1 +
->  1 file changed, 1 insertion(+)
+> On 7/12/23 22:38, Wang Ming wrote:
+>> The debugfs_create_dir() function returns error pointers, it never 
+>> returns NULL. Most incorrect error checks were fixed, but the one in 
+>> bnad_debugfs_init() was forgotten.
+>>
+>> Fix the remaining error check.
+>>
+>> Signed-off-by: Wang Ming <machel@vivo.com>
+>>
+>> Fixes: 7afc5dbde091 ("bna: Add debugfs interface.")
 > 
-> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> index 4529e264cb86..94cfaa884578 100644
-> --- a/kernel/trace/trace.c
-> +++ b/kernel/trace/trace.c
-> @@ -6764,6 +6764,7 @@ static int tracing_release_pipe(struct inode *inode, struct file *file)
->  
->  	free_cpumask_var(iter->started);
->  	kfree(iter->fmt);
-> +	kfree(iter->temp);
->  	mutex_destroy(&iter->mutex);
->  	kfree(iter);
->  
+> Comment from fs/debugfs/inode.c:
+> 
+>  * NOTE: it's expected that most callers should _ignore_ the errors returned
+>  * by this function. Other debugfs functions handle the fact that the "dentry"
+>  * passed to them could be an error and they don't crash in that case.
+>  * Drivers should generally work fine even if debugfs fails to init anyway.
+> 
+> so no, drivers should not usually care about debugfs function call results.
+> Is there some special case here?
+> 
+>> ---
+>>  drivers/net/ethernet/brocade/bna/bnad_debugfs.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/net/ethernet/brocade/bna/bnad_debugfs.c 
+>> b/drivers/net/ethernet/brocade/bna/bnad_debugfs.c
+>> index 04ad0f2b9677..678a3668a041 100644
+>> --- a/drivers/net/ethernet/brocade/bna/bnad_debugfs.c
+>> +++ b/drivers/net/ethernet/brocade/bna/bnad_debugfs.c
+>> @@ -512,7 +512,7 @@ bnad_debugfs_init(struct bnad *bnad)
+>>       if (!bnad->port_debugfs_root) {
+>>               bnad->port_debugfs_root =
+>>                       debugfs_create_dir(name, bna_debugfs_root);
+>> -             if (!bnad->port_debugfs_root) {
+>> +             if (IS_ERR(bnad->port_debugfs_root)) {
+>>                       netdev_warn(bnad->netdev,
+>>                                   "debugfs root dir creation failed\n");
+>>                       return;
+> 
+> --
+> ~Randy
 
+-- 
+~Randy
