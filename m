@@ -2,146 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9438B75179D
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 06:41:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DD5D7517A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 06:43:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233837AbjGMElY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 00:41:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42594 "EHLO
+        id S233886AbjGMEnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 00:43:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232133AbjGMElV (ORCPT
+        with ESMTP id S233573AbjGMEnG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 00:41:21 -0400
-Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84A39211E;
-        Wed, 12 Jul 2023 21:41:16 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R711e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0VnFWGm4_1689223270;
-Received: from 30.97.48.217(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0VnFWGm4_1689223270)
-          by smtp.aliyun-inc.com;
-          Thu, 13 Jul 2023 12:41:11 +0800
-Message-ID: <f124e041-6a82-2069-975c-4f393e5c4137@linux.alibaba.com>
-Date:   Thu, 13 Jul 2023 12:41:09 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH v1] rcu: Fix and improve RCU read lock checks when
- !CONFIG_DEBUG_LOCK_ALLOC
-To:     paulmck@kernel.org
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        Sandeep Dhavale <dhavale@google.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-erofs@lists.ozlabs.org, xiang@kernel.org,
-        Will Shiu <Will.Shiu@mediatek.com>, kernel-team@android.com,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20230711233816.2187577-1-dhavale@google.com>
- <CAEXW_YQvpiFEaaNoS=Msgi17mU3kZD+q8bNBaHYasMArG9aPig@mail.gmail.com>
- <CAB=BE-Rm0ycTZXj=wHW_FBCCKbswG+dh3L+o1+CUW=Pg_oWnyw@mail.gmail.com>
- <20230713003201.GA469376@google.com>
- <161f1615-3d85-cf47-d2d5-695adf1ca7d4@linux.alibaba.com>
- <0d9e7b4d-6477-47a6-b3d2-2c9d9b64903d@paulmck-laptop>
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-In-Reply-To: <0d9e7b4d-6477-47a6-b3d2-2c9d9b64903d@paulmck-laptop>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 13 Jul 2023 00:43:06 -0400
+Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEC431FC9
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 21:43:04 -0700 (PDT)
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20230713044301epoutp0151b6562ef3ddc64fba38215fabf11b73~xU7dA1tQ10211902119epoutp01I
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 04:43:01 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20230713044301epoutp0151b6562ef3ddc64fba38215fabf11b73~xU7dA1tQ10211902119epoutp01I
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1689223381;
+        bh=jnrbdUvnu2pvYRlibF+/arqX32ZF1+0djsgqKI7ySIc=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=ng76qHqIFw4ZnoqnDBQo07nDEw2iX0Qle5+g3YB/Ku+j/bwfR1uVphFCkaOtE3n5H
+         tvMHVHjWQ7xMeDt8GjxxqJgTUv4vCVx/n15htDTvcwVHOs5/vMlSOYOjiGyNf9Towd
+         UDd+E01y/GBzHVPYpts8YTx5pm/SJKIIY/PxwlxY=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
+        20230713044301epcas1p46717b593de832342203ad87252fe3bb1~xU7cZaDn72021020210epcas1p4x;
+        Thu, 13 Jul 2023 04:43:01 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.36.134]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4R1hmz5WcDz4x9Pv; Thu, 13 Jul
+        2023 04:42:59 +0000 (GMT)
+X-AuditID: b6c32a35-f8fff70000008374-3c-64af80d31aee
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        D9.6B.33652.3D08FA46; Thu, 13 Jul 2023 13:42:59 +0900 (KST)
+Mime-Version: 1.0
+Subject: RE: [PATCH] dt-bindings: extcon: extcon-usb-gpio: convert to yaml
+ format
+Reply-To: myungjoo.ham@samsung.com
+Sender: MyungJoo Ham <myungjoo.ham@samsung.com>
+From:   MyungJoo Ham <myungjoo.ham@samsung.com>
+To:     David Heidelberg <david@ixit.cz>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <20230713002519.109392-1-david@ixit.cz>
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20230713044259epcms1p3a4de07b9ec965a30ac908619c47d6139@epcms1p3>
+Date:   Thu, 13 Jul 2023 13:42:59 +0900
+X-CMS-MailID: 20230713044259epcms1p3a4de07b9ec965a30ac908619c47d6139
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+CMS-TYPE: 101P
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrNKsWRmVeSWpSXmKPExsWy7bCmge7lhvUpBv/3aFpc//Kc1eLYPnuL
+        +UfOsVr0vXjIbDHlz3Imi8u75rBZtO49wu7A7tHfeJDZY9OqTjaPO9f2sHn0bVnF6PF5k1wA
+        a1S2TUZqYkpqkUJqXnJ+SmZeuq2Sd3C8c7ypmYGhrqGlhbmSQl5ibqqtkotPgK5bZg7QFUoK
+        ZYk5pUChgMTiYiV9O5ui/NKSVIWM/OISW6XUgpScAtMCveLE3OLSvHS9vNQSK0MDAyNToMKE
+        7Ixl5/4zF1znqdj6dy5jA+NSni5GTg4JAROJd5M3sYPYQgI7GCWWv6jtYuTg4BUQlPi7Qxgk
+        LCwQLLHs6yWoEiWJhpv7mCHi+hIdD7YxgthsAroSWzfcZeli5OIQEbjKKHFx9yOwImaBOol1
+        3bvYIXbxSsxof8oCYUtLbF++FayZE+iGNRt+MUHERSVurn7LDmO/PzafEcIWkWi9d5YZwhaU
+        ePBzN1RcSuLJzslsIIslBLYxSuw4MgfK2c8oMeVhG9QkfYkzc0+ygdi8Ar4SS1dMB+tmEVCV
+        OHtpAVSNi8SkeX/ZIa7Wlli28DUzKCSYBTQl1u/ShwjzSbz72sMK88yOeU+gjlaTOLR7CdQY
+        GYnT0xdCHeohce3MSWZIyFVLnJ+5gXUCo/wsRPjOQrJsFsKyBYzMqxjFUguKc9NTiw0LDOEx
+        mpyfu4kRnAq1THcwTnz7Qe8QIxMH4yFGCQ5mJRFelW3rUoR4UxIrq1KL8uOLSnNSiw8xmgK9
+        OZFZSjQ5H5iM80riDU0sDUzMjIxNLAzNDJXEeZkf9aYICaQnlqRmp6YWpBbB9DFxcEo1MF2+
+        I/z2qqS4iiVz1e4FVs++cOj+mTJn50kxwcU7vLjfmy28G1Q+2/DHabMYXcN3xRds/kUHNC5Y
+        feC0m1uvwWZN4Vs9cu4MbksmpX7cfs05Y5lt4IdrTXcLNXVdiv+3FSyTD7Y+m+e6cJqt2/Hc
+        z5J3ft1XtlLdKcVm0Tnd/uDTVys2G8d7HdBN3Sr2vOCr9Js1RUZfztm3TZ5XeybYPXu+u8vN
+        584X1njsXvsjMzfsyYsD9VyTVs2p/qRjutsxcPaqPba9nVtWsaz1urhC9HBNG+tqeeZVeWYb
+        S/yOH+N/Vrz1dcrqg2bvX+V+UtrwN7kjcCrH5BTJudJTpz+Pj2LhaJStf3gp4RhDyq7QCe+V
+        WIozEg21mIuKEwGYKoSoDgQAAA==
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20230713002537epcas1p3a1b2049dd05d42a6c9df26edf7988ca6
+References: <20230713002519.109392-1-david@ixit.cz>
+        <CGME20230713002537epcas1p3a1b2049dd05d42a6c9df26edf7988ca6@epcms1p3>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2023/7/13 12:27, Paul E. McKenney wrote:
-> On Thu, Jul 13, 2023 at 10:02:17AM +0800, Gao Xiang wrote:
->>
->>
->> On 2023/7/13 08:32, Joel Fernandes wrote:
->>> On Wed, Jul 12, 2023 at 02:20:56PM -0700, Sandeep Dhavale wrote:
->>> [..]
->>>>> As such this patch looks correct to me, one thing I noticed is that
->>>>> you can check rcu_is_watching() like the lockdep-enabled code does.
->>>>> That will tell you also if a reader-section is possible because in
->>>>> extended-quiescent-states, RCU readers should be non-existent or
->>>>> that's a bug.
->>>>>
->>>> Please correct me if I am wrong, reading from the comment in
->>>> kernel/rcu/update.c rcu_read_lock_held_common()
->>>> ..
->>>>     * The reason for this is that RCU ignores CPUs that are
->>>>    * in such a section, considering these as in extended quiescent state,
->>>>    * so such a CPU is effectively never in an RCU read-side critical section
->>>>    * regardless of what RCU primitives it invokes.
->>>>
->>>> It seems rcu will treat this as lock not held rather than a fact that
->>>> lock is not held. Is my understanding correct?
->>>
->>> If RCU treats it as a lock not held, that is a fact for RCU ;-). Maybe you
->>> mean it is not a fact for erofs?
->>
->> I'm not sure if I get what you mean, EROFS doesn't take any RCU read lock
->> here:
-> 
-> The key point is that we need lockdep to report errors when
-> rcu_read_lock(), rcu_dereference(), and friends are used when RCU is
-> not watching.  We also need lockdep to report an error when someone
-> uses rcu_dereference() when RCU is not watching, but also forgets the
-> rcu_read_lock().
-> 
-> And this is the job of rcu_read_lock_held(), which is one reason why
-> that rcu_is_watching() is needed.
-> 
->> z_erofs_decompressqueue_endio() is actually a "bio->bi_end_io", previously
->> which can be called under two scenarios:
->>
->>   1) under softirq context, which is actually part of device I/O compleltion;
->>
->>   2) under threaded context, like what dm-verity or likewise calls.
->>
->> But EROFS needs to decompress in a threaded context anyway, so we trigger
->> a workqueue to resolve the case 1).
->>
->> Recently, someone reported there could be some case 3) [I think it was
->> introduced recently but I have no time to dig into it]:
->>
->>   case 3: under RCU read lock context, which is shown by this:
->> https://lore.kernel.org/r/4a8254eb-ac39-1e19-3d82-417d3a7b9f94@linux.alibaba.com/T/#u
->>
->>   and such RCU read lock is taken in __blk_mq_run_dispatch_ops().
->>
->> But as the commit shown, we only need to trigger a workqueue for case 1)
->> and 3) due to performance reasons.
-> 
-> Just out of curiosity, exactly how much is it costing to trigger the
-> workqueue?
-
-There are lots of performance issues here and even a plumber
-topic last year to show that, see:
-
-[1] https://lore.kernel.org/r/20230519001709.2563-1-tj@kernel.org
-[2] https://lore.kernel.org/r/CAHk-=wgE9kORADrDJ4nEsHHLirqPCZ1tGaEPAZejHdZ03qCOGg@mail.gmail.com
-[3] https://lore.kernel.org/r/CAB=BE-SBtO6vcoyLNA9F-9VaN5R0t3o_Zn+FW8GbO6wyUqFneQ@mail.gmail.com
-[4] https://lpc.events/event/16/contributions/1338/
-and more.
-
-I'm not sure if it's necessary to look info all of that,
-andSandeep knows more than I am (the scheduling issue
-becomes vital on some aarch64 platform.)
-
-Thanks,
-Gao Xiang
+>--------- Original Message ---------
+>Sender : David Heidelberg=C2=A0<david=40ixit.cz>=0D=0A>Date=20=20=20:=2020=
+23-07-13=2009:25=20(GMT+9)=0D=0A>Title=20=20:=20=5BPATCH=5D=20dt-bindings:=
+=20extcon:=20extcon-usb-gpio:=20convert=20to=20yaml=20format=0D=0A>=C2=A0=
+=0D=0A>Signed-off-by:=20David=20Heidelberg=20<david=40ixit.cz>=0D=0A=0D=0AA=
+cked-by:=20MyungJoo=20Ham=20<myungjoo.ham=40samsung.com>=0D=0A=0D=0A>---=0D=
+=0A>=20.../bindings/extcon/extcon-usb-gpio.txt=C2=A0=20=C2=A0=20=C2=A0=20=
+=20=7C=2021=20---------=0D=0A>=20.../bindings/extcon/extcon-usb-gpio.yaml=
+=C2=A0=20=C2=A0=20=C2=A0=20=7C=2045=20+++++++++++++++++++=0D=0A>=202=20file=
+s=20changed,=2045=20insertions(+),=2021=20deletions(-)=0D=0A>=20delete=20mo=
+de=20100644=20Documentation/devicetree/bindings/extcon/extcon-usb-gpio.txt=
+=0D=0A>=20create=20mode=20100644=20Documentation/devicetree/bindings/extcon=
+/extcon-usb-gpio.yaml=0D=0A>=0D=0A>diff=20--git=20a/Documentation/devicetre=
+e/bindings/extcon/extcon-usb-gpio.txt=20b/Documentation/devicetree/bindings=
+/extcon/extcon-usb-gpio.txt=0D=0A>deleted=20file=20mode=20100644=0D=0A>inde=
+x=20dfc14f71e81f..000000000000=0D=0A>---=20a/Documentation/devicetree/bindi=
+ngs/extcon/extcon-usb-gpio.txt=0D=0A>+++=20/dev/null=0D=0A=5B=5D=0D=0A>diff=
+=20--git=20a/Documentation/devicetree/bindings/extcon/extcon-usb-gpio.yaml=
+=20b/Documentation/devicetree/bindings/extcon/extcon-usb-gpio.yaml=0D=0A>ne=
+w=20file=20mode=20100644=0D=0A>index=20000000000000..b345745013a2=0D=0A>---=
+=20/dev/null=0D=0A>+++=20b/Documentation/devicetree/bindings/extcon/extcon-=
+usb-gpio.yaml=0D=0A=5B=5D=0D=0A
