@@ -2,43 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7980C75192A
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 08:56:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 769DE75192C
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 08:56:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233344AbjGMG4O convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 13 Jul 2023 02:56:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57406 "EHLO
+        id S233283AbjGMG4e convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 13 Jul 2023 02:56:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230248AbjGMG4N (ORCPT
+        with ESMTP id S233980AbjGMG4a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 02:56:13 -0400
+        Thu, 13 Jul 2023 02:56:30 -0400
 Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40CC4119;
-        Wed, 12 Jul 2023 23:56:12 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AC871BFA;
+        Wed, 12 Jul 2023 23:56:28 -0700 (PDT)
 Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
           by outpost.zedat.fu-berlin.de (Exim 4.95)
           with esmtps (TLS1.3)
           tls TLS_AES_256_GCM_SHA384
           (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1qJqFD-000taC-6v; Thu, 13 Jul 2023 08:56:07 +0200
+          id 1qJqFU-000teD-9Z; Thu, 13 Jul 2023 08:56:24 +0200
 Received: from p57bd9f0d.dip0.t-ipconnect.de ([87.189.159.13] helo=[192.168.178.81])
           by inpost2.zedat.fu-berlin.de (Exim 4.95)
           with esmtpsa (TLS1.3)
           tls TLS_AES_256_GCM_SHA384
           (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1qJqFC-001aFJ-RU; Thu, 13 Jul 2023 08:56:07 +0200
-Message-ID: <69a612689cb8ce6972f12510ffa4da93c7ad9f0b.camel@physik.fu-berlin.de>
-Subject: Re: [PATCH] [RFC] sh: dreamcast: Handle virq offset in cascaded IRQ
- demux
+          id 1qJqFT-001aGv-Up; Thu, 13 Jul 2023 08:56:24 +0200
+Message-ID: <787c97736d68dcb6968efc67d6a242b46ab74cf9.camel@physik.fu-berlin.de>
+Subject: Re: [PATCH v2] sh: hd64461: fix virq offsets
 From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>
+To:     Artur Rojek <contact@artur-rojek.eu>,
+        Rich Felker <dalias@libc.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>
 Cc:     linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Thu, 13 Jul 2023 08:56:04 +0200
-In-Reply-To: <7d0cb246c9f1cd24bb1f637ec5cb67e799a4c3b8.1688908227.git.geert+renesas@glider.be>
-References: <7d0cb246c9f1cd24bb1f637ec5cb67e799a4c3b8.1688908227.git.geert+renesas@glider.be>
+Date:   Thu, 13 Jul 2023 08:56:22 +0200
+In-Reply-To: <20230710233132.69734-1-contact@artur-rojek.eu>
+References: <20230710233132.69734-1-contact@artur-rojek.eu>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8BIT
 User-Agent: Evolution 3.48.4 
@@ -56,38 +55,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2023-07-09 at 15:10 +0200, Geert Uytterhoeven wrote:
-> Take into account the virq offset when translating cascaded interrupts.
+On Tue, 2023-07-11 at 01:31 +0200, Artur Rojek wrote:
+> A recent change to start counting SuperH IRQ #s from 16 breaks support
+> for the Hitachi HD64461 companion chip.
 > 
-> Fixes: a8ac2961148e8c72 ("sh: Avoid using IRQ0 on SH3 and SH4")
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
-> Compile-tested only.
-> ---
->  arch/sh/boards/mach-dreamcast/irq.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+> Move the offchip IRQ base and HD64461 IRQ # by 16 in order to
+> accommodate for the new virq numbering rules.
 > 
-> diff --git a/arch/sh/boards/mach-dreamcast/irq.c b/arch/sh/boards/mach-dreamcast/irq.c
-> index cc06e4cdb4cdf9b7..4e5fb59481a26747 100644
-> --- a/arch/sh/boards/mach-dreamcast/irq.c
-> +++ b/arch/sh/boards/mach-dreamcast/irq.c
-> @@ -108,13 +108,13 @@ int systemasic_irq_demux(int irq)
->  	__u32 j, bit;
+> Fixes: a8ac2961148e ("sh: Avoid using IRQ0 on SH3 and SH4")
+> Signed-off-by: Artur Rojek <contact@artur-rojek.eu>
+> ---
+> 
+> v2: Make the IRQ base offset an explicit (64 + 16), as per review.
+> 
+>  arch/sh/cchips/Kconfig        | 4 ++--
+>  arch/sh/include/asm/hd64461.h | 2 +-
+>  2 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/sh/cchips/Kconfig b/arch/sh/cchips/Kconfig
+> index efde2edb5627..9659a0bc58de 100644
+> --- a/arch/sh/cchips/Kconfig
+> +++ b/arch/sh/cchips/Kconfig
+> @@ -29,9 +29,9 @@ endchoice
+>  config HD64461_IRQ
+>  	int "HD64461 IRQ"
+>  	depends on HD64461
+> -	default "36"
+> +	default "52"
+>  	help
+> -	  The default setting of the HD64461 IRQ is 36.
+> +	  The default setting of the HD64461 IRQ is 52.
 >  
->  	switch (irq) {
-> -	case 13:
-> +	case 16 + 13:
->  		level = 0;
->  		break;
-> -	case 11:
-> +	case 16 + 11:
->  		level = 1;
->  		break;
-> -	case  9:
-> +	case 16 + 9:
->  		level = 2;
->  		break;
->  	default:
+>  	  Do not change this unless you know what you are doing.
+>  
+> diff --git a/arch/sh/include/asm/hd64461.h b/arch/sh/include/asm/hd64461.h
+> index afb24cb034b1..d2c485fa333b 100644
+> --- a/arch/sh/include/asm/hd64461.h
+> +++ b/arch/sh/include/asm/hd64461.h
+> @@ -229,7 +229,7 @@
+>  #define	HD64461_NIMR		HD64461_IO_OFFSET(0x5002)
+>  
+>  #define	HD64461_IRQBASE		OFFCHIP_IRQ_BASE
+> -#define	OFFCHIP_IRQ_BASE	64
+> +#define	OFFCHIP_IRQ_BASE	(64 + 16)
+>  #define	HD64461_IRQ_NUM		16
+>  
+>  #define	HD64461_IRQ_UART	(HD64461_IRQBASE+5)
 
 Applied to my for-linus branch.
 
