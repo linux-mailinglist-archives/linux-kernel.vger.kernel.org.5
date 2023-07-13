@@ -2,99 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEAE6752A50
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 20:31:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB9B8752A53
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 20:32:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231905AbjGMSbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 14:31:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41106 "EHLO
+        id S232007AbjGMSb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 14:31:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbjGMSbU (ORCPT
+        with ESMTP id S229611AbjGMSb5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 14:31:20 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE25E2D4B
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 11:31:18 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id ca18e2360f4ac-785d3a53ed6so12476639f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 11:31:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1689273078; x=1689877878;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1Sg87cEYeWMB6yYseQ4SjGuYhfzXrqT0VWVgvI9gUao=;
-        b=5G66KJ5FDNm9G2/e9SL9UO1FqJdRu76kki5mG3ANpiwrA8TfvoEVHKoTv++bPUJRv0
-         KuB0ML+nzEzOhLi7YNeX+b3mKSBE9NyqTVNiiUX5ASXKCaU0maSbTWKF2T+aNbO1b//1
-         LI9W6/jcGGTP/YnZkF2iOvg3NTOVQ6IYavIQ6TWnrrEKFtVIeqvEYAas5a/sMXzvtgMN
-         vwaBKRHJ2BnDrq7na1UJreDe7knpCr26myl2TlXujtTdPO8S33CSftmozbmsc/czVwby
-         QNoHdDu6TK85gf1DKOBTwSxshxwtYpUlS5SJtpF1J8/h+8Bq27e+ppiaGSBiEGx55ZwF
-         pbtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689273078; x=1689877878;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1Sg87cEYeWMB6yYseQ4SjGuYhfzXrqT0VWVgvI9gUao=;
-        b=GWeaal9ygxg6qyTMFpkf3KlmzI9T2ZH90ow/u47OSS7FS7Mdmk2MZgN8pYJ2UAksU/
-         68OpK0pHT1K2MSeTemxGv0hOyZOuY9uT4GtII7jT5Q8OhzvaM9E5WAeiWT1LYve+Gi9o
-         RWP5zxlwGC6GEUNyLWwEpYB+/hZdOoDXl1ELjlyr1ent/aViazsnUA/OYjrVHVihfTZ6
-         xgWnXxD6uanO8+EyGzwcTYl/vf1UWWNdBJOU61uFg89/7Zl3DhztDmJG8tIgqMUlTNDW
-         Cx1KjdJBmyRnnsXHbvtACyWnDQdxlxnqk8Ie/a7EL1669y/OsgoCQknHHr2Zmq0Tue4T
-         j9QQ==
-X-Gm-Message-State: ABy/qLazcOPF8Uy+1O5F3/NQuTuPLrUBnG3bScNyJvBpSNS8yu771fAU
-        pNGFi5Snv3f7WYtoUM8mfPF5Wg==
-X-Google-Smtp-Source: APBJJlFg744e8fSspcr/ts17lJ2WHR9lKLwe/Kn5bBBmB113WrTkm3T6wK/+pgh1jRF//f2xT2nYYQ==
-X-Received: by 2002:a6b:b7c1:0:b0:783:6ec1:65f6 with SMTP id h184-20020a6bb7c1000000b007836ec165f6mr2264242iof.1.1689273078146;
-        Thu, 13 Jul 2023 11:31:18 -0700 (PDT)
-Received: from [127.0.0.1] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id g10-20020a02cd0a000000b0042b28813816sm2078332jaq.14.2023.07.13.11.31.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Jul 2023 11:31:17 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     hch@lst.de, tj@kernel.org, ming.lei@redhat.com,
-        chengming.zhou@linux.dev
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhouchengming@bytedance.com
-In-Reply-To: <20230710105516.2053478-1-chengming.zhou@linux.dev>
-References: <20230710105516.2053478-1-chengming.zhou@linux.dev>
-Subject: Re: [PATCH v5] blk-mq: fix start_time_ns and alloc_time_ns for
- pre-allocated rq
-Message-Id: <168927307722.553980.1947848634070794553.b4-ty@kernel.dk>
-Date:   Thu, 13 Jul 2023 12:31:17 -0600
+        Thu, 13 Jul 2023 14:31:57 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC07F2D46;
+        Thu, 13 Jul 2023 11:31:56 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36DIVnni085033;
+        Thu, 13 Jul 2023 13:31:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1689273109;
+        bh=cbufHtKmT1x2klHfrhnZCmt3cAyIK/2Lga1xIZFOMgM=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=VlIJo0iX028Ucxb1LYXBud0VvJeH8HDKDq81QFgBdoEa9iit8ODBU4YJXyyAcB5dW
+         IEje4Jlu1mcn+rq0rCUpJAZu0W1h6ketxWtXdn3KPcneKqtoymj5wFir5qQ0o0tJF+
+         p2XHZBZ3fUQPqoj+J5jRB6dGE9EeO5GD5NgFp94E=
+Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36DIVnTP012497
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 13 Jul 2023 13:31:49 -0500
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 13
+ Jul 2023 13:31:49 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 13 Jul 2023 13:31:49 -0500
+Received: from [10.250.32.50] (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36DIVmA1019630;
+        Thu, 13 Jul 2023 13:31:48 -0500
+Message-ID: <af071a46-2e8e-a107-b0d8-d0bb2f845486@ti.com>
+Date:   Thu, 13 Jul 2023 13:31:48 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v5 3/5] arm64: dts: ti: k3-j784s4: Add WIZ and SERDES PHY
+ nodes
+Content-Language: en-US
+To:     Nishanth Menon <nm@ti.com>, Jayesh Choudhary <j-choudhary@ti.com>
+CC:     <vigneshr@ti.com>, <krzysztof.kozlowski+dt@linaro.org>,
+        <s-vadapalli@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20230710101705.154119-1-j-choudhary@ti.com>
+ <20230710101705.154119-4-j-choudhary@ti.com>
+ <20230712141828.lnpo4mhd5dv34rlz@census>
+ <18310450-05f3-172c-e4bc-fda114f333a4@ti.com>
+ <20230713182107.ashuygyg4x4j77s5@backboard>
+From:   Andrew Davis <afd@ti.com>
+In-Reply-To: <20230713182107.ashuygyg4x4j77s5@backboard>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-099c9
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Mon, 10 Jul 2023 18:55:16 +0800, chengming.zhou@linux.dev wrote:
-> The iocost rely on rq start_time_ns and alloc_time_ns to tell saturation
-> state of the block device. Most of the time request is allocated after
-> rq_qos_throttle() and its alloc_time_ns or start_time_ns won't be affected.
+On 7/13/23 1:21 PM, Nishanth Menon wrote:
+> On 21:01-20230713, Jayesh Choudhary wrote:
+>>
+>>
+>> On 12/07/23 19:48, Nishanth Menon wrote:
+>>> On 15:47-20230710, Jayesh Choudhary wrote:
+>>>> From: Siddharth Vadapalli <s-vadapalli@ti.com>
+>>>>
+>>>> J784S4 SoC has 4 Serdes instances along with their respective WIZ
+>>>> instances. Add device-tree nodes for them and disable them by default.
+>>>>
+>>>> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+>>>> [j-choudhary@ti.com: fix serdes_wiz clock order]
+>>>> Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
+>>>> ---
+>>> NAK. This patch introduces the following dtbs_check warning.
+>>> arch/arm64/boot/dts/ti/k3-am69-sk.dtb: serdes-refclk: 'clock-frequency' is a required property
+>>>
+>>
+>> Sorry for this. This property was added in the final board file.
+>> I will fix it in the next revision.
+>> I will add '0' as clock-property in the main file similar to j721e[1]
+>> which will be overridden in the board file with required value to get
+>> rid of this warning.
 > 
-> But for plug batched allocation introduced by the commit 47c122e35d7e
-> ("block: pre-allocate requests if plug is started and is a batch"), we can
-> rq_qos_throttle() after the allocation of the request. This is what the
-> blk_mq_get_cached_request() does.
+> That would follow what renesas (r8a774a1.dtsi) and imx
+> (imx8dxl-ss-conn.dtsi) seem to be doing as well. Just make sure to add
+> documentation to the property to indicate expectation. Unless someone
+> has objections to this approach.
 > 
-> [...]
 
-Applied, thanks!
+Would it work better to disable these nodes, only enabling them in the
+board files when a real clock-frequency can be provided?
 
-[1/1] blk-mq: fix start_time_ns and alloc_time_ns for pre-allocated rq
-      commit: 5c17f45e91f5035c1b317e93b3dfb01088ac2902
+My initial reaction would be to move the whole external reference clock
+node to the board file since that is where it is provided, but seems
+that would cause more churn in serdes_wiz* nodes than we would want..
 
-Best regards,
--- 
-Jens Axboe
-
-
-
+Andrew
