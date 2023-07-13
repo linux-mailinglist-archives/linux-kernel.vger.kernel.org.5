@@ -2,92 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E3F2751EAD
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 12:17:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EADF751EB1
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 12:17:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233121AbjGMKRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 06:17:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57378 "EHLO
+        id S232739AbjGMKRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 06:17:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233797AbjGMKQj (ORCPT
+        with ESMTP id S233603AbjGMKRb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 06:16:39 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F63F270F
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 03:16:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=UXKb8ReKi6vjKGSullcaPdOC0k6TBghM4uyawRsMGf0=; b=MPR7gAXtNr5fuBgqu+/UmCcQtu
-        w0XvQvZRF+PO9lNSCvZMkZw/BypcOkHFC+l/CB7oDPzbnwJbOoPOixNtLZ8ep2rIiAkCdIMQFNULW
-        fY2GkDfHBdb5N72KIhcyPYrZp1i9K2Ep6ju6KQyADiRL5IVJyhobf5BcdZfL7Huuf2W533vAyIiWC
-        zvoJLufT3ij6FcUlJew07+L2W6kEZDC/9aGQwQIAMxudLBsa5viLr3yK5sC1hU5gIgNsAXvhRjhF8
-        Ps3FFXU6KuSuFWAxefd1/bQzcr4+5UxkePVyL3GkVwybAdw83P1fZNlJRtuaQp7UiqGuydAqXK38q
-        P8aEXmhQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:57662)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qJtMy-0006SO-1L;
-        Thu, 13 Jul 2023 11:16:20 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qJtMy-00064D-9g; Thu, 13 Jul 2023 11:16:20 +0100
-Date:   Thu, 13 Jul 2023 11:16:20 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     hanyu001@208suo.com
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: Fwd: [PATCH] arm: mm: replace snprintf in show functions with
- sysfs_emit
-Message-ID: <ZK/O9Dc2aYtXEKHd@shell.armlinux.org.uk>
-References: <tencent_EFB5DEE75502CBD51C95CFE33D443DB41608@qq.com>
- <72204230a061f7d5bf19f09d524203ce@208suo.com>
+        Thu, 13 Jul 2023 06:17:31 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE1C3273F
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 03:17:27 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3fbd33a1819so52755e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 03:17:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689243446; x=1691835446;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cgTfpf6IMD+zAdQw7gG1t68xyEykfaw6L7r/eLwpcfM=;
+        b=QXKfcJsGmoR2FM+lAmlHzHe6q7yhlyPrQsB+vj6KfUt6Bb2e8m8BQf+lpKGL7vFgJo
+         /qZh3y1iyMzKappWzYzKoDn2Rxfd+N6uaAr16XWKSmVi+bOYgmEOm/n32Eq/oDdpfOPu
+         pjTEImKYTahfoNfD4b1rE87Fy8swF5uKyvdgAP6bfdgnLbRNQ4wU9Fhb9K00BWInbz5X
+         Dft/1S1COT/pG2C2MPHxeIVnpI7Xx7r2Q2PmXJbQpQEtFq54SC4aoORGeD+J480O/bTo
+         ovGRzW5PUnr/06tkzkmgEVgnzXTGYofZ4L3Elq1nV9Di4/OyJsbGG6q3VLnPhjMfoc6z
+         He5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689243446; x=1691835446;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cgTfpf6IMD+zAdQw7gG1t68xyEykfaw6L7r/eLwpcfM=;
+        b=lQcbv+elxcLHRHQBvq22+SJlLiIGPzrxm+p4uYC4loCeX5QNB66m+9N/6vP6JpwPlb
+         K3QlNHQmMVyAmrNi/2xqaXv/fmMlRrHn8FHxAzoBSSi69iPwr0xDe3KVo3O+MFkOb3ri
+         SIyV2iGw0MBjRvzN77h99phNCrsjdZHq7NrI/aNOjoXc1rF04WO/Q+yJnObIwLKhIn+8
+         HaJ7VOGqzF5UiYPi1m/QOh/CdLZHqtEVs6GLphFP45APwzRbdwPd37PPgbn4HL8+bJ9u
+         HOYnOmy/AUiR81uSnfeVYXuAGutAc74SyrweTVwLx8Lz8OkgqX5AERqpz811IURfowrm
+         r36A==
+X-Gm-Message-State: ABy/qLYCTqyuVer6Jp73ktZ/hc1sDQt/Rd1XCAMh34BRc08uRePRAOTt
+        bIpjbLseC5QggIu7Q3w94iSreKqfsws2l4V+Rv0JhA==
+X-Google-Smtp-Source: APBJJlELuWCfdGb2EDMi3fT5s3Ym2+WxWmUEY6LSu7hPmkiTxSseEO2OPLfVUEJVsYNHI5Mbp/NFKXW02jQC8YiyH48=
+X-Received: by 2002:a05:600c:1c9a:b0:3f6:f4b:d4a6 with SMTP id
+ k26-20020a05600c1c9a00b003f60f4bd4a6mr179255wms.7.1689243446227; Thu, 13 Jul
+ 2023 03:17:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <72204230a061f7d5bf19f09d524203ce@208suo.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <00000000000009408f05e977da5d@google.com> <00000000000085151506005b1491@google.com>
+In-Reply-To: <00000000000085151506005b1491@google.com>
+From:   Aleksandr Nogikh <nogikh@google.com>
+Date:   Thu, 13 Jul 2023 12:17:13 +0200
+Message-ID: <CANp29Y4y1T6T6VBCGxOP2aDSf-2zRBgFOJEbxZT_Figd=gNm0A@mail.gmail.com>
+Subject: Re: [syzbot] [ntfs3?] general protection fault in d_flags_for_inode
+To:     syzbot <syzbot+2f012b85ac8ce9be92e5@syzkaller.appspotmail.com>
+Cc:     almaz.alexandrovich@paragon-software.com, hverkuil-cisco@xs4all.nl,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mchehab@kernel.org, ntfs3@lists.linux.dev,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-15.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 06:06:15PM +0800, hanyu001@208suo.com wrote:
-> coccicheck complains about the use of snprintf() in sysfs show functions.
-> 
-> Fix the coccicheck warning:
-> WARNING: use scnprintf or sprintf.
-> 
-> ./arch/arm/mm/cache-l2x0-pmu.c:346:8-16: WARNING: use scnprintf or sprintf
-> 
-> Signed-off-by: ztt <1549089851@qq.com>
-> ---
->  arch/arm/mm/cache-l2x0-pmu.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/mm/cache-l2x0-pmu.c b/arch/arm/mm/cache-l2x0-pmu.c
-> index 993fefdc167a..d20626451a2e 100644
-> --- a/arch/arm/mm/cache-l2x0-pmu.c
-> +++ b/arch/arm/mm/cache-l2x0-pmu.c
-> @@ -343,7 +343,7 @@ static ssize_t l2x0_pmu_event_show(struct device *dev,
->      struct l2x0_event_attribute *lattr;
-> 
->      lattr = container_of(attr, typeof(*lattr), attr);
-> -    return snprintf(buf, PAGE_SIZE, "config=0x%x\n", lattr->config);
-> +    return scnprintf(buf, PAGE_SIZE, "config=0x%x\n", lattr->config);
+On Thu, Jul 13, 2023 at 11:37=E2=80=AFAM syzbot
+<syzbot+2f012b85ac8ce9be92e5@syzkaller.appspotmail.com> wrote:
+>
+> syzbot suspects this issue was fixed by commit:
+>
+> commit c43784c856483dded7956175b5786e27af6d87f1
+> Author: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+> Date:   Thu Dec 8 07:51:32 2022 +0000
+>
+>     media: v4l2-mem2mem: use vb2_is_streaming()
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D17e7d1bca8=
+0000
 
-This only serves to shut up a warning. On 32-bit ARM, there is utterly
-no way what so ever that "config=0x%x\n" could ever overflow 4096 bytes,
-or even 32 bytes!
+No, that's apparently unrelated. Though I don't see where exactly the
+bisection went astray..
+Likely because the reproducer got quite unreliable at older commits
+and we made a few false "git bisect good" commands.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+We will soon start automatically discarding such bisection results:
+https://github.com/google/syzkaller/pull/4028
+
+> start commit:   4da34b7d175d Merge tag 'thermal-6.1-rc2' of git://git.ker=
+n..
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3Dea03ca4517608=
+0bc
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3D2f012b85ac8ce9b=
+e92e5
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D17834f9a880=
+000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D10edf52688000=
+0
+>
+> If the result looks correct, please mark the issue as fixed by replying w=
+ith:
+>
+> #syz fix: media: v4l2-mem2mem: use vb2_is_streaming()
+
+>
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisect=
+ion
+>
+> --
