@@ -2,68 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3EA9752108
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 14:18:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35693752109
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 14:18:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234010AbjGMMSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 08:18:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40768 "EHLO
+        id S234294AbjGMMSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 08:18:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234648AbjGMMSG (ORCPT
+        with ESMTP id S234656AbjGMMSH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 08:18:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CD312701
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 05:17:14 -0700 (PDT)
+        Thu, 13 Jul 2023 08:18:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F7A926B5
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 05:17:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689250633;
+        s=mimecast20190719; t=1689250638;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=O/8LqiC6QlUvXSN10idrMxAvpQIqE3LX2fGViAlsLns=;
-        b=WczQiEu6RfxmUi1b+EZ9aaLYtjgccfnkrOwqWbViI/U49duwhePDgogWO1IK5oTXIp8LQV
-        jmhdU9bMY7r/c0EoIdwBOuMRcZDz5Bi9MDU0DilK/goM3i8p8+Ap1zcRh5gJigmbwCfx46
-        aFENYcBAyGmPrO03rr2j5l5qzKMLW3A=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=I9Ye8KfETUuRbXwbLJ8cBLC8vHqrIxM24kzSIqos1xM=;
+        b=Raoswb7HfYaQ7uIolIbOkh73VOgUkd6DJkgYPRp99e+vODWbwsN0gi/Txp9pCf4y4IP2wQ
+        2qnWkXGRh16AWmH1pieCyaL7Hqv5XnLGQX+tPnmJR0tkygaIF9+7UZV0R05JcpneeCZU64
+        zT7pEksbM91Tt1kGziYRX9GrhtH3Slo=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-168-0G5kQDoXNQa7I7OtjZpW0Q-1; Thu, 13 Jul 2023 08:17:09 -0400
-X-MC-Unique: 0G5kQDoXNQa7I7OtjZpW0Q-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-3fa979d0c32so3462705e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 05:17:09 -0700 (PDT)
+ us-mta-635-7Chm2BpON_GL14t_YIGKgg-1; Thu, 13 Jul 2023 08:17:16 -0400
+X-MC-Unique: 7Chm2BpON_GL14t_YIGKgg-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3fbffd088a9so3414865e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 05:17:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689250628; x=1691842628;
+        d=1e100.net; s=20221208; t=1689250635; x=1691842635;
         h=content-transfer-encoding:in-reply-to:organization:from:references
          :cc:to:content-language:subject:user-agent:mime-version:date
          :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=O/8LqiC6QlUvXSN10idrMxAvpQIqE3LX2fGViAlsLns=;
-        b=LLxyP88VTzHd0EMcpDaUZwEB6DegUxLFtRM//kvzMJ/xNa4kkUw5laUofvCSa7mUWV
-         JDAaqH7qYsu8T9cJBxpwAy3PwIbl8FPEdCm57fMy3hL49GNA+a+eC4ON9d6SYYScjrvQ
-         zAtTXfzmv8QcWOFSikD4dapeGWxZHYXqOMo+5LzzAi9AUM60rzG6SDWKON7Qg4ygFbfg
-         9bkgj4kqHxN3zxAAbufEQ/lltfjoOR10GyqQaD/EaOwGD0Ws/wACT1S/MAzPd75aaRcP
-         ejw3p48Ut/Ry4lYtDk9huG76SFkzG9z3sXdNQzMXpgAS7rOVlxVM0Ch4brSCdsFfNgR9
-         9hoQ==
-X-Gm-Message-State: ABy/qLZGPitLPoK5qu9cQkDlrylY/Vg+MNZ1KB3PK8kczfL+0ZTRJVE2
-        Va5j3XtdiOjXNa6RqCmB/kaF833FKfP9mHkmwxA2w35npCOyb37nQDkcx/88TLI+iFAevz2xxdh
-        tW/yJN44Ao+dmNg58p1d/wybHE6rfVXYm
-X-Received: by 2002:a1c:7414:0:b0:3fb:ba04:6d5d with SMTP id p20-20020a1c7414000000b003fbba046d5dmr1255202wmc.12.1689250628190;
-        Thu, 13 Jul 2023 05:17:08 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlEpx3LU8EUsWQF1DZWtF+CPMES9CCsA5X6eHyVTsaP8JeTZuKPHy0iS78dQFv5unRikPNa1Ug==
-X-Received: by 2002:a1c:7414:0:b0:3fb:ba04:6d5d with SMTP id p20-20020a1c7414000000b003fbba046d5dmr1255182wmc.12.1689250627780;
-        Thu, 13 Jul 2023 05:17:07 -0700 (PDT)
+        bh=I9Ye8KfETUuRbXwbLJ8cBLC8vHqrIxM24kzSIqos1xM=;
+        b=ZKGXD4EgolomK4LXbW0tgTMbysX1+q4vAkzZYfhOaV/hxHZzlhU807aKewgMre6rmg
+         SSN/UXt/10hjvs/aTRdadl2Gp2PJPfmPaStabBNxaBg2CrreCKnhLN3suP2w9HWf2ldy
+         pRil1rjhe/f0EFi1nUbl30Ke/U9V5lBFrK1+lI6ry1fj61zkQK1A6vC2V5tYTyYmUtvN
+         Mp8SCrH3b6wFh8+1GIv9foywOWoTepzbNbOxFYsCcIkBNj/wem9ILaC2uhGUk4xDkGB7
+         2+eHxFtsK0zgyn240AxmsVGIVgXM8vZiJ4iqlgh2iL/+3y55AkqiwD3umjIlGB2M7tDL
+         02OA==
+X-Gm-Message-State: ABy/qLYdjmhFgSpwJ4LS4qiiXgw8vKBYSZaRoaXkObNeNgrK/a2Bzgh8
+        Im1dF1GhLusODx0AGap3XVEFghUW4GA+IFWpmwYz3457V2wD9bTV9tgqcFfc5188YNOnfayREjt
+        B1Zyf5PsDnBgIUQz9DZv9apgF
+X-Received: by 2002:a05:600c:20c4:b0:3fb:e054:903f with SMTP id y4-20020a05600c20c400b003fbe054903fmr1237408wmm.36.1689250635418;
+        Thu, 13 Jul 2023 05:17:15 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlH4K1xzW6AnUhVBZ0m3bhe20kl+YjcL/Vw7G0f9UZ/hZUDowjjuFLDR26UZuruzxrGYqelQkQ==
+X-Received: by 2002:a05:600c:20c4:b0:3fb:e054:903f with SMTP id y4-20020a05600c20c400b003fbe054903fmr1237397wmm.36.1689250635215;
+        Thu, 13 Jul 2023 05:17:15 -0700 (PDT)
 Received: from ?IPV6:2003:cb:c717:6100:2da7:427e:49a5:e07? (p200300cbc71761002da7427e49a50e07.dip0.t-ipconnect.de. [2003:cb:c717:6100:2da7:427e:49a5:e07])
-        by smtp.gmail.com with ESMTPSA id l4-20020a1ced04000000b003fbe561f6a3sm18254150wmh.37.2023.07.13.05.17.06
+        by smtp.gmail.com with ESMTPSA id z14-20020a05600c220e00b003fbacc853ccsm7630178wml.18.2023.07.13.05.17.14
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 Jul 2023 05:17:07 -0700 (PDT)
-Message-ID: <24920ffd-1afa-e791-f8ae-c2eb801afd34@redhat.com>
-Date:   Thu, 13 Jul 2023 14:17:06 +0200
+        Thu, 13 Jul 2023 05:17:14 -0700 (PDT)
+Message-ID: <68392d51-ef9d-e687-f659-983bf2ba237b@redhat.com>
+Date:   Thu, 13 Jul 2023 14:17:13 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.12.0
-Subject: Re: [PATCH] arm64/mm: Set only the PTE_DIRTY bit while preserving the
- HW dirty state
+Subject: Re: [PATCH] arm64/mm: Add pte_rdonly() helper
 Content-Language: en-US
 To:     Anshuman Khandual <anshuman.khandual@arm.com>,
         linux-arm-kernel@lists.infradead.org
@@ -71,10 +70,10 @@ Cc:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
         linux-kernel@vger.kernel.org
-References: <20230713071518.628440-1-anshuman.khandual@arm.com>
+References: <20230713092004.693749-1-anshuman.khandual@arm.com>
 From:   David Hildenbrand <david@redhat.com>
 Organization: Red Hat
-In-Reply-To: <20230713071518.628440-1-anshuman.khandual@arm.com>
+In-Reply-To: <20230713092004.693749-1-anshuman.khandual@arm.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -88,14 +87,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13.07.23 09:15, Anshuman Khandual wrote:
-> pte_mkdirty() creates dirty states both in SW and HW bits, which is really
-> not required, either in pte_wrprotect() or pte_modify() for preserving the
-> HW dirty state. Because pte_mkdirty() sets PTE_DIRTY and clears PTE_RDONLY
-> as pte_write() always evaluates to be true - otherwise pte_hw_dirty() will
-> not test out in the first place. Clearing PTE_RDONLY again is not required
-> here because the pte is already in pte_hw_dirty() but might soon loose its
-> dirty state thus requiring preservation in SW dirty bit i.e PTE_DIRTY.
+On 13.07.23 11:20, Anshuman Khandual wrote:
+> This replaces open coding PTE_RDONLY check with a new helper pte_rdonly().
+> No functional change is intended here.
 > 
 > Cc: Catalin Marinas <catalin.marinas@arm.com>
 > Cc: Will Deacon <will@kernel.org>
@@ -106,32 +100,30 @@ On 13.07.23 09:15, Anshuman Khandual wrote:
 > ---
 > This applies on v6.5-rc1
 > 
->   arch/arm64/include/asm/pgtable.h | 5 +++--
->   1 file changed, 3 insertions(+), 2 deletions(-)
+>   arch/arm64/include/asm/pgtable.h | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
 > 
 > diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-> index 0bd18de9fd97..171d6d7f8087 100644
+> index 171d6d7f8087..72c2e8431360 100644
 > --- a/arch/arm64/include/asm/pgtable.h
 > +++ b/arch/arm64/include/asm/pgtable.h
-> @@ -212,7 +212,7 @@ static inline pte_t pte_wrprotect(pte_t pte)
->   	 * clear), set the PTE_DIRTY bit.
->   	 */
->   	if (pte_hw_dirty(pte))
-> -		pte = pte_mkdirty(pte);
-> +		pte = set_pte_bit(pte, __pgprot(PTE_DIRTY));
+> @@ -103,6 +103,7 @@ static inline pteval_t __phys_to_pte_val(phys_addr_t phys)
+>   #define pte_young(pte)		(!!(pte_val(pte) & PTE_AF))
+>   #define pte_special(pte)	(!!(pte_val(pte) & PTE_SPECIAL))
+>   #define pte_write(pte)		(!!(pte_val(pte) & PTE_WRITE))
+> +#define pte_rdonly(pte)		(!!(pte_val(pte) & PTE_RDONLY))
+>   #define pte_user(pte)		(!!(pte_val(pte) & PTE_USER))
+>   #define pte_user_exec(pte)	(!(pte_val(pte) & PTE_UXN))
+>   #define pte_cont(pte)		(!!(pte_val(pte) & PTE_CONT))
+> @@ -120,7 +121,7 @@ static inline pteval_t __phys_to_pte_val(phys_addr_t phys)
+>   	(__boundary - 1 < (end) - 1) ? __boundary : (end);			\
+>   })
 >   
->   	pte = clear_pte_bit(pte, __pgprot(PTE_WRITE));
->   	pte = set_pte_bit(pte, __pgprot(PTE_RDONLY));
-> @@ -823,7 +823,8 @@ static inline pte_t pte_modify(pte_t pte, pgprot_t newprot)
->   			      PTE_ATTRINDX_MASK;
->   	/* preserve the hardware dirty information */
->   	if (pte_hw_dirty(pte))
-> -		pte = pte_mkdirty(pte);
-> +		pte = set_pte_bit(pte, __pgprot(PTE_DIRTY));
-> +
->   	pte_val(pte) = (pte_val(pte) & ~mask) | (pgprot_val(newprot) & mask);
->   	return pte;
->   }
+> -#define pte_hw_dirty(pte)	(pte_write(pte) && !(pte_val(pte) & PTE_RDONLY))
+> +#define pte_hw_dirty(pte)	(pte_write(pte) && !pte_rdonly(pte))
+>   #define pte_sw_dirty(pte)	(!!(pte_val(pte) & PTE_DIRTY))
+>   #define pte_dirty(pte)		(pte_sw_dirty(pte) || pte_hw_dirty(pte))
+>   
 
 Reviewed-by: David Hildenbrand <david@redhat.com>
 
