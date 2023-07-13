@@ -2,93 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 750D9752789
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 17:43:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A6CB75278C
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 17:43:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229839AbjGMPnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 11:43:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45380 "EHLO
+        id S235017AbjGMPnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 11:43:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbjGMPnR (ORCPT
+        with ESMTP id S229549AbjGMPnU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 11:43:17 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18DCF2680;
-        Thu, 13 Jul 2023 08:43:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=e1RschMAietqo4yrW4fae/Y/YBT6qlJyR4H15nx9b/c=; b=j+Mu6xLXRTrrXKeT6HECd8Ud04
-        XKOaZ9pu9coE1LMrRTG2GcvkI/IbXHqweQ6930xoT+KufQV8LMto4yh74B3+Ef03ZTIV8/vOA2Gnw
-        IKaPSyDnh/vMH9OdwrRJ5yBbONMxeeGdxBnaXlKuZGgQZaNoQHw6B6y43IknlVytCnAALiCbPLqB0
-        2RWjhUsQdJF4cIQfvCEWpEgzxhG8hVjOVQqBIjVY7FAbW0smvrVAZbu0nJhexL/Z1So+u9u5z6nl9
-        8NfBvA2IojHJjXevR+bPzh4IX8WOXd/pF/ZDZw3nteZ9TfDZ43IfYkfGzYnwADsBmv++TDYfl4uhc
-        2QKB5qZw==;
-Received: from [2601:1c2:980:9ec0::2764]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qJyT1-003o2A-0C;
-        Thu, 13 Jul 2023 15:42:55 +0000
-Message-ID: <04a96ba2-6952-e6de-93a2-dc2998ce519d@infradead.org>
-Date:   Thu, 13 Jul 2023 08:42:53 -0700
+        Thu, 13 Jul 2023 11:43:20 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C56142686
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 08:43:18 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-c2cf29195f8so824333276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 08:43:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689262998; x=1689867798;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=91vNV3YrdzSjKOSREPIs1wSiF2NAZ5QLx0dAx8l+9Cs=;
+        b=rDxvl6mZuriokxBHc27a1IvWgQXE5WtWQswiLsM4jHgQP7vkELi7SgUvleLqEdYIIi
+         B9/qrxBoc+4j0fCZdTZIhjUHaRaf40Fse3iVbhOvpxTQxsHQgptK4AL7qbTv6mB/8g98
+         4kd0ufDwOyI8auYr+orVFJKIBCOxqO2WwlCZwsEpqVtWc5lWRgcC3RRHlwfWeecgV38y
+         nGBAe6NgwdEV6LivipYtblUKtzZmvJtqLRDZx3WnJBwQ1N1inP+HXpt4X1iLE6Vq6wY5
+         G7s/7BE9oCLkKLnlY2c7E2dPVpBKOHQ2ES1DRWo6GHXAqteGNAQeb4eyzFFVI9vySks/
+         cdyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689262998; x=1689867798;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=91vNV3YrdzSjKOSREPIs1wSiF2NAZ5QLx0dAx8l+9Cs=;
+        b=Zo6ZPt+TloqcbFQm3ywW9WwBXyPB3uCoU6VKPSyurGvcOCbMgJqYQN52K3ZE0OIkeS
+         rDfQrUpSJs+2zgZeJN4UC/FcDKVfgCi81CRz6y3RpBJ1gmRxVUXmbJDwm9loxLqM9phi
+         pauapWZTlj6i7xQj/V5yXwqqK5FpqY9TbWJr8KOKlvbf+QsNA9KRjItwhuV2U3T9HVtC
+         uhqv3BhrNAQUJiwlsO5zNrgWwGmGlU4nHxhQ5MnAqTIjkDgroLdw0J9oGKsnHe3cyOl0
+         xvZmaDwRSaXEXjkGgrfgLaGknEuH+m8t+XxoPyWu9LTQ+oghekRWUh4i4aDWcs3SI/aR
+         i3hw==
+X-Gm-Message-State: ABy/qLYqGYin7ts6n5J4b3vLzQ5B1rI3JTeUcaJ/S4XfLIYjzT/Exlv8
+        3D2AeMgdLu+zx6kjmk6GZqnT8o3mw1SfzflwabaxgA==
+X-Google-Smtp-Source: APBJJlEzqkIycBpd/dk78rxLiZ5DOQgoh2uewJ9I1h61UlwEZbrwkONkI8ayCwX25DFG4WRdWqcFsLGGtlya5l1nooE=
+X-Received: by 2002:a25:c0c8:0:b0:c4f:43d7:7daf with SMTP id
+ c191-20020a25c0c8000000b00c4f43d77dafmr1554760ybf.1.1689262997949; Thu, 13
+ Jul 2023 08:43:17 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH net-next v2] net: tcp: support to probe tcp receiver OOM
-Content-Language: en-US
-To:     menglong8.dong@gmail.com, edumazet@google.com, ncardwell@google.com
-Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        corbet@lwn.net, dsahern@kernel.org, kuniyu@amazon.com,
-        morleyd@google.com, imagedong@tencent.com, mfreemon@cloudflare.com,
-        mubashirq@google.com, netdev@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230713112404.2022373-1-imagedong@tencent.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230713112404.2022373-1-imagedong@tencent.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230712130215.666924-1-amit.pundir@linaro.org>
+ <3b677200-a201-680b-391f-fbf73064496a@linaro.org> <CAMi1Hd003r1kJ6e4r2urFtN1BEnCRatLcQ1Q7Eh5wBdj=2WDFA@mail.gmail.com>
+In-Reply-To: <CAMi1Hd003r1kJ6e4r2urFtN1BEnCRatLcQ1Q7Eh5wBdj=2WDFA@mail.gmail.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Thu, 13 Jul 2023 18:43:06 +0300
+Message-ID: <CAA8EJpp6yprRL3qzM9pHt2uJ6sb-nPhwas5qm9aDthegSaw7DQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] dt-bindings: display/msm: qcom,sdm845-mdss: add
+ memory-region property
+To:     Amit Pundir <amit.pundir@linaro.org>
+Cc:     Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Caleb Connolly <caleb.connolly@linaro.org>,
+        Bryan Donoghue <bryan.odonoghue@linaro.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Krishna Manikandan <quic_mkrishn@quicinc.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        dt <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 13 Jul 2023 at 18:34, Amit Pundir <amit.pundir@linaro.org> wrote:
+>
+> On Wed, 12 Jul 2023 at 18:45, Dmitry Baryshkov
+> <dmitry.baryshkov@linaro.org> wrote:
+> >
+> > On 12/07/2023 16:02, Amit Pundir wrote:
+> > > Add and document the reserved memory region property
+> > > in the qcom,sdm845-mdss schema.
+> > >
+> > > Signed-off-by: Amit Pundir <amit.pundir@linaro.org>
+> > > ---
+> > >   .../devicetree/bindings/display/msm/qcom,sdm845-mdss.yaml    | 5 +++++
+> > >   1 file changed, 5 insertions(+)
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/display/msm/qcom,sdm845-mdss.yaml b/Documentation/devicetree/bindings/display/msm/qcom,sdm845-mdss.yaml
+> > > index 6ecb00920d7f..3ea1dbd7e317 100644
+> > > --- a/Documentation/devicetree/bindings/display/msm/qcom,sdm845-mdss.yaml
+> > > +++ b/Documentation/devicetree/bindings/display/msm/qcom,sdm845-mdss.yaml
+> > > @@ -39,6 +39,11 @@ properties:
+> > >     interconnect-names:
+> > >       maxItems: 2
+> > >
+> > > +  memory-region:
+> > > +    maxItems: 1
+> > > +    description:
+> > > +      Phandle to a node describing a reserved memory region.
+> > > +
+> >
+> > Please add it to mdss-common.yaml instead
+>
+> mdss-common.yaml didn't like this property at all and
+> I ran into a lot of new dtbs_check warnings:
+> https://www.irccloud.com/pastebin/raw/pEYAeaB1
+>
+> I need some help in decoding these please.
+
+I'm not sure what happened there (and it's hard to understand without
+seeing your patch). But after applying your patch to mdss-common.yaml,
+`make dt_binding_check' passes:
+
+diff --git a/Documentation/devicetree/bindings/display/msm/mdss-common.yaml
+b/Documentation/devicetree/bindings/display/msm/mdss-common.yaml
+index ccd7d6417523..924fe383e4a1 100644
+--- a/Documentation/devicetree/bindings/display/msm/mdss-common.yaml
++++ b/Documentation/devicetree/bindings/display/msm/mdss-common.yaml
+@@ -77,6 +77,11 @@ properties:
+     items:
+       - description: MDSS_CORE reset
+
++  memory-region:
++    maxItems: 1
++    description:
++      Phandle to a node describing a reserved memory region.
++
+ required:
+   - reg
+   - reg-names
 
 
-On 7/13/23 04:24, menglong8.dong@gmail.com wrote:
-> diff --git a/Documentation/networking/ip-sysctl.rst b/Documentation/networking/ip-sysctl.rst
-> index 4a010a7cde7f..3de2dce74037 100644
-> --- a/Documentation/networking/ip-sysctl.rst
-> +++ b/Documentation/networking/ip-sysctl.rst
-> @@ -694,6 +694,20 @@ tcp_retries2 - INTEGER
->  	RFC 1122 recommends at least 100 seconds for the timeout,
->  	which corresponds to a value of at least 8.
->  
-> +tcp_oom_retries - INTEGER
-> +	RTO retransmissions count of the receiver is recognised as OOM.
-> +	Given a value N, a hypothetical TCP connection will enter probe
-> +	state if N times RTO retransmissions performed and every
-> +	retransmission gets a pure ack, who doesn't contain SACK block.
+>
+> Regards,
+> Amit Pundir
+>
+> >
+> > >   patternProperties:
+> > >     "^display-controller@[0-9a-f]+$":
+> > >       type: object
+> >
+> > --
+> > With best wishes
+> > Dmitry
+> >
 
-	                           ACK
-> +
-> +	The default value is 0, which means disable the OOM detection.
-> +	If disabled, skb will be dropped directly, without sending an
-> +	ACK, when rmem schedule fails. The function is valid only if sack
 
-	                                                             SACK
-
-> +	is enabled.
-> +
-> +	3 is the suggested value to enable this function. Do't make it
-
-	                                                  Don't
-
-> +	greater than tcp_retries2.
 
 -- 
-~Randy
+With best wishes
+Dmitry
