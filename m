@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 331D2751957
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 09:06:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9235A751953
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 09:06:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234132AbjGMHGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 03:06:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33716 "EHLO
+        id S234058AbjGMHGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 03:06:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233998AbjGMHGm (ORCPT
+        with ESMTP id S233945AbjGMHGl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 03:06:42 -0400
+        Thu, 13 Jul 2023 03:06:41 -0400
 Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35E17199D;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35C9A172C;
         Thu, 13 Jul 2023 00:06:40 -0700 (PDT)
 Received: from 74.172.62.81.static.wline.lns.sme.cust.swisscom.ch ([81.62.172.74] helo=martin-debian-2.paytec.ch)
         by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.89)
         (envelope-from <martin@kaiser.cx>)
-        id 1qJqPM-0004KN-Kp; Thu, 13 Jul 2023 09:06:36 +0200
+        id 1qJqPN-0004KN-CF; Thu, 13 Jul 2023 09:06:37 +0200
 From:   Martin Kaiser <martin@kaiser.cx>
 To:     Herbert Xu <herbert@gondor.apana.org.au>
 Cc:     olivier@sobrie.be, linux-crypto@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Martin Kaiser <martin@kaiser.cx>
-Subject: [PATCH 2/3] hwrng: ba431 - don't init of_device_id's data
-Date:   Thu, 13 Jul 2023 09:04:45 +0200
-Message-Id: <20230713070446.230978-3-martin@kaiser.cx>
+Subject: [PATCH 3/3] hwrng: ba431 - use dev_err_probe after failed registration
+Date:   Thu, 13 Jul 2023 09:04:46 +0200
+Message-Id: <20230713070446.230978-4-martin@kaiser.cx>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20230713070446.230978-1-martin@kaiser.cx>
 References: <20230713070446.230978-1-martin@kaiser.cx>
@@ -42,27 +42,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We have no device-specific data for silex-insight,ba431-rng. There's no
-need to set .data = NULL, this is the default.
+Use dev_err_probe to print the error message after a failed hwrng
+registration.
 
 Signed-off-by: Martin Kaiser <martin@kaiser.cx>
 ---
- drivers/char/hw_random/ba431-rng.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/char/hw_random/ba431-rng.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/char/hw_random/ba431-rng.c b/drivers/char/hw_random/ba431-rng.c
-index b1518dd52a24..d2a9d16323a6 100644
+index d2a9d16323a6..9de7466e6896 100644
 --- a/drivers/char/hw_random/ba431-rng.c
 +++ b/drivers/char/hw_random/ba431-rng.c
-@@ -201,7 +201,7 @@ static int ba431_trng_probe(struct platform_device *pdev)
- }
+@@ -190,10 +190,8 @@ static int ba431_trng_probe(struct platform_device *pdev)
+ 	ba431->rng.read = ba431_trng_read;
  
- static const struct of_device_id ba431_trng_dt_ids[] = {
--	{ .compatible = "silex-insight,ba431-rng", .data = NULL },
-+	{ .compatible = "silex-insight,ba431-rng" },
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, ba431_trng_dt_ids);
+ 	ret = devm_hwrng_register(&pdev->dev, &ba431->rng);
+-	if (ret) {
+-		dev_err(&pdev->dev, "BA431 registration failed (%d)\n", ret);
+-		return ret;
+-	}
++	if (ret)
++		return dev_err_probe(&pdev->dev, ret, "BA431 registration failed\n");
+ 
+ 	dev_info(&pdev->dev, "BA431 TRNG registered\n");
+ 
 -- 
 2.30.2
 
