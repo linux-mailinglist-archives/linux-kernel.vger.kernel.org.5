@@ -2,236 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4023F752B4C
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 22:02:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F989752B4F
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 22:03:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232598AbjGMUCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 16:02:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42970 "EHLO
+        id S233496AbjGMUDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 16:03:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231292AbjGMUCg (ORCPT
+        with ESMTP id S231547AbjGMUDV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 16:02:36 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9EAA2D4B
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 13:02:34 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id e9e14a558f8ab-345d2b936c2so820795ab.0
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 13:02:34 -0700 (PDT)
+        Thu, 13 Jul 2023 16:03:21 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01C472D4E
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 13:03:20 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-4fba03becc6so3003499e87.0
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 13:03:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1689278554; x=1689883354;
+        d=linaro.org; s=google; t=1689278598; x=1689883398;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=ivegnJY0e81uEIcQL/+AUl0jNxUcDJZGfjh6X1XgJhc=;
-        b=JTrnUxXTNaCRk1hGgR6DtGad2KLIFReAkYi9F7WIKUOzXx42wJZ3S4NmDSDoamVNU8
-         4VITMcTzxgFrXo++/Y+Bn7tgflSkX9cpQHTInqz4yfFwk+Xq6503c1f//0Ha7eBnr2Z8
-         Oo02Y22OTpugOdXnAgu5ICTSYgWKFrl/8SXfA=
+        bh=Yvt8Ku6KDe29tpizQm23o+O9+z8bar+cVRkERkmQ91w=;
+        b=FIEiEaFZqrXW8g8YQ8JN5/m9jV8Rn+IH6+81QIfMP6OXn6Yx3ig8G05Rc2TzTjM92V
+         QFyWvhupVc7i04q4dWNiplHx7Q54ZZ/p4Z4dTusHG2IpEOi6l1NkpfxgsTi6rwyQzD8n
+         ZOC4c3xWeMOxZIeWojRjqw8OBPKWgl2fwPLd3RbgzlKjxxn5AGLn6dPVbCsBCTmJ3Rlm
+         KPkU95S9zJR0wNt0nB+MgZSVuuEnUR/P3bGoZeVBJ9aeve2Juk38x177QueyngiiE4ST
+         WdJInwrH3RsE3yoZvv0N4Pdg88osODnbFo9cvLG61hQfRW8CZlCBL3T4Aj9TXIDQV4Uq
+         A3Vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689278554; x=1689883354;
+        d=1e100.net; s=20221208; t=1689278598; x=1689883398;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ivegnJY0e81uEIcQL/+AUl0jNxUcDJZGfjh6X1XgJhc=;
-        b=IQY4OTkuIupFUaT8htV94nCUZ3MOBunKN9NsXxRPCfKcKBm3ghvDRVbAqLoPm+Mb5U
-         SqcEaT+C7k3xPD5T4mHEkyJDiBrzeb+NkaqATe8jkyT7yyxswv0zyTEeyTRH2wck7zRx
-         fR27gdrtEWhgCKaCSHZuCkxysdRd921spYL24FclqIBwFwqCj76qTcc0Bs8g6/HFskvK
-         EjrlfxwGynvq1xLTVTjT/u+6XCqQoxVB7s9U7QuQbsvKiDHIIbzTvMPzf3V5g7hZQUlg
-         9Fdg/LMUqwno9CdEnyrxokenJclhkZvMnQvRphQVjAgl4BxWAVeUjmnevY0pjujJKp2a
-         mfFQ==
-X-Gm-Message-State: ABy/qLbDVsTI3QP+njYlSXVMfYhTf/AG052MA8N+Eq7TN1/QgV5L7Bh3
-        z55ZN1iWN2MJgMWUIZaQhT703g==
-X-Google-Smtp-Source: APBJJlHq+cSUbxM0oZMtNU+5ue5zTRSKurMgx9UQi6A/mnWzTQ5s9cLiX4TBStF4ZPFbC0YbeNKUXg==
-X-Received: by 2002:a05:6602:3ce:b0:780:c6bb:ad8d with SMTP id g14-20020a05660203ce00b00780c6bbad8dmr3203165iov.0.1689278554210;
-        Thu, 13 Jul 2023 13:02:34 -0700 (PDT)
-Received: from [192.168.1.128] ([38.15.45.1])
-        by smtp.gmail.com with ESMTPSA id z25-20020a02ceb9000000b0042b39f1c3d2sm2129524jaq.144.2023.07.13.13.02.33
+        bh=Yvt8Ku6KDe29tpizQm23o+O9+z8bar+cVRkERkmQ91w=;
+        b=hZ7kAN2OFfZvAgfMqjvMoa8wqk5eH6N4k2kwI/+B9cm3n68oWBy+8j8JFIdHTYLJar
+         NI98SOWhemOHACr1/gBh28UWjQKQ1yG4IESycRagB0wlt48ssTppYPtT/MhzW2D9StSd
+         x8mOw4X6ng6P+XDFTNHk1P78l+1b4s7EHfj3gR8O+roXh+9ohUmmPC44iqAKlA5vUxjU
+         0f0G+eDNpnEdbkSdQEmQArKldsQo5GmGvCAwYrWouf5PKmtl0VNHrOzbWm2YKoQN5FEL
+         JhNZEnEW1oGf+9s3WgOwhPBvMd7sliuY4FLZ2xvRtqzTxTMkX7QJVoLtgM2hNIzbe8Ee
+         pXrg==
+X-Gm-Message-State: ABy/qLZXByBoqZMqqjegLiXV/Fwb67JsoCB7ZOdw2Ye4so/BiFtuGAe8
+        4P2/4Y7F2rm18SvT//1AXRdgQg==
+X-Google-Smtp-Source: APBJJlHvFT4NkzYf8AiTu0gZdv5cunOm8vlcbun9kkFFQ7/GyRaJ58yCVi/nDi7GsigvUUQbiZlZ0g==
+X-Received: by 2002:a05:6512:398a:b0:4f9:5582:a7d3 with SMTP id j10-20020a056512398a00b004f95582a7d3mr218898lfu.22.1689278598227;
+        Thu, 13 Jul 2023 13:03:18 -0700 (PDT)
+Received: from [10.10.15.130] ([192.130.178.91])
+        by smtp.gmail.com with ESMTPSA id x7-20020ac259c7000000b004f84b36a24fsm1227265lfn.51.2023.07.13.13.03.17
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 Jul 2023 13:02:33 -0700 (PDT)
-Message-ID: <8d944238-1a9a-e93e-fdab-54e74fa12e11@linuxfoundation.org>
-Date:   Thu, 13 Jul 2023 14:02:33 -0600
+        Thu, 13 Jul 2023 13:03:17 -0700 (PDT)
+Message-ID: <a7aa6e21-6f79-0029-5034-db368239980a@linaro.org>
+Date:   Thu, 13 Jul 2023 23:03:17 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH] selftests: Fix arm64 test installation
-Content-Language: en-US
-To:     Mark Brown <broonie@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20230710-kselftest-fix-arm64-v1-1-48e872844f25@kernel.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20230710-kselftest-fix-arm64-v1-1-48e872844f25@kernel.org>
+Subject: Re: [PATCH] drm/msm: Fix hw_fence error path cleanup
+Content-Language: en-GB
+To:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org
+Cc:     linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        Rob Clark <robdclark@chromium.org>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20230712222523.7404-1-robdclark@gmail.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+In-Reply-To: <20230712222523.7404-1-robdclark@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/10/23 08:04, Mark Brown wrote:
-> The recent change fc96c7c19df ("selftests: error out if kernel header
-> files are not yet built") to generate an error message when building
-> kselftests without having installed the headers is generating spurious
-> failures during the install step which breaks the arm64 selftests (and
-> only the arm64 selftests):
+On 13/07/2023 01:25, Rob Clark wrote:
+> From: Rob Clark <robdclark@chromium.org>
 > 
-> Emit Tests for arm64
-> make[5]: *** [../../lib.mk:81: kernel_header_files] Error 1
-> make[5]: *** [../../lib.mk:81: kernel_header_files] Error 1
-> make[5]: *** [../../lib.mk:81: kernel_header_files] Error 1
-> make[5]: *** [../../lib.mk:81: kernel_header_files] Error 1
-> make[5]: *** [../../lib.mk:81: kernel_header_files] Error 1
-> make[5]: *** [../../lib.mk:81: kernel_header_files] Error 1
-> make[5]: *** [../../lib.mk:81: kernel_header_files] Error 1
-> make[4]: *** [Makefile:26: all] Error 2
+> In an error path where the submit is free'd without the job being run,
+> the hw_fence pointer is simply a kzalloc'd block of memory.  In this
+> case we should just kfree() it, rather than trying to decrement it's
+> reference count.  Fortunately we can tell that this is the case by
+> checking for a zero refcount, since if the job was run, the submit would
+> be holding a reference to the hw_fence.
 > 
-> Presumably the arm64 tests are doing something unusual in their build
-> setup which could be adjusted but I didn't immediately see it and since
-> this is having a serious impact on test coverage in automation let's
-> just revert for now.
-> 
-> This is causing failures in KernelCI with the command:
-> 
->     make KBUILD_BUILD_USER=KernelCI FORMAT=.xz ARCH=arm64 HOSTCC=gcc CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_COMPAT=arm-linux-gnueabihf- CC="ccache aarch64-linux-gnu-gcc" O=/tmp/kci/linux/build -C/tmp/kci/linux -j10 kselftest-gen_tar
-> 
-> and also when building using tuxmake.
-> 
-> Full log: https://storage.kernelci.org/mainline/master/v6.5-rc1/arm64/defconfig/gcc-10/logs/kselftest.log
-> 
-> Fixes: 9fc96c7c19df ("selftests: error out if kernel header files are not yet built")
-> Signed-off-by: Mark Brown <broonie@kernel.org>
+> Fixes: f94e6a51e17c ("drm/msm: Pre-allocate hw_fence")
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
 > ---
->   tools/testing/selftests/Makefile | 21 +--------------------
->   tools/testing/selftests/lib.mk   | 40 +++-------------------------------------
->   2 files changed, 4 insertions(+), 57 deletions(-)
+>   drivers/gpu/drm/msm/msm_fence.c      |  6 ++++++
+>   drivers/gpu/drm/msm/msm_gem_submit.c | 14 +++++++++++++-
+>   2 files changed, 19 insertions(+), 1 deletion(-)
 > 
-> diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
-> index 666b56f22a41..405683b8cb39 100644
-> --- a/tools/testing/selftests/Makefile
-> +++ b/tools/testing/selftests/Makefile
-> @@ -146,12 +146,10 @@ ifneq ($(KBUILD_OUTPUT),)
->     abs_objtree := $(realpath $(abs_objtree))
->     BUILD := $(abs_objtree)/kselftest
->     KHDR_INCLUDES := -isystem ${abs_objtree}/usr/include
-> -  KHDR_DIR := ${abs_objtree}/usr/include
->   else
->     BUILD := $(CURDIR)
->     abs_srctree := $(shell cd $(top_srcdir) && pwd)
->     KHDR_INCLUDES := -isystem ${abs_srctree}/usr/include
-> -  KHDR_DIR := ${abs_srctree}/usr/include
->     DEFAULT_INSTALL_HDR_PATH := 1
->   endif
+> diff --git a/drivers/gpu/drm/msm/msm_fence.c b/drivers/gpu/drm/msm/msm_fence.c
+> index 96599ec3eb78..1a5d4f1c8b42 100644
+> --- a/drivers/gpu/drm/msm/msm_fence.c
+> +++ b/drivers/gpu/drm/msm/msm_fence.c
+> @@ -191,6 +191,12 @@ msm_fence_init(struct dma_fence *fence, struct msm_fence_context *fctx)
 >   
-> @@ -165,7 +163,7 @@ export KHDR_INCLUDES
->   # all isn't the first target in the file.
->   .DEFAULT_GOAL := all
+>   	f->fctx = fctx;
 >   
-> -all: kernel_header_files
-> +all:
->   	@ret=1;							\
->   	for TARGET in $(TARGETS); do				\
->   		BUILD_TARGET=$$BUILD/$$TARGET;			\
-> @@ -176,23 +174,6 @@ all: kernel_header_files
->   		ret=$$((ret * $$?));				\
->   	done; exit $$ret;
->   
-> -kernel_header_files:
-> -	@ls $(KHDR_DIR)/linux/*.h >/dev/null 2>/dev/null;                          \
-> -	if [ $$? -ne 0 ]; then                                                     \
-> -            RED='\033[1;31m';                                                  \
-> -            NOCOLOR='\033[0m';                                                 \
-> -            echo;                                                              \
-> -            echo -e "$${RED}error$${NOCOLOR}: missing kernel header files.";   \
-> -            echo "Please run this and try again:";                             \
-> -            echo;                                                              \
-> -            echo "    cd $(top_srcdir)";                                       \
-> -            echo "    make headers";                                           \
-> -            echo;                                                              \
-> -	    exit 1;                                                                \
-> -	fi
-> -
-> -.PHONY: kernel_header_files
-> -
->   run_tests: all
->   	@for TARGET in $(TARGETS); do \
->   		BUILD_TARGET=$$BUILD/$$TARGET;	\
-> diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.mk
-> index d17854285f2b..05400462c779 100644
-> --- a/tools/testing/selftests/lib.mk
-> +++ b/tools/testing/selftests/lib.mk
-> @@ -44,26 +44,10 @@ endif
->   selfdir = $(realpath $(dir $(filter %/lib.mk,$(MAKEFILE_LIST))))
->   top_srcdir = $(selfdir)/../../..
->   
-> -ifeq ("$(origin O)", "command line")
-> -  KBUILD_OUTPUT := $(O)
-> +ifeq ($(KHDR_INCLUDES),)
-> +KHDR_INCLUDES := -isystem $(top_srcdir)/usr/include
->   endif
->   
-> -ifneq ($(KBUILD_OUTPUT),)
-> -  # Make's built-in functions such as $(abspath ...), $(realpath ...) cannot
-> -  # expand a shell special character '~'. We use a somewhat tedious way here.
-> -  abs_objtree := $(shell cd $(top_srcdir) && mkdir -p $(KBUILD_OUTPUT) && cd $(KBUILD_OUTPUT) && pwd)
-> -  $(if $(abs_objtree),, \
-> -    $(error failed to create output directory "$(KBUILD_OUTPUT)"))
-> -  # $(realpath ...) resolves symlinks
-> -  abs_objtree := $(realpath $(abs_objtree))
-> -  KHDR_DIR := ${abs_objtree}/usr/include
-> -else
-> -  abs_srctree := $(shell cd $(top_srcdir) && pwd)
-> -  KHDR_DIR := ${abs_srctree}/usr/include
-> -endif
-> -
-> -KHDR_INCLUDES := -isystem $(KHDR_DIR)
-> -
->   # The following are built by lib.mk common compile rules.
->   # TEST_CUSTOM_PROGS should be used by tests that require
->   # custom build rule and prevent common build rule use.
-> @@ -74,25 +58,7 @@ TEST_GEN_PROGS := $(patsubst %,$(OUTPUT)/%,$(TEST_GEN_PROGS))
->   TEST_GEN_PROGS_EXTENDED := $(patsubst %,$(OUTPUT)/%,$(TEST_GEN_PROGS_EXTENDED))
->   TEST_GEN_FILES := $(patsubst %,$(OUTPUT)/%,$(TEST_GEN_FILES))
->   
-> -all: kernel_header_files $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED) \
-> -     $(TEST_GEN_FILES)
-> -
-> -kernel_header_files:
-> -	@ls $(KHDR_DIR)/linux/*.h >/dev/null 2>/dev/null;                      \
-> -	if [ $$? -ne 0 ]; then                                                 \
-> -            RED='\033[1;31m';                                                  \
-> -            NOCOLOR='\033[0m';                                                 \
-> -            echo;                                                              \
-> -            echo -e "$${RED}error$${NOCOLOR}: missing kernel header files.";   \
-> -            echo "Please run this and try again:";                             \
-> -            echo;                                                              \
-> -            echo "    cd $(top_srcdir)";                                       \
-> -            echo "    make headers";                                           \
-> -            echo;                                                              \
-> -	    exit 1; \
-> -	fi
-> -
-> -.PHONY: kernel_header_files
-> +all: $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED) $(TEST_GEN_FILES)
->   
->   define RUN_TESTS
->   	BASE_DIR="$(selfdir)";			\
-> 
-> ---
-> base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
-> change-id: 20230710-kselftest-fix-arm64-c023160018d7
-> 
-> Best regards,
+> +	/*
+> +	 * Until this point, the fence was just some pre-allocated memory,
+> +	 * no-one should have taken a reference to it yet.
+> +	 */
+> +	WARN_ON(kref_read(&fence->refcount));
 
-Thank you. Will apply the patch for the next rc
+It this really correct to return a refcounted object with 0 refcount 
+(I'm looking at submit_create() / msm_fence_alloc() )? Maybe it would be 
+better to move dma_fence_get() to msm_fence_alloc() ? But don't 
+immediately see, which one should be moved.
 
-thanks,
--- Shuah
+> +
+>   	dma_fence_init(&f->base, &msm_fence_ops, &fctx->spinlock,
+>   		       fctx->context, ++fctx->last_fence);
+>   }
+> diff --git a/drivers/gpu/drm/msm/msm_gem_submit.c b/drivers/gpu/drm/msm/msm_gem_submit.c
+> index 3f1aa4de3b87..9d66498cdc04 100644
+> --- a/drivers/gpu/drm/msm/msm_gem_submit.c
+> +++ b/drivers/gpu/drm/msm/msm_gem_submit.c
+> @@ -86,7 +86,19 @@ void __msm_gem_submit_destroy(struct kref *kref)
+>   	}
+>   
+>   	dma_fence_put(submit->user_fence);
+> -	dma_fence_put(submit->hw_fence);
+> +
+> +	/*
+> +	 * If the submit is freed before msm_job_run(), then hw_fence is
+> +	 * just some pre-allocated memory, not a reference counted fence.
+> +	 * Once the job runs and the hw_fence is initialized, it will
+> +	 * have a refcount of at least one, since the submit holds a ref
+> +	 * to the hw_fence.
+> +	 */
+> +	if (kref_read(&submit->hw_fence->refcount) == 0) {
+> +		kfree(submit->hw_fence);
+> +	} else {
+> +		dma_fence_put(submit->hw_fence);
+> +	}
+>   
+>   	put_pid(submit->pid);
+>   	msm_submitqueue_put(submit->queue);
+
+-- 
+With best wishes
+Dmitry
+
