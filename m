@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDDD3751926
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 08:55:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10140751928
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 08:55:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229890AbjGMGzJ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 13 Jul 2023 02:55:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56428 "EHLO
+        id S233945AbjGMGzj convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 13 Jul 2023 02:55:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230248AbjGMGzH (ORCPT
+        with ESMTP id S230248AbjGMGzg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 02:55:07 -0400
+        Thu, 13 Jul 2023 02:55:36 -0400
 Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35F0B119;
-        Wed, 12 Jul 2023 23:55:06 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B828D2118;
+        Wed, 12 Jul 2023 23:55:21 -0700 (PDT)
 Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
           by outpost.zedat.fu-berlin.de (Exim 4.95)
           with esmtps (TLS1.3)
           tls TLS_AES_256_GCM_SHA384
           (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1qJqE9-000t2O-48; Thu, 13 Jul 2023 08:55:01 +0200
+          id 1qJqEO-000tEz-Oz; Thu, 13 Jul 2023 08:55:16 +0200
 Received: from p57bd9f0d.dip0.t-ipconnect.de ([87.189.159.13] helo=[192.168.178.81])
           by inpost2.zedat.fu-berlin.de (Exim 4.95)
           with esmtpsa (TLS1.3)
           tls TLS_AES_256_GCM_SHA384
           (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1qJqE8-001Zzm-Q0; Thu, 13 Jul 2023 08:55:01 +0200
-Message-ID: <d76aa3802c8f1ee63f94cc799f1c3b479da1086c.camel@physik.fu-berlin.de>
+          id 1qJqEO-001a5n-Gh; Thu, 13 Jul 2023 08:55:16 +0200
+Message-ID: <aa725a3b84040e3136979acb8f71fa423bd02e71.camel@physik.fu-berlin.de>
 Subject: Re: [PATCH] [RFC] sh: highlander: Handle virq offset in cascaded
  IRL demux
 From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
@@ -36,7 +36,7 @@ To:     Geert Uytterhoeven <geert+renesas@glider.be>,
         Yoshinori Sato <ysato@users.sourceforge.jp>,
         Rich Felker <dalias@libc.org>
 Cc:     linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Thu, 13 Jul 2023 08:54:58 +0200
+Date:   Thu, 13 Jul 2023 08:55:15 +0200
 In-Reply-To: <4fcb0d08a2b372431c41e04312742dc9e41e1be4.1688908186.git.geert+renesas@glider.be>
 References: <4fcb0d08a2b372431c41e04312742dc9e41e1be4.1688908186.git.geert+renesas@glider.be>
 Content-Type: text/plain; charset="UTF-8"
