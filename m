@@ -2,395 +2,313 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79C67751FD8
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 13:24:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7639751FDB
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 13:25:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233570AbjGMLYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 07:24:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34050 "EHLO
+        id S233149AbjGMLZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 07:25:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232342AbjGMLYa (ORCPT
+        with ESMTP id S231693AbjGMLZH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 07:24:30 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D94D610E2;
-        Thu, 13 Jul 2023 04:24:28 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id d2e1a72fcca58-66f5faba829so384046b3a.3;
-        Thu, 13 Jul 2023 04:24:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689247468; x=1691839468;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=diCaU9T9K+7GZFl+nMf3Y8Nxqf/vtw/IWeBhwen/Vlo=;
-        b=odnOR2uY1RopKeXAJpLEGKBaClPQYiJSC4r7/9td95LLHhm/Zzp2ObvEJyV2zQm3gT
-         iDtl05cdoTfKb6MOfjUzEhv/oLbm24y2DXud3CFIMB31lRckYjLIHksk5oZOYMHzvj/n
-         4Hc//aOM5kNk35RI9WgA4XDR3FuVH1J9Z7QxfahoLfI/gfNdxVQbQIYgmNoJqNnmXuqi
-         sehbB7y8Aqe6UmChPf70W0cetQt/8l6S71DR9zgxvFO0OQYjHQ/R4RWEVpBB85AoP0/H
-         uDFcbV+mes/8wSGDPRQ2fd6noOvkCJ4emJslvPCbnYji1XKAJ6xWjKKWCwrnQOwh6SXE
-         sTNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689247468; x=1691839468;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=diCaU9T9K+7GZFl+nMf3Y8Nxqf/vtw/IWeBhwen/Vlo=;
-        b=k4mfMXbcBTKwS+LBG3snx25MC1DYONySbvCwhLYwcGlSjniEDytwIXRC2ASzyv6//t
-         VykRjdi1zOFDTcTSuaJXV6TfmhzjPU0YkLUDGPcyarzA+AOcLXhFjDPad5m7/2pBkm98
-         JAEIfHXDuqhHNFZBaQ+D2arv23iBmkZjbAgygJm+Swqfo0R0czBisL7qt05g8UrfyIxM
-         0K9XTtvSA3prCNX/+LZ68RdcMql0emRWwxucIBEwzFBm+82I1UYSKw+AmaoMpwqm9Fr0
-         oXFJYcHSDA5V3qYlpcNl8HG7szKuk0wKRMA9BHnjjn8hSQANVbJ5qXAqpgzTn6QIxk+F
-         Sfcg==
-X-Gm-Message-State: ABy/qLYMKAQ1eKFR+cTnkizAUtKdbjf6Wn4Ufasir+I+lFzJ8qeN36F0
-        O2BXBJ6EfeCjJYT1MWrd15s=
-X-Google-Smtp-Source: APBJJlGZvaloFXknVRTvqkS8CO2229Ce8SaVTTc8OYaqYbk+O9Fae3U1O78NMpT1HHYwb5Da+Y9qWQ==
-X-Received: by 2002:a05:6a21:7881:b0:130:2e61:3061 with SMTP id bf1-20020a056a21788100b001302e613061mr676155pzc.60.1689247468114;
-        Thu, 13 Jul 2023 04:24:28 -0700 (PDT)
-Received: from localhost.localdomain ([203.205.141.86])
-        by smtp.gmail.com with ESMTPSA id z16-20020a1709028f9000b001b86dd825e7sm5686717plo.108.2023.07.13.04.24.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Jul 2023 04:24:27 -0700 (PDT)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: imagedong@tencent.com
-To:     edumazet@google.com, ncardwell@google.com
-Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        corbet@lwn.net, dsahern@kernel.org, kuniyu@amazon.com,
-        morleyd@google.com, imagedong@tencent.com, mfreemon@cloudflare.com,
-        mubashirq@google.com, netdev@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v2] net: tcp: support to probe tcp receiver OOM
-Date:   Thu, 13 Jul 2023 19:24:04 +0800
-Message-Id: <20230713112404.2022373-1-imagedong@tencent.com>
-X-Mailer: git-send-email 2.40.1
-MIME-Version: 1.0
+        Thu, 13 Jul 2023 07:25:07 -0400
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11olkn2094.outbound.protection.outlook.com [40.92.19.94])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28AE626A1;
+        Thu, 13 Jul 2023 04:25:06 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=S5k1sCrOcR+eVdEefIyz62+JSAA5bQtC4NZXm2YvfwBNcqcMqRIDAJ7rvSaXgDCCW4hzB1EICBa/6ZeZR/QuCbaXc52LvroQNx7QK4uZ32E1qaIimpoUzX6u4Fn8iXk2BWkAneg7DdTsm7w9WrYH6qVZKThw1rbLKny4EZWf4nlwaWAjmVEoO7HVo799PNHTwKG2CysfRoUR7FB0XkNpGnZGwzu5ifLCPcst3HOSzOMp0CwCdb6ZYsfCjElOcemwbpE5BbLOATzqkE8P38RHAFfAuxwi89RSL6TXbfYFlfZ2zB4FZnnld7vRo21589FoNQZgLVng3OsUKxtuHNbS2Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=EUp735ezLrpfaCtn8iocDk+bEFmiTmz0NOQLD1NGQJ4=;
+ b=PuFyBMI8r+LU5w5hoffskTA+cz7Cup6aSodMxOR9QPI6DccG/LlKr7b3MIcwzeezrs+szpfuck7uuin2it+mZ9riBtOHU0/aqyS/EctluuYFFADg1PcXFe4y/UR/0UFijzTvA2ZXI+SvE8DXvExKutqvBOIMojezJXXoXCNdH4pEUnLcD5+d6hFhU4HNgEeI/BT7J2q0XwwkWjnmO8xY75/6W1WNLXX+ZzxZiB8mjcugyjv2p4W8cQrtoFzi17hqQ9z1E+1V+nG5NXPmQ4Ho+Z2paGhy1C3gU+llibgg0p4Srp62CihrLnCAiYkYi2eQSR9hXs8IiwlEd3xFAlR3Jw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EUp735ezLrpfaCtn8iocDk+bEFmiTmz0NOQLD1NGQJ4=;
+ b=j3986HuxR9c7/0I5DC5cozQT3lWYef90ZOIurLsTLF1Eci0FovJFw/D0LfA7x8d+ID/fCx3EC59vpmeQKv58Jd5ACQf/niUn7ONxj0qpM6IZrT48HcFpckXmavqP+BhPU+4kaIuBLrCviAj6iB2X4UlGV+YisSZRXoSJcq3mKRbgjvyicZ8MZtKr4V+UsbErqj8KktIpi2T2TZBWauXXacGjqkxlTYo4zIAYClg5AqrnzeQuI4sIwlU6IEuYGfV14+aVVSe0RdzV5IxeiRenAsi0nKyHPWcpo9sdKOj5SdJNUyhHWG1OA74P6uTCpwP3AKImxkc3eIom3sf2VQJYxA==
+Received: from BYAPR03MB4133.namprd03.prod.outlook.com (2603:10b6:a03:7d::19)
+ by SJ0PR03MB6763.namprd03.prod.outlook.com (2603:10b6:a03:40a::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6565.26; Thu, 13 Jul
+ 2023 11:25:04 +0000
+Received: from BYAPR03MB4133.namprd03.prod.outlook.com
+ ([fe80::8e5a:85a7:372b:39c3]) by BYAPR03MB4133.namprd03.prod.outlook.com
+ ([fe80::8e5a:85a7:372b:39c3%6]) with mapi id 15.20.6588.022; Thu, 13 Jul 2023
+ 11:25:04 +0000
+Subject: Re: [RFC 0/3] KVM: x86: introduce pv feature lazy tscdeadline
+To:     Xiaoyao Li <xiaoyao.li@intel.com>,
+        Zhi Wang <zhi.wang.linux@gmail.com>
+Cc:     seanjc@google.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+        hpa@zytor.com, kvm@vger.kernel.org, arkinjob@outlook.com,
+        linux-kernel@vger.kernel.org
+References: <BYAPR03MB4133436C792BBF9EC6D77672CD2DA@BYAPR03MB4133.namprd03.prod.outlook.com>
+ <20230712211453.000025f6.zhi.wang.linux@gmail.com>
+ <BYAPR03MB4133E3A1487ED160FBB59E0CCD37A@BYAPR03MB4133.namprd03.prod.outlook.com>
+ <20230713095755.00003d27.zhi.wang.linux@gmail.com>
+ <93e37735-f0d6-9603-615e-e17d59a7b537@intel.com>
+From:   Wang Jianchao <jianchwa@outlook.com>
+Message-ID: <BYAPR03MB41332D18C30341F8D35FAE2ECD37A@BYAPR03MB4133.namprd03.prod.outlook.com>
+Date:   Thu, 13 Jul 2023 19:24:48 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <93e37735-f0d6-9603-615e-e17d59a7b537@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-TMN:  [9ZXnzksSj1uwTxUPJdP/HFjbE4c2KzOyHufPTXs6E+U=]
+X-ClientProxiedBy: SI2PR02CA0040.apcprd02.prod.outlook.com
+ (2603:1096:4:196::6) To BYAPR03MB4133.namprd03.prod.outlook.com
+ (2603:10b6:a03:7d::19)
+X-Microsoft-Original-Message-ID: <1f8c2c15-55e3-4e08-9c2e-e73c7280723d@outlook.com>
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BYAPR03MB4133:EE_|SJ0PR03MB6763:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3fc786bf-abfa-4534-1165-08db8393cdaf
+X-MS-Exchange-SLBlob-MailProps: Cq7lScuPrnpRiBCNjHstdpiJs+aCKuFNY1a62yxnEDXMzTQZC+qXpt7t03HwKPlCn8LQqfs/KKkiOba0LHAXQQD+Sx4YhiL+dGd7DjaDXpMwPY/kZ1MaTzdn6w/ColOrlT6LOaYImH2firL2Kwbi0xzsUlWO8m8Bx374BDq2X/IWGKHV5+HTE0cW8a/8NoBJVmYr7nZZUcqqZpQyYC54qHBGEmp6CKirMfO5HJRRxwmZVnv/iRUgnq2mqfaWGjM+I8NNFExUW98i0E8eciIwfDcNNOeUlVDxyzDduY0N667kCTP/kjQKJxeMdVZ0tI4PHFrJ7YKPqDzYIDslK0LjetQLo62639DxdiSokKm80ZyC7b35wYT7MaMlyKJSovGI7/XXw4a9dawUovJBrIm8K3UH6xkwWZrlzQ5LrzfynpA7hTaCyHT0MeobN/jsaGBpW7p1tBvQpIwrxi1OcaDSOBN/2/vSdgGp2V7nYbsEyY8Yrh/sAoG/FUAITv+/X5A5zNYvcdIVH+x6nBFQtID6DrCyu8N5kkSBwuG/Dj4y9QcyhSNyALUSIuVZHWQFHwioFoemUtgg7hlZGSO+Y0j7AFkIL6dqO5SM8PQRIdk206k7ZYHKBSeU8fzovmh2aCc5dJ4TgkIgPp0A1YF4RdvdETYwB7mdIPUqZh9on3oYZBIqvorXDlB3Se3ME93/kES/K8AH/eA/BUje6Xv9newy0CojSobxampA2mo6ZV+lVrvAnp2arTNS+u/4ayaNAUT/uMM9oMm2c6s=
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 6kkcN/+YtmgjHq07Q7EbKs15lPhhpAdFG9InCdCquw38j3yGiyEhLXLUN2h29vjW/AeDP4po36XY8hgyOdQ9Xt44uPnh7Q72o+3pxyB0sySeFCybaK3BKAgRPZu6dr4DjxTkOu8ksgOwq5LG4rg8p+7pE/DOK2KmiWC9l/UfL3JnEeL3Ry43UtlXh8VUZdMwZInhFPEe3Iv2ohJNqb/5fDtI3K3ahp77K0u03E1GaKgIrQElzXYSkr4zz6RNX95gp5VLAhJQpOjFirXMs8o4SB0PeIsbh3jTWp35bBvOeOziUPnnm6wtbWGWmb10TpmGfGdbFN6p0mP9n0ZRspa8lGHRiB/EJ66Cj93eNb5VGDuGC0vNay1VIEG9cNXFBCdoJJrnglTNQw9H9NRzXJ17lUH/zdoqvmLGMyEDIIwltUzOchrRSp3zPEFyA3Vm1i+W23iwrXzkTk3PYOtFq6iEYAXSMWNzIYUqyiGoeeGqSMgOSSbmyUI7uiTX4qJLM4WuOvNSW1AIpe4Qs4te0sjlM2HwvVIJmKP9PrcDPzQi3vkeBA+jmrTP5VACsDMgnE/I
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VXFoWXdGMjRRVzl5QnBac2dnOFVvQWxMb0hXWFpZTHJWUWVGYVVtZ2hZZlIz?=
+ =?utf-8?B?VENXNzNra2tpUUtrc3lGRFJpR0F6bUpXWlZGaCtSMlBWS2ZyY3BkMGJuT3hy?=
+ =?utf-8?B?dUlPQ2g1eHlGbG96amVIL0lVbFpTdW1ldllHQjB1QS9Nc2F3dUk0Z0Eva3hU?=
+ =?utf-8?B?NXBRR01OcUU4cEJOa3hWK3RxQk0xdVRtc1Rjb2dJVE9hdUNkVGxIbVN0cmtO?=
+ =?utf-8?B?K1NIS0NJS2N1M1RqbVlOcStUVGNYSXdlemI1WllSaks5VzZVMkhHa1Z3YS9v?=
+ =?utf-8?B?dURZcGtDd0V4cXd3QTBwZGtFcURyZUozS2tVSkdiTENqSnpndUJGODVyckhV?=
+ =?utf-8?B?cEVucHB0VTZpTWVkbDNibENFL2p1ejRPZC9pZGF6cDZldFl2MWpqNFhveHZs?=
+ =?utf-8?B?SXFFVVRyRzI1NUt4UU9SaVNUa1VRMFU4ZmhlRWo1bmhSdGIyVjFnaTFsNmF4?=
+ =?utf-8?B?SmltdzJuckFWcHFLZEsxem8rSGh1K3dyTU1jajZGUFdxUlZJWmQ0Nmc3L0FZ?=
+ =?utf-8?B?QXFQM29GTW11cnNBZVhESjdvRFB0MHVreENsT2tKdjcvNVNQUms2NTlodDZO?=
+ =?utf-8?B?YnhFbHlJdml1ZlF4QmZrV3VuUGs5eEUrRUNtcE5uWUR1Nk5NS1hNZ1VxK2Fx?=
+ =?utf-8?B?MUxZd0lrL1FqTEt2Q2JtNjRZbjlUU3Z2V1RhUFp4Y2x5WEdWbi9qMEkzNTYy?=
+ =?utf-8?B?cnk1cGtyNzBlOWI4MU8wcGZWQ1ZOeWxxWldndG0yN3FMdlA2b252ZjZQWmlG?=
+ =?utf-8?B?QzhUZm5sMkQrOVYxaXBXVHcvRFNYQmwvR2JhY25ZSTd0VEI0azNNcjB6SGla?=
+ =?utf-8?B?U0hjSlZlZzBJcUpFWWkycURrVG05amxsTjF5MWZmNzNrd3d0MnNvNitGemVD?=
+ =?utf-8?B?c05pZVk2Q1VRZ3FGVGhMV1R1bEUzUGdISThFZ1hCSGNmczc1Y1JBMXhXcFpM?=
+ =?utf-8?B?R2trR2U2MWphbkUyNHhhRVNnZzJ0UklDZW5zak9ZcjIvV1B5UG92aDZzUmZl?=
+ =?utf-8?B?Wkx2cityU202amc2eG9ML0x5ZnNCNlFTMmdBTHFXcGlPL0NhQzRkUDU5VTI5?=
+ =?utf-8?B?c3VZdzNxKzNyLzRoRGdnVzA3TGpETHBjVmpodHh3azd3RDRjUkdlRjhqNi9N?=
+ =?utf-8?B?Qjg1M0JFcWIvOTIrdUFHN2RiUVJoZEhFV0tlL0xLQnMxcU9XNmwxa0xXVWcr?=
+ =?utf-8?B?UllWYTdFQVRFK1QrMXhtLzd1NkJuTkZmUEp2ZEN1d3ZSQ0JOdlFNSng5L3JZ?=
+ =?utf-8?B?QkFkZlowaW05TTZndUhueDdMZ2dXSm1nNnJ4c0ttRENvNnVYUWRxajZFVngv?=
+ =?utf-8?B?Nmk5d09RSURGMUZTdDBGUlo2dGZ4VXd2M05udEd3aUpLN0dDTHE3WWpCOTVv?=
+ =?utf-8?B?S1FUSlllOTZNaHFWTnV4UUYrekkrMDl6YVZDOGhsek1kdUVJOXBDenZ6b1Jl?=
+ =?utf-8?B?RzBVQ1hVTG1ZUHprc0hHSUROOFJQV2FEcnB1N2hHQTYvUk9YRGR4REtVbi9q?=
+ =?utf-8?B?cHNQUTNhOEwzM2FyNTlOaDlnQlhsc3NMVndYREN1QkN1eGlQM1lIaXA0WWlG?=
+ =?utf-8?B?V0U0NHBkRFF5QmNrRk1mTk9tdk11Wnd3VlphKy9rYk9XT0Fzby84MTUybUJO?=
+ =?utf-8?Q?gKF98y3F8rcf4MzGg9sim1I0XB+xSqCvihVBkSrCo8LI=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3fc786bf-abfa-4534-1165-08db8393cdaf
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR03MB4133.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2023 11:25:04.2211
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR03MB6763
+X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_MUA_MOZILLA,
+        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Menglong Dong <imagedong@tencent.com>
 
-For now, skb will be dropped directly if rmem schedule fails, which means
-tcp_try_rmem_schedule() returns an error. This can happen on following
-cases:
 
-1. The total memory allocated for TCP protocol is up to tcp_mem[2], and
-   the receive queue of the tcp socket is not empty.
-2. The receive buffer of the tcp socket is full, which can happen on small
-   packet cases.
+On 2023.07.13 18:27, Xiaoyao Li wrote:
+> On 7/13/2023 2:57 PM, Zhi Wang wrote:
+>> On Thu, 13 Jul 2023 10:50:36 +0800
+>> Wang Jianchao <jianchwa@outlook.com> wrote:
+>>
+>>>
+>>>
+>>> On 2023.07.13 02:14, Zhi Wang wrote:
+>>>> On Fri,  7 Jul 2023 14:17:58 +0800
+>>>> Wang Jianchao <jianchwa@outlook.com> wrote:
+>>>>
+>>>>> Hi
+>>>>>
+>>>>> This patchset attemps to introduce a new pv feature, lazy tscdeadline.
+>>>>> Everytime guest write msr of MSR_IA32_TSC_DEADLINE, a vm-exit occurs
+>>>>> and host side handle it. However, a lot of the vm-exit is unnecessary
+>>>>> because the timer is often over-written before it expires.
+>>>>>
+>>>>> v : write to msr of tsc deadline
+>>>>> | : timer armed by tsc deadline
+>>>>>
+>>>>>           v v v v v        | | | | |
+>>>>> --------------------------------------->  Time
+>>>>>
+>>>>> The timer armed by msr write is over-written before expires and the
+>>>>> vm-exit caused by it are wasted. The lazy tscdeadline works as following,
+>>>>>
+>>>>>           v v v v v        |       |
+>>>>> --------------------------------------->  Time
+>>>>>                            '- arm -'
+>>>>>
+>>>>
+>>>> Interesting patch.
+>>>>
+>>>> I am a little bit confused of the chart above. It seems the write of MSR,
+>>>> which is said to cause VM exit, is not reduced in the chart of lazy
+>>>> tscdeadline, only the times of arm are getting less. And the benefit of
+>>>> lazy tscdeadline is said coming from "less vm exit". Maybe it is better
+>>>> to imporve the chart a little bit to help people jump into the idea
+>>>> easily?
+>>>
+>>> Thanks so much for you comment and sorry for my poor chart.
+>>>
+>>
+>> You don't have to say sorry here. :) Save it for later when you actually
+>> break something.
+>>
+>>> Let me try to rework the chart.
+>>>
+>>> Before this patch, every time guest start or modify a hrtimer, we need to write the msr of tsc deadline,
+>>> a vm-exit occurs and host arms a hv or sw timer for it.
+>>>
+>>>
+>>> w: write msr
+>>> x: vm-exit
+>>> t: hv or sw timer
+>>>
+>>>
+>>> Guest
+>>>           w
+>>> --------------------------------------->  Time
+>>> Host     x              t
+>>>  
+>>> However, in some workload that needs setup timer frequently, msr of tscdeadline is usually overwritten
+>>> many times before the timer expires. And every time we modify the tscdeadline, a vm-exit ocurrs
+>>>
+>>>
+>>> 1. write to msr with t0
+>>>
+>>> Guest
+>>>           w0
+>>> ---------------------------------------->  Time
+>>> Host     x0             t0
+>>>
+>>>   2. write to msr with t1
+>>> Guest
+>>>               w1
+>>> ------------------------------------------>  Time
+>>> Host         x1          t0->t1
+>>>
+>>>
+>>> 2. write to msr with t2
+>>> Guest
+>>>                  w2
+>>> ------------------------------------------>  Time
+>>> Host            x2          t1->t2
+>>>  
+>>> 3. write to msr with t3
+>>> Guest
+>>>                      w3
+>>> ------------------------------------------>  Time
+>>> Host                x3           t2->t3
+>>>
+>>>
+>>>
+>>> What this patch want to do is to eliminate the vm-exit of x1 x2 and x3 as following,
+>>>
+>>>
+>>> Firstly, we have two fields shared between guest and host as other pv features, saying,
+>>>   - armed, the value of tscdeadline that has a timer in host side, only updated by __host__ side
+>>>   - pending, the next value of tscdeadline, only updated by __guest__ side
+>>>
+>>>
+>>> 1. write to msr with t0
+>>>
+>>>               armed   : t0
+>>>               pending : t0
+>>> Guest
+>>>           w0
+>>> ---------------------------------------->  Time
+>>> Host     x0             t0
+>>>
+>>> vm-exit occurs and arms a timer for t0 in host side
+>>>
+>>>   2. write to msr with t1
+>>>
+>>>               armed   : t0
+>>>               pending : t1
+>>>
+>>> Guest
+>>>               w1
+>>> ------------------------------------------>  Time
+>>> Host                     t0
+>>>
+>>> the value of tsc deadline that has been armed, namely t0, is smaller than t1, needn't to write
+>>> to msr but just update pending
+>>>
+>>>
+>>> 3. write to msr with t2
+>>>
+>>>               armed   : t0
+>>>               pending : t2
+>>>   Guest
+>>>                  w2
+>>> ------------------------------------------>  Time
+>>> Host                      t0
+>>>   Similar with step 2, just update pending field with t2, no vm-exit
+>>>
+>>>
+>>> 4.  write to msr with t3
+>>>
+>>>               armed   : t0
+>>>               pending : t3
+>>>
+>>> Guest
+>>>                      w3
+>>> ------------------------------------------>  Time
+>>> Host                       t0
+>>> Similar with step 2, just update pending field with t3, no vm-exit
+>>>
+>>>
+>>> 5.  t0 expires, arm t3
+>>>
+>>>               armed   : t3
+>>>               pending : t3
+>>>
+>>>
+>>> Guest
+>>>                              ------------------------------------------>  Time
+>>> Host                       t0  ------> t3
+>>>
+>>> t0 is fired, it checks the pending field and re-arm a timer based on it.
+>>>
+>>>
+>>> Here is the core ideal of this patch ;)
+>>>
+>>
+>> That's much better. Please keep this in the cover letter in the next RFC.
+>>
+>> My concern about this approach is: it might slightly affect timing
+>> sensitive workload in the guest, as the approach merges the deadline
+>> interrupt. The guest might see less deadline interrupts than before. It
+>> might be better to have a comparison of number of deadline interrupts
+>> in the cover letter.
+> 
+> I don't think guest will get less deadline interrupts since the deadline is updated always before the timer expires.
+> 
+> However, host will get more deadline interrupt because timer for t0 is not disarmed when new deadline (t1, t2, t3) is programmed.
+> 
 
-If the user hangs and doesn't take away the packet in the receive queue
-with recv() or read() for a long time, the sender will keep
-retransmitting until timeout, and the tcp connection will break.
+I forget to avoid to inject local timer interrupt of t0 in this version. This will be modified in V3 patchset.
+But there is still a vm-exit of preemption timer for t0 ...
+The worst case is: guest program t0 t1, t1's vm-exit due to msr write is avoided but t0's preemption vm-exit replace it.
+In the other case, there should be benefit of vm-exit.
 
-In order to handle such case, we introduce the tcp protocol OOM detection
-in following steps, as Neal Cardwell suggested:
-
-1. reply a pure ack, which doesn't contain SACK blocks, if we fail to
-   alloc memory to queue the skb on the receiving path. We only do this
-   for the next wanted sequence
-2. we assume that the receiver is OOM if we have retransmitted the first
-   skb in the retransmission queue for N times and every retransmission
-   has a corresponding pure ack, which doesn't contain SACK blocks.
-   Meanwhile, SACK should be enabled on the connection, too.
-3. the sender enter OOM state, and use the probe timer instead of the
-   retrans timer. In tcp_send_probe0(), we retransmit the first skb in
-   rtx queue instead of zero-window probe packet if the socket is in OOM
-   state.
-4. we exit the OOM state if snd_una was changed, which means
-   FLAG_SND_UNA_ADVANCED is set.
-
-And we introduce the sysctl "tcp_oom_retries" for the "N". By default,
-its value is 0, which means the OOM detection is disabled, to reduce the
-impact to the users who don't need such function.
-
-Signed-off-by: Menglong Dong <imagedong@tencent.com>
----
-v2:
-- disable the OOM detection by default to reduce the impact
-- don't impact the fast path
----
- Documentation/networking/ip-sysctl.rst | 14 +++++
- include/linux/tcp.h                    |  1 +
- include/net/inet_connection_sock.h     |  3 +-
- include/net/netns/ipv4.h               |  1 +
- include/net/sock.h                     |  1 +
- net/ipv4/sysctl_net_ipv4.c             |  7 +++
- net/ipv4/tcp_input.c                   | 71 +++++++++++++++++++++++++-
- net/ipv4/tcp_ipv4.c                    |  1 +
- net/ipv4/tcp_output.c                  | 13 ++++-
- net/ipv4/tcp_timer.c                   |  7 ++-
- 10 files changed, 114 insertions(+), 5 deletions(-)
-
-diff --git a/Documentation/networking/ip-sysctl.rst b/Documentation/networking/ip-sysctl.rst
-index 4a010a7cde7f..3de2dce74037 100644
---- a/Documentation/networking/ip-sysctl.rst
-+++ b/Documentation/networking/ip-sysctl.rst
-@@ -694,6 +694,20 @@ tcp_retries2 - INTEGER
- 	RFC 1122 recommends at least 100 seconds for the timeout,
- 	which corresponds to a value of at least 8.
- 
-+tcp_oom_retries - INTEGER
-+	RTO retransmissions count of the receiver is recognised as OOM.
-+	Given a value N, a hypothetical TCP connection will enter probe
-+	state if N times RTO retransmissions performed and every
-+	retransmission gets a pure ack, who doesn't contain SACK block.
-+
-+	The default value is 0, which means disable the OOM detection.
-+	If disabled, skb will be dropped directly, without sending an
-+	ACK, when rmem schedule fails. The function is valid only if sack
-+	is enabled.
-+
-+	3 is the suggested value to enable this function. Do't make it
-+	greater than tcp_retries2.
-+
- tcp_rfc1337 - BOOLEAN
- 	If set, the TCP stack behaves conforming to RFC1337. If unset,
- 	we are not conforming to RFC, but prevent TCP TIME_WAIT
-diff --git a/include/linux/tcp.h b/include/linux/tcp.h
-index b4c08ac86983..0801119a94ea 100644
---- a/include/linux/tcp.h
-+++ b/include/linux/tcp.h
-@@ -337,6 +337,7 @@ struct tcp_sock {
- 	u32	pushed_seq;	/* Last pushed seq, required to talk to windows */
- 	u32	lost_out;	/* Lost packets			*/
- 	u32	sacked_out;	/* SACK'd packets			*/
-+	u32	oom_ack_rcv;	/* Number of received pure ACK for OOM */
- 
- 	struct hrtimer	pacing_timer;
- 	struct hrtimer	compressed_ack_timer;
-diff --git a/include/net/inet_connection_sock.h b/include/net/inet_connection_sock.h
-index c2b15f7e5516..2c0d51a241b3 100644
---- a/include/net/inet_connection_sock.h
-+++ b/include/net/inet_connection_sock.h
-@@ -164,7 +164,8 @@ enum inet_csk_ack_state_t {
- 	ICSK_ACK_TIMER  = 2,
- 	ICSK_ACK_PUSHED = 4,
- 	ICSK_ACK_PUSHED2 = 8,
--	ICSK_ACK_NOW = 16	/* Send the next ACK immediately (once) */
-+	ICSK_ACK_NOW    = 16,	/* Send the next ACK immediately (once) */
-+	ICSK_ACK_PURE   = 32,	/* Send ACK without sack */
- };
- 
- void inet_csk_init_xmit_timers(struct sock *sk,
-diff --git a/include/net/netns/ipv4.h b/include/net/netns/ipv4.h
-index f00374718159..378656328b68 100644
---- a/include/net/netns/ipv4.h
-+++ b/include/net/netns/ipv4.h
-@@ -196,6 +196,7 @@ struct netns_ipv4 {
- 
- 	u8 sysctl_fib_notify_on_flag_change;
- 	u8 sysctl_tcp_syn_linear_timeouts;
-+	u8 sysctl_tcp_oom_retries;
- 
- #ifdef CONFIG_NET_L3_MASTER_DEV
- 	u8 sysctl_udp_l3mdev_accept;
-diff --git a/include/net/sock.h b/include/net/sock.h
-index 2eb916d1ff64..ecc5ba2f8ddf 100644
---- a/include/net/sock.h
-+++ b/include/net/sock.h
-@@ -959,6 +959,7 @@ enum sock_flags {
- 	SOCK_XDP, /* XDP is attached */
- 	SOCK_TSTAMP_NEW, /* Indicates 64 bit timestamps always */
- 	SOCK_RCVMARK, /* Receive SO_MARK  ancillary data with packet */
-+	SOCK_RCV_OOM, /* the receiver is in OOM state */
- };
- 
- #define SK_FLAGS_TIMESTAMP ((1UL << SOCK_TIMESTAMP) | (1UL << SOCK_TIMESTAMPING_RX_SOFTWARE))
-diff --git a/net/ipv4/sysctl_net_ipv4.c b/net/ipv4/sysctl_net_ipv4.c
-index 2afb0870648b..61143d0864d7 100644
---- a/net/ipv4/sysctl_net_ipv4.c
-+++ b/net/ipv4/sysctl_net_ipv4.c
-@@ -1489,6 +1489,13 @@ static struct ctl_table ipv4_net_table[] = {
- 		.extra1		= SYSCTL_ZERO,
- 		.extra2		= SYSCTL_ONE,
- 	},
-+	{
-+		.procname	= "tcp_oom_retries",
-+		.data		= &init_net.ipv4.sysctl_tcp_oom_retries,
-+		.maxlen		= sizeof(u8),
-+		.mode		= 0644,
-+		.proc_handler	= proc_dou8vec_minmax,
-+	},
- 	{ }
- };
- 
-diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
-index 57c8af1859c1..f5179bcdf3bf 100644
---- a/net/ipv4/tcp_input.c
-+++ b/net/ipv4/tcp_input.c
-@@ -3762,6 +3762,65 @@ static u32 tcp_newly_delivered(struct sock *sk, u32 prior_delivered, int flag)
- 	return delivered;
- }
- 
-+static bool tcp_need_ack_oom(struct sock *sk)
-+{
-+	return (READ_ONCE(sock_net(sk)->ipv4.sysctl_tcp_oom_retries) &&
-+		inet_csk(sk)->icsk_retransmits &&
-+		tcp_is_sack(tcp_sk(sk))) ||
-+	       sock_flag(sk, SOCK_RCV_OOM);
-+}
-+
-+static void tcp_ack_oom(struct sock *sk, const struct sk_buff *skb,
-+			const u32 prior_snd_una, int *flag)
-+{
-+	struct inet_connection_sock *icsk = inet_csk(sk);
-+	u32 ack = TCP_SKB_CB(skb)->ack_seq;
-+	struct tcp_sock *tp = tcp_sk(sk);
-+	int tcp_oom_retries;
-+	unsigned long when;
-+
-+	if (sock_flag(sk, SOCK_RCV_OOM)) {
-+		/* new data is acked, which means the retransmission
-+		 * success, and we can leave the OOM state now.
-+		 */
-+		if (*flag & FLAG_SND_UNA_ADVANCED) {
-+			tp->oom_ack_rcv = 0;
-+			icsk->icsk_backoff = 0;
-+			icsk->icsk_probes_tstamp = 0;
-+			inet_csk_clear_xmit_timer(sk, ICSK_TIME_PROBE0);
-+			sock_reset_flag(sk, SOCK_RCV_OOM);
-+		}
-+		return;
-+	}
-+
-+	/* Only pure ACK without SACK blocks is considered here */
-+	if (TCP_SKB_CB(skb)->seq != TCP_SKB_CB(skb)->end_seq ||
-+	    TCP_SKB_CB(skb)->sacked || prior_snd_una != ack)
-+		return;
-+
-+	/* this means real packet drop may happen, don't enter the OOM
-+	 * state
-+	 */
-+	if (icsk->icsk_retransmits != tp->oom_ack_rcv + 1)
-+		return;
-+
-+	tp->oom_ack_rcv++;
-+	tcp_oom_retries = READ_ONCE(sock_net(sk)->ipv4.sysctl_tcp_oom_retries);
-+	if (tp->oom_ack_rcv < tcp_oom_retries)
-+		return;
-+
-+	/* enter OOM state when we receive enough pure ACKs */
-+	sock_set_flag(sk, SOCK_RCV_OOM);
-+	tp->oom_ack_rcv = 0;
-+	icsk->icsk_retransmits = 0;
-+
-+	/* use oom-probe instead of retrans timer */
-+	when = tcp_probe0_when(sk, TCP_RTO_MAX);
-+	when = tcp_clamp_probe0_to_user_timeout(sk, when);
-+	tcp_reset_xmit_timer(sk, ICSK_TIME_PROBE0, when, TCP_RTO_MAX);
-+	*flag &= ~FLAG_SET_XMIT_TIMER;
-+}
-+
- /* This routine deals with incoming acks, but not outgoing ones. */
- static int tcp_ack(struct sock *sk, const struct sk_buff *skb, int flag)
- {
-@@ -3907,6 +3966,10 @@ static int tcp_ack(struct sock *sk, const struct sk_buff *skb, int flag)
- 				      &rexmit);
- 	}
- 
-+	if (tcp_need_ack_oom(sk))
-+		/* we don't impact the fast path......do we? */
-+		tcp_ack_oom(sk, skb, prior_snd_una, &flag);
-+
- 	/* If needed, reset TLP/RTO timer when RACK doesn't set. */
- 	if (flag & FLAG_SET_XMIT_TIMER)
- 		tcp_set_xmit_timer(sk);
-@@ -5056,7 +5119,13 @@ static void tcp_data_queue(struct sock *sk, struct sk_buff *skb)
- 			reason = SKB_DROP_REASON_PROTO_MEM;
- 			NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPRCVQDROP);
- 			sk->sk_data_ready(sk);
--			goto drop;
-+			if (tcp_is_sack(tp) &&
-+			    READ_ONCE(sock_net(sk)->ipv4.sysctl_tcp_oom_retries)) {
-+				inet_csk(sk)->icsk_ack.pending |= ICSK_ACK_PURE;
-+				goto out_of_window;
-+			} else {
-+				goto drop;
-+			}
- 		}
- 
- 		eaten = tcp_queue_rcv(sk, skb, &fragstolen);
-diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
-index cecd5a135e64..26a2fc6ae574 100644
---- a/net/ipv4/tcp_ipv4.c
-+++ b/net/ipv4/tcp_ipv4.c
-@@ -3216,6 +3216,7 @@ static int __net_init tcp_sk_init(struct net *net)
- 	net->ipv4.sysctl_tcp_notsent_lowat = UINT_MAX;
- 	net->ipv4.sysctl_tcp_tw_reuse = 2;
- 	net->ipv4.sysctl_tcp_no_ssthresh_metrics_save = 1;
-+	net->ipv4.sysctl_tcp_oom_retries = 0;
- 
- 	refcount_set(&net->ipv4.tcp_death_row.tw_refcount, 1);
- 	tcp_set_hashinfo(net);
-diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
-index 2cb39b6dad02..6a30ce7e649f 100644
---- a/net/ipv4/tcp_output.c
-+++ b/net/ipv4/tcp_output.c
-@@ -959,7 +959,8 @@ static unsigned int tcp_established_options(struct sock *sk, struct sk_buff *skb
- 	}
- 
- 	eff_sacks = tp->rx_opt.num_sacks + tp->rx_opt.dsack;
--	if (unlikely(eff_sacks)) {
-+	if (!(inet_csk(sk)->icsk_ack.pending & ICSK_ACK_PURE) &&
-+	    unlikely(eff_sacks)) {
- 		const unsigned int remaining = MAX_TCP_OPTION_SPACE - size;
- 		if (unlikely(remaining < TCPOLEN_SACK_BASE_ALIGNED +
- 					 TCPOLEN_SACK_PERBLOCK))
-@@ -4130,6 +4131,13 @@ int tcp_write_wakeup(struct sock *sk, int mib)
- 	if (sk->sk_state == TCP_CLOSE)
- 		return -1;
- 
-+	if (sock_flag(sk, SOCK_RCV_OOM)) {
-+		skb = tcp_rtx_queue_head(sk);
-+		WARN_ON_ONCE(!skb);
-+		if (skb)
-+			return __tcp_retransmit_skb(sk, skb, 1);
-+	}
-+
- 	skb = tcp_send_head(sk);
- 	if (skb && before(TCP_SKB_CB(skb)->seq, tcp_wnd_end(tp))) {
- 		int err;
-@@ -4178,7 +4186,8 @@ void tcp_send_probe0(struct sock *sk)
- 
- 	err = tcp_write_wakeup(sk, LINUX_MIB_TCPWINPROBE);
- 
--	if (tp->packets_out || tcp_write_queue_empty(sk)) {
-+	if (!sock_flag(sk, SOCK_RCV_OOM) &&
-+	    (tp->packets_out || tcp_write_queue_empty(sk))) {
- 		/* Cancel probe timer, if it is not required. */
- 		icsk->icsk_probes_out = 0;
- 		icsk->icsk_backoff = 0;
-diff --git a/net/ipv4/tcp_timer.c b/net/ipv4/tcp_timer.c
-index 470f581eedd4..41dbe52101b8 100644
---- a/net/ipv4/tcp_timer.c
-+++ b/net/ipv4/tcp_timer.c
-@@ -369,7 +369,7 @@ static void tcp_probe_timer(struct sock *sk)
- 	struct tcp_sock *tp = tcp_sk(sk);
- 	int max_probes;
- 
--	if (tp->packets_out || !skb) {
-+	if (!sock_flag(sk, SOCK_RCV_OOM) && (tp->packets_out || !skb)) {
- 		icsk->icsk_probes_out = 0;
- 		icsk->icsk_probes_tstamp = 0;
- 		return;
-@@ -544,6 +544,11 @@ void tcp_retransmit_timer(struct sock *sk)
- 		}
- 		if (mib_idx)
- 			__NET_INC_STATS(sock_net(sk), mib_idx);
-+
-+		/* initialize oom_ack_rcv with 0 when the first
-+		 * retransmission happen
-+		 */
-+		tp->oom_ack_rcv = 0;
- 	}
- 
- 	tcp_enter_loss(sk);
--- 
-2.40.1
+Thanks
+Jianchao
 
