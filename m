@@ -2,205 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF10F752CFE
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 00:26:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9D44752D06
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 00:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231397AbjGMW0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 18:26:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59900 "EHLO
+        id S231396AbjGMW1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 18:27:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231254AbjGMW0O (ORCPT
+        with ESMTP id S229960AbjGMW1w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 18:26:14 -0400
-Received: from sonic309-25.consmr.mail.ir2.yahoo.com (sonic309-25.consmr.mail.ir2.yahoo.com [77.238.179.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A190273E
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 15:26:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rocketmail.com; s=s2048; t=1689287168; bh=C+hRNpz31Q1m5e4vLU6zQGZFY5pXxupfUYhNVLntXno=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=USJYYs2JaVO035Ap/Ci4UQas0VIn3O4D9wRYf6rxfZyCMb1F98CQ5bsIUDTUGMXfr296v/FHxgs8qwAUotbCKLNRJ6Xa2ujm7stzYJjgU1M1bVbTQ2LyJcfTQl8gKRpjgq2pZFcKrt2mrUobzHmLNGxyahlxyHxaP+LLDhyXgvi82c6E+d3hK3Ie0aGv/JjvblVuDSLa1Vgsn9eximOhrQyPWlsETBrfxmVXOdSADY2Zxkk1Q4PeqrNq4g1/6thQDTFmx7PM9O0IOzL6xvgAqvKwB2V7QlQnhcj9akcqCPPyHnjRvxrqydzqW70vycezhpVe3XlKdxEejzPYLG3eNg==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1689287168; bh=GPYqG2HUuJN6VY9f70ahcJZ4b/xQufqe7GJVwOOAANv=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=b10gJRLTBTj/cCiaEwavS2vZSsQudIxshLVyD6RceMTnMv/jxoQxU8i9O1UgUI/V6Nxd0quLrQX0mNHDjOy2MJjrs6bbYsKK/Kc3Sd5rD1VIsfesMXsdYoMQUs8UxR9cImT2NXirXjNr3NbZKKv7MeWKFzTzRL+KBwLt+NZ+OspnHAXjCmChGfksdbcVx0y2LJ3qvxyv2RWZF7zg5ofpQhgBlUjWLXM0f7BSlximA/KlEw972xg7Hx9n2vdFGqS36F9vvO5KTy9k48820CDP9G557GKbWxLccFC3d3DdBhwGseDzHr69yjNG+iLcZu6nsO/nYBkVg+JRQY/CUhvEaw==
-X-YMail-OSG: kPJKLHUVM1lflqUrRix.AXdc8_iiu.5JCGjGhpEUZkRzYEBO.uEmFMaNyEtosoI
- B9m5ujlXDoCmqSadM53ifw_tuo8EQ_S52AD6W_Tz8_W3jl05QfEym4CtoEYDnLyn.VeuOleEOVpS
- dO3tQOzZEe0kfWYpQULUST7Xndyz1O2QCVOAIA53HXWNlbPcFSkLujsK4.q.ZrgJaOJdPwsh4Hhj
- yq.DMDthzRYPdT8exJXnZhNhrxiPbXglknJYD1VTRQBcJiVpfgKpA0UI6pbabDrV87lHvQr.J6iT
- G3zAwtIc3NF.CQZaHKGEHF0YZa5JQEZHzrpH2u8XIKZ.7dqDykfTmzTEwxLtUFVvzlG2zfxXcKgu
- mfTTiS.L3WlNpuesj4CbP1f6NUyyHMdKcIFB57d4yTK4K1wLBY9D2lZ7.f9awoTSGbTdLA3vZ1v2
- CWW13lRWVBP4kYXEA2O.kyA5k23jKXQ.f.iqgl38HMqeSkHNGZGjOZqfOltAKnec7IODdEbqrG91
- nSmm9Ednd3OebI93aB_kUQkKSSnni2gVXKl51YZPmdZFJJufiLDBFgiBhKqrW3U.EaEgCxa7bPGY
- lp6CaWGPQiQceB0_sjiWGQOfT.m1sV0Te.0lc4PPmuIrof06s3kEY8c3OJkgYFttyCOT2jGv7ivV
- qGCNGGCO8H.5l5D.WpUqAF_YQMtpsqmw7mNVjCGMNVtlTp5z3CI_BpD_yQAR0AD3ZkcboYSAdKU7
- ohoNrPoAONrZ8DCUULeOKCAyoFX7P4yPlPhV6i5Md.K0UWJ2zgQoYgDXiK0l.Qy43ZXD_YqJ2wtV
- AI7FWZedhHFXJr0srWfkqpD4SV.vVCfNc3lADxeCVmQMx057.Sxdh2wjm4VXAI0hoWVqRJ5.zEbz
- l1Q49Vq2osLAKox9ENdhOaC74h6AUO7gnEznmBUZCxHWRK2zo2xOdC9.WXJ8wwlgnih3ks5p6ysd
- qGdVHV0ShcGbKaw3vD6SQIfKyUKPn.zkpfWvDEK36REj_.HBVOeToQgMMCutC5pTIwMYz2i_rvaF
- JHFy5qCkWr2W9ZmPVol2YCjjmha1K3hvAAzgfLYro38OURino7ZJUKhkNZIk5Hhhvn19Rph3L4vP
- boWRgVB82WoS6f4uNGfdE2pV2opAFlxQsM1G.HXNzgwFnTnywNc2cNS_UVpQN6VHI1cB0MphrX91
- gUivGsrxEjH1Iu3YH0tZqMEmj0KFcWx.S7HDwjJCMcP05BYfHKyhpFFnn0rDi96gikQU.8fWZPQM
- CG330umALXLT1es6Io9mmHDifc8QzriRq.8AQ6he6KzC2E0DuivU70yyTVifoEPsq9i8MfrRC.pM
- hHTFmP4fzOqT4EpF7fFIDAYUf1LChH8j0WticwjeZdUvNQ0DwL2xRbQRrD6T1_vs8CKKewqqO1HA
- y8R8NTg8NLkU.YVgV44Hjm5YXVeDsAc2O4TfidF9BfuBxr0HSz5D6cthyvPEFgzhUW2USY4aymm8
- uXPPejiWhQj6eZw50hWIVZSLqNq6OPOi1sC3C752BGzNT3nQt8RlpQO7fUp.4I74rSQYNJ6e_HYd
- S_UXNBP1OcjHEZLpW9BKetU9Z.fcaNX2meaKrKTcT9ErrFCWgZkQmF4zQhVSBbKKrKopc7Yvos7k
- TnnKXDc4pIVPRPFqTubKxkQRlsQ244gWM8wH9sZfdd_a_P2yNBVaFkGPQUsFi.frZ66elh8Rli4h
- WRPDewEvRu8mzhA3NHSjaXtNsqOqV40rxwVRpOCNRMk96lOLdZmnFM_YOaEK8FTy9E6_wlb5igdM
- h8_sFTWpAVLRm2Ub7xF.grCgD2VRFDNBC2qiz9IAJS0KDiWuBImjbDgY6tC5be8VoyySYvNbWgns
- 27jIJT1DfYw9.YgerbvPc49NoFgcIwiEvQ3Q3PrOV18mwWmQKE6TjZfE6mI74CEiUhWpm_oBWHtw
- 6gcYiH8lExFL_5kfPacL6Jg_AMKzI46y_2dLaovDS.hRtflkIkGJYY5mRr1hF2g0OHJ1cYQZZ4Bb
- jEikWR35gDKkA_f_rrLBjN8Tr_9MrtnGUkJ3RLY_YZOz_gT4gzrB4wKilwipRe30oLxrFkY7ToWO
- O9EtCNkogr0LsK8axpgv1rPHBLpcWrA7YTEm9_RVe5Fx.PU6GJo1dDUocKeTjzdUJP0lKjviIYIV
- ZMDnYVEhxJtDpm3acNGR4BzODXFpPaY6s16y6kWjDC3yX8KLYVjeWAI4WfyPADXvqF8OBrvsdWAu
- LJdUhQvmWq4ahseTFw3PIFK.6Pos58U9ZmJyd.HNR7ohy2rBk1nQqy9.oiiQmiae9zQ_oZk8WW1b
- Fh512UOH_aEtzgdxEzXpI9ofMUQU-
-X-Sonic-MF: <jahau@rocketmail.com>
-X-Sonic-ID: 32c85954-2108-443f-84b7-53f52a82755c
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic309.consmr.mail.ir2.yahoo.com with HTTP; Thu, 13 Jul 2023 22:26:08 +0000
-Received: by hermes--production-ir2-7858d959bd-r4jkj (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 7b21490b2998ee19b22bb7f64882cd48;
-          Thu, 13 Jul 2023 22:26:06 +0000 (UTC)
-Message-ID: <b067e3c0-c2fe-21ce-b398-3f889adbfd06@rocketmail.com>
-Date:   Fri, 14 Jul 2023 00:26:04 +0200
+        Thu, 13 Jul 2023 18:27:52 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD0531BD5;
+        Thu, 13 Jul 2023 15:27:50 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 65AE261B7D;
+        Thu, 13 Jul 2023 22:27:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B50A3C433C7;
+        Thu, 13 Jul 2023 22:27:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689287269;
+        bh=I0kzTZFnlT4bjc9zwoxuBIX+VXnchct3aq2xuHL8IYo=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=CtEyUvbAxF6FVHziF3TS/0lxpvj6yBjBMohtclxty9JMh/uF6UP5IKjrq5mf8gv4y
+         rxUNzs3Ae6sMV/bwrswqCYFDRzIkA10QYAv5IEUvgWHybKmm2HUaQlFaKtXyIvx1Rw
+         0A+90KhNOAFWlv4FFMGGLHtz0MNKse0SntlPnrFbE/Sizwxo5ABAT4YOfQyg2/9TEI
+         9gYOazxSQEJZfSJVjpVfONZqUMcHXjcBBuX6nSEqEJJsvCB3t4YuwMUG8PyCm9hqMy
+         d8fGCIeHhkLFBLBSNOFBV5RX1OyccAZeSg1unwaXxb+rbaFQUKX47d9EWH9l9pnO1O
+         6P71OvZO2g/Bg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 49328CE009E; Thu, 13 Jul 2023 15:27:49 -0700 (PDT)
+Date:   Thu, 13 Jul 2023 15:27:49 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Gao Xiang <hsiangkao@linux.alibaba.com>
+Cc:     Alan Huang <mmpgouride@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sandeep Dhavale <dhavale@google.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-erofs@lists.ozlabs.org, xiang@kernel.org,
+        Will Shiu <Will.Shiu@mediatek.com>, kernel-team@android.com,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH v1] rcu: Fix and improve RCU read lock checks when
+ !CONFIG_DEBUG_LOCK_ALLOC
+Message-ID: <9467912e-dc27-4e3f-861f-d1c4117ddce5@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <0d9e7b4d-6477-47a6-b3d2-2c9d9b64903d@paulmck-laptop>
+ <f124e041-6a82-2069-975c-4f393e5c4137@linux.alibaba.com>
+ <87292a44-cc02-4d95-940e-e4e31d0bc6f2@paulmck-laptop>
+ <f1c60dcb-e32f-7b7e-bf0d-5dec999e9299@linux.alibaba.com>
+ <CAEXW_YSODXRfgkR0D2G-x=0uZdsqvF3kZL+LL3DcRX-5CULJ1Q@mail.gmail.com>
+ <894a3b64-a369-7bc6-c8a8-0910843cc587@linux.alibaba.com>
+ <CAEXW_YSM1yik4yWTgZoxCS9RM6TbsL26VCVCH=41+uMA8chfAQ@mail.gmail.com>
+ <F7D5032D-908E-4227-8A38-AF740AC86CDC@gmail.com>
+ <c62bd3db-5ed3-4dbf-bba9-d9dace23312c@paulmck-laptop>
+ <57b07fc3-6049-6ace-2523-2d013273c456@linux.alibaba.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2] arm64: dts: qcom: msm8916-samsung-serranove: Add
- RT5033 PMIC with charger
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Sebastian Reichel <sre@kernel.org>, Lee Jones <lee@kernel.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Raymond Hackley <raymondhackley@protonmail.com>,
-        Henrik Grimler <henrik@grimler.se>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
-References: <20230619203743.8136-1-jahau.ref@rocketmail.com>
- <20230619203743.8136-1-jahau@rocketmail.com>
- <02fe7c1e-cb6a-14bc-73fc-04956a2b8396@kernel.org>
- <3376e14a-4fc7-160e-509e-8dcbe627ef62@rocketmail.com>
- <b8e21ba1-900d-6731-579d-e18c37a97a71@kernel.org>
-Content-Language: en-US
-From:   Jakob Hauser <jahau@rocketmail.com>
-In-Reply-To: <b8e21ba1-900d-6731-579d-e18c37a97a71@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
-X-Mailer: WebService/1.1.21647 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <57b07fc3-6049-6ace-2523-2d013273c456@linux.alibaba.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgS3J6eXN6dG9mLA0KDQpPbiAxMi4wNy4yMyAyMjoyOCwgS3J6eXN6dG9mIEtvemxvd3Nr
-aSB3cm90ZToNCj4gT24gMTIvMDcvMjAyMyAyMTo1MCwgSmFrb2IgSGF1c2VyIHdyb3RlOg0K
-Li4uDQo+PiBPbiAxMS4wNy4yMyAwODoxMywgS3J6eXN6dG9mIEtvemxvd3NraSB3cm90ZToN
-Cj4+IC4uLg0KPj4+IFRoaXMgYXBwZWFyZWQgaW4gdG9kYXkncyBuZXh0IG5leHQtMjAyMzA3
-MTEgYW5kIGNhdXNlcyBuZXcgd2FybmluZ3MNCj4+Pg0KPj4+IG1zbTg5MTYtc2Ftc3VuZy1z
-ZXJyYW5vdmUuZHRiOiBleHRjb25AMTQ6ICdjb25uZWN0b3InIGRvZXMgbm90IG1hdGNoIGFu
-eQ0KPj4+IG9mIHRoZSByZWdleGVzOiAncGluY3RybC1bMC05XSsnDQo+Pj4gaHR0cHM6Ly9r
-cnprLmV1LyMvYnVpbGRlcnMvOTAvYnVpbGRzLzQwL3N0ZXBzLzE3L2xvZ3Mvc3RkaW8NCj4+
-Pg0KPj4+IFRoZSBjb21taXQgbWVudGlvbnMgcnQ1MDMzLCBidXQgdGhhdCBpcyBub3QgdGhl
-IHNjaGVtYSBiZWluZyBoZXJlDQo+Pj4gdGVzdGVkLCBzbyBjbGVhcmx5IHRoaXMgaXMgd3Jv
-bmcgb3IgYmluZGluZ3Mgd2VyZSBub3QgdXBkYXRlZC4NCj4+Pg0KPj4+IFBsZWFzZSBmaXgg
-KGFuZCB0ZXN0IHlvdXIgZnV0dXJlIHBhdGNoZXMpLg0KPj4NCj4+IFRoZSBpbXBsZW1lbnRh
-dGlvbiB5b3Ugc2VlIGluIHRoaXMgcGF0Y2ggZm9sbG93cyB0aGUgZ3VpZGFuY2Ugb2YgeW91
-cnMNCj4+IGFuZCBSb2LigJlzLiBJIGFscmVhZHkgZXhwcmVzc2VkIG15IGRpc2NvbnRlbnQg
-YWJvdXQgaXQgYmVmb3JlLg0KPj4NCj4+IFRvIHNvbHZlIHRoZSBtZXNzYWdlLCB0aGUgZHQt
-YmluZGluZ3Mgb2YgZXh0Y29uIGRldmljZSBzbTU1MDItbXVpYyBbMV0NCj4+IHdvdWxkIG5l
-ZWQgdG8gYmUgY2hhbmdlZCB0byBhbGxvdyBhICJjb25uZWN0b3IiIHN1Yi1ub2RlLiBUaGF0
-4oCZcyBub3QgdGhlDQo+PiByaWdodCBhcHByb2FjaC4NCj4+DQo+PiBJIHN0aWxsIGhhdmUg
-dGhlIGltcHJlc3Npb24gdGhhdCB0aGUgY3VycmVudCBpbXBsZW1lbnRhdGlvbiBpcyBiYXNl
-ZCBvbg0KPj4gbWlzdW5kZXJzdGFuZGluZ3MuIEkgZG8gdGhpbmsgUm9i4oCZcyBjb21tZW50
-IHRoYXQgZXhjb24gcGhhbmRsZSBiZWluZw0KPj4gZGVwcmVjYXRlZCBbMl0gaXMgdmFsaWQg
-Zm9yIHRoZSBVU0Igc3Vic3lzdGVtLiBZb3VyIHN1Z2dlc3Rpb24gdG8gY2hlY2sNCj4+ICJw
-b3J0cyBncmFwaCIsICJvcmllbnRhdGlvbiIgYW5kICJ1c2Itcm9sZS1zd2l0Y2giIGFwcGxp
-ZXMgdG8gVVNCDQo+PiBzdWJzeXN0ZW0gYXMgd2VsbCBbM10uIFJvYiB0b29rIHRoZSB0aW1l
-IHRvIGFkZCBtb3JlIGV4cGxhbmF0aW9uIFs0XSBidXQNCj4+IGl04oCZcyBzdGlsbCBhYm91
-dCBoYW5kbGluZyBjb25uZWN0b3JzIGluIHRoZSBtb3JlIHN0cmljdCBzZW5zZSwgd2hpY2gg
-aXMNCj4+IGNpcmNsaW5nIGFyb3VuZCBVQlMgc3Vic3lzdGVtLg0KPj4NCj4+IFRoZXNlIGRp
-c2N1c3Npb25zIGxlZCB0byBhIHN0cmFuZ2VseSBtaXhlZC11cCByZXN1bHQuIEkgd2FzIHB1
-c2hlZCB0bw0KPj4gaW1wbGVtZW50IHRoZSBVU0Igc3Vic3lzdGVtIGNvbm5lY3RvciBhcHBy
-b2FjaCB1cG9uIGFuIGV4Y3RvbiBzdWJzeXN0ZW0NCj4+IGRldmljZS4gQXMgdGhlIHN0YW5k
-YXJkIFVTQiBjb25uZWN0b3IgYXBwcm9hY2ggZGlkbuKAmXQgZml0LCB3ZSBzd2l0Y2hlZA0K
-Pj4gdG8gYSB2ZW5kb3Itc3BlY2lmaWMgY29ubmVjdG9yIHBoYW5kbGUgWzVdLiBJbiBmYWN0
-IGl04oCZcyBraW5kIG9mIGENCj4+IHdvcmthcm91bmQgZm9yIHRoZSBleHRjb24gcGhhbmRs
-ZS4NCj4+DQo+PiBUaGUgZXh0Y29uIGRldmljZSBzbTU1MDQgaXMgYSByZWFsIHBpZWNlIG9m
-IGhhcmR3YXJlLiBJdOKAmXMgbm90IGhhbmRsZWQNCj4+IGJ5IFVTQiBzdWJzeXN0ZW0gYnV0
-IGJ5IGV4dGNvbiBzdWJzeXN0ZW0uIFRoZSBleGN0b24gc3Vic3lzdGVtIGhhcyBhDQo+PiBt
-ZXRob2QgaW1wbGVtZW50ZWQgdG8gZ2V0IHRoZSBkZXZpY2UgYnkgcGhhbmRsZSBbNl0uDQo+
-IA0KPiBJIGFtIG5vdCBzdXJlIGlmIHdlIGRpc2N1c3MgdGhlIHNhbWUgcHJvYmxlbS4gTXkg
-ZW1haWwgd2FzIGFib3V0IHRoZSBEVFMNCj4gYW5kIGJpbmRpbmdzLCBub3Qgd2hldGhlciB0
-aGlzIHdvcmtzIGluIExpbnV4IGRyaXZlcnMuIEZyb20geW91ciByZXBseSBJDQo+IGZlZWwg
-dGhhdCB0aGlzIHBhdGNoIG1pZ2h0IGFjdHVhbGx5IG5vdCB3b3JrPyBUaGlzIHdvdWxkIGJl
-IHF1aXRlDQo+IGNvbmZ1c2luZy4uLg0KPiANCj4gWW91IGFkZGVkIG5ldyBjaGlsZCBub2Rl
-ICJjb25uZWN0b3IiIHRvIHRoZSBzaWxpY29ubWl0dXMsc201NTA0LW11aWMsIHNvDQo+IGFs
-bCBJIHdvdWxkIGV4cGVjdCB0aGF0IHdlIG1pc3MgaGVyZSBvbmx5IHVwZGF0aW5nIHRoYXQg
-YmluZGluZy4NCj4gQXNzdW1pbmcgdGhhdCB5b3VyIGNvZGUgd2FzIHdvcmtpbmcuLi4NCg0K
-VGhlIHBhdGNoIHdvcmtzLg0KDQo+PiBJIHRoZXJlZm9yZSBwcm9wb3NlIHRvIHVzZSB0aGUg
-cGhhbmRsZSBvZiB0aGUgZXh0Y29uIHN1YnN5c3RlbS4NCj4gDQo+IGV4dGNvbiBpbiB0aGUg
-YmluZGluZ3M/IFRoZW4gd2Ugd291bGQgYmUgYmFjayB0byBzcXVhcmUgb25lLg0KDQpJZiBz
-cXVhcmUgb25lIGlzIGEgcmVhc29uYWJsZSBwcm9wb3NhbCwgaXQgc2hvdWxkIGJlIGNvbnNp
-ZGVyZWQuIA0KRGlzY3Vzc2lvbnMgY2FuIGdvIGFzdHJheS4gSXQncyBhIHByb2Nlc3MuDQoN
-ClRoZSBleHRjb24gc3Vic3lzdGVtIG9mZmVycyBtZXRob2RzIHRvIGFjY2VzcyBhbiBleGN0
-b24gZGV2aWNlLiBJZiB0aGVyZSANCmlzIGV4dGNvbiBoYXJkd2FyZSBpbnN0YWxsZWQsIHVz
-aW5nIG9uZSBvZiB0aG9zZSBtZXRob2RzIGlzIGEgcHJldHR5IA0Kc3RyYWlnaHQtZm9yd2Fy
-ZCBhbmQgYW4gb2J2aW91cyBhcHByb2FjaC4NCg0KV2hhdCBzcGVha3MgYWdhaW5zdCB0aGUg
-dXNlIG9mIHRoaXMgbWV0aG9kPyBSb2IgYXJndWVkIHRoYXQgdGhlIA0KY29tcGxleGl0eSBv
-ZiBjb25uZWN0b3IgaW1wbGVtZW50YXRpb24gZ3JldyBvdmVyIHRpbWUgYW5kIHRoZXJlZm9y
-ZSANCnN0YW5kYXJkIGNvbm5lY3RvciBiaW5kaW5ncyBzaG91bGQgYmUgdXNlZC4gSSB1bmRl
-cnN0YW5kIHRoaXMgYW5kIHRoZSANCmV4YW1wbGUgeW91IGxpbmtlZCBpbiB0aGUgcHJldmlv
-dXMgZGlzY3Vzc2lvbiBzaG93cyBzdWNoIGEgY29tcGxleGl0eS4gDQpCdXQgdGhpcyBpcyBh
-Ym91dCBVU0Igc3Vic3lzdGVtLg0KDQpVU0Igc3Vic3lzdGVtIGlzIG5vdCBpbnZvbHZlZCBo
-ZXJlLiBXaHkgaW52b2x2aW5nIGl0IGJ5IGZvcmNlPw0KDQpJIHN1cmUgZG9uJ3QgaGF2ZSB0
-aGUgZnVsbCBwaWN0dXJlLiBIb3dldmVyLCBzbyBmYXIgdGhlIHdob2xlIGRpc2N1c3Npb24g
-DQpzZWVtcyB0byBiZSBiYXNlZCBvbiB0aGUgY29uZnVzaW9uIG9mIGRpZmZlcmVudCBleHRj
-b24gcGhhbmRsZXM6IA0KInZpcnR1YWwiIG9uZXMgaW4gVVNCIHN1YnN5c3RlbSBhbmQgInJl
-YWwiIG9uZXMgaW4gZXh0Y29uIHN1YnN5c3RlbS4gSWYgDQp0aGF0J3MgdGhlIGNhc2UsIHdl
-J3ZlIGJlZW4gZHJpZnRpbmcgaW50byB0aGUgd3JvbmcgZGlyZWN0aW9uIGFsbCB0aGUgdGlt
-ZS4NCg0KPj4gSSBtZWFuDQo+PiBleHRjb24gc3Vic3lzdGVtLCBub3QgVVNCIHN1YnN5c3Rl
-bS4gSW4gY2FzZSB5b3UgZGlzYWdyZWUsIEkga2luZGx5IGFzaw0KPj4geW91IHRvIHRha2Ug
-bW9yZSB0aW1lIHRvIGFuc3dlciBpbiBtb3JlIGRldGFpbCBhbmQgZXNwZWNpYWxseQ0KPj4g
-Y2FzZS1yZWxhdGVkLg0KPiANCj4gQXNzdW1pbmcgeW91ciBwYXRjaCB3b3JrcywgSSB0aGlu
-ayBhYm92ZSBpcyBxdWl0ZSBzcGVjaWZpYyBhbnN3ZXIgLSBuZXcNCj4gcHJvcGVydHkgaXMg
-bWlzc2luZyBpbiBzbTU1MDQgYmluZGluZy4NCg0KSSBkb24ndCB0aGluayB0aGlzIGlzIHRo
-ZSByaWdodCB3YXkgdG8gZ2V0IHJpZCBvZiB0aGUgaXNzdWUuIFN1cmUsIA0KdGVjaG5pY2Fs
-bHkgdGhlIG1lc3NhZ2UgZGlzYXBwZWFycy4gQ29udGVudHdpc2UsIGhvd2V2ZXIsIHdlJ3Jl
-IHNuZWFraW5nIA0KdGhlIGNvbmZ1c2lvbiBvZiBvdXIgZGlzY3Vzc2lvbiBpbnRvIHRoZSBk
-dC1iaW5kaW5ncy4gSW1hZ2luZSB3aGF0IHRoZSANCmRlc2NyaXB0aW9uIG9mIHRoYXQgImNv
-bm5lY3RvciIgcHJvcGVydHkgaW4gDQpzaWxpY29ubWl0dXMsc201NTAyLW11aWMueWFtbCB3
-b3VsZCBsb29rIGxpa2U6ICJTdGFuZGFyZCBVU0IgY29ubmVjdG9yIA0Kbm9kZSBhY2NvcmRp
-bmcgdG8gdXNiLWNvbm5lY3Rvci55YW1sIGZvciBhY2Nlc3NpbmcgdGhlIGV4dGNvbiBkZXZp
-Y2UgdmlhIA0KZGV2aWNldHJlZS4iIEEgZGV2aWNlIGluIHRoZSBleHRjb24gc3Vic3lzdGVt
-IGRvZXNuJ3QgbmVlZCB0aGlzLCB0aGUgDQpleHRjb24gc3Vic3lzdGVtIGFscmVhZHkgcHJv
-dmlkZXMgdGhlIG1ldGhvZCB0byBhY2Nlc3MgdGhlIGV4dGNvbiBkZXZpY2UgDQp2aWEgZGV2
-aWNldHJlZS4NCg0KV2VsbCwgSSBndWVzcyB3ZSB3b3VsZCBzaWxlbnRseSBza2lwIGEgZGVz
-Y3JpcHRpb24gbGlrZSB0aGF0IGJ5IGNoYW5naW5nIA0KImFkZGl0aW9uYWxQcm9wZXJ0aWVz
-IiBmcm9tIGZhbHNlIHRvIHRydWUuDQoNCldoeSBkbyBJIG1ha2UgdXAgc3VjaCBhIGJpZyB0
-aGluZyBpZiB0aGUgbWVzc2FnZSBjb3VsZCBiZSBtYWRlIGRpc2FwcGVhciANCnRoYXQgZWFz
-aWx5IChhbmQgYnVybmluZyB0aW1lIG9mIHlvdXJzLCBzb3JyeSk/IFRoaXMgbWl4LXVwIHdl
-J3JlIA0KaW1wbGVtZW50aW5nIGhlcmUgaXMgY29uZnVzaW5nLiBJdCdzIG5vdCBoZWxwZnVs
-IGZvciBmdXJ0aGVyIGRldmVsb3BtZW50IA0KYW5kIGltcGxlbWVudGF0aW9uIG9mIHJ0NTAz
-MyBhbmQgc2ltaWxhciBoYXJkd2FyZSBhcnJhbmdlbWVudHMuIFRoZSANCmlzc3VlIHRoYXQg
-Y2FtZSB1cCB3aXRoaW4gdGhlIHNhbXN1bmctc2VycmFub3ZlIGR0cyBwYXRjaCBoZXJlIGlz
-IGEgZ29vZCANCmluZGljYXRpb24gb2YgdGhhdC4NCg0KSSBjYW4gcHJlcGFyZSBhIHBhdGNo
-c2V0IHRvIGRpc3NvbHZlIHRoaXMgVVNCL2V4dGNvbiBtaXgtdXAgKGJhc2ljYWxseSANCnNx
-dWFyZSBvbmUsIGFzIHlvdSBjYWxsZWQgaXQpLg0KDQpBbHRlcm5hdGl2ZWx5LCBpZiBhbGwg
-bXkgdHJpZXMgdG8gY2xhcmlmeSBhIHBvc3NpYmxlIG1pc3VuZGVyc3RhbmRpbmcgDQphcmUg
-aW4gdmFpbiBhbmQgbm8gb25lIGVsc2UgaW50ZXJ2ZW5lcywgSSBndWVzcyBJIGhhdmUgbm8g
-b3RoZXIgb3B0aW9uIA0KdGhhbiBwcmVwYXJpbmcgYSBwYXRjaCB0byBjaGFuZ2UgdGhlIGR0
-LWJpbmR1bmdzIG9mIA0Kc2lsaWNvbm1pdHVzLHNtNTUwMi1tdWljLnlhbWwuDQoNCj4+IEFu
-ZCBzcGVjaWZpY2FsbHkgdG8gS3J6eXN6dG9mIEkgYXNrIGZvciBtb3JlIHBvbGl0ZW5lc3Mg
-aW4NCj4+IHlvdXIgd2F5IG9mIGNvbW11bmljYXRpbmcuIEkgdW5kZXJzdGFuZCB5b3XigJly
-ZSBhbnN3ZXJpbmcgaHVuZHJlZHMgb2YNCj4+IHJlcXVlc3RzIGEgZGF5IGJ1dCB0aGUgY29t
-bXVuaWNhdGlvbiB3ZSBoYWQgaW4gdGhlIHBhc3Qgd2Vla3MgaXMgcmVhbGx5DQo+PiBmcnVz
-dHJhdGluZy4NCj4gDQo+IFNvcnJ5IHRvIGhlYXIgdGhhdCwgcGxlYXNlIGFjY2VwdCBteSBh
-cG9sb2dpZXMuIEkgd2VudCB0aHJvdWdoIGFsbCBteQ0KPiByZXBsaWVzIHRvIHlvdSBpbiBw
-YXN0IGZldyB3ZWVrcyBhbmQgY291bGQgbm90IGZpbmQgYW55IHBhcnRpY3VsYXINCj4gaW1w
-b2xpdGUgYmVoYXZpb3IgZnJvbSBteSBzaWRlLg0KDQpJJ20gbm90IHVzZWQgdG8gdGhlIGZh
-c3QtcGFjZWQgaW50ZXJhY3Rpb24gb24gdGhlIGtlcm5lbCBsaXN0cy4gTWF5YmUgSSANCmhh
-dmUgbWlzdGFrZW4gc29tZSBvZiB5b3VyIGNvbW1lbnRzLiBJbiB0aGF0IGNhc2Ugc29ycnkg
-Zm9yIG15IGFjY3VzYXRpb24uDQoNCi4uLg0KDQpLaW5kIHJlZ2FyZHMsDQpKYWtvYg0K
+On Fri, Jul 14, 2023 at 03:00:25AM +0800, Gao Xiang wrote:
+> On 2023/7/14 02:14, Paul E. McKenney wrote:
+> > On Fri, Jul 14, 2023 at 12:09:27AM +0800, Alan Huang wrote:
+> 
+> ...
+> 
+> > > > 
+> > > >  From what Sandeep described, the code path is in an RCU reader. My
+> > > > question is more, why doesn't it use SRCU instead since it clearly
+> > > > does so if BLK_MQ_F_BLOCKING. What are the tradeoffs? IMHO, a deeper
+> > > > dive needs to be made into that before concluding that the fix is to
+> > > > use rcu_read_lock_any_held().
+> > > 
+> > > Copied from [1]:
+> > > 
+> > > "Background: Historically erofs would always schedule a kworker for
+> > >   decompression which would incur the scheduling cost regardless of
+> > >   the context. But z_erofs_decompressqueue_endio() may not always
+> > >   be in atomic context and we could actually benefit from doing the
+> > >   decompression in z_erofs_decompressqueue_endio() if we are in
+> > >   thread context, for example when running with dm-verity.
+> > >   This optimization was later added in patch [2] which has shown
+> > >   improvement in performance benchmarks.”
+> > > 
+> > > I’m not sure if it is a design issue.
+> 
+> What do you mean a design issue, honestly?  I feel uneasy to hear this.
+> 
+> > I have no official opinion myself, but there are quite a few people
+> > who firmly believe that any situation like this one (where driver or
+> > file-system code needs to query the current context to see if blocking
+> > is OK) constitutes a design flaw.  Such people might argue that this
+> > code path should have a clearly documented context, and that if that
+> > documentation states that the code might be in atomic context, then the
+> > driver/fs should assume atomic context.  Alternatively, if driver/fs
+> 
+> I don't think a software decoder (for example, decompression) should be
+> left in the atomic context honestly.
+> 
+> Regardless of the decompression speed of some algorithm theirselves
+> (considering very slow decompression on very slow devices), it means
+> that we also don't have a way to vmap or likewise (considering
+> decompression + handle extra deduplication copies) in the atomic
+> context, even memory allocation has to be in an atomic way.
+> 
+> Especially now have more cases that decodes in the RCU reader context
+> apart from softirq contexts?
+
+Just out of curiosity, why are these cases within RCU readers happening?
+Is this due to recent MM changes?  But yes, you would have the same
+problem in softirq context.
+
+> > needs the context to be non-atomic, the callers should make it so.
+> > 
+> > See for example in_atomic() and its comment header:
+> > 
+> > /*
+> >   * Are we running in atomic context?  WARNING: this macro cannot
+> >   * always detect atomic context; in particular, it cannot know about
+> >   * held spinlocks in non-preemptible kernels.  Thus it should not be
+> >   * used in the general case to determine whether sleeping is possible.
+> >   * Do not use in_atomic() in driver code.
+> >   */
+> > #define in_atomic()	(preempt_count() != 0)
+> > 
+> > In the immortal words of Dan Frye, this should be good clean fun!  ;-)
+> 
+> Honestly, I think such helper (to show whether it's in the atomic context)
+> is useful to driver users, even it could cause some false positive in some
+> configuration but it's acceptable.
+> 
+> Anyway, I could "Always use a workqueue.", but again, the original commit
+> was raised by a real vendor (OPPO), and I think if dropping this, all
+> downstream users which use dm-verity will be impacted and individual end
+> users will not be happy as well.
+
+Well, given what we have discussed thus far, for some kernels, you would
+always use a workqueue.  One option would be to force CONFIG_PREEMPT_COUNT
+to always be enabled, but this option has not been rejected multiple
+times in the past.
+
+But you are quite free to roll your own z_erofs_wq_needed().
+
+							Thanx, Paul
