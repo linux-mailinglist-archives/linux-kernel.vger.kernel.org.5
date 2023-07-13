@@ -2,142 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C710A751901
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 08:46:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B05F6751903
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 08:46:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234077AbjGMGp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 02:45:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52526 "EHLO
+        id S234095AbjGMGqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 02:46:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234078AbjGMGpu (ORCPT
+        with ESMTP id S234083AbjGMGp7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 02:45:50 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 198401998;
-        Wed, 12 Jul 2023 23:45:50 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9EE8761A34;
-        Thu, 13 Jul 2023 06:45:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70414C433C7;
-        Thu, 13 Jul 2023 06:45:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689230749;
-        bh=QdqoMXXDocWFm5bXrCU/+PhGlp5BHVUakp74/t5bQw8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UpKOhloDcMQEfbql1x8e+dg+Li4h6ErUzD4oD1xqZyEbvIMZ7rnXO91uLPFxxsHU8
-         g1mk+VbaYE/8VDqZ09QcJWesrwdxL0M5Ms0ubcMoeMgYAKYlSa4uYK3GFN1hMkt47r
-         5p72Br7Z9XNhs1wcFu5/wPwfQOlKt9WRBVVJDvg0MvkTTR5iziImCACay+s/sb9hw/
-         jWuKIuyHz1gQTkhe1U+bpdHPJzIT5bEwX/pm7wXOzLpGv0dmb6sRYk3s9q9nP3hozM
-         ZhamJNGfoB9ekD3gRbwOx4eqhhSU//dKRqtgI4EFvA2odb3fDXPVSnfH0VUUE3DiH9
-         QRn6Y/zHofvHQ==
-Date:   Thu, 13 Jul 2023 08:45:44 +0200
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     Alejandro Tafalla <atafalla@dnyon.com>
-Cc:     jic23@kernel.org, lars@metafoo.de, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
-Subject: Re: [RESEND PATCH v2] iio: imu: lsm6dsx: Fix mount matrix retrieval
-Message-ID: <ZK+dmF9juAnj5YYr@lore-desk>
-References: <4847336.31r3eYUQgx@alexbook>
+        Thu, 13 Jul 2023 02:45:59 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25D662123
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 23:45:56 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R1lVl2YRwzBJDj9
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 14:45:51 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1689230751; x=1691822752; bh=4vUhvqonTqUpI5VbubYfWLeGs5u
+        ghPwDkkTzJRLbAdQ=; b=E674rs50jBc9lPAr2jyaZcpkrhfgYOJ8W4vXCqr9kS5
+        eU1ca6cjWZf0GBCZfy+4ubmoZhWoza6QihtIIEV3YWGzjFvR7EXzR5zbYu6h4gcu
+        IySrWI+NRJ3j9zVoqQsHhfhSI1I70IFdU4DJNT1tPtgn23Xr/1aEil8r7tvaWw+M
+        rplMpG3VSzuXHaetKC5mDe70CJDHgrXEH6ogBVoF1tv7kzuQWmORJfTCRvS7ru99
+        5/jeoWH7n3ZksyNueMfpNeuZRZECadKRxOEStTddYILRt88g/Ko9n/no1ccGdzYQ
+        JSXkWGojTEwUaijN6j4CROG/I7pFrzeQCPBJmMn3Klw==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id mdlhKuthPdm1 for <linux-kernel@vger.kernel.org>;
+        Thu, 13 Jul 2023 14:45:51 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R1lVl0WprzBJDhy;
+        Thu, 13 Jul 2023 14:45:51 +0800 (CST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="AQXm/7OLTLW6eLTI"
-Content-Disposition: inline
-In-Reply-To: <4847336.31r3eYUQgx@alexbook>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Date:   Thu, 13 Jul 2023 14:45:50 +0800
+From:   hanyu001@208suo.com
+To:     jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org
+Subject: Fwd: [PATCH] scsi: isci:  Convert snprintf() to sysfs_emit()
+In-Reply-To: <tencent_9AA2345A885AECF32201BDEABACAB9F12707@qq.com>
+References: <tencent_9AA2345A885AECF32201BDEABACAB9F12707@qq.com>
+User-Agent: Roundcube Webmail
+Message-ID: <9983c57b3af01ba23f482c680ad82698@208suo.com>
+X-Sender: hanyu001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Coccinnelle reports a warning
+Warning: Use scnprintf or sprintf
 
---AQXm/7OLTLW6eLTI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+WARNING: use scnprintf or sprintf
+Signed-off-by: ztt <1549089851@qq.com>
+---
+  drivers/scsi/isci/init.c | 2 +-
+  1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Jul 13, Alejandro Tafalla wrote:
-> The function lsm6dsx_get_acpi_mount_matrix should return an error when AC=
-PI
-> support is not enabled to allow executing iio_read_mount_matrix in the
-> probe function.
->=20
-> Fixes: dc3d25f22b88 ("iio: imu: lsm6dsx: Add ACPI mount matrix retrieval")
->=20
-> Signed-off-by: Alejandro Tafalla <atafalla@dnyon.com>
-> ---
-> Changes in v2:
-> - Use of error codes instead of true/false
->=20
->  drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
->=20
-> diff --git a/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c b/drivers/iio/i=
-mu/st_lsm6dsx/st_lsm6dsx_core.c
-> index 6a18b363cf73..1a4752c95601 100644
-> --- a/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c
-> +++ b/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c
-> @@ -2687,7 +2687,7 @@ static int lsm6dsx_get_acpi_mount_matrix(struct dev=
-ice *dev,
->  static int lsm6dsx_get_acpi_mount_matrix(struct device *dev,
->  					  struct iio_mount_matrix *orientation)
->  {
-> -	return false;
-> +	return -EOPNOTSUPP;
->  }
-> =20
->  #endif
-> @@ -2767,11 +2767,11 @@ int st_lsm6dsx_probe(struct device *dev, int irq,=
- int hw_id,
->  	}
-> =20
->  	err =3D lsm6dsx_get_acpi_mount_matrix(hw->dev, &hw->orientation);
-> -	if (err) {
-> +	if (err =3D=3D -EOPNOTSUPP)
+diff --git a/drivers/scsi/isci/init.c b/drivers/scsi/isci/init.c
+index ac1e04b86d8f..5ce24fc7f940 100644
+--- a/drivers/scsi/isci/init.c
++++ b/drivers/scsi/isci/init.c
+@@ -137,7 +137,7 @@ static ssize_t isci_show_id(struct device *dev, 
+struct device_attribute *attr, c
+      struct sas_ha_struct *sas_ha = SHOST_TO_SAS_HA(shost);
+      struct isci_host *ihost = container_of(sas_ha, typeof(*ihost), 
+sas_ha);
 
-why do you need this extra check? According to the previous codebase, even =
-if
-lsm6dsx_get_acpi_mount_matrix() fails we want to fallback to
-iio_read_mount_matrix(), right?
+-    return snprintf(buf, PAGE_SIZE, "%d\n", ihost->id);
++    return scnprintf(buf, PAGE_SIZE, "%d\n", ihost->id);
+  }
 
-Regards,
-Lorenzo
-
->  		err =3D iio_read_mount_matrix(hw->dev, &hw->orientation);
-> -		if (err)
-> -			return err;
-> -	}
-> +
-> +	if (err)
-> +		return err;
-> =20
->  	for (i =3D 0; i < ST_LSM6DSX_ID_MAX; i++) {
->  		if (!hw->iio_devs[i])
-> --=20
-> 2.41.0
->=20
->=20
->=20
->=20
->=20
->=20
->=20
-
---AQXm/7OLTLW6eLTI
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZK+dmAAKCRA6cBh0uS2t
-rF/sAQCLa9z1VQ+pJmnDyrf/ZO2ICFgjaUS1iye/28z/ZhkLPAEAtOSPoVSeW06l
-1tAOk/TsiJWcW/3gXq/ncQBrp8/qKA8=
-=pvG7
------END PGP SIGNATURE-----
-
---AQXm/7OLTLW6eLTI--
+  static DEVICE_ATTR(isci_id, S_IRUGO, isci_show_id, NULL);
