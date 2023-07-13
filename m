@@ -2,137 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16ACF7515F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 03:57:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 799F57515F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 04:01:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233398AbjGMB5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 21:57:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37948 "EHLO
+        id S233419AbjGMCBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 22:01:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231901AbjGMB5u (ORCPT
+        with ESMTP id S231901AbjGMCA6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 21:57:50 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2042.outbound.protection.outlook.com [40.107.220.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 751841BEC
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 18:57:48 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iY36NOSlS4tPRAR44dZQrzIgZQ2hlQNXa+IgcxkNcktcFRtTT3i+OZX1d8SE3ByGlubi4bXsXstuy7PJPnVG9GP7L6Khka6dtlNlRFiM+fHa98USRRf/ZKdTQbXeMSarbFdXyCNVMg//Dctc8HmRng+y1hhDPCmKBwusWdUFzlkhgLOJ3cZAnK1wQck9ZQNPlc00eopYq9g/d7nMwU44F4WiXWCgJQELXyh+++l1AadZbfmuL6tu2LdOvqwqGVLiQLuip9IkG4FqPs3RiWeVoJNjlO6Bj2qxxzQsAwB4f/PPJzSvY0aZWnAt1hZtJfDqkuz42ugLrceCkBnwpyj2mQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2vwPEIAMqTQG+dXnEmLO2vtlT4NdclUoQhXqYAhQV8I=;
- b=BB1Pxn+4NZ0Exv89W6bMJgFXbM6KFKL8k0b7g1gtg0TPy7MN0ddZcyu8BvJaiDdJrNXuyhPOZkJ2zMpuopV9OQYnX7y+b9lb34/2VmHKpfP2lzTYnkgvyVItlkF5HQSA38gPRt9kHu8ORe3PFR49VWMLFTmDzAs+49kHrUDpF/WLaPySyT2zzdhIO/CmYcAmxVYPbsSw6xZNG8plkPn7knPJUFRZ3lKowPN9WWuUYx5ZQYvm+1VVWOUZN7eDKHlbx3+AYRQzH9N8jU0vOVnX+fv+2V+4BbcsD5kaqxguQOmmj7psL/WIeTrCNuYH7mCYZyK+vWwhifsCt/v1hLr8ow==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.161) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2vwPEIAMqTQG+dXnEmLO2vtlT4NdclUoQhXqYAhQV8I=;
- b=a69h8v+5AJ92th6dBEsyUBpk/Lr2uMtj9c0ZXW1GZTRPzGxUtHBpvGT8tOTkgpUc2VgroF9TcExNjDv4HpcytPgSpoAUgedZmDoKbAsugd1QuXCzyX0yjyjwZCk9IycWKlAvu6Mg8tMFNZNHEpqcew4wvaGv1plMWulV4ja5lasxGA+KYenbbRub24wnVqNmSh1lkWRYp08MDtGlj82T8C+IROChRXEAErOH3lh0rbEzN6T7s2sE7OFbveFS5Q3H1kKjnxXBZ6AAgK0yLbd+FRkK4xEZSC8iIV3Ole6PQaMsbcKqRKtZ+vUrARF3ozu7IFPguJin9mHaguxipY3u1w==
-Received: from DS7PR05CA0018.namprd05.prod.outlook.com (2603:10b6:5:3b9::23)
- by PH7PR12MB7114.namprd12.prod.outlook.com (2603:10b6:510:1ed::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.22; Thu, 13 Jul
- 2023 01:57:46 +0000
-Received: from DM6NAM11FT040.eop-nam11.prod.protection.outlook.com
- (2603:10b6:5:3b9:cafe::b5) by DS7PR05CA0018.outlook.office365.com
- (2603:10b6:5:3b9::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.9 via Frontend
- Transport; Thu, 13 Jul 2023 01:57:45 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.161) by
- DM6NAM11FT040.mail.protection.outlook.com (10.13.173.133) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6521.44 via Frontend Transport; Thu, 13 Jul 2023 01:57:45 +0000
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
- (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Wed, 12 Jul 2023
- 18:57:33 -0700
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail202.nvidia.com
- (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Wed, 12 Jul
- 2023 18:57:33 -0700
-Received: from Asurada-Nvidia (10.127.8.13) by mail.nvidia.com (10.129.68.9)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37 via Frontend
- Transport; Wed, 12 Jul 2023 18:57:32 -0700
-Date:   Wed, 12 Jul 2023 18:57:30 -0700
-From:   Nicolin Chen <nicolinc@nvidia.com>
-To:     Michael Shavit <mshavit@google.com>
-CC:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        "Joerg Roedel" <joro@8bytes.org>, <jean-philippe@linaro.org>,
-        <jgg@nvidia.com>, <baolu.lu@linux.intel.com>,
-        <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 05/13] iommu/arm-smmu-v3: Use the master-owned s1_cfg
-Message-ID: <ZK9aChHZ3E9IcwJ/@Asurada-Nvidia>
-References: <20230621063825.268890-1-mshavit@google.com>
- <20230621063825.268890-6-mshavit@google.com>
+        Wed, 12 Jul 2023 22:00:58 -0400
+Received: from mail-oa1-f79.google.com (mail-oa1-f79.google.com [209.85.160.79])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 608331BEC
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 19:00:56 -0700 (PDT)
+Received: by mail-oa1-f79.google.com with SMTP id 586e51a60fabf-1b0271d3228so296850fac.1
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 19:00:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689213655; x=1691805655;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yRv+N4ss6idVrsjTU89OuW2S18JYKvB8zh+B/pD64SQ=;
+        b=A0fHuu6Lu9CfsnW6TUc87oHq4y/hwsRxXnbLgwbRwx9/B6d8y8UOVlDD4SjAONrqe3
+         dN9BvfHACSa99/jWvqLEXOfUl6h3tFQHwR5w5Z11q2IPYSE/92p5nu+nCe0HxO9zUyXO
+         Pu49pRorHCKte3zNbKA5jCrnzSifsAtq0zRhygfnL6tsAdQ4teJY5/6ceNB+fxuJfp4q
+         OWq0MCn77UzVpAT/Rp7AfZl7LPGbZs6KJtqAtVH7up/Zl3JFARjUBsguJqT079vNH6Uo
+         6l9vFNEX3JIlKZ0ezYllE2F0yVJW+uBwA+FR8Ipd10toLVB90ZZXTkaiE6lGZ9drvALz
+         14Ng==
+X-Gm-Message-State: ABy/qLbChDfhNsuDa5phryES3WWX2Hb7Y27VPq9njjYAAm5SsM0nBk2H
+        fGECQGnIfz12BUoK/D2rf0aQbZ5IGFpEAkyLOheZZ2t12H5o
+X-Google-Smtp-Source: APBJJlGz91PJyci96JqRqvreut/VZA/FmJ+2GqfmYvlaiHQomiz+HZpESsyrD4+yN52oaQ15yavfacHRz1ryf0B2mAOFOWswKxMO
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230621063825.268890-6-mshavit@google.com>
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6NAM11FT040:EE_|PH7PR12MB7114:EE_
-X-MS-Office365-Filtering-Correlation-Id: ca0d5150-9eb5-4779-e20c-08db83448d89
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dwt+Rz9S4SD8uJDCf1GdCjboR7UGeYvnEfH9ZV+fbylgMHhE6dbROqd2+9YIHwLyQYtWpsvSf7/0wfr5UnIRQu1NSS+APKC3LPnYFozA2s+Qxa58tAK5hJWHv06VJki8B3s5zTntMhiVUNoAaiJSjBRZgbIYFPsMI3JdcynF4hPH3MPbXsN0LGyj3wAfkfw0dy0wrTzYPPt8VlHGgE9wA+NUajbgMXc2ZjMKv0qPricIqQ46tGUrHUHB5ZKVLlM9bNhbfqmQ2laFTAzbaK7DVeVEitUaHZlM3NY6B8QmA2OkPtl7QWNRWh+9p0qlHfHdk4Yr3qxoTmTW674z+plJCbqCgMiCZIkuUaKxQogNa+GjW/JOIT7i7ArZK31fZOqpgahF3AWnQBbzJZ8M0PCkCNy/R0onglgRCi9lk+2Rsod2gYB4LbD4zHO2MWn9j6gsA+b9SNNqo7Y5fMuWXXBgEeVnSmkMJgsLwG43empDeCbkWUfW/RdpMgYbPxrsJSfItl185NUA6pBafwWLLvn7cnoCRRGlfnJdFmJBJBVdrFczpnd/2WkQ9ciHlqGsnuwiQGDHU2tui6eo9ZYxOJEO/K7+mjiaS3qQg6LivG6Z3JT0RBKvUbnIC+2bVJI/zkFQjMu1jKUtlZtdMW/m4yXoO1minHdoQmsJPFcpNqoMz5sqvO0DiaBxMTNHOjCuw3c195IKau80ESWbceGeQi6gWK6wmzAqZfw8QGHjh8XJMEwR3L8yDdwXtgWlXinjYS92
-X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(376002)(39860400002)(136003)(396003)(346002)(451199021)(46966006)(36840700001)(40470700004)(8936002)(8676002)(41300700001)(54906003)(55016003)(40480700001)(5660300002)(2906002)(316002)(4744005)(6916009)(4326008)(70586007)(70206006)(40460700003)(426003)(9686003)(33716001)(478600001)(186003)(86362001)(336012)(82310400005)(356005)(7636003)(47076005)(82740400003)(26005)(36860700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2023 01:57:45.7133
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ca0d5150-9eb5-4779-e20c-08db83448d89
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT040.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7114
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6870:5a96:b0:1b0:5c0a:c047 with SMTP id
+ dt22-20020a0568705a9600b001b05c0ac047mr522481oab.2.1689213655740; Wed, 12 Jul
+ 2023 19:00:55 -0700 (PDT)
+Date:   Wed, 12 Jul 2023 19:00:55 -0700
+In-Reply-To: <000000000000cfe6f305ee84ff1f@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e6a390060054b370@google.com>
+Subject: Re: [syzbot] [reiserfs?] possible deadlock in reiserfs_dirty_inode
+From:   syzbot <syzbot+c319bb5b1014113a92cf@syzkaller.appspotmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        reiserfs-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 21, 2023 at 02:37:17PM +0800, Michael Shavit wrote:
- 
-> Insert CDs for STAGE_1 domains into a CD table owned by the
-> arm_smmu_master. Remove the CD table that was owned by arm_smmu_domain.
+syzbot has found a reproducer for the following issue on:
 
-> @@ -718,10 +718,7 @@ struct arm_smmu_domain {
-> 
->         enum arm_smmu_domain_stage              stage;
->         union {
-> -               struct {
->                 struct arm_smmu_ctx_desc        cd;
-> -               struct arm_smmu_s1_cfg          s1_cfg;
-> -               };
->                 struct arm_smmu_s2_cfg          s2_cfg;
->         };
+HEAD commit:    e40939bbfc68 Merge branch 'for-next/core' into for-kernelci
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=1070f4bca80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c84f463eb74eab24
+dashboard link: https://syzkaller.appspot.com/bug?extid=c319bb5b1014113a92cf
+compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
+userspace arch: arm64
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=112c37e2a80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12e4c2daa80000
 
-So the arm_smmu_domain looks like an object representing either:
-1) a CD table + (if !IDENTITY) an S1 IOPT for default substream
-2) an S2 IOPT
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/257596b75aaf/disk-e40939bb.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/9c75b8d61081/vmlinux-e40939bb.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/8f0233129f4f/Image-e40939bb.gz.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/05e314af739c/mount_0.gz
 
-I wonder if we need something like struct arm_smmu_subdomain to
-represent a substream, because now an IOMMU_DOMAIN_SVA domain is
-represented by this struct arm_smmu_domain too, which is neither
-of the two cases in the list above.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+c319bb5b1014113a92cf@syzkaller.appspotmail.com
 
-Thanks
-Nicolin
+======================================================
+WARNING: possible circular locking dependency detected
+6.4.0-rc7-syzkaller-ge40939bbfc68 #0 Not tainted
+------------------------------------------------------
+syz-executor365/5984 is trying to acquire lock:
+ffff0000db0d17d8 (&mm->mmap_lock
+){++++}-{3:3}, at: __might_fault+0x9c/0x124 mm/memory.c:5731
+
+but task is already holding lock:
+ffff0000c2367090 (&sbi->lock){+.+.}-{3:3}, at: reiserfs_write_lock+0x7c/0xe8 fs/reiserfs/lock.c:27
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #1 (&sbi->lock){+.+.}-{3:3}:
+       __mutex_lock_common+0x190/0x21a0 kernel/locking/mutex.c:603
+       __mutex_lock kernel/locking/mutex.c:747 [inline]
+       mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:799
+       reiserfs_write_lock+0x7c/0xe8 fs/reiserfs/lock.c:27
+       reiserfs_dirty_inode+0xe4/0x204 fs/reiserfs/super.c:704
+       __mark_inode_dirty+0x2b0/0x10f4 fs/fs-writeback.c:2424
+       generic_update_time fs/inode.c:1859 [inline]
+       inode_update_time fs/inode.c:1872 [inline]
+       touch_atime+0x5d8/0x8d4 fs/inode.c:1944
+       file_accessed include/linux/fs.h:2198 [inline]
+       generic_file_mmap+0xb0/0x11c mm/filemap.c:3606
+       call_mmap include/linux/fs.h:1873 [inline]
+       mmap_region+0xc00/0x1aa4 mm/mmap.c:2649
+       do_mmap+0xa00/0x1108 mm/mmap.c:1394
+       vm_mmap_pgoff+0x198/0x3b8 mm/util.c:543
+       ksys_mmap_pgoff+0x3c8/0x5b0 mm/mmap.c:1440
+       __do_sys_mmap arch/arm64/kernel/sys.c:28 [inline]
+       __se_sys_mmap arch/arm64/kernel/sys.c:21 [inline]
+       __arm64_sys_mmap+0xf8/0x110 arch/arm64/kernel/sys.c:21
+       __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
+       invoke_syscall+0x98/0x2c0 arch/arm64/kernel/syscall.c:52
+       el0_svc_common+0x138/0x244 arch/arm64/kernel/syscall.c:142
+       do_el0_svc+0x64/0x198 arch/arm64/kernel/syscall.c:191
+       el0_svc+0x4c/0x160 arch/arm64/kernel/entry-common.c:647
+       el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:665
+       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
+
+-> #0 (&mm->mmap_lock){++++}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:3113 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3232 [inline]
+       validate_chain kernel/locking/lockdep.c:3847 [inline]
+       __lock_acquire+0x3308/0x7604 kernel/locking/lockdep.c:5088
+       lock_acquire+0x23c/0x71c kernel/locking/lockdep.c:5705
+       __might_fault+0xc4/0x124 mm/memory.c:5732
+       reiserfs_ioctl+0x10c/0x454 fs/reiserfs/ioctl.c:96
+       vfs_ioctl fs/ioctl.c:51 [inline]
+       __do_sys_ioctl fs/ioctl.c:870 [inline]
+       __se_sys_ioctl fs/ioctl.c:856 [inline]
+       __arm64_sys_ioctl+0x14c/0x1c8 fs/ioctl.c:856
+       __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
+       invoke_syscall+0x98/0x2c0 arch/arm64/kernel/syscall.c:52
+       el0_svc_common+0x138/0x244 arch/arm64/kernel/syscall.c:142
+       do_el0_svc+0x64/0x198 arch/arm64/kernel/syscall.c:191
+       el0_svc+0x4c/0x160 arch/arm64/kernel/entry-common.c:647
+       el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:665
+       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
+
+other info that might help us debug this:
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&sbi->lock);
+                               lock(&mm->mmap_lock);
+                               lock(&sbi->lock);
+  rlock(&mm->mmap_lock);
+
+ *** DEADLOCK ***
+
+1 lock held by syz-executor365/5984:
+ #0: ffff0000c2367090 (&sbi->lock){+.+.}-{3:3}, at: reiserfs_write_lock+0x7c/0xe8 fs/reiserfs/lock.c:27
+
+stack backtrace:
+CPU: 1 PID: 5984 Comm: syz-executor365 Not tainted 6.4.0-rc7-syzkaller-ge40939bbfc68 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/27/2023
+Call trace:
+ dump_backtrace+0x1b8/0x1e4 arch/arm64/kernel/stacktrace.c:233
+ show_stack+0x2c/0x44 arch/arm64/kernel/stacktrace.c:240
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd0/0x124 lib/dump_stack.c:106
+ dump_stack+0x1c/0x28 lib/dump_stack.c:113
+ print_circular_bug+0x150/0x1b8 kernel/locking/lockdep.c:2066
+ check_noncircular+0x2cc/0x378 kernel/locking/lockdep.c:2188
+ check_prev_add kernel/locking/lockdep.c:3113 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3232 [inline]
+ validate_chain kernel/locking/lockdep.c:3847 [inline]
+ __lock_acquire+0x3308/0x7604 kernel/locking/lockdep.c:5088
+ lock_acquire+0x23c/0x71c kernel/locking/lockdep.c:5705
+ __might_fault+0xc4/0x124 mm/memory.c:5732
+ reiserfs_ioctl+0x10c/0x454 fs/reiserfs/ioctl.c:96
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:870 [inline]
+ __se_sys_ioctl fs/ioctl.c:856 [inline]
+ __arm64_sys_ioctl+0x14c/0x1c8 fs/ioctl.c:856
+ __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
+ invoke_syscall+0x98/0x2c0 arch/arm64/kernel/syscall.c:52
+ el0_svc_common+0x138/0x244 arch/arm64/kernel/syscall.c:142
+ do_el0_svc+0x64/0x198 arch/arm64/kernel/syscall.c:191
+ el0_svc+0x4c/0x160 arch/arm64/kernel/entry-common.c:647
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:665
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
+
+
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
