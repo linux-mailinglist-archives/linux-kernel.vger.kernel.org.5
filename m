@@ -2,292 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE2C87523B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 15:27:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28D9C7523B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 15:27:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234848AbjGMN1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 09:27:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59800 "EHLO
+        id S235298AbjGMN1K convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 13 Jul 2023 09:27:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235266AbjGMN1X (ORCPT
+        with ESMTP id S235231AbjGMN0s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 09:27:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09E38B4
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 06:26:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689254751;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nw20ycbPPxi/SRkqYxH6undVF0+uhwnpTJXu5xv9bTY=;
-        b=TARLDh6qqc6uuTqDGgzZBfEnNz1nvIHVoUKEyjhAEuDoVRyBKOq2hUx3Do/x2vQPrASrns
-        lA+EGT4PLE/Sx6LODBoe7KeckHjsA9JfhydIDWAn+/DarrhyZC/VSuLNoDG5pYjjOdt5MT
-        dTJKiZkmkg3XDbDSy3drYkbRXC65v+g=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-449-qkq5pNpGPQquBkT8x9rKNw-1; Thu, 13 Jul 2023 09:25:40 -0400
-X-MC-Unique: qkq5pNpGPQquBkT8x9rKNw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 232623C160E3;
-        Thu, 13 Jul 2023 13:25:36 +0000 (UTC)
-Received: from lorien.usersys.redhat.com (unknown [10.39.192.40])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 450052166B27;
-        Thu, 13 Jul 2023 13:25:32 +0000 (UTC)
-Date:   Thu, 13 Jul 2023 09:25:28 -0400
-From:   Phil Auld <pauld@redhat.com>
-To:     Benjamin Segall <bsegall@google.com>
-Cc:     linux-kernel@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH v6 2/2] Sched/fair: Block nohz tick_stop when cfs
- bandwidth in use
-Message-ID: <20230713132528.GB13342@lorien.usersys.redhat.com>
-References: <20230712133357.381137-1-pauld@redhat.com>
- <20230712133357.381137-3-pauld@redhat.com>
- <xm264jm8g4q3.fsf@google.com>
+        Thu, 13 Jul 2023 09:26:48 -0400
+Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51177173B
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 06:26:19 -0700 (PDT)
+Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-1b0606bee45so581107fac.3
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 06:26:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689254765; x=1691846765;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bg9WT8GiqVL500V6bD8ca2KAHdtJ4A5XuJqJli1xLtc=;
+        b=GV96dK0eS1OTVXqoMDvb84dif4NfeEEC3mPBmOUygp/MTCYix+qBFz03p43/nClIeg
+         /4OLT3htqt8aNsk5RYe8BVv3PQiaUsxHbwqqjsh5AMJAf8Ve74M/r8CglYE1/E7oxwgJ
+         /Md/Ytu8ovR9ZVqKJNIrkyN0CiD6LWSZ0s4odssjalLn9/9vf/Wl9IukGaU0bX+xYJbk
+         SuEGriWyp7ckZXsDC4ZkO02w6izXEuiB+uY1ouRcvVDuaqyiIGYdhIqWdA5MllD8ktsu
+         XpiRli8r2SnCnA2Ben8mbcrpbMDva8JgcHJqrmY5338i/yrJ0sHCaLHGaQFFPLoAucuE
+         aTWw==
+X-Gm-Message-State: ABy/qLYteIaVgY76Sgy2zctr0WDpI9LFs5tmds1iNqmJhwwjpZeqDt7X
+        6MSXZ234SIraxhccmdy96DwoBmOcJ9tyvYzr
+X-Google-Smtp-Source: APBJJlHo6uFhEuwtkNADqDUgNbzxuEI82N5X7wTjA/6E90deIq3TGb4H8730q4nvf9XAwkkHC6srsQ==
+X-Received: by 2002:a05:6870:fb87:b0:1b3:7f59:c681 with SMTP id kv7-20020a056870fb8700b001b37f59c681mr1772952oab.46.1689254765230;
+        Thu, 13 Jul 2023 06:26:05 -0700 (PDT)
+Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com. [209.85.160.45])
+        by smtp.gmail.com with ESMTPSA id i19-20020a4a8d93000000b005660ed0becesm2858752ook.39.2023.07.13.06.26.04
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 Jul 2023 06:26:04 -0700 (PDT)
+Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-1b06ea7e7beso596309fac.0
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 06:26:04 -0700 (PDT)
+X-Received: by 2002:a05:6870:589b:b0:1b0:40b0:114c with SMTP id
+ be27-20020a056870589b00b001b040b0114cmr2014075oab.43.1689254764671; Thu, 13
+ Jul 2023 06:26:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <xm264jm8g4q3.fsf@google.com>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230609170941.1150941-1-javierm@redhat.com> <20230609170941.1150941-5-javierm@redhat.com>
+ <CAMuHMdVXhi52KfpCmnum+9t74UWP+AOLE95xQU6VV6Nz=VHk1Q@mail.gmail.com> <87fs5sgdfh.fsf@minerva.mail-host-address-is-not-set>
+In-Reply-To: <87fs5sgdfh.fsf@minerva.mail-host-address-is-not-set>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 13 Jul 2023 15:25:49 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWmJjGX+s=z0bBMDz0=zqZJHrGhkzWyRkmstS0eW9aiTg@mail.gmail.com>
+Message-ID: <CAMuHMdWmJjGX+s=z0bBMDz0=zqZJHrGhkzWyRkmstS0eW9aiTg@mail.gmail.com>
+Subject: Re: [PATCH v2 4/5] drm/ssd130x: Don't allocate buffers on each plane update
+To:     Javier Martinez Canillas <javierm@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>,
+        dri-devel@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 03:11:32PM -0700 Benjamin Segall wrote:
-> Phil Auld <pauld@redhat.com> writes:
-> 
-> > CFS bandwidth limits and NOHZ full don't play well together.  Tasks
-> > can easily run well past their quotas before a remote tick does
-> > accounting.  This leads to long, multi-period stalls before such
-> > tasks can run again. Currently, when presented with these conflicting
-> > requirements the scheduler is favoring nohz_full and letting the tick
-> > be stopped. However, nohz tick stopping is already best-effort, there
-> > are a number of conditions that can prevent it, whereas cfs runtime
-> > bandwidth is expected to be enforced.
+Hi Javier,
+
+On Thu, Jul 13, 2023 at 3:21 PM Javier Martinez Canillas
+<javierm@redhat.com> wrote:
+> Geert Uytterhoeven <geert@linux-m68k.org> writes:
+> > On Fri, Jun 9, 2023 at 7:09 PM Javier Martinez Canillas
+> > <javierm@redhat.com> wrote:
+> >> The resolutions for these panels are fixed and defined in the Device Tree,
+> >> so there's no point to allocate the buffers on each plane update and that
+> >> can just be done once.
+> >>
+> >> Let's do the allocation and free on the encoder enable and disable helpers
+> >> since that's where others initialization and teardown operations are done.
+> >>
+> >> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+> >> Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
+> >> ---
+> >>
+> >> (no changes since v1)
 > >
-> > Make the scheduler favor bandwidth over stopping the tick by setting
-> > TICK_DEP_BIT_SCHED when the only running task is a cfs task with
-> > runtime limit enabled. We use cfs_b->hierarchical_quota to
-> > determine if the task requires the tick.
+> > Thanks for your patch, which is now commit 49d7d581ceaf4cf8
+> > ("drm/ssd130x: Don't allocate buffers on each plane update") in
+> > drm-misc/for-linux-next.
 > >
-> > Add check in pick_next_task_fair() as well since that is where
-> > we have a handle on the task that is actually going to be running.
+> >> --- a/drivers/gpu/drm/solomon/ssd130x.c
+> >> +++ b/drivers/gpu/drm/solomon/ssd130x.c
+> >> @@ -701,14 +709,22 @@ static void ssd130x_encoder_helper_atomic_enable(struct drm_encoder *encoder,
+> >>                 return;
+> >>
+> >>         ret = ssd130x_init(ssd130x);
+> >> -       if (ret) {
+> >> -               ssd130x_power_off(ssd130x);
+> >> -               return;
+> >> -       }
+> >> +       if (ret)
+> >> +               goto power_off;
+> >> +
+> >> +       ret = ssd130x_buf_alloc(ssd130x);
 > >
-> > Add check in sched_can_stop_tick() to cover some edge cases such
-> > as nr_running going from 2->1 and the 1 remains the running task.
+> > This appears to be too late, causing a NULL pointer dereference:
 > >
-> > Add sched_feat HZ_BW (off by default) to control the tick_stop
-> > behavior.
-> 
-> I think this looks good now.
-> Reviewed-By: Ben Segall <bsegall@google.com>
 >
+> Thanks for reporting this issue.
+>
+> > [   59.302761] [<c0303d90>] ssd130x_update_rect.isra.0+0x13c/0x340
+> > [   59.304231] [<c0304200>]
+> > ssd130x_primary_plane_helper_atomic_update+0x26c/0x284
+> > [   59.305716] [<c02f8d54>] drm_atomic_helper_commit_planes+0xfc/0x27c
+> >
+>
+> I wonder how this could be too late. I thought that the encoder
+> .atomic_enable callback would be called before any plane .atomic_update.
+>
+> > Bailing out from ssd130x_update_rect() when data_array is still NULL
+> > fixes that.
+> >
+>
+> Maybe we can add that with a drm_WARN() ? I still want to understand how
+> a plane update can happen before an encoder enable.
 
-Thanks for your help and patience!
+Full log is:
 
+    ssd130x-i2c 0-003c: supply vcc not found, using dummy regulator
+    [drm] Initialized ssd130x 1.0.0 20220131 for 0-003c on minor 0
+    ssd130x-i2c 0-003c: [drm] surface width(128), height(32), bpp(1)
+and format(R1   little-endian (0x20203152))
+    Unable to handle kernel NULL pointer dereference at virtual address 00000000
+    Oops [#1]
+    CPU: 0 PID: 1 Comm: swapper Not tainted
+6.5.0-rc1-orangecrab-02219-g0a529a1e4bf4 #565
+    epc : ssd130x_update_rect.isra.0+0x13c/0x340
+     ra : ssd130x_update_rect.isra.0+0x2bc/0x340
+    epc : c0303d90 ra : c0303f10 sp : c182b5b0
+     gp : c06d37f0 tp : c1828000 t0 : 00000064
+     t1 : 00000000 t2 : 00000000 s0 : c182b600
+     s1 : c2044000 a0 : 00000000 a1 : 00000000
+     a2 : 00000008 a3 : a040f080 a4 : 00000000
+     a5 : 00000000 a6 : 00001000 a7 : 00000008
+     s2 : 00000004 s3 : 00000080 s4 : c2045000
+     s5 : 00000010 s6 : 00000080 s7 : 00000000
+     s8 : 00000000 s9 : a040f000 s10: 00000008
+     s11: 00000000 t3 : 00000153 t4 : c2050ef4
+     t5 : c20447a0 t6 : 00000080
+    status: 00000120 badaddr: 00000000 cause: 0000000f
+    [<c0303d90>] ssd130x_update_rect.isra.0+0x13c/0x340
+    [<c0304200>] ssd130x_primary_plane_helper_atomic_update+0x26c/0x284
+    [<c02f8d54>] drm_atomic_helper_commit_planes+0xfc/0x27c
+    [<c02f9314>] drm_atomic_helper_commit_tail+0x5c/0xb4
+    [<c02f94fc>] commit_tail+0x190/0x1b8
+    [<c02f99fc>] drm_atomic_helper_commit+0x194/0x1c0
+    [<c02c5d00>] drm_atomic_commit+0xa4/0xe4
+    [<c02cce40>] drm_client_modeset_commit_atomic+0x244/0x278
+    [<c02ccef0>] drm_client_modeset_commit_locked+0x7c/0x1bc
+    [<c02cd064>] drm_client_modeset_commit+0x34/0x64
+    [<c0301a78>] __drm_fb_helper_restore_fbdev_mode_unlocked+0xc4/0xe8
+    [<c0303424>] drm_fb_helper_set_par+0x38/0x58
+    [<c027c410>] fbcon_init+0x294/0x534
+    [<c02af188>] visual_init+0xac/0x114
+    [<c02b1834>] do_bind_con_driver.isra.0+0x1bc/0x39c
+    [<c02b2fcc>] do_take_over_console+0x128/0x1b4
+    [<c027ad24>] do_fbcon_takeover+0x74/0xfc
+    [<c027e704>] fbcon_fb_registered+0x168/0x1b4
+    [<c0275c84>] register_framebuffer+0x180/0x238
+    [<c03017a4>] __drm_fb_helper_initial_config_and_unlock+0x328/0x538
+    [<c0303844>] drm_fb_helper_initial_config+0x40/0x54
+    [<c0300818>] drm_fbdev_generic_client_hotplug+0x98/0xdc
+    [<c0300c5c>] drm_fbdev_generic_setup+0x9c/0x178
+    [<c0304fa0>] ssd130x_probe+0x5e0/0x788
+    [<c030522c>] ssd130x_i2c_probe+0x4c/0x70
+    [<c0358464>] i2c_device_probe+0x120/0x1f0
+    [<c030e5a4>] really_probe+0xb8/0x30c
+    [<c030e974>] __driver_probe_device+0x17c/0x1c8
+    [<c030ea0c>] driver_probe_device+0x4c/0x140
+    [<c030ebe4>] __device_attach_driver+0xe4/0x150
+    [<c030ccc4>] bus_for_each_drv+0x8c/0x100
+    [<c030f034>] __device_attach+0x12c/0x1ac
+    [<c030f3e0>] device_initial_probe+0x18/0x28
+    [<c030cf14>] bus_probe_device+0xcc/0xd0
+    [<c030b274>] device_add+0x5d8/0x7b4
+    [<c030b474>] device_register+0x24/0x38
+    [<c0358f24>] i2c_new_client_device+0x1a8/0x2b8
+    [<c035b960>] of_i2c_register_devices+0xdc/0x164
+    [<c0359750>] i2c_register_adapter+0x1b8/0x56c
+    [<c0359eb0>] i2c_add_adapter+0x94/0x100
+    [<c035d47c>] __i2c_bit_add_bus+0xc0/0x460
+    [<c035d838>] i2c_bit_add_bus+0x1c/0x2c
+    [<c035da20>] litex_i2c_probe+0x108/0x164
+    [<c0310de4>] platform_probe+0x54/0xb0
+    [<c030e5a4>] really_probe+0xb8/0x30c
+    [<c030e974>] __driver_probe_device+0x17c/0x1c8
+    [<c030ea0c>] driver_probe_device+0x4c/0x140
+    [<c030ed74>] __driver_attach+0x124/0x1f4
+    [<c030c880>] bus_for_each_dev+0x84/0xf4
+    [<c030f4f8>] driver_attach+0x28/0x38
+    [<c030d174>] bus_add_driver+0x120/0x214
+    [<c030fc90>] driver_register+0x70/0x15c
+    [<c0311d98>] __platform_driver_register+0x28/0x38
+    [<c0520958>] litex_i2c_driver_init+0x24/0x34
+    [<c0507fe8>] do_one_initcall+0x80/0x238
+    [<c05083d4>] kernel_init_freeable+0x1b4/0x238
+    [<c04fdd9c>] kernel_init+0x24/0x144
+    [<c00022d8>] ret_from_fork+0x10/0x24
 
-Cheers,
-Phil
+Gr{oetje,eeting}s,
 
-
-> >
-> > Signed-off-by: Phil Auld <pauld@redhat.com>
-> > Cc: Ingo Molnar <mingo@redhat.com>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: Vincent Guittot <vincent.guittot@linaro.org>
-> > Cc: Juri Lelli <juri.lelli@redhat.com>
-> > Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> > Cc: Valentin Schneider <vschneid@redhat.com>
-> > Cc: Ben Segall <bsegall@google.com>
-> > Cc: Frederic Weisbecker <frederic@kernel.org>
-> > ---
-> > v6: restore check for fair_sched_class
-> >
-> > v5: Reworked checks to use newly-fixed cfs_b->hierarchical_quota to
-> > check for bw
-> > constraints. 
-> >
-> > v4: Made checks for runtime_enabled hierarchical. 
-> >
-> > v3: Moved sched_cfs_bandwidth_active() prototype to sched.h outside of
-> > guards to
-> > silence -Wmissing-prototypes.
-> >
-> > v2:  Ben pointed out that the bit could get cleared in the dequeue path
-> > if we migrate a newly enqueued task without preempting curr. Added a
-> > check for that edge case to sched_can_stop_tick. Removed the call to
-> > sched_can_stop_tick from sched_fair_update_stop_tick since it was
-> > redundant.
-> >
-> >  kernel/sched/core.c     | 26 ++++++++++++++++++++++
-> >  kernel/sched/fair.c     | 49 +++++++++++++++++++++++++++++++++++++++++
-> >  kernel/sched/features.h |  2 ++
-> >  kernel/sched/sched.h    |  1 +
-> >  4 files changed, 78 insertions(+)
-> >
-> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > index f80697a79baf..8a2ed4c0b709 100644
-> > --- a/kernel/sched/core.c
-> > +++ b/kernel/sched/core.c
-> > @@ -1194,6 +1194,20 @@ static void nohz_csd_func(void *info)
-> >  #endif /* CONFIG_NO_HZ_COMMON */
-> >  
-> >  #ifdef CONFIG_NO_HZ_FULL
-> > +static inline bool __need_bw_check(struct rq *rq, struct task_struct *p)
-> > +{
-> > +	if (rq->nr_running != 1)
-> > +		return false;
-> > +
-> > +	if (p->sched_class != &fair_sched_class)
-> > +		return false;
-> > +
-> > +	if (!task_on_rq_queued(p))
-> > +		return false;
-> > +
-> > +	return true;
-> > +}
-> > +
-> >  bool sched_can_stop_tick(struct rq *rq)
-> >  {
-> >  	int fifo_nr_running;
-> > @@ -1229,6 +1243,18 @@ bool sched_can_stop_tick(struct rq *rq)
-> >  	if (rq->nr_running > 1)
-> >  		return false;
-> >  
-> > +	/*
-> > +	 * If there is one task and it has CFS runtime bandwidth constraints
-> > +	 * and it's on the cpu now we don't want to stop the tick.
-> > +	 * This check prevents clearing the bit if a newly enqueued task here is
-> > +	 * dequeued by migrating while the constrained task continues to run.
-> > +	 * E.g. going from 2->1 without going through pick_next_task().
-> > +	 */
-> > +	if (sched_feat(HZ_BW) && __need_bw_check(rq, rq->curr)) {
-> > +		if (cfs_task_bw_constrained(rq->curr))
-> > +			return false;
-> > +	}
-> > +
-> >  	return true;
-> >  }
-> >  #endif /* CONFIG_NO_HZ_FULL */
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index d9b3d4617e16..acd9f317aad1 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -6140,6 +6140,46 @@ static void __maybe_unused unthrottle_offline_cfs_rqs(struct rq *rq)
-> >  	rcu_read_unlock();
-> >  }
-> >  
-> > +bool cfs_task_bw_constrained(struct task_struct *p)
-> > +{
-> > +	struct cfs_rq *cfs_rq = task_cfs_rq(p);
-> > +
-> > +	if (!cfs_bandwidth_used())
-> > +		return false;
-> > +
-> > +	if (cfs_rq->runtime_enabled ||
-> > +	    tg_cfs_bandwidth(cfs_rq->tg)->hierarchical_quota != RUNTIME_INF)
-> > +		return true;
-> > +
-> > +	return false;
-> > +}
-> > +
-> > +#ifdef CONFIG_NO_HZ_FULL
-> > +/* called from pick_next_task_fair() */
-> > +static void sched_fair_update_stop_tick(struct rq *rq, struct task_struct *p)
-> > +{
-> > +	int cpu = cpu_of(rq);
-> > +
-> > +	if (!sched_feat(HZ_BW) || !cfs_bandwidth_used())
-> > +		return;
-> > +
-> > +	if (!tick_nohz_full_cpu(cpu))
-> > +		return;
-> > +
-> > +	if (rq->nr_running != 1)
-> > +		return;
-> > +
-> > +	/*
-> > +	 *  We know there is only one task runnable and we've just picked it. The
-> > +	 *  normal enqueue path will have cleared TICK_DEP_BIT_SCHED if we will
-> > +	 *  be otherwise able to stop the tick. Just need to check if we are using
-> > +	 *  bandwidth control.
-> > +	 */
-> > +	if (cfs_task_bw_constrained(p))
-> > +		tick_nohz_dep_set_cpu(cpu, TICK_DEP_BIT_SCHED);
-> > +}
-> > +#endif
-> > +
-> >  #else /* CONFIG_CFS_BANDWIDTH */
-> >  
-> >  static inline bool cfs_bandwidth_used(void)
-> > @@ -6182,9 +6222,17 @@ static inline struct cfs_bandwidth *tg_cfs_bandwidth(struct task_group *tg)
-> >  static inline void destroy_cfs_bandwidth(struct cfs_bandwidth *cfs_b) {}
-> >  static inline void update_runtime_enabled(struct rq *rq) {}
-> >  static inline void unthrottle_offline_cfs_rqs(struct rq *rq) {}
-> > +bool cfs_task_bw_constrained(struct task_struct *p)
-> > +{
-> > +	return false;
-> > +}
-> >  
-> >  #endif /* CONFIG_CFS_BANDWIDTH */
-> >  
-> > +#if !defined(CONFIG_CFS_BANDWIDTH) || !defined(CONFIG_NO_HZ_FULL)
-> > +static inline void sched_fair_update_stop_tick(struct rq *rq, struct task_struct *p) {}
-> > +#endif
-> > +
-> >  /**************************************************
-> >   * CFS operations on tasks:
-> >   */
-> > @@ -8098,6 +8146,7 @@ done: __maybe_unused;
-> >  		hrtick_start_fair(rq, p);
-> >  
-> >  	update_misfit_status(p, rq);
-> > +	sched_fair_update_stop_tick(rq, p);
-> >  
-> >  	return p;
-> >  
-> > diff --git a/kernel/sched/features.h b/kernel/sched/features.h
-> > index ee7f23c76bd3..6fdf1fdf6b17 100644
-> > --- a/kernel/sched/features.h
-> > +++ b/kernel/sched/features.h
-> > @@ -101,3 +101,5 @@ SCHED_FEAT(LATENCY_WARN, false)
-> >  
-> >  SCHED_FEAT(ALT_PERIOD, true)
-> >  SCHED_FEAT(BASE_SLICE, true)
-> > +
-> > +SCHED_FEAT(HZ_BW, false)
-> > diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> > index 63822c9238cc..d6d346bc78aa 100644
-> > --- a/kernel/sched/sched.h
-> > +++ b/kernel/sched/sched.h
-> > @@ -465,6 +465,7 @@ extern void init_cfs_bandwidth(struct cfs_bandwidth *cfs_b, struct cfs_bandwidth
-> >  extern void __refill_cfs_bandwidth_runtime(struct cfs_bandwidth *cfs_b);
-> >  extern void start_cfs_bandwidth(struct cfs_bandwidth *cfs_b);
-> >  extern void unthrottle_cfs_rq(struct cfs_rq *cfs_rq);
-> > +extern bool cfs_task_bw_constrained(struct task_struct *p);
-> >  
-> >  extern void init_tg_rt_entry(struct task_group *tg, struct rt_rq *rt_rq,
-> >  		struct sched_rt_entity *rt_se, int cpu,
-> 
+                        Geert
 
 -- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
