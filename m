@@ -2,54 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1878B752417
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 15:42:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 778A575241A
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 15:42:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234962AbjGMNm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 09:42:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44012 "EHLO
+        id S235166AbjGMNmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 09:42:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234837AbjGMNm0 (ORCPT
+        with ESMTP id S235139AbjGMNmb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 09:42:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 106ACC1
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 06:42:26 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A2104612FC
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 13:42:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51944C433C8;
-        Thu, 13 Jul 2023 13:42:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689255745;
-        bh=Pzvx/onzkFLeZHXmurZO43gv7Xi6QjhZYg5WaQZIbdw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iw2YO4N9xwGBEPPMtdQHDE6nEVb+6gWjZq3DNx1c6rnomEZexGU9EMmEN1Gfg+77d
-         E/M9NCwx3zCbzhYHDdjcIqZnt5CDm/zr3YyzaE6e9y6Sdpnoe3N5eNePrLTvUW1bIT
-         5wOExWfCfsxj737uyvWKyyptMuL6lAnLjLbPLqV0xmS7OMY9fktt/tsOeWv0GDWith
-         KO/xfi3oDjF566L1QiC6o532j3VeP2S9Ozo91THTkL7b2o1eafCY/ET7fuxur7J+M2
-         6fytkL96d4vXg/VVXgnWn5Mj+EdzDETyfbd62/U/I4iPhJ9TkHin9LwO24xo/92mfO
-         wboXpE65kwUDg==
-Date:   Thu, 13 Jul 2023 14:42:21 +0100
-From:   Lee Jones <lee@kernel.org>
-To:     Yangtao Li <frank.li@vivo.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 7/7] mfd: hi655x-pmic: Convert to
- devm_platform_ioremap_resource()
-Message-ID: <20230713134221.GC10768@google.com>
-References: <20230706113939.1178-1-frank.li@vivo.com>
- <20230706113939.1178-7-frank.li@vivo.com>
+        Thu, 13 Jul 2023 09:42:31 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF150E4F;
+        Thu, 13 Jul 2023 06:42:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=eqRFjEfnQpKX3SCwpqVqk5MwPZ2HabqrXxJtbeOAy2Y=; b=Xpm1APX1flTFZG414QOtZyFKnZ
+        XZBeRsaIEzyZfvFraA3stqUA2/UbL54AdKEFB+YFck5dODAOwA4k41eWWwLWsgZwoL1ESKsTR+JEB
+        qPXiqSPVl4SVXOItL3fULoS6vqFOJRZkbdE2j9PPZ9qSq5PDb1pocBH6M6GYG3ZDPueKcKm/8/uPg
+        lOGhsoeZM+ARDzp4/K+xXoJlYN9P3BMDpvKX5OnSNFOFq8PDZNz4Zc2ZO1YrEtObG2IUwAVSYIYXJ
+        g43md3NOFX+J50BWHA43iAphI20mVnWgzi+bR/i913Yh0j0WnfUcmaRqX2QPr7bvlBolFXHd79J4X
+        rjzKr0XA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qJwaQ-000Bur-DA; Thu, 13 Jul 2023 13:42:26 +0000
+Date:   Thu, 13 Jul 2023 14:42:26 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Christian Borntraeger <borntraeger@linux.ibm.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        linux-s390 <linux-s390@vger.kernel.org>
+Subject: Re: [PATCH v5 00/38] New page table range API
+Message-ID: <ZK//Qnfhx+ihtvlO@casper.infradead.org>
+References: <20230710204339.3554919-1-willy@infradead.org>
+ <8cfc3eef-e387-88e1-1006-2d7d97a09213@linux.ibm.com>
+ <ZK1My5hQYC2Kb6G1@casper.infradead.org>
+ <56ca93af-67dc-9d10-d27e-00c8d7c20f1b@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230706113939.1178-7-frank.li@vivo.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <56ca93af-67dc-9d10-d27e-00c8d7c20f1b@linux.ibm.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,17 +56,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 06 Jul 2023, Yangtao Li wrote:
-
-> Use devm_platform_ioremap_resource() to simplify code.
+On Thu, Jul 13, 2023 at 12:42:44PM +0200, Christian Borntraeger wrote:
 > 
-> Signed-off-by: Yangtao Li <frank.li@vivo.com>
-> ---
->  drivers/mfd/hi655x-pmic.c       | 3 +--
->  include/linux/mfd/hi655x-pmic.h | 1 -
->  2 files changed, 1 insertion(+), 3 deletions(-)
+> 
+> Am 11.07.23 um 14:36 schrieb Matthew Wilcox:
+> > On Tue, Jul 11, 2023 at 11:07:06AM +0200, Christian Borntraeger wrote:
+> > > Am 10.07.23 um 22:43 schrieb Matthew Wilcox (Oracle):
+> > > > This patchset changes the API used by the MM to set up page table entries.
+> > > > The four APIs are:
+> > > >       set_ptes(mm, addr, ptep, pte, nr)
+> > > >       update_mmu_cache_range(vma, addr, ptep, nr)
+> > > >       flush_dcache_folio(folio)
+> > > >       flush_icache_pages(vma, page, nr)
+> > > > 
+> > > > flush_dcache_folio() isn't technically new, but no architecture
+> > > > implemented it, so I've done that for them.  The old APIs remain around
+> > > > but are mostly implemented by calling the new interfaces.
+> > > > 
+> > > > The new APIs are based around setting up N page table entries at once.
+> > > > The N entries belong to the same PMD, the same folio and the same VMA,
+> > > > so ptep++ is a legitimate operation, and locking is taken care of for
+> > > > you.  Some architectures can do a better job of it than just a loop,
+> > > > but I have hesitated to make too deep a change to architectures I don't
+> > > > understand well.
+> > > > 
+> > > > One thing I have changed in every architecture is that PG_arch_1 is now a
+> > > > per-folio bit instead of a per-page bit.  This was something that would
+> > > > have to happen eventually, and it makes sense to do it now rather than
+> > > > iterate over every page involved in a cache flush and figure out if it
+> > > > needs to happen.
+> > > 
+> > > I think we do use PG_arch_1 on s390 for our secure page handling and
+> > > making this perf folio instead of physical page really seems wrong
+> > > and it probably breaks this code.
+> > 
+> > Per-page flags are going away in the next few years, so you're going to
+> > need a new design.  s390 seems to do a lot of unusual things.  I wish
+> > you'd talk to the rest of us more.
+> 
+> I understand you point from a logical point of view, but a 4k page frame
+> is also a hardware defined memory region. And I think not only for us.
+> How do you want to implement hardware poisoning for example?
+> Marking the whole folio with PG_hwpoison seems wrong.
 
-Applied, thanks
+For hardware poison, we can't use the page for any other purpose any more.
+So one of the 16 types of pointer is for hardware poison.  That doesn't
+seem like it's a solution that could work for secure/insecure pages?
 
--- 
-Lee Jones [李琼斯]
+But what I'm really wondering is why you need to transition pages
+between secure/insecure on a 4kB boundary.  What's the downside to doing
+it on a 16kB or 64kB boundary, or whatever size has been allocated?
+
