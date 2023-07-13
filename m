@@ -2,96 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C78AC7528F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 18:45:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55B257528FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 18:45:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235254AbjGMQpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 12:45:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56468 "EHLO
+        id S235306AbjGMQpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 12:45:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235221AbjGMQpC (ORCPT
+        with ESMTP id S235286AbjGMQpk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 12:45:02 -0400
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05048211F;
-        Thu, 13 Jul 2023 09:45:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689266702; x=1720802702;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=snXTa2azq0xnvrMVVYEmz2Vp8CufjzE+QoK451TgVig=;
-  b=bcotvVHAw4LSxtrKGgbin0SUiFMdlKnROqaNJTlrcXj71zp2wD5PFdHU
-   2QteACk3OuDcJQZ148fT3qtMnG14aoYB8ROweyEVngid1BkFcrNYHY5XC
-   45/zGM3HUYsBcL+sZo0b+O/oHtn5WYTFkMz/oUp8wyB1EFGIu2TvF6M3X
-   q7AyACzTacDAjHDup+Q2JAEwaiDMpu7ekEBa70A/oSUZ10Sf+fv2D8A0W
-   4P3MOeOiSXRyAfUkkj+I0tLCtg4PuUAaitD59iBRJ49v6bx0dEMqwHEk2
-   /bwaRg0WZ8kEVsGRK1urDb3Tx/n4mDczTvI4RaC2KamNeGmh6fc7zfu1O
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="345566222"
-X-IronPort-AV: E=Sophos;i="6.01,203,1684825200"; 
-   d="scan'208";a="345566222"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2023 09:45:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="716024032"
-X-IronPort-AV: E=Sophos;i="6.01,203,1684825200"; 
-   d="scan'208";a="716024032"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga007.jf.intel.com with ESMTP; 13 Jul 2023 09:44:56 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qJzR1-002RMV-1y;
-        Thu, 13 Jul 2023 19:44:55 +0300
-Date:   Thu, 13 Jul 2023 19:44:55 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc:     hdegoede@redhat.com, markgross@kernel.org,
-        ilpo.jarvinen@linux.intel.com, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/3] platform/x86/intel/tpmi: Read feature control
- status
-Message-ID: <ZLAqBzZTvylHn2Yp@smile.fi.intel.com>
-References: <20230712225950.171326-1-srinivas.pandruvada@linux.intel.com>
- <20230712225950.171326-2-srinivas.pandruvada@linux.intel.com>
+        Thu, 13 Jul 2023 12:45:40 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55884273F;
+        Thu, 13 Jul 2023 09:45:39 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E455661ABC;
+        Thu, 13 Jul 2023 16:45:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 586CEC433C8;
+        Thu, 13 Jul 2023 16:45:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689266738;
+        bh=J3RUI8qwmJA4yybDRpC1CZ1azrTZb/rtPO3fvob1qaQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=UF5ph5fXPMOCKjXbD+kRjXsknOp3ebyBk25B7EUTUldcQ7/geh3aqzzro20niieF2
+         EXaiokHw7yKT86DNyzF4zYJTLk/rfNHtxcMDn2mMhuthlcdm7eJO7FrmtvyYNDVSVF
+         JKk9iSdPRLT2vj8LvbsOsWttXtgd0WiBiMRSM/X/0F3SmsVCp2c5Dr0ujlZZAbpyG1
+         Wq7E9R0QRmOsrmlpxnfqOd/MCx2JYpMs4fEeG69+J/DNfVWm92EZOdoQY7W15MQY88
+         KvAzx6Ukuvd5awg40LAA/LNmEztde46TgTduFA+KnYaOgjDz728s8w0C8/gRVJvIEN
+         ZfgRPibcbqm7g==
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2b8390003e2so1356711fa.0;
+        Thu, 13 Jul 2023 09:45:38 -0700 (PDT)
+X-Gm-Message-State: ABy/qLaY66IZzrEj3yQHlRHdizbxREP4MVuqZzKx/g+ZlmT3EzuRxuwZ
+        rIqI8d37/swtDEUoqeUOCdRTl7wZOjJ0O2Id5w==
+X-Google-Smtp-Source: APBJJlFDo7wwC4D28vWY2R4KsBMLdqWGL+yrptwz13QqhZxBfsTZ8gqTjVVzon8XNGcy5TX2GWE4qjSiHbBk9G3Vxak=
+X-Received: by 2002:a2e:3c0c:0:b0:2b4:7f2e:a42d with SMTP id
+ j12-20020a2e3c0c000000b002b47f2ea42dmr1951655lja.41.1689266736265; Thu, 13
+ Jul 2023 09:45:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230712225950.171326-2-srinivas.pandruvada@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <1894ed7a1a9.f5e49d5d141371.2744760538860302017@linux.beauty> <1894edd07ee.b7245352142935.3234373322799059936@linux.beauty>
+In-Reply-To: <1894edd07ee.b7245352142935.3234373322799059936@linux.beauty>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Thu, 13 Jul 2023 10:45:24 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKSnhvgDfXA46v_CzFn1q1U_Lr7N=JA8bMYMrPAgENOWA@mail.gmail.com>
+Message-ID: <CAL_JsqKSnhvgDfXA46v_CzFn1q1U_Lr7N=JA8bMYMrPAgENOWA@mail.gmail.com>
+Subject: Re: [PATCH V2] of: property: fw_devlink: fixup return value check of
+ strcmp_suffix in parse_gpios
+To:     Li Chen <me@linux.beauty>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 03:59:48PM -0700, Srinivas Pandruvada wrote:
-> Some of the PM features can be locked or disabled. In that case, write
-> interface can be locked.
-> 
-> This status is read via a mailbox. There is one TPMI ID which provides
-> base address for interface and data register for mail box operation.
-> The mailbox operations is defined in the TPMI specification. Refer to
-> https://github.com/intel/tpmi_power_management/ for TPMI specifications.
-> 
-> An API is exposed to feature drivers to read feature control status.
+On Thu, Jul 13, 2023 at 4:47=E2=80=AFAM Li Chen <me@linux.beauty> wrote:
+>
+> This commit addresses an issue where enabling fw_devlink=3Don was causing
+> a PCIe malfunction, resulting in endpoints missing.
+> After thorough investigation, it was determined that the root cause was
+> an incorrect usage of strcmp_suffix in parse_gpios.
+>
+> Fixes: d473d32c2fba ("of: property: fw_devlink: do not link ".*,nr-gpios"=
+")
+> Signed-off-by: Li Chen <lchen@ambarella.com>
+> Cc: stable@vger.kernel.org
+> ---
+> changes:
+> v1->v2: add Cc stable
+>
+>  drivers/of/property.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/of/property.c b/drivers/of/property.c
+> index ddc75cd50825..261eb8f3be08 100644
+> --- a/drivers/of/property.c
+> +++ b/drivers/of/property.c
+> @@ -1272,7 +1272,7 @@ DEFINE_SUFFIX_PROP(gpio, "-gpio", "#gpio-cells")
+>  static struct device_node *parse_gpios(struct device_node *np,
+>                                        const char *prop_name, int index)
+>  {
+> -       if (!strcmp_suffix(prop_name, ",nr-gpios"))
+> +       if (strcmp_suffix(prop_name, ",nr-gpios"))
 
-...
+strcmp returns 0 when there is a match. When we match ",nr-gpios", we
+want to bail out. The existing code was correct. Your patch just
+disables fw_devlink for all GPIO dependencies.
 
-
-> +#define TPMI_CONTROL_TIMEOUT_MAX_US	(1 * USEC_PER_SEC)
-
-
-> +#define TPMI_RB_TIMEOUT_MAX_US		USEC_PER_SEC
-
-In the similar way?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Rob
