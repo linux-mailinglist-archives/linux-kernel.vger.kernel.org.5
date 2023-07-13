@@ -2,128 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2201375160C
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 04:10:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4883751611
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 04:12:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233192AbjGMCKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 22:10:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41352 "EHLO
+        id S233368AbjGMCMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 22:12:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231859AbjGMCKi (ORCPT
+        with ESMTP id S229502AbjGMCMD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 22:10:38 -0400
-Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5334512D;
-        Wed, 12 Jul 2023 19:10:37 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R941e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0VnEugHV_1689214232;
-Received: from 30.97.48.217(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0VnEugHV_1689214232)
-          by smtp.aliyun-inc.com;
-          Thu, 13 Jul 2023 10:10:33 +0800
-Message-ID: <a6d65874-1280-bf16-06ce-2062d913dbca@linux.alibaba.com>
-Date:   Thu, 13 Jul 2023 10:10:31 +0800
+        Wed, 12 Jul 2023 22:12:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C8FE1FF1
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 19:11:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689214280;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=s/2697O0WOZzNU0fxI4+rorreaPiwgOivv5WesbBePc=;
+        b=SKwcxAxvDpLVvSfTI2RVnLlu5L8bQTVVz7ieSJvP0Rsdd2b3UvLH5X0DVufys582LMXuhp
+        IQqlTCt481UCeQNm6Nl0ELmScPndkVKFsDMbnEyDbqteT2Ul/KDmYQUGADIDrj9FDvEdvJ
+        Dbsav/H5N6wfxly6VF1hz0pkJVRoHH8=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-122-MjUmQG4dNYW16I4xvZIFig-1; Wed, 12 Jul 2023 22:11:19 -0400
+X-MC-Unique: MjUmQG4dNYW16I4xvZIFig-1
+Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-635e91cba88so1889966d6.0
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 19:11:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689214279; x=1691806279;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=s/2697O0WOZzNU0fxI4+rorreaPiwgOivv5WesbBePc=;
+        b=a3PYPc44TDQiRAcMMFKnL0Gp+wFjYWbZ8kTCmFD9/HW8ujE3xSwLQfcOxoes5VhO5P
+         +DbKog0ROiMEoOIYcZEXdkaU77d7i/iPw5rkYxCaHTuhagAmE/aQyNUoraIPGjdelev/
+         cbUiovzEHUtKXxF8ffGZ7bEsyqU1GQxKq6IFDZEvz+jIydyNx9PVvEMjl3lxYApyqj+0
+         r7MvVAM2VM9peH9b2DyRyxG57HJHftlglOaMyRtztzQKT95S2Uz9ksSvvSoKuj+EoRl+
+         xlc2olqBbVtDoQB3l153LqH1/HXf+wfFuts98gUBW/74X8ZFQccfhM+FFyypbEDtbYwD
+         B8fw==
+X-Gm-Message-State: ABy/qLaiMFtFJY3Gabjfme/iP1UjL9I6/XDzxg9i7NIQ4UTTajlpBd6F
+        TuUgGub2MVutHVcxqx/O7GWpay4czRVT2h/hCjlBYuaZJ0mVTSbNE63i9qcmdGp9yqs1myz6yzQ
+        lg5WO8/3mN7nactDBlK40dtzStcdGwzVryUETL9Z3
+X-Received: by 2002:a0c:b2c9:0:b0:635:db0c:df78 with SMTP id d9-20020a0cb2c9000000b00635db0cdf78mr339601qvf.3.1689214278890;
+        Wed, 12 Jul 2023 19:11:18 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlFFeowjryewkXgJ7D2QuOCleXdwxPIj3A3rUqAeCGlEgdxqsT3EnctVnJJQ6ikOCWxW6yVWqvPGurpBACNxwSo=
+X-Received: by 2002:a0c:b2c9:0:b0:635:db0c:df78 with SMTP id
+ d9-20020a0cb2c9000000b00635db0cdf78mr339582qvf.3.1689214278617; Wed, 12 Jul
+ 2023 19:11:18 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH v1] rcu: Fix and improve RCU read lock checks when
- !CONFIG_DEBUG_LOCK_ALLOC
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     Joel Fernandes <joel@joelfernandes.org>,
-        Sandeep Dhavale <dhavale@google.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-erofs@lists.ozlabs.org, xiang@kernel.org,
-        Will Shiu <Will.Shiu@mediatek.com>, kernel-team@android.com,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20230711233816.2187577-1-dhavale@google.com>
- <CAEXW_YQvpiFEaaNoS=Msgi17mU3kZD+q8bNBaHYasMArG9aPig@mail.gmail.com>
- <CAB=BE-Rm0ycTZXj=wHW_FBCCKbswG+dh3L+o1+CUW=Pg_oWnyw@mail.gmail.com>
- <20230713003201.GA469376@google.com>
- <161f1615-3d85-cf47-d2d5-695adf1ca7d4@linux.alibaba.com>
-In-Reply-To: <161f1615-3d85-cf47-d2d5-695adf1ca7d4@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <ZK9ZiNMsJX8+1F3N@debian.debian>
+In-Reply-To: <ZK9ZiNMsJX8+1F3N@debian.debian>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Thu, 13 Jul 2023 10:11:06 +0800
+Message-ID: <CACGkMEsy+dFK+BnTg_9K59VX-PzHW_fpwY3SRpUxg-MRyD5HWA@mail.gmail.com>
+Subject: Re: [PATCH net] gso: fix GSO_DODGY bit handling for related protocols
+To:     Yan Zhai <yan@cloudflare.com>
+Cc:     "open list:NETWORKING [TCP]" <netdev@vger.kernel.org>,
+        kernel-team@cloudflare.com, Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Xin Long <lucien.xin@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Andrew Melnychenko <andrew@daynix.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:SCTP PROTOCOL" <linux-sctp@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 13, 2023 at 9:55=E2=80=AFAM Yan Zhai <yan@cloudflare.com> wrote=
+:
+>
+> SKB_GSO_DODGY bit indicates a GSO packet comes from an untrusted source.
+> The canonical way is to recompute the gso_segs to avoid device driver
+> issues. Afterwards, the DODGY bit can be removed to avoid re-check at the
+> egress of later devices, e.g. packets can egress to a vlan device backed
+> by a real NIC.
+>
+> Commit 1fd54773c267 ("udp: allow header check for dodgy GSO_UDP_L4
+> packets.") checks DODGY bit for UDP, but for packets that can be fed
+> directly to the device after gso_segs reset, it actually falls through
+> to fragmentation [1].
+>
+> Commit 90017accff61 ("sctp: Add GSO support") and commit 3820c3f3e417
+> ("[TCP]: Reset gso_segs if packet is dodgy") both didn't remove the DODGY
+> bit after recomputing gso_segs.
 
+If we try to fix two issues, we'd better use separate patches.
 
-On 2023/7/13 10:02, Gao Xiang wrote:
-> 
-> 
-> On 2023/7/13 08:32, Joel Fernandes wrote:
->> On Wed, Jul 12, 2023 at 02:20:56PM -0700, Sandeep Dhavale wrote:
->> [..]
->>>> As such this patch looks correct to me, one thing I noticed is that
->>>> you can check rcu_is_watching() like the lockdep-enabled code does.
->>>> That will tell you also if a reader-section is possible because in
->>>> extended-quiescent-states, RCU readers should be non-existent or
->>>> that's a bug.
->>>>
->>> Please correct me if I am wrong, reading from the comment in
->>> kernel/rcu/update.c rcu_read_lock_held_common()
->>> ..
->>>    * The reason for this is that RCU ignores CPUs that are
->>>   * in such a section, considering these as in extended quiescent state,
->>>   * so such a CPU is effectively never in an RCU read-side critical section
->>>   * regardless of what RCU primitives it invokes.
->>>
->>> It seems rcu will treat this as lock not held rather than a fact that
->>> lock is not held. Is my understanding correct?
->>
->> If RCU treats it as a lock not held, that is a fact for RCU ;-). Maybe you
->> mean it is not a fact for erofs?
-> 
-> I'm not sure if I get what you mean, EROFS doesn't take any RCU read lock
-> here:
-> 
-> z_erofs_decompressqueue_endio() is actually a "bio->bi_end_io", previously
-> which can be called under two scenarios:
-> 
->   1) under softirq context, which is actually part of device I/O compleltion;
-> 
->   2) under threaded context, like what dm-verity or likewise calls.
-> 
-> But EROFS needs to decompress in a threaded context anyway, so we trigger
-> a workqueue to resolve the case 1).
-> 
-> 
-> Recently, someone reported there could be some case 3) [I think it was
-> introduced recently but I have no time to dig into it]:
-> 
->   case 3: under RCU read lock context, which is shown by this:
-> https://lore.kernel.org/r/4a8254eb-ac39-1e19-3d82-417d3a7b9f94@linux.alibaba.com/T/#u
+>
+> This change fixes the GSO_UDP_L4 handling case, and remove the DODGY bit
+> at other places.
+>
+> Fixes: 90017accff61 ("sctp: Add GSO support")
+> Fixes: 3820c3f3e417 ("[TCP]: Reset gso_segs if packet is dodgy")
+> Fixes: 1fd54773c267 ("udp: allow header check for dodgy GSO_UDP_L4 packet=
+s.")
+> Signed-off-by: Yan Zhai <yan@cloudflare.com>
+>
+> ---
+> [1]:
+> https://lore.kernel.org/all/CAJPywTKDdjtwkLVUW6LRA2FU912qcDmQOQGt2WaDo28K=
+zYDg+A@mail.gmail.com/
+>
+> ---
+>  net/ipv4/tcp_offload.c |  1 +
+>  net/ipv4/udp_offload.c | 19 +++++++++++++++----
+>  net/ipv6/udp_offload.c | 19 +++++++++++++++----
+>  net/sctp/offload.c     |  2 ++
+>  4 files changed, 33 insertions(+), 8 deletions(-)
+>
+> diff --git a/net/ipv4/tcp_offload.c b/net/ipv4/tcp_offload.c
+> index 8311c38267b5..f9b93708c22e 100644
+> --- a/net/ipv4/tcp_offload.c
+> +++ b/net/ipv4/tcp_offload.c
+> @@ -87,6 +87,7 @@ struct sk_buff *tcp_gso_segment(struct sk_buff *skb,
+>                 /* Packet is from an untrusted source, reset gso_segs. */
+>
+>                 skb_shinfo(skb)->gso_segs =3D DIV_ROUND_UP(skb->len, mss)=
+;
+> +               skb_shinfo(skb)->gso_type &=3D ~SKB_GSO_DODGY;
+>
+>                 segs =3D NULL;
+>                 goto out;
+> diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
+> index 75aa4de5b731..bd29cf19bb6b 100644
+> --- a/net/ipv4/udp_offload.c
+> +++ b/net/ipv4/udp_offload.c
+> @@ -388,11 +388,22 @@ static struct sk_buff *udp4_ufo_fragment(struct sk_=
+buff *skb,
+>         if (!pskb_may_pull(skb, sizeof(struct udphdr)))
+>                 goto out;
+>
+> -       if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4 &&
+> -           !skb_gso_ok(skb, features | NETIF_F_GSO_ROBUST))
+> -               return __udp_gso_segment(skb, features, false);
+> -
+>         mss =3D skb_shinfo(skb)->gso_size;
+> +
+> +       if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4) {
+> +               if (skb_gso_ok(skb, features | NETIF_F_GSO_ROBUST)) {
+> +                       /* Packet is from an untrusted source, reset actu=
+al gso_segs */
+> +                       skb_shinfo(skb)->gso_segs =3D DIV_ROUND_UP(skb->l=
+en - sizeof(*uh),
+> +                                                                mss);
+> +                       skb_shinfo(skb)->gso_type &=3D ~SKB_GSO_DODGY;
+> +
+> +                       segs =3D NULL;
+> +                       goto out;
+> +               } else {
+> +                       return __udp_gso_segment(skb, features, false);
 
-Sorry about the incorrect link (I really don't know who initally reported
-this and on which device):
+I think it's better and cleaner to move those changes in
+__udp_gso_segment() as Willem suggests.
 
-https://lore.kernel.org/linux-erofs/161f1615-3d85-cf47-d2d5-695adf1ca7d4@linux.alibaba.com/T/#t
+> +               }
+> +       }
+> +
+>         if (unlikely(skb->len <=3D mss))
+>                 goto out;
+>
+> diff --git a/net/ipv6/udp_offload.c b/net/ipv6/udp_offload.c
+> index ad3b8726873e..6857d9f7bd06 100644
+> --- a/net/ipv6/udp_offload.c
+> +++ b/net/ipv6/udp_offload.c
+> @@ -43,11 +43,22 @@ static struct sk_buff *udp6_ufo_fragment(struct sk_bu=
+ff *skb,
+>                 if (!pskb_may_pull(skb, sizeof(struct udphdr)))
+>                         goto out;
+>
+> -               if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4 &&
+> -                   !skb_gso_ok(skb, features | NETIF_F_GSO_ROBUST))
+> -                       return __udp_gso_segment(skb, features, true);
+> -
+>                 mss =3D skb_shinfo(skb)->gso_size;
+> +
+> +               if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4) {
+> +                       if (skb_gso_ok(skb, features | NETIF_F_GSO_ROBUST=
+)) {
+> +                               /* Packet is from an untrusted source, re=
+set actual gso_segs */
+> +                               skb_shinfo(skb)->gso_segs =3D DIV_ROUND_U=
+P(skb->len - sizeof(*uh),
+> +                                                                        =
+mss);
+> +                               skb_shinfo(skb)->gso_type &=3D ~SKB_GSO_D=
+ODGY;
 
-> 
->   and such RCU read lock is taken in __blk_mq_run_dispatch_ops().
-> 
-> But as the commit shown, we only need to trigger a workqueue for case 1)
-> and 3) due to performance reasons.
-> 
-> Hopefully I show it more clear.
-> 
-> Thanks,
-> Gao Xiang
+Any reason you want to remove the DODGY here? Is this an optimization?
+We will lose the chance to recognize/validate it elsewhere.
+
+Thanks
+
+> +
+> +                               segs =3D NULL;
+> +                               goto out;
+> +                       } else {
+> +                               return __udp_gso_segment(skb, features, t=
+rue);
+> +                       }
+> +               }
+> +
+>                 if (unlikely(skb->len <=3D mss))
+>                         goto out;
+>
+> diff --git a/net/sctp/offload.c b/net/sctp/offload.c
+> index 502095173d88..3d2b44db0d42 100644
+> --- a/net/sctp/offload.c
+> +++ b/net/sctp/offload.c
+> @@ -65,6 +65,8 @@ static struct sk_buff *sctp_gso_segment(struct sk_buff =
+*skb,
+>                 skb_walk_frags(skb, frag_iter)
+>                         pinfo->gso_segs++;
+>
+> +               pinfo->gso_type &=3D ~SKB_GSO_DODGY;
+> +
+>                 segs =3D NULL;
+>                 goto out;
+>         }
+> --
+> 2.30.2
+>
+
