@@ -2,114 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85CCD7527C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 17:55:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 503B07527EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 18:02:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233956AbjGMPzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 11:55:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52606 "EHLO
+        id S235177AbjGMQCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 12:02:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231167AbjGMPzM (ORCPT
+        with ESMTP id S232816AbjGMQBr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 11:55:12 -0400
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83C402686
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 08:55:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689263710; x=1720799710;
-  h=date:from:to:cc:subject:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=HzDe1rmkDf9NDLJwnlBTzYnFxwjCcY33RbbgJLyqs1c=;
-  b=ZT5Rcx9bzgM2HbpvI4s3iTZAbMj55EedINvDaWCVqslHMGcNut+WxFwn
-   Cd/vAUDwcS1B872DAI5OJMXw2RpH89PdS7OGPOge+u4ajNYU1hbKir6Yk
-   RyIMn0LXrnBnm/jij6Yrsnjxvahe2ANErTkoHflHnSxH3KMbjLF8C/Bj0
-   rhgrjuq/qzYJ4wyJI3xZYrSCDyZynDVY38xwdVBaHOj604EIuBWMuUR0W
-   rXgGgDj7xdFwkyL7BZnWZ9s441lSyyUjssQqikiGTfiRxY22qd/+Z+2yd
-   AEiHYvR64N1BrCNGOiXg+AAmAimaI6z8uOuHL1JGNV0jLhJWH2mEhzpCA
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="428995541"
-X-IronPort-AV: E=Sophos;i="6.01,203,1684825200"; 
-   d="scan'208";a="428995541"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2023 08:55:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="672311580"
-X-IronPort-AV: E=Sophos;i="6.01,203,1684825200"; 
-   d="scan'208";a="672311580"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.24.100.114])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2023 08:55:09 -0700
-Date:   Thu, 13 Jul 2023 09:00:07 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        "Robin Murphy" <robin.murphy@arm.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Will Deacon <will@kernel.org>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "Yu, Fenghua" <fenghua.yu@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>, jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH v10 2/7] iommu: Move global PASID allocation from SVA to
- core
-Message-ID: <20230713090007.40ef2ac3@jacob-builder>
-In-Reply-To: <BN9PR11MB527619C7106BE91167B9EC118C37A@BN9PR11MB5276.namprd11.prod.outlook.com>
-References: <20230712163355.3177511-1-jacob.jun.pan@linux.intel.com>
-        <20230712163355.3177511-3-jacob.jun.pan@linux.intel.com>
-        <BN9PR11MB527619C7106BE91167B9EC118C37A@BN9PR11MB5276.namprd11.prod.outlook.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Thu, 13 Jul 2023 12:01:47 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BB9B270D;
+        Thu, 13 Jul 2023 09:01:47 -0700 (PDT)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36DF0Icj001283;
+        Thu, 13 Jul 2023 16:01:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=CsT9iAfXVZR9OmieCUMutP9im1dY1nRQpXp0+pqVraU=;
+ b=omTjDHwojwQZNIE+LPUxUgFssq2p8tnAxnGeJLe9sn2yRwiW8qJ+eg5v+ja3lVk6Arpr
+ EuPP7d+p/Fi7r+l0agwK5Tc6ERmb1dlX3FDMsKaGPkmsYUzXRvD7xzJXLrnyNdHA/YQT
+ motXpcgHkgrNE7vO+WdclCnm/ZDCB5IDma0q3VaFFHK0eE19JIc5msOQ36eiFjqNDH1a
+ pRnTQBjsbzvTCrIH0zX/UfZI+D6CuLUiQKATa1hWRdxEuvOoUF5HEaCHbyHUe8ERk/IC
+ AhnFb9xIMUSf7li5knDBIf1jj3y7CIwAKrrFhOzrIMu4qNq7zDyeakdgIO26pzHcXwup hA== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rt3qfhxwq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 13 Jul 2023 16:01:40 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36DG1eqC028111
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 13 Jul 2023 16:01:40 GMT
+Received: from [10.111.182.44] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 13 Jul
+ 2023 09:01:39 -0700
+Message-ID: <0c205c06-bdbd-a6f6-f351-52c918b1cff0@quicinc.com>
+Date:   Thu, 13 Jul 2023 09:01:39 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH net v2] ath6kl: Remove error checking for
+ debugfs_create_dir()
+Content-Language: en-US
+To:     Wang Ming <machel@vivo.com>, Kalle Valo <kvalo@kernel.org>,
+        <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <opensource.kernel@vivo.com>, <pabeni@redhat.com>
+References: <20230713100404.5096-1-machel@vivo.com>
+From:   Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <20230713100404.5096-1-machel@vivo.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: WZfuo20TynACNMheW7FBEj_qV9-CIp-k
+X-Proofpoint-GUID: WZfuo20TynACNMheW7FBEj_qV9-CIp-k
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-13_06,2023-07-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 bulkscore=0
+ mlxscore=0 suspectscore=0 adultscore=0 priorityscore=1501 mlxlogscore=544
+ phishscore=0 malwarescore=0 spamscore=0 impostorscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2305260000
+ definitions=main-2307130141
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kevin,
+subject prefix should be "wifi: ath6kl: "
 
-On Thu, 13 Jul 2023 07:42:01 +0000, "Tian, Kevin" <kevin.tian@intel.com>
-wrote:
 
-> > From: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> > Sent: Thursday, July 13, 2023 12:34 AM
-> > 
-> >  }
-> > +
-> > +ioasid_t iommu_alloc_global_pasid_dev(struct device *dev)
-> > +{
-> > +	int ret;
-> > +
-> > +	/* max_pasids == 0 means that the device does not support
-> > PASID */
-> > +	if (!dev->iommu->max_pasids)
-> > +		return IOMMU_PASID_INVALID;
-> > +
-> > +	/*
-> > +	 * max_pasids is set up by vendor driver based on number of
-> > PASID bits
-> > +	 * supported but the IDA allocation is inclusive.
-> > +	 */
-> > +	ret = ida_alloc_range(&iommu_global_pasid_ida,
-> > IOMMU_FIRST_GLOBAL_PASID,
-> > +			      dev->iommu->max_pasids - 1, GFP_KERNEL);
-> > +	return ret < 0 ? IOMMU_PASID_INVALID : ret;
-> > +}
-> > +EXPORT_SYMBOL_GPL(iommu_alloc_global_pasid_dev);  
-> 
-> nit. Just call it iommu_alloc_global_pasid.
-
-will do. it will be symmetric.
-
-Thanks,
-
-Jacob
