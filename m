@@ -2,152 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F989752B4F
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 22:03:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25324752B53
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 22:05:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233496AbjGMUDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 16:03:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43320 "EHLO
+        id S233542AbjGMUFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 16:05:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231547AbjGMUDV (ORCPT
+        with ESMTP id S231547AbjGMUFO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 16:03:21 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01C472D4E
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 13:03:20 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-4fba03becc6so3003499e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 13:03:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689278598; x=1689883398;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Yvt8Ku6KDe29tpizQm23o+O9+z8bar+cVRkERkmQ91w=;
-        b=FIEiEaFZqrXW8g8YQ8JN5/m9jV8Rn+IH6+81QIfMP6OXn6Yx3ig8G05Rc2TzTjM92V
-         QFyWvhupVc7i04q4dWNiplHx7Q54ZZ/p4Z4dTusHG2IpEOi6l1NkpfxgsTi6rwyQzD8n
-         ZOC4c3xWeMOxZIeWojRjqw8OBPKWgl2fwPLd3RbgzlKjxxn5AGLn6dPVbCsBCTmJ3Rlm
-         KPkU95S9zJR0wNt0nB+MgZSVuuEnUR/P3bGoZeVBJ9aeve2Juk38x177QueyngiiE4ST
-         WdJInwrH3RsE3yoZvv0N4Pdg88osODnbFo9cvLG61hQfRW8CZlCBL3T4Aj9TXIDQV4Uq
-         A3Vg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689278598; x=1689883398;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Yvt8Ku6KDe29tpizQm23o+O9+z8bar+cVRkERkmQ91w=;
-        b=hZ7kAN2OFfZvAgfMqjvMoa8wqk5eH6N4k2kwI/+B9cm3n68oWBy+8j8JFIdHTYLJar
-         NI98SOWhemOHACr1/gBh28UWjQKQ1yG4IESycRagB0wlt48ssTppYPtT/MhzW2D9StSd
-         x8mOw4X6ng6P+XDFTNHk1P78l+1b4s7EHfj3gR8O+roXh+9ohUmmPC44iqAKlA5vUxjU
-         0f0G+eDNpnEdbkSdQEmQArKldsQo5GmGvCAwYrWouf5PKmtl0VNHrOzbWm2YKoQN5FEL
-         JhNZEnEW1oGf+9s3WgOwhPBvMd7sliuY4FLZ2xvRtqzTxTMkX7QJVoLtgM2hNIzbe8Ee
-         pXrg==
-X-Gm-Message-State: ABy/qLZXByBoqZMqqjegLiXV/Fwb67JsoCB7ZOdw2Ye4so/BiFtuGAe8
-        4P2/4Y7F2rm18SvT//1AXRdgQg==
-X-Google-Smtp-Source: APBJJlHvFT4NkzYf8AiTu0gZdv5cunOm8vlcbun9kkFFQ7/GyRaJ58yCVi/nDi7GsigvUUQbiZlZ0g==
-X-Received: by 2002:a05:6512:398a:b0:4f9:5582:a7d3 with SMTP id j10-20020a056512398a00b004f95582a7d3mr218898lfu.22.1689278598227;
-        Thu, 13 Jul 2023 13:03:18 -0700 (PDT)
-Received: from [10.10.15.130] ([192.130.178.91])
-        by smtp.gmail.com with ESMTPSA id x7-20020ac259c7000000b004f84b36a24fsm1227265lfn.51.2023.07.13.13.03.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 Jul 2023 13:03:17 -0700 (PDT)
-Message-ID: <a7aa6e21-6f79-0029-5034-db368239980a@linaro.org>
-Date:   Thu, 13 Jul 2023 23:03:17 +0300
+        Thu, 13 Jul 2023 16:05:14 -0400
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 860AA2D4B;
+        Thu, 13 Jul 2023 13:05:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689278713; x=1720814713;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=9JiUrZtZsTMA2CpeUkSmTHTXxe2GKMdio7QpaLZNZ3w=;
+  b=OZHrf/hSTRluFbQYiOPjIjDC3CHRU2TVjHaYYDG8PhkT3FNw8xYwxulh
+   gQmHpXDA5ZUFDVFcczusTvt/rfDgVtCRJOpSryhVLY3+2k0nusUfaWQlN
+   RwsUQIJgDtpDx0V4PvE8VAEGngtEN/5c6Pqr8PSSgnn/rCf9FDg9Lxt9b
+   /0zK3rlIKWEGPYjL8zBoH/Lm3GpEWzrxRgnK8HcuOjo6vFxOX0gYJDiiF
+   jVKabNNx5Hd7f4EaSLWeZ6gFNCSi81s4huAb5H1dbspPSn2mit4/EMHW8
+   yAuhHxz026hT3i8L8gc2UlmZrR++i0AKZaqIFv9IrtmRgcm5TCIqQU8oC
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="364177164"
+X-IronPort-AV: E=Sophos;i="6.01,203,1684825200"; 
+   d="scan'208";a="364177164"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2023 13:05:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="757307678"
+X-IronPort-AV: E=Sophos;i="6.01,203,1684825200"; 
+   d="scan'208";a="757307678"
+Received: from lkp-server01.sh.intel.com (HELO c544d7fc5005) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 13 Jul 2023 13:05:08 -0700
+Received: from kbuild by c544d7fc5005 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qK2Yl-0006sX-2T;
+        Thu, 13 Jul 2023 20:05:07 +0000
+Date:   Fri, 14 Jul 2023 04:04:42 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Krishna chaitanya chundru <quic_krichai@quicinc.com>,
+        manivannan.sadhasivam@linaro.org
+Cc:     oe-kbuild-all@lists.linux.dev, helgaas@kernel.org,
+        linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, quic_vbadigan@quicinc.com,
+        quic_nitegupt@quicinc.com, quic_skananth@quicinc.com,
+        quic_ramkri@quicinc.com, krzysztof.kozlowski@linaro.org,
+        Krishna chaitanya chundru <quic_krichai@quicinc.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v2 2/8] PCI: qcom-ep: Add support for D-state change
+ notification
+Message-ID: <202307140321.wjx00mop-lkp@intel.com>
+References: <1688122331-25478-3-git-send-email-quic_krichai@quicinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] drm/msm: Fix hw_fence error path cleanup
-Content-Language: en-GB
-To:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org
-Cc:     linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        Rob Clark <robdclark@chromium.org>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20230712222523.7404-1-robdclark@gmail.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-In-Reply-To: <20230712222523.7404-1-robdclark@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1688122331-25478-3-git-send-email-quic_krichai@quicinc.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/07/2023 01:25, Rob Clark wrote:
-> From: Rob Clark <robdclark@chromium.org>
-> 
-> In an error path where the submit is free'd without the job being run,
-> the hw_fence pointer is simply a kzalloc'd block of memory.  In this
-> case we should just kfree() it, rather than trying to decrement it's
-> reference count.  Fortunately we can tell that this is the case by
-> checking for a zero refcount, since if the job was run, the submit would
-> be holding a reference to the hw_fence.
-> 
-> Fixes: f94e6a51e17c ("drm/msm: Pre-allocate hw_fence")
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
-> ---
->   drivers/gpu/drm/msm/msm_fence.c      |  6 ++++++
->   drivers/gpu/drm/msm/msm_gem_submit.c | 14 +++++++++++++-
->   2 files changed, 19 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/msm_fence.c b/drivers/gpu/drm/msm/msm_fence.c
-> index 96599ec3eb78..1a5d4f1c8b42 100644
-> --- a/drivers/gpu/drm/msm/msm_fence.c
-> +++ b/drivers/gpu/drm/msm/msm_fence.c
-> @@ -191,6 +191,12 @@ msm_fence_init(struct dma_fence *fence, struct msm_fence_context *fctx)
->   
->   	f->fctx = fctx;
->   
-> +	/*
-> +	 * Until this point, the fence was just some pre-allocated memory,
-> +	 * no-one should have taken a reference to it yet.
-> +	 */
-> +	WARN_ON(kref_read(&fence->refcount));
+Hi Krishna,
 
-It this really correct to return a refcounted object with 0 refcount 
-(I'm looking at submit_create() / msm_fence_alloc() )? Maybe it would be 
-better to move dma_fence_get() to msm_fence_alloc() ? But don't 
-immediately see, which one should be moved.
+kernel test robot noticed the following build warnings:
 
-> +
->   	dma_fence_init(&f->base, &msm_fence_ops, &fctx->spinlock,
->   		       fctx->context, ++fctx->last_fence);
->   }
-> diff --git a/drivers/gpu/drm/msm/msm_gem_submit.c b/drivers/gpu/drm/msm/msm_gem_submit.c
-> index 3f1aa4de3b87..9d66498cdc04 100644
-> --- a/drivers/gpu/drm/msm/msm_gem_submit.c
-> +++ b/drivers/gpu/drm/msm/msm_gem_submit.c
-> @@ -86,7 +86,19 @@ void __msm_gem_submit_destroy(struct kref *kref)
->   	}
->   
->   	dma_fence_put(submit->user_fence);
-> -	dma_fence_put(submit->hw_fence);
-> +
-> +	/*
-> +	 * If the submit is freed before msm_job_run(), then hw_fence is
-> +	 * just some pre-allocated memory, not a reference counted fence.
-> +	 * Once the job runs and the hw_fence is initialized, it will
-> +	 * have a refcount of at least one, since the submit holds a ref
-> +	 * to the hw_fence.
-> +	 */
-> +	if (kref_read(&submit->hw_fence->refcount) == 0) {
-> +		kfree(submit->hw_fence);
-> +	} else {
-> +		dma_fence_put(submit->hw_fence);
-> +	}
->   
->   	put_pid(submit->pid);
->   	msm_submitqueue_put(submit->queue);
+[auto build test WARNING on pci/next]
+[also build test WARNING on pci/for-linus linus/master v6.5-rc1 next-20230713]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Krishna-chaitanya-chundru/PCI-endpoint-Add-dstate-change-notifier-support/20230630-190228
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git next
+patch link:    https://lore.kernel.org/r/1688122331-25478-3-git-send-email-quic_krichai%40quicinc.com
+patch subject: [PATCH v2 2/8] PCI: qcom-ep: Add support for D-state change notification
+config: arm-randconfig-r081-20230713 (https://download.01.org/0day-ci/archive/20230714/202307140321.wjx00mop-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230714/202307140321.wjx00mop-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307140321.wjx00mop-lkp@intel.com/
+
+sparse warnings: (new ones prefixed by >>)
+>> drivers/pci/controller/dwc/pcie-qcom-ep.c:587:23: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted pci_power_t [usertype] state @@     got unsigned int [assigned] [usertype] dstate @@
+   drivers/pci/controller/dwc/pcie-qcom-ep.c:587:23: sparse:     expected restricted pci_power_t [usertype] state
+   drivers/pci/controller/dwc/pcie-qcom-ep.c:587:23: sparse:     got unsigned int [assigned] [usertype] dstate
+
+vim +587 drivers/pci/controller/dwc/pcie-qcom-ep.c
+
+   555	
+   556	/* TODO: Notify clients about PCIe state change */
+   557	static irqreturn_t qcom_pcie_ep_global_irq_thread(int irq, void *data)
+   558	{
+   559		struct qcom_pcie_ep *pcie_ep = data;
+   560		struct dw_pcie *pci = &pcie_ep->pci;
+   561		struct device *dev = pci->dev;
+   562		u32 status = readl_relaxed(pcie_ep->parf + PARF_INT_ALL_STATUS);
+   563		u32 mask = readl_relaxed(pcie_ep->parf + PARF_INT_ALL_MASK);
+   564		pci_power_t state;
+   565		u32 dstate, val;
+   566	
+   567		writel_relaxed(status, pcie_ep->parf + PARF_INT_ALL_CLEAR);
+   568		status &= mask;
+   569	
+   570		if (FIELD_GET(PARF_INT_ALL_LINK_DOWN, status)) {
+   571			dev_dbg(dev, "Received Linkdown event\n");
+   572			pcie_ep->link_status = QCOM_PCIE_EP_LINK_DOWN;
+   573			pci_epc_linkdown(pci->ep.epc);
+   574		} else if (FIELD_GET(PARF_INT_ALL_BME, status)) {
+   575			dev_dbg(dev, "Received BME event. Link is enabled!\n");
+   576			pcie_ep->link_status = QCOM_PCIE_EP_LINK_ENABLED;
+   577			pci_epc_bme_notify(pci->ep.epc);
+   578		} else if (FIELD_GET(PARF_INT_ALL_PM_TURNOFF, status)) {
+   579			dev_dbg(dev, "Received PM Turn-off event! Entering L23\n");
+   580			val = readl_relaxed(pcie_ep->parf + PARF_PM_CTRL);
+   581			val |= PARF_PM_CTRL_READY_ENTR_L23;
+   582			writel_relaxed(val, pcie_ep->parf + PARF_PM_CTRL);
+   583		} else if (FIELD_GET(PARF_INT_ALL_DSTATE_CHANGE, status)) {
+   584			dstate = dw_pcie_readl_dbi(pci, DBI_CON_STATUS) &
+   585						   DBI_CON_STATUS_POWER_STATE_MASK;
+   586			dev_dbg(dev, "Received D%d state event\n", dstate);
+ > 587			state = dstate;
+   588			if (dstate == 3) {
+   589				val = readl_relaxed(pcie_ep->parf + PARF_PM_CTRL);
+   590				val |= PARF_PM_CTRL_REQ_EXIT_L1;
+   591				writel_relaxed(val, pcie_ep->parf + PARF_PM_CTRL);
+   592				state = PCI_D3hot;
+   593				if (gpiod_get_value(pcie_ep->reset))
+   594					state = PCI_D3cold;
+   595			}
+   596			pci_epc_dstate_change(pci->ep.epc, state);
+   597		} else if (FIELD_GET(PARF_INT_ALL_LINK_UP, status)) {
+   598			dev_dbg(dev, "Received Linkup event. Enumeration complete!\n");
+   599			dw_pcie_ep_linkup(&pci->ep);
+   600			pcie_ep->link_status = QCOM_PCIE_EP_LINK_UP;
+   601		} else {
+   602			dev_dbg(dev, "Received unknown event: %d\n", status);
+   603		}
+   604	
+   605		return IRQ_HANDLED;
+   606	}
+   607	
 
 -- 
-With best wishes
-Dmitry
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
