@@ -2,111 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3A457517C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 06:59:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51D907517CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 07:01:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233858AbjGME7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 00:59:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47820 "EHLO
+        id S233890AbjGMFBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 01:01:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233146AbjGME7f (ORCPT
+        with ESMTP id S233555AbjGMFBS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 00:59:35 -0400
-Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F5472106;
-        Wed, 12 Jul 2023 21:59:33 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0VnFbT4s_1689224367;
-Received: from 30.97.48.217(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0VnFbT4s_1689224367)
-          by smtp.aliyun-inc.com;
-          Thu, 13 Jul 2023 12:59:29 +0800
-Message-ID: <f1c60dcb-e32f-7b7e-bf0d-5dec999e9299@linux.alibaba.com>
-Date:   Thu, 13 Jul 2023 12:59:27 +0800
+        Thu, 13 Jul 2023 01:01:18 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5EE5210C
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 22:01:16 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-3fc075d9994so27905e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 22:01:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689224475; x=1691816475;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=HmWSfEZ6QI0Mxj58SiIQ9FAbf1ZZZ2dZrTYlFtYj89c=;
+        b=wHSXRDRoFlWi8R0L2C9UanejpHHVfkL1xwL6EVp1gvck336sSThoV+emUjCLgclmul
+         asfV013NnBYtbYaI65Z6Jt80XcxmuW+peGK9fZdnkCeMBUDM9GNrqFju7knIbqBWjZ2K
+         1/ix8SV53SH5knZVMg4arR/bEyEoqohXbTT/GSbHo8BYBtWupKMZt170JxAnzxqHnsq2
+         821zS2bylv9gUwhEzGy3nqcMPAkYZHf9aUCIrRkB726zaTj7ue5gljybqk4bj+wuUCCv
+         kGMG6w470KVpl9jdBcOKosglHbtACBXaseZlQ3rfkbBFXy1QHm0WCYiRphCD16S17aF8
+         cBww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689224475; x=1691816475;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HmWSfEZ6QI0Mxj58SiIQ9FAbf1ZZZ2dZrTYlFtYj89c=;
+        b=N6kqt2TsBirl3NwKTXdF6p+TgluNffrdeyyQVlF5HPAfutknShZwxzkxqwK27CT/hx
+         cFIoB8KdE0eOjESQVYagaecwFYrlqMhtzfyLKQYC9mhLOoa+j3j//546nfCltJMVtilz
+         aiLn63yefai8CO/oz347OvabY3SCEO4X0Uf2+VPTChHKuPXIb9k8tZQ7ukT65fJBjesd
+         fMNsGd/lx8ydYO8InGfqadEbCQcdXscmzDFNkSn/Yqirq3u5Mdd0UM4b3V1iPdQtuDnq
+         cZbzibUcmgUHgJ8qdlASqhjuMmyEsV8Q4+FJvljSVgT5bP6C6eMafBJAjYTZEvscni71
+         ZXAA==
+X-Gm-Message-State: ABy/qLZTrhex8zVbAtH1ISb6M0aH2SmMbPaxqtdO1/m30Mpz/KELdCJu
+        iJNFDWd6B+4UcE3pTPE19FbqhQahgmAy2hXky1Y0zg==
+X-Google-Smtp-Source: APBJJlHl0BMyAUvIbgVetiZ27JuP9li47AMi8iMY0P+VHB5dfvLG0LDMol2YeN5V0n7MUZKCAgjxUAA8EfKYoay7ytk=
+X-Received: by 2002:a05:600c:2196:b0:3f7:e4d8:2569 with SMTP id
+ e22-20020a05600c219600b003f7e4d82569mr166165wme.5.1689224475065; Wed, 12 Jul
+ 2023 22:01:15 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH v1] rcu: Fix and improve RCU read lock checks when
- !CONFIG_DEBUG_LOCK_ALLOC
-To:     paulmck@kernel.org
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        Sandeep Dhavale <dhavale@google.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-erofs@lists.ozlabs.org, xiang@kernel.org,
-        Will Shiu <Will.Shiu@mediatek.com>, kernel-team@android.com,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20230711233816.2187577-1-dhavale@google.com>
- <CAEXW_YQvpiFEaaNoS=Msgi17mU3kZD+q8bNBaHYasMArG9aPig@mail.gmail.com>
- <CAB=BE-Rm0ycTZXj=wHW_FBCCKbswG+dh3L+o1+CUW=Pg_oWnyw@mail.gmail.com>
- <20230713003201.GA469376@google.com>
- <161f1615-3d85-cf47-d2d5-695adf1ca7d4@linux.alibaba.com>
- <0d9e7b4d-6477-47a6-b3d2-2c9d9b64903d@paulmck-laptop>
- <f124e041-6a82-2069-975c-4f393e5c4137@linux.alibaba.com>
- <87292a44-cc02-4d95-940e-e4e31d0bc6f2@paulmck-laptop>
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-In-Reply-To: <87292a44-cc02-4d95-940e-e4e31d0bc6f2@paulmck-laptop>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230704083206.693155-2-davidgow@google.com> <519844640ae6483c8059a6440c620e01@AcuMS.aculab.com>
+In-Reply-To: <519844640ae6483c8059a6440c620e01@AcuMS.aculab.com>
+From:   David Gow <davidgow@google.com>
+Date:   Thu, 13 Jul 2023 13:01:02 +0800
+Message-ID: <CABVgOSmrx=AJgPCb-if1KOBD9EBhSV8MSv3yg+otBC4aS+LD-w@mail.gmail.com>
+Subject: Re: [PATCH] x86: checksum: Fix unaligned checksums on < i686
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Noah Goldstein <goldstein.w.n@gmail.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000cf1e500600573827"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--000000000000cf1e500600573827
+Content-Type: text/plain; charset="UTF-8"
 
+On Mon, 10 Jul 2023 at 23:01, David Laight <David.Laight@aculab.com> wrote:
+>
+> From: David Gow
+> > Sent: 04 July 2023 09:32
+> >
+> > The checksum_32 code was originally written to only handle 2-byte
+> > aligned buffers, but was later extended to support arbitrary alignment.
+> > However, the non-PPro variant doesn't apply the carry before jumping to
+> > the 2- or 4-byte aligned versions, which clear CF.
+> ....
+> > I also tested it on a real 486DX2, with the same results.
+>
+> Which cpu does anyone really care about?
+>
+> The unrolled 'adcl' loop is horrid on intel cpu between
+> (about) 'core' and 'haswell' because each u-op can only
+> have two inputs and adc needs 3 - so is 2 u-ops.
+> First fixed by summing to alternate registers.
+>
+> On anything modern (well I've not checked some Atom based
+> servers) misaligned accesses are pretty near zero cost.
+> So it really isn't worth the tests that align data.
+>
+> (I suspect it all got better a long time ago except
+> for transfers that cross cache-line boundaries, with
+> adc taking two cycles even that might be free.)
+>
 
-On 2023/7/13 12:52, Paul E. McKenney wrote:
-> On Thu, Jul 13, 2023 at 12:41:09PM +0800, Gao Xiang wrote:
->>
->>
+I agree that the implementation here is suitably ancient far from
+optimal, but think the alignment issue in this patch is a separate
+correctness issue. (Even if it's one which is unlikely to result in
+real-world problems at present.)
 
-...
+There's probably a valid argument around whether or not the
+checksumming code should be alignment-agnostic, or whether a 2- or 4-
+byte alignment is something callers have to guarantee, but since some
+effort had gone into making these work with unaligned data, I think
+it's sensible to make sure those cases actually work, and so for the
+KUnit test to verify that all these different alignments all give
+correct results.
 
->>
->> There are lots of performance issues here and even a plumber
->> topic last year to show that, see:
->>
->> [1] https://lore.kernel.org/r/20230519001709.2563-1-tj@kernel.org
->> [2] https://lore.kernel.org/r/CAHk-=wgE9kORADrDJ4nEsHHLirqPCZ1tGaEPAZejHdZ03qCOGg@mail.gmail.com
->> [3] https://lore.kernel.org/r/CAB=BE-SBtO6vcoyLNA9F-9VaN5R0t3o_Zn+FW8GbO6wyUqFneQ@mail.gmail.com
->> [4] https://lpc.events/event/16/contributions/1338/
->> and more.
->>
->> I'm not sure if it's necessary to look info all of that,
->> andSandeep knows more than I am (the scheduling issue
->> becomes vital on some aarch64 platform.)
-> 
-> Hmmm...  Please let me try again.
-> 
-> Assuming that this approach turns out to make sense, the resulting
-> patch will need to clearly state the performance benefits directly in
-> the commit log.
-> 
-> And of course, for the approach to make sense, it must avoid breaking
-> the existing lockdep-RCU debugging code.
-> 
-> Is that more clear?
+If it seems worth cleaning up / optimising the code more significantly
+(maybe some of the people who really care have TCP header checksum
+offload anyway), that seems like a separate task to me. Personally,
+while I care quite a bit that 32-bit x86 is still working (even on
+ancient CPUs), I don't really have the time to spend optimising it.
+(Worst-case, if maintaining it gets too rough, we could possibly fall
+back to the C implementations, though I haven't benchmarked them.)
 
-Personally I'm not working on Android platform any more so I don't
-have a way to reproduce, hopefully Sandeep could give actually
-number _again_ if dm-verity is enabled and trigger another
-workqueue here and make a comparsion why the scheduling latency of
-the extra work becomes unacceptable.
+-- David
 
-Thanks,
-Gao Xiang
+--000000000000cf1e500600573827
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIIPnwYJKoZIhvcNAQcCoIIPkDCCD4wCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+ggz5MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
+IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
+dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
+6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
+c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
+I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
+AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
+BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
+CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
+AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
+MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
+My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
+LmNybDBMBgNVHSAERTBDMEEGCSsGAQQBoDIBKDA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5n
+bG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzANBgkqhkiG9w0BAQsFAAOCAQEANyYcO+9JZYyqQt41
+TMwvFWAw3vLoLOQIfIn48/yea/ekOcParTb0mbhsvVSZ6sGn+txYAZb33wIb1f4wK4xQ7+RUYBfI
+TuTPL7olF9hDpojC2F6Eu8nuEf1XD9qNI8zFd4kfjg4rb+AME0L81WaCL/WhP2kDCnRU4jm6TryB
+CHhZqtxkIvXGPGHjwJJazJBnX5NayIce4fGuUEJ7HkuCthVZ3Rws0UyHSAXesT/0tXATND4mNr1X
+El6adiSQy619ybVERnRi5aDe1PTwE+qNiotEEaeujz1a/+yYaaTY+k+qJcVxi7tbyQ0hi0UB3myM
+A/z2HmGEwO8hx7hDjKmKbDCCA18wggJHoAMCAQICCwQAAAAAASFYUwiiMA0GCSqGSIb3DQEBCwUA
+MEwxIDAeBgNVBAsTF0dsb2JhbFNpZ24gUm9vdCBDQSAtIFIzMRMwEQYDVQQKEwpHbG9iYWxTaWdu
+MRMwEQYDVQQDEwpHbG9iYWxTaWduMB4XDTA5MDMxODEwMDAwMFoXDTI5MDMxODEwMDAwMFowTDEg
+MB4GA1UECxMXR2xvYmFsU2lnbiBSb290IENBIC0gUjMxEzARBgNVBAoTCkdsb2JhbFNpZ24xEzAR
+BgNVBAMTCkdsb2JhbFNpZ24wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDMJXaQeQZ4
+Ihb1wIO2hMoonv0FdhHFrYhy/EYCQ8eyip0EXyTLLkvhYIJG4VKrDIFHcGzdZNHr9SyjD4I9DCuu
+l9e2FIYQebs7E4B3jAjhSdJqYi8fXvqWaN+JJ5U4nwbXPsnLJlkNc96wyOkmDoMVxu9bi9IEYMpJ
+pij2aTv2y8gokeWdimFXN6x0FNx04Druci8unPvQu7/1PQDhBjPogiuuU6Y6FnOM3UEOIDrAtKeh
+6bJPkC4yYOlXy7kEkmho5TgmYHWyn3f/kRTvriBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti
++w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGjQjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8E
+BTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5NUPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEA
+S0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigHM8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9u
+bG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmUY/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaM
+ld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88
+q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcya5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/f
+hO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/XzCCBNgwggPAoAMCAQICEAEDPnEOWzT2vYIrJhGq
+c1swDQYJKoZIhvcNAQELBQAwVDELMAkGA1UEBhMCQkUxGTAXBgNVBAoTEEdsb2JhbFNpZ24gbnYt
+c2ExKjAoBgNVBAMTIUdsb2JhbFNpZ24gQXRsYXMgUjMgU01JTUUgQ0EgMjAyMDAeFw0yMzA1MTIx
+NjMzMjlaFw0yMzExMDgxNjMzMjlaMCQxIjAgBgkqhkiG9w0BCQEWE2RhdmlkZ293QGdvb2dsZS5j
+b20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCfIQuFV9ECjSKrnHc+/gEoEHeMu29G
+hkC9x5KA7Tgm7ZISSdxxP+b9Q23vqKKYcaXlXzxDUweAEa7KrhRdZMpcF1p14/qI6AG7rBn8otbO
+t6QSE9nwXQRL5ITEHtPRcQzLU5H9Yyq4b9MmEZAq+ByKX1t6FrXw461kqV8I/oCueKmD0p6mU/4k
+xzQWik4ZqST0MXkJiZenSKDDN+U1qGgHKC3HAzsIlWpNh/WsWcD4RRcEtwfW1h9DwRfGFp78OFQg
+65qXbeub4G7ELSIdjGygCzVG+g1jo6we5uqPep3iRCzn92KROEVxP5lG9FlwQ2YWMt+dNiGrJdKy
+Kw4TK7CrAgMBAAGjggHUMIIB0DAeBgNVHREEFzAVgRNkYXZpZGdvd0Bnb29nbGUuY29tMA4GA1Ud
+DwEB/wQEAwIFoDAdBgNVHSUEFjAUBggrBgEFBQcDBAYIKwYBBQUHAwIwHQYDVR0OBBYEFG/UTu3x
+9IGQSBx2i4m+hGXJpET+MEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
+dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAwGA1UdEwEB/wQCMAAwgZoGCCsG
+AQUFBwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9n
+c2F0bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWdu
+LmNvbS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouse
+LHIb0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20v
+Y2EvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQCRI3Z4cAidgFcv
+Usqdz765x6KMZSfg/WtFrYg8ewsP2NpCxVM2+EhPyyEQ0k0DhtzdtGoI/Ug+jdFDyCKB9P2+EPLh
+iMjMnFILp7Zs4r18ECHlvZuDZfH9m0BchXIxu5jLIuQyKUWrCRDZZEDNr510ZhhVfYSFPA8ms1nk
+jyzYFOHYQyv5IfML/3IBFKlON5OZa+V8EZYULYcNkp03DdWglafj7SXZ1/XgAbVYrC381UvrsYN8
+jndVvoa1GWwe+NVlIIK7Q3uAjV3qLEDQpaNPg1rr0oAn6YmvTccjVMqj2YNwN+RHhKNzgRGxY5ct
+FaN+8fXZhRhpv3bVbAWuPZXoMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
+R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
+MDIwAhABAz5xDls09r2CKyYRqnNbMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCBp
+WsI1hnWwgUz/xZB47BwTZK01JyPANanxrxegB/pTfzAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
+MBwGCSqGSIb3DQEJBTEPFw0yMzA3MTMwNTAxMTVaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
+BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
+CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEANouLkbmUaYgAT2nmcZf2
+aQF9zmV4eRony04mu1Cfo+W0HSJ5GmJWoV+2nKKS1NppAwOBLevd7Vz44CaQzSOrrA8DWJ3slNV+
+m1o8iD7kdO5UvBHMHDCzvU9eKgnBOpjkRCl9dlwXOStyobCYyLD2OReLPDAdk27M9eXTVPlMw3aV
+5u/lntpu7TrvNR+xeS0jGCQe51wkbC+ft5QsnrQVSVWHM/xmjAkPbqGiQ9AYJK7UMrZ5HZTXxo4Q
+v36TKHOLiXOUj7Rh0cjgK2KxgmUV2OvQsqXpcUQZjYA9OIBk02XNRGNLTpt1snE+3sfy4day/XBD
+YUFDC4ZsZ82AmDZbhA==
+--000000000000cf1e500600573827--
