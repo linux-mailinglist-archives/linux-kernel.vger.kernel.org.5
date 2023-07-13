@@ -2,66 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46AAB752B79
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 22:13:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA894752B75
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 22:12:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233951AbjGMUNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 16:13:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48646 "EHLO
+        id S233808AbjGMUMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 16:12:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229930AbjGMUNE (ORCPT
+        with ESMTP id S232123AbjGMUMh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 16:13:04 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB1612D6A;
-        Thu, 13 Jul 2023 13:12:36 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36DKC4Xq112372;
-        Thu, 13 Jul 2023 15:12:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1689279124;
-        bh=0S2ewqAxg7ILJY9MxheLt4LbCdAki+6jXINxMjiX69o=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=ZQAWguTaq0oJyQamAR6Zivi6qbRIvLgQIWQZlx9J9WE73yHjbhCjKyIr/MYZLwpdF
-         dTaCJ5AJghWNnFi9etSLlrvI1SIeazIKE1zeBVsd/8CDCrwfB9PG+grWocrVjP1fAG
-         wvN41ffEpVziD/63jxogNJQs8JhftAKMGYqLKIUU=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36DKC4Bp026133
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 13 Jul 2023 15:12:04 -0500
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 13
- Jul 2023 15:12:03 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 13 Jul 2023 15:12:03 -0500
-Received: from [10.250.32.50] (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36DKC3Fc081261;
-        Thu, 13 Jul 2023 15:12:03 -0500
-Message-ID: <b16568ec-0428-981b-01ca-571cc5d52704@ti.com>
-Date:   Thu, 13 Jul 2023 15:12:03 -0500
+        Thu, 13 Jul 2023 16:12:37 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A380F1720
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 13:12:15 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1b9ed206018so11385ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 13:12:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689279126; x=1691871126;
+        h=mime-version:user-agent:message-id:in-reply-to:date:references
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=OCbyQDFiXgp3czjaCN0LZJhyRPoDhTEyRb41OL4Vb5k=;
+        b=6soCqQ3PQtWloijWJSLom2UhPzjnKQykn+yvtGsjJTX7/3RKSoO/WaqNq6llQ6I0GU
+         oXuvHOGy0nOlCb54f3eoGBIGhZg4xpaSo3Mc0NkjATaPn+C8bIevlX/tHaWUi27Wpon9
+         /rjRzZJxuujTMScHueAo3gPCTL3IxkhW3ha5pvM6gNEqaJM1Lcgjz3e0FSNg401wWq5s
+         RHr2FiknbmmzIS7AirqfX2lAcauOI8Xa4Wu9G2RqFw8BiW2jLJsmPEncO/3LK2NOgiqf
+         Rthss3Npyg8+AlhEiLZUVgdOiqufcYQHwFVJG+U7ijkH+yLhfLTsMHxdBfwh48pLLZOV
+         QZ5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689279126; x=1691871126;
+        h=mime-version:user-agent:message-id:in-reply-to:date:references
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OCbyQDFiXgp3czjaCN0LZJhyRPoDhTEyRb41OL4Vb5k=;
+        b=XZ0f+oy5DLxmqav4ZIoVFKRj6ebjHvXWTJjo9c+WxJiwOCc9iBBYwE7IQF8+FOcoCN
+         ZHxZoPbL47eOJ6UP4D1bLzopS8VhFli+Ri4nJcOafWh2GU4ObOwNG64Zq+t5SA/DxSsf
+         YSnAjzCHskTfsbhkcFzqVtyUQlTqsKT4R7iZRI9svXSUTl+j9pfsNp4rqkXA9wtWMMpu
+         lppNRfmqENYwbD6GjtWVDPydaBmYp3MZq1fO9njC3lN6jxQYS+bskJ9QDURfrFaOYqcR
+         BrtZsOMjUBSr+sMcZTNYuciusLeAK3Mq6lcpXhrVF0UrBGGRTrcCetRwz0Th2Q1pBLws
+         J6oQ==
+X-Gm-Message-State: ABy/qLZWOb52MunUW/wO/dl0bRKXlCcVg4F1VDUQesH5TAydUu5ZgHj3
+        Fv2oPpEQGWfIzQemsiPUdrZPnA==
+X-Google-Smtp-Source: APBJJlFvUK/urcGJljHMhiHTiPoSih0M93gjIbwrmSooqPK1b1eU1oLjKATc664VgtBjM2QZNydEOQ==
+X-Received: by 2002:a17:902:e810:b0:1b9:d34c:c47c with SMTP id u16-20020a170902e81000b001b9d34cc47cmr568828plg.8.1689279126500;
+        Thu, 13 Jul 2023 13:12:06 -0700 (PDT)
+Received: from bsegall-glaptop.localhost (c-73-158-249-138.hsd1.ca.comcast.net. [73.158.249.138])
+        by smtp.gmail.com with ESMTPSA id fe21-20020a056a002f1500b0064d681c753csm5836265pfb.40.2023.07.13.13.12.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Jul 2023 13:12:06 -0700 (PDT)
+From:   Benjamin Segall <bsegall@google.com>
+To:     Phil Auld <pauld@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH v2 1/2] sched, cgroup: Restore meaning to
+ hierarchical_quota
+References: <20230712133357.381137-1-pauld@redhat.com>
+        <20230712133357.381137-2-pauld@redhat.com>
+        <xm268rbkg4tg.fsf@google.com>
+        <20230713132306.GA13342@lorien.usersys.redhat.com>
+Date:   Thu, 13 Jul 2023 13:12:04 -0700
+In-Reply-To: <20230713132306.GA13342@lorien.usersys.redhat.com> (Phil Auld's
+        message of "Thu, 13 Jul 2023 09:23:06 -0400")
+Message-ID: <xm26zg3zefl7.fsf@google.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2] mux: mmio: use reg property when parent device is not
- a syscon
-Content-Language: en-US
-To:     Peter Rosin <peda@axentia.se>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20230605154153.24025-1-afd@ti.com>
-From:   Andrew Davis <afd@ti.com>
-In-Reply-To: <20230605154153.24025-1-afd@ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,47 +86,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/5/23 10:41 AM, Andrew Davis wrote:
-> The DT binding for the reg-mux compatible states it can be used when the
-> "parent device of mux controller is not syscon device". It also allows
-> for a reg property. When the reg property is provided, use that to
-> identify the address space for this mux. If not provided fallback to
-> using the parent device as a regmap provider.
-> 
-> Signed-off-by: Andrew Davis <afd@ti.com>
-> ---
+Phil Auld <pauld@redhat.com> writes:
 
-Ping, still needed and applies cleanly on v6.5-rc1.
+> On Wed, Jul 12, 2023 at 03:09:31PM -0700 Benjamin Segall wrote:
+>> Phil Auld <pauld@redhat.com> writes:
+>> 
+>> > In cgroupv2 cfs_b->hierarchical_quota is set to -1 for all task
+>> > groups due to the previous fix simply taking the min.  It should
+>> > reflect a limit imposed at that level or by an ancestor. Even
+>> > though cgroupv2 does not require child quota to be less than or
+>> > equal to that of its ancestors the task group will still be
+>> > constrained by such a quota so this should be shown here. Cgroupv1
+>> > continues to set this correctly.
+>> >
+>> > In both cases, add initialization when a new task group is created
+>> > based on the current parent's value (or RUNTIME_INF in the case of
+>> > root_task_group). Otherwise, the field is wrong until a quota is
+>> > changed after creation and __cfs_schedulable() is called.
+>> >
+>> > Fixes: c53593e5cb69 ("sched, cgroup: Don't reject lower cpu.max on ancestors")
+>> > Signed-off-by: Phil Auld <pauld@redhat.com>
+>> > Reviewed-by: Ben Segall <bsegall@google.com>
+>> > Cc: Ingo Molnar <mingo@redhat.com>
+>> > Cc: Peter Zijlstra <peterz@infradead.org>
+>> > Cc: Vincent Guittot <vincent.guittot@linaro.org>
+>> > Cc: Juri Lelli <juri.lelli@redhat.com>
+>> > Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+>> > Cc: Valentin Schneider <vschneid@redhat.com>
+>> > Cc: Ben Segall <bsegall@google.com>
+>> > Cc: Frederic Weisbecker <frederic@kernel.org>
+>> > Cc: Tejun Heo <tj@kernel.org>
+>> > ---
+>> >
+>> > v2: Improve comment about how setting hierarchical_quota correctly
+>> >
+>> > helps the scheduler. Remove extra parens.
+>> >  kernel/sched/core.c  | 13 +++++++++----
+>> >  kernel/sched/fair.c  |  7 ++++---
+>> >  kernel/sched/sched.h |  2 +-
+>> >  3 files changed, 14 insertions(+), 8 deletions(-)
+>> >
+>> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+>> > index a68d1276bab0..f80697a79baf 100644
+>> > --- a/kernel/sched/core.c
+>> > +++ b/kernel/sched/core.c
+>> > @@ -9904,7 +9904,7 @@ void __init sched_init(void)
+>> >  		ptr += nr_cpu_ids * sizeof(void **);
+>> >  
+>> >  		root_task_group.shares = ROOT_TASK_GROUP_LOAD;
+>> > -		init_cfs_bandwidth(&root_task_group.cfs_bandwidth);
+>> > +		init_cfs_bandwidth(&root_task_group.cfs_bandwidth, NULL);
+>> >  #endif /* CONFIG_FAIR_GROUP_SCHED */
+>> >  #ifdef CONFIG_RT_GROUP_SCHED
+>> >  		root_task_group.rt_se = (struct sched_rt_entity **)ptr;
+>> > @@ -11038,11 +11038,16 @@ static int tg_cfs_schedulable_down(struct task_group *tg, void *data)
+>> >  
+>> >  		/*
+>> >  		 * Ensure max(child_quota) <= parent_quota.  On cgroup2,
+>> > -		 * always take the min.  On cgroup1, only inherit when no
+>> > -		 * limit is set:
+>> > +		 * always take the non-RUNTIME_INF min.  On cgroup1, only
+>> > +		 * inherit when no limit is set. In cgroup2 this is used
+>> > +		 * by the scheduler to determine if a given CFS task has a
+>> > +		 * bandwidth constraint at some higher level.
+>> >  		 */
+>> 
+>> It's still used for determining this on cgroup1 (and the cgroup1 code
+>> still works for that), right?
+>>
+>
+> It would, except that the enforcement of child quota <= parent quota
+> means that cfs_rq->runtime_enabled will be set and we'll hit that first
+> on cgroup1.  So we don't really use it for this determination in
+> cgroup1.
 
-Andrew
-
-> 
-> Changes from v1:
->   - Flip logic as suggested in v1[0]
-> 
-> [0] https://lore.kernel.org/lkml/1c27d9d4-b1cc-c158-90f7-f7e47e02c424@ti.com/T/
-> 
->   drivers/mux/mmio.c | 9 ++++++---
->   1 file changed, 6 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/mux/mmio.c b/drivers/mux/mmio.c
-> index 44a7a0e885b8d..2c9e4df9d6f2c 100644
-> --- a/drivers/mux/mmio.c
-> +++ b/drivers/mux/mmio.c
-> @@ -44,10 +44,13 @@ static int mux_mmio_probe(struct platform_device *pdev)
->   	int ret;
->   	int i;
->   
-> -	if (of_device_is_compatible(np, "mmio-mux"))
-> +	if (of_device_is_compatible(np, "mmio-mux")) {
->   		regmap = syscon_node_to_regmap(np->parent);
-> -	else
-> -		regmap = dev_get_regmap(dev->parent, NULL) ?: ERR_PTR(-ENODEV);
-> +	} else {
-> +		regmap = device_node_to_regmap(np);
-> +		if (IS_ERR(regmap))
-> +			regmap = dev_get_regmap(dev->parent, NULL) ?: ERR_PTR(-ENODEV);
-> +	}
->   	if (IS_ERR(regmap)) {
->   		ret = PTR_ERR(regmap);
->   		dev_err(dev, "failed to get regmap: %d\n", ret);
+cgroup1 tg_cfs_schedulable_down only constricts child quota when it's
+set. You can set quota=RUNTIME_INF on any cgroup, no matter what its
+parent is. (The schedulable constraint is a little silly)
