@@ -2,67 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D9DE7518CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 08:31:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B24647518D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 08:32:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234036AbjGMGbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 02:31:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47920 "EHLO
+        id S234039AbjGMGcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 02:32:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231967AbjGMGbR (ORCPT
+        with ESMTP id S233991AbjGMGcH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 02:31:17 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51F1C1FC0;
-        Wed, 12 Jul 2023 23:31:13 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36D6UkpD061855;
-        Thu, 13 Jul 2023 01:30:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1689229846;
-        bh=IOUMvtjxzY1ZJPeePTxYO5sK2LDSSE4dwWaf+//lmHQ=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=sEvjCifKhDDRv5qVXA/PfuRvz7z0VfdgII6iFQ6+VPByRnhQm2JYz21s7oauCTAB7
-         WE27t1GJeNgSdOkKs3bDt0/RzRJx5iZWMl0ROb4ZptOQpLOE/KRgF2DOX1maXGA5hT
-         bYZ6KjDkayHuHImcpy/3ze8VpxceZltm+r5i8rbg=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36D6Uk0h001759
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 13 Jul 2023 01:30:46 -0500
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 13
- Jul 2023 01:30:45 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 13 Jul 2023 01:30:45 -0500
-Received: from [172.24.28.200] (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36D6Ug88068426;
-        Thu, 13 Jul 2023 01:30:43 -0500
-Message-ID: <575f9db2-ba47-d261-f7c7-b9e09b369f3e@ti.com>
-Date:   Thu, 13 Jul 2023 12:00:41 +0530
+        Thu, 13 Jul 2023 02:32:07 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EF401FC0
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 23:32:05 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fbea14700bso2460625e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 23:32:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689229924; x=1691821924;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Ggpj2HpIwuIwps0pPKNt1KxoFIc7z8mhEvXCZwkez4I=;
+        b=BdEgN0Zh7befL3eiroVtMlZu188tBVLVSLXDp2d7hyGm5HT2wgJxaIpYbOUXHeXFbi
+         3hl82+p9Fhc+pV5DBLBY8Hkva/FMuh/jzX99Ozfi7TG1bpyQvfV9EP8W0+q6DpcYW+wo
+         6L7JSxKGFOREsIkQwQgicvoR67rbu3qdjbqRZdQp038kQ5dHOXgBFPPRNDBhF/7KSQeU
+         zijxNCk28UWM/ZO09jx/s1d9JEpnIC+3gAPNNWDGDmBz76e7USLElEJ6pZqy2XkX7Nie
+         9cfsBostMu3if/dErm9wxWuzoGW83eXLrsmnL24p7pidJZmV5dKqFYTX1lM/I9fg7IMW
+         6VAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689229924; x=1691821924;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ggpj2HpIwuIwps0pPKNt1KxoFIc7z8mhEvXCZwkez4I=;
+        b=kRU+daxCPEwav6yrPYMPWF3LIuid8r4k3vCwSFq6I+lmz9i2SdyytrxyB10W1j5xyY
+         XMr3Tm33vEx6ONAgEZL7F7ZX7e9ZJMO4dVw+6empVwNbky2yIl5XcbhBNW3nypHCxs0v
+         pZ815OIhmOt8fMcBX/l6pzzt9N/lYDdZGlrq6OtjtKOhq5t1Ohs2PTxKQuLshYSaYxBe
+         zrKW0F9GSXsIF24ZhOMdwh3Q8rWHmvD+f4ltlhYsiPDtIjofa3oJ8Fm6hJ85ZEu+j4ZL
+         hd6F2OeGoc0IRxb1OBUlaRzLdYjaamzOeSY+ZTNYaNx55sfq5+iKyCsZ8Q5guUxqlJ+O
+         lPgQ==
+X-Gm-Message-State: ABy/qLZIo0oUOQI6zBHqNYoduvxdSW6XvCEakJOetD92rCjX48zhPfAL
+        5iuAYQY57KYmpCVCsThSZ7XZMpIEoULX95873lHTKg==
+X-Google-Smtp-Source: APBJJlH6hiMzxxBARZgDoXlXogR4LO5VsOQCXxTv6NYWVyWAE5jv1Zm04ZGCkmCZ2ZVTyl3abisbkw==
+X-Received: by 2002:a1c:7514:0:b0:3fb:abd0:2b4b with SMTP id o20-20020a1c7514000000b003fbabd02b4bmr482493wmc.26.1689229924045;
+        Wed, 12 Jul 2023 23:32:04 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id n22-20020a7bcbd6000000b003fbb618f7adsm6778960wmi.15.2023.07.12.23.32.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 Jul 2023 23:32:03 -0700 (PDT)
+Message-ID: <4c48796a-8e9c-ca5f-bacc-6811ea95f316@linaro.org>
+Date:   Thu, 13 Jul 2023 08:32:00 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net] net: ethernet: ti: cpsw_ale: Fix
- cpsw_ale_get_field()/cpsw_ale_set_field()
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 2/5] dt-bindings: thermal: tsens: Add ipq5332
+ compatible
+To:     Praveenkumar I <quic_ipkumar@quicinc.com>, amitk@kernel.org,
+        thara.gopinath@gmail.com, agross@kernel.org, andersson@kernel.org,
+        konrad.dybcio@linaro.org, rafael@kernel.org,
+        daniel.lezcano@linaro.org, rui.zhang@intel.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     quic_varada@quicinc.com
+References: <20230713052732.787853-1-quic_ipkumar@quicinc.com>
+ <20230713052732.787853-3-quic_ipkumar@quicinc.com>
 Content-Language: en-US
-To:     Roger Quadros <rogerq@kernel.org>,
-        Siddharth Vadapalli <s-vadapalli@ti.com>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>
-References: <20230712110657.1282499-1-s-vadapalli@ti.com>
- <837f1d5f-64fa-2496-6379-09e5e95252f4@kernel.org>
-From:   "Patil, Tanmay" <t-patil@ti.com>
-In-Reply-To: <837f1d5f-64fa-2496-6379-09e5e95252f4@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230713052732.787853-3-quic_ipkumar@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,82 +82,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 13/07/2023 07:27, Praveenkumar I wrote:
+> IPQ5332 uses TSENS v2.3.3 with combined interrupt. RPM is not
+> available in the SoC, hence adding new compatible to have the
+> sensor enablement and calibration function.
+> 
+> This patch also adds nvmem-cell-names for ipq5332
+> 
+> Signed-off-by: Praveenkumar I <quic_ipkumar@quicinc.com>
 
 
-On 7/12/2023 7:20 PM, Roger Quadros wrote:
-> 
-> 
-> On 12/07/2023 14:06, Siddharth Vadapalli wrote:
->> From: Tanmay Patil <t-patil@ti.com>
->>
->> CPSW ALE has 75 bit ALE entries which are stored within three 32 bit words.
->> The cpsw_ale_get_field() and cpsw_ale_set_field() functions assume that the
->> field will be strictly contained within one word. However, this is not
->> guaranteed to be the case and it is possible for ALE field entries to span
->> across up to two words at the most.
->>
->> Fix the methods to handle getting/setting fields spanning up to two words.
->>
->> Fixes: db82173f23c5 ("netdev: driver: ethernet: add cpsw address lookup engine support")
->> Signed-off-by: Tanmay Patil <t-patil@ti.com>
->> [s-vadapalli@ti.com: rephrased commit message and added Fixes tag]
->> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
->> ---
->>   drivers/net/ethernet/ti/cpsw_ale.c | 24 +++++++++++++++++++-----
->>   1 file changed, 19 insertions(+), 5 deletions(-)
->>
->> diff --git a/drivers/net/ethernet/ti/cpsw_ale.c b/drivers/net/ethernet/ti/cpsw_ale.c
->> index 0c5e783e574c..64bf22cd860c 100644
->> --- a/drivers/net/ethernet/ti/cpsw_ale.c
->> +++ b/drivers/net/ethernet/ti/cpsw_ale.c
->> @@ -106,23 +106,37 @@ struct cpsw_ale_dev_id {
->>   
->>   static inline int cpsw_ale_get_field(u32 *ale_entry, u32 start, u32 bits)
->>   {
->> -	int idx;
->> +	int idx, idx2;
->> +	u32 hi_val = 0;
->>   
->>   	idx    = start / 32;
->> +	idx2 = (start + bits - 1) / 32;
->> +	/* Check if bits to be fetched exceed a word */
->> +	if (idx != idx2) {
->> +		idx2 = 2 - idx2; /* flip */
->> +		hi_val = ale_entry[idx2] << ((idx2 * 32) - start);
->> +	}
->>   	start -= idx * 32;
->>   	idx    = 2 - idx; /* flip */
->> -	return (ale_entry[idx] >> start) & BITMASK(bits);
->> +	return (hi_val + (ale_entry[idx] >> start)) & BITMASK(bits);
-> 
-> Should this be bit-wise OR instead of ADD?
-> 
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-As the hi_val has been declared and left shifted in this function, we 
-are sure that the trailing bits are all '0'. Hence we can directly add them.
+Best regards,
+Krzysztof
 
->>   }
->>   
->>   static inline void cpsw_ale_set_field(u32 *ale_entry, u32 start, u32 bits,
->>   				      u32 value)
->>   {
->> -	int idx;
->> +	int idx, idx2;
->>   
->>   	value &= BITMASK(bits);
->> -	idx    = start / 32;
->> +	idx = start / 32;
->> +	idx2 = (start + bits - 1) / 32;
->> +	/* Check if bits to be set exceed a word */
->> +	if (idx != idx2) {
->> +		idx2 = 2 - idx2; /* flip */
->> +		ale_entry[idx2] &= ~(BITMASK(bits + start - (idx2 * 32)));
->> +		ale_entry[idx2] |= (value >> ((idx2 * 32) - start));
->> +	}
->>   	start -= idx * 32;
->> -	idx    = 2 - idx; /* flip */
->> +	idx = 2 - idx; /* flip */
->>   	ale_entry[idx] &= ~(BITMASK(bits) << start);
->>   	ale_entry[idx] |=  (value << start);
->>   }
-> 
