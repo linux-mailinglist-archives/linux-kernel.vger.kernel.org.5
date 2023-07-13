@@ -2,106 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70DF375256F
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 16:48:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6674F752577
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 16:48:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229839AbjGMOsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 10:48:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54030 "EHLO
+        id S231731AbjGMOsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 10:48:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231126AbjGMOr6 (ORCPT
+        with ESMTP id S231126AbjGMOsq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 10:47:58 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A443D19A6;
-        Thu, 13 Jul 2023 07:47:57 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 40477615BE;
-        Thu, 13 Jul 2023 14:47:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CAF6C433C8;
-        Thu, 13 Jul 2023 14:47:56 +0000 (UTC)
-Date:   Thu, 13 Jul 2023 10:47:54 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Zheng Yejian <zhengyejian1@huawei.com>
-Cc:     <mhiramat@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>
-Subject: Re: [PATCH] traing: Fix memory leak of iter->temp when reading
- trace_pipe
-Message-ID: <20230713104754.6cf4696c@gandalf.local.home>
-In-Reply-To: <bae57723-50f4-a497-3691-33c4f1234896@huawei.com>
-References: <20230713141435.1133021-1-zhengyejian1@huawei.com>
-        <bae57723-50f4-a497-3691-33c4f1234896@huawei.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Thu, 13 Jul 2023 10:48:46 -0400
+Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02on2042.outbound.protection.outlook.com [40.107.241.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8428212D;
+        Thu, 13 Jul 2023 07:48:45 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PMF8MxxhRt8De336PC8pJDAGHHJnUYpRps95Rwj+mqmUsY9ghUW2Nrpf0zM9/0FpfH+5Fk7hVKu7yieDLzwvMJewS1CH/lG8E1LeTwc+iAvDsb8L/6lCEqz73sGWvdmZg5OoPVv+nK6eYUMsZNlvZ3e05rijYQEWx1qb92XIJH69fiBNT4ykltRYf0xa26zXzr8+Y7HmX6/9F0Sg2f/ZZcu40t5usHRInlTdPifsftJxD3ID5+ML4EVNDFx87m1xYzJucJAJQFyEXHCXC4pLMTiQlgBFw0sYzywD6R0g7UPXbPv6cXfOSPNoHTjA32Puj66MC5PSBqokNK91m4SMIA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=qnYbnPt4L7xrw6HDXCldXKb9iMOag9e71uf/VjLpkV0=;
+ b=IqnXtNtVk3NsFLyEHaJXxM98sCK26oBWmuGNP5uM6oziB1X8DLlY5hNkH7aSsq5ynfs1I3yZXS0A3uQXzIDYd7cqh8pIWEvAD2xuIBfJwyaDwBcu1TBxvPFiPZ+gxRpl3ANgf+einU7f8J6xk4lrLKvZFw7/LyV5/0G6MdzP6OBWS17BYRmlgnDGVC1vVdCbopaN1kJ6kay88/F8MFVM1f6BR4/Lga43YmMgYT4lkpFdUBQC/X5y0u6w77xjuYhCYiBtPt7v22pA8/CUMrNpIWWL+iYK2T5zAa8vC6jvGHYPUniNA7Q3jGTCz2avBuomXopjhUWM6kVFKya2/mZEUQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 194.138.21.76) smtp.rcpttodomain=redhat.com smtp.mailfrom=siemens.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=siemens.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=siemens.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qnYbnPt4L7xrw6HDXCldXKb9iMOag9e71uf/VjLpkV0=;
+ b=spiThwEFim2O078MvzJgOsL143X46g3JsfzqEGHslbuPNxr2E3Wqqvgdk65YnYJq6CyQWCc6c1ADv3/i2c19VuiWGSJ14oPY5HJHwIyYTUCsw7JQSYzwXIXe9WfdTV1eEOQa0KTUYijj4sQztHPyiFwcBGF/2Vyu1Ee/pfHjY2e+NObF0e5k+peTfnS3HAm9bRqWTtTyBuwEkSgZ9FK1tCa3ditVUWBOA8L8B50VDuoIoTA6am9PsBtBHIp6zXjapFcuNp0b4iie6faJtgPkQMyC/fhk/TmWvayN8h/5jyFVyjv1Aa7pd7OgTSrNowmbU0Dvk7gRoJ4TyDma5Whcng==
+Received: from FR0P281CA0079.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:1e::19)
+ by DB8PR10MB3831.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:16b::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.20; Thu, 13 Jul
+ 2023 14:48:43 +0000
+Received: from VE1EUR01FT029.eop-EUR01.prod.protection.outlook.com
+ (2603:10a6:d10:1e:cafe::46) by FR0P281CA0079.outlook.office365.com
+ (2603:10a6:d10:1e::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.20 via Frontend
+ Transport; Thu, 13 Jul 2023 14:48:43 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 194.138.21.76)
+ smtp.mailfrom=siemens.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=siemens.com;
+Received-SPF: Pass (protection.outlook.com: domain of siemens.com designates
+ 194.138.21.76 as permitted sender) receiver=protection.outlook.com;
+ client-ip=194.138.21.76; helo=hybrid.siemens.com; pr=C
+Received: from hybrid.siemens.com (194.138.21.76) by
+ VE1EUR01FT029.mail.protection.outlook.com (10.152.2.224) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6588.22 via Frontend Transport; Thu, 13 Jul 2023 14:48:42 +0000
+Received: from DEMCHDC8WAA.ad011.siemens.net (139.25.226.104) by
+ DEMCHDC8VSA.ad011.siemens.net (194.138.21.76) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Thu, 13 Jul 2023 16:48:42 +0200
+Received: from md1za8fc.ppmd.siemens.net (139.25.69.128) by
+ DEMCHDC8WAA.ad011.siemens.net (139.25.226.104) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.25; Thu, 13 Jul 2023 16:48:42 +0200
+From:   Henning Schild <henning.schild@siemens.com>
+To:     Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        <platform-driver-x86@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Tobias Schaffner <tobias.schaffner@siemens.com>,
+        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
+        Henning Schild <henning.schild@siemens.com>
+Subject: [PATCH v2 0/3] platform/x86: simatic-ipc: add another model and hwmon module loading
+Date:   Thu, 13 Jul 2023 16:48:29 +0200
+Message-ID: <20230713144832.26473-1-henning.schild@siemens.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [139.25.69.128]
+X-ClientProxiedBy: DEMCHDC8WBA.ad011.siemens.net (139.25.226.105) To
+ DEMCHDC8WAA.ad011.siemens.net (139.25.226.104)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VE1EUR01FT029:EE_|DB8PR10MB3831:EE_
+X-MS-Office365-Filtering-Correlation-Id: 32355f76-c675-4f47-7a53-08db83b040de
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: IUU3RQHWSMRtXLTJbhhc7aKl7/sL9MGv08+jHsNArb6WdJvvyLyb42pKA8IuZf6FDo/++jWhZ9Cx43B59qSmrIW5hvibGxXMBOQHamUNviK3d4Q1g71Rt7nN6jLVeQyl3YLcKkTDzEivUV7rZ4A56BcFrV85UaknTBTV5DissSBzqdYhBqca8OBXC1ZNRDyqxNnkwg3b9j1rNTly1VpXvw/qywmbiFZ+s//JYIXHa83OD+ZjmUDR9vMEWqfobCNdYIhGlcGqBaQXzf/s6iQFv4YzD3Ehjg2OrDA0qXcsQQCvzZETqpDxavex4naSqb0DZBxtzXotzezg8aUKR/+q34yqD9v4ylKqb5ucPz6SZgcPsKrKutWttJo0oQ5yKvQfOAQ6ttnGH9NqTrC4gx9woYI5cVz20LFfGu9Hn6wJMetVmPVK0cXcx6ivg3gm/7fFflwXi8Ffod4JfOnmbnZv4drkzy7vgpsu1/sQvCgqzl1yODYRL3BJvWNbtD/F+hbeRVcWx6P85g6MxbH8uffZkRdrT8d5DMjPplxPeThnBYKWNDjXRJoUV6D76DxCSAuKKNuCSMsnV+pwJ29e2BvpA+SaaUEyWupyyLuFDsND7MfZofjTAGKCtYSqGBKkhtA5WhfJCz1b+nYGC0Xdx67eQWXkYyUTzynRlvf1LWISQsAh8x8sn6MZ9r6exnXD5U7yQcgzAmqjaDCSaBSgTVkTAk+azXxV0UN75HoY6PSntuPfLFNV6BstrIrAMEgjIhYLcvvhISsbrKwDarxaZuYgFQ==
+X-Forefront-Antispam-Report: CIP:194.138.21.76;CTRY:DE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:hybrid.siemens.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(346002)(39860400002)(136003)(376002)(396003)(451199021)(46966006)(40470700004)(36840700001)(44832011)(70206006)(4326008)(70586007)(41300700001)(316002)(2906002)(4744005)(478600001)(8936002)(5660300002)(8676002)(110136005)(54906003)(36860700001)(6666004)(40460700003)(26005)(107886003)(40480700001)(36756003)(186003)(16526019)(83380400001)(336012)(47076005)(1076003)(82960400001)(356005)(82310400005)(82740400003)(2616005)(81166007)(956004)(86362001)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: siemens.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2023 14:48:42.8393
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 32355f76-c675-4f47-7a53-08db83b040de
+X-MS-Exchange-CrossTenant-Id: 38ae3bcd-9579-4fd4-adda-b42e1495d55a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=38ae3bcd-9579-4fd4-adda-b42e1495d55a;Ip=[194.138.21.76];Helo=[hybrid.siemens.com]
+X-MS-Exchange-CrossTenant-AuthSource: VE1EUR01FT029.eop-EUR01.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR10MB3831
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 13 Jul 2023 22:23:20 +0800
-Zheng Yejian <zhengyejian1@huawei.com> wrote:
+cahnged since v1:
+ - switch to using a list of modules per device
+ - add p3 and make the watchdog module load code use what p2 created
 
-> On 2023/7/13 22:14, Zheng Yejian wrote:
-> > kmemleak reports:
-> >    unreferenced object 0xffff88814d14e200 (size 256):
-> >      comm "cat", pid 336, jiffies 4294871818 (age 779.490s)
-> >      hex dump (first 32 bytes):
-> >        04 00 01 03 00 00 00 00 08 00 00 00 00 00 00 00  ................
-> >        0c d8 c8 9b ff ff ff ff 04 5a ca 9b ff ff ff ff  .........Z......
-> >      backtrace:
-> >        [<ffffffff9bdff18f>] __kmalloc+0x4f/0x140
-> >        [<ffffffff9bc9238b>] trace_find_next_entry+0xbb/0x1d0
-> >        [<ffffffff9bc9caef>] trace_print_lat_context+0xaf/0x4e0
-> >        [<ffffffff9bc94490>] print_trace_line+0x3e0/0x950
-> >        [<ffffffff9bc95499>] tracing_read_pipe+0x2d9/0x5a0
-> >        [<ffffffff9bf03a43>] vfs_read+0x143/0x520
-> >        [<ffffffff9bf04c2d>] ksys_read+0xbd/0x160
-> >        [<ffffffff9d0f0edf>] do_syscall_64+0x3f/0x90
-> >        [<ffffffff9d2000aa>] entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-> > 
-> > when reading file 'trace_pipe', 'iter->temp' is allocated or relocated
-> > in trace_find_next_entry() but not freed before 'trace_pipe' is closed.
-> > 
-> > To fix it, free 'iter->temp' in tracing_release_pipe().
-> >   
-> 
-> Sorry, forget the Fixes tag:(
-> 
-> Is following Fixes right?
-> Fixes: ff895103a84a ("tracing: Save off entry when peeking at next entry")
+The first patch just adds a device that is pretty similar to another one
+we already had here.
 
-That's the one I already added ;-)
+The second patch loads modules for hwmon support, should they be
+available. That will save users the need to detect and manually load
+those modules after a machine has been clearly identified by its Siemens
+Simatic IPC station id.
 
-Don't worry too much about adding fixes, I will always analyze a fix patch
-to find out what it actually fixes. If you add one, I'll still confirm it.
+And finally p3 changes another request_module call to use the mechanism
+introduced in p2.
 
--- Steve
+Henning Schild (3):
+  platform/x86: simatic-ipc: add another model
+  platform/x86: simatic-ipc: add auto-loading of hwmon modules
+  platform/x86: simatic-ipc: use extra module loading for watchdog
 
-> 
-> > Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
-> > ---
-> >   kernel/trace/trace.c | 1 +
-> >   1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> > index 4529e264cb86..94cfaa884578 100644
-> > --- a/kernel/trace/trace.c
-> > +++ b/kernel/trace/trace.c
-> > @@ -6764,6 +6764,7 @@ static int tracing_release_pipe(struct inode *inode, struct file *file)
-> >   
-> >   	free_cpumask_var(iter->started);
-> >   	kfree(iter->fmt);
-> > +	kfree(iter->temp);
-> >   	mutex_destroy(&iter->mutex);
-> >   	kfree(iter);
-> >     
+ drivers/platform/x86/simatic-ipc.c            | 74 ++++++++++++++-----
+ include/linux/platform_data/x86/simatic-ipc.h |  1 +
+ 2 files changed, 57 insertions(+), 18 deletions(-)
+
+-- 
+2.41.0
 
