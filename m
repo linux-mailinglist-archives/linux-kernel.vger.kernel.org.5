@@ -2,101 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56E8775102F
-	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 20:02:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB55B750FC5
+	for <lists+linux-kernel@lfdr.de>; Wed, 12 Jul 2023 19:36:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232784AbjGLSCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 14:02:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55946 "EHLO
+        id S232817AbjGLRgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 13:36:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231836AbjGLSCn (ORCPT
+        with ESMTP id S231602AbjGLRgQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 14:02:43 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFC0711B;
-        Wed, 12 Jul 2023 11:02:42 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7A8B5618A8;
-        Wed, 12 Jul 2023 18:02:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F23DCC433C7;
-        Wed, 12 Jul 2023 18:02:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689184961;
-        bh=U2OA5AbewW9cU7RByClE25sKH4R8ibU9NqasHsYKFjg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=RwyPZx8jjn/q4m6QFr9vjgdNYSHMv/HGmvdyVS4EWdrY8pNAMltUL/Bd6cclvip6m
-         XlfSKduwD/ku5DcbQxzGFwFhcC1loub39lct/8iwzwguArUCLep7w3TriUS0P7vsx7
-         vUhgc0cgcFWObt3qyioVatpC73K/fng86l96MKHbqhR5Mq8e8vETYj1wYEfrAcfLkL
-         K6bg0jiNanHSizFefp/P1pCUBiL0hXWdYdVU+SFSKMPnuglpj08S3m3eGuxnfzEDzd
-         jv+4zmi7b2L7PbXYIcxLXL9YwXVZPkmxoD16n1yI8IoCxrLkcOZIS2P50CCNt/kVKZ
-         G36pWSwWtwyrg==
-Date:   Wed, 12 Jul 2023 11:02:40 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     David Ahern <dsahern@gmail.com>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Netdev <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, Qingfang DENG <qingfang.deng@siflower.com.cn>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        YOSHIFUJI Hideaki <yoshfuji@linux-ipv6.org>,
-        Masahide NAKAMURA <nakam@linux-ipv6.org>,
-        Ville Nuorvala <vnuorval@tcs.hut.fi>,
-        Arnd Bergmann <arnd@arndb.de>, Pavel Machek <pavel@denx.de>
-Subject: Re: [PATCH 6.4 0/6] 6.4.3-rc2 review
-Message-ID: <20230712110240.2b232f84@kernel.org>
-In-Reply-To: <CA+G9fYvEJgcNhvJk6pvdQOkaS_+x105ZgSM1BVvYy0RRW+1TvA@mail.gmail.com>
-References: <20230709203826.141774942@linuxfoundation.org>
-        <CA+G9fYtEr-=GbcXNDYo3XOkwR+uYgehVoDjsP0pFLUpZ_AZcyg@mail.gmail.com>
-        <20230711201506.25cc464d@kernel.org>
-        <ZK5k7YnVA39sSXOv@duo.ucw.cz>
-        <CA+G9fYvEJgcNhvJk6pvdQOkaS_+x105ZgSM1BVvYy0RRW+1TvA@mail.gmail.com>
+        Wed, 12 Jul 2023 13:36:16 -0400
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56E061BD
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 10:36:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689183375; x=1720719375;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=L2w7h+1zojcVdKco4DovJ69ANkFD1mq7GmkWM2ppddQ=;
+  b=eYwnbqnE39MEk5CxU5XFlxl7j7QO5UjH0UZaHzjV7OxxtXKZf2+EcPk8
+   gDFunCBjWX/j/YESFA/BAfD7UGwm2Z6ibt55Mw6frAX/FLKYj1DeGHq/a
+   CXFddYIrd20tyilcKBd31vH+2eUEtf813iz8i4SZ8wKuTqF5w8qHM/6df
+   ZyAg2QxC4hBeCWHFhbsV3Nnd1n7pu57J22gfLUKiZK3V/Sm5APEeBlkZX
+   EPKRULvj6ngP580kP3bhU+MBiCaP3fgpg7fnCcmEWCE+GeHmSrxkWN83B
+   ieMUs1YB335/IGj5I84Z4FAWhea0vPsme9BUTW8TukShXc1HNRct4PMxx
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10769"; a="451318710"
+X-IronPort-AV: E=Sophos;i="6.01,200,1684825200"; 
+   d="scan'208";a="451318710"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2023 10:36:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10769"; a="845734325"
+X-IronPort-AV: E=Sophos;i="6.01,200,1684825200"; 
+   d="scan'208";a="845734325"
+Received: from chenyu-dev.sh.intel.com ([10.239.62.164])
+  by orsmga004.jf.intel.com with ESMTP; 12 Jul 2023 10:36:05 -0700
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>
+Cc:     Ricardo Neri <ricardo.neri@intel.com>,
+        Tim Chen <tim.c.chen@intel.com>,
+        Yicong Yang <yangyicong@huawei.com>,
+        linux-kernel@vger.kernel.org, Chen Yu <yu.c.chen@intel.com>
+Subject: [PATCH] sched/topology: Align group flags when removing degenerate domain
+Date:   Thu, 13 Jul 2023 09:31:33 +0800
+Message-Id: <20230713013133.2314153-1-yu.c.chen@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 12 Jul 2023 18:41:46 +0530 Naresh Kamboju wrote:
-> That is the commit id from stable-rc tree.
-> 
-> I have re-tested the reported issues multiple times and
-> it seems that it is intermittently reproducible.
-> Following list of links shows kernel crashes while testing
-> selftest net pmtu.sh
-> 
-> 1)
-> Unable to handle kernel paging request at virtual address
-> https://lkft.validation.linaro.org/scheduler/job/6579624#L4648
-> 
-> 
-> 2)
-> include/net/neighbour.h:302 suspicious rcu_dereference_check() usage!
-> 
-> https://lkft.validation.linaro.org/scheduler/job/6579625#L7500
-> https://lkft.validation.linaro.org/scheduler/job/6579626#L7509
-> https://lkft.validation.linaro.org/scheduler/job/6579622#L7537
-> https://lkft.validation.linaro.org/scheduler/job/6579623#L7469
+The flags of the child of a given scheduling domain are used to initialize
+the flags of its scheduling groups. When the child of a scheduling domain
+is degenerated, the flags of its local scheduling group need to be updated
+to align with the flags of its new child domain.
 
-Nothing jumps out at me.
+The flag SD_SHARE_CPUCAPACITY was aligned in
+Commit bf2dc42d6beb ("sched/topology: Propagate SMT flags when removing degenerate domain").
+Further generalize this alignment so other flags can be used later, such as
+in cluster-based task wakeup. [1]
 
-David, any ideas?
+Link: https://lore.kernel.org/lkml/20230530115527.GC156198@hirez.programming.kicks-ass.net #1
+Suggested-by: Ricardo Neri <ricardo.neri@intel.com>
+Reported-by: Yicong Yang <yangyicong@huawei.com>
+Closes: https://lore.kernel.org/lkml/ce714341-af58-2522-69a8-321f02c82893@huawei.com/
+Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+---
+ kernel/sched/topology.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+index d3a3b2646ec4..ff02d7deec0c 100644
+--- a/kernel/sched/topology.c
++++ b/kernel/sched/topology.c
+@@ -722,8 +722,7 @@ cpu_attach_domain(struct sched_domain *sd, struct root_domain *rd, int cpu)
+ 
+ 			if (parent->parent) {
+ 				parent->parent->child = tmp;
+-				if (tmp->flags & SD_SHARE_CPUCAPACITY)
+-					parent->parent->groups->flags |= SD_SHARE_CPUCAPACITY;
++				parent->parent->groups->flags = tmp->flags;
+ 			}
+ 
+ 			/*
+-- 
+2.25.1
+
