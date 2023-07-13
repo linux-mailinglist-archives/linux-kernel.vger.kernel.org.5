@@ -2,191 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC0B475199B
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 09:16:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 538BF751997
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 09:14:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234221AbjGMHQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 03:16:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41594 "EHLO
+        id S234170AbjGMHOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 03:14:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234195AbjGMHQX (ORCPT
+        with ESMTP id S234064AbjGMHOB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 03:16:23 -0400
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ED281BEC;
-        Thu, 13 Jul 2023 00:16:15 -0700 (PDT)
-X-UUID: 2582e23a214d11ee9cb5633481061a41-20230713
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=Ac6vrCPUiIy9uc512AmFbjbxWAxDhgg98wOqkjmcHRc=;
-        b=sxghFqH8fYdZ8oU3jyugtzmjuwCW5slRK4wSUGTUc3/QrQkSb6mshlsZrI+yESnQYIJHg/utKkiLVh6MxU6c7SF82iwOs1TtPCPzerixuXHGCy/xF1v5M9SkH5/1fE8KALVdIGUUO/q8J8wcWuEobj19xL4/eBGXZ9chV8NGgP4=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.28,REQID:54a6e002-4dc8-46c7-a92d-40e59a895baa,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:0
-X-CID-META: VersionHash:176cd25,CLOUDID:975be30d-26a8-467f-b838-f99719a9c083,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:
-        NO,DKR:0,DKP:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
-X-UUID: 2582e23a214d11ee9cb5633481061a41-20230713
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw01.mediatek.com
-        (envelope-from <chris.lu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 551887242; Thu, 13 Jul 2023 15:16:12 +0800
-Received: from mtkmbs11n1.mediatek.inc (172.21.101.185) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Thu, 13 Jul 2023 15:16:10 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Thu, 13 Jul 2023 15:16:10 +0800
-From:   Chris Lu <chris.lu@mediatek.com>
-To:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Von Dentz <luiz.dentz@gmail.com>
-CC:     Sean Wang <sean.wang@mediatek.com>,
-        Aaron Hou <aaron.hou@mediatek.com>,
-        Steve Lee <steve.lee@mediatek.com>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mediatek <linux-mediatek@lists.infradead.org>,
-        Chris Lu <chris.lu@mediatek.com>
-Subject: [PATCH v6] Bluetooth: btmtk: Fix kernel crash when processing coredump
-Date:   Thu, 13 Jul 2023 15:11:06 +0800
-Message-ID: <20230713071105.26248-1-chris.lu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Thu, 13 Jul 2023 03:14:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCB9D213B
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 00:12:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689232311;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4rbQFF4yS3GMxwkk3pn6/zA31jQ3tbZhDFGj76ueuJQ=;
+        b=VErrStRA25u1gwBeOPt/vIlFXKsbpDYBkIhPJMtL2Fm0i/2hotmtLMcjy7a9pjH3+JKMKD
+        yczt8rM7W4AwJBHthvLnb4lTcABHjQxSNcq7HZC8UvoLYbh3auU2N7pmkeE6l4duWfqV92
+        TKis5Oo5oV+/ZyM3dlGuYHlrxw6USNo=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-226-wziDqvOqNuO2foMwBt_Urw-1; Thu, 13 Jul 2023 03:11:49 -0400
+X-MC-Unique: wziDqvOqNuO2foMwBt_Urw-1
+Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-62dd79f63e0so1115806d6.0
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 00:11:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689232308; x=1689837108;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4rbQFF4yS3GMxwkk3pn6/zA31jQ3tbZhDFGj76ueuJQ=;
+        b=Qg1OBqdlQ9F87XLVkCtpdZmdNNseB9bhKFm6+JR7oEu0sHPdn3rJKJCFRF0OUw5bMg
+         +D1TF78Fj0dFHlKhqdDS6tRcdq8ol1D6xTqF1RY04FbIUOp/Lfn2qtXYpd/6S62iJrhi
+         AHy+GN4nEANpbEe/og6LKV6/TrnmSxoUGhj31D2aAlPwWsPMb3CLVa7IfWgw139/TNMu
+         8NmiOqP+dIO5+8yDmxp/Hq0NBya5JAg19WElN6CwAMNuVxMIbz/s4Bn6YJyoEova4F3f
+         0I1iEO8oY+g5LuV2gYMGd2Q9NgZvu7iQW1sqbpElz8okvqYTnAI4lWvMRtWEVV6ZN1oX
+         5/cg==
+X-Gm-Message-State: ABy/qLYoqfD5P111vEzs6ICoFnBDNOe0WN/uR3VALaV4oIcZAU8MCdje
+        p+73Mg7WztE4wSvahp8LWeLVp0e+qNB7EHUvREvW1NP2KQ8Y04aeOsu2Muu6+RgjBZsDsV9i/NH
+        OD8N+UGw8VCLBfTYib09QOqpK
+X-Received: by 2002:a05:622a:453:b0:3ff:2a6b:5a76 with SMTP id o19-20020a05622a045300b003ff2a6b5a76mr1023107qtx.5.1689232308748;
+        Thu, 13 Jul 2023 00:11:48 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlErYDj2t9Gqn1bkKhZr8rKPzq+adKKENgLpBmad1q5vqdriwgXadx8H4HdDp5pMraZmaEQwbQ==
+X-Received: by 2002:a05:622a:453:b0:3ff:2a6b:5a76 with SMTP id o19-20020a05622a045300b003ff2a6b5a76mr1023080qtx.5.1689232308424;
+        Thu, 13 Jul 2023 00:11:48 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-235-188.dyn.eolo.it. [146.241.235.188])
+        by smtp.gmail.com with ESMTPSA id c7-20020ae9e207000000b00767cfb1e859sm2693833qkc.47.2023.07.13.00.11.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Jul 2023 00:11:48 -0700 (PDT)
+Message-ID: <31b64f509a9b4b8badf8925dddff4269ad572d39.camel@redhat.com>
+Subject: Re: [PATCH net] gso: fix GSO_DODGY bit handling for related
+ protocols
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Yan Zhai <yan@cloudflare.com>, Jason Wang <jasowang@redhat.com>
+Cc:     "open list:NETWORKING [TCP]" <netdev@vger.kernel.org>,
+        kernel-team@cloudflare.com, Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Xin Long <lucien.xin@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Andrew Melnychenko <andrew@daynix.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:SCTP PROTOCOL" <linux-sctp@vger.kernel.org>
+Date:   Thu, 13 Jul 2023 09:11:44 +0200
+In-Reply-To: <CAO3-PboQ1WL4wu+znnrF4kEdNnx42xPNJ_+Oc88bEejW2J-A+Q@mail.gmail.com>
+References: <ZK9ZiNMsJX8+1F3N@debian.debian>
+         <CACGkMEsy+dFK+BnTg_9K59VX-PzHW_fpwY3SRpUxg-MRyD5HWA@mail.gmail.com>
+         <CAO3-PboQ1WL4wu+znnrF4kEdNnx42xPNJ_+Oc88bEejW2J-A+Q@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,T_SCC_BODY_TEXT_LINE,T_SPF_TEMPERROR,UNPARSEABLE_RELAY
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There may be a potential kernel crash risk if 'skb->len
-- MTK_COREDUMP_END_LEN' value is less than 0 when doing
-memcmp in btmtk_process_coredump().
-Check the value is valid before doing memcmp.
+On Wed, 2023-07-12 at 21:58 -0500, Yan Zhai wrote:
+> On Wed, Jul 12, 2023 at 9:11=E2=80=AFPM Jason Wang <jasowang@redhat.com> =
+wrote:
+> >=20
+> > On Thu, Jul 13, 2023 at 9:55=E2=80=AFAM Yan Zhai <yan@cloudflare.com> w=
+rote:
+> > >=20
+> > > SKB_GSO_DODGY bit indicates a GSO packet comes from an untrusted sour=
+ce.
+> > > The canonical way is to recompute the gso_segs to avoid device driver
+> > > issues. Afterwards, the DODGY bit can be removed to avoid re-check at=
+ the
+> > > egress of later devices, e.g. packets can egress to a vlan device bac=
+ked
+> > > by a real NIC.
+> > >=20
+> > > Commit 1fd54773c267 ("udp: allow header check for dodgy GSO_UDP_L4
+> > > packets.") checks DODGY bit for UDP, but for packets that can be fed
+> > > directly to the device after gso_segs reset, it actually falls throug=
+h
+> > > to fragmentation [1].
+> > >=20
+> > > Commit 90017accff61 ("sctp: Add GSO support") and commit 3820c3f3e417
+> > > ("[TCP]: Reset gso_segs if packet is dodgy") both didn't remove the D=
+ODGY
+> > > bit after recomputing gso_segs.
+> >=20
+> > If we try to fix two issues, we'd better use separate patches.
+> >=20
+> > >=20
+> > > This change fixes the GSO_UDP_L4 handling case, and remove the DODGY =
+bit
+> > > at other places.
+> > >=20
+> > > Fixes: 90017accff61 ("sctp: Add GSO support")
+> > > Fixes: 3820c3f3e417 ("[TCP]: Reset gso_segs if packet is dodgy")
+> > > Fixes: 1fd54773c267 ("udp: allow header check for dodgy GSO_UDP_L4 pa=
+ckets.")
+> > > Signed-off-by: Yan Zhai <yan@cloudflare.com>
+> > >=20
+> > > ---
+> > > [1]:
+> > > https://lore.kernel.org/all/CAJPywTKDdjtwkLVUW6LRA2FU912qcDmQOQGt2WaD=
+o28KzYDg+A@mail.gmail.com/
+> > >=20
+> > > ---
+> > >  net/ipv4/tcp_offload.c |  1 +
+> > >  net/ipv4/udp_offload.c | 19 +++++++++++++++----
+> > >  net/ipv6/udp_offload.c | 19 +++++++++++++++----
+> > >  net/sctp/offload.c     |  2 ++
+> > >  4 files changed, 33 insertions(+), 8 deletions(-)
+> > >=20
+> > > diff --git a/net/ipv4/tcp_offload.c b/net/ipv4/tcp_offload.c
+> > > index 8311c38267b5..f9b93708c22e 100644
+> > > --- a/net/ipv4/tcp_offload.c
+> > > +++ b/net/ipv4/tcp_offload.c
+> > > @@ -87,6 +87,7 @@ struct sk_buff *tcp_gso_segment(struct sk_buff *skb=
+,
+> > >                 /* Packet is from an untrusted source, reset gso_segs=
+. */
+> > >=20
+> > >                 skb_shinfo(skb)->gso_segs =3D DIV_ROUND_UP(skb->len, =
+mss);
+> > > +               skb_shinfo(skb)->gso_type &=3D ~SKB_GSO_DODGY;
+> > >=20
+> > >                 segs =3D NULL;
+> > >                 goto out;
+> > > diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
+> > > index 75aa4de5b731..bd29cf19bb6b 100644
+> > > --- a/net/ipv4/udp_offload.c
+> > > +++ b/net/ipv4/udp_offload.c
+> > > @@ -388,11 +388,22 @@ static struct sk_buff *udp4_ufo_fragment(struct=
+ sk_buff *skb,
+> > >         if (!pskb_may_pull(skb, sizeof(struct udphdr)))
+> > >                 goto out;
+> > >=20
+> > > -       if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4 &&
+> > > -           !skb_gso_ok(skb, features | NETIF_F_GSO_ROBUST))
+> > > -               return __udp_gso_segment(skb, features, false);
+> > > -
+> > >         mss =3D skb_shinfo(skb)->gso_size;
+> > > +
+> > > +       if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4) {
+> > > +               if (skb_gso_ok(skb, features | NETIF_F_GSO_ROBUST)) {
+> > > +                       /* Packet is from an untrusted source, reset =
+actual gso_segs */
+> > > +                       skb_shinfo(skb)->gso_segs =3D DIV_ROUND_UP(sk=
+b->len - sizeof(*uh),
+> > > +                                                                mss)=
+;
+> > > +                       skb_shinfo(skb)->gso_type &=3D ~SKB_GSO_DODGY=
+;
+> > > +
+> > > +                       segs =3D NULL;
+> > > +                       goto out;
+> > > +               } else {
+> > > +                       return __udp_gso_segment(skb, features, false=
+);
+> >=20
+> > I think it's better and cleaner to move those changes in
+> > __udp_gso_segment() as Willem suggests.
+> >=20
+> > > +               }
+> > > +       }
+> > > +
+> > >         if (unlikely(skb->len <=3D mss))
+> > >                 goto out;
+> > >=20
+> > > diff --git a/net/ipv6/udp_offload.c b/net/ipv6/udp_offload.c
+> > > index ad3b8726873e..6857d9f7bd06 100644
+> > > --- a/net/ipv6/udp_offload.c
+> > > +++ b/net/ipv6/udp_offload.c
+> > > @@ -43,11 +43,22 @@ static struct sk_buff *udp6_ufo_fragment(struct s=
+k_buff *skb,
+> > >                 if (!pskb_may_pull(skb, sizeof(struct udphdr)))
+> > >                         goto out;
+> > >=20
+> > > -               if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4 &&
+> > > -                   !skb_gso_ok(skb, features | NETIF_F_GSO_ROBUST))
+> > > -                       return __udp_gso_segment(skb, features, true)=
+;
+> > > -
+> > >                 mss =3D skb_shinfo(skb)->gso_size;
+> > > +
+> > > +               if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4) {
+> > > +                       if (skb_gso_ok(skb, features | NETIF_F_GSO_RO=
+BUST)) {
+> > > +                               /* Packet is from an untrusted source=
+, reset actual gso_segs */
+> > > +                               skb_shinfo(skb)->gso_segs =3D DIV_ROU=
+ND_UP(skb->len - sizeof(*uh),
+> > > +                                                                    =
+    mss);
+> > > +                               skb_shinfo(skb)->gso_type &=3D ~SKB_G=
+SO_DODGY;
+> >=20
+> > Any reason you want to remove the DODGY here? Is this an optimization?
+> > We will lose the chance to recognize/validate it elsewhere.
+> >=20
+> It is intended as a small optimization. And this is in fact the piece
+> I am not fully confident about: after validating the gso_segs at a
+> trusted location (i.e. assuming the kernel is the trusted computing
+> base), do we need to validate it somewhere else? For example, in our
+> scenario, we have a tun/tap device in a net namespace, so the packet
+> going out will enter from the tap, get forwarded through an veth, and
+> then a vlan backed by a real ethernet interface. If the bit is carried
+> over, then at each egress of these devices, we need to enter the GSO
+> code, which feels pretty redundant as long as the packet does not
+> leave kernel space. WDYT?
 
-[215.021695] Unable to handle kernel paging request at
-             virtual address ffffff939fffd3c5
-[215.021781] Mem abort info:
-[215.021805]   ESR = 0x96000005
-[215.021833]   EC = 0x25: DABT (current EL), IL = 32 bits
-[215.021861]   SET = 0, FnV = 0
-[215.021875]   EA = 0, S1PTW = 0
-[215.021886] Data abort info:
-[215.021899]   ISV = 0, ISS = 0x00000005
-[215.021912]   CM = 0, WnR = 0
-[215.021929] swapper pgtable: 4k pages, 39-bit VAs,
-             pgdp=00000000410de000
-[215.021943] [ffffff939fffd3c5] pgd=0000000000000000,
-             p4d=0000000000000000, pud=0000000000000000
-[215.021979] Internal error: Oops: 96000005 [#1] PREEMPT SMP
-[215.022496] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.10.186#3
-             (HASH:ad23 4)
-[215.022511] Hardware name: MediaTek Tomato board (DT)
-[215.022530] pstate: 80400009 (Nzcv daif +PAN -UAO -TCO BTYPE=--)
-[215.022556] pc : __pi_memcmp+0xd0/0x1b8
-[215.022579] lr : btmtk_process_coredump+0xb0/0x5f8 [btmtk]
-[215.022593] sp : ffffffc010003d40
-[215.022607] x29: ffffffc010003d40 x28: 0000000000000006
-[215.022633] x27: ffffffda696350c0 x26: 0000000000000002
-[215.022659] x25: 00000000000003ff x24: ffffff9360cca804
-[215.022685] x23: 0000000000000000 x22: ffffff9365638500
-[215.022710] x21: ffffff9365638700 x20: 0000000000000000
-[215.022736] x19: ffffff936002e000 x18: 0000000000000000
-[215.022761] x17: 0000000000000180 x16: ffffffda6881b8b4
-[215.022787] x15: 0000000000000001 x14: 0000000000002d00
-[215.022812] x13: 0000000000060000 x12: 0000000000000181
-[215.022837] x11: 0000000000000006 x10: fffffffffffffffd
-[215.022862] x9 : 0000000000000006 x8 : 0000000000000003
-[215.022887] x7 : 0000000000000000 x6 : 0000000000000000
-[215.022913] x5 : ffffff93656387b8 x4 : 0000000000000000
-[215.022938] x3 : ffffffc010003c18 x2 : 0000000000000006
-[215.022963] x1 : ffffffda09d4124a x0 : ffffff939fffd3c5
-[215.022989] Call trace:
-[215.023012]  __pi_memcmp+0xd0/0x1b8
-[215.023053]  btusb_recv_acl_mtk+0x64/0x90 [btusb (HASH:dc6b 5)]
-[215.023087]  btusb_recv_bulk+0x118/0x170 [btusb (HASH:dc6b 5)]
-[215.023121]  btusb_bulk_complete+0x8c/0x148 [btusb (HASH:dc6b 5)]
-[215.023144]  __usb_hcd_giveback_urb+0xbc/0x148
-[215.023164]  usb_giveback_urb_bh+0xb4/0x190
-[215.023184]  tasklet_action_common+0x98/0x1a0
-[215.023201]  tasklet_action+0x2c/0x38
-[215.023220]  __do_softirq+0xe0/0x38c
-[215.023241]  invoke_softirq+0x34/0x6c
-[215.023258]  irq_exit+0x6c/0xb0
-[215.023279]  __handle_domain_irq+0x98/0xd4
-[215.023296]  gic_handle_irq+0x5c/0x11c
-[215.023313]  el1_irq+0xd0/0x180
-[215.023332]  cpuidle_enter_state+0xac/0x338
-[215.023349]  cpuidle_enter+0x40/0x70
-[215.023366]  do_idle+0x150/0x278
-[215.023384]  cpu_startup_entry+0x2c/0x58
-[215.023401]  rest_init+0xdc/0xec
-[215.023419]  arch_call_rest_init+0x18/0x24
-[215.023435]  start_kernel+0x334/0x400
-[215.023460] Code: 91002129 eb09010a 9a89810b cb0b0042 (38401403)
-[215.023478] ---[ end trace 28668fd20c7a90cd ]
+As an optimization, I think it should land on a different (net-next)
+patch. Additionally I think it should be possible to get a greater gain
+adding the  ROBUST feature to virtual devices (but I'm not sure if
+syzkaller will be able to use that in nasty ways).
 
-Fixes: 2822cd0173ad ("Bluetooth: btusb: mediatek: add MediaTek devcoredump support")
-Signed-off-by: Chris Lu <chris.lu@mediatek.com>
-Co-developed-by: Sean Wang <sean.wang@mediatek.com>
-Signed-off-by: Sean Wang <sean.wang@mediatek.com>
----
-v1 -> v2: fix typo
-v2 -> v3: fix bot checking error
-v3 -> v4: reduce variable 'offset' declaration
-v4 -> v5: update bug info in commit message
-v5 -> v6: fix bot checking error
-          commit message exceeds max length
+Cheers,
 
- drivers/bluetooth/btmtk.c | 12 ++++++------
- drivers/bluetooth/btmtk.h |  1 +
- 2 files changed, 7 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/bluetooth/btmtk.c b/drivers/bluetooth/btmtk.c
-index 786f775196ae..aaabb732082c 100644
---- a/drivers/bluetooth/btmtk.c
-+++ b/drivers/bluetooth/btmtk.c
-@@ -395,12 +395,12 @@ int btmtk_process_coredump(struct hci_dev *hdev, struct sk_buff *skb)
- 
- 		/* Mediatek coredump data would be more than MTK_COREDUMP_NUM */
- 		if (data->cd_info.cnt > MTK_COREDUMP_NUM &&
--		    skb->len > sizeof(MTK_COREDUMP_END) &&
--		    !memcmp((char *)&skb->data[skb->len - sizeof(MTK_COREDUMP_END)],
--			    MTK_COREDUMP_END, sizeof(MTK_COREDUMP_END) - 1)) {
--			bt_dev_info(hdev, "Mediatek coredump end");
--			hci_devcd_complete(hdev);
--		}
-+		    skb->len > MTK_COREDUMP_END_LEN)
-+			if (!memcmp((char *)&skb->data[skb->len - MTK_COREDUMP_END_LEN],
-+				    MTK_COREDUMP_END, MTK_COREDUMP_END_LEN - 1)) {
-+				bt_dev_info(hdev, "Mediatek coredump end");
-+				hci_devcd_complete(hdev);
-+			}
- 
- 		break;
- 	}
-diff --git a/drivers/bluetooth/btmtk.h b/drivers/bluetooth/btmtk.h
-index 68309dfe076a..56f5502baadf 100644
---- a/drivers/bluetooth/btmtk.h
-+++ b/drivers/bluetooth/btmtk.h
-@@ -24,6 +24,7 @@
- 
- #define MTK_COREDUMP_SIZE		(1024 * 1000)
- #define MTK_COREDUMP_END		"coredump end"
-+#define MTK_COREDUMP_END_LEN		(sizeof(MTK_COREDUMP_END))
- #define MTK_COREDUMP_NUM		255
- 
- enum {
--- 
-2.18.0
+Paolo
 
