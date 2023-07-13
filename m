@@ -2,137 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D00575292C
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 18:53:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB8C875292F
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 18:53:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235358AbjGMQxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 12:53:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33934 "EHLO
+        id S235394AbjGMQxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 12:53:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234714AbjGMQxe (ORCPT
+        with ESMTP id S234968AbjGMQxk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 12:53:34 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C19402D40
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 09:53:22 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1b8bbcfd89aso5578665ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 09:53:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1689267202; x=1691859202;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=NoNGGvzPoC+CfmJaMdzXCn37KFGOyeGfI/UvmRM+Do0=;
-        b=G9AtbbPvATaVSbvSLJQJamXs5udACD6yAYKkKVVbhuaLC65+5LQidnKuoPpjeWgaYV
-         Kkq8yIQGtzi7ifWRea8+yytsz/kAGVCRcxsJZdCBkiGqZ9K4yKEPdGjomttT8OLr5UOB
-         H4rvrN3juTFhitd2ZgQHx5oFthRgOwbJqCdV4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689267202; x=1691859202;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NoNGGvzPoC+CfmJaMdzXCn37KFGOyeGfI/UvmRM+Do0=;
-        b=URGheubER+EuePi+XUQiPnxn1NLDkdBKie/xWDqxVluFHT+vYuDoIcIJMujTjcS3jv
-         gJlrlGswCCb3jsVEwPQ6lG/yfU8I5QU+qLT2KHdLI9n/u0Yrx/EwAgju62G5yAjey2gk
-         KImEDY+BIenQe+xhHhrwdzi8B9lsTa3mMPLYTkIhng2O+s6M1+E/401G4ZQ+x6Jvk+/e
-         Nb1K3jp1hRWnojUZ1LD8repLNcIbSsD6Nt8x8uH/Hp91mHMLLHYycuk5Wn4mhfnHzPEb
-         +S0hgBkFNJf+0kA7T1fTBARgg4oijKqintiy8pvsXjY44We1w2QE11c+uX7CIAq78z6A
-         UKUA==
-X-Gm-Message-State: ABy/qLYT7MFaYtl6eglb/A9Cqm7sbfgphhNeHYdP4upZErAHoRBS8h2Z
-        DVvwkTIBw0J1Pz75cG0Fnm6ryw==
-X-Google-Smtp-Source: APBJJlHkhNi7qzNBIMq9ENOHZGdML1MCvQrdLivOAcrVfd4jNxyTp4Ll/r2OE+3aX72+qVOTZosNkQ==
-X-Received: by 2002:a17:903:482:b0:1b8:a2af:fe23 with SMTP id jj2-20020a170903048200b001b8a2affe23mr1383903plb.2.1689267202150;
-        Thu, 13 Jul 2023 09:53:22 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id f11-20020a17090274cb00b001b077301a58sm6134977plt.79.2023.07.13.09.53.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Jul 2023 09:53:21 -0700 (PDT)
-Date:   Thu, 13 Jul 2023 09:53:20 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux trace kernel <linux-trace-kernel@vger.kernel.org>,
-        linux-hardening@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Sven Schnelle <svens@linux.ibm.com>
-Subject: Re: [PATCH] tracing: Add back FORTIFY_SOURCE logic to kernel_stack
- event structure
-Message-ID: <202307130953.B54C43B@keescook>
-References: <20230713092605.2ddb9788@rorschach.local.home>
+        Thu, 13 Jul 2023 12:53:40 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A1852738;
+        Thu, 13 Jul 2023 09:53:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689267207; x=1720803207;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=wsaXoMjeXzUXPQTx1vrfeh4jfCe9bDIocWoVsE4tC4g=;
+  b=fisohDjKx0A9WwBItBmbYcqnNB75VoEw/2e50OkkT4YjW/A6/jyoX+LS
+   E/XM/pMJ9q22fnc+281fox3KhzOO9jFvn+0Ybnd8+S71+F/ks9ur0KZCK
+   seXkisrdCKV3cd7jXHqEfQ1y1vcXkGQg4IfFj0cuJm4KwHf/8peI/Y4jj
+   pewE46Y4LvNcqDhsj2MjyL9j+/c3tIlSiWEJkf2HzUw6QN/ZOheBG34FV
+   n64WLkTH0Sj6bqLD3ztoYlmb5pRIXl92Gn08RbWPrGHCrEbmrR5jFlbUq
+   yzLsfRdgXRupRFZvRk1zFZxTL9/uiinowYky6mHdVlvQmcDnKLv+e8G0N
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="345568482"
+X-IronPort-AV: E=Sophos;i="6.01,203,1684825200"; 
+   d="scan'208";a="345568482"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2023 09:53:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="716029145"
+X-IronPort-AV: E=Sophos;i="6.01,203,1684825200"; 
+   d="scan'208";a="716029145"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga007.jf.intel.com with ESMTP; 13 Jul 2023 09:53:23 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 3B23B241; Thu, 13 Jul 2023 19:53:29 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: [PATCH v1 1/1] Documentation: core-api: Drop :export: for int_log.h
+Date:   Thu, 13 Jul 2023 19:53:20 +0300
+Message-Id: <20230713165320.14199-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230713092605.2ddb9788@rorschach.local.home>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 09:26:05AM -0400, Steven Rostedt wrote:
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> 
-> For backward compatibility, older tooling expects to see the kernel_stack
-> event with a "caller" field that is a fixed size array of 8 addresses. The
-> code now supports more than 8 with an added "size" field that states the
-> real number of entries. But the "caller" field still just looks like a
-> fixed size to user space.
-> 
-> Since the tracing macros that create the user space format files also
-> creates the structures that those files represent, the kernel_stack event
-> structure had its "caller" field a fixed size of 8, but in reality, when
-> it is allocated on the ring buffer, it can hold more if the stack trace is
-> bigger that 8 functions. The copying of these entries was simply done with
-> a memcpy():
-> 
->   size = nr_entries * sizeof(unsigned long);
->   memcpy(entry->caller, fstack->calls, size);
-> 
-> The FORTIFY_SOURCE logic noticed at runtime that when the nr_entries was
-> larger than 8, that the memcpy() was writing more than what the structure
-> stated it can hold and it complained about it. This is because the
-> FORTIFY_SOURCE code is unaware that the amount allocated is actually
-> enough to hold the size. It does not expect that a fixed size field will
-> hold more than the fixed size.
-> 
-> This was originally solved by hiding the caller assignment with some
-> pointer arithmetic.
-> 
->   ptr = ring_buffer_data();
->   entry = ptr;
-> 
->   ptr += offsetof(typeof(*entry), caller);
->   memcpy(ptr, fstack->calls, size);
-> 
-> But it is considered bad form to hide from kernel hardening. Instead, make
-> it work nicely with FORTIFY_SOURCE by adding a new __stack_array() macro
-> that is specific for this one special use case. The macro will take 4
-> arguments: type, item, len, field (whereas the __array() macro takes just
-> the first three). This macro will act just like the __array() macro when
-> creating the code to deal with the format file that is exposed to user
-> space. But for the kernel, it will turn the caller field into:
-> 
->   type item[] __counted_by(field);
-> 
-> or for this instance:
-> 
->   unsigned long caller[] __counted_by(size);
-> 
-> Now the kernel code can expose the assignment of the caller to the
-> FORTIFY_SOURCE and everyone is happy!
-> 
-> Link: https://lore.kernel.org/linux-trace-kernel/20230712105235.5fc441aa@gandalf.local.home/
-> 
-> Suggested-by: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+The :export: keyword makes sense only for C-files, where EXPORT_SYMBOL()
+might appear. Otherwise kernel-doc may not produce anything out of this
+file.
 
-Yay! This looks good. :)
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Fixes: f97fa3dcb2db ("lib/math: Move dvb_math.c into lib/math/int_log.c")
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ Documentation/core-api/kernel-api.rst | 1 -
+ 1 file changed, 1 deletion(-)
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
-
+diff --git a/Documentation/core-api/kernel-api.rst b/Documentation/core-api/kernel-api.rst
+index a526fbe06f86..ae92a2571388 100644
+--- a/Documentation/core-api/kernel-api.rst
++++ b/Documentation/core-api/kernel-api.rst
+@@ -166,7 +166,6 @@ Integer log and power Functions
+ -------------------------------
+ 
+ .. kernel-doc:: include/linux/int_log.h
+-   :export:
+ 
+ .. kernel-doc:: lib/math/int_pow.c
+    :export:
 -- 
-Kees Cook
+2.40.0.1.gaa8946217a0b
+
