@@ -2,104 +2,342 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B03E4751E21
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 12:03:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFAF9751E22
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 12:03:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234490AbjGMKDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 06:03:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46794 "EHLO
+        id S234539AbjGMKDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 06:03:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234345AbjGMKDY (ORCPT
+        with ESMTP id S234132AbjGMKD1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 06:03:24 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4F5C269F
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 03:03:07 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-5149aafef44so583808a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 03:03:07 -0700 (PDT)
+        Thu, 13 Jul 2023 06:03:27 -0400
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D51CC18E
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 03:03:21 -0700 (PDT)
+Received: by mail-vs1-xe2f.google.com with SMTP id ada2fe7eead31-440b53841a4so114516137.3
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 03:03:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689242586; x=1691834586;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+        d=chromium.org; s=google; t=1689242601; x=1691834601;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fGlDIyrrfNAq/yp93QtArxGFLqlQI2VbX5YT6nCkJec=;
-        b=dRMUT/whHAaqfW62jCLHfa3YAYIoSb/L33DoG8qef7m5uyaWftiZ6aHVo7EdPXCuue
-         mpWPNSlvyDl8E9zg488amopoa40UCmSROulQTLgONzQoY9OwZARbI4e5hSDRXj4af3LT
-         j9seR79WLt5m98CBWnG6TUkMNdKP0ZYBuMYOHLn+NsSLnk8yuvdguLDmEcu9j035kGPX
-         ZnY+KHBUCez2YbTt6zxHoviEu0cdLcB4AzaUiN4DUGrwTOHUMQ1IZXty8rRu2bzIK5hB
-         KErrA/clD3DcD+itYeG1hxtH+tDXK/yDY/8jmCnbN/p5Sc144FjYlZb5/RqUod4sgzje
-         ejAw==
+        bh=fbr5P/iOV1YnDJmD38Ms/Qv1YcU51e/0SbtpdmzhniI=;
+        b=N4rq2N3URVjXBjVCI+PLQV79dBXcqUS9YRrsoiFGvTojgP/zZWUg1IkQFmywbx68su
+         HYnAAmj22CKy/xLm0B4JFm6OZ3W3pDI3skWRWVriMfzrc5POD53fDieyjqpJmUKOHzd3
+         51lOP+06qvUTrhwnGi2xNysl+cnd2DkbLhI1U=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689242586; x=1691834586;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1689242601; x=1691834601;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=fGlDIyrrfNAq/yp93QtArxGFLqlQI2VbX5YT6nCkJec=;
-        b=frLGd+16XUia8101cxpQf9uVuaPiJ8VO+D5kbWN69BbHwL/k3qQ7uK/++4x+y4nD9/
-         iV9dYrWziwgM8b1qzxogsW/PXx8b2y15Y+nvm8YWgfKxnYr4tIHN/zoDTEKCj6FDIeGJ
-         EDN7zADkmEVW2yF8hnXEHNnclmMdYP9aWKQN1ngHbf6d8eZL2UgGtqR7dPstioCvC8eW
-         5QqO/B6iHP4eBfBfby2X/Jw+02xZyy4kKmwN49hQC2oVrB6/cjfRloENw4q33bOXjOSu
-         vampUCGMAEj73VwarmXxU5JuRHJG5BEFAhc4QoHZjnSAJBSBig1VSLyjTXHpMFP0k71G
-         dxHQ==
-X-Gm-Message-State: ABy/qLb1sfCfgY2jIqdZZzZsemGQbjMSd+NEx43WGZjcotFojEMQiFy8
-        0chKmqMvQFWsl/K0Dyu+JvXssja/hrTCstD/cQ7VLA==
-X-Google-Smtp-Source: APBJJlG0P8JjG7quzdt3aed4/aGpuXKVi0PuT9bBYRTMrdueHE8H83Z1oxV0y7WYLZqDc96rvJyz9g==
-X-Received: by 2002:aa7:d511:0:b0:51d:91d2:335b with SMTP id y17-20020aa7d511000000b0051d91d2335bmr1561993edq.1.1689242586245;
-        Thu, 13 Jul 2023 03:03:06 -0700 (PDT)
-Received: from [192.168.1.195] ([5.133.47.210])
-        by smtp.gmail.com with ESMTPSA id w22-20020a056402071600b0051de3c6c5e5sm4007740edx.94.2023.07.13.03.03.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Jul 2023 03:03:05 -0700 (PDT)
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Christian Marangi <ansuelsmth@gmail.com>,
-        devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>
-In-Reply-To: <20230627204630.9476-1-zajec5@gmail.com>
-References: <20230627204630.9476-1-zajec5@gmail.com>
-Subject: Re: [PATCH V4] dt-bindings: nvmem: fixed-cell: add compatible for
- MAC cells
-Message-Id: <168924258532.15442.13233045007197917854.b4-ty@linaro.org>
-Date:   Thu, 13 Jul 2023 11:03:05 +0100
+        bh=fbr5P/iOV1YnDJmD38Ms/Qv1YcU51e/0SbtpdmzhniI=;
+        b=bKLnZ7soT+OJ8M/FIwVGap3aTxHYj+8igkBNM7BT3sWj/aGVbe74ONB8Qpw1dsmol5
+         6Umlh5Fv41+IDs0C1vzfGjFzbCrIO/DHIts1ieZLGLUwEZ2kdHq7btg3qE9iNl9UED8I
+         ebgMfCehjbip24W8IhsaUawq0zs9a9TpRWjG0ga7UrE9g9L4r4mPiVsE2ahJ0QhVhDza
+         cq5eo8Zl2KkKB4l+o4ZiHoQkZ9GkwYMIxezJfsO/1pHR1lUnlPRRjT6+SLxUw7NJffXN
+         A72utbKCxgzDJn4OBp8td//746SdHxsmXOG5apOarfpl/y3pPCJwvDNFU8WIM8W1ljOm
+         IYWQ==
+X-Gm-Message-State: ABy/qLZMfKmzANcUWXfeMuti9vCeLZ6V00446bs0Vo7eS8uM3zRP55xT
+        BqgoKN8R8ZvBMty+BSDoXywnPLPumFZmOxncd/K7aw==
+X-Google-Smtp-Source: APBJJlH3OAPdkRXJDgrSZSi2f22vQy/OJUNrZ7M+L5K6c2Nu95HGZdPVo9OrdMAO15IRLwd0bIvjnAAVd0U74xMX3j0=
+X-Received: by 2002:a05:6102:7b7:b0:444:bb70:db73 with SMTP id
+ x23-20020a05610207b700b00444bb70db73mr148641vsg.28.1689242600881; Thu, 13 Jul
+ 2023 03:03:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.12.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230713090152.140060-1-angelogioacchino.delregno@collabora.com>
+ <CAGXv+5FFO3pDM=2eDscGnRVj34+8t6L02nt7OvPEO_FV8_POVQ@mail.gmail.com> <f6d01998-b469-99d3-48ed-0360c9378af5@collabora.com>
+In-Reply-To: <f6d01998-b469-99d3-48ed-0360c9378af5@collabora.com>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Thu, 13 Jul 2023 18:03:09 +0800
+Message-ID: <CAGXv+5H181rLCjQZTakCswbi6r7jsx_KH4fmnxN9z-KRykhzUQ@mail.gmail.com>
+Subject: Re: [PATCH v5 00/10] MediaTek DisplayPort: support eDP and aux-bus
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     chunkuang.hu@kernel.org, p.zabel@pengutronix.de, airlied@gmail.com,
+        daniel@ffwll.ch, matthias.bgg@gmail.com,
+        dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kernel@collabora.com,
+        nfraprado@collabora.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 13, 2023 at 5:57=E2=80=AFPM AngeloGioacchino Del Regno
+<angelogioacchino.delregno@collabora.com> wrote:
+>
+> Il 13/07/23 11:54, Chen-Yu Tsai ha scritto:
+> > On Thu, Jul 13, 2023 at 5:01=E2=80=AFPM AngeloGioacchino Del Regno
+> > <angelogioacchino.delregno@collabora.com> wrote:
+> >>
+> >> Changes in v5:
+> >>   - Added .wait_hpd_asserted() callback for aux-bus
+> >>   - Avoid enabling and registering HPD interrupt + handlers for
+> >>     eDP case only (keeps HPD interrupts enabled for full DP case)
+> >>   - Support not always-on eDP panels (boot with regulator off,
+> >>     suspend with regulator off) for power saving in PM suspend.
+> >
+> > This still doesn't work when the DRM driver is builtin, and the panel
+> > driver is a module. This is still with regulator-always-on.
+> >
+> >  From what I can tell from the kernel logs, the DRM driver is not waiti=
+ng
+> > for eDP panel to probe (which sort of makes sense?), and simply uses
+> > the default EDID. When the panel does probe, nothing triggers the DRM
+> > driver to update its connector.
+> >
+> > [drm:drm_helper_probe_single_connector_modes] [CONNECTOR:32:eDP-1]
+> > [drm:drm_helper_probe_single_connector_modes] [CONNECTOR:32:eDP-1]
+> > status updated from unknown to connected
+> > [drm:drm_mode_debug_printmodeline] Modeline "640x480": 60 25175 640
+> > 656 752 800 480 490 492 525 0x40 0xa
+> > [drm:drm_mode_prune_invalid] Not using 640x480 mode: CLOCK_HIGH
+> > [drm:drm_mode_debug_printmodeline] Modeline "800x600": 56 36000 800
+> > 824 896 1024 600 601 603 625 0x40 0x5
+> > [drm:drm_mode_prune_invalid] Not using 800x600 mode: CLOCK_HIGH
+> > [drm:drm_mode_debug_printmodeline] Modeline "800x600": 60 40000 800
+> > 840 968 1056 600 601 605 628 0x40 0x5
+> > [drm:drm_mode_prune_invalid] Not using 800x600 mode: CLOCK_HIGH
+> > [drm:drm_mode_debug_printmodeline] Modeline "848x480": 60 33750 848
+> > 864 976 1088 480 486 494 517 0x40 0x5
+> > [drm:drm_mode_prune_invalid] Not using 848x480 mode: CLOCK_HIGH
+> > [drm:drm_mode_debug_printmodeline] Modeline "1024x768": 60 65000 1024
+> > 1048 1184 1344 768 771 777 806 0x40 0xa
+> > [drm:drm_mode_prune_invalid] Not using 1024x768 mode: CLOCK_HIGH
+> > [drm:drm_helper_probe_single_connector_modes] [CONNECTOR:34:DP-1]
+> > [drm:drm_helper_probe_single_connector_modes] [CONNECTOR:34:DP-1]
+> > status updated from unknown to disconnected
+> > [drm:drm_helper_probe_single_connector_modes] [CONNECTOR:34:DP-1] disco=
+nnected
+> > [drm:drm_client_modeset_probe] No connectors reported connected with mo=
+des
+> > [drm:drm_client_modeset_probe] connector 32 enabled? yes
+> > [drm:drm_client_modeset_probe] connector 34 enabled? no
+> > [drm:drm_client_firmware_config.constprop.0.isra.0] Not using firmware
+> > configuration
+> > [drm:drm_client_modeset_probe] looking for cmdline mode on connector 32
+> > [drm:drm_client_modeset_probe] looking for preferred mode on connector =
+32 0
+> > [drm:drm_client_modeset_probe] found mode none
+> > [drm:drm_client_modeset_probe] picking CRTCs for 4096x4096 config
+> > mediatek-drm mediatek-drm.12.auto:
+> > [drm:__drm_fb_helper_initial_config_and_unlock] test CRTC 0 primary
+> > plane
+> > mediatek-drm mediatek-drm.12.auto: [drm] Cannot find any crtc or sizes
+> > mediatek-drm mediatek-drm.12.auto: [drm:drm_dp_dpcd_probe] aux_mtk_dp:
+> > 0x00000 AUX -> (ret=3D  1) 14
+> > mediatek-drm mediatek-drm.12.auto: [drm:drm_dp_dpcd_read] aux_mtk_dp:
+> > 0x00000 AUX -> (ret=3D 15) 14 0a 84 41 00 00 01 80 02 00 00 00 0f 09 80
+> > mediatek-drm mediatek-drm.12.auto: [drm:drm_dp_dpcd_probe] aux_mtk_dp:
+> > 0x00000 AUX -> (ret=3D  1) 14
+> > mediatek-drm mediatek-drm.12.auto: [drm:drm_dp_dpcd_read] aux_mtk_dp:
+> > 0x02200 AUX -> (ret=3D 15) 14 0a 84 41 00 00 01 80 02 00 00 00 0f 01 80
+> > mediatek-drm mediatek-drm.12.auto: [drm:drm_dp_read_dpcd_caps]
+> > aux_mtk_dp: Base DPCD: 14 0a 84 41 00 00 01 80 02 00 00 00 0f 09 80
+> > mediatek-drm mediatek-drm.12.auto: [drm:drm_dp_read_dpcd_caps]
+> > aux_mtk_dp: DPCD: 14 0a 84 41 00 00 01 80 02 00 00 00 0f 01 80
+> > mediatek-drm mediatek-drm.12.auto: [drm:drm_dp_dpcd_probe] aux_mtk_dp:
+> > 0x00000 AUX -> (ret=3D  1) 14
+> > mediatek-drm mediatek-drm.12.auto: [drm:drm_dp_dpcd_read] aux_mtk_dp:
+> > 0x00021 AUX -> (ret=3D  1) 00
+> > panel-simple-dp-aux aux-1c500000.edp-tx: Detected BOE NE135FBM-N41 v8.1=
+ (0x095f)
+> >
+> > If the panel is also built-in, then the eDP panel probe happens between
+> > the drm driver adding components and binding to them, and everything se=
+ems
+> > to work OK.
+> >
+>
+> Argh. I actually forgot to test that case. Sorry about that.
+>
+> Anyway, you don't need regulator-always-on anymore, nor regulator-boot-on=
+...
 
-On Tue, 27 Jun 2023 22:46:30 +0200, Rafał Miłecki wrote:
-> A lot of home routers have NVMEM fixed cells containing MAC address that
-> need some further processing. In ~99% cases MAC needs to be:
-> 1. Optionally parsed from ASCII format
-> 2. Increased by a vendor-picked value
-> 
-> There was already an attempt to design a binding for that at NVMEM
-> device level in the past. It wasn't accepted though as it didn't really
-> fit NVMEM device layer.
-> 
-> [...]
+Confirmed this case works now.
 
-Applied, thanks!
+> ...I'll recheck with panel-edp as module and fix.
 
-[1/1] dt-bindings: nvmem: fixed-cell: add compatible for MAC cells
-      commit: b7495ea1b534fa4d73e5132f05ecc79f5068aa22
+With the module case, I also get an devlink error:
 
-Best regards,
--- 
-Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+mediatek-drm-dp 1c500000.edp-tx: Failed to create device link (0x180)
+with regulator-pp3300-disp-x
 
+which doesn't happen with the builtin case. Not sure if it gets a retry
+or anything later.
+
+ChenYu
+
+> Cheers,
+> Angelo
+>
+> >
+> > ChenYu
+> >
+> >> Changes in v4:
+> >>   - Set data lanes to idle to prevent stalls if bootloader didn't
+> >>     properly close the eDP port
+> >>   - Now using the .done_probing() callback for AUX bus to prevent
+> >>     probe deferral loops in case the panel-edp driver is a module
+> >>     as previously seen with another bridge driver (ANX7625) on
+> >>     some other SoCs (MT8192 and others)
+> >>   - Rebased over next-20230706
+> >>   - Dropped Chen-Yu's T-b tag on last patch as some logic changed
+> >>     (before, I wasn't using the .done_probing() callback).
+> >>
+> >> Changes in v3:
+> >>   - Added DPTX AUX block initialization before trying to communicate
+> >>     to stop relying on the bootloader keeping it initialized before
+> >>     booting Linux.
+> >>   - Fixed commit description for patch [09/09] and removed commented
+> >>     out code (that slipped from dev phase.. sorry!).
+> >>
+> >> This series adds "real" support for eDP in the mtk-dp DisplayPort driv=
+er.
+> >>
+> >> Explaining the "real":
+> >> Before this change, the DisplayPort driver did support eDP to some
+> >> extent, but it was treating it entirely like a regular DP interface
+> >> which is partially fine, after all, embedded DisplayPort *is* actually
+> >> DisplayPort, but there might be some differences to account for... and
+> >> this is for both small performance improvements and, more importantly,
+> >> for correct functionality in some systems.
+> >>
+> >> Functionality first:
+> >>
+> >> One of the common differences found in various boards implementing eDP
+> >> and machines using an eDP panel is that many times the HPD line is not
+> >> connected. This *must* be accounted for: at startup, this specific IP
+> >> will raise a HPD interrupt (which should maybe be ignored... as it doe=
+s
+> >> not appear to be a "real" event...) that will make the eDP panel to be
+> >> detected and to actually work but, after a suspend-resume cycle, there
+> >> will be no HPD interrupt (as there's no HPD line in my case!) producin=
+g
+> >> a functionality issue - specifically, the DP Link Training fails becau=
+se
+> >> the panel doesn't get powered up, then it stays black and won't work
+> >> until rebooting the machine (or removing and reinserting the module I
+> >> think, but I haven't tried that).
+> >>
+> >> Now for.. both:
+> >> eDP panels are *e*DP because they are *not* removable (in the sense th=
+at
+> >> you can't unplug the cable without disassembling the machine, in which
+> >> case, the machine shall be powered down..!): this (correct) assumption
+> >> makes us able to solve some issues and to also gain a little performan=
+ce
+> >> during PM operations.
+> >>
+> >> What was done here is:
+> >>   - Caching the EDID if the panel is eDP: we're always going to read t=
+he
+> >>     same data everytime, so we can just cache that (as it's small enou=
+gh)
+> >>     shortening PM resume times for the eDP driver instance;
+> >>   - Always return connector_status_connected if it's eDP: non-removabl=
+e
+> >>     means connector_status_disconnected can't happen during runtime...
+> >>     this also saves us some time and even power, as we won't have to
+> >>     perform yet another power cycle of the HW;
+> >>   - Added aux-bus support!
+> >>     This makes us able to rely on panel autodetection from the EDID,
+> >>     avoiding to add more and more panel timings to panel-edp and, even
+> >>     better, allowing to use one panel node in devicetrees for multiple
+> >>     variants of the same machine since, at that point, it's not import=
+ant
+> >>     to "preventively know" what panel we have (eh, it's autodetected..=
+.!).
+> >>
+> >> This was tested on a MT8195 Cherry Tomato Chromebook (panel-edp on aux=
+-bus)
+> >>
+> >>
+> >> P.S.: For your own testing commodity, here's a reference devicetree:
+> >>
+> >> pp3300_disp_x: regulator-pp3300-disp-x {
+> >>          compatible =3D "regulator-fixed";
+> >>          regulator-name =3D "pp3300_disp_x";
+> >>          regulator-min-microvolt =3D <3300000>;
+> >>          regulator-max-microvolt =3D <3300000>;
+> >>          enable-active-high;
+> >>          gpio =3D <&pio 55 GPIO_ACTIVE_HIGH>;
+> >>          pinctrl-names =3D "default";
+> >>          pinctrl-0 =3D <&panel_fixed_pins>;
+> >> };
+> >>
+> >> &edp_tx {
+> >>          status =3D "okay";
+> >>
+> >>          pinctrl-names =3D "default";
+> >>          pinctrl-0 =3D <&edptx_pins_default>;
+> >>
+> >>          ports {
+> >>                  #address-cells =3D <1>;
+> >>                  #size-cells =3D <0>;
+> >>
+> >>                  port@0 {
+> >>                          reg =3D <0>;
+> >>                          edp_in: endpoint {
+> >>                                  remote-endpoint =3D <&dp_intf0_out>;
+> >>                          };
+> >>                  };
+> >>
+> >>                  port@1 {
+> >>                          reg =3D <1>;
+> >>                          edp_out: endpoint {
+> >>                                  data-lanes =3D <0 1 2 3>;
+> >>                                  remote-endpoint =3D <&panel_in>;
+> >>                          };
+> >>                  };
+> >>          };
+> >>
+> >>          aux-bus {
+> >>                  panel: panel {
+> >>                          compatible =3D "edp-panel";
+> >>                          power-supply =3D <&pp3300_disp_x>;
+> >>                          backlight =3D <&backlight_lcd0>;
+> >>                          port {
+> >>                                  panel_in: endpoint {
+> >>                                          remote-endpoint =3D <&edp_out=
+>;
+> >>                                  };
+> >>                          };
+> >>                  };
+> >>          };
+> >> };
+> >>
+> >> AngeloGioacchino Del Regno (10):
+> >>    drm/mediatek: dp: Move AUX and panel poweron/off sequence to functi=
+on
+> >>    drm/mediatek: dp: Change logging to dev for mtk_dp_aux_transfer()
+> >>    drm/mediatek: dp: Use devm variant of drm_bridge_add()
+> >>    drm/mediatek: dp: Move AUX_P0 setting to
+> >>      mtk_dp_initialize_aux_settings()
+> >>    drm/mediatek: dp: Enable event interrupt only when bridge attached
+> >>    drm/mediatek: dp: Avoid mutex locks if audio is not supported/enabl=
+ed
+> >>    drm/mediatek: dp: Move PHY registration to new function
+> >>    drm/mediatek: dp: Add support for embedded DisplayPort aux-bus
+> >>    drm/mediatek: dp: Add .wait_hpd_asserted() for AUX bus
+> >>    drm/mediatek: dp: Don't register HPD interrupt handler for eDP case
+> >>
+> >>   drivers/gpu/drm/mediatek/Kconfig  |   1 +
+> >>   drivers/gpu/drm/mediatek/mtk_dp.c | 335 ++++++++++++++++++++--------=
+--
+> >>   2 files changed, 224 insertions(+), 112 deletions(-)
+> >>
+> >> --
+> >> 2.40.1
+> >>
+> >
+>
