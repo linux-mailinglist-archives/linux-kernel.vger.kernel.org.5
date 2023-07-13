@@ -2,53 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44BCF7527D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 17:56:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D894E7527D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 17:56:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235143AbjGMP4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 11:56:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53448 "EHLO
+        id S235110AbjGMP45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 11:56:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232088AbjGMP4h (ORCPT
+        with ESMTP id S231536AbjGMP4z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 11:56:37 -0400
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8294C26AE;
-        Thu, 13 Jul 2023 08:56:36 -0700 (PDT)
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id AC4A86732D; Thu, 13 Jul 2023 17:56:31 +0200 (CEST)
-Date:   Thu, 13 Jul 2023 17:56:31 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Cyril Hrubis <chrubis@suse.cz>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        kernel test robot <oliver.sang@intel.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Matthew Wilcox <willy@infradead.org>, cluster-devel@redhat.com,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Chao Yu <chao@kernel.org>, linux-fsdevel@vger.kernel.org,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Xiubo Li <xiubli@redhat.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        ltp@lists.linux.it, lkp@intel.com, Jens Axboe <axboe@kernel.dk>,
-        Christian Brauner <brauner@kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        Anna Schumaker <anna@kernel.org>, oe-lkp@lists.linux.dev,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hannes Reinecke <hare@suse.de>
-Subject: Re: [LTP] [linus:master] [iomap]  219580eea1: ltp.writev07.fail
-Message-ID: <20230713155631.GA29281@lst.de>
-References: <202307132107.2ce4ea2f-oliver.sang@intel.com> <20230713150923.GA28246@lst.de> <ZLAZn_SBmoIFG5F5@yuki>
+        Thu, 13 Jul 2023 11:56:55 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24480E4D
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 08:56:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=7j4q1Rny9N+eD4EQVhhjJLZ2Gojrgq5ScKuXneWBUww=; b=t7w9ve+J/zPxN8gSgP5nLFFmXb
+        56oUaSkvpv6nNjz2/G2/L72mojFXePsb0sE8zK99tIfyOAi13IYDpE9gYDKsLvXp90s2Gche7VpzV
+        bDS1Za9wt1+6eE1CFIMHiR5hY7dTfflJxFX+4wKHvABx3q5c+5+W6j34GE77je9Z1JYBG/VMITC05
+        9qQcP47cD84hSapg//n8yc+YJv5OyvcSCwZDtIZIYCgPHJSIw6/XcPVASdPOwBt/c45rPxp2yReAA
+        dChYxbABHnoGAeMXPmpaY2KuyKpKerVmeZ7fcMa6ICW5K7AJwzrdbzDjlulNUeNX5F2SoJTZ/k4iG
+        FtqBo/Zg==;
+Received: from [2601:1c2:980:9ec0::2764]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qJygT-003qEb-34;
+        Thu, 13 Jul 2023 15:56:50 +0000
+Message-ID: <153c8781-a83a-d7d9-92b2-b82ca9ab06aa@infradead.org>
+Date:   Thu, 13 Jul 2023 08:56:48 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZLAZn_SBmoIFG5F5@yuki>
-User-Agent: Mutt/1.5.17 (2007-11-01)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH RESEND v5 1/3] ABI: sysfs-nvmem-cells: Expose cells
+ through sysfs
+Content-Language: en-US
+To:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Robert Marko <robert.marko@sartura.hr>,
+        Luka Perkov <luka.perkov@sartura.hr>
+References: <20230713075508.485072-1-miquel.raynal@bootlin.com>
+ <20230713075508.485072-2-miquel.raynal@bootlin.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20230713075508.485072-2-miquel.raynal@bootlin.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -57,33 +60,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 05:34:55PM +0200, Cyril Hrubis wrote:
->                 iter.processed = iomap_write_iter(&iter, i);
+Hi,
+
+On 7/13/23 00:55, Miquel Raynal wrote:
+> The binary content of nvmem devices is available to the user so in the
+> easiest cases, finding the content of a cell is rather easy as it is
+> just a matter of looking at a known and fixed offset. However, nvmem
+> layouts have been recently introduced to cope with more advanced
+> situations, where the offset and size of the cells is not known in
+> advance or is dynamic. When using layouts, more advanced parsers are
+> used by the kernel in order to give direct access to the content of each
+> cell regardless of their position/size in the underlying device, but
+> these information were not accessible to the user.
 > 
-> +       iocb->ki_pos += iter.pos - iocb->ki_pos;
-> +
->         if (unlikely(ret < 0))
->                 return ret;
-> -       ret = iter.pos - iocb->ki_pos;
-> -       iocb->ki_pos += ret;
-> -       return ret;
-> +
-> +       return iter.pos - iocb->ki_pos;
+> By exposing the nvmem cells to the user through a dedicated cell/ folder
+> containing one file per cell, we provide a straightforward access to
+> useful user information without the need for re-writing a userland
+> parser. Content of nvmem cells is usually: product names, manufacturing
+> date, MAC addresses, etc,
+> 
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+>  Documentation/ABI/testing/sysfs-nvmem-cells | 19 +++++++++++++++++++
+>  1 file changed, 19 insertions(+)
+>  create mode 100644 Documentation/ABI/testing/sysfs-nvmem-cells
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-nvmem-cells b/Documentation/ABI/testing/sysfs-nvmem-cells
+> new file mode 100644
+> index 000000000000..641a7d7dad76
+> --- /dev/null
+> +++ b/Documentation/ABI/testing/sysfs-nvmem-cells
+> @@ -0,0 +1,19 @@
+> +What:		/sys/bus/nvmem/devices/.../cells/<cell-name>
+> +Date:		May 2023
+> +KernelVersion:	6.5
+> +Contact:	Miquel Raynal <miquel.raynal@bootlin.com>
+> +Description:
+> +		The cells/ folder contains one file per cell exposed by
 
-I don't think this works, as iocb->ki_pos has been updated above.
-What you want is probably the version below.  But so far I can't
-reproduce anything yet..
+(My shell doesn't show "folders". ;)
 
-diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-index adb92cdb24b009..02aea0174ddbcf 100644
---- a/fs/iomap/buffered-io.c
-+++ b/fs/iomap/buffered-io.c
-@@ -872,7 +872,7 @@ iomap_file_buffered_write(struct kiocb *iocb, struct iov_iter *i,
- 	while ((ret = iomap_iter(&iter, ops)) > 0)
- 		iter.processed = iomap_write_iter(&iter, i);
- 
--	if (unlikely(ret < 0))
-+	if (iter.pos == iocb->ki_pos)
- 		return ret;
- 	ret = iter.pos - iocb->ki_pos;
- 	iocb->ki_pos += ret;
+> +		the nvmem device. The name of the file is the cell name.
+> +		The length of the file is the size of the cell (when
+> +		known). The content of the file is the binary content of
+> +		the cell (may sometimes be ASCII, likely without
+> +		trailing character).
+> +		Note: This file is only present if CONFIG_NVMEM_SYSFS
+> +		is enabled
+
+add ending '.':    enabled.
+
+> +
+> +		ex::
+
+		Example::
+or
+		E.g.::
+
+> +
+> +		  hexdump -C /sys/bus/nvmem/devices/1-00563/cells/product-name
+> +		  00000000  54 4e 34 38 4d 2d 50 2d  44 4e         |TN48M-P-DN|
+> +		  0000000a
+
+-- 
+~Randy
