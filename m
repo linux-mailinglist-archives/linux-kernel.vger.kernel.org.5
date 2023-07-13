@@ -2,169 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CE117523A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 15:24:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53DB27523AC
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 15:25:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235279AbjGMNYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 09:24:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56744 "EHLO
+        id S235319AbjGMNZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 09:25:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235264AbjGMNXx (ORCPT
+        with ESMTP id S235310AbjGMNZa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 09:23:53 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEF472D40
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 06:22:52 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b702319893so10474231fa.3
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 06:22:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1689254563; x=1691846563;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dXWviMRLD7YocUFq1hAwJTX8QyWW8iQWGTv5QqtyLjk=;
-        b=McxC7at3hk1pweV1zh33Jfqa/21F0tDnkTwZMMTwXWTU1ixyOxDbDD2wOcvvyq7q2d
-         rX/1t2VLAdaVSy4GzHUcK9YnqgraYwtY+DWa857WOxv8UOC88QZ31m0fuxbUc8/eWE22
-         jxez+//fWGwCCLrHHQ6WSHtgZTUFmgmDPtbDWcgmEkJPoE03zrt1CneXzSWMXoux6PIB
-         jkdtzhTZaTrqVYYeiqJgbU7SZVq8IzFIH6XNh4GmLyqVTT8WMZ6pOkG9HfVwVwSVOHRS
-         0hU6GCD9vtwOymJdp3/PgHZaSeRS9DCP+M+y46dT+/dwxRyVa15fBq7BLTrr3YvlEstf
-         Zvqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689254563; x=1691846563;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dXWviMRLD7YocUFq1hAwJTX8QyWW8iQWGTv5QqtyLjk=;
-        b=YfB7k07dPXAPKPSQ6dcpt608HU2X18hg8WlAEjXqTgQkJ8s3XV9KtOEip5mqmE4Fva
-         dPFeGnwNgwo8otdTHF+EH7d/WKdSXQgpX1DSMWnk+M3O1wv5ZA+qnC29ESEbw+9nsmhb
-         uejs88qlcG/aL4MzsT+RzdgUDW4m36bGwKxxkP4b1OxbhY3KNJMrTnCAAb6UnvQP5qGJ
-         PALbReAE2GsUK9Ujecv38tEAHqkHHIUVfxm5FOdqMAoBkZ5TZ2R8Yr/yEEE4y9HoE7uE
-         UzAPtgliCFCU6bRpUYBZHKeP7ro9jlSfxq/06shYX5+isnHpNlkwnFtZjpAkX+bJrFhm
-         mhOQ==
-X-Gm-Message-State: ABy/qLYKrAviUAlnCkYacDQXijLlMJPwYh+qBg5jPgY2KDJ8FHmEq4BO
-        5WmMvTtbkoSsw3d1dShXKSfShUfWvWDjoepKVUU=
-X-Google-Smtp-Source: APBJJlFenJyAGZmX8lEaZL7qfj96wtFrIKUun/k3YYqQR79WUOoM+Tr06gqwq0Dkn2qCu7f7U7uISA==
-X-Received: by 2002:a2e:95ca:0:b0:2b6:ed80:15d1 with SMTP id y10-20020a2e95ca000000b002b6ed8015d1mr1287788ljh.24.1689254562815;
-        Thu, 13 Jul 2023 06:22:42 -0700 (PDT)
-Received: from [192.168.1.172] ([93.5.22.158])
-        by smtp.gmail.com with ESMTPSA id qo11-20020a170907212b00b00992b0745548sm3943114ejb.152.2023.07.13.06.22.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 Jul 2023 06:22:42 -0700 (PDT)
-Message-ID: <9a0817c2-4101-5c21-977d-77ac0d83a067@baylibre.com>
-Date:   Thu, 13 Jul 2023 15:22:41 +0200
+        Thu, 13 Jul 2023 09:25:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84DCC4201
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 06:23:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689254601;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sCNnAqtdZsq/T/Af1EsNb1sBkiqm6+BgG/2WKf0u1XM=;
+        b=eiOkFh7eL2PJNaBO+nQ9MMjvEP3jK7JL1S9OvZeVLbJp6oJQFAKvovwwxX0tWGBElDqrW6
+        aUpyd8wkvwOWbxu2qaVkSxc0+rG9NPjMpXZJNFjLy7lPp2R0LZbeYcxfGi/AUaleiGmYAB
+        L8A6czWnGbqzokxq6MkcFpPEAjnPmYY=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-392-qddTa3tzMb6uxLdu5_5AQA-1; Thu, 13 Jul 2023 09:23:16 -0400
+X-MC-Unique: qddTa3tzMb6uxLdu5_5AQA-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 78CF48F9E40;
+        Thu, 13 Jul 2023 13:23:15 +0000 (UTC)
+Received: from lorien.usersys.redhat.com (unknown [10.39.192.40])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E0EFC492C13;
+        Thu, 13 Jul 2023 13:23:10 +0000 (UTC)
+Date:   Thu, 13 Jul 2023 09:23:06 -0400
+From:   Phil Auld <pauld@redhat.com>
+To:     Benjamin Segall <bsegall@google.com>
+Cc:     linux-kernel@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH v2 1/2] sched, cgroup: Restore meaning to
+ hierarchical_quota
+Message-ID: <20230713132306.GA13342@lorien.usersys.redhat.com>
+References: <20230712133357.381137-1-pauld@redhat.com>
+ <20230712133357.381137-2-pauld@redhat.com>
+ <xm268rbkg4tg.fsf@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 2/2] clk: mediatek: mt8195-topckgen: Refactor parents for
- top_dp/edp muxes
-Content-Language: en-US
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>, sboyd@kernel.org
-Cc:     mturquette@baylibre.com, matthias.bgg@gmail.com,
-        wenst@chromium.org, msp@baylibre.com, yangyingliang@huawei.com,
-        u.kleine-koenig@pengutronix.de, miles.chen@mediatek.com,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, kernel@collabora.com
-References: <20230713072138.84117-1-angelogioacchino.delregno@collabora.com>
- <20230713072138.84117-3-angelogioacchino.delregno@collabora.com>
-From:   Alexandre Mergnat <amergnat@baylibre.com>
-In-Reply-To: <20230713072138.84117-3-angelogioacchino.delregno@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <xm268rbkg4tg.fsf@google.com>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 13/07/2023 09:21, AngeloGioacchino Del Regno wrote:
-> The top_dp and top_edp muxes can be both parented to either TVDPLL1
-> or TVDPLL2, two identically specced PLLs for the specific purpose of
-> giving out pixel clock: this becomes a problem when the MediaTek
-> DisplayPort Interface (DPI) driver tries to set the pixel clock rate.
+On Wed, Jul 12, 2023 at 03:09:31PM -0700 Benjamin Segall wrote:
+> Phil Auld <pauld@redhat.com> writes:
 > 
-> In the usecase of two simultaneous outputs (using two controllers),
-> it was seen that one of the displays would sometimes display garbled
-> output (if any at all) and this was because:
->   - top_edp was set to TVDPLL1, outputting X GHz
->   - top_dp was set to TVDPLL2, outputting Y GHz
->     - mtk_dpi calls clk_set_rate(top_edp, Z GHz)
->       - top_dp is switched to TVDPLL1
->       - TVDPLL1 changes its rate, top_edp outputs the wrong rate.
->       - eDP display is garbled
+> > In cgroupv2 cfs_b->hierarchical_quota is set to -1 for all task
+> > groups due to the previous fix simply taking the min.  It should
+> > reflect a limit imposed at that level or by an ancestor. Even
+> > though cgroupv2 does not require child quota to be less than or
+> > equal to that of its ancestors the task group will still be
+> > constrained by such a quota so this should be shown here. Cgroupv1
+> > continues to set this correctly.
+> >
+> > In both cases, add initialization when a new task group is created
+> > based on the current parent's value (or RUNTIME_INF in the case of
+> > root_task_group). Otherwise, the field is wrong until a quota is
+> > changed after creation and __cfs_schedulable() is called.
+> >
+> > Fixes: c53593e5cb69 ("sched, cgroup: Don't reject lower cpu.max on ancestors")
+> > Signed-off-by: Phil Auld <pauld@redhat.com>
+> > Reviewed-by: Ben Segall <bsegall@google.com>
+> > Cc: Ingo Molnar <mingo@redhat.com>
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: Vincent Guittot <vincent.guittot@linaro.org>
+> > Cc: Juri Lelli <juri.lelli@redhat.com>
+> > Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> > Cc: Valentin Schneider <vschneid@redhat.com>
+> > Cc: Ben Segall <bsegall@google.com>
+> > Cc: Frederic Weisbecker <frederic@kernel.org>
+> > Cc: Tejun Heo <tj@kernel.org>
+> > ---
+> >
+> > v2: Improve comment about how setting hierarchical_quota correctly
+> >
+> > helps the scheduler. Remove extra parens.
+> >  kernel/sched/core.c  | 13 +++++++++----
+> >  kernel/sched/fair.c  |  7 ++++---
+> >  kernel/sched/sched.h |  2 +-
+> >  3 files changed, 14 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> > index a68d1276bab0..f80697a79baf 100644
+> > --- a/kernel/sched/core.c
+> > +++ b/kernel/sched/core.c
+> > @@ -9904,7 +9904,7 @@ void __init sched_init(void)
+> >  		ptr += nr_cpu_ids * sizeof(void **);
+> >  
+> >  		root_task_group.shares = ROOT_TASK_GROUP_LOAD;
+> > -		init_cfs_bandwidth(&root_task_group.cfs_bandwidth);
+> > +		init_cfs_bandwidth(&root_task_group.cfs_bandwidth, NULL);
+> >  #endif /* CONFIG_FAIR_GROUP_SCHED */
+> >  #ifdef CONFIG_RT_GROUP_SCHED
+> >  		root_task_group.rt_se = (struct sched_rt_entity **)ptr;
+> > @@ -11038,11 +11038,16 @@ static int tg_cfs_schedulable_down(struct task_group *tg, void *data)
+> >  
+> >  		/*
+> >  		 * Ensure max(child_quota) <= parent_quota.  On cgroup2,
+> > -		 * always take the min.  On cgroup1, only inherit when no
+> > -		 * limit is set:
+> > +		 * always take the non-RUNTIME_INF min.  On cgroup1, only
+> > +		 * inherit when no limit is set. In cgroup2 this is used
+> > +		 * by the scheduler to determine if a given CFS task has a
+> > +		 * bandwidth constraint at some higher level.
+> >  		 */
 > 
-> To solve this issue, remove all TVDPLL1 parents from `top_dp` and
-> all TVDPLL2 parents from `top_edp`, plus, necessarily switch both
-> clocks to use the new MUX_GATE_CLR_SET_UPD_INDEXED() macro to be
-> able to use the right bit index for the new parents list.
+> It's still used for determining this on cgroup1 (and the cgroup1 code
+> still works for that), right?
+>
+
+It would, except that the enforcement of child quota <= parent quota
+means that cfs_rq->runtime_enabled will be set and we'll hit that first
+on cgroup1.  So we don't really use it for this determination in cgroup1.
+
+But I could generalize that comment if you want.
+
+
+Thanks,
+Phil
+
+
+> >  		if (cgroup_subsys_on_dfl(cpu_cgrp_subsys)) {
+> > -			quota = min(quota, parent_quota);
+> > +			if (quota == RUNTIME_INF)
+> > +				quota = parent_quota;
+> > +			else if (parent_quota != RUNTIME_INF)
+> > +				quota = min(quota, parent_quota);
+> >  		} else {
+> >  			if (quota == RUNTIME_INF)
+> >  				quota = parent_quota;
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index 373ff5f55884..d9b3d4617e16 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -6005,13 +6005,14 @@ static enum hrtimer_restart sched_cfs_period_timer(struct hrtimer *timer)
+> >  	return idle ? HRTIMER_NORESTART : HRTIMER_RESTART;
+> >  }
+> >  
+> > -void init_cfs_bandwidth(struct cfs_bandwidth *cfs_b)
+> > +void init_cfs_bandwidth(struct cfs_bandwidth *cfs_b, struct cfs_bandwidth *parent)
+> >  {
+> >  	raw_spin_lock_init(&cfs_b->lock);
+> >  	cfs_b->runtime = 0;
+> >  	cfs_b->quota = RUNTIME_INF;
+> >  	cfs_b->period = ns_to_ktime(default_cfs_period());
+> >  	cfs_b->burst = 0;
+> > +	cfs_b->hierarchical_quota = parent ? parent->hierarchical_quota : RUNTIME_INF;
+> >  
+> >  	INIT_LIST_HEAD(&cfs_b->throttled_cfs_rq);
+> >  	hrtimer_init(&cfs_b->period_timer, CLOCK_MONOTONIC, HRTIMER_MODE_ABS_PINNED);
+> > @@ -6168,7 +6169,7 @@ static inline int throttled_lb_pair(struct task_group *tg,
+> >  	return 0;
+> >  }
+> >  
+> > -void init_cfs_bandwidth(struct cfs_bandwidth *cfs_b) {}
+> > +void init_cfs_bandwidth(struct cfs_bandwidth *cfs_b, struct cfs_bandwidth *parent) {}
+> >  
+> >  #ifdef CONFIG_FAIR_GROUP_SCHED
+> >  static void init_cfs_rq_runtime(struct cfs_rq *cfs_rq) {}
+> > @@ -12373,7 +12374,7 @@ int alloc_fair_sched_group(struct task_group *tg, struct task_group *parent)
+> >  
+> >  	tg->shares = NICE_0_LOAD;
+> >  
+> > -	init_cfs_bandwidth(tg_cfs_bandwidth(tg));
+> > +	init_cfs_bandwidth(tg_cfs_bandwidth(tg), tg_cfs_bandwidth(parent));
+> >  
+> >  	for_each_possible_cpu(i) {
+> >  		cfs_rq = kzalloc_node(sizeof(struct cfs_rq),
+> > diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> > index ec7b3e0a2b20..63822c9238cc 100644
+> > --- a/kernel/sched/sched.h
+> > +++ b/kernel/sched/sched.h
+> > @@ -460,7 +460,7 @@ extern void unregister_fair_sched_group(struct task_group *tg);
+> >  extern void init_tg_cfs_entry(struct task_group *tg, struct cfs_rq *cfs_rq,
+> >  			struct sched_entity *se, int cpu,
+> >  			struct sched_entity *parent);
+> > -extern void init_cfs_bandwidth(struct cfs_bandwidth *cfs_b);
+> > +extern void init_cfs_bandwidth(struct cfs_bandwidth *cfs_b, struct cfs_bandwidth *parent);
+> >  
+> >  extern void __refill_cfs_bandwidth_runtime(struct cfs_bandwidth *cfs_b);
+> >  extern void start_cfs_bandwidth(struct cfs_bandwidth *cfs_b);
 > 
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> ---
->   drivers/clk/mediatek/clk-mt8195-topckgen.c | 22 ++++++++++++++--------
->   1 file changed, 14 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/clk/mediatek/clk-mt8195-topckgen.c b/drivers/clk/mediatek/clk-mt8195-topckgen.c
-> index 81daa24cadde..abb3721f6e1b 100644
-> --- a/drivers/clk/mediatek/clk-mt8195-topckgen.c
-> +++ b/drivers/clk/mediatek/clk-mt8195-topckgen.c
-> @@ -417,15 +417,21 @@ static const char * const pwrmcu_parents[] = {
->   
->   static const char * const dp_parents[] = {
->   	"clk26m",
-> -	"tvdpll1_d2",
->   	"tvdpll2_d2",
-> -	"tvdpll1_d4",
->   	"tvdpll2_d4",
-> -	"tvdpll1_d8",
->   	"tvdpll2_d8",
-> -	"tvdpll1_d16",
->   	"tvdpll2_d16"
->   };
-> +static const u8 dp_parents_idx[] = { 0, 2, 4, 6, 8 };
-> +
-> +static const char * const edp_parents[] = {
-> +	"clk26m",
-> +	"tvdpll1_d2",
-> +	"tvdpll1_d4",
-> +	"tvdpll1_d8",
-> +	"tvdpll1_d16"
-> +};
-> +static const u8 edp_parents_idx[] = { 0, 1, 3, 5, 7 };
-
-AFAII your solution is to force a specific TVDPLLX for each display, and 
-it isn't dynamic.
-
-Do you think it's possible to do that using the DTS ? I'm asking 
-because, IMHO, this kind of setup is more friendly/readable/flexible in 
-the DTS than hardcoded into the driver.
-
->   
->   static const char * const disp_pwm_parents[] = {
->   	"clk26m",
-> @@ -957,11 +963,11 @@ static const struct mtk_mux top_mtk_muxes[] = {
->   	MUX_GATE_CLR_SET_UPD_FLAGS(CLK_TOP_PWRMCU, "top_pwrmcu",
->   		pwrmcu_parents, 0x08C, 0x090, 0x094, 16, 3, 23, 0x08, 6,
->   		CLK_IS_CRITICAL | CLK_SET_RATE_PARENT),
-> -	MUX_GATE_CLR_SET_UPD(CLK_TOP_DP, "top_dp",
-> -		dp_parents, 0x08C, 0x090, 0x094, 24, 4, 31, 0x08, 7),
-> +	MUX_GATE_CLR_SET_UPD_INDEXED(CLK_TOP_DP, "top_dp",
-> +		dp_parents, dp_parents_idx, 0x08C, 0x090, 0x094, 24, 4, 31, 0x08, 7),
->   	/* CLK_CFG_10 */
-> -	MUX_GATE_CLR_SET_UPD(CLK_TOP_EDP, "top_edp",
-> -		dp_parents, 0x098, 0x09C, 0x0A0, 0, 4, 7, 0x08, 8),
-> +	MUX_GATE_CLR_SET_UPD_INDEXED(CLK_TOP_EDP, "top_edp",
-> +		edp_parents, edp_parents_idx, 0x098, 0x09C, 0x0A0, 0, 4, 7, 0x08, 8),
->   	MUX_GATE_CLR_SET_UPD(CLK_TOP_DPI, "top_dpi",
->   		dp_parents, 0x098, 0x09C, 0x0A0, 8, 4, 15, 0x08, 9),
->   	MUX_GATE_CLR_SET_UPD(CLK_TOP_DISP_PWM0, "top_disp_pwm0",
 
 -- 
-Regards,
-Alexandre
+
