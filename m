@@ -2,103 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03EE2752010
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 13:37:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97DA275200E
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 13:37:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233781AbjGMLhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 07:37:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41920 "EHLO
+        id S234423AbjGMLhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 07:37:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234429AbjGMLhT (ORCPT
+        with ESMTP id S234310AbjGMLhS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 07:37:19 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6964526B5
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 04:36:57 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R1syV1DDvzBRRLw
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 19:36:50 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689248210; x=1691840211; bh=AQOQ1c0XKcyDZs+TfqLgxEcngrm
-        o8ph5U4DznAEcV2c=; b=Ti4NAGWDiFPtWG1BrTarQN+PhJWHkC2DhDwD2RZF+uP
-        Z9m0Ac0bSGra1cKGznpPvEjt9+Ez7UEGf4qTXqNbdR8NdwluFn72CWx9ymV0ULcn
-        zf/CecrDMhhCIJVxEu0wLFKqe4e6ZQFCt0m1sNCDUFzUxkkAlrrbaNlM7TKIe6Dm
-        enl9ZSLI3tp4FMQHiy5LClsL9IIIbrP95bHlV39b9oC+C0GNSFjq4lOpQyTgOTlb
-        vY/Nj3tqiSWWUd1cJSpH7SMonolqEo0Wrwuq1ti7HwuBvuhxpCd1eLMODDf84UDb
-        3oGmkd0ydQohUmT8o2eRx3J8nf7XdBfnaOfuenQHOmg==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 07vmrB8EtlM4 for <linux-kernel@vger.kernel.org>;
-        Thu, 13 Jul 2023 19:36:50 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R1syT6c5kzBJBfN;
-        Thu, 13 Jul 2023 19:36:49 +0800 (CST)
+        Thu, 13 Jul 2023 07:37:18 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 329152727
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 04:37:00 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3fbf1b82d9cso4973735e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 04:37:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689248218; x=1691840218;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=yg3+ltae9txCQHkNZ8ew/vDeWxnQVlh8GZjwxVSzsmE=;
+        b=oR6Qq4tUXYxURj2kKLDigQN4hSxPreEHDACih7z6ejaLWNT/QElG/D79Mrsv/vN8Ny
+         0r+3bdojlQyIJB3LRXSzcPJKDF/aM5sJ+YSL+TCEAZEeDugGMvAluBLARlsquemP2c7G
+         z2SwQCcCmLjwvmDNrjwkFlcYyqvL+34h6CqznBAWjXdr7mP7WRdJzviKLXhITRKu9Ttb
+         ZvZopjmcheoHuPhyIIFLJJ+ajtFLN0a1GN6ZnoWFid9e9mYEpsjnYpLALtsm59WrMUpi
+         R3PaSl623Ya0ELHJdgSaXgq5g0X+0yaFSYvq139oVeo2geSlyFbXt84190zfLMR9P+wr
+         lSOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689248218; x=1691840218;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yg3+ltae9txCQHkNZ8ew/vDeWxnQVlh8GZjwxVSzsmE=;
+        b=gRDfd/FRdjGMHjxqvJFM0glRZLgDMuD7QFMXNdOVzxe9uTzESjscXpslMWt3r60L1y
+         JSU46xB7S3KEe2Pa2TJi2R1CE0PwCzWHlSr2o7frY0y9eKsrOAfeb2h/p0m8O1dVB2OU
+         T9Qs1Eq72B6ogtvjmO8W3vpiJSFibYpZQ1d9iKA/vLHMHOJ4Fa+E/yEnUBGE4Y48OrnM
+         ZV9+cli/ph6aBp124prYfjIlL2cNzkUZVI7yenII6HLS2vNWVzswEw+IOUooI9RZegNi
+         X1sOZagzw2//LAc67ECSwBiOZsdw+ziKo1nAM9msqOw+CKOr0s5npS1IM0/VJbPbDdsf
+         32eg==
+X-Gm-Message-State: ABy/qLazTVKdZEQ+hpdyR3o+G9XgeohmidJyWeRj975oH1Yl8OwS08VU
+        LmBDPKHMxzYA68b76B2dyh/83Q==
+X-Google-Smtp-Source: APBJJlF8GdZS3ShkisOw1onsgke22P9SX9aKJjOQWKfqavy8b9fmDTouU4NBJmZYeT9YO95+hbJ4Tw==
+X-Received: by 2002:a05:600c:2945:b0:3fb:739d:27b2 with SMTP id n5-20020a05600c294500b003fb739d27b2mr1180111wmd.8.1689248218586;
+        Thu, 13 Jul 2023 04:36:58 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id 16-20020a05600c029000b003fc04d13242sm15051331wmk.0.2023.07.13.04.36.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 Jul 2023 04:36:57 -0700 (PDT)
+Message-ID: <fb7e557c-c41d-26b9-9018-75c179483314@linaro.org>
+Date:   Thu, 13 Jul 2023 13:36:54 +0200
 MIME-Version: 1.0
-Date:   Thu, 13 Jul 2023 19:36:49 +0800
-From:   chenqingyun001@208suo.com
-To:     catalin.marinas@arm.com, will@kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: errata:#include <linux/cpufeature.h> instead of
- <asm/cpufeature.h>            space required after that ','
-In-Reply-To: <tencent_90950F0CFE28194211015CA269F07BE08C06@qq.com>
-References: <tencent_90950F0CFE28194211015CA269F07BE08C06@qq.com>
-User-Agent: Roundcube Webmail
-Message-ID: <ac915cdb7b41c38a4af64fec89f9ddee@208suo.com>
-X-Sender: chenqingyun001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 2/6] dt-bindings: phy: qcom,m31: Document qcom,m31 USB
+ phy
+Content-Language: en-US
+To:     Varadarajan Narayanan <quic_varada@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org, vkoul@kernel.org,
+        kishon@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        gregkh@linuxfoundation.org, catalin.marinas@arm.com,
+        will@kernel.org, p.zabel@pengutronix.de, arnd@arndb.de,
+        geert+renesas@glider.be, neil.armstrong@linaro.org,
+        nfraprado@collabora.com, broonie@kernel.org, rafal@milecki.pl,
+        quic_srichara@quicinc.com, quic_varada@quicinc.org,
+        quic_wcheng@quicinc.com, linux-arm-msm@vger.kernel.org,
+        linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <cover.1689065318.git.quic_varada@quicinc.com>
+ <77fe66271044a18871e1dfb80bbb481617197d18.1689065318.git.quic_varada@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <77fe66271044a18871e1dfb80bbb481617197d18.1689065318.git.quic_varada@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The linux/cpufeature.h header file is a more general and
-standardized header file, which includes the cpufeature.h
-header files under different architectures, while the
-asm/cpufeature.h header file is a header file specific
-to a certain architecture. There may be some
-incompatibilities or outdated issues.
-If commas are used to separate multiple parameters
-or expressions, there should be a space after the
-commas to maintain code readability and style consistency.
+On 11/07/2023 10:51, Varadarajan Narayanan wrote:
+> Document the M31 USB2 phy present in IPQ5332.
+> 
+> Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
+> Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
+> ---
+> v3:
+> 	Incorporate review comments. Will bring in ipq5018 compatible
+> 	string while posting ipq5018 usb patchset.
+> 
+> v1:
+> 	Rename qcom,m31.yaml -> qcom,ipq5332-usb-hsphy.yaml
+> 	Drop default binding "m31,usb-hsphy"
+> 	Add clock
+> 	Remove 'oneOf' from compatible
+> 	Remove 'qscratch' region from register space as it is not needed
+> 	Remove reset-names
+> 	Fix the example definition
+> ---
+>  .../bindings/phy/qcom,ipq5332-usb-hsphy.yaml       | 49 ++++++++++++++++++++++
+>  1 file changed, 49 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/phy/qcom,ipq5332-usb-hsphy.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/phy/qcom,ipq5332-usb-hsphy.yaml b/Documentation/devicetree/bindings/phy/qcom,ipq5332-usb-hsphy.yaml
+> new file mode 100644
+> index 0000000..2cfdd73
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/phy/qcom,ipq5332-usb-hsphy.yaml
+> @@ -0,0 +1,49 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/phy/qcom,ipq5332-usb-hsphy.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: M31 (https://www.m31tech.com) USB PHY
+> +
+> +maintainers:
+> +  - Sricharan Ramabadhran <quic_srichara@quicinc.com>
+> +  - Varadarajan Narayanan <quic_varada@quicinc.org>
 
+I was wondering why I keep receiving delays/bounces for my emails in
+this thread... and here we have. Please correct your email.
 
-Signed-off-by: Qingyun Chen <chenqingyun001@208suo.com>
----
-  arch/arm64/kernel/cpu_errata.c | 4 ++--
-  1 file changed, 2 insertions(+), 2 deletions(-)
+Best regards,
+Krzysztof
 
-diff --git a/arch/arm64/kernel/cpu_errata.c 
-b/arch/arm64/kernel/cpu_errata.c
-index 307faa2b4395..9b19380629c1 100644
---- a/arch/arm64/kernel/cpu_errata.c
-+++ b/arch/arm64/kernel/cpu_errata.c
-@@ -10,7 +10,7 @@
-  #include <linux/cpu.h>
-  #include <asm/cpu.h>
-  #include <asm/cputype.h>
--#include <asm/cpufeature.h>
-+#include <linux/cpufeature.h>
-  #include <asm/kvm_asm.h>
-  #include <asm/smp_plat.h>
-
-@@ -726,7 +726,7 @@ const struct arm64_cpu_capabilities arm64_errata[] = 
-{
-          .capability = ARM64_WORKAROUND_2658417,
-          /* Cortex-A510 r0p0 - r1p1 */
-          ERRATA_MIDR_RANGE(MIDR_CORTEX_A510, 0, 0, 1, 1),
--        MIDR_FIXED(MIDR_CPU_VAR_REV(1,1), BIT(25)),
-+        MIDR_FIXED(MIDR_CPU_VAR_REV(1, 1), BIT(25)),
-          .cpu_enable = cpu_clear_bf16_from_user_emulation,
-      },
-  #endif
