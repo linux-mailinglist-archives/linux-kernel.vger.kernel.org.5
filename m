@@ -2,187 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63959751802
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 07:22:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AB4E751807
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 07:26:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233902AbjGMFWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 01:22:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53970 "EHLO
+        id S233811AbjGMF0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 01:26:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233811AbjGMFWk (ORCPT
+        with ESMTP id S232553AbjGMF0L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 01:22:40 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27AFF127
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 22:22:38 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-66c729f5618so360691b3a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 22:22:38 -0700 (PDT)
+        Thu, 13 Jul 2023 01:26:11 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A518B0
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 22:26:10 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id d75a77b69052e-403b07cf5d0so3420661cf.2
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 22:26:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1689225757; x=1691817757;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xXkqor9Pj1M925UJ+WZIwXJFUm4FisVGEdFy8WXsojI=;
-        b=j8k6Q14byW5JjV/sfjFd4uGLMjuj8iRdgH6g3n6siLv7deQY2HQwHXhjx/QjKK7yfB
-         DorLX40CwV+wcqDrMqndTl2/0ptE00PIfVl/pslyzO6lcjmOANqhhBMO5hl+yVZAo62L
-         Hqh3mieIp+KzYzu8DAykAl1wyj+466CI0BS64=
+        d=gmail.com; s=20221208; t=1689225969; x=1691817969;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=wY6yIeUd5XkzBxHd4IVhXPW1XkMh9zkeZ+8KULrZkQQ=;
+        b=qhnJNFc9Ui8w3ZntanV9x3uULKUEk3Gr1w8FQK6ywNaBqjjhHZ84BHRj+m/9CQ2T3r
+         8kxUYjUrna+eGdhNFU9cr0Q9K4OFicGwuPEN5eWCLdGoxAU4b+8YRGlty0iqYswmyVHU
+         +xCYkQwgaHIvqamfG7JVhESHM45XU/a95Inqp7f4p+R1SOnxe6Dlas6XPlySwW89xjrR
+         kv5AdE5picQObmafQ6vGg0p/3e5NJcFk82cCmbvQDRQWAbQ9Md8jSv4j/JhwdHCAMY/L
+         UMdNzfqghGKNA+l05uY+A/pNPyYP0tYF1VynCc6GKRUwpRb4g6ywO14FFXhHL1YEghYr
+         //ZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689225757; x=1691817757;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xXkqor9Pj1M925UJ+WZIwXJFUm4FisVGEdFy8WXsojI=;
-        b=HASoVBsEl9TsjM9t4clqlCXW5CXUfEvXsvIBb7MGJkzxOgTpfJHxgNbtHl4d/NiCzi
-         oJnJxJmtHnsHpqtVL+dO6+PDjnm9SRAcDA1Di56hE4E4eegh9lXhklfDND6zPkWMiow6
-         Ym0yO2FodQhQoQw+gYh8SaGff5wgGMk9Uf44eh5qnz2zfLmdr7Q2Y0Zlb1Rh/oVqrmbj
-         4MgRNbqenIDfZsTvDxoQHwcrp+cS+2lCfc/6WTNUknGwFCglYm3x0Vtt3zqF9AkB6RNr
-         aT3g08BG6T+wuKM5cGomqYdqIYL4F+ncl2ULEtdElFlnxubHFd/1dyOmrGuBWfak7mKJ
-         DW8A==
-X-Gm-Message-State: ABy/qLZqcNNX3qhzoEYengXjg3A2ASG5xmkdyzR5X01VFs/L25TmqlNU
-        4DxQU/N5IfCpd/9KQdAys/y2fA==
-X-Google-Smtp-Source: APBJJlHplYhOqSZW6ahZfnyEya/TDhnDEgnXh2VWL3LotXdHTEHPrKtPps+qfXQ93yZwO0iIoJkFTA==
-X-Received: by 2002:a05:6a20:32aa:b0:12e:32e2:2645 with SMTP id g42-20020a056a2032aa00b0012e32e22645mr432420pzd.15.1689225757577;
-        Wed, 12 Jul 2023 22:22:37 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id k22-20020aa792d6000000b00682868714fdsm4626428pfa.95.2023.07.12.22.22.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Jul 2023 22:22:36 -0700 (PDT)
-Date:   Wed, 12 Jul 2023 22:22:35 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] tracing: Stop FORTIFY_SOURCE complaining about stack
- trace caller
-Message-ID: <202307122118.F4DD6200@keescook>
-References: <20230712105235.5fc441aa@gandalf.local.home>
- <202307121618.17C50DA9A@keescook>
- <20230712204358.756d0018@gandalf.local.home>
+        d=1e100.net; s=20221208; t=1689225969; x=1691817969;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wY6yIeUd5XkzBxHd4IVhXPW1XkMh9zkeZ+8KULrZkQQ=;
+        b=FCOAqdw4FRuU3CEeVt3A3N9f5LzUWScuU2fZZQ/OWvBr28tPpS/csjdtGlFkG/S06D
+         z69eRnZN9M0NCWQb2GJz4wvVbc65TkYax1j/yW8dDMs5WenTZ+htLXXJEvHe30O+F7rr
+         kYTTVf/QoPnmoaJEAN+NqK+N2VjxBAgerfYGukVEdKC4ENKBkzoLIu+uUFips7AeYwaL
+         pvb2YhosaoZIGb3bmmXE1XlL3UqbCU+8HRqUAbNeQCK2OJZ7Og1txZsu7114Y/3xT1e+
+         zW10Mhe43kqQwJQ15mayAGUeQspPSPKNaH9jWwYO2w8XHLxDK3DUMDkJtS+pqHhGS/R8
+         riQw==
+X-Gm-Message-State: ABy/qLaMUr2ajcJ38xMTN+zWLfA8CS/rqdrH8daxROd1IGIsYY5QzapG
+        b0B5UHZIWwgjvYi4LoXYZOI=
+X-Google-Smtp-Source: APBJJlH2UNtTGC8nZZnk8cJsui63PsvCqbA2j22TBkK9asviiVC12PDgkQ98kSuFiNgAamwR3I443Q==
+X-Received: by 2002:ac8:5c4f:0:b0:3fd:ec2e:cd75 with SMTP id j15-20020ac85c4f000000b003fdec2ecd75mr1101874qtj.15.1689225969635;
+        Wed, 12 Jul 2023 22:26:09 -0700 (PDT)
+Received: from [127.0.0.1] ([212.107.28.53])
+        by smtp.gmail.com with ESMTPSA id 28-20020a17090a001c00b00263258fda1bsm11745740pja.46.2023.07.12.22.26.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 Jul 2023 22:26:08 -0700 (PDT)
+From:   Celeste Liu <coelacanthushex@gmail.com>
+X-Google-Original-From: Celeste Liu <CoelacanthusHex@gmail.com>
+Message-ID: <7937b1c9-cde3-29ad-66dd-c95c4f0506ca@gmail.com>
+Date:   Thu, 13 Jul 2023 13:26:00 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230712204358.756d0018@gandalf.local.home>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] riscv: entry: set a0 prior to syscall_handler
+To:     Guo Ren <guoren@kernel.org>
+Cc:     Palmer Dabbelt <palmer@rivosinc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Felix Yan <felixonmars@archlinux.org>,
+        Ruizhe Pan <c141028@gmail.com>,
+        Shiqi Zhang <shiqi@isrc.iscas.ac.cn>
+References: <20230711062202.3542367-1-CoelacanthusHex@gmail.com>
+ <CAJF2gTRgXbEfQWiWtZtVNBDhpY2miG_ByHrVZF2fbfu60hCHcQ@mail.gmail.com>
+Content-Language: en-GB-large
+In-Reply-To: <CAJF2gTRgXbEfQWiWtZtVNBDhpY2miG_ByHrVZF2fbfu60hCHcQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 08:43:58PM -0400, Steven Rostedt wrote:
-> On Wed, 12 Jul 2023 16:36:30 -0700
-> Kees Cook <keescook@chromium.org> wrote:
-> > [...]
-> > +union stack_entry_dynamic {
-> > +	struct stack_entry entry;
-> > +	struct {
-> > +		int size;
-> > +		unsigned long caller[] __counted_by(size);
-> > +	};
-> > +};
+
+On 2023/7/13 08:00, Guo Ren wrote:
+> On Tue, Jul 11, 2023 at 2:22 AM Celeste Liu <coelacanthushex@gmail.com> wrote:
+>>
+>> When we test seccomp with 6.4 kernel, we found errno has wrong value.
+>> If we deny NETLINK_AUDIT with EAFNOSUPPORT, after f0bddf50586d, we will
+>> get ENOSYS. We got same result with 9c2598d43510 ("riscv: entry: Save a0
+>> prior syscall_enter_from_user_mode()").
+>>
+>> Compared with x86 and loongarch's implementation of this part of the
+>> function, we think that regs->a0 = -ENOSYS should be advanced before
+>> syscall_handler to fix this problem. We have written the following patch,
+>> which can fix this problem after testing. But we don't know enough about
+>> this part of the code to explain the root cause. Hope someone can find
+>> a reasonable explanation. And we'd like to reword this commit message
+>> according to the explanation in v2
+>>
+>> Fixes: f0bddf50586d ("riscv: entry: Convert to generic entry")
+>> Reported-by: Felix Yan <felixonmars@archlinux.org>
+>> Co-developed-by: Ruizhe Pan <c141028@gmail.com>
+>> Signed-off-by: Ruizhe Pan <c141028@gmail.com>
+>> Co-developed-by: Shiqi Zhang <shiqi@isrc.iscas.ac.cn>
+>> Signed-off-by: Shiqi Zhang <shiqi@isrc.iscas.ac.cn>
+>> Signed-off-by: Celeste Liu <CoelacanthusHex@gmail.com>
+>> Tested-by: Felix Yan <felixonmars@archlinux.org>
+>> ---
+>>  arch/riscv/kernel/traps.c | 3 +--
+>>  1 file changed, 1 insertion(+), 2 deletions(-)
+>>
+>> diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
+>> index f910dfccbf5d2..ccadb5ffd063c 100644
+>> --- a/arch/riscv/kernel/traps.c
+>> +++ b/arch/riscv/kernel/traps.c
+>> @@ -301,6 +301,7 @@ asmlinkage __visible __trap_section void do_trap_ecall_u(struct pt_regs *regs)
+>>
+>>                 regs->epc += 4;
+>>                 regs->orig_a0 = regs->a0;
+>> +               regs->a0 = -ENOSYS;
+> Oh, no. You destroyed the a0 for syscall_handler, right? It's not
+> reasonable. Let's see which syscall_handler needs a0=-ENOSYS.
 > 
-> This actually makes it more likely to cause a bug in the future (and the
-> present!). Now we need to know that if stack_entry were to ever change, we
-> have to change this too. And it can change (although highly unlikely).
-
-Yeah, I should have included a bit more, like:
-BUILD_BUG_ON(offsetof(struct stack_entry, caller) == offsetof(struct stack_entry_dynamic, caller))
-
-But anyway, I think we can still do better. :)
-
-> [...]
-> Now, this event is unique, as it's the only event that has a dynamic array
-> that is not done by the way other dynamic arrays are done. Which is to
-> insert a field that has an offset and length to it. That is, other events
-> would look like this:
+> Could you give out more detail on your test case?
 > 
-> struct stack_entry {
-> 	int		size;
-> 	short		offset; length;
-> 	[ more fields ]
-> 	int		dynamic[];
-> }
 
-Yeah, it won't be a "true" trace dynamic array. stack_entry is the
-sockaddr of trace. :) (i.e. we want to change the size of the trailing
-array without actually changing the struct, but this way leads to
-madness.)
+Our test case is here:
 
-> Where offset would be the ((void *)(struct stack_entry *)data) + offset. As
-> all the dynamic size portions of an event are at the end of the event, with
-> these offset/length tuples to tell user space and the kernel where to look
-> in the event binary data for those fields.
+int main() {
+  scmp_filter_ctx ctx;
+  ctx = seccomp_init(SCMP_ACT_ALLOW);
+
+  seccomp_rule_add_exact(ctx, SCMP_ACT_ERRNO(EAFNOSUPPORT), SCMP_SYS(socket), 2,
+                         SCMP_CMP(0, SCMP_CMP_EQ, AF_NETLINK),
+                         SCMP_CMP(2, SCMP_CMP_EQ, NETLINK_AUDIT));
+
+  if (seccomp_load(ctx) < 0) {
+    perror("seccomp_load");
+    exit(EXIT_FAILURE);
+  }
+
+  int sock_fd1 = socket(AF_NETLINK, SOCK_RAW, NETLINK_GENERIC);
+  if (sock_fd1 < 0) {
+    printf("1st socket syscall failed with return value %d and errno %d (%s), which is unexpected\n",
+           sock_fd1, errno, strerror(errno));
+    seccomp_release(ctx);
+    return 1;
+  }
+  printf("1st socket created successfully, as expected.\n");
+
+  int sock_fd2 = socket(AF_NETLINK, SOCK_RAW, NETLINK_AUDIT);
+  if (sock_fd2 < 0) {
+    printf("2nd socket syscall failed with return value %d and errno %d (%s).\n", sock_fd2, errno,
+           strerror(errno));
+
+    if (errno == EAFNOSUPPORT) {
+      printf("2nd socket syscall failed with EAFNOSUPPORT, as expected.\n");
+      seccomp_release(ctx);
+      return 0;
+    } else {
+      printf("2nd socket syscall failed with unexpected errno, which is unexpected.\n");
+      seccomp_release(ctx);
+      return 1;
+    }
+  }
+  printf("2nd socket created successfully, which is unexpected.\n");
+  seccomp_release(ctx);
+
+  return 2;
+}
+
+>>
+>>                 riscv_v_vstate_discard(regs);
+>>
+>> @@ -308,8 +309,6 @@ asmlinkage __visible __trap_section void do_trap_ecall_u(struct pt_regs *regs)
+>>
+>>                 if (syscall < NR_syscalls)
+>>                         syscall_handler(regs, syscall);
+>> -               else
+>> -                       regs->a0 = -ENOSYS;
+>>
+>>                 syscall_exit_to_user_mode(regs);
+>>         } else {
+>> --
+>> 2.41.0
+>>
 > 
-> But to keep backward compatibility, as this event had code specific for
-> parsing it in libtraceevent that doesn't expect that offset/length tuple,
-> and instead just looked at the "caller[8]" portion to see that it had 8
-> fields (this is static for all events). New code uses the size to know, and
-> ignores the [8]. The event meta data gives the actual size of the stored
-> data so the parser knows not to go beyond that.
-
-Right -- so, it would have been much nicer to use a new struct when
-caller[8] wasn't enough. :) But that ship has sailed. Now we're in
-a state where some tools expect caller[8] and some expect "caller[]
-__counted_by(size)". In other places where we've had a "minimum sized
-flexible array" requirements, we would've used a union, effectively like:
-
-	int size;
-	union {
-		some_type legacy_padding[8];
-		some_type caller[] __counted_by(size);
-	};
-
-Old code ends up with the same sized struct, and new code gets a proper
-flexible array with the original struct member name. (And with
-__counted_by, we'll have the capacity to do run-time bounds checking on
-the flexible array.)
-
 > 
-> Note, this event existed before normal trace events that had the dynamic
-> arrays, which is why it didn't do the same.
-> 
-> The only thing this code is doing is filling in the ring buffer. The entry
-> structure is just a helper to know where to place the data in the ring
-> buffer.
-> 
-> So my question to you is, what's the purpose of hardening? To prevent
-> future bugs, right? By making a shadow struct, we are now burdened to
-> remember to modify the shadow stack if we ever modify this current
-> structure.
-
-Right, I'd rather avoid a shadow struct -- it's especially weird here
-given the special way trace creates its structures. :P The hardening
-efforts are mainly holistic protections, in the sense that much of the
-kernel isn't doing this kind of careful length management, etc. But that
-means we can't abuse fixed-sized arrays anymore -- the compiler needs
-to believe what it's told about sizes. ;)
-
-> [...]
-> This is why I much rather prefer the simple:
-> 
->  	ptr += offsetof(typeof(*entry), caller);
->  	memcpy(ptr, fstack->calls, size);
-> 
-> Which doesn't need to care about synchronizing with the macro magic of the
-> structure, which may change in the future, and this will lead to one more
-> location that would need to be updated, but likely forgotten.
-
-I am just thinking this will kick the can down the road. The compiler
-may get smart enough to see through this or who know what next.
-
-> C is fun, let's go shopping!
-
-Yup. I'm just trying to take away all the foot-guns. :) Let me try
-another way to solve this that is less of a bypass. For now, sure, let's
-take the work-around, but I think it'll need to be fixed up soon.
-
--Kees
-
--- 
-Kees Cook
