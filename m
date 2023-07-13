@@ -2,213 +2,309 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11EB875257C
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 16:49:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52154752579
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 16:49:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231864AbjGMOtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 10:49:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54460 "EHLO
+        id S231806AbjGMOtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 10:49:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231745AbjGMOs4 (ORCPT
+        with ESMTP id S231617AbjGMOsv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 10:48:56 -0400
-Received: from EUR02-AM0-obe.outbound.protection.outlook.com (mail-am0eur02on2060.outbound.protection.outlook.com [40.107.247.60])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B375A19A6;
-        Thu, 13 Jul 2023 07:48:54 -0700 (PDT)
+        Thu, 13 Jul 2023 10:48:51 -0400
+Received: from DM5PR00CU002.outbound.protection.outlook.com (mail-centralusazon11021018.outbound.protection.outlook.com [52.101.62.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C206C2707;
+        Thu, 13 Jul 2023 07:48:49 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hbrRo7ceKPTkDvJd/LttA857y0+z9U5ksRuS7WHrlO4ZoUvr1NJqHVt5qVDPpPiKnxVYWEGWa07kE7AxrXbktvr/B3yvx7D9bTwgltSa4TnZfu+x1pa1XG3fxzLqTJTLJ1ZadXqKLW7UZPPf4Ywd4+ZTRCphmAee2Jn3keug0ta9ifiiNvdpUzGxQRzoTozSqw3vsP+1y5oCqAD4b9fiaCMfR2n800QxXTTMFGZn/IPgkqDF7RCRihCM1LqbHBFZSK5kgi+8KLIqhj17r/ZuLo4YgrTCxvoxk/LOQNyOQ8CN823kmzwwS2xsU9V8qTO9MFRoQxbmbE4pvxS2JFs9Lg==
+ b=F9/ugR/AU3bX0PJ2z+vSPKDsd1pIvKnXsPbXz2slRp83LdrkKhKvQpoJmXz/6dXtyYJq/pxSLazc1zBPJtrdcoPGsuqKtNx/0zFd/cHBJc5R55GVfPgIg5xZUukqPoOIgy8MuWEiAjX/9xKtlEiVDwIidzc3ol5U/W4EVuXBkgBO71k9SV+ZqSUVUAq0IbML6zqxcOu8LPXXYWO7880ehtSztncUuHmjtxDLNK85blFAzx4n89elnqp+Yq41DvU9uYrgkt3L11iTA/yQ/2Pp2uUYPRHS1QiNl90rXw3PK9U1TIk4mcNsMg3tQ2r/iMka1gP6jLSc9dXllSU87pw7Aw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=QSJcoY4+HAmGuyDEiIYVd4CBBAFTxbUWiQfpFvrvjXM=;
- b=JB8w1KQr+NdmWsLBpplh1X/oPSBl1nO44+hgCyBlcTjacjUALw3DkKeRJsTjIq6onw1/5zl3uOVoZ7QuK0UdYF9VqdNakIM01DR3KdA5iUkqR28LmhYBZw0umEna1GiX84wuwwLMlxv6UHm6ysIzD0Hogu+l+c3YP2zp6axMQVvYvLzSzwY1r99XDjmzEG9s0hr2TF1DicCY/Z87wUnykxcEmXFK5BmPpzPdRbKmwiG9XPhfORr8Rnnv2PckD58LZ6Seqcn67YRcisZ0WQZcb0BYNotPOmnrTApyJcWeEDf+tHarqDxjfRQ05AwfXpA7wS5h2T23l6Y4WTHsbYNwhw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 194.138.21.76) smtp.rcpttodomain=redhat.com smtp.mailfrom=siemens.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=siemens.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=siemens.com;
+ bh=SzkOrI9emLI3vBoFC3fba8bWg9WN6lL7vpvADbhV2O4=;
+ b=gjhDkP6vkjQG4c4AOFhXXWx2Cc2srAt3PfRpfrlFnVgk78pWQOIdmp9mvKLyhidAQ/82Am4kXuPDfFdaTUT/+n4zRVifcNzUYAYpnUo//kIRQiKoOFbWQmc4hCJ7fIaWxXSYEs7K1kBPnaBgmeyiXBuGL/rt90ikn48pB4ujXklzFSAdzhtyUPtS6kW1KyJA9xGAMDxgvX6YHD80p+zSs13PfgHYrX4LFuBrhfrigA+e9zEBgsf4wJaVlQforIUAk5FOkmT5mvubpY3yX/Nm4+hx7ozbVg/M+L1WHF7qP6C2RD6KTBxmQebaLNLMb3FmzX78wzUCW99KVwTyCryhhA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QSJcoY4+HAmGuyDEiIYVd4CBBAFTxbUWiQfpFvrvjXM=;
- b=Ob5FRIDBsx8M1mB4NwesfsNmb4HYZuBcRAZyLBml1ucFVeqyXMzNADIRm0yHQXYH5sksjOeNUqcY75UWpFyynOzd2A65sGeLS0+8W7ntCXOGLvwTorXRRV8GERGOKvoBici0Pme0T3VNnlmX5oF23+vkT1wUR/cXi3N5eO3mfnrvrC8/Z2r42BmnhTlkvCGqSiP0VBkIhj6kw4A2ZHUI9pUKbT0M2E9w33v0OugRwJsI2vKrYTjQFI3bFjr53akCpIcgzd8+HUe20aQMvvWMP8NJrBbum9KDF/y6M1GpZvQVqQb1UuK3zptfzml34hPd6XfhHLqtU18PhtLfoOqrqA==
-Received: from FR0P281CA0093.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:a9::7) by
- AS4PR10MB5371.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:4bb::17) with
+ bh=SzkOrI9emLI3vBoFC3fba8bWg9WN6lL7vpvADbhV2O4=;
+ b=AJ8HYIjJPEZkQf4b6CLfEMY3WTeangd6Z9tGiRPzFsimWmq8p+Oh5o65Qv2R84g991X/WPPp7ofbU5yVx0rNpqCglOWOBdNnFcpK8cSyznHaMbp9H9jOWums2NTsWtkLZ6ERD+y93Qk+Zdn6VgiELNA0aUrbK6jIj8V2GeXglgk=
+Received: from BY5PR21MB1443.namprd21.prod.outlook.com (2603:10b6:a03:21f::18)
+ by DM6PR21MB1531.namprd21.prod.outlook.com (2603:10b6:5:25f::9) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6565.32; Thu, 13 Jul
- 2023 14:48:52 +0000
-Received: from VE1EUR01FT096.eop-EUR01.prod.protection.outlook.com
- (2603:10a6:d10:a9:cafe::77) by FR0P281CA0093.outlook.office365.com
- (2603:10a6:d10:a9::7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.20 via Frontend
- Transport; Thu, 13 Jul 2023 14:48:52 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 194.138.21.76)
- smtp.mailfrom=siemens.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=siemens.com;
-Received-SPF: Pass (protection.outlook.com: domain of siemens.com designates
- 194.138.21.76 as permitted sender) receiver=protection.outlook.com;
- client-ip=194.138.21.76; helo=hybrid.siemens.com; pr=C
-Received: from hybrid.siemens.com (194.138.21.76) by
- VE1EUR01FT096.mail.protection.outlook.com (10.152.3.72) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6588.22 via Frontend Transport; Thu, 13 Jul 2023 14:48:52 +0000
-Received: from DEMCHDC8WBA.ad011.siemens.net (139.25.226.105) by
- DEMCHDC8VSA.ad011.siemens.net (194.138.21.76) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Thu, 13 Jul 2023 16:48:51 +0200
-Received: from md1za8fc.ppmd.siemens.net (139.25.69.128) by
- DEMCHDC8WBA.ad011.siemens.net (139.25.226.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.25; Thu, 13 Jul 2023 16:48:51 +0200
-From:   Henning Schild <henning.schild@siemens.com>
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        <platform-driver-x86@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Tobias Schaffner <tobias.schaffner@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Henning Schild <henning.schild@siemens.com>
-Subject: [PATCH v2 3/3] platform/x86: simatic-ipc: use extra module loading for watchdog
-Date:   Thu, 13 Jul 2023 16:48:32 +0200
-Message-ID: <20230713144832.26473-4-henning.schild@siemens.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230713144832.26473-1-henning.schild@siemens.com>
-References: <20230713144832.26473-1-henning.schild@siemens.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.12; Thu, 13 Jul
+ 2023 14:48:46 +0000
+Received: from BY5PR21MB1443.namprd21.prod.outlook.com
+ ([fe80::e42f:9692:e651:6707]) by BY5PR21MB1443.namprd21.prod.outlook.com
+ ([fe80::e42f:9692:e651:6707%4]) with mapi id 15.20.6609.007; Thu, 13 Jul 2023
+ 14:48:46 +0000
+From:   Haiyang Zhang <haiyangz@microsoft.com>
+To:     "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+CC:     Haiyang Zhang <haiyangz@microsoft.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Paul Rosswurm <paulros@microsoft.com>,
+        "olaf@aepfle.de" <olaf@aepfle.de>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        Long Li <longli@microsoft.com>,
+        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        Ajay Sharma <sharmaajay@microsoft.com>,
+        "hawk@kernel.org" <hawk@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "shradhagupta@linux.microsoft.com" <shradhagupta@linux.microsoft.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: [PATCH net-next] net: mana: Add page pool for RX buffers
+Thread-Topic: [PATCH net-next] net: mana: Add page pool for RX buffers
+Thread-Index: Adm1mSA+i88N/DCwBUak7+uxb6tVIw==
+Sender: LKML haiyangz <lkmlhyz@microsoft.com>
+Date:   Thu, 13 Jul 2023 14:48:45 +0000
+Message-ID: <1689259687-5231-1-git-send-email-haiyangz@microsoft.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MW4PR03CA0049.namprd03.prod.outlook.com
+ (2603:10b6:303:8e::24) To BY5PR21MB1443.namprd21.prod.outlook.com
+ (2603:10b6:a03:21f::18)
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-exchange-messagesentrepresentingtype: 2
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BY5PR21MB1443:EE_|DM6PR21MB1531:EE_
+x-ms-office365-filtering-correlation-id: fd5e86bf-46d8-46f5-85b9-08db83b042b8
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: U3WXDiWp5f+bHmc9sshQnJ/o2IS2Sz4LBx888SBan5gzOM6Xgv32TVUgyXdzOueeo41MUh/bqmhLEuKF6f5u+c94JMl4+C53mVvaO5Ff2vwLaiYIMe2y5c5OZP5Q5ZQIJ+wMUSwEYN/i7xc+kIXApU5RQQxR20p5G5XIoOusfRKhZppbcjm01ufBrweM44vtFmOgxMX5Eq8gjmgzrf4EWlPF7UHmJ6AxpLo0aMGPD4WBz1WzKG1R33vK8v1b5KEDLGSSNRtmRjvS/6xh+WiiMqE1YoiOVuS5ILJfey5VY6X6VTowg4CMMvl0tX4vNrz2nhTnJwY3f8YvRxtPcXBrWx2bO4WI7SwOUb2cYjEX6Z/LAK/PzFnEtuHV5fkVbLUMGgPhDuFY8BZad1+lNHuXgnjTZPqIGLbNd72bgin3bylSBNN9J0d6QNo5NlocqDOcz2VbVVmMMNr0gXZNV7OuqsfdEBPWK7t360NicfLAscKXp+WRXNhNYw/7dnBMvoFRmkwUtf/7XFfVKkdg490ATKpAijfiYIW2/vWBgu+3/p7U9wcibPo/JLNbm4lAuhHXPkpWhCWEakug20W9sZ29W0DO66RG4k8BBH8EJSABipBKPBYtDXA87nudRKD82eSx31ABxUpn+CLArbHEiWkt8K3nN3/C1l9ZyrRhysDIXN0=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR21MB1443.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(396003)(376002)(39860400002)(136003)(366004)(451199021)(2616005)(6512007)(26005)(186003)(6506007)(7416002)(5660300002)(8936002)(41300700001)(8676002)(4326008)(110136005)(38350700002)(38100700002)(122000001)(54906003)(82960400001)(82950400001)(66946007)(316002)(66446008)(64756008)(66556008)(66476007)(7846003)(83380400001)(71200400001)(2906002)(52116002)(10290500003)(478600001)(6486002)(36756003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?hBP2tuiv5Ma+Amxa68K8EJDJ6WWGK3uq61XI6ThtF3+L+LL0NeGtX+aRlT?=
+ =?iso-8859-1?Q?GBjecMuTB2NupRBBiJYxBMIc0WHOX1GNBa2tdXyGIoaaKngJpbXBy/l3Qc?=
+ =?iso-8859-1?Q?5tt5Q2mHJ0Q8e7TT1LGiqgFAS2UAGIbFhrEP+3uIz22EXOO4vBQysc+L92?=
+ =?iso-8859-1?Q?7OicpaOGcnAmieSt0XQATFupY/5tggBEVVIvFz+seXofXf5WJJT4g9X+31?=
+ =?iso-8859-1?Q?WEwRxCBOyy5c3Hey5kX6qY7olXtVu9GgltLePYf6iYbwz28GaCV3xmYRmY?=
+ =?iso-8859-1?Q?k3aZKEdbdPImH2NU3ix9ZNaDKXQiw8gD8hgj2LTmWDaxT+y/NJ1AfHMpAd?=
+ =?iso-8859-1?Q?vOhASbQRjKUNq8/OCoW3fszD0iPnrTDtd7roNK1eZaI4IrZufpi+VfIUuq?=
+ =?iso-8859-1?Q?U/72sylVCpMs8kxiKRr8Gjwr0b+pF+5bPa91hI4xKzUrISgu78jNmKUqqf?=
+ =?iso-8859-1?Q?o46JVBFxt1svuJUFNu3YPOxCue+YAMol4HVvCHsD7TLXfhMa2O95wmx6hd?=
+ =?iso-8859-1?Q?WAtV3BX20Sa8nja3IGRafYViA44TToP5oZ0WL1Dd3H9fgnxqFebswO3hnh?=
+ =?iso-8859-1?Q?hsm0f3lCXUDJ7IrswBb4aQW4Y2AelGf13u/zIXRTC2455iBL7ruXIoXhbv?=
+ =?iso-8859-1?Q?PmpjkoNnYpuwj5MR8bMQSCz+nXSwMeo6lV0BbCWnansIyjUPkqNybQQ4Fa?=
+ =?iso-8859-1?Q?PFVcLseG//0vA+rY8JKm1VUl/aL5tmzgo9Y1xH2i/JsRlh+w/BvF/wNsVQ?=
+ =?iso-8859-1?Q?36je6F60hiVQ5opHyusJn+ieqVeX1Hqry9hzFosDH1uSCDlOgcO0qyn2kJ?=
+ =?iso-8859-1?Q?08Uooc01Xmt5gauG4nDrYiM8g6+SEBmGXAvZUzpiUi2ZwJ83rjysMLY/tD?=
+ =?iso-8859-1?Q?BmNKHxpqFznGXVnV6wQBA+lc3nX4tzdR3Yzs8HX0G3t+zKRemhtJdP5ITi?=
+ =?iso-8859-1?Q?EQSjMKAK4z7jVN9HGsBze7MPOGcYbr/v22wBnBVgxrNF5oj767OfgDWNaB?=
+ =?iso-8859-1?Q?CsKc9MbZAFgmtFDWYhVWJwurAdt1LvOEN8imE0xHgGrlfQ9xeqFm0ayiBB?=
+ =?iso-8859-1?Q?tp8QElg5154NSDX9eBOLA2TeVychPqYo4RVu8RDW8GuUJLWQ2XothIGzYe?=
+ =?iso-8859-1?Q?AH3fS5fpbIfwMSNsPQAOFS9pwjjIhMHVMn5klDX2qhNTiRXvgHI1Kk84Lm?=
+ =?iso-8859-1?Q?+eZIaU+nVIUEySmkzK+N/Oi9YjPLpEL4eCAdM2hHIxtF964oIiE4OgMKVY?=
+ =?iso-8859-1?Q?gHsMaPUCcNq5rEFmiJX43ZbFNFuPBI/Aq64jHADwGkvUWMTbLrM69oxF6e?=
+ =?iso-8859-1?Q?AimOJxa9R6ZRdeLPKc+Ey64DcpbER1gpMMxQCDbzVGSDTp04Dn+GSUSZjN?=
+ =?iso-8859-1?Q?C2+gd7edQAs4izr0Ca1a+SnNyjqDYmIbcP6c1oM3YVgSBAev5L2cUs+40t?=
+ =?iso-8859-1?Q?e3KMSx/Z7papeoP3dFFpd2/qfKlK9oqbE4mrVKjp1u3twTO6R89bUvag9Q?=
+ =?iso-8859-1?Q?7FUI30QTPhbQJ+cnYiRroCgsM7hgkHWHZpZsWwgPSxjz4xHRlkxRj78kdI?=
+ =?iso-8859-1?Q?QcPsmyeWx6+HtgwFn+9Mm0CLNniAINL7xMNlNuOISTvZs2i9yoDDDllRLQ?=
+ =?iso-8859-1?Q?XNDCZ7uhSiMhSc7n4cgwd5CSS+OWVxe8V9?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [139.25.69.128]
-X-ClientProxiedBy: DEMCHDC8WBA.ad011.siemens.net (139.25.226.105) To
- DEMCHDC8WBA.ad011.siemens.net (139.25.226.105)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VE1EUR01FT096:EE_|AS4PR10MB5371:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5d8ac1f7-621d-4409-7a98-08db83b0468f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xz08wHDpx6dY4ETWtNuR9LAd2b+f/NZz21fxNZ3UsH9xiE+GpakS3hEbD85hm3o+HB2mEecrnlWOBK6AhDGZHwYDOWCj2oAAWqrcyv10CvHYfj2Fx8MDWrHvT0WfNJ/d1u0yBsADbJL0q0KMzG/pk5BkZNR40MiIu0WmyN9hxnqa4fgorqCbcex1huICaevF+IK/LTBdIew+tYIAjB2D5a2/A/8FAlEExaFdeOencdAL/gJBJEB8LKuncsovR35yJLRI2MG0KyD7ApacJ2G6/zyEqzjj86SDcFivJYlgyyRit+sNOdyMTxQ4P1eM3haiq0dtNcIQ2fcrduWD2pMvsuJA/+lw//P4l8GoJevI2O7T7CnzEp6frp5cL05L9xGmz05+bHGNruL0GK6wN4HRdq4kb5KL9jOpRC9Xu0aaVmItoAFobA4ZPeQ70T24CszaYVLISD9mM2MK4yMYBJXEkHe9OJvqMWJhVG9GkcA3PDG0FJyctqHX+e6db2h2f2WNN19eg2FXsOjeniIQOA3q5ppwAwJ1i3qZyIzd+nr2bAHrIvYefSs69HFPNG02n58JcXTDKDeTberG7JcIo7/k+W6I0KAcVpiED374kuC+oK6dfVdP2xy+H97zzuPlJYAoIObsONDKrLszRmTTtdW7Iv9X06/2rHGhJIexcNkz2WrDDQXNXB+0lxoC4d9roAzevXs7Llw/w6Rf0ydVhZFPIaqLtuvwAWjCG+oVyPL43Vz5c6SPZK9bmtVKhGQpTmXjVMrU6QWItc/5j3bGuxP0zYtkWGvY2zTypTRZQ6O8K48=
-X-Forefront-Antispam-Report: CIP:194.138.21.76;CTRY:DE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:hybrid.siemens.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(396003)(346002)(136003)(39860400002)(376002)(451199021)(36840700001)(46966006)(40470700004)(4326008)(70586007)(70206006)(110136005)(478600001)(356005)(1076003)(82960400001)(81166007)(82740400003)(26005)(40480700001)(6666004)(54906003)(316002)(41300700001)(82310400005)(8676002)(8936002)(86362001)(40460700003)(83380400001)(107886003)(5660300002)(44832011)(16526019)(186003)(2616005)(956004)(2906002)(36756003)(36860700001)(336012)(47076005)(171213001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: siemens.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2023 14:48:52.3879
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR21MB1443.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fd5e86bf-46d8-46f5-85b9-08db83b042b8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Jul 2023 14:48:45.9912
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5d8ac1f7-621d-4409-7a98-08db83b0468f
-X-MS-Exchange-CrossTenant-Id: 38ae3bcd-9579-4fd4-adda-b42e1495d55a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=38ae3bcd-9579-4fd4-adda-b42e1495d55a;Ip=[194.138.21.76];Helo=[hybrid.siemens.com]
-X-MS-Exchange-CrossTenant-AuthSource: VE1EUR01FT096.eop-EUR01.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS4PR10MB5371
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 90C9vvElG38vr3i8rxg/wqgUm2JBwd+UacRP/Xt4sewLMt+TyQv93Nta2BKsFuzklwLX3UfJhNSSXPExbzybNw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR21MB1531
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We recently introduced a way to name additional modules to load for each
-device. Use that instead of wdtmode to load the watchdog module. This
-patch does not change behaviour, it is just style.
+Add page pool for RX buffers for faster buffer cycle and reduce CPU
+usage.
 
-Signed-off-by: Henning Schild <henning.schild@siemens.com>
+Get an extra ref count of a page after allocation, so after upper
+layers put the page, it's still referenced by the pool. We can reuse
+it as RX buffer without alloc a new page.
+
+Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
 ---
- drivers/platform/x86/simatic-ipc.c | 42 ++++++++++++++----------------
- 1 file changed, 19 insertions(+), 23 deletions(-)
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 73 ++++++++++++++++++-
+ include/net/mana/mana.h                       |  5 ++
+ 2 files changed, 77 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/platform/x86/simatic-ipc.c b/drivers/platform/x86/simatic-ipc.c
-index 46487b4e0016..ef59009db9cf 100644
---- a/drivers/platform/x86/simatic-ipc.c
-+++ b/drivers/platform/x86/simatic-ipc.c
-@@ -34,7 +34,7 @@ static const struct dmi_system_id simatic_ipc_whitelist[] = {
- 
- static struct simatic_ipc_platform platform_data;
- 
--#define SIMATIC_IPC_MAX_EXTRA_MODULES 1
-+#define SIMATIC_IPC_MAX_EXTRA_MODULES 2
- 
- static struct {
- 	u32 station_id;
-@@ -45,40 +45,40 @@ static struct {
- } device_modes[] = {
- 	{SIMATIC_IPC_IPC127E,
- 		SIMATIC_IPC_DEVICE_127E, SIMATIC_IPC_DEVICE_NONE, SIMATIC_IPC_DEVICE_127E,
--		{ "emc1403" }},
-+		{ "emc1403", NULL }},
- 	{SIMATIC_IPC_IPC227D,
- 		SIMATIC_IPC_DEVICE_227D, SIMATIC_IPC_DEVICE_NONE, SIMATIC_IPC_DEVICE_NONE,
--		{ "emc1403" }},
-+		{ "emc1403", NULL }},
- 	{SIMATIC_IPC_IPC227E,
- 		SIMATIC_IPC_DEVICE_427E, SIMATIC_IPC_DEVICE_227E, SIMATIC_IPC_DEVICE_227E,
--		{ "emc1403" }},
-+		{ "emc1403", NULL }},
- 	{SIMATIC_IPC_IPC227G,
--		SIMATIC_IPC_DEVICE_227G, SIMATIC_IPC_DEVICE_227G, SIMATIC_IPC_DEVICE_227G,
--		{ "nct6775" }},
-+		SIMATIC_IPC_DEVICE_227G, SIMATIC_IPC_DEVICE_NONE, SIMATIC_IPC_DEVICE_227G,
-+		{ "nct6775", "w83627hf_wdt" }},
- 	{SIMATIC_IPC_IPC277G,
--		SIMATIC_IPC_DEVICE_NONE, SIMATIC_IPC_DEVICE_227G, SIMATIC_IPC_DEVICE_227G,
--		{ "nct6775" }},
-+		SIMATIC_IPC_DEVICE_NONE, SIMATIC_IPC_DEVICE_NONE, SIMATIC_IPC_DEVICE_227G,
-+		{ "nct6775", "w83627hf_wdt" }},
- 	{SIMATIC_IPC_IPC277E,
- 		SIMATIC_IPC_DEVICE_NONE, SIMATIC_IPC_DEVICE_227E, SIMATIC_IPC_DEVICE_227E,
--		{ "emc1403" }},
-+		{ "emc1403", NULL }},
- 	{SIMATIC_IPC_IPC427D,
- 		SIMATIC_IPC_DEVICE_427E, SIMATIC_IPC_DEVICE_NONE, SIMATIC_IPC_DEVICE_NONE,
--		{ "emc1403" }},
-+		{ "emc1403", NULL }},
- 	{SIMATIC_IPC_IPC427E,
- 		SIMATIC_IPC_DEVICE_427E, SIMATIC_IPC_DEVICE_427E, SIMATIC_IPC_DEVICE_NONE,
--		{ "emc1403" }},
-+		{ "emc1403", NULL }},
- 	{SIMATIC_IPC_IPC477E,
- 		SIMATIC_IPC_DEVICE_NONE, SIMATIC_IPC_DEVICE_427E, SIMATIC_IPC_DEVICE_NONE,
--		{ "emc1403" }},
-+		{ "emc1403", NULL }},
- 	{SIMATIC_IPC_IPCBX_39A,
--		SIMATIC_IPC_DEVICE_227G, SIMATIC_IPC_DEVICE_227G, SIMATIC_IPC_DEVICE_BX_39A,
--		{ "nct6775" }},
-+		SIMATIC_IPC_DEVICE_227G, SIMATIC_IPC_DEVICE_NONE, SIMATIC_IPC_DEVICE_BX_39A,
-+		{ "nct6775", "w83627hf_wdt" }},
- 	{SIMATIC_IPC_IPCPX_39A,
--		SIMATIC_IPC_DEVICE_NONE, SIMATIC_IPC_DEVICE_227G, SIMATIC_IPC_DEVICE_BX_39A,
--		{ "nct6775" }},
-+		SIMATIC_IPC_DEVICE_NONE, SIMATIC_IPC_DEVICE_NONE, SIMATIC_IPC_DEVICE_BX_39A,
-+		{ "nct6775", "w83627hf_wdt" }},
- 	{SIMATIC_IPC_IPCBX_21A,
- 		SIMATIC_IPC_DEVICE_BX_21A, SIMATIC_IPC_DEVICE_NONE, SIMATIC_IPC_DEVICE_BX_21A,
--		{ "emc1403" }},
-+		{ "emc1403", NULL }},
- };
- 
- static int register_platform_devices(u32 station_id)
-@@ -139,11 +139,6 @@ static int register_platform_devices(u32 station_id)
- 			 ipc_led_platform_device->name);
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/et=
+hernet/microsoft/mana/mana_en.c
+index a499e460594b..6444a8e47852 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_en.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+@@ -1507,6 +1507,34 @@ static void mana_rx_skb(void *buf_va, struct mana_rx=
+comp_oob *cqe,
+ 	return;
+ }
+=20
++static struct page *mana_get_page_from_pool(struct mana_rxq *rxq)
++{
++	struct page *page;
++	int i;
++
++	i =3D rxq->pl_last + 1;
++	if (i >=3D MANA_POOL_SIZE)
++		i =3D 0;
++
++	rxq->pl_last =3D i;
++
++	page =3D rxq->pool[i];
++	if (page_ref_count(page) =3D=3D 1) {
++		get_page(page);
++		return page;
++	}
++
++	page =3D dev_alloc_page();
++	if (page) {
++		put_page(rxq->pool[i]);
++
++		get_page(page);
++		rxq->pool[i] =3D page;
++	}
++
++	return page;
++}
++
+ static void *mana_get_rxfrag(struct mana_rxq *rxq, struct device *dev,
+ 			     dma_addr_t *da, bool is_napi)
+ {
+@@ -1533,7 +1561,7 @@ static void *mana_get_rxfrag(struct mana_rxq *rxq, st=
+ruct device *dev,
+ 			return NULL;
+ 		}
+ 	} else {
+-		page =3D dev_alloc_page();
++		page =3D mana_get_page_from_pool(rxq);
+ 		if (!page)
+ 			return NULL;
+=20
+@@ -1873,6 +1901,21 @@ static int mana_create_txq(struct mana_port_context =
+*apc,
+ 	return err;
+ }
+=20
++static void mana_release_rxq_pool(struct mana_rxq *rxq)
++{
++	struct page *page;
++	int i;
++
++	for (i =3D 0; i < MANA_POOL_SIZE; i++) {
++		page =3D rxq->pool[i];
++
++		if (page)
++			put_page(page);
++
++		rxq->pool[i] =3D NULL;
++	}
++}
++
+ static void mana_destroy_rxq(struct mana_port_context *apc,
+ 			     struct mana_rxq *rxq, bool validate_state)
+=20
+@@ -1917,6 +1960,8 @@ static void mana_destroy_rxq(struct mana_port_context=
+ *apc,
+ 		rx_oob->buf_va =3D NULL;
  	}
- 
--	if (wdtmode == SIMATIC_IPC_DEVICE_227G) {
--		request_module("w83627hf_wdt");
--		return 0;
--	}
--
- 	if (wdtmode != SIMATIC_IPC_DEVICE_NONE) {
- 		platform_data.devmode = wdtmode;
- 		ipc_wdt_platform_device =
-@@ -159,7 +154,8 @@ static int register_platform_devices(u32 station_id)
- 	}
- 
- 	if (ledmode == SIMATIC_IPC_DEVICE_NONE &&
--	    wdtmode == SIMATIC_IPC_DEVICE_NONE) {
-+	    wdtmode == SIMATIC_IPC_DEVICE_NONE &&
-+	    battmode == SIMATIC_IPC_DEVICE_NONE) {
- 		pr_warn("unsupported IPC detected, station id=%08x\n",
- 			station_id);
- 		return -EINVAL;
--- 
-2.41.0
+=20
++	mana_release_rxq_pool(rxq);
++
+ 	if (rxq->gdma_rq)
+ 		mana_gd_destroy_queue(gc, rxq->gdma_rq);
+=20
+@@ -2008,6 +2053,27 @@ static int mana_push_wqe(struct mana_rxq *rxq)
+ 	return 0;
+ }
+=20
++static int mana_alloc_rxq_pool(struct mana_rxq *rxq)
++{
++	struct page *page;
++	int i;
++
++	for (i =3D 0; i < MANA_POOL_SIZE; i++) {
++		page =3D dev_alloc_page();
++		if (!page)
++			goto err;
++
++		rxq->pool[i] =3D page;
++	}
++
++	return 0;
++
++err:
++	mana_release_rxq_pool(rxq);
++
++	return -ENOMEM;
++}
++
+ static struct mana_rxq *mana_create_rxq(struct mana_port_context *apc,
+ 					u32 rxq_idx, struct mana_eq *eq,
+ 					struct net_device *ndev)
+@@ -2029,6 +2095,11 @@ static struct mana_rxq *mana_create_rxq(struct mana_=
+port_context *apc,
+ 	if (!rxq)
+ 		return NULL;
+=20
++	if (mana_alloc_rxq_pool(rxq)) {
++		kfree(rxq);
++		return NULL;
++	}
++
+ 	rxq->ndev =3D ndev;
+ 	rxq->num_rx_buf =3D RX_BUFFERS_PER_QUEUE;
+ 	rxq->rxq_idx =3D rxq_idx;
+diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
+index 024ad8ddb27e..8f1f09f9e4ab 100644
+--- a/include/net/mana/mana.h
++++ b/include/net/mana/mana.h
+@@ -297,6 +297,8 @@ struct mana_recv_buf_oob {
+=20
+ #define MANA_XDP_MTU_MAX (PAGE_SIZE - MANA_RXBUF_PAD - XDP_PACKET_HEADROOM=
+)
+=20
++#define MANA_POOL_SIZE (RX_BUFFERS_PER_QUEUE * 2)
++
+ struct mana_rxq {
+ 	struct gdma_queue *gdma_rq;
+ 	/* Cache the gdma receive queue id */
+@@ -330,6 +332,9 @@ struct mana_rxq {
+ 	bool xdp_flush;
+ 	int xdp_rc; /* XDP redirect return code */
+=20
++	struct page *pool[MANA_POOL_SIZE];
++	int pl_last;
++
+ 	/* MUST BE THE LAST MEMBER:
+ 	 * Each receive buffer has an associated mana_recv_buf_oob.
+ 	 */
+--=20
+2.25.1
 
