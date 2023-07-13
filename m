@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 730F5751518
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 02:18:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A73B751519
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 02:19:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233240AbjGMASz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 20:18:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36522 "EHLO
+        id S233283AbjGMAS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 20:18:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231743AbjGMASk (ORCPT
+        with ESMTP id S229529AbjGMASl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 20:18:40 -0400
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 769571FD2
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 17:18:39 -0700 (PDT)
-Received: by mail-pj1-x1049.google.com with SMTP id 98e67ed59e1d1-262e0c70e8eso16444a91.2
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 17:18:39 -0700 (PDT)
+        Wed, 12 Jul 2023 20:18:41 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDDC71995
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 17:18:40 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1b8b30f781cso838175ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 17:18:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689207519; x=1691799519;
+        d=google.com; s=20221208; t=1689207520; x=1691799520;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8FNetjBnnWs4aWcoESXEPv5EQNod9M4H8ra/lwVlWng=;
-        b=OYL0bSj4G5DjZWuCKYJh1mgYYyb7btYF2LGzKY9Bk+oN0orukveShF4mERnDT12wOV
-         59jdagioq6JUZlITmhCB22KSsxcpFF6nRLpZZr2dAeg1q60Px50PCZI4BiVQB4x4I1Nv
-         D7UtKoG3pLXisajm6f5fiIvw4mAM/GvHvlla0HmYIzBfJMVspK8P3f7Zh2oU4gWLY038
-         pzkJZ7lT76qFOdxc22MN7AWRmoNR4Jxt1plUazR3Kx2CHPPAlPjFhmATOWQzVnQ1H54p
-         mEraCl7FGtI0EzT6W0V7qICdMdx0dnTi3JpZXGu/u6Ttzha9Zt0Uc8uTuZemcL9A24wm
-         4ruw==
+        bh=Iz4QSmIvTSTUsAdxwi3pCBw4pt8RugCrQx5KDc9ZhJs=;
+        b=OxVY6Z7lXNfLpGGQxHTUt1swejOIFF85FUW0wE2VE8vdLB5aDIEaplEBhJovE6UIuU
+         K4MI2omqzLcf0878ohV/qbCyn1o1btoxNO1zmo4XpzgNCwhqbsR5g9lPMhF/oc6c5OSH
+         FLFQ8rcC3HlG6YKuWPQCFnkeyENr45NxeouUwj5SMJayn/oY+aa5qTUD8r4awoQKd282
+         07sAZWdt7BPtWzt9aI4AGI/dz9iMygnhJ+O+zdqcVmDbmZTctgty2teAKbz/LapOZrLR
+         jUhKEwIXQ2hO2jhE5Geirl2yikNH3XAhBveTKUwqbOhLRH3RICugfJqK+TjpYtt4DoV1
+         LizA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689207519; x=1691799519;
+        d=1e100.net; s=20221208; t=1689207520; x=1691799520;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8FNetjBnnWs4aWcoESXEPv5EQNod9M4H8ra/lwVlWng=;
-        b=KwrFxlgIjJ4CE2JXLm7tFmLiGYuB72JZLEQaMRDjpaGt3cYVvHtx/5Tc9M9af73Wbo
-         dtKD5Tx5NPV8P0/FzBsPyKprl+mFDxSc8EkjgBT9z+sLpbCmRuf2xh0dlWvxMWp3rXMU
-         DOc+mrzxgxtDth3dMmxRxo+nzjQKb7s1lMrmYm93IfVvn7SsiYgPV2i0tM+65ghlGLtV
-         htrXrzkSAQzgW8GHrPSBHHusOlfCMP7sd1+0d3WynF1/St1NwCOBSdfzRVVg6vBNG1fc
-         6zX6dGcpcFQDz2ChuSZrnXWFyl/L9qU9ySeGsWIFO/SqI/oqHHIcHuGzxE3fbD3k5Lct
-         wo6g==
-X-Gm-Message-State: ABy/qLbaf9c8bT/ZeYGtdBZa1fakX5ITqlc9XqofqTuLGanHBRDB6NN+
-        9WlS610fcd2qLzqBskSrcvt8vlM//7IP8Q==
-X-Google-Smtp-Source: APBJJlHqRdIoAACpRH8a6t9G+zRijJgrhccuFIBvQtuMsvEmpFO+C6Om+9Yz4ShU/cZRQoH/R02E4OT9ko/qNQ==
+        bh=Iz4QSmIvTSTUsAdxwi3pCBw4pt8RugCrQx5KDc9ZhJs=;
+        b=Iubx0nKWgbDpGT3weyygBNegPOfNihpz52Ui9wVFOwNZ12vzMtQo+k7mvRjqqLDEZA
+         AC/fLiwxYoltMpv/g3Mb13gxr/TSOZ6kKEnCJh/a6ab6WbGpZeinaZHuzylNLWFGQ1yn
+         k+mIHTx/7jpRtuYf4dt55JmlpOKMh2mG5v2v/o27kIemNiCa2XP1Tg///XBTzeHcS1ue
+         6f4m4b//lvkahdb9RDZuC3MUtpwSR8G29pD9ypNyMZc237AdwYJeQdUrn31eC7af+3XN
+         eAKKaVD37Z9qtflGFSFA/pFPVODT2ze4EQjWcsxOaRvsHc1p6g7dUtZWoPabcV/QX6wM
+         2Vww==
+X-Gm-Message-State: ABy/qLY98/OSWlMbnIGUGsmMuVUpsEiamOfSpvxOUFy08CoZLyvVgPmG
+        qzJIAqIj4dU/KvAjS2AHJtfKZe1GgSV/Gw==
+X-Google-Smtp-Source: APBJJlFBNAQ4nTEEROlscxAMFHxffimTCXNSjblZZoYT2wX9TgjL8pV7vT6yXRoYce4lKt7cw6slHJX3L0xABg==
 X-Received: from yjq3.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:272f])
- (user=jiaqiyan job=sendgmr) by 2002:a17:902:8bcb:b0:1ab:18eb:17c8 with SMTP
- id r11-20020a1709028bcb00b001ab18eb17c8mr720plo.2.1689207518956; Wed, 12 Jul
- 2023 17:18:38 -0700 (PDT)
-Date:   Thu, 13 Jul 2023 00:18:30 +0000
+ (user=jiaqiyan job=sendgmr) by 2002:a17:902:e54e:b0:1b5:1fe8:a91 with SMTP id
+ n14-20020a170902e54e00b001b51fe80a91mr611plf.3.1689207520379; Wed, 12 Jul
+ 2023 17:18:40 -0700 (PDT)
+Date:   Thu, 13 Jul 2023 00:18:31 +0000
 In-Reply-To: <20230713001833.3778937-1-jiaqiyan@google.com>
 Mime-Version: 1.0
 References: <20230713001833.3778937-1-jiaqiyan@google.com>
 X-Mailer: git-send-email 2.41.0.255.g8b1d071c50-goog
-Message-ID: <20230713001833.3778937-2-jiaqiyan@google.com>
-Subject: [PATCH v4 1/4] mm/hwpoison: delete all entries before traversal in __folio_free_raw_hwp
+Message-ID: <20230713001833.3778937-3-jiaqiyan@google.com>
+Subject: [PATCH v4 2/4] mm/hwpoison: check if a raw page in a hugetlb folio is
+ raw HWPOISON
 From:   Jiaqi Yan <jiaqiyan@google.com>
 To:     linmiaohe@huawei.com, mike.kravetz@oracle.com,
         naoya.horiguchi@nec.com
@@ -71,55 +72,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Traversal on llist (e.g. llist_for_each_safe) is only safe AFTER entries
-are deleted from the llist. Correct the way __folio_free_raw_hwp deletes
-and frees raw_hwp_page entries in raw_hwp_list: first llist_del_all, then
-kfree within llist_for_each_safe.
+Add the functionality, is_raw_hwpoison_page_in_hugepage, to tell if a
+raw page in a hugetlb folio is HWPOISON. This functionality relies on
+RawHwpUnreliable to be not set; otherwise hugepage's raw HWPOISON list
+becomes meaningless.
 
-As of today, concurrent adding, deleting, and traversal on raw_hwp_list
-from hugetlb.c and/or memory-failure.c are fine with each other. Note
-this is guaranteed partly by the lock-free nature of llist, and partly
-by holding hugetlb_lock and/or mf_mutex. For example, as llist_del_all
-is lock-free with itself, folio_clear_hugetlb_hwpoison()s from
-__update_and_free_hugetlb_folio and memory_failure won't need explicit
-locking when freeing the raw_hwp_list. New code that manipulates
-raw_hwp_list must be careful to ensure the concurrency correctness.
+is_raw_hwpoison_page_in_hugepage holds mf_mutex in order to synchronize
+with folio_set_hugetlb_hwpoison and folio_free_raw_hwp who iterate,
+insert, or delete entry in raw_hwp_list. llist itself doesn't ensure
+insertion and removal are synchornized with the llist_for_each_entry
+used by is_raw_hwpoison_page_in_hugepage (unless iterated entries are
+already deleted from the list). Caller can minimize the overhead of
+lock cycles by first checking HWPOISON flag of the folio.
 
-Acked-by: Mike Kravetz <mike.kravetz@oracle.com>
-Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Exports this functionality to be immediately used in the read operation
+for hugetlbfs.
+
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Reviewed-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
 Signed-off-by: Jiaqi Yan <jiaqiyan@google.com>
 ---
- mm/memory-failure.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ include/linux/hugetlb.h |  5 +++++
+ mm/memory-failure.c     | 40 ++++++++++++++++++++++++++++++++++++++--
+ 2 files changed, 43 insertions(+), 2 deletions(-)
 
+diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+index ca3c8e10f24a..0a96cfacb746 100644
+--- a/include/linux/hugetlb.h
++++ b/include/linux/hugetlb.h
+@@ -1007,6 +1007,11 @@ void hugetlb_register_node(struct node *node);
+ void hugetlb_unregister_node(struct node *node);
+ #endif
+ 
++/*
++ * Check if a given raw @page in a hugepage is HWPOISON.
++ */
++bool is_raw_hwpoison_page_in_hugepage(struct page *page);
++
+ #else	/* CONFIG_HUGETLB_PAGE */
+ struct hstate {};
+ 
 diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-index e245191e6b04..a08677dcf953 100644
+index a08677dcf953..d610d8f03f69 100644
 --- a/mm/memory-failure.c
 +++ b/mm/memory-failure.c
-@@ -1829,12 +1829,11 @@ static inline struct llist_head *raw_hwp_list_head(struct folio *folio)
+@@ -75,6 +75,8 @@ atomic_long_t num_poisoned_pages __read_mostly = ATOMIC_LONG_INIT(0);
  
- static unsigned long __folio_free_raw_hwp(struct folio *folio, bool move_flag)
+ static bool hw_memory_failure __read_mostly = false;
+ 
++static DEFINE_MUTEX(mf_mutex);
++
+ inline void num_poisoned_pages_inc(unsigned long pfn)
  {
--	struct llist_head *head;
--	struct llist_node *t, *tnode;
-+	struct llist_node *t, *tnode, *head;
- 	unsigned long count = 0;
+ 	atomic_long_inc(&num_poisoned_pages);
+@@ -1813,6 +1815,7 @@ EXPORT_SYMBOL_GPL(mf_dax_kill_procs);
+ #endif /* CONFIG_FS_DAX */
  
--	head = raw_hwp_list_head(folio);
--	llist_for_each_safe(tnode, t, head->first) {
-+	head = llist_del_all(raw_hwp_list_head(folio));
-+	llist_for_each_safe(tnode, t, head) {
- 		struct raw_hwp_page *p = container_of(tnode, struct raw_hwp_page, node);
- 
- 		if (move_flag)
-@@ -1844,7 +1843,6 @@ static unsigned long __folio_free_raw_hwp(struct folio *folio, bool move_flag)
- 		kfree(p);
- 		count++;
- 	}
--	llist_del_all(head);
- 	return count;
+ #ifdef CONFIG_HUGETLB_PAGE
++
+ /*
+  * Struct raw_hwp_page represents information about "raw error page",
+  * constructing singly linked list from ->_hugetlb_hwpoison field of folio.
+@@ -1827,6 +1830,41 @@ static inline struct llist_head *raw_hwp_list_head(struct folio *folio)
+ 	return (struct llist_head *)&folio->_hugetlb_hwpoison;
  }
  
++bool is_raw_hwpoison_page_in_hugepage(struct page *page)
++{
++	struct llist_head *raw_hwp_head;
++	struct raw_hwp_page *p;
++	struct folio *folio = page_folio(page);
++	bool ret = false;
++
++	if (!folio_test_hwpoison(folio))
++		return false;
++
++	if (!folio_test_hugetlb(folio))
++		return PageHWPoison(page);
++
++	/*
++	 * When RawHwpUnreliable is set, kernel lost track of which subpages
++	 * are HWPOISON. So return as if ALL subpages are HWPOISONed.
++	 */
++	if (folio_test_hugetlb_raw_hwp_unreliable(folio))
++		return true;
++
++	mutex_lock(&mf_mutex);
++
++	raw_hwp_head = raw_hwp_list_head(folio);
++	llist_for_each_entry(p, raw_hwp_head->first, node) {
++		if (page == p->page) {
++			ret = true;
++			break;
++		}
++	}
++
++	mutex_unlock(&mf_mutex);
++
++	return ret;
++}
++
+ static unsigned long __folio_free_raw_hwp(struct folio *folio, bool move_flag)
+ {
+ 	struct llist_node *t, *tnode, *head;
+@@ -2106,8 +2144,6 @@ static int memory_failure_dev_pagemap(unsigned long pfn, int flags,
+ 	return rc;
+ }
+ 
+-static DEFINE_MUTEX(mf_mutex);
+-
+ /**
+  * memory_failure - Handle memory failure of a page.
+  * @pfn: Page Number of the corrupted page
 -- 
 2.41.0.255.g8b1d071c50-goog
 
