@@ -2,133 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 746D1751CF3
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 11:14:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6CCD751CF7
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 11:15:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233588AbjGMJOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 05:14:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43490 "EHLO
+        id S233918AbjGMJPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 05:15:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232184AbjGMJOd (ORCPT
+        with ESMTP id S230036AbjGMJPM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 05:14:33 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B61ECF
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 02:14:32 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qJsOh-00064e-Uu; Thu, 13 Jul 2023 11:14:03 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qJsOd-00E5Je-3M; Thu, 13 Jul 2023 11:13:59 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qJsOc-004WHz-Ed; Thu, 13 Jul 2023 11:13:58 +0200
-Date:   Thu, 13 Jul 2023 11:13:58 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Yangtao Li <frank.li@vivo.com>
-Cc:     Andrew Jeffery <andrew@aj.id.au>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Joel Stanley <joel@jms.id.au>, linux-mmc@vger.kernel.org,
-        linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 34/58] mmc: sdhci-of-aspeed: Convert to platform remove
- callback returning void
-Message-ID: <20230713091358.p4r42rnhzje4avdj@pengutronix.de>
-References: <20230713080807.69999-1-frank.li@vivo.com>
- <20230713080807.69999-34-frank.li@vivo.com>
+        Thu, 13 Jul 2023 05:15:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0D6DB4
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 02:14:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689239670;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KAprlvR1Ix2PbgQmaBalxSCG9P2sXZzbouDbbLDyB+A=;
+        b=R0PBHlv0+dXPUdBcmn/Wz3aE3jsHeQ/914qE8V2rUGlaMOeBYEaFZ1Fp1gCkBbd8I7Itoe
+        cG1M+2eiOtj3doRGme8pDpWFhJ/GElPVy3AdAg9lTVEY7O6lgT35TFkRxnxIr9zCYz1YwM
+        gA9a0aVt00JSVFXirjy7nI/22QsOZoQ=
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
+ [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-583-9Esh9TjQPhCz1AnW1NH2fQ-1; Thu, 13 Jul 2023 05:14:29 -0400
+X-MC-Unique: 9Esh9TjQPhCz1AnW1NH2fQ-1
+Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2b6fdb8d0acso1266291fa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 02:14:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689239667; x=1689844467;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KAprlvR1Ix2PbgQmaBalxSCG9P2sXZzbouDbbLDyB+A=;
+        b=iz+VE/OpESgwSPzOSupbTWjCgKNAYykZ8hlZT5seAPNvhSLaiiF2VwiJl4BvzrJ2lV
+         X0fkTluwtpzFup27g2/lQftssCEF1v2C0mJEco28LTV3loesLLnfAvDMV30GVWPKv14K
+         uT4E9EzavBLVWJbXNWtwiOMpgdDqIHvCg2qKp5cVb5W1YIOs6c5PxATUXCAbuc9S+OR1
+         EsTc7mKUDLUl7cxTzIPO1y5okHtfpm+FvEV6Kt2yXVpCaXJt34+c+hWdG4cPiLKxZr/F
+         NrMYtZeUB7Wh7ffjAu8hiaCQWTLDmYef1V0Ku+AF7ndTPPsYtHZlG5vKr5VLOat/ApCE
+         zTVA==
+X-Gm-Message-State: ABy/qLbrZDon3AM43jYPVSp1Dv8h6ylf+mP8ATgfMYlU29A7M70P3zMG
+        fo4qTiRSSE7CVkUuV4mc1JSBPFUXcg4dJfE6QuJi9TUttihaDODc9IVZ/Ktq+E8/UvKC5iNpMHz
+        jAcTGUgOFtgivn2GRfgjlwkk/JtS44B5RZubRapd5
+X-Received: by 2002:a2e:a790:0:b0:2b6:99a7:2fb4 with SMTP id c16-20020a2ea790000000b002b699a72fb4mr1037274ljf.0.1689239667744;
+        Thu, 13 Jul 2023 02:14:27 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlEkshQIMfUIvgmhESYeAU1+QrImVvQD8hS/q4nZ4jzkB6vlgYRDkE2AQxSAa5zT+wKB/ukH3fmIoOvzD5m3kis=
+X-Received: by 2002:a2e:a790:0:b0:2b6:99a7:2fb4 with SMTP id
+ c16-20020a2ea790000000b002b699a72fb4mr1037259ljf.0.1689239667458; Thu, 13 Jul
+ 2023 02:14:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="kadj4nzld535btjr"
-Content-Disposition: inline
-In-Reply-To: <20230713080807.69999-34-frank.li@vivo.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <20230710070505.53916-1-xujianghui@cdjrlc.com> <1ddf673283e93e83d912066f2241b976@208suo.com>
+ <ZKvK4NXzkKZTE35E@debian.me> <CACO55tuG+4=4MTGq=FRuuP8dJaAHwtMCy3e9H8v5d8dVGsnkJw@mail.gmail.com>
+In-Reply-To: <CACO55tuG+4=4MTGq=FRuuP8dJaAHwtMCy3e9H8v5d8dVGsnkJw@mail.gmail.com>
+From:   Karol Herbst <kherbst@redhat.com>
+Date:   Thu, 13 Jul 2023 11:14:16 +0200
+Message-ID: <CACO55tubrPUcdcsfavOqNt6_oqibNceVLGmpjS3Vtz13RqELGw@mail.gmail.com>
+Subject: Re: [PATCH] drm/nouveau/iccsense:
+To:     Bagas Sanjaya <bagasdotme@gmail.com>
+Cc:     sunran001@208suo.com, airlied@gmail.com, daniel@ffwll.ch,
+        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 13, 2023 at 11:13=E2=80=AFAM Karol Herbst <kherbst@redhat.com> =
+wrote:
+>
+> On Mon, Jul 10, 2023 at 11:10=E2=80=AFAM Bagas Sanjaya <bagasdotme@gmail.=
+com> wrote:
+> >
+> > On Mon, Jul 10, 2023 at 03:06:47PM +0800, sunran001@208suo.com wrote:
+> > > Fixed error: 'do not use assignment in if condition'
+> > >
+> > > This patch fixes error: 'do not use assignment in if condition'
+> > > in drm/nouveau/iccsense
+> >
+> > I guess this is checkpatch fix, right?
+> >
+> > >
+> > > Signed-off-by: Ran Sun <sunran001@208suo.com>
+> > > ---
+> > >  drivers/gpu/drm/nouveau/nvkm/subdev/iccsense/base.c | 3 ++-
+> > >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/iccsense/base.c
+> > > b/drivers/gpu/drm/nouveau/nvkm/subdev/iccsense/base.c
+> > > index 8f0ccd3664eb..2428f3d6e477 100644
+> > > --- a/drivers/gpu/drm/nouveau/nvkm/subdev/iccsense/base.c
+> > > +++ b/drivers/gpu/drm/nouveau/nvkm/subdev/iccsense/base.c
+> > > @@ -322,7 +322,8 @@ int
+> > >  nvkm_iccsense_new_(struct nvkm_device *device, enum nvkm_subdev_type=
+ type,
+> > > int inst,
+> > >             struct nvkm_iccsense **iccsense)
+> > >  {
+> > > -    if (!(*iccsense =3D kzalloc(sizeof(**iccsense), GFP_KERNEL)))
+> > > +    *iccsense =3D kzalloc(sizeof(**iccsense), GFP_KERNEL);
+> > > +    if (!*iccsense)
+> > >          return -ENOMEM;
+> > >      INIT_LIST_HEAD(&(*iccsense)->sensors);
+> > >      INIT_LIST_HEAD(&(*iccsense)->rails);
+> >
+> > Your patch is corrupted (tabs converted to spaces) because you're using
+> > Roundcube. Please use git-send-mail(1) instead.
+> >
+>
+> oh right, I didn't notice with the patches I reviewed already here.
+> Yeah, none of them apply, please use git to send those patches.
+>
 
---kadj4nzld535btjr
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+also please send them all together in a single series the next time.
 
-On Thu, Jul 13, 2023 at 04:07:43PM +0800, Yangtao Li wrote:
-> The .remove() callback for a platform driver returns an int which makes
-> many driver authors wrongly assume it's possible to do error handling by
-> returning an error code. However the value returned is (mostly) ignored
-> and this typically results in resource leaks. To improve here there is a
-> quest to make the remove callback return void. In the first step of this
-> quest all drivers are converted to .remove_new() which already returns
-> void.
->=20
-> Trivially convert this driver from always returning zero in the remove
-> callback to the void returning variant.
->=20
-> Cc: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-> Signed-off-by: Yangtao Li <frank.li@vivo.com>
-> ---
->  drivers/mmc/host/sdhci-of-aspeed.c | 15 +++++----------
->  1 file changed, 5 insertions(+), 10 deletions(-)
->=20
-> diff --git a/drivers/mmc/host/sdhci-of-aspeed.c b/drivers/mmc/host/sdhci-=
-of-aspeed.c
-> index 25b4073f698b..42d54532cabe 100644
-> --- a/drivers/mmc/host/sdhci-of-aspeed.c
-> +++ b/drivers/mmc/host/sdhci-of-aspeed.c
-> @@ -450,22 +450,19 @@ static int aspeed_sdhci_probe(struct platform_devic=
-e *pdev)
->  	return ret;
->  }
-> =20
-> -static int aspeed_sdhci_remove(struct platform_device *pdev)
-> +static void aspeed_sdhci_remove(struct platform_device *pdev)
->  {
->  	struct sdhci_pltfm_host *pltfm_host;
->  	struct sdhci_host *host;
-> -	int dead =3D 0;
-> =20
->  	host =3D platform_get_drvdata(pdev);
->  	pltfm_host =3D sdhci_priv(host);
-> =20
-> -	sdhci_remove_host(host, dead);
-> +	sdhci_remove_host(host, 0);
+> > Thanks.
+> >
+> > --
+> > An old man doll... just what I always wanted! - Clara
 
-Please mention additional cleanups in the commit log (or split them into
-separate patches).
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---kadj4nzld535btjr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmSvwFUACgkQj4D7WH0S
-/k6wiggAt93FG44I5BusUjcLCaJIc68VoaotrR0JLJCtFzMpQRD3O6i07AtzGcj0
-GTZ7/O9cLM8BXkhMCFCB2qtEF367tZSFsu7M5JfXZLxBQq705O0CLXl7XxM+O/co
-6la8+3RcyhF7DmifGiz41BBJNq+so3v/LlBbLd5BUuBFV4lWwzq2tbNZTXEzFttF
-sE+Tx0t9kkozlelYHVp+NXIp0XDGTpjgt4ROx3rGWJ/dF44n0C7YPpVmLZVM2qxe
-8tEPNxoij66WrTI+APD83psJ71CNc2J3cdDl0BuqmpL49GY1OJGxenufxVmOEjGW
-bCOH1R0Rqn1aiBByQQQ5tD+PfrRNVg==
-=b7ZI
------END PGP SIGNATURE-----
-
---kadj4nzld535btjr--
