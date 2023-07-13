@@ -2,75 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2DB1752509
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 16:19:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D44C1752510
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 16:23:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231126AbjGMOTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 10:19:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35800 "EHLO
+        id S229601AbjGMOX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 10:23:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230267AbjGMOS2 (ORCPT
+        with ESMTP id S229472AbjGMOXY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 10:18:28 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A920D26AF
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 07:18:26 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-4fb77f21c63so1390261e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 07:18:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689257905; x=1691849905;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=b2FGnkTFhckKy1B44O7jpGYAwsWcXuAkok3ADC0wZTc=;
-        b=X9wOIS7sK7yvNtsVAiKkpFNNk91CbLAr4zI+HQyk3zRR1NPaiQCXoby+zXUMadvHK8
-         eX/kBeKhdi62T144tgbpLA+i4vU3JD1rER4gDSvMYAVjXOKlb6KcZ2ALQrBG1rdr3xHK
-         k4l1Mjx8G1F/4Zimf5K0/Y/NND9tQtLfwV4oyU0JZygLjFASGWARJG2l+NLmRjNOF5cF
-         iv4ZkELNEcHy3DO6s2+vG64KL7p7IznRyOL+8maZqCa2LRwZZ47Zb9h7dxjnwt+CG0UM
-         2rijsnRKyxFR9dml1ng5KX58W/MYvqPWXLjtfz2HUFuB/EU5xNVY0Ce7OvcGlyz54Hpc
-         mAmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689257905; x=1691849905;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=b2FGnkTFhckKy1B44O7jpGYAwsWcXuAkok3ADC0wZTc=;
-        b=TNRWWk4Ti8AOW0oQ/uagkZmiy1DcDQCuELgzqV5TDykZRbXDgsS8wVWJFI54qP0wK3
-         2rkIqOF0vpcVclCuZZqA17oumijkzw8lMvzp3Guis9IqeXb80ymj79LjOAxIczFEZhAq
-         v4TuuFfatZ9/a9RvISAXboURY8W1k3ZB3M3dfv9HiqPUoOpF9PNcP1aLc0tzLt4CHQrM
-         7wwZ6szLOFwKa9eXp1xXFtEelS4Wxptf/izMYB4d/fl7l7OSdkn0jboTLeIN5v/BQzxt
-         WKkR8tXlexCBPSA1GsFYX/skWAOxeAJfDRy+6e/Z0EPvpk+MA4DOPBKOc9HOgE+ez+Ap
-         QuVA==
-X-Gm-Message-State: ABy/qLavGXmc7onznSAyHygrAg6zqAymgci5KM4D4P3svsjNsyR2HZgZ
-        97EPm/jLpSRwJzZDNH69lt9YbA==
-X-Google-Smtp-Source: APBJJlEe/LcOSdXGIs29m2hZJ6aDLIXECWIhX2RS15qAHOIH0lx4KMJaPzvxHM3/7G6hBrDa3Z7jsQ==
-X-Received: by 2002:ac2:43c4:0:b0:4f8:5f32:b1da with SMTP id u4-20020ac243c4000000b004f85f32b1damr1233186lfl.24.1689257905043;
-        Thu, 13 Jul 2023 07:18:25 -0700 (PDT)
-Received: from uffe-tuxpro14.. (h-94-254-63-18.NA.cust.bahnhof.se. [94.254.63.18])
-        by smtp.gmail.com with ESMTPSA id w28-20020ac2599c000000b004fb759964a9sm1132426lfn.168.2023.07.13.07.18.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Jul 2023 07:18:24 -0700 (PDT)
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-To:     Sudeep Holla <sudeep.holla@arm.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     Nikunj Kela <nkela@quicinc.com>,
-        Prasad Sodagudi <psodagud@quicinc.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 11/11] cpufreq: scmi: Drop redundant ifdef in scmi_cpufreq_probe()
-Date:   Thu, 13 Jul 2023 16:17:38 +0200
-Message-Id: <20230713141738.23970-12-ulf.hansson@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230713141738.23970-1-ulf.hansson@linaro.org>
-References: <20230713141738.23970-1-ulf.hansson@linaro.org>
+        Thu, 13 Jul 2023 10:23:24 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E18526AF;
+        Thu, 13 Jul 2023 07:23:23 -0700 (PDT)
+Received: from dggpeml500012.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4R1xd94V56zVjbZ;
+        Thu, 13 Jul 2023 22:22:05 +0800 (CST)
+Received: from [10.67.110.218] (10.67.110.218) by
+ dggpeml500012.china.huawei.com (7.185.36.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Thu, 13 Jul 2023 22:23:20 +0800
+Message-ID: <bae57723-50f4-a497-3691-33c4f1234896@huawei.com>
+Date:   Thu, 13 Jul 2023 22:23:20 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Subject: Re: [PATCH] traing: Fix memory leak of iter->temp when reading
+ trace_pipe
+Content-Language: en-US
+To:     <rostedt@goodmis.org>, <mhiramat@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-trace-kernel@vger.kernel.org>
+References: <20230713141435.1133021-1-zhengyejian1@huawei.com>
+From:   Zheng Yejian <zhengyejian1@huawei.com>
+In-Reply-To: <20230713141435.1133021-1-zhengyejian1@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.110.218]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500012.china.huawei.com (7.185.36.15)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,37 +52,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We have stubs for devm_of_clk_add_hw_provider(), so there should be no need
-to protect this with the '#ifdef CONFIG_COMMON_CLK'. Let's drop it to clean
-up the code a bit.
+On 2023/7/13 22:14, Zheng Yejian wrote:
+> kmemleak reports:
+>    unreferenced object 0xffff88814d14e200 (size 256):
+>      comm "cat", pid 336, jiffies 4294871818 (age 779.490s)
+>      hex dump (first 32 bytes):
+>        04 00 01 03 00 00 00 00 08 00 00 00 00 00 00 00  ................
+>        0c d8 c8 9b ff ff ff ff 04 5a ca 9b ff ff ff ff  .........Z......
+>      backtrace:
+>        [<ffffffff9bdff18f>] __kmalloc+0x4f/0x140
+>        [<ffffffff9bc9238b>] trace_find_next_entry+0xbb/0x1d0
+>        [<ffffffff9bc9caef>] trace_print_lat_context+0xaf/0x4e0
+>        [<ffffffff9bc94490>] print_trace_line+0x3e0/0x950
+>        [<ffffffff9bc95499>] tracing_read_pipe+0x2d9/0x5a0
+>        [<ffffffff9bf03a43>] vfs_read+0x143/0x520
+>        [<ffffffff9bf04c2d>] ksys_read+0xbd/0x160
+>        [<ffffffff9d0f0edf>] do_syscall_64+0x3f/0x90
+>        [<ffffffff9d2000aa>] entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> 
+> when reading file 'trace_pipe', 'iter->temp' is allocated or relocated
+> in trace_find_next_entry() but not freed before 'trace_pipe' is closed.
+> 
+> To fix it, free 'iter->temp' in tracing_release_pipe().
+> 
 
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
----
+Sorry, forget the Fixes tag:(
 
-Changes in v2:
-	- New patch.
+Is following Fixes right?
+Fixes: ff895103a84a ("tracing: Save off entry when peeking at next entry")
 
----
-
- drivers/cpufreq/scmi-cpufreq.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/drivers/cpufreq/scmi-cpufreq.c b/drivers/cpufreq/scmi-cpufreq.c
-index b42f43d9bd89..ab967e520355 100644
---- a/drivers/cpufreq/scmi-cpufreq.c
-+++ b/drivers/cpufreq/scmi-cpufreq.c
-@@ -326,11 +326,9 @@ static int scmi_cpufreq_probe(struct scmi_device *sdev)
- 	if (IS_ERR(perf_ops))
- 		return PTR_ERR(perf_ops);
- 
--#ifdef CONFIG_COMMON_CLK
- 	/* dummy clock provider as needed by OPP if clocks property is used */
- 	if (of_property_present(dev->of_node, "#clock-cells"))
- 		devm_of_clk_add_hw_provider(dev, of_clk_hw_simple_get, NULL);
--#endif
- 
- 	ret = cpufreq_register_driver(&scmi_cpufreq_driver);
- 	if (ret) {
--- 
-2.34.1
+> Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
+> ---
+>   kernel/trace/trace.c | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+> index 4529e264cb86..94cfaa884578 100644
+> --- a/kernel/trace/trace.c
+> +++ b/kernel/trace/trace.c
+> @@ -6764,6 +6764,7 @@ static int tracing_release_pipe(struct inode *inode, struct file *file)
+>   
+>   	free_cpumask_var(iter->started);
+>   	kfree(iter->fmt);
+> +	kfree(iter->temp);
+>   	mutex_destroy(&iter->mutex);
+>   	kfree(iter);
+>   
 
