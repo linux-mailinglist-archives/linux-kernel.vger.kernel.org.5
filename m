@@ -2,94 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78BCA7516AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 05:19:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C01D87516B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 05:21:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233495AbjGMDTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 23:19:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41348 "EHLO
+        id S233562AbjGMDVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 23:21:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231592AbjGMDTb (ORCPT
+        with ESMTP id S233421AbjGMDVJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 23:19:31 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF3D01BDC
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 20:19:30 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R1fwb4djtzBJDj9
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 11:19:27 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689218367; x=1691810368; bh=vy2hpwLqIbN4V8wU9/R2s/5gk++
-        9S9+eXX9ZvB2DiBg=; b=YS4/1JguloWnSI8OkPM3qQfVn8zPppzD/yeTa6OjUHv
-        2+lRAGhqbZUsFGq0Ac4rD6FEtkIM2iEHMt5BTXG7tybt9nNDdmYfyFjpumIZj/GL
-        bkRGb07OUUKg43X5BlTUyYqNiNS/PTxP5aC3KJfxVo5yCwnLrK/5mgAUhzRsnSiK
-        7huQyvSbZqfg217JRVCo8aIZ5Bs+Q9dCVnJflrEuDlgYYKJbLwUIhwTTTT2wgVJ4
-        zaPgbiLZkjOxQGIeL9W8UuJVLnkRIAIxvRG5x1qLMbwvt2tT6CREkYp1nmmh0/UB
-        r+uDOq3apugkN9AG35Az2G1Hgd/H3MCJwjyXlYllRag==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id nwhqA0GPuJG3 for <linux-kernel@vger.kernel.org>;
-        Thu, 13 Jul 2023 11:19:27 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R1fwb2pylzBHXgq;
-        Thu, 13 Jul 2023 11:19:27 +0800 (CST)
+        Wed, 12 Jul 2023 23:21:09 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6059810FC;
+        Wed, 12 Jul 2023 20:21:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=605YgMfajbHUM8zyPverYiNrP/gL/svBXPBHjEAyzKA=; b=BDiydvVJ4ED4g+lWwgib5QO/7H
+        QE/h5ih5ZbmG0yjhU0PPEXbHnulFBdGPWy/GGmjw9G1rAjAOYZW8kV7/ryaNP+H/Yw0aS5YW+VuBG
+        Dx6iikGUC33E/7DjrAwWYyYoqaCOmsyMg/daZ+KIdMkj4MLNoMNSVrGQVg8bctIhNbZDL2dty1ksW
+        ZyBtcyRrVxk8cumG5VATCfRokvtNqFSAjIA+/V71ACX9LOL1VqsiKkv7swjvjPtkFB85ByoY+KBRi
+        L6YypChaDTu2RDTBhQ9x84gcfgbMD5epaOhIFH+BSimfhR4jiBl3jBkJzkbF1SHW+8OlKN2gymFKq
+        I9EWrwxw==;
+Received: from [2601:1c2:980:9ec0::2764]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qJmt9-001oD3-2n;
+        Thu, 13 Jul 2023 03:21:07 +0000
+Message-ID: <670a325f-f066-d146-f738-e5db1ca029ee@infradead.org>
+Date:   Wed, 12 Jul 2023 20:21:05 -0700
 MIME-Version: 1.0
-Date:   Thu, 13 Jul 2023 11:19:27 +0800
-From:   liubin001@208suo.com
-To:     airlied@gmail.com, daniel@ffwll.ch
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/vmwgfx: "foo* const bar" should be "foo * const bar"\
- that ope- n brace { should be on the previous line
-In-Reply-To: <tencent_4F166AB6DC9C757B0454E3F4875027411F08@qq.com>
-References: <tencent_4F166AB6DC9C757B0454E3F4875027411F08@qq.com>
-User-Agent: Roundcube Webmail
-Message-ID: <2caf90d074a9a685cfcc0ebdfedf2caa@208suo.com>
-X-Sender: liubin001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH 12/20] bcache: move closures to lib/
+Content-Language: en-US
+To:     Kent Overstreet <kent.overstreet@linux.dev>,
+        linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
+        Coly Li <colyli@suse.de>
+References: <20230712211115.2174650-1-kent.overstreet@linux.dev>
+ <20230712211115.2174650-13-kent.overstreet@linux.dev>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20230712211115.2174650-13-kent.overstreet@linux.dev>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(1)The standard format for declaring a pointer is to add a space bet-
-ween the type name and the * symbol, as well as between the * symbol and 
-the variable name.
-(2) that open brace { should be on the previous line
-Signed-off-by: 	Bin Liu <liubin001@208suo.com>
----
-  drivers/gpu/drm/vmwgfx/vmwgfx_msg.c | 2 +-
-  1 file changed, 1 insertion(+), 1 deletion(-)
+Hi,
 
-diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_msg.c 
-b/drivers/gpu/drm/vmwgfx/vmwgfx_msg.c
-index 96504a320c2a..b56936f95d31 100644
---- a/drivers/gpu/drm/vmwgfx/vmwgfx_msg.c
-+++ b/drivers/gpu/drm/vmwgfx/vmwgfx_msg.c
-@@ -87,7 +87,7 @@ struct rpc_channel {
+LGTM.
+I have a couple of small nits below...
 
-  #if IS_ENABLED(CONFIG_DRM_VMWGFX_MKSSTATS)
-  /* Kernel mksGuestStats counter names and desciptions; same order as 
-enum mksstat_kern_stats_t */
--static const char* const mksstat_kern_name_desc[MKSSTAT_KERN_COUNT][2] 
-=
-{
-         { "vmw_execbuf_ioctl", "vmw_execbuf_ioctl" },
-         { "vmw_cotable_resize", "vmw_cotable_resize" },
-};
+On 7/12/23 14:11, Kent Overstreet wrote:
+> From: Kent Overstreet <kent.overstreet@gmail.com>
+> 
+> Prep work for bcachefs - being a fork of bcache it also uses closures
+> 
+> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> Acked-by: Coly Li <colyli@suse.de>
+> ---
+>  drivers/md/bcache/Kconfig                     | 10 +-----
+>  drivers/md/bcache/Makefile                    |  4 +--
+>  drivers/md/bcache/bcache.h                    |  2 +-
+>  drivers/md/bcache/super.c                     |  1 -
+>  drivers/md/bcache/util.h                      |  3 +-
+>  .../md/bcache => include/linux}/closure.h     | 17 +++++----
+>  lib/Kconfig                                   |  3 ++
+>  lib/Kconfig.debug                             |  9 +++++
+>  lib/Makefile                                  |  2 ++
+>  {drivers/md/bcache => lib}/closure.c          | 35 +++++++++----------
+>  10 files changed, 43 insertions(+), 43 deletions(-)
+>  rename {drivers/md/bcache => include/linux}/closure.h (97%)
+>  rename {drivers/md/bcache => lib}/closure.c (88%)
+> 
 
-+static const char * const mksstat_kern_name_desc[MKSSTAT_KERN_COUNT][2] 
-= {
-      { "vmw_execbuf_ioctl", "vmw_execbuf_ioctl" },
-      { "vmw_cotable_resize", "vmw_cotable_resize" },
-  };
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index ce51d4dc68..3ee25d5dae 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -1637,6 +1637,15 @@ config DEBUG_NOTIFIERS
+>  	  This is a relatively cheap check but if you care about maximum
+>  	  performance, say N.
+>  
+> +config DEBUG_CLOSURES
+> +	bool "Debug closures (bcache async widgits)"
+
+	                                   widgets
+
+> +	depends on CLOSURES
+> +	select DEBUG_FS
+> +	help
+> +	Keeps all active closures in a linked list and provides a debugfs
+> +	interface to list them, which makes it possible to see asynchronous
+> +	operations that get stuck.
+
+Indent those 3 help text lines with 2 additional spaces, please,
+as documented and as is done in (most of) the rest of this file.
+
+With those fixed:
+
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+
+thanks.
+-- 
+~Randy
