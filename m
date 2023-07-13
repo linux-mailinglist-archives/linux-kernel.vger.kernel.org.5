@@ -2,160 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5327751C16
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 10:47:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D548F751C18
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 10:48:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234651AbjGMIrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 04:47:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50908 "EHLO
+        id S233315AbjGMIsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 04:48:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233315AbjGMIrW (ORCPT
+        with ESMTP id S234788AbjGMIsP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 04:47:22 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 594D010E2
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 01:47:17 -0700 (PDT)
-Received: from ptz.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::77] helo=[127.0.0.1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1qJryd-0001kt-QA; Thu, 13 Jul 2023 10:47:08 +0200
-Message-ID: <d72b2806-c4b0-50ef-98ea-7f06c47b1c6a@pengutronix.de>
-Date:   Thu, 13 Jul 2023 10:47:02 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.2
-Subject: Re: [PATCH 1/2] dt-bindings: net: fsl,fec: Add TX clock controls
-Content-Language: en-US
-To:     =?UTF-8?B?VmVzYSBKw6TDpHNrZWzDpGluZW4=?= 
-        <vesa.jaaskelainen@vaisala.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        Eric Dumazet <edumazet@google.com>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Jakub Kicinski <kuba@kernel.org>, Wei Fang <wei.fang@nxp.com>,
-        netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-arm-kernel@lists.infradead.org
-References: <20230711150808.18714-1-vesa.jaaskelainen@vaisala.com>
- <20230711150808.18714-2-vesa.jaaskelainen@vaisala.com>
- <006f9599-6aa4-52ac-068a-831893ec6bf8@linaro.org>
- <49bf4392-299f-cb4b-ef4b-f920faa65866@vaisala.com>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-In-Reply-To: <49bf4392-299f-cb4b-ef4b-f920faa65866@vaisala.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:1d::77
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Thu, 13 Jul 2023 04:48:15 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D839D1BF6;
+        Thu, 13 Jul 2023 01:47:46 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id B9A351F855;
+        Thu, 13 Jul 2023 08:47:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1689238063; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yLtfPAZsvpeWczNM+t4zcESEp5Dk4o94Mp02aHG++MY=;
+        b=AOaOkSEa/3bsAS0pOGj2OvVlAls79RqKFxDN3P8nEtp1oN7C11Vk5vwXmWhhjDp2GXOW4d
+        pVtarbjWl9UyAQimXe+IplLDZ55aq03uvW11nV/GUQEkN6TH+I+48qunFLSb2sdwkIZv83
+        W+MlH2bNb20pQlZay3sPlpjTjLMZt6s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1689238063;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yLtfPAZsvpeWczNM+t4zcESEp5Dk4o94Mp02aHG++MY=;
+        b=D8oHXgP3NXxjChhLS6TUZQ/1kY6OYIOP2fuUEGgEJzKgRlRgbgdt+En8XmjkvBYpbVe2kh
+        UcQOay5an3KIaBAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8174613489;
+        Thu, 13 Jul 2023 08:47:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id fjDEHi+6r2SHOAAAMHmgww
+        (envelope-from <tiwai@suse.de>); Thu, 13 Jul 2023 08:47:43 +0000
+Date:   Thu, 13 Jul 2023 10:47:43 +0200
+Message-ID: <87ilaofb9s.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     =?ISO-8859-1?Q?=22N=EDcolas_F=2E_R=2E_A=2E=22?= Prado 
+        <nfraprado@collabora.com>, Jaroslav Kysela <perex@perex.cz>,
+        kernel@collabora.com,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Shuah Khan <shuah@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH 2/2] kselftest/alsa: pcm-test: Decrease stream duration from 4 to 2 seconds
+In-Reply-To: <87ef1544-c1aa-4cce-82f2-60c6f1c2b1c8@sirena.org.uk>
+References: <20230620220839.2215057-3-nfraprado@collabora.com>
+        <33bea0d3-b8dd-4936-812e-392166df4437@sirena.org.uk>
+        <443f697b-fecf-6e8e-0b76-65257aff7da8@perex.cz>
+        <9069ad0c-d166-4620-a3de-a36ab233cab0@sirena.org.uk>
+        <5c2d5213-5299-44f1-9611-26002c8a5d3a@notapiano>
+        <87352krcz5.wl-tiwai@suse.de>
+        <f5cab2c2-1638-4d19-aff3-d46ed34b857e@sirena.org.uk>
+        <87wmzwptu0.wl-tiwai@suse.de>
+        <06b8bfde-e4f1-48ea-aa3e-35d2fe5df046@sirena.org.uk>
+        <87wmz8i746.wl-tiwai@suse.de>
+        <87ef1544-c1aa-4cce-82f2-60c6f1c2b1c8@sirena.org.uk>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Vesa,
+On Thu, 13 Jul 2023 00:03:24 +0200,
+Mark Brown wrote:
+> 
+> On Mon, Jul 10, 2023 at 09:00:09AM +0200, Takashi Iwai wrote:
+> > Mark Brown wrote:
+> 
+> > > For KernelCI we've got coverage on both.  I can also run stuff on the
+> > > boards I have in my lab on demand of course, but there's more coverage
+> > > in KernelCI.
+> 
+> > OK, now I applied those two patches to for-next branch (i.e. for 6.6
+> > kernel).  Let's watch out.
+> 
+> I'm seeing failures on my i.MX6 boards, both the Q and DL have started
+> failing in the same way:
+> 
+> # default.time3.0.0.0.PLAYBACK - 44.1kHz stereo large periods
+> # default.time3.0.0.0.PLAYBACK hw_params.RW_INTERLEAVED.S16_LE.44100.2.16383.131064 sw_params.131064
+> not ok 10 default.time3.0.0.0.PLAYBACK
+> # time mismatch: expected 2000ms got 2229
+> 
+> reliably (the actual time drifts by a few ms).  The other boards I've
+> got coverage of seem fine, and I didn't check any broader CI yet.
 
-On 13.07.23 10:29, Vesa Jääskeläinen wrote:
-> Hi Krzysztof,
-> 
-> On 12.7.2023 23.36, Krzysztof Kozlowski wrote:
->> On 11/07/2023 17:08, Vesa Jääskeläinen wrote:
->>> With fsl,fec-tx-clock-output one can control if TX clock is routed outside
->>> of the chip.
->>>
->>> With fsl,fec-tx-clk-as-ref-clock one can select if external TX clock is as
->>> reference clock.
->>>
->>> Signed-off-by: Vesa Jääskeläinen <vesa.jaaskelainen@vaisala.com>
->>> ---
->>>   .../devicetree/bindings/net/fsl,fec.yaml          | 15 +++++++++++++++
->>>   1 file changed, 15 insertions(+)
->>>
->>> diff --git a/Documentation/devicetree/bindings/net/fsl,fec.yaml b/Documentation/devicetree/bindings/net/fsl,fec.yaml
->>> index b494e009326e..c09105878bc6 100644
->>> --- a/Documentation/devicetree/bindings/net/fsl,fec.yaml
->>> +++ b/Documentation/devicetree/bindings/net/fsl,fec.yaml
->>> @@ -166,6 +166,21 @@ properties:
->>>       description:
->>>         If present, indicates that the hardware supports waking up via magic packet.
->>>   +  fsl,fec-tx-clock-output:
->>> +    $ref: /schemas/types.yaml#/definitions/flag
->>> +    description:
->>> +      If present, ENETx_TX_CLK output driver is enabled.
->>> +      If not present, ENETx_TX_CLK output driver is disabled.
->> Here...
->>
->>> +
->>> +  fsl,fec-tx-clk-as-ref-clock:
->>> +    $ref: /schemas/types.yaml#/definitions/flag
->>> +    description:
->>> +      If present, gets ENETx TX reference clk from the ENETx_TX_CLK pin. In
->>> +      this use case, an external OSC provides the clock for both the external
->>> +      PHY and the internal controller.
->>> +      If not present, ENETx TX reference clock is driven by ref_enetpllx. This
->>> +      clock is also output to pins via the IOMUX.ENET_REF_CLKx function.
->> and here:
->> In general, Common Clock Framework and its bindings should be used for
->> handling clock providers and consumers. Why it cannot be used for these
->> two cases?
-> 
-> Did you have something specific in mind on how it could be modeled?
-> 
-> I tried to look at:
-> Documentation/devicetree/bindings/clock/
-> 
-> But didn't spot anything for this.
+Interesting.  With the current patch, we rather extended the margin in
+proportion; formerly 4 sec +/- 0.1s, now 2 sec +/- 0.1s.  And it
+exceeded out of sudden.
 
-This has been implemented for i.MX6Q/DL using CCF. Please follow suit
-for SoloX. See series at:
-https://lore.kernel.org/all/20230131084642.709385-1-o.rempel@pengutronix.de/
-
-Thanks,
-Ahmad
+I guess this rather caught a problem of the driver itself.
 
 
+thanks,
 
-> 
-> In net bindings:
-> Documentation/devicetree/bindings/net
-> 
-> We have some similarities:
-> 
-> - adi,phy-output-clock
-> - adi,phy-output-reference-clock
-> - nxp,rmii-refclk-in
-> - clock_in_out
-> - ti,clk-output-sel
-> - ti,sgmii-ref-clock-output-enable
-> 
-> In here clock output generator would be the i.MX not the PHY as what was in ADI's.
-> 
-> xMII variants are close but very specific for specific MII interface type.
-> 
-> clock_in_out seems a bit out of place.
-> 
-> Thanks,
-> Vesa Jääskeläinen
-> 
-> 
-> 
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
-
+Takashi
