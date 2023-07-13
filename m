@@ -2,169 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26668751D9B
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 11:43:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68C5C751B6D
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 10:24:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234512AbjGMJno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 05:43:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59126 "EHLO
+        id S234486AbjGMIYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 04:24:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234681AbjGMJnH (ORCPT
+        with ESMTP id S234408AbjGMIYV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 05:43:07 -0400
-X-Greylist: delayed 1466 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 13 Jul 2023 02:41:44 PDT
-Received: from mx0a-0014ca01.pphosted.com (mx0b-0014ca01.pphosted.com [208.86.201.193])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE90F2D43;
-        Thu, 13 Jul 2023 02:41:44 -0700 (PDT)
-Received: from pps.filterd (m0042333.ppops.net [127.0.0.1])
-        by mx0b-0014ca01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36D4Z12r016903;
-        Thu, 13 Jul 2023 01:14:41 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=proofpoint;
- bh=UyfXsStPg3cp6IuL0Tabo3tg2yOR47bjz2DMdutvSBw=;
- b=VOt6nMbJuGIDmZq/lOW5erecpSmZOj5xIJ1Os/43I0E5c2Fp+ajtQ2zkHDPNv1RyOEN8
- xnkHFBVifwVuEaPs0IcBjJxSLFnexeDGHadieyFhPqzgxGNUQhNAJz26YI3aIx/tqo74
- Eq44LIY9mNP46Ec7TfSfHYih4lgUOBDObO68Y65duDZHEcLr9sSWi8784HSszGxoUmRf
- wKLlgBslWUvkiLdnwTLl/xN46HlaHuiknB5xR2kc5m76zuXSnvJXTDb3c9Ya/86w1FCT
- K+572ssElLFr3OndLWi1UwwLe0ZL+EtEmGLYnUX+QtZwwnkPEEEO2gtb+0zX84GPggIS GA== 
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2105.outbound.protection.outlook.com [104.47.70.105])
-        by mx0b-0014ca01.pphosted.com (PPS) with ESMTPS id 3rt6c1sbah-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 13 Jul 2023 01:14:41 -0700
+        Thu, 13 Jul 2023 04:24:21 -0400
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2072d.outbound.protection.outlook.com [IPv6:2a01:111:f400:feae::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3AE53C1E
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 01:15:59 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ku8OtkgF8aJNdVAgiWB5QYWg/GR1Dfta/dxamz9TgEgh0MkqiDCDNLPiZ51gcpowp22eUWYI1HUqgp21KORO2e1xneSzdWtAg2DpDKt8u+Dnen5UIjgNP2JMCo2ixtfK/w+c2gwbZFVnOAmTFNc8DK2FantZcr0twSkXbPNorXN6R41Y3kTCJNdvY0VDp1RFpU6Z1VdOBvlysVoZ5FH23a9KJV6/dz5GQgM+2p0aXebkDZxj+L6e/FBMswhUwqU5MYAi+RfHnZaAzKyhrQfIBvqSP6wkPNj+GtplJG5v19un7n69KeTY7VEucfIbRS6wkTo8INfSMx2j8BJOVdAyQw==
+ b=YQolX8qBKebZShbIt7oZQXWr5DhwmOFIof6zcrhw7cZ42TuWOU/bVO/aRjA/t6fPutMUm0MDmunUqSARBpho6yuRGVoGa/JGLWroy8TU3C6rp8qzsQ3DUn0JkkfgB9601WkFD5MniNDW68n7Ss4PuvogL/+JHY6+El22H4YDZye3CHZ0Pb0mCjh62lErypac5+OynoKZSYh9aWf78/Ysn/nCKmHBoZ6uwB8SkLM3GzYkMbPKx9XKqrf4eNUU+X3LU173PRb9ola8fe6mI3goRappd3OpWU7b/lIFjofz8JcE0sEc494Vft7TzPFcCYJbBpyyUpvHSYPAYHl8Se0+BQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=UyfXsStPg3cp6IuL0Tabo3tg2yOR47bjz2DMdutvSBw=;
- b=IuQsFvHnFhDn6zhL17IGQ+9nRHWTG9M9xUPzUedcMB+jTEt+H5Uk89BQsKbdNNs1kwqkLZfUIMHGWzN/RGD9/dXyPudqhrYdLYJW+uPDRw6ttFocJEH8ed/yXlQPtp65dGm0r4EHd//SRXiLEP7iX/XnCkO4wGSg5L8xWCxGAS/VDIfIchx4AIDU+WAjFuUdWao3uj0y+QoS2puMD6AxoBdYAw1mrtqd1rtEwWQbBmWr6qqB6NB6Fokzl99MuiBwpWugo3T8eZH5LTuKXpOTdF+1UXvvVOfByMLva34j+NV+VJIN0N2Jk8WLKVGZZ6Bwf0lAiHEc+x3ySBaM9pa1aw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 64.207.220.244) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=cadence.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=cadence.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
- s=selector2;
+ bh=xoj4WiEE3DwP8/N3bZM0fkuXe1WoGm3w9LsKLj1MqlU=;
+ b=LnnOEdsLeL+Va8lF8axnc5UgBNvPReid3iwNpBPKhNhl8uwQ3tEAznpztgIcBbcoHcHa4W3z0xJHGCji9CQPt5yE/J+hEeOhihzIGIQcTo2+KjF13rVGTFJYKv5NMFZhdrDCL6cC6x6VJr+1URm84zdWQDZIqJnM36+rcZcKQjOwb5uJmmhxnDkc6OsDW/aNCU0cIF9wTeplG4OiEGOtCVgWj06jWMeh5C4R/HBwnY7jt4blK57H1LoEhN+jTNE7LQ9gZY34xXJ3Dt2c5jpO0/eftfKC5DhGrAuUcrsnyKj/SUderW2T9y9bf4xTNJp7kkeuopo+oduvX2Vh0nqZww==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UyfXsStPg3cp6IuL0Tabo3tg2yOR47bjz2DMdutvSBw=;
- b=ZGuIxXk3yT7GjrxtgZaR+cny4wHOjCmRKydFH0mCpKKhqy9FBKUXMHkRIuPx3LuNe8yniwG7G4lqHlGynOPV7dSg5ixfStq2FyOVHWiLXSsgJXlGgVra79AW6SEQav0xhRFCapPu8gTkn4fVJ4NzosrFq8ywVWpRGA8B5DNdv6w=
-Received: from DS7PR03CA0275.namprd03.prod.outlook.com (2603:10b6:5:3ad::10)
- by MN2PR07MB7135.namprd07.prod.outlook.com (2603:10b6:208:1a7::16) with
+ bh=xoj4WiEE3DwP8/N3bZM0fkuXe1WoGm3w9LsKLj1MqlU=;
+ b=q0KttmxNRCggk5F/Klx61ledPG1BCBbt2HEx1EXspfAXGYqTO34WN5YP+OsjkcZzuJBzfkw51hP7dZrP7GLW95qtVEpG+Rc1k75LziQ3XEAQn451sz4GXkvxLh+pXsTqo8e8jTVhD3N1McbQhU1xWxv3Pbs1zi2xL1AJ+uavQWJ0rOvqOkNZ0w3shBZxYeoMGLHCXVIkHPHH5k/RBLpKsCi+YNqqKZO72O+e3SKYtELz0uFo6PawMqrHVKrf0QhNHu3l6etnl42Ow7lakXHJkWYZfQTwfbmVGQLFbWaokooywdVNbKTKKhR/8OHEq1MlRoyomJFzvRSQ79VpYKbScg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from SEZPR06MB5269.apcprd06.prod.outlook.com (2603:1096:101:78::6)
+ by SEZPR06MB6349.apcprd06.prod.outlook.com (2603:1096:101:10e::10) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.24; Thu, 13 Jul
- 2023 08:14:39 +0000
-Received: from DM6NAM12FT044.eop-nam12.prod.protection.outlook.com
- (2603:10b6:5:3ad:cafe::43) by DS7PR03CA0275.outlook.office365.com
- (2603:10b6:5:3ad::10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.24 via Frontend
- Transport; Thu, 13 Jul 2023 08:14:39 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 64.207.220.244)
- smtp.mailfrom=cadence.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=cadence.com;
-Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
- 64.207.220.244 as permitted sender) receiver=protection.outlook.com;
- client-ip=64.207.220.244; helo=wcmailrelayl01.cadence.com; pr=C
-Received: from wcmailrelayl01.cadence.com (64.207.220.244) by
- DM6NAM12FT044.mail.protection.outlook.com (10.13.178.204) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6609.9 via Frontend Transport; Thu, 13 Jul 2023 08:14:37 +0000
-Received: from maileu5.global.cadence.com (eudvw-maileu5.cadence.com [10.160.110.202])
-        by wcmailrelayl01.cadence.com (8.14.7/8.14.4) with ESMTP id 36D8EY5m138529
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=OK);
-        Thu, 13 Jul 2023 01:14:35 -0700
-Received: from maileu5.global.cadence.com (10.160.110.202) by
- maileu5.global.cadence.com (10.160.110.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Thu, 13 Jul 2023 10:14:33 +0200
-Received: from eu-cn02.cadence.com (10.160.89.185) by
- maileu5.global.cadence.com (10.160.110.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24 via Frontend Transport; Thu, 13 Jul 2023 10:14:33 +0200
-Received: from eu-cn02.cadence.com (localhost.localdomain [127.0.0.1])
-        by eu-cn02.cadence.com (8.14.7/8.14.7) with ESMTP id 36D8EXhP326761;
-        Thu, 13 Jul 2023 04:14:33 -0400
-Received: (from pawell@localhost)
-        by eu-cn02.cadence.com (8.14.7/8.14.7/Submit) id 36D8EWiq326741;
-        Thu, 13 Jul 2023 04:14:32 -0400
-From:   Pawel Laszczak <pawell@cadence.com>
-To:     <peter.chen@kernel.org>
-CC:     <gregkh@linuxfoundation.org>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Pawel Laszczak <pawell@cadence.com>, <stable@vger.kernel.org>
-Subject: [PATCH] usb: cdnsp: Fixes issue with dequeuing not queued requests
-Date:   Thu, 13 Jul 2023 04:14:29 -0400
-Message-ID: <20230713081429.326660-1-pawell@cadence.com>
-X-Mailer: git-send-email 2.30.0
-MIME-Version: 1.0
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.20; Thu, 13 Jul
+ 2023 08:14:33 +0000
+Received: from SEZPR06MB5269.apcprd06.prod.outlook.com
+ ([fe80::fa0e:6c06:7474:285c]) by SEZPR06MB5269.apcprd06.prod.outlook.com
+ ([fe80::fa0e:6c06:7474:285c%5]) with mapi id 15.20.6565.028; Thu, 13 Jul 2023
+ 08:14:32 +0000
+Message-ID: <67103218-8f89-f4ac-81b7-0d5c54a59220@vivo.com>
+Date:   Thu, 13 Jul 2023 16:14:29 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.1
+Subject: Re: [PATCH 09/18] mtd: rawnand: davinci: Convert to
+ devm_platform_ioremap_resource()
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20230707040622.78174-1-frank.li@vivo.com>
+ <20230707040622.78174-9-frank.li@vivo.com> <20230712140953.30b5309c@xps-13>
+From:   Yangtao Li <frank.li@vivo.com>
+In-Reply-To: <20230712140953.30b5309c@xps-13>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-CrossPremisesHeadersFilteredBySendConnector: maileu5.global.cadence.com
-X-OrganizationHeadersPreserved: maileu5.global.cadence.com
-X-EOPAttributedMessage: 0
+X-ClientProxiedBy: SGXP274CA0013.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::25)
+ To SEZPR06MB5269.apcprd06.prod.outlook.com (2603:1096:101:78::6)
+MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6NAM12FT044:EE_|MN2PR07MB7135:EE_
-X-MS-Office365-Filtering-Correlation-Id: a88dae3f-8f90-4f74-c925-08db8379333f
+X-MS-TrafficTypeDiagnostic: SEZPR06MB5269:EE_|SEZPR06MB6349:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2e53f0a7-db94-476d-80e3-08db83793026
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: MtSyH8605DOjSWhczPYgE4jmMnTqCQzXgx/85PFsI2W1W/vdwvssd7bHu8TMP0JogwXiNf5ilwx4JYRS9GqKRnRIvjcfLA+iE4/x09ynU7HLLAWgKgGZEA78EblRlRybL2vas30Cf16Ug+QCgcuqDQ+xFZyEomGS7mK6B1Cl7RbgA81b73Me2XLT4v9xt56dvLGWjcEBRBpDMksJ+waOOx6yvi2qqO1KZ+jOk5DT7yW0WGEr43z/BpiOW+iHSNTceFXpKsFCVFIqtaocAVt6jnu7EBWQwg3g4zVczCAVC53/feo4Txe/RMougAHjP5TlpCktOm6PWTfQuGpg0Q+aUys73pWIOYB+e4C1qy9ef//Zaw3w8nxC6T6kOEuy1+D4e90WbvP9FrO85YJaf4nWjxncMZl2Nrju3yVhFGAU+qYUIli2Wau/K7k9D03ZFFoc2nJ03247UpEP1qCKAW5g9kYs6GbH7ikmRzzNAwOv0aZ/DAaTTqgUbdXGk95Ne6OeOksnWZBp+ezqPUyIYUSkgQLNV/yMgIflXjnhIdaDMh8OC7oTGmuJpbCfXBtvUiOAmRXaeV6GpGeMRPwXsOnYk+iqHWPfi2aKEVfe8ieqCeA/HkwY6yXmH7BX2JRD4VMLm1j/HhRDbdQORwPyGCUECc5JJg5B+iBCv0BTYQ0DMZOjeXJFqMjxx3fPbnpSmlghYL01oNYT/YeSFJfB7B8408hoTpG6ooUCSWpjBVMtn87K4PH8QJbanRnUE8ONSfqrrliHusbpGavhd+PtEmm00A==
-X-Forefront-Antispam-Report: CIP:64.207.220.244;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:wcmailrelayl01.cadence.com;PTR:ErrorRetry;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(376002)(136003)(396003)(346002)(36092001)(451199021)(46966006)(40470700004)(36840700001)(4744005)(2906002)(36860700001)(83380400001)(40460700003)(2616005)(426003)(47076005)(356005)(82740400003)(86362001)(36756003)(82310400005)(81166007)(40480700001)(316002)(6916009)(4326008)(42186006)(70586007)(70206006)(41300700001)(1076003)(336012)(26005)(54906003)(478600001)(186003)(6666004)(8676002)(8936002)(5660300002)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: cadence.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2023 08:14:37.5438
+X-Microsoft-Antispam-Message-Info: UBZH4l67znvCuq2EFMd/UgvYqZ+JvoQJXYg/hVs6NBtY8GaKgGpOxr8T/R9/F1407iIdZ1CLJCtBSBUtarS+JdUzFwDPbQx4jFVB5wvrxavwdWJAVh3PFsXnFA72A3gLmhXid2uoztii6BOJFWNaM8YR5EpYBZfhLxo8Y7AXCcn6rF27NQX7fVp6jfSJbl5BnnJwkTCCbPq0uhFnKxuIHS26sa3JtfJbQEXSV6uNxQOXJpwt536HtbMUaYAHAFlv1t3BUVHD42aceE5GlGlLyoWuPl3vgw7zy6kAPfxJR7TDBxU4PoeptRleoEMTScaewSkZsAAw7JHcqcpXHqfJfXuzCIBDvzr4OyI/L3InFrahcy4i1c0+eT0BCQ/X9uVcuK4KgcxUNe30o9Ngg0SMACC8fUTTrq3GTw9gM5k6EdtA1IfbeJ7JFYcfpZ7CIgv4KBZkig/hT7nmRXOa51Aa2f5HyAyCC4HMBMqdcIciCp4FKP3bPjReuxpm8XjhBGQFe/h+N/kexIDaowP62und420BLPHmxcXEpd3Zw4y/qSz9kusPFwYzfQtOu5FbUkKg4w+Jc1G1KBP328gMBwkNpVy10OsMtQepqcfZAaFFBz41MaOIPTcxmQ6SODFWb4HJC1zRRlp2kx2kCp3JWsrEfHdbuXJUCReyegWsoTKcKINr0aP6ilIyeKmAdTI60hmo
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEZPR06MB5269.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(376002)(346002)(136003)(39860400002)(396003)(451199021)(8936002)(8676002)(83380400001)(36756003)(38100700002)(2906002)(38350700002)(66574015)(2616005)(31696002)(86362001)(53546011)(26005)(5660300002)(6506007)(186003)(31686004)(6666004)(4326008)(6916009)(66476007)(6486002)(54906003)(66556008)(66946007)(41300700001)(6512007)(52116002)(316002)(478600001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZmQ5bUJLQ3R6SEd1NmNMNXk4TDJKTVhlOGxGYm5XejNXOFFnQnNIRWU3STNV?=
+ =?utf-8?B?QVVobWlwY2U1UHpOa0hRM09aRWZIVk9jNU9CTXVqMU03alc0YW8wcklxOWFB?=
+ =?utf-8?B?WnR2Wk00V2tHbGVmQkg0cG1wa0MwV2VhR2VpeDVkdGI4MUFIUFRpZkNZY3Br?=
+ =?utf-8?B?WkVVU1E1Wk1rSXdUUkZiZXlDdnFjQmxmV0xBcHJRcVh6SUJucUtNN2N3Y3l1?=
+ =?utf-8?B?N3NyU2V2TFRQa1ArZm5pc1lFNFBSY0JIcklkNkZQR1RjV3VGMEhWV0NMQ3Jr?=
+ =?utf-8?B?YkcyMFZXbUNuN29XNkoxSm1PRE85VlE0ajJWQjZ4TDd5WUd3aGJaamxyODBE?=
+ =?utf-8?B?VnZQWkJxOGMrWkdPZEErVTErNEF0eitiQkRNa0FxaHJId2lXaTZ5cm5GUW15?=
+ =?utf-8?B?VkFSUGhkOVFXbWIxRkxLeThNUFlYSzR5SHAvUW1TWW1CaVlWc2NJVTdGVDdR?=
+ =?utf-8?B?SFMweVMvNlY3Y0ZxMktOazRDVkMyUEVDV1VPL1dVOStJZUlYV1JZUVdyRGlZ?=
+ =?utf-8?B?WnNCYjNqK0kxNGxxaFhsY2JPWXBEWjJpU3NhUkxVMy9ucThxY1lBMll5ZVZC?=
+ =?utf-8?B?WTE4SDdpMDhnekZhdE8wOHBFMGgwbnZmbmYwM2oxL1dxL3dqdUNUUVdxVFYy?=
+ =?utf-8?B?QjFXRjdTTWkzT0FXMm5pK0dzdmVyd3M4Z3VpMDUyN05PblYrb3NBa3lGQURV?=
+ =?utf-8?B?UWNKTlhldk5VeFo5b0huaFlTZDVKdjZkaGIrY0xkZFJjMHdESjJnWDNKYTVI?=
+ =?utf-8?B?NnF1Rno1M0ZaUXNkb1ppd2k0bUk5Q2tZdHd6VHd1WVNueFg0VWpPR2IwU0ls?=
+ =?utf-8?B?ZnB0b3czYkFyMjNZSVpwZTRYVTE3cWdwOFhydXRzRGdEQUhHOUdBczRxN1Nj?=
+ =?utf-8?B?eDJ0alRHaTYzd1ArSWNTaytpUFJkNXg0cHhDVEdSdjFLVG9lWW5iS2U2OFdn?=
+ =?utf-8?B?bko0aWtxa0x3TWRGdGdTNlA1eldQVWVsWUZ2L2NTa0RJQnZRMkU2L1p2T2FI?=
+ =?utf-8?B?ajFMcVI5bCtzTDNSYkNFUFlZdlJ4bEovS3lZbDRHL1VlQjNoRlU3MHlMYzlv?=
+ =?utf-8?B?WU01REI1TDhhSldSb3dGb1VOdHE0T1VwME1XY2NuSXVOTHhjS0F0RkhtUFA3?=
+ =?utf-8?B?UHVsMmwzTDJHSHcwUEVEZE9xdEhsREEycFBQcVZENHExOXhXUjJJTTFoVnRi?=
+ =?utf-8?B?UmFYTzVCSkF4SmxTRmJ2Y3E3Rm1CZXZ2MDR5L1BYdXpZL1dYSWk1R0dybFdn?=
+ =?utf-8?B?WEVCYUNGanU0N0VUR1l6eEo0UXZ5RDd2T3RpUHE5K0JUNjhGVlhhK0VGdy9i?=
+ =?utf-8?B?eGFEWGtBK29JbzZNUHh5K01kZHEvSytMZGhPQWtiK0NnV1dIM01LNERIb0dG?=
+ =?utf-8?B?QjE1NGMzT3c4MGV1MDRybWtaSzYza1NGNTluQ3ByNmxTRkZLclBUS2lQUGo5?=
+ =?utf-8?B?SFBFcU91RXBnT0F5WnVhdU00RkV2NTlzcy94ektiT1dNR212bjFxRFBBd213?=
+ =?utf-8?B?SVBURmw2a1RLZFN3TlczK1A5R25yM08vdGFCUWg5ZDBLR2RMVXU2SHd2Yzll?=
+ =?utf-8?B?QUM3eEQyWFdrc1ZVOU9xQVBMMW9saW52UERtL0dCSUpjOWJDb0dYVHQ3Q2FP?=
+ =?utf-8?B?MmU4OGdXNCtPeUtZbXB1LzhPd2NBb3dUdEp6Tk5jWmNFN3hFTVNYc2d4bGRr?=
+ =?utf-8?B?WCtXdjNia2M4cXpQalVhK0hYUE1PMGI2UEpyRkpvbFlYbTVRa084TVhDTmRY?=
+ =?utf-8?B?bHZTME9nT3ZBSFk5VWdXRzIwWWVRckRSL0J3RXl5S3JPd0ZmZ0pZYjBDaXJU?=
+ =?utf-8?B?UngwWWxaTjhQR0V2Y1F6ZFVwTWYzdThyYkQ1bUg4ZVFOcUtlQVRWM3UyN1Ba?=
+ =?utf-8?B?bnFvYTFJcFA2d2p6UjVsSDJpWkp4N1hMZDluYndkMDNzWkNvUW1xa05rNElE?=
+ =?utf-8?B?dXF3UWdKWGp5Z2VaSm83RGx1TExaVmtCMUpzK1FFK080dXUzUzUwNm15QWMr?=
+ =?utf-8?B?ZDhOcDVtWFVYc0FIME1NWmRVME5YZEJTcDY3RTVYSTBJTUt1TVo2eFQ2V0lj?=
+ =?utf-8?B?SUlIaUtqaVluYU01NnppdDFUN3NFTHh4aExXZzFRcGFNOHh6TTF5QThoOUJ0?=
+ =?utf-8?Q?w6K7pmi5LoH1/x9UIAdva68eF?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2e53f0a7-db94-476d-80e3-08db83793026
+X-MS-Exchange-CrossTenant-AuthSource: SEZPR06MB5269.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2023 08:14:32.6810
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a88dae3f-8f90-4f74-c925-08db8379333f
-X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[64.207.220.244];Helo=[wcmailrelayl01.cadence.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM12FT044.eop-nam12.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR07MB7135
-X-Proofpoint-GUID: fyZHq2o2dkmlfPSdd6X4ns4Wo0d66-4P
-X-Proofpoint-ORIG-GUID: fyZHq2o2dkmlfPSdd6X4ns4Wo0d66-4P
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-13_04,2023-07-11_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 mlxscore=0
- phishscore=0 malwarescore=0 spamscore=0 clxscore=1011 suspectscore=0
- mlxlogscore=483 priorityscore=1501 adultscore=0 lowpriorityscore=0
- impostorscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2305260000 definitions=main-2307130071
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: FHVOh9CpaapwQsqR97lEJtECI+Zqxz2Ioq9ixOm4sM4F1E7mER/DL7h190J9dEhNqxJaSjWbZeaPmamKTfB44A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR06MB6349
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gadget ACM while unloading module try to dequeue not queued usb
-request which causes the kernel to crash.
-Patch adds extra condition to check whether usb request is processed
-by CDNSP driver.
+Hi Mique,
 
-cc: <stable@vger.kernel.org>
-Fixes: 3d82904559f4 ("usb: cdnsp: cdns3 Add main part of Cadence USBSSP DRD Driver")
-Signed-off-by: Pawel Laszczak <pawell@cadence.com>
----
- drivers/usb/cdns3/cdnsp-gadget.c | 3 +++
- 1 file changed, 3 insertions(+)
+On 2023/7/12 20:09, Miquel Raynal wrote:
+> Hi Yangtao,
+>
+> frank.li@vivo.com wrote on Fri,  7 Jul 2023 12:06:13 +0800:
+>
+>> Use devm_platform_ioremap_resource() to simplify code.
+>>
+>> Signed-off-by: Yangtao Li <frank.li@vivo.com>
+>> ---
+>>   drivers/mtd/nand/raw/davinci_nand.c | 21 +++++++++------------
+>>   1 file changed, 9 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/drivers/mtd/nand/raw/davinci_nand.c b/drivers/mtd/nand/raw/davinci_nand.c
+>> index 415d6aaa8255..2db1cd1d3d03 100644
+>> --- a/drivers/mtd/nand/raw/davinci_nand.c
+>> +++ b/drivers/mtd/nand/raw/davinci_nand.c
+>> @@ -710,8 +710,7 @@ static int nand_davinci_probe(struct platform_device *pdev)
+>>   {
+>>   	struct davinci_nand_pdata	*pdata;
+>>   	struct davinci_nand_info	*info;
+>> -	struct resource			*res1;
+>> -	struct resource			*res2;
+>> +	struct resource			*res;
+>>   	void __iomem			*vaddr;
+>>   	void __iomem			*base;
+>>   	int				ret;
+>> @@ -736,26 +735,24 @@ static int nand_davinci_probe(struct platform_device *pdev)
+>>   
+>>   	platform_set_drvdata(pdev, info);
+>>   
+>> -	res1 = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>> -	res2 = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+>> -	if (!res1 || !res2) {
+>> -		dev_err(&pdev->dev, "resource missing\n");
+>> -		return -EINVAL;
+>> -	}
+>> -
+>> -	vaddr = devm_ioremap_resource(&pdev->dev, res1);
+>> +	vaddr = devm_platform_ioremap_resource(pdev, 0);
+>>   	if (IS_ERR(vaddr))
+>>   		return PTR_ERR(vaddr);
+>>   
+>> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+>> +	if (!res) {
+>> +		dev_err(&pdev->dev, "resource missing\n");
+>> +		return -EINVAL;
+>> +	}
+>>   	/*
+>>   	 * This registers range is used to setup NAND settings. In case with
+>>   	 * TI AEMIF driver, the same memory address range is requested already
+>>   	 * by AEMIF, so we cannot request it twice, just ioremap.
+>>   	 * The AEMIF and NAND drivers not use the same registers in this range.
+>>   	 */
+>> -	base = devm_ioremap(&pdev->dev, res2->start, resource_size(res2));
+>> +	base = devm_ioremap(&pdev->dev, res->start, resource_size(res));
+>>   	if (!base) {
+>> -		dev_err(&pdev->dev, "ioremap failed for resource %pR\n", res2);
+>> +		dev_err(&pdev->dev, "ioremap failed for resource %pR\n", res);
+> I believe this is the only use of the resource, I am in favor of just
+> using the regular devm_platform_ioremap_resource() helper here and just
+> drop the reference to the resource from the message.
 
-diff --git a/drivers/usb/cdns3/cdnsp-gadget.c b/drivers/usb/cdns3/cdnsp-gadget.c
-index fff9ec9c391f..3a30c2af0c00 100644
---- a/drivers/usb/cdns3/cdnsp-gadget.c
-+++ b/drivers/usb/cdns3/cdnsp-gadget.c
-@@ -1125,6 +1125,9 @@ static int cdnsp_gadget_ep_dequeue(struct usb_ep *ep,
- 	unsigned long flags;
- 	int ret;
 
-+	if (request->status != -EINPROGRESS)
-+		return 0;
-+
- 	if (!pep->endpoint.desc) {
- 		dev_err(pdev->dev,
- 			"%s: can't dequeue to disabled endpoint\n",
--- 
-2.37.2
+I guess maybe you can apply this patch directly?
 
+
+It should be noted that devm_ioremap_resource is not the same as 
+devm_ioremap,
+
+here is devm_ioremap (devm_request_mem_region will not be called, and 
+there are comments explaining why this interface is needed),
+
+which means that we cannot simply replace it with 
+devm_platform_ioremap_resource.
+
+
+MBR,
+
+Yangtao
+
+
+>
+> I will apply all other patches, please send a v2 only for this one
+> once improved.
+>
+>>   		return -EADDRNOTAVAIL;
+>>   	}
+>>   
+>
+> Thanks,
+> Miquèl
