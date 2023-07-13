@@ -2,190 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C1B675186A
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 07:59:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22FD875186F
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 08:00:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233994AbjGMF7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 01:59:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36030 "EHLO
+        id S233753AbjGMGAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 02:00:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233753AbjGMF7A (ORCPT
+        with ESMTP id S232430AbjGMGAa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 01:59:00 -0400
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41BDE213E;
-        Wed, 12 Jul 2023 22:58:46 -0700 (PDT)
-X-UUID: 53382e3e214211ee9cb5633481061a41-20230713
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=E2jkB6QuAT5TlLxmNf2eeEz1sQnQ+ByDeLjjrUTWBMw=;
-        b=hv3ckB1Xns6N3GoUxMirUA0WCgMMx0un/B6rCi1RWMknilAc2TcARp/6okIsBFvfWq/8rkilxLFow7UL/yb/cINPjf1UlinkZo1QMoKrI+SHQYcomfPajL1eS4S7nW9AwyNYDDWtNymS8LYq+HVIjMKogHlQSZtXUFRA4ClXXEU=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.28,REQID:7eafe7a2-2856-4ca2-bb0b-83f63bdac10f,IP:0,U
-        RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-        :release,TS:-5
-X-CID-META: VersionHash:176cd25,CLOUDID:1f782e0e-c22b-45ab-8a43-3004e9216b56,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-        DKR:0,DKP:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: 53382e3e214211ee9cb5633481061a41-20230713
-Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by mailgw01.mediatek.com
-        (envelope-from <mark-pk.tsai@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 953533169; Thu, 13 Jul 2023 13:58:44 +0800
-Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- mtkmbs13n1.mediatek.inc (172.21.101.193) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Thu, 13 Jul 2023 13:58:43 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Thu, 13 Jul 2023 13:58:43 +0800
-From:   Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-To:     Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>, <dm-devel@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <yj.chiang@mediatek.com>, Peter Korsgaard <peter@korsgaard.com>,
-        Mike Snitzer <snitzer@kernel.org>, <stable@vger.kernel.org>,
-        Mark-PK Tsai <mark-pk.tsai@mediatek.com>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-Subject: [PATCH 5.15] dm init: add dm-mod.waitfor to wait for asynchronously probed block devices
-Date:   Thu, 13 Jul 2023 13:58:37 +0800
-Message-ID: <20230713055841.24815-1-mark-pk.tsai@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Thu, 13 Jul 2023 02:00:30 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F2C91FDE
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 23:00:28 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3fbea14700bso2238765e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 23:00:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689228027; x=1691820027;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=CD3yM43uVnHI58j5asWPMcNTIiJ0VXkGdNi8zJM5rl8=;
+        b=jPbN/2PN3o9FYzujK+crWu5CCRRJRoeTLtRw6l3ITIs32FKiFPJPLeOLwZq4h24rF8
+         7oAxo5tBIscu4EdByBgJZFm24LSWy/fc9wrZA6Tw3RrLicgmsn5Ucz5H3kwQlARQ06gO
+         f/BbDF3wzVAIUwd6nKXu8y6Q/2H8ScEsu83F+B9sWmZqtbatLnmExDgGb3Hh1B/bflth
+         EVq1MlVLP4StOFw8L2Ju7KfWi29gNTo7AbSFuTCm2fyLx6oCZvasny0RKOYlHE/rxhxT
+         M6YENiNygFmCLbjGrEeFPbny97ZvNqwchXSKwJBEMPeInyoQznQe/63M3gkcQWa/f3wX
+         7qWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689228027; x=1691820027;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CD3yM43uVnHI58j5asWPMcNTIiJ0VXkGdNi8zJM5rl8=;
+        b=aTkV8Ildh2hgAPWGbD3/7I6vyvXre0MXtB+xcUhCFfogtVX2SWPvaey2+i6T3BXHii
+         KCRopWDWzkMFDh/va1J9Y0GolKBWEJEC3fnKICCZJzgUs5AAXOPJsEs/JnWTrSfnbQdJ
+         MbNaK15TeqsaaXLkWu0e0/F9R0/oWSLqvwhWW3ji2KGpcuAyFy6CDRooiCKlj2mRBpxK
+         uOQmtmd7X17mhEAvo4Cjx3CJ0r3t0LawDTAul0priSEuJuavuIEpLeaCt64oJD8L51u+
+         G7CtIarPgDhUlIfpemau1a6cl8NNP1s0HF2v1E/4bhdBcvX6CFCi94a586DituLO4mLr
+         55uw==
+X-Gm-Message-State: ABy/qLYCeyyPXY8rtg6bkVL8jXKr9qYH5EfjQ+0h4Dby6qEX4TkWsM8y
+        nAQ/o2Hes9f9ACJ9N5yK+HrslA==
+X-Google-Smtp-Source: APBJJlHonhciDEd++BHU5EGIRUCt/hp64szoeIPE8MHsVC2B6aCGlD5ZkVr3/Z2zEogB2D9OgGuHPA==
+X-Received: by 2002:a7b:c5ce:0:b0:3fb:dff2:9f17 with SMTP id n14-20020a7bc5ce000000b003fbdff29f17mr437447wmk.15.1689228026881;
+        Wed, 12 Jul 2023 23:00:26 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id f11-20020a7bc8cb000000b003fa98908014sm17443210wml.8.2023.07.12.23.00.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Jul 2023 23:00:24 -0700 (PDT)
+Date:   Thu, 13 Jul 2023 09:00:20 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     =?utf-8?B?546L5piOLei9r+S7tuW6leWxguaKgOacr+mDqA==?= 
+        <machel@vivo.com>
+Cc:     Jon Mason <jdmason@kudzu.us>, Dave Jiang <dave.jiang@intel.com>,
+        Allen Hubbe <allenbh@gmail.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Dan Carpenter <error27@gmail.com>,
+        Jiasheng Jiang <jiasheng@iscas.ac.cn>,
+        "ntb@lists.linux.dev" <ntb@lists.linux.dev>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "opensource.kernel" <opensource.kernel@vivo.com>
+Subject: Re: =?utf-8?B?5Zue5aSNOiBbUEFUQ0ggdjJdIG50?=
+ =?utf-8?Q?b=3AFix_an_NULL_v?= =?utf-8?Q?s?= IS_ERR() bug for
+ debugfs_create_dir() in tool_setup_dbgfs()
+Message-ID: <bc1efd80-a490-4037-9e83-e0bb5cc0cb47@kadam.mountain>
+References: <20230712124035.7981-1-machel@vivo.com>
+ <138ab604-27de-4ac6-88fb-0886ee8f6b6d@kadam.mountain>
+ <SG2PR06MB3743C36C711A4801F4CE2304BD37A@SG2PR06MB3743.apcprd06.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,MAY_BE_FORGED,SPF_HELO_PASS,T_SCC_BODY_TEXT_LINE,
-        T_SPF_TEMPERROR,UNPARSEABLE_RELAY autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <SG2PR06MB3743C36C711A4801F4CE2304BD37A@SG2PR06MB3743.apcprd06.prod.outlook.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Korsgaard <peter@korsgaard.com>
+On Thu, Jul 13, 2023 at 02:13:32AM +0000, 王明-软件底层技术部 wrote:
+> Hi dan carpenter
+> You mean that this modification is correct, but there is no need to do
+> so, is that the understanding?
 
-Just calling wait_for_device_probe() is not enough to ensure that
-asynchronously probed block devices are available (E.G. mmc, usb), so
-add a "dm-mod.waitfor=<device1>[,..,<deviceN>]" parameter to get
-dm-init to explicitly wait for specific block devices before
-initializing the tables with logic similar to the rootwait logic that
-was introduced with commit  cc1ed7542c8c ("init: wait for
-asynchronously scanned block devices").
+No, this patch is wrong.  Possibly harmless, possibly harmful but either
+way it is wrong.  The correct way is:
 
-E.G. with dm-verity on mmc using:
-dm-mod.waitfor="PARTLABEL=hash-a,PARTLABEL=root-a"
-
-[    0.671671] device-mapper: init: waiting for all devices to be available before creating mapped devices
-[    0.671679] device-mapper: init: waiting for device PARTLABEL=hash-a ...
-[    0.710695] mmc0: new HS200 MMC card at address 0001
-[    0.711158] mmcblk0: mmc0:0001 004GA0 3.69 GiB
-[    0.715954] mmcblk0boot0: mmc0:0001 004GA0 partition 1 2.00 MiB
-[    0.722085] mmcblk0boot1: mmc0:0001 004GA0 partition 2 2.00 MiB
-[    0.728093] mmcblk0rpmb: mmc0:0001 004GA0 partition 3 512 KiB, chardev (249:0)
-[    0.738274]  mmcblk0: p1 p2 p3 p4 p5 p6 p7
-[    0.751282] device-mapper: init: waiting for device PARTLABEL=root-a ...
-[    0.751306] device-mapper: init: all devices available
-[    0.751683] device-mapper: verity: sha256 using implementation "sha256-generic"
-[    0.759344] device-mapper: ioctl: dm-0 (vroot) is ready
-[    0.766540] VFS: Mounted root (squashfs filesystem) readonly on device 254:0.
-
-Signed-off-by: Peter Korsgaard <peter@korsgaard.com>
-Signed-off-by: Mike Snitzer <snitzer@kernel.org>
-Cc: stable@vger.kernel.org
-Signed-off-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
----
- .../admin-guide/device-mapper/dm-init.rst     |  8 +++++++
- drivers/md/dm-init.c                          | 22 ++++++++++++++++++-
- 2 files changed, 29 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/admin-guide/device-mapper/dm-init.rst b/Documentation/admin-guide/device-mapper/dm-init.rst
-index e5242ff17e9b..981d6a907699 100644
---- a/Documentation/admin-guide/device-mapper/dm-init.rst
-+++ b/Documentation/admin-guide/device-mapper/dm-init.rst
-@@ -123,3 +123,11 @@ Other examples (per target):
-     0 1638400 verity 1 8:1 8:2 4096 4096 204800 1 sha256
-     fb1a5a0f00deb908d8b53cb270858975e76cf64105d412ce764225d53b8f3cfd
-     51934789604d1b92399c52e7cb149d1b3a1b74bbbcb103b2a0aaacbed5c08584
-+
-+For setups using device-mapper on top of asynchronously probed block
-+devices (MMC, USB, ..), it may be necessary to tell dm-init to
-+explicitly wait for them to become available before setting up the
-+device-mapper tables. This can be done with the "dm-mod.waitfor="
-+module parameter, which takes a list of devices to wait for::
-+
-+  dm-mod.waitfor=<device1>[,..,<deviceN>]
-diff --git a/drivers/md/dm-init.c b/drivers/md/dm-init.c
-index b0c45c6ebe0b..dc4381d68313 100644
---- a/drivers/md/dm-init.c
-+++ b/drivers/md/dm-init.c
-@@ -8,6 +8,7 @@
-  */
+diff --git a/drivers/ntb/test/ntb_tool.c b/drivers/ntb/test/ntb_tool.c
+index eeeb4b1c97d2..e0acc11d29ba 100644
+--- a/drivers/ntb/test/ntb_tool.c
++++ b/drivers/ntb/test/ntb_tool.c
+@@ -1495,8 +1495,6 @@ static void tool_setup_dbgfs(struct tool_ctx *tc)
  
- #include <linux/ctype.h>
-+#include <linux/delay.h>
- #include <linux/device.h>
- #include <linux/device-mapper.h>
- #include <linux/init.h>
-@@ -18,12 +19,17 @@
- #define DM_MAX_DEVICES 256
- #define DM_MAX_TARGETS 256
- #define DM_MAX_STR_SIZE 4096
-+#define DM_MAX_WAITFOR 256
+ 	tc->dbgfs_dir = debugfs_create_dir(dev_name(&tc->ntb->dev),
+ 					   tool_dbgfs_topdir);
+-	if (!tc->dbgfs_dir)
+-		return;
  
- static char *create;
- 
-+static char *waitfor[DM_MAX_WAITFOR];
-+
- /*
-  * Format: dm-mod.create=<name>,<uuid>,<minor>,<flags>,<table>[,<table>+][;<name>,<uuid>,<minor>,<flags>,<table>[,<table>+]+]
-  * Table format: <start_sector> <num_sectors> <target_type> <target_args>
-+ * Block devices to wait for to become available before setting up tables:
-+ * dm-mod.waitfor=<device1>[,..,<deviceN>]
-  *
-  * See Documentation/admin-guide/device-mapper/dm-init.rst for dm-mod.create="..." format
-  * details.
-@@ -266,7 +272,7 @@ static int __init dm_init_init(void)
- 	struct dm_device *dev;
- 	LIST_HEAD(devices);
- 	char *str;
--	int r;
-+	int i, r;
- 
- 	if (!create)
- 		return 0;
-@@ -286,6 +292,17 @@ static int __init dm_init_init(void)
- 	DMINFO("waiting for all devices to be available before creating mapped devices");
- 	wait_for_device_probe();
- 
-+	for (i = 0; i < ARRAY_SIZE(waitfor); i++) {
-+		if (waitfor[i]) {
-+			DMINFO("waiting for device %s ...", waitfor[i]);
-+			while (!dm_get_dev_t(waitfor[i]))
-+				msleep(5);
-+		}
-+	}
-+
-+	if (waitfor[0])
-+		DMINFO("all devices available");
-+
- 	list_for_each_entry(dev, &devices, list) {
- 		if (dm_early_create(&dev->dmi, dev->table,
- 				    dev->target_args_array))
-@@ -301,3 +318,6 @@ late_initcall(dm_init_init);
- 
- module_param(create, charp, 0);
- MODULE_PARM_DESC(create, "Create a mapped device in early boot");
-+
-+module_param_array(waitfor, charp, NULL, 0);
-+MODULE_PARM_DESC(waitfor, "Devices to wait for before setting up tables");
--- 
-2.18.0
-
+ 	debugfs_create_file("port", 0600, tc->dbgfs_dir,
+ 			    tc, &tool_port_fops);
