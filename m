@@ -2,82 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55F3F752869
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 18:34:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7809752870
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 18:35:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232297AbjGMQeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 12:34:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44992 "EHLO
+        id S231315AbjGMQfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 12:35:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229919AbjGMQeG (ORCPT
+        with ESMTP id S231833AbjGMQfD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 12:34:06 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6FDE2D5D;
-        Thu, 13 Jul 2023 09:33:46 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C98FC61A5E;
-        Thu, 13 Jul 2023 16:33:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F979C433B7;
-        Thu, 13 Jul 2023 16:33:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689266016;
-        bh=uhsVmzJ8WaZFeuYmEIBKJxAUY3vj6kSqoRYxSMWJi0I=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=uCMTNTPSG1OYrO6FMZaMLROByerhlORvyPS/Wkrw5tdxY84k896W9urr+OWbUqWnX
-         RFChbxILbMb3wPdh8c1R+YpDWXZZBHZzfdJsgM9rGUQFNZe4aB2akOzD1RTRWCh2V+
-         oZMyEgMCP0HnuigbhmVdsujB56NjMHFoDQxMt+Sc5MHdvra4hIihLLoXHvMZHDvc7u
-         aFMJviASDeeuNNReIz/gX9vb1Zh0prc1oqjEpXpWeltzp4kl8v+SJ03+b7xqzX81bP
-         rEgM8s8wNUXhGKBeD1ZR6l96AOQ4AkRaKx434czeY3Vi9ziu45DzHjxEPkUtzpI7vq
-         9j+5+u3kd3zCQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id ADBA8CE009F; Thu, 13 Jul 2023 09:33:35 -0700 (PDT)
-Date:   Thu, 13 Jul 2023 09:33:35 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Gao Xiang <hsiangkao@linux.alibaba.com>,
-        Sandeep Dhavale <dhavale@google.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-erofs@lists.ozlabs.org, xiang@kernel.org,
-        Will Shiu <Will.Shiu@mediatek.com>, kernel-team@android.com,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH v1] rcu: Fix and improve RCU read lock checks when
- !CONFIG_DEBUG_LOCK_ALLOC
-Message-ID: <58b661d0-0ebb-4b45-a10d-c5927fb791cd@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <CAB=BE-Rm0ycTZXj=wHW_FBCCKbswG+dh3L+o1+CUW=Pg_oWnyw@mail.gmail.com>
- <20230713003201.GA469376@google.com>
- <161f1615-3d85-cf47-d2d5-695adf1ca7d4@linux.alibaba.com>
- <0d9e7b4d-6477-47a6-b3d2-2c9d9b64903d@paulmck-laptop>
- <f124e041-6a82-2069-975c-4f393e5c4137@linux.alibaba.com>
- <87292a44-cc02-4d95-940e-e4e31d0bc6f2@paulmck-laptop>
- <f1c60dcb-e32f-7b7e-bf0d-5dec999e9299@linux.alibaba.com>
- <CAEXW_YSODXRfgkR0D2G-x=0uZdsqvF3kZL+LL3DcRX-5CULJ1Q@mail.gmail.com>
- <894a3b64-a369-7bc6-c8a8-0910843cc587@linux.alibaba.com>
- <CAEXW_YSM1yik4yWTgZoxCS9RM6TbsL26VCVCH=41+uMA8chfAQ@mail.gmail.com>
+        Thu, 13 Jul 2023 12:35:03 -0400
+Received: from mail-oi1-f207.google.com (mail-oi1-f207.google.com [209.85.167.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 866862D57
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 09:34:33 -0700 (PDT)
+Received: by mail-oi1-f207.google.com with SMTP id 5614622812f47-3a41b765478so3152679b6e.0
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 09:34:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689266026; x=1691858026;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=K3ho6xXohiGptiysxkdNs0zr5VXNkhbGRNFfWgt++Yc=;
+        b=NyB2tPQHD2I93SbwyelXtQpaigorb1BvqBhRdo09y2ak+RaFEU8kNkFzsjhff5eKxs
+         gb4XR//X548l6BDsVqCRgfRYwCHIEotP+7H35mXgi1PUyEOS2NEGmafU92QDym5Dp9gs
+         vOJcf/aRutUQtWTdYAwOtAmykYQPTP5SvSezT4NuAn5Ln/uauskBuvkd0cr4MzHaiiKg
+         vhdeXKs1lIPTMVFkjXCsDrtyCNoFu/euE37F5BGvYXKWeIZakDs1HQzt9ANXmhFn6/s/
+         lPAHAR+ni61wB5oYda9AhtzHtnOIi0SgNwSxnnhdXaLvfFprfkpiOP0qOWjgZo93xkV9
+         ahsQ==
+X-Gm-Message-State: ABy/qLaWIPtmk7JbmyRacURdBkt+sazNdTgtdzP5hCV7XxZ6jjm5PZs9
+        b2rywc5WgmawHvxBCyhD/PVH4UPZIKuersT1nH3z0TldWJt4
+X-Google-Smtp-Source: APBJJlGOyLraT05agNLqXzPVWF56vPakWCVDUWfF0JUTV93KsFJRMN3gxu8G06wGOuoXxNkoeHrPnANRG+gvOvasmzO7JbjRUx5f
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEXW_YSM1yik4yWTgZoxCS9RM6TbsL26VCVCH=41+uMA8chfAQ@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Received: by 2002:a05:6808:1290:b0:3a4:1484:b3db with SMTP id
+ a16-20020a056808129000b003a41484b3dbmr258967oiw.5.1689266026722; Thu, 13 Jul
+ 2023 09:33:46 -0700 (PDT)
+Date:   Thu, 13 Jul 2023 09:33:46 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000743ce2060060e5ce@google.com>
+Subject: [syzbot] [ext4?] INFO: task hung in find_inode_fast (2)
+From:   syzbot <syzbot+adfd362e7719c02b3015@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,139 +55,195 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 11:33:24AM -0400, Joel Fernandes wrote:
-> On Thu, Jul 13, 2023 at 10:34 AM Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
-> > On 2023/7/13 22:07, Joel Fernandes wrote:
-> > > On Thu, Jul 13, 2023 at 12:59 AM Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
-> > >> On 2023/7/13 12:52, Paul E. McKenney wrote:
-> > >>> On Thu, Jul 13, 2023 at 12:41:09PM +0800, Gao Xiang wrote:
-> > >>
-> > >> ...
-> > >>
-> > >>>>
-> > >>>> There are lots of performance issues here and even a plumber
-> > >>>> topic last year to show that, see:
-> > >>>>
-> > >>>> [1] https://lore.kernel.org/r/20230519001709.2563-1-tj@kernel.org
-> > >>>> [2] https://lore.kernel.org/r/CAHk-=wgE9kORADrDJ4nEsHHLirqPCZ1tGaEPAZejHdZ03qCOGg@mail.gmail.com
-> > >>>> [3] https://lore.kernel.org/r/CAB=BE-SBtO6vcoyLNA9F-9VaN5R0t3o_Zn+FW8GbO6wyUqFneQ@mail.gmail.com
-> > >>>> [4] https://lpc.events/event/16/contributions/1338/
-> > >>>> and more.
-> > >>>>
-> > >>>> I'm not sure if it's necessary to look info all of that,
-> > >>>> andSandeep knows more than I am (the scheduling issue
-> > >>>> becomes vital on some aarch64 platform.)
-> > >>>
-> > >>> Hmmm...  Please let me try again.
-> > >>>
-> > >>> Assuming that this approach turns out to make sense, the resulting
-> > >>> patch will need to clearly state the performance benefits directly in
-> > >>> the commit log.
-> > >>>
-> > >>> And of course, for the approach to make sense, it must avoid breaking
-> > >>> the existing lockdep-RCU debugging code.
-> > >>>
-> > >>> Is that more clear?
-> > >>
-> > >> Personally I'm not working on Android platform any more so I don't
-> > >> have a way to reproduce, hopefully Sandeep could give actually
-> > >> number _again_ if dm-verity is enabled and trigger another
-> > >> workqueue here and make a comparsion why the scheduling latency of
-> > >> the extra work becomes unacceptable.
-> > >>
-> > >
-> > > Question from my side, are we talking about only performance issues or
-> > > also a crash? It appears z_erofs_decompress_pcluster() takes
-> > > mutex_lock(&pcl->lock);
-> > >
-> > > So if it is either in an RCU read-side critical section or in an
-> > > atomic section, like the softirq path, then it may
-> > > schedule-while-atomic or trigger RCU warnings.
-> > >
-> > > z_erofs_decompressqueue_endio
-> > > -> z_erofs_decompress_kickoff
-> > >   ->z_erofs_decompressqueue_work
-> > >    ->z_erofs_decompress_queue
-> > >     -> z_erofs_decompress_pcluster
-> > >      -> mutex_lock
-> > >
-> >
-> > Why does the softirq path not trigger a workqueue instead?
-> 
-> I said "if it is". I was giving a scenario. mutex_lock() is not
-> allowed in softirq context or in an RCU-reader.
-> 
-> > > Per Sandeep in [1], this stack happens under RCU read-lock in:
-> > >
-> > > #define __blk_mq_run_dispatch_ops(q, check_sleep, dispatch_ops) \
-> > > [...]
-> > >                  rcu_read_lock();
-> > >                  (dispatch_ops);
-> > >                  rcu_read_unlock();
-> > > [...]
-> > >
-> > > Coming from:
-> > > blk_mq_flush_plug_list ->
-> > >                             blk_mq_run_dispatch_ops(q,
-> > >                                  __blk_mq_flush_plug_list(q, plug));
-> > >
-> > > and __blk_mq_flush_plug_list does this:
-> > >            q->mq_ops->queue_rqs(&plug->mq_list);
-> > >
-> > > This somehow ends up calling the bio_endio and the
-> > > z_erofs_decompressqueue_endio which grabs the mutex.
-> > >
-> > > So... I have a question, it looks like one of the paths in
-> > > __blk_mq_run_dispatch_ops() uses SRCU.  Where are as the alternate
-> > > path uses RCU. Why does this alternate want to block even if it is not
-> > > supposed to? Is the real issue here that the BLK_MQ_F_BLOCKING should
-> > > be set? It sounds like you want to block in the "else" path even
-> > > though BLK_MQ_F_BLOCKING is not set:
-> >
-> > BLK_MQ_F_BLOCKING is not a flag that a filesystem can do anything with.
-> > That is block layer and mq device driver stuffs. filesystems cannot set
-> > this value.
-> >
-> > As I said, as far as I understand, previously,
-> > .end_io() can only be called without RCU context, so it will be fine,
-> > but I don't know when .end_io() can be called under some RCU context
-> > now.
-> 
-> >From what Sandeep described, the code path is in an RCU reader. My
-> question is more, why doesn't it use SRCU instead since it clearly
-> does so if BLK_MQ_F_BLOCKING. What are the tradeoffs? IMHO, a deeper
-> dive needs to be made into that before concluding that the fix is to
-> use rcu_read_lock_any_held().
+Hello,
 
-How can this be solved?
+syzbot found the following issue on:
 
-1.	Always use a workqueue.  Simple, but is said to have performance
-	issues.
+HEAD commit:    1c7873e33645 mm: lock newly mapped VMA with corrected orde..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10d2771ca80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=15873d91ff37a949
+dashboard link: https://syzkaller.appspot.com/bug?extid=adfd362e7719c02b3015
+compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=136b54c4a80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=179ec9d8a80000
 
-2.	Pass a flag in that indicates whether or not the caller is in an
-	RCU read-side critical section.  Conceptually simple, but might
-	or might not be reasonable to actually implement in the code as
-	it exists now.	(You tell me!)
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/266e35c3f21e/disk-1c7873e3.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/9cf36dfe8b31/vmlinux-1c7873e3.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/a274cf2ce4d3/bzImage-1c7873e3.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/3d70fcee5ad3/mount_0.gz
 
-3.	Create a function in z_erofs that gives you a decent
-	approximation, maybe something like the following.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+adfd362e7719c02b3015@syzkaller.appspotmail.com
 
-4.	Other ideas here.
+INFO: task syz-executor173:7462 blocked for more than 143 seconds.
+      Not tainted 6.4.0-syzkaller-12454-g1c7873e33645 #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor173 state:D stack:25544 pid:7462  ppid:5046   flags:0x00004004
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5381 [inline]
+ __schedule+0x1873/0x48f0 kernel/sched/core.c:6710
+ schedule+0xc3/0x180 kernel/sched/core.c:6786
+ __wait_on_freeing_inode fs/inode.c:2240 [inline]
+ find_inode_fast+0x319/0x450 fs/inode.c:950
+ iget_locked+0xcb/0x830 fs/inode.c:1317
+ __ext4_iget+0x261/0x3f30 fs/ext4/inode.c:4670
+ ext4_xattr_inode_cache_find fs/ext4/xattr.c:1542 [inline]
+ ext4_xattr_inode_lookup_create fs/ext4/xattr.c:1577 [inline]
+ ext4_xattr_set_entry+0x219f/0x3e80 fs/ext4/xattr.c:1719
+ ext4_xattr_block_set+0xb12/0x3630 fs/ext4/xattr.c:2025
+ ext4_xattr_set_handle+0xcd4/0x15c0 fs/ext4/xattr.c:2442
+ ext4_xattr_set+0x241/0x3d0 fs/ext4/xattr.c:2544
+ __vfs_setxattr+0x460/0x4a0 fs/xattr.c:201
+ __vfs_setxattr_noperm+0x12e/0x5e0 fs/xattr.c:235
+ vfs_setxattr+0x221/0x420 fs/xattr.c:322
+ do_setxattr fs/xattr.c:630 [inline]
+ setxattr+0x25d/0x2f0 fs/xattr.c:653
+ path_setxattr+0x1c0/0x2a0 fs/xattr.c:672
+ __do_sys_setxattr fs/xattr.c:688 [inline]
+ __se_sys_setxattr fs/xattr.c:684 [inline]
+ __x64_sys_setxattr+0xbb/0xd0 fs/xattr.c:684
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f9b8cd80509
+RSP: 002b:00007f9b841472f8 EFLAGS: 00000246 ORIG_RAX: 00000000000000bc
+RAX: ffffffffffffffda RBX: 00007f9b8ce0c550 RCX: 00007f9b8cd80509
+RDX: 00000000200005c0 RSI: 0000000020000180 RDI: 00000000200000c0
+RBP: 0030656c69662f2e R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000002000 R11: 0000000000000246 R12: 00007f9b8cdd2360
+R13: 66763d746d66716a R14: 2f30656c69662f2e R15: 00007f9b8ce0c558
+ </TASK>
+INFO: task syz-executor173:7468 blocked for more than 143 seconds.
+      Not tainted 6.4.0-syzkaller-12454-g1c7873e33645 #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor173 state:D stack:25768 pid:7468  ppid:5046   flags:0x00004004
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5381 [inline]
+ __schedule+0x1873/0x48f0 kernel/sched/core.c:6710
+ schedule+0xc3/0x180 kernel/sched/core.c:6786
+ mb_cache_entry_wait_unused+0x166/0x250 fs/mbcache.c:148
+ ext4_evict_ea_inode+0x14a/0x2f0 fs/ext4/xattr.c:480
+ ext4_evict_inode+0x184/0xf20 fs/ext4/inode.c:180
+ evict+0x2a4/0x620 fs/inode.c:665
+ ext4_xattr_set_entry+0x13d4/0x3e80 fs/ext4/xattr.c:1856
+ ext4_xattr_block_set+0x69c/0x3630 fs/ext4/xattr.c:1956
+ ext4_xattr_set_handle+0xcd4/0x15c0 fs/ext4/xattr.c:2442
+ ext4_xattr_set+0x241/0x3d0 fs/ext4/xattr.c:2544
+ __vfs_setxattr+0x460/0x4a0 fs/xattr.c:201
+ __vfs_setxattr_noperm+0x12e/0x5e0 fs/xattr.c:235
+ vfs_setxattr+0x221/0x420 fs/xattr.c:322
+ do_setxattr fs/xattr.c:630 [inline]
+ setxattr+0x25d/0x2f0 fs/xattr.c:653
+ path_setxattr+0x1c0/0x2a0 fs/xattr.c:672
+ __do_sys_setxattr fs/xattr.c:688 [inline]
+ __se_sys_setxattr fs/xattr.c:684 [inline]
+ __x64_sys_setxattr+0xbb/0xd0 fs/xattr.c:684
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f9b8cd80509
+RSP: 002b:00007f9b841262f8 EFLAGS: 00000246 ORIG_RAX: 00000000000000bc
+RAX: ffffffffffffffda RBX: 00007f9b8ce0c560 RCX: 00007f9b8cd80509
+RDX: 0000000000000000 RSI: 0000000020000200 RDI: 00000000200001c0
+RBP: 0030656c69662f2e R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f9b8cdd2360
+R13: 66763d746d66716a R14: 2f30656c69662f2e R15: 00007f9b8ce0c568
+ </TASK>
 
-The following is untested, and is probably quite buggy, but it should
-provide you with a starting point.
+Showing all locks held in the system:
+1 lock held by rcu_tasks_kthre/13:
+ #0: ffffffff8d328af0 (rcu_tasks.tasks_gp_mutex){+.+.}-{3:3}, at: rcu_tasks_one_gp+0x29/0xd20 kernel/rcu/tasks.h:522
+1 lock held by rcu_tasks_trace/14:
+ #0: ffffffff8d328eb0 (rcu_tasks_trace.tasks_gp_mutex){+.+.}-{3:3}, at: rcu_tasks_one_gp+0x29/0xd20 kernel/rcu/tasks.h:522
+1 lock held by khungtaskd/28:
+ #0: ffffffff8d328920 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire+0x0/0x30
+3 locks held by kworker/1:2/2094:
+ #0: ffff888012870d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x7e3/0x12c0 kernel/workqueue.c:2569
+ #1: ffffc9000786fd20 ((work_completion)(&pwq->unbound_release_work)){+.+.}-{0:0}, at: process_one_work+0x82b/0x12c0 kernel/workqueue.c:2571
+ #2: ffffffff8d32dfb8 (rcu_state.exp_mutex){+.+.}-{3:3}, at: exp_funnel_lock kernel/rcu/tree_exp.h:325 [inline]
+ #2: ffffffff8d32dfb8 (rcu_state.exp_mutex){+.+.}-{3:3}, at: synchronize_rcu_expedited+0x46c/0x890 kernel/rcu/tree_exp.h:992
+3 locks held by kworker/0:3/4759:
+ #0: ffff888012870d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x7e3/0x12c0 kernel/workqueue.c:2569
+ #1: ffffc9000379fd20 ((work_completion)(&pwq->unbound_release_work)){+.+.}-{0:0}, at: process_one_work+0x82b/0x12c0 kernel/workqueue.c:2571
+ #2: ffffffff8d32dfb8 (rcu_state.exp_mutex){+.+.}-{3:3}, at: exp_funnel_lock kernel/rcu/tree_exp.h:293 [inline]
+ #2: ffffffff8d32dfb8 (rcu_state.exp_mutex){+.+.}-{3:3}, at: synchronize_rcu_expedited+0x3a3/0x890 kernel/rcu/tree_exp.h:992
+2 locks held by getty/4772:
+ #0: ffff88802d3c2098
+ (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:243
+ #1: ffffc900015b02f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x6b1/0x1dc0 drivers/tty/n_tty.c:2187
+1 lock held by udevd/5050:
+2 locks held by kworker/0:2/5052:
+ #0: ffff888012870d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x7e3/0x12c0 kernel/workqueue.c:2569
+ #1: ffffc90003c0fd20 ((work_completion)(&pwq->unbound_release_work)){+.+.}-{0:0}, at: process_one_work+0x82b/0x12c0 kernel/workqueue.c:2571
+2 locks held by kworker/1:3/5060:
+ #0: ffff888012870d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x7e3/0x12c0 kernel/workqueue.c:2569
+ #1: ffffc90003c9fd20 ((work_completion)(&pwq->unbound_release_work)){+.+.}-{0:0}, at: process_one_work+0x82b/0x12c0 kernel/workqueue.c:2571
+1 lock held by udevd/5105:
+2 locks held by kworker/0:4/5115:
+ #0: ffff888012872538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: process_one_work+0x7e3/0x12c0 kernel/workqueue.c:2569
+ #1: ffffc90003e6fd20 ((work_completion)(&rew->rew_work)){+.+.}-{0:0}, at: process_one_work+0x82b/0x12c0 kernel/workqueue.c:2571
+3 locks held by syz-executor173/7462:
+ #0: ffff8880220f2410 (sb_writers#4){.+.+}-{0:0}, at: mnt_want_write+0x3f/0x90 fs/namespace.c:403
+ #1: ffff8880783cf200 (&sb->s_type->i_mutex_key#7){++++}-{3:3}, at: inode_lock include/linux/fs.h:771 [inline]
+ #1: ffff8880783cf200 (&sb->s_type->i_mutex_key#7){++++}-{3:3}, at: vfs_setxattr+0x1e1/0x420 fs/xattr.c:321
+ #2: ffff8880783ceec8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_lock_xattr fs/ext4/xattr.h:155 [inline]
+ #2: ffff8880783ceec8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_xattr_set_handle+0x274/0x15c0 fs/ext4/xattr.c:2357
+3 locks held by syz-executor173/7468:
+ #0: ffff8880220f2410 (sb_writers#4){.+.+}-{0:0}, at: mnt_want_write+0x3f/0x90 fs/namespace.c:403
+ #1: ffff88806aed8400 (&type->i_mutex_dir_key#3){++++}-{3:3}, at: inode_lock include/linux/fs.h:771 [inline]
+ #1: ffff88806aed8400 (&type->i_mutex_dir_key#3){++++}-{3:3}, at: vfs_setxattr+0x1e1/0x420 fs/xattr.c:321
+ #2: ffff88806aed80c8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_lock_xattr fs/ext4/xattr.h:155 [inline]
+ #2: ffff88806aed80c8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_xattr_set_handle+0x274/0x15c0 fs/ext4/xattr.c:2357
 
-static bool z_erofs_wq_needed(void)
-{
-	if (IS_ENABLED(CONFIG_PREEMPTION) && rcu_preempt_depth())
-		return true;  // RCU reader
-	if (IS_ENABLED(CONFIG_PREEMPT_COUNT) && !preemptible())
-		return true;  // non-preemptible
-	if (!IS_ENABLED(CONFIG_PREEMPT_COUNT))
-		return true;  // non-preeemptible kernel, so play it safe
-	return false;
-}
+=============================================
 
-You break it, you buy it!  ;-)
+NMI backtrace for cpu 0
+CPU: 0 PID: 28 Comm: khungtaskd Not tainted 6.4.0-syzkaller-12454-g1c7873e33645 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/03/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
+ nmi_cpu_backtrace+0x498/0x4d0 lib/nmi_backtrace.c:113
+ nmi_trigger_cpumask_backtrace+0x187/0x300 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:160 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:222 [inline]
+ watchdog+0xec2/0xf00 kernel/hung_task.c:379
+ kthread+0x2b8/0x350 kernel/kthread.c:389
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
+ </TASK>
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1 skipped: idling at native_safe_halt arch/x86/include/asm/irqflags.h:48 [inline]
+NMI backtrace for cpu 1 skipped: idling at arch_safe_halt arch/x86/include/asm/irqflags.h:86 [inline]
+NMI backtrace for cpu 1 skipped: idling at __intel_idle_hlt drivers/idle/intel_idle.c:205 [inline]
+NMI backtrace for cpu 1 skipped: idling at intel_idle_hlt+0x15/0x20 drivers/idle/intel_idle.c:224
 
-							Thanx, Paul
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
