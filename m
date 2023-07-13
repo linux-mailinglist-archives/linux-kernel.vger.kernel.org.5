@@ -2,157 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F412752852
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 18:30:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB7FB752857
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 18:32:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234050AbjGMQap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 12:30:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42146 "EHLO
+        id S233222AbjGMQcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 12:32:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232785AbjGMQak (ORCPT
+        with ESMTP id S229593AbjGMQcc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 12:30:40 -0400
-Received: from AUS01-SY4-obe.outbound.protection.outlook.com (mail-sy4aus01olkn2169.outbound.protection.outlook.com [40.92.62.169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 118DD2D4B
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 09:30:35 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=I0V5cnpn7Yx/wxOsxsKjfvLyhpCx+FU0BucstTdhVLvMgha2l4Ua7VZoYEIp5Lm2f6GDhKIBDOzqbstHRCh4Cd71HB8dLUr8wDoRx55Sdagz2cinFmKWhvfz5Mggut3RzyLdyhw8gMxNxxA05KNFdfYUs6qXX6s/PvbHQxSTUfNxQBudrt7LVrxG174UIPfroXqA54LAx6MG50cCdIwtFd+A33Te1zWpM9lsTB9qAkQfU9Cwc88pHXidJZ6YUZ7J/Pa0JEK/zEcnEol16Gmg1JZkFVL9i6s1+3IqNasYYD1IwsmVCAdc+3UKzCqwpoFoAfVLpQj+KxJazMlqJGXgaA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TQdNsbOGTZM22GthjPokb6fIXvhlSUu4SdntYZsqhNE=;
- b=AXB+OQTU+drbodaRsA6GLRXeFpAckwW8BQo33k/GTncvGdnu7o0ChzEGMoPtHpXEqNAnINCw/UGtMVoK0FE0i85Kg+LYzB3D5Lg6Kj/nv5W/2z+lS4GnFbqPMnz9RelUY4hm1t3yXEm1SWftMkRwlMtSuBsin/7pTTXYf7GQl2vtkJfIy35KMkIFXiF5C2s8UB3+w3eGIUhTf1eDc9mmi2y8p/h07FklUMqmoGs/gyjg+d6gFOKH4lMHyhCvwx30hQ5nchmKDqTb+pT0L9M4xssh73Qzt+6/NT/PspexGDeHgpV9HDeS+sgl21Qm3jRRIQG7pR6VeWMViXHiqDJAwA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TQdNsbOGTZM22GthjPokb6fIXvhlSUu4SdntYZsqhNE=;
- b=en+4vNE7wfT43Xx+g4PVv1kgQD30gERDJ0XqdHI+X1sVBYmNYkhWke3NrrsbR9ohq5gJ4tygf+iFikeO5BvExVDB5xN6aSRjzOhfBc/CmG/A53SPKPVtbmDcmiqCOCr2j2uhtaswTiDevPyuSAlPzzojUjFrNrLIXKoWPdpRxJLl5YyNqeaiOnjl5/116+/G+XfrEgIEDI3ctsSgNLINNOfanNskHaNN0Vld17U0XtBVQ/CMEj0/ydbTMmhkVyTWFUic2sA7Tsg1SALxwDF2vz3A0vpvUSJtF7fZKDkssJ7Tc8rll8g2NXZ0GPmHO8m4ZisAdKYXf920C4/z5pitkQ==
-Received: from SY4P282MB1835.AUSP282.PROD.OUTLOOK.COM (2603:10c6:10:c2::7) by
- SY6P282MB3254.AUSP282.PROD.OUTLOOK.COM (2603:10c6:10:165::20) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6588.26; Thu, 13 Jul 2023 16:30:29 +0000
-Received: from SY4P282MB1835.AUSP282.PROD.OUTLOOK.COM
- ([fe80::8302:9e75:933d:b45]) by SY4P282MB1835.AUSP282.PROD.OUTLOOK.COM
- ([fe80::8302:9e75:933d:b45%6]) with mapi id 15.20.6588.024; Thu, 13 Jul 2023
- 16:30:29 +0000
-From:   David Xu <xuwd1@hotmail.com>
-To:     James Schulman <james.schulman@cirrus.com>,
-        David Rhodes <david.rhodes@cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        "Luke D. Jones" <luke@ljones.dev>,
-        Stefan Binding <sbinding@opensource.cirrus.com>,
-        Andy Chi <andy.chi@canonical.com>,
-        Tim Crawford <tcrawford@system76.com>,
-        Philipp Jungkamp <p.jungkamp@gmx.net>,
-        =?UTF-8?q?Kacper=20Michaj=C5=82ow?= <kasper93@gmail.com>,
-        Matthew Anderson <ruinairas1992@gmail.com>,
-        Yuchi Yang <yangyuchi66@gmail.com>,
-        Yang Yingliang <yangyingliang@huawei.com>
-Cc:     alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
-        linux-kernel@vger.kernel.org, David Xu <xuwd1@hotmail.com>
-Subject: [PATCH 2/2] ALSA: hda/realtek: Add quirks for Lenovo 16IAH7, 16IAX7 and 16ARHA7
-Date:   Fri, 14 Jul 2023 00:29:55 +0800
-Message-ID: <SY4P282MB18359DB2390AEFED26AC53A0E037A@SY4P282MB1835.AUSP282.PROD.OUTLOOK.COM>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230713162955.34842-1-xuwd1@hotmail.com>
-References: <20230713162955.34842-1-xuwd1@hotmail.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [fs06H3BeN0QhvwCjWzUObJafeZb21865]
-X-ClientProxiedBy: TYCP286CA0125.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:400:2b6::7) To SY4P282MB1835.AUSP282.PROD.OUTLOOK.COM
- (2603:10c6:10:c2::7)
-X-Microsoft-Original-Message-ID: <20230713162955.34842-3-xuwd1@hotmail.com>
+        Thu, 13 Jul 2023 12:32:32 -0400
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 238D21980;
+        Thu, 13 Jul 2023 09:32:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689265951; x=1720801951;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=cXZtGgbLWRfM3llFgBerTG/qiILJWd0SfRKH1JDQjUE=;
+  b=Wb+4pNuLn1Ud0jHvYCzYHX3KLUO+E/oQLvPSzgN81tF56sgyOXyEn/4P
+   xS2AzHwMvLZUdAX2pf9D/EQQgB5TtQy2KV8A9IOjHrgnpeRMJXb3Umheb
+   luyZBeo/URG4kYbchxTU++vUeFV5olpQoYKrGPS0FwU9rF2Xk/vAd56Mo
+   jj0klxUjx7Kr/aSVfpPwjutsVaV5tyz8hRnvNoIZMDgxlxdFNngzcwTSH
+   VRLho/o53f0ASh7/q5V0RQi97bdV2cxb8hwNggLX3TEo+kOQMJ4VfTLMN
+   /LWj8n0Zc4xXgsnHJbgNdGfIHhHXTNPp0Ol5tkbgtKRLGNQoYMie5CJsm
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="362707580"
+X-IronPort-AV: E=Sophos;i="6.01,203,1684825200"; 
+   d="scan'208";a="362707580"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2023 09:32:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="722046367"
+X-IronPort-AV: E=Sophos;i="6.01,203,1684825200"; 
+   d="scan'208";a="722046367"
+Received: from agluck-desk3.sc.intel.com ([172.25.222.74])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2023 09:32:21 -0700
+From:   Tony Luck <tony.luck@intel.com>
+To:     Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Peter Newman <peternewman@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org
+Cc:     Shaopeng Tan <tan.shaopeng@fujitsu.com>,
+        James Morse <james.morse@arm.com>,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        Babu Moger <babu.moger@amd.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        patches@lists.linux.dev, Tony Luck <tony.luck@intel.com>
+Subject: [PATCH v3 0/8] x86/resctrl: Add support for Sub-NUMA cluster (SNC) systems
+Date:   Thu, 13 Jul 2023 09:31:59 -0700
+Message-Id: <20230713163207.219710-1-tony.luck@intel.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SY4P282MB1835:EE_|SY6P282MB3254:EE_
-X-MS-Office365-Filtering-Correlation-Id: a82c8a00-d375-4dbd-3780-08db83be7891
-X-MS-Exchange-SLBlob-MailProps: ZILSnhm0P3nN7ksDdJHhaEOcm48SSgzZgL6F/YuI9gmDi06p/1nukHZHE6nO4AGcmdlQY/DGuRoeLrjaXGQox4eV7oLAgiy53MyOGe4ITqKmEBRCtduKs68ytc3D3XTYUNbjfomsc0AcQWnyF0bGDeU8Mf1QKE23AGgtJv5oSZjFjDScz7MrN9K+I9zU+mmkakoLvA1xuQwHJ4mru15wCOqjUlzbnlwW3OKhv1BwWnIBtkWgFL3p93MEhTTnptmgvuAK91yhs8P6stXJTaSjUTsAiJXEIqabxRSF+ex+FE+Nsi+GfSAY6H9Sge4bCupauyptTrqQkMv3kXlG5XEiup4pbQVFmr/36yKUDFSxFjbKdRg6AvdcxVgFHmhO780cIBL6flH9WxZcetJ4jAyKI2gNrxU0LdIM6OYU7ovnLoj7BnjsFLnsSqtRq+otRvCas9qek9NL3udO8r273lATequ3TiGJDDFpxLaWV5Qs9hIe0YSC0qgwRk9Lvvm2mLu+584UBGPoKUamZ0AZkkyuy31NgR2VN6lsM8Z4q7HHkZca4dYaUlxJBj0OOEvAMSqf809FtENfG1ny6aCDXPIrdo4Y33Sr715+LXvy4dsBrhcjjuDM7JQ+U3aS6LReo8GCTgHdpFmQYzssNWnWPZ+r/fJqHRNrnxvt6lK81B8fXeK8ywu+9I9O5X/bNWRFGr9pHcdG6rg+3BV5Nwq0HaVYV96owNJlqStc7XDWj0JBE6lIOqFWkh/P+aPMdDwZuqAX/J1JlhL2f10T1em+OkVN6XagHXsaSDwP
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: V+NQtccZQi1wDKQLtcMT/SJtHEb72MWgEwaGeJ71KfdrfRQQMV+JPb2OlqYu+qa8D9KTSXvjeji00BHsLgw2q+nLMtMXOMMmDgRUKaRJOzuD/bPknIiXDPJTNwDI3NAgYu+Uo+jnEEJ59tMgjJeAqe2CKwKVMJV4g2CmDfpBnlvqnMTezl838hN6/gjLY7pb1e2y0G/68pEjgPvwD34cls/mKZVuH6DmHF5LKzZYafun0SDAoc5lt52YXPVWh+NgIzpc1w8PBDvjCqKWW9QT6PwBryWjzk8bBTiXJLJyDkyfc01pGE7MgcIO3wqsILg+s7LuNqg7SaqPthqIFUGHhazxQ+Zvely5ltK7mG+OXdeCMv//aSjnBRD/7xY2plGVw5YokB2yYC5mkJm7AMGxRcOfjUUReT23213M2/5TC2QqQB9eHtXm8gYKPhnls1b3MfwyvJdy/YasdXE56gZEhN3ODCw/ntRhw8tGnyC9PZEHZFld9IbCuO47LgYSmXJe4eXme1APK5jZPnpGg2JD6s+ccA0hmIMEqciFogaMe0Yz2xbcj7vDPi/XVtYSArrQLMIjFJP6Jr1A0/NMRjNm9Fl4EiJH0VbYEhiaRJj04+I=
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?O6tURigrd6yLj5RqLTx5IZg2qK0XszsGFe6XWCkCqxaq7z3SV4a1htx+6kQF?=
- =?us-ascii?Q?CDltjBcgDnU84bXbW0zpa7QqRKLqdMmrFE6pNUpXwjBEWjZBWmVsVOwRTLfD?=
- =?us-ascii?Q?N9NyW83/P4gFO3TIT23on+Osh2bNTkGQN7wUZW2DoRe8Ds+Qj//y4Ufa7k0U?=
- =?us-ascii?Q?+5ddRxRS1cDJYfeQRHXVkEE53wOkDYWHtqxjWGYrHcUmz6RDiN+c0Lx3+iNS?=
- =?us-ascii?Q?RbrvWH7dzTPscuqfJefVhku1Lmmxn7Bovdb2E8kBuqQpR0JkyU7ndoXGVm1p?=
- =?us-ascii?Q?Eg5SXB+sTqrY5P6g/OEP2BR7WizSZIDSjR9R7qS/F0zmMj0GzBtRRxlcMYZz?=
- =?us-ascii?Q?KbEjHW54Y4J3cJxSNGh4UtrSRQusoBUUbLylytYmj1nE16+/XmSMkZvZQxHu?=
- =?us-ascii?Q?RGu6pIdCwj+7vaDunaMkVBG+wffSYx/wbUv8X8VYjlXpUVg/uBgotFWf23Sy?=
- =?us-ascii?Q?V6VKbdzsoF3Z7/VrmmG6d6pQv1cEp9v0mzU4miftqtLnjl3T4Ayz3zvRNv9y?=
- =?us-ascii?Q?nM3RKDB2Y5Psdwg4nnWRoTW9H726P0VhNSgnbJ4VxCtYanCis1u4tcoj8go7?=
- =?us-ascii?Q?mfnneXbAcYYRCnvovDbwN1bfR7aWqrvEZDySPFIpeRVKsmk7mHSvEKMCbD6W?=
- =?us-ascii?Q?tuv8fzNpEPK0obQuWLm/uKkWMB8RBaCCZOZz0WrRerh95xVX4Xh0zkYXKjrB?=
- =?us-ascii?Q?y5egHrn0JOGH9C9AVBQUbCGOJNYyUu4mlZ9U/0o3O3qn1CF5aT3Br3qMHkUG?=
- =?us-ascii?Q?GgZu5KiO+AMvSxyQgeTv5dvYuYblgVEyvRLyLah0xxXahdTshWHl+697OfvQ?=
- =?us-ascii?Q?2W6bcK7f0dhJzLdw/IVklk5rVpicgD3YGkV+2H6y5K78Wm71ZQpuLsNg7t8i?=
- =?us-ascii?Q?N2EXYkbGDOSvud1cbm+TVHXg/ULY0ZLnFDtUi2d6AmcmN+BZ21+5i8G/G50L?=
- =?us-ascii?Q?i5wdPiyRJQnhk76wv9L5Ys62OqpR4VXeUHi19jaobQ8halNwgS0BoqWardU5?=
- =?us-ascii?Q?6j+kInhN4IBuHSonKcQEH1paNe1hRdiZxqAPl32txSqWr4YdeI3/sR6IGbuR?=
- =?us-ascii?Q?xDTf022ZLWHxxyGhsPeJcZX7i27BOAKT8o+aOS6OqW/B9XDFHqrzU4Ui/aPn?=
- =?us-ascii?Q?zgavq+3SXaMFkQWLwtaE5iHki73si6nJlVS+rdZ8370+6M4yVFIG7whd+Di/?=
- =?us-ascii?Q?0FbHHpfFRIaVVr1gMCAUHrYixMdZ0BT5P78Hwg=3D=3D?=
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-746f3.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: a82c8a00-d375-4dbd-3780-08db83be7891
-X-MS-Exchange-CrossTenant-AuthSource: SY4P282MB1835.AUSP282.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2023 16:30:29.4738
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SY6P282MB3254
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add quirks for Lenovo 16IAH7, 16IAX7 and 16ARHA7 that have dual
-cs35l41 amplifiers that drives their speakers.
+There isn't a simple hardware enumeration to indicate to software that
+a system is running with Sub-NUMA Clustering enabled.
 
-Please note that this patch depends on patch 1, for the added quirks
-to work for the specified models, proper CSC3551 configurtion fixups
-have to be applied.
+Compare the number of NUMA nodes with the number of L3 caches to calculate
+the number of Sub-NUMA nodes per L3 cache.
 
-Signed-off-by: David Xu <xuwd1@hotmail.com>
+When Sub-NUMA clustering mode is enabled in BIOS setup, the RMID counters
+are distributed equally between the SNC nodes within each socket.
+
+E.g. if there are 400 RMID counters, and the system is configured with
+two SNC nodes per socket, then RMID counter 0..199 are used on SNC node
+0 on the socket, and RMID counter 200..399 on SNC node 1.
+
+A model specific MSR (0xca0) can change the configuration of the RMIDs
+when SNC mode is enabled.
+
+The MSR controls the interpretation of the RMID field in the
+IA32_PQR_ASSOC MSR so that the appropriate hardware counters within the
+SNC node are updated. If reconfigured from default, RMIDs are divided
+evenly across clusters.
+
+Also initialize a per-cpu RMID offset value. Use this to calculate the
+value to write to the IA32_QM_EVTSEL MSR when reading RMID event values.
+
+N.B. this works well for well-behaved NUMA applications that access
+memory predominantly from the local memory node. For applications that
+access memory across multiple nodes it may be necessary for the user
+to read counters for all SNC nodes on a socket and add the values to
+get the actual LLC occupancy or memory bandwidth. Perhaps this isn't
+all that different from applications that span across multiple sockets
+in a legacy system.
+
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+
 ---
- sound/pci/hda/patch_realtek.c | 5 +++++
- 1 file changed, 5 insertions(+)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index e2f8b608de82..cc10bb8b75d1 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -9831,6 +9831,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x31af, "ThinkCentre Station", ALC623_FIXUP_LENOVO_THINKSTATION_P340),
- 	SND_PCI_QUIRK(0x17aa, 0x3801, "Lenovo Yoga9 14IAP7", ALC287_FIXUP_YOGA9_14IAP7_BASS_SPK_PIN),
- 	SND_PCI_QUIRK(0x17aa, 0x3802, "Lenovo Yoga DuetITL 2021", ALC287_FIXUP_YOGA7_14ITL_SPEAKERS),
-+	SND_PCI_QUIRK(0x17aa, 0x3803, "Legion Slim 7i 16IAH7", ALC287_FIXUP_CS35L41_I2C_2),
- 	SND_PCI_QUIRK(0x17aa, 0x3813, "Legion 7i 15IMHG05", ALC287_FIXUP_LEGION_15IMHG05_SPEAKERS),
- 	SND_PCI_QUIRK(0x17aa, 0x3818, "Lenovo C940 / Yoga Duet 7", ALC298_FIXUP_LENOVO_C940_DUET7),
- 	SND_PCI_QUIRK(0x17aa, 0x3819, "Lenovo 13s Gen2 ITL", ALC287_FIXUP_13S_GEN2_SPEAKERS),
-@@ -9846,6 +9847,10 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x3853, "Lenovo Yoga 7 15ITL5", ALC287_FIXUP_YOGA7_14ITL_SPEAKERS),
- 	SND_PCI_QUIRK(0x17aa, 0x3855, "Legion 7 16ITHG6", ALC287_FIXUP_LEGION_16ITHG6),
- 	SND_PCI_QUIRK(0x17aa, 0x3869, "Lenovo Yoga7 14IAL7", ALC287_FIXUP_YOGA9_14IAP7_BASS_SPK_PIN),
-+	SND_PCI_QUIRK(0x17aa, 0x386e, "Legion Slim 7i 16IAH7", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x17aa, 0x386f, "Legion 7i 16IAX7", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x17aa, 0x3874, "Legion 7i 16IAX7", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x17aa, 0x3877, "Legion 7 16ARHA7", ALC287_FIXUP_CS35L41_I2C_2),
- 	SND_PCI_QUIRK(0x17aa, 0x3902, "Lenovo E50-80", ALC269_FIXUP_DMIC_THINKPAD_ACPI),
- 	SND_PCI_QUIRK(0x17aa, 0x3977, "IdeaPad S210", ALC283_FIXUP_INT_MIC),
- 	SND_PCI_QUIRK(0x17aa, 0x3978, "Lenovo B50-70", ALC269_FIXUP_DMIC_THINKPAD_ACPI),
+Changes since v2:
+
+* Rebased to v6.5-rc1
+
+Peter Newman:	Found that I'd reversed the actions writing to the new
+		MSR to enable/disable RMID remapping for SNC mode.
+* Fixed.
+
+Peter Newman:	Provided Reviewed-by: and Tested-by: tags
+
+* Included in this series.
+
+Randy Dunlap:	Reported a run-on sentence in the documentation.
+
+* Broke the sentence into two as suggested.
+
+Shaopeng Tan:	Reported that the CMT resctrl self-test failed
+
+* Added extra patch to the series to make the resctrl test detect when SNC
+  mode is enabled and adjust effective cache size.
+
+* I also patched the rdtgroup_cbm_to_size() function to adjust the cache
+  size reported in the "size" files in resctrl groups when SNC is active.
+
+Shaopeng Tan:	Noted the for_each_capable_rdt_resource() macro is no longer used.
+
+* Deleted defintion of this macro.
+
+Tony Luck (8):
+  x86/resctrl: Refactor in preparation for node-scoped resources
+  x86/resctrl: Remove hard code of RDT_RESOURCE_L3 in monitor.c
+  x86/resctrl: Add a new node-scoped resource to rdt_resources_all[]
+  x86/resctrl: Add code to setup monitoring at L3 or NODE scope.
+  x86/resctrl: Add package scoped resource
+  x86/resctrl: Update documentation with Sub-NUMA cluster changes
+  x86/resctrl: Determine if Sub-NUMA Cluster is enabled and initialize.
+  selftests/resctrl: Adjust effective L3 cache size when SNC enabled
+
+ Documentation/arch/x86/resctrl.rst          |  10 +-
+ include/linux/resctrl.h                     |   5 +-
+ arch/x86/include/asm/resctrl.h              |   2 +
+ arch/x86/kernel/cpu/resctrl/internal.h      |  20 ++-
+ tools/testing/selftests/resctrl/resctrl.h   |   1 +
+ arch/x86/kernel/cpu/resctrl/core.c          | 154 ++++++++++++++++++--
+ arch/x86/kernel/cpu/resctrl/monitor.c       |  24 +--
+ arch/x86/kernel/cpu/resctrl/pseudo_lock.c   |   2 +-
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c      |   6 +-
+ tools/testing/selftests/resctrl/resctrlfs.c |  57 ++++++++
+ 10 files changed, 248 insertions(+), 33 deletions(-)
+
+
+base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
 -- 
-2.41.0
+2.40.1
 
