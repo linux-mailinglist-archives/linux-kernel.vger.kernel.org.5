@@ -2,66 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BEA275254C
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 16:37:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD409752557
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 16:40:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229761AbjGMOhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 10:37:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49938 "EHLO
+        id S231362AbjGMOkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 10:40:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbjGMOhT (ORCPT
+        with ESMTP id S230371AbjGMOkV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 10:37:19 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 204781991
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 07:37:18 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2b743161832so11888251fa.1
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 07:37:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1689259036; x=1691851036;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xPi8Rde664k4OWrsk/yjT4y4yqazwgh3DlNB+1+OPRk=;
-        b=0AQf6ugszcZPVHY7DwMOiA13w29AGJT5OPOCp2OF+zN86xFPJowoWVjL2xiRvqqsF4
-         iRhdMPVvNexvHD9CqLBb8eCGnaaKkW4wpq53MqDi5jxJozA0WNMu8hOWmnOYernj/2IY
-         bA11DqM9IxQv+R+PEm3OGM0M+gif2kxsEXVDNCcMwueZMbQsM4olsXNKpoxlDar+VA32
-         Ly+ry+Ijehrjp3+zB0RYGXAUltkLzxTBJWwLGm9GOtvyE3WEU77BnO1o0I7xV1DLS2Vb
-         tOhAxVRH6x/drXN9EfOv+1gRTFAlCncCJw7GD9Fz2KAjLUSEsihFKlsjacvPKmTEWOBJ
-         eKkA==
+        Thu, 13 Jul 2023 10:40:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D67B11FDB
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 07:39:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689259178;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nfVJf+CjaE6DuMWqWkr20N6XnbITZj0/2XbgRP6AAJI=;
+        b=hlx7FYyE2mWF8MFJ7AUwPIBUOrlt+eocXuZNjfdHfGY2z6RNS9BZ1RV7eoo+1NqHdZ0LPf
+        daWO9/AKL8fGkZenskGiD8Q9o+yOZqtQkY7wFOKiTxMK3jopeBMXIMLah8bFNNrqgT+bNW
+        95HHu6PPVf8hsNBM8/nSkYrN/Fe7Pcc=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-274-y_TbrcR-NqaIemHdZmoFWA-1; Thu, 13 Jul 2023 10:39:36 -0400
+X-MC-Unique: y_TbrcR-NqaIemHdZmoFWA-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-31455dcc30eso603128f8f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 07:39:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689259036; x=1691851036;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xPi8Rde664k4OWrsk/yjT4y4yqazwgh3DlNB+1+OPRk=;
-        b=VwkdJjTVX48AY6FRXDyok8wE9egkg6H4EcS42Iw6Z6zRJKxlK9Nf/KSwvac5teVAj4
-         RCDR5bRkxEt+6+ry7bJabutQjRZPMpAuhGYeT18OF8AXa+VA7+kRxIGECw3wi4nsSipt
-         oTTvtcOzRJcYTR3iTpEnPFX+ft7Xctomd4pYaa9tMH8J0Sj3zOZQMi+qsVncntZAj+Kt
-         JPc1pZ48yrPEYxkATCUFAjzOKUo2lhM+olEIf/hj2H0VhXDxpMv+2pY0YNmEw5LOAaDJ
-         A5EQv/6u7EHhup+9SrZl8KMSZ7vfqgy+/f3V143KPk21MqSeRjMwNXcm4vuO3+qtBMBZ
-         8R4g==
-X-Gm-Message-State: ABy/qLbgWzE1p+gQa65YmtDMFaHRXaCqFtfoCmKW5WrWpSyzgYWZmqVf
-        ovzGN2mefJejLjb3dIDy7PaaPK2vCOfJT3zORZpLjg==
-X-Google-Smtp-Source: APBJJlGb+Hl5Ue9NsHUBSVMKchaqyoYb8Q3XGAg4ZgImreaHHxSMI8h/aNdlV3mV0Si2/cGZyFd6CFDg1CxrvDIwX2w=
-X-Received: by 2002:a2e:9dd0:0:b0:2b6:df15:f6ad with SMTP id
- x16-20020a2e9dd0000000b002b6df15f6admr1529183ljj.18.1689259036279; Thu, 13
- Jul 2023 07:37:16 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689259175; x=1691851175;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nfVJf+CjaE6DuMWqWkr20N6XnbITZj0/2XbgRP6AAJI=;
+        b=ER4c1pD/NezjIwCwqrV/TieZOu+LoCQ48tqtkY0efpErAsrAK1Zsixnz3sWmUNdKj3
+         /c61EGIGwJo+8MVGaNRlY/QShc1SmmoQoCgGgQmECrGq3Z+gmI2SyIUCFcQXqNnVQNka
+         o6UG/j6YzfKgkixzuPg+KKHwfOdFrPlHtiB5r88wKjCp/x/A1ra31D85qZiCKeUtcYhq
+         YSRWxOz/g8TRIizH0uBa9YU4hQdULD5tbYJnZGpK2tlTuKlsFr9kx0kLV42ZvlRVuPIz
+         wMDthDQrQWhiQcdRbIie4v1SzrHA4VzQKG+RkozXZm7VRr/q7nV2hyIe+7hjZT/WJoEt
+         vXLA==
+X-Gm-Message-State: ABy/qLbg26jlGJOa9vDwh5UFeSfHFTfp/Ufm7+6qyq1nLCCglniKbGs8
+        +30B9B+3AlO7i3Z8W7jiTwoQ1lNs5DF06VSwU8SzfXClyZce4nuCHbFllPg+/Ya+8cj7Bgt9CH8
+        kCa49511R9eTePN8+g0SP61hE
+X-Received: by 2002:adf:f887:0:b0:314:4db:e0bd with SMTP id u7-20020adff887000000b0031404dbe0bdmr1905887wrp.11.1689259175307;
+        Thu, 13 Jul 2023 07:39:35 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGSjMYfGqhv6sHrb1dNLPmiyVP/KsEwzfsp5VIi+Zc70Ljs1HbCLTVI/ixiy7GeEU81Mz2Nfw==
+X-Received: by 2002:adf:f887:0:b0:314:4db:e0bd with SMTP id u7-20020adff887000000b0031404dbe0bdmr1905861wrp.11.1689259174914;
+        Thu, 13 Jul 2023 07:39:34 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c717:6100:2da7:427e:49a5:e07? (p200300cbc71761002da7427e49a50e07.dip0.t-ipconnect.de. [2003:cb:c717:6100:2da7:427e:49a5:e07])
+        by smtp.gmail.com with ESMTPSA id q14-20020adfea0e000000b003063a92bbf5sm8107671wrm.70.2023.07.13.07.39.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 Jul 2023 07:39:34 -0700 (PDT)
+Message-ID: <ac816a32-cea9-363f-4490-19e6f5225c3d@redhat.com>
+Date:   Thu, 13 Jul 2023 16:39:33 +0200
 MIME-Version: 1.0
-References: <8b57db8d-1d3a-883e-eb8f-ddf15f19d823@gmail.com>
-In-Reply-To: <8b57db8d-1d3a-883e-eb8f-ddf15f19d823@gmail.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Thu, 13 Jul 2023 16:37:04 +0200
-Message-ID: <CAMRc=MdDmsUUwZqKFt6vMaL9iuRT-44XvLJrEbr9vZTxOJR1Mg@mail.gmail.com>
-Subject: Re: [PATCH] mmc: davinci: Make SDIO irq truly optional
-To:     Julien Delbergue <j.delbergue.foss@gmail.com>
-Cc:     ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v1 2/9] selftests/mm: Give scripts execute permission
+Content-Language: en-US
+To:     Ryan Roberts <ryan.roberts@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Mark Brown <broonie@kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Florent Revest <revest@chromium.org>,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        SeongJae Park <sj@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org
+References: <20230713135440.3651409-1-ryan.roberts@arm.com>
+ <20230713135440.3651409-3-ryan.roberts@arm.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <20230713135440.3651409-3-ryan.roberts@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,36 +93,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 11:31=E2=80=AFAM Julien Delbergue
-<j.delbergue.foss@gmail.com> wrote:
->
-> The following error is printed on Logic PD's DA850 EVM:
->   davinci_mmc 1c40000.mmc: error -ENXIO: IRQ index 1 not found
->
-> Depending on the board, the SDIO interrupt may not be present, so use
-> the correct function to reflect that and prevent logging an error.
->
-> Signed-off-by: Julien Delbergue <j.delbergue.foss@gmail.com>
+On 13.07.23 15:54, Ryan Roberts wrote:
+> When run under run_vmtests.sh, test scripts were failing to run with
+> "permission denied" due to the scripts not being executable.
+> 
+> It is also annoying not to be able to directly invoke run_vmtests.sh,
+> which is solved by giving also it the execute permission.
+> 
+> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 > ---
->  drivers/mmc/host/davinci_mmc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/mmc/host/davinci_mmc.c b/drivers/mmc/host/davinci_mm=
-c.c
-> index 7138dfa065bf..fb686c0d171c 100644
-> --- a/drivers/mmc/host/davinci_mmc.c
-> +++ b/drivers/mmc/host/davinci_mmc.c
-> @@ -1257,7 +1257,7 @@ static int davinci_mmcsd_probe(struct platform_devi=
-ce *pdev)
->
->         host->use_dma =3D use_dma;
->         host->mmc_irq =3D irq;
-> -       host->sdio_irq =3D platform_get_irq(pdev, 1);
-> +       host->sdio_irq =3D platform_get_irq_optional(pdev, 1);
->
->         if (host->use_dma) {
->                 ret =3D davinci_acquire_dma_channels(host);
-> --
-> 2.34.1
+>   tools/testing/selftests/mm/charge_reserved_hugetlb.sh  | 0
+>   tools/testing/selftests/mm/check_config.sh             | 0
+>   tools/testing/selftests/mm/hugetlb_reparenting_test.sh | 0
+>   tools/testing/selftests/mm/run_vmtests.sh              | 0
+>   tools/testing/selftests/mm/test_hmm.sh                 | 0
+>   tools/testing/selftests/mm/test_vmalloc.sh             | 0
+>   tools/testing/selftests/mm/va_high_addr_switch.sh      | 0
+>   tools/testing/selftests/mm/write_hugetlb_memory.sh     | 0
+>   8 files changed, 0 insertions(+), 0 deletions(-)
+>   mode change 100644 => 100755 tools/testing/selftests/mm/charge_reserved_hugetlb.sh
+>   mode change 100644 => 100755 tools/testing/selftests/mm/check_config.sh
+>   mode change 100644 => 100755 tools/testing/selftests/mm/hugetlb_reparenting_test.sh
+>   mode change 100644 => 100755 tools/testing/selftests/mm/run_vmtests.sh
+>   mode change 100644 => 100755 tools/testing/selftests/mm/test_hmm.sh
+>   mode change 100644 => 100755 tools/testing/selftests/mm/test_vmalloc.sh
+>   mode change 100644 => 100755 tools/testing/selftests/mm/va_high_addr_switch.sh
+>   mode change 100644 => 100755 tools/testing/selftests/mm/write_hugetlb_memory.sh
+> 
+> diff --git a/tools/testing/selftests/mm/charge_reserved_hugetlb.sh b/tools/testing/selftests/mm/charge_reserved_hugetlb.sh
+> old mode 100644
+> new mode 100755
+> diff --git a/tools/testing/selftests/mm/check_config.sh b/tools/testing/selftests/mm/check_config.sh
+> old mode 100644
+> new mode 100755
+> diff --git a/tools/testing/selftests/mm/hugetlb_reparenting_test.sh b/tools/testing/selftests/mm/hugetlb_reparenting_test.sh
+> old mode 100644
+> new mode 100755
+> diff --git a/tools/testing/selftests/mm/run_vmtests.sh b/tools/testing/selftests/mm/run_vmtests.sh
+> old mode 100644
+> new mode 100755
+> diff --git a/tools/testing/selftests/mm/test_hmm.sh b/tools/testing/selftests/mm/test_hmm.sh
+> old mode 100644
+> new mode 100755
+> diff --git a/tools/testing/selftests/mm/test_vmalloc.sh b/tools/testing/selftests/mm/test_vmalloc.sh
+> old mode 100644
+> new mode 100755
+> diff --git a/tools/testing/selftests/mm/va_high_addr_switch.sh b/tools/testing/selftests/mm/va_high_addr_switch.sh
+> old mode 100644
+> new mode 100755
+> diff --git a/tools/testing/selftests/mm/write_hugetlb_memory.sh b/tools/testing/selftests/mm/write_hugetlb_memory.sh
+> old mode 100644
+> new mode 100755
 
-Acked-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Sounds reasonable to me.
+
+Probably due to:
+
+commit baa489fabd01596d5426d6e112b34ba5fb59ab82
+Author: SeongJae Park <sj@kernel.org>
+Date:   Tue Jan 3 18:07:53 2023 +0000
+
+     selftests/vm: rename selftests/vm to selftests/mm
+     
+     Rename selftets/vm to selftests/mm for being more consistent with the
+     code, documentation, and tools directories, and won't be confused with
+     virtual machines.
+
+
+and indeed, it contains
+
+diff --git a/tools/testing/selftests/vm/run_vmtests.sh b/tools/testing/selftests/mm/run_vmtests.sh
+old mode 100755
+new mode 100644
+similarity index 100%
+rename from tools/testing/selftests/vm/run_vmtests.sh
+rename to tools/testing/selftests/mm/run_vmtests.sh
+
+
+Reviewed-by: David Hildenbrand <david@redhat.com>
+
+-- 
+Cheers,
+
+David / dhildenb
+
