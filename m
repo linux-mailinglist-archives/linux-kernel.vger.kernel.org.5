@@ -2,208 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91EFF752D2E
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 00:46:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25640752D32
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 00:49:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231234AbjGMWq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 18:46:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39584 "EHLO
+        id S233189AbjGMWtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 18:49:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231421AbjGMWqO (ORCPT
+        with ESMTP id S232564AbjGMWtT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 18:46:14 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B6EF270B
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 15:46:13 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1b8a7734734so5887415ad.2
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 15:46:13 -0700 (PDT)
+        Thu, 13 Jul 2023 18:49:19 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C5D02D46
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 15:49:17 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-51ddbf83ff9so5267a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 15:49:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689288373; x=1691880373;
-        h=content-transfer-encoding:cc:to:from:subject:message-id
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jlviYcHwsz3zgb3Z/9cmi+oU98mhelhtL3RDJqVwSjc=;
-        b=xxlwEtmNqK7eSUJEB804Hz+q428CMYwEVKko8eWqMrpf0Ahj2+mrxahB7oMV/O4F5B
-         1XkCBi7KaovT4IE3C8X4aIQGrmiTvatUY/8Xf6/qJc4BcV+GWzNm5A2vdtPdFC8YE3rx
-         uoLxvosGJYNIykJioP74J4N2k9ScDen4Q8n+BhhU2sPI4CDXdMU18dYIhyACkr14SsNW
-         AWL/CQ1xt1A9wb/F3APVRGFN5zyyX+fD3h69y84wsDocJjRjzwR7OdOrYeeKDzvbavxR
-         Zkrgboh6E8Xe+g9wgMutsgOqEsrJyoNdXJjUHU/V46/BOTbRkoMJ4ikKVK6ve7skAqvB
-         SGhQ==
+        d=google.com; s=20221208; t=1689288556; x=1691880556;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MzcnyZs6D3jZP1/90Em2wdIP94ZrD+KbkxYDRuLwWJE=;
+        b=YbSBSKEGuVEqFb+8L1xB90bbx9PAx1IFGTDlwilLvm19IfKutZMrVwaN1yOaCXRzw5
+         MZUQjJpEWVZM0DR2m5AxleVdTk2ymAh4HpgWCiWdwfTjEVXF/OpyyFu9SpllQ9lrpzdT
+         xyz9Ijr8jA8PvvDfPo4oQpv5DJikjRnpxtuIZp0ll1yB/cHvfRQFiMg+OlFSVqnBDCy6
+         XZDThvtyAqCF75ID6U6JTpxG0+cS19CczfMsQ91gOY/M4t0H+rGN+4TvSNyxeinNxePx
+         0VjKQaZWz00m4npcN3skY9OJrbHcetRubpJbVaAiBp269Hce49FsIai61vXQji+qF6jZ
+         yGAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689288373; x=1691880373;
-        h=content-transfer-encoding:cc:to:from:subject:message-id
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=jlviYcHwsz3zgb3Z/9cmi+oU98mhelhtL3RDJqVwSjc=;
-        b=RfIqsNspD00Cl62ye/Q8AZQK/EwRtPf5wtSGNLI5SKT0VAIEQctWcwvwFNtgNHWGe8
-         ZhXKMHAIn2z9FXR7oF+UY6qHFgklCIOqjyAF/HQa9g8A129w+NMYceXPiVSVHH+PdmnS
-         JVWUPblU8FQ4CRwazpu4NMWJQPtNBm5nIkZu4ikG/vJ1QvIDGIPyEC4m0XLj83/c+M1f
-         xtXKw04t4069IRUGsJrRQMT1Y7TvgoFHsVKYChNWkcLgsh8w/rs8BN5QiPRGXrOqYsbH
-         DO06ijdOW22Ktayf1PhoCFH0JCTZJXxhoFF6wiA7MlgmOpEGI7SikgVer1iCK6ASkgiU
-         BGbg==
-X-Gm-Message-State: ABy/qLZSXN5w0dy670DCQ/gs344MdRWTOR9tmjtEysEu8Ag4oqerO0z+
-        Iq+Istb8HykxshBbmiqnumafztrM/CgCa5Ar7Q==
-X-Google-Smtp-Source: APBJJlERPG/+eayyUgcaUIRW0xWDavYekBKC7TcOLS/MzLmlBQovbnx1yFNwnYhI8Hf1GI05Y3XFjgiX1sbGXMahCw==
-X-Received: from ackerleytng-ctop.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:13f8])
- (user=ackerleytng job=sendgmr) by 2002:a17:902:e9c6:b0:1a6:4ce8:3ed5 with
- SMTP id 6-20020a170902e9c600b001a64ce83ed5mr8890plk.4.1689288373014; Thu, 13
- Jul 2023 15:46:13 -0700 (PDT)
-Date:   Thu, 13 Jul 2023 22:46:11 +0000
-In-Reply-To: <ZFWli2/H5M8MZRiY@google.com> (message from Sean Christopherson
- on Fri, 5 May 2023 17:55:39 -0700)
-Mime-Version: 1.0
-Message-ID: <diqzr0pb2zws.fsf@ackerleytng-ctop.c.googlers.com>
-Subject: Re: Rename restrictedmem => guardedmem? (was: Re: [PATCH v10 0/9]
- KVM: mm: fd-based approach for supporting KVM)
-From:   Ackerley Tng <ackerleytng@google.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     david@redhat.com, chao.p.peng@linux.intel.com, pbonzini@redhat.com,
-        vkuznets@redhat.com, jmattson@google.com, joro@8bytes.org,
-        mail@maciej.szmigiero.name, vbabka@suse.cz, vannapurve@google.com,
-        yu.c.zhang@linux.intel.com, kirill.shutemov@linux.intel.com,
-        dhildenb@redhat.com, qperret@google.com, tabba@google.com,
-        michael.roth@amd.com, wei.w.wang@intel.com, rppt@kernel.org,
-        liam.merwick@oracle.com, isaku.yamahata@gmail.com,
-        jarkko@kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, hughd@google.com, brauner@kernel.org
-Content-Type: text/plain; charset="utf-8"
+        d=1e100.net; s=20221208; t=1689288556; x=1691880556;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MzcnyZs6D3jZP1/90Em2wdIP94ZrD+KbkxYDRuLwWJE=;
+        b=cskGDF6FwjbOjHNyu0vP4/jlTr9DQ9V0KEjG/EvPKGf2N+3In8GW8aqDcj1+DiWH06
+         IFyRkhu76R/dwyIvArh67KOYGXykCrDgKa0xk8O00kFwnO+xdgrahXk4cml1NKer9DM+
+         elE2EdRUE3493uUJrqIGMdtBcIKIB3FpLfiD4kzHalRNC+07v5Wa1NmWl57bxlmBOqgL
+         nwaHI6KW+PLGu+PkLNVYvER5I+d5yWq54MC+IE+QmrqU5A8kU6F9bIzrHIoq8AKS9kXq
+         Qtb/qHcJ4b7xErnBiQi+bIS2alkOcVVEGwB+PSNp9C2wEADb5gruszkZO+fUvau7QNcP
+         A8YA==
+X-Gm-Message-State: ABy/qLY37WGIxQYs8Pgco8PFjORI4S90XPr9XrwRKMxiE1oMndE98IuS
+        c22gI98a+bgCZVGVHmcqtQVaYlNyOThmFGWf79cg0g==
+X-Google-Smtp-Source: APBJJlGqtqJFAuAxh5MPiLeVS1ew+4dt62Lqbmv37bwCVq092aGdah1wT/JBThvQYfrLGxPjsNzHlRJYNInGjgUPRpw=
+X-Received: by 2002:a50:9ea7:0:b0:514:92e4:ab9f with SMTP id
+ a36-20020a509ea7000000b0051492e4ab9fmr297828edf.7.1689288555839; Thu, 13 Jul
+ 2023 15:49:15 -0700 (PDT)
+MIME-Version: 1.0
+References: <cover.1689171160.git.mchehab@kernel.org> <0e5f68ab045965292fee1748254bf9b91db9039a.1689171160.git.mchehab@kernel.org>
+In-Reply-To: <0e5f68ab045965292fee1748254bf9b91db9039a.1689171160.git.mchehab@kernel.org>
+From:   Rae Moar <rmoar@google.com>
+Date:   Thu, 13 Jul 2023 18:49:02 -0400
+Message-ID: <CA+GJov7ejGbgXPJYWKpve8Cz5M5z8G2vHJ0x+LZeK19OGmuX3A@mail.gmail.com>
+Subject: Re: [PATCH RFC 2/2] drm: add documentation for drm_buddy_test kUnit test
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        David Gow <davidgow@google.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?B?TWHDrXJhIENhbmFs?= <mairacanal@riseup.net>,
+        Nikolai Kondrashov <spbnick@gmail.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Arthur Grillo <arthurgrillo@riseup.net>,
+        Kees Cook <keescook@chromium.org>,
+        dri-devel@lists.freedesktop.org, kunit-dev@googlegroups.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, mauro.chehab@intel.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sean Christopherson <seanjc@google.com> writes:
-
-> On Fri, May 05, 2023, Ackerley Tng wrote:
->>
->> Hi Sean,
->>
->> Thanks for implementing this POC!
->>
->> ... snip ...
->>
+On Wed, Jul 12, 2023 at 10:29=E2=80=AFAM Mauro Carvalho Chehab
+<mchehab@kernel.org> wrote:
 >
-> I don't love either approach idea because it means a file created in the =
-context
-> of a VM can outlive the VM itself, and then userspace ends up with a file=
- descriptor
-> that it can't do anything with except close().  I doubt that matters in p=
-ractice
-> though, e.g. when the VM dies, all memory can be freed so that the file e=
-nds up
-> being little more than a shell.  And if we go that route, there's no need=
- to grab
-> a reference to the file during bind, KVM can just grab a longterm referen=
-ce when
-> the file is initially created and then drop it when KVM dies (and nullifi=
-es gmem->kvm).
+> As an example for the new documentation tool, add a documentation
+> for drm_buddy_test.
 >
-> ... snip ...
+> I opted to place this on a completely different directory, in order
+> to make easier to test the feature with:
 >
-> My preference is to make it a VM-scoped ioctl(), if it ends up being a KV=
-M ioctl()
-> and not a common syscall.  If the file isn't tightly coupled to a single =
-VM, then
-> punching a hole is further complicated by needing to deal with invalidati=
-ng multiple
-> regions that are bound to different @kvm instances.  It's not super compl=
-ex, but
-> AFAICT having the ioctl() be system-scoped doesn't add value, e.g. I don'=
-t think
-> having one VM own the memory will complicate even if/when we get to the p=
-oint where
-> VMs can share "private" memory, and the gmem code would still need to dea=
-l with
-> grabbing a module reference.
+>         $ make SPHINXDIRS=3D"tests" htmldocs
+>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
+> ---
+>
+> To avoid mailbombing on a large number of people, only mailing lists were=
+ C/C on the cover.
+> See [PATCH RFC 0/2] at: https://lore.kernel.org/all/cover.1689171160.git.=
+mchehab@kernel.org/
+>
+>  Documentation/index.rst                |  2 +-
+>  Documentation/tests/index.rst          |  6 ++++++
+>  Documentation/tests/kunit.rst          |  5 +++++
+>  drivers/gpu/drm/tests/drm_buddy_test.c | 12 ++++++++++++
+>  4 files changed, 24 insertions(+), 1 deletion(-)
+>  create mode 100644 Documentation/tests/index.rst
+>  create mode 100644 Documentation/tests/kunit.rst
+>
+> diff --git a/Documentation/index.rst b/Documentation/index.rst
+> index 9dfdc826618c..80a6ce14a61a 100644
+> --- a/Documentation/index.rst
+> +++ b/Documentation/index.rst
+> @@ -60,7 +60,7 @@ Various other manuals with useful information for all k=
+ernel developers.
+>     fault-injection/index
+>     livepatch/index
+>     rust/index
+> -
+> +   test/index
+>
+>  User-oriented documentation
+>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D
+> diff --git a/Documentation/tests/index.rst b/Documentation/tests/index.rs=
+t
+> new file mode 100644
+> index 000000000000..bfc39eb5c0aa
+> --- /dev/null
+> +++ b/Documentation/tests/index.rst
+> @@ -0,0 +1,6 @@
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +Kunit documentation test
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +
+> +.. toctree::
+> +   kunit
+> diff --git a/Documentation/tests/kunit.rst b/Documentation/tests/kunit.rs=
+t
+> new file mode 100644
+> index 000000000000..6ffc151988a0
+> --- /dev/null
+> +++ b/Documentation/tests/kunit.rst
+> @@ -0,0 +1,5 @@
+> +Kunit tests
+> +-----------
+> +
+> +.. include-test:: drivers/gpu/drm/tests/drm_buddy_test.c
+> +
+> diff --git a/drivers/gpu/drm/tests/drm_buddy_test.c b/drivers/gpu/drm/tes=
+ts/drm_buddy_test.c
+> index 09ee6f6af896..dd6c5afd6cd6 100644
+> --- a/drivers/gpu/drm/tests/drm_buddy_test.c
+> +++ b/drivers/gpu/drm/tests/drm_buddy_test.c
+> @@ -737,6 +737,18 @@ static int drm_buddy_suite_init(struct kunit_suite *=
+suite)
+>         return 0;
+>  }
+>
+> +/**
+> + * KTEST_SUITE: set of tests for drm buddy alloc
+> + * Scope: drm subsystem
+> + * Mega feature: drm
+> + * Feature: buddy_alloc
+> + *
+> + * KTEST_TEST: drm_test_buddy_alloc_%s
+> + * Description: Run DRM buddy allocation %arg[1] test
+> + *
+> + * arg[1].values: limit, range, optimistic, smoke, pathological
+> + */
+> +
 
-I=E2=80=99d like to follow up on this discussion about a guest_mem file
-outliving the VM and whether to have a VM-scoped ioctl or a KVM ioctl.
+I apologize that the last email included a HTML attachment of the message.
 
-Here's a POC of delayed binding of a guest_mem file to a memslot, where
-the guest_mem file outlives the VM [1].
+Just in case anyone was unable to receive the last email here is a
+copy of the message:
 
-I also hope to raise some points before we do the first integration of
-guest_mem patches!
+Hi!
 
+This is such a cool patch series. I just have a few comments related
+to the output.
 
-A use case for guest_mem inodes outliving the VM is when the host VMM
-needs to be upgraded. The guest_mem inode is passed between two VMs on
-the same host machine and all memory associated with the inode needs to
-be retained.
+In the html output the tests are listed as:
+ktest@drm_buddy_test@...
 
-To support the above use case, binding of memslots is delayed until
-first use, so that the following inode passing flow can be used:
+I wonder if instead of using the file name of "drm_buddy_test" this
+could possibly be the suite name, "drm_buddy", as this is what users
+will call when using kunit.py to run the tests. Although
+"drm_buddy_test" is also the module name so I don't mind it too much.
+But in the future the file name and module name are not guaranteed to
+be the same for other tests.
 
-1. Source (old version of host VMM) process passes guest_mem inodes to
-   destination (new version of host VMM) process via unix sockets.
-2. Destination process initializes memslots identical to source process.
-3. Destination process invokes ioctl to migrate guest_mem inode over to
-   destination process by unbinding all memslots from the source VM and
-   binding them to the destination VM. (The kvm pointer is updated in
-   this process)
+Most preferably, there would be a reference to the kunit suite name,
+file name, and the module name.
 
-Without delayed binding, step 2 will fail since initialization of
-memslots would check and find that the kvm pointer in the guest_mem
-inode points to the kvm in the source process.
+This may be difficult to implement as these can all differ. I am
+currently working on the KUnit Attribute framework which saves the
+module name and I am thinking about also saving the file path as a
+future attribute. This could be a helpful framework for the KUnit
+tests specifically.
 
+I am not sure how easy it would be to access c objects/functions using
+this system.
 
-These two patches contain the meat of the changes required to support
-delayed binding:
+Finally, I was wondering if it is the intention to put a list of all
+KUnit tests that use this new feature into tests/kunit.rst or would
+this be broken up in some way.
 
-https://github.com/googleprodkernel/linux-cc/commit/93b31a006ef2e4dbe1ef0ec=
-5d2534ca30f3bf60c
-https://github.com/googleprodkernel/linux-cc/commit/dd5ac5e53f14a1ef9915c9c=
-1e4cc1006a40b49df
+Thanks!
+-Rae
 
-Some things to highlight for the approach set out in these two patches:
-
-1. Previously, closing the guest_mem file in userspace=C2=A0is taken to mea=
-n
-   that all associated memory is to be removed and cleared. With these
-   two patches, each memslot also holds a reference to the file (and
-   therefore inode) and so even if the host VMM closes the fd, the VM
-   will be able to continue to function.
-
-   This is desirable to userspace since closing the file should not be
-   interpreted as a command to clear memory. This is aligned with the
-   way tmpfs=C2=A0files are used with KVM before guest_mem: when the file i=
-s
-   closed in userspace, the memory contents are still mapped and can
-   still be used by the VM. fallocate(PUNCH_HOLE) is how userspace
-   should command memory to be removed, just like munmap() would be used
-   to remove memory from use by KVM.
-
-2. Creating a guest mem file no longer depends on a specific VM and
-   hence the guest_mem creation ioctl can be a system ioctl instead of a
-   VM specific ioctl. This will also address Chao's concern at [3].
-
-
-I also separated cleaning up files vs inodes in
-https://github.com/googleprodkernel/linux-cc/commit/0f5aa18910c515141e57e05=
-c4cc791022047a242,
-which I believe is more aligned with how files and inodes are cleaned up
-in FSes. This alignment makes it easier to extend gmem=C2=A0to hugetlb, for
-one. While working on this, I was also wondering if we should perhaps be
-storing the inode pointer in slot->gmem instead of the file pointer? The
-memory is associated with an inode->mapping rather than the file. Are we
-binding to a userspace handle on the inode (store file pointer), or are
-we really referencing the inode (store inode pointer)?
-
-The branch [1] doesn't handle the bug Sean previously mentioned at [2]:
-Need to take a reference on the KVM module, so that even if guest_mem
-files are not bound to any VM, the KVM module cannot be unloaded. If the
-KVM module can be unloaded while guest_mem files are open, then
-userspace may be able to crash the kernel by invoking guest_mem
-functions that had been unloaded together with KVM.
-
-
-[1] https://github.com/googleprodkernel/linux-cc/tree/gmem-delayed-binding
-[2] https://lore.kernel.org/lkml/ZFWli2%2FH5M8MZRiY@google.com/
-[3] https://lore.kernel.org/lkml/20230509124428.GA217130@chaop.bj.intel.com=
-/
+>  static struct kunit_case drm_buddy_tests[] =3D {
+>         KUNIT_CASE(drm_test_buddy_alloc_limit),
+>         KUNIT_CASE(drm_test_buddy_alloc_range),
+> --
+> 2.40.1
+>
