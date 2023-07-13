@@ -2,381 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41461752618
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 17:05:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A2F875261A
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 17:05:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232834AbjGMPFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 11:05:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40038 "EHLO
+        id S232862AbjGMPFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 11:05:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232672AbjGMPEj (ORCPT
+        with ESMTP id S232883AbjGMPFD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 11:04:39 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 736D52712
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 08:04:36 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b74209fb60so12164481fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 08:04:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1689260674; x=1691852674;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7RWIyxc2fxOoTJ0pcPAUm02yVIb8lns8bxrWOs6Fo7c=;
-        b=ZV1G//OmhC3/UpDeEOU8lfbR00P/oIU8ig3n9j0FLnOzyB74gc4mbX4i8KmDqmbrdf
-         PU5BwCcqj6JbOc1zH4Gj28HscvVEZpilJBsmeO0QS4u7OUfzlrsNFQDoJNdtry1FQhGg
-         pvaXCWkDCbe/Z3L3Kf0Y+TAn2HX7jFC40XTz+Q33Xc8udDOIIaLG0JVTUVVQ/wuzboU/
-         ykKXP8G1AjesFi5GkfSSJajCVNFGR/vtJMtKKneJ91dmxBKSRZOmw3XvegU+nzZvqAdZ
-         2AZ7l6boH6Yj8P6Sc0l0HeoKeUqhQDcO++sTXZ4rln3gX2dyKRnALJWQG3HEedNgVwtz
-         OzmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689260674; x=1691852674;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7RWIyxc2fxOoTJ0pcPAUm02yVIb8lns8bxrWOs6Fo7c=;
-        b=Q3dij4NVo1k3/RxINLl+Tk9nRIEVUs9qo252yM+aa48Is28kB+k5iDAOO+hQeUXewM
-         W+jmkg7zH4W7evt+tl0S0C4cVMX4WWPHScwCZsF76kE7/z6Ttsi3vF58BHs8dDl6PJNs
-         lTb1UWg0ENmc8sRNu4hfsT7i4+iLZHfJQ0tjzc9PQayMHkyQVB6zwTP40UfDaB+85YPS
-         TQZj5NmPaFibiq3O1s2uI7FAtMnuAtf2hzabj6W/G7vBwLkInRQsmmrhO4l5YgbK0Ma5
-         ag18s0Aqj92sMggqN6YdRq3VmnkJ7HHAd6AGX4r6kd4M25PB6mhBtEYWVMaIun1R3hyo
-         zFOw==
-X-Gm-Message-State: ABy/qLb1TlN9WK4kGm9UnnF5sPOIwuHuBP0LSmPVdWlgs8kIhgtRGGgL
-        rV9xqu6mjDGvbKnsWRU3YkvX0g==
-X-Google-Smtp-Source: APBJJlFdrepyu4DVUbr74D6/B7pKN8ipCaI64VhTZAq3cbH+iff2NCSSYGBSJCnyJMIE0QURj3XnqQ==
-X-Received: by 2002:a2e:96c2:0:b0:2b7:4169:622f with SMTP id d2-20020a2e96c2000000b002b74169622fmr1931052ljj.40.1689260674567;
-        Thu, 13 Jul 2023 08:04:34 -0700 (PDT)
-Received: from blmsp.fritz.box ([2001:4091:a247:82fa:1d6d:d215:e7c4:dd5e])
-        by smtp.gmail.com with ESMTPSA id cd26-20020a170906b35a00b009929c39d5c4sm4102939ejb.36.2023.07.13.08.04.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Jul 2023 08:04:34 -0700 (PDT)
-From:   Markus Schneider-Pargmann <msp@baylibre.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Chun-Jie Chen <chun-jie.chen@mediatek.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Tinghan Shen <tinghan.shen@mediatek.com>,
-        Fabien Parent <parent.f@gmail.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Fabien Parent <fparent@baylibre.com>,
-        Markus Schneider-Pargmann <msp@baylibre.com>,
-        Alexandre Mergnat <amergnat@baylibre.com>
-Subject: [PATCH v7 8/8] soc: mediatek: pm-domains: Add support for MT8365
-Date:   Thu, 13 Jul 2023 17:04:14 +0200
-Message-Id: <20230713150414.891893-9-msp@baylibre.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230713150414.891893-1-msp@baylibre.com>
-References: <20230713150414.891893-1-msp@baylibre.com>
+        Thu, 13 Jul 2023 11:05:03 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 410DF2D7B;
+        Thu, 13 Jul 2023 08:04:47 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 724981570;
+        Thu, 13 Jul 2023 08:05:29 -0700 (PDT)
+Received: from [10.1.30.48] (C02Z41KALVDN.cambridge.arm.com [10.1.30.48])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8538A3F73F;
+        Thu, 13 Jul 2023 08:04:45 -0700 (PDT)
+Message-ID: <2b586ba2-7522-a823-afd6-7b4d978f18c2@arm.com>
+Date:   Thu, 13 Jul 2023 16:04:44 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH v1 9/9] selftests/mm: Run all tests from run_vmtests.sh
+To:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Mark Brown <broonie@kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Florent Revest <revest@chromium.org>,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org
+References: <20230713135440.3651409-1-ryan.roberts@arm.com>
+ <20230713135440.3651409-10-ryan.roberts@arm.com>
+ <d77c6592-09f4-036d-ad00-a7a28de1da3f@redhat.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <d77c6592-09f4-036d-ad00-a7a28de1da3f@redhat.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UPPERCASE_50_75 autolearn=no autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fabien Parent <fparent@baylibre.com>
+On 13/07/2023 15:50, David Hildenbrand wrote:
+> On 13.07.23 15:54, Ryan Roberts wrote:
+>> It is very unclear to me how one is supposed to run all the mm selftests
+>> consistently and get clear results.
+>>
+>> Most of the test programs are launched by both run_vmtests.sh and
+>> run_kselftest.sh:
+>>
+>>    hugepage-mmap
+>>    hugepage-shm
+>>    map_hugetlb
+>>    hugepage-mremap
+>>    hugepage-vmemmap
+>>    hugetlb-madvise
+>>    map_fixed_noreplace
+>>    gup_test
+>>    gup_longterm
+>>    uffd-unit-tests
+>>    uffd-stress
+>>    compaction_test
+>>    on-fault-limit
+>>    map_populate
+>>    mlock-random-test
+>>    mlock2-tests
+>>    mrelease_test
+>>    mremap_test
+>>    thuge-gen
+>>    virtual_address_range
+>>    va_high_addr_switch
+>>    mremap_dontunmap
+>>    hmm-tests
+>>    madv_populate
+>>    memfd_secret
+>>    ksm_tests
+>>    ksm_functional_tests
+>>    soft-dirty
+>>    cow
+>>
+> 
+> Which run_kselftest.sh are you referring to, the one in the parent directory?
 
-Add the needed board data to support MT8365 SoC.
+run_kselftest.sh is the uniform way of executing all the kselftests. mm seems to
+be trying to be special as far as I can see. Certainly if you run the `install`
+make target, kselftests will create a list of all the tests (including non-mm
+tests if you have included them in the TARGETS variable) and copy that test list
+and run_kselftest.sh to the install path along with all the test binaries. Then
+the user can invoke any of the collections or specific tests in the collections
+using that tool. It also wraps everything with tap output, runs tests with a
+timeout, etc.
 
-Signed-off-by: Fabien Parent <fparent@baylibre.com>
-Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
-Tested-by: Alexandre Mergnat <amergnat@baylibre.com>
----
- drivers/soc/mediatek/mt8365-pm-domains.h | 197 +++++++++++++++++++++++
- drivers/soc/mediatek/mtk-pm-domains.c    |   5 +
- include/linux/soc/mediatek/infracfg.h    |  41 +++++
- 3 files changed, 243 insertions(+)
- create mode 100644 drivers/soc/mediatek/mt8365-pm-domains.h
+See Documentation/dev-tools/kselftest.rst
 
-diff --git a/drivers/soc/mediatek/mt8365-pm-domains.h b/drivers/soc/mediatek/mt8365-pm-domains.h
-new file mode 100644
-index 000000000000..3d83d49eaa7c
---- /dev/null
-+++ b/drivers/soc/mediatek/mt8365-pm-domains.h
-@@ -0,0 +1,197 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+
-+#ifndef __SOC_MEDIATEK_MT8365_PM_DOMAINS_H
-+#define __SOC_MEDIATEK_MT8365_PM_DOMAINS_H
-+
-+#include "mtk-pm-domains.h"
-+#include <dt-bindings/power/mediatek,mt8365-power.h>
-+
-+/*
-+ * MT8365 power domain support
-+ */
-+
-+#define MT8365_BUS_PROT_INFRA_WR_TOPAXI(_mask)				\
-+		BUS_PROT_WR(INFRA, _mask,				\
-+			    MT8365_INFRA_TOPAXI_PROTECTEN_SET,		\
-+			    MT8365_INFRA_TOPAXI_PROTECTEN_CLR,		\
-+			    MT8365_INFRA_TOPAXI_PROTECTEN_STA1)
-+
-+#define MT8365_BUS_PROT_INFRA_WR_TOPAXI_1(_mask)			\
-+		BUS_PROT_WR(INFRA, _mask,				\
-+			    MT8365_INFRA_TOPAXI_PROTECTEN_1_SET,	\
-+			    MT8365_INFRA_TOPAXI_PROTECTEN_1_CLR,	\
-+			    MT8365_INFRA_TOPAXI_PROTECTEN_1_STA1)
-+
-+#define MT8365_BUS_PROT_SMI_WR_CLAMP_EN_PORT(port)			\
-+		BUS_PROT_WR(SMI, BIT(port),				\
-+			    MT8365_SMI_COMMON_CLAMP_EN_SET,		\
-+			    MT8365_SMI_COMMON_CLAMP_EN_CLR,		\
-+			    MT8365_SMI_COMMON_CLAMP_EN)
-+
-+#define MT8365_BUS_PROT_WAY_EN(_set_mask, _set, _sta_mask, _sta)	\
-+		_BUS_PROT(_set_mask, _set, _set, _sta_mask, _sta,	\
-+			  BUS_PROT_COMPONENT_INFRA |			\
-+			  BUS_PROT_STA_COMPONENT_INFRA_NAO |		\
-+			  BUS_PROT_INVERTED |				\
-+			  BUS_PROT_REG_UPDATE)
-+
-+static const struct scpsys_domain_data scpsys_domain_data_mt8365[] = {
-+	[MT8365_POWER_DOMAIN_MM] = {
-+		.name = "mm",
-+		.sta_mask = PWR_STATUS_DISP,
-+		.ctl_offs = 0x30c,
-+		.pwr_sta_offs = 0x0180,
-+		.pwr_sta2nd_offs = 0x0184,
-+		.sram_pdn_bits = GENMASK(8, 8),
-+		.sram_pdn_ack_bits = GENMASK(12, 12),
-+		.bp_cfg = {
-+			MT8365_BUS_PROT_INFRA_WR_TOPAXI_1(
-+				MT8365_INFRA_TOPAXI_PROTECTEN_1_MM2INFRA_AXI_GALS_MST_0 |
-+				MT8365_INFRA_TOPAXI_PROTECTEN_1_MM2INFRA_AXI_GALS_MST_1),
-+			MT8365_BUS_PROT_INFRA_WR_TOPAXI(
-+				MT8365_INFRA_TOPAXI_PROTECTEN_MM_M0 |
-+				MT8365_INFRA_TOPAXI_PROTECTEN_MDMCU_M1 |
-+				MT8365_INFRA_TOPAXI_PROTECTEN_MM2INFRA_AXI_GALS_SLV_0 |
-+				MT8365_INFRA_TOPAXI_PROTECTEN_MM2INFRA_AXI_GALS_SLV_1),
-+			MT8365_BUS_PROT_WAY_EN(
-+				MT8365_INFRA_TOPAXI_SI0_WAY_EN_MMAPB_S,
-+				MT8365_INFRA_TOPAXI_SI0_CTL,
-+				MT8365_INFRA_NAO_TOPAXI_SI0_CTRL_UPDATED,
-+				MT8365_INFRA_NAO_TOPAXI_SI0_STA),
-+			MT8365_BUS_PROT_WAY_EN(
-+				MT8365_INFRA_TOPAXI_SI2_WAY_EN_PERI_M1,
-+				MT8365_INFRA_TOPAXI_SI2_CTL,
-+				MT8365_INFRA_NAO_TOPAXI_SI2_CTRL_UPDATED,
-+				MT8365_INFRA_NAO_TOPAXI_SI2_STA),
-+			MT8365_BUS_PROT_INFRA_WR_TOPAXI(
-+				MT8365_INFRA_TOPAXI_PROTECTEN_MMAPB_S),
-+		},
-+		.caps = MTK_SCPD_STRICT_BUS_PROTECTION | MTK_SCPD_HAS_INFRA_NAO,
-+	},
-+	[MT8365_POWER_DOMAIN_VENC] = {
-+		.name = "venc",
-+		.sta_mask = PWR_STATUS_VENC,
-+		.ctl_offs = 0x0304,
-+		.pwr_sta_offs = 0x0180,
-+		.pwr_sta2nd_offs = 0x0184,
-+		.sram_pdn_bits = GENMASK(8, 8),
-+		.sram_pdn_ack_bits = GENMASK(12, 12),
-+		.bp_cfg = {
-+			MT8365_BUS_PROT_SMI_WR_CLAMP_EN_PORT(1),
-+		},
-+	},
-+	[MT8365_POWER_DOMAIN_AUDIO] = {
-+		.name = "audio",
-+		.sta_mask = PWR_STATUS_AUDIO,
-+		.ctl_offs = 0x0314,
-+		.pwr_sta_offs = 0x0180,
-+		.pwr_sta2nd_offs = 0x0184,
-+		.sram_pdn_bits = GENMASK(12, 8),
-+		.sram_pdn_ack_bits = GENMASK(17, 13),
-+		.bp_cfg = {
-+			MT8365_BUS_PROT_INFRA_WR_TOPAXI_1(
-+				MT8365_INFRA_TOPAXI_PROTECTEN_1_PWRDNREQ_MP1_L2C_AFIFO |
-+				MT8365_INFRA_TOPAXI_PROTECTEN_1_AUDIO_BUS_AUDIO_M),
-+		},
-+		.caps = MTK_SCPD_ACTIVE_WAKEUP,
-+	},
-+	[MT8365_POWER_DOMAIN_CONN] = {
-+		.name = "conn",
-+		.sta_mask = PWR_STATUS_CONN,
-+		.ctl_offs = 0x032c,
-+		.pwr_sta_offs = 0x0180,
-+		.pwr_sta2nd_offs = 0x0184,
-+		.sram_pdn_bits = 0,
-+		.sram_pdn_ack_bits = 0,
-+		.bp_cfg = {
-+			MT8365_BUS_PROT_INFRA_WR_TOPAXI(
-+				MT8365_INFRA_TOPAXI_PROTECTEN_AP2CONN_AHB),
-+			MT8365_BUS_PROT_INFRA_WR_TOPAXI_1(
-+				MT8365_INFRA_TOPAXI_PROTECTEN_1_CONN2INFRA_AXI_GALS_MST),
-+			MT8365_BUS_PROT_INFRA_WR_TOPAXI(
-+				MT8365_INFRA_TOPAXI_PROTECTEN_CONN2INFRA_AHB),
-+			MT8365_BUS_PROT_INFRA_WR_TOPAXI_1(
-+				MT8365_INFRA_TOPAXI_PROTECTEN_1_INFRA2CONN_AHB_GALS_SLV),
-+		},
-+		.caps = MTK_SCPD_ACTIVE_WAKEUP | MTK_SCPD_KEEP_DEFAULT_OFF,
-+	},
-+	[MT8365_POWER_DOMAIN_MFG] = {
-+		.name = "mfg",
-+		.sta_mask = PWR_STATUS_MFG,
-+		.ctl_offs = 0x0338,
-+		.pwr_sta_offs = 0x0180,
-+		.pwr_sta2nd_offs = 0x0184,
-+		.sram_pdn_bits = GENMASK(9, 8),
-+		.sram_pdn_ack_bits = GENMASK(13, 12),
-+		.bp_cfg = {
-+			MT8365_BUS_PROT_INFRA_WR_TOPAXI(BIT(25)),
-+			MT8365_BUS_PROT_INFRA_WR_TOPAXI(
-+				MT8365_INFRA_TOPAXI_PROTECTEN_MFG_M0 |
-+				MT8365_INFRA_TOPAXI_PROTECTEN_INFRA2MFG),
-+		},
-+	},
-+	[MT8365_POWER_DOMAIN_CAM] = {
-+		.name = "cam",
-+		.sta_mask = BIT(25),
-+		.ctl_offs = 0x0344,
-+		.pwr_sta_offs = 0x0180,
-+		.pwr_sta2nd_offs = 0x0184,
-+		.sram_pdn_bits = GENMASK(9, 8),
-+		.sram_pdn_ack_bits = GENMASK(13, 12),
-+		.bp_cfg = {
-+			MT8365_BUS_PROT_INFRA_WR_TOPAXI_1(
-+				MT8365_INFRA_TOPAXI_PROTECTEN_1_CAM2MM_AXI_GALS_MST),
-+			MT8365_BUS_PROT_SMI_WR_CLAMP_EN_PORT(2),
-+		},
-+	},
-+	[MT8365_POWER_DOMAIN_VDEC] = {
-+		.name = "vdec",
-+		.sta_mask = BIT(31),
-+		.ctl_offs = 0x0370,
-+		.pwr_sta_offs = 0x0180,
-+		.pwr_sta2nd_offs = 0x0184,
-+		.sram_pdn_bits = GENMASK(8, 8),
-+		.sram_pdn_ack_bits = GENMASK(12, 12),
-+		.bp_cfg = {
-+			MT8365_BUS_PROT_SMI_WR_CLAMP_EN_PORT(3),
-+		},
-+	},
-+	[MT8365_POWER_DOMAIN_APU] = {
-+		.name = "apu",
-+		.sta_mask = BIT(16),
-+		.ctl_offs = 0x0378,
-+		.pwr_sta_offs = 0x0180,
-+		.pwr_sta2nd_offs = 0x0184,
-+		.sram_pdn_bits = GENMASK(14, 8),
-+		.sram_pdn_ack_bits = GENMASK(21, 15),
-+		.bp_cfg = {
-+			MT8365_BUS_PROT_INFRA_WR_TOPAXI_1(
-+				MT8365_INFRA_TOPAXI_PROTECTEN_1_APU2AP |
-+				MT8365_INFRA_TOPAXI_PROTECTEN_1_APU_CBIP_GALS_MST),
-+			MT8365_BUS_PROT_SMI_WR_CLAMP_EN_PORT(4),
-+		},
-+	},
-+	[MT8365_POWER_DOMAIN_DSP] = {
-+		.name = "dsp",
-+		.sta_mask = BIT(17),
-+		.ctl_offs = 0x037C,
-+		.pwr_sta_offs = 0x0180,
-+		.pwr_sta2nd_offs = 0x0184,
-+		.sram_pdn_bits = GENMASK(11, 8),
-+		.sram_pdn_ack_bits = GENMASK(15, 12),
-+		.bp_cfg = {
-+			MT8365_BUS_PROT_INFRA_WR_TOPAXI_1(
-+				MT8365_INFRA_TOPAXI_PROTECTEN_1_PWRDNREQ_INFRA_GALS_ADB |
-+				MT8365_INFRA_TOPAXI_PROTECTEN_1_AUDIO_BUS_DSP_M |
-+				MT8365_INFRA_TOPAXI_PROTECTEN_1_AUDIO_BUS_DSP_S),
-+		},
-+		.caps = MTK_SCPD_ACTIVE_WAKEUP,
-+	},
-+};
-+
-+static const struct scpsys_soc_data mt8365_scpsys_data = {
-+	.domains_data = scpsys_domain_data_mt8365,
-+	.num_domains = ARRAY_SIZE(scpsys_domain_data_mt8365),
-+};
-+
-+#endif /* __SOC_MEDIATEK_MT8365_PM_DOMAINS_H */
-diff --git a/drivers/soc/mediatek/mtk-pm-domains.c b/drivers/soc/mediatek/mtk-pm-domains.c
-index cf45e29420b2..4215ddef6d36 100644
---- a/drivers/soc/mediatek/mtk-pm-domains.c
-+++ b/drivers/soc/mediatek/mtk-pm-domains.c
-@@ -24,6 +24,7 @@
- #include "mt8188-pm-domains.h"
- #include "mt8192-pm-domains.h"
- #include "mt8195-pm-domains.h"
-+#include "mt8365-pm-domains.h"
- 
- #define MTK_POLL_DELAY_US		10
- #define MTK_POLL_TIMEOUT		USEC_PER_SEC
-@@ -652,6 +653,10 @@ static const struct of_device_id scpsys_of_match[] = {
- 		.compatible = "mediatek,mt8195-power-controller",
- 		.data = &mt8195_scpsys_data,
- 	},
-+	{
-+		.compatible = "mediatek,mt8365-power-controller",
-+		.data = &mt8365_scpsys_data,
-+	},
- 	{ }
- };
- 
-diff --git a/include/linux/soc/mediatek/infracfg.h b/include/linux/soc/mediatek/infracfg.h
-index 07f67b3d8e97..6c6cccc848f4 100644
---- a/include/linux/soc/mediatek/infracfg.h
-+++ b/include/linux/soc/mediatek/infracfg.h
-@@ -2,6 +2,47 @@
- #ifndef __SOC_MEDIATEK_INFRACFG_H
- #define __SOC_MEDIATEK_INFRACFG_H
- 
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_STA1				0x228
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_SET				0x2a0
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_CLR				0x2a4
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_MM_M0				BIT(1)
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_MDMCU_M1				BIT(2)
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_MMAPB_S				BIT(6)
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_MM2INFRA_AXI_GALS_SLV_0		BIT(10)
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_MM2INFRA_AXI_GALS_SLV_1		BIT(11)
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_AP2CONN_AHB			BIT(13)
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_CONN2INFRA_AHB			BIT(14)
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_MFG_M0				BIT(21)
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_INFRA2MFG			BIT(22)
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_1_STA1				0x258
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_1_SET				0x2a8
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_1_CLR				0x2ac
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_1_APU2AP				BIT(2)
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_1_MM2INFRA_AXI_GALS_MST_0	BIT(16)
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_1_MM2INFRA_AXI_GALS_MST_1	BIT(17)
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_1_CONN2INFRA_AXI_GALS_MST	BIT(18)
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_1_CAM2MM_AXI_GALS_MST		BIT(19)
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_1_APU_CBIP_GALS_MST		BIT(20)
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_1_INFRA2CONN_AHB_GALS_SLV	BIT(21)
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_1_PWRDNREQ_INFRA_GALS_ADB	BIT(24)
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_1_PWRDNREQ_MP1_L2C_AFIFO		BIT(27)
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_1_AUDIO_BUS_AUDIO_M		BIT(28)
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_1_AUDIO_BUS_DSP_M		BIT(30)
-+#define MT8365_INFRA_TOPAXI_PROTECTEN_1_AUDIO_BUS_DSP_S		BIT(31)
-+
-+#define MT8365_INFRA_NAO_TOPAXI_SI0_STA					0x0
-+#define MT8365_INFRA_NAO_TOPAXI_SI0_CTRL_UPDATED			BIT(24)
-+#define MT8365_INFRA_NAO_TOPAXI_SI2_STA					0x28
-+#define MT8365_INFRA_NAO_TOPAXI_SI2_CTRL_UPDATED			BIT(14)
-+#define MT8365_INFRA_TOPAXI_SI0_CTL					0x200
-+#define MT8365_INFRA_TOPAXI_SI0_WAY_EN_MMAPB_S				BIT(6)
-+#define MT8365_INFRA_TOPAXI_SI2_CTL					0x234
-+#define MT8365_INFRA_TOPAXI_SI2_WAY_EN_PERI_M1				BIT(5)
-+
-+#define MT8365_SMI_COMMON_CLAMP_EN			0x3c0
-+#define MT8365_SMI_COMMON_CLAMP_EN_SET			0x3c4
-+#define MT8365_SMI_COMMON_CLAMP_EN_CLR			0x3c8
-+
- #define MT8195_TOP_AXI_PROT_EN_STA1                     0x228
- #define MT8195_TOP_AXI_PROT_EN_1_STA1                   0x258
- #define MT8195_TOP_AXI_PROT_EN_SET			0x2a0
--- 
-2.40.1
+> 
+> How to invoke it to run these mm tests?
+> 
+> (I never dared invoking something different than
+> run_vmtests.sh ;) )
+
+# single test:
+$ sudo ./run_kselftest.sh -t mm:<test_name>
+
+or
+
+# all tests in collection:
+$ sudo ./run_kselftest.sh -c mm
+
+> 
+> [...]
+> 
+>>
+>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+>> ---
+>>   tools/testing/selftests/mm/Makefile       | 79 ++++++++++++-----------
+>>   tools/testing/selftests/mm/run_vmtests.sh | 23 +++++++
+>>   tools/testing/selftests/mm/settings       |  2 +-
+>>   3 files changed, 64 insertions(+), 40 deletions(-)
+>>
+>> diff --git a/tools/testing/selftests/mm/Makefile
+>> b/tools/testing/selftests/mm/Makefile
+>> index 66d7c07dc177..881ed96d96fd 100644
+>> --- a/tools/testing/selftests/mm/Makefile
+>> +++ b/tools/testing/selftests/mm/Makefile
+>> @@ -35,39 +35,39 @@ MAKEFLAGS += --no-builtin-rules
+>>   CFLAGS = -Wall -I $(top_srcdir) $(EXTRA_CFLAGS) $(KHDR_INCLUDES)
+>>   LDLIBS = -lrt -lpthread
+>>   -TEST_GEN_PROGS = cow
+>> -TEST_GEN_PROGS += compaction_test
+>> -TEST_GEN_PROGS += gup_longterm
+>> -TEST_GEN_PROGS += gup_test
+>> -TEST_GEN_PROGS += hmm-tests
+>> -TEST_GEN_PROGS += hugetlb-madvise
+>> -TEST_GEN_PROGS += hugepage-mmap
+>> -TEST_GEN_PROGS += hugepage-mremap
+>> -TEST_GEN_PROGS += hugepage-shm
+>> -TEST_GEN_PROGS += hugepage-vmemmap
+>> -TEST_GEN_PROGS += khugepaged
+>> -TEST_GEN_PROGS += madv_populate
+>> -TEST_GEN_PROGS += map_fixed_noreplace
+>> -TEST_GEN_PROGS += map_hugetlb
+>> -TEST_GEN_PROGS += map_populate
+>> -TEST_GEN_PROGS += memfd_secret
+>> -TEST_GEN_PROGS += migration
+>> -TEST_GEN_PROGS += mkdirty
+>> -TEST_GEN_PROGS += mlock-random-test
+>> -TEST_GEN_PROGS += mlock2-tests
+>> -TEST_GEN_PROGS += mrelease_test
+>> -TEST_GEN_PROGS += mremap_dontunmap
+>> -TEST_GEN_PROGS += mremap_test
+>> -TEST_GEN_PROGS += on-fault-limit
+>> -TEST_GEN_PROGS += thuge-gen
+>> -TEST_GEN_PROGS += transhuge-stress
+>> -TEST_GEN_PROGS += uffd-stress
+>> -TEST_GEN_PROGS += uffd-unit-tests
+>> -TEST_GEN_PROGS += soft-dirty
+>> -TEST_GEN_PROGS += split_huge_page_test
+>> -TEST_GEN_PROGS += ksm_tests
+>> -TEST_GEN_PROGS += ksm_functional_tests
+>> -TEST_GEN_PROGS += mdwe_test
+>> +TEST_GEN_FILES = cow
+>> +TEST_GEN_FILES += compaction_test
+>> +TEST_GEN_FILES += gup_longterm
+>> +TEST_GEN_FILES += gup_test
+>> +TEST_GEN_FILES += hmm-tests
+>> +TEST_GEN_FILES += hugetlb-madvise
+>> +TEST_GEN_FILES += hugepage-mmap
+>> +TEST_GEN_FILES += hugepage-mremap
+>> +TEST_GEN_FILES += hugepage-shm
+>> +TEST_GEN_FILES += hugepage-vmemmap
+>> +TEST_GEN_FILES += khugepaged
+>> +TEST_GEN_FILES += madv_populate
+>> +TEST_GEN_FILES += map_fixed_noreplace
+>> +TEST_GEN_FILES += map_hugetlb
+>> +TEST_GEN_FILES += map_populate
+>> +TEST_GEN_FILES += memfd_secret
+>> +TEST_GEN_FILES += migration
+>> +TEST_GEN_FILES += mkdirty
+>> +TEST_GEN_FILES += mlock-random-test
+>> +TEST_GEN_FILES += mlock2-tests
+>> +TEST_GEN_FILES += mrelease_test
+>> +TEST_GEN_FILES += mremap_dontunmap
+>> +TEST_GEN_FILES += mremap_test
+>> +TEST_GEN_FILES += on-fault-limit
+>> +TEST_GEN_FILES += thuge-gen
+>> +TEST_GEN_FILES += transhuge-stress
+>> +TEST_GEN_FILES += uffd-stress
+>> +TEST_GEN_FILES += uffd-unit-tests
+>> +TEST_GEN_FILES += soft-dirty
+>> +TEST_GEN_FILES += split_huge_page_test
+>> +TEST_GEN_FILES += ksm_tests
+>> +TEST_GEN_FILES += ksm_functional_tests
+>> +TEST_GEN_FILES += mdwe_test
+> 
+> IIRC, we recently converted all to TEST_GEN_PROGS. See
+> 
+> commit aef6fde75d8c6c1cad4a0e017a8d4cbee2143723
+> Author: Peter Xu <peterx@redhat.com>
+> Date:   Wed Apr 12 12:42:18 2023 -0400
+> 
+>     selftests/mm: use TEST_GEN_PROGS where proper
+>         TEST_GEN_PROGS and TEST_GEN_FILES are used randomly in the mm/Makefile to
+>     specify programs that need to build.  Logically all these binaries should
+>     all fall into TEST_GEN_PROGS.
+>         Replace those TEST_GEN_FILES with TEST_GEN_PROGS, so that we can reference
+>     all the tests easily later.
+> 
+> 
+> Why is that change required, and how does it interact with
+> run_kselftest.sh? (Not clear from you patch description.)
+
+TEST_GEN_PROGS will compile and install the tests and will add them to the list
+of tests that run_kselftest.sh will run. TEST_GEN_FILES will compile and install
+the tests but will not add them to the test list.
+
+Note that run_vmtests.sh is added to TEST_PROGS, which means it ends up in the
+test list. (the lack of "_GEN" means it won't be compiled, but simply copied).
+
+So with this change at the kselftest level, there is a single test in its list;
+run_vmtests.sh. And all the other tests that were previously in that list are
+moved into run_vmtests.sh (if they weren't there already).
+
+I've only learnt all this today; All based on info in kselftest.rst.
+
+> 
 
