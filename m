@@ -2,330 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 037C37529B9
+	by mail.lfdr.de (Postfix) with ESMTP id 4AB937529BA
 	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 19:20:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232310AbjGMRUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 13:20:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48540 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231565AbjGMRUh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S231274AbjGMRUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 13 Jul 2023 13:20:37 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8950C26A3
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 10:20:02 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b7430bda8bso15300191fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 10:20:02 -0700 (PDT)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229788AbjGMRUc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 13 Jul 2023 13:20:32 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40B8130F1;
+        Thu, 13 Jul 2023 10:19:58 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-6682909acadso656644b3a.3;
+        Thu, 13 Jul 2023 10:19:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1689268800; x=1691860800;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sf1LEXpI5qsWQMcYWNIu1Gn0J/fmr0jIVKvCTRIOitI=;
-        b=MJ73vMkcAMR/QYGaIG2JAfhpokaQT8TPhHWU2AsTG4l3iHQOauGnppUjl5nHcNzv81
-         rrvGNYjY3tuulMAEPBGZEod4/KF7EYZdA31JS4SKQqkvidyiPqPgYPBAsnREsUQ6pH4u
-         eP7su6QoTIM3vec1TGEFlRxWbsYzCCWcBCOAbBgAOhqmoFtvyMy1/7jnCJxXyAACPSVP
-         7AcbG9c/ToOu9vuWbGmT/7zZeZHl/5tTeBO/lQgGAo9s25Kh6l2bd9zDnP+41MVl5Lkd
-         KbptZISWBLStr+WnBjDhf1KxXEkL0aC3iVIVm11qs4blG39PsufJUf+xtBL6HLubm9KB
-         gcsg==
+        d=gmail.com; s=20221208; t=1689268791; x=1691860791;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=B6q3yqHw5lCIHcrpempCEB7KMGH+tCMNgbL7f40MAuY=;
+        b=jAgjP/YVQgvUerdQbk9DZmbDd6WW69rrl+Vb0Pmr19zOvs4XWQlfbBzdQvhxY5MMqO
+         R/DslgZop0z0Yi+8Tx1oncf+xRJ3F4DrKDY6/DYAvICkGD+6wzo2qqHg5kWaDlzIZtf+
+         9k6jp5wJbojL6L0vTZEPAG4uVhXaIbcJCY2BMfmgHjwCeDicSDujoS3Fugf/OcGpLaBZ
+         5j5kV0i6Bn2uK77lYaSKpT8bqtaMa/UQ24dEPoB9L2VZyCT6QWmryrl72Q/oe0iZA8qg
+         fkXQB3aZ389gHI+QwnBhzDApKC4dJbcHCA1rAbpSs4SW9A+u7NsxunoBeyzADQg354oU
+         DoOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689268800; x=1691860800;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sf1LEXpI5qsWQMcYWNIu1Gn0J/fmr0jIVKvCTRIOitI=;
-        b=E7U7cNFneti73U1O7EZMmvWl6GKu8NtLUWVyWe81HyjNAFXj+xj7H9izjzMlC2Z84G
-         m5vijXeQx1iokV+5NCaGOFAQItA7ccyDiGekszyERp9neDWDj9aPNVM0ghYkwC9Kupav
-         ozfU5eGyiRyHXq7QEEUsA95VTtGdc2zI/Q6BKpMy14pK5WVhq0odAkyMAFHP7lyc79ww
-         /rrFBgqrTMCWAcf8bFgODfy4UEucFNApVSeARhgXzIE5JfNo38rmLL9aAWExTBODIkeA
-         Oi7OSSEJuoZ42EPha5ikqRFF3KhzPJYkb65iPsVipGUfMsc5hGDBve9AP6se1YauVUgE
-         cehg==
-X-Gm-Message-State: ABy/qLbyN9XhcKYZ6IbKzqaps1/sDOvs3VKR4eSwZXawtLhxBiZ42Ba0
-        En2r3cahlE1Q0vid6AapTR+EdDQSCdx7L3rTot4TEQ==
-X-Google-Smtp-Source: APBJJlFhA2/oHj1WysqNchsjir2N59f/Lp6MRb5/86dqHuJPkA+JXi1PVdsgM6yLq2wweiWK0xDu1tGkq2EFCu7tij8=
-X-Received: by 2002:a2e:908a:0:b0:2b6:e536:a2a3 with SMTP id
- l10-20020a2e908a000000b002b6e536a2a3mr1940731ljg.19.1689268800481; Thu, 13
- Jul 2023 10:20:00 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689268791; x=1691860791;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=B6q3yqHw5lCIHcrpempCEB7KMGH+tCMNgbL7f40MAuY=;
+        b=dSC4YxoaojFdHcomYOCmGh/Qp+J4x43CT/B8eeB26VJLza1CDedut6GnqMiNzyvS2s
+         t1EmiyHzWujfX38SjaWWSDF6n/a5l6Ixr6u8LtishrEvSpBA3lCD/ALsVH86pxp+Dj4F
+         tFvNypRnMymUf9i6dkC/MTBlZbyrEluod8pDDWuu+uHw3VZqiOAA7nTUuWekpo/4g1ef
+         wojVMl8gRXMY1WqbilbX0YwAkqs7Of4/bIrZd7EasAJPvLBhGVaAfN2qJIfFRmLtYqhY
+         Ac6Q/8jtGTj2a7kF4omBYQRv9JvRdx4mYistYKtK2Clv37VGzfYtSJL7i06lLGI3ycg7
+         F9Lg==
+X-Gm-Message-State: ABy/qLZm26ym/EZ7v4SMz4HOGD1+a1KW7ZsNbrSmWZGviebOcNo9LKMl
+        zeX/5Bub4FrgIiAQj8uCIl8=
+X-Google-Smtp-Source: APBJJlFK+jp89O6Uf/fdu37X+TR0XQ5OdJaVvAJzDHuc3bhgoA7Mcji5vntrlVvyeFSOyq8Sgw4bsQ==
+X-Received: by 2002:a05:6a20:12c8:b0:122:8096:7012 with SMTP id v8-20020a056a2012c800b0012280967012mr1796270pzg.3.1689268790647;
+        Thu, 13 Jul 2023 10:19:50 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id t16-20020a170902e85000b001b9de39905asm6180413plg.59.2023.07.13.10.19.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 Jul 2023 10:19:49 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <389c90f7-2df7-5998-068a-40bc8722893b@roeck-us.net>
+Date:   Thu, 13 Jul 2023 10:19:48 -0700
 MIME-Version: 1.0
-References: <20230711153743.1970625-1-heiko@sntech.de> <20230711153743.1970625-2-heiko@sntech.de>
- <6573575.5kvhTvEP53@basile.remlab.net>
-In-Reply-To: <6573575.5kvhTvEP53@basile.remlab.net>
-From:   Andy Chiu <andy.chiu@sifive.com>
-Date:   Fri, 14 Jul 2023 01:19:47 +0800
-Message-ID: <CABgGipXgDKHPEBLT_e0DgHTo0WLwNxf5SD4sTDwmTHVj6Wz5VA@mail.gmail.com>
-Subject: Re: [PATCH v4 01/12] riscv: Add support for kernel mode vector
-To:     =?UTF-8?Q?R=C3=A9mi_Denis=2DCourmont?= <remi@remlab.net>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Content-Language: en-US
+To:     huaqian.li@siemens.com, wim@linux-watchdog.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc:     huaqianlee@gmail.com, nm@ti.com, vigneshr@ti.com,
+        kristo@kernel.org, linux-watchdog@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, jan.kiszka@siemens.com,
+        baocheng.su@siemens.com
+References: <20230713095127.1230109-1-huaqian.li@siemens.com>
+ <20230713095127.1230109-4-huaqian.li@siemens.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH v3 3/3] watchdog:rit_wdt: Add support for WDIOF_CARDRESET
+In-Reply-To: <20230713095127.1230109-4-huaqian.li@siemens.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Heiko
+On 7/13/23 02:51, huaqian.li@siemens.com wrote:
+> From: Li Hua Qian <huaqian.li@siemens.com>
+> 
+> This patch adds the WDIOF_CARDRESET support for the platform watchdog
+> whose hardware does not support this feature, to know if the board
+> reboot is due to a watchdog reset.
+> 
+> This is done via reserved memory(RAM), which indicates if specific
+> info saved, triggering the watchdog reset in last boot.
+> 
+> Signed-off-by: Li Hua Qian <huaqian.li@siemens.com>
+> ---
+>   drivers/watchdog/rti_wdt.c | 51 ++++++++++++++++++++++++++++++++++++++
+>   1 file changed, 51 insertions(+)
+> 
+> diff --git a/drivers/watchdog/rti_wdt.c b/drivers/watchdog/rti_wdt.c
+> index ce8f18e93aa9..b9435b972cb9 100644
+> --- a/drivers/watchdog/rti_wdt.c
+> +++ b/drivers/watchdog/rti_wdt.c
+> @@ -18,6 +18,8 @@
+>   #include <linux/pm_runtime.h>
+>   #include <linux/types.h>
+>   #include <linux/watchdog.h>
+> +#include <linux/of_address.h>
+> +#include <linux/of.h>
+>   
 
-On Wed, Jul 12, 2023 at 1:15=E2=80=AFAM R=C3=A9mi Denis-Courmont <remi@reml=
-ab.net> wrote:
->
->         Hi,
->
-> Le tiistaina 11. hein=C3=A4kuuta 2023, 18.37.32 EEST Heiko Stuebner a =C3=
-=A9crit :
-> > From: Greentime Hu <greentime.hu@sifive.com>
-> >
-> > Add kernel_rvv_begin() and kernel_rvv_end() function declarations
-> > and corresponding definitions in kernel_mode_vector.c
-> >
-> > These are needed to wrap uses of vector in kernel mode.
-> >
-> > Co-developed-by: Vincent Chen <vincent.chen@sifive.com>
-> > Signed-off-by: Vincent Chen <vincent.chen@sifive.com>
-> > Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
-> > Signed-off-by: Heiko Stuebner <heiko.stuebner@vrull.eu>
-> > ---
-> >  arch/riscv/include/asm/vector.h        |  17 ++++
-> >  arch/riscv/kernel/Makefile             |   1 +
-> >  arch/riscv/kernel/kernel_mode_vector.c | 132 +++++++++++++++++++++++++
-> >  3 files changed, 150 insertions(+)
-> >  create mode 100644 arch/riscv/kernel/kernel_mode_vector.c
-> >
-> > diff --git a/arch/riscv/include/asm/vector.h
-> > b/arch/riscv/include/asm/vector.h index 3d78930cab51..ac2c23045eec 1006=
-44
-> > --- a/arch/riscv/include/asm/vector.h
-> > +++ b/arch/riscv/include/asm/vector.h
-> > @@ -196,6 +196,23 @@ static inline void __switch_to_vector(struct
-> > task_struct *prev, void riscv_v_vstate_ctrl_init(struct task_struct *ts=
-k);
-> >  bool riscv_v_vstate_ctrl_user_allowed(void);
-> >
-> > +static inline void riscv_v_flush_cpu_state(void)
-> > +{
-> > +     asm volatile (
-> > +             ".option push\n\t"
-> > +             ".option arch, +v\n\t"
-> > +             "vsetvli        t0, x0, e8, m8, ta, ma\n\t"
-> > +             "vmv.v.i        v0, 0\n\t"
-> > +             "vmv.v.i        v8, 0\n\t"
-> > +             "vmv.v.i        v16, 0\n\t"
-> > +             "vmv.v.i        v24, 0\n\t"
-> > +             ".option pop\n\t"
-> > +             : : : "t0");
->
-> Why bother with zeroing out the vectors before kernel use? That sounds li=
-ke it
-> will only hide bugs in kernel code - implicitly assuming that everything =
-is
-> initially zero. Ditto initialising the vector configuration; if you reall=
-y want
-> to have a fixed initial value rather than "leak" whatever user set, bette=
-r use
-> an invalid configuration (vill=3D1), IMO.
+This driver so far managed to keep include files in alphabetic order.
+Please keep it that way.
 
-Yes, I agree that we don't have to zero out (or invalid) v registers
-before any kernel uses. And we only have to restore user's v registers
-once, before really returning back to the user space. Actually I am
-going to send out the series (for kernel-mode vector) having these
-improvements in a few days. Does it seem ok to you to drop the first
-two patches and rebase on top of mine at the next respin for the
-crypto vector? Or is there any good way that you can think of to let
-us cooperate on this?
+>   #define DEFAULT_HEARTBEAT 60
+>   
+> @@ -52,6 +54,11 @@
+>   
+>   #define DWDST			BIT(1)
+>   
+> +#define PON_REASON_SOF_NUM	0xBBBBCCCC
+> +#define PON_REASON_MAGIC_NUM	0xDDDDDDDD
+> +#define PON_REASON_EOF_NUM	0xCCCCBBBB
+> +#define RESERVED_MEM_MIN_SIZE	12
+> +
+>   static int heartbeat = DEFAULT_HEARTBEAT;
+>   
+>   /*
+> @@ -198,6 +205,11 @@ static int rti_wdt_probe(struct platform_device *pdev)
+>   	struct rti_wdt_device *wdt;
+>   	struct clk *clk;
+>   	u32 last_ping = 0;
+> +	struct device_node *node;
+> +	u32 reserved_mem_size;
+> +	struct resource res;
+> +	u32 *vaddr;
+> +	u64 paddr;
+>   
+>   	wdt = devm_kzalloc(dev, sizeof(*wdt), GFP_KERNEL);
+>   	if (!wdt)
+> @@ -284,6 +296,45 @@ static int rti_wdt_probe(struct platform_device *pdev)
+>   		}
+>   	}
+>   
+> +	node = of_parse_phandle(pdev->dev.of_node, "memory-region", 0);
+> +	if (!node) {
+> +		dev_dbg(dev, "No memory-region specified.\n");
 
->
-> > +}
-> > +
-> > +void kernel_rvv_begin(void);
-> > +void kernel_rvv_end(void);
-> > +
-> >  #else /* ! CONFIG_RISCV_ISA_V  */
-> >
-> >  struct pt_regs;
-> > diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
-> > index 506cc4a9a45a..3f4435746af7 100644
-> > --- a/arch/riscv/kernel/Makefile
-> > +++ b/arch/riscv/kernel/Makefile
-> > @@ -61,6 +61,7 @@ obj-$(CONFIG_MMU) +=3D vdso.o vdso/
-> >  obj-$(CONFIG_RISCV_M_MODE)   +=3D traps_misaligned.o
-> >  obj-$(CONFIG_FPU)            +=3D fpu.o
-> >  obj-$(CONFIG_RISCV_ISA_V)    +=3D vector.o
-> > +obj-$(CONFIG_RISCV_ISA_V)    +=3D kernel_mode_vector.o
-> >  obj-$(CONFIG_SMP)            +=3D smpboot.o
-> >  obj-$(CONFIG_SMP)            +=3D smp.o
-> >  obj-$(CONFIG_SMP)            +=3D cpu_ops.o
-> > diff --git a/arch/riscv/kernel/kernel_mode_vector.c
-> > b/arch/riscv/kernel/kernel_mode_vector.c new file mode 100644
-> > index 000000000000..2d704190c054
-> > --- /dev/null
-> > +++ b/arch/riscv/kernel/kernel_mode_vector.c
-> > @@ -0,0 +1,132 @@
-> > +// SPDX-License-Identifier: GPL-2.0-or-later
-> > +/*
-> > + * Copyright (C) 2012 ARM Ltd.
-> > + * Author: Catalin Marinas <catalin.marinas@arm.com>
-> > + * Copyright (C) 2017 Linaro Ltd. <ard.biesheuvel@linaro.org>
-> > + * Copyright (C) 2021 SiFive
-> > + */
-> > +#include <linux/compiler.h>
-> > +#include <linux/irqflags.h>
-> > +#include <linux/percpu.h>
-> > +#include <linux/preempt.h>
-> > +#include <linux/types.h>
-> > +
-> > +#include <asm/vector.h>
-> > +#include <asm/switch_to.h>
-> > +
-> > +DECLARE_PER_CPU(bool, vector_context_busy);
-> > +DEFINE_PER_CPU(bool, vector_context_busy);
-> > +
-> > +/*
-> > + * may_use_vector - whether it is allowable at this time to issue vect=
-or
-> > + *                instructions or access the vector register file
-> > + *
-> > + * Callers must not assume that the result remains true beyond the nex=
-t
-> > + * preempt_enable() or return from softirq context.
-> > + */
-> > +static __must_check inline bool may_use_vector(void)
-> > +{
-> > +     /*
-> > +      * vector_context_busy is only set while preemption is disabled,
-> > +      * and is clear whenever preemption is enabled. Since
-> > +      * this_cpu_read() is atomic w.r.t. preemption, vector_context_bu=
-sy
-> > +      * cannot change under our feet -- if it's set we cannot be
-> > +      * migrated, and if it's clear we cannot be migrated to a CPU
-> > +      * where it is set.
-> > +      */
-> > +     return !in_irq() && !irqs_disabled() && !in_nmi() &&
-> > +            !this_cpu_read(vector_context_busy);
-> > +}
-> > +
-> > +/*
-> > + * Claim ownership of the CPU vector context for use by the calling
-> > context. + *
-> > + * The caller may freely manipulate the vector context metadata until
-> > + * put_cpu_vector_context() is called.
-> > + */
-> > +static void get_cpu_vector_context(void)
-> > +{
-> > +     bool busy;
-> > +
-> > +     preempt_disable();
-> > +     busy =3D __this_cpu_xchg(vector_context_busy, true);
-> > +
-> > +     WARN_ON(busy);
-> > +}
-> > +
-> > +/*
-> > + * Release the CPU vector context.
-> > + *
-> > + * Must be called from a context in which get_cpu_vector_context() was
-> > + * previously called, with no call to put_cpu_vector_context() in the
-> > + * meantime.
-> > + */
-> > +static void put_cpu_vector_context(void)
-> > +{
-> > +     bool busy =3D __this_cpu_xchg(vector_context_busy, false);
-> > +
-> > +     WARN_ON(!busy);
-> > +     preempt_enable();
-> > +}
-> > +
-> > +/*
-> > + * kernel_rvv_begin(): obtain the CPU vector registers for use by the
-> > calling + * context
-> > + *
-> > + * Must not be called unless may_use_vector() returns true.
-> > + * Task context in the vector registers is saved back to memory as
-> > necessary. + *
-> > + * A matching call to kernel_rvv_end() must be made before returning f=
-rom
-> > the + * calling context.
-> > + *
-> > + * The caller may freely use the vector registers until kernel_rvv_end=
-() is
-> > + * called.
-> > + */
-> > +void kernel_rvv_begin(void)
-> > +{
-> > +     if (WARN_ON(!has_vector()))
-> > +             return;
-> > +
-> > +     WARN_ON(!may_use_vector());
-> > +
-> > +     /* Acquire kernel mode vector */
-> > +     get_cpu_vector_context();
-> > +
-> > +     /* Save vector state, if any */
-> > +     riscv_v_vstate_save(current, task_pt_regs(current));
-> > +
-> > +     /* Enable vector */
-> > +     riscv_v_enable();
-> > +
-> > +     /* Invalidate vector regs */
-> > +     riscv_v_flush_cpu_state();
-> > +}
-> > +EXPORT_SYMBOL_GPL(kernel_rvv_begin);
-> > +
-> > +/*
-> > + * kernel_rvv_end(): give the CPU vector registers back to the current=
- task
-> > + *
-> > + * Must be called from a context in which kernel_rvv_begin() was previ=
-ously
-> > + * called, with no call to kernel_rvv_end() in the meantime.
-> > + *
-> > + * The caller must not use the vector registers after this function is
-> > called, + * unless kernel_rvv_begin() is called again in the meantime.
-> > + */
-> > +void kernel_rvv_end(void)
-> > +{
-> > +     if (WARN_ON(!has_vector()))
-> > +             return;
-> > +
-> > +     /* Invalidate vector regs */
-> > +     riscv_v_flush_cpu_state();
-> > +
-> > +     /* Restore vector state, if any */
-> > +     riscv_v_vstate_restore(current, task_pt_regs(current));
->
-> I thought that the kernel was already nuking user vectors on every system
-> call, since the RVV spec says so.
->
-> Are you trying to use vectors from interrupts? Otherwise, isn't this flus=
-h &
-> restore superfluous?
->
-> > +
-> > +     /* disable vector */
-> > +     riscv_v_disable();
-> > +
-> > +     /* release kernel mode vector */
-> > +     put_cpu_vector_context();
-> > +}
-> > +EXPORT_SYMBOL_GPL(kernel_rvv_end);
->
->
-> --
-> =E9=9B=B7=E7=B1=B3=E2=80=A7=E5=BE=B7=E5=B0=BC-=E5=BA=93=E5=B0=94=E8=92=99
-> http://www.remlab.net/
->
->
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+If you really want that debug message, please keep the action part
+first. I personally think it is just noise; the devicetree can always
+be looked up if needed.
 
-Thanks.
+> +	} else {
+> +		ret = of_address_to_resource(node, 0, &res);
+> +		if (ret) {
+> +			dev_err(dev, "No memory address assigned to the region.\n");
+> +			goto err_iomap;
+> +		}
+> +
+> +		/*
+> +		 * If reserved memory is defined for watchdog reset cause.
+> +		 * Readout the Power-on(PON) reason and pass to bootstatus.
+> +		 */
+> +		paddr = res.start;
+> +		reserved_mem_size = res.end - (res.start - 1);
 
-Andy
+Please use resource_size().
+
+> +		if (reserved_mem_size < RESERVED_MEM_MIN_SIZE) {
+> +			dev_err(dev, "The size of reserved memory is too small.\n");
+> +			ret = -EINVAL;
+> +			goto err_iomap;
+> +		}
+> +
+> +		vaddr = memremap(paddr, reserved_mem_size, MEMREMAP_WB);
+> +		if (vaddr == NULL) {
+> +			dev_err(dev, "Failed to map memory-region.\n");
+> +			ret = -ENOMEM;
+> +			goto err_iomap;
+> +		}
+> +
+> +		if (vaddr[0] == PON_REASON_SOF_NUM &&
+> +		    vaddr[1] == PON_REASON_MAGIC_NUM &&
+> +		    vaddr[2] == PON_REASON_EOF_NUM) {
+> +			dev_dbg(dev, "Watchdog reset cause detected.\n");
+
+Isn't that a bit pointless ? That is obvious when reading the boot status.
+
+> +			wdd->bootstatus |= WDIOF_CARDRESET;
+> +		}
+> +		memset(vaddr, 0, reserved_mem_size);
+> +		memunmap(vaddr);
+> +	}
+> +
+>   	watchdog_init_timeout(wdd, heartbeat, dev);
+>   
+>   	ret = watchdog_register_device(wdd);
+
