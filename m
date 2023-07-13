@@ -2,72 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E340751E6F
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 12:07:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C775F751E7B
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 12:11:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234439AbjGMKHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 06:07:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46182 "EHLO
+        id S232646AbjGMKLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 06:11:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234663AbjGMKHF (ORCPT
+        with ESMTP id S234213AbjGMKKg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 06:07:05 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A3522D7B
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 03:06:50 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 96AF022190;
-        Thu, 13 Jul 2023 10:06:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1689242808; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mk56FONtOowVALN0q21XBKEQINE8MoiVbx53HrUlPjU=;
-        b=TEADc15/9oH2caOSex97zxH9ktqYsbZ2wFXgQz0Q6IxEpgUqmqpGEa1ar1iEuf5qc+YOAt
-        WrrlrPT2fJTPkBrwQYm0+0a+Hoeraz9Owk/wdysYNs/ziw3qqeiiNnPXwgwj4wOuiYyDhl
-        f+BTZwRmU1AUqVkzr7JN8oKaIRR35L0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1689242808;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mk56FONtOowVALN0q21XBKEQINE8MoiVbx53HrUlPjU=;
-        b=kwqXlxu+JQc2kTNAsX3PVteoF4/HE2c0tkvaAX4qjsMfJoP9omU8WS8nPyjlGjO0U+33mC
-        gTKGqcACJu0Wt+DA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7B4DE133D6;
-        Thu, 13 Jul 2023 10:06:48 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id JmULHbjMr2TWYAAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Thu, 13 Jul 2023 10:06:48 +0000
-Message-ID: <340afb94-9c08-46ef-0514-9da52162b45c@suse.de>
-Date:   Thu, 13 Jul 2023 12:06:47 +0200
+        Thu, 13 Jul 2023 06:10:36 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E90942D42
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 03:09:41 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2b700e85950so7139281fa.3
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 03:09:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689242980; x=1691834980;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HlEGorW8l9E/UYv5LNvre41VRn1sbOFHWBTcePkBvLM=;
+        b=DgKqY0bqKsQ6ufK7JmqdllNO488QV8nQolyxr7oAPm6g2Vc2OnvxaegerPOIF8Y6g4
+         m2zQVvuu/9j46Y6GDBVQPBueo+6+ysuO3/xyUDBK77XFu9X1zfB6raHScbxArHx/+0ik
+         sQl5O3522xEvwQG0cbdvs9QTI5v3oS153Xd2ei0kGHppXsrmTzRHYzWZUPX2fTQopMIf
+         PqIWKCKNB9u7KBajtQqbHWExugSJQTeQK0R6YidNvS3EpLGJM6dOyiQ0KRFKUYPJN40s
+         SePU7DOa0I0v4yFz49uabytA8hK1y/y9LTLp+H3BcNpbrRZv5fK7HRSOjokFSLRxk9D3
+         5E5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689242980; x=1691834980;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HlEGorW8l9E/UYv5LNvre41VRn1sbOFHWBTcePkBvLM=;
+        b=THHcM6cOYUWLbv9ajvgjXFpJM3pMWWhw6PVvoN9Qcf/knqzMr5R0h4yThtriTmT8ZU
+         djKaRxdIABiZBKy9BS72QBzBVaDJH6m5MVwGxsGAJ5EwuCEAQXO9dhYEPHMqSdJQHaFa
+         ht36WXF+5jVcqcXRi65RTYuZcyZPAoW5HRTSVjL+3Chy204ABLxq+f54KBrkhEbgKtB/
+         Hv0WX1ySx6m/rMGUQmF+/LHCjgBtr84m8LtTaw7Afx4vyUyAu6rEGdN2D/ofo6HPu6bG
+         9ck4CLoJjYFn2tpbVyCX05UeUzV0zYOcPhQ73XW0GfF4n3ome2GkluMNP7vSSfYd4Euk
+         qEMA==
+X-Gm-Message-State: ABy/qLZ7nlEVsVfhE/BLaid1HU1efYvWD98rB+tn+kgFXIKRDQP6M4U7
+        TEynXbboQ+aVqS5l0fD7LPo3YsrWIpGhxtZkeTMo7w==
+X-Google-Smtp-Source: APBJJlF5sr/wh2DDYaII88WULplR8+deO1+FpS47hGm6ZAtSvBTV9LAReUI5FcUhv8QTZlQSWmrdcELmZAmnZsOfcRc=
+X-Received: by 2002:a2e:9054:0:b0:2b6:a22f:9fb9 with SMTP id
+ n20-20020a2e9054000000b002b6a22f9fb9mr988809ljg.27.1689242979968; Thu, 13 Jul
+ 2023 03:09:39 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH] drm/ssd130x: Change pixel format used to compute the
- buffer size
-Content-Language: en-US
-To:     Javier Martinez Canillas <javierm@redhat.com>,
-        linux-kernel@vger.kernel.org
-Cc:     dri-devel@lists.freedesktop.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-References: <20230713085859.907127-1-javierm@redhat.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-In-Reply-To: <20230713085859.907127-1-javierm@redhat.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------GUEY8WDKKNuJNWEUMZsZV4cn"
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+References: <20230712101344.2714626-1-chenhuacai@loongson.cn>
+ <CA+fCnZd1nhG9FDzkeW42jFbPuGKZms-HzHXBiO5YTSnkmsZoZQ@mail.gmail.com>
+ <CAAhV-H4nuwBJHE3VPj6yE2HUw3tDaLtgeRQ5mj0SRV6RoD8-9Q@mail.gmail.com>
+ <CANpmjNM_FEpXPVgoAbUwEK+9m90X54ykWnMvpUP2ZQ8sjoSByg@mail.gmail.com> <CAAhV-H4WUXVYv5er7UpPHKQDdBheT-UgEsOnBmPGPJ=LKWh4PQ@mail.gmail.com>
+In-Reply-To: <CAAhV-H4WUXVYv5er7UpPHKQDdBheT-UgEsOnBmPGPJ=LKWh4PQ@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Thu, 13 Jul 2023 12:09:03 +0200
+Message-ID: <CANpmjNN-zypOUdJ-7XW0nN+gbGFwxC-JPFs=WA8FipsKiBhbKw@mail.gmail.com>
+Subject: Re: [PATCH] kasan: Fix tests by removing -ffreestanding
+To:     Huacai Chen <chenhuacai@kernel.org>
+Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,78 +78,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------GUEY8WDKKNuJNWEUMZsZV4cn
-Content-Type: multipart/mixed; boundary="------------rY40G7UYCo0b9nL9RwG30f0W";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Javier Martinez Canillas <javierm@redhat.com>,
- linux-kernel@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org, Geert Uytterhoeven <geert@linux-m68k.org>
-Message-ID: <340afb94-9c08-46ef-0514-9da52162b45c@suse.de>
-Subject: Re: [PATCH] drm/ssd130x: Change pixel format used to compute the
- buffer size
-References: <20230713085859.907127-1-javierm@redhat.com>
-In-Reply-To: <20230713085859.907127-1-javierm@redhat.com>
+On Thu, 13 Jul 2023 at 11:58, Huacai Chen <chenhuacai@kernel.org> wrote:
+>
+> Hi, Marco,
+>
+> On Thu, Jul 13, 2023 at 4:12=E2=80=AFPM Marco Elver <elver@google.com> wr=
+ote:
+> >
+> > On Thu, 13 Jul 2023 at 06:33, Huacai Chen <chenhuacai@kernel.org> wrote=
+:
+> > >
+> > > Hi, Andrey,
+> > >
+> > > On Thu, Jul 13, 2023 at 12:12=E2=80=AFAM Andrey Konovalov <andreyknvl=
+@gmail.com> wrote:
+> > > > On Wed, Jul 12, 2023 at 12:14=E2=80=AFPM Huacai Chen <chenhuacai@lo=
+ongson.cn> wrote:
+> > > > >
+> > > > > CONFIG_CC_HAS_KASAN_MEMINTRINSIC_PREFIX hopes -fbuiltin for memse=
+t()/
+> > > > > memcpy()/memmove() if instrumentation is needed. This is the defa=
+ult
+> > > > > behavior but some archs pass -ffreestanding which implies -fno-bu=
+iltin,
+> > > > > and then causes some kasan tests fail. So we remove -ffreestandin=
+g for
+> > > > > kasan tests.
+> > > >
+> > > > Could you clarify on which architecture you observed tests failures=
+?
+> > > Observed on LoongArch [1], KASAN for LoongArch was planned to be
+> > > merged in 6.5, but at the last minute I found some tests fail with
+> > > GCC14 (CONFIG_CC_HAS_KASAN_MEMINTRINSIC_PREFIX) so the patches are
+> > > dropped. After some debugging we found the root cause is
+> > > -ffreestanding.
+> > [...]
+> > > > >  CFLAGS_kasan_test.o :=3D $(CFLAGS_KASAN_TEST)
+> > > > > +CFLAGS_REMOVE_kasan_test.o :=3D -ffreestanding
+> > > > >  CFLAGS_kasan_test_module.o :=3D $(CFLAGS_KASAN_TEST)
+> > > > > +CFLAGS_REMOVE_kasan_test_module.o :=3D -ffreestanding
+> >
+> > It makes sense that if -ffreestanding is added everywhere, that this
+> > patch fixes the test. Also see:
+> > https://lkml.kernel.org/r/20230224085942.1791837-3-elver@google.com
+> >
+> > -ffreestanding implies -fno-builtin, which used to be added to the
+> > test where !CC_HAS_KASAN_MEMINTRINSIC_PREFIX (old compilers).
+> >
+> > But ideally, the test doesn't have any special flags to make it pass,
+> > because ultimately we want the test setup to be as close to other
+> > normal kernel code.
+> >
+> > What this means for LoongArch, is that the test legitimately is
+> > pointing out an issue: namely that with newer compilers, your current
+> > KASAN support for LoongArch is failing to detect bad accesses within
+> > mem*() functions.
+> >
+> > The reason newer compilers should emit __asan_mem*() functions and
+> > replace normal mem*() functions, is that making mem*() functions
+> > always instrumented is not safe when e.g. called from uninstrumented
+> > code. One problem is that compilers will happily generate
+> > memcpy/memset calls themselves for e.g. variable initialization or
+> > struct copies - and unfortunately -ffreestanding does _not_ prohibit
+> > compilers from doing so: https://godbolt.org/z/hxGvdo4P9
+> >
+> > I would propose 2 options:
+> >
+> > 1. Removing -ffreestanding from LoongArch. It is unclear to me why
+> > this is required. As said above, -ffreestanding does not actually
+> > prohibit the compiler from generating implicit memset/memcpy. It
+> > prohibits some other optimizations, but in the kernel, you might even
+> > want those optimizations if common libcalls are already implemented
+> > (which they should be?).
+> >
+> > 2. If KASAN is enabled on LoongArch, make memset/memcpy/memmove
+> > aliases to __asan_memset/__asan_memcpy/__asan_memmove. That means
+> > you'd have to invert how you currently set up __mem and mem functions:
+> > the implementation is in __mem*, and mem* functions alias __mem* -or-
+> > if KASAN is enabled __asan_mem* functions (ifdef
+> > CONFIG_CC_HAS_KASAN_MEMINTRINSIC_PREFIX to make old compilers work as
+> > well).
+> >
+> > If you go with option #2 you are accepting the risk of using
+> > instrumented mem* functions from uninstrumented files/functions. This
+> > has been an issue for other architectures. In many cases you might get
+> > lucky enough that it doesn't cause issues, but that's not guaranteed.
+> Thank you for your advice, but we should keep -ffreestanding for
+> LoongArch, even if it may cause failing to detect bad accesses.
+> Because now the __builtin_memset() assumes hardware supports unaligned
+> access, which is not the case for Loongson-2K series. If removing
+> -ffreestanding, Loongson-2K gets a poor performance.
+>
+> On the other hand, LoongArch is not the only architecture use
+> -ffreestanding, e.g., MIPS, X86_32, M68K and Xtensa also use, so the
+> tests should get fixed.
 
---------------rY40G7UYCo0b9nL9RwG30f0W
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
-
-DQoNCkFtIDEzLjA3LjIzIHVtIDEwOjU4IHNjaHJpZWIgSmF2aWVyIE1hcnRpbmV6IENhbmls
-bGFzOg0KPiBUaGUgY29tbWl0IGUyNTRiNTg0ZGJjMCAoImRybS9zc2QxMzB4OiBSZW1vdmUg
-aGFyZGNvZGVkIGJpdHMtcGVyLXBpeGVsIGluDQo+IHNzZDEzMHhfYnVmX2FsbG9jKCkiKSB1
-c2VkIGEgcGl4ZWwgZm9ybWF0IGluZm8gaW5zdGVhZCBvZiBhIGhhcmRjb2RlZCBicHANCj4g
-dG8gY2FsY3VsYXRlIHRoZSBzaXplIG9mIHRoZSBidWZmZXIgYWxsb2NhdGVkIHRvIHN0b3Jl
-IHRoZSBuYXRpdmUgcGl4ZWxzLg0KPiANCj4gQnV0IHRoYXQgd3JvbmdseSB1c2VkIHRoZSBE
-Uk1fRk9STUFUX0MxIGZvdXJjYyBwaXhlbCBmb3JtYXQsIHdoaWNoIGlzIGZvcg0KPiBjb2xv
-ci1pbmRleGVkIGZyYW1lIGJ1ZmZlciBmb3JtYXRzLiBXaGlsZSB0aGUgc3NkMTAzeCBjb250
-cm9sbGVycyBkb24ndA0KPiBzdXBwb3J0IGRpZmZlcmVudCBzaW5nbGUtY2hhbm5lbCBjb2xv
-cnMgbm9yIGEgQ29sb3IgTG9va3VwIFRhYmxlIChDTFVUKS4NCg0KTWFrZXMgc2Vuc2UgdG8g
-bWUuDQoNClJldmlld2VkLWJ5OiBUaG9tYXMgWmltbWVybWFubiA8dHppbW1lcm1hbm5Ac3Vz
-ZS5kZT4NCg0KPiANCj4gQm90aCBmb3JtYXRzIHVzZSBlaWdodCBwaXhlbHMvYnl0ZSwgc28g
-aW4gcHJhY3RpY2UgdGhlcmUgaXMgbm8gZnVuY3Rpb25hbA0KPiBjaGFuZ2VzIGluIHRoaXMg
-cGF0Y2guIEJ1dCBzdGlsbCB0aGUgY29ycmVjdCBwaXhlbCBmb3JtYXQgc2hvdWxkIGJlIHVz
-ZWQuDQo+IA0KPiBTdWdnZXN0ZWQtYnk6IEdlZXJ0IFV5dHRlcmhvZXZlbiA8Z2VlcnRAbGlu
-dXgtbTY4ay5vcmc+DQo+IFNpZ25lZC1vZmYtYnk6IEphdmllciBNYXJ0aW5leiBDYW5pbGxh
-cyA8amF2aWVybUByZWRoYXQuY29tPg0KPiAtLS0NCj4gDQo+ICAgZHJpdmVycy9ncHUvZHJt
-L3NvbG9tb24vc3NkMTMweC5jIHwgMiArLQ0KPiAgIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2Vy
-dGlvbigrKSwgMSBkZWxldGlvbigtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1
-L2RybS9zb2xvbW9uL3NzZDEzMHguYyBiL2RyaXZlcnMvZ3B1L2RybS9zb2xvbW9uL3NzZDEz
-MHguYw0KPiBpbmRleCBiM2RjMWNhOWRjMTAuLmFmYjA4YThhYTlmYyAxMDA2NDQNCj4gLS0t
-IGEvZHJpdmVycy9ncHUvZHJtL3NvbG9tb24vc3NkMTMweC5jDQo+ICsrKyBiL2RyaXZlcnMv
-Z3B1L2RybS9zb2xvbW9uL3NzZDEzMHguYw0KPiBAQCAtMTUzLDcgKzE1Myw3IEBAIHN0YXRp
-YyBpbnQgc3NkMTMweF9idWZfYWxsb2Moc3RydWN0IHNzZDEzMHhfZGV2aWNlICpzc2QxMzB4
-KQ0KPiAgIAljb25zdCBzdHJ1Y3QgZHJtX2Zvcm1hdF9pbmZvICpmaTsNCj4gICAJdW5zaWdu
-ZWQgaW50IHBpdGNoOw0KPiAgIA0KPiAtCWZpID0gZHJtX2Zvcm1hdF9pbmZvKERSTV9GT1JN
-QVRfQzEpOw0KPiArCWZpID0gZHJtX2Zvcm1hdF9pbmZvKERSTV9GT1JNQVRfUjEpOw0KPiAg
-IAlpZiAoIWZpKQ0KPiAgIAkJcmV0dXJuIC1FSU5WQUw7DQo+ICAgDQoNCi0tIA0KVGhvbWFz
-IFppbW1lcm1hbm4NCkdyYXBoaWNzIERyaXZlciBEZXZlbG9wZXINClNVU0UgU29mdHdhcmUg
-U29sdXRpb25zIEdlcm1hbnkgR21iSA0KRnJhbmtlbnN0cmFzc2UgMTQ2LCA5MDQ2MSBOdWVy
-bmJlcmcsIEdlcm1hbnkNCkdGOiBJdm8gVG90ZXYsIEFuZHJldyBNeWVycywgQW5kcmV3IE1j
-RG9uYWxkLCBCb3VkaWVuIE1vZXJtYW4NCkhSQiAzNjgwOSAoQUcgTnVlcm5iZXJnKQ0K
-
---------------rY40G7UYCo0b9nL9RwG30f0W--
-
---------------GUEY8WDKKNuJNWEUMZsZV4cn
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmSvzLcFAwAAAAAACgkQlh/E3EQov+C2
-kw//dNy31ZIyF5ZLCm8ZWvlyDralfrHhgmI+96z6bwouUwZxr1Tcm81aPBMF83sq3UMBZqy05+jo
-P31AXYVNnLE8+PhFUMKjKr1Dc0/xD043qAju3CJ7xTH82NwE1duBZIqbpUc0tHjxImFvWCjrkAYQ
-j8glIC9D9XZY2XG/g2Qag9PYF7Kzf2jLKge6l1UddNiHTsGJkpP4gJ1dNzLhAHdAAMPwBVjkp7dN
-AZQFZipK43Qe7gOcN6ORGKDc9kb+L3YRUTgZjqceP2QWEL+YHeUhOOt1lxvIoiQhRUF/mvjgojkb
-JYWgO+qzwFuZ4nActcV6AFoHVTv7b/PA6b56qY4Og8bbwdxLIP49vJZDrRC9JqZS45t5oJJ4LRTb
-K0in7M10RcX715sRLGmePtR40ynZbHl4mloBue2Wn/c6Yr7RMCinxLBNv4cqseqZ3UKbGOMUbDTl
-w8xfdbPldy1BLuB8f2Jwutbf8rOz+OSwp2vCQhXJJGkqQ0fEgilp4n2pkAXXPYPBioOJ6rYpsuLi
-HBQ/P2hDZJXf3kSYXlrUGtIFU1pkkdCX7W45G29Ny8tBzmLFQCYRJ4nPqcYutjDbgcaQSu5JHPte
-2xyFRN0IYs65agiaJuF8LTjZ2AqB2U2w4sSunDjQGBB+Iur7y0sWQB9ARCH1kRysNxgdb57uy/w2
-PQg=
-=J7qb
------END PGP SIGNATURE-----
-
---------------GUEY8WDKKNuJNWEUMZsZV4cn--
+That's fair - in which case, I would recommend option #2 or some
+variant of it. Because fixing the test by removing -ffreestanding is
+just hiding that there's a real issue that needs to be fixed to have
+properly working KASAN on LoongArch.
