@@ -2,64 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EFBD751F76
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 13:06:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C9A8751F7F
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 13:06:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233925AbjGMLGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 07:06:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51016 "EHLO
+        id S234141AbjGMLGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 07:06:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbjGMLGJ (ORCPT
+        with ESMTP id S234182AbjGMLGd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 07:06:09 -0400
-Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA0292691
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 04:06:04 -0700 (PDT)
-Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-57045429f76so4624977b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 04:06:04 -0700 (PDT)
+        Thu, 13 Jul 2023 07:06:33 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11C782738
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 04:06:21 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-ca3cc52ee62so523898276.0
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 04:06:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689246363; x=1691838363;
+        d=linaro.org; s=google; t=1689246380; x=1691838380;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=jQ5zJ3RE3bkqHW8nA39k1wel/wtNjBxuxQZqeE/oUIc=;
-        b=AF4JKuK521m6pB4IPsTQ+GbIWvx6HdZRWVs+C/32ulGesRM1zmk1vbHB4UwV1J6XP3
-         zd7N23Hr2cH+MRs2rq8FOD+J/ndsTIujQp7lzgR+eh48apV2E/O/x7pwTjuNqGypgJYv
-         U5Yl5JQyBCCTKaccyP4uHt8Plaw+gPFq/0Cq4sVbo+RqhBH7Rf9zZb2UQVz7aQvrKV2X
-         BSS/CrJU1XisLVIOnKYIv7DJniMH7Bq7bmHtpy/Oi6UBYSyt9knrS6YZoBjHP6Rxg79w
-         GA+Zi1PUbXLsu2USX7EwENOe1S8HkIPv0yN3dRPKvde1q6/e2pJfiy3vpofdakqwW0kg
-         ZfaQ==
+        bh=WiV/7q29Lz9ovivX2FWAx1Ldp08v14j+trL88mxoLRY=;
+        b=eHuodEMDmc0gaOLGxz4ZOl2QDUjscsSR534Yb0lsjWkR+iDaGKmcW504dn05tzvAjx
+         1yz4d5P/2M+6vgpGuNhuApckUlcmKYeE3f1/lU1wNBBnn58JW5MniNKq5Z/dRKuYaEgR
+         MA5xl2XLjoVlTuurE4+ycjzM5DO6556A+sVkde3usYGkl+JnZwJYRsHzxbI1NoG+pgd0
+         a3KeCvwvYTkQoOzQAc5KAe7VvTb7jqrEaxPixzse8rw3QIl2IVD+oi4gqdVV5ihaHu4p
+         wTfflQTZZd4gb/zcdeUUWlkA6KrsMxQ4FJOWZIknrqw79Xe16SUChZkpfheZoAS7wiib
+         jvUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689246363; x=1691838363;
+        d=1e100.net; s=20221208; t=1689246380; x=1691838380;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=jQ5zJ3RE3bkqHW8nA39k1wel/wtNjBxuxQZqeE/oUIc=;
-        b=TAxnTuOtuiLP0eSKmQhx6F7wc/H6S8nrEmiVdZEaaf+NfZdY19mt5nzzmPtjq+VwrT
-         UWZqg/D/JHddgFC7vLKYQThmbpXucjnXy9BA8NM2VkPeGUHSjrMKKwScIIfGjeyfXy+y
-         JhzgqKBl8iH3rkDdLGdtt+ZxqSr8ruZ/g1OSDrLzNLTfHFLIvP9XJ+YbUYWSC7i6qneK
-         mV8j9dlauA7NIk8DqNIgZrWSP+bYzc7hMka8T8uRYZ4sA5Tqpm3P1mzCJsDjDxQtA1za
-         tqfNP5vZ5zK3o4eK7DZ1Y/0rs0P4f6EULjkZSdf408ejC4e7nL0ngFG+iQaGDuJgDWqE
-         BiRw==
-X-Gm-Message-State: ABy/qLap6Me5RFsKUQ7ZHUIJ/FKQdFztL+75vbVenmpffpv+w/oM0w5L
-        +FYZbbcmlKcHmyL2iR/9XTLO0+GEAW3gPEzM3tUWNA==
-X-Google-Smtp-Source: APBJJlG6zZPjAMen3wDVjrgT8dwhjGZ3m8Hcib7Gz1vJ0iqq3SC5gZIHOnTB0izb/nMffmR2rQGrjr1dp1LGr3QanzM=
-X-Received: by 2002:a0d:dfcf:0:b0:570:6a58:d864 with SMTP id
- i198-20020a0ddfcf000000b005706a58d864mr1098399ywe.51.1689246363583; Thu, 13
- Jul 2023 04:06:03 -0700 (PDT)
+        bh=WiV/7q29Lz9ovivX2FWAx1Ldp08v14j+trL88mxoLRY=;
+        b=WB2Jy9fI8uaoHV0R1TPv04jkIs3AOwhkyBccRJ8nNEtpJzqVHEuLoWXwxxLFPtysM/
+         l3qfofPG9+PO2YsgPcx5gy1YAq5KlizU2ovnbZ6Sy7omLprhqSXmQJzwZa8kyUqFNI6A
+         LV/MQ7oBCifDAgEloSBPQE3iSRn+ZK8rHffOWPjfpwbJIS+M+3BWu0H/2HuSGy0Na9V2
+         yAuNcly/VMKV3Zh7xZGQhH1M+aghECKsv52mFBCNUOaN19PROICegEhWlA9Fk3nAGm/I
+         e2wi78QSu1Mh7hCmYh1+SXOGhlytT8/FxSKrssU4eUv3GK6wrzXZJOzpeewDcQjMo7wE
+         3/Aw==
+X-Gm-Message-State: ABy/qLYGpHgWyPx75nKId+GM/r2FbB/ycs2Jp9tqyFph1fDldacUqRPl
+        MtfQjGL+cWVslNkWXCCNOFPVAwDvNu8BvsyE/IuUXQ==
+X-Google-Smtp-Source: APBJJlGvdFT1I5LlLlSZ1vXvHoB35pTHYRo+rkqezmhzn+Qzriqe/07gvMGjawbihGymi4kllx31OgEP5eBDfTAEQME=
+X-Received: by 2002:a25:8550:0:b0:ca7:aad7:3091 with SMTP id
+ f16-20020a258550000000b00ca7aad73091mr918328ybn.27.1689246380252; Thu, 13 Jul
+ 2023 04:06:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230622090233.188539-1-harperchen1110@gmail.com>
-In-Reply-To: <20230622090233.188539-1-harperchen1110@gmail.com>
+References: <20230629184318.551317-1-linux@fw-web.de> <20230629184318.551317-2-linux@fw-web.de>
+In-Reply-To: <20230629184318.551317-2-linux@fw-web.de>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 13 Jul 2023 13:05:27 +0200
-Message-ID: <CAPDyKFqGG4S9GYZhikt--BhSpemke0t3859mX5QN7Rc2ajYwZQ@mail.gmail.com>
-Subject: Re: [PATCH] mmc: sunplus: fix return value check of mmc_add_host()
-To:     Wei Chen <harperchen1110@gmail.com>
-Cc:     tonyhuang.sunplus@gmail.com, lhjeff911@gmail.com,
-        p.zabel@pengutronix.de, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Date:   Thu, 13 Jul 2023 13:05:44 +0200
+Message-ID: <CAPDyKFrvQWUQuT_SX=hArY9TP61naN0gzaZ+8qo6PnOMntn9gg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] dt-bindings: mmc: mtk-sd: drop assigned-clocks/clock-parents
+To:     Frank Wunderlich <linux@fw-web.de>
+Cc:     linux-mediatek@lists.infradead.org,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Chaotian Jing <chaotian.jing@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Wenbin Mei <wenbin.mei@mediatek.com>,
+        Sam Shih <sam.shih@mediatek.com>, linux-mmc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -68,18 +78,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 22 Jun 2023 at 11:02, Wei Chen <harperchen1110@gmail.com> wrote:
+On Thu, 29 Jun 2023 at 20:43, Frank Wunderlich <linux@fw-web.de> wrote:
 >
-> mmc_add_host() may return error, if we ignore its return value,
-> 1. the memory allocated in mmc_alloc_host() will be leaked
-> 2. null-ptr-deref will happen when calling mmc_remove_host()
-> in remove function spmmc_drv_remove() because deleting not
-> added device.
+> From: Frank Wunderlich <frank-w@public-files.de>
 >
-> Fix this by checking the return value of mmc_add_host(). Moreover,
-> I fixed the error handling path of spmmc_drv_probe() to clean up.
+> MT7986 has 2 clock-parents and these properties are not needed in driver
+> binding. So drop them completely.
 >
-> Signed-off-by: Wei Chen <harperchen1110@gmail.com>
+> Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
 
 Applied for next, thanks!
 
@@ -88,51 +94,33 @@ Uffe
 
 
 > ---
->  drivers/mmc/host/sunplus-mmc.c | 16 ++++++++++++----
->  1 file changed, 12 insertions(+), 4 deletions(-)
+> v2:
+> - drop assigned-clock* completely based on discussion with Krzysztof in v1
+> ---
+>  Documentation/devicetree/bindings/mmc/mtk-sd.yaml | 10 ----------
+>  1 file changed, 10 deletions(-)
 >
-> diff --git a/drivers/mmc/host/sunplus-mmc.c b/drivers/mmc/host/sunplus-mmc.c
-> index db5e0dcdfa7f..a96e90ea6541 100644
-> --- a/drivers/mmc/host/sunplus-mmc.c
-> +++ b/drivers/mmc/host/sunplus-mmc.c
-> @@ -902,7 +902,7 @@ static int spmmc_drv_probe(struct platform_device *pdev)
+> diff --git a/Documentation/devicetree/bindings/mmc/mtk-sd.yaml b/Documentation/devicetree/bindings/mmc/mtk-sd.yaml
+> index 46eefdd19a2c..3fffa467e4e1 100644
+> --- a/Documentation/devicetree/bindings/mmc/mtk-sd.yaml
+> +++ b/Documentation/devicetree/bindings/mmc/mtk-sd.yaml
+> @@ -91,16 +91,6 @@ properties:
+>        should switch dat1 pin to GPIO mode.
+>      maxItems: 1
 >
->         ret = mmc_of_parse(mmc);
->         if (ret)
-> -               goto probe_free_host;
-> +               goto clk_disable;
->
->         mmc->ops = &spmmc_ops;
->         mmc->f_min = SPMMC_MIN_CLK;
-> @@ -911,7 +911,7 @@ static int spmmc_drv_probe(struct platform_device *pdev)
->
->         ret = mmc_regulator_get_supply(mmc);
->         if (ret)
-> -               goto probe_free_host;
-> +               goto clk_disable;
->
->         if (!mmc->ocr_avail)
->                 mmc->ocr_avail = MMC_VDD_32_33 | MMC_VDD_33_34;
-> @@ -927,9 +927,17 @@ static int spmmc_drv_probe(struct platform_device *pdev)
->         host->tuning_info.enable_tuning = 1;
->         pm_runtime_set_active(&pdev->dev);
->         pm_runtime_enable(&pdev->dev);
-> -       mmc_add_host(mmc);
-> +       ret = mmc_add_host(mmc);
-> +       if (ret)
-> +               goto pm_disable;
->
-> -       return ret;
-> +       return 0;
-> +
-> +pm_disable:
-> +       pm_runtime_disable(&pdev->dev);
-> +
-> +clk_disable:
-> +       clk_disable_unprepare(host->clk);
->
->  probe_free_host:
->         if (mmc)
+> -  assigned-clocks:
+> -    description:
+> -      PLL of the source clock.
+> -    maxItems: 1
+> -
+> -  assigned-clock-parents:
+> -    description:
+> -      parent of source clock, used for HS400 mode to get 400Mhz source clock.
+> -    maxItems: 1
+> -
+>    hs400-ds-delay:
+>      $ref: /schemas/types.yaml#/definitions/uint32
+>      description:
 > --
-> 2.25.1
+> 2.34.1
 >
