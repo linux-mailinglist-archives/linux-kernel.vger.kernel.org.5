@@ -2,71 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74B027515DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 03:42:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73DAB75154B
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 02:30:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233180AbjGMBmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 21:42:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33976 "EHLO
+        id S233049AbjGMAap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 20:30:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233205AbjGMBmP (ORCPT
+        with ESMTP id S229808AbjGMAan (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 21:42:15 -0400
-X-Greylist: delayed 1801 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 12 Jul 2023 18:42:13 PDT
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:242:246e::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 152991FEE;
-        Wed, 12 Jul 2023 18:42:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-        Resent-Cc:Resent-Message-ID; bh=m3po4FiRsuRaodVf3w1lKGRDQNG5T/ke8/cTCsTCpi0=;
-        t=1689212533; x=1690422133; b=EzF0nwhmzXPInb/EC4kTZO9WQzs1BCBZclq9VKpD7u+Oi+C
-        ZvH7ocEqCvxafHLwgapM6jHGE1C7/X5b+LkEWP9ZEFpBucgRD1dLJP41VsOlEiHJOwK6VKKn/5/8o
-        8U+/Rtyogf2TTB4a1mCM7f7mbL9RT09bfqfliyYl2nQksZm39QY1vrzTknEhcRjGOiSqx5dYISHZF
-        lyns2lU0Asay7cKxhO90vz+Q3WMLZ2r+Ru/ujvw6155gNXNvoW9wpUXLlv7DkQ/Sg0F+rL9oJ2LSu
-        exCiHKSyFXPbRY8W9EzEIMtE4llRHlP/5jTecbZT6D0h3Xkq12sQKvnLS+T3MLCg==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.96)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1qJkC3-0004Hv-1i;
-        Thu, 13 Jul 2023 02:28:27 +0200
-Message-ID: <2d26c0028590a80e7aa80487cbeffd5ca6e6a5ea.camel@sipsolutions.net>
-Subject: Re: [PATCH] USB: disable all RNDIS protocol drivers
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Oliver Neukum <oneukum@suse.com>,
-        Enrico Mioso <mrkiko.rs@gmail.com>,
-        Jan Engelhardt <jengelh@inai.de>, linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Kalle Valo <kvalo@kernel.org>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Maciej =?UTF-8?Q?=C5=BBenczykowski?= <maze@google.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Andrzej Pietrasiewicz <andrzejtp2010@gmail.com>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        =?UTF-8?Q?=C5=81ukasz?= Stelmach <l.stelmach@samsung.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
-        linux-wireless@vger.kernel.org,
-        Ilja Van Sprundel <ivansprundel@ioactive.com>,
-        Joseph Tartaro <joseph.tartaro@ioactive.com>
-Date:   Thu, 13 Jul 2023 02:28:26 +0200
-In-Reply-To: <2023071222-asleep-vacancy-4cfa@gregkh>
-References: <20221123124620.1387499-1-gregkh@linuxfoundation.org>
-         <n9108s34-9rn0-3n8q-r3s5-51r9647331ns@vanv.qr> <ZKM5nbDnKnFZLOlY@rivendell>
-         <2023070430-fragment-remember-2fdd@gregkh>
-         <e5a92f9c-2d56-00fc-5e01-56e7df8dc1c1@suse.com>
-         <6a4a8980912380085ea628049b5e19e38bcd8e1d.camel@sipsolutions.net>
-         <2023071222-asleep-vacancy-4cfa@gregkh>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Wed, 12 Jul 2023 20:30:43 -0400
+Received: from dnyon.com (dnyon.com [142.132.167.13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83C9B1FF5;
+        Wed, 12 Jul 2023 17:30:41 -0700 (PDT)
+From:   Alejandro Tafalla <atafalla@dnyon.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dnyon.com; s=mail;
+        t=1689208234; bh=OqvMagDHrs9sGhzHEnKv1/CpHc2sIgYQxc++nItrEtU=;
+        h=From:To:Cc:Subject;
+        b=gXGkKF+F71ogzf/2taKOshImmn61+Rct6eaD8Yuijekx/aj2OLxUtOkoVC2Z5d4V+
+         kiw0OsAKWaYsk+obUhQCC9bfhmn4dl0JN95FW6zzyEW0J+NXGXJVaFDof5jKhrirDh
+         ozH58IGZthpyx2F3WNSkG67GVV0/WBkvISTOLXPb6Ht7nBTZt5G2J0RezJ4TIXv5xm
+         douxSHt++6oxFHUEzz2Rx1eluNhgAcjJF8iFT30fGrTAWqORCBfLgG1N6zcPObpoSM
+         Yykwqy+6aw+5HY+uYuRUR9C+sbRVLpkC8RVBKAAiqxwfxpcKg8arJMINdSEaxMi66d
+         kU8MSWoDsqBo39kkFtnlmPPvbGPOIII8EImwce6liR7qWKZdbEk7wJ913sbNnIdYuL
+         iZs1cNHLIqg/fReYAPn4TfTHhzpYvh2XrOFSmHcZz2Lo/BkR3wG1sxXQistFXqHCRQ
+         +te1ekxYxJgq9eIXYteq3zER5n3jjadkyKeyrZxu+jaIvpRbYKSDwmqwOMn6FeMOMW
+         oXa7UgilBbRmL28Tj3FY3JVcRXKbtNBrc3EGy9kL4L0j1lHa43YMWBh6nzxqddNQqM
+         dNqDnxKBQDIg3rrlwTdwqTr38SLTTH3i3HghLrnersA+zHch8MTUjjxL2KYmm78UYB
+         0vSe4cPKRjHEIkjtbf9zCZCI=
+To:     lorenzo@kernel.org, jic23@kernel.org, lars@metafoo.de
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+Subject: [PATCH v2] iio: imu: lsm6dsx: Fix mount matrix retrieval
+Date:   Thu, 13 Jul 2023 02:28:34 +0200
+Message-ID: <5690549.31r3eYUQgx@alexpc>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -77,46 +49,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-07-12 at 18:39 +0200, Greg Kroah-Hartman wrote:
-> On Wed, Jul 12, 2023 at 03:00:55PM +0200, Johannes Berg wrote:
-> > On Wed, 2023-07-12 at 11:22 +0200, Oliver Neukum wrote:
-> > >=20
-> > > On 04.07.23 08:47, Greg Kroah-Hartman wrote:
-> > > > On Mon, Jul 03, 2023 at 11:11:57PM +0200, Enrico Mioso wrote:
-> > > > > Hi all!!
-> > > > >=20
-> > > > > I think the rndis_host USB driver might emit a warning in the dme=
-sg, but disabling the driver wouldn't be a good idea.
-> > > > > The TP-Link MR6400 V1 LTE modem and also some ZTE modems integrat=
-ed in routers do use this protocol.
-> > > > >=20
-> > > > > We may also distinguish between these cases and devices you might=
- plug in - as they pose different risk levels.
-> > > >=20
-> > > > Again, you have to fully trust the other side of an RNDIS connectio=
-n,
-> > > > any hints on how to have the kernel determine that?
-> >=20
-> > > it is a network protocol. So this statement is kind of odd.
-> > > Are you saying that there are RNDIS messages that cannot be verified
-> > > for some reason, that still cannot be disclosed?
-> >=20
-> > Agree, it's also just a USB device, so no special trickery with DMA,
-> > shared buffers, etc.
-> >=20
-> > I mean, yeah, the RNDIS code is really old and almost certainly has a
-> > severe lack of input validation, but that still doesn't mean it's
-> > fundamentally impossible.
->=20
-> You all are going to make me have to write some exploits aren't you...
+The function lsm6dsx_get_acpi_mount_matrix should return an error when ACPI
+support is not enabled to allow executing iio_read_mount_matrix in the
+probe function.
 
-This is getting a bit childish. Nobody ever said that wasn't possible,
-in fact I did say exactly above that I'm sure since it's old and all it
-lacks input validation. So yeah, I full well believe that you can write
-exploits for it.
+Fixes: dc3d25f22b88 ("iio: imu: lsm6dsx: Add ACPI mount matrix retrieval")
 
-All we said is that your statement of "RNDIS is fundamentally unfixable"
-doesn't make a lot of sense. If this were the case, all USB drivers
-would have to "trust the other side" as well, right?
+Signed-off-by: Alejandro Tafalla <atafalla@dnyon.com>
+---
+Changes in v2:
+- Use of error codes instead of true/false. 
+---
+ drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-johannes
+diff --git a/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c b/drivers/iio/imu/
+st_lsm6dsx/st_lsm6dsx_core.c
+index 6a18b363cf73..1a4752c95601 100644
+--- a/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c
++++ b/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c
+@@ -2687,7 +2687,7 @@ static int lsm6dsx_get_acpi_mount_matrix(struct device 
+*dev,
+ static int lsm6dsx_get_acpi_mount_matrix(struct device *dev,
+ 					  struct iio_mount_matrix 
+*orientation)
+ {
+-	return false;
++	return -EOPNOTSUPP;
+ }
+ 
+ #endif
+@@ -2767,11 +2767,11 @@ int st_lsm6dsx_probe(struct device *dev, int irq, int 
+hw_id,
+ 	}
+ 
+ 	err = lsm6dsx_get_acpi_mount_matrix(hw->dev, &hw->orientation);
+-	if (err) {
++	if (err == -EOPNOTSUPP)
+ 		err = iio_read_mount_matrix(hw->dev, &hw->orientation);
+-		if (err)
+-			return err;
+-	}
++
++	if (err)
++		return err;
+ 
+ 	for (i = 0; i < ST_LSM6DSX_ID_MAX; i++) {
+ 		if (!hw->iio_devs[i])
+-- 
+2.41.0
+
+
+
+
