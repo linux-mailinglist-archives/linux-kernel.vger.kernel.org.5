@@ -2,52 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8657F7527A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 17:47:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C7407527AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 17:49:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234253AbjGMPri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 11:47:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49026 "EHLO
+        id S232744AbjGMPt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 11:49:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230390AbjGMPrg (ORCPT
+        with ESMTP id S230380AbjGMPtY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 11:47:36 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95B1F1BEB
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 08:47:35 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Thu, 13 Jul 2023 11:49:24 -0400
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A434B1BEB
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 08:49:23 -0700 (PDT)
+Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com [209.85.215.198])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2764A60A70
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 15:47:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3151DC433C7;
-        Thu, 13 Jul 2023 15:47:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1689263254;
-        bh=i37Pn35Ma5iz47/BovQHmpsTpruTD//Fx78Ggq9VeG4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=F8vX1KqKm+k+fEp+TeFwoalLYLV2z+vFifI7I1H8DW8a0Oh+jY0JWg829fbHqEavj
-         0Q2nP3bYFd6N2AFPf7F4oMMprkM3GVPg9UJM60uO9V12CDUpUADsRD74By9aksh4bN
-         gqePTIMYsg4jks6P4rnr1V3SwurIm/DF7uzGgES4=
-Date:   Thu, 13 Jul 2023 17:47:31 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     hanyu001@208suo.com
-Cc:     tglx@linutronix.de, peterz@infradead.org, vschneid@redhat.com,
-        dwmw@amazon.co.uk, akpm@linux-foundation.org, npiggin@gmail.com,
-        pauld@redhat.com, vdonnefort@google.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: Fwd: [PATCH] kernel:  convert sysfs snprintf to sysfs_emit
-Message-ID: <2023071353-garage-twisty-8414@gregkh>
-References: <tencent_48D17833D10F2D6A2DF87986804C357D2506@qq.com>
- <ef672732fbb865f338d88db89fc11062@208suo.com>
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 30FA13F722
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 15:49:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1689263360;
+        bh=n3uwF+PhF/LCrAwLUh31M26n0RcXjtVO0HNToCDrTPg=;
+        h=From:To:cc:Subject:In-reply-to:References:MIME-Version:
+         Content-Type:Date:Message-ID;
+        b=APQ809otVSI3WX3X+yq+09SXpH9zTgAC4anQ+E6yL3TMcwWaHV+JdsF/etyrCyzHk
+         4u4suupfXVbwFoUTxp2fuX+jnY/sjHeIpP+HcC3SxFzUD2B23DjKvZYpJfHo9CY/0u
+         GYTFqicG1XuDAK8IMtTlpZ2FteF+vEi2UYNci+qhUN7yoPtsB2z0iT5JW2NT0/vs1/
+         AkvZR54KzQ/4/7JLCOZGbatmNDVSBkio5snNtsRjGRnwwCN6pVPYwlkYzdObUCujlJ
+         InDHqE4XTqJDWphIfnLOrglpeiu4lt99rc7hsBa0qJbfjwu51/EtDTE6gRgsCVTFD9
+         tw9Teg+uNOi8w==
+Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-55bf1eabe34so475528a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 08:49:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689263356; x=1691855356;
+        h=message-id:date:content-transfer-encoding:content-id:mime-version
+         :comments:references:in-reply-to:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=n3uwF+PhF/LCrAwLUh31M26n0RcXjtVO0HNToCDrTPg=;
+        b=W1nn2i//YaMoUGPzgkKeAsDJrvk8VUsLpJPcpecsgnbgWi17VL3L9Hs3qrryk5NZYN
+         VNB2BBYZGqwtxxOFFibAG+u5U22L/G3ZCSTXnX1rIIPl7GgJg+p+QevUhrS6VMpiD/93
+         DV2a/DbN0Eh9Bv+wUK5UVe1dr/d3eBmw/dP2pSyAur+iG8KxYWyBN/rpyl3b4YH5mFkE
+         X2I/wn1kj+0jqzGOG8ArLGTeM/KQgLDxY0mgUlMTiliJC2aj5PPImhNXIUYd5EUv75wv
+         khVzIGuIm3hhuQFUpx571YlkRnGC1h/NNdZXXQwnyVqe8sb6bVYFiLIB+DiRVwzTKIiD
+         76BQ==
+X-Gm-Message-State: ABy/qLZNwmeUGa4LQcF4NKjkTOtKAufPNHn7ir75M0oE0AbsNelDmHJw
+        WDWO4v57l095NqEfw2QmPHK4hhJU+m7/Cq2/mRDpSifms9qGMev7wA70YxsEbIiv/fept9dIXyD
+        A28L4d1SoYfbs9kX+0tTwi75sF1CHlatHjgLIdba5wQ==
+X-Received: by 2002:a05:6a20:4421:b0:131:dd92:4805 with SMTP id ce33-20020a056a20442100b00131dd924805mr1723888pzb.57.1689263356359;
+        Thu, 13 Jul 2023 08:49:16 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlHekTUfrweh/EaRRcrm+KOYQucCEEY8g7tbjF9pWZHmVZklspjSNv/1FrXl4lZg9vwDv9ClSQ==
+X-Received: by 2002:a05:6a20:4421:b0:131:dd92:4805 with SMTP id ce33-20020a056a20442100b00131dd924805mr1723861pzb.57.1689263356000;
+        Thu, 13 Jul 2023 08:49:16 -0700 (PDT)
+Received: from famine.localdomain ([50.125.80.253])
+        by smtp.gmail.com with ESMTPSA id h21-20020a62b415000000b00682b15d509csm5550440pfn.194.2023.07.13.08.49.15
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 13 Jul 2023 08:49:15 -0700 (PDT)
+Received: by famine.localdomain (Postfix, from userid 1000)
+        id 3100E5FEAC; Thu, 13 Jul 2023 08:49:15 -0700 (PDT)
+Received: from famine (localhost [127.0.0.1])
+        by famine.localdomain (Postfix) with ESMTP id 29F6D9FABB;
+        Thu, 13 Jul 2023 08:49:15 -0700 (PDT)
+From:   Jay Vosburgh <jay.vosburgh@canonical.com>
+To:     Wang Ming <machel@vivo.com>
+cc:     Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Yufeng Mo <moyufeng@huawei.com>,
+        Guangbin Huang <huangguangbin2@huawei.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        opensource.kernel@vivo.com
+Subject: Re: [PATCH net v1] net:bonding:Fix error checking for debugfs_create_dir()
+In-reply-to: <20230713033607.12804-1-machel@vivo.com>
+References: <20230713033607.12804-1-machel@vivo.com>
+Comments: In-reply-to Wang Ming <machel@vivo.com>
+   message dated "Thu, 13 Jul 2023 11:35:54 +0800."
+X-Mailer: MH-E 8.6+git; nmh 1.6; Emacs 29.0.50
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ef672732fbb865f338d88db89fc11062@208suo.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <24869.1689263355.1@famine>
+Content-Transfer-Encoding: quoted-printable
+Date:   Thu, 13 Jul 2023 08:49:15 -0700
+Message-ID: <24870.1689263355@famine>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,84 +96,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 05:20:49PM +0800, hanyu001@208suo.com wrote:
-> Fix the following coccicheck warnings:
-> drivers/tty/vt/vt.c:3942:8-16:
-> WARNING: use scnprintf or sprintf
-> drivers/tty/vt/vt.c:3950:8-16:
-> WARNING: use scnprintf or sprintf
-> 
-> ./kernel/cpu.c:2920:8-16: WARNING: use scnprintf or sprintf
-> ./kernel/cpu.c:2907:8-16: WARNING: use scnprintf or sprintf
-> 
-> Signed-off-by: ztt <1549089851@qq.com>
-> ---
->  kernel/cpu.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/cpu.c b/kernel/cpu.c
-> index ed65aeaa94b5..1a9634236b54 100644
-> --- a/kernel/cpu.c
-> +++ b/kernel/cpu.c
-> @@ -2904,7 +2904,7 @@ static ssize_t control_show(struct device *dev,
->  {
->      const char *state = smt_states[cpu_smt_control];
-> 
-> -    return snprintf(buf, PAGE_SIZE - 2, "%s\n", state);
-> +    return scnprintf(buf, PAGE_SIZE - 2, "%s\n", state);
->  }
-> 
->  static ssize_t control_store(struct device *dev, struct device_attribute
-> *attr,
-> @@ -2917,7 +2917,7 @@ static DEVICE_ATTR_RW(control);
->  static ssize_t active_show(struct device *dev,
->                 struct device_attribute *attr, char *buf)
->  {
-> -    return snprintf(buf, PAGE_SIZE - 2, "%d\n", sched_smt_active());
-> +    return scnprintf(buf, PAGE_SIZE - 2, "%d\n", sched_smt_active());
->  }
->  static DEVICE_ATTR_RO(active);
+Wang Ming <machel@vivo.com> wrote:
 
-Hi,
+>The debugfs_create_dir() function returns error pointers,
+>it never returns NULL. Most incorrect error checks were fixed,
+>but the one in bond_create_debugfs() was forgotten.
+>
+>Fix the remaining error check.
+>
+>Signed-off-by: Wang Ming <machel@vivo.com>
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+	Seems fine to me; note that almost nobody uses this as bonding
+debugfs is hidden behind !CONFIG_NET_NS.
 
-You are receiving this message because of the following common error(s)
-as indicated below:
+Acked-by: Jay Vosburgh <jay.vosburgh@canonical.com>
 
-- Your patch is malformed (tabs converted to spaces, linewrapped, etc.)
-  and can not be applied.  Please read the file,
-  Documentation/process/email-clients.rst in order to fix this.
+	-J
 
-- You did not specify a description of why the patch is needed, or
-  possibly, any description at all, in the email body.  Please read the
-  section entitled "The canonical patch format" in the kernel file,
-  Documentation/process/submitting-patches.rst for what is needed in
-  order to properly describe the change.
+>Fixes: 52333512701b ("net: bonding: remove unnecessary braces")
+>---
+> drivers/net/bonding/bond_debugfs.c | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+>
+>diff --git a/drivers/net/bonding/bond_debugfs.c b/drivers/net/bonding/bon=
+d_debugfs.c
+>index 594094526648..d4a82f276e87 100644
+>--- a/drivers/net/bonding/bond_debugfs.c
+>+++ b/drivers/net/bonding/bond_debugfs.c
+>@@ -88,7 +88,7 @@ void bond_create_debugfs(void)
+> {
+> 	bonding_debug_root =3D debugfs_create_dir("bonding", NULL);
+> =
 
-- You did not write a descriptive Subject: for the patch, allowing Greg,
-  and everyone else, to know what this patch is all about.  Please read
-  the section entitled "The canonical patch format" in the kernel file,
-  Documentation/process/submitting-patches.rst for what a proper
-  Subject: line should look like.
+>-	if (!bonding_debug_root)
+>+	if (IS_ERR(bonding_debug_root))
+> 		pr_warn("Warning: Cannot create bonding directory in debugfs\n");
+> }
+> =
 
-- It looks like you did not use your "real" name for the patch on either
-  the Signed-off-by: line, or the From: line (both of which have to
-  match).  Please read the kernel file,
-  Documentation/process/submitting-patches.rst for how to do this
-  correctly.
+>-- =
 
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
+>2.25.1
+>
+>
