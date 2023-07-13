@@ -2,139 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBE79751A37
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 09:47:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABB23751A55
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 09:50:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232331AbjGMHrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 03:47:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59068 "EHLO
+        id S232648AbjGMHut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 03:50:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232461AbjGMHq5 (ORCPT
+        with ESMTP id S232343AbjGMHur (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 03:46:57 -0400
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2115.outbound.protection.outlook.com [40.107.215.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54627B7;
-        Thu, 13 Jul 2023 00:46:56 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XuKYXDyorY0QwBOI/+VlLBpuGtMk9zCtL5+8cztDkyDajbrW6eJ2YLMOF3afTchwS2JA9vZ9IQfQm97/mTUSh88obZyujENmzki0SEzBnAg8TUxaFaMkScAJ6V3a3vZO+j+P5NtvqKKzOn9JF9FKOZ+QZMEICyLEPwMzhIk5uvh5z+BvoxOCpkqaSwUQw2fwHVMJsKzr9ecNwOg0OkH5a6AkfUhwql8aRb9IUZjYk81ua+BFY7f6JI7McOtizoXNHW4EH6AnR3SjU3lYn/d3yP5faNxXS5GssSqOisoWr9vTRbwW6VaGfpUu6YxM3PSI4LPkQi+R+S/aKzA95a59UA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=sFVcN6Z/bvdnA+549n9s8cmHl4AdhVjhKxg3id/pKBs=;
- b=Mf1i6+LIWHSGX3/rDCZ+zayiIEiaRKKgPN6rrcGx01Gr1nlbB1Y/YXNQovq9Mo7cE+7Azocb65DSybtsHdmDopBQXgGT3IbgNJuN3KRLJWX9+QPuTPs+8G8bks7hSgQdyeit7OHyBXVC9uO2jG5sJPzXCQV06GDn5Dx+tuLFZdcRZesQY0lDTBiELhB2BnULKt5bV65xFKGguJkDDR8jQRtoyn9hU+TONSXbQwfl1yb6NZn9zCEhJUMV0wcdomwSPfRNR/2O48qct3M29XYZnJZUcx2qTwKqLc+O5ja3IPnpZ2demhGtH/GQl5q/PScLWEVrwuqHDKDU32jQimLBoQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sFVcN6Z/bvdnA+549n9s8cmHl4AdhVjhKxg3id/pKBs=;
- b=YNoiqYEmqOKKPTWwhyQ3zIKdawSQwhF37EI4vPIz/B8RfNHfoIJKZ3Sbuy1uRjgH3zIi2FvKyWgYythMXDqXIeRo2Bgk9Eu0sGLh1c+DISDM0/FVNhESJv3xfi1+nK4BQPiSJrk8IOrYWWvPlMb90DrXfa1WlFWu2sqHEf2/E0ur+np14+d3bVWjWxttAw5hK3m38jCkJ/Us05Wu2ez7iW5FI3z517yrOBD+Wgr16lOn8xvFcFNJxZIuDTNQ9nwWGuPEfyZnYs31uD5VuhZY6YzsO7/nN2YFSYFNtuTv/Qjcwz7lL23zApM59EUSDyTqkZsjLScGy6ntdItYOXCL0g==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from SG2PR06MB5288.apcprd06.prod.outlook.com (2603:1096:4:1dc::9) by
- KL1PR06MB6299.apcprd06.prod.outlook.com (2603:1096:820:ce::14) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6588.22; Thu, 13 Jul 2023 07:46:50 +0000
-Received: from SG2PR06MB5288.apcprd06.prod.outlook.com
- ([fe80::f9b8:80b5:844e:f49a]) by SG2PR06MB5288.apcprd06.prod.outlook.com
- ([fe80::f9b8:80b5:844e:f49a%6]) with mapi id 15.20.6565.028; Thu, 13 Jul 2023
- 07:46:50 +0000
-From:   Minjie Du <duminjie@vivo.com>
-To:     Jiri Slaby <jirislaby@kernel.org>,
-        Nick Kossifidis <mickflemm@gmail.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kalle Valo <kvalo@kernel.org>,
-        linux-wireless@vger.kernel.org (open list:ATHEROS ATH5K WIRELESS DRIVER),
-        linux-kernel@vger.kernel.org (open list)
-Cc:     opensource.kernel@vivo.com, Minjie Du <duminjie@vivo.com>
-Subject: [PATCH v3] drivers: wireless: ath5k: remove parameter check in ath5k_debug_init_device(struct ath5k_hw *ah)
-Date:   Thu, 13 Jul 2023 15:46:32 +0800
-Message-Id: <20230713074632.11204-1-duminjie@vivo.com>
-X-Mailer: git-send-email 2.39.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR03CA0117.apcprd03.prod.outlook.com
- (2603:1096:4:91::21) To SG2PR06MB5288.apcprd06.prod.outlook.com
- (2603:1096:4:1dc::9)
+        Thu, 13 Jul 2023 03:50:47 -0400
+Received: from smtp-fw-2101.amazon.com (smtp-fw-2101.amazon.com [72.21.196.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 321F3B7;
+        Thu, 13 Jul 2023 00:50:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1689234647; x=1720770647;
+  h=references:from:to:cc:date:message-id:in-reply-to:
+   mime-version:subject;
+  bh=vot4qMoMLFWBXgyy/o6LSt72N9CRa0tUFzm54MB4zW4=;
+  b=r5Jp7N/KjHTHce7RFrFa92deyMkUoKZzn0i9ORmah2Qc0CV8SqjBtCn3
+   syoihsikxJ9p3T74ABRIIboX20gEvd1RmnSVHROwATdb4/avteDElGZFa
+   vE8UcMhLdrlAeW+nw1imGvfHt1xonulXW8HPAtLwOS0x3VQZneH8B1o4R
+   k=;
+X-IronPort-AV: E=Sophos;i="6.01,202,1684800000"; 
+   d="scan'208";a="339471606"
+Subject: Re: [PATCH net] net: ena: fix shift-out-of-bounds in exponential backoff
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-pdx-2a-m6i4x-3ef535ca.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-2101.iad2.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2023 07:50:43 +0000
+Received: from EX19D010EUA002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-pdx-2a-m6i4x-3ef535ca.us-west-2.amazon.com (Postfix) with ESMTPS id A414C609A2;
+        Thu, 13 Jul 2023 07:50:41 +0000 (UTC)
+Received: from EX19D028EUB003.ant.amazon.com (10.252.61.31) by
+ EX19D010EUA002.ant.amazon.com (10.252.50.108) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Thu, 13 Jul 2023 07:50:38 +0000
+Received: from u95c7fd9b18a35b.ant.amazon.com.amazon.com (10.1.212.11) by
+ EX19D028EUB003.ant.amazon.com (10.252.61.31) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Thu, 13 Jul 2023 07:50:34 +0000
+References: <20230711013621.GE1926@templeofstupid.com>
+ <pj41zllefmpbw7.fsf@u95c7fd9b18a35b.ant.amazon.com>
+ <20230711225210.GA2088@templeofstupid.com>
+User-agent: mu4e 1.10.3; emacs 28.2
+From:   Shay Agroskin <shayagr@amazon.com>
+To:     Krister Johansen <kjlx@templeofstupid.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Arthur Kiyanovski" <akiyano@amazon.com>,
+        David Arinzon <darinzon@amazon.com>,
+        "Noam Dagan" <ndagan@amazon.com>,
+        Saeed Bishara <saeedb@amazon.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        "Jakub Kicinski" <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+Date:   Thu, 13 Jul 2023 10:46:55 +0300
+Message-ID: <pj41zlilao9rqt.fsf@u95c7fd9b18a35b.ant.amazon.com>
+In-Reply-To: <20230711225210.GA2088@templeofstupid.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SG2PR06MB5288:EE_|KL1PR06MB6299:EE_
-X-MS-Office365-Filtering-Correlation-Id: a48b4100-a02a-41c8-88cb-08db83755170
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9zk0rfaKbr2xzOnsQjOR00bYv0yU78RQunqbcJkX8vr1SP/ocYQpD9VnZ3H5Wy+LSUgM8asCX43+HEfV22T2MZVoZXbbhhGW3GW7WTC5ITAciImRvokFdeZd6D3JlGw+dChNRfhOe2a9Xjk0kbmRJ0MSHqQ0GTZbHe2WdewDJqHPkNJSTfjqkLdw6kfkBZpwXaomBup6+Lr9V1PVzvMybsbjU3hR7S0VEFU2Qj7O7UcudUlGSbtqHE16TnOaUd4jfF0Lf7oGCwMKuT9/EhUknjAou88PZn8Akz6XaZVLwp0wKs9O5IGrVGc2bNscRlds9vy7eFg0pidj5pfEaH0JTwMn8AhzjbQQP5m4AK01DE+wO5TNRF5J0UlxnQr7gqiC/0ZpY2q9tr6Lwkwayot6Nle7X4yaHqGOhhpwCxr0TgMEMz/K3IrAVzpwx9rn6WxpBU1PrCqQ/K5bniiTreSsauYckpKqbUyvdmiwsxOxNnyHj9LIsNJqyJnOiopQ2W809lmG9zgsqH6YkYRrODMoD7G9kdJrUK6gu8Dg13XQk06b7PzJplm1lOPjbF2ckVlSrZ6JwJjFJIG7eVH0XIHMQSUq95Iig5POlBy3GFhBGWm3sX0syHUcXS00U3rk/Klp739J6UG+NOyj8VM1+XQdIA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB5288.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(136003)(366004)(39860400002)(396003)(376002)(451199021)(110136005)(186003)(4326008)(66556008)(66476007)(66946007)(52116002)(6486002)(6512007)(41300700001)(478600001)(316002)(6666004)(8936002)(8676002)(107886003)(86362001)(26005)(6506007)(1076003)(5660300002)(83380400001)(2906002)(38350700002)(2616005)(36756003)(4744005)(38100700002)(32563001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ERqN3R2Mp5QXk+px4402XruQk1EU5w0I6g9JPXLB40bwoBcBZMznAnA4qM+v?=
- =?us-ascii?Q?WAJg1M6l9m7xvhuWdcW1r+qFXfp4UBhjdzugZEPXRK08kgggde1hjxHIKkjf?=
- =?us-ascii?Q?YN9/C7n71hI+LXhgDPpbWnvFu/jYhYmN52r+X4uWw5asvrlHiATxpEUTwmRg?=
- =?us-ascii?Q?fAvPPbGP7eQQCI4QXPyAJxj+C0NFyYC7lNuKWPjv5YYSOe4f5e5sCa1MRIxS?=
- =?us-ascii?Q?dG2w38umiWYvUsYQDZNVJibT7mFaAfH3d9kTVUyCN/uWe2vetUNJPXjPdEm+?=
- =?us-ascii?Q?A7j+iiaXONwbRViTcHoZVnT8ulgz44GNnDK/qis1E7XS6DzzhJExY/rPq2Lc?=
- =?us-ascii?Q?BwZYl5mrdhf0A1yVGsFOT5EufrrF+fgNQNU8+GCbIW+hd4oW5DWMSbwtZtnM?=
- =?us-ascii?Q?DAEumKjF/yopysXeHgkfCBWfhgOhXxxGf8M50EcHNm5MwZZFkTuLrUgL4X15?=
- =?us-ascii?Q?NX1OqIH523rW3sLDsoET+9HgyfRJoFWSE5yKmWPt9EbfxX2H/icK5vJ2EZVt?=
- =?us-ascii?Q?555a69HqWecQE0do4oVgeGZEPxUUFmFDB8lvnskljAY65dlS/8BmJdo23Hrg?=
- =?us-ascii?Q?s8MjqjQ9eGAkNcWdK0jrfsKq4qZ9QFI4h25o1Sa+egB+Rwas0+8dqNjp1IXf?=
- =?us-ascii?Q?8Mldh24o+wbJ/otnA99hTs3/b02DmEwyzSp+F1orHkUkiELJWV5HhaD9ARTc?=
- =?us-ascii?Q?8kn4lVCQbUyELbu1z8Bf9BQaWgFbXQ710WjSgaVuwW/JzLGV2Nx/mCW5Imps?=
- =?us-ascii?Q?DkZ6Zj0TMhTboyo3v4rQu1TWBnSDKB9zlq4Arhzz6SB1PncIbGi7jmyyJkaM?=
- =?us-ascii?Q?rngJcQsxF+6SaNXsY5LOF8AJcG7p/FRYo/bbnNJSxp5fCHTlPjejMkVC1uZ0?=
- =?us-ascii?Q?dOnXMWiaiyLaaWS8R/W83u61NnfXOOaX53+lbkXjkvmDHWuIXDAISMxS5V8V?=
- =?us-ascii?Q?C1nd/sIhe1iMH36Wa9+VYlPaA7JD3Y7Kegu+SoBZ7x6rNgSzUMU0n+N7cFvq?=
- =?us-ascii?Q?L31qrB6eB8fHBPDpkQ09WKDJOGOVhvtIk7IOIN1/1KirnvYIMwvpQQMPHaEg?=
- =?us-ascii?Q?1tPs8e2MWk54vQSg3JPWaROPqjlcTROr3MPB6RGA2ILG1Rdf7ctt2nyl2CAk?=
- =?us-ascii?Q?93qOwTJ7FpHX3qQmD6S04XWM8vKgUuPwlLYqP4NYb0LC9DBNAsr5ddD3hL1W?=
- =?us-ascii?Q?aN86Z/OZ93ilT0gtbz2qMjQgpJngFgCWVcuJmPjNReOWSRk5klNLzPqxQPsr?=
- =?us-ascii?Q?HGsA8ZEatJGMCsr5rsfXHW1ktQei9C0z1wXuhkHn9NFOZo8Dnx98XLajsYBR?=
- =?us-ascii?Q?Bk4nE7oa/jTSctcXsSjFgOqYiApm1jAkiTFBqLusiBK8paxxKOR3JS63KVPI?=
- =?us-ascii?Q?CDk+UQiVkCc/CoW42jI7yAMlX2pnFmXfTKJNtOfe0omlxN1XypBzrrewPi2M?=
- =?us-ascii?Q?+UdxBD5Gg5N4LxIW3OZYXfpbRylqbGcTuI8PLLjlAMpvpu/Xth6YLcz/jdps?=
- =?us-ascii?Q?AAahRMuPX8AtH2D4FS5vltJrlRsy0ZaGzjLHhQ+l1PIReYWWp5fsh4y6gnzT?=
- =?us-ascii?Q?/R4DBQuRg27JTJa5gTKfKaw0uCYkpLAknsm+1n/w?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a48b4100-a02a-41c8-88cb-08db83755170
-X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB5288.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2023 07:46:50.5457
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: gKPkHnv3xtjLtNlSV2BOSvlkc6+NxG5e0NeHJVZfsZPZVvH32LgCBsILpADwjTnVkZMuSkP0eI3xiH7RaIX1bw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR06MB6299
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; format=flowed
+X-Originating-IP: [10.1.212.11]
+X-ClientProxiedBy: EX19D044UWB003.ant.amazon.com (10.13.139.168) To
+ EX19D028EUB003.ant.amazon.com (10.252.61.31)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-debugfs_create_file() will return early if phydir is an error
-pointer, so an extra error check is not needed.
 
-Signed-off-by: Minjie Du <duminjie@vivo.com>
----
- drivers/net/wireless/ath/ath5k/debug.c | 2 --
- 1 file changed, 2 deletions(-)
+Krister Johansen <kjlx@templeofstupid.com> writes:
 
-diff --git a/drivers/net/wireless/ath/ath5k/debug.c b/drivers/net/wireless/ath/ath5k/debug.c
-index 4b41160e5..ec130510a 100644
---- a/drivers/net/wireless/ath/ath5k/debug.c
-+++ b/drivers/net/wireless/ath/ath5k/debug.c
-@@ -982,8 +982,6 @@ ath5k_debug_init_device(struct ath5k_hw *ah)
- 	ah->debug.level = ath5k_debug;
- 
- 	phydir = debugfs_create_dir("ath5k", ah->hw->wiphy->debugfsdir);
--	if (!phydir)
--		return;
- 
- 	debugfs_create_file("debug", 0600, phydir, ah, &fops_debug);
- 	debugfs_create_file("registers", 0400, phydir, ah, &registers_fops);
--- 
-2.39.0
+>
+> On Tue, Jul 11, 2023 at 08:47:32PM +0300, Shay Agroskin wrote:
+>>
+>> Krister Johansen <kjlx@templeofstupid.com> writes:
+>>
+>> > diff --git a/drivers/net/ethernet/amazon/ena/ena_com.c
+>> > b/drivers/net/ethernet/amazon/ena/ena_com.c
+>> > index 451c3a1b6255..633b321d7fdd 100644
+>> > --- a/drivers/net/ethernet/amazon/ena/ena_com.c
+>> > +++ b/drivers/net/ethernet/amazon/ena/ena_com.c
+>> > @@ -35,6 +35,8 @@
+>> >  #define ENA_REGS_ADMIN_INTR_MASK 1
+>> > +#define ENA_MAX_BACKOFF_DELAY_EXP 16U
+>> > +
+>> >  #define ENA_MIN_ADMIN_POLL_US 100
+>> >  #define ENA_MAX_ADMIN_POLL_US 5000
+>> > @@ -536,6 +538,7 @@ static int 
+>> > ena_com_comp_status_to_errno(struct
+>> > ena_com_admin_queue *admin_queue,
+>> >    static void ena_delay_exponential_backoff_us(u32 exp, u32 
+>> >    delay_us)
+>> >  {
+>> > +   exp = min_t(u32, exp, ENA_MAX_BACKOFF_DELAY_EXP);
+>> >     delay_us = max_t(u32, ENA_MIN_ADMIN_POLL_US, delay_us);
+>> >     delay_us = min_t(u32, delay_us * (1U << exp), 
+>> >     ENA_MAX_ADMIN_POLL_US);
+>> >     usleep_range(delay_us, 2 * delay_us);
+>>
+>> Hi, thanks for submitting this patch (:
+>
+> Absolutely; thanks for the review!
+>
+>> Going over the logic here, the driver sleeps for `delay_us` 
+>> micro-seconds in
+>> each iteration that this function gets called.
+>>
+>> For an exp = 14 it'd sleep (I added units notation)
+>> delay_us * (2 ^ exp) us = 100 * (2 ^ 14) us = (10 * (2 ^ 14)) / 
+>> (1000000) s
+>> = 1.6 s
+>>
+>> For an exp = 15 it'd sleep
+>> (10 * (2 ^ 15)) / (1000000) = 3.2s
+>>
+>> To even get close to an overflow value, say exp=29 the driver 
+>> would sleep in
+>> a single iteration
+>> 53687 s = 14.9 hours.
+>>
+>> The driver should stop trying to get a response from the device 
+>> after a
+>> timeout period received from the device which is 3 seconds by 
+>> default.
+>>
+>> The point being, it seems very unlikely to hit this 
+>> overflow. Did you
+>> experience it or was the issue discovered by a static analyzer 
+>> ?
+>
+> No, no use of fuzzing or static analysis.  This was hit on a 
+> production
+> instance that was having ENA trouble.
+>
+> I'm apparently reading the code differently.  I thought this 
+> line:
+>
+>> >     delay_us = min_t(u32, delay_us * (1U << exp), 
+>> >     ENA_MAX_ADMIN_POLL_US);
+>
+> Was going to cap that delay_us at (delay_us * (1U << exp)) or
+> 5000us, whichever is smaller.  By that measure, if delay_us is 
+> 100 and
+> ENA_MAX_ADMIN_POLL_US is 5000, this should start getting capped 
+> after
+> exp = 6, correct?  By my estimate, that puts it at between 160ms 
+> and
+> 320ms of sleeping before one could hit this problem.
+>
+> I went and pulled the logs out of the archive and have the 
+> following
+> timeline.  This is seconds from boot as reported by dmesg:
+>
+>    11244.226583 - ena warns TX not completed on time, 10112000 
+>    usecs since
+>     last napi execution, missing tx timeout val of 5000 msec
+>
+>    11245.190453 - netdev watchdog fires
+>
+>    11245.190781 - ena records Transmit timeout
+>    11245.250739 - ena records Trigger reset on
+>
+>    11246.812620 - UBSAN message to console
+>
+>    11248.590441 - ena reports Reset inidication didn't turn off
+>    11250.633545 - ena reports failure to reset device
+>    12013.529338 - last logline before new boot
+>
+> While the difference between the panic and the trigger reset is 
+> more
+> than 320ms, it is definitely on the order of seconds instead of 
+> hours.
+>
 
+Yup you're right. I was so entangled in my exponent calculations 
+that I completely missed the min_t expression there.
+
+That's quite an awkward design to be honest, I hope to submit a 
+re-write for it in one of the releases.
+
+Thanks again for the work you've put into it
