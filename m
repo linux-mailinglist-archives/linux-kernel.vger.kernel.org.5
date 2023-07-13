@@ -2,79 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 246D4751D68
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 11:37:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 220DC751D6B
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 11:38:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233915AbjGMJhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 05:37:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57386 "EHLO
+        id S233935AbjGMJiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 05:38:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234047AbjGMJh3 (ORCPT
+        with ESMTP id S234044AbjGMJhz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 05:37:29 -0400
-Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com [209.85.167.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 453E926A0
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 02:37:27 -0700 (PDT)
-Received: by mail-oi1-f197.google.com with SMTP id 5614622812f47-3a337ddff03so932692b6e.0
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 02:37:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689241046; x=1691833046;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/KWHPeqYs83RLpJCQk4X770LmbcxpeUbYJZczIbA8Zk=;
-        b=CSyIY5taus/tzGSFJRwl012ZqZfQMioyn7M+tkV/KFq+z+iwFp21HrfkEQi/OhA6FF
-         uhN4hlHRQ/6KghB4YemijxZpe+itVQIAI8wi7B+Ihw2Ba3JJ7/OOujjHqGyEJuNLZCh5
-         H0RCepPrWi1NHN4vfE6LjTCrLTHEl2MpUdv+ikpafzU5SNO8NbpEIWFj++el8hayKXr4
-         BG7G55MlBDDt8wm+z1gXovo64E7aYnoJ9MSoOzxzazFwS38TeosDXg3YWlW4D72p61jm
-         1ISTVSXML0o2OBAKdeG9HhZSO9eJ0m5cUzug9loAqVFHVsKDXhbe1PASsiJgN13YGURa
-         wrLg==
-X-Gm-Message-State: ABy/qLbpyB6vGvrOOQiWpeRX/U73xSBbLp05gxaCqimLgsjLVlHLGn/G
-        j/p2kIzDKr+dKM5omQZOOw4fx5fuT+tBMBjAuz2x1wMBx89g
-X-Google-Smtp-Source: APBJJlFZ+k3bwHzCz46y/eYpJf6R6cCLa5axYPD6JDKJCB12y166+xp558SQKzwK0Dlpi5J58QXr8+KIEBjNH/wOYJLzmbq9lEL4
+        Thu, 13 Jul 2023 05:37:55 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43B1B2119
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 02:37:50 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R1qK70mLmzBJx3w
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 17:37:47 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1689241066; x=1691833067; bh=ffg9fpOGNhSuyyvfjkJBC7SqF9T
+        qN7dHnY5U6zzt5gs=; b=g8H9l7N+ySiLaXJNsEUHRWU0dCN7Js27zi7J4SmMwmR
+        uGrpAtE7rBF43zov/Mcudfgoj2fIr8zWkK3eT+xB20AM0u/c1LizygrVts78jWrz
+        97CLllRq+sSeA6z4oqv846iDf6fkjo2Bsan+50c5nws9cqIBNIlT/bwuZIOxFIM7
+        /JWzTAEEc8xQF9Z+O7+jMICdcCn/BnoRM7QH1RMlh9TUAgxaCA6Xzc3RBwM39PkS
+        VXFk2zo+ks+xaQnqCEnwdnSQxErwSRIUU3cP5IG13J0VKei3sRycEE1Me/H6fyaY
+        b60h5MgGp2M67O8mD5MLrTTCbfryEHIcw+JXVHWISRA==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id Fqt21Jq-ecN9 for <linux-kernel@vger.kernel.org>;
+        Thu, 13 Jul 2023 17:37:46 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R1qK66CMhzBHXgh;
+        Thu, 13 Jul 2023 17:37:46 +0800 (CST)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:1592:b0:3a3:c493:b971 with SMTP id
- t18-20020a056808159200b003a3c493b971mr1397311oiw.7.1689241046552; Thu, 13 Jul
- 2023 02:37:26 -0700 (PDT)
-Date:   Thu, 13 Jul 2023 02:37:26 -0700
-In-Reply-To: <00000000000009408f05e977da5d@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000085151506005b1491@google.com>
-Subject: Re: [syzbot] [ntfs3?] general protection fault in d_flags_for_inode
-From:   syzbot <syzbot+2f012b85ac8ce9be92e5@syzkaller.appspotmail.com>
-To:     almaz.alexandrovich@paragon-software.com, hverkuil-cisco@xs4all.nl,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mchehab@kernel.org, ntfs3@lists.linux.dev,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Date:   Thu, 13 Jul 2023 17:37:46 +0800
+From:   hanyu001@208suo.com
+To:     deller@gmx.de
+Cc:     linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] parisc: math-emu: fcnvxf: Add space after that ','
+In-Reply-To: <tencent_86762B5284E20421D8A676F4CC1B205D2F0A@qq.com>
+References: <tencent_86762B5284E20421D8A676F4CC1B205D2F0A@qq.com>
+User-Agent: Roundcube Webmail
+Message-ID: <a2ae26be540da062ea4912c36962093b@208suo.com>
+X-Sender: hanyu001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
 
-commit c43784c856483dded7956175b5786e27af6d87f1
-Author: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Date:   Thu Dec 8 07:51:32 2022 +0000
+Fix Error reported by checkpatch.pl
 
-    media: v4l2-mem2mem: use vb2_is_streaming()
+arch/parisc/math-emu/fcnvxf.c:99: ERROR: space required after that ',' 
+(ctx:VxV
+)
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17e7d1bca80000
-start commit:   4da34b7d175d Merge tag 'thermal-6.1-rc2' of git://git.kern..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ea03ca45176080bc
-dashboard link: https://syzkaller.appspot.com/bug?extid=2f012b85ac8ce9be92e5
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17834f9a880000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10edf526880000
+Signed-off-by: maqimei <2433033762@qq.com>
+---
+  arch/parisc/math-emu/fcnvxf.c | 2 +-
+  1 file changed, 1 insertion(+), 1 deletion(-)
 
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: media: v4l2-mem2mem: use vb2_is_streaming()
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+diff --git a/arch/parisc/math-emu/fcnvxf.c 
+b/arch/parisc/math-emu/fcnvxf.c
+index 6940179..f5f9376 100644
+--- a/arch/parisc/math-emu/fcnvxf.c
++++ b/arch/parisc/math-emu/fcnvxf.c
+@@ -96,7 +96,7 @@
+                      Sgl_increment(result);
+                  break;
+              case ROUNDNEAREST:
+-                Sgl_roundnearest_from_int(src,result);
++                Sgl_roundnearest_from_int(src, result);
+          }
+          if (Is_inexacttrap_enabled()) {
+              *dstptr = result;
