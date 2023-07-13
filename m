@@ -2,209 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51D907517CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 07:01:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 051077517CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 07:03:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233890AbjGMFBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 01:01:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48208 "EHLO
+        id S233619AbjGMFDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 01:03:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233555AbjGMFBS (ORCPT
+        with ESMTP id S233728AbjGMFC7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 01:01:18 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5EE5210C
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 22:01:16 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-3fc075d9994so27905e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 22:01:16 -0700 (PDT)
+        Thu, 13 Jul 2023 01:02:59 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34C331734
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 22:02:58 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-6686a05bc66so192500b3a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 22:02:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689224475; x=1691816475;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=HmWSfEZ6QI0Mxj58SiIQ9FAbf1ZZZ2dZrTYlFtYj89c=;
-        b=wHSXRDRoFlWi8R0L2C9UanejpHHVfkL1xwL6EVp1gvck336sSThoV+emUjCLgclmul
-         asfV013NnBYtbYaI65Z6Jt80XcxmuW+peGK9fZdnkCeMBUDM9GNrqFju7knIbqBWjZ2K
-         1/ix8SV53SH5knZVMg4arR/bEyEoqohXbTT/GSbHo8BYBtWupKMZt170JxAnzxqHnsq2
-         821zS2bylv9gUwhEzGy3nqcMPAkYZHf9aUCIrRkB726zaTj7ue5gljybqk4bj+wuUCCv
-         kGMG6w470KVpl9jdBcOKosglHbtACBXaseZlQ3rfkbBFXy1QHm0WCYiRphCD16S17aF8
-         cBww==
+        d=linaro.org; s=google; t=1689224577; x=1691816577;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=zmNRJ1DhhnpsNLZvHCU4oBTJzYSiuqq67vhMQEJqAGk=;
+        b=FSat0dWd9nFI3BYX7PS5L4Ae6ndXJo5ilm08eo0j6QiVl6suiLWt9O2WpWJrmoUM+4
+         6+RhUp6KBx067jkhzLhojOcCzT3oXo7W4softROP7hjZmm5S5u72/LFxKqYMxSow8HLM
+         V4SJY4xf2bfEnVyKAWriEwvENDvWRNLYnWEnSG+7wziv1yy/E5PT8LUsS3fuR1kU6/gL
+         kxunvNEDEf1mZSLO4Fst/gX87/8hheD/xk9GCC7kF3qxTdiXooEEueK+t7Fa2tLbFjCJ
+         o2qSXJaAx48ZKbCv9cdA1Y3FKf9bnjTFxd1swjCjV9bUurGTW0o9WVdkzlEm85qFvWn2
+         sCVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689224475; x=1691816475;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HmWSfEZ6QI0Mxj58SiIQ9FAbf1ZZZ2dZrTYlFtYj89c=;
-        b=N6kqt2TsBirl3NwKTXdF6p+TgluNffrdeyyQVlF5HPAfutknShZwxzkxqwK27CT/hx
-         cFIoB8KdE0eOjESQVYagaecwFYrlqMhtzfyLKQYC9mhLOoa+j3j//546nfCltJMVtilz
-         aiLn63yefai8CO/oz347OvabY3SCEO4X0Uf2+VPTChHKuPXIb9k8tZQ7ukT65fJBjesd
-         fMNsGd/lx8ydYO8InGfqadEbCQcdXscmzDFNkSn/Yqirq3u5Mdd0UM4b3V1iPdQtuDnq
-         cZbzibUcmgUHgJ8qdlASqhjuMmyEsV8Q4+FJvljSVgT5bP6C6eMafBJAjYTZEvscni71
-         ZXAA==
-X-Gm-Message-State: ABy/qLZTrhex8zVbAtH1ISb6M0aH2SmMbPaxqtdO1/m30Mpz/KELdCJu
-        iJNFDWd6B+4UcE3pTPE19FbqhQahgmAy2hXky1Y0zg==
-X-Google-Smtp-Source: APBJJlHl0BMyAUvIbgVetiZ27JuP9li47AMi8iMY0P+VHB5dfvLG0LDMol2YeN5V0n7MUZKCAgjxUAA8EfKYoay7ytk=
-X-Received: by 2002:a05:600c:2196:b0:3f7:e4d8:2569 with SMTP id
- e22-20020a05600c219600b003f7e4d82569mr166165wme.5.1689224475065; Wed, 12 Jul
- 2023 22:01:15 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689224578; x=1691816578;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zmNRJ1DhhnpsNLZvHCU4oBTJzYSiuqq67vhMQEJqAGk=;
+        b=JE8gpMd3ujHnutkCer+jtqioEd/O/gkRHuyGM4rwGQ8LRgZKFhbOgk0Whk8bd6HOCB
+         FJVCQTOluMJsdlui+NmQSgFcv1IDBy35AIO+Q5iqB66jSN76wvaNIB5WRHlSPFJasQAU
+         3HBTO/i6XfJ1Q5ERNACd8Ncly8DoVxOGGy8stkE6Tb0FIshw9OvOCTGxmu9MG3S2E6VG
+         CcI1gOmFefsLqKZzlNWJcKV9XjeLBUcjaQdRS0m1bmIrWbPkgdOulTbvZvSTeJ3OQBVE
+         SAMSDfViHwzLmfy5XCSF5hMXNiC9AOTd5ahBkhCuMuLCfQEyvpJ0OYpbvmmNJrTdKuFl
+         eC5Q==
+X-Gm-Message-State: ABy/qLa0LTgu4LB4U+43BbelqEZAkjOdR5FcWKoXf4WilYpk6VmW3lyo
+        rAEYFqRPAF8emvn1gF0KGTPe
+X-Google-Smtp-Source: APBJJlE/YSQ1fGKxgw5Djc2nrADRvVNea6O9A00b/3toWdXISb2e7TQXf9rlBmJeV5tD7ldIg6d5nw==
+X-Received: by 2002:a05:6a20:394f:b0:12f:952:11ee with SMTP id r15-20020a056a20394f00b0012f095211eemr173448pzg.43.1689224577534;
+        Wed, 12 Jul 2023 22:02:57 -0700 (PDT)
+Received: from thinkpad ([117.207.27.112])
+        by smtp.gmail.com with ESMTPSA id c23-20020a170902cb1700b001b9bebbc621sm4847537ply.136.2023.07.12.22.02.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Jul 2023 22:02:56 -0700 (PDT)
+Date:   Thu, 13 Jul 2023 10:32:48 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Signed-off-by missing for commit in the mhi tree
+Message-ID: <20230713050248.GA3047@thinkpad>
+References: <20230713081411.43792927@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20230704083206.693155-2-davidgow@google.com> <519844640ae6483c8059a6440c620e01@AcuMS.aculab.com>
-In-Reply-To: <519844640ae6483c8059a6440c620e01@AcuMS.aculab.com>
-From:   David Gow <davidgow@google.com>
-Date:   Thu, 13 Jul 2023 13:01:02 +0800
-Message-ID: <CABVgOSmrx=AJgPCb-if1KOBD9EBhSV8MSv3yg+otBC4aS+LD-w@mail.gmail.com>
-Subject: Re: [PATCH] x86: checksum: Fix unaligned checksums on < i686
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Noah Goldstein <goldstein.w.n@gmail.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000cf1e500600573827"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230713081411.43792927@canb.auug.org.au>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000cf1e500600573827
-Content-Type: text/plain; charset="UTF-8"
+On Thu, Jul 13, 2023 at 08:14:11AM +1000, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Commit
+> 
+>   8623c0a70ef6 ("bus: mhi: host: use vmalloc_array and vcalloc")
+> 
+> is missing a Signed-off-by from its committer.
+> 
 
-On Mon, 10 Jul 2023 at 23:01, David Laight <David.Laight@aculab.com> wrote:
->
-> From: David Gow
-> > Sent: 04 July 2023 09:32
-> >
-> > The checksum_32 code was originally written to only handle 2-byte
-> > aligned buffers, but was later extended to support arbitrary alignment.
-> > However, the non-PPro variant doesn't apply the carry before jumping to
-> > the 2- or 4-byte aligned versions, which clear CF.
-> ....
-> > I also tested it on a real 486DX2, with the same results.
->
-> Which cpu does anyone really care about?
->
-> The unrolled 'adcl' loop is horrid on intel cpu between
-> (about) 'core' and 'haswell' because each u-op can only
-> have two inputs and adc needs 3 - so is 2 u-ops.
-> First fixed by summing to alternate registers.
->
-> On anything modern (well I've not checked some Atom based
-> servers) misaligned accesses are pretty near zero cost.
-> So it really isn't worth the tests that align data.
->
-> (I suspect it all got better a long time ago except
-> for transfers that cross cache-line boundaries, with
-> adc taking two cycles even that might be free.)
->
+Doh! Fixed it now.
 
-I agree that the implementation here is suitably ancient far from
-optimal, but think the alignment issue in this patch is a separate
-correctness issue. (Even if it's one which is unlikely to result in
-real-world problems at present.)
+- Mani
 
-There's probably a valid argument around whether or not the
-checksumming code should be alignment-agnostic, or whether a 2- or 4-
-byte alignment is something callers have to guarantee, but since some
-effort had gone into making these work with unaligned data, I think
-it's sensible to make sure those cases actually work, and so for the
-KUnit test to verify that all these different alignments all give
-correct results.
+> -- 
+> Cheers,
+> Stephen Rothwell
 
-If it seems worth cleaning up / optimising the code more significantly
-(maybe some of the people who really care have TCP header checksum
-offload anyway), that seems like a separate task to me. Personally,
-while I care quite a bit that 32-bit x86 is still working (even on
-ancient CPUs), I don't really have the time to spend optimising it.
-(Worst-case, if maintaining it gets too rough, we could possibly fall
-back to the C implementations, though I haven't benchmarked them.)
 
--- David
 
---000000000000cf1e500600573827
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIIPnwYJKoZIhvcNAQcCoIIPkDCCD4wCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-ggz5MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
-IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
-dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
-6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
-c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
-I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
-AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
-BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
-CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
-AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
-MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
-My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
-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
-9IGQSBx2i4m+hGXJpET+MEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
-dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAwGA1UdEwEB/wQCMAAwgZoGCCsG
-AQUFBwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9n
-c2F0bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWdu
-LmNvbS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouse
-LHIb0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20v
-Y2EvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQCRI3Z4cAidgFcv
-Usqdz765x6KMZSfg/WtFrYg8ewsP2NpCxVM2+EhPyyEQ0k0DhtzdtGoI/Ug+jdFDyCKB9P2+EPLh
-iMjMnFILp7Zs4r18ECHlvZuDZfH9m0BchXIxu5jLIuQyKUWrCRDZZEDNr510ZhhVfYSFPA8ms1nk
-jyzYFOHYQyv5IfML/3IBFKlON5OZa+V8EZYULYcNkp03DdWglafj7SXZ1/XgAbVYrC381UvrsYN8
-jndVvoa1GWwe+NVlIIK7Q3uAjV3qLEDQpaNPg1rr0oAn6YmvTccjVMqj2YNwN+RHhKNzgRGxY5ct
-FaN+8fXZhRhpv3bVbAWuPZXoMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
-R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
-MDIwAhABAz5xDls09r2CKyYRqnNbMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCBp
-WsI1hnWwgUz/xZB47BwTZK01JyPANanxrxegB/pTfzAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
-MBwGCSqGSIb3DQEJBTEPFw0yMzA3MTMwNTAxMTVaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
-BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
-CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEANouLkbmUaYgAT2nmcZf2
-aQF9zmV4eRony04mu1Cfo+W0HSJ5GmJWoV+2nKKS1NppAwOBLevd7Vz44CaQzSOrrA8DWJ3slNV+
-m1o8iD7kdO5UvBHMHDCzvU9eKgnBOpjkRCl9dlwXOStyobCYyLD2OReLPDAdk27M9eXTVPlMw3aV
-5u/lntpu7TrvNR+xeS0jGCQe51wkbC+ft5QsnrQVSVWHM/xmjAkPbqGiQ9AYJK7UMrZ5HZTXxo4Q
-v36TKHOLiXOUj7Rh0cjgK2KxgmUV2OvQsqXpcUQZjYA9OIBk02XNRGNLTpt1snE+3sfy4day/XBD
-YUFDC4ZsZ82AmDZbhA==
---000000000000cf1e500600573827--
+-- 
+மணிவண்ணன் சதாசிவம்
