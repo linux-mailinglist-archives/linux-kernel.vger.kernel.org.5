@@ -2,145 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47DB0752921
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 18:52:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8627175292A
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 18:53:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234985AbjGMQwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 12:52:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32972 "EHLO
+        id S235356AbjGMQxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 12:53:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231925AbjGMQwh (ORCPT
+        with ESMTP id S235143AbjGMQwt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 12:52:37 -0400
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 513711FC0
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 09:52:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689267156; x=1720803156;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=JqXMq5WZ95DqjgVxvww1Q/0jvY3SQLw4w6B8FSX7C1c=;
-  b=G3r3osphxAesTI8eVc+U2PKMYXMBhlozkFU+vii6Nc3pfR6z6yJhYeVp
-   FM3VdZ0NvWsmVlSJ2GZYFkRBzh0lfM6A2xM9XBjT5wCEwmAn+amHT5LFH
-   dRPrOE1dMPpRmdXMojorXdfQ2+tUvyzP3ifAKWDn1T3HiR2qayQl6j9kj
-   TEKbUMLkX6JjLFJ3qQFe5/3vvCdXZpOTGAWbp2WDNAF/JrqBUqMD3/d9u
-   rUH/QkTi7qx/Jfq9P/jS4KvrrugT3LJiI5fqNrCWoPN1JDgtvQpan9zzk
-   MP4raKd2rgBj/oMX9KLQs8zjRkKBDe9OsddvEn/PlefuKbg9W47IV+inx
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="345568308"
-X-IronPort-AV: E=Sophos;i="6.01,203,1684825200"; 
-   d="scan'208";a="345568308"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2023 09:52:36 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="896090334"
-X-IronPort-AV: E=Sophos;i="6.01,203,1684825200"; 
-   d="scan'208";a="896090334"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga005.jf.intel.com with ESMTP; 13 Jul 2023 09:52:34 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qJzYO-002RS7-2x;
-        Thu, 13 Jul 2023 19:52:32 +0300
-Date:   Thu, 13 Jul 2023 19:52:32 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Yury Norov <yury.norov@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: Re: [PATCH] cpumask: eliminate kernel-doc warnings
-Message-ID: <ZLAr0GtOVBHe8rMU@smile.fi.intel.com>
-References: <20230713030832.17900-1-rdunlap@infradead.org>
+        Thu, 13 Jul 2023 12:52:49 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 218652701
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 09:52:48 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id 46e09a7af769-6b5d57d7db9so763982a34.3
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 09:52:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689267167; x=1691859167;
+        h=content-transfer-encoding:author:mime-version:message-id:date
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/TQQu9i4zVTx/pAbl1XLa7p043pJkUqA0em0AaQVe1Q=;
+        b=EOJTZVfBLXbJ+tgLJUJRaAhYQO95hGodf9yyM3ZyJmDrHCRlhC2xTABoIUd+3Cl1Yo
+         XO6MFz+wN+mKMs6tq2jcRQ64XxumnSH7k9awmG8P4d7raV506yyFNuk+QzDmoxlG7chk
+         Xm8c4ZN86UiZ92TA62A3E7CqOGXkzsg58hlso09jztugiWJsrZlajfgdFEImk3AudVEl
+         cx4jXLpbjX+rbI6inQvzyxatK+J3NV0dtyEMl2rdalG0LM16oQKztrzu1e9wqiv4IAZx
+         OywlZGqh1gyC+BOajdMLtm5QuJcdzMOffKpKItqBLM8fiPpYEPx/vCTS+0PA28sPaCRn
+         hNEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689267167; x=1691859167;
+        h=content-transfer-encoding:author:mime-version:message-id:date
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/TQQu9i4zVTx/pAbl1XLa7p043pJkUqA0em0AaQVe1Q=;
+        b=DpQW36g+RNCcxjPuQ9hd/ZfM+VDmTY+VoE9qrwceyRbtw4jJFlLMegr4+d1QZZQR7f
+         4Cfd3SPwdqv11cYXT1HOY5YSbobsjFAieqz7IQUywbI6HTpPPJmWVT7W10uSXMUdMRQl
+         CvYyDL1nc4Le+s346ps2SwBAnHToqztyRsqgqY+x2aHW3bbvR4Dr04ZJKdyqH/4l/Ec+
+         qh6ia7bvcu71l1WDlvZF4/1emgIiTeEVLsf39f6/a4QOtetpuxBSUXukbSuy+iWNkQxD
+         CXMr+Lq6x3gwPenWoy3mO+923vbztdDOSVvFHBFm3fpSd7HwP+pc3JYznaV198gjQPV3
+         uK1w==
+X-Gm-Message-State: ABy/qLaKXO1OaB+Q/2QU+hyxkBkiZojqg7HR5uPxOVSCzEwpPrQma9IZ
+        fWHiQHz/hx8yi6EByNTCDaEy+Q==
+X-Google-Smtp-Source: APBJJlECN8Pkf5oJl1wriKAi9i7oMviETr74ANXnYL6u7bXmI8D7Lz2S54OFWvuw32qLmK8Qci/xoA==
+X-Received: by 2002:a05:6870:c188:b0:19f:5c37:abb9 with SMTP id h8-20020a056870c18800b0019f5c37abb9mr2495348oad.12.1689267167408;
+        Thu, 13 Jul 2023 09:52:47 -0700 (PDT)
+Received: from x-wing.lan ([49.207.50.231])
+        by smtp.gmail.com with ESMTPSA id d3-20020a17090abf8300b002633fa95ac2sm12009150pjs.13.2023.07.13.09.52.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Jul 2023 09:52:46 -0700 (PDT)
+From:   Amit Pundir <amit.pundir@linaro.org>
+To:     Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Caleb Connolly <caleb.connolly@linaro.org>,
+        Bryan Donoghue <bryan.odonoghue@linaro.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Krishna Manikandan <quic_mkrishn@quicinc.com>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        dt <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: [PATCH v5 1/2] dt-bindings: display/msm: mdss-common: add memory-region property
+Date:   Thu, 13 Jul 2023 22:22:37 +0530
+Message-Id: <20230713165238.2814849-1-amit.pundir@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230713030832.17900-1-rdunlap@infradead.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Author: Amit Pundir <amit.pundir@linaro.org>
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 08:08:32PM -0700, Randy Dunlap wrote:
-> Update lib/cpumask.c and <linux/cpumask.h> to fix all kernel-doc
-> warnings:
-> 
-> include/linux/cpumask.h:185: warning: Function parameter or member 'srcp1' not described in 'cpumask_first_and'
-> include/linux/cpumask.h:185: warning: Function parameter or member 'srcp2' not described in 'cpumask_first_and'
-> include/linux/cpumask.h:185: warning: Excess function parameter 'src1p' description in 'cpumask_first_and'
-> include/linux/cpumask.h:185: warning: Excess function parameter 'src2p' description in 'cpumask_first_and'
-> 
-> lib/cpumask.c:59: warning: Function parameter or member 'node' not described in 'alloc_cpumask_var_node'
-> lib/cpumask.c:169: warning: Function parameter or member 'src1p' not described in 'cpumask_any_and_distribute'
-> lib/cpumask.c:169: warning: Function parameter or member 'src2p' not described in 'cpumask_any_and_distribute'
+Add and document the reserved memory region property in the
+mdss-common schema.
 
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Thanks for fixing this!
+For now (sdm845-db845c), it points to a framebuffer memory
+region reserved by the bootloader for splash screen.
 
-> Fixes: 7b4967c53204 ("cpumask: Add alloc_cpumask_var_node()")
-> Fixes: 839cad5fa54b ("cpumask: fix function description kernel-doc notation")
-> Fixes: 93ba139ba819 ("cpumask: use find_first_and_bit()")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> ---
->  include/linux/cpumask.h |    8 ++++++--
->  lib/cpumask.c           |    5 ++++-
->  2 files changed, 10 insertions(+), 3 deletions(-)
-> 
-> diff -- a/lib/cpumask.c b/lib/cpumask.c
-> --- a/lib/cpumask.c
-> +++ b/lib/cpumask.c
-> @@ -45,6 +45,7 @@ EXPORT_SYMBOL(cpumask_next_wrap);
->   * alloc_cpumask_var_node - allocate a struct cpumask on a given node
->   * @mask: pointer to cpumask_var_t where the cpumask is returned
->   * @flags: GFP_ flags
-> + * @node: memory node from which to allocate or %NUMA_NO_NODE
->   *
->   * Only defined when CONFIG_CPUMASK_OFFSTACK=y, otherwise is
->   * a nop returning a constant 1 (in <linux/cpumask.h>)
-> @@ -157,7 +158,9 @@ EXPORT_SYMBOL(cpumask_local_spread);
->  static DEFINE_PER_CPU(int, distribute_cpu_mask_prev);
->  
->  /**
-> - * cpumask_any_and_distribute - Return an arbitrary cpu within srcp1 & srcp2.
-> + * cpumask_any_and_distribute - Return an arbitrary cpu within src1p & src2p.
-> + * @src1p: first &cpumask for intersection
-> + * @src2p: second &cpumask for intersection
->   *
->   * Iterated calls using the same srcp1 and srcp2 will be distributed within
->   * their intersection.
-> diff -- a/include/linux/cpumask.h b/include/linux/cpumask.h
-> --- a/include/linux/cpumask.h
-> +++ b/include/linux/cpumask.h
-> @@ -175,8 +175,8 @@ static inline unsigned int cpumask_first
->  
->  /**
->   * cpumask_first_and - return the first cpu from *srcp1 & *srcp2
-> - * @src1p: the first input
-> - * @src2p: the second input
-> + * @srcp1: the first input
-> + * @srcp2: the second input
->   *
->   * Returns >= nr_cpu_ids if no cpus set in both.  See also cpumask_next_and().
->   */
-> @@ -1197,6 +1197,10 @@ cpumap_print_bitmask_to_buf(char *buf, c
->  /**
->   * cpumap_print_list_to_buf  - copies the cpumask into the buffer as
->   *	comma-separated list of cpus
-> + * @buf: the buffer to copy into
-> + * @mask: the cpumask to copy
-> + * @off: in the string from which we are copying, we copy to @buf
-> + * @count: the maximum number of bytes to print
->   *
->   * Everything is same with the above cpumap_print_bitmask_to_buf()
->   * except the print format.
+Signed-off-by: Amit Pundir <amit.pundir@linaro.org>
+---
+v5: Moving the dt-binding to mdss-common schema with
+    updated commit message and property description.
 
+v4: Adding this new dt-binding patch, in qcom,sdm845-mdss
+    schema, in the v4 of the follow-up patch for
+    sdm845-db845c.
+    https://lore.kernel.org/lkml/20230712130215.666924-2-amit.pundir@linaro.org/
+
+ .../devicetree/bindings/display/msm/mdss-common.yaml         | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/display/msm/mdss-common.yaml b/Documentation/devicetree/bindings/display/msm/mdss-common.yaml
+index ccd7d6417523..84ed2757ded5 100644
+--- a/Documentation/devicetree/bindings/display/msm/mdss-common.yaml
++++ b/Documentation/devicetree/bindings/display/msm/mdss-common.yaml
+@@ -77,6 +77,12 @@ properties:
+     items:
+       - description: MDSS_CORE reset
+ 
++  memory-region:
++    maxItems: 1
++    description:
++      Phandle to a node describing a reserved framebuffer memory region.
++      For example, the splash memory region set up by the bootloader.
++
+ required:
+   - reg
+   - reg-names
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.25.1
 
