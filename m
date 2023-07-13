@@ -2,123 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5A5175252F
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 16:33:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2241E75253D
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 16:34:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230411AbjGMOdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 10:33:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46468 "EHLO
+        id S231315AbjGMOej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 10:34:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230372AbjGMOdK (ORCPT
+        with ESMTP id S231225AbjGMOef (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 10:33:10 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BC3926B5
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 07:33:07 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1b8a7734734so3357655ad.2
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 07:33:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689258787; x=1691850787;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=fr2vYa/Ch6xYV487nmzxcm8iM/FlpnkWVHQ5jynQTbg=;
-        b=jacaK9M2p8ae07DYtf3WTwW4sJ88AeR0PMoTM/K8Zom80G9CNsRED8/7OkNACpL4FI
-         vSrK+poAQrpW9b9XXAEX3N+/eJqGG0fl2uSilp/V2zhMmynFGmkNp19rQMAPCUIgro+L
-         8wZFnIyWuBTpd6inSk0jhwWPq/qOKDhiCmrdy2nICENUOLQPMx4zm5vkc1J+N+jf8F/9
-         NWijWeXBKP6nhRWfAZooF9dECtwpwP1B06LROVi+ZRGQWEPDlF+8FcWtS7IpVg38LWBC
-         sabPszkfHQCdZSa4qO28HKir4zE3m+cUi5LtAFjCZb9xEKl25slyjVF3CoaXZrvttifT
-         RnQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689258787; x=1691850787;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fr2vYa/Ch6xYV487nmzxcm8iM/FlpnkWVHQ5jynQTbg=;
-        b=QRTuNFiEFcoj5ZvYfPsnpuU+8/ZjOBJfvFHJntMfzziDxRUpyf4sCsun9FwiCj/W5W
-         gA05Qm/GB1Q6N/LEQtVDvoGU/H/4mOh0VHUkij3k/eOGvJ8K5EKoNI8d2+0mUQk+4TVe
-         dFrN7T6APJs0DIOOOKLXZ8x9ntpQgxEyW6OVhsrivSc36JWlQeuondcTaqw78eAMt/tl
-         kT+v0YWRgk5BK6ZzjWOopXDJfF8DinW5J0fBwcV2exgZIgMd2/ckxenSgdf/QIoj+dlb
-         Tb2loyhtiaqxYJmL8Eh/tmnpJwo5dlV25o5Myfe/XbQDF9FNfPZ0nZVnC2TIMukvihTj
-         vgfg==
-X-Gm-Message-State: ABy/qLZxnf+aHVeJEgE7IePnHpIzt+edBTYh7baMjoqy/JL+wPEi+3Yy
-        qBYfoj5fKL/hJNvQydzjzhn7rI4xADY=
-X-Google-Smtp-Source: APBJJlFAAhWItEMB5PDxlVd4/XD0kDAeGPn5ZZPTnMU3ojU8FDM9Oji9AhkfLIh7rpZuc1o0H3AhYJQLwhY=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:b282:b0:1ba:1704:89d1 with SMTP id
- u2-20020a170902b28200b001ba170489d1mr5846plr.10.1689258786828; Thu, 13 Jul
- 2023 07:33:06 -0700 (PDT)
-Date:   Thu, 13 Jul 2023 07:33:05 -0700
-In-Reply-To: <20230713-vfs-eventfd-signal-v1-2-7fda6c5d212b@kernel.org>
-Mime-Version: 1.0
-References: <20230713-vfs-eventfd-signal-v1-0-7fda6c5d212b@kernel.org> <20230713-vfs-eventfd-signal-v1-2-7fda6c5d212b@kernel.org>
-Message-ID: <ZLAK+FA3qgbHW0YK@google.com>
-Subject: Re: [PATCH 2/2] eventfd: simplify eventfd_signal_mask()
-From:   Sean Christopherson <seanjc@google.com>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     linux-fsdevel@vger.kernel.org,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        David Woodhouse <dwmw2@infradead.org>,
-        Paul Durrant <paul@xen.org>, Oded Gabbay <ogabbay@kernel.org>,
-        Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
-        Moritz Fischer <mdf@kernel.org>, Xu Yilun <yilun.xu@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Leon Romanovsky <leon@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Eric Farman <farman@linux.ibm.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Vineeth Vijayan <vneethv@linux.ibm.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Tony Krowiak <akrowiak@linux.ibm.com>,
-        Jason Herne <jjherne@linux.ibm.com>,
-        Harald Freudenberger <freude@linux.ibm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Diana Craciun <diana.craciun@oss.nxp.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>, Fei Li <fei1.li@intel.com>,
-        Benjamin LaHaise <bcrl@kvack.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Kirti Wankhede <kwankhede@nvidia.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-fpga@vger.kernel.org, intel-gvt-dev@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        linux-usb@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-aio@kvack.org, cgroups@vger.kernel.org, linux-mm@kvack.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        io-uring@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        Thu, 13 Jul 2023 10:34:35 -0400
+Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [80.241.56.152])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0484826AF;
+        Thu, 13 Jul 2023 07:34:32 -0700 (PDT)
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:b231:465::2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4R1xvT1mlmz9sTq;
+        Thu, 13 Jul 2023 16:34:29 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cyphar.com; s=MBO0001;
+        t=1689258869;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=lAa7dqvmH+q9XR/GIeI3noqFo+Lf1ym1g3+Ai+iNMRQ=;
+        b=qUOa4YG376HPdtUX9J+UbKWx9u11F5Z+gXjdV/pSgA3GrtUNyKbuBsGccuriE0RNBmfVr+
+        GGOwyythmmKSi+L/FK9I5Xfwh+tZbGylpGRJ/1cm5pERnc6LMAeEPpwpR6KLaC0OhbZSv2
+        6rJ1jlIq3X/d812rYImFbjE2RDymOwNm7QF88DLJdMNYMuk/2J4cLmQsdhgX02yxqAOt1c
+        ijb7fHSC4E1HLhOcAVnFqttvDhPqcQJ24eo2dt4A3ylYV5aKQjeVdRVPW+oG7VtYUJnFu6
+        C5F3iL4cZcSmSItYWfGBI4d4eP3wCC2JJhzSbBLQPUXrV09d206nmsfo9aygdA==
+From:   Aleksa Sarai <cyphar@cyphar.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>, Jeff Xu <jeffxu@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Daniel Verkamp <dverkamp@chromium.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: [RFC PATCH 0/3] memfd: cleanups for vm.memfd_noexec
+Date:   Fri, 14 Jul 2023 00:33:45 +1000
+Message-ID: <20230713143406.14342-1-cyphar@cyphar.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 4R1xvT1mlmz9sTq
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -126,93 +58,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023, Christian Brauner wrote:
-> diff --git a/fs/eventfd.c b/fs/eventfd.c
-> index dc9e01053235..077be5da72bd 100644
-> --- a/fs/eventfd.c
-> +++ b/fs/eventfd.c
-> @@ -43,9 +43,10 @@ struct eventfd_ctx {
->  	int id;
->  };
->  
-> -__u64 eventfd_signal_mask(struct eventfd_ctx *ctx, __u64 n, __poll_t mask)
-> +bool eventfd_signal_mask(struct eventfd_ctx *ctx, __poll_t mask)
->  {
->  	unsigned long flags;
-> +	__u64 n = 1;
->  
->  	/*
->  	 * Deadlock or stack overflow issues can happen if we recurse here
-> @@ -68,7 +69,7 @@ __u64 eventfd_signal_mask(struct eventfd_ctx *ctx, __u64 n, __poll_t mask)
->  	current->in_eventfd = 0;
->  	spin_unlock_irqrestore(&ctx->wqh.lock, flags);
->  
-> -	return n;
-> +	return n == 1;
->  }
+It seems that the most critical issue with vm.memfd_noexec=2 (the fact
+that passing MFD_EXEC would bypass it entirely[1]) has been fixed in
+Andrew's tree[2], but there are still some outstanding issues that need
+to be addressed:
 
-...
+ * The dmesg warnings are pr_warn_once, which on most systems means that
+   they will be used up by systemd or some other boot process and
+   userspace developers will never see it. The original patch posted to
+   the ML used pr_warn_ratelimited but the merged patch had it changed
+   (with a comment about it being "per review"), but given that the
+   current warnings are useless, pr_warn_ratelimited makes far more
+   sense.
 
-> @@ -58,13 +58,12 @@ static inline struct eventfd_ctx *eventfd_ctx_fdget(int fd)
->  	return ERR_PTR(-ENOSYS);
->  }
->  
-> -static inline int eventfd_signal(struct eventfd_ctx *ctx)
-> +static inline bool eventfd_signal(struct eventfd_ctx *ctx)
->  {
->  	return -ENOSYS;
->  }
->  
-> -static inline int eventfd_signal_mask(struct eventfd_ctx *ctx, __u64 n,
-> -				      unsigned mask)
-> +static inline bool eventfd_signal_mask(struct eventfd_ctx *ctx, unsigned mask)
->  {
->  	return -ENOSYS;
+ * vm.memfd_noexec=2 shouldn't reject old-style memfd_create(2) syscalls
+   because it will make it far to difficult to ever migrate. Instead it
+   should imply MFD_EXEC.
 
-This will morph to "true" for what should be an error case.  One option would be
-to have eventfd_signal_mask() return 0/-errno instead of the count, but looking
-at all the callers, nothing ever actually consumes the result.
+ * The racheting mechanism for vm.memfd_noexec doesn't make sense as a
+   security mechanism because a CAP_SYS_ADMIN capable user can create
+   executable binaries in a hidden tmpfs very easily, not to mention the
+   many other things they can do.
 
-KVMGT morphs failure into -EFAULT
+ * The memfd selftests would not exit with a non-zero error code when
+   certain tests that ran in a forked process (specifically the ones
+   related to MFD_EXEC and MFD_NOEXEC_SEAL) failed.
 
-	if (vgpu->msi_trigger && eventfd_signal(vgpu->msi_trigger, 1) != 1)
-		return -EFAULT;
+(This patchset is based on top of Jeff Xu's patches[2] fixing the
+MFD_EXEC bug in vm.memfd_noexec=2.)
 
-but the only caller of that user ignores the return value.
+[1]: https://lore.kernel.org/all/ZJwcsU0vI-nzgOB_@codewreck.org/
+[2]: https://lore.kernel.org/all/20230705063315.3680666-1-jeffxu@google.com/
 
-	if (vgpu_vreg(vgpu, i915_mmio_reg_offset(GEN8_MASTER_IRQ))
-			& ~GEN8_MASTER_IRQ_CONTROL)
-		inject_virtual_interrupt(vgpu);
+Aleksa Sarai (3):
+  memfd: cleanups for vm.memfd_noexec handling
+  memfd: remove racheting feature from vm.memfd_noexec
+  selftests: memfd: error out test process when child test fails
 
-The sample driver in samples/vfio-mdev/mtty.c uses a similar pattern: prints an
-error but otherwise ignores the result.
+ include/linux/pid_namespace.h              | 16 +++------
+ kernel/pid_sysctl.h                        |  7 ----
+ mm/memfd.c                                 | 32 +++++++----------
+ tools/testing/selftests/memfd/memfd_test.c | 41 ++++++++++++++++++----
+ 4 files changed, 51 insertions(+), 45 deletions(-)
 
-So why not return nothing?  That will simplify eventfd_signal_mask() a wee bit
-more, and eliminate that bizarre return value confusion for the ugly stubs, e.g.
+-- 
+2.41.0
 
-void eventfd_signal_mask(struct eventfd_ctx *ctx, unsigned mask)
-{
-	unsigned long flags;
-
-	/*
-	 * Deadlock or stack overflow issues can happen if we recurse here
-	 * through waitqueue wakeup handlers. If the caller users potentially
-	 * nested waitqueues with custom wakeup handlers, then it should
-	 * check eventfd_signal_allowed() before calling this function. If
-	 * it returns false, the eventfd_signal() call should be deferred to a
-	 * safe context.
-	 */
-	if (WARN_ON_ONCE(current->in_eventfd))
-		return;
-
-	spin_lock_irqsave(&ctx->wqh.lock, flags);
-	current->in_eventfd = 1;
-	if (ctx->count < ULLONG_MAX)
-		ctx->count++;
-	if (waitqueue_active(&ctx->wqh))
-		wake_up_locked_poll(&ctx->wqh, EPOLLIN | mask);
-	current->in_eventfd = 0;
-	spin_unlock_irqrestore(&ctx->wqh.lock, flags);
-}
-
-You could even go further and unify the real and stub versions of eventfd_signal().
