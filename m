@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85938752C51
+	by mail.lfdr.de (Postfix) with ESMTP id D6394752C52
 	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 23:41:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234378AbjGMVll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 17:41:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44844 "EHLO
+        id S234416AbjGMVlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 17:41:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233935AbjGMVlc (ORCPT
+        with ESMTP id S234004AbjGMVle (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 17:41:32 -0400
+        Thu, 13 Jul 2023 17:41:34 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 279B01FC0
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 14:41:32 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30D812691;
+        Thu, 13 Jul 2023 14:41:33 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9C95A61B7F
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 21:41:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 0745CC433C8;
-        Thu, 13 Jul 2023 21:41:31 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C2B4361B7C;
+        Thu, 13 Jul 2023 21:41:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 33C5AC433C8;
+        Thu, 13 Jul 2023 21:41:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689284491;
-        bh=zGzXoM0u04bgU98YlFEDAFt+ZgG3JOfNU4FRvqkvpW4=;
+        s=k20201202; t=1689284492;
+        bh=3JvPqEa1GFkBw4E++eZtthSt3xnfoZDBIXWi5DtceVw=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=UuCYnx35ZBqO0FTru00ZbUPsPYxVIGrf+34R1b41M8oxpz9T9nqXhwZj8/M+G4Q92
-         ql1LTN7v5O9hVTlzNvbyB4RgjYKVTRHC/SvLszDPT/5gsoQPEqMmjzKDXxGUqXE7FR
-         3Tgw9eOO5+kf0IqR7wu94lHHhqDuzldP4ynHWs8N7F3kdEeYom/1umr2T1uXRkSSvr
-         hKPDBGgq/jfjxrLGzpb6sx1bDEndPpUZPKzXu4nD5qCfQ/oC0nFNT/g0as1/UZaFl2
-         oWyFlDeqnHLOPrrox4yl/p9281jp9SAoKOPDzqEZ9NplKVvLbEgnCRcEHXp6DRFmxU
-         sMDt3MVskDqeg==
+        b=IHhavEOSY2lVw6TLkVP4vX4cA/Xftf+irYY92S8laMAcLbrPljPFly5hwlG7hqRpR
+         XXmx+zcMt2TTRLVeDci/cagwNwKxA35dk72ZOBW26oj+mEe+x31am4WnFU9UqhAQ3s
+         w8ZoCUZ0VTRX+KeFaGxK6fU18KlurC2xGcxAJk6WVOJWtihVSnzFZaShAe+8WRuLVl
+         /pTbuRarC4ZY99hHZhAln8YKsS0nzcAO+N0MigE1bIN0i+nTpKMphd/7P46sEhwwSp
+         OpAnpwf5EGoYe5qEOem2M1L0ZUegInC8vDHC5wfld/JLO76s0g6aMhHpiTj38BjDQO
+         yY5tlIp+tR7GQ==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E9B83E29F46;
-        Thu, 13 Jul 2023 21:41:30 +0000 (UTC)
-Subject: Re: [GIT PULL] erofs fixes for 6.5-rc2
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 21F19E29F42;
+        Thu, 13 Jul 2023 21:41:32 +0000 (UTC)
+Subject: Re: [GIT PULL] OpenRISC fix for 6.5
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <ZLAX9WApf3wGm5Q+@debian>
-References: <ZLAX9WApf3wGm5Q+@debian>
-X-PR-Tracked-List-Id: Development of Linux EROFS file system <linux-erofs.lists.ozlabs.org>
-X-PR-Tracked-Message-Id: <ZLAX9WApf3wGm5Q+@debian>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/xiang/erofs.git tags/erofs-for-6.5-rc2-fixes
-X-PR-Tracked-Commit-Id: 18bddc5b67038722cb88fcf51fbf41a0277092cb
+In-Reply-To: <ZK8NY+xAAHRTSEPc@antec>
+References: <ZK8NY+xAAHRTSEPc@antec>
+X-PR-Tracked-List-Id: <linux-openrisc.vger.kernel.org>
+X-PR-Tracked-Message-Id: <ZK8NY+xAAHRTSEPc@antec>
+X-PR-Tracked-Remote: https://github.com/openrisc/linux.git tags/for-linus
+X-PR-Tracked-Commit-Id: dceaafd668812115037fc13a1893d068b7b880f5
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 4b810bf037e524b54669acbe4e0df54b15d87ea1
-Message-Id: <168928449095.12038.10202336583193139465.pr-tracker-bot@kernel.org>
-Date:   Thu, 13 Jul 2023 21:41:30 +0000
-To:     Gao Xiang <xiang@kernel.org>
+X-PR-Merge-Commit-Id: 0099852f9d7322890636503146f303b41cd8663e
+Message-Id: <168928449213.12038.10658881121373883641.pr-tracker-bot@kernel.org>
+Date:   Thu, 13 Jul 2023 21:41:32 +0000
+To:     Stafford Horne <shorne@gmail.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, Yue Hu <huyue2@coolpad.com>,
-        Chunhai Guo <guochunhai@vivo.com>, linux-erofs@lists.ozlabs.org
+        Linux OpenRISC <linux-openrisc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -63,12 +63,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 13 Jul 2023 23:27:49 +0800:
+The pull request you sent on Wed, 12 Jul 2023 21:30:27 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/xiang/erofs.git tags/erofs-for-6.5-rc2-fixes
+> https://github.com/openrisc/linux.git tags/for-linus
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/4b810bf037e524b54669acbe4e0df54b15d87ea1
+https://git.kernel.org/torvalds/c/0099852f9d7322890636503146f303b41cd8663e
 
 Thank you!
 
