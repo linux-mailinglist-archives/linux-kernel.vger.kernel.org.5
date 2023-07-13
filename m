@@ -2,59 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FF0F752114
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 14:19:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74245752110
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 14:19:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234625AbjGMMTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 08:19:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42586 "EHLO
+        id S234628AbjGMMTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 08:19:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234660AbjGMMT1 (ORCPT
+        with ESMTP id S234574AbjGMMTQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 08:19:27 -0400
-Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [80.241.56.152])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D02E2691;
-        Thu, 13 Jul 2023 05:19:25 -0700 (PDT)
-Received: from smtp202.mailbox.org (smtp202.mailbox.org [IPv6:2001:67c:2050:b231:465::202])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4R1tvY219Sz9scb;
-        Thu, 13 Jul 2023 14:19:21 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cyphar.com; s=MBO0001;
-        t=1689250761;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=xpxD6jJvH2NdvxBxxbA/xwwWPK026oBkIsxvhSiVppQ=;
-        b=cylZYD1v3/ux3bOiBo3SI+1bkuoVoVNqjUBtUccqLVf/rjbGuRgjZ0Z6usXEm/u3ktL1v8
-        71xqGF6BjvRUpF2MnI9/7rMzhIJe/qPc8YUXWpj0UYEfTX9ESVdtOBLWqZLgY7p++dgdWJ
-        u3LO9hPOjKSXDO1Hdr9TLWSe9AaFE1cVOGBWKLQOC3KS9lCI8780JZMgKP2RRkDvY6wB8k
-        O/ESIRtcVJZPbUKsdZQMUgeQ8k77eFHC/zczIBMUoA+jhMfQO7oJ+Ey0zEVYj5s+ez7voJ
-        3U9095AoedknarhqdaeQj74FN+bFWJ21aH9h5d0W5dmoY/1l3hvYwrOffueUmA==
-From:   Aleksa Sarai <cyphar@cyphar.com>
-To:     Willy Tarreau <w@1wt.eu>, Shuah Khan <shuah@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Dave Chinner <dchinner@redhat.com>,
-        xu xin <cgel.zte@gmail.com>, Al Viro <viro@zeniv.linux.org.uk>,
-        Stefan Roesch <shr@devkernel.io>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Zhihao Cheng <chengzhihao1@huawei.com>,
-        "Liam R. Howlett" <Liam.Howlett@Oracle.com>,
-        Janis Danisevskis <jdanis@google.com>,
-        Kees Cook <keescook@chromium.org>
-Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: [PATCH] procfs: block chmod on /proc/thread-self/comm
-Date:   Thu, 13 Jul 2023 22:19:04 +1000
-Message-ID: <20230713121907.9693-1-cyphar@cyphar.com>
+        Thu, 13 Jul 2023 08:19:16 -0400
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17B8826B5;
+        Thu, 13 Jul 2023 05:19:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689250749; x=1720786749;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=yWZlIGF86AoSbSeZCQ313Q5kPpd7c+4YEC9Hig1jsYk=;
+  b=RSftoQOnHSvYD+GamHoWI6eR7I2kAHl25mv/MHfAI4uRIhNCF/nkXbn5
+   Y8bBnc31KQpfSLYmvZJB5hE48GIOi+hZi/cZkp3ZqzB2WL0bBkW+MmjPI
+   5QJiwGZ3YYHss279i0OktP7zdrYQrgn27AeEqE4TY2NGTddk3XQX4WQfB
+   dC3yoX+pa1UjunGBxwsl+B59AdOpN4vDdBwV9CQaveQCLjB/raUfn2WKj
+   IQVS8AG+bDg4TGz6PuHds/D0hFyKUNgP0q0WmSDE9xq3sPTHAzdji8U4D
+   Pgno5dynnQC9h7Y1ghaIQx6TGD8UJFeEuw/2LiLRjDCetnX7FueBiewjl
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="364034721"
+X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
+   d="scan'208";a="364034721"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2023 05:19:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="751611057"
+X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
+   d="scan'208";a="751611057"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga008.jf.intel.com with ESMTP; 13 Jul 2023 05:19:05 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qJvHk-002OS7-2A;
+        Thu, 13 Jul 2023 15:19:04 +0300
+Date:   Thu, 13 Jul 2023 15:19:04 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the sound-asoc tree
+Message-ID: <ZK/ruOD4QFPQ3Q5q@smile.fi.intel.com>
+References: <20230713121627.17990c86@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 4R1tvY219Sz9scb
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230713121627.17990c86@canb.auug.org.au>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,54 +68,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Due to an oversight in commit 1b3044e39a89 ("procfs: fix pthread
-cross-thread naming if !PR_DUMPABLE") in switching from REG to NOD,
-chmod operations on /proc/thread-self/comm were no longer blocked as
-they are on almost all other procfs files.
+On Thu, Jul 13, 2023 at 12:16:27PM +1000, Stephen Rothwell wrote:
+> Hi all,
+> 
+> After merging the sound-asoc tree, today's linux-next build (htmldocs)
+> produced this warning:
+> 
+> include/linux/int_log.h:1: warning: no structured comments found
+> 
+> Introduced by commit
+> 
+>   f97fa3dcb2db ("lib/math: Move dvb_math.c into lib/math/int_log.c")
 
-A very similar situation with /proc/self/environ was used to as a root
-exploit a long time ago, but procfs has SB_I_NOEXEC so this is simply a
-correctness issue.
+Can you elaborate a bit, please?
 
-Ref: https://lwn.net/Articles/191954/
-Ref: 6d76fa58b050 ("Don't allow chmod() on the /proc/<pid>/ files")
-Fixes: 1b3044e39a89 ("procfs: fix pthread cross-thread naming if !PR_DUMPABLE")
-Cc: stable@vger.kernel.org # v4.7+
-Signed-off-by: Aleksa Sarai <cyphar@cyphar.com>
----
- fs/proc/base.c                               | 3 ++-
- tools/testing/selftests/nolibc/nolibc-test.c | 4 ++++
- 2 files changed, 6 insertions(+), 1 deletion(-)
+Seems to me to be a false positive, or unveils a bug somewhere else.
 
-diff --git a/fs/proc/base.c b/fs/proc/base.c
-index 05452c3b9872..7394229816f3 100644
---- a/fs/proc/base.c
-+++ b/fs/proc/base.c
-@@ -3583,7 +3583,8 @@ static int proc_tid_comm_permission(struct mnt_idmap *idmap,
- }
- 
- static const struct inode_operations proc_tid_comm_inode_operations = {
--		.permission = proc_tid_comm_permission,
-+		.setattr	= proc_setattr,
-+		.permission	= proc_tid_comm_permission,
- };
- 
- /*
-diff --git a/tools/testing/selftests/nolibc/nolibc-test.c b/tools/testing/selftests/nolibc/nolibc-test.c
-index 486334981e60..08f0969208eb 100644
---- a/tools/testing/selftests/nolibc/nolibc-test.c
-+++ b/tools/testing/selftests/nolibc/nolibc-test.c
-@@ -580,6 +580,10 @@ int run_syscall(int min, int max)
- 		CASE_TEST(chmod_net);         EXPECT_SYSZR(proc, chmod("/proc/self/net", 0555)); break;
- 		CASE_TEST(chmod_self);        EXPECT_SYSER(proc, chmod("/proc/self", 0555), -1, EPERM); break;
- 		CASE_TEST(chown_self);        EXPECT_SYSER(proc, chown("/proc/self", 0, 0), -1, EPERM); break;
-+		CASE_TEST(chmod_self_comm);   EXPECT_SYSER(proc, chmod("/proc/self/comm", 0777), -1, EPERM); break;
-+		CASE_TEST(chmod_tid_comm);    EXPECT_SYSER(proc, chmod("/proc/thread-self/comm", 0777), -1, EPERM); break;
-+		CASE_TEST(chmod_self_environ);EXPECT_SYSER(proc, chmod("/proc/self/environ", 0777), -1, EPERM); break;
-+		CASE_TEST(chmod_tid_environ); EXPECT_SYSER(proc, chmod("/proc/thread-self/environ", 0777), -1, EPERM); break;
- 		CASE_TEST(chroot_root);       EXPECT_SYSZR(euid0, chroot("/")); break;
- 		CASE_TEST(chroot_blah);       EXPECT_SYSER(1, chroot("/proc/self/blah"), -1, ENOENT); break;
- 		CASE_TEST(chroot_exe);        EXPECT_SYSER(proc, chroot("/proc/self/exe"), -1, ENOTDIR); break;
 -- 
-2.41.0
+With Best Regards,
+Andy Shevchenko
+
 
