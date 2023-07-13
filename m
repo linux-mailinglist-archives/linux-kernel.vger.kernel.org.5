@@ -2,137 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DEE8752A7C
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 20:51:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCAEF752A83
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 20:52:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231362AbjGMSvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 14:51:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46720 "EHLO
+        id S229620AbjGMSwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 14:52:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229620AbjGMSvs (ORCPT
+        with ESMTP id S231926AbjGMSwm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 14:51:48 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65B501BD5
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 11:51:47 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fbd33a57ddso10068385e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 11:51:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689274306; x=1691866306;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=CRTSQeUdEcnOajeYoZyJyVr14RVak3GBVUbXP0XQdD8=;
-        b=k7idrVD3RsqeuHqTO9rpH6mwpxtDc61Ezz3IEiqaaW+yycMVDXcOUK25k1gnwf3Tsa
-         JNYyr6Xt7TBgsP42SCshexrnS4RlNtEsTI1sxsMokh2ipYJ175NJ/sj/+SDABByQ9sKL
-         N5zc+A76cNhWElOj+UaRMc7Ent2H9DfxvXu+mWuAuNcQ74m+MTlg9/zuGBdBj3NUimGx
-         7xWiLwHjZy3mHoNfQpJWazMejVBv5uZDM1IlQHjtRbUqOImER0W9F3FfI653/qlEvG9u
-         zdM9vIxR4Mj08dzzi3QzD8fp50AFpOqNq4Es0vBevPJUNy7DTazzlN78ZURrj0n94R0g
-         bk/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689274306; x=1691866306;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CRTSQeUdEcnOajeYoZyJyVr14RVak3GBVUbXP0XQdD8=;
-        b=Dmdi/jDHOoehaYuztdRsvvvFkZhGzMoh7erGxRIa969+BEqG1DKTfw6gftwCtXRQm7
-         0QXniZMpjG9ImkkR3QTaZP7wO1CwLtKOdQlGSakUuLVUG89FGoxd7LE66Wt0Vc7DCN+3
-         +A1SN4g6L7llv9UrzfV/k7rJTaCY9bk7ZZ3M0ePxuKw+j2EamdXDs7K4EQj8Cerpgfjz
-         Fz0ZPvu7N8uESBX07iPjE2wx0p0nL3B96BCt3FeqD14QU/lMOWXgi9iTVL9mweWLZ2KH
-         bRZgi+owTRtb5aWcF/sTROeoSIS6+XEDfuy5TyyKB1BH5YVia1vaTo5bqzrCkE6oTKy5
-         wdIw==
-X-Gm-Message-State: ABy/qLYchAiseVf5k9ESMgYdgsWaiTcBOAfCYOJmMlzzqy0tWFaSVJ4L
-        XEaeoNlV4SnQOaT2370wevody1hdlrqZzzQh1f2Wdw==
-X-Google-Smtp-Source: APBJJlGvHzvAe/oR+TTlkHcVqp0fo8lpXt8SG+ObjVCv6Vz7ojUSg+bE3wo3qfu/bC0DdnxZh+XcOdlxLsXIEcAD5hA=
-X-Received: by 2002:a7b:c5c5:0:b0:3fa:99d6:47a4 with SMTP id
- n5-20020a7bc5c5000000b003fa99d647a4mr2316810wmk.22.1689274305706; Thu, 13 Jul
- 2023 11:51:45 -0700 (PDT)
+        Thu, 13 Jul 2023 14:52:42 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88B5E2709;
+        Thu, 13 Jul 2023 11:52:39 -0700 (PDT)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36DIkoAw006900;
+        Thu, 13 Jul 2023 18:52:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
+ cc : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=qcppdkim1; bh=w0ZsrTSnOBfStnjIXUJ6185VAcOLGCvpnM2Umu/Mklo=;
+ b=DA+YGwdDHG5Qug2ScDMBOWU+TDWDQcYA0Yy4RaZpXbSlwSsnfNhV5qNfVmroQwRiNvOS
+ joD6si7BFOV4eknx0kBCrFIMcHC+dZ8ARE+Cj94txz0gXSZilfdryIoWbL4hz2LUFWpJ
+ LeivQSGry+2w3+xYPMHBUPUomLCm3K7gbeqPT8ZBcDx9Rc63G4p/BtW78sckFzuybGg4
+ WrC1MbuwX4rqoFlAsI/5v/rbDx+4zAWoquE2ZqOF964EEuRjHiBiGB6KLEp8r5Eyir9n
+ hWvqYz3sCl34k10P2wiJqyWCc/R9kE3Ou4f7a5w1m5HYokcYxZHMHl91ODU5XFnV5NH3 YA== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rtpuhr09s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 13 Jul 2023 18:52:16 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36DIqFLX017392
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 13 Jul 2023 18:52:15 GMT
+Received: from akhilpo-linux.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Thu, 13 Jul 2023 11:52:11 -0700
+Date:   Fri, 14 Jul 2023 00:22:08 +0530
+From:   Akhil P Oommen <quic_akhilpo@quicinc.com>
+To:     Rob Clark <robdclark@gmail.com>
+CC:     <dri-devel@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>,
+        <freedreno@lists.freedesktop.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        "Daniel Vetter" <daniel@ffwll.ch>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] drm/msm/adreno: Fix snapshot BINDLESS_DATA size
+Message-ID: <3ect6gyn4ylhrkql5isb2x3bbfg55yohhgivszejtvsjxfn6s7@ricinp6rf3i4>
+References: <20230711175409.157800-1-robdclark@gmail.com>
 MIME-Version: 1.0
-References: <161f1615-3d85-cf47-d2d5-695adf1ca7d4@linux.alibaba.com>
- <0d9e7b4d-6477-47a6-b3d2-2c9d9b64903d@paulmck-laptop> <f124e041-6a82-2069-975c-4f393e5c4137@linux.alibaba.com>
- <87292a44-cc02-4d95-940e-e4e31d0bc6f2@paulmck-laptop> <f1c60dcb-e32f-7b7e-bf0d-5dec999e9299@linux.alibaba.com>
- <CAEXW_YSODXRfgkR0D2G-x=0uZdsqvF3kZL+LL3DcRX-5CULJ1Q@mail.gmail.com>
- <894a3b64-a369-7bc6-c8a8-0910843cc587@linux.alibaba.com> <CAEXW_YSM1yik4yWTgZoxCS9RM6TbsL26VCVCH=41+uMA8chfAQ@mail.gmail.com>
- <58b661d0-0ebb-4b45-a10d-c5927fb791cd@paulmck-laptop> <CAB=BE-QSaRKvVQg28wu6zVoO9RwiHZgXJzUaEMdbtpieVLmT8A@mail.gmail.com>
- <39923da8-16a1-43a8-99f1-5e13508e4ee4@paulmck-laptop>
-In-Reply-To: <39923da8-16a1-43a8-99f1-5e13508e4ee4@paulmck-laptop>
-From:   Sandeep Dhavale <dhavale@google.com>
-Date:   Thu, 13 Jul 2023 11:51:34 -0700
-Message-ID: <CAB=BE-QNFhOD=xe09hiZOLmDN7XQxnaxyMz1X=4EeU7SFKaRKA@mail.gmail.com>
-Subject: Re: [PATCH v1] rcu: Fix and improve RCU read lock checks when !CONFIG_DEBUG_LOCK_ALLOC
-To:     paulmck@kernel.org
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        Gao Xiang <hsiangkao@linux.alibaba.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-erofs@lists.ozlabs.org, xiang@kernel.org,
-        Will Shiu <Will.Shiu@mediatek.com>, kernel-team@android.com,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230711175409.157800-1-robdclark@gmail.com>
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: rfpCF3EEy1A_-RnZU5MYwVDSeJFMgYeS
+X-Proofpoint-ORIG-GUID: rfpCF3EEy1A_-RnZU5MYwVDSeJFMgYeS
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-13_07,2023-07-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ clxscore=1011 mlxlogscore=999 spamscore=0 malwarescore=0 bulkscore=0
+ impostorscore=0 adultscore=0 phishscore=0 lowpriorityscore=0
+ suspectscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307130168
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Thank you for the background.
->
-> > Paul, Joel,
-> > Shall we fix the rcu_read_lock_*held() regardless of how erofs
-> > improves the check?
->
-> Help me out here.  Exactly what is broken with rcu_read_lock_*held(),
-> keeping in mind their intended use for lockdep-based debugging?
->
-Hi Paul,
-With !CONFIG_DEBUG_ALLOC_LOCK
-rcu_read_lock_held() -> Always returns 1.
-rcu_read_lock_any_held()-> returns !preemptible() so may return 0.
+On Tue, Jul 11, 2023 at 10:54:07AM -0700, Rob Clark wrote:
+> 
+> From: Rob Clark <robdclark@chromium.org>
+> 
+> The incorrect size was causing "CP | AHB bus error" when snapshotting
+> the GPU state on a6xx gen4 (a660 family).
+> 
+> Closes: https://gitlab.freedesktop.org/drm/msm/-/issues/26
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> ---
+>  drivers/gpu/drm/msm/adreno/a6xx_gpu_state.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.h b/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.h
+> index 790f55e24533..e788ed72eb0d 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.h
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.h
+> @@ -206,7 +206,7 @@ static const struct a6xx_shader_block {
+>  	SHADER(A6XX_SP_LB_3_DATA, 0x800),
+>  	SHADER(A6XX_SP_LB_4_DATA, 0x800),
+>  	SHADER(A6XX_SP_LB_5_DATA, 0x200),
+> -	SHADER(A6XX_SP_CB_BINDLESS_DATA, 0x2000),
+> +	SHADER(A6XX_SP_CB_BINDLESS_DATA, 0x800),
+>  	SHADER(A6XX_SP_CB_LEGACY_DATA, 0x280),
+>  	SHADER(A6XX_SP_UAV_DATA, 0x80),
+>  	SHADER(A6XX_SP_INST_TAG, 0x80),
+> -- 
+> 2.41.0
+> 
+Reviewed-by: Akhil P Oommen <quic_akhilpo@quicinc.com>
 
-Now current usages for rcu_read_lock_*held() are under RCU_LOCKDEP_WARN()
-which becomes noOP with !CONFIG_DEBUG_ALLOC_LOCK
-(due to debug_lockdep_rcu_enabled()) so this inconsistency is not causing
-any problems right now. So my question was about your opinion for fixing this
-for semantics if it's worth correcting.
-
-Also it would have been better IMO if there was a reliable API
-for rcu_read_lock_*held() than erofs trying to figure it out at a higher level.
-
-> I have no official opinion myself, but there are quite a few people
-...
-
-Regarding erofs trying to detect this, I understand few people can
-have different
-opinions. Not scheduling a thread while being in a thread context itself
-is reasonable in my opinion which also has shown performance gains.
-
-Thanks,
-Sandeep.
-
-
-
->                                                         Thanx, Paul
->
-> > Thanks,
-> > Sandeep.
-> >
-> > [1] https://lore.kernel.org/linux-erofs/20230208093322.75816-1-hsiangkao@linux.alibaba.com/
->
-> --
-> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
->
+-Akhil
