@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AC527528A5
+	by mail.lfdr.de (Postfix) with ESMTP id DD4C57528A8
 	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 18:37:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232637AbjGMQhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 12:37:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47984 "EHLO
+        id S234696AbjGMQhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 12:37:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234527AbjGMQhK (ORCPT
+        with ESMTP id S234498AbjGMQhK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 13 Jul 2023 12:37:10 -0400
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35D0A3595
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC6CE3596
         for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 09:36:47 -0700 (PDT)
-Received: by mail-il1-x129.google.com with SMTP id e9e14a558f8ab-3461053677eso1986715ab.0
+Received: by mail-il1-x12f.google.com with SMTP id e9e14a558f8ab-345e55a62d8so3752415ab.3
         for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 09:36:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689266206; x=1691858206;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=xsnxNcz70qyyc9HqO162D63ZHCaN0/jJDoy6JcdJGmw=;
-        b=i7IstqIiYWKSdTInB7RRLoyrrLWTiSdmQH/GS8yzHgjpyNNVM889S9qI6PuD9MVvxM
-         VQZcQfLjMkwsMYEvKNkl2vEihabVz0KhBorU1Q3ef3UANCHHBUoaqdOYNEWSrbMze7gX
-         IGzqWcHtueflYkrTcnZFQTzjqHv7dQinHY87CQviORAljaCB+pEZViGmvwwkp0Gx3jM9
-         j9A6pGTk4bVLjQjRGttATxcQKWRhvE4CDsuoHqd17oe6ZB8Bz3kxioFnZeXJxL3ZdLLo
-         +8Z0QUKR7wUQlnXTHfHADwqU8TrDxBkffg+V1vQDV/whjTgUH/6TFLvIAfzb7SYvQR8t
-         lsIw==
+        d=gmail.com; s=20221208; t=1689266207; x=1691858207;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2EpDVIlDX2H9hcBKUU2bnV2uAgz8tLVHVeXAEtG+jYc=;
+        b=ScYmlxUqCGHtoYkCe/XAPIYLYXG3kX1g+sGc64KIc1SPlphq1iH3iLFxyNaQBB652f
+         hklDrCTTYlW92m6CVnwtS0cEz78sbOuxuzeOu08ZcspU6NOI6P1F8PdWKgGbnFtecvzS
+         GrmN5EGlNJ/oBdbvs9E6fELTDXD4FiHOtHKM/Lp3fAxM9aeJsDhGjW28UGtL3zIjYIjB
+         enDjJsx+6UOF551dJI3KRt49ObrxSOddSYnnYM4BpZp2Nst0oOcMQVvPoYypaDWrC7HK
+         D8DLgRmFCnb4Np40k53LjcQDwnJALjI4wEx5gmjsmbmyWw25obaPUSxuiSCu4CdKYdDP
+         ZnnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689266206; x=1691858206;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xsnxNcz70qyyc9HqO162D63ZHCaN0/jJDoy6JcdJGmw=;
-        b=DD7QPyTWmPW+mDqAaDNqn9fkzJKtBwAZkyU8tlFYaOHIgQLEHtMyzzKQmE3K1uEJO1
-         dULxC8tRlkOjYj6/jEchO9frZcrpdySON/QX3+KdplnLXEFmS5A+gL7fKA0mdtoHZJce
-         yZJpKKjtFIwxhmWyPXh3K66FthLebQqk5EjIfNYyw91S5PW83SW9YMxZ/7J94izRbk8U
-         t+z69E+vtnfoAW/Q1T4/2owQ+AL1C+KWC96cwapS0EvQ9SMX3GdRAZtIaZMEqLmBRyLW
-         oZ+OXYb8QLU7mJHJPbgMvBPdbPzI8wXaYWXyE4TV4uqqts82KEAp5N5PXs0sv0JqFVns
-         IrKg==
-X-Gm-Message-State: ABy/qLbKS3/BmRqYFNpmwEq1Rixw0YpoE54LSwaozFYZlWCQu4QO/5QY
-        kTX0JMAy3Pt/edhYqbw3DCU=
-X-Google-Smtp-Source: APBJJlEpTm+P9ou1CsNfuTysTeyM1Re1D8qofR3fYXOdTSWwLaStjYdeCmokoG5fYZfAgKGPMOpiyQ==
-X-Received: by 2002:a05:6e02:1043:b0:342:558c:d88e with SMTP id p3-20020a056e02104300b00342558cd88emr100849ilj.11.1689266206006;
+        d=1e100.net; s=20221208; t=1689266207; x=1691858207;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2EpDVIlDX2H9hcBKUU2bnV2uAgz8tLVHVeXAEtG+jYc=;
+        b=gXHLsi7LLHWdMM6hGI2r1MQDMEkGxMSnuYEbvdckHb0gDrSyrnV/yPZ+4mPOeRPlaO
+         3dPQoETsn67dORiepc7PFdSTpJLCyou8s+f1CwAKs+yGmRP5f1OBuZbHTNy/Y9xdlLvq
+         P4/uIQqNv+jytZ7MB4Q3Dg0u79EGJapRpkJhqjcio05Iq9sdULuNa1XHKwMcfHNWtGeI
+         QDnYcEmPO1Zp8UjjB756By7wzskvu+zRlf0fe4fEHjcjIuESvJ7iXjLbVTUGlr885ld5
+         QcuqmFkquTemgOMf71zQRA43+zliRbAjL7ekvaiYuEUOEML5+tARYIvhB5hcHTeacTLz
+         suhQ==
+X-Gm-Message-State: ABy/qLaui0JftpIWbH6kxVvGxf0Wv8PgKdMVzHxUY0DCs6Zsu8FkHa0M
+        D3kKLYhc1/uc2zJsfUHLXT4=
+X-Google-Smtp-Source: APBJJlEKbFktiFQ/78FtlpMN0cgiNpYvultfFSQZab8UdWpq20qsbPfbNKW5a6SBlQ9oXjRJlEalhA==
+X-Received: by 2002:a92:d4cb:0:b0:346:7502:aeaa with SMTP id o11-20020a92d4cb000000b003467502aeaamr1751455ilm.18.1689266206905;
         Thu, 13 Jul 2023 09:36:46 -0700 (PDT)
 Received: from frodo.. (c-73-78-62-130.hsd1.co.comcast.net. [73.78.62.130])
-        by smtp.googlemail.com with ESMTPSA id s7-20020a92d907000000b00345950d7e94sm2147571iln.20.2023.07.13.09.36.44
+        by smtp.googlemail.com with ESMTPSA id s7-20020a92d907000000b00345950d7e94sm2147571iln.20.2023.07.13.09.36.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Jul 2023 09:36:45 -0700 (PDT)
+        Thu, 13 Jul 2023 09:36:46 -0700 (PDT)
 From:   Jim Cromie <jim.cromie@gmail.com>
 To:     jbaron@akamai.com, daniel.vetter@ffwll.ch,
         linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
@@ -57,10 +58,12 @@ To:     jbaron@akamai.com, daniel.vetter@ffwll.ch,
 Cc:     jani.nikula@intel.com, ville.syrjala@linux.intel.com,
         seanpaul@chromium.org, robdclark@gmail.com,
         gregkh@linuxfoundation.org, Jim Cromie <jim.cromie@gmail.com>
-Subject: [PATCH v4 00/21] fix DRM_USE_DYNAMIC_DEBUG regression
-Date:   Thu, 13 Jul 2023 10:36:05 -0600
-Message-ID: <20230713163626.31338-1-jim.cromie@gmail.com>
+Subject: [PATCH v4 01/21] drm: use correct ccflags-y syntax
+Date:   Thu, 13 Jul 2023 10:36:06 -0600
+Message-ID: <20230713163626.31338-2-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230713163626.31338-1-jim.cromie@gmail.com>
+References: <20230713163626.31338-1-jim.cromie@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -73,91 +76,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hi Jason, Daniel, Greg, etal
+Incorrect CFLAGS- usage failed to add -DDYNAMIC_DEBUG_MODULE,
+which broke builds with:
 
-Heres another run at the regression, adequately explained in V3 here:
- https://lore.kernel.org/lkml/20230125203743.564009-1-jim.cromie@gmail.com/
- https://patchwork.freedesktop.org/series/113363/
+CONFIG_DRM_USE_DYNAMIC_DEBUG=y
+CONFIG_DYNAMIC_DEBUG_CORE=y
+but without DYNAMIC_DEBUG
 
-V3 exposed an init-ordering issue with jump-label, fixed by Jason with
-7deabd674988 ("dyndbg: use the module notifier callbacks")
+Nobody noticed because a larger regression emerged.
 
-These patches are against v6.4, they apply cleanly to drm-next-2023-07-07
-Also at https://github.com/jimc/linux.git (dd-fix-2k2, dd-fix-2k-on-drm)
+Also add subdir-ccflags so that all drivers pick up the addition.
 
+Fixes: 84ec67288c10 ("drm_print: wrap drm_*_dbg in dyndbg descriptor factory macro")
+Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
+---
+ drivers/gpu/drm/Makefile | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-The bulk of the work is in the 2nd of the dyndbg-API commits, it
-probably requires the most scrutiny.  It splits the confused
-double-duty job of DECLARE_DYNDBG_CLASSMAP into DYNDBG_CLASSMAP_DEFINE
-and DYNDBG_CLASSMAP_USE.
-
-The other dyndbg-API patches could stand a wider review, since they
-make new API.  Bikeshed on names, now while its easy.  Fresh eyes see
-inconsistencies better.
-
-I considered s/class_map/classmap/, since theres also CLASSMAP, and
-also PeterZ's new CLASS macros (which I should generally stay away from).
-Or is that just churn ?  catmap ??  And maybe *param* fn-names too.
-
-I yanked the NAME class-types, since there are no users except the
-test-module, we could have it back later if anyone wants it.
-
-theres also an RFC s/__LINE__/__COUNTER__/ in __UNIQUE_ID fallback.
-
-
-Jim Cromie (21):
-  drm: use correct ccflags-y syntax
-  test-dyndbg: fixup CLASSMAP usage error
-  dyndbg: make ddebug_class_param union members same size
-  dyndbg: replace classmap list with a vector
-  dyndbg: ddebug_apply_class_bitmap - add module arg, select on it
-  dyndbg: split param_set_dyndbg_classes to module/wrapper fns
-  dyndbg: drop NUM_TYPE_ARRAY
-  dyndbg: reduce verbose/debug clutter
-  dyndbg: silence debugs with no-change updates
-  dyndbg: tighten ddebug_class_name() 1st arg type
-  dyndbg: tighten fn-sig of ddebug_apply_class_bitmap
-  dyndbg-API: remove DD_CLASS_TYPE_(DISJOINT|LEVEL)_NAMES and code
-  dyndbg-API: fix DECLARE_DYNDBG_CLASSMAP & CONFIG_DRM_USE_DYNAMIC_DEBUG
-  dyndbg: refactor ddebug_classparam_clamp_input
-  dyndbg-API: promote DYNDBG_CLASSMAP_PARAM to API
-  dyndbg-test: make it build with just CONFIG_DYNAMIC_DEBUG_CORE
-  drm: restore CONFIG_DRM_USE_DYNAMIC_DEBUG un-BROKEN
-  compiler.h: RFC - s/__LINE__/__COUNTER__/ in __UNIQUE_ID fallback
-  drm-drivers: DRM_CLASSMAP_USE in 2nd batch of drivers, helpers
-  config TEST_DYNAMIC_DEBUG default m
-  dyndbg-doc: add classmap info to howto
-
- .../admin-guide/dynamic-debug-howto.rst       |  60 +++
- drivers/gpu/drm/Kconfig                       |   3 +-
- drivers/gpu/drm/Makefile                      |   3 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c       |  12 +-
- drivers/gpu/drm/display/drm_dp_helper.c       |  12 +-
- drivers/gpu/drm/drm_crtc_helper.c             |  12 +-
- drivers/gpu/drm/drm_gem_shmem_helper.c        |   2 +
- drivers/gpu/drm/drm_print.c                   |  35 +-
- drivers/gpu/drm/gud/gud_drv.c                 |   2 +
- drivers/gpu/drm/i915/i915_params.c            |  12 +-
- drivers/gpu/drm/mgag200/mgag200_drv.c         |   2 +
- drivers/gpu/drm/nouveau/nouveau_drm.c         |  12 +-
- drivers/gpu/drm/qxl/qxl_drv.c                 |   2 +
- drivers/gpu/drm/radeon/radeon_drv.c           |   2 +
- drivers/gpu/drm/udl/udl_main.c                |   2 +
- drivers/gpu/drm/vkms/vkms_drv.c               |   2 +
- drivers/gpu/drm/vmwgfx/vmwgfx_drv.c           |   2 +
- include/asm-generic/vmlinux.lds.h             |   1 +
- include/drm/drm_print.h                       |  12 +-
- include/linux/compiler.h                      |   4 +-
- include/linux/dynamic_debug.h                 | 112 +++--
- kernel/module/main.c                          |   3 +
- lib/Kconfig.debug                             |  13 +-
- lib/Makefile                                  |   4 +-
- lib/dynamic_debug.c                           | 399 +++++++++++-------
- lib/test_dynamic_debug.c                      | 127 +++---
- lib/test_dynamic_debug_submod.c               |  10 +
- 27 files changed, 522 insertions(+), 340 deletions(-)
- create mode 100644 lib/test_dynamic_debug_submod.c
-
+diff --git a/drivers/gpu/drm/Makefile b/drivers/gpu/drm/Makefile
+index a33257d2bc7f..670bf046019e 100644
+--- a/drivers/gpu/drm/Makefile
++++ b/drivers/gpu/drm/Makefile
+@@ -3,7 +3,8 @@
+ # Makefile for the drm device driver.  This driver provides support for the
+ # Direct Rendering Infrastructure (DRI) in XFree86 4.1.0 and higher.
+ 
+-CFLAGS-$(CONFIG_DRM_USE_DYNAMIC_DEBUG)	+= -DDYNAMIC_DEBUG_MODULE
++ccflags-$(CONFIG_DRM_USE_DYNAMIC_DEBUG)		+= -DDYNAMIC_DEBUG_MODULE
++subdir-ccflags-$(CONFIG_DRM_USE_DYNAMIC_DEBUG)	+= -DDYNAMIC_DEBUG_MODULE
+ 
+ drm-y := \
+ 	drm_aperture.o \
 -- 
 2.41.0
 
