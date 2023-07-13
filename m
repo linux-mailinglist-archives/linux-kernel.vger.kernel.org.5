@@ -2,121 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A0A4751E1F
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 12:03:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B03E4751E21
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 12:03:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234227AbjGMKD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 06:03:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46664 "EHLO
+        id S234490AbjGMKDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 06:03:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232342AbjGMKDU (ORCPT
+        with ESMTP id S234345AbjGMKDY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 06:03:20 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E082A26B5
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 03:02:55 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-313e742a787so290049f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 03:02:55 -0700 (PDT)
+        Thu, 13 Jul 2023 06:03:24 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4F5C269F
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 03:03:07 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-5149aafef44so583808a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 03:03:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689242574; x=1691834574;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=24N6QIJfw8vnZ0z26iuUATuQsDpghCwf/j1TkIoQh/Y=;
-        b=ClZzo/bCy2XliMbqG3GS5vec6HVRguyhE0iR5eB0wXIy/CgFmC7TYazGqT7MraSL1m
-         ccZRcdih5Mqch2b1VS66B34Z3tao9R6Nz6hOgIV8S+q9/kX13cTm/di4MI6r2Xd0YHCJ
-         1Ldq/fTXAdlYioEp4nmdfuMBwChXtc8CvmATe/VK8XiksxyZQJqH3PrV8ybIP2UqtwrK
-         oxQfT1neQGeqxwA9ZgQrT228AoDxN1Zwb2613qw09m1VdHCilNfKVdVwnOpGueLo6kB0
-         O7Hb9aQrpv2enxm5mdkCP5lu/F7UE/ioEVEVmISVWdgLp88qWApT2ISoFu8JtEExhONi
-         x6Og==
+        d=linaro.org; s=google; t=1689242586; x=1691834586;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fGlDIyrrfNAq/yp93QtArxGFLqlQI2VbX5YT6nCkJec=;
+        b=dRMUT/whHAaqfW62jCLHfa3YAYIoSb/L33DoG8qef7m5uyaWftiZ6aHVo7EdPXCuue
+         mpWPNSlvyDl8E9zg488amopoa40UCmSROulQTLgONzQoY9OwZARbI4e5hSDRXj4af3LT
+         j9seR79WLt5m98CBWnG6TUkMNdKP0ZYBuMYOHLn+NsSLnk8yuvdguLDmEcu9j035kGPX
+         ZnY+KHBUCez2YbTt6zxHoviEu0cdLcB4AzaUiN4DUGrwTOHUMQ1IZXty8rRu2bzIK5hB
+         KErrA/clD3DcD+itYeG1hxtH+tDXK/yDY/8jmCnbN/p5Sc144FjYlZb5/RqUod4sgzje
+         ejAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689242574; x=1691834574;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=24N6QIJfw8vnZ0z26iuUATuQsDpghCwf/j1TkIoQh/Y=;
-        b=fXIrvwQnH6ln60t0XAW+QGSqE5Fy8FEf+hiE5IGaDGMjuf0UOeStG8L8fbZFDVSw/c
-         rGxdnoajRLTBmR97a8nKwJoK60NMFwpMmTMMY7fNq4fO4LjQ8j14kvALi2tTmiMX22j0
-         BnqWvZIoAsyWSPVUD+qai1wpj27QtvDp1xcd79GcGc9FYmwv6OKs3wkOkaIUHWyvqLJL
-         Wtk1AyXPtJFw5Pw3QC+twVkjj1S3xPuQshDRoz56p6rj2e//75/b77O7XK3QHddO4g5L
-         9BrgBLhCMFyOE0Ox6XZZQizchNUDXGlQmHCC3Xa7F57rYu9ZWLMBtm4HUVdKf7oQHZLV
-         RSBw==
-X-Gm-Message-State: ABy/qLarVJQXDOjvK6njqESVgohC55i/DXL53tGvJB0oPXftS1nOybof
-        1r9WbrsWSx5EBaxQNvvo0y8GMg==
-X-Google-Smtp-Source: APBJJlFtt8ebDSbwMjmV/fHwToHgVyDwZ1DvTZK1G7a5UTKK0RsrpDpB7V1RLGiAYj/n8+foNZPK9w==
-X-Received: by 2002:adf:d0c3:0:b0:314:323b:9d3b with SMTP id z3-20020adfd0c3000000b00314323b9d3bmr3835181wrh.32.1689242574306;
-        Thu, 13 Jul 2023 03:02:54 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id s15-20020adff80f000000b00313f9a0c521sm7539831wrp.107.2023.07.13.03.02.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 Jul 2023 03:02:53 -0700 (PDT)
-Message-ID: <1dddf0b5-c47e-4d80-7126-b9563e972927@linaro.org>
-Date:   Thu, 13 Jul 2023 12:02:50 +0200
+        d=1e100.net; s=20221208; t=1689242586; x=1691834586;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fGlDIyrrfNAq/yp93QtArxGFLqlQI2VbX5YT6nCkJec=;
+        b=frLGd+16XUia8101cxpQf9uVuaPiJ8VO+D5kbWN69BbHwL/k3qQ7uK/++4x+y4nD9/
+         iV9dYrWziwgM8b1qzxogsW/PXx8b2y15Y+nvm8YWgfKxnYr4tIHN/zoDTEKCj6FDIeGJ
+         EDN7zADkmEVW2yF8hnXEHNnclmMdYP9aWKQN1ngHbf6d8eZL2UgGtqR7dPstioCvC8eW
+         5QqO/B6iHP4eBfBfby2X/Jw+02xZyy4kKmwN49hQC2oVrB6/cjfRloENw4q33bOXjOSu
+         vampUCGMAEj73VwarmXxU5JuRHJG5BEFAhc4QoHZjnSAJBSBig1VSLyjTXHpMFP0k71G
+         dxHQ==
+X-Gm-Message-State: ABy/qLb1sfCfgY2jIqdZZzZsemGQbjMSd+NEx43WGZjcotFojEMQiFy8
+        0chKmqMvQFWsl/K0Dyu+JvXssja/hrTCstD/cQ7VLA==
+X-Google-Smtp-Source: APBJJlG0P8JjG7quzdt3aed4/aGpuXKVi0PuT9bBYRTMrdueHE8H83Z1oxV0y7WYLZqDc96rvJyz9g==
+X-Received: by 2002:aa7:d511:0:b0:51d:91d2:335b with SMTP id y17-20020aa7d511000000b0051d91d2335bmr1561993edq.1.1689242586245;
+        Thu, 13 Jul 2023 03:03:06 -0700 (PDT)
+Received: from [192.168.1.195] ([5.133.47.210])
+        by smtp.gmail.com with ESMTPSA id w22-20020a056402071600b0051de3c6c5e5sm4007740edx.94.2023.07.13.03.03.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Jul 2023 03:03:05 -0700 (PDT)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Christian Marangi <ansuelsmth@gmail.com>,
+        devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>
+In-Reply-To: <20230627204630.9476-1-zajec5@gmail.com>
+References: <20230627204630.9476-1-zajec5@gmail.com>
+Subject: Re: [PATCH V4] dt-bindings: nvmem: fixed-cell: add compatible for
+ MAC cells
+Message-Id: <168924258532.15442.13233045007197917854.b4-ty@linaro.org>
+Date:   Thu, 13 Jul 2023 11:03:05 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCHv2 1/2] dt-bindings: serial: atmel,at91-usart: add
- compatible for sam9x60
-Content-Language: en-US
-To:     Durai Manickam KR <durai.manickamkr@microchip.com>,
-        Hari.PrasathGE@microchip.com,
-        balamanikandan.gunasundar@microchip.com,
-        manikandan.m@microchip.com, varshini.rajendran@microchip.com,
-        dharma.b@microchip.com, nayabbasha.sayed@microchip.com,
-        balakrishnan.s@microchip.com, cristian.birsan@microchip.com,
-        nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
-        davem@davemloft.net, arnd@arndb.de, olof@lixom.net, soc@kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Kavyasree.Kotagiri@microchip.com,
-        Horatiu.Vultur@microchip.com, robh+dt@kernel.org, andrew@lunn.ch,
-        michael@walle.cc, jerry.ray@microchip.com, conor+dt@kernel.org,
-        jesper.nilsson@axis.com, andre.przywara@arm.com, ada@thorsis.com,
-        radu_nicolae.pirea@upb.ro, richard.genoud@gmail.com,
-        gregkh@linuxfoundation.org, linux-spi@vger.kernel.org,
-        linux-serial@vger.kernel.org
-References: <20230713095111.335346-1-durai.manickamkr@microchip.com>
- <20230713095111.335346-2-durai.manickamkr@microchip.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230713095111.335346-2-durai.manickamkr@microchip.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.12.2
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/07/2023 11:51, Durai Manickam KR wrote:
-> Add sam9x60 compatible to DT bindings documentation.
 
-Unfortunately, I don't understand this commit msg with patch. You say
-you added a compatible, but the compatible was there before and your
-diff moves it to a list.
-
-Explain in the commit msg what is the real problem.
-
+On Tue, 27 Jun 2023 22:46:30 +0200, Rafał Miłecki wrote:
+> A lot of home routers have NVMEM fixed cells containing MAC address that
+> need some further processing. In ~99% cases MAC needs to be:
+> 1. Optionally parsed from ASCII format
+> 2. Increased by a vendor-picked value
 > 
-> Signed-off-by: Durai Manickam KR <durai.manickamkr@microchip.com>
-> ---
->  .../devicetree/bindings/serial/atmel,at91-usart.yaml          | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+> There was already an attempt to design a binding for that at NVMEM
+> device level in the past. It wasn't accepted though as it didn't really
+> fit NVMEM device layer.
 > 
-> diff --git a/Documentation/devicetree/bindings/serial/atmel,at91-usart.yaml b/Documentation/devicetree/bindings/serial/atmel,at91-usart.yaml
-> index 30b2131b5860..65cb2e5c5eee 100644
-> --- a/Documentation/devicetree/bindings/serial/atmel,at91-usart.yaml
-> +++ b/Documentation/devicetree/bindings/serial/atmel,at91-usart.yaml
-> @@ -16,13 +16,15 @@ properties:
->        - enum:
->            - atmel,at91rm9200-usart
->            - atmel,at91sam9260-usart
-> -          - microchip,sam9x60-usart
+> [...]
 
-It's here, look ^^.
+Applied, thanks!
+
+[1/1] dt-bindings: nvmem: fixed-cell: add compatible for MAC cells
+      commit: b7495ea1b534fa4d73e5132f05ecc79f5068aa22
 
 Best regards,
-Krzysztof
+-- 
+Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
