@@ -2,152 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA675752E06
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 01:42:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D34B752E08
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 01:42:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232854AbjGMXmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 19:42:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60570 "EHLO
+        id S233609AbjGMXmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 19:42:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230024AbjGMXmB (ORCPT
+        with ESMTP id S230024AbjGMXml (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 19:42:01 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 298642707;
-        Thu, 13 Jul 2023 16:42:00 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-66767d628e2so894220b3a.2;
-        Thu, 13 Jul 2023 16:42:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689291719; x=1691883719;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=RavftxM7stIkYQ2IJPruUWiOpFM2KNLE8/u9G61hE4A=;
-        b=MuJE1t4T255NCEZrBBpi0yNwry35P/wlbqLeRmCJoeetMdL2iwt4om53GKdD5JEvab
-         rnNQFYFiuJheLARUpzyOdO+OB8Dg6XaCtXCuKJpTSOYFP6wQXhoQ8AZkO/Pahspf6Mku
-         /8QeCLtB6VwOSRTjAc8xIyhappD46Y7iEHCssVip+VMcmhba+PgY3i/4nry8//z7BWC8
-         s954ToOV3VjEtN1upnzaQN3vAau++1JnXa2GEcGShbUu77m/NOtiJDNPw0MgUV/l0cDC
-         pkCQ1EWOrxrbg85LbB9sl8Lt9Wt3UMyKd9j7FOaDn1RQWh4fq3sjAoIGRMCLz+1YB0TS
-         0srQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689291719; x=1691883719;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RavftxM7stIkYQ2IJPruUWiOpFM2KNLE8/u9G61hE4A=;
-        b=ijHEgyX5sQCjWwSnNWhlpepqmBfTnBgejKtoYgGnz1bvdXGcxpkHMjoRvx919SKeaj
-         +dR0K9pwmb9+62nA9ngrHTUVNGSTHXudtf53ckXFCd/vXDEFs6AMu05cKIfENWZg25Eu
-         A1JJtA1eAWrn+pVYzucM7KC8FrwZktrcjdMll60VwlsWsTh7w7U3txc/ZAWE7o4s/SrY
-         JI4xdbJ9xoBMkJejsPda8QeOChFB/u9gJmsaRzh2AXCZ4BkEDRPg9fcw2qA9fHBV4QUg
-         y2lJ6EXSyjhASTFZyl49jzuunknpYR1gQ75Cr7OhMZHmUaMoLr0Mh34e8/7YigSwxYiG
-         YDog==
-X-Gm-Message-State: ABy/qLYpvOS54DrVRmTRgLFsHVZxXEz4w3oqGhlP8ck6whdHVPfBQmXZ
-        /0N+WLo3+z8ZXXHebvJhZ7oJELfgGMlQONLDJ2s=
-X-Google-Smtp-Source: APBJJlFfv7VasI4YZaVvcUzi2+APdnETq0oX/B50Js9LdFkM+A+5Vt0QH3Z0YfjEXSo/HY6K93ROdQ==
-X-Received: by 2002:a05:6a00:14c6:b0:682:7d8a:f887 with SMTP id w6-20020a056a0014c600b006827d8af887mr2661411pfu.30.1689291719479;
-        Thu, 13 Jul 2023 16:41:59 -0700 (PDT)
-Received: from localhost.localdomain ([221.231.171.18])
-        by smtp.gmail.com with ESMTPSA id c3-20020aa78803000000b0067a50223e3bsm5927984pfo.111.2023.07.13.16.41.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Jul 2023 16:41:59 -0700 (PDT)
-From:   Polaris Pi <pinkperfect2021@gmail.com>
-To:     kuba@kernel.org, amitkarwar@gmail.com, kvalo@kernel.org,
-        ganapathi017@gmail.com, sharvari.harisangam@nxp.com,
-        huxinming820@gmail.com
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Polaris Pi <pinkperfect2021@gmail.com>
-Subject: [PATCH v4] wifi: mwifiex: Fix OOB and integer underflow when rx packets
-Date:   Thu, 13 Jul 2023 23:41:50 +0000
-Message-Id: <20230713234150.2533384-1-pinkperfect2021@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 13 Jul 2023 19:42:41 -0400
+Received: from wnew3-smtp.messagingengine.com (wnew3-smtp.messagingengine.com [64.147.123.17])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFDCA2707;
+        Thu, 13 Jul 2023 16:42:39 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailnew.west.internal (Postfix) with ESMTP id DA1652B0005E;
+        Thu, 13 Jul 2023 19:42:36 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Thu, 13 Jul 2023 19:42:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
+        1689291756; x=1689298956; bh=EzNZ4lSIA6Q11ERKP9wL6gbe1PTUeztr8yy
+        uoNBS6xI=; b=lwlN9tGh2djU92nCaw14L8DOqRSFUea9bxC8PzEXViIRwkgKWqx
+        0PRLwA5GyEoUkqZgV1OG38xgf06awiPK/inuCCPe/Kfj5rUfl9H/R2CtkCeGrb0d
+        rzPplFlSpf95be0DK5IsgGZU+gJBUFXJmUGFUAybOXr71Jq8mPd6ceJzUfY3f255
+        qNVnrFmzEbSFVFAuWB3oBe3On59NB36ZAFBmvTyEG5shK9v0ghBSIbefS1mCoJ9N
+        MsAp6xN4ks/32ErGWlJTufHJm4PysC0mQsXSpRzFZHI5whQEU7V8oztTJ5Kwj8ka
+        gz0t/2WkL15AZj1t7l+lvC93oN+Dga/jTOw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+        1689291756; x=1689298956; bh=EzNZ4lSIA6Q11ERKP9wL6gbe1PTUeztr8yy
+        uoNBS6xI=; b=eZJGBYtpogIteZ9RY7DGwiLXsVU/AqBs/HcGcGkMDp/pYEUXq6z
+        SZPjvwdwZEzt+zwUC2De3idEBM0U0osNYUkUyWq1asZoSFByDWQ2AVlXu8WO+XEh
+        ysyyF5jDChkqvWYUVpU16spKxznJVtdM4jWqTvtzFkbmSy8gDfJLpfdGa/kkib7u
+        tB/RuBEFy8P6Qhr49mYQJHzDLxr4CF6k6dtByzMPPBROjTM/UK8qgwdUUFybN45k
+        CwNhklHrGUHl7ePHvMXTUNfxlc72ckZYkBTj1v+GzHPog/FypI6Tb0F5mGeGQBMN
+        YSSV8+Jo00+juInO/9wZi6newj/p6znX/sw==
+X-ME-Sender: <xms:64uwZNVacJ5NUMpvwo4iBGdlz67l-Saew17mLJ9DGWISMv1STsy4sg>
+    <xme:64uwZNkmxCGIcKVXB_023ZUf6kZtqfnCDLP7xp3cTx1MVvgvGPD2vbvRHbMLx-MgZ
+    SINkvuIcruTIlQ9Hw>
+X-ME-Received: <xmr:64uwZJbY15BAcpgo3svwKSXkanT3Gwo0NVAcVat7o2_lZg4kgigM3fv6qA9fljl7IL_pvhGsOV-iD0fuMdvI3nZNc8p4UA6N_osh>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrfeehgddviecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenfg
+    hrlhcuvffnffculdejtddmnecujfgurhepfffhvfevuffkfhggtggugfgjsehtkefstddt
+    tdejnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqne
+    cuggftrfgrthhtvghrnhepieektdefhffhjeejgeejhfekkeejgfegvdeuhfeitdeiueeh
+    hffgvedthedviefgnecuffhomhgrihhnpehqvghmuhdrohhrghenucevlhhushhtvghruf
+    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:64uwZAVoqZuK6x0Zc470yxBCCCwJDEP4Qn6U_z-4FamVbPQsKNVyww>
+    <xmx:64uwZHmMdfE20ZbIMwCnk2Tv5iOsFcfU8e0MFy4Q1SLaJ3Hnd0YUpQ>
+    <xmx:64uwZNchtFnRTMKgfQWpij797GJxGPhaHZ5HAvm4cuVvy_7wdmjnzw>
+    <xmx:7IuwZFF3iowhMRQ7rNsPyJKSznXv9vLz1UWVUst5UFCrNPSvFcu3j8iw4Lo>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 13 Jul 2023 19:42:34 -0400 (EDT)
+Date:   Thu, 13 Jul 2023 17:42:32 -0600
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
+        coreteam@netfilter.org,
+        Network Development <netdev@vger.kernel.org>,
+        David Ahern <dsahern@kernel.org>
+Subject: Re: [PATCH bpf-next v4 2/6] netfilter: bpf: Support
+ BPF_F_NETFILTER_IP_DEFRAG in netfilter link
+Message-ID: <t6wypww537golmoosbikfuombrqq555fh5mbycwl4whto6joo4@hcqlospkgqyr>
+References: <cover.1689203090.git.dxu@dxuuu.xyz>
+ <d3b0ff95c58356192ea3b50824f8cdbf02c354e3.1689203090.git.dxu@dxuuu.xyz>
+ <CAADnVQKKfEtZYZxihxvG3aQ34E1m95qTZ=jTD7yd0qvOASpAjQ@mail.gmail.com>
+ <kwiwaeaijj6sxwz5fhtxyoquhz2kpujbsbeajysufgmdjgyx5c@f6lqrd23xr5f>
+ <CAADnVQLcAoN5z+HD_44UKgJJc6t5TPW8+Ai9We0qJpau4NtEzA@mail.gmail.com>
+ <wltfmammaf5g4gumsbna4kmwo6dtd24g472o7kgkug42dhwcy2@32fmd7q6kvg4>
+ <CAADnVQJQZ2jQSWByVvi3N2ZOoL0XDSJzx5biSVvq=inS7OSW7A@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAADnVQJQZ2jQSWByVvi3N2ZOoL0XDSJzx5biSVvq=inS7OSW7A@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make sure mwifiex_process_mgmt_packet and its callers
-mwifiex_process_sta_rx_packet and mwifiex_process_uap_rx_packet
-not out-of-bounds access the skb->data buffer.
+On Thu, Jul 13, 2023 at 04:10:03PM -0700, Alexei Starovoitov wrote:
+> On Wed, Jul 12, 2023 at 9:33 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+> >
+> > On Wed, Jul 12, 2023 at 06:26:13PM -0700, Alexei Starovoitov wrote:
+> > > On Wed, Jul 12, 2023 at 6:22 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+> > > >
+> > > > Hi Alexei,
+> > > >
+> > > > On Wed, Jul 12, 2023 at 05:43:49PM -0700, Alexei Starovoitov wrote:
+> > > > > On Wed, Jul 12, 2023 at 4:44 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+> > > > > > +#if IS_ENABLED(CONFIG_NF_DEFRAG_IPV6)
+> > > > > > +       case NFPROTO_IPV6:
+> > > > > > +               rcu_read_lock();
+> > > > > > +               v6_hook = rcu_dereference(nf_defrag_v6_hook);
+> > > > > > +               if (!v6_hook) {
+> > > > > > +                       rcu_read_unlock();
+> > > > > > +                       err = request_module("nf_defrag_ipv6");
+> > > > > > +                       if (err)
+> > > > > > +                               return err < 0 ? err : -EINVAL;
+> > > > > > +
+> > > > > > +                       rcu_read_lock();
+> > > > > > +                       v6_hook = rcu_dereference(nf_defrag_v6_hook);
+> > > > > > +                       if (!v6_hook) {
+> > > > > > +                               WARN_ONCE(1, "nf_defrag_ipv6_hooks bad registration");
+> > > > > > +                               err = -ENOENT;
+> > > > > > +                               goto out_v6;
+> > > > > > +                       }
+> > > > > > +               }
+> > > > > > +
+> > > > > > +               err = v6_hook->enable(link->net);
+> > > > >
+> > > > > I was about to apply, but luckily caught this issue in my local test:
+> > > > >
+> > > > > [   18.462448] BUG: sleeping function called from invalid context at
+> > > > > kernel/locking/mutex.c:283
+> > > > > [   18.463238] in_atomic(): 0, irqs_disabled(): 0, non_block: 0, pid:
+> > > > > 2042, name: test_progs
+> > > > > [   18.463927] preempt_count: 0, expected: 0
+> > > > > [   18.464249] RCU nest depth: 1, expected: 0
+> > > > > [   18.464631] CPU: 15 PID: 2042 Comm: test_progs Tainted: G
+> > > > > O       6.4.0-04319-g6f6ec4fa00dc #4896
+> > > > > [   18.465480] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+> > > > > BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> > > > > [   18.466531] Call Trace:
+> > > > > [   18.466767]  <TASK>
+> > > > > [   18.466975]  dump_stack_lvl+0x32/0x40
+> > > > > [   18.467325]  __might_resched+0x129/0x180
+> > > > > [   18.467691]  mutex_lock+0x1a/0x40
+> > > > > [   18.468057]  nf_defrag_ipv4_enable+0x16/0x70
+> > > > > [   18.468467]  bpf_nf_link_attach+0x141/0x300
+> > > > > [   18.468856]  __sys_bpf+0x133e/0x26d0
+> > > > >
+> > > > > You cannot call mutex under rcu_read_lock.
+> > > >
+> > > > Whoops, my bad. I think this patch should fix it:
+> > > >
+> > > > ```
+> > > > From 7e8927c44452db07ddd7cf0e30bb49215fc044ed Mon Sep 17 00:00:00 2001
+> > > > Message-ID: <7e8927c44452db07ddd7cf0e30bb49215fc044ed.1689211250.git.dxu@dxuuu.xyz>
+> > > > From: Daniel Xu <dxu@dxuuu.xyz>
+> > > > Date: Wed, 12 Jul 2023 19:17:35 -0600
+> > > > Subject: [PATCH] netfilter: bpf: Don't hold rcu_read_lock during
+> > > >  enable/disable
+> > > >
+> > > > ->enable()/->disable() takes a mutex which can sleep. You can't sleep
+> > > > during RCU read side critical section.
+> > > >
+> > > > Our refcnt on the module will protect us from ->enable()/->disable()
+> > > > from going away while we call it.
+> > > >
+> > > > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> > > > ---
+> > > >  net/netfilter/nf_bpf_link.c | 10 ++++++++--
+> > > >  1 file changed, 8 insertions(+), 2 deletions(-)
+> > > >
+> > > > diff --git a/net/netfilter/nf_bpf_link.c b/net/netfilter/nf_bpf_link.c
+> > > > index 77ffbf26ba3d..79704cc596aa 100644
+> > > > --- a/net/netfilter/nf_bpf_link.c
+> > > > +++ b/net/netfilter/nf_bpf_link.c
+> > > > @@ -60,9 +60,12 @@ static int bpf_nf_enable_defrag(struct bpf_nf_link *link)
+> > > >                         goto out_v4;
+> > > >                 }
+> > > >
+> > > > +               rcu_read_unlock();
+> > > >                 err = v4_hook->enable(link->net);
+> > > >                 if (err)
+> > > >                         module_put(v4_hook->owner);
+> > > > +
+> > > > +               return err;
+> > > >  out_v4:
+> > > >                 rcu_read_unlock();
+> > > >                 return err;
+> > > > @@ -92,9 +95,12 @@ static int bpf_nf_enable_defrag(struct bpf_nf_link *link)
+> > > >                         goto out_v6;
+> > > >                 }
+> > > >
+> > > > +               rcu_read_unlock();
+> > > >                 err = v6_hook->enable(link->net);
+> > > >                 if (err)
+> > > >                         module_put(v6_hook->owner);
+> > > > +
+> > > > +               return err;
+> > > >  out_v6:
+> > > >                 rcu_read_unlock();
+> > > >                 return err;
+> > > > @@ -114,11 +120,11 @@ static void bpf_nf_disable_defrag(struct bpf_nf_link *link)
+> > > >         case NFPROTO_IPV4:
+> > > >                 rcu_read_lock();
+> > > >                 v4_hook = rcu_dereference(nf_defrag_v4_hook);
+> > > > +               rcu_read_unlock();
+> > > >                 if (v4_hook) {
+> > > >                         v4_hook->disable(link->net);
+> > > >                         module_put(v4_hook->owner);
+> > > >                 }
+> > > > -               rcu_read_unlock();
+> > > >
+> > > >                 break;
+> > > >  #endif
+> > > > @@ -126,11 +132,11 @@ static void bpf_nf_disable_defrag(struct bpf_nf_link *link)
+> > > >         case NFPROTO_IPV6:
+> > > >                 rcu_read_lock();
+> > > >                 v6_hook = rcu_dereference(nf_defrag_v6_hook);
+> > > > +               rcu_read_unlock();
+> > >
+> > > No. v6_hook is gone as soon as you unlock it.
+> >
+> > I think we're protected here by the try_module_get() on the enable path.
+> > And we only disable defrag if enabling succeeds. The module shouldn't
+> > be able to deregister its hooks until we call the module_put() later.
+> >
+> > I think READ_ONCE() would've been more appropriate but I wasn't sure if
+> > that was ok given nf_defrag_v(4|6)_hook is written to by
+> > rcu_assign_pointer() and I was assuming symmetry is necessary.
+> 
+> Why is rcu_assign_pointer() used?
+> If it's not RCU protected, what is the point of rcu_*() accessors
+> and rcu_read_lock() ?
+> 
+> In general, the pattern:
+> rcu_read_lock();
+> ptr = rcu_dereference(...);
+> rcu_read_unlock();
+> ptr->..
+> is a bug. 100%.
+> 
 
-Fixes: 2dbaf751b1de ("mwifiex: report received management frames to cfg80211")
-Signed-off-by: Polaris Pi <pinkperfect2021@gmail.com>
----
- drivers/net/wireless/marvell/mwifiex/sta_rx.c   |  3 ++-
- drivers/net/wireless/marvell/mwifiex/uap_txrx.c | 10 +++-------
- drivers/net/wireless/marvell/mwifiex/util.c     |  5 +++++
- 3 files changed, 10 insertions(+), 8 deletions(-)
+The reason I left it like this is b/c otherwise I think there is a race
+with module unload and taking a refcnt. For example:
 
-diff --git a/drivers/net/wireless/marvell/mwifiex/sta_rx.c b/drivers/net/wireless/marvell/mwifiex/sta_rx.c
-index 13659b02ba88..88aaec645291 100644
---- a/drivers/net/wireless/marvell/mwifiex/sta_rx.c
-+++ b/drivers/net/wireless/marvell/mwifiex/sta_rx.c
-@@ -194,7 +194,8 @@ int mwifiex_process_sta_rx_packet(struct mwifiex_private *priv,
- 
- 	rx_pkt_hdr = (void *)local_rx_pd + rx_pkt_offset;
- 
--	if ((rx_pkt_offset + rx_pkt_length) > (u16) skb->len) {
-+	if ((rx_pkt_offset + rx_pkt_length) > (u16)skb->len ||
-+	    skb->len - rx_pkt_offset < sizeof(*rx_pkt_hdr)) {
- 		mwifiex_dbg(adapter, ERROR,
- 			    "wrong rx packet: len=%d, rx_pkt_offset=%d, rx_pkt_length=%d\n",
- 			    skb->len, rx_pkt_offset, rx_pkt_length);
-diff --git a/drivers/net/wireless/marvell/mwifiex/uap_txrx.c b/drivers/net/wireless/marvell/mwifiex/uap_txrx.c
-index e495f7eaea03..f84ed22518c6 100644
---- a/drivers/net/wireless/marvell/mwifiex/uap_txrx.c
-+++ b/drivers/net/wireless/marvell/mwifiex/uap_txrx.c
-@@ -367,20 +367,15 @@ int mwifiex_process_uap_rx_packet(struct mwifiex_private *priv,
- 	rx_pkt_type = le16_to_cpu(uap_rx_pd->rx_pkt_type);
- 	rx_pkt_hdr = (void *)uap_rx_pd + le16_to_cpu(uap_rx_pd->rx_pkt_offset);
- 
--	ether_addr_copy(ta, rx_pkt_hdr->eth803_hdr.h_source);
--
- 	if ((le16_to_cpu(uap_rx_pd->rx_pkt_offset) +
--	     le16_to_cpu(uap_rx_pd->rx_pkt_length)) > (u16) skb->len) {
-+	     le16_to_cpu(uap_rx_pd->rx_pkt_length)) > (u16)skb->len ||
-+	     skb->len - le16_to_cpu(uap_rx_pd->rx_pkt_offset) < sizeof(*rx_pkt_hdr)) {
- 		mwifiex_dbg(adapter, ERROR,
- 			    "wrong rx packet: len=%d, offset=%d, length=%d\n",
- 			    skb->len, le16_to_cpu(uap_rx_pd->rx_pkt_offset),
- 			    le16_to_cpu(uap_rx_pd->rx_pkt_length));
- 		priv->stats.rx_dropped++;
- 
--		node = mwifiex_get_sta_entry(priv, ta);
--		if (node)
--			node->stats.tx_failed++;
--
- 		dev_kfree_skb_any(skb);
- 		return 0;
- 	}
-@@ -393,6 +388,7 @@ int mwifiex_process_uap_rx_packet(struct mwifiex_private *priv,
- 		return ret;
- 	}
- 
-+	ether_addr_copy(ta, rx_pkt_hdr->eth803_hdr.h_source);
- 
- 	if (rx_pkt_type != PKT_TYPE_BAR && uap_rx_pd->priority < MAX_NUM_TID) {
- 		spin_lock_bh(&priv->sta_list_spinlock);
-diff --git a/drivers/net/wireless/marvell/mwifiex/util.c b/drivers/net/wireless/marvell/mwifiex/util.c
-index 94c2d219835d..31e1a82883e4 100644
---- a/drivers/net/wireless/marvell/mwifiex/util.c
-+++ b/drivers/net/wireless/marvell/mwifiex/util.c
-@@ -399,6 +399,11 @@ mwifiex_process_mgmt_packet(struct mwifiex_private *priv,
- 
- 	pkt_len = le16_to_cpu(rx_pd->rx_pkt_length);
- 
-+	if (pkt_len < sizeof(struct ieee80211_hdr) || skb->len < pkt_len) {
-+		mwifiex_dbg(priv->adapter, ERROR, "invalid rx_pkt_length");
-+		return -1;
-+	}
-+
- 	ieee_hdr = (void *)skb->data;
- 	if (ieee80211_is_mgmt(ieee_hdr->frame_control)) {
- 		if (mwifiex_parse_mgmt_packet(priv, (u8 *)ieee_hdr,
--- 
-2.25.1
+ptr = READ_ONCE(global_var)
+                                             <module unload on other cpu>
+// ptr invalid
+try_module_get(ptr->owner) 
 
+I think the the synchronize_rcu() call in
+kernel/module/main.c:free_module() protects against that race based on
+my reading.
+
+Maybe the ->enable() path can store a copy of the hook ptr in
+struct bpf_nf_link to get rid of the odd rcu_dereference()?
+
+Open to other ideas too -- would appreciate any hints.
+
+Thanks,
+Daniel
