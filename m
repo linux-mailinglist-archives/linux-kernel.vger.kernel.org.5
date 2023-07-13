@@ -2,77 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E697E7526DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 17:27:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A03B7526E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 17:27:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234727AbjGMP1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 11:27:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57676 "EHLO
+        id S229960AbjGMP1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 11:27:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234714AbjGMP0h (ORCPT
+        with ESMTP id S234715AbjGMP0i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 11:26:37 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73A0B30E1;
-        Thu, 13 Jul 2023 08:26:20 -0700 (PDT)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36DCraUi007421;
-        Thu, 13 Jul 2023 15:26:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=qcppdkim1;
- bh=fgQQD5BT6zHmZYJ4hIT1i+LyHKGipeMbg1HN10ft5Ds=;
- b=PEE8bReNRuQCUOpT5qbG5Qe3IO3PakWiBpSwJh7RN1d4NB7eXxycGT8nJZALDTFmpxfe
- WOg52q2nqbeGYV9XhReCp0SVJaKqS4TXnZRKxS4o4RBuLtrpnIKTE7Yzq0xQiTRZlylh
- im83pNw8cTUco+8NM4af+zOpccZ/BbI4pJOYv8zbPEr2xtSSAqL7JqlzUqoeXG5Bbd/J
- hIi67YYfysyP7jtYT8QIltCzIFZaDxMlxtIjw3Vbth3xKjRr5WRDwlrCTqUe8PWqKMdc
- moIspFCXQP091QcMDYYQ5rOz2uFBUtey+mo/SErNeCwblT3g7WG276lcf4gsonGoUNqK Yw== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rt3qfhuyc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 13 Jul 2023 15:26:16 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36DFQGq4006195
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 13 Jul 2023 15:26:16 GMT
-Received: from win-platform-upstream01.qualcomm.com (10.80.80.8) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Thu, 13 Jul 2023 08:26:12 -0700
-From:   Sridharan S N <quic_sridsn@quicinc.com>
-To:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Sridharan S N <quic_sridsn@quicinc.com>
-Subject: [PATCH v2 2/2] arm64: dts: qcom: ipq9574: add support for the RDP417 variant
-Date:   Thu, 13 Jul 2023 20:55:22 +0530
-Message-ID: <20230713152522.1063154-3-quic_sridsn@quicinc.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230713152522.1063154-1-quic_sridsn@quicinc.com>
-References: <20230713152522.1063154-1-quic_sridsn@quicinc.com>
+        Thu, 13 Jul 2023 11:26:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B941CE68
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 08:25:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689261945;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YTyQOOC//U8Og4/WA4jzJJru1aS6+IZedvreavXkuvE=;
+        b=Kipij7m9L5OQeNtefXmJ/1n/UjlkA20/Nmfqw3J10l80mh2e5qC0BIbFXVnhxNzKvyVMpM
+        EPdfa2NjdT+feIA9cUemhm9slVQj0w1jAZ6RN8NviqYgDuT7x2eeY4IdADidCo29SXzRYN
+        WaHrZrNK4uE+smGFhUd9/s9FH3vl1e0=
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
+ [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-524-nOkRvtoKOUqu8CeuWV5xaQ-1; Thu, 13 Jul 2023 11:25:39 -0400
+X-MC-Unique: nOkRvtoKOUqu8CeuWV5xaQ-1
+Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2b7254099ffso8438311fa.2
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 08:25:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689261938; x=1691853938;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YTyQOOC//U8Og4/WA4jzJJru1aS6+IZedvreavXkuvE=;
+        b=HXrpeo5wfyCc/rmOHeRLJLm8keNe9+qrMmPJIGT9bP79KgBBIiwt+8PhoG1VJ7Pnz9
+         0lUgxB1Vzc9bZeo9IbcCj96yWiViI8FECm9hhKimhPHR7rdSAoBbQcjlpp8dblZ2eGQx
+         ORCN0oREWBKyqus7Fbs8SoGInOG/snvIMNjcP2+YK8KQSDFZXgk9Wk60L7POx084B7v8
+         Vgtad0aIysZ+b+MF9yv0FVycwav+R4pkRcfE9JhJrjuJo8XZDnQTuU4eZQ8PEFvRFTdV
+         O61gpXu+uFlzpsMgSgLyDivysWpm49DecV4BV1uszDG1xbw0S7I5uYWbOHS3kIbgf8si
+         Zbyg==
+X-Gm-Message-State: ABy/qLYGA7oRjXOobbRLOnLqjVSuh0c3/HVXuYMj4II9EX8tmNT/GP0s
+        1+CBJeB93kpUpAOf2+H0hd8ugeBKE3ttAJrn7QhJL0VPUBqxt3wtBU7+tmj4XXuGUpWXP/kgMjj
+        8XaGXRmSfBhCqdiwMo8f6tA3g
+X-Received: by 2002:a2e:98d2:0:b0:2b6:cd12:24f7 with SMTP id s18-20020a2e98d2000000b002b6cd1224f7mr1871070ljj.44.1689261938036;
+        Thu, 13 Jul 2023 08:25:38 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGYa8s8q1BOcKvw6NzmwI8a8tReA9pD5wtqHyEdYGSX1dP/THfRMRenFXA2BpekJVW87YhtUw==
+X-Received: by 2002:a2e:98d2:0:b0:2b6:cd12:24f7 with SMTP id s18-20020a2e98d2000000b002b6cd1224f7mr1871051ljj.44.1689261937629;
+        Thu, 13 Jul 2023 08:25:37 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c717:6100:2da7:427e:49a5:e07? (p200300cbc71761002da7427e49a50e07.dip0.t-ipconnect.de. [2003:cb:c717:6100:2da7:427e:49a5:e07])
+        by smtp.gmail.com with ESMTPSA id k6-20020a05600c0b4600b003fc00702f65sm17464841wmr.46.2023.07.13.08.25.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 Jul 2023 08:25:37 -0700 (PDT)
+Message-ID: <57f4cfe0-2f20-c50a-439f-ee914dde1693@redhat.com>
+Date:   Thu, 13 Jul 2023 17:25:36 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v1 9/9] selftests/mm: Run all tests from run_vmtests.sh
+Content-Language: en-US
+To:     Ryan Roberts <ryan.roberts@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Mark Brown <broonie@kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Florent Revest <revest@chromium.org>,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, Peter Xu <peterx@redhat.com>
+References: <20230713135440.3651409-1-ryan.roberts@arm.com>
+ <20230713135440.3651409-10-ryan.roberts@arm.com>
+ <d77c6592-09f4-036d-ad00-a7a28de1da3f@redhat.com>
+ <2b586ba2-7522-a823-afd6-7b4d978f18c2@arm.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <2b586ba2-7522-a823-afd6-7b4d978f18c2@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: YyGTFzy2jC29qkR2YbGM3gykmbdnKF_-
-X-Proofpoint-GUID: YyGTFzy2jC29qkR2YbGM3gykmbdnKF_-
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-13_05,2023-07-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 bulkscore=0
- mlxscore=0 suspectscore=0 adultscore=0 priorityscore=1501 mlxlogscore=732
- phishscore=0 malwarescore=0 spamscore=0 impostorscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2305260000
- definitions=main-2307130135
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,56 +94,160 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the initial device tree support for the Reference Design
-Platform(RDP) 417 based on IPQ9574 family of SoC.
+>>
+>> Which run_kselftest.sh are you referring to, the one in the parent directory?
+> 
+> run_kselftest.sh is the uniform way of executing all the kselftests. mm seems to
+> be trying to be special as far as I can see. Certainly if you run the `install`
+> make target, kselftests will create a list of all the tests (including non-mm
+> tests if you have included them in the TARGETS variable) and copy that test list
+> and run_kselftest.sh to the install path along with all the test binaries. Then
+> the user can invoke any of the collections or specific tests in the collections
+> using that tool. It also wraps everything with tap output, runs tests with a
+> timeout, etc.
+> 
+> See Documentation/dev-tools/kselftest.rst
+> 
 
-Signed-off-by: Sridharan S N <quic_sridsn@quicinc.com>
----
-changes in v2:
-	- updated commit message.Moved dependency to change log
-	  This patch depends on below patchset:
-	  https://lore.kernel.org/lkml/20230713105909.14209-2-quic_anusha@quicinc.com/
-	
+Got it, thanks!
 
- arch/arm64/boot/dts/qcom/Makefile           |  1 +
- arch/arm64/boot/dts/qcom/ipq9574-rdp417.dts | 16 ++++++++++++++++
- 2 files changed, 17 insertions(+)
- create mode 100644 arch/arm64/boot/dts/qcom/ipq9574-rdp417.dts
+>>
+>> How to invoke it to run these mm tests?
+>>
+>> (I never dared invoking something different than
+>> run_vmtests.sh ;) )
+> 
+> # single test:
+> $ sudo ./run_kselftest.sh -t mm:<test_name>
+> 
+> or
+> 
+> # all tests in collection:
+> $ sudo ./run_kselftest.sh -c mm
+> 
 
-diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
-index 337abc4ceb17..9c30344d08c1 100644
---- a/arch/arm64/boot/dts/qcom/Makefile
-+++ b/arch/arm64/boot/dts/qcom/Makefile
-@@ -12,6 +12,7 @@ dtb-$(CONFIG_ARCH_QCOM)	+= ipq6018-cp01-c1.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= ipq8074-hk01.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= ipq8074-hk10-c1.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= ipq8074-hk10-c2.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= ipq9574-rdp417.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= ipq9574-rdp418.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= ipq9574-rdp433.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= ipq9574-rdp449.dtb
-diff --git a/arch/arm64/boot/dts/qcom/ipq9574-rdp417.dts b/arch/arm64/boot/dts/qcom/ipq9574-rdp417.dts
-new file mode 100644
-index 000000000000..9a5d4c3db1f2
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/ipq9574-rdp417.dts
-@@ -0,0 +1,16 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
-+/*
-+ * IPQ9574 RDP417 board device tree source
-+ *
-+ * Copyright (c) 2020-2021 The Linux Foundation. All rights reserved.
-+ * Copyright (c) 2022-2023 Qualcomm Innovation Center, Inc. All rights reserved.
-+ */
-+
-+/dts-v1/;
-+
-+#include "ipq9574-rdp-common.dtsi"
-+
-+/ {
-+	model = "Qualcomm Technologies, Inc. IPQ9574/AP-AL01-C1";
-+	compatible = "qcom,ipq9574-ap-al01-c1", "qcom,ipq9574";
-+};
+Ah, that makes sense. So I guess mm is then one "collection".
+
+>>
+>> [...]
+>>
+>>>
+>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+>>> ---
+>>>    tools/testing/selftests/mm/Makefile       | 79 ++++++++++++-----------
+>>>    tools/testing/selftests/mm/run_vmtests.sh | 23 +++++++
+>>>    tools/testing/selftests/mm/settings       |  2 +-
+>>>    3 files changed, 64 insertions(+), 40 deletions(-)
+>>>
+>>> diff --git a/tools/testing/selftests/mm/Makefile
+>>> b/tools/testing/selftests/mm/Makefile
+>>> index 66d7c07dc177..881ed96d96fd 100644
+>>> --- a/tools/testing/selftests/mm/Makefile
+>>> +++ b/tools/testing/selftests/mm/Makefile
+>>> @@ -35,39 +35,39 @@ MAKEFLAGS += --no-builtin-rules
+>>>    CFLAGS = -Wall -I $(top_srcdir) $(EXTRA_CFLAGS) $(KHDR_INCLUDES)
+>>>    LDLIBS = -lrt -lpthread
+>>>    -TEST_GEN_PROGS = cow
+>>> -TEST_GEN_PROGS += compaction_test
+>>> -TEST_GEN_PROGS += gup_longterm
+>>> -TEST_GEN_PROGS += gup_test
+>>> -TEST_GEN_PROGS += hmm-tests
+>>> -TEST_GEN_PROGS += hugetlb-madvise
+>>> -TEST_GEN_PROGS += hugepage-mmap
+>>> -TEST_GEN_PROGS += hugepage-mremap
+>>> -TEST_GEN_PROGS += hugepage-shm
+>>> -TEST_GEN_PROGS += hugepage-vmemmap
+>>> -TEST_GEN_PROGS += khugepaged
+>>> -TEST_GEN_PROGS += madv_populate
+>>> -TEST_GEN_PROGS += map_fixed_noreplace
+>>> -TEST_GEN_PROGS += map_hugetlb
+>>> -TEST_GEN_PROGS += map_populate
+>>> -TEST_GEN_PROGS += memfd_secret
+>>> -TEST_GEN_PROGS += migration
+>>> -TEST_GEN_PROGS += mkdirty
+>>> -TEST_GEN_PROGS += mlock-random-test
+>>> -TEST_GEN_PROGS += mlock2-tests
+>>> -TEST_GEN_PROGS += mrelease_test
+>>> -TEST_GEN_PROGS += mremap_dontunmap
+>>> -TEST_GEN_PROGS += mremap_test
+>>> -TEST_GEN_PROGS += on-fault-limit
+>>> -TEST_GEN_PROGS += thuge-gen
+>>> -TEST_GEN_PROGS += transhuge-stress
+>>> -TEST_GEN_PROGS += uffd-stress
+>>> -TEST_GEN_PROGS += uffd-unit-tests
+>>> -TEST_GEN_PROGS += soft-dirty
+>>> -TEST_GEN_PROGS += split_huge_page_test
+>>> -TEST_GEN_PROGS += ksm_tests
+>>> -TEST_GEN_PROGS += ksm_functional_tests
+>>> -TEST_GEN_PROGS += mdwe_test
+>>> +TEST_GEN_FILES = cow
+>>> +TEST_GEN_FILES += compaction_test
+>>> +TEST_GEN_FILES += gup_longterm
+>>> +TEST_GEN_FILES += gup_test
+>>> +TEST_GEN_FILES += hmm-tests
+>>> +TEST_GEN_FILES += hugetlb-madvise
+>>> +TEST_GEN_FILES += hugepage-mmap
+>>> +TEST_GEN_FILES += hugepage-mremap
+>>> +TEST_GEN_FILES += hugepage-shm
+>>> +TEST_GEN_FILES += hugepage-vmemmap
+>>> +TEST_GEN_FILES += khugepaged
+>>> +TEST_GEN_FILES += madv_populate
+>>> +TEST_GEN_FILES += map_fixed_noreplace
+>>> +TEST_GEN_FILES += map_hugetlb
+>>> +TEST_GEN_FILES += map_populate
+>>> +TEST_GEN_FILES += memfd_secret
+>>> +TEST_GEN_FILES += migration
+>>> +TEST_GEN_FILES += mkdirty
+>>> +TEST_GEN_FILES += mlock-random-test
+>>> +TEST_GEN_FILES += mlock2-tests
+>>> +TEST_GEN_FILES += mrelease_test
+>>> +TEST_GEN_FILES += mremap_dontunmap
+>>> +TEST_GEN_FILES += mremap_test
+>>> +TEST_GEN_FILES += on-fault-limit
+>>> +TEST_GEN_FILES += thuge-gen
+>>> +TEST_GEN_FILES += transhuge-stress
+>>> +TEST_GEN_FILES += uffd-stress
+>>> +TEST_GEN_FILES += uffd-unit-tests
+>>> +TEST_GEN_FILES += soft-dirty
+>>> +TEST_GEN_FILES += split_huge_page_test
+>>> +TEST_GEN_FILES += ksm_tests
+>>> +TEST_GEN_FILES += ksm_functional_tests
+>>> +TEST_GEN_FILES += mdwe_test
+>>
+>> IIRC, we recently converted all to TEST_GEN_PROGS. See
+>>
+>> commit aef6fde75d8c6c1cad4a0e017a8d4cbee2143723
+>> Author: Peter Xu <peterx@redhat.com>
+>> Date:   Wed Apr 12 12:42:18 2023 -0400
+>>
+>>      selftests/mm: use TEST_GEN_PROGS where proper
+>>          TEST_GEN_PROGS and TEST_GEN_FILES are used randomly in the mm/Makefile to
+>>      specify programs that need to build.  Logically all these binaries should
+>>      all fall into TEST_GEN_PROGS.
+>>          Replace those TEST_GEN_FILES with TEST_GEN_PROGS, so that we can reference
+>>      all the tests easily later.
+>>
+>>
+>> Why is that change required, and how does it interact with
+>> run_kselftest.sh? (Not clear from you patch description.)
+> 
+> TEST_GEN_PROGS will compile and install the tests and will add them to the list
+> of tests that run_kselftest.sh will run. TEST_GEN_FILES will compile and install
+> the tests but will not add them to the test list.
+> 
+> Note that run_vmtests.sh is added to TEST_PROGS, which means it ends up in the
+> test list. (the lack of "_GEN" means it won't be compiled, but simply copied).
+> 
+> So with this change at the kselftest level, there is a single test in its list;
+> run_vmtests.sh. And all the other tests that were previously in that list are
+> moved into run_vmtests.sh (if they weren't there already).
+
+That sound good to me. (worth adding to the patch description)
+
+Let me CC Peter, so he's aware.
+
 -- 
-2.34.1
+Cheers,
+
+David / dhildenb
 
