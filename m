@@ -2,124 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B2B6751FB8
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 13:17:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4C05751FBC
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 13:20:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234420AbjGMLRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 07:17:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57682 "EHLO
+        id S233190AbjGMLUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 07:20:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233395AbjGMLRv (ORCPT
+        with ESMTP id S232181AbjGMLUF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 07:17:51 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7EBD26AE
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 04:17:49 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fbc0609cd6so4993235e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 04:17:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689247068; x=1691839068;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jQg97wBXe3P0z07YZIHkWsGOthPp2ylFeuaEh8lcL5g=;
-        b=fnT0JxbBGGoisk9+3XNkZZcv2SkvY8ojpQLL8pva71+onsqpaGXHZCsn7i2GLweYFl
-         9hWiYrw/Ewjk7pN7/Q5hwbkTvrXVeCgpEx8J3oXbWljZqUkCGAKsyFQqygMikg04m1fF
-         HgUD604I2qNi05XgZKtkc/j9dx+9YrXjRgGFlIay3w2t8ZeZghgJY4U6hMpzQvRy9aEU
-         pFd6SdERn3qrw+qEe0NjSzxnPDGKR3nzV9EP8axpOz0aQio+chMOpTFEkvU36KgwV37o
-         uqPYVo9RqPup0SGnN5xa4BZhhMvEhfjyispMYjYaPdLOG8gjoGPM5E1tCeNUjd/wd6Sp
-         nEBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689247068; x=1691839068;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jQg97wBXe3P0z07YZIHkWsGOthPp2ylFeuaEh8lcL5g=;
-        b=T9FWgmeroG2kOFZd3w5OygvWIEK1nocfFHRTKlQUbtmpnswECaCZb1HHdSrjvxdyQR
-         +uSrjEN+Ll5dKs98dxqO8nRTLPcnva3K7HGFosvW5ZrIuoqSji6Qvfap+gdl1paIFT2i
-         cPzpfgTsA03xQLZqzVCf9OnaBPw8d9OymsGSpXuRZ/F+e1mgUFLFPy+E1BHLoUQ6Zlas
-         JEOeO7B/fqrrNDBSyVcrAnRUny+NmMBbSlgbzkii/d6YOumAyuHBMsfdRdYRJNAlkrYo
-         XYP+s9gIcyKZtYPGy5ZAvXV+YRtxyR3SyjiESPAlsPwiVXe/yyIuUmuLXuNmMhEYOlC0
-         YsXg==
-X-Gm-Message-State: ABy/qLaKGXzwJ+P6/GUbbRmDDrpqj/mfjHAPWMVEUe0/BoFIBHlaEv6X
-        BiXLpBgYJsTMwrFdI/YlD0c7kg==
-X-Google-Smtp-Source: APBJJlH87+cyagSht4LdOPuIJ+1dwMis7Qky9NEDILlxQd4l8J85GnFiCzPwZ/cdZ2oAsxEtwt50HA==
-X-Received: by 2002:a5d:5966:0:b0:313:ebbf:3696 with SMTP id e38-20020a5d5966000000b00313ebbf3696mr1098202wri.46.1689247068442;
-        Thu, 13 Jul 2023 04:17:48 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id n2-20020a05600c294200b003fc17e8a1efsm7832235wmd.45.2023.07.13.04.17.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 Jul 2023 04:17:48 -0700 (PDT)
-Message-ID: <61ca392d-fbfb-2c1d-16ce-771193252e67@linaro.org>
-Date:   Thu, 13 Jul 2023 13:17:45 +0200
+        Thu, 13 Jul 2023 07:20:05 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 526AA26A1;
+        Thu, 13 Jul 2023 04:20:04 -0700 (PDT)
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36DBGP5B029087;
+        Thu, 13 Jul 2023 11:19:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=WeQUdBYX4oH9A+RGhFG1aGqzmBTPgeTJskhiZlg5yy8=;
+ b=ajGAO9CIpFQjQOn1eU0d7c3NP6gL37Py1Zq/tlkvp1/BEJh2nj0q0ga6+KrGE3edOb3R
+ wownuVfqrQcLfEHpYTnreLQ987rEVQi+4bf2t7TyL68MPdV7++KLGXBqAYqW/BWZFqI2
+ F1+H7QDp4eCxCY7XJwPoC1Wp5rgIUfTtNau6mTzvI0waX4bbE6+FQvn+c5fQFF6vBbh6
+ hYd7nxblsBwXZQHepouoRHYkx16puWpE09FxXgaylDAdC2rX5cCRZv0vK7a3u7Sv3aHq
+ FfHFImFZyHauu6ElNBpURMyMwRrQfiR8OUUETGJx4uXrvF1QLr+RYv3HnO3un4XD3ERl Cw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3rtg8j01n1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 13 Jul 2023 11:19:44 +0000
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36DBHUw3031579;
+        Thu, 13 Jul 2023 11:19:44 GMT
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3rtg8j01mp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 13 Jul 2023 11:19:44 +0000
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36D3JRuW031327;
+        Thu, 13 Jul 2023 11:19:42 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+        by ppma06ams.nl.ibm.com (PPS) with ESMTPS id 3rpy2e37gc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 13 Jul 2023 11:19:42 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36DBJdkc22086282
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 13 Jul 2023 11:19:39 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E64432004D;
+        Thu, 13 Jul 2023 11:19:38 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 89CDD2004B;
+        Thu, 13 Jul 2023 11:19:38 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Thu, 13 Jul 2023 11:19:38 +0000 (GMT)
+From:   Thomas Richter <tmricht@linux.ibm.com>
+To:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        acme@kernel.org, irogers@google.com, wangnan0@huawei.com,
+        jolsa@kernel.org
+Cc:     svens@linux.ibm.com, gor@linux.ibm.com, sumanthk@linux.ibm.com,
+        hca@linux.ibm.com, Thomas Richter <tmricht@linux.ibm.com>
+Subject: [PATCH v2] perf build: Support llvm and clang support compiled in
+Date:   Thu, 13 Jul 2023 13:19:30 +0200
+Message-Id: <20230713111930.1636612-1-tmricht@linux.ibm.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 net-next 2/9] dt-bindings: net: mediatek,net: add
- mt7988-eth binding
-Content-Language: en-US
-To:     Daniel Golle <daniel@makrotopia.org>, netdev@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Russell King <linux@armlinux.org.uk>,
-        =?UTF-8?Q?Bj=c3=b8rn_Mork?= <bjorn@mork.no>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Greg Ungerer <gerg@kernel.org>
-References: <cover.1689012506.git.daniel@makrotopia.org>
- <6c2e9caddfb9427444307d8443f1b231e500787b.1689012506.git.daniel@makrotopia.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <6c2e9caddfb9427444307d8443f1b231e500787b.1689012506.git.daniel@makrotopia.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 9fuoG5gglUFQq318UC0FQCozZ2GcwgjC
+X-Proofpoint-GUID: WURcoLFAw5trRMChsU4IRMpL_-eDGZ5u
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-13_04,2023-07-11_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ adultscore=0 bulkscore=0 spamscore=0 phishscore=0 clxscore=1015
+ malwarescore=0 impostorscore=0 suspectscore=0 priorityscore=1501
+ mlxscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2305260000 definitions=main-2307130097
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/07/2023 04:17, Daniel Golle wrote:
-> Introduce DT bindings for the MT7988 SoC to mediatek,net.yaml.
-> The MT7988 SoC got 3 Ethernet MACs operating at a maximum of
-> 10 Gigabit/sec supported by 2 packet processor engines for
-> offloading tasks.
-> The first MAC is hard-wired to a built-in switch which exposes
-> four 1000Base-T PHYs as user ports.
-> It also comes with built-in 2500Base-T PHY which can be used
-> with the 2nd GMAC.
-> The 2nd and 3rd GMAC can be connected to external PHYs or provide
-> SFP(+) cages attached via SGMII, 1000Base-X, 2500Base-X, USXGMII,
-> 5GBase-R or 10GBase-KR.
-> 
-> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+Perf build suports llvm and clang support compiled in.
+Test case 56 builtin clang support provides a test case
+which is always skipped.
 
-It does not look like you tested the bindings, at least after quick
-look. Please run `make dt_binding_check` (see
-Documentation/devicetree/bindings/writing-schema.rst for instructions).
-Maybe you need to update your dtschema and yamllint.
+Link perf with the latest llvm and clang libraries and
+enable this test case.
 
-Beside that:
-1. no underscores in property names.
-2. Don't use syscon as an excuse for laziness. PLL is a clock, not syscon.
+Use 'make LIBCLANGLLVM=1' to include this support.
 
-Best regards,
-Krzysztof
+V2: Add Library patch before -lclang-cpp
+
+Output before:
+ # ./perf test 56
+ 56: builtin clang support                  :
+ 56.1: builtin clang compile C source to IR : Skip (not compiled in)
+ 56.2: builtin clang compile C source to ELF object: \
+	 				Skip (not compiled in)
+
+Output after:
+ # ./perf test 56
+ 56: builtin clang support                          :
+ 56.1: builtin clang compile C source to IR         : Ok
+ 56.2: builtin clang compile C source to ELF object : Ok
+ #
+
+Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
+Cc: Wang Nan <wangnan0@huawei.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+---
+ tools/perf/Makefile.config | 2 +-
+ tools/perf/Makefile.perf   | 5 +----
+ 2 files changed, 2 insertions(+), 5 deletions(-)
+
+diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+index 0609c19caabd..a90af438261c 100644
+--- a/tools/perf/Makefile.config
++++ b/tools/perf/Makefile.config
+@@ -325,7 +325,7 @@ CORE_CFLAGS += -Wall
+ CORE_CFLAGS += -Wextra
+ CORE_CFLAGS += -std=gnu11
+ 
+-CXXFLAGS += -std=gnu++14 -fno-exceptions -fno-rtti
++CXXFLAGS += -std=gnu++17 -fno-exceptions -fno-rtti
+ CXXFLAGS += -Wall
+ CXXFLAGS += -fno-omit-frame-pointer
+ CXXFLAGS += -ggdb3
+diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+index 097316ef38e6..158a0733fc9d 100644
+--- a/tools/perf/Makefile.perf
++++ b/tools/perf/Makefile.perf
+@@ -426,10 +426,7 @@ EXTLIBS := $(call filter-out,$(EXCLUDE_EXTLIBS),$(EXTLIBS))
+ LIBS = -Wl,--whole-archive $(PERFLIBS) $(EXTRA_PERFLIBS) -Wl,--no-whole-archive -Wl,--start-group $(EXTLIBS) -Wl,--end-group
+ 
+ ifeq ($(USE_CLANG), 1)
+-  CLANGLIBS_LIST = AST Basic CodeGen Driver Frontend Lex Tooling Edit Sema Analysis Parse Serialization
+-  CLANGLIBS_NOEXT_LIST = $(foreach l,$(CLANGLIBS_LIST),$(shell $(LLVM_CONFIG) --libdir)/libclang$(l))
+-  LIBCLANG = $(foreach l,$(CLANGLIBS_NOEXT_LIST),$(wildcard $(l).a $(l).so))
+-  LIBS += -Wl,--start-group $(LIBCLANG) -Wl,--end-group
++  LIBS += -L$(shell $(LLVM_CONFIG) --libdir) -lclang-cpp
+ endif
+ 
+ ifeq ($(USE_LLVM), 1)
+-- 
+2.41.0
 
