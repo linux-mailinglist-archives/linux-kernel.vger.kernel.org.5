@@ -2,128 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BD0275216F
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 14:44:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 881D3752173
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 14:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233657AbjGMMoe convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 13 Jul 2023 08:44:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54888 "EHLO
+        id S234066AbjGMMpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 08:45:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229838AbjGMMod (ORCPT
+        with ESMTP id S229838AbjGMMpV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 08:44:33 -0400
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 744FB212E
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 05:44:32 -0700 (PDT)
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-57a6df91b1eso5731867b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 05:44:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689252271; x=1691844271;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hz+Lx2AHPiC1tEoYOibbkH4KESx0nTtUs5AmfKyrn3g=;
-        b=FB1vnXHEJMHPhhqF+gTKVJSUCvyqDw1nU1SUFEy2fcjVDYVvbM7EX0Re7VeCPXTFYG
-         fyB1c53ykTAGCSVoN+2QOKrnRr4LaUFt2grOkS6iTapURZcjVpwhWgqbLl+X2agob9qW
-         ojYZQ+VXRRsavdjT18jj39yheEG9RjluEQugk1ZVj0Gop5/Dh2+2PK8+AbTE2aq4EhVv
-         3AJSNnik4ztcN09zhBzbL6Or26naBqVa1J/TmRTfotCp8lnzeUJKCctpXNITDienKuie
-         cPjMY9zrxahBBGztMq5VhZlf8KjJCQPjVUy5xzNmZS5LN+V5C39oJfMyapqY8+GpvOQd
-         AWlw==
-X-Gm-Message-State: ABy/qLZjrusJmgXZDZv6T07xxcFurHrjQrR4ul0Y9LROvE0iWoyCfF6H
-        B+V3RTtBOx8hl1Ib5sa23fUgR+NF3wqoKGnm
-X-Google-Smtp-Source: APBJJlG4M73gsXKXFCL2KjEc4Os5Pw+D95twdw84HoAQlaSzatc1Blt09hXDD0pCWe0dhxP7SMa1fQ==
-X-Received: by 2002:a81:8443:0:b0:576:f0d6:3d68 with SMTP id u64-20020a818443000000b00576f0d63d68mr1371822ywf.32.1689252271275;
-        Thu, 13 Jul 2023 05:44:31 -0700 (PDT)
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com. [209.85.128.171])
-        by smtp.gmail.com with ESMTPSA id o126-20020a0dcc84000000b00577322f8fd3sm1742867ywd.18.2023.07.13.05.44.30
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 Jul 2023 05:44:30 -0700 (PDT)
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-57712d00cc1so5729787b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 05:44:30 -0700 (PDT)
-X-Received: by 2002:a0d:cb41:0:b0:56f:fffc:56ff with SMTP id
- n62-20020a0dcb41000000b0056ffffc56ffmr1622296ywd.42.1689252270339; Thu, 13
- Jul 2023 05:44:30 -0700 (PDT)
+        Thu, 13 Jul 2023 08:45:21 -0400
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9E83212E;
+        Thu, 13 Jul 2023 05:45:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689252317; x=1720788317;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=AXOgPYaPuOxYmPDMtFL2ISnKlxaaq+TWYj4SLMdIzoo=;
+  b=NcujlginmKqUgpaEbKCBs/lyWxh2MX5fTf0X/dr8qmfYfzelj2cRSwQ3
+   ROrcNx50Od8AgmWxzmZ0pSl1fyeAjYr2++F0teu9LmkvQGB6F8HY8MDvQ
+   U3BTSL2qZoDiNGVeElxtFNvGZNS9iZVVjK/Kmdtcmy9iS7DMtnua9mxL2
+   tgeEZU/UaNUR4QAityE+aNRtPOp9mzMWzCjzgueyhlmBReU+VvtZalc1s
+   9arJKqQER7yTwnBn77JQLXQYeYGHTvs4UtJqKv4w8x7noMHAi4AWqlFC6
+   PN4nDsWnHcn3M0zbXtkn1josMWhk//oqj+RlPgFz+90OrtmpB3dtKqemo
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="367796715"
+X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
+   d="scan'208";a="367796715"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2023 05:45:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="757144353"
+X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
+   d="scan'208";a="757144353"
+Received: from ijarvine-mobl2.ger.corp.intel.com ([10.251.222.39])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2023 05:45:12 -0700
+From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Lukas Wunner <lukas@wunner.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Dean Luick <dean.luick@cornelisnetworks.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        =?UTF-8?q?Jonas=20Dre=C3=9Fler?= <verdre@v0yd.nl>,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Subject: [PATCH v4 00/11] PCI: Improve PCIe Capability RMW concurrency control
+Date:   Thu, 13 Jul 2023 15:44:54 +0300
+Message-Id: <20230713124505.94866-1-ilpo.jarvinen@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20230609170941.1150941-1-javierm@redhat.com> <20230609170941.1150941-5-javierm@redhat.com>
-In-Reply-To: <20230609170941.1150941-5-javierm@redhat.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 13 Jul 2023 14:44:15 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVXhi52KfpCmnum+9t74UWP+AOLE95xQU6VV6Nz=VHk1Q@mail.gmail.com>
-Message-ID: <CAMuHMdVXhi52KfpCmnum+9t74UWP+AOLE95xQU6VV6Nz=VHk1Q@mail.gmail.com>
-Subject: Re: [PATCH v2 4/5] drm/ssd130x: Don't allocate buffers on each plane update
-To:     Javier Martinez Canillas <javierm@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>,
-        dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Javier,
+PCI Express Capability RMW accessors don't properly protect against
+concurrent access. Link Control Register is written by a number of
+things in the kernel in a RMW fashion without any concurrency control.
+This could in the unlucky case lead to losing one of the updates. One
+of the most obvious path which can race with most of the other LNKCTL
+RMW operations seems to be ASPM policy sysfs write which triggers
+LNKCTL update. Similarly, Root Control Register can be concurrently
+accessed by AER and PME.
 
-On Fri, Jun 9, 2023 at 7:09 PM Javier Martinez Canillas
-<javierm@redhat.com> wrote:
-> The resolutions for these panels are fixed and defined in the Device Tree,
-> so there's no point to allocate the buffers on each plane update and that
-> can just be done once.
->
-> Let's do the allocation and free on the encoder enable and disable helpers
-> since that's where others initialization and teardown operations are done.
->
-> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
-> Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
-> ---
->
-> (no changes since v1)
+Make pcie_capability_clear_and_set_word() (and other RMW accessors that
+call it) to use a per device spinlock to protect the RMW operations to
+the Capability Registers that require locking. Convert open-coded
+LNKCTL RMW operations to use pcie_capability_clear_and_set_word() to
+benefit from the locking.
 
-Thanks for your patch, which is now commit 49d7d581ceaf4cf8
-("drm/ssd130x: Don't allocate buffers on each plane update") in
-drm-misc/for-linux-next.
+There's also a related series which improves ASPM service driver and
+device driver coordination by removing out-of-band ASPM state
+management from device drivers (which will remove some of the code
+fragments changed by this series but it has higher regression
+potential which is why it seems prudent to do these changes in two
+steps):
+  https://lore.kernel.org/linux-pci/20230602114751.19671-1-ilpo.jarvinen@linux.intel.com/T/#t
 
-> --- a/drivers/gpu/drm/solomon/ssd130x.c
-> +++ b/drivers/gpu/drm/solomon/ssd130x.c
-> @@ -701,14 +709,22 @@ static void ssd130x_encoder_helper_atomic_enable(struct drm_encoder *encoder,
->                 return;
->
->         ret = ssd130x_init(ssd130x);
-> -       if (ret) {
-> -               ssd130x_power_off(ssd130x);
-> -               return;
-> -       }
-> +       if (ret)
-> +               goto power_off;
-> +
-> +       ret = ssd130x_buf_alloc(ssd130x);
+v4:
+- Rebased on top of pci/main
+- Added patch to update documentation
 
-This appears to be too late, causing a NULL pointer dereference:
+v3:
+- Split link retraining change off from ASPM patch & reorder it earlier
+- Adjust changelog to take into account the move of link retraining
+  code into PCI core and no longer refer to ASPM (currently in
+  pci/enumeration branch)
+- based on top of pci/main
 
-[   59.302761] [<c0303d90>] ssd130x_update_rect.isra.0+0x13c/0x340
-[   59.304231] [<c0304200>]
-ssd130x_primary_plane_helper_atomic_update+0x26c/0x284
-[   59.305716] [<c02f8d54>] drm_atomic_helper_commit_planes+0xfc/0x27c
+v2:
+- Keep the RMW ops caller API the same
+- Make pcie_capability_clear_and_set_word() a wrapper that uses
+  locked/unlocked variant based on the capability reg
+- Extracted LNKCTL2 changes out from this series to keep this purely
+  a series which fixes something (LNKCTL2 RMW lock is necessary only
+  when PCIe BW control is introduced).
+- Added Fixes tags (it's a bit rathole but yeah, they're there now).
+- Renamed cap_lock to pcie_cap_lock
+- Changed ath1* to clear the ASPMC field before setting it
 
-Bailing out from ssd130x_update_rect() when data_array is still NULL
-fixes that.
+Ilpo Järvinen (11):
+  PCI: Add locking to RMW PCI Express Capability Register accessors
+  PCI: Make link retraining use RMW accessors for changing LNKCTL
+  PCI: pciehp: Use RMW accessors for changing LNKCTL
+  PCI/ASPM: Use RMW accessors for changing LNKCTL
+  drm/amdgpu: Use RMW accessors for changing LNKCTL
+  drm/radeon: Use RMW accessors for changing LNKCTL
+  net/mlx5: Use RMW accessors for changing LNKCTL
+  wifi: ath11k: Use RMW accessors for changing LNKCTL
+  wifi: ath12k: Use RMW accessors for changing LNKCTL
+  wifi: ath10k: Use RMW accessors for changing LNKCTL
+  PCI: Document the Capability accessor RMW improvements
 
-Gr{oetje,eeting}s,
-
-                        Geert
+ Documentation/PCI/pciebus-howto.rst           | 14 ++++---
+ drivers/gpu/drm/amd/amdgpu/cik.c              | 36 +++++-------------
+ drivers/gpu/drm/amd/amdgpu/si.c               | 36 +++++-------------
+ drivers/gpu/drm/radeon/cik.c                  | 36 +++++-------------
+ drivers/gpu/drm/radeon/si.c                   | 37 +++++--------------
+ .../ethernet/mellanox/mlx5/core/fw_reset.c    |  9 +----
+ drivers/net/wireless/ath/ath10k/pci.c         |  9 +++--
+ drivers/net/wireless/ath/ath11k/pci.c         | 10 +++--
+ drivers/net/wireless/ath/ath12k/pci.c         | 10 +++--
+ drivers/pci/access.c                          | 20 ++++++++--
+ drivers/pci/hotplug/pciehp_hpc.c              | 12 ++----
+ drivers/pci/pci.c                             |  8 +---
+ drivers/pci/pcie/aspm.c                       | 31 +++++++---------
+ drivers/pci/probe.c                           |  1 +
+ include/linux/pci.h                           | 34 ++++++++++++++++-
+ 15 files changed, 137 insertions(+), 166 deletions(-)
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.30.2
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
