@@ -2,86 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81065752B0A
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 21:33:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB5AD752B0C
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 21:33:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233486AbjGMTdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 15:33:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36398 "EHLO
+        id S233126AbjGMTdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 15:33:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233441AbjGMTdg (ORCPT
+        with ESMTP id S233121AbjGMTdw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 15:33:36 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5382B2D77;
-        Thu, 13 Jul 2023 12:33:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=cA+1aUaQanMFNEQyl9OnMvn02aE9XScDbFGO22nPMMY=; b=cf4/cn23xXdm+s4y2Y0MnOwH7A
-        AMiDHv+11kSOTUAGsEz1W/byhrW2GjlDunN55IcZBNbxaShSl0hYNvZqXjkilikasHrPqpe3HNpYN
-        rcev8TKCXFM4oztm3HGYWuQ9F68IH+eQEmXEPeIOABB5EBfwSghnmfCvhTpTgcrlgYno=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qK248-001HjT-Eo; Thu, 13 Jul 2023 21:33:28 +0200
-Date:   Thu, 13 Jul 2023 21:33:28 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     "Sverdlin, Alexander" <alexander.sverdlin@siemens.com>
-Cc:     "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "olteanv@gmail.com" <olteanv@gmail.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "Haener, Michael" <michael.haener@siemens.com>,
-        "kuba@kernel.org" <kuba@kernel.org>
-Subject: Re: [PATCH v2 0/3] net: dsa: SERDES support for mv88e632x family
-Message-ID: <9edfd9ed-a162-480a-8265-261c2fe72750@lunn.ch>
-References: <20230704065916.132486-1-michael.haener@siemens.com>
- <20a135919ac7d54699d1eca5486fd640d667ad05.camel@siemens.com>
- <67189741-efd5-4f54-8438-66a6e2a693f5@lunn.ch>
- <6594cbb5b83312b73127f6bf23bbf988bb40c491.camel@siemens.com>
- <ZK+cvZJmYRkKKZ0d@shell.armlinux.org.uk>
- <d154d59edd2883b30de8f80fa9c08ec7700504d6.camel@siemens.com>
- <d7466827-7f39-495b-a129-91188e3d150f@lunn.ch>
- <d1d3ac6fe99c6f54c82ae0c2f7e817d86b6e4075.camel@siemens.com>
+        Thu, 13 Jul 2023 15:33:52 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B3C82D43
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 12:33:50 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id ca18e2360f4ac-785d3a53ed6so13470039f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 12:33:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1689276829; x=1689881629;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Rsorryzax5Y3bPybZVINyEhtRW0LniXcZ10eoX/oXNs=;
+        b=Wlpj5dG+wbmOlRt78R8ZsYTt2KGnZ4b+1ZOW35Cnu+YaI36KwgaNBwZq/4kFw1dhdQ
+         c+Xj5t1BxQ/tOspHvzpnxbPQD6zDQhf9B6CXvLY7+Vns7yx4OPsE3xI6soIw5ndMa20s
+         5DywhV7tv+AgZA6ox08cHS7T72Qn+231KUHbg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689276829; x=1689881629;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Rsorryzax5Y3bPybZVINyEhtRW0LniXcZ10eoX/oXNs=;
+        b=JuoaWHqcnaFb33ixfJ9kLnYHzuhVI9uOrN5OmiJ9ncRq2hgjZ9LKmQe7GUekBRLkHu
+         Arys/tKPKrUwKifJqZZx48qGDVMg66+35okXcq/kQsmiuLteHf8Hquk4IyNiv8lU/Ksl
+         aNctcOVJm5pQy7BqOpAbH6+WwjzYXi1CCh2g3gZH7Y1dd24f+Ze4MZoL98XqyStWm1PX
+         yb61dqge1SmW9s9Dg97egP63/1W8jCghSVnKyGf+7ExTIFOlaKSTqWjqSSY9v2PIursI
+         yr0nxNYpGFMG+3oZ+jMUxZLjlXWxO+wCqavQnReOdt5gK09kneLq6BoVgdQ9ZGIQ671+
+         mrVw==
+X-Gm-Message-State: ABy/qLYGb6T3Z7b+9tI/VAAMxyjgJtsxTYvgMb0NlepJ9qJtIzfrbvMR
+        RztO8gjBhsK38QLv1LF6YrtdJ3fgXGOf8BQ75WE1NA==
+X-Google-Smtp-Source: APBJJlF5ir59Htegev7n15uRcZGB7HP4joLeV0hONmJbPeJboQCeMjzwvL0ILaGM0qlVRJvOCi9GkQ==
+X-Received: by 2002:a05:6602:2762:b0:780:d65c:d78f with SMTP id l2-20020a056602276200b00780d65cd78fmr2869824ioe.2.1689276829390;
+        Thu, 13 Jul 2023 12:33:49 -0700 (PDT)
+Received: from [192.168.1.128] ([38.15.45.1])
+        by smtp.gmail.com with ESMTPSA id h8-20020a02c4c8000000b0042b761d2594sm2103883jaj.125.2023.07.13.12.33.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 Jul 2023 12:33:49 -0700 (PDT)
+Message-ID: <f17f5330-9b8f-81a2-508f-8cc25c355590@linuxfoundation.org>
+Date:   Thu, 13 Jul 2023 13:33:48 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d1d3ac6fe99c6f54c82ae0c2f7e817d86b6e4075.camel@siemens.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v1] tools: timers: fix freq average calculation
+Content-Language: en-US
+To:     John Stultz <jstultz@google.com>, Minjie Du <duminjie@vivo.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        "open list:TIMEKEEPING, CLOCKSOURCE CORE, NTP, ALARMTIMER" 
+        <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, opensource.kernel@vivo.com,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20230706032257.1662-1-duminjie@vivo.com>
+ <CANDhNCoJ2ZjGCY3yZ3K4XZF8-bNTExOUWNkqWtJ2FZW=bYFwzw@mail.gmail.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <CANDhNCoJ2ZjGCY3yZ3K4XZF8-bNTExOUWNkqWtJ2FZW=bYFwzw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 04:29:12PM +0000, Sverdlin, Alexander wrote:
-> Hi Andrew,
+On 7/5/23 21:46, John Stultz wrote:
+> On Wed, Jul 5, 2023 at 8:23 PM Minjie Du <duminjie@vivo.com> wrote:
+>>
+>> Delete a duplicate assignment from this function implementation.
+>> The note means ppm is average of the two actual freq samples.
+>> But ppm have a duplicate assignment.
+>>
+>> Signed-off-by: Minjie Du <duminjie@vivo.com>
+>> ---
+>>   tools/testing/selftests/timers/raw_skew.c | 3 +--
+>>   1 file changed, 1 insertion(+), 2 deletions(-)
+>>
+>> diff --git a/tools/testing/selftests/timers/raw_skew.c b/tools/testing/selftests/timers/raw_skew.c
+>> index 5beceeed0..6eba203f9 100644
+>> --- a/tools/testing/selftests/timers/raw_skew.c
+>> +++ b/tools/testing/selftests/timers/raw_skew.c
+>> @@ -129,8 +129,7 @@ int main(int argc, char **argv)
+>>          printf("%lld.%i(est)", eppm/1000, abs((int)(eppm%1000)));
+>>
+>>          /* Avg the two actual freq samples adjtimex gave us */
+>> -       ppm = (tx1.freq + tx2.freq) * 1000 / 2;
+>> -       ppm = (long long)tx1.freq * 1000;
+>> +       ppm = (long long)(tx1.freq + tx2.freq) * 1000 / 2;
 > 
-> On Thu, 2023-07-13 at 17:34 +0200, Andrew Lunn wrote:
-> > > we did understand Andrew's request indeed, however we were not able to
-> > > backport your series quickly to the version we are able to test on the
-> > > HW.
-> > 
-> > But your own patchset has been tested on net-next by yourself? So it
-> > should be trivial to use "b4 am <threadid>" to get Russells patchset,
-> > apply them on top of net-next, and then add your patches as well.
+> Huh. So yeah, I looked back in my own history and this has been there
+> forever. I'm guessing I was intending to average the two samples and
+> then due to reasons I can't remember decided to just use the first in
+> the short-term for some debugging (with the second assignment) and
+> committed both.
 > 
-> unfortunately it has been only built on net-next and tested on a 5.15.x with some
-> limited backports so that Russell series would require even more backporting.
+> I think it should be safe, because if the freq values are not the same
+> the test will return SKIP, so it's unlikely changing this would cause
+> new test failures.
+> 
+> Acked-by: John Stultz <jstultz@google.com>
+> 
+> Thanks for noticing this and sending this out!
+> -john
 
-You should indicate that the patch is only built tested when
-submitting it.
+Applied to linux-kselftest fixes branch for next rc2 or rc3
 
-I assume you are using a vendor kernel? What is missing in mainline to
-stop networking working?
-
-	 Andrew
+thanks,
+-- Shuah
