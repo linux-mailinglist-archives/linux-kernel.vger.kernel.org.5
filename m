@@ -2,180 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51CAF751DDD
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 11:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CABF751D7A
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 11:40:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234437AbjGMJyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 05:54:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38598 "EHLO
+        id S232014AbjGMJki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 05:40:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234204AbjGMJxg (ORCPT
+        with ESMTP id S234061AbjGMJk1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 05:53:36 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC9A2268A;
-        Thu, 13 Jul 2023 02:53:34 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4021D61A98;
-        Thu, 13 Jul 2023 09:53:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D674C433CD;
-        Thu, 13 Jul 2023 09:53:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689242013;
-        bh=BWm/olWl0fngm/stPMwo1frRWG1GYu4x/EQXCH6480k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hEB3XE27SjP3dLfoUKnqBskRcXzvjf9S1LEsk9Q2uf11Any0qIGE1Cp+1BYWLSCDk
-         c2gM5+zTukrmhfuU8Pt4xN3TthYxhHSTFws4OWdwgL5NSJ/IKAkoIXTmRkS2mUsLdz
-         DBa8sMQr4IY7r1qe/KbKeVogAlP4a0JIoATHZCl4NzTX322l7W/QCDVzHBt6nGrPxB
-         JayCU8yCieTLSf/rKaW/URWDpTdCBF/lDxq5wrBCLoedsDveAj7POoy8DlpSK7sQ3a
-         OeBwecPOU/6XIy54/DcZd8zmUEftRpH48Vk3OU9sSTwRwmjgr1wSHA9FxxksYD87ZT
-         EumGmuiH3+mcQ==
-Date:   Thu, 13 Jul 2023 10:53:28 +0100
-From:   Lee Jones <lee@kernel.org>
-To:     Jean-Jacques Hiblot <jjhiblot@traphandler.com>
-Cc:     pavel@ucw.cz, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v10 3/5] leds: class: store the color index in struct
- led_classdev
-Message-ID: <20230713095328.GH10768@google.com>
-References: <20230624084217.3079205-1-jjhiblot@traphandler.com>
- <20230624084217.3079205-4-jjhiblot@traphandler.com>
+        Thu, 13 Jul 2023 05:40:27 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78ED1210B;
+        Thu, 13 Jul 2023 02:40:26 -0700 (PDT)
+Received: from dggpemm500001.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R1qMR24J5zrRlb;
+        Thu, 13 Jul 2023 17:39:47 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Thu, 13 Jul 2023 17:40:22 +0800
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+To:     <linux-mm@kvack.org>, Andrew Morton <akpm@linux-foundation.org>,
+        <surenb@google.com>
+CC:     Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        <x86@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <loongarch@lists.linux.dev>,
+        <linuxppc-dev@lists.ozlabs.org>, <linux-riscv@lists.infradead.org>,
+        <linux-s390@vger.kernel.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Subject: [PATCH rfc -next 01/10] mm: add a generic VMA lock-based page fault handler
+Date:   Thu, 13 Jul 2023 17:53:29 +0800
+Message-ID: <20230713095339.189715-2-wangkefeng.wang@huawei.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230713095339.189715-1-wangkefeng.wang@huawei.com>
+References: <20230713095339.189715-1-wangkefeng.wang@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230624084217.3079205-4-jjhiblot@traphandler.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_FILL_THIS_FORM_SHORT,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 24 Jun 2023, Jean-Jacques Hiblot wrote:
+There are more and more architectures enabled ARCH_SUPPORTS_PER_VMA_LOCK,
+eg, x86, arm64, powerpc and s390, and riscv, those implementation are very
+similar which results in some duplicated codes, let's add a generic VMA
+lock-based page fault handler to eliminate them, and which also make it
+easy to support this feature on new architectures.
 
-> This information might be useful for more than only deriving the led's
+Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+---
+ include/linux/mm.h | 28 ++++++++++++++++++++++++++++
+ mm/memory.c        | 42 ++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 70 insertions(+)
 
-Please expand on this.  What more?
-
-> name. And since we have this information, we can expose it in the sysfs.
-
-The second sentence doesn't make sense to me.
-
-It's good practice to try and avoid placing "And" as the first word.
-
-> Signed-off-by: Jean-Jacques Hiblot <jjhiblot@traphandler.com>
-> ---
->  Documentation/ABI/testing/sysfs-class-led |  9 +++++++++
->  drivers/leds/led-class.c                  | 20 ++++++++++++++++++++
->  include/linux/leds.h                      |  1 +
->  3 files changed, 30 insertions(+)
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-class-led b/Documentation/ABI/testing/sysfs-class-led
-> index 2e24ac3bd7ef..1509e71fcde1 100644
-> --- a/Documentation/ABI/testing/sysfs-class-led
-> +++ b/Documentation/ABI/testing/sysfs-class-led
-> @@ -59,6 +59,15 @@ Description:
->  		brightness. Reading this file when no hw brightness change
->  		event has happened will return an ENODATA error.
->  
-> +What:		/sys/class/leds/<led>/color
-> +Date:		June 2023
-> +KernelVersion:	6.5
-> +Description:
-> +		Color of the led.
-
-s/led/LED/  everywhere please.
-
-> +		This is a read-only file. Reading this file returns the color
-> +		of the led as a string (ex: "red", "green", "multicolor").
-
-e.g.
-
-> +
->  What:		/sys/class/leds/<led>/trigger
->  Date:		March 2006
->  KernelVersion:	2.6.17
-> diff --git a/drivers/leds/led-class.c b/drivers/leds/led-class.c
-> index eb1a8494dc5b..6cca21b227dd 100644
-> --- a/drivers/leds/led-class.c
-> +++ b/drivers/leds/led-class.c
-> @@ -76,6 +76,18 @@ static ssize_t max_brightness_show(struct device *dev,
->  }
->  static DEVICE_ATTR_RO(max_brightness);
->  
-> +static ssize_t color_show(struct device *dev,
-> +		struct device_attribute *attr, char *buf)
-> +{
-> +	const char *color_text = "invalid";
-> +	struct led_classdev *led_cdev = dev_get_drvdata(dev);
-
-Can this be NULL?
-
-> +	if (led_cdev->color < LED_COLOR_ID_MAX)
-> +		color_text = led_colors[led_cdev->color];
-
-'\n'
-
-> +	return sysfs_emit(buf, "%s\n", color_text);
-> +}
-> +static DEVICE_ATTR_RO(color);
-> +
->  #ifdef CONFIG_LEDS_TRIGGERS
->  static BIN_ATTR(trigger, 0644, led_trigger_read, led_trigger_write, 0);
->  static struct bin_attribute *led_trigger_bin_attrs[] = {
-> @@ -90,6 +102,7 @@ static const struct attribute_group led_trigger_group = {
->  static struct attribute *led_class_attrs[] = {
->  	&dev_attr_brightness.attr,
->  	&dev_attr_max_brightness.attr,
-> +	&dev_attr_color.attr,
->  	NULL,
->  };
->  
-> @@ -482,6 +495,10 @@ int led_classdev_register_ext(struct device *parent,
->  			if (fwnode_property_present(init_data->fwnode,
->  						    "retain-state-shutdown"))
->  				led_cdev->flags |= LED_RETAIN_AT_SHUTDOWN;
-> +
-> +			if (fwnode_property_present(init_data->fwnode, "color"))
-> +				fwnode_property_read_u32(init_data->fwnode, "color",
-> +							 &led_cdev->color);
->  		}
->  	} else {
->  		proposed_name = led_cdev->name;
-> @@ -491,6 +508,9 @@ int led_classdev_register_ext(struct device *parent,
->  	if (ret < 0)
->  		return ret;
->  
-> +	if (led_cdev->color >= LED_COLOR_ID_MAX)
-> +		dev_warn(parent, "LED %s color identifier out of range\n", final_name);
-> +
->  	mutex_init(&led_cdev->led_access);
->  	mutex_lock(&led_cdev->led_access);
->  	led_cdev->dev = device_create_with_groups(leds_class, parent, 0,
-> diff --git a/include/linux/leds.h b/include/linux/leds.h
-> index 95311c70d95c..487d00dac4de 100644
-> --- a/include/linux/leds.h
-> +++ b/include/linux/leds.h
-> @@ -100,6 +100,7 @@ struct led_classdev {
->  	const char		*name;
->  	unsigned int brightness;
->  	unsigned int max_brightness;
-> +	unsigned int color;
->  	int			 flags;
->  
->  	/* Lower 16 bits reflect status */
-> -- 
-> 2.34.1
-> 
-
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index c7886784832b..cba1b7b19c9d 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -633,6 +633,15 @@ static inline void vma_numab_state_init(struct vm_area_struct *vma) {}
+ static inline void vma_numab_state_free(struct vm_area_struct *vma) {}
+ #endif /* CONFIG_NUMA_BALANCING */
+ 
++struct vm_locked_fault {
++	struct mm_struct *mm;
++	unsigned long address;
++	unsigned int fault_flags;
++	unsigned long vm_flags;
++	struct pt_regs *regs;
++	unsigned long fault_code;
++};
++
+ #ifdef CONFIG_PER_VMA_LOCK
+ /*
+  * Try to read-lock a vma. The function is allowed to occasionally yield false
+@@ -733,6 +742,19 @@ static inline void assert_fault_locked(struct vm_fault *vmf)
+ struct vm_area_struct *lock_vma_under_rcu(struct mm_struct *mm,
+ 					  unsigned long address);
+ 
++#define VM_LOCKED_FAULT_INIT(_name, _mm, _address, _fault_flags, _vm_flags, _regs, _fault_code) \
++	_name.mm		= _mm;			\
++	_name.address		= _address;		\
++	_name.fault_flags	= _fault_flags;		\
++	_name.vm_flags		= _vm_flags;		\
++	_name.regs		= _regs;		\
++	_name.fault_code	= _fault_code
++
++int __weak arch_vma_check_access(struct vm_area_struct *vma,
++				 struct vm_locked_fault *vmlf);
++
++int try_vma_locked_page_fault(struct vm_locked_fault *vmlf, vm_fault_t *ret);
++
+ #else /* CONFIG_PER_VMA_LOCK */
+ 
+ static inline bool vma_start_read(struct vm_area_struct *vma)
+@@ -742,6 +764,12 @@ static inline void vma_start_write(struct vm_area_struct *vma) {}
+ static inline void vma_assert_write_locked(struct vm_area_struct *vma) {}
+ static inline void vma_mark_detached(struct vm_area_struct *vma,
+ 				     bool detached) {}
++#define VM_LOCKED_FAULT_INIT(_name, _mm, _address, _fault_flags, _vm_flags, _regs, _fault_code)
++static inline int try_vma_locked_page_fault(struct vm_locked_fault *vmlf,
++					    vm_fault_t *ret)
++{
++	return -EINVAL;
++}
+ 
+ static inline void release_fault_lock(struct vm_fault *vmf)
+ {
+diff --git a/mm/memory.c b/mm/memory.c
+index ad790394963a..d3f5d1270e7a 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -5449,6 +5449,48 @@ struct vm_area_struct *lock_vma_under_rcu(struct mm_struct *mm,
+ 	count_vm_vma_lock_event(VMA_LOCK_ABORT);
+ 	return NULL;
+ }
++
++int __weak arch_vma_check_access(struct vm_area_struct *vma,
++				 struct vm_locked_fault *vmlf)
++{
++	if (!(vma->vm_flags & vmlf->vm_flags))
++		return -EINVAL;
++	return 0;
++}
++
++int try_vma_locked_page_fault(struct vm_locked_fault *vmlf, vm_fault_t *ret)
++{
++	struct vm_area_struct *vma;
++	vm_fault_t fault;
++
++	if (!(vmlf->fault_flags & FAULT_FLAG_USER))
++		return -EINVAL;
++
++	vma = lock_vma_under_rcu(vmlf->mm, vmlf->address);
++	if (!vma)
++		return -EINVAL;
++
++	if (arch_vma_check_access(vma, vmlf)) {
++		vma_end_read(vma);
++		return -EINVAL;
++	}
++
++	fault = handle_mm_fault(vma, vmlf->address,
++				vmlf->fault_flags | FAULT_FLAG_VMA_LOCK,
++				vmlf->regs);
++	*ret = fault;
++
++	if (!(fault & (VM_FAULT_RETRY | VM_FAULT_COMPLETED)))
++		vma_end_read(vma);
++
++	if ((fault & VM_FAULT_RETRY))
++		count_vm_vma_lock_event(VMA_LOCK_RETRY);
++	else
++		count_vm_vma_lock_event(VMA_LOCK_SUCCESS);
++
++	return 0;
++}
++
+ #endif /* CONFIG_PER_VMA_LOCK */
+ 
+ #ifndef __PAGETABLE_P4D_FOLDED
 -- 
-Lee Jones [李琼斯]
+2.27.0
+
