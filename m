@@ -2,103 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79E007529F7
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 19:39:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 903A07529FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 19:39:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232840AbjGMRi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 13:38:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57612 "EHLO
+        id S233058AbjGMRjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 13:39:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232759AbjGMRi4 (ORCPT
+        with ESMTP id S232854AbjGMRjD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 13:38:56 -0400
-Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AD7C26BC;
-        Thu, 13 Jul 2023 10:38:55 -0700 (PDT)
-Received: by mail-ua1-x932.google.com with SMTP id a1e0cc1a2514c-794d1714617so352807241.0;
-        Thu, 13 Jul 2023 10:38:55 -0700 (PDT)
+        Thu, 13 Jul 2023 13:39:03 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1C942702
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 10:39:01 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4fb8574a3a1so1777437e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 10:39:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689269934; x=1691861934;
+        d=rockhopper.net; s=google; t=1689269940; x=1691861940;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Lq0dSBv4S2ADFTDlFw+U8GJHF5afWm8c+OBzDmy3WMQ=;
-        b=E17PYgGXc3qQL2vUcdSDLIqy2nWsal1OePYKQCrBoSXTte7R75Wak40hCV9rJEQY1w
-         22RJy3gYJvXoPjjM81W1asaVJ6mAsfa7G4FdHtNMRYu3tzqKQGFb8RM0aB9yJKfn9csb
-         rtrgDfS6IcPRaVqvF/1PPHd2I0mHFm1GpN7BfUXfSu8FP5DBdHUEwdopInVKkQR9gfDt
-         G4NQIhLGTu/y/jwaO9FVIwuBlW9Se0Zrs48nsEiagGscRxRx7o0W5h5azEJuUDJh71mM
-         vU0aO0GDT8k6wJQiPWmxstk1/Fe0PC9Oj9HZMbVJFZp2Tk8QUc8VOZDGb+KdiL+Aayjh
-         Aqww==
+        bh=OlnIv1GsZFbVP3Mz1BXr5g6tvtlYrqCrnxeQatJWL5o=;
+        b=dgiY+HvO1FpJhCIGvHgXS0mUDVS3PxJF9No5QY2NVBT1Tj3CHHds3pcUK70WI7fiY8
+         Or+/PGk3KywJbVt5OtcINVfueInl1X1emfZGvye1yRtQgSmz8vyr2AOTbdTG6j/ORNSS
+         CVyxWZn2mYd/tI1arM+gVepPEVCghGikwGkIYO+D2jtyGfT7JHmuxO9IIZ4XqiF1LZ7h
+         eim6um7RqfDTccpdOrk1fjkdGbwxyLaRKebX92aur6uiFT3EMPB40rP8z3GVTr1ZB3Vp
+         IW9iSnSRx1GK533xqWZLhYe3FGAqHRIkUe15uwrVXNOveMN6hJz/aT1V2Ae2Sw3e7sgL
+         medQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689269934; x=1691861934;
+        d=1e100.net; s=20221208; t=1689269940; x=1691861940;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Lq0dSBv4S2ADFTDlFw+U8GJHF5afWm8c+OBzDmy3WMQ=;
-        b=EQeEk/0TQTmPCYmp6r1ELYu96Du6Yo1YUtHBEttFBzl036f4IBDfOUojbErAMYB6zU
-         PHxe3E392Xki4au045ym6D4VS1jhUPYnS4x7PUhDHjMfChOeMAhuHFuFDBuhzm81iSIS
-         aaWLrNACX8ByXaZ3XxD13CeiQCY79aWr5x6+X/aNLj+S/QLWCSZZ5+HnrCZ0MUAr8d7Z
-         fxfsd5ByFvJnWeEXk5gE8xXWlVvj5gcwxBlpvP0K4Pl2WuDff9BLRzp4deW9isBD2+tE
-         6zwJuJkSTTiNuLBIzMfJhfKUrtZmlTK5/Bzla3pywEU761IV5qqF26mzU/x+ISvIqmEW
-         ZksA==
-X-Gm-Message-State: ABy/qLZt33Yq/7eLYaSVpRrIvzdzYIsQIjJ1fPlGmb/pAvZNzIV4THaS
-        2t30qZAy523WnH013eZKDpaoY/vjHZSJ66+VY4U=
-X-Google-Smtp-Source: APBJJlGmz9kcZyA2EvGUAc88OVD93BqG1zU/89VreMl5ZkKpMae0GdzpJIxAWDGWB7CUjbz/K7CLNJAun3Rw0m5gqxs=
-X-Received: by 2002:a1f:bdcc:0:b0:46e:7102:7211 with SMTP id
- n195-20020a1fbdcc000000b0046e71027211mr1618120vkf.11.1689269934311; Thu, 13
- Jul 2023 10:38:54 -0700 (PDT)
+        bh=OlnIv1GsZFbVP3Mz1BXr5g6tvtlYrqCrnxeQatJWL5o=;
+        b=EzK2awg6Ob4wTzkmbEX45EN4davFDx13RCNGJdfd+tIx0fpDQRaN72/Ae7zkzj4mZI
+         OQSJFYoOhXPnGJz3G410hhyn/rVOTXusA+fKWr6FFktAykfGhGpYj9kQa37JvKxwXX6v
+         CHtuMLEqQRzxGJIrcqzPt2F+CynjDCoGK4QPJ9jX/Y450clgTngoHbTL+2bOyXXF12LY
+         kESw71P9UOVcqMDVUqjGdhlDJQl8u/PsOr448WXxigmJpiy+wrx/OY/LRuaCDg3LVHIi
+         2PbfZgxTNZYiL0AfuTWJYS2vz/+ncOMImp60LdtraQ3nhHgXqy7bVKNZ/8Snz1JU83B9
+         Uptw==
+X-Gm-Message-State: ABy/qLYD/i75uSSJLp+qlrrsPpxbMtWnb0YbrOGj6+g1iLLEFaqDzIrE
+        QMNifBXO9BHNiat2P5lWcH4PHYVaXGvPl8N2yXQtPw==
+X-Google-Smtp-Source: APBJJlGX/JqfBDiTkKnXSfw8Jeta2jGHb+I9n/u/xraUGH8HRL532zdH+oRvB6XAeXbc5bOvnH8Jj87VgxutH3Y3jsc=
+X-Received: by 2002:a05:6512:b85:b0:4f8:442c:de25 with SMTP id
+ b5-20020a0565120b8500b004f8442cde25mr1974614lfv.5.1689269939161; Thu, 13 Jul
+ 2023 10:38:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <ZLA0ILTAZsIzxR6c@debian.debian>
-In-Reply-To: <ZLA0ILTAZsIzxR6c@debian.debian>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Thu, 13 Jul 2023 13:38:18 -0400
-Message-ID: <CAF=yD-K-fra5nc-pjOV8Ng9sB2WWWeZA=s+-WN=O6+=8aZ-E6w@mail.gmail.com>
-Subject: Re: [PATCH v2 net] gso: fix dodgy bit handling for GSO_UDP_L4
-To:     Yan Zhai <yan@cloudflare.com>
-Cc:     "open list:NETWORKING [TCP]" <netdev@vger.kernel.org>,
-        kernel-team@cloudflare.com, Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        Xin Long <lucien.xin@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Andrew Melnychenko <andrew@daynix.com>,
-        Jason Wang <jasowang@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:SCTP PROTOCOL" <linux-sctp@vger.kernel.org>
+References: <CAHqEdrPuH4ayMiiq5FixaNjM=r44VJOw-v3iQ0mek55FTUWpsw@mail.gmail.com>
+ <CAHqEdrPD_EX=V0RnvvycN1MyXs0e+jkCcQ-nfHwOmyZR2LecfA@mail.gmail.com> <20230706084511.gp4iuvekkw7lwhdl@bogus>
+In-Reply-To: <20230706084511.gp4iuvekkw7lwhdl@bogus>
+From:   Avram Lubkin <avram@rockhopper.net>
+Date:   Thu, 13 Jul 2023 13:38:48 -0400
+Message-ID: <CAHqEdrMmwHzDFUeMWxmXrpM273-yw9-rz-HFnQK+Br0rcf0m1w@mail.gmail.com>
+Subject: Re: Bug introduced in 724ba67 (ARM: dts: Move .dts files to vendor sub-directories)
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     robh@kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        conor+dt@kernel.org, liviu.dudau@arm.com,
+        krzysztof.kozlowski+dt@linaro.org, lpieralisi@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 1:28=E2=80=AFPM Yan Zhai <yan@cloudflare.com> wrote=
-:
->
-> Commit 1fd54773c267 ("udp: allow header check for dodgy GSO_UDP_L4
-> packets.") checks DODGY bit for UDP, but for packets that can be fed
-> directly to the device after gso_segs reset, it actually falls through
-> to fragmentation:
->
-> https://lore.kernel.org/all/CAJPywTKDdjtwkLVUW6LRA2FU912qcDmQOQGt2WaDo28K=
-zYDg+A@mail.gmail.com/
->
-> This change restores the expected behavior of GSO_UDP_L4 packets.
->
-> Fixes: 1fd54773c267 ("udp: allow header check for dodgy GSO_UDP_L4 packet=
-s.")
-> Suggested-by: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-> Signed-off-by: Yan Zhai <yan@cloudflare.com>
+Thanks for submitting a patch. I saw it was acked. Will that get
+merged soon? It shouldn't need to for the next merge window since it's
+fixing an issue, right?
+Just wondering if I need to work around this or not.
 
-Reviewed-by: Willem de Bruijn <willemb@google.com>
+Thanks,
+Avram
 
-for next time: places hyperlinks in the block of tags at the bottom of
-the commit as "Link: ${URL}"
+On Thu, Jul 6, 2023 at 4:45=E2=80=AFAM Sudeep Holla <sudeep.holla@arm.com> =
+wrote:
+>
+> On Wed, Jul 05, 2023 at 10:16:19AM -0400, Avram Lubkin wrote:
+> > Resending in plain text mode
+> >
+> > SImple bug introduced in 724ba6751532055db75992fc6ae21c3e322e94a7.
+> >
+> > The file
+> >   arch/arm/boot/dts/vexpress-v2m-rs1.dtsi
+> > was moved to
+> >   arch/arm/boot/dts/arm/vexpress-v2m-rs1.dtsi
+> >
+> > However,
+> >   arch/arm64/boot/dts/arm/vexpress-v2m-rs1.dtsi
+> > is a symlink and still points to the old location
+> >   ../../../../arm/boot/dts/vexpress-v2m-rs1.dtsi
+> >
+>
+> It doesn't break any compilation as it is taken care. I will submit a pat=
+ch
+> to remove the symlink soon. Thanks for the report.
+>
+>
+> --
+> Regards,
+> Sudeep
