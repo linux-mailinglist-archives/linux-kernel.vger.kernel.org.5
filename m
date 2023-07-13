@@ -2,48 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D7207516DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 05:45:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D5B87516E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 05:47:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233701AbjGMDpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 23:45:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50312 "EHLO
+        id S233719AbjGMDrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 23:47:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233745AbjGMDpR (ORCPT
+        with ESMTP id S233188AbjGMDq5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 23:45:17 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1D6D1FFD
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 20:45:06 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2208D61919
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 03:45:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4ADE8C433C7;
-        Thu, 13 Jul 2023 03:45:04 +0000 (UTC)
-Date:   Wed, 12 Jul 2023 23:45:02 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Beau Belgrave <beaub@linux.microsoft.com>,
-        Florent Revest <revest@chromium.org>,
-        Mohamed Khalfella <mkhalfella@purestorage.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Zheng Yejian <zhengyejian1@huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Subject: [GIT PULL v2] tracing: Fixes for v6.5-rc1
-Message-ID: <20230712234502.3c6eb43d@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Wed, 12 Jul 2023 23:46:57 -0400
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9275B1986;
+        Wed, 12 Jul 2023 20:46:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689220015; x=1720756015;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=7fsrZLZUyFY1fsS3ZuztrRjgoJOA5KGBAbJRuqqZhVU=;
+  b=Aap8Vzs28EMrJa2yXQ9AXPSUFBVCPnmbcHEmbTFFJVwORwb+ZUrcArxa
+   1kyl1fcEEYvZ6hK02gHYR0fawkIV0GykMNEkrxycXVDxyTLwK/ImW55sR
+   jRlXCePGQWBIkLEuxtob3471j/HXyaq6QOCsJ04gaQL8HW+UOA5vyqTKc
+   Z16ptlIaR4JXvOcRV+ncCsmQs1WX6xwDSXu6MCGTAJAFMBQ169e4fglFX
+   vCAaCgsaat30gLvJq8FSCoH9jUpvvfmVgsHhCAUFSqL9EEIKhivh7J1l9
+   dchHKJoOWINde9dqmvnxWUIE1mF8htXCKsvFDwVYbZc5UxqA5HJjdSiRF
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10769"; a="354993965"
+X-IronPort-AV: E=Sophos;i="6.01,201,1684825200"; 
+   d="scan'208";a="354993965"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2023 20:46:55 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10769"; a="699099608"
+X-IronPort-AV: E=Sophos;i="6.01,201,1684825200"; 
+   d="scan'208";a="699099608"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orsmga006.jf.intel.com with ESMTP; 12 Jul 2023 20:46:55 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 12 Jul 2023 20:46:54 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Wed, 12 Jul 2023 20:46:54 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.173)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Wed, 12 Jul 2023 20:46:54 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nAqnmnK06GGr5nXjLMXAmkjXrjyjAOJEs6frGvpac/1G9ssBQAKopMxw7SvHTXmVwK5TFvu4ARQO6K2KcTIhnheLYbItI0RseV8zj4wCGvpnqk/P1N9k3AnnXQ27edy1T80yGRlEYc+ZlZv+xO1FWgg0RsehWXPGyzxGG/zEpow40WBZ1HqHvwfGAAUR5Em7R9RpitHxCdC5KNK5EvZ/qfwwnr78l788Iu9Nc/Zfxc7CibJJlqxfScw+qZRtr/e1N6/qnogzwF7IC2HuG241M9qy+g8kLsK81Nen8t81iKXFzavek9YFyeI1BMkGMpB1lzCONi6anJc1t30pgP2y7g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=7fsrZLZUyFY1fsS3ZuztrRjgoJOA5KGBAbJRuqqZhVU=;
+ b=euGTKVU0+L5YQzgCligtD/9gzm49JQQQsdD82Bp9BwnkiA0+8GUJHLMDiN14pHLJD6P7BV6HkPNcqg2z8M+1AzrC+YJzm3VA4PdSj2v4j1MSpLdSRboFCP+KWVe2XNy14a8+ceqGAMZzW7FxuyG/lnKwYRFSo4KXNOZxe9fBjj3T43I6FRnKdrYyJK/09NBq38Nm1t4o6EBQOvgc4MD+HNSPl6cqW+BLBq59VFTdJtlzXxw5BQZKDXtQywnLFyPFAK7IKTSukDhu36n+paB+2eOh5x3g2L+l2qdJHJP/W2JmIqo74RhE7ZTlB56oSwzk9kIrhAzDnnbi3jjfdIOltA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
+ by SJ0PR11MB5917.namprd11.prod.outlook.com (2603:10b6:a03:42b::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6565.26; Thu, 13 Jul
+ 2023 03:46:52 +0000
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::aca2:5ddb:5e78:e3df]) by BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::aca2:5ddb:5e78:e3df%4]) with mapi id 15.20.6588.022; Thu, 13 Jul 2023
+ 03:46:52 +0000
+From:   "Huang, Kai" <kai.huang@intel.com>
+To:     "isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>
+CC:     "Hansen, Dave" <dave.hansen@intel.com>,
+        "Christopherson,, Sean" <seanjc@google.com>,
+        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "sathyanarayanan.kuppuswamy@linux.intel.com" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: Re: [PATCH 09/10] x86/virt/tdx: Wire up basic SEAMCALL functions
+Thread-Topic: [PATCH 09/10] x86/virt/tdx: Wire up basic SEAMCALL functions
+Thread-Index: AQHZtJ11LVNzaBLM3EiCxikVoFiXz6+2s2kAgABcqoA=
+Date:   Thu, 13 Jul 2023 03:46:52 +0000
+Message-ID: <4202b26acdb3fe926dd1a9a46c2c7c35a5d85529.camel@intel.com>
+References: <cover.1689151537.git.kai.huang@intel.com>
+         <41b7e5503a3e6057dc168b3c5a9693651c501d22.1689151537.git.kai.huang@intel.com>
+         <20230712221510.GG3894444@ls.amr.corp.intel.com>
+In-Reply-To: <20230712221510.GG3894444@ls.amr.corp.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BL1PR11MB5978:EE_|SJ0PR11MB5917:EE_
+x-ms-office365-filtering-correlation-id: 396f4579-5cf6-45a9-0d2f-08db8353cb6f
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: +NQfYN3CyRLWuCCAbLQ+SvL7tmxBmdQg3mEzj3PN198BogDIB314CJiNMFtVLlSnMqf/dY6tLjs/tqKaw1NVmvce5M304tt78t8WO5Mkg0bzH/821yjsgWnId6YBPU3JGnqwz8EwuQ2EMrti+yloZqzNVxroknLZzx2lnS6q+kXt5uGUXixtzS4/Kz49riDsj9HpDDA9l1PCKJLqs5RNu23pnofcxsQRtI+pp5UxFo4Sj6EETFtWxkRevkxwxLmm9VMAKSIgwaq2UX767+KwZ6jGO+HCsTG7zR/M77ubrkaM8Xtyfj58xl2wSb9u93FIyYBwqYw5G8GkufjXGfmmDGB8s1byZA/WIrfnVQTG2SB4OFAfEwr7HC/9f+G5xoX8UU+HUZtAi8gm1hJC4v+/xTtOxHp3ul8H8Feac9s7BOV5xaP4Zs0aKw94fc5VkFH/vQNLc7zEvbwNOtCAuLeoklh+q4ZtCMs54HcR8+st75H5EyakarI15Q69KvJmyZq3DBpeh5PM2TUD2M1X6QEFz/oHc6a6wNj3aYQvdXk4LGOgCnIK4dgACFPkEezuiDlKtwXCSLXI8gOBy0/Poy/lZB7x9jwhDSR4WETQIN+0nVM96jBrgKA1HSrx50D5XQLl
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(136003)(376002)(366004)(39860400002)(396003)(346002)(451199021)(6486002)(6512007)(71200400001)(186003)(83380400001)(6506007)(36756003)(2616005)(86362001)(38070700005)(38100700002)(26005)(82960400001)(122000001)(76116006)(4326008)(66946007)(6916009)(66446008)(64756008)(66476007)(66556008)(2906002)(316002)(91956017)(7416002)(5660300002)(8936002)(41300700001)(54906003)(8676002)(478600001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Mk9rUHdNelRaUzZVVE1sZzlBdHc5VklRZlRTL3FyS3ZVdXRoZjBudlVHaDVz?=
+ =?utf-8?B?bVFlNng1WkJjL2pGcGtnRUZvUEJtVDRLOHRvQisyYlVHRVVma1pudHJIMFJE?=
+ =?utf-8?B?UnhNT2p4UGdLdVQvSFduS0lnWFV2ZVZmOFd5N3AxanZUdFlaNXRHUGYrNkNj?=
+ =?utf-8?B?N0NXZWxNTUF1dktyb0lHRUpObUFMNkdIVlJ4NkRPV1g0L2g1MGh2OUMrdzZx?=
+ =?utf-8?B?QzEvR21jaWk5M1ZCVEEvZE5XN2JvNWFvYlJlbEM4UEJVZkk1UGljbUpxTkha?=
+ =?utf-8?B?Y3BlZ2lCdTdiL2F0TU85cjgzNmUzTnhGMmNMRHptZEFldmI5TmJqRk5JVUpv?=
+ =?utf-8?B?Wi9BS2E1N2NqUnJraUhuejhRTkpkdW1IZFZvd05aOGZQeUs2VmZ5VGhRNTVz?=
+ =?utf-8?B?S2hVRS9jQis2Um1DcXZYTDg3dDB3Y055cXg1Vjcwc3JUTHk4NTRSRDVVWm0w?=
+ =?utf-8?B?OHE4WWpicVYzVDFpeVZzZkR0My9qZnFPRGVNQWh1c0h3dlRqYlZ0ZGRJNW1Y?=
+ =?utf-8?B?TVA3QUF5Tk1KOFZKSElZeTcvR3BjMCt6WkhOS2FEWWpST2QyelU0Y3B1K2tJ?=
+ =?utf-8?B?eVd6RnJUQzNiUGkwMHg3cGlJcTliamQrenRwMWZiOEdNbVdZNmQ0VFpGRnlG?=
+ =?utf-8?B?MWNBb0tsQ24rTC9BRkluUHFjWTcvU1ZhWmhCK2tkdlZZL1ZNMWJreDV2NmE4?=
+ =?utf-8?B?TE5XYkNEWklDaHVIbys0MGRCNnQ1MUpvd1JrY2JzeHhNQXM4WTRGWGpTWFdD?=
+ =?utf-8?B?bGtxNVM2bkdCUHM4RnFJOHlUa3Z3MUhFb2J0TEwwRHptWjhiUzVtKytySWlP?=
+ =?utf-8?B?OTkwZlBvVVExQWY2OUVCbWhtald6M0tmVlE4ZDg3dlRxQVhreU9yVmxmQzJ6?=
+ =?utf-8?B?YjNCaVFhTVZBNDZia0N6K0RaWkZlYU9GVWJaaGtOakQ4bFdGUHRkTnVQbnJY?=
+ =?utf-8?B?cFlYVjIvVStHSitpTWlFbHR3SVhtOUFVVFRwNytrcXE4d0ExbElFK1QzZVFJ?=
+ =?utf-8?B?V2FJZ2FUZ1NjeXN0MEszVmswRnhoVHlrZWFhQVNhMEdiQncrMW1XNWREczc2?=
+ =?utf-8?B?LzIxVmt3QnZQd1JETitic3FXMVpEc3JmZW9mSTlJRkhSSmhyczVEaG9jQkk5?=
+ =?utf-8?B?QmdnbzYrRXY4dmtodkt3eU1sRnZtYURHRjdpUXFQOFB5U0VqSmFRWVdNOVZw?=
+ =?utf-8?B?RkJ1cFRYQjd1VUtkaDE0TmY2SHc4bUdpTVFUNHM0Y1Z1Z2Jrd3FuczJvQTRs?=
+ =?utf-8?B?NEFMalZFa09uZGRSTU50SlFIbkVmWGVwY0cwek5qclFtdTJYbUZqQlp5K3VI?=
+ =?utf-8?B?Tm9tOVp1QjBONHIybG5qUFN2SzVMSE9ST2t6QkVVbENqaVVPbXp0eVpjZzFs?=
+ =?utf-8?B?S05JRWZlYkZDUko0emVDMTB0SFp0MXpEVy9NS1VrVGNURjl6bERtN0IvUUg1?=
+ =?utf-8?B?c0J2d1pGWEJGd3N3ZVNvdEhWZHY4QTc2NTJQZUVTZHJZTG8zQXNNZVVUZG5D?=
+ =?utf-8?B?MWVSSmIxUlpjcEtjbXJMSGpYeXhiQmRRRDUxcEl3YXNsdU4yR2s4N2JSNEJ6?=
+ =?utf-8?B?TEVqbnJza2J2SW9IcFNSNFZhY3UyQ2R3b2pCaU8vZW96Y1dXMlo5c0dnKzl2?=
+ =?utf-8?B?VlJkMERCT21lTVNNdWovUDVKSzRXQXV0Qkg3bkgvSXpvdXU3SEUrUFJzTGda?=
+ =?utf-8?B?RmEzK3ZVazlvcXFON2R4UUtwVGZtMlpQRGQ0YkV4ajBnUUhSaHZ2ZWtFVDNk?=
+ =?utf-8?B?SVNoTGJHcyttV1JQcFR3QjJuVG5EVlhNc3gvWm9FazhDOG02d3dteDRUK29K?=
+ =?utf-8?B?TDJ6WHhydVpuRUk0cVo1aFRmSUV3ZUg1eDhDYm1VQklmR0h6YTdUazV0UTdB?=
+ =?utf-8?B?a0pXb2VTQTBSeDFxR2JMekZZSUEvSjlIaE1laWtWeUtkWlFxT01kZldjTjdX?=
+ =?utf-8?B?ZFBtN0RqMUVoU2gwNU9saTd1OEgrblFuUERnTmVVYUQ0cm5jcjhTYWs1bmNT?=
+ =?utf-8?B?QU1UMnFNOGFLSTRBMlVyWGtGeGRVRkd2QVBxNk1jUk5WQzFuTk5qYmp5YjFj?=
+ =?utf-8?B?WGtsWTArWU5YZHFBeDdMczZ5SjJkOUpZTnlBSjdBVUx4T0hncVo1cnRldnBF?=
+ =?utf-8?Q?fi5X8cnnJJcWPSSydogkrMH6s?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <361C2443CA738945870EC9455B9BEB46@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 396f4579-5cf6-45a9-0d2f-08db8353cb6f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Jul 2023 03:46:52.1178
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: UvGfn30mi3E3SCOU65nwqIV0gkbsJxfmfx/Klj77nkdRgFI/LYSbID/cWYMy2ArNi2KMVs2IZGqA3+Ceuin89g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5917
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,755 +174,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Linus,
-
-Tracing fixes and clean ups:
-
-- Fix some missing-prototype warnings
-
-- Fix user events struct args (did not include size of struct)
-  When creating a user event, the "struct" keyword is to denote
-  that the size of the field will be passed in. But the parsing
-  failed to handle this case.
-
-- Add selftest to struct sizes for user events
-
-- Fix sample code for direct trampolines.
-  The sample code for direct trampolines attached to handle_mm_fault().
-  But the prototype changed and the direct trampoline sample code
-  was not updated. Direct trampolines needs to have the arguments correct
-  otherwise it can fail or crash the system.
-
-- Remove unused ftrace_regs_caller_ret() prototype.
-
-- Quiet false positive of FORTIFY_SOURCE
-  Due to backward compatibility, the structure used to save stack traces
-  in the kernel had a fixed size of 8. This structure is exported to
-  user space via the tracing format file. A change was made to allow
-  more than 8 functions to be recorded, and user space now uses the
-  size field to know how many functions are actually in the stack.
-  But the structure still has size of 8 (even though it points into
-  the ring buffer that has the required amount allocated to hold a
-  full stack. This was fine until the fortifier noticed that the
-  memcpy(&entry->caller, stack, size) was greater than the 8 functions
-  and would complain at runtime about it. Hide this by using a pointer
-  to the stack location on the ring buffer instead of using the address
-  of the entry structure caller field.
-
-- Fix a deadloop in reading trace_pipe that was caused by a mismatch
-  between ring_buffer_empty() returning false which then asked to
-  read the data, but the read code uses rb_num_of_entries() that
-  returned zero, and causing a infinite "retry".
-
-- Fix a warning caused by not using all pages allocated to store
-  ftrace functions, where this can happen if the linker inserts a bunch of
-  "NULL" entries, causing the accounting of how many pages needed
-  to be off.
-
-- Fix histogram synthetic event crashing when the start event is
-  removed and the end event is still using a variable from it.
-
-
-Please pull the latest trace-v6.5-rc1-2 tree, which can be found at:
-
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
-trace-v6.5-rc1-2
-
-Tag SHA1: e4442d1b2035213b9e982c9fc4d222c360162190
-Head SHA1: 6018b585e8c6fa7d85d4b38d9ce49a5b67be7078
-
-
-Arnd Bergmann (1):
-      tracing: arm64: Avoid missing-prototype warnings
-
-Beau Belgrave (2):
-      tracing/user_events: Fix struct arg size match check
-      selftests/user_events: Test struct size match cases
-
-Florent Revest (2):
-      samples: ftrace: Save required argument registers in sample trampolines
-      arm64: ftrace: Add direct call trampoline samples support
-
-Mohamed Khalfella (1):
-      tracing/histograms: Add histograms to hist_vars if they have referenced variables
-
-Steven Rostedt (Google) (1):
-      tracing: Stop FORTIFY_SOURCE complaining about stack trace caller
-
-YueHaibing (1):
-      x86/ftrace: Remove unsued extern declaration ftrace_regs_caller_ret()
-
-Zheng Yejian (2):
-      ring-buffer: Fix deadloop issue on reading trace_pipe
-      ftrace: Fix possible warning on checking all pages used in ftrace_process_locs()
-
-----
- arch/arm64/Kconfig                             |  2 ++
- arch/arm64/include/asm/ftrace.h                |  4 +++
- arch/arm64/include/asm/syscall.h               |  3 ++
- arch/arm64/kernel/syscall.c                    |  3 --
- arch/x86/kernel/ftrace.c                       |  1 -
- include/linux/ftrace.h                         |  9 ++++++
- kernel/trace/fgraph.c                          |  1 +
- kernel/trace/ftrace.c                          | 45 ++++++++++++++++++--------
- kernel/trace/ftrace_internal.h                 |  5 +--
- kernel/trace/ring_buffer.c                     | 24 ++++++++------
- kernel/trace/trace.c                           | 21 ++++++++++--
- kernel/trace/trace_events_hist.c               |  8 +++--
- kernel/trace/trace_events_user.c               |  3 ++
- kernel/trace/trace_kprobe_selftest.c           |  3 ++
- samples/ftrace/ftrace-direct-modify.c          | 34 +++++++++++++++++++
- samples/ftrace/ftrace-direct-multi-modify.c    | 40 +++++++++++++++++++++++
- samples/ftrace/ftrace-direct-multi.c           | 25 ++++++++++++++
- samples/ftrace/ftrace-direct-too.c             | 40 +++++++++++++++++++----
- samples/ftrace/ftrace-direct.c                 | 24 ++++++++++++++
- tools/testing/selftests/user_events/dyn_test.c | 12 +++++++
- 20 files changed, 267 insertions(+), 40 deletions(-)
----------------------------
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 7856c3a3e35a..a2511b30d0f6 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -197,6 +197,8 @@ config ARM64
- 		    !CC_OPTIMIZE_FOR_SIZE)
- 	select FTRACE_MCOUNT_USE_PATCHABLE_FUNCTION_ENTRY \
- 		if DYNAMIC_FTRACE_WITH_ARGS
-+	select HAVE_SAMPLE_FTRACE_DIRECT
-+	select HAVE_SAMPLE_FTRACE_DIRECT_MULTI
- 	select HAVE_EFFICIENT_UNALIGNED_ACCESS
- 	select HAVE_FAST_GUP
- 	select HAVE_FTRACE_MCOUNT_RECORD
-diff --git a/arch/arm64/include/asm/ftrace.h b/arch/arm64/include/asm/ftrace.h
-index 21ac1c5c71d3..ab158196480c 100644
---- a/arch/arm64/include/asm/ftrace.h
-+++ b/arch/arm64/include/asm/ftrace.h
-@@ -211,6 +211,10 @@ static inline unsigned long fgraph_ret_regs_frame_pointer(struct fgraph_ret_regs
- {
- 	return ret_regs->fp;
- }
-+
-+void prepare_ftrace_return(unsigned long self_addr, unsigned long *parent,
-+			   unsigned long frame_pointer);
-+
- #endif /* ifdef CONFIG_FUNCTION_GRAPH_TRACER  */
- #endif
- 
-diff --git a/arch/arm64/include/asm/syscall.h b/arch/arm64/include/asm/syscall.h
-index 4cfe9b49709b..ab8e14b96f68 100644
---- a/arch/arm64/include/asm/syscall.h
-+++ b/arch/arm64/include/asm/syscall.h
-@@ -85,4 +85,7 @@ static inline int syscall_get_arch(struct task_struct *task)
- 	return AUDIT_ARCH_AARCH64;
- }
- 
-+int syscall_trace_enter(struct pt_regs *regs);
-+void syscall_trace_exit(struct pt_regs *regs);
-+
- #endif	/* __ASM_SYSCALL_H */
-diff --git a/arch/arm64/kernel/syscall.c b/arch/arm64/kernel/syscall.c
-index 5a668d7f3c1f..b1ae2f2eaf77 100644
---- a/arch/arm64/kernel/syscall.c
-+++ b/arch/arm64/kernel/syscall.c
-@@ -75,9 +75,6 @@ static inline bool has_syscall_work(unsigned long flags)
- 	return unlikely(flags & _TIF_SYSCALL_WORK);
- }
- 
--int syscall_trace_enter(struct pt_regs *regs);
--void syscall_trace_exit(struct pt_regs *regs);
--
- static void el0_svc_common(struct pt_regs *regs, int scno, int sc_nr,
- 			   const syscall_fn_t syscall_table[])
- {
-diff --git a/arch/x86/kernel/ftrace.c b/arch/x86/kernel/ftrace.c
-index 01e8f34daf22..12df54ff0e81 100644
---- a/arch/x86/kernel/ftrace.c
-+++ b/arch/x86/kernel/ftrace.c
-@@ -282,7 +282,6 @@ static inline void tramp_free(void *tramp) { }
- 
- /* Defined as markers to the end of the ftrace default trampolines */
- extern void ftrace_regs_caller_end(void);
--extern void ftrace_regs_caller_ret(void);
- extern void ftrace_caller_end(void);
- extern void ftrace_caller_op_ptr(void);
- extern void ftrace_regs_caller_op_ptr(void);
-diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-index 8e59bd954153..ce156c7704ee 100644
---- a/include/linux/ftrace.h
-+++ b/include/linux/ftrace.h
-@@ -41,6 +41,15 @@ struct ftrace_ops;
- struct ftrace_regs;
- struct dyn_ftrace;
- 
-+char *arch_ftrace_match_adjust(char *str, const char *search);
-+
-+#ifdef CONFIG_HAVE_FUNCTION_GRAPH_RETVAL
-+struct fgraph_ret_regs;
-+unsigned long ftrace_return_to_handler(struct fgraph_ret_regs *ret_regs);
-+#else
-+unsigned long ftrace_return_to_handler(unsigned long frame_pointer);
-+#endif
-+
- #ifdef CONFIG_FUNCTION_TRACER
- /*
-  * If the arch's mcount caller does not support all of ftrace's
-diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
-index cd2c35b1dd8f..c83c005e654e 100644
---- a/kernel/trace/fgraph.c
-+++ b/kernel/trace/fgraph.c
-@@ -15,6 +15,7 @@
- #include <trace/events/sched.h>
- 
- #include "ftrace_internal.h"
-+#include "trace.h"
- 
- #ifdef CONFIG_DYNAMIC_FTRACE
- #define ASSIGN_OPS_HASH(opsname, val) \
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index 3740aca79fe7..05c0024815bf 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -3305,6 +3305,22 @@ static int ftrace_allocate_records(struct ftrace_page *pg, int count)
- 	return cnt;
- }
- 
-+static void ftrace_free_pages(struct ftrace_page *pages)
-+{
-+	struct ftrace_page *pg = pages;
-+
-+	while (pg) {
-+		if (pg->records) {
-+			free_pages((unsigned long)pg->records, pg->order);
-+			ftrace_number_of_pages -= 1 << pg->order;
-+		}
-+		pages = pg->next;
-+		kfree(pg);
-+		pg = pages;
-+		ftrace_number_of_groups--;
-+	}
-+}
-+
- static struct ftrace_page *
- ftrace_allocate_pages(unsigned long num_to_init)
- {
-@@ -3343,17 +3359,7 @@ ftrace_allocate_pages(unsigned long num_to_init)
- 	return start_pg;
- 
-  free_pages:
--	pg = start_pg;
--	while (pg) {
--		if (pg->records) {
--			free_pages((unsigned long)pg->records, pg->order);
--			ftrace_number_of_pages -= 1 << pg->order;
--		}
--		start_pg = pg->next;
--		kfree(pg);
--		pg = start_pg;
--		ftrace_number_of_groups--;
--	}
-+	ftrace_free_pages(start_pg);
- 	pr_info("ftrace: FAILED to allocate memory for functions\n");
- 	return NULL;
- }
-@@ -6471,9 +6477,11 @@ static int ftrace_process_locs(struct module *mod,
- 			       unsigned long *start,
- 			       unsigned long *end)
- {
-+	struct ftrace_page *pg_unuse = NULL;
- 	struct ftrace_page *start_pg;
- 	struct ftrace_page *pg;
- 	struct dyn_ftrace *rec;
-+	unsigned long skipped = 0;
- 	unsigned long count;
- 	unsigned long *p;
- 	unsigned long addr;
-@@ -6536,8 +6544,10 @@ static int ftrace_process_locs(struct module *mod,
- 		 * object files to satisfy alignments.
- 		 * Skip any NULL pointers.
- 		 */
--		if (!addr)
-+		if (!addr) {
-+			skipped++;
- 			continue;
-+		}
- 
- 		end_offset = (pg->index+1) * sizeof(pg->records[0]);
- 		if (end_offset > PAGE_SIZE << pg->order) {
-@@ -6551,8 +6561,10 @@ static int ftrace_process_locs(struct module *mod,
- 		rec->ip = addr;
- 	}
- 
--	/* We should have used all pages */
--	WARN_ON(pg->next);
-+	if (pg->next) {
-+		pg_unuse = pg->next;
-+		pg->next = NULL;
-+	}
- 
- 	/* Assign the last page to ftrace_pages */
- 	ftrace_pages = pg;
-@@ -6574,6 +6586,11 @@ static int ftrace_process_locs(struct module *mod,
-  out:
- 	mutex_unlock(&ftrace_lock);
- 
-+	/* We should have used all pages unless we skipped some */
-+	if (pg_unuse) {
-+		WARN_ON(!skipped);
-+		ftrace_free_pages(pg_unuse);
-+	}
- 	return ret;
- }
- 
-diff --git a/kernel/trace/ftrace_internal.h b/kernel/trace/ftrace_internal.h
-index 382775edf690..5012c04f92c0 100644
---- a/kernel/trace/ftrace_internal.h
-+++ b/kernel/trace/ftrace_internal.h
-@@ -2,6 +2,9 @@
- #ifndef _LINUX_KERNEL_FTRACE_INTERNAL_H
- #define  _LINUX_KERNEL_FTRACE_INTERNAL_H
- 
-+int __register_ftrace_function(struct ftrace_ops *ops);
-+int __unregister_ftrace_function(struct ftrace_ops *ops);
-+
- #ifdef CONFIG_FUNCTION_TRACER
- 
- extern struct mutex ftrace_lock;
-@@ -15,8 +18,6 @@ int ftrace_ops_test(struct ftrace_ops *ops, unsigned long ip, void *regs);
- 
- #else /* !CONFIG_DYNAMIC_FTRACE */
- 
--int __register_ftrace_function(struct ftrace_ops *ops);
--int __unregister_ftrace_function(struct ftrace_ops *ops);
- /* Keep as macros so we do not need to define the commands */
- # define ftrace_startup(ops, command)					\
- 	({								\
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index 834b361a4a66..14d8001140c8 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -5242,28 +5242,34 @@ unsigned long ring_buffer_size(struct trace_buffer *buffer, int cpu)
- }
- EXPORT_SYMBOL_GPL(ring_buffer_size);
- 
-+static void rb_clear_buffer_page(struct buffer_page *page)
-+{
-+	local_set(&page->write, 0);
-+	local_set(&page->entries, 0);
-+	rb_init_page(page->page);
-+	page->read = 0;
-+}
-+
- static void
- rb_reset_cpu(struct ring_buffer_per_cpu *cpu_buffer)
- {
-+	struct buffer_page *page;
-+
- 	rb_head_page_deactivate(cpu_buffer);
- 
- 	cpu_buffer->head_page
- 		= list_entry(cpu_buffer->pages, struct buffer_page, list);
--	local_set(&cpu_buffer->head_page->write, 0);
--	local_set(&cpu_buffer->head_page->entries, 0);
--	local_set(&cpu_buffer->head_page->page->commit, 0);
--
--	cpu_buffer->head_page->read = 0;
-+	rb_clear_buffer_page(cpu_buffer->head_page);
-+	list_for_each_entry(page, cpu_buffer->pages, list) {
-+		rb_clear_buffer_page(page);
-+	}
- 
- 	cpu_buffer->tail_page = cpu_buffer->head_page;
- 	cpu_buffer->commit_page = cpu_buffer->head_page;
- 
- 	INIT_LIST_HEAD(&cpu_buffer->reader_page->list);
- 	INIT_LIST_HEAD(&cpu_buffer->new_pages);
--	local_set(&cpu_buffer->reader_page->write, 0);
--	local_set(&cpu_buffer->reader_page->entries, 0);
--	local_set(&cpu_buffer->reader_page->page->commit, 0);
--	cpu_buffer->reader_page->read = 0;
-+	rb_clear_buffer_page(cpu_buffer->reader_page);
- 
- 	local_set(&cpu_buffer->entries_bytes, 0);
- 	local_set(&cpu_buffer->overrun, 0);
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 4529e264cb86..20122eeccf97 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -3118,6 +3118,7 @@ static void __ftrace_trace_stack(struct trace_buffer *buffer,
- 	struct ftrace_stack *fstack;
- 	struct stack_entry *entry;
- 	int stackidx;
-+	void *ptr;
- 
- 	/*
- 	 * Add one, for this function and the call to save_stack_trace()
-@@ -3161,9 +3162,25 @@ static void __ftrace_trace_stack(struct trace_buffer *buffer,
- 				    trace_ctx);
- 	if (!event)
- 		goto out;
--	entry = ring_buffer_event_data(event);
-+	ptr = ring_buffer_event_data(event);
-+	entry = ptr;
-+
-+	/*
-+	 * For backward compatibility reasons, the entry->caller is an
-+	 * array of 8 slots to store the stack. This is also exported
-+	 * to user space. The amount allocated on the ring buffer actually
-+	 * holds enough for the stack specified by nr_entries. This will
-+	 * go into the location of entry->caller. Due to string fortifiers
-+	 * checking the size of the destination of memcpy() it triggers
-+	 * when it detects that size is greater than 8. To hide this from
-+	 * the fortifiers, we use "ptr" and pointer arithmetic to assign caller.
-+	 *
-+	 * The below is really just:
-+	 *   memcpy(&entry->caller, fstack->calls, size);
-+	 */
-+	ptr += offsetof(typeof(*entry), caller);
-+	memcpy(ptr, fstack->calls, size);
- 
--	memcpy(&entry->caller, fstack->calls, size);
- 	entry->size = nr_entries;
- 
- 	if (!call_filter_check_discard(call, entry, buffer, event))
-diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-index b97d3ad832f1..c8c61381eba4 100644
---- a/kernel/trace/trace_events_hist.c
-+++ b/kernel/trace/trace_events_hist.c
-@@ -6663,13 +6663,15 @@ static int event_hist_trigger_parse(struct event_command *cmd_ops,
- 	if (get_named_trigger_data(trigger_data))
- 		goto enable;
- 
--	if (has_hist_vars(hist_data))
--		save_hist_vars(hist_data);
--
- 	ret = create_actions(hist_data);
- 	if (ret)
- 		goto out_unreg;
- 
-+	if (has_hist_vars(hist_data) || hist_data->n_var_refs) {
-+		if (save_hist_vars(hist_data))
-+			goto out_unreg;
-+	}
-+
- 	ret = tracing_map_init(hist_data->map);
- 	if (ret)
- 		goto out_unreg;
-diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
-index 4f5e74bbdab2..33cb6af31f39 100644
---- a/kernel/trace/trace_events_user.c
-+++ b/kernel/trace/trace_events_user.c
-@@ -1317,6 +1317,9 @@ static int user_field_set_string(struct ftrace_event_field *field,
- 	pos += snprintf(buf + pos, LEN_OR_ZERO, " ");
- 	pos += snprintf(buf + pos, LEN_OR_ZERO, "%s", field->name);
- 
-+	if (str_has_prefix(field->type, "struct "))
-+		pos += snprintf(buf + pos, LEN_OR_ZERO, " %d", field->size);
-+
- 	if (colon)
- 		pos += snprintf(buf + pos, LEN_OR_ZERO, ";");
- 
-diff --git a/kernel/trace/trace_kprobe_selftest.c b/kernel/trace/trace_kprobe_selftest.c
-index 16548ee4c8c6..3851cd1e6a62 100644
---- a/kernel/trace/trace_kprobe_selftest.c
-+++ b/kernel/trace/trace_kprobe_selftest.c
-@@ -1,4 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
-+
-+#include "trace_kprobe_selftest.h"
-+
- /*
-  * Function used during the kprobe self test. This function is in a separate
-  * compile unit so it can be compile with CC_FLAGS_FTRACE to ensure that it
-diff --git a/samples/ftrace/ftrace-direct-modify.c b/samples/ftrace/ftrace-direct-modify.c
-index 06d889149012..e5ed08098ff3 100644
---- a/samples/ftrace/ftrace-direct-modify.c
-+++ b/samples/ftrace/ftrace-direct-modify.c
-@@ -2,7 +2,9 @@
- #include <linux/module.h>
- #include <linux/kthread.h>
- #include <linux/ftrace.h>
-+#ifndef CONFIG_ARM64
- #include <asm/asm-offsets.h>
-+#endif
- 
- extern void my_direct_func1(void);
- extern void my_direct_func2(void);
-@@ -96,6 +98,38 @@ asm (
- 
- #endif /* CONFIG_S390 */
- 
-+#ifdef CONFIG_ARM64
-+
-+asm (
-+"	.pushsection    .text, \"ax\", @progbits\n"
-+"	.type		my_tramp1, @function\n"
-+"	.globl		my_tramp1\n"
-+"   my_tramp1:"
-+"	bti	c\n"
-+"	sub	sp, sp, #16\n"
-+"	stp	x9, x30, [sp]\n"
-+"	bl	my_direct_func1\n"
-+"	ldp	x30, x9, [sp]\n"
-+"	add	sp, sp, #16\n"
-+"	ret	x9\n"
-+"	.size		my_tramp1, .-my_tramp1\n"
-+
-+"	.type		my_tramp2, @function\n"
-+"	.globl		my_tramp2\n"
-+"   my_tramp2:"
-+"	bti	c\n"
-+"	sub	sp, sp, #16\n"
-+"	stp	x9, x30, [sp]\n"
-+"	bl	my_direct_func2\n"
-+"	ldp	x30, x9, [sp]\n"
-+"	add	sp, sp, #16\n"
-+"	ret	x9\n"
-+"	.size		my_tramp2, .-my_tramp2\n"
-+"	.popsection\n"
-+);
-+
-+#endif /* CONFIG_ARM64 */
-+
- #ifdef CONFIG_LOONGARCH
- 
- asm (
-diff --git a/samples/ftrace/ftrace-direct-multi-modify.c b/samples/ftrace/ftrace-direct-multi-modify.c
-index 62f6b681999e..292cff2b3f5d 100644
---- a/samples/ftrace/ftrace-direct-multi-modify.c
-+++ b/samples/ftrace/ftrace-direct-multi-modify.c
-@@ -2,7 +2,9 @@
- #include <linux/module.h>
- #include <linux/kthread.h>
- #include <linux/ftrace.h>
-+#ifndef CONFIG_ARM64
- #include <asm/asm-offsets.h>
-+#endif
- 
- extern void my_direct_func1(unsigned long ip);
- extern void my_direct_func2(unsigned long ip);
-@@ -103,6 +105,44 @@ asm (
- 
- #endif /* CONFIG_S390 */
- 
-+#ifdef CONFIG_ARM64
-+
-+asm (
-+"	.pushsection    .text, \"ax\", @progbits\n"
-+"	.type		my_tramp1, @function\n"
-+"	.globl		my_tramp1\n"
-+"   my_tramp1:"
-+"	bti	c\n"
-+"	sub	sp, sp, #32\n"
-+"	stp	x9, x30, [sp]\n"
-+"	str	x0, [sp, #16]\n"
-+"	mov	x0, x30\n"
-+"	bl	my_direct_func1\n"
-+"	ldp	x30, x9, [sp]\n"
-+"	ldr	x0, [sp, #16]\n"
-+"	add	sp, sp, #32\n"
-+"	ret	x9\n"
-+"	.size		my_tramp1, .-my_tramp1\n"
-+
-+"	.type		my_tramp2, @function\n"
-+"	.globl		my_tramp2\n"
-+"   my_tramp2:"
-+"	bti	c\n"
-+"	sub	sp, sp, #32\n"
-+"	stp	x9, x30, [sp]\n"
-+"	str	x0, [sp, #16]\n"
-+"	mov	x0, x30\n"
-+"	bl	my_direct_func2\n"
-+"	ldp	x30, x9, [sp]\n"
-+"	ldr	x0, [sp, #16]\n"
-+"	add	sp, sp, #32\n"
-+"	ret	x9\n"
-+"	.size		my_tramp2, .-my_tramp2\n"
-+"	.popsection\n"
-+);
-+
-+#endif /* CONFIG_ARM64 */
-+
- #ifdef CONFIG_LOONGARCH
- #include <asm/asm.h>
- 
-diff --git a/samples/ftrace/ftrace-direct-multi.c b/samples/ftrace/ftrace-direct-multi.c
-index 5482cf616b43..b4391e08c913 100644
---- a/samples/ftrace/ftrace-direct-multi.c
-+++ b/samples/ftrace/ftrace-direct-multi.c
-@@ -4,7 +4,9 @@
- #include <linux/mm.h> /* for handle_mm_fault() */
- #include <linux/ftrace.h>
- #include <linux/sched/stat.h>
-+#ifndef CONFIG_ARM64
- #include <asm/asm-offsets.h>
-+#endif
- 
- extern void my_direct_func(unsigned long ip);
- 
-@@ -66,6 +68,29 @@ asm (
- 
- #endif /* CONFIG_S390 */
- 
-+#ifdef CONFIG_ARM64
-+
-+asm (
-+"	.pushsection	.text, \"ax\", @progbits\n"
-+"	.type		my_tramp, @function\n"
-+"	.globl		my_tramp\n"
-+"   my_tramp:"
-+"	bti	c\n"
-+"	sub	sp, sp, #32\n"
-+"	stp	x9, x30, [sp]\n"
-+"	str	x0, [sp, #16]\n"
-+"	mov	x0, x30\n"
-+"	bl	my_direct_func\n"
-+"	ldp	x30, x9, [sp]\n"
-+"	ldr	x0, [sp, #16]\n"
-+"	add	sp, sp, #32\n"
-+"	ret	x9\n"
-+"	.size		my_tramp, .-my_tramp\n"
-+"	.popsection\n"
-+);
-+
-+#endif /* CONFIG_ARM64 */
-+
- #ifdef CONFIG_LOONGARCH
- 
- #include <asm/asm.h>
-diff --git a/samples/ftrace/ftrace-direct-too.c b/samples/ftrace/ftrace-direct-too.c
-index a05bc2cc2261..e9804c5307c0 100644
---- a/samples/ftrace/ftrace-direct-too.c
-+++ b/samples/ftrace/ftrace-direct-too.c
-@@ -3,16 +3,18 @@
- 
- #include <linux/mm.h> /* for handle_mm_fault() */
- #include <linux/ftrace.h>
-+#ifndef CONFIG_ARM64
- #include <asm/asm-offsets.h>
-+#endif
- 
--extern void my_direct_func(struct vm_area_struct *vma,
--			   unsigned long address, unsigned int flags);
-+extern void my_direct_func(struct vm_area_struct *vma, unsigned long address,
-+			   unsigned int flags, struct pt_regs *regs);
- 
--void my_direct_func(struct vm_area_struct *vma,
--			unsigned long address, unsigned int flags)
-+void my_direct_func(struct vm_area_struct *vma, unsigned long address,
-+		    unsigned int flags, struct pt_regs *regs)
- {
--	trace_printk("handle mm fault vma=%p address=%lx flags=%x\n",
--		     vma, address, flags);
-+	trace_printk("handle mm fault vma=%p address=%lx flags=%x regs=%p\n",
-+		     vma, address, flags, regs);
- }
- 
- extern void my_tramp(void *);
-@@ -34,7 +36,9 @@ asm (
- "	pushq %rdi\n"
- "	pushq %rsi\n"
- "	pushq %rdx\n"
-+"	pushq %rcx\n"
- "	call my_direct_func\n"
-+"	popq %rcx\n"
- "	popq %rdx\n"
- "	popq %rsi\n"
- "	popq %rdi\n"
-@@ -70,6 +74,30 @@ asm (
- 
- #endif /* CONFIG_S390 */
- 
-+#ifdef CONFIG_ARM64
-+
-+asm (
-+"	.pushsection	.text, \"ax\", @progbits\n"
-+"	.type		my_tramp, @function\n"
-+"	.globl		my_tramp\n"
-+"   my_tramp:"
-+"	bti	c\n"
-+"	sub	sp, sp, #48\n"
-+"	stp	x9, x30, [sp]\n"
-+"	stp	x0, x1, [sp, #16]\n"
-+"	stp	x2, x3, [sp, #32]\n"
-+"	bl	my_direct_func\n"
-+"	ldp	x30, x9, [sp]\n"
-+"	ldp	x0, x1, [sp, #16]\n"
-+"	ldp	x2, x3, [sp, #32]\n"
-+"	add	sp, sp, #48\n"
-+"	ret	x9\n"
-+"	.size		my_tramp, .-my_tramp\n"
-+"	.popsection\n"
-+);
-+
-+#endif /* CONFIG_ARM64 */
-+
- #ifdef CONFIG_LOONGARCH
- 
- asm (
-diff --git a/samples/ftrace/ftrace-direct.c b/samples/ftrace/ftrace-direct.c
-index 06879bbd3399..20f4a7caa810 100644
---- a/samples/ftrace/ftrace-direct.c
-+++ b/samples/ftrace/ftrace-direct.c
-@@ -3,7 +3,9 @@
- 
- #include <linux/sched.h> /* for wake_up_process() */
- #include <linux/ftrace.h>
-+#ifndef CONFIG_ARM64
- #include <asm/asm-offsets.h>
-+#endif
- 
- extern void my_direct_func(struct task_struct *p);
- 
-@@ -63,6 +65,28 @@ asm (
- 
- #endif /* CONFIG_S390 */
- 
-+#ifdef CONFIG_ARM64
-+
-+asm (
-+"	.pushsection	.text, \"ax\", @progbits\n"
-+"	.type		my_tramp, @function\n"
-+"	.globl		my_tramp\n"
-+"   my_tramp:"
-+"	bti	c\n"
-+"	sub	sp, sp, #32\n"
-+"	stp	x9, x30, [sp]\n"
-+"	str	x0, [sp, #16]\n"
-+"	bl	my_direct_func\n"
-+"	ldp	x30, x9, [sp]\n"
-+"	ldr	x0, [sp, #16]\n"
-+"	add	sp, sp, #32\n"
-+"	ret	x9\n"
-+"	.size		my_tramp, .-my_tramp\n"
-+"	.popsection\n"
-+);
-+
-+#endif /* CONFIG_ARM64 */
-+
- #ifdef CONFIG_LOONGARCH
- 
- asm (
-diff --git a/tools/testing/selftests/user_events/dyn_test.c b/tools/testing/selftests/user_events/dyn_test.c
-index d6979a48478f..91a4444ad42b 100644
---- a/tools/testing/selftests/user_events/dyn_test.c
-+++ b/tools/testing/selftests/user_events/dyn_test.c
-@@ -217,6 +217,18 @@ TEST_F(user, matching) {
- 	/* Types don't match */
- 	TEST_NMATCH("__test_event u64 a; u64 b",
- 		    "__test_event u32 a; u32 b");
-+
-+	/* Struct name and size matches */
-+	TEST_MATCH("__test_event struct my_struct a 20",
-+		   "__test_event struct my_struct a 20");
-+
-+	/* Struct name don't match */
-+	TEST_NMATCH("__test_event struct my_struct a 20",
-+		    "__test_event struct my_struct b 20");
-+
-+	/* Struct size don't match */
-+	TEST_NMATCH("__test_event struct my_struct a 20",
-+		    "__test_event struct my_struct a 21");
- }
- 
- int main(int argc, char **argv)
+T24gV2VkLCAyMDIzLTA3LTEyIGF0IDE1OjE1IC0wNzAwLCBJc2FrdSBZYW1haGF0YSB3cm90ZToN
+Cj4gPiBUaGUgU0VBTUNBTEwgQUJJIGlzIHZlcnkgc2ltaWxhciB0byB0aGUgVERDQUxMIEFCSSBh
+bmQgbGV2ZXJhZ2VzIG11Y2gNCj4gPiBURENBTEwgaW5mcmFzdHJ1Y3R1cmUuwqAgV2lyZSB1cCBi
+YXNpYyBmdW5jdGlvbnMgdG8gbWFrZSBTRUFNQ0FMTHMgZm9yDQo+ID4gdGhlIGJhc2ljIFREWCBz
+dXBwb3J0OiBfX3NlYW1jYWxsKCksIF9fc2VhbWNhbGxfcmV0KCkgYW5kDQo+ID4gX19zZWFtY2Fs
+bF9zYXZlZF9yZXQoKSB3aGljaCBpcyBmb3IgVERILlZQLkVOVEVSIGxlYWYgZnVuY3Rpb24uDQo+
+IA0KPiBIaS7CoCBfX3NlYW1jYWxsX3NhdmVkX3JldCgpIHVzZXMgc3RydWN0IHRkeF9tb2R1bGVf
+YXJnIGFzIGlucHV0IGFuZCBvdXRwdXQuwqAgRm9yDQo+IEtWTSBUREguVlAuRU5URVIgY2FzZSwg
+dGhvc2UgYXJndW1lbnRzIGFyZSBhbHJlYWR5IGluIHVuc2lnbmVkIGxvbmcNCj4ga3ZtX3ZjcHVf
+YXJjaDo6cmVnc1tdLsKgIEl0J3Mgc2lsbHkgdG8gbW92ZSB0aG9zZSB2YWx1ZXMgdHdpY2UuwqAg
+RnJvbQ0KPiBrdm1fdmNwdV9hcmNoOjpyZWdzIHRvIHRkeF9tb2R1bGVfYXJncy7CoCBGcm9tIHRk
+eF9tb2R1bGVfYXJncyB0byByZWFsIHJlZ2lzdGVycy4NCj4gDQo+IElmIFRESC5WUC5FTlRFUiBp
+cyB0aGUgb25seSB1c2VyIG9mIF9fc2VhbWNhbGxfc2F2ZWRfcmV0KCksIGNhbiB3ZSBtYWtlIGl0
+IHRvDQo+IHRha2UgdW5zaWduZWQgbG9uZyBrdm1fdmNwdV9hcmdoOjpyZWdzW05SX1ZDUFVfUkVH
+U10/wqAgTWF5YmUgSSBjYW4gbWFrZSB0aGUNCj4gY2hhbmdlIHdpdGggVERYIEtWTSBwYXRjaCBz
+ZXJpZXMuDQoNClRoZSBhc3NlbWJseSBjb2RlIGFzc3VtZXMgdGhlIHNlY29uZCBhcmd1bWVudCBp
+cyBhIHBvaW50ZXIgdG8gJ3N0cnVjdA0KdGR4X21vZHVsZV9hcmdzJy4gIEkgZG9uJ3Qga25vdyBo
+b3cgY2FuIHdlIGNoYW5nZSBfX3NlYW1jYWxsX3NhdmVkX3JldCgpIHRvDQphY2hpZXZlIHdoYXQg
+eW91IHNhaWQuICBXZSBtaWdodCBjaGFuZ2UgdGhlIGt2bV92Y3B1X2FyZ2g6OnJlZ3NbTlJfVkNQ
+VV9SRUdTXSB0bw0KbWF0Y2ggJ3N0cnVjdCB0ZHhfbW9kdWxlX2FyZ3MnJ3MgbGF5b3V0IGFuZCBt
+YW51YWxseSBjb252ZXJ0IHBhcnQgb2YgInJlZ3MiIHRvDQp0aGUgc3RydWN0dXJlIGFuZCBwYXNz
+IHRvIF9fc2VhbWNhbGxfc2F2ZWRfcmV0KCksIGJ1dCBpdCdzIHRvbyBoYWNreSBJIHN1cHBvc2Uu
+DQoNClRoaXMgd2FzIG9uZSBjb25jZXJuIHRoYXQgSSBtZW50aW9uZWQgVlAuRU5URVIgY2FuIGJl
+IGltcGxlbWVudGVkIGJ5IEtWTSBpbiBpdHMNCm93biBhc3NlbWJseSBpbiB0aGUgVERYIGhvc3Qg
+djEyIGRpc2N1c3Npb24uICBJIGtpbmRhIGFncmVlIHdlIHNob3VsZCBsZXZlcmFnZQ0KS1ZNJ3Mg
+ZXhpc3Rpbmcga3ZtX3ZjcHVfYXJjaDo6cmVnc1tOUl9DUFVfUkVHU10gaW5mcmFzdHJ1Y3R1cmUg
+dG8gbWluaW1pemUgdGhlDQpjb2RlIGNoYW5nZSB0byB0aGUgS1ZNJ3MgY29tbW9uIGluZnJhc3Ry
+dWN0dXJlLiAgSWYgc28sIEkgZ3Vlc3Mgd2UgaGF2ZSB0byBjYXJyeQ0KdGhpcyBtZW1vcnkgY29w
+eSBidXJkZW4gYmV0d2VlbiB0d28gc3RydWN0dXJlcy4NCg0KQnR3LCBJIGRvIGZpbmQgS1ZNJ3Mg
+VlAuRU5URVIgY29kZSBpcyBhIGxpdHRsZSBiaXQgcmVkdW5kYW50IHRvIHRoZSBjb21tb24NClNF
+QU1DQUxMIGFzc2VtYmx5LCB3aGljaCBpcyBhIGdvb2QgcmVhc29uIGZvciBLVk0gdG8gdXNlIF9f
+c2VhbWNhbGwoKSB2YXJpYW50cw0KZm9yIFRESC5WUC5FTlRFUi4NCg0KU28gaXQncyBhIHRyYWRl
+b2ZmIEkgdGhpbmsuDQoNCk9uIHRoZSBvdGhlciBoYW5kLCBnaXZlbiBDb0NvIFZNcyBub3JtYWxs
+eSBkb24ndCBleHBvc2UgYWxsIEdQUnMgdG8gVk1NLCBpdCdzDQphbHNvIGRlYmF0YWJsZSB3aGV0
+aGVyIHdlIHNob3VsZCBpbnZlbnQgYW5vdGhlciBpbmZyYXN0cnVjdHVyZSB0byB0aGUgS1ZNIGNv
+ZGUNCnRvIGhhbmRsZSByZWdpc3RlciBhY2Nlc3Mgb2YgQ29DbyBWTXMgdG9vLCBlLmcuLCB3ZSBj
+YW4gY2F0Y2ggYnVncyBlYXNpbHkgd2hlbg0KS1ZNIHRyaWVzIHRvIGFjY2VzcyB0aGUgcmVnaXN0
+ZXJzIHRoYXQgaXQgc2hvdWxkbid0IGFjY2Vzcy4NCg0KSXQncyBiZXR0ZXIgS1ZNIG1haW50YWlu
+ZXIgY2FuIHByb3ZpZGUgc29tZSBpbnB1dCBoZXJlLiA6KQ0K
