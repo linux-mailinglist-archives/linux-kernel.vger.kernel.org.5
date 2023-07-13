@@ -2,250 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1C97751FCB
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 13:20:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD6B4751FC7
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 13:20:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234468AbjGMLUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 07:20:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59042 "EHLO
+        id S233992AbjGMLUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 07:20:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234318AbjGMLUg (ORCPT
+        with ESMTP id S234225AbjGMLUg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 13 Jul 2023 07:20:36 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3BF426BB;
-        Thu, 13 Jul 2023 04:20:31 -0700 (PDT)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36DB21mj022314;
-        Thu, 13 Jul 2023 11:20:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=qcppdkim1;
- bh=v89CRS7CxCh3o1XBNy4m1cpnYqKFuJYcIzlFhO7tpZk=;
- b=DBYvn4lhCBTj/W1NQsHfmOXzICcd3xM0KNgdqEEqmMhkvazWfnx4vPKFOtlAaoKRmr/Z
- qASWVhcUVuq2jwrgB/cPL7VZRDUbcFSnXG/AJG6JnJ93EeDQmVWHgy2TBhDt0BHSBkJJ
- CGwEdRc07R3K+l7eMJ46qy2FLFidPOnLA3twihddADoLN7PLRiyC3X9lLbvGu4nu1C2V
- kqHlWbin5WWh8qrO073+L6GFfSjTyNyrQkFJuX1NArWaXeQKe9hXtko9r4zrLJ4TbXOx
- zkPMvnTb+8b15LM9EN4Oaa29fujp4Wp8yWtX/4EnnSau4rL5PgnKKEtnCS2LNhlwtZv5 3Q== 
-Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rtg1sg13f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 13 Jul 2023 11:20:23 +0000
-Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-        by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 36DBKK21012007;
-        Thu, 13 Jul 2023 11:20:20 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTPS id 3rq0vm0p93-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Thu, 13 Jul 2023 11:20:20 +0000
-Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36DBKJvn011991;
-        Thu, 13 Jul 2023 11:20:19 GMT
-Received: from hu-sgudaval-hyd.qualcomm.com (hu-krichai-hyd.qualcomm.com [10.213.110.112])
-        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 36DBKJ6a011979;
-        Thu, 13 Jul 2023 11:20:19 +0000
-Received: by hu-sgudaval-hyd.qualcomm.com (Postfix, from userid 4058933)
-        id D58BD4AC7; Thu, 13 Jul 2023 16:50:18 +0530 (+0530)
-From:   Krishna chaitanya chundru <quic_krichai@quicinc.com>
-To:     manivannan.sadhasivam@linaro.org
-Cc:     helgaas@kernel.org, linux-pci@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        quic_vbadigan@quicinc.com, quic_nitegupt@quicinc.com,
-        quic_skananth@quicinc.com, quic_ramkri@quicinc.com,
-        krzysztof.kozlowski@linaro.org,
-        Krishna chaitanya chundru <quic_krichai@quicinc.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH v8 3/3] PCI: qcom-ep: Add ICC bandwidth voting support
-Date:   Thu, 13 Jul 2023 16:50:13 +0530
-Message-Id: <1689247213-13569-4-git-send-email-quic_krichai@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1689247213-13569-1-git-send-email-quic_krichai@quicinc.com>
-References: <1689247213-13569-1-git-send-email-quic_krichai@quicinc.com>
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: VEvxgUv7VLUcS0E7ZmLY8kdRamiban9L
-X-Proofpoint-ORIG-GUID: VEvxgUv7VLUcS0E7ZmLY8kdRamiban9L
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-13_04,2023-07-11_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 mlxlogscore=999 spamscore=0 impostorscore=0 mlxscore=0
- suspectscore=0 adultscore=0 clxscore=1015 priorityscore=1501 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2305260000 definitions=main-2307130099
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0165B198A;
+        Thu, 13 Jul 2023 04:20:28 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F3E1A1570;
+        Thu, 13 Jul 2023 04:21:10 -0700 (PDT)
+Received: from FVFF77S0Q05N.cambridge.arm.com (unknown [10.37.36.116])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 954BC3F740;
+        Thu, 13 Jul 2023 04:20:26 -0700 (PDT)
+Date:   Thu, 13 Jul 2023 12:20:19 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     "Aiqun(Maria) Yu" <quic_aiquny@quicinc.com>
+Cc:     Will Deacon <will@kernel.org>, corbet@lwn.net,
+        catalin.marinas@arm.com, maz@kernel.org, quic_pkondeti@quicinc.com,
+        quic_kaushalk@quicinc.com, quic_satyap@quicinc.com,
+        quic_shashim@quicinc.com, quic_songxue@quicinc.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] arm64: Add the arm64.nolse_atomics command line option
+Message-ID: <ZK_d86ApI1FCHhTL@FVFF77S0Q05N.cambridge.arm.com>
+References: <20230710055955.36551-1-quic_aiquny@quicinc.com>
+ <20230710093751.GC32673@willie-the-truck>
+ <5cf15f85-0397-96f7-4110-13494551b53b@quicinc.com>
+ <20230711082226.GA1554@willie-the-truck>
+ <84f0994a-26de-c20a-a32f-ec8fe41df3a3@quicinc.com>
+ <20230711102510.GA1809@willie-the-truck>
+ <67c2621f-4cad-2495-9785-7737246d3e90@quicinc.com>
+ <ZK5X9bXQT7GBxNHj@FVFF77S0Q05N.emea.arm.com>
+ <604ac52d-4336-744f-2ab8-44d1c93fbaa8@quicinc.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <604ac52d-4336-744f-2ab8-44d1c93fbaa8@quicinc.com>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for voting interconnect (ICC) bandwidth based
-on the link speed and width.
+On Thu, Jul 13, 2023 at 10:24:24AM +0800, Aiqun(Maria) Yu wrote:
+> On 7/12/2023 3:36 PM, Mark Rutland wrote:
+> > On Wed, Jul 12, 2023 at 11:09:10AM +0800, Aiqun(Maria) Yu wrote:
+> > > On 7/11/2023 6:25 PM, Will Deacon wrote:
+> > > > On Tue, Jul 11, 2023 at 06:15:49PM +0800, Aiqun(Maria) Yu wrote:
+> > > > > On 7/11/2023 4:22 PM, Will Deacon wrote:
+> > > > > > On Tue, Jul 11, 2023 at 12:02:22PM +0800, Aiqun(Maria) Yu wrote:
+> > > > > > > On 7/10/2023 5:37 PM, Will Deacon wrote:
+> > > > > > > > On Mon, Jul 10, 2023 at 01:59:55PM +0800, Maria Yu wrote:
+> > > > > > > > > In order to be able to disable lse_atomic even if cpu
+> > > > > > > > > support it, most likely because of memory controller
+> > > > > > > > > cannot deal with the lse atomic instructions, use a
+> > > > > > > > > new idreg override to deal with it.
+> > > > > > > > 
+> > > > > > > > This should not be a problem for cacheable memory though, right?
+> > > > > > > > 
+> > > > > > > > Given that Linux does not issue atomic operations to non-cacheable mappings,
+> > > > > > > > I'm struggling to see why there's a problem here.
+> > > > > > > 
+> > > > > > > The lse atomic operation can be issued on non-cacheable mappings as well.
+> > > > > > > Even if it is cached data, with different CPUECTLR_EL1 setting, it can also
+> > > > > > > do far lse atomic operations.
+> > > > > > 
+> > > > > > Please can you point me to the place in the kernel sources where this
+> > > > > > happens? The architecture doesn't guarantee that atomics to non-cacheable
+> > > > > > mappings will work, see "B2.2.6 Possible implementation restrictions on
+> > > > > > using atomic instructions". Linux, therefore, doesn't issue atomics
+> > > > > > to non-cacheable memory.
+> > > > > 
+> > > > > We encounter the issue on third party kernel modules and third party apps
+> > > > > instead of linux kernel itself.
+> > > > 
+> > > > Great, so there's nothing to do in the kernel then!
+> > > > 
+> > > > The third party code needs to be modified not to use atomic instructions
+> > > > with non-cacheable mappings. No need to involve us with that.
+> > > 
+> > > > > This is a tradeoff of performance and stability. Per my understanding,
+> > > > > options can be used to enable the lse_atomic to have the most performance
+> > > > > cared system, and disable the lse_atomic by stability cared most system.
+> > > > 
+> > > > Where do livelock and starvation fit in with "stability"? Disabling LSE
+> > > > atomics for things like qspinlock and the scheduler just because of some
+> > > > badly written third-party code isn't much of a tradeoff.
+> > 
+> > > We also have requirement to have cpus/system fully support lse atomic and
+> > > cpus/system not fully support lse atomic with a generic kernel image.
+> > 
+> > Who *specifically* has this requirement (i.e. what does 'we' mean here)? The
+> 
+> I can use other word to describe the requirement instead of "we".
+> 
+> There is requirements like android google gki. It request different cpu arch
+> system to use same generic kernel Image.
 
-This commit is inspired from the basic interconnect support added
-to pcie-qcom driver in commit c4860af88d0c ("PCI: qcom: Add basic
-interconnect support").
+GKI requires the system to use the generic kernel image; GKI does not require
+supporting atomics to non-cacheable mappings.
 
-The interconnect support is kept optional to be backward compatible
-with legacy devicetrees.
+What I am asking is: who has the requirement to perform atomics to
+non-cacheable mappings?
 
-Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
----
- drivers/pci/controller/dwc/pcie-qcom-ep.c | 72 +++++++++++++++++++++++++++++++
- 1 file changed, 72 insertions(+)
+> > upstream kernel does not require that atomics work on non-cacheable memory, and
+> 
+> The same issue the system can be down of lse atomic not supported for
+> cachable memory when there need far atomic.
 
-diff --git a/drivers/pci/controller/dwc/pcie-qcom-ep.c b/drivers/pci/controller/dwc/pcie-qcom-ep.c
-index 0fe7f06..cf9fc94 100644
---- a/drivers/pci/controller/dwc/pcie-qcom-ep.c
-+++ b/drivers/pci/controller/dwc/pcie-qcom-ep.c
-@@ -13,6 +13,7 @@
- #include <linux/debugfs.h>
- #include <linux/delay.h>
- #include <linux/gpio/consumer.h>
-+#include <linux/interconnect.h>
- #include <linux/mfd/syscon.h>
- #include <linux/phy/pcie.h>
- #include <linux/phy/phy.h>
-@@ -28,6 +29,7 @@
- #define PARF_SYS_CTRL				0x00
- #define PARF_DB_CTRL				0x10
- #define PARF_PM_CTRL				0x20
-+#define PARF_PM_STTS				0x24
- #define PARF_MHI_CLOCK_RESET_CTRL		0x174
- #define PARF_MHI_BASE_ADDR_LOWER		0x178
- #define PARF_MHI_BASE_ADDR_UPPER		0x17c
-@@ -133,6 +135,11 @@
- #define CORE_RESET_TIME_US_MAX			1005
- #define WAKE_DELAY_US				2000 /* 2 ms */
- 
-+#define PCIE_GEN1_BW_MBPS			250
-+#define PCIE_GEN2_BW_MBPS			500
-+#define PCIE_GEN3_BW_MBPS			985
-+#define PCIE_GEN4_BW_MBPS			1969
-+
- #define to_pcie_ep(x)				dev_get_drvdata((x)->dev)
- 
- enum qcom_pcie_ep_link_status {
-@@ -178,6 +185,8 @@ struct qcom_pcie_ep {
- 	struct phy *phy;
- 	struct dentry *debugfs;
- 
-+	struct icc_path *icc_mem;
-+
- 	struct clk_bulk_data *clks;
- 	int num_clks;
- 
-@@ -253,8 +262,49 @@ static void qcom_pcie_dw_stop_link(struct dw_pcie *pci)
- 	disable_irq(pcie_ep->perst_irq);
- }
- 
-+static void qcom_pcie_ep_icc_update(struct qcom_pcie_ep *pcie_ep)
-+{
-+	struct dw_pcie *pci = &pcie_ep->pci;
-+	u32 offset, status, bw;
-+	int speed, width;
-+	int ret;
-+
-+	if (!pcie_ep->icc_mem)
-+		return;
-+
-+	offset = dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
-+	status = readw(pci->dbi_base + offset + PCI_EXP_LNKSTA);
-+
-+	speed = FIELD_GET(PCI_EXP_LNKSTA_CLS, status);
-+	width = FIELD_GET(PCI_EXP_LNKSTA_NLW, status);
-+
-+	switch (speed) {
-+	case 1:
-+		bw = MBps_to_icc(PCIE_GEN1_BW_MBPS);
-+		break;
-+	case 2:
-+		bw = MBps_to_icc(PCIE_GEN2_BW_MBPS);
-+		break;
-+	case 3:
-+		bw = MBps_to_icc(PCIE_GEN3_BW_MBPS);
-+		break;
-+	default:
-+		dev_warn(pci->dev, "using default GEN4 bandwidth\n");
-+		fallthrough;
-+	case 4:
-+		bw = MBps_to_icc(PCIE_GEN4_BW_MBPS);
-+		break;
-+	}
-+
-+	ret = icc_set_bw(pcie_ep->icc_mem, 0, width * bw);
-+	if (ret)
-+		dev_err(pci->dev, "failed to set interconnect bandwidth: %d\n",
-+			ret);
-+}
-+
- static int qcom_pcie_enable_resources(struct qcom_pcie_ep *pcie_ep)
- {
-+	struct dw_pcie *pci = &pcie_ep->pci;
- 	int ret;
- 
- 	ret = clk_bulk_prepare_enable(pcie_ep->num_clks, pcie_ep->clks);
-@@ -277,8 +327,24 @@ static int qcom_pcie_enable_resources(struct qcom_pcie_ep *pcie_ep)
- 	if (ret)
- 		goto err_phy_exit;
- 
-+	/*
-+	 * Some Qualcomm platforms require interconnect bandwidth constraints
-+	 * to be set before enabling interconnect clocks.
-+	 *
-+	 * Set an initial peak bandwidth corresponding to single-lane Gen 1
-+	 * for the pcie-mem path.
-+	 */
-+	ret = icc_set_bw(pcie_ep->icc_mem, 0, MBps_to_icc(PCIE_GEN1_BW_MBPS));
-+	if (ret) {
-+		dev_err(pci->dev, "failed to set interconnect bandwidth: %d\n",
-+			ret);
-+		goto err_phy_off;
-+	}
-+
- 	return 0;
- 
-+err_phy_off:
-+	phy_power_off(pcie_ep->phy);
- err_phy_exit:
- 	phy_exit(pcie_ep->phy);
- err_disable_clk:
-@@ -289,6 +355,7 @@ static int qcom_pcie_enable_resources(struct qcom_pcie_ep *pcie_ep)
- 
- static void qcom_pcie_disable_resources(struct qcom_pcie_ep *pcie_ep)
- {
-+	icc_set_bw(pcie_ep->icc_mem, 0, 0);
- 	phy_power_off(pcie_ep->phy);
- 	phy_exit(pcie_ep->phy);
- 	clk_bulk_disable_unprepare(pcie_ep->num_clks, pcie_ep->clks);
-@@ -550,6 +617,10 @@ static int qcom_pcie_ep_get_resources(struct platform_device *pdev,
- 	if (IS_ERR(pcie_ep->phy))
- 		ret = PTR_ERR(pcie_ep->phy);
- 
-+	pcie_ep->icc_mem = devm_of_icc_get(dev, "pcie-mem");
-+	if (IS_ERR(pcie_ep->icc_mem))
-+		ret = PTR_ERR(pcie_ep->icc_mem);
-+
- 	return ret;
- }
- 
-@@ -573,6 +644,7 @@ static irqreturn_t qcom_pcie_ep_global_irq_thread(int irq, void *data)
- 	} else if (FIELD_GET(PARF_INT_ALL_BME, status)) {
- 		dev_dbg(dev, "Received BME event. Link is enabled!\n");
- 		pcie_ep->link_status = QCOM_PCIE_EP_LINK_ENABLED;
-+		qcom_pcie_ep_icc_update(pcie_ep);
- 		pci_epc_bme_notify(pci->ep.epc);
- 	} else if (FIELD_GET(PARF_INT_ALL_PM_TURNOFF, status)) {
- 		dev_dbg(dev, "Received PM Turn-off event! Entering L23\n");
--- 
-2.7.4
+Are you saying that LSE atomics to *cacheable* mappings do not work on your
+system?
 
+Specifically, when using a Normal Inner-Shareable Inner-Writeback
+Outer-Writeback mapping, do the LSE atomics work or not work?
+
+> > saying "The company I work for want this" doesn't change that.
+> > 
+> > AFAICT the system here is architecturally compliant, and what you're relying
+> > upon something that the architecture doesn't guarantee, and Linux doesn't
+> > guarantee.
+> 
+> It is not also only our company's problem:
+> To support the atomic instructions added in the Armv8.1 architecture, CHI-B
+> provides Atomic Transactions. while Atomic Transactions support is also
+> *optional* from CHI-B.
+> 
+> So far atomic cannot fully supported by ARMv8.1 cpu + CHI-B system as well.
+> 
+> from:
+> https://developer.arm.com/documentation/102407/0100/Atomic-operations?lang=en
+> 
+> So only cpu support atomic cannot garantee the system support lse atomic
+> > 
+> > > Same kernel module wanted to be used by lse atomic fully support cpu and not
+> > > fully support cpu/system as well.
+> > 
+> > Which kernel modules *specifically* need to do atomics to non-cacheable memory?
+> The driver want to always do far atomic(no speculatively) and allow a
+> read-modify-write non-interruptible sequence in a single instruction.
+
+That doesn't answer my question (you haven't told me what "the driver" is).
+
+That doesn't explain why you need to use non-cachable memory for this.
+
+Thanks,
+Mark.
