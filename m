@@ -2,223 +2,488 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F8BE751EE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 12:35:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 383A4751EEB
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 12:36:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234133AbjGMKfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 06:35:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39794 "EHLO
+        id S233983AbjGMKg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 06:36:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233106AbjGMKfE (ORCPT
+        with ESMTP id S229640AbjGMKg1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 06:35:04 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2046.outbound.protection.outlook.com [40.107.243.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5D851720;
-        Thu, 13 Jul 2023 03:35:02 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=myD9z1vUutNcJKunCoEjJbQM2JoVPdWs26MW63VoeC/LquEI9a6uocKCmP3nsSlHoAEuI8wR2h5uClH8BPnrMnW2WNm8bxFKl54pTtRHH0VsHWnPvB0nWUa02OiNh0t3DOjN/WTOg6blXcnq5tOC20AYa1tcIAXiDIP2JrsidUEce06fTdzdx+lsZscZEziShrF+NOPe9THucY5hLmqqhs8kDuammOtgmjrXP8MMztGy87VevUfHEJ059Fisty5DFBlnLruug86NU2P4OM2iXtA4mYuInd3WQZf0lUOVsnzqW4EJ6qAdwBxiSO4yo96DTE7oqkswlD6gBh+8Fk2nxQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jBxI4RThnKa5YQqbxjsvpaY2Bvd3kMAkjmDdJeWZ2Xk=;
- b=F0ACz29iipNi/dQikFyBVOuyaxbq0VeRgCEoYAxWq8tDhHGBuFQQ05L8i0zjAceFTFLuFQjVoUy/c2kcRrYAlNaLfZP9aC94Y9L2ARy6+uqKkaphBZb5cwP4FqS7zms0DHSGUAVY4TiwyeoHpYIGgFRwOn5bBSXmhIM/xdlEU3VNYIyu2Qv+rHYldsaEeSZbw8RxrVPl36VxnXlE1VpbV/p+AflgiNMfotGSV2dphaVwQxJiOhjJQhO6LN5xqw1KzSdAThRC/uu0Nty+ohJht2gqhRurjxxy732tRxsZFocU/Bwdz5N/ECRFkP19OyGxWwVkRDGWaNUPBlk2d/a6Bw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=davemloft.net smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jBxI4RThnKa5YQqbxjsvpaY2Bvd3kMAkjmDdJeWZ2Xk=;
- b=rfvwm/cJN7h9K+wWNj9fw357+B3RfdsAUNU1X6T1VKl+h1NRpkUaoNNpes4hrbI6f9s+A+aP0378guW+tZ5grunFa25KBumXrJGuDx2bY5KwMG3iwfPgTG3tjafCUyVyaoHnq8lz8B1TkCLRAGQfGRRFZpHTMBLx7pPGHaguidk=
-Received: from BN8PR12CA0036.namprd12.prod.outlook.com (2603:10b6:408:60::49)
- by MN2PR12MB4453.namprd12.prod.outlook.com (2603:10b6:208:260::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.22; Thu, 13 Jul
- 2023 10:35:00 +0000
-Received: from BN8NAM11FT073.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:60:cafe::74) by BN8PR12CA0036.outlook.office365.com
- (2603:10b6:408:60::49) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.24 via Frontend
- Transport; Thu, 13 Jul 2023 10:35:00 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BN8NAM11FT073.mail.protection.outlook.com (10.13.177.231) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6588.24 via Frontend Transport; Thu, 13 Jul 2023 10:34:59 +0000
-Received: from SATLEXMB06.amd.com (10.181.40.147) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Thu, 13 Jul
- 2023 05:34:59 -0500
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB06.amd.com
- (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Thu, 13 Jul
- 2023 05:34:58 -0500
-Received: from xhdpranavis40.xilinx.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.23 via Frontend
- Transport; Thu, 13 Jul 2023 05:34:54 -0500
-From:   Pranavi Somisetty <pranavi.somisetty@amd.com>
-To:     <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <michal.simek@amd.com>, <harini.katakam@amd.com>
-CC:     <git@amd.com>, <radhey.shyam.pandey@amd.com>,
-        <pranavi.somisetty@amd.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH] dt-bindings: net: xilinx_gmii2rgmii: Convert to json schema
-Date:   Thu, 13 Jul 2023 04:34:53 -0600
-Message-ID: <20230713103453.24018-1-pranavi.somisetty@amd.com>
-X-Mailer: git-send-email 2.36.1
+        Thu, 13 Jul 2023 06:36:27 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3128119
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 03:36:25 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9923833737eso77499066b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 03:36:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689244584; x=1691836584;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jd1121X7hsRvwiEJeJMLPNg8mwgNjy602P1L116XEcs=;
+        b=HaEMQlr7i8zLaHQPhT6SIWg7l0Vnd9Hm/q/EpxhxzG3pGYe8fmNTs3yfziEnx54L8X
+         BBeGvNXzdMkVJLTVkJP7xyLqt8BctjGgAqtiozXpNuBVSIstjta5KQs9YrLoCRjFW4Yt
+         PET2vnT4WsmIuE9P53P913Po4NP4x5EexljWVAu4gjmh7+zZouy64E4EdP2uoZcHpy9A
+         2CjtwfORSBjquw8IarxbGW0E1goiHQS8kXeUfkdtGOWWcXczjm79nbR1n2dTdtZoEyMV
+         n0q84qM0DqIGN4AMXK7l0H6K7p4gG5Nsykp/sw2hFcip8Eas0+eLSztN07ntxBwbpmQp
+         caBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689244584; x=1691836584;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jd1121X7hsRvwiEJeJMLPNg8mwgNjy602P1L116XEcs=;
+        b=KBonCB8fbjRO8fvaSdGsT49ecQp1kULUHHELdyh0AfTFMIzOHLvDt1HC2nl1oTQvef
+         nsxhUdSODdRUedAm2IO8iOgoRR2SFREyrHvW4fjdHhrvN4GjvHEnIA4dLHUhLl2aRnnm
+         jUxEzH6/ZSLpWE3n4xY5/nQ9pkodaLFMaRN9EDx54nNeo42Cu+McymYfDtKY77bqFdjj
+         CNnthiqEylVovNiXG11AvSjsRkIE0hYHM6BFTiLpvBaHVgbfEc/vRhHXyKGAltLvwqie
+         FfPXlHnVcKll9tIc17wndEva3dbv8O5jejSdAH9Wjt9WVeF9IAzqhaJaApyt70YPoaf8
+         +fyg==
+X-Gm-Message-State: ABy/qLYD4k7f6t+LidXW/PyJzRjzHX5jp+JAUWoLjPQ0YIngUs4kRSKk
+        uJ6EAzv89TtSU6pWXBNi6m9BeF+Wk5mAUb5wKjpR+rRlUgk1iAGOx5OAJQ==
+X-Google-Smtp-Source: APBJJlEMePIAUiTiUCnDu4vL3G3jnPFL6cjAEPuLEumvIqDGIZSdlywlZU46R7j9giw2uti/vuMTQB912NMqbx4ezwc=
+X-Received: by 2002:a17:906:210:b0:993:d117:e3b9 with SMTP id
+ 16-20020a170906021000b00993d117e3b9mr1190491ejd.20.1689244583819; Thu, 13 Jul
+ 2023 03:36:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN8NAM11FT073:EE_|MN2PR12MB4453:EE_
-X-MS-Office365-Filtering-Correlation-Id: bea9c579-dd7d-471a-3924-08db838ccf29
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0xHam2gnvpiumXWKTAR3VjF5kRzFXevW82iB4iSUMz2IUArZWGscLKIu1pDE8JvAe9hAz+Vo9PfBhJM3PjLsnyZ+5XF9O+oZ0gP4zHWYGaTDwvvxo3jSGTgIS70jpIocStjSK3Z4TZJ39smir/unNfgKSIQ6vgEctMkDMv+al+ebIMaOBJESqEFPeT+DQvvOBvjK+Xz2uX7m0Js9c/q7yW5QFiIfwYK3me0uDWFiYGsIgrclN/sLBpEGpDE7h7qk2vc/C7N5CfeG30U6J7whdNcJsuHKB2tCCaFvcZM7XB75HpzX90w67Rm/PgquYSeBgQoXQUWcfjv1NO/HaHts5bYqGkKDvMoQoYzN3H26sSiPolpBlxB8VeGsv2++kU6Ko8hrwnZGB6h8c5Gq6zF8L+K0meHpu5ZchEbQAZI0MX5YNn4xLp+WR+Zl7D46va61cvufiBDq1oNHLKZCpRJNi98+xDhyGudv1Cjt74esXoyGpfjJ7QBoc3qCUxZ9zQgk/UjfVDvkHxpX30gvF1x76cXAODS+27irTY0fXvh79CtKGTOMQCAGeBnH60HGDCh0tuEK4/6XTUnOvIe2kaqvzyDwxyefToflwEX048cuKF/Of+2vUZff80hMO0PJ/rwY1KIrfx6SSurDznfTRaTo8Y+o/1LDr74nGLvOR9+/P3uY8xGTiysQ1VMe5KNC9ppgPH4HBmR37LWbd+WVglqUb34l5Bh3BNKjBXweWpeRU133OEUqrOYmsjJlfoFgTDKUqt+dXHeHk5f7oR+LhQyHquyKXLHNk1ywOzjNvz80p9A=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(396003)(346002)(136003)(39860400002)(376002)(451199021)(36840700001)(46966006)(40470700004)(40460700003)(41300700001)(336012)(82310400005)(47076005)(356005)(81166007)(426003)(83380400001)(2616005)(82740400003)(186003)(1076003)(26005)(36860700001)(40480700001)(966005)(110136005)(54906003)(478600001)(2906002)(316002)(70586007)(36756003)(70206006)(6636002)(4326008)(5660300002)(44832011)(7416002)(8936002)(8676002)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2023 10:34:59.6833
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: bea9c579-dd7d-471a-3924-08db838ccf29
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT073.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4453
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+References: <20230620194644.3142384-1-yosryahmed@google.com> <CAKEwX=OLR02MazB31wR-nphjZJvBHrm5Zy7hLPByZ3ubgO8mjw@mail.gmail.com>
+In-Reply-To: <CAKEwX=OLR02MazB31wR-nphjZJvBHrm5Zy7hLPByZ3ubgO8mjw@mail.gmail.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Thu, 13 Jul 2023 03:35:25 -0700
+Message-ID: <CAJD7tkZ7dLwny7-CX7qCywZPtki+fDuESGfv+B9QG87cSsrHVQ@mail.gmail.com>
+Subject: Re: [PATCH v3] mm: zswap: multiple zpools support
+To:     Nhat Pham <nphamcs@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Seth Jennings <sjenning@redhat.com>,
+        Dan Streetman <ddstreet@ieee.org>,
+        Vitaly Wool <vitaly.wool@konsulko.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Domenico Cerasuolo <cerasuolodomenico@gmail.com>,
+        Yu Zhao <yuzhao@google.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the Xilinx GMII to RGMII Converter device tree binding
-documentation to json schema.
-This converter is usually used as gem <---> gmii2rgmii <---> external phy
-and, it's phy-handle should point to the phandle of the external phy.
+On Sun, Jul 9, 2023 at 4:12=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> wrote:
+>
+> On Tue, Jun 20, 2023 at 12:46=E2=80=AFPM Yosry Ahmed <yosryahmed@google.c=
+om> wrote:
+> >
+> > Support using multiple zpools of the same type in zswap, for concurrenc=
+y
+> > purposes. A fixed number of 32 zpools is suggested by this commit, whic=
+h
+> > was determined empirically. It can be later changed or made into a
+> > config option if needed.
+> >
+> > On a setup with zswap and zsmalloc, comparing a single zpool to 32
+> > zpools shows improvements in the zsmalloc lock contention, especially o=
+n
+> > the swap out path.
+> >
+> > The following shows the perf analysis of the swapout path when 10
+> > workloads are simultaneously reclaiming and refaulting tmpfs pages.
+> > There are some improvements on the swap in path as well, but less
+> > significant.
+> >
+> > 1 zpool:
+> >
+> >  |--28.99%--zswap_frontswap_store
+> >        |
+> >        <snip>
+> >        |
+> >        |--8.98%--zpool_map_handle
+> >        |     |
+> >        |      --8.98%--zs_zpool_map
+> >        |           |
+> >        |            --8.95%--zs_map_object
+> >        |                 |
+> >        |                  --8.38%--_raw_spin_lock
+> >        |                       |
+> >        |                        --7.39%--queued_spin_lock_slowpath
+> >        |
+> >        |--8.82%--zpool_malloc
+> >        |     |
+> >        |      --8.82%--zs_zpool_malloc
+> >        |           |
+> >        |            --8.80%--zs_malloc
+> >        |                 |
+> >        |                 |--7.21%--_raw_spin_lock
+> >        |                 |     |
+> >        |                 |      --6.81%--queued_spin_lock_slowpath
+> >        <snip>
+> >
+> > 32 zpools:
+> >
+> >  |--16.73%--zswap_frontswap_store
+> >        |
+> >        <snip>
+> >        |
+> >        |--1.81%--zpool_malloc
+> >        |     |
+> >        |      --1.81%--zs_zpool_malloc
+> >        |           |
+> >        |            --1.79%--zs_malloc
+> >        |                 |
+> >        |                  --0.73%--obj_malloc
+> >        |
+> >        |--1.06%--zswap_update_total_size
+> >        |
+> >        |--0.59%--zpool_map_handle
+> >        |     |
+> >        |      --0.59%--zs_zpool_map
+> >        |           |
+> >        |            --0.57%--zs_map_object
+> >        |                 |
+> >        |                  --0.51%--_raw_spin_lock
+> >        <snip>
+> >
+> > Suggested-by: Yu Zhao <yuzhao@google.com>
+> > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> > ---
+> >
+> > v2 -> v3:
+> > - Removed config option (Johannes Weiner). Now it's a constant.
+> > - Fixed spelling typos (Yu Zhao).
+> >
+> > v1 -> v2:
+> > - Prettified perf graph in commit log.
+> > - Changed zswap_nr_zpools to a macro, changed zswap_pool->zpools to a
+> >   fixed size array instead of a flex array.
+> > - Removed stale comment.
+> >
+> > ---
+> >  mm/zswap.c | 81 ++++++++++++++++++++++++++++++++++++------------------
+> >  1 file changed, 54 insertions(+), 27 deletions(-)
+> >
+> > diff --git a/mm/zswap.c b/mm/zswap.c
+> > index 87b204233115..6ee7028497b8 100644
+> > --- a/mm/zswap.c
+> > +++ b/mm/zswap.c
+> > @@ -142,6 +142,9 @@ static bool zswap_exclusive_loads_enabled =3D IS_EN=
+ABLED(
+> >                 CONFIG_ZSWAP_EXCLUSIVE_LOADS_DEFAULT_ON);
+> >  module_param_named(exclusive_loads, zswap_exclusive_loads_enabled, boo=
+l, 0644);
+> >
+> > +/* Number of zpools in zswap_pool (empirically determined for scalabil=
+ity) */
+> > +#define ZSWAP_NR_ZPOOLS 32
+> > +
+> >  /*********************************
+> >  * data structures
+> >  **********************************/
+> > @@ -161,7 +164,7 @@ struct crypto_acomp_ctx {
+> >   * needs to be verified that it's still valid in the tree.
+> >   */
+> >  struct zswap_pool {
+> > -       struct zpool *zpool;
+> > +       struct zpool *zpools[ZSWAP_NR_ZPOOLS];
+> >         struct crypto_acomp_ctx __percpu *acomp_ctx;
+> >         struct kref kref;
+> >         struct list_head list;
+> > @@ -248,7 +251,7 @@ static bool zswap_has_pool;
+> >
+> >  #define zswap_pool_debug(msg, p)                               \
+> >         pr_debug("%s pool %s/%s\n", msg, (p)->tfm_name,         \
+> > -                zpool_get_type((p)->zpool))
+> > +                zpool_get_type((p)->zpools[0]))
+> >
+> >  static int zswap_writeback_entry(struct zswap_entry *entry,
+> >                                  struct zswap_tree *tree);
+> > @@ -272,11 +275,13 @@ static void zswap_update_total_size(void)
+> >  {
+> >         struct zswap_pool *pool;
+> >         u64 total =3D 0;
+> > +       int i;
+> >
+> >         rcu_read_lock();
+> >
+> >         list_for_each_entry_rcu(pool, &zswap_pools, list)
+> > -               total +=3D zpool_get_total_size(pool->zpool);
+> > +               for (i =3D 0; i < ZSWAP_NR_ZPOOLS; i++)
+> > +                       total +=3D zpool_get_total_size(pool->zpools[i]=
+);
+> >
+> >         rcu_read_unlock();
+> >
+> > @@ -363,6 +368,16 @@ static void zswap_rb_erase(struct rb_root *root, s=
+truct zswap_entry *entry)
+> >         }
+> >  }
+> >
+> > +static struct zpool *zswap_find_zpool(struct zswap_entry *entry)
+> > +{
+> > +       int i =3D 0;
+> > +
+> > +       if (ZSWAP_NR_ZPOOLS > 1)
+> > +               i =3D hash_ptr(entry, ilog2(ZSWAP_NR_ZPOOLS));
+> > +
+> > +       return entry->pool->zpools[i];
+> > +}
+> > +
+> >  /*
+> >   * Carries out the common pattern of freeing and entry's zpool allocat=
+ion,
+> >   * freeing the entry itself, and decrementing the number of stored pag=
+es.
+> > @@ -379,7 +394,7 @@ static void zswap_free_entry(struct zswap_entry *en=
+try)
+> >                 spin_lock(&entry->pool->lru_lock);
+> >                 list_del(&entry->lru);
+> >                 spin_unlock(&entry->pool->lru_lock);
+> > -               zpool_free(entry->pool->zpool, entry->handle);
+> > +               zpool_free(zswap_find_zpool(entry), entry->handle);
+> >                 zswap_pool_put(entry->pool);
+> >         }
+> >         zswap_entry_cache_free(entry);
+> > @@ -588,7 +603,8 @@ static struct zswap_pool *zswap_pool_find_get(char =
+*type, char *compressor)
+> >         list_for_each_entry_rcu(pool, &zswap_pools, list) {
+> >                 if (strcmp(pool->tfm_name, compressor))
+> >                         continue;
+> > -               if (strcmp(zpool_get_type(pool->zpool), type))
+> > +               /* all zpools share the same type */
+> > +               if (strcmp(zpool_get_type(pool->zpools[0]), type))
+> >                         continue;
+> >                 /* if we can't get it, it's about to be destroyed */
+> >                 if (!zswap_pool_get(pool))
+> > @@ -692,6 +708,7 @@ static void shrink_worker(struct work_struct *w)
+> >
+> >  static struct zswap_pool *zswap_pool_create(char *type, char *compress=
+or)
+> >  {
+> > +       int i;
+> >         struct zswap_pool *pool;
+> >         char name[38]; /* 'zswap' + 32 char (max) num + \0 */
+> >         gfp_t gfp =3D __GFP_NORETRY | __GFP_NOWARN | __GFP_KSWAPD_RECLA=
+IM;
+> > @@ -712,15 +729,18 @@ static struct zswap_pool *zswap_pool_create(char =
+*type, char *compressor)
+> >         if (!pool)
+> >                 return NULL;
+> >
+> > -       /* unique name for each pool specifically required by zsmalloc =
+*/
+> > -       snprintf(name, 38, "zswap%x", atomic_inc_return(&zswap_pools_co=
+unt));
+> > +       for (i =3D 0; i < ZSWAP_NR_ZPOOLS; i++) {
+> > +               /* unique name for each pool specifically required by z=
+smalloc */
+> > +               snprintf(name, 38, "zswap%x",
+> > +                        atomic_inc_return(&zswap_pools_count));
+> >
+> > -       pool->zpool =3D zpool_create_pool(type, name, gfp);
+> > -       if (!pool->zpool) {
+> > -               pr_err("%s zpool not available\n", type);
+> > -               goto error;
+> > +               pool->zpools[i] =3D zpool_create_pool(type, name, gfp);
+> > +               if (!pool->zpools[i]) {
+> > +                       pr_err("%s zpool not available\n", type);
+> > +                       goto error;
+> > +               }
+> >         }
+> > -       pr_debug("using %s zpool\n", zpool_get_type(pool->zpool));
+> > +       pr_debug("using %s zpool\n", zpool_get_type(pool->zpools[0]));
+> >
+> >         strscpy(pool->tfm_name, compressor, sizeof(pool->tfm_name));
+> >
+> > @@ -752,8 +772,8 @@ static struct zswap_pool *zswap_pool_create(char *t=
+ype, char *compressor)
+> >  error:
+> >         if (pool->acomp_ctx)
+> >                 free_percpu(pool->acomp_ctx);
+> > -       if (pool->zpool)
+> > -               zpool_destroy_pool(pool->zpool);
+> > +       while (i--)
+> > +               zpool_destroy_pool(pool->zpools[i]);
+> >         kfree(pool);
+> >         return NULL;
+> >  }
+> > @@ -802,11 +822,14 @@ static struct zswap_pool *__zswap_pool_create_fal=
+lback(void)
+> >
+> >  static void zswap_pool_destroy(struct zswap_pool *pool)
+> >  {
+> > +       int i;
+> > +
+> >         zswap_pool_debug("destroying", pool);
+> >
+> >         cpuhp_state_remove_instance(CPUHP_MM_ZSWP_POOL_PREPARE, &pool->=
+node);
+> >         free_percpu(pool->acomp_ctx);
+> > -       zpool_destroy_pool(pool->zpool);
+> > +       for (i =3D 0; i < ZSWAP_NR_ZPOOLS; i++)
+> > +               zpool_destroy_pool(pool->zpools[i]);
+> >         kfree(pool);
+> >  }
+> >
+> > @@ -1070,7 +1093,7 @@ static int zswap_writeback_entry(struct zswap_ent=
+ry *entry,
+> >         struct page *page;
+> >         struct scatterlist input, output;
+> >         struct crypto_acomp_ctx *acomp_ctx;
+> > -       struct zpool *pool =3D entry->pool->zpool;
+> > +       struct zpool *pool =3D zswap_find_zpool(entry);
+> >
+> >         u8 *src, *tmp =3D NULL;
+> >         unsigned int dlen;
+> > @@ -1211,6 +1234,7 @@ static int zswap_frontswap_store(unsigned type, p=
+goff_t offset,
+> >         struct crypto_acomp_ctx *acomp_ctx;
+> >         struct obj_cgroup *objcg =3D NULL;
+> >         struct zswap_pool *pool;
+> > +       struct zpool *zpool;
+> >         int ret;
+> >         unsigned int dlen =3D PAGE_SIZE;
+> >         unsigned long handle, value;
+> > @@ -1321,10 +1345,11 @@ static int zswap_frontswap_store(unsigned type,=
+ pgoff_t offset,
+> >         }
+> >
+> >         /* store */
+> > +       zpool =3D zswap_find_zpool(entry);
+> >         gfp =3D __GFP_NORETRY | __GFP_NOWARN | __GFP_KSWAPD_RECLAIM;
+> > -       if (zpool_malloc_support_movable(entry->pool->zpool))
+> > +       if (zpool_malloc_support_movable(zpool))
+> >                 gfp |=3D __GFP_HIGHMEM | __GFP_MOVABLE;
+> > -       ret =3D zpool_malloc(entry->pool->zpool, dlen, gfp, &handle);
+> > +       ret =3D zpool_malloc(zpool, dlen, gfp, &handle);
+> >         if (ret =3D=3D -ENOSPC) {
+> >                 zswap_reject_compress_poor++;
+> >                 goto put_dstmem;
+> > @@ -1333,9 +1358,9 @@ static int zswap_frontswap_store(unsigned type, p=
+goff_t offset,
+> >                 zswap_reject_alloc_fail++;
+> >                 goto put_dstmem;
+> >         }
+> > -       buf =3D zpool_map_handle(entry->pool->zpool, handle, ZPOOL_MM_W=
+O);
+> > +       buf =3D zpool_map_handle(zpool, handle, ZPOOL_MM_WO);
+> >         memcpy(buf, dst, dlen);
+> > -       zpool_unmap_handle(entry->pool->zpool, handle);
+> > +       zpool_unmap_handle(zpool, handle);
+> >         mutex_unlock(acomp_ctx->mutex);
+> >
+> >         /* populate entry */
+> > @@ -1406,6 +1431,7 @@ static int zswap_frontswap_load(unsigned type, pg=
+off_t offset,
+> >         struct scatterlist input, output;
+> >         struct crypto_acomp_ctx *acomp_ctx;
+> >         u8 *src, *dst, *tmp;
+> > +       struct zpool *zpool;
+> >         unsigned int dlen;
+> >         int ret;
+> >
+> > @@ -1427,7 +1453,8 @@ static int zswap_frontswap_load(unsigned type, pg=
+off_t offset,
+> >                 goto stats;
+> >         }
+> >
+> > -       if (!zpool_can_sleep_mapped(entry->pool->zpool)) {
+> > +       zpool =3D zswap_find_zpool(entry);
+> > +       if (!zpool_can_sleep_mapped(zpool)) {
+> >                 tmp =3D kmalloc(entry->length, GFP_KERNEL);
+> >                 if (!tmp) {
+> >                         ret =3D -ENOMEM;
+> > @@ -1437,12 +1464,12 @@ static int zswap_frontswap_load(unsigned type, =
+pgoff_t offset,
+> >
+> >         /* decompress */
+> >         dlen =3D PAGE_SIZE;
+> > -       src =3D zpool_map_handle(entry->pool->zpool, entry->handle, ZPO=
+OL_MM_RO);
+> > +       src =3D zpool_map_handle(zpool, entry->handle, ZPOOL_MM_RO);
+> >
+> > -       if (!zpool_can_sleep_mapped(entry->pool->zpool)) {
+> > +       if (!zpool_can_sleep_mapped(zpool)) {
+> >                 memcpy(tmp, src, entry->length);
+> >                 src =3D tmp;
+> > -               zpool_unmap_handle(entry->pool->zpool, entry->handle);
+> > +               zpool_unmap_handle(zpool, entry->handle);
+> >         }
+> >
+> >         acomp_ctx =3D raw_cpu_ptr(entry->pool->acomp_ctx);
+> > @@ -1454,8 +1481,8 @@ static int zswap_frontswap_load(unsigned type, pg=
+off_t offset,
+> >         ret =3D crypto_wait_req(crypto_acomp_decompress(acomp_ctx->req)=
+, &acomp_ctx->wait);
+> >         mutex_unlock(acomp_ctx->mutex);
+> >
+> > -       if (zpool_can_sleep_mapped(entry->pool->zpool))
+> > -               zpool_unmap_handle(entry->pool->zpool, entry->handle);
+> > +       if (zpool_can_sleep_mapped(zpool))
+> > +               zpool_unmap_handle(zpool, entry->handle);
+> >         else
+> >                 kfree(tmp);
+> >
+> > @@ -1616,7 +1643,7 @@ static int zswap_setup(void)
+> >         pool =3D __zswap_pool_create_fallback();
+> >         if (pool) {
+> >                 pr_info("loaded using pool %s/%s\n", pool->tfm_name,
+> > -                       zpool_get_type(pool->zpool));
+> > +                       zpool_get_type(pool->zpools[0]));
+> >                 list_add(&pool->list, &zswap_pools);
+> >                 zswap_has_pool =3D true;
+> >         } else {
+> > --
+> > 2.41.0.162.gfafddb0af9-goog
+> >
+>
+> In terms of correctness, the code LGTM.
+> However, I do share Johannes' concern about this change.
+>
+> May I ask how sensitive is the system performance to the number of pools?
+> i.e during the tuning process, did you see lots of performance
+> variability as you vary the number of pools? Is 32 a number that
+> works well across workloads, hardware, etc?
 
-Signed-off-by: Pranavi Somisetty <pranavi.somisetty@amd.com>
----
- .../bindings/net/xilinx_gmii2rgmii.txt        | 35 ------------
- .../bindings/net/xlnx,gmii-to-rgmii.yaml      | 53 +++++++++++++++++++
- 2 files changed, 53 insertions(+), 35 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/net/xilinx_gmii2rgmii.txt
- create mode 100644 Documentation/devicetree/bindings/net/xlnx,gmii-to-rgmii.yaml
+I did not tune this myself, it has been used in our fleet for many
+years now, and honestly I am not sure what range of values was tried
+out. For us, 32 is a number that works well across our entire fleet
+(that uses zswap ofc).
 
-diff --git a/Documentation/devicetree/bindings/net/xilinx_gmii2rgmii.txt b/Documentation/devicetree/bindings/net/xilinx_gmii2rgmii.txt
-deleted file mode 100644
-index 038dda48b8e6..000000000000
---- a/Documentation/devicetree/bindings/net/xilinx_gmii2rgmii.txt
-+++ /dev/null
-@@ -1,35 +0,0 @@
--XILINX GMIITORGMII Converter Driver Device Tree Bindings
----------------------------------------------------------
--
--The Gigabit Media Independent Interface (GMII) to Reduced Gigabit Media
--Independent Interface (RGMII) core provides the RGMII between RGMII-compliant
--Ethernet physical media devices (PHY) and the Gigabit Ethernet controller.
--This core can be used in all three modes of operation(10/100/1000 Mb/s).
--The Management Data Input/Output (MDIO) interface is used to configure the
--Speed of operation. This core can switch dynamically between the three
--Different speed modes by configuring the conveter register through mdio write.
--
--This converter sits between the ethernet MAC and the external phy.
--MAC <==> GMII2RGMII <==> RGMII_PHY
--
--For more details about mdio please refer phy.txt file in the same directory.
--
--Required properties:
--- compatible	: Should be "xlnx,gmii-to-rgmii-1.0"
--- reg		: The ID number for the phy, usually a small integer
--- phy-handle	: Should point to the external phy device.
--		  See ethernet.txt file in the same directory.
--
--Example:
--	mdio {
--		#address-cells = <1>;
--		#size-cells = <0>;
--		phy: ethernet-phy@0 {
--			......
--		};
--		gmiitorgmii: gmiitorgmii@8 {
--			compatible = "xlnx,gmii-to-rgmii-1.0";
--			reg = <8>;
--			phy-handle = <&phy>;
--		};
--	};
-diff --git a/Documentation/devicetree/bindings/net/xlnx,gmii-to-rgmii.yaml b/Documentation/devicetree/bindings/net/xlnx,gmii-to-rgmii.yaml
-new file mode 100644
-index 000000000000..8990054f9d53
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/xlnx,gmii-to-rgmii.yaml
-@@ -0,0 +1,53 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/xlnx,gmii-to-rgmii.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Xilinx GMII to RGMII Converter
-+
-+maintainers:
-+  - Harini Katakam <harini.katakam@amd.com>
-+
-+description:
-+  The Gigabit Media Independent Interface (GMII) to Reduced Gigabit Media
-+  Independent Interface (RGMII) core provides the RGMII between RGMII-compliant
-+  ethernet physical media devices (PHY) and the Gigabit Ethernet controller.
-+  This core can be used in all three modes of operation(10/100/1000 Mb/s).
-+  The Management Data Input/Output (MDIO) interface is used to configure the
-+  speed of operation. This core can switch dynamically between the three
-+  different speed modes by configuring the converter register through mdio write.
-+  The core cannot function without an external phy connected to it.
-+
-+properties:
-+  compatible:
-+    const: xlnx,gmii-to-rgmii-1.0
-+
-+  reg:
-+    minimum: 0
-+    maximum: 31
-+    description: The ID number for the phy, usually a small integer.
-+
-+  phy-handle: true
-+
-+required:
-+  - compatible
-+  - reg
-+  - phy-handle
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    mdio {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+        phy: ethernet-phy@0 {
-+            reg = <0>;
-+        };
-+        gmiitorgmii@8 {
-+            compatible = "xlnx,gmii-to-rgmii-1.0";
-+            reg = <8>;
-+            phy-handle = <&phy>;
-+        };
-+    };
--- 
-2.36.1
+>
+> Personally, I prefer the per-CPU pool idea - or some way to automatically
+> determine the number of pools that are more generic than this 32 value
+> (what if we have new hardware with more CPUs? Would 32 still be valid,
+> or do we have to change it?).
 
+Ideally, we would have the number of zpools be a function of the
+system specs, or even autotune based on the workload. However, I don't
+think we have a clear idea about what this should look like. While a
+constant value is suboptimal, we have multiple constants in MM that
+seem to be working relatively well across different machines and
+workloads (e.g. SWAP_CLUSTER_MAX) -- so it's not unheard of.
+
+We have been using 32 zpools across different machines and workloads
+for years now. I would be hesitant to throw away years of production
+testing right away, without data to back that something else is
+better. I would prefer to start with something that (at least in our
+fleet) is proven to be good, and we can easily extend it later to
+replace 32 with a more sophisticated formula or something that is
+calculated at boot or even tuned by userspace. Having the support in
+the code to have multiple zpools is valuable as-is imo.
+
+>
+> I'm experimenting with some other zswap changes - if I have
+> extra cycles and resources I'll try to apply this patch and see how the
+> numbers play out.
+
+That would be amazing. Looking forward to any numbers you can dig :)
+
+>
+> I'll defer to Johannes and other reviewers for further comments.
