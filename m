@@ -2,132 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35F1A752C3D
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 23:35:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7E34752C3E
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 23:36:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232676AbjGMVe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 17:34:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41808 "EHLO
+        id S233823AbjGMVgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 17:36:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229942AbjGMVe5 (ORCPT
+        with ESMTP id S232833AbjGMVf4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 17:34:57 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 186322D60
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 14:34:31 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-31427ddd3fbso1352264f8f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 14:34:31 -0700 (PDT)
+        Thu, 13 Jul 2023 17:35:56 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33D752D79
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 14:35:33 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id d75a77b69052e-40371070eb7so45151cf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 14:35:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google; t=1689284069; x=1691876069;
+        d=google.com; s=20221208; t=1689284132; x=1691876132;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3Z9ExxShnMFQ+6I5uZ5HSYqKDhYmMF4V08BZ/iO202I=;
-        b=h96b3lCadCzWegH3hy0ZB2qQb2VZ9g0nshLIbNVzMENhuzrBxLTtfdh7mmX90L1hwe
-         RZfzF4Aa5SynwDTuf1h66O484szaN5D9Kl6XuazI2Ihx4qpiFs3t5c/PsFAPpgQJOIGL
-         X0GmfjEclYmAKt73DrMFCY70GggFKLYn2hzgI=
+        bh=fUoa5A08dWzHBGesZwp+iuIs8vVoR0P5xBL9pZfFCac=;
+        b=sFhi/+DfNipC4AkEm9ehVCMoVGbcidgD+d71VfUxe64Aknr3qWcOedQHMrOhGAe6Zw
+         3BJzYV8lIEzwvNzmOe4SzlL/jAzMWuUsESHQD5tWEc+9xxGFoFtdE5rUU6fYXrSM5qrS
+         FEedFwfRZ/XbiJddR3v1XgFc/mg6L8LsqLs9BCN2A2GQ5P3UoPcOjhbSgDFZ7TDNSjB7
+         sslDXKhjDPD+fjFn5zuRMia5W9jNSpYmvPrGu2kak5elN98E0FRvjvZZg1qYOVEqRs9O
+         t193zIFpVZnGDrOiFhODCD8l3RcuNU1n+PXyD/jIjjW7llfcoj9Wlv/fSzZmzbacO/K6
+         1qqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689284069; x=1691876069;
+        d=1e100.net; s=20221208; t=1689284132; x=1691876132;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=3Z9ExxShnMFQ+6I5uZ5HSYqKDhYmMF4V08BZ/iO202I=;
-        b=YUoHn43RvQq378YPU8nkRPGZ8rDyDgZHk4tlYn7l2TnFlHJEzPDhlOtGC+bp15uTgz
-         9mRkeHFeshrqP62nFyUHeZURDUmYAZnUeg9j2ijn+8qd+cKrZL7/ljrSqHtdjrD+p/AX
-         3FCBIod1oOtwmNhq0OFXKA9MF2F2/0EU4CyZh9yI80rQmRQSGFs9NclTH8zuAXWXmXvN
-         Cs4Y+Uhhrf1M3LHMijbhDtzgmdx/SBqrE3g1zTKKXHy93+GGBG70aPoR9R6Rsejn4yvL
-         mdOda2r8YO6U2QI1KMLjMrTVH/LI35Gkk7ai0NHC6PzIM0e30+7BwcbfYVCdj7JKz+0Z
-         W9HA==
-X-Gm-Message-State: ABy/qLYxTXLYPhtzwZNKRJVvPKTjXSrRcmPz1fJL2pICdLRwwZRB0xfr
-        1MdN1wKXg0rZnIEX5OL01r9OmTml5HTiQi7CMe8UXw==
-X-Google-Smtp-Source: APBJJlEoBICt+M1o2fpsiTHu4cykBm4jfvf7AttkoM7qNKhXs+8mqzzxbWSkihKb2n+cgh1OVWaS8/sgVq5hlVOTAdA=
-X-Received: by 2002:a05:6000:c2:b0:314:2fe5:b4cf with SMTP id
- q2-20020a05600000c200b003142fe5b4cfmr2116161wrx.53.1689284069583; Thu, 13 Jul
- 2023 14:34:29 -0700 (PDT)
+        bh=fUoa5A08dWzHBGesZwp+iuIs8vVoR0P5xBL9pZfFCac=;
+        b=iVdFpkDSdF8PA5R2NcPanVRmVSGMXkuSH4wEoIfFD4CqGgreWrKSuB0NxmEUJH+hiu
+         4MiUH4bIFEcTlah7gj2LdRg6p+/wxJYir9QNUq2QwAcudzpOMdt5Yy82jLPVA7pTZMYe
+         Bx+MP8fEmJ3KGNAHO00YZEqeSKjGhHFcgUkRQCVObM0CGaVRMtzpleRCqN33Vs5ME2Sf
+         KhgsVJQ8+XYPuyf4ywHEdoi5ob88vK1QzAuQEt4a7L2pTBxew5jW7HAzTAlf0gk+FGzc
+         kCO31YIUiEzFw+Sq8mAMC8EN/XZawXf5VuEV6nlYIiy2bgXOBCkHLnLggu945+Nabu5W
+         7jvA==
+X-Gm-Message-State: ABy/qLYK9PA6w6qKJGUAuUFLBOQNjzxVSTU036q1KB34Du3HyeJM2w7S
+        x8Kyx4230efwcJVlCtTX9GbuIs/Z1ykSzVVtNrViwA==
+X-Google-Smtp-Source: APBJJlHcr0n0amHwFS1Sn4j8Xig7KC2igjGc/mxuLuJHqedGL7hl5VdbWFneOfb0fZD7HMEgfOacYjJFFwgCxfNF2TM=
+X-Received: by 2002:ac8:590d:0:b0:3f8:5b2:aef4 with SMTP id
+ 13-20020ac8590d000000b003f805b2aef4mr639497qty.28.1689284132081; Thu, 13 Jul
+ 2023 14:35:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230710183338.58531-1-ivan@cloudflare.com> <2023071039-negate-stalemate-6987@gregkh>
- <CABWYdi39+TJd1qV3nWs_eYc7XMC0RvxG22ihfq7rzuPaNvn1cQ@mail.gmail.com>
- <CAOQ4uxiFhkSM2pSNLCE6cLz6mhYOvk5D7vDsghVTqy9cDqeqew@mail.gmail.com>
- <CABWYdi26iboFTFz+Vex3VO0fzmFzyfOxgr-qc964mLiC3En7=A@mail.gmail.com> <CAOQ4uxgLp+gwJPTWj9uwhncx8RD5-mZY7qOaD2C6pbu7c4+srw@mail.gmail.com>
-In-Reply-To: <CAOQ4uxgLp+gwJPTWj9uwhncx8RD5-mZY7qOaD2C6pbu7c4+srw@mail.gmail.com>
-From:   Ivan Babrou <ivan@cloudflare.com>
-Date:   Thu, 13 Jul 2023 14:34:18 -0700
-Message-ID: <CABWYdi2fTLnQeZnLG2uTCHyQkBnr1Z9OtfYhnzp_TtqiXyYd9A@mail.gmail.com>
-Subject: Re: [PATCH] kernfs: attach uuid for every kernfs and report it in fsid
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-fsdevel@vger.kernel.org, kernel-team@cloudflare.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Christian Brauner <brauner@kernel.org>
+References: <20230628102949.2598096-1-john.g.garry@oracle.com>
+ <20230628102949.2598096-5-john.g.garry@oracle.com> <CAP-5=fXa24_LEiyni0Ncyfa5hKwC1GE6y-zi2u8M98M9SwHX+g@mail.gmail.com>
+ <CAP-5=fUs=u3PKYP3mVDdzNB8+=GAHaEXG3SGfWJpMELYYqO_hA@mail.gmail.com>
+ <d59b6e7c-cead-24d4-a9cb-6552b3154d84@oracle.com> <CAP-5=fUu6xgVDQT4tq=vmRLDMe3ddMLywP11uOLvKSu8Lc6BjQ@mail.gmail.com>
+ <897dcf1d-6a04-33d3-9c4f-ea9d1706cdad@oracle.com> <CAP-5=fX+rz928LtFs2MWYUH=6Mcvz0XQcLRkO-n9BnVnX4RYWw@mail.gmail.com>
+ <297ddf04-9b35-7613-8efd-2857668b6835@oracle.com>
+In-Reply-To: <297ddf04-9b35-7613-8efd-2857668b6835@oracle.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Thu, 13 Jul 2023 14:35:20 -0700
+Message-ID: <CAP-5=fXSQVyqCfrBJFjHkrRdANuQC=TKR-HHi37hLaQ91rPQiA@mail.gmail.com>
+Subject: Re: [PATCH RFC 4/9] perf jevents: Add sys_events_find_events_table()
+To:     John Garry <john.g.garry@oracle.com>
+Cc:     acme@kernel.org, namhyung@kernel.org, jolsa@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        renyu.zj@linux.alibaba.com, shangxiaojing@huawei.com,
+        kjain@linux.ibm.com, kan.liang@linux.intel.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 11, 2023 at 10:44=E2=80=AFPM Amir Goldstein <amir73il@gmail.com=
+On Thu, Jul 13, 2023 at 8:07=E2=80=AFAM John Garry <john.g.garry@oracle.com=
 > wrote:
-> > > I agree. I think it was a good decision.
-> > > I have some followup questions though.
-> > >
-> > > I guess your use case cares about the creation of cgroups?
-> > > as long as the only way to create a cgroup is via vfs
-> > > vfs_mkdir() -> ... cgroup_mkdir()
-> > > fsnotify_mkdir() will be called.
-> > > Is that a correct statement?
-> >
-> > As far as I'm aware, this is the only way. We have the cgroups mailing
-> > list CC'd to confirm.
-> >
-> > I checked systemd and docker as real world consumers and both use
-> > mkdir and are visible in fanotify with this patch applied.
-> >
-> > > Because if not, then explicit fsnotify_mkdir() calls may be needed
-> > > similar to tracefs/debugfs.
-> > >
-> > > I don't think that the statement holds for dieing cgroups,
-> > > so explicit fsnotify_rmdir() are almost certainly needed to make
-> > > inotify/fanotify monitoring on cgroups complete.
-> > >
-> > > I am on the fence w.r.t making the above a prerequisite to merging
-> > > your patch.
-> > >
-> > > One the one hand, inotify monitoring of cgroups directory was already
-> > > possible (I think?) with the mentioned shortcomings for a long time.
-> > >
-> > > On the other hand, we have an opportunity to add support to fanotify
-> > > monitoring of cgroups directory only after the missing fsnotify hooks
-> > > are added, making fanotify API a much more reliable option for
-> > > monitoring cgroups.
-> > >
-> > > So I am leaning towards requiring the missing fsnotify hooks before
-> > > attaching a unique fsid to cgroups/kernfs.
-> >
-> > Unless somebody responsible for cgroups says there's a different way
-> > to create cgroups, I think this requirement doesn't apply.
-> >
 >
-> I was more concerned about the reliability of FAN_DELETE for
-> dieing cgroups without an explicit rmdir() from userspace.
+> On 12/07/2023 18:52, Ian Rogers wrote:
+> >> To be crystal clear, when you say ">1 PMU", do you mean ">1 PMU instan=
+ce
+> >> of the same type" or ">1 PMU type"?
+> > So I'm meaning that if you have a MetricExpr where the events are from
+> >> 1 PMU, for example memory bandwidth coming from uncore PMUs and then
+> > instructions from a core PMU, and you do something like a ratio
+> > between these two.
+> >
+> >>    in a metric wouldn't work though as it would
+> >>> appear the event was missing. Having the metric specify the PMU avoid=
+s
+> >>> these problems, but is verbose.
+> >> The message I'm getting - correct me if I am wrong - is that you would
+> >> still prefer the PMU specified per event in metric expr, right? We don=
+'t
+> >> do that exactly for sys PMU metrics today - we specify "Unit" instead,=
+ like:
+> >>
+> >> MetricExpr: "sys_pmu_bar_event_foo1 + sys_pmu_bar_event_foo2"
+> >> Compat: "baz"
+> >> Unit:"sys_pmu_bar"
+> >>
+> >> And so you prefer something like the following, right?
+> >> MetricExpr: "sys_pmu_foo@bar1@ + sys_pmu_foo@bar2@"
+> >>
+> >> If so, I think that is ok - I just want to get rid of Unit and Compat.
+> > I think we're agreeing =F0=9F=98=84
+>
+> Ok, fine. I need to check on implementing support for that.
+>
+> Then would you have any idea for testing here?
+>
+> What I do is to ensure that if we 2x tables like following for separate
+> SoCs:
+>
+> soc_a.json
+>
+>
+> {
+>                 "MetricExpr": "pmu_unit@event_foo@ * pmu_unit@event_bar@ =
+* 1",
+>                 "MetricName": "metric_baz",
+> },
+> {
+>                 "EventCode": "0x84",
+>                 "EventName": "event_foo ",
+>                 "Compat": "0x00000030",
+>                 "Unit": "pmu_unit"
+> },
+> {
+>                 "EventCode": "0x85",
+>                 "EventName": "event_bar ",
+>                 "Compat": "0x00000030",
+>                 "Unit": "pmu_unit"
+> },
+>
+>
+>
+> soc_b.json
+>
+>
+> {
+>                 "MetricExpr": "pmu_unit@event_foo@ * pmu_unit@event_bar@ =
+* 2",
+>                 "MetricName": "metric_baz",
+> },
+> {
+>                 "EventCode": "0x84",
+>                 "EventName": "event_foo ",
+>                 "Compat": "0x00000040",
+>                 "Unit": "pmu_unit"
+> },
+> {
+>                 "EventCode": "0x85",
+>                 "EventName": "event_bar ",
+>                 "Compat": "0x00000040",
+>                 "Unit": "pmu_unit"
+> },
+>
+> And we have a pmu with name and hw id matching "pmu_unit" and
+> "0x00000040" present, that we select metric metric_baz for soc_b
 
-I checked the code and cgroups are destroyed in cgroup_destroy_locked,
-which is only called from two places:
+Not sure I'm fully understanding.With the sysfs layout we'd have to
+have a way of supporting CPUIDs, we could have a mapfile.csv style
+approach or perhaps encode the CPUID into the path. It is complex as
+CPUIDs are wildcards in the tool.
 
-* In cgroup_mkdir (only on failure)
-* In cgroup_rmdir
+> >I think Unit may be useful, say on Intel
+> > hybrid I want the tma_fround_bound metric on just cpu_atom. Currently
+> > the use of Unit is messy for metrics, ie uncore metrics are associated
+> > with core PMUs, and what to do with a MetricExpr with >1 PMU. I think
+> > we're learning from trying. I'm just hoping the migration to a sysfs
+> > style layout will still be possible, as I can see lots of upside in
+> > terms of testing, 1 approach, etc.
+>
+> Do you have an RFC or something for this "sysfs style layout"? I think
+> that it would be easier for me to understand your idea by seeing the SW.
 
-See: https://elixir.bootlin.com/linux/v6.5-rc1/A/ident/cgroup_destroy_locke=
-d
+When I get a chance :-) My thought is to first extend jevents.py to
+have a second output format, so sysfs style rather than pmu-events.c.
+This way we can merge the changes as a jevents.py feature even if we
+don't change the perf tool to support it.
 
-We should be covered here.
+Thanks,
+Ian
+
+> Thanks,
+> John
