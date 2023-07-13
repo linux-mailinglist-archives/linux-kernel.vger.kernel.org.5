@@ -2,70 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3C84751EB3
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 12:18:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 689C8751EB6
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 12:18:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233074AbjGMKSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 06:18:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59168 "EHLO
+        id S233363AbjGMKS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 06:18:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232144AbjGMKSO (ORCPT
+        with ESMTP id S233312AbjGMKSZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 06:18:14 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6573E1724;
-        Thu, 13 Jul 2023 03:18:12 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F3B0C60C00;
-        Thu, 13 Jul 2023 10:18:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A1E9C433CD;
-        Thu, 13 Jul 2023 10:18:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689243491;
-        bh=ET0PIk/EJwOtrnFetQCgnV0IGpMF5SKCWlqW+zEctgk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=YMlAn0FKUIcij8cMaBk1sFjGdlftqb544w6tk1470W3FP8qhFxn+egxqkXA5LavAS
-         esTIPGnjOKs03CHA1k5fK0BcLZG62Fd+YJjjeUX9Jx/+xTrTWAxHKlJCXj/+I0fcf6
-         tgt9Hl+9GgifspdfdEgIMhgHCX9v0289T95tYeQ7gFQeNRPmW8uUyl6JLAr/+vh+sU
-         EArTQBAxwB/G70oaog4LkVrUoXGF7PalknTC3Qf4N+/v/qvWOAIvAtxUG8G1VdKaZC
-         SiS90semh7lh/XT8ETTWgIFpxHQAzLQ8xhYpCzly4tEAIDqDQZ178VA/ugu6IOY3u9
-         uYQDvUzquX5OQ==
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-4f122ff663eso927751e87.2;
-        Thu, 13 Jul 2023 03:18:11 -0700 (PDT)
-X-Gm-Message-State: ABy/qLagSoMP+j+D3AolVsy2Lq2p5ZXHYn0FXKC7gGLd5huehqVITJ8i
-        m363FG3oXb6HSwnlDFOh77jGFNVRVq+0GlSBe8Y=
-X-Google-Smtp-Source: APBJJlFBQWCejzkySepLV/mSpZDO69J/ce++jVUzK0IbQmheOsTIP22zHMFDXog7ITY4n68UbN14AQPbrEm/zMas0Pg=
-X-Received: by 2002:a05:6512:3984:b0:4f8:7513:8cb0 with SMTP id
- j4-20020a056512398400b004f875138cb0mr1040508lfu.2.1689243489214; Thu, 13 Jul
- 2023 03:18:09 -0700 (PDT)
+        Thu, 13 Jul 2023 06:18:25 -0400
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2095.outbound.protection.outlook.com [40.107.215.95])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B479E77
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 03:18:23 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PUHSZJECmq/ttVDYmM2zXFsDnBJw8tV5znQnxEzwOakD+JihyqEe38BuYocF+819mVdYnppJzkCe/H53JI4CGrBj9IJnlYaFJiQ2YzMEU1BsORaVTka9g38tSBWxY4ZCSEMB6TazOqSWzHK35Zf6CEQtcvCKpui5XEpnJKebl+NBDSw0cz9nA2DOViUSjirOo2XHFBeNog/oamMGT8tr8HZQCGhAWa2iiQyAOgAKwA4mDyo4AMsepQpTmAw/RDVmVh6kKCPozWu4SX/W1jHE5lpoXhLaCBrKMEjwWVBJiH8j+HAPGxjdh7uLBCtrapR8Npk+SZglynA9jw6AP7/QlA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=zeaHT2bqmX3nJfpzENvL3co3+x17nXy1KmB94ot5qbI=;
+ b=m6y2G/oIU9+AbtqlvGP2JLnam6Tn3E/HblH5+IwnWVGX1bm5BLbHzn2N0VTn+ns/kSQvrE1j3wFV5qMk2F2QoAKWfXv4izWVNlMdzgPnZuGxuenPamnezFrbzzxiJr9FEjwptEiEOT00DanAE4dHzQmvy6zUB1J3g4rimxxFx8RN2u8BKoWffFA2oyK8KUdAAQGfrXwkWdWf4m2t+NLOfOPsTreu0QqCawlBhcVowRm0J5DrzdV0y/Om3+F6iCUW6UqscPXQ0ItEO+JnbDsllEJ8rl6VQkpn0WmO9LecurjGeeZ1ergPJyXqY7OPRfLps1wrPtnz7zVyr1xtACwR3A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zeaHT2bqmX3nJfpzENvL3co3+x17nXy1KmB94ot5qbI=;
+ b=NoC75sF3bYL/uzvFdzHh40W1PnoUoS+Ue1ry6ntIpwLFU3pFoU7oasqUzj38ScXsPOD/A4DrS8Veiqu4guxGmfFS0oQ5Uw7JunjT44TQaMgWrRvelJOFBgwODwJ9+fB/d8nLyQTNMqYHqVF7niwvbRwTaAJTYsemMWQ4ex2ShM+U1nDOD9UFpyAqqzo6bHikPzoRISTEEny2AvJUfpptha2mObv89iaxm4OoO7zXgm4AS22HK/fUpJBp63rDH9w2sREqS/Uk5nlmsemIG0A7TIlu1ZoRP4/kkI8w6kege2KTEGGDX+rkY6VB2VSSRsd2Nc3cgvA+5qBcWPCj9isw/Q==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from SG2PR06MB5288.apcprd06.prod.outlook.com (2603:1096:4:1dc::9) by
+ SEZPR06MB5174.apcprd06.prod.outlook.com (2603:1096:101:70::10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6588.20; Thu, 13 Jul 2023 10:18:16 +0000
+Received: from SG2PR06MB5288.apcprd06.prod.outlook.com
+ ([fe80::f9b8:80b5:844e:f49a]) by SG2PR06MB5288.apcprd06.prod.outlook.com
+ ([fe80::f9b8:80b5:844e:f49a%6]) with mapi id 15.20.6565.028; Thu, 13 Jul 2023
+ 10:18:16 +0000
+From:   Minjie Du <duminjie@vivo.com>
+To:     Jassi Brar <jassisinghbrar@gmail.com>,
+        linux-kernel@vger.kernel.org (open list:MAILBOX API)
+Cc:     opensource.kernel@vivo.com, Minjie Du <duminjie@vivo.com>
+Subject: [PATCH v1] mailbox: mailbox-test: Fix an error check in mbox_test_probe()
+Date:   Thu, 13 Jul 2023 18:18:08 +0800
+Message-Id: <20230713101808.15524-1-duminjie@vivo.com>
+X-Mailer: git-send-email 2.39.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR04CA0152.apcprd04.prod.outlook.com (2603:1096:4::14)
+ To SG2PR06MB5288.apcprd06.prod.outlook.com (2603:1096:4:1dc::9)
 MIME-Version: 1.0
-References: <20230601072043.24439-1-ltao@redhat.com> <20230705173359.GDZKWphyFbNE8id6Jm@fat_crate.local>
- <CAO7dBbXdJgpO4Ym=4WME3OOrUhq2MNKpNZmhpsC7pOSugHiKDg@mail.gmail.com>
- <ZKeTX2aemPbsMiVr@MiWiFi-R3L-srv> <ZKfLYG_4DANc_i5r@suse.de>
- <20230707085712.GBZKfTaGJXnzhEenxj@fat_crate.local> <20230707152515.42gpfzjgvfwe6rf7@amd.com>
- <20230707171217.GHZKhHcffp4nn6RgR/@fat_crate.local>
-In-Reply-To: <20230707171217.GHZKhHcffp4nn6RgR/@fat_crate.local>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 13 Jul 2023 12:17:57 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXFBtd6DRzwNbuY5_zc4DThjQWs9itN=qYkED-+6nkoGcw@mail.gmail.com>
-Message-ID: <CAMj1kXFBtd6DRzwNbuY5_zc4DThjQWs9itN=qYkED-+6nkoGcw@mail.gmail.com>
-Subject: Re: [PATCH v2] x86/kexec: Add EFI config table identity mapping for
- kexec kernel
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Michael Roth <michael.roth@amd.com>,
-        Joerg Roedel <jroedel@suse.de>, Baoquan He <bhe@redhat.com>,
-        Tao Liu <ltao@redhat.com>, thomas.lendacky@amd.com,
-        tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
-        x86@kernel.org, hpa@zytor.com, linux-kernel@vger.kernel.org,
-        dyoung@redhat.com, kexec@lists.infradead.org,
-        linux-efi@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SG2PR06MB5288:EE_|SEZPR06MB5174:EE_
+X-MS-Office365-Filtering-Correlation-Id: 06ade2e0-dffd-4fcc-6975-08db838a78f7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: mEl9JwU4FxLKaoRBPDAryOF0k+l7fLG3HR8PrRLvV89nuxtKuqAtaVE54MHhNyvezgX6MuedDmisZJQzOGg3AMCZlBwcDdQY31IFWHdJX8P+NZPx+vqn+PtEaF02jH4xjhE8uFuqVxYo2dyD/P6uGV8vRTYQioa7qW6XxQD9nwyuH62kgY/AEh0e6L/3AxXmCBUKL+ekTJfclxi4jLLW6z6jni2hp/SgetNOivKQacr7mrrqywMtL+RlY9KXVVncmGWuwaKOwmfE9vIbZAnox3ZU5wcP36SnTy8tsKVshKZIdUpZvgzypsqQuPl7286f4cGpIAmIywFnI+E3Py/1B0VXKau8LJNpqxl5Nk6b/8K+Ak4Qwqjvxwatl7ZQMG9C9V1/gox3z5NnnuFmsgnsF3voQDjAsET9lR6prqDBQeT2Qtrns8wt/bZeoN5SXlzK9ypWpEKBodNYyg6hTT6JAOukNrW2Z33lIhkxM+Z5mf4gCAxzA1ECxRPOHrsdnPfECRyc0oHBgYyRK0z/uHPyjnd4SnMF5bHWiAimlJ5bIAB6svbaaNFzXhqKLOW0SoD0ScAljcM1bh2i0+N+1M5c8sCGlSIRuItQU7IRSe7DcSJRsSf16laW0LSu3A4OaAEz
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB5288.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(39860400002)(376002)(346002)(396003)(366004)(451199021)(316002)(41300700001)(6512007)(8676002)(52116002)(66556008)(66476007)(66946007)(6486002)(4326008)(478600001)(83380400001)(6506007)(6666004)(107886003)(38100700002)(38350700002)(8936002)(1076003)(86362001)(36756003)(26005)(5660300002)(2616005)(2906002)(15650500001)(4744005)(186003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?NBcPvRJMGtUigcBKcm+zHRGWRRKlU/a9ErNOIjkUFs0UkKNAkNyeM/G4dSVC?=
+ =?us-ascii?Q?uEoY6DhGk/y4E2Y6d1Iv8ozH39U1DXeSqiB+tEobvJVyG0qQWtTh/diaWPWO?=
+ =?us-ascii?Q?RWLRShHdD+2oz/08UCpg4f13XFbscLEi5QEbFCVRDa3nzxVuao6vju1MoSYc?=
+ =?us-ascii?Q?t0P+0oh8ZmM2tG3p0L1Jh9k6kwVGPPm7JA6n9/wa6fwwUZa1ni2aeyCZnLRR?=
+ =?us-ascii?Q?B7RBhXgbXNqOKl9Bqtl+WOUvd4jLual43g/unmg/ZRlGDeSohow1VprJHj8J?=
+ =?us-ascii?Q?xNUKTriEDO/b16izWYCH5n7hzN7Hq/ucFfKjYSv8oDMFzu/5VR2yTJkn2q2O?=
+ =?us-ascii?Q?kQXhY2g4VV6RkNXtka/ZO8k8914Jz633I/ub8Bl7LnMnIL2DQ+xMrsIr91qA?=
+ =?us-ascii?Q?/wyx3c7R/932coVJYYQ4Bkwc45miyjJbYMfT3AM0qXd5yc0ohqB/dqPCA9uG?=
+ =?us-ascii?Q?7VgxOdXowsm2bI6416toYT7X31KAeDOOTz3l2532WlZEZ6o9IlHSbQcImB6e?=
+ =?us-ascii?Q?m4TJhNsE8HrWepSJTJh4xYFIi7zB0n7DK6b4Yhdarcss+8G4igH5Qbh0G2DY?=
+ =?us-ascii?Q?eQgT3jOerVspYm/hz8jQy8S17H3TUDr106tmXRoQaHVGss6tOr5f/DNNqAzf?=
+ =?us-ascii?Q?ghjhObeJtSp8e/P6fvA36iHKRxhoxFMUl2ugIzJO9lHBdNJH9dZi8Jv7b/WA?=
+ =?us-ascii?Q?ESsa5PN0JP7touIP0Ps7mTF3ptEeZTWQZsUy8y/F37U7isu/C7rXpxEZ8TR5?=
+ =?us-ascii?Q?0yaKiuuEAHeFUsuUaP/YxRhxiWZ/Ftywa/JvI5OAJkouAOPomMLeGcpamQCP?=
+ =?us-ascii?Q?RBB49gwDQfavDJadBgF3fe9GIEzkjs4Qj41mFTkL+0Si/gIPBES2CvDv3QQM?=
+ =?us-ascii?Q?AqDdXfSoLs/5d/WuZIMecxf2LQr1EhcVV/6rrYHVV2zAc/oAPTN5UgWdDvp0?=
+ =?us-ascii?Q?UUuScr9FhOGblac9t/Os/OacymnBEsyPP9k79hChsdCWHxQauHOWUiPgdowJ?=
+ =?us-ascii?Q?BQSHlDnVxg26Zgf0A8i5Wpa32vXOXewTzki5FeGTAUE9oHMyFT76b/bvkWYi?=
+ =?us-ascii?Q?2xLRQT4yEyTth/FdmwFv8YrAFB1sp5iNdbCu8mn2vliMSt2nGeTv4awUSWaT?=
+ =?us-ascii?Q?7BreE6Exj6EArMLBQDu190XqjaPD/iuq+R9r+H1cHDErZFxvwdHQdncvkzf6?=
+ =?us-ascii?Q?cCuQMKJpSvkvbv+LbnBHcbEbJg4C4+5U03m2dAG14gdQcwFduGxEk7/YNGNG?=
+ =?us-ascii?Q?a1A5zvStIPuYTIa9TRIlQWJxZVksI5aGjKlNzBm10r4gO3XjRpGsh1DC8pKh?=
+ =?us-ascii?Q?c5vuvixFTH/3Q45tkk/YvFc9VJMb5ePrY0Lf1QFrHeBBMJ5r0GC8+kVzWsKq?=
+ =?us-ascii?Q?x+26Ln0z5euHPOkJqjM7M6DjsukINJJn7juiPDxbyDAm3K3dPOk66pMNKyRK?=
+ =?us-ascii?Q?CNAiNRoZkcbfvkxSeIDVC/vyRZway0YcSDjKp0IMlEk71EJHUVfCdZHC3phv?=
+ =?us-ascii?Q?nVRzPY3f1IP1xTkUxAgjmqCW2dSuVCa0hgTqhTNzTqYLT8iffoO9viDVOidE?=
+ =?us-ascii?Q?iDopYZvx8lUyICutfhglCsHMK3foBxiccUdjWEd1?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 06ade2e0-dffd-4fcc-6975-08db838a78f7
+X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB5288.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2023 10:18:16.2782
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: DRdN4Y3FM1wJdyeVMxtUrxbN+QSyFUiMybK/SFQB7gPRAOhFMOei/v21FuyXGdhNc7j6KXhfUrXrMGKeTDEoEg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR06MB5174
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,56 +109,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 7 Jul 2023 at 19:12, Borislav Petkov <bp@alien8.de> wrote:
->
-> On Fri, Jul 07, 2023 at 10:25:15AM -0500, Michael Roth wrote:
-> > ...
-> > It would be unfortunate if we finally abandoned this path because of the
-> > issue being hit here though. I think the patch posted here is the proper
-> > resolution to the issue being hit, and I'm hoping at this point we've
-> > identified all the similar cases where EFI/setup_data-related structures
-> > were missing explicit mappings. But if we still think it's too much of a
-> > liability to access the EFI config table outside of SEV-enabled guests,
-> > then I can work on re-implementing things based on the above logic.
->
-> Replying here to Tom's note too...
->
-> So, I like the idea of rechecking CPUID. Yes, let's do the sev_status
-> check. As a result, we either fail the guest - no problem - or we boot
-> and we recheck. Thus, we don't run AMD code on !AMD machines, if the HV
-> is not a lying bastard.
->
-> Now, if we've gotten a valid setup_data SETUP_EFI entry with a valid
-> pointer to an EFI config table, then that should happen in the generic
-> path - initialize_identity_maps(), for example - like you've done in
-> b57feed2cc26 - not in the kexec code because kexec *happens* to need it.
->
-> We want to access the EFI config table? Sure, by all means, but make
-> that generic for all code.
->
+mbox_test_request_channel() function returns NULL or
+error value embedded in the pointer (PTR_ERR).
+Evaluate the return value using IS_ERR_OR_NULL.
 
-OK, so in summary, what seems to be happening here is that the SEV
-init code in the decompressor looks for the cc blob table before the
-on-demand mapping code is up, which normally ensures that any RAM
-address is accessible even if it hasn't been mapped explicitly.
+Signed-off-by: Minjie Du <duminjie@vivo.com>
+---
+ drivers/mailbox/mailbox-test.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-This is why the fix happens to work: the code only maps the array of
-(guid, phys_addr) tuples that describes the list of configuration
-tables that have been provided by the firmware. The actual
-configuration tables themselves could be anywhere in physical memory,
-and without prior knowledge of a particular GUID value, there is no
-way to know the size of the table, and so they cannot be mapped
-upfront like this. However, the cc blob table does not exist on this
-machine, and so whether the EFI config tables themselves are mapped or
-not is irrelevant.
+diff --git a/drivers/mailbox/mailbox-test.c b/drivers/mailbox/mailbox-test.c
+index fc6a12a51..560c0fd98 100644
+--- a/drivers/mailbox/mailbox-test.c
++++ b/drivers/mailbox/mailbox-test.c
+@@ -390,7 +390,7 @@ static int mbox_test_probe(struct platform_device *pdev)
+ 	tdev->tx_channel = mbox_test_request_channel(pdev, "tx");
+ 	tdev->rx_channel = mbox_test_request_channel(pdev, "rx");
+ 
+-	if (!tdev->tx_channel && !tdev->rx_channel)
++	if (IS_ERR_OR_NULL(tdev->tx_channel) && IS_ERR_OR_NULL(tdev->rx_channel))
+ 		return -EPROBE_DEFER;
+ 
+ 	/* If Rx is not specified but has Rx MMIO, then Rx = Tx */
+-- 
+2.39.0
 
-But it does mean the fix is incomplete, and certainly does not belong
-in generic kexec code. If anything, we should be fixing the
-decompressor code to defer the cc blob table check until after the
-demand mapping code is up.
-
-If this is problematic, we might instead disable SEV for kexec, and
-rely on the fact that SEV firmware enters with a complete 1:1 map (as
-we seem to be doing currently). If kexec for SEV is needed at some
-point, we can re-enable it by having it provide a mapping for the
-config table array and the cc blob table explicitly.
