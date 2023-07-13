@@ -2,92 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3CF5752BD0
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 22:44:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41DDE752BA5
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 22:28:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233832AbjGMUn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 16:43:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59882 "EHLO
+        id S232408AbjGMU20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 16:28:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229699AbjGMUn1 (ORCPT
+        with ESMTP id S232575AbjGMU2Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 16:43:27 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7090D2710;
-        Thu, 13 Jul 2023 13:43:26 -0700 (PDT)
-Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36DKHBxx017705;
-        Thu, 13 Jul 2023 20:43:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=772T/pNvtTeSekLPdcFDuGm+FrrGOncjPpcPiRxQAsA=;
- b=W7jUpo7X+Vp1Op9klgbXzcdrpPz8PRd1CqWFJWf18U0QXV7NDECZDBS1xrSRpE6FaIgT
- 4DJw2C3hWfyPAbeIV8U7oQ46f6wv1kQ5ZBqntgt86s6MuAAszFYwgHTDhTx6wKQrgQNZ
- NO86pJgJVgZdAEHpldzvNJV3zPELmb7lcfr+JMmgn51VSZA9RohLaa9zZMKKODWEpUsP
- 2RexgKtXRdsRVRrW+CUWXgNxZJJZEH2+FSdJPgFmNAGSHjQf5/J+A5Y3MY018ambKH2y
- szcaUGP1D4OJr77hBdhgETo+f6KRnGmu3cQKbjTotg63/YgheNat6Gy7yurgvfiu3DZk 7Q== 
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3rtr5r0ss2-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 13 Jul 2023 20:43:17 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36DInN4F001168;
-        Thu, 13 Jul 2023 20:27:26 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3rtpvur4tc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 13 Jul 2023 20:27:26 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36DKRNcm42336770
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 13 Jul 2023 20:27:23 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4215720049;
-        Thu, 13 Jul 2023 20:27:23 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B359220043;
-        Thu, 13 Jul 2023 20:27:22 +0000 (GMT)
-Received: from [9.171.17.117] (unknown [9.171.17.117])
-        by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Thu, 13 Jul 2023 20:27:22 +0000 (GMT)
-Message-ID: <75932f85-67c7-8065-9fa0-77d76db19e7b@linux.ibm.com>
-Date:   Thu, 13 Jul 2023 22:27:21 +0200
+        Thu, 13 Jul 2023 16:28:24 -0400
+Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5685B2121;
+        Thu, 13 Jul 2023 13:28:23 -0700 (PDT)
+Received: by mail-oo1-xc2b.google.com with SMTP id 006d021491bc7-565f3881cbeso876318eaf.2;
+        Thu, 13 Jul 2023 13:28:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689280102; x=1691872102;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Np41xAxvHrQ2l3HEYE/iCG+BGK60W/bW25GsC4Ze4Ls=;
+        b=MSOZe0a0TCNiUE1J9GHg7gzTxqtD93rIaEv8yH9dG0O3biRqgiRg7eVEoowZABHHq9
+         WPOrK4heUc/FQ1PFbE447EoQylZgTAeAhOcMfLTg6I6p+p63MKGMJp03SLN6YkoiXii2
+         eCSk1DD/kGt2YtnlpJyAz4rh2h59TrUMK4qdnnZMN1+7MpJCZcBxg6j7ai6VKjcbO5zH
+         T3TAb7A2NBZfgknFehq4bMxPTZJlvOJVP1v6w3Sy+MwgLbeo2X3IQ9H1b0ufb18ECM6H
+         praDapkx1KgxVKfbcukQLCGoRCqQ96Yt43GuxUxPu/5J3VviEp0bgly3ObOI06UyuMj4
+         4UHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689280102; x=1691872102;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Np41xAxvHrQ2l3HEYE/iCG+BGK60W/bW25GsC4Ze4Ls=;
+        b=OXeu2Bokglp3XRiEGKHL+rsjhk1lwXELfo8nsCp5BiYgw09pvte1Pj9fnSaZGXPYvj
+         hsYP2XJ1sUH8QeOv1i/OIm56xIu7AAOA//PGXy1DWKRbQfSZ4izcKmBZUpgsF845/wDy
+         lAPiGMiPL+EhIC153LZFywrhKSzP1NsGC/WdO+PsibUYJ5IELDF4dcD2dBQRa2DsbdKw
+         zvsiOMkFoOV0p2o034A6BM3VgAEW3oAtuQuqAsGfSIFZrk6Vip41Y63VqEbPeTWVjDOp
+         QptueWZYrYKARGywvhwtU4Eo02eM01HjRW21oEhvAO8mz1Ozlro1KC9ZC7jc7rrC8DVd
+         Ghzg==
+X-Gm-Message-State: ABy/qLYWOnDOJvZs30cv5q611G/rpra9aG4xjeRvDZBChho1vhLPuXmq
+        0tUxISeldcTa5lbqyNIt3Ca7YlnLyJwEmLZOS5o=
+X-Google-Smtp-Source: APBJJlFkLJCu3on9g7cCOHvlsrVrWrUeXDOEar9Stl41UAiT2mkrQHSVSwVSH3Ime/iZEma7m4BFCC/oQF/XUe3AW/g=
+X-Received: by 2002:a4a:2450:0:b0:560:ac0f:b87c with SMTP id
+ v16-20020a4a2450000000b00560ac0fb87cmr2361812oov.8.1689280102445; Thu, 13 Jul
+ 2023 13:28:22 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v5 00/38] New page table range API
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        linux-s390 <linux-s390@vger.kernel.org>
-References: <20230710204339.3554919-1-willy@infradead.org>
- <8cfc3eef-e387-88e1-1006-2d7d97a09213@linux.ibm.com>
- <ZK1My5hQYC2Kb6G1@casper.infradead.org>
- <56ca93af-67dc-9d10-d27e-00c8d7c20f1b@linux.ibm.com>
- <ZK//Qnfhx+ihtvlO@casper.infradead.org>
-Content-Language: en-US
-From:   Christian Borntraeger <borntraeger@linux.ibm.com>
-In-Reply-To: <ZK//Qnfhx+ihtvlO@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: hBhU07KTJ-nQvi3vo9XvqfWV1hZipSMI
-X-Proofpoint-ORIG-GUID: hBhU07KTJ-nQvi3vo9XvqfWV1hZipSMI
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-13_08,2023-07-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
- impostorscore=0 mlxscore=0 mlxlogscore=705 lowpriorityscore=0
- priorityscore=1501 clxscore=1015 suspectscore=0 spamscore=0 malwarescore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307130182
+References: <20230712222523.7404-1-robdclark@gmail.com> <a7aa6e21-6f79-0029-5034-db368239980a@linaro.org>
+In-Reply-To: <a7aa6e21-6f79-0029-5034-db368239980a@linaro.org>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Thu, 13 Jul 2023 13:28:11 -0700
+Message-ID: <CAF6AEGuua3BMY1S4OXxO66eoXchTCOcuFX3t163=d7f7YS2ygw@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm: Fix hw_fence error path cleanup
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org,
+        Rob Clark <robdclark@chromium.org>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -95,62 +76,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 13, 2023 at 1:03=E2=80=AFPM Dmitry Baryshkov
+<dmitry.baryshkov@linaro.org> wrote:
+>
+> On 13/07/2023 01:25, Rob Clark wrote:
+> > From: Rob Clark <robdclark@chromium.org>
+> >
+> > In an error path where the submit is free'd without the job being run,
+> > the hw_fence pointer is simply a kzalloc'd block of memory.  In this
+> > case we should just kfree() it, rather than trying to decrement it's
+> > reference count.  Fortunately we can tell that this is the case by
+> > checking for a zero refcount, since if the job was run, the submit woul=
+d
+> > be holding a reference to the hw_fence.
+> >
+> > Fixes: f94e6a51e17c ("drm/msm: Pre-allocate hw_fence")
+> > Signed-off-by: Rob Clark <robdclark@chromium.org>
+> > ---
+> >   drivers/gpu/drm/msm/msm_fence.c      |  6 ++++++
+> >   drivers/gpu/drm/msm/msm_gem_submit.c | 14 +++++++++++++-
+> >   2 files changed, 19 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/gpu/drm/msm/msm_fence.c b/drivers/gpu/drm/msm/msm_=
+fence.c
+> > index 96599ec3eb78..1a5d4f1c8b42 100644
+> > --- a/drivers/gpu/drm/msm/msm_fence.c
+> > +++ b/drivers/gpu/drm/msm/msm_fence.c
+> > @@ -191,6 +191,12 @@ msm_fence_init(struct dma_fence *fence, struct msm=
+_fence_context *fctx)
+> >
+> >       f->fctx =3D fctx;
+> >
+> > +     /*
+> > +      * Until this point, the fence was just some pre-allocated memory=
+,
+> > +      * no-one should have taken a reference to it yet.
+> > +      */
+> > +     WARN_ON(kref_read(&fence->refcount));
+>
+> It this really correct to return a refcounted object with 0 refcount
+> (I'm looking at submit_create() / msm_fence_alloc() )? Maybe it would be
+> better to move dma_fence_get() to msm_fence_alloc() ? But don't
+> immediately see, which one should be moved.
 
+The issue is that we can't really initialize the fence until
+msm_job_run(), when it is known what order the fence would be
+signaled.  But we don't want to do any allocations in msm_job_run()
+because that could trigger the shrinker, which could need to wait
+until jobs complete to release memory, forming a deadlock.
 
-Am 13.07.23 um 15:42 schrieb Matthew Wilcox:
-> On Thu, Jul 13, 2023 at 12:42:44PM +0200, Christian Borntraeger wrote:
->>
->>
->> Am 11.07.23 um 14:36 schrieb Matthew Wilcox:
->>> On Tue, Jul 11, 2023 at 11:07:06AM +0200, Christian Borntraeger wrote:
->>>> Am 10.07.23 um 22:43 schrieb Matthew Wilcox (Oracle):
->>>>> This patchset changes the API used by the MM to set up page table entries.
->>>>> The four APIs are:
->>>>>        set_ptes(mm, addr, ptep, pte, nr)
->>>>>        update_mmu_cache_range(vma, addr, ptep, nr)
->>>>>        flush_dcache_folio(folio)
->>>>>        flush_icache_pages(vma, page, nr)
->>>>>
->>>>> flush_dcache_folio() isn't technically new, but no architecture
->>>>> implemented it, so I've done that for them.  The old APIs remain around
->>>>> but are mostly implemented by calling the new interfaces.
->>>>>
->>>>> The new APIs are based around setting up N page table entries at once.
->>>>> The N entries belong to the same PMD, the same folio and the same VMA,
->>>>> so ptep++ is a legitimate operation, and locking is taken care of for
->>>>> you.  Some architectures can do a better job of it than just a loop,
->>>>> but I have hesitated to make too deep a change to architectures I don't
->>>>> understand well.
->>>>>
->>>>> One thing I have changed in every architecture is that PG_arch_1 is now a
->>>>> per-folio bit instead of a per-page bit.  This was something that would
->>>>> have to happen eventually, and it makes sense to do it now rather than
->>>>> iterate over every page involved in a cache flush and figure out if it
->>>>> needs to happen.
->>>>
->>>> I think we do use PG_arch_1 on s390 for our secure page handling and
->>>> making this perf folio instead of physical page really seems wrong
->>>> and it probably breaks this code.
->>>
->>> Per-page flags are going away in the next few years, so you're going to
->>> need a new design.  s390 seems to do a lot of unusual things.  I wish
->>> you'd talk to the rest of us more.
->>
->> I understand you point from a logical point of view, but a 4k page frame
->> is also a hardware defined memory region. And I think not only for us.
->> How do you want to implement hardware poisoning for example?
->> Marking the whole folio with PG_hwpoison seems wrong.
-> 
-> For hardware poison, we can't use the page for any other purpose any more.
-> So one of the 16 types of pointer is for hardware poison.  That doesn't
-> seem like it's a solution that could work for secure/insecure pages?
-> 
-> But what I'm really wondering is why you need to transition pages
-> between secure/insecure on a 4kB boundary.  What's the downside to doing
-> it on a 16kB or 64kB boundary, or whatever size has been allocated?
+BR,
+-R
 
-The export and import for more pages will be more expensive, but I assume that
-we would then also use the larger chunks (e.g. for paging). The more interesting
-problem is that the guest can make a page shared/non-shared on a 4kb granularity.
-
-Stupid question: can folios be split into folio,single page,folio when needed?
+> > +
+> >       dma_fence_init(&f->base, &msm_fence_ops, &fctx->spinlock,
+> >                      fctx->context, ++fctx->last_fence);
+> >   }
+> > diff --git a/drivers/gpu/drm/msm/msm_gem_submit.c b/drivers/gpu/drm/msm=
+/msm_gem_submit.c
+> > index 3f1aa4de3b87..9d66498cdc04 100644
+> > --- a/drivers/gpu/drm/msm/msm_gem_submit.c
+> > +++ b/drivers/gpu/drm/msm/msm_gem_submit.c
+> > @@ -86,7 +86,19 @@ void __msm_gem_submit_destroy(struct kref *kref)
+> >       }
+> >
+> >       dma_fence_put(submit->user_fence);
+> > -     dma_fence_put(submit->hw_fence);
+> > +
+> > +     /*
+> > +      * If the submit is freed before msm_job_run(), then hw_fence is
+> > +      * just some pre-allocated memory, not a reference counted fence.
+> > +      * Once the job runs and the hw_fence is initialized, it will
+> > +      * have a refcount of at least one, since the submit holds a ref
+> > +      * to the hw_fence.
+> > +      */
+> > +     if (kref_read(&submit->hw_fence->refcount) =3D=3D 0) {
+> > +             kfree(submit->hw_fence);
+> > +     } else {
+> > +             dma_fence_put(submit->hw_fence);
+> > +     }
+> >
+> >       put_pid(submit->pid);
+> >       msm_submitqueue_put(submit->queue);
+>
+> --
+> With best wishes
+> Dmitry
+>
