@@ -2,192 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 799F57515F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 04:01:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C43E07515FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 04:02:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233419AbjGMCBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 22:01:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38550 "EHLO
+        id S233451AbjGMCCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 22:02:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231901AbjGMCA6 (ORCPT
+        with ESMTP id S232178AbjGMCCg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 22:00:58 -0400
-Received: from mail-oa1-f79.google.com (mail-oa1-f79.google.com [209.85.160.79])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 608331BEC
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 19:00:56 -0700 (PDT)
-Received: by mail-oa1-f79.google.com with SMTP id 586e51a60fabf-1b0271d3228so296850fac.1
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 19:00:56 -0700 (PDT)
+        Wed, 12 Jul 2023 22:02:36 -0400
+Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEF3E1FD6;
+        Wed, 12 Jul 2023 19:02:34 -0700 (PDT)
+Received: by mail-vs1-xe32.google.com with SMTP id ada2fe7eead31-444c5209861so114471137.2;
+        Wed, 12 Jul 2023 19:02:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689213754; x=1691805754;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aiS3BGLVDtj4R25tckJIQtyqK9hOLbEea2jDynKrbjU=;
+        b=KZMBpTBH33didekshXEgRJxJXueNDxLw+OpJOIIGIFg19vFpc8eHiiFgaqQzvx0eC2
+         y28J42zKZ35/vfYYazEAvbf1np9k5Z2RZ7MJw1CTLZVgLIdWI9htYO+6ZMZSufdsQPS0
+         T0VO1cew0ZSA8Ou/So3CxboIfYIBMoDu2mOpgQx50brRYWJEv6LgmlHKKylIm6Amzvq9
+         JCXGdD7TQXYBjwQ0cBtz6rpQKcwmvT6C1osF8oPIN2qlEn/qCq+uhNSaBx+/16jUWVyP
+         ugwYZ/KFo7TH83eHvL0ZXk+YlCBe9HWzpSOdU/2IPJz8sgbiqPdf5Qzxavev9KgOKEA0
+         mwcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689213655; x=1691805655;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yRv+N4ss6idVrsjTU89OuW2S18JYKvB8zh+B/pD64SQ=;
-        b=A0fHuu6Lu9CfsnW6TUc87oHq4y/hwsRxXnbLgwbRwx9/B6d8y8UOVlDD4SjAONrqe3
-         dN9BvfHACSa99/jWvqLEXOfUl6h3tFQHwR5w5Z11q2IPYSE/92p5nu+nCe0HxO9zUyXO
-         Pu49pRorHCKte3zNbKA5jCrnzSifsAtq0zRhygfnL6tsAdQ4teJY5/6ceNB+fxuJfp4q
-         OWq0MCn77UzVpAT/Rp7AfZl7LPGbZs6KJtqAtVH7up/Zl3JFARjUBsguJqT079vNH6Uo
-         6l9vFNEX3JIlKZ0ezYllE2F0yVJW+uBwA+FR8Ipd10toLVB90ZZXTkaiE6lGZ9drvALz
-         14Ng==
-X-Gm-Message-State: ABy/qLbChDfhNsuDa5phryES3WWX2Hb7Y27VPq9njjYAAm5SsM0nBk2H
-        fGECQGnIfz12BUoK/D2rf0aQbZ5IGFpEAkyLOheZZ2t12H5o
-X-Google-Smtp-Source: APBJJlGz91PJyci96JqRqvreut/VZA/FmJ+2GqfmYvlaiHQomiz+HZpESsyrD4+yN52oaQ15yavfacHRz1ryf0B2mAOFOWswKxMO
+        d=1e100.net; s=20221208; t=1689213754; x=1691805754;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aiS3BGLVDtj4R25tckJIQtyqK9hOLbEea2jDynKrbjU=;
+        b=Fg9EW0+h2YxIk6KXPCZaKdMLZLP9aD6KyKPIb9h0iaa/uhdrx8JHJALsUhLJl/oT0r
+         OrpXJyrJqiPhPY12kPNqX1QCdGLxyL7SaQ/SUaRhH/pJTB1vf8yUkCnVs7bFqhs+ucFF
+         sWXH2TkfWgW/IXQtOSSd+GXE8su7AoFPOwVDyeHqDit01fY9yO8cT6/N+DIfWrF7/2kL
+         pB4DVZP/+tv1FYWXTkrCdFR5hNhV96smc93wph5y2eMXjPWGzSGVKMw7M83H18qDfitI
+         EybEtIi+6wQe4ePyQMXp5Wy6dwWHSSS2QVUtwEuZVRyXbamsDueZRDfqLtmShPGbsFT7
+         Rg6w==
+X-Gm-Message-State: ABy/qLYxrdpCGsTvvt8mbDdNDN3+voEgjkfX9iN5+5FUX6hUpdAaqk0J
+        HGgX6vsamD0+Idfbs62GTiwiUyQ2pTOO7315Ycwucy0UxcQ=
+X-Google-Smtp-Source: APBJJlF9aHgncchT+3cRAkCk1U/N1nOJx8LUbmT2m7uCdGfKinqaEBite8KPp6bClIsoX63QdPZ64zMhrTdsmYuYFqU=
+X-Received: by 2002:a67:ef99:0:b0:443:5bec:a2fd with SMTP id
+ r25-20020a67ef99000000b004435beca2fdmr270251vsp.18.1689213753738; Wed, 12 Jul
+ 2023 19:02:33 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:5a96:b0:1b0:5c0a:c047 with SMTP id
- dt22-20020a0568705a9600b001b05c0ac047mr522481oab.2.1689213655740; Wed, 12 Jul
- 2023 19:00:55 -0700 (PDT)
-Date:   Wed, 12 Jul 2023 19:00:55 -0700
-In-Reply-To: <000000000000cfe6f305ee84ff1f@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e6a390060054b370@google.com>
-Subject: Re: [syzbot] [reiserfs?] possible deadlock in reiserfs_dirty_inode
-From:   syzbot <syzbot+c319bb5b1014113a92cf@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        reiserfs-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <ZK9ZiNMsJX8+1F3N@debian.debian>
+In-Reply-To: <ZK9ZiNMsJX8+1F3N@debian.debian>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Wed, 12 Jul 2023 22:01:57 -0400
+Message-ID: <CAF=yD-Lb2k02TLaCQHwFSG=eQrWCnvqHVaWuK2viGqiCdwAxwg@mail.gmail.com>
+Subject: Re: [PATCH net] gso: fix GSO_DODGY bit handling for related protocols
+To:     Yan Zhai <yan@cloudflare.com>
+Cc:     "open list:NETWORKING [TCP]" <netdev@vger.kernel.org>,
+        kernel-team@cloudflare.com, Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Xin Long <lucien.xin@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Andrew Melnychenko <andrew@daynix.com>,
+        Jason Wang <jasowang@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:SCTP PROTOCOL" <linux-sctp@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On Wed, Jul 12, 2023 at 9:55=E2=80=AFPM Yan Zhai <yan@cloudflare.com> wrote=
+:
+>
+> SKB_GSO_DODGY bit indicates a GSO packet comes from an untrusted source.
+> The canonical way is to recompute the gso_segs to avoid device driver
+> issues. Afterwards, the DODGY bit can be removed to avoid re-check at the
+> egress of later devices, e.g. packets can egress to a vlan device backed
+> by a real NIC.
+>
+> Commit 1fd54773c267 ("udp: allow header check for dodgy GSO_UDP_L4
+> packets.") checks DODGY bit for UDP, but for packets that can be fed
+> directly to the device after gso_segs reset, it actually falls through
+> to fragmentation [1].
+>
+> Commit 90017accff61 ("sctp: Add GSO support") and commit 3820c3f3e417
+> ("[TCP]: Reset gso_segs if packet is dodgy") both didn't remove the DODGY
+> bit after recomputing gso_segs.
+>
+> This change fixes the GSO_UDP_L4 handling case, and remove the DODGY bit
+> at other places.
 
-HEAD commit:    e40939bbfc68 Merge branch 'for-next/core' into for-kernelci
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=1070f4bca80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c84f463eb74eab24
-dashboard link: https://syzkaller.appspot.com/bug?extid=c319bb5b1014113a92cf
-compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=112c37e2a80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12e4c2daa80000
+These two things should not be conflated.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/257596b75aaf/disk-e40939bb.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/9c75b8d61081/vmlinux-e40939bb.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/8f0233129f4f/Image-e40939bb.gz.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/05e314af739c/mount_0.gz
+Only the USO fix is strictly needed to fix the reported issue.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c319bb5b1014113a92cf@syzkaller.appspotmail.com
+> Fixes: 90017accff61 ("sctp: Add GSO support")
+> Fixes: 3820c3f3e417 ("[TCP]: Reset gso_segs if packet is dodgy")
+> Fixes: 1fd54773c267 ("udp: allow header check for dodgy GSO_UDP_L4 packet=
+s.")
 
-======================================================
-WARNING: possible circular locking dependency detected
-6.4.0-rc7-syzkaller-ge40939bbfc68 #0 Not tainted
-------------------------------------------------------
-syz-executor365/5984 is trying to acquire lock:
-ffff0000db0d17d8 (&mm->mmap_lock
-){++++}-{3:3}, at: __might_fault+0x9c/0x124 mm/memory.c:5731
+Link: https://lore.kernel.org/all/CAJPywTKDdjtwkLVUW6LRA2FU912qcDmQOQGt2WaD=
+o28KzYDg+A@mail.gmail.com/
 
-but task is already holding lock:
-ffff0000c2367090 (&sbi->lock){+.+.}-{3:3}, at: reiserfs_write_lock+0x7c/0xe8 fs/reiserfs/lock.c:27
+> Signed-off-by: Yan Zhai <yan@cloudflare.com>
+>
+> ---
+> [1]:
+> https://lore.kernel.org/all/CAJPywTKDdjtwkLVUW6LRA2FU912qcDmQOQGt2WaDo28K=
+zYDg+A@mail.gmail.com/
+>
+> ---
+>  net/ipv4/tcp_offload.c |  1 +
+>  net/ipv4/udp_offload.c | 19 +++++++++++++++----
+>  net/ipv6/udp_offload.c | 19 +++++++++++++++----
+>  net/sctp/offload.c     |  2 ++
+>  4 files changed, 33 insertions(+), 8 deletions(-)
+>
+> diff --git a/net/ipv4/tcp_offload.c b/net/ipv4/tcp_offload.c
+> index 8311c38267b5..f9b93708c22e 100644
+> --- a/net/ipv4/tcp_offload.c
+> +++ b/net/ipv4/tcp_offload.c
+> @@ -87,6 +87,7 @@ struct sk_buff *tcp_gso_segment(struct sk_buff *skb,
+>                 /* Packet is from an untrusted source, reset gso_segs. */
+>
+>                 skb_shinfo(skb)->gso_segs =3D DIV_ROUND_UP(skb->len, mss)=
+;
+> +               skb_shinfo(skb)->gso_type &=3D ~SKB_GSO_DODGY;
+>
+>                 segs =3D NULL;
+>                 goto out;
+> diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
+> index 75aa4de5b731..bd29cf19bb6b 100644
+> --- a/net/ipv4/udp_offload.c
+> +++ b/net/ipv4/udp_offload.c
+> @@ -388,11 +388,22 @@ static struct sk_buff *udp4_ufo_fragment(struct sk_=
+buff *skb,
+>         if (!pskb_may_pull(skb, sizeof(struct udphdr)))
+>                 goto out;
+>
+> -       if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4 &&
+> -           !skb_gso_ok(skb, features | NETIF_F_GSO_ROBUST))
+> -               return __udp_gso_segment(skb, features, false);
+> -
+>         mss =3D skb_shinfo(skb)->gso_size;
 
-which lock already depends on the new lock.
+Why move the block below this line?
 
+> +
+> +       if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4) {
+> +               if (skb_gso_ok(skb, features | NETIF_F_GSO_ROBUST)) {
+> +                       /* Packet is from an untrusted source, reset actu=
+al gso_segs */
+> +                       skb_shinfo(skb)->gso_segs =3D DIV_ROUND_UP(skb->l=
+en - sizeof(*uh),
+> +                                                                mss);
+> +                       skb_shinfo(skb)->gso_type &=3D ~SKB_GSO_DODGY;
+> +
+> +                       segs =3D NULL;
+> +                       goto out;
+> +               } else {
+> +                       return __udp_gso_segment(skb, features, false);
+> +               }
+> +       }
+> +
 
-the existing dependency chain (in reverse order) is:
+The validation should take place inside __udp_gso_segment.
 
--> #1 (&sbi->lock){+.+.}-{3:3}:
-       __mutex_lock_common+0x190/0x21a0 kernel/locking/mutex.c:603
-       __mutex_lock kernel/locking/mutex.c:747 [inline]
-       mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:799
-       reiserfs_write_lock+0x7c/0xe8 fs/reiserfs/lock.c:27
-       reiserfs_dirty_inode+0xe4/0x204 fs/reiserfs/super.c:704
-       __mark_inode_dirty+0x2b0/0x10f4 fs/fs-writeback.c:2424
-       generic_update_time fs/inode.c:1859 [inline]
-       inode_update_time fs/inode.c:1872 [inline]
-       touch_atime+0x5d8/0x8d4 fs/inode.c:1944
-       file_accessed include/linux/fs.h:2198 [inline]
-       generic_file_mmap+0xb0/0x11c mm/filemap.c:3606
-       call_mmap include/linux/fs.h:1873 [inline]
-       mmap_region+0xc00/0x1aa4 mm/mmap.c:2649
-       do_mmap+0xa00/0x1108 mm/mmap.c:1394
-       vm_mmap_pgoff+0x198/0x3b8 mm/util.c:543
-       ksys_mmap_pgoff+0x3c8/0x5b0 mm/mmap.c:1440
-       __do_sys_mmap arch/arm64/kernel/sys.c:28 [inline]
-       __se_sys_mmap arch/arm64/kernel/sys.c:21 [inline]
-       __arm64_sys_mmap+0xf8/0x110 arch/arm64/kernel/sys.c:21
-       __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
-       invoke_syscall+0x98/0x2c0 arch/arm64/kernel/syscall.c:52
-       el0_svc_common+0x138/0x244 arch/arm64/kernel/syscall.c:142
-       do_el0_svc+0x64/0x198 arch/arm64/kernel/syscall.c:191
-       el0_svc+0x4c/0x160 arch/arm64/kernel/entry-common.c:647
-       el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:665
-       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
+Revert the previous patch to always enter that function for USO packets:
 
--> #0 (&mm->mmap_lock){++++}-{3:3}:
-       check_prev_add kernel/locking/lockdep.c:3113 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3232 [inline]
-       validate_chain kernel/locking/lockdep.c:3847 [inline]
-       __lock_acquire+0x3308/0x7604 kernel/locking/lockdep.c:5088
-       lock_acquire+0x23c/0x71c kernel/locking/lockdep.c:5705
-       __might_fault+0xc4/0x124 mm/memory.c:5732
-       reiserfs_ioctl+0x10c/0x454 fs/reiserfs/ioctl.c:96
-       vfs_ioctl fs/ioctl.c:51 [inline]
-       __do_sys_ioctl fs/ioctl.c:870 [inline]
-       __se_sys_ioctl fs/ioctl.c:856 [inline]
-       __arm64_sys_ioctl+0x14c/0x1c8 fs/ioctl.c:856
-       __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
-       invoke_syscall+0x98/0x2c0 arch/arm64/kernel/syscall.c:52
-       el0_svc_common+0x138/0x244 arch/arm64/kernel/syscall.c:142
-       do_el0_svc+0x64/0x198 arch/arm64/kernel/syscall.c:191
-       el0_svc+0x4c/0x160 arch/arm64/kernel/entry-common.c:647
-       el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:665
-       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
+       if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4)
+                return __udp_gso_segment(skb, features, false);
 
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&sbi->lock);
-                               lock(&mm->mmap_lock);
-                               lock(&sbi->lock);
-  rlock(&mm->mmap_lock);
-
- *** DEADLOCK ***
-
-1 lock held by syz-executor365/5984:
- #0: ffff0000c2367090 (&sbi->lock){+.+.}-{3:3}, at: reiserfs_write_lock+0x7c/0xe8 fs/reiserfs/lock.c:27
-
-stack backtrace:
-CPU: 1 PID: 5984 Comm: syz-executor365 Not tainted 6.4.0-rc7-syzkaller-ge40939bbfc68 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/27/2023
-Call trace:
- dump_backtrace+0x1b8/0x1e4 arch/arm64/kernel/stacktrace.c:233
- show_stack+0x2c/0x44 arch/arm64/kernel/stacktrace.c:240
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd0/0x124 lib/dump_stack.c:106
- dump_stack+0x1c/0x28 lib/dump_stack.c:113
- print_circular_bug+0x150/0x1b8 kernel/locking/lockdep.c:2066
- check_noncircular+0x2cc/0x378 kernel/locking/lockdep.c:2188
- check_prev_add kernel/locking/lockdep.c:3113 [inline]
- check_prevs_add kernel/locking/lockdep.c:3232 [inline]
- validate_chain kernel/locking/lockdep.c:3847 [inline]
- __lock_acquire+0x3308/0x7604 kernel/locking/lockdep.c:5088
- lock_acquire+0x23c/0x71c kernel/locking/lockdep.c:5705
- __might_fault+0xc4/0x124 mm/memory.c:5732
- reiserfs_ioctl+0x10c/0x454 fs/reiserfs/ioctl.c:96
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:870 [inline]
- __se_sys_ioctl fs/ioctl.c:856 [inline]
- __arm64_sys_ioctl+0x14c/0x1c8 fs/ioctl.c:856
- __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
- invoke_syscall+0x98/0x2c0 arch/arm64/kernel/syscall.c:52
- el0_svc_common+0x138/0x244 arch/arm64/kernel/syscall.c:142
- do_el0_svc+0x64/0x198 arch/arm64/kernel/syscall.c:191
- el0_svc+0x4c/0x160 arch/arm64/kernel/entry-common.c:647
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:665
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
+And in that function decide to return NULL after validation.
 
 
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+>         if (unlikely(skb->len <=3D mss))
+>                 goto out;
+>
+> diff --git a/net/ipv6/udp_offload.c b/net/ipv6/udp_offload.c
+> index ad3b8726873e..6857d9f7bd06 100644
+> --- a/net/ipv6/udp_offload.c
+> +++ b/net/ipv6/udp_offload.c
+> @@ -43,11 +43,22 @@ static struct sk_buff *udp6_ufo_fragment(struct sk_bu=
+ff *skb,
+>                 if (!pskb_may_pull(skb, sizeof(struct udphdr)))
+>                         goto out;
+>
+> -               if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4 &&
+> -                   !skb_gso_ok(skb, features | NETIF_F_GSO_ROBUST))
+> -                       return __udp_gso_segment(skb, features, true);
+> -
+>                 mss =3D skb_shinfo(skb)->gso_size;
+> +
+> +               if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4) {
+> +                       if (skb_gso_ok(skb, features | NETIF_F_GSO_ROBUST=
+)) {
+> +                               /* Packet is from an untrusted source, re=
+set actual gso_segs */
+> +                               skb_shinfo(skb)->gso_segs =3D DIV_ROUND_U=
+P(skb->len - sizeof(*uh),
+> +                                                                        =
+mss);
+> +                               skb_shinfo(skb)->gso_type &=3D ~SKB_GSO_D=
+ODGY;
+> +
+> +                               segs =3D NULL;
+> +                               goto out;
+> +                       } else {
+> +                               return __udp_gso_segment(skb, features, t=
+rue);
+> +                       }
+> +               }
+> +
+>                 if (unlikely(skb->len <=3D mss))
+>                         goto out;
+>
+> diff --git a/net/sctp/offload.c b/net/sctp/offload.c
+> index 502095173d88..3d2b44db0d42 100644
+> --- a/net/sctp/offload.c
+> +++ b/net/sctp/offload.c
+> @@ -65,6 +65,8 @@ static struct sk_buff *sctp_gso_segment(struct sk_buff =
+*skb,
+>                 skb_walk_frags(skb, frag_iter)
+>                         pinfo->gso_segs++;
+>
+> +               pinfo->gso_type &=3D ~SKB_GSO_DODGY;
+> +
+>                 segs =3D NULL;
+>                 goto out;
+>         }
+> --
+> 2.30.2
+>
