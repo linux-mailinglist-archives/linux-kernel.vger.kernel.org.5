@@ -2,56 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3050A752B33
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 21:51:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D87B1752B36
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 21:53:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233149AbjGMTvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 15:51:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41026 "EHLO
+        id S233316AbjGMTxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 15:53:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232321AbjGMTvH (ORCPT
+        with ESMTP id S232396AbjGMTxJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 15:51:07 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A2F32D41
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 12:51:05 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EE6AC61B30
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 19:51:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BC08C433C7;
-        Thu, 13 Jul 2023 19:51:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689277864;
-        bh=RtiaTGckWKbZxwOmj5pBEFw8EKpdYqkAlq63iDnjx6s=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=Vtu3uPpMb5pm/wBYPqYMM4Alrfq/ud3nBWROfaO7qmIan8fxXcsZMb0tBJgWHwZcF
-         RYXwuH6WJ0lfPC6BigFJxBHcbb44HB0iq0mRZLWzOl1EZNSIHTh3HBs2rGam7mhW6x
-         HOJHFNfh0AKe4cL6yXN5p2S6dYGt7PjfAKB/X7X2/RriEf6Diii1W5QePtIbe/dLZk
-         R1C3Sw57xTYmQxE1oObv//WB6Ysw3OEGCfgePAGFdAFhsVVvkmFGNQSO99bcE4L8f5
-         tb/dAZEY2juN/XUUBbaBxB9w4i6kMzkxE+v6oJ3UyOLHxGsl3yUvX17GrOs/UmS97Y
-         rnLK4X8zeWzjw==
-From:   Mark Brown <broonie@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org,
-        Christoph Niedermaier <cniedermaier@dh-electronics.com>
-Cc:     Support Opensource <support.opensource@diasemi.com>,
-        Adam Thomson <Adam.Thomson.Opensource@diasemi.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Marek Vasut <marex@denx.de>, kernel@dh-electronics.com,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20230713090328.3879-1-cniedermaier@dh-electronics.com>
-References: <20230713090328.3879-1-cniedermaier@dh-electronics.com>
-Subject: Re: [PATCH V5] regulator: da9062: Make the use of IRQ optional
-Message-Id: <168927786232.267267.7055463236282761197.b4-ty@kernel.org>
-Date:   Thu, 13 Jul 2023 20:51:02 +0100
+        Thu, 13 Jul 2023 15:53:09 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 037A71BEB
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 12:53:08 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4f9fdb0ef35so2051783e87.0
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 12:53:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689277986; x=1689882786;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tkSK4Hprfqvy1sXh7+UPS2V9p+xt/zZPx5zVI9IIj2A=;
+        b=L7U6PT4gRJmUhzc3i7IRnueruqmsdNXGog/dPpUVMruUPYVb0oqU7SxON1iD4YQxAP
+         vDkd9HkZi2gB0XGHa1rK2dqh8gze/DIz3KMcqb/RcvJlas9besq0hEp4/Ci/QE7Pwnv/
+         qYsfXY57LEmSJ+MVyXub7Y/Lz12muLA8HN91GfTFUuji1Cg53XwqKHFm82kUbiKWztsw
+         u0JayV0DURL81rR74Aa0PVq189o/XSYxpIIJC2if/0f1ri4SpEcpz3V01fdvourmNrkC
+         /Z8cQ/2Zpsqg6j80zn7gnHjxkNazhOSsRaugR2PAfuU3dDWI6yI6pvmsehjHG+im3oDS
+         zljg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689277986; x=1689882786;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tkSK4Hprfqvy1sXh7+UPS2V9p+xt/zZPx5zVI9IIj2A=;
+        b=G0yQ4A4++GkTXvT5p6w4LBiiyMV000hjeZEkLylXx7sN618fl0X1K8opOxf1rbIDSM
+         pGFjcl3itPIdx/BRgbGpNpseWrH8Wd58Dfj1wIlGPfJTRQag71Cek4MZxbGxRLxM7owN
+         71JE9R1BCzM8X4OzN4hDgtpA56MHjL+yJHEiLjnnOkYEh5efnJYAoJp28kGBoFfkikyW
+         wXP8n7NlMXo1oAZ/Tkb4Tx/3Sioo8My0PfOumDGCCD+UX9w1wJUQW0tzgsVln/ic4Kpo
+         TaXdnKmqQDbNbKKDMxKUL8Ah1E7UM0qdm0yOXt6radrVDPv2DUJVxgexQ+H8DG7EVzPG
+         Lt9Q==
+X-Gm-Message-State: ABy/qLYx4MV5gPCewE6Ehvs9ilhLpyp8KOxrfmBs/jlwDldmh6zst7Ki
+        JokS+8oIJpgl3wdCUE4lxqzoKQ==
+X-Google-Smtp-Source: APBJJlGVw6V+RP1LIbdt+ch7pPvJN+Jx/IZaclPER7QiiajPjn4MUP8U4h/rRIIgI0eVg2+9OrIxIw==
+X-Received: by 2002:a05:6512:3f10:b0:4f7:6976:2070 with SMTP id y16-20020a0565123f1000b004f769762070mr2159598lfa.40.1689277986183;
+        Thu, 13 Jul 2023 12:53:06 -0700 (PDT)
+Received: from [10.10.15.130] ([192.130.178.91])
+        by smtp.gmail.com with ESMTPSA id i12-20020ac2522c000000b004fa52552c82sm1224452lfl.155.2023.07.13.12.53.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 Jul 2023 12:53:05 -0700 (PDT)
+Message-ID: <bf9439f1-4ae6-78db-95cb-b8cad84ff0ab@linaro.org>
+Date:   Thu, 13 Jul 2023 22:53:04 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] drm/msm/adreno: Fix snapshot BINDLESS_DATA size
+To:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org
+Cc:     linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        Rob Clark <robdclark@chromium.org>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Akhil P Oommen <quic_akhilpo@quicinc.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20230711175409.157800-1-robdclark@gmail.com>
+Content-Language: en-GB
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+In-Reply-To: <20230711175409.157800-1-robdclark@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-099c9
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -60,38 +82,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 13 Jul 2023 11:03:28 +0200, Christoph Niedermaier wrote:
-> This patch makes the use of IRQ optional to make the DA9061/62 usable
-> for designs that don't have the IRQ pin connected, because the regulator
-> is usable without IRQ.
+On 11/07/2023 20:54, Rob Clark wrote:
+> From: Rob Clark <robdclark@chromium.org>
 > 
+> The incorrect size was causing "CP | AHB bus error" when snapshotting
+> the GPU state on a6xx gen4 (a660 family).
 > 
+> Closes: https://gitlab.freedesktop.org/drm/msm/-/issues/26
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
 
-Applied to
+What about:
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+Fixes: 1707add81551 ("drm/msm/a6xx: Add a6xx gpu state")
 
-Thanks!
+?
 
-[1/1] regulator: da9062: Make the use of IRQ optional
-      commit: 497897cb200d03b89524e6b4dfb71c77af324766
+> ---
+>   drivers/gpu/drm/msm/adreno/a6xx_gpu_state.h | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.h b/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.h
+> index 790f55e24533..e788ed72eb0d 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.h
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.h
+> @@ -206,7 +206,7 @@ static const struct a6xx_shader_block {
+>   	SHADER(A6XX_SP_LB_3_DATA, 0x800),
+>   	SHADER(A6XX_SP_LB_4_DATA, 0x800),
+>   	SHADER(A6XX_SP_LB_5_DATA, 0x200),
+> -	SHADER(A6XX_SP_CB_BINDLESS_DATA, 0x2000),
+> +	SHADER(A6XX_SP_CB_BINDLESS_DATA, 0x800),
+>   	SHADER(A6XX_SP_CB_LEGACY_DATA, 0x280),
+>   	SHADER(A6XX_SP_UAV_DATA, 0x80),
+>   	SHADER(A6XX_SP_INST_TAG, 0x80),
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+-- 
+With best wishes
+Dmitry
 
