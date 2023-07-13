@@ -2,192 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CCB675270D
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 17:30:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76C0C752710
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 17:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234921AbjGMPaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 11:30:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60230 "EHLO
+        id S235010AbjGMPaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 11:30:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232956AbjGMP3T (ORCPT
+        with ESMTP id S235044AbjGMP3O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 11:29:19 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51320358C
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 08:28:59 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-3fbc54cab6fso7834445e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 08:28:59 -0700 (PDT)
+        Thu, 13 Jul 2023 11:29:14 -0400
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D4030F4
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 08:28:50 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id 6a1803df08f44-635fa79d7c0so9837496d6.1
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 08:28:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689262138; x=1691854138;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fQO6gNAEktA8kEixN8D27EH+Cpq5epFEey0edwAdXMY=;
-        b=oQo6Gx7KIFLJF9/K18gtoCqYQ33/wKzBynQefMMsCw64qAU+lu7pQHtH+wC+8mwry1
-         PyLLEWVT2oYpK9MntYve7kl+T0UZdJO2rwtz/IqOfahsHem9ft+J39t8LMKhfqbhRnBX
-         9id4DrC3Ane9yGZuPBdqgKLthyhi85yLXeNVLyVDlzKjzrbq/yVyLi97nmUSRThibz/p
-         5NS4ThHGgmBjmGO6t6CSmK23j3XuCMSHASFmNWMNYbDef1HPeMin265rAqmpTrpXwwqI
-         AIgoZDtZzWQnpuy/mVHhbVRcNLj2eNpZMcm5QhBhCDGnT9iTckx9J9b54oB7H14QfQ8n
-         XokA==
+        d=cmpxchg-org.20221208.gappssmtp.com; s=20221208; t=1689262130; x=1691854130;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=h/80Ekd6DqzKLFqX46dYHjJZXY+rAS6rJgfP1rtkgTw=;
+        b=E9hBr1jtJz/iksiAdsR2un2ICY/Q8lHi4KTgSuA/7iR3fqTHt+lPbTuN9+IPLgjjvt
+         4cSAR5bN+HKxFrii46F8+XH89z2AirUAr2Wppx5SO7OarfVVsnvTYTl83mER9V5P/4dW
+         vYqcfDG+DpazKcJ2rEldIgdTinGJ/qMmK9HI7wosH6ppxzdKKmGz1jJzcHbSBmelm3uF
+         /ZPjjUNVscZLfAF9ByHAoAmD+iyFcwzYSG5NNBzOnVzXuBdII0QG6ETfNteggNbDSXuS
+         FNNRc3FWCjDzOkKEpwf+LhJDcJIEBl7qaL+01kClqrHS+0wmvv1GWm6/ir3IZFHRzG4o
+         swBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689262138; x=1691854138;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fQO6gNAEktA8kEixN8D27EH+Cpq5epFEey0edwAdXMY=;
-        b=KZPcBvq2UX12ZyDhCaIx1ab367mevFS5Z0j8VSNWZgHgz2l5mc/mJ8q9H1cHFlbtOy
-         DwyxbIbSUItzCKODSYZBZXwblUV11Dgtl5i0+upvb3qosxeB3sqi2wUHkkWG2Zg7f/bD
-         dCZbRkheI0fDb9BWYEmCZd227/x/sc98IiuDWnT/6b3+rY7DM8JVapGZQHaUnkQ4cnQN
-         AxH28vWBknrhSfqosnq2yvg1pv7QX+ptv6bGZ9FB6lE+5VBIR8qw66TWFd+SUebprp0L
-         jgR4/oOS/oGOm5qlNl54wVYFACAmRQ6dR3djn8ulE3ACVi8MYSqH6wdfWntLN3fQhi17
-         koFA==
-X-Gm-Message-State: ABy/qLZcrVsdhgxvGm6GyXukowjH/UtV1Y8PRYSeSvOIV0kj3J/Q0Bx2
-        ddgT2l+QQAGzRRoIB5f49n+b6FrYlOMHcqhVMazHMQ==
-X-Google-Smtp-Source: APBJJlGvxD217zUNMBN8WO2s3a+6x9vPlciyEoAeCGQQ7j2Yltg/heP99SNtLyfacrt14HvPp1etHg==
-X-Received: by 2002:a05:600c:2902:b0:3fc:80a:993e with SMTP id i2-20020a05600c290200b003fc080a993emr1650459wmd.17.1689262137885;
-        Thu, 13 Jul 2023 08:28:57 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id l22-20020a7bc456000000b003fbb5142c4bsm18563121wmi.18.2023.07.13.08.28.56
+        d=1e100.net; s=20221208; t=1689262130; x=1691854130;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=h/80Ekd6DqzKLFqX46dYHjJZXY+rAS6rJgfP1rtkgTw=;
+        b=Eky1CZ90wBmSeiuQBYFYThQZebeXmO/kveL0TLIDjkVdLklEtx8p4U208yDHdxKF3N
+         9H5lwd9b1icrN01nFpz/JTU6MTynZmb8MnAJlOlIc4QoCk+5IUji+tlWKnXGwbA5oBq4
+         41yPhK7HFfI4+cGBNcLwUs6O57BQw2ssvUGAMHGubVTvz2sjeDiiD2T2v5RgSTwWn8bu
+         obJ+64Krd7ZmqyrprgNdAe8iqPjr/IN1dlbIr9ggUO/ezsghRmsOJjiF3dGa9uViSSEQ
+         wJTsTJPFLR2IWkmA1Q6M/RW5v9Z/s+xEBRelrqnU+akaKfbQixxB+zLL4m9haXOuzAiQ
+         G4iA==
+X-Gm-Message-State: ABy/qLZRRmMTEBhkdolyOOgw+h4wJS7VceIzY7KkqsbPhPbskwa2IXOw
+        1LeLAV8djIYJuF65cgYkDbK9pQ==
+X-Google-Smtp-Source: APBJJlEPmbtWoVegAbCrTRJayFAcpqN6oOQKID1ZEfTn5WBgGrZqLXQyComslaaPYjdCn2i0GnHvHw==
+X-Received: by 2002:a05:6214:20e7:b0:62f:fe47:d478 with SMTP id 7-20020a05621420e700b0062ffe47d478mr32572qvk.8.1689262129830;
+        Thu, 13 Jul 2023 08:28:49 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:400::5:f593])
+        by smtp.gmail.com with ESMTPSA id d22-20020a0cb2d6000000b00631fea4d5bcsm3168522qvf.95.2023.07.13.08.28.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Jul 2023 08:28:57 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Marek Vasut <marex@denx.de>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH 3/3] dt-bindings: net: davicom,dm9000: convert to DT schema
-Date:   Thu, 13 Jul 2023 17:28:48 +0200
-Message-Id: <20230713152848.82752-4-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230713152848.82752-1-krzysztof.kozlowski@linaro.org>
-References: <20230713152848.82752-1-krzysztof.kozlowski@linaro.org>
+        Thu, 13 Jul 2023 08:28:49 -0700 (PDT)
+Date:   Thu, 13 Jul 2023 11:28:48 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     James Gowans <jgowans@amazon.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Jan H =?iso-8859-1?Q?=2E_Sch=F6nherr?= <jschoenh@amazon.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Matthew Wilcox <willy@infradead.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Minghao Chi <chi.minghao@zte.com.cn>
+Subject: Re: [RFC] mm: compaction: suitable_migration_target checks for
+ higher order buddies
+Message-ID: <20230713152848.GA495602@cmpxchg.org>
+References: <20230712155421.875491-1-jgowans@amazon.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230712155421.875491-1-jgowans@amazon.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the Davicom DM9000 Fast Ethernet Controller bindings to DT
-schema.
+On Wed, Jul 12, 2023 at 05:54:21PM +0200, James Gowans wrote:
+> Huge page compaction finds free target pages to which source pages can
+> be migrated when compacting.  A huge page sized and aligned block is
+> considered a valid source of target pages if it passes the
+> suitable_migration_target() test. One of the things which
+> suitable_migration_target() does is to ensure that the entire block
+> isn't currently free. It would counter productive to use an already
+> fully free huge page sized block as a migration target because using
+> pages from that free huge page block would decrease the number of
+> available huge pages in the system.
+> 
+> suitable_migration_source() attempts to ensure that the supplied block
+> is not currently a fully free block by checking PageBuddy flag on the
+> starting page of the huge page sized and aligned block. This approach is
+> flawed: the buddy list can and does maintain buddies at a larger order
+> than huge page size. For example on a typical x86 system, huge page
+> pageblock_order is 2 MiB, but the buddy list MAX_ORDER is 4 MiB. Because
+> of this, a pageblock_order sized block may be free because it is part of
+> a larger order buddy list buddy, but the pageblock_order sized block
+> won't itself be part of the buddy list, only the larger order block will
+> be. The current suitable_migration_target() implementation of just
+> checking the PageBuddy flag on the pageblock_order block is hence
+> insufficient as it will appear that the block is not free and hence try
+> to use it as a source of migration target pages.
+> 
+> Enhance suitable_migration_target() to cater for this case by scanning
+> up the buddy orders from the current pageblock_order page to MAX_ORDER
+> to see if any of the larger page blocks have the PageBuddy flag set.
+> 
+> In practice incorrectly considering a page block as a suitable migration
+> target doesn't actually cause the block to be broken down. That block is
+> passed to isolate_freepages_block() which will scan it for any pages
+> currently in the buddy list. The assumption is that buddy list nodes
+> will be found because the entire block is not free. In the case
+> described above actually no buddy list nodes will be found because the
+> higher order block is free. It's just unnecessary scanning.
+> 
+> As such, the user visible effect of this change is only (in theory [1])
+> very slightly faster huge compaction by avoiding scanning entirely free
+> blocks for free pages. Even if the effect is negligible, this change
+> better conveys what the function is attempting to do: check whether this
+> page block is entirely free or not.
+> 
+> [1] I have not actually measured whether the difference is noticeable.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- .../bindings/net/davicom,dm9000.yaml          | 59 +++++++++++++++++++
- .../bindings/net/davicom-dm9000.txt           | 27 ---------
- 2 files changed, 59 insertions(+), 27 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/net/davicom,dm9000.yaml
- delete mode 100644 Documentation/devicetree/bindings/net/davicom-dm9000.txt
+This is an interesting find. But because it's working correctly right
+now, this patch is a performance optimization, so numbers would help.
 
-diff --git a/Documentation/devicetree/bindings/net/davicom,dm9000.yaml b/Documentation/devicetree/bindings/net/davicom,dm9000.yaml
-new file mode 100644
-index 000000000000..66a7c6eec767
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/davicom,dm9000.yaml
-@@ -0,0 +1,59 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/davicom,dm9000.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Davicom DM9000 Fast Ethernet Controller
-+
-+maintainers:
-+  - Paul Cercueil <paul@crapouillou.net>
-+
-+properties:
-+  compatible:
-+    const: davicom,dm9000
-+
-+  reg:
-+    items:
-+      - description: Address registers
-+      - description: Data registers
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  davicom,no-eeprom:
-+    type: boolean
-+    description: Configuration EEPROM is not available
-+
-+  davicom,ext-phy:
-+    type: boolean
-+    description: Use external PHY
-+
-+  reset-gpios:
-+    maxItems: 1
-+
-+  vcc-supply: true
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+
-+allOf:
-+  - $ref: /schemas/memory-controllers/mc-peripheral-props.yaml#
-+  - $ref: /schemas/net/ethernet-controller.yaml#
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+
-+    ethernet@a8000000 {
-+        compatible = "davicom,dm9000";
-+        reg = <0xa8000000 0x2>, <0xa8000002 0x2>;
-+        interrupt-parent = <&gph1>;
-+        interrupts = <1 IRQ_TYPE_LEVEL_HIGH>;
-+        local-mac-address = [00 00 de ad be ef];
-+        davicom,no-eeprom;
-+    };
-diff --git a/Documentation/devicetree/bindings/net/davicom-dm9000.txt b/Documentation/devicetree/bindings/net/davicom-dm9000.txt
-deleted file mode 100644
-index 64c159e9cbf7..000000000000
---- a/Documentation/devicetree/bindings/net/davicom-dm9000.txt
-+++ /dev/null
-@@ -1,27 +0,0 @@
--Davicom DM9000 Fast Ethernet controller
--
--Required properties:
--- compatible = "davicom,dm9000";
--- reg : physical addresses and sizes of registers, must contain 2 entries:
--    first entry : address register,
--    second entry : data register.
--- interrupts : interrupt specifier specific to interrupt controller
--
--Optional properties:
--- davicom,no-eeprom : Configuration EEPROM is not available
--- davicom,ext-phy : Use external PHY
--- reset-gpios : phandle of gpio that will be used to reset chip during probe
--- vcc-supply : phandle of regulator that will be used to enable power to chip
--
--Example:
--
--	ethernet@18000000 {
--		compatible = "davicom,dm9000";
--		reg = <0x18000000 0x2 0x18000004 0x2>;
--		interrupt-parent = <&gpn>;
--		interrupts = <7 4>;
--		local-mac-address = [00 00 de ad be ef];
--		davicom,no-eeprom;
--		reset-gpios = <&gpf 12 GPIO_ACTIVE_LOW>;
--		vcc-supply = <&eth0_power>;
--	};
--- 
-2.34.1
+> @@ -1342,15 +1342,40 @@ static bool suitable_migration_source(struct compact_control *cc,
+>  static bool suitable_migration_target(struct compact_control *cc,
+>  							struct page *page)
+>  {
+> -	/* If the page is a large free page, then disallow migration */
+> -	if (PageBuddy(page)) {
+> +	unsigned int higher_order;
+> +	/*
+> +	 * If the supplied page is part of a pageblock_order or larger free
+> +	 * block it is not a suitable migration target block. Detect this case
+> +	 * by starting at the pageorder_block aligned page and scan upwards to
+> +	 * MAX_ORDER aligned page. Scan to see if any of the struct pages are
+> +	 * in the buddy list for the order of the larger block. Disallow
+> +	 * migration if so.
+> +	 */
+> +	for (higher_order = pageblock_order; higher_order <= MAX_ORDER; ++higher_order) {
+> +		struct page *higher_order_page;
+> +		unsigned long higher_order_pfn;
+>  		/*
+> -		 * We are checking page_order without zone->lock taken. But
+> -		 * the only small danger is that we skip a potentially suitable
+> -		 * pageblock, so it's not worth to check order for valid range.
+> +		 * This is legal provided that struct pages are always initialised
+> +		 * to at least start at MAX_ORDER alignment.
+>  		 */
+> -		if (buddy_order_unsafe(page) >= pageblock_order)
+> -			return false;
+> +		higher_order_pfn &= ~((1 << higher_order) - 1);
+> +		higher_order_page = pfn_to_page(higher_order_pfn);
+> +		if (PageBuddy(higher_order_page)) {
+> +			/*
+> +			 * We are checking page_order without zone->lock taken. But
+> +			 * the only small danger is that we skip a potentially suitable
+> +			 * pageblock, so it's not worth to check order for valid range.
+> +			 */
+> +			if (buddy_order_unsafe(higher_order_page) >= higher_order)
+> +				return false;
+> +			/*
+> +			 * This is a buddy but not a sufficiently large buddy.
+> +			 * There will never be a larger one above this.
+> +			 */
+> +			else
+> +				break;
+> +		}
 
+One thing that's unfortunate is that isolate_freepages() will still
+just skip one pageblock, even if you find the buddy further away than
+that. This would check the same range at least twice (or more,
+depending on the distance between pageblock_order and MAX_ORDER).
+
+Instead of returning bool, it could make sense to return the pfn of
+where you find the buddy, and then have isolate_freepages() skip and
+continue the search at the pageblock below that.
+
+Btw, this is also fixed by my patches that add the MIGRATE_FREE
+type[1]. It has isolate_freepages() check this block type instead of
+PageBuddy(), and that's set for all subblocks in a larger buddy.
+
+[1] https://lore.kernel.org/lkml/20230418191313.268131-1-hannes@cmpxchg.org/ ]
