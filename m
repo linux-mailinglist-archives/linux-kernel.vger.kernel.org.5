@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8A35751A9F
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 09:59:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60379751AA2
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 10:00:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233757AbjGMH7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 03:59:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39758 "EHLO
+        id S233661AbjGMIAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 04:00:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233746AbjGMH7O (ORCPT
+        with ESMTP id S233639AbjGMH7c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 03:59:14 -0400
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B5852D5A;
-        Thu, 13 Jul 2023 00:58:47 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 4DBD240003;
-        Thu, 13 Jul 2023 07:58:44 +0000 (UTC)
+        Thu, 13 Jul 2023 03:59:32 -0400
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34F9030D1;
+        Thu, 13 Jul 2023 00:58:52 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id B96A1E0008;
+        Thu, 13 Jul 2023 07:58:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1689235126;
+        t=1689235131;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=CAcdgMe2/s9IbGFcplUxzsGXDAg2SeY5YUX5I1fIs5A=;
-        b=oi0J6CpOPXfLfbUneqPDi+zoXuN+iEyY9u0jowSSMSWYbreVvFKHkkdRDWfhy9P0OV6LY3
-        KgZ3zaRuCipq1Mi2G8yn5IuyVvlE37zaejQnJ7hlEsUUAGKFhAhH8UYd06z8v3zcDRblyh
-        aq4hqCeXMEZumvN6SgoIuruDvy+SGU4bM/ezDS+Cu3iLTVcSCPnqRrQnDoiLyGXo+hQM+1
-        29rq9KQbnJIDKit8Ru6c5Am+mDaz8/D0buwg2jIKZbrdR1+XESgHkfZTZIF0O9TYaV37St
-        52EUNblsUHDaBFKWVO0gIObjJEcNtefbnOUE1N+o2gIo4ZkCPYnWi3DDRDrBZA==
+        bh=btfcTaMxTQ02PSlnbX5V3o2sBc1OCsVPCe9sHQUY0AQ=;
+        b=i5gFwm9c0W4b8Kq3SQR47prgKPw792/M8EFlTQZWMOXe99ZwXKhuLl/WiI58Owu2cBbJLc
+        WIjsLx4KPTsF9xcBVtW4HnnRRfBge6/zt30sT5cpp/yjbrpkj67blmA+opX6QHCinZZ+Y5
+        PXO3ksb9GQnn8hTgb0NKl+RpbCrIXMHDojFboGUENuPV9vWbumF7Vodkg0UHP3AlHEor3r
+        ekW0h1TZ4AYL7Di6ChJPG2TVXkJ8x9CrId1KEE81pdZrrR482KhhgRsYUfbd556n2BFsOK
+        to5FDO96WqqRvpET/yYSGsLb0OZMqoBGS3mVDnHGXDmYMlK+lZphqapy0Us6lw==
 From:   Miquel Raynal <miquel.raynal@bootlin.com>
 To:     William Zhang <william.zhang@broadcom.com>,
         Broadcom Kernel List <bcm-kernel-feedback-list@broadcom.com>,
@@ -39,20 +39,21 @@ Cc:     Miquel Raynal <miquel.raynal@bootlin.com>, f.fainelli@gmail.com,
         anand.gore@broadcom.com, dregan@mail.com, kamal.dasu@broadcom.com,
         tomer.yacoby@broadcom.com, dan.beygelman@broadcom.com,
         Florian Fainelli <florian.fainelli@broadcom.com>,
-        stable@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Rob Herring <robh@kernel.org>,
+        linux-kernel@vger.kernel.org,
         Vignesh Raghavendra <vigneshr@ti.com>,
         Richard Weinberger <richard@nod.at>,
         Boris Brezillon <bbrezillon@kernel.org>,
         Kamal Dasu <kdasu.kdev@gmail.com>
-Subject: Re: [PATCH v4 2/5] mtd: rawnand: brcmnand: Fix potential false time out warning
-Date:   Thu, 13 Jul 2023 09:58:43 +0200
-Message-Id: <20230713075843.486536-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v4 1/5] mtd: rawnand: brcmnand: Fix ECC level field setting for v7.2 controller
+Date:   Thu, 13 Jul 2023 09:58:48 +0200
+Message-Id: <20230713075848.486574-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230706182909.79151-3-william.zhang@broadcom.com>
+In-Reply-To: <20230706182909.79151-2-william.zhang@broadcom.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'9cc0a598b944816f2968baf2631757f22721b996'
+X-linux-mtd-patch-commit: b'2ec2839a9062db8a592525a3fdabd42dcd9a3a9b'
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -65,13 +66,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-07-06 at 18:29:06 UTC, William Zhang wrote:
-> If system is busy during the command status polling function, the driver
-> may not get the chance to poll the status register till the end of time
-> out and return the premature status.  Do a final check after time out
-> happens to ensure reading the correct status.
+On Thu, 2023-07-06 at 18:29:05 UTC, William Zhang wrote:
+> v7.2 controller has different ECC level field size and shift in the acc
+> control register than its predecessor and successor controller. It needs
+> to be set specifically.
 > 
-> Fixes: 9d2ee0a60b8b ("mtd: nand: brcmnand: Check flash #WP pin status before nand erase/program")
+> Fixes: decba6d47869 ("mtd: brcmnand: Add v7.2 controller support")
 > Signed-off-by: William Zhang <william.zhang@broadcom.com>
 > Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
 > Cc: stable@vger.kernel.org
