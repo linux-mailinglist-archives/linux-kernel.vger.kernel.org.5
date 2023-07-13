@@ -2,88 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED385751944
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 09:03:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF725751952
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 09:06:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233862AbjGMHDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 03:03:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60738 "EHLO
+        id S234039AbjGMHGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 03:06:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234039AbjGMHC6 (ORCPT
+        with ESMTP id S233212AbjGMHGl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 03:02:58 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E0A7212D
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 00:02:55 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R1ltN6Xw0zBL4kD
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 15:02:52 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689231772; x=1691823773; bh=ux/UlvltyFIL39oRt2Pw13EaJop
-        G7fMscRK5tWErzkA=; b=OXnpDXuz03xe6vLFXv7smKxbSXCl7I3zzpVEsnBPtv8
-        Aj5YhGwfED8QY3ZPQK2feseRfxf809V3uNR5CxitzjdnXFIcDFYXF6QKzOqztiWm
-        EUprJDziV1aCeY3W8N+YshvDFGBxDZhRQ6TBkfxx0/mLqEP6HY7+LZAw9iES2DEZ
-        mE+o4CRa1jygZe5bpy8ctvMAbT7jJCHqvRf0scuHbGAaSVK+N/fw/Yb3jpriZuoI
-        0yUZZc1ykYYRPlvs4D9KJ/7oVOwiFwcloXsm8KM8tGlL8dLLf6htWWksVpHhn2U6
-        2Cd7wCaAha/b/6n+8cvcmETJp4xHnQLUuyo3vAfewLQ==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id R2FbITJezuEj for <linux-kernel@vger.kernel.org>;
-        Thu, 13 Jul 2023 15:02:52 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R1ltN4vB0zBJDhy;
-        Thu, 13 Jul 2023 15:02:52 +0800 (CST)
+        Thu, 13 Jul 2023 03:06:41 -0400
+Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35A37E5F;
+        Thu, 13 Jul 2023 00:06:40 -0700 (PDT)
+Received: from 74.172.62.81.static.wline.lns.sme.cust.swisscom.ch ([81.62.172.74] helo=martin-debian-2.paytec.ch)
+        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <martin@kaiser.cx>)
+        id 1qJqPK-0004KN-Ic; Thu, 13 Jul 2023 09:06:34 +0200
+From:   Martin Kaiser <martin@kaiser.cx>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     olivier@sobrie.be, linux-crypto@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Martin Kaiser <martin@kaiser.cx>
+Subject: [PATCH 0/3] hwrng: ba431 - trivial cleanups
+Date:   Thu, 13 Jul 2023 09:04:43 +0200
+Message-Id: <20230713070446.230978-1-martin@kaiser.cx>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Date:   Thu, 13 Jul 2023 15:02:52 +0800
-From:   hanyu001@208suo.com
-To:     tglx@linutronix.de, maz@kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] drivers: irqchip: add spaces around '=','<'
-In-Reply-To: <tencent_1A41AAB66C1D66F32748618B4E8AB7A12E08@qq.com>
-References: <tencent_1A41AAB66C1D66F32748618B4E8AB7A12E08@qq.com>
-User-Agent: Roundcube Webmail
-Message-ID: <163ceb00f3a86951b5ad735a8a487305@208suo.com>
-X-Sender: hanyu001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This fixes the checkpatch.pl errors:
+Here's three trivial clenaups of the ba431 driver. Compile-tested only.
 
-drivers/irqchip/irq-vt8500.c:173: ERROR: spaces required around that '=' 
-(ctx:VxV)
-drivers/irqchip/irq-vt8500.c:173: ERROR: spaces required around that '<' 
-(ctx:VxV)
+Martin Kaiser (3):
+  hwrng: ba431 - do not set drvdata
+  hwrng: ba431 - don't init of_device_id's data
+  hwrng: ba431 - use dev_err_probe after failed registration
 
-Signed-off-by: maqimei <2433033762@qq.com>
----
-  drivers/irqchip/irq-vt8500.c | 2 +-
-  1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/char/hw_random/ba431-rng.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/irqchip/irq-vt8500.c b/drivers/irqchip/irq-vt8500.c
-index e17dd3a..597881a 100644
---- a/drivers/irqchip/irq-vt8500.c
-+++ b/drivers/irqchip/irq-vt8500.c
-@@ -170,7 +170,7 @@ static void __exception_irq_entry 
-vt8500_handle_irq(struct pt_regs *regs)
-      void __iomem *base;
+-- 
+2.30.2
 
-      /* Loop through each active controller */
--    for (i=0; i<active_cnt; i++) {
-+    for (i = 0; i < active_cnt; i++) {
-          base = intc[i].base;
-          irqnr = readl_relaxed(base) & 0x3F;
-          /*
