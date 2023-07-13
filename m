@@ -2,128 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 174357521AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 14:48:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93349752214
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 15:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234836AbjGMMs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 08:48:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57950 "EHLO
+        id S233894AbjGMNBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 09:01:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234826AbjGMMsS (ORCPT
+        with ESMTP id S233780AbjGMNBh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 08:48:18 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E293C273B
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 05:47:53 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-3143b72c5ffso851165f8f.3
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 05:47:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689252459; x=1691844459;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=z+Z95kHJar6LgJuF8EaQ4xrWI5fsRo898PQkWtblwYA=;
-        b=ZWtafz1E6fk6SAsYpf4lGZD1+nSgipZ/1yHk8BiiBeCPmDYFNw/BHXw8sle+l2vVmS
-         HiRfDaiEutO8CKyd/tWcIbzDH68IKAq0P+wq6L3O+yCRnGWEZXF20jAOZurQ/poTKzrb
-         g2OnlU1tMldBasNoMoKBcVuVSBCTsyKGMaByUKioVd4KMVuWxyelDtQjMhVnKsq5Iagw
-         6P15f+uhPUS8d9HS9De43ANQUipGV+9v29ZgjBforFnnWFgsbssKQyogmv4hd+73mvAv
-         lE4BynPqwqichj7yZRCL2JXaPbqySmT8UZO4u9PrfLAkj4WOjTJ+83c7+Pw5b6vArAq9
-         /iXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689252459; x=1691844459;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=z+Z95kHJar6LgJuF8EaQ4xrWI5fsRo898PQkWtblwYA=;
-        b=fokPmn2PiyeFxPQuPvQiPFdda5Tevj6la9ONZ9JwFUwvlWfsl7U6h2TlXQnolORUfD
-         kIkVAysKiX/Xug/XE8Ui3KDI5KWoVFu1+sd+Ol8hHGs4N1oN5z1vMaGnu7Yw623G6xyt
-         2rq9nTd4yU+ivieziddVcnb+Ig/2qP4R9h8FQRkwSnnt/76wwjImN6qq0Uuyi+Oc4kx0
-         gv/5U32yWrOm/qacyQHIJD50xLQTeDm+zLKHc0xHUu8cbzmSm2Oty/3xh8NHCtSIlYia
-         dp8tB0o6yTL+5stNrL1+bWbEGMhU0+4cPJU0DOd5PUlRQkH6S+oRLnsrPKGW4DR9rxBB
-         HeNA==
-X-Gm-Message-State: ABy/qLYixJBbO9Pb/4ZZ9GjyrkaUCWZS/fFTJvckrkgV7T1APxKXPjMe
-        UvRLW0F855yYpVMcVuVI6EuP1w==
-X-Google-Smtp-Source: APBJJlFbNLe7S8IsK2vPmgsjbKmKD9UvXXP3v3+dBxQYsKg50wEXZp6DtXoc8BrOfzOVUcWK2M8cHA==
-X-Received: by 2002:a05:6000:18f:b0:315:a1d5:a3d5 with SMTP id p15-20020a056000018f00b00315a1d5a3d5mr1544161wrx.22.1689252459616;
-        Thu, 13 Jul 2023 05:47:39 -0700 (PDT)
-Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
-        by smtp.googlemail.com with ESMTPSA id m15-20020adfdc4f000000b003142ea7a661sm7905018wrj.21.2023.07.13.05.47.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 Jul 2023 05:47:39 -0700 (PDT)
-Message-ID: <cb852190-2128-ee92-ff64-a47bd262154a@linaro.org>
-Date:   Thu, 13 Jul 2023 14:47:37 +0200
+        Thu, 13 Jul 2023 09:01:37 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B1AD173B
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 06:01:32 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R1vY96GlMzBRSTw
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 20:48:29 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1689252509; x=1691844510; bh=XyMYDjcQC6+dgPnu3BuklwgtWvG
+        Wtys2VxsyHNQ9PoA=; b=h95VI81ggq2q3DfCYRMYuveknTG8eEwq2cag/vN26YP
+        Nvlsri1dzoME6V0xg5YDuwAlCTzVsnWKEOSXgkN94R/df2vcrx/tEj4OQkrkRLh4
+        GDxJwbr0wdbxrioV5RgMOBZ0NVS5KXZV8S4JKea4DnHVC77JaTg/JkVq1Ey8dCzu
+        gqlZF8IjjxnlYWn/RhJfvL1e2gPhy1ep0iTKTgOXoyJESIIUygrggG+GO5rYSDO1
+        9VI5lnC725gRZ5r0CtS40LY0nBSlWaLLvppahNY8RjLtbW9kA30NyMhyrx/EfHGw
+        oVrohJf+HhiGDai66hUENIWxlBwgodgoxp2SG6HOtpw==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id a_z5WPpXJgFX for <linux-kernel@vger.kernel.org>;
+        Thu, 13 Jul 2023 20:48:29 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R1vY91vJqzBRRLw;
+        Thu, 13 Jul 2023 20:48:29 +0800 (CST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v2 04/15] dt-bindings: timer: oxsemi,rps-timer: remove
- obsolete bindings
-Content-Language: en-US
-To:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andy@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-oxnas@groups.io,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Daniel Golle <daniel@makrotopia.org>
-References: <20230630-topic-oxnas-upstream-remove-v2-0-fb6ab3dea87c@linaro.org>
- <20230630-topic-oxnas-upstream-remove-v2-4-fb6ab3dea87c@linaro.org>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <20230630-topic-oxnas-upstream-remove-v2-4-fb6ab3dea87c@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Date:   Thu, 13 Jul 2023 20:48:29 +0800
+From:   huzhi001@208suo.com
+To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, seanjc@google.com,
+        pbonzini@redhat.com
+Cc:     hpa@zytor.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] x86: Fix warnings in kvm_emulate.h
+In-Reply-To: <tencent_415AB86AA63A22065D7B022D94B2209BB707@qq.com>
+References: <tencent_415AB86AA63A22065D7B022D94B2209BB707@qq.com>
+User-Agent: Roundcube Webmail
+Message-ID: <a96564ba2d5b643fdbca000f686f2843@208suo.com>
+X-Sender: huzhi001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/06/2023 18:58, Neil Armstrong wrote:
-> Due to lack of maintenance and stall of development for a few years now,
-> and since no new features will ever be added upstream, remove the
-> OX810 and OX820 timer bindings.
-> 
-> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Acked-by: Linus Walleij <linus.walleij@linaro.org>
-> Acked-by: Arnd Bergmann <arnd@arndb.de>
-> Acked-by: Daniel Golle <daniel@makrotopia.org>
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-> ---
+The following checkpatch warnings are removed:
+WARNING: Prefer 'unsigned int' to bare use of 'unsigned'
+WARNING: Prefer 'unsigned int' to bare use of 'unsigned'
+WARNING: Prefer 'unsigned int' to bare use of 'unsigned'
+WARNING: Prefer 'unsigned int' to bare use of 'unsigned'
+WARNING: Prefer 'unsigned int' to bare use of 'unsigned'
+WARNING: Prefer 'unsigned int' to bare use of 'unsigned'
+WARNING: Prefer 'unsigned int' to bare use of 'unsigned'
+WARNING: Prefer 'unsigned int' to bare use of 'unsigned'
 
-Applied, thanks
+Signed-off-by: ZhiHu <huzhi001@208suo.com>
+---
+  arch/x86/kvm/kvm_emulate.h | 16 ++++++++--------
+  1 file changed, 8 insertions(+), 8 deletions(-)
 
+diff --git a/arch/x86/kvm/kvm_emulate.h b/arch/x86/kvm/kvm_emulate.h
+index ab65f3a47dfd..652020025457 100644
+--- a/arch/x86/kvm/kvm_emulate.h
++++ b/arch/x86/kvm/kvm_emulate.h
+@@ -95,14 +95,14 @@ struct x86_emulate_ops {
+       *
+       * @reg: gpr number.
+       */
+-    ulong (*read_gpr)(struct x86_emulate_ctxt *ctxt, unsigned reg);
++    ulong (*read_gpr)(struct x86_emulate_ctxt *ctxt, unsigned int reg);
+      /*
+       * write_gpr: write a general purpose register (rax - r15)
+       *
+       * @reg: gpr number.
+       * @val: value to write.
+       */
+-    void (*write_gpr)(struct x86_emulate_ctxt *ctxt, unsigned reg, 
+ulong val);
++    void (*write_gpr)(struct x86_emulate_ctxt *ctxt, unsigned int reg, 
+ulong val);
+      /*
+       * read_std: Read bytes of standard (non-emulated/special) memory.
+       *           Used for descriptor reading.
+@@ -240,10 +240,10 @@ struct operand {
+          unsigned long *reg;
+          struct segmented_address {
+              ulong ea;
+-            unsigned seg;
++            unsigned int seg;
+          } mem;
+-        unsigned xmm;
+-        unsigned mm;
++        unsigned int xmm;
++        unsigned int mm;
+      } addr;
+      union {
+          unsigned long val;
+@@ -508,7 +508,7 @@ void emulator_invalidate_register_cache(struct 
+x86_emulate_ctxt *ctxt);
+  void emulator_writeback_register_cache(struct x86_emulate_ctxt *ctxt);
+  bool emulator_can_use_gpa(struct x86_emulate_ctxt *ctxt);
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+-static inline ulong reg_read(struct x86_emulate_ctxt *ctxt, unsigned 
+nr)
++static inline ulong reg_read(struct x86_emulate_ctxt *ctxt, unsigned 
+int nr)
+  {
+      if (KVM_EMULATOR_BUG_ON(nr >= NR_EMULATOR_GPRS, ctxt))
+          nr &= NR_EMULATOR_GPRS - 1;
+@@ -520,7 +520,7 @@ static inline ulong reg_read(struct x86_emulate_ctxt 
+*ctxt, unsigned nr)
+      return ctxt->_regs[nr];
+  }
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+-static inline ulong *reg_write(struct x86_emulate_ctxt *ctxt, unsigned 
+nr)
++static inline ulong *reg_write(struct x86_emulate_ctxt *ctxt, unsigned 
+int nr)
+  {
+      if (KVM_EMULATOR_BUG_ON(nr >= NR_EMULATOR_GPRS, ctxt))
+          nr &= NR_EMULATOR_GPRS - 1;
+@@ -533,7 +533,7 @@ static inline ulong *reg_write(struct 
+x86_emulate_ctxt *ctxt, unsigned nr)
+      return &ctxt->_regs[nr];
+  }
 
+-static inline ulong *reg_rmw(struct x86_emulate_ctxt *ctxt, unsigned 
+nr)
++static inline ulong *reg_rmw(struct x86_emulate_ctxt *ctxt, unsigned 
+int nr)
+  {
+      reg_read(ctxt, nr);
+      return reg_write(ctxt, nr);
