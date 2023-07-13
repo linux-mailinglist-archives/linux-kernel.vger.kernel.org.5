@@ -2,61 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DF09751BC9
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 10:38:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEEE6751B8A
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 10:31:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233843AbjGMIi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 04:38:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42006 "EHLO
+        id S234070AbjGMIbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 04:31:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234327AbjGMIhx (ORCPT
+        with ESMTP id S234323AbjGMIa1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 04:37:53 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09D3E4EF4
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 01:32:04 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-201-C7sYW67KNPG6e6sJsnGWqw-1; Thu, 13 Jul 2023 09:18:47 +0100
-X-MC-Unique: C7sYW67KNPG6e6sJsnGWqw-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 13 Jul
- 2023 09:18:45 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Thu, 13 Jul 2023 09:18:45 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Kees Cook' <keescook@chromium.org>
-CC:     'Azeem Shaikh' <azeemshaikh38@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] kobject: Replace strlcpy with strscpy
-Thread-Topic: [PATCH] kobject: Replace strlcpy with strscpy
-Thread-Index: AQHZrdj8Qo2zsxXODk+YaMEZxqXK9K+zA4WggABClwCAAP0w0IACiCMAgACbHnA=
-Date:   Thu, 13 Jul 2023 08:18:45 +0000
-Message-ID: <24ccdb40832c4dc0a5376d76a9ea9ae2@AcuMS.aculab.com>
-References: <20230703180528.3709258-1-azeemshaikh38@gmail.com>
- <ad25bb8552704028860cf7a419c54fa3@AcuMS.aculab.com>
- <CADmuW3XOcGDBszYw80Dy03DXk3T25k8FNUrJWLKU9tL2znzanw@mail.gmail.com>
- <0aaa9355aa714e608091af2a5fca1373@AcuMS.aculab.com>
- <202307121651.04D1758@keescook>
-In-Reply-To: <202307121651.04D1758@keescook>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Thu, 13 Jul 2023 04:30:27 -0400
+Received: from aposti.net (aposti.net [89.234.176.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64BEB1BFA;
+        Thu, 13 Jul 2023 01:21:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1689236444;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UOOBqUgvHuPo6oWCliTlkcsf1P60C5K6cRYNo3O2Cy0=;
+        b=T6OSn0Rmxqmn8IAK1KKPdZovLHXxMCyyctONW5Yz10JH91m9+bYeynjk+9i23HFvXBCwEk
+        qk59KHO6lU+C23LmKmDog1/9tsFgnGWV2Min5EN/Vg1L7zMYUXCFHOJO0lUxNdLJFNK2Sa
+        Cd2Wsr57KYkZBTaQIWXSwQnRumNugx0=
+Message-ID: <ac10f71996d363b8298c9cded7fda5a98675b5ec.camel@crapouillou.net>
+Subject: Re: [PATCH 03/58] mmc: jz4740: Convert to platform remove callback
+ returning void
+From:   Paul Cercueil <paul@crapouillou.net>
+To:     Yangtao Li <frank.li@vivo.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, linux-mips@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 13 Jul 2023 10:20:42 +0200
+In-Reply-To: <20230713080807.69999-3-frank.li@vivo.com>
+References: <20230713080807.69999-1-frank.li@vivo.com>
+         <20230713080807.69999-3-frank.li@vivo.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,25 +51,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogS2VlcyBDb29rIDxrZWVzY29va0BjaHJvbWl1bS5vcmc+DQo+IFNlbnQ6IDEzIEp1bHkg
-MjAyMyAwMDo1Mw0KLi4uLg0KPiA+ID4gcHJfd2FybigiaW5pdF91ZXZlbnRfYXJndjogYnVmZmVy
-IHNpemUgb2YgJWQgdG9vIHNtYWxsIGZvciAlcywgbmVlZGVkDQo+ID4gPiAlZFxuIiwgYnVmZmVy
-X3NpemUsIHN1YnN5c3RlbSwgc3RybGVuKHN1YnN5c3RlbSkpOw0KPiA+ID4NCj4gPiA+IERvZXMg
-dGhhdCBzZWVtIGJldHRlcj8NCj4gDQo+IFllYWgsIHRoYXQnbGwgcmV0YWluIHRoZSBpbnRlbnRp
-b24gb2YgdGhlIHdhcm5pbmcuIEl0IHNob3VsZG4ndCByZWFsbHkNCj4gZXZlbiBiZSBwb3NzaWJs
-ZSB0byBoaXQgdGhhdCB3YXJuaW5nLCBzbyBJIGRvbid0IHRoaW5rIHdlIG5lZWQgdG8gd29ycnkN
-Cj4gYWJvdXQgdGhlICJleHRyYSIgY2FsbCB0byBzdHJsZW4oKS4NCj4gDQo+ID4gTm90IHdpdGgg
-dGhlIGp1c3RpZmljYXRpb24gZm9yIG5vdCB1c2luZyBzdHJsY3B5KCkgOi0pDQo+IA0KPiBXaGF0
-Pw0KDQpUaGUgY29tbWl0IG1lc3NhZ2Ugc2F5cyB0aGF0IHN0cmxjcHkoKSBpc24ndCB1c2VkIGJl
-Y2F1c2UNCm9mIHBvc3NpYmxlICdyZWFkIGJleW9uZCBidWZmZXIgZW5kJyAoZXRjKSBpZiBpdCBp
-c24ndA0KJ1wwJyB0ZXJtaW5hdGVkLg0KDQpCdXQgaGVyZSBpZiAoZXh0cmVtZWx5IHVubGlrZWx5
-KSB0aGUgc291cmNlIGlzbid0IHRlcm1pbmF0ZWQNCnRoZW4gdGhlIGV4dHJhIHJlYWRzIGdldCBk
-b25lIGFueXdheS4NClNvIHRoZSBjb21taXQgbWVzc2FnZSBqdXN0IGRvZXNuJ3QgbWF0Y2ggdGhl
-IGNoYW5nZS4NCg0KSSdkIGd1ZXNzIHRoYXQgaXQgaXMgcG9zc2libGUgZm9yIHRoZXJlIHRvIGJl
-IGluc3VmZmljaWVudCBzcGFjZS4NClByb2JhYmx5IGJlY2F1c2Ugb3RoZXIgc3RyaW5ncyBoYXZl
-IGZpbGxlZCB0aGUgYnVmZmVyLg0KVGhlIGVycm9yIG1lc3NhZ2UgbWlnaHQgYmUgYmV0dGVyIGFz
-Og0KCSJpbnN1ZmZpY2llbnQgYnVmZmVyIHNwYWNlICgldSBsZWZ0KSBmb3IgJXNcbiIsDQoJCWJ1
-ZmZlcl9zaXplLCBzdWJzeXN0ZW0pOw0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNz
-IExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAx
-UFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
+Hi,
+
+Le jeudi 13 juillet 2023 =C3=A0 16:07 +0800, Yangtao Li a =C3=A9crit=C2=A0:
+> The .remove() callback for a platform driver returns an int which
+> makes
+> many driver authors wrongly assume it's possible to do error handling
+> by
+> returning an error code. However the value returned is (mostly)
+> ignored
+> and this typically results in resource leaks. To improve here there
+> is a
+> quest to make the remove callback return void. In the first step of
+> this
+> quest all drivers are converted to .remove_new() which already
+> returns
+> void.
+>=20
+> Trivially convert this driver from always returning zero in the
+> remove
+> callback to the void returning variant.
+>=20
+> Cc: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+> Signed-off-by: Yangtao Li <frank.li@vivo.com>
+
+Reviewed-by: Paul Cercueil <paul@crapouillou.net>
+
+Cheers,
+-Paul
+
+> ---
+> =C2=A0drivers/mmc/host/jz4740_mmc.c | 6 ++----
+> =C2=A01 file changed, 2 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/drivers/mmc/host/jz4740_mmc.c
+> b/drivers/mmc/host/jz4740_mmc.c
+> index 1846a05210e3..f379ce5b582d 100644
+> --- a/drivers/mmc/host/jz4740_mmc.c
+> +++ b/drivers/mmc/host/jz4740_mmc.c
+> @@ -1163,7 +1163,7 @@ static int jz4740_mmc_probe(struct
+> platform_device* pdev)
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return ret;
+> =C2=A0}
+> =C2=A0
+> -static int jz4740_mmc_remove(struct platform_device *pdev)
+> +static void jz4740_mmc_remove(struct platform_device *pdev)
+> =C2=A0{
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct jz4740_mmc_host *h=
+ost =3D platform_get_drvdata(pdev);
+> =C2=A0
+> @@ -1179,8 +1179,6 @@ static int jz4740_mmc_remove(struct
+> platform_device *pdev)
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0jz4740_mmc_release_dma_channels(host);
+> =C2=A0
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0mmc_free_host(host->mmc);
+> -
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return 0;
+> =C2=A0}
+> =C2=A0
+> =C2=A0static int jz4740_mmc_suspend(struct device *dev)
+> @@ -1198,7 +1196,7 @@ static
+> DEFINE_SIMPLE_DEV_PM_OPS(jz4740_mmc_pm_ops, jz4740_mmc_suspend,
+> =C2=A0
+> =C2=A0static struct platform_driver jz4740_mmc_driver =3D {
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0.probe =3D jz4740_mmc_pro=
+be,
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0.remove =3D jz4740_mmc_remove,
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0.remove_new =3D jz4740_mmc_rem=
+ove,
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0.driver =3D {
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0.name =3D "jz4740-mmc",
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0.probe_type =3D PROBE_PREFER_ASYNCHRONOUS,
 
