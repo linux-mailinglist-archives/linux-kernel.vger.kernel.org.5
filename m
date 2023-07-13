@@ -2,186 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76C0C752710
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 17:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7395C752709
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 17:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235010AbjGMPaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 11:30:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57902 "EHLO
+        id S234817AbjGMP3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 11:29:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235044AbjGMP3O (ORCPT
+        with ESMTP id S234067AbjGMP3U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 11:29:14 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D4030F4
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 08:28:50 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id 6a1803df08f44-635fa79d7c0so9837496d6.1
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 08:28:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20221208.gappssmtp.com; s=20221208; t=1689262130; x=1691854130;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=h/80Ekd6DqzKLFqX46dYHjJZXY+rAS6rJgfP1rtkgTw=;
-        b=E9hBr1jtJz/iksiAdsR2un2ICY/Q8lHi4KTgSuA/7iR3fqTHt+lPbTuN9+IPLgjjvt
-         4cSAR5bN+HKxFrii46F8+XH89z2AirUAr2Wppx5SO7OarfVVsnvTYTl83mER9V5P/4dW
-         vYqcfDG+DpazKcJ2rEldIgdTinGJ/qMmK9HI7wosH6ppxzdKKmGz1jJzcHbSBmelm3uF
-         /ZPjjUNVscZLfAF9ByHAoAmD+iyFcwzYSG5NNBzOnVzXuBdII0QG6ETfNteggNbDSXuS
-         FNNRc3FWCjDzOkKEpwf+LhJDcJIEBl7qaL+01kClqrHS+0wmvv1GWm6/ir3IZFHRzG4o
-         swBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689262130; x=1691854130;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=h/80Ekd6DqzKLFqX46dYHjJZXY+rAS6rJgfP1rtkgTw=;
-        b=Eky1CZ90wBmSeiuQBYFYThQZebeXmO/kveL0TLIDjkVdLklEtx8p4U208yDHdxKF3N
-         9H5lwd9b1icrN01nFpz/JTU6MTynZmb8MnAJlOlIc4QoCk+5IUji+tlWKnXGwbA5oBq4
-         41yPhK7HFfI4+cGBNcLwUs6O57BQw2ssvUGAMHGubVTvz2sjeDiiD2T2v5RgSTwWn8bu
-         obJ+64Krd7ZmqyrprgNdAe8iqPjr/IN1dlbIr9ggUO/ezsghRmsOJjiF3dGa9uViSSEQ
-         wJTsTJPFLR2IWkmA1Q6M/RW5v9Z/s+xEBRelrqnU+akaKfbQixxB+zLL4m9haXOuzAiQ
-         G4iA==
-X-Gm-Message-State: ABy/qLZRRmMTEBhkdolyOOgw+h4wJS7VceIzY7KkqsbPhPbskwa2IXOw
-        1LeLAV8djIYJuF65cgYkDbK9pQ==
-X-Google-Smtp-Source: APBJJlEPmbtWoVegAbCrTRJayFAcpqN6oOQKID1ZEfTn5WBgGrZqLXQyComslaaPYjdCn2i0GnHvHw==
-X-Received: by 2002:a05:6214:20e7:b0:62f:fe47:d478 with SMTP id 7-20020a05621420e700b0062ffe47d478mr32572qvk.8.1689262129830;
-        Thu, 13 Jul 2023 08:28:49 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:400::5:f593])
-        by smtp.gmail.com with ESMTPSA id d22-20020a0cb2d6000000b00631fea4d5bcsm3168522qvf.95.2023.07.13.08.28.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Jul 2023 08:28:49 -0700 (PDT)
-Date:   Thu, 13 Jul 2023 11:28:48 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     James Gowans <jgowans@amazon.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Jan H =?iso-8859-1?Q?=2E_Sch=F6nherr?= <jschoenh@amazon.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Matthew Wilcox <willy@infradead.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Minghao Chi <chi.minghao@zte.com.cn>
-Subject: Re: [RFC] mm: compaction: suitable_migration_target checks for
- higher order buddies
-Message-ID: <20230713152848.GA495602@cmpxchg.org>
-References: <20230712155421.875491-1-jgowans@amazon.com>
+        Thu, 13 Jul 2023 11:29:20 -0400
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B1D22127
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 08:29:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689262141; x=1720798141;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=xux1JYmAbMREnLahnAwC5Ie7sNJtHyUdLX33J5c/Lxk=;
+  b=SqSg9amHUNa29LhTvIDrtUrIkmqlzz6oZnVUY2qoKANU2NvqMtiS7f1+
+   uUu1hvLhAsdunNHmefqQxTeKq+aRNvQySpjCcz+Hjo6DKr4HiH+dJLVMM
+   YCbsU9Uwl5NbueH3QSrPj2jSAvPT9/eHilQEFS3eVcYdfWFHKj/ZwZgA9
+   8MIf9fbiK4/Q8UhK2o8J9kIC1mNCOE5cPIAJw7Kbh00jMXItQCDsjK8Lk
+   8V8Qy9XSP5Su4B3zhfBEkgcCnYERNOWWsVB10GOfVsR72/Zt9sAHZDutj
+   HTuDx3FsPFVSd32edAdc9Pej0TBTZUpo6F4/5czFHQ9qnqJIfh6GQmCjo
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="396026668"
+X-IronPort-AV: E=Sophos;i="6.01,203,1684825200"; 
+   d="scan'208";a="396026668"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2023 08:29:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="757204899"
+X-IronPort-AV: E=Sophos;i="6.01,203,1684825200"; 
+   d="scan'208";a="757204899"
+Received: from lkp-server01.sh.intel.com (HELO c544d7fc5005) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 13 Jul 2023 08:28:59 -0700
+Received: from kbuild by c544d7fc5005 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qJyFX-0006i8-0t;
+        Thu, 13 Jul 2023 15:28:59 +0000
+Date:   Thu, 13 Jul 2023 23:28:54 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+Subject: fs/ext4/inode.c:2715:12: warning: stack frame size (1392) exceeds
+ limit (1024) in 'ext4_do_writepages'
+Message-ID: <202307132338.YXtPr5BN-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230712155421.875491-1-jgowans@amazon.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 05:54:21PM +0200, James Gowans wrote:
-> Huge page compaction finds free target pages to which source pages can
-> be migrated when compacting.  A huge page sized and aligned block is
-> considered a valid source of target pages if it passes the
-> suitable_migration_target() test. One of the things which
-> suitable_migration_target() does is to ensure that the entire block
-> isn't currently free. It would counter productive to use an already
-> fully free huge page sized block as a migration target because using
-> pages from that free huge page block would decrease the number of
-> available huge pages in the system.
-> 
-> suitable_migration_source() attempts to ensure that the supplied block
-> is not currently a fully free block by checking PageBuddy flag on the
-> starting page of the huge page sized and aligned block. This approach is
-> flawed: the buddy list can and does maintain buddies at a larger order
-> than huge page size. For example on a typical x86 system, huge page
-> pageblock_order is 2 MiB, but the buddy list MAX_ORDER is 4 MiB. Because
-> of this, a pageblock_order sized block may be free because it is part of
-> a larger order buddy list buddy, but the pageblock_order sized block
-> won't itself be part of the buddy list, only the larger order block will
-> be. The current suitable_migration_target() implementation of just
-> checking the PageBuddy flag on the pageblock_order block is hence
-> insufficient as it will appear that the block is not free and hence try
-> to use it as a source of migration target pages.
-> 
-> Enhance suitable_migration_target() to cater for this case by scanning
-> up the buddy orders from the current pageblock_order page to MAX_ORDER
-> to see if any of the larger page blocks have the PageBuddy flag set.
-> 
-> In practice incorrectly considering a page block as a suitable migration
-> target doesn't actually cause the block to be broken down. That block is
-> passed to isolate_freepages_block() which will scan it for any pages
-> currently in the buddy list. The assumption is that buddy list nodes
-> will be found because the entire block is not free. In the case
-> described above actually no buddy list nodes will be found because the
-> higher order block is free. It's just unnecessary scanning.
-> 
-> As such, the user visible effect of this change is only (in theory [1])
-> very slightly faster huge compaction by avoiding scanning entirely free
-> blocks for free pages. Even if the effect is negligible, this change
-> better conveys what the function is attempting to do: check whether this
-> page block is entirely free or not.
-> 
-> [1] I have not actually measured whether the difference is noticeable.
+Hi Jan,
 
-This is an interesting find. But because it's working correctly right
-now, this patch is a performance optimization, so numbers would help.
+FYI, the error/warning still remains.
 
-> @@ -1342,15 +1342,40 @@ static bool suitable_migration_source(struct compact_control *cc,
->  static bool suitable_migration_target(struct compact_control *cc,
->  							struct page *page)
->  {
-> -	/* If the page is a large free page, then disallow migration */
-> -	if (PageBuddy(page)) {
-> +	unsigned int higher_order;
-> +	/*
-> +	 * If the supplied page is part of a pageblock_order or larger free
-> +	 * block it is not a suitable migration target block. Detect this case
-> +	 * by starting at the pageorder_block aligned page and scan upwards to
-> +	 * MAX_ORDER aligned page. Scan to see if any of the struct pages are
-> +	 * in the buddy list for the order of the larger block. Disallow
-> +	 * migration if so.
-> +	 */
-> +	for (higher_order = pageblock_order; higher_order <= MAX_ORDER; ++higher_order) {
-> +		struct page *higher_order_page;
-> +		unsigned long higher_order_pfn;
->  		/*
-> -		 * We are checking page_order without zone->lock taken. But
-> -		 * the only small danger is that we skip a potentially suitable
-> -		 * pageblock, so it's not worth to check order for valid range.
-> +		 * This is legal provided that struct pages are always initialised
-> +		 * to at least start at MAX_ORDER alignment.
->  		 */
-> -		if (buddy_order_unsafe(page) >= pageblock_order)
-> -			return false;
-> +		higher_order_pfn &= ~((1 << higher_order) - 1);
-> +		higher_order_page = pfn_to_page(higher_order_pfn);
-> +		if (PageBuddy(higher_order_page)) {
-> +			/*
-> +			 * We are checking page_order without zone->lock taken. But
-> +			 * the only small danger is that we skip a potentially suitable
-> +			 * pageblock, so it's not worth to check order for valid range.
-> +			 */
-> +			if (buddy_order_unsafe(higher_order_page) >= higher_order)
-> +				return false;
-> +			/*
-> +			 * This is a buddy but not a sufficiently large buddy.
-> +			 * There will never be a larger one above this.
-> +			 */
-> +			else
-> +				break;
-> +		}
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   eb26cbb1a754ccde5d4d74527dad5ba051808fad
+commit: 15648d599cd1c15cc678039dcab65599276fe407 ext4: provide ext4_do_writepages()
+date:   7 months ago
+config: riscv-randconfig-r003-20230713 (https://download.01.org/0day-ci/archive/20230713/202307132338.YXtPr5BN-lkp@intel.com/config)
+compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
+reproduce: (https://download.01.org/0day-ci/archive/20230713/202307132338.YXtPr5BN-lkp@intel.com/reproduce)
 
-One thing that's unfortunate is that isolate_freepages() will still
-just skip one pageblock, even if you find the buddy further away than
-that. This would check the same range at least twice (or more,
-depending on the distance between pageblock_order and MAX_ORDER).
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307132338.YXtPr5BN-lkp@intel.com/
 
-Instead of returning bool, it could make sense to return the pfn of
-where you find the buddy, and then have isolate_freepages() skip and
-continue the search at the pageblock below that.
+All warnings (new ones prefixed by >>):
 
-Btw, this is also fixed by my patches that add the MIGRATE_FREE
-type[1]. It has isolate_freepages() check this block type instead of
-PageBuddy(), and that's set for all subblocks in a larger buddy.
+>> fs/ext4/inode.c:2715:12: warning: stack frame size (1392) exceeds limit (1024) in 'ext4_do_writepages' [-Wframe-larger-than]
+   static int ext4_do_writepages(struct mpage_da_data *mpd)
+              ^
+   1 warning generated.
 
-[1] https://lore.kernel.org/lkml/20230418191313.268131-1-hannes@cmpxchg.org/ ]
+
+vim +/ext4_do_writepages +2715 fs/ext4/inode.c
+
+  2714	
+> 2715	static int ext4_do_writepages(struct mpage_da_data *mpd)
+  2716	{
+  2717		struct writeback_control *wbc = mpd->wbc;
+  2718		pgoff_t	writeback_index = 0;
+  2719		long nr_to_write = wbc->nr_to_write;
+  2720		int range_whole = 0;
+  2721		int cycled = 1;
+  2722		handle_t *handle = NULL;
+  2723		struct inode *inode = mpd->inode;
+  2724		struct address_space *mapping = inode->i_mapping;
+  2725		int needed_blocks, rsv_blocks = 0, ret = 0;
+  2726		struct ext4_sb_info *sbi = EXT4_SB(mapping->host->i_sb);
+  2727		struct blk_plug plug;
+  2728		bool give_up_on_write = false;
+  2729	
+  2730		if (unlikely(ext4_forced_shutdown(EXT4_SB(inode->i_sb))))
+  2731			return -EIO;
+  2732	
+  2733		percpu_down_read(&sbi->s_writepages_rwsem);
+  2734		trace_ext4_writepages(inode, wbc);
+  2735	
+  2736		/*
+  2737		 * No pages to write? This is mainly a kludge to avoid starting
+  2738		 * a transaction for special inodes like journal inode on last iput()
+  2739		 * because that could violate lock ordering on umount
+  2740		 */
+  2741		if (!mapping->nrpages || !mapping_tagged(mapping, PAGECACHE_TAG_DIRTY))
+  2742			goto out_writepages;
+  2743	
+  2744		if (ext4_should_journal_data(inode)) {
+  2745			ret = generic_writepages(mapping, wbc);
+  2746			goto out_writepages;
+  2747		}
+  2748	
+  2749		/*
+  2750		 * If the filesystem has aborted, it is read-only, so return
+  2751		 * right away instead of dumping stack traces later on that
+  2752		 * will obscure the real source of the problem.  We test
+  2753		 * EXT4_MF_FS_ABORTED instead of sb->s_flag's SB_RDONLY because
+  2754		 * the latter could be true if the filesystem is mounted
+  2755		 * read-only, and in that case, ext4_writepages should
+  2756		 * *never* be called, so if that ever happens, we would want
+  2757		 * the stack trace.
+  2758		 */
+  2759		if (unlikely(ext4_forced_shutdown(EXT4_SB(mapping->host->i_sb)) ||
+  2760			     ext4_test_mount_flag(inode->i_sb, EXT4_MF_FS_ABORTED))) {
+  2761			ret = -EROFS;
+  2762			goto out_writepages;
+  2763		}
+  2764	
+  2765		/*
+  2766		 * If we have inline data and arrive here, it means that
+  2767		 * we will soon create the block for the 1st page, so
+  2768		 * we'd better clear the inline data here.
+  2769		 */
+  2770		if (ext4_has_inline_data(inode)) {
+  2771			/* Just inode will be modified... */
+  2772			handle = ext4_journal_start(inode, EXT4_HT_INODE, 1);
+  2773			if (IS_ERR(handle)) {
+  2774				ret = PTR_ERR(handle);
+  2775				goto out_writepages;
+  2776			}
+  2777			BUG_ON(ext4_test_inode_state(inode,
+  2778					EXT4_STATE_MAY_INLINE_DATA));
+  2779			ext4_destroy_inline_data(handle, inode);
+  2780			ext4_journal_stop(handle);
+  2781		}
+  2782	
+  2783		if (ext4_should_dioread_nolock(inode)) {
+  2784			/*
+  2785			 * We may need to convert up to one extent per block in
+  2786			 * the page and we may dirty the inode.
+  2787			 */
+  2788			rsv_blocks = 1 + ext4_chunk_trans_blocks(inode,
+  2789							PAGE_SIZE >> inode->i_blkbits);
+  2790		}
+  2791	
+  2792		if (wbc->range_start == 0 && wbc->range_end == LLONG_MAX)
+  2793			range_whole = 1;
+  2794	
+  2795		if (wbc->range_cyclic) {
+  2796			writeback_index = mapping->writeback_index;
+  2797			if (writeback_index)
+  2798				cycled = 0;
+  2799			mpd->first_page = writeback_index;
+  2800			mpd->last_page = -1;
+  2801		} else {
+  2802			mpd->first_page = wbc->range_start >> PAGE_SHIFT;
+  2803			mpd->last_page = wbc->range_end >> PAGE_SHIFT;
+  2804		}
+  2805	
+  2806		ext4_io_submit_init(&mpd->io_submit, wbc);
+  2807	retry:
+  2808		if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
+  2809			tag_pages_for_writeback(mapping, mpd->first_page,
+  2810						mpd->last_page);
+  2811		blk_start_plug(&plug);
+  2812	
+  2813		/*
+  2814		 * First writeback pages that don't need mapping - we can avoid
+  2815		 * starting a transaction unnecessarily and also avoid being blocked
+  2816		 * in the block layer on device congestion while having transaction
+  2817		 * started.
+  2818		 */
+  2819		mpd->do_map = 0;
+  2820		mpd->scanned_until_end = 0;
+  2821		mpd->io_submit.io_end = ext4_init_io_end(inode, GFP_KERNEL);
+  2822		if (!mpd->io_submit.io_end) {
+  2823			ret = -ENOMEM;
+  2824			goto unplug;
+  2825		}
+  2826		ret = mpage_prepare_extent_to_map(mpd);
+  2827		/* Unlock pages we didn't use */
+  2828		mpage_release_unused_pages(mpd, false);
+  2829		/* Submit prepared bio */
+  2830		ext4_io_submit(&mpd->io_submit);
+  2831		ext4_put_io_end_defer(mpd->io_submit.io_end);
+  2832		mpd->io_submit.io_end = NULL;
+  2833		if (ret < 0)
+  2834			goto unplug;
+  2835	
+  2836		while (!mpd->scanned_until_end && wbc->nr_to_write > 0) {
+  2837			/* For each extent of pages we use new io_end */
+  2838			mpd->io_submit.io_end = ext4_init_io_end(inode, GFP_KERNEL);
+  2839			if (!mpd->io_submit.io_end) {
+  2840				ret = -ENOMEM;
+  2841				break;
+  2842			}
+  2843	
+  2844			WARN_ON_ONCE(!mpd->can_map);
+  2845			/*
+  2846			 * We have two constraints: We find one extent to map and we
+  2847			 * must always write out whole page (makes a difference when
+  2848			 * blocksize < pagesize) so that we don't block on IO when we
+  2849			 * try to write out the rest of the page. Journalled mode is
+  2850			 * not supported by delalloc.
+  2851			 */
+  2852			BUG_ON(ext4_should_journal_data(inode));
+  2853			needed_blocks = ext4_da_writepages_trans_blocks(inode);
+  2854	
+  2855			/* start a new transaction */
+  2856			handle = ext4_journal_start_with_reserve(inode,
+  2857					EXT4_HT_WRITE_PAGE, needed_blocks, rsv_blocks);
+  2858			if (IS_ERR(handle)) {
+  2859				ret = PTR_ERR(handle);
+  2860				ext4_msg(inode->i_sb, KERN_CRIT, "%s: jbd2_start: "
+  2861				       "%ld pages, ino %lu; err %d", __func__,
+  2862					wbc->nr_to_write, inode->i_ino, ret);
+  2863				/* Release allocated io_end */
+  2864				ext4_put_io_end(mpd->io_submit.io_end);
+  2865				mpd->io_submit.io_end = NULL;
+  2866				break;
+  2867			}
+  2868			mpd->do_map = 1;
+  2869	
+  2870			trace_ext4_da_write_pages(inode, mpd->first_page, wbc);
+  2871			ret = mpage_prepare_extent_to_map(mpd);
+  2872			if (!ret && mpd->map.m_len)
+  2873				ret = mpage_map_and_submit_extent(handle, mpd,
+  2874						&give_up_on_write);
+  2875			/*
+  2876			 * Caution: If the handle is synchronous,
+  2877			 * ext4_journal_stop() can wait for transaction commit
+  2878			 * to finish which may depend on writeback of pages to
+  2879			 * complete or on page lock to be released.  In that
+  2880			 * case, we have to wait until after we have
+  2881			 * submitted all the IO, released page locks we hold,
+  2882			 * and dropped io_end reference (for extent conversion
+  2883			 * to be able to complete) before stopping the handle.
+  2884			 */
+  2885			if (!ext4_handle_valid(handle) || handle->h_sync == 0) {
+  2886				ext4_journal_stop(handle);
+  2887				handle = NULL;
+  2888				mpd->do_map = 0;
+  2889			}
+  2890			/* Unlock pages we didn't use */
+  2891			mpage_release_unused_pages(mpd, give_up_on_write);
+  2892			/* Submit prepared bio */
+  2893			ext4_io_submit(&mpd->io_submit);
+  2894	
+  2895			/*
+  2896			 * Drop our io_end reference we got from init. We have
+  2897			 * to be careful and use deferred io_end finishing if
+  2898			 * we are still holding the transaction as we can
+  2899			 * release the last reference to io_end which may end
+  2900			 * up doing unwritten extent conversion.
+  2901			 */
+  2902			if (handle) {
+  2903				ext4_put_io_end_defer(mpd->io_submit.io_end);
+  2904				ext4_journal_stop(handle);
+  2905			} else
+  2906				ext4_put_io_end(mpd->io_submit.io_end);
+  2907			mpd->io_submit.io_end = NULL;
+  2908	
+  2909			if (ret == -ENOSPC && sbi->s_journal) {
+  2910				/*
+  2911				 * Commit the transaction which would
+  2912				 * free blocks released in the transaction
+  2913				 * and try again
+  2914				 */
+  2915				jbd2_journal_force_commit_nested(sbi->s_journal);
+  2916				ret = 0;
+  2917				continue;
+  2918			}
+  2919			/* Fatal error - ENOMEM, EIO... */
+  2920			if (ret)
+  2921				break;
+  2922		}
+  2923	unplug:
+  2924		blk_finish_plug(&plug);
+  2925		if (!ret && !cycled && wbc->nr_to_write > 0) {
+  2926			cycled = 1;
+  2927			mpd->last_page = writeback_index - 1;
+  2928			mpd->first_page = 0;
+  2929			goto retry;
+  2930		}
+  2931	
+  2932		/* Update index */
+  2933		if (wbc->range_cyclic || (range_whole && wbc->nr_to_write > 0))
+  2934			/*
+  2935			 * Set the writeback_index so that range_cyclic
+  2936			 * mode will write it back later
+  2937			 */
+  2938			mapping->writeback_index = mpd->first_page;
+  2939	
+  2940	out_writepages:
+  2941		trace_ext4_writepages_result(inode, wbc, ret,
+  2942					     nr_to_write - wbc->nr_to_write);
+  2943		percpu_up_read(&sbi->s_writepages_rwsem);
+  2944		return ret;
+  2945	}
+  2946	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
