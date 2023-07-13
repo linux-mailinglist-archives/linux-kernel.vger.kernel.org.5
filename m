@@ -2,56 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0C28751D66
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 11:37:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 246D4751D68
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 11:37:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233896AbjGMJhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 05:37:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57140 "EHLO
+        id S233915AbjGMJhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 05:37:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233881AbjGMJhN (ORCPT
+        with ESMTP id S234047AbjGMJh3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 05:37:13 -0400
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::228])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5115211C
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 02:37:10 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id F37451BF207;
-        Thu, 13 Jul 2023 09:37:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1689241029;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4n03VlwqNrTzGxnzSe3ZU7Gn2htAMkWYJH1ovqAe1uk=;
-        b=gNtOQxpIUU3NyuNaletbc9HPDxJSzj1Ztx+wzywiX5PSiuOBkc26oFy2XNX7gyiJqxCbid
-        35RF32A0Szbpupb5gtiR4Q5X91vCyJ+bUqLV6/seQDXeWDBFbSnUttzt+3e10zsJcv90eU
-        Kt0+7QPL7Uk9zwjw9iY37pRL2jj69w2Ily/RpDR5yolDfEEFiydnam5b8K94qohtPyJZ1G
-        wjjKwhF4MHY9YfJWaxkuV3BAhKGBPuL3etK/1LTkcB31t/IxU7wPgTLp8XrOGZDhRLelTZ
-        QUIfvjZzFX0EzvedBP3dkVCexBtSpDo65CxKl42r2ZWnyxEbkL5SFh9uyi1gGg==
-Date:   Thu, 13 Jul 2023 11:37:07 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Robert Marko <robert.marko@sartura.hr>,
-        Luka Perkov <luka.perkov@sartura.hr>
-Subject: Re: [PATCH RESEND v5 2/2] nvmem: core: Expose cells through sysfs
-Message-ID: <20230713113707.6ae8c5de@xps-13>
-In-Reply-To: <0affe06b-08ad-aadf-c936-2c93b5e2b904@linaro.org>
-References: <20230713075508.485072-1-miquel.raynal@bootlin.com>
-        <20230713075508.485072-4-miquel.raynal@bootlin.com>
-        <0affe06b-08ad-aadf-c936-2c93b5e2b904@linaro.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        Thu, 13 Jul 2023 05:37:29 -0400
+Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com [209.85.167.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 453E926A0
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 02:37:27 -0700 (PDT)
+Received: by mail-oi1-f197.google.com with SMTP id 5614622812f47-3a337ddff03so932692b6e.0
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 02:37:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689241046; x=1691833046;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/KWHPeqYs83RLpJCQk4X770LmbcxpeUbYJZczIbA8Zk=;
+        b=CSyIY5taus/tzGSFJRwl012ZqZfQMioyn7M+tkV/KFq+z+iwFp21HrfkEQi/OhA6FF
+         uhN4hlHRQ/6KghB4YemijxZpe+itVQIAI8wi7B+Ihw2Ba3JJ7/OOujjHqGyEJuNLZCh5
+         H0RCepPrWi1NHN4vfE6LjTCrLTHEl2MpUdv+ikpafzU5SNO8NbpEIWFj++el8hayKXr4
+         BG7G55MlBDDt8wm+z1gXovo64E7aYnoJ9MSoOzxzazFwS38TeosDXg3YWlW4D72p61jm
+         1ISTVSXML0o2OBAKdeG9HhZSO9eJ0m5cUzug9loAqVFHVsKDXhbe1PASsiJgN13YGURa
+         wrLg==
+X-Gm-Message-State: ABy/qLbpyB6vGvrOOQiWpeRX/U73xSBbLp05gxaCqimLgsjLVlHLGn/G
+        j/p2kIzDKr+dKM5omQZOOw4fx5fuT+tBMBjAuz2x1wMBx89g
+X-Google-Smtp-Source: APBJJlFZ+k3bwHzCz46y/eYpJf6R6cCLa5axYPD6JDKJCB12y166+xp558SQKzwK0Dlpi5J58QXr8+KIEBjNH/wOYJLzmbq9lEL4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Received: by 2002:a05:6808:1592:b0:3a3:c493:b971 with SMTP id
+ t18-20020a056808159200b003a3c493b971mr1397311oiw.7.1689241046552; Thu, 13 Jul
+ 2023 02:37:26 -0700 (PDT)
+Date:   Thu, 13 Jul 2023 02:37:26 -0700
+In-Reply-To: <00000000000009408f05e977da5d@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000085151506005b1491@google.com>
+Subject: Re: [syzbot] [ntfs3?] general protection fault in d_flags_for_inode
+From:   syzbot <syzbot+2f012b85ac8ce9be92e5@syzkaller.appspotmail.com>
+To:     almaz.alexandrovich@paragon-software.com, hverkuil-cisco@xs4all.nl,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mchehab@kernel.org, ntfs3@lists.linux.dev,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,206 +57,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Srinivas,
+syzbot suspects this issue was fixed by commit:
 
-srinivas.kandagatla@linaro.org wrote on Thu, 13 Jul 2023 10:16:46 +0100:
+commit c43784c856483dded7956175b5786e27af6d87f1
+Author: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Date:   Thu Dec 8 07:51:32 2022 +0000
 
-> This one seems to be an extra patch in the series :-)
+    media: v4l2-mem2mem: use vb2_is_streaming()
 
-True /o\ It got mixed with the real series during the "resend"...
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17e7d1bca80000
+start commit:   4da34b7d175d Merge tag 'thermal-6.1-rc2' of git://git.kern..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ea03ca45176080bc
+dashboard link: https://syzkaller.appspot.com/bug?extid=2f012b85ac8ce9be92e5
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17834f9a880000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10edf526880000
 
-> 
-> 
-> 
-> On 13/07/2023 08:55, Miquel Raynal wrote:
-> > The binary content of nvmem devices is available to the user so in the
-> > easiest cases, finding the content of a cell is rather easy as it is
-> > just a matter of looking at a known and fixed offset. However, nvmem
-> > layouts have been recently introduced to cope with more advanced
-> > situations, where the offset and size of the cells is not known in
-> > advance or is dynamic. When using layouts, more advanced parsers are
-> > used by the kernel in order to give direct access to the content of each
-> > cell, regardless of its position/size in the underlying
-> > device. Unfortunately, these information are not accessible by users,
-> > unless by fully re-implementing the parser logic in userland.
-> > 
-> > Let's expose the cells and their content through sysfs to avoid these
-> > situations. Of course the relevant NVMEM sysfs Kconfig option must be
-> > enabled for this support to be available.
-> > 
-> > Not all nvmem devices expose cells. Indeed, the .bin_attrs attribute
-> > group member will be filled at runtime only when relevant and will
-> > remain empty otherwise. In this case, as the cells attribute group will
-> > be empty, it will not lead to any additional folder/file creation.
-> > 
-> > Exposed cells are read-only. There is, in practice, everything in the
-> > core to support a write path, but as I don't see any need for that, I
-> > prefer to keep the interface simple (and probably safer). The interface
-> > is documented as being in the "testing" state which means we can later
-> > add a write attribute if though relevant.
-> > 
-> > There is one limitation though: if a layout is built as a module but is
-> > not properly installed in the system and loaded manually with insmod
-> > while the nvmem device driver was built-in, the cells won't appear in
-> > sysfs. But if done like that, the cells won't be usable by the built-in
-> > kernel drivers anyway.
-> > 
-> > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> > Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > ---
-> >   drivers/nvmem/core.c | 121 ++++++++++++++++++++++++++++++++++++++++---
-> >   1 file changed, 113 insertions(+), 8 deletions(-)
-> > 
-> > diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-> > index 3f8c7718412b..8b49b12501e2 100644
-> > --- a/drivers/nvmem/core.c
-> > +++ b/drivers/nvmem/core.c
-> > @@ -325,6 +325,43 @@ static umode_t nvmem_bin_attr_is_visible(struct kobject *kobj,
-> >   	return nvmem_bin_attr_get_umode(nvmem);
-> >   }  
-> >   > +static struct nvmem_cell *nvmem_create_cell(struct nvmem_cell_entry *entry,  
-> > +					    const char *id, int index);
-> > +
-> > +static ssize_t nvmem_cell_attr_read(struct file *filp, struct kobject *kobj,
-> > +				    struct bin_attribute *attr, char *buf,
-> > +				    loff_t pos, size_t count)
-> > +{
-> > +	struct nvmem_cell_entry *entry;
-> > +	struct nvmem_cell *cell = NULL;
-> > +	size_t cell_sz, read_len;
-> > +	void *content;
-> > +
-> > +	entry = attr->private;
-> > +	cell = nvmem_create_cell(entry, entry->name, 0);
-> > +	if (IS_ERR(cell))
-> > +		return PTR_ERR(cell);
-> > +
-> > +	if (!cell)
-> > +		return -EINVAL;
-> > +
-> > +	content = nvmem_cell_read(cell, &cell_sz);
-> > +	if (IS_ERR(content)) {
-> > +		read_len = PTR_ERR(content);
-> > +		goto destroy_cell;
-> > +	}
-> > +
-> > +	read_len = min_t(unsigned int, cell_sz - pos, count);
-> > +	memcpy(buf, content + pos, read_len);
-> > +	kfree(content);
-> > +
-> > +destroy_cell:
-> > +	kfree_const(cell->id);
-> > +	kfree(cell);
-> > +
-> > +	return read_len;
-> > +}
-> > +
-> >   /* default read/write permissions */
-> >   static struct bin_attribute bin_attr_rw_nvmem = {
-> >   	.attr	= {
-> > @@ -346,8 +383,14 @@ static const struct attribute_group nvmem_bin_group = {
-> >   	.is_bin_visible = nvmem_bin_attr_is_visible,
-> >   };  
-> >   > +/* Cell attributes will be dynamically allocated */  
-> > +static struct attribute_group nvmem_cells_group = {
-> > +	.name		= "cells",
-> > +};
-> > +
-> >   static const struct attribute_group *nvmem_dev_groups[] = {
-> >   	&nvmem_bin_group,
-> > +	&nvmem_cells_group,
-> >   	NULL,
-> >   };  
-> >   > @@ -406,6 +449,58 @@ static void nvmem_sysfs_remove_compat(struct nvmem_device *nvmem,  
-> >   		device_remove_bin_file(nvmem->base_dev, &nvmem->eeprom);
-> >   }  
-> >   > +static int nvmem_populate_sysfs_cells(struct nvmem_device *nvmem)  
-> > +{
-> > +	struct bin_attribute **cells_attrs, *attrs;
-> > +	struct nvmem_cell_entry *entry;
-> > +	unsigned int ncells = 0, i = 0;
-> > +	int ret = 0;
-> > +
-> > +	mutex_lock(&nvmem_mutex);
-> > +
-> > +	if (list_empty(&nvmem->cells))
-> > +		goto unlock_mutex;
-> > +
-> > +	/* Allocate an array of attributes with a sentinel */
-> > +	ncells = list_count_nodes(&nvmem->cells);
-> > +	cells_attrs = devm_kcalloc(&nvmem->dev, ncells + 1,
-> > +				   sizeof(struct bin_attribute *), GFP_KERNEL);
-> > +	if (!cells_attrs) {
-> > +		ret = -ENOMEM;
-> > +		goto unlock_mutex;
-> > +	}
-> > +
-> > +	attrs = devm_kcalloc(&nvmem->dev, ncells, sizeof(struct bin_attribute), GFP_KERNEL);
-> > +	if (!attrs) {
-> > +		ret = -ENOMEM;
-> > +		goto unlock_mutex;
-> > +	}
-> > +
-> > +	/* Initialize each attribute to take the name and size of the cell */
-> > +	list_for_each_entry(entry, &nvmem->cells, node) {
-> > +		sysfs_bin_attr_init(&attrs[i]);
-> > +		attrs[i].attr.name = devm_kstrdup(&nvmem->dev, entry->name, GFP_KERNEL);
-> > +		attrs[i].attr.mode = 0444;
-> > +		attrs[i].size = entry->bytes;
-> > +		attrs[i].read = &nvmem_cell_attr_read;
-> > +		attrs[i].private = entry;
-> > +		if (!attrs[i].attr.name) {
-> > +			ret = -ENOMEM;
-> > +			goto unlock_mutex;
-> > +		}
-> > +
-> > +		cells_attrs[i] = &attrs[i];
-> > +		i++;
-> > +	}
-> > +
-> > +	nvmem_cells_group.bin_attrs = cells_attrs;
-> > +
-> > +unlock_mutex:
-> > +	mutex_unlock(&nvmem_mutex);
-> > +
-> > +	return ret;
-> > +}
-> > +
-> >   #else /* CONFIG_NVMEM_SYSFS */  
-> >   >   static int nvmem_sysfs_setup_compat(struct nvmem_device *nvmem,  
-> > @@ -998,20 +1093,30 @@ struct nvmem_device *nvmem_register(const struct nvmem_config *config)
-> >   	if (rval)
-> >   		goto err_remove_cells;  
-> >   > +	rval = nvmem_add_cells_from_layout(nvmem);  
-> > +	if (rval)
-> > +		goto err_remove_cells;
-> > +
-> > +	rval = nvmem_add_cells_from_fixed_layout(nvmem);
-> > +	if (rval)
-> > +		goto err_remove_cells;
-> > +
-> > +	rval = nvmem_add_cells_from_layout(nvmem);
-> > +	if (rval)
-> > +		goto err_remove_cells;
-> > +
-> > +#ifdef CONFIG_NVMEM_SYSFS
-> > +	rval = nvmem_populate_sysfs_cells(nvmem);
-> > +	if (rval)
-> > +		goto err_remove_cells;
-> > +#endif
-> > +
-> >   	dev_dbg(&nvmem->dev, "Registering nvmem device %s\n", config->name);  
-> >   >   	rval = device_add(&nvmem->dev);  
-> >   	if (rval)
-> >   		goto err_remove_cells;  
-> >   > -	rval = nvmem_add_cells_from_fixed_layout(nvmem);  
-> > -	if (rval)
-> > -		goto err_remove_cells;
-> > -
-> > -	rval = nvmem_add_cells_from_layout(nvmem);
-> > -	if (rval)
-> > -		goto err_remove_cells;
-> > -
-> >   	blocking_notifier_call_chain(&nvmem_notifier, NVMEM_ADD, nvmem);  
-> >   >   	return nvmem;  
+If the result looks correct, please mark the issue as fixed by replying with:
 
+#syz fix: media: v4l2-mem2mem: use vb2_is_streaming()
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
