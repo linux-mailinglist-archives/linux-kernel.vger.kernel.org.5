@@ -2,232 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D4F97524A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 16:09:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54C3C7524BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 16:12:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234662AbjGMOI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 10:08:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57096 "EHLO
+        id S233242AbjGMOMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 10:12:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234347AbjGMOI4 (ORCPT
+        with ESMTP id S231261AbjGMOMh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 10:08:56 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 035ED213B;
-        Thu, 13 Jul 2023 07:08:54 -0700 (PDT)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36DBljK3019330;
-        Thu, 13 Jul 2023 14:08:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=/H4BNQNynx7sJYPrZ6VP2UoalZEAUlZB0mbgyY3MC78=;
- b=DP2ma9blwl+3P//3Rarf9ZbbgoVBMhzdJ5rRwyPKCnjqsg3JCIrY7gVn6V87SUdacdvm
- B/nDTASH1CgPqH1SK+7FM8/n5gH03A0aV/TLjITJCJoq1V+Osbmh2vtqF7f8wsJrWbLR
- oSTNREtksS8QWgtOFeC+Oqa1E+YZ5/Tpnw74dR+i16qGjtKTeSMNFSdepxna68eDHFof
- k/FUrxS2WGZZO7uJMyOyWvw2TwuAFM4VYV4JfnYXWo6IL2guJVCyB/DNnlZKECnsf9HJ
- Vddk3q7AzGzVdtPTVPEbcKXj++GPEC6YkLttVNtkLJ172ZCbyEQCIBx92HCyfTplCqfH cw== 
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rt3qfhmru-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 13 Jul 2023 14:08:41 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36DE8e4I012088
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 13 Jul 2023 14:08:40 GMT
-Received: from [10.239.133.73] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 13 Jul
- 2023 07:08:37 -0700
-Message-ID: <e02b9969-a3ca-a80d-1d32-25d2bf4c72b6@quicinc.com>
-Date:   Thu, 13 Jul 2023 22:08:34 +0800
+        Thu, 13 Jul 2023 10:12:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62BD3212D
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 07:11:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689257496;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tw/eoBEWLDHVsIdpPF3KdQhX368y1HB9uJr9R7DEshg=;
+        b=R6pSihALVkPBS7gy8ZVVW2u2G7ZKC9cp4uvbLeEgQpApGGgNxBFutw0iMUthRVp1fAP6Ww
+        HiCJe6bqKGWxiowketwI9TzsrppPdblTI1C1iI7mXP6SpSA1MQmMM0wTrYpx5ao8btTnqL
+        DW/odnNc4uleAho6xT81hr+KUAuAiKs=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-25-KeYwAMXFPdmy3hkCesWXuA-1; Thu, 13 Jul 2023 10:10:15 -0400
+X-MC-Unique: KeYwAMXFPdmy3hkCesWXuA-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-315a03cae87so803702f8f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 07:09:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689257356; x=1691849356;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tw/eoBEWLDHVsIdpPF3KdQhX368y1HB9uJr9R7DEshg=;
+        b=PSgKZ7p+1ZyhatPqWhQiVmgBdw3bf2S8Lke7OajRom+AmWFxmF2LHTBx75yRCX7aGB
+         +gOSBOsgTsBno5+TRoUnkROL/v7OYu4g9evrl85bOVwx1jrXyVJP3Nt1eTSM2F+eYjSn
+         1MpzcFSphT9AgEmoc1qwMNpBwIwuOlTo/aSYYUbo+AiQaQX3PSVK0NKp1bNNX+qOBu8P
+         OuGCg6oTo5uyt38Eo2kDovVlbqWa7abW30IEDdVsdAVoJbzQSI6I0q6tead113st0l+E
+         2AMrOUH4B+2c2wDSQpA7yRrMhh/rfxrg4BaR8bpwBv+zErYN2FYyY4MZWURbvnRVgJMV
+         FpVg==
+X-Gm-Message-State: ABy/qLZVUdK+0H+5kxp8nWtz9cfGPX7mXP2BHqRckRNoIaa1zrrSu2VK
+        Iou03Cu1XH6Jf9kRUsj1R5Tx9RLF+xMm8xJKKsTqANqytshxx5uqG5CfZKovEDrbCrxN77xpUMR
+        DrgipfdxONa3DlpX53TmITSRH
+X-Received: by 2002:a1c:4c13:0:b0:3f7:e660:cdc5 with SMTP id z19-20020a1c4c13000000b003f7e660cdc5mr1798973wmf.9.1689257356164;
+        Thu, 13 Jul 2023 07:09:16 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGu9H5wSS8hXXhYYApaNJvReqEuskvCWOKnvIxqDav0vh5y4IkEbUfbVxj6FQh37NRgSwfV6g==
+X-Received: by 2002:a1c:4c13:0:b0:3f7:e660:cdc5 with SMTP id z19-20020a1c4c13000000b003f7e660cdc5mr1798949wmf.9.1689257355790;
+        Thu, 13 Jul 2023 07:09:15 -0700 (PDT)
+Received: from [192.168.3.108] (p4ff23613.dip0.t-ipconnect.de. [79.242.54.19])
+        by smtp.gmail.com with ESMTPSA id f21-20020a7bcc15000000b003fbb06af219sm7938206wmh.32.2023.07.13.07.09.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 Jul 2023 07:09:14 -0700 (PDT)
+Message-ID: <3c566e28-c7ad-7ba8-4583-619266282387@redhat.com>
+Date:   Thu, 13 Jul 2023 16:09:13 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.2
-Subject: Re: [PATCH] arm64: Add the arm64.nolse_atomics command line option
-To:     Mark Rutland <mark.rutland@arm.com>
-CC:     Will Deacon <will@kernel.org>, <corbet@lwn.net>,
-        <catalin.marinas@arm.com>, <maz@kernel.org>,
-        <quic_pkondeti@quicinc.com>, <quic_kaushalk@quicinc.com>,
-        <quic_satyap@quicinc.com>, <quic_shashim@quicinc.com>,
-        <quic_songxue@quicinc.com>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20230710055955.36551-1-quic_aiquny@quicinc.com>
- <20230710093751.GC32673@willie-the-truck>
- <5cf15f85-0397-96f7-4110-13494551b53b@quicinc.com>
- <20230711082226.GA1554@willie-the-truck>
- <84f0994a-26de-c20a-a32f-ec8fe41df3a3@quicinc.com>
- <20230711102510.GA1809@willie-the-truck>
- <67c2621f-4cad-2495-9785-7737246d3e90@quicinc.com>
- <ZK5X9bXQT7GBxNHj@FVFF77S0Q05N.emea.arm.com>
- <604ac52d-4336-744f-2ab8-44d1c93fbaa8@quicinc.com>
- <ZK_d86ApI1FCHhTL@FVFF77S0Q05N.cambridge.arm.com>
-From:   "Aiqun(Maria) Yu" <quic_aiquny@quicinc.com>
-In-Reply-To: <ZK_d86ApI1FCHhTL@FVFF77S0Q05N.cambridge.arm.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: YA45hnt7kRZPDI7huSrx7hQV6w6Q4Hky
-X-Proofpoint-GUID: YA45hnt7kRZPDI7huSrx7hQV6w6Q4Hky
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-13_05,2023-07-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 bulkscore=0
- mlxscore=0 suspectscore=0 adultscore=0 priorityscore=1501 mlxlogscore=999
- phishscore=0 malwarescore=0 spamscore=0 impostorscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2305260000
- definitions=main-2307130123
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v1 3/9] selftests/mm: Skip soft-dirty tests on arm64
+Content-Language: en-US
+To:     Ryan Roberts <ryan.roberts@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Mark Brown <broonie@kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Florent Revest <revest@chromium.org>,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org
+References: <20230713135440.3651409-1-ryan.roberts@arm.com>
+ <20230713135440.3651409-4-ryan.roberts@arm.com>
+ <cf3c237e-69c8-dd6e-26fc-fe19de910813@redhat.com>
+ <773cc0a8-24b8-7fcb-2980-7676fc772014@arm.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <773cc0a8-24b8-7fcb-2980-7676fc772014@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/13/2023 7:20 PM, Mark Rutland wrote:
-> On Thu, Jul 13, 2023 at 10:24:24AM +0800, Aiqun(Maria) Yu wrote:
->> On 7/12/2023 3:36 PM, Mark Rutland wrote:
->>> On Wed, Jul 12, 2023 at 11:09:10AM +0800, Aiqun(Maria) Yu wrote:
->>>> On 7/11/2023 6:25 PM, Will Deacon wrote:
->>>>> On Tue, Jul 11, 2023 at 06:15:49PM +0800, Aiqun(Maria) Yu wrote:
->>>>>> On 7/11/2023 4:22 PM, Will Deacon wrote:
->>>>>>> On Tue, Jul 11, 2023 at 12:02:22PM +0800, Aiqun(Maria) Yu wrote:
->>>>>>>> On 7/10/2023 5:37 PM, Will Deacon wrote:
->>>>>>>>> On Mon, Jul 10, 2023 at 01:59:55PM +0800, Maria Yu wrote:
->>>>>>>>>> In order to be able to disable lse_atomic even if cpu
->>>>>>>>>> support it, most likely because of memory controller
->>>>>>>>>> cannot deal with the lse atomic instructions, use a
->>>>>>>>>> new idreg override to deal with it.
->>>>>>>>>
->>>>>>>>> This should not be a problem for cacheable memory though, right?
->>>>>>>>>
->>>>>>>>> Given that Linux does not issue atomic operations to non-cacheable mappings,
->>>>>>>>> I'm struggling to see why there's a problem here.
->>>>>>>>
->>>>>>>> The lse atomic operation can be issued on non-cacheable mappings as well.
->>>>>>>> Even if it is cached data, with different CPUECTLR_EL1 setting, it can also
->>>>>>>> do far lse atomic operations.
->>>>>>>
->>>>>>> Please can you point me to the place in the kernel sources where this
->>>>>>> happens? The architecture doesn't guarantee that atomics to non-cacheable
->>>>>>> mappings will work, see "B2.2.6 Possible implementation restrictions on
->>>>>>> using atomic instructions". Linux, therefore, doesn't issue atomics
->>>>>>> to non-cacheable memory.
->>>>>>
->>>>>> We encounter the issue on third party kernel modules and third party apps
->>>>>> instead of linux kernel itself.
->>>>>
->>>>> Great, so there's nothing to do in the kernel then!
->>>>>
->>>>> The third party code needs to be modified not to use atomic instructions
->>>>> with non-cacheable mappings. No need to involve us with that.
->>>>
->>>>>> This is a tradeoff of performance and stability. Per my understanding,
->>>>>> options can be used to enable the lse_atomic to have the most performance
->>>>>> cared system, and disable the lse_atomic by stability cared most system.
->>>>>
->>>>> Where do livelock and starvation fit in with "stability"? Disabling LSE
->>>>> atomics for things like qspinlock and the scheduler just because of some
->>>>> badly written third-party code isn't much of a tradeoff.
+On 13.07.23 16:03, Ryan Roberts wrote:
+> On 13/07/2023 14:56, David Hildenbrand wrote:
+>> On 13.07.23 15:54, Ryan Roberts wrote:
+>>> arm64 does not support the soft-dirty PTE bit. However there are tests
+>>> in `madv_populate` and `soft-dirty` which assume it is supported and
+>>> cause spurious failures to be reported when preferred behaviour would be
+>>> to mark the tests as skipped.
 >>>
->>>> We also have requirement to have cpus/system fully support lse atomic and
->>>> cpus/system not fully support lse atomic with a generic kernel image.
+>>> Unfortunately, the only way to determine if the soft-dirty dirty bit is
+>>> supported is to write to a page, then see if the bit is set in
+>>> /proc/self/pagemap. But the tests that we want to conditionally execute
+>>> are testing precicesly this. So if we introduced this feature check, we
+>>> could accedentally turn a real failure (on a system that claims to
+>>> support soft-dirty) into a skip.
 >>>
->>> Who *specifically* has this requirement (i.e. what does 'we' mean here)? The
->>
->> I can use other word to describe the requirement instead of "we".
->>
->> There is requirements like android google gki. It request different cpu arch
->> system to use same generic kernel Image.
-> 
-> GKI requires the system to use the generic kernel image; GKI does not require
-> supporting atomics to non-cacheable mappings.
-GKI does not have to require atomics to non-cacheable mappings.
-
-GKI requires LSE ATOMIC feature to be enabled by default.
-And GKI requires runtime disable the current cpu lse atomic feature.
-
-It was an old soc, We received stability issues and finally completely 
-disable lse atomic for the product when it is non-gki kernel.
-> 
-> What I am asking is: who has the requirement to perform atomics to
-> non-cacheable mappings?
-> 
->>> upstream kernel does not require that atomics work on non-cacheable memory, and
->>
->> The same issue the system can be down of lse atomic not supported for
->> cachable memory when there need far atomic.
-> 
-> Are you saying that LSE atomics to *cacheable* mappings do not work on your
-> system?
-> 
-> Specifically, when using a Normal Inner-Shareable Inner-Writeback
-> Outer-Writeback mapping, do the LSE atomics work or not work?
-*cacheable* mapping have the LSE atomic is not working if far atomic is 
-performed.
-> 
->>> saying "The company I work for want this" doesn't change that.
+>>> So instead, do the check based on architecture; for arm64, we report
+>>> that soft-dirty is not supported. This is wrapped up into a utility
+>>> function `system_has_softdirty()`, which is used to skip the whole
+>>> `soft-dirty` suite, and mark the soft-dirty tests in the `madv_populate`
+>>> suite as skipped.
 >>>
->>> AFAICT the system here is architecturally compliant, and what you're relying
->>> upon something that the architecture doesn't guarantee, and Linux doesn't
->>> guarantee.
->>
->> It is not also only our company's problem:
->> To support the atomic instructions added in the Armv8.1 architecture, CHI-B
->> provides Atomic Transactions. while Atomic Transactions support is also
->> *optional* from CHI-B.
->>
->> So far atomic cannot fully supported by ARMv8.1 cpu + CHI-B system as well.
->>
->> from:
->> https://developer.arm.com/documentation/102407/0100/Atomic-operations?lang=en
->>
->> So only cpu support atomic cannot garantee the system support lse atomic
+>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+>>> ---
+>>>    tools/testing/selftests/mm/madv_populate.c | 18 +++++++++++++-----
+>>>    tools/testing/selftests/mm/soft-dirty.c    |  3 +++
+>>>    tools/testing/selftests/mm/vm_util.c       | 17 +++++++++++++++++
+>>>    tools/testing/selftests/mm/vm_util.h       |  1 +
+>>>    4 files changed, 34 insertions(+), 5 deletions(-)
 >>>
->>>> Same kernel module wanted to be used by lse atomic fully support cpu and not
->>>> fully support cpu/system as well.
+>>> diff --git a/tools/testing/selftests/mm/madv_populate.c
+>>> b/tools/testing/selftests/mm/madv_populate.c
+>>> index 60547245e479..5a8c176d7fec 100644
+>>> --- a/tools/testing/selftests/mm/madv_populate.c
+>>> +++ b/tools/testing/selftests/mm/madv_populate.c
+>>> @@ -232,6 +232,14 @@ static bool range_is_not_softdirty(char *start, ssize_t
+>>> size)
+>>>        return ret;
+>>>    }
 >>>
->>> Which kernel modules *specifically* need to do atomics to non-cacheable memory?
->> The driver want to always do far atomic(no speculatively) and allow a
->> read-modify-write non-interruptible sequence in a single instruction.
+>>> +#define ksft_test_result_if_softdirty(cond, ...)    \
+>>> +do {                            \
+>>> +    if (system_has_softdirty())            \
+>>> +        ksft_test_result(cond, __VA_ARGS__);    \
+>>> +    else                        \
+>>> +        ksft_test_result_skip(__VA_ARGS__);    \
+>>> +} while (0)
+>>> +
+>>>    static void test_softdirty(void)
+>>>    {
+>>>        char *addr;
+>>> @@ -246,19 +254,19 @@ static void test_softdirty(void)
+>>>
+>>>        /* Clear any softdirty bits. */
+>>>        clear_softdirty();
+>>> -    ksft_test_result(range_is_not_softdirty(addr, SIZE),
+>>> +    ksft_test_result_if_softdirty(range_is_not_softdirty(addr, SIZE),
+>>>                 "range is not softdirty\n");
+>>>
+>>>        /* Populating READ should set softdirty. */
+>>>        ret = madvise(addr, SIZE, MADV_POPULATE_READ);
+>>> -    ksft_test_result(!ret, "MADV_POPULATE_READ\n");
+>>> -    ksft_test_result(range_is_not_softdirty(addr, SIZE),
+>>> +    ksft_test_result_if_softdirty(!ret, "MADV_POPULATE_READ\n");
+>>> +    ksft_test_result_if_softdirty(range_is_not_softdirty(addr, SIZE),
+>>>                 "range is not softdirty\n");
+>>>
+>>>        /* Populating WRITE should set softdirty. */
+>>>        ret = madvise(addr, SIZE, MADV_POPULATE_WRITE);
+>>> -    ksft_test_result(!ret, "MADV_POPULATE_WRITE\n");
+>>> -    ksft_test_result(range_is_softdirty(addr, SIZE),
+>>> +    ksft_test_result_if_softdirty(!ret, "MADV_POPULATE_WRITE\n");
+>>> +    ksft_test_result_if_softdirty(range_is_softdirty(addr, SIZE),
+>>>                 "range is softdirty\n");
+>>
+>> We probably want to skip the whole test_*softdirty* test instead of adding this
+>> (IMHO suboptimal) ksft_test_result_if_softdirty.
 > 
-> That doesn't answer my question (you haven't told me what "the driver" is).
-
-The customers' third part drivers. Do you want to have the driver's 
-name? Or source code? The driver works well on current far atomic 
-supported systems.
-
-Is it a reasonable action like this from your point of view like this?
-The driver want to always do far atomic(no speculatively) and allow a
-read-modify-write non-interruptible sequence in a single instruction?
-
-There is also an example in below link that far atomic usage is allowed 
-and sometimes performs good than near atomic:
-https://developer.arm.com/documentation/102407/0100/Atomic-operations?lang=en 
-
+> Yeah I thought about doing it that way, but then the output just looks like
+> there were fewer tests and they all passed. But thinking about it now, I guess
+> the TAP header outputs the number of planned tests and the number of tests
+> executed are fewer, so a machine parser would still notice. I just don't like
+> that it outputs skipped:0.
 > 
-> That doesn't explain why you need to use non-cachable memory for this.
-I want to correct that not "I need to", it is the end user/third party 
-driver want to do far atomics.
-And my intention here is to give the options to let end user decide they 
-can disable the lse atomic from their end.
-
-With disablement, the benefit is that they can keep the same code(kind 
-of GKI from customer end) for far atomic supported/not supported systems.
-
+> But it a lightly held view. Happy to just do:
 > 
-> Thanks,
-> Mark.
+> 	if (system_has_softdirty())
+> 		test_softdirty()
+> 
+> If you insist. ;-)
+
+diff --git a/tools/testing/selftests/mm/madv_populate.c b/tools/testing/selftests/mm/madv_populate.c
+index 60547245e479..33fda0337b32 100644
+--- a/tools/testing/selftests/mm/madv_populate.c
++++ b/tools/testing/selftests/mm/madv_populate.c
+@@ -266,12 +266,16 @@ static void test_softdirty(void)
+  
+  int main(int argc, char **argv)
+  {
++       int nr_tests = 16;
+         int err;
+  
+         pagesize = getpagesize();
+  
++       if (system_has_softdirty())
++               nr_tests += 5;
++
+         ksft_print_header();
+-       ksft_set_plan(21);
++       ksft_set_plan(nr_tests);
+  
+         sense_support();
+         test_prot_read();
+@@ -279,7 +283,8 @@ int main(int argc, char **argv)
+         test_holes();
+         test_populate_read();
+         test_populate_write();
+-       test_softdirty();
++       if (system_has_softdirty())
++               test_softdirty();
+  
+         err = ksft_get_fail_cnt();
+         if (err)
+
 
 -- 
-Thx and BRs,
-Aiqun(Maria) Yu
+Cheers,
+
+David / dhildenb
 
