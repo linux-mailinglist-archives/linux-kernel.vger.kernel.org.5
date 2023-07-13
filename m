@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EE5C75285E
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 18:33:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D597B75285C
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 18:33:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234684AbjGMQck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 12:32:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43488 "EHLO
+        id S232983AbjGMQch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 12:32:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232700AbjGMQcd (ORCPT
+        with ESMTP id S230166AbjGMQcd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 13 Jul 2023 12:32:33 -0400
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75E91272A;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F6472719;
         Thu, 13 Jul 2023 09:32:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1689265952; x=1720801952;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=O8VYBIBmlW5jTpuxcxQvWpwg4pXyAEtUg3Nl4gqJA+Y=;
-  b=PeuhXeUkI5KDD7qoOATvsf9N56p2NgOP3fZ+Fn5+RpjGVqJZa+DbjQ68
-   8sUytTqq1ex1agC0j9ASWWBWHJOGqS1y+DnZd5j5tfr/v77imdbKsZFST
-   MVjP9ehLcavbllvh5LY4n9kM7gA5GBYr6y4UIrBhZE+aCnM4ImPhjNI6h
-   PUOnzS9rmUNktdbvHTYyNKjL09sWE53APYI4e60GqMitvgB8hTmtiAgQ/
-   Y6moQvt6FBn0AWb0L0I+Jnge/ULalVNOXrF2Ua8DKlfISZOTBnn63nDwQ
-   Xqz8mTWXS/FPMLKPQd/+7Of3UPG6YVmFLKVmNT3RSYIk3YvsNU+eb5wwy
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="362707593"
+  bh=UfMNDGqaFTdJ9acHmvMM5A8aK/ToJAVWU+2PC7nhIQo=;
+  b=TVF+kkA5oUzSy4xh2J+maOj5HuzcGk/qeewYdQ5jvWUnXNBrrV55pHg8
+   G6bFI7DY4LHFyBym8Ao4ymUqHE7F3ZlG0a6U8u2Py2BXySGbuu6NK5EaK
+   IcsXgVLBfufYJbU82aVAMcpsISqhlsJdrmhueelrCzES/TNZZKn+Ewwpw
+   o7aCAMghIoIKJIsQqByfKKix6rRN+meOoFenma4vDayNxdTf5kONgKhuv
+   gAE8DJa0gT4+/oMZ02bOk/CItGkdbk0bjy/DFYLGUjluN/LbNJ3jvUAk3
+   9YazBwI63CAdjLEDg6/K+pBN8iv2eMRezW1jXMZWV0cb1IaugKDBC0TXG
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="362707607"
 X-IronPort-AV: E=Sophos;i="6.01,203,1684825200"; 
-   d="scan'208";a="362707593"
+   d="scan'208";a="362707607"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
   by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2023 09:32:22 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="722046370"
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="722046373"
 X-IronPort-AV: E=Sophos;i="6.01,203,1684825200"; 
-   d="scan'208";a="722046370"
+   d="scan'208";a="722046373"
 Received: from agluck-desk3.sc.intel.com ([172.25.222.74])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2023 09:32:21 -0700
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2023 09:32:22 -0700
 From:   Tony Luck <tony.luck@intel.com>
 To:     Fenghua Yu <fenghua.yu@intel.com>,
         Reinette Chatre <reinette.chatre@intel.com>,
@@ -52,9 +52,9 @@ Cc:     Shaopeng Tan <tan.shaopeng@fujitsu.com>,
         Randy Dunlap <rdunlap@infradead.org>,
         linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
         patches@lists.linux.dev, Tony Luck <tony.luck@intel.com>
-Subject: [PATCH v3 1/8] x86/resctrl: Refactor in preparation for node-scoped resources
-Date:   Thu, 13 Jul 2023 09:32:00 -0700
-Message-Id: <20230713163207.219710-2-tony.luck@intel.com>
+Subject: [PATCH v3 2/8] x86/resctrl: Remove hard code of RDT_RESOURCE_L3 in monitor.c
+Date:   Thu, 13 Jul 2023 09:32:01 -0700
+Message-Id: <20230713163207.219710-3-tony.luck@intel.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230713163207.219710-1-tony.luck@intel.com>
 References: <20230713163207.219710-1-tony.luck@intel.com>
@@ -70,158 +70,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sub-NUMA cluster systems provide monitoring resources at the NUMA
-node scope instead of the L3 cache scope.
+Scope of monitoring may be scoped at L3 cache granularity (legacy) or
+at the node level (systems with Sub NUMA Cluster enabled).
 
-Rename the cache_level field in struct rdt_resource to the more
-generic "scope" and add symbolic names and a helper function.
+Save the struct rdt_resource pointer that was used to initialize
+the monitor sections of code and use that value instead of the
+hard-coded RDT_RESOURCE_L3.
 
 No functional change.
 
 Signed-off-by: Tony Luck <tony.luck@intel.com>
 Reviewed-by: Peter Newman <peternewman@google.com>
 ---
- include/linux/resctrl.h                   |  4 ++--
- arch/x86/kernel/cpu/resctrl/internal.h    |  5 +++++
- arch/x86/kernel/cpu/resctrl/core.c        | 17 +++++++++++------
- arch/x86/kernel/cpu/resctrl/pseudo_lock.c |  2 +-
- arch/x86/kernel/cpu/resctrl/rdtgroup.c    |  2 +-
- 5 files changed, 20 insertions(+), 10 deletions(-)
+ arch/x86/kernel/cpu/resctrl/monitor.c | 18 +++++++++++-------
+ 1 file changed, 11 insertions(+), 7 deletions(-)
 
-diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
-index 8334eeacfec5..25051daa6655 100644
---- a/include/linux/resctrl.h
-+++ b/include/linux/resctrl.h
-@@ -150,7 +150,7 @@ struct resctrl_schema;
-  * @alloc_capable:	Is allocation available on this machine
-  * @mon_capable:	Is monitor feature available on this machine
-  * @num_rmid:		Number of RMIDs available
-- * @cache_level:	Which cache level defines scope of this resource
-+ * @scope:		Scope of this resource (cache level or NUMA node)
-  * @cache:		Cache allocation related data
-  * @membw:		If the component has bandwidth controls, their properties.
-  * @domains:		All domains for this resource
-@@ -168,7 +168,7 @@ struct rdt_resource {
- 	bool			alloc_capable;
- 	bool			mon_capable;
- 	int			num_rmid;
--	int			cache_level;
-+	int			scope;
- 	struct resctrl_cache	cache;
- 	struct resctrl_membw	membw;
- 	struct list_head	domains;
-diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-index 85ceaf9a31ac..8275b8a74f7e 100644
---- a/arch/x86/kernel/cpu/resctrl/internal.h
-+++ b/arch/x86/kernel/cpu/resctrl/internal.h
-@@ -440,6 +440,11 @@ enum resctrl_res_level {
- 	RDT_NUM_RESOURCES,
+diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
+index ded1fc7cb7cb..9be6ffdd01ae 100644
+--- a/arch/x86/kernel/cpu/resctrl/monitor.c
++++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+@@ -30,6 +30,8 @@ struct rmid_entry {
+ 	struct list_head		list;
  };
  
-+enum resctrl_scope {
-+	SCOPE_L2_CACHE = 2,
-+	SCOPE_L3_CACHE = 3
-+};
++static struct rdt_resource *mon_resource;
 +
- static inline struct rdt_resource *resctrl_inc(struct rdt_resource *res)
+ /**
+  * @rmid_free_lru    A least recently used list of free RMIDs
+  *     These RMIDs are guaranteed to have an occupancy less than the
+@@ -268,7 +270,7 @@ int resctrl_arch_rmid_read(struct rdt_resource *r, struct rdt_domain *d,
+  */
+ void __check_limbo(struct rdt_domain *d, bool force_free)
  {
- 	struct rdt_hw_resource *hw_res = resctrl_to_arch_res(res);
-diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
-index 030d3b409768..6571514752f3 100644
---- a/arch/x86/kernel/cpu/resctrl/core.c
-+++ b/arch/x86/kernel/cpu/resctrl/core.c
-@@ -65,7 +65,7 @@ struct rdt_hw_resource rdt_resources_all[] = {
- 		.r_resctrl = {
- 			.rid			= RDT_RESOURCE_L3,
- 			.name			= "L3",
--			.cache_level		= 3,
-+			.scope			= SCOPE_L3_CACHE,
- 			.domains		= domain_init(RDT_RESOURCE_L3),
- 			.parse_ctrlval		= parse_cbm,
- 			.format_str		= "%d=%0*x",
-@@ -79,7 +79,7 @@ struct rdt_hw_resource rdt_resources_all[] = {
- 		.r_resctrl = {
- 			.rid			= RDT_RESOURCE_L2,
- 			.name			= "L2",
--			.cache_level		= 2,
-+			.scope			= SCOPE_L2_CACHE,
- 			.domains		= domain_init(RDT_RESOURCE_L2),
- 			.parse_ctrlval		= parse_cbm,
- 			.format_str		= "%d=%0*x",
-@@ -93,7 +93,7 @@ struct rdt_hw_resource rdt_resources_all[] = {
- 		.r_resctrl = {
- 			.rid			= RDT_RESOURCE_MBA,
- 			.name			= "MB",
--			.cache_level		= 3,
-+			.scope			= SCOPE_L3_CACHE,
- 			.domains		= domain_init(RDT_RESOURCE_MBA),
- 			.parse_ctrlval		= parse_bw,
- 			.format_str		= "%d=%*u",
-@@ -105,7 +105,7 @@ struct rdt_hw_resource rdt_resources_all[] = {
- 		.r_resctrl = {
- 			.rid			= RDT_RESOURCE_SMBA,
- 			.name			= "SMBA",
--			.cache_level		= 3,
-+			.scope			= 3,
- 			.domains		= domain_init(RDT_RESOURCE_SMBA),
- 			.parse_ctrlval		= parse_bw,
- 			.format_str		= "%d=%*u",
-@@ -487,6 +487,11 @@ static int arch_domain_mbm_alloc(u32 num_rmid, struct rdt_hw_domain *hw_dom)
- 	return 0;
+-	struct rdt_resource *r = &rdt_resources_all[RDT_RESOURCE_L3].r_resctrl;
++	struct rdt_resource *r = mon_resource;
+ 	struct rmid_entry *entry;
+ 	u32 crmid = 1, nrmid;
+ 	bool rmid_dirty;
+@@ -333,7 +335,7 @@ int alloc_rmid(void)
+ 
+ static void add_rmid_to_limbo(struct rmid_entry *entry)
+ {
+-	struct rdt_resource *r = &rdt_resources_all[RDT_RESOURCE_L3].r_resctrl;
++	struct rdt_resource *r = mon_resource;
+ 	struct rdt_domain *d;
+ 	int cpu, err;
+ 	u64 val = 0;
+@@ -645,7 +647,7 @@ void cqm_handle_limbo(struct work_struct *work)
+ 
+ 	mutex_lock(&rdtgroup_mutex);
+ 
+-	r = &rdt_resources_all[RDT_RESOURCE_L3].r_resctrl;
++	r = mon_resource;
+ 	d = container_of(work, struct rdt_domain, cqm_limbo.work);
+ 
+ 	__check_limbo(d, false);
+@@ -681,7 +683,7 @@ void mbm_handle_overflow(struct work_struct *work)
+ 	if (!static_branch_likely(&rdt_mon_enable_key))
+ 		goto out_unlock;
+ 
+-	r = &rdt_resources_all[RDT_RESOURCE_L3].r_resctrl;
++	r = mon_resource;
+ 	d = container_of(work, struct rdt_domain, mbm_over.work);
+ 
+ 	list_for_each_entry(prgrp, &rdt_all_groups, rdtgroup_list) {
+@@ -759,9 +761,9 @@ static struct mon_evt mbm_local_event = {
+ /*
+  * Initialize the event list for the resource.
+  *
+- * Note that MBM events are also part of RDT_RESOURCE_L3 resource
+- * because as per the SDM the total and local memory bandwidth
+- * are enumerated as part of L3 monitoring.
++ * Monitor events can either be part of RDT_RESOURCE_L3 resource,
++ * or they may be per NUMA node on systems with sub-NUMA cluster
++ * enabled and are then in the RDT_RESOURCE_NODE resource.
+  */
+ static void l3_mon_evt_init(struct rdt_resource *r)
+ {
+@@ -773,6 +775,8 @@ static void l3_mon_evt_init(struct rdt_resource *r)
+ 		list_add_tail(&mbm_total_event.list, &r->evt_list);
+ 	if (is_mbm_local_enabled())
+ 		list_add_tail(&mbm_local_event.list, &r->evt_list);
++
++	mon_resource = r;
  }
  
-+static int get_domain_id(int cpu, enum resctrl_scope scope)
-+{
-+	return get_cpu_cacheinfo_id(cpu, scope);
-+}
-+
- /*
-  * domain_add_cpu - Add a cpu to a resource's domain list.
-  *
-@@ -502,7 +507,7 @@ static int arch_domain_mbm_alloc(u32 num_rmid, struct rdt_hw_domain *hw_dom)
-  */
- static void domain_add_cpu(int cpu, struct rdt_resource *r)
- {
--	int id = get_cpu_cacheinfo_id(cpu, r->cache_level);
-+	int id = get_domain_id(cpu, r->scope);
- 	struct list_head *add_pos = NULL;
- 	struct rdt_hw_domain *hw_dom;
- 	struct rdt_domain *d;
-@@ -552,7 +557,7 @@ static void domain_add_cpu(int cpu, struct rdt_resource *r)
- 
- static void domain_remove_cpu(int cpu, struct rdt_resource *r)
- {
--	int id = get_cpu_cacheinfo_id(cpu, r->cache_level);
-+	int id = get_domain_id(cpu, r->scope);
- 	struct rdt_hw_domain *hw_dom;
- 	struct rdt_domain *d;
- 
-diff --git a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
-index 458cb7419502..42f124ffb968 100644
---- a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
-+++ b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
-@@ -297,7 +297,7 @@ static int pseudo_lock_region_init(struct pseudo_lock_region *plr)
- 	plr->size = rdtgroup_cbm_to_size(plr->s->res, plr->d, plr->cbm);
- 
- 	for (i = 0; i < ci->num_leaves; i++) {
--		if (ci->info_list[i].level == plr->s->res->cache_level) {
-+		if (ci->info_list[i].level == plr->s->res->scope) {
- 			plr->line_size = ci->info_list[i].coherency_line_size;
- 			return 0;
- 		}
-diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-index 725344048f85..418658f0a9ad 100644
---- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-+++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -1348,7 +1348,7 @@ unsigned int rdtgroup_cbm_to_size(struct rdt_resource *r,
- 	num_b = bitmap_weight(&cbm, r->cache.cbm_len);
- 	ci = get_cpu_cacheinfo(cpumask_any(&d->cpu_mask));
- 	for (i = 0; i < ci->num_leaves; i++) {
--		if (ci->info_list[i].level == r->cache_level) {
-+		if (ci->info_list[i].level == r->scope) {
- 			size = ci->info_list[i].size / r->cache.cbm_len * num_b;
- 			break;
- 		}
+ int __init rdt_get_mon_l3_config(struct rdt_resource *r)
 -- 
 2.40.1
 
