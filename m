@@ -2,103 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91A50751FEB
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 13:30:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72FA6751FEF
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 13:32:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233928AbjGMLan convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 13 Jul 2023 07:30:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37062 "EHLO
+        id S232845AbjGMLcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 07:32:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233580AbjGMLak (ORCPT
+        with ESMTP id S233093AbjGMLcd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 07:30:40 -0400
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 457A518E;
-        Thu, 13 Jul 2023 04:30:39 -0700 (PDT)
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-98502b12fd4so17946066b.1;
-        Thu, 13 Jul 2023 04:30:39 -0700 (PDT)
+        Thu, 13 Jul 2023 07:32:33 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DACB426B5
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 04:32:32 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-993a37b79e2so100944166b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 04:32:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1689247951; x=1691839951;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=eNKkvXVW1sthMJRNqYMNGRFlFZb1M91hFC/q+puE6Ik=;
+        b=n+N153ZahhRtO6YJoWCv6JsN3zC7IJ7QdemzoZhSrpo0a4s7XSfHOnMy+OzsWlaQjn
+         BLdgIRouGm5RgGddFnd+UBAqx6E2c58E71jmDhWxbr+NEyu/oslQ7epG6hKSSCZLA3RU
+         Wp6ina2GVyU1UYQcB5tk5w8HOFEtZ9ulsmTR4sYIPxxRr/6cD8JfIvlwBkqzTTjePILj
+         Zh7zlgbmdhGkCd1C0ajUvlzasqSNM8Gu9sH6izLzrkTcl50KpEoTLXhT/x2r+EIJg11k
+         bP30DN68paLcfU0b8DQnwIW72HqXrqiKeRKulCKC9ukTdnlPrh5DWTQ4XUI9T8a4jKIX
+         IhyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689247838; x=1689852638;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IdSP6ezbFiKCfroZ5GX5zt/8h3KSlShTUnj+xRO1MX0=;
-        b=aDMfvld0Ajhf8X3DQxGr9+CTBVW1lYUBMVE570P8XBstUwqnwF+VapnUTfmSunwWnS
-         wJmKgBlZx5KTk6XWLFZMSd9iNEjKdv7XYAZHxIbxeno2O79tRDrpPF6ZCUvQ+hUG6AbM
-         bbKOAaXMnbvBsEmK4LexCIsreGs6/4+j1hRAZJK3q0UmaMOw9Lm3/iJK/lP0KJMnEIBe
-         qYDyHAviPAcdGx1tjVK77+wnVJGqLgSY46VFqnCTLpjdoaHFgHXl8U/nzs+MlCiEa5xr
-         QRcizstT2sJsJX/Qqfn0isCKWZXolPkcaZzGnMdTBBhLKlTE362DgDccoA37nPwZsWN5
-         +OLw==
-X-Gm-Message-State: ABy/qLbJe/lVT/2VzfdYw5awL46M5bxXkE2tX8wbzD9OGlidDX5RSlCO
-        niX4/kuYO1/w1tYR1cT/GoihCAL4KqZTOg+xh2s=
-X-Google-Smtp-Source: APBJJlEzNhHSm7/nas6ZGwAjLZGhL0q93TMstSkMzTvTz6R71uHqjNwcqtmwYNUZpOhi5hSE7bPSkAWEwq2ez+7AKgA=
-X-Received: by 2002:a17:906:73d3:b0:993:eed1:904 with SMTP id
- n19-20020a17090673d300b00993eed10904mr997537ejl.3.1689247837448; Thu, 13 Jul
- 2023 04:30:37 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689247951; x=1691839951;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eNKkvXVW1sthMJRNqYMNGRFlFZb1M91hFC/q+puE6Ik=;
+        b=RkLfxAOYTGh9QnEpCgGFMClRBqFhE/T6UQwNxuPAAI+y7wQ3mvDrK0blVwQ2QuncUB
+         1VRXfzKLFX289VpYoJ1GJKYIDN6sAkckvI0gaebuPyFHSI0ekAeq3zoxFMsPVe9r2xu7
+         GC8scnvqEFG9Zm30HqIBOlrAKmv4kxftAgBHOoYhkJ8RedS622FGxBGvvcrnQcSMCijP
+         KrARJlHLvcmQ/aYVCP9iI+KBZcV/QaJ5X7nJ7Mwtp6hOicG+E6ZGfX5go6It/hJmO7hf
+         XWrEqf3R9zLvNYW/ZV315dFTLPxyGhNLrvskv8NxARCyLKLd4vBLTu5x30tBa2k7X9ZT
+         UaEg==
+X-Gm-Message-State: ABy/qLbw1QDVE34xByOILFssGP2XkLQkSwSST0yc7D1QNWuWUTsFRJvh
+        mM8SnoQS/RnpAKg1ELndLmmLDQ==
+X-Google-Smtp-Source: APBJJlEv0v+ZpKSZl9+bieRO2mmmwa+e/d1XEwqZ/2OSLJQFFFxirJJFUUKCqYFW75geQh2AmB9TdQ==
+X-Received: by 2002:a17:906:5a45:b0:977:95f4:5cca with SMTP id my5-20020a1709065a4500b0097795f45ccamr1301033ejc.54.1689247951165;
+        Thu, 13 Jul 2023 04:32:31 -0700 (PDT)
+Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
+        by smtp.gmail.com with ESMTPSA id n25-20020a17090695d900b009927d4d7a6dsm3904142ejy.192.2023.07.13.04.32.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Jul 2023 04:32:30 -0700 (PDT)
+Date:   Thu, 13 Jul 2023 13:32:29 +0200
+From:   Andrew Jones <ajones@ventanamicro.com>
+To:     Anup Patel <apatel@ventanamicro.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Atish Patra <atishp@atishpatra.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Samuel Ortiz <sameo@rivosinc.com>, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/7] RISC-V: KVM: Allow Zba and Zbs extensions for
+ Guest/VM
+Message-ID: <20230713-edec78d8a36c3c84618f159f@orel>
+References: <20230712161047.1764756-1-apatel@ventanamicro.com>
+ <20230712161047.1764756-4-apatel@ventanamicro.com>
 MIME-Version: 1.0
-References: <20230707203731.848188-1-daniel.lezcano@linaro.org> <82b2d4dc-4583-925a-9e3c-77ae30d0d261@linaro.org>
-In-Reply-To: <82b2d4dc-4583-925a-9e3c-77ae30d0d261@linaro.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 13 Jul 2023 13:30:25 +0200
-Message-ID: <CAJZ5v0iUyPjsyfcE6MB1gqeRvb8aM0d6TsrB1Oehw4p58SnFYQ@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] One more step to the thermal zone structure encapsulation
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     rafael@kernel.org, linux-pm@vger.kernel.org,
-        thierry.reding@gmail.com, linux-kernel@vger.kernel.org,
-        srinivas.pandruvada@linux.intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230712161047.1764756-4-apatel@ventanamicro.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 11:33 AM Daniel Lezcano
-<daniel.lezcano@linaro.org> wrote:
+On Wed, Jul 12, 2023 at 09:40:43PM +0530, Anup Patel wrote:
+> We extend the KVM ISA extension ONE_REG interface to allow KVM
+> user space to detect and enable Zba and Zbs extensions for Guest/VM.
+> 
+> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+> ---
+>  arch/riscv/include/uapi/asm/kvm.h | 2 ++
+>  arch/riscv/kvm/vcpu_onereg.c      | 4 ++++
+>  2 files changed, 6 insertions(+)
 >
-> On 07/07/2023 22:37, Daniel Lezcano wrote:
-> > The series provides more changes to self-encapsulate the thermal zone device
-> > structure in order to protect wild accesses to the thermal zone device
-> > internals, especially the trip points and the locks.
-> >
-> > The first patch adds a macro to warn at compilation time if the
-> > thermal_core.h is included in a file not belonging to the thermal core
-> > code. One warning will happen with the nvidia drivers but this is in
-> > the way to be solved.
-> >
-> > The second patch reorders the headers inclusion in the core code.
-> >
-> > The next patches makes the int340x drivers to use the thermal trip
-> > update above and the different accessors for thermal zone structure.
-> >
-> > Daniel Lezcano (4):
-> >    thermal/core: Hardening the self-encapsulation
-> >    thermal/core: Reorder the headers inclusion
-> >    thermal/drivers/int3400: Use thermal zone device wrappers
-> >    thermal/drivers/int340x: Do not check the thermal zone state
-> >
-> >   drivers/thermal/gov_bang_bang.c               |  1 +
-> >   drivers/thermal/gov_fair_share.c              |  1 +
-> >   drivers/thermal/gov_power_allocator.c         |  7 +--
-> >   drivers/thermal/gov_step_wise.c               |  1 +
-> >   drivers/thermal/gov_user_space.c              |  1 +
-> >   .../intel/int340x_thermal/int3400_thermal.c   | 44 +++++++++----------
-> >   drivers/thermal/thermal_acpi.c                |  1 +
-> >   drivers/thermal/thermal_core.c                |  7 +--
-> >   drivers/thermal/thermal_core.h                |  4 ++
-> >   drivers/thermal/thermal_helpers.c             |  1 +
-> >   drivers/thermal/thermal_hwmon.c               |  1 +
-> >   drivers/thermal/thermal_netlink.c             |  1 +
-> >   drivers/thermal/thermal_of.c                  |  1 +
-> >   drivers/thermal/thermal_sysfs.c               |  1 +
-> >   drivers/thermal/thermal_trip.c                |  1 +
-> >   15 files changed, 45 insertions(+), 28 deletions(-)
->
-> Applied
 
-OK
+Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
