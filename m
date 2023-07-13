@@ -2,107 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1714751782
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 06:33:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D39E2751785
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 06:33:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233707AbjGMEd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 00:33:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39814 "EHLO
+        id S233735AbjGMEd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 00:33:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232343AbjGMEdZ (ORCPT
+        with ESMTP id S233715AbjGMEdw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 00:33:25 -0400
-Received: from new2-smtp.messagingengine.com (new2-smtp.messagingengine.com [66.111.4.224])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A70912F;
-        Wed, 12 Jul 2023 21:33:24 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id A651158014A;
-        Thu, 13 Jul 2023 00:33:20 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Thu, 13 Jul 2023 00:33:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
-        1689222800; x=1689230000; bh=v+lGBq+GJvpo2kNvySw6OJjRn6Dau/dhBqQ
-        PgKVw2CQ=; b=Ydxif1r282/SQPhrzrY2GmsMajEwfmQ8a79fOmJp2JCCyCO1H5e
-        EPewr9Zx+Us62Lyk0Uq67G9wzmJ4CGJldD2IU4Y0QlAki+1RznNT1RUL4ppEW468
-        a4zFolkEu8Jd+YOYrLHwzkIX3geDGNQvTaKCRGh3jtv20ZK8sgbzN8UOr4rxTadu
-        xpKwmfmDF8Rhkna2/u7+B5pkOrg7Nh5f1iStoZGT9S/2h12q5BrjLd9FmMvW/mou
-        4FexsgaHFbDOupyzvCR3NCa7Ko/8w00K+IcUVjWgCxtNX1klziRCDEQQP3SQFY8i
-        IvTl24b4Y5X4GDzULEUY/sRyWvZSs7ufpqA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-        1689222800; x=1689230000; bh=v+lGBq+GJvpo2kNvySw6OJjRn6Dau/dhBqQ
-        PgKVw2CQ=; b=fgeaCodm8HH0aE7shD+BHhQYqHpMXe9BsL9VSsSN/WJWSEeBrEC
-        BTk7kBvJrQLLHaQYyNb7zrDFBKLB2THEbzyMh9+9L/Yc5KOv49G46KVti8zYVa46
-        GaKpMMFfWXSmNTraqwyzR7FRS2Ag7G0BGX+XD8Ha1hSJZOWrZglRWBqqOeIqH6bh
-        i5OT0a9PzcDvxVqOExTrfgqW57QvhX2IBLR+7ev+zBf2j2igL9FeujM/Dx+oFQ7I
-        JFNLhQgUonkgeRqvJn2i7UcpcQ2EPY/AST+v8wW7TF5kFYE9Jhv8JTFWVBDbdcsO
-        U7Omy3Fhtv1h8GcVR2+hgUWu/89F4Vvj70g==
-X-ME-Sender: <xms:kH6vZCNvEuQFvMAjH-eqZdA5Z6iqj2kWh2GCbX9JTLDgB7G3kYd1Qg>
-    <xme:kH6vZA_g7MGZi1EGlBsUW_9alzrF2TWPmqvsL7cbHI9yDxizyAG8NSxyI1fEVuCZ1
-    JsQQo6UlHzfyoaMkQ>
-X-ME-Received: <xmr:kH6vZJQ4Xep3pgUvzJa2NYPw0HCQ9lUnWNACwK_oCo_a1lE7gnxhrjgF3gfhrdd5hy0Z3T3GHqZLRuraZbih0MxWyS3FRCH_I-Bt>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrfeefgdekvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenfg
-    hrlhcuvffnffculdejtddmnecujfgurhepfffhvfevuffkfhggtggugfgjsehtkefstddt
-    tdejnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqne
-    cuggftrfgrthhtvghrnhepieektdefhffhjeejgeejhfekkeejgfegvdeuhfeitdeiueeh
-    hffgvedthedviefgnecuffhomhgrihhnpehqvghmuhdrohhrghenucevlhhushhtvghruf
-    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:kH6vZCt72U-FBVX6tLrqaPeaPoUfUH9z-P6Nj1hqnigQJ_pjsvGDmA>
-    <xmx:kH6vZKfXKXYQo42k5IQHOLv_7RzDdWkSNJgYftSK6yp142O-PgxGzQ>
-    <xmx:kH6vZG14awhZMY8fhJ3e837cipMAXfutZEyzNfuLpCfYkYs8asLuqg>
-    <xmx:kH6vZIcDhoL_pWLsJEg5zCMGqqwT0nqZgobChfCa9hCQiPXfbh_9sA>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 13 Jul 2023 00:33:18 -0400 (EDT)
-Date:   Wed, 12 Jul 2023 22:33:17 -0600
-From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>,
-        coreteam@netfilter.org,
-        Network Development <netdev@vger.kernel.org>,
-        David Ahern <dsahern@kernel.org>
-Subject: Re: [PATCH bpf-next v4 2/6] netfilter: bpf: Support
- BPF_F_NETFILTER_IP_DEFRAG in netfilter link
-Message-ID: <wltfmammaf5g4gumsbna4kmwo6dtd24g472o7kgkug42dhwcy2@32fmd7q6kvg4>
-References: <cover.1689203090.git.dxu@dxuuu.xyz>
- <d3b0ff95c58356192ea3b50824f8cdbf02c354e3.1689203090.git.dxu@dxuuu.xyz>
- <CAADnVQKKfEtZYZxihxvG3aQ34E1m95qTZ=jTD7yd0qvOASpAjQ@mail.gmail.com>
- <kwiwaeaijj6sxwz5fhtxyoquhz2kpujbsbeajysufgmdjgyx5c@f6lqrd23xr5f>
- <CAADnVQLcAoN5z+HD_44UKgJJc6t5TPW8+Ai9We0qJpau4NtEzA@mail.gmail.com>
+        Thu, 13 Jul 2023 00:33:52 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D65CC19BE
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 21:33:48 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5E42B61A0F
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 04:33:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3619C433CD
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 04:33:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689222827;
+        bh=+kTyiAGba3mSR5djKFqg01Udpt0rBTFCzthMvoEcpms=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=a7llqEy2HskttNfrPgpsHDzKi4l7zaqRp+j1s58C8FUTggYKpnqSZi9ZZUfxMbOTX
+         sdCWlDAxxbZ1GIWygWrRsTXMlyVrxfIZ9eDsVrFiiK68/WoeKf3q60fKBlJ3UE/L1Z
+         IiHjQeJoWm2rP/DONXCYzKOC0MLZM7jaI055Sie4y8+sbn6ELvc8u/zbS6/doHEtN6
+         bv0pCFriPc8fpzPSwATRjMqUlYBQ9JJu9U2Axe38zjerYL7NgP24vimn6KjNQKbY9y
+         knDc56xdu5RLc0dMxfJAFp4lTM88cHwH8jGdQQFHPbV2u5gz9pI3fTJ8deGa+XPNj2
+         GkJtVkPH0lbxw==
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-51e429e1eabso246415a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 21:33:47 -0700 (PDT)
+X-Gm-Message-State: ABy/qLaehk5nVJDCs4gpFWQ+G5T9NrVfOUu00VW/64dYl/dMiLSWn5gM
+        Lr7aRNBUf0ctIk1MRAUoFFDs/WCE2kqYHRdhjtg=
+X-Google-Smtp-Source: APBJJlEgbwJZ2VhU0QdQ+9cp7Qhd5M5V/j96iwJAwEctUoFZkSVLvhgLsDd0AwvpvnG+v2B724bGeqx69KAaGt0W/+c=
+X-Received: by 2002:aa7:d34a:0:b0:51d:9ec4:9616 with SMTP id
+ m10-20020aa7d34a000000b0051d9ec49616mr597329edr.28.1689222825887; Wed, 12 Jul
+ 2023 21:33:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQLcAoN5z+HD_44UKgJJc6t5TPW8+Ai9We0qJpau4NtEzA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+References: <20230712101344.2714626-1-chenhuacai@loongson.cn> <CA+fCnZd1nhG9FDzkeW42jFbPuGKZms-HzHXBiO5YTSnkmsZoZQ@mail.gmail.com>
+In-Reply-To: <CA+fCnZd1nhG9FDzkeW42jFbPuGKZms-HzHXBiO5YTSnkmsZoZQ@mail.gmail.com>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Thu, 13 Jul 2023 12:33:33 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H4nuwBJHE3VPj6yE2HUw3tDaLtgeRQ5mj0SRV6RoD8-9Q@mail.gmail.com>
+Message-ID: <CAAhV-H4nuwBJHE3VPj6yE2HUw3tDaLtgeRQ5mj0SRV6RoD8-9Q@mail.gmail.com>
+Subject: Re: [PATCH] kasan: Fix tests by removing -ffreestanding
+To:     Andrey Konovalov <andreyknvl@gmail.com>
+Cc:     Huacai Chen <chenhuacai@loongson.cn>,
+        Marco Elver <elver@google.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -110,138 +69,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 06:26:13PM -0700, Alexei Starovoitov wrote:
-> On Wed, Jul 12, 2023 at 6:22 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+Hi, Andrey,
+
+On Thu, Jul 13, 2023 at 12:12=E2=80=AFAM Andrey Konovalov <andreyknvl@gmail=
+.com> wrote:
+>
+> On Wed, Jul 12, 2023 at 12:14=E2=80=AFPM Huacai Chen <chenhuacai@loongson=
+.cn> wrote:
 > >
-> > Hi Alexei,
+> > CONFIG_CC_HAS_KASAN_MEMINTRINSIC_PREFIX hopes -fbuiltin for memset()/
+> > memcpy()/memmove() if instrumentation is needed. This is the default
+> > behavior but some archs pass -ffreestanding which implies -fno-builtin,
+> > and then causes some kasan tests fail. So we remove -ffreestanding for
+> > kasan tests.
+>
+> Could you clarify on which architecture you observed tests failures?
+Observed on LoongArch [1], KASAN for LoongArch was planned to be
+merged in 6.5, but at the last minute I found some tests fail with
+GCC14 (CONFIG_CC_HAS_KASAN_MEMINTRINSIC_PREFIX) so the patches are
+dropped. After some debugging we found the root cause is
+-ffreestanding.
+
+[1] https://github.com/chenhuacai/linux/commit/af2da91541a8899b502bece9b1fd=
+e225b71f37a8
+
+Huacai
+>
 > >
-> > On Wed, Jul 12, 2023 at 05:43:49PM -0700, Alexei Starovoitov wrote:
-> > > On Wed, Jul 12, 2023 at 4:44 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
-> > > > +#if IS_ENABLED(CONFIG_NF_DEFRAG_IPV6)
-> > > > +       case NFPROTO_IPV6:
-> > > > +               rcu_read_lock();
-> > > > +               v6_hook = rcu_dereference(nf_defrag_v6_hook);
-> > > > +               if (!v6_hook) {
-> > > > +                       rcu_read_unlock();
-> > > > +                       err = request_module("nf_defrag_ipv6");
-> > > > +                       if (err)
-> > > > +                               return err < 0 ? err : -EINVAL;
-> > > > +
-> > > > +                       rcu_read_lock();
-> > > > +                       v6_hook = rcu_dereference(nf_defrag_v6_hook);
-> > > > +                       if (!v6_hook) {
-> > > > +                               WARN_ONCE(1, "nf_defrag_ipv6_hooks bad registration");
-> > > > +                               err = -ENOENT;
-> > > > +                               goto out_v6;
-> > > > +                       }
-> > > > +               }
-> > > > +
-> > > > +               err = v6_hook->enable(link->net);
-> > >
-> > > I was about to apply, but luckily caught this issue in my local test:
-> > >
-> > > [   18.462448] BUG: sleeping function called from invalid context at
-> > > kernel/locking/mutex.c:283
-> > > [   18.463238] in_atomic(): 0, irqs_disabled(): 0, non_block: 0, pid:
-> > > 2042, name: test_progs
-> > > [   18.463927] preempt_count: 0, expected: 0
-> > > [   18.464249] RCU nest depth: 1, expected: 0
-> > > [   18.464631] CPU: 15 PID: 2042 Comm: test_progs Tainted: G
-> > > O       6.4.0-04319-g6f6ec4fa00dc #4896
-> > > [   18.465480] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
-> > > BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-> > > [   18.466531] Call Trace:
-> > > [   18.466767]  <TASK>
-> > > [   18.466975]  dump_stack_lvl+0x32/0x40
-> > > [   18.467325]  __might_resched+0x129/0x180
-> > > [   18.467691]  mutex_lock+0x1a/0x40
-> > > [   18.468057]  nf_defrag_ipv4_enable+0x16/0x70
-> > > [   18.468467]  bpf_nf_link_attach+0x141/0x300
-> > > [   18.468856]  __sys_bpf+0x133e/0x26d0
-> > >
-> > > You cannot call mutex under rcu_read_lock.
-> >
-> > Whoops, my bad. I think this patch should fix it:
-> >
-> > ```
-> > From 7e8927c44452db07ddd7cf0e30bb49215fc044ed Mon Sep 17 00:00:00 2001
-> > Message-ID: <7e8927c44452db07ddd7cf0e30bb49215fc044ed.1689211250.git.dxu@dxuuu.xyz>
-> > From: Daniel Xu <dxu@dxuuu.xyz>
-> > Date: Wed, 12 Jul 2023 19:17:35 -0600
-> > Subject: [PATCH] netfilter: bpf: Don't hold rcu_read_lock during
-> >  enable/disable
-> >
-> > ->enable()/->disable() takes a mutex which can sleep. You can't sleep
-> > during RCU read side critical section.
-> >
-> > Our refcnt on the module will protect us from ->enable()/->disable()
-> > from going away while we call it.
-> >
-> > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> > Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
 > > ---
-> >  net/netfilter/nf_bpf_link.c | 10 ++++++++--
-> >  1 file changed, 8 insertions(+), 2 deletions(-)
+> >  mm/kasan/Makefile | 2 ++
+> >  1 file changed, 2 insertions(+)
 > >
-> > diff --git a/net/netfilter/nf_bpf_link.c b/net/netfilter/nf_bpf_link.c
-> > index 77ffbf26ba3d..79704cc596aa 100644
-> > --- a/net/netfilter/nf_bpf_link.c
-> > +++ b/net/netfilter/nf_bpf_link.c
-> > @@ -60,9 +60,12 @@ static int bpf_nf_enable_defrag(struct bpf_nf_link *link)
-> >                         goto out_v4;
-> >                 }
+> > diff --git a/mm/kasan/Makefile b/mm/kasan/Makefile
+> > index 7634dd2a6128..edd1977a6b88 100644
+> > --- a/mm/kasan/Makefile
+> > +++ b/mm/kasan/Makefile
+> > @@ -45,7 +45,9 @@ CFLAGS_KASAN_TEST +=3D -fno-builtin
+> >  endif
 > >
-> > +               rcu_read_unlock();
-> >                 err = v4_hook->enable(link->net);
-> >                 if (err)
-> >                         module_put(v4_hook->owner);
-> > +
-> > +               return err;
-> >  out_v4:
-> >                 rcu_read_unlock();
-> >                 return err;
-> > @@ -92,9 +95,12 @@ static int bpf_nf_enable_defrag(struct bpf_nf_link *link)
-> >                         goto out_v6;
-> >                 }
+> >  CFLAGS_kasan_test.o :=3D $(CFLAGS_KASAN_TEST)
+> > +CFLAGS_REMOVE_kasan_test.o :=3D -ffreestanding
+> >  CFLAGS_kasan_test_module.o :=3D $(CFLAGS_KASAN_TEST)
+> > +CFLAGS_REMOVE_kasan_test_module.o :=3D -ffreestanding
 > >
-> > +               rcu_read_unlock();
-> >                 err = v6_hook->enable(link->net);
-> >                 if (err)
-> >                         module_put(v6_hook->owner);
-> > +
-> > +               return err;
-> >  out_v6:
-> >                 rcu_read_unlock();
-> >                 return err;
-> > @@ -114,11 +120,11 @@ static void bpf_nf_disable_defrag(struct bpf_nf_link *link)
-> >         case NFPROTO_IPV4:
-> >                 rcu_read_lock();
-> >                 v4_hook = rcu_dereference(nf_defrag_v4_hook);
-> > +               rcu_read_unlock();
-> >                 if (v4_hook) {
-> >                         v4_hook->disable(link->net);
-> >                         module_put(v4_hook->owner);
-> >                 }
-> > -               rcu_read_unlock();
-> >
-> >                 break;
-> >  #endif
-> > @@ -126,11 +132,11 @@ static void bpf_nf_disable_defrag(struct bpf_nf_link *link)
-> >         case NFPROTO_IPV6:
-> >                 rcu_read_lock();
-> >                 v6_hook = rcu_dereference(nf_defrag_v6_hook);
-> > +               rcu_read_unlock();
-> 
-> No. v6_hook is gone as soon as you unlock it.
-
-I think we're protected here by the try_module_get() on the enable path.
-And we only disable defrag if enabling succeeds. The module shouldn't
-be able to deregister its hooks until we call the module_put() later.
-
-I think READ_ONCE() would've been more appropriate but I wasn't sure if
-that was ok given nf_defrag_v(4|6)_hook is written to by
-rcu_assign_pointer() and I was assuming symmetry is necessary.
-
-Does that sound right?
-
-Thanks,
-Daniel
+> >  obj-y :=3D common.o report.o
+> >  obj-$(CONFIG_KASAN_GENERIC) +=3D init.o generic.o report_generic.o sha=
+dow.o quarantine.o
+> > --
+> > 2.39.3
+>
+> +Marco
