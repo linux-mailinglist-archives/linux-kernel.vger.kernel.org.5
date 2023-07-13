@@ -2,55 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6FF8752C49
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 23:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ECDE752C50
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 23:41:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232919AbjGMVj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 17:39:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43812 "EHLO
+        id S234360AbjGMVlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 17:41:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230212AbjGMVj5 (ORCPT
+        with ESMTP id S234328AbjGMVlb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 17:39:57 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEE691FC0;
-        Thu, 13 Jul 2023 14:39:56 -0700 (PDT)
+        Thu, 13 Jul 2023 17:41:31 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE1C62691;
+        Thu, 13 Jul 2023 14:41:30 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6795361B6C;
-        Thu, 13 Jul 2023 21:39:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8AC2EC433C7;
-        Thu, 13 Jul 2023 21:39:55 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 712C761B7C;
+        Thu, 13 Jul 2023 21:41:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id D577BC433CA;
+        Thu, 13 Jul 2023 21:41:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689284395;
-        bh=fJgb0wn8cM5E3LZjSiMmJS/ati1UElaHXC724dGS2pA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=HIWRKduB/7c1UiEq4oBIcRWc4NvMCDFYMLfNvcdRy+kMqwMVH9YcNAkuQTCHzd3h9
-         g5CmzktmSrO1iQ9qYYHC5NceVQQTrdp2T5JcjnrcyzEbQRJbRGhUtQaJFhBr9INqXD
-         TF43nE0Qps0DEH+ulexMu7W07KLV85vM+GGG+SMAu/nAWUUt2WXpsG+PJTXL8PrNLa
-         DZnQ/4a34qYMgAfnjyntrPoXJMuku9E1kFCeB7bPlaqar9VOwlw5ZWNYDPTsVv9VY1
-         SVuKGmb4o/9YTpzs5cw9nBJ0GzrmMfKosdiMBIPvqYH8ctFkwhL9Yo7VDd7EgXXC1J
-         DlOdT4tB3Inrg==
-Date:   Thu, 13 Jul 2023 16:39:53 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Vidya Sagar <vidyas@nvidia.com>
-Cc:     lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
-        bhelgaas@google.com, thierry.reding@gmail.com,
-        jonathanh@nvidia.com, Sergey.Semin@baikalelectronics.ru,
-        linux-pci@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kthota@nvidia.com,
-        mmaddireddy@nvidia.com, sagar.tv@gmail.com
-Subject: Re: [PATCH V3] Revert "PCI: tegra194: Enable support for 256 Byte
- payload"
-Message-ID: <20230713213953.GA331829@bhelgaas>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230619102604.3735001-1-vidyas@nvidia.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        s=k20201202; t=1689284489;
+        bh=jpkwRfIuO/p7CmmiIptnPZpuPwnt1xMdErD42scVioE=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=PnHV7FfGf0Q7aK6dC/VdAQbmGh446IrCj0LlIA6f5iqR0ArZiDKxMpW4W07F1TSL1
+         /5uqwLqWzCr7i+F7S6OlQEDNCZq2SrQliofa9Yh5AbYQyPhEME/l+5hQtqY7EXvMMH
+         shGEPki2RW04M4S4e22AyzWpSo105IPIVQ7DL2IzJNEtHOjkivDtFWUQ2jVLLG7fF+
+         BX1O2s6TzUsB++dWQAPpNdgO5uw6erQbCe7Rxbe4YCcHTIGBT5L4AB0jAPskhVk3o5
+         lNGE98F9rKlieHtYh+lWOZd1vyZFI3Jlos3k/2+83eIq0KK/7/8CjmpllQkyBzRZ0/
+         ela6nozmqMB3w==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C309CE29F46;
+        Thu, 13 Jul 2023 21:41:29 +0000 (UTC)
+Subject: Re: [GIT PULL] sh fixes for v6.5
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <90e6042f3a82d5e9b4cf475603dcb73ca5e821d8.camel@physik.fu-berlin.de>
+References: <90e6042f3a82d5e9b4cf475603dcb73ca5e821d8.camel@physik.fu-berlin.de>
+X-PR-Tracked-List-Id: <linux-sh.vger.kernel.org>
+X-PR-Tracked-Message-Id: <90e6042f3a82d5e9b4cf475603dcb73ca5e821d8.camel@physik.fu-berlin.de>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/glaubitz/sh-linux.git tags/sh-for-v6.5-tag2
+X-PR-Tracked-Commit-Id: 7c28a35e19fafa1d3b367bcd3ec4021427a9397b
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 9350cd0190c0d60915ec704112c864d858a0d31c
+Message-Id: <168928448979.12038.351367698931546359.pr-tracker-bot@kernel.org>
+Date:   Thu, 13 Jul 2023 21:41:29 +0000
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Artur Rojek <contact@artur-rojek.eu>,
+        Rich Felker <dalias@libc.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        linux-sh@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -59,118 +67,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 19, 2023 at 03:56:04PM +0530, Vidya Sagar wrote:
-> This reverts commit 4fb8e46c1bc4 ("PCI: tegra194: Enable
-> support for 256 Byte payload").
-> 
-> Consider a PCIe hierarchy with a PCIe switch and a device connected
-> downstream of the switch that has support for MPS which is the minimum in
-> the hierarchy, and root port programmed with an MPS in its DevCtl register
-> that is greater than the minimum. In this scenario, the default bus
-> configuration of the kernel i.e. "PCIE_BUS_DEFAULT" doesn't configure the
-> MPS settings in the hierarchy correctly resulting in the device with
-> support for minimum MPS in the hierarchy receiving the TLPs of size more
-> than that. Although this can be addressed by appending "pci=pcie_bus_safe"
-> to the kernel command line, it doesn't seem to be a good idea to always
-> have this commandline argument even for the basic functionality to work.
+The pull request you sent on Thu, 13 Jul 2023 09:25:39 +0200:
 
-I think this has some irrelevant detail (IIUC the problem should
-happen even without a switch) and could be more specific (I think the
-problem case is RP MPS=256, EP only supports MPS=128).
+> git://git.kernel.org/pub/scm/linux/kernel/git/glaubitz/sh-linux.git tags/sh-for-v6.5-tag2
 
-> Reverting commit 4fb8e46c1bc4 ("PCI: tegra194: Enable support for 256
-> Byte payload") avoids this requirement and ensures that the basic
-> functionality of the devices irrespective of the hierarchy and the MPS of
-> the devices in the hierarchy.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/9350cd0190c0d60915ec704112c864d858a0d31c
 
-"Ensure" is a transitive verb, so "... ensures that the basic
-functionality ..." is missing whatever the object should be.
+Thank you!
 
-Maybe something like the following?
-
-  After 4fb8e46c1bc4 ("PCI: tegra194: Enable support for 256 Byte
-  payload"), we set MPS=256 for tegra194 Root Ports.
-
-  By default (CONFIG_PCIE_BUS_DEFAULT set and no "pci=pcie_bus_*"
-  parameter), Linux configures the MPS of every device to match the
-  upstream bridge, which is impossible if the Root Port has MPS=256
-  and a device only supports MPS=128.
-
-  This scenario results in uncorrectable Malformed TLP errors if the
-  Root Port sends TLPs with payloads larger than 128 bytes.  These
-  errors can be avoided by using the "pci=pcie_bus_safe" parameter,
-  but it doesn't seem to be a good idea to always have this parameter
-  even for basic functionality to work.
-
-  Revert 4fb8e46c1bc4 ("PCI: tegra194: Enable support for 256 Byte
-  payload") so the Root Ports default to MPS=128, which all devices
-  support.
-
-  If peer-to-peer DMA is not required, one can use "pci=pcie_bus_perf" 
-  to get the benefit of larger MPS settings.
-
-> To reap the benefits of having support for higher MPS, optionally, one can
-> always append the kernel command line with "pci=pcie_bus_perf".
-> 
-> Fixes: 4fb8e46c1bc4 ("PCI: tegra194: Enable support for 256 Byte payload")
-> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
-> ---
-> V3:
-> * Fixed a build issue
-> 
-> V2:
-> * Addressed review comments from Bjorn
-> 
->  drivers/pci/controller/dwc/pcie-tegra194.c | 14 ++------------
->  1 file changed, 2 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
-> index 4fdadc7b045f..a772faff14b5 100644
-> --- a/drivers/pci/controller/dwc/pcie-tegra194.c
-> +++ b/drivers/pci/controller/dwc/pcie-tegra194.c
-> @@ -900,11 +900,6 @@ static int tegra_pcie_dw_host_init(struct dw_pcie_rp *pp)
->  		pcie->pcie_cap_base = dw_pcie_find_capability(&pcie->pci,
->  							      PCI_CAP_ID_EXP);
->  
-> -	val_16 = dw_pcie_readw_dbi(pci, pcie->pcie_cap_base + PCI_EXP_DEVCTL);
-> -	val_16 &= ~PCI_EXP_DEVCTL_PAYLOAD;
-> -	val_16 |= PCI_EXP_DEVCTL_PAYLOAD_256B;
-> -	dw_pcie_writew_dbi(pci, pcie->pcie_cap_base + PCI_EXP_DEVCTL, val_16);
-> -
->  	val = dw_pcie_readl_dbi(pci, PCI_IO_BASE);
->  	val &= ~(IO_BASE_IO_DECODE | IO_BASE_IO_DECODE_BIT8);
->  	dw_pcie_writel_dbi(pci, PCI_IO_BASE, val);
-> @@ -1756,7 +1751,6 @@ static void pex_ep_event_pex_rst_deassert(struct tegra_pcie_dw *pcie)
->  	struct device *dev = pcie->dev;
->  	u32 val;
->  	int ret;
-> -	u16 val_16;
->  
->  	if (pcie->ep_state == EP_STATE_ENABLED)
->  		return;
-> @@ -1887,20 +1881,16 @@ static void pex_ep_event_pex_rst_deassert(struct tegra_pcie_dw *pcie)
->  	pcie->pcie_cap_base = dw_pcie_find_capability(&pcie->pci,
->  						      PCI_CAP_ID_EXP);
->  
-> -	val_16 = dw_pcie_readw_dbi(pci, pcie->pcie_cap_base + PCI_EXP_DEVCTL);
-> -	val_16 &= ~PCI_EXP_DEVCTL_PAYLOAD;
-> -	val_16 |= PCI_EXP_DEVCTL_PAYLOAD_256B;
-> -	dw_pcie_writew_dbi(pci, pcie->pcie_cap_base + PCI_EXP_DEVCTL, val_16);
-> -
->  	/* Clear Slot Clock Configuration bit if SRNS configuration */
->  	if (pcie->enable_srns) {
-> +		u16 val_16;
-> +
->  		val_16 = dw_pcie_readw_dbi(pci, pcie->pcie_cap_base +
->  					   PCI_EXP_LNKSTA);
->  		val_16 &= ~PCI_EXP_LNKSTA_SLC;
->  		dw_pcie_writew_dbi(pci, pcie->pcie_cap_base + PCI_EXP_LNKSTA,
->  				   val_16);
->  	}
-> -
->  	clk_set_rate(pcie->core_clk, GEN4_CORE_CLK_FREQ);
->  
->  	val = (ep->msi_mem_phys & MSIX_ADDR_MATCH_LOW_OFF_MASK);
-> -- 
-> 2.25.1
-> 
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
