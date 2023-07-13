@@ -2,181 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0B7C751EC6
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 12:25:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19E7D751ED0
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 12:27:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233943AbjGMKZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 06:25:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34502 "EHLO
+        id S233266AbjGMK1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 06:27:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232314AbjGMKZA (ORCPT
+        with ESMTP id S229890AbjGMK1G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 06:25:00 -0400
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C128B0;
-        Thu, 13 Jul 2023 03:24:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689243899; x=1720779899;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=vw2ntZopvg5nU5QxMufsJDYrJv1lGTtPEIZGWTmHPv4=;
-  b=iUBpiUgcKfqlUmn20i2EzCh31PeS4su8l92072jNgH0In7OvkFaTopKV
-   /aKKP+kpvKEVTLHVnfbIs3jTAjRCYQWMMdIbYMDFD+JgwZYy46rqL+/U8
-   Ed56TBvYNmCA0c1m3JEZax7jTROsi32LpufnLq0DSgL6NJo6GauuFFLjs
-   V1gw79BWMzSOkdrwWB1jMKozgBY9lHa7DxolbJk2tnkAPS1C+kaZbHrmo
-   xdZxKJ90iqX2SDgkwIifCl+Z8LiTxkXZ4xBL1Chsr9dCrl0rcIPRC68eM
-   NLDJ7IQkHELxfOv2ffH/qmXwX1mI/elFSYBsCJOiAHzxDKaIhMnlowvxP
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10769"; a="428895029"
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="428895029"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2023 03:24:58 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10769"; a="751565400"
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="751565400"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orsmga008.jf.intel.com with ESMTP; 13 Jul 2023 03:24:58 -0700
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 13 Jul 2023 03:24:58 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 13 Jul 2023 03:24:57 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Thu, 13 Jul 2023 03:24:57 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.105)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Thu, 13 Jul 2023 03:24:56 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Pu25oyiI2Hfu4xEODLy+idUVKl4lu1V4megZHtPTFZEoiVwuxSDQjIICm4Vmhl+KNQ+wpOoBHJd2OBJSgGIOfowv+bG5XbPPEVaTfSFEyA9I3JtF0TQ3lRX8JyHZ/fQkF3ZBgKYNiCMUZ6+wA9kPLP76+CJDIK/h+zVmiK+HFkoWlUS1gW9tX6DhfCxHSEO4MKntZQqoXqWFJVA6hNgaaGW1ECATNdxHZrbMc2hbVJaJe1RoiLmD0NUFyVbmkXIRAsu/+iGp9a7JghMhum6DpruhJkvcwHcbqvdp2SeKLYr5Pc1PPFjZb6KP7T0facAukVgv8fkMmpasyC2QdarVvA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vw2ntZopvg5nU5QxMufsJDYrJv1lGTtPEIZGWTmHPv4=;
- b=ACZVTk/hKCdqt5ksDiknVK+QqOzMCBNbvKSklkYB921TvYYkz7n8qfRtBkrwJIaFfJPuga+pwpTXlX6QZKjLY/AZa1ezQTD7KA4b/v5YSbBTQJaRLgNhYXHYg7YlE+sqVd+jEPtdDMuAT3yCmBendbnPFNx8L5Dzk55M4nfIhfECPNSaa1/VRNtJZWUuR0Y7XzYo4urs9PjLvqbPn/pFzhi/CHewJKFElNbC7eG12zXnfFVy22gqYl4aAm/LBhTvF3lywdeMJ0zpveirT2kazGi2GbziBDxzXD912hGP03yclGA+TmRQpSqDWJtc2VYePJP+2tWdvADgJwGkV3J8aQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
- by PH7PR11MB7145.namprd11.prod.outlook.com (2603:10b6:510:1ec::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.20; Thu, 13 Jul
- 2023 10:24:49 +0000
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::aca2:5ddb:5e78:e3df]) by BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::aca2:5ddb:5e78:e3df%4]) with mapi id 15.20.6588.022; Thu, 13 Jul 2023
- 10:24:48 +0000
-From:   "Huang, Kai" <kai.huang@intel.com>
-To:     "peterz@infradead.org" <peterz@infradead.org>
-CC:     "Hansen, Dave" <dave.hansen@intel.com>,
-        "Christopherson,, Sean" <seanjc@google.com>,
-        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Subject: Re: [PATCH 07/10] x86/tdx: Extend TDX_MODULE_CALL to support more
- TDCALL/SEAMCALL leafs
-Thread-Topic: [PATCH 07/10] x86/tdx: Extend TDX_MODULE_CALL to support more
- TDCALL/SEAMCALL leafs
-Thread-Index: AQHZtJ1x0ZB1GuCRuUKTpeSsU9Y3jq+2WZEAgAABkQCAAPx6gIAAC1QAgAAa7QCAAAFlAA==
-Date:   Thu, 13 Jul 2023 10:24:48 +0000
-Message-ID: <a2218af09553f89674d3ba3d59db31d2521745e3.camel@intel.com>
-References: <cover.1689151537.git.kai.huang@intel.com>
-         <ecfd84af9186aa5368acb40a2740afbf1d0d1b5d.1689151537.git.kai.huang@intel.com>
-         <20230712165336.GA3115257@hirez.programming.kicks-ass.net>
-         <20230712165912.GA3100142@hirez.programming.kicks-ass.net>
-         <cc5b4df23273b546225241fae2cbbea52ccb13d3.camel@intel.com>
-         <20230713084324.GA3138667@hirez.programming.kicks-ass.net>
-         <5cc5ba09636647a076206fae932bbf88f233b8b2.camel@intel.com>
-In-Reply-To: <5cc5ba09636647a076206fae932bbf88f233b8b2.camel@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.48.4 (3.48.4-1.fc38) 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BL1PR11MB5978:EE_|PH7PR11MB7145:EE_
-x-ms-office365-filtering-correlation-id: 52c748ac-8dd0-46ac-38ba-08db838b6312
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: S6eDPTzCrTq2Um9Bf+spbkzaBgxnb1g8qGvVD4YVJjkRRZqTQm47aw47I/T1haKLFDLLS9VZ9pwmj2PbdwBXtFKsPmsemge8JsxmH2FV1v+meBqZmA6QuoCY4Mt55xc9sWCvQHdPvjCFU5naIK8wYlFPiYI3If6M2r621D94WS2K1Kc98ZqH3wJ5lo+axczOGxQe4gyrP8OmF7U36ATBotiC1yi/ddJFuD6el3rS6CkibhsScF9/5+YLiJmhFhcDIC1TPkn/OX49jutmq7SKDzowQGQCgM6i1Lfxb2OuKuCy3dg0a6hZc1cO7juSilhcBSBR/rfYKP8Qua6/wMIbZo2JB/pV4KQ3ycLMDpSmQPjDJLKao1WgKccCd/yBfFUijzmXuGqylFp6NlTM7FA/uis7rHKkBjIIdZDtyjyT35oxC6nKGerE1d+bmIrPuBl8cOE0A3OQU+8V5epVkIzBvEZKyehC+lOxx8nIcEbpO1/YLh2i4D5b8khFJAb7OwdFSpWalMSnUNbLMCbOOX00P7JGvw3onSuPiJkYiAQDlhgEyQGQtGk8m+CfXiQf7K3YeMsh7BSZCV3fURnS2CXaplf0Iql81zmJUmlIiB+mukkoDS0G6JHDB6m2T63zhXMZ
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(376002)(366004)(396003)(346002)(39860400002)(136003)(451199021)(316002)(41300700001)(8676002)(8936002)(6512007)(6506007)(7416002)(5660300002)(26005)(2616005)(2906002)(66946007)(6916009)(38100700002)(4744005)(54906003)(122000001)(36756003)(86362001)(478600001)(6486002)(38070700005)(64756008)(66476007)(82960400001)(66556008)(71200400001)(66446008)(4326008)(76116006)(91956017)(186003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?YlA2ZE1RcmVmMUYvQVh3V2V6b0swQ2JSVmRyOUk3N0hBMkpDbG9xT3FQaFdS?=
- =?utf-8?B?Vy9Va1RDMnd3bmV1MldKaUQxQndJd1ZEdFBCNTNweFJqa2RldHhFUzlWV3c1?=
- =?utf-8?B?enV2NndIU1dzN1pNb29MQzRneEdZaDFtMnV6VS9zNGVCeE1ibjRUWGpma0hp?=
- =?utf-8?B?TzUvRW1DS2o0Vk4weHIrT05rN3c1STRidVpCdDVZQWhxUVN3MVdmYXc4czZO?=
- =?utf-8?B?dUZKRzBxK1ZUeWQxeXRMMGJRNFNzTUpRY3N2K0poaVZSOC9qaVhRSjU3VnJE?=
- =?utf-8?B?M3FmNjFEQ3YweTU4VFFjQWw1TjhsY2FIWVA0aUNhQmcydzROL1YxYlFkdkc1?=
- =?utf-8?B?MlE1TS84Ulpad1QzNzcxbVBOeUVjTi9sZ2JQU2FVcU01S2g3MDFET3lpSUhY?=
- =?utf-8?B?SVhubDFHbzVydXB4YXRuaE9XWWlFK3RYaXlzck4vZ0Rob25qNVBKbUt0b1ZH?=
- =?utf-8?B?R2lHVXdHU3dsa25iTk4yc2JiWExyQzBJblBvWGxDQitRc2wxZzBvSXNIL005?=
- =?utf-8?B?RWl5bjZVdFUvbXQ0dUowd1FlOE0xTmNENjgvUXE4c25ZQ3NUSldNc1Y5K1dG?=
- =?utf-8?B?STBNOHl4RFMyNkQvWkFlMU1KSjYyeDZuRWR3ZU9jYTdXOUpoR0x3emhYbW0y?=
- =?utf-8?B?OWNkd2pYempmaGlaZlJzUGlRSXlGbmRyem1QZGtHSHNOQTJSS0NVbDB4YTdu?=
- =?utf-8?B?U2VwVjlaeHFUeUZtekRVRzNtV1BqcHIzb2YxRHA5Z2dOQzRVK1Y2Uzc3SXFZ?=
- =?utf-8?B?c3J4aU5oek5GWTA3RXJkc0RsZUV1d2tkNmY4MWhrK2daWHhrYUFLdXZNN3do?=
- =?utf-8?B?RVNYcTNkaHkyWVN5dXF3dnQrYUhHdnpieXNHUndvcngzWDdacjVGbS9lM2Nq?=
- =?utf-8?B?OFJEVGw3V0J2cTNSNGlLV2VPZGI1T1dVd1R4Wk5GTUl3a0tvTWJBdE0vcS9C?=
- =?utf-8?B?cGs3NXZoY2Mxdk1kMTd0cUZKbmtjdmpLcVI0MTdmL1hDYitYYmZZOHZxUnE2?=
- =?utf-8?B?Z3l0R1FQckJKRVVBZ2JzV2Q2Ny80QUw3MGNwaCtKVTRFekh0a0kyWnZRN1Zm?=
- =?utf-8?B?ampTa1lDUUFqWDhLd3phQTN5aDR1cHBWbG1ydFQxYU1VMDdlaUM0akNaaGQr?=
- =?utf-8?B?b3FvSUY3bDV6c3hqUGxrYXdhTVBaNmR0aDJJYW5HZlVEa0dRUVNFeHNrNG9L?=
- =?utf-8?B?ZDd1cnBMdktjZmh6MzRFZmVzYkR6bDV5bURmYnZCTUEyelMxZm1HaXc3ZU5s?=
- =?utf-8?B?aGY0TWxHdWpraEpYRTNnQTROT1h0RzJMSlFFdGxSajUxdTZZbDNVK1Brdllr?=
- =?utf-8?B?aTdzS20wZXF2V20zQ0tGNXM4WHpvMGNlZWpmM0NzcHRJZE5WSExuLzZlbVYy?=
- =?utf-8?B?WTBXT1Q0TVZvd2tFUVU0enRKa0ZLYy9WbzdPV0hBdWdkWUlYdit1VkZqQWI3?=
- =?utf-8?B?MXNpNG0zOXA5aEtrTXdMQTdWTDFTaXZxSlArV05aUnZUcnZPMkFOT3h3ZUsw?=
- =?utf-8?B?R082R3R0NUZUVUpMWmZZYWtYTlZFNmNMVlN5bkRVMFR1NklXb0FDMTJ0ZGc3?=
- =?utf-8?B?QVJoKzFRQ1JvVGdteHJHcDFPZGFPMjZZbzJPZU5VWnZFdXliQlFnalp4RTds?=
- =?utf-8?B?ZEdGOENSVDJWeS9CaC9yWmJJVXZqYzIrV2VOb2JYZWw4bXNza0tNWG9hYy9K?=
- =?utf-8?B?UHBTZWxwWVFCdG9nRWxmeU1JYlJCcERMZVp0SDFIeVdscGFtVTVkTkpPK3VU?=
- =?utf-8?B?RWVXMGVpcmhGRVdVLzNBVkxTVHliNXFtdUR4K3hlc1JRcHJNNjkxSk9GdDBZ?=
- =?utf-8?B?WkhlQUhpVytaYldseUovTSt5dmIxSmdwc2Z5TWpTRnNzZXY2dDAwU2NMMnV1?=
- =?utf-8?B?MzRGa2hKSDVhZWptdkdNamp4V0hIQldJVklVS3Rud3dBaVNXNSticlc3cmFW?=
- =?utf-8?B?UzRzRVZ4YW9sTkpkMkxWVERNMENxeVhWWDFvRktuUzFFczV3dDFlOVVmQnRK?=
- =?utf-8?B?aHFlL3V0RFpGZ1JZbm1LZzRaOUNRbkhKQkhEKzF1SmNBQjVoR1lyUm1GMkwy?=
- =?utf-8?B?b0xyYk1UTFlMWFBWTzVvK210ZUE1d0ZmcXZ3bnFsb3FEaWRqUWg2N256VDl6?=
- =?utf-8?B?WWt5QXlYcjJUaWgrRytDVmo0L0NuMHdTbEpRcnJuS2ZvZHZDQ2RUSkl4RTd0?=
- =?utf-8?B?cmc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <A41509A309794145B468EBA3E950A857@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Thu, 13 Jul 2023 06:27:06 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DBFA10F2
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 03:27:02 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso484076a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 03:27:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1689244022; x=1691836022;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ApCz51CPtH35kpnMj3Yy1H6D1SilWGM0dQB3wFwtSyc=;
+        b=Y+OY1adHFtzR3l5wrZult+Zfq5t6fWnOdzUt2qkrb4lRFmx34lxsAI9jqXyaHSWJMB
+         O0w9WJQuKx446k26vmE/EAdIU5Ys13I9om+yeeOf8nLYibKkohOJTUjdU1szDpEb5HG+
+         H3EkmLhq9CGrmCj2VOTQ7QZp3BK7dFK0//GyM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689244022; x=1691836022;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ApCz51CPtH35kpnMj3Yy1H6D1SilWGM0dQB3wFwtSyc=;
+        b=RAP0SLHLAcdCIFhifb5YXLiUFgcgCN+o9QG68mDsZSK8uuE6LayloPCmgtaCxhxhDx
+         G8Pj099++deV8QUBEvPOdT/BI/jJYLs7EQMAtXcElJ0BQVpCTnuDMjj17wKVFNdbmnuK
+         j3C1Io/MaoOyXjLK3HJFNwHlxG/h+zr9qF7jpZ3FXkNtiJnSOxbiSNu7YSSMHk0q6sJF
+         YVAJeirrr/6akQcD7zfyDEsewgyAvhcq4DVs55gp5pzNBRRcSygAdhf6ARMWOypaaDdY
+         rVoW9TpvMzinVCOBSF6PuMX9XY4qRikxF8fIOdwPwckUTDNuTYA26A94F7jS8dyzKP/R
+         GHag==
+X-Gm-Message-State: ABy/qLa7q8gb1v+jHSA0xOGSMLZ41RJntce/uZq3OxgqLykrvujIFowX
+        uN1AIgDJQauOkly8TyL8hPZkXg==
+X-Google-Smtp-Source: APBJJlGdO7yI5qudcQGM//coSzMXpp3ks2++LbmtDcPUpbGjiZRpiNd7N4PtyGsF5xQNsuwHItKOgA==
+X-Received: by 2002:a17:902:70c5:b0:1ae:8892:7d27 with SMTP id l5-20020a17090270c500b001ae88927d27mr1094013plt.42.1689244021643;
+        Thu, 13 Jul 2023 03:27:01 -0700 (PDT)
+Received: from chromium.org (0.223.81.34.bc.googleusercontent.com. [34.81.223.0])
+        by smtp.gmail.com with ESMTPSA id a2-20020a1709027d8200b001b8622c1ad2sm5572667plm.130.2023.07.13.03.26.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Jul 2023 03:27:00 -0700 (PDT)
+Date:   Thu, 13 Jul 2023 10:26:56 +0000
+From:   Tomasz Figa <tfiga@chromium.org>
+To:     ayaka <ayaka@soulik.info>
+Cc:     linux-media@vger.kernel.org, randy.li@synaptics.com,
+        Brian.Starkey@arm.com, boris.brezillon@collabora.com,
+        frkoenig@chromium.org, hans.verkuil@cisco.com, hiroh@chromium.org,
+        hverkuil@xs4all.nl, kernel@collabora.com,
+        laurent.pinchart@ideasonboard.com, linux-kernel@vger.kernel.org,
+        mchehab@kernel.org, narmstrong@baylibre.com, nicolas@ndufresne.ca,
+        sakari.ailus@iki.fi, stanimir.varbanov@linaro.org,
+        Helen Koike <helen.koike@collabora.com>
+Subject: Re: [PATCH v7 1/9] media: v4l2: Extend pixel formats to unify
+ single/multi-planar handling (and more)
+Message-ID: <20230713102656.qmrtd3jscu3fualy@chromium.org>
+References: <20230206043308.28365-1-ayaka@soulik.info>
+ <20230206043308.28365-2-ayaka@soulik.info>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 52c748ac-8dd0-46ac-38ba-08db838b6312
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Jul 2023 10:24:48.8451
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ZV2rJmkXj3zWaaU1WHLVm8UWGPqRfxoGPHvkJilBhKxnCUMj4r3puHZYwNRN4QgivjwVYPNopEqzoSHPy7N+Aw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB7145
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230206043308.28365-2-ayaka@soulik.info>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -184,16 +76,808 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIzLTA3LTEzIGF0IDEwOjE5ICswMDAwLCBIdWFuZywgS2FpIHdyb3RlOg0KPiBP
-biBUaHUsIDIwMjMtMDctMTMgYXQgMTA6NDMgKzAyMDAsIFBldGVyIFppamxzdHJhIHdyb3RlOg0K
-PiA+IE9uIFRodSwgSnVsIDEzLCAyMDIzIGF0IDA4OjAyOjU0QU0gKzAwMDAsIEh1YW5nLCBLYWkg
-d3JvdGU6DQo+ID4gDQo+ID4gPiBTb3JyeSBJIGFtIGlnbm9yYW50IGhlcmUuICBXb24ndCAiY2xl
-YXJpbmcgRUNYIG9ubHkiIGxlYXZlIGhpZ2ggYml0cyBvZg0KPiA+ID4gcmVnaXN0ZXJzIHN0aWxs
-IGNvbnRhaW5pbmcgZ3Vlc3QncyB2YWx1ZT8NCj4gPiANCj4gPiBhcmNoaXRlY3R1cmUgemVyby1l
-eHRlbmRzIDMyYml0IHN0b3Jlcw0KPiANCj4gU29ycnksIHdoZXJlIGNhbiBJIGZpbmQgdGhpcyBp
-bmZvcm1hdGlvbj8gTG9va2luZyBhdCBTRE0gSSBjb3VsZG4ndCBmaW5kIDotKA0KPiANCj4gDQoN
-CkhtbS4uIEkgdGhpbmsgSSBmb3VuZCBpdCAtLSBpdCdzIGluIFNETSB2b2wgMToNCg0KMy40LjEu
-MSBHZW5lcmFsLVB1cnBvc2UgUmVnaXN0ZXJzIGluIDY0LUJpdCBNb2RlDQoNCjMyLWJpdCBvcGVy
-YW5kcyBnZW5lcmF0ZSBhIDMyLWJpdCByZXN1bHQsIHplcm8tZXh0ZW5kZWQgdG8gYSA2NC1iaXQg
-cmVzdWx0IGluDQp0aGUgZGVzdGluYXRpb24gZ2VuZXJhbC1wdXJwb3NlIHJlZ2lzdGVyLg0KDQpT
-b3JyeSBmb3IgdGhlIG5vaXNlIQ0K
+On Mon, Feb 06, 2023 at 12:33:00PM +0800, ayaka wrote:
+> From: Randy Li <ayaka@soulik.info>
+> 
+> This is part of the multiplanar and singleplanar unification process.
+> v4l2_ext_pix_format is supposed to work for both cases.
+> 
+> We also add the concept of modifiers already employed in DRM to expose
+> HW-specific formats (like tiled or compressed formats) and allow
+> exchanging this information with the DRM subsystem in a consistent way.
+> 
+> Note that only V4L2_BUF_TYPE_VIDEO_[OUTPUT,CAPTURE] are accepted in
+> v4l2_ext_pix_format, other types will be rejected if you use the
+> {G,S,TRY}_EXT_PIX_FMT ioctls.
+> 
+> New hooks have been added to v4l2_ioctl_ops to support those new ioctls
+> in drivers, but, in the meantime, the core takes care of converting
+> {S,G,TRY}_EXT_PIX_FMT requests into {S,G,TRY}_FMT so that old drivers can
+> still work if the userspace app/lib uses the new ioctls.
+> 
+> The conversion is also done the other around to allow userspace
+> apps/libs using {S,G,TRY}_FMT to work with drivers implementing the
+> _ext_ hooks.
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
+> Signed-off-by: Helen Koike <helen.koike@collabora.com>
+> Signed-off-by: Randy Li <ayaka@soulik.info>
+> ---
+> 
+> Changes in v7:
+> - use the resevered fields in v4l2_fmtdesc to store the modifier for format
+>   enumerate.
+> - Dropping the old ioctl() calling new interfaces adapter.
+
+Why?
+
+We need backwards compatibility with the legacy API, but requiring
+drivers to implement both will add even more boiler plate code to the
+drivers and potential for each driver to have a buggy implementation in
+its own way. (From my experience, every driver already handles the
+TRY_FMT/S_FMT operations in its own slightly buggy way.)
+
+What we probably don't need is core code for making old drivers
+automatically support the new API (i.e. the other way around). We can
+have the drivers modified to the new API whenever one needs to use the
+new features with the old hardware. (And possibly other modernization of
+the driver code could happen at the same time.)
+
+> - Refresh the patch
+> Changes in v6:
+>  The main change here was fixing the conversion, so planes reflects color planes,
+>  and to implement this properly I made major refactors compared to the previous
+>  version.
+> - struct v4l2_plane_ext_pix_format removed, using struct v4l2_plane_pix_format instead (Tomasz)
+> - refer to drm_fourcc.h in struct v4l2_ext_pix_format docs (Hans)
+> - reorder colorimetry fields in struct v4l2_ext_pix_format (Hans)
+> - do not set Ext ioctls as valid for vid_out_overlay (Tomasz)
+> - refactor conversion functions, so planes are color planes (Tomasz)
+> - Don't explicitly check for e->modifier != 0 in v4l2_ext_pix_format_to_format() (Tomasz)
+> - Use "ef" for extended formats in the framework for consistency (Tomasz)
+> - Handle xfer_func field in conversions (Tomasz)
+> - Zero reserved fields in v4l_s_ext_pix_fmt() and v4l_try_ext_pix_fmt() (Tomasz)
+> - Refactor format functions to use v4l_fmt_ioctl_via_ext()
+> - Several fixes/refactoring/changes
+> - Remove EXT API for touch devices
+> 
+> Changes in v5:
+> - change sizes and reorder fields to avoid holes in the struct and make
+>   it the same for 32 and 64 bits
+> - removed __attribute__ ((packed)) from uapi structs
+> - Fix doc warning from make htmldocs
+> - Updated commit message with EXT_PIX prefix for the ioctls.
+> 
+> Changes in v4:
+> - Use v4l2_ext_pix_format directly in the ioctl, drop v4l2_ext_format,
+> making V4L2_BUF_TYPE_VIDEO_[OUTPUT,CAPTURE] the only valid types.
+> - Add reserved fields
+> - Removed num_planes from struct v4l2_ext_pix_format
+> - Removed flag field from struct v4l2_ext_pix_format, since the only
+>   defined value is V4L2_PIX_FMT_FLAG_PREMUL_ALPHA only used by vsp1,
+>   where we can use modifiers, or add it back later through the reserved
+>   bits.
+> - In v4l2_ext_format_to_format(), check if modifier is != MOD_LINEAR &&
+>   != MOD_INVALID
+> - Fix type assignment in v4l_g_fmt_ext_pix()
+> - Rebased on top of media/master (post 5.8-rc1)
+> 
+> Changes in v3:
+> - Rebased on top of media/master (post 5.4-rc1)
+> 
+> Changes in v2:
+> - Move the modifier in v4l2_ext_format (was formerly placed in
+>   v4l2_ext_plane)
+> - Fix a few bugs in the converters and add a strict parameter to
+>   allow conversion of uninitialized/mis-initialized objects
+> ---
+>  drivers/media/v4l2-core/v4l2-dev.c   |  13 +
+>  drivers/media/v4l2-core/v4l2-ioctl.c | 357 ++++++++++++++++++++++++++-
+>  include/media/v4l2-ioctl.h           |  28 +++
+>  include/uapi/linux/videodev2.h       |  46 +++-
+>  4 files changed, 438 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/media/v4l2-core/v4l2-dev.c b/drivers/media/v4l2-core/v4l2-dev.c
+> index 397d553177fa..cfe90bfd47f1 100644
+> --- a/drivers/media/v4l2-core/v4l2-dev.c
+> +++ b/drivers/media/v4l2-core/v4l2-dev.c
+> @@ -615,6 +615,10 @@ static void determine_valid_ioctls(struct video_device *vdev)
+>  			       ops->vidioc_g_fmt_vid_out_mplane ||
+>  			       ops->vidioc_g_fmt_vid_out_overlay)))
+>  			__set_bit(_IOC_NR(VIDIOC_G_FMT), valid_ioctls);
+> +		if ((is_rx && ops->vidioc_g_ext_pix_fmt_vid_cap) ||
+> +		    (is_tx && ops->vidioc_g_ext_pix_fmt_vid_out)) {
+> +			__set_bit(_IOC_NR(VIDIOC_G_EXT_PIX_FMT), valid_ioctls);
+> +		}
+>  		if ((is_rx && (ops->vidioc_s_fmt_vid_cap ||
+>  			       ops->vidioc_s_fmt_vid_cap_mplane ||
+>  			       ops->vidioc_s_fmt_vid_overlay)) ||
+> @@ -622,6 +626,11 @@ static void determine_valid_ioctls(struct video_device *vdev)
+>  			       ops->vidioc_s_fmt_vid_out_mplane ||
+>  			       ops->vidioc_s_fmt_vid_out_overlay)))
+>  			__set_bit(_IOC_NR(VIDIOC_S_FMT), valid_ioctls);
+> +
+> +		if ((is_rx && ops->vidioc_s_ext_pix_fmt_vid_cap) ||
+> +		    (is_tx && ops->vidioc_s_ext_pix_fmt_vid_out)) {
+> +			__set_bit(_IOC_NR(VIDIOC_S_EXT_PIX_FMT), valid_ioctls);
+> +		}
+>  		if ((is_rx && (ops->vidioc_try_fmt_vid_cap ||
+>  			       ops->vidioc_try_fmt_vid_cap_mplane ||
+>  			       ops->vidioc_try_fmt_vid_overlay)) ||
+> @@ -629,6 +638,10 @@ static void determine_valid_ioctls(struct video_device *vdev)
+>  			       ops->vidioc_try_fmt_vid_out_mplane ||
+>  			       ops->vidioc_try_fmt_vid_out_overlay)))
+>  			__set_bit(_IOC_NR(VIDIOC_TRY_FMT), valid_ioctls);
+> +		if ((is_rx && ops->vidioc_try_ext_pix_fmt_vid_cap) ||
+> +		    (is_tx && ops->vidioc_try_ext_pix_fmt_vid_out)) {
+> +			__set_bit(_IOC_NR(VIDIOC_TRY_EXT_PIX_FMT), valid_ioctls);
+> +		}
+>  		SET_VALID_IOCTL(ops, VIDIOC_OVERLAY, vidioc_overlay);
+>  		SET_VALID_IOCTL(ops, VIDIOC_G_FBUF, vidioc_g_fbuf);
+>  		SET_VALID_IOCTL(ops, VIDIOC_S_FBUF, vidioc_s_fbuf);
+> diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
+> index 87f163a89c80..52b77a968bb3 100644
+> --- a/drivers/media/v4l2-core/v4l2-ioctl.c
+> +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+> @@ -18,8 +18,10 @@
+>  
+>  #include <linux/v4l2-subdev.h>
+>  #include <linux/videodev2.h>
+> +#include <drm/drm_fourcc.h>
+>  
+>  #include <media/media-device.h> /* for media_set_bus_info() */
+> +
+>  #include <media/v4l2-common.h>
+>  #include <media/v4l2-ioctl.h>
+>  #include <media/v4l2-ctrls.h>
+> @@ -34,6 +36,11 @@
+>  
+>  #define is_valid_ioctl(vfd, cmd) test_bit(_IOC_NR(cmd), (vfd)->valid_ioctls)
+>  
+> +#define V4L2_IS_CAP_MULTIPLANAR(vdev)	(vdev->device_caps & \
+> +					 (V4L2_CAP_VIDEO_CAPTURE_MPLANE | \
+> +					 V4L2_CAP_VIDEO_OUTPUT_MPLANE | \
+> +					 V4L2_CAP_VIDEO_M2M_MPLANE))
+> +
+>  struct std_descr {
+>  	v4l2_std_id std;
+>  	const char *descr;
+> @@ -353,6 +360,27 @@ static void v4l_print_format(const void *arg, bool write_only)
+>  	}
+>  }
+>  
+> +static void v4l_print_ext_pix_format(const void *arg, bool write_only)
+> +{
+> +	const struct v4l2_ext_pix_format *ef = arg;
+> +	unsigned int i;
+> +
+> +	pr_cont("type=%s, width=%u, height=%u, format=%c%c%c%c, modifier %llx, field=%s, colorspace=%d, ycbcr_enc=%u, quantization=%u, xfer_func=%u\n",
+> +		prt_names(ef->type, v4l2_type_names),
+> +		ef->width, ef->height,
+> +		(ef->pixelformat & 0xff),
+> +		(ef->pixelformat >>  8) & 0xff,
+> +		(ef->pixelformat >> 16) & 0xff,
+> +		(ef->pixelformat >> 24) & 0xff,
+> +		ef->modifier, prt_names(ef->field, v4l2_field_names),
+> +		ef->colorspace, ef->ycbcr_enc,
+> +		ef->quantization, ef->xfer_func);
+> +	for (i = 0; i < VIDEO_MAX_PLANES && ef->plane_fmt[i].sizeimage; i++)
+> +		pr_debug("plane %u: bytesperline=%u sizeimage=%u\n",
+> +			 i, ef->plane_fmt[i].bytesperline,
+> +			 ef->plane_fmt[i].sizeimage);
+> +}
+> +
+>  static void v4l_print_framebuffer(const void *arg, bool write_only)
+>  {
+>  	const struct v4l2_framebuffer *p = arg;
+> @@ -940,7 +968,9 @@ static int check_fmt(struct file *file, enum v4l2_buf_type type)
+>  	switch (type) {
+>  	case V4L2_BUF_TYPE_VIDEO_CAPTURE:
+>  		if ((is_vid || is_tch) && is_rx &&
+> -		    (ops->vidioc_g_fmt_vid_cap || ops->vidioc_g_fmt_vid_cap_mplane))
+> +		    (ops->vidioc_g_fmt_vid_cap ||
+> +		     ops->vidioc_g_ext_pix_fmt_vid_cap ||
+> +		     ops->vidioc_g_fmt_vid_cap_mplane))
+>  			return 0;
+>  		break;
+>  	case V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE:
+> @@ -953,7 +983,9 @@ static int check_fmt(struct file *file, enum v4l2_buf_type type)
+>  		break;
+>  	case V4L2_BUF_TYPE_VIDEO_OUTPUT:
+>  		if (is_vid && is_tx &&
+> -		    (ops->vidioc_g_fmt_vid_out || ops->vidioc_g_fmt_vid_out_mplane))
+> +		    (ops->vidioc_g_fmt_vid_out ||
+> +		     ops->vidioc_g_ext_pix_fmt_vid_out ||
+> +		     ops->vidioc_g_fmt_vid_out_mplane))
+>  			return 0;
+>  		break;
+>  	case V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE:
+> @@ -1082,6 +1114,203 @@ static void v4l_sanitize_format(struct v4l2_format *fmt)
+>  	}
+>  }
+>  
+> +static void
+> +v4l2_ext_pix_format_to_pix_format(const struct v4l2_ext_pix_format *ef,
+> +				  struct v4l2_pix_format *pix)
+> +{
+> +	unsigned int i;
+> +
+> +	pix->width = ef->width;
+> +	pix->height = ef->height;
+> +	pix->field = ef->field;
+> +	pix->flags = V4L2_PIX_FMT_FLAG_SET_CSC;
+> +	pix->colorspace = ef->colorspace;
+> +	pix->ycbcr_enc = ef->ycbcr_enc;
+> +	pix->priv = V4L2_PIX_FMT_PRIV_MAGIC;
+> +	pix->quantization = ef->quantization;
+> +	pix->pixelformat = ef->pixelformat;
+> +	pix->bytesperline = ef->plane_fmt[0].bytesperline;
+> +	pix->sizeimage = ef->plane_fmt[0].sizeimage;
+> +	for (i = 1; i < VIDEO_MAX_PLANES && ef->plane_fmt[i].sizeimage; i++)
+> +		pix->sizeimage += ef->plane_fmt[i].sizeimage;
+> +}
+> +
+> +static void
+> +v4l2_ext_pix_format_to_pix_mp_format(const struct v4l2_ext_pix_format *ef,
+> +				     struct v4l2_pix_format_mplane *pix_mp)
+> +{
+> +	const struct v4l2_format_info *info =
+> +					v4l2_format_info(ef->pixelformat);
+> +	unsigned int i;
+> +
+> +	pix_mp->width = ef->width;
+> +	pix_mp->height = ef->height;
+> +	pix_mp->field = ef->field;
+> +	pix_mp->flags = V4L2_PIX_FMT_FLAG_SET_CSC;
+> +	pix_mp->colorspace = ef->colorspace;
+> +	pix_mp->ycbcr_enc = ef->ycbcr_enc;
+> +	pix_mp->quantization = ef->quantization;
+> +	pix_mp->pixelformat = ef->pixelformat;
+> +
+> +	/* This is true when converting to non-M-variant */
+> +	if (info && info->mem_planes == 1) {
+> +		pix_mp->plane_fmt[0] = ef->plane_fmt[0];
+> +		pix_mp->num_planes = 1;
+> +		for (i = 1; i < VIDEO_MAX_PLANES && ef->plane_fmt[i].sizeimage; i++)
+> +			pix_mp->plane_fmt[0].sizeimage += ef->plane_fmt[i].sizeimage;
+> +
+> +		return;
+> +	}
+> +
+> +	for (i = 0; i < VIDEO_MAX_PLANES && ef->plane_fmt[i].sizeimage; i++)
+> +		pix_mp->plane_fmt[i] = ef->plane_fmt[i];
+> +	pix_mp->num_planes = i;
+> +}
+> +
+> +/*
+> + * v4l2_ext_pix_format_to_format - convert to v4l2_ext_pix_format to v4l2_format
+> + *
+> + * @ef: A pointer to struct struct v4l2_ext_pix_format to be converted.
+> + * @f: A pointer to struct v4l2_format to be filled.
+> + * @is_mplane: Bool indicating if multiplanar API should be used in @f.
+> + *
+> + * If pixelformat should be converted to M-variant, change ef->pixelformat
+> + * to the M-variant before calling this function.
+> + */
+> +static void v4l2_ext_pix_format_to_format(const struct v4l2_ext_pix_format *ef,
+> +					  struct v4l2_format *f, bool is_mplane)
+> +{
+> +	memset(f, 0, sizeof(*f));
+> +
+> +	if (ef->modifier != DRM_FORMAT_MOD_LINEAR &&
+> +	    ef->modifier != DRM_FORMAT_MOD_INVALID)
+> +		pr_warn("Modifiers are not supported in v4l2_format, ignoring %llx\n",
+> +			ef->modifier);
+> +
+> +	if (!is_mplane) {
+> +		f->type = ef->type;
+> +		v4l2_ext_pix_format_to_pix_format(ef, &f->fmt.pix);
+> +		return;
+> +	}
+> +
+> +	if (ef->type == V4L2_BUF_TYPE_VIDEO_CAPTURE)
+> +		f->type = V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE;
+> +	else
+> +		f->type = V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE;
+> +
+> +	v4l2_ext_pix_format_to_pix_mp_format(ef, &f->fmt.pix_mp);
+> +}
+> +
+> +static void
+> +v4l2_pix_format_to_ext_pix_format(const struct v4l2_pix_format *pix,
+> +				  struct v4l2_ext_pix_format *ef)
+> +{
+> +	const struct v4l2_format_info *info =
+> +					v4l2_format_info(pix->pixelformat);
+> +	unsigned int i;
+> +
+> +	ef->width = pix->width;
+> +	ef->height = pix->height;
+> +	ef->field = pix->field;
+> +	ef->colorspace = pix->colorspace;
+> +	ef->ycbcr_enc = pix->ycbcr_enc;
+> +	ef->quantization = pix->quantization;
+> +	ef->xfer_func = pix->xfer_func;
+> +	if (pix->flags)
+> +		pr_warn("Ignoring pixelformat flags 0x%x\n", pix->flags);
+> +
+> +	/* We assume M-variants won't be used in this function */
+> +	ef->pixelformat = pix->pixelformat;
+> +
+> +	ef->plane_fmt[0].bytesperline = pix->bytesperline;
+> +	ef->plane_fmt[0].sizeimage = pix->sizeimage;
+> +
+> +	if (!info)
+> +		return;
+
+Should we print a warning in case of !info?
+
+> +
+> +	for (i = 1; i < info->comp_planes; i++) {
+> +		ef->plane_fmt[i].bytesperline = pix->bytesperline / info->hdiv;
+> +		ef->plane_fmt[i].sizeimage = ef->plane_fmt[i].bytesperline *
+> +					     ef->height / info->vdiv;
+> +		ef->plane_fmt[0].sizeimage -= ef->plane_fmt[i].sizeimage;
+> +	}
+> +}
+> +
+> +static void
+> +v4l2_pix_mp_format_to_ext_pix_format(const struct v4l2_pix_format_mplane *pix_mp,
+> +				     struct v4l2_ext_pix_format *ef)
+> +{
+> +	const struct v4l2_format_info *info =
+> +					v4l2_format_info(pix_mp->pixelformat);
+> +	unsigned int i;
+> +
+> +	ef->width = pix_mp->width;
+> +	ef->height = pix_mp->height;
+> +	ef->field = pix_mp->field;
+> +	ef->colorspace = pix_mp->colorspace;
+> +	ef->ycbcr_enc = pix_mp->ycbcr_enc;
+> +	ef->quantization = pix_mp->quantization;
+> +	ef->xfer_func = pix_mp->xfer_func;
+> +	if (pix_mp->flags)
+> +		pr_warn("Ignoring pixelformat flags 0x%x\n", pix_mp->flags);
+> +
+> +	if (!info)
+> +		return;
+
+If we return here, the returned ef will not make any sense, because it
+would have uninitialized plane_fmt[]. Should we print a warning here too?
+
+> +
+> +	ef->pixelformat = pix_mp->pixelformat;
+> +
+> +	if (info->comp_planes == info->mem_planes) {
+> +		for (i = 0; i < pix_mp->num_planes && i < VIDEO_MAX_PLANES; i++)
+> +			ef->plane_fmt[i] = pix_mp->plane_fmt[i];
+> +
+> +		return;
+> +	}
+> +
+> +	/* case where mem_planes is 1 and comp_planes > 1 */
+> +	ef->plane_fmt[0] = pix_mp->plane_fmt[0];
+> +	for (i = 1; i < info->comp_planes; i++) {
+> +		ef->plane_fmt[i].bytesperline =
+> +			pix_mp->plane_fmt[0].bytesperline / info->hdiv;
+> +		ef->plane_fmt[i].sizeimage =
+> +			ef->plane_fmt[i].bytesperline * ef->height / info->vdiv;
+> +		ef->plane_fmt[0].sizeimage -= ef->plane_fmt[i].sizeimage;
+> +	}
+> +}
+> +
+> +/*
+> + * v4l2_format_to_ext_pix_format - convert to v4l2_format to v4l2_ext_pix_format
+> + *
+> + * @f: A pointer to struct v4l2_format to be converted.
+> + * @ef: A pointer to struct struct v4l2_ext_pix_format to be filled.
+> + *
+> + * This method normalize the pixelformat to non-M variant.
+> + */
+> +static void v4l2_format_to_ext_pix_format(const struct v4l2_format *f,
+> +					  struct v4l2_ext_pix_format *ef)
+> +{
+> +	memset(ef, 0, sizeof(*ef));
+> +
+> +	switch (f->type) {
+> +	case V4L2_BUF_TYPE_VIDEO_CAPTURE:
+> +	case V4L2_BUF_TYPE_VIDEO_OUTPUT:
+> +		ef->type = f->type;
+> +		v4l2_pix_format_to_ext_pix_format(&f->fmt.pix, ef);
+> +		break;
+> +	case V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE:
+> +		ef->type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+> +		v4l2_pix_mp_format_to_ext_pix_format(&f->fmt.pix_mp, ef);
+> +		break;
+> +	case V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE:
+> +		ef->type = V4L2_BUF_TYPE_VIDEO_OUTPUT;
+> +		v4l2_pix_mp_format_to_ext_pix_format(&f->fmt.pix_mp, ef);
+> +		break;
+> +	default:
+> +		WARN("Converting to Ext Pix Format with wrong buffer type %s\n",
+> +		     prt_names(f->type, v4l2_type_names));
+> +		break;
+> +	}
+> +}
+> +
+>  static int v4l_querycap(const struct v4l2_ioctl_ops *ops,
+>  				struct file *file, void *fh, void *arg)
+>  {
+> @@ -1654,7 +1883,9 @@ static int v4l_g_fmt(const struct v4l2_ioctl_ops *ops,
+>  			v4l_pix_format_touch(&p->fmt.pix);
+>  		return ret;
+>  	case V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE:
+> -		return ops->vidioc_g_fmt_vid_cap_mplane(file, fh, arg);
+> +		if (ops->vidioc_g_fmt_vid_cap_mplane)
+> +			return ops->vidioc_g_fmt_vid_cap_mplane(file, fh, arg);
+
+What is this change needed for?
+
+> +		break;
+>  	case V4L2_BUF_TYPE_VIDEO_OVERLAY:
+>  		return ops->vidioc_g_fmt_vid_overlay(file, fh, arg);
+>  	case V4L2_BUF_TYPE_VBI_CAPTURE:
+> @@ -1662,7 +1893,8 @@ static int v4l_g_fmt(const struct v4l2_ioctl_ops *ops,
+>  	case V4L2_BUF_TYPE_SLICED_VBI_CAPTURE:
+>  		return ops->vidioc_g_fmt_sliced_vbi_cap(file, fh, arg);
+>  	case V4L2_BUF_TYPE_VIDEO_OUTPUT:
+> -		if (unlikely(!ops->vidioc_g_fmt_vid_out))
+> +		if (unlikely(!ops->vidioc_g_fmt_vid_out &&
+> +			     !ops->vidioc_g_ext_pix_fmt_vid_out))
+
+Ditto.
+
+>  			break;
+>  		p->fmt.pix.priv = V4L2_PIX_FMT_PRIV_MAGIC;
+>  		ret = ops->vidioc_g_fmt_vid_out(file, fh, arg);
+> @@ -1670,7 +1902,9 @@ static int v4l_g_fmt(const struct v4l2_ioctl_ops *ops,
+>  		p->fmt.pix.priv = V4L2_PIX_FMT_PRIV_MAGIC;
+>  		return ret;
+>  	case V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE:
+> -		return ops->vidioc_g_fmt_vid_out_mplane(file, fh, arg);
+> +		if (ops->vidioc_g_fmt_vid_out_mplane)
+> +			return ops->vidioc_g_fmt_vid_out_mplane(file, fh, arg);
+> +		break;
+
+Ditto.
+
+>  	case V4L2_BUF_TYPE_VIDEO_OUTPUT_OVERLAY:
+>  		return ops->vidioc_g_fmt_vid_out_overlay(file, fh, arg);
+>  	case V4L2_BUF_TYPE_VBI_OUTPUT:
+> @@ -1689,6 +1923,42 @@ static int v4l_g_fmt(const struct v4l2_ioctl_ops *ops,
+>  	return -EINVAL;
+>  }
+>  
+> +static int v4l_g_ext_pix_fmt(const struct v4l2_ioctl_ops *ops,
+> +			     struct file *file, void *fh, void *arg)
+> +{
+> +	struct v4l2_ext_pix_format *ef = arg;
+> +	struct v4l2_format f = {
+> +		.type = ef->type,
+> +	};
+> +	int ret = check_fmt(file, ef->type);
+> +
+> +	if (ret)
+> +		return ret;
+> +
+> +	memset(ef, 0, sizeof(*ef));
+> +	ef->type = f.type;
+> +
+> +	switch (f.type) {
+> +	case V4L2_BUF_TYPE_VIDEO_CAPTURE:
+> +		if (ops->vidioc_g_ext_pix_fmt_vid_cap)
+> +			return ops->vidioc_g_ext_pix_fmt_vid_cap(file, fh, ef);
+> +		break;
+> +	case V4L2_BUF_TYPE_VIDEO_OUTPUT:
+> +		if (ops->vidioc_g_ext_pix_fmt_vid_out)
+> +			return ops->vidioc_g_ext_pix_fmt_vid_out(file, fh, ef);
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+
+Given that determine_valid_ioctls() will only set the valid ioctl bit if
+the right operation is provided by the driver, when would the code below
+be run?
+
+> +	ret = v4l_g_fmt(ops, file, fh, &f);
+> +	if (ret)
+> +		return ret;
+> +
+> +	v4l2_format_to_ext_pix_format(&f, ef);
+> +	return 0;
+> +}
+> +
+>  static int v4l_s_fmt(const struct v4l2_ioctl_ops *ops,
+>  				struct file *file, void *fh, void *arg)
+>  {
+> @@ -1794,6 +2064,42 @@ static int v4l_s_fmt(const struct v4l2_ioctl_ops *ops,
+>  	return -EINVAL;
+>  }
+>  
+> +static int v4l_s_ext_pix_fmt(const struct v4l2_ioctl_ops *ops,()
+> +			     struct file *file, void *fh, void *arg)
+> +{
+> +	struct video_device *vfd = video_devdata(file);
+> +	struct v4l2_ext_pix_format *ef = arg;
+> +	struct v4l2_format f;
+> +	int ret = check_fmt(file, ef->type);
+> +
+> +	if (ret)
+> +		return ret;
+> +
+> +	memset(ef->reserved, 0, sizeof(ef->reserved));
+> +
+> +	switch (ef->type) {
+> +	case V4L2_BUF_TYPE_VIDEO_CAPTURE:
+> +		if (ops->vidioc_s_ext_pix_fmt_vid_cap)
+> +			return ops->vidioc_s_ext_pix_fmt_vid_cap(file, fh, ef);
+> +		break;
+> +	case V4L2_BUF_TYPE_VIDEO_OUTPUT:
+> +		if (ops->vidioc_s_ext_pix_fmt_vid_out)
+> +			return ops->vidioc_s_ext_pix_fmt_vid_out(file, fh, ef);
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+
+Ditto.
+
+> +	v4l2_ext_pix_format_to_format(ef, &f, V4L2_IS_CAP_MULTIPLANAR(vfd));
+> +
+> +	ret = v4l_s_fmt(ops, file, fh, &f);
+> +	if (ret)
+> +		return ret;
+> +
+> +	v4l2_format_to_ext_pix_format(&f, ef);
+> +	return 0;
+> +}
+> +
+>  static int v4l_try_fmt(const struct v4l2_ioctl_ops *ops,
+>  				struct file *file, void *fh, void *arg)
+>  {
+> @@ -1896,6 +2202,44 @@ static int v4l_try_fmt(const struct v4l2_ioctl_ops *ops,
+>  	return -EINVAL;
+>  }
+>  
+> +static int v4l_try_ext_pix_fmt(const struct v4l2_ioctl_ops *ops,
+> +			       struct file *file, void *fh, void *arg)
+> +{
+> +	struct video_device *vfd = video_devdata(file);
+> +	struct v4l2_ext_pix_format *ef = arg;
+> +	struct v4l2_format f;
+> +	int ret = check_fmt(file, ef->type);
+> +
+> +	if (ret)
+> +		return ret;
+> +
+> +	memset(ef->reserved, 0, sizeof(ef->reserved));
+> +
+> +	switch (ef->type) {
+> +	case V4L2_BUF_TYPE_VIDEO_CAPTURE:
+> +		if (ops->vidioc_try_ext_pix_fmt_vid_cap)
+> +			return ops->vidioc_try_ext_pix_fmt_vid_cap(file, fh,
+> +								   ef);
+> +		break;
+> +	case V4L2_BUF_TYPE_VIDEO_OUTPUT:
+> +		if (ops->vidioc_try_ext_pix_fmt_vid_out)
+> +			return ops->vidioc_try_ext_pix_fmt_vid_out(file, fh,
+> +								   ef);
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+
+Ditto.
+
+> +
+> +	v4l2_ext_pix_format_to_format(ef, &f, V4L2_IS_CAP_MULTIPLANAR(vfd));
+> +
+> +	ret = v4l_try_fmt(ops, file, fh, &f);
+> +	if (ret)
+> +		return ret;
+> +
+> +	v4l2_format_to_ext_pix_format(&f, ef);
+> +	return 0;
+> +}
+> +
+>  static int v4l_streamon(const struct v4l2_ioctl_ops *ops,
+>  				struct file *file, void *fh, void *arg)
+>  {
+> @@ -2902,6 +3246,9 @@ static const struct v4l2_ioctl_info v4l2_ioctls[] = {
+>  	IOCTL_INFO(VIDIOC_ENUM_FREQ_BANDS, v4l_enum_freq_bands, v4l_print_freq_band, 0),
+>  	IOCTL_INFO(VIDIOC_DBG_G_CHIP_INFO, v4l_dbg_g_chip_info, v4l_print_dbg_chip_info, INFO_FL_CLEAR(v4l2_dbg_chip_info, match)),
+>  	IOCTL_INFO(VIDIOC_QUERY_EXT_CTRL, v4l_query_ext_ctrl, v4l_print_query_ext_ctrl, INFO_FL_CTRL | INFO_FL_CLEAR(v4l2_query_ext_ctrl, id)),
+> +	IOCTL_INFO(VIDIOC_G_EXT_PIX_FMT, v4l_g_ext_pix_fmt, v4l_print_ext_pix_format, 0),
+> +	IOCTL_INFO(VIDIOC_S_EXT_PIX_FMT, v4l_s_ext_pix_fmt, v4l_print_ext_pix_format, INFO_FL_PRIO),
+> +	IOCTL_INFO(VIDIOC_TRY_EXT_PIX_FMT, v4l_try_ext_pix_fmt, v4l_print_ext_pix_format, 0),
+>  };
+>  #define V4L2_IOCTLS ARRAY_SIZE(v4l2_ioctls)
+>  
+> diff --git a/include/media/v4l2-ioctl.h b/include/media/v4l2-ioctl.h
+> index edb733f21604..c44708dc9355 100644
+> --- a/include/media/v4l2-ioctl.h
+> +++ b/include/media/v4l2-ioctl.h
+> @@ -48,11 +48,17 @@ struct v4l2_fh;
+>   * @vidioc_g_fmt_vid_cap: pointer to the function that implements
+>   *	:ref:`VIDIOC_G_FMT <vidioc_g_fmt>` ioctl logic for video capture
+>   *	in single plane mode
+> + * @vidioc_g_ext_pix_fmt_vid_cap: pointer to the function that implements
+> + *	:ref:`VIDIOC_G_EXT_PIX_FMT <vidioc_g_ext_pix_fmt>` ioctl logic for video
+> + *	capture
+>   * @vidioc_g_fmt_vid_overlay: pointer to the function that implements
+>   *	:ref:`VIDIOC_G_FMT <vidioc_g_fmt>` ioctl logic for video overlay
+>   * @vidioc_g_fmt_vid_out: pointer to the function that implements
+>   *	:ref:`VIDIOC_G_FMT <vidioc_g_fmt>` ioctl logic for video out
+>   *	in single plane mode
+> + * @vidioc_g_ext_pix_fmt_vid_out: pointer to the function that implements
+> + *	:ref:`VIDIOC_G_EXT_PIX_FMT <vidioc_g_ext_pix_fmt>` ioctl logic for video
+> + *	out
+>   * @vidioc_g_fmt_vid_out_overlay: pointer to the function that implements
+>   *	:ref:`VIDIOC_G_FMT <vidioc_g_fmt>` ioctl logic for video overlay output
+>   * @vidioc_g_fmt_vbi_cap: pointer to the function that implements
+> @@ -82,11 +88,16 @@ struct v4l2_fh;
+>   * @vidioc_s_fmt_vid_cap: pointer to the function that implements
+>   *	:ref:`VIDIOC_S_FMT <vidioc_g_fmt>` ioctl logic for video capture
+>   *	in single plane mode
+> + * @vidioc_s_ext_pix_fmt_vid_cap: pointer to the function that implements
+> + *	:ref:`VIDIOC_S_EXT_PIX_FMT <vidioc_g_ext_pix_fmt>` ioctl logic for video
+> + *	capture
+>   * @vidioc_s_fmt_vid_overlay: pointer to the function that implements
+>   *	:ref:`VIDIOC_S_FMT <vidioc_g_fmt>` ioctl logic for video overlay
+>   * @vidioc_s_fmt_vid_out: pointer to the function that implements
+>   *	:ref:`VIDIOC_S_FMT <vidioc_g_fmt>` ioctl logic for video out
+>   *	in single plane mode
+> + * @vidioc_s_ext_pix_fmt_vid_out: pointer to the function that implements
+> + *	:ref:`VIDIOC_S_EXT_PIX_FMT <vidioc_g_fmt>` ioctl logic for video out
+>   * @vidioc_s_fmt_vid_out_overlay: pointer to the function that implements
+>   *	:ref:`VIDIOC_S_FMT <vidioc_g_fmt>` ioctl logic for video overlay output
+>   * @vidioc_s_fmt_vbi_cap: pointer to the function that implements
+> @@ -116,11 +127,16 @@ struct v4l2_fh;
+>   * @vidioc_try_fmt_vid_cap: pointer to the function that implements
+>   *	:ref:`VIDIOC_TRY_FMT <vidioc_g_fmt>` ioctl logic for video capture
+>   *	in single plane mode
+> + * @vidioc_try_ext_pix_fmt_vid_cap: pointer to the function that implements
+> + *	:ref:`VIDIOC_TRY_EXT_PIX_FMT <vidioc_g_ext_pix_fmt>` ioctl logic for
+> +	video capture
+>   * @vidioc_try_fmt_vid_overlay: pointer to the function that implements
+>   *	:ref:`VIDIOC_TRY_FMT <vidioc_g_fmt>` ioctl logic for video overlay
+>   * @vidioc_try_fmt_vid_out: pointer to the function that implements
+>   *	:ref:`VIDIOC_TRY_FMT <vidioc_g_fmt>` ioctl logic for video out
+>   *	in single plane mode
+> + * @vidioc_try_ext_pix_fmt_vid_out: pointer to the function that implements
+> + *	:ref:`VIDIOC_TRY_EXT_PIX_FMT <vidioc_g_fmt>` ioctl logic for video out
+>   * @vidioc_try_fmt_vid_out_overlay: pointer to the function that implements
+>   *	:ref:`VIDIOC_TRY_FMT <vidioc_g_fmt>` ioctl logic for video overlay
+>   *	output
+> @@ -319,10 +335,14 @@ struct v4l2_ioctl_ops {
+>  	/* VIDIOC_G_FMT handlers */
+>  	int (*vidioc_g_fmt_vid_cap)(struct file *file, void *fh,
+>  				    struct v4l2_format *f);
+> +	int (*vidioc_g_ext_pix_fmt_vid_cap)(struct file *file, void *fh,
+> +					    struct v4l2_ext_pix_format *ef);
+>  	int (*vidioc_g_fmt_vid_overlay)(struct file *file, void *fh,
+>  					struct v4l2_format *f);
+>  	int (*vidioc_g_fmt_vid_out)(struct file *file, void *fh,
+>  				    struct v4l2_format *f);
+> +	int (*vidioc_g_ext_pix_fmt_vid_out)(struct file *file, void *fh,
+> +					    struct v4l2_ext_pix_format *ef);
+>  	int (*vidioc_g_fmt_vid_out_overlay)(struct file *file, void *fh,
+>  					    struct v4l2_format *f);
+>  	int (*vidioc_g_fmt_vbi_cap)(struct file *file, void *fh,
+> @@ -349,10 +369,14 @@ struct v4l2_ioctl_ops {
+>  	/* VIDIOC_S_FMT handlers */
+>  	int (*vidioc_s_fmt_vid_cap)(struct file *file, void *fh,
+>  				    struct v4l2_format *f);
+> +	int (*vidioc_s_ext_pix_fmt_vid_cap)(struct file *file, void *fh,
+> +					    struct v4l2_ext_pix_format *ef);
+>  	int (*vidioc_s_fmt_vid_overlay)(struct file *file, void *fh,
+>  					struct v4l2_format *f);
+>  	int (*vidioc_s_fmt_vid_out)(struct file *file, void *fh,
+>  				    struct v4l2_format *f);
+> +	int (*vidioc_s_ext_pix_fmt_vid_out)(struct file *file, void *fh,
+> +					    struct v4l2_ext_pix_format *ef);
+>  	int (*vidioc_s_fmt_vid_out_overlay)(struct file *file, void *fh,
+>  					    struct v4l2_format *f);
+>  	int (*vidioc_s_fmt_vbi_cap)(struct file *file, void *fh,
+> @@ -379,10 +403,14 @@ struct v4l2_ioctl_ops {
+>  	/* VIDIOC_TRY_FMT handlers */
+>  	int (*vidioc_try_fmt_vid_cap)(struct file *file, void *fh,
+>  				      struct v4l2_format *f);
+> +	int (*vidioc_try_ext_pix_fmt_vid_cap)(struct file *file, void *fh,
+> +					      struct v4l2_ext_pix_format *ef);
+>  	int (*vidioc_try_fmt_vid_overlay)(struct file *file, void *fh,
+>  					  struct v4l2_format *f);
+>  	int (*vidioc_try_fmt_vid_out)(struct file *file, void *fh,
+>  				      struct v4l2_format *f);
+> +	int (*vidioc_try_ext_pix_fmt_vid_out)(struct file *file, void *fh,
+> +					      struct v4l2_ext_pix_format *ef);
+>  	int (*vidioc_try_fmt_vid_out_overlay)(struct file *file, void *fh,
+>  					     struct v4l2_format *f);
+>  	int (*vidioc_try_fmt_vbi_cap)(struct file *file, void *fh,
+> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+> index 17a9b975177a..74a8dd7f7637 100644
+> --- a/include/uapi/linux/videodev2.h
+> +++ b/include/uapi/linux/videodev2.h
+> @@ -840,7 +840,8 @@ struct v4l2_fmtdesc {
+>  	__u8		    description[32];   /* Description string */
+>  	__u32		    pixelformat;       /* Format fourcc      */
+>  	__u32		    mbus_code;		/* Media bus code    */
+> -	__u32		    reserved[3];
+> +	__u64		    modifier;		/* Format modifier   */
+
+How would that work? Would the driver expose multiple entries for the
+same pixelformat, just with different modifier?
+
+> +	__u32		    reserved;
+>  };
+>  
+>  #define V4L2_FMT_FLAG_COMPRESSED		0x0001
+> @@ -2417,6 +2418,45 @@ struct v4l2_format {
+>  	} fmt;
+>  };
+>  
+> +/**
+> + * struct v4l2_ext_pix_format - extended multiplanar format definition
+> + * @type:		enum v4l2_buf_type; type of the data stream
+> + * @width:		image width in pixels
+> + * @height:		image height in pixels
+> + * @pixelformat:	little endian four character code (fourcc)
+> + * @modifier:		modifier applied to the format (used for tiled formats
+> + *			and other kind of HW-specific formats, like compressed
+> + *			formats) as defined in drm_fourcc.h
+> + * @field:		enum v4l2_field; field order (for interlaced video)
+> + * @colorspace:		enum v4l2_colorspace; supplemental to pixelformat
+> + * @plane_fmt:		per-plane information
+> + * @flags:		format flags (V4L2_PIX_FMT_FLAG_*)
+> + * @ycbcr_enc:		enum v4l2_ycbcr_encoding, Y'CbCr encoding
+> + * @hsv_enc:		enum v4l2_hsv_encoding, HSV encoding
+> + * @quantization:	enum v4l2_quantization, colorspace quantization
+> + * @xfer_func:		enum v4l2_xfer_func, colorspace transfer function
+> + * @reserved:		drivers and applications must zero this array
+> + */
+> +struct v4l2_ext_pix_format {
+> +	__u32				type;
+> +	__u32				width;
+> +	__u32				height;
+> +	__u32				pixelformat;
+> +	__u64				modifier;
+> +	__u32				field;
+> +	__u32				colorspace;
+> +
+> +	struct v4l2_plane_pix_format	plane_fmt[VIDEO_MAX_PLANES];
+> +	__u8				flags;
+> +	 union {
+
+nit: Spurious space before "union".
+
+Best regards,
+Tomasz
+
+> +		__u8				ycbcr_enc;
+> +		__u8				hsv_enc;
+> +	};
+> +	__u8				quantization;
+> +	__u8				xfer_func;
+> +	__u32				reserved[10];
+> +} __attribute__ ((packed));
+> +
+>  /*	Stream type-dependent parameters
+>   */
+>  struct v4l2_streamparm {
+> @@ -2690,6 +2730,10 @@ struct v4l2_create_buffers {
+>  
+>  #define VIDIOC_QUERY_EXT_CTRL	_IOWR('V', 103, struct v4l2_query_ext_ctrl)
+>  
+> +#define VIDIOC_G_EXT_PIX_FMT	_IOWR('V', 104, struct v4l2_ext_pix_format)
+> +#define VIDIOC_S_EXT_PIX_FMT	_IOWR('V', 105, struct v4l2_ext_pix_format)
+> +#define VIDIOC_TRY_EXT_PIX_FMT	_IOWR('V', 106, struct v4l2_ext_pix_format)
+> +
+>  /* Reminder: when adding new ioctls please add support for them to
+>     drivers/media/v4l2-core/v4l2-compat-ioctl32.c as well! */
+>  
+> -- 
+> 2.17.1
+> 
