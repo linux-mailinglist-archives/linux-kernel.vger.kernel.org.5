@@ -2,52 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 269117518DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 08:35:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 350E97518E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 08:38:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234058AbjGMGfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 02:35:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49594 "EHLO
+        id S230369AbjGMGiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 02:38:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233452AbjGMGfY (ORCPT
+        with ESMTP id S233452AbjGMGiB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 02:35:24 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA3B21BEB
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 23:35:20 -0700 (PDT)
-Received: from canpemm500009.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R1lFs6sB4zrRlj;
-        Thu, 13 Jul 2023 14:34:41 +0800 (CST)
-Received: from [10.67.102.169] (10.67.102.169) by
- canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 13 Jul 2023 14:35:18 +0800
-CC:     <yangyicong@hisilicon.com>, Ricardo Neri <ricardo.neri@intel.com>,
-        Tim Chen <tim.c.chen@intel.com>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] sched/topology: Align group flags when removing
- degenerate domain
-To:     Chen Yu <yu.c.chen@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>
-References: <20230713013133.2314153-1-yu.c.chen@intel.com>
-From:   Yicong Yang <yangyicong@huawei.com>
-Message-ID: <9a9cdf48-816f-56aa-6e0f-1d89d5c5cbd2@huawei.com>
-Date:   Thu, 13 Jul 2023 14:35:17 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Thu, 13 Jul 2023 02:38:01 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C7201FC0
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 23:37:59 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-991da766865so60049866b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 23:37:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689230278; x=1691822278;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5HZ3KiatBE0zEmzQws3XEcIxxLMYWe1RVYqM7D6xg+8=;
+        b=amfQ0vR/Ka6BkP8S9fk/PBznA9FhrkIyoo2FtY49acDTDKTXcoxytRDiBel0Ydrldx
+         M7FLZw8SSWsUPwc9rh7ciWNp3chEqPD614QD7+m/IPH6EnqtAaP3aZGaNsRICGVc188D
+         HakoAWfiVFlv0ihYpL+VQBgo7urziJSQEm816WGzSPBdb7mStql2rcaw01Aoc1zj1H04
+         s+eOHyqYFu9W9GkDBTSaT+e+llFG4niDKpWY82NarL8gdTBZcE/3c1NZ7g1l40iugTeR
+         iB0aUwIU/cYQzsN4mMTmczXS7XFSgA3PFhjgXkJgIMcCZrAM+ckdQ33fQjAV532/2bll
+         RuvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689230278; x=1691822278;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5HZ3KiatBE0zEmzQws3XEcIxxLMYWe1RVYqM7D6xg+8=;
+        b=X8stKVVvs13wRj58d8H46bE6DoMJGmG1roaaSzPRpWpvJXwmO4Byb8kA876S8pYn7v
+         iywJgwxkeyLmxvoq8dQ/W/MLtr8fmHdBDImmpDeCGmccrgcy2+K9BjEwv+Dn6F8Nx5iX
+         P7oAeEPxbBj3F6exG8HOFwAxEuTPVYS5P4l8o2kq3FVF2q+GgTVQiIJfxAKkB/1B0awF
+         j56VSqBLZTjuQyF3a5Z3SabFQKuwmh863ngxNfT0Cr9hJJTdaXBHnzbrz173OS501119
+         IzXcoOexsyPdYGIOATt12DK5JZnlQR8/SKQpICvQ4jk9dgKlxUf40SxNr6ciGtSdPW4a
+         WMSw==
+X-Gm-Message-State: ABy/qLbWTheHtnns+ht5EV3YpaHR6n1CL2NF88hv48DtDIA+G4f0eDWc
+        /D8SXch8g7yEi8P3XoUXRQ7cUQ==
+X-Google-Smtp-Source: APBJJlEVvsOpjUa1F/Ke4X5LIYhjqeziKi2BhIY0V1omn41PuOqlrsF+WlAG3fgdEuXbYtfPvvl5PA==
+X-Received: by 2002:a17:906:39d2:b0:989:3e0d:89fb with SMTP id i18-20020a17090639d200b009893e0d89fbmr446878eje.45.1689230277887;
+        Wed, 12 Jul 2023 23:37:57 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id t9-20020a1709064f0900b00992a8a54f32sm3544028eju.139.2023.07.12.23.37.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 Jul 2023 23:37:57 -0700 (PDT)
+Message-ID: <84d88d8b-25a1-9b0f-d779-325d048909b7@linaro.org>
+Date:   Thu, 13 Jul 2023 08:37:55 +0200
 MIME-Version: 1.0
-In-Reply-To: <20230713013133.2314153-1-yu.c.chen@intel.com>
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] dt-bindings: usb: qcom,dwc3: document extcon property
+Content-Language: en-US
+To:     David Heidelberg <david@ixit.cz>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Wesley Cheng <quic_wcheng@quicinc.com>
+Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230712235902.98557-1-david@ixit.cz>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230712235902.98557-1-david@ixit.cz>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.169]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- canpemm500009.china.huawei.com (7.192.105.203)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,45 +81,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/7/13 9:31, Chen Yu wrote:
-> The flags of the child of a given scheduling domain are used to initialize
-> the flags of its scheduling groups. When the child of a scheduling domain
-> is degenerated, the flags of its local scheduling group need to be updated
-> to align with the flags of its new child domain.
-> 
-> The flag SD_SHARE_CPUCAPACITY was aligned in
-> Commit bf2dc42d6beb ("sched/topology: Propagate SMT flags when removing degenerate domain").
-> Further generalize this alignment so other flags can be used later, such as
-> in cluster-based task wakeup. [1]
+On 13/07/2023 01:59, David Heidelberg wrote:
+> The driver has support for it already. Only missing bit is dt-binding entry.
 
-Currently I only update the cluster flags on my current testing branch. It'll be even better to
-align all flags for possible usage. Will rebase on this one.
+No, because the child node already has it. We do not need to extcons for
+one USB. Also another reason is that it should be deprecated.
 
-> 
-> Link: https://lore.kernel.org/lkml/20230530115527.GC156198@hirez.programming.kicks-ass.net #1
-> Suggested-by: Ricardo Neri <ricardo.neri@intel.com>
-> Reported-by: Yicong Yang <yangyicong@huawei.com>
-> Closes: https://lore.kernel.org/lkml/ce714341-af58-2522-69a8-321f02c82893@huawei.com/
-> Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+Best regards,
+Krzysztof
 
-Reviewed-by: Yicong Yang <yangyicong@hisilicon.com>
-
-> ---
->  kernel/sched/topology.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-> index d3a3b2646ec4..ff02d7deec0c 100644
-> --- a/kernel/sched/topology.c
-> +++ b/kernel/sched/topology.c
-> @@ -722,8 +722,7 @@ cpu_attach_domain(struct sched_domain *sd, struct root_domain *rd, int cpu)
->  
->  			if (parent->parent) {
->  				parent->parent->child = tmp;
-> -				if (tmp->flags & SD_SHARE_CPUCAPACITY)
-> -					parent->parent->groups->flags |= SD_SHARE_CPUCAPACITY;
-> +				parent->parent->groups->flags = tmp->flags;
->  			}
->  
->  			/*
-> 
