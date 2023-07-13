@@ -2,191 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7E34752C3E
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 23:36:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6FF8752C49
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 23:40:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233823AbjGMVgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 17:36:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42720 "EHLO
+        id S232919AbjGMVj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 17:39:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232833AbjGMVf4 (ORCPT
+        with ESMTP id S230212AbjGMVj5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 17:35:56 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33D752D79
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 14:35:33 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id d75a77b69052e-40371070eb7so45151cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 14:35:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689284132; x=1691876132;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fUoa5A08dWzHBGesZwp+iuIs8vVoR0P5xBL9pZfFCac=;
-        b=sFhi/+DfNipC4AkEm9ehVCMoVGbcidgD+d71VfUxe64Aknr3qWcOedQHMrOhGAe6Zw
-         3BJzYV8lIEzwvNzmOe4SzlL/jAzMWuUsESHQD5tWEc+9xxGFoFtdE5rUU6fYXrSM5qrS
-         FEedFwfRZ/XbiJddR3v1XgFc/mg6L8LsqLs9BCN2A2GQ5P3UoPcOjhbSgDFZ7TDNSjB7
-         sslDXKhjDPD+fjFn5zuRMia5W9jNSpYmvPrGu2kak5elN98E0FRvjvZZg1qYOVEqRs9O
-         t193zIFpVZnGDrOiFhODCD8l3RcuNU1n+PXyD/jIjjW7llfcoj9Wlv/fSzZmzbacO/K6
-         1qqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689284132; x=1691876132;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fUoa5A08dWzHBGesZwp+iuIs8vVoR0P5xBL9pZfFCac=;
-        b=iVdFpkDSdF8PA5R2NcPanVRmVSGMXkuSH4wEoIfFD4CqGgreWrKSuB0NxmEUJH+hiu
-         4MiUH4bIFEcTlah7gj2LdRg6p+/wxJYir9QNUq2QwAcudzpOMdt5Yy82jLPVA7pTZMYe
-         Bx+MP8fEmJ3KGNAHO00YZEqeSKjGhHFcgUkRQCVObM0CGaVRMtzpleRCqN33Vs5ME2Sf
-         KhgsVJQ8+XYPuyf4ywHEdoi5ob88vK1QzAuQEt4a7L2pTBxew5jW7HAzTAlf0gk+FGzc
-         kCO31YIUiEzFw+Sq8mAMC8EN/XZawXf5VuEV6nlYIiy2bgXOBCkHLnLggu945+Nabu5W
-         7jvA==
-X-Gm-Message-State: ABy/qLYK9PA6w6qKJGUAuUFLBOQNjzxVSTU036q1KB34Du3HyeJM2w7S
-        x8Kyx4230efwcJVlCtTX9GbuIs/Z1ykSzVVtNrViwA==
-X-Google-Smtp-Source: APBJJlHcr0n0amHwFS1Sn4j8Xig7KC2igjGc/mxuLuJHqedGL7hl5VdbWFneOfb0fZD7HMEgfOacYjJFFwgCxfNF2TM=
-X-Received: by 2002:ac8:590d:0:b0:3f8:5b2:aef4 with SMTP id
- 13-20020ac8590d000000b003f805b2aef4mr639497qty.28.1689284132081; Thu, 13 Jul
- 2023 14:35:32 -0700 (PDT)
+        Thu, 13 Jul 2023 17:39:57 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEE691FC0;
+        Thu, 13 Jul 2023 14:39:56 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6795361B6C;
+        Thu, 13 Jul 2023 21:39:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8AC2EC433C7;
+        Thu, 13 Jul 2023 21:39:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689284395;
+        bh=fJgb0wn8cM5E3LZjSiMmJS/ati1UElaHXC724dGS2pA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=HIWRKduB/7c1UiEq4oBIcRWc4NvMCDFYMLfNvcdRy+kMqwMVH9YcNAkuQTCHzd3h9
+         g5CmzktmSrO1iQ9qYYHC5NceVQQTrdp2T5JcjnrcyzEbQRJbRGhUtQaJFhBr9INqXD
+         TF43nE0Qps0DEH+ulexMu7W07KLV85vM+GGG+SMAu/nAWUUt2WXpsG+PJTXL8PrNLa
+         DZnQ/4a34qYMgAfnjyntrPoXJMuku9E1kFCeB7bPlaqar9VOwlw5ZWNYDPTsVv9VY1
+         SVuKGmb4o/9YTpzs5cw9nBJ0GzrmMfKosdiMBIPvqYH8ctFkwhL9Yo7VDd7EgXXC1J
+         DlOdT4tB3Inrg==
+Date:   Thu, 13 Jul 2023 16:39:53 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Vidya Sagar <vidyas@nvidia.com>
+Cc:     lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
+        bhelgaas@google.com, thierry.reding@gmail.com,
+        jonathanh@nvidia.com, Sergey.Semin@baikalelectronics.ru,
+        linux-pci@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kthota@nvidia.com,
+        mmaddireddy@nvidia.com, sagar.tv@gmail.com
+Subject: Re: [PATCH V3] Revert "PCI: tegra194: Enable support for 256 Byte
+ payload"
+Message-ID: <20230713213953.GA331829@bhelgaas>
 MIME-Version: 1.0
-References: <20230628102949.2598096-1-john.g.garry@oracle.com>
- <20230628102949.2598096-5-john.g.garry@oracle.com> <CAP-5=fXa24_LEiyni0Ncyfa5hKwC1GE6y-zi2u8M98M9SwHX+g@mail.gmail.com>
- <CAP-5=fUs=u3PKYP3mVDdzNB8+=GAHaEXG3SGfWJpMELYYqO_hA@mail.gmail.com>
- <d59b6e7c-cead-24d4-a9cb-6552b3154d84@oracle.com> <CAP-5=fUu6xgVDQT4tq=vmRLDMe3ddMLywP11uOLvKSu8Lc6BjQ@mail.gmail.com>
- <897dcf1d-6a04-33d3-9c4f-ea9d1706cdad@oracle.com> <CAP-5=fX+rz928LtFs2MWYUH=6Mcvz0XQcLRkO-n9BnVnX4RYWw@mail.gmail.com>
- <297ddf04-9b35-7613-8efd-2857668b6835@oracle.com>
-In-Reply-To: <297ddf04-9b35-7613-8efd-2857668b6835@oracle.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Thu, 13 Jul 2023 14:35:20 -0700
-Message-ID: <CAP-5=fXSQVyqCfrBJFjHkrRdANuQC=TKR-HHi37hLaQ91rPQiA@mail.gmail.com>
-Subject: Re: [PATCH RFC 4/9] perf jevents: Add sys_events_find_events_table()
-To:     John Garry <john.g.garry@oracle.com>
-Cc:     acme@kernel.org, namhyung@kernel.org, jolsa@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        renyu.zj@linux.alibaba.com, shangxiaojing@huawei.com,
-        kjain@linux.ibm.com, kan.liang@linux.intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230619102604.3735001-1-vidyas@nvidia.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 8:07=E2=80=AFAM John Garry <john.g.garry@oracle.com=
-> wrote:
->
-> On 12/07/2023 18:52, Ian Rogers wrote:
-> >> To be crystal clear, when you say ">1 PMU", do you mean ">1 PMU instan=
-ce
-> >> of the same type" or ">1 PMU type"?
-> > So I'm meaning that if you have a MetricExpr where the events are from
-> >> 1 PMU, for example memory bandwidth coming from uncore PMUs and then
-> > instructions from a core PMU, and you do something like a ratio
-> > between these two.
-> >
-> >>    in a metric wouldn't work though as it would
-> >>> appear the event was missing. Having the metric specify the PMU avoid=
-s
-> >>> these problems, but is verbose.
-> >> The message I'm getting - correct me if I am wrong - is that you would
-> >> still prefer the PMU specified per event in metric expr, right? We don=
-'t
-> >> do that exactly for sys PMU metrics today - we specify "Unit" instead,=
- like:
-> >>
-> >> MetricExpr: "sys_pmu_bar_event_foo1 + sys_pmu_bar_event_foo2"
-> >> Compat: "baz"
-> >> Unit:"sys_pmu_bar"
-> >>
-> >> And so you prefer something like the following, right?
-> >> MetricExpr: "sys_pmu_foo@bar1@ + sys_pmu_foo@bar2@"
-> >>
-> >> If so, I think that is ok - I just want to get rid of Unit and Compat.
-> > I think we're agreeing =F0=9F=98=84
->
-> Ok, fine. I need to check on implementing support for that.
->
-> Then would you have any idea for testing here?
->
-> What I do is to ensure that if we 2x tables like following for separate
-> SoCs:
->
-> soc_a.json
->
->
-> {
->                 "MetricExpr": "pmu_unit@event_foo@ * pmu_unit@event_bar@ =
-* 1",
->                 "MetricName": "metric_baz",
-> },
-> {
->                 "EventCode": "0x84",
->                 "EventName": "event_foo ",
->                 "Compat": "0x00000030",
->                 "Unit": "pmu_unit"
-> },
-> {
->                 "EventCode": "0x85",
->                 "EventName": "event_bar ",
->                 "Compat": "0x00000030",
->                 "Unit": "pmu_unit"
-> },
->
->
->
-> soc_b.json
->
->
-> {
->                 "MetricExpr": "pmu_unit@event_foo@ * pmu_unit@event_bar@ =
-* 2",
->                 "MetricName": "metric_baz",
-> },
-> {
->                 "EventCode": "0x84",
->                 "EventName": "event_foo ",
->                 "Compat": "0x00000040",
->                 "Unit": "pmu_unit"
-> },
-> {
->                 "EventCode": "0x85",
->                 "EventName": "event_bar ",
->                 "Compat": "0x00000040",
->                 "Unit": "pmu_unit"
-> },
->
-> And we have a pmu with name and hw id matching "pmu_unit" and
-> "0x00000040" present, that we select metric metric_baz for soc_b
+On Mon, Jun 19, 2023 at 03:56:04PM +0530, Vidya Sagar wrote:
+> This reverts commit 4fb8e46c1bc4 ("PCI: tegra194: Enable
+> support for 256 Byte payload").
+> 
+> Consider a PCIe hierarchy with a PCIe switch and a device connected
+> downstream of the switch that has support for MPS which is the minimum in
+> the hierarchy, and root port programmed with an MPS in its DevCtl register
+> that is greater than the minimum. In this scenario, the default bus
+> configuration of the kernel i.e. "PCIE_BUS_DEFAULT" doesn't configure the
+> MPS settings in the hierarchy correctly resulting in the device with
+> support for minimum MPS in the hierarchy receiving the TLPs of size more
+> than that. Although this can be addressed by appending "pci=pcie_bus_safe"
+> to the kernel command line, it doesn't seem to be a good idea to always
+> have this commandline argument even for the basic functionality to work.
 
-Not sure I'm fully understanding.With the sysfs layout we'd have to
-have a way of supporting CPUIDs, we could have a mapfile.csv style
-approach or perhaps encode the CPUID into the path. It is complex as
-CPUIDs are wildcards in the tool.
+I think this has some irrelevant detail (IIUC the problem should
+happen even without a switch) and could be more specific (I think the
+problem case is RP MPS=256, EP only supports MPS=128).
 
-> >I think Unit may be useful, say on Intel
-> > hybrid I want the tma_fround_bound metric on just cpu_atom. Currently
-> > the use of Unit is messy for metrics, ie uncore metrics are associated
-> > with core PMUs, and what to do with a MetricExpr with >1 PMU. I think
-> > we're learning from trying. I'm just hoping the migration to a sysfs
-> > style layout will still be possible, as I can see lots of upside in
-> > terms of testing, 1 approach, etc.
->
-> Do you have an RFC or something for this "sysfs style layout"? I think
-> that it would be easier for me to understand your idea by seeing the SW.
+> Reverting commit 4fb8e46c1bc4 ("PCI: tegra194: Enable support for 256
+> Byte payload") avoids this requirement and ensures that the basic
+> functionality of the devices irrespective of the hierarchy and the MPS of
+> the devices in the hierarchy.
 
-When I get a chance :-) My thought is to first extend jevents.py to
-have a second output format, so sysfs style rather than pmu-events.c.
-This way we can merge the changes as a jevents.py feature even if we
-don't change the perf tool to support it.
+"Ensure" is a transitive verb, so "... ensures that the basic
+functionality ..." is missing whatever the object should be.
 
-Thanks,
-Ian
+Maybe something like the following?
 
-> Thanks,
-> John
+  After 4fb8e46c1bc4 ("PCI: tegra194: Enable support for 256 Byte
+  payload"), we set MPS=256 for tegra194 Root Ports.
+
+  By default (CONFIG_PCIE_BUS_DEFAULT set and no "pci=pcie_bus_*"
+  parameter), Linux configures the MPS of every device to match the
+  upstream bridge, which is impossible if the Root Port has MPS=256
+  and a device only supports MPS=128.
+
+  This scenario results in uncorrectable Malformed TLP errors if the
+  Root Port sends TLPs with payloads larger than 128 bytes.  These
+  errors can be avoided by using the "pci=pcie_bus_safe" parameter,
+  but it doesn't seem to be a good idea to always have this parameter
+  even for basic functionality to work.
+
+  Revert 4fb8e46c1bc4 ("PCI: tegra194: Enable support for 256 Byte
+  payload") so the Root Ports default to MPS=128, which all devices
+  support.
+
+  If peer-to-peer DMA is not required, one can use "pci=pcie_bus_perf" 
+  to get the benefit of larger MPS settings.
+
+> To reap the benefits of having support for higher MPS, optionally, one can
+> always append the kernel command line with "pci=pcie_bus_perf".
+> 
+> Fixes: 4fb8e46c1bc4 ("PCI: tegra194: Enable support for 256 Byte payload")
+> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+> ---
+> V3:
+> * Fixed a build issue
+> 
+> V2:
+> * Addressed review comments from Bjorn
+> 
+>  drivers/pci/controller/dwc/pcie-tegra194.c | 14 ++------------
+>  1 file changed, 2 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
+> index 4fdadc7b045f..a772faff14b5 100644
+> --- a/drivers/pci/controller/dwc/pcie-tegra194.c
+> +++ b/drivers/pci/controller/dwc/pcie-tegra194.c
+> @@ -900,11 +900,6 @@ static int tegra_pcie_dw_host_init(struct dw_pcie_rp *pp)
+>  		pcie->pcie_cap_base = dw_pcie_find_capability(&pcie->pci,
+>  							      PCI_CAP_ID_EXP);
+>  
+> -	val_16 = dw_pcie_readw_dbi(pci, pcie->pcie_cap_base + PCI_EXP_DEVCTL);
+> -	val_16 &= ~PCI_EXP_DEVCTL_PAYLOAD;
+> -	val_16 |= PCI_EXP_DEVCTL_PAYLOAD_256B;
+> -	dw_pcie_writew_dbi(pci, pcie->pcie_cap_base + PCI_EXP_DEVCTL, val_16);
+> -
+>  	val = dw_pcie_readl_dbi(pci, PCI_IO_BASE);
+>  	val &= ~(IO_BASE_IO_DECODE | IO_BASE_IO_DECODE_BIT8);
+>  	dw_pcie_writel_dbi(pci, PCI_IO_BASE, val);
+> @@ -1756,7 +1751,6 @@ static void pex_ep_event_pex_rst_deassert(struct tegra_pcie_dw *pcie)
+>  	struct device *dev = pcie->dev;
+>  	u32 val;
+>  	int ret;
+> -	u16 val_16;
+>  
+>  	if (pcie->ep_state == EP_STATE_ENABLED)
+>  		return;
+> @@ -1887,20 +1881,16 @@ static void pex_ep_event_pex_rst_deassert(struct tegra_pcie_dw *pcie)
+>  	pcie->pcie_cap_base = dw_pcie_find_capability(&pcie->pci,
+>  						      PCI_CAP_ID_EXP);
+>  
+> -	val_16 = dw_pcie_readw_dbi(pci, pcie->pcie_cap_base + PCI_EXP_DEVCTL);
+> -	val_16 &= ~PCI_EXP_DEVCTL_PAYLOAD;
+> -	val_16 |= PCI_EXP_DEVCTL_PAYLOAD_256B;
+> -	dw_pcie_writew_dbi(pci, pcie->pcie_cap_base + PCI_EXP_DEVCTL, val_16);
+> -
+>  	/* Clear Slot Clock Configuration bit if SRNS configuration */
+>  	if (pcie->enable_srns) {
+> +		u16 val_16;
+> +
+>  		val_16 = dw_pcie_readw_dbi(pci, pcie->pcie_cap_base +
+>  					   PCI_EXP_LNKSTA);
+>  		val_16 &= ~PCI_EXP_LNKSTA_SLC;
+>  		dw_pcie_writew_dbi(pci, pcie->pcie_cap_base + PCI_EXP_LNKSTA,
+>  				   val_16);
+>  	}
+> -
+>  	clk_set_rate(pcie->core_clk, GEN4_CORE_CLK_FREQ);
+>  
+>  	val = (ep->msi_mem_phys & MSIX_ADDR_MATCH_LOW_OFF_MASK);
+> -- 
+> 2.25.1
+> 
