@@ -2,56 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A69FF751C99
+	by mail.lfdr.de (Postfix) with ESMTP id EE0E0751C9A
 	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 11:04:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231774AbjGMJDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 05:03:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59640 "EHLO
+        id S233493AbjGMJD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 05:03:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234352AbjGMJCx (ORCPT
+        with ESMTP id S234517AbjGMJC6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 05:02:53 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F3C630E0
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 02:02:07 -0700 (PDT)
-Received: from IcarusMOD.eternityproject.eu (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id AC8CD6607057;
-        Thu, 13 Jul 2023 10:02:05 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1689238926;
-        bh=NUiL26AMB0eJr1HWFXYSANZqHcBDwdZS+nF51oT6vRo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=McFUqvt3BNIanzaeJPu66jVNu2+kAoLmDmmgBjlLVU6cT5RRKrHGu79apoVYiopvS
-         Gf2DJqnktBt1HWSqEaq9VfTMSoGPY7PGIIsNQ18ENjHZyTzP7sA2MVTMp4P+/7RD8S
-         nsTx+lwYltphdtDWBkwo/WnXA+LtNpAV36ahECutLieAvBDlRy6OzXIdQh4S0VB424
-         OyXIMTtN1UKQtWe6PAK394mq3Szf6GbmI5Blv90YlaxHMU/WHlGLqA0YqMkxvL1DR6
-         ZZ5NlfcOHTqzfF7P1lsXLCr8i0N4QwtUvpryh8KhkOns9VDOXHpzxnOaTuR5911Vnw
-         7B4g+WUsNCnTA==
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-To:     chunkuang.hu@kernel.org
-Cc:     p.zabel@pengutronix.de, airlied@gmail.com, daniel@ffwll.ch,
-        matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
-        dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel@collabora.com,
-        wenst@chromium.org, nfraprado@collabora.com
-Subject: [PATCH v5 10/10] drm/mediatek: dp: Don't register HPD interrupt handler for eDP case
-Date:   Thu, 13 Jul 2023 11:01:52 +0200
-Message-Id: <20230713090152.140060-11-angelogioacchino.delregno@collabora.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230713090152.140060-1-angelogioacchino.delregno@collabora.com>
-References: <20230713090152.140060-1-angelogioacchino.delregno@collabora.com>
+        Thu, 13 Jul 2023 05:02:58 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE9091BF4
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 02:02:44 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qJsDZ-0004Hj-Dl; Thu, 13 Jul 2023 11:02:33 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qJsDX-00E4qI-So; Thu, 13 Jul 2023 11:02:31 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qJsDW-004WGM-Om; Thu, 13 Jul 2023 11:02:30 +0200
+Date:   Thu, 13 Jul 2023 11:02:30 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Yangtao Li <frank.li@vivo.com>,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 14/58] mmc: dw_mmc: exynos: Convert to platform remove
+ callback returning void
+Message-ID: <20230713090230.iwhicjbirll5icec@pengutronix.de>
+References: <20230713080807.69999-1-frank.li@vivo.com>
+ <20230713080807.69999-14-frank.li@vivo.com>
+ <75d2dc5e-4cbf-2519-cdf7-8fde374126ec@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="d6d7itv6cdabafnt"
+Content-Disposition: inline
+In-Reply-To: <75d2dc5e-4cbf-2519-cdf7-8fde374126ec@linaro.org>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,172 +60,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The interrupt handler for HPD is useful only if a display is actually
-supposed to be hotpluggable, as that manages the machinery to perform
-cable (un)plug detection, debouncing and setup for re-training.
 
-Since eDP panels are not supposed to be hotpluggable we can avoid
-using the HPD interrupts altogether and rely on HPD polling only
-for the suspend/resume case, saving us some spinlocking action and
-the overhead of interrupts firing at every suspend/resume cycle,
-achieving a faster (even if just slightly) display resume.
+--d6d7itv6cdabafnt
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
----
- drivers/gpu/drm/mediatek/mtk_dp.c | 81 ++++++++++++++++++-------------
- 1 file changed, 46 insertions(+), 35 deletions(-)
+On Thu, Jul 13, 2023 at 10:11:15AM +0200, Krzysztof Kozlowski wrote:
+> On 13/07/2023 10:07, Yangtao Li wrote:
+> > The .remove() callback for a platform driver returns an int which makes
+> > many driver authors wrongly assume it's possible to do error handling by
+> > returning an error code. However the value returned is (mostly) ignored
+> > and this typically results in resource leaks. To improve here there is a
+> > quest to make the remove callback return void. In the first step of this
+> > quest all drivers are converted to .remove_new() which already returns
+> > void.
+> >=20
+> > Trivially convert this driver from always returning zero in the remove
+> > callback to the void returning variant.
+>=20
+> You even copied Uwe's commit msg... Aren't you duplicate his work or is
+> it being coordinated?
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_dp.c b/drivers/gpu/drm/mediatek/mtk_dp.c
-index a00bf6693b28..14eeb4a74191 100644
---- a/drivers/gpu/drm/mediatek/mtk_dp.c
-+++ b/drivers/gpu/drm/mediatek/mtk_dp.c
-@@ -2175,9 +2175,11 @@ static int mtk_dp_bridge_attach(struct drm_bridge *bridge,
- 
- 	mtk_dp->drm_dev = bridge->dev;
- 
--	irq_clear_status_flags(mtk_dp->irq, IRQ_NOAUTOEN);
--	enable_irq(mtk_dp->irq);
--	mtk_dp_hwirq_enable(mtk_dp, true);
-+	if (mtk_dp->bridge.type != DRM_MODE_CONNECTOR_eDP) {
-+		irq_clear_status_flags(mtk_dp->irq, IRQ_NOAUTOEN);
-+		enable_irq(mtk_dp->irq);
-+		mtk_dp_hwirq_enable(mtk_dp, true);
-+	}
- 
- 	return 0;
- 
-@@ -2192,8 +2194,10 @@ static void mtk_dp_bridge_detach(struct drm_bridge *bridge)
- {
- 	struct mtk_dp *mtk_dp = mtk_dp_from_bridge(bridge);
- 
--	mtk_dp_hwirq_enable(mtk_dp, false);
--	disable_irq(mtk_dp->irq);
-+	if (mtk_dp->bridge.type != DRM_MODE_CONNECTOR_eDP) {
-+		mtk_dp_hwirq_enable(mtk_dp, false);
-+		disable_irq(mtk_dp->irq);
-+	}
- 	mtk_dp->drm_dev = NULL;
- 	mtk_dp_poweroff(mtk_dp);
- 	drm_dp_aux_unregister(&mtk_dp->aux);
-@@ -2567,40 +2571,44 @@ static int mtk_dp_probe(struct platform_device *pdev)
- 	mtk_dp->dev = dev;
- 	mtk_dp->data = (struct mtk_dp_data *)of_device_get_match_data(dev);
- 
--	mtk_dp->irq = platform_get_irq(pdev, 0);
--	if (mtk_dp->irq < 0)
--		return dev_err_probe(dev, mtk_dp->irq,
--				     "failed to request dp irq resource\n");
--
--	mtk_dp->next_bridge = devm_drm_of_get_bridge(dev, dev->of_node, 1, 0);
--	if (IS_ERR(mtk_dp->next_bridge) &&
--	    PTR_ERR(mtk_dp->next_bridge) == -ENODEV)
--		mtk_dp->next_bridge = NULL;
--	else if (IS_ERR(mtk_dp->next_bridge))
--		return dev_err_probe(dev, PTR_ERR(mtk_dp->next_bridge),
--				     "Failed to get bridge\n");
--
- 	ret = mtk_dp_dt_parse(mtk_dp, pdev);
- 	if (ret)
- 		return dev_err_probe(dev, ret, "Failed to parse dt\n");
- 
-+	/*
-+	 * Request the interrupt and install service routine only if we are
-+	 * on full DisplayPort.
-+	 * For eDP, polling the HPD instead is more convenient because we
-+	 * don't expect any (un)plug events during runtime, hence we can
-+	 * avoid some locking.
-+	 */
-+	if (mtk_dp->data->bridge_type != DRM_MODE_CONNECTOR_eDP) {
-+		mtk_dp->irq = platform_get_irq(pdev, 0);
-+		if (mtk_dp->irq < 0)
-+			return dev_err_probe(dev, mtk_dp->irq,
-+					     "failed to request dp irq resource\n");
-+
-+		spin_lock_init(&mtk_dp->irq_thread_lock);
-+
-+		irq_set_status_flags(mtk_dp->irq, IRQ_NOAUTOEN);
-+		ret = devm_request_threaded_irq(dev, mtk_dp->irq, mtk_dp_hpd_event,
-+						mtk_dp_hpd_event_thread,
-+						IRQ_TYPE_LEVEL_HIGH, dev_name(dev),
-+						mtk_dp);
-+		if (ret)
-+			return dev_err_probe(dev, ret,
-+					     "failed to request mediatek dptx irq\n");
-+
-+		mtk_dp->need_debounce = true;
-+		timer_setup(&mtk_dp->debounce_timer, mtk_dp_debounce_timer, 0);
-+	}
-+
- 	mtk_dp->aux.name = "aux_mtk_dp";
- 	mtk_dp->aux.dev = dev;
- 	mtk_dp->aux.transfer = mtk_dp_aux_transfer;
- 	mtk_dp->aux.wait_hpd_asserted = mtk_dp_wait_hpd_asserted;
- 	drm_dp_aux_init(&mtk_dp->aux);
- 
--	spin_lock_init(&mtk_dp->irq_thread_lock);
--
--	irq_set_status_flags(mtk_dp->irq, IRQ_NOAUTOEN);
--	ret = devm_request_threaded_irq(dev, mtk_dp->irq, mtk_dp_hpd_event,
--					mtk_dp_hpd_event_thread,
--					IRQ_TYPE_LEVEL_HIGH, dev_name(dev),
--					mtk_dp);
--	if (ret)
--		return dev_err_probe(dev, ret,
--				     "failed to request mediatek dptx irq\n");
--
- 	platform_set_drvdata(pdev, mtk_dp);
- 
- 	if (mtk_dp->data->audio_supported) {
-@@ -2628,9 +2636,6 @@ static int mtk_dp_probe(struct platform_device *pdev)
- 
- 	devm_drm_bridge_add(dev, &mtk_dp->bridge);
- 
--	mtk_dp->need_debounce = true;
--	timer_setup(&mtk_dp->debounce_timer, mtk_dp_debounce_timer, 0);
--
- 	if (mtk_dp->bridge.type == DRM_MODE_CONNECTOR_eDP) {
- 		/*
- 		 * Set the data lanes to idle in case the bootloader didn't
-@@ -2641,6 +2646,9 @@ static int mtk_dp_probe(struct platform_device *pdev)
- 		mtk_dp_initialize_aux_settings(mtk_dp);
- 		mtk_dp_power_enable(mtk_dp);
- 
-+		/* Disable HW interrupts: we don't need any for eDP */
-+		mtk_dp_hwirq_enable(mtk_dp, false);
-+
- 		/*
- 		 * Power on the AUX to allow reading the EDID from aux-bus:
- 		 * please note that it is necessary to call power off in the
-@@ -2680,7 +2688,8 @@ static int mtk_dp_remove(struct platform_device *pdev)
- 
- 	pm_runtime_put(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
--	del_timer_sync(&mtk_dp->debounce_timer);
-+	if (mtk_dp->data->bridge_type != DRM_MODE_CONNECTOR_eDP)
-+		del_timer_sync(&mtk_dp->debounce_timer);
- 	drm_bridge_remove(&mtk_dp->bridge);
- 	platform_device_unregister(mtk_dp->phy_dev);
- 	if (mtk_dp->audio_pdev)
-@@ -2695,7 +2704,8 @@ static int mtk_dp_suspend(struct device *dev)
- 	struct mtk_dp *mtk_dp = dev_get_drvdata(dev);
- 
- 	mtk_dp_power_disable(mtk_dp);
--	mtk_dp_hwirq_enable(mtk_dp, false);
-+	if (mtk_dp->bridge.type != DRM_MODE_CONNECTOR_eDP)
-+		mtk_dp_hwirq_enable(mtk_dp, false);
- 	pm_runtime_put_sync(dev);
- 
- 	return 0;
-@@ -2707,7 +2717,8 @@ static int mtk_dp_resume(struct device *dev)
- 
- 	pm_runtime_get_sync(dev);
- 	mtk_dp_init_port(mtk_dp);
--	mtk_dp_hwirq_enable(mtk_dp, true);
-+	if (mtk_dp->bridge.type != DRM_MODE_CONNECTOR_eDP)
-+		mtk_dp_hwirq_enable(mtk_dp, true);
- 	mtk_dp_power_enable(mtk_dp);
- 
- 	return 0;
--- 
-2.40.1
+We communicated and I politely asked to not interfer. This series is
+just what Yangtao had still pending. That's fine for me.
 
+Thanks for noticing,
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--d6d7itv6cdabafnt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmSvvaUACgkQj4D7WH0S
+/k48vgf7B9pOCj8BEtBTeW/UjDXpN6Ydodk3PjPhDksAVMx3pfZiUm43bOVMgD/G
+30npFfBBlwWgCrzx3XoBoJ2qFYHoq+pjTlH1EZcipdXN3/AONF5YUQ/OR3+CnwZd
+CWFxvF6RFK/LwkErVlFsrF6WBHpSkJ14lfMvSkAIPtOZ3JoykZtHd+D3YsQJvceS
+rikOZOHI3LJEKOmAPtfRNk+PjEfERw0T+2+/JiLIe4Cip7GZ2vOz5K+2YXRWHeRy
+8vgSXOKRfegphqtSuE0qQxMrTafPsKsck4OKS5U8PC+ebYaW/MUwWTiU45RBiMiz
+QqeKHVZV1Vp2TKVzQSkDkGgoNkxFOw==
+=XV+K
+-----END PGP SIGNATURE-----
+
+--d6d7itv6cdabafnt--
