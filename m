@@ -2,100 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E37B6751E3A
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 12:05:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77683751E4D
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 12:06:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234294AbjGMKFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 06:05:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46658 "EHLO
+        id S234630AbjGMKGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 06:06:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234446AbjGMKFW (ORCPT
+        with ESMTP id S234583AbjGMKGT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 06:05:22 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FFA026B7;
-        Thu, 13 Jul 2023 03:05:20 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-51ff068c09cso623322a12.2;
-        Thu, 13 Jul 2023 03:05:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689242718; x=1691834718;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2eU1v8SBPLo/f8d631zxPH7q1FrYfpA8BtvD+U5WDps=;
-        b=IWo8CdTQ52nAlRuplSmJYxlM4xkupx0emk+pAK1lZ8Rpzqq1LvtWfPCZrq2XFMCZW+
-         WoRaLwvf4NwuAB27T1uDNMm/NAq3x0J3SdVuEUhsowfaGnt5GzCig97hB3QArr5itt0K
-         4jDmJNl6w9qQ7VhnJ/lnAyEdXS3AUc576jo9dhBwBARlbb9xZTVt4T/W+tb/BU9/Ax/7
-         QrC+lfA4E95GRgenodQc0jEHMuP6pERg1kJtnHS7AYoA+EOja6eh5GLPOBIvR/amlftz
-         L11VWTVbJMa9iLmW21FeAFaPHkagtOvaDE9eN9yDpMhNKpEzqghwq0MKppkSkgJoeaJh
-         LVdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689242718; x=1691834718;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2eU1v8SBPLo/f8d631zxPH7q1FrYfpA8BtvD+U5WDps=;
-        b=KLly6M4lSNsDdTRhlYVaV3LRsUkVC4Hm2aFuykcOHSV+aWgEttMIaCGS8XibPMqhc1
-         n7DRHKndl5cLfkeV3hIza6gv2zJ+eyc7JMdEZHcwEzT0cvflbY9/OHKpJA936uGt5g9x
-         aj9FGZV0EnOBJ26hrqcLMcvi7yiXgglOJvRwaPXJGzabJWbUh6UecVwuRGleVtdfkEk0
-         WdlfqzpcGNDPA5OBnoqACIGbeMh4/x8wpkzWjK3h30FG+/vTDIWCanYStgvQUq9HksaE
-         scHI/QVqhsfqhmetzVD0M9KjIHMa7S1Fqmx9UbO0546EJitFfId5DYBeMo34JenygV60
-         Ilpg==
-X-Gm-Message-State: ABy/qLbWrPFZKIaRYIsrnw8h/+D22THNrkfTugbXoV5d4nGmpVgyhm+A
-        yETzAVnumm+l9iQtfd0Tqaa5Qep4wWeHjnWSnww=
-X-Google-Smtp-Source: APBJJlFtOTqr20EEKymM6u44/YxzkjgdahoshDCP2JdeZwBwVK0vai/JD8A+i69fF56gan+5u0QDcbgSuf/PrETob5A=
-X-Received: by 2002:a05:6402:b2e:b0:51b:dcb4:a9b3 with SMTP id
- bo14-20020a0564020b2e00b0051bdcb4a9b3mr1514757edb.24.1689242718185; Thu, 13
- Jul 2023 03:05:18 -0700 (PDT)
+        Thu, 13 Jul 2023 06:06:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16961270F;
+        Thu, 13 Jul 2023 03:06:05 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8BF4A608D5;
+        Thu, 13 Jul 2023 10:06:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6875C433C8;
+        Thu, 13 Jul 2023 10:05:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689242764;
+        bh=uxBF/65cfGgFc9NUZsYBWMo4c7yjkoqCGF6QeEUJdAY=;
+        h=From:Subject:Date:To:Cc:From;
+        b=fMIucUY7GArhLgcLDCFIQxCyAzXRgRPE8TkbNnY5GyU1HBPhbd5464W8Yg6jjQ1lL
+         m6CWFlXeaqd10iV8ptWkOllE56aJPowyXSs5WiPty1Qsblb5rDh7+XYZZkXkukuQUD
+         2oiaMlw7C0sww3ot9gyUkCaU1j297MtNOoU25HevXc+ptbrPhHq2Zk21bLHu2o2olV
+         KM6Bl/kUQtYvAIUPH+MSd/KGQP+HX58eb57Amnb444A4mU/RQ41PTUTV2bTgUUDM37
+         0Ncnb1LvDeYFhV3bcDM22YynZx1G+N6CQHl4PYcq4tdmwsqnstpRPCpNQMucQad6SH
+         v0+dq9gbDJkNg==
+From:   Christian Brauner <brauner@kernel.org>
+Subject: [PATCH 0/2] eventfd: simplify signal helpers
+Date:   Thu, 13 Jul 2023 12:05:36 +0200
+Message-Id: <20230713-vfs-eventfd-signal-v1-0-7fda6c5d212b@kernel.org>
 MIME-Version: 1.0
-References: <20230712224251.26482-1-iuliana.prodan@oss.nxp.com>
-In-Reply-To: <20230712224251.26482-1-iuliana.prodan@oss.nxp.com>
-From:   Daniel Baluta <daniel.baluta@gmail.com>
-Date:   Thu, 13 Jul 2023 13:05:06 +0300
-Message-ID: <CAEnQRZBc+EWZDX05KpFNSz1A_NQjX4K2x+LPftpezkeUXRd6fA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] remoteproc: imx_dsp_rproc: add module parameter to
- ignore ready flag from remote processor
-To:     "Iuliana Prodan (OSS)" <iuliana.prodan@oss.nxp.com>
-Cc:     Bjorn Andersson <andersson@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        "S.J. Wang" <shengjiu.wang@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Mpuaudiosw <Mpuaudiosw@nxp.com>,
-        Iuliana Prodan <iuliana.prodan@nxp.com>,
-        linux-imx <linux-imx@nxp.com>, linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        LnxRevLi <LnxRevLi@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAHDMr2QC/x3MwQrCMAyA4VcZORtpN9jAVxEPaZtuAY3SSBHG3
+ t3o8Tv8/w7GTdjgMuzQuIvJUx3xNEDeSFdGKW4YwziFJU7YqyF31nctaLIq3TGkUOK8UJk5g4e
+ vxlU+/+n15k5kjKmR5u238sP5IZbhOL4kMfO0fwAAAA==
+To:     linux-fsdevel@vger.kernel.org
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        David Woodhouse <dwmw2@infradead.org>,
+        Paul Durrant <paul@xen.org>, Oded Gabbay <ogabbay@kernel.org>,
+        Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
+        Moritz Fischer <mdf@kernel.org>, Xu Yilun <yilun.xu@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Leon Romanovsky <leon@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Eric Farman <farman@linux.ibm.com>,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Vineeth Vijayan <vneethv@linux.ibm.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Tony Krowiak <akrowiak@linux.ibm.com>,
+        Jason Herne <jjherne@linux.ibm.com>,
+        Harald Freudenberger <freude@linux.ibm.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Diana Craciun <diana.craciun@oss.nxp.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>, Fei Li <fei1.li@intel.com>,
+        Benjamin LaHaise <bcrl@kvack.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Kirti Wankhede <kwankhede@nvidia.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-fpga@vger.kernel.org, intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        linux-usb@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-aio@kvack.org, cgroups@vger.kernel.org, linux-mm@kvack.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        io-uring@vger.kernel.org
+X-Mailer: b4 0.13-dev-099c9
+X-Developer-Signature: v=1; a=openpgp-sha256; l=276; i=brauner@kernel.org;
+ h=from:subject:message-id; bh=uxBF/65cfGgFc9NUZsYBWMo4c7yjkoqCGF6QeEUJdAY=;
+ b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaSsP1PLoVi0NYRvYnj1752/FbjTRLb2F5/eK1jjLMP8OeoE
+ g8DNjlIWBjEuBlkxRRaHdpNwueU8FZuNMjVg5rAygQxh4OIUgIlwrGT4n2l3WEWjd0VXqt6ih11Ns1
+ YfjrROvjc3V73IYWbr0apscUaGq6+my1lGuQtz2O564OagKGE5qVEnsLx/a9H1rIRnpwXZAA==
+X-Developer-Key: i=brauner@kernel.org; a=openpgp;
+ fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 2:15=E2=80=AFAM Iuliana Prodan (OSS)
-<iuliana.prodan@oss.nxp.com> wrote:
->
-> From: Iuliana Prodan <iuliana.prodan@nxp.com>
->
-> There are cases when we want to test samples that do not
-> reply with FW READY message, after fw is loaded and the
-> remote processor started.
-> In these cases, do not wait for a confirmation from the remote processor
-> at start.
->
-> Added "ignore_dsp_ready" flag while inserting the module to ignore
-> remote processor reply after start.
-> By default, this is off - do not ignore reply from rproc.
->
-> Signed-off-by: Iuliana Prodan <iuliana.prodan@nxp.com>
+Hey everyone,
 
-Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
+This simplifies the eventfd_signal() and eventfd_signal_mask() helpers
+by removing the count argument which is effectively unused.
+
+---
+
+
+
+---
+base-commit: 6be357f00aad4189130147fdc6f568cf776a4909
+change-id: 20230713-vfs-eventfd-signal-0b0d167ad6ec
+
