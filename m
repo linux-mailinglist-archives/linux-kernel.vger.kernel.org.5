@@ -2,143 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C572751FF2
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 13:33:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0061C751FF7
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 13:34:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234036AbjGMLdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 07:33:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38188 "EHLO
+        id S234153AbjGMLeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 07:34:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233901AbjGMLdQ (ORCPT
+        with ESMTP id S232802AbjGMLeE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 07:33:16 -0400
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2121.outbound.protection.outlook.com [40.107.255.121])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8057E5C;
-        Thu, 13 Jul 2023 04:33:15 -0700 (PDT)
+        Thu, 13 Jul 2023 07:34:04 -0400
+Received: from CY4PR02CU007.outbound.protection.outlook.com (mail-westcentralusazon11011008.outbound.protection.outlook.com [40.93.199.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA25C26B5;
+        Thu, 13 Jul 2023 04:34:03 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=E+au0rBTmS/OogFb8sJiiz9WdeclrYr3gC23aaLtVih8cPaoy2iW4YqFnc+XBFC0ZR41iIkx++zXXQfrLPx7SnI5fArzuZs/hzvO2DR3tzn4JiOTY7eU6/6o/aYUCq70K+Z0I7s49+hcJ2NMA/EEv5fFxRPRW9N3rs4sN3Ew+vud0cXavCNsx9DIi6ep8pTWsSvwUT3U+Qjipa46ASASghHwsfN0bLmSVsMgQWlOTMg+pK2KGer6YKTSF3/4vXQsIfRi0Ogkwmo6q+G0/MhHtSlT2/9/469lbmU+C9KqS2wik4uuHCin3+A6Ehaz4OrHRBWtZUcR+WzsKgheu+sG2Q==
+ b=eGDkIybyeEP/7h3OVwLRDa+u79Bm02a3x6MxLgyH8LWU/gJaBsonedktLHnG6lIfe5h3I3/0mEpyLkZSXNaAHLxLh0bK9wwfv7k2IBnFBNPysBRAcRJi8SKSgSAAt0oiSZrWQaFi9VPCTycUvnpZASrt1fRv5RyJX6HJOxs+H4qDTmJIjza9CZz/V/XOXelk9jfCCcQm3QaOkm4fhKeMpmGeCSWmUuKlgL6/bDjSNv0OglKNiEQyxCRMB7Z9zkCbEO8RUBnwKSxuVtA8msIKBqKMO+BvDu0RQwJaaGqK/iD0zSSMh77IJJacNq8K0fAaeH6ezdO9lW26VdgXBKxcXQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VkED8Tup/BiVDBlFqY6z97DBOBbHcqwFNs9Cxp+l4+4=;
- b=ndMGAWCHzlKpGA5r4X/PUi1yFqe+x7NUKrqgOIimolR+nPzswSQVYrvdvSOqNqKIu66wMcAsH4uRdsXICtVOKa2DDgQ2eAuVRlIADXzG9PpiMw7iP8XfSSxBkbRMzmusbEb5YhiDyLrQewcL30p7MZs0lKgVye+Z0kYpqVLd0ml0PMQTlSuTDUuNKmgBoPpT1sy3yCaOB65Xy7KcBDMx4BniUQONJhbE5+pJ3DfIrX5p9lKEikNbXRR6Vtl6wHUIQ34X8+AlfhnSYQbYgiWrOCQfrVyBSnSNMYsz2iMjEBSkKF8swsI+FBG55txxKGEsHSk7+G4PiTsPDtoptvoMVg==
+ bh=XgE+9AHvqhwiWNwxdtFengcUyBpY81SylR+AynJvodg=;
+ b=CrPicnmlxerUoGECcP0xxCBwdpLob4yfkrF+JRKDDWcXxrL75jkJDGHMnt/LS0xnW/yA1xWCIhQDWPKr9xJBlUIl4FkJkMMJYjgMgCVclI/wjJ8+xz4JjQ72i+g1kiX8M0H4ZKhQ2qZfYT+CWETk7fJ99/gU6NecRoCM1M8DFoJafpy6EX42PCD+n2c3nUk5dhLKXt4MSLD/FUiReqyGFEdCjX9dO3tdSLDEtf9sQBvhXqBV55MQ2pRMGZXgQYUJph0Ls4tX1vJtBrFYajSVElJOrAocsJnYl4FFG0uvLOp43jDdvzIg0tksEMRA0XdB8zTAEuwgZsiqG9z6NNmeVQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
+ dkim=pass header.d=vmware.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VkED8Tup/BiVDBlFqY6z97DBOBbHcqwFNs9Cxp+l4+4=;
- b=ox/3bW9Sdfb7h5uLEHokbfNKXGoIsflE+LzeJWV2ZDnUQKa0u5llBS0ScuA1tPLvF6JpguFEfNcmztt5IAtzv/q3Xe/5RT2IpNYUGYE94xBYqaplICSkOApkCqpv5zUl750MloExWdhcqc2HW8skblJIkrvBb0Pvh7MPBRAn1rfY9DZx3KH9Cvp5aBs1OoaZPBvvOxXeqoOsxLXR3U8vrd0zJpZYiaqcMxvu+D5QhpIWPWMUVI9z7tXhbN41irXtHrBJv8a+XW68ruszt1FCkuZI5BVgh2vEXieyxDA7FeytgjwGUqGs7cSt15yix7mkZjeb3dSX+HgXO1xGOscD8w==
+ bh=XgE+9AHvqhwiWNwxdtFengcUyBpY81SylR+AynJvodg=;
+ b=dPghTVukC3m9szBmaQT6+AxYWI5SAiQok0VWL/ACDGseFSryT/yheLUfpLLH0YJ8w4DMY21WZMHQM9bVu9Zwz/2oCh1jwo7UrmTXUp+keW4hWbUBQ8iHYsvPPam5lfDyjh7enHjcozRsnJBVuxNsoMwuW6tzYkAcaFVUMtvMqFI=
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from SG2PR06MB3743.apcprd06.prod.outlook.com (2603:1096:4:d0::18) by
- SEZPR06MB6495.apcprd06.prod.outlook.com (2603:1096:101:189::12) with
+ header.d=none;dmarc=none action=none header.from=vmware.com;
+Received: from PH0PR05MB8703.namprd05.prod.outlook.com (2603:10b6:510:bd::5)
+ by PH0PR05MB8719.namprd05.prod.outlook.com (2603:10b6:510:b3::20) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.24; Thu, 13 Jul
- 2023 11:33:12 +0000
-Received: from SG2PR06MB3743.apcprd06.prod.outlook.com
- ([fe80::2a86:a42:b60a:470c]) by SG2PR06MB3743.apcprd06.prod.outlook.com
- ([fe80::2a86:a42:b60a:470c%4]) with mapi id 15.20.6588.024; Thu, 13 Jul 2023
- 11:33:12 +0000
-From:   Wang Ming <machel@vivo.com>
-To:     Christian Brauner <brauner@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Chinner <dchinner@redhat.com>,
-        Xiaokai Ran <ran.xiaokai@zte.com.cn>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        xu xin <xu.xin16@zte.com.cn>,
-        Zhihao Cheng <chengzhihao1@huawei.com>,
-        "Liam R. Howlett" <Liam.Howlett@Oracle.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Cc:     opensource.kernel@vivo.com, Wang Ming <machel@vivo.com>
-Subject: [PATCH v1] fs: proc: Add error checking for d_hash_and_lookup()
-Date:   Thu, 13 Jul 2023 19:32:48 +0800
-Message-Id: <20230713113303.6512-1-machel@vivo.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6565.32; Thu, 13 Jul
+ 2023 11:33:56 +0000
+Received: from PH0PR05MB8703.namprd05.prod.outlook.com
+ ([fe80::119b:d975:430c:e1b4]) by PH0PR05MB8703.namprd05.prod.outlook.com
+ ([fe80::119b:d975:430c:e1b4%6]) with mapi id 15.20.6565.028; Thu, 13 Jul 2023
+ 11:33:56 +0000
+From:   Ajay Kaher <akaher@vmware.com>
+To:     rostedt@goodmis.org, shuah@kernel.org, mhiramat@kernel.org
+Cc:     chinglinyu@google.com, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, lkp@intel.com,
+        namit@vmware.com, oe-lkp@lists.linux.dev, akaher@vmware.com,
+        amakhalov@vmware.com, er.ajay.kaher@gmail.com,
+        srivatsa@csail.mit.edu, tkundu@vmware.com, vsirnapalli@vmware.com
+Subject: [PATCH v4 00/10] tracing: introducing eventfs
+Date:   Thu, 13 Jul 2023 17:03:14 +0530
+Message-Id: <1689248004-8158-1-git-send-email-akaher@vmware.com>
+X-Mailer: git-send-email 2.7.4
 Content-Type: text/plain
-X-ClientProxiedBy: SGBP274CA0008.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b0::20)
- To SG2PR06MB3743.apcprd06.prod.outlook.com (2603:1096:4:d0::18)
+X-ClientProxiedBy: BYAPR05CA0046.namprd05.prod.outlook.com
+ (2603:10b6:a03:74::23) To PH0PR05MB8703.namprd05.prod.outlook.com
+ (2603:10b6:510:bd::5)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SG2PR06MB3743:EE_|SEZPR06MB6495:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2176feae-0092-411e-16ae-08db8394f0cb
+X-MS-TrafficTypeDiagnostic: PH0PR05MB8703:EE_|PH0PR05MB8719:EE_
+X-MS-Office365-Filtering-Correlation-Id: 99c65011-8c0e-48ed-e825-08db83950ad3
+X-LD-Processed: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0,ExtAddr
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: WhF4RkEPjZZ9GRiyhZDjklE7jLzv8iYmC+zLfmlRQCt67m/ovSntLrPzwivKnRM2tqKpvTyZw9mbrDjtHHmuYi3vX+dtWiH763IAHyhsIsP36hWHd/9j9XilsbM3HcGfO/1TSMpKhnS/Tnx/yGNWmaX0lYjmr/RHi9fqRxsf0vijWFwhrocZBIE5lB4yWHZQRTo7BB8Hm6A3TNguwFBu9eXHDAYBfMjSyr0kIWniaE8QUyW6rmHKyHcA8WJalLzPv7cu1N5/+MRUH86uIb8m4XwmmLc9erFC0oxY+hB+MWQsJGf4KEJWZxGi8QID8dUq1ZbIhnECkjVMdsmDOmaVdIJxicbCQAoI2M/MD+8TYkHMhIV6HawRmtyvdOEZ+vn05KVK+OnkJ7HtdH2whDzvo3F66J/X2DiRAgqIx7qX99GpPdpt9rMJqiE7mDWFlkw/k2oHqKqOWNB0XVneQ8wK0csGX0NFX56Y114V3D/6Ep7YbQv7JfGFxk6LY1qhTJX3Ub1qz7zYevw5Oe4Laug2KskPomIJJ/2ulP270XXBGlr0OEM6Yf9huKQ2xPecJjUIQL0KOuuVHOTRLPLFB2QH8WsiwbHjaa2yChR5JGzgJYIw7A+tW+xlzmmrr10gBRGrRV7AAHZn9x+yW3UN0qyXxQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB3743.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(366004)(39860400002)(136003)(396003)(346002)(451199021)(2906002)(4744005)(83380400001)(26005)(1076003)(6506007)(186003)(66556008)(66946007)(52116002)(6666004)(6486002)(6512007)(66476007)(110136005)(478600001)(38350700002)(38100700002)(107886003)(86362001)(921005)(2616005)(4326008)(316002)(36756003)(7416002)(41300700001)(5660300002)(8936002)(8676002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: AMVSDBFSaekmmxmVIyOVO/Cb/S/UeLaNWcb5iSQHniEfS8gTOH7Rnk8J7cmOR36m2WH1jb8q29aannXnbbeENiP+BX+SPm42z+zMNw6/IGa+Vb8vMtNDQ6Dzrxd2pRJKRmQVSDCcMSQQuFKukbI8DskzoEh3HvxhgTlX5b0EUOS+Wv+Sg7+56znHEAkOgMr7EhDzGdo2smyjz8qWpwqMZ5mmL7ClcU0qvvgN3d+UFtWl136zo/8vFbPYBumsNJmwK6dtTsJcWTBKhNfilEsoOkQ8sLCKx0DK7LojG98bnaNg4bHqy4sqSDZWKueTFi9RY+NhaYbBE7dWP8eBAiIWdenFnWHhzdlmfK6jAqXllobWVy9yoRMFgHswXfLyidlGiFEEQds/74MpeJzFPOZfnUrEaStWkvXujNBPYjKwTTU86XAVtvbamE7HDc6/oOELMjiviwT44gf0YAQK36wxWX4UPYqiV8XPqhNBBsinHgdfLbuJk+K1f1qKc0l8sK6Ut4RrXz0gOD1yxgdsZgozOSmnFFCngrafYvdEcCxVFWHtViB7OZ1BMZsRLa6Y0/Uai+YOWLn2uLdORg6kIa0Mh0XWVbAP+Fld/FWb3X2ra05rJMn34nDJwNrDZZ/pLroQZtIWNi8kCTY9d5Ky6bhGh+oeqNGuOgGnOrKEuIE2ftc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR05MB8703.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(376002)(396003)(366004)(39860400002)(346002)(451199021)(41300700001)(2616005)(83380400001)(7416002)(2906002)(186003)(36756003)(5660300002)(26005)(38350700002)(8676002)(8936002)(107886003)(316002)(6506007)(66556008)(66476007)(38100700002)(4326008)(66946007)(52116002)(6486002)(86362001)(6512007)(478600001)(6666004);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?+bfvz9QwLPYVU/yKyZXbPM4IVOgSYeNIfNdcbQdV5uB0LhSsSPjY1bpAkLv/?=
- =?us-ascii?Q?YbefV4Zet7mlsV+D9KIsmA4sIJisiJObVjXRYwIXxhyOmSxqveP4ehfHMhBE?=
- =?us-ascii?Q?qLO2Ctoen/443HYnq2HAKUqpVinVa3sQrkoxSfcWBF81Uj5YETLWAGJjlUyM?=
- =?us-ascii?Q?CtgV4fDnU7illJUJ9VrGkX/hzKoIj1bTSBTYoaXGSTmZfBhru6f2UtkDGTt8?=
- =?us-ascii?Q?4VxtknSOcE9H4cLBriPJ7hPeaTnFo+TLygBD32591gyfsEuYNGdid2if314u?=
- =?us-ascii?Q?G/hWag7fZoxkQIhqk4JyUHTlLkRxQA84irxqB9wQhvv0Q0eioC8QYgIKrSxt?=
- =?us-ascii?Q?9TodLzgPGb9VCdJMRvqMEEXClr9EpOk6t6v86Dr3iCooh3TQS0/6VGNjGgUm?=
- =?us-ascii?Q?FUIOisX1IqJ2i7XRCiIvXraKY51ZOmB6PsfnOAtQOSuDsgp6EqpeBJ9BIis0?=
- =?us-ascii?Q?zzlCrbBnHDwR4cRau6UrfD9v5kJzkLd5ddDAzAtIHV6sGlMNjF9VPYvQajaz?=
- =?us-ascii?Q?01i5G//csIHCIZdaKBT2lX0wgJFwhV3/Y8gtPEbwD15FNYJAhMilZo56P4/A?=
- =?us-ascii?Q?BIe8mw9SaCloo2Yy0T8DrFlOK9oQWXodrUXpXKqK6w+j5IKgPCHUe1tf3vwi?=
- =?us-ascii?Q?eqO/CUa4vqdSliL1yh0DS9C2IsktsS1HSEq+ypwcWIcDmWRnXafTyUO89KQ3?=
- =?us-ascii?Q?0KuwZhMuY00Rn/g0E3mGgGBIJ1+MpiKX+kOQOvQ9PsR5Zju/plWh8UQ3wn4w?=
- =?us-ascii?Q?0Y8Eb8sc7Ys7J0brI3vUwCOmsuVZwWIr3RM2lOck8OWyhMbawwZeluewXQA0?=
- =?us-ascii?Q?gG6xlrIJ5WUv8U/mjUUAZhV4BIUzPkHeuTsTBBSv30ay37eKtzlns+1/jX36?=
- =?us-ascii?Q?FIxS4OgWsQaMq1Y5mFy/TmDmu6S/huW2qGekhgRnAFA4dX5/ik9nOkVAIbfw?=
- =?us-ascii?Q?juI0F3afkPJmK4CnDo6MWrmkulRpim0HwEjNDWMzTrar4zNBsZj8Y2+1lMVL?=
- =?us-ascii?Q?0mnvPD21Scn/HbG1847VmrJvAthG8UrwBhuz5n0Id/Qi6mOqjMvdr8H8MUal?=
- =?us-ascii?Q?2X5t55/UWeIKQXk3FgsXmtKmjoegRMOjk/gLhLt/aJiGwU6t65VtUQhxyPy2?=
- =?us-ascii?Q?jcghMTCOMDmQ6WcErq/sea4hmaysUGMiKb/HiJXykyI6QyJFKncNAlcLRgA6?=
- =?us-ascii?Q?gKR+9IEzeSmQYy2kzRZ19LJkmSthh/1M0kjvtx+TDNkt9/597BXJ9Z7dV7n5?=
- =?us-ascii?Q?97HKfJLhsmYJo2zRFnXyqBq+ocn1T0x2XSSX+EahCnhI84VXecXMlfpaXPnU?=
- =?us-ascii?Q?JTHeI71HA5hNHWY6YHliLBCQuS9EXnt7TAAXWu7duGv/P/KpmRD7qZltTHas?=
- =?us-ascii?Q?1mCns2BlWN5LemhrdcWO4PUpfQYozN5P6CDXWyRmmiqDCcCZ38RZrgAwTh+Y?=
- =?us-ascii?Q?DnnaqUuU/rhPekD60WhYDfR/Z7vCx7D/Hr04zG9hnwpPz43j4AlMQ2CPVC53?=
- =?us-ascii?Q?shesXCAkKBywZiYj+rbxEXWeRNWPEj+vxVxq66KPvCX/j6bVs+uW3Vp19+MF?=
- =?us-ascii?Q?ALkDujUrsI9jsL5iOkadRgKMPawwyc2zMOzCibgJ?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2176feae-0092-411e-16ae-08db8394f0cb
-X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB3743.apcprd06.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?rye0zlZFD1MF3w8cVih2Up/ypdj//xWeYuDrvzoReTppvBMLBSTNx5HpSeMF?=
+ =?us-ascii?Q?Hcegn/34+p5sZR1uSHk0YmD531/CYuV4pinZWIyZpmYVe3BfyaxcBsbDwJiC?=
+ =?us-ascii?Q?ba2MT/21Hfy7JQ8pkEAiFcR/TUrMhTDAlyPKNS/oLPdpxCYx9OJKxEwPhBhT?=
+ =?us-ascii?Q?VgOWTORSDLXUeeSdKiLg61UQrpFIKFW4f8wz26j3U/yAyU0wTrZalH2/oHGU?=
+ =?us-ascii?Q?FUrvgFmbguxHry7QR4tdoxwHdYmHmBt8sXzqrUQ8EJV61WBzaoQlxduk2sD1?=
+ =?us-ascii?Q?t/VPh/5A52tJfm0fuVQl/19xM4AOSdHTNVEqO5iH21Z84q/r2EdYUQaoCDyr?=
+ =?us-ascii?Q?sb9+R7dU0P3xZ7sY7fAF1TP8bFz/IRVf/wC2pl9SG8u/Ef2WNG28YYCUSJ2Y?=
+ =?us-ascii?Q?KQjHVSaFUDtqM9QNtX2iiMZ58oHtgFvRc5myGIE0a8haAVv7OppsIdx5ULwe?=
+ =?us-ascii?Q?Als1+9pr7gRl/G3q5bclBiuXPKInSkc+qzM2/l5KMx9LIQEVUR5vWzS4ZdAA?=
+ =?us-ascii?Q?4nbx5d14v168v3Cjz2Lf8IhWAKKW2nClnD9B9KukiI+RCO0ovF0MjDoXrXaH?=
+ =?us-ascii?Q?wMxCuUCH81Vph3m4ffTth+VOnRNYZ1TgiupK9KRguAbQDibdflZeUHm3Rx3G?=
+ =?us-ascii?Q?EaSYlsSKBkJQvGFe2XBHoZ7DU8Z/eqYVdvi5JnGuexGWXOX4ymZN9VMMOKEl?=
+ =?us-ascii?Q?2dXqXFPIZatONc/uYfhrdtzIKom0VVNajPh/y1ogwKwYfNJXLXWORwPx0Kks?=
+ =?us-ascii?Q?qIqzn1VstXkhwIuWV9vzVreV+TphmnaSr8CFyHUXyM550/YMla0Tvf1GWNgz?=
+ =?us-ascii?Q?SyL9Ixq32gnyRmWYY2GHV08wBKnaf8DWeUGaAVAoXDC4pNDoR0FrB+OJ/JPS?=
+ =?us-ascii?Q?wCCH4Khsoylihw/zOHrb70W27K1w480g6pq40Fmjlj+9Al2R91mQUGOaqPb6?=
+ =?us-ascii?Q?DI677aGEroazgpTUV2Tc8D8iHF83CpqaIYjgGMnxXn67yq4VxMvbUK0InUI6?=
+ =?us-ascii?Q?o3tZs9Ks7CG/VEf+oXHWmcspucaLaqGehFh5Dh0RHuw05bBJMSWUcAfMUuxb?=
+ =?us-ascii?Q?676BsvRPl2hUZq9ck0PtW67V9CacPCT5i9GhzGsNSLh76mplxsJtqtftZ1hr?=
+ =?us-ascii?Q?Z+fydjQorqpg9WL67ExC4rcLfp4EZm4fJB45ugpHlvPO9J6p53jLmkYibBpo?=
+ =?us-ascii?Q?bO+LorokZUXNoDU7S7D8p8EnjhcSgqnFv2k0pWcrFFZOmWAuv2sysB/EiwkO?=
+ =?us-ascii?Q?g9GNkVYa0UEq9BP5h1V24I4LRxQPK5wXGC6eui6Uvj3PKdUluSHNQTDhgxZA?=
+ =?us-ascii?Q?fVP5XQataYGzmo0AfuDYi4HRF/GaHJke9dbmyLwUq4qGIhZa9FPwKicODKlh?=
+ =?us-ascii?Q?a1Er1JiRzzI3vWy7fkyfCeOqFsndpLtYp9jqKDESdSIKWybrLz9cT206qUnc?=
+ =?us-ascii?Q?9/G9PjBJRztoo/gKTvHN16TIosWWayCNiuEJVUAOvEZ0MB9ThaggwQLbj1vc?=
+ =?us-ascii?Q?dqikEYOO2ZHVyE81QkJ3qISR/PYgyPLP6Gfm+IG5PAUp73QPvI+zLAz2SsR6?=
+ =?us-ascii?Q?P+3kUa1OO6NH1yYbFPevVM6gE0pKNEKVrk7kkHCz?=
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 99c65011-8c0e-48ed-e825-08db83950ad3
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR05MB8703.namprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2023 11:33:12.2581
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2023 11:33:55.9604
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-Id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YMHz+FeoDxpvSMLm5ufYaQeZ8KVDD5fLOWwxsQTWoxvAjIVvSF0VCeY4JPGa5FAPFW/tzMWpTmcY7o0ApigtJw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR06MB6495
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: JdsVozuctcwalq4Xm5XnDbRlEN+BziyOtGeDjGoonBNOVtSj1XlDdtk7aK0h3SIkhl6+FGUYmUWxylblpyTlHg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR05MB8719
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In case of failure, d_hash_and_lookup() returns NULL or an error
-pointer. The proc_fill_cache() needs to add the handling of the
-error pointer returned by d_hash_and_lookup().
+Events Tracing infrastructure contains lot of files, directories
+(internally in terms of inodes, dentries). And ends up by consuming
+memory in MBs. We can have multiple events of Events Tracing, which
+further requires more memory.
 
-Signed-off-by: Wang Ming <machel@vivo.com>
----
- fs/proc/base.c | 2 ++
- 1 file changed, 2 insertions(+)
+Instead of creating inodes/dentries, eventfs could keep meta-data and
+skip the creation of inodes/dentries. As and when require, eventfs will
+create the inodes/dentries only for required files/directories.
+Also eventfs would delete the inodes/dentries once no more requires
+but preserve the meta data.
 
-diff --git a/fs/proc/base.c b/fs/proc/base.c
-index bbc998fd2a2f..4c0e8329b318 100644
---- a/fs/proc/base.c
-+++ b/fs/proc/base.c
-@@ -2071,6 +2071,8 @@ bool proc_fill_cache(struct file *file, struct dir_context *ctx,
- 	ino_t ino = 1;
- 
- 	child = d_hash_and_lookup(dir, &qname);
-+	if (IS_ERR(child))
-+		goto end_instantiate;
- 	if (!child) {
- 		DECLARE_WAIT_QUEUE_HEAD_ONSTACK(wq);
- 		child = d_alloc_parallel(dir, &qname, &wq);
+Tracing events took ~9MB, with this approach it took ~4.5MB
+for ~10K files/dir.
+
+v3:
+Patch 3,4,5,7,9:
+         removed all the eventfs_rwsem code and replaced it with an srcu
+         lock for the readers, and a mutex to synchronize the writers of
+         the list.
+
+Patch 2: moved 'tracefs_inode' and 'get_tracefs()' to v4 03/10
+
+Patch 3: moved the struct eventfs_file and eventfs_inode into event_inode.c
+         as it really should not be exposed to all users.
+
+Patch 5: added a recursion check to eventfs_remove_rec() as it is really
+         dangerous to have unchecked recursion in the kernel (we do have
+         a fixed size stack).
+
+         have the free use srcu callbacks. After the srcu grace periods
+         are done, it adds the eventfs_file onto a llist (lockless link
+         list) and wakes up a work queue. Then the work queue does the
+         freeing (this needs to be done in task/workqueue context, as
+         srcu callbacks are done in softirq context).
+
+Patch 6: renamed:
+         eventfs_create_file() -> create_file()
+         eventfs_create_dir() -> create_dir()
+
+v2:
+Patch 01: new patch:'Require all trace events to have a TRACE_SYSTEM'
+Patch 02: moved from v1 1/9
+Patch 03: moved from v1 2/9
+          As suggested by Zheng Yejian, introduced eventfs_prepare_ef()
+          helper function to add files or directories to eventfs
+          fix WARNING reported by kernel test robot in v1 8/9
+Patch 04: moved from v1 3/9
+          used eventfs_prepare_ef() to add files
+          fix WARNING reported by kernel test robot in v1 8/9
+Patch 05: moved from v1 4/9
+          fix compiling warning reported by kernel test robot in v1 4/9
+Patch 06: moved from v1 5/9
+Patch 07: moved from v1 6/9
+Patch 08: moved from v1 7/9
+Patch 09: moved from v1 8/9
+          rebased because of v3 01/10
+Patch 10: moved from v1 9/9
+
+v1:
+Patch 1: add header file
+Patch 2: resolved kernel test robot issues
+         protecting eventfs lists using nested eventfs_rwsem
+Patch 3: protecting eventfs lists using nested eventfs_rwsem
+Patch 4: improve events cleanup code to fix crashes
+Patch 5: resolved kernel test robot issues
+         removed d_instantiate_anon() calls
+Patch 6: resolved kernel test robot issues
+         fix kprobe test in eventfs_root_lookup()
+         protecting eventfs lists using nested eventfs_rwsem
+Patch 7: remove header file
+Patch 8: pass eventfs_rwsem as argument to eventfs functions
+         called eventfs_remove_events_dir() instead of tracefs_remove()
+         from event_trace_del_tracer()
+Patch 9: new patch to fix kprobe test case
+
+Ajay Kaher (9):
+  tracefs: Rename some tracefs function
+  eventfs: Implement eventfs dir creation functions
+  eventfs: Implement eventfs file add functions
+  eventfs: Implement eventfs file, directory remove function
+  eventfs: Implement functions to create eventfs files and directories
+  eventfs: Implement eventfs lookup, read, open functions
+  eventfs: Implement tracefs_inode_cache
+  eventfs: Move tracing/events to eventfs
+  test: ftrace: Fix kprobe test for eventfs
+
+Steven Rostedt (Google) (1):
+  tracing: Require all trace events to have a TRACE_SYSTEM
+
+ fs/tracefs/Makefile                           |   1 +
+ fs/tracefs/event_inode.c                      | 711 ++++++++++++++++++
+ fs/tracefs/inode.c                            | 124 ++-
+ fs/tracefs/internal.h                         |  25 +
+ include/linux/trace_events.h                  |   1 +
+ include/linux/tracefs.h                       |  32 +
+ kernel/trace/trace.h                          |   2 +-
+ kernel/trace/trace_events.c                   |  78 +-
+ .../ftrace/test.d/kprobe/kprobe_args_char.tc  |   4 +-
+ .../test.d/kprobe/kprobe_args_string.tc       |   4 +-
+ 10 files changed, 930 insertions(+), 52 deletions(-)
+ create mode 100644 fs/tracefs/event_inode.c
+ create mode 100644 fs/tracefs/internal.h
+
 -- 
-2.25.1
+2.39.0
 
