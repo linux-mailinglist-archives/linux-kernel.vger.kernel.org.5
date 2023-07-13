@@ -2,48 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D44C1752510
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 16:23:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B509F752514
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 16:26:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229601AbjGMOX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 10:23:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39358 "EHLO
+        id S229721AbjGMO0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 10:26:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjGMOXY (ORCPT
+        with ESMTP id S229472AbjGMOZ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 10:23:24 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E18526AF;
-        Thu, 13 Jul 2023 07:23:23 -0700 (PDT)
-Received: from dggpeml500012.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4R1xd94V56zVjbZ;
-        Thu, 13 Jul 2023 22:22:05 +0800 (CST)
-Received: from [10.67.110.218] (10.67.110.218) by
- dggpeml500012.china.huawei.com (7.185.36.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 13 Jul 2023 22:23:20 +0800
-Message-ID: <bae57723-50f4-a497-3691-33c4f1234896@huawei.com>
-Date:   Thu, 13 Jul 2023 22:23:20 +0800
+        Thu, 13 Jul 2023 10:25:58 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D3E26AF;
+        Thu, 13 Jul 2023 07:25:57 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3C6F96153D;
+        Thu, 13 Jul 2023 14:25:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B6E6C433C7;
+        Thu, 13 Jul 2023 14:25:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689258356;
+        bh=ceLGsUdUEdvARZ34SamfY0iHE6Sz+y/w35l/b94Ztx8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=fKbF+Ln0o06eJaKuOtHmDtmY8sKeziOCE1UI5chCXUVsovuRJ2r1oA2cwcL+akIX2
+         fRBasAvqYabjCDTLO7oBPyY4PIrYy2i0io0rMkOxdbUseIZUNNq05h5PG3UdRK+GcK
+         O3m7PxonbM91zIRkYhFzgQYKm4KpM0+PxxQ8PGuRU1R7vA/AZ40TYfV9STdOD05QjL
+         RaxQWNqd8gLNJE2azgmYSCsdTKdPSOx+FnwCLlJzHK5GEhHbyLXuNgi21ssS0qY+D7
+         FriPqVjZd++IlYd5cVGGua6KWf6XB6+jkmk6WAwUzGuziXTQhck4dvRP4Sni5PE3dH
+         F1NmYD3aJxX5A==
+From:   Christian Brauner <brauner@kernel.org>
+To:     Andreas Gruenbacher <agruenba@redhat.com>,
+        Jeff Layton <jlayton@kernel.org>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel@vger.kernel.org, cluster-devel@redhat.com,
+        linux-kernel@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>
+Subject: Re: [PATCH] gfs2: fix timestamp handling on quota inodes
+Date:   Thu, 13 Jul 2023 16:25:50 +0200
+Message-Id: <20230713-beispiel-bezeichnen-cf537927cefd@brauner>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230713135249.153796-1-jlayton@kernel.org>
+References: <20230713135249.153796-1-jlayton@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [PATCH] traing: Fix memory leak of iter->temp when reading
- trace_pipe
-Content-Language: en-US
-To:     <rostedt@goodmis.org>, <mhiramat@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>
-References: <20230713141435.1133021-1-zhengyejian1@huawei.com>
-From:   Zheng Yejian <zhengyejian1@huawei.com>
-In-Reply-To: <20230713141435.1133021-1-zhengyejian1@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.110.218]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500012.china.huawei.com (7.185.36.15)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1115; i=brauner@kernel.org; h=from:subject:message-id; bh=ceLGsUdUEdvARZ34SamfY0iHE6Sz+y/w35l/b94Ztx8=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaRs4Mw+Ei5erdYSLhCbuvKoiYZWkESapb7alPumIS/0KzT1 pzztKGVhEONikBVTZHFoNwmXW85TsdkoUwNmDisTyBAGLk4BmEjMN0aGu7Oe+r6/avoobZ9m47WcLU V7ws/NSDoYIPf3e925aSd1/Bn+2SbPk/3VXFGX3PD8q+URbfGKRWdCNj1eer197vyfZwQmsAMA
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -52,50 +60,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/7/13 22:14, Zheng Yejian wrote:
-> kmemleak reports:
->    unreferenced object 0xffff88814d14e200 (size 256):
->      comm "cat", pid 336, jiffies 4294871818 (age 779.490s)
->      hex dump (first 32 bytes):
->        04 00 01 03 00 00 00 00 08 00 00 00 00 00 00 00  ................
->        0c d8 c8 9b ff ff ff ff 04 5a ca 9b ff ff ff ff  .........Z......
->      backtrace:
->        [<ffffffff9bdff18f>] __kmalloc+0x4f/0x140
->        [<ffffffff9bc9238b>] trace_find_next_entry+0xbb/0x1d0
->        [<ffffffff9bc9caef>] trace_print_lat_context+0xaf/0x4e0
->        [<ffffffff9bc94490>] print_trace_line+0x3e0/0x950
->        [<ffffffff9bc95499>] tracing_read_pipe+0x2d9/0x5a0
->        [<ffffffff9bf03a43>] vfs_read+0x143/0x520
->        [<ffffffff9bf04c2d>] ksys_read+0xbd/0x160
->        [<ffffffff9d0f0edf>] do_syscall_64+0x3f/0x90
->        [<ffffffff9d2000aa>] entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+On Thu, 13 Jul 2023 09:52:48 -0400, Jeff Layton wrote:
+> While these aren't generally visible from userland, it's best to be
+> consistent with timestamp handling. When adjusting the quota, update the
+> mtime and ctime like we would with a write operation on any other inode,
+> and avoid updating the atime which should only be done for reads.
 > 
-> when reading file 'trace_pipe', 'iter->temp' is allocated or relocated
-> in trace_find_next_entry() but not freed before 'trace_pipe' is closed.
-> 
-> To fix it, free 'iter->temp' in tracing_release_pipe().
 > 
 
-Sorry, forget the Fixes tag:(
+Applied to the vfs.ctime branch of the vfs/vfs.git tree.
+Patches in the vfs.ctime branch should appear in linux-next soon.
 
-Is following Fixes right?
-Fixes: ff895103a84a ("tracing: Save off entry when peeking at next entry")
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
 
-> Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
-> ---
->   kernel/trace/trace.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> index 4529e264cb86..94cfaa884578 100644
-> --- a/kernel/trace/trace.c
-> +++ b/kernel/trace/trace.c
-> @@ -6764,6 +6764,7 @@ static int tracing_release_pipe(struct inode *inode, struct file *file)
->   
->   	free_cpumask_var(iter->started);
->   	kfree(iter->fmt);
-> +	kfree(iter->temp);
->   	mutex_destroy(&iter->mutex);
->   	kfree(iter);
->   
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
 
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.ctime
+
+[1/1] gfs2: fix timestamp handling on quota inodes
+      https://git.kernel.org/vfs/vfs/c/ea462c3f7f48
