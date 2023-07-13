@@ -2,182 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EAD97520BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 14:05:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57A7B7520C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 14:05:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234537AbjGMMFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 08:05:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60172 "EHLO
+        id S233677AbjGMMFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 08:05:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234441AbjGMMFA (ORCPT
+        with ESMTP id S233096AbjGMMFk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 08:05:00 -0400
-X-Greylist: delayed 1438 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 13 Jul 2023 05:04:55 PDT
-Received: from egress-ip33b.ess.de.barracuda.com (egress-ip33b.ess.de.barracuda.com [18.185.115.237])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0EDB1FCD
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 05:04:55 -0700 (PDT)
-Received: from mail-yw1-f198.google.com (mail-yw1-f198.google.com [209.85.128.198]) by mx-outbound17-21.eu-central-1b.ess.aws.cudaops.com (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO); Thu, 13 Jul 2023 12:04:52 +0000
-Received: by mail-yw1-f198.google.com with SMTP id 00721157ae682-5704991ea05so5085717b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 05:04:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mistralsolutions.com; s=google; t=1689249891; x=1691841891;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=KyAy2AzzOz8nJpjULNpX43+m0sZBWwEmM9yra+1Q5j8=;
-        b=AyYMSJmCykEIt+CYHHGwVRLJdS165TvzqjGvR0QpnOvmItgH/gCD6cOypdTGibf4kA
-         uh60liiqWlFRSK4VM5WXWC2o5tkXxqYyHN1Fk1Lbqn6OfC08vIbGMxcYbY8YK715hJqz
-         AL/iU7Zsk7QV8Wekkf80TkZX3bmO31OR7s3Po=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689249891; x=1691841891;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KyAy2AzzOz8nJpjULNpX43+m0sZBWwEmM9yra+1Q5j8=;
-        b=LHjUDq19RvzvqslH1zQZaVilp6uU0ZIpSnnreNP/4vkEqemJ5Vw7YLewVa8VpXXb6K
-         dDYcZ4kvUopT2wOSKrEwL26rrhQ+a/HVrfemFEOb4EhzhP4TtjLZTHeawt0wXVjao1bO
-         BzrHARC1BoGEvPhkK7dqwQA5NzTUfDLKjAZoXVsRQXPEiD+a86F+fWMe7eYQBFUpDS9A
-         CY+yjxJtlet/4rPEbtfLTf4s1dgwt//RBbq/6loEbDtOkK8g7LfDqpf8bSLvyuIxPVg9
-         IQ5+wz2iUs2Km31xdutAj/nR1/v4zcEi/IIspPowGbuY+tuKrjzpugDU8LU5XgyWb0EX
-         HVdw==
-X-Gm-Message-State: ABy/qLYK24Uyh5xCF3Fy5+v/DWERQH/DE/hUgAEA+Gji28tT3sOIbS+k
-        RxuU73BVbJAUDQg7719Vcdt/BX1VXQiuh19CYs+lLYkppnYe0vDnpChZI5+Jib2z9mniL9qxiAp
-        HOCZlw8mp9g27AOd2jMAfXdvLZMYv8dfTkRoq681R/RCa8U56jrm0cVe+wsN8
-X-Received: by 2002:a17:90a:7bca:b0:262:dd2c:54fc with SMTP id d10-20020a17090a7bca00b00262dd2c54fcmr495896pjl.42.1689248435105;
-        Thu, 13 Jul 2023 04:40:35 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFa72+vLfza7NcrCk0tX0uLR0VUrams/Zn92hIEZcTYLiZ9I1Pj/rfG47blKhz+MQQ88ZPWDw==
-X-Received: by 2002:a17:90a:7bca:b0:262:dd2c:54fc with SMTP id d10-20020a17090a7bca00b00262dd2c54fcmr495888pjl.42.1689248434823;
-        Thu, 13 Jul 2023 04:40:34 -0700 (PDT)
-Received: from LAP568U.mistral.in ([106.51.227.150])
-        by smtp.gmail.com with ESMTPSA id 13-20020a17090a190d00b00263f41a655esm5693516pjg.43.2023.07.13.04.40.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Jul 2023 04:40:34 -0700 (PDT)
-From:   Sinthu Raja <sinthu.raja@mistralsolutions.com>
-X-Google-Original-From: Sinthu Raja <sinthu.raja@ti.com>
-To:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Sinthu Raja <sinthu.raja@ti.com>
-Subject: [PATCH] arm64: dts: ti: k3-j721s2-main: Add dts nodes for EHRPWMs
-Date:   Thu, 13 Jul 2023 17:10:21 +0530
-Message-Id: <20230713114021.28450-1-sinthu.raja@ti.com>
-X-Mailer: git-send-email 2.36.1
+        Thu, 13 Jul 2023 08:05:40 -0400
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2067.outbound.protection.outlook.com [40.107.101.67])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FB722682;
+        Thu, 13 Jul 2023 05:05:35 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=h4aIv+8mLscnrckBt9RyUwHpsv4hgwIrL3f74ix7gkaCKVUzk/TWn7FAmrSuZxMjIGrBF/teRD0HU2yMuSSOl65pqVqV1inq6xTo73Jy/8nSM6c0JhNjJg2RsClxVB77+J0IOHsa+iB073Iz+2/gKQDAVJo6EruJjFUDWpr4W8YPYesG2rg8axu2DZQd4mJCTcYRCvNDShJeUkjr125EBI+cm/kWdVejpfmXMSizR1iNcFNRcmQ+acIN+eWBv3Q871QRpamylDjmEVrPdwZyL253q4NrqjrrX1xzu+7485kPwwdzwoc2fstvAWXfQBB0GG+eSx4V5R26OV3hpIp0Aw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=46t1vpqH/2W2DPq5F+oiTqhgHdbG/OFg1FyDVd/HtuQ=;
+ b=AhN/kp6FhNNdgaWyVpRc9KkZtDALVGmjgD0LD/re4bwrGjUdYJJnfQZc4/c2AcdrBjlJWVrc4Z/EfQkW0/rYzZc4korhTdWbQGg4Fg93kDmPz1N4KZop8fkYSXB8frI297YxrzXckVJwiYqcfrENSB5awHHmuz24CD3M3mSLFkk9BdG5YM8goJz8JuhYoBQ4AC83NxYYfVDEb3+lkGDwAJiyB24j5ktDq+dIYRuuJz9LprlAZ+Q7sh6y/EbzP/MWr0Q1SeGQrDog9FX4KsqcE6os6j9lJ2+g8l0NVou5wip25uzBJuOsicrH5obd08Fn0IuZ80OjXZ0/2tStCoJJTA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=46t1vpqH/2W2DPq5F+oiTqhgHdbG/OFg1FyDVd/HtuQ=;
+ b=mPaRwqJvYW56HK/+G7XNOJMz7Hq94gemBGkz7C77GPehZwWokNkhhzjUwM+c5/AFjGAzb/5emmCaU8bSsYnF8ifM8T4WY9ukFwisS+StPQ8qS7VBglq3oT9XafdxZONutHR8TA1LMPgcCEFcK2PUVacN4iCYnBMGqDfZeDJ7KpbqT7rZiWW0UEpCTSy5u9GfrL0i3wqXqLxeoBuA9+cjxF6x6tcenuD0Cpf5qGGsVpETpY4JoteSQoAxK6647H5flmsTp1TO8xFX7Crm7C2FH0guBz/hqT0aJKf3xphyf2sVRuOHpcMvftdaLrBCxrXa64qT7R5LS0f8qDWWiatwBA==
+Received: from SJ0PR03CA0337.namprd03.prod.outlook.com (2603:10b6:a03:39c::12)
+ by PH7PR12MB9128.namprd12.prod.outlook.com (2603:10b6:510:2f7::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.20; Thu, 13 Jul
+ 2023 12:05:33 +0000
+Received: from DM6NAM11FT016.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:a03:39c:cafe::91) by SJ0PR03CA0337.outlook.office365.com
+ (2603:10b6:a03:39c::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.24 via Frontend
+ Transport; Thu, 13 Jul 2023 12:05:33 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ DM6NAM11FT016.mail.protection.outlook.com (10.13.173.139) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6588.24 via Frontend Transport; Thu, 13 Jul 2023 12:05:32 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Thu, 13 Jul 2023
+ 05:05:16 -0700
+Received: from yaviefel (10.126.230.35) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Thu, 13 Jul
+ 2023 05:05:14 -0700
+References: <20230713-vfs-eventfd-signal-v1-0-7fda6c5d212b@kernel.org>
+ <20230713-vfs-eventfd-signal-v1-2-7fda6c5d212b@kernel.org>
+User-agent: mu4e 1.6.6; emacs 28.2
+From:   Petr Machata <petrm@nvidia.com>
+To:     Christian Brauner <brauner@kernel.org>
+CC:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] eventfd: simplify eventfd_signal_mask()
+Date:   Thu, 13 Jul 2023 13:59:01 +0200
+In-Reply-To: <20230713-vfs-eventfd-signal-v1-2-7fda6c5d212b@kernel.org>
+Message-ID: <877cr4uidk.fsf@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-BESS-ID: 1689249892-304373-12304-6968-1
-X-BESS-VER: 2019.1_20230712.1926
-X-BESS-Apparent-Source-IP: 209.85.128.198
-X-BESS-Parts: H4sIAAAAAAACA4uuVkqtKFGyUirNy1bSUcovVrIysrAwAbIygILGBpYGximW5o
-        kpKcaWKeamqUZJRsYpZiYG5gapFoYGZkq1sQCOzDtxQQAAAA==
-X-BESS-Outbound-Spam-Score: 0.00
-X-BESS-Outbound-Spam-Report: Code version 3.2, rules version 3.2.2.249458 [from 
-        cloudscan18-35.eu-central-1b.ess.aws.cudaops.com]
-        Rule breakdown below
-         pts rule name              description
-        ---- ---------------------- --------------------------------
-        0.00 BSF_BESS_OUTBOUND      META: BESS Outbound 
-        0.00 BSF_SC0_MISMATCH_TO    META: Envelope rcpt doesn't match header 
-X-BESS-Outbound-Spam-Status: SCORE=0.00 using account:ESS91090 scores of KILL_LEVEL=7.0 tests=BSF_BESS_OUTBOUND, BSF_SC0_MISMATCH_TO
-X-BESS-BRTS-Status: 1
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.126.230.35]
+X-ClientProxiedBy: rnnvmail202.nvidia.com (10.129.68.7) To
+ rnnvmail201.nvidia.com (10.129.68.8)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6NAM11FT016:EE_|PH7PR12MB9128:EE_
+X-MS-Office365-Filtering-Correlation-Id: 00599237-2058-4671-d894-08db83997573
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: vVttLdahOmtF1a2ILkXv5hkl159lZMIP5DopN2km/xwNS7eQSUwkOKtsVWLQIeS4+jJwW3maOezHt2v2JBw/+sVj2JhXBu/YO+1lknF/N5qSt4SoGCbpgxv2rVbPfmw+C6gRCO1WWNorKugyk6VGQ8erI9DCGpoDxsQfXyu7gwsyECbTpuD6YToeU3xwNvvw58aAk/zaJCZ4sJHkO5YQfDmkkAzTiQpqKLVNi1JypOxd+mJYnSWx0kmieTOb0ZvlslR/3R3Sopo0Li4D/PPEvzFQjd8gYIAcbTwMGHQRZBjzmSs2psU9RnqlaoCca78BFueofyKU6WwbXNvmMbdyoi7D4vwGLc95JBQMpdQMIls7x3/7FQHY2TkwBxtR5OrW966aLYD9G/DhKl13pkscJ+0bwoBV2E+uT7u+sfQr+iR8NfVGkx/JMCSI5QSMMwYeKscudgBeaDNGthTid9eNAgHXWKi4/8R+op2KZAd1dZEg1NnMEjF9+ZPIXP5oR++eXV2wZJKFd1b9VLq7bTfoElbm6SbGD6O8cVpLZDQxcJXBMjUzfYw5p2ho91fx1M0PfnctQlP+JupBk7RVWUKA581ef/Qg9HfKx5zXQ5o1f6QoYhFm/4+RDWYQE052v4DPs7INWfQ2sT0geBY7ts26XI5PUmz+fohtmhXaAUBgyvoLYy20Kz+0fhvC9U+2F9lRNO5yvKv+xnYcXKWyXSp8BtbbRC88Dsdw4OH6oD8KQ+OnxnV5CPsS5hqDZtQyZuW6
+X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(346002)(136003)(376002)(396003)(39860400002)(451199021)(36840700001)(46966006)(40470700004)(6916009)(336012)(70206006)(70586007)(426003)(2906002)(36860700001)(40480700001)(40460700003)(316002)(47076005)(4326008)(4744005)(41300700001)(5660300002)(36756003)(26005)(54906003)(356005)(82740400003)(8936002)(8676002)(86362001)(6666004)(82310400005)(478600001)(7636003)(186003)(16526019)(2616005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2023 12:05:32.5256
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 00599237-2058-4671-d894-08db83997573
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT016.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB9128
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sinthu Raja <sinthu.raja@ti.com>
 
-Add dts nodes for 6 EHRPWM instances on SoC. Disable EHRPWM nodes in the
-dtsi files and only enable the ones that are actually pinned out on a
-given board in the board dts file.
+Christian Brauner <brauner@kernel.org> writes:
 
-Signed-off-by: Sinthu Raja <sinthu.raja@ti.com>
----
- arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi | 66 ++++++++++++++++++++++
- 1 file changed, 66 insertions(+)
+> @@ -82,9 +83,9 @@ __u64 eventfd_signal_mask(struct eventfd_ctx *ctx, __u64 n, __poll_t mask)
+>   *
+>   * Returns the amount by which the counter was incremented.
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi b/arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi
-index ed79ab3a3271..0d3a965f764f 100644
---- a/arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi
-@@ -58,6 +58,72 @@ serdes_ln_ctrl: mux-controller@80 {
- 			mux-reg-masks = <0x80 0x3>, <0x84 0x3>, /* SERDES0 lane0/1 select */
- 					<0x88 0x3>, <0x8c 0x3>; /* SERDES0 lane2/3 select */
- 		};
-+
-+		ehrpwm_tbclk: clock-controller@140 {
-+			compatible = "ti,am654-ehrpwm-tbclk", "syscon";
-+			reg = <0x140 0x18>;
-+			#clock-cells = <1>;
-+		};
-+	};
-+
-+	main_ehrpwm0: pwm@3000000 {
-+		compatible = "ti,am654-ehrpwm", "ti,am3352-ehrpwm";
-+		#pwm-cells = <3>;
-+		reg = <0x00 0x3000000 0x00 0x100>;
-+		power-domains = <&k3_pds 160 TI_SCI_PD_EXCLUSIVE>;
-+		clocks = <&ehrpwm_tbclk 0>, <&k3_clks 160 0>;
-+		clock-names = "tbclk", "fck";
-+		status = "disabled";
-+	};
-+
-+	main_ehrpwm1: pwm@3010000 {
-+		compatible = "ti,am654-ehrpwm", "ti,am3352-ehrpwm";
-+		#pwm-cells = <3>;
-+		reg = <0x00 0x3010000 0x00 0x100>;
-+		power-domains = <&k3_pds 161 TI_SCI_PD_EXCLUSIVE>;
-+		clocks = <&ehrpwm_tbclk 1>, <&k3_clks 161 0>;
-+		clock-names = "tbclk", "fck";
-+		status = "disabled";
-+	};
-+
-+	main_ehrpwm2: pwm@3020000 {
-+		compatible = "ti,am654-ehrpwm", "ti,am3352-ehrpwm";
-+		#pwm-cells = <3>;
-+		reg = <0x00 0x3020000 0x00 0x100>;
-+		power-domains = <&k3_pds 162 TI_SCI_PD_EXCLUSIVE>;
-+		clocks = <&ehrpwm_tbclk 2>, <&k3_clks 162 0>;
-+		clock-names = "tbclk", "fck";
-+		status = "disabled";
-+	};
-+
-+	main_ehrpwm3: pwm@3030000 {
-+		compatible = "ti,am654-ehrpwm", "ti,am3352-ehrpwm";
-+		#pwm-cells = <3>;
-+		reg = <0x00 0x3030000 0x00 0x100>;
-+		power-domains = <&k3_pds 163 TI_SCI_PD_EXCLUSIVE>;
-+		clocks = <&ehrpwm_tbclk 3>, <&k3_clks 163 0>;
-+		clock-names = "tbclk", "fck";
-+		status = "disabled";
-+	};
-+
-+	main_ehrpwm4: pwm@3040000 {
-+		compatible = "ti,am654-ehrpwm", "ti,am3352-ehrpwm";
-+		#pwm-cells = <3>;
-+		reg = <0x00 0x3040000 0x00 0x100>;
-+		power-domains = <&k3_pds 164 TI_SCI_PD_EXCLUSIVE>;
-+		clocks = <&ehrpwm_tbclk 4>, <&k3_clks 164 0>;
-+		clock-names = "tbclk", "fck";
-+		status = "disabled";
-+	};
-+
-+	main_ehrpwm5: pwm@3050000 {
-+		compatible = "ti,am654-ehrpwm", "ti,am3352-ehrpwm";
-+		#pwm-cells = <3>;
-+		reg = <0x00 0x3050000 0x00 0x100>;
-+		power-domains = <&k3_pds 165 TI_SCI_PD_EXCLUSIVE>;
-+		clocks = <&ehrpwm_tbclk 5>, <&k3_clks 165 0>;
-+		clock-names = "tbclk", "fck";
-+		status = "disabled";
- 	};
- 
- 	gic500: interrupt-controller@1800000 {
--- 
-2.36.1
+This should be reworded to reflect the fact that the function now
+returns a bool.
 
+>   */
+> -__u64 eventfd_signal(struct eventfd_ctx *ctx)
+> +bool eventfd_signal(struct eventfd_ctx *ctx)
+>  {
+> -	return eventfd_signal_mask(ctx, 1, 0);
+> +	return eventfd_signal_mask(ctx, 0);
+>  }
+>  EXPORT_SYMBOL_GPL(eventfd_signal);
+>  
