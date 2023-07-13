@@ -2,113 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB9B8752A53
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 20:32:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07B78752A58
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 20:33:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232007AbjGMSb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 14:31:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41580 "EHLO
+        id S232090AbjGMSdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 14:33:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbjGMSb5 (ORCPT
+        with ESMTP id S229611AbjGMSdR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 14:31:57 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC07F2D46;
-        Thu, 13 Jul 2023 11:31:56 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36DIVnni085033;
-        Thu, 13 Jul 2023 13:31:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1689273109;
-        bh=cbufHtKmT1x2klHfrhnZCmt3cAyIK/2Lga1xIZFOMgM=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=VlIJo0iX028Ucxb1LYXBud0VvJeH8HDKDq81QFgBdoEa9iit8ODBU4YJXyyAcB5dW
-         IEje4Jlu1mcn+rq0rCUpJAZu0W1h6ketxWtXdn3KPcneKqtoymj5wFir5qQ0o0tJF+
-         p2XHZBZ3fUQPqoj+J5jRB6dGE9EeO5GD5NgFp94E=
-Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36DIVnTP012497
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 13 Jul 2023 13:31:49 -0500
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 13
- Jul 2023 13:31:49 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 13 Jul 2023 13:31:49 -0500
-Received: from [10.250.32.50] (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36DIVmA1019630;
-        Thu, 13 Jul 2023 13:31:48 -0500
-Message-ID: <af071a46-2e8e-a107-b0d8-d0bb2f845486@ti.com>
-Date:   Thu, 13 Jul 2023 13:31:48 -0500
+        Thu, 13 Jul 2023 14:33:17 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 734162D46
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 11:33:16 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-98df3dea907so145005366b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 11:33:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1689273195; x=1691865195;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=5eTbts8cHZSzakMKK2Zdyg4qGmgVnQqsmrB4hVj4oIo=;
+        b=MfvQrnz3HQM5uz3bUzlEICp3/ZryjhT3ML1rJzkGnCys+HNir8SHdMag1/s/C5Xa53
+         2eQ0aNkn7mmeFhB12PYRwc6FjzzoC2QIuUXZ9Mb10qoenWygdzZZtTvdjmeCrDzurzbG
+         I9iBCPSNZhXadon5dPLLPeuXPC6d+ISaE6qrw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689273195; x=1691865195;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5eTbts8cHZSzakMKK2Zdyg4qGmgVnQqsmrB4hVj4oIo=;
+        b=IPpl1Vmw7ieY6YPfA4xOOnm2crcc0tdUcHtRgA6CtZbkQazc17Qxt4qYoSxQdbfV7A
+         oTYYU75Fs/BnQcWyxxbJcHrBvBBk6srWwy+nZqbYvjVrZNz6h1YDxgl+u0FVRMl/gT89
+         36bFN6jqH+rJTImAnRK3NJcV5wtEA+YWtIZJHCNq0CcuBM+NUyxkUUOX4t0o9NwNCIJr
+         APDNOCNyeMeVeYCiR9JkwDqGHIyBqyUdVxV5O0X11aKdZtL1gocquuyDxufnYiwWWGde
+         dcczLXRLp7rxWZFwmHDJXrpNThE5Q/rmKFeoqcfgXJUJLIhpF4C9gh3SdPrn8Wazj9YO
+         CSDA==
+X-Gm-Message-State: ABy/qLbT5dAzY9eXEH4ZWLs45e059bZ/+hArt1CNv7MYs7FLSxzKmbDW
+        iFVrb+3OxMpWbIwzma7Wz6z+Do2j64lmG7dIBXEzbS/B
+X-Google-Smtp-Source: APBJJlEOtxso6b+8NV4QvCz7q50dCO0hRCMwvGKZ4VzyKsJXBAnrVSiRKo6Q1+HO1uW+LZ+CKgc72A==
+X-Received: by 2002:a17:906:7a58:b0:988:6bd2:b0b3 with SMTP id i24-20020a1709067a5800b009886bd2b0b3mr2254876ejo.60.1689273194911;
+        Thu, 13 Jul 2023 11:33:14 -0700 (PDT)
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com. [209.85.218.46])
+        by smtp.gmail.com with ESMTPSA id e6-20020a170906080600b00993470682e5sm4316521ejd.32.2023.07.13.11.33.14
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 Jul 2023 11:33:14 -0700 (PDT)
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-991c786369cso146127866b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 11:33:14 -0700 (PDT)
+X-Received: by 2002:aa7:d511:0:b0:51d:91d2:335b with SMTP id
+ y17-20020aa7d511000000b0051d91d2335bmr2839984edq.1.1689273173806; Thu, 13 Jul
+ 2023 11:32:53 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v5 3/5] arm64: dts: ti: k3-j784s4: Add WIZ and SERDES PHY
- nodes
-Content-Language: en-US
-To:     Nishanth Menon <nm@ti.com>, Jayesh Choudhary <j-choudhary@ti.com>
-CC:     <vigneshr@ti.com>, <krzysztof.kozlowski+dt@linaro.org>,
-        <s-vadapalli@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20230710101705.154119-1-j-choudhary@ti.com>
- <20230710101705.154119-4-j-choudhary@ti.com>
- <20230712141828.lnpo4mhd5dv34rlz@census>
- <18310450-05f3-172c-e4bc-fda114f333a4@ti.com>
- <20230713182107.ashuygyg4x4j77s5@backboard>
-From:   Andrew Davis <afd@ti.com>
-In-Reply-To: <20230713182107.ashuygyg4x4j77s5@backboard>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230711011412.100319-1-tj@kernel.org> <20230711011412.100319-28-tj@kernel.org>
+ <ZLAAEnd2HOinKrA+@righiandr-XPS-13-7390>
+In-Reply-To: <ZLAAEnd2HOinKrA+@righiandr-XPS-13-7390>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 13 Jul 2023 11:32:37 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiT-nr-kRON8vToQSbMhijztp8LV=Y0PgjLJhgDPckxPA@mail.gmail.com>
+Message-ID: <CAHk-=wiT-nr-kRON8vToQSbMhijztp8LV=Y0PgjLJhgDPckxPA@mail.gmail.com>
+Subject: Re: [PATCH 27/34] sched_ext: Implement SCX_KICK_WAIT
+To:     Andrea Righi <andrea.righi@canonical.com>
+Cc:     Tejun Heo <tj@kernel.org>, mingo@redhat.com, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@kernel.org, joshdon@google.com, brho@google.com,
+        pjt@google.com, derkling@google.com, haoluo@google.com,
+        dvernet@meta.com, dschatzberg@meta.com, dskarlat@cs.cmu.edu,
+        riel@surriel.com, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/13/23 1:21 PM, Nishanth Menon wrote:
-> On 21:01-20230713, Jayesh Choudhary wrote:
->>
->>
->> On 12/07/23 19:48, Nishanth Menon wrote:
->>> On 15:47-20230710, Jayesh Choudhary wrote:
->>>> From: Siddharth Vadapalli <s-vadapalli@ti.com>
->>>>
->>>> J784S4 SoC has 4 Serdes instances along with their respective WIZ
->>>> instances. Add device-tree nodes for them and disable them by default.
->>>>
->>>> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
->>>> [j-choudhary@ti.com: fix serdes_wiz clock order]
->>>> Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
->>>> ---
->>> NAK. This patch introduces the following dtbs_check warning.
->>> arch/arm64/boot/dts/ti/k3-am69-sk.dtb: serdes-refclk: 'clock-frequency' is a required property
->>>
->>
->> Sorry for this. This property was added in the final board file.
->> I will fix it in the next revision.
->> I will add '0' as clock-property in the main file similar to j721e[1]
->> which will be overridden in the board file with required value to get
->> rid of this warning.
-> 
-> That would follow what renesas (r8a774a1.dtsi) and imx
-> (imx8dxl-ss-conn.dtsi) seem to be doing as well. Just make sure to add
-> documentation to the property to indicate expectation. Unless someone
-> has objections to this approach.
-> 
+On Thu, 13 Jul 2023 at 06:46, Andrea Righi <andrea.righi@canonical.com> wrote:
+>
+> I'm not sure if we already have an equivalent of
+> smp_store_release_u64/smp_load_acquire_u64(). Otherwise, it may be worth
+> to add them to a more generic place.
 
-Would it work better to disable these nodes, only enabling them in the
-board files when a real clock-frequency can be provided?
+Yeah, a 64-bit atomic load/store is not necessarily even possible on
+32-bit architectures.
 
-My initial reaction would be to move the whole external reference clock
-node to the board file since that is where it is provided, but seems
-that would cause more churn in serdes_wiz* nodes than we would want..
+And when it *is* possible, it might be very very expensive indeed (eg
+on 32-bit x86, the way to do a 64-bit load would be with "cmpxchg8b",
+which is ridiculously slow)
 
-Andrew
+              Linus
