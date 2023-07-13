@@ -2,96 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4A43752AB2
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 21:05:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDEE2752AC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 21:08:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231951AbjGMTFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 15:05:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54016 "EHLO
+        id S231777AbjGMTI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 15:08:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229916AbjGMTE7 (ORCPT
+        with ESMTP id S229651AbjGMTI4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 15:04:59 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB31F171D
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 12:04:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=Tunyxm7225nRlfSTHxgTZRKdYPHBEXYuY6MWqVIZLtA=; b=v9XsH4mAkY82rUYyHnv9cyZivu
-        eTM5svjbjBnJMSPXncAe6D+e21qhbDQy3561717YRHOWE6LJXq6t2Das0jW3nywXeYg2Nc0Lj4elh
-        Rqz35n6SJy4/VfFnXrB+ysqGYzkGrlIKsPQMPS+jhSe7vqhbglAkHaFZ8eEdkWnGBndF9W8It/QDl
-        +Z3eJvkJ71nZghLJtjS3IEtTRKpGVAwW3auJiCct/mpJbaq8O+iP2FFy1LScGhNAyUvMNv6Y9uWWD
-        qT4qor6+G4MkeIAe1TasFzBO7DPHFLCflul6ixFPPxOu6YQgkDWXcBc4BvhmFMbdwNDYFVfAvtoNV
-        002c3+rw==;
-Received: from [2601:1c2:980:9ec0::2764]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qK1cW-004Chy-22;
-        Thu, 13 Jul 2023 19:04:56 +0000
-Message-ID: <07f0c6ac-f195-e598-4649-e88ad5e76005@infradead.org>
-Date:   Thu, 13 Jul 2023 12:04:54 -0700
+        Thu, 13 Jul 2023 15:08:56 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 653581993;
+        Thu, 13 Jul 2023 12:08:53 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 716E61570;
+        Thu, 13 Jul 2023 12:09:35 -0700 (PDT)
+Received: from FVFF77S0Q05N.cambridge.arm.com (unknown [10.37.36.116])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1495E3F67D;
+        Thu, 13 Jul 2023 12:08:50 -0700 (PDT)
+Date:   Thu, 13 Jul 2023 20:08:48 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     "Aiqun(Maria) Yu" <quic_aiquny@quicinc.com>
+Cc:     Will Deacon <will@kernel.org>, corbet@lwn.net,
+        catalin.marinas@arm.com, maz@kernel.org, quic_pkondeti@quicinc.com,
+        quic_kaushalk@quicinc.com, quic_satyap@quicinc.com,
+        quic_shashim@quicinc.com, quic_songxue@quicinc.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] arm64: Add the arm64.nolse_atomics command line option
+Message-ID: <ZLBLwG2LJ4gZLfbh@FVFF77S0Q05N.cambridge.arm.com>
+References: <20230710093751.GC32673@willie-the-truck>
+ <5cf15f85-0397-96f7-4110-13494551b53b@quicinc.com>
+ <20230711082226.GA1554@willie-the-truck>
+ <84f0994a-26de-c20a-a32f-ec8fe41df3a3@quicinc.com>
+ <20230711102510.GA1809@willie-the-truck>
+ <67c2621f-4cad-2495-9785-7737246d3e90@quicinc.com>
+ <ZK5X9bXQT7GBxNHj@FVFF77S0Q05N.emea.arm.com>
+ <604ac52d-4336-744f-2ab8-44d1c93fbaa8@quicinc.com>
+ <ZK_d86ApI1FCHhTL@FVFF77S0Q05N.cambridge.arm.com>
+ <e02b9969-a3ca-a80d-1d32-25d2bf4c72b6@quicinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v4 20/21] config TEST_DYNAMIC_DEBUG default m
-Content-Language: en-US
-To:     Jim Cromie <jim.cromie@gmail.com>, jbaron@akamai.com,
-        daniel.vetter@ffwll.ch, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        intel-gvt-dev@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org
-Cc:     jani.nikula@intel.com, ville.syrjala@linux.intel.com,
-        seanpaul@chromium.org, robdclark@gmail.com,
-        gregkh@linuxfoundation.org
-References: <20230713163626.31338-1-jim.cromie@gmail.com>
- <20230713163626.31338-21-jim.cromie@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230713163626.31338-21-jim.cromie@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e02b9969-a3ca-a80d-1d32-25d2bf4c72b6@quicinc.com>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jim,
+On Thu, Jul 13, 2023 at 10:08:34PM +0800, Aiqun(Maria) Yu wrote:
+> On 7/13/2023 7:20 PM, Mark Rutland wrote:
+> > Are you saying that LSE atomics to *cacheable* mappings do not work on your
+> > system?
+> > 
+> > Specifically, when using a Normal Inner-Shareable Inner-Writeback
+> > Outer-Writeback mapping, do the LSE atomics work or not work?
+> *cacheable* mapping have the LSE atomic is not working if far atomic is
+> performed.
 
-On 7/13/23 09:36, Jim Cromie wrote:
-> Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
-> ---
->  lib/Kconfig.debug | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index d4fbbcc395d2..82d11ac63758 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -2696,13 +2696,14 @@ config TEST_STATIC_KEYS
->  
->  config TEST_DYNAMIC_DEBUG
->  	tristate "Build test-dynamic-debug module"
-> +	default m
+Thanks for confirming; the fact that this doesn't work on *cacheable* memory is
+definitely a major issue. I think everyone is confused here because of the
+earlier mention of non-cachable accesses (which don't matter).
 
-You need to justify such a change, and since it's not required
-for running the system, I don't think it should be 'm'.
+I know that some CPU implementations have EL3 control bits to force LSE atomics
+to be performed near (e.g. in Cortex-A55, the CPUECTLR.ATOM control bits),
+which would avoid the issue while still allowing the LSE atomics to be used.
 
->  	depends on DYNAMIC_DEBUG || DYNAMIC_DEBUG_CORE
->  	help
->  	  This module works/demo's the dyndbg's classmap API, by
->  	  creating 2 classes: a DISJOINT classmap (like DRM.debug)
->  	  and a LEVELS/VERBOSE classmap (where 2>1).
->  
-> -	  If unsure, say N.
-> +	  If unsure, say N.  If bored/curious, say M
->  
->  config TEST_KMOD
->  	tristate "kmod stress tester"
+If those can be configured in EL3 firmware, that would be a preferable
+workaround.
 
--- 
-~Randy
+Can you say which CPUs are integrated in this system? and/or can you check if
+such control bits exist?
+
+Thanks,
+Mark.
+ 
