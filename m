@@ -2,107 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8E937526B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 17:24:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B2E57526DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 17:26:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234314AbjGMPYC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 13 Jul 2023 11:24:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55758 "EHLO
+        id S234755AbjGMP0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 11:26:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230151AbjGMPYA (ORCPT
+        with ESMTP id S234643AbjGMP0b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 11:24:00 -0400
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B617C134;
-        Thu, 13 Jul 2023 08:23:59 -0700 (PDT)
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-98dfd15aae1so21042966b.0;
-        Thu, 13 Jul 2023 08:23:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689261838; x=1689866638;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VrE6LY2wmxVu6SrdiDWyyjLd4AHotqYK1QoQuBvkj3M=;
-        b=gXIBMETr61BUB80tiimK2MUVz1hlRVmjDssCE/6ofBA4kOB+fGBvyCfaVugVHKAlLL
-         IS/J/HgXuVzEZh4Vk2Vgadavee7uiVZZvNaTxTn63GWEQErqF+LiKQhw+PXDipCyEILF
-         DM39Y0tyOWq5J3l7S9ghv7k6ucz6UZEAki66P0Cf2wy7rlFRbxyDId715o9iRA0+W6mQ
-         Sm5j5nSSvxJVZ5EgTyOorzOHf8SphGYLx4V0ZVSy5PXvulzYjJW/oxvlxHZXr3sbelbU
-         wne4roF7TCOmgGJsMH3el0SJ9o9CeN3XEowcRXDsqPucqOg6r8AeG8/X5l+kyFSUn/sg
-         RCzQ==
-X-Gm-Message-State: ABy/qLYtlMWlEfxiOS8RYBVDpfwQzhm4bfz8MMddBSMNiMGkP2lmY92h
-        gBdfwv4wizGlMPPZA88F+LXqb2r7+EEBuPiNNvY=
-X-Google-Smtp-Source: APBJJlGi3f9rnzgFLBm8Q9r1GpDwzKwioXzayy1WG2P4eJ1Q49QD9da5U9DpCLrgyjqsUkso5pyRyPPd+sB1bbq+/pM=
-X-Received: by 2002:a17:906:74dc:b0:994:1808:176b with SMTP id
- z28-20020a17090674dc00b009941808176bmr1254391ejl.6.1689261838133; Thu, 13 Jul
- 2023 08:23:58 -0700 (PDT)
+        Thu, 13 Jul 2023 11:26:31 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAF2A2D75;
+        Thu, 13 Jul 2023 08:26:15 -0700 (PDT)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36DDu3Ff013708;
+        Thu, 13 Jul 2023 15:26:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=lhnL0nYaUy4E209WvnIwLh692n8VbgyF9GkbTz9X0K0=;
+ b=Fl1cJyIkCil8Z8IkAIR4uhFOYY8eIpG9lo1auXG8reO+ZmTOHDAynJLl3R88X7KXzojV
+ kvCai5Jx2R1qNK57vX50IebTuGbq/XS8kM8cNkEBFqXvWRPBtBsyoVWFG93Vj7tpZLMu
+ 3Cb/+bn7IU/ko+WhYCd9hpEIvc4gegX0DH/sy4IKQYmnAVa9LHYmbV3k3zWHTaluRePC
+ bpXOa00+5LGAujLH0cHNjD0T+78HU03N2EnDCFAWAZGTv3IsyoyE9qQzVHTcj+Qr5+U5
+ gRXnrmriy87uWo9G2gbh8QWSxm+PlCAk9nGRj5hLkLn3KeLluFflTKU0hJOg8p+QJMLQ Ww== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rt57mspcv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 13 Jul 2023 15:26:09 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36DFQ8o8029160
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 13 Jul 2023 15:26:08 GMT
+Received: from win-platform-upstream01.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Thu, 13 Jul 2023 08:26:04 -0700
+From:   Sridharan S N <quic_sridsn@quicinc.com>
+To:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Sridharan S N <quic_sridsn@quicinc.com>
+Subject: [PATCH v2 0/2] Add initial support for RDP417 of IPQ9574 family 
+Date:   Thu, 13 Jul 2023 20:55:20 +0530
+Message-ID: <20230713152522.1063154-1-quic_sridsn@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230703080252.2899090-1-michal.wilczynski@intel.com> <20230703080252.2899090-9-michal.wilczynski@intel.com>
-In-Reply-To: <20230703080252.2899090-9-michal.wilczynski@intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 13 Jul 2023 17:23:47 +0200
-Message-ID: <CAJZ5v0jDOOhcTcYnDrkWbto1f_XJRs4Yd3huQcRJhhCoBGVcQA@mail.gmail.com>
-Subject: Re: [PATCH v7 8/9] acpi/nfit: Remove unnecessary .remove callback
-To:     Michal Wilczynski <michal.wilczynski@intel.com>,
-        dan.j.williams@intel.com
-Cc:     linux-acpi@vger.kernel.org, rafael@kernel.org,
-        vishal.l.verma@intel.com, lenb@kernel.org, dave.jiang@intel.com,
-        ira.weiny@intel.com, rui.zhang@intel.com,
-        linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: oUYhafzUmtf6svQQQmZ-scxpsxLBXqtA
+X-Proofpoint-GUID: oUYhafzUmtf6svQQQmZ-scxpsxLBXqtA
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-13_05,2023-07-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=609 clxscore=1015
+ impostorscore=0 bulkscore=0 phishscore=0 mlxscore=0 priorityscore=1501
+ lowpriorityscore=0 spamscore=0 suspectscore=0 malwarescore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2305260000
+ definitions=main-2307130135
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 3, 2023 at 10:03 AM Michal Wilczynski
-<michal.wilczynski@intel.com> wrote:
->
-> Nfit driver doesn't use .remove() callback and provide an empty function
-> as it's .remove() callback. Remove empty acpi_nfit_remove() and
-> initialization of callback.
->
-> Suggested-by: Dan Williams <dan.j.williams@intel.com>
-> Signed-off-by: Michal Wilczynski <michal.wilczynski@intel.com>
+Add the initial device tree support for the Reference Design
+Platform(RDP) 454 based on IPQ9574 family of SoCs.
 
-This one is not strictly related to the rest of the series, but it
-does depend on the previous one, so assuming that the previous one is
-not objectionable, I suppose I can take them both.  Dan?
+This series depends on below patchset:
+https://lore.kernel.org/lkml/20230713105909.14209-2-quic_anusha@quicinc.com/
 
-> ---
->  drivers/acpi/nfit/core.c | 6 ------
->  1 file changed, 6 deletions(-)
->
-> diff --git a/drivers/acpi/nfit/core.c b/drivers/acpi/nfit/core.c
-> index 124e928647d3..16bf17a3d6ff 100644
-> --- a/drivers/acpi/nfit/core.c
-> +++ b/drivers/acpi/nfit/core.c
-> @@ -3402,11 +3402,6 @@ static int acpi_nfit_add(struct acpi_device *adev)
->                                         adev);
->  }
->
-> -static void acpi_nfit_remove(struct acpi_device *adev)
-> -{
-> -       /* see acpi_nfit_unregister */
-> -}
-> -
->  static void acpi_nfit_update_notify(struct device *dev, acpi_handle handle)
->  {
->         struct acpi_nfit_desc *acpi_desc = dev_get_drvdata(dev);
-> @@ -3488,7 +3483,6 @@ static struct acpi_driver acpi_nfit_driver = {
->         .ids = acpi_nfit_ids,
->         .ops = {
->                 .add = acpi_nfit_add,
-> -               .remove = acpi_nfit_remove,
->         },
->  };
->
-> --
-> 2.41.0
->
+This series depends on below patchset for CHECK_DTBS issue
+https://lore.kernel.org/linux-arm-msm/20230526161129.1454-4-quic_anusha@quicinc.com/
+Sridharan S N (2):
+  dt-bindings: arm: qcom: document AL01-C1 board based on IPQ9574 family
+  arm64: dts: qcom: ipq9574: add support for the RDP417 variant
+
+ Documentation/devicetree/bindings/arm/qcom.yaml |  2 ++
+ arch/arm64/boot/dts/qcom/Makefile               |  1 +
+ arch/arm64/boot/dts/qcom/ipq9574-rdp417.dts     | 16 ++++++++++++++++
+ 3 files changed, 19 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/qcom/ipq9574-rdp417.dts
+
+-- 
+2.34.1
+
