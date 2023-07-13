@@ -2,156 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1FB8752BDA
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 22:50:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BED6752BDB
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 22:50:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234131AbjGMUuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 16:50:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32978 "EHLO
+        id S233950AbjGMUu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 16:50:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234132AbjGMUuG (ORCPT
+        with ESMTP id S232270AbjGMUuY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 16:50:06 -0400
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2060.outbound.protection.outlook.com [40.107.20.60])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFD7D2D68;
-        Thu, 13 Jul 2023 13:50:03 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ha7SX5fTPOkyuyYqQDPYaZDDwHVt4rpFXsLzEtBGR54ILCXjnQVihJivM65dnv0JEgC/0UxowIVoaGNSgaeXPnoYEOtjgcaopAk4jREHwfcGG516aIAvxqTe0fX1sdJe1N8TupwiG+2FNX+FwSQBwSdOuIPZE5J1AhB6wkh+rqz/77PI+1c1bH1H9nwHaZUcBNVpBAseUC1fpMIW4FrVjhGlMgHc1/xX35a3+u0YjDdeVimAd1+cdGj3eQJUkWUwgHZ97QMcC4or4RgstkDLjlv/SAUnChYbbqNED6+GbrMJaLElWziK5GrcUQMYb7DprxY4gitH+wndjN3yFApkpg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EA4jMpLY3coHVia3Tv8eCKYtQkwpOwQUZGr5m/3lt6w=;
- b=fRtHwyFcBt/ltvZAkXIPaYrfFxW+eSA0Pb1PV/RoMSDZRmV/NxqPsF0PpUJQ2HJMpitdAC9begMYXKVioPVJt5X7tERD7cuhxbYAFiBTJIoA+miJdX8gdmpC7umORU9I4Ct+jp5xxlX56e8ucPAvBiqLHxiXTq91v1ptGFOe+4y73Snm1fRmi5CU/8iQ5qC2H3UdY8B78zUEJgBeZdbvKmCsgID8bMUL3QFH7moDup6KHGNaKF6i8TRancaqqCqbyxTRWbFwpsLW4d+haWfmejWf2KrCig7tbAWUU/9QcEEvKGx2TFpij8MejI8iSXSWy0Qb4Sit7VZuqCYYHu1urg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EA4jMpLY3coHVia3Tv8eCKYtQkwpOwQUZGr5m/3lt6w=;
- b=R4gYaJkwAoD3uYnqsBK21Cz86AMV319Lk98Y8YBmu8w1BYAB3YNMB6Hxw970pH5iuFrOipGSl17h2mzJnW7g9dJcwGp0ukqh4S6zju4YAm2rskSsdIAv73mU/jrb52jL2eLlz5s+IYrUzVi6sZahP8gjBXMBk0A2JxYB8kLk0Hc=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
- by AS5PR04MB9731.eurprd04.prod.outlook.com (2603:10a6:20b:654::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.20; Thu, 13 Jul
- 2023 20:50:01 +0000
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::c479:12c5:ce68:5e45]) by AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::c479:12c5:ce68:5e45%3]) with mapi id 15.20.6588.017; Thu, 13 Jul 2023
- 20:50:01 +0000
-From:   Frank Li <Frank.Li@nxp.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        Peng Fan <peng.fan@nxp.com>,
-        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
-        DEVICE TREE BINDINGS),
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM/FREESCALE IMX
-        / MXC ARM ARCHITECTURE), linux-kernel@vger.kernel.org (open list)
-Cc:     imx@lists.linux.dev
-Subject: [PATCH v2 3/3] arm64: dts: imx8qm-mek: delete A72 thermal zone
-Date:   Thu, 13 Jul 2023 16:49:31 -0400
-Message-Id: <20230713204932.1591255-3-Frank.Li@nxp.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230713204932.1591255-1-Frank.Li@nxp.com>
-References: <20230713204932.1591255-1-Frank.Li@nxp.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: BY5PR13CA0030.namprd13.prod.outlook.com
- (2603:10b6:a03:180::43) To AM6PR04MB4838.eurprd04.prod.outlook.com
- (2603:10a6:20b:4::16)
+        Thu, 13 Jul 2023 16:50:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40CC32D54
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 13:49:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689281376;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IHjAiKDgkWEhMt7jYaYaz3lsgC1nD6n3KKjsUKIQ3NE=;
+        b=OVgOPA/KKNHRsYZ290Wv0Ln5mzj/q6r5Ei5QNJGRsH0yeDk12tulbQIi+cZM+nrKh5xPws
+        9Y00+IJ06HPJgOPMdrpvLjevZCkycGgoUmDTpRaYeL1jmh4TjNC2l1IZCzdPvarhpgMt06
+        RZKuR6xB0N81DA1nWntBars07wafHL8=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-60-IopMjFnOPFa2ppYZS0oCvA-1; Thu, 13 Jul 2023 16:49:35 -0400
+X-MC-Unique: IopMjFnOPFa2ppYZS0oCvA-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-3f42bcef2acso6414455e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 13:49:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689281374; x=1691873374;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IHjAiKDgkWEhMt7jYaYaz3lsgC1nD6n3KKjsUKIQ3NE=;
+        b=jGCxrAlAGgREneMg5wmurz77KCmzlKPsTBElP0ovNvAuebEgiZmBUSWuAnUE1OEomw
+         IiSjatcFEL07YELQewQCBEMCpBYftyAHVvPecrsTrmyg8S1WW3ju7UlyTyjq0mU16bje
+         dqekzMBOnY76Eh8rtSf8sTOhcpcuTk3m3ce/wuQjqBpOo7T1vxCJHk1cDujS/CfD6/K4
+         Jjr70V5iaYebryHzvHoQs4+cipPWHpBScC9gSsFfppTCF4oLKTIExDH7n7Fj78ptRvz/
+         eeUZobotMbkz6DVpA24dVfoRmqcYzn16zZp9T4hRuAvSouMDS0z3e59xjZM6HDPOLcjF
+         6RMg==
+X-Gm-Message-State: ABy/qLY7/FdLRBzjUgihzspsTDBHaUvuXM01FFeXi/QGKcbj2/U8SE93
+        OwSV2/uhaxHLVnyeqVlQrRnMb99JHYGhclHEjTo+d/Jjtq3NtqlRVdiajOEZ6yBze0soZ1fE+ey
+        JWqHafqs4XRKboMcF4dlElfOK
+X-Received: by 2002:a05:600c:247:b0:3fb:b6fa:9871 with SMTP id 7-20020a05600c024700b003fbb6fa9871mr2263350wmj.14.1689281373970;
+        Thu, 13 Jul 2023 13:49:33 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlFvvODTtbDEgvJEh2F5G/6pc7oW4plrq83Kc2SB3wRSCz6q+L+2QOl9Tzub416n+rdv9wYY1w==
+X-Received: by 2002:a05:600c:247:b0:3fb:b6fa:9871 with SMTP id 7-20020a05600c024700b003fbb6fa9871mr2263340wmj.14.1689281373551;
+        Thu, 13 Jul 2023 13:49:33 -0700 (PDT)
+Received: from [192.168.95.46] ([213.55.224.225])
+        by smtp.gmail.com with ESMTPSA id f15-20020a7bc8cf000000b003fbaa2903f4sm8586554wml.19.2023.07.13.13.49.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 Jul 2023 13:49:32 -0700 (PDT)
+Message-ID: <5e7716de-ffce-e89d-0aa3-45eed4804652@redhat.com>
+Date:   Thu, 13 Jul 2023 22:49:31 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|AS5PR04MB9731:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2567555b-920a-4cb1-6472-08db83e2ba02
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: psff2XlUyi4fho2sVxL4pMVXz6FZEXG08n0zClpgyZxiQzj13TJgfILe7CRenim3K5gNnzqADIebSR34WFgfqNhlW7L5zoDDiSPLDg02Hqrh96u8BOrAAWKaxa016i9FMIyN9mxkXVeLZmqYB9RrDx2+veS4RM8voiZPtPtWFBR5sHuCqZIKWVawyZI5Ty9rfRcEuaf3t3k6YrZVwHln9f4+PChMbj/x/C4uDvWhxA5CKUh6RGS3uDveiHqKQm0I6j0CQ9iXqhpQ+aDgxwndEx76sYi3FlbK9E2JQ0cHQnI9MFY1MPSnBn192pjNI+gR/KfZFBzTnLT5I9BlJ7d/isUd0lWFHOT5y9dzU3VQ75zaOJ+t8cz27p/T77pSNM76EkaY3Myb4GvUD3rx5UmPcSVM2DJ3jgbxL0TNJ2EOBZG34Si4q8+agOZaR6Efz9E7ONVaVGFZO1Of72krpKtyZsii1DQrbndY93ZanXRsS5rpZwXCJYUAjP2oOy/U3IG9FIjuFGPwosSxMpxoKU9kDsLIxrf9uDTKsP+RJrscF0juIWeVZ+OOh4vwO78yB2eKNjdOhwDsvnhbUjJ0O0P67EZK9oAn2TCk3zbvLeZXLJcqK6aU+Ik+38PdkJ7bfRm0l8ZDWr6/g1IZYZRkp5/WyDzZy7UK7t2fbsp8bZ/pPk4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(376002)(39860400002)(346002)(396003)(366004)(451199021)(2906002)(38350700002)(6512007)(38100700002)(921005)(83380400001)(2616005)(1076003)(26005)(186003)(86362001)(5660300002)(6506007)(6666004)(8676002)(36756003)(7416002)(8936002)(4744005)(478600001)(110136005)(52116002)(66556008)(41300700001)(66946007)(66476007)(316002)(4326008)(6486002)(32563001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?E8Ln8xxvPIUiqMztdStX+9MaXfpkwGO5QXCV/+QNfIRiKkmyNkpIaWxfeaed?=
- =?us-ascii?Q?fuIakYTf6iMCxC0THA96Xkqo3N4rb21FLgzkczpNiNslhkZ+bq+jtv4/3Ypc?=
- =?us-ascii?Q?8QUGjUlc787oe0RhjxAys5AedeCKjXjvjAIcg4FhbE9aXxge7cc0FG3aYLlJ?=
- =?us-ascii?Q?I67UJZPv4zXnbxqBpyuDz/P77UZLue+rHSM55lU7lbHt8Q4EoeO3kZacgLgj?=
- =?us-ascii?Q?3V+3hsq2XIg8qsWIpKwcMfhT+Rhd5oqEjAvoICKtDy182qDBLYap5Z/O8WSJ?=
- =?us-ascii?Q?0B0pk1FAClU+iNp69CtuqLO3c2AMke1sMSasDOI0g3GjhdWegfBirDh4LLuC?=
- =?us-ascii?Q?LmwkrRWgN3hKuTTeJR+euS59h4TPSyOyxD9FMY65uHIOuOTcghyYK3T5ODh8?=
- =?us-ascii?Q?OYt9FcxwXk/xn7KqFNS0kkn5jLaffjcbvQTDEh+5Ih+Al0eYQurIEaJX0xzv?=
- =?us-ascii?Q?HBq+qQiX2LsReYPlzBO6saHTsUY3ozrZ4rqRdQMo4uVTrA754jKXU7kfCrmO?=
- =?us-ascii?Q?OIEhuDNV0EaJjy+SEL+orYckKKsL3TEsRBKv4ij74Dtu8Uzxe8ij4fZlkfKj?=
- =?us-ascii?Q?5HpivqUswNgZiQmlurkogW9AIpVEpCT6IxloLR2ZEqzFfLWpbmGhcwnrNTHG?=
- =?us-ascii?Q?or8ob4UIblyC7qzoMLFHztx9k7vFkgUThR+E/EwCA/Yl7R2d/U+WytarBUeV?=
- =?us-ascii?Q?mR8lYpXdylHXRH1bqXqYQW/Ioc08SNLSk0ahdUFz0E2Y2XNK1sN+L+w/TKxp?=
- =?us-ascii?Q?8SB8bPU83fz2Up2XodKmfFrL9ByWK8FyZdh2WxoeiS0fgHn1yT/3oS5jzfOQ?=
- =?us-ascii?Q?4tGLBdGJsCI/x6WNkyjeZs07ZLxjFiCgI5GWt+axve612jUuYOa6F/TxpwE5?=
- =?us-ascii?Q?swK9NQbQJSQW3d0k+f75FiNKB5q89mPHCmAxKgKkXdZifNRgaq8Zaxi4YLfC?=
- =?us-ascii?Q?IuTaVidEzfrtel/R/jxikJkoyRvduCGZWMstStrbfU+AgHuQaAksGJul7uKM?=
- =?us-ascii?Q?0PJSBlbbuIeL/XeFbGWvVK6tj5AZTggg8UGTzGOu0H4STSt/aRL52vgnXHj/?=
- =?us-ascii?Q?L8CrqxFAVl5xfpn5DhcIIJxT+gEjDEFkr3nuFTMIL+Q7TWi+Nr2ctT+dgExV?=
- =?us-ascii?Q?TRhwpNNrYBH5WtN91zANn6n8bYpfFNVwqUT/SC++MLeiqU6hIxiqX1i7RrtD?=
- =?us-ascii?Q?UBFeTC83jLZGRLdbbo+tZJLOrzZvXxeHCqa5hh+C8drVxTg4NjQJ3nq++WNl?=
- =?us-ascii?Q?RYiIMDwkgkBHPN8aCBlBQDnth/W3d6k4aCDdYLmqIv6RdXQ2ib6XEbX6ucd8?=
- =?us-ascii?Q?CWtj/A/cXha0UWwX1I0uGEN1bbN5ZiPJlJ33OGxGtwUiYcbr/6mTReh8M+IT?=
- =?us-ascii?Q?Ztr6FpVImwH7nk82ChHRBSWVjewLEoaSvRyKzuZr76OwYVdx+yfHWJZ9tYdZ?=
- =?us-ascii?Q?sLO3ZHX9GEYcepLtcMCZFWnVzH0lzeU5Px2FKd76WOnbrEVS9CL64NNFgbik?=
- =?us-ascii?Q?VGEBIFGj2ieXtHv2WDmiGohb3OjgMFFDjx7tz1LkTSiDXIyEliOwmQh0Ib7K?=
- =?us-ascii?Q?7F7+0ft2Lps4R4Vz33jRqws13HUEJnSuhaJI/8Ew?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2567555b-920a-4cb1-6472-08db83e2ba02
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2023 20:50:01.2525
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: QuB9zZzLRB54+z4+BmpPetrj4oqSGl47OWc403UM4jNckBFGSIv84NGg4uBQ2U3G1m0ZBlY8Ajep5T0CWakw5A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS5PR04MB9731
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [RFC PATCH v2] x86/boot: add .sbat section to the bzImage
+Content-Language: de-CH
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        bluca@debian.org, lennart@poettering.net,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        =?UTF-8?Q?Daniel_P=2e_Berrang=c3=a9?= <berrange@redhat.com>,
+        linux-kernel@vger.kernel.org
+References: <20230711154449.1378385-1-eesposit@redhat.com>
+ <2023071237-private-overhang-7f86@gregkh> <875y6o429i.fsf@redhat.com>
+ <2023071329-persevere-pursuant-e631@gregkh> <87wmz33j36.fsf@redhat.com>
+ <2023071356-royal-charter-a647@gregkh>
+From:   Emanuele Giuseppe Esposito <eesposit@redhat.com>
+In-Reply-To: <2023071356-royal-charter-a647@gregkh>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The A72 nodes have been deleted in this DTB. Removes the corresponding
-thermal zone to ensure a successful build.
 
-Reviewed-by: Peng Fan <peng.fan@nxp.com>
-Signed-off-by: Frank Li <Frank.Li@nxp.com>
----
-change from v1 to v2
-- pass make dtbs_check
 
- arch/arm64/boot/dts/freescale/imx8qm-mek.dts | 4 ++++
- 1 file changed, 4 insertions(+)
+Am 13/07/2023 um 18:58 schrieb Greg KH:
+> On Thu, Jul 13, 2023 at 05:51:57PM +0200, Vitaly Kuznetsov wrote:
+>> Greg KH <gregkh@linuxfoundation.org> writes:
+>>> On Thu, Jul 13, 2023 at 10:57:45AM +0200, Vitaly Kuznetsov wrote:
+>>>> I don't
+>>>> particularly see why anyone would need to get additional sign-offs to
+>>>> just ask a question (which I don actually think was asked before!) and
+>>>> IMO an RFC/patch is usually the best way to do so.
+>>>
+>>> Again, no questions were asked.
+>>>
+>>> And when I asked questions, no one knowledgable answered them (hint, we
+>>> release more than 3 kernels a year...)
+>>>
+>>
+>> I think that getting these questions was actually the main reason to
+>> send out the RFC. (Personally, I don't think that stable@ is an
+>> insurmountable problem with an epoch-based revocation mechamism as we
+>> can e.g. switch module name from "linux" to e.g. "linux-stable-5.14"
+>> when screating a stable branch or do something like that but that's not
+>> the main/only problem we see here).
+> 
+> There was no "questions" asked about this RFC, so what should we respond
+> with except with what we did, "No way this is acceptable, as this was
+> not thought through at all"?
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8qm-mek.dts b/arch/arm64/boot/dts/freescale/imx8qm-mek.dts
-index 607cd6b4e972..0b34cc2250e1 100644
---- a/arch/arm64/boot/dts/freescale/imx8qm-mek.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8qm-mek.dts
-@@ -22,6 +22,10 @@ cpus {
- 		/delete-node/ cpu@101;
- 	};
- 
-+	thermal-zones {
-+		/delete-node/ cpu1-thermal;
-+	};
-+
- 	memory@80000000 {
- 		device_type = "memory";
- 		reg = <0x00000000 0x80000000 0 0x40000000>;
--- 
-2.34.1
+
+As I wrote you privately before, yeah I think there is a
+misunderstanding here. I always thought that RFC stands for "hey I don't
+know what I am doing, can you help me?". I apologize for the
+misunderstanding.
+Also other hints were "*Important*: this is just an RFC, as I am not
+expert in this area and
+I don't know what's the best way to achieve this."
+and "Issues with this patch:" section.
+
+> 
+>>> Turn it around, what would you do if you got this patch in your inbox to
+>>> review and you were responsible for doing kernel releases and security
+>>> fixes?
+>>>
+>>
+>> I replied to the thread not to defend the idea as after the discussion
+>> it is clear there's a lot to take into consideration if anyone decides
+>> to pursue the SBAT idea ever again (and the discussion is now well
+>> preserved in the archive!). I replied to disagree with "get sign-offs
+>> from senior people before sending RFCs" idea, I believe that asking
+>> questions by sending a not-fully-ready patch as "RFC" should not be
+>> discouraged. 
+> 
+> On the contrary, this is EXACTLY what needs to happen here.
+> 
+> This developer (I'm not picking on them at all, it's not their fault),
+> should be taking advantage of the resources of their company when
+> dealing with core, critical, functionality of the kernel.
+> 
+> To just "throw them at the wolves" like Red Hat did, is a total
+> disservice to them, AND it wastes the time and resources of the
+> community, as it is not our job to train and teach them, it is the job
+> of the senior people at your company to do so.
+> 
+> We have a non-zero number of companies that right now who are in the
+> "penalty box" because their developers have had a history of throwing
+> crud over the wall, or having inexperienced developers submit changes
+> that are obviously wrong, which waste the time and energy of the kernel
+> community.  For companies that do this, we have instituted the
+> requirement that they get review and acceptance of kernel changes from
+> the experienced developers within the company BEFORE submitting their
+> changes to the community, for the basic fact that this actually saves
+> EVERYONE time and energy.
+> 
+> It allows the developer to grow and learn more quickly, it saves the
+> energy and time of the reviewers (which is our most valuable resource
+> right now) and it provides a solid path forward on the corporate ladder
+> of using mentors well, and lifting up your own employees.
+> 
+> I don't think you want us to put Red Hat into this type of policy at
+> this point in time, but if you all keep insisting that you can just "let
+> loose" inexperienced developers who wish to change the core
+> functionality of how we operate, that can easily change.
+
+Wow, I was not aware of these policies O.O.
+What you say makes sense, but what about developers not working in a
+company? Then they are completely ignored?
+Otherwise a simple way to trick you is to actually use my gmail address
+and you won't ever know that I work for RH.
+Is this the policy of the community? If so, is it explained clearly
+somewhere? Because I think a lot of people need to be aware of this, not
+wait that this mess happens for every company employer submitting a
+patch in the kernel.
+
+> 
+> Remember, this proposed patch directly affects how the kernel is
+> released, how the security team works, and how the security of Linux is
+> viewed by the world.  Why would you NOT want your experienced developers
+> to review such a thing first?  To not want that, means that Red Hat just
+> doesn't care about their developers, nor the community, which I sure
+> hope is not the case.
+> 
+> So again, yes, I am INSISTING that the next version of this change be
+> properly reviewed, vetted, and signed-off-by, by the senior kernel
+> developers at your company BEFORE you submit it again for review by
+> anyone in the community.  Only that way can I hope that it will be
+> something that actually takes into account all of the questions we have
+> already had for this proposed 2 line change.
+> 
+> Funnily, I think this proposed patch takes the dubious record for "most
+> innocuous looking patch that will directly affect the development
+> procedures for the most people", an outstanding record that I hope never
+> gets broken :)
+
+Glad to be the one that opened the pandora box for everyone :)
+
+Thank you,
+Emanuele
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
