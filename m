@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DE20751A5D
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 09:52:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D91C751A60
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 09:53:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232877AbjGMHw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 03:52:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34256 "EHLO
+        id S232887AbjGMHxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 03:53:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232812AbjGMHwZ (ORCPT
+        with ESMTP id S233086AbjGMHxA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 03:52:25 -0400
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D5A51BEB;
-        Thu, 13 Jul 2023 00:52:23 -0700 (PDT)
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-98df3dea907so65484766b.3;
-        Thu, 13 Jul 2023 00:52:23 -0700 (PDT)
+        Thu, 13 Jul 2023 03:53:00 -0400
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD711FF1;
+        Thu, 13 Jul 2023 00:52:55 -0700 (PDT)
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-98dfb3f9af6so65557166b.2;
+        Thu, 13 Jul 2023 00:52:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689234742; x=1691826742;
+        d=1e100.net; s=20221208; t=1689234773; x=1691826773;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pTxbR6KeeV+FJxSPbnngFcfSxrDlS1AZ/DJwic9okog=;
-        b=anx2Se0UlJ5YKSG8ONeSnJCn5GZ7qPgFuPmnL7O7V4Zh6H2NpGSGHSidEwT+zTRdEN
-         pWDWVzE7fFxXDff5rgw56dLheNNPgtORB+hXsMk1OCydqEgIyA8k1Pf+2Dz35/2OfDx0
-         +Su0DuNjGfClr8/fzDX3uFKrvbCvb7uy7cKk3H8VkZV3UfIapjJPmIerUOwGL2mGokb/
-         g2O+opiRqDMGo76HBb+CLPP9s+ID5t9ncjfCLrkjgQVrq+dxCOzDuhlEbiWKGM9o5z3H
-         nprajnZPElGL5kOesDVWHN7iUhurI0qhpoK+PAvqPmHDWaTRKlpV8OCXnTTGQjdRxBYr
-         +hQg==
-X-Gm-Message-State: ABy/qLbZ3uNirsEA4Py01TvxIAIocgg2dANFJGufsfNPVrtVD+vKiIqj
-        RA4z5XqrnTMYvXwsZGxriPE=
-X-Google-Smtp-Source: APBJJlGOS2AaW76q4ZnCSo5z8pAsHue+NRxzJWQOZoQqkA7aWR99PZcWX2wB/rrGbJOdGuYeOs68Cg==
-X-Received: by 2002:a17:906:739e:b0:977:befe:d888 with SMTP id f30-20020a170906739e00b00977befed888mr863511ejl.13.1689234741590;
-        Thu, 13 Jul 2023 00:52:21 -0700 (PDT)
+        bh=oMhGDhSPkVOFk1WX7KdLm58e6BOk+Dpg6SU01MeEJM8=;
+        b=DDUlOQAL0X7Cf/y5DCcqBvCBjYy5/t/mVK3aknzRGeUizjapK1GfgjKBAp/xMfHW2W
+         wymzGoo8jGMr6KL6SAlpI1xfBtRuiIKWBLonuiaKEATFF5mrRkH/8z8+3vGqlbGbZdmL
+         6+v3+Fca1nElYc90lMw5YU8k7s5UJXkqX85OTa4WRc96tCTc9UKGu2EgnNd3G/IIOhkr
+         JUqsWDe1oDoeNl99DSZ7qh+GOFbArtkrlEYEkD6awgmhVn8AcJ1GsIpuxvuZtqpiofBF
+         tTqnIF2JfnD7BUwkNOFMz952zn1aGwOfbShFU6DmBkeLW4d43i+KZKzLug9Aai7OqBWi
+         +1Xw==
+X-Gm-Message-State: ABy/qLYYK1NFzU458IO6bzhGNbeZlVXbR+AHyMkGksdavXUP/yb0AtiW
+        ThW4SsFuljntQn9n/1w5sas=
+X-Google-Smtp-Source: APBJJlHocHdLu8Ml9xRuSHiwTddyegMKaMbj5HvsjMU3ufSRT5CtDKiyvhuphLyTNZ2sB7XkjpSYrA==
+X-Received: by 2002:a17:906:de:b0:96a:3f29:40d9 with SMTP id 30-20020a17090600de00b0096a3f2940d9mr738491eji.25.1689234773553;
+        Thu, 13 Jul 2023 00:52:53 -0700 (PDT)
 Received: from [192.168.1.58] (185-219-167-24-static.vivo.cz. [185.219.167.24])
-        by smtp.gmail.com with ESMTPSA id d24-20020a170906175800b009928b4e3b9fsm3606280eje.114.2023.07.13.00.52.20
+        by smtp.gmail.com with ESMTPSA id bl6-20020a170906c24600b00977ca5de275sm3701691ejb.13.2023.07.13.00.52.52
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 Jul 2023 00:52:21 -0700 (PDT)
-Message-ID: <7305080b-9626-3cd3-707f-b41296578c49@kernel.org>
-Date:   Thu, 13 Jul 2023 09:52:20 +0200
+        Thu, 13 Jul 2023 00:52:53 -0700 (PDT)
+Message-ID: <12594c68-b452-b91d-9e41-c7ae8ade191a@kernel.org>
+Date:   Thu, 13 Jul 2023 09:52:52 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
@@ -61,28 +61,24 @@ Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
         FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The subject should be:
-wifi: ath5k: remove parameter check in ath5k_debug_init_device()
-
-I believe this is documented in SubmittingPatches.
-
 On 13. 07. 23, 9:46, Minjie Du wrote:
 > debugfs_create_file() will return early if phydir is an error
 > pointer, so an extra error check is not needed.
-
-It would be worth noting that the check is actually wrong.
-
+> 
 > Signed-off-by: Minjie Du <duminjie@vivo.com>
 > ---
+
+And also: this is a v3 without a changelog.
+
 >   drivers/net/wireless/ath/ath5k/debug.c | 2 --
 >   1 file changed, 2 deletions(-)
 > 
