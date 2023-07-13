@@ -2,53 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15136752AEB
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 21:28:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67349752AEF
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 21:29:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232788AbjGMT2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 15:28:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33082 "EHLO
+        id S232391AbjGMT3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 15:29:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231245AbjGMT2w (ORCPT
+        with ESMTP id S230249AbjGMT3s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 15:28:52 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA1622707;
-        Thu, 13 Jul 2023 12:28:51 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 67AFB61B24;
-        Thu, 13 Jul 2023 19:28:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C7CFC433C7;
-        Thu, 13 Jul 2023 19:28:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1689276530;
-        bh=zDVMhROmojmbgyEs2EDFF1j/BJYI67as1OcXUNfcQPg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xnARUZ0P4IJfcgcPMHZ9Y6DjTZcWfPEqfbjzO+3k0J7MGqLzYYWrIhzbHGrSDjTjP
-         fkROjl9lPL8k4HfEQESuE7ohoRjDo/EzyxGcqEbIhCTW0a3enlxmyy8AFC4kRNnTHf
-         gb37E6ir3PbH3oNe2jOpCLtGi0BIQ7W3ZZZXqmCM=
-Date:   Thu, 13 Jul 2023 21:28:47 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Andrew Davis <afd@ti.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        John Stultz <jstultz@google.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] misc: sram: Add DMA-BUF Heap exporting of SRAM areas
-Message-ID: <2023071308-squeeze-hamster-d02f@gregkh>
-References: <20230713191316.116019-1-afd@ti.com>
+        Thu, 13 Jul 2023 15:29:48 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04B592680;
+        Thu, 13 Jul 2023 12:29:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+        s=mail; t=1689276584;
+        bh=Xho1RRU1A/ibhnVnCa6aEvzSgVmvXCiwnrryRlLF1wc=;
+        h=From:Date:Subject:To:Cc:From;
+        b=WLHmHuCAc9Bxhf82Qu5ylY+J6JNyIeCoo5z4Bn/bkvsjG5ZFBWa2A2zXmM1C87Rwo
+         pX94ZmRRb8TKu98r0SDwx/Xzm5J3VTTVsMM0H5nvUeXecUX6+907xd9nU4iogCUZX4
+         9Qg/tH+uXTjymkIeryuGu5wlwNQP8+fDyjsFpbpM=
+From:   =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Date:   Thu, 13 Jul 2023 21:29:35 +0200
+Subject: [PATCH v3] nbd: automatically load module on genl access
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230713191316.116019-1-afd@ti.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20230713-b4-nbd-genl-v3-1-226cbddba04b@weissschuh.net>
+X-B4-Tracking: v=1; b=H4sIAJ5QsGQC/22OQQ6CMBREr2K69hv6W7C48h6GRVu+tAkW0wJiC
+ He3mrgxLt8k82ZWlih6Suy0W1mk2Sc/hAxiv2PW6dAR+DYzwwJFgSjASAimhY5CD0IfpdWVUJW
+ qWG4YnQhM1MG63AlT3+fwHunql8/Epcl8jcMNRhdJf8XIOS+KEqVQB+RKAYfeh2k5P8inlKyb3
+ CHQ+F5wPo1DfH7uzvhW/n82Y5ZUslRlW1uSpv51Ndu2vQAOXMeQ/QAAAA==
+To:     Josef Bacik <josef@toxicpanda.com>, Jens Axboe <axboe@kernel.dk>
+Cc:     linux-block@vger.kernel.org, nbd@other.debian.org,
+        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1689276583; l=1914;
+ i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
+ bh=Xho1RRU1A/ibhnVnCa6aEvzSgVmvXCiwnrryRlLF1wc=;
+ b=YSMNsgom1VNydhyc2/0PBTrm3KK9NElllnflH0x4429UnzwKvfEyztkNwQjdzm4Li+nhO0IvI
+ KKKVR2imMcwCqsNjhBAEBOZSHDWNXgqyG3IX4zLXWcQEi+KN3cdxCW8
+X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
+ pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -57,81 +55,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 02:13:16PM -0500, Andrew Davis wrote:
-> This new export type exposes to userspace the SRAM area as a DMA-BUF Heap,
-> this allows for allocations of DMA-BUFs that can be consumed by various
-> DMA-BUF supporting devices.
+Add a module alias to nbd.ko that allows the generic netlink core to
+automatically load the module when netlink messages for nbd are
+received.
 
-What devices exactly?
+This frees the user from manually having to load the module before using
+nbd functionality via netlink.
+If the system policy allows it this can even be used to load the nbd
+module from containers which would otherwise not have access to the
+necessary module files to do a normal "modprobe nbd".
 
-And what userspace tools/programs are going to use this api?
+For example this avoids the following error when using nbd-client:
 
-> 
-> Signed-off-by: Andrew Davis <afd@ti.com>
-> ---
-> 
-> Changes from v2:
->  - Make sram_dma_heap_allocate static (kernel test robot)
->  - Rebase on v6.5-rc1
-> 
->  drivers/misc/Kconfig         |   7 +
->  drivers/misc/Makefile        |   1 +
->  drivers/misc/sram-dma-heap.c | 245 +++++++++++++++++++++++++++++++++++
->  drivers/misc/sram.c          |   6 +
->  drivers/misc/sram.h          |  16 +++
->  5 files changed, 275 insertions(+)
->  create mode 100644 drivers/misc/sram-dma-heap.c
-> 
-> diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
-> index 75e427f124b28..ee34dfb61605f 100644
-> --- a/drivers/misc/Kconfig
-> +++ b/drivers/misc/Kconfig
-> @@ -448,6 +448,13 @@ config SRAM
->  config SRAM_EXEC
->  	bool
->  
-> +config SRAM_DMA_HEAP
-> +	bool "Export on-chip SRAM pools using DMA-Heaps"
-> +	depends on DMABUF_HEAPS && SRAM
-> +	help
-> +	  This driver allows the export of on-chip SRAM marked as both pool
-> +	  and exportable to userspace using the DMA-Heaps interface.
+$ nbd-client localhost 10809 /dev/nbd0
+...
+Error: Couldn't resolve the nbd netlink family, make sure the nbd module is loaded and your nbd driver supports the netlink interface.
 
-Module name?
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+---
+Changes in v3:
+- Resend to gain some reviews
+- Expand commit message
+- Drop additional reviewers again
+- Cc Christoph as reviewer, as he recently reviewed NBD stuff
+- Link to v2: https://lore.kernel.org/r/20230223-b4-nbd-genl-v2-1-64585d9ce4b9@weissschuh.net
 
->  config DW_XDATA_PCIE
->  	depends on PCI
->  	tristate "Synopsys DesignWare xData PCIe driver"
-> diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
-> index f2a4d1ff65d46..5e7516bfaa8de 100644
-> --- a/drivers/misc/Makefile
-> +++ b/drivers/misc/Makefile
-> @@ -47,6 +47,7 @@ obj-$(CONFIG_VMWARE_VMCI)	+= vmw_vmci/
->  obj-$(CONFIG_LATTICE_ECP3_CONFIG)	+= lattice-ecp3-config.o
->  obj-$(CONFIG_SRAM)		+= sram.o
->  obj-$(CONFIG_SRAM_EXEC)		+= sram-exec.o
-> +obj-$(CONFIG_SRAM_DMA_HEAP)	+= sram-dma-heap.o
->  obj-$(CONFIG_GENWQE)		+= genwqe/
->  obj-$(CONFIG_ECHO)		+= echo/
->  obj-$(CONFIG_CXL_BASE)		+= cxl/
-> diff --git a/drivers/misc/sram-dma-heap.c b/drivers/misc/sram-dma-heap.c
-> new file mode 100644
-> index 0000000000000..c054c04dff33e
-> --- /dev/null
-> +++ b/drivers/misc/sram-dma-heap.c
-> @@ -0,0 +1,245 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * SRAM DMA-Heap userspace exporter
-> + *
-> + * Copyright (C) 2019-2022 Texas Instruments Incorporated - https://www.ti.com/
-> + *	Andrew Davis <afd@ti.com>
+Changes in v2:
+- Expand Cc list to get some reviews
+- Add concrete commit example to commit message
+- Link to v1: https://lore.kernel.org/lkml/20221110052438.2188-1-linux@weissschuh.net/
+---
+ drivers/block/nbd.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-It's 2023 :(
+diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+index 8576d696c7a2..a346dbd73543 100644
+--- a/drivers/block/nbd.c
++++ b/drivers/block/nbd.c
+@@ -2336,6 +2336,7 @@ static struct genl_family nbd_genl_family __ro_after_init = {
+ 	.mcgrps		= nbd_mcast_grps,
+ 	.n_mcgrps	= ARRAY_SIZE(nbd_mcast_grps),
+ };
++MODULE_ALIAS_GENL_FAMILY(NBD_GENL_FAMILY_NAME);
+ 
+ static int populate_nbd_status(struct nbd_device *nbd, struct sk_buff *reply)
+ {
 
-And this needs review from the dma-buf maintainers before I could do
-anything with it.
+---
+base-commit: eb26cbb1a754ccde5d4d74527dad5ba051808fad
+change-id: 20230223-b4-nbd-genl-3a74ca638686
 
-thanks,
+Best regards,
+-- 
+Thomas Weißschuh <linux@weissschuh.net>
 
-greg k-h
