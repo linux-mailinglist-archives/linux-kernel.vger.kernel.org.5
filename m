@@ -2,166 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC24F75195D
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 09:08:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C333751999
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 09:16:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234143AbjGMHIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 03:08:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35020 "EHLO
+        id S234188AbjGMHQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 03:16:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234064AbjGMHIA (ORCPT
+        with ESMTP id S234010AbjGMHQH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 03:08:00 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E7D212D;
-        Thu, 13 Jul 2023 00:07:42 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D17E561A39;
-        Thu, 13 Jul 2023 07:07:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A0B4C433C8;
-        Thu, 13 Jul 2023 07:07:33 +0000 (UTC)
-Message-ID: <37b85c30-7ba4-00ee-3441-26335e16ecf2@xs4all.nl>
-Date:   Thu, 13 Jul 2023 09:07:31 +0200
+        Thu, 13 Jul 2023 03:16:07 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10DBA119
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 00:16:06 -0700 (PDT)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36D6pjgD021569;
+        Thu, 13 Jul 2023 07:15:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=G+SM0xlJQlGGJ7O5RMFvi7gmhLdB2QSrfaYUMEEoKoI=;
+ b=apIiJSozVuJwlTs5ltZW63qEKCRTcZV1+3AxxBJf1z4YiinryfsT4yuudwTmFaHCWueZ
+ IQJo4gfOaLYwytsjeLWGJGmsv8bwpCEz7NbP78IzDo/j2eoIq4h1DCilczd0Nxz5dgKJ
+ vqymTzJvQ/4WHLzd0Km0cTHYhPgtHBzfxvZLa3DWXr4f0zqUOKW+VW+cR92Vjb1W+unK
+ tcfaW5uvUIPJLQN3xyZo27g1Cx9uPiNp1/TVaD0Ny6FEbFyR/gzEcrBajKhHD0WJ/Xwn
+ CXPe3+rEXzApfh9kq5o+cf9W0y1ucjbYe9xTc2tLa9UdlECty/akgz9P0B84HEeKYIn/ PQ== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rtbmur3wm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 13 Jul 2023 07:15:59 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36D7Fwr2027102
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 13 Jul 2023 07:15:58 GMT
+Received: from hu-nprakash-blr.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Thu, 13 Jul 2023 00:09:31 -0700
+From:   Nikhil V <quic_nprakash@quicinc.com>
+To:     <catalin.marinas@arm.com>, <will@kernel.org>
+CC:     Nikhil V <quic_nprakash@quicinc.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <quic_pkondeti@quicinc.com>,
+        <quic_guptap@quicinc.com>, <quic_charante@quicinc.com>
+Subject: [PATCH] arm64: mm: Make hibernation aware of KFENCE
+Date:   Thu, 13 Jul 2023 12:37:57 +0530
+Message-ID: <20230713070757.4093-1-quic_nprakash@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH 01/28] media: cec: ch7322: drop of_match_ptr for ID table
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Sakari Ailus <sakari.ailus@iki.fi>
-Cc:     Joe Tessler <jrt@google.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Michael Tretter <m.tretter@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        =?UTF-8?Q?Niklas_S=c3=b6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Rui Miguel Silva <rmfrfs@gmail.com>,
-        Wenyou Yang <wenyou.yang@microchip.com>,
-        Bin Liu <bin.liu@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Minghsiu Tsai <minghsiu.tsai@mediatek.com>,
-        Houlong Wei <houlong.wei@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Andrzej Pietrasiewicz <andrzejtp2010@gmail.com>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        Yong Deng <yong.deng@magewell.com>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sean Young <sean@mess.org>, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-tegra@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-rockchip@lists.infradead.org
-References: <20230312131318.351173-1-krzysztof.kozlowski@linaro.org>
- <98a77653-ec58-56c4-9893-3b424f67c87e@linaro.org>
- <5afcec8b-b8f6-35b0-278a-5de185e4a7a2@xs4all.nl>
- <ZG9XJCD98VWjGjTN@valkosipuli.retiisi.eu>
- <ZG9ger4WE2VWoVEF@valkosipuli.retiisi.eu>
- <158425ec-86e8-ca3e-eed8-e14b37c42730@linaro.org>
- <ce217ae6-6dd5-26ea-2ce7-95d97ef791c4@linaro.org>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <ce217ae6-6dd5-26ea-2ce7-95d97ef791c4@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: ArvbgUGmIseak7PaXnMRBnZo-9DyaCfi
+X-Proofpoint-ORIG-GUID: ArvbgUGmIseak7PaXnMRBnZo-9DyaCfi
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-13_04,2023-07-11_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 mlxscore=0
+ lowpriorityscore=0 priorityscore=1501 suspectscore=0 phishscore=0
+ spamscore=0 bulkscore=0 mlxlogscore=765 impostorscore=0 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2305260000 definitions=main-2307130062
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/07/2023 08:46, Krzysztof Kozlowski wrote:
-> On 19/06/2023 16:13, Krzysztof Kozlowski wrote:
->> On 25/05/2023 15:19, Sakari Ailus wrote:
->>> Hi folks,
->>>
->>> On Thu, May 25, 2023 at 03:40:04PM +0300, Sakari Ailus wrote:
->>>> Hi Hans,
->>>>
->>>> On Sat, May 13, 2023 at 11:57:33AM +0200, Hans Verkuil wrote:
->>>>> On 12/05/2023 18:35, Krzysztof Kozlowski wrote:
->>>>>> On 12/03/2023 14:12, Krzysztof Kozlowski wrote:
->>>>>>> The driver can match only via the DT table so the table should be always
->>>>>>> used and the of_match_ptr does not have any sense (this also allows ACPI
->>>>>>> matching via PRP0001, even though it might not be relevant here).
->>>>>>>
->>>>>>>   drivers/media/cec/i2c/ch7322.c:583:34: error: ‘ch7322_of_match’ defined but not used [-Werror=unused-const-variable=]
->>>>>>>
->>>>>>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->>>>>>> ---
->>>>>>
->>>>>> Hans, Sakari,
->>>>>>
->>>>>> Can you pick up the patchset? There was positive feedback:
->>>>>> https://patchwork.linuxtv.org/project/linux-media/patch/20230312131318.351173-1-krzysztof.kozlowski@linaro.org/
->>>>>>
->>>>>> but it seems it was not applied.
->>>>>
->>>>> I see it is delegated to Sakari in patchwork and marked Under Review, but I don't
->>>>> see a corresponding pull request for this series.
->>>>>
->>>>> Sakari, did something go wrong?
->>>>
->>>> I spotted this as Hans notified me in IRC, I wasn't cc'd. Apologies for
->>>> this --- I intended to take these but I think I must have missed something
->>>> important in the process. I'll take them now.
->>>>
->>>> Thanks.
->>>
->>> This no longer applied cleanly. Mostly there was fuzz near .of_match_table
->>> changes as probe_new (and remove_new?) changes have been recently merged.
->>> There were other issues as well, I marked a few patches in the set "not
->>> applicable" as other patches had already done equivalent changes earlier.
->>>
->>> There were substance-changing changes in the 20th patch, replied to the
->>> disuccsion there.
->>>
->>> I've pushed the result here and intend to send PR to Mauro soon if there
->>> are no issues:
->>>
->>> <URL:https://git.linuxtv.org/sailus/media_tree.git/log/?h=of-match-ptr>
->>
->> One month later, I still don't see this set in the linux-next.  What's
->> happening here?
->>
-> 
-> I don't think this was merged in v6.5-rc1. It's not in linux-next,
-> either. Another month passed...
+In the restore path, swsusp_arch_suspend_exit uses copy_page() to
+over-write memory. However, with features like KFENCE enabled, there could
+be situations where it may have marked some pages as not valid, due to
+which it could be reported as invalid accesses.
 
-I'm really hopeful it will be merged very soon. As you may have noticed (!) we
-have problems with maintaining the media subsystem (too many patches, not enough
-maintainers). We had a meeting about that a few weeks ago and are working on
-it.
+Consider a situation where page 'P' was part of the hibernation image.
+Now, when the resume kernel tries to restore the pages, the same page 'P'
+is already in use in the resume kernel and is kfence protected, due to
+which its mapping is removed from linear map. Since restoring pages happens
+with the resume kernel page tables, we would end up accessing 'P' during
+copy and results in kernel pagefault.
 
-The core problem for this particular series was that the PR containing this series
-was posted much too late (as in three months too late!), and it came in too late
-for 6.5.
+The proposed fix tries to solve this issue by marking PTE as valid for such
+kfence protected pages.
 
-Regards,
+Co-developed-by: Pavankumar Kondeti <quic_pkondeti@quicinc.com>
+Signed-off-by: Pavankumar Kondeti <quic_pkondeti@quicinc.com>
+Signed-off-by: Nikhil V <quic_nprakash@quicinc.com>
+---
+ arch/arm64/mm/trans_pgd.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-	Hans
+diff --git a/arch/arm64/mm/trans_pgd.c b/arch/arm64/mm/trans_pgd.c
+index 4ea2eefbc053..e9ad391fc8ea 100644
+--- a/arch/arm64/mm/trans_pgd.c
++++ b/arch/arm64/mm/trans_pgd.c
+@@ -24,6 +24,7 @@
+ #include <linux/bug.h>
+ #include <linux/mm.h>
+ #include <linux/mmzone.h>
++#include <linux/kfence.h>
+ 
+ static void *trans_alloc(struct trans_pgd_info *info)
+ {
+@@ -41,7 +42,8 @@ static void _copy_pte(pte_t *dst_ptep, pte_t *src_ptep, unsigned long addr)
+ 		 * the temporary mappings we use during restore.
+ 		 */
+ 		set_pte(dst_ptep, pte_mkwrite(pte));
+-	} else if (debug_pagealloc_enabled() && !pte_none(pte)) {
++	} else if ((debug_pagealloc_enabled() ||
++		   is_kfence_address((void *)addr)) && !pte_none(pte)) {
+ 		/*
+ 		 * debug_pagealloc will removed the PTE_VALID bit if
+ 		 * the page isn't in use by the resume kernel. It may have
+-- 
+2.17.1
+
