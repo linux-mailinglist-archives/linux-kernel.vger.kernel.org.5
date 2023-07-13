@@ -2,228 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B73C751742
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 06:18:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 940BC751751
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 06:21:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233778AbjGMESK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 00:18:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60352 "EHLO
+        id S233600AbjGMEU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 00:20:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233653AbjGMESI (ORCPT
+        with ESMTP id S232341AbjGMEUz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 00:18:08 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DF7F1BC6
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 21:18:05 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-51e24210395so7920a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 21:18:05 -0700 (PDT)
+        Thu, 13 Jul 2023 00:20:55 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D2D519BE
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 21:20:54 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id 5614622812f47-3a412653335so266082b6e.1
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 21:20:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689221883; x=1691813883;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=pz3nS8lXTNVZ3u6IVmUqiloBRE/ZcXusj9fHVOjMYbc=;
-        b=awYpnn8LiC3iJ1Y09IQWDtiVJhwm9VSxoHjU8M0b4YUzHu0cR00B+pj0NWi/v5hO6k
-         Hd/Tz567m+UwwCyKu0f+kZhheZ0qigGDQWaeWNEvTXwsjvuEaXJtjHjUroMz9/0sS/yI
-         w/k5vfeDai8cU6G5Iqrw+hf3NU8w+UL06HdFkgE4qCz8z2duSubJ71fd+nl6seCnY32t
-         kxxwIvV4d4Y3eRb27/rjRo20ASiAetUVDZub8wP4eYT1EBmii2eUTnu18u5Dl1Wea/TA
-         xQCMETSY+wSMTpnOgDdMFWQTCB5fiFvkjDOqv09mBPkE854FFyPcx9on+W6TWSSDx/8e
-         AiZg==
+        d=gmail.com; s=20221208; t=1689222053; x=1691814053;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=YPThBi3gLHbiMnxNJA8Pqg7+B1TGtxLdGO8OQZP+rPE=;
+        b=kZPDfTp8BiBR6nr8WXBNq/Q0pG0Jj/xtqusNHh+GQB/o1+8mYiboEeIDaKy4oTDCaX
+         m0KbGb1TzIiljMKK5ecWb0kViWUeZV2R797gxnFo6+8imC+dLU+UECElCCtJL7vnR6y4
+         jUJyurBGHJcWQ38PoVhHxoBS4hXToDnZ9xubwSOPm2NGnZqzb+9kIMJN/xNj0PaB1K5R
+         HXgmxuwxbcPjmzN5eIT43t+HluklQTar/sMWaOE4MEBtNk84zA5Y14aVVhuAsmlfKwfK
+         3IFEnmFQeSTP1E/7nxPsTWWv0/c0/ZA7IZJQMapCu/YPDw2sN98paPG0h2DJ2XhCLKNL
+         KGZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689221883; x=1691813883;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20221208; t=1689222053; x=1691814053;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=pz3nS8lXTNVZ3u6IVmUqiloBRE/ZcXusj9fHVOjMYbc=;
-        b=PBlIXluOUR/bTULvEMjkIb+J5coPPH5Pf6LtamGeIraR4K8sCJs5W4Jk95SNWko3qh
-         VBdokCJu9OPEezX/03ahvFdosFoAx9tXLI6RPovBVrIOp76IDqO5jtO3vnpQYjd/yA+S
-         XcBd6B/Xd33K+w3JwRRZQ/udvG/zt2LuHKj5N8a7zoCjtGtuFhJwn7aQVSyjBjN/LoeY
-         jlZPeUVJxWBXlPoXxrgUeZY5DxKRX5oEzVOKWUvr7ecJCl3cOOyIeCn7K7pMnofMDMhb
-         KZrXk3XBc09hAU8JvAA9pF9iTJQkcoHQlNpk/10q2dv+iZahUH48Qzf+ZGdmxW2eGo0h
-         yEZQ==
-X-Gm-Message-State: ABy/qLZC6JflqrdVEd80T7zCbub+lcvTJaMtxC504mxu45ogU/lw7Bfa
-        X7EUmagloVGrZCw1LgXm2lSDEJCf/+YHdMN6C2E5F4rTETOEGh68t5I=
-X-Google-Smtp-Source: APBJJlFfExe8G13ZlB8gnjM3mSBkA7p1atxW5Jhf4upMxlHzNOtlQPwz8FkvYpMRiMmiJ5oUOpQJTw6tfNSLHK28hFY=
-X-Received: by 2002:a50:8a9c:0:b0:51a:1ffd:10e with SMTP id
- j28-20020a508a9c000000b0051a1ffd010emr190568edj.3.1689221883430; Wed, 12 Jul
- 2023 21:18:03 -0700 (PDT)
+        bh=YPThBi3gLHbiMnxNJA8Pqg7+B1TGtxLdGO8OQZP+rPE=;
+        b=HoHJkxYR4B+3oWyzVrLbd1g5rb7AvKtEVZk3dXilxoA1RZB/BU5wgadrpxpmW75Idw
+         6MRciiQijT2Di8bGt9ptItFuz6GNEQxeMC6sMHYSbpzOR/IlMSilczxDeQduGiEP/4bd
+         fQU2TQDkn4AVY/8jM1Tk7+xQoz80Uofr7QpAbbMH5fe/5d0aiI0w3M65m0BrgwoRgXp4
+         N/BM2GPjd5kHIsjGU0BsUxU9yoGW0M5WXxiZd7ilRQfxPAoha8L8zOcvpT/YDS0LqUwu
+         jkUofOjgi5GbiwXyM2LWaXDpE+36ZH+6r6H/OIeMri7IrK8HxvtLf9VLjyTyyw6NYV96
+         M5tA==
+X-Gm-Message-State: ABy/qLZqqCQC45MLhVY+QM1mWxSRH1qE/TbkZADNe7ijaoiOhPai7EbG
+        gZpS8HYJyhTxkIgDRYoSQL0=
+X-Google-Smtp-Source: APBJJlEVeO6bzD9JRQ8lZ4+gjyfbYmqIa4dFDm7lRrzAYkMXt3pCuCK4fqd2c6VMnQYLZNQX3GlUCQ==
+X-Received: by 2002:a05:6808:148d:b0:398:34da:daad with SMTP id e13-20020a056808148d00b0039834dadaadmr648193oiw.51.1689222053542;
+        Wed, 12 Jul 2023 21:20:53 -0700 (PDT)
+Received: from fedora.. ([1.245.179.104])
+        by smtp.gmail.com with ESMTPSA id u18-20020aa78392000000b006827c26f147sm4346601pfm.138.2023.07.12.21.20.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Jul 2023 21:20:52 -0700 (PDT)
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     Minchan Kim <minchan@kernel.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Subject: [RFC PATCH v2 00/21] mm/zsmalloc: Split zsdesc from struct page
+Date:   Thu, 13 Jul 2023 13:20:15 +0900
+Message-ID: <20230713042037.980211-1-42.hyeyoo@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-References: <20230712-regmap-kunit-enable-v1-1-13e296bd0204@kernel.org>
-In-Reply-To: <20230712-regmap-kunit-enable-v1-1-13e296bd0204@kernel.org>
-From:   David Gow <davidgow@google.com>
-Date:   Thu, 13 Jul 2023 12:17:50 +0800
-Message-ID: <CABVgOSkzui0e_1LhrMAeJG1RMFqyq472XNHod0tS452mUg2m+g@mail.gmail.com>
-Subject: Re: [PATCH] regmap: Provide user selectable option to enable regmap
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Brendan Higgins <brendan.higgins@linux.dev>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kunit-dev@googlegroups.com
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000571b4f0600569e0d"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000571b4f0600569e0d
-Content-Type: text/plain; charset="UTF-8"
+v1: https://lore.kernel.org/linux-mm/20230220132218.546369-1-42.hyeyoo@gmail.com
 
-On Wed, 12 Jul 2023 at 07:22, Mark Brown <broonie@kernel.org> wrote:
->
-> Since apparently enabling all the KUnit tests shouldn't enable any new
-> subsystems it is hard to enable the regmap KUnit tests in normal KUnit
-> testing scenarios that don't enable any drivers.  Add a Kconfig option
-> to help with this and include it in the KUnit all tests config.
->
-> Signed-off-by: Mark Brown <broonie@kernel.org>
-> ---
+v1 -> v2:
+ - rebased to the latest mm-unstable, resulting in some patches dropped
+ - adjusted comments from Mike Rapoport, defining helpers when
+   converting its users
 
-Thanks: I wasn't totally convinced of the extra CONFIG_REGMAP_BUILD
-option at first, but having thought about it some more (and seen the
-ASoC topology one, which has always annoyed me for being a pain to
-enable), I've come around.
+The purpose of this series is to define own memory descriptor for zsmalloc,
+instead of re-using various fields of struct page. This is a part of the
+effort to reduce the size of struct page to unsigned long and enable
+dynamic allocation of memory descriptors.
 
-Reviewed-by: David Gow <davidgow@google.com>
+While [1] outlines this ultimate objective, the current use of struct page
+is highly dependent on its definition, making it challenging to separately
+allocate memory descriptors.
 
-Cheers,
--- David
+Therefore, this series introduces new descriptor for zsmalloc, called
+zsdesc. It overlays struct page for now, but will eventually be allocated
+independently in the future. And apart from dynamic allocation of descriptors,
+this is a nice cleanup.
 
->  drivers/base/regmap/Kconfig                  | 12 +++++++++++-
->  tools/testing/kunit/configs/all_tests.config |  2 ++
->  2 files changed, 13 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/base/regmap/Kconfig b/drivers/base/regmap/Kconfig
-> index 0db2021f7477..b1affac70d5d 100644
-> --- a/drivers/base/regmap/Kconfig
-> +++ b/drivers/base/regmap/Kconfig
-> @@ -4,7 +4,7 @@
->  # subsystems should select the appropriate symbols.
->
->  config REGMAP
-> -       bool "Register Map support" if KUNIT_ALL_TESTS
-> +       bool
->         default y if (REGMAP_I2C || REGMAP_SPI || REGMAP_SPMI || REGMAP_W1 || REGMAP_AC97 || REGMAP_MMIO || REGMAP_IRQ || REGMAP_SOUNDWIRE || REGMAP_SOUNDWIRE_MBQ || REGMAP_SCCB || REGMAP_I3C || REGMAP_SPI_AVMM || REGMAP_MDIO || REGMAP_FSI)
->         select IRQ_DOMAIN if REGMAP_IRQ
->         select MDIO_BUS if REGMAP_MDIO
-> @@ -23,6 +23,16 @@ config REGMAP_KUNIT
->         default KUNIT_ALL_TESTS
->         select REGMAP_RAM
->
-> +config REGMAP_BUILD
-> +       bool "Enable regmap build"
-> +       depends on KUNIT
-> +       select REGMAP
-> +       help
-> +         This option exists purely to allow the regmap KUnit tests to
-> +         be enabled without having to enable some driver that uses
-> +         regmap due to unfortunate issues with how KUnit tests are
-> +         normally enabled.
-> +
->  config REGMAP_AC97
->         tristate
->
-> diff --git a/tools/testing/kunit/configs/all_tests.config b/tools/testing/kunit/configs/all_tests.config
-> index 0393940c706a..873f3e06ccad 100644
-> --- a/tools/testing/kunit/configs/all_tests.config
-> +++ b/tools/testing/kunit/configs/all_tests.config
-> @@ -33,5 +33,7 @@ CONFIG_DAMON_PADDR=y
->  CONFIG_DEBUG_FS=y
->  CONFIG_DAMON_DBGFS=y
->
-> +CONFIG_REGMAP_BUILD=y
-> +
->  CONFIG_SECURITY=y
->  CONFIG_SECURITY_APPARMOR=y
->
-> ---
-> base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
-> change-id: 20230701-regmap-kunit-enable-a08718e77dd4
->
-> Best regards,
-> --
-> Mark Brown <broonie@kernel.org>
->
+This work is also available at:
+	https://gitlab.com/hyeyoo/linux/-/tree/separate_zsdesc_rfc-v2
 
---000000000000571b4f0600569e0d
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+[1] State Of The Page, August 2022
+https://lore.kernel.org/lkml/YvV1KTyzZ+Jrtj9x@casper.infradead.org
 
-MIIPnwYJKoZIhvcNAQcCoIIPkDCCD4wCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-ggz5MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
-IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
-dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
-6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
-c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
-I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
-AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
-BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
-CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
-AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
-MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
-My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
-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
-9IGQSBx2i4m+hGXJpET+MEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
-dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAwGA1UdEwEB/wQCMAAwgZoGCCsG
-AQUFBwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9n
-c2F0bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWdu
-LmNvbS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouse
-LHIb0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20v
-Y2EvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQCRI3Z4cAidgFcv
-Usqdz765x6KMZSfg/WtFrYg8ewsP2NpCxVM2+EhPyyEQ0k0DhtzdtGoI/Ug+jdFDyCKB9P2+EPLh
-iMjMnFILp7Zs4r18ECHlvZuDZfH9m0BchXIxu5jLIuQyKUWrCRDZZEDNr510ZhhVfYSFPA8ms1nk
-jyzYFOHYQyv5IfML/3IBFKlON5OZa+V8EZYULYcNkp03DdWglafj7SXZ1/XgAbVYrC381UvrsYN8
-jndVvoa1GWwe+NVlIIK7Q3uAjV3qLEDQpaNPg1rr0oAn6YmvTccjVMqj2YNwN+RHhKNzgRGxY5ct
-FaN+8fXZhRhpv3bVbAWuPZXoMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
-R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
-MDIwAhABAz5xDls09r2CKyYRqnNbMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCD9
-wrwVthY0C9S0YJ3hYy9opnPigKNPhNBlaORts7fapzAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
-MBwGCSqGSIb3DQEJBTEPFw0yMzA3MTMwNDE4MDNaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
-BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
-CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAC7kb++0HobZNLkNwM1pZ
-1zI4kk4LLEaxv73pRDkVMZojMtZjvsRphm1M8p3DirKe1w9pf1UpHkG/H5pZMWAnkDO3j5uuVAmI
-t7AU+6Rgcvtop06PdbPMS7OPJEqXOGwrtrd35ZI7HMP6nezJY2KU2foFtWrbUh2DKPDyvTR3WhXq
-XvJ3J/gSvoNH6Qz0nXKujv0F2/y5hwbWph8LLwQuvJ/YcB38PSRC6EopX278M1boDDQIZnlG765l
-hSAcBUj0zkA0jrGnUMN7hJ0I+ZTkJAvxSsMwiVNX62XVtpiGTZWogptKNdnvS++0HMIufoIjl7Cb
-/HfV+y5tWEq18RYhLA==
---000000000000571b4f0600569e0d--
+Hyeonggon Yoo (21):
+  mm/zsmalloc: create new struct zsdesc
+  mm/zsmalloc: add utility functions for zsdesc
+  mm/zsmalloc: replace first_page to first_zsdesc in struct zspage
+  mm/zsmalloc: add alternatives of frequently used helper functions
+  mm/zsmalloc: convert {try,}lock_zspage() to use zsdesc
+  mm/zsmalloc: convert __zs_{map,unmap}_object() to use zsdesc
+  mm/zsmalloc: convert obj_to_location() and its users to use zsdesc
+  mm/zsmalloc: convert obj_malloc() to use zsdesc
+  mm/zsmalloc: convert create_page_chain() and its user to use zsdesc
+  mm/zsmalloc: convert obj_allocated() and related helpers to use zsdesc
+  mm/zsmalloc: convert init_zspage() to use zsdesc
+  mm/zsmalloc: convert obj_to_page() and zs_free() to use zsdesc
+  mm/zsmalloc: convert reset_page() to reset_zsdesc()
+  mm/zsmalloc: convert zs_page_{isolate,migrate,putback} to use zsdesc
+  mm/zsmalloc: convert __free_zspage() to use zsdesc
+  mm/zsmalloc: convert location_to_obj() to use zsdesc
+  mm/zsmalloc: convert migrate_zspage() to use zsdesc
+  mm/zsmalloc: convert get_zspage() to take zsdesc
+  mm/zsmalloc: convert SetZsPageMovable() to use zsdesc
+  mm/zsmalloc: remove now unused helper functions
+  mm/zsmalloc: convert {get,set}_first_obj_offset() to use zsdesc
+
+ mm/zsmalloc.c | 574 +++++++++++++++++++++++++++++++-------------------
+ 1 file changed, 360 insertions(+), 214 deletions(-)
+
+-- 
+2.41.0
+
