@@ -2,108 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7182A7519E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 09:27:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5AF57519EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 09:28:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231216AbjGMH1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 03:27:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47038 "EHLO
+        id S233576AbjGMH2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 03:28:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234232AbjGMH1S (ORCPT
+        with ESMTP id S230109AbjGMH2q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 03:27:18 -0400
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2133.outbound.protection.outlook.com [40.107.215.133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57BC1269F;
-        Thu, 13 Jul 2023 00:27:06 -0700 (PDT)
+        Thu, 13 Jul 2023 03:28:46 -0400
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2090.outbound.protection.outlook.com [40.107.215.90])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B869C172C;
+        Thu, 13 Jul 2023 00:28:45 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=P8PkLW5GMEJ7RCABPDGrlmG1lndjDJ5pBTj6l+NNf86JoHlrrDJjfo4pkmAaz1si123CFQj8fsA1eAoF3Bud3yWuMkmuNeJMq0P2tbzwuVm3PtUc8YxC2w01vB87Jzmnm8wmSJ+h+IC+vOKH8OEz/ltC9OC1b5VFPg/KzQr9HJn+3O75/x0OJvZ+XLUfPVb4Kym8NAMlL6wo7W1i560fuCo+IdmtBwhoxWSyy/Of3GvArkLIbTPFyX/wasv+wqLifJwgez7+012oQ2qsUM2wPZ3RngnZPpauwTmNcQ6DK0Q2U50sJ4zZnAZsMTGXGy8P2ulz3Oo3Cq982gj4MjfXMQ==
+ b=G3zHdQjrjSXxFr05jXA6TGNjl87u7p6bpdTA4CGRUxnWtIqyfdWHmu2PYIIsreLz9k1K5OfyqCR+ZkMtp8lFHIRF3VNbOveZ8Z3iqSP5QUt2BI+zJE2G2c0V8Qt2wPcjXELe5qjSWqPFl8oUfPYHFQ3Pk8z70B+cFxapMnDZ8sXWSe4LhAiJzgNm4dj/f+pmp7S7/v7hquc+eC9M2xWZYFFJ19HmfirrPSSSQlRsO6Ic/zCkrbWPTXNbJYccp/0gn14jDDOIl7FAwAvEufgCd7jeMctiQL+ZsFEXaHePale5U0VedMSBiBsRA/VJqW/Xkw4Y9PfhTzXoR3dGG6aiJA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=RxYzMH8N+1wKBiO/yJc9X/mhXJnA92XlG4e/hqDIl3c=;
- b=YsHU/MUSj2jbncOsCy3XOEvyjkvy5KjIMetvxeFL2/FMLyTWMeR7V0NUkDN0jCbwbk8b85jRR9sLUMpUctO61OctqwIiPwvq5PxNo7mktgs0iXi6eSgbapzIC31WsQ5MIaOCGFxYW9vqCnFqvm81fnDefmiWazc0XS83tORB3J8zgag9riwDQLmkFyA4IoEColYdUqolck5ZyZzmuo+fj/m0r6oWHBp8qGcShCU45AIm1vSmPN/ys4kmpdcSHTN8CpZv6zdO25s9l5tOyYTAlWVo8aN2MghDFFgeAxqzjA9twQF9jNgEaq1ljknd/KDrbtba80ONOHQ4gSPzd7KTRA==
+ bh=lFpOYKW5iwzxJ56icRPI0PpaBTfsqkn6CvaEv2T7b9c=;
+ b=EHoIhb58N/uuUcjZl62FeovtLji/4Oc8wUx01x7o6X0/gSFezz6a/XWrog4/ju+4lfyvtnsIR5Y+EnB5g/TNX7OEz6r37s9Rt8N/ExISQs9CmWN2H9BiYyP1agconiDgpSF3HPyrVeoispd5dldeEBFLSWmazVarSgHCExEJMgcZTuJpD5roWc2qIn+aY5+ZzsM3gmYUX1O2mvQQ/LiUCqtonF3/OF4BVuu2zaSdIBzspzkm8Il6nNgbdGKuol7+93P/8K+9TYXGYWrfQ2cr1d6NEzru2nYcpWM8QbrkxOM7Jwjt5ZDjI6lHlXLDcWkXInzYYo7Ylf1J47ThP7/baw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
  dkim=pass header.d=vivo.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RxYzMH8N+1wKBiO/yJc9X/mhXJnA92XlG4e/hqDIl3c=;
- b=j64kGn5Nz/h4iuP5lc5yCgFUaDanM/sExN0Tmcqx9dGsRtVdAw9qXQXsG4PgQbdLqaLg15ObFpbawWKXvE8R3rp/ytA69LQA1oR4VcLOWtDrqkFBwV6xmb6brsdhZ4wK3hqup+xiC9Dr0n4nT+5NVZSYR9YRHUtC8UnFMehqkmO4KRJrwbBZIP6WlH/XP7VZqBCYFa9ozn4xvLyaAmmFMiU+JLvUEcDVkmTh3nsCs1d1vftwO716uDoGrBSxSI42oOnQydIwX3/5HvKlaaxKbLrXydF9tcj7encpAr9x93zyHihJClQA+lJBmFdosEyZeTdoZ15saTYO1M2lgQu+3w==
+ bh=lFpOYKW5iwzxJ56icRPI0PpaBTfsqkn6CvaEv2T7b9c=;
+ b=aandSrtlvxcMTDHf+MGJ5WfQAI6mOVCgkxLJVtah9iqCy4HYJSntCyi0m4SVSaqJFeeQhkPQr12czM8e51odxi2NosVFp/KCF6LsSnVXOpn2WpLtysFJlusu/BzEi+jgI04iglKJfJVaoqmycGX5/3ZM8O2ej2FmCJTuxVBSK4vdToELxZ+Sy1tTnWsc+1+dLpX8YEKZXyMoV38vlo5+ATqdvkNUrs1M2/fw1qQLB0GAN6oVZI/bX+saQzRv7XLrdPJmGhDagDZvhmnSeuFV2eQSVj2sLfEjz3jxJ1PxCtwNQhk0ZVU3+mPPAYOl8yr1ec00NIQmJxRvWP/vaBMfYQ==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from SG2PR06MB3743.apcprd06.prod.outlook.com (2603:1096:4:d0::18) by
- TYSPR06MB6503.apcprd06.prod.outlook.com (2603:1096:400:474::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6565.31; Thu, 13 Jul
- 2023 07:27:02 +0000
-Received: from SG2PR06MB3743.apcprd06.prod.outlook.com
- ([fe80::2a86:a42:b60a:470c]) by SG2PR06MB3743.apcprd06.prod.outlook.com
- ([fe80::2a86:a42:b60a:470c%4]) with mapi id 15.20.6588.024; Thu, 13 Jul 2023
- 07:27:02 +0000
-From:   Wang Ming <machel@vivo.com>
-To:     Nilesh Javali <njavali@marvell.com>,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     opensource.kernel@vivo.com, gregkh@linuxfoundation.org,
-        error27@gmail.com, Wang Ming <machel@vivo.com>
-Subject: [PATCH v1] scsi: qla2xxx: Remove error checking for debugfs_create_dir()
-Date:   Thu, 13 Jul 2023 15:26:25 +0800
-Message-Id: <20230713072640.1587-1-machel@vivo.com>
-X-Mailer: git-send-email 2.25.1
+Received: from SG2PR06MB5288.apcprd06.prod.outlook.com (2603:1096:4:1dc::9) by
+ TYZPR06MB4206.apcprd06.prod.outlook.com (2603:1096:400:2d::13) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6588.22; Thu, 13 Jul 2023 07:28:41 +0000
+Received: from SG2PR06MB5288.apcprd06.prod.outlook.com
+ ([fe80::f9b8:80b5:844e:f49a]) by SG2PR06MB5288.apcprd06.prod.outlook.com
+ ([fe80::f9b8:80b5:844e:f49a%6]) with mapi id 15.20.6565.028; Thu, 13 Jul 2023
+ 07:28:41 +0000
+From:   Minjie Du <duminjie@vivo.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-tegra@vger.kernel.org (open list:TEGRA IOMMU DRIVERS),
+        iommu@lists.linux.dev (open list:IOMMU SUBSYSTEM),
+        linux-kernel@vger.kernel.org (open list)
+Cc:     opensource.kernel@vivo.com, Minjie Du <duminjie@vivo.com>,
+        Thierry Reding <treding@nvidia.com>
+Subject: [PATCH v4] iommu: remove redundant parameter check in tegra_smmu_debugfs_init()
+Date:   Thu, 13 Jul 2023 15:28:25 +0800
+Message-Id: <20230713072825.10348-1-duminjie@vivo.com>
+X-Mailer: git-send-email 2.39.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: SG2P153CA0049.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c6::18)
- To SG2PR06MB3743.apcprd06.prod.outlook.com (2603:1096:4:d0::18)
+X-ClientProxiedBy: TYXPR01CA0047.jpnprd01.prod.outlook.com
+ (2603:1096:403:a::17) To SG2PR06MB5288.apcprd06.prod.outlook.com
+ (2603:1096:4:1dc::9)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SG2PR06MB3743:EE_|TYSPR06MB6503:EE_
-X-MS-Office365-Filtering-Correlation-Id: d36009a0-8c7a-4423-3f76-08db83728d2d
+X-MS-TrafficTypeDiagnostic: SG2PR06MB5288:EE_|TYZPR06MB4206:EE_
+X-MS-Office365-Filtering-Correlation-Id: b0da3745-c702-4f9c-d2f8-08db8372c83c
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: FPVnDrPKeq8AOdCZ+NtcOc/goRZ2CXW8VH1Rnq/xG8G2xcsyx02NxFCGlwvuDWGHQQ3SU540w4mfOzz14dN9s3fFCo0/dbLM9w1U292QWcvCaxC7jyD2rnOrQxeJoej0lfHsvBt20C9NvuVt2lpK3LIngEzVxgKV98ZAGH+2xzfzRfz9oskzk1gyB8vWL89m/aGTUszdIqcqag0HLLfo8OjeSk6YEhJaxA/0zXOtWynSEYimAjhNdAt5VDgU9humW0UI3CFXJSCZHpOFBsNk2z6Fqd3V9rOcl8t7KVqlvIQXtsC95TWG18HPY4IgI5FLgi9mApbaI7K1OfElbExf2finzuTCXioVhDp3KRv1WIAtcH5rzPGppGsatOqChkBeh1iVwuosbSksDoAP2N5o29iP3/aX2zgoM2V20b9H56HGtq5pe+DS+VfYh7Q8O/vHSN2elopv1VHs/aZMsejIah4L2xpZ7hqKRaxpDITZbIv3WljwyBL1cyyuqD2p0hMDh8Tdt6sh6BQvp/jPADBAwGThXer80o7Nff5VAJugulB2Uxq6R8OszxgqoRe+Ob6QLlcEx0ze6VCH4Kx65R8z62PfoAODc3Nz85NqkP5S6O9cRuhZl7s9nKDUw39ohh6A
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB3743.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(136003)(396003)(346002)(39860400002)(366004)(451199021)(41300700001)(38350700002)(1076003)(83380400001)(38100700002)(26005)(6512007)(186003)(107886003)(2906002)(8676002)(2616005)(5660300002)(8936002)(478600001)(36756003)(66556008)(6666004)(66476007)(52116002)(6486002)(4326008)(66946007)(86362001)(110136005)(316002)(6506007);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: wnMdaR6VtenMDfUx80K7hb4iTMXMXCzxKS55gPfTCwnRnq1lg7kKuaZeAA/nYvP90dMrFe3NmM1kNKkB+GN1/S/v9PNEQJXkZsO7gLbWtdEeJwLFuohCzNsC6K1yYkViplj4CM7smCoJHX5Sa82RPXDRzYRLMZgjq+AjcxtSP4E1WY93lgNR1vqwz6nAf8TXGi9VRGEfSAj5piy6BertZ2ppolDsWVYzEyeRBxCuOLTug028EhcmyzBo76GAL1BAWwdjojwIiRSmubvgniblzBMNheBQLqkjbnF39WHl1HTu59qGvg0WhdKYOI1ZKBjlFBqJbCKwueIk3ylkPfYI1+SDamLbmMWewWPXmOfGJv+wyM1mGb/7GN0z6ER4403WG3sHijY1CYt/8142fIOvoPtuiV6lnb3dBNCvPVxrn2Pzc2xSiRcNGgIRRLESHgfFLUULXiNbvEejtvRu8aNGyDndnxAr1tgrWkD1mYG26X5B0Kgw8E4QpRcGC1nm9wU9ZaeBFlk9ZucpSyzgmHx8G9Rj6zx7YtAtRxB7GIc3hT8GsmXsEd0q0i4BcH41p24+EIN//MoHnmtDSyAqoqrjh21lBTFP+lM7ys3oM1lwsv8qy2fsYaH94PDhJgPMwbOh
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB5288.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(346002)(136003)(376002)(39850400004)(366004)(451199021)(38100700002)(38350700002)(478600001)(4326008)(86362001)(6666004)(52116002)(6486002)(54906003)(110136005)(66476007)(66556008)(66946007)(6512007)(316002)(83380400001)(41300700001)(4744005)(2906002)(36756003)(2616005)(8676002)(8936002)(26005)(6506007)(1076003)(5660300002)(7416002)(186003);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Ito6ZeeYs8mFPaYwf7C9KBUr88P7Dth029hk+24MjbB3O/6FLABOVnO4f11I?=
- =?us-ascii?Q?tDwdaRIY8QZZ6KXv3aMycvt5a5how1NxgckveYnuiSEjuClg1W+rRk3mGUc6?=
- =?us-ascii?Q?stDcGE6wqjEhHo6gOgMQcgQH7J1S0sNM1OTU9ujkluC1cDb6Fy4sdq+qMc0v?=
- =?us-ascii?Q?sJEs4+TnlKRCmIcsski4fB3Fd6a1/EboWtoYuQjYWHmAy3lXZn6/ZiwrM9lK?=
- =?us-ascii?Q?GO4tTH8uxf2G4eDUiOngpHF/d0ljzzjdlTY8BEB+akGXu5cjLN3rGkO8npNR?=
- =?us-ascii?Q?3PCn1Gls5hmLRhYcxIs1acV2w1mK2A4hmEBdVsHUIXgYqk0tWv5m4SVpiVT/?=
- =?us-ascii?Q?Zw0im4OjK8QYsRR/xJRLuL9e5OxKNX1CCKq3DgXo1HXXb8dRH9G/UVuMk+Cp?=
- =?us-ascii?Q?396Q0YgajUjvJqPTwpBphZRVVhGhB7Y4/+2S3zd8aU4L6hD7JnGMOrmEPcBS?=
- =?us-ascii?Q?PIdiWqlke0rWurWqDmNt4n4cnkuGsER+Dko/kdUNSbmD5Ckz7Dd0LXGHJnPr?=
- =?us-ascii?Q?OVZsK6WdkGlEXfkvrnAfRhaZuILEh1H694TZKruox8gwGwjg9DUrBhpapiyL?=
- =?us-ascii?Q?cXwByPmsVdJY280s2jNLfkz7D5TDDt9Ij+B6EPFGh+3Enw2CuJbGPxMOUYWD?=
- =?us-ascii?Q?/vQeHqQXPsZnrICUNN1UFCFIrjm0IAa8wtKi5aMnXO2SGI6JzfQHgmbRjJ1L?=
- =?us-ascii?Q?MfttwZVxbD9+qcdozYnmwXTdzPrF9eYkXRTq+MX/JhvrluD5kcQ34oiL2Ro/?=
- =?us-ascii?Q?XWPR2ApR4oW5WJT+1eHox9Ho77dqhAtuuYl3/dUhqDHy/v4XjlXtvH20stSj?=
- =?us-ascii?Q?iuUzpfRa1vi3ciX1foFQSdRcRjp9Ma6aMRqtxveda6+0rO+p+yrnhcje5tNL?=
- =?us-ascii?Q?CZWxboyi/J0LWUFYQHEXIeu1wOWAUrkbfO2Wl3ZwMkTQzszIOiRFtLcBOlf6?=
- =?us-ascii?Q?ZyzqO+K2y3RPTdFvAD8deXLkkI+mIcMEQfWMTMzMt4ziBugrh3CMxSTOXKxb?=
- =?us-ascii?Q?Gk/TJIowHq2ONG39CNADdKYi16TMFGNHZzIgIWskJpDeny9s/8xkZkLwWkey?=
- =?us-ascii?Q?rdRMTZjCwIp6tM6hWCEDVVpGAMK0oKrkSGC9mgVRIRUc7PYixhv7RFadGn3T?=
- =?us-ascii?Q?8HGws0y0q1kgdTMe4FzyREKYqi2MVX/ZypV2SJkrUuhPI92SS5DlNSnLH9Qy?=
- =?us-ascii?Q?8kmQtC3uIig+9OC8i2np/EQOQaoJYpQLyF6SqG0wemQRJQFOANWXBPg0CrfD?=
- =?us-ascii?Q?FoAQNzU4NshQmq/golpgMn8u3wSPIHYb0kVRpPQn7Xx1uzhcp6Uv4lOqI7Ek?=
- =?us-ascii?Q?pw3Z5hOOMKqaZnPh1fqWT3gPOlfcxOdnvIvZDTvyxRQCGjR4vyXTlD3tOrny?=
- =?us-ascii?Q?QIXbZ6fP5DiQY3PJmDnetnsJCT5YG8/fgMi1Og3uxFgk6BcryxN1fx72zaFf?=
- =?us-ascii?Q?DKCd/zIU2/mYEKJguxgHneNRU4QCitnN0RrdumJ5Oh0R+vsxRTSUYByaJNqd?=
- =?us-ascii?Q?IYJKC84EVQQJeq5ILPkmSXI0jNf/H4IviCKiX8TLiVuwDLQyx5J4r0OsvqSH?=
- =?us-ascii?Q?FTlJiYxMMQSLRxRJ3iKV9Cz7urvzQdsR3UC6ISux?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?FN4/JTABdQ912O5W0giepajf+hPQC2smMUAkLcE3iLKIfWd8rR/1M28FeUi9?=
+ =?us-ascii?Q?2ucCkT/QtSkTdDnPteRpa2EsOYcq1MvmoK7OBmTCMuKpXPyZ4IWJLa5ysY04?=
+ =?us-ascii?Q?tknMvRtBUXU5WiqFOhE6tUB1ulF41MsDZhfj2Hld6hJmMhh2ksKoKXWRZ28n?=
+ =?us-ascii?Q?Jg5QbzlKvLReZXJd/nuVHtxNn3Hb2oBIlS93Dj08JlcK8Qiq8wHzdCf+Y2If?=
+ =?us-ascii?Q?Meu8P7c9F6hU2tDgxal1IGe2s4kGZxP3QKo5pxYnXkDJEI/TtwPtZnfAB0IH?=
+ =?us-ascii?Q?f2OSEFm5Ltvr6TQdURw/KhlZCL5ckRM8WfMCneH9GPezIzPC8M7Aub3e6+i0?=
+ =?us-ascii?Q?agVN4XE40aeXSh2wKyUVaoKGQk/txFN6SxM5ibzfx2AsgUgWzFU/4fmdPAF7?=
+ =?us-ascii?Q?9958DEumvFs8DFoK9XL0dJpy/fx12GxwzlxeeZgn6oWPQpjW3JNiXLJk74ZV?=
+ =?us-ascii?Q?o3Vz7ntaPvkl6pw3ogAdu6BbQaKR1mjBl+/d/N2qYWLZ+h2peKfZmfcFI96Q?=
+ =?us-ascii?Q?6WemctsgV5tmTD1WRkOO9cjLb3sNXPa5Q0IuaLECdHHrYoB3xO35axOu7cSp?=
+ =?us-ascii?Q?fHX3X7qGvZ7mq9P0SQKRZ+Ako1s9RqPWlI0KkxahP/FYvmgFTMqfyo7Puacc?=
+ =?us-ascii?Q?YVvNMrEW+i2hr6tOXjrT5S900jjiY1pSGbmaUz0IT/Prdeh0dOt+o5ZTswFY?=
+ =?us-ascii?Q?rjBW4o55GwEUD/dOodbZj9QYK1nRk4pr3JEGdgNH86C8NTXaxmB24dkfbDoc?=
+ =?us-ascii?Q?U2ExOXc8HDprDH7qf06kahJies9/s57FTQWKS2sc4C+5H6tQpqvuX4TvJebL?=
+ =?us-ascii?Q?RcWR2d34xvIUgkjHUqWA9VQJrD7D4PAnrUxzX/h5Jt4Kgx9N5jDnmpx4kbfS?=
+ =?us-ascii?Q?uJtu/8qBV0jt1HpJfq7JvjHnkBt9wxmWizA97RDedHoQu38V5wYcHcMaNZHk?=
+ =?us-ascii?Q?XN2XbleZhdvIZsMMiAbdzU2xXAB4fO6YqGv/syec0FkDQtoKqVERC2K9yWxm?=
+ =?us-ascii?Q?SqKWJJTKq4AudO5rqKtyh/yROXZjT6NdgaXCje/mMCOKpr4B0QRO1Xck1BHH?=
+ =?us-ascii?Q?cvcdZSc336LrF+z+xIUnoBq8JJJswizf02p93kiwpKotA+h+ArndMUHNJeJj?=
+ =?us-ascii?Q?BbzVMiI4ny4LhIR3m5eoBX26v/I5AzVQiThBKzhR5hcnwW8Er7AIK1lN3i7a?=
+ =?us-ascii?Q?u/voW4k1z8WKi2HJeJb/r35+mMI9/e6do2IZIrJ4SyAftn5+tQ+hOZHjIF13?=
+ =?us-ascii?Q?fAdSCK06bCliuov3xIpz0a+1zxkSVb+Wh01ZbuLFMzZZ4/Gw96nvWlsEuM/z?=
+ =?us-ascii?Q?bHOpFknLTIIROmUHn5EG5RRgIctdnDIogl8CFyYFFL6KffdZhkovjajv7EDa?=
+ =?us-ascii?Q?garU2lubT8fopAhfwIEWZ7ViVo3B/AwAzk/IkyUEYjNtqg7Uew1y5SoWfOow?=
+ =?us-ascii?Q?cZKvPZi/2FogrsK+cJBxO5hPTFDDilZFkevjrOfNbwEo3aGJIlpmY0YA4Yi3?=
+ =?us-ascii?Q?F8TsUgaEuEdsEN3wdhPvnx5UZ+uvknNvISVeQVdA8uTJubsfm2n9y4IBsgOb?=
+ =?us-ascii?Q?s2rzfHxpN//+xaen9TgzKhSsdADcv09rmyQfi8bi?=
 X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d36009a0-8c7a-4423-3f76-08db83728d2d
-X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB3743.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b0da3745-c702-4f9c-d2f8-08db8372c83c
+X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB5288.apcprd06.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2023 07:27:02.2610
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2023 07:28:41.4077
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Cr+GiwVHPwcISUDLSIM8rNmX64RgMmCF5GXVTGzM/GbGOv+IQh63AC7aqVR9p+qt/OoSwAV6OoQkexIVQfQTow==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYSPR06MB6503
+X-MS-Exchange-CrossTenant-UserPrincipalName: cX6ex/y2DGT9IAbbsKu4THE7SgUJxzl0KBYOYpyYA7en6B3rYbO7dXtQuM1pxUC6mnvvCpkay4h6GLvJuTDMOA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR06MB4206
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -114,54 +117,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is expected that most callers should _ignore_ the errors
-return by debugfs_create_dir() in qla2x00_dfs_create_rport()
-and qla2x00_dfs_setup().
+debugfs_create_file() will return early if smmu->debugfs is an error
+pointer, so an extra error check is not needed.
 
-Signed-off-by: Wang Ming <machel@vivo.com>
+Signed-off-by: Minjie Du <duminjie@vivo.com>
+Acked-by: Thierry Reding <treding@nvidia.com>
 ---
- drivers/scsi/qla2xxx/qla_dfs.c | 12 ------------
- 1 file changed, 12 deletions(-)
+ drivers/iommu/tegra-smmu.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/scsi/qla2xxx/qla_dfs.c b/drivers/scsi/qla2xxx/qla_dfs.c
-index 1925cc6897b6..8cd67092aff4 100644
---- a/drivers/scsi/qla2xxx/qla_dfs.c
-+++ b/drivers/scsi/qla2xxx/qla_dfs.c
-@@ -111,13 +111,8 @@ qla2x00_dfs_create_rport(scsi_qla_host_t *vha, struct fc_port *fp)
- 	debugfs_create_file(#_attr, 0400, fp->dfs_rport_dir,	\
- 		fp, &qla_dfs_rport_field_##_attr##_fops)
- 
--	if (!vha->dfs_rport_root || fp->dfs_rport_dir)
--		return;
--
- 	sprintf(wwn, "pn-%016llx", wwn_to_u64(fp->port_name));
- 	fp->dfs_rport_dir = debugfs_create_dir(wwn, vha->dfs_rport_root);
--	if (!fp->dfs_rport_dir)
--		return;
- 	if (NVME_TARGET(vha->hw, fp))
- 		debugfs_create_file("dev_loss_tmo", 0600, fp->dfs_rport_dir,
- 				    fp, &qla_dfs_rport_dev_loss_tmo_fops);
-@@ -139,8 +134,6 @@ qla2x00_dfs_create_rport(scsi_qla_host_t *vha, struct fc_port *fp)
- void
- qla2x00_dfs_remove_rport(scsi_qla_host_t *vha, struct fc_port *fp)
+diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
+index 1cbf063cc..2137040b7 100644
+--- a/drivers/iommu/tegra-smmu.c
++++ b/drivers/iommu/tegra-smmu.c
+@@ -1056,8 +1056,6 @@ DEFINE_SHOW_ATTRIBUTE(tegra_smmu_clients);
+ static void tegra_smmu_debugfs_init(struct tegra_smmu *smmu)
  {
--	if (!vha->dfs_rport_root || !fp->dfs_rport_dir)
+ 	smmu->debugfs = debugfs_create_dir("smmu", NULL);
+-	if (!smmu->debugfs)
 -		return;
- 	debugfs_remove_recursive(fp->dfs_rport_dir);
- 	fp->dfs_rport_dir = NULL;
- }
-@@ -705,11 +698,6 @@ qla2x00_dfs_setup(scsi_qla_host_t *vha)
- 		}
- 	}
- 	vha->dfs_rport_root = debugfs_create_dir("rports", ha->dfs_dir);
--	if (!vha->dfs_rport_root) {
--		ql_log(ql_log_warn, vha, 0xd012,
--		       "Unable to create debugFS rports node.\n");
--		goto out;
--	}
- out:
- 	return 0;
- }
+ 
+ 	debugfs_create_file("swgroups", S_IRUGO, smmu->debugfs, smmu,
+ 			    &tegra_smmu_swgroups_fops);
 -- 
-2.25.1
+2.39.0
 
