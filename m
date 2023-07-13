@@ -2,139 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C50E6751CC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 11:08:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15BA0751CC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 11:08:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229695AbjGMJIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 05:08:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37482 "EHLO
+        id S233497AbjGMJIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 05:08:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233797AbjGMJHn (ORCPT
+        with ESMTP id S233776AbjGMJHm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 05:07:43 -0400
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2102.outbound.protection.outlook.com [40.107.255.102])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FB851FC9
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 02:07:38 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PXQZbfWK1Nh0NTYjy/DFAlsreS2XFfYo+b0t4XUlYXDBW/Ia/cIpujewD/zLO4uhy1iLlUxWAb9hLmObIAmbahhZXMj5rGuTFAl5duEB2mG1VpUI77OQIMfF+GmesuCmtvLcewPUX2qOqA19O887r4GiOgKzlQvUh7lVh73z96+BzTc02thGi3SZBknSumrLPyeYNBD1XU6FiDq84ZNaGrD2oBiUsjtncniHke0LWJHMqnx8alCtN/8NARtNriDTpwy0lV0hP+C5HxFdyz9GTk7TSofelUnTXW3iggabWcGEc8v+cLOMYNdYG88GFHmQe9onuGoyVs/XRIzfNZsarQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=u0y+rDS3ZL+62JjvDt6QAhYsqIH809leEn9kseNghXM=;
- b=OG0bz/clY0fuLigxre3rRlZHcuITbsPa2loaqZbKqQ9uCsXhpBgZm15yEeswCxxVrL2Ja9hgrjonpTwSaInDLVvcznrqRYDmN9/rUJFhwWXQolslErthGWLG9o0chqll3TSv2vh1aWKFt21RbW5ekBuPZiseqd7FF102JT0xl/ymY/q+DnlAknEfEYEkNrPZSHoWMWX52PxjVZqZq0JR42DNONcqwln+GYPeGD1D/NOTP4kZqKi5s4d8Ebiv2jpg/4Uxs8iuSVcul66y06sZLZB4v/UkU3lI5NOaHGlwWOcYLK3vXlLxI1AP46BLnRLdhW/vSjo2zhrUA3WcXVxJ3g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=u0y+rDS3ZL+62JjvDt6QAhYsqIH809leEn9kseNghXM=;
- b=prk7mO3rYm1Kjp2Gz6+8HKgRiDo91dxDwqOW7NeidX2hhQ7bEFQHLsh9K5FMXiqXg9LSF4orL61xxuGgQd3N0o5xyzB8TGOse4boOH1oIcuzsw0Ftx7whgpLgaYRKomFBq0Yc22HJ+xstMT1e3B5X8XEEcpv8VSfQ+wT+qNB7GoeRTbmdYtxVWs4GJfR5JCJ0hjL7E62gm0fvPztU76sEDY9JaAm+dfvz5BneOcSlcS0+GSEtiCak2+1BfgPTBb7M5kS2wZV2g2H/cWatp5C/fEGEEx9nMZLKZVaDbeHq2PQohSu0G7Ov2hsGUvm3KojHyuM4N/F8+VeTVVaSADB7w==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from SG2PR06MB5288.apcprd06.prod.outlook.com (2603:1096:4:1dc::9) by
- TYUPR06MB5912.apcprd06.prod.outlook.com (2603:1096:400:353::5) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6588.20; Thu, 13 Jul 2023 09:07:34 +0000
-Received: from SG2PR06MB5288.apcprd06.prod.outlook.com
- ([fe80::f9b8:80b5:844e:f49a]) by SG2PR06MB5288.apcprd06.prod.outlook.com
- ([fe80::f9b8:80b5:844e:f49a%6]) with mapi id 15.20.6565.028; Thu, 13 Jul 2023
- 09:07:33 +0000
-From:   Minjie Du <duminjie@vivo.com>
+        Thu, 13 Jul 2023 05:07:42 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5321D1FC0
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 02:07:37 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-991fe70f21bso79522966b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 02:07:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1689239256; x=1691831256;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=EwcL9L1d5Ep6I3OBmVEevOc5sUTVYd5D4r/f/BPtefs=;
+        b=UESAu+5a5TJxeQsviLt+XkW6TqgybmnL2loLwuqcwcrZX5lgC9JBicbJwvmqupEuG6
+         4WVy4VPASqrgJTWptK1GGIzYaAr6QINZdEflWWoqwGky7IHsNZuKqRKZ4KIUSPosFVO5
+         dVrzBEnugotbmyNFFbX/5FwT4s00Lq0Midakx0+D0DyqemyKzOZYjDApjbkSajvDHx0o
+         YBOZGoSRFhBsCUW+CoUu++R1U/HbGqefD+cj7wd0yWIGkz8MOdMViohdIqc4x8YCd8wY
+         HrNtZn/VNZz3zZ7n9YubPXwi0IydbXaN4stJZgFtTNGNvZ8L/hvrDsTVwdHU7iKqqiRd
+         eDww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689239256; x=1691831256;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EwcL9L1d5Ep6I3OBmVEevOc5sUTVYd5D4r/f/BPtefs=;
+        b=UEq+vJXJRF66Dl+YoRcUq0EDnxFtbbsr8q1o7fqBBq8VCIuFHQDBeveAVXqArgz9iW
+         AD4HfOdEcn3307IVPV7A4CyIvz/K7yRaMpVeth0/+Kxk8biXSc0jrMAMkT5yoJ2K4f49
+         /XypNglj5//V4QCzuaX9unj/XTAit1xxTeUF/U7L7txdxD5haQqOjlKiUR8NUi3eQyMw
+         FsKLGJrZtLVssXbl+PeCd79Nx++iTEshlFSpREDZEt9KP/9CIUTuq2ZuuYl6aMGCUAWB
+         uOdpfwRh/9kUCl2VPvNS9p9QIGy3u9EtVG8SV9ynGUoLTY4jsvmH5TjiHgONPvDDRfEu
+         Q9UQ==
+X-Gm-Message-State: ABy/qLZEV/lcjzOGrTBzGdnvTBNhGNDixVB3hOTokbf056Zk5XLU3Zgu
+        x+z6lwUFsuxAbKOGU1A6KosJHQ==
+X-Google-Smtp-Source: APBJJlG/9dWdAO+IHMennvFnx6By0szo1vvjGgfqMSsw7wupzZ+6jkd9yMZGR2+spJ8wS3e08a/IdQ==
+X-Received: by 2002:a17:906:5a45:b0:977:95f4:5cca with SMTP id my5-20020a1709065a4500b0097795f45ccamr911215ejc.54.1689239255685;
+        Thu, 13 Jul 2023 02:07:35 -0700 (PDT)
+Received: from [127.0.1.1] ([93.5.22.158])
+        by smtp.googlemail.com with ESMTPSA id p18-20020a1709060dd200b00982d0563b11sm3707352eji.197.2023.07.13.02.07.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Jul 2023 02:07:35 -0700 (PDT)
+From:   Alexandre Mergnat <amergnat@baylibre.com>
+Subject: [PATCH v2 0/3] Add startek-kd070fhfid015 display support
+Date:   Thu, 13 Jul 2023 11:07:32 +0200
+Message-Id: <20230711-startek_display-v2-0-87bc7bdec6e9@baylibre.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIANS+r2QC/3WNyw6CMBAAf4Xs2RpawsuT/2GI2dJFNtaWtEgkh
+ H+3cvc4k0xmg0iBKcIl2yDQwpG9S6BOGfQjugcJNolB5arIaylFnDHM9LwbjpPFVbRlY1RVDpV
+ GhFRpjCR0QNePqXNva5OcAg38OTa3LvHIcfZhPa6L/Nn/g0WKXMiqaGWtyRRNedW4WtaBzr1/Q
+ bfv+xdLR05ZxgAAAA==
 To:     Neil Armstrong <neil.armstrong@linaro.org>,
         Sam Ravnborg <sam@ravnborg.org>,
         David Airlie <airlied@gmail.com>,
         Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org (open list:DRM PANEL DRIVERS),
-        linux-kernel@vger.kernel.org (open list)
-Cc:     opensource.kernel@vivo.com, Minjie Du <duminjie@vivo.com>
-Subject: [PATCH v1] drm/panel: novatek-nt35950: fix parameter check in nt35950_probe()
-Date:   Thu, 13 Jul 2023 17:07:24 +0800
-Message-Id: <20230713090724.12519-1-duminjie@vivo.com>
-X-Mailer: git-send-email 2.39.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: TY2PR02CA0058.apcprd02.prod.outlook.com
- (2603:1096:404:e2::22) To SG2PR06MB5288.apcprd06.prod.outlook.com
- (2603:1096:4:1dc::9)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SG2PR06MB5288:EE_|TYUPR06MB5912:EE_
-X-MS-Office365-Filtering-Correlation-Id: 23d5c8a4-2ab8-445a-0650-08db838097f5
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: B/TbJe4/5YPOXm2+GDVimL1Hb17vdXAe6EdIEUmXch45QxhBXj8Sk58aHE6z7Oq6eHC0/vgyuPEvQ7EREQc+olxi50ifVRO/R35jHrrQO62rZ7i22rBsXLrMCzvb17f6i7bzCtzZRbKqtq5pmliF2cZCJ7e0BH0U4XxW+v8QavcaAmtpU25wbt/6+kJoj39lytNyjIXHH8FNkciAXjZeKn5hgNURpSKfxiUDiQ2OibQWn0xi3spljD1zMCy3mHwn4wx+aUnufjzavnBCoLyRIZhtNe5T6LJGYvzVCK8qIujEaOolMFjPgyp5pe10xxuKcA8x303OROPOzvZVX3peHzOKHQQVQCGsAj8ibZlb4zLRM7pvX0ySgK8aIZbdeRIMfF7bJjRtHZW/rP1+ASOJN8F8jXPBv7ymVl+xknFc6wThDalSNI1yFQ6KRaFGkOCxn2q8jLLvF7zAYJvrK0NSgNJKzilVb0qPer53ONun9tV2rk9o/W65ontqx/XCKIO4aZmY3ZTf019B/sTOGUPsb5OZ4nZ3SQf07v8hwnUN3iWpdzoR7rJpZltEN1Eejq7U1BkTFlMqLABVPZFZ+aFeFu08jRb7AvlTfiE36kYo9lX7tcjlvT0cMrxtgiC5Jp6z
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB5288.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(376002)(346002)(136003)(39860400002)(396003)(451199021)(107886003)(8936002)(8676002)(83380400001)(4744005)(36756003)(38100700002)(2906002)(38350700002)(2616005)(86362001)(26005)(5660300002)(1076003)(6506007)(186003)(6666004)(4326008)(66476007)(6486002)(110136005)(66556008)(66946007)(41300700001)(6512007)(52116002)(316002)(478600001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?xKUY4rm/oc6oYByYuOR8lQ1ZgqQaOkPUxbXtsj+xvdphtEUDUNyWXc9BP0on?=
- =?us-ascii?Q?nFnBE7JtPt1oj394PUCcZBcRPAGUp59WofXxwcFLcBZgEfBrQPuxYt77NsMs?=
- =?us-ascii?Q?1Rk+BXqm1VtQjvOYB0HKJd65/2UP04EbFiPEiAjHfVGzbhy+ocrf8CcawsgB?=
- =?us-ascii?Q?FsxFpdDdLotVeNzKkhwQtWBxXdcA+9/4mdp4wO1daHQBkojhSvh55/bhtjNg?=
- =?us-ascii?Q?ijAow4p0WAGnLMQr1WrJxi4yIsCNOaAqtTvEEX7temPObwB+9MePcDvqO7h4?=
- =?us-ascii?Q?nmqIQ1YxqkcxyIry8WzfSjkj0bEDqWPN8ve8YJ/oV1i72dAPCMSDBq2PMBzU?=
- =?us-ascii?Q?B/RbLVS0TnL7Z1e3P9nLLhkoCSN/PchfXRRaO4pymyzZQ2Z0MG1a251UJrZ2?=
- =?us-ascii?Q?1BrPnXi12c/cuvY5F7ikVdRIaAc+YLP+GfGSHjrqt4b2dVVZEDu6WY6DxB9O?=
- =?us-ascii?Q?/dngkyxbXfTITVjIxp6wroIwkDMfObvKLk4R8xH34YzHTZ/uC84Rw0rusqz0?=
- =?us-ascii?Q?rRRfiCDRWD/maJ+BCRUAQemXtGqNxuxM0HZeGo4LfHpDpe9nuyxrNfPc9Wk1?=
- =?us-ascii?Q?OPOJpYMho2R7Sa+mCl0oe4aYAnG2SA17c0NAXOsFH+z2lV/71pyVSCcExeSa?=
- =?us-ascii?Q?QqHBPGY9hAdr/23jRCxziCA1QFTq3vBztXan/hAoK8wKEZQIlLZ7Gw4hhRf5?=
- =?us-ascii?Q?MmXSgI61ieeglOaezk5BKP6JPkkjK7Utzyz82Fqi+61X1TZpC9bIlXOldzWK?=
- =?us-ascii?Q?yLY5gXFV/pqgF+X2FHxOTE27XCH+656K8MCSrljRNQSfOJI5M6zyVak19PH0?=
- =?us-ascii?Q?ASxnC+W+ZmCUkOuFvTXKo4ReAbSfPUcUdD4Jt8YJ/+OhsdGPOn92YooMi55+?=
- =?us-ascii?Q?ZjMAvg1ImhXVKbOBu1FBE8b981goV6xhbFjWhxAdaCsvJ8hovbHrrLiQf/5w?=
- =?us-ascii?Q?9BRMcD4W5Nbjt1KTg05xYOkP4d2nSS9pexel42qaIm4h8/0swo88khUlGAdO?=
- =?us-ascii?Q?GjoAFS4Vd/kXxfWg5k9bcWfTyO9Qk3UCyWViWrjDUBM38c4RhVmaCYAT4OXB?=
- =?us-ascii?Q?KziiXOHkOM4QRPLWxWfpXqhruAHUJggOpDggcu4tMfNYcQPnsfAgiO9Yxytl?=
- =?us-ascii?Q?0YJgO+USVOnSwNr5Ok+1OXwz0wmCBEQFPu9J1fXupgwCopUS7pCNBk/V++u+?=
- =?us-ascii?Q?IfgpWthYwCNQr5tBtM8MmTtv9m9WXvEh6D6rT1MCD6WROr21DK0Jx4w6rMFk?=
- =?us-ascii?Q?HkA+2K+roNgtaI1TFXnW4E7ib7DjDRNgsMq2KnfjCyc4ysrOz4chDKhT72gC?=
- =?us-ascii?Q?u5ycYH6zECegD4zXdq746AeOo25NEf8oNVm5qjckQBR2Ni3Siq5IuNydk4gz?=
- =?us-ascii?Q?YXSDlleZ9YE7VLZFJmt5mOkJJnbchnP8YkLF/rYgy/4d2Z30tbIqiyaI00A2?=
- =?us-ascii?Q?WEmwhT7pkqkHpP8qWRY1mUIvmARi9WwoeUCqCah3tu9Q4IGnRO8mx2r/Vrnf?=
- =?us-ascii?Q?+xUkY7p8gK1gnpTgdrWfGDnWrEGHrsQuj8OAqk66CnuFr2WBQseDHZI3tOTP?=
- =?us-ascii?Q?7ybeowC4r1825oC77L2uFPPwNd/GEvgqPGAaDG+1?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 23d5c8a4-2ab8-445a-0650-08db838097f5
-X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB5288.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2023 09:07:33.3659
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ionePz8A+/fhbAGZ4VFaCfOvsE4jremFEtSEZuwLzkb8AiE4SZSH5UjzENzlBpiFPTFM43YXVt59YX8lJbKe3Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYUPR06MB5912
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Guillaume La Roque <glaroque@baylibre.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Alexandre Mergnat <amergnat@baylibre.com>,
+        Conor Dooley <conor.dooley@microchip.com>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1988; i=amergnat@baylibre.com;
+ h=from:subject:message-id; bh=3y5LMZOUzphp7mX14QjhOYQXh5yv0tTAKwXAmNFnEB8=;
+ b=owEBbQKS/ZANAwAKAStGSZ1+MdRFAcsmYgBkr77WCyMuAZkdsHbMMihvWnhf1LFUKBPEmnEVeSqM
+ jKNcQ+OJAjMEAAEKAB0WIQQjG17X8+qqcA5g/osrRkmdfjHURQUCZK++1gAKCRArRkmdfjHURfNBD/
+ wKl40srBR89jOhq8VWwgbAbUPLeM19ItclQ2y2gem8pYXOkoFhCaAeUt9c9bZet0i/TqOVG6LKQKXZ
+ TmzhZJWbrJ4RJRTWjg0nfcpxO6uSxLDT1q4sYIMZ9v5d4eTXNefO1+1pE/h/Wv1h9a7JPc2rFRoc8q
+ MMKCtSvr5p4jRJlTV7uRNo2IUOlamv8d9ue0Gthn/6tUTshAHPh2nkmRj4gOCD/N8cMdZI88C0aY2w
+ wXhxk0A1milOKjkzjdIU0dLV5d8k3TLUYtl+Yoc1qSYbxCRhjg/I34wjAp3sUhsHdXzJFGF9A9vYPw
+ POYvyR1pbONQvRAkPvhc8engSQPlUZuF7bJsjhPfJaSAePFmbWwq4sxzCJxnG7Itj+UGrr5KlEGhrM
+ 7NXzlVFoZpcB5y5GnCO/jIwYu6Hz5ObI6d51BQ2xuYIvKEdXVW1LFDH4AjfgTKPSBzMzuqxHBSGadA
+ 0MctXbbMxSAXaymUI7pZLr5ngn1cXSagOA8WxAHgiz4jR7NWzmmmWdW0YEiiVW+IE46uZc+LVw38MU
+ btxqgXtsA2p/sgkTqy8GpmLNifE+G6UK6tuj9T6ohdnSpmrvxVwn8AdR53O8TfJdvy949eq8H+5ntQ
+ nbZwcrht0BQsAfUcKBDM8SZdOE5hsCNvKuxB4wnZFRuLc/mkv/vkx0cSvAow==
+X-Developer-Key: i=amergnat@baylibre.com; a=openpgp;
+ fpr=231B5ED7F3EAAA700E60FE8B2B46499D7E31D445
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make IS_ERR() judge the mipi_dsi_device_register_full() function return
-in nt35950_probe().
+Add the support of the Startek KD070FHFID015 panel.
+It's a 7-inch TFT LCD display with a resolution of 1024 x 600 pixels.
 
-Signed-off-by: Minjie Du <duminjie@vivo.com>
+This serie come from a bigger one [1]. Then I addressed the previous
+comments for the related commits here.
+
+[1]: https://lore.kernel.org/all/20230220-display-v1-0-45cbc68e188b@baylibre.com/
+
+Signed-off-by: Alexandre Mergnat <amergnat@baylibre.com>
 ---
- drivers/gpu/drm/panel/panel-novatek-nt35950.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Changes in v2:
+- Replace "dcdc-gpio" by "enable-gpio" because this pin enable the
+  Power IC supply. Also, this property come from panel-common.
+- Remove height-mm and width-mm since they are useless here.
+- Re-order elements in the stk_panel structure for readability.
+- Link to v1: https://lore.kernel.org/r/20230711-startek_display-v1-0-163917bed385@baylibre.com
 
-diff --git a/drivers/gpu/drm/panel/panel-novatek-nt35950.c b/drivers/gpu/drm/panel/panel-novatek-nt35950.c
-index 8b108ac80..4903bbf1d 100644
---- a/drivers/gpu/drm/panel/panel-novatek-nt35950.c
-+++ b/drivers/gpu/drm/panel/panel-novatek-nt35950.c
-@@ -571,7 +571,7 @@ static int nt35950_probe(struct mipi_dsi_device *dsi)
- 		}
- 
- 		nt->dsi[1] = mipi_dsi_device_register_full(dsi_r_host, info);
--		if (!nt->dsi[1]) {
-+		if (IS_ERR(nt->dsi[1])) {
- 			dev_err(dev, "Cannot get secondary DSI node\n");
- 			return -ENODEV;
- 		}
+Changes in v1:
+- Fix typos in the driver.
+- Merge 2 regulators in one bulk variable in the driver.
+- Remove backlight enable/disable from the driver because it's already
+  managed by the backlight core.
+- Move hardcoded values from function to the generic structure in the
+  driver.
+- Remove unnecessary function (stk_panel_del).
+- Replace some functions by macro to increase the readability.
+- Link to parent serie: [1]
+
+---
+Alexandre Mergnat (2):
+      dt-bindings: display: panel: add startek kd070fhfid015 support
+      arm64: defconfig: enable STARTEK KD070FHFID015 panel
+
+Guillaume La Roque (1):
+      drm/panel: Support for startek-kd070fhfid015 MIPI-DSI panel
+
+ .../display/panel/startek,kd070fhfid015.yaml       |  69 ++++
+ arch/arm64/configs/defconfig                       |   1 +
+ drivers/gpu/drm/panel/Kconfig                      |  11 +
+ drivers/gpu/drm/panel/Makefile                     |   1 +
+ .../gpu/drm/panel/panel-startek-kd070fhfid015.c    | 431 +++++++++++++++++++++
+ 5 files changed, 513 insertions(+)
+---
+base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
+change-id: 20230711-startek_display-958d265f6baa
+
+Best regards,
 -- 
-2.39.0
+Alexandre Mergnat <amergnat@baylibre.com>
 
