@@ -2,113 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5AE47519E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 09:26:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B75317519E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 09:26:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234316AbjGMH0a convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 13 Jul 2023 03:26:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47912 "EHLO
+        id S234275AbjGMH01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 03:26:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234195AbjGMH0O (ORCPT
+        with ESMTP id S234181AbjGMH0M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 03:26:14 -0400
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3B9C2116;
-        Thu, 13 Jul 2023 00:25:55 -0700 (PDT)
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.95)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1qJqhp-0013fl-2P; Thu, 13 Jul 2023 09:25:41 +0200
-Received: from p57bd9f0d.dip0.t-ipconnect.de ([87.189.159.13] helo=[192.168.178.81])
-          by inpost2.zedat.fu-berlin.de (Exim 4.95)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1qJqho-001eww-Qr; Thu, 13 Jul 2023 09:25:41 +0200
-Message-ID: <90e6042f3a82d5e9b4cf475603dcb73ca5e821d8.camel@physik.fu-berlin.de>
-Subject: [GIT PULL] sh fixes for v6.5
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Artur Rojek <contact@artur-rojek.eu>,
-        Rich Felker <dalias@libc.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        linux-sh@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Thu, 13 Jul 2023 09:25:39 +0200
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 
+        Thu, 13 Jul 2023 03:26:12 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D96C02D43;
+        Thu, 13 Jul 2023 00:25:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=PzFC7qNxQkAsCR0tnxCCk6SWQGRQ28U1/TaF6Fofsxw=; b=kx82qL2Q33zKRHoO0BsBb9bypQ
+        b/QA4Z4g7ZnzMhjGWZuUiXjAVa0VLM1P09FKH2yVnk2KzsCUZ3gg94n64QCCQiMVOLy4HFMF29QAB
+        DphIkiOPgi0BxVgyIM3UWf1sgH9kFGKtHmyP5M+GCxNDnIhRL3PUQdO8WD2M9GmvXuaWR1RWgbVq+
+        g3SfY4GuCSO3y5Lju41ITXb7zX2YNsChV8wtDJn3PgZNmR/lr+akGUrKuVz7rTwyhVoTsgF/Fo5ni
+        p0sSeVKXyWh832EjcVt3zPU8uMANW6yBARuSIC6XymXPEIde7oOQOsOgVd7JA42XsY6aUetKYs3wR
+        FK14PNMQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:56656)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qJqhx-0005sY-15;
+        Thu, 13 Jul 2023 08:25:49 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qJqht-0005w9-QV; Thu, 13 Jul 2023 08:25:45 +0100
+Date:   Thu, 13 Jul 2023 08:25:45 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Daniel Golle <daniel@makrotopia.org>
+Cc:     netdev@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        =?iso-8859-1?Q?Bj=F8rn?= Mork <bjorn@mork.no>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Greg Ungerer <gerg@kernel.org>
+Subject: Re: [PATCH v2 net-next 6/9] net: ethernet: mtk_eth_soc: add
+ MTK_NETSYS_V3 capability bit
+Message-ID: <ZK+m+ayRW/uaxl6u@shell.armlinux.org.uk>
+References: <cover.1689012506.git.daniel@makrotopia.org>
+ <6dc1e0ad7e8138835c959fc83a6c1564e8488c59.1689012506.git.daniel@makrotopia.org>
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.189.159.13
-X-ZEDAT-Hint: PO
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6dc1e0ad7e8138835c959fc83a6c1564e8488c59.1689012506.git.daniel@makrotopia.org>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus!
+on thu, jul 13, 2023 at 03:19:49am +0100, daniel golle wrote:
+> +
+> +		if (mtk_has_caps(eth->soc->caps, mtk_netsys_v3)) {
 
-The sh updates for v6.5 introduced multiple regressions that this pull request addresses.
-In particular, the change a8ac2961148e ("sh: Avoid using IRQ0 on SH3 and SH4") causes
-several boards to hang during boot due to incorrect IRQ numbers.
+this is a case in point for one of my previous comments...
 
-Geert Uytterhoeven has contributed patches that handle the virq offset in the IRQ code
-for the dreamcast, highlander and r2d boards while Artur Rojek has contributed a patch
-which handles the virq offset for the hd64461 companion chip.
+this code started out believing that testing for mtk_netsys_v2 for v2
+features would be sufficient. your first patch ended up having to
+change that to !v1. how long until this becomes !v1 && !v2 because
+it gets used on v3 and v4 etc?
 
-With the series applied, the affected boards will boot the kernel again without issues.
-
-The following changes since commit 7497840d462c8f54c4888c22ab3726a8cde4b9a2:
-
-  sh: Provide unxlate_dev_mem_ptr() in asm/io.h (2023-07-05 19:04:51 +0200)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/glaubitz/sh-linux.git tags/sh-for-v6.5-tag2
-
-for you to fetch changes up to 7c28a35e19fafa1d3b367bcd3ec4021427a9397b:
-
-  sh: hd64461: Handle virq offset for offchip IRQ base and HD64461 IRQ (2023-07-13 08:37:53 +0200)
-
-Thanks for pulling!
-
-Adrian
-
-----------------------------------------------------------------
-sh fixes for v6.5
-
-- sh: hd64461: Handle virq offset for offchip IRQ base and HD64461 IRQ
-- sh: mach-dreamcast: Handle virq offset in cascaded IRQ demux
-- sh: mach-highlander: Handle virq offset in cascaded IRL demux
-- sh: mach-r2d: Handle virq offset in cascaded IRL demux
-
-----------------------------------------------------------------
-Artur Rojek (1):
-      sh: hd64461: Handle virq offset for offchip IRQ base and HD64461 IRQ
-
-Geert Uytterhoeven (3):
-      sh: mach-r2d: Handle virq offset in cascaded IRL demux
-      sh: mach-highlander: Handle virq offset in cascaded IRL demux
-      sh: mach-dreamcast: Handle virq offset in cascaded IRQ demux
-
- arch/sh/boards/mach-dreamcast/irq.c    | 6 +++---
- arch/sh/boards/mach-highlander/setup.c | 4 ++--
- arch/sh/boards/mach-r2d/irq.c          | 4 ++--
- arch/sh/cchips/Kconfig                 | 4 ++--
- arch/sh/include/asm/hd64461.h          | 2 +-
- 5 files changed, 10 insertions(+), 10 deletions(-)
+this is why i think an integer version field would be a much saner
+approach.
 
 -- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
