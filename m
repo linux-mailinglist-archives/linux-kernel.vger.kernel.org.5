@@ -2,132 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3AF675171F
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 06:05:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A37C751727
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 06:08:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233608AbjGMEF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 00:05:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56332 "EHLO
+        id S233173AbjGMEIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 00:08:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbjGMEF1 (ORCPT
+        with ESMTP id S230007AbjGMEIp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 00:05:27 -0400
-Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B0A61FD2
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 21:05:23 -0700 (PDT)
-Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-403c6a0f3aaso3020771cf.2
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 21:05:23 -0700 (PDT)
+        Thu, 13 Jul 2023 00:08:45 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 166241FFD;
+        Wed, 12 Jul 2023 21:08:45 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id d2e1a72fcca58-666e3b15370so192113b3a.0;
+        Wed, 12 Jul 2023 21:08:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689221324; x=1691813324;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=TEwq2+q6JfV3n+3skv2W0fszZRn1aic7BmEleaUX5Kc=;
+        b=nNdyIXRuVkdtNEzIvkMJtTHSa6vpvQ/sTY/wCj2NMRWBwH2Fgp/OuUYYWCH684LDPb
+         ySrMpM4gk6l6YTrkm+caTpOniU+xQLqgkguxAW50cNJjITRg9VE+yuijAoT3Yu9pA79N
+         WU107GHPlyZ/DatTrght5v1IQ+jnhMUAGR4TJjZ12nkPYYALBinp41CtJjdL9iPjdapg
+         qBA4kXnnW/hsH+4b4yUgcw1n/yQmOFDX/3HntIQ+1OlcXBgeueNG8aiEzSXCcuVTTYXw
+         EGk8GFG9twio4lO2xYMFg1j80O0fXgd6C6fe84OyNwJppPunRoASzReGFCmYZginXJ5y
+         qRyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689221122; x=1691813122;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GajuMt+6Q9tx2blQfMfUh9E0E/uqR27CkP+42hN7Tqs=;
-        b=gDvLB3r3V86ko8I3G39vt7W+qJo+S3sOTVVFqP3XCfCbqjaPg5qCUxk0pT1ZKpssjU
-         fiZYWWXBwJU+Xi64SlLWHhAxcEzNMXvoglzhcLFu+lYSSeVVx60VShxcy6VHPcWz8KpF
-         +F1LJgxdmMG1RfHd1Gag8WxDXBybpgz3u0t9BANn9SrlrkmXnegfGnApn0rdh+grsu+Y
-         1g8dd25RPy4zSOJbv1GZDMvi+3MShTzKTbsg1Z/uI1xSO9Fh6gWWY6HtjiBOdQ4tONwC
-         t+TVyecBjSZ1j2RHyxCbdhvnLYBbh31RYT/930chbQtzcrILNK2IaW4EcKDXIAcshuEk
-         ZctQ==
-X-Gm-Message-State: ABy/qLZ+IuKRbePuu5H2F0VqrEnsdj2fEXF3IAXWFJ74021+ZeL3EcBU
-        LZaNnscVv4u7uCM8+cuIvj0=
-X-Google-Smtp-Source: APBJJlH5v1OSRqsqRlexTyIn2nsZxnDKmUSQVKyFEh7GmRRs22EZf3ya4EGSH0DBMcTuscbv1AoeEg==
-X-Received: by 2002:a05:622a:11:b0:403:2842:4d09 with SMTP id x17-20020a05622a001100b0040328424d09mr595554qtw.26.1689221122338;
-        Wed, 12 Jul 2023 21:05:22 -0700 (PDT)
-Received: from maniforge ([2620:10d:c091:400::5:38a5])
-        by smtp.gmail.com with ESMTPSA id bv11-20020a05622a0a0b00b003fdebf1a634sm2771183qtb.75.2023.07.12.21.05.20
+        d=1e100.net; s=20221208; t=1689221324; x=1691813324;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TEwq2+q6JfV3n+3skv2W0fszZRn1aic7BmEleaUX5Kc=;
+        b=dhOWm2l2RWMuJUSWJi8Wj+AnGfbyy5LMdfGeUdsyHOgsaOzOmUkIiZLn0N4xQBDquT
+         T+ZYAj4duCeP2Ept3sfwTi/BvMhloYtmt9ogEgw1GO7kRrG7zfMlQzrNC6c+sDTqWQAc
+         XjU8DKUfv0z836MbO1+dVj7oTHYlFFQ3PW8k3MkMRPE2ZWNXaTfezeFRlXFvmN+gv9ho
+         nqrPhRxIdM4OyKhAXLh0Sgf+TP3v4WVfjLTooQxWjkdrsX0UDr0yuzYhzoi32SRwLFXL
+         FSqUD4s0CF/MijF5RH3sTee1Y8/pOV33yK04mfMZD7i7lIvummOrlV0zqbmRtQQ1yQN+
+         ajxw==
+X-Gm-Message-State: ABy/qLZ3G/+9OzLBOnoF/k+V4PaKSoGObug11ySNyxWd3uFULBwMmlk8
+        0w80X1hnY9gMlmEmb6i3R1iTZDq6iFuMFFWP
+X-Google-Smtp-Source: APBJJlEY120b734X5cPoDPB8G/pM26FDSWMSFId7fSoN6Yds/YcWb238LnW8kFYGhoM1BpAkdhHdpQ==
+X-Received: by 2002:a05:6a20:144d:b0:125:f3d8:e65b with SMTP id a13-20020a056a20144d00b00125f3d8e65bmr145540pzi.18.1689221324400;
+        Wed, 12 Jul 2023 21:08:44 -0700 (PDT)
+Received: from localhost.localdomain ([43.132.98.100])
+        by smtp.gmail.com with ESMTPSA id c7-20020a170902d48700b001bb04755212sm483217plg.228.2023.07.12.21.08.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Jul 2023 21:05:21 -0700 (PDT)
-Date:   Wed, 12 Jul 2023 23:05:19 -0500
-From:   David Vernet <void@manifault.com>
-To:     Abel Wu <wuyun.abel@bytedance.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, gautham.shenoy@amd.com,
-        kprateek.nayak@amd.com, aaron.lu@intel.com, clm@meta.com,
-        tj@kernel.org, roman.gushchin@linux.dev, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH v2 5/7] sched: Implement shared runqueue in CFS
-Message-ID: <20230713040519.GB260054@maniforge>
-References: <20230710200342.358255-1-void@manifault.com>
- <20230710200342.358255-6-void@manifault.com>
- <93260dd9-818a-7f98-e030-635e0dc8cad8@bytedance.com>
- <20230712221657.GF12207@maniforge>
- <a70eaa87-2afa-a5c7-a463-7199744cefa4@bytedance.com>
+        Wed, 12 Jul 2023 21:08:43 -0700 (PDT)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: imagedong@tencent.com
+To:     yhs@meta.com, daniel@iogearbox.net, alexei.starovoitov@gmail.com
+Cc:     ast@kernel.org, andrii@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        dsahern@kernel.org, jolsa@kernel.org, x86@kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Menglong Dong <imagedong@tencent.com>
+Subject: [PATCH bpf-next v10 0/3] bpf, x86: allow function arguments up to 12 for TRACING
+Date:   Thu, 13 Jul 2023 12:07:35 +0800
+Message-Id: <20230713040738.1789742-1-imagedong@tencent.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a70eaa87-2afa-a5c7-a463-7199744cefa4@bytedance.com>
-User-Agent: Mutt/2.2.10 (2023-03-25)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 11:43:50AM +0800, Abel Wu wrote:
-> On 7/13/23 6:16 AM, David Vernet wrote:
-> > On Wed, Jul 12, 2023 at 06:47:26PM +0800, Abel Wu wrote:
-> > > > + *
-> > > > + * HOW
-> > > > + * ===
-> > > > + *
-> > > > + * An shared_runq is comprised of a list, and a spinlock for synchronization.
-> > > > + * Given that the critical section for a shared_runq is typically a fast list
-> > > > + * operation, and that the shared_runq is localized to a single LLC, the
-> > > > + * spinlock will typically only be contended on workloads that do little else
-> > > > + * other than hammer the runqueue.
-> > > 
-> > > Would there be scalability issues on large LLCs?
-> > 
-> > See the next patch in the series [0] where we shard the per-LLC shared
-> > runqueues to avoid contention.
-> > 
-> > [0]: https://lore.kernel.org/lkml/20230710200342.358255-7-void@manifault.com/
-> 
-> Sorry, I should have read the cover letter more carefully. By sharding,
-> the LLC is partitioned into several zones, hence contention is relieved.
-> But sharding itself might be tricky. Making the SMT siblings not cross
-> shards, as suggested by Peter, is generally a good thing. But I wonder
-> if there is any workload might benefit from other sharding form.
+From: Menglong Dong <imagedong@tencent.com>
 
-IMO for now the best thing to do is keep things simple until we observe
-it being a problem in practice. Or to at least plan to address it in a
-follow-on patch set when we add support for a dynamic shard sizing.
-Proper shard sizing is required to do optimal SMT placement anyways, and
-in general will likely have more of an impact on performance.
+For now, the BPF program of type BPF_PROG_TYPE_TRACING can only be used
+on the kernel functions whose arguments count less than or equal to 6, if
+not considering '> 8 bytes' struct argument. This is not friendly at all,
+as too many functions have arguments count more than 6. According to the
+current kernel version, below is a statistics of the function arguments
+count:
 
-> > > 
-> > > > +
-> > > > +	task_rq_unlock(src_rq, p, &src_rf);
-> > > > +
-> > > > +	raw_spin_rq_lock(rq);
-> > > > +	rq_repin_lock(rq, rf);
-> > > 
-> > > By making it looks more ugly, we can save some cycles..
-> > > 
-> > > 	if (src_rq != rq) {
-> > > 		task_rq_unlock(src_rq, p, &src_rf);
-> > > 	} else {
-> > > 		rq_unpin_lock(src_rq, src_rf);
-> > > 		raw_spin_unlock_irqrestore(&p->pi_lock, src_rf.flags);
-> > > 		rq_repin_lock(rq, rf);
-> > > 	}
-> 
-> I forgot the repin part when src_rq != rq, but I'm sure you already got
-> my point :)
+argument count | function count
+7              | 704
+8              | 270
+9              | 84
+10             | 47
+11             | 47
+12             | 27
+13             | 22
+14             | 5
+15             | 0
+16             | 1
 
-Yep, I got your main point which was to avoid the extra dropping and
-acquiring of the same rq spinlock. FYI for posterity / anyone else
-reading, the missing repin isn't sufficient on its own for the src_rq !=
-rq path. We also need to reacquire the rq lock.
+Therefore, let's enhance it by increasing the function arguments count
+allowed in arch_prepare_bpf_trampoline(), for now, only x86_64.
 
-Thanks again for the helpful reviews.
+In the 1st patch, we save/restore regs with BPF_DW size to make the code
+in save_regs()/restore_regs() simpler.
 
-- David
+In the 2nd patch, we make arch_prepare_bpf_trampoline() support to copy
+function arguments in stack for x86 arch. Therefore, the maximum
+arguments can be up to MAX_BPF_FUNC_ARGS for FENTRY, FEXIT and
+MODIFY_RETURN. Meanwhile, we clean the potential garbage value when we
+copy the arguments on-stack.
+
+And the 3rd patch is for the testcases of the this series.
+
+Changes since v9:
+- fix the failed test cases of trampoline_count and get_func_args_test
+  in the 3rd patch
+
+Changes since v8:
+- change the way to test fmod_ret in the 3rd patch
+
+Changes since v7:
+- split the testcases, and add fentry_many_args/fexit_many_args to
+  DENYLIST.aarch64 in 3rd patch
+
+Changes since v6:
+- somit nits from commit message and comment in the 1st patch
+- remove the inline in get_nr_regs() in the 1st patch
+- rename some function and various in the 1st patch
+
+Changes since v5:
+- adjust the commit log of the 1st patch, avoiding confusing people that
+  bugs exist in current code
+- introduce get_nr_regs() to get the space that used to pass args on
+  stack correct in the 2nd patch
+- add testcases to tracing_struct.c instead of fentry_test.c and
+  fexit_test.c
+
+Changes since v4:
+- consider the case of the struct in arguments can't be hold by regs
+- add comment for some code
+- add testcases for MODIFY_RETURN
+- rebase to the latest
+
+Changes since v3:
+- try make the stack pointer 16-byte aligned. Not sure if I'm right :)
+- introduce clean_garbage() to clean the grabage when argument count is 7
+- use different data type in bpf_testmod_fentry_test{7,12}
+- add testcase for grabage values in ctx
+
+Changes since v2:
+- keep MAX_BPF_FUNC_ARGS still
+- clean garbage value in upper bytes in the 2nd patch
+- move bpf_fentry_test{7,12} to bpf_testmod.c and rename them to
+  bpf_testmod_fentry_test{7,12} meanwhile in the 3rd patch
+
+Changes since v1:
+- change the maximun function arguments to 14 from 12
+- add testcases (Jiri Olsa)
+- instead EMIT4 with EMIT3_off32 for "lea" to prevent overflow
+
+Menglong Dong (3):
+  bpf, x86: save/restore regs with BPF_DW size
+  bpf, x86: allow function arguments up to 12 for TRACING
+  selftests/bpf: add testcase for TRACING with 6+ arguments
+
+ arch/x86/net/bpf_jit_comp.c                   | 246 +++++++++++++++---
+ net/bpf/test_run.c                            |  14 +-
+ tools/testing/selftests/bpf/DENYLIST.aarch64  |   2 +
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  49 +++-
+ .../selftests/bpf/prog_tests/fentry_test.c    |  43 ++-
+ .../selftests/bpf/prog_tests/fexit_test.c     |  43 ++-
+ .../bpf/prog_tests/get_func_args_test.c       |   4 +-
+ .../selftests/bpf/prog_tests/modify_return.c  |  10 +-
+ .../selftests/bpf/prog_tests/tracing_struct.c |  19 ++
+ .../bpf/prog_tests/trampoline_count.c         |   4 +-
+ .../selftests/bpf/progs/fentry_many_args.c    |  39 +++
+ .../selftests/bpf/progs/fexit_many_args.c     |  40 +++
+ .../selftests/bpf/progs/modify_return.c       |  40 +++
+ .../selftests/bpf/progs/tracing_struct.c      |  54 ++++
+ 14 files changed, 548 insertions(+), 59 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/fentry_many_args.c
+ create mode 100644 tools/testing/selftests/bpf/progs/fexit_many_args.c
+
+-- 
+2.40.1
+
