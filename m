@@ -2,181 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27B5C751B29
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 10:13:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90C23751AD9
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 10:10:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234028AbjGMINL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 04:13:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49846 "EHLO
+        id S233346AbjGMIKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 04:10:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233860AbjGMILc (ORCPT
+        with ESMTP id S233746AbjGMIJm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 04:11:32 -0400
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2100.outbound.protection.outlook.com [40.107.255.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62D4B2102;
-        Thu, 13 Jul 2023 01:09:25 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oepT/ZoJyvDVwxR4VR7zY+fG4EuW9UVnViY9J6S7zk1Bnfwuy0SKC9mXZphEXwqjLXryhI0XGwQfrj4x6QNIiN+Wu6jOn3E26H+0AheIvMAiQW1pG12CSI3VM2I+xGZStE0DQPpkvJYnJtivV49bp15CdGjLJEP0QhYhJjdFAEB33vVCSkBUkAlnrBizY+Gy+LqFTcsvrEywlGs1fkv6Np7mA+Hv/cYVskjazzadLo2VRsXr0JqKhgx7kL5F3SRqHU2lC10U6SNnXaDwRrAvQh1HzjYWwgI2rHLW0kdh6o6DyTTZBiClIIr0y5doudKQqhuzSzDNoo6BB0J+m7hCkQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=uMtEtYh4yggL3P4Ktr/c7Zr9RRKQR6LhGA6gTsORCp0=;
- b=AeuuckOgKEMLg6D8nyyu/sQNCsY7pMVrQx7YuOwIrtq8sZCCOZ7Ss49IZMF9pXs20IXgtYwypANjzsccpwuRe2C0AXv/QRe5Xx6iarYDu/hFoYaGNkmYTtJYwUmVWsdOMlCWf9pcIRLU1YfeTY/DHX3Ahj460c2tgJ8ICs2rWAB5kuSrP/ZoQHv/H+bentY+E6aN96It7We8tk/CNW8Mw6GSNHj++BLLZGgXbV4tpjJNG2FoLM82thX31nYRiaVybk7G/l5G3ejS41C1743kZ+thzn5FvrLFdiQ1wBAeb5unGpsAgb5aYZTpeLB30eX0DKcfMOPD2y3d/0AeXThjog==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uMtEtYh4yggL3P4Ktr/c7Zr9RRKQR6LhGA6gTsORCp0=;
- b=get4PgZLKhRYMqQxX5xtrZBI4EueLM/enpmA6YrBHnN0tVo4RaC/rU2gfUgD5BGHIyBHuE/3kun6p1IPCYnj7cSAAV4CamNey0pfG4lzzcdQAdjqXvNXAFgczmYkR7bIA3/NZYHl66ZlJWPdTNbhVQHF9kQTA6RK4CbGXtDDxpcYkdN5JEB9xzZyRTqc1D0gaT9jJB5a3CogxY6JYzGmQNGs/5j0Xeq/l0kc1zovQ3SVBTtAwuCqZIFBef5QmeeUnNHyjxKlkLPHSyWQj5i7mVxeCSRoBlVOke/ULCRq6rttVVq7srquEboIX1IFeEp51aeTuwG0zP3A8XObijmvUw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from SEZPR06MB5269.apcprd06.prod.outlook.com (2603:1096:101:78::6)
- by SI2PR06MB4409.apcprd06.prod.outlook.com (2603:1096:4:15c::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.24; Thu, 13 Jul
- 2023 08:09:22 +0000
-Received: from SEZPR06MB5269.apcprd06.prod.outlook.com
- ([fe80::fa0e:6c06:7474:285c]) by SEZPR06MB5269.apcprd06.prod.outlook.com
- ([fe80::fa0e:6c06:7474:285c%5]) with mapi id 15.20.6565.028; Thu, 13 Jul 2023
- 08:09:21 +0000
-From:   Yangtao Li <frank.li@vivo.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     Yangtao Li <frank.li@vivo.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-mmc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 35/58] mmc: meson-mx-sdio: Convert to platform remove callback returning void
-Date:   Thu, 13 Jul 2023 16:07:44 +0800
-Message-Id: <20230713080807.69999-35-frank.li@vivo.com>
-X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20230713080807.69999-1-frank.li@vivo.com>
-References: <20230713080807.69999-1-frank.li@vivo.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SG2PR02CA0091.apcprd02.prod.outlook.com
- (2603:1096:4:90::31) To SEZPR06MB5269.apcprd06.prod.outlook.com
- (2603:1096:101:78::6)
+        Thu, 13 Jul 2023 04:09:42 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29266270F;
+        Thu, 13 Jul 2023 01:08:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=u0MMSF1BzosWHENbYjUkiziMMb6fnm98Zn1xzxHch2A=; b=GcPFOkaVfv+4rWtqRq8f5/Hg0C
+        x759LYiWrisgCwDLlpY2O5kMsCKvp1CACLcajs6VC/SI7OkTmvqwKDH0vrQBiepAlY9dbKWyTGlq8
+        DQ/mhqwAc/Gl9wFClxqPmww6pSrSVBG6ZxSn/f6lNnxdWTRaqr+sPiZc1EQ7tugcBDGY9kyPHGydj
+        /Wk5qSXzPmrzLHH6tEYIXOMLDH7yPcp3rr1xelU5HdF+sgT6pT9iL94XLl9SZ76mCLXvhehQ6g/RD
+        G3bjvsCIt/qZxgCUmGJuBeqOXvgC4nyfH7WnOt0yN8ntFD3SwIoDJqaRBzlsPjGsDoRdlNKwfbNHF
+        7WbIj6pw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qJrMY-004YHC-0d;
+        Thu, 13 Jul 2023 08:07:46 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5AF54300222;
+        Thu, 13 Jul 2023 10:07:45 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4476E266877EB; Thu, 13 Jul 2023 10:07:45 +0200 (CEST)
+Date:   Thu, 13 Jul 2023 10:07:45 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Kai Huang <kai.huang@intel.com>
+Cc:     kirill.shutemov@linux.intel.com, linux-kernel@vger.kernel.org,
+        dave.hansen@intel.com, tglx@linutronix.de, bp@alien8.de,
+        mingo@redhat.com, hpa@zytor.com, x86@kernel.org, seanjc@google.com,
+        pbonzini@redhat.com, kvm@vger.kernel.org, isaku.yamahata@intel.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH 10/10] x86/virt/tdx: Allow SEAMCALL to handle #UD and #GP
+Message-ID: <20230713080745.GB3139243@hirez.programming.kicks-ass.net>
+References: <cover.1689151537.git.kai.huang@intel.com>
+ <d08c5e27dd7377564d69648f3eb7b56d3c95b84b.1689151537.git.kai.huang@intel.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SEZPR06MB5269:EE_|SI2PR06MB4409:EE_
-X-MS-Office365-Filtering-Correlation-Id: ec7bf0a4-a3ac-4054-a764-08db837876e3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 16MSeHMUey2zVk3KeGERPfX8XV6QLbsK4hPHIMot37+9Sz7Qahqwq7+UvyUwmAZeK+0C9wIpRCRiU4eTyFxry4dF/NsRJwxJ6nMvJiB8RP8X7hBmboEUqPzEEPIqjhDJBlXStNyK/SybASANvjVEHv0YZyO6zpuNaJT2wZqhgxxuVb8fGNxyauMBtPrmmeUJtiueU7EgXT7X8m3OVGeKD8X6vLPRmF0H6DjU1s5qa5A0kWVbMCTACgSFWGOhIdekM41Vk2WgJSRjYA0OJiiZVAcsXeHdO1MzRdYet2/VPps3rEpVvwB3kSzGkFVoAs8QNf4FSe9Ge6JQHCW2YJ9Pxi6M6/oPjvSK8ZpjEyR+EWmA0MxBdiHuG+j6+SqayjFFaGEehkLZApJEQC6pcpvh1cCY7dYjrcA9ilaUlIXMlEZKvMVPLqY6KhVP9UndiEPJwOQGUzb0huZVsO330lvWWiHDvnlhISTkZMwLylLYnnNoJERZCysgOQ8q8gRCSTtqELlEAJI+neAUHl19aCDo7umLUOPPj33RteHKOk9p2wy3Fja+D9OvATSSmTBmVDENHEag4q1K1bSncOgQf73kMo+5qXXwQuFWdlKFl074oC23RMvM+msI49SA9lNtW7lq
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEZPR06MB5269.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(346002)(396003)(39860400002)(366004)(136003)(451199021)(478600001)(52116002)(6486002)(6666004)(110136005)(54906003)(83380400001)(2616005)(36756003)(86362001)(2906002)(186003)(26005)(6506007)(1076003)(6512007)(38350700002)(38100700002)(4326008)(66946007)(66476007)(41300700001)(316002)(8676002)(5660300002)(7416002)(66556008)(8936002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SlZQQVp0QTVsUkxTcGlXRTdUb0JSOWpVTWNEK1RPOEV2OS8zeUhDMWNOZy9H?=
- =?utf-8?B?MzhZZTJZR093V0FYeHZnSGlkczZEWVIrNng3S29OV0NTYkk3bHEwZTA3Y1JV?=
- =?utf-8?B?T0VOQlB3MkY5Q0JQcURGWXlRQ2JaeGkwdWZ5QXl3bEo2UEQ0Y05McXpkdDd3?=
- =?utf-8?B?NzliRkxHekZBYlRHTDY0WW1lOVkyR2pVUmQyb1dqOUJvdUNlMUdRRnAzeUtu?=
- =?utf-8?B?N2ZlQStJaUd5TWhJSGpDdzcxL2FOTmprMFhEN3YzNU9LS21HSUlxZy9QdDgy?=
- =?utf-8?B?dkNENllTaHhTQ0hKVll4YmNucGFUdjJtdTYzaWlIVTdlWFgrQ0RYUlNOQkY0?=
- =?utf-8?B?TG1ScUJiZHhOdE5kSzIwZi9iV2lEQkFYdEZKVnRwY2hualJ6czBSZTIxK2k2?=
- =?utf-8?B?T1hDMVpLRm9veDZCL3g1ZlU4Kyt0K0RkTnBPaEpVeEs2UE1CQnZBb0ovK0lE?=
- =?utf-8?B?MStFRFQ2OXJrb1cvUFVTSFNYekljTTZZRy9OMmZaQk1OT1FYOHRqODlubWpK?=
- =?utf-8?B?R3BUSktoWkhnQ01yOEZlMmY0UEtWL2JVK0t0Qng1azJYdkR0bVJObldnZHI1?=
- =?utf-8?B?eVBwQ3AwcDZPelNqK2Ixc1Z5RnhhZTZGSGtyNHNYbXltWER4ODY3VUQzUUVE?=
- =?utf-8?B?WXIxWjJ1K0xLZ1JNUUpEb1RqYlQyd3NsZ1A1RlhrTC9LSE51V25rZWFkU0lV?=
- =?utf-8?B?RDFwaXlDYW9POHZVdkxrcUVoK0s3bFR6QkE0VjhVNkRhZ0NSWWlCYVhKa1hN?=
- =?utf-8?B?YitnSnBZZS9YbTgwSTFLOXlZMjhvUTlnb3dKd0RCTDZWQm9DT2tiL0V2dGRi?=
- =?utf-8?B?Wm9OcW5lV2U0bU9aTzZQOHE1MkUyVC9EYTdQZnZsUWFYTGh2Vkl1TVFSTXZn?=
- =?utf-8?B?SkhpREtNeWtmK0hOWm9peUJqa1JkblRRMjJwWGZaUEgvb3hSQkNwYnRZcTdH?=
- =?utf-8?B?KzMyMGpIM2Qrd3U4c2M3M05DbE1RSDd4MzNkejhWaldJVlNINGpranhXM283?=
- =?utf-8?B?RDBsYWlSVmtXSEw2RXRzUlBCMGxlQldhUkp1enFNM29XSlhOZzI3WFhGaTRk?=
- =?utf-8?B?b0F1S0QvZVIrRkIwNE55QVZlT1U3ekhOaUkwcjc2bitLQ3VTK2JHT1k0c3or?=
- =?utf-8?B?SzRpTmJnellQZjdUK1dpOXpaOER3eTZYNWk0WWtCYXVkbm1rSmpZRkZIYTNt?=
- =?utf-8?B?WUkzSE82UjBGU2pSTTdDZjNrbEU0VFpoWGtLRE5rTnN6bVNYcFhnVHFjMUpR?=
- =?utf-8?B?TXBDNnFYMkZ2R2QzSlkvd0lXaDN5V3ppaDlhWDNISDFRUTgvTDY5dUsrRHpq?=
- =?utf-8?B?bWoycWpsUm9NdVZqVklkRTFTMmxTM3Q0SmJ3ZENCQ1ZBOGVlazdGWWVidFZJ?=
- =?utf-8?B?MlZMY2srVHRIcWVvVWRnSVE3bDA5TzBmWWlKaTM3TXZMalZ2M00rQi9LR3VD?=
- =?utf-8?B?MnJxLzIwTnVKTVJUeUxXWS9KbHNBUzRxdzZadFJWeHltNEtrNnVINXR4THly?=
- =?utf-8?B?TFFUQkNCdVpTVzcyYmsvTTVUMW9TN3JiMFB2WWJUYUZVYVRGcnMxMUFXVU5E?=
- =?utf-8?B?MmNEMkRlUlVXTkh3amREZHdiUHErNTJqSm4wUW4xaVFRSnJiMlo5R3hQaXdG?=
- =?utf-8?B?dERVcmV6a3BleE9ZM1Yvbm5SNm95WmpFcmJOZTd1c0tXQWpaZFBUL3ZDcm9t?=
- =?utf-8?B?ZEZpZjBaL1MyakVCWmxhd3ltVE5lOG5jaWw3M3JIQWxhUkp3Y1pQOFEwZE03?=
- =?utf-8?B?SmRPQzlDNFkrWTJ5cEhXMDdtOTFLMmlVUDV6cWlaeFNIMHhreHk2bFNkWE0z?=
- =?utf-8?B?cFFtd1V5bFh3TURUQmJwQldGZHk3UmxlcUlsWTBRUEZIcVVycTdvVCtUWEc1?=
- =?utf-8?B?VWhYVUJEcis1WHExMURHQWo2a3RKbGNZcU1GaFhWcWRDYWY3OE9KaDRxTnFy?=
- =?utf-8?B?V3RTL1RiVDZKaXg1WFZ0dUhTaWx0bHJHUkwrMEhSZGdUOThydnJJdVYvSE1R?=
- =?utf-8?B?WDB3M0FOQjI1b0ZPcmt5RUxtZWcvKzVkb3NmM0hIYWl1MndHallyamliSCtJ?=
- =?utf-8?B?QkgybGZoc2loWkVBZTgwSjlkRk81K3ZzRE9DU3BKUVZCamxiTTZaTi9iS2wy?=
- =?utf-8?Q?fC+YcwYQfRpYUCgrm5HS+rdRC?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ec7bf0a4-a3ac-4054-a764-08db837876e3
-X-MS-Exchange-CrossTenant-AuthSource: SEZPR06MB5269.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2023 08:09:21.8488
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vUDynbJ95iJrmAuHYp84wtGmS2lPp3GnPWZQtu30c5ff/3E7x+0lxwNM2rc4wq5kJTd6SWVrYg7eSmQrkLvhbw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SI2PR06MB4409
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d08c5e27dd7377564d69648f3eb7b56d3c95b84b.1689151537.git.kai.huang@intel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The .remove() callback for a platform driver returns an int which makes
-many driver authors wrongly assume it's possible to do error handling by
-returning an error code. However the value returned is (mostly) ignored
-and this typically results in resource leaks. To improve here there is a
-quest to make the remove callback return void. In the first step of this
-quest all drivers are converted to .remove_new() which already returns
-void.
+On Wed, Jul 12, 2023 at 08:55:24PM +1200, Kai Huang wrote:
+> @@ -85,6 +86,7 @@
+>  	.endif	/* \saved */
+>  
+>  	.if \host
+> +1:
+>  	seamcall
+>  	/*
+>  	 * SEAMCALL instruction is essentially a VMExit from VMX root
+> @@ -99,6 +101,7 @@
+>  	 */
+>  	mov $TDX_SEAMCALL_VMFAILINVALID, %rdi
+>  	cmovc %rdi, %rax
+> +2:
+>  	.else
+>  	tdcall
+>  	.endif
 
-Trivially convert this driver from always returning zero in the remove
-callback to the void returning variant.
+This is just wrong, if the thing traps you should not do the return
+registers. And at this point the mov/cmovc thing doesn't make much sense
+either.
 
-Cc: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Signed-off-by: Yangtao Li <frank.li@vivo.com>
----
- drivers/mmc/host/meson-mx-sdio.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+> @@ -185,4 +188,21 @@
+>  
+>  	FRAME_END
+>  	RET
+> +
+> +	.if \host
+> +3:
+> +	/*
+> +	 * SEAMCALL caused #GP or #UD.  By reaching here %eax contains
+> +	 * the trap number.  Convert the trap number to the TDX error
+> +	 * code by setting TDX_SW_ERROR to the high 32-bits of %rax.
+> +	 *
+> +	 * Note cannot OR TDX_SW_ERROR directly to %rax as OR instruction
+> +	 * only accepts 32-bit immediate at most.
+> +	 */
+> +	movq $TDX_SW_ERROR, %r12
+> +	orq  %r12, %rax
+> +	jmp  2b
+> +
+> +	_ASM_EXTABLE_FAULT(1b, 3b)
+> +	.endif	/* \host */
+>  .endm
 
-diff --git a/drivers/mmc/host/meson-mx-sdio.c b/drivers/mmc/host/meson-mx-sdio.c
-index 3a19a05ef55a..a11577f2ee69 100644
---- a/drivers/mmc/host/meson-mx-sdio.c
-+++ b/drivers/mmc/host/meson-mx-sdio.c
-@@ -728,7 +728,7 @@ static int meson_mx_mmc_probe(struct platform_device *pdev)
- 	return ret;
- }
- 
--static int meson_mx_mmc_remove(struct platform_device *pdev)
-+static void meson_mx_mmc_remove(struct platform_device *pdev)
- {
- 	struct meson_mx_mmc_host *host = platform_get_drvdata(pdev);
- 	struct device *slot_dev = mmc_dev(host->mmc);
-@@ -743,8 +743,6 @@ static int meson_mx_mmc_remove(struct platform_device *pdev)
- 	clk_disable_unprepare(host->core_clk);
- 
- 	mmc_free_host(host->mmc);
--
--	return 0;
- }
- 
- static const struct of_device_id meson_mx_mmc_of_match[] = {
-@@ -756,7 +754,7 @@ MODULE_DEVICE_TABLE(of, meson_mx_mmc_of_match);
- 
- static struct platform_driver meson_mx_mmc_driver = {
- 	.probe   = meson_mx_mmc_probe,
--	.remove  = meson_mx_mmc_remove,
-+	.remove_new = meson_mx_mmc_remove,
- 	.driver  = {
- 		.name = "meson-mx-sdio",
- 		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
--- 
-2.39.0
+Also, please used named labels where possible and *please* keep asm
+directives unindented.
 
+
+--- a/arch/x86/virt/vmx/tdx/tdxcall.S
++++ b/arch/x86/virt/vmx/tdx/tdxcall.S
+@@ -56,7 +56,7 @@
+ 	movq	TDX_MODULE_r10(%rsi), %r10
+ 	movq	TDX_MODULE_r11(%rsi), %r11
+ 
+-	.if \saved
++.if \saved
+ 	/*
+ 	 * Move additional input regs from the structure.  For simplicity
+ 	 * assume that anything needs the callee-saved regs also tramples
+@@ -75,18 +75,18 @@
+ 	movq	TDX_MODULE_r15(%rsi), %r15
+ 	movq	TDX_MODULE_rbx(%rsi), %rbx
+ 
+-	.if \ret
++.if \ret
+ 	/* Save the structure pointer as %rsi is about to be clobbered */
+ 	pushq	%rsi
+-	.endif
++.endif
+ 
+ 	movq	TDX_MODULE_rdi(%rsi), %rdi
+ 	/* %rsi needs to be done at last */
+ 	movq	TDX_MODULE_rsi(%rsi), %rsi
+-	.endif	/* \saved */
++.endif	/* \saved */
+ 
+-	.if \host
+-1:
++.if \host
++.Lseamcall:
+ 	seamcall
+ 	/*
+ 	 * SEAMCALL instruction is essentially a VMExit from VMX root
+@@ -99,15 +99,13 @@
+ 	 * This value will never be used as actual SEAMCALL error code as
+ 	 * it is from the Reserved status code class.
+ 	 */
+-	mov $TDX_SEAMCALL_VMFAILINVALID, %rdi
+-	cmovc %rdi, %rax
+-2:
+-	.else
++	jc	.Lseamfail
++.else
+ 	tdcall
+-	.endif
++.endif
+ 
+-	.if \ret
+-	.if \saved
++.if \ret
++.if \saved
+ 	/*
+ 	 * Restore the structure from stack to saved the output registers
+ 	 *
+@@ -136,7 +134,7 @@
+ 	movq %r15, TDX_MODULE_r15(%rsi)
+ 	movq %rbx, TDX_MODULE_rbx(%rsi)
+ 	movq %rdi, TDX_MODULE_rdi(%rsi)
+-	.endif	/* \saved */
++.endif	/* \saved */
+ 
+ 	/* Copy output regs to the structure */
+ 	movq %rcx, TDX_MODULE_rcx(%rsi)
+@@ -145,10 +143,11 @@
+ 	movq %r9,  TDX_MODULE_r9(%rsi)
+ 	movq %r10, TDX_MODULE_r10(%rsi)
+ 	movq %r11, TDX_MODULE_r11(%rsi)
+-	.endif	/* \ret */
++.endif	/* \ret */
+ 
+-	.if \saved
+-	.if \ret
++.Lout:
++.if \saved
++.if \ret
+ 	/*
+ 	 * Clear registers shared by guest for VP.ENTER and VP.VMCALL to
+ 	 * prevent speculative use of values from guest/VMM, including
+@@ -170,13 +169,8 @@
+ 	xorq %r9,  %r9
+ 	xorq %r10, %r10
+ 	xorq %r11, %r11
+-	xorq %r12, %r12
+-	xorq %r13, %r13
+-	xorq %r14, %r14
+-	xorq %r15, %r15
+-	xorq %rbx, %rbx
+ 	xorq %rdi, %rdi
+-	.endif	/* \ret */
++.endif	/* \ret */
+ 
+ 	/* Restore callee-saved GPRs as mandated by the x86_64 ABI */
+ 	popq	%r15
+@@ -184,13 +178,17 @@
+ 	popq	%r13
+ 	popq	%r12
+ 	popq	%rbx
+-	.endif	/* \saved */
++.endif	/* \saved */
+ 
+ 	FRAME_END
+ 	RET
+ 
+-	.if \host
+-3:
++.if \host
++.Lseamfail:
++	mov	$TDX_SEAMCALL_VMFAILINVALID, %rax
++	jmp	.Lout
++
++.Lseamtrap:
+ 	/*
+ 	 * SEAMCALL caused #GP or #UD.  By reaching here %eax contains
+ 	 * the trap number.  Convert the trap number to the TDX error
+@@ -201,8 +199,8 @@
+ 	 */
+ 	movq $TDX_SW_ERROR, %r12
+ 	orq  %r12, %rax
+-	jmp  2b
++	jmp .Lout
+ 
+-	_ASM_EXTABLE_FAULT(1b, 3b)
+-	.endif	/* \host */
++	_ASM_EXTABLE_FAULT(.Lseamcall, .Lseamtrap)
++.endif	/* \host */
+ .endm
