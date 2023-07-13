@@ -2,101 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29248751D73
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 11:40:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A85CE751D91
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 11:42:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234057AbjGMJk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 05:40:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58814 "EHLO
+        id S234450AbjGMJme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 05:42:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231774AbjGMJkZ (ORCPT
+        with ESMTP id S234202AbjGMJmJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 05:40:25 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19E461FD7;
-        Thu, 13 Jul 2023 02:40:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=kxEHiB4D3m9yY/2dDO7P2A7iGOSaPkpw/P8MmEhifuo=; b=lSisNuvY2Y6og/MU4fqubO5ZCZ
-        o0KzISwWjmdnggSiCAUnk+jPi1PksKszWU9pCusCXpYuJyPWkreDmse7Kv2eiepI+jwnn6fyZM+wy
-        xda8dv5rDApk0IOSAqGNjfJuVpxS6/dBkWUyeowaXAnXUiryry72KHG/g4a6i7Iaa7RyYi9OAcwrm
-        Uk58a4HRX/Y+NjdP1dhDA+8Tsjs8WBXSegjYvvuBEWH/L14xE+Qmzw/Xg/WGTEnQiS+qi9PuykmSb
-        v/Wwjg8LVKlAfcc8ECJA9VP5CMYQRJMZjEeUmDv/AOwrK7VPSAeAZyylvZClUFicci9hlNYCTFThN
-        3611ICNQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qJsnx-000140-6y; Thu, 13 Jul 2023 09:40:09 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 25A5430007E;
-        Thu, 13 Jul 2023 11:40:08 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0CA03245CA117; Thu, 13 Jul 2023 11:40:08 +0200 (CEST)
-Date:   Thu, 13 Jul 2023 11:40:07 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Huang, Kai" <kai.huang@intel.com>
-Cc:     "Hansen, Dave" <dave.hansen@intel.com>,
-        "Christopherson,, Sean" <seanjc@google.com>,
-        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Subject: Re: [PATCH 07/10] x86/tdx: Extend TDX_MODULE_CALL to support more
- TDCALL/SEAMCALL leafs
-Message-ID: <20230713094007.GG3138667@hirez.programming.kicks-ass.net>
-References: <cover.1689151537.git.kai.huang@intel.com>
- <ecfd84af9186aa5368acb40a2740afbf1d0d1b5d.1689151537.git.kai.huang@intel.com>
- <20230712165336.GA3115257@hirez.programming.kicks-ass.net>
- <6489a835da0d21c7637d071b7ef40ae1cda87237.camel@intel.com>
- <20230713084640.GB3138667@hirez.programming.kicks-ass.net>
- <c0861d54af50ef01983703cc24e41118867342b8.camel@intel.com>
+        Thu, 13 Jul 2023 05:42:09 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F30E359B
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 02:41:02 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R1qNj6cfYzBJx3w
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 17:40:53 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1689241253; x=1691833254; bh=W1OSJeuitguUtY+tH1dNwmL1b5W
+        ZEKIxcKU+sdfcjLQ=; b=sWDpdinzoh13UDyz3CpJHEfqr/Og6AuRdbtiqAJn4os
+        LjvNNQl5keQAAW0/vue5nouI+5Fjkg80UVfzZGJnBdpdwD9ror2Symkn/76zs/Ku
+        JALg7OZAhT12RpOwo3rZFFH97GjcFgaPe9UZB59053u2nunGV2Xs1firvgpRn++6
+        BpmZEzNhf1ge6Kb2AG62aB6AZP0OgOxNa/8UnITUuS22QV5++WrQWuTfAy5pm1J5
+        Vg8oJe4/4eWwI6L0epXwyLhlwrDYQuo69CY0W50dYsTNUdLC49eLkiP6DQLPDhBD
+        B2LJt2ihXmwyTAbkzMZZMbrU/6wJA5jdS9AEA69sSJg==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id M2b6Th8xyt3a for <linux-kernel@vger.kernel.org>;
+        Thu, 13 Jul 2023 17:40:53 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R1qNj29s4zBHXgh;
+        Thu, 13 Jul 2023 17:40:53 +0800 (CST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c0861d54af50ef01983703cc24e41118867342b8.camel@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Date:   Thu, 13 Jul 2023 17:40:53 +0800
+From:   hanyu001@208suo.com
+To:     erazor_de@users.sourceforge.net, jikos@kernel.org,
+        benjamin.tissoires@redhat.com
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Fwd: [PATCH] hid:  Replace snprintf() with sysfs_emit()
+In-Reply-To: <tencent_F6951CE34644A8B408B524E70F0283D50F08@qq.com>
+References: <tencent_F6951CE34644A8B408B524E70F0283D50F08@qq.com>
+User-Agent: Roundcube Webmail
+Message-ID: <bad7fd90191a531ebf10816f48d3012f@208suo.com>
+X-Sender: hanyu001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 09:34:24AM +0000, Huang, Kai wrote:
-> On Thu, 2023-07-13 at 10:46 +0200, Peter Zijlstra wrote:
-> > On Thu, Jul 13, 2023 at 07:48:20AM +0000, Huang, Kai wrote:
-> > 
-> > > I found below comment in KVM code:
-> > > 
-> > > > +	 * See arch/x86/kvm/vmx/vmenter.S:
-> > > > +	 *
-> > > > +	 * In theory, a L1 cache miss when restoring register from stack
-> > > > +	 * could lead to speculative execution with guest's values.
-> > > 
-> > > And KVM explicitly does XOR for the registers that gets "pop"ed almost
-> > > instantly, so I followed.
-> > > 
-> > > But to be honest I don't quite understand this.  :-)
-> > 
-> > Urgh, I suppose that actually makes sense. Since pop is a load it might
-> > continue speculation with the previous value. Whereas the xor-clear
-> > idiom is impossible to speculate through.
-> > 
-> > Oh well...
-> 
-> Then should I keep those registers that are "pop"ed immediately afterwards?
+coccinelle report:
+./drivers/scsi/mvsas/mv_init.c:699:8-16:
+WARNING: use scnprintf or sprintf
+./drivers/scsi/mvsas/mv_init.c:747:8-16:
+WARNING: use scnprintf or sprintf
 
-Yeah, I suppose so.
+./drivers/hid/hid-roccat-kovaplus.c:330:8-16: WARNING: use scnprintf or 
+sprintf
+./drivers/hid/hid-roccat-kovaplus.c:277:8-16: WARNING: use scnprintf or 
+sprintf
+./drivers/hid/hid-roccat-kovaplus.c:339:8-16: WARNING: use scnprintf or 
+sprintf
+./drivers/hid/hid-roccat-kovaplus.c:349:8-16: WARNING: use scnprintf or 
+sprintf
+./drivers/hid/hid-roccat-kovaplus.c:370:8-16: WARNING: use scnprintf or 
+sprintf
+
+Signed-off-by: ztt <1549089851@qq.com>
+---
+  drivers/hid/hid-roccat-kovaplus.c | 10 +++++-----
+  1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/hid/hid-roccat-kovaplus.c 
+b/drivers/hid/hid-roccat-kovaplus.c
+index 1a1d96e11683..282e26f55074 100644
+--- a/drivers/hid/hid-roccat-kovaplus.c
++++ b/drivers/hid/hid-roccat-kovaplus.c
+@@ -274,7 +274,7 @@ static ssize_t 
+kovaplus_sysfs_show_actual_profile(struct device *dev,
+  {
+      struct kovaplus_device *kovaplus =
+              hid_get_drvdata(dev_get_drvdata(dev->parent->parent));
+-    return snprintf(buf, PAGE_SIZE, "%d\n", kovaplus->actual_profile);
++    return scnprintf(buf, PAGE_SIZE, "%d\n", kovaplus->actual_profile);
+  }
+
+  static ssize_t kovaplus_sysfs_set_actual_profile(struct device *dev,
+@@ -327,7 +327,7 @@ static ssize_t kovaplus_sysfs_show_actual_cpi(struct 
+device *dev,
+  {
+      struct kovaplus_device *kovaplus =
+              hid_get_drvdata(dev_get_drvdata(dev->parent->parent));
+-    return snprintf(buf, PAGE_SIZE, "%d\n", kovaplus->actual_cpi);
++    return scnprintf(buf, PAGE_SIZE, "%d\n", kovaplus->actual_cpi);
+  }
+  static DEVICE_ATTR(actual_cpi, 0440, kovaplus_sysfs_show_actual_cpi, 
+NULL);
+
+@@ -336,7 +336,7 @@ static ssize_t 
+kovaplus_sysfs_show_actual_sensitivity_x(struct device *dev,
+  {
+      struct kovaplus_device *kovaplus =
+              hid_get_drvdata(dev_get_drvdata(dev->parent->parent));
+-    return snprintf(buf, PAGE_SIZE, "%d\n", 
+kovaplus->actual_x_sensitivity);
++    return scnprintf(buf, PAGE_SIZE, "%d\n", 
+kovaplus->actual_x_sensitivity);
+  }
+  static DEVICE_ATTR(actual_sensitivity_x, 0440,
+             kovaplus_sysfs_show_actual_sensitivity_x, NULL);
+@@ -346,7 +346,7 @@ static ssize_t 
+kovaplus_sysfs_show_actual_sensitivity_y(struct device *dev,
+  {
+      struct kovaplus_device *kovaplus =
+              hid_get_drvdata(dev_get_drvdata(dev->parent->parent));
+-    return snprintf(buf, PAGE_SIZE, "%d\n", 
+kovaplus->actual_y_sensitivity);
++    return scnprintf(buf, PAGE_SIZE, "%d\n", 
+kovaplus->actual_y_sensitivity);
+  }
+  static DEVICE_ATTR(actual_sensitivity_y, 0440,
+             kovaplus_sysfs_show_actual_sensitivity_y, NULL);
+@@ -367,7 +367,7 @@ static ssize_t 
+kovaplus_sysfs_show_firmware_version(struct device *dev,
+              &info, KOVAPLUS_SIZE_INFO);
+      mutex_unlock(&kovaplus->kovaplus_lock);
+
+-    return snprintf(buf, PAGE_SIZE, "%d\n", info.firmware_version);
++    return scnprintf(buf, PAGE_SIZE, "%d\n", info.firmware_version);
+  }
+  static DEVICE_ATTR(firmware_version, 0440,
+             kovaplus_sysfs_show_firmware_version, NULL);
