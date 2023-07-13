@@ -2,308 +2,439 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 325CD752205
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 14:58:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D507752200
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 14:57:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234423AbjGMM6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 08:58:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36654 "EHLO
+        id S234873AbjGMM5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 08:57:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234891AbjGMM5p (ORCPT
+        with ESMTP id S234860AbjGMM5f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 08:57:45 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FCE42702
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 05:57:41 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-579e9b95b86so5507107b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 05:57:41 -0700 (PDT)
+        Thu, 13 Jul 2023 08:57:35 -0400
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2073.outbound.protection.outlook.com [40.107.94.73])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78687173B
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 05:57:33 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eTAbBrrXPqRr1mXgucOU5lC+YIojymYlfyaTtJL7xypSQJQozDwY5BIy1rPol0r/aMcpceJcB2FgedOB69iK+pkgPK0N5SDhIjTx32vIZy+G9KFamWjPTJAMSorKwIpqa/Y5wYBGiGyOLj32CFHPi8eq2UCyYXTKb2Uqkxh1xt4jrtlp4WoVQh86BzTPKim6SY68aYqPBnv+/Ri5CakH56dVGwWLPT29Mdd1kDzqYxc1SA95jCFszXirkN9ipbUPXmaJXbmw4z0Oh8xuOb6LNNXS11yYYJJawuG9FQDCk7jPaRBr9S5wFfTaGSM00HJUPhMIKaeR57qL3xajiLz1YQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=4cA+q6vEZZMd4FyxrLe+MzC/9+458G/yI6cBlw28Zfo=;
+ b=LVzAOcBECVMXnjU6dcDuy+97zRo1+uM4UyYaSQ6SvBhLpjaoGrgfjX3haUjZ2IqmG0Of2aHd1TjlnZO2xAVnuOUuLf5KIW19efdNrtOLsc/c7s1JygZmqPXB88i/b0P39pEx8ADgMwrznG0IrXlU3gbSyIMHxwyB2GCY/XSHJLlQ3kkpuslYwohMDQn1fGEQ+FMUb/3eKuDTwMfQU0R9BYpJwoNJTsD9+Q9I2u/cAbfqGCHCclT/L00SG4pwQBA2I9tv6BWkaJYGk7HuNrKyjQYzQWMQsOY+Jf5s85LNmmXwtHYP0LBfnMfGLbeMn1hdpDmwnDzM9CPflwpJiGAsqA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=softfail (sender ip
+ is 165.204.84.17) smtp.rcpttodomain=kernel.org
+ smtp.mailfrom=amd.corp-partner.google.com; dmarc=fail (p=reject sp=reject
+ pct=100) action=oreject header.from=amd.corp-partner.google.com; dkim=none
+ (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689253060; x=1691845060;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=GOfdDj4t/4l0qN/MzMyGSYQ+xos/zeOUfaRubiCXYXI=;
-        b=fkNAaakhJhj14joU9vjShVN1J78/4ao4j4r/p0M09hqWWrtvYQsGmFffwTbIc+z21k
-         OzoCWRoZ9KXixeBMf8N4Ri/coa/+8/xhR9EKxTNP8sfg3qpJat0FAxgDfcso3YLSRxuh
-         tY3+AZS3TUi6H9CqRMIO6SNQKVGT6MR1mFawBy7pnitaqt3ZGBxlgndqmv2HJtMKJA43
-         U3PMN16S19MICAm06IGvBgzUo76/EVqARHIYt3KZurXU3HFFjt3/XW6jXM66vj5+t1kA
-         5Fj1MEGzbzeQH4Mmxx1jNONJ0i9fxqfaD+AdEi66+pcUHkQ3G3yvhO7pNJTb2WABE3b5
-         KE4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689253060; x=1691845060;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GOfdDj4t/4l0qN/MzMyGSYQ+xos/zeOUfaRubiCXYXI=;
-        b=QsKjDzfRn9yzjcgStmpJJ65+l4S4uYgZV2OuIGQW8kL6rQB/BnmHvPHX+/VidsPD9O
-         LxyvsJla2oCDNtdHc7unkc6zONId2wk4/y89fqRepaOTxM4CzzM4MNG+6Sf7gSDz8V2a
-         DRqhtfB/Azi58ZxPKuVybetbW8Hj5roOE4+3AjFKQP7m+r2i3c0Dpdb0k+Hf/K7g5K8t
-         ejnYffAyY8NY9UVNlvISNyGjooTApw4SO7SVxyo9piksH11JTQ8nNxHHUBKLmrJbxcJd
-         /HSAkzuU4qcwtoYLpCIhU/sLUaSEEv4v1z2B7lNvR0b2q+cGZGavKAgdRo2Ufg3wK6K4
-         Kbjw==
-X-Gm-Message-State: ABy/qLY9IQOeGJd6PH7qRcIoBPsOrt3ljQ/8r3uhLBf2moeJy6CSvr+o
-        Fouzi3+32DFdeBBERN7R/SBaxclkDAw=
-X-Google-Smtp-Source: APBJJlE4gqf8HgUFd5kWo4vVey1n9AXLc59Gq5/Kp0SmJA9jDOWF5opeYPMCBv7jvMQnKUUmiSAL5uMTcOM=
-X-Received: from glider.muc.corp.google.com ([2a00:79e0:9c:201:7a88:66b7:31e5:7d85])
- (user=glider job=sendgmr) by 2002:a81:8b48:0:b0:570:b1:ca37 with SMTP id
- e8-20020a818b48000000b0057000b1ca37mr13111ywk.5.1689253060736; Thu, 13 Jul
- 2023 05:57:40 -0700 (PDT)
-Date:   Thu, 13 Jul 2023 14:57:05 +0200
-In-Reply-To: <20230713125706.2884502-1-glider@google.com>
-Mime-Version: 1.0
-References: <20230713125706.2884502-1-glider@google.com>
-X-Mailer: git-send-email 2.41.0.255.g8b1d071c50-goog
-Message-ID: <20230713125706.2884502-6-glider@google.com>
-Subject: [v2 5/5] arm64: mte: add compression support to mteswap.c
-From:   Alexander Potapenko <glider@google.com>
-To:     glider@google.com, catalin.marinas@arm.com, will@kernel.org,
-        pcc@google.com, andreyknvl@gmail.com,
-        andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk,
-        yury.norov@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        eugenis@google.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+ d=amdcloud.onmicrosoft.com; s=selector1-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4cA+q6vEZZMd4FyxrLe+MzC/9+458G/yI6cBlw28Zfo=;
+ b=MVgKnmGmn1xl8J1Fbe6rA7mprr9yIxbulYkEAKJHJblX4hIK7ed+1v8Ze1tSMVWhPKUFjieb1W8ePWodAkYL5WsLATYZC+gQqerh9tWZPAQ5CZ6IZ7fouWBXH+9wv2Lf15bq/2MBWD4On33p0B8gNrLI4F3n4g6+iQ/5fhpr+3WFOr1xEBP3SOgA5anGGYC7nUKWIom4WSw1JWZ5oIysEbg9lqA4ji40Ql5i/1uquR/+Ta3JyCpP7Kc4H+Xhx5CYEjM88ruw6A/8YQo8z3RPs0ZChSPj22faw6cjKXS0DP7B17iYTkGytxbWS/0OfV0lwF94qTvDLVCk/EoOmF1hgw==
+Received: from SJ0PR03CA0005.namprd03.prod.outlook.com (2603:10b6:a03:33a::10)
+ by IA1PR12MB8537.namprd12.prod.outlook.com (2603:10b6:208:453::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.24; Thu, 13 Jul
+ 2023 12:57:29 +0000
+Received: from CO1NAM11FT005.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:a03:33a:cafe::6f) by SJ0PR03CA0005.outlook.office365.com
+ (2603:10b6:a03:33a::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.22 via Frontend
+ Transport; Thu, 13 Jul 2023 12:57:28 +0000
+X-MS-Exchange-Authentication-Results: spf=softfail (sender IP is
+ 165.204.84.17) smtp.mailfrom=amd.corp-partner.google.com; dkim=none (message
+ not signed) header.d=none;dmarc=fail action=oreject
+ header.from=amd.corp-partner.google.com;
+Received-SPF: SoftFail (protection.outlook.com: domain of transitioning
+ amd.corp-partner.google.com discourages use of 165.204.84.17 as permitted
+ sender)
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CO1NAM11FT005.mail.protection.outlook.com (10.13.174.147) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6588.24 via Frontend Transport; Thu, 13 Jul 2023 12:57:28 +0000
+Received: from SATLEXMB06.amd.com (10.181.40.147) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Thu, 13 Jul
+ 2023 07:57:25 -0500
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB06.amd.com
+ (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.23; Thu, 13 Jul
+ 2023 07:57:23 -0500
+Received: from sof-System-Product-Name.amd.com (10.180.168.240) by
+ SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.23
+ via Frontend Transport; Thu, 13 Jul 2023 07:57:02 -0500
+From:   V sujith kumar Reddy 
+        <vsujithkumar.reddy@amd.corp-partner.google.com>
+To:     <broonie@kernel.org>, <alsa-devel@alsa-project.org>
+CC:     <Vijendar.Mukunda@amd.com>, <Basavaraj.Hiregoudar@amd.com>,
+        <Sunil-kumar.Dommati@amd.com>, <venkataprasad.potturu@amd.com>,
+        <ssabakar@amd.com>, <akondave@amd.com>,
+        <mastan.katragadda@amd.com>,
+        "V sujith kumar Reddy" <Vsujithkumar.Reddy@amd.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
+        Iuliana Prodan <iuliana.prodan@nxp.com>,
+        "Mastan Katragadda" <Mastan.Katragadda@amd.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:SOUND - SOUND OPEN FIRMWARE (SOF) DRIVERS" 
+        <sound-open-firmware@alsa-project.org>
+Subject: [PATCH 1/3] ASoC: SOF: amd: Add Probe functionality support for amd platforms.
+Date:   Thu, 13 Jul 2023 18:27:07 +0530
+Message-ID: <20230713125709.418851-2-vsujithkumar.reddy@amd.corp-partner.google.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230713125709.418851-1-vsujithkumar.reddy@amd.corp-partner.google.com>
+References: <20230713125709.418851-1-vsujithkumar.reddy@amd.corp-partner.google.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1NAM11FT005:EE_|IA1PR12MB8537:EE_
+X-MS-Office365-Filtering-Correlation-Id: a5e622fb-0bab-464f-4274-08db83a0b6b8
+X-MS-Exchange-SenderADCheck: 2
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: XERzmxOe0AXYBMz5h3d9zwGvZJ5dt+d7sNLhhkJQLMLBZVLIaevCLdAVF2L5D0hg4rcuzjZtDw0ioEUv7AnRi4X5aicbJPYRs5rZoPRmvguHJjuojaoh+1Mo8me3X665b+T6ORnTvvym4RjaNJx4SHySMWRV4dbpwHGjuEkrreYH/s/1dBLzgqwwN8QpwEOJA5Kzu/nwU++llJP2hC5kRpqeyteelwJTMPGZNq/KA/zpoG4YdV7zW1V3fdM3GqNIWwmKaMUr4mndGjmymB0stvmeqDHnjSIer0IUo7Ddp1/++hyHuIZscqvavT9lvgzDmZgDgntC6e/uJ1MPpBNqL8ffXYrkkiOgp5iNZQbs2HCDt3UTHw1y5oLn4O+1Im00dxqtLl+ermhLJaiwAFF3Dx5S9uGhJ/qMzYbHvJgCTk+jSanHD3wqegeHCbBLmrJGN5r6cYEu4uEPRuKFmOTEjepNrpdIdj8E1qSVjKfa7mHdpf1Q7snf37RlC82LfGFrrVxJcToL22uL1Qe7rdQOXStKkfE4suePfKyinDg5c65h3durZgID4IQ5Jgw7d475WdVNqYKtWT8BKRiYpPdoqbofafh3NEReRlmMSfq295aPkRSjx1yNFTbkNS/reP4XeVNHGS3BKwCa16k1+dzZdDQA+iElBArJnjqVVlK8jZ6U2xBkm0oi7cVH7Hst1BfgWc3udD9GTJjF/UY8+K2nvvQrUHyByRcJ7RMRD99JSyoSOfMc2e6nHSDIcjzn5vpu
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(136003)(346002)(39860400002)(376002)(396003)(451199021)(40470700004)(46966006)(7416002)(4326008)(70586007)(70206006)(41300700001)(316002)(2906002)(498600001)(76482006)(5660300002)(8936002)(8676002)(54906003)(110136005)(40460700003)(26005)(1076003)(40480700001)(336012)(83380400001)(35950700001)(47076005)(2616005)(81166007)(356005)(82740400003)(82310400005)(86362001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amdcloud.onmicrosoft.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2023 12:57:28.5029
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: a5e622fb-0bab-464f-4274-08db83a0b6b8
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT005.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB8537
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Define the internal mteswap.h interface:
- - _mte_alloc_and_save_tags()
- - _mte_free_saved_tags()
- - _mte_restore_tags()
+From: V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>
 
-, that encapsulates saving tags for a struct page (together with memory
-allocation), restoring tags, and deleting the storage allocated for them.
+This patch consist of probe client device registration,stream tag
+and dma channel configuration for SOF firmware.
 
-These functions accept opaque pointers, which may point to 128-byte
-tag buffers, as well as smaller buffers containing compressed tags, or
-have compressed tags stored directly in them.
-
-The existing code from mteswap.c operating with uncompressed tags is split
-away into mteswap_nocomp.c, and the newly introduced mteswap_comp.c
-provides compression with the EA0 algorithm. The latter implementation
-is picked if CONFIG_ARM64_MTE_COMP=y.
-
-Soon after booting Android, tag compression saves ~2.5x memory previously
-spent by mteswap.c on tag allocations. With the growing uptime, the
-savings reach 20x and even more.
-
-Signed-off-by: Alexander Potapenko <glider@google.com>
+Signed-off-by: V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>
 ---
- arch/arm64/mm/Makefile         |  5 ++++
- arch/arm64/mm/mteswap.c        | 19 ++++++-------
- arch/arm64/mm/mteswap.h        | 12 ++++++++
- arch/arm64/mm/mteswap_comp.c   | 50 ++++++++++++++++++++++++++++++++++
- arch/arm64/mm/mteswap_nocomp.c | 37 +++++++++++++++++++++++++
- 5 files changed, 112 insertions(+), 11 deletions(-)
- create mode 100644 arch/arm64/mm/mteswap.h
- create mode 100644 arch/arm64/mm/mteswap_comp.c
- create mode 100644 arch/arm64/mm/mteswap_nocomp.c
+ sound/soc/sof/amd/Kconfig      |   8 ++
+ sound/soc/sof/amd/Makefile     |   1 +
+ sound/soc/sof/amd/acp-common.c |   4 +
+ sound/soc/sof/amd/acp-ipc.c    |  26 ++++++
+ sound/soc/sof/amd/acp-probes.c | 147 +++++++++++++++++++++++++++++++++
+ sound/soc/sof/amd/acp.h        |   9 ++
+ 6 files changed, 195 insertions(+)
+ create mode 100644 sound/soc/sof/amd/acp-probes.c
 
-diff --git a/arch/arm64/mm/Makefile b/arch/arm64/mm/Makefile
-index 170dc62b010b9..46a798e2b67cb 100644
---- a/arch/arm64/mm/Makefile
-+++ b/arch/arm64/mm/Makefile
-@@ -11,6 +11,11 @@ obj-$(CONFIG_TRANS_TABLE)	+= trans_pgd-asm.o
- obj-$(CONFIG_DEBUG_VIRTUAL)	+= physaddr.o
- obj-$(CONFIG_ARM64_MTE)		+= mteswap.o
- obj-$(CONFIG_ARM64_MTE_COMP)	+= mtecomp.o
-+ifdef CONFIG_ARM64_MTE_COMP
-+obj-$(CONFIG_ARM64_MTE)		+= mteswap_comp.o
-+else
-+obj-$(CONFIG_ARM64_MTE)		+= mteswap_nocomp.o
-+endif
- obj-$(CONFIG_ARM64_MTE_COMP_KUNIT_TEST) += test_mtecomp.o
- KASAN_SANITIZE_physaddr.o	+= n
+diff --git a/sound/soc/sof/amd/Kconfig b/sound/soc/sof/amd/Kconfig
+index 1cb92d6030e3..7dbc8df5cfe6 100644
+--- a/sound/soc/sof/amd/Kconfig
++++ b/sound/soc/sof/amd/Kconfig
+@@ -21,6 +21,7 @@ config SND_SOC_SOF_AMD_COMMON
+ 	select SND_SOC_SOF_PCI_DEV
+ 	select SND_AMD_ACP_CONFIG
+ 	select SND_SOC_SOF_XTENSA
++	select SND_SOC_SOF_ACP_PROBES
+ 	select SND_SOC_ACPI if ACPI
+ 	help
+ 	  This option is not user-selectable but automatically handled by
+@@ -42,4 +43,11 @@ config SND_SOC_SOF_AMD_REMBRANDT
+ 	  Say Y if you want to enable SOF on Rembrandt.
+ 	  If unsure select "N".
  
-diff --git a/arch/arm64/mm/mteswap.c b/arch/arm64/mm/mteswap.c
-index cd508ba80ab1b..e072c1209fbb6 100644
---- a/arch/arm64/mm/mteswap.c
-+++ b/arch/arm64/mm/mteswap.c
-@@ -7,6 +7,8 @@
- #include <linux/swapops.h>
- #include <asm/mte.h>
- 
-+#include "mteswap.h"
++config SND_SOC_SOF_ACP_PROBES
++	tristate
++	select SND_SOC_SOF_DEBUG_PROBES
++	help
++	  This option is not user-selectable but automatically handled by
++	  'select' statements at a higher level
 +
- static DEFINE_XARRAY(mte_pages);
+ endif
+diff --git a/sound/soc/sof/amd/Makefile b/sound/soc/sof/amd/Makefile
+index 5626d13b3e69..ef9f7df4e379 100644
+--- a/sound/soc/sof/amd/Makefile
++++ b/sound/soc/sof/amd/Makefile
+@@ -5,6 +5,7 @@
+ # Copyright(c) 2021 Advanced Micro Devices, Inc. All rights reserved.
  
- void *mte_allocate_tag_storage(void)
-@@ -27,20 +29,18 @@ int mte_save_tags(struct page *page)
- 	if (!page_mte_tagged(page))
- 		return 0;
+ snd-sof-amd-acp-objs := acp.o acp-loader.o acp-ipc.o acp-pcm.o acp-stream.o acp-trace.o acp-common.o
++snd-sof-amd-acp-$(CONFIG_SND_SOC_SOF_ACP_PROBES) = acp-probes.o
+ snd-sof-amd-renoir-objs := pci-rn.o renoir.o
+ snd-sof-amd-rembrandt-objs := pci-rmb.o rembrandt.o
  
--	tag_storage = mte_allocate_tag_storage();
-+	tag_storage = _mte_alloc_and_save_tags(page);
- 	if (!tag_storage)
- 		return -ENOMEM;
+diff --git a/sound/soc/sof/amd/acp-common.c b/sound/soc/sof/amd/acp-common.c
+index df36b411a12e..3a0c7688dcfe 100644
+--- a/sound/soc/sof/amd/acp-common.c
++++ b/sound/soc/sof/amd/acp-common.c
+@@ -196,6 +196,10 @@ struct snd_sof_dsp_ops sof_acp_common_ops = {
+ 	.dbg_dump		= amd_sof_dump,
+ 	.debugfs_add_region_item = snd_sof_debugfs_add_region_item_iomem,
+ 	.dsp_arch_ops = &sof_xtensa_arch_ops,
++
++	/* probe client device registation */
++	.register_ipc_clients = acp_probes_register,
++	.unregister_ipc_clients = acp_probes_unregister,
+ };
+ EXPORT_SYMBOL_NS(sof_acp_common_ops, SND_SOC_SOF_AMD_COMMON);
  
--	mte_save_page_tags(page_address(page), tag_storage);
--
- 	/* page_private contains the swap entry.val set in do_swap_page */
- 	ret = xa_store(&mte_pages, page_private(page), tag_storage, GFP_KERNEL);
- 	if (WARN(xa_is_err(ret), "Failed to store MTE tags")) {
--		mte_free_tag_storage(tag_storage);
-+		_mte_free_saved_tags(tag_storage);
- 		return xa_err(ret);
- 	} else if (ret) {
- 		/* Entry is being replaced, free the old entry */
--		mte_free_tag_storage(ret);
-+		_mte_free_saved_tags(ret);
+diff --git a/sound/soc/sof/amd/acp-ipc.c b/sound/soc/sof/amd/acp-ipc.c
+index 8a0fc635a997..81a2c096a185 100644
+--- a/sound/soc/sof/amd/acp-ipc.c
++++ b/sound/soc/sof/amd/acp-ipc.c
+@@ -155,6 +155,8 @@ static void acp_dsp_ipc_get_reply(struct snd_sof_dev *sdev)
+ irqreturn_t acp_sof_ipc_irq_thread(int irq, void *context)
+ {
+ 	struct snd_sof_dev *sdev = context;
++	const struct sof_amd_acp_desc *desc = get_chip_info(sdev->pdata);
++	struct acp_dev_data *adata = sdev->pdata->hw_pdata;
+ 	unsigned int dsp_msg_write = sdev->debug_box.offset +
+ 				     offsetof(struct scratch_ipc_conf, sof_dsp_msg_write);
+ 	unsigned int dsp_ack_write = sdev->debug_box.offset +
+@@ -200,6 +202,30 @@ irqreturn_t acp_sof_ipc_irq_thread(int irq, void *context)
+ 		return IRQ_HANDLED;
  	}
  
- 	return 0;
-@@ -53,10 +53,7 @@ void mte_restore_tags(swp_entry_t entry, struct page *page)
- 	if (!tags)
- 		return;
- 
--	if (try_page_mte_tagging(page)) {
--		mte_restore_page_tags(page_address(page), tags);
--		set_page_mte_tagged(page);
--	}
-+	_mte_restore_tags(tags, page);
- }
- 
- void mte_invalidate_tags(int type, pgoff_t offset)
-@@ -64,7 +61,7 @@ void mte_invalidate_tags(int type, pgoff_t offset)
- 	swp_entry_t entry = swp_entry(type, offset);
- 	void *tags = xa_erase(&mte_pages, entry.val);
- 
--	mte_free_tag_storage(tags);
-+	_mte_free_saved_tags(tags);
- }
- 
- void mte_invalidate_tags_area(int type)
-@@ -78,7 +75,7 @@ void mte_invalidate_tags_area(int type)
- 	xa_lock(&mte_pages);
- 	xas_for_each(&xa_state, tags, last_entry.val - 1) {
- 		__xa_erase(&mte_pages, xa_state.xa_index);
--		mte_free_tag_storage(tags);
-+		_mte_free_saved_tags(tags);
- 	}
- 	xa_unlock(&mte_pages);
- }
-diff --git a/arch/arm64/mm/mteswap.h b/arch/arm64/mm/mteswap.h
-new file mode 100644
-index 0000000000000..bf25f2b3e75a4
---- /dev/null
-+++ b/arch/arm64/mm/mteswap.h
-@@ -0,0 +1,12 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
++	if (desc->probe_reg_offset) {
++		u32 val;
++		u32 posn;
 +
-+#ifndef ARCH_ARM64_MM_MTESWAP_H_
-+#define ARCH_ARM64_MM_MTESWAP_H_
-+
-+#include <linux/mm_types.h>
-+
-+void *_mte_alloc_and_save_tags(struct page *page);
-+void _mte_free_saved_tags(void *tags);
-+void _mte_restore_tags(void *tags, struct page *page);
-+
-+#endif // ARCH_ARM64_MM_MTESWAP_H_
-diff --git a/arch/arm64/mm/mteswap_comp.c b/arch/arm64/mm/mteswap_comp.c
-new file mode 100644
-index 0000000000000..bc2591f8d4f35
---- /dev/null
-+++ b/arch/arm64/mm/mteswap_comp.c
-@@ -0,0 +1,50 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/* MTE tag storage management with EA0 compression. */
-+
-+#include <asm/mte.h>
-+#include <asm/mtecomp.h>
-+#include <linux/pagemap.h>
-+#include <linux/slab.h>
-+#include <linux/swap.h>
-+#include <linux/swapops.h>
-+#include <linux/xarray.h>
-+
-+#include "mteswap.h"
-+
-+void *_mte_alloc_and_save_tags(struct page *page)
-+{
-+	u8 tags[128];
-+	u64 handle;
-+
-+	mte_save_page_tags(page_address(page), tags);
-+	handle = ea0_compress(tags);
-+	return xa_mk_value(handle);
-+}
-+
-+void _mte_free_saved_tags(void *storage)
-+{
-+	unsigned long handle = xa_to_value(storage);
-+	int size;
-+
-+	if (!handle)
-+		return;
-+	size = ea0_storage_size(handle);
-+	ea0_release_handle(handle);
-+}
-+
-+void _mte_restore_tags(void *tags, struct page *page)
-+{
-+	u64 handle = xa_to_value(tags);
-+	u8 tags_decomp[128];
-+
-+	if (!handle)
-+		return;
-+
-+	if (try_page_mte_tagging(page)) {
-+		if (!ea0_decompress(handle, tags_decomp))
-+			return;
-+		mte_restore_page_tags(page_address(page), tags_decomp);
-+		set_page_mte_tagged(page);
++		/* Probe register consists of two parts
++		 * (0-30) bit has cumulative position value
++		 * 31 bit is a synchronization flag between DSP and CPU
++		 * for the position update
++		 */
++		val = snd_sof_dsp_read(sdev, ACP_DSP_BAR, desc->probe_reg_offset);
++		if (val & PROBE_STATUS_BIT) {
++			posn = val & ~PROBE_STATUS_BIT;
++			if (adata->probe_stream) {
++				/* Probe related posn value is of 31 bits limited to 2GB
++				 * once wrapped DSP won't send posn interrupt.
++				 */
++				adata->probe_stream->cstream_posn = posn;
++				snd_compr_fragment_elapsed(adata->probe_stream->cstream);
++				snd_sof_dsp_write(sdev, ACP_DSP_BAR, desc->probe_reg_offset, posn);
++				ipc_irq = true;
++			}
++		}
 +	}
-+}
-diff --git a/arch/arm64/mm/mteswap_nocomp.c b/arch/arm64/mm/mteswap_nocomp.c
++
+ 	if (!ipc_irq)
+ 		dev_dbg_ratelimited(sdev->dev, "nothing to do in IPC IRQ thread\n");
+ 
+diff --git a/sound/soc/sof/amd/acp-probes.c b/sound/soc/sof/amd/acp-probes.c
 new file mode 100644
-index 0000000000000..efcdac88b342d
+index 000000000000..778cf1a8b610
 --- /dev/null
-+++ b/arch/arm64/mm/mteswap_nocomp.c
-@@ -0,0 +1,37 @@
-+// SPDX-License-Identifier: GPL-2.0
++++ b/sound/soc/sof/amd/acp-probes.c
+@@ -0,0 +1,147 @@
++// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
++//
++// This file is provided under a dual BSD/GPLv2 license. When using or
++// redistributing this file, you may do so under either license.
++//
++// Copyright(c) 2023 Advanced Micro Devices, Inc.
++//
++// Authors: V Sujith Kumar Reddy <Vsujithkumar.Reddy@amd.com>
 +
-+/* MTE tag storage management without compression support. */
++/*
++ * Probe interface for generic AMD audio ACP DSP block
++ */
 +
-+#include <asm/mte.h>
-+#include <linux/pagemap.h>
-+#include <linux/slab.h>
-+#include <linux/swap.h>
-+#include <linux/swapops.h>
-+#include <linux/xarray.h>
++#include <linux/module.h>
++#include <sound/soc.h>
++#include "../sof-priv.h"
++#include "../sof-client-probes.h"
++#include "../sof-client.h"
++#include "../ops.h"
++#include "acp.h"
++#include "acp-dsp-offset.h"
 +
-+#include "mteswap.h"
-+
-+void *_mte_alloc_and_save_tags(struct page *page)
++static int acp_probes_compr_startup(struct sof_client_dev *cdev,
++				    struct snd_compr_stream *cstream,
++				    struct snd_soc_dai *dai, u32 *stream_id)
 +{
-+	void *storage;
++	struct snd_sof_dev *sdev = sof_client_dev_to_sof_dev(cdev);
++	struct acp_dsp_stream *stream;
++	struct acp_dev_data *adata;
 +
-+	storage = mte_allocate_tag_storage();
-+	if (!storage)
-+		return NULL;
++	adata = sdev->pdata->hw_pdata;
++	stream = acp_dsp_stream_get(sdev, 0);
++	if (!stream)
++		return -ENODEV;
 +
-+	mte_save_page_tags(page_address(page), storage);
-+	return storage;
++	stream->cstream = cstream;
++	cstream->runtime->private_data = stream;
++
++	adata->probe_stream = stream;
++	*stream_id = stream->stream_tag;
++
++	return 0;
 +}
 +
-+void _mte_free_saved_tags(void *storage)
++static int acp_probes_compr_shutdown(struct sof_client_dev *cdev,
++				     struct snd_compr_stream *cstream,
++				     struct snd_soc_dai *dai)
 +{
-+	mte_free_tag_storage(storage);
-+}
++	struct snd_sof_dev *sdev = sof_client_dev_to_sof_dev(cdev);
++	struct acp_dsp_stream *stream = cstream->runtime->private_data;
++	struct acp_dev_data *adata;
++	int ret;
 +
-+void _mte_restore_tags(void *tags, struct page *page)
-+{
-+	if (try_page_mte_tagging(page)) {
-+		mte_restore_page_tags(page_address(page), tags);
-+		set_page_mte_tagged(page);
++	ret = acp_dsp_stream_put(sdev, stream);
++	if (ret < 0) {
++		dev_err(sdev->dev, "Failed to release probe compress stream\n");
++		return ret;
 +	}
++
++	adata = sdev->pdata->hw_pdata;
++	stream->cstream = NULL;
++	cstream->runtime->private_data = NULL;
++	adata->probe_stream = NULL;
++
++	return 0;
 +}
++
++static int acp_probes_compr_set_params(struct sof_client_dev *cdev,
++				       struct snd_compr_stream *cstream,
++				       struct snd_compr_params *params,
++				       struct snd_soc_dai *dai)
++{
++	struct snd_sof_dev *sdev = sof_client_dev_to_sof_dev(cdev);
++	struct acp_dsp_stream *stream = cstream->runtime->private_data;
++	unsigned int buf_offset, index;
++	u32 size;
++	int ret;
++
++	stream->dmab = cstream->runtime->dma_buffer_p;
++	stream->num_pages = PFN_UP(cstream->runtime->dma_bytes);
++	size = cstream->runtime->buffer_size;
++
++	ret = acp_dsp_stream_config(sdev, stream);
++	if (ret < 0) {
++		acp_dsp_stream_put(sdev, stream);
++		return ret;
++	}
++
++	/* write buffer size of stream in scratch memory */
++
++	buf_offset = sdev->debug_box.offset +
++		     offsetof(struct scratch_reg_conf, buf_size);
++	index = stream->stream_tag - 1;
++	buf_offset = buf_offset + index * 4;
++
++	snd_sof_dsp_write(sdev, ACP_DSP_BAR, ACP_SCRATCH_REG_0 + buf_offset, size);
++
++	return 0;
++}
++
++static int acp_probes_compr_trigger(struct sof_client_dev *cdev,
++				    struct snd_compr_stream *cstream,
++				    int cmd, struct snd_soc_dai *dai)
++{
++	/* Nothing to do here, as it is a mandatory callback just defined */
++	return 0;
++}
++
++static int acp_probes_compr_pointer(struct sof_client_dev *cdev,
++				    struct snd_compr_stream *cstream,
++				    struct snd_compr_tstamp *tstamp,
++				    struct snd_soc_dai *dai)
++{
++	struct acp_dsp_stream *stream = cstream->runtime->private_data;
++	struct snd_soc_pcm_stream *pstream;
++
++	pstream = &dai->driver->capture;
++	tstamp->copied_total = stream->cstream_posn;
++	tstamp->sampling_rate = snd_pcm_rate_bit_to_rate(pstream->rates);
++
++	return 0;
++}
++
++/* SOF client implementation */
++static const struct sof_probes_host_ops acp_probes_ops = {
++	.startup = acp_probes_compr_startup,
++	.shutdown = acp_probes_compr_shutdown,
++	.set_params = acp_probes_compr_set_params,
++	.trigger = acp_probes_compr_trigger,
++	.pointer = acp_probes_compr_pointer,
++};
++
++int acp_probes_register(struct snd_sof_dev *sdev)
++{
++	return sof_client_dev_register(sdev, "acp-probes", 0, &acp_probes_ops,
++				       sizeof(acp_probes_ops));
++}
++EXPORT_SYMBOL_NS(acp_probes_register, SND_SOC_SOF_AMD_COMMON);
++
++void acp_probes_unregister(struct snd_sof_dev *sdev)
++{
++	sof_client_dev_unregister(sdev, "acp-probes", 0);
++}
++EXPORT_SYMBOL_NS(acp_probes_unregister, SND_SOC_SOF_AMD_COMMON);
++
++MODULE_IMPORT_NS(SND_SOC_SOF_CLIENT);
++
+diff --git a/sound/soc/sof/amd/acp.h b/sound/soc/sof/amd/acp.h
+index c3659dbc3745..72fa0af971f0 100644
+--- a/sound/soc/sof/amd/acp.h
++++ b/sound/soc/sof/amd/acp.h
+@@ -77,6 +77,7 @@
+ #define AMD_STACK_DUMP_SIZE			32
+ 
+ #define SRAM1_SIZE				0x13A000
++#define PROBE_STATUS_BIT			BIT(31)
+ 
+ enum clock_source {
+ 	ACP_CLOCK_96M = 0,
+@@ -156,6 +157,8 @@ struct acp_dsp_stream {
+ 	int active;
+ 	unsigned int reg_offset;
+ 	size_t posn_offset;
++	struct snd_compr_stream *cstream;
++	u64 cstream_posn;
+ };
+ 
+ struct sof_amd_acp_desc {
+@@ -168,6 +171,7 @@ struct sof_amd_acp_desc {
+ 	u32 hw_semaphore_offset;
+ 	u32 acp_clkmux_sel;
+ 	u32 fusion_dsp_offset;
++	u32 probe_reg_offset;
+ };
+ 
+ /* Common device data struct for ACP devices */
+@@ -186,6 +190,7 @@ struct acp_dev_data {
+ 	struct acp_dsp_stream stream_buf[ACP_MAX_STREAM];
+ 	struct acp_dsp_stream *dtrace_stream;
+ 	struct pci_dev *smn_dev;
++	struct acp_dsp_stream *probe_stream;
+ };
+ 
+ void memcpy_to_scratch(struct snd_sof_dev *sdev, u32 offset, unsigned int *src, size_t bytes);
+@@ -273,4 +278,8 @@ static inline const struct sof_amd_acp_desc *get_chip_info(struct snd_sof_pdata
+ 
+ 	return desc->chip_info;
+ }
++
++int acp_probes_register(struct snd_sof_dev *sdev);
++void acp_probes_unregister(struct snd_sof_dev *sdev);
++
+ #endif
 -- 
-2.41.0.255.g8b1d071c50-goog
+2.25.1
 
