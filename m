@@ -2,98 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07B78752A58
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 20:33:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 266F0752A6B
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 20:44:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232090AbjGMSdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 14:33:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41996 "EHLO
+        id S232227AbjGMSor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 14:44:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbjGMSdR (ORCPT
+        with ESMTP id S231626AbjGMSoq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 14:33:17 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 734162D46
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 11:33:16 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-98df3dea907so145005366b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 11:33:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1689273195; x=1691865195;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=5eTbts8cHZSzakMKK2Zdyg4qGmgVnQqsmrB4hVj4oIo=;
-        b=MfvQrnz3HQM5uz3bUzlEICp3/ZryjhT3ML1rJzkGnCys+HNir8SHdMag1/s/C5Xa53
-         2eQ0aNkn7mmeFhB12PYRwc6FjzzoC2QIuUXZ9Mb10qoenWygdzZZtTvdjmeCrDzurzbG
-         I9iBCPSNZhXadon5dPLLPeuXPC6d+ISaE6qrw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689273195; x=1691865195;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5eTbts8cHZSzakMKK2Zdyg4qGmgVnQqsmrB4hVj4oIo=;
-        b=IPpl1Vmw7ieY6YPfA4xOOnm2crcc0tdUcHtRgA6CtZbkQazc17Qxt4qYoSxQdbfV7A
-         oTYYU75Fs/BnQcWyxxbJcHrBvBBk6srWwy+nZqbYvjVrZNz6h1YDxgl+u0FVRMl/gT89
-         36bFN6jqH+rJTImAnRK3NJcV5wtEA+YWtIZJHCNq0CcuBM+NUyxkUUOX4t0o9NwNCIJr
-         APDNOCNyeMeVeYCiR9JkwDqGHIyBqyUdVxV5O0X11aKdZtL1gocquuyDxufnYiwWWGde
-         dcczLXRLp7rxWZFwmHDJXrpNThE5Q/rmKFeoqcfgXJUJLIhpF4C9gh3SdPrn8Wazj9YO
-         CSDA==
-X-Gm-Message-State: ABy/qLbT5dAzY9eXEH4ZWLs45e059bZ/+hArt1CNv7MYs7FLSxzKmbDW
-        iFVrb+3OxMpWbIwzma7Wz6z+Do2j64lmG7dIBXEzbS/B
-X-Google-Smtp-Source: APBJJlEOtxso6b+8NV4QvCz7q50dCO0hRCMwvGKZ4VzyKsJXBAnrVSiRKo6Q1+HO1uW+LZ+CKgc72A==
-X-Received: by 2002:a17:906:7a58:b0:988:6bd2:b0b3 with SMTP id i24-20020a1709067a5800b009886bd2b0b3mr2254876ejo.60.1689273194911;
-        Thu, 13 Jul 2023 11:33:14 -0700 (PDT)
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com. [209.85.218.46])
-        by smtp.gmail.com with ESMTPSA id e6-20020a170906080600b00993470682e5sm4316521ejd.32.2023.07.13.11.33.14
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 Jul 2023 11:33:14 -0700 (PDT)
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-991c786369cso146127866b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 11:33:14 -0700 (PDT)
-X-Received: by 2002:aa7:d511:0:b0:51d:91d2:335b with SMTP id
- y17-20020aa7d511000000b0051d91d2335bmr2839984edq.1.1689273173806; Thu, 13 Jul
- 2023 11:32:53 -0700 (PDT)
+        Thu, 13 Jul 2023 14:44:46 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FC3426B2
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 11:44:45 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36DIiBgo087508;
+        Thu, 13 Jul 2023 13:44:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1689273851;
+        bh=49KqOhoWraqa4xPJvs9k+Ho8uF5dhQ4RQNO+03mu9eI=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=tOGkFM/2lpI2kKJUQ6x38SM1ZsoFWHZgM3OKWoBY6GHGu0bWkULxbcjZocVJItUMT
+         Ylw1f/EbXdTHmaGe3a6GPwIRGB9jzjX3ssKEWyAJQZm9MenwYywibysDgz5mLtXXfN
+         4PtuE/vMXXqndUEj8EKuoYfiGERcSgsMiH2JSYHc=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36DIiBnl025156
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 13 Jul 2023 13:44:11 -0500
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 13
+ Jul 2023 13:44:11 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 13 Jul 2023 13:44:11 -0500
+Received: from [10.250.32.50] (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36DIiAiE066405;
+        Thu, 13 Jul 2023 13:44:10 -0500
+Message-ID: <3611feaa-9c89-b580-6266-c12cf048f56a@ti.com>
+Date:   Thu, 13 Jul 2023 13:44:10 -0500
 MIME-Version: 1.0
-References: <20230711011412.100319-1-tj@kernel.org> <20230711011412.100319-28-tj@kernel.org>
- <ZLAAEnd2HOinKrA+@righiandr-XPS-13-7390>
-In-Reply-To: <ZLAAEnd2HOinKrA+@righiandr-XPS-13-7390>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 13 Jul 2023 11:32:37 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiT-nr-kRON8vToQSbMhijztp8LV=Y0PgjLJhgDPckxPA@mail.gmail.com>
-Message-ID: <CAHk-=wiT-nr-kRON8vToQSbMhijztp8LV=Y0PgjLJhgDPckxPA@mail.gmail.com>
-Subject: Re: [PATCH 27/34] sched_ext: Implement SCX_KICK_WAIT
-To:     Andrea Righi <andrea.righi@canonical.com>
-Cc:     Tejun Heo <tj@kernel.org>, mingo@redhat.com, peterz@infradead.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@kernel.org, joshdon@google.com, brho@google.com,
-        pjt@google.com, derkling@google.com, haoluo@google.com,
-        dvernet@meta.com, dschatzberg@meta.com, dskarlat@cs.cmu.edu,
-        riel@surriel.com, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 06/10] ARM: mach-airoha: Rework support and directory
+ structure
+Content-Language: en-US
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+CC:     Baruch Siach <baruch@tkos.co.il>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20230515160234.289631-1-afd@ti.com>
+ <20230515160234.289631-6-afd@ti.com> <ZGJeRiqylcysFPqu@shell.armlinux.org.uk>
+From:   Andrew Davis <afd@ti.com>
+In-Reply-To: <ZGJeRiqylcysFPqu@shell.armlinux.org.uk>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 13 Jul 2023 at 06:46, Andrea Righi <andrea.righi@canonical.com> wrote:
->
-> I'm not sure if we already have an equivalent of
-> smp_store_release_u64/smp_load_acquire_u64(). Otherwise, it may be worth
-> to add them to a more generic place.
+On 5/15/23 11:31 AM, Russell King (Oracle) wrote:
+> On Mon, May 15, 2023 at 11:02:30AM -0500, Andrew Davis wrote:
+>> Having a platform need a mach-* directory should be seen as a negative,
+>> it means the platform needs special non-standard handling. ARM64 support
+>> does not allow mach-* directories at all. While we may not get to that
+>> given all the non-standard architectures we support, we should still try
+>> to get as close as we can and reduce the number of mach directories.
+>>
+>> The mach-airoha/ directory, and files within, provide just one "feature":
+>> having the kernel print the machine name if the DTB does not also contain
+>> a "model" string (which they always do). To reduce the number of mach-*
+>> directories let's do without that feature and remove this directory.
+> 
+> I'm guessing this is copy-n-pasted description. However:
+>> -static const char * const airoha_board_dt_compat[] = {
+>> -	"airoha,en7523",
+>> -	NULL,
+>> -};
+>> -
+>> -DT_MACHINE_START(MEDIATEK_DT, "Airoha Cortex-A53 (Device Tree)")
+>> -	.dt_compat	= airoha_board_dt_compat,
+>> -MACHINE_END
+> 
+> If this is actually used, then it will have the effect of providing a
+> "machine" that has both l2c_aux_mask and l2c_aux_val as zero, whereas
+> the default one has l2c_aux_mask set to ~0.
+> 
 
-Yeah, a 64-bit atomic load/store is not necessarily even possible on
-32-bit architectures.
+Given we set l2c_aux_mask to ~0 as a default for "Generic" DT system I
+had assumed this was safe, but no I cannot prove it for this board as
+I don't have one.
 
-And when it *is* possible, it might be very very expensive indeed (eg
-on 32-bit x86, the way to do a 64-bit load would be with "cmpxchg8b",
-which is ridiculously slow)
+I wonder if we should have some way to set this in DT, that would
+let us drop some more MACHINE defines that exist only to set
+the l2c_aux_val/mask..
 
-              Linus
+> This has the effect of _not_ calling l2x0_of_init() - but you don't
+> mention this. You probably should, and you should probably state why
+> that is safe (assuming you've even realised you've made this change!)
+> 
+
+Reverse question, did the folks adding this support know this had
+the effect of changing l2c_aux_mask from the default?
+
+For now I'll resend this series with only the first 5 patches which
+should be trivially safe. The later ones I can send after double
+checking on l2x0_of_init().
+
+Andrew
