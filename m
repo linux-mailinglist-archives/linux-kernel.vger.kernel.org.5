@@ -2,97 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36EA3752169
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 14:41:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BD0275216F
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 14:44:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233807AbjGMMlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 08:41:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54316 "EHLO
+        id S233657AbjGMMoe convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 13 Jul 2023 08:44:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232641AbjGMMlO (ORCPT
+        with ESMTP id S229838AbjGMMod (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 08:41:14 -0400
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A5C32689;
-        Thu, 13 Jul 2023 05:41:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689252073; x=1720788073;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=719nGNaqp2z062TRFXHa8IQYLeAfHCSr2qHTTczVNeU=;
-  b=YCktluaXtzQDQ+I2In62uJCgJmR9qfP+8Yz5ygAOZ0E0luKqd+A2Xvvj
-   gEfnHl1J4DdAFFywhoOalROosHK0576YrSgVi6dgUYuSck8/puLiTdANo
-   A+yje+UGdWwCKYWDxj3nbQrbVby9U9ENZuzNwcCHywn/UEvQUF3NoJF0c
-   hsERU7Ul+JqyhvjQLGczkIQH+8XHB1/Gn34rgLn++qKviD/fW8BGbvZKh
-   4hYcD5faVY8iuduqKQYIP9TVaat+hoe5q2heBy45TModgfGtnKz1aQ6sT
-   XJONQE2Rgg3FyoEFHP79jF5ynwSw3WGfSo6GoZW0LNBgYVnb8/swT83xc
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="431320394"
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="431320394"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2023 05:41:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="895987146"
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="895987146"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga005.jf.intel.com with ESMTP; 13 Jul 2023 05:41:10 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qJvd7-002OgD-0G;
-        Thu, 13 Jul 2023 15:41:09 +0300
-Date:   Thu, 13 Jul 2023 15:41:08 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the sound-asoc tree
-Message-ID: <ZK/w5LFanElxZazG@smile.fi.intel.com>
-References: <20230713121627.17990c86@canb.auug.org.au>
- <ZK/ruOD4QFPQ3Q5q@smile.fi.intel.com>
+        Thu, 13 Jul 2023 08:44:33 -0400
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 744FB212E
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 05:44:32 -0700 (PDT)
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-57a6df91b1eso5731867b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 05:44:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689252271; x=1691844271;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hz+Lx2AHPiC1tEoYOibbkH4KESx0nTtUs5AmfKyrn3g=;
+        b=FB1vnXHEJMHPhhqF+gTKVJSUCvyqDw1nU1SUFEy2fcjVDYVvbM7EX0Re7VeCPXTFYG
+         fyB1c53ykTAGCSVoN+2QOKrnRr4LaUFt2grOkS6iTapURZcjVpwhWgqbLl+X2agob9qW
+         ojYZQ+VXRRsavdjT18jj39yheEG9RjluEQugk1ZVj0Gop5/Dh2+2PK8+AbTE2aq4EhVv
+         3AJSNnik4ztcN09zhBzbL6Or26naBqVa1J/TmRTfotCp8lnzeUJKCctpXNITDienKuie
+         cPjMY9zrxahBBGztMq5VhZlf8KjJCQPjVUy5xzNmZS5LN+V5C39oJfMyapqY8+GpvOQd
+         AWlw==
+X-Gm-Message-State: ABy/qLZjrusJmgXZDZv6T07xxcFurHrjQrR4ul0Y9LROvE0iWoyCfF6H
+        B+V3RTtBOx8hl1Ib5sa23fUgR+NF3wqoKGnm
+X-Google-Smtp-Source: APBJJlG4M73gsXKXFCL2KjEc4Os5Pw+D95twdw84HoAQlaSzatc1Blt09hXDD0pCWe0dhxP7SMa1fQ==
+X-Received: by 2002:a81:8443:0:b0:576:f0d6:3d68 with SMTP id u64-20020a818443000000b00576f0d63d68mr1371822ywf.32.1689252271275;
+        Thu, 13 Jul 2023 05:44:31 -0700 (PDT)
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com. [209.85.128.171])
+        by smtp.gmail.com with ESMTPSA id o126-20020a0dcc84000000b00577322f8fd3sm1742867ywd.18.2023.07.13.05.44.30
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 Jul 2023 05:44:30 -0700 (PDT)
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-57712d00cc1so5729787b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 05:44:30 -0700 (PDT)
+X-Received: by 2002:a0d:cb41:0:b0:56f:fffc:56ff with SMTP id
+ n62-20020a0dcb41000000b0056ffffc56ffmr1622296ywd.42.1689252270339; Thu, 13
+ Jul 2023 05:44:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZK/ruOD4QFPQ3Q5q@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230609170941.1150941-1-javierm@redhat.com> <20230609170941.1150941-5-javierm@redhat.com>
+In-Reply-To: <20230609170941.1150941-5-javierm@redhat.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 13 Jul 2023 14:44:15 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVXhi52KfpCmnum+9t74UWP+AOLE95xQU6VV6Nz=VHk1Q@mail.gmail.com>
+Message-ID: <CAMuHMdVXhi52KfpCmnum+9t74UWP+AOLE95xQU6VV6Nz=VHk1Q@mail.gmail.com>
+Subject: Re: [PATCH v2 4/5] drm/ssd130x: Don't allocate buffers on each plane update
+To:     Javier Martinez Canillas <javierm@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>,
+        dri-devel@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 03:19:04PM +0300, Andy Shevchenko wrote:
-> On Thu, Jul 13, 2023 at 12:16:27PM +1000, Stephen Rothwell wrote:
-> > Hi all,
-> > 
-> > After merging the sound-asoc tree, today's linux-next build (htmldocs)
-> > produced this warning:
-> > 
-> > include/linux/int_log.h:1: warning: no structured comments found
-> > 
-> > Introduced by commit
-> > 
-> >   f97fa3dcb2db ("lib/math: Move dvb_math.c into lib/math/int_log.c")
-> 
-> Can you elaborate a bit, please?
-> 
-> Seems to me to be a false positive, or unveils a bug somewhere else.
+Hi Javier,
 
-Ah, now I understand. There is a header file that has descriptions but
-EXPORT_SYMBOL. We have to drop keyword export from the index.
+On Fri, Jun 9, 2023 at 7:09 PM Javier Martinez Canillas
+<javierm@redhat.com> wrote:
+> The resolutions for these panels are fixed and defined in the Device Tree,
+> so there's no point to allocate the buffers on each plane update and that
+> can just be done once.
+>
+> Let's do the allocation and free on the encoder enable and disable helpers
+> since that's where others initialization and teardown operations are done.
+>
+> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+> Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
+> ---
+>
+> (no changes since v1)
 
-Thank you for the report, I'll cook the patch ASAP.
+Thanks for your patch, which is now commit 49d7d581ceaf4cf8
+("drm/ssd130x: Don't allocate buffers on each plane update") in
+drm-misc/for-linux-next.
+
+> --- a/drivers/gpu/drm/solomon/ssd130x.c
+> +++ b/drivers/gpu/drm/solomon/ssd130x.c
+> @@ -701,14 +709,22 @@ static void ssd130x_encoder_helper_atomic_enable(struct drm_encoder *encoder,
+>                 return;
+>
+>         ret = ssd130x_init(ssd130x);
+> -       if (ret) {
+> -               ssd130x_power_off(ssd130x);
+> -               return;
+> -       }
+> +       if (ret)
+> +               goto power_off;
+> +
+> +       ret = ssd130x_buf_alloc(ssd130x);
+
+This appears to be too late, causing a NULL pointer dereference:
+
+[   59.302761] [<c0303d90>] ssd130x_update_rect.isra.0+0x13c/0x340
+[   59.304231] [<c0304200>]
+ssd130x_primary_plane_helper_atomic_update+0x26c/0x284
+[   59.305716] [<c02f8d54>] drm_atomic_helper_commit_planes+0xfc/0x27c
+
+Bailing out from ssd130x_update_rect() when data_array is still NULL
+fixes that.
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
