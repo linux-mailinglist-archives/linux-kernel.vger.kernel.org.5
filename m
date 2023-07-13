@@ -2,98 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F0EF7519E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 09:26:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5AE47519E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 09:26:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234318AbjGMH0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 03:26:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48452 "EHLO
+        id S234316AbjGMH0a convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 13 Jul 2023 03:26:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234286AbjGMHZw (ORCPT
+        with ESMTP id S234195AbjGMH0O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 03:25:52 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AE182D79
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 00:25:29 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R1mMV4h02zBS5q3
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 15:24:38 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689233078; x=1691825079; bh=wYJldeuL08DmlYf8zZlrQMIdz9B
-        pS1/I/O4xkGnJ224=; b=r7d/c3byIBFbruhDj7IP9juV7pXkCSjVht/NPG9iutZ
-        V1s7JS4QGQ0DrMgI3+el4b82skG90autuEZjYpEEUbnHaD3aJPkf3Scy0Yd1HoNi
-        3L6tjATLq/PRX79yKP1mkLX1szkiVTZlo3gFihquUVVrx8pmDzkHVImGUwwKmLGs
-        vv635Yss7QEzu29rUzbKaRhShh4cXWgQXWjmVVnTmD9a5sqMhg5FnCrK4Kd3aUIy
-        yylwbbA1VOVtmsNNGHFgouwWkYNiAr4rS3DtogjGtkXNnlPp7cyZ5/BIhkAKziIV
-        n1CiJGvvKtGNV4KQwJKYCkrupwiBMrKsaGL2N7O2Skg==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id VpaubIqQiBMU for <linux-kernel@vger.kernel.org>;
-        Thu, 13 Jul 2023 15:24:38 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R1mMV2hZ2zBRRM0;
-        Thu, 13 Jul 2023 15:24:38 +0800 (CST)
+        Thu, 13 Jul 2023 03:26:14 -0400
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3B9C2116;
+        Thu, 13 Jul 2023 00:25:55 -0700 (PDT)
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.95)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1qJqhp-0013fl-2P; Thu, 13 Jul 2023 09:25:41 +0200
+Received: from p57bd9f0d.dip0.t-ipconnect.de ([87.189.159.13] helo=[192.168.178.81])
+          by inpost2.zedat.fu-berlin.de (Exim 4.95)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1qJqho-001eww-Qr; Thu, 13 Jul 2023 09:25:41 +0200
+Message-ID: <90e6042f3a82d5e9b4cf475603dcb73ca5e821d8.camel@physik.fu-berlin.de>
+Subject: [GIT PULL] sh fixes for v6.5
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Artur Rojek <contact@artur-rojek.eu>,
+        Rich Felker <dalias@libc.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        linux-sh@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Thu, 13 Jul 2023 09:25:39 +0200
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.48.4 
 MIME-Version: 1.0
-Date:   Thu, 13 Jul 2023 15:24:38 +0800
-From:   hanyu001@208suo.com
-To:     jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Fwd: [PATCH] scsi: convert sysfs snprintf to sysfs_emit
-In-Reply-To: <tencent_C381A3EA994A82F105A2085A965AA4736E07@qq.com>
-References: <tencent_C381A3EA994A82F105A2085A965AA4736E07@qq.com>
-User-Agent: Roundcube Webmail
-Message-ID: <30394ceb9ab9d12b14919234f8bbe67f@208suo.com>
-X-Sender: hanyu001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 87.189.159.13
+X-ZEDAT-Hint: PO
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccincheck warning:
-drivers/usb/misc/usbsevseg.c:170:8-16:
-WARNING: use scnprintf or sprintf
+Hi Linus!
 
-WARNING: use scnprintf or sprintf
-WARNING: use scnprintf or sprintf
+The sh updates for v6.5 introduced multiple regressions that this pull request addresses.
+In particular, the change a8ac2961148e ("sh: Avoid using IRQ0 on SH3 and SH4") causes
+several boards to hang during boot due to incorrect IRQ numbers.
 
-Signed-off-by: ztt <1549089851@qq.com>
----
-  drivers/scsi/hptiop.c | 4 ++--
-  1 file changed, 2 insertions(+), 2 deletions(-)
+Geert Uytterhoeven has contributed patches that handle the virq offset in the IRQ code
+for the dreamcast, highlander and r2d boards while Artur Rojek has contributed a patch
+which handles the virq offset for the hd64461 companion chip.
 
-diff --git a/drivers/scsi/hptiop.c b/drivers/scsi/hptiop.c
-index f5334ccbf2ca..26282aceac75 100644
---- a/drivers/scsi/hptiop.c
-+++ b/drivers/scsi/hptiop.c
-@@ -1111,7 +1111,7 @@ static int hptiop_adjust_disk_queue_depth(struct 
-scsi_device *sdev,
-  static ssize_t hptiop_show_version(struct device *dev,
-                     struct device_attribute *attr, char *buf)
-  {
--    return snprintf(buf, PAGE_SIZE, "%s\n", driver_ver);
-+    return scnprintf(buf, PAGE_SIZE, "%s\n", driver_ver);
-  }
+With the series applied, the affected boards will boot the kernel again without issues.
 
-  static ssize_t hptiop_show_fw_version(struct device *dev,
-@@ -1120,7 +1120,7 @@ static ssize_t hptiop_show_fw_version(struct 
-device *dev,
-      struct Scsi_Host *host = class_to_shost(dev);
-      struct hptiop_hba *hba = (struct hptiop_hba *)host->hostdata;
+The following changes since commit 7497840d462c8f54c4888c22ab3726a8cde4b9a2:
 
--    return snprintf(buf, PAGE_SIZE, "%d.%d.%d.%d\n",
-+    return scnprintf(buf, PAGE_SIZE, "%d.%d.%d.%d\n",
-                  hba->firmware_version >> 24,
-                  (hba->firmware_version >> 16) & 0xff,
-                  (hba->firmware_version >> 8) & 0xff,
+  sh: Provide unxlate_dev_mem_ptr() in asm/io.h (2023-07-05 19:04:51 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/glaubitz/sh-linux.git tags/sh-for-v6.5-tag2
+
+for you to fetch changes up to 7c28a35e19fafa1d3b367bcd3ec4021427a9397b:
+
+  sh: hd64461: Handle virq offset for offchip IRQ base and HD64461 IRQ (2023-07-13 08:37:53 +0200)
+
+Thanks for pulling!
+
+Adrian
+
+----------------------------------------------------------------
+sh fixes for v6.5
+
+- sh: hd64461: Handle virq offset for offchip IRQ base and HD64461 IRQ
+- sh: mach-dreamcast: Handle virq offset in cascaded IRQ demux
+- sh: mach-highlander: Handle virq offset in cascaded IRL demux
+- sh: mach-r2d: Handle virq offset in cascaded IRL demux
+
+----------------------------------------------------------------
+Artur Rojek (1):
+      sh: hd64461: Handle virq offset for offchip IRQ base and HD64461 IRQ
+
+Geert Uytterhoeven (3):
+      sh: mach-r2d: Handle virq offset in cascaded IRL demux
+      sh: mach-highlander: Handle virq offset in cascaded IRL demux
+      sh: mach-dreamcast: Handle virq offset in cascaded IRQ demux
+
+ arch/sh/boards/mach-dreamcast/irq.c    | 6 +++---
+ arch/sh/boards/mach-highlander/setup.c | 4 ++--
+ arch/sh/boards/mach-r2d/irq.c          | 4 ++--
+ arch/sh/cchips/Kconfig                 | 4 ++--
+ arch/sh/include/asm/hd64461.h          | 2 +-
+ 5 files changed, 10 insertions(+), 10 deletions(-)
+
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
