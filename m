@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED18F752B62
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 22:10:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 440B6752B64
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 22:10:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233670AbjGMUK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 16:10:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45678 "EHLO
+        id S233707AbjGMUK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 16:10:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233601AbjGMUKY (ORCPT
+        with ESMTP id S232017AbjGMUKY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 13 Jul 2023 16:10:24 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27219270A;
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37012273E;
         Thu, 13 Jul 2023 13:10:23 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AD31661B60;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B95F161B63;
         Thu, 13 Jul 2023 20:10:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 1A348C433C9;
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 1FAB3C433CD;
         Thu, 13 Jul 2023 20:10:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1689279022;
-        bh=Vd69UnBMvNxkGVnrm8VAbe2niEVf8MQoM3flkrP2Mwg=;
+        bh=/T0RGImw5OHbBJqaqZIGtDVaNfpbb1jTUyvOzVCwqwc=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=ry31bvQCUMTGpltWNCWm+i8gT81OJgHFD8sWLHgzlbFDYVabFOBCS7PvY5kc1yqtU
-         H8N1k0zNorxr6GndVvVu0horqnrCgj9hQ9rWviIEvFBIC/4ZMjmpm9vrzg/87rYXyg
-         oIfxDB7O+j25GSrP/cXOjmuv+a1OHlWLqu+U2lto6YCqILbgrijX1uIn7a6x+bdi/D
-         6UYUn8aQTLRDEZgl77sE90a2ABAJfLn9vrshP0YaaeIlP7qxPA4CWOMpxYVmgBtSpt
-         CbBkneDhpVKI5QCN1HQoPypUne3syXGfnAU9HZA+4y4HK7+9CU93AAspCu2a569me3
-         xMnDsMsDAHBVg==
+        b=qptsmUk/s9g37BNrYb553GLnStu/I0oyNyzlTqBV+ZvSkkie6WljdpBaEnUkXiaiV
+         VcHFdVS4aqekHNY8Ym02sxxD7FvT45Neat3KDUUcNIzTlnVIVb/CIliblIZZCGg3IW
+         mJiSO+b9VSu5La1Jv/xK6m/E8Z1vIUQ1oOmug8tmKbXu4qUmtVVaJF9M1zD+epXXwM
+         6qQE7nviXikgLC+OqNftvbF76FaeDKcieg15zpjiL4aVvbuCzRitSH+jYOkhJL9bfm
+         jAtkaoIXdtW4W1GHJMyTKYIpBMTC4y+ZTPPjeiZvv4xZaInXwAaQHUOwxMvvNelosV
+         IjpMwxGrIrlOQ==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id EEE8CE4D006;
-        Thu, 13 Jul 2023 20:10:21 +0000 (UTC)
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 024D9F83708;
+        Thu, 13 Jul 2023 20:10:22 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2] Bluetooth: btusb: Add support for another MediaTek 7922
- VID/PID
+Subject: Re: [PATCH] Bluetooth: Fix hci_suspend_sync crash
 From:   patchwork-bot+bluetooth@kernel.org
-Message-Id: <168927902197.26469.16922399141053596083.git-patchwork-notify@kernel.org>
-Date:   Thu, 13 Jul 2023 20:10:21 +0000
-References: <20230712213602.15280-1-rgammans@gammascience.co.uk>
-In-Reply-To: <20230712213602.15280-1-rgammans@gammascience.co.uk>
-To:     Roger Gammans <rgammans@gammascience.co.uk>
-Cc:     luiz.dentz@gmail.com, johan.hedberg@gmail.com, marcel@holtmann.org,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-Id: <168927902200.26469.6694434190230470998.git-patchwork-notify@kernel.org>
+Date:   Thu, 13 Jul 2023 20:10:22 +0000
+References: <20230705210647.1.I636c21e4dc8fe3352f4d7aef26c0ec3857e24ca0@changeid>
+In-Reply-To: <20230705210647.1.I636c21e4dc8fe3352f4d7aef26c0ec3857e24ca0@changeid>
+To:     Ying Hsu <yinghsu@chromium.org>
+Cc:     linux-bluetooth@vger.kernel.org,
+        chromeos-bluetooth-upstreaming@chromium.org,
+        johan.hedberg@gmail.com, luiz.dentz@gmail.com, marcel@holtmann.org,
+        linux-kernel@vger.kernel.org
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -64,57 +65,33 @@ Hello:
 This patch was applied to bluetooth/bluetooth-next.git (master)
 by Luiz Augusto von Dentz <luiz.von.dentz@intel.com>:
 
-On Wed, 12 Jul 2023 22:36:02 +0100 you wrote:
-> This one is found on the Dell Inspiron 2-in-1 7435
-> 
-> The information in /sys/kernel/debug/usb/devices about the Bluetooth
-> device is listed as the below.
-> 
-> T:  Bus=03 Lev=01 Prnt=01 Port=02 Cnt=01 Dev#=  2 Spd=480  MxCh= 0
-> D:  Ver= 2.10 Cls=ef(misc ) Sub=02 Prot=01 MxPS=64 #Cfgs=  1
-> P:  Vendor=0489 ProdID=e0f1 Rev= 1.00
-> S:  Manufacturer=MediaTek Inc.
-> S:  Product=Wireless_Device
-> S:  SerialNumber=000000000
-> C:* #Ifs= 3 Cfg#= 1 Atr=e0 MxPwr=100mA
-> A:  FirstIf#= 0 IfCount= 3 Cls=e0(wlcon) Sub=01 Prot=01
-> I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=125us
-> E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-> I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-> I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-> I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-> I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-> I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
-> I:  If#= 1 Alt= 6 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=  63 Ivl=1ms
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=  63 Ivl=1ms
-> I:* If#= 2 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=(none)
-> E:  Ad=8a(I) Atr=03(Int.) MxPS=  64 Ivl=125us
-> E:  Ad=0a(O) Atr=03(Int.) MxPS=  64 Ivl=125us
-> I:  If#= 2 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=(none)
-> E:  Ad=8a(I) Atr=03(Int.) MxPS= 512 Ivl=125us
-> E:  Ad=0a(O) Atr=03(Int.) MxPS= 512 Ivl=125us
+On Wed,  5 Jul 2023 21:06:47 +0000 you wrote:
+> If hci_unregister_dev() frees the hci_dev object but hci_suspend_notifier
+> may still be accessing it, it can cause the program to crash.
+> Here's the call trace:
+>   <4>[102152.653246] Call Trace:
+>   <4>[102152.653254]  hci_suspend_sync+0x109/0x301 [bluetooth]
+>   <4>[102152.653259]  hci_suspend_dev+0x78/0xcd [bluetooth]
+>   <4>[102152.653263]  hci_suspend_notifier+0x42/0x7a [bluetooth]
+>   <4>[102152.653268]  notifier_call_chain+0x43/0x6b
+>   <4>[102152.653271]  __blocking_notifier_call_chain+0x48/0x69
+>   <4>[102152.653273]  __pm_notifier_call_chain+0x22/0x39
+>   <4>[102152.653276]  pm_suspend+0x287/0x57c
+>   <4>[102152.653278]  state_store+0xae/0xe5
+>   <4>[102152.653281]  kernfs_fop_write+0x109/0x173
+>   <4>[102152.653284]  __vfs_write+0x16f/0x1a2
+>   <4>[102152.653287]  ? selinux_file_permission+0xca/0x16f
+>   <4>[102152.653289]  ? security_file_permission+0x36/0x109
+>   <4>[102152.653291]  vfs_write+0x114/0x21d
+>   <4>[102152.653293]  __x64_sys_write+0x7b/0xdb
+>   <4>[102152.653296]  do_syscall_64+0x59/0x194
+>   <4>[102152.653299]  entry_SYSCALL_64_after_hwframe+0x5c/0xc1
 > 
 > [...]
 
 Here is the summary with links:
-  - [v2] Bluetooth: btusb: Add support for another MediaTek 7922 VID/PID
-    https://git.kernel.org/bluetooth/bluetooth-next/c/ce13b87737a8
+  - Bluetooth: Fix hci_suspend_sync crash
+    https://git.kernel.org/bluetooth/bluetooth-next/c/0c9bf63ad8ca
 
 You are awesome, thank you!
 -- 
