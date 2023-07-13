@@ -2,63 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F32B75253A
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 16:34:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AEF575253B
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 16:34:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231196AbjGMOeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 10:34:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47480 "EHLO
+        id S231250AbjGMOeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 10:34:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230511AbjGMOeS (ORCPT
+        with ESMTP id S231157AbjGMOeT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 10:34:18 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 034A61734;
-        Thu, 13 Jul 2023 07:34:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=1cn7Q6I73HV7gvnlU7oQKxFR3wKoCxsTSAluUNEqkHc=; b=sOgaJ6qdj54VtOsq1KfsidmtDT
-        DSiGDNgH4inaB2oU94f3BPqpXBg9phkOiRHg0PNO9Wzexpsofd1PT1A++mo2wAg1AqHEk5lgRwKVN
-        jN6xyeGp3xCPzyP7EW1aiESBfhNcch5zQuAS8e/kjm3DrtGgre231nG1T+EA0PWNUsoAVQb6/+WqR
-        JPwVj+zA/nGBCHTUuJVmxK0px6hKgwf8gMCDPD6pIpz8b8NwOGXDJorzzBuSlgJWDiHQSfwTmLREJ
-        HSeK9beUgz7cDtl5p0iYlCzalxv30mST4xUQlMpX5L/41GqnpgN+BhltBjIFHUnmX9vH3fWtHpl/I
-        FDQSYCpg==;
-Received: from [2601:1c2:980:9ec0::2764]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qJxOT-003ZqM-0i;
-        Thu, 13 Jul 2023 14:34:09 +0000
-Message-ID: <d83f5767-a98f-a258-f0c4-e7228345b93f@infradead.org>
-Date:   Thu, 13 Jul 2023 07:34:08 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: =?UTF-8?B?UmU6IOWbnuWkjTogW1BBVENIIG5ldCB2MV0gYm5hOkZpeCBlcnJvciBj?=
- =?UTF-8?Q?hecking_for_debugfs=5fcreate=5fdir=28=29?=
-Content-Language: en-US
-To:     =?UTF-8?B?546L5piOLei9r+S7tuW6leWxguaKgOacr+mDqA==?= 
-        <machel@vivo.com>
-Cc:     Rasesh Mody <rmody@marvell.com>,
-        Sudarsana Kalluru <skalluru@marvell.com>,
-        "GR-Linux-NIC-Dev@marvell.com" <GR-Linux-NIC-Dev@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Krishna Gudipati <kgudipat@brocade.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Thu, 13 Jul 2023 10:34:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E41426AF;
+        Thu, 13 Jul 2023 07:34:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D0E89612FB;
+        Thu, 13 Jul 2023 14:34:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48387C433C7;
+        Thu, 13 Jul 2023 14:34:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689258857;
+        bh=VvRbrk8bzF6109xHYWtz9ezHyRLP7zONTWaQbd9M5+4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=qAzSsJGWCo8M/UTeczkxEqABOWcuExVLij5rg1JFd9aP9lB0oCPJzGsXxxVIFD9av
+         uqHktUuAgnhr2cor/YRx1JQv2qGC4yOvZqDXRgcpuyizI2MA/aB4oRIdEZKzeEy0cU
+         K702mrMtLVHXbZ0MBFJ8tEACV34J1WxImIqk43MCcKG7ISZ0WPsP0xUPRuqUYh80Su
+         /H9SAQmLM1K/8s+M7c6/hI1+41xRMAcfxe7ziFKOmWvCuTM4LGTOgVPTUABuwqhdAY
+         LrvRe39QX3dH9HzuYEQObeacvZR+e+x4uSIXCar+BcBe22I0RdwuCf2omav3EtUYNT
+         +5F1fmMtgtIUg==
+Date:   Thu, 13 Jul 2023 23:34:13 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Dan Carpenter <dan.carpenter@linaro.org>,
+        linux-trace-kernel@vger.kernel.org,
         LKML <linux-kernel@vger.kernel.org>
-References: <20230713053823.14898-1-machel@vivo.com>
- <27105f25-f3f9-0856-86e5-86236ce83dee@infradead.org>
- <SG2PR06MB37438F03D13983B7F603E43DBD37A@SG2PR06MB3743.apcprd06.prod.outlook.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <SG2PR06MB37438F03D13983B7F603E43DBD37A@SG2PR06MB3743.apcprd06.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+Subject: Re: [PATCH v5 3/5] tracing/probes: Fix to update dynamic data
+ counter if fetcharg uses it
+Message-Id: <20230713233413.2a54de15175527e12984ff6e@kernel.org>
+In-Reply-To: <20230713093436.0241ed77@gandalf.local.home>
+References: <168908491977.123124.16583481716284477889.stgit@devnote2>
+        <168908494781.123124.8160245359962103684.stgit@devnote2>
+        <20230713093436.0241ed77@gandalf.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,68 +60,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 13 Jul 2023 09:34:36 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
+> On Tue, 11 Jul 2023 23:15:48 +0900
+> "Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
+> 
+> > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > 
+> > Fix to update dynamic data counter ('dyndata') and max length ('maxlen')
+> > only if the fetcharg uses the dynamic data. Also get out arg->dynamic
+> > from unlikely(). This makes dynamic data address wrong if
+> > process_fetch_insn() returns error on !arg->dynamic case.
+> > 
+> > Suggested-by: Steven Rostedt <rostedt@goodmis.org>
+> > Link: https://lore.kernel.org/all/20230710233400.5aaf024e@gandalf.local.home/
+> > Fixes: 9178412ddf5a ("tracing: probeevent: Return consumed bytes of dynamic area")
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> 
+> Reviewed-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 
-On 7/13/23 02:05, 王明-软件底层技术部 wrote:
-> Ok, so I think we should delete the check operation. What do you think? If it is consistent, I will submit it again
-> : )
+Thank you! I'll pull this series. 
 
-Yes, that's the idea. Thanks.
+> 
+> -- Steve
+> 
+> > ---
+> >  kernel/trace/trace_probe_tmpl.h |   12 +++++++-----
+> >  1 file changed, 7 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/kernel/trace/trace_probe_tmpl.h b/kernel/trace/trace_probe_tmpl.h
+> > index ed9d57c6b041..185da001f4c3 100644
+> > --- a/kernel/trace/trace_probe_tmpl.h
+> > +++ b/kernel/trace/trace_probe_tmpl.h
+> > @@ -267,11 +267,13 @@ store_trace_args(void *data, struct trace_probe *tp, void *rec,
+> >  		if (unlikely(arg->dynamic))
+> >  			*dl = make_data_loc(maxlen, dyndata - base);
+> >  		ret = process_fetch_insn(arg->code, rec, dl, base);
+> > -		if (unlikely(ret < 0 && arg->dynamic)) {
+> > -			*dl = make_data_loc(0, dyndata - base);
+> > -		} else {
+> > -			dyndata += ret;
+> > -			maxlen -= ret;
+> > +		if (arg->dynamic) {
+> > +			if (unlikely(ret < 0)) {
+> > +				*dl = make_data_loc(0, dyndata - base);
+> > +			} else {
+> > +				dyndata += ret;
+> > +				maxlen -= ret;
+> > +			}
+> >  		}
+> >  	}
+> >  }
+> 
 
-> Ming
-> -----邮件原件-----
-> 发件人: Randy Dunlap <rdunlap@infradead.org> 
-> 发送时间: 2023年7月13日 13:50
-> 收件人: 王明-软件底层技术部 <machel@vivo.com>; Rasesh Mody <rmody@marvell.com>; Sudarsana Kalluru <skalluru@marvell.com>; GR-Linux-NIC-Dev@marvell.com; David S. Miller <davem@davemloft.net>; Eric Dumazet <edumazet@google.com>; Jakub Kicinski <kuba@kernel.org>; Paolo Abeni <pabeni@redhat.com>; Krishna Gudipati <kgudipat@brocade.com>; netdev@vger.kernel.org; linux-kernel@vger.kernel.org
-> 抄送: opensource.kernel <opensource.kernel@vivo.com>
-> 主题: Re: [PATCH net v1] bna:Fix error checking for debugfs_create_dir()
-> 
-> [Some people who received this message don't often get email from rdunlap@infradead.org. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
-> 
-> Hi--
-> 
-> On 7/12/23 22:38, Wang Ming wrote:
->> The debugfs_create_dir() function returns error pointers, it never 
->> returns NULL. Most incorrect error checks were fixed, but the one in 
->> bnad_debugfs_init() was forgotten.
->>
->> Fix the remaining error check.
->>
->> Signed-off-by: Wang Ming <machel@vivo.com>
->>
->> Fixes: 7afc5dbde091 ("bna: Add debugfs interface.")
-> 
-> Comment from fs/debugfs/inode.c:
-> 
->  * NOTE: it's expected that most callers should _ignore_ the errors returned
->  * by this function. Other debugfs functions handle the fact that the "dentry"
->  * passed to them could be an error and they don't crash in that case.
->  * Drivers should generally work fine even if debugfs fails to init anyway.
-> 
-> so no, drivers should not usually care about debugfs function call results.
-> Is there some special case here?
-> 
->> ---
->>  drivers/net/ethernet/brocade/bna/bnad_debugfs.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/net/ethernet/brocade/bna/bnad_debugfs.c 
->> b/drivers/net/ethernet/brocade/bna/bnad_debugfs.c
->> index 04ad0f2b9677..678a3668a041 100644
->> --- a/drivers/net/ethernet/brocade/bna/bnad_debugfs.c
->> +++ b/drivers/net/ethernet/brocade/bna/bnad_debugfs.c
->> @@ -512,7 +512,7 @@ bnad_debugfs_init(struct bnad *bnad)
->>       if (!bnad->port_debugfs_root) {
->>               bnad->port_debugfs_root =
->>                       debugfs_create_dir(name, bna_debugfs_root);
->> -             if (!bnad->port_debugfs_root) {
->> +             if (IS_ERR(bnad->port_debugfs_root)) {
->>                       netdev_warn(bnad->netdev,
->>                                   "debugfs root dir creation failed\n");
->>                       return;
-> 
-> --
-> ~Randy
 
 -- 
-~Randy
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
