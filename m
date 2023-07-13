@@ -2,220 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30DED7515C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 03:26:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 713CA7515CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 03:27:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232278AbjGMB0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 21:26:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58734 "EHLO
+        id S229502AbjGMB1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 21:27:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229502AbjGMB03 (ORCPT
+        with ESMTP id S231791AbjGMB1F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 21:26:29 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05AF21FDE;
-        Wed, 12 Jul 2023 18:26:27 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2b70404a5a0so1172891fa.2;
-        Wed, 12 Jul 2023 18:26:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689211585; x=1691803585;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jxHIfdjUy2D+e36IlhY5UhNMqIoRQ40rBpziU8T3N10=;
-        b=psdAc+8FN7dzzOo3MgPLwTCd3NAklAdi3rikz2jT3jc/p3me/4+OxL5Ksyd2+SZ2Qr
-         Tr+5Vrz4vW28HUgdOo2frgGI2Aer7ABUIIt3AudPpk3UsWCye0gduL23mBOxZS65FWA+
-         Js1aJQ/f89qX0rez6vlbHtfnCs3BbV32GOP6hIenAoD04wzSDA91sQ6RImD+N8iMF4iQ
-         U0rYSIHOU5KZGIV883j1CWFWWS4t4Cf/feC8X+OFtCNSdQ4l+JCYw2EbfkhLMgwyoMQP
-         WIs3Z08NzjmchL12enT1YArAE5Q1MD7zXq70V+HFpFERxtk+Rl8uKsyVIcYSe3I1bhAQ
-         vBvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689211585; x=1691803585;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jxHIfdjUy2D+e36IlhY5UhNMqIoRQ40rBpziU8T3N10=;
-        b=c6Z+Xx+9mhQT+yYL+jCciN4JUB0V0BKb9+5cMiYII9XPDf8x0fprkZcjYVtn6GENpk
-         fSlOJmaooX10jutonsN8Nj7L0bxR3ctNa5pm1K25xOXwKn6z80eAcBqs83JcPhdd5F/G
-         LPZyRjOUJI2CBEMb54Ae75WR+YWFjF4CX0dBkSSb3Lh/QUqHbVSbZ57I1XwFfx+sjllk
-         7H60pB20P9HNkFxRceqgs6ffY1QbCO2K1Zy2PO32jefquUVw2dxY7RLCLAPXGw24CoXV
-         JjoHWPeaBL6q5PnaBMpdI3r0r7CdVHBuUtTV6hQIi9Km2y/M95+Mo1YJPpIXuemTiw8D
-         PR0A==
-X-Gm-Message-State: ABy/qLZN9zBWQLi1gRi5Lg/2emXHZ+DBBIBE9oEYFElCx6n3ToD+XCqM
-        99fFEY/jom/cJzWtgSQIHf3gUflMbv4KC+9Q3eg=
-X-Google-Smtp-Source: APBJJlGU3RbBtxCeeWcNJGLwmlEdH+7Gh2A5sIWRxtOds9k0BSq4bD0+y32Y6Uyma9QlqL2quVt71b5uT1Qyn5KXkko=
-X-Received: by 2002:a2e:8456:0:b0:2b6:df00:b371 with SMTP id
- u22-20020a2e8456000000b002b6df00b371mr43638ljh.6.1689211584879; Wed, 12 Jul
- 2023 18:26:24 -0700 (PDT)
+        Wed, 12 Jul 2023 21:27:05 -0400
+Received: from mg.richtek.com (mg.richtek.com [220.130.44.152])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D12451992;
+        Wed, 12 Jul 2023 18:27:01 -0700 (PDT)
+X-MailGates: (SIP:2,PASS,NONE)(compute_score:DELIVER,40,3)
+Received: from 192.168.10.47
+        by mg.richtek.com with MailGates ESMTPS Server V6.0(2932553:0:AUTH_RELAY)
+        (envelope-from <cy_huang@richtek.com>)
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256/256); Thu, 13 Jul 2023 09:26:42 +0800 (CST)
+Received: from ex4.rt.l (192.168.10.47) by ex4.rt.l (192.168.10.47) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.25; Thu, 13 Jul
+ 2023 09:26:41 +0800
+Received: from linuxcarl2.richtek.com (192.168.10.154) by ex4.rt.l
+ (192.168.10.45) with Microsoft SMTP Server id 15.2.1118.25 via Frontend
+ Transport; Thu, 13 Jul 2023 09:26:41 +0800
+Date:   Thu, 13 Jul 2023 09:26:41 +0800
+From:   ChiYuan Huang <cy_huang@richtek.com>
+To:     Sebastian Reichel <sre@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Allen Chiang <allen_chiang@richtek.com>,
+        "open list:POWER SUPPLY CLASS/SUBSYSTEM and DRIVERS" 
+        <linux-pm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Subject: Re: [PATCH RESEND v4 0/3] Add Richtek RT9759 smart cap divider
+ charger support
+Message-ID: <20230713012641.GB2003@linuxcarl2.richtek.com>
+References: <1688371229-1089-1-git-send-email-cy_huang@richtek.com>
 MIME-Version: 1.0
-References: <cover.1689203090.git.dxu@dxuuu.xyz> <d3b0ff95c58356192ea3b50824f8cdbf02c354e3.1689203090.git.dxu@dxuuu.xyz>
- <CAADnVQKKfEtZYZxihxvG3aQ34E1m95qTZ=jTD7yd0qvOASpAjQ@mail.gmail.com> <kwiwaeaijj6sxwz5fhtxyoquhz2kpujbsbeajysufgmdjgyx5c@f6lqrd23xr5f>
-In-Reply-To: <kwiwaeaijj6sxwz5fhtxyoquhz2kpujbsbeajysufgmdjgyx5c@f6lqrd23xr5f>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 12 Jul 2023 18:26:13 -0700
-Message-ID: <CAADnVQLcAoN5z+HD_44UKgJJc6t5TPW8+Ai9We0qJpau4NtEzA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 2/6] netfilter: bpf: Support
- BPF_F_NETFILTER_IP_DEFRAG in netfilter link
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>,
-        coreteam@netfilter.org,
-        Network Development <netdev@vger.kernel.org>,
-        David Ahern <dsahern@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <1688371229-1089-1-git-send-email-cy_huang@richtek.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 6:22=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrote:
+On Mon, Jul 03, 2023 at 04:00:26PM +0800, cy_huang@richtek.com wrote:
+> From: ChiYuan Huang <cy_huang@richtek.com>
+> 
+> This patch set is to add Richtek RT9759 smart cap divider charger.
+> 
+> The RT9759 is a high efficiency and high charge current charger.
+> The efficiency is up to 97.8% when VBAT=4.2V, IBAT=2.5A, and the maximum
+> charge current is up to 8A. The device integrates smart cap divider topology
+> with a dual-phase charge pump core and 9 channel high speed ADCs to monitor
+> the charging process.
 >
-> Hi Alexei,
->
-> On Wed, Jul 12, 2023 at 05:43:49PM -0700, Alexei Starovoitov wrote:
-> > On Wed, Jul 12, 2023 at 4:44=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrote=
-:
-> > > +#if IS_ENABLED(CONFIG_NF_DEFRAG_IPV6)
-> > > +       case NFPROTO_IPV6:
-> > > +               rcu_read_lock();
-> > > +               v6_hook =3D rcu_dereference(nf_defrag_v6_hook);
-> > > +               if (!v6_hook) {
-> > > +                       rcu_read_unlock();
-> > > +                       err =3D request_module("nf_defrag_ipv6");
-> > > +                       if (err)
-> > > +                               return err < 0 ? err : -EINVAL;
-> > > +
-> > > +                       rcu_read_lock();
-> > > +                       v6_hook =3D rcu_dereference(nf_defrag_v6_hook=
-);
-> > > +                       if (!v6_hook) {
-> > > +                               WARN_ONCE(1, "nf_defrag_ipv6_hooks ba=
-d registration");
-> > > +                               err =3D -ENOENT;
-> > > +                               goto out_v6;
-> > > +                       }
-> > > +               }
-> > > +
-> > > +               err =3D v6_hook->enable(link->net);
-> >
-> > I was about to apply, but luckily caught this issue in my local test:
-> >
-> > [   18.462448] BUG: sleeping function called from invalid context at
-> > kernel/locking/mutex.c:283
-> > [   18.463238] in_atomic(): 0, irqs_disabled(): 0, non_block: 0, pid:
-> > 2042, name: test_progs
-> > [   18.463927] preempt_count: 0, expected: 0
-> > [   18.464249] RCU nest depth: 1, expected: 0
-> > [   18.464631] CPU: 15 PID: 2042 Comm: test_progs Tainted: G
-> > O       6.4.0-04319-g6f6ec4fa00dc #4896
-> > [   18.465480] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
-> > BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-> > [   18.466531] Call Trace:
-> > [   18.466767]  <TASK>
-> > [   18.466975]  dump_stack_lvl+0x32/0x40
-> > [   18.467325]  __might_resched+0x129/0x180
-> > [   18.467691]  mutex_lock+0x1a/0x40
-> > [   18.468057]  nf_defrag_ipv4_enable+0x16/0x70
-> > [   18.468467]  bpf_nf_link_attach+0x141/0x300
-> > [   18.468856]  __sys_bpf+0x133e/0x26d0
-> >
-> > You cannot call mutex under rcu_read_lock.
->
-> Whoops, my bad. I think this patch should fix it:
->
-> ```
-> From 7e8927c44452db07ddd7cf0e30bb49215fc044ed Mon Sep 17 00:00:00 2001
-> Message-ID: <7e8927c44452db07ddd7cf0e30bb49215fc044ed.1689211250.git.dxu@=
-dxuuu.xyz>
-> From: Daniel Xu <dxu@dxuuu.xyz>
-> Date: Wed, 12 Jul 2023 19:17:35 -0600
-> Subject: [PATCH] netfilter: bpf: Don't hold rcu_read_lock during
->  enable/disable
->
-> ->enable()/->disable() takes a mutex which can sleep. You can't sleep
-> during RCU read side critical section.
->
-> Our refcnt on the module will protect us from ->enable()/->disable()
-> from going away while we call it.
->
-> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> ---
->  net/netfilter/nf_bpf_link.c | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
->
-> diff --git a/net/netfilter/nf_bpf_link.c b/net/netfilter/nf_bpf_link.c
-> index 77ffbf26ba3d..79704cc596aa 100644
-> --- a/net/netfilter/nf_bpf_link.c
-> +++ b/net/netfilter/nf_bpf_link.c
-> @@ -60,9 +60,12 @@ static int bpf_nf_enable_defrag(struct bpf_nf_link *li=
-nk)
->                         goto out_v4;
->                 }
->
-> +               rcu_read_unlock();
->                 err =3D v4_hook->enable(link->net);
->                 if (err)
->                         module_put(v4_hook->owner);
-> +
-> +               return err;
->  out_v4:
->                 rcu_read_unlock();
->                 return err;
-> @@ -92,9 +95,12 @@ static int bpf_nf_enable_defrag(struct bpf_nf_link *li=
-nk)
->                         goto out_v6;
->                 }
->
-> +               rcu_read_unlock();
->                 err =3D v6_hook->enable(link->net);
->                 if (err)
->                         module_put(v6_hook->owner);
-> +
-> +               return err;
->  out_v6:
->                 rcu_read_unlock();
->                 return err;
-> @@ -114,11 +120,11 @@ static void bpf_nf_disable_defrag(struct bpf_nf_lin=
-k *link)
->         case NFPROTO_IPV4:
->                 rcu_read_lock();
->                 v4_hook =3D rcu_dereference(nf_defrag_v4_hook);
-> +               rcu_read_unlock();
->                 if (v4_hook) {
->                         v4_hook->disable(link->net);
->                         module_put(v4_hook->owner);
->                 }
-> -               rcu_read_unlock();
->
->                 break;
->  #endif
-> @@ -126,11 +132,11 @@ static void bpf_nf_disable_defrag(struct bpf_nf_lin=
-k *link)
->         case NFPROTO_IPV6:
->                 rcu_read_lock();
->                 v6_hook =3D rcu_dereference(nf_defrag_v6_hook);
-> +               rcu_read_unlock();
+Hi, 
+   Did I miss to mail loop any reviewer or cc mailing list?
 
-No. v6_hook is gone as soon as you unlock it.
+I trace the mail record. This patch series is already pending above one half year.
+
+Do I need to still resend the patch series or restart a new one from v1?
+ 
+> Since v4:
+> - Since it's 2023 now, change date from 2022 to 2023 for source code and ABI.
+> 
+> Since v3:
+> - Fix 0002 patch title typo (from 'rt9471' to 'rt9759')
+> - Remove unused R_VAC_OVP range.
+> - Refer to ABI document, use 'status' to control battery charging, not 'online'
+> - Refer to ABI document, use 'online' to indicate bus state
+> 
+> Since v2:
+> - Add Reviewed-by tag for dt-binding patch
+> - Change ABI document date from Oct 2022 to Nov 2022 and KernelVersion
+>   from 6.1 to 6.2
+> 
+> ChiYuan Huang (3):
+>   dt-bindings: power: supply: Add Richtek RT9759 smart cap divider
+>     charger
+>   power: supply: Add Richtek RT9759 smart cap divider charger
+>   Documentation: power: rt9759: Document exported sysfs entries
+> 
+>  .../ABI/testing/sysfs-class-power-rt9759      |  37 ++
+>  .../bindings/power/supply/richtek,rt9759.yaml |  61 ++
+>  drivers/power/supply/Kconfig                  |  15 +
+>  drivers/power/supply/Makefile                 |   1 +
+>  drivers/power/supply/rt9759.c                 | 613 ++++++++++++++++++
+>  5 files changed, 727 insertions(+)
+>  create mode 100644 Documentation/ABI/testing/sysfs-class-power-rt9759
+>  create mode 100644 Documentation/devicetree/bindings/power/supply/richtek,rt9759.yaml
+>  create mode 100644 drivers/power/supply/rt9759.c
+> 
+> 
+> base-commit: a901a3568fd26ca9c4a82d8bc5ed5b3ed844d451
+> -- 
+> 2.40.1
+> 
