@@ -2,67 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A380E751A89
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 09:58:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17433751A8C
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 09:58:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232234AbjGMH6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 03:58:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37426 "EHLO
+        id S233589AbjGMH6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 03:58:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233523AbjGMH6F (ORCPT
+        with ESMTP id S233556AbjGMH6F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 13 Jul 2023 03:58:05 -0400
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::225])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE16526BC;
-        Thu, 13 Jul 2023 00:57:50 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id F38841C000C;
-        Thu, 13 Jul 2023 07:57:47 +0000 (UTC)
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 423D62713
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 00:57:54 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 0D0C76001A;
+        Thu, 13 Jul 2023 07:57:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1689235069;
+        t=1689235073;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=zm70Pn5WowQZi56CEQT8CB/u/lv3WH1eimTpmgCWNHU=;
-        b=p02VM6E4wTbdL/iNBK7F+S+qYX5WX4yiY+5Qkjchrchqe9I8CYJ6xpK2rKceFrKVcHs4E+
-        fPW7J7fPgZdvN2NB+kHsF+SFAhKZ6WpH1PHs2RbM/V/+LfSFwd8oMqgpz665lR9bx0UrPr
-        jeKdkXF1th/TCs11IRZfmx+XG3SlsaCSevUDlsw0mwPez39Q4ZJk6HMbb1AAPOn5muorcA
-        Qxc5xyru28pqQV8JeP9F5b6f3tGSRGNbR7S6OsvnO7lRic1VugIxw7+xQFg7W1MDSp8Fyj
-        uFRvx0xZWZZ1vSKuUueWSegd0mPWT9JdG+Y1kG0Jeh9S8x3OyITRrWo+Equo3g==
+        bh=E2rrTKML2PGQOGjKRFJnjSlB02Tb+RkYO5UuH5F+OIY=;
+        b=o/XTxi1GM5jS2d9tzAqYxdPkYT9V2v/d3KPILatQQ6cN0xfi+gq5zfL493O1NbRZF/NU7w
+        A3sfWXZjlrlyyRZYL0yE2w0WPDGi/DYVNsfNp1t6b2n1eDYqrWR7oERaWYTSgcBq8Vv7kB
+        WpxlMVMWOcijVUiWZlSDEIMk2ZAvRbAQ5o97XFESzgivgXlq+boYzSpf6WfIse5Y/jfUP6
+        hdmWx9+Fjoe52Q9kMMi0PRyNY9wR1kRtGTxnrpVYVVJkdpznHrw5Ub5J6FUy5MHnfI/IGz
+        Eu/Dpmg2hvWyh1ZziaKo8jm21xPlf6zeCdsn+ie8MAkjH85eIWoAWqxbdvT08g==
 From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Md Sadre Alam <quic_mdalam@quicinc.com>, mani@kernel.org,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     quic_srichara@quicinc.com
-Subject: Re: [PATCH v5 1/2] mtd: rawnand: qcom: Implement exec_op()
-Date:   Thu, 13 Jul 2023 09:57:47 +0200
-Message-Id: <20230713075747.486046-1-miquel.raynal@bootlin.com>
+To:     Yangtao Li <frank.li@vivo.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 12/18] mtd: nand: omap: Use devm_platform_get_and_ioremap_resource()
+Date:   Thu, 13 Jul 2023 09:57:51 +0200
+Message-Id: <20230713075751.486075-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230710054440.23297-1-quic_mdalam@quicinc.com>
+In-Reply-To: <20230707040622.78174-12-frank.li@vivo.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'5c6a9518447ebc72606b390ab5cb3eab9dc1d867'
+X-linux-mtd-patch-commit: b'2ef5fc30ae167056e7d9a92fc854f0741029fa04'
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-07-10 at 05:44:39 UTC, Md Sadre Alam wrote:
-> Implement exec_op() so we can later get rid of the legacy
-> interface implementation.
+On Fri, 2023-07-07 at 04:06:16 UTC, Yangtao Li wrote:
+> Convert platform_get_resource(), devm_ioremap_resource() to a single
+> call to devm_platform_get_and_ioremap_resource(), as this is exactly
+> what this function does.
 > 
-> Co-developed-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
-> Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
-> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
+> Signed-off-by: Yangtao Li <frank.li@vivo.com>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
