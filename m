@@ -2,75 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C9A8751F7F
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 13:06:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D445751F74
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 13:06:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234141AbjGMLGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 07:06:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51474 "EHLO
+        id S231891AbjGMLGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 07:06:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234182AbjGMLGd (ORCPT
+        with ESMTP id S233627AbjGMLFx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 07:06:33 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11C782738
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 04:06:21 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-ca3cc52ee62so523898276.0
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 04:06:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689246380; x=1691838380;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=WiV/7q29Lz9ovivX2FWAx1Ldp08v14j+trL88mxoLRY=;
-        b=eHuodEMDmc0gaOLGxz4ZOl2QDUjscsSR534Yb0lsjWkR+iDaGKmcW504dn05tzvAjx
-         1yz4d5P/2M+6vgpGuNhuApckUlcmKYeE3f1/lU1wNBBnn58JW5MniNKq5Z/dRKuYaEgR
-         MA5xl2XLjoVlTuurE4+ycjzM5DO6556A+sVkde3usYGkl+JnZwJYRsHzxbI1NoG+pgd0
-         a3KeCvwvYTkQoOzQAc5KAe7VvTb7jqrEaxPixzse8rw3QIl2IVD+oi4gqdVV5ihaHu4p
-         wTfflQTZZd4gb/zcdeUUWlkA6KrsMxQ4FJOWZIknrqw79Xe16SUChZkpfheZoAS7wiib
-         jvUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689246380; x=1691838380;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WiV/7q29Lz9ovivX2FWAx1Ldp08v14j+trL88mxoLRY=;
-        b=WB2Jy9fI8uaoHV0R1TPv04jkIs3AOwhkyBccRJ8nNEtpJzqVHEuLoWXwxxLFPtysM/
-         l3qfofPG9+PO2YsgPcx5gy1YAq5KlizU2ovnbZ6Sy7omLprhqSXmQJzwZa8kyUqFNI6A
-         LV/MQ7oBCifDAgEloSBPQE3iSRn+ZK8rHffOWPjfpwbJIS+M+3BWu0H/2HuSGy0Na9V2
-         yAuNcly/VMKV3Zh7xZGQhH1M+aghECKsv52mFBCNUOaN19PROICegEhWlA9Fk3nAGm/I
-         e2wi78QSu1Mh7hCmYh1+SXOGhlytT8/FxSKrssU4eUv3GK6wrzXZJOzpeewDcQjMo7wE
-         3/Aw==
-X-Gm-Message-State: ABy/qLYGpHgWyPx75nKId+GM/r2FbB/ycs2Jp9tqyFph1fDldacUqRPl
-        MtfQjGL+cWVslNkWXCCNOFPVAwDvNu8BvsyE/IuUXQ==
-X-Google-Smtp-Source: APBJJlGvdFT1I5LlLlSZ1vXvHoB35pTHYRo+rkqezmhzn+Qzriqe/07gvMGjawbihGymi4kllx31OgEP5eBDfTAEQME=
-X-Received: by 2002:a25:8550:0:b0:ca7:aad7:3091 with SMTP id
- f16-20020a258550000000b00ca7aad73091mr918328ybn.27.1689246380252; Thu, 13 Jul
- 2023 04:06:20 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230629184318.551317-1-linux@fw-web.de> <20230629184318.551317-2-linux@fw-web.de>
-In-Reply-To: <20230629184318.551317-2-linux@fw-web.de>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 13 Jul 2023 13:05:44 +0200
-Message-ID: <CAPDyKFrvQWUQuT_SX=hArY9TP61naN0gzaZ+8qo6PnOMntn9gg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] dt-bindings: mmc: mtk-sd: drop assigned-clocks/clock-parents
-To:     Frank Wunderlich <linux@fw-web.de>
-Cc:     linux-mediatek@lists.infradead.org,
-        Frank Wunderlich <frank-w@public-files.de>,
-        Chaotian Jing <chaotian.jing@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Wenbin Mei <wenbin.mei@mediatek.com>,
-        Sam Shih <sam.shih@mediatek.com>, linux-mmc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
+        Thu, 13 Jul 2023 07:05:53 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:242:246e::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52C2C211E;
+        Thu, 13 Jul 2023 04:05:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+        Resent-Cc:Resent-Message-ID; bh=fIgDmYcoJkd7PIFdP4hS9xlcqxhxEOoDJGq8m/+LNS4=;
+        t=1689246352; x=1690455952; b=doIBk7MGZgnTTJV7nIYLFuwpy+bCHNt1nRywQsnp9LIleqg
+        jROGJwzAEdJUzdpG5X2UegUpurOmpC6KyJ43MVrMA+EtsH7WZfYpkvPK68ZtAEm+AjBoNEZDNH8gq
+        R5DHP1cKM7yo4smrRYaiQLPApg5FGwSbqOc8Otyc/ix2kGfI9IEz07Y5RTXUz4ZeGxSUpn9Q9kzoQ
+        sMzfdBuK8XcSACFdGPjX9LtuWhNYPPM6++OIIQp7xamAk9lFcay6GJjM46eW6kv+y/L1fsX9HN4AT
+        dDmCUwyrq7azMEEmt5m8q8FShoIMpB9DWx/Q9Z7OQD+j18MU4ibrcC4V9XUgKoLw==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.96)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1qJu8p-001Df9-0b;
+        Thu, 13 Jul 2023 13:05:47 +0200
+Message-ID: <d1f9ca04bb055dc07f2a7f9f07f774e08913cf00.camel@sipsolutions.net>
+Subject: Re: Closing down the wireless trees for a summer break?
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Kalle Valo <kvalo@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, regressions@lists.linux.dev,
+        Jakub Kicinski <kuba@kernel.org>
+Date:   Thu, 13 Jul 2023 13:05:45 +0200
+In-Reply-To: <87wmz43xy4.fsf@kernel.org>
+References: <87y1kncuh4.fsf@kernel.org>
+         <ZK7Yzd0VvblA3ONU@smile.fi.intel.com> <87wmz43xy4.fsf@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+MIME-Version: 1.0
+X-malware-bazaar: not-scanned
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,49 +57,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 29 Jun 2023 at 20:43, Frank Wunderlich <linux@fw-web.de> wrote:
->
-> From: Frank Wunderlich <frank-w@public-files.de>
->
-> MT7986 has 2 clock-parents and these properties are not needed in driver
-> binding. So drop them completely.
->
-> Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
+On Thu, 2023-07-13 at 13:30 +0300, Kalle Valo wrote:
+> Andy Shevchenko <andriy.shevchenko@intel.com> writes:
+>=20
+> > On Tue, Jun 13, 2023 at 05:22:47PM +0300, Kalle Valo wrote:
+> >=20
+> > ...
+> >=20
+> > > [1] https://phb-crystal-ball.sipsolutions.net/
+> >=20
+> > How could one use the shut down site?
+>=20
+> What do you mean? At least from Finland it Works for me:
 
-Applied for next, thanks!
+That did in fact not work yesterday for some time as I was doing some
+maintenance :)
 
-Kind regards
-Uffe
-
-
-> ---
-> v2:
-> - drop assigned-clock* completely based on discussion with Krzysztof in v1
-> ---
->  Documentation/devicetree/bindings/mmc/mtk-sd.yaml | 10 ----------
->  1 file changed, 10 deletions(-)
->
-> diff --git a/Documentation/devicetree/bindings/mmc/mtk-sd.yaml b/Documentation/devicetree/bindings/mmc/mtk-sd.yaml
-> index 46eefdd19a2c..3fffa467e4e1 100644
-> --- a/Documentation/devicetree/bindings/mmc/mtk-sd.yaml
-> +++ b/Documentation/devicetree/bindings/mmc/mtk-sd.yaml
-> @@ -91,16 +91,6 @@ properties:
->        should switch dat1 pin to GPIO mode.
->      maxItems: 1
->
-> -  assigned-clocks:
-> -    description:
-> -      PLL of the source clock.
-> -    maxItems: 1
-> -
-> -  assigned-clock-parents:
-> -    description:
-> -      parent of source clock, used for HS400 mode to get 400Mhz source clock.
-> -    maxItems: 1
-> -
->    hs400-ds-delay:
->      $ref: /schemas/types.yaml#/definitions/uint32
->      description:
-> --
-> 2.34.1
->
+johannes
