@@ -2,101 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DC2C751E30
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 12:05:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 460DD751E39
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 12:05:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232343AbjGMKFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 06:05:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47294 "EHLO
+        id S234300AbjGMKFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 06:05:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234258AbjGMKFC (ORCPT
+        with ESMTP id S233615AbjGMKFW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 06:05:02 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8767326B8;
-        Thu, 13 Jul 2023 03:04:49 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-51e590a8ab5so628922a12.2;
-        Thu, 13 Jul 2023 03:04:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689242688; x=1691834688;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AG0tftJGRVz+edfVy1HASxGCbkPbMa+Ya7MsRka1IMk=;
-        b=GlPdBTJKtNXurT9JZybgKrI0dvbFIOquoPg2+wj0f2VNWSGCpc5nvlFsjV7BM7RWvu
-         XuPX6Vaqvn1rZIn2e5pXhkoatYDRvzOEzNVNa21+fHRsSdrjd4Hu/74UyGgiW1uICBpq
-         L2e2auTqldrd6WXj5OQQIbNusW5b2RYWgX+A7iqy3yra3QFsufgTPA0mJB4HfIcnEQIn
-         mEZIMp6+MnQj4awRyOp/Rpy8soO3JORz+WIJr5oDQKJ5PA2ViQ/Pfu4fv7dV+EBFMVSF
-         NNXJ1IIQq5h9rD4P1MFk9WYX2nEPtmlYjFHiN1lHNERv4TatYgFh9smfht0QO476Z58d
-         DlBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689242688; x=1691834688;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AG0tftJGRVz+edfVy1HASxGCbkPbMa+Ya7MsRka1IMk=;
-        b=BuJYspotjnwa2lD2YTjAa6d6NDd+dptlhi3ihCjQzJKoReXkZKLWuu6SFq4B05YyxW
-         IgeqwLb9IJaulAPIQme4DDib9VINeRH40/JbYhiJxVtcomx9zBZMUkbg05gsJLmN4kC2
-         fM2XxYErQHy779wRU1q+QPG9TTBzBFuYgpaANKfUsOEqEFXWyJphIdR/52fLB5nPky4P
-         ALekFkBAzZgU79QmNMT2eopz/RrqloTUpd7w5qzdxdpmrauRZHKzkcizaurW4PClUheT
-         8xb6d9jxQXHJ8012bZedsaiVmu7Nz51gcW0O3QdPoZbm+HNbHDoldwZgCQEV7q3gXtRJ
-         +lVw==
-X-Gm-Message-State: ABy/qLbiN8FTg1SfU0rDd5gYJjOmpZUrQyzCvuju7Rf4djeZpqXBcC/p
-        Ojv1d1KUvnc2txCQ/CaIPDLINTCzWiaegP7Nvjc=
-X-Google-Smtp-Source: APBJJlGTsPG7qROrK9c6x4dqWbJryjQgq60jKxVsQy49wVkCX3YAqX3GbLggc9QIi0jeewxZwA6wL53aP2DjcgYFxFA=
-X-Received: by 2002:a05:6402:1511:b0:51e:362d:b172 with SMTP id
- f17-20020a056402151100b0051e362db172mr1474885edw.32.1689242687762; Thu, 13
- Jul 2023 03:04:47 -0700 (PDT)
+        Thu, 13 Jul 2023 06:05:22 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D3BC270B;
+        Thu, 13 Jul 2023 03:05:19 -0700 (PDT)
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AC72E1EC0874;
+        Thu, 13 Jul 2023 12:05:17 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1689242717;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=7Fga6nMHDneASJyJWOa5x3oZX4NUZq8wtQ0fIf5FLj4=;
+        b=W52Gq0eGyy6yNbH6krdvGsssZlsvLb7eBA5g6ZLUqDKLYkwQAm8QfhZhGcx3zqz4BrN7Ij
+        4l4BDqqiQTcVbr70vX2vUz3Hgrd0JDULRole3q68e2q6gx50rwHSnRFaVsoSIAZsf6ouxP
+        BAD9mtJ14mnP8dG27LIcpioWnlkPa9o=
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id PPrSclreo3ew; Thu, 13 Jul 2023 10:05:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1689242715; bh=7Fga6nMHDneASJyJWOa5x3oZX4NUZq8wtQ0fIf5FLj4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=G4wQOL+pIIf61EeJSKTohfApZiu6Tin3+i2YS8q9H6pzBcgSq7Irq9K/mRsBETmUS
+         jiWIku6eR2dFBvxbhEzEMTbGazY7+A/OzeWvrLhR/glAsvDNzkubay0Ny0d6o7bLvL
+         nEuXhlr5oT/RdAIpkAiKKqNfVNDCOrJTSzaQ/WhwomO4P8DfrczJAWfvyt/ivnKwiu
+         rBDb2rIOvCgpOE+MyQ5XJSDjW+KQP4UCqIIWg8S3qQ4hKja9pr7r+y1yRAid9nUovq
+         ZRTp4MO3VXQyzRVnsQcRmWv+YvowxCQ901T+YW2FqyyzX+4HrkvG/a2XkU8dFMzKCe
+         qtWdZ8FyzXKp4ek0xauEvkX30VGGfuu/1aVUDXIN1I7pVeDc6e/ddPP2bCrgS0qZ2l
+         wCNmtxBZJzTT21+k0w3Yqv8RrlBt6lvrAjad7PvnCFaI7oPDcbwnrgqk8+cDn52BIL
+         aKz/U3v+4ZaN75K6JYb8H+x7PpjtB66aG1YOPgrU0MnhBvemLna1NYumW0pzvb9uov
+         jdRiTdR3VHEqKt3GTPup0AVH+7ROO0BISJIjsewZG61Km/yE5S1O9qUekAydF5noTs
+         3VZXDVy+zGGwFo3oz8DdUP5Z5AMM5saQG96TNV3t2zWeiD+O6jfQ7L/yQzB2IqW8bj
+         cfGF5yXKu6EBwZt/TOIoDuoc=
+Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 0B15540E0034;
+        Thu, 13 Jul 2023 10:05:02 +0000 (UTC)
+Date:   Thu, 13 Jul 2023 12:04:59 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Tao Liu <ltao@redhat.com>
+Cc:     tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+        x86@kernel.org, hpa@zytor.com, ardb@kernel.org,
+        linux-kernel@vger.kernel.org, bhe@redhat.com, dyoung@redhat.com,
+        kexec@lists.infradead.org, linux-efi@vger.kernel.org
+Subject: Re: [PATCH v2] x86/kexec: Add EFI config table identity mapping for
+ kexec kernel
+Message-ID: <20230713100459.GEZK/MS69XbphJa+tN@fat_crate.local>
+References: <20230601072043.24439-1-ltao@redhat.com>
 MIME-Version: 1.0
-References: <20230712224220.26430-1-iuliana.prodan@oss.nxp.com>
-In-Reply-To: <20230712224220.26430-1-iuliana.prodan@oss.nxp.com>
-From:   Daniel Baluta <daniel.baluta@gmail.com>
-Date:   Thu, 13 Jul 2023 13:04:35 +0300
-Message-ID: <CAEnQRZAqW4zVOrtRRUNHtR4rW0n3dXQ5+4PPaM3jSW7D70Gy9A@mail.gmail.com>
-Subject: Re: [PATCH 1/2] remoteproc: imx_dsp_rproc: add mandatory
- find_loaded_rsc_table op
-To:     "Iuliana Prodan (OSS)" <iuliana.prodan@oss.nxp.com>
-Cc:     Bjorn Andersson <andersson@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        "S.J. Wang" <shengjiu.wang@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Mpuaudiosw <Mpuaudiosw@nxp.com>,
-        Iuliana Prodan <iuliana.prodan@nxp.com>,
-        linux-imx <linux-imx@nxp.com>, linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        LnxRevLi <LnxRevLi@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230601072043.24439-1-ltao@redhat.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 2:13=E2=80=AFAM Iuliana Prodan (OSS)
-<iuliana.prodan@oss.nxp.com> wrote:
->
-> From: Iuliana Prodan <iuliana.prodan@nxp.com>
->
-> Add the .find_loaded_rsc_table operation for i.MX DSP.
-> We need it for inter-process communication between DSP
-> and main core.
->
-> This callback is used to find the resource table (defined
-> in remote processor linker script) where the address of the
-> vrings along with the other allocated resources (carveouts etc)
-> are stored.
-> If this is not found, the vrings are not allocated and
-> the IPC between cores will not work.
->
-> Signed-off-by: Iuliana Prodan <iuliana.prodan@nxp.com>
+On Thu, Jun 01, 2023 at 03:20:44PM +0800, Tao Liu wrote:
+>  arch/x86/kernel/machine_kexec_64.c | 35 ++++++++++++++++++++++++++----
+>  1 file changed, 31 insertions(+), 4 deletions(-)
 
-Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
+Ok, pls try this totally untested thing.
+
+Thx.
+
+---
+diff --git a/arch/x86/boot/compressed/sev.c b/arch/x86/boot/compressed/sev.c
+index 09dc8c187b3c..fefe27b2af85 100644
+--- a/arch/x86/boot/compressed/sev.c
++++ b/arch/x86/boot/compressed/sev.c
+@@ -404,13 +404,20 @@ void sev_enable(struct boot_params *bp)
+ 	if (bp)
+ 		bp->cc_blob_address = 0;
+ 
++	/* Check for the SME/SEV support leaf */
++	eax = 0x80000000;
++	ecx = 0;
++	native_cpuid(&eax, &ebx, &ecx, &edx);
++	if (eax < 0x8000001f)
++		return;
++
+ 	/*
+ 	 * Setup/preliminary detection of SNP. This will be sanity-checked
+ 	 * against CPUID/MSR values later.
+ 	 */
+ 	snp = snp_init(bp);
+ 
+-	/* Check for the SME/SEV support leaf */
++	/* Recheck the SME/SEV support leaf */
+ 	eax = 0x80000000;
+ 	ecx = 0;
+ 	native_cpuid(&eax, &ebx, &ecx, &edx);
+
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
