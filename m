@@ -2,541 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 243AA751646
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 04:21:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB0E1751647
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 04:23:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232279AbjGMCVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 22:21:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48678 "EHLO
+        id S233555AbjGMCXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 22:23:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232753AbjGMCVh (ORCPT
+        with ESMTP id S233538AbjGMCXP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 22:21:37 -0400
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B131226B7;
-        Wed, 12 Jul 2023 19:21:20 -0700 (PDT)
-Received: from local
-        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-         (Exim 4.96)
-        (envelope-from <daniel@makrotopia.org>)
-        id 1qJlxG-0005aw-1x;
-        Thu, 13 Jul 2023 02:21:19 +0000
-Date:   Thu, 13 Jul 2023 03:21:05 +0100
-From:   Daniel Golle <daniel@makrotopia.org>
-To:     netdev@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Russell King <linux@armlinux.org.uk>,
-        =?iso-8859-1?Q?Bj=F8rn?= Mork <bjorn@mork.no>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Greg Ungerer <gerg@kernel.org>
-Subject: [PATCH v2 net-next 9/9] net: ethernet: mtk_eth_soc: add basic
- support for MT7988 SoC
-Message-ID: <1bcf797afee57f0136d6f9f5233b1d57dc6a383f.1689012506.git.daniel@makrotopia.org>
-References: <cover.1689012506.git.daniel@makrotopia.org>
+        Wed, 12 Jul 2023 22:23:15 -0400
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2045.outbound.protection.outlook.com [40.107.212.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3E3CE42;
+        Wed, 12 Jul 2023 19:23:13 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KJMlFKdBTVrwMP1kwN+9JIxxw85KTn+cXqhM15H2OxguNHdPbgL7xZMFdgeSOPSyRT4dbZaDS+ixShwQAQ6fpaEp31mRrZLKJxV15X7nm2YVmI2W5McWertsc1HFw0RPPJuGkHtOUW3W0vLZpEWV+H0RMKGmKMA3Z81Ti4KURjEBBEz1gOgCJkRliUXWNozYyMwUXxHdLUIsuQ1MoGLPMPFMmQwtq3gLSLMqH4Qn3HdpSTJm+CYGi5uj03EYbsPsXFA1CKEVnRKxT2AxS0CsoIsFIkCXMn9+O86KiADby7EgTgdX9kOPrujesYX+aGfLpNXeWri9kXgItcSz56r4MQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=N4Zp9meooRmxJwVte2Ty61V4pAsCu+q1lFDB+gmkQt4=;
+ b=GHV4MMpRfYUrmQrHXTWgQOlczg0LoIgHErOzv5fQArDWOYJ49xr+hD4t2k0KCbJYhPt9gKUJ0hjGeaBhGwdEHyk/BhVCAvLUW7ff3uee25YTBepbPT26LRFpkmj2U2aH2D+g0tkbVIFU7miujIBXzR+mAw6sV50MKkBQT5jWK3+FU2ahxfh5EfDDVlOCNGwkPII8tb1tm1V/hzm5gMurKSc6PlbyOrFHIoka3Z2zTrwNqPO8uJsn4b20ltm2FHWEowzS5ISLWapy9vtEmYi8Wlrwr86qfSv99YXa1t/BOR4h4Wda+bcKPbJZcE9YZf5W54PB9/fpcXj+YP/U+bkQCw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=N4Zp9meooRmxJwVte2Ty61V4pAsCu+q1lFDB+gmkQt4=;
+ b=HLBHpsAqaJumZGT3Uc4wt26IDf10nVlDox1FPgL95QN6B6GBYMSha7LypRDzIp/txliElSbYcLbdWS5Jhin8RabsVDMu48dM98XYlIYQbIzq0txEJNtKHD2V63+NNP2vmSfguHmWAWb6xGZ1QCV+Aj4/P69KsKvvppdIpwwKVIha8a8VP1K9g5FcfrpasfDTclCIobijmxwmsfwASUe8IgrVh3IDS86eVPyUH+7wUy/tAK9Bor3rDULc+hgtcvtqYDjTQ6Qut19tpQuhjgDQ/FXTJDH+3rS8mePt0pbHveMD2UHuxVfalJpQFXAVo9xnvtm1VAOdmFzIGE+mcWsbZw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from IA1PR12MB6019.namprd12.prod.outlook.com (2603:10b6:208:3d5::16)
+ by PH8PR12MB6796.namprd12.prod.outlook.com (2603:10b6:510:1c7::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6565.33; Thu, 13 Jul
+ 2023 02:23:08 +0000
+Received: from IA1PR12MB6019.namprd12.prod.outlook.com
+ ([fe80::7185:fb6e:af4:4ecd]) by IA1PR12MB6019.namprd12.prod.outlook.com
+ ([fe80::7185:fb6e:af4:4ecd%4]) with mapi id 15.20.6565.028; Thu, 13 Jul 2023
+ 02:23:08 +0000
+Message-ID: <31f9d78d-aec0-8e34-f499-ada44578657a@nvidia.com>
+Date:   Thu, 13 Jul 2023 10:22:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH net-next V1 0/4] virtio_net: add per queue interrupt
+ coalescing support
+Content-Language: en-US
+To:     Heng Qi <hengqi@linux.alibaba.com>
+Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org, mst@redhat.com,
+        jasowang@redhat.com, xuanzhuo@linux.alibaba.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+        hawk@kernel.org, john.fastabend@gmail.com, jiri@nvidia.com,
+        dtatulea@nvidia.com
+References: <20230710092005.5062-1-gavinl@nvidia.com>
+ <e77232b9-a290-545b-cb02-ae1fbc2cd5cb@linux.alibaba.com>
+From:   Gavin Li <gavinl@nvidia.com>
+In-Reply-To: <e77232b9-a290-545b-cb02-ae1fbc2cd5cb@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SG2PR01CA0192.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:189::21) To IA1PR12MB6019.namprd12.prod.outlook.com
+ (2603:10b6:208:3d5::16)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1689012506.git.daniel@makrotopia.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: IA1PR12MB6019:EE_|PH8PR12MB6796:EE_
+X-MS-Office365-Filtering-Correlation-Id: f0306b83-91e5-47b8-58c8-08db834818a8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: BDJt68Tz9jscTS5TCxakXtAuAZezSiekqDOoVVwbTeKMahbY4J+Jw0wI6Tu4DZyguSNllxyiTKmY2moSbBWAu8NGHSbHyty4ewjJMg246/3I/4V3ASmPXrZfb774EbMtjFlEGfhH0fityAOO5LmK63ezO0efxKfpjgdN5aX7Z4u7pazVwxmg7pMy0AaD8GjSczO2FI8sECscab4+DaHs5Ip7qq7mNCrrrQkVpx8oddS1GKxTB8oNFvAd6gAKDU2Yr8JDBYqxaEPNBF9ZibBOWm6dKzfOJRKltMO9bhb7DQHv7hMX+k67+MEzW0ANBNaylT/+RbMZ3LQIU6/qS8ap88p8BdE23mTKrPwEJhk8cnsReuAxencpowfXCgu7zEonbkwYVJGyk1KK6/lPilpokmRL2Lsj/gMbPW+1cpg3DbWnJXp0Av+c5Z5uxImBkbko/d3vgsCTuvfc52HmsQPPUXyoNJckcb6l/vHpbRrdQ/5eqQ3VdV7zLMFTTVy34E5lA2wWgil4kxMZ4dQK3MHXUrFHci0EbggHzapr0I7M6XxRPhgbWzHkrFc0a2zy+naQBk0byw1d0Pw3CgbBrlEuvQ2r5ZAyQlZzydaNw8zqPPCyorh7EUsmAjI23PIc0m69ckNFemK+jxarNW7+9wKirA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR12MB6019.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(136003)(396003)(346002)(376002)(366004)(451199021)(31686004)(478600001)(6666004)(6486002)(2616005)(83380400001)(36756003)(86362001)(31696002)(2906002)(107886003)(186003)(26005)(6506007)(53546011)(6512007)(38100700002)(8676002)(66476007)(66556008)(6916009)(316002)(41300700001)(66946007)(5660300002)(8936002)(4326008)(7416002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?K2d4VjRsUXVQeHd5NDVUVWRrbUdvL3hGbnc1cW9RLzVBNTl6Z3NkRlRRWHFr?=
+ =?utf-8?B?cTJqeEgxUWt5Q29VRkMvdzNGRXIyZXB5RHNzTEtjS0s5VlBJYk1xY3pWU3hz?=
+ =?utf-8?B?WFVNeU1GenlnYVkrb0s5QW8rN0xJdm9jWTBXK2FjNFBwcElJL0JXRWhjS2w2?=
+ =?utf-8?B?cHB6QzFpSTJDOWpsd3RuMnY1b0VCclRaZmNMbEVFUXN3TW1UeWMxdkgxdmtM?=
+ =?utf-8?B?YWEwWGtqbEZCSS9NbFZUNS9Gdy9xMmVEdmNFZEtUN1ZMWlhOUXkyNHluY01Q?=
+ =?utf-8?B?aXFwM25sZHJmZUFCQXJCTWxXU0RUbFU4TWhZNThzT0hORnBOemR2YTlVdmlX?=
+ =?utf-8?B?RGVzQ29FSXlXYzdMenZiWDBJT0FBVDBUdlduaHRqZXVXdU5oVDVYL2JVTEpz?=
+ =?utf-8?B?Rit5UXF5N3RNbHFtdUNqQlR0REpQOWpLSlZZbGRqSnFPTXZUTXJ0d0VDbG9X?=
+ =?utf-8?B?U2VRVDQ1T2p6UEQvU3FKNnEzTUUvM2c2SHVDNXRvZWdIMGxIUy93ZDlqZDVG?=
+ =?utf-8?B?NmdOcjcxaWgrMnkxc1dKTW02M0lwL3pjNEJwYy8xdldFb3c0NCtnaWsyLzNG?=
+ =?utf-8?B?bFZ6UHdNSHhQcDZZL3ZtcVhLTWRzVzNVV291eEcrZFNacDY1YVhDcm1jd1I4?=
+ =?utf-8?B?WmNEOWpOdndGQnRJcEo0U1lWTjRLelA5TFNnVTdXN0ZqRGI1UGM5OURldWhI?=
+ =?utf-8?B?UnhaQUZERHNXQmVnNGUrNThhQ1J1bUhoWm9ZN1VCM1IxY0lld0RpV1hyb3ZI?=
+ =?utf-8?B?ZHZVamNrREtrRHNRT0ZtQStnLzhBSFhNcC9TekpiN3ZPd3c2TVdJZ00rR2lx?=
+ =?utf-8?B?WEpvUVRrYzJZRzllV0wwbjgzV1BNOVNPYmFUK0RRUlJMQjZ0eHF6R0xkZ28v?=
+ =?utf-8?B?S3RhK3JjZkdDTjNsRnJQUmJIMFJIcVNMWXQ4M0VjNGh5YXhNcmhpbHZ0STIv?=
+ =?utf-8?B?SDRuc1UyZ1RQMW96OHdYWUpHT2tHRWxBRWRORUhKZ255WXVmNnVPUTVhMStD?=
+ =?utf-8?B?OWk0K0lPSHd0b3l1bWpETlp5MWcwR1lWaDNvN2ZpdE1kc3NlVzVPMjZzMnZl?=
+ =?utf-8?B?dThGUjNvNmNwaFhOaGpzYmUrZFJGOGVTMmQzTmZTbGo3clMwemYyM2xJUUNi?=
+ =?utf-8?B?R2kvRUxvWlhSd0ttM3BmRENGeUVEVGRJUzB0bm5ycW96WUljRGg1TU5kWmxY?=
+ =?utf-8?B?NnlDZkhGUXQzaEgvQWpyaEJLNFYxdm5lNFl2STMvMWRLM056dWVEUjRIdkxR?=
+ =?utf-8?B?N0ZBbVNJbU1KVDU0Nm1HSlpxRVZDdlRxc2RVa2tMYUc5WW9WZmE5dmgzcmZp?=
+ =?utf-8?B?L0tiWDdqOGoxeXFwcFVEWnhncjFuK1hoY2lxYk5CZUZvK1RRakRKV242aEdr?=
+ =?utf-8?B?ZjNuOE1VOWZKVFoyamRLSnVRZktsZlc4RS8zdWpDR2ZDSkpwMTVVbE0rMHdL?=
+ =?utf-8?B?ZzRkalFVdXdMY2lOYzUzaCtJazY5cVdubXVoaWZuL1JkbzB2VDFXdFFoRHJs?=
+ =?utf-8?B?Wk9zWEIvbEt0OGFRRnJCZEI0MnAzeVlacVVaNW9JeVRoN245YVllQ253NkZ2?=
+ =?utf-8?B?T3lXdGZaWGNTYnNvanQvenBtMlR5Qk93R0k4VGU4NUptRVByeGpCS3hKOWV2?=
+ =?utf-8?B?RzJiSkJBVTZEa1BMUGZBMU40QzVhVjhOZHpMZUh6RzZmby9JZUdXbDhobnln?=
+ =?utf-8?B?MTQ3SFZkbjBBY1Z2WWJTaHlZcXhOYk9VNFlTWFJKVnpmV0dpbDFaUmJDNmZ5?=
+ =?utf-8?B?MnRtbm9xRU9ZVTlRWFFnZG1lalZ3NTYwRzdyNUdKYVNTemRoOXNFY1BRNWc4?=
+ =?utf-8?B?Slh4OE5tMTBIY0hwWG1uVXEweFpqaXpzeUhDMXVXL29kdG5rcEFoZnlIL3Bi?=
+ =?utf-8?B?S2VOeXZSYlc4QkgrUXdESUVNTUFaeFMwaEFpcWdHdGMvT1MwUDBOTGVLelNK?=
+ =?utf-8?B?STREcEl0RlI4MTkzcTBvNjdaOHlmMVpTYmFxTXlxSzEyWjY3SHhORDZod080?=
+ =?utf-8?B?WkhyeUloaDAwZEk0N0QvMUh1VUxXZTVnZTA5RE05dTl6VmdVRVJzYXdrVGIw?=
+ =?utf-8?B?a2oraGxlRXEzc3NxUEhZQnRZUkJoaFdpK296WHZhZW5yUG50RTRVTjMzdWcr?=
+ =?utf-8?Q?MdDg84DW1EOSdS+IXsVZomkyX?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f0306b83-91e5-47b8-58c8-08db834818a8
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR12MB6019.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2023 02:23:08.1046
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: mCJakgMK/vro8jEXaWyz5ss1dXtxenJupvNvaBkGlDt/BdVanzkWrm1YSJ/APTI/AnISTq9svwCthHps86FnrA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB6796
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lorenzo Bianconi <lorenzo@kernel.org>
 
-Introduce support for ethernet chip available in MT7988 SoC to
-mtk_eth_soc driver. As a first step support only the first GMAC which
-is hard-wired to the internal DSA switch having 4 built-in gigabit
-Ethernet PHYs.
 
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-Signed-off-by: Daniel Golle <daniel@makrotopia.org>
----
- drivers/net/ethernet/mediatek/mtk_eth_path.c |  14 +-
- drivers/net/ethernet/mediatek/mtk_eth_soc.c  | 201 +++++++++++++++++--
- drivers/net/ethernet/mediatek/mtk_eth_soc.h  |  86 +++++++-
- 3 files changed, 273 insertions(+), 28 deletions(-)
-
-diff --git a/drivers/net/ethernet/mediatek/mtk_eth_path.c b/drivers/net/ethernet/mediatek/mtk_eth_path.c
-index 34ac492e047cb..cc84b30ace412 100644
---- a/drivers/net/ethernet/mediatek/mtk_eth_path.c
-+++ b/drivers/net/ethernet/mediatek/mtk_eth_path.c
-@@ -43,7 +43,7 @@ static const char *mtk_eth_path_name(u64 path)
- static int set_mux_gdm1_to_gmac1_esw(struct mtk_eth *eth, u64 path)
- {
- 	bool updated = true;
--	u32 val, mask, set;
-+	u32 mask, set, reg;
- 
- 	switch (path) {
- 	case MTK_ETH_PATH_GMAC1_SGMII:
-@@ -59,11 +59,13 @@ static int set_mux_gdm1_to_gmac1_esw(struct mtk_eth *eth, u64 path)
- 		break;
- 	}
- 
--	if (updated) {
--		val = mtk_r32(eth, MTK_MAC_MISC);
--		val = (val & mask) | set;
--		mtk_w32(eth, val, MTK_MAC_MISC);
--	}
-+	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V3))
-+		reg = MTK_MAC_MISC_V3;
-+	else
-+		reg = MTK_MAC_MISC;
-+
-+	if (updated)
-+		mtk_m32(eth, mask, set, reg);
- 
- 	dev_dbg(eth->dev, "path %s in %s updated = %d\n",
- 		mtk_eth_path_name(path), __func__, updated);
-diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-index c47353f4af541..5a3463c05cfb5 100644
---- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-+++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-@@ -152,6 +152,54 @@ static const struct mtk_reg_map mt7986_reg_map = {
- 	.pse_oq_sta		= 0x01a0,
- };
- 
-+static const struct mtk_reg_map mt7988_reg_map = {
-+	.tx_irq_mask		= 0x461c,
-+	.tx_irq_status		= 0x4618,
-+	.pdma = {
-+		.rx_ptr		= 0x6900,
-+		.rx_cnt_cfg	= 0x6904,
-+		.pcrx_ptr	= 0x6908,
-+		.glo_cfg	= 0x6a04,
-+		.rst_idx	= 0x6a08,
-+		.delay_irq	= 0x6a0c,
-+		.irq_status	= 0x6a20,
-+		.irq_mask	= 0x6a28,
-+		.adma_rx_dbg0	= 0x6a38,
-+		.int_grp	= 0x6a50,
-+	},
-+	.qdma = {
-+		.qtx_cfg	= 0x4400,
-+		.qtx_sch	= 0x4404,
-+		.rx_ptr		= 0x4500,
-+		.rx_cnt_cfg	= 0x4504,
-+		.qcrx_ptr	= 0x4508,
-+		.glo_cfg	= 0x4604,
-+		.rst_idx	= 0x4608,
-+		.delay_irq	= 0x460c,
-+		.fc_th		= 0x4610,
-+		.int_grp	= 0x4620,
-+		.hred		= 0x4644,
-+		.ctx_ptr	= 0x4700,
-+		.dtx_ptr	= 0x4704,
-+		.crx_ptr	= 0x4710,
-+		.drx_ptr	= 0x4714,
-+		.fq_head	= 0x4720,
-+		.fq_tail	= 0x4724,
-+		.fq_count	= 0x4728,
-+		.fq_blen	= 0x472c,
-+		.tx_sch_rate	= 0x4798,
-+	},
-+	.gdm1_cnt		= 0x1c00,
-+	.gdma_to_ppe		= 0x3333,
-+	.ppe_base		= 0x2200,
-+	.wdma_base = {
-+		[0]		= 0x4800,
-+		[1]		= 0x4c00,
-+	},
-+	.pse_iq_sta		= 0x0180,
-+	.pse_oq_sta		= 0x01a0,
-+};
-+
- /* strings used by ethtool */
- static const struct mtk_ethtool_stats {
- 	char str[ETH_GSTRING_LEN];
-@@ -179,10 +227,54 @@ static const struct mtk_ethtool_stats {
- };
- 
- static const char * const mtk_clks_source_name[] = {
--	"ethif", "sgmiitop", "esw", "gp0", "gp1", "gp2", "fe", "trgpll",
--	"sgmii_tx250m", "sgmii_rx250m", "sgmii_cdr_ref", "sgmii_cdr_fb",
--	"sgmii2_tx250m", "sgmii2_rx250m", "sgmii2_cdr_ref", "sgmii2_cdr_fb",
--	"sgmii_ck", "eth2pll", "wocpu0", "wocpu1", "netsys0", "netsys1"
-+	"ethif",
-+	"sgmiitop",
-+	"esw",
-+	"gp0",
-+	"gp1",
-+	"gp2",
-+	"gp3",
-+	"xgp1",
-+	"xgp2",
-+	"xgp3",
-+	"crypto",
-+	"fe",
-+	"trgpll",
-+	"sgmii_tx250m",
-+	"sgmii_rx250m",
-+	"sgmii_cdr_ref",
-+	"sgmii_cdr_fb",
-+	"sgmii2_tx250m",
-+	"sgmii2_rx250m",
-+	"sgmii2_cdr_ref",
-+	"sgmii2_cdr_fb",
-+	"sgmii_ck",
-+	"eth2pll",
-+	"wocpu0",
-+	"wocpu1",
-+	"netsys0",
-+	"netsys1",
-+	"ethwarp_wocpu2",
-+	"ethwarp_wocpu1",
-+	"ethwarp_wocpu0",
-+	"top_usxgmii0_sel",
-+	"top_usxgmii1_sel",
-+	"top_sgm0_sel",
-+	"top_sgm1_sel",
-+	"top_xfi_phy0_xtal_sel",
-+	"top_xfi_phy1_xtal_sel",
-+	"top_eth_gmii_sel",
-+	"top_eth_refck_50m_sel",
-+	"top_eth_sys_200m_sel",
-+	"top_eth_sys_sel",
-+	"top_eth_xgmii_sel",
-+	"top_eth_mii_sel",
-+	"top_netsys_sel",
-+	"top_netsys_500m_sel",
-+	"top_netsys_pao_2x_sel",
-+	"top_netsys_sync_250m_sel",
-+	"top_netsys_ppefb_250m_sel",
-+	"top_netsys_warp_sel",
- };
- 
- void mtk_w32(struct mtk_eth *eth, u32 val, unsigned reg)
-@@ -195,7 +287,7 @@ u32 mtk_r32(struct mtk_eth *eth, unsigned reg)
- 	return __raw_readl(eth->base + reg);
- }
- 
--static u32 mtk_m32(struct mtk_eth *eth, u32 mask, u32 set, unsigned reg)
-+u32 mtk_m32(struct mtk_eth *eth, u32 mask, u32 set, unsigned reg)
- {
- 	u32 val;
- 
-@@ -425,6 +517,19 @@ static void mtk_gmac0_rgmii_adjust(struct mtk_eth *eth,
- 	mtk_w32(eth, tck, TRGMII_TCK_CTRL);
- }
- 
-+static void mtk_setup_bridge_switch(struct mtk_eth *eth)
-+{
-+	/* Force Port1 XGMAC Link Up */
-+	mtk_m32(eth, 0, MTK_XGMAC_FORCE_LINK(MTK_GMAC1_ID),
-+		MTK_XGMAC_STS(MTK_GMAC1_ID));
-+
-+	/* Adjust GSW bridge IPG to 11 */
-+	mtk_m32(eth, GSWTX_IPG_MASK | GSWRX_IPG_MASK,
-+		(GSW_IPG_11 << GSWTX_IPG_SHIFT) |
-+		(GSW_IPG_11 << GSWRX_IPG_SHIFT),
-+		MTK_GSW_CFG);
-+}
-+
- static struct phylink_pcs *mtk_mac_select_pcs(struct phylink_config *config,
- 					      phy_interface_t interface)
- {
-@@ -484,6 +589,8 @@ static void mtk_mac_config(struct phylink_config *config, unsigned int mode,
- 					goto init_err;
- 			}
- 			break;
-+		case PHY_INTERFACE_MODE_INTERNAL:
-+			break;
- 		default:
- 			goto err_phy;
- 		}
-@@ -562,6 +669,15 @@ static void mtk_mac_config(struct phylink_config *config, unsigned int mode,
- 		return;
- 	}
- 
-+	/* Setup gmac */
-+	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V3) &&
-+	    mac->interface == PHY_INTERFACE_MODE_INTERNAL) {
-+		mtk_w32(mac->hw, MTK_GDMA_XGDM_SEL, MTK_GDMA_EG_CTRL(mac->id));
-+		mtk_w32(mac->hw, MAC_MCR_FORCE_LINK_DOWN, MTK_MAC_MCR(mac->id));
-+
-+		mtk_setup_bridge_switch(eth);
-+	}
-+
- 	return;
- 
- err_phy:
-@@ -807,11 +923,16 @@ static int mtk_mdio_init(struct mtk_eth *eth)
- 	}
- 	divider = min_t(unsigned int, DIV_ROUND_UP(MDC_MAX_FREQ, max_clk), 63);
- 
-+	/* Configure MDC Turbo Mode */
-+	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V3))
-+		mtk_m32(eth, 0, MISC_MDC_TURBO, MTK_MAC_MISC_V3);
-+
- 	/* Configure MDC Divider */
--	val = mtk_r32(eth, MTK_PPSC);
--	val &= ~PPSC_MDC_CFG;
--	val |= FIELD_PREP(PPSC_MDC_CFG, divider) | PPSC_MDC_TURBO;
--	mtk_w32(eth, val, MTK_PPSC);
-+	val = FIELD_PREP(PPSC_MDC_CFG, divider);
-+	if (MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V1) ||
-+	    MTK_HAS_CAPS(eth->soc->caps, MTK_NETSYS_V2))
-+		val |= PPSC_MDC_TURBO;
-+	mtk_m32(eth, PPSC_MDC_CFG, val, MTK_PPSC);
- 
- 	dev_dbg(eth->dev, "MDC is running on %d Hz\n", MDC_MAX_FREQ / divider);
- 
-@@ -1272,10 +1393,19 @@ static void mtk_tx_set_dma_desc_v2(struct net_device *dev, void *txd,
- 		data |= TX_DMA_LS0;
- 	WRITE_ONCE(desc->txd3, data);
- 
--	if (mac->id == MTK_GMAC3_ID)
--		data = PSE_GDM3_PORT;
--	else
--		data = (mac->id + 1) << TX_DMA_FPORT_SHIFT_V2; /* forward port */
-+	 /* set forward port */
-+	switch (mac->id) {
-+	case MTK_GMAC1_ID:
-+		data = PSE_GDM1_PORT << TX_DMA_FPORT_SHIFT_V2;
-+		break;
-+	case MTK_GMAC2_ID:
-+		data = PSE_GDM2_PORT << TX_DMA_FPORT_SHIFT_V2;
-+		break;
-+	case MTK_GMAC3_ID:
-+		data = PSE_GDM3_PORT << TX_DMA_FPORT_SHIFT_V2;
-+		break;
-+	}
-+
- 	data |= TX_DMA_SWC_V2 | QID_BITS_V2(info->qid);
- 	WRITE_ONCE(desc->txd4, data);
- 
-@@ -4462,6 +4592,17 @@ static int mtk_add_mac(struct mtk_eth *eth, struct device_node *np)
- 			  mac->phylink_config.supported_interfaces);
- 	}
- 
-+	if (MTK_HAS_CAPS(mac->hw->soc->caps, MTK_NETSYS_V3_BIT) &&
-+	    MTK_HAS_CAPS(mac->hw->soc->caps, MTK_ESW_BIT) &&
-+	    id == MTK_GMAC1_ID) {
-+		mac->phylink_config.mac_capabilities = MAC_ASYM_PAUSE |
-+						       MAC_SYM_PAUSE |
-+						       MAC_10000FD;
-+		phy_interface_zero(mac->phylink_config.supported_interfaces);
-+		__set_bit(PHY_INTERFACE_MODE_INTERNAL,
-+			  mac->phylink_config.supported_interfaces);
-+	}
-+
- 	phylink = phylink_create(&mac->phylink_config,
- 				 of_fwnode_handle(mac->of_node),
- 				 phy_mode, &mtk_phylink_ops);
-@@ -4981,6 +5122,23 @@ static const struct mtk_soc_data mt7986_data = {
- 	},
- };
- 
-+static const struct mtk_soc_data mt7988_data = {
-+	.reg_map = &mt7988_reg_map,
-+	.ana_rgc3 = 0x128,
-+	.caps = MT7988_CAPS,
-+	.hw_features = MTK_HW_FEATURES,
-+	.required_clks = MT7988_CLKS_BITMAP,
-+	.required_pctl = false,
-+	.txrx = {
-+		.txd_size = sizeof(struct mtk_tx_dma_v2),
-+		.rxd_size = sizeof(struct mtk_rx_dma_v2),
-+		.rx_irq_done_mask = MTK_RX_DONE_INT_V2,
-+		.rx_dma_l4_valid = RX_DMA_L4_VALID_V2,
-+		.dma_max_len = MTK_TX_DMA_BUF_LEN_V2,
-+		.dma_len_offset = 8,
-+	},
-+};
-+
- static const struct mtk_soc_data rt5350_data = {
- 	.reg_map = &mt7628_reg_map,
- 	.caps = MT7628_CAPS,
-@@ -4998,14 +5156,15 @@ static const struct mtk_soc_data rt5350_data = {
- };
- 
- const struct of_device_id of_mtk_match[] = {
--	{ .compatible = "mediatek,mt2701-eth", .data = &mt2701_data},
--	{ .compatible = "mediatek,mt7621-eth", .data = &mt7621_data},
--	{ .compatible = "mediatek,mt7622-eth", .data = &mt7622_data},
--	{ .compatible = "mediatek,mt7623-eth", .data = &mt7623_data},
--	{ .compatible = "mediatek,mt7629-eth", .data = &mt7629_data},
--	{ .compatible = "mediatek,mt7981-eth", .data = &mt7981_data},
--	{ .compatible = "mediatek,mt7986-eth", .data = &mt7986_data},
--	{ .compatible = "ralink,rt5350-eth", .data = &rt5350_data},
-+	{ .compatible = "mediatek,mt2701-eth", .data = &mt2701_data },
-+	{ .compatible = "mediatek,mt7621-eth", .data = &mt7621_data },
-+	{ .compatible = "mediatek,mt7622-eth", .data = &mt7622_data },
-+	{ .compatible = "mediatek,mt7623-eth", .data = &mt7623_data },
-+	{ .compatible = "mediatek,mt7629-eth", .data = &mt7629_data },
-+	{ .compatible = "mediatek,mt7981-eth", .data = &mt7981_data },
-+	{ .compatible = "mediatek,mt7986-eth", .data = &mt7986_data },
-+	{ .compatible = "mediatek,mt7988-eth", .data = &mt7988_data },
-+	{ .compatible = "ralink,rt5350-eth", .data = &rt5350_data },
- 	{},
- };
- MODULE_DEVICE_TABLE(of, of_mtk_match);
-diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.h b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-index 66d30344b688c..37a2295e1be9b 100644
---- a/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-+++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-@@ -117,7 +117,8 @@
- #define MTK_CDMP_EG_CTRL	0x404
- 
- /* GDM Exgress Control Register */
--#define MTK_GDMA_FWD_CFG(x)	(0x500 + (x * 0x1000))
-+#define MTK_GDMA_FWD_CFG(x)	({ typeof(x) _x = (x); (_x == MTK_GMAC3_ID) ?	\
-+				   0x540 : 0x500 + (_x * 0x1000); })
- #define MTK_GDMA_SPECIAL_TAG	BIT(24)
- #define MTK_GDMA_ICS_EN		BIT(22)
- #define MTK_GDMA_TCS_EN		BIT(21)
-@@ -126,6 +127,11 @@
- #define MTK_GDMA_TO_PDMA	0x0
- #define MTK_GDMA_DROP_ALL       0x7777
- 
-+/* GDM Egress Control Register */
-+#define MTK_GDMA_EG_CTRL(x)	({ typeof(x) _x = (x); (_x == MTK_GMAC3_ID) ?	\
-+				   0x544 : 0x504 + (_x * 0x1000); })
-+#define MTK_GDMA_XGDM_SEL	BIT(31)
-+
- /* Unicast Filter MAC Address Register - Low */
- #define MTK_GDMA_MAC_ADRL(x)	(0x508 + (x * 0x1000))
- 
-@@ -389,7 +395,26 @@
- #define PHY_IAC_TIMEOUT		HZ
- 
- #define MTK_MAC_MISC		0x1000c
-+#define MTK_MAC_MISC_V3		0x10010
- #define MTK_MUX_TO_ESW		BIT(0)
-+#define MISC_MDC_TURBO		BIT(4)
-+
-+/* XMAC status registers */
-+#define MTK_XGMAC_STS(x)	(((x) == MTK_GMAC3_ID) ? 0x1001C : 0x1000C)
-+#define MTK_XGMAC_FORCE_LINK(x)	(((x) == MTK_GMAC2_ID) ? BIT(31) : BIT(15))
-+#define MTK_USXGMII_PCS_LINK	BIT(8)
-+#define MTK_XGMAC_RX_FC		BIT(5)
-+#define MTK_XGMAC_TX_FC		BIT(4)
-+#define MTK_USXGMII_PCS_MODE	GENMASK(3, 1)
-+#define MTK_XGMAC_LINK_STS	BIT(0)
-+
-+/* GSW bridge registers */
-+#define MTK_GSW_CFG		(0x10080)
-+#define GSWTX_IPG_MASK		GENMASK(19, 16)
-+#define GSWTX_IPG_SHIFT		16
-+#define GSWRX_IPG_MASK		GENMASK(3, 0)
-+#define GSWRX_IPG_SHIFT		0
-+#define GSW_IPG_11		11
- 
- /* Mac control registers */
- #define MTK_MAC_MCR(x)		(0x10100 + (x * 0x100))
-@@ -647,6 +672,11 @@ enum mtk_clks_map {
- 	MTK_CLK_GP0,
- 	MTK_CLK_GP1,
- 	MTK_CLK_GP2,
-+	MTK_CLK_GP3,
-+	MTK_CLK_XGP1,
-+	MTK_CLK_XGP2,
-+	MTK_CLK_XGP3,
-+	MTK_CLK_CRYPTO,
- 	MTK_CLK_FE,
- 	MTK_CLK_TRGPLL,
- 	MTK_CLK_SGMII_TX_250M,
-@@ -663,6 +693,27 @@ enum mtk_clks_map {
- 	MTK_CLK_WOCPU1,
- 	MTK_CLK_NETSYS0,
- 	MTK_CLK_NETSYS1,
-+	MTK_CLK_ETHWARP_WOCPU2,
-+	MTK_CLK_ETHWARP_WOCPU1,
-+	MTK_CLK_ETHWARP_WOCPU0,
-+	MTK_CLK_TOP_USXGMII_SBUS_0_SEL,
-+	MTK_CLK_TOP_USXGMII_SBUS_1_SEL,
-+	MTK_CLK_TOP_SGM_0_SEL,
-+	MTK_CLK_TOP_SGM_1_SEL,
-+	MTK_CLK_TOP_XFI_PHY_0_XTAL_SEL,
-+	MTK_CLK_TOP_XFI_PHY_1_XTAL_SEL,
-+	MTK_CLK_TOP_ETH_GMII_SEL,
-+	MTK_CLK_TOP_ETH_REFCK_50M_SEL,
-+	MTK_CLK_TOP_ETH_SYS_200M_SEL,
-+	MTK_CLK_TOP_ETH_SYS_SEL,
-+	MTK_CLK_TOP_ETH_XGMII_SEL,
-+	MTK_CLK_TOP_ETH_MII_SEL,
-+	MTK_CLK_TOP_NETSYS_SEL,
-+	MTK_CLK_TOP_NETSYS_500M_SEL,
-+	MTK_CLK_TOP_NETSYS_PAO_2X_SEL,
-+	MTK_CLK_TOP_NETSYS_SYNC_250M_SEL,
-+	MTK_CLK_TOP_NETSYS_PPEFB_250M_SEL,
-+	MTK_CLK_TOP_NETSYS_WARP_SEL,
- 	MTK_CLK_MAX
- };
- 
-@@ -716,6 +767,36 @@ enum mtk_clks_map {
- 				 BIT_ULL(MTK_CLK_SGMII2_RX_250M) | \
- 				 BIT_ULL(MTK_CLK_SGMII2_CDR_REF) | \
- 				 BIT_ULL(MTK_CLK_SGMII2_CDR_FB))
-+#define MT7988_CLKS_BITMAP	(BIT_ULL(MTK_CLK_FE) | BIT_ULL(MTK_CLK_ESW) | \
-+				 BIT_ULL(MTK_CLK_GP1) | BIT_ULL(MTK_CLK_GP2) | \
-+				 BIT_ULL(MTK_CLK_GP3) | BIT_ULL(MTK_CLK_XGP1) | \
-+				 BIT_ULL(MTK_CLK_XGP2) | BIT_ULL(MTK_CLK_XGP3) | \
-+				 BIT_ULL(MTK_CLK_CRYPTO) | \
-+				 BIT_ULL(MTK_CLK_SGMII_TX_250M) | \
-+				 BIT_ULL(MTK_CLK_SGMII_RX_250M) | \
-+				 BIT_ULL(MTK_CLK_SGMII2_TX_250M) | \
-+				 BIT_ULL(MTK_CLK_SGMII2_RX_250M) | \
-+				 BIT_ULL(MTK_CLK_ETHWARP_WOCPU2) | \
-+				 BIT_ULL(MTK_CLK_ETHWARP_WOCPU1) | \
-+				 BIT_ULL(MTK_CLK_ETHWARP_WOCPU0) | \
-+				 BIT_ULL(MTK_CLK_TOP_USXGMII_SBUS_0_SEL) | \
-+				 BIT_ULL(MTK_CLK_TOP_USXGMII_SBUS_1_SEL) | \
-+				 BIT_ULL(MTK_CLK_TOP_SGM_0_SEL) | \
-+				 BIT_ULL(MTK_CLK_TOP_SGM_1_SEL) | \
-+				 BIT_ULL(MTK_CLK_TOP_XFI_PHY_0_XTAL_SEL) | \
-+				 BIT_ULL(MTK_CLK_TOP_XFI_PHY_1_XTAL_SEL) | \
-+				 BIT_ULL(MTK_CLK_TOP_ETH_GMII_SEL) | \
-+				 BIT_ULL(MTK_CLK_TOP_ETH_REFCK_50M_SEL) | \
-+				 BIT_ULL(MTK_CLK_TOP_ETH_SYS_200M_SEL) | \
-+				 BIT_ULL(MTK_CLK_TOP_ETH_SYS_SEL) | \
-+				 BIT_ULL(MTK_CLK_TOP_ETH_XGMII_SEL) | \
-+				 BIT_ULL(MTK_CLK_TOP_ETH_MII_SEL) | \
-+				 BIT_ULL(MTK_CLK_TOP_NETSYS_SEL) | \
-+				 BIT_ULL(MTK_CLK_TOP_NETSYS_500M_SEL) | \
-+				 BIT_ULL(MTK_CLK_TOP_NETSYS_PAO_2X_SEL) | \
-+				 BIT_ULL(MTK_CLK_TOP_NETSYS_SYNC_250M_SEL) | \
-+				 BIT_ULL(MTK_CLK_TOP_NETSYS_PPEFB_250M_SEL) | \
-+				 BIT_ULL(MTK_CLK_TOP_NETSYS_WARP_SEL))
- 
- enum mtk_dev_state {
- 	MTK_HW_INIT,
-@@ -975,6 +1056,8 @@ enum mkt_eth_capabilities {
- 		      MTK_MUX_GMAC12_TO_GEPHY_SGMII | MTK_QDMA | \
- 		      MTK_NETSYS_V2 | MTK_RSTCTRL_PPE1)
- 
-+#define MT7988_CAPS  (MTK_GDM1_ESW | MTK_QDMA | MTK_NETSYS_V3 | MTK_RSTCTRL_PPE1)
-+
- struct mtk_tx_dma_desc_info {
- 	dma_addr_t	addr;
- 	u32		size;
-@@ -1302,6 +1385,7 @@ void mtk_stats_update_mac(struct mtk_mac *mac);
- 
- void mtk_w32(struct mtk_eth *eth, u32 val, unsigned reg);
- u32 mtk_r32(struct mtk_eth *eth, unsigned reg);
-+u32 mtk_m32(struct mtk_eth *eth, u32 mask, u32 set, unsigned reg);
- 
- int mtk_gmac_sgmii_path_setup(struct mtk_eth *eth, int mac_id);
- int mtk_gmac_gephy_path_setup(struct mtk_eth *eth, int mac_id);
--- 
-2.41.0
+On 7/12/2023 4:34 PM, Heng Qi wrote:
+> 
+> 
+> 在 2023/7/10 下午5:20, Gavin Li 写道:
+>> Currently, coalescing parameters are grouped for all transmit and receive
+>> virtqueues. This patch series add support to set or get the parameters 
+>> for
+>> a specified virtqueue.
+>>
+>> When the traffic between virtqueues is unbalanced, for example, one 
+>> virtqueue
+>> is busy and another virtqueue is idle, then it will be very useful to
+>> control coalescing parameters at the virtqueue granularity.
+> 
+> 
+> We definitely did the same thing, and I'm waiting for our hardware 
+> implementation to be ready to
+> push the ethtool + netdim implementation.
+> 
+> Since this commit log is completely copied from the implementation of 
+> the virtio spec, consulting
+> each other's scheduling plan in advance can be friendly to avoid us 
+> doing the same thing and consuming an extra effort.
+> 
+> Thanks.
+> 
+I didn't know about the effort you made and the progress of it.
+Since the code has been done and tested, I'll continue submission.
+>>
+>> Example command:
+>> $ ethtool -Q eth5 queue_mask 0x1 --coalesce tx-packets 10
+>> Would set max_packets=10 to VQ 1.
+>> $ ethtool -Q eth5 queue_mask 0x1 --coalesce rx-packets 10
+>> Would set max_packets=10 to VQ 0.
+>> $ ethtool -Q eth5 queue_mask 0x1 --show-coalesce
+>>   Queue: 0
+>>   Adaptive RX: off  TX: off
+>>   stats-block-usecs: 0
+>>   sample-interval: 0
+>>   pkt-rate-low: 0
+>>   pkt-rate-high: 0
+>>
+>>   rx-usecs: 222
+>>   rx-frames: 0
+>>   rx-usecs-irq: 0
+>>   rx-frames-irq: 256
+>>
+>>   tx-usecs: 222
+>>   tx-frames: 0
+>>   tx-usecs-irq: 0
+>>   tx-frames-irq: 256
+>>
+>>   rx-usecs-low: 0
+>>   rx-frame-low: 0
+>>   tx-usecs-low: 0
+>>   tx-frame-low: 0
+>>
+>>   rx-usecs-high: 0
+>>   rx-frame-high: 0
+>>   tx-usecs-high: 0
+>>   tx-frame-high: 0
+>>
+>> In this patch series:
+>> Patch-1: Extract interrupt coalescing settings to a structure.
+>> Patch-2: Extract get/set interrupt coalesce to a function.
+>> Patch-3: Support per queue interrupt coalesce command.
+>> Patch-4: Enable per queue interrupt coalesce feature.
+>>
+>> Gavin Li (4):
+>>    virtio_net: extract interrupt coalescing settings to a structure
+>>    virtio_net: extract get/set interrupt coalesce to a function
+>>    virtio_net: support per queue interrupt coalesce command
+>>    virtio_net: enable per queue interrupt coalesce feature
+>>
+>>   drivers/net/virtio_net.c        | 169 ++++++++++++++++++++++++++------
+>>   include/uapi/linux/virtio_net.h |  14 +++
+>>   2 files changed, 154 insertions(+), 29 deletions(-)
+>>
+> 
