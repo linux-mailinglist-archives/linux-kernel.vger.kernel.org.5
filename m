@@ -2,81 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4187B752D35
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 00:50:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3470752D38
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 00:50:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233269AbjGMWuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 18:50:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40834 "EHLO
+        id S233516AbjGMWuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 18:50:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232564AbjGMWuC (ORCPT
+        with ESMTP id S233428AbjGMWuM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 18:50:02 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63DDF272E;
-        Thu, 13 Jul 2023 15:50:01 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E6CB261ACC;
-        Thu, 13 Jul 2023 22:50:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44269C433C8;
-        Thu, 13 Jul 2023 22:50:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689288600;
-        bh=Gh29Wb2aqyt/xe1iph8cTszJeDxWE0Roznnq+SAGWZ8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=VaRXLHYhtTyuD9XWDz27Rl2aO8zPRZskUvzqfJAF92vLzrkbA1Y5NUjSzFLaXNttT
-         Mq4/87sYRaDsoqYCB1UmD0lTJcgyIqf4hPkUNLIjRtWgnpKIUa0UlBohIVxoT/5OYe
-         LPI8SNUu5DQHvwaqvAeK9H//rn3lqEkzS3gYi6r7HMk5ldyULLR1XZ+1krSuvNdKrc
-         /Lh8hvIfm6qIJxaosEZ+BIjy/ii59ZQDKRYKds0z6X/Yk8YqaSViWfG2kbymfaijg4
-         WMEA8atAS8c9/yBHT2rmaq+hW5LZOgbfTHrrjdMreRm4OB5BelVlAvW9q8PaLKI/SR
-         JcMinMyrv3cSQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id D646ECE009E; Thu, 13 Jul 2023 15:49:59 -0700 (PDT)
-Date:   Thu, 13 Jul 2023 15:49:59 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Sandeep Dhavale <dhavale@google.com>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        Gao Xiang <hsiangkao@linux.alibaba.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-erofs@lists.ozlabs.org, xiang@kernel.org,
-        Will Shiu <Will.Shiu@mediatek.com>, kernel-team@android.com,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH v1] rcu: Fix and improve RCU read lock checks when
- !CONFIG_DEBUG_LOCK_ALLOC
-Message-ID: <32b8c9d5-37da-4508-b524-fc0fd326c432@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <f124e041-6a82-2069-975c-4f393e5c4137@linux.alibaba.com>
- <87292a44-cc02-4d95-940e-e4e31d0bc6f2@paulmck-laptop>
- <f1c60dcb-e32f-7b7e-bf0d-5dec999e9299@linux.alibaba.com>
- <CAEXW_YSODXRfgkR0D2G-x=0uZdsqvF3kZL+LL3DcRX-5CULJ1Q@mail.gmail.com>
- <894a3b64-a369-7bc6-c8a8-0910843cc587@linux.alibaba.com>
- <CAEXW_YSM1yik4yWTgZoxCS9RM6TbsL26VCVCH=41+uMA8chfAQ@mail.gmail.com>
- <58b661d0-0ebb-4b45-a10d-c5927fb791cd@paulmck-laptop>
- <CAB=BE-QSaRKvVQg28wu6zVoO9RwiHZgXJzUaEMdbtpieVLmT8A@mail.gmail.com>
- <39923da8-16a1-43a8-99f1-5e13508e4ee4@paulmck-laptop>
- <CAB=BE-QNFhOD=xe09hiZOLmDN7XQxnaxyMz1X=4EeU7SFKaRKA@mail.gmail.com>
+        Thu, 13 Jul 2023 18:50:12 -0400
+Received: from mail-oi1-f205.google.com (mail-oi1-f205.google.com [209.85.167.205])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E04CB2D63
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 15:50:09 -0700 (PDT)
+Received: by mail-oi1-f205.google.com with SMTP id 5614622812f47-3a3c76a8accso2135712b6e.0
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 15:50:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689288609; x=1691880609;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=HiG7QsHYS4bYE/ecIBoQBPgtKp+SZ4lcp7NGeemCj58=;
+        b=O5HyMG8v04AyfvLS6+QrVYtcgwspxyNDuKVGs7ooOfRXDMLzP4lya3CRJvNGiUjfzg
+         fpCzQHA47kBuWHJR9iNq2BpHd6FmQMeRzb0UmhbEi+CAm1J1V8ZiMTpleuO9iUXOSYis
+         DFbr6aUNndOo9Y5SArUxgLR68fmHG0hx8rrSS5cAazBFU7gOlZfKRyWu33cP9MMfH+gg
+         eE/103nyAaOGe9q60Ea9zg/p7fW0pjt43OEb6PfFAdcOhGa6smX5+O/hqlm9qkBgD1aZ
+         uH89DCsjU7B+Vxrb1AJ8tfFZWr6cFKyI3mitDmKqJcObq/xynMrG3vcOvntVkMa/4DrW
+         gWHw==
+X-Gm-Message-State: ABy/qLZF3oc0wTJTkVWrMdR0cAZSHv1lj244NqTGp9iqtFLo7gg8umYI
+        OtfS8Czup+l5O+3fvvrNeMHQFs6pGEanUufJxirSBlHO2N/I
+X-Google-Smtp-Source: APBJJlE0XhfdYLbBnrEKZH288NoziIdfo7puEoE2XhiCGqUo3BD5oLLpAklh578BZovdH/yokFdkGZjMXnii0ZsdxTd/LEIQgJlw
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAB=BE-QNFhOD=xe09hiZOLmDN7XQxnaxyMz1X=4EeU7SFKaRKA@mail.gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Received: by 2002:a05:6808:1308:b0:3a2:4d1d:2831 with SMTP id
+ y8-20020a056808130800b003a24d1d2831mr4083020oiv.3.1689288609163; Thu, 13 Jul
+ 2023 15:50:09 -0700 (PDT)
+Date:   Thu, 13 Jul 2023 15:50:09 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000078ee7e060066270b@google.com>
+Subject: [syzbot] [fat?] possible deadlock in lock_mm_and_find_vma
+From:   syzbot <syzbot+1741a5d9b79989c10bdc@syzkaller.appspotmail.com>
+To:     linkinjeon@kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sj1557.seo@samsung.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,69 +55,245 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 11:51:34AM -0700, Sandeep Dhavale wrote:
-> > Thank you for the background.
-> >
-> > > Paul, Joel,
-> > > Shall we fix the rcu_read_lock_*held() regardless of how erofs
-> > > improves the check?
-> >
-> > Help me out here.  Exactly what is broken with rcu_read_lock_*held(),
-> > keeping in mind their intended use for lockdep-based debugging?
-> >
-> Hi Paul,
-> With !CONFIG_DEBUG_ALLOC_LOCK
-> rcu_read_lock_held() -> Always returns 1.
-> rcu_read_lock_any_held()-> returns !preemptible() so may return 0.
-> 
-> Now current usages for rcu_read_lock_*held() are under RCU_LOCKDEP_WARN()
-> which becomes noOP with !CONFIG_DEBUG_ALLOC_LOCK
-> (due to debug_lockdep_rcu_enabled()) so this inconsistency is not causing
-> any problems right now. So my question was about your opinion for fixing this
-> for semantics if it's worth correcting.
-> 
-> Also it would have been better IMO if there was a reliable API
-> for rcu_read_lock_*held() than erofs trying to figure it out at a higher level.
+Hello,
 
-Sorry, but the current lockdep-support functions need to stay focused
-on lockdep.  They are not set up for general use, as we already saw
-with rcu_is_watching().
+syzbot found the following issue on:
 
-If you get a z_erofs_wq_needed() (or whatever) upstream, and if it turns
-out that there is an RCU-specific portion that has clean semantics,
-then I would be willing to look at pulling that portion into RCU.
-Note "look at" as opposed to "unconditionally agree to".  ;-)
+HEAD commit:    123212f53f3e Add linux-next specific files for 20230707
+git tree:       linux-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=1280756ca80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=15ec80b62f588543
+dashboard link: https://syzkaller.appspot.com/bug?extid=1741a5d9b79989c10bdc
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11571cbca80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=171b7dc2a80000
 
-> > I have no official opinion myself, but there are quite a few people
-> ...
-> 
-> Regarding erofs trying to detect this, I understand few people can
-> have different
-> opinions. Not scheduling a thread while being in a thread context itself
-> is reasonable in my opinion which also has shown performance gains.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/098f7ee2237c/disk-123212f5.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/88defebbfc49/vmlinux-123212f5.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/d5e9343ec16a/bzImage-123212f5.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/4d36f82ce652/mount_0.gz
 
-You still haven't quantified the performance gains.  Presumably they
-are most compelling with large numbers of small buffers to be decrypted.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+1741a5d9b79989c10bdc@syzkaller.appspotmail.com
 
-But why not just make a z_erofs_wq_needed() or similar in your own
-code, and push it upstream?  If the performance gains really are so
-compelling, one would hope that some sort of reasonable arrangement
-could be arrived at.
+======================================================
+WARNING: possible circular locking dependency detected
+6.4.0-next-20230707-syzkaller #0 Not tainted
+------------------------------------------------------
+syz-executor330/5073 is trying to acquire lock:
+ffff8880218527a0 (&mm->mmap_lock){++++}-{3:3}, at: mmap_read_lock_killable include/linux/mmap_lock.h:151 [inline]
+ffff8880218527a0 (&mm->mmap_lock){++++}-{3:3}, at: get_mmap_lock_carefully mm/memory.c:5293 [inline]
+ffff8880218527a0 (&mm->mmap_lock){++++}-{3:3}, at: lock_mm_and_find_vma+0x369/0x510 mm/memory.c:5344
 
-							Thanx, Paul
+but task is already holding lock:
+ffff888019f760e0 (&sbi->s_lock){+.+.}-{3:3}, at: exfat_iterate+0x117/0xb50 fs/exfat/dir.c:232
 
-> Thanks,
-> Sandeep.
-> 
-> 
-> 
-> >                                                         Thanx, Paul
-> >
-> > > Thanks,
-> > > Sandeep.
-> > >
-> > > [1] https://lore.kernel.org/linux-erofs/20230208093322.75816-1-hsiangkao@linux.alibaba.com/
-> >
-> > --
-> > To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
-> >
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #2 (&sbi->s_lock){+.+.}-{3:3}:
+       __mutex_lock_common kernel/locking/mutex.c:603 [inline]
+       __mutex_lock+0x12f/0x1350 kernel/locking/mutex.c:747
+       exfat_get_block+0x18d/0x16e0 fs/exfat/inode.c:280
+       do_mpage_readpage+0x768/0x1960 fs/mpage.c:234
+       mpage_readahead+0x344/0x580 fs/mpage.c:382
+       read_pages+0x1a2/0xd40 mm/readahead.c:160
+       page_cache_ra_unbounded+0x477/0x5e0 mm/readahead.c:269
+       do_page_cache_ra mm/readahead.c:299 [inline]
+       page_cache_ra_order+0x6ec/0xa00 mm/readahead.c:559
+       ondemand_readahead+0x6b3/0x1080 mm/readahead.c:681
+       page_cache_sync_ra+0x1c0/0x1f0 mm/readahead.c:708
+       page_cache_sync_readahead include/linux/pagemap.h:1230 [inline]
+       filemap_get_pages+0x28d/0x1660 mm/filemap.c:2564
+       filemap_read+0x365/0xc40 mm/filemap.c:2660
+       generic_file_read_iter+0x34c/0x450 mm/filemap.c:2839
+       __kernel_read+0x2ca/0x870 fs/read_write.c:428
+       integrity_kernel_read+0x7f/0xb0 security/integrity/iint.c:195
+       ima_calc_file_hash_tfm+0x2b9/0x3c0 security/integrity/ima/ima_crypto.c:485
+       ima_calc_file_shash security/integrity/ima/ima_crypto.c:516 [inline]
+       ima_calc_file_hash+0x198/0x4b0 security/integrity/ima/ima_crypto.c:573
+       ima_collect_measurement+0x5a8/0x6b0 security/integrity/ima/ima_api.c:289
+       process_measurement+0xd32/0x1940 security/integrity/ima/ima_main.c:345
+       ima_file_check+0xba/0x100 security/integrity/ima/ima_main.c:543
+       do_open fs/namei.c:3638 [inline]
+       path_openat+0x1588/0x2710 fs/namei.c:3793
+       do_filp_open+0x1ba/0x410 fs/namei.c:3820
+       do_sys_openat2+0x160/0x1c0 fs/open.c:1407
+       do_sys_open fs/open.c:1422 [inline]
+       __do_sys_openat fs/open.c:1438 [inline]
+       __se_sys_openat fs/open.c:1433 [inline]
+       __x64_sys_openat+0x143/0x1f0 fs/open.c:1433
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+-> #1 (mapping.invalidate_lock#3){.+.+}-{3:3}:
+       down_read+0x9c/0x480 kernel/locking/rwsem.c:1520
+       filemap_invalidate_lock_shared include/linux/fs.h:826 [inline]
+       filemap_fault+0xba8/0x2490 mm/filemap.c:3291
+       __do_fault+0x107/0x600 mm/memory.c:4208
+       do_read_fault mm/memory.c:4557 [inline]
+       do_fault mm/memory.c:4680 [inline]
+       do_pte_missing mm/memory.c:3673 [inline]
+       handle_pte_fault mm/memory.c:4949 [inline]
+       __handle_mm_fault+0x2ac5/0x3dd0 mm/memory.c:5089
+       handle_mm_fault+0x2a1/0x9e0 mm/memory.c:5254
+       faultin_page mm/gup.c:952 [inline]
+       __get_user_pages+0x4d3/0x10e0 mm/gup.c:1235
+       __get_user_pages_locked mm/gup.c:1500 [inline]
+       __gup_longterm_locked+0x6f9/0x23e0 mm/gup.c:2194
+       pin_user_pages_remote+0xee/0x140 mm/gup.c:3335
+       process_vm_rw_single_vec mm/process_vm_access.c:105 [inline]
+       process_vm_rw_core.constprop.0+0x437/0x980 mm/process_vm_access.c:215
+       process_vm_rw+0x29c/0x300 mm/process_vm_access.c:283
+       __do_sys_process_vm_readv mm/process_vm_access.c:295 [inline]
+       __se_sys_process_vm_readv mm/process_vm_access.c:291 [inline]
+       __x64_sys_process_vm_readv+0xe3/0x1b0 mm/process_vm_access.c:291
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+-> #0 (&mm->mmap_lock){++++}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:3142 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3261 [inline]
+       validate_chain kernel/locking/lockdep.c:3876 [inline]
+       __lock_acquire+0x2e9d/0x5e20 kernel/locking/lockdep.c:5144
+       lock_acquire kernel/locking/lockdep.c:5761 [inline]
+       lock_acquire+0x1b1/0x520 kernel/locking/lockdep.c:5726
+       down_read_killable+0x9f/0x4f0 kernel/locking/rwsem.c:1543
+       mmap_read_lock_killable include/linux/mmap_lock.h:151 [inline]
+       get_mmap_lock_carefully mm/memory.c:5293 [inline]
+       lock_mm_and_find_vma+0x369/0x510 mm/memory.c:5344
+       do_user_addr_fault+0x2c6/0x10a0 arch/x86/mm/fault.c:1387
+       handle_page_fault arch/x86/mm/fault.c:1509 [inline]
+       exc_page_fault+0x98/0x170 arch/x86/mm/fault.c:1565
+       asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:570
+       filldir64+0x291/0x5d0 fs/readdir.c:335
+       dir_emit_dot include/linux/fs.h:3198 [inline]
+       dir_emit_dots include/linux/fs.h:3209 [inline]
+       exfat_iterate+0x577/0xb50 fs/exfat/dir.c:235
+       iterate_dir+0x20c/0x750 fs/readdir.c:67
+       __do_sys_getdents64 fs/readdir.c:369 [inline]
+       __se_sys_getdents64 fs/readdir.c:354 [inline]
+       __x64_sys_getdents64+0x13e/0x2c0 fs/readdir.c:354
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+other info that might help us debug this:
+
+Chain exists of:
+  &mm->mmap_lock --> mapping.invalidate_lock#3 --> &sbi->s_lock
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&sbi->s_lock);
+                               lock(mapping.invalidate_lock#3);
+                               lock(&sbi->s_lock);
+  rlock(&mm->mmap_lock);
+
+ *** DEADLOCK ***
+
+3 locks held by syz-executor330/5073:
+ #0: ffff88807a9d6ac8 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xd7/0xf0 fs/file.c:1047
+ #1: ffff888075236f90 (&sb->s_type->i_mutex_key#15){++++}-{3:3}, at: iterate_dir+0x545/0x750 fs/readdir.c:57
+ #2: ffff888019f760e0 (&sbi->s_lock){+.+.}-{3:3}, at: exfat_iterate+0x117/0xb50 fs/exfat/dir.c:232
+
+stack backtrace:
+CPU: 1 PID: 5073 Comm: syz-executor330 Not tainted 6.4.0-next-20230707-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/03/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x150 lib/dump_stack.c:106
+ check_noncircular+0x2df/0x3b0 kernel/locking/lockdep.c:2195
+ check_prev_add kernel/locking/lockdep.c:3142 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3261 [inline]
+ validate_chain kernel/locking/lockdep.c:3876 [inline]
+ __lock_acquire+0x2e9d/0x5e20 kernel/locking/lockdep.c:5144
+ lock_acquire kernel/locking/lockdep.c:5761 [inline]
+ lock_acquire+0x1b1/0x520 kernel/locking/lockdep.c:5726
+ down_read_killable+0x9f/0x4f0 kernel/locking/rwsem.c:1543
+ mmap_read_lock_killable include/linux/mmap_lock.h:151 [inline]
+ get_mmap_lock_carefully mm/memory.c:5293 [inline]
+ lock_mm_and_find_vma+0x369/0x510 mm/memory.c:5344
+ do_user_addr_fault+0x2c6/0x10a0 arch/x86/mm/fault.c:1387
+ handle_page_fault arch/x86/mm/fault.c:1509 [inline]
+ exc_page_fault+0x98/0x170 arch/x86/mm/fault.c:1565
+ asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:570
+RIP: 0010:filldir64+0x291/0x5d0 fs/readdir.c:335
+Code: 02 41 83 e7 01 44 89 fe e8 6c 61 99 ff 45 84 ff 0f 84 9a fe ff ff e9 40 ff ff ff e8 f9 64 99 ff 0f 01 cb 0f ae e8 48 8b 04 24 <49> 89 47 08 e8 e6 64 99 ff 4c 8b 7c 24 28 48 8b 7c 24 10 49 89 3f
+RSP: 0018:ffffc90003b0fbf8 EFLAGS: 00050293
+RAX: 0000000000000000 RBX: ffffc90003b0fe98 RCX: 0000000000000000
+RDX: ffff888021549dc0 RSI: ffffffff81eb8397 RDI: 0000000000000006
+RBP: 0000000000000018 R08: 0000000000000006 R09: 0000000000000000
+R10: 0000000000000018 R11: 0000000000000001 R12: 0000000000000001
+R13: 0000000000000018 R14: ffffffff8a865cc0 R15: 0000000000000000
+ dir_emit_dot include/linux/fs.h:3198 [inline]
+ dir_emit_dots include/linux/fs.h:3209 [inline]
+ exfat_iterate+0x577/0xb50 fs/exfat/dir.c:235
+ iterate_dir+0x20c/0x750 fs/readdir.c:67
+ __do_sys_getdents64 fs/readdir.c:369 [inline]
+ __se_sys_getdents64 fs/readdir.c:354 [inline]
+ __x64_sys_getdents64+0x13e/0x2c0 fs/readdir.c:354
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7ff0c3b4cab9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 71 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ff0bb6f7208 EFLAGS: 00000246 ORIG_RAX: 00000000000000d9
+RAX: ffffffffffffffda RBX: 00007ff0c3bd27b8 RCX: 00007ff0c3b4cab9
+RDX: 0000000000008008 RSI: 0000000000000000 RDI: 0000000000000006
+RBP: 00007ff0c3bd27b0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007ff0c3bd27bc
+R13: 00007ffe85f2080f R14: 00007ff0bb6f7300 R15: 0000000000022000
+ </TASK>
+----------------
+Code disassembly (best guess):
+   0:	02 41 83             	add    -0x7d(%rcx),%al
+   3:	e7 01                	out    %eax,$0x1
+   5:	44 89 fe             	mov    %r15d,%esi
+   8:	e8 6c 61 99 ff       	callq  0xff996179
+   d:	45 84 ff             	test   %r15b,%r15b
+  10:	0f 84 9a fe ff ff    	je     0xfffffeb0
+  16:	e9 40 ff ff ff       	jmpq   0xffffff5b
+  1b:	e8 f9 64 99 ff       	callq  0xff996519
+  20:	0f 01 cb             	stac
+  23:	0f ae e8             	lfence
+  26:	48 8b 04 24          	mov    (%rsp),%rax
+* 2a:	49 89 47 08          	mov    %rax,0x8(%r15) <-- trapping instruction
+  2e:	e8 e6 64 99 ff       	callq  0xff996519
+  33:	4c 8b 7c 24 28       	mov    0x28(%rsp),%r15
+  38:	48 8b 7c 24 10       	mov    0x10(%rsp),%rdi
+  3d:	49 89 3f             	mov    %rdi,(%r15)
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
