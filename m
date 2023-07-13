@@ -2,100 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6BD575271E
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 17:32:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36970752728
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 17:32:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234867AbjGMPcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 11:32:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33584 "EHLO
+        id S233441AbjGMPcu convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 13 Jul 2023 11:32:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235091AbjGMPbt (ORCPT
+        with ESMTP id S232834AbjGMPcf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 11:31:49 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A4E030E7;
-        Thu, 13 Jul 2023 08:31:19 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 930E761A2A;
-        Thu, 13 Jul 2023 15:31:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23AEFC433C9;
-        Thu, 13 Jul 2023 15:31:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689262266;
-        bh=+bl7pGAIjOwAWrnLWJZrbTUju1m6vSqMi+vbA9qDarc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HdkGpCT4OKVPWpXMzoWAdJXWeDmQQTIlz5UuWbQdX+FvsVaIiM0RIaHNjXyYw4Dpq
-         0E+TrM+ZTNpDNJwspFrtMpNOhFrdpOsPWUDaBfc3ky4V48UpYQ+tRCAUzyqBCzSQrx
-         +Qr+/D+SHrVrK/rap00ix0c99qWp3/nuBANKs42UsY9eosobXOCNW6lytER9gvJuWD
-         QLfPBtH8KTKz/u5FNixfjCu+d5lKQ6JLNPtXt7Gc3hRzU97eK9WMdkaeCb791Xhzos
-         vbeyoTTpbX7ZOi8+yvSPBb2NXH8uKDWEYN5F6MnSlarQWxtFPwzB5a5byrsMhsYJAO
-         5ziK9vk1ax0dA==
-Date:   Thu, 13 Jul 2023 16:30:59 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Ryan Roberts <ryan.roberts@arm.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Florent Revest <revest@chromium.org>,
-        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v1 9/9] selftests/mm: Run all tests from run_vmtests.sh
-Message-ID: <97742685-e026-417b-8c8f-938330027636@sirena.org.uk>
-References: <20230713135440.3651409-1-ryan.roberts@arm.com>
- <20230713135440.3651409-10-ryan.roberts@arm.com>
- <d77c6592-09f4-036d-ad00-a7a28de1da3f@redhat.com>
- <2b586ba2-7522-a823-afd6-7b4d978f18c2@arm.com>
+        Thu, 13 Jul 2023 11:32:35 -0400
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2765930F5;
+        Thu, 13 Jul 2023 08:32:15 -0700 (PDT)
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2b6e2eb71c2so3053281fa.0;
+        Thu, 13 Jul 2023 08:32:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689262287; x=1691854287;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rEgyv0cci576WGyNwcqpYH0DIUtSj32VEpSp0sob1x0=;
+        b=SdduFklWkFLg9fzqbUSR9ERoebu0nLYW26A17cPHbWeHFKPNgvRY4CLKya8fcjWhjj
+         wix6QGyuIDBPS3aRqbVZufJbi2oqvSJQeHCvvuhPW2LERLgyndCanVJGqQ0skHtVXse3
+         cOxALwVrgIVZS1e1owsOvzccxNqlKlZiNLkq785OvLAuwBRyIuE+pOh3HKhg4fw/P+1E
+         mMWHVbp4mkvPzy7gigmt7vj/OEnAj3+GTwyTFAuohkX2NFYrtN7GvaV9Gtp6IQVcDcUA
+         gQwl4xvoB7UYU7mYTlqEitCoInfHe8qHwKdH1O2dfNu/2afsUMsps/u5RHSgvkkZvWfL
+         eGsg==
+X-Gm-Message-State: ABy/qLZqjEkS4uxXcfC4RT+C95MDu8bmO/2J7a6eqHHC7MlU0o7vPZ0c
+        rsM8lfcc/vfcEk+x2xttlNOCisnSgNWTYVLejRg=
+X-Google-Smtp-Source: APBJJlEGN3mNfwXC0sE4w/L4+BmaoxzzZtLJMqiLhNNMHvhfRQ4zywUSnqrxaZLo/LCt7DSNgjrLuJowHeXKPazohes=
+X-Received: by 2002:a2e:be10:0:b0:2b7:2ca0:989a with SMTP id
+ z16-20020a2ebe10000000b002b72ca0989amr1823257ljq.5.1689262287093; Thu, 13 Jul
+ 2023 08:31:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="onJhUM6E6puuqySH"
-Content-Disposition: inline
-In-Reply-To: <2b586ba2-7522-a823-afd6-7b4d978f18c2@arm.com>
-X-Cookie: MOUNT TAPE U1439 ON B3, NO RING
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230712172459.20275-1-mario.limonciello@amd.com>
+In-Reply-To: <20230712172459.20275-1-mario.limonciello@amd.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 13 Jul 2023 17:31:16 +0200
+Message-ID: <CAJZ5v0jDpMNsWztgPDfLG3eGw3YOxK_ygWRLgHmbZUoMh97tbw@mail.gmail.com>
+Subject: Re: [PATCH] ACPI: thermal: Drop nocrt parameter
+To:     Mario Limonciello <mario.limonciello@amd.com>
+Cc:     rafael@kernel.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jul 12, 2023 at 7:25 PM Mario Limonciello
+<mario.limonciello@amd.com> wrote:
+>
+> The `nocrt` module parameter has no code associated with it and does
+> nothing.  As `crt=-1` has same functionality as what nocrt should be
+> doing drop `nocrt` and associated documentation.
+>
+> This should fix a quirk for Gigabyte GA-7ZX that used `nocrt` and
+> thus didn't function properly.
+>
+> Fixes: 8c99fdce3078 ("ACPI: thermal: set "thermal.nocrt" via DMI on Gigabyte GA-7ZX")
+> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
 
---onJhUM6E6puuqySH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Stable material I suppose?
 
-On Thu, Jul 13, 2023 at 04:04:44PM +0100, Ryan Roberts wrote:
-
-> So with this change at the kselftest level, there is a single test in its list;
-> run_vmtests.sh. And all the other tests that were previously in that list are
-> moved into run_vmtests.sh (if they weren't there already).
-
-The results parsers I'm aware of like the LAVA one will DTRT with nested
-kselftests since that's required to pull see individual test cases run
-by a single binary so it's the common case to see at least one level of
-nesting.
-
---onJhUM6E6puuqySH
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmSwGLMACgkQJNaLcl1U
-h9BznQf/R74hHYm7LdjI06OmEd0RI0mxw6+/XWm6KKDxZ28fK3TAx/HdCd5QL+i/
-53Cdoyeoc4fCAPKY9in1xVo492p8qYdCetruuUUjHm5FVQFFH29Jb25Crjk0NxqT
-8iFlNAv42sg0wvOVKfdHShqFu8LakabasfEulvz4Mp4WQdCTOiuq34MidDS1TZxE
-GXO/Q+6BGTDr0BAK0gyhZWY+ENIyGrmdwYh4G630kEbYxV8tO9CNzrUpjH4XXO+4
-inh3KdiiJuXJTHLV7iwVkVeVRsvuc0LDXr8IwlPzTkk5twaFtTjMs1W0Zs38jtib
-2BY8jadzeUk/WzvXnnCzbAjmL2g+Dg==
-=JjuZ
------END PGP SIGNATURE-----
-
---onJhUM6E6puuqySH--
+> ---
+>  Documentation/admin-guide/kernel-parameters.txt | 4 ----
+>  drivers/acpi/thermal.c                          | 6 +-----
+>  2 files changed, 1 insertion(+), 9 deletions(-)
+>
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index a1457995fd41c..2de235d52faca 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -6243,10 +6243,6 @@
+>                         -1: disable all critical trip points in all thermal zones
+>                         <degrees C>: override all critical trip points
+>
+> -       thermal.nocrt=  [HW,ACPI]
+> -                       Set to disable actions on ACPI thermal zone
+> -                       critical and hot trip points.
+> -
+>         thermal.off=    [HW,ACPI]
+>                         1: disable ACPI thermal control
+>
+> diff --git a/drivers/acpi/thermal.c b/drivers/acpi/thermal.c
+> index f9f6ebb08fdb7..3163a40f02e30 100644
+> --- a/drivers/acpi/thermal.c
+> +++ b/drivers/acpi/thermal.c
+> @@ -82,10 +82,6 @@ static int tzp;
+>  module_param(tzp, int, 0444);
+>  MODULE_PARM_DESC(tzp, "Thermal zone polling frequency, in 1/10 seconds.");
+>
+> -static int nocrt;
+> -module_param(nocrt, int, 0);
+> -MODULE_PARM_DESC(nocrt, "Set to take no action upon ACPI thermal zone critical trips points.");
+> -
+>  static int off;
+>  module_param(off, int, 0);
+>  MODULE_PARM_DESC(off, "Set to disable ACPI thermal support.");
+> @@ -1094,7 +1090,7 @@ static int thermal_act(const struct dmi_system_id *d) {
+>  static int thermal_nocrt(const struct dmi_system_id *d) {
+>         pr_notice("%s detected: disabling all critical thermal trip point actions.\n",
+>                   d->ident);
+> -       nocrt = 1;
+> +       crt = -1;
+>         return 0;
+>  }
+>  static int thermal_tzp(const struct dmi_system_id *d) {
+> --
