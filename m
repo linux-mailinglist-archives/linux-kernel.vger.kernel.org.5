@@ -2,72 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41DDE752BA5
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 22:28:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA2C3752BAC
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 22:30:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232408AbjGMU20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 16:28:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55476 "EHLO
+        id S233978AbjGMUaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 16:30:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232575AbjGMU2Y (ORCPT
+        with ESMTP id S230456AbjGMUax (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 16:28:24 -0400
-Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5685B2121;
-        Thu, 13 Jul 2023 13:28:23 -0700 (PDT)
-Received: by mail-oo1-xc2b.google.com with SMTP id 006d021491bc7-565f3881cbeso876318eaf.2;
-        Thu, 13 Jul 2023 13:28:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689280102; x=1691872102;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Np41xAxvHrQ2l3HEYE/iCG+BGK60W/bW25GsC4Ze4Ls=;
-        b=MSOZe0a0TCNiUE1J9GHg7gzTxqtD93rIaEv8yH9dG0O3biRqgiRg7eVEoowZABHHq9
-         WPOrK4heUc/FQ1PFbE447EoQylZgTAeAhOcMfLTg6I6p+p63MKGMJp03SLN6YkoiXii2
-         eCSk1DD/kGt2YtnlpJyAz4rh2h59TrUMK4qdnnZMN1+7MpJCZcBxg6j7ai6VKjcbO5zH
-         T3TAb7A2NBZfgknFehq4bMxPTZJlvOJVP1v6w3Sy+MwgLbeo2X3IQ9H1b0ufb18ECM6H
-         praDapkx1KgxVKfbcukQLCGoRCqQ96Yt43GuxUxPu/5J3VviEp0bgly3ObOI06UyuMj4
-         4UHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689280102; x=1691872102;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Np41xAxvHrQ2l3HEYE/iCG+BGK60W/bW25GsC4Ze4Ls=;
-        b=OXeu2Bokglp3XRiEGKHL+rsjhk1lwXELfo8nsCp5BiYgw09pvte1Pj9fnSaZGXPYvj
-         hsYP2XJ1sUH8QeOv1i/OIm56xIu7AAOA//PGXy1DWKRbQfSZ4izcKmBZUpgsF845/wDy
-         lAPiGMiPL+EhIC153LZFywrhKSzP1NsGC/WdO+PsibUYJ5IELDF4dcD2dBQRa2DsbdKw
-         zvsiOMkFoOV0p2o034A6BM3VgAEW3oAtuQuqAsGfSIFZrk6Vip41Y63VqEbPeTWVjDOp
-         QptueWZYrYKARGywvhwtU4Eo02eM01HjRW21oEhvAO8mz1Ozlro1KC9ZC7jc7rrC8DVd
-         Ghzg==
-X-Gm-Message-State: ABy/qLYWOnDOJvZs30cv5q611G/rpra9aG4xjeRvDZBChho1vhLPuXmq
-        0tUxISeldcTa5lbqyNIt3Ca7YlnLyJwEmLZOS5o=
-X-Google-Smtp-Source: APBJJlFkLJCu3on9g7cCOHvlsrVrWrUeXDOEar9Stl41UAiT2mkrQHSVSwVSH3Ime/iZEma7m4BFCC/oQF/XUe3AW/g=
-X-Received: by 2002:a4a:2450:0:b0:560:ac0f:b87c with SMTP id
- v16-20020a4a2450000000b00560ac0fb87cmr2361812oov.8.1689280102445; Thu, 13 Jul
- 2023 13:28:22 -0700 (PDT)
+        Thu, 13 Jul 2023 16:30:53 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 899A92120;
+        Thu, 13 Jul 2023 13:30:52 -0700 (PDT)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36DJsYpk020458;
+        Thu, 13 Jul 2023 20:30:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : from : to : cc : references : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=vs8LTN8zAxmwQ45mO8Cvh/7DVenMQkWIcHjbBWki//w=;
+ b=U4qmgeJ6zKaSFk+MiBo4TJ6HKrOz2Xaz+CcN/+xW69xM0I+H+7Aw15sJRE8DUQfuYRK8
+ XBjJ/g0YUGpGzzcNVxMNImMNZrTY5Tl8yXAguO4RleYQynDfemoZ26PiRekPMvSDW6qa
+ 1U2okeuSweg19uXSytPCnZZRuZjCBZlV7LHyMTW0DnXtcrAvMsgKAUbDezQftR5v+9K+
+ dXHjMiDqfd5d1UxX+wxNGCWtxX3WW8BDuKRcnXrHrw8l1xBUMA210qlAKo60qsvanpiW
+ 2KAmYGTwwtAkjjAAgw+LuyYcAqQ1pdSYYqOsoguFR+pAEYXJkaN8FGkrBJCQ+kuAPsl7 +w== 
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rtptu864u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 13 Jul 2023 20:30:31 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36DKUUkl029931
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 13 Jul 2023 20:30:30 GMT
+Received: from [10.110.48.195] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 13 Jul
+ 2023 13:28:35 -0700
+Message-ID: <04605642-cad8-1701-ff41-63f2f00ba5f6@quicinc.com>
+Date:   Thu, 13 Jul 2023 13:28:34 -0700
 MIME-Version: 1.0
-References: <20230712222523.7404-1-robdclark@gmail.com> <a7aa6e21-6f79-0029-5034-db368239980a@linaro.org>
-In-Reply-To: <a7aa6e21-6f79-0029-5034-db368239980a@linaro.org>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Thu, 13 Jul 2023 13:28:11 -0700
-Message-ID: <CAF6AEGuua3BMY1S4OXxO66eoXchTCOcuFX3t163=d7f7YS2ygw@mail.gmail.com>
-Subject: Re: [PATCH] drm/msm: Fix hw_fence error path cleanup
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org,
-        Rob Clark <robdclark@chromium.org>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [PATCH v13 10/24] gunyah: vm_mgr: Add/remove user memory regions
+Content-Language: en-US
+From:   Elliot Berman <quic_eberman@quicinc.com>
+To:     Will Deacon <will@kernel.org>
+CC:     Alex Elder <elder@linaro.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Prakruthi Deepak Heragu <quic_pheragu@quicinc.com>,
+        Murali Nalajala <quic_mnalajal@quicinc.com>,
+        Trilok Soni <quic_tsoni@quicinc.com>,
+        Srivatsa Vaddagiri <quic_svaddagi@quicinc.com>,
+        Carl van Schaik <quic_cvanscha@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "Arnd Bergmann" <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Bagas Sanjaya" <bagasdotme@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        "Catalin Marinas" <catalin.marinas@arm.com>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <qperret@google.com>
+References: <20230509204801.2824351-1-quic_eberman@quicinc.com>
+ <20230509204801.2824351-11-quic_eberman@quicinc.com>
+ <20230519115948.GB2637@willie-the-truck>
+ <e22c31bd-10ed-f242-3e72-debf40e01e3c@quicinc.com>
+ <20230605141839.GD21212@willie-the-truck>
+ <3bd86221-ee2e-d157-009b-11f6ada98537@quicinc.com>
+ <eae302ab-b508-cdc6-847f-dff6a6b82798@quicinc.com>
+In-Reply-To: <eae302ab-b508-cdc6-847f-dff6a6b82798@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 3oym6Wpenj-Rn6j76kn-kvjFzKHYvRg7
+X-Proofpoint-ORIG-GUID: 3oym6Wpenj-Rn6j76kn-kvjFzKHYvRg7
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-13_08,2023-07-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 phishscore=0 lowpriorityscore=0 clxscore=1015 mlxscore=0
+ suspectscore=0 adultscore=0 mlxlogscore=812 spamscore=0 impostorscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307130181
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -76,90 +105,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 1:03=E2=80=AFPM Dmitry Baryshkov
-<dmitry.baryshkov@linaro.org> wrote:
->
-> On 13/07/2023 01:25, Rob Clark wrote:
-> > From: Rob Clark <robdclark@chromium.org>
-> >
-> > In an error path where the submit is free'd without the job being run,
-> > the hw_fence pointer is simply a kzalloc'd block of memory.  In this
-> > case we should just kfree() it, rather than trying to decrement it's
-> > reference count.  Fortunately we can tell that this is the case by
-> > checking for a zero refcount, since if the job was run, the submit woul=
-d
-> > be holding a reference to the hw_fence.
-> >
-> > Fixes: f94e6a51e17c ("drm/msm: Pre-allocate hw_fence")
-> > Signed-off-by: Rob Clark <robdclark@chromium.org>
-> > ---
-> >   drivers/gpu/drm/msm/msm_fence.c      |  6 ++++++
-> >   drivers/gpu/drm/msm/msm_gem_submit.c | 14 +++++++++++++-
-> >   2 files changed, 19 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/gpu/drm/msm/msm_fence.c b/drivers/gpu/drm/msm/msm_=
-fence.c
-> > index 96599ec3eb78..1a5d4f1c8b42 100644
-> > --- a/drivers/gpu/drm/msm/msm_fence.c
-> > +++ b/drivers/gpu/drm/msm/msm_fence.c
-> > @@ -191,6 +191,12 @@ msm_fence_init(struct dma_fence *fence, struct msm=
-_fence_context *fctx)
-> >
-> >       f->fctx =3D fctx;
-> >
-> > +     /*
-> > +      * Until this point, the fence was just some pre-allocated memory=
-,
-> > +      * no-one should have taken a reference to it yet.
-> > +      */
-> > +     WARN_ON(kref_read(&fence->refcount));
->
-> It this really correct to return a refcounted object with 0 refcount
-> (I'm looking at submit_create() / msm_fence_alloc() )? Maybe it would be
-> better to move dma_fence_get() to msm_fence_alloc() ? But don't
-> immediately see, which one should be moved.
+Hi Will,
 
-The issue is that we can't really initialize the fence until
-msm_job_run(), when it is known what order the fence would be
-signaled.  But we don't want to do any allocations in msm_job_run()
-because that could trigger the shrinker, which could need to wait
-until jobs complete to release memory, forming a deadlock.
+On 6/22/2023 4:56 PM, Elliot Berman wrote:
+> 
+> 
+> On 6/7/2023 8:54 AM, Elliot Berman wrote:
+>>
+>>
+>> On 6/5/2023 7:18 AM, Will Deacon wrote:
+>>> Hi Elliot,
+>>>
+>>> [+Quentin since he's looked at the MMU notifiers]
+>>>
+>>> Sorry for the slow response, I got buried in email during a week away.
+>>>
+>>> On Fri, May 19, 2023 at 10:02:29AM -0700, Elliot Berman wrote:
+>>>> On 5/19/2023 4:59 AM, Will Deacon wrote:
+>>>>> On Tue, May 09, 2023 at 01:47:47PM -0700, Elliot Berman wrote:
+>>>>>> +    ret = account_locked_vm(ghvm->mm, mapping->npages, true);
+>>>>>> +    if (ret)
+>>>>>> +        goto free_mapping;
+>>>>>> +
+>>>>>> +    mapping->pages = kcalloc(mapping->npages, 
+>>>>>> sizeof(*mapping->pages), GFP_KERNEL_ACCOUNT);
+>>>>>> +    if (!mapping->pages) {
+>>>>>> +        ret = -ENOMEM;
+>>>>>> +        mapping->npages = 0; /* update npages for reclaim */
+>>>>>> +        goto unlock_pages;
+>>>>>> +    }
+>>>>>> +
+>>>>>> +    gup_flags = FOLL_LONGTERM;
+>>>>>> +    if (region->flags & GH_MEM_ALLOW_WRITE)
+>>>>>> +        gup_flags |= FOLL_WRITE;
+>>>>>> +
+>>>>>> +    pinned = pin_user_pages_fast(region->userspace_addr, 
+>>>>>> mapping->npages,
+>>>>>> +                    gup_flags, mapping->pages);
+>>>>>> +    if (pinned < 0) {
+>>>>>> +        ret = pinned;
+>>>>>> +        goto free_pages;
+>>>>>> +    } else if (pinned != mapping->npages) {
+>>>>>> +        ret = -EFAULT;
+>>>>>> +        mapping->npages = pinned; /* update npages for reclaim */
+>>>>>> +        goto unpin_pages;
+>>>>>> +    }
+>>>>>
+>>>>> Sorry if I missed it, but I still don't see where you reject file 
+>>>>> mappings
+>>>>> here.
+>>>>>
+>>>>
+>>>> Sure, I can reject file mappings. I didn't catch that was the ask 
+>>>> previously
+>>>> and thought it was only a comment about behavior of file mappings.
+>>>
+>>> I thought the mention of filesystem corruption was clear enough! It's
+>>> definitely something we shouldn't allow.
+>>>
+>>>>> This is also the wrong interface for upstream. Please get involved 
+>>>>> with
+>>>>> the fd-based guest memory discussions [1] and port your series to 
+>>>>> that.
+>>>>>
+>>>>
+>>>> The user interface design for *shared* memory aligns with
+>>>> KVM_SET_USER_MEMORY_REGION.
+>>>
+>>> I don't think it does. For example, file mappings don't work (as above),
+>>> you're placing additional rlimit requirements on the caller, read-only
+>>> memslots are not functional, the memory cannot be swapped or migrated,
+>>> dirty logging doesn't work etc. pKVM is in the same boat, but that's why
+>>> we're not upstreaming this part in its current form.
+>>>
+>>
+>> I thought pKVM was only holding off on upstreaming changes related to 
+>> guest-private memory?
+>>
+>>>> I understood we want to use restricted memfd for giving 
+>>>> guest-private memory
+>>>> (Gunyah calls this "lending memory"). When I went through the 
+>>>> changes, I
+>>>> gathered KVM is using restricted memfd only for guest-private memory 
+>>>> and not
+>>>> for shared memory. Thus, I dropped support for lending memory to the 
+>>>> guest
+>>>> VM and only retained the shared memory support in this series. I'd 
+>>>> like to
+>>>> merge what we can today and introduce the guest-private memory 
+>>>> support in
+>>>> tandem with the restricted memfd; I don't see much reason to delay the
+>>>> series.
+>>>
+>>> Right, protected guests will use the new restricted memfd ("guest mem"
+>>> now, I think?), but non-protected guests should implement the existing
+>>> interface *without* the need for the GUP pin on guest memory pages. Yes,
+>>> that means full support for MMU notifiers so that these pages can be
+>>> managed properly by the host kernel. We're working on that for pKVM, but
+>>> it requires a more flexible form of memory sharing over what we 
+>>> currently
+>>> have so that e.g. the zero page can be shared between multiple entities.
+>>
+>> Gunyah doesn't support swapping pages out while the guest is running 
+>> and the design of Gunyah isn't made to give host kernel full control 
+>> over the S2 page table for its guests. As best I can tell from reading 
+>> the respective drivers, ACRN and Nitro Enclaves both GUP pin guest 
+>> memory pages prior to giving them to the guest, so I don't think this 
+>> requirement from Gunyah is particularly unusual.
+>>
+> 
+> I read/dug into mmu notifiers more and I don't think it matches with 
+> Gunyah's features today. We don't allow the host to freely manage VM's 
+> pages because it requires the guest VM to have a level of trust on the 
+> host. Once a page is given to the guest, it's done for the lifetime of 
+> the VM. Allowing the host to replace pages in the guest memory map isn't 
+> part of any VM's security model that we run in Gunyah. With that 
+> requirement, longterm pinning looks like the correct approach to me.
 
-BR,
--R
-
-> > +
-> >       dma_fence_init(&f->base, &msm_fence_ops, &fctx->spinlock,
-> >                      fctx->context, ++fctx->last_fence);
-> >   }
-> > diff --git a/drivers/gpu/drm/msm/msm_gem_submit.c b/drivers/gpu/drm/msm=
-/msm_gem_submit.c
-> > index 3f1aa4de3b87..9d66498cdc04 100644
-> > --- a/drivers/gpu/drm/msm/msm_gem_submit.c
-> > +++ b/drivers/gpu/drm/msm/msm_gem_submit.c
-> > @@ -86,7 +86,19 @@ void __msm_gem_submit_destroy(struct kref *kref)
-> >       }
-> >
-> >       dma_fence_put(submit->user_fence);
-> > -     dma_fence_put(submit->hw_fence);
-> > +
-> > +     /*
-> > +      * If the submit is freed before msm_job_run(), then hw_fence is
-> > +      * just some pre-allocated memory, not a reference counted fence.
-> > +      * Once the job runs and the hw_fence is initialized, it will
-> > +      * have a refcount of at least one, since the submit holds a ref
-> > +      * to the hw_fence.
-> > +      */
-> > +     if (kref_read(&submit->hw_fence->refcount) =3D=3D 0) {
-> > +             kfree(submit->hw_fence);
-> > +     } else {
-> > +             dma_fence_put(submit->hw_fence);
-> > +     }
-> >
-> >       put_pid(submit->pid);
-> >       msm_submitqueue_put(submit->queue);
->
-> --
-> With best wishes
-> Dmitry
->
+Is my approach of longterm pinning correct given that Gunyah doesn't 
+allow host to freely swap pages?
