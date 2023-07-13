@@ -2,101 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D91C751A60
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 09:53:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A53C5751A6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 09:55:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232887AbjGMHxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 03:53:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34858 "EHLO
+        id S233019AbjGMHzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 03:55:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233086AbjGMHxA (ORCPT
+        with ESMTP id S232648AbjGMHzM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 03:53:00 -0400
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD711FF1;
-        Thu, 13 Jul 2023 00:52:55 -0700 (PDT)
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-98dfb3f9af6so65557166b.2;
-        Thu, 13 Jul 2023 00:52:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689234773; x=1691826773;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oMhGDhSPkVOFk1WX7KdLm58e6BOk+Dpg6SU01MeEJM8=;
-        b=DDUlOQAL0X7Cf/y5DCcqBvCBjYy5/t/mVK3aknzRGeUizjapK1GfgjKBAp/xMfHW2W
-         wymzGoo8jGMr6KL6SAlpI1xfBtRuiIKWBLonuiaKEATFF5mrRkH/8z8+3vGqlbGbZdmL
-         6+v3+Fca1nElYc90lMw5YU8k7s5UJXkqX85OTa4WRc96tCTc9UKGu2EgnNd3G/IIOhkr
-         JUqsWDe1oDoeNl99DSZ7qh+GOFbArtkrlEYEkD6awgmhVn8AcJ1GsIpuxvuZtqpiofBF
-         tTqnIF2JfnD7BUwkNOFMz952zn1aGwOfbShFU6DmBkeLW4d43i+KZKzLug9Aai7OqBWi
-         +1Xw==
-X-Gm-Message-State: ABy/qLYYK1NFzU458IO6bzhGNbeZlVXbR+AHyMkGksdavXUP/yb0AtiW
-        ThW4SsFuljntQn9n/1w5sas=
-X-Google-Smtp-Source: APBJJlHocHdLu8Ml9xRuSHiwTddyegMKaMbj5HvsjMU3ufSRT5CtDKiyvhuphLyTNZ2sB7XkjpSYrA==
-X-Received: by 2002:a17:906:de:b0:96a:3f29:40d9 with SMTP id 30-20020a17090600de00b0096a3f2940d9mr738491eji.25.1689234773553;
-        Thu, 13 Jul 2023 00:52:53 -0700 (PDT)
-Received: from [192.168.1.58] (185-219-167-24-static.vivo.cz. [185.219.167.24])
-        by smtp.gmail.com with ESMTPSA id bl6-20020a170906c24600b00977ca5de275sm3701691ejb.13.2023.07.13.00.52.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 Jul 2023 00:52:53 -0700 (PDT)
-Message-ID: <12594c68-b452-b91d-9e41-c7ae8ade191a@kernel.org>
-Date:   Thu, 13 Jul 2023 09:52:52 +0200
+        Thu, 13 Jul 2023 03:55:12 -0400
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF22C10FA
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 00:55:10 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id E0033C0005;
+        Thu, 13 Jul 2023 07:55:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1689234909;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=zelVWeNXzGogS3y0N3CrG89Tb56cbqeZuO00/dwNJ+E=;
+        b=jsPq8HwZejgrL8khSpcVxtlSAlyB5elFBtvinWqCa27rn35iA3l0jwQLYPPCF4dFNvv0sH
+        fc4b5GgFs8xu35gnhqIceuLJ/FKgvVnxU7hcvIblMpUaEoYdMA6EWoNKYZv4bPcEhyh735
+        OHGt9MKOAMoMQSCgwAa0J5IH2A4dV++oieSkvltJ1HJ2xW50H963szrSspEb7ocbqfOhAu
+        hiR2s1uK/4hSaXOJ04fBxSrYCqd0OUqHxUCvX/DX00kxpzQ7h+NGrECYnG4Ic1fi23IMgu
+        jtP9/KpiDhNQq5Wo0pLzLEie5v0a/dILa0A75SI5bZ9/ANfvzt/G5FCNhg0tyg==
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Robert Marko <robert.marko@sartura.hr>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH RESEND v5 0/3] NVMEM cells in sysfs
+Date:   Thu, 13 Jul 2023 09:55:04 +0200
+Message-Id: <20230713075508.485072-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3] drivers: wireless: ath5k: remove parameter check in
- ath5k_debug_init_device(struct ath5k_hw *ah)
-Content-Language: en-US
-To:     Minjie Du <duminjie@vivo.com>,
-        Nick Kossifidis <mickflemm@gmail.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kalle Valo <kvalo@kernel.org>,
-        "open list:ATHEROS ATH5K WIRELESS DRIVER" 
-        <linux-wireless@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Cc:     opensource.kernel@vivo.com
-References: <20230713074632.11204-1-duminjie@vivo.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-In-Reply-To: <20230713074632.11204-1-duminjie@vivo.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13. 07. 23, 9:46, Minjie Du wrote:
-> debugfs_create_file() will return early if phydir is an error
-> pointer, so an extra error check is not needed.
-> 
-> Signed-off-by: Minjie Du <duminjie@vivo.com>
-> ---
+Hello,
 
-And also: this is a v3 without a changelog.
+As part of a previous effort, support for dynamic NVMEM layouts was
+brought into mainline, helping a lot in getting information from NVMEM
+devices at non-static locations. One common example of NVMEM cell is the
+MAC address that must be used. Sometimes the cell content is mainly (or
+only) useful to the kernel, and sometimes it is not. Users might also
+want to know the content of cells such as: the manufacturing place and
+date, the hardware version, the unique ID, etc. Two possibilities in
+this case: either the users re-implement their own parser to go through
+the whole device and search for the information they want, or the kernel
+can expose the content of the cells if deemed relevant. This second
+approach sounds way more relevant than the first one to avoid useless
+code duplication, so here is a series bringing NVMEM cells content to
+the user through sysfs.
 
->   drivers/net/wireless/ath/ath5k/debug.c | 2 --
->   1 file changed, 2 deletions(-)
-> 
-> diff --git a/drivers/net/wireless/ath/ath5k/debug.c b/drivers/net/wireless/ath/ath5k/debug.c
-> index 4b41160e5..ec130510a 100644
-> --- a/drivers/net/wireless/ath/ath5k/debug.c
-> +++ b/drivers/net/wireless/ath/ath5k/debug.c
-> @@ -982,8 +982,6 @@ ath5k_debug_init_device(struct ath5k_hw *ah)
->   	ah->debug.level = ath5k_debug;
->   
->   	phydir = debugfs_create_dir("ath5k", ah->hw->wiphy->debugfsdir);
-> -	if (!phydir)
-> -		return;
->   
->   	debugfs_create_file("debug", 0600, phydir, ah, &fops_debug);
->   	debugfs_create_file("registers", 0400, phydir, ah, &registers_fops);
+Here is a real life example with a Marvell Armada 7040 TN48m switch:
+
+$ nvmem=/sys/bus/nvmem/devices/1-00563/
+$ for i in `ls -1 $nvmem/cells/*`; do basename $i; hexdump -C $i | head -n1; done
+country-code
+00000000  54 57                                             |TW|
+crc32
+00000000  bb cd 51 98                                       |..Q.|
+device-version
+00000000  02                                                |.|
+diag-version
+00000000  56 31 2e 30 2e 30                                 |V1.0.0|
+label-revision
+00000000  44 31                                             |D1|
+mac-address
+00000000  18 be 92 13 9a 00                                 |......|
+manufacture-date
+00000000  30 32 2f 32 34 2f 32 30  32 31 20 31 38 3a 35 39  |02/24/2021 18:59|
+manufacturer
+00000000  44 4e 49                                          |DNI|
+num-macs
+00000000  00 40                                             |.@|
+onie-version
+00000000  32 30 32 30 2e 31 31 2d  56 30 31                 |2020.11-V01|
+platform-name
+00000000  38 38 46 37 30 34 30 2f  38 38 46 36 38 32 30     |88F7040/88F6820|
+product-name
+00000000  54 4e 34 38 4d 2d 50 2d  44 4e                    |TN48M-P-DN|
+serial-number
+00000000  54 4e 34 38 31 50 32 54  57 32 30 34 32 30 33 32  |TN481P2TW2042032|
+vendor
+00000000  44 4e 49                                          |DNI|
+
+Here is a list of known limitations though:
+* It is currently not possible to know whether the cell contains ASCII
+  or binary data, so by default all cells are exposed in binary form.
+* For now the implementation focuses on the read aspect. Technically
+  speaking, in some cases, it could be acceptable to write the cells, I
+  guess, but for now read-only files sound more than enough. A writable
+  path can be added later anyway.
+* The sysfs entries are created when the device probes, not when the
+  NVMEM driver does. This means, if an NVMEM layout is used *and*
+  compiled as a module *and* not installed properly in the system (a
+  usermode helper tries to load the module otherwise), then the sysfs
+  cells won't appear when the layout is actually insmod'ed because the
+  sysfs folders/files have already been populated.
+
+Resending v5:
+* I forgot the mailing list in my former submission, both are absolutely
+  identical otherwise.
+
+Changes in v5:
+* Rebased on last -rc1, fixing a conflict and skipping the first two
+patches already taken by Greg.
+* Collected tags from Greg.
+* Split the nvmem patch into two, one which just moves the cells
+  creation and the other which adds the cells.
+
+Changes in v4:
+* Use a core helper to count the number of cells in a list.
+* Provide sysfs attributes a private member which is the entry itself to
+  avoid the need for looking up the nvmem device and then looping over
+  all the cells to find the right one.
+
+Changes in v3:
+* Patch 1 is new: fix a style issue which bothered me when reading the
+  core.
+* Patch 2 is new: Don't error out when an attribute group does not
+  contain any attributes, it's easier for developers to handle "empty"
+  directories this way. It avoids strange/bad solutions to be
+  implemented and does not cost much.
+* Drop the is_visible hook as it is no longer needed.
+* Stop allocating an empty attribute array to comply with the sysfs core
+  checks (this check has been altered in the first commits).
+* Fix a missing tab in the ABI doc.
+
+Changes in v2:
+* Do not mention the cells might become writable in the future in the
+  ABI documentation.
+* Fix a wrong return value reported by Dan and kernel test robot.
+* Implement .is_bin_visible().
+* Avoid overwriting the list of attribute groups, but keep the cells
+  attribute group writable as we need to populate it at run time.
+* Improve the commit messages.
+* Give a real life example in the cover letter.
+
+
+Miquel Raynal (3):
+  ABI: sysfs-nvmem-cells: Expose cells through sysfs
+  nvmem: core: Create all cells before adding the nvmem device
+  nvmem: core: Expose cells through sysfs
+
+ Documentation/ABI/testing/sysfs-nvmem-cells |  19 ++++
+ drivers/nvmem/core.c                        | 113 ++++++++++++++++++--
+ 2 files changed, 126 insertions(+), 6 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-nvmem-cells
 
 -- 
-js
-suse labs
+2.34.1
 
