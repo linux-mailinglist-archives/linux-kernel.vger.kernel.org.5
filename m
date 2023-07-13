@@ -2,107 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0879D75256A
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 16:45:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70DF375256F
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 16:48:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231621AbjGMOpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 10:45:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53264 "EHLO
+        id S229839AbjGMOsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 10:48:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231129AbjGMOpm (ORCPT
+        with ESMTP id S231126AbjGMOr6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 10:45:42 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 386632705;
-        Thu, 13 Jul 2023 07:45:41 -0700 (PDT)
+        Thu, 13 Jul 2023 10:47:58 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A443D19A6;
+        Thu, 13 Jul 2023 07:47:57 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BCC016157F;
-        Thu, 13 Jul 2023 14:45:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C950CC433C8;
-        Thu, 13 Jul 2023 14:45:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689259540;
-        bh=9x2+cvi+3bTenkv1neM15nfVBtvEgjl998KUiR4iaaE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fb+lbr3rXs6mQK6vDdOoMi9PbVJLhx7gakT+qkYxDpktn9DlvXCe4dUTbSXjrK/3o
-         ITsy53hn3nBDsHjuWRvIHyLxHDdMDEnGn65XqdzzaOsDi6slhDIBjK8T++wmcSGQPK
-         yAqthuJHPgmk8zmOPBf/Vck1vfkSUD5IPF+RQxE3TXnW5FKwIZNKpagx35sU9ndB5c
-         FVoYKzhltVJBFARZ8rXRKxjyx0QsDNl6xBsXdcZtoWUsljFIrIhl7hAwT6dHLo4jPx
-         cPZUpejuonWkiSOhXt7qpxgW2q+Qv19Xhl/mSWT0hCf9MlHDgpUgPfON/W8pe1zwQI
-         /9mLX7/Ab2TKA==
-Date:   Thu, 13 Jul 2023 15:45:34 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Ryan Roberts <ryan.roberts@arm.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Florent Revest <revest@chromium.org>,
-        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v1 1/9] selftests: Line buffer test program's stdout
-Message-ID: <1b33e341-e86d-4647-bcbe-38d2667cb891@sirena.org.uk>
-References: <20230713135440.3651409-1-ryan.roberts@arm.com>
- <20230713135440.3651409-2-ryan.roberts@arm.com>
- <8a8d077c-55bd-4710-9dfd-1cbb1a9170a8@sirena.org.uk>
- <1e560ea5-3eb2-40a8-33aa-514eb026de3a@arm.com>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 40477615BE;
+        Thu, 13 Jul 2023 14:47:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CAF6C433C8;
+        Thu, 13 Jul 2023 14:47:56 +0000 (UTC)
+Date:   Thu, 13 Jul 2023 10:47:54 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Zheng Yejian <zhengyejian1@huawei.com>
+Cc:     <mhiramat@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-trace-kernel@vger.kernel.org>
+Subject: Re: [PATCH] traing: Fix memory leak of iter->temp when reading
+ trace_pipe
+Message-ID: <20230713104754.6cf4696c@gandalf.local.home>
+In-Reply-To: <bae57723-50f4-a497-3691-33c4f1234896@huawei.com>
+References: <20230713141435.1133021-1-zhengyejian1@huawei.com>
+        <bae57723-50f4-a497-3691-33c4f1234896@huawei.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="opkr7b0grNXS+tLU"
-Content-Disposition: inline
-In-Reply-To: <1e560ea5-3eb2-40a8-33aa-514eb026de3a@arm.com>
-X-Cookie: MOUNT TAPE U1439 ON B3, NO RING
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 13 Jul 2023 22:23:20 +0800
+Zheng Yejian <zhengyejian1@huawei.com> wrote:
 
---opkr7b0grNXS+tLU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> On 2023/7/13 22:14, Zheng Yejian wrote:
+> > kmemleak reports:
+> >    unreferenced object 0xffff88814d14e200 (size 256):
+> >      comm "cat", pid 336, jiffies 4294871818 (age 779.490s)
+> >      hex dump (first 32 bytes):
+> >        04 00 01 03 00 00 00 00 08 00 00 00 00 00 00 00  ................
+> >        0c d8 c8 9b ff ff ff ff 04 5a ca 9b ff ff ff ff  .........Z......
+> >      backtrace:
+> >        [<ffffffff9bdff18f>] __kmalloc+0x4f/0x140
+> >        [<ffffffff9bc9238b>] trace_find_next_entry+0xbb/0x1d0
+> >        [<ffffffff9bc9caef>] trace_print_lat_context+0xaf/0x4e0
+> >        [<ffffffff9bc94490>] print_trace_line+0x3e0/0x950
+> >        [<ffffffff9bc95499>] tracing_read_pipe+0x2d9/0x5a0
+> >        [<ffffffff9bf03a43>] vfs_read+0x143/0x520
+> >        [<ffffffff9bf04c2d>] ksys_read+0xbd/0x160
+> >        [<ffffffff9d0f0edf>] do_syscall_64+0x3f/0x90
+> >        [<ffffffff9d2000aa>] entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> > 
+> > when reading file 'trace_pipe', 'iter->temp' is allocated or relocated
+> > in trace_find_next_entry() but not freed before 'trace_pipe' is closed.
+> > 
+> > To fix it, free 'iter->temp' in tracing_release_pipe().
+> >   
+> 
+> Sorry, forget the Fixes tag:(
+> 
+> Is following Fixes right?
+> Fixes: ff895103a84a ("tracing: Save off entry when peeking at next entry")
 
-On Thu, Jul 13, 2023 at 03:32:19PM +0100, Ryan Roberts wrote:
-> On 13/07/2023 15:16, Mark Brown wrote:
+That's the one I already added ;-)
 
-> > so that if setbuf
-> > isn't installed on the target system or the tests are run standalone we
-> > don't run into issues there.  Even if the test isn't corrupting data
-> > having things unbuffered is going to be good for making sure we don't
-> > drop any output if the test dies.
+Don't worry too much about adding fixes, I will always analyze a fix patch
+to find out what it actually fixes. If you add one, I'll still confirm it.
 
-> Note that currently I've set stdbuf to encourage line buffering rather than no
-> buffering. Are you saying no buffering is preferred? I took the view that line
-> buffering is a good middle ground, and and aligns with what people see when
-> developing and running the program manually in the terminal.
+-- Steve
 
-TBH with the way KTAP is specified line buffered and unbuffered are
-probably equivalent, I was just defaulting to unbuffered since it's the
-more conservative (if less performant for lots of I/O) option.
+> 
+> > Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
+> > ---
+> >   kernel/trace/trace.c | 1 +
+> >   1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+> > index 4529e264cb86..94cfaa884578 100644
+> > --- a/kernel/trace/trace.c
+> > +++ b/kernel/trace/trace.c
+> > @@ -6764,6 +6764,7 @@ static int tracing_release_pipe(struct inode *inode, struct file *file)
+> >   
+> >   	free_cpumask_var(iter->started);
+> >   	kfree(iter->fmt);
+> > +	kfree(iter->temp);
+> >   	mutex_destroy(&iter->mutex);
+> >   	kfree(iter);
+> >     
 
---opkr7b0grNXS+tLU
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmSwDg0ACgkQJNaLcl1U
-h9BjVQf/TDjeTXyfVia9mY7E3G3glN1Oxz4ObsUpvF6whyd5D7AjlDAjrB41x6xs
-S2dLRBFeHLXa2DABIRYUs0oNpoaI7QnBdIurIHO1JdsDWhiPhgIthBDOoYnOzKy0
-QB4aJOcg/MfYbbdcqxL9CpiZU0dvFJA2Ge4sEC3gBJxLzj4nW9y7eSI+Aro9RYxD
-WZsPeOqGrxlzRplEf6ENdoiPxFvfx/wog2pc+dpgfXxYo6JMeJreShHPbHvIguGA
-4eeLtN5whg3nZ6R2gAFBkqmbCrBDf+K713xaO1a3WPWVyr6Guqbee/uTwA00CHkV
-7XtoMJ0hi9IE7KeQ8BRYKcym5LjPpw==
-=yLQw
------END PGP SIGNATURE-----
-
---opkr7b0grNXS+tLU--
