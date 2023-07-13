@@ -2,81 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 763137519F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 09:31:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BB8C7519FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 09:34:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234256AbjGMHbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 03:31:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52098 "EHLO
+        id S230079AbjGMHeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 03:34:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234233AbjGMHbS (ORCPT
+        with ESMTP id S229455AbjGMHeL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 03:31:18 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8D992684
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 00:31:15 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Thu, 13 Jul 2023 03:34:11 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73A7010E2;
+        Thu, 13 Jul 2023 00:34:10 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id CC0DC6607035;
-        Thu, 13 Jul 2023 08:31:13 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1689233474;
-        bh=H+CV57KKU5YOchvpQhf4UeBBdOfwLF5gSkEruFhwdhg=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=Twd83G8qfsh7ml3i8rQVN+4JuNr7fJZYwviEPXRVYzYfgx2PcRNRJS2cpDpnjx2er
-         pfidQLHN5H0i0Gxyb4TcXW2pEcVYXvWto7ANtJRM2s19jtdRIsFh1+eMJTotYaz2XM
-         aL4CR/igU0n3rFXBZAkES11bWUXmovpFsMHne1QLTIq6K4u/hoLU5iaNx24f7Ncnms
-         0SOy0U7a4DgLXVJynZhnSvcmzxt6E073X/hCDwnawfMIB5DAq3SlrckHi/EghDSIUX
-         ObqeUkNuHdsIGFZXXr43YGsefoQZ/Vxd3oSqwWREN1uIXDomrz8ZQESPLnYumIlQ+Y
-         omNfxT5Q0XDBw==
-Message-ID: <52970189-dcb1-e48c-578b-4cd0679e56ab@collabora.com>
-Date:   Thu, 13 Jul 2023 09:31:10 +0200
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 08F2A61A39;
+        Thu, 13 Jul 2023 07:34:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0096C433C7;
+        Thu, 13 Jul 2023 07:34:04 +0000 (UTC)
+Date:   Thu, 13 Jul 2023 13:03:54 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Krishna chaitanya chundru <quic_krichai@quicinc.com>
+Cc:     helgaas@kernel.org, linux-pci@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_vbadigan@quicinc.com, quic_nitegupt@quicinc.com,
+        quic_skananth@quicinc.com, quic_ramkri@quicinc.com,
+        krzysztof.kozlowski@linaro.org,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH v7 3/3] PCI: qcom-ep: Add ICC bandwidth voting support
+Message-ID: <20230713073354.GH3047@thinkpad>
+References: <1688099123-28036-1-git-send-email-quic_krichai@quicinc.com>
+ <1688099123-28036-4-git-send-email-quic_krichai@quicinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH 0/4] drm/mediatek: Small mtk-dpi cleanups
-To:     chunkuang.hu@kernel.org
-Cc:     p.zabel@pengutronix.de, airlied@gmail.com, daniel@ffwll.ch,
-        matthias.bgg@gmail.com, dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel@collabora.com,
-        Chen-Yu Tsai <wenst@chromium.org>
-References: <20230412115250.164899-1-angelogioacchino.delregno@collabora.com>
-Content-Language: en-US
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20230412115250.164899-1-angelogioacchino.delregno@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1688099123-28036-4-git-send-email-quic_krichai@quicinc.com>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 12/04/23 13:52, AngeloGioacchino Del Regno ha scritto:
-> This is a small cleanup of the mtk-dpi driver, switching it to devm
-> variants where possible and where it made sense, and reducing lines
-> while retaining and improving human readability.
+On Fri, Jun 30, 2023 at 09:55:23AM +0530, Krishna chaitanya chundru wrote:
+> Add support for voting interconnect (ICC) bandwidth based
+> on the link speed and width.
 > 
-> AngeloGioacchino Del Regno (4):
->    drm/mediatek: mtk_dpi: Simplify with devm_drm_bridge_add()
->    drm/mediatek: mtk_dpi: Simplify with dev_err_probe()
->    drm/mediatek: mtk_dpi: Switch to devm_drm_of_get_bridge()
->    drm/mediatek: mtk_dpi: Use devm_platform_get_and_ioremap_resource()
+> This commit is inspired from the basic interconnect support added
+> to pcie-qcom driver in commit c4860af88d0c ("PCI: qcom: Add basic
+> interconnect support").
 > 
->   drivers/gpu/drm/mediatek/mtk_dpi.c | 59 +++++++++++-------------------
->   1 file changed, 21 insertions(+), 38 deletions(-)
+> The interconnect support is kept optional to be backward compatible
+> with legacy devicetrees.
+> 
+> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+> ---
+>  drivers/pci/controller/dwc/pcie-qcom-ep.c | 71 +++++++++++++++++++++++++++++++
+>  1 file changed, 71 insertions(+)
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-qcom-ep.c b/drivers/pci/controller/dwc/pcie-qcom-ep.c
+> index 1435f51..cfe3061 100644
+> --- a/drivers/pci/controller/dwc/pcie-qcom-ep.c
+> +++ b/drivers/pci/controller/dwc/pcie-qcom-ep.c
+> @@ -13,6 +13,7 @@
+>  #include <linux/debugfs.h>
+>  #include <linux/delay.h>
+>  #include <linux/gpio/consumer.h>
+> +#include <linux/interconnect.h>
+>  #include <linux/mfd/syscon.h>
+>  #include <linux/phy/pcie.h>
+>  #include <linux/phy/phy.h>
+> @@ -28,6 +29,7 @@
+>  #define PARF_SYS_CTRL				0x00
+>  #define PARF_DB_CTRL				0x10
+>  #define PARF_PM_CTRL				0x20
+> +#define PARF_PM_STTS				0x24
+>  #define PARF_MHI_CLOCK_RESET_CTRL		0x174
+>  #define PARF_MHI_BASE_ADDR_LOWER		0x178
+>  #define PARF_MHI_BASE_ADDR_UPPER		0x17c
+> @@ -133,6 +135,11 @@
+>  #define CORE_RESET_TIME_US_MAX			1005
+>  #define WAKE_DELAY_US				2000 /* 2 ms */
+>  
+> +#define PCIE_GEN1_BW_MBPS			250
+> +#define PCIE_GEN2_BW_MBPS			500
+> +#define PCIE_GEN3_BW_MBPS			985
+> +#define PCIE_GEN4_BW_MBPS			1969
+> +
+>  #define to_pcie_ep(x)				dev_get_drvdata((x)->dev)
+>  
+>  enum qcom_pcie_ep_link_status {
+> @@ -178,6 +185,8 @@ struct qcom_pcie_ep {
+>  	struct phy *phy;
+>  	struct dentry *debugfs;
+>  
+> +	struct icc_path *icc_mem;
+> +
+>  	struct clk_bulk_data *clks;
+>  	int num_clks;
+>  
+> @@ -253,8 +262,49 @@ static void qcom_pcie_dw_stop_link(struct dw_pcie *pci)
+>  	disable_irq(pcie_ep->perst_irq);
+>  }
+>  
+> +static void qcom_pcie_ep_icc_update(struct qcom_pcie_ep *pcie_ep)
+> +{
+> +	struct dw_pcie *pci = &pcie_ep->pci;
+> +	u32 offset, status, bw;
+> +	int speed, width;
+> +	int ret;
+> +
+> +	if (!pcie_ep->icc_mem)
+> +		return;
+> +
+> +	offset = dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
+> +	status = readw(pci->dbi_base + offset + PCI_EXP_LNKSTA);
+> +
+> +	speed = FIELD_GET(PCI_EXP_LNKSTA_CLS, status);
+> +	width = FIELD_GET(PCI_EXP_LNKSTA_NLW, status);
+> +
+> +	switch (speed) {
+> +	case 1:
+> +		bw = MBps_to_icc(PCIE_GEN1_BW_MBPS);
+> +		break;
+> +	case 2:
+> +		bw = MBps_to_icc(PCIE_GEN2_BW_MBPS);
+> +		break;
+> +	case 3:
+> +		bw = MBps_to_icc(PCIE_GEN3_BW_MBPS);
+> +		break;
+> +	default:
+> +		dev_warn(pci->dev, "using default GEN4 bandwidth\n");
+> +		fallthrough;
+> +	case 4:
+> +		bw = MBps_to_icc(PCIE_GEN4_BW_MBPS);
+> +		break;
+> +	}
+> +
+> +	ret = icc_set_bw(pcie_ep->icc_mem, 0, width * bw);
+> +	if (ret)
+> +		dev_err(pci->dev, "failed to set interconnect bandwidth: %d\n",
+> +			ret);
+> +}
+> +
+>  static int qcom_pcie_enable_resources(struct qcom_pcie_ep *pcie_ep)
+>  {
+> +	struct dw_pcie *pci = &pcie_ep->pci;
+>  	int ret;
+>  
+>  	ret = clk_bulk_prepare_enable(pcie_ep->num_clks, pcie_ep->clks);
+> @@ -277,8 +327,24 @@ static int qcom_pcie_enable_resources(struct qcom_pcie_ep *pcie_ep)
+>  	if (ret)
+>  		goto err_phy_exit;
+>  
+> +	/*
+> +	 * Some Qualcomm platforms require interconnect bandwidth constraints
+> +	 * to be set before enabling interconnect clocks.
+> +	 *
+> +	 * Set an initial peak bandwidth corresponding to single-lane Gen 1
+> +	 * for the pcie-mem path.
+> +	 */
+> +	ret = icc_set_bw(pcie_ep->icc_mem, 0, MBps_to_icc(PCIE_GEN1_BW_MBPS));
+> +	if (ret) {
+> +		dev_err(pci->dev, "failed to set interconnect bandwidth: %d\n",
+> +			ret);
+> +		goto err_phy_off;
+> +	}
+> +
+
+You need to set bw to 0 during disable_resources() as well. Otherwise, it will
+result in resource leakage when the driver is not in use.
+
+- Mani
+
+>  	return 0;
+>  
+> +err_phy_off:
+> +	phy_power_off(pcie_ep->phy);
+>  err_phy_exit:
+>  	phy_exit(pcie_ep->phy);
+>  err_disable_clk:
+> @@ -550,6 +616,10 @@ static int qcom_pcie_ep_get_resources(struct platform_device *pdev,
+>  	if (IS_ERR(pcie_ep->phy))
+>  		ret = PTR_ERR(pcie_ep->phy);
+>  
+> +	pcie_ep->icc_mem = devm_of_icc_get(dev, "pcie-mem");
+> +	if (IS_ERR(pcie_ep->icc_mem))
+> +		ret = PTR_ERR(pcie_ep->icc_mem);
+> +
+>  	return ret;
+>  }
+>  
+> @@ -573,6 +643,7 @@ static irqreturn_t qcom_pcie_ep_global_irq_thread(int irq, void *data)
+>  	} else if (FIELD_GET(PARF_INT_ALL_BME, status)) {
+>  		dev_dbg(dev, "Received BME event. Link is enabled!\n");
+>  		pcie_ep->link_status = QCOM_PCIE_EP_LINK_ENABLED;
+> +		qcom_pcie_ep_icc_update(pcie_ep);
+>  		pci_epc_bme_notify(pci->ep.epc);
+>  	} else if (FIELD_GET(PARF_INT_ALL_PM_TURNOFF, status)) {
+>  		dev_dbg(dev, "Received PM Turn-off event! Entering L23\n");
+> -- 
+> 2.7.4
 > 
 
-Ping for a fully ready and well tested series that I've sent *3 months* ago.
-
-Thanks,
-Angelo
+-- 
+மணிவண்ணன் சதாசிவம்
