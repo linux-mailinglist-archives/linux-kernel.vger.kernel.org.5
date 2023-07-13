@@ -2,98 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B005752BFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 23:18:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4224F752C0F
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 23:22:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234091AbjGMVSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 17:18:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36360 "EHLO
+        id S230151AbjGMVW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 17:22:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233016AbjGMVRv (ORCPT
+        with ESMTP id S229715AbjGMVW2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 17:17:51 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0F382D69
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 14:17:47 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3fc0aecf15bso9988085e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 14:17:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tessares.net; s=google; t=1689283066; x=1691875066;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TsJALsxCC7W/CAsd1l447Gkg4QP+b67KVu4aEHXx1H8=;
-        b=bt3cywbmI2xlzlVR6vRTSp+EcwPMU/Po0YAkZsTxYd4qeBDWmBtWWW1L7ZLZu7/Rp0
-         /rorCNOUTXNVUWcLrGeCXbk9yTbznrWpdKIZ7g9alJTVVuqw2gcb2COuguuFWoQ4WVon
-         8Np8h5Mwx8NsaQNfcxYyX911xkWytdrDTsxbw4eODsgaFgUIe4+SqpMumx7RaLTQ5+8X
-         MIOFF8AO8Bz0TWAlXVTJYgThE16Hn01Y+16mpzsUXW83Vbix9Z+QtRQAytDsiOD3+9vj
-         z9e71xvYt+xLgB2ItMz8f8lLgv4n2Y8YAhJ+U0f4CoRe+c31H6HDYo85nab2G+EVApeg
-         4c9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689283066; x=1691875066;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TsJALsxCC7W/CAsd1l447Gkg4QP+b67KVu4aEHXx1H8=;
-        b=XddKIPIo9pd/0EwjQlKHqVf2WCPNJQ9ERhNj1oEb6qE9YeFGRlhmRZeRZrOnbL7zjz
-         5MhaqDnsREHLGqLAMINkWWq+TBNafKNFnG9vFOqhd6wtGMkNFc0hWlJIWbG9oQMFPFGj
-         xK9tyAVQTaZrFD5O8d+puh8YPdHSQtg38gMZT+X098X/VwDtIpNvjcDELJyANqYSfOSj
-         /sQlHwb1UBl518DVuoF7pNls/AZ4OZStiUQzEcg5oaovK/cqJkk+X4ela0ncCsFBliHJ
-         9vPmfft+Te6TZIsstZ+kSzgkWHeqljnHWk6DPKoVbQCfbvsDaCvwUCZCUy8NX59h3og+
-         GG7A==
-X-Gm-Message-State: ABy/qLYlq5HCH/AX9EZ80Ti9qc6DjbEybRs4AmWRkCg6YNrbdz4G0XyL
-        +mpij40Ez7dbQlsX36PB8KcYqA==
-X-Google-Smtp-Source: APBJJlEqHDqd/DaR1zZg8FeNIPs0jDRzB47sGZJXntmh5xucKXav31Pxi0b1G9aQg7Zs3wM4F2CWHg==
-X-Received: by 2002:a7b:cbc9:0:b0:3fb:e1ed:7f83 with SMTP id n9-20020a7bcbc9000000b003fbe1ed7f83mr2882825wmi.33.1689283066347;
-        Thu, 13 Jul 2023 14:17:46 -0700 (PDT)
-Received: from vdi08.nix.tessares.net (static.219.156.76.144.clients.your-server.de. [144.76.156.219])
-        by smtp.gmail.com with ESMTPSA id m20-20020a7bcb94000000b003fbfea1afffsm8734136wmi.27.2023.07.13.14.17.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Jul 2023 14:17:45 -0700 (PDT)
-From:   Matthieu Baerts <matthieu.baerts@tessares.net>
-Date:   Thu, 13 Jul 2023 23:16:46 +0200
-Subject: [PATCH net 3/3] selftests: tc: add ConnTrack procfs kconfig
+        Thu, 13 Jul 2023 17:22:28 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 737BB2D54;
+        Thu, 13 Jul 2023 14:22:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=fxcF2LxM1o1X1zKtJxvwKJctPKOxt8kJ6pn0SPqkKNk=; b=bxbOZaBfewQCzYAp/0OvSpKnk7
+        IHH2kLe95oKbphdIW/l/btaONo6dfsstnFOBdXvKLUf475O71ULPmAO51FRcsMKLWeLbBUDcEr8VK
+        YpZo9rEsPImdJl+F/OnVbNJZsc7vkH5QFfLdPjo5LBazLDaMfMFKeO5cYtmbfjDDuP3/X9CADyOzc
+        Hx1HWHSIhwcpjYqUl2jh0q/+CYaf8luyCaIPIQ4cyH2KYwV9h0+qz3SIHfaqZNEizFe3L4T55CYyr
+        2/scqQiv/a5AZBn3iVNDFqTV/xIPSwWAiZL5OVkRwRf2wDYMwYKItGOQnhmC2AGEs1PL2hAkS4B7O
+        dYvyOjlw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qK3lV-000RuB-Jj; Thu, 13 Jul 2023 21:22:21 +0000
+Date:   Thu, 13 Jul 2023 22:22:21 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Christian Borntraeger <borntraeger@linux.ibm.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        linux-s390 <linux-s390@vger.kernel.org>
+Subject: Re: [PATCH v5 00/38] New page table range API
+Message-ID: <ZLBrDdtQpML+7vXx@casper.infradead.org>
+References: <20230710204339.3554919-1-willy@infradead.org>
+ <8cfc3eef-e387-88e1-1006-2d7d97a09213@linux.ibm.com>
+ <ZK1My5hQYC2Kb6G1@casper.infradead.org>
+ <56ca93af-67dc-9d10-d27e-00c8d7c20f1b@linux.ibm.com>
+ <ZK//Qnfhx+ihtvlO@casper.infradead.org>
+ <75932f85-67c7-8065-9fa0-77d76db19e7b@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230713-tc-selftests-lkft-v1-3-1eb4fd3a96e7@tessares.net>
-References: <20230713-tc-selftests-lkft-v1-0-1eb4fd3a96e7@tessares.net>
-In-Reply-To: <20230713-tc-selftests-lkft-v1-0-1eb4fd3a96e7@tessares.net>
-To:     Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>, Shuah Khan <shuah@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Paul Blakey <paulb@mellanox.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        mptcp@lists.linux.dev
-Cc:     Pedro Tammela <pctammela@mojatatu.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        stable@vger.kernel.org
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1295;
- i=matthieu.baerts@tessares.net; h=from:subject:message-id;
- bh=YxZMkeKTSYd/i12Y6hiS0Va0uPxVYaw6onSJrdJZ2xk=;
- b=owEBbQKS/ZANAwAIAfa3gk9CaaBzAcsmYgBksGn1bBYwvMN9ZJOmDSJeapOx7V3gAfyEaaHiq
- u4fgEkD5s+JAjMEAAEIAB0WIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZLBp9QAKCRD2t4JPQmmg
- c/79EADA/xNSe+OXe+fAkOmIazz02wIFBl+djuhBXh/Wq7uTJ/wXX2LVXz7haAPg0yi452RyvW6
- Y3umutQuwMqvWzIStUfkZHrvVTBjBp2u7zvgkknGe2hDS7tDLYXmbQ667Qs340s8OUMGqvptQk7
- y25FKL03KNuLSokg0OhB1Dp1u9hAYsuDmp18420NV6kDA3jPi1WMMzd9FV0iajheLOgk3TM1/JM
- CmY1+0inJwGExfLshAmG5soMIwQwZql8d1Lq4lD4hn2tkfUPO5tsrcoOaj3y2rDxE6vECvC9sWI
- 3syinI2F9TgnuGw/+OXCL7GkqLbD/1ok/fTu0M2AQV1e6dOEbi4xTxMlqhAOYlqC48rsNVrwiIC
- 5xxByReFo7qwwKI9y8JVMf98hF04OY8vwow1gw/Cbwf15/GZpWnIWqFRfA9PrYpyxFs0iq4ASeL
- 6opLFLVqXBXpeOsySZvp6gl3GqxMk0oNCpDRg29Q9E8EkzzMlIjqJKZUsQnFvrwJOOKNPzi00cZ
- +AWTZiSk7qawGmeIBg1KKMdLx0xcG1puAieB1bzmmSB4ZXlR4aogcXkAE+ku92dZ6PYvTxdt8nt
- 2UUXOHdQmUX2S4etArxuBVMbnXQ7cHk7oHy9Fat5T/EwBWQK3QQiWZEmdI/qPOxJotVjg3ZIiaG
- r69EzqvS4gPH/QQ==
-X-Developer-Key: i=matthieu.baerts@tessares.net; a=openpgp;
- fpr=E8CB85F76877057A6E27F77AF6B7824F4269A073
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <75932f85-67c7-8065-9fa0-77d76db19e7b@linux.ibm.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -101,37 +58,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When looking at the TC selftest reports, I noticed one test was failing
-because /proc/net/nf_conntrack was not available.
+On Thu, Jul 13, 2023 at 10:27:21PM +0200, Christian Borntraeger wrote:
+> 
+> 
+> Am 13.07.23 um 15:42 schrieb Matthew Wilcox:
+> > On Thu, Jul 13, 2023 at 12:42:44PM +0200, Christian Borntraeger wrote:
+> > > 
+> > > 
+> > > Am 11.07.23 um 14:36 schrieb Matthew Wilcox:
+> > > > On Tue, Jul 11, 2023 at 11:07:06AM +0200, Christian Borntraeger wrote:
+> > > > > Am 10.07.23 um 22:43 schrieb Matthew Wilcox (Oracle):
+> > > > > > This patchset changes the API used by the MM to set up page table entries.
+> > > > > > The four APIs are:
+> > > > > >        set_ptes(mm, addr, ptep, pte, nr)
+> > > > > >        update_mmu_cache_range(vma, addr, ptep, nr)
+> > > > > >        flush_dcache_folio(folio)
+> > > > > >        flush_icache_pages(vma, page, nr)
+> > > > > > 
+> > > > > > flush_dcache_folio() isn't technically new, but no architecture
+> > > > > > implemented it, so I've done that for them.  The old APIs remain around
+> > > > > > but are mostly implemented by calling the new interfaces.
+> > > > > > 
+> > > > > > The new APIs are based around setting up N page table entries at once.
+> > > > > > The N entries belong to the same PMD, the same folio and the same VMA,
+> > > > > > so ptep++ is a legitimate operation, and locking is taken care of for
+> > > > > > you.  Some architectures can do a better job of it than just a loop,
+> > > > > > but I have hesitated to make too deep a change to architectures I don't
+> > > > > > understand well.
+> > > > > > 
+> > > > > > One thing I have changed in every architecture is that PG_arch_1 is now a
+> > > > > > per-folio bit instead of a per-page bit.  This was something that would
+> > > > > > have to happen eventually, and it makes sense to do it now rather than
+> > > > > > iterate over every page involved in a cache flush and figure out if it
+> > > > > > needs to happen.
+> > > > > 
+> > > > > I think we do use PG_arch_1 on s390 for our secure page handling and
+> > > > > making this perf folio instead of physical page really seems wrong
+> > > > > and it probably breaks this code.
+> > > > 
+> > > > Per-page flags are going away in the next few years, so you're going to
+> > > > need a new design.  s390 seems to do a lot of unusual things.  I wish
+> > > > you'd talk to the rest of us more.
+> > > 
+> > > I understand you point from a logical point of view, but a 4k page frame
+> > > is also a hardware defined memory region. And I think not only for us.
+> > > How do you want to implement hardware poisoning for example?
+> > > Marking the whole folio with PG_hwpoison seems wrong.
+> > 
+> > For hardware poison, we can't use the page for any other purpose any more.
+> > So one of the 16 types of pointer is for hardware poison.  That doesn't
+> > seem like it's a solution that could work for secure/insecure pages?
+> > 
+> > But what I'm really wondering is why you need to transition pages
+> > between secure/insecure on a 4kB boundary.  What's the downside to doing
+> > it on a 16kB or 64kB boundary, or whatever size has been allocated?
+> 
+> The export and import for more pages will be more expensive, but I assume that
+> we would then also use the larger chunks (e.g. for paging). The more interesting
+> problem is that the guest can make a page shared/non-shared on a 4kb granularity.
+> 
+> Stupid question: can folios be split into folio,single page,folio when needed?
 
-  not ok 373 3992 - Add ct action triggering DNAT tuple conflict
-  	Could not match regex pattern. Verify command output:
-  cat: /proc/net/nf_conntrack: No such file or directory
+If that's a stupid question, you're going to find the answer utterly
+moronic ...
 
-It is only available if NF_CONNTRACK_PROCFS kconfig is set. So the issue
-can be fixed simply by adding it to the list of required kconfig.
+Yes, we have split_folio() today.  However, it can fail if somebody else
+has a reference to it, and if it does succeed, we don't really have a
+join_folio() operation (we have khugepaged which walks around looking
+for small folios it can replace with large folios, but that's not really
+what you want).
 
-Fixes: e46905641316 ("tc-testing: add test for ct DNAT tuple collision")
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/netdev/0e061d4a-9a23-9f58-3b35-d8919de332d7@tessares.net/T/ [1]
-Signed-off-by: Matthieu Baerts <matthieu.baerts@tessares.net>
----
- tools/testing/selftests/tc-testing/config | 1 +
- 1 file changed, 1 insertion(+)
+In the MM of, let's say, 2025, I do intend to support what we might
+call a hole in a folio, precisely for hwpoison and it's beginning to
+sound a bit like it might work for you too.  So you'd do something like
+... 
 
-diff --git a/tools/testing/selftests/tc-testing/config b/tools/testing/selftests/tc-testing/config
-index d1ad29040c02..71706197ba0f 100644
---- a/tools/testing/selftests/tc-testing/config
-+++ b/tools/testing/selftests/tc-testing/config
-@@ -5,6 +5,7 @@ CONFIG_NF_CONNTRACK=m
- CONFIG_NF_CONNTRACK_MARK=y
- CONFIG_NF_CONNTRACK_ZONES=y
- CONFIG_NF_CONNTRACK_LABELS=y
-+CONFIG_NF_CONNTRACK_PROCFS=y
- CONFIG_NF_FLOW_TABLE=m
- CONFIG_NF_NAT=m
- CONFIG_NETFILTER_XT_TARGET_LOG=m
+Allocate a 256MB folio for your VM (probably one of many allocations
+you'd do to give your VM some memory).  That sets 65536 page pointers
+to the same value.  Then you "secure" all 256MB of it so the
+VM can use it all.  Then the VM wants the host to read/write a 16kB
+chunk of that, so you allocate a "struct insecure_mem" and set four
+of the page pointers to point to that instead (it probably contains
+a copy of the original page pointer).  We'd mark the folio as containing
+a hole so that the MM knows something unusual is going on.  When you're
+done reading/writing the memory, you re-secure it, set the page pointers
+back to point to the original folio and free the struct insecure_mem.
 
--- 
-2.40.1
+Would something like that work for you?  Details TBD, of course.
 
