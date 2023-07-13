@@ -2,194 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50597752D2C
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 00:44:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91EFF752D2E
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 00:46:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232854AbjGMWo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 18:44:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39144 "EHLO
+        id S231234AbjGMWq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 18:46:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231234AbjGMWoy (ORCPT
+        with ESMTP id S231421AbjGMWqO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 18:44:54 -0400
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1979E270B;
-        Thu, 13 Jul 2023 15:44:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689288292; x=1720824292;
-  h=message-id:date:subject:to:references:from:in-reply-to:
-   content-transfer-encoding:mime-version;
-  bh=tIHXQWWcf5sodIcjbkEr4g5dXXSvsG+6fvdJSYKzqU8=;
-  b=mqgRyXcg+aAlTUENUKKe+Rbliy/+vYLuCBI5W/miKIjwPCRJJ5/m/JNt
-   37EJimerMCoo1e2DoBZIASY337b3wpUSogXvbE9pIGNjVXwakuGQaKntT
-   C13w9YeIeX9QS4/hZt+NHelcHK4xJq+sny9XHNLRiMC/AM4YlJ7YrkiwF
-   U/X4kroWnw9nnzFTnUgA+aCA29MGdp3WRS1e1I60CbfIV9JP94w5rqVCN
-   Sw8cTZjktwTeWyWCiufy+N3zx/43BdEwraZRFIGEj6qje2UCzCb0ao+Ng
-   87+/Pzdr/1IQaEDavakf9Q6YxqFd05a8taQf+mMUw17N1/F6g0zHah78b
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="367975626"
-X-IronPort-AV: E=Sophos;i="6.01,204,1684825200"; 
-   d="scan'208";a="367975626"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2023 15:44:51 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="757345807"
-X-IronPort-AV: E=Sophos;i="6.01,204,1684825200"; 
-   d="scan'208";a="757345807"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orsmga001.jf.intel.com with ESMTP; 13 Jul 2023 15:44:51 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 13 Jul 2023 15:44:50 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 13 Jul 2023 15:44:50 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Thu, 13 Jul 2023 15:44:50 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.48) by
- edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Thu, 13 Jul 2023 15:44:50 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IK8nB6aa+UbUZn/8xv82z8HAcZPgnBVkL/HO5xseFR2Ojb+F6Ux8NI51ETybmKrFkzCUS48kmNBBw9Y4dFUYPrnCPsxINe46Z9wGfXAxOMHCSdPoDLsHYzwz0aEGFfg23YJairtGBB0OEsDQu/XQYO/7rKXJOVUEoUa26dckT7NClAP70FHoy2hAaffJTSvRa047kvp+2fSOH4Sj4MyFJYsVnrbjswO/HIRFnK7OH6Vc0nTYEm7t1imnPWY2AkcOhd3msVqT/DMDLZdsd/5wriqLFOvdlyWwkSRlKUfQZbuzJEu4JqUYWEe7iSGja5hI6crl7dZViuFHnkUsLBN96A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7TcPZGGU0QJlD4Cy/szr4hRYM7vqaavaNnLp38omotg=;
- b=Ssuvm+5wUNVTQc6vcs85q0Fv2umFf2HUsCTefUHtWGj3+d7eIvjSgUeRcW9c2/s2S/AwO+VZGRtJP3C5FgcGihfmM3OchLa2FI8SB5nQQDJAKKjaoj/pUAvtxS2Hv+aMi53AKTdfXnqqJV3jFcaKxunzMx//G9bjG/ZRHH9ZEruUPf/Df21DKrShZSHIbI+lu3zTFeFIUyb8DfveAYtzVhSvXB4pikUhoygcpnpOBGWQ4OAyfCnkN1QRWZLZP4DrsSq8haI+SzC/V+DETsbYCXJFClhSlO/xcQhaf0N2cy+uYmOpzTLnJZ1jbphy71FwO2k0vi/lQFWMt/MWP6Cp9w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
- by CH3PR11MB7370.namprd11.prod.outlook.com (2603:10b6:610:14e::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.24; Thu, 13 Jul
- 2023 22:44:43 +0000
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::3b1a:8ccf:e7e4:e9fa]) by SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::3b1a:8ccf:e7e4:e9fa%4]) with mapi id 15.20.6588.017; Thu, 13 Jul 2023
- 22:44:43 +0000
-Message-ID: <69a1669a-25c5-3bb1-4d73-00079ef9d2ee@intel.com>
-Date:   Thu, 13 Jul 2023 15:44:41 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [PATCH v4 02/19] selftests/resctrl: Don't leak buffer in
- fill_cache()
-Content-Language: en-US
-To:     =?UTF-8?Q?Ilpo_J=c3=a4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        "Shaopeng Tan" <tan.shaopeng@jp.fujitsu.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        "Colin Ian King" <colin.i.king@gmail.com>,
-        <linux-kernel@vger.kernel.org>
-References: <20230713131932.133258-1-ilpo.jarvinen@linux.intel.com>
- <20230713131932.133258-3-ilpo.jarvinen@linux.intel.com>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-In-Reply-To: <20230713131932.133258-3-ilpo.jarvinen@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: MW4PR04CA0304.namprd04.prod.outlook.com
- (2603:10b6:303:82::9) To SJ2PR11MB7573.namprd11.prod.outlook.com
- (2603:10b6:a03:4d2::10)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|CH3PR11MB7370:EE_
-X-MS-Office365-Filtering-Correlation-Id: 841738b9-85ad-4854-3c43-08db83f2c053
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: S/4kCxsZBRvRsjCqKj/0BdH4bpriQACAumuicR8w5hHKPubFriVldi3vZ0Aayt1YZ1Zim00xlVrGgceeHyc+rUBlIRMPb3Als4w7ZyPmrVQpRrpuHdgZQBCWUF0Z9icnQUozNFyqfnRdJXQ1iImGCLwACkaFznaFB+PZ1Ee5E7PbA/hMH8XN1+r/Mpn+i94nPgXqHo8TZnfBBXb1j/5UY1oUhKKyB7hGukN5bYhHFIBMk0tzCiRkgy66bRHvWuZW8JMw4yEMObPtphaw3Hsi/Ld2ihGyWYe2kHAckCcDCh9soRXjlftL7VNe+CYkXbXN4uythIG6Dq7cfdBWliSPBmuarHG/F/UKYMKHapUrG0o7+IYV/kc8Dg2icYDFrFtvzdIblA2QovqpYT1IuKWn5EnTCSH0QRm3Ar5J6BTRAU1vMCJUpoyhujvkjJvn3Pi4MZxQt4zBQ9oyZdE2+7Qfdb9lT6sD2h0YO+Rze/7yJAkbS9p2/eMLwlU8CA1nXJttSeqxfM2tfvPOAeWEaMBDc/Bc5R3oKOlxNRrls8UC+yRk8IGN6fFSasdpOM6FeO6LhisZCpzRtEh2054bzSFUdU+J726yCrxQfYKYyq35PrRVPZ+K2uFG8WAAcKtM4QoBuHQ0VXGNBxTaVHhINZDZ3Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(346002)(376002)(396003)(366004)(136003)(451199021)(6512007)(6486002)(83380400001)(186003)(66574015)(36756003)(2616005)(38100700002)(31696002)(86362001)(82960400001)(6506007)(26005)(53546011)(66476007)(66946007)(44832011)(110136005)(66556008)(41300700001)(316002)(5660300002)(31686004)(8936002)(8676002)(2906002)(478600001)(4744005)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SWVFM0lVQmR4bk4wdHNjdHpFS0REMGRFNk9tck5WbUVwSWdlZG5zT0VmSDZu?=
- =?utf-8?B?NjBqVDVObVZNOEJjeFZKVnNGa3BjM0Rud3BYY1VKU0hlcStzcVNVVVJPQTMr?=
- =?utf-8?B?RUY0N2tXNnFodVV1ekp2THIvQnJCSHoxSkpmS2gwaUlEMUZPc2U0NDllUHlJ?=
- =?utf-8?B?Wk9VZk9IRldDZVkrN3RWN3ZrSUJJNzJYRkpjMmF5eG1sMC8raU8zRVE4TCtt?=
- =?utf-8?B?RFViSEhiZlJrQk1zSXJ5OWJhd1dDZGc5bE5EcDNyT29oLzg2Yno3Zk5JdVBD?=
- =?utf-8?B?b3MxUzVJYzNZZkpFWUVCUy9sdUpzSnVLNk5HK1pxK1BGdll3ank1ZFdoVm1m?=
- =?utf-8?B?MUVwVUdRdm5jdUN0R1BaN3NWVXFhMld0Q01Wc2dwdTh5U3FEM0NkbmRLQWxp?=
- =?utf-8?B?MDh6UUdaQ3BCRlpMb0lIbUl6T1hreGRQVHZ4Y1JRVk03UFVtSHpHWFJHblpR?=
- =?utf-8?B?WWhYamlpOXhvSVBCREltYkFXcXYzZmgzSUJKdzRUdFNYcUN4dmcvcHkxZHVC?=
- =?utf-8?B?Y0oyVEpQaXA1NGlmV2tDOStFR1ZxVW83UmdMVUFjMzVla3FUbDdmQ1NBMjBu?=
- =?utf-8?B?YTVoM3FhRld2QXEvNER3TmZDcEpFM2drS0VsK0EwTTZXNGYxVVBIdkVwSW5h?=
- =?utf-8?B?ajI5UEVzTXNFUDlhZlU1ZytDb1hGQW9qWk1pT3Qrb25QZmJVdWE1V1RMNm1B?=
- =?utf-8?B?MFNQTlNzajFtVEQ4Z1VrOTRmMDRhL2UzYjNOVmhVK2N0Mnd2NUx5VWpGZXg4?=
- =?utf-8?B?MkU0MGorRnc0QTFlY01JSVQ2VVdyN0dybnNYS2xWenQvQ0FSMnkwd0thZjA4?=
- =?utf-8?B?K0ZlQ1p4bzZlaXo4dHNYTk1rTW9pOEdtdFcwMEF3VmRHZEcwT0wzOXBiMlZR?=
- =?utf-8?B?WFRKbE1RODFrWVpiMDJDQUJrbGhQam00bnNmeVRjaStzaGduNDdIVDIzWkIy?=
- =?utf-8?B?cEI5MXJ6VDdwQVIvTDkxYnZsTDFlN0J3ZVdNVy96Rml6cE8yNUZqd3hHZXZV?=
- =?utf-8?B?NGNyeC9KN3FZd0pvcEVaZzc2S2hlYmtoeE0xbkx6MS9vZ25qanJuSmQ1LzJW?=
- =?utf-8?B?R2tiT1ZOS1NTY0pVMTZrT2FmMUlsSjhZRkVoRHZOb2lrcWxza1o4L2Z2U2Fw?=
- =?utf-8?B?Y2FUc0gySDZPUEhScGZXQ1Vmb2EwbjVJNHhCazFKdE1jaU1zUzQxUHZtamxE?=
- =?utf-8?B?bllzeUM3OGJmNHRnM0grdWpua0pqUnJwQi9rcFd0V2xVbitxbUlEdzlLUTBX?=
- =?utf-8?B?bGxiZzE2bVV4UVRqQ3YrSkU1MjIzSHhGOGg2NTFrWnhIMVZtTlJBdzJzdW5w?=
- =?utf-8?B?WkRlbjUyeE5sZzRTMzBBaGlwZWxNQ1dyRXJaVlU5dnhMNU9xYnVvT1RKYUpK?=
- =?utf-8?B?akswRXRaREZxVWNXOUIvaTdRNkZtSm9vNHJKbU9nQlcvanRmT2x0cEN0NVg5?=
- =?utf-8?B?VU9ySDRKSXRhaThiblJpQWZKQ01IUE9mVExxMGJ3TzExdnd2NUIvMnRHSUo4?=
- =?utf-8?B?M0FpdDU2UUt1N3ZUU1hYamRxWEMwTkZzL0x3YTZLbkg3SW5lQUJhNk01YXF6?=
- =?utf-8?B?bm1FZ282UnVrZjMwVStBcWxlMGdKaS9jam80dUg3alBibld1UlUvY3hoc3A3?=
- =?utf-8?B?Si91cU5MRFdnYXQ5WHNVSkZ2d2JFMGdBSXJyY0R0MzdWSWM4aGQ4ajQ4eU5G?=
- =?utf-8?B?T0RCRUd0MHAxdEt4bExvaG1tUGU1YmwyclBHMWZmNUpGZnlCTzkxSjk0S25L?=
- =?utf-8?B?WTJxRUhSaXU4eHZVaVYwc0NvdWQ2UnBhNm80N1R6eTN0OWRPSTRIM3RORHJB?=
- =?utf-8?B?dWhoY1RMcFdxemhmRTR6WW1CeUkzaldQd04zOVFJT2pqZjBHY21pRy9ZVkVm?=
- =?utf-8?B?RmhTRFFPNkhVOUlDME9RVjlPZ1dsWmY2amZGdzJubWRnckNtcWNYZnUzYnZj?=
- =?utf-8?B?S1VCVVhJa3gvWWJieGhhUG80WlZDQkh1ZTdlbFk1bnlyOFg5SEtiK3ZuVUYw?=
- =?utf-8?B?NjFrN3krRm0yRjk5OFZPekRueVFwbTIwMEl5RzFvdVVMa3V0U05MZjRNYmlP?=
- =?utf-8?B?ZkZhK3Jsc0JWMSthd3VuNE9tSkoxS0RNZS93UTlYRnBjc29WWUU3MG5xcHNj?=
- =?utf-8?B?ejA0SjZzd2VJRlkwSExPRk1oQUs4MnA3Q2VKRDBJckFGaFkxL2hFNFhOSUNp?=
- =?utf-8?B?S3c9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 841738b9-85ad-4854-3c43-08db83f2c053
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2023 22:44:43.6212
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HwyVtZYy8TFLn1zhM2EPyQMNRMtX699ZNw9jlzPUWC4QYXhI3UkPSJJDJT71z1LjCQCO4aQggdoIL8UxfSHIsrSpoamdOfPUx+qOV1+gRfU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB7370
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        Thu, 13 Jul 2023 18:46:14 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B6EF270B
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 15:46:13 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1b8a7734734so5887415ad.2
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 15:46:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689288373; x=1691880373;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jlviYcHwsz3zgb3Z/9cmi+oU98mhelhtL3RDJqVwSjc=;
+        b=xxlwEtmNqK7eSUJEB804Hz+q428CMYwEVKko8eWqMrpf0Ahj2+mrxahB7oMV/O4F5B
+         1XkCBi7KaovT4IE3C8X4aIQGrmiTvatUY/8Xf6/qJc4BcV+GWzNm5A2vdtPdFC8YE3rx
+         uoLxvosGJYNIykJioP74J4N2k9ScDen4Q8n+BhhU2sPI4CDXdMU18dYIhyACkr14SsNW
+         AWL/CQ1xt1A9wb/F3APVRGFN5zyyX+fD3h69y84wsDocJjRjzwR7OdOrYeeKDzvbavxR
+         Zkrgboh6E8Xe+g9wgMutsgOqEsrJyoNdXJjUHU/V46/BOTbRkoMJ4ikKVK6ve7skAqvB
+         SGhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689288373; x=1691880373;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=jlviYcHwsz3zgb3Z/9cmi+oU98mhelhtL3RDJqVwSjc=;
+        b=RfIqsNspD00Cl62ye/Q8AZQK/EwRtPf5wtSGNLI5SKT0VAIEQctWcwvwFNtgNHWGe8
+         ZhXKMHAIn2z9FXR7oF+UY6qHFgklCIOqjyAF/HQa9g8A129w+NMYceXPiVSVHH+PdmnS
+         JVWUPblU8FQ4CRwazpu4NMWJQPtNBm5nIkZu4ikG/vJ1QvIDGIPyEC4m0XLj83/c+M1f
+         xtXKw04t4069IRUGsJrRQMT1Y7TvgoFHsVKYChNWkcLgsh8w/rs8BN5QiPRGXrOqYsbH
+         DO06ijdOW22Ktayf1PhoCFH0JCTZJXxhoFF6wiA7MlgmOpEGI7SikgVer1iCK6ASkgiU
+         BGbg==
+X-Gm-Message-State: ABy/qLZSXN5w0dy670DCQ/gs344MdRWTOR9tmjtEysEu8Ag4oqerO0z+
+        Iq+Istb8HykxshBbmiqnumafztrM/CgCa5Ar7Q==
+X-Google-Smtp-Source: APBJJlERPG/+eayyUgcaUIRW0xWDavYekBKC7TcOLS/MzLmlBQovbnx1yFNwnYhI8Hf1GI05Y3XFjgiX1sbGXMahCw==
+X-Received: from ackerleytng-ctop.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:13f8])
+ (user=ackerleytng job=sendgmr) by 2002:a17:902:e9c6:b0:1a6:4ce8:3ed5 with
+ SMTP id 6-20020a170902e9c600b001a64ce83ed5mr8890plk.4.1689288373014; Thu, 13
+ Jul 2023 15:46:13 -0700 (PDT)
+Date:   Thu, 13 Jul 2023 22:46:11 +0000
+In-Reply-To: <ZFWli2/H5M8MZRiY@google.com> (message from Sean Christopherson
+ on Fri, 5 May 2023 17:55:39 -0700)
+Mime-Version: 1.0
+Message-ID: <diqzr0pb2zws.fsf@ackerleytng-ctop.c.googlers.com>
+Subject: Re: Rename restrictedmem => guardedmem? (was: Re: [PATCH v10 0/9]
+ KVM: mm: fd-based approach for supporting KVM)
+From:   Ackerley Tng <ackerleytng@google.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     david@redhat.com, chao.p.peng@linux.intel.com, pbonzini@redhat.com,
+        vkuznets@redhat.com, jmattson@google.com, joro@8bytes.org,
+        mail@maciej.szmigiero.name, vbabka@suse.cz, vannapurve@google.com,
+        yu.c.zhang@linux.intel.com, kirill.shutemov@linux.intel.com,
+        dhildenb@redhat.com, qperret@google.com, tabba@google.com,
+        michael.roth@amd.com, wei.w.wang@intel.com, rppt@kernel.org,
+        liam.merwick@oracle.com, isaku.yamahata@gmail.com,
+        jarkko@kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, hughd@google.com, brauner@kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ilpo,
+Sean Christopherson <seanjc@google.com> writes:
 
-On 7/13/2023 6:19 AM, Ilpo Järvinen wrote:
-> The error path in fill_cache() does return before the allocated buffer
-> is freed leaking the buffer.
-> 
-> The leak was introduced when fill_cache_read() started to return errors
-> in c7b607fa9325 ("selftests/resctrl: Fix null pointer dereference on
+> On Fri, May 05, 2023, Ackerley Tng wrote:
+>>
+>> Hi Sean,
+>>
+>> Thanks for implementing this POC!
+>>
+>> ... snip ...
+>>
+>
+> I don't love either approach idea because it means a file created in the =
+context
+> of a VM can outlive the VM itself, and then userspace ends up with a file=
+ descriptor
+> that it can't do anything with except close().  I doubt that matters in p=
+ractice
+> though, e.g. when the VM dies, all memory can be freed so that the file e=
+nds up
+> being little more than a shell.  And if we go that route, there's no need=
+ to grab
+> a reference to the file during bind, KVM can just grab a longterm referen=
+ce when
+> the file is initially created and then drop it when KVM dies (and nullifi=
+es gmem->kvm).
+>
+> ... snip ...
+>
+> My preference is to make it a VM-scoped ioctl(), if it ends up being a KV=
+M ioctl()
+> and not a common syscall.  If the file isn't tightly coupled to a single =
+VM, then
+> punching a hole is further complicated by needing to deal with invalidati=
+ng multiple
+> regions that are bound to different @kvm instances.  It's not super compl=
+ex, but
+> AFAICT having the ioctl() be system-scoped doesn't add value, e.g. I don'=
+t think
+> having one VM own the memory will complicate even if/when we get to the p=
+oint where
+> VMs can share "private" memory, and the gmem code would still need to dea=
+l with
+> grabbing a module reference.
 
-Could you please prefix the sha with "commit" to get a clean
-checkpatch.pl check?
+I=E2=80=99d like to follow up on this discussion about a guest_mem file
+outliving the VM and whether to have a VM-scoped ioctl or a KVM ioctl.
 
-> open failed"), before that both fill functions always returned 0.
-> 
-> Move free() earlier to prevent the mem leak.
-> 
-> Fixes: c7b607fa9325 ("selftests/resctrl: Fix null pointer dereference on open failed")
-> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+Here's a POC of delayed binding of a guest_mem file to a memslot, where
+the guest_mem file outlives the VM [1].
 
-Thank you for catching this.
+I also hope to raise some points before we do the first integration of
+guest_mem patches!
 
-With the changelog update:
 
-Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+A use case for guest_mem inodes outliving the VM is when the host VMM
+needs to be upgraded. The guest_mem inode is passed between two VMs on
+the same host machine and all memory associated with the inode needs to
+be retained.
 
-Reinette
+To support the above use case, binding of memslots is delayed until
+first use, so that the following inode passing flow can be used:
+
+1. Source (old version of host VMM) process passes guest_mem inodes to
+   destination (new version of host VMM) process via unix sockets.
+2. Destination process initializes memslots identical to source process.
+3. Destination process invokes ioctl to migrate guest_mem inode over to
+   destination process by unbinding all memslots from the source VM and
+   binding them to the destination VM. (The kvm pointer is updated in
+   this process)
+
+Without delayed binding, step 2 will fail since initialization of
+memslots would check and find that the kvm pointer in the guest_mem
+inode points to the kvm in the source process.
+
+
+These two patches contain the meat of the changes required to support
+delayed binding:
+
+https://github.com/googleprodkernel/linux-cc/commit/93b31a006ef2e4dbe1ef0ec=
+5d2534ca30f3bf60c
+https://github.com/googleprodkernel/linux-cc/commit/dd5ac5e53f14a1ef9915c9c=
+1e4cc1006a40b49df
+
+Some things to highlight for the approach set out in these two patches:
+
+1. Previously, closing the guest_mem file in userspace=C2=A0is taken to mea=
+n
+   that all associated memory is to be removed and cleared. With these
+   two patches, each memslot also holds a reference to the file (and
+   therefore inode) and so even if the host VMM closes the fd, the VM
+   will be able to continue to function.
+
+   This is desirable to userspace since closing the file should not be
+   interpreted as a command to clear memory. This is aligned with the
+   way tmpfs=C2=A0files are used with KVM before guest_mem: when the file i=
+s
+   closed in userspace, the memory contents are still mapped and can
+   still be used by the VM. fallocate(PUNCH_HOLE) is how userspace
+   should command memory to be removed, just like munmap() would be used
+   to remove memory from use by KVM.
+
+2. Creating a guest mem file no longer depends on a specific VM and
+   hence the guest_mem creation ioctl can be a system ioctl instead of a
+   VM specific ioctl. This will also address Chao's concern at [3].
+
+
+I also separated cleaning up files vs inodes in
+https://github.com/googleprodkernel/linux-cc/commit/0f5aa18910c515141e57e05=
+c4cc791022047a242,
+which I believe is more aligned with how files and inodes are cleaned up
+in FSes. This alignment makes it easier to extend gmem=C2=A0to hugetlb, for
+one. While working on this, I was also wondering if we should perhaps be
+storing the inode pointer in slot->gmem instead of the file pointer? The
+memory is associated with an inode->mapping rather than the file. Are we
+binding to a userspace handle on the inode (store file pointer), or are
+we really referencing the inode (store inode pointer)?
+
+The branch [1] doesn't handle the bug Sean previously mentioned at [2]:
+Need to take a reference on the KVM module, so that even if guest_mem
+files are not bound to any VM, the KVM module cannot be unloaded. If the
+KVM module can be unloaded while guest_mem files are open, then
+userspace may be able to crash the kernel by invoking guest_mem
+functions that had been unloaded together with KVM.
+
+
+[1] https://github.com/googleprodkernel/linux-cc/tree/gmem-delayed-binding
+[2] https://lore.kernel.org/lkml/ZFWli2%2FH5M8MZRiY@google.com/
+[3] https://lore.kernel.org/lkml/20230509124428.GA217130@chaop.bj.intel.com=
+/
