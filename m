@@ -2,94 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D5C2752B25
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 21:46:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96CA8752B2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 21:48:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233306AbjGMTqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 15:46:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39654 "EHLO
+        id S231709AbjGMTsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 15:48:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230142AbjGMTqX (ORCPT
+        with ESMTP id S230138AbjGMTsI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 15:46:23 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 435FA269D;
-        Thu, 13 Jul 2023 12:46:22 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C697F61B44;
-        Thu, 13 Jul 2023 19:46:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49D17C433C7;
-        Thu, 13 Jul 2023 19:46:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689277581;
-        bh=AGrJTyF1kQCmjhSQd29qxN+hkwd04kIQUDVunqRAgNU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OUb+x1Htqgdv9RFiQ/Ndl3aK9jclOdtAP/pomFM90Jgj77KpThOU6Lxr/+QilisyN
-         bXBtvp1S6DrDX/igCXgsyY4Bkw/qK3c9k/tHIZnwI891cYsEc+WRUyeG3ipoNGb59N
-         IHrLNgqNooqTHZSwHxbVYbI6GO/wZg/rbx5xRWcTtMKLwy5FhT5zze6VTK5to3Nctl
-         axXvEzuzBrR7S2aZikScrZ1hd9ijpJ+892FhgS5XyUO6islmNH179PU5qQXHPtM9mr
-         oQTE8v0UESWmYR6qNSV+uaIh6xpTpENac8yHgmxWG6FDXJmG8O0zR+DzUSmMQlGrvk
-         519OZ5ylSuvxQ==
-Date:   Thu, 13 Jul 2023 20:46:16 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Wei Xu <xuwei5@hisilicon.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: arm: hisilicon,cpuctrl: Merge
- "hisilicon,hix5hd2-clock" into parent binding
-Message-ID: <20230713-encounter-earmuff-ca0edd40e57b@spud>
-References: <20230707210700.869060-1-robh@kernel.org>
+        Thu, 13 Jul 2023 15:48:08 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5668E2724;
+        Thu, 13 Jul 2023 12:48:07 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id ca18e2360f4ac-7837329a00aso39929139f.2;
+        Thu, 13 Jul 2023 12:48:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689277686; x=1691869686;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TQKDTkoWZPUpNGxKDSJ4dzeo/1BxtJ5U/WdKrNfLRH8=;
+        b=dUz9qPmFSv1nBpZjQIWVenvDX71b7rzbJPcijCEUBYXxozGAYtVnGeZXnzNXMKenT/
+         R6kUxUmYqeEs2AiXZhAzy3eb3CltElJdC1vpFRz1aXdND4q6kK/ivO2BYwfU2ambpj9Q
+         K0xjD0ySvtl9MpAVeI8eN4+tW2DCcMssKUJUHwq5ODW0XjVBgJgC5NwnmC52SJTq+GfT
+         +vrWLIt2qEncRbOHY/VFJ4tS1ShzbxeoVi9KRpHcNi665QYbyxuIWgzPD5yk2iVe8d81
+         4FLPOOQZ/yPvb5RTQAvM9rKJ5ghTKWO7La+xrsF0mcuXJ46Zq+vJEYKwm8TosZ2br1T7
+         jMzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689277686; x=1691869686;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TQKDTkoWZPUpNGxKDSJ4dzeo/1BxtJ5U/WdKrNfLRH8=;
+        b=H7EPTbt1wBiKyk/WTKvNX++4m5161tMC0USZNlwHx+1dsG/XUmtAFSTSBoY2TRTUPo
+         hqNRVtKQeDTv7JoJurC2+0FokFC6/0xCue2Rpi8Hsx5D4h5zOzM9FV4aGVbKYIpXjTKf
+         d6o0efIGMnntp0WqnnglMyng2N7Vl+m5RzXNay75mAe/sS2RbKnPoP/l97Hrs8hIkkAB
+         7M44Ogw5aBWqTQYrKePGCECyMt3wMxbX8nCde+zU7NeusUACOGzpWaSu3S6vxgj9o/n0
+         9+36xzf29q8sm4RmIwnPXDkVk2VhHpotavxh1tSGy1bZa/Sfnch0wzu8r6NM3oUCKDXV
+         zbxQ==
+X-Gm-Message-State: ABy/qLagmHgumYNwUzN4cQ58AHxZ7q6ado01XkiWUN71jTbZc4bd1pGm
+        hSU7NB1GSz4GgPV+D4tLFNY=
+X-Google-Smtp-Source: APBJJlGro/zqjnuY9gy47z2GPd38MalaLr8oHlhnQr67G6DOTwls4bQrnQ20nlXK3urtEgaJxCJ6Rw==
+X-Received: by 2002:a5e:a519:0:b0:786:e0d0:78b4 with SMTP id 25-20020a5ea519000000b00786e0d078b4mr2881191iog.9.1689277686393;
+        Thu, 13 Jul 2023 12:48:06 -0700 (PDT)
+Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
+        by smtp.gmail.com with ESMTPSA id s22-20020a02cc96000000b0041d859c5721sm2094051jap.64.2023.07.13.12.48.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Jul 2023 12:48:05 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 13 Jul 2023 09:48:04 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrea Righi <andrea.righi@canonical.com>, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
+        joshdon@google.com, brho@google.com, pjt@google.com,
+        derkling@google.com, haoluo@google.com, dvernet@meta.com,
+        dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@meta.com
+Subject: Re: [PATCH 27/34] sched_ext: Implement SCX_KICK_WAIT
+Message-ID: <ZLBU9O-f9vHcSmNP@slm.duckdns.org>
+References: <20230711011412.100319-1-tj@kernel.org>
+ <20230711011412.100319-28-tj@kernel.org>
+ <ZLAAEnd2HOinKrA+@righiandr-XPS-13-7390>
+ <CAHk-=wiT-nr-kRON8vToQSbMhijztp8LV=Y0PgjLJhgDPckxPA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="adCi25htn3vGAWbH"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230707210700.869060-1-robh@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAHk-=wiT-nr-kRON8vToQSbMhijztp8LV=Y0PgjLJhgDPckxPA@mail.gmail.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
---adCi25htn3vGAWbH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Thu, Jul 13, 2023 at 11:32:37AM -0700, Linus Torvalds wrote:
+> On Thu, 13 Jul 2023 at 06:46, Andrea Righi <andrea.righi@canonical.com> wrote:
+> >
+> > I'm not sure if we already have an equivalent of
+> > smp_store_release_u64/smp_load_acquire_u64(). Otherwise, it may be worth
+> > to add them to a more generic place.
+> 
+> Yeah, a 64-bit atomic load/store is not necessarily even possible on
+> 32-bit architectures.
+> 
+> And when it *is* possible, it might be very very expensive indeed (eg
+> on 32-bit x86, the way to do a 64-bit load would be with "cmpxchg8b",
+> which is ridiculously slow)
 
-On Fri, Jul 07, 2023 at 03:07:00PM -0600, Rob Herring wrote:
-> -Each clock is assigned an identifier and client nodes use this identifier
-> -to specify the clock which they consume.
+There are two places where sched_ext is depending on atomic load/store.
+One's this pnt_seq which is using smp_store_release/load_acquire(). The
+other is task_struct->scx.ops_state which uses atomic64_read_acquire() and
+atomic64_store_release(). atomic64's are implemented with spinlocks on
+32bits by default which is probably why Andrea didn't hit it.
 
-> -All these identifier could be found in <dt-bindings/clock/hix5hd2-clock.h>.
+pnt_seq is a per-cpu counter for successful pick_next_task's from sched_ext
+and used to tell "has at least one pick_next_task() succeeded after my
+kicking that CPU".
 
-Might've been nice to preserve the reference to the header containing
-the defines?
+p->scx_ops.state has embedded qseq counter (2bits for state flags, the rest
+for the counter. I gotta change the masks to macros too.) which is used to
+detect whether the task has been dequeued and re-enqueued between while a
+CPU is trying to double lock rq's for task migration.
 
-Either way, this seems to have sat for a bit so,
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+As both are used to detect races in very short and immediate time windows,
+using, respectively, 32bit and 30bit, should be safe practically. e.g. while
+it's theoretically possible for the task to be dequeued and re-enqueued
+exactly 2^30 times while the CPU is trying to switch rq locks, I don't think
+that's practically possible without something going very wrong with the
+machine (e.g. NMI / SMI).
 
-Cheers,
-Conor.
+I'll note the above and change both to unsigned longs.
 
---adCi25htn3vGAWbH
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks.
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZLBUiAAKCRB4tDGHoIJi
-0quRAQDmc+bJ5QjRN9aDgaZD7JitN5GsZ1G7TexzypuR9ELl/wD+In6o2DXNID7x
-VIoDxySl+hzN+FrFvzXAHfutd9X6kAI=
-=DQuz
------END PGP SIGNATURE-----
-
---adCi25htn3vGAWbH--
+-- 
+tejun
