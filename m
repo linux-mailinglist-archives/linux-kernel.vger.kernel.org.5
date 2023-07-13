@@ -2,422 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30BAC751F6E
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 13:05:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FB15751F71
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 13:05:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233480AbjGMLFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 07:05:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50360 "EHLO
+        id S233106AbjGMLFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 07:05:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231891AbjGMLFM (ORCPT
+        with ESMTP id S231891AbjGMLFu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 07:05:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C424C211C
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 04:04:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689246267;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=dPHYn3i85bgtIPhwWNtefstu+BtnMyOoT7Fb2iJ/lDY=;
-        b=ceTs0qo8nxttt1MGIZRQUgVp50Eo9Ce7Yzzb+2fAvDjx1xktRbvSDZpGmhQfgsJZK2F1Iy
-        IriLBthg+gHQCGjr9lG8rEK4wWY+bTc5Y2GH4y8QnR+On2fAHWHM18aJK2I6Cpehm0OU15
-        F9wveH2n/u+sTmU59euJGLLyEiR9Eyo=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-375-c5vW48rUMCa2hHl6obCHSg-1; Thu, 13 Jul 2023 07:04:26 -0400
-X-MC-Unique: c5vW48rUMCa2hHl6obCHSg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C69358F9E43;
-        Thu, 13 Jul 2023 11:04:25 +0000 (UTC)
-Received: from gerbillo.redhat.com (unknown [10.45.225.12])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 893C7F66D6;
-        Thu, 13 Jul 2023 11:04:24 +0000 (UTC)
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     torvalds@linux-foundation.org
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Networking for 6.5-rc2
-Date:   Thu, 13 Jul 2023 13:04:15 +0200
-Message-ID: <20230713110415.38918-1-pabeni@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+        Thu, 13 Jul 2023 07:05:50 -0400
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2122.outbound.protection.outlook.com [40.107.255.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8FA0211C;
+        Thu, 13 Jul 2023 04:05:47 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ge85yAeRbmoTqkl3PZ8j/s5oPXFdxDe7ExzNY0JoF1KQVy4p1dGnN2J95iGYf6fra+PkvUiN7xfBtmo1WgOp5dokd0h7p2teOInF2kBtMWSf+NcnPZruUJM8xStrBinBjTzF+h+z7ZDxGtD1R021AlZ8OXAiTIfzea6QATK1qlwioi5ii0tPKcVfrkCKTJM9O2KUaIAnbLiQrDljiQXXBAJ9SY4+Qm06kX/sWnQ/sBwmHNbkkXclZ83vZ/12N7U69p0W9+0oIOt16EpoVIZBS+/8DY2wVUCEyMPRH7gBo7ssTrXrXDEK8iKs6UmBTs8ItfOhw1f1iX3Hsup+GVxLUA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=OJ4aHi2/QlKSI9gpcQ3FCcZBADISTe8CrPt8NhidorM=;
+ b=JTW9sS6Y3WqId+FWl1QQDzKe9c7oCM6alPCnZjs868+BdW7bwhElurompGQ5jrKXFRBupT4X82UEuU48v/sGCS9dBa8ZfqSGGAhAGA3AczhpUb6gc0k3A6ZWv+2E8x7MUtVtsAjyr1HrNYy2Z9BMM7Ue2W8egOytxG/HnY6BjQxhHyIk0lSO2VvljHXWV77wxBJIBoAy2LRJ2dAYiSKpaSqhlDowFkR+Fhn5LdI3gI2iebMmQUM62UU2PC3jBfSfGwKW2zdxTPuj/w0/mG3aCBuaWxXuUlOpsUXOENEegVuiQBG3rBcvj5dUOuC5i9+hrcDL3chihg7TlJi5V+tlXg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OJ4aHi2/QlKSI9gpcQ3FCcZBADISTe8CrPt8NhidorM=;
+ b=M9Ag+ZrG8W/xeH/FbcrQmGHQ+3QCnyD1rjL+ixZq1T5Sk7eua84QFZ+S1aFRaH47LElA3LLjaJZIyYOgvw0imeFIiqDoYaLsc+nr/nw2KMyi6PED/LYiI+R6isv24j64uLzKovInPGqFGWdAmlTTW5QKSQcdNsP/THf9ecIAtOsYTCeKouyOS2z9sLADO3Fo8haIU2nCcfk3bhLpBGdOk9oHG3V11GZArWwfMSS3icpP4iDRRI8gpnyASPM5j0MAt0w1PKl3KNmzAZxiR3UI3HwZhv89mrhMR4/O4ckStEUJc1MzHei7Xaf7Z/+JbRSnASH3TDRZ6Lo2qFEwF/6QUA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from SG2PR06MB3743.apcprd06.prod.outlook.com (2603:1096:4:d0::18) by
+ TYZPR06MB6403.apcprd06.prod.outlook.com (2603:1096:400:428::9) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6588.20; Thu, 13 Jul 2023 11:05:44 +0000
+Received: from SG2PR06MB3743.apcprd06.prod.outlook.com
+ ([fe80::2a86:a42:b60a:470c]) by SG2PR06MB3743.apcprd06.prod.outlook.com
+ ([fe80::2a86:a42:b60a:470c%4]) with mapi id 15.20.6588.024; Thu, 13 Jul 2023
+ 11:05:44 +0000
+From:   Wang Ming <machel@vivo.com>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     opensource.kernel@vivo.com, Wang Ming <machel@vivo.com>
+Subject: [PATCH v1] fs: Fix error checking for d_hash_and_lookup()
+Date:   Thu, 13 Jul 2023 19:05:00 +0800
+Message-Id: <20230713110513.5626-1-machel@vivo.com>
+X-Mailer: git-send-email 2.25.1
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-ClientProxiedBy: SG2P153CA0023.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c7::10)
+ To SG2PR06MB3743.apcprd06.prod.outlook.com (2603:1096:4:d0::18)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SG2PR06MB3743:EE_|TYZPR06MB6403:EE_
+X-MS-Office365-Filtering-Correlation-Id: 604016a3-3395-4b48-ac40-08db83911a7c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ReVBy+s07cmEuF01dQvnQ/CCzSsf58ZAUaZhB86Snc8In9J6wczx+pl1zUOcvIWtUfzGZ1pYpsgaBs62yA1+SV5Ns5kM6ozfSsiBcub+MBFgpYZ3mCMDYUMkDWzFpDFWWO7N3nB91+FVAgpg3AqUz7OwRlk1aup7lcEy6M7TC/2iBH2qyTpU2djBOQkjMkE3a7idbQP9K26vHMmtGii9CnIOFHWFMpcryGQei8wVLHztEJBjakItXMCeYE4L4Bb2y2l+z2wwJiNWarvjjdlUKlIcf3op1qpmCIHFWcQ2y8bUd2RPrIwFoHqnahkR407XFuNvqC8Qw3tYU1fvEBLbrmXrbd6ID0K0YoTUZO9C9jT0mGtO9VUpgyu7LoKfq2gA2thzDKB4cePtujghhLoXIxCGKEwd1qr5KsP6IWNwM/CHxKgFyQm0BRQS6dih4qFt2uPNcDLruAaz89fsNp6pYHA0EwMgen1NOgZBhG5709Zrh8E1q1yZK9qNqSVNNfDY7UJUTd09T0+OUHE7SCir1VsQlKuYGLCkggfeXR66LQo9dYkinvMPZyU6hKaFuocAN2H/cjA7vHDzU0BxIF4WxtJbOtS+1oidjw6HWDkQCcX7op3o4eo3AOys7lRdq2PM
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB3743.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(136003)(366004)(39850400004)(396003)(346002)(451199021)(4744005)(41300700001)(8936002)(316002)(2906002)(8676002)(5660300002)(66556008)(66946007)(66476007)(4326008)(26005)(38350700002)(107886003)(6506007)(1076003)(38100700002)(86362001)(6666004)(83380400001)(36756003)(6512007)(52116002)(6486002)(2616005)(110136005)(478600001)(186003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?lRO0VlKNkOsR2lcOk9eXP3E4mN/DfRiAL2D3t8kIjWykx+DkrjPuVb+PD8P8?=
+ =?us-ascii?Q?F5WwQGO6KrA4LOtmrZpC4DqtsayuUcLdgLb7bjZ6WWbWn6OWGTJAyewB4X5f?=
+ =?us-ascii?Q?T5twisJHUsVHkZHZjn1NqHdiywM+pYSFnfXTonqoBr4yUiZ1npo/7tvNoPOF?=
+ =?us-ascii?Q?q5NaMvLVwuhzY87r7ikLcjfWaHfJUG/+riXCyW3CzlK7qqhn9kg9lq06Cy/e?=
+ =?us-ascii?Q?p2Ny9OHuMEajqGFWY54/FQTDA5pixXzkHRS3EoNbBo+Vlo/XJaaX9wiOygxR?=
+ =?us-ascii?Q?C+N3vTPRHculLVSrsY38exR8ECLESiVXwxGJUGEXOo3aSeslkq7A41nPPdiG?=
+ =?us-ascii?Q?pICG/Ip+6M13k43X/hT+H1Qgo0DaEtpoi36UFRBRCLBgPqHfpqF1l1atIVJ9?=
+ =?us-ascii?Q?KcgIeUub8oZQXuTOmWVL/HyMYrp2mJmx5j1VtK1sYnxrM31mokHCacuYKxyV?=
+ =?us-ascii?Q?8S6kkdo8wFFNyBDY7YerCBpBqRY8jnE3UYpasFq3uNwWA3p5ZvU4X4/QFX6J?=
+ =?us-ascii?Q?pzHl/FcMDMnZ4DZPr8FxzbdD+ICdeSF7dtrGMKqrvQ6vhwB7FGFFEOSkQMLH?=
+ =?us-ascii?Q?Q433prCItc6CRiBcESWCPYd7DQwIjSdANCpTEcDvldY5ou/aC/GieuwqwowM?=
+ =?us-ascii?Q?DTRQ91aP8PEB2u6m+TjyvLUo0H76tG5M0AB48kw81njW7aL57+ZKBez0yw6b?=
+ =?us-ascii?Q?R2KzCo/uGVxynlvMcNwgRCLKfUTXx591ta0N2tsVRac5UNOznNlvmv2/gITz?=
+ =?us-ascii?Q?mrWIBebeb4zwwplcpnA2oqvdkeCIL22VsLRQJH+57/iz5k69p0SPMo431Hm2?=
+ =?us-ascii?Q?yv7vdO6Gj6DGLMUI0Fb0eED1r6yFoJyNmQ5A3rEPUdfrUBD7+z6iXTQ59AAF?=
+ =?us-ascii?Q?Ngyks24kbA7t8SRUE+p9sgb3ffXWi+n6fwdVvAQI1H+hM9mg6+tJ9IgLvrn9?=
+ =?us-ascii?Q?PZXgWB6l8QSfg+Q+2ObOtrI49xIF3TBDiwr8j+yvTK6+Ck5xM/PK50/lNN7Z?=
+ =?us-ascii?Q?MLIoQFjl8H1+TvOVwgTlOP+bo6evb2N2MkM7OfUN3SEGzCMTMHWDrGCMzfg/?=
+ =?us-ascii?Q?Cwy+NF3+qmS6tAj5cCeyiiwEo5bWfwZVYRPKoxUYe4g/00eIhDDqXkDO2q99?=
+ =?us-ascii?Q?XBN9gCsaE80S8K1vwPEYQwlp2V36I9EQRs2Y6VDOD/G1teoPh3C6kANzpTgx?=
+ =?us-ascii?Q?UB57BjEW+3npA3Mqjn97VGbMD2zT74FtZA125a31v1euUVMSVDs+2AfhSg0/?=
+ =?us-ascii?Q?j50k3WT+czLV1/kdzpsyfAcAKX2EBDSbg0EtwsfvGHgga0DF10PcduuDixh8?=
+ =?us-ascii?Q?+cWyFV0fdvS7wtmYI0T8OIRaVu81ktASOh8DQVIHddPMwmWMKEWgdZY2rUnC?=
+ =?us-ascii?Q?Iy6LmsznTEC3exBsfrvAzMTdy06LievOX1J+YJIW6kUlFN77bBIOtQ25EtxD?=
+ =?us-ascii?Q?IHusa8P4SvOp9CCzGVps5sa5u1ZzocTsWrP1ozuILXbL9mP9bgtucH8h8aaG?=
+ =?us-ascii?Q?uU8cKPjeaJ/bJXhQShtQnHtHvYO6mqpNp/6LBFvMcpcB/9LGB2QF0VBG8iex?=
+ =?us-ascii?Q?Wxk1Sf5yzvMmyhoHRewYb//6lGcP5Lp5iw0c/Cgl?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 604016a3-3395-4b48-ac40-08db83911a7c
+X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB3743.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2023 11:05:44.2379
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: e+oxsu+H43Ng5AcG1k734aR7Jo4TLRkFyLl/Iq7vGWaskpU+P7KzIpBv9wV28d03JoIMcRtK8ONy+fmfHHM/DA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR06MB6403
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus!
-
-Notably this includes the fix for the WiFi regression you were
-waiting for. 
-
-The following changes since commit 6843306689aff3aea608e4d2630b2a5a0137f827:
-
-  Merge tag 'net-6.5-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net (2023-07-05 15:44:45 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-6.5-rc2
-
-for you to fetch changes up to 9d23aac8a85f69239e585c8656c6fdb21be65695:
-
-  Merge branch 'net-sched-fixes-for-sch_qfq' (2023-07-13 11:12:01 +0200)
-
-----------------------------------------------------------------
-Networking fixes for 6.5-rc2, including fixes from netfilter,
-wireless and ebpf
-
-Current release - regressions:
-
-  - netfilter: conntrack: gre: don't set assured flag for clash entries
-
-  - wifi: iwlwifi: remove 'use_tfh' config to fix crash
-
-Previous releases - regressions:
-
-  - ipv6: fix a potential refcount underflow for idev
-
-  - icmp6: ifix null-ptr-deref of ip6_null_entry->rt6i_idev in icmp6_dev()
-
-  - bpf: fix max stack depth check for async callbacks
-
-  - eth: mlx5e:
-    - check for NOT_READY flag state after locking
-    - fix page_pool page fragment tracking for XDP
-
-  - eth: igc:
-    - fix tx hang issue when QBV gate is closed
-    - fix corner cases for TSN offload
-
-  - eth: octeontx2-af: Move validation of ptp pointer before its usage
-
-  - eth: ena: fix shift-out-of-bounds in exponential backoff
-
-Previous releases - always broken:
-
-  - core: prevent skb corruption on frag list segmentation
-
-  - sched:
-    - cls_fw: fix improper refcount update leads to use-after-free
-    - sch_qfq: account for stab overhead in qfq_enqueue
-
-  - netfilter:
-    - report use refcount overflow
-    - prevent OOB access in nft_byteorder_eval
-
-  - wifi: mt7921e: fix init command fail with enabled device
-
-  - eth: ocelot: fix oversize frame dropping for preemptible TCs
-
-  - eth: fec: recycle pages for transmitted XDP frames
-
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
-
-----------------------------------------------------------------
-Alexei Starovoitov (1):
-      Merge branch 'Fix for check_max_stack_depth'
-
-Andrew Halaney (1):
-      MAINTAINERS: Add another mailing list for QUALCOMM ETHQOS ETHERNET DRIVER
-
-Aravindhan Gunasekaran (1):
-      igc: Handle PPS start time programming for past time values
-
-Azeem Shaikh (1):
-      net: sched: Replace strlcpy with strscpy
-
-Björn Töpel (1):
-      riscv, bpf: Fix inconsistent JIT image generation
-
-Dan Carpenter (1):
-      netdevsim: fix uninitialized data in nsim_dev_trap_fa_cookie_write()
-
-David S. Miller (3):
-      Merge branch '1GbE' of git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/net-queue
-      Merge branch 's390-ism-fixes'
-      Merge branch '1GbE' of git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/net-queue
-
-Dragos Tatulea (2):
-      net/mlx5e: RX, Fix flush and close release flow of regular rq for legacy rq
-      net/mlx5e: RX, Fix page_pool page fragment tracking for XDP
-
-Eric Dumazet (1):
-      udp6: fix udp6_ehashfn() typo
-
-Felix Fietkau (1):
-      wifi: cfg80211: fix receiving mesh packets without RFC1042 header
-
-Florent Revest (1):
-      netfilter: conntrack: Avoid nf_ct_helper_hash uses after free
-
-Florian Kauer (6):
-      igc: Rename qbv_enable to taprio_offload_enable
-      igc: Do not enable taprio offload for invalid arguments
-      igc: Handle already enabled taprio offload for basetime 0
-      igc: No strict mode in pure launchtime/CBS offload
-      igc: Fix launchtime before start of cycle
-      igc: Fix inserting of empty frame for launchtime
-
-Florian Westphal (2):
-      netfilter: conntrack: gre: don't set assured flag for clash entries
-      netfilter: conntrack: don't fold port numbers into addresses before hashing
-
-Ido Schimmel (1):
-      net/sched: flower: Ensure both minimum and maximum ports are specified
-
-Ivan Babrou (1):
-      udp6: add a missing call into udp_fail_queue_rcv_skb tracepoint
-
-Jakub Kicinski (5):
-      Merge branch 'fix-dropping-of-oversize-preemptible-frames-with-felix-dsa-driver'
-      Merge tag 'mlx5-fixes-2023-07-05' of git://git.kernel.org/pub/scm/linux/kernel/git/saeed/linux
-      Merge branch '100GbE' of git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/net-queue
-      docs: netdev: update the URL of the status page
-      Merge tag 'for-netdev' of https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf
-
-Jiasheng Jiang (1):
-      net: dsa: qca8k: Add check for skb_copy
-
-Jiawen Wu (1):
-      net: txgbe: fix eeprom calculation error
-
-Johannes Berg (1):
-      wifi: iwlwifi: remove 'use_tfh' config to fix crash
-
-Junfeng Guo (2):
-      gve: Set default duplex configuration to full
-      gve: unify driver name usage
-
-Klaus Kudielka (1):
-      net: mvneta: fix txq_map in case of txq_number==1
-
-Krister Johansen (1):
-      net: ena: fix shift-out-of-bounds in exponential backoff
-
-Kumar Kartikeya Dwivedi (2):
-      bpf: Fix max stack depth check for async callbacks
-      selftests/bpf: Add selftest for check_stack_max_depth bug
-
-Kuniyuki Iwashima (1):
-      icmp6: Fix null-ptr-deref of ip6_null_entry->rt6i_idev in icmp6_dev().
-
-Larysa Zaremba (1):
-      xdp: use trusted arguments in XDP hints kfuncs
-
-Lu Hongfei (1):
-      net: dsa: Removed unneeded of_node_put in felix_parse_ports_node
-
-M A Ramdhan (1):
-      net/sched: cls_fw: Fix improper refcount update leads to use-after-free
-
-Maher Sanalla (1):
-      net/mlx5: Query hca_cap_2 only when supported
-
-Muhammad Husaini Zulkifli (3):
-      igc: Add condition for qbv_config_change_errors counter
-      igc: Remove delay during TX ring configuration
-      igc: Fix TX Hang issue when QBV Gate is closed
-
-Niklas Schnelle (3):
-      s390/ism: Fix locking for forwarding of IRQs and events to clients
-      s390/ism: Fix and simplify add()/remove() callback handling
-      s390/ism: Do not unregister clients with registered DMBs
-
-Nitya Sunkad (1):
-      ionic: remove WARN_ON to prevent panic_on_warn
-
-Pablo Neira Ayuso (1):
-      netfilter: nf_tables: report use refcount overflow
-
-Paolo Abeni (4):
-      Merge tag 'nf-23-07-06' of git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf
-      net: prevent skb corruption on frag list segmentation
-      Merge branch 'net-fec-fix-some-issues-of-ndo_xdp_xmit'
-      Merge branch 'net-sched-fixes-for-sch_qfq'
-
-Pedro Tammela (5):
-      net/sched: make psched_mtu() RTNL-less safe
-      net/sched: sch_qfq: reintroduce lmax bound check for MTU
-      selftests: tc-testing: add tests for qfq mtu sanity check
-      net/sched: sch_qfq: account for stab overhead in qfq_enqueue
-      selftests: tc-testing: add test for qfq with stab overhead
-
-Prasad Koya (1):
-      igc: set TP bit in 'supported' and 'advertising' fields of ethtool_link_ksettings
-
-Pu Lehui (1):
-      bpf: cpumap: Fix memory leak in cpu_map_update_elem
-
-Quan Zhou (1):
-      wifi: mt76: mt7921e: fix init command fail with enabled device
-
-Rafał Miłecki (1):
-      net: bgmac: postpone turning IRQs off to avoid SoC hangs
-
-Randy Dunlap (1):
-      wifi: airo: avoid uninitialized warning in airo_get_rate()
-
-Ratheesh Kannoth (1):
-      octeontx2-af: Promisc enable/disable through mbox
-
-Saeed Mahameed (1):
-      net/mlx5: Register a unique thermal zone per device
-
-Sai Krishna (1):
-      octeontx2-af: Move validation of ptp pointer before its usage
-
-Shannon Nelson (1):
-      ionic: remove dead device fail path
-
-Simon Horman (1):
-      net: lan743x: select FIXED_PHY
-
-Sridhar Samudrala (2):
-      ice: Fix max_rate check while configuring TX rate limits
-      ice: Fix tx queue rate limit when TCs are configured
-
-Suman Ghosh (1):
-      octeontx2-pf: Add additional check for MCAM rules
-
-Tan Tee Min (1):
-      igc: Include the length/type field and VLAN tag in queueMaxSDU
-
-Thadeu Lima de Souza Cascardo (2):
-      netfilter: nf_tables: do not ignore genmask when looking up chain by id
-      netfilter: nf_tables: prevent OOB access in nft_byteorder_eval
-
-Vlad Buslov (1):
-      net/mlx5e: Check for NOT_READY flag state after locking
-
-Vladimir Oltean (3):
-      net: mscc: ocelot: extend ocelot->fwd_domain_lock to cover ocelot->tas_lock
-      net: dsa: felix: make vsc9959_tas_guard_bands_update() visible to ocelot->ops
-      net: mscc: ocelot: fix oversize frame dropping for preemptible TCs
-
-Wei Fang (4):
-      net: fec: dynamically set the NETDEV_XDP_ACT_NDO_XMIT feature of XDP
-      net: fec: recycle pages for transmitted XDP frames
-      net: fec: increase the size of tx ring and update tx_wake_threshold
-      net: fec: use netdev_err_once() instead of netdev_err()
-
-Yevgeny Kliteynik (1):
-      net/mlx5e: TC, CT: Offload ct clear only once
-
-Zhang Shurong (1):
-      wifi: rtw89: debug: fix error code in rtw89_debug_priv_send_h2c_set()
-
-Zhengchao Shao (3):
-      net/mlx5e: fix double free in mlx5e_destroy_flow_table
-      net/mlx5e: fix memory leak in mlx5e_fs_tt_redirect_any_create
-      net/mlx5e: fix memory leak in mlx5e_ptp_open
-
-Ziyang Xuan (1):
-      ipv6/addrconf: fix a potential refcount underflow for idev
-
- Documentation/process/maintainer-netdev.rst        |   2 +-
- MAINTAINERS                                        |   1 +
- arch/riscv/net/bpf_jit.h                           |   6 +-
- arch/riscv/net/bpf_jit_core.c                      |  19 ++-
- drivers/net/dsa/ocelot/felix.c                     |  10 +-
- drivers/net/dsa/ocelot/felix.h                     |   1 -
- drivers/net/dsa/ocelot/felix_vsc9959.c             |  59 ++++---
- drivers/net/dsa/qca/qca8k-8xxx.c                   |   3 +
- drivers/net/ethernet/amazon/ena/ena_com.c          |   3 +
- drivers/net/ethernet/broadcom/bgmac.c              |   4 +-
- drivers/net/ethernet/freescale/fec.h               |  17 +-
- drivers/net/ethernet/freescale/fec_main.c          | 166 +++++++++++++-------
- drivers/net/ethernet/google/gve/gve.h              |   1 +
- drivers/net/ethernet/google/gve/gve_ethtool.c      |   5 +-
- drivers/net/ethernet/google/gve/gve_main.c         |  11 +-
- drivers/net/ethernet/intel/ice/ice_main.c          |  23 ++-
- drivers/net/ethernet/intel/ice/ice_tc_lib.c        |  22 +--
- drivers/net/ethernet/intel/ice/ice_tc_lib.h        |   1 +
- drivers/net/ethernet/intel/igc/igc.h               |   9 +-
- drivers/net/ethernet/intel/igc/igc_ethtool.c       |   2 +
- drivers/net/ethernet/intel/igc/igc_main.c          |  98 ++++++++----
- drivers/net/ethernet/intel/igc/igc_ptp.c           |  25 ++-
- drivers/net/ethernet/intel/igc/igc_tsn.c           |  68 ++++++--
- drivers/net/ethernet/marvell/mvneta.c              |   4 +-
- drivers/net/ethernet/marvell/octeontx2/af/ptp.c    |  19 ++-
- drivers/net/ethernet/marvell/octeontx2/af/rvu.c    |   2 +-
- .../net/ethernet/marvell/octeontx2/af/rvu_nix.c    |  11 +-
- .../ethernet/marvell/octeontx2/af/rvu_npc_hash.c   |  23 ++-
- .../ethernet/marvell/octeontx2/nic/otx2_flows.c    |   8 +
- .../net/ethernet/marvell/octeontx2/nic/otx2_tc.c   |  15 ++
- .../mellanox/mlx5/core/en/fs_tt_redirect.c         |   6 +-
- drivers/net/ethernet/mellanox/mlx5/core/en/ptp.c   |   6 +-
- drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c |  14 +-
- drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.h |   1 +
- drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c   |   3 +-
- .../ethernet/mellanox/mlx5/core/en_accel/fs_tcp.c  |   1 +
- drivers/net/ethernet/mellanox/mlx5/core/en_rx.c    |  44 +++---
- drivers/net/ethernet/mellanox/mlx5/core/en_tc.c    |   6 +-
- drivers/net/ethernet/mellanox/mlx5/core/eswitch.c  |   3 +
- drivers/net/ethernet/mellanox/mlx5/core/thermal.c  |  19 ++-
- drivers/net/ethernet/microchip/Kconfig             |   2 +-
- drivers/net/ethernet/mscc/ocelot.c                 |   1 -
- drivers/net/ethernet/mscc/ocelot_mm.c              |  14 +-
- .../net/ethernet/pensando/ionic/ionic_bus_pci.c    |   6 -
- drivers/net/ethernet/pensando/ionic/ionic_lif.c    |   5 -
- drivers/net/ethernet/wangxun/txgbe/txgbe_hw.c      |   3 -
- drivers/net/netdevsim/dev.c                        |   9 +-
- drivers/net/wireless/cisco/airo.c                  |   5 +-
- drivers/net/wireless/intel/iwlwifi/cfg/22000.c     |   5 -
- drivers/net/wireless/intel/iwlwifi/iwl-config.h    |   2 -
- drivers/net/wireless/intel/iwlwifi/iwl-fh.h        |   4 +-
- drivers/net/wireless/intel/iwlwifi/iwl-trans.c     |   6 +-
- drivers/net/wireless/intel/iwlwifi/mvm/mvm.h       |   2 +-
- drivers/net/wireless/intel/iwlwifi/pcie/trans.c    |   4 +-
- drivers/net/wireless/intel/iwlwifi/pcie/tx.c       |   2 +-
- drivers/net/wireless/intel/iwlwifi/queue/tx.c      |  10 +-
- drivers/net/wireless/intel/iwlwifi/queue/tx.h      |   8 +-
- drivers/net/wireless/mediatek/mt76/mt7921/dma.c    |   4 -
- drivers/net/wireless/mediatek/mt76/mt7921/mcu.c    |   8 -
- drivers/net/wireless/mediatek/mt76/mt7921/pci.c    |   8 +
- drivers/net/wireless/realtek/rtw89/debug.c         |   5 +-
- drivers/s390/net/ism_drv.c                         | 139 ++++++++--------
- include/linux/ism.h                                |   7 +-
- include/net/netfilter/nf_conntrack_tuple.h         |   3 +
- include/net/netfilter/nf_tables.h                  |  31 +++-
- include/net/pkt_sched.h                            |   2 +-
- include/soc/mscc/ocelot.h                          |   9 +-
- kernel/bpf/cpumap.c                                |  40 +++--
- kernel/bpf/verifier.c                              |   5 +-
- net/core/net-traces.c                              |   2 +
- net/core/skbuff.c                                  |   5 +
- net/core/xdp.c                                     |   2 +-
- net/ipv6/addrconf.c                                |   3 +-
- net/ipv6/icmp.c                                    |   5 +-
- net/ipv6/udp.c                                     |   4 +-
- net/netfilter/nf_conntrack_core.c                  |  20 +--
- net/netfilter/nf_conntrack_helper.c                |   4 +
- net/netfilter/nf_conntrack_proto_gre.c             |  10 +-
- net/netfilter/nf_tables_api.c                      | 174 +++++++++++++--------
- net/netfilter/nft_byteorder.c                      |  14 +-
- net/netfilter/nft_flow_offload.c                   |   6 +-
- net/netfilter/nft_immediate.c                      |   8 +-
- net/netfilter/nft_objref.c                         |   8 +-
- net/sched/act_api.c                                |   2 +-
- net/sched/cls_flower.c                             |  10 ++
- net/sched/cls_fw.c                                 |  10 +-
- net/sched/sch_qfq.c                                |  18 ++-
- net/wireless/util.c                                |   2 +
- .../selftests/bpf/prog_tests/async_stack_depth.c   |   9 ++
- .../selftests/bpf/progs/async_stack_depth.c        |  40 +++++
- .../selftests/tc-testing/tc-tests/qdiscs/qfq.json  |  86 ++++++++++
- 91 files changed, 1011 insertions(+), 521 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/async_stack_depth.c
- create mode 100644 tools/testing/selftests/bpf/progs/async_stack_depth.c
+In case of failure, debugfs_create_dir() returns NULL or an error
+pointer. Most incorrect error checks were fixed, but the one in
+d_add_ci() was forgotten.
+
+Fixes: d9171b934526 ("parallel lookups machinery, part 4 (and last)")
+Signed-off-by: Wang Ming <machel@vivo.com>
+---
+ fs/dcache.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/dcache.c b/fs/dcache.c
+index 52e6d5fdab6b..2f03e275d2e0 100644
+--- a/fs/dcache.c
++++ b/fs/dcache.c
+@@ -2220,7 +2220,7 @@ struct dentry *d_add_ci(struct dentry *dentry, struct inode *inode,
+ 	 * if not go ahead and create it now.
+ 	 */
+ 	found = d_hash_and_lookup(dentry->d_parent, name);
+-	if (found) {
++	if (!IS_ERR_OR_NULL(found)) {
+ 		iput(inode);
+ 		return found;
+ 	}
+-- 
+2.25.1
 
