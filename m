@@ -2,72 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC4977515C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 03:25:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30DED7515C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 03:26:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232486AbjGMBZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 21:25:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58196 "EHLO
+        id S232278AbjGMB0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 21:26:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231592AbjGMBZG (ORCPT
+        with ESMTP id S229502AbjGMB03 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 21:25:06 -0400
-Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F7E61FDE
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 18:25:05 -0700 (PDT)
-Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-570877f7838so691537b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 18:25:05 -0700 (PDT)
+        Wed, 12 Jul 2023 21:26:29 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05AF21FDE;
+        Wed, 12 Jul 2023 18:26:27 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2b70404a5a0so1172891fa.2;
+        Wed, 12 Jul 2023 18:26:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689211504; x=1691803504;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1689211585; x=1691803585;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DqHFSQOzO/XxaRJXgZdmByKAXPqRNRjyMIQrSCq8enU=;
-        b=TR1zcSgLsGdmzMtZo6rrfSeyFREsDN1hEgUGIQnsUj6D/y4MixnzaKm0TUUXUraFwe
-         2F0LDbtwW4iuL6ZL9pCKL4rUTrOqCSCZZRR9ZFV0WoW1dkCim58yW/WWVsrghjNXlKHI
-         5KYpB2Da5i3luvXCWoava16QYYilQTAcmlSJnvpc2sIm3Zmk+G7Gv5Hr7YveQ4qOK4to
-         SO/jex5T3nRzAkV4ClyWpLIIFaLioFJ+90gVR7MVjnXN8KDSJ8xzKMchFpyrSqxTLhyk
-         ZfvVMbaN1aMIp7RpifwWEHhDY2vrz2gUCcIuHkwiugM9TNL+d82KgwTlzLyGMlc0psdx
-         VCwA==
+        bh=jxHIfdjUy2D+e36IlhY5UhNMqIoRQ40rBpziU8T3N10=;
+        b=psdAc+8FN7dzzOo3MgPLwTCd3NAklAdi3rikz2jT3jc/p3me/4+OxL5Ksyd2+SZ2Qr
+         Tr+5Vrz4vW28HUgdOo2frgGI2Aer7ABUIIt3AudPpk3UsWCye0gduL23mBOxZS65FWA+
+         Js1aJQ/f89qX0rez6vlbHtfnCs3BbV32GOP6hIenAoD04wzSDA91sQ6RImD+N8iMF4iQ
+         U0rYSIHOU5KZGIV883j1CWFWWS4t4Cf/feC8X+OFtCNSdQ4l+JCYw2EbfkhLMgwyoMQP
+         WIs3Z08NzjmchL12enT1YArAE5Q1MD7zXq70V+HFpFERxtk+Rl8uKsyVIcYSe3I1bhAQ
+         vBvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689211504; x=1691803504;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=DqHFSQOzO/XxaRJXgZdmByKAXPqRNRjyMIQrSCq8enU=;
-        b=F03f+xscBGI4HKnF7maAD+QMJ8fscewas2n70mt/lHxDnUe78Icrx4ybWOZI6pc9lA
-         6Q8QtY5qitTotlS9ApaNJ7MxlPvNpdAY60jUwqsOCH9NbHaeNqQ7Whce7G9ycJiQmAc8
-         SsdW09CAegDEVobRExEn1hE23FCdGgHyqviMKQ7zf/LsJrhngNaSateld1ES11felTNy
-         zapRCrhcZIgk0sbGCii4PmWHN9mgCW1nuDpKWbNbdZBLaV3gfjRLICEXi1t5HH32AZOp
-         kIvHFbhDT0rCfDHOvOT6RcBkFXjaf99tLTCq2Ym4WjqASaeRxlI8RP72G9aTOByjf4s4
-         EsFg==
-X-Gm-Message-State: ABy/qLaiedwKXx1KjLIw/mhMrKTNlnDIo2ow7LU3R2RNsBCjEOMbRuWe
-        pogIOqkyf4RjQNTVa3pg0pUFJJxR2lA=
-X-Google-Smtp-Source: APBJJlHMBHkj00RvSRUYQ/QogWDePOSIDqsqlln4XBVpRRSHweZVWOWEEd9nwa8rVbMVL9IY//hSLg==
-X-Received: by 2002:a0d:e615:0:b0:565:e48d:32cf with SMTP id p21-20020a0de615000000b00565e48d32cfmr366971ywe.7.1689211504176;
-        Wed, 12 Jul 2023 18:25:04 -0700 (PDT)
-Received: from [0.0.0.0] ([5.180.77.117])
-        by smtp.gmail.com with ESMTPSA id b14-20020a170902b60e00b001ac591b0500sm4599862pls.134.2023.07.12.18.25.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 Jul 2023 18:25:03 -0700 (PDT)
-Message-ID: <ced7dc06-bbc9-afa1-6973-b992871eac11@gmail.com>
-Date:   Thu, 13 Jul 2023 09:24:58 +0800
+        d=1e100.net; s=20221208; t=1689211585; x=1691803585;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jxHIfdjUy2D+e36IlhY5UhNMqIoRQ40rBpziU8T3N10=;
+        b=c6Z+Xx+9mhQT+yYL+jCciN4JUB0V0BKb9+5cMiYII9XPDf8x0fprkZcjYVtn6GENpk
+         fSlOJmaooX10jutonsN8Nj7L0bxR3ctNa5pm1K25xOXwKn6z80eAcBqs83JcPhdd5F/G
+         LPZyRjOUJI2CBEMb54Ae75WR+YWFjF4CX0dBkSSb3Lh/QUqHbVSbZ57I1XwFfx+sjllk
+         7H60pB20P9HNkFxRceqgs6ffY1QbCO2K1Zy2PO32jefquUVw2dxY7RLCLAPXGw24CoXV
+         JjoHWPeaBL6q5PnaBMpdI3r0r7CdVHBuUtTV6hQIi9Km2y/M95+Mo1YJPpIXuemTiw8D
+         PR0A==
+X-Gm-Message-State: ABy/qLZN9zBWQLi1gRi5Lg/2emXHZ+DBBIBE9oEYFElCx6n3ToD+XCqM
+        99fFEY/jom/cJzWtgSQIHf3gUflMbv4KC+9Q3eg=
+X-Google-Smtp-Source: APBJJlGU3RbBtxCeeWcNJGLwmlEdH+7Gh2A5sIWRxtOds9k0BSq4bD0+y32Y6Uyma9QlqL2quVt71b5uT1Qyn5KXkko=
+X-Received: by 2002:a2e:8456:0:b0:2b6:df00:b371 with SMTP id
+ u22-20020a2e8456000000b002b6df00b371mr43638ljh.6.1689211584879; Wed, 12 Jul
+ 2023 18:26:24 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.0
-Subject: Re: [PATCH] riscv: correct pt_level name via pgtable_l5/4_enabled
-To:     Palmer Dabbelt <palmer@dabbelt.com>, alex@ghiti.fr
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
-        alexghiti@rivosinc.com, Bjorn Topel <bjorn@rivosinc.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <mhng-05add620-8132-496a-a514-4b78c78b3694@palmer-ri-x1c9a>
-From:   Song Shuai <suagrfillet@gmail.com>
-In-Reply-To: <mhng-05add620-8132-496a-a514-4b78c78b3694@palmer-ri-x1c9a>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+References: <cover.1689203090.git.dxu@dxuuu.xyz> <d3b0ff95c58356192ea3b50824f8cdbf02c354e3.1689203090.git.dxu@dxuuu.xyz>
+ <CAADnVQKKfEtZYZxihxvG3aQ34E1m95qTZ=jTD7yd0qvOASpAjQ@mail.gmail.com> <kwiwaeaijj6sxwz5fhtxyoquhz2kpujbsbeajysufgmdjgyx5c@f6lqrd23xr5f>
+In-Reply-To: <kwiwaeaijj6sxwz5fhtxyoquhz2kpujbsbeajysufgmdjgyx5c@f6lqrd23xr5f>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 12 Jul 2023 18:26:13 -0700
+Message-ID: <CAADnVQLcAoN5z+HD_44UKgJJc6t5TPW8+Ai9We0qJpau4NtEzA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 2/6] netfilter: bpf: Support
+ BPF_F_NETFILTER_IP_DEFRAG in netfilter link
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
+        coreteam@netfilter.org,
+        Network Development <netdev@vger.kernel.org>,
+        David Ahern <dsahern@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,82 +90,132 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jul 12, 2023 at 6:22=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrote:
+>
+> Hi Alexei,
+>
+> On Wed, Jul 12, 2023 at 05:43:49PM -0700, Alexei Starovoitov wrote:
+> > On Wed, Jul 12, 2023 at 4:44=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrote=
+:
+> > > +#if IS_ENABLED(CONFIG_NF_DEFRAG_IPV6)
+> > > +       case NFPROTO_IPV6:
+> > > +               rcu_read_lock();
+> > > +               v6_hook =3D rcu_dereference(nf_defrag_v6_hook);
+> > > +               if (!v6_hook) {
+> > > +                       rcu_read_unlock();
+> > > +                       err =3D request_module("nf_defrag_ipv6");
+> > > +                       if (err)
+> > > +                               return err < 0 ? err : -EINVAL;
+> > > +
+> > > +                       rcu_read_lock();
+> > > +                       v6_hook =3D rcu_dereference(nf_defrag_v6_hook=
+);
+> > > +                       if (!v6_hook) {
+> > > +                               WARN_ONCE(1, "nf_defrag_ipv6_hooks ba=
+d registration");
+> > > +                               err =3D -ENOENT;
+> > > +                               goto out_v6;
+> > > +                       }
+> > > +               }
+> > > +
+> > > +               err =3D v6_hook->enable(link->net);
+> >
+> > I was about to apply, but luckily caught this issue in my local test:
+> >
+> > [   18.462448] BUG: sleeping function called from invalid context at
+> > kernel/locking/mutex.c:283
+> > [   18.463238] in_atomic(): 0, irqs_disabled(): 0, non_block: 0, pid:
+> > 2042, name: test_progs
+> > [   18.463927] preempt_count: 0, expected: 0
+> > [   18.464249] RCU nest depth: 1, expected: 0
+> > [   18.464631] CPU: 15 PID: 2042 Comm: test_progs Tainted: G
+> > O       6.4.0-04319-g6f6ec4fa00dc #4896
+> > [   18.465480] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+> > BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> > [   18.466531] Call Trace:
+> > [   18.466767]  <TASK>
+> > [   18.466975]  dump_stack_lvl+0x32/0x40
+> > [   18.467325]  __might_resched+0x129/0x180
+> > [   18.467691]  mutex_lock+0x1a/0x40
+> > [   18.468057]  nf_defrag_ipv4_enable+0x16/0x70
+> > [   18.468467]  bpf_nf_link_attach+0x141/0x300
+> > [   18.468856]  __sys_bpf+0x133e/0x26d0
+> >
+> > You cannot call mutex under rcu_read_lock.
+>
+> Whoops, my bad. I think this patch should fix it:
+>
+> ```
+> From 7e8927c44452db07ddd7cf0e30bb49215fc044ed Mon Sep 17 00:00:00 2001
+> Message-ID: <7e8927c44452db07ddd7cf0e30bb49215fc044ed.1689211250.git.dxu@=
+dxuuu.xyz>
+> From: Daniel Xu <dxu@dxuuu.xyz>
+> Date: Wed, 12 Jul 2023 19:17:35 -0600
+> Subject: [PATCH] netfilter: bpf: Don't hold rcu_read_lock during
+>  enable/disable
+>
+> ->enable()/->disable() takes a mutex which can sleep. You can't sleep
+> during RCU read side critical section.
+>
+> Our refcnt on the module will protect us from ->enable()/->disable()
+> from going away while we call it.
+>
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> ---
+>  net/netfilter/nf_bpf_link.c | 10 ++++++++--
+>  1 file changed, 8 insertions(+), 2 deletions(-)
+>
+> diff --git a/net/netfilter/nf_bpf_link.c b/net/netfilter/nf_bpf_link.c
+> index 77ffbf26ba3d..79704cc596aa 100644
+> --- a/net/netfilter/nf_bpf_link.c
+> +++ b/net/netfilter/nf_bpf_link.c
+> @@ -60,9 +60,12 @@ static int bpf_nf_enable_defrag(struct bpf_nf_link *li=
+nk)
+>                         goto out_v4;
+>                 }
+>
+> +               rcu_read_unlock();
+>                 err =3D v4_hook->enable(link->net);
+>                 if (err)
+>                         module_put(v4_hook->owner);
+> +
+> +               return err;
+>  out_v4:
+>                 rcu_read_unlock();
+>                 return err;
+> @@ -92,9 +95,12 @@ static int bpf_nf_enable_defrag(struct bpf_nf_link *li=
+nk)
+>                         goto out_v6;
+>                 }
+>
+> +               rcu_read_unlock();
+>                 err =3D v6_hook->enable(link->net);
+>                 if (err)
+>                         module_put(v6_hook->owner);
+> +
+> +               return err;
+>  out_v6:
+>                 rcu_read_unlock();
+>                 return err;
+> @@ -114,11 +120,11 @@ static void bpf_nf_disable_defrag(struct bpf_nf_lin=
+k *link)
+>         case NFPROTO_IPV4:
+>                 rcu_read_lock();
+>                 v4_hook =3D rcu_dereference(nf_defrag_v4_hook);
+> +               rcu_read_unlock();
+>                 if (v4_hook) {
+>                         v4_hook->disable(link->net);
+>                         module_put(v4_hook->owner);
+>                 }
+> -               rcu_read_unlock();
+>
+>                 break;
+>  #endif
+> @@ -126,11 +132,11 @@ static void bpf_nf_disable_defrag(struct bpf_nf_lin=
+k *link)
+>         case NFPROTO_IPV6:
+>                 rcu_read_lock();
+>                 v6_hook =3D rcu_dereference(nf_defrag_v6_hook);
+> +               rcu_read_unlock();
 
-
-在 2023/7/12 21:58, Palmer Dabbelt 写道:
-> On Tue, 11 Jul 2023 04:14:10 PDT (-0700), alex@ghiti.fr wrote:
->> Hi Song,
->>
->>
->> On 11/07/2023 12:52, Song Shuai wrote:
->>> The pt_level uses CONFIG_PGTABLE_LEVELS to display page table names.
->>> But if downgrading page mode from kernel cmdline in 64BIT, it will
->>> give a wrong name.
->>>
->>> Like, using no4lvl for sv39, ptdump named the 1G-mapping as "PUD"
->>> that should be "PGD":
->>>
->>> 0xffffffd840000000-0xffffffd900000000    0x00000000c0000000         
->>> 3G PUD     D A G . . W R V
->>>
->>> So select "P4D/PUD" or "PGD" via pgtable_l5/4_enabled to correct it.
->>>
->>> Fixes: 26e7aacb83df ("riscv: Allow to downgrade paging mode from the 
->>> command line")
->>> Signed-off-by: Song Shuai <suagrfillet@gmail.com>
->>> ---
->>>   arch/riscv/mm/ptdump.c | 5 +++++
->>>   1 file changed, 5 insertions(+)
->>>
->>> diff --git a/arch/riscv/mm/ptdump.c b/arch/riscv/mm/ptdump.c
->>> index 20a9f991a6d7..cfdd327981ee 100644
->>> --- a/arch/riscv/mm/ptdump.c
->>> +++ b/arch/riscv/mm/ptdump.c
->>> @@ -384,6 +384,11 @@ static int __init ptdump_init(void)
->>>
->>>       kernel_ptd_info.base_addr = KERN_VIRT_START;
->>>
->>> +#ifdef CONFIG_64BIT
->>> +    pg_level[1].name = pgtable_l5_enabled ? "P4D" : "PGD";
->>> +    pg_level[2].name = pgtable_l4_enabled ? "PUD" : "PGD";
->>> +#endif
->>
->>
->> You don't need the #ifdef here as pgtable_lX_enabled are always declared.
->>
->>
->>> +
->>>       for (i = 0; i < ARRAY_SIZE(pg_level); i++)
->>>           for (j = 0; j < ARRAY_SIZE(pte_bits); j++)
->>>               pg_level[i].mask |= pte_bits[j].mask;
->>
->>
->> The Fixes tag is wrong to me, if satp mode is restricted by the hardware
->> itself (not from the command line), the same problem happens. Maybe that
->> should be the sv48 introduction patch? Or the sv57? It will be more
->> cumbersome to backport with the sv48 introduction though as this patch
->> won't apply as-is.
-> 
-> Sometimes it's easier to base the fix on the original offending commit 
-> and then forward-port it via a merge, I haven't looked at this one to 
-> know for sure though.
-> 
->> Otherwise, you can add:
->>
->> Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-> 
-> Thanks.
-> 
-> Song: do you have a v2 that addresses the comments?
-> 
-Here is V2 :
-
-https://lore.kernel.org/linux-riscv/20230712115740.943324-1-suagrfillet@gmail.com/
->>
->> Thanks,
->>
->> Alex
-
--- 
-Thanks
-Song Shuai
+No. v6_hook is gone as soon as you unlock it.
