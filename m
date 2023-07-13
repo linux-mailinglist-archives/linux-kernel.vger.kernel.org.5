@@ -2,119 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99E8675169D
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 05:08:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6376C75169F
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 05:10:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233162AbjGMDIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 23:08:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37910 "EHLO
+        id S233285AbjGMDKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 23:10:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230054AbjGMDIf (ORCPT
+        with ESMTP id S232201AbjGMDKb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 23:08:35 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 782AF1BD4
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 20:08:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=Y0sPLF5aVYVsJG2qcCZTDi+Jbzew9ykSv/hCoWV/WPI=; b=Gm1FOHM5A2OQWxfTBx2xtCY7qI
-        rjgMpmJoRuRum6A+zb94Ptr/ljjUJS9qnjiWJ8YSkrzZCUP5PqOunrOVnC+0P1M2ydKHfrLZ/YT6Q
-        FEgjj04uz1l9DDJjPSpQ8M8f3VqU1NFqZcTc+32J5FgmdKXaeJ8DYm9K0+Wpx4ZmKX5rLF2qIF7d5
-        NV7tWx+fn3zvyUOEQP+9gWYNjEWod6o39TWaPKEsoRNep24zR5U+P5fZolfrh3lN1rM82MeyxYFaJ
-        I5euXRrsLYNGp+PXidAkRQf79LTs8EFobwilxODF7pJJAJdk81NDqEe8fIcTzOVVHv1+34bm3g39/
-        KAod/dVA==;
-Received: from [2601:1c2:980:9ec0::2764] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qJmgz-001nEP-2O;
-        Thu, 13 Jul 2023 03:08:33 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org, Yury Norov <yury.norov@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH] cpumask: eliminate kernel-doc warnings
-Date:   Wed, 12 Jul 2023 20:08:32 -0700
-Message-ID: <20230713030832.17900-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.41.0
+        Wed, 12 Jul 2023 23:10:31 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63EFE1BDC
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 20:10:30 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id d75a77b69052e-403b622101bso105361cf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 20:10:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689217829; x=1691809829;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xCEbI3WgmGp1pRdtBWdu/+PPGiU0Pj/o+/7oiTniyaE=;
+        b=Hg1CGXQ0eyM5/jE5SmlcTlo1bRmry0Wt9Vl2FzVAPRYpMMTj9uVyJmQtFcKikEXSTB
+         B1cG/SdA3VD/wuesbYyHeJaaIvyBZwm72uzXcOFXKEzkOpeP8mQ+TSpGyZ68TxiA5hzd
+         4nJO+mL7FXol+qEfzYM0i0rzMEQ7mmLDcaFH/2oxm+PbCKIpj4fOmg4CdznFuDgCZ5qi
+         XonaexQDgP884JigkO5lDS3IMk7TIR16xhivyb4/oai+7V4aeqzq8QFGOXQBQ1UU2/Zm
+         O4WvwDzz7X30j+2LpOFe9Nwr70u0SRsRiJcg1VjFYDgwIyvccFumbXd4pnr8s7PYi7U3
+         IB9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689217829; x=1691809829;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xCEbI3WgmGp1pRdtBWdu/+PPGiU0Pj/o+/7oiTniyaE=;
+        b=AgbIMpaZ+VryBHuyOB4YlHpR6s0cPVVUA8SJqa6lltK/ohALmLhRBJEG2ivRfLtcWH
+         UVxQDlu4JdaVD5lWUPL/To8vnQM/DseBfbG/MJXmdJ6GBJEAJ3CBRoIz0b/S3LT0yf4n
+         dZ5O/dz+dH/BtQZ656JHKOrH5F2okuH6jDv0R2aeBXubag468PqdTAeKNp7a3qhiz+xq
+         L2lkNAXTmjpFy6jijqQ6k+29IHyf+58N+nrTcyOuGy00b0q6wnidUiDAzs6bkSqdAh3Q
+         /HTVFPG3qJ0ZzGwhyTVoMgO/UPqdDXaz3aaUyuDSgLCI9tC5bUOH5ZA+gvqpJ019KjXV
+         Y6kw==
+X-Gm-Message-State: ABy/qLZuz39EpUlFtFGgXn83MI9cr6OHeJsL3RUmlsBAuzNs8hU38nDP
+        eaR1CMFWnqwRQKpVil2RMjyRAPjSA6/Of8U6lqSguw==
+X-Google-Smtp-Source: APBJJlH79jPWzG5n9UA0czpeAGh9irvaLp4SsnIBSq4hmhIVAqPafLLD+MqdLwOqYP+Fs8W+vcZSUxgUYsb+cU46bpE=
+X-Received: by 2002:a05:622a:307:b0:403:b1e5:bcae with SMTP id
+ q7-20020a05622a030700b00403b1e5bcaemr454336qtw.10.1689217829371; Wed, 12 Jul
+ 2023 20:10:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230712083037.4081444-1-tmricht@linux.ibm.com>
+In-Reply-To: <20230712083037.4081444-1-tmricht@linux.ibm.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 12 Jul 2023 20:10:18 -0700
+Message-ID: <CAP-5=fUM5w8o4LOh470ciNhvH3bRPnOQ8AojGcWNXeQJJq-TsQ@mail.gmail.com>
+Subject: Re: [PATCH] perf build: Fix broken feature check for llvm due to C++ standard
+To:     Thomas Richter <tmricht@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        acme@kernel.org, wangnan0@huawei.com, jolsa@kernel.org,
+        svens@linux.ibm.com, gor@linux.ibm.com, sumanthk@linux.ibm.com,
+        hca@linux.ibm.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update lib/cpumask.c and <linux/cpumask.h> to fix all kernel-doc
-warnings:
+On Wed, Jul 12, 2023 at 1:35=E2=80=AFAM Thomas Richter <tmricht@linux.ibm.c=
+om> wrote:
+>
+> Perf build auto-detects features and packages already installed
+> for its build. This is done in directory tools/build/feature. This
+> directory contains small sample programs. When they successfully
+> compile the necessary prereqs in form of libraries and header
+> files are present.
+>
+> Such a check is also done for llvm. And this check fails.
+> Fix this and update to the latest C++ standard.
+>
+> Output before:
+>  # rm -f ./test-llvm.bin; make test-llvm.bin; ./test-llvm.bin
+>  g++  -MD -Wall -Werror -o test-llvm.bin test-llvm.cpp \
+>                 > test-llvm.make.output 2>&1 -std=3Dgnu++14 \
+>         -I/usr/include          \
+>         -L/usr/lib64            \
+>         -lLLVM-16               \
+>                         \
+>         > test-llvm.make.output 2>&1
+>
+>  make: *** [Makefile:343: test-llvm.bin] Error 1
+>  -bash: ./test-llvm.bin: No such file or directory
+>  #
+>
+> Output after:
+>  # rm -f ./test-llvm.bin; make test-llvm.bin; ./test-llvm.bin
+>  g++  -MD -Wall -Werror -o test-llvm.bin test-llvm.cpp \
+>                 > test-llvm.make.output 2>&1 -std=3Dgnu++17 \
+>         -I/usr/include          \
+>         -L/usr/lib64            \
+>         -lLLVM-16               \
+>                         \
+>         > test-llvm.make.output 2>&1
+>  Hello World!
+>  #
+>
+> Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
 
-include/linux/cpumask.h:185: warning: Function parameter or member 'srcp1' not described in 'cpumask_first_and'
-include/linux/cpumask.h:185: warning: Function parameter or member 'srcp2' not described in 'cpumask_first_and'
-include/linux/cpumask.h:185: warning: Excess function parameter 'src1p' description in 'cpumask_first_and'
-include/linux/cpumask.h:185: warning: Excess function parameter 'src2p' description in 'cpumask_first_and'
+Tested-by: Ian Rogers <irogers@google.com>
 
-lib/cpumask.c:59: warning: Function parameter or member 'node' not described in 'alloc_cpumask_var_node'
-lib/cpumask.c:169: warning: Function parameter or member 'src1p' not described in 'cpumask_any_and_distribute'
-lib/cpumask.c:169: warning: Function parameter or member 'src2p' not described in 'cpumask_any_and_distribute'
+Tested with clang/llvm 15.
 
-Fixes: 7b4967c53204 ("cpumask: Add alloc_cpumask_var_node()")
-Fixes: 839cad5fa54b ("cpumask: fix function description kernel-doc notation")
-Fixes: 93ba139ba819 ("cpumask: use find_first_and_bit()")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
----
- include/linux/cpumask.h |    8 ++++++--
- lib/cpumask.c           |    5 ++++-
- 2 files changed, 10 insertions(+), 3 deletions(-)
+Thanks,
+Ian
 
-diff -- a/lib/cpumask.c b/lib/cpumask.c
---- a/lib/cpumask.c
-+++ b/lib/cpumask.c
-@@ -45,6 +45,7 @@ EXPORT_SYMBOL(cpumask_next_wrap);
-  * alloc_cpumask_var_node - allocate a struct cpumask on a given node
-  * @mask: pointer to cpumask_var_t where the cpumask is returned
-  * @flags: GFP_ flags
-+ * @node: memory node from which to allocate or %NUMA_NO_NODE
-  *
-  * Only defined when CONFIG_CPUMASK_OFFSTACK=y, otherwise is
-  * a nop returning a constant 1 (in <linux/cpumask.h>)
-@@ -157,7 +158,9 @@ EXPORT_SYMBOL(cpumask_local_spread);
- static DEFINE_PER_CPU(int, distribute_cpu_mask_prev);
- 
- /**
-- * cpumask_any_and_distribute - Return an arbitrary cpu within srcp1 & srcp2.
-+ * cpumask_any_and_distribute - Return an arbitrary cpu within src1p & src2p.
-+ * @src1p: first &cpumask for intersection
-+ * @src2p: second &cpumask for intersection
-  *
-  * Iterated calls using the same srcp1 and srcp2 will be distributed within
-  * their intersection.
-diff -- a/include/linux/cpumask.h b/include/linux/cpumask.h
---- a/include/linux/cpumask.h
-+++ b/include/linux/cpumask.h
-@@ -175,8 +175,8 @@ static inline unsigned int cpumask_first
- 
- /**
-  * cpumask_first_and - return the first cpu from *srcp1 & *srcp2
-- * @src1p: the first input
-- * @src2p: the second input
-+ * @srcp1: the first input
-+ * @srcp2: the second input
-  *
-  * Returns >= nr_cpu_ids if no cpus set in both.  See also cpumask_next_and().
-  */
-@@ -1197,6 +1197,10 @@ cpumap_print_bitmask_to_buf(char *buf, c
- /**
-  * cpumap_print_list_to_buf  - copies the cpumask into the buffer as
-  *	comma-separated list of cpus
-+ * @buf: the buffer to copy into
-+ * @mask: the cpumask to copy
-+ * @off: in the string from which we are copying, we copy to @buf
-+ * @count: the maximum number of bytes to print
-  *
-  * Everything is same with the above cpumap_print_bitmask_to_buf()
-  * except the print format.
+> ---
+>  tools/build/feature/Makefile | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
+> index 0f0aa9b7d7b5..f8db69654791 100644
+> --- a/tools/build/feature/Makefile
+> +++ b/tools/build/feature/Makefile
+> @@ -340,7 +340,7 @@ $(OUTPUT)test-jvmti-cmlr.bin:
+>         $(BUILD)
+>
+>  $(OUTPUT)test-llvm.bin:
+> -       $(BUILDXX) -std=3Dgnu++14                                 \
+> +       $(BUILDXX) -std=3Dgnu++17                                 \
+>                 -I$(shell $(LLVM_CONFIG) --includedir)          \
+>                 -L$(shell $(LLVM_CONFIG) --libdir)              \
+>                 $(shell $(LLVM_CONFIG) --libs Core BPF)         \
+> --
+> 2.41.0
+>
