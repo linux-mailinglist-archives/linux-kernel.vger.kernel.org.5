@@ -2,133 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 859DE752019
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 13:38:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8199075202C
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 13:40:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232841AbjGMLiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 07:38:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43250 "EHLO
+        id S234429AbjGMLjf convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 13 Jul 2023 07:39:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232461AbjGMLin (ORCPT
+        with ESMTP id S234318AbjGMLjN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 07:38:43 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 299D3E5C
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 04:38:42 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-4fba8f2197bso1067393e87.3
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 04:38:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689248320; x=1691840320;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gkxaOO+CHvkkNHNAedQF2pdgDoOPgApXqdl51IGfcu4=;
-        b=s923okNqmRTL1o3NnbuwJ9dVf9F0FFkNU7AI7QAAPQmisbkv4iajKQU+/p4WgGSzbH
-         chdSzQzm5i9GlGc3f2MUrXEggFZv7hwRGMxQvD5IDp6eUYPOPGYCbvNVtmEprjU9bbxc
-         j5mM3vjUvvwUSYU5cQ3uL50UVNfNhkkf0Vh8IgWtX070Qe/v3dXUH+Wwy8emitQ7ag6j
-         f+eQorXU7oZhmFa/wfsCgl4jy0P4oWmR5BXLMNLd1CNd6YAxnPyX2Oxg7VzjEZCo0UoT
-         eskG3yGIE+VI7XrhT6ndu2CGRMFpaIzdEH4UAA2WDjGwEqJQ5wUFzFfFpjT+HDqRZ0cG
-         qCtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689248320; x=1691840320;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gkxaOO+CHvkkNHNAedQF2pdgDoOPgApXqdl51IGfcu4=;
-        b=RBLQQB41y5SVQFXtz/y+gvBpRsLInVXnfapf1spmaZ2+SCtJ+XqJRE8fGJC7hflDYE
-         1k9IbFuEcxt79rWfyfUboOo1oIn1tNjcsDmNm3rXzk3RqbmO5VkAAB4/1SxuvGduewkb
-         Os+J5qZPFSaO2BM7HQiFtpWYqI7itgzlUwta06ILEZP1zFPMi9Bo9wIOKn1MwxOKkcjk
-         B3CnB0kNnGuIeZvwJFlS8H2FEjvHpVZUxj+BUeL63QIz+Ug0ENOb5K/FuIDQV3nYEiUR
-         79Aiv21V7nTcR332P3Igtz3IZNcydRFpeeYL++DAAVnR2A7ZbFQdccK7Dw/rqe3nuZ48
-         9p/g==
-X-Gm-Message-State: ABy/qLaTFCsorhrPGtzsaj8sLOr1J0+jJr17VMFF/X80Pu8OPogzsg2R
-        mJ6pz74kV9Mqsogqrf9WB97JQg==
-X-Google-Smtp-Source: APBJJlFbztQimcm1kAYwn6R3xa11Hk9ZS9hMlJ0qmtnR5prNqridycqQPgwm1uohXWe0zuYeCXgQsA==
-X-Received: by 2002:a05:6512:b85:b0:4fb:9075:4fca with SMTP id b5-20020a0565120b8500b004fb90754fcamr1159049lfv.11.1689248320438;
-        Thu, 13 Jul 2023 04:38:40 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id i16-20020adffdd0000000b0030fb4b55c13sm7738058wrs.96.2023.07.13.04.38.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 Jul 2023 04:38:39 -0700 (PDT)
-Message-ID: <684ce378-a697-a352-eba7-c8f3ad62d8e4@linaro.org>
-Date:   Thu, 13 Jul 2023 13:38:37 +0200
+        Thu, 13 Jul 2023 07:39:13 -0400
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4F76268A;
+        Thu, 13 Jul 2023 04:39:10 -0700 (PDT)
+Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
+        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 28B5F831C;
+        Thu, 13 Jul 2023 19:39:04 +0800 (CST)
+Received: from EXMBX061.cuchost.com (172.16.6.61) by EXMBX165.cuchost.com
+ (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 13 Jul
+ 2023 19:39:04 +0800
+Received: from localhost.localdomain (183.27.98.46) by EXMBX061.cuchost.com
+ (172.16.6.61) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 13 Jul
+ 2023 19:39:03 +0800
+From:   Xingyu Wu <xingyu.wu@starfivetech.com>
+To:     <linux-riscv@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        "Michael Turquette" <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "Philipp Zabel" <p.zabel@pengutronix.de>,
+        Conor Dooley <conor@kernel.org>,
+        "Emil Renner Berthing" <emil.renner.berthing@canonical.com>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Hal Feng <hal.feng@starfivetech.com>,
+        Xingyu Wu <xingyu.wu@starfivetech.com>,
+        <linux-kernel@vger.kernel.org>, <linux-clk@vger.kernel.org>
+Subject: [PATCH v8 0/9] Add STG/ISP/VOUT clock and reset drivers for StarFive JH7110
+Date:   Thu, 13 Jul 2023 19:38:53 +0800
+Message-ID: <20230713113902.56519-1-xingyu.wu@starfivetech.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 1/6] dt-bindings: thermal: tsens: Add nvmem cells for
- calibration data
-Content-Language: en-US
-To:     Praveenkumar I <quic_ipkumar@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org, amitk@kernel.org,
-        thara.gopinath@gmail.com, rafael@kernel.org,
-        daniel.lezcano@linaro.org, rui.zhang@intel.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     quic_varada@quicinc.com
-References: <20230710103735.1375847-1-quic_ipkumar@quicinc.com>
- <20230710103735.1375847-2-quic_ipkumar@quicinc.com>
- <09e33a89-c060-69b1-b94f-b21c45d1d249@linaro.org>
- <59ea653e-c5da-71cb-eb85-1aa3c72e2089@quicinc.com>
- <37aa7ae8-206e-3a48-b90d-22d49e86c675@linaro.org>
- <1b050086-07c5-add6-6002-d7368d532566@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <1b050086-07c5-add6-6002-d7368d532566@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [183.27.98.46]
+X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX061.cuchost.com
+ (172.16.6.61)
+X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/07/2023 16:13, Praveenkumar I wrote:
->>>>>              - const: calib
->>>>> @@ -205,6 +209,24 @@ properties:
->>>>>              - const: s9_p2_backup
->>>>>              - const: s10_p1_backup
->>>>>              - const: s10_p2_backup
->>>>> +      - items:
->>>>> +          - const: mode
->>>>> +          - const: base0
->>>>> +          - const: base1
->>>>> +          - const: s0_offset
->>>>> +          - const: s3_offset
->>>>> +          - const: s4_offset
->>>>> +          - const: s5_offset
->>>>> +          - const: s6_offset
->>>>> +          - const: s7_offset
->>>>> +          - const: s8_offset
->>>>> +          - const: s9_offset
->>>>> +          - const: s10_offset
->>>>> +          - const: s11_offset
->>>>> +          - const: s12_offset
->>>>> +          - const: s13_offset
->>>>> +          - const: s14_offset
->>>>> +          - const: s15_offset
->>>> Don't introduce new naming style. Existing uses s[0-9]+, without offset
->>>> suffix. Why this should be different?
->>> As I mentioned above, s[0-9]+_p1 / s[0-9]+p2 is for TSENS V1. TSENS V2
->>> QFPROM layout is different from the existing one.
->> I know, I did not write about p1/p2.
->>
->>> I would like to add mode, base0, base1 and 16 patterns
->>> '^s[0-15]+_offset$'. But DT binding check is failing in oneOf/ anyOf
->>> condintion.
->> This does not explain why you need different style - this "offset" suffix.
-> In QFPROM, the BIT field names are s0_offset, s3_offset to s15_offset. 
-> s1_offset and s2_offset not present in IPQ5332.
-> Hence used the same "offset" suffix here. May I know in this case, which 
-> nvmem-cells-names you are suggesting to use?
+This patch serises are base on the basic JH7110 SYSCRG/AONCRG
+drivers and add new partial clock drivers and reset supports
+about System-Top-Group(STG), Image-Signal-Process(ISP)
+and Video-Output(VOUT) for the StarFive JH7110 RISC-V SoC. These
+clocks and resets could be used by DMA, VIN and Display modules.
 
-"Existing uses s[0-9]+"
+Patches 1 and 2 are about the System-Top-Group clock and reset
+generator(STGCRG) part. The first patch adds docunmentation to
+describe STG bindings, and the second patch adds clock driver to
+support STG clocks and resets as auxiliary device for JH7110.
 
-so s[0-9]+
+Patches 3 and 4 are about the Image-Signal-Process clock and reset
+gennerator(ISPCRG) part. The first patch adds docunmentation to
+describe ISP bindings, and the second patch adds clock driver to
+support ISP clocks and resets as auxiliary device for JH7110.
+And ISP clocks should power on and enable the SYSCRG clocks first
+before registering.
 
-Best regards,
-Krzysztof
+Patches 5 and 6 are about the Video-Output clock and reset
+generator(VOUTCRG) part. The first patch adds docunmentation to
+describe VOUT bindings, and the second patch adds clock driver to
+support VOUT clocks and resets as auxiliary device for JH7110.
+And VOUT clocks also should power on and enable the SYSCRG clocks
+first before registering.
+
+Patch 7 adds struct members to support STG/ISP/VOUT resets.
+Patch 8 adds external clocks which ISP and VOUT clock driver need.
+Patch 9 adds device node about STGCRG, ISPCRG and VOUTCRG to JH7110 dts.
+
+Changes since v7:
+- Changed the name of top clocks' struct in header file.
+- Added the pm_ptr() and moved the '#endif' down below the
+  jh7110_voutcrg_pm_ops with using RUNTIME_PM_OPS() instead of
+  SET_RUNTIME_PM_OPS() in ISPCRG and VOUTCRG drivers.
+
+v7: https://lore.kernel.org/all/20230712092007.31013-1-xingyu.wu@starfivetech.com/
+
+Changes since v6: 
+- Rebased on the Linux 6.5-rc1.
+- Dropped the unnecessary selections in the Kconfig.
+- Dropped the patches about the PMU node and MAINTIANERS.
+- Add the reviews.
+
+v6: https://lore.kernel.org/all/20230518101234.143748-1-xingyu.wu@starfivetech.com/
+
+Changes since v5: 
+- Rebased on the Linux 6.4-rc2.
+- Modified the reset name about VOUTCRG to fix the error with
+  CONFIG_FORTIFY_SOURCE=y
+- Added the patch about pmu node.
+
+v5: https://lore.kernel.org/all/20230424135409.6648-1-xingyu.wu@starfivetech.com/
+
+Changes since v4: 
+- Rebased on the lastest patches about fixing the basic clock and reset drivers.
+- Dropped the 'dev_set_drvdata()' in STG clock driver.
+- Modified the data with 'dev_set_drvdata()' in ISP/VOUT clock driver
+  and move the struct about the data to JH7110 header file, which both
+  ISP and VOUT clock drivers will use.
+
+v4: https://lore.kernel.org/all/20230411135558.44282-1-xingyu.wu@starfivetech.com/
+
+Changes since v3:
+- Rebased on the lastest JH71X0 clock and reset driver of patchset[1]
+  and modified the parameters of the register reset functions.
+- The patch 1 combined three commits on STG/ISP/VOUT resets into one.
+  And Changed the auxiliary_device_id name from
+  "clk_starfive_jh71x0.reset-*" to "clk_starfive_jh7110_sys.rst-*".
+- Added a maintainer in STARFIVE JH71X0 CLOCK DRIVERS.
+
+v3: https://lore.kernel.org/all/20230314124404.117592-1-xingyu.wu@starfivetech.com/
+
+Changes since v2:
+Patch 1:
+- Dropped the modification of maintainers.
+- Modified clock and reset names in the dt-bindings header files.
+Patch 3:
+- Added 'Emil Renner Berthing' as the author.
+- Used 'default m' in Kconfig file.
+- Changed the flags of 'CLK_IGNORE_UNUSED' to 0 or 'CLK_IS_CRITICAL'.
+Patch 4:
+- Dropped the 'reset-names' property.
+- Shortened the clock and reset names in the dt-bindings header files.
+Pacth 6:
+- Used 'default m' in Kconfig file.
+- Changed the flags of 'CLK_IGNORE_UNUSED' to 0.
+- Set reset_control struct to a local variable because it just is used
+  one time in probe.
+Pacth 7:
+- Dropped the 'reset-names' property.
+Patch 9:
+- Used 'default m' in Kconfig file.
+- Set reset_control struct to a local variable because it just is used
+  one time in probe.
+Patch 10:
+- Changed the order of externel clock in alphanumerical order.
+Patch 11:
+- Dropped the 'reset-names' property in ispcrg and voutcrg node.
+
+v2: https://lore.kernel.org/all/20230221083323.302471-1-xingyu.wu@starfivetech.com/
+
+Changes since v1:
+- Modified the binding and dropped the indentation.
+- Removed the useless header files in the drivers.
+- Used an array lookup instead of a pile of conditions about parent
+  clocks' name.
+- Added clocks operation on driver remove.
+
+v1: https://lore.kernel.org/all/20230120024445.244345-1-xingyu.wu@starfivetech.com/
+
+Emil Renner Berthing (1):
+  clk: starfive: Add StarFive JH7110 System-Top-Group clock driver
+
+Xingyu Wu (8):
+  dt-bindings: clock: Add StarFive JH7110 System-Top-Group clock and
+    reset generator
+  dt-bindings: clock: Add StarFive JH7110 Image-Signal-Process clock and
+    reset generator
+  clk: starfive: Add StarFive JH7110 Image-Signal-Process clock driver
+  dt-bindings: clock: Add StarFive JH7110 Video-Output clock and reset
+    generator
+  clk: starfive: Add StarFive JH7110 Video-Output clock driver
+  reset: starfive: jh7110: Add StarFive STG/ISP/VOUT resets support
+  riscv: dts: starfive: jh7110: Add DVP and HDMI TX pixel external
+    clocks
+  riscv: dts: starfive: jh7110: Add STGCRG/ISPCRG/VOUTCRG nodes
+
+ .../clock/starfive,jh7110-ispcrg.yaml         |  87 +++++++
+ .../clock/starfive,jh7110-stgcrg.yaml         |  82 ++++++
+ .../clock/starfive,jh7110-voutcrg.yaml        |  90 +++++++
+ .../jh7110-starfive-visionfive-2.dtsi         |   8 +
+ arch/riscv/boot/dts/starfive/jh7110.dtsi      |  67 +++++
+ drivers/clk/starfive/Kconfig                  |  24 ++
+ drivers/clk/starfive/Makefile                 |   3 +
+ .../clk/starfive/clk-starfive-jh7110-isp.c    | 232 +++++++++++++++++
+ .../clk/starfive/clk-starfive-jh7110-stg.c    | 173 +++++++++++++
+ .../clk/starfive/clk-starfive-jh7110-vout.c   | 239 ++++++++++++++++++
+ drivers/clk/starfive/clk-starfive-jh7110.h    |   6 +
+ .../reset/starfive/reset-starfive-jh7110.c    |  30 +++
+ .../dt-bindings/clock/starfive,jh7110-crg.h   |  74 ++++++
+ .../dt-bindings/reset/starfive,jh7110-crg.h   |  60 +++++
+ 14 files changed, 1175 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/starfive,jh7110-ispcrg.yaml
+ create mode 100644 Documentation/devicetree/bindings/clock/starfive,jh7110-stgcrg.yaml
+ create mode 100644 Documentation/devicetree/bindings/clock/starfive,jh7110-voutcrg.yaml
+ create mode 100644 drivers/clk/starfive/clk-starfive-jh7110-isp.c
+ create mode 100644 drivers/clk/starfive/clk-starfive-jh7110-stg.c
+ create mode 100644 drivers/clk/starfive/clk-starfive-jh7110-vout.c
+
+-- 
+2.25.1
 
