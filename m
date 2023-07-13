@@ -2,96 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D71F47518DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 08:34:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 269117518DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 08:35:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233560AbjGMGen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 02:34:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49062 "EHLO
+        id S234058AbjGMGfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 02:35:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233452AbjGMGel (ORCPT
+        with ESMTP id S233452AbjGMGfY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 02:34:41 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AFE81FF0
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 23:34:40 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-31441dfbf97so494157f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 23:34:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689230079; x=1691822079;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ji3ABV84q7pwwNcfLMGwkQ8jm7Jiga5U46rBbgA+QPQ=;
-        b=vkQ0eGOJBnUWmvOHYA5/mHo4VXPHxuKN2ttCE5Hxt0mqrMFan9kXyFkzOLCc9NcLVR
-         6YzdgKqR54Xr+2FgTLzncb5UuenWFyy+GSH/24ojw5TBNYbn3zzNl+z7JH31GvSXYRdl
-         9/pCGhWYre7Oi6+GqeCa9OcztPaMNUJCaiQJ+P3tMHjb7UbrXlvuuYeLSemnWAyicJkR
-         BpbZq0ETNbph8Wd3gqZQo/HeDS72QjURxXDtdfjlZ+neriDrAHhI+Gwt5b9DYCEaEem2
-         gpAVnb138hW8YRZpnHqprX7MgWko0U8rCrpjdsbRuIz4KIoJJiDNJqo+sq0ngTGLF8e6
-         flaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689230079; x=1691822079;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ji3ABV84q7pwwNcfLMGwkQ8jm7Jiga5U46rBbgA+QPQ=;
-        b=JQV22z27xsdkt0Fj07EsLcOT5FSnbMOU6fOsFBU4nouruBDAwNokdU8i0IuaenlTfC
-         iAUt5OSt4eqnhhMp8ULbVypKzYB+PVVhbxSXIScmBh89eO9XYOoODYZForAz8S5mUbkr
-         OU58z0vZXnnfS8necS8bszPPrOmegDhaBS8Pqg6UP1KSJr7dKO992R4Qq+NnL/qABcdW
-         n1MBIkdCbUbZw5LGEQ1CapQcoJwZl1rADSQCxAmFRfEs/7qO2usV4dWELOceG5r+xY2A
-         RqwB2RHShqMTcH8OU1DVtlgswQQpnHywvtS2vpBm19Xf0KdCICwmVYhR0H84sOsZSwi5
-         9Lmg==
-X-Gm-Message-State: ABy/qLbVTLNyC1pVuebMW+5fk0w+nKjB45mylbn7JsgHwmTyQ7WKa7j2
-        n9AnIszOW2tOdLNADtIzcE2/xeYKHg/njPLhtqDExA==
-X-Google-Smtp-Source: APBJJlGP0pTmoCMHxRetA6rjQg1JjLzTz1+auw+WbVrKvwRyLurg/WoJOzckWnrg6kd+jof2FDtEMg==
-X-Received: by 2002:a5d:408c:0:b0:314:71a5:c103 with SMTP id o12-20020a5d408c000000b0031471a5c103mr577330wrp.61.1689230078805;
-        Wed, 12 Jul 2023 23:34:38 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id t16-20020a5d49d0000000b003143bb5ecd5sm6966237wrs.69.2023.07.12.23.34.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 Jul 2023 23:34:38 -0700 (PDT)
-Message-ID: <77d4f683-8c78-8801-407f-389c96ce7c85@linaro.org>
-Date:   Thu, 13 Jul 2023 08:34:36 +0200
+        Thu, 13 Jul 2023 02:35:24 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA3B21BEB
+        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 23:35:20 -0700 (PDT)
+Received: from canpemm500009.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R1lFs6sB4zrRlj;
+        Thu, 13 Jul 2023 14:34:41 +0800 (CST)
+Received: from [10.67.102.169] (10.67.102.169) by
+ canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Thu, 13 Jul 2023 14:35:18 +0800
+CC:     <yangyicong@hisilicon.com>, Ricardo Neri <ricardo.neri@intel.com>,
+        Tim Chen <tim.c.chen@intel.com>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] sched/topology: Align group flags when removing
+ degenerate domain
+To:     Chen Yu <yu.c.chen@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>
+References: <20230713013133.2314153-1-yu.c.chen@intel.com>
+From:   Yicong Yang <yangyicong@huawei.com>
+Message-ID: <9a9cdf48-816f-56aa-6e0f-1d89d5c5cbd2@huawei.com>
+Date:   Thu, 13 Jul 2023 14:35:17 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] dt-bindings: extcon: extcon-usb-gpio: convert to yaml
- format
-Content-Language: en-US
-To:     David Heidelberg <david@ixit.cz>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20230713002519.109392-1-david@ixit.cz>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230713002519.109392-1-david@ixit.cz>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20230713013133.2314153-1-yu.c.chen@intel.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.67.102.169]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ canpemm500009.china.huawei.com (7.192.105.203)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/07/2023 02:25, David Heidelberg wrote:
-> Signed-off-by: David Heidelberg <david@ixit.cz>
+On 2023/7/13 9:31, Chen Yu wrote:
+> The flags of the child of a given scheduling domain are used to initialize
+> the flags of its scheduling groups. When the child of a scheduling domain
+> is degenerated, the flags of its local scheduling group need to be updated
+> to align with the flags of its new child domain.
+> 
+> The flag SD_SHARE_CPUCAPACITY was aligned in
+> Commit bf2dc42d6beb ("sched/topology: Propagate SMT flags when removing degenerate domain").
+> Further generalize this alignment so other flags can be used later, such as
+> in cluster-based task wakeup. [1]
+
+Currently I only update the cluster flags on my current testing branch. It'll be even better to
+align all flags for possible usage. Will rebase on this one.
+
+> 
+> Link: https://lore.kernel.org/lkml/20230530115527.GC156198@hirez.programming.kicks-ass.net #1
+> Suggested-by: Ricardo Neri <ricardo.neri@intel.com>
+> Reported-by: Yicong Yang <yangyicong@huawei.com>
+> Closes: https://lore.kernel.org/lkml/ce714341-af58-2522-69a8-321f02c82893@huawei.com/
+> Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+
+Reviewed-by: Yicong Yang <yangyicong@hisilicon.com>
+
 > ---
-
-Missing commit msg... but anyway this was sent a month ago:
-
-https://lore.kernel.org/all/20230615145838.1526919-1-alexander.stein@ew.tq-group.com/
-
-plus your version unfortunately makes similar mistake as Alexander's.
-
-
-
-Best regards,
-Krzysztof
-
+>  kernel/sched/topology.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+> index d3a3b2646ec4..ff02d7deec0c 100644
+> --- a/kernel/sched/topology.c
+> +++ b/kernel/sched/topology.c
+> @@ -722,8 +722,7 @@ cpu_attach_domain(struct sched_domain *sd, struct root_domain *rd, int cpu)
+>  
+>  			if (parent->parent) {
+>  				parent->parent->child = tmp;
+> -				if (tmp->flags & SD_SHARE_CPUCAPACITY)
+> -					parent->parent->groups->flags |= SD_SHARE_CPUCAPACITY;
+> +				parent->parent->groups->flags = tmp->flags;
+>  			}
+>  
+>  			/*
+> 
