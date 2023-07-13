@@ -2,139 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9B737516AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 05:18:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F04377516B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 05:20:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233486AbjGMDSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 12 Jul 2023 23:18:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40966 "EHLO
+        id S233504AbjGMDUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 12 Jul 2023 23:20:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231592AbjGMDSW (ORCPT
+        with ESMTP id S233507AbjGMDT6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 12 Jul 2023 23:18:22 -0400
-Received: from mail-il1-f171.google.com (mail-il1-f171.google.com [209.85.166.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D455510FC;
-        Wed, 12 Jul 2023 20:18:21 -0700 (PDT)
-Received: by mail-il1-f171.google.com with SMTP id e9e14a558f8ab-3463de183b0so846895ab.2;
-        Wed, 12 Jul 2023 20:18:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689218301; x=1691810301;
-        h=date:subject:message-id:references:in-reply-to:cc:to:from
-         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=qawsrB2QjObGFKdtBJBr24bS4klgjaH5RnlsFvFaqdA=;
-        b=FlASqXf7vRR5t3eTnmT7e/V8WHJv239bInW7MXYkyKN8IDb0MXkkL9DE8fwlIqVTp3
-         RXe7cnLfEmmC+YkWvAlca1ij/QbStsSF0+woa8c+b9OeHedWU8fdla8kHhSA/xcvaOE8
-         dp5sYxDBvkyb2WtCVYkG1tqrYFs5V7njTU0zzCG4q8IbwftkUPlFTsqH/2+mH46aPYKZ
-         EUReysGNjY1l6s2NhaN70XW0faywWJugXDHD80cvbP+tI9fwrTVJkJ/aNLyCE2t0MTnT
-         qMxefhnLViZoFaPkPetjGxUg7wMyAco0WTBy9w/jJRmK7OhSRifzPSBt5NMj5+Kt2PLF
-         tXRA==
-X-Gm-Message-State: ABy/qLY1lPqTdVrZLrSZ36c1oWe2AjtLuGgt2Z46eR1apdDQBflSBRQk
-        MU/zhdU/6eWWH63kwN52kw==
-X-Google-Smtp-Source: APBJJlHY6uobXkZ7Ot/PXNS2zXB03TK8FxoMtNQm5K2O57QB9S+kej4dH9EdpogJCIV4sH4ZYuGddw==
-X-Received: by 2002:a92:cf4a:0:b0:345:aba5:3780 with SMTP id c10-20020a92cf4a000000b00345aba53780mr405972ilr.22.1689218301057;
-        Wed, 12 Jul 2023 20:18:21 -0700 (PDT)
-Received: from robh_at_kernel.org ([64.188.179.250])
-        by smtp.gmail.com with ESMTPSA id g2-20020a92d7c2000000b0034579ffe2b1sm1745730ilq.29.2023.07.12.20.18.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Jul 2023 20:18:20 -0700 (PDT)
-Received: (nullmailer pid 2687664 invoked by uid 1000);
-        Thu, 13 Jul 2023 03:18:17 -0000
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8bit
+        Wed, 12 Jul 2023 23:19:58 -0400
+Received: from SHSQR01.spreadtrum.com (mx1.unisoc.com [222.66.158.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E01271FDE;
+        Wed, 12 Jul 2023 20:19:54 -0700 (PDT)
+Received: from dlp.unisoc.com ([10.29.3.86])
+        by SHSQR01.spreadtrum.com with ESMTP id 36D3JIv5061613;
+        Thu, 13 Jul 2023 11:19:18 +0800 (+08)
+        (envelope-from Chunyan.Zhang@unisoc.com)
+Received: from SHDLP.spreadtrum.com (bjmbx02.spreadtrum.com [10.0.64.8])
+        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4R1fvB4D1dz2M4K4c;
+        Thu, 13 Jul 2023 11:18:14 +0800 (CST)
+Received: from ubt.spreadtrum.com (10.0.73.70) by BJMBX02.spreadtrum.com
+ (10.0.64.8) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Thu, 13 Jul
+ 2023 11:19:16 +0800
+From:   Chunyan Zhang <chunyan.zhang@unisoc.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+CC:     <linux-serial@vger.kernel.org>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH V2 1/2] serial: sprd: Assign sprd_port after initialized to avoid wrong access
+Date:   Thu, 13 Jul 2023 11:19:03 +0800
+Message-ID: <20230713031904.12106-1-chunyan.zhang@unisoc.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     Daniel Golle <daniel@makrotopia.org>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-mediatek@lists.infradead.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Greg Ungerer <gerg@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        devicetree@vger.kernel.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-arm-kernel@lists.infradead.org, Felix Fietkau <nbd@nbd.name>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org,
-        =?utf-8?q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-In-Reply-To: <6c2e9caddfb9427444307d8443f1b231e500787b.1689012506.git.daniel@makrotopia.org>
-References: <cover.1689012506.git.daniel@makrotopia.org>
- <6c2e9caddfb9427444307d8443f1b231e500787b.1689012506.git.daniel@makrotopia.org>
-Message-Id: <168921829748.2687635.17297461907605978671.robh@kernel.org>
-Subject: Re: [PATCH v2 net-next 2/9] dt-bindings: net: mediatek,net: add
- mt7988-eth binding
-Date:   Wed, 12 Jul 2023 21:18:17 -0600
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.0.73.70]
+X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
+ BJMBX02.spreadtrum.com (10.0.64.8)
+X-MAIL: SHSQR01.spreadtrum.com 36D3JIv5061613
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The global pointer 'sprd_port' may not zero when sprd_probe returns
+failure, that is a risk for sprd_port to be accessed afterward, and
+may lead to unexpected errors.
 
-On Thu, 13 Jul 2023 03:17:55 +0100, Daniel Golle wrote:
-> Introduce DT bindings for the MT7988 SoC to mediatek,net.yaml.
-> The MT7988 SoC got 3 Ethernet MACs operating at a maximum of
-> 10 Gigabit/sec supported by 2 packet processor engines for
-> offloading tasks.
-> The first MAC is hard-wired to a built-in switch which exposes
-> four 1000Base-T PHYs as user ports.
-> It also comes with built-in 2500Base-T PHY which can be used
-> with the 2nd GMAC.
-> The 2nd and 3rd GMAC can be connected to external PHYs or provide
-> SFP(+) cages attached via SGMII, 1000Base-X, 2500Base-X, USXGMII,
-> 5GBase-R or 10GBase-KR.
-> 
-> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
-> ---
->  .../devicetree/bindings/net/mediatek,net.yaml | 111 ++++++++++++++++++
->  1 file changed, 111 insertions(+)
-> 
+For example:
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+There are two UART ports, UART1 is used for console and configured in
+kernel command line, i.e. "console=";
 
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/net/mediatek,net.yaml:76:9: [error] syntax error: could not find expected ':' (syntax)
+The UART1 probe failed and the memory allocated to sprd_port[1] was
+released, but sprd_port[1] was not set to NULL;
 
-dtschema/dtc warnings/errors:
-make[2]: *** Deleting file 'Documentation/devicetree/bindings/net/mediatek,net.example.dts'
-Documentation/devicetree/bindings/net/mediatek,net.yaml:76:9: could not find expected ':'
-make[2]: *** [Documentation/devicetree/bindings/Makefile:26: Documentation/devicetree/bindings/net/mediatek,net.example.dts] Error 1
-make[2]: *** Waiting for unfinished jobs....
-./Documentation/devicetree/bindings/net/mediatek,net.yaml:76:9: could not find expected ':'
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/mediatek,net.yaml: ignoring, error parsing file
-make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1500: dt_binding_check] Error 2
-make: *** [Makefile:234: __sub-make] Error 2
+In UART2 probe, the same virtual address was allocated to sprd_port[2],
+and UART2 probe process finally will go into sprd_console_setup() to
+register UART1 as console since it is configured as preferred console
+(filled to console_cmdline[]), but the console parameters (sprd_port[1])
+belong to UART2.
 
-doc reference errors (make refcheckdocs):
+So move the sprd_port[] assignment to where the port already initialized
+can avoid the above issue.
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/6c2e9caddfb9427444307d8443f1b231e500787b.1689012506.git.daniel@makrotopia.org
+Fixes: b7396a38fb28 ("tty/serial: Add Spreadtrum sc9836-uart driver support")
+Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+---
+V2:
+- Leave sprd_remove() to keep the unrelated code logic the same.
+---
+ drivers/tty/serial/sprd_serial.c | 25 +++++++++++++++++--------
+ 1 file changed, 17 insertions(+), 8 deletions(-)
 
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
+diff --git a/drivers/tty/serial/sprd_serial.c b/drivers/tty/serial/sprd_serial.c
+index b58f51296ace..11de338a6122 100644
+--- a/drivers/tty/serial/sprd_serial.c
++++ b/drivers/tty/serial/sprd_serial.c
+@@ -1106,7 +1106,7 @@ static bool sprd_uart_is_console(struct uart_port *uport)
+ static int sprd_clk_init(struct uart_port *uport)
+ {
+ 	struct clk *clk_uart, *clk_parent;
+-	struct sprd_uart_port *u = sprd_port[uport->line];
++	struct sprd_uart_port *u = container_of(uport, struct sprd_uart_port, port);
+ 
+ 	clk_uart = devm_clk_get(uport->dev, "uart");
+ 	if (IS_ERR(clk_uart)) {
+@@ -1149,22 +1149,22 @@ static int sprd_probe(struct platform_device *pdev)
+ {
+ 	struct resource *res;
+ 	struct uart_port *up;
++	struct sprd_uart_port *sport;
+ 	int irq;
+ 	int index;
+ 	int ret;
+ 
+ 	index = of_alias_get_id(pdev->dev.of_node, "serial");
+-	if (index < 0 || index >= ARRAY_SIZE(sprd_port)) {
++	if (index < 0 || index >= UART_NR_MAX) {
+ 		dev_err(&pdev->dev, "got a wrong serial alias id %d\n", index);
+ 		return -EINVAL;
+ 	}
+ 
+-	sprd_port[index] = devm_kzalloc(&pdev->dev, sizeof(*sprd_port[index]),
+-					GFP_KERNEL);
+-	if (!sprd_port[index])
++	sport = devm_kzalloc(&pdev->dev, sizeof(*sport), GFP_KERNEL);
++	if (!sport)
+ 		return -ENOMEM;
+ 
+-	up = &sprd_port[index]->port;
++	up = &sport->port;
+ 	up->dev = &pdev->dev;
+ 	up->line = index;
+ 	up->type = PORT_SPRD;
+@@ -1195,7 +1195,7 @@ static int sprd_probe(struct platform_device *pdev)
+ 	 * Allocate one dma buffer to prepare for receive transfer, in case
+ 	 * memory allocation failure at runtime.
+ 	 */
+-	ret = sprd_rx_alloc_buf(sprd_port[index]);
++	ret = sprd_rx_alloc_buf(sport);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -1208,12 +1208,21 @@ static int sprd_probe(struct platform_device *pdev)
+ 	}
+ 	sprd_ports_num++;
+ 
++	sprd_port[index] = sport;
++
+ 	ret = uart_add_one_port(&sprd_uart_driver, up);
+ 	if (ret)
+-		sprd_remove(pdev);
++		goto clean_port;
+ 
+ 	platform_set_drvdata(pdev, up);
+ 
++	return 0;
++
++clean_port:
++	sprd_port[index] = NULL;
++	sprd_ports_num--;
++	uart_unregister_driver(&sprd_uart_driver);
++	sprd_remove(pdev);
+ 	return ret;
+ }
+ 
+-- 
+2.41.0
 
