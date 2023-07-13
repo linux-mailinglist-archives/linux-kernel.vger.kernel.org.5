@@ -2,82 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27AC3752354
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 15:20:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10CB8752356
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 15:20:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233976AbjGMNUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 09:20:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51426 "EHLO
+        id S235102AbjGMNUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 09:20:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234147AbjGMNT5 (ORCPT
+        with ESMTP id S235151AbjGMNUF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 09:19:57 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D06943A92;
-        Thu, 13 Jul 2023 06:19:23 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 75B12612FC;
-        Thu, 13 Jul 2023 13:19:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30BDBC433C9;
-        Thu, 13 Jul 2023 13:19:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689254345;
-        bh=u+5xkBeFRP9d+V4EON2W5LWepmKPQK26vIycq1UicY8=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=SSucd0pvRsFGNDCth1I7okGhuxvslol13Ph+SYHwpCQPigK2ghsxDQZKN9exJOkCA
-         ZHunCUppQcELNUs7VCTOJXtSBUvDYB6SzSZDlT1ab1gsvTHCfizcYr9kYIJ7z79pIw
-         F+De+4y/7GmH4N9egMGBM98x4ndWJ+rWbLbHTCeHgnI3B/vQmlyaKu5a9JSXfh37z+
-         LStZelGsKSLvDgjiTpxwbUkgc+bJNsF4LNkcJr7r/K/56wgFuG55mt/sDiaDnlKLmv
-         0EmBFVBXZiEIQ1YMFE1NWEq7vlowL8BVdvA2azLbxtbqf5MfaKj9ZouX9tP2UVSZSi
-         JLITbtARJV1Hg==
-Message-ID: <6097b2118e820af8d9ffee6b663c4e260158d62a.camel@kernel.org>
-Subject: Re: [PATCH] ext4: fix decoding of raw_inode timestamps
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     brauner@kernel.org, Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Thu, 13 Jul 2023 09:19:03 -0400
-In-Reply-To: <20230713130434.GA3724752@mit.edu>
-References: <20230712150251.163790-1-jlayton@kernel.org>
-         <20230712175258.GB3677745@mit.edu>
-         <4c29c4e8f88509b2f8e8c08197dba8cfeb07c045.camel@kernel.org>
-         <20230712212557.GE3432379@mit.edu>
-         <11bef51bf7fed6082f41a9ecde341b46c0c3e0ec.camel@kernel.org>
-         <20230713130434.GA3724752@mit.edu>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Thu, 13 Jul 2023 09:20:05 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 721451FD6;
+        Thu, 13 Jul 2023 06:19:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689254385; x=1720790385;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=oLhxPyIN7mgwR8XP8nOZx/+mWVZFK14soxI+lDZTabs=;
+  b=jun12iVD0Q8cuORNs0PO9flnSRBwVm7vsRdKg6uSw9Cpe3vEAe171P+4
+   TJrUOZCK1AgUYTTJRiUX8hdZdcbGgx92KOSBAUaw8F/YP2Rpl1FdtFKy0
+   emaM6hLrmfqhwIhm6JDChji005h6gDnUgoH1fHv2x6M1+/KDMhPRU5YQx
+   5TZbpU3pXTWQK6JN6nbKN515bQOoUdbrzakHwhDSEgyit5WatSgPZHQhW
+   OwSLb5Rh6qnvrQZfMF2pt5KKTV7nw8aPzp0/wmyKUuE0iJAfFnDhdqc/J
+   Y5XVzwuu+knED6BTTDn36F4TT3DmXag0tgZAI42ii6GkRqLcBaR2H8iOC
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="345496274"
+X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
+   d="scan'208";a="345496274"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2023 06:19:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="968615563"
+X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
+   d="scan'208";a="968615563"
+Received: from ijarvine-mobl2.ger.corp.intel.com ([10.251.222.39])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2023 06:19:40 -0700
+From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     linux-kselftest@vger.kernel.org,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
+        Fenghua Yu <fenghua.yu@intel.com>
+Cc:     linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Subject: [PATCH v4 00/19] selftests/resctrl: Fixes and cleanups
+Date:   Thu, 13 Jul 2023 16:19:13 +0300
+Message-Id: <20230713131932.133258-1-ilpo.jarvinen@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-07-13 at 09:04 -0400, Theodore Ts'o wrote:
-> On Thu, Jul 13, 2023 at 06:48:04AM -0400, Jeff Layton wrote:
-> >=20
-> > The above output is what I get with the fix in place. Without this
-> > patch, I get: ...
->=20
-> Thanks!!  It's good to know the _one_ kunit test we have is capable of
-> detecting this.  We have a patch series lined up to add our *second*
-> unit test (for the block allocator) for the next merge window, and
-> while our unit test coverage is still quite small, it's nice to know
-> that it can detect problems --- and much faster than running xfstests.  :=
--}
->=20
+Here is a series with some fixes and cleanups to resctrl selftests.
+Only has a minor change in code ordering in main() compared with v3.
 
-Yeah, it's pretty quick! I need to consider adding some tests for some
-other areas that are difficult to view outside the kernel (the errseq_t
-infrastructure comes to mind).
---=20
-Jeff Layton <jlayton@kernel.org>
+v4:
+- Move resctrlfs (unconditional) umount after resctrl fs support check
+
+v3:
+- Don't include rewritten CAT test into this series!
+- Tweak wildcard style in Makefile
+- Fix many changelog typos, remove some wrong claims, and generally
+  improve them.
+- Add fix to PARENT_EXIT() to unmount resctrl FS
+- Add unmounting resctrl FS before starting any tests
+- Add fix for buf leak
+- Add fix for perf fd closing
+- Split mount/remount/umount patches differently
+- Use size_t and %zu for span
+- Keep MBM print as MB, only internally use span in bytes
+- Drop start_buf global from fill_buf
+
+
+v2 (was sent with CAT test rewrite which is no longer included in v3):
+- Rebased on top of next to solve the conflicts
+- Added 2 patches related to resctrl FS mount/umount (fix + cleanup)
+- Consistently use "alloc" in cache_alloc_size()
+- CAT test error handling tweaked
+- Remove a spurious newline change from the CAT patch
+- Small improvements to changelogs
+
+Ilpo Järvinen (19):
+  selftests/resctrl: Add resctrl.h into build deps
+  selftests/resctrl: Don't leak buffer in fill_cache()
+  selftests/resctrl: Unmount resctrl FS if child fails to run benchmark
+  selftests/resctrl: Close perf value read fd on errors
+  selftests/resctrl: Unmount resctrl FS before starting the first test
+  selftests/resctrl: Move resctrl FS mount/umount to higher level
+  selftests/resctrl: Refactor remount_resctrl(bool mum_resctrlfs) to
+    mount_resctrl()
+  selftests/resctrl: Remove mum_resctrlfs from struct resctrl_val_param
+  selftests/resctrl: Convert span to size_t
+  selftests/resctrl: Express span internally in bytes
+  selftests/resctrl: Remove duplicated preparation for span arg
+  selftests/resctrl: Remove "malloc_and_init_memory" param from
+    run_fill_buf()
+  selftests/resctrl: Remove unnecessary startptr global from fill_buf
+  selftests/resctrl: Improve parameter consistency in fill_buf
+  selftests/resctrl: Don't pass test name to fill_buf
+  selftests/resctrl: Don't use variable argument list for ->setup()
+  selftests/resctrl: Move CAT/CMT test global vars to function they are
+    used in
+  selftests/resctrl: Pass the real number of tests to show_cache_info()
+  selftests/resctrl: Remove test type checks from cat_val()
+
+ tools/testing/selftests/resctrl/Makefile      |  2 +-
+ tools/testing/selftests/resctrl/cache.c       | 64 +++++++-------
+ tools/testing/selftests/resctrl/cat_test.c    | 28 ++----
+ tools/testing/selftests/resctrl/cmt_test.c    | 29 ++-----
+ tools/testing/selftests/resctrl/fill_buf.c    | 87 +++++++------------
+ tools/testing/selftests/resctrl/mba_test.c    |  9 +-
+ tools/testing/selftests/resctrl/mbm_test.c    | 17 ++--
+ tools/testing/selftests/resctrl/resctrl.h     | 17 ++--
+ .../testing/selftests/resctrl/resctrl_tests.c | 82 +++++++++++------
+ tools/testing/selftests/resctrl/resctrl_val.c |  7 +-
+ tools/testing/selftests/resctrl/resctrlfs.c   | 57 ++++++------
+ 11 files changed, 169 insertions(+), 230 deletions(-)
+
+-- 
+2.30.2
+
