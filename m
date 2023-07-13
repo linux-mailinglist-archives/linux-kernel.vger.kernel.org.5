@@ -2,88 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FA56751E94
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 12:14:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DC9E751EA6
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 12:15:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233762AbjGMKOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 06:14:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55858 "EHLO
+        id S234249AbjGMKPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 06:15:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231675AbjGMKOQ (ORCPT
+        with ESMTP id S234144AbjGMKPP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 06:14:16 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDD71119;
-        Thu, 13 Jul 2023 03:14:15 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Thu, 13 Jul 2023 06:15:15 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FC4C2D41;
+        Thu, 13 Jul 2023 03:15:03 -0700 (PDT)
+Received: from localhost.localdomain (unknown [39.45.151.35])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 87E1D1F385;
-        Thu, 13 Jul 2023 10:14:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1689243254; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yESZf5o+g8lL/htPSYTth/5qzyYw57M36VTUgeXJiPw=;
-        b=VKWwmDRwJRlT8LxYSbDPb05dHzZEoQvkDWgn6zHRBFZnMwbEs+LjFyiMahZnl1I4owsGVl
-        9Tl6+9WcRwPiKUT1YZGyLf8dugKK9pfns0AibtCcX2YNO2lC0lmfOfvYzanrM05+6bcLSl
-        uk5PhcjStMwP1S4+41xzfIScYKVKnkc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1689243254;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yESZf5o+g8lL/htPSYTth/5qzyYw57M36VTUgeXJiPw=;
-        b=TL0j7/87sulczK7E21raQGt51x52fHWSSE+QeEL8uoL/EXjtnJWyAleAR65lcGFj7uNo2K
-        W+UO2XZgQfQ/JwCw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 68FCD133D6;
-        Thu, 13 Jul 2023 10:14:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id vEclGXbOr2SCZAAAMHmgww
-        (envelope-from <hare@suse.de>); Thu, 13 Jul 2023 10:14:14 +0000
-Message-ID: <875b1903-bca8-8c6e-79d7-506313bbd56d@suse.de>
-Date:   Thu, 13 Jul 2023 12:14:14 +0200
+        (Authenticated sender: usama.anjum)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 918176606F70;
+        Thu, 13 Jul 2023 11:14:55 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1689243302;
+        bh=e3RwcWLS0DN4jGAQ1nXg3KEjRQ1a6mnaZglmii6vuAs=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=fRggsLw8SYCGeDn08atN83cllupnb3ZJ5MQpOBR4LrF1xs2o73DV1aNg9wrIu3P0/
+         JeIbvUrIo3JKmVSoyAWGM1wG1+LPMuBKMPzS8LKuGBLs7iCQwOgL/IRtsH7rfyGStp
+         I1YxKGMMK5LAL70tCirmjl3OMWidVTSRWUbSISebqm69g59sahJn+nTSOPIhLQAHoU
+         dPeq7633pIrGzb2dlrdc9wzPOJOoDXDwt2ZELakrY+HzWYagzcvvqt/NmPTW6/Ev/d
+         3nwX4XdH0e7eUGozIRv+Zl/B1s2qaHYmaH0/4RO0WxIHyOfe7fOud3c+yyoBure7Cb
+         sxySisZP134VQ==
+From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
+To:     Peter Xu <peterx@redhat.com>, David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <emmir@google.com>,
+        Andrei Vagin <avagin@gmail.com>,
+        Danylo Mocherniuk <mdanylo@google.com>,
+        Paul Gofman <pgofman@codeweavers.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>, Nadav Amit <namit@vmware.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Shuah Khan <shuah@kernel.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Yang Shi <shy828301@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Liam R . Howlett" <Liam.Howlett@Oracle.com>,
+        Yun Zhou <yun.zhou@windriver.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Alex Sierra <alex.sierra@amd.com>,
+        Muhammad Usama Anjum <usama.anjum@collabora.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        Greg KH <gregkh@linuxfoundation.org>, kernel@collabora.com
+Subject: [PATCH v25 4/5] mm/pagemap: add documentation of PAGEMAP_SCAN IOCTL
+Date:   Thu, 13 Jul 2023 15:14:14 +0500
+Message-Id: <20230713101415.108875-5-usama.anjum@collabora.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230713101415.108875-1-usama.anjum@collabora.com>
+References: <20230713101415.108875-1-usama.anjum@collabora.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH blktests v1 2/3] nvme/rc: Avoid triggering host nvme-cli
- autoconnect
-Content-Language: en-US
-To:     Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Daniel Wagner <dwagner@suse.de>
-Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, Chaitanya Kulkarni <kch@nvidia.com>,
-        Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        James Smart <jsmart2021@gmail.com>,
-        Martin Belanger <Martin.Belanger@dell.com>
-References: <20230620132703.20648-1-dwagner@suse.de>
- <20230620132703.20648-3-dwagner@suse.de>
- <9c07e4f6-2cf5-b53b-6b48-bd4df8798ee9@nvidia.com>
- <bz2s6nyjwl6l7yfrd4wtjdtousv23ypcdleckibps5lyjpwi4x@wqq6qqesevpk>
- <39f9977e-b34c-f2dd-d356-8c78414a60d1@nvidia.com>
- <jdsoqllqmrqu5j5bt3fudkksmjskgs4ooodynm6yh3b4oc5scn@t3hydrmbb22f>
- <972a06e0-6841-043e-fc00-db7596f664c4@nvidia.com>
- <cskolyrp3s47gnn4nwtqpfxtafzhpirn3hv7ovhnnzpbb3ll2z@oum3v3n7go6l>
- <6dced1ba-c468-c88e-f861-9c202e803894@nvidia.com>
- <eadl5bkyysdcymgy7ra4hm6cqn6ngcxbyvz2qzg3fdffsssnpo@d3rzegyurzn5>
- <6fa5ec73-e6c6-cf8e-b11f-1a57f0fc34b4@nvidia.com>
- <95210a8a-c70e-c312-2c47-4f5ee9329586@suse.de>
- <bd7c91c4-9528-aaeb-9789-03191dc7761b@nvidia.com>
-From:   Hannes Reinecke <hare@suse.de>
-In-Reply-To: <bd7c91c4-9528-aaeb-9789-03191dc7761b@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -92,126 +77,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/13/23 10:49, Max Gurtovoy wrote:
-> 
-> 
-> On 13/07/2023 9:00, Hannes Reinecke wrote:
->> On 7/13/23 02:12, Max Gurtovoy wrote:
->>>
->>>
->>> On 12/07/2023 15:04, Daniel Wagner wrote:
->>>> On Mon, Jul 10, 2023 at 07:30:20PM +0300, Max Gurtovoy wrote:
->>>>>
->>>>>
->>>>> On 10/07/2023 18:03, Daniel Wagner wrote:
->>>>>> On Mon, Jul 10, 2023 at 03:31:23PM +0300, Max Gurtovoy wrote:
->>>>>>> I think it is more than just commit message.
->>>>>>
->>>>>> Okay, starting to understand what's the problem.
->>>>>>
->>>>>>> A lot of code that we can avoid was added regarding the --context 
->>>>>>> cmdline
->>>>>>> argument.
->>>>>>
->>>>>> Correct and it's not optional to get the tests passing for the fc 
->>>>>> transport.
->>>>>
->>>>> why the fc needs the --context to pass tests ?
->>>>
->>>> A typical nvme test consists out of following steps (nvme/004):
->>>>
->>>> // nvme target setup (1)
->>>>     _create_nvmet_subsystem "blktests-subsystem-1" "${loop_dev}" \
->>>>         "91fdba0d-f87b-4c25-b80f-db7be1418b9e"
->>>>     _add_nvmet_subsys_to_port "${port}" "blktests-subsystem-1"
->>>>
->>>> // nvme host setup (2)
->>>>     _nvme_connect_subsys "${nvme_trtype}" blktests-subsystem-1
->>>>
->>>>     local nvmedev
->>>>     nvmedev=$(_find_nvme_dev "blktests-subsystem-1")
->>>>     cat "/sys/block/${nvmedev}n1/uuid"
->>>>     cat "/sys/block/${nvmedev}n1/wwid"
->>>>
->>>> // nvme host teardown (3)
->>>>     _nvme_disconnect_subsys blktests-subsystem-1
->>>>
->>>> // nvme target teardown (4)
->>>>     _remove_nvmet_subsystem_from_port "${port}" "blktests-subsystem-1"
->>>>     _remove_nvmet_subsystem "blktests-subsystem-1"
->>>>
->>>>
->>>> The corresponding output with --context
->>>>
->>>>   run blktests nvme/004 at 2023-07-12 13:49:50
->>>> // (1)
->>>>   loop0: detected capacity change from 0 to 32768
->>>>   nvmet: adding nsid 1 to subsystem blktests-subsystem-1
->>>>   nvme nvme2: NVME-FC{0}: create association : host wwpn 
->>>> 0x20001100aa000002  rport wwpn 0x20001100aa000001: NQN 
->>>> "blktests-subsystem-1"
->>>>   (NULL device *): {0:0} Association created
->>>>   [174] nvmet: ctrl 1 start keep-alive timer for 5 secs
->>>> // (2)
->>>>   nvmet: creating nvm controller 1 for subsystem 
->>>> blktests-subsystem-1 for NQN 
->>>> nqn.2014-08.org.nvmexpress:uuid:0f01fb42-9f7f-4856-b0b3-51e60b8de349.
->>>>   [374] nvmet: adding queue 1 to ctrl 1.
->>>>   [1138] nvmet: adding queue 2 to ctrl 1.
->>>>   [73] nvmet: adding queue 3 to ctrl 1.
->>>>   [174] nvmet: adding queue 4 to ctrl 1.
->>>>   nvme nvme2: NVME-FC{0}: controller connect complete
->>>>   nvme nvme2: NVME-FC{0}: new ctrl: NQN "blktests-subsystem-1"
->>>> // (3)
->>>>   nvme nvme2: Removing ctrl: NQN "blktests-subsystem-1"
->>>> // (4)
->>>>   [1138] nvmet: ctrl 1 stop keep-alive
->>>>   (NULL device *): {0:0} Association deleted
->>>>   (NULL device *): {0:0} Association freed
->>>>   (NULL device *): Disconnect LS failed: No Association
->>>>
->>>>
->>>> and without --context
->>>>
->>>>   run blktests nvme/004 at 2023-07-12 13:50:33
->>>> // (1)
->>>>   loop1: detected capacity change from 0 to 32768
->>>>   nvmet: adding nsid 1 to subsystem blktests-subsystem-1
->>>>   nvme nvme2: NVME-FC{0}: create association : host wwpn 
->>>> 0x20001100aa000002  rport wwpn 0x20001100aa000001: NQN 
->>>> "nqn.2014-08.org.nvmexpress.discovery"
->>>
->>> why does this association to discovery controller created ? because 
->>> of some system service ?
->>>
->> Yes. There are nvme-autoconnect udev rules and systemd services 
->> installed per default (in quite some systems now).
->> And it's really hard (if not impossible) to disable these services (as 
->> we cannot be sure how they are named, hence we wouldn't know which 
->> service to disable.
-> 
-> Right. We shouldn't disable them IMO.
-> 
->>
->>> can we configure the blktests subsystem not to be discovered or add 
->>> some access list to it ?
->>>
->> But that's precisely what the '--context' thing is attempting to do ...
-> 
-> I'm not sure it is.
-> 
-> Exposing the subsystem is from the target configuration side.
-> Additionally, the --context (which is in the initiator/host side), 
-> according to Daniel, is there to distinguish between different 
-> invocations. I proposed that blktests subsystem will not be part of 
-> discoverable fabric or protected somehow by access list. Therefore, no 
-> additional invocation will happen.
-> 
-Hmm. Maybe we can tweak blktest to use it's own HostNQN, and always pass 
-that for any nvme-cli call.
-Daniel?
+Add some explanation and method to use write-protection and written-to
+on memory range.
 
-Cheers,
+Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+---
+Changes in v21:
+- Update according to changed interface
 
-Hannes
+Changes in v20:
+- Add new flag in documentation
+
+Changes in v19:
+- Improved documentatiom with punctuation marks
+
+Changes in v16:
+- Update the documentation
+
+Changes in v11:
+- Add more documentation
+
+rst
+---
+ Documentation/admin-guide/mm/pagemap.rst | 58 ++++++++++++++++++++++++
+ 1 file changed, 58 insertions(+)
+
+diff --git a/Documentation/admin-guide/mm/pagemap.rst b/Documentation/admin-guide/mm/pagemap.rst
+index c8f380271cad..4bdad8eff009 100644
+--- a/Documentation/admin-guide/mm/pagemap.rst
++++ b/Documentation/admin-guide/mm/pagemap.rst
+@@ -227,3 +227,61 @@ Before Linux 3.11 pagemap bits 55-60 were used for "page-shift" (which is
+ always 12 at most architectures). Since Linux 3.11 their meaning changes
+ after first clear of soft-dirty bits. Since Linux 4.2 they are used for
+ flags unconditionally.
++
++Pagemap Scan IOCTL
++==================
++
++The ``PAGEMAP_SCAN`` IOCTL on the pagemap file can be used to get or optionally
++clear the info about page table entries. The following operations are supported
++in this IOCTL:
++- Get the information if the pages have been written to (``PAGE_IS_WRITTEN``),
++  file mapped (``PAGE_IS_FILE``), present (``PAGE_IS_PRESENT``), swapped
++  (``PAGE_IS_SWAPPED``) or page has pfn zero (``PAGE_IS_PFNZERO``).
++- Find pages which have been written to and/or write protect the pages atomically
++  (atomic ``PM_SCAN_OP_GET + PM_SCAN_OP_WP``)
++
++The ``struct pm_scan_arg`` is used as the argument of the IOCTL.
++ 1. The size of the ``struct pm_scan_arg`` must be specified in the ``size``
++    field. This field will be helpful in recognizing the structure if extensions
++    are done later.
++ 2. The flags can be specified in the ``flags`` field. The ``PM_SCAN_OP_GET``
++    and ``PM_SCAN_OP_WP`` are the only added flags at this time.
++ 3. The range is specified through ``start`` and ``end``.
++ 4. The output buffer of ``struct page_region`` array and size is specified in
++    ``vec`` and ``vec_len``.
++ 5. The optional maximum requested pages are specified in the ``max_pages``.
++ 6. The masks are specified in ``required_mask``, ``anyof_mask``,
++    ``excluded_ mask`` and ``return_mask``.
++    1.  To find if ``PAGE_IS_WRITTEN`` flag is set for pages which have
++        ``PAGE_IS_FILE`` set and ``PAGE_IS_SWAPPED`` unset, ``required_mask``
++        is set to ``PAGE_IS_FILE``, ``exclude_mask`` is set to
++        ``PAGE_IS_SWAPPED`` and ``return_mask`` is set to ``PAGE_IS_WRITTEN``.
++        The output buffer in ``vec`` and length must be specified in ``vec_len``.
++    2. To find pages which have either ``PAGE_IS_FILE`` or ``PAGE_IS_SWAPPED``
++       set, ``anyof_masks`` is set to  ``PAGE_IS_FILE | PAGE_IS_SWAPPED``.
++    3. To find written pages and engage write protect, ``PAGE_IS_WRITTEN`` is
++       specified in ``required_mask`` and ``return_mask``. In addition to
++       specifying the output buffer in ``vec`` and length in ``vec_len``, the
++       ``PM_SCAN_OP_WP`` is specified in ``flags`` to perform write protect
++       on the range as well.
++
++The ``PAGE_IS_WRITTEN`` flag can be considered as the better and correct
++alternative of soft-dirty flag. It doesn't get affected by housekeeping chores
++(VMA merging) of the kernel and hence the user can find the true soft-dirty pages
++only. This IOCTL adds the atomic way to find which pages have been written and
++write protect those pages again. This kind of operation is needed to efficiently
++find out which pages have changed in the memory.
++
++To get information about which pages have been written to or optionally write
++protect the pages, following must be performed first in order:
++ 1. The userfaultfd file descriptor is created with ``userfaultfd`` syscall.
++ 2. The ``UFFD_FEATURE_WP_UNPOPULATED`` and ``UFFD_FEATURE_WP_ASYNC`` features
++    are set by ``UFFDIO_API`` IOCTL.
++ 3. The memory range is registered with ``UFFDIO_REGISTER_MODE_WP`` mode
++    through ``UFFDIO_REGISTER`` IOCTL.
++ 4. Then any part of the registered memory or the whole memory region must
++    be write protected using ``PAGEMAP_SCAN`` IOCTL with flag ``PM_SCAN_OP_WP``
++    or the ``UFFDIO_WRITEPROTECT`` IOCTL can be used. Both of these perform the
++    same operation. The former is better in terms of performance.
++ 5. Now the ``PAGEMAP_SCAN`` IOCTL can be used to either just find pages which
++    have been written to and/or optionally write protect the pages as well.
+-- 
+2.39.2
 
