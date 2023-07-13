@@ -2,60 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7440F7529E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 19:32:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C0C47529E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 19:34:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231316AbjGMRco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 13:32:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54956 "EHLO
+        id S231617AbjGMReN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 13:34:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjGMRcm (ORCPT
+        with ESMTP id S230468AbjGMReM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 13:32:42 -0400
+        Thu, 13 Jul 2023 13:34:12 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80A6C268F;
-        Thu, 13 Jul 2023 10:32:41 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D256226A0
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 10:34:10 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 02FD661B06;
-        Thu, 13 Jul 2023 17:32:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A9FDC433C8;
-        Thu, 13 Jul 2023 17:32:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689269560;
-        bh=PAOtplUQoMJhtZzcBNlbOTwjamvxrWqG3jleY/dqhhk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uaZOFR/nYeOPb+yQhZrT162tKTHFjajv+Ys4feivBgBGysICYcS6qdY/owjuDdoUM
-         zmBrZRi2fk3BgxkOGVOlPg9ALrBvxELnAihV4f7DyrbDesmSI7rLwmm9tb4Q+6Vysk
-         Dn0OaD9jISmjAApgEm4g7KNmIAd7jYsur7UAX+oTBGah0HxDiEZLQ9qNzp0iw4jQDQ
-         JLiA8o12/CCTktCFdv1F4bpGpNj6l58zGuZ0uXCfdSy1s32W2bCXa7Wz5ZYLKoLRmd
-         hYYL6qMHQfOMwsUEqLGUYn4aCVE/6fFyQ3/oysSFrL0Gd0F9EFinsgvKzJWl7uZ3Ri
-         jLXP1m+gf95Cg==
-From:   SeongJae Park <sj@kernel.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     "Ryan Roberts" <ryan.roberts@arm.com>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "Shuah Khan" <shuah@kernel.org>,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
-        "Mark Brown" <broonie@kernel.org>,
-        "John Hubbard" <jhubbard@nvidia.com>,
-        "Florent Revest" <revest@chromium.org>,
-        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        "SeongJae Park" <sj@kernel.org>, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v1 2/9] selftests/mm: Give scripts execute permission
-Date:   Thu, 13 Jul 2023 17:32:37 +0000
-Message-Id: <20230713173237.66285-1-sj@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <ac816a32-cea9-363f-4490-19e6f5225c3d@redhat.com>
-References: 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 706DB61ADB
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 17:34:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 390ECC433C7;
+        Thu, 13 Jul 2023 17:34:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1689269649;
+        bh=E5ywfrtI0Wco8qvyzBJpgMPdT7W3NwtbJglM7sjmO7U=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=OHpIyvXaC7NiiFrbSOrnSr6QNzIs34S29H5zYDRfLdgbxGk1H7VW8z7EbpMdSkFp0
+         N5Kor/L7l2mylFn31eRxzBdTCS+PrMrcIpB1Tm5Jw6CUiUxr7CE7a8QCBsfMQ4dSdG
+         ytOxhDNS4uQPuGaUJ9wMfy6iCgeH5OAVeCyY7nxE=
+Date:   Thu, 13 Jul 2023 10:34:07 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Jiaqi Yan <jiaqiyan@google.com>,
+        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        James Houghton <jthoughton@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 0/2] Fix hugetlb free path race with memory errors
+Message-Id: <20230713103407.902e24dc90e85a9779ba885c@linux-foundation.org>
+In-Reply-To: <20230711220942.43706-1-mike.kravetz@oracle.com>
+References: <20230711220942.43706-1-mike.kravetz@oracle.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -64,117 +60,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 13 Jul 2023 16:39:33 +0200 David Hildenbrand <david@redhat.com> wrote:
+On Tue, 11 Jul 2023 15:09:40 -0700 Mike Kravetz <mike.kravetz@oracle.com> wrote:
 
-> On 13.07.23 15:54, Ryan Roberts wrote:
-> > When run under run_vmtests.sh, test scripts were failing to run with
-> > "permission denied" due to the scripts not being executable.
-> > 
-> > It is also annoying not to be able to directly invoke run_vmtests.sh,
-> > which is solved by giving also it the execute permission.
-> > 
-> > Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
-> > ---
-> >   tools/testing/selftests/mm/charge_reserved_hugetlb.sh  | 0
-> >   tools/testing/selftests/mm/check_config.sh             | 0
-> >   tools/testing/selftests/mm/hugetlb_reparenting_test.sh | 0
-> >   tools/testing/selftests/mm/run_vmtests.sh              | 0
-> >   tools/testing/selftests/mm/test_hmm.sh                 | 0
-> >   tools/testing/selftests/mm/test_vmalloc.sh             | 0
-> >   tools/testing/selftests/mm/va_high_addr_switch.sh      | 0
-> >   tools/testing/selftests/mm/write_hugetlb_memory.sh     | 0
-> >   8 files changed, 0 insertions(+), 0 deletions(-)
-> >   mode change 100644 => 100755 tools/testing/selftests/mm/charge_reserved_hugetlb.sh
-> >   mode change 100644 => 100755 tools/testing/selftests/mm/check_config.sh
-> >   mode change 100644 => 100755 tools/testing/selftests/mm/hugetlb_reparenting_test.sh
-> >   mode change 100644 => 100755 tools/testing/selftests/mm/run_vmtests.sh
-> >   mode change 100644 => 100755 tools/testing/selftests/mm/test_hmm.sh
-> >   mode change 100644 => 100755 tools/testing/selftests/mm/test_vmalloc.sh
-> >   mode change 100644 => 100755 tools/testing/selftests/mm/va_high_addr_switch.sh
-> >   mode change 100644 => 100755 tools/testing/selftests/mm/write_hugetlb_memory.sh
-> > 
-> > diff --git a/tools/testing/selftests/mm/charge_reserved_hugetlb.sh b/tools/testing/selftests/mm/charge_reserved_hugetlb.sh
-> > old mode 100644
-> > new mode 100755
-> > diff --git a/tools/testing/selftests/mm/check_config.sh b/tools/testing/selftests/mm/check_config.sh
-> > old mode 100644
-> > new mode 100755
-> > diff --git a/tools/testing/selftests/mm/hugetlb_reparenting_test.sh b/tools/testing/selftests/mm/hugetlb_reparenting_test.sh
-> > old mode 100644
-> > new mode 100755
-> > diff --git a/tools/testing/selftests/mm/run_vmtests.sh b/tools/testing/selftests/mm/run_vmtests.sh
-> > old mode 100644
-> > new mode 100755
-> > diff --git a/tools/testing/selftests/mm/test_hmm.sh b/tools/testing/selftests/mm/test_hmm.sh
-> > old mode 100644
-> > new mode 100755
-> > diff --git a/tools/testing/selftests/mm/test_vmalloc.sh b/tools/testing/selftests/mm/test_vmalloc.sh
-> > old mode 100644
-> > new mode 100755
-> > diff --git a/tools/testing/selftests/mm/va_high_addr_switch.sh b/tools/testing/selftests/mm/va_high_addr_switch.sh
-> > old mode 100644
-> > new mode 100755
-> > diff --git a/tools/testing/selftests/mm/write_hugetlb_memory.sh b/tools/testing/selftests/mm/write_hugetlb_memory.sh
-> > old mode 100644
-> > new mode 100755
+> In the discussion of Jiaqi Yan's series "Improve hugetlbfs read on
+> HWPOISON hugepages" the race window was discovered.
+> https://lore.kernel.org/linux-mm/20230616233447.GB7371@monkey/
 > 
-> Sounds reasonable to me.
+> Freeing a hugetlb page back to low level memory allocators is performed
+> in two steps.
+> 1) Under hugetlb lock, remove page from hugetlb lists and clear destructor
+> 2) Outside lock, allocate vmemmap if necessary and call low level free
+> Between these two steps, the hugetlb page will appear as a normal
+> compound page.  However, vmemmap for tail pages could be missing.
+> If a memory error occurs at this time, we could try to update page
+> flags non-existant page structs.
 > 
-> Probably due to:
+> A much more detailed description is in the first patch.
 > 
-> commit baa489fabd01596d5426d6e112b34ba5fb59ab82
-> Author: SeongJae Park <sj@kernel.org>
-> Date:   Tue Jan 3 18:07:53 2023 +0000
+> The first patch addresses the race window.  However, it adds a
+> hugetlb_lock lock/unlock cycle to every vmemmap optimized hugetlb
+> page free operation.  This could lead to slowdowns if one is freeing
+> a large number of hugetlb pages.
 > 
->      selftests/vm: rename selftests/vm to selftests/mm
->      
->      Rename selftets/vm to selftests/mm for being more consistent with the
->      code, documentation, and tools directories, and won't be confused with
->      virtual machines.
+> The second path optimizes the update_and_free_pages_bulk routine
+> to only take the lock once in bulk operations.
 > 
+> The second patch is technically not a bug fix, but includes a Fixes
+> tag and Cc stable to avoid a performance regression.  It can be
+> combined with the first, but was done separately make reviewing easier.
 > 
-> and indeed, it contains
-> 
-> diff --git a/tools/testing/selftests/vm/run_vmtests.sh b/tools/testing/selftests/mm/run_vmtests.sh
-> old mode 100755
-> new mode 100644
-> similarity index 100%
-> rename from tools/testing/selftests/vm/run_vmtests.sh
-> rename to tools/testing/selftests/mm/run_vmtests.sh
 
-Thank you for tracking this and kindly Cc-ing me!  I'd like to clarify a little
-bit more, though.  The permission change has made by the commit as you found.
-Nevertheless, the submitted version[1] of the patch didn't change the
-permission.  I guess the change was made while managing it via some file
-permission unsupported patches management tool.
+I feel that backporting performance improvements into -stable is not a
+usual thing to do.  Perhaps the fact that it's a regression fix changes
+this, but why?
 
-I had a similar issue with DAMON selftest and sent a patch restoring the
-permission.  Greg suggested me to update the framework instead, to support such
-management tool[2], so I made it[3].  It recently also merged into 5.15.y for
-DAMON selftests[4].
+Much hinges on the magnitude of the performance change.  Are you able
+to quantify this at all?
 
-I have no strong opinion about whether we need to keep the permission or it's
-good to have no execute permission since kselftest framework supports it.  I
-just wanted to clarify the events I've shown.  Please correct me if I missed or
-wrong something.  Cc-ing Greg, since he might have an opinion.
-
-[1] https://lore.kernel.org/all/20230103180754.129637-5-sj@kernel.org/
-[2] https://lore.kernel.org/mm-commits/YRJisBs9AunccCD4@kroah.com/
-[3] https://lore.kernel.org/all/20210810164534.25902-1-sj38.park@gmail.com/
-[4] https://lore.kernel.org/stable/2023042743-cheesy-parasitic-206d@gregkh/
-
-
-Thanks,
-SJ
-
-> 
-> 
-> Reviewed-by: David Hildenbrand <david@redhat.com>
-> 
-> -- 
-> Cheers,
-> 
-> David / dhildenb
-> 
-> 
-> 
