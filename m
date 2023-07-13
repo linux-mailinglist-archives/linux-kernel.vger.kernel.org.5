@@ -2,134 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8F6C751B9E
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 10:33:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 913BA751B9C
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 10:33:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234526AbjGMIdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 04:33:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38438 "EHLO
+        id S234372AbjGMId0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 04:33:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233520AbjGMIdW (ORCPT
+        with ESMTP id S234530AbjGMIcz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 04:33:22 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B2687282
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 01:24:45 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id ca18e2360f4ac-78362f574c9so9191739f.3
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 01:24:45 -0700 (PDT)
+        Thu, 13 Jul 2023 04:32:55 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CF2D6E9B
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 01:24:14 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-6686a05bc66so279035b3a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 01:24:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1689236684; x=1691828684;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SC8wLptS4WXWt8bW8YWC7ooVYG9MHbSN/yLxSgqam3k=;
-        b=OG+cmDQ9vAuwCIb4A70FoqcL/dGFjXJGwUAeRUHDub7+E9E50ulm8eNhwS3f1ite0M
-         Z5P0Y9vVlBEED+T8dA8EzXAxWoKCGvswnN70yAnH42b1NqxzjjLSNwzKII/n+6qF6Lyn
-         IoS12nMis2tiwaXVNnrUbkZWJxiluxvn78Tuo=
+        d=linaro.org; s=google; t=1689236654; x=1691828654;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=kKuPJ0jIVe9rxT8F83vWao/GSLcZQvkvWTM04IuCyY8=;
+        b=nQ63IjH7Dxla397fTVbDwhr1FnHqS+asUrpDE9FJXZDc/fLh3oMUxE3eyjLHZEsPtH
+         5CR9keJOKQzPGlbGaHE5/vKZ6GD5jwVmaJJSbafRJZyzYL9xngNuOWyu6maBOnlRMlP0
+         WKQ8T/UWeOHZgLeUy/OUadpNeMEnG50IaUJ3v1cqa4PnIPl3IEM2l9oEdt7n152k/Qsl
+         bwiOd+5XVn9EZyZF3UBqsHuN0OJfg7w0H4gMBHxOyTfVSRskXq3fErdWFO98duLqGQJ+
+         YmLUR/s64PPChX6QlTA7Re7GvM5WDME2q33r2McXtsBAP0P4v58tyChop6k0iqW5hy5N
+         BuGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689236684; x=1691828684;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SC8wLptS4WXWt8bW8YWC7ooVYG9MHbSN/yLxSgqam3k=;
-        b=I/g+hrODKDQ144M9ryeURkvKlMJfLgiCvUQeESNnaQt8jKxrD2BzDvv93MhNdXOuc3
-         u48X/Vj2ytQ1hYizqaYELbnr6YQ2Ha/dlrNhlt/0gNYWZ8dHlfZV0v7i7vYuHPriD+9+
-         IGQrcdYqqtdwQ+gSBKKsbDG9YwvetBE5NxKPJokLaETOAhxUkGMrDuvRqPR872G/aZdR
-         3sw7AI2Z01GJYox6kyMz6y673MA8MbyNnzh9CWjQDxP9OMr1q8kRVetVtCJQzRF61/YK
-         9VCJItoKYZtdInMXGroNTr5ekU+sAJpOxH8ypZ8pgywEorZCF2Os9/5alzFOxY0fCbxF
-         IvdQ==
-X-Gm-Message-State: ABy/qLZ26UoZkPg8jOK2KrKNy+MAUrtJMd7kk9r4ICEkNW+esxeVDMYF
-        QNUFyHw01xqW1Dt32uid4RUZY2iTtpA0cZ47VwQ=
-X-Google-Smtp-Source: APBJJlG1rXd8MZF3/jTfqJuUWUGpRc8I0uGmMaHLNz8vIM2V8EzPw/DyqTppmmrccX+awgwV6SpZvQ==
-X-Received: by 2002:a5d:85d7:0:b0:787:5a3f:d957 with SMTP id e23-20020a5d85d7000000b007875a3fd957mr888520ios.9.1689236684600;
-        Thu, 13 Jul 2023 01:24:44 -0700 (PDT)
-Received: from mail-io1-f48.google.com (mail-io1-f48.google.com. [209.85.166.48])
-        by smtp.gmail.com with ESMTPSA id eq23-20020a0566384e3700b0042b0f3f9367sm1790077jab.129.2023.07.13.01.24.43
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 Jul 2023 01:24:43 -0700 (PDT)
-Received: by mail-io1-f48.google.com with SMTP id ca18e2360f4ac-78362f574c9so9190939f.3
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 01:24:43 -0700 (PDT)
-X-Received: by 2002:a6b:e70c:0:b0:777:8e86:7702 with SMTP id
- b12-20020a6be70c000000b007778e867702mr1334033ioh.16.1689236683371; Thu, 13
- Jul 2023 01:24:43 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689236654; x=1691828654;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kKuPJ0jIVe9rxT8F83vWao/GSLcZQvkvWTM04IuCyY8=;
+        b=PjXMzBJl3WtNfgAkHBH81yJvMmhYkBRgxfHUjDL2GIwJ8EoonDrbHLFPQKEzKaZ/Jo
+         6EtzBwnFuK89BECjMlAMuDawK0w95a6g1rF+xyfl3lec36ld4TUG51jWhl1CkqQKFzgK
+         2c9U6ImaGT2UMCw/j3sRtQTXEQX9pL+bgZvee2LB8QXfx6+DEs/eE93ltcCTjDwQsrgU
+         7jg3HoEIxJqeapXpRLbJWNuR99KbnsIdbzcIBOtNzVUYjkB6b53xI1gOBjEbxeGEnHIv
+         ZgClRJk7ZULRA7Bvm4Z3X8iOJ8MMtEtZz8Ndw5RPwvhnR3zjkgeueLFtVVD9g6lgr76Q
+         Ymtw==
+X-Gm-Message-State: ABy/qLZk3mubbvWuHrLLZbQsgrt7IbREw2OYy+cw4yU5IKa9w38MpE0Y
+        wOqmFtznio2jBUdubQHfSvFniXaRhBrX41xAsws=
+X-Google-Smtp-Source: APBJJlF/JMk+PxvAAbvR3sfCNfLD7IimCJKgpKsJ/o22bsX9uppwZ6XLImDkWeMIqjs65woqwPtkRQ==
+X-Received: by 2002:a05:6a00:1913:b0:668:852a:ffc4 with SMTP id y19-20020a056a00191300b00668852affc4mr615729pfi.4.1689236653671;
+        Thu, 13 Jul 2023 01:24:13 -0700 (PDT)
+Received: from localhost ([122.172.87.195])
+        by smtp.gmail.com with ESMTPSA id u12-20020aa7848c000000b0065da94fe921sm4909516pfn.50.2023.07.13.01.24.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Jul 2023 01:24:13 -0700 (PDT)
+Date:   Thu, 13 Jul 2023 13:54:10 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Yangtao Li <frank.li@vivo.com>
+Cc:     Viresh Kumar <vireshk@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 51/58] mmc: sdhci-spear: Convert to platform remove
+ callback returning void
+Message-ID: <20230713082410.tc3se6lr726hbeq6@vireshk-i7>
+References: <20230713080807.69999-1-frank.li@vivo.com>
+ <20230713080807.69999-51-frank.li@vivo.com>
 MIME-Version: 1.0
-References: <20230412115250.164899-1-angelogioacchino.delregno@collabora.com> <20230412115250.164899-4-angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20230412115250.164899-4-angelogioacchino.delregno@collabora.com>
-From:   Fei Shao <fshao@chromium.org>
-Date:   Thu, 13 Jul 2023 16:24:07 +0800
-X-Gmail-Original-Message-ID: <CAC=S1nhePNeKY=q3XofzPcbwvyonz-bSuSLDNgsKx088qB3ZJA@mail.gmail.com>
-Message-ID: <CAC=S1nhePNeKY=q3XofzPcbwvyonz-bSuSLDNgsKx088qB3ZJA@mail.gmail.com>
-Subject: Re: [PATCH 3/4] drm/mediatek: mtk_dpi: Switch to devm_drm_of_get_bridge()
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     chunkuang.hu@kernel.org, p.zabel@pengutronix.de, airlied@gmail.com,
-        daniel@ffwll.ch, matthias.bgg@gmail.com,
-        dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel@collabora.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230713080807.69999-51-frank.li@vivo.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Angelo,
-
-On Wed, Apr 12, 2023 at 7:53=E2=80=AFPM AngeloGioacchino Del Regno
-<angelogioacchino.delregno@collabora.com> wrote:
->
-> Function drm_of_find_panel_or_bridge() is marked as deprecated: since
-> the usage of that in this driver exactly corresponds to the new function
-> devm_drm_of_get_bridge(), switch to it.
->
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@coll=
-abora.com>
+On 13-07-23, 16:08, Yangtao Li wrote:
+> The .remove() callback for a platform driver returns an int which makes
+> many driver authors wrongly assume it's possible to do error handling by
+> returning an error code. However the value returned is (mostly) ignored
+> and this typically results in resource leaks. To improve here there is a
+> quest to make the remove callback return void. In the first step of this
+> quest all drivers are converted to .remove_new() which already returns
+> void.
+> 
+> Trivially convert this driver from always returning zero in the remove
+> callback to the void returning variant.
+> 
+> Cc: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> Signed-off-by: Yangtao Li <frank.li@vivo.com>
 > ---
->  drivers/gpu/drm/mediatek/mtk_dpi.c | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/gpu/drm/mediatek/mtk_dpi.c b/drivers/gpu/drm/mediate=
-k/mtk_dpi.c
-> index 6be65ea21f8f..9025111013d3 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_dpi.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_dpi.c
-> @@ -1063,10 +1063,9 @@ static int mtk_dpi_probe(struct platform_device *p=
-dev)
->         if (dpi->irq <=3D 0)
->                 return -EINVAL;
->
-> -       ret =3D drm_of_find_panel_or_bridge(dev->of_node, 0, 0,
-> -                                         NULL, &dpi->next_bridge);
-> -       if (ret)
-> -               return ret;
-> +       dpi->next_bridge =3D devm_drm_of_get_bridge(dev, dev->of_node, 0,=
- 0);
-> +       if (IS_ERR(dpi->next_bridge))
-> +               return PTR_ERR(dpi->next_bridge);
+>  drivers/mmc/host/sdhci-spear.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/mmc/host/sdhci-spear.c b/drivers/mmc/host/sdhci-spear.c
+> index c79035727b20..ec6c7d8e3736 100644
+> --- a/drivers/mmc/host/sdhci-spear.c
+> +++ b/drivers/mmc/host/sdhci-spear.c
+> @@ -117,7 +117,7 @@ static int sdhci_probe(struct platform_device *pdev)
+>  	return ret;
+>  }
+>  
+> -static int sdhci_remove(struct platform_device *pdev)
+> +static void sdhci_remove(struct platform_device *pdev)
+>  {
+>  	struct sdhci_host *host = platform_get_drvdata(pdev);
+>  	struct spear_sdhci *sdhci = sdhci_priv(host);
+> @@ -131,8 +131,6 @@ static int sdhci_remove(struct platform_device *pdev)
+>  	sdhci_remove_host(host, dead);
+>  	clk_disable_unprepare(sdhci->clk);
+>  	sdhci_free_host(host);
+> -
+> -	return 0;
+>  }
+>  
+>  #ifdef CONFIG_PM_SLEEP
+> @@ -186,7 +184,7 @@ static struct platform_driver sdhci_driver = {
+>  		.of_match_table = of_match_ptr(sdhci_spear_id_table),
+>  	},
+>  	.probe		= sdhci_probe,
+> -	.remove		= sdhci_remove,
+> +	.remove_new	= sdhci_remove,
+>  };
+>  
+>  module_platform_driver(sdhci_driver);
 
-The original code doesn't print any log so it's probably fine, but
-given you're already at it, perhaps you want to also make use of
-dev_err_probe() here?
-devm_drm_of_get_bridge() can also pass -EPROBE_DEFER from its wrapped
-drm_of_find_panel_or_bridge(). Furthermore, that will make the code
-visually align with your previous patch.
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-But that's just optional, and since this patch works anyway,
-
-Reviewed-by: Fei Shao <fshao@chromium.org>
-
->
->         dev_info(dev, "Found bridge node: %pOF\n", dpi->next_bridge->of_n=
-ode);
->
-> --
-> 2.40.0
->
->
+-- 
+viresh
