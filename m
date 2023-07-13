@@ -2,195 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FD46752A6F
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 20:47:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30271752A73
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 20:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232372AbjGMSrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 14:47:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44650 "EHLO
+        id S231865AbjGMSsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 14:48:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232245AbjGMSrh (ORCPT
+        with ESMTP id S232438AbjGMSsM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 14:47:37 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95176211E
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 11:47:34 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1b9ed206018so26135ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 11:47:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689274054; x=1689878854;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cCMwVIQzOUutbhN/GsjN6pM+paFnW3LWSf+I9hKYPpQ=;
-        b=3lxVvYBLFqoAJ02OKTEDfVZUUK0wkW5kJ6VSqGoJM7b4lBnNFpCFUCFtiPuM7u9nOX
-         VSzLx40KDeP0giCms38tanWNG5c8xfii4A4aZi/1HhYtk68VovRyTHE2Tw9kgrwbUWYk
-         lgrmNm/UXJYJ3QUrwEpWVqgYQQt7CWi61h13oFp4tb/Z9qxx4ZK/T0ji1ZZoxOI2eUmA
-         40KTd3OKOpoIH89wLfbNxh4/jZ8GdPRsy6Oxi+4m+Sv9jvQBFc4+hHiNNXGDKsBRO5ya
-         acMC0ar3TRzt2JiLwJDPfGeVijikeplK1YGsCdeFNniK+KiZ+wOosH+qnrRf1sTm/NZ0
-         fP2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689274054; x=1689878854;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cCMwVIQzOUutbhN/GsjN6pM+paFnW3LWSf+I9hKYPpQ=;
-        b=DjQ0CKQTM5sc0WOGSQ0Xu3GaNbQnMSpK+1jZ6ONU3Z4KUZb0//8pzPkDw5hDhJDP9C
-         erulrHe8m7RqWhr7hDyaMrxe1JA4QWu9MDYQ3e3RW/gCMmq0X91q/co1Zy6KSrrykbog
-         9ksThgGCaH/JOtJ1FAQlo1LyIqH58StuZ/7mJjIvQR3aw4BUpLd+DHmnucWrsrsrGrpJ
-         zW8nPeeBdNXzRMoeUcQZQbDjlC+rCsEMDmI2psQygusaLL1GEhyJWMMI2Tq2QdQk4C4Q
-         JScqRx2t460fuNRhQXKzsldgnwr+HsgBOuOGO6fvKVTCFrMXE0gfsoOnZkFhaRjrHwSo
-         HVgQ==
-X-Gm-Message-State: ABy/qLYjIY4SntW55Hs90bctR6EFEVZImvHPIrm+kAjIcPswILVHIOgw
-        pCn0tQ7U+KDJnqaJnN6ffJ649Tt5PKZ3CUAZBAJFFA==
-X-Google-Smtp-Source: APBJJlFBmm7dpauUp37YeMKq373RcC3tN66u8ZQjiY1ufKfbpQJ/qTz6oxjhnsAqBc5kb4Tn8fRf3T+9JjhqDu8XLg4=
-X-Received: by 2002:a17:902:bb0f:b0:1b8:9044:91d3 with SMTP id
- im15-20020a170902bb0f00b001b8904491d3mr552902plb.18.1689274053909; Thu, 13
- Jul 2023 11:47:33 -0700 (PDT)
+        Thu, 13 Jul 2023 14:48:12 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EED22D60;
+        Thu, 13 Jul 2023 11:48:09 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36DIm0vd020271;
+        Thu, 13 Jul 2023 13:48:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1689274080;
+        bh=b2QaefHcNlxOonhFM5a+7hs2oTXj01jZJL4r4YLiLmM=;
+        h=From:To:CC:Subject:Date;
+        b=xGpUFcCwAoR+lgWoUEz7Ss0kBiSQjUYDHs38x4NI8kutzXSrFBWMFtZe5r6qtgHbA
+         stIHG0P/pTVolEddkZjnWv0idNELH2iykIvoV9OOHpgUmoK4z0nbSDPq2aZj5ya21q
+         bvB941gIdkI/ff9leTkaHfOSncAesLoahkok/8Os=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36DIm0gP107148
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 13 Jul 2023 13:48:00 -0500
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 13
+ Jul 2023 13:48:00 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 13 Jul 2023 13:47:59 -0500
+Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36DIlxLQ003475;
+        Thu, 13 Jul 2023 13:47:59 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Tero Kristo <kristo@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Nishanth Menon <nm@ti.com>
+Subject: [PATCH] arm64: dts: ti: Fix compatible of ti,*-ehrpwm-tbclk
+Date:   Thu, 13 Jul 2023 13:47:59 -0500
+Message-ID: <20230713184759.3336536-1-nm@ti.com>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
-References: <20230621175002.2832640-1-rananta@google.com> <20230621175002.2832640-8-rananta@google.com>
- <1fe280a7-0f10-e124-00aa-b137df722c33@redhat.com> <CAJHc60xQtjvVsWRE=w-pAioNJW6uh-qKuZz2wp6bkT=X4oCm5A@mail.gmail.com>
- <60ba5bb4-6fad-0e51-2cd5-845610e6631d@redhat.com>
-In-Reply-To: <60ba5bb4-6fad-0e51-2cd5-845610e6631d@redhat.com>
-From:   Raghavendra Rao Ananta <rananta@google.com>
-Date:   Thu, 13 Jul 2023 11:47:19 -0700
-Message-ID: <CAJHc60y6AaAUVy=V6GHTpVhHGO3Bjn1vpTnYpdFiFLjS-vR-uA@mail.gmail.com>
-Subject: Re: [RESEND PATCH v5 07/11] KVM: arm64: Define kvm_tlb_flush_vmid_range()
-To:     Gavin Shan <gshan@redhat.com>
-Cc:     Oliver Upton <oliver.upton@linux.dev>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gavin,
+TI EHRPWM compatible is just ti,*-ehrpwm-tbclk without needing a
+syscon compatibility.
 
-On Wed, Jul 5, 2023 at 5:04=E2=80=AFPM Gavin Shan <gshan@redhat.com> wrote:
->
-> On 7/6/23 04:28, Raghavendra Rao Ananta wrote:
-> > On Tue, Jul 4, 2023 at 5:31=E2=80=AFPM Gavin Shan <gshan@redhat.com> wr=
-ote:
-> >> On 6/22/23 03:49, Raghavendra Rao Ananta wrote:
-> >>> Implement the helper kvm_tlb_flush_vmid_range() that acts
-> >>> as a wrapper for range-based TLB invalidations. For the
-> >>> given VMID, use the range-based TLBI instructions to do
-> >>> the job or fallback to invalidating all the TLB entries.
-> >>>
-> >>> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> >>> ---
-> >>>    arch/arm64/include/asm/kvm_pgtable.h | 10 ++++++++++
-> >>>    arch/arm64/kvm/hyp/pgtable.c         | 20 ++++++++++++++++++++
-> >>>    2 files changed, 30 insertions(+)
-> >>>
-> >>
-> >> It may be reasonable to fold this to PATCH[08/11] since kvm_tlb_flush_=
-vmid_range() is
-> >> only called by ARM64's kvm_arch_flush_remote_tlbs_range(), which is ad=
-ded by PATCH[08/11].
-> >> In either way, the changes look good to me:
-> >>
-> > Ah, the patches 10 and 11 also call kvm_tlb_flush_vmid_range(), so
-> > probably it's better to keep the definition isolated?
-> >
->
-> Thanks for your explanation. It's fine to have two separate patches in th=
-is
-> case. I still need to spend some time to look at PATCH[11/11] whose subje=
-ct
-> includes typo (intructions -> instructions)
->
-I'm planning to send v6 soon, but I'm happy to wait if you have any
-other comments on v5 patch-11.
-Appreciate your help with the reviews.
+Fixes the following dtbs_check warnings:
+ compatible: [''ti,am654-ehrpwm-tbclk, 'syscon'] is too long
+ compatible: ['ti,am64-epwm-tbclk', 'syscon'] is too long
+ compatible: ['ti,am62-epwm-tbclk', 'syscon'] is too long
 
-Thank you.
-Raghavendra
-> Thanks,
-> Gavin
->
-> >> Reviewed-by: Gavin Shan <gshan@redhat.com>
-> >>
-> >>> diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/includ=
-e/asm/kvm_pgtable.h
-> >>> index 4cd6762bda805..1b12295a83595 100644
-> >>> --- a/arch/arm64/include/asm/kvm_pgtable.h
-> >>> +++ b/arch/arm64/include/asm/kvm_pgtable.h
-> >>> @@ -682,4 +682,14 @@ enum kvm_pgtable_prot kvm_pgtable_stage2_pte_pro=
-t(kvm_pte_t pte);
-> >>>     *     kvm_pgtable_prot format.
-> >>>     */
-> >>>    enum kvm_pgtable_prot kvm_pgtable_hyp_pte_prot(kvm_pte_t pte);
-> >>> +
-> >>> +/**
-> >>> + * kvm_tlb_flush_vmid_range() - Invalidate/flush a range of TLB entr=
-ies
-> >>> + *
-> >>> + * @mmu:     Stage-2 KVM MMU struct
-> >>> + * @addr:    The base Intermediate physical address from which to in=
-validate
-> >>> + * @size:    Size of the range from the base to invalidate
-> >>> + */
-> >>> +void kvm_tlb_flush_vmid_range(struct kvm_s2_mmu *mmu,
-> >>> +                             phys_addr_t addr, size_t size);
-> >>>    #endif      /* __ARM64_KVM_PGTABLE_H__ */
-> >>> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtabl=
-e.c
-> >>> index 3d61bd3e591d2..df8ac14d9d3d4 100644
-> >>> --- a/arch/arm64/kvm/hyp/pgtable.c
-> >>> +++ b/arch/arm64/kvm/hyp/pgtable.c
-> >>> @@ -631,6 +631,26 @@ static bool stage2_has_fwb(struct kvm_pgtable *p=
-gt)
-> >>>        return !(pgt->flags & KVM_PGTABLE_S2_NOFWB);
-> >>>    }
-> >>>
-> >>> +void kvm_tlb_flush_vmid_range(struct kvm_s2_mmu *mmu,
-> >>> +                             phys_addr_t addr, size_t size)
-> >>> +{
-> >>> +     unsigned long pages, inval_pages;
-> >>> +
-> >>> +     if (!system_supports_tlb_range()) {
-> >>> +             kvm_call_hyp(__kvm_tlb_flush_vmid, mmu);
-> >>> +             return;
-> >>> +     }
-> >>> +
-> >>> +     pages =3D size >> PAGE_SHIFT;
-> >>> +     while (pages > 0) {
-> >>> +             inval_pages =3D min(pages, MAX_TLBI_RANGE_PAGES);
-> >>> +             kvm_call_hyp(__kvm_tlb_flush_vmid_range, mmu, addr, inv=
-al_pages);
-> >>> +
-> >>> +             addr +=3D inval_pages << PAGE_SHIFT;
-> >>> +             pages -=3D inval_pages;
-> >>> +     }
-> >>> +}
-> >>> +
-> >>>    #define KVM_S2_MEMATTR(pgt, attr) PAGE_S2_MEMATTR(attr, stage2_has=
-_fwb(pgt))
-> >>>
-> >>>    static int stage2_set_prot_attr(struct kvm_pgtable *pgt, enum kvm_=
-pgtable_prot prot,
->
+Signed-off-by: Nishanth Menon <nm@ti.com>
+---
+Based on next-20230713
+Full list of warnings squashed is a bit long.. but
+https://gist.github.com/nmenon/5182ac2165297d5b07e2483d5f020e0c is the
+delta.
+
+ arch/arm64/boot/dts/ti/k3-am62-main.dtsi  | 2 +-
+ arch/arm64/boot/dts/ti/k3-am64-main.dtsi  | 2 +-
+ arch/arm64/boot/dts/ti/k3-am65-main.dtsi  | 2 +-
+ arch/arm64/boot/dts/ti/k3-j721e-main.dtsi | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
+index 4a1dab9e40a0..5cea46be40f5 100644
+--- a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
+@@ -56,7 +56,7 @@ phy_gmii_sel: phy@4044 {
+ 		};
+ 
+ 		epwm_tbclk: clock@4130 {
+-			compatible = "ti,am62-epwm-tbclk", "syscon";
++			compatible = "ti,am62-epwm-tbclk";
+ 			reg = <0x4130 0x4>;
+ 			#clock-cells = <1>;
+ 		};
+diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+index a57ea7130ca3..d3dd8c426dad 100644
+--- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
+@@ -222,7 +222,7 @@ phy_gmii_sel: phy@4044 {
+ 		};
+ 
+ 		epwm_tbclk: clock@4140 {
+-			compatible = "ti,am64-epwm-tbclk", "syscon";
++			compatible = "ti,am64-epwm-tbclk";
+ 			reg = <0x4130 0x4>;
+ 			#clock-cells = <1>;
+ 		};
+diff --git a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+index 791c6b38993d..350beddc3d3c 100644
+--- a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+@@ -503,7 +503,7 @@ dss_oldi_io_ctrl: dss-oldi-io-ctrl@41e0 {
+ 		};
+ 
+ 		ehrpwm_tbclk: clock@4140 {
+-			compatible = "ti,am654-ehrpwm-tbclk", "syscon";
++			compatible = "ti,am654-ehrpwm-tbclk";
+ 			reg = <0x4140 0x18>;
+ 			#clock-cells = <1>;
+ 		};
+diff --git a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+index 575435c1a984..6c9fe28b6de7 100644
+--- a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+@@ -76,7 +76,7 @@ usb_serdes_mux: mux-controller@4000 {
+ 		};
+ 
+ 		ehrpwm_tbclk: clock-controller@4140 {
+-			compatible = "ti,am654-ehrpwm-tbclk", "syscon";
++			compatible = "ti,am654-ehrpwm-tbclk";
+ 			reg = <0x4140 0x18>;
+ 			#clock-cells = <1>;
+ 		};
+-- 
+2.40.0
+
