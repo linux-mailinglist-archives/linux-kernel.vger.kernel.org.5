@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6197C752ACE
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 21:13:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57662752AD0
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 21:16:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232862AbjGMTNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 15:13:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56802 "EHLO
+        id S232804AbjGMTQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 15:16:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229890AbjGMTNx (ORCPT
+        with ESMTP id S229638AbjGMTP7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 15:13:53 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 216EB2D6B
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 12:13:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=SlWSwhHe+t/+5CD+8qzJLYQdlCsQhw+Uh2KGkPXB6kM=; b=vg3XLPJFrNw3vBwRCjiW5YxOq2
-        J7z60gNJOjveg32CLIuJ85nynYH5q14lwRsCJUluPBYOWCNDwUUPmAzN1bbzgN4io1hrdAbNn+bet
-        LvHAEgJAI3o+TolSH/sGJ6361Hl5rgpW0e7WaGYCAX2Jmm6BKgnZf+Xvchn5LU/nzwqptkUtfZPrg
-        RIUS2TMNeUwzQXngfHeIGUDygAngNJiGYqLfhn/ym9A0WNBTTT/Qqyl22ZXC/vOOrpOxsQ0i3H5Ne
-        RShtljbjCUdcWFxd8DVqFRYbU1479QbYMDVCzwsl/nd+vfJEiyINMToaackbPhBPrWaqhPUhfEKOJ
-        iAesR+Yw==;
-Received: from [2601:1c2:980:9ec0::2764]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qK1l4-004DOL-2N;
-        Thu, 13 Jul 2023 19:13:46 +0000
-Message-ID: <76995421-a529-ac25-c306-2e4ac2844602@infradead.org>
-Date:   Thu, 13 Jul 2023 12:13:45 -0700
+        Thu, 13 Jul 2023 15:15:59 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 847721993;
+        Thu, 13 Jul 2023 12:15:58 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 157A161B32;
+        Thu, 13 Jul 2023 19:15:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64E84C433C7;
+        Thu, 13 Jul 2023 19:15:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689275757;
+        bh=wMAAhumlVTX0yM9sGr71/Qtd2eWIFF4a6a+b8XS0BR0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=K+d39gaEwtn59FjRTtalKbrFQ4ZI6g86ihfs4Eeh28rmvYFu0E0lwH/me6ta4x3Ke
+         bQzsZYF4TSR9LtyVoL7cjmmglE6i8Dq1X7deLDrpatuJenfaxjKFjwxkO78XZ0XdVT
+         J9bT+m+7PVHksM8LToszm99NvXYN/47smkhLN3M4TBauUHYuJRYKmSs9JeR1aPTmbw
+         GaaLxrrVM0W2wNFrpFxrvKYplh0ySK08eKzYpM7n3n+YO/0pN/52zmn0LQTS4weaFs
+         Ci38WDKqlEwFhcMuR9mBOGiKNlYtPX+g1l0j1YMxPALkzeH9DLCaQZIQkgt9nUjtCz
+         +J3hvBAWjsG1g==
+Date:   Thu, 13 Jul 2023 20:15:50 +0100
+From:   Lee Jones <lee@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        =?iso-8859-1?Q?Fern=E1ndez?= Rojas <noltari@gmail.com>,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RESEND PATCH] dt-bindings: mfd: brcm: drop unneeded quotes and
+ use absolute /schemas path
+Message-ID: <20230713191550.GA1016730@google.com>
+References: <20230713065040.7968-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v4 21/21] dyndbg-doc: add classmap info to howto
-Content-Language: en-US
-To:     Jim Cromie <jim.cromie@gmail.com>, jbaron@akamai.com,
-        daniel.vetter@ffwll.ch, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        intel-gvt-dev@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org
-Cc:     jani.nikula@intel.com, ville.syrjala@linux.intel.com,
-        seanpaul@chromium.org, robdclark@gmail.com,
-        gregkh@linuxfoundation.org
-References: <20230713163626.31338-1-jim.cromie@gmail.com>
- <20230713163626.31338-22-jim.cromie@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230713163626.31338-22-jim.cromie@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230713065040.7968-1-krzysztof.kozlowski@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,103 +61,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 13 Jul 2023, Krzysztof Kozlowski wrote:
 
-
-On 7/13/23 09:36, Jim Cromie wrote:
-> Add some basic info on classmap usage and api
+> Cleanup bindings dropping unneeded quotes. Once all these are fixed,
+> checking for this can be enabled in yamllint.  Also absolute path
+> starting with /schemas is preferred.
 > 
-> Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > ---
->  .../admin-guide/dynamic-debug-howto.rst       | 64 ++++++++++++++++++-
->  1 file changed, 63 insertions(+), 1 deletion(-)
 > 
-> diff --git a/Documentation/admin-guide/dynamic-debug-howto.rst b/Documentation/admin-guide/dynamic-debug-howto.rst
-> index 8dc668cc1216..878750ce8c1d 100644
-> --- a/Documentation/admin-guide/dynamic-debug-howto.rst
-> +++ b/Documentation/admin-guide/dynamic-debug-howto.rst
+> Rebase and resend. Dependencies were merged in v6.5-rc1.
+> 
+>  .../devicetree/bindings/mfd/brcm,bcm6318-gpio-sysctl.yaml     | 4 ++--
+>  .../devicetree/bindings/mfd/brcm,bcm63268-gpio-sysctl.yaml    | 4 ++--
+>  .../devicetree/bindings/mfd/brcm,bcm6328-gpio-sysctl.yaml     | 4 ++--
+>  .../devicetree/bindings/mfd/brcm,bcm6358-gpio-sysctl.yaml     | 4 ++--
+>  .../devicetree/bindings/mfd/brcm,bcm6362-gpio-sysctl.yaml     | 4 ++--
+>  .../devicetree/bindings/mfd/brcm,bcm6368-gpio-sysctl.yaml     | 4 ++--
+>  6 files changed, 12 insertions(+), 12 deletions(-)
 
-> @@ -374,3 +373,66 @@ just a shortcut for ``print_hex_dump(KERN_DEBUG)``.
->  For ``print_hex_dump_debug()``/``print_hex_dump_bytes()``, format string is
->  its ``prefix_str`` argument, if it is constant string; or ``hexdump``
->  in case ``prefix_str`` is built dynamically.
-> +
-> +Dynamic Debug classmaps
-> +=======================
-> +
-> +Dyndbg generally selects *prdbg* callsites using structural info:
-> +module, file, function, line.  Using classmaps, user modules can
-> +organize/select pr_debug()s as they like.
-> +
-> +- classes coordinates/spans multiple modules
-> +- complements the mod,file,func attrs
-> +- keeps pr_debug's 0-off-cost JUMP_LABEL goodness
-> +- isolates from other class'd and un-class'd pr_debugs() 
-> +  (one doesnt mix 2 clients bank accounts)
+Applied, thanks
 
-          doesn't
-
-> +
-> +  # IOW this doesn't change DRM.debug settings
-> +  #> echo -p > /proc/dynamic_debug/control
-> +
-> +  # change the classes by naming them explicitly (no wildcard here)
-> +  #> echo class DRM_UT_CORE +p > /proc/dynamic_debug/control
-> +
-> +To support DRM.debug (/sys/module/drm/parameters/debug), dyndbg
-> +provides DYNDBG_CLASSMAP_PARAM*.  It maps the categories/classes:
-> +DRM_UT_CORE.. to bits 0..N, allowing to set all classes at once.
-> +
-> +Dynamic Debug Classmap API
-> +==========================
-> +
-> +DYNDBG_CLASSMAP_DEFINE - modules create CLASSMAPs, naming the classes
-> +and type, and mapping the class-names to consecutive _class_ids.  By
-> +doing so, they tell dyndbg that they are using those class_ids, and
-> +authorize dyndbg to manipulate the callsites by their class-names.
-> +
-> +Its expected that client modules will follow the DRM.debug model:
-> +1. define their debug-classes using an enum type, where the enum
-> +symbol and its integer value define both the classnames and class-ids.
-> +2. use or macro-wrap __pr_debug_cls(ENUM_VAL, "hello world\n")
-> +   
-> +There are 2 types of classmaps:
-> +
-> + DD_CLASS_TYPE_DISJOINT_BITS: classes are independent, ala DRM.debug
-
-                                                          a la
-or just                                                   like
-
-> + DD_CLASS_TYPE_LEVEL_NUM: classes are relative (Verbose3 > Verbose2)
-> +
-> +Both these classmap-types use the class-names/ENUM_VALs to validate
-> +commands into >control.
-> +
-> +DYNDBG_CLASSMAP_PARAM - refs a DEFINEd classmap, exposing the set of
-
-Is this:                   refers to a
-?
-
-> +defined classes to manipulation as a group.  This interface enforces
-> +the relatedness of classes of DD_CLASS_TYPE_LEVEL_NUM typed classmaps;
-> +all classes are independent in the >control parser itself.
-> +
-> +DYNDBG_CLASSMAP_USE - drm drivers use the CLASSMAP that drm DEFINEs.
-> +This shares the classmap defn, and authorizes coordinated changes
-
-                            definition,
-
-> +amongst the CLASSMAP DEFINEr and multiple USErs.
-> +
-> +Modules or module-groups (drm & drivers) can define multiple
-> +classmaps, as long as they share the limited 0..62 per-module-group
-> +_class_id range, without overlap.
-> +
-> +``#define DEBUG`` will enable all pr_debugs in scope, including any
-> +class'd ones (__pr_debug_cls(id,fmt..)).  This won't be reflected in
-> +the PARAM readback value, but the pr_debug callsites can be toggled
-> +into agreement with the param.
-> +
-
-thanks.
 -- 
-~Randy
+Lee Jones [李琼斯]
