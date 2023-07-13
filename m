@@ -2,57 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B615A751FAC
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 13:15:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD558751FB0
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 13:16:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233391AbjGMLPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 07:15:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56610 "EHLO
+        id S234236AbjGMLQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 07:16:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230514AbjGMLPW (ORCPT
+        with ESMTP id S230514AbjGMLQY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 07:15:22 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43751211E;
-        Thu, 13 Jul 2023 04:15:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=xp/JG4/G1ATrTAJs+ii6ztYxtOJ+Dc811mAA+mAjxxo=; b=BTu2p49E1i+SM7USiXt11gQW/B
-        Y9ogFcRONmlhAnao9/ZSC4+XzSunDGEY98wYAXye9jnRf6g/9QL2BNUPoZG85HoMqw1cK9DWQt6cO
-        tMjOyHpNYxIv91/0LTagui6gwCeA0OZaJiq5BR+Y+QtPmU2nZgVm7glv7rDuk513P+yrftdnGoJaP
-        OBWXYu/72ZGvg40r34uGnZCc5nfG9gyRD1U/3dF4yU57CdLh3O6sChTr3GJNUQ34okoY+JF85V5v6
-        46ueeHH/IOx/rH4SVLvPV2YMIoA3et/iqIEXYhlcH6zl9KG0+TaXb8megaXbXz6vX4gXdgqaktG/Q
-        0BwWrctA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qJuHy-004eZW-2K;
-        Thu, 13 Jul 2023 11:15:15 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 74CE73002CE;
-        Thu, 13 Jul 2023 13:15:13 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 316F8245E1182; Thu, 13 Jul 2023 13:15:13 +0200 (CEST)
-Date:   Thu, 13 Jul 2023 13:15:13 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tglx@linutronix.de, mingo@redhat.com, andres@anarazel.de
-Subject: Re: [PATCH 4/8] io_uring: add support for futex wake and wait
-Message-ID: <20230713111513.GH3138667@hirez.programming.kicks-ass.net>
-References: <20230712162017.391843-1-axboe@kernel.dk>
- <20230712162017.391843-5-axboe@kernel.dk>
+        Thu, 13 Jul 2023 07:16:24 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6E08211C
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 04:16:23 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3fbc244d384so5197985e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 04:16:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689246982; x=1691838982;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/t01C0EN/QpTHgEBz222IZKPLFehmewtEJJGjauLMaI=;
+        b=eRP3N/6ImevwUzf9czr7Mdt+g6cvqkQ7wpsBpGJHV8fbjaClh7al/4pY9OBafDFXYA
+         D5TdzfwwF2JW1E/2TjAQmgik9OXcJalB1dLjaOeaO2ITcgq3u2mxIoqJlZ1B/PdvVULq
+         jbEAGF9XLNZZpgq9dS/BlGBYpEVagd0o9mskBHewBAV95kCHgUzR3XylysPYiz+frBXz
+         glgLnxxraooy6deqE2iRPcirfNU3mtSea43nn7beyTfS5aD1PbQ51yh64ceH8hJtJWZo
+         La54GOgtvu8KVi7v78PRVbsRls5NHtkdWRIOZVeyWopj/iIw0gT8dFXTeOAhnieXx7oJ
+         MgLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689246982; x=1691838982;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/t01C0EN/QpTHgEBz222IZKPLFehmewtEJJGjauLMaI=;
+        b=NtMJ/iyJQLRlhzowtfssQiK/xph7jSckMUILOjaqBNFBzhc2MfsO5u/C3p3ikPl6RK
+         FdZCkDpPHWjKIt3K2QYXCAIFKdydZeX8w16AzMNO/Umu5FxfUnudCT8kPfS577MDxIl3
+         UomwZ49ZMrR7/RIeibFxoy+AwgxM/a116oPea8Dn0spyq9wsWZ13RnJfNTrbLfi3j3NR
+         2OFiOjvtLq1yUs27o3379qQiq/yMOa+RdcYEPMGkznC5wfi34cUKHdtZn9aSi7LZ0QU4
+         YqV2neIb3tkB8XP2wfEGSkodXVREpNl3TLuNjXxv56kBCPJgVGQuUswLTkc/Ocq6iz/Y
+         Am7A==
+X-Gm-Message-State: ABy/qLai1E2q4LGNPo2X8j/wXUfScPo7J+pJ99HkmAFTdyG3j+EvsfNt
+        WZtKgJ8j4V8ExtH/Hct7ZS+RWWW0EJN5dORM9kI25A==
+X-Google-Smtp-Source: APBJJlGmlptlgLgKMVcHCZdHYBHYEoZEjp0eeJuOJ8LpxrUplb1P3+Uoj54fMqYDX19vmUDfuXT51w==
+X-Received: by 2002:a05:6000:181b:b0:313:f86f:2851 with SMTP id m27-20020a056000181b00b00313f86f2851mr1336211wrh.3.1689246982433;
+        Thu, 13 Jul 2023 04:16:22 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id k4-20020a056000004400b00314326c91e2sm7702997wrx.28.2023.07.13.04.16.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 Jul 2023 04:16:21 -0700 (PDT)
+Message-ID: <f2cf63ac-9bf4-157a-b24e-58dc31336d63@linaro.org>
+Date:   Thu, 13 Jul 2023 13:16:18 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230712162017.391843-5-axboe@kernel.dk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 net-next 1/9] dt-bindings: net: mediatek,net: add
+ missing mediatek,mt7621-eth
+Content-Language: en-US
+To:     Daniel Golle <daniel@makrotopia.org>, netdev@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Russell King <linux@armlinux.org.uk>,
+        =?UTF-8?Q?Bj=c3=b8rn_Mork?= <bjorn@mork.no>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Greg Ungerer <gerg@kernel.org>
+References: <cover.1689012506.git.daniel@makrotopia.org>
+ <c472c5611c9c7133978b312a766295a975a0e91a.1689012506.git.daniel@makrotopia.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <c472c5611c9c7133978b312a766295a975a0e91a.1689012506.git.daniel@makrotopia.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,91 +96,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 10:20:13AM -0600, Jens Axboe wrote:
+On 13/07/2023 04:17, Daniel Golle wrote:
+> Document the Ethernet controller found in the MediaTek MT7621 MIPS SoC
+> family which is supported by the mtk_eth_soc driver.
+> 
+> Fixes: 889bcbdeee57 ("net: ethernet: mediatek: support MT7621 SoC ethernet hardware")
+> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+> ---
 
-> +int io_futex_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
-> +{
-> +	struct io_futex *iof = io_kiocb_to_cmd(req, struct io_futex);
-> +
-> +	if (unlikely(sqe->addr2 || sqe->buf_index || sqe->addr3))
-> +		return -EINVAL;
-> +
-> +	iof->futex_op = READ_ONCE(sqe->fd);
-> +	iof->uaddr = u64_to_user_ptr(READ_ONCE(sqe->addr));
-> +	iof->futex_val = READ_ONCE(sqe->len);
-> +	iof->futex_mask = READ_ONCE(sqe->file_index);
-> +	iof->futex_flags = READ_ONCE(sqe->futex_flags);
-> +	if (iof->futex_flags & FUTEX_CMD_MASK)
-> +		return -EINVAL;
-> +
-> +	return 0;
-> +}
 
-I'm a little confused on the purpose of iof->futex_op, it doesn't appear
-to be used. Instead iof->futex_flags is used as the ~FUTEX_CMD_MASK part
-of ops.
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-The latter actually makes sense since you encode the actual op in the
-IOURING_OP_ space.
-
-> +int io_futex_wait(struct io_kiocb *req, unsigned int issue_flags)
-> +{
-> +	struct io_futex *iof = io_kiocb_to_cmd(req, struct io_futex);
-> +	struct io_ring_ctx *ctx = req->ctx;
-> +	struct io_futex_data *ifd = NULL;
-> +	struct futex_hash_bucket *hb;
-> +	unsigned int flags;
-> +	int ret;
-> +
-> +	if (!iof->futex_mask) {
-> +		ret = -EINVAL;
-> +		goto done;
-> +	}
-> +	if (!futex_op_to_flags(FUTEX_WAIT, iof->futex_flags, &flags)) {
-
-A little confusing since you then implement FUTEX_WAIT_BITSET, but using
-FUTEX_WAIT ensures this goes -ENOSYS when setting FUTEX_CLOCK_REALTIME,
-since you handle timeouts through the iouring thing.
-
-Perhaps a comment?
-
-> +		ret = -ENOSYS;
-> +		goto done;
-> +	}
-> +
-> +	io_ring_submit_lock(ctx, issue_flags);
-> +	ifd = io_alloc_ifd(ctx);
-> +	if (!ifd) {
-> +		ret = -ENOMEM;
-> +		goto done_unlock;
-> +	}
-> +
-> +	req->async_data = ifd;
-> +	ifd->q = futex_q_init;
-> +	ifd->q.bitset = iof->futex_mask;
-> +	ifd->q.wake = io_futex_wake_fn;
-> +	ifd->req = req;
-> +
-> +	ret = futex_wait_setup(iof->uaddr, iof->futex_val, flags, &ifd->q, &hb);
-> +	if (!ret) {
-> +		hlist_add_head(&req->hash_node, &ctx->futex_list);
-> +		io_ring_submit_unlock(ctx, issue_flags);
-> +
-> +		futex_queue(&ifd->q, hb);
-> +		return IOU_ISSUE_SKIP_COMPLETE;
-> +	}
-> +
-> +done_unlock:
-> +	io_ring_submit_unlock(ctx, issue_flags);
-> +done:
-> +	if (ret < 0)
-> +		req_set_fail(req);
-> +	io_req_set_res(req, ret, 0);
-> +	kfree(ifd);
-> +	return IOU_OK;
-> +}
-
-Other than that, I think these things are indeed transparant wrt the
-existing futex interface. If we add a flag this shouldn't care.
-
+Best regards,
+Krzysztof
 
