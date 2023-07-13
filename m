@@ -2,178 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8525752865
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 18:33:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55F3F752869
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 18:34:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234875AbjGMQdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 12:33:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43516 "EHLO
+        id S232297AbjGMQeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 12:34:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234076AbjGMQcg (ORCPT
+        with ESMTP id S229919AbjGMQeG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 12:32:36 -0400
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FA3E273F;
-        Thu, 13 Jul 2023 09:32:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689265955; x=1720801955;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=QLPVmH8OKhS156FijxUUbjl5TQT038tMDl99vshP4rU=;
-  b=M1gczokT+uUBuUD4ZoLQG6uPnJV3HheA4kBcSKXqSKNjjdAgyTNO4VSq
-   cIFv4lQmR11LW/V/wMceBfYrrJ+X9Zns7v2LnwCf6PYQ98rvDl9GOPRvV
-   hI7NPmdRQWJSpjaK429NjlZEclnZlLLZsT6pDG7Q6EHDEuvERbxrhTqIw
-   5j41eGvxDAmNsmzjWQKf4yLGI/H8dNzUG2Ml3UOorgJBqEJXZLOUl1Sl8
-   DyiOAOloSjfk+1d0u1wrzLVYFa6r9OFuycUZYFpHJTHg77RfjRPX6Djcr
-   etJchpisEV7bxqcpamNM2HrsaJGHYlMbuwXZzFi1n4aNPN69VOwqphcIh
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="362707678"
-X-IronPort-AV: E=Sophos;i="6.01,203,1684825200"; 
-   d="scan'208";a="362707678"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2023 09:32:24 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="722046397"
-X-IronPort-AV: E=Sophos;i="6.01,203,1684825200"; 
-   d="scan'208";a="722046397"
-Received: from agluck-desk3.sc.intel.com ([172.25.222.74])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2023 09:32:23 -0700
-From:   Tony Luck <tony.luck@intel.com>
-To:     Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Peter Newman <peternewman@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org
-Cc:     Shaopeng Tan <tan.shaopeng@fujitsu.com>,
-        James Morse <james.morse@arm.com>,
-        Jamie Iles <quic_jiles@quicinc.com>,
-        Babu Moger <babu.moger@amd.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        patches@lists.linux.dev, Tony Luck <tony.luck@intel.com>
-Subject: [PATCH v3 8/8] selftests/resctrl: Adjust effective L3 cache size when SNC enabled
-Date:   Thu, 13 Jul 2023 09:32:07 -0700
-Message-Id: <20230713163207.219710-9-tony.luck@intel.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230713163207.219710-1-tony.luck@intel.com>
-References: <20230713163207.219710-1-tony.luck@intel.com>
+        Thu, 13 Jul 2023 12:34:06 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6FDE2D5D;
+        Thu, 13 Jul 2023 09:33:46 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C98FC61A5E;
+        Thu, 13 Jul 2023 16:33:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F979C433B7;
+        Thu, 13 Jul 2023 16:33:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689266016;
+        bh=uhsVmzJ8WaZFeuYmEIBKJxAUY3vj6kSqoRYxSMWJi0I=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=uCMTNTPSG1OYrO6FMZaMLROByerhlORvyPS/Wkrw5tdxY84k896W9urr+OWbUqWnX
+         RFChbxILbMb3wPdh8c1R+YpDWXZZBHZzfdJsgM9rGUQFNZe4aB2akOzD1RTRWCh2V+
+         oZMyEgMCP0HnuigbhmVdsujB56NjMHFoDQxMt+Sc5MHdvra4hIihLLoXHvMZHDvc7u
+         aFMJviASDeeuNNReIz/gX9vb1Zh0prc1oqjEpXpWeltzp4kl8v+SJ03+b7xqzX81bP
+         rEgM8s8wNUXhGKBeD1ZR6l96AOQ4AkRaKx434czeY3Vi9ziu45DzHjxEPkUtzpI7vq
+         9j+5+u3kd3zCQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id ADBA8CE009F; Thu, 13 Jul 2023 09:33:35 -0700 (PDT)
+Date:   Thu, 13 Jul 2023 09:33:35 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Gao Xiang <hsiangkao@linux.alibaba.com>,
+        Sandeep Dhavale <dhavale@google.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-erofs@lists.ozlabs.org, xiang@kernel.org,
+        Will Shiu <Will.Shiu@mediatek.com>, kernel-team@android.com,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH v1] rcu: Fix and improve RCU read lock checks when
+ !CONFIG_DEBUG_LOCK_ALLOC
+Message-ID: <58b661d0-0ebb-4b45-a10d-c5927fb791cd@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <CAB=BE-Rm0ycTZXj=wHW_FBCCKbswG+dh3L+o1+CUW=Pg_oWnyw@mail.gmail.com>
+ <20230713003201.GA469376@google.com>
+ <161f1615-3d85-cf47-d2d5-695adf1ca7d4@linux.alibaba.com>
+ <0d9e7b4d-6477-47a6-b3d2-2c9d9b64903d@paulmck-laptop>
+ <f124e041-6a82-2069-975c-4f393e5c4137@linux.alibaba.com>
+ <87292a44-cc02-4d95-940e-e4e31d0bc6f2@paulmck-laptop>
+ <f1c60dcb-e32f-7b7e-bf0d-5dec999e9299@linux.alibaba.com>
+ <CAEXW_YSODXRfgkR0D2G-x=0uZdsqvF3kZL+LL3DcRX-5CULJ1Q@mail.gmail.com>
+ <894a3b64-a369-7bc6-c8a8-0910843cc587@linux.alibaba.com>
+ <CAEXW_YSM1yik4yWTgZoxCS9RM6TbsL26VCVCH=41+uMA8chfAQ@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAEXW_YSM1yik4yWTgZoxCS9RM6TbsL26VCVCH=41+uMA8chfAQ@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sub-NUMA Cluster divides CPUs sharing an L3 cache into separate NUMA
-nodes. Systems may support splitting into either two or four nodes.
+On Thu, Jul 13, 2023 at 11:33:24AM -0400, Joel Fernandes wrote:
+> On Thu, Jul 13, 2023 at 10:34 AM Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
+> > On 2023/7/13 22:07, Joel Fernandes wrote:
+> > > On Thu, Jul 13, 2023 at 12:59 AM Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
+> > >> On 2023/7/13 12:52, Paul E. McKenney wrote:
+> > >>> On Thu, Jul 13, 2023 at 12:41:09PM +0800, Gao Xiang wrote:
+> > >>
+> > >> ...
+> > >>
+> > >>>>
+> > >>>> There are lots of performance issues here and even a plumber
+> > >>>> topic last year to show that, see:
+> > >>>>
+> > >>>> [1] https://lore.kernel.org/r/20230519001709.2563-1-tj@kernel.org
+> > >>>> [2] https://lore.kernel.org/r/CAHk-=wgE9kORADrDJ4nEsHHLirqPCZ1tGaEPAZejHdZ03qCOGg@mail.gmail.com
+> > >>>> [3] https://lore.kernel.org/r/CAB=BE-SBtO6vcoyLNA9F-9VaN5R0t3o_Zn+FW8GbO6wyUqFneQ@mail.gmail.com
+> > >>>> [4] https://lpc.events/event/16/contributions/1338/
+> > >>>> and more.
+> > >>>>
+> > >>>> I'm not sure if it's necessary to look info all of that,
+> > >>>> andSandeep knows more than I am (the scheduling issue
+> > >>>> becomes vital on some aarch64 platform.)
+> > >>>
+> > >>> Hmmm...  Please let me try again.
+> > >>>
+> > >>> Assuming that this approach turns out to make sense, the resulting
+> > >>> patch will need to clearly state the performance benefits directly in
+> > >>> the commit log.
+> > >>>
+> > >>> And of course, for the approach to make sense, it must avoid breaking
+> > >>> the existing lockdep-RCU debugging code.
+> > >>>
+> > >>> Is that more clear?
+> > >>
+> > >> Personally I'm not working on Android platform any more so I don't
+> > >> have a way to reproduce, hopefully Sandeep could give actually
+> > >> number _again_ if dm-verity is enabled and trigger another
+> > >> workqueue here and make a comparsion why the scheduling latency of
+> > >> the extra work becomes unacceptable.
+> > >>
+> > >
+> > > Question from my side, are we talking about only performance issues or
+> > > also a crash? It appears z_erofs_decompress_pcluster() takes
+> > > mutex_lock(&pcl->lock);
+> > >
+> > > So if it is either in an RCU read-side critical section or in an
+> > > atomic section, like the softirq path, then it may
+> > > schedule-while-atomic or trigger RCU warnings.
+> > >
+> > > z_erofs_decompressqueue_endio
+> > > -> z_erofs_decompress_kickoff
+> > >   ->z_erofs_decompressqueue_work
+> > >    ->z_erofs_decompress_queue
+> > >     -> z_erofs_decompress_pcluster
+> > >      -> mutex_lock
+> > >
+> >
+> > Why does the softirq path not trigger a workqueue instead?
+> 
+> I said "if it is". I was giving a scenario. mutex_lock() is not
+> allowed in softirq context or in an RCU-reader.
+> 
+> > > Per Sandeep in [1], this stack happens under RCU read-lock in:
+> > >
+> > > #define __blk_mq_run_dispatch_ops(q, check_sleep, dispatch_ops) \
+> > > [...]
+> > >                  rcu_read_lock();
+> > >                  (dispatch_ops);
+> > >                  rcu_read_unlock();
+> > > [...]
+> > >
+> > > Coming from:
+> > > blk_mq_flush_plug_list ->
+> > >                             blk_mq_run_dispatch_ops(q,
+> > >                                  __blk_mq_flush_plug_list(q, plug));
+> > >
+> > > and __blk_mq_flush_plug_list does this:
+> > >            q->mq_ops->queue_rqs(&plug->mq_list);
+> > >
+> > > This somehow ends up calling the bio_endio and the
+> > > z_erofs_decompressqueue_endio which grabs the mutex.
+> > >
+> > > So... I have a question, it looks like one of the paths in
+> > > __blk_mq_run_dispatch_ops() uses SRCU.  Where are as the alternate
+> > > path uses RCU. Why does this alternate want to block even if it is not
+> > > supposed to? Is the real issue here that the BLK_MQ_F_BLOCKING should
+> > > be set? It sounds like you want to block in the "else" path even
+> > > though BLK_MQ_F_BLOCKING is not set:
+> >
+> > BLK_MQ_F_BLOCKING is not a flag that a filesystem can do anything with.
+> > That is block layer and mq device driver stuffs. filesystems cannot set
+> > this value.
+> >
+> > As I said, as far as I understand, previously,
+> > .end_io() can only be called without RCU context, so it will be fine,
+> > but I don't know when .end_io() can be called under some RCU context
+> > now.
+> 
+> >From what Sandeep described, the code path is in an RCU reader. My
+> question is more, why doesn't it use SRCU instead since it clearly
+> does so if BLK_MQ_F_BLOCKING. What are the tradeoffs? IMHO, a deeper
+> dive needs to be made into that before concluding that the fix is to
+> use rcu_read_lock_any_held().
 
-When SNC mode is enabled the effective amount of L3 cache available
-for allocation is divided by the number of nodes per L3.
+How can this be solved?
 
-Detect which SNC mode is active by comparing the number of CPUs
-that share a cache with CPU0, with the number of CPUs on node0.
+1.	Always use a workqueue.  Simple, but is said to have performance
+	issues.
 
-Reported-by: "Shaopeng Tan (Fujitsu)" <tan.shaopeng@fujitsu.com>
-Closes: https://lore.kernel.org/r/TYAPR01MB6330B9B17686EF426D2C3F308B25A@TYAPR01MB6330.jpnprd01.prod.outlook.com
-Signed-off-by: Tony Luck <tony.luck@intel.com>
----
- tools/testing/selftests/resctrl/resctrl.h   |  1 +
- tools/testing/selftests/resctrl/resctrlfs.c | 57 +++++++++++++++++++++
- 2 files changed, 58 insertions(+)
+2.	Pass a flag in that indicates whether or not the caller is in an
+	RCU read-side critical section.  Conceptually simple, but might
+	or might not be reasonable to actually implement in the code as
+	it exists now.	(You tell me!)
 
-diff --git a/tools/testing/selftests/resctrl/resctrl.h b/tools/testing/selftests/resctrl/resctrl.h
-index 87e39456dee0..a8b43210b573 100644
---- a/tools/testing/selftests/resctrl/resctrl.h
-+++ b/tools/testing/selftests/resctrl/resctrl.h
-@@ -13,6 +13,7 @@
- #include <signal.h>
- #include <dirent.h>
- #include <stdbool.h>
-+#include <ctype.h>
- #include <sys/stat.h>
- #include <sys/ioctl.h>
- #include <sys/mount.h>
-diff --git a/tools/testing/selftests/resctrl/resctrlfs.c b/tools/testing/selftests/resctrl/resctrlfs.c
-index fb00245dee92..79eecbf9f863 100644
---- a/tools/testing/selftests/resctrl/resctrlfs.c
-+++ b/tools/testing/selftests/resctrl/resctrlfs.c
-@@ -130,6 +130,61 @@ int get_resource_id(int cpu_no, int *resource_id)
- 	return 0;
- }
- 
-+/*
-+ * Count number of CPUs in a /sys bit map
-+ */
-+static int count_sys_bitmap_bits(char *name)
-+{
-+	FILE *fp = fopen(name, "r");
-+	int count = 0, c;
-+
-+	if (!fp)
-+		return 0;
-+
-+	while ((c = fgetc(fp)) != EOF) {
-+		if (!isxdigit(c))
-+			continue;
-+		switch (c) {
-+		case 'f':
-+			count++;
-+		case '7': case 'b': case 'd': case 'e':
-+			count++;
-+		case '3': case '5': case '6': case '9': case 'a': case 'c':
-+			count++;
-+		case '1': case '2': case '4': case '8':
-+			count++;
-+		}
-+	}
-+	fclose(fp);
-+
-+	return count;
-+}
-+
-+/*
-+ * Detect SNC by compating #CPUs in node0 with #CPUs sharing LLC with CPU0
-+ * Try to get this right, even if a few CPUs are offline so that the number
-+ * of CPUs in node0 is not exactly half or a quarter of the CPUs sharing the
-+ * LLC of CPU0.
-+ */
-+static int snc_ways(void)
-+{
-+	int node_cpus, cache_cpus;
-+
-+	node_cpus = count_sys_bitmap_bits("/sys/devices/system/node/node0/cpumap");
-+	cache_cpus = count_sys_bitmap_bits("/sys/devices/system/cpu/cpu0/cache/index3/shared_cpu_map");
-+
-+	if (!node_cpus || !cache_cpus) {
-+		fprintf(stderr, "Warning could not determine Sub-NUMA Cluster mode\n");
-+		return 1;
-+	}
-+
-+	if (4 * node_cpus >= cache_cpus)
-+		return 4;
-+	else if (2 * node_cpus >= cache_cpus)
-+		return 2;
-+	return 1;
-+}
-+
- /*
-  * get_cache_size - Get cache size for a specified CPU
-  * @cpu_no:	CPU number
-@@ -190,6 +245,8 @@ int get_cache_size(int cpu_no, char *cache_type, unsigned long *cache_size)
- 			break;
- 	}
- 
-+	if (cache_num == 3)
-+		*cache_size /= snc_ways();
- 	return 0;
- }
- 
--- 
-2.40.1
+3.	Create a function in z_erofs that gives you a decent
+	approximation, maybe something like the following.
 
+4.	Other ideas here.
+
+The following is untested, and is probably quite buggy, but it should
+provide you with a starting point.
+
+static bool z_erofs_wq_needed(void)
+{
+	if (IS_ENABLED(CONFIG_PREEMPTION) && rcu_preempt_depth())
+		return true;  // RCU reader
+	if (IS_ENABLED(CONFIG_PREEMPT_COUNT) && !preemptible())
+		return true;  // non-preemptible
+	if (!IS_ENABLED(CONFIG_PREEMPT_COUNT))
+		return true;  // non-preeemptible kernel, so play it safe
+	return false;
+}
+
+You break it, you buy it!  ;-)
+
+							Thanx, Paul
