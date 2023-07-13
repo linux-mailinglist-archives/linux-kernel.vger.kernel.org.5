@@ -2,84 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0C627523AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 15:24:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CE117523A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 15:24:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235382AbjGMNYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 09:24:36 -0400
+        id S235279AbjGMNYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 09:24:20 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235242AbjGMNYR (ORCPT
+        with ESMTP id S235264AbjGMNXx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 09:24:17 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 478E03C01;
-        Thu, 13 Jul 2023 06:23:09 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8557C612FC;
-        Thu, 13 Jul 2023 13:22:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73C62C433C7;
-        Thu, 13 Jul 2023 13:22:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689254550;
-        bh=bOUAPzYMXtdmmDSu2PZbdjTsWvkvo0nimQiCAPr8Yhw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=JhOxNiBdFSDCF2V9/Owve15T7sqX4XOaeLrOvcgSNwS3EOX8VGPBTRWhuKoRbgBd6
-         UZFYLGBzQhDg3neOr3DuwW0ysPNNI3j+3TqncYXQx5UByAPqlrSR9FNQA9+GAO5LFF
-         y0krZvqDmQ5nsqpEiy0GeMLmk+sjw1pb6NYckaT6eXLvP7V99Bmw8ctkemXlii6Yzb
-         LjhV08DNKdnVDxVeYlcOFk53tsOZU4+Jo52jzg8OzM36DdGHFjIQHeCqY+8H+mRPpa
-         fGonogsNanTUNMQAXXtHV+wsT033vaVk2i34k/TuiaojjLu7D980TKd4GHtOwPNXA1
-         kcr1qYNL3l4Gg==
-Date:   Thu, 13 Jul 2023 15:22:24 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>
-Cc:     Aleksa Sarai <cyphar@cyphar.com>, Willy Tarreau <w@1wt.eu>,
-        Shuah Khan <shuah@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Chinner <dchinner@redhat.com>,
-        xu xin <cgel.zte@gmail.com>, Al Viro <viro@zeniv.linux.org.uk>,
-        Stefan Roesch <shr@devkernel.io>,
-        Zhihao Cheng <chengzhihao1@huawei.com>,
-        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Janis Danisevskis <jdanis@google.com>,
-        Kees Cook <keescook@chromium.org>, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH] procfs: block chmod on /proc/thread-self/comm
-Message-ID: <20230713-unerschrocken-kutschieren-9be3c8958b5d@brauner>
+        Thu, 13 Jul 2023 09:23:53 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEF472D40
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 06:22:52 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b702319893so10474231fa.3
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 06:22:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1689254563; x=1691846563;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dXWviMRLD7YocUFq1hAwJTX8QyWW8iQWGTv5QqtyLjk=;
+        b=McxC7at3hk1pweV1zh33Jfqa/21F0tDnkTwZMMTwXWTU1ixyOxDbDD2wOcvvyq7q2d
+         rX/1t2VLAdaVSy4GzHUcK9YnqgraYwtY+DWa857WOxv8UOC88QZ31m0fuxbUc8/eWE22
+         jxez+//fWGwCCLrHHQ6WSHtgZTUFmgmDPtbDWcgmEkJPoE03zrt1CneXzSWMXoux6PIB
+         jkdtzhTZaTrqVYYeiqJgbU7SZVq8IzFIH6XNh4GmLyqVTT8WMZ6pOkG9HfVwVwSVOHRS
+         0hU6GCD9vtwOymJdp3/PgHZaSeRS9DCP+M+y46dT+/dwxRyVa15fBq7BLTrr3YvlEstf
+         Zvqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689254563; x=1691846563;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dXWviMRLD7YocUFq1hAwJTX8QyWW8iQWGTv5QqtyLjk=;
+        b=YfB7k07dPXAPKPSQ6dcpt608HU2X18hg8WlAEjXqTgQkJ8s3XV9KtOEip5mqmE4Fva
+         dPFeGnwNgwo8otdTHF+EH7d/WKdSXQgpX1DSMWnk+M3O1wv5ZA+qnC29ESEbw+9nsmhb
+         uejs88qlcG/aL4MzsT+RzdgUDW4m36bGwKxxkP4b1OxbhY3KNJMrTnCAAb6UnvQP5qGJ
+         PALbReAE2GsUK9Ujecv38tEAHqkHHIUVfxm5FOdqMAoBkZ5TZ2R8Yr/yEEE4y9HoE7uE
+         UzAPtgliCFCU6bRpUYBZHKeP7ro9jlSfxq/06shYX5+isnHpNlkwnFtZjpAkX+bJrFhm
+         mhOQ==
+X-Gm-Message-State: ABy/qLYKrAviUAlnCkYacDQXijLlMJPwYh+qBg5jPgY2KDJ8FHmEq4BO
+        5WmMvTtbkoSsw3d1dShXKSfShUfWvWDjoepKVUU=
+X-Google-Smtp-Source: APBJJlFenJyAGZmX8lEaZL7qfj96wtFrIKUun/k3YYqQR79WUOoM+Tr06gqwq0Dkn2qCu7f7U7uISA==
+X-Received: by 2002:a2e:95ca:0:b0:2b6:ed80:15d1 with SMTP id y10-20020a2e95ca000000b002b6ed8015d1mr1287788ljh.24.1689254562815;
+        Thu, 13 Jul 2023 06:22:42 -0700 (PDT)
+Received: from [192.168.1.172] ([93.5.22.158])
+        by smtp.gmail.com with ESMTPSA id qo11-20020a170907212b00b00992b0745548sm3943114ejb.152.2023.07.13.06.22.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 Jul 2023 06:22:42 -0700 (PDT)
+Message-ID: <9a0817c2-4101-5c21-977d-77ac0d83a067@baylibre.com>
+Date:   Thu, 13 Jul 2023 15:22:41 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 2/2] clk: mediatek: mt8195-topckgen: Refactor parents for
+ top_dp/edp muxes
+Content-Language: en-US
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, sboyd@kernel.org
+Cc:     mturquette@baylibre.com, matthias.bgg@gmail.com,
+        wenst@chromium.org, msp@baylibre.com, yangyingliang@huawei.com,
+        u.kleine-koenig@pengutronix.de, miles.chen@mediatek.com,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, kernel@collabora.com
+References: <20230713072138.84117-1-angelogioacchino.delregno@collabora.com>
+ <20230713072138.84117-3-angelogioacchino.delregno@collabora.com>
+From:   Alexandre Mergnat <amergnat@baylibre.com>
+In-Reply-To: <20230713072138.84117-3-angelogioacchino.delregno@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > diff --git a/tools/testing/selftests/nolibc/nolibc-test.c b/tools/testing/selftests/nolibc/nolibc-test.c
-> > index 486334981e60..08f0969208eb 100644
-> > --- a/tools/testing/selftests/nolibc/nolibc-test.c
-> > +++ b/tools/testing/selftests/nolibc/nolibc-test.c
-> > @@ -580,6 +580,10 @@ int run_syscall(int min, int max)
-> >  		CASE_TEST(chmod_net);         EXPECT_SYSZR(proc, chmod("/proc/self/net", 0555)); break;
-> >  		CASE_TEST(chmod_self);        EXPECT_SYSER(proc, chmod("/proc/self", 0555), -1, EPERM); break;
-> >  		CASE_TEST(chown_self);        EXPECT_SYSER(proc, chown("/proc/self", 0, 0), -1, EPERM); break;
-> > +		CASE_TEST(chmod_self_comm);   EXPECT_SYSER(proc, chmod("/proc/self/comm", 0777), -1, EPERM); break;
-> > +		CASE_TEST(chmod_tid_comm);    EXPECT_SYSER(proc, chmod("/proc/thread-self/comm", 0777), -1, EPERM); break;
-> > +		CASE_TEST(chmod_self_environ);EXPECT_SYSER(proc, chmod("/proc/self/environ", 0777), -1, EPERM); break;
-> > +		CASE_TEST(chmod_tid_environ); EXPECT_SYSER(proc, chmod("/proc/thread-self/environ", 0777), -1, EPERM); break;
 
+
+On 13/07/2023 09:21, AngeloGioacchino Del Regno wrote:
+> The top_dp and top_edp muxes can be both parented to either TVDPLL1
+> or TVDPLL2, two identically specced PLLs for the specific purpose of
+> giving out pixel clock: this becomes a problem when the MediaTek
+> DisplayPort Interface (DPI) driver tries to set the pixel clock rate.
 > 
-> I'm not a big fan of this, it abuses the nolibc testsuite to test core
-> kernel functionality.
+> In the usecase of two simultaneous outputs (using two controllers),
+> it was seen that one of the displays would sometimes display garbled
+> output (if any at all) and this was because:
+>   - top_edp was set to TVDPLL1, outputting X GHz
+>   - top_dp was set to TVDPLL2, outputting Y GHz
+>     - mtk_dpi calls clk_set_rate(top_edp, Z GHz)
+>       - top_dp is switched to TVDPLL1
+>       - TVDPLL1 changes its rate, top_edp outputs the wrong rate.
+>       - eDP display is garbled
+> 
+> To solve this issue, remove all TVDPLL1 parents from `top_dp` and
+> all TVDPLL2 parents from `top_edp`, plus, necessarily switch both
+> clocks to use the new MUX_GATE_CLR_SET_UPD_INDEXED() macro to be
+> able to use the right bit index for the new parents list.
+> 
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> ---
+>   drivers/clk/mediatek/clk-mt8195-topckgen.c | 22 ++++++++++++++--------
+>   1 file changed, 14 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/clk/mediatek/clk-mt8195-topckgen.c b/drivers/clk/mediatek/clk-mt8195-topckgen.c
+> index 81daa24cadde..abb3721f6e1b 100644
+> --- a/drivers/clk/mediatek/clk-mt8195-topckgen.c
+> +++ b/drivers/clk/mediatek/clk-mt8195-topckgen.c
+> @@ -417,15 +417,21 @@ static const char * const pwrmcu_parents[] = {
+>   
+>   static const char * const dp_parents[] = {
+>   	"clk26m",
+> -	"tvdpll1_d2",
+>   	"tvdpll2_d2",
+> -	"tvdpll1_d4",
+>   	"tvdpll2_d4",
+> -	"tvdpll1_d8",
+>   	"tvdpll2_d8",
+> -	"tvdpll1_d16",
+>   	"tvdpll2_d16"
+>   };
+> +static const u8 dp_parents_idx[] = { 0, 2, 4, 6, 8 };
+> +
+> +static const char * const edp_parents[] = {
+> +	"clk26m",
+> +	"tvdpll1_d2",
+> +	"tvdpll1_d4",
+> +	"tvdpll1_d8",
+> +	"tvdpll1_d16"
+> +};
+> +static const u8 edp_parents_idx[] = { 0, 1, 3, 5, 7 };
 
-Yes, this should be dropped.
-We need a minimal patch to fix this. This just makes backporting harder
-and any test doesn't need to be backported.
+AFAII your solution is to force a specific TVDPLLX for each display, and 
+it isn't dynamic.
+
+Do you think it's possible to do that using the DTS ? I'm asking 
+because, IMHO, this kind of setup is more friendly/readable/flexible in 
+the DTS than hardcoded into the driver.
+
+>   
+>   static const char * const disp_pwm_parents[] = {
+>   	"clk26m",
+> @@ -957,11 +963,11 @@ static const struct mtk_mux top_mtk_muxes[] = {
+>   	MUX_GATE_CLR_SET_UPD_FLAGS(CLK_TOP_PWRMCU, "top_pwrmcu",
+>   		pwrmcu_parents, 0x08C, 0x090, 0x094, 16, 3, 23, 0x08, 6,
+>   		CLK_IS_CRITICAL | CLK_SET_RATE_PARENT),
+> -	MUX_GATE_CLR_SET_UPD(CLK_TOP_DP, "top_dp",
+> -		dp_parents, 0x08C, 0x090, 0x094, 24, 4, 31, 0x08, 7),
+> +	MUX_GATE_CLR_SET_UPD_INDEXED(CLK_TOP_DP, "top_dp",
+> +		dp_parents, dp_parents_idx, 0x08C, 0x090, 0x094, 24, 4, 31, 0x08, 7),
+>   	/* CLK_CFG_10 */
+> -	MUX_GATE_CLR_SET_UPD(CLK_TOP_EDP, "top_edp",
+> -		dp_parents, 0x098, 0x09C, 0x0A0, 0, 4, 7, 0x08, 8),
+> +	MUX_GATE_CLR_SET_UPD_INDEXED(CLK_TOP_EDP, "top_edp",
+> +		edp_parents, edp_parents_idx, 0x098, 0x09C, 0x0A0, 0, 4, 7, 0x08, 8),
+>   	MUX_GATE_CLR_SET_UPD(CLK_TOP_DPI, "top_dpi",
+>   		dp_parents, 0x098, 0x09C, 0x0A0, 8, 4, 15, 0x08, 9),
+>   	MUX_GATE_CLR_SET_UPD(CLK_TOP_DISP_PWM0, "top_disp_pwm0",
+
+-- 
+Regards,
+Alexandre
