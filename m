@@ -2,93 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65B54752426
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 15:48:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43E75752429
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 15:48:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229580AbjGMNsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 09:48:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45606 "EHLO
+        id S229809AbjGMNse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 09:48:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjGMNsM (ORCPT
+        with ESMTP id S229436AbjGMNsc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 09:48:12 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6640719B4;
-        Thu, 13 Jul 2023 06:48:10 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qJwfi-0003Ca-Qb; Thu, 13 Jul 2023 15:47:54 +0200
-Message-ID: <573023b6-4320-2c8d-b1ec-75d542590db0@leemhuis.info>
-Date:   Thu, 13 Jul 2023 15:47:54 +0200
+        Thu, 13 Jul 2023 09:48:32 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9F911FD6;
+        Thu, 13 Jul 2023 06:48:29 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 253786153D;
+        Thu, 13 Jul 2023 13:48:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27EBEC433C8;
+        Thu, 13 Jul 2023 13:48:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689256108;
+        bh=aVFkOdZiMIHWVq2IMmFdy8HY77pkeHTrC64KlWEXfQM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KW+LnXsT5S4/XdZXg2Un2kQeTTXap5cG0rVSxTcMqCwnkZ0VH8wOYZviKW3+Pw+dG
+         GhtNrnE6pF7HU9UMRkgLvopDXWUio5yGWcLNuswitR9UtV0gLLm6fO476wfyzWhljU
+         npDfKMQI4bRV8cmJAxvIUSCgsBCCKQMWiOGBHTWDxtk4M3taVPmmDVbV0KtK5dwP3l
+         6tFJ30y5QT/TC/UYTn/fFWAyYoSKwudLuYkP26lFQrARkZvKVk9medyApVYoObHSBD
+         fokyi0gTpieaRBqWTl77Uqq1ULCOjWl0SKnWtdZ7aZRENhGDj/+bLwYAhnmVk1wX27
+         FroSouUHpSbWA==
+Date:   Thu, 13 Jul 2023 14:48:23 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     William Qiu <william.qiu@starfivetech.com>,
+        devicetree@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH v2 2/3] dt-bindings: spi: constrain minItems of clocks
+ and clock-names
+Message-ID: <5ef17d53-460c-4281-a241-1622a24bac5b@sirena.org.uk>
+References: <20230713090015.127541-1-william.qiu@starfivetech.com>
+ <20230713090015.127541-3-william.qiu@starfivetech.com>
+ <c5ad1e1c-58f4-4833-b9c7-8876c1a0dc27@sirena.org.uk>
+ <e3fd0d3f-3fe4-2e23-2548-ecbd487e9c9f@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-Subject: Re: [PATCH] sparc: mark __arch_xchg() as __always_inline
-Content-Language: en-US, de-DE
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andi Shyti <andi.shyti@linux.intel.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Palmer Dabbelt <palmer@rivosinc.com>,
-        sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sam Ravnborg <sam@ravnborg.org>
-References: <20230628094938.2318171-1-arnd@kernel.org>
- <20230628155103.GA214400@ravnborg.org>
-From:   "Linux regression tracking (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-In-Reply-To: <20230628155103.GA214400@ravnborg.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1689256090;9d0540f3;
-X-HE-SMSGID: 1qJwfi-0003Ca-Qb
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="dpyDkCLVucMmtixK"
+Content-Disposition: inline
+In-Reply-To: <e3fd0d3f-3fe4-2e23-2548-ecbd487e9c9f@linaro.org>
+X-Cookie: MOUNT TAPE U1439 ON B3, NO RING
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.06.23 17:51, Sam Ravnborg wrote:
-> On Wed, Jun 28, 2023 at 11:49:18AM +0200, Arnd Bergmann wrote:
->> From: Arnd Bergmann <arnd@arndb.de>
->>
->> An otherwise correct change to the atomic operations uncovered an
->> existing bug in the sparc __arch_xchg() function, which is calls
->> __xchg_called_with_bad_pointer() when its arguments are unknown at
->> compile time:
->>
->> ERROR: modpost: "__xchg_called_with_bad_pointer" [lib/atomic64_test.ko] undefined!
->>
->> This now happens because gcc determines that it's better to not inline the
->> function. Avoid this by just marking the function as __always_inline
->> to force the compiler to do the right thing here.
->>
->> Reported-by: Guenter Roeck <linux@roeck-us.net>
->> Link: https://lore.kernel.org/all/c525adc9-6623-4660-8718-e0c9311563b8@roeck-us.net/
->> Fixes: d12157efc8e08 ("locking/atomic: make atomic*_{cmp,}xchg optional")
->> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
-> 
-> I assume you will find a way to apply the patch.
 
-Hmmm, looks to me like this patch is sitting here for two weeks now
-without having made any progress. From a quick search on lore it also
-looks like Dave is not very active currently. Hence:
+--dpyDkCLVucMmtixK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Arnd, is that maybe something that is worth sending straight to Linus?
+On Thu, Jul 13, 2023 at 02:39:19PM +0200, Krzysztof Kozlowski wrote:
+> On 13/07/2023 14:28, Mark Brown wrote:
+> > On Thu, Jul 13, 2023 at 05:00:14PM +0800, William Qiu wrote:
 
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
+> >> The SPI controller only need apb_pclk clock to work properly on JH7110 SoC,
+> >> so there add minItems whose value is equal to 1. Other platforms do not
+> >> have this constraint.
+
+> > Presumably this means that this is some variant of the usual pl022 IP,
+
+> Hm, in such case this could mean we need dedicated compatible.
+
+Yes, indeed.
+
+--dpyDkCLVucMmtixK
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmSwAKYACgkQJNaLcl1U
+h9BpEgf9EY0uJQAMe4MnptnRo7jvpMoIHgFT017s7FDsYZ5NJtmMdV+t/R0nQUg/
+gVRSsP2/f4GMNQokTmIV0RlLIQMBS7CrTlds5WQ31ok7G9fdsTEv/n5BWikmbCuH
+nFlnrUws6Ag7LUsFR0rFdL/uq/zbFOAMzykz5YLuEXVpdSb9OoPJQOrEBQk6asui
+bmhE12NziQo0hSVP1pLaUxOz8RLw6PqJUBHp8QFQ+5N7dXgtp6ALRHEWftboRZiX
++RFT/oUiscAXFtGDobmLvCHkPSCbLflxkaXuYUSdZP9AStWND38s9uFV6OE9O2hZ
+U1BGVb2xUcGVvWdal9BSvSnAHxYS4w==
+=sgri
+-----END PGP SIGNATURE-----
+
+--dpyDkCLVucMmtixK--
