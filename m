@@ -2,100 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E2F67517EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 07:12:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51B037517E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 13 Jul 2023 07:09:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233622AbjGMFMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 01:12:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50898 "EHLO
+        id S233802AbjGMFJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 01:09:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232068AbjGMFMk (ORCPT
+        with ESMTP id S233578AbjGMFJM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 01:12:40 -0400
-Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 711132114
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 22:12:39 -0700 (PDT)
-Received: by mail-oo1-xc2d.google.com with SMTP id 006d021491bc7-5634fbf0cf4so290189eaf.3
-        for <linux-kernel@vger.kernel.org>; Wed, 12 Jul 2023 22:12:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689225159; x=1691817159;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=AU3f9OQKR2a7cxUcrQLuhTivCLhFp5YGHO1sZ351/7Q=;
-        b=Pv4KC/jmX1h5RaGkzhk8xIJryS9ZzM7mZcrr/uDY07pmNgkFBFXi76SA34H7wrSNbm
-         2GrFH3B8nV4H9ZA2A0xx7AR8g4wXrKCfyHcdtXk/Yb6SO9IpfxhyDMiQ1kVoJQ68Z9IC
-         XynCc+GxdtaFT8x+aN2AHekUB+xkIAAMh100S/st7SZtbDb2G0Ldzy5+7apv+AQ7RA9A
-         wQWya2zHM9DA1JY2iCeIoROSkIFQF0R+Z5OjuM9kSmrFkfz6UMmHkwdP3o94tyrOuRC2
-         ZOyHq83pHb65uoE786MEeBrO3uHR0OfXUoQ0GP/RpTkBuRNCM3STYBySeQNRIi1yMq7/
-         cfGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689225159; x=1691817159;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AU3f9OQKR2a7cxUcrQLuhTivCLhFp5YGHO1sZ351/7Q=;
-        b=d07pjZYWT9XDTSMh8ulPRGgl/thLkNa2UZAV3UcTbRSE5ReMx518UvGwTNzM760Rum
-         AVr36RZsUult/ZBVCJXF5mj3HU3bgAhQzh1QMIVRGG6MC/2/cKZAf03t0roaePnzfEaC
-         3ZN97N0bDtqB+JGjvAkgr0IMhC3UeljTAb42p6hloBlnS0phK3FUc1a1c1+w630TveVF
-         ozoh7OhfvBik9/vJnScWr2JaLWWmLQSvFtheMiaa7T4Ht3w7SmGweEcBiAYldIIDDEP5
-         RJZlDhXXPqz0jiQVDv6JM59Wbgsi/03fwQkU88kflcvAsOPjQwlZV20G4XvjbLC50BR4
-         5ufw==
-X-Gm-Message-State: ABy/qLaXsNYeynujALaIHTYqmWJWgr3JOEWzlyIlgUFRjU08IE2QGEfa
-        z3BA7hfVSPdw9Rvz3guxrPoagg==
-X-Google-Smtp-Source: APBJJlFVtfh+brkVU8HuhcMpavDiEm/S4lSKG6xVm8+rGf5PEmPcC8RMTgmTfkwIgecc9BruTvLlXQ==
-X-Received: by 2002:a05:6358:6f06:b0:133:835:8e03 with SMTP id r6-20020a0563586f0600b0013308358e03mr830173rwn.16.1689225158671;
-        Wed, 12 Jul 2023 22:12:38 -0700 (PDT)
-Received: from localhost ([122.172.87.195])
-        by smtp.gmail.com with ESMTPSA id o11-20020a63a80b000000b0050fa6546a45sm4549950pgf.6.2023.07.12.22.12.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Jul 2023 22:12:38 -0700 (PDT)
-Date:   Thu, 13 Jul 2023 10:42:35 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, vireshk@kernel.org,
-        nm@ti.com, sboyd@kernel.org, myungjoo.ham@samsung.com,
-        kyungmin.park@samsung.com, cw00.choi@samsung.com,
-        andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        quic_asutoshd@quicinc.com, quic_cang@quicinc.com,
-        quic_nitirawa@quicinc.com, quic_narepall@quicinc.com,
-        quic_bhaskarv@quicinc.com, quic_richardp@quicinc.com,
-        quic_nguyenb@quicinc.com, quic_ziqichen@quicinc.com,
-        bmasney@redhat.com, krzysztof.kozlowski@linaro.org
-Subject: Re: [PATCH 11/14] scsi: ufs: host: Add support for parsing OPP
-Message-ID: <20230713051235.ob5z3li3lz52xtzm@vireshk-i7>
-References: <20230712103213.101770-1-manivannan.sadhasivam@linaro.org>
- <20230712103213.101770-14-manivannan.sadhasivam@linaro.org>
- <e6a5129a-db07-977d-2ecd-328a52cbcdc0@linaro.org>
- <20230712163406.GG102757@thinkpad>
- <CAA8EJpovHr1qxepVprk6UvnhKe+nu4VuziyKKgjV3UzommFz6g@mail.gmail.com>
- <20230713040918.jnf5oqiwymrdnrmq@vireshk-i7>
- <20230713050550.GB3047@thinkpad>
+        Thu, 13 Jul 2023 01:09:12 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A7F52114;
+        Wed, 12 Jul 2023 22:09:11 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4R1jM62XMWz4f3m7l;
+        Thu, 13 Jul 2023 13:09:06 +0800 (CST)
+Received: from ubuntu20.huawei.com (unknown [10.67.174.33])
+        by APP2 (Coremail) with SMTP id Syh0CgCHlufvhq9ktQcZNw--.45992S2;
+        Thu, 13 Jul 2023 13:09:06 +0800 (CST)
+From:   "GONG, Ruiqi" <gongruiqi@huaweicloud.com>
+To:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Wang Weiyang <wangweiyang2@huawei.com>,
+        Xiu Jianfeng <xiujianfeng@huawei.com>, gongruiqi1@huawei.com
+Subject: [PATCH] bpf: Add support of skipping the current object for bpf_iter progs
+Date:   Thu, 13 Jul 2023 13:13:23 +0800
+Message-Id: <20230713051323.2867905-1-gongruiqi@huaweicloud.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230713050550.GB3047@thinkpad>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: Syh0CgCHlufvhq9ktQcZNw--.45992S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7WryfCF45ZrWrXF4xAF4ktFb_yoW8Ar17pF
+        s7KF9rCw40vw47uFZFyFs7CryrAwnaq3W7GFWqk3yrKr1UXws8Wrn8GF1aqFyrtryxKr1F
+        vF4I9FWYv345uFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkYb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
+        AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
+        j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
+        kEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY
+        0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I
+        0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAI
+        cVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcV
+        CF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280
+        aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUbPEf5UUUUU==
+X-CM-SenderInfo: pjrqw2pxltxq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13-07-23, 10:35, Manivannan Sadhasivam wrote:
-> We can settle with this custom callback for now. If there are drivers in the
-> future trying to do the same (skipping 0 freq) then we can generalize.
+bpf_seq_read() can accept three different types of seq_ops->show()'s
+return value:
 
-Just for completeness, there isn't much to generalize here apart from
-changing the DT order of clocks. Isn't it ?
+  err > 0: skip the obj and reuse seq_num
+  err < 0: abort the whole iter process
+  err == 0 (implicitly): continue
 
-The change require for the OPP core makes sense, I will probably just
-push it anyway.
+but bpf_iter_run_prog() is limited to the last two cases. Extend the
+legal return value of bpf_iter progs so that they can skip certain
+objects and then proceed to the followings.
 
+Signed-off-by: GONG, Ruiqi <gongruiqi@huaweicloud.com>
+---
+ kernel/bpf/bpf_iter.c | 9 +++++----
+ kernel/bpf/verifier.c | 1 +
+ 2 files changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/kernel/bpf/bpf_iter.c b/kernel/bpf/bpf_iter.c
+index 96856f130cbf..1c1d67ec466c 100644
+--- a/kernel/bpf/bpf_iter.c
++++ b/kernel/bpf/bpf_iter.c
+@@ -716,13 +716,14 @@ int bpf_iter_run_prog(struct bpf_prog *prog, void *ctx)
+ 		rcu_read_unlock();
+ 	}
+ 
+-	/* bpf program can only return 0 or 1:
+-	 *  0 : okay
+-	 *  1 : retry the same object
++	/* bpf program can return:
++	 *  0 : has shown the object, go next
++	 *  1 : has skipped the object, go next
++	 * -1 : encountered error and should terminate
+ 	 * The bpf_iter_run_prog() return value
+ 	 * will be seq_ops->show() return value.
+ 	 */
+-	return ret == 0 ? 0 : -EAGAIN;
++	return ret == 0 ? 0 : (ret == 1 ? 1 : -EAGAIN);
+ }
+ 
+ BPF_CALL_4(bpf_for_each_map_elem, struct bpf_map *, map, void *, callback_fn,
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 930b5555cfd3..cebd3a0b3172 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -14333,6 +14333,7 @@ static int check_return_code(struct bpf_verifier_env *env)
+ 		case BPF_MODIFY_RETURN:
+ 			return 0;
+ 		case BPF_TRACE_ITER:
++			range = tnum_range(-1, 1);
+ 			break;
+ 		default:
+ 			return -ENOTSUPP;
 -- 
-viresh
+2.25.1
+
