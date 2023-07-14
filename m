@@ -2,170 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2277754514
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 00:45:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B946475451A
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 00:45:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229874AbjGNWpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 18:45:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36812 "EHLO
+        id S230043AbjGNWpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 18:45:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjGNWpO (ORCPT
+        with ESMTP id S229879AbjGNWpp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 18:45:14 -0400
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B8DE30FF
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 15:45:07 -0700 (PDT)
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com [209.85.215.200])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 9AF7E3F723
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 22:45:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1689374705;
-        bh=FP8NFo5ttl/GuZaVvQMiK1O2vkwG6/VwhootU2UrwC8=;
-        h=From:To:cc:Subject:In-reply-to:References:MIME-Version:
-         Content-Type:Date:Message-ID;
-        b=r+rXyLF7jsf2GuBfJrSdhn8efT8sA85PXz5nUtexayV55R8ScRxL+ZU0w1iiEKOEc
-         UmbeIc5OPCpHLdga69o1SGGinA5elbklAzIZKFBzBs+k68gRXysUSwZhXBuKFLEYbI
-         RLeO59VVTbUDe5UuCdwLerajwG+KxsakUw/7yjXu3sYGboRU21hjPGZbIBlFdkbHrK
-         N5ym46qYfY6ZBOAcgMRSHVF8rkKJysS7QD8L+91UcVeLWl0dPOxSaeFA9E2sHirBcV
-         7vm3m2v1X6G6hjXgnvLS5WCA26oo/6HJ/v2jnwe6nxMURPK3es89t5nkX625Ktrf9W
-         F2aGcuWwZa6qA==
-Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-55c79a5565aso1215475a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 15:45:05 -0700 (PDT)
+        Fri, 14 Jul 2023 18:45:45 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2162C30FD;
+        Fri, 14 Jul 2023 15:45:44 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-6687466137bso1683694b3a.0;
+        Fri, 14 Jul 2023 15:45:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689374743; x=1691966743;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Rt6PphGaSWp2+mm0gUhqAdDTRb1FCdl8+rMRxrEr5H4=;
+        b=qeXTqgmpFTwkVy7IzpfccXoIuiWbJ+4Kj3ma4pXJvymox8TVb4aGcn+KOlAktvNMpS
+         SS9fQggp18ftKGAA0c/s1oxcBq0AfhgzY4K/iWmz/cRpX7nEuOCBEbdS1RMUx0DEYGSD
+         f6EutV7cd4XrwJAY+oDY/oUyUQuPraGXdlBun1/8cHhX4JiHv9ijqzIcdevq08yfxZGh
+         9sFqq9A8F98lZ5hTCUXO17abPfcb5KMtfXvz2lOrV2UoUTgvJ9r4YKFImjDZgFOBsv2v
+         YoZ50gE8Acv1vQAWXPszif7967EejGuJBEbD4BTygV5435Lw+wHSpNjTSQ1uAHqY1Kf8
+         o+6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689374704; x=1691966704;
-        h=message-id:date:content-transfer-encoding:content-id:mime-version
-         :comments:references:in-reply-to:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FP8NFo5ttl/GuZaVvQMiK1O2vkwG6/VwhootU2UrwC8=;
-        b=kCtdaeA0uEwShDraoBwd6Fw3DY/yi6tEULCq7+A51Utuam58U1+fPxf/Q6R1EXUgsz
-         +IuehgWwgyfTNDkYJbtCED1BSC+UHg7krt4gkzYD+/L1nqpLZ5PYGwwfBhh+pcD3X8qi
-         IKjQhxYy9EAjtrUkDQkpygUZmA0n+Z/oXbNtCq81udNgjRQpDb8CVBXrmTwpIwvAafVE
-         NurVe/tFiuGrQmqzYH/4ANfRXfmJWpVE3wb/V8QP7elES5IfBTQ1Xl99G7j7EdRGeuJ9
-         j8fq3A+FrNtb2nti+l1kSmq2X0KgO2wQx9awAnto9b9Jp8V2X17d1OWpUtoYO2J1JhFe
-         TZtg==
-X-Gm-Message-State: ABy/qLbRzcJxcQkf9M4IOldjBZqlCyg4D5Fbmba2FY1TPB3G4sfIQP4n
-        /7TKZQjP1NBsGXm96VVYrkQqK+0on/swj0j1egQJ7eF7/gQREZeHbWTwSckjLu6YjTsMD7rVlWk
-        RDRgr+3UMEKRiHxvYYK9Nqla+aGdpRwtcfD/iIp61Fg==
-X-Received: by 2002:a05:6a20:1451:b0:132:e1ec:796f with SMTP id a17-20020a056a20145100b00132e1ec796fmr5071576pzi.26.1689374704095;
-        Fri, 14 Jul 2023 15:45:04 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlHgjpMNALXZnAKw+OgXUuJ3hVL/R2N+iBUFv3O9Iq5/ifwPwKWAZjErpko1jUdHuH4DijWuQg==
-X-Received: by 2002:a05:6a20:1451:b0:132:e1ec:796f with SMTP id a17-20020a056a20145100b00132e1ec796fmr5071566pzi.26.1689374703660;
-        Fri, 14 Jul 2023 15:45:03 -0700 (PDT)
-Received: from famine.localdomain ([50.125.80.253])
-        by smtp.gmail.com with ESMTPSA id g7-20020aa78187000000b00659b8313d08sm7638033pfi.78.2023.07.14.15.45.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 14 Jul 2023 15:45:03 -0700 (PDT)
-Received: by famine.localdomain (Postfix, from userid 1000)
-        id DDB3D5FEAC; Fri, 14 Jul 2023 15:45:02 -0700 (PDT)
-Received: from famine (localhost [127.0.0.1])
-        by famine.localdomain (Postfix) with ESMTP id D65DC9FABB;
-        Fri, 14 Jul 2023 15:45:02 -0700 (PDT)
-From:   Jay Vosburgh <jay.vosburgh@canonical.com>
-To:     Jamie Bainbridge <jamie.bainbridge@gmail.com>
-cc:     "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        d=1e100.net; s=20221208; t=1689374743; x=1691966743;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Rt6PphGaSWp2+mm0gUhqAdDTRb1FCdl8+rMRxrEr5H4=;
+        b=U9pLRldbdX/8vu7SCOs4nv7Nv2hOcGvXQdjuN9Bcf5HKdQvG9vzzkaxsJpNCOpMcjN
+         QOXnSFG8+d96+Co9SSA/C0w4u9wTzTjcg5iFiC9y/cFFPmR3b5WUqpPUHQ4XpsHNJvvZ
+         9nVK1P67JKEb91Nren7/G0zH0JbgPUN1fb89cm/fz9pCWIvwhZlUp9hHeenJLAR5b5TV
+         p0RYTNDZJwrSrIt3xMwrwjgt1xBu5k4R01oOge7zjk7Y0VpO5wEVAkBgS+51INojYqGe
+         wF99xplWFAZHChg8weJKw7PkV4jGZk/Yt3q/psztRPnwbHFgqbVnxJ9mlhxsOKUNygE/
+         b/GA==
+X-Gm-Message-State: ABy/qLY6LjURe45Gg0OG0K3TL+AB22JGaU/UH5th1620gO6q923gjUHC
+        TfbrcPm1/6IKmoUQn2SY4RVUxiZ98+U=
+X-Google-Smtp-Source: APBJJlGknl8/FXvmcINYtf3ns7KY0s8LBYD4T+UAw9SqbCkDqRWjjWyk0G4jwTBF9omW5JwwTDt51w==
+X-Received: by 2002:a05:6a20:12cd:b0:133:5110:344c with SMTP id v13-20020a056a2012cd00b001335110344cmr5429857pzg.8.1689374742554;
+        Fri, 14 Jul 2023 15:45:42 -0700 (PDT)
+Received: from dtor-ws.mtv.corp.google.com ([2620:15c:9d:2:fe13:1555:c84f:8fa3])
+        by smtp.gmail.com with ESMTPSA id jm23-20020a17090304d700b001b9de2b905asm8246120plb.231.2023.07.14.15.45.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Jul 2023 15:45:42 -0700 (PDT)
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Roxana Bradescu <roxabee@google.com>, kvm@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tcp: Add memory pressure flag to sockstat
-In-reply-to: <a35a5881c3280bd7a4fd1943a8b40b890e3bf280.1689316697.git.jamie.bainbridge@gmail.com>
-References: <a35a5881c3280bd7a4fd1943a8b40b890e3bf280.1689316697.git.jamie.bainbridge@gmail.com>
-Comments: In-reply-to Jamie Bainbridge <jamie.bainbridge@gmail.com>
-   message dated "Fri, 14 Jul 2023 16:39:53 +1000."
-X-Mailer: MH-E 8.6+git; nmh 1.6; Emacs 29.0.50
+Subject: [PATCH v3 1/2] kvm/vfio: ensure kvg instance stays around in kvm_vfio_group_add()
+Date:   Fri, 14 Jul 2023 15:45:32 -0700
+Message-ID: <20230714224538.404793-1-dmitry.torokhov@gmail.com>
+X-Mailer: git-send-email 2.41.0.255.g8b1d071c50-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <30996.1689374702.1@famine>
-Content-Transfer-Encoding: quoted-printable
-Date:   Fri, 14 Jul 2023 15:45:02 -0700
-Message-ID: <30997.1689374702@famine>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jamie Bainbridge <jamie.bainbridge@gmail.com> wrote:
+kvm_vfio_group_add() creates kvg instance, links it to kv->group_list,
+and calls kvm_vfio_file_set_kvm() with kvg->file as an argument after
+dropping kv->lock. If we race group addition and deletion calls, kvg
+instance may get freed by the time we get around to calling
+kvm_vfio_file_set_kvm().
 
->When tuning a system it can be helpful to know whether the protocol is
->in memory pressure state or not. This can be determined by corresponding
->the number of pages in "net.ipv4.tcp_mem" with the current allocation,
->but a global variable already tracks this as the source of truth.
->
->Expose that variable in sockstat where other protocol memory usage is
->already reported.
->
->Add "pressure" which is 0 in normal state and 1 under pressure:
->
-> # grep TCP /proc/net/sockstat
-> TCP: inuse 5 orphan 0 tw 0 alloc 7 mem 1 pressure 0
->
-> # grep TCP /proc/net/sockstat
-> TCP: inuse 5 orphan 0 tw 0 alloc 7 mem 1 pressure 1
+Previous iterations of the code did not reference kvg->file outside of
+the critical section, but used a temporary variable. Still, they had
+similar problem of the file reference being owned by kvg structure and
+potential for kvm_vfio_group_del() dropping it before
+kvm_vfio_group_add() had a chance to complete.
 
-	Isn't this already available in /proc/net/protocols?
+Fix this by moving call to kvm_vfio_file_set_kvm() under the protection
+of kv->lock. We already call it while holding the same lock when vfio
+group is being deleted, so it should be safe here as well.
 
-protocol  size sockets  memory press maxhdr  slab module     cl co di ac i=
-o in de sh ss gs se re sp bi br ha uh gp em
-[...]
-UDP       1472      7       6   NI       0   yes  kernel      y  y  y  n  =
-y  y  y  n  y  y  y  y  y  n  n  y  y  y  n
-TCP       2512      5       1   no     320   yes  kernel      y  y  y  y  =
-y  y  y  y  y  y  y  y  y  n  y  y  y  y  y
-
-	-J
-
->Tested by writing a large value to global variable tcp_memory_pressure
->(it usually stores jiffies when memory pressure was entered) and not
->just by code review or editing example output.
->
->Signed-off-by: Jamie Bainbridge <jamie.bainbridge@gmail.com>
->---
-> net/ipv4/proc.c | 7 ++++---
-> 1 file changed, 4 insertions(+), 3 deletions(-)
->
->diff --git a/net/ipv4/proc.c b/net/ipv4/proc.c
->index eaf1d3113b62f7dc93fdc7b7c4041140ac63bf69..f4c5ced2de49d5c6d7f5d7ccd=
-aa76c89dcf8c932 100644
->--- a/net/ipv4/proc.c
->+++ b/net/ipv4/proc.c
->@@ -51,16 +51,17 @@
-> static int sockstat_seq_show(struct seq_file *seq, void *v)
-> {
-> 	struct net *net =3D seq->private;
->-	int orphans, sockets;
->+	int orphans, sockets, tcp_pressure;
-> =
-
-> 	orphans =3D tcp_orphan_count_sum();
-> 	sockets =3D proto_sockets_allocated_sum_positive(&tcp_prot);
->+	tcp_pressure =3D READ_ONCE(tcp_memory_pressure) ? 1 : 0;
-> =
-
-> 	socket_seq_show(seq);
->-	seq_printf(seq, "TCP: inuse %d orphan %d tw %d alloc %d mem %ld\n",
->+	seq_printf(seq, "TCP: inuse %d orphan %d tw %d alloc %d mem %ld pressur=
-e %d\n",
-> 		   sock_prot_inuse_get(net, &tcp_prot), orphans,
-> 		   refcount_read(&net->ipv4.tcp_death_row.tw_refcount) - 1,
->-		   sockets, proto_memory_allocated(&tcp_prot));
->+		   sockets, proto_memory_allocated(&tcp_prot), tcp_pressure);
-> 	seq_printf(seq, "UDP: inuse %d mem %ld\n",
-> 		   sock_prot_inuse_get(net, &udp_prot),
-> 		   proto_memory_allocated(&udp_prot));
->-- =
-
->2.41.0
->
->
-
+Fixes: 2fc1bec15883 ("kvm: set/clear kvm to/from vfio_group when group add/delete")
+Reviewed-by: Alex Williamson <alex.williamson@redhat.com>
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 ---
-	-Jay Vosburgh, jay.vosburgh@canonical.com
+
+v3: added Alex's reviewed-by
+
+v2: updated commit description with the correct "Fixes" tag (per Alex),
+    expanded commit description to mention issues with the earlier
+    implementation of kvm_vfio_group_add().
+
+ virt/kvm/vfio.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/virt/kvm/vfio.c b/virt/kvm/vfio.c
+index 9584eb57e0ed..cd46d7ef98d6 100644
+--- a/virt/kvm/vfio.c
++++ b/virt/kvm/vfio.c
+@@ -179,10 +179,10 @@ static int kvm_vfio_group_add(struct kvm_device *dev, unsigned int fd)
+ 	list_add_tail(&kvg->node, &kv->group_list);
+ 
+ 	kvm_arch_start_assignment(dev->kvm);
++	kvm_vfio_file_set_kvm(kvg->file, dev->kvm);
+ 
+ 	mutex_unlock(&kv->lock);
+ 
+-	kvm_vfio_file_set_kvm(kvg->file, dev->kvm);
+ 	kvm_vfio_update_coherency(dev);
+ 
+ 	return 0;
+-- 
+2.41.0.255.g8b1d071c50-goog
+
