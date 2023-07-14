@@ -2,68 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAE967540E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 19:46:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03F417540F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 19:46:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236210AbjGNRp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 13:45:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60672 "EHLO
+        id S236293AbjGNRpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 13:45:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235841AbjGNRp0 (ORCPT
+        with ESMTP id S235555AbjGNRpe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 13:45:26 -0400
-Received: from mail-io1-f54.google.com (mail-io1-f54.google.com [209.85.166.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CB6B3AB6;
-        Fri, 14 Jul 2023 10:44:52 -0700 (PDT)
-Received: by mail-io1-f54.google.com with SMTP id ca18e2360f4ac-7836164a08aso89046139f.1;
-        Fri, 14 Jul 2023 10:44:52 -0700 (PDT)
+        Fri, 14 Jul 2023 13:45:34 -0400
+Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 952004211;
+        Fri, 14 Jul 2023 10:44:58 -0700 (PDT)
+Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-77a62a84855so87543239f.1;
+        Fri, 14 Jul 2023 10:44:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689356691; x=1691948691;
+        d=1e100.net; s=20221208; t=1689356697; x=1691948697;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=lbZU0XtXzjBRJilDOgmpVrKHFrnYrm31NTuN+kNT6Ao=;
-        b=ILx7/Hcu2VIWm2FGtS9F0xIZQH5gtAU/Ik6adH3ZWZE6lrvhnLMhahBDTQWq/trSWg
-         s6ea95wk7YC1DXN/r065BOEQQw+fA3ff3UsZRGaPNdeaXIOhDeaNyea9zh3mkzuzOWEo
-         I7ECnOc2X2Lc/I4lrP60vlWMH3qAFt8XIMOd/8sdXQFilh6YP8RNKC7kmxEeXqnT6GhX
-         pO921+HkhwwI3JGn7GLZIIqb3kfJPbbALT0yIzcBIf0Bv+VmkpIoW4u/jdXU4RaMnCz+
-         jXhCSzxpXLyhVmTYVL2ofoxJaGB2Cj0Wm8eR/+If5JZIgHuOG8mpHfB8mrqDPywvS2yB
-         8v5A==
-X-Gm-Message-State: ABy/qLbMFxdQ9y90zbNC/1peaaNaUpMsD1AyFWEIlBC4gP/WEWWLjidr
-        aIkCN56th7SRKMDqdt8c6w==
-X-Google-Smtp-Source: APBJJlEneyYfkFVpPFyvX92A6HKtgdIQ1HejXqIhAvVOgzLjJuL+rrrd6jC8t5f8VdpG+Ms7XluKwg==
-X-Received: by 2002:a5e:a705:0:b0:786:e669:3059 with SMTP id b5-20020a5ea705000000b00786e6693059mr6292798iod.6.1689356691575;
-        Fri, 14 Jul 2023 10:44:51 -0700 (PDT)
+        bh=PqfHU9/jof2n+eltFOXNaUlea7YTW9U5AL0XDRpcvbQ=;
+        b=DSKpWn5A6mtOjq7RVrcNMIjIRYLeABfPuf3q0vX4fGaPKhUKNw30VLti00uShyFPFo
+         juAqumcRrT0/2rBi8TeZM70Gi59ar7NnH+AtNrlBWhsPhv5NjkQfiqAT5FVZ6o2o5V45
+         4S+QwZgRVvnt4YojSp+9dTaGwiZ0Mv6C+dAvm+yzFgUNQBi2SN3I3BfLoxVAGNGPGM20
+         6wKqk0a0HjUw9WUyuTwUB1DoJeN7Vj897g34NW84QsbZax9HqPeeZXdqhML9rVZM5Z9T
+         zXLqoBNd9isMpeqBHXjpwQbAd71N9+fV44rExftJyQDe5WhYIDLTB7iVSq573gMzkfQ6
+         P8IA==
+X-Gm-Message-State: ABy/qLb9F+Jt8Mm0Ciy/1tmMuxNTxugl/E4vlkA3fj0t5fadq+HNQA6B
+        yfPc0McC9EU4DSorrk3B1Q==
+X-Google-Smtp-Source: APBJJlGqidc7FR4pp1OFipkVAh6jg4XeFaJZWlf6SWayCHN6GNVV5PeDvJ4WqDNSobo6mLD6zaMjDg==
+X-Received: by 2002:a6b:760e:0:b0:787:f94:5133 with SMTP id g14-20020a6b760e000000b007870f945133mr4908622iom.2.1689356697247;
+        Fri, 14 Jul 2023 10:44:57 -0700 (PDT)
 Received: from robh_at_kernel.org ([64.188.179.250])
-        by smtp.gmail.com with ESMTPSA id q3-20020a6b7103000000b00786ff73252bsm2805680iog.10.2023.07.14.10.44.49
+        by smtp.gmail.com with ESMTPSA id c4-20020a6bec04000000b00786f50d6bf5sm2683997ioh.19.2023.07.14.10.44.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 10:44:50 -0700 (PDT)
-Received: (nullmailer pid 4055095 invoked by uid 1000);
-        Fri, 14 Jul 2023 17:44:48 -0000
+        Fri, 14 Jul 2023 10:44:56 -0700 (PDT)
+Received: (nullmailer pid 4055297 invoked by uid 1000);
+        Fri, 14 Jul 2023 17:44:55 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Sudeep Holla <sudeep.holla@arm.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Michal Simek <michal.simek@amd.com>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, linux-tegra@vger.kernel.org
-Subject: [PATCH] firmware: Explicitly include correct DT includes
-Date:   Fri, 14 Jul 2023 11:44:37 -0600
-Message-Id: <20230714174438.4054854-1-robh@kernel.org>
+To:     Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Vladimir Georgiev <v.georgiev@metrotek.ru>
+Cc:     devicetree@vger.kernel.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] fpga: Explicitly include correct DT includes
+Date:   Fri, 14 Jul 2023 11:44:48 -0600
+Message-Id: <20230714174449.4055156-1-robh@kernel.org>
 X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -89,145 +75,118 @@ explicitly include the correct includes.
 
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- drivers/firmware/arm_scmi/driver.c | 4 ++--
- drivers/firmware/imx/imx-dsp.c     | 1 -
- drivers/firmware/imx/imx-scu-irq.c | 1 +
- drivers/firmware/imx/imx-scu.c     | 1 +
- drivers/firmware/mtk-adsp-ipc.c    | 1 -
- drivers/firmware/raspberrypi.c     | 1 +
- drivers/firmware/scpi_pm_domain.c  | 3 ++-
- drivers/firmware/stratix10-rsu.c   | 1 -
- drivers/firmware/tegra/bpmp.c      | 3 +--
- drivers/firmware/xilinx/zynqmp.c   | 1 +
- 10 files changed, 9 insertions(+), 8 deletions(-)
+ drivers/fpga/altera-fpga2sdram.c      | 2 +-
+ drivers/fpga/altera-freeze-bridge.c   | 7 +++----
+ drivers/fpga/altera-pr-ip-core-plat.c | 3 ++-
+ drivers/fpga/microchip-spi.c          | 2 +-
+ drivers/fpga/of-fpga-region.c         | 2 ++
+ drivers/fpga/stratix10-soc.c          | 1 +
+ 6 files changed, 10 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-index b5957cc12fee..87383c05424b 100644
---- a/drivers/firmware/arm_scmi/driver.c
-+++ b/drivers/firmware/arm_scmi/driver.c
-@@ -28,8 +28,8 @@
- #include <linux/hashtable.h>
+diff --git a/drivers/fpga/altera-fpga2sdram.c b/drivers/fpga/altera-fpga2sdram.c
+index ff3a646fd9e3..1fa2ccc321ab 100644
+--- a/drivers/fpga/altera-fpga2sdram.c
++++ b/drivers/fpga/altera-fpga2sdram.c
+@@ -27,7 +27,7 @@
+ #include <linux/kernel.h>
+ #include <linux/mfd/syscon.h>
+ #include <linux/module.h>
+-#include <linux/of_platform.h>
++#include <linux/of.h>
+ #include <linux/regmap.h>
+ 
+ #define ALT_SDR_CTL_FPGAPORTRST_OFST		0x80
+diff --git a/drivers/fpga/altera-freeze-bridge.c b/drivers/fpga/altera-freeze-bridge.c
+index 445f4b011167..db5977725a51 100644
+--- a/drivers/fpga/altera-freeze-bridge.c
++++ b/drivers/fpga/altera-freeze-bridge.c
+@@ -7,8 +7,9 @@
+ #include <linux/delay.h>
+ #include <linux/io.h>
+ #include <linux/kernel.h>
+-#include <linux/of_device.h>
++#include <linux/mod_devicetable.h>
+ #include <linux/module.h>
++#include <linux/platform_device.h>
+ #include <linux/fpga/fpga-bridge.h>
+ 
+ #define FREEZE_CSR_STATUS_OFFSET		0
+@@ -198,13 +199,11 @@ static const struct fpga_bridge_ops altera_freeze_br_br_ops = {
+ 	.enable_show = altera_freeze_br_enable_show,
+ };
+ 
+-#ifdef CONFIG_OF
+ static const struct of_device_id altera_freeze_br_of_match[] = {
+ 	{ .compatible = "altr,freeze-bridge-controller", },
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(of, altera_freeze_br_of_match);
+-#endif
+ 
+ static int altera_freeze_br_probe(struct platform_device *pdev)
+ {
+@@ -270,7 +269,7 @@ static struct platform_driver altera_freeze_br_driver = {
+ 	.remove = altera_freeze_br_remove,
+ 	.driver = {
+ 		.name	= "altera_freeze_br",
+-		.of_match_table = of_match_ptr(altera_freeze_br_of_match),
++		.of_match_table = altera_freeze_br_of_match,
+ 	},
+ };
+ 
+diff --git a/drivers/fpga/altera-pr-ip-core-plat.c b/drivers/fpga/altera-pr-ip-core-plat.c
+index b008a6b8d2d3..b1244ca182e4 100644
+--- a/drivers/fpga/altera-pr-ip-core-plat.c
++++ b/drivers/fpga/altera-pr-ip-core-plat.c
+@@ -9,7 +9,8 @@
+  */
+ #include <linux/fpga/altera-pr-ip-core.h>
+ #include <linux/module.h>
+-#include <linux/of_device.h>
++#include <linux/mod_devicetable.h>
++#include <linux/platform_device.h>
+ 
+ static int alt_pr_platform_probe(struct platform_device *pdev)
+ {
+diff --git a/drivers/fpga/microchip-spi.c b/drivers/fpga/microchip-spi.c
+index d6070e7f5205..2a82c726d6e5 100644
+--- a/drivers/fpga/microchip-spi.c
++++ b/drivers/fpga/microchip-spi.c
+@@ -8,7 +8,7 @@
+ #include <linux/fpga/fpga-mgr.h>
+ #include <linux/iopoll.h>
+ #include <linux/module.h>
+-#include <linux/of_device.h>
++#include <linux/of.h>
+ #include <linux/spi/spi.h>
+ 
+ #define	MPF_SPI_ISC_ENABLE	0x0B
+diff --git a/drivers/fpga/of-fpga-region.c b/drivers/fpga/of-fpga-region.c
+index ae82532fc127..a6affd83f275 100644
+--- a/drivers/fpga/of-fpga-region.c
++++ b/drivers/fpga/of-fpga-region.c
+@@ -12,7 +12,9 @@
+ #include <linux/kernel.h>
  #include <linux/list.h>
  #include <linux/module.h>
--#include <linux/of_address.h>
--#include <linux/of_device.h>
 +#include <linux/of.h>
+ #include <linux/of_platform.h>
 +#include <linux/platform_device.h>
- #include <linux/processor.h>
- #include <linux/refcount.h>
  #include <linux/slab.h>
-diff --git a/drivers/firmware/imx/imx-dsp.c b/drivers/firmware/imx/imx-dsp.c
-index a6c06d7476c3..3dba590a2a95 100644
---- a/drivers/firmware/imx/imx-dsp.c
-+++ b/drivers/firmware/imx/imx-dsp.c
-@@ -10,7 +10,6 @@
- #include <linux/kernel.h>
- #include <linux/mailbox_client.h>
- #include <linux/module.h>
--#include <linux/of_platform.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
+ #include <linux/spinlock.h>
  
-diff --git a/drivers/firmware/imx/imx-scu-irq.c b/drivers/firmware/imx/imx-scu-irq.c
-index d9dcc20945c6..a149537e0639 100644
---- a/drivers/firmware/imx/imx-scu-irq.c
-+++ b/drivers/firmware/imx/imx-scu-irq.c
+diff --git a/drivers/fpga/stratix10-soc.c b/drivers/fpga/stratix10-soc.c
+index f7f01982a512..cacb9cc5757e 100644
+--- a/drivers/fpga/stratix10-soc.c
++++ b/drivers/fpga/stratix10-soc.c
 @@ -10,6 +10,7 @@
- #include <linux/firmware/imx/ipc.h>
- #include <linux/firmware/imx/sci.h>
- #include <linux/mailbox_client.h>
-+#include <linux/of.h>
- #include <linux/suspend.h>
- 
- #define IMX_SC_IRQ_FUNC_ENABLE	1
-diff --git a/drivers/firmware/imx/imx-scu.c b/drivers/firmware/imx/imx-scu.c
-index 47db49911e7b..2e5914f3a110 100644
---- a/drivers/firmware/imx/imx-scu.c
-+++ b/drivers/firmware/imx/imx-scu.c
-@@ -16,6 +16,7 @@
- #include <linux/mailbox_client.h>
- #include <linux/module.h>
- #include <linux/mutex.h>
-+#include <linux/of.h>
- #include <linux/of_platform.h>
- #include <linux/platform_device.h>
- 
-diff --git a/drivers/firmware/mtk-adsp-ipc.c b/drivers/firmware/mtk-adsp-ipc.c
-index 3c071f814455..85e94ddc7204 100644
---- a/drivers/firmware/mtk-adsp-ipc.c
-+++ b/drivers/firmware/mtk-adsp-ipc.c
-@@ -8,7 +8,6 @@
- #include <linux/kernel.h>
- #include <linux/mailbox_client.h>
- #include <linux/module.h>
--#include <linux/of_platform.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- 
-diff --git a/drivers/firmware/raspberrypi.c b/drivers/firmware/raspberrypi.c
-index c3bc29e0a488..f66efaa5196d 100644
---- a/drivers/firmware/raspberrypi.c
-+++ b/drivers/firmware/raspberrypi.c
-@@ -10,6 +10,7 @@
- #include <linux/kref.h>
- #include <linux/mailbox_client.h>
- #include <linux/module.h>
-+#include <linux/of.h>
- #include <linux/of_platform.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
-diff --git a/drivers/firmware/scpi_pm_domain.c b/drivers/firmware/scpi_pm_domain.c
-index 800673910b51..2231e6dd2070 100644
---- a/drivers/firmware/scpi_pm_domain.c
-+++ b/drivers/firmware/scpi_pm_domain.c
-@@ -8,7 +8,8 @@
- #include <linux/err.h>
- #include <linux/io.h>
- #include <linux/module.h>
--#include <linux/of_platform.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
- #include <linux/pm_domain.h>
- #include <linux/scpi_protocol.h>
- 
-diff --git a/drivers/firmware/stratix10-rsu.c b/drivers/firmware/stratix10-rsu.c
-index e51c95f8d445..ab3074705380 100644
---- a/drivers/firmware/stratix10-rsu.c
-+++ b/drivers/firmware/stratix10-rsu.c
-@@ -10,7 +10,6 @@
- #include <linux/module.h>
- #include <linux/mutex.h>
- #include <linux/of.h>
--#include <linux/of_platform.h>
- #include <linux/platform_device.h>
- #include <linux/firmware/intel/stratix10-svc-client.h>
- #include <linux/string.h>
-diff --git a/drivers/firmware/tegra/bpmp.c b/drivers/firmware/tegra/bpmp.c
-index 17bd3590aaa2..51d062e0c3f1 100644
---- a/drivers/firmware/tegra/bpmp.c
-+++ b/drivers/firmware/tegra/bpmp.c
-@@ -8,8 +8,7 @@
- #include <linux/mailbox_client.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_address.h>
--#include <linux/of_device.h>
-+#include <linux/of_platform.h>
- #include <linux/platform_device.h>
- #include <linux/pm.h>
- #include <linux/semaphore.h>
-diff --git a/drivers/firmware/xilinx/zynqmp.c b/drivers/firmware/xilinx/zynqmp.c
-index f8c4eb2b43f8..eb9ad5ae393f 100644
---- a/drivers/firmware/xilinx/zynqmp.c
-+++ b/drivers/firmware/xilinx/zynqmp.c
-@@ -18,6 +18,7 @@
  #include <linux/module.h>
  #include <linux/of.h>
  #include <linux/of_platform.h>
 +#include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <linux/uaccess.h>
- #include <linux/hashtable.h>
+ 
+ /*
+  * FPGA programming requires a higher level of privilege (EL3), per the SoC
 -- 
 2.40.1
 
