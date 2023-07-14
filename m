@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DEFA75417F
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 19:55:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B623D7541B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 19:55:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236783AbjGNRyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 13:54:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40174 "EHLO
+        id S236669AbjGNRye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 13:54:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236627AbjGNRxn (ORCPT
+        with ESMTP id S236499AbjGNRyB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 13:53:43 -0400
-Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 921823A8F;
-        Fri, 14 Jul 2023 10:53:13 -0700 (PDT)
-Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-7836272f36eso89730839f.1;
-        Fri, 14 Jul 2023 10:53:13 -0700 (PDT)
+        Fri, 14 Jul 2023 13:54:01 -0400
+Received: from mail-il1-f171.google.com (mail-il1-f171.google.com [209.85.166.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 403C2422D;
+        Fri, 14 Jul 2023 10:53:31 -0700 (PDT)
+Received: by mail-il1-f171.google.com with SMTP id e9e14a558f8ab-34637e55d8dso9316605ab.2;
+        Fri, 14 Jul 2023 10:53:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689357131; x=1691949131;
+        d=1e100.net; s=20221208; t=1689357120; x=1691949120;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=KMGMhhBOKvrqzG6Chm/OfzHX4ABY4AlZjMg+WBLKLoE=;
-        b=CnkRYubZ8QS9nYtO5F/7uVbii1E0Py6K9L8H/7jcQbFwF1/1jTXSNiGUydPAwFiLnN
-         zM2ZxYIV+pgocnfjhfrlXNbYGFGJIouZHdlYkQ8LSqEZbxHwisLD0U3RW/tCcKgK/YpM
-         ntMlkFp4iew62EZKHlu784qjdXSxYg36xiLMQP96KC4KYhF7zbA2AsQgEx6PRWG9VEsp
-         gvYO66FxFXFjZu33lCjDFU7K38gb3ddESd9hCHC/6zbXoQP7yZfn5cuumI+vvYWnK49C
-         hI71Qd2C3hI8aKQK2L8XUkq1OmMc07ptxa9MJBmKTXeUUcUl8f2zrQUpgDEbtDS2D/uF
-         3Yug==
-X-Gm-Message-State: ABy/qLYiJRpKgu8JK1vrHt0UxWBo7pSqnYO3s3YlJkihT52JYN+c2OuS
-        4/Fs27U4OmnZe0UmQq8vRw==
-X-Google-Smtp-Source: APBJJlHu3NIRVjvAZ/pfhV3+K4CCko9L3P0cR+tv4RaJ/uCVtQQlLvb7trU3TpwNL6wsZqD4Kgd/Mw==
-X-Received: by 2002:a6b:5b04:0:b0:783:4f8d:4484 with SMTP id v4-20020a6b5b04000000b007834f8d4484mr5964377ioh.2.1689357130978;
-        Fri, 14 Jul 2023 10:52:10 -0700 (PDT)
+        bh=sTzcVBJWZ3FygfO4cCF34p+eZrcFm8fXrcWkJJkRg+4=;
+        b=hz6pMEia4jYQqXWj9MAwlz6fbO70Ka295gSCypy+W9uUrjbUcVU2jmIiJNT7KXiGEq
+         Hc4ESJtKa3izSLY7nutgh19SMB20rMfFzW5U0CiMnRUa6WMyDX2iPNEakwKs1ivbKKgb
+         ClRct5C8YN7PKR3HWODyGmH39ZUzytE7RKFyoK9fB46AJyoloqAP4mJmqtcbyooV/8Vq
+         TwiejJyOgsjU6+0WAUYGXJiDGzzVZ9nQWoT0gjKf1L/Ly98dZy1vYRSADNBeOCWG8e0W
+         pNXNDxx/BHFxyOTSpa8SH7RYoWUVbijDHy0HkYyRI74ChfeRtrxM2kYgsq2s1GgA+NXp
+         a0Eg==
+X-Gm-Message-State: ABy/qLaVlN+8G68JJnaGL0RbPkE2VpFDm68l7YWcc5DRsuE5Gpg/rBsp
+        C/Gi/93RxQI/U1jE8RCwCg==
+X-Google-Smtp-Source: APBJJlGpJgoM+pVfwZn7OJWzOzIWz07PqgfABsQSmT1UwRrTyjoPvoB0A+qUcXRVic/HD+YI9+DzRg==
+X-Received: by 2002:a05:6e02:109:b0:345:ad48:d160 with SMTP id t9-20020a056e02010900b00345ad48d160mr5022494ilm.17.1689357120622;
+        Fri, 14 Jul 2023 10:52:00 -0700 (PDT)
 Received: from robh_at_kernel.org ([64.188.179.250])
-        by smtp.gmail.com with ESMTPSA id a1-20020a5d9581000000b007836a9ca101sm2823607ioo.22.2023.07.14.10.52.09
+        by smtp.gmail.com with ESMTPSA id ed26-20020a056638291a00b0042b451aa95esm2589606jab.150.2023.07.14.10.51.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 10:52:10 -0700 (PDT)
-Received: (nullmailer pid 4067514 invoked by uid 1000);
-        Fri, 14 Jul 2023 17:51:35 -0000
+        Fri, 14 Jul 2023 10:52:00 -0700 (PDT)
+Received: (nullmailer pid 4067752 invoked by uid 1000);
+        Fri, 14 Jul 2023 17:51:40 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>
+To:     Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Daire McNamara <daire.mcnamara@microchip.com>
 Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] soc: imx: Explicitly include correct DT includes
-Date:   Fri, 14 Jul 2023 11:51:33 -0600
-Message-Id: <20230714175134.4067445-1-robh@kernel.org>
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Subject: [PATCH] soc: microchip: Explicitly include correct DT includes
+Date:   Fri, 14 Jul 2023 11:51:38 -0600
+Message-Id: <20230714175139.4067685-1-robh@kernel.org>
 X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -76,80 +76,35 @@ explicitly include the correct includes.
 
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- drivers/soc/imx/gpcv2.c           | 2 +-
- drivers/soc/imx/imx8m-blk-ctrl.c  | 3 ++-
- drivers/soc/imx/imx8mp-blk-ctrl.c | 2 +-
- drivers/soc/imx/imx93-blk-ctrl.c  | 2 +-
- drivers/soc/imx/imx93-pd.c        | 2 +-
- 5 files changed, 6 insertions(+), 5 deletions(-)
+ drivers/soc/atmel/sfr.c                     | 1 -
+ drivers/soc/microchip/mpfs-sys-controller.c | 2 +-
+ 2 files changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/soc/imx/gpcv2.c b/drivers/soc/imx/gpcv2.c
-index 4b3300b090a8..fbd3d92f8cd8 100644
---- a/drivers/soc/imx/gpcv2.c
-+++ b/drivers/soc/imx/gpcv2.c
-@@ -9,7 +9,7 @@
-  */
+diff --git a/drivers/soc/atmel/sfr.c b/drivers/soc/atmel/sfr.c
+index 0525eef49d1a..cc94ca1b494c 100644
+--- a/drivers/soc/atmel/sfr.c
++++ b/drivers/soc/atmel/sfr.c
+@@ -10,7 +10,6 @@
+ #include <linux/nvmem-provider.h>
+ #include <linux/random.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/platform_device.h>
+ #include <linux/regmap.h>
  
- #include <linux/clk.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/pm_domain.h>
- #include <linux/pm_runtime.h>
-diff --git a/drivers/soc/imx/imx8m-blk-ctrl.c b/drivers/soc/imx/imx8m-blk-ctrl.c
-index afbca0d48c14..cc5ef6e2f0a8 100644
---- a/drivers/soc/imx/imx8m-blk-ctrl.c
-+++ b/drivers/soc/imx/imx8m-blk-ctrl.c
-@@ -8,7 +8,8 @@
- #include <linux/device.h>
- #include <linux/interconnect.h>
+diff --git a/drivers/soc/microchip/mpfs-sys-controller.c b/drivers/soc/microchip/mpfs-sys-controller.c
+index 216d9f4ea0ce..fbcd5fd24d7c 100644
+--- a/drivers/soc/microchip/mpfs-sys-controller.c
++++ b/drivers/soc/microchip/mpfs-sys-controller.c
+@@ -13,7 +13,7 @@
  #include <linux/module.h>
--#include <linux/of_device.h>
+ #include <linux/jiffies.h>
+ #include <linux/interrupt.h>
+-#include <linux/of_platform.h>
 +#include <linux/of.h>
-+#include <linux/of_platform.h>
+ #include <linux/mailbox_client.h>
  #include <linux/platform_device.h>
- #include <linux/pm_domain.h>
- #include <linux/pm_runtime.h>
-diff --git a/drivers/soc/imx/imx8mp-blk-ctrl.c b/drivers/soc/imx/imx8mp-blk-ctrl.c
-index 870aecc0202a..5a9f5ece43d9 100644
---- a/drivers/soc/imx/imx8mp-blk-ctrl.c
-+++ b/drivers/soc/imx/imx8mp-blk-ctrl.c
-@@ -10,7 +10,7 @@
- #include <linux/device.h>
- #include <linux/interconnect.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/pm_domain.h>
- #include <linux/pm_runtime.h>
-diff --git a/drivers/soc/imx/imx93-blk-ctrl.c b/drivers/soc/imx/imx93-blk-ctrl.c
-index 2c600329436c..a734889b67ce 100644
---- a/drivers/soc/imx/imx93-blk-ctrl.c
-+++ b/drivers/soc/imx/imx93-blk-ctrl.c
-@@ -6,7 +6,7 @@
- #include <linux/clk.h>
- #include <linux/device.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/pm_domain.h>
- #include <linux/pm_runtime.h>
-diff --git a/drivers/soc/imx/imx93-pd.c b/drivers/soc/imx/imx93-pd.c
-index 832deeed8fd6..b9e60d136875 100644
---- a/drivers/soc/imx/imx93-pd.c
-+++ b/drivers/soc/imx/imx93-pd.c
-@@ -5,8 +5,8 @@
- 
- #include <linux/clk.h>
- #include <linux/delay.h>
--#include <linux/of_device.h>
- #include <linux/iopoll.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/pm_domain.h>
+ #include <soc/microchip/mpfs.h>
 -- 
 2.40.1
 
