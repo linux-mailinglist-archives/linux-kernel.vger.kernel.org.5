@@ -2,104 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8C597536D2
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:44:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A06747536D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:44:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235642AbjGNJoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 05:44:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37230 "EHLO
+        id S235699AbjGNJoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 05:44:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235522AbjGNJoL (ORCPT
+        with ESMTP id S235713AbjGNJoU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 05:44:11 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72DC710EA
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 02:44:10 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-57325434999so14417177b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 02:44:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689327849; x=1691919849;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FQulSBzim5w5xsl3zfUAjtDmEmIk8kUKUMOuRvJ6ZCs=;
-        b=DQpb4IPB+IEOr1+4EUQM2FmUBJw5xH7JV8ghu2wughEM1EpQiUxBQZ5zjqURzdywtg
-         tTQXaa6b3GEFmZFpbMJYgihDJYXbins0NvNDWbPyFwdUePob9m927o2lx2j5Ob/BPSjv
-         nMhdBDga2+kWHumNaj3xqYgTl03NBH5mjktuZ1BEs/tzloL8RpHiHHvIeUy1SM2Vg7id
-         idOuWKpM9chwHBoRaScpj896NxhPaVjKVYqn/QBLqdqba0Gepx1461g1W/WXcNiXslMI
-         llxiWcfZ8KGZXYjvApsptsIedYoxGdrh6HHfWmq+4cO7S6OLBmSHb4aH6QLdQXYrBAnb
-         By3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689327849; x=1691919849;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FQulSBzim5w5xsl3zfUAjtDmEmIk8kUKUMOuRvJ6ZCs=;
-        b=Bbl2yId+x1/De/CQoNn7pfyNUMpHCJvkYaOil56lb9rc73mH/QcB7my8SFhAxM0DYJ
-         HVYoB0qvdBZ3WhGTztiMryDTthzAjjuv6c3N3hrzqELl216eHdBAaejZKVzcP607cfoo
-         Zy33q1KPED/3P+VmO3m/+UlcosqWpVf+kxseMW/ENYmP24D5A7m7c2txc3LAV6XiWVNA
-         UoANznfcF+RoRhkwWPUIoAwl4371i9P2Yl9TljsstRq9F3wogA8EalInoNgJ11iiFREd
-         W2nzJW/Z2JX+tNCyNWHtaTURZ59fLHqd9lET8mGh7sJC1mCTHVcwX7/mSoj07alj4kuT
-         FY/g==
-X-Gm-Message-State: ABy/qLbZLVsOa7mnFpeRXr0lFgy/MOpjCLXh7hjIrMwQWnOXiU8uH0D4
-        OBqnRGdcZ1JvlpHZ05SbHn1zPWSFAU+UCTY=
-X-Google-Smtp-Source: APBJJlFkOynd+DZBQ11JhDvwFzakuB2FgEeg8+O6Um/oHo+JsjuP3TedLZMe2EG99Wz7Gm+tf4lfq7SZ9BPMf/c=
-X-Received: from aliceryhl.c.googlers.com ([fda3:e722:ac3:cc00:31:98fb:c0a8:6c8])
- (user=aliceryhl job=sendgmr) by 2002:a81:b3c4:0:b0:576:de5f:95e1 with SMTP id
- r187-20020a81b3c4000000b00576de5f95e1mr27471ywh.1.1689327849767; Fri, 14 Jul
- 2023 02:44:09 -0700 (PDT)
-Date:   Fri, 14 Jul 2023 09:44:07 +0000
-In-Reply-To: <20230714-zeroed-v1-1-494d6820d61b@asahilina.net>
-Mime-Version: 1.0
-References: <20230714-zeroed-v1-1-494d6820d61b@asahilina.net>
-X-Mailer: git-send-email 2.41.0.255.g8b1d071c50-goog
-Message-ID: <20230714094407.2188895-1-aliceryhl@google.com>
-Subject: Re: [PATCH] rust: init: Implement Zeroable::zeroed()
-From:   Alice Ryhl <aliceryhl@google.com>
-To:     lina@asahilina.net
-Cc:     alex.gaynor@gmail.com, benno.lossin@proton.me,
-        bjorn3_gh@protonmail.com, boqun.feng@gmail.com, gary@garyguo.net,
-        linux-kernel@vger.kernel.org, ojeda@kernel.org,
-        rust-for-linux@vger.kernel.org, wedsonaf@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Fri, 14 Jul 2023 05:44:20 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CFFBA1BD4;
+        Fri, 14 Jul 2023 02:44:17 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8FB7E1570;
+        Fri, 14 Jul 2023 02:44:59 -0700 (PDT)
+Received: from [10.57.76.27] (unknown [10.57.76.27])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9CBF23F740;
+        Fri, 14 Jul 2023 02:44:15 -0700 (PDT)
+Message-ID: <7935c31a-6c47-95c8-d6bd-176b81046699@arm.com>
+Date:   Fri, 14 Jul 2023 10:44:14 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH v1 2/9] selftests/mm: Give scripts execute permission
+To:     SeongJae Park <sj@kernel.org>, David Hildenbrand <david@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Mark Brown <broonie@kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Florent Revest <revest@chromium.org>,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
+References: <20230713173237.66285-1-sj@kernel.org>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20230713173237.66285-1-sj@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Asahi Lina <lina@asahilina.net> writes:
-> +pub unsafe trait Zeroable: core::marker::Sized {
-> +    /// Create a new zeroed T.
-> +    ///
-> +    /// Directly returns a zeroed T, analogous to Default::default().
-> +    fn zeroed() -> Self {
-> +        unsafe { core::mem::zeroed() }
-> +    }
-> +}
+On 13/07/2023 18:32, SeongJae Park wrote:
+> On Thu, 13 Jul 2023 16:39:33 +0200 David Hildenbrand <david@redhat.com> wrote:
+> 
+>> On 13.07.23 15:54, Ryan Roberts wrote:
+>>> When run under run_vmtests.sh, test scripts were failing to run with
+>>> "permission denied" due to the scripts not being executable.
+>>>
+>>> It is also annoying not to be able to directly invoke run_vmtests.sh,
+>>> which is solved by giving also it the execute permission.
+>>>
+>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+>>> ---
+>>>   tools/testing/selftests/mm/charge_reserved_hugetlb.sh  | 0
+>>>   tools/testing/selftests/mm/check_config.sh             | 0
+>>>   tools/testing/selftests/mm/hugetlb_reparenting_test.sh | 0
+>>>   tools/testing/selftests/mm/run_vmtests.sh              | 0
+>>>   tools/testing/selftests/mm/test_hmm.sh                 | 0
+>>>   tools/testing/selftests/mm/test_vmalloc.sh             | 0
+>>>   tools/testing/selftests/mm/va_high_addr_switch.sh      | 0
+>>>   tools/testing/selftests/mm/write_hugetlb_memory.sh     | 0
+>>>   8 files changed, 0 insertions(+), 0 deletions(-)
+>>>   mode change 100644 => 100755 tools/testing/selftests/mm/charge_reserved_hugetlb.sh
+>>>   mode change 100644 => 100755 tools/testing/selftests/mm/check_config.sh
+>>>   mode change 100644 => 100755 tools/testing/selftests/mm/hugetlb_reparenting_test.sh
+>>>   mode change 100644 => 100755 tools/testing/selftests/mm/run_vmtests.sh
+>>>   mode change 100644 => 100755 tools/testing/selftests/mm/test_hmm.sh
+>>>   mode change 100644 => 100755 tools/testing/selftests/mm/test_vmalloc.sh
+>>>   mode change 100644 => 100755 tools/testing/selftests/mm/va_high_addr_switch.sh
+>>>   mode change 100644 => 100755 tools/testing/selftests/mm/write_hugetlb_memory.sh
+>>>
+>>> diff --git a/tools/testing/selftests/mm/charge_reserved_hugetlb.sh b/tools/testing/selftests/mm/charge_reserved_hugetlb.sh
+>>> old mode 100644
+>>> new mode 100755
+>>> diff --git a/tools/testing/selftests/mm/check_config.sh b/tools/testing/selftests/mm/check_config.sh
+>>> old mode 100644
+>>> new mode 100755
+>>> diff --git a/tools/testing/selftests/mm/hugetlb_reparenting_test.sh b/tools/testing/selftests/mm/hugetlb_reparenting_test.sh
+>>> old mode 100644
+>>> new mode 100755
+>>> diff --git a/tools/testing/selftests/mm/run_vmtests.sh b/tools/testing/selftests/mm/run_vmtests.sh
+>>> old mode 100644
+>>> new mode 100755
+>>> diff --git a/tools/testing/selftests/mm/test_hmm.sh b/tools/testing/selftests/mm/test_hmm.sh
+>>> old mode 100644
+>>> new mode 100755
+>>> diff --git a/tools/testing/selftests/mm/test_vmalloc.sh b/tools/testing/selftests/mm/test_vmalloc.sh
+>>> old mode 100644
+>>> new mode 100755
+>>> diff --git a/tools/testing/selftests/mm/va_high_addr_switch.sh b/tools/testing/selftests/mm/va_high_addr_switch.sh
+>>> old mode 100644
+>>> new mode 100755
+>>> diff --git a/tools/testing/selftests/mm/write_hugetlb_memory.sh b/tools/testing/selftests/mm/write_hugetlb_memory.sh
+>>> old mode 100644
+>>> new mode 100755
+>>
+>> Sounds reasonable to me.
+>>
+>> Probably due to:
+>>
+>> commit baa489fabd01596d5426d6e112b34ba5fb59ab82
+>> Author: SeongJae Park <sj@kernel.org>
+>> Date:   Tue Jan 3 18:07:53 2023 +0000
+>>
+>>      selftests/vm: rename selftests/vm to selftests/mm
+>>      
+>>      Rename selftets/vm to selftests/mm for being more consistent with the
+>>      code, documentation, and tools directories, and won't be confused with
+>>      virtual machines.
+>>
+>>
+>> and indeed, it contains
+>>
+>> diff --git a/tools/testing/selftests/vm/run_vmtests.sh b/tools/testing/selftests/mm/run_vmtests.sh
+>> old mode 100755
+>> new mode 100644
+>> similarity index 100%
+>> rename from tools/testing/selftests/vm/run_vmtests.sh
+>> rename to tools/testing/selftests/mm/run_vmtests.sh
+> 
+> Thank you for tracking this and kindly Cc-ing me!  I'd like to clarify a little
+> bit more, though.  The permission change has made by the commit as you found.
+> Nevertheless, the submitted version[1] of the patch didn't change the
+> permission.  I guess the change was made while managing it via some file
+> permission unsupported patches management tool.
+> 
+> I had a similar issue with DAMON selftest and sent a patch restoring the
+> permission.  Greg suggested me to update the framework instead, to support such
+> management tool[2], so I made it[3].  It recently also merged into 5.15.y for
+> DAMON selftests[4].
+> 
+> I have no strong opinion about whether we need to keep the permission or it's
+> good to have no execute permission since kselftest framework supports it.  I
+> just wanted to clarify the events I've shown.  Please correct me if I missed or
+> wrong something.  Cc-ing Greg, since he might have an opinion.
 
-I don't think this trait needs to require `Sized`. How about the
-following alternate implementation?
+Thanks for the detailed explanation. Are you effectively saying this patch will
+turn into a no-op once its been munged through the various patch management
+tools? That's disappointing because it's a pain to have to invoke everything
+though bash explicitly. Many other scripts manage to have the correct execute
+permission set (see everything in ./scripts for example).
 
-pub unsafe trait Zeroable {
-    /// Create a new zeroed T.
-    ///
-    /// Directly returns a zeroed T, analogous to Default::default().
-    fn zeroed() -> Self
-    where
-        Self: core::marker::Sized,
-    {
-        unsafe { core::mem::zeroed() }
-    }
-}
+Personally I'd rather keep this patch and try rather than proactively do a work
+around.
 
-Then types like [T] can also implement Zeroable when T does.
 
-If you make the above change, then you may add my
-  Reviewed-by: Alice Ryhl <aliceryhl@google.com>
-
-Alice
+> 
+> [1] https://lore.kernel.org/all/20230103180754.129637-5-sj@kernel.org/
+> [2] https://lore.kernel.org/mm-commits/YRJisBs9AunccCD4@kroah.com/
+> [3] https://lore.kernel.org/all/20210810164534.25902-1-sj38.park@gmail.com/
+> [4] https://lore.kernel.org/stable/2023042743-cheesy-parasitic-206d@gregkh/
+> 
+> 
+> Thanks,
+> SJ
+> 
+>>
+>>
+>> Reviewed-by: David Hildenbrand <david@redhat.com>
+>>
+>> -- 
+>> Cheers,
+>>
+>> David / dhildenb
+>>
+>>
+>>
 
