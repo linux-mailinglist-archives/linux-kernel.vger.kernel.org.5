@@ -2,174 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20EDB753E81
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 17:11:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E35CE753E83
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 17:11:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236347AbjGNPLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 11:11:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43256 "EHLO
+        id S236299AbjGNPLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 11:11:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236344AbjGNPLU (ORCPT
+        with ESMTP id S236349AbjGNPLd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 11:11:20 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2F5B2735;
-        Fri, 14 Jul 2023 08:11:18 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3CEAC61D43;
-        Fri, 14 Jul 2023 15:11:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07830C433C7;
-        Fri, 14 Jul 2023 15:11:15 +0000 (UTC)
-Date:   Fri, 14 Jul 2023 11:11:13 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Ajay Kaher <akaher@vmware.com>
-Cc:     shuah@kernel.org, mhiramat@kernel.org, chinglinyu@google.com,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, lkp@intel.com,
-        namit@vmware.com, oe-lkp@lists.linux.dev, amakhalov@vmware.com,
-        er.ajay.kaher@gmail.com, srivatsa@csail.mit.edu, tkundu@vmware.com,
-        vsirnapalli@vmware.com
-Subject: Re: [PATCH v4 02/10] tracefs: Rename some tracefs function
-Message-ID: <20230714111113.1584f2fb@gandalf.local.home>
-In-Reply-To: <1689248004-8158-3-git-send-email-akaher@vmware.com>
-References: <1689248004-8158-1-git-send-email-akaher@vmware.com>
-        <1689248004-8158-3-git-send-email-akaher@vmware.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Fri, 14 Jul 2023 11:11:33 -0400
+Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com [209.85.210.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A91BB30D8
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 08:11:32 -0700 (PDT)
+Received: by mail-ot1-f71.google.com with SMTP id 46e09a7af769-6b86c0d3b5eso3248290a34.3
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 08:11:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689347492; x=1691939492;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CCLOxUsPk9gij7lrd4gl3ju7/pLr9suuyXvJ5OtLAUQ=;
+        b=VnWPTfNAYcuYIr8jm6puOP13zh0IaQZPqfvKEn4OZSUm8HGksxrt7E2M2PN7y5jmK7
+         5leDQBl2DDt3y/kRyWG0mzQH8q4kafqYRQ0kkaE3Hu3CwneynzKNMojEMvw/0Atz0N1c
+         FFIGzXsqFQ+23ajpDYf0P8s+NQWwfEHBNPwpDGCGhbT3QcJ2X8ySLrzOY6EhGeDba35w
+         nS5qvr/ZlsgyLLTqikPAOaGI1Ssr8OABqG5zgqdJD0YSdLAAsI3Hf4s1cArIliOjtjtj
+         Wpqs877FO1YKW1MWhsLde4Tg8XsdW/CAR3fFCrnslmRxJ1stk5z8sV+jOy96uiQX+ivT
+         aQQw==
+X-Gm-Message-State: ABy/qLY7fTc2xn9+vQFuflBUWfvlMXy6gQ3sov51HgIbIcXpvYHJsbOu
+        yuowFOB6wnrVXwnpPSDIAgnojnuL+ZZYkZB9M3L5Fm3ubdpm
+X-Google-Smtp-Source: APBJJlE6TyCcdhAUrsmWbb8fvxPE8mWG/ukHNruZoQLsPGdacASBBgg9EA/N2Q99G1L6A2y+bsP1WGM7Wx8B6uHLvOQRaJVtfrE4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a9d:7488:0:b0:6b8:8894:e4ac with SMTP id
+ t8-20020a9d7488000000b006b88894e4acmr4268213otk.3.1689347492003; Fri, 14 Jul
+ 2023 08:11:32 -0700 (PDT)
+Date:   Fri, 14 Jul 2023 08:11:31 -0700
+In-Reply-To: <0000000000005921ef05ffddc3b7@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000029c576060073dd62@google.com>
+Subject: Re: [syzbot] [f2fs?] possible deadlock in f2fs_getxattr
+From:   syzbot <syzbot+e5600587fa9cbf8e3826@syzkaller.appspotmail.com>
+To:     chao@kernel.org, jaegeuk@kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+syzbot has bisected this issue to:
 
-Some nits.
+commit 5eda1ad1aaffdfebdecf7a164e586060a210f74f
+Author: Jaegeuk Kim <jaegeuk@kernel.org>
+Date:   Wed Jun 28 08:00:56 2023 +0000
 
-First, the subject should be:
+    f2fs: fix deadlock in i_xattr_sem and inode page lock
 
- tracefs: Rename and export some tracefs functions
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1177322aa80000
+start commit:   3f01e9fed845 Merge tag 'linux-watchdog-6.5-rc2' of git://w..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=1377322aa80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1577322aa80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=29fd3392a08741ef
+dashboard link: https://syzkaller.appspot.com/bug?extid=e5600587fa9cbf8e3826
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1336f364a80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=130a365aa80000
 
-Yes, we should export them here too, even though they are not used yet.
+Reported-by: syzbot+e5600587fa9cbf8e3826@syzkaller.appspotmail.com
+Fixes: 5eda1ad1aaff ("f2fs: fix deadlock in i_xattr_sem and inode page lock")
 
-On Thu, 13 Jul 2023 17:03:16 +0530
-Ajay Kaher <akaher@vmware.com> wrote:
-
-> Renaming following functions as these would require by eventfs
-> as well:
-
-I would have this state:
-
-Export a few tracefs functions that will be needed by the eventfs dynamic
-file system. Rename them to start with "tracefs_" to keep with the name
-space.
-
-> 
-> start_creating -> tracefs_start_creating
-> failed_creating -> tracefs_failed_creating
-> end_creating -> tracefs_end_creating
-> 
-> Signed-off-by: Ajay Kaher <akaher@vmware.com>
-> Co-developed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> Tested-by: Ching-lin Yu <chinglinyu@google.com>
-> ---
->  fs/tracefs/inode.c | 18 +++++++++---------
->  1 file changed, 9 insertions(+), 9 deletions(-)
-> 
-> diff --git a/fs/tracefs/inode.c b/fs/tracefs/inode.c
-> index 57ac8aa4a724..b0348efc0238 100644
-> --- a/fs/tracefs/inode.c
-> +++ b/fs/tracefs/inode.c
-> @@ -399,7 +399,7 @@ static struct file_system_type trace_fs_type = {
->  };
->  MODULE_ALIAS_FS("tracefs");
->  
-> -static struct dentry *start_creating(const char *name, struct dentry *parent)
-> +static struct dentry *tracefs_start_creating(const char *name, struct dentry *parent)
-
-Remove the static, and create the fs/tracefs/internal.h file in this patch.
-
--- Steve
-
-
->  {
->  	struct dentry *dentry;
->  	int error;
-> @@ -437,7 +437,7 @@ static struct dentry *start_creating(const char *name, struct dentry *parent)
->  	return dentry;
->  }
->  
-> -static struct dentry *failed_creating(struct dentry *dentry)
-> +static struct dentry *tracefs_failed_creating(struct dentry *dentry)
->  {
->  	inode_unlock(d_inode(dentry->d_parent));
->  	dput(dentry);
-> @@ -445,7 +445,7 @@ static struct dentry *failed_creating(struct dentry *dentry)
->  	return NULL;
->  }
->  
-> -static struct dentry *end_creating(struct dentry *dentry)
-> +static struct dentry *tracefs_end_creating(struct dentry *dentry)
->  {
->  	inode_unlock(d_inode(dentry->d_parent));
->  	return dentry;
-> @@ -490,14 +490,14 @@ struct dentry *tracefs_create_file(const char *name, umode_t mode,
->  	if (!(mode & S_IFMT))
->  		mode |= S_IFREG;
->  	BUG_ON(!S_ISREG(mode));
-> -	dentry = start_creating(name, parent);
-> +	dentry = tracefs_start_creating(name, parent);
->  
->  	if (IS_ERR(dentry))
->  		return NULL;
->  
->  	inode = tracefs_get_inode(dentry->d_sb);
->  	if (unlikely(!inode))
-> -		return failed_creating(dentry);
-> +		return tracefs_failed_creating(dentry);
->  
->  	inode->i_mode = mode;
->  	inode->i_fop = fops ? fops : &tracefs_file_operations;
-> @@ -506,13 +506,13 @@ struct dentry *tracefs_create_file(const char *name, umode_t mode,
->  	inode->i_gid = d_inode(dentry->d_parent)->i_gid;
->  	d_instantiate(dentry, inode);
->  	fsnotify_create(d_inode(dentry->d_parent), dentry);
-> -	return end_creating(dentry);
-> +	return tracefs_end_creating(dentry);
->  }
->  
->  static struct dentry *__create_dir(const char *name, struct dentry *parent,
->  				   const struct inode_operations *ops)
->  {
-> -	struct dentry *dentry = start_creating(name, parent);
-> +	struct dentry *dentry = tracefs_start_creating(name, parent);
->  	struct inode *inode;
->  
->  	if (IS_ERR(dentry))
-> @@ -520,7 +520,7 @@ static struct dentry *__create_dir(const char *name, struct dentry *parent,
->  
->  	inode = tracefs_get_inode(dentry->d_sb);
->  	if (unlikely(!inode))
-> -		return failed_creating(dentry);
-> +		return tracefs_failed_creating(dentry);
->  
->  	/* Do not set bits for OTH */
->  	inode->i_mode = S_IFDIR | S_IRWXU | S_IRUSR| S_IRGRP | S_IXUSR | S_IXGRP;
-> @@ -534,7 +534,7 @@ static struct dentry *__create_dir(const char *name, struct dentry *parent,
->  	d_instantiate(dentry, inode);
->  	inc_nlink(d_inode(dentry->d_parent));
->  	fsnotify_mkdir(d_inode(dentry->d_parent), dentry);
-> -	return end_creating(dentry);
-> +	return tracefs_end_creating(dentry);
->  }
->  
->  /**
-
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
