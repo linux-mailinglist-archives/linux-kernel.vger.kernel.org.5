@@ -2,59 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61159753159
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 07:37:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E57D753166
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 07:42:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234567AbjGNFhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 01:37:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35494 "EHLO
+        id S234787AbjGNFmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 01:42:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233638AbjGNFh3 (ORCPT
+        with ESMTP id S229574AbjGNFmC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 01:37:29 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99B5C2738
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 22:37:26 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R2KxH5cp1zBR9sN
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 13:37:23 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689313043; x=1691905044; bh=8BNA5nZF9onPgOovnxahcOKlTIQ
-        u2zsyuHGyYIxstW8=; b=PRbyWFPip4xtVRJBxFYm4+QckfVQSA38NjNC01+WYzQ
-        FtKDrVu2Nf8BsZCABcoJ1AuqNdxf/Xcsdy8qZDRe7oaFR9p7pzTpSi0KbK1rgpOW
-        PK6eYTbGD5zdvnkCs5474PUWMcAwSuaq7CHBcUwuYCj1z8cWVS9T3MQSU4PKIPYN
-        enJfNAljYodSDLsmZgSLk3UwMwSFQuBaJXYL52ju7qMNkW5cbvQAUqwhKXStTuGi
-        HtkZ0pXPcIZnENwnOVVg7pJb9ckIS2aFTbq+6cTNLyKsj6mzGjK+DcSLBLXNrBFh
-        XkzL0SAvWz6WkXYu7M1uDdA4pHbqZgFAHIMVjkrMhdQ==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 1llbn-__IcmC for <linux-kernel@vger.kernel.org>;
-        Fri, 14 Jul 2023 13:37:23 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R2KxH3Lr1zBR5C9;
-        Fri, 14 Jul 2023 13:37:23 +0800 (CST)
+        Fri, 14 Jul 2023 01:42:02 -0400
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 132DF211C;
+        Thu, 13 Jul 2023 22:41:58 -0700 (PDT)
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-98377c5d53eso211224666b.0;
+        Thu, 13 Jul 2023 22:41:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689313316; x=1691905316;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GlZFb68wNBynoMUUWnbthgOtvqoVTjliLFFvPyquQvc=;
+        b=CFkh7R00Ixw1W5er527PSsd815EGyUiP/63Ymlo9qSSkkF72+EULXet3iTHIdpAOaG
+         QQQcbsn4+YMdS1VVJhi1Zn327yYJumPQlONN0xmxO6CF9OCj0nnDKVNczBRUDb6Mb6JB
+         ysOImWj+h8dW4CbvV0kufXiGy3j4sOnD9Jg74js8cVBkfU+PyvPHejXq0NG9p5EZyRYh
+         FQZM5e3vJN3h8iBRe0zdLytziZsYAdY8PNB++KML47NjA4BrIKmSsSTMZh/qMFBb04af
+         SZOyCAUaRwjH80ndwV7dZrBqHtsQyr6lWJN6JQOFu7KtsKur8i/J3Yn3p5KUdU0wFV8A
+         piEA==
+X-Gm-Message-State: ABy/qLai57EycDEnM9yeMCVzqmGxG9i71UO/phTAMebZkvr0qtZi/YMp
+        2vkrsdXpS4XZuXFb2FbBlIST/6NiBME=
+X-Google-Smtp-Source: APBJJlGQ0OGERa3wrZmlcwpl3P1BJmz5mDsbfmNWdhgV9dRm3nwGTNOsaO5U1B9SBhMRTeG0zEHICw==
+X-Received: by 2002:a17:906:20dd:b0:993:f11a:fe42 with SMTP id c29-20020a17090620dd00b00993f11afe42mr3538831ejc.6.1689313316059;
+        Thu, 13 Jul 2023 22:41:56 -0700 (PDT)
+Received: from [192.168.1.58] (185-219-167-24-static.vivo.cz. [185.219.167.24])
+        by smtp.gmail.com with ESMTPSA id n11-20020a1709061d0b00b00982cfe1fe5dsm4902403ejh.65.2023.07.13.22.41.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 Jul 2023 22:41:55 -0700 (PDT)
+Message-ID: <1bc521b4-5425-38bf-9600-a6efe11a2549@kernel.org>
+Date:   Fri, 14 Jul 2023 07:41:54 +0200
 MIME-Version: 1.0
-Date:   Fri, 14 Jul 2023 13:37:23 +0800
-From:   chenqingyun001@208suo.com
-To:     catalin.marinas@arm.com, will@kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: extable:"(foo*)" should be "(foo *)"
-In-Reply-To: <tencent_1DFBBBDD0C944F003E04996E11065CA32906@qq.com>
-References: <tencent_1DFBBBDD0C944F003E04996E11065CA32906@qq.com>
-User-Agent: Roundcube Webmail
-Message-ID: <74dd71ee7fa975cec2927d291936207b@208suo.com>
-X-Sender: chenqingyun001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Content-Language: en-US
+To:     Markus Elfring <Markus.Elfring@web.de>,
+        Minjie Du <duminjie@vivo.com>, opensource.kernel@vivo.com,
+        linux-wireless@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Kalle Valo <kvalo@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Nick Kossifidis <mickflemm@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+References: <20230713082433.11485-1-duminjie@vivo.com>
+ <288c6005-7d0b-3eb0-514d-e2ac09ae6b00@web.de>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Subject: Re: [PATCH v4] wifi: ath5k: remove parameter check in
+ ath5k_debug_init_device()
+In-Reply-To: <288c6005-7d0b-3eb0-514d-e2ac09ae6b00@web.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,28 +70,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The variable name of the needle type is preceded
-by parentheses without a space between the
-parentheses and the asterisk. This will make
-the code look unclear, and may conflict with
-some tools or compilers.
+On 13. 07. 23, 14:30, Markus Elfring wrote:
+> Please apply the subject “[PATCH v5] wifi: ath5k: Remove an error check in ath5k_debug_init_device()”.
 
-Signed-off-by: Qingyun Chen <chenqingyun001@208suo.com>
----
-  arch/arm64/mm/extable.c | 2 +-
-  1 file changed, 1 insertion(+), 1 deletion(-)
+FWIW I personally prefer the European style: lowercase after colon. So I 
+would not suggest anyone to use one or the other.
 
-diff --git a/arch/arm64/mm/extable.c b/arch/arm64/mm/extable.c
-index 228d681a8715..c89a52870ca9 100644
---- a/arch/arm64/mm/extable.c
-+++ b/arch/arm64/mm/extable.c
-@@ -42,7 +42,7 @@ ex_handler_load_unaligned_zeropad(const struct 
-exception_table_entry *ex,
-      offset = addr & 0x7UL;
-      addr &= ~0x7UL;
+-- 
+js
+suse labs
 
--    data = *(unsigned long*)addr;
-+    data = *(unsigned long *)addr;
-
-  #ifndef __AARCH64EB__
-      data >>= 8 * offset;
