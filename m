@@ -2,59 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31948754196
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 19:55:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3AB97541F3
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 20:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236644AbjGNRyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 13:54:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40200 "EHLO
+        id S236554AbjGNR7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 13:59:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236560AbjGNRxo (ORCPT
+        with ESMTP id S237052AbjGNR6g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 13:53:44 -0400
-Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69094359F;
-        Fri, 14 Jul 2023 10:53:14 -0700 (PDT)
-Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-7866189cff1so84338539f.0;
-        Fri, 14 Jul 2023 10:53:14 -0700 (PDT)
+        Fri, 14 Jul 2023 13:58:36 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87D053C22;
+        Fri, 14 Jul 2023 10:58:09 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id ca18e2360f4ac-7872d448c5aso90289839f.0;
+        Fri, 14 Jul 2023 10:58:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689357133; x=1691949133;
+        d=1e100.net; s=20221208; t=1689357118; x=1691949118;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=UAZXEC0ZZSTboxvyemEYcLPqrWdEtetoC7pYf3hwIVs=;
-        b=Jg8C/nVKXRZegyDv/44iMu92dvdWE1i+VS1rqaAgoFy7vTXj27lpE1Is0FMxN05EYG
-         78jQmjzUcGqAmTD/39YywefKNKOEm6eRVdsTsptNXFwd5DUrb4EWSVvlt4TfotlluBhA
-         EbgP/95Z5FJbnZs4tLQMakjgpPDeyKl4f3oec8OcUS7zvwOSnmm6eWaJ5KP29yNAyDBA
-         cyISSyB+8ynW78n7fMcHd5H03DUa6Kumb8J2EyAT04GRg7W8NgxN0+MbqJ1+hF26qWPh
-         d/w+rtz/mhHkXlavGYZ3oV6fLLGR/6w0yy+bZB+YfJ4XavdC82YW7cM/1/fcNCLkPLFd
-         g93g==
-X-Gm-Message-State: ABy/qLaqcr7CjrNQTcGOrI+tUQMxh9h5rEHSFbmklMYnEk/9dBh7Ze1e
-        uM+Qwjz5/R9dr2rMT/xE9M3jY4JOTMJM
-X-Google-Smtp-Source: APBJJlE9JcsK12a+nn2E92glV3v0m6kTD9dSy4NFGvaTaUE4vjS3fqBwn27Us4irzM5tFOUlsZVZZQ==
-X-Received: by 2002:a05:6602:2565:b0:783:63d6:4cb with SMTP id dj5-20020a056602256500b0078363d604cbmr5307703iob.14.1689357132908;
-        Fri, 14 Jul 2023 10:52:12 -0700 (PDT)
+        bh=zbnWXAP6JBrW+dHGKwXKkOfj8OfWH0aRyqnE7uTJeWs=;
+        b=aODUPDw0eoHBj18TjlcxSfLEDixS/oBrXQmLWZbYgSdAUTwj747iNumRW2DZMBdnre
+         lmk0zhJBsn6k1yGv2wsa0RYYphWhTX/FSR1ILH5HaDJm6EDchlFV7+rR2UPC1ea7BBvW
+         GG5fLujFPkli2GNhWkkeUC+/nYAgIBJ+QMUch2alUcFSCBeQHFU4idKTPADrELKdQGHL
+         Z7AfUqldhCl2oI8K6i6WjkApmGKC85BeW21bJClaIRnEY4JSsW7qIUrWrgK8hxZrE489
+         7h276ac2YF1Kfe0sP5p3Nb8PTEbYO5Lh8LJY8wUYqx8jBi0o51vO1WS3rM7FogG0S8Gy
+         dXjQ==
+X-Gm-Message-State: ABy/qLYQ/fciCIfMZP9oA9K2kSZP3mXdfiFBAUatnSUAD9ySeWmPYi7/
+        wKp3yAppkYuNyNUR8lRYDw==
+X-Google-Smtp-Source: APBJJlFH2dqRNFNmY4eF86k3IcG5y+s8DPiZ/Ue6nMPz4EC0ut7JoIFqrEm1IKWNxSfwo+867jK3BA==
+X-Received: by 2002:a5e:8b49:0:b0:785:ca70:46a2 with SMTP id z9-20020a5e8b49000000b00785ca7046a2mr6042928iom.4.1689357118670;
+        Fri, 14 Jul 2023 10:51:58 -0700 (PDT)
 Received: from robh_at_kernel.org ([64.188.179.250])
-        by smtp.gmail.com with ESMTPSA id ei2-20020a05663829a200b0042b4b1246cbsm2731387jab.148.2023.07.14.10.52.11
+        by smtp.gmail.com with ESMTPSA id u8-20020a5edd48000000b007862c74cec6sm2797330iop.1.2023.07.14.10.51.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 10:52:12 -0700 (PDT)
-Received: (nullmailer pid 4067193 invoked by uid 1000);
-        Fri, 14 Jul 2023 17:51:29 -0000
+        Fri, 14 Jul 2023 10:51:57 -0700 (PDT)
+Received: (nullmailer pid 4067296 invoked by uid 1000);
+        Fri, 14 Jul 2023 17:51:31 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@aj.id.au>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] soc: aspeed: Explicitly include correct DT includes
-Date:   Fri, 14 Jul 2023 11:51:28 -0600
-Message-Id: <20230714175128.4067138-1-robh@kernel.org>
+To:     =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>
+Cc:     devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] soc: bcm: Explicitly include correct DT includes
+Date:   Fri, 14 Jul 2023 11:51:29 -0600
+Message-Id: <20230714175130.4067236-1-robh@kernel.org>
 X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
         FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -72,51 +75,34 @@ explicitly include the correct includes.
 
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- drivers/soc/aspeed/aspeed-lpc-snoop.c    | 1 -
- drivers/soc/aspeed/aspeed-p2a-ctrl.c     | 2 +-
- drivers/soc/aspeed/aspeed-uart-routing.c | 3 +--
- 3 files changed, 2 insertions(+), 4 deletions(-)
+ drivers/soc/bcm/bcm63xx/bcm-pmb.c       | 1 -
+ drivers/soc/bcm/bcm63xx/bcm63xx-power.c | 1 -
+ 2 files changed, 2 deletions(-)
 
-diff --git a/drivers/soc/aspeed/aspeed-lpc-snoop.c b/drivers/soc/aspeed/aspeed-lpc-snoop.c
-index eceeaf8dfbeb..773dbcbc03a6 100644
---- a/drivers/soc/aspeed/aspeed-lpc-snoop.c
-+++ b/drivers/soc/aspeed/aspeed-lpc-snoop.c
-@@ -19,7 +19,6 @@
- #include <linux/miscdevice.h>
+diff --git a/drivers/soc/bcm/bcm63xx/bcm-pmb.c b/drivers/soc/bcm/bcm63xx/bcm-pmb.c
+index 9407cac47fdb..a72ba26ecf9d 100644
+--- a/drivers/soc/bcm/bcm63xx/bcm-pmb.c
++++ b/drivers/soc/bcm/bcm63xx/bcm-pmb.c
+@@ -8,7 +8,6 @@
+ #include <linux/io.h>
  #include <linux/module.h>
  #include <linux/of.h>
 -#include <linux/of_device.h>
  #include <linux/platform_device.h>
- #include <linux/poll.h>
- #include <linux/regmap.h>
-diff --git a/drivers/soc/aspeed/aspeed-p2a-ctrl.c b/drivers/soc/aspeed/aspeed-p2a-ctrl.c
-index 20b5fb2a207c..548f44da28a9 100644
---- a/drivers/soc/aspeed/aspeed-p2a-ctrl.c
-+++ b/drivers/soc/aspeed/aspeed-p2a-ctrl.c
-@@ -18,8 +18,8 @@
- #include <linux/mm.h>
- #include <linux/module.h>
- #include <linux/mutex.h>
-+#include <linux/of.h>
- #include <linux/of_address.h>
--#include <linux/of_device.h>
+ #include <linux/pm_domain.h>
+ #include <linux/reset/bcm63xx_pmb.h>
+diff --git a/drivers/soc/bcm/bcm63xx/bcm63xx-power.c b/drivers/soc/bcm/bcm63xx/bcm63xx-power.c
+index aa72e13d5d0e..98b0c2430dbc 100644
+--- a/drivers/soc/bcm/bcm63xx/bcm63xx-power.c
++++ b/drivers/soc/bcm/bcm63xx/bcm63xx-power.c
+@@ -14,7 +14,6 @@
  #include <linux/platform_device.h>
- #include <linux/regmap.h>
- #include <linux/slab.h>
-diff --git a/drivers/soc/aspeed/aspeed-uart-routing.c b/drivers/soc/aspeed/aspeed-uart-routing.c
-index ef8b24fd1851..8c89ad312c1d 100644
---- a/drivers/soc/aspeed/aspeed-uart-routing.c
-+++ b/drivers/soc/aspeed/aspeed-uart-routing.c
-@@ -5,8 +5,7 @@
-  */
- #include <linux/device.h>
- #include <linux/module.h>
+ #include <linux/pm_domain.h>
+ #include <linux/of.h>
 -#include <linux/of_device.h>
--#include <linux/of_platform.h>
-+#include <linux/of.h>
- #include <linux/mfd/syscon.h>
- #include <linux/regmap.h>
- #include <linux/platform_device.h>
+ 
+ struct bcm63xx_power_dev {
+ 	struct generic_pm_domain genpd;
 -- 
 2.40.1
 
