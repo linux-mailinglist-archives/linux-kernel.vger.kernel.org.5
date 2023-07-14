@@ -2,191 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66B8775451B
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 00:45:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7E16754521
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 00:48:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230081AbjGNWpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 18:45:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37254 "EHLO
+        id S230174AbjGNWsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 18:48:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjGNWpp (ORCPT
+        with ESMTP id S229483AbjGNWsW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 18:45:45 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4238E30FF;
-        Fri, 14 Jul 2023 15:45:44 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1b89bc52cd1so13543685ad.1;
-        Fri, 14 Jul 2023 15:45:44 -0700 (PDT)
+        Fri, 14 Jul 2023 18:48:22 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60B282113;
+        Fri, 14 Jul 2023 15:48:21 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1b895a06484so15313405ad.1;
+        Fri, 14 Jul 2023 15:48:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689374744; x=1691966744;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XzVDB954Kue2g3HPSB+wZhpBO153V/L/a3HbEYrcniU=;
-        b=cw1yLVVgi2nnIfoPZ+Ov0pTORSpLanxDOLf3vaqC6CCadkpUhuzVo+F5031X5lvrSs
-         +KxUcwR9CFvU2QgGetgEp/VgCyW8TtJTJ+02m5sz5MEMaqAvLxNBjI84CQ1WRf97mXqs
-         eYuD673OVWbTzDZNkuEMfqXmUg6BZSec0MUbUUpjE3g8GZgQhoYoyMvJTvd+d170PLo0
-         n91ZAQL+QTjhqcifxT0LjEpo1DZH04PhPhTwQy3QB3ao1kaa2MWpLssi/R8su724UtJu
-         gK8G+qcPNuIi2oz34XSzmfBkTRuF5baQggMQznWP+Bg3bh9nbP7fgE5Q4dD2hj4YvsRu
-         AHoQ==
+        d=gmail.com; s=20221208; t=1689374901; x=1691966901;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1KPDXw6d9QZoIdRyusRX5j718BfWZgOZEixbpaIJv+E=;
+        b=CT3GBfawVE1QNsKfAqGgoFAV5+9AozosB89w0/RPQcLvMiyt1nscbONtsTPyOqTf8y
+         ObnOutT/we3CUiebSmY+6b+DKsyyI8rVQXYmawwYIVPrfz4jxO2th8IKyJ3Lz+MiEyf+
+         W+BomqV7BoZoMV3fZseTlKXjvJYJ9LqCPzqnk4JXFjxQdsOTDuVmyCRSlBeiFJ6grlld
+         jpxDeannYcDPCS09Wext4Hay9562AUSrc08lGVKEjd15TA+wt0frX3h6/+hewRB7iyKm
+         GAplpYWmB4RBUb1PW8gepE79Yp5hDzdoAy+2KoGFGfvIZnKHzuI5NdRtd57XQkftM1g+
+         kp+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689374744; x=1691966744;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XzVDB954Kue2g3HPSB+wZhpBO153V/L/a3HbEYrcniU=;
-        b=Iq5/WYwcUWarVGRtdKWElDUzZmfIF2Di63Bj86OxOXOWacUVEzWOReMVCxbSTnlO9x
-         9MB8Ub3bxGmZ40wmM2RNi1GGiTkkonOKAx5swSf7INy4dsVS2sz/DwEmTX7wkSWqltfL
-         KtUZZMEGY1otpbKDB0FS4gTAjPc0WbGW3t+xZjnNa21EBf7SvD2naLxre9bJwg4XqaEq
-         1tRcd9e3xSBBj3cgXEW5s7URooK+3wlUE+rQC9hXkiSnI6szn8ZYSdqyl7goVCM01uD1
-         EfgSFtdVDu7XCry0e5uh8KhCZG9a7t+I4EV91NvKa+2g23tkySnY2AcYFZlJO6dHXPle
-         CY3A==
-X-Gm-Message-State: ABy/qLY+Ikoy6BZ4nrE1gFl6tAcqAWRiekyOmYxgz1/BCjohm/Jg3kmV
-        MckTGlOcf5O2rmeUOigTbaI=
-X-Google-Smtp-Source: APBJJlEX7qycWfHg7JlfebRVWAwjG3NJB/gHHmmn3iULEWdiJnTMCvweb3f9K+1prN6oZQSKybH2Uw==
-X-Received: by 2002:a17:903:24d:b0:1b7:e49f:39 with SMTP id j13-20020a170903024d00b001b7e49f0039mr5023368plh.60.1689374743450;
-        Fri, 14 Jul 2023 15:45:43 -0700 (PDT)
-Received: from dtor-ws.mtv.corp.google.com ([2620:15c:9d:2:fe13:1555:c84f:8fa3])
-        by smtp.gmail.com with ESMTPSA id jm23-20020a17090304d700b001b9de2b905asm8246120plb.231.2023.07.14.15.45.42
+        d=1e100.net; s=20221208; t=1689374901; x=1691966901;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1KPDXw6d9QZoIdRyusRX5j718BfWZgOZEixbpaIJv+E=;
+        b=dSAei/v4n1tX/GUD5dZj3jOr509eM1sZC73TdXCzFeljXW4jv7mJgJXfhrXv9iWNrv
+         nclhbxSNxNKbKKab2XRdNmoVAFPLhhI450NX24KvFB2B8jXRmOEJauDGlcmkR0zhR2Lh
+         xG3TBQEAtKAa9CoRRRIvhwCH9QpwWLZY1JH70d5UImSYnhAkBW42XZRX4s703YOH7/YW
+         be7YjL3zvUoPpueB2J9jCJ3cd+SzkcKRKfCWIbtOouaKg9t+Yk2DkWEyhbiF96hiPU+f
+         hv2XfDHSue2XFTtAgE0W6t6Tx5G9FgSPgoJgSvA+VZbCkGNL9OnVMIec12YXygXMVKuf
+         tBkA==
+X-Gm-Message-State: ABy/qLYoeDgykoZuq9gm5Dxmz+YqAlwvJfPQDy7EFqb4Gl9Cc4fATt42
+        p9VEE7uNzAU02lz60kYZgAQCXjocohXIc+ViCiU=
+X-Google-Smtp-Source: APBJJlHYQrcEFpBZFB5cptzfdbqr9WU1KqJqnCs5O9HDa+wA+G7yJUhsSDWj8HCnaHgx8UaubdXMxw==
+X-Received: by 2002:a17:903:2343:b0:1b8:77b3:6bf6 with SMTP id c3-20020a170903234300b001b877b36bf6mr5726230plh.33.1689374900748;
+        Fri, 14 Jul 2023 15:48:20 -0700 (PDT)
+Received: from localhost.localdomain ([221.231.171.18])
+        by smtp.gmail.com with ESMTPSA id ja22-20020a170902efd600b001b8c6662094sm8260845plb.188.2023.07.14.15.48.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 15:45:43 -0700 (PDT)
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Roxana Bradescu <roxabee@google.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/2] kvm/vfio: avoid bouncing the mutex when adding and deleting groups
-Date:   Fri, 14 Jul 2023 15:45:33 -0700
-Message-ID: <20230714224538.404793-2-dmitry.torokhov@gmail.com>
-X-Mailer: git-send-email 2.41.0.255.g8b1d071c50-goog
-In-Reply-To: <20230714224538.404793-1-dmitry.torokhov@gmail.com>
-References: <20230714224538.404793-1-dmitry.torokhov@gmail.com>
+        Fri, 14 Jul 2023 15:48:20 -0700 (PDT)
+From:   Polaris Pi <pinkperfect2021@gmail.com>
+To:     kuba@kernel.org, matthewmwang@chromium.org, kuabhs@chromium.org,
+        amitkarwar@gmail.com, kvalo@kernel.org, ganapathi017@gmail.com,
+        sharvari.harisangam@nxp.com, huxinming820@gmail.com
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Polaris Pi <pinkperfect2021@gmail.com>
+Subject: [PATCH v6] wifi: mwifiex: Fix OOB and integer underflow when rx packets
+Date:   Fri, 14 Jul 2023 22:48:09 +0000
+Message-Id: <20230714224809.3929539-1-pinkperfect2021@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stop taking kv->lock mutex in kvm_vfio_update_coherency() and instead
-call it with this mutex held: the callers of the function usually
-already have it taken (and released) before calling
-kvm_vfio_update_coherency(). This avoid bouncing the lock up and down.
+Make sure mwifiex_process_mgmt_packet and its callers
+mwifiex_process_sta_rx_packet and mwifiex_process_uap_rx_packet
+not out-of-bounds access the skb->data buffer.
 
-The exception is kvm_vfio_release() where we do not take the lock, but
-it is being executed when the very last reference to kvm_device is being
-dropped, so there are no concerns about concurrency.
-
-Suggested-by: Alex Williamson <alex.williamson@redhat.com>
-Reviewed-by: Alex Williamson <alex.williamson@redhat.com>
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Fixes: 2dbaf751b1de ("mwifiex: report received management frames to cfg80211")
+Signed-off-by: Polaris Pi <pinkperfect2021@gmail.com>
 ---
+V5: Follow chromeos comments: preserve the original flow of mwifiex_process_uap_rx_packet
+V6: Simplify check in mwifiex_process_uap_rx_packet
+---
+ drivers/net/wireless/marvell/mwifiex/sta_rx.c   |  3 ++-
+ drivers/net/wireless/marvell/mwifiex/uap_txrx.c | 10 ++++++++++
+ drivers/net/wireless/marvell/mwifiex/util.c     |  5 +++++
+ 3 files changed, 17 insertions(+), 1 deletion(-)
 
-v3: initialize "ret" with 0 (per Alex), added Alex's reviewed-by
-
-v2: new patch.
-
- virt/kvm/vfio.c | 26 +++++++++-----------------
- 1 file changed, 9 insertions(+), 17 deletions(-)
-
-diff --git a/virt/kvm/vfio.c b/virt/kvm/vfio.c
-index cd46d7ef98d6..dbf2b855cf78 100644
---- a/virt/kvm/vfio.c
-+++ b/virt/kvm/vfio.c
-@@ -122,8 +122,6 @@ static void kvm_vfio_update_coherency(struct kvm_device *dev)
- 	bool noncoherent = false;
- 	struct kvm_vfio_group *kvg;
+diff --git a/drivers/net/wireless/marvell/mwifiex/sta_rx.c b/drivers/net/wireless/marvell/mwifiex/sta_rx.c
+index 13659b02ba88..88aaec645291 100644
+--- a/drivers/net/wireless/marvell/mwifiex/sta_rx.c
++++ b/drivers/net/wireless/marvell/mwifiex/sta_rx.c
+@@ -194,7 +194,8 @@ int mwifiex_process_sta_rx_packet(struct mwifiex_private *priv,
  
--	mutex_lock(&kv->lock);
--
- 	list_for_each_entry(kvg, &kv->group_list, node) {
- 		if (!kvm_vfio_file_enforced_coherent(kvg->file)) {
- 			noncoherent = true;
-@@ -139,8 +137,6 @@ static void kvm_vfio_update_coherency(struct kvm_device *dev)
- 		else
- 			kvm_arch_unregister_noncoherent_dma(dev->kvm);
- 	}
--
--	mutex_unlock(&kv->lock);
- }
+ 	rx_pkt_hdr = (void *)local_rx_pd + rx_pkt_offset;
  
- static int kvm_vfio_group_add(struct kvm_device *dev, unsigned int fd)
-@@ -148,7 +144,7 @@ static int kvm_vfio_group_add(struct kvm_device *dev, unsigned int fd)
- 	struct kvm_vfio *kv = dev->private;
- 	struct kvm_vfio_group *kvg;
- 	struct file *filp;
--	int ret;
-+	int ret = 0;
+-	if ((rx_pkt_offset + rx_pkt_length) > (u16) skb->len) {
++	if ((rx_pkt_offset + rx_pkt_length) > (u16)skb->len ||
++	    skb->len - rx_pkt_offset < sizeof(*rx_pkt_hdr)) {
+ 		mwifiex_dbg(adapter, ERROR,
+ 			    "wrong rx packet: len=%d, rx_pkt_offset=%d, rx_pkt_length=%d\n",
+ 			    skb->len, rx_pkt_offset, rx_pkt_length);
+diff --git a/drivers/net/wireless/marvell/mwifiex/uap_txrx.c b/drivers/net/wireless/marvell/mwifiex/uap_txrx.c
+index e495f7eaea03..f0711b73ba3e 100644
+--- a/drivers/net/wireless/marvell/mwifiex/uap_txrx.c
++++ b/drivers/net/wireless/marvell/mwifiex/uap_txrx.c
+@@ -367,6 +367,16 @@ int mwifiex_process_uap_rx_packet(struct mwifiex_private *priv,
+ 	rx_pkt_type = le16_to_cpu(uap_rx_pd->rx_pkt_type);
+ 	rx_pkt_hdr = (void *)uap_rx_pd + le16_to_cpu(uap_rx_pd->rx_pkt_offset);
  
- 	filp = fget(fd);
- 	if (!filp)
-@@ -157,7 +153,7 @@ static int kvm_vfio_group_add(struct kvm_device *dev, unsigned int fd)
- 	/* Ensure the FD is a vfio group FD.*/
- 	if (!kvm_vfio_file_is_group(filp)) {
- 		ret = -EINVAL;
--		goto err_fput;
-+		goto out_fput;
- 	}
- 
- 	mutex_lock(&kv->lock);
-@@ -165,30 +161,26 @@ static int kvm_vfio_group_add(struct kvm_device *dev, unsigned int fd)
- 	list_for_each_entry(kvg, &kv->group_list, node) {
- 		if (kvg->file == filp) {
- 			ret = -EEXIST;
--			goto err_unlock;
-+			goto out_unlock;
- 		}
- 	}
- 
- 	kvg = kzalloc(sizeof(*kvg), GFP_KERNEL_ACCOUNT);
- 	if (!kvg) {
- 		ret = -ENOMEM;
--		goto err_unlock;
-+		goto out_unlock;
- 	}
- 
--	kvg->file = filp;
-+	kvg->file = get_file(filp);
- 	list_add_tail(&kvg->node, &kv->group_list);
- 
- 	kvm_arch_start_assignment(dev->kvm);
- 	kvm_vfio_file_set_kvm(kvg->file, dev->kvm);
--
--	mutex_unlock(&kv->lock);
--
- 	kvm_vfio_update_coherency(dev);
- 
--	return 0;
--err_unlock:
-+out_unlock:
- 	mutex_unlock(&kv->lock);
--err_fput:
-+out_fput:
- 	fput(filp);
- 	return ret;
- }
-@@ -224,12 +216,12 @@ static int kvm_vfio_group_del(struct kvm_device *dev, unsigned int fd)
- 		break;
- 	}
- 
-+	kvm_vfio_update_coherency(dev);
++	if (le16_to_cpu(uap_rx_pd->rx_pkt_offset) + sizeof(*rx_pkt_hdr) > skb->len) {
++		mwifiex_dbg(adapter, ERROR,
++			    "wrong rx packet offset: len=%d, offset=%d\n",
++			    skb->len, le16_to_cpu(uap_rx_pd->rx_pkt_offset));
++		priv->stats.rx_dropped++;
 +
- 	mutex_unlock(&kv->lock);
++		dev_kfree_skb_any(skb);
++		return 0;
++	}
++
+ 	ether_addr_copy(ta, rx_pkt_hdr->eth803_hdr.h_source);
  
- 	fdput(f);
+ 	if ((le16_to_cpu(uap_rx_pd->rx_pkt_offset) +
+diff --git a/drivers/net/wireless/marvell/mwifiex/util.c b/drivers/net/wireless/marvell/mwifiex/util.c
+index 94c2d219835d..31e1a82883e4 100644
+--- a/drivers/net/wireless/marvell/mwifiex/util.c
++++ b/drivers/net/wireless/marvell/mwifiex/util.c
+@@ -399,6 +399,11 @@ mwifiex_process_mgmt_packet(struct mwifiex_private *priv,
  
--	kvm_vfio_update_coherency(dev);
--
- 	return ret;
- }
+ 	pkt_len = le16_to_cpu(rx_pd->rx_pkt_length);
  
++	if (pkt_len < sizeof(struct ieee80211_hdr) || skb->len < pkt_len) {
++		mwifiex_dbg(priv->adapter, ERROR, "invalid rx_pkt_length");
++		return -1;
++	}
++
+ 	ieee_hdr = (void *)skb->data;
+ 	if (ieee80211_is_mgmt(ieee_hdr->frame_control)) {
+ 		if (mwifiex_parse_mgmt_packet(priv, (u8 *)ieee_hdr,
 -- 
-2.41.0.255.g8b1d071c50-goog
+2.25.1
 
