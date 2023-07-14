@@ -2,94 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 743EB753E19
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 16:52:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEEF6753E1B
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 16:52:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235960AbjGNOwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 10:52:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58208 "EHLO
+        id S236149AbjGNOwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 10:52:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235853AbjGNOwf (ORCPT
+        with ESMTP id S236077AbjGNOwn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 10:52:35 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35BF426A5;
-        Fri, 14 Jul 2023 07:52:34 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-98dfb3f9af6so261540466b.2;
-        Fri, 14 Jul 2023 07:52:34 -0700 (PDT)
+        Fri, 14 Jul 2023 10:52:43 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A69130D7
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 07:52:42 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id ca18e2360f4ac-77dcff76e35so21530239f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 07:52:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689346352; x=1691938352;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=S+Y7J/CfROpAWdo0NFVfodvbCSxyNFMpV5vaNCFKuEA=;
-        b=HOCxu6W8gCA+Z01yLdgRwWPbWKx21vPpdKDTsF8DWYDTpqcmP+I+Fb41hjdLrvJzpH
-         O+EkcijxxzmjHTjFRv6/vVusSnJ6Ftu6akOZYMon4nM7zLkbEe6Mq3io/s5QywRnUPAE
-         EC/vlnTighBJXrdlTmrcfZr9wRQCvv/NsASzAvII/dnkMkMYYUpZWnV9VfRkD/7O3jU6
-         jKFQwztB5HTmpbcSW1zveO8+7gsir1+ti5n91HhzxeIxviEocBWBf6Xe3/8AwjuK3AjO
-         cQ48CvSOOnIOn+++QhjPSr3uOhQt2x/aBJzQs062IPauFtc04VQycNxXuKGBABt10GTe
-         ASwg==
+        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1689346362; x=1691938362;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JAmunczEJZFXmZmHXM1b+lVlqoJeo+37Wzbf/I2rzuk=;
+        b=SEXK0AEWpeZ+PSHHyWI4issvXXGelXWSsFqVGgJFtbl590xsUVQLTSG94AA2elEUEJ
+         YVLEHKIdOrgh5aqhkpxiddvzDKY7dsW1UVZrudb1DvejpaKdvXDDVRTx6j0zxZ/8/JJ5
+         iEtKeOMR9jSG9y+x4kVWbZiPXd1GB6P7Y58+pMnvN3oIykfGU97JUNG2WA3poicjKtt6
+         lLCnWPleldaLOvVX00IlU1ro0LPYJeEQbUdwHuYrlAhjMPlpaHVj0nUIh93Tmiv8FET6
+         +TFuphVYLgEvbYh4Vm9750UMBXoCx0YAe/1yhJH5liGr6qwEr1g0KC8oo/C/vTVK+rzW
+         az+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689346352; x=1691938352;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=S+Y7J/CfROpAWdo0NFVfodvbCSxyNFMpV5vaNCFKuEA=;
-        b=QuiSRQrScEe+boGE0H/Y0sHdDek+gPjg1VFzsif5pttlKd6M7Ur2CAGzUGGr4Q6dO2
-         3WASQPGGGTE1TpLHfPFl4qn/9QDAygufBNUUwftvqKXVFvEbSMuB/OqPt0xtPH4sl3z9
-         m0WsK890t5ImUB8fSVVJaI3R624tbCsmyA3fsjRLa9Ke26o9nE8NZ2Nlxy7svK3zpBc5
-         u8edcHKk51bfzV98iofbGw2ifIAZlb1XFtCrXjfLTfFIqjO/1gB6YzawzUv3AArSLEU3
-         GDsVnlCP+o/eB95VhjyBK+jbzYPKFmDBj+G5C2dgf/7zZIu77HNMnd94Ko1QEVR4R0r1
-         N36g==
-X-Gm-Message-State: ABy/qLZZ4RarD0IPqa8ijDHg2DxEBvoCu4Vruhc5EcwlSMFY9raCCp8D
-        pz1HhrmFRs3huV8BYFWCrh4=
-X-Google-Smtp-Source: APBJJlG7OWa/0j2mFZ3Jz/CdSQr9e0vGXSmQRb7+u9Nnx2FGDHPrlREDkcmjngmV4/ockafeBw+Kbg==
-X-Received: by 2002:a17:906:b7d5:b0:992:c774:9415 with SMTP id fy21-20020a170906b7d500b00992c7749415mr4430305ejb.63.1689346352457;
-        Fri, 14 Jul 2023 07:52:32 -0700 (PDT)
-Received: from localhost (p200300e41f4b7100f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f4b:7100:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id a15-20020a17090680cf00b0099251a40184sm5536348ejx.99.2023.07.14.07.52.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 07:52:31 -0700 (PDT)
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, jonathanh@nvidia.com,
-        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Sumit Gupta <sumitg@nvidia.com>
-Cc:     bbasu@nvidia.com, shaochunk@nvidia.com
-Subject: Re: [Patch] arm64: tegra: update CPU OPP tables
-Date:   Fri, 14 Jul 2023 16:52:26 +0200
-Message-ID: <168934632798.2822346.11688804206324171987.b4-ty@nvidia.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230713133850.823-1-sumitg@nvidia.com>
-References: <20230713133850.823-1-sumitg@nvidia.com>
+        d=1e100.net; s=20221208; t=1689346362; x=1691938362;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JAmunczEJZFXmZmHXM1b+lVlqoJeo+37Wzbf/I2rzuk=;
+        b=U2N9Vg0IYqyMOeF9xBbj9+Hye3SPbAhbOHnZQndSLW2wbCZ2gJLDnhtI1Ow8u55spX
+         apMRjNvP4Hu6A2yKgLg9SXYeKOXeFzwYjjrQtfoTC525cuhgB19JwRj7ADl8VzAS9j36
+         So9pMYlVvxH6+2An/I/an/ldhc4Nra3SxzmYhONn0O5Ux1JO5+3axSlaYmkxy107i6dx
+         RWpsnqGW2l7kqWbVvjcMp51uyOBhtYaxq6o9FYFuY8pls07w86sdO3WZk4Em8p6XAwpV
+         dTJMhh++GpeYwv3si56OQV3RBumBxgqqCpeamW+E9Oea0+soaVrkzfGI+//MnZpnN/CL
+         ZsQw==
+X-Gm-Message-State: ABy/qLaJER6g9dN7b3GCPyNd8i/cxlOGL7qsLjhIwRzM2Ox4G925z5Bl
+        CQ8pUext1CpKslev0LWbWFFuPw==
+X-Google-Smtp-Source: APBJJlEWtOeftyE9WaGt/sW0C8jvzHGspQW6CwjILQtd6tjwhjPIhbAftPrYIZ9aSMDxtKsfJApJTQ==
+X-Received: by 2002:a05:6602:360e:b0:783:63e8:3bfc with SMTP id bc14-20020a056602360e00b0078363e83bfcmr4727005iob.0.1689346361873;
+        Fri, 14 Jul 2023 07:52:41 -0700 (PDT)
+Received: from [192.168.1.94] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id ep9-20020a0566384e0900b0042b326ed1ebsm2657638jab.48.2023.07.14.07.52.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 14 Jul 2023 07:52:41 -0700 (PDT)
+Message-ID: <bcf174d8-607b-e61a-2091-eccd3ffe0dfe@kernel.dk>
+Date:   Fri, 14 Jul 2023 08:52:40 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 4/8] io_uring: add support for futex wake and wait
+Content-Language: en-US
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, andres@anarazel.de
+References: <20230712162017.391843-1-axboe@kernel.dk>
+ <20230712162017.391843-5-axboe@kernel.dk>
+ <20230713111513.GH3138667@hirez.programming.kicks-ass.net>
+ <20230713172455.GA3191007@hirez.programming.kicks-ass.net>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20230713172455.GA3191007@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thierry Reding <treding@nvidia.com>
-
-
-On Thu, 13 Jul 2023 19:08:50 +0530, Sumit Gupta wrote:
-> Update the CPU OPP table to include all frequencies supported by
-> Tegra234. Different platforms can choose to keep all or few entries
-> based on their power and performance tunings.
+On 7/13/23 11:24?AM, Peter Zijlstra wrote:
+> On Thu, Jul 13, 2023 at 01:15:13PM +0200, Peter Zijlstra wrote:
+>> On Wed, Jul 12, 2023 at 10:20:13AM -0600, Jens Axboe wrote:
+>>
+>>> +int io_futex_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
+>>> +{
+>>> +	struct io_futex *iof = io_kiocb_to_cmd(req, struct io_futex);
+>>> +
+>>> +	if (unlikely(sqe->addr2 || sqe->buf_index || sqe->addr3))
+>>> +		return -EINVAL;
+>>> +
+>>> +	iof->futex_op = READ_ONCE(sqe->fd);
+>>> +	iof->uaddr = u64_to_user_ptr(READ_ONCE(sqe->addr));
+>>> +	iof->futex_val = READ_ONCE(sqe->len);
+>>> +	iof->futex_mask = READ_ONCE(sqe->file_index);
+>>> +	iof->futex_flags = READ_ONCE(sqe->futex_flags);
+>>> +	if (iof->futex_flags & FUTEX_CMD_MASK)
+>>> +		return -EINVAL;
+>>> +
+>>> +	return 0;
+>>> +}
+>>
+>> I'm a little confused on the purpose of iof->futex_op, it doesn't appear
+>> to be used. Instead iof->futex_flags is used as the ~FUTEX_CMD_MASK part
+>> of ops.
+>>
+>> The latter actually makes sense since you encode the actual op in the
+>> IOURING_OP_ space.
 > 
+> Futex is slowly getting back to me; I'm thinking these io_uring
+> interfaces should perhaps use the futex2 flags instead of the futex_op
+> encoded muck.
 > 
+> I'll try and send out a few patches tomorrow to clarify things a little
+> -- the futex2 work seems to have stalled somewhere halfway :/
 
-Applied, thanks!
+Saw your series - I'll take a look. In terms of staging when we get
+there, would it be possible to split your flags series into the bare
+minimum and trivial, and then have that as a dependency for this series
+and the rest of your series?
 
-[1/1] arm64: tegra: update CPU OPP tables
-      commit: d5b9d25d3fb6f63614ee00104f16e099e3497c65
-
-Best regards,
 -- 
-Thierry Reding <treding@nvidia.com>
+Jens Axboe
+
