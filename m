@@ -2,251 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F1FB75382F
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 12:30:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF35E7537EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 12:24:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236237AbjGNKan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 06:30:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41572 "EHLO
+        id S236174AbjGNKYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 06:24:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235628AbjGNKak (ORCPT
+        with ESMTP id S235413AbjGNKYJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 06:30:40 -0400
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48F9B2710
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 03:30:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689330639; x=1720866639;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=jNcBCjfgpKFqqYeQOT7ZSvB8g0ejk/brWSi//NaBOYY=;
-  b=kUisoQbmZ+mbESoz5Hl6i01HaJwpEPS9JO+umSH9tRuifDeCtEiBQVyu
-   J3K/H4NbpnWc9jo9vjRacLR0VzPNU/kRkJWFVe+WM3w58+RihdIYM1I9M
-   4veNJTsCYnFOZNpv+U+UU2Af8qEirwsaI56FOx5Hz6AD2Ss+TsyZf6avV
-   /WOp2sFIsRgmIY9p+hIIv6jHM+SOdkWR+rmUPkk/bAe4O6DEYwT9IpmTz
-   tnjvqu/2OJyepKXA+YJfkdBe+xng/wyHufaPkGXJFjWyXVWyyXbKdPoTa
-   rlzLp/TWSZrWwR3ewrtfUuFxXR8fMWZcdPEP99cFxATdoAoWzdELn02P6
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="429206316"
-X-IronPort-AV: E=Sophos;i="6.01,205,1684825200"; 
-   d="scan'208";a="429206316"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 03:30:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="751992057"
-X-IronPort-AV: E=Sophos;i="6.01,205,1684825200"; 
-   d="scan'208";a="751992057"
-Received: from silpixa00400294.ir.intel.com ([10.237.222.100])
-  by orsmga008.jf.intel.com with ESMTP; 14 Jul 2023 03:30:37 -0700
-From:   Wojciech Ziemba <wojciech.ziemba@intel.com>
-To:     broonie@kernel.org
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        qat-linux@intel.com, Wojciech Ziemba <wojciech.ziemba@intel.com>
-Subject: [PATCH] lib: Introduce KUnit tests for minmax
-Date:   Fri, 14 Jul 2023 11:23:53 +0100
-Message-Id: <20230714102353.27814-1-wojciech.ziemba@intel.com>
-X-Mailer: git-send-email 2.38.1
+        Fri, 14 Jul 2023 06:24:09 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40D532728;
+        Fri, 14 Jul 2023 03:24:08 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id DE2461FD60;
+        Fri, 14 Jul 2023 10:24:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1689330246; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9bB3ajJzlHzH/NCavasHXOu44UGyH8PhtuwbaAsRiUs=;
+        b=ZfVUZTYxKgmlcgDz3AHjqL+8kKqOPlM48so6SAp4bPoDCqqDz+3/+UNtLxmMlKTi7krayp
+        P98fFJUBwfL3/ZEjSpwYWcoFDAWmaSZLprBhqZqP0RU9FZezuOmH3c4Tej5E/gtnnmKjK0
+        9VuzaJtqrKln18Yvq2tUKpEvLJSSsc4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1689330246;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9bB3ajJzlHzH/NCavasHXOu44UGyH8PhtuwbaAsRiUs=;
+        b=i9uyf4NbLjtrEiMsl2L+V6st/ysF7iZUMveLAhVTrl60zcT/tjGmmWLGkqqm4zfDOP/ch4
+        ZMBJeoOcV2Ws7pDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8784513A15;
+        Fri, 14 Jul 2023 10:24:06 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id s3zkH0YisWS7EgAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Fri, 14 Jul 2023 10:24:06 +0000
+Message-ID: <47a3ab8d-5e8c-db2c-fcde-5c2b1bac32aa@suse.de>
+Date:   Fri, 14 Jul 2023 12:24:05 +0200
 MIME-Version: 1.0
-Organization: Intel Research and Development Ireland Ltd - Co. Reg. #308263 - Collinstown Industrial Park, Leixlip, County Kildare - Ireland
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v3 00/18] fbdev: Remove FBINFO_DEFAULT and
+ FBINFO_FLAG_DEFAULT flags
+Content-Language: en-US
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-fbdev@vger.kernel.org, kvm@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-sh@vger.kernel.org,
+        deller@gmx.de, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        javierm@redhat.com, dri-devel@lists.freedesktop.org,
+        linux-input@vger.kernel.org, linux-nvidia@lists.surfsouth.com,
+        linux-omap@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-geode@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
+References: <20230714075155.5686-1-tzimmermann@suse.de>
+ <CAMuHMdWoeyJPAgPgFi545SJFcaVCgZi1-zW2N5cBeU9BnHgo1w@mail.gmail.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+In-Reply-To: <CAMuHMdWoeyJPAgPgFi545SJFcaVCgZi1-zW2N5cBeU9BnHgo1w@mail.gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------ytQioUjfc867nfoK1gzl7Kf7"
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds KUnit coverage for minmax_array() macros from
-<linux/minmax.h>. It assures that these macros compile correctly
-and work as expected when different types are used. The test cases
-exercise types: s8, u8, s16, u16, s32, u32, s64, u64 with arrays
-of random numbers.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------ytQioUjfc867nfoK1gzl7Kf7
+Content-Type: multipart/mixed; boundary="------------e1VN5UoecP2KMs2cwDKg5iZ3";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-fbdev@vger.kernel.org, kvm@vger.kernel.org,
+ linux-hyperv@vger.kernel.org, linux-sh@vger.kernel.org, deller@gmx.de,
+ linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+ amd-gfx@lists.freedesktop.org, javierm@redhat.com,
+ dri-devel@lists.freedesktop.org, linux-input@vger.kernel.org,
+ linux-nvidia@lists.surfsouth.com, linux-omap@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-geode@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
+Message-ID: <47a3ab8d-5e8c-db2c-fcde-5c2b1bac32aa@suse.de>
+Subject: Re: [PATCH v3 00/18] fbdev: Remove FBINFO_DEFAULT and
+ FBINFO_FLAG_DEFAULT flags
+References: <20230714075155.5686-1-tzimmermann@suse.de>
+ <CAMuHMdWoeyJPAgPgFi545SJFcaVCgZi1-zW2N5cBeU9BnHgo1w@mail.gmail.com>
+In-Reply-To: <CAMuHMdWoeyJPAgPgFi545SJFcaVCgZi1-zW2N5cBeU9BnHgo1w@mail.gmail.com>
 
-Signed-off-by: Wojciech Ziemba <wojciech.ziemba@intel.com>
----
- lib/Kconfig.debug  |  12 +++++
- lib/Makefile       |   1 +
- lib/minmax_kunit.c | 132 +++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 145 insertions(+)
- create mode 100644 lib/minmax_kunit.c
+--------------e1VN5UoecP2KMs2cwDKg5iZ3
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index fbc89baf7de6..e845876482fb 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -2777,6 +2777,18 @@ config SIPHASH_KUNIT_TEST
- 	  This is intended to help people writing architecture-specific
- 	  optimized versions.  If unsure, say N.
- 
-+config MINMAX_KUNIT_TEST
-+	tristate "KUnit test for minmax" if !KUNIT_ALL_TESTS
-+	depends on KUNIT
-+	default KUNIT_ALL_TESTS
-+	help
-+	  Builds KUnit tests module for minmax.
-+
-+	  For more information on KUnit and unit tests in general please refer
-+	  to the KUnit documentation in Documentation/dev-tools/kunit/.
-+
-+	  If unsure, say N.
-+
- config TEST_UDELAY
- 	tristate "udelay test driver"
- 	help
-diff --git a/lib/Makefile b/lib/Makefile
-index 42d307ade225..950a3f388e6f 100644
---- a/lib/Makefile
-+++ b/lib/Makefile
-@@ -396,6 +396,7 @@ obj-$(CONFIG_FORTIFY_KUNIT_TEST) += fortify_kunit.o
- obj-$(CONFIG_STRCAT_KUNIT_TEST) += strcat_kunit.o
- obj-$(CONFIG_STRSCPY_KUNIT_TEST) += strscpy_kunit.o
- obj-$(CONFIG_SIPHASH_KUNIT_TEST) += siphash_kunit.o
-+obj-$(CONFIG_MINMAX_KUNIT_TEST) += minmax_kunit.o
- 
- obj-$(CONFIG_GENERIC_LIB_DEVMEM_IS_ALLOWED) += devmem_is_allowed.o
- 
-diff --git a/lib/minmax_kunit.c b/lib/minmax_kunit.c
-new file mode 100644
-index 000000000000..00ec175156d6
---- /dev/null
-+++ b/lib/minmax_kunit.c
-@@ -0,0 +1,132 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2023 Intel Corporation
-+ *
-+ * KUnit test cases for minmax.
-+ */
-+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-+
-+#include <kunit/test.h>
-+
-+#include <linux/kernel.h>
-+#include <linux/minmax.h>
-+#include <linux/module.h>
-+#include <linux/types.h>
-+
-+#define MINMAX_ARR_TEST(type, op, expected)				\
-+	static const type expected_##op##_##type = expected;		\
-+static void op##_array_##type##_test(struct kunit *test)		\
-+{									\
-+	type value = op##_array(test_vector_##type,			\
-+				  ARRAY_SIZE(test_vector_##type));	\
-+	KUNIT_EXPECT_EQ(test, value, expected_##op##_##type);		\
-+}
-+
-+/* type 's8' */
-+static const s8 test_vector_s8[] = {
-+	1, 85, -112, -61, 6, 0, 117, -55, 68, -55, 23, 1, -100, 55, -118
-+};
-+
-+MINMAX_ARR_TEST(s8, min, -118)
-+MINMAX_ARR_TEST(s8, max, 117)
-+
-+/* type 'u8' */
-+static const u8 test_vector_u8[] = {
-+	209, 145, 131, 180, 88, 97, 240, 170, 148, 158, 35, 226, 14, 244, 2
-+};
-+
-+MINMAX_ARR_TEST(u8, min, 2)
-+MINMAX_ARR_TEST(u8, max, 244)
-+
-+/* type 's16' */
-+static const s16 test_vector_s16[] = {
-+	2641, 30296, -15090, 11371, 13995, 28244, 27482, -7239, -9036, -3147,
-+	22065, 2097, -26854, -8633, 13366
-+};
-+
-+MINMAX_ARR_TEST(s16, min, -26854)
-+MINMAX_ARR_TEST(s16, max, 30296)
-+
-+/* type 'u16' */
-+static const u16 test_vector_u16[] = {
-+	50102, 58387, 42350, 33531, 32109, 65525, 25985, 31889, 14772, 7296,
-+	48242, 53340, 33594, 19856, 45544
-+};
-+
-+MINMAX_ARR_TEST(u16, min, 7296)
-+MINMAX_ARR_TEST(u16, max, 65525)
-+
-+/* type 's32' */
-+static const s32 test_vector_s32[] = {
-+	979885732L, 885950778L, -1450966230L, -1624192399L, -1753023734L,
-+	530868381L, 656215973L, 630677997L, 391000329L, 1253640357L,
-+	438040531L, -993355872L, 585127620L, -1068766240L, 147051568L
-+};
-+
-+MINMAX_ARR_TEST(s32, min, -1753023734L)
-+MINMAX_ARR_TEST(s32, max, 1253640357L)
-+
-+/* type 'u32' */
-+static const u32 test_vector_u32[] = {
-+	2161504111UL, 1183092838UL, 1728689175UL, 2309150449UL, 3735269177UL,
-+	1550306875UL, 2147576091UL, 4187089172UL, 545942284UL, 1969608375UL,
-+	2624877400UL, 3029665375UL, 1293120185UL, 3801307680UL, 1161238802UL
-+};
-+
-+MINMAX_ARR_TEST(u32, min, 545942284UL)
-+MINMAX_ARR_TEST(u32, max, 4187089172UL)
-+
-+/* type 's64' */
-+static const s64 test_vector_s64[] = {
-+	-8438490804591620000LL, 8025377321703520000LL, 3208690154945970000LL,
-+	-2321767394263770000LL, -1278489889635390000LL, 2190470827346570000LL,
-+	-2022822382784580000LL, 6599789147713410000LL, 3949996236706410000LL,
-+	-8261935734503760000LL, 661645293834217000LL, 8346383784731440000LL,
-+	-3443819189603500000LL, 7985744187902840000LL, 5083298007916820000LL
-+};
-+
-+MINMAX_ARR_TEST(s64, min, -8438490804591620000LL)
-+MINMAX_ARR_TEST(s64, max, 8346383784731440000LL)
-+
-+/* type 'u64' */
-+static const u64 test_vector_u64[] = {
-+	8249683091780880000ULL, 13192984997103100000ULL, 17673970905507700000ULL,
-+	11101419446779000000ULL, 7059417167478820000ULL, 17488355550255500000ULL,
-+	1592214570100350000ULL, 4324504718429290000ULL, 9233486922226120000ULL,
-+	17205873265072200000ULL, 15951973546886800000ULL, 8694358874973410000ULL,
-+	11857168979503600000ULL, 15015693759541800000ULL, 4758196429468010000ULL
-+};
-+
-+MINMAX_ARR_TEST(u64, min, 1592214570100350000ULL)
-+MINMAX_ARR_TEST(u64, max, 17673970905507700000ULL)
-+#undef MINMAX_ARR_TEST
-+
-+static struct kunit_case minmax_array_test_cases[] = {
-+	KUNIT_CASE(min_array_s8_test),
-+	KUNIT_CASE(max_array_s8_test),
-+	KUNIT_CASE(min_array_u8_test),
-+	KUNIT_CASE(max_array_u8_test),
-+	KUNIT_CASE(min_array_s16_test),
-+	KUNIT_CASE(max_array_s16_test),
-+	KUNIT_CASE(min_array_u16_test),
-+	KUNIT_CASE(max_array_u16_test),
-+	KUNIT_CASE(min_array_s32_test),
-+	KUNIT_CASE(max_array_s32_test),
-+	KUNIT_CASE(min_array_u32_test),
-+	KUNIT_CASE(max_array_u32_test),
-+	KUNIT_CASE(min_array_s64_test),
-+	KUNIT_CASE(max_array_s64_test),
-+	KUNIT_CASE(min_array_u64_test),
-+	KUNIT_CASE(max_array_u64_test),
-+	{}
-+};
-+
-+static struct kunit_suite minmax_test_suite = {
-+	.name = "minmax_array",
-+	.test_cases = minmax_array_test_cases,
-+};
-+kunit_test_suite(minmax_test_suite);
-+
-+MODULE_AUTHOR("Intel");
-+MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("KUnit test module for minmax");
--- 
-2.38.1
+SGkNCg0KQW0gMTQuMDcuMjMgdW0gMTI6MDQgc2NocmllYiBHZWVydCBVeXR0ZXJob2V2ZW46
+DQo+IEhpIFRob21hcywNCj4gDQo+IE9uIEZyaSwgSnVsIDE0LCAyMDIzIGF0IDk6NTPigK9B
+TSBUaG9tYXMgWmltbWVybWFubiA8dHppbW1lcm1hbm5Ac3VzZS5kZT4gd3JvdGU6DQo+PiBS
+ZW1vdmUgdGhlIHVudXNlZCBmbGFncyBGQklORk9fREVGQVVMVCBhbmQgRkJJTkZPX0ZMQUdf
+REVGQVVMVCBmcm9tDQo+PiBmYmRldiBhbmQgZHJpdmVycywgYXMgYnJpZWZseSBkaXNjdXNz
+ZWQgYXQgWzFdLiBCb3RoIGZsYWdzIHdlcmUgbWF5YmUNCj4+IHVzZWZ1bCB3aGVuIGZiZGV2
+IGhhZCBzcGVjaWFsIGhhbmRsaW5nIGZvciBkcml2ZXIgbW9kdWxlcy4gV2l0aA0KPj4gY29t
+bWl0IDM3NmIzZmY1NGM5YSAoImZiZGV2OiBOdWtlIEZCSU5GT19NT0RVTEUiKSwgdGhleSBh
+cmUgYm90aCAwDQo+PiBhbmQgaGF2ZSBubyBmdXJ0aGVyIGVmZmVjdC4NCj4+DQo+PiBQYXRj
+aGVzIDEgdG8gNyByZW1vdmUgRkJJTkZPX0RFRkFVTFQgZnJvbSBkcml2ZXJzLiBQYXRjaGVz
+IDIgdG8gNQ0KPj4gc3BsaXQgdGhpcyBieSB0aGUgd2F5IHRoZSBmYl9pbmZvIHN0cnVjdCBp
+cyBiZWluZyBhbGxvY2F0ZWQuIEFsbCBmbGFncw0KPj4gYXJlIGNsZWFyZWQgdG8gemVybyBk
+dXJpbmcgdGhlIGFsbG9jYXRpb24uDQo+Pg0KPj4gUGF0Y2hlcyA4IHRvIDE2IGRvIHRoZSBz
+YW1lIGZvciBGQklORk9fRkxBR19ERUZBVUxULiBQYXRjaCA4IGZpeGVzDQo+PiBhbiBhY3R1
+YWwgYnVnIGluIGhvdyBhcmNoL3NoIHVzZXMgdGhlIHRva2VuIGZvciBzdHJ1Y3QgZmJfdmlk
+ZW9tb2RlLA0KPj4gd2hpY2ggaXMgdW5yZWxhdGVkLg0KPj4NCj4+IFBhdGNoIDE3IHJlbW92
+ZXMgYm90aCBmbGFnIGNvbnN0YW50cyBmcm9tIDxsaW51eC9mYi5oPiBhbmQgcGF0Y2ggMTgN
+Cj4+IGRvY3VtZW50cyB0aGUgemVybydlZCBtZW1vcnkgcmV0dXJuZWQgYnkgZnJhbWVidWZm
+ZXJfYWxsb2MoKS4NCj4+DQo+PiB2MzoNCj4+ICAgICAgICAgICogc2g6IGluY2x1ZGUgYm9h
+cmQgbmFtZSBpbiBjb21taXQgbWVzc2FnZSAoQWRyaWFuKQ0KPj4gICAgICAgICAgKiBkb2Nz
+OiByZXdvcmQgdGV4dCAoTWlndWVsKQ0KPiANCj4gVGhhbmtzIGZvciB0aGUgdXBkYXRlIQ0K
+PiANCj4+ICAgIGZiZGV2OiBSZW1vdmUgZmxhZyBGQklORk9fREVGQVVMVCBmcm9tIGZiZGV2
+IGRyaXZlcnMNCj4+ICAgIGZiZGV2OiBSZW1vdmUgZmxhZyBGQklORk9fREVGQVVMVCBmcm9t
+IGZiZGV2IGRyaXZlcnMNCj4+ICAgIGZiZGV2OiBSZW1vdmUgZmxhZyBGQklORk9fREVGQVVM
+VCBmcm9tIGZiZGV2IGRyaXZlcnMNCj4+ICAgIGZiZGV2OiBSZW1vdmUgZmxhZyBGQklORk9f
+REVGQVVMVCBmcm9tIGZiZGV2IGRyaXZlcnMNCg0KSSB3YXNuJ3QgaGFwcHkgYWJvdXQgdGhp
+cyBlaXRoZXIuIEJ1dCBJIGNvdWxkIG5vdCBjb21lIHVwIHdpdGggYSANCmRlc2NyaXB0aW9u
+IHRoYXQgZml0cyBpbnRvIHRoZSA3NC1jaGFyIGxpbWl0IGZvciBlYWNoIGNvbW1pdC4gVGhl
+eSBvbmx5IA0KZGlmZmVyIGluIHRoZSBtZXRob2Qgb2YgbWVtb3J5IGFsbG9jYXRpb24uIERv
+IHlvdSBoYXZlIGFueSBpZGVhcz8NCg0KPiANCj4gRm91ciBwYXRjaGVzIHdpdGggdGhlIGV4
+YWN0IHNhbWUgb25lLWxpbmUgc3VtbWFyeS4gUGxlYXNlIG1ha2UgdGhlbQ0KPiB1bmlxdWUu
+DQo+IA0KPj4gICAgZmJkZXY6IFJlbW92ZSBmbGFnIEZCSU5GT19GTEFHX0RFRkFVTFQgZnJv
+bSBmYmRldiBkcml2ZXJzDQo+PiAgICBmYmRldjogUmVtb3ZlIGZsYWcgRkJJTkZPX0ZMQUdf
+REVGQVVMVCBmcm9tIGZiZGV2IGRyaXZlcnMNCj4gDQo+IFR3byBwYXRjaGVzIHdpdGggdGhl
+IGV4YWN0IHNhbWUgb25lLWxpbmUgc3VtbWFyeS4gUGxlYXNlIG1ha2UgdGhlbQ0KPiB1bmlx
+dWUuDQoNClNhbWUgcHJvYmxlbSBoZXJlLg0KDQpCZXN0IHJlZ2FyZHMNClRob21hcw0KDQo+
+IA0KPiBHcntvZXRqZSxlZXRpbmd9cywNCj4gDQo+ICAgICAgICAgICAgICAgICAgICAgICAg
+ICBHZWVydA0KPiANCg0KLS0gDQpUaG9tYXMgWmltbWVybWFubg0KR3JhcGhpY3MgRHJpdmVy
+IERldmVsb3Blcg0KU1VTRSBTb2Z0d2FyZSBTb2x1dGlvbnMgR2VybWFueSBHbWJIDQpGcmFu
+a2Vuc3RyYXNzZSAxNDYsIDkwNDYxIE51ZXJuYmVyZywgR2VybWFueQ0KR0Y6IEl2byBUb3Rl
+diwgQW5kcmV3IE15ZXJzLCBBbmRyZXcgTWNEb25hbGQsIEJvdWRpZW4gTW9lcm1hbg0KSFJC
+IDM2ODA5IChBRyBOdWVybmJlcmcpDQo=
 
+--------------e1VN5UoecP2KMs2cwDKg5iZ3--
+
+--------------ytQioUjfc867nfoK1gzl7Kf7
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmSxIkUFAwAAAAAACgkQlh/E3EQov+A5
+ZBAAlrHgFf58BneZE6hcC+r5o5NXfcPpZXyll0zbPfn6bgz+XFX3WjCIOEeFVAtRj4l1NZP2gLDL
+7XNg57GaZUV+3tu12rPUwqHB/PP8fo4xN1zoUFHh6n/bZ/IPtqK261weN3XdIE0++yBbi9uX0OJw
+sbnYwY9bEjuVCVxhLzZwkvB7OBMd2W4tyY44Dk7zY4Tr5kFLfrU2fPIyaM4i7DDof+JsxDbgeISQ
+lb1J6DuP7jxc23B/dIP1KcbGvuw9IpA6HM5annXZkHPBb0LvAOn5k8RJsCdLsPrMA9csWZO3BPeN
+ilViiWFtO27QGJPFU+vXC/4HWySxkpaAf3fqgFlrLFoQLNg7n37nnIqOdjz+eE3wHkiTd0h2LwVu
+k6gemHqCKMgJwK9bLRFTueMM5lp0GwsC4vpChviNYECfzzTLZKYZHHyWtYeoh/i5VxZezHuk+8io
+i8pcC79dy1b6ahi3hR3yLqwxihfje3jfrNjYPf1woeuEUsMr25eBK2/+mRmIvnFtg19/X14rJbPg
+aipPmZE4z4DiVVhiEbx/6XFlOflHehdn2hw2hyyfXEXNftSgzOV/Jshfga/TCLtbRs3Asg5U81Cd
+l+g39cAV4H0yoCaPnygHuLklnZ7tW2yfrjbwJJoFu65tFJDiV22dChid3jEfYbm9OZJVJPko4Oi7
+y34=
+=brtE
+-----END PGP SIGNATURE-----
+
+--------------ytQioUjfc867nfoK1gzl7Kf7--
