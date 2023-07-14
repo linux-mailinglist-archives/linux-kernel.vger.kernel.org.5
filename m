@@ -2,155 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49B9D7544FF
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 00:31:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E076754502
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 00:36:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230102AbjGNWbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 18:31:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60804 "EHLO
+        id S229494AbjGNWgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 18:36:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjGNWbo (ORCPT
+        with ESMTP id S229437AbjGNWf6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 18:31:44 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B6042D48;
-        Fri, 14 Jul 2023 15:31:43 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F2B6461E0C;
-        Fri, 14 Jul 2023 22:31:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BE9BC433C7;
-        Fri, 14 Jul 2023 22:31:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689373902;
-        bh=LNIw34qBX2V8Elz1G1PACLsCQHf7o2a3bkEmgF+nghQ=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=a5xPJKj8IlTbIOuPnQXt8GteRC9OLgnCno7Ijmn5WRzeYBKefbplVia9GSvy5KUgh
-         gXP+k9+GA/G84FRziLIATN2Kv0TcpGUHYAfErQw1bi117SEVskaWLBFYte4V4iAxYd
-         h7wdQcZ0H9102nfO4m9UJvGktHE55k4EfbKXYiE3VN/IG4jnDykYOWUydV0XwCumJA
-         8wa9sv14ToVMeaQBpg1vEKyfsM0d+oHHj5txFXg82qc+QYvb8zsacMTaJG9wyGfGAs
-         75lkK72oMdSBWtQS4mOpj3EeDlTkBJN0qUn2B2iSa9M0PR8l0DKL/zpS8B8qcS1xcX
-         uNHp8zR0M9YLg==
-From:   Mark Brown <broonie@kernel.org>
-To:     Radu Pirea <radu_nicolae.pirea@upb.ro>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Vladimir Oltean <olteanv@gmail.com>, Han Xu <han.xu@nxp.com>,
-        Jean-Marie Verdun <verdun@hpe.com>,
-        Nick Hawkins <nick.hawkins@hpe.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Haibo Chen <haibo.chen@nxp.com>,
-        Yogesh Gaur <yogeshgaur.83@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Sowjanya Komatineni <skomatineni@nvidia.com>,
-        =?utf-8?q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Michal Simek <michal.simek@amd.com>,
-        Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, openbmc@lists.ozlabs.org,
-        linux-arm-msm@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org
-In-Reply-To: <20230714174955.4064174-1-robh@kernel.org>
-References: <20230714174955.4064174-1-robh@kernel.org>
-Subject: Re: [PATCH] spi: Explicitly include correct DT includes
-Message-Id: <168937389002.266788.5461737923596867983.b4-ty@kernel.org>
-Date:   Fri, 14 Jul 2023 23:31:30 +0100
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-099c9
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 14 Jul 2023 18:35:58 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91D432D73
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 15:35:53 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1b896096287so17458785ad.0
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 15:35:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689374153; x=1691966153;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=AqPQXu/AIr+STPlGjrumZEqk7MLinV6fP6qlYwF+Hxk=;
+        b=Tt0V9A0qkpbl5zS0LESlEdwvp+4lS8swsnaM5ygU4p8wmWduWJsTsWiMBUrW9Vh2KL
+         aNiclCU+3JOXB1yiqIKXN6QgR9QdqoTo2RC11ivA+QpKq3HQpnI8PiDAYzg63A260iOT
+         /X8Zs4ITCCFalugl0jsN26LMWffPpuzQBP22vn8lpRSG+H4mTHf3+orEXOoeYZYdfyr2
+         abFsO9FDujBoCuI48/+aMdXB2jBUEMCB+wK+csXPETYbqUkpzTNRqr4u7awtDvgcPp5C
+         u2l7VKka+4qaqK2LwY7H9dgsRxhvzJ+xsqjkh1lzLWjpI9iGg9n1Apbc27ImlTO1X+KO
+         zawA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689374153; x=1691966153;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AqPQXu/AIr+STPlGjrumZEqk7MLinV6fP6qlYwF+Hxk=;
+        b=NZeb9URwOmCYQqrxeEzdFPwpToZMpB10u+aDbJaJWq37thvw8ydwgXzvO6rBah87gK
+         oy1LXfmU3B3Z4tE7CKCZY47lao29cwANMHjG9t23f/B+sQOa8wiNvv+0J8GmuqHlLows
+         khyNij0MocIb9TxpjLgl4nJ8QFmyM/257lPA8jqYVYvuoS/32CSo2dYxA0YKeZVAYIzH
+         WScZmvv1Prhc5Oz4/simhwhG2GQH2QppwQ5gcLOGVZHsnV5e4zp5a/voz4NqFU39kvVZ
+         pRoyzpdgmOCNK5pgmfiLa3h5d4MaC47Fccisp3fEJVxhK0qFOPwvO31VjNWn2w0uJj8d
+         V9fQ==
+X-Gm-Message-State: ABy/qLZ0wnm8F6BPqoETa0dPTSE9R4VfEVT573KZN+r1no5P8v1ZCYOC
+        QcJNX4ROfplGudrtMwy7W9Vg5oK9VcU=
+X-Google-Smtp-Source: APBJJlF9Rovb1aladgpgZPHMCXoqG55aen/Zed897i+LVWocHvfN1RJ6IbmpkTUFw7J9N1WkMXgLw6ub6IY=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:b492:b0:1b9:e338:a90d with SMTP id
+ y18-20020a170902b49200b001b9e338a90dmr17230plr.3.1689374153026; Fri, 14 Jul
+ 2023 15:35:53 -0700 (PDT)
+Date:   Fri, 14 Jul 2023 22:35:51 +0000
+In-Reply-To: <20230714115715.000026fe.zhi.wang.linux@gmail.com>
+Mime-Version: 1.0
+References: <cover.1687991811.git.isaku.yamahata@intel.com>
+ <358fb191b3690a5cbc2c985d3ffc67224df11cf3.1687991811.git.isaku.yamahata@intel.com>
+ <ZLB0ytO7y4NOLWpL@google.com> <20230714115715.000026fe.zhi.wang.linux@gmail.com>
+Message-ID: <ZLHNx5jDjla2+4b0@google.com>
+Subject: Re: [RFC PATCH v3 08/11] KVM: Fix set_mem_attr ioctl when error case
+From:   Sean Christopherson <seanjc@google.com>
+To:     Zhi Wang <zhi.wang.linux@gmail.com>
+Cc:     isaku.yamahata@intel.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+        Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+        Sagi Shahar <sagis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Kai Huang <kai.huang@intel.com>, chen.bo@intel.com,
+        linux-coco@lists.linux.dev,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Yuan Yao <yuan.yao@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 14 Jul 2023 11:49:52 -0600, Rob Herring wrote:
-> The DT of_device.h and of_platform.h date back to the separate
-> of_platform_bus_type before it as merged into the regular platform bus.
-> As part of that merge prepping Arm DT support 13 years ago, they
-> "temporarily" include each other. They also include platform_device.h
-> and of.h. As a result, there's a pretty much random mix of those include
-> files used throughout the tree. In order to detangle these headers and
-> replace the implicit includes with struct declarations, users need to
-> explicitly include the correct includes.
+On Fri, Jul 14, 2023, Zhi Wang wrote:
+> On Thu, 13 Jul 2023 15:03:54 -0700
+> Sean Christopherson <seanjc@google.com> wrote:
+> > +       /*
+> > +        * Reserve memory ahead of time to avoid having to deal with failures
+> > +        * partway through setting the new attributes.
+> > +        */
+> > +       for (i = start; i < end; i++) {
+> > +               r = xa_reserve(&kvm->mem_attr_array, i, GFP_KERNEL_ACCOUNT);
+> > +               if (r)
+> > +                       goto out_unlock;
+> > +       }
+> > +
+> >         KVM_MMU_LOCK(kvm);
+> >         kvm_mmu_invalidate_begin(kvm);
+> >         kvm_mmu_invalidate_range_add(kvm, start, end);
+> >         KVM_MMU_UNLOCK(kvm);
+> >  
+> >         for (i = start; i < end; i++) {
+> > -               if (xa_err(xa_store(&kvm->mem_attr_array, i, entry,
+> > -                                   GFP_KERNEL_ACCOUNT)))
+> > +               r = xa_err(xa_store(&kvm->mem_attr_array, i, entry,
+> > +                                   GFP_KERNEL_ACCOUNT));
+> > +               if (KVM_BUG_ON(r, kvm))
+> >                         break;
+> >         }
+> >
 > 
-> [...]
+> IIUC, If an error happenes here, we should bail out and call xa_release()?
+> Or the code below (which is not shown here) still changes the memory attrs
+> partially.
 
-Applied to
+I'm pretty sure we want to continue on.  The VM is dead (killed by KVM_BUG_ON()),
+so the attributes as seen by userspace and/or the VM don't matter.  What does
+matter is that KVM's internal state is consistent, e.g. that KVM doesn't have
+shared SPTEs while the attributes say a GFN is private.  That might not matter
+for teardown, but I can't think of any reason not to tidy up.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+And there can also be other ioctls() in flight.  KVM_REQ_VM_DEAD ensures vCPU
+can't enter the guest, and vm->vm_dead ensures no new ioctls() cant start, but
+neither of those guarantees there aren't other tasks doing KVM things.
 
-Thanks!
-
-[1/1] spi: Explicitly include correct DT includes
-      commit: 749396cb29a7d82cb5e324bf61be3fc948d97141
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+Regardless, we definitely don't need to do xa_release().  The VM is dead and all
+its memory will be reclaimed soon enough.  And there's no guarantee xa_release()
+will actually be able to free anything, e.g. already processed entries won't be
+freed, nor will any entries that existed _before_ the ioctl() was invoked.  Not
+to mention that the xarray probably isn't consuming much memory, relatively
+speaking.  I.e. in the majority of scenarios, it's likely preferable to get out
+and destroy the VM asap.
