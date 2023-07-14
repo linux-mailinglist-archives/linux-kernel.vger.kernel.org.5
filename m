@@ -2,99 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BACCC752F44
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 04:14:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77BEF752F46
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 04:16:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233638AbjGNCOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 22:14:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48980 "EHLO
+        id S233609AbjGNCQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 22:16:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232126AbjGNCOs (ORCPT
+        with ESMTP id S229723AbjGNCQS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 22:14:48 -0400
+        Thu, 13 Jul 2023 22:16:18 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C987826BA;
-        Thu, 13 Jul 2023 19:14:47 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A427726BA;
+        Thu, 13 Jul 2023 19:16:16 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5E7EB61BB2;
-        Fri, 14 Jul 2023 02:14:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FBB8C433C9;
-        Fri, 14 Jul 2023 02:14:45 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 25F4861BC5;
+        Fri, 14 Jul 2023 02:16:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81EE9C433C7;
+        Fri, 14 Jul 2023 02:16:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689300886;
-        bh=8Su4tH7Uf2tt1RV6zTUILrzWkPBhK4BHT0mVRJAQcJI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cDH6ud/gSUOK41K3v0rFH4a4fpC3iav2I462ewa6HLKUipoWl6sNi6NeIC5hPGEcC
-         3WQPgXaVDYviIstLnH8GMndaqXNF6TZWul5EI+lR+vqJgIGaozHLTsDU3rBTGIpVDy
-         PES2rpu90YlQVKMey+lnkvp0SvaXGBvP9iz1Bp46qQzTbnsskxu/RU2SMzDTqVjs1I
-         djw2U01J2xKK8O21bCJKhlWym4anrGlYbe7Irm+KW3sGyVKjm0iS7hJjU5w0bMBP9x
-         S80E5a9XZbxCMChvU/LwhII/kkr7Wj9cFGAzDQFSLhHkN2Evx12cXUjMYQGhLh2GK7
-         3AFYBgrGal4vw==
-Date:   Fri, 14 Jul 2023 10:14:36 +0800
-From:   Peter Chen <peter.chen@kernel.org>
-To:     Pawel Laszczak <pawell@cadence.com>
-Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] usb: cdnsp: Fixes issue with dequeuing not queued
- requests
-Message-ID: <20230714021436.GA2520702@nchen-desktop>
-References: <20230713081429.326660-1-pawell@cadence.com>
+        s=k20201202; t=1689300975;
+        bh=uAVQKn3XrJvZfXm8GxKUNsUi9JDwhiLuZKguvR0XKN4=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=dRv0ToS9r49I28wAPbW2pKF0ybIjFqTwlsDjH0AB8NQg4H0tdDxR3pUOfMFK3I2zR
+         4+M8AuRrzbMbMPCniCP4ji8JgXDq8Iu0b9f2RTbQ2UsJ+N4sWyPTGGGPH55JwBRD8m
+         yz/2Q84JKIBnqEfY7+VNDf5pxBQlfQud0SLFcZLrXOoxmWfpV4LBCYP4FLGGY1W3ik
+         JMi2CU+iWkDhpJc3wHZEQ2BmBRUL9b+ikJRxRymOuMfKKW9YdL962BK/DSRcQtWK1Q
+         Aor3hrldqO0lS1fETSXX6zR1MBzZqqEtX/E1/OC7LW8QU/5XO0aDInPLfdqhz4xL5V
+         mmyL+6bS+p4cA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 1B97BCE009E; Thu, 13 Jul 2023 19:16:15 -0700 (PDT)
+Date:   Thu, 13 Jul 2023 19:16:15 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Gao Xiang <hsiangkao@linux.alibaba.com>,
+        Sandeep Dhavale <dhavale@google.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-erofs@lists.ozlabs.org, xiang@kernel.org,
+        Will Shiu <Will.Shiu@mediatek.com>, kernel-team@android.com,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH v1] rcu: Fix and improve RCU read lock checks when
+ !CONFIG_DEBUG_LOCK_ALLOC
+Message-ID: <7d433fac-a62d-4e81-b8e5-57cf5f2d1d55@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230713003201.GA469376@google.com>
+ <161f1615-3d85-cf47-d2d5-695adf1ca7d4@linux.alibaba.com>
+ <0d9e7b4d-6477-47a6-b3d2-2c9d9b64903d@paulmck-laptop>
+ <f124e041-6a82-2069-975c-4f393e5c4137@linux.alibaba.com>
+ <87292a44-cc02-4d95-940e-e4e31d0bc6f2@paulmck-laptop>
+ <f1c60dcb-e32f-7b7e-bf0d-5dec999e9299@linux.alibaba.com>
+ <CAEXW_YSODXRfgkR0D2G-x=0uZdsqvF3kZL+LL3DcRX-5CULJ1Q@mail.gmail.com>
+ <894a3b64-a369-7bc6-c8a8-0910843cc587@linux.alibaba.com>
+ <CAEXW_YSM1yik4yWTgZoxCS9RM6TbsL26VCVCH=41+uMA8chfAQ@mail.gmail.com>
+ <58b661d0-0ebb-4b45-a10d-c5927fb791cd@paulmck-laptop>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230713081429.326660-1-pawell@cadence.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <58b661d0-0ebb-4b45-a10d-c5927fb791cd@paulmck-laptop>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23-07-13 04:14:29, Pawel Laszczak wrote:
-> Gadget ACM while unloading module try to dequeue not queued usb
-> request which causes the kernel to crash.
-> Patch adds extra condition to check whether usb request is processed
-> by CDNSP driver.
+On Thu, Jul 13, 2023 at 09:33:35AM -0700, Paul E. McKenney wrote:
+> On Thu, Jul 13, 2023 at 11:33:24AM -0400, Joel Fernandes wrote:
+> > On Thu, Jul 13, 2023 at 10:34 AM Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
+> > > On 2023/7/13 22:07, Joel Fernandes wrote:
+> > > > On Thu, Jul 13, 2023 at 12:59 AM Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
+> > > >> On 2023/7/13 12:52, Paul E. McKenney wrote:
+> > > >>> On Thu, Jul 13, 2023 at 12:41:09PM +0800, Gao Xiang wrote:
+> > > >>
+> > > >> ...
+> > > >>
+> > > >>>>
+> > > >>>> There are lots of performance issues here and even a plumber
+> > > >>>> topic last year to show that, see:
+> > > >>>>
+> > > >>>> [1] https://lore.kernel.org/r/20230519001709.2563-1-tj@kernel.org
+> > > >>>> [2] https://lore.kernel.org/r/CAHk-=wgE9kORADrDJ4nEsHHLirqPCZ1tGaEPAZejHdZ03qCOGg@mail.gmail.com
+> > > >>>> [3] https://lore.kernel.org/r/CAB=BE-SBtO6vcoyLNA9F-9VaN5R0t3o_Zn+FW8GbO6wyUqFneQ@mail.gmail.com
+> > > >>>> [4] https://lpc.events/event/16/contributions/1338/
+> > > >>>> and more.
+> > > >>>>
+> > > >>>> I'm not sure if it's necessary to look info all of that,
+> > > >>>> andSandeep knows more than I am (the scheduling issue
+> > > >>>> becomes vital on some aarch64 platform.)
+> > > >>>
+> > > >>> Hmmm...  Please let me try again.
+> > > >>>
+> > > >>> Assuming that this approach turns out to make sense, the resulting
+> > > >>> patch will need to clearly state the performance benefits directly in
+> > > >>> the commit log.
+> > > >>>
+> > > >>> And of course, for the approach to make sense, it must avoid breaking
+> > > >>> the existing lockdep-RCU debugging code.
+> > > >>>
+> > > >>> Is that more clear?
+> > > >>
+> > > >> Personally I'm not working on Android platform any more so I don't
+> > > >> have a way to reproduce, hopefully Sandeep could give actually
+> > > >> number _again_ if dm-verity is enabled and trigger another
+> > > >> workqueue here and make a comparsion why the scheduling latency of
+> > > >> the extra work becomes unacceptable.
+> > > >>
+> > > >
+> > > > Question from my side, are we talking about only performance issues or
+> > > > also a crash? It appears z_erofs_decompress_pcluster() takes
+> > > > mutex_lock(&pcl->lock);
+> > > >
+> > > > So if it is either in an RCU read-side critical section or in an
+> > > > atomic section, like the softirq path, then it may
+> > > > schedule-while-atomic or trigger RCU warnings.
+> > > >
+> > > > z_erofs_decompressqueue_endio
+> > > > -> z_erofs_decompress_kickoff
+> > > >   ->z_erofs_decompressqueue_work
+> > > >    ->z_erofs_decompress_queue
+> > > >     -> z_erofs_decompress_pcluster
+> > > >      -> mutex_lock
+> > > >
+> > >
+> > > Why does the softirq path not trigger a workqueue instead?
+> > 
+> > I said "if it is". I was giving a scenario. mutex_lock() is not
+> > allowed in softirq context or in an RCU-reader.
+> > 
+> > > > Per Sandeep in [1], this stack happens under RCU read-lock in:
+> > > >
+> > > > #define __blk_mq_run_dispatch_ops(q, check_sleep, dispatch_ops) \
+> > > > [...]
+> > > >                  rcu_read_lock();
+> > > >                  (dispatch_ops);
+> > > >                  rcu_read_unlock();
+> > > > [...]
+> > > >
+> > > > Coming from:
+> > > > blk_mq_flush_plug_list ->
+> > > >                             blk_mq_run_dispatch_ops(q,
+> > > >                                  __blk_mq_flush_plug_list(q, plug));
+> > > >
+> > > > and __blk_mq_flush_plug_list does this:
+> > > >            q->mq_ops->queue_rqs(&plug->mq_list);
+> > > >
+> > > > This somehow ends up calling the bio_endio and the
+> > > > z_erofs_decompressqueue_endio which grabs the mutex.
+> > > >
+> > > > So... I have a question, it looks like one of the paths in
+> > > > __blk_mq_run_dispatch_ops() uses SRCU.  Where are as the alternate
+> > > > path uses RCU. Why does this alternate want to block even if it is not
+> > > > supposed to? Is the real issue here that the BLK_MQ_F_BLOCKING should
+> > > > be set? It sounds like you want to block in the "else" path even
+> > > > though BLK_MQ_F_BLOCKING is not set:
+> > >
+> > > BLK_MQ_F_BLOCKING is not a flag that a filesystem can do anything with.
+> > > That is block layer and mq device driver stuffs. filesystems cannot set
+> > > this value.
+> > >
+> > > As I said, as far as I understand, previously,
+> > > .end_io() can only be called without RCU context, so it will be fine,
+> > > but I don't know when .end_io() can be called under some RCU context
+> > > now.
+> > 
+> > >From what Sandeep described, the code path is in an RCU reader. My
+> > question is more, why doesn't it use SRCU instead since it clearly
+> > does so if BLK_MQ_F_BLOCKING. What are the tradeoffs? IMHO, a deeper
+> > dive needs to be made into that before concluding that the fix is to
+> > use rcu_read_lock_any_held().
 > 
-
-Why ACM does that?
-
-> cc: <stable@vger.kernel.org>
-> Fixes: 3d82904559f4 ("usb: cdnsp: cdns3 Add main part of Cadence USBSSP DRD Driver")
-> Signed-off-by: Pawel Laszczak <pawell@cadence.com>
-> ---
->  drivers/usb/cdns3/cdnsp-gadget.c | 3 +++
->  1 file changed, 3 insertions(+)
+> How can this be solved?
 > 
-> diff --git a/drivers/usb/cdns3/cdnsp-gadget.c b/drivers/usb/cdns3/cdnsp-gadget.c
-> index fff9ec9c391f..3a30c2af0c00 100644
-> --- a/drivers/usb/cdns3/cdnsp-gadget.c
-> +++ b/drivers/usb/cdns3/cdnsp-gadget.c
-> @@ -1125,6 +1125,9 @@ static int cdnsp_gadget_ep_dequeue(struct usb_ep *ep,
->  	unsigned long flags;
->  	int ret;
+> 1.	Always use a workqueue.  Simple, but is said to have performance
+> 	issues.
 > 
-> +	if (request->status != -EINPROGRESS)
-> +		return 0;
-> +
-
-Why not you use pending list which used at cdnsp_ep_enqueue to do this?
-
-
->  	if (!pep->endpoint.desc) {
->  		dev_err(pdev->dev,
->  			"%s: can't dequeue to disabled endpoint\n",
-> -- 
-> 2.37.2
+> 2.	Pass a flag in that indicates whether or not the caller is in an
+> 	RCU read-side critical section.  Conceptually simple, but might
+> 	or might not be reasonable to actually implement in the code as
+> 	it exists now.	(You tell me!)
 > 
+> 3.	Create a function in z_erofs that gives you a decent
+> 	approximation, maybe something like the following.
+> 
+> 4.	Other ideas here.
 
--- 
+5.	#3 plus make the corresponding Kconfig option select
+	PREEMPT_COUNT, assuming that any users needing compression in
+	non-preemptible kernels are OK with PREEMPT_COUNT being set.
+	(Some users of non-preemptible kernels object strenuously
+	to the added overhead from CONFIG_PREEMPT_COUNT=y.)
 
-Thanks,
-Peter Chen
+							Thanx, Paul
+
+> The following is untested, and is probably quite buggy, but it should
+> provide you with a starting point.
+> 
+> static bool z_erofs_wq_needed(void)
+> {
+> 	if (IS_ENABLED(CONFIG_PREEMPTION) && rcu_preempt_depth())
+> 		return true;  // RCU reader
+> 	if (IS_ENABLED(CONFIG_PREEMPT_COUNT) && !preemptible())
+> 		return true;  // non-preemptible
+> 	if (!IS_ENABLED(CONFIG_PREEMPT_COUNT))
+> 		return true;  // non-preeemptible kernel, so play it safe
+> 	return false;
+> }
+> 
+> You break it, you buy it!  ;-)
+> 
+> 							Thanx, Paul
