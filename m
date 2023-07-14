@@ -2,70 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61DD2753C12
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 15:51:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0F2C753C18
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 15:51:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235472AbjGNNvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 09:51:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47238 "EHLO
+        id S235853AbjGNNvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 09:51:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235760AbjGNNve (ORCPT
+        with ESMTP id S235759AbjGNNvj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 09:51:34 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81D5835A0
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 06:51:31 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4fb94b1423eso3347656e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 06:51:31 -0700 (PDT)
+        Fri, 14 Jul 2023 09:51:39 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBA7335AC
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 06:51:32 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-992ca792065so258851066b.2
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 06:51:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=9elements.com; s=google; t=1689342690; x=1691934690;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=aBRkWVB0g8Qm8dyh6//o7Lwn4Q/uU6uVP9gh0M6sy3E=;
-        b=Zi6m+bT1LbXG3N25RVbGeYgxQ56d0Diy7az6zxJQxnUUTzeZKdpCWT7EexnOSqVO+I
-         +PKvpO1facfQ0DHxNSVICdVH0UOesiAUkHlDUZswzriCZh1MMZx/VLuA+BCG61YXZLrU
-         qTHBjc4AL/ao7lyeiEBPpYloHZuoBCM2m9O++P2qXnW+DUKvV+5JucEo/jSwIb5LxQx4
-         SU3zMn1ha3oYgC/JpSKD/tAt11u5tdVyN4IVUubZIoGsZXkuOtkX+k5EKBjc0EbViE5i
-         K0Yrj5PdZkNkSOTb5GUB6KiGXpSu34fIpNmT36pS4yJC7egfxF1UMZPNwacDKqkQfDzi
-         f/VQ==
+        d=9elements.com; s=google; t=1689342691; x=1691934691;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=urifUudkEPyq2FzlaT1w1iDQxgnQEtIqwDDZrLy2t8E=;
+        b=HoaYNMUc+3aRJuYOwNmUedlSGEpUBUGY6lxQ/zMGvOj9K2wQntSgnZkBPOSKVBU3n9
+         JOvML0jRSQx9AFX+U5PqI7PKiQSTaXK1lU7Dy/gIxiq58+VImnTu2PfOsBg5IpZI7VsK
+         q3ulnWZAbSdgguL2WOpDHUaXFDAJj0wjLYErKrHkU/vRdKd/ZCqrP0XfIsws61YnV9Vx
+         xGpfr7pSgCyoguvUWuGLjnubcw/zm1ifpg/0MFj7sMwdRoA/yO5g2essZAU7CA/VYFIl
+         8RzBub+t/S83+3GlRVYB1TLsoYZhmkHzYSA2vZs3sz4JGC2q3tg1JgEoPyaV+cs//2g1
+         pYag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689342690; x=1691934690;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=aBRkWVB0g8Qm8dyh6//o7Lwn4Q/uU6uVP9gh0M6sy3E=;
-        b=S6jtE1z+vbusSjI2At85/r45/vIL3n1WpygA9ua9QtFdXF/hE7mBkAnKqipaPdaDlA
-         FmS133Z5Red6bo5gtGNaFUKelqZ03oWh/SH2cULyN2i6CD4j4MeBacszfpUiK0W7Y0Ld
-         KTBo4Zy/djJTUD9NKpymzQQC4PCMkR2zOLxysOyK0Ma8ghQ6iY9ZTk76DKK0wCnZL11g
-         TF8j/1iaTvnjjspdRryFd4I1UB69ooisjj+jB2WB87k9QrcaGV8PWFkH0TozoIYRn6np
-         9DkngzNoESvLVYqr/Rgeg0P7hCJDKPn//r6ei4tUTBKuaPrx2l61CJdTIBwZqb+w2aNL
-         Zrqw==
-X-Gm-Message-State: ABy/qLYPtSQXeozVmN1Z7O23BTpZdzYyEuxMGPr2lpAL4X50T4SPNiLR
-        0V7Pn2Dq3+CYJ18OQnBf7e+sSw==
-X-Google-Smtp-Source: APBJJlEuLw1IGzH4fZS1r8RK5XTuiItRrFc/00qhHzD6ekUP9PRWebDQk9UN1vFtpSECd0OXh3o4nA==
-X-Received: by 2002:a2e:9c97:0:b0:2b6:dec9:2812 with SMTP id x23-20020a2e9c97000000b002b6dec92812mr4342904lji.33.1689342689670;
-        Fri, 14 Jul 2023 06:51:29 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689342691; x=1691934691;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=urifUudkEPyq2FzlaT1w1iDQxgnQEtIqwDDZrLy2t8E=;
+        b=j5nhusaCbXVmhUj14AgJh+w50GxH0P+9r9d2IaMYR60XWFL9P/kuTwQkb1fVVWPydv
+         62dac0y9pLn0/r27wMY8dsGXGEoBcdSfGTIi0Pb8ZnV1ja5lueCaTGRtKp3uNB+yFzgD
+         bLdD6hG3t0dUkUfai5/e3dxbMVjQIPIhFBnPW7RxYLc+Zvxh9eO2+E7yfbbRVoLdRYzd
+         lA+x27bIe/8/Vj+jkDVaJk3CzqZ55fwcxKhD9e6ixfg4iNX3wUgryoJxoNnPDR/vs/Rg
+         I2mkSG2Xu+ndsyi/sHkm84PDnQ6yIY+HzpK9mOnbluWxIiJO7C8HBF/YitSNheJfx30R
+         yCnA==
+X-Gm-Message-State: ABy/qLbrQe75yfgUEkr6Bwqkd5S35vk2Zf62/yt7rh1pOJXjn4HvMcTF
+        fb6rCH+cmoyby2Zi1YBHyKKruA==
+X-Google-Smtp-Source: APBJJlGAmr0/UJAC8kytY2+fUeQfkDE7VGTOGWyv7yqIHO7IS3vrc7CDFjtiUckxYVrj8UVqqkr0DA==
+X-Received: by 2002:a17:906:57c7:b0:991:fef4:bb7 with SMTP id u7-20020a17090657c700b00991fef40bb7mr3750894ejr.73.1689342691040;
+        Fri, 14 Jul 2023 06:51:31 -0700 (PDT)
 Received: from stroh80.sec.9e.network (ip-078-094-000-051.um19.pools.vodafone-ip.de. [78.94.0.51])
-        by smtp.gmail.com with ESMTPSA id h21-20020a170906261500b0099236e3f270sm5405991ejc.58.2023.07.14.06.51.28
+        by smtp.gmail.com with ESMTPSA id h21-20020a170906261500b0099236e3f270sm5405991ejc.58.2023.07.14.06.51.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 06:51:29 -0700 (PDT)
+        Fri, 14 Jul 2023 06:51:30 -0700 (PDT)
 From:   Naresh Solanki <naresh.solanki@9elements.com>
 X-Google-Original-From: Naresh Solanki <Naresh.Solanki@9elements.com>
 To:     devicetree@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>
+        Jean Delvare <jdelvare@suse.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
 Cc:     linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
         Patrick Rudolph <patrick.rudolph@9elements.com>,
-        Naresh Solanki <Naresh.Solanki@9elements.com>
-Subject: [PATCH v2 1/8] hwmon: (pmbus/mp2975) Fix whitespace error
-Date:   Fri, 14 Jul 2023 15:51:09 +0200
-Message-ID: <20230714135124.2645339-1-Naresh.Solanki@9elements.com>
+        Naresh Solanki <Naresh.Solanki@9elements.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v2 2/8] dt-bindings: trivial-devices: Add MPS MP2971 and MP2973
+Date:   Fri, 14 Jul 2023 15:51:10 +0200
+Message-ID: <20230714135124.2645339-2-Naresh.Solanki@9elements.com>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230714135124.2645339-1-Naresh.Solanki@9elements.com>
+References: <20230714135124.2645339-1-Naresh.Solanki@9elements.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -74,29 +82,30 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Patrick Rudolph <patrick.rudolph@9elements.com>
 
-Fix whitespace error reported by checkpatch.pl
+Add Monolithic Power Systems MP2971 & MP2973 to trivial devices.
 
 Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
 Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- drivers/hwmon/pmbus/mp2975.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/devicetree/bindings/trivial-devices.yaml | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/hwmon/pmbus/mp2975.c b/drivers/hwmon/pmbus/mp2975.c
-index 2109b0458a8b..130cfde52e42 100644
---- a/drivers/hwmon/pmbus/mp2975.c
-+++ b/drivers/hwmon/pmbus/mp2975.c
-@@ -600,7 +600,7 @@ mp2975_vout_ov_scale_get(struct i2c_client *client, struct mp2975_data *data,
- 	if (ret < 0)
- 		return ret;
- 	thres_dev = ret & MP2975_PRT_THRES_DIV_OV_EN ? MP2975_PROT_DEV_OV_ON :
--	                                               MP2975_PROT_DEV_OV_OFF;
-+						       MP2975_PROT_DEV_OV_OFF;
- 
- 	/* Select the gain of remote sense amplifier. */
- 	ret = i2c_smbus_read_word_data(client, PMBUS_VOUT_SCALE_LOOP);
-
-base-commit: 4dbbaf8fbdbd13adc80731b2452257857e4c2d8b
+diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Documentation/devicetree/bindings/trivial-devices.yaml
+index 246863a9bc7e..f639618508a9 100644
+--- a/Documentation/devicetree/bindings/trivial-devices.yaml
++++ b/Documentation/devicetree/bindings/trivial-devices.yaml
+@@ -119,6 +119,10 @@ properties:
+           - fsl,mpr121
+             # Monolithic Power Systems Inc. multi-phase controller mp2888
+           - mps,mp2888
++            # Monolithic Power Systems Inc. multi-phase controller mp2971
++          - mps,mp2971
++            # Monolithic Power Systems Inc. multi-phase controller mp2973
++          - mps,mp2973
+             # Monolithic Power Systems Inc. multi-phase controller mp2975
+           - mps,mp2975
+             # Honeywell Humidicon HIH-6130 humidity/temperature sensor
 -- 
 2.41.0
 
