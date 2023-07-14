@@ -2,80 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54C0875314B
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 07:31:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78ECB753155
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 07:35:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234768AbjGNFbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 01:31:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58930 "EHLO
+        id S235049AbjGNFfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 01:35:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234790AbjGNFav (ORCPT
+        with ESMTP id S235043AbjGNFeg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 01:30:51 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D338CE;
-        Thu, 13 Jul 2023 22:30:49 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BA8A761C27;
-        Fri, 14 Jul 2023 05:30:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61E86C433CA;
-        Fri, 14 Jul 2023 05:30:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689312648;
-        bh=OO3aJGSLrJlHxzbJ/RAQsyOAvgpnOxQpufn7Eu9OMqc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tPRNr0W04D1o76be8JFHxLxu6Ix2T2izn8FdR86uJRf+ZOg9//wXchVpRa/i+OaeR
-         tB6x1+PTZMubhCqxVZXFl7gWTSo7WPzPd8PkFqOCPr/r26FVNloGN2efpe85nSymRg
-         cqzDXYTLtP+3fxVTkImCT9SQcIYxSA/WM5gvgaFym+E20nDkwSyL/fteoWduYcqc93
-         HJjtqnnTaDQvq3aJN7CWxsd9JS4DiaLNhpRNcCGF1s2H6/LPAk1GQC7Xc61NRh5Rqa
-         ymm741oXZ0M0/TVCki0XJ326VxUsdq4xx8me3D+V0WZWeoMeOxNS08P8/iAhaR90yD
-         jFotBQx04DB2Q==
-From:   Bjorn Andersson <andersson@kernel.org>
-To:     agross@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Praveenkumar I <quic_ipkumar@quicinc.com>
-Cc:     quic_varada@quicinc.com
-Subject: Re: (subset) [PATCH 0/1] Add cpu cooling support for ipq9574
-Date:   Thu, 13 Jul 2023 22:34:03 -0700
-Message-ID: <168931284128.1538684.6561992585360702369.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230713083101.971525-1-quic_ipkumar@quicinc.com>
-References: <20230713083101.971525-1-quic_ipkumar@quicinc.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 14 Jul 2023 01:34:36 -0400
+X-Greylist: delayed 73 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 13 Jul 2023 22:34:06 PDT
+Received: from mailgw.gate-on.net (auth.gate-on.net [IPv6:2001:278:1033:4::74:21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B608430C6
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 22:34:06 -0700 (PDT)
+Received: from vega.pgw.jp (unknown [49.135.109.134])
+        by mailgw.gate-on.net (Postfix) with ESMTP id 492DC80189;
+        Fri, 14 Jul 2023 14:34:05 +0900 (JST)
+Received: from localhost (vega.pgw.jp [10.5.0.30])
+        by vega.pgw.jp (Postfix) with SMTP
+        id CC1D8A53D; Fri, 14 Jul 2023 14:34:04 +0900 (JST)
+From:   <kkabe@vega.pgw.jp>
+Content-Type: text/plain; charset=ISO-2022-JP
+To:     regressions@lists.linux.dev
+Cc:     bagasdotme@gmail.com, alexander.deucher@amd.com,
+        christian.koenig@amd.com, Xinhui.Pan@amd.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        hpa@zytor.com, linux-kernel@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, rostedt@goodmis.org,
+        kkabe@vega.pgw.jp
+Subject: Re: radeon.ko/i586: BUG: kernel NULL pointer dereference, address:00000004
+In-Reply-To: Your message of "Fri, 14 Jul 2023 05:44:07 +0200".
+        <55a3bbb1-5b3c-f454-b529-8ee9944cc67c@leemhuis.info>
+X-Mailer: mnews [version 1.22PL5] 2002-11-27(Wed)
+Date:   Fri, 14 Jul 2023 14:34:04 +0900
+Message-ID: <230714143404.M0123570@vega.pgw.jp>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Thanks you all for getting attention to the report: 
 
-On Thu, 13 Jul 2023 14:01:00 +0530, Praveenkumar I wrote:
-> Attached patch adds cpu cooling support for ipq9574.
-> 
-> Praveenkumar I (1):
->   arm64: dts: qcom: ipq9574: Add cpu cooling maps
-> 
-> arch/arm64/boot/dts/qcom/ipq9574.dtsi | 61 +++++++++++++++++++++++----
->  1 file changed, 53 insertions(+), 8 deletions(-)
-> 
-> [...]
+regressions@leemhuis.info sed in <55a3bbb1-5b3c-f454-b529-8ee9944cc67c@leemhuis.info>
 
-Applied, thanks!
+>> On 14.07.23 05:12, Steven Rostedt wrote:
+>> > On Fri, 14 Jul 2023 09:50:17 +0700
+>> > Bagas Sanjaya <bagasdotme@gmail.com> wrote:
+>> > 
+>> >> I notice a regression report on Bugzilla [1]. Quoting from it:
+>> >>
+>> >>
+>> >> See Bugzilla for the full thread and attached patches that fixes
+>> >> this regression.
+>> >>
+>> >> Later, when bisecting, the reporter got better kernel trace:
+>> >>
+>> >>> [  469.825305] BUG: kernel NULL pointer dereference, address: 00000004
+>> >>> [  469.830502] #PF: supervisor read access in kernel mode
+>> >>> [  469.830502] #PF: error_code(0x0000) - not-present page
+>> >>> [  469.830502] *pde = 00000000
+>> >>> [  469.830502] Oops: 0000 [#1] PREEMPT SMP
+>> >>> [  469.830502] CPU: 0 PID: 365 Comm: systemd-udevd Not tainted 5.14.0-221.el9.v1.i586 #1
+>> > 
+>> > This is a 5.14 kernel right?
+>> 
+>> And a vendor kernel that from the sound of the version number might be
+>> heavily patched. But apparently the reporter later bisected this on a
+>> newer kernel (Bagas, would have been good if this had been mentioned in
+>> your earlier mail):
+>> 
+>> https://bugzilla.kernel.org/show_bug.cgi?id=217669#c5
+>> ```
+>> I succeeded to bisect down the regressing commit found in kernel-5.18.0-rc2:
+>> 
+>> b39181f7c690 (refs/bisect/bad) ftrace: Add FTRACE_MCOUNT_MAX_OFFSET to
+>> avoid adding weak function
+>> 
+>> This at a glance does not relate to drm/kms code.
+>> 
+>> The attached patch effectively reverts the commit for 32bit.
+>> This fixed the problem on kernel-5.18.0, but not enough for kernel-6.4.3 ```
+>> 
+>> That being said: That commit is not in 5.18, as Steve noticed:
+>> 
+>> >> #regzbot introduced: b39181f7c6907d https://bugzilla.kernel.org/show_bug.cgi?id=217669
+>> >> #regzbot title: FTRACE_MCOUNT_MAX_OFFSET causes kernel NULL pointer dereference and virtual console (tty1) freeze
+>> > That commit was added in 5.19.
+>> > 
+>> > So I'm confused about why it's mentioned. Was it backported?
+>> 
+>> Taketo Kabe, could you please help to clean this confusion up? Did you
+>> mean 5.19 in https://bugzilla.kernel.org/show_bug.cgi?id=217669#c5 ? And
+>> BTW: did you really use a vanilla kernel for your bisection?
 
-[1/1] arm64: dts: qcom: ipq9574: Add cpu cooling maps
-      commit: 752f585805c559e7c990e7d23e49d03167065761
 
-Best regards,
--- 
-Bjorn Andersson <andersson@kernel.org>
+Reporter Me:
+I bisected using freedesktop.org kernel tree, which git commit ID is
+in sync with kernel.org
+but version number in ./Makefile could be slighty behind. 
+
+Patch in
+https://bugzilla.kernel.org/show_bug.cgi?id=217669#c4
+fixed the problem in freedesktop.org kernel 5.18.0-rc2 .
+This may explain that in kernel.org tree, the said commit is in kernel-5.19.
+
+
+>> TWIMC, there is also
+>> https://bugzilla.kernel.org/show_bug.cgi?id=217669#c6 :
+>> ```
+>> Attached patch sort of fixes the problem; it does not panic and
+>> KMS console works, but printk is triggered 4 times on radeon.ko load and
+>> when VGA connector is plugged in.
+>> 
+>> I am sort of at loss now; I need advice from people which knows better.
+>> 
+>>  --- ./drivers/gpu/drm/drm_internal.h.rd	2023-06-25 21:35:27.506967450 +0900
+>>  +++ ./drivers/gpu/drm/drm_internal.h.rd	2023-06-25 21:36:34.758055363 +0900
+>>  @@ -99,6 +99,10 @@ u64 drm_vblank_count(struct drm_device *
+>>   /* drm_vblank_work.c */
+>>   static inline void drm_vblank_flush_worker(struct drm_vblank_crtc *vblank)
+>>   {
+>>  +	if (!vblank->worker) {
+>>  +		printk(KERN_WARNING "%s: vblank->worker NULL? returning\n", __func__);
+>>  +		return;
+>>  +	}
+>>   	kthread_flush_worker(vblank->worker);
+>>   }
+>> ```
+>> 
+>> Ciao, Thorsten
+>> 
