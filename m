@@ -2,157 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56B4D752F69
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 04:32:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8B2B752F6A
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 04:33:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234393AbjGNCcA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 13 Jul 2023 22:32:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52240 "EHLO
+        id S232834AbjGNCc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 22:32:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231547AbjGNCb4 (ORCPT
+        with ESMTP id S229580AbjGNCcy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 22:31:56 -0400
-Received: from mail-vk1-f169.google.com (mail-vk1-f169.google.com [209.85.221.169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C429C2D63;
-        Thu, 13 Jul 2023 19:31:49 -0700 (PDT)
-Received: by mail-vk1-f169.google.com with SMTP id 71dfb90a1353d-4815756d742so435313e0c.1;
-        Thu, 13 Jul 2023 19:31:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689301909; x=1691893909;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3nTW7gc06oCO+awj0xYoLUkZXhqvUKiuD24Yf6fhtuE=;
-        b=YtWDI73dY00nez3A+XO3CPqLDhZSS1sxSz4DvDpMrBcA+N/HgwY+Bv+L+hylYez5D0
-         4BtKlT1FuIFCAJ7jEdHucn/sv7OqMN2F1wgdFkdwVGpHcjUaXifeVh1KN1iFTCP4CKNU
-         Sa9TlZi0JhARPCzI5P7piIOAQnO0y7B2yRQuxEiFuTEUy6raKTKKp41wGnnPbsugkjuf
-         6a/Zxm0LHYJ3N3ZwW7C54doaGS4LZkxTHU7obQNlM31jkMbKW9ZJV5b7zqN2UNG40xJg
-         jnwDhpoxw3i/pSdSWSBYG4gFcudFlqEDFEXl/j4M/NDAwiGzBoZMTsR2RcMKpy0lfOmH
-         a2ew==
-X-Gm-Message-State: ABy/qLYlvHJMYCoWPSNIXwlXtqbP4dl5v7I4nQBhY0T3QokMrQ6Q/Fjf
-        w9NGWKMdTz9K/zJYoVPRgWKhL0fAKeP6iM0wE5Y=
-X-Google-Smtp-Source: APBJJlFcM/c6143DXDXfpL/riNtIJbjA6mt/IFwh6YTX0AAQ6hBrc+1QjH+nTBRYi5xUjsXKyAVVsqbO0Pd20e5AIHU=
-X-Received: by 2002:a1f:bfd8:0:b0:47e:6e24:7672 with SMTP id
- p207-20020a1fbfd8000000b0047e6e247672mr1885895vkf.13.1689301908691; Thu, 13
- Jul 2023 19:31:48 -0700 (PDT)
+        Thu, 13 Jul 2023 22:32:54 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06F601BF2
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 19:32:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=vnAYT/HuY3ixM7+2cTf3F2/ewTiIm1tWUzzZyDC5XHM=; b=Ai+11+74z+pTCpUL57Bl/gc3Bi
+        ++l4VLNxyssSFQxcPoyVkE7kWuBGXyuiULHDMV0nnZs4srqLMjtZ7zQN9CGJTus0H0JEehMbJWJus
+        AHdoDh5cVhZMKKFflztBkSWAjygvYwZ73gJXtREuK00mTE3Y0RGUM7pUMlxnWFfOxIqQxSWVGNwwh
+        DiIZLPwmSL6YlOHRv5myUwq92OCpyGKYC7Iksk+3yKLxsJxrjqx6pW4Z8AY2GAO1gabON82R9pGi/
+        LJsutyMfXuihkRWOth663d1zdsNati/OjvGeqQQNk4DHztSVQrceEGpCHouSYB1R0ZTFTFBc8Lzpo
+        mzXOToBw==;
+Received: from [2601:1c2:980:9ec0::2764]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qK8bc-004ncU-1Y;
+        Fri, 14 Jul 2023 02:32:28 +0000
+Message-ID: <3b646c8d-4449-40d2-e43a-a3330c77eb29@infradead.org>
+Date:   Thu, 13 Jul 2023 19:32:27 -0700
 MIME-Version: 1.0
-References: <cover.1689024635.git.anupnewsmail@gmail.com> <11543b39f97a7e2f9eac76c1233f1b1caa3f2c48.1689024635.git.anupnewsmail@gmail.com>
- <CAP-5=fXT3a4JE6u8zXf3=xFbOGTre3WD63SMPrA_iSVpgHjDVA@mail.gmail.com>
-In-Reply-To: <CAP-5=fXT3a4JE6u8zXf3=xFbOGTre3WD63SMPrA_iSVpgHjDVA@mail.gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Thu, 13 Jul 2023 19:31:36 -0700
-Message-ID: <CAM9d7cjRhOQfihjg9ddKBmNCkW7CAG3NMWPkJQOAs5MHUxQUuA@mail.gmail.com>
-Subject: Re: [PATCH v3 4/6] scripts: python: Add trace end processing and JSON output
-To:     Ian Rogers <irogers@google.com>
-Cc:     Anup Sharma <anupnewsmail@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: =?UTF-8?Q?Re=3a_=5bPATCH_v2=5d_kernel=3a_resource=3a_Remove_unneces?=
+ =?UTF-8?Q?sary_=e2=80=980=e2=80=99_values_from_err?=
+Content-Language: en-US
+To:     Li kunyu <kunyu@nfschina.com>, dan.j.williams@intel.com,
+        gregkh@linuxfoundation.org, Jonathan.Cameron@huawei.com,
+        ira.weiny@intel.com, bhelgaas@google.com,
+        andriy.shevchenko@linux.intel.com
+Cc:     linux-kernel@vger.kernel.org
+References: <20230715182428.3348-1-kunyu@nfschina.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20230715182428.3348-1-kunyu@nfschina.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anup and Ian,
-
-On Wed, Jul 12, 2023 at 10:28 AM Ian Rogers <irogers@google.com> wrote:
->
-> On Mon, Jul 10, 2023 at 4:13 PM Anup Sharma <anupnewsmail@gmail.com> wrote:
-> >
-> > Inside the trace end function the final output will be dumped
-> > to standard output in JSON gecko format. Additionally, constants
-> > such as USER_CATEGORY_INDEX, KERNEL_CATEGORY_INDEX, CATEGORIES, and
-> > PRODUCT are defined to provide contextual information.
-> >
-> > Signed-off-by: Anup Sharma <anupnewsmail@gmail.com>
->
-> Acked-by: Ian Rogers <irogers@google.com>
-
-I'm ok with this change too but I think it can be squashed to
-patch 1/6 as I think it'd make it more self-contained.  Of course
-you might change time and thread to have empty values.
-
->
-> > ---
-> >  .../scripts/python/firefox-gecko-converter.py | 34 ++++++++++++++++++-
-> >  1 file changed, 33 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/tools/perf/scripts/python/firefox-gecko-converter.py b/tools/perf/scripts/python/firefox-gecko-converter.py
-> > index 0b8a86bdcab1..39818a603265 100644
-> > --- a/tools/perf/scripts/python/firefox-gecko-converter.py
-> > +++ b/tools/perf/scripts/python/firefox-gecko-converter.py
-> > @@ -24,8 +24,40 @@ from Core import *
-> >  thread_map = {}
-> >  start_time = None
-> >
-> > +# Follow Brendan Gregg's Flamegraph convention: orange for kernel and yellow for user
-> > +CATEGORIES = [
-> > +    {'name': 'User', 'color': 'yellow', 'subcategories': ['Other']},
-> > +    {'name': 'Kernel', 'color': 'orange', 'subcategories': ['Other']}
-> > +]
->
-> A follow up could be to make these command line options, defaulting to
-> orange and yellow.
-
-Sounds good.
-
->
-> > +
-> > +# The product name is used by the profiler UI to show the Operating system and Processor.
-> > +PRODUCT = os.popen('uname -op').read().strip()
-
-I'm not against this but having a command name (or full
-command line) of the target process as a title might be better.
-But I'm not sure if the python scripting engine exposed the info
-(like in perf report --header-only) to the script.
-
-Thanks,
-Namhyung
 
 
-> > +
-> >  def trace_end():
-> > -       pass
-> > +    thread_array = thread_map.values()))
-> > +
-> > +    result = {
-> > +        'meta': {
-> > +            'interval': 1,
-> > +            'processType': 0,
-> > +            'product': PRODUCT,
-> > +            'stackwalk': 1,
-> > +            'debug': 0,
-> > +            'gcpoison': 0,
-> > +            'asyncstack': 1,
-> > +            'startTime': start_time,
-> > +            'shutdownTime': None,
-> > +            'version': 24,
-> > +            'presymbolicated': True,
-> > +            'categories': CATEGORIES,
-> > +            'markerSchema': []
-> > +            },
-> > +        'libs': [],
-> > +        'threads': thread_array,
-> > +        'processes': [],
-> > +        'pausedRanges': []
-> > +    }
-> > +    json.dump(result, sys.stdout, indent=2)
-> >
-> >  def process_event(param_dict):
-> >         global start_time
-> > --
-> > 2.34.1
-> >
+On 7/15/23 11:24, Li kunyu wrote:
+> err is assigned first, so it does not need to initialize the assignment.
+> Modify __find_resource execution syntax to make it more in line with
+> commonly used styles.
+> 
+> Signed-off-by: Li kunyu <kunyu@nfschina.com>
+
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+Thanks.
+
+> ---
+>  v2:
+>    Modify __find_resource Execution Syntax.
+> 
+>  kernel/resource.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/resource.c b/kernel/resource.c
+> index b1763b2fd7ef..ee79e8f4f422 100644
+> --- a/kernel/resource.c
+> +++ b/kernel/resource.c
+> @@ -656,13 +656,14 @@ static int reallocate_resource(struct resource *root, struct resource *old,
+>  			       resource_size_t newsize,
+>  			       struct resource_constraint *constraint)
+>  {
+> -	int err=0;
+> +	int err;
+>  	struct resource new = *old;
+>  	struct resource *conflict;
+>  
+>  	write_lock(&resource_lock);
+>  
+> -	if ((err = __find_resource(root, old, &new, newsize, constraint)))
+> +	err = __find_resource(root, old, &new, newsize, constraint);
+> +	if (err)
+>  		goto out;
+>  
+>  	if (resource_contains(&new, old)) {
+
+-- 
+~Randy
