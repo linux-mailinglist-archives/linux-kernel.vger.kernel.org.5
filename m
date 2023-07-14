@@ -2,101 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8630B752F8C
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 04:50:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93D38752F8E
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 04:51:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234296AbjGNCuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 22:50:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58690 "EHLO
+        id S234079AbjGNCvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 22:51:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234066AbjGNCuu (ORCPT
+        with ESMTP id S234066AbjGNCvS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 22:50:50 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3315730C4
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 19:50:41 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9B0AC61793
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 02:50:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE102C433C7;
-        Fri, 14 Jul 2023 02:50:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689303040;
-        bh=2Op+uXao1BbAqsYxyDGL7x1AspWkNmMOL52H6O8XlrA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=XgXytrA5xctbXjnmKoyAio6gnsSaqZ1ilmeF5UOrm8ZyS9SJkBWB0OD73V8oBfKS4
-         LT7K79XTgwvCsSvTJ7qwcYZZ1c88OjOoPLZSNNymE9wd7QkucyWkXXbgePE/QeqmU0
-         4hy3IJRRyBWKSMXsYQ+cYv04mk0+K36hK1VHeHFNHRo9npBQEUr+SepA46756m3jja
-         RT9l2c9Rt0hmRLjxFzwIH4nviMnbqAtyzpSahOI53kLaCk4/OSeCkBbcnuLPNY5jvj
-         11G9hol5O4Tco7KHtx2J3pGiYmLRhZ0v/jSME55360ZSAcklyWRVJE7cs4dquGpsod
-         /hrVlu4Zz6yRg==
-Date:   Thu, 13 Jul 2023 19:50:37 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Maxim Georgiev <glipus@gmail.com>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Vadim Fedorenko <vadim.fedorenko@linux.dev>,
-        Gerhard Engleder <gerhard@engleder-embedded.com>,
-        Hangbin Liu <liuhangbin@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        Wei Fang <wei.fang@nxp.com>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        UNGLinuxDriver@microchip.com,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Steen Hegelund <Steen.Hegelund@microchip.com>,
-        Daniel Machon <daniel.machon@microchip.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        Casper Andersson <casper.casan@gmail.com>,
-        Sergey Organov <sorganov@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 net-next 10/10] net: remove phy_has_hwtstamp() ->
- phy_mii_ioctl() decision from converted drivers
-Message-ID: <20230713195037.34444454@kernel.org>
-In-Reply-To: <20230713121907.3249291-11-vladimir.oltean@nxp.com>
-References: <20230713121907.3249291-1-vladimir.oltean@nxp.com>
-        <20230713121907.3249291-11-vladimir.oltean@nxp.com>
+        Thu, 13 Jul 2023 22:51:18 -0400
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA2D52D6B;
+        Thu, 13 Jul 2023 19:51:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689303067; x=1720839067;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=3ItH7GDLekgA6ZJq1QFTHSD2GE2/QqQMe4ZG5EQNPz4=;
+  b=CN0vSYmwiDh3p/zuVm9jZrfAgRkn3uE4+MtK38IGFFHvuSxbunmr1mqB
+   ihzdjfe8wrOR57eYoL/LT0x7tZpZZbazas3utxTqj9WUEuIYUBjgEm8G+
+   svehUu4ndn/JT/n2G3XaYWvQrXpsuZzx9AzV+g9guhR+H2/HqbVj0tYF0
+   JDqf7+84rPDIj6VO5yZ9lnztGz++XdiaGIXtx28t2ISAkpzk2pcVxVbUw
+   QId3loo1EjEqxYHGFnErVJeVNWSMqRQmq4fAUOR2g8kshnimEBGTuWIwn
+   u7MRiwbRhOrzi94czmLr2DOQDexxZCS60I1TZEZWLvFni7p4PO8xfOTcv
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="362837721"
+X-IronPort-AV: E=Sophos;i="6.01,204,1684825200"; 
+   d="scan'208";a="362837721"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2023 19:51:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="716174394"
+X-IronPort-AV: E=Sophos;i="6.01,204,1684825200"; 
+   d="scan'208";a="716174394"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.252.191.49]) ([10.252.191.49])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2023 19:51:01 -0700
+Message-ID: <ed4200bb-d7e8-b8b5-bfb6-510bebbb8808@linux.intel.com>
+Date:   Fri, 14 Jul 2023 10:50:57 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Cc:     baolu.lu@linux.intel.com,
+        "opensource.kernel" <opensource.kernel@vivo.com>,
+        Thierry Reding <treding@nvidia.com>
+Subject: =?UTF-8?B?UmU6IOWbnuWkjTogW1BBVENIIHY0XSBpb21tdTogcmVtb3ZlIHJlZHVu?=
+ =?UTF-8?Q?dant_parameter_check_in_tegra=5fsmmu=5fdebugfs=5finit=28=29?=
+Content-Language: en-US
+To:     =?UTF-8?B?5p2c5pWP5p2w?= <duminjie@vivo.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        "open list:TEGRA IOMMU DRIVERS" <linux-tegra@vger.kernel.org>,
+        "open list:IOMMU SUBSYSTEM" <iommu@lists.linux.dev>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20230713072825.10348-1-duminjie@vivo.com>
+ <61f31b3e-b618-88db-a07c-f6761c1c7d06@linux.intel.com>
+ <SG2PR06MB5288E9FC9B6EA21E20BB011EAE34A@SG2PR06MB5288.apcprd06.prod.outlook.com>
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <SG2PR06MB5288E9FC9B6EA21E20BB011EAE34A@SG2PR06MB5288.apcprd06.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 13 Jul 2023 15:19:07 +0300 Vladimir Oltean wrote:
->  /**
->   * struct kernel_hwtstamp_config - Kernel copy of struct hwtstamp_config
->   *
-> @@ -26,6 +31,7 @@ struct kernel_hwtstamp_config {
->  	int rx_filter;
->  	struct ifreq *ifr;
->  	bool copied_to_user;
-> +	enum hwtstamp_source source;
->  };
+On 2023/7/14 10:38, 杜敏杰 wrote:
+> Hi baolu!
+> 
+> Thanks for your suggestion!
+> 
+> You say:
+>> Next time when you send a new version of a patch, please don't forget to add the change log after the tear line. This way, people can know how the patch evolved into this way.
+> Do I need to submit a new patch?
 
-source is missing from the kdoc
+Oh no. Just a kind remind. :-)
 
-phy_mii_ioctl() can be in a module so we need a stub / indirection
--- 
-pw-bot: cr
+Best regards,
+baolu
