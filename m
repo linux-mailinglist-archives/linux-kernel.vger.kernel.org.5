@@ -2,204 +2,340 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A56E3753099
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 06:37:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0541775309E
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 06:39:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234907AbjGNEgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 00:36:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38624 "EHLO
+        id S234769AbjGNEj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 00:39:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234497AbjGNEgv (ORCPT
+        with ESMTP id S233939AbjGNEjw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 00:36:51 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0498EE5C;
-        Thu, 13 Jul 2023 21:36:50 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8317D61BE3;
-        Fri, 14 Jul 2023 04:36:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77953C433C7;
-        Fri, 14 Jul 2023 04:36:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689309408;
-        bh=qs1u/ZYJZiaTb0F8yk8LaI3dBfd09CDYXgEOadys3Ug=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=VWryaICehPJ4j7l6Yaff5LNSlGsxj39Rrd1Uz6PbCHNVWRzzA8Lwz6LNOreIv6mgN
-         fEw8/eQF0O5XIw57yGvmclZbN9HZ/UCeNZwxt2o8iUD0QxVQng61+qKRE3zICFlOCK
-         eZIxponL92EMbdrsVsDYs77GlQNLf7L+5+PkO1D7i8Ll320U4lwVi7+zqejbtriIV0
-         JY/I6/LeJGNvbUD9LZpJJ37WCFisfCORc8F+CQRiqOOiZZnhwMUfIz3+cOtQvYQlnS
-         +eWeFlyHa61BInTgOjkxLUDLeOu1wd7nq07EmgPKQnQ2iW71jUikVQGWVw15JcVtQm
-         A7si7OxTiNT0Q==
-Message-ID: <6f1014cd-f8c5-f935-dcc7-4f5a6b85e473@kernel.org>
-Date:   Fri, 14 Jul 2023 06:36:41 +0200
+        Fri, 14 Jul 2023 00:39:52 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC28E211F
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 21:39:50 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-992f15c36fcso192794766b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 21:39:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689309589; x=1691901589;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=CcH/aystrJ6CXZA8qG6BNZCfnNcu6DPOcQ2YDR7bZSY=;
+        b=k7n5n485J1PiibEInR+NucF0IFX6VaNJKOxdlB+4JT14IV9tLE85n2oBtfv27e315U
+         l4f+Lw0gE3ozgZWAq+6pggNNRfAa/JpxUMlKLAAV28wT4NzfY1U6+nPr1dVw7Hn36DJL
+         teW3DKfnO+06lZCijccCFZdGcMZ71Vv5MmQ1Sx8RCX69nIRVIveknuYnjaVx6YlRdwgo
+         Vb4YbieQFQs7zqfSB16rX231WnbzWM9+GZ6Mb1pluy4jOoVcQ5m6n4ge1nwU8yKrrSNk
+         0OnVDNHnFlRGCCDYk1zbqTxAlDuQ8OL2+9cJRhgjbcAAJXeSwtMZ1SCHgiMG1ebkf69W
+         Mp6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689309589; x=1691901589;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CcH/aystrJ6CXZA8qG6BNZCfnNcu6DPOcQ2YDR7bZSY=;
+        b=fJNjeHNMUPUMOzcCSsfuJEfa8Sx9zVkDI7uXaOE/tpWNbDCnWNnt+E/LICvyUUwd5d
+         TnwZQ2lhXhNb58ovueZFJBCG+NfYhKAvbjFNTdx+T1QNmtQxKmaqgSe0ATFK3h6Iuau5
+         fF/XMyOKQe7+HUwNWzzEJR7LphEDyCc0cFB6pO6YTew4j3NISntMmo8DAPYcX4O+ydCe
+         Zdd6vsPH77gzg2Is2GaNT/2DSUiygJR/AdBiUjge5TXrbhyK8iiZFIzVxYMwMaQGT6Ob
+         0kXHKnb6PCo61BaJmAp0yJWW/yWuo7CGccb4Hf3CfWGJFnzfRayvJ6DHqoAcTdEe9tUq
+         /khw==
+X-Gm-Message-State: ABy/qLaCRr7KmNjXTbku73yQ2ajfTNvpRUgeUJO/e+BBy+fR+vRBHPxH
+        ndR4HT2mZfp1567uuY0xqjGw9ifVHfISHqTI3mQEYkhPS5s=
+X-Google-Smtp-Source: APBJJlEuq+iUhWyYpsiUm7tLfKO5iMwpDe3tQbjuHaLQsslI+h6Nmr2eiYZ0ugup+KCTh47JYItZ7XNRevGp7Hl0lw0=
+X-Received: by 2002:a17:907:bc7:b0:993:f4cd:34b5 with SMTP id
+ ez7-20020a1709070bc700b00993f4cd34b5mr2630462ejc.29.1689309589187; Thu, 13
+ Jul 2023 21:39:49 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH docs] docs: maintainer: document expectations of small
- time maintainers
-To:     Jakub Kicinski <kuba@kernel.org>, corbet@lwn.net
-Cc:     workflows@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org
-References: <20230713223432.1501133-1-kuba@kernel.org>
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-In-Reply-To: <20230713223432.1501133-1-kuba@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+From:   Dave Airlie <airlied@gmail.com>
+Date:   Fri, 14 Jul 2023 14:39:37 +1000
+Message-ID: <CAPM=9txdhgYF63eL7VMpc3gmnvCz=gnxLW=HwTRNHNU8geU5Ww@mail.gmail.com>
+Subject: [git pull] drm fixes for 6.5-rc2
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/07/2023 00:34, Jakub Kicinski wrote:
-> We appear to have a gap in our process docs. We go into detail
-> on how to contribute code to the kernel, and how to be a subsystem
-> maintainer. I can't find any docs directed towards the thousands
-> of small scale maintainers, like folks maintaining a single driver
-> or a single network protocol.
-> 
-> Document our expectations and best practices. I'm hoping this doc
-> will be particularly useful to set expectations with HW vendors.
-> 
-> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-> ---
-> Please consider this more of a draft than a statement of my opinion.
-> IOW prefer suggesting edits over arguing about correctness, hope
-> that makes sense.
-> ---
->  .../feature-and-driver-maintainers.rst        | 159 ++++++++++++++++++
->  Documentation/maintainer/index.rst            |   1 +
->  2 files changed, 160 insertions(+)
->  create mode 100644 Documentation/maintainer/feature-and-driver-maintainers.rst
-> 
-> diff --git a/Documentation/maintainer/feature-and-driver-maintainers.rst b/Documentation/maintainer/feature-and-driver-maintainers.rst
-> new file mode 100644
-> index 000000000000..ee8ccc22b16a
-> --- /dev/null
-> +++ b/Documentation/maintainer/feature-and-driver-maintainers.rst
-> @@ -0,0 +1,159 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +==============================
-> +Feature and driver maintainers
-> +==============================
-> +
-> +The term "maintainer" spans a very wide range of levels of engagement
-> +from people handling patches and pull requests as almost a full time job
-> +to people responsible for a small feature or a driver.
-> +
-> +Unlike most of the chapter, this section is meant for the latter (more
-> +populous) group. It provides tips and describes the expectations and
-> +responsibilities of maintainers of a small(ish) section of the code.
-> +
-> +Driver and alike most often do not have their own mailing lists and
-> +git trees but instead send and review patches on the list of a larger
-> +subsystem.
-> +
-> +Responsibilities
-> +================
-> +
-> +The amount of maintenance work is usually proportional to the size
-> +and popularity of the code base. Small features and drivers should
-> +require relatively small amount of care and feeding. Nonetheless
-> +when the work does arrive (in form of patches which need review,
-> +user bug reports etc.) it has to be acted upon very promptly.
-> +Even when single driver only sees one patch a month, or a quarter,
-> +a subsystem could well have a hundred such drivers. Subsystem
-> +maintainers cannot afford to wait a long time to hear from reviewers.
-> +
-> +The exact expectations on the review time will vary by subsystem
-> +from 1 day (e.g. networking) to a week in smaller subsystems.
+Hey Linus,
 
-Two weeks is the upper limit.
+There were a bunch of fixes lined up for 2 weeks, so we have quite a
+few scattered fixes, mostly amdgpu and i915, but ttm has a bunch and
+nouveau makes an appearance.
 
-> +
-> +Mailing list participation
-> +--------------------------
-> +
-> +Linux kernel uses mailing lists as the primary form of communication.
-> +Maintainers must be subscribed and follow the appropriate subsystem-wide
-> +mailing list. Either by subscribing to the whole list or using more
-> +modern, selective setup like
-> +`lei <https://people.kernel.org/monsieuricon/lore-lei-part-1-getting-started>`_.
-> +
-> +Maintainers must know how to communicate on the list (plain text, no invasive
-> +legal footers, no top posting, etc.)
-> +
-> +Reviews
-> +-------
-> +
-> +Maintainers must review *all* patches touching exclusively their drivers,
+So a bit busier than usual for rc2, but nothing seems out of the ordinary.
 
-I don't agree with this as a small driver maintainer. Several subsystem
-maintainers take the patches much faster than I am able to check the
-inbox. I can provide names if you need some proves. With such criteria I
-should be removed from maintainers, because I am not able to review
-within 24h.
+Dave.
 
-Either give reasonable time, like two weeks, or don't require driver
-maintainers to be 24/7 for subystem maintainer disposal. This is very
-unfair rule.
+drm-fixes-2023-07-14-1:
+drm fixes for 6.5-rc2
 
-> +no matter how trivial. If the patch is a tree wide change and modifies
-> +multiple drivers - whether to provide a review is left to the maintainer.
-> +
-> +There should be multiple maintainers for any piece of code, an ``Acked-by``
-> +or ``Reviewed-by`` tag (or review comments) from a single maintainer is
-> +enough to satisfy this requirement.
-> +
-> +If review process or validation for a particular change will take longer
-> +than the expected review timeline for the subsystem, maintainer should
-> +reply to the submission indicating that the work is being done, and when
-> +to expect full results.
-> +
-> +Refactoring and core changes
-> +----------------------------
-> +
-> +Occasionally core code needs to be changed to improve the maintainability
-> +of the kernel as a whole. Maintainers are expected to be present and
-> +help guide and test changes to their code to fit the new infrastructure.
-> +
-> +Bug reports
-> +-----------
-> +
-> +Maintainers must respond to and address bug reports. The bug reports
+fbdev:
+- dma: Fix documented default preferred_bpp value
 
-This is even more unreasonable than previous 1 day review. I don't have
-capabilities to address bug reports for numerous drivers I am
-maintaining. I don't have hardware, I don't have time, no one pays me
-for it. I still need some life outside of working hours, so expecting
-both reviews in 1 day and addressing bugs is way too much.
+ttm:
+- fix warning that we shouldn't mix && and ||
+- never consider pinned BOs for eviction&swap
+- Don't leak a resource on eviction error
+- Don't leak a resource on swapout move error
+- fix bulk_move corruption when adding a entry
 
-> +range from users reporting real life crashes, thru errors discovered
-> +in fuzzing to reports of issues with the code found by static analysis
-> +tools and new compiler warnings.
-> +
-> +Volunteer maintainers are only required to address bugs and regressions.
+client:
+- Send hotplug event after registering a client
 
-"Only required"? That's not "only" but a lot.
+dma-buf:
+- keep the signaling time of merged fences v3
+- fix an error pointer vs NULL bug
 
-> +It is understood that due to lack of access to documentation and
-> +implementation details they may not be able to solve all problems.
+sched:
+- wait for all deps in kill jobs
+- call set fence parent from scheduled
 
-So how do I address? Say "Oh, that's bad"?
+i915:
+- Don't preserve dpll_hw_state for slave crtc in Bigjoiner
+- Consider OA buffer boundary when zeroing out reports
+- Remove dead code from gen8_pte_encode
+- Fix one wrong caching mode enum usage
 
-Jakub, with both of your criteria - reviewing and addressing - I should
-be dropped from all the driver maintainership. If this document passes,
-I will do it - drop myself - because:
-1. No one pays me for it,
-2. I barely have hardware,
-3. I want to live a life and I am already working much more than 8h per day.
+amdgpu:
+- SMU i2c locking fix
+- Fix a possible deadlock in process restoration for ROCm apps
+- Disable PCIe lane/speed switching on Intel platforms (the platforms
+don't support it)
 
+nouveau:
+- disp: fix HDMI on gt215+
+- disp/g94: enable HDMI
+- acr: Abort loading ACR if no firmware was found
+- bring back blit subchannel for pre nv50 GPUs
+- Fix drm_dp_remove_payload() invocation
 
-Best regards,
-Krzysztof
+ivpu:
+- Fix VPU register access in irq disable
+- Clear specific interrupt status bits on C0
 
+bridge:
+- dw_hdmi: fix connector access for scdc
+- ti-sn65dsi86: Fix auxiliary bus lifetime
+
+panel:
+- simple: Add connector_type for innolux_at043tn24
+- simple: Add Powertip PH800480T013 drm_display_mode flags
+The following changes since commit 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5=
+:
+
+  Linux 6.5-rc1 (2023-07-09 13:53:13 -0700)
+
+are available in the Git repository at:
+
+  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2023-07-14-1
+
+for you to fetch changes up to 38d88d5e97c9032ebeca092b9372209f2ca92cdf:
+
+  Merge tag 'amd-drm-fixes-6.5-2023-07-12' of
+https://gitlab.freedesktop.org/agd5f/linux into drm-fixes (2023-07-14
+13:19:54 +1000)
+
+----------------------------------------------------------------
+drm fixes for 6.5-rc2
+
+fbdev:
+- dma: Fix documented default preferred_bpp value
+
+ttm:
+- fix warning that we shouldn't mix && and ||
+- never consider pinned BOs for eviction&swap
+- Don't leak a resource on eviction error
+- Don't leak a resource on swapout move error
+- fix bulk_move corruption when adding a entry
+
+client:
+- Send hotplug event after registering a client
+
+dma-buf:
+- keep the signaling time of merged fences v3
+- fix an error pointer vs NULL bug
+
+sched:
+- wait for all deps in kill jobs
+- call set fence parent from scheduled
+
+i915:
+- Don't preserve dpll_hw_state for slave crtc in Bigjoiner
+- Consider OA buffer boundary when zeroing out reports
+- Remove dead code from gen8_pte_encode
+- Fix one wrong caching mode enum usage
+
+amdgpu:
+- SMU i2c locking fix
+- Fix a possible deadlock in process restoration for ROCm apps
+- Disable PCIe lane/speed switching on Intel platforms (the platforms
+don't support it)
+
+nouveau:
+- disp: fix HDMI on gt215+
+- disp/g94: enable HDMI
+- acr: Abort loading ACR if no firmware was found
+- bring back blit subchannel for pre nv50 GPUs
+- Fix drm_dp_remove_payload() invocation
+
+ivpu:
+- Fix VPU register access in irq disable
+- Clear specific interrupt status bits on C0
+
+bridge:
+- dw_hdmi: fix connector access for scdc
+- ti-sn65dsi86: Fix auxiliary bus lifetime
+
+panel:
+- simple: Add connector_type for innolux_at043tn24
+- simple: Add Powertip PH800480T013 drm_display_mode flags
+
+----------------------------------------------------------------
+Adri=C3=A1n Larumbe (1):
+      drm: bridge: dw_hdmi: fix connector access for scdc
+
+Boris Brezillon (2):
+      drm/sched: Make sure we wait for all dependencies in kill_jobs_cb()
+      drm/sched: Call drm_sched_fence_set_parent() from
+drm_sched_fence_scheduled()
+
+Christian K=C3=B6nig (3):
+      drm/ttm: fix warning that we shouldn't mix && and ||
+      dma-buf: keep the signaling time of merged fences v3
+      drm/ttm: never consider pinned BOs for eviction&swap
+
+Dan Carpenter (1):
+      dma-buf: fix an error pointer vs NULL bug
+
+Dave Airlie (3):
+      Merge tag 'drm-misc-fixes-2023-07-13' of
+ssh://git.freedesktop.org/git/drm/drm-misc into drm-fixes
+      Merge tag 'drm-intel-fixes-2023-07-13' of
+git://anongit.freedesktop.org/drm/drm-intel into drm-fixes
+      Merge tag 'amd-drm-fixes-6.5-2023-07-12' of
+https://gitlab.freedesktop.org/agd5f/linux into drm-fixes
+
+Douglas Anderson (1):
+      drm/bridge: ti-sn65dsi86: Fix auxiliary bus lifetime
+
+Evan Quan (1):
+      drm/amd/pm: share the code around SMU13 pcie parameters update
+
+Fabio Estevam (1):
+      drm/panel: simple: Add connector_type for innolux_at043tn24
+
+Geert Uytterhoeven (1):
+      drm/fbdev-dma: Fix documented default preferred_bpp value
+
+Karol Herbst (4):
+      drm/nouveau/disp: fix HDMI on gt215+
+      drm/nouveau/disp/g94: enable HDMI
+      drm/nouveau/acr: Abort loading ACR if no firmware was found
+      drm/nouveau: bring back blit subchannel for pre nv50 GPUs
+
+Karol Wachowski (2):
+      accel/ivpu: Fix VPU register access in irq disable
+      accel/ivpu: Clear specific interrupt status bits on C0
+
+Lyude Paul (1):
+      drm/nouveau/kms/nv50-: Fix drm_dp_remove_payload() invocation
+
+Marek Vasut (1):
+      drm/panel: simple: Add Powertip PH800480T013 drm_display_mode flags
+
+Mario Limonciello (3):
+      drm/amd/pm: conditionally disable pcie lane/speed switching for SMU13
+      drm/amd: Move helper for dynamic speed switch check out of smu13
+      drm/amd: Align SMU11 SMU_MSG_OverridePcieParameters
+implementation with SMU13
+
+Maxime Ripard (1):
+      Merge v6.5-rc1 into drm-misc-fixes
+
+Stanislav Lisovskiy (1):
+      drm/i915: Don't preserve dpll_hw_state for slave crtc in Bigjoiner
+
+Thomas Hellstr=C3=B6m (2):
+      drm/ttm: Don't leak a resource on eviction error
+      drm/ttm: Don't leak a resource on swapout move error
+
+Thomas Zimmermann (1):
+      drm/client: Send hotplug event after registering a client
+
+Tvrtko Ursulin (2):
+      drm/i915: Remove dead code from gen8_pte_encode
+      drm/i915: Fix one wrong caching mode enum usage
+
+Umesh Nerlige Ramappa (1):
+      drm/i915/perf: Consider OA buffer boundary when zeroing out reports
+
+Yang Wang (1):
+      drm/amd/pm: fix smu i2c data read risk
+
+Yunxiang Li (1):
+      drm/ttm: fix bulk_move corruption when adding a entry
+
+gaba (1):
+      drm/amdgpu: avoid restore process run into dead loop.
+
+ drivers/accel/ivpu/ivpu_drv.h                      |  1 +
+ drivers/accel/ivpu/ivpu_hw_mtl.c                   | 20 +++--
+ drivers/dma-buf/dma-fence-unwrap.c                 | 26 ++++++-
+ drivers/dma-buf/dma-fence.c                        |  7 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu.h                |  1 +
+ drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c   |  3 +
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c         | 19 +++++
+ drivers/gpu/drm/amd/pm/swsmu/inc/smu_v13_0.h       |  4 +
+ drivers/gpu/drm/amd/pm/swsmu/smu11/arcturus_ppt.c  |  2 +-
+ drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c    |  2 +-
+ .../drm/amd/pm/swsmu/smu11/sienna_cichlid_ppt.c    | 91 +++++-------------=
+----
+ drivers/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c |  2 +-
+ drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0.c     | 48 ++++++++++++
+ .../gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_0_ppt.c   | 35 +--------
+ .../gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_6_ppt.c   |  2 +-
+ .../gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_7_ppt.c   | 33 +-------
+ drivers/gpu/drm/armada/armada_fbdev.c              |  4 -
+ drivers/gpu/drm/bridge/synopsys/dw-hdmi.c          |  9 ++-
+ drivers/gpu/drm/bridge/ti-sn65dsi86.c              | 35 +++++----
+ drivers/gpu/drm/drm_client.c                       | 21 +++++
+ drivers/gpu/drm/drm_fbdev_dma.c                    |  6 +-
+ drivers/gpu/drm/drm_fbdev_generic.c                |  4 -
+ drivers/gpu/drm/drm_syncobj.c                      |  6 +-
+ drivers/gpu/drm/exynos/exynos_drm_fbdev.c          |  4 -
+ drivers/gpu/drm/gma500/fbdev.c                     |  4 -
+ drivers/gpu/drm/i915/display/intel_display.c       |  1 -
+ drivers/gpu/drm/i915/gt/gen8_ppgtt.c               |  3 -
+ drivers/gpu/drm/i915/gt/intel_gtt.c                |  2 +-
+ drivers/gpu/drm/i915/i915_perf.c                   | 11 ++-
+ drivers/gpu/drm/msm/msm_fbdev.c                    |  4 -
+ drivers/gpu/drm/nouveau/dispnv50/disp.c            |  8 +-
+ drivers/gpu/drm/nouveau/nouveau_chan.c             |  1 +
+ drivers/gpu/drm/nouveau/nouveau_chan.h             |  1 +
+ drivers/gpu/drm/nouveau/nouveau_drm.c              | 20 ++++-
+ drivers/gpu/drm/nouveau/nvkm/engine/disp/g94.c     |  1 +
+ drivers/gpu/drm/nouveau/nvkm/engine/disp/gt215.c   |  2 +-
+ drivers/gpu/drm/nouveau/nvkm/subdev/acr/base.c     |  2 +-
+ drivers/gpu/drm/omapdrm/omap_fbdev.c               |  4 -
+ drivers/gpu/drm/panel/panel-simple.c               |  2 +
+ drivers/gpu/drm/radeon/radeon_fbdev.c              |  4 -
+ drivers/gpu/drm/scheduler/sched_entity.c           | 41 ++++++++--
+ drivers/gpu/drm/scheduler/sched_fence.c            | 40 ++++++----
+ drivers/gpu/drm/scheduler/sched_main.c             |  3 +-
+ drivers/gpu/drm/tegra/fbdev.c                      |  4 -
+ drivers/gpu/drm/ttm/ttm_bo.c                       | 29 ++++---
+ drivers/gpu/drm/ttm/ttm_resource.c                 |  5 +-
+ include/drm/gpu_scheduler.h                        |  5 +-
+ include/linux/dma-fence.h                          |  2 +-
+ 48 files changed, 318 insertions(+), 266 deletions(-)
