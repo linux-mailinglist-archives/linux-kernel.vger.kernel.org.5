@@ -2,144 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFB8F753710
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:50:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACA7775370B
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:49:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235918AbjGNJuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 05:50:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40306 "EHLO
+        id S235510AbjGNJt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 05:49:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235993AbjGNJti (ORCPT
+        with ESMTP id S235961AbjGNJtF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 05:49:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BC1530C5
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 02:48:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689328118;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Z97MyfIRibDWN3rLru1qWEoPopdMmVgdKe32TsvDViA=;
-        b=eJaT95ayOIAEI7n/JVF5JZAiVFi7w/cF4Vz+QBfAASHVp9uGKsMD78VAn857GHhPJNSm0v
-        EEGksbZwN6LMtkxqqEn7Z0CnDnnYP+1kwSz1EbPMFwCIjXtkY3jr/Z62mS4SRqhpP3/JnQ
-        rtzWooAA3iSp0XHY8niFyVaXTeXeW20=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-215-hBRFV0bkPP-mj81xvxsfmQ-1; Fri, 14 Jul 2023 05:48:37 -0400
-X-MC-Unique: hBRFV0bkPP-mj81xvxsfmQ-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-315a03cae87so1153813f8f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 02:48:37 -0700 (PDT)
+        Fri, 14 Jul 2023 05:49:05 -0400
+Received: from mail-ed1-x549.google.com (mail-ed1-x549.google.com [IPv6:2a00:1450:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B93D73AB1
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 02:48:54 -0700 (PDT)
+Received: by mail-ed1-x549.google.com with SMTP id 4fb4d7f45d1cf-51d981149b5so1041114a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 02:48:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689328133; x=1691920133;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=LgB9Mhn/4by5bCjJpUEX/UcsNdb0bdjrrqXERtCyeLI=;
+        b=C3GVqpZj6i0V8gkeGoO6N72GIt8HeLW1V5EMHZbZAE7/3bqd+2NE3EZ8b624qO0BD3
+         jTO0ejZIZ84R7+1oKeHt05CyuT8Yx571+hljrlG5bjx1A1tD1ebv55QLpfBRWvTwo4AF
+         GzCHxriMdWWJVLRQKR+UjdxcFE3HjYbbFlnfTPROo/NYJ+hrJAVz/+FBBQYzZd4j2l7+
+         NJDISCiRb0ci+5wZj6nIp6DrgMm7Wj6aX5gOS4SEwwMGtbmLUrQbwlhBZT/VSrNLaG1X
+         qJ5wEbRmzJVJbeja9uKq4s2N1dI/cKc9HshqAOGM81iO2tuSTFwCkfsqx/D/Rb7xc8X2
+         Bqlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689328116; x=1691920116;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Z97MyfIRibDWN3rLru1qWEoPopdMmVgdKe32TsvDViA=;
-        b=J6IPfBbN2vlcLisjD/jiIIMgb+G/GL6b6w6D15ymThxSUNjFa8MbyMwBj0i5s4bc4N
-         Bj5jZoeknbeDWZE7tK2EtxGA3aC8DnH4T6xVStm/VsUR6OIMomkIem4idTXhNY+VdyVX
-         yuMlaBEnOS3rqM1ygEjy+gfWyA019d8EQHgD2LLU/aXYhAX4OWSfmjG5OE0UU7mYWvs4
-         cZYOijFydgeFQD9/hxyZnxA6+q6YBFpGHMqQIaT8Bl/B26t+Tyki5cLd0VU5edtAQgZN
-         rsF0ugmoWVr1xhZU2O06N3P4FvrpPefz2ObQfgJcX1blKx6qGNE6ephQe6qL07JkGCTb
-         vcFw==
-X-Gm-Message-State: ABy/qLZ9nSlTxXLJVaOPBOkOJTviBar4oCbZ5HZ5/6xSoEViZCCbuGOe
-        OCFbtFmJIpCgL1DjyyFLP5D9f9Pjo7+hkyFxcm8nTVczUUUSuRKcASsahJUxPmwa6lwZf8wyf6o
-        hWlbrIN3ujDdNytYjL5oHG/7x
-X-Received: by 2002:a05:600c:4f46:b0:3fa:125c:8d65 with SMTP id m6-20020a05600c4f4600b003fa125c8d65mr1901783wmq.3.1689328116106;
-        Fri, 14 Jul 2023 02:48:36 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGWfZIJyNMIOBOjrpSYm8OGTuUPCpFBy2GQgf6h3deOqmpOOP4cjW8gyAPZVAGHfk4rYWHYVQ==
-X-Received: by 2002:a05:600c:4f46:b0:3fa:125c:8d65 with SMTP id m6-20020a05600c4f4600b003fa125c8d65mr1901768wmq.3.1689328115848;
-        Fri, 14 Jul 2023 02:48:35 -0700 (PDT)
-Received: from localhost ([91.126.32.244])
-        by smtp.gmail.com with ESMTPSA id s8-20020a7bc388000000b003fb41491670sm1013494wmj.24.2023.07.14.02.48.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 02:48:35 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 1/8] drm/ssd130x: Fix pitch calculation in
- ssd130x_fb_blit_rect()
-In-Reply-To: <CAMuHMdVAXPqjSNGMrZQ2g8FNNL4f7PbdoUCi17g9YOdoqmjFpQ@mail.gmail.com>
-References: <cover.1689252746.git.geert@linux-m68k.org>
- <54deec2ec533e90544faa8c60a0c2518c58f3e9c.1689252746.git.geert@linux-m68k.org>
- <87r0pau99o.fsf@minerva.mail-host-address-is-not-set>
- <CAMuHMdVAXPqjSNGMrZQ2g8FNNL4f7PbdoUCi17g9YOdoqmjFpQ@mail.gmail.com>
-Date:   Fri, 14 Jul 2023 11:48:34 +0200
-Message-ID: <874jm69631.fsf@minerva.mail-host-address-is-not-set>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1689328133; x=1691920133;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LgB9Mhn/4by5bCjJpUEX/UcsNdb0bdjrrqXERtCyeLI=;
+        b=fpRfNSj2JKEOfc0NnesP5RC98+P4EFnM8Uysw01gMjpEDlXNi3RvJzd/OygN97T2AE
+         S1Swx7KEXFXdjlmzIUUwDAvtzqDMjRVV9dYU4pP1sl+h4c1q/dgEIWNQY3BsWY4YJTap
+         KGD5MthjwbOEXqr4M/DpsryUga2HobdHHWn7SdWjS77bs176x5knd+w3EF2rnijHZ963
+         Xu3xHGXQBvNzDxS5guGQAkczqwoGZ/UorsQAd00faTDe4HsegwVFTH9IkdmB3XX0o1Xx
+         GCv51AgAqkB0cDBU9akfufvZHbcROl1vHTLejO+TXi6uivTbIxc0HHj2JTd0unAyZVVe
+         Qzwg==
+X-Gm-Message-State: ABy/qLaqhV5HrutcKoQandQFHJIstIVdDXK+yZtCItLpAuptRXs/FoJQ
+        /FZWAcMYA+4MGmotXLcxPncoM/jmkxLj3GE=
+X-Google-Smtp-Source: APBJJlFX3YPOyr7+HJnYzpBJU6w92y6qG7Iwif9vTDearcfvz9cn3ZRfZBU1/7bS7OzWLsIsm/mXxa4S1pwPyb0=
+X-Received: from aliceryhl.c.googlers.com ([fda3:e722:ac3:cc00:31:98fb:c0a8:6c8])
+ (user=aliceryhl job=sendgmr) by 2002:a17:907:2c78:b0:98e:10f5:db52 with SMTP
+ id ib24-20020a1709072c7800b0098e10f5db52mr9590ejc.7.1689328133162; Fri, 14
+ Jul 2023 02:48:53 -0700 (PDT)
+Date:   Fri, 14 Jul 2023 09:48:44 +0000
+In-Reply-To: <20230714-cstring-debug-v1-1-4e7c3018dd4f@asahilina.net>
+Mime-Version: 1.0
+References: <20230714-cstring-debug-v1-1-4e7c3018dd4f@asahilina.net>
+X-Mailer: git-send-email 2.41.0.255.g8b1d071c50-goog
+Message-ID: <20230714094844.2189906-1-aliceryhl@google.com>
+Subject: Re: [PATCH] rust: kernel: str: Implement Debug for CString
+From:   Alice Ryhl <aliceryhl@google.com>
+To:     lina@asahilina.net
+Cc:     alex.gaynor@gmail.com, asahi@lists.linux.dev,
+        benno.lossin@proton.me, bjorn3_gh@protonmail.com,
+        boqun.feng@gmail.com, gary@garyguo.net,
+        linux-kernel@vger.kernel.org, ojeda@kernel.org,
+        rust-for-linux@vger.kernel.org, wedsonaf@gmail.com,
+        Alice Ryhl <aliceryhl@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Geert Uytterhoeven <geert@linux-m68k.org> writes:
+Asahi Lina <lina@asahilina.net> writes:
+> Trivial implementation.
+> 
+> Signed-off-by: Asahi Lina <lina@asahilina.net>
 
-> Hi Javier,
->
-> On Fri, Jul 14, 2023 at 11:34=E2=80=AFAM Javier Martinez Canillas
-> <javierm@redhat.com> wrote:
->> Geert Uytterhoeven <geert@linux-m68k.org> writes:
->> > The page height must be taken into account only for vertical coordinat=
-es
->> > and heights, not for horizontal coordinates and widths.
->> >
->> > Fixes: 179a790aaf2a0127 ("drm/ssd130x: Set the page height value in th=
-e device info data")
->> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
->
->> > --- a/drivers/gpu/drm/solomon/ssd130x.c
->> > +++ b/drivers/gpu/drm/solomon/ssd130x.c
->> > @@ -596,7 +596,7 @@ static int ssd130x_fb_blit_rect(struct drm_framebu=
-ffer *fb, const struct iosys_m
->> >       rect->y1 =3D round_down(rect->y1, page_height);
->> >       rect->y2 =3D min_t(unsigned int, round_up(rect->y2, page_height)=
-, ssd130x->height);
->> >
->> > -     dst_pitch =3D DIV_ROUND_UP(drm_rect_width(rect), page_height);
->> > +     dst_pitch =3D DIV_ROUND_UP(drm_rect_width(rect), 8);
->> >
->>
->> That's true for ssd130x controllers that use R1, but when doing that
->> change one of my goals was to prepare the driver for supporting the
->> ssd132x family that use a 16-grayscale pixel format (R4).
->>
->> For those controllers, the pixels are encoded in 4-bit and each page
->> has two pixels. So for those controllers the dst_pitch will need to
->> be DIV_ROUND_UP(drm_rect_width(rect), 2) instead since the width is
->> not 8 in that case.
->>
->> So I would prefer to skip this patch from your set, because otherwise
->> we will need to revert it when adding support for SSD132x controllers.
->
-> My point is that the 8 as used here is related to the number of bits per =
-pixel,
-> not to the page height.  The page height might also be impacted by the
-> number of bits per pixel, but that is orthogonal.
->
+The commit message is a bit short, but the change itself looks fine.
 
-Ah, I see what you mean. Yes, you are right. We can later add a
-different variable when adding support for controllers using R4.
-
-Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
-
---=20
-Best regards,
-
-Javier Martinez Canillas
-Core Platforms
-Red Hat
+Reviewed-by: Alice Ryhl <aliceryhl@google.com>
 
