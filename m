@@ -2,100 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B300753380
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 09:49:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7577D753394
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 09:51:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235451AbjGNHtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 03:49:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43484 "EHLO
+        id S235464AbjGNHvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 03:51:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233196AbjGNHs6 (ORCPT
+        with ESMTP id S233722AbjGNHve (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 03:48:58 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2CA930DC
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 00:48:56 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fbea14706eso14754175e9.2
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 00:48:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689320935; x=1691912935;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=3QpjptWEe+VIO/fnSv61CBVGJqoodwQcJwlBI1/HFzc=;
-        b=MQU8BC23rfL4Dy56JGTZFq3hrCDJrWs/CrxfYiAoWhKVmMF/bK3V4DcbQ7RqddmjHM
-         FCkutIIwNM0Y2t0pK6V1NY5UTWSertqVCqoESckkVTu0z9RFb+BoQPCxXdvha6bSCViC
-         Y0vfyFL6xoyxR7fIp4K2u0S+Z55BjGyvgr8CDLJJgXoc541ro0QZ9w7+wibyL3iv+ykT
-         Y6qbylRbPqhUrNFF8ot4oRJlnR/Eiyu7jHgLvalU0uzPwd6mQt88Wis3cTEMawCKcxk7
-         xoM/94qFzntqDrfkypbS6xLO/Fzu6HpixHcC7a1M1bGEKdRU5PLthSFLwsTfEdsQNfz5
-         yCEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689320935; x=1691912935;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3QpjptWEe+VIO/fnSv61CBVGJqoodwQcJwlBI1/HFzc=;
-        b=Rro6sdiq3dRv9KjRX+PJf3pf8janbi9mflUyeqleq32rpxMEOh49HFWVSuwRK63nNM
-         OWYlH5F9j0cB/y53OTf9tnXblcBluADj8pVbkrrFb68QDBhjeuAG5YvTtnshi5BDyCQq
-         KxArjC5hRq+7+8bq5N8sY2R/ZzlcHWrlWrfZv+YHR7jdQC2qf/4TaS51EkhzjYw+4AZ4
-         rrurd+JuQWYY5dqP8gV0gSnR7rin6acjGX//9CJz7iP+d+mva0M4TAiZiP0nof0RlAlm
-         2IkUNrSx3qbChnLiqvFYHT1K7RW+BtJ6Bj8JcVJfhFy2DSARsy15RQxyI2dHhnHCUkR4
-         Jbcg==
-X-Gm-Message-State: ABy/qLZwI/d3EWXbKdvBXR18QynWto0ZZxLrgIBdjbkWt9UM7U9Cx1p9
-        /fkKl+vSNwxTvdiGI6oJd0Q=
-X-Google-Smtp-Source: APBJJlHEKf5mwrmYXECNSguayI7QvgnO7Xg9DEangRk0h9LE6wpUnDrG1u3sWpiikIq8dGUA4Usuvw==
-X-Received: by 2002:a05:600c:214c:b0:3fb:dbd0:a7ea with SMTP id v12-20020a05600c214c00b003fbdbd0a7eamr3335602wml.37.1689320934886;
-        Fri, 14 Jul 2023 00:48:54 -0700 (PDT)
-Received: from ?IPv6:2003:f6:ef05:8700:4ac8:4223:8b53:53c1? (p200300f6ef0587004ac842238b5353c1.dip0.t-ipconnect.de. [2003:f6:ef05:8700:4ac8:4223:8b53:53c1])
-        by smtp.gmail.com with ESMTPSA id z16-20020a05600c221000b003fbaa2903f4sm806599wml.19.2023.07.14.00.48.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 00:48:54 -0700 (PDT)
-Message-ID: <27105a1712cd7be1d3d36702873f5702999566e7.camel@gmail.com>
-Subject: Re: [PATCH] drm: adv7511: Fix low refresh rate register for
- ADV7533/5
-From:   Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To:     Fabio Estevam <festevam@gmail.com>,
-        Alexandru Ardelean <alex@shruggie.ro>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Bogdan Togorean <bogdan.togorean@analog.com>
-Date:   Fri, 14 Jul 2023 09:51:23 +0200
-In-Reply-To: <CAOMZO5Br-nMxLSekZL5jLHNpyfOH_KgL1WUgAZ25wu86S2eYwA@mail.gmail.com>
-References: <20230516164416.11616-1-alex@shruggie.ro>
-         <CAOMZO5Br-nMxLSekZL5jLHNpyfOH_KgL1WUgAZ25wu86S2eYwA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 
+        Fri, 14 Jul 2023 03:51:34 -0400
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DC65213F;
+        Fri, 14 Jul 2023 00:51:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689321094; x=1720857094;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=cmxZE3r+8v7kGkShku53lm2dagOvRA1bZuZRZS6YJQE=;
+  b=n57g7i1LrrMaJ+uisfSDuM85vvPRGbPCVULYAT9gEYCV6nuKSKRPt4Vn
+   ftznR37h8CnryBXsFXFwlKPX6ILQ4rcVWBULMXwsWIAI9nHNkicYkVbmD
+   Ak4TDMQP95BpY4UhP5txvKaPk3dacywccdIJpGS0wSg4O6NqtbNb7z6/l
+   tZ/GoNclhWK5WQJiUk2wl7DZPj0t11UsI26wxgdj90/J61tU1ruitNcLC
+   R+jSOxre64rDK0K8BGY3GiKej5eSRlq8F+M92/XgH1GZlPahNNv+mS/qJ
+   cL0q4on91OvNwm2KcDaW3jFUnUFVJrZPqPHClZmoRVZztX7XyLccpYBdI
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="431587985"
+X-IronPort-AV: E=Sophos;i="6.01,204,1684825200"; 
+   d="scan'208";a="431587985"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 00:51:33 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="896326532"
+X-IronPort-AV: E=Sophos;i="6.01,204,1684825200"; 
+   d="scan'208";a="896326532"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.49.109])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 00:51:31 -0700
+Message-ID: <a1d7dcce-99c4-7e6e-7041-749d16fe0c95@intel.com>
+Date:   Fri, 14 Jul 2023 10:51:27 +0300
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Subject: Re: [PATCH 26/58] mmc: f-sdh30: Convert to platform remove callback
+ returning void
+Content-Language: en-US
+To:     Yangtao Li <frank.li@vivo.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230713080807.69999-1-frank.li@vivo.com>
+ <20230713080807.69999-26-frank.li@vivo.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <20230713080807.69999-26-frank.li@vivo.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Alex,
+On 13/07/23 11:07, Yangtao Li wrote:
+> The .remove() callback for a platform driver returns an int which makes
+> many driver authors wrongly assume it's possible to do error handling by
+> returning an error code. However the value returned is (mostly) ignored
+> and this typically results in resource leaks. To improve here there is a
+> quest to make the remove callback return void. In the first step of this
+> quest all drivers are converted to .remove_new() which already returns
+> void.
+> 
+> Trivially convert this driver from always returning zero in the remove
+> callback to the void returning variant.
+> 
+> Cc: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> Signed-off-by: Yangtao Li <frank.li@vivo.com>
 
-On Thu, 2023-07-13 at 17:19 -0300, Fabio Estevam wrote:
-> On Wed, May 17, 2023 at 4:08=E2=80=AFAM Alexandru Ardelean <alex@shruggie=
-.ro> wrote:
-> >=20
-> > From: Bogdan Togorean <bogdan.togorean@analog.com>
-> >=20
-> > For ADV7533 and ADV7535 low refresh rate is selected using
-> > bits [3:2] of 0x4a main register.
-> > So depending on ADV model write 0xfb or 0x4a register.
-> >=20
-> > Signed-off-by: Bogdan Togorean <bogdan.togorean@analog.com>
-> > Signed-off-by: Alexandru Ardelean <alex@shruggie.ro>
->=20
-> Should this contain a Fixes tag so that it could be backported to
-> stable kernels?
+Doesn't apply anymore.  You can check against the "next" branch in:
 
-Yeah, most likely yes... With that:
+	git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git
 
-Reviewed-by: Nuno Sa <nuno.sa@analog.com>
-
+> ---
+>  drivers/mmc/host/sdhci_f_sdh30.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/mmc/host/sdhci_f_sdh30.c b/drivers/mmc/host/sdhci_f_sdh30.c
+> index a202a69a4b08..6016e183c03c 100644
+> --- a/drivers/mmc/host/sdhci_f_sdh30.c
+> +++ b/drivers/mmc/host/sdhci_f_sdh30.c
+> @@ -208,7 +208,7 @@ static int sdhci_f_sdh30_probe(struct platform_device *pdev)
+>  	return ret;
+>  }
+>  
+> -static int sdhci_f_sdh30_remove(struct platform_device *pdev)
+> +static void sdhci_f_sdh30_remove(struct platform_device *pdev)
+>  {
+>  	struct sdhci_host *host = platform_get_drvdata(pdev);
+>  	struct f_sdhost_priv *priv = sdhci_priv(host);
+> @@ -222,8 +222,6 @@ static int sdhci_f_sdh30_remove(struct platform_device *pdev)
+>  
+>  	sdhci_free_host(host);
+>  	platform_set_drvdata(pdev, NULL);
+> -
+> -	return 0;
+>  }
+>  
+>  #ifdef CONFIG_OF
+> @@ -252,7 +250,7 @@ static struct platform_driver sdhci_f_sdh30_driver = {
+>  		.pm	= &sdhci_pltfm_pmops,
+>  	},
+>  	.probe	= sdhci_f_sdh30_probe,
+> -	.remove	= sdhci_f_sdh30_remove,
+> +	.remove_new = sdhci_f_sdh30_remove,
+>  };
+>  
+>  module_platform_driver(sdhci_f_sdh30_driver);
 
