@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9602A752E65
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 03:02:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52041752E67
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 03:02:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234578AbjGNBCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 21:02:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50652 "EHLO
+        id S234596AbjGNBCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 21:02:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230151AbjGNBCP (ORCPT
+        with ESMTP id S234609AbjGNBCg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 21:02:15 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2099.outbound.protection.outlook.com [40.107.220.99])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F18521FEA;
-        Thu, 13 Jul 2023 18:02:12 -0700 (PDT)
+        Thu, 13 Jul 2023 21:02:36 -0400
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2100.outbound.protection.outlook.com [40.107.236.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E1902D73;
+        Thu, 13 Jul 2023 18:02:29 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JOIJ2yJRoq6vd8QYQG9/NpWlkH6f6SkhGuqRS5USiR++pTC5X4Mb9ub7D3jvtqxWhQY0BbRBl4KB+CpkVjJPgkNFpxf1mhAWlIirgnQpyDUZkAbqmiFAk/5N2S5RYrRjiEAx6DXoZ/GjFCdjJYbKePRPgVfw0a+CRROMYXLXA0yIgMEB2JGbBz+th2fTtYLMsMOE7nuLybqiGGKP1AMdO0YlJoqmtItS3Pw5RpdZzeGDMqcvc3Mb9iC7e8pywDscSYF5d2URmdbheThzy6h2Mnmj/STCsiJSgGnHPrH0uw4YTAyrHm+lDu+bKU4l3WLAFE00ZwVM5/IWRR5oVXJKaA==
+ b=KgN0HferY5jf21gGY+3Cq4XL0myk3K4p82RORmPmwHRMz9nosUSTbRigq5xMFsuvs50fKmRY3WjLJO3vNYvJLH4LLpMezX99dQVa0mqB2rbOlb1luRl/Ai6M2tTduW2D0jiCIfP9MXomaRw0UTjdxywF5YvF+VhLVdipH94Ha9eT0zVLGZZQLSSO5JaGDv2ujMNGQaS4ZmqFo75uMwBQJtVB4ZMUdWsRkLLXhTVFj0mgiHvQDfNz5iCmzTiJSf8F6COTC7/KDyXwQPm+0pTNEZdxwmN7oYMw0OiKln5jUEWtwlcj+eOQX2C865II/lRGaTaHFYbH0gSv9CXfpA7/Rg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=t7xHvM/kA4l9rUNrVhBg9XsMqEcNUDOakWs0wrg+nPg=;
- b=gYMrqJhtWx7vjIXKc2n09XwMmLS3dNOTfdC+SJv9rrHbSL5cn6cs5fwGe2TLRTnTBzEFit6mmDaDgXXob2/x/dNeFYGzaH1daCm3vnrfMk1sKn0Zvb461iY4UMrt+SSy6Z1p6jgJEYhJh6ZqCv9nq+j+A1K4456Vj1bPQnNCByXXEunKv4LxzRnK4LAjUdg4VFctCDvKOv4/EQNmNdO0MgZSvkCoBxrNo36n5brB0A8e2EvFonpQZOcRWnbR6OCwNd0bws3ipIwSu1mCLlUYXZlogI6xcyT7oNj3YA/JmC89eXmSd+Qsm9r46jSt6uhy+udiC4ys2Z/ztyInAUiiJQ==
+ bh=UyYUQQp9yBc4hP0w+WM6rga4/CQa0V5X5PZ+PPakvrs=;
+ b=OgDDkzNGpUTtLBijQWfFIB7xQX9oX1Tj58YUMKHeDHTB+A+QI9MTiD+wDv1LlWvpB7llpms66iPInjVtEksJd2FLUuj6tqNi2CsrPeksNsY2Es357TJEukpMmPpPOFEJIjpXBQi+KOpzT7FHrWg7Z6q4NDiFebG3NY2gDxpY2G8kMcpS4cHluhPLOCtwRA1W9njm+MpCA8EeW/qoRhalmwiJ/tc5XOtskXeKrzn79o6qacPi6d0p73I1tDVkma7KTd6PPG969pqsK5N2FOEfkEiPGV8kuk0sG63vCIj6GeJSbIXkqVi3gpdSYyimfKqeraoy6HI16VyKVbwFyKYOlw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
  header.from=os.amperecomputing.com; dkim=pass
@@ -29,18 +29,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=os.amperecomputing.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=t7xHvM/kA4l9rUNrVhBg9XsMqEcNUDOakWs0wrg+nPg=;
- b=CTeQ1aG9I8IRH2APo/vfiiOG8zG7SJBAI10ZcF7S3neQ/b/j7QUf2lkJ1LIfNTx6kPV4/hV9HateOSMH7+/Aw+CHXpnaWRU7Yw6btkl4cqkicOg4NLYe1/XHkqrZkhfFDIR9kczMUvrCF8b9WVus+hdSxaTqOmSgFiNJ2ynypQw=
+ bh=UyYUQQp9yBc4hP0w+WM6rga4/CQa0V5X5PZ+PPakvrs=;
+ b=g/d+4zTXQh4OoDbHKvnOS6uGKb2OF5TnOHGU4D+bjVkryi1uplC/q+DFOgqMv4c7R84isfs67MiSq6BMAa4sq/NINGvJts/z3F3elZSdIm1N4tVSrpu/ylu7CLupAZD81lyGvMChiZkY8rUg9ANHNcmOVVM0cWzI9uuUSAbof4M=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
 Received: from DM5PR0102MB3590.prod.exchangelabs.com (2603:10b6:4:a4::25) by
  BY3PR01MB6611.prod.exchangelabs.com (2603:10b6:a03:36a::5) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6588.27; Fri, 14 Jul 2023 01:02:08 +0000
+ 15.20.6588.27; Fri, 14 Jul 2023 01:02:25 +0000
 Received: from DM5PR0102MB3590.prod.exchangelabs.com
  ([fe80::235a:622:9239:3963]) by DM5PR0102MB3590.prod.exchangelabs.com
  ([fe80::235a:622:9239:3963%7]) with mapi id 15.20.6588.017; Fri, 14 Jul 2023
- 01:02:08 +0000
+ 01:02:25 +0000
 From:   Ilkka Koskinen <ilkka@os.amperecomputing.com>
 To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
         Besar Wicaksono <bwicaksono@nvidia.com>,
@@ -51,10 +51,12 @@ To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
 Cc:     Ilkka Koskinen <ilkka@os.amperecomputing.com>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-doc@vger.kernel.org
-Subject: [PATCH v5 0/4] perf: ampere: Add support for Ampere SoC PMUs
-Date:   Thu, 13 Jul 2023 18:01:37 -0700
-Message-Id: <20230714010141.824226-1-ilkka@os.amperecomputing.com>
+Subject: [PATCH v5 1/4] perf: arm_cspmu: Split 64-bit write to 32-bit writes
+Date:   Thu, 13 Jul 2023 18:01:38 -0700
+Message-Id: <20230714010141.824226-2-ilkka@os.amperecomputing.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230714010141.824226-1-ilkka@os.amperecomputing.com>
+References: <20230714010141.824226-1-ilkka@os.amperecomputing.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-ClientProxiedBy: CH0P223CA0013.NAMP223.PROD.OUTLOOK.COM
@@ -63,51 +65,51 @@ X-ClientProxiedBy: CH0P223CA0013.NAMP223.PROD.OUTLOOK.COM
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: DM5PR0102MB3590:EE_|BY3PR01MB6611:EE_
-X-MS-Office365-Filtering-Correlation-Id: e513d80a-87d7-4697-510c-08db8405f284
+X-MS-Office365-Filtering-Correlation-Id: 7e29187d-a754-43b8-178c-08db8405fc93
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: kOdoI20KWQbLL/ZZQf08H/fTIeR1Zpyz0mi9K9HnOfob4qowXaEo3PwarwIRI0VLAAgu6/SxxOzv4atJrzNTXebBdagp34cNIekQMEobKzT22fviOYevFTtj/BgekzO7xKAfSXtWcx622KUHtDFQG9UjAK8MFwjdCt6KEKJGj3O8JelRKvutyx10OmHbsF3iQ0dY9iBpoXSfOEn/5MOgkPjhIObvkbjJujrHvms9tEzF0CeRhbeysgZsP+sLqby12azXWp6FczTVxDu0ZvusQs35qa95gAVEJHoKYhPET7zfwB8WBLGmDQfrcoib9L4cQfYgJh1E48NCKCfg7/rlYfNeutmp2nC1DhjpVtQD+b4uOskefkueQ5NsPzmIvOkw6nc507LxAeiK3sk6CUedAKy6t9r5Zge3++yOl6XzM2JX9mUPpBtgBkQYEXVdE6RkgpRNMUGyWCRkrEXSADmtg5ZsEMw+YIqH1cO7XyJAuxHE+0DmOIIk/F/souguSXF7eiB/RfcKBFVtYFLEKzXd+Ft7Y/eQV7ISUuRYjlS9GCMxWdYWLBr4yemRq7V9MhhYSZImkEGhFJumPzpOXMGBmimltkeGeDyAbtZngTgPgdGCjWt6FMmxkHbnMM44eNvW
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR0102MB3590.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(366004)(346002)(136003)(39850400004)(376002)(451199021)(2906002)(38100700002)(38350700002)(6512007)(83380400001)(186003)(2616005)(26005)(1076003)(86362001)(6506007)(5660300002)(8676002)(8936002)(7416002)(110136005)(478600001)(6486002)(52116002)(6666004)(41300700001)(66946007)(66556008)(66476007)(316002)(4326008);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: kd5LZAYiQ6Lgo7MVla34/8WlwTAEnrsf/WbGyOaXmwUkhnq2iXVb4lMn5v2GTgOE+5799l5sCoWZNXl9DIDgzxGD4adq3nt7po66+2U+h1am6rO9l0uYFysVBywf1lUWCH8LHUoWEUdny8XWdJSdGXWRd0i7r1H5fsA4txHn/b7XGpwEkG66Rw/U4pcAAt2yNAFGSoaU+59kuUwh+t8pYzWb/vhaVtTq/UUYg5hPQ/kgcOO87lwSiNV3yJXnTJVvf6IcmCRV8tbEMifkg/jW7dggak4FQpnre60MfVZcKZOQkGBvRuEAF+HBmuFgNgpirWJXJo8tDRTwfQLaD8t9yVhOPu5iGY7SrXk2/q/jUQSOgyO3dxziJQnv1z/xbaro+7QIW5Wvi3/yzokrRYG4e8SRxziyR4Cz12z7uVwfbmkBVr1BQTdyPfxx8zxNA/jnQJb5Vxbz4pkirlzJy8CMXftoiH92YC6z+C6rh1karT+aPZCrEvYJUvOnxEJjpYhlNcaCwuyEeUN0bkCvbEktltCIHpBzofA2iUt4Zgb7rNY/cGDW9ydJaYrMaUJPNR6c+xW8VV0oaJTFGnxTdaXXDoOFqUvurDhk7bqhglthNsKmHcHFl05jZnNxv1DRM3sY
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR0102MB3590.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(366004)(346002)(136003)(39850400004)(376002)(451199021)(2906002)(38100700002)(38350700002)(6512007)(83380400001)(186003)(2616005)(26005)(1076003)(86362001)(6506007)(5660300002)(8676002)(8936002)(4744005)(7416002)(110136005)(478600001)(6486002)(52116002)(6666004)(41300700001)(66946007)(66556008)(66476007)(316002)(4326008);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Jnw15+n75xoLosSPJdD+yHVvDIQTO8rfOc3bqn/eNlxJC3zGlYg0FNChb6iU?=
- =?us-ascii?Q?tpAz61R5sU/yFnZrUydKx8KL6YTmdJp8wHEjp0i4fsfmgo1pBSFovwi8rN7F?=
- =?us-ascii?Q?Fd9/uoKAht3iwfhAMrwez6G6MUaFec0ZG7hVTv353e9I5F0BqExj2AG6IY/3?=
- =?us-ascii?Q?zLuYBqN0MEaHuizuLl3zBWxUIxBV9OrZ9ES04VWklhR2V6KPyQkXa+YzQm0v?=
- =?us-ascii?Q?T5GITaDr0m5VjFAiulWMKlM9/mgQZR/77VlyQSwGr/6JPA/5uHyUYNap0R1G?=
- =?us-ascii?Q?g1y98+XhqcqTlQs3tnHr6Isb96BPvfU2d/jtXPaoPZQbPfIlZLOFBM1slStK?=
- =?us-ascii?Q?a4TXOKwiEMYIIyQOVMd0C6PMvoYnDw654zNmqtasYCgX9CK5lok9pcgbDK59?=
- =?us-ascii?Q?YKXY6tuMkhBHufHSo7ql33hy6cdgJl/pCs77oCpkJ0MxgzL3eC0wxyMcYANA?=
- =?us-ascii?Q?AjkUFc8GwmuKOeReVCVk0mFiXsqJSJ/myPLiIe58OUv7/5aHObDjIl7NJxCN?=
- =?us-ascii?Q?AZKc94f/U60z/3cdm6M9kQcRKO0SPLF7IcOzgM6mJpRcm+4EqhP7I83WUrsn?=
- =?us-ascii?Q?7KRZY9mA1vmzrbNyQ2oy1Bwb3UIc+KLZSuErHsR8iePEYgwsaUPla73HLfVG?=
- =?us-ascii?Q?6rHDuXB/Fdf3+ikMqJmlp8JdmOgYn0fuwFIh1alQWclJyzAX7AcUOmdniynk?=
- =?us-ascii?Q?p4OQXBJSV1pUwt1wlcytgiv9XTiFwZYL34kQlvWITsiXYcEIzEVAJSORVDTt?=
- =?us-ascii?Q?Tm/v4zUwX0WYwpUqOCZJC+KEHKV/vBe2Qrwmtous7m41UkyUK1qY0ZJ2pzdx?=
- =?us-ascii?Q?aZTFfl+eZXRwyf8CHlTtV7xEcrgRNuWg/Rz58m9BP0DFN6rSxyC8daDIU7cI?=
- =?us-ascii?Q?uJ4OJ7PXAcM8g46oQSgbUXFv6F8w5Q33gEa+58qHLpD6QeKyD6RYf/l8YFEI?=
- =?us-ascii?Q?Z310FyTZllXTtCnl2TR3vrAr4pzVlkToRRWGNvGH0rpsL2ESiz78041x4sdg?=
- =?us-ascii?Q?x1BJL2ReSZ78hF0RAJS7lUW7xL/ylJShdpV+5k3SpkqmU5ej85+rnfKCUIc4?=
- =?us-ascii?Q?ujkhi/6UkESrda93K3BdTm0J4scv5jSClM/jt8eVYH9ssSGZ+WdZ7STp69my?=
- =?us-ascii?Q?0C4PkBc2HYTHIKiNgrBq9pkAHOVufnj+XQ3QiIaNEGeSD8p1bP/zNMsb17hi?=
- =?us-ascii?Q?MBuxXGjrRaCXAjIf5VdyahN1+FR8RY8WG4ytRZp7FSBTAR1ROY583n6+lutN?=
- =?us-ascii?Q?ckS4bpORSywzQMikwXZ4qmCcsmb4liQbgde7lhQaaQO4JF8y1b+JvhK8lPSM?=
- =?us-ascii?Q?QSj31eAOcH5D4iKKBT5hgGc73HqIjmhB1XsyN5KmAYLgI93vaiTc20tS5f7c?=
- =?us-ascii?Q?KPTALvOBXKdqTx8NZ0HE1IVdt2f6cRyZ1D/oCIo3JvugvypqUbdOu89CmXsS?=
- =?us-ascii?Q?FR0tpnfWF3iPWw0jdhmchW/vNX3XoOthcbBJesAPU0yZWjbP9/ovfk8TEn3L?=
- =?us-ascii?Q?yR5H/CNrbMRdudlsVKEPrzg2pTEYigHoqh40BY8Qij7l2tUUd3GXRqrsOaUh?=
- =?us-ascii?Q?vpTxu31wysZoLMbH2Xb5qIiby65/zy9A/Qm+tQEfcCtLcaOeVkgYdsG4CJfN?=
- =?us-ascii?Q?CQ=3D=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?BGzk/j4u/X1AVOBZPe682S2I8XmnbqEWAGbkcIEkENyMU9qx81XvM2i1q8NQ?=
+ =?us-ascii?Q?b5MIuVl3iXG0stII0B+U+KRfrkvb8ZVo6i17NWesZdbJN8YGGYPxhZT+jnJi?=
+ =?us-ascii?Q?0jOZYP8+2pb6Z6hY4477jVIQ43M7oEk2Uy7e369BHb1A4mRtT3yfFuJKUOky?=
+ =?us-ascii?Q?gikAKg3DkmQtfZB8oyLWZpPFQg5mp912cFe4xbNp/Y6JiiWGegoU8vR6wTTL?=
+ =?us-ascii?Q?5G1FABWPnQDWKJiSkHqt+71Xd5XW18+gZzS8M4LBiQ+99/ou9jOvVDA+lEb+?=
+ =?us-ascii?Q?68U0Xgvr56uGnbMt5gYzFhpo+69tWaS6A8+nyZVVGgvqoY2QxQx4W6/8/8S8?=
+ =?us-ascii?Q?vlvWYBXYUu5kYVApaj1MBf9a/hh65Q2qLBRUtjrKNbIw9Q0WC967q9EvkP7P?=
+ =?us-ascii?Q?ywifZkTrZywgkxcBroRdrUja+NYNtUvMEfACO5kiaxC+pVmOwJAAcJzpLQn9?=
+ =?us-ascii?Q?x1SKk6MHvXToWEtyhM+J/QpYhVwxyCb4S3S6jpkofoG1gHtgfjSiNaiU5Uz6?=
+ =?us-ascii?Q?MhD3gJsKLqL5mVbPtlSgFulu24uLElgyBbRG9x7dk4f9Nq8bWc4yX598qdJp?=
+ =?us-ascii?Q?skfa4Il3KUxW4WTRN/R3ZQ8prWfUtbExGDAZ2oOF4kWXFY3nlLyKG+bgryOI?=
+ =?us-ascii?Q?0zNht2+mJDz0bvV90qZsg+Mc9mJMLqaSWSJ0n5OUmg/Jgaqz470z3TRirU3q?=
+ =?us-ascii?Q?0bcrPmTO3/Uuzlg2z/e5I5vU+bL60b/3X9Uir/ZTUZtOhPIPCqgLiVTqpheb?=
+ =?us-ascii?Q?KRlo4pC2vl0YnjHHgN+81C3mRuPSX3/cAhctnK8zSKkxItq2IkpJv2c18dqC?=
+ =?us-ascii?Q?kLqkwiMGaFtGd3s3nkVeCe1s1mM2b6GyGX1pUtfGuzH8ujq/ifeZfR0OL+V4?=
+ =?us-ascii?Q?PxB6tMN4EM6o2wJ+ZitM56ZPOdlJOzTB3C0zbTBVUREo/r0ohiSXqZIDwu9+?=
+ =?us-ascii?Q?cPOK/ZsfA15pbkmp8VW9BIyvEn4s/KdRq7Dsk9vTKifkzXM+pXIbkUXJBRia?=
+ =?us-ascii?Q?aBvjZIrWl0eUNsPzFhYuxh5unTTM40lLs7l9p2z++SndsuWkrwEE3agyeKIB?=
+ =?us-ascii?Q?mbdUgG1FE5ALLBe9SbF+Ps1/VMVMaSdAM86wMPKTFJbVInAKppCqWvc5f8PT?=
+ =?us-ascii?Q?Zg7R3wCjIuA88tAC8Bf8dnqUq4YwRjqnA2LbAtaYUUH3HrBkBUJ/CepHKaV2?=
+ =?us-ascii?Q?0c9Hni66bhq5EeNspgE2dbfXrPtZ4cuEcZN1wsHEBHGgJevo/fL1MWpsM9L3?=
+ =?us-ascii?Q?kgjX5y4xXHO0wsXRcgX9NBE23SAO0DWbXBVNsVxgsiH8DZ1BIp8GucSxDB8d?=
+ =?us-ascii?Q?+6QN5KC6XU5h2McNfFN0DL5ff+KhdaXvRtdY55qeMg8imFLLBEINadnB+uX6?=
+ =?us-ascii?Q?mHCZB9i1RmvJFScgjYuVYX0z+fD0QFI+BDL4l8KvvxGtmtwSNU/kw80hcGW2?=
+ =?us-ascii?Q?k6sXA9qn2dEcCMFQmZUWSY7IDZ8oMYkhnjRgbEILbKWr9fUtZOJaK1S4Mk29?=
+ =?us-ascii?Q?EBnIqtlZI0F7vLOn5CCQjsrol+ZsY+AbukLpP2lJvlY0XK9VgcUvpqJ5C9FK?=
+ =?us-ascii?Q?UixQrurHwtEKoEcJTd6VdluwGZjNBa9ORrOQtQjPdrjVTIij/jvFYkSZENAP?=
+ =?us-ascii?Q?a9q6TC2mTzM0wHleLNxhG04=3D?=
 X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e513d80a-87d7-4697-510c-08db8405f284
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7e29187d-a754-43b8-178c-08db8405fc93
 X-MS-Exchange-CrossTenant-AuthSource: DM5PR0102MB3590.prod.exchangelabs.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jul 2023 01:02:08.4384
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jul 2023 01:02:25.1959
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: VvL3LwkUaI9lwSnrkLRPtupK6ENLV7Z3/cCEFB0+b1LslIpsAeDbxPGN+DGRJHZDQd2914bc7V0c+74ayJmPKM+9kXKUu0aselbsIuzT774G9NsL2IEUHFc8u3SWS14R
+X-MS-Exchange-CrossTenant-UserPrincipalName: m+wi/Wgs2LAVthooEQ1PuD0IBFpKqx6zJsutQXPFymyxLjccluSphvHHrvnTIfeF7CB6DVia/1xeFCh8YGzFxMX+XvEFeyYs2lfLhAgEzv01ILAaJRY4NC2VKY5H3aoB
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY3PR01MB6611
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
@@ -119,55 +121,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changes since v4:
-    * "Support implementation specific filters" patch:
-        - Added comment about filter and impdef registers and reference
-          to the Coresight PMU specification to the commit message
+Split the 64-bit register accesses if 64-bit access is not supported
+by the PMU.
 
-    * "Add support for Ampere SoC PMU" patch:
-	- Fixed the documentation and added more comments
-        - Changed the incrementing PMU index number to idr_alloc()
-	  (Needs a impdef release hook patch to release unused index)
-	- Fixed style in init_ops() to more reasonable
-	- Moved bank parameter to config1
+Signed-off-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
+Reviewed-by: Besar Wicaksono <bwicaksono@nvidia.com>
+---
+ drivers/perf/arm_cspmu/arm_cspmu.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-Changes since v3:
-    * use_64b_counter_reg => has_atomic_dword (patch 1/4)
-    * Removed the unnecessary hook for group validation (patch 3/4)
-    * Added group config validation to ampere_cspmu_validate_event() (patch 4/4)
-    * Rebased the patchset
-
-Changes since v2:
-    * Changed to use supports_64bits_atomics() and replaced the split writes
-      with lo_hi_writeq()
-    * Added implementation specific group validation to patch 3
-    * Dropped shared interrupt patch
-    * Removed unnecessary filter_enable parameter from ampere module
-    * Added group validation to ampere module
-
-Changes since v1:
-    * Rather than creating a completely new driver, implemented as a submodule
-      of Arm CoreSight PMU driver
-      * Fixed shared filter handling
-
-
-Ilkka Koskinen (4):
-  perf: arm_cspmu: Split 64-bit write to 32-bit writes
-  perf: arm_cspmu: Support implementation specific filters
-  perf: arm_cspmu: Support implementation specific validation
-  perf: arm_cspmu: ampere_cspmu: Add support for Ampere SoC PMU
-
- .../admin-guide/perf/ampere_cspmu.rst         |  29 +++
- drivers/perf/arm_cspmu/Makefile               |   2 +-
- drivers/perf/arm_cspmu/ampere_cspmu.c         | 243 ++++++++++++++++++
- drivers/perf/arm_cspmu/ampere_cspmu.h         |  17 ++
- drivers/perf/arm_cspmu/arm_cspmu.c            |  29 ++-
- drivers/perf/arm_cspmu/arm_cspmu.h            |   6 +
- 6 files changed, 321 insertions(+), 5 deletions(-)
- create mode 100644 Documentation/admin-guide/perf/ampere_cspmu.rst
- create mode 100644 drivers/perf/arm_cspmu/ampere_cspmu.c
- create mode 100644 drivers/perf/arm_cspmu/ampere_cspmu.h
-
+diff --git a/drivers/perf/arm_cspmu/arm_cspmu.c b/drivers/perf/arm_cspmu/arm_cspmu.c
+index e2b7827c4563..0f517152cb4e 100644
+--- a/drivers/perf/arm_cspmu/arm_cspmu.c
++++ b/drivers/perf/arm_cspmu/arm_cspmu.c
+@@ -696,7 +696,10 @@ static void arm_cspmu_write_counter(struct perf_event *event, u64 val)
+ 	if (use_64b_counter_reg(cspmu)) {
+ 		offset = counter_offset(sizeof(u64), event->hw.idx);
+ 
+-		writeq(val, cspmu->base1 + offset);
++		if (cspmu->has_atomic_dword)
++			writeq(val, cspmu->base1 + offset);
++		else
++			lo_hi_writeq(val, cspmu->base1 + offset);
+ 	} else {
+ 		offset = counter_offset(sizeof(u32), event->hw.idx);
+ 
 -- 
 2.40.1
 
