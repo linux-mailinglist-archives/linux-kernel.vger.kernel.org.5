@@ -2,90 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB4E1752E92
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 03:36:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B42B6752E9B
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 03:38:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233213AbjGNBgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 21:36:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57934 "EHLO
+        id S233916AbjGNBiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 21:38:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232845AbjGNBgT (ORCPT
+        with ESMTP id S233535AbjGNBiE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 21:36:19 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22EB02D48
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 18:36:18 -0700 (PDT)
-Received: from canpemm500002.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4R2DYc4m6NzVjHn;
-        Fri, 14 Jul 2023 09:35:00 +0800 (CST)
-Received: from [10.174.151.185] (10.174.151.185) by
- canpemm500002.china.huawei.com (7.192.104.244) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 14 Jul 2023 09:36:15 +0800
-Subject: Re: [PATCH] mm: remove some useless comments of node_stat_item
-To:     Matthew Wilcox <willy@infradead.org>
-CC:     <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230713114915.74671-1-linmiaohe@huawei.com>
- <ZK/ppvBO00rbspa8@casper.infradead.org>
- <55c255df-9c7c-744f-e1a1-27602fcb5509@huawei.com>
- <ZK/uukqNMQYyyNif@casper.infradead.org>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <d9efcca5-0448-2d0d-84e0-9af99f0c0701@huawei.com>
-Date:   Fri, 14 Jul 2023 09:36:15 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Thu, 13 Jul 2023 21:38:04 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48C142D64;
+        Thu, 13 Jul 2023 18:38:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8CD6C61BBA;
+        Fri, 14 Jul 2023 01:38:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF2F5C433CC;
+        Fri, 14 Jul 2023 01:38:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689298681;
+        bh=9TI9J6mC1lCJpPc8yugRRuczYXnteaBnSfpK07oP/rw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=iBXhPgcriMJ1+XItROFvnpDxNjY1K+s4THIVfK4o36kH1expG9OZZ+RQMu0ZVMj7n
+         XHOhNIvHHsRas+cnh0my5HI0IfnuuRNH6CYaMa9A6J20I7JThbvU3W//+IgxVXibOY
+         6Kd4G1xAoma53alLiT6jIYw+OKzpBrHMiTvIBEV+r859L+UCwqhTJXPn1Ob5MUAlXF
+         zIf3oUR8N5Rl7t/1QZKKC/70m6WY2Pc729Dy5TUR0zovKYd2+cxLFxBjfSvmszeOD2
+         dfpYGMEraP9W1feXMVfyypVUjTudO3JvPhP97zMZemX7af7feuhNOMXuL/TiCD0fPm
+         eIw+QTEWuGQXw==
+Received: by mercury (Postfix, from userid 1000)
+        id C9628106766D; Fri, 14 Jul 2023 03:37:58 +0200 (CEST)
+From:   Sebastian Reichel <sre@kernel.org>
+To:     Sebastian Reichel <sre@kernel.org>
+Cc:     Gerald Loacker <gerald.loacker@wolfvision.net>,
+        Michael Riesch <michael.riesch@wolfvision.net>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH v3 00/19] Sitronix ST7789V improvements
+Date:   Fri, 14 Jul 2023 03:37:37 +0200
+Message-Id: <20230714013756.1546769-1-sre@kernel.org>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-In-Reply-To: <ZK/uukqNMQYyyNif@casper.infradead.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.151.185]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- canpemm500002.china.huawei.com (7.192.104.244)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/7/13 20:31, Matthew Wilcox wrote:
-> On Thu, Jul 13, 2023 at 08:18:29PM +0800, Miaohe Lin wrote:
->> On 2023/7/13 20:10, Matthew Wilcox wrote:
->>> On Thu, Jul 13, 2023 at 07:49:15PM +0800, Miaohe Lin wrote:
->>>> Some comments of node_stat_item are not that helpful and even confusing,
->>>> so remove them. No functional change intended.
->>>
->>> No, that's very useful and important.  Why does it confuse you?
->>
->> Thanks for your quick respond.
->>
->> I just can't figure out what these comments want to tell. Could you help explain these?
-> 
-> Don't snip the thing you want explained to you!
-> 
->         NR_INACTIVE_ANON = NR_LRU_BASE, /* must match order of LRU_[IN]ACTIVE */
-> -       NR_ACTIVE_ANON,         /*  "     "     "   "       "         */
-> -       NR_INACTIVE_FILE,       /*  "     "     "   "       "         */
-> -       NR_ACTIVE_FILE,         /*  "     "     "   "       "         */
-> -       NR_UNEVICTABLE,         /*  "     "     "   "       "         */
-> +	NR_ACTIVE_ANON,
-> +       NR_INACTIVE_FILE,
-> +       NR_ACTIVE_FILE,
-> +	NR_UNEVICTABLE,
-> 
-> What this is communicating to me is that these five items
-> (NR_INACTIVE_ANON to NR_UNEVICTABLE) must stay in the same order with
-> LRU_INACTIVE and LRU_ACTIVE.  By removing the ditto-marks from the
-> subsequent four lines, you've made the comment say that this one line
-> must stay in the same order as LRU_INACTIVE and LRU_ACTIVE ... which
-> makes no sense at all.
+Hi,
 
-I see. Many thanks for your kind explanation. :)
+This adds panel support for Inanbo T28CP45TN89, which I found inside of a
+handheld thermal camera. The panel is based on the st7789v controller. All
+information is based on reverse engineering. I also appended the series
+from Miquel Raynal adding EDT ET028013DMA panel support, so that I could
+easily test it with my SPI_NO_RX setup. They are slightly different due
+to rebasing.
 
+Changes since PATCHv2:
+ * https://lore.kernel.org/all/20230422205012.2464933-1-sre@kernel.org/
+ * https://lore.kernel.org/all/20230616163255.2804163-1-miquel.raynal@bootlin.com/
+ * Add Rob Herring's R-b for the DT binding
+ * Make panel info "static const"
+ * Add Michael Riesch's R-b to all my patches
+ * Rebase to 6.5-rc1
+ * Append Miquel's series
+
+Changes since PATCHv1:
+ * https://lore.kernel.org/all/20230317232355.1554980-1-sre@kernel.org/
+ * Apply DT binding changes requested by Krzysztof Kozlowski and his Ack
+ * I changed the driver patches to avoid code duplication and splitted
+   the code a bit more
+
+Greetings,
+
+-- Sebastian
+
+Miquel Raynal (6):
+  dt-bindings: display: st7789v: Add the edt,et028013dma panel
+    compatible
+  dt-bindings: display: st7789v: bound the number of Rx data lines
+  drm/panel: sitronix-st7789v: Use 9 bits per spi word by default
+  drm/panel: sitronix-st7789v: Clarify a definition
+  drm/panel: sitronix-st7789v: Add EDT ET028013DMA panel support
+  drm/panel: sitronix-st7789v: Check display ID
+
+Sebastian Reichel (13):
+  dt-bindings: vendor-prefixes: add Inanbo
+  dt-bindings: display: st7789v: add Inanbo T28CP45TN89
+  drm/panel: sitronix-st7789v: add SPI ID table
+  drm/panel: sitronix-st7789v: remove unused constants
+  drm/panel: sitronix-st7789v: make reset GPIO optional
+  drm/panel: sitronix-st7789v: simplify st7789v_spi_write
+  drm/panel: sitronix-st7789v: improve error handling
+  drm/panel: sitronix-st7789v: avoid hardcoding mode info
+  drm/panel: sitronix-st7789v: avoid hardcoding panel size
+  drm/panel: sitronix-st7789v: add media bus format
+  drm/panel: sitronix-st7789v: avoid hardcoding invert mode
+  drm/panel: sitronix-st7789v: avoid hardcoding polarity info
+  drm/panel: sitronix-st7789v: add Inanbo T28CP45TN89 support
+
+ .../display/panel/sitronix,st7789v.yaml       |  10 +-
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ .../gpu/drm/panel/panel-sitronix-st7789v.c    | 262 +++++++++++++++---
+ 3 files changed, 237 insertions(+), 37 deletions(-)
+
+-- 
+2.40.1
 
