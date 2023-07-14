@@ -2,101 +2,307 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62EE9754217
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 20:02:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18B0D75420C
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 20:01:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236725AbjGNSBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 14:01:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48484 "EHLO
+        id S236562AbjGNSBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 14:01:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236116AbjGNSBu (ORCPT
+        with ESMTP id S236448AbjGNSB3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 14:01:50 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D3B43A81;
-        Fri, 14 Jul 2023 11:01:03 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9DD0761DB5;
-        Fri, 14 Jul 2023 17:59:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD982C433C7;
-        Fri, 14 Jul 2023 17:59:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689357553;
-        bh=s1el2zzcSXw96fILtVV/pU2QXloiost9bfy5t32Iex0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ao86t8MZvEKBX/XgxW1G3+uLkvz2sj3PdGXfpGTEa/GrPIW3mGqzpkGOF7eCF1vWx
-         0VimLdhjIb3Me1NyirFerV8HXvZVoA1tFC1CrsJF7VEcHjDEhwLj3Kvvfr0eOR2Dqi
-         oTY15VDUOV37uBg3EcrTug8xNql0jrwRjvrqCIhqRV9kt2yc5HAnU9df6e3vu3IlYK
-         BYQvqiVuYABgO++OH8ym20BY/AxIXPNmHLFalcOZtZqnX0DgNUljn9UIIWdL/7Ohmv
-         OnGiB8DHRlzrrmRIGSZSortxasXbis/ID18ere56edFKZOSUqj78OOiXbXLMGmPZEI
-         zH1eJC4Ns8nPA==
-Date:   Fri, 14 Jul 2023 18:59:08 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Thorsten Leemhuis <linux@leemhuis.info>, corbet@lwn.net,
-        workflows@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org
-Subject: Re: [PATCH docs] docs: maintainer: document expectations of small
- time maintainers
-Message-ID: <a7d0381c-c99e-4dba-9156-cc07a86bdc39@sirena.org.uk>
-References: <20230713223432.1501133-1-kuba@kernel.org>
- <f61a12c6-9587-9cb4-122e-dc3a74e58bd1@leemhuis.info>
- <20230714102218.687ee2ea@kernel.org>
+        Fri, 14 Jul 2023 14:01:29 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C974730DF
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 11:00:58 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7CC451570;
+        Fri, 14 Jul 2023 11:00:29 -0700 (PDT)
+Received: from [10.57.76.27] (unknown [10.57.76.27])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 93F7F3F67D;
+        Fri, 14 Jul 2023 10:59:44 -0700 (PDT)
+Message-ID: <432490d1-8d1e-1742-295a-d6e60a054ab6@arm.com>
+Date:   Fri, 14 Jul 2023 18:59:42 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="KVi/BTK8+Otxl5a/"
-Content-Disposition: inline
-In-Reply-To: <20230714102218.687ee2ea@kernel.org>
-X-Cookie: Preserve the old, but know the new.
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH v3 3/4] mm: FLEXIBLE_THP for improved performance
+To:     Yu Zhao <yuzhao@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20230714160407.4142030-1-ryan.roberts@arm.com>
+ <20230714161733.4144503-3-ryan.roberts@arm.com>
+ <CAOUHufacQ8Vx9WQ3BVjGGWKGhcRkL7u79UMX=O7oePDwZ0iNxw@mail.gmail.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <CAOUHufacQ8Vx9WQ3BVjGGWKGhcRkL7u79UMX=O7oePDwZ0iNxw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 14/07/2023 18:17, Yu Zhao wrote:
+> On Fri, Jul 14, 2023 at 10:17 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>
+>> Introduce FLEXIBLE_THP feature, which allows anonymous memory to be
+>> allocated in large folios of a determined order. All pages of the large
+>> folio are pte-mapped during the same page fault, significantly reducing
+>> the number of page faults. The number of per-page operations (e.g. ref
+>> counting, rmap management lru list management) are also significantly
+>> reduced since those ops now become per-folio.
+>>
+>> The new behaviour is hidden behind the new FLEXIBLE_THP Kconfig, which
+>> defaults to disabled for now; The long term aim is for this to defaut to
+>> enabled, but there are some risks around internal fragmentation that
+>> need to be better understood first.
+>>
+>> When enabled, the folio order is determined as such: For a vma, process
+>> or system that has explicitly disabled THP, we continue to allocate
+>> order-0. THP is most likely disabled to avoid any possible internal
+>> fragmentation so we honour that request.
+>>
+>> Otherwise, the return value of arch_wants_pte_order() is used. For vmas
+>> that have not explicitly opted-in to use transparent hugepages (e.g.
+>> where thp=madvise and the vma does not have MADV_HUGEPAGE), then
+>> arch_wants_pte_order() is limited by the new cmdline parameter,
+>> `flexthp_unhinted_max`. This allows for a performance boost without
+>> requiring any explicit opt-in from the workload while allowing the
+>> sysadmin to tune between performance and internal fragmentation.
+>>
+>> arch_wants_pte_order() can be overridden by the architecture if desired.
+>> Some architectures (e.g. arm64) can coalsece TLB entries if a contiguous
+>> set of ptes map physically contigious, naturally aligned memory, so this
+>> mechanism allows the architecture to optimize as required.
+>>
+>> If the preferred order can't be used (e.g. because the folio would
+>> breach the bounds of the vma, or because ptes in the region are already
+>> mapped) then we fall back to a suitable lower order; first
+>> PAGE_ALLOC_COSTLY_ORDER, then order-0.
+>>
+>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+>> ---
+>>  .../admin-guide/kernel-parameters.txt         |  10 +
+>>  mm/Kconfig                                    |  10 +
+>>  mm/memory.c                                   | 187 ++++++++++++++++--
+>>  3 files changed, 190 insertions(+), 17 deletions(-)
+>>
+>> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+>> index a1457995fd41..405d624e2191 100644
+>> --- a/Documentation/admin-guide/kernel-parameters.txt
+>> +++ b/Documentation/admin-guide/kernel-parameters.txt
+>> @@ -1497,6 +1497,16 @@
+>>                         See Documentation/admin-guide/sysctl/net.rst for
+>>                         fb_tunnels_only_for_init_ns
+>>
+>> +       flexthp_unhinted_max=
+>> +                       [KNL] Requires CONFIG_FLEXIBLE_THP enabled. The maximum
+>> +                       folio size that will be allocated for an anonymous vma
+>> +                       that has neither explicitly opted in nor out of using
+>> +                       transparent hugepages. The size must be a power-of-2 in
+>> +                       the range [PAGE_SIZE, PMD_SIZE). A larger size improves
+>> +                       performance by reducing page faults, while a smaller
+>> +                       size reduces internal fragmentation. Default: max(64K,
+>> +                       PAGE_SIZE). Format: size[KMG].
+>> +
+> 
+> Let's split this parameter into a separate patch.
 
---KVi/BTK8+Otxl5a/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Ha - I had it as a separate patch originally, but thought you'd ask for it to be
+a single patch so squashed it ;-). I can separate it again, no problem.
 
-On Fri, Jul 14, 2023 at 10:22:18AM -0700, Jakub Kicinski wrote:
-> On Fri, 14 Jul 2023 08:24:38 +0200 Thorsten Leemhuis wrote:
+> 
+> And I'm going to ask many questions about it (I can live with a sysctl
+> parameter but this boot parameter is unacceptable to me).
 
-> > Also: It's totally normal that commercial vendor contribute basic
-> > drivers with known problems and missing features (some of which will
-> > never be implemented). The latter will be considered a "bug" for quite a
-> > few users that read this. Those suddenly thus might becomes something
-> > they now "must" fix, which leads to questions: how fast? just in
-> > mainline, or in stable, too?
+Please do. Hopefully the thread with DavidH against v2 gives the rationale. Care
+to elaborate on why its unacceptable?
 
-> If we try to fend off anyone who doesn't understand common meaning=20
-> of words the document will be very long and painful to read.
+> 
+>> diff --git a/mm/memory.c b/mm/memory.c
+>> index 01f39e8144ef..e8bc729efb9d 100644
+>> --- a/mm/memory.c
+>> +++ b/mm/memory.c
+>> @@ -4050,6 +4050,148 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>>         return ret;
+>>  }
+>>
+>> +static bool vmf_pte_range_changed(struct vm_fault *vmf, int nr_pages)
+>> +{
+>> +       int i;
+>> +
+>> +       if (nr_pages == 1)
+>> +               return vmf_pte_changed(vmf);
+>> +
+>> +       for (i = 0; i < nr_pages; i++) {
+>> +               if (!pte_none(ptep_get_lockless(vmf->pte + i)))
+>> +                       return true;
+>> +       }
+>> +
+>> +       return false;
+>> +}
+>> +
+>> +#ifdef CONFIG_FLEXIBLE_THP
+>> +static int flexthp_unhinted_max_order =
+>> +               ilog2(SZ_64K > PAGE_SIZE ? SZ_64K : PAGE_SIZE) - PAGE_SHIFT;
+>> +
+>> +static int __init parse_flexthp_unhinted_max(char *s)
+>> +{
+>> +       unsigned long long size = memparse(s, NULL);
+>> +
+>> +       if (!is_power_of_2(size) || size < PAGE_SIZE || size > PMD_SIZE) {
+>> +               pr_warn("flexthp: flexthp_unhinted_max=%s must be power-of-2 between PAGE_SIZE (%lu) and PMD_SIZE (%lu), ignoring\n",
+>> +                       s, PAGE_SIZE, PMD_SIZE);
+>> +               return 1;
+>> +       }
+>> +
+>> +       flexthp_unhinted_max_order = ilog2(size) - PAGE_SHIFT;
+>> +
+>> +       /* THP machinery requires at least 3 struct pages for meta data. */
+>> +       if (flexthp_unhinted_max_order == 1)
+>> +               flexthp_unhinted_max_order--;
+>> +
+>> +       return 1;
+>> +}
+>> +
+>> +__setup("flexthp_unhinted_max=", parse_flexthp_unhinted_max);
+>> +
+>> +static int anon_folio_order(struct vm_area_struct *vma)
+>> +{
+>> +       int order;
+>> +
+>> +       /*
+>> +        * If THP is explicitly disabled for either the vma, the process or the
+>> +        * system, then this is very likely intended to limit internal
+>> +        * fragmentation; in this case, don't attempt to allocate a large
+>> +        * anonymous folio.
+>> +        *
+>> +        * Else, if the vma is eligible for thp, allocate a large folio of the
+>> +        * size preferred by the arch. Or if the arch requested a very small
+>> +        * size or didn't request a size, then use PAGE_ALLOC_COSTLY_ORDER,
+>> +        * which still meets the arch's requirements but means we still take
+>> +        * advantage of SW optimizations (e.g. fewer page faults).
+>> +        *
+>> +        * Finally if thp is enabled but the vma isn't eligible, take the
+>> +        * arch-preferred size and limit it to the flexthp_unhinted_max cmdline
+>> +        * parameter. This allows a sysadmin to tune performance vs internal
+>> +        * fragmentation.
+>> +        */
+>> +
+>> +       if ((vma->vm_flags & VM_NOHUGEPAGE) ||
+>> +           test_bit(MMF_DISABLE_THP, &vma->vm_mm->flags) ||
+>> +           !hugepage_flags_enabled())
+>> +               order = 0;
+>> +       else {
+>> +               order = max(arch_wants_pte_order(), PAGE_ALLOC_COSTLY_ORDER);
+>> +
+>> +               if (!hugepage_vma_check(vma, vma->vm_flags, false, true, true))
+>> +                       order = min(order, flexthp_unhinted_max_order);
+>> +       }
+>> +
+>> +       return order;
+>> +}
+>> +
+>> +static int alloc_anon_folio(struct vm_fault *vmf, struct folio **folio)
+>> +{
+>> +       int i;
+>> +       gfp_t gfp;
+>> +       pte_t *pte;
+>> +       unsigned long addr;
+>> +       struct vm_area_struct *vma = vmf->vma;
+>> +       int prefer = anon_folio_order(vma);
+>> +       int orders[] = {
+>> +               prefer,
+>> +               prefer > PAGE_ALLOC_COSTLY_ORDER ? PAGE_ALLOC_COSTLY_ORDER : 0,
+>> +               0,
+>> +       };
+>> +
+>> +       *folio = NULL;
+>> +
+>> +       if (vmf_orig_pte_uffd_wp(vmf))
+>> +               goto fallback;
+>> +
+>> +       for (i = 0; orders[i]; i++) {
+>> +               addr = ALIGN_DOWN(vmf->address, PAGE_SIZE << orders[i]);
+>> +               if (addr >= vma->vm_start &&
+>> +                   addr + (PAGE_SIZE << orders[i]) <= vma->vm_end)
+>> +                       break;
+>> +       }
+>> +
+>> +       if (!orders[i])
+>> +               goto fallback;
+>> +
+>> +       pte = pte_offset_map(vmf->pmd, vmf->address & PMD_MASK);
+>> +       if (!pte)
+>> +               return -EAGAIN;
+> 
+> It would be a bug if this happens. So probably -EINVAL?
 
-That's true, but "bug" is one of those things where there is a frequent
-disconnect on definitions, and when coupled with the must respond bit I
-can see things going wrong.
+Not sure what you mean? Hugh Dickins' series that went into v6.5-rc1 makes it
+possible for pte_offset_map() to fail (if I understood correctly) and we have to
+handle this. The intent is that we will return from the fault without making any
+change, then we will refault and try again.
 
---KVi/BTK8+Otxl5a/
-Content-Type: application/pgp-signature; name="signature.asc"
+> 
+>> +
+>> +       for (; orders[i]; i++) {
+>> +               addr = ALIGN_DOWN(vmf->address, PAGE_SIZE << orders[i]);
+>> +               vmf->pte = pte + pte_index(addr);
+>> +               if (!vmf_pte_range_changed(vmf, 1 << orders[i]))
+>> +                       break;
+>> +       }
+>> +
+>> +       vmf->pte = NULL;
+>> +       pte_unmap(pte);
+>> +
+>> +       gfp = vma_thp_gfp_mask(vma);
+>> +
+>> +       for (; orders[i]; i++) {
+>> +               addr = ALIGN_DOWN(vmf->address, PAGE_SIZE << orders[i]);
+>> +               *folio = vma_alloc_folio(gfp, orders[i], vma, addr, true);
+>> +               if (*folio) {
+>> +                       clear_huge_page(&(*folio)->page, addr, 1 << orders[i]);
+>> +                       return 0;
+>> +               }
+>> +       }
+>> +
+>> +fallback:
+>> +       *folio = vma_alloc_zeroed_movable_folio(vma, vmf->address);
+>> +       return *folio ? 0 : -ENOMEM;
+>> +}
+>> +#else
+>> +static inline int alloc_anon_folio(struct vm_fault *vmf, struct folio **folio)
+> 
+> Drop "inline" (it doesn't do anything in .c).
 
------BEGIN PGP SIGNATURE-----
+There are 38 instances of inline in memory.c alone, so looks like a well used
+convention, even if the compiler may choose to ignore. Perhaps you can educate
+me; what's the benefit of dropping it?
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmSxjOsACgkQJNaLcl1U
-h9ANGQf/Uj59jbEqoKoJTQol5fPW0lVUi1Wk7isseKJDDsElbkiIwrx3FQx3sGjX
-T2OjnR9KfvcAENLz7nrC0amKje5ZclDI+70Jz2FRfdVRwVVWh937vG/JnS2Ciy1l
-avneg5pyeMDLJaaF8X9V6IDRv4HKZII1YyEOAM9K6o42ZJVuTIMs+VQqowgy1tJN
-vGDOCS4GZNmPCSHVGtdfLulsH3D9NilRMXunGFzGdudvDacm+t5b14V/n0tSD0/D
-62Jf/C5LTIo5SadXVWakl80KYGnG+AmUHwYa4JHWktw1VGY33ywrhFsa/oRwva/S
-ZYsFRsXYI3ly2G3UiN1JpuB6MzAXMg==
-=7c+u
------END PGP SIGNATURE-----
+> 
+> The rest looks good to me.
 
---KVi/BTK8+Otxl5a/--
+Great - just incase it wasn't obvious, I decided not to overwrite vmf->address
+with the aligned version, as you suggested, for 2 reasons; 1) address is const
+in the struct, so would have had to change that. 2) there is a uffd path that
+can be taken after the vmf->address fixup would have occured and the path
+consumes that member, so it would have had to be un-fixed-up making it more
+messy than the way I opted for.
+
+Thanks for the quick review as always!
+
