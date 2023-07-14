@@ -2,41 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48EF0753092
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 06:29:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCD53753095
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 06:30:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234764AbjGNE3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 00:29:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36986 "EHLO
+        id S234946AbjGNEaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 00:30:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232372AbjGNE3m (ORCPT
+        with ESMTP id S234850AbjGNEaV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 00:29:42 -0400
-Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67FE62736
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 21:29:40 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R591e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0VnKDHcR_1689308975;
-Received: from 30.97.49.6(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0VnKDHcR_1689308975)
-          by smtp.aliyun-inc.com;
-          Fri, 14 Jul 2023 12:29:36 +0800
-Message-ID: <8a896983-ec76-d705-b4af-b34ffe529a81@linux.alibaba.com>
-Date:   Fri, 14 Jul 2023 12:29:35 +0800
+        Fri, 14 Jul 2023 00:30:21 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF3932D48
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 21:30:18 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R2JRq0ZPrzBRSVw
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 12:30:15 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1689309014; x=1691901015; bh=dZqnqZqBjGRAEON5ShfXliTdE7Z
+        9seHxdVTMng/HwSM=; b=K1SWXeBDwfCAX93KDt4utJr7hNeQiIl1xVs9YI2vutb
+        ei2VFaZ06iKbj3VDTCKaYb9kww0rCqb0ZKJ9DbnUEF8o/qM7z5piC+RJYAL+16KC
+        xkj5VpoSCF+SyHc3sHm2ZWHusiXD8bwFHqIldd3jfczcCpXAu9DWTodumoUXgDKK
+        JH1m7YOOoOvFw0qa+nPegwOEuoXt2/XR7zojtXlFto2/F6KZChwY8UUBAmQUNQYe
+        Co1Hy0JYJe1ps7GU+3hAASK1YDdSsGNnnUOHI7+iPFOAjm9tSNPC0vhuC/PHSB+I
+        vB2lCNO13dB3lmdPT4QbWGocn1pBhyj2qIIox5ftRKA==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id sMUKkdQ5hHUl for <linux-kernel@vger.kernel.org>;
+        Fri, 14 Jul 2023 12:30:14 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R2JRp5byVzBRSVj;
+        Fri, 14 Jul 2023 12:30:14 +0800 (CST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH] erofs: deprecate superblock checksum feature
-To:     Jingbo Xu <jefflexu@linux.alibaba.com>, chao@kernel.org,
-        huyue2@coolpad.com, linux-erofs@lists.ozlabs.org
-Cc:     linux-kernel@vger.kernel.org, pratikshinde320@gmail.com
-References: <20230714033832.111740-1-jefflexu@linux.alibaba.com>
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-In-Reply-To: <20230714033832.111740-1-jefflexu@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Date:   Fri, 14 Jul 2023 12:30:14 +0800
+From:   liubin001@208suo.com
+To:     gregkh@linuxfoundation.org
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Fwd: [PATCH] tty:Insert clk_put before return (clk) to release memory
+In-Reply-To: <tencent_EF85BF6D0EE7D05E10D527FD335467508106@qq.com>
+References: <tencent_EF85BF6D0EE7D05E10D527FD335467508106@qq.com>
+User-Agent: Roundcube Webmail
+Message-ID: <57adb092639743f2619c4765379b3ec7@208suo.com>
+X-Sender: liubin001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -44,120 +63,23 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+tty/serial:Insert clk_put before return (clk) to release memory
+Signed-off-by: Liu Bin <liubin001@08suo.com>
+---
+  drivers/tty/serial/bcm63xx_uart.c | 1 +
+  1 file changed, 1 insertion(+)
 
-On 2023/7/14 11:38, Jingbo Xu wrote:
-> Later we're going to introduce fs-verity based verification for the
-> whole image.  Make the superblock checksum feature deprecated.
+diff --git a/drivers/tty/serial/bcm63xx_uart.c 
+b/drivers/tty/serial/bcm63xx_uart.c
+index 55e82d0bf92d..7353b683952d 100644
+--- a/drivers/tty/serial/bcm63xx_uart.c
++++ b/drivers/tty/serial/bcm63xx_uart.c
+@@ -851,6 +851,7 @@ static int bcm_uart_probe(struct platform_device 
+*pdev)
+          clk = of_clk_get(pdev->dev.of_node, 0);
 
-I'd suggest that
+      if (IS_ERR(clk))
++        clk_put(clk);
+          return -ENODEV;
 
-
-"Later we're going to try the self-contained image verification.
-  The current superblock checksum feature has quite limited
-  functionality, instead, merkle trees can provide better protection
-  for image integrity.
-
-  Since the superblock checksum is a compatible feature, just
-  deprecate now. "
-   
-
-> 
-> Signed-off-by: Jingbo Xu <jefflexu@linux.alibaba.com>
-> ---
->   fs/erofs/Kconfig |  1 -
->   fs/erofs/super.c | 44 +++++---------------------------------------
->   2 files changed, 5 insertions(+), 40 deletions(-)
-> 
-> diff --git a/fs/erofs/Kconfig b/fs/erofs/Kconfig
-> index f259d92c9720..ebcb1f6a426a 100644
-> --- a/fs/erofs/Kconfig
-> +++ b/fs/erofs/Kconfig
-> @@ -4,7 +4,6 @@ config EROFS_FS
->   	tristate "EROFS filesystem support"
->   	depends on BLOCK
->   	select FS_IOMAP
-> -	select LIBCRC32C
->   	help
->   	  EROFS (Enhanced Read-Only File System) is a lightweight read-only
->   	  file system with modern designs (e.g. no buffer heads, inline
-> diff --git a/fs/erofs/super.c b/fs/erofs/super.c
-> index 9d6a3c6158bd..bb6a966ac4d4 100644
-> --- a/fs/erofs/super.c
-> +++ b/fs/erofs/super.c
-> @@ -8,7 +8,6 @@
->   #include <linux/statfs.h>
->   #include <linux/parser.h>
->   #include <linux/seq_file.h>
-> -#include <linux/crc32c.h>
->   #include <linux/fs_context.h>
->   #include <linux/fs_parser.h>
->   #include <linux/dax.h>
-> @@ -51,33 +50,6 @@ void _erofs_info(struct super_block *sb, const char *function,
->   	va_end(args);
->   }
->   
-> -static int erofs_superblock_csum_verify(struct super_block *sb, void *sbdata)
-> -{
-> -	size_t len = 1 << EROFS_SB(sb)->blkszbits;
-> -	struct erofs_super_block *dsb;
-> -	u32 expected_crc, crc;
-> -
-> -	if (len > EROFS_SUPER_OFFSET)
-> -		len -= EROFS_SUPER_OFFSET;
-> -
-> -	dsb = kmemdup(sbdata + EROFS_SUPER_OFFSET, len, GFP_KERNEL);
-> -	if (!dsb)
-> -		return -ENOMEM;
-> -
-> -	expected_crc = le32_to_cpu(dsb->checksum);
-> -	dsb->checksum = 0;
-> -	/* to allow for x86 boot sectors and other oddities. */
-> -	crc = crc32c(~0, dsb, len);
-> -	kfree(dsb);
-> -
-> -	if (crc != expected_crc) {
-> -		erofs_err(sb, "invalid checksum 0x%08x, 0x%08x expected",
-> -			  crc, expected_crc);
-> -		return -EBADMSG;
-> -	}
-> -	return 0;
-> -}
-> -
->   static void erofs_inode_init_once(void *ptr)
->   {
->   	struct erofs_inode *vi = ptr;
-> @@ -113,15 +85,16 @@ static void erofs_free_inode(struct inode *inode)
->   static bool check_layout_compatibility(struct super_block *sb,
->   				       struct erofs_super_block *dsb)
->   {
-> -	const unsigned int feature = le32_to_cpu(dsb->feature_incompat);
-> +	struct erofs_sb_info *sbi = EROFS_SB(sb);
->   
-> -	EROFS_SB(sb)->feature_incompat = feature;
-> +	sbi->feature_compat = le32_to_cpu(dsb->feature_compat);
-> +	sbi->feature_incompat = le32_to_cpu(dsb->feature_incompat);
->   
->   	/* check if current kernel meets all mandatory requirements */
-> -	if (feature & (~EROFS_ALL_FEATURE_INCOMPAT)) {
-> +	if (sbi->feature_incompat & (~EROFS_ALL_FEATURE_INCOMPAT)) {
->   		erofs_err(sb,
->   			  "unidentified incompatible feature %x, please upgrade kernel version",
-> -			   feature & ~EROFS_ALL_FEATURE_INCOMPAT);
-> +			   sbi->feature_incompat & ~EROFS_ALL_FEATURE_INCOMPAT);
->   		return false;
->   	}
->   	return true;
-> @@ -365,13 +338,6 @@ static int erofs_read_superblock(struct super_block *sb)
->   		goto out;
->   	}
->   
-> -	sbi->feature_compat = le32_to_cpu(dsb->feature_compat);
-> -	if (erofs_sb_has_sb_chksum(sbi)) {
-> -		ret = erofs_superblock_csum_verify(sb, data);
-> -		if (ret)
-> -			goto out;
-> -	}
-> -
->   	ret = -EINVAL;
->   	if (!check_layout_compatibility(sb, dsb))
->   		goto out;
+      port->iotype = UPIO_MEM;
