@@ -2,140 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4120C75428A
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 20:28:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 873BB75428D
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 20:29:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236838AbjGNS2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 14:28:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42746 "EHLO
+        id S236846AbjGNS3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 14:29:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235666AbjGNS2W (ORCPT
+        with ESMTP id S236842AbjGNS3J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 14:28:22 -0400
-Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 514F0C6
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 11:28:21 -0700 (PDT)
-Received: by mail-vs1-xe33.google.com with SMTP id ada2fe7eead31-440ad406bc8so660953137.3
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 11:28:21 -0700 (PDT)
+        Fri, 14 Jul 2023 14:29:09 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3199626BB
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 11:29:07 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2b6fbf0c0e2so34252101fa.2
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 11:29:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1689359300; x=1691951300;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QEwh3jWpcS4Rr9/xa0HOrqWoe7wb9dJDR+SiTAkE0+w=;
-        b=GJB6wy00ho4cgQgXPNrW8Vi88apS61JH+hMIrk21zgvJ7QtBfaGWZFt0PmM503sWrN
-         4M+p7P9OaJPbgHHRkqEGUzGUaGL9IpKWXnEXT7IH8x2onT/EZeuepOF+QCabiWZeYe7J
-         djmtI1p5stNcz0bPDFeE9VMSIiGA5jzHSd3yI=
+        d=linaro.org; s=google; t=1689359345; x=1691951345;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=V8Wt8cMGCqy9CZq6012XBPM2kyz2Mn90yzkk5uGQWyU=;
+        b=mvajMGQNG+5AvAaKOl4BVvuCD4zs13l7V8u70iG64R7IMoL+YUkkqskXvWa83uZY/G
+         tU2iLxRoo/usmgBwqJQk4hnIuumPHp19LW+BiipO4d1rxi2u/CW7DEk8Yt9q13RhReES
+         2p//ZDhe8aHwjamAXl7mWylHty+53enF4TOZDB36PCmCe8ivLlh7OtkCMjTN7rzH+Gbm
+         YDFDQWE4OvKL1PwI3DpuPkZDOYfDT9tMiURUd6t+IOFsBp7ANcagPRbr84Wtyp46RDXV
+         jtSrCA7MfuO5SyUHaqx/HwpKeFeC69gB1NJpbjhEI6uEEppjTmShQZkt5zvClfZNim9b
+         zbdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689359300; x=1691951300;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QEwh3jWpcS4Rr9/xa0HOrqWoe7wb9dJDR+SiTAkE0+w=;
-        b=dXjhiOV1BhR9XtEfRnM4D60hN6bpA1dI+nOyR3EgWUpnt8gYUbmeQXpkgiaKob3PJx
-         a165Ip5ceEsxPvFftA1I662rkAtJy82gTjUZ8wVk0H18IfPRlGXOwhfb0uWXJ6qDLnDU
-         6FwHGNNQqsjDHbYH1aPIocnc6zJ1EhtqyDanRXvvN3i+fUtIMINy0Qk4mpRbwwLmuYaw
-         E0850ZyBOOSYTm1HH3ZaseQvX0yyxpRvTHt3iMlXHygzhHkaPDyzv1UgabmPoUc06zNY
-         jnVr+AUe9oTtyqsBc0GTUbOO33bFBLgWPd4O8lNJ0OPBNnlzUZjXyiqE1iugCZUA5ff7
-         qxLg==
-X-Gm-Message-State: ABy/qLZhMTSETKyjIG/s6AMLYBBj6hHX7K2N7cuqHPKAStkDRKTwZAOb
-        kh6vIOPMyQeZaboVykpxmqBtimis/IZ+71iVtTI=
-X-Google-Smtp-Source: APBJJlGtD9qXoeR5fHzlSeVWUzWN3w255qGeCaqVr8loJq6nkwqDxbR7oD6lizCs2R1szFh1Ou4dPA==
-X-Received: by 2002:a67:eb96:0:b0:445:20ba:fb16 with SMTP id e22-20020a67eb96000000b0044520bafb16mr2074462vso.25.1689359300197;
-        Fri, 14 Jul 2023 11:28:20 -0700 (PDT)
-Received: from [192.168.0.140] (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
-        by smtp.gmail.com with ESMTPSA id i13-20020a05620a150d00b00767660afed5sm3980568qkk.99.2023.07.14.11.28.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 Jul 2023 11:28:19 -0700 (PDT)
-Message-ID: <f61fa0cc-eca7-c04a-abf6-5ca5318bd2b8@joelfernandes.org>
-Date:   Fri, 14 Jul 2023 14:28:18 -0400
+        d=1e100.net; s=20221208; t=1689359345; x=1691951345;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=V8Wt8cMGCqy9CZq6012XBPM2kyz2Mn90yzkk5uGQWyU=;
+        b=e5OBuLjgXuC+CW1HwsX1iToYClNvyDUzQcJ7YyNNef9vJRigh9QlblVV//nKrN7Nz2
+         meJvsakQItrjwtT1LXaRwQN9bM0DZZcR7P/htBjcGJXosT6vEk9+BRW4GG7GupV1xuHg
+         EHah9SM54dVO7oYVnYikn6ayhM6VBHmXDttYAxnBUdcFhWwq2qMdVIWY41bynDYufyyE
+         fhFNerm8gL7JkPkpnH1lnithuPqAa91bzp4NAZTbJFMnLikQNvWSjGJhrL+5Ia+Okaor
+         1ItWDdxYu4Fa/4gYLpC7bjVe34VUfK1SXJOGBeZuYkJXEQjDEOV7AKPnnyARFB9imgBN
+         9qBA==
+X-Gm-Message-State: ABy/qLYIulcgLuR79DqxWeFMvXVpmeYDmURd7JXk5LE4gg6dDUm5ozFs
+        O6R8wHLFAouiIsLZUPalHjxMFw==
+X-Google-Smtp-Source: APBJJlHCw4a7udF2Olxu1CeYC6D6ejTjPUE0r4lNRWXVSMD4v6zAA/CEHUxPcOzwszw4xt6K9ozOZA==
+X-Received: by 2002:a2e:9c93:0:b0:2b6:e536:a2a9 with SMTP id x19-20020a2e9c93000000b002b6e536a2a9mr4728029lji.47.1689359345403;
+        Fri, 14 Jul 2023 11:29:05 -0700 (PDT)
+Received: from [127.0.1.1] ([85.235.12.238])
+        by smtp.gmail.com with ESMTPSA id f21-20020a2e9e95000000b002b1b92910c8sm2092229ljk.86.2023.07.14.11.29.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Jul 2023 11:29:05 -0700 (PDT)
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 14 Jul 2023 20:29:03 +0200
+Subject: [PATCH v3] mtd: spi-nor: Correct flags for Winbond w25q128
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 1/3] tick/nohz: Rename the tick handlers to more
- self-explanatory names
-To:     Frederic Weisbecker <frederic@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-References: <20230714120852.23573-1-frederic@kernel.org>
- <20230714120852.23573-2-frederic@kernel.org>
-Content-Language: en-US
-From:   Joel Fernandes <joel@joelfernandes.org>
-In-Reply-To: <20230714120852.23573-2-frederic@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Message-Id: <20230714-spi-nor-winbond-w25q128-v3-1-bdb2192f079b@linaro.org>
+X-B4-Tracking: v=1; b=H4sIAO6TsWQC/43NTQrCMBCG4auUrI1kJvZHV95DXKRN0g5IUhNJl
+ dK7mxZcuBBcvh/MMzOLJpCJ7FTMLJhEkbzLIXcF6wblesNJ52YoUIoagMeRuPOBT+Ra7zSfsLw
+ DNlwiqEqgMVjVLF+PwVh6bvLlmnug+PDhtT1KsK4fE3+aCThwWzdWtu0BFXTnGzkV/N6Hnq1ow
+ j8hzFApuqMFXTa6+oaWZXkD23C8bggBAAA=
+To:     Tudor Ambarus <tudor.ambarus@linaro.org>,
+        Pratyush Yadav <pratyush@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/14/23 08:08, Frederic Weisbecker wrote:
-> The current name of the tick handlers don't tell much about what differ
-> between them. Use names that better reflect their role and resolution.
-> 
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> ---
->   kernel/time/tick-sched.c | 8 ++++----
->   1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-> index 89055050d1ac..a7b5960258f2 100644
-> --- a/kernel/time/tick-sched.c
-> +++ b/kernel/time/tick-sched.c
-> @@ -1355,7 +1355,7 @@ void tick_nohz_idle_exit(void)
->   /*
->    * The nohz low res interrupt handler
->    */
-> -static void tick_nohz_handler(struct clock_event_device *dev)
-> +static void tick_lowres_handler(struct clock_event_device *dev)
+The Winbond "w25q128" (actual vendor name W25Q128JV) has
+exactly the same flags as the sibling device "w25q128jv".
+The devices both require unlocking to enable write access.
 
-Maybe tick_nohz_lowres_handler() is better?
+The actual product naming between devices vs the Linux
+strings in winbond.c:
 
-You also have tick_periodic which is also 'lowres'.
+0xef4018: "w25q128"   W25Q128JV-IM/JM
+0xef7018: "w25q128jv" W25Q128JV-IN/IQ/JQ
 
-That would also keep the "tick_nohz" prefix which is prevalent in this code.
+The latter device, "w25q128jv" supports features named DTQ
+and QPI, otherwise it is the same.
 
->   {
->   	struct tick_sched *ts = this_cpu_ptr(&tick_cpu_sched);
->   	struct pt_regs *regs = get_irq_regs();
-> @@ -1401,7 +1401,7 @@ static void tick_nohz_switch_to_nohz(void)
->   	if (!tick_nohz_enabled)
->   		return;
->   
-> -	if (tick_switch_to_oneshot(tick_nohz_handler))
-> +	if (tick_switch_to_oneshot(tick_lowres_handler))
->   		return;
->   
->   	/*
-> @@ -1464,7 +1464,7 @@ void tick_irq_enter(void)
->    * We rearm the timer until we get disabled by the idle code.
->    * Called with interrupts disabled.
->    */
-> -static enum hrtimer_restart tick_sched_timer(struct hrtimer *timer)
-> +static enum hrtimer_restart tick_highres_handler(struct hrtimer *timer)
+Not having the right flags has the annoying side effect
+that write access does not work.
 
-This one looks good.
+After this patch I can write to the flash on the Inteno
+XG6846 router.
 
-thanks,
+The flash memory also supports dual and quad SPI modes.
+This does not currently manifest, but by turning on SFDP
+parsing, the right SPI modes are emitted in
+/sys/kernel/debug/spi-nor/spi1.0/capabilities
+for this chip, so we also turn on this.
 
-  - Joel
+Since we suspect that older chips may be using the same
+device ID, we need to keep NO_SFDP_FLAGS(SECT_4K) as these
+older chips may not support SFDP.
 
+cat jedec_id
+ef4018
+cat manufacturer
+winbond
+cat partname
+w25q128
+hexdump -v -C sfdp
+00000000  53 46 44 50 05 01 00 ff  00 05 01 10 80 00 00 ff
+00000010  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
+00000020  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
+00000030  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
+00000040  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
+00000050  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
+00000060  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
+00000070  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
+00000080  e5 20 f9 ff ff ff ff 07  44 eb 08 6b 08 3b 42 bb
+00000090  fe ff ff ff ff ff 00 00  ff ff 40 eb 0c 20 0f 52
+000000a0  10 d8 00 00 36 02 a6 00  82 ea 14 c9 e9 63 76 33
+000000b0  7a 75 7a 75 f7 a2 d5 5c  19 f7 4d ff e9 30 f8 80
 
->   {
->   	struct tick_sched *ts =
->   		container_of(timer, struct tick_sched, sched_timer);
-> @@ -1513,7 +1513,7 @@ void tick_setup_sched_timer(void)
->   	 * Emulate tick processing via per-CPU hrtimers:
->   	 */
->   	hrtimer_init(&ts->sched_timer, CLOCK_MONOTONIC, HRTIMER_MODE_ABS_HARD);
-> -	ts->sched_timer.function = tick_sched_timer;
-> +	ts->sched_timer.function = tick_highres_handler;
->   
->   	/* Get the next period (per-CPU) */
->   	hrtimer_set_expires(&ts->sched_timer, tick_init_jiffy_update());
+Cc: stable@vger.kernel.org
+Suggested-by: Michael Walle <michael@walle.cc>
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+Changes in v3:
+- Keep NO_SFDP_FLAGS(SECT_4K) around.
+- Update commit message
+- Link to v2: https://lore.kernel.org/r/20230712-spi-nor-winbond-w25q128-v2-1-50c9f1d58d6c@linaro.org
+
+Changes in v2:
+- Only add the write access flags.
+- Use SFDP parsing to properly detect the various
+  available SPI modes.
+- Link to v1: https://lore.kernel.org/r/20230712-spi-nor-winbond-w25q128-v1-1-f78f3bb42a1c@linaro.org
+---
+ drivers/mtd/spi-nor/winbond.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
+index 834d6ba5ce70..8f30a67cd27a 100644
+--- a/drivers/mtd/spi-nor/winbond.c
++++ b/drivers/mtd/spi-nor/winbond.c
+@@ -121,6 +121,8 @@ static const struct flash_info winbond_nor_parts[] = {
+ 	{ "w25q80bl", INFO(0xef4014, 0, 64 * 1024,  16)
+ 		NO_SFDP_FLAGS(SECT_4K) },
+ 	{ "w25q128", INFO(0xef4018, 0, 64 * 1024, 256)
++		PARSE_SFDP
++		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
+ 		NO_SFDP_FLAGS(SECT_4K) },
+ 	{ "w25q256", INFO(0xef4019, 0, 64 * 1024, 512)
+ 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+
+---
+base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
+change-id: 20230711-spi-nor-winbond-w25q128-321a602ee267
+
+Best regards,
+-- 
+Linus Walleij <linus.walleij@linaro.org>
 
