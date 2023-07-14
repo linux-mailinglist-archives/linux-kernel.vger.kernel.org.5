@@ -2,119 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5113752E51
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 02:34:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41E09752E53
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 02:37:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234534AbjGNAeo convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 13 Jul 2023 20:34:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46048 "EHLO
+        id S232513AbjGNAh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 20:37:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229916AbjGNAem (ORCPT
+        with ESMTP id S231292AbjGNAhy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 20:34:42 -0400
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0DAE52D4B;
-        Thu, 13 Jul 2023 17:34:40 -0700 (PDT)
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 36E0Y7n84015630, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 36E0Y7n84015630
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Fri, 14 Jul 2023 08:34:08 +0800
-Received: from RTEXMBS06.realtek.com.tw (172.21.6.99) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.32; Fri, 14 Jul 2023 08:34:14 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.34; Fri, 14 Jul 2023 08:34:14 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d]) by
- RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d%5]) with mapi id
- 15.01.2375.007; Fri, 14 Jul 2023 08:34:14 +0800
-From:   Ping-Ke Shih <pkshih@realtek.com>
-To:     "Lukas F. Hartmann" <lukas@mntre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jernej.skrabec@gmail.com" <jernej.skrabec@gmail.com>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
-        "kvalo@kernel.org" <kvalo@kernel.org>,
-        "tony0620emma@gmail.com" <tony0620emma@gmail.com>
-Subject: RE: [PATCH] wifi: rtw88: sdio: Honor the host max_req_size in the RX path
-Thread-Topic: [PATCH] wifi: rtw88: sdio: Honor the host max_req_size in the RX
- path
-Thread-Index: AQHZsp+XbJMjQ56edkCHhTIfjugPgq+yJqHggAT+3gCAAUh3EA==
-Date:   Fri, 14 Jul 2023 00:34:14 +0000
-Message-ID: <208ee32354b44205bb76a55c0d4bc93b@realtek.com>
-References: <20230709195712.603200-1-martin.blumenstingl@googlemail.com>
- <b55cd3172ea7474ba1a67db2d5b39301@realtek.com> <87pm4w3rjp.fsf@mntre.com>
-In-Reply-To: <87pm4w3rjp.fsf@mntre.com>
-Accept-Language: en-US, zh-TW
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.69.188]
-x-kse-serverinfo: RTEXMBS06.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Thu, 13 Jul 2023 20:37:54 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 574F5211C;
+        Thu, 13 Jul 2023 17:37:53 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-6686a05bc66so1000299b3a.1;
+        Thu, 13 Jul 2023 17:37:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689295073; x=1691887073;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=CctAjUFV1xpereksxrBg0+mczOOOQo8Ume+knSAyNSA=;
+        b=lYJpcJRJb9SNL3nkgSZJixYh9SFl72yF1riPiYiU8ciraE3COWM1XxqEcRv2LXBGi4
+         wQx9jFsqpPNRfK1lPzrOVs3ut0a5jR8GlT/JvhNyeHGIewXMcfMxxWBFmDMyH1JjL8lU
+         lntJP6Y3pGlDGZo8MrpLf+8844EE+0JJdNCG3gGFfKMcuzrOqN39yFFpm3H7BWPQvkLG
+         FtWgm+EsPtlACRVy2WfZOPx/FzVJd4bazCeZjywlak2gDsY4yR+3FoIzmISFHqRYuv97
+         20/M90KLBiKKvcVVLCN7PbMnGsw6/NJwo211cglp84au5+sOuJd0izOZnPxTgQOHTl2w
+         AxkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689295073; x=1691887073;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CctAjUFV1xpereksxrBg0+mczOOOQo8Ume+knSAyNSA=;
+        b=B2Hu91nY/EVUW+pddPSyWJ2MVTA0fey6FuhoLsDkUVubmyrMFNHeQPejVVtrC4zFfo
+         /TAgp/falK+V9pOI8tlnHQlU8amOP8HXWlejGkWpVvHVslceNXdPbBw2jqGehywMb2CO
+         IpReQ8qc612wGbtWNTCUXhK8PXarog3SngLOwuZs3GcR3Y8CzrSBOs3gRokY6R+WMqCu
+         zYWchLuzDAUq19ctiEry6bgr6fl5Bf7XTvwZs9sq3m1yAX6AyYPi5mA7GPgcrKSCadWo
+         m2WSmrJI2UG8NkmkpUwwzYdlWeSX0UUDsZUYMCuzvTq5k+9T5oIOXwK+4cQkNBlkZNLY
+         g8zg==
+X-Gm-Message-State: ABy/qLaRuONLonZZPwpYsNgcZlUjVHoIBzilZDEYVn94qWwbGB++ZRZ6
+        8ASfAPLIv7k1pJUEdwCMXWCS0NfU/dg=
+X-Google-Smtp-Source: APBJJlEiHiaptAXuvtXrlZ6sVYZbgFP0Qaahhb0xY+3xGXgYFbidFVi2AxUIRJJ595Diplb5DXLQVA==
+X-Received: by 2002:a05:6a00:2492:b0:64d:5b4b:8429 with SMTP id c18-20020a056a00249200b0064d5b4b8429mr3305331pfv.18.1689295072299;
+        Thu, 13 Jul 2023 17:37:52 -0700 (PDT)
+Received: from ubuntu777.domain.name (36-228-70-13.dynamic-ip.hinet.net. [36.228.70.13])
+        by smtp.gmail.com with ESMTPSA id s11-20020a62e70b000000b006825003a276sm5970384pfh.42.2023.07.13.17.37.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Jul 2023 17:37:51 -0700 (PDT)
+From:   Min-Hua Chen <minhuadotchen@gmail.com>
+To:     Daniel Vetter <daniel@ffwll.ch>, Helge Deller <deller@gmx.de>
+Cc:     Min-Hua Chen <minhuadotchen@gmail.com>,
+        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] fbdev: fbmem: mark registered_fb static
+Date:   Fri, 14 Jul 2023 08:37:46 +0800
+Message-Id: <20230714003748.91129-1-minhuadotchen@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Mark registered_fb, num_registered_fb, fbcon_registered_fb, and
+fbcon_num_registered_fb static to fix the following sparse
+warnings:
 
-> -----Original Message-----
-> From: Lukas F. Hartmann <lukas@mntre.com>
-> Sent: Thursday, July 13, 2023 8:49 PM
-> To: Ping-Ke Shih <pkshih@realtek.com>; Martin Blumenstingl <martin.blumenstingl@googlemail.com>;
-> linux-wireless@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org; jernej.skrabec@gmail.com; ulf.hansson@linaro.org; kvalo@kernel.org;
-> tony0620emma@gmail.com
-> Subject: RE: [PATCH] wifi: rtw88: sdio: Honor the host max_req_size in the RX path
-> 
-> Hi,
-> 
-> Ping-Ke Shih <pkshih@realtek.com> writes:
-> 
-> > I assume your conclusion is correct for all platforms, so I add my reviewed-by.
-> > But, I think it would be better that Lukas can help to test this patch on his
-> > platform, and give a tested-by tag before getting this patch merged.
-> 
-> I have been testing this now more rigorously in my own laptop with
-> Kernel 6.4.1 (from Debian experimental) and this patch applied. I first
-> had issues with rtw_power_mode_change (and "firmware failed to leave lps
-> state"), so I turned off power_save using iw. This made everything
-> quiet, but unfortunately after about 1 hour of usage I get
-> skb_over_panic again and I believe some memory corruption happens in the
-> kernel, as I can do dmesg only once and then another dmesg will hang forever.
-> (After WARNING: CPU: 4 PID: 0 at kernel/context_tracking.c:128
-> ct_kernel_exit.constprop.0+0xa0/0xa8)
-> 
-> Here are the errors that lead up to this:
-> http://dump.mntmn.com/rtw88-failure-1h-dmesg.txt
+drivers/video/fbdev/core/fbmem.c:51:16: sparse: warning: symbol 'registered_fb' was not declared. Should it be static?
+drivers/video/fbdev/core/fbmem.c:52:5: sparse: warning: symbol 'num_registered_fb' was not declared. Should it be static?
+drivers/video/fbdev/core/fbcon.c:105:16: sparse: warning: symbol 'fbcon_registered_fb' was not declared. Should it be static?
+drivers/video/fbdev/core/fbcon.c:106:5: sparse: warning: symbol 'fbcon_num_registered_fb' was not declared. Should it be static?
 
-Hi Martin,
+No functional change intended.
 
-The dmesg shows that
-"rtw_8822cs mmc2:0001:1: Failed to read 1536 byte(s) from SDIO port 0x000000d1"
+Signed-off-by: Min-Hua Chen <minhuadotchen@gmail.com>
+---
+ drivers/video/fbdev/core/fbcon.c | 4 ++--
+ drivers/video/fbdev/core/fbmem.c | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-Shouldn't we return an error code (with proper error handling) instead of
-just break the loop? Because 'buf' content isn't usable. 
-
-I wonder the approach of this patch is still not enough for Lukas' platform. 
-
-Ping-Ke
+diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
+index c6c9d040bdec..4336c7d64ed0 100644
+--- a/drivers/video/fbdev/core/fbcon.c
++++ b/drivers/video/fbdev/core/fbcon.c
+@@ -102,8 +102,8 @@ enum {
+ 
+ static struct fbcon_display fb_display[MAX_NR_CONSOLES];
+ 
+-struct fb_info *fbcon_registered_fb[FB_MAX];
+-int fbcon_num_registered_fb;
++static struct fb_info *fbcon_registered_fb[FB_MAX];
++static int fbcon_num_registered_fb;
+ 
+ #define fbcon_for_each_registered_fb(i)		\
+ 	for (i = 0; WARN_CONSOLE_UNLOCKED(), i < FB_MAX; i++)		\
+diff --git a/drivers/video/fbdev/core/fbmem.c b/drivers/video/fbdev/core/fbmem.c
+index 329d16e49a90..18355655959a 100644
+--- a/drivers/video/fbdev/core/fbmem.c
++++ b/drivers/video/fbdev/core/fbmem.c
+@@ -48,8 +48,8 @@
+ 
+ static DEFINE_MUTEX(registration_lock);
+ 
+-struct fb_info *registered_fb[FB_MAX] __read_mostly;
+-int num_registered_fb __read_mostly;
++static struct fb_info *registered_fb[FB_MAX] __read_mostly;
++static int num_registered_fb __read_mostly;
+ #define for_each_registered_fb(i)		\
+ 	for (i = 0; i < FB_MAX; i++)		\
+ 		if (!registered_fb[i]) {} else
+-- 
+2.34.1
 
