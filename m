@@ -2,137 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 278B975315B
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 07:40:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2902753154
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 07:34:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234697AbjGNFkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 01:40:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35902 "EHLO
+        id S234529AbjGNFer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 01:34:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231972AbjGNFkE (ORCPT
+        with ESMTP id S234892AbjGNFeZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 01:40:04 -0400
-Received: from mailgw.gate-on.net (auth.gate-on.net [IPv6:2001:278:1033:4::74:21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8AEA2738
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 22:40:02 -0700 (PDT)
-Received: from vega.pgw.jp (unknown [49.135.109.134])
-        by mailgw.gate-on.net (Postfix) with ESMTP id 95F0080165;
-        Fri, 14 Jul 2023 14:32:49 +0900 (JST)
-Received: from localhost (vega.pgw.jp [10.5.0.30])
-        by vega.pgw.jp (Postfix) with SMTP
-        id 8B1E5A53D; Fri, 14 Jul 2023 14:32:46 +0900 (JST)
-From:   <kkabe@vega.pgw.jp>
-Content-Type: text/plain; charset=ISO-2022-JP
-To:     regressions@lists.linux.dev
-Cc:     bagasdotme@gmail.com, alexander.deucher@amd.com,
-        christian.koenig@amd.com, Xinhui.Pan@amd.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        hpa@zytor.com, linux-kernel@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org
-Cc:     rostedt@goodmis.org, kkabe@vega.pgw.jp
-Subject: Re: radeon.ko/i586: BUG: kernel NULL pointer dereference, address:00000004
-In-Reply-To: Your message of "Fri, 14 Jul 2023 05:44:07 +0200".
-        <55a3bbb1-5b3c-f454-b529-8ee9944cc67c@leemhuis.info>
-X-Mailer: mnews [version 1.22PL5] 2002-11-27(Wed)
-Date:   Fri, 14 Jul 2023 14:32:46 +0900
-Message-ID: <230714143246.M0123552@vega.pgw.jp>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 14 Jul 2023 01:34:25 -0400
+Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E36863593
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 22:33:23 -0700 (PDT)
+Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-579ef51428eso14122387b3.2
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 22:33:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=edgeble-ai.20221208.gappssmtp.com; s=20221208; t=1689312803; x=1691904803;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=cO93OCrQNlLCZA+MMbVD/bFScGU9EicCldb08idSeGU=;
+        b=xBgejHrRR1ZPmQWWVcZZ13sWt5Ofu+iTDPRYzWWl6gJKPsKmamGqKOT/8OjniwAsTG
+         JjQGYJuscLmU4kpmBNcnYXKhZs8Jr8q2rjUAr2LtgDJaAhl2iiy0xdlkRji58y7/TJGg
+         L9lcnSnB4aTCrtEtVgibS9vJQgbLuXedWyf885FAUqc0pL3v7IWG2uEXuJxbbPINw19E
+         eGQzj46HD2NmBOzuNuPjKVmsjRyFTnqN/vDTXI61n22KtcjIfHoijhgmwopUxo7s2548
+         HOk3lrefVTcJCZmSqpp+nnBUpnaViPJUAbHnVCdiLq3GznGvRN5fkwwKOtKlecebFJ3M
+         dyvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689312803; x=1691904803;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cO93OCrQNlLCZA+MMbVD/bFScGU9EicCldb08idSeGU=;
+        b=Um8gxJ32DeUhiwCZTPzpKXbvscV635Qyq9F99ZPzZ3Saq52ltLs2bhh05wKpwufPrl
+         jHnXOMpbrr25tS2t+UkzvA8M0U0MkP5DMSI79spMSh+fzIeW/8C63QyVuMVDUY++qqHA
+         nhDgzv+BUU8/FsQMDVqFi5lPnP8zUT7tUw3dO1AX+ZtB3JLEpBuIzvQMOe9RCzlSrrCY
+         jy9WOzhaBp1o7b2KGUJB5AcE8bibweMFC1qW97P4VsgX7HKtY56+J7cTLkvfQRe+u2O5
+         35MQhJBrL1vNeDZb24PyGnlVvFudxeRLroCXtWd9o3NiXIZ46XXd2O7rb1Od9fjMQJ7q
+         K60w==
+X-Gm-Message-State: ABy/qLaSog5CyNCepSsckNaHR2sZ4diBPyRUFiu6Cmz5Jfi2T6GFA1Q/
+        3iaKIxcHQSJdUbxJNopBVAaZ3nIvNS3+DVQnpQ1aXOIWN4ljyAUx4he/Og==
+X-Google-Smtp-Source: APBJJlER1ImBn8SyF4nvZFu6jfUXHV0RYVHgsrGbzlXI/WqrC2ZszrwiB0XPgpV3SfHRs1CKdVmSZ5f1SuUUQOe0xkE=
+X-Received: by 2002:a81:ab50:0:b0:56d:9b15:72a with SMTP id
+ d16-20020a81ab50000000b0056d9b15072amr3845945ywk.33.1689312802990; Thu, 13
+ Jul 2023 22:33:22 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230403193250.108693-1-sebastian.reichel@collabora.com>
+ <20230403193250.108693-2-sebastian.reichel@collabora.com> <CA+VMnFz4USPcXmQMyUB9n5EVmvQrJARDvnpO7iBrXZ8q2xcyAA@mail.gmail.com>
+ <20230713193812.px7q4sdfdppuywsg@mercury.elektranox.org>
+In-Reply-To: <20230713193812.px7q4sdfdppuywsg@mercury.elektranox.org>
+From:   Jagan Teki <jagan@edgeble.ai>
+Date:   Fri, 14 Jul 2023 11:03:12 +0530
+Message-ID: <CA+VMnFwjFx5+h9=KGR-1o0ejSaxbE=-5wH3iqEEkn6k4q_he7Q@mail.gmail.com>
+Subject: Re: [PATCHv2 1/2] clk: rockchip: rk3588: make gate linked clocks
+ ignore unused
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     Heiko Stuebner <heiko@sntech.de>,
+        linux-rockchip@lists.infradead.org,
+        Peter Geis <pgwipeout@gmail.com>,
+        Elaine Zhang <zhangqing@rock-chips.com>,
+        Finley Xiao <finley.xiao@rock-chips.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kernel@collabora.com,
+        Vincent Legoll <vincent.legoll@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks you all for getting attention to the report: 
+Hi Sebastian,
 
-regressions@leemhuis.info sed in <55a3bbb1-5b3c-f454-b529-8ee9944cc67c@leemhuis.info>
+On Fri, 14 Jul 2023 at 01:08, Sebastian Reichel
+<sebastian.reichel@collabora.com> wrote:
+>
+> Hello Jagan,
+>
+> On Thu, Jul 13, 2023 at 08:25:03PM +0530, Jagan Teki wrote:
+> > On Tue, 4 Apr 2023 at 01:03, Sebastian Reichel
+> > <sebastian.reichel@collabora.com> wrote:
+> > [...]
+> > > + * Recent Rockchip SoCs have a new hardware block called Native Interface
+> > > + * Unit (NIU), which gates clocks to devices behind them. These effectively
+> > > + * need two parent clocks.
+> > > + *
+> > > + * Downstream enables the linked clock via runtime PM whenever the gate is
+> > > + * enabled. This implementation uses separate clock nodes for each of the
+> > > + * linked gate clocks, which leaks parts of the clock tree into DT.
+> > > + *
+> > > + * The GATE_LINK macro instead takes the second parent via 'linkname', but
+> > > + * ignores the information. Once the clock framework is ready to handle it, the
+> > > + * information should be passed on here. But since these clocks are required to
+> > > + * access multiple relevant IP blocks, such as PCIe or USB, we mark all linked
+> > > + * clocks critical until a better solution is available. This will waste some
+> > > + * power, but avoids leaking implementation details into DT or hanging the
+> > > + * system.
+> > >   */
+> >
+> > Does it mean the clk-link topology in the downstream kernel can be
+> > reused the same as normal clock notation?
+>
+> Yes.
+>
+> > For example, I'm trying to add HCLK_VO1 directly to VO1 syscon instead
+> > of routing to pclk_vo1_grf(done downstream)
+> >       vo1_grf: syscon@fd5a8000 {
+> >                compatible = "rockchip,rk3588-vo-grf", "syscon";
+> >                reg = <0x0 0xfd5a8000 0x0 0x100>;
+> >              clocks = <&cru HCLK_VO1>;
+>
+> You need PCLK_VO1 (which is currently not exposed; I somehow missed
+> it).
+>
+> >       };
+> >
+> > This seems breaking syscon for vo1_grf and observed a bus error
+> > while accessing regmap.
+>
+> I investigated the issue you are seeing some weeks ago when my
+> co-workers started to work on HDMI RX and TX. You are probably
+> just missing this patch:
+>
+> https://gitlab.collabora.com/hardware-enablement/rockchip-3588/linux/-/commit/ecc6415344957fa88356cec10f8b75a9da603a7b
 
->> On 14.07.23 05:12, Steven Rostedt wrote:
->> > On Fri, 14 Jul 2023 09:50:17 +0700
->> > Bagas Sanjaya <bagasdotme@gmail.com> wrote:
->> > 
->> >> I notice a regression report on Bugzilla [1]. Quoting from it:
->> >>
->> >>
->> >> See Bugzilla for the full thread and attached patches that fixes
->> >> this regression.
->> >>
->> >> Later, when bisecting, the reporter got better kernel trace:
->> >>
->> >>> [  469.825305] BUG: kernel NULL pointer dereference, address: 00000004
->> >>> [  469.830502] #PF: supervisor read access in kernel mode
->> >>> [  469.830502] #PF: error_code(0x0000) - not-present page
->> >>> [  469.830502] *pde = 00000000
->> >>> [  469.830502] Oops: 0000 [#1] PREEMPT SMP
->> >>> [  469.830502] CPU: 0 PID: 365 Comm: systemd-udevd Not tainted 5.14.0-221.el9.v1.i586 #1
->> > 
->> > This is a 5.14 kernel right?
->> 
->> And a vendor kernel that from the sound of the version number might be
->> heavily patched. But apparently the reporter later bisected this on a
->> newer kernel (Bagas, would have been good if this had been mentioned in
->> your earlier mail):
->> 
->> https://bugzilla.kernel.org/show_bug.cgi?id=217669#c5
->> ```
->> I succeeded to bisect down the regressing commit found in kernel-5.18.0-rc2:
->> 
->> b39181f7c690 (refs/bisect/bad) ftrace: Add FTRACE_MCOUNT_MAX_OFFSET to
->> avoid adding weak function
->> 
->> This at a glance does not relate to drm/kms code.
->> 
->> The attached patch effectively reverts the commit for 32bit.
->> This fixed the problem on kernel-5.18.0, but not enough for kernel-6.4.3 ```
->> 
->> That being said: That commit is not in 5.18, as Steve noticed:
->> 
->> >> #regzbot introduced: b39181f7c6907d https://bugzilla.kernel.org/show_bug.cgi?id=217669
->> >> #regzbot title: FTRACE_MCOUNT_MAX_OFFSET causes kernel NULL pointer dereference and virtual console (tty1) freeze
->> > That commit was added in 5.19.
->> > 
->> > So I'm confused about why it's mentioned. Was it backported?
->> 
->> Taketo Kabe, could you please help to clean this confusion up? Did you
->> mean 5.19 in https://bugzilla.kernel.org/show_bug.cgi?id=217669#c5 ? And
->> BTW: did you really use a vanilla kernel for your bisection?
+In fact, I tried this solution as well, by connecting the PCLK_VO1GRF.
 
+        vo1_grf: syscon@fd5a8000 {
+                compatible = "rockchip,rk3588-vo-grf", "syscon";
+                reg = <0x0 0xfd5a8000 0x0 0x100>;
+                clocks = <&cru PCLK_VO1GRF>;
+        };
 
-Reporter Me:
-I bisected using freedesktop.org kernel tree, which git commit ID is
-in sync with kernel.org
-but version number in ./Makefile could be slighty behind. 
+But the result seems the same, accessing vo1_grf triggers an abort [1]
 
-Patch in
-https://bugzilla.kernel.org/show_bug.cgi?id=217669#c4
-fixed the problem in freedesktop.org kernel 5.18.0-rc2 .
-This may explain that in kernel.org tree, the said commit is in kernel-5.19.
+[1] https://gist.github.com/openedev/e241da8180341ffbf4dc6a26de7efa31
 
-
->> TWIMC, there is also
->> https://bugzilla.kernel.org/show_bug.cgi?id=217669#c6 :
->> ```
->> Attached patch sort of fixes the problem; it does not panic and
->> KMS console works, but printk is triggered 4 times on radeon.ko load and
->> when VGA connector is plugged in.
->> 
->> I am sort of at loss now; I need advice from people which knows better.
->> 
->>  --- ./drivers/gpu/drm/drm_internal.h.rd	2023-06-25 21:35:27.506967450 +0900
->>  +++ ./drivers/gpu/drm/drm_internal.h.rd	2023-06-25 21:36:34.758055363 +0900
->>  @@ -99,6 +99,10 @@ u64 drm_vblank_count(struct drm_device *
->>   /* drm_vblank_work.c */
->>   static inline void drm_vblank_flush_worker(struct drm_vblank_crtc *vblank)
->>   {
->>  +	if (!vblank->worker) {
->>  +		printk(KERN_WARNING "%s: vblank->worker NULL? returning\n", __func__);
->>  +		return;
->>  +	}
->>   	kthread_flush_worker(vblank->worker);
->>   }
->> ```
->> 
->> Ciao, Thorsten
->> 
+Thanks,
+Jagan.
