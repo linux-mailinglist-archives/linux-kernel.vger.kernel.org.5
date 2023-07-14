@@ -2,471 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA5727544F6
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 00:30:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49B9D7544FF
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 00:31:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229808AbjGNWak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 18:30:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60392 "EHLO
+        id S230102AbjGNWbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 18:31:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjGNWai (ORCPT
+        with ESMTP id S229437AbjGNWbo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 18:30:38 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 742BB2D6B
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 15:30:36 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-cae693192d1so2295033276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 15:30:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689373835; x=1689978635;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=YW5FZ1K6diwrH4+nhB/fXam/1SoVM/vT+mwAPHKfWHA=;
-        b=rBbT6LWCBcILoh5Jm0TEi+CRZwEV9gpSIN8HctlOVfxcLiBkQMX3UCtFgBpLXMo6P1
-         yIV2N9Ldwrf6dni7DNdQmGw/QDhCYHcasZcL7ed+QtLHjPz4068kidSh2UIOLM+4SkDN
-         68dqJh4B7CKZ+DcmLJpUkSyswV6pnnXnso9LI+yRxZmi6bj+fO1bRFGD3NnmFA8n9uYe
-         h3JoEtm4s+HkNvJo6Nh/JTVfDQBbLToNy63qj0vBhr01ykDvXb4uOziN3pOoKZPOGxrn
-         9Md4BJb17/qiviTs45CTPiWRss3TkJVw8G3OutWN7LEMnWJPtpTQaKNoh2lqwh5oCYT5
-         3NTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689373835; x=1689978635;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YW5FZ1K6diwrH4+nhB/fXam/1SoVM/vT+mwAPHKfWHA=;
-        b=XRRNvVGk1FAbVa93wCBbXQN1dEW1coVdu3VYJ/pp5ZxaofoIlh4SWs04dhyq0SSMbi
-         1Pb01FPY6seinVDSrKeO2Oyq4GIu6+9uTU4mx7APasd/k2OVZkIywKJBqW4rUi4oCOdk
-         J4nk+fNhqcTJHBzYwpDIVFdl0Gqh4G9QKVqfH0Y25OnEphDwqCOUon5rN/sUBWVGEMXT
-         V8/i7EKK91a0uCWr4mV+Ra4PnBEFtKtYOKDUV3rA/2Bx0AIqOLDtqUBSFC/LoIpZsU6u
-         d8cPe20p0mQ/UQv+yN9avPYoV/WKEQqzMul1w64krXtxaguM3Ul5TTW0o1yQSRro3WfY
-         Tdfw==
-X-Gm-Message-State: ABy/qLYtkzZHBM1Hg4IDZIkd+x9zlHOhScbH8dNK55cqCdun2R5k0kLG
-        DxGluXuNZP3409zeeQEQ7L6o2udYLcvPc15wPzXIEA==
-X-Google-Smtp-Source: APBJJlHTMsllj2Rlmbc6r+TTnedyb7w6obUup5DXWhx7RuOpqt9hVfQCfdmq0dSgeOHn3qgdFe5RsrKnREF9KfMvZHk=
-X-Received: by 2002:a25:8689:0:b0:c0b:7483:5cf0 with SMTP id
- z9-20020a258689000000b00c0b74835cf0mr5289905ybk.65.1689373835500; Fri, 14 Jul
- 2023 15:30:35 -0700 (PDT)
+        Fri, 14 Jul 2023 18:31:44 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B6042D48;
+        Fri, 14 Jul 2023 15:31:43 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id F2B6461E0C;
+        Fri, 14 Jul 2023 22:31:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BE9BC433C7;
+        Fri, 14 Jul 2023 22:31:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689373902;
+        bh=LNIw34qBX2V8Elz1G1PACLsCQHf7o2a3bkEmgF+nghQ=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=a5xPJKj8IlTbIOuPnQXt8GteRC9OLgnCno7Ijmn5WRzeYBKefbplVia9GSvy5KUgh
+         gXP+k9+GA/G84FRziLIATN2Kv0TcpGUHYAfErQw1bi117SEVskaWLBFYte4V4iAxYd
+         h7wdQcZ0H9102nfO4m9UJvGktHE55k4EfbKXYiE3VN/IG4jnDykYOWUydV0XwCumJA
+         8wa9sv14ToVMeaQBpg1vEKyfsM0d+oHHj5txFXg82qc+QYvb8zsacMTaJG9wyGfGAs
+         75lkK72oMdSBWtQS4mOpj3EeDlTkBJN0qUn2B2iSa9M0PR8l0DKL/zpS8B8qcS1xcX
+         uNHp8zR0M9YLg==
+From:   Mark Brown <broonie@kernel.org>
+To:     Radu Pirea <radu_nicolae.pirea@upb.ro>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Vladimir Oltean <olteanv@gmail.com>, Han Xu <han.xu@nxp.com>,
+        Jean-Marie Verdun <verdun@hpe.com>,
+        Nick Hawkins <nick.hawkins@hpe.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Haibo Chen <haibo.chen@nxp.com>,
+        Yogesh Gaur <yogeshgaur.83@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Sowjanya Komatineni <skomatineni@nvidia.com>,
+        =?utf-8?q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Michal Simek <michal.simek@amd.com>,
+        Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, openbmc@lists.ozlabs.org,
+        linux-arm-msm@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org
+In-Reply-To: <20230714174955.4064174-1-robh@kernel.org>
+References: <20230714174955.4064174-1-robh@kernel.org>
+Subject: Re: [PATCH] spi: Explicitly include correct DT includes
+Message-Id: <168937389002.266788.5461737923596867983.b4-ty@kernel.org>
+Date:   Fri, 14 Jul 2023 23:31:30 +0100
 MIME-Version: 1.0
-References: <20230713-add-widebus-support-v2-1-ad0added17b6@quicinc.com>
- <91bc6348-2030-85dd-1492-1609b392793f@linaro.org> <05996344-0e43-7f37-c99a-42c04f91dc83@quicinc.com>
-In-Reply-To: <05996344-0e43-7f37-c99a-42c04f91dc83@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Sat, 15 Jul 2023 01:30:24 +0300
-Message-ID: <CAA8EJppFDcrVdegskSD0TJPOdSzVw_50+Bq+u8LKn26jdKE=tw@mail.gmail.com>
-Subject: Re: [PATCH v2] drm/msm/dsi: Enable DATABUS_WIDEN for DSI command mode
-To:     Jessica Zhang <quic_jesszhan@quicinc.com>
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, quic_abhinavk@quicinc.com,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-099c9
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 14 Jul 2023 at 22:03, Jessica Zhang <quic_jesszhan@quicinc.com> wrote:
->
->
->
-> On 7/13/2023 6:23 PM, Dmitry Baryshkov wrote:
-> > On 14/07/2023 03:21, Jessica Zhang wrote:
-> >> DSI 6G v2.5.x+ and DPU 7.x+ support a data-bus widen mode that allows DSI
-> >> to send 48 bits of compressed data per pclk instead of 24.
-> >>
-> >> For all chipsets that support this mode, enable it whenever DSC is
-> >> enabled as recommended by the hardware programming guide.
-> >>
-> >> Only enable this for command mode as we are currently unable to validate
-> >> it for video mode.
-> >>
-> >> Signed-off-by: Jessica Zhang <quic_jesszhan@quicinc.com>
-> >> ---
-> >> Note: The dsi.xml.h changes were generated using the headergen2 script in
-> >> envytools [2], but the changes to the copyright and rules-ng-ng source
-> >> file
-> >> paths were dropped.
-> >
-> > Separate commit please, so that it can be replaced by headers sync with
-> > Mesa3d.
->
-> Hi Dmitry,
->
-> Acked.
->
-> >
-> >>
-> >> [1] https://patchwork.freedesktop.org/series/120580/
-> >> [2] https://github.com/freedreno/envytools/
-> >>
-> >> --
-> >> Changes in v2:
-> >> - Rebased on top of "drm/msm/dpu: Re-introduce dpu core revision"
-> >> - Squashed all commits to avoid breaking feature if the series is only
-> >> partially applied
-> >
-> > No. Please unsquash it. Please design the series so that the patches
-> > work even if it is only partially applied.
->
-> Acked.
->
-> >
-> >> - Moved DATABUS_WIDEN bit setting to dsi_ctr_enable() (Marijn)
-> >> - Have DPU check if wide bus is requested by output driver (Dmitry)
-> >> - Introduced bytes_per_pclk variable for dsi_timing_setup() hdisplay
-> >> adjustment (Marijn)
-> >> - Link to v1:
-> >> https://lore.kernel.org/r/20230525-add-widebus-support-v1-0-c7069f2efca1@quicinc.com
-> >> ---
-> >>   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c        | 10 ++++++----
-> >>   .../gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c   |  4 +++-
-> >>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c        |  3 +++
-> >>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h        |  1 +
-> >>   drivers/gpu/drm/msm/dsi/dsi.c                      |  5 +++++
-> >>   drivers/gpu/drm/msm/dsi/dsi.h                      |  1 +
-> >>   drivers/gpu/drm/msm/dsi/dsi.xml.h                  |  1 +
-> >>   drivers/gpu/drm/msm/dsi/dsi_host.c                 | 23
-> >> +++++++++++++++++++++-
-> >>   drivers/gpu/drm/msm/msm_drv.h                      |  6 ++++++
-> >>   9 files changed, 48 insertions(+), 6 deletions(-)
-> >>
-> >> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-> >> b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-> >> index f0a2a1dca741..6aed63c06c1d 100644
-> >> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-> >> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-> >> @@ -2411,6 +2411,7 @@ struct drm_encoder *dpu_encoder_init(struct
-> >> drm_device *dev,
-> >>       struct dpu_kms *dpu_kms = to_dpu_kms(priv->kms);
-> >>       struct drm_encoder *drm_enc = NULL;
-> >>       struct dpu_encoder_virt *dpu_enc = NULL;
-> >> +    int index = disp_info->h_tile_instance[0];
-> >>       int ret = 0;
-> >>       dpu_enc = devm_kzalloc(dev->dev, sizeof(*dpu_enc), GFP_KERNEL);
-> >> @@ -2439,13 +2440,14 @@ struct drm_encoder *dpu_encoder_init(struct
-> >> drm_device *dev,
-> >>       timer_setup(&dpu_enc->frame_done_timer,
-> >>               dpu_encoder_frame_done_timeout, 0);
-> >> -    if (disp_info->intf_type == INTF_DSI)
-> >> +    if (disp_info->intf_type == INTF_DSI) {
-> >>           timer_setup(&dpu_enc->vsync_event_timer,
-> >>                   dpu_encoder_vsync_event_handler,
-> >
-> > While you are touching this part, could you please drop
-> > dpu_encoder_vsync_event_handler() and
-> > dpu_encoder_vsync_event_work_handler(), they are useless?
->
-> Since these calls aren't related to widebus, I don't think I'll include
-> it in this series. However, I can post this cleanup as a separate patch
-> and add that as a dependency if that's ok.
+On Fri, 14 Jul 2023 11:49:52 -0600, Rob Herring wrote:
+> The DT of_device.h and of_platform.h date back to the separate
+> of_platform_bus_type before it as merged into the regular platform bus.
+> As part of that merge prepping Arm DT support 13 years ago, they
+> "temporarily" include each other. They also include platform_device.h
+> and of.h. As a result, there's a pretty much random mix of those include
+> files used throughout the tree. In order to detangle these headers and
+> replace the implicit includes with struct declarations, users need to
+> explicitly include the correct includes.
+> 
+> [...]
 
-Sure, that will work for me. Thank you!
+Applied to
 
->
-> >
-> >>                   0);
-> >> -    else if (disp_info->intf_type == INTF_DP)
-> >> -        dpu_enc->wide_bus_en = msm_dp_wide_bus_available(
-> >> -                priv->dp[disp_info->h_tile_instance[0]]);
-> >> +        dpu_enc->wide_bus_en =
-> >> msm_dsi_is_widebus_enabled(priv->dsi[index]);
-> >> +    } else if (disp_info->intf_type == INTF_DP) {
-> >> +        dpu_enc->wide_bus_en =
-> >> msm_dp_wide_bus_available(priv->dp[index]);
-> >> +    }
-> >>       INIT_DELAYED_WORK(&dpu_enc->delayed_off_work,
-> >>               dpu_encoder_off_work);
-> >> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
-> >> b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
-> >> index df88358e7037..dace6168be2d 100644
-> >> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
-> >> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
-> >> @@ -69,8 +69,10 @@ static void _dpu_encoder_phys_cmd_update_intf_cfg(
-> >>                   phys_enc->hw_intf,
-> >>                   phys_enc->hw_pp->idx);
-> >> -    if (intf_cfg.dsc != 0)
-> >> +    if (intf_cfg.dsc != 0) {
-> >>           cmd_mode_cfg.data_compress = true;
-> >> +        cmd_mode_cfg.wide_bus_en =
-> >> dpu_encoder_is_widebus_enabled(phys_enc->parent);
-> >> +    }
-> >>       if (phys_enc->hw_intf->ops.program_intf_cmd_cfg)
-> >>
-> >> phys_enc->hw_intf->ops.program_intf_cmd_cfg(phys_enc->hw_intf,
-> >> &cmd_mode_cfg);
-> >> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
-> >> b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
-> >> index 8ec6505d9e78..dc6f3febb574 100644
-> >> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
-> >> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
-> >> @@ -521,6 +521,9 @@ static void
-> >> dpu_hw_intf_program_intf_cmd_cfg(struct dpu_hw_intf *ctx,
-> >>       if (cmd_mode_cfg->data_compress)
-> >>           intf_cfg2 |= INTF_CFG2_DCE_DATA_COMPRESS;
-> >> +    if (cmd_mode_cfg->wide_bus_en)
-> >> +        intf_cfg2 |= INTF_CFG2_DATABUS_WIDEN;
-> >> +
-> >>       DPU_REG_WRITE(&ctx->hw, INTF_CONFIG2, intf_cfg2);
-> >>   }
-> >> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h
-> >> b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h
-> >> index 77f80531782b..c539025c418b 100644
-> >> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h
-> >> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h
-> >> @@ -50,6 +50,7 @@ struct dpu_hw_intf_status {
-> >>   struct dpu_hw_intf_cmd_mode_cfg {
-> >>       u8 data_compress;    /* enable data compress between dpu and dsi */
-> >> +    u8 wide_bus_en;        /* enable databus widen mode */
-> >>   };
-> >>   /**
-> >> diff --git a/drivers/gpu/drm/msm/dsi/dsi.c
-> >> b/drivers/gpu/drm/msm/dsi/dsi.c
-> >> index baab79ab6e74..e3cc06c94397 100644
-> >> --- a/drivers/gpu/drm/msm/dsi/dsi.c
-> >> +++ b/drivers/gpu/drm/msm/dsi/dsi.c
-> >> @@ -17,6 +17,11 @@ struct drm_dsc_config
-> >> *msm_dsi_get_dsc_config(struct msm_dsi *msm_dsi)
-> >>       return msm_dsi_host_get_dsc_config(msm_dsi->host);
-> >>   }
-> >> +bool msm_dsi_is_widebus_enabled(struct msm_dsi *msm_dsi)
-> >> +{
-> >> +    return msm_dsi_host_is_widebus_supported(msm_dsi->host);
-> >
-> > This is incorrect. It will enable widebus even for non-DSC cases.
->
-> FWIW, all calls for msm_dsi_is_widebus_enabled() and
-> msm_dsi_host_is_widebus_supported() are guarded by a DSC check.
->
-> That being said, I also see your point that msm_dsi_is_widebus_enabled()
-> is an incorrect name since this will only check if widebus is supported.
->
-> Maybe a better change would be to change msm_dsi_is_widebus_enabled to
-> *_is_widebus_supported(), move the setting of dpu_enc->wide_bus_en for
-> both DP and DSI to dpu_encoder_virt_atomic_enable(), then for DSI set
-> wide_bus_en = dpu_enc->dsc && dsi_is_widebus_supported().
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
-I think we should change msm_dp_wide_bus_available() to
-msm_dp_wide_bus_enabled(). We don't have a way to tell DP (or DSI) if
-widebus really should be enabled or not. So it would be better to make
-DP and DSI drivers provide is_widebus_enabled function.
+Thanks!
 
->
-> >
-> >> +}
-> >> +
-> >>   static int dsi_get_phy(struct msm_dsi *msm_dsi)
-> >>   {
-> >>       struct platform_device *pdev = msm_dsi->pdev;
-> >> diff --git a/drivers/gpu/drm/msm/dsi/dsi.h
-> >> b/drivers/gpu/drm/msm/dsi/dsi.h
-> >> index bd3763a5d723..219a9f756759 100644
-> >> --- a/drivers/gpu/drm/msm/dsi/dsi.h
-> >> +++ b/drivers/gpu/drm/msm/dsi/dsi.h
-> >> @@ -134,6 +134,7 @@ int dsi_calc_clk_rate_6g(struct msm_dsi_host
-> >> *msm_host, bool is_bonded_dsi);
-> >>   void msm_dsi_host_snapshot(struct msm_disp_state *disp_state, struct
-> >> mipi_dsi_host *host);
-> >>   void msm_dsi_host_test_pattern_en(struct mipi_dsi_host *host);
-> >>   struct drm_dsc_config *msm_dsi_host_get_dsc_config(struct
-> >> mipi_dsi_host *host);
-> >> +bool msm_dsi_host_is_widebus_supported(struct mipi_dsi_host *host);
-> >>   /* dsi phy */
-> >>   struct msm_dsi_phy;
-> >> diff --git a/drivers/gpu/drm/msm/dsi/dsi.xml.h
-> >> b/drivers/gpu/drm/msm/dsi/dsi.xml.h
-> >> index a4a154601114..2a7d980e12c3 100644
-> >> --- a/drivers/gpu/drm/msm/dsi/dsi.xml.h
-> >> +++ b/drivers/gpu/drm/msm/dsi/dsi.xml.h
-> >> @@ -664,6 +664,7 @@ static inline uint32_t
-> >> DSI_CMD_MODE_MDP_CTRL2_INPUT_RGB_SWAP(enum dsi_rgb_swap v
-> >>       return ((val) << DSI_CMD_MODE_MDP_CTRL2_INPUT_RGB_SWAP__SHIFT) &
-> >> DSI_CMD_MODE_MDP_CTRL2_INPUT_RGB_SWAP__MASK;
-> >>   }
-> >>   #define DSI_CMD_MODE_MDP_CTRL2_BURST_MODE            0x00010000
-> >> +#define DSI_CMD_MODE_MDP_CTRL2_DATABUS_WIDEN            0x00100000
-> >>   #define REG_DSI_CMD_MODE_MDP_STREAM2_CTRL            0x000001b8
-> >>   #define DSI_CMD_MODE_MDP_STREAM2_CTRL_DATA_TYPE__MASK        0x0000003f
-> >> diff --git a/drivers/gpu/drm/msm/dsi/dsi_host.c
-> >> b/drivers/gpu/drm/msm/dsi/dsi_host.c
-> >> index 645927214871..6ea3476acf0d 100644
-> >> --- a/drivers/gpu/drm/msm/dsi/dsi_host.c
-> >> +++ b/drivers/gpu/drm/msm/dsi/dsi_host.c
-> >> @@ -710,6 +710,14 @@ static void dsi_ctrl_disable(struct msm_dsi_host
-> >> *msm_host)
-> >>       dsi_write(msm_host, REG_DSI_CTRL, 0);
-> >>   }
-> >> +bool msm_dsi_host_is_widebus_supported(struct mipi_dsi_host *host)
-> >> +{
-> >> +    struct msm_dsi_host *msm_host = to_msm_dsi_host(host);
-> >> +
-> >> +    return msm_host->cfg_hnd->major == MSM_DSI_VER_MAJOR_6G &&
-> >> +            msm_host->cfg_hnd->minor >= MSM_DSI_6G_VER_MINOR_V2_5_0;
-> >
-> > Would it be better to push it to the config data, like we did for DP?
->
-> I don't think so -- I think adding it to the config data as a feature
-> flag would bloat dsi_cfg.c. It would be simpler and cleaner (IMO) to
-> keep this as a version check.
+[1/1] spi: Explicitly include correct DT includes
+      commit: 749396cb29a7d82cb5e324bf61be3fc948d97141
 
-Ok.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
->
-> >
-> >> +}
-> >> +
-> >>   static void dsi_ctrl_enable(struct msm_dsi_host *msm_host,
-> >>               struct msm_dsi_phy_shared_timings *phy_shared_timings,
-> >> struct msm_dsi_phy *phy)
-> >>   {
-> >> @@ -757,6 +765,11 @@ static void dsi_ctrl_enable(struct msm_dsi_host
-> >> *msm_host,
-> >>               msm_host->cfg_hnd->minor >= MSM_DSI_6G_VER_MINOR_V1_3) {
-> >>               data = dsi_read(msm_host, REG_DSI_CMD_MODE_MDP_CTRL2);
-> >>               data |= DSI_CMD_MODE_MDP_CTRL2_BURST_MODE;
-> >> +
-> >> +            /* TODO: Allow for video-mode support once tested/fixed */
-> >> +            if (msm_host->cfg_hnd->minor >=
-> >> MSM_DSI_6G_VER_MINOR_V2_5_0 && msm_host->dsc)
-> >
-> > msm_dsi_is_widebus_enabled() && msm_host->dsc
->
-> *_is_widebus_enabled() also checks for major version >= 6G, so calling
-> it here would be a bit redundant as we're already checking for that earlier.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-However now you have different checks in two different places.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-My suggestion is to have the function msm_dsi_is_widebus_supported(),
-which the rest of the code uses to check if wide bus is actually
-enabled in the HW. If at some point DSI 2.11 drops wide bus support,
-I'd like to see a change at a single place, rather than having changes
-all over the code.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-Likewise I'd like to have the function msm_dsi_is_widebus_enabled(),
-which is used by the rest of the code to check if the widebus should
-be actually enabled.
+Thanks,
+Mark
 
-Actually I think we can even drop the is_supported at all() and use
-the following code:
-
-bool msm_dsi_is_widebus_enabled()
-{
-   if (major < 6G || minor < V2_5_0)
-     return false;
-
-   return !!msm_host->dsc;
-}
-
-Then the rest of the code should call this function only.
-
->
-> FWIW, I've nested the widebus configuration within the burst mode
-> configuration to keep it so that we only have to read/write the
-> MDP_CTRL2 once.
->
-> >
-> >> +                data |= DSI_CMD_MODE_MDP_CTRL2_DATABUS_WIDEN;
-> >> +
-> >>               dsi_write(msm_host, REG_DSI_CMD_MODE_MDP_CTRL2, data);
-> >>           }
-> >>       }
-> >> @@ -894,6 +907,7 @@ static void dsi_timing_setup(struct msm_dsi_host
-> >> *msm_host, bool is_bonded_dsi)
-> >>       u32 hdisplay = mode->hdisplay;
-> >>       u32 wc;
-> >>       int ret;
-> >> +    bool widebus_supported =
-> >> msm_dsi_host_is_widebus_supported(&msm_host->base);
-> >
-> > s/supported/enabled for this function.
->
-> I would like to keep the name as *_is_widebus_supported() since it
-> better reflects the functionality of the helper.
->
-> FWIW, the widebus hdisplay adjustments are already guarded by a DSC check.
-
-See my previous comment.
-
->
-> Thanks,
->
-> Jessica Zhang
->
-> >
-> >>       DBG("");
-> >> @@ -914,6 +928,7 @@ static void dsi_timing_setup(struct msm_dsi_host
-> >> *msm_host, bool is_bonded_dsi)
-> >>       if (msm_host->dsc) {
-> >>           struct drm_dsc_config *dsc = msm_host->dsc;
-> >> +        u32 bytes_per_pclk;
-> >>           /* update dsc params with timing params */
-> >>           if (!dsc || !mode->hdisplay || !mode->vdisplay) {
-> >> @@ -937,7 +952,13 @@ static void dsi_timing_setup(struct msm_dsi_host
-> >> *msm_host, bool is_bonded_dsi)
-> >>            * pulse width same
-> >>            */
-> >>           h_total -= hdisplay;
-> >> -        hdisplay =
-> >> DIV_ROUND_UP(msm_dsc_get_bytes_per_line(msm_host->dsc), 3);
-> >> +        if (widebus_supported && !(msm_host->mode_flags &
-> >> MIPI_DSI_MODE_VIDEO))
-> >> +            bytes_per_pclk = 6;
-> >> +        else
-> >> +            bytes_per_pclk = 3;
-> >> +
-> >> +        hdisplay =
-> >> DIV_ROUND_UP(msm_dsc_get_bytes_per_line(msm_host->dsc), bytes_per_pclk);
-> >> +
-> >>           h_total += hdisplay;
-> >>           ha_end = ha_start + hdisplay;
-> >>       }
-> >> diff --git a/drivers/gpu/drm/msm/msm_drv.h
-> >> b/drivers/gpu/drm/msm/msm_drv.h
-> >> index 9d9d5e009163..7ff56d09014c 100644
-> >> --- a/drivers/gpu/drm/msm/msm_drv.h
-> >> +++ b/drivers/gpu/drm/msm/msm_drv.h
-> >> @@ -344,6 +344,7 @@ void msm_dsi_snapshot(struct msm_disp_state
-> >> *disp_state, struct msm_dsi *msm_dsi
-> >>   bool msm_dsi_is_cmd_mode(struct msm_dsi *msm_dsi);
-> >>   bool msm_dsi_is_bonded_dsi(struct msm_dsi *msm_dsi);
-> >>   bool msm_dsi_is_master_dsi(struct msm_dsi *msm_dsi);
-> >> +bool msm_dsi_is_widebus_enabled(struct msm_dsi *msm_dsi);
-> >>   struct drm_dsc_config *msm_dsi_get_dsc_config(struct msm_dsi *msm_dsi);
-> >>   #else
-> >>   static inline void __init msm_dsi_register(void)
-> >> @@ -374,6 +375,11 @@ static inline bool msm_dsi_is_master_dsi(struct
-> >> msm_dsi *msm_dsi)
-> >>       return false;
-> >>   }
-> >> +static inline bool msm_dsi_is_widebus_enabled(struct msm_dsi *msm_dsi)
-> >> +{
-> >> +    return false;
-> >> +}
-> >> +
-> >>   static inline struct drm_dsc_config *msm_dsi_get_dsc_config(struct
-> >> msm_dsi *msm_dsi)
-> >>   {
-> >>       return NULL;
-> >>
-> >> ---
-> >> base-commit: 9445fc2942a890e84c74e170ebd7dfb9566e3357
-> >> change-id: 20230525-add-widebus-support-f785546ee751
-> >>
-> >> Best regards,
-> >
-> > --
-> > With best wishes
-> > Dmitry
-> >
-
-
-
--- 
-With best wishes
-Dmitry
