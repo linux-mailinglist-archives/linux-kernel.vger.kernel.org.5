@@ -2,97 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C0C5753BDA
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 15:34:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41326753BDC
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 15:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235664AbjGNNeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 09:34:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39706 "EHLO
+        id S235693AbjGNNfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 09:35:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235679AbjGNNeI (ORCPT
+        with ESMTP id S235219AbjGNNfS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 09:34:08 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E975135A9
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 06:34:01 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-81-ZP8DPh8MNd-v9zhHoSe8Pg-1; Fri, 14 Jul 2023 14:33:59 +0100
-X-MC-Unique: ZP8DPh8MNd-v9zhHoSe8Pg-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 14 Jul
- 2023 14:33:57 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Fri, 14 Jul 2023 14:33:57 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     "'Rafael J. Wysocki'" <rafael@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>
-CC:     "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "rafael.j.wysocki@intel.com" <rafael.j.wysocki@intel.com>,
-        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "lkp@intel.com" <lkp@intel.com>
-Subject: RE: [PATCH] powercap: intel_rapl_tpmi: Fix a sparse warning
-Thread-Topic: [PATCH] powercap: intel_rapl_tpmi: Fix a sparse warning
-Thread-Index: AQHZtCOQbW983MhKOEiMpogSWUeue6+5RwXg
-Date:   Fri, 14 Jul 2023 13:33:57 +0000
-Message-ID: <a6d032df2b664950a63518c83a7db3f3@AcuMS.aculab.com>
-References: <20230704050238.712223-1-rui.zhang@intel.com>
- <CAJZ5v0gZz1RCqp=Do0RTOCwPvWW9E_SQSyFjuRVuBkR9jxCJjw@mail.gmail.com>
-In-Reply-To: <CAJZ5v0gZz1RCqp=Do0RTOCwPvWW9E_SQSyFjuRVuBkR9jxCJjw@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
-MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
+        Fri, 14 Jul 2023 09:35:18 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E072C1991;
+        Fri, 14 Jul 2023 06:35:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5CF5E61D21;
+        Fri, 14 Jul 2023 13:35:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A81D4C433C7;
+        Fri, 14 Jul 2023 13:35:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689341715;
+        bh=LmNuxSDhR2xVlR/o8NTwfyzlHy/wLO/mPMqtHawGjwQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Loi/16pfanheWa+qvyOzRQD2Ww3aZH0SazgDvpO4Xu+BEjwUixhWJ87f6gM5vozGQ
+         npReio+qWUrWpngEa4Mb2oGpLVdx6SgmWPQtsobjXEJc7aLylypC6YBGIB+6Ea9RiV
+         FkGD/Jae6rigsdElpq6PbOBaH2qv+qAk1IR5NaurpPYO/50uUGxM7/VE5vf/LuOiFX
+         G21zStG3Bq3+UY/ZFNBbU/ZtMODMUVto1aZSPO+wfcc26YicqYJ1bal61RwrW7m/zL
+         T7yT6KhGIMJffVit3lqc7MZzK9sXAEJUJk4aErNEeA1z5mAuCtCiTn6DTD1lA1LBap
+         kEklyJ90rvVHQ==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qKIwz-00D7Bz-7Y;
+        Fri, 14 Jul 2023 14:35:13 +0100
+Date:   Fri, 14 Jul 2023 14:35:12 +0100
+Message-ID: <86cz0uvcof.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Anup Patel <apatel@ventanamicro.com>
+Cc:     Saravana Kannan <saravanak@google.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Sunil V L <sunilvl@ventanamicro.com>,
+        Conor Dooley <conor@kernel.org>,
+        Anup Patel <anup@brainfault.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v5 7/9] irqchip: Add RISC-V advanced PLIC driver
+In-Reply-To: <CAK9=C2ULxsXednwnoyzYKjQFpe_zBSZ4v0FqUYFnxK2TpbiMtg@mail.gmail.com>
+References: <20230710094321.1378351-1-apatel@ventanamicro.com>
+        <20230710094321.1378351-8-apatel@ventanamicro.com>
+        <CAGETcx8kH8cJVdhcv5K4qNUo58godFZEBnOfTGKUUQ6VuUguvQ@mail.gmail.com>
+        <86jzv2vpdb.wl-maz@kernel.org>
+        <CAK9=C2ULxsXednwnoyzYKjQFpe_zBSZ4v0FqUYFnxK2TpbiMtg@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: apatel@ventanamicro.com, saravanak@google.com, palmer@dabbelt.com, paul.walmsley@sifive.com, tglx@linutronix.de, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, atishp@atishpatra.org, ajones@ventanamicro.com, sunilvl@ventanamicro.com, conor@kernel.org, anup@brainfault.org, linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogUmFmYWVsIEouIFd5c29ja2kNCj4gU2VudDogMTEgSnVseSAyMDIzIDE5OjE0DQouLi4N
-Cj4gT24gVHVlLCBKdWwgNCwgMjAyMyBhdCA3OjAy4oCvQU0gWmhhbmcgUnVpIDxydWkuemhhbmdA
-aW50ZWwuY29tPiB3cm90ZToNCj4gPg0KPiA+IEZpeCBhIHNwYXJzZSB3YXJuaW5nIGluIGludGVs
-X3JhcGxfdHBtaSBkcml2ZXIuDQo+ID4NCj4gPiAuLi9kcml2ZXJzL3Bvd2VyY2FwL2ludGVsX3Jh
-cGxfdHBtaS5jOjE0MTo0MTogc3BhcnNlOiB3YXJuaW5nOiBpbmNvcnJlY3QgdHlwZSBpbiBpbml0
-aWFsaXplcg0KPiAoZGlmZmVyZW50IGFkZHJlc3Mgc3BhY2VzKQ0KPiA+IC4uL2RyaXZlcnMvcG93
-ZXJjYXAvaW50ZWxfcmFwbF90cG1pLmM6MTQxOjQxOiBzcGFyc2U6ICAgIGV4cGVjdGVkIHVuc2ln
-bmVkIGxvbmcgbG9uZyBbdXNlcnR5cGVdDQo+ICp0cG1pX3JhcGxfcmVncw0KPiA+IC4uL2RyaXZl
-cnMvcG93ZXJjYXAvaW50ZWxfcmFwbF90cG1pLmM6MTQxOjQxOiBzcGFyc2U6ICAgIGdvdCB2b2lk
-IFtub2RlcmVmXSBfX2lvbWVtICoNCj4gPg0KPiA+IEZpeGVzOiA5ZWVmN2Y5ZGE5MjggKCJwb3dl
-cmNhcDogaW50ZWxfcmFwbDogSW50cm9kdWNlIFJBUEwgVFBNSSBpbnRlcmZhY2UgZHJpdmVyIikN
-Cj4gPiBSZXBvcnRlZC1ieToga2VybmVsIHRlc3Qgcm9ib3QgPGxrcEBpbnRlbC5jb20+DQo+ID4g
-Q2xvc2VzOiBodHRwczovL2xvcmUua2VybmVsLm9yZy9vZS1rYnVpbGQtYWxsLzIwMjMwNzAzMTQw
-NS5keTNkcnV1eS1sa3BAaW50ZWwuY29tLw0KPiA+IFNpZ25lZC1vZmYtYnk6IFpoYW5nIFJ1aSA8
-cnVpLnpoYW5nQGludGVsLmNvbT4NCj4gPiAtLS0NCj4gPiAgZHJpdmVycy9wb3dlcmNhcC9pbnRl
-bF9yYXBsX3RwbWkuYyB8IDIgKy0NCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCsp
-LCAxIGRlbGV0aW9uKC0pDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9wb3dlcmNhcC9p
-bnRlbF9yYXBsX3RwbWkuYyBiL2RyaXZlcnMvcG93ZXJjYXAvaW50ZWxfcmFwbF90cG1pLmMNCj4g
-PiBpbmRleCA0ZjRmMTNkZWQyMjUuLjA1ZjY2NGEwOTZhYiAxMDA2NDQNCj4gPiAtLS0gYS9kcml2
-ZXJzL3Bvd2VyY2FwL2ludGVsX3JhcGxfdHBtaS5jDQo+ID4gKysrIGIvZHJpdmVycy9wb3dlcmNh
-cC9pbnRlbF9yYXBsX3RwbWkuYw0KPiA+IEBAIC0xMzgsNyArMTM4LDcgQEAgc3RhdGljIGludCBw
-YXJzZV9vbmVfZG9tYWluKHN0cnVjdCB0cG1pX3JhcGxfcGFja2FnZSAqdHJwLCB1MzIgb2Zmc2V0
-KQ0KPiA+ICAgICAgICAgZW51bSB0cG1pX3JhcGxfcmVnaXN0ZXIgcmVnX2luZGV4Ow0KPiA+ICAg
-ICAgICAgZW51bSByYXBsX2RvbWFpbl9yZWdfaWQgcmVnX2lkOw0KPiA+ICAgICAgICAgaW50IHRw
-bWlfZG9tYWluX3NpemUsIHRwbWlfZG9tYWluX2ZsYWdzOw0KPiA+IC0gICAgICAgdTY0ICp0cG1p
-X3JhcGxfcmVncyA9IHRycC0+YmFzZSArIG9mZnNldDsNCj4gPiArICAgICAgIHU2NCAqdHBtaV9y
-YXBsX3JlZ3MgPSAodTY0ICopKHRycC0+YmFzZSArIG9mZnNldCk7DQo+ID4gICAgICAgICB1NjQg
-dHBtaV9kb21haW5faGVhZGVyID0gcmVhZHEoKHZvaWQgX19pb21lbSAqKXRwbWlfcmFwbF9yZWdz
-KTsNCg0KSXNuJ3QgdGhlIGNvcnJlY3QgZml4IHRvIGFkZCBfX2lvbWVtIHRvIHRoZSBkZWZpbml0
-aW9uIG9mDQp0cG1pX3JhcGlfcmVncyBhbmQgYWxzbyByZW1vdmUgdGhlIGNhc3QgZnJvbSB0aGUg
-Zm9sbG93aW5nDQpyZWFkcSgpIGxpbmU/DQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJl
-c3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsx
-IDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
+On Fri, 14 Jul 2023 10:35:34 +0100,
+Anup Patel <apatel@ventanamicro.com> wrote:
+>=20
+> On Fri, Jul 14, 2023 at 2:31=E2=80=AFPM Marc Zyngier <maz@kernel.org> wro=
+te:
+> >
+> > Anup,
+> >
+> > On Fri, 14 Jul 2023 00:56:22 +0100,
+> > Saravana Kannan <saravanak@google.com> wrote:
+> > >
+> > > On Mon, Jul 10, 2023 at 2:44=E2=80=AFAM Anup Patel <apatel@ventanamic=
+ro.com> wrote:
+> > > >
+> > > > The RISC-V advanced interrupt architecture (AIA) specification defi=
+nes
+> > > > a new interrupt controller for managing wired interrupts on a RISC-V
+> > > > platform. This new interrupt controller is referred to as advanced
+> > > > platform-level interrupt controller (APLIC) which can forward wired
+> > > > interrupts to CPUs (or HARTs) as local interrupts OR as message
+> > > > signaled interrupts.
+> > > > (For more details refer https://github.com/riscv/riscv-aia)
+> > > >
+> > > > This patch adds an irqchip driver for RISC-V APLIC found on RISC-V
+> > > > platforms.
+> > > >
+> > > > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+> >
+> > [...]
+> >
+> > > > +static int __init aplic_dt_init(struct device_node *node,
+> > > > +                               struct device_node *parent)
+> > > > +{
+> > > > +       /*
+> > > > +        * The APLIC platform driver needs to be probed early
+> > > > +        * so for device tree:
+> > > > +        *
+> > > > +        * 1) Set the FWNODE_FLAG_BEST_EFFORT flag in fwnode which
+> > > > +        *    provides a hint to the device driver core to probe the
+> > > > +        *    platform driver early.
+> > > > +        * 2) Clear the OF_POPULATED flag in device_node because
+> > > > +        *    of_irq_init() sets it which prevents creation of
+> > > > +        *    platform device.
+> > > > +        */
+> > > > +       node->fwnode.flags |=3D FWNODE_FLAG_BEST_EFFORT;
+> > >
+> > > Please stop spamming us with broken patches. Already told you this is
+> > > not an option.
+> > >
+> > > Nack.
+> >
+> > What puzzles me here is that *no other arch* requires this sort of
+> > hack. What is so special about the APLIC that it requires it? I see
+> > nothing in this patch that even hints at it, despite the "discussion"
+> > in the last round.
+> >
+> > The rules are simple:
+> >
+> > - either the APLIC is so fundamental to the system that it has to be
+> >   initialised super early, much like the GIC on arm64, at which point
+> >   it cannot be a platform device, and the story is pretty simple.
+> >
+> > - or it isn't that fundamental, and it can be probed as a platform
+> >   device using the dependency infrastructure that is already used by
+> >   multiple other interrupt controller drivers, without any need to
+> >   mess with internal flags. Again, this should be simple enough.
+>=20
+> APLIC manages all wired interrupts whereas IMSIC manages all
+> MSIs. Both APLIC and IMSIC are fundamental devices which need
+> to be probed super early.
+>=20
+> Now APLIC has two modes of operations:
+> 1) Direct mode where there is no IMSIC in the system and APLIC
+>     directly injects interrupt to CPUs
+> 2) MSI mode where IMSIC is present in the system and APLIC
+>     converts wired interrupts into MSIs
+>=20
+> The APLIC driver added by this patch is a common driver for
+> both above modes.
 
+Which it doesn't need to be. You are pointlessly making life difficult
+for yourself, and everyone else. The MSI bridge behaviour has *zero*
+reason to be the same driver as the main "I need it super early"
+driver. They may be called the same, but they *are* different things
+in the system.
+
+They can share code, but they are fundamentally a different thing in
+the system. And I guess this silly approach has other ramifications:
+the IMSIC is also some early driver when it really doesn't need to be.
+Who needs MSIs that early in the life of the system? I don't buy this
+for even a second.
+
+Frankly, this whole thing needs to be taken apart and rebuilt from the
+ground up.
+
+> For #2, APLIC needs to be a platform device to create a device
+> MSI domain using platform_msi_create_device_domain() which
+> is why the APLIC driver is a platform driver.
+
+You can't have your cake and eat it. If needed super early, and it
+cannot be a platform driver. End of the story.
+
+And to my earlier point: IMSIC and APLIC-as-MSI-bridge have no purpose
+being early drivers. They must be platform drivers, and only that.
+
+> > If these rules don't apply to your stuff, please explain what is so
+> > different. And I mean actually explain the issue. Which isn't telling
+> > us "it doesn't work without it". Because as things stand, there is no
+> > way I will even consider taking this ugly mix of probing methods.
+>=20
+> Yes, I don't want this ugly FWNODE_FLAG_BEST_EFFORT hack
+> in this driver.
+
+And yet you are hammering it even when told this is wrong.
+
+> I tried several things but setting the FWNODE_FLAG_BEST_EFFORT
+> flag is the only thing which works right now.
+
+How about you take a step back and realise that the way you've
+architected your drivers makes little sense? I don't think you have
+tried *that*.
+
+Thanks,
+
+	M.
+
+--=20
+Without deviation from the norm, progress is not possible.
