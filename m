@@ -2,244 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20ACD75331C
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 09:23:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E81A753323
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 09:25:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235391AbjGNHXI convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 14 Jul 2023 03:23:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60550 "EHLO
+        id S235127AbjGNHZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 03:25:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235259AbjGNHXC (ORCPT
+        with ESMTP id S231959AbjGNHZ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 03:23:02 -0400
-Received: from frasgout13.his.huawei.com (unknown [14.137.139.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 147F72722;
-        Fri, 14 Jul 2023 00:22:57 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.229])
-        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4R2N2D2s05z9xHf8;
-        Fri, 14 Jul 2023 15:11:48 +0800 (CST)
-Received: from [127.0.0.1] (unknown [10.204.63.22])
-        by APP2 (Coremail) with SMTP id GxC2BwC3hl2197BkUW5+BA--.7298S2;
-        Fri, 14 Jul 2023 08:22:37 +0100 (CET)
-Message-ID: <ecbf405c6806fa4706051e0bf946d742f3442367.camel@huaweicloud.com>
-Subject: Re: [PATCH v3] integrity: Always reference the blacklist keyring
- with apprasial
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     Eric Snowberg <eric.snowberg@oracle.com>, zohar@linux.ibm.com
-Cc:     dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org,
-        serge@hallyn.com, roberto.sassu@huawei.com,
-        kanth.ghatraju@oracle.com, konrad.wilk@oracle.com,
-        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Date:   Fri, 14 Jul 2023 09:22:25 +0200
-In-Reply-To: <20230714011141.2288133-1-eric.snowberg@oracle.com>
-References: <20230714011141.2288133-1-eric.snowberg@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.44.4-0ubuntu1 
+        Fri, 14 Jul 2023 03:25:28 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D63EB271F
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 00:25:25 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-4fb8574a3a1so2683083e87.1
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 00:25:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=metaspace-dk.20221208.gappssmtp.com; s=20221208; t=1689319524; x=1689924324;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=f2Wu6QIlizBtEokw90LPWWON38SIdYdvvEsVMj5xrKM=;
+        b=ggD3NGEx9VLtwxoCk9j9fiIuZJtmLVG2+D9Am2YHr1VsM384ZapAjgjAhCkE0/HHCN
+         oA149LFWsngBRuUQO/9pD1rgI6DpL2fxDzk3JC5xC/YF0Gz7xg+dxAckSW+hp7DzjSh/
+         ksfHz0nYeaZ94hkS4dKK6uXVS64tmxK32eJcehkByczO/C5HpBqYkNoyN2k2pRRjOLzL
+         VdYd3tjOBNXwpEwzlPW2Di7jOEpfS4pqKKi+JyLNLj4fpeCwig23brBge0G0nN7yglvs
+         ZH4D9kMRv9YzBPBbS3gpk7MuXsucddJcs+nxKmWSz1vUTc7r6lIQTdkDmlhsrCUFig5A
+         FydQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689319524; x=1689924324;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=f2Wu6QIlizBtEokw90LPWWON38SIdYdvvEsVMj5xrKM=;
+        b=XVR2BeAvZ8kGmsULE4AjLZwe7rGhTdG2m2SOLkBahnAWUTd6Wsp/o1TZ64AXYMF4A4
+         mwcShcO8RJjY1uvTnvErGxbBZFJXJu0rlfCH5rPc/xTxAQs9NfR2pgXVQoWpERP7Z6fA
+         p5grwA0fq8UlPtUyUa0jlEkpbj+YChI19KaZN6Ow5AW7yiC68/H9mDgy4okXYLxHPwBh
+         87BFK3CSYBtbYIgXP7ytkachwEd5QJYkUgxfBfpGCa4zWXWa/UIeq9wDa0w4R1ErXMl+
+         864mcWYneevzehc6TxOGhZ6ooQYsCMXR5zMK+fDAxAcx04oxpfVBBxvT1zg6N0SQZjqN
+         bonw==
+X-Gm-Message-State: ABy/qLYCCt+nSQVVWfh1xdLR93g0ojS6S3CEYjvRX89ntrf121T4b75B
+        CUDVhT/3zYx2uBjRCBOFCqrjFA==
+X-Google-Smtp-Source: APBJJlFxFh9/7o0h24xSGD4XN7JrlwTI+CHcMTm73B48WcJZw7o9GcGGqI/o0/Fk1zCXlaqCGH1LSQ==
+X-Received: by 2002:a05:6512:304a:b0:4f3:b588:48d0 with SMTP id b10-20020a056512304a00b004f3b58848d0mr3285807lfb.14.1689319524098;
+        Fri, 14 Jul 2023 00:25:24 -0700 (PDT)
+Received: from localhost ([185.108.254.55])
+        by smtp.gmail.com with ESMTPSA id i14-20020a056512006e00b004fb77d6cab3sm1380615lfo.261.2023.07.14.00.25.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Jul 2023 00:25:23 -0700 (PDT)
+From:   Andreas Hindborg <nmi@metaspace.dk>
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     Matias Bjorling <Matias.Bjorling@wdc.com>,
+        linux-kernel@vger.kernel.org (open list),
+        Damien Le Moal <dlemoal@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, gost.dev@samsung.com,
+        Christoph Hellwig <hch@infradead.org>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Johannes Thumshirn <jth@kernel.org>,
+        Aravind Ramesh <Aravind.Ramesh@wdc.com>,
+        linux-block@vger.kernel.org (open list:BLOCK LAYER),
+        Hans Holmberg <Hans.Holmberg@wdc.com>,
+        Minwoo Im <minwoo.im.dev@gmail.com>
+Subject: [PATCH v9 0/2] ublk: enable zoned storage support
+Date:   Fri, 14 Jul 2023 09:25:08 +0200
+Message-ID: <20230714072510.47770-1-nmi@metaspace.dk>
+X-Mailer: git-send-email 2.41.0
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-X-CM-TRANSID: GxC2BwC3hl2197BkUW5+BA--.7298S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3JFyxKF45Kw1rKF4DXr1xAFb_yoW3Xr4fpa
-        95tF1j9FyxGryIvFy7Aw4q9F4S9r4jqF4UCFZ8t340yFs5Xr10gr18GrZxZFWFkr95t3Z2
-        qF1UK3yUA3Wjq37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWUJVW8JwA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgASBF1jj4xobAABss
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-07-13 at 21:11 -0400, Eric Snowberg wrote:
-> Commit 273df864cf746 ("ima: Check against blacklisted hashes for files with
-> modsig") introduced an appraise_flag option for referencing the blacklist
-> keyring.  Any matching binary found on this keyring fails signature
-> validation. This flag only works with module appended signatures.
-> 
-> An important part of a PKI infrastructure is to have the ability to do
-> revocation at a later time should a vulnerability be found.  Expand the
-> revocation flag usage to all appraisal functions. The flag is now
-> enabled by default. Setting the flag with an IMA policy has been
-> deprecated. Without a revocation capability like this in place, only
-> authenticity can be maintained. With this change, integrity can now be
-> achieved with digital signature based IMA appraisal.
-> 
-> Signed-off-by: Eric Snowberg <eric.snowberg@oracle.com>
-> ---
-> v3 changes:
->   No longer display appraise_flag=check_blacklist in the policy
-> v2 changes:
->   Update the "case Opt_apprase_flag"
->   Removed "appraise_flag=" in the powerpc arch specific policy rules
-> ---
->  Documentation/ABI/testing/ima_policy  |  6 +++---
->  arch/powerpc/kernel/ima_arch.c        |  8 ++++----
->  security/integrity/ima/ima_appraise.c | 12 +++++++-----
->  security/integrity/ima/ima_policy.c   | 17 +++++------------
->  4 files changed, 19 insertions(+), 24 deletions(-)
-> 
-> diff --git a/Documentation/ABI/testing/ima_policy b/Documentation/ABI/testing/ima_policy
-> index 49db0ff288e5..a712c396f6e9 100644
-> --- a/Documentation/ABI/testing/ima_policy
-> +++ b/Documentation/ABI/testing/ima_policy
-> @@ -57,9 +57,9 @@ Description:
->  				stored in security.ima xattr. Requires
->  				specifying "digest_type=verity" first.)
->  
-> -			appraise_flag:= [check_blacklist]
-> -			Currently, blacklist check is only for files signed with appended
-> -			signature.
-> +			appraise_flag:= [check_blacklist] (deprecated)
-> +			Setting the check_blacklist flag is no longer necessary.
-> +			All apprasial functions set it by default.
+From: Andreas Hindborg <a.hindborg@samsung.com>
 
-Typo.
+Hi All,
 
->  			digest_type:= verity
->  			    Require fs-verity's file digest instead of the
->  			    regular IMA file hash.
-> diff --git a/arch/powerpc/kernel/ima_arch.c b/arch/powerpc/kernel/ima_arch.c
-> index 957abd592075..b7029beed847 100644
-> --- a/arch/powerpc/kernel/ima_arch.c
-> +++ b/arch/powerpc/kernel/ima_arch.c
-> @@ -23,9 +23,9 @@ bool arch_ima_get_secureboot(void)
->   * is not enabled.
->   */
->  static const char *const secure_rules[] = {
-> -	"appraise func=KEXEC_KERNEL_CHECK appraise_flag=check_blacklist appraise_type=imasig|modsig",
-> +	"appraise func=KEXEC_KERNEL_CHECK appraise_type=imasig|modsig",
->  #ifndef CONFIG_MODULE_SIG
-> -	"appraise func=MODULE_CHECK appraise_flag=check_blacklist appraise_type=imasig|modsig",
-> +	"appraise func=MODULE_CHECK appraise_type=imasig|modsig",
->  #endif
->  	NULL
->  };
-> @@ -49,9 +49,9 @@ static const char *const trusted_rules[] = {
->  static const char *const secure_and_trusted_rules[] = {
->  	"measure func=KEXEC_KERNEL_CHECK template=ima-modsig",
->  	"measure func=MODULE_CHECK template=ima-modsig",
-> -	"appraise func=KEXEC_KERNEL_CHECK appraise_flag=check_blacklist appraise_type=imasig|modsig",
-> +	"appraise func=KEXEC_KERNEL_CHECK appraise_type=imasig|modsig",
->  #ifndef CONFIG_MODULE_SIG
-> -	"appraise func=MODULE_CHECK appraise_flag=check_blacklist appraise_type=imasig|modsig",
-> +	"appraise func=MODULE_CHECK appraise_type=imasig|modsig",
->  #endif
->  	NULL
->  };
-> diff --git a/security/integrity/ima/ima_appraise.c b/security/integrity/ima/ima_appraise.c
-> index 491c1aca0b1c..870dde67707b 100644
-> --- a/security/integrity/ima/ima_appraise.c
-> +++ b/security/integrity/ima/ima_appraise.c
-> @@ -458,11 +458,13 @@ int ima_check_blacklist(struct integrity_iint_cache *iint,
->  		ima_get_modsig_digest(modsig, &hash_algo, &digest, &digestsize);
->  
->  		rc = is_binary_blacklisted(digest, digestsize);
-> -		if ((rc == -EPERM) && (iint->flags & IMA_MEASURE))
-> -			process_buffer_measurement(&nop_mnt_idmap, NULL, digest, digestsize,
-> -						   "blacklisted-hash", NONE,
-> -						   pcr, NULL, false, NULL, 0);
-> -	}
-> +	} else if (iint->flags & IMA_DIGSIG_REQUIRED && iint->ima_hash)
-> +		rc = is_binary_blacklisted(iint->ima_hash->digest, iint->ima_hash->length);
+This patch set adds zoned storage support to `ublk`. The first patch does some
+house cleaning in preparation for the last patch. The last patch adds support
+for report_zones and the following operations:
 
-Curiosity (I didn't read the previous discussions), if you are checking
-if binaries are blacklisted, why not doing for the BPRM_CHECK hook?
+ - REQ_OP_ZONE_OPEN
+ - REQ_OP_ZONE_CLOSE
+ - REQ_OP_ZONE_FINISH
+ - REQ_OP_ZONE_RESET
+ - REQ_OP_ZONE_APPEND
 
-> +
-> +	if ((rc == -EPERM) && (iint->flags & IMA_MEASURE))
+A user space component based on ubdsrv is available for testing [1] with the
+"loop" target.
 
-Uhm, the measurement will be done only if you are also doing appraisal
-with digital signatures. But if you have only measure rules, you won't
-know. Shouldn't you run is_binary_blacklisted() also for measure rules?
+Read/write and zone operations are tested with zenfs [2].
 
-Thanks
+The zone append path is tested with fio -> zonefs -> ublk -> null_blk.
 
-Roberto
+The implementation of zone append requires ublk user copy feature, and therefore
+the series is based on branch for-next (6afa337a3789) of [3].
 
-> +		process_buffer_measurement(&nop_mnt_idmap, NULL, digest, digestsize,
-> +					   "blacklisted-hash", NONE,
-> +					   pcr, NULL, false, NULL, 0);
->  
->  	return rc;
->  }
-> diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
-> index c9b3bd8f1bb9..69452b79686b 100644
-> --- a/security/integrity/ima/ima_policy.c
-> +++ b/security/integrity/ima/ima_policy.c
-> @@ -1280,7 +1280,7 @@ static bool ima_validate_rule(struct ima_rule_entry *entry)
->  				     IMA_FSNAME | IMA_GID | IMA_EGID |
->  				     IMA_FGROUP | IMA_DIGSIG_REQUIRED |
->  				     IMA_PERMIT_DIRECTIO | IMA_VALIDATE_ALGOS |
-> -				     IMA_VERITY_REQUIRED))
-> +				     IMA_CHECK_BLACKLIST | IMA_VERITY_REQUIRED))
->  			return false;
->  
->  		break;
-> @@ -1355,7 +1355,7 @@ static bool ima_validate_rule(struct ima_rule_entry *entry)
->  
->  	/* Ensure that combinations of flags are compatible with each other */
->  	if (entry->flags & IMA_CHECK_BLACKLIST &&
-> -	    !(entry->flags & IMA_MODSIG_ALLOWED))
-> +	    !(entry->flags & IMA_DIGSIG_REQUIRED))
->  		return false;
->  
->  	/*
-> @@ -1803,11 +1803,11 @@ static int ima_parse_rule(char *rule, struct ima_rule_entry *entry)
->  				if (entry->flags & IMA_VERITY_REQUIRED)
->  					result = -EINVAL;
->  				else
-> -					entry->flags |= IMA_DIGSIG_REQUIRED;
-> +					entry->flags |= IMA_DIGSIG_REQUIRED | IMA_CHECK_BLACKLIST;
->  			} else if (strcmp(args[0].from, "sigv3") == 0) {
->  				/* Only fsverity supports sigv3 for now */
->  				if (entry->flags & IMA_VERITY_REQUIRED)
-> -					entry->flags |= IMA_DIGSIG_REQUIRED;
-> +					entry->flags |= IMA_DIGSIG_REQUIRED | IMA_CHECK_BLACKLIST;
->  				else
->  					result = -EINVAL;
->  			} else if (IS_ENABLED(CONFIG_IMA_APPRAISE_MODSIG) &&
-> @@ -1816,18 +1816,13 @@ static int ima_parse_rule(char *rule, struct ima_rule_entry *entry)
->  					result = -EINVAL;
->  				else
->  					entry->flags |= IMA_DIGSIG_REQUIRED |
-> -						IMA_MODSIG_ALLOWED;
-> +						IMA_MODSIG_ALLOWED | IMA_CHECK_BLACKLIST;
->  			} else {
->  				result = -EINVAL;
->  			}
->  			break;
->  		case Opt_appraise_flag:
->  			ima_log_string(ab, "appraise_flag", args[0].from);
-> -			if (IS_ENABLED(CONFIG_IMA_APPRAISE_MODSIG) &&
-> -			    strstr(args[0].from, "blacklist"))
-> -				entry->flags |= IMA_CHECK_BLACKLIST;
-> -			else
-> -				result = -EINVAL;
->  			break;
->  		case Opt_appraise_algos:
->  			ima_log_string(ab, "appraise_algos", args[0].from);
-> @@ -2271,8 +2266,6 @@ int ima_policy_show(struct seq_file *m, void *v)
->  	}
->  	if (entry->flags & IMA_VERITY_REQUIRED)
->  		seq_puts(m, "digest_type=verity ");
-> -	if (entry->flags & IMA_CHECK_BLACKLIST)
-> -		seq_puts(m, "appraise_flag=check_blacklist ");
->  	if (entry->flags & IMA_PERMIT_DIRECTIO)
->  		seq_puts(m, "permit_directio ");
->  	rcu_read_unlock();
+Changes for v9
+ - Move setup of IO descriptor for zoned operations into separate function
+ - Fix an issue in `ublk_report_zones()` where zone report size was set to `remaining_zones` instead of `zones_in_request`
+ - Do not truncate bufsize to `queue_max_segments` pages in `ublk_alloc_report_buffer()`
+ - Do not change signature of `ublk_dev_param_basic_apply()` (not needed)
+
+[1] https://github.com/metaspace/ubdsrv/tree/acc072e077bceea390bae14b6ccb8087f6d0cf1a
+[2] https://github.com/westerndigitalcorporation/zenfs
+[3] https://git.kernel.dk/linux.git
+
+Andreas Hindborg (2):
+  ublk: add helper to check if device supports user copy
+  ublk: enable zoned storage support
+
+ drivers/block/ublk_drv.c      | 342 ++++++++++++++++++++++++++++++++--
+ include/uapi/linux/ublk_cmd.h |  36 +++-
+ 2 files changed, 360 insertions(+), 18 deletions(-)
+
+
+base-commit: 3261ea42710e9665c9151006049411bd23b5411f
+-- 
+2.41.0
 
