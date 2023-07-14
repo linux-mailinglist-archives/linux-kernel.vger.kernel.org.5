@@ -2,139 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21CB4752F29
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 04:09:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E852752F28
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 04:09:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234050AbjGNCJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 22:09:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46842 "EHLO
+        id S233670AbjGNCI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 22:08:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232126AbjGNCJU (ORCPT
+        with ESMTP id S229614AbjGNCIy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 22:09:20 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC10B2D64
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 19:09:15 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id d75a77b69052e-4036bd4fff1so173841cf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 19:09:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689300555; x=1691892555;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yaoyMod4YhQet4GlKsQo7SoI2O5v7F0iNZz73/v59vU=;
-        b=MkLXXmdMYO5MjdINzkKT/vpvpgCKquPcbnWMJh7ZVyVppPkKOUFhF7vkNfx3GDSD2Y
-         o3ytngfQLVehiOeiE7z84FEolHR4lnKs8Js+X8hnVPfFu5aocs88eACuhb//HqpkTxPJ
-         E1B39L1s2E/FDIUjQQ4Ji4Iy6avLEF5IbWf4jjFvmVpE0h8UWefuQal7EetYynazW5Ln
-         J3yhCxh29d3ibhvvX6/qJgJ+5RDB3YLAZBE3O8BhP68Gm4f5uyrGcw8Ht4MmZKXxXAL2
-         Hhsg00KWx59mvRtMR7xzbqXOGUR7dQGDCv/YN0ohetR/3UVMH5Gwp+1ZezBH18jb41M4
-         pj4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689300555; x=1691892555;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yaoyMod4YhQet4GlKsQo7SoI2O5v7F0iNZz73/v59vU=;
-        b=kUSkto+JA0bqxImm7RK/DFtweEjkANKVE6LyVX5qS6X+QuMqQxzbPkIRe23uv/nzsM
-         3jHwQNQBNqdSjprhFWKUH8qDb9IGXgnCyBfj5meTXoUmTa5M2Bdxz+/nitrungHxxmLL
-         oJk/DFxtxEnMMHM0x8QVOYc/c+qkUZsaBfzfhqgygeTHcHexQSYFi6GX/k++KNUlNGz7
-         fNF0KkGvEYwnVpbOkKiuprtisLhyChh2WmEj1dEMJPOjzBkr+lTk+RAwtiFGI8eEeQgY
-         +yAn0OS8274znA8FeGTovrSUwD6/DucD+JgWCm+2CySc261Ryu/6kkZ+0Ucl14IWkdwf
-         KoJA==
-X-Gm-Message-State: ABy/qLYeWT/HARF5AhWSRTlJvEacNr6IoVNF5z1YTHQ6ncuP1jB1cMcd
-        2je39nLisEQf9fv7RYrePSk1mRrf++O54gzxSm5xYQ==
-X-Google-Smtp-Source: APBJJlEPLV0bF4tbzek2jRVF22PTIoNWTDMx7dndC/6IdnzTfMMK2pzf/pL0r/5uHf0J6qv/hb/b+lg1WYFjI43wJ0I=
-X-Received: by 2002:a05:622a:394:b0:3fa:45ab:22a5 with SMTP id
- j20-20020a05622a039400b003fa45ab22a5mr708987qtx.27.1689300554862; Thu, 13 Jul
- 2023 19:09:14 -0700 (PDT)
+        Thu, 13 Jul 2023 22:08:54 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86DE826AE
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 19:08:50 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R2FJY4p8szBRSVV
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 10:08:45 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1689300525; x=1691892526; bh=Fzq7xxyEDs/i9LXK669wVX2YP5w
+        0Q7ZOsHaKtuIRCLQ=; b=sNuOf+9cAzbEQvOb1DuzNo6+j9t1TGLpwpsxSrpGCCY
+        bjVGka3k27cJl2/xIcjTKVGsal+0BTKsoAE3Sh7XIU2bg64i9KCs6ksekYKwD6Vi
+        zxZnYNOolukLwtnQkMJkbAO1ryiQdX+yMwNjKLngS6BamIkh+dnGz9HEXu6fMxSn
+        wuEr0ojdrl48R23BQY2uMudgEJxK2y89BOheaT/I7Wer6bsXMjwZckTRjTnt+Zek
+        Hy51VGgonJI6OJ1AVoxeWRigREZi1z3nZh7rfKPX92a0tLex3N5baPvlmy84P/an
+        4w9F52AqOGqAGT6K7FFDZiOfjNz33foEI0rE8l1rV6g==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 8b1vRqmef91W for <linux-kernel@vger.kernel.org>;
+        Fri, 14 Jul 2023 10:08:45 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R2FJY2hgfzBRSVQ;
+        Fri, 14 Jul 2023 10:08:45 +0800 (CST)
 MIME-Version: 1.0
-References: <20230713150558.200545-1-fengwei.yin@intel.com>
-In-Reply-To: <20230713150558.200545-1-fengwei.yin@intel.com>
-From:   Yu Zhao <yuzhao@google.com>
-Date:   Thu, 13 Jul 2023 20:08:38 -0600
-Message-ID: <CAOUHufb0zxKvmvEXfG4kySenxyPtagnr_cf4Ms-6si3bQTybGQ@mail.gmail.com>
-Subject: Re: [RFC PATCH] madvise: make madvise_cold_or_pageout_pte_range()
- support large folio
-To:     Yin Fengwei <fengwei.yin@intel.com>,
-        Minchan Kim <minchan@kernel.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, willy@infradead.org, david@redhat.com,
-        ryan.roberts@arm.com, shy828301@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Date:   Fri, 14 Jul 2023 10:08:45 +0800
+From:   sunran001@208suo.com
+To:     airlied@gmail.com, daniel@ffwll.ch
+Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/nouveau: add missing spaces after ','
+In-Reply-To: <20230714012736.13031-1-xujianghui@cdjrlc.com>
+References: <20230714012736.13031-1-xujianghui@cdjrlc.com>
+User-Agent: Roundcube Webmail
+Message-ID: <79709251a62a1d58947d96a363e82d58@208suo.com>
+X-Sender: sunran001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UPPERCASE_50_75,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 9:06=E2=80=AFAM Yin Fengwei <fengwei.yin@intel.com>=
- wrote:
->
-> Current madvise_cold_or_pageout_pte_range() has two problems for
-> large folio support:
->   - Using folio_mapcount() with large folio prevent large folio from
->     picking up.
->   - If large folio is in the range requested, shouldn't split it
->     in madvise_cold_or_pageout_pte_range().
->
-> Fix them by:
->   - Use folio_estimated_sharers() with large folio
->   - If large folio is in the range requested, don't split it. Leave
->     to page reclaim phase.
->
-> For large folio cross boundaries of requested range, skip it if it's
-> page cache. Try to split it if it's anonymous folio. If splitting
-> fails, skip it.
+Add missing spaces to clear checkpatch errors.
 
-For now, we may not want to change the existing semantic (heuristic).
-IOW, we may want to stick to the "only owner" condition:
+ERROR: space required after that ',' (ctx:VxV)
 
-  - if (folio_mapcount(folio) !=3D 1)
-  + if (folio_entire_mapcount(folio) ||
-  +     (any_page_within_range_has_mapcount > 1))
+Signed-off-by: Ran Sun <sunran001@208suo.com>
+---
+  drivers/gpu/drm/nouveau/include/nvhw/drf.h | 80 +++++++++++-----------
+  1 file changed, 40 insertions(+), 40 deletions(-)
 
-+Minchan Kim
+diff --git a/drivers/gpu/drm/nouveau/include/nvhw/drf.h 
+b/drivers/gpu/drm/nouveau/include/nvhw/drf.h
+index d6969c0e2f29..a14f8d5663bb 100644
+--- a/drivers/gpu/drm/nouveau/include/nvhw/drf.h
++++ b/drivers/gpu/drm/nouveau/include/nvhw/drf.h
+@@ -33,58 +33,58 @@
+  #define DRF_MX_MW(drf)      drf
+  #define DRF_MX(drf)         DRF_MX_##drf
+  #define DRF_MW(drf)         DRF_MX(drf)
+-#define DRF_MW_SPANS(o,drf) (DRF_LW_IDX((o),drf) != 
+DRF_HW_IDX((o),drf))
++#define DRF_MW_SPANS(o, drf) (DRF_LW_IDX((o), drf) != DRF_HW_IDX((o), 
+drf))
+  #define DRF_MW_SIZE(o)      (sizeof((o)[0]) * 8)
 
-Also there is an existing bug here: the later commit 07e8c82b5eff8
-("madvise: convert madvise_cold_or_pageout_pte_range() to use folios")
-is incorrect for sure; the original commit 9c276cc65a58f ("mm:
-introduce MADV_COLD") seems incorrect too.
+-#define DRF_LW_IDX(o,drf)   (DRF_LO(DRF_MW(drf)) / DRF_MW_SIZE(o))
+-#define DRF_LW_LO(o,drf)    (DRF_LO(DRF_MW(drf)) % DRF_MW_SIZE(o))
+-#define DRF_LW_HI(o,drf)    (DRF_MW_SPANS((o),drf) ? (DRF_MW_SIZE(o) - 
+1) : DRF_HW_HI((o),drf))
+-#define DRF_LW_BITS(o,drf)  (DRF_LW_HI((o),drf) - DRF_LW_LO((o),drf) + 
+1)
+-#define DRF_LW_MASK(o,drf)  (~0ULL >> (64 - DRF_LW_BITS((o),drf)))
+-#define DRF_LW_SMASK(o,drf) (DRF_LW_MASK((o),drf) << 
+DRF_LW_LO((o),drf))
+-#define DRF_LW_GET(o,drf)   (((o)[DRF_LW_IDX((o),drf)] >> 
+DRF_LW_LO((o),drf)) & DRF_LW_MASK((o),drf))
+-#define DRF_LW_VAL(o,drf,v) (((v) & DRF_LW_MASK((o),drf)) << 
+DRF_LW_LO((o),drf))
+-#define DRF_LW_CLR(o,drf)   ((o)[DRF_LW_IDX((o),drf)] & 
+~DRF_LW_SMASK((o),drf))
+-#define DRF_LW_SET(o,drf,v) (DRF_LW_CLR((o),drf) | 
+DRF_LW_VAL((o),drf,(v)))
+-
+-#define DRF_HW_IDX(o,drf)   (DRF_HI(DRF_MW(drf)) / DRF_MW_SIZE(o))
+-#define DRF_HW_LO(o,drf)    0
+-#define DRF_HW_HI(o,drf)    (DRF_HI(DRF_MW(drf)) % DRF_MW_SIZE(o))
+-#define DRF_HW_BITS(o,drf)  (DRF_HW_HI((o),drf) - DRF_HW_LO((o),drf) + 
+1)
+-#define DRF_HW_MASK(o,drf)  (~0ULL >> (64 - DRF_HW_BITS((o),drf)))
+-#define DRF_HW_SMASK(o,drf) (DRF_HW_MASK((o),drf) << 
+DRF_HW_LO((o),drf))
+-#define DRF_HW_GET(o,drf)   ((o)[DRF_HW_IDX(o,drf)] & 
+DRF_HW_SMASK((o),drf))
+-#define DRF_HW_VAL(o,drf,v) (((long long)(v) >> DRF_LW_BITS((o),drf)) & 
+DRF_HW_SMASK((o),drf))
+-#define DRF_HW_CLR(o,drf)   ((o)[DRF_HW_IDX((o),drf)] & 
+~DRF_HW_SMASK((o),drf))
+-#define DRF_HW_SET(o,drf,v) (DRF_HW_CLR((o),drf) | 
+DRF_HW_VAL((o),drf,(v)))
++#define DRF_LW_IDX(o, drf)   (DRF_LO(DRF_MW(drf)) / DRF_MW_SIZE(o))
++#define DRF_LW_LO(o, drf)    (DRF_LO(DRF_MW(drf)) % DRF_MW_SIZE(o))
++#define DRF_LW_HI(o, drf)    (DRF_MW_SPANS((o), drf) ? (DRF_MW_SIZE(o) 
+- 1) : DRF_HW_HI((o), drf))
++#define DRF_LW_BITS(o, drf)  (DRF_LW_HI((o), drf) - DRF_LW_LO((o), drf) 
++ 1)
++#define DRF_LW_MASK(o, drf)  (~0ULL >> (64 - DRF_LW_BITS((o), drf)))
++#define DRF_LW_SMASK(o, drf) (DRF_LW_MASK((o), drf) << DRF_LW_LO((o), 
+drf))
++#define DRF_LW_GET(o, drf)   (((o)[DRF_LW_IDX((o), drf)] >> 
+DRF_LW_LO((o), drf)) & DRF_LW_MASK((o), drf))
++#define DRF_LW_VAL(o, drf, v) (((v) & DRF_LW_MASK((o), drf)) << 
+DRF_LW_LO((o), drf))
++#define DRF_LW_CLR(o, drf)   ((o)[DRF_LW_IDX((o), drf)] & 
+~DRF_LW_SMASK((o), drf))
++#define DRF_LW_SET(o, drf, v) (DRF_LW_CLR((o), drf) | DRF_LW_VAL((o), 
+drf, (v)))
++
++#define DRF_HW_IDX(o, drf)   (DRF_HI(DRF_MW(drf)) / DRF_MW_SIZE(o))
++#define DRF_HW_LO(o, drf)    0
++#define DRF_HW_HI(o, drf)    (DRF_HI(DRF_MW(drf)) % DRF_MW_SIZE(o))
++#define DRF_HW_BITS(o, drf)  (DRF_HW_HI((o), drf) - DRF_HW_LO((o), drf) 
++ 1)
++#define DRF_HW_MASK(o, drf)  (~0ULL >> (64 - DRF_HW_BITS((o), drf)))
++#define DRF_HW_SMASK(o, drf) (DRF_HW_MASK((o), drf) << DRF_HW_LO((o), 
+drf))
++#define DRF_HW_GET(o, drf)   ((o)[DRF_HW_IDX(o, drf)] & 
+DRF_HW_SMASK((o), drf))
++#define DRF_HW_VAL(o, drf, v) (((long long)(v) >> DRF_LW_BITS((o), 
+drf)) & DRF_HW_SMASK((o), drf))
++#define DRF_HW_CLR(o, drf)   ((o)[DRF_HW_IDX((o), drf)] & 
+~DRF_HW_SMASK((o), drf))
++#define DRF_HW_SET(o, drf, v) (DRF_HW_CLR((o), drf) | DRF_HW_VAL((o), 
+drf, (v)))
 
-+Vishal Moola (Oracle)
+  /* DRF accessors. */
+-#define NVVAL_X(drf,v) (((v) & DRF_MASK(drf)) << DRF_LO(drf))
+-#define NVVAL_N(X,d,r,f,  v) NVVAL_X(d##_##r##_##f, (v))
+-#define NVVAL_I(X,d,r,f,i,v) NVVAL_X(d##_##r##_##f(i), (v))
+-#define NVVAL_(X,_1,_2,_3,_4,_5,IMPL,...) IMPL
++#define NVVAL_X(drf, v) (((v) & DRF_MASK(drf)) << DRF_LO(drf))
++#define NVVAL_N(X, d, r, f,  v) NVVAL_X(d##_##r##_##f, (v))
++#define NVVAL_I(X, d, r, f, i, v) NVVAL_X(d##_##r##_##f(i), (v))
++#define NVVAL_(X, _1, _2, _3, _4, _5, IMPL, ...) IMPL
+  #define NVVAL(A...) NVVAL_(X, ##A, NVVAL_I, NVVAL_N)(X, ##A)
 
-The "any_page_within_range_has_mapcount" test above seems to be the
-only correct to meet condition claimed by the comments, before or
-after the folio conversion, assuming here a THP page means the
-compound page without PMD mappings (PMD-split). Otherwise the test is
-always false (if it's also PMD mapped somewhere else).
+-#define NVDEF_N(X,d,r,f,  v) NVVAL_X(d##_##r##_##f, 
+d##_##r##_##f##_##v)
+-#define NVDEF_I(X,d,r,f,i,v) NVVAL_X(d##_##r##_##f(i), 
+d##_##r##_##f##_##v)
+-#define NVDEF_(X,_1,_2,_3,_4,_5,IMPL,...) IMPL
++#define NVDEF_N(X, d, r, f, v) NVVAL_X(d##_##r##_##f, 
+d##_##r##_##f##_##v)
++#define NVDEF_I(X, d, r, f, i, v) NVVAL_X(d##_##r##_##f(i), 
+d##_##r##_##f##_##v)
++#define NVDEF_(X, _1, _2, _3, _4, _5, IMPL, ...) IMPL
+  #define NVDEF(A...) NVDEF_(X, ##A, NVDEF_I, NVDEF_N)(X, ##A)
 
-  /*
-   * Creating a THP page is expensive so split it only if we
-   * are sure it's worth. Split it if we are only owner.
-   */
+-#define NVVAL_GET_X(o,drf) (((o) >> DRF_LO(drf)) & DRF_MASK(drf))
+-#define NVVAL_GET_N(X,o,d,r,f  ) NVVAL_GET_X(o, d##_##r##_##f)
+-#define NVVAL_GET_I(X,o,d,r,f,i) NVVAL_GET_X(o, d##_##r##_##f(i))
+-#define NVVAL_GET_(X,_1,_2,_3,_4,_5,IMPL,...) IMPL
++#define NVVAL_GET_X(o, drf) (((o) >> DRF_LO(drf)) & DRF_MASK(drf))
++#define NVVAL_GET_N(X, o, d, r, f) NVVAL_GET_X(o, d##_##r##_##f)
++#define NVVAL_GET_I(X, o, d, r, f, i) NVVAL_GET_X(o, d##_##r##_##f(i))
++#define NVVAL_GET_(X, _1, _2, _3, _4, _5, IMPL, ...) IMPL
+  #define NVVAL_GET(A...) NVVAL_GET_(X, ##A, NVVAL_GET_I, NVVAL_GET_N)(X, 
+##A)
 
-> The main reason to call folio_referenced() is to clear the yong of
-> conresponding PTEs. So in page reclaim phase, there is good chance
-> the folio can be reclaimed.
->
-> Signed-off-by: Yin Fengwei <fengwei.yin@intel.com>
-> ---
-> This patch is based on mlock large folio support rfc2 as it depends
-> on the folio_in_range() added by that patchset
->
-> Also folio_op_size() can be unitfied with get_folio_mlock_step().
->
-> Testing done:
->   - kselftest: No new regression introduced.
->
->  mm/madvise.c | 133 ++++++++++++++++++++++++++++++++-------------------
->  1 file changed, 84 insertions(+), 49 deletions(-)
+-#define NVVAL_TEST_X(o,drf,cmp,drfv) (NVVAL_GET_X((o), drf) cmp drfv)
+-#define NVVAL_TEST_N(X,o,d,r,f,  cmp,v) NVVAL_TEST_X(o, d##_##r##_##f   
+, cmp, (v))
+-#define NVVAL_TEST_I(X,o,d,r,f,i,cmp,v) NVVAL_TEST_X(o, 
+d##_##r##_##f(i), cmp, (v))
+-#define NVVAL_TEST_(X,_1,_2,_3,_4,_5,_6,_7,IMPL,...) IMPL
++#define NVVAL_TEST_X(o, drf, cmp, drfv) (NVVAL_GET_X((o), drf) cmp 
+drfv)
++#define NVVAL_TEST_N(X, o, d, r, f, cmp, v) NVVAL_TEST_X(o, 
+d##_##r##_##f   , cmp, (v))
++#define NVVAL_TEST_I(X, o, d, r, f, i, cmp, v) NVVAL_TEST_X(o, 
+d##_##r##_##f(i), cmp, (v))
++#define NVVAL_TEST_(X, _1, _2, _3, _4, _5, _6, _7, IMPL, ...) IMPL
+  #define NVVAL_TEST(A...) NVVAL_TEST_(X, ##A, NVVAL_TEST_I, 
+NVVAL_TEST_N)(X, ##A)
 
-Also the refactor looks fine to me but it'd be better if it's a separate pa=
-tch.
+-#define NVDEF_TEST_N(X,o,d,r,f,  cmp,v) NVVAL_TEST_X(o, d##_##r##_##f   
+, cmp, d##_##r##_##f##_##v)
+-#define NVDEF_TEST_I(X,o,d,r,f,i,cmp,v) NVVAL_TEST_X(o, 
+d##_##r##_##f(i), cmp, d##_##r##_##f##_##v)
+-#define NVDEF_TEST_(X,_1,_2,_3,_4,_5,_6,_7,IMPL,...) IMPL
++#define NVDEF_TEST_N(X, o, d, r, f, cmp, v) NVVAL_TEST_X(o, 
+d##_##r##_##f   , cmp, d##_##r##_##f##_##v)
++#define NVDEF_TEST_I(X, o, d, r, f, i, cmp, v) NVVAL_TEST_X(o, 
+d##_##r##_##f(i), cmp, d##_##r##_##f##_##v)
++#define NVDEF_TEST_(X, _1, _2, _3, _4, _5, _6, _7, IMPL, ...) IMPL
+  #define NVDEF_TEST(A...) NVDEF_TEST_(X, ##A, NVDEF_TEST_I, 
+NVDEF_TEST_N)(X, ##A)
+
+  #define NVVAL_SET_X(o,drf,v) (((o) & ~DRF_SMASK(drf)) | NVVAL_X(drf, 
+(v)))
