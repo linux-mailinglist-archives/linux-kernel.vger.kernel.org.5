@@ -2,210 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 875B775375A
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 12:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9BC3753781
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 12:08:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235527AbjGNKDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 06:03:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50146 "EHLO
+        id S236018AbjGNKIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 06:08:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231584AbjGNKDM (ORCPT
+        with ESMTP id S235170AbjGNKIX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 06:03:12 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 597601999
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 03:03:10 -0700 (PDT)
-Received: from dggpemm500003.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R2RmQ37n6ztRSY;
-        Fri, 14 Jul 2023 18:00:06 +0800 (CST)
-Received: from [10.67.145.254] (10.67.145.254) by
- dggpemm500003.china.huawei.com (7.185.36.56) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 14 Jul 2023 18:03:07 +0800
-Message-ID: <35b6cc52-c18d-802c-4c6f-904a3e6414a0@hisilicon.com>
-Date:   Fri, 14 Jul 2023 18:03:07 +0800
+        Fri, 14 Jul 2023 06:08:23 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 879EDE44;
+        Fri, 14 Jul 2023 03:08:22 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 3FAE31FD60;
+        Fri, 14 Jul 2023 10:08:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1689329301;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=e7Rv1H6fjmBW7mfZ+ZrZR0i86EmB3mqsT9/DnQrSAjs=;
+        b=qsMmse8mTusoohv3JefPmD7rtFAwwKNHClCQ0HTfc641h+qO4HfMWLwAUw6JK/6NdBGaZ3
+        4mipH79Z+CbRfFNEwjSAWOdpJgWjT6dfbedZgIbWGQt/uhlHLzPYxioXVlqC/+QpWZux4K
+        Y3ZQdJycLUZW19YxqTjIVmg1M2Ij6cc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1689329301;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=e7Rv1H6fjmBW7mfZ+ZrZR0i86EmB3mqsT9/DnQrSAjs=;
+        b=Lw/3NxXsnUVhBmQlwadstME3Do+Rr7Sg2IMERJuFKXIfMrLHOVUqp+ivNvM2lvKfellMa2
+        2bzVGhMBJJmvnGDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EEB3413A15;
+        Fri, 14 Jul 2023 10:08:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id R0lGOZQesWSrCgAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Fri, 14 Jul 2023 10:08:20 +0000
+Date:   Fri, 14 Jul 2023 12:01:44 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     xiaoshoukui <xiaoshoukui@gmail.com>
+Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xiaoshoukui <xiaoshoukui@ruijie.com.cn>
+Subject: Re: [PATCH] btrfs: fix balance_ctl not free properly in btrfs_balance
+Message-ID: <20230714100143.GE20457@suse.cz>
+Reply-To: dsterba@suse.cz
+References: <20230714071548.45825-1-xiaoshoukui@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.0.2
-Subject: Re: [PATCH v3] irqchip: gic-v3: Extend collection table
-To:     <linux-kernel@vger.kernel.org>
-References: <1687341691-894-1-git-send-email-wangwudi@hisilicon.com>
- <a9821d1012a24f23ac4c3136d77b452a@hisilicon.com>
-CC:     Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "liaochang (A)" <liaochang1@huawei.com>
-From:   wangwudi <wangwudi@hisilicon.com>
-In-Reply-To: <a9821d1012a24f23ac4c3136d77b452a@hisilicon.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.145.254]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500003.china.huawei.com (7.185.36.56)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230714071548.45825-1-xiaoshoukui@gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
-
-A gentle ping.
-
-Thanks,
-Wudi
-
-在 2023/7/14 17:57, wangwudi 写道:
-> 
-> 
-> -----邮件原件-----
-> 发件人: wangwudi 
-> 发送时间: 2023年6月21日 18:02
-> 收件人: linux-kernel@vger.kernel.org
-> 抄送: liaochang (A) <liaochang1@huawei.com>; wangwudi <wangwudi@hisilicon.com>; Thomas Gleixner <tglx@linutronix.de>; Marc Zyngier <maz@kernel.org>
-> 主题: [PATCH v3] irqchip: gic-v3: Extend collection table
-> 
-> Only single level table is supported to the collection table, and only one page is allocated.
-> 
-> Extend collection table to support more CPUs:
-> 1. Recalculate the page number of collection table based on the number of CPUs.
-> 2. Add 2 level tables to collection table when HCC field is zero.
-> 3. Add GITS_TYPER_CIDBITS macros.
-> 
-> It is noticed in an internal simulation research:
-> - the page_size of collection table is 4 KB
-> - the entry_size of collection table is 16 Byte
-> - with 512 CPUs
-> 
-> And I don't find a have a GIC500 platform to test this path. 
-> 
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Signed-off-by: wangwudi <wangwudi@hisilicon.com>
+On Fri, Jul 14, 2023 at 03:15:48AM -0400, xiaoshoukui wrote:
+> Signed-off-by: xiaoshoukui <xiaoshoukui@ruijie.com.cn>
 > ---
+>  fs/btrfs/volumes.c | 10 +---------
+>  1 file changed, 1 insertion(+), 9 deletions(-)
 > 
-> ChangeLog:
-> v1-->v2:
-> 1. Support 2 level table.
-> 2. Rewrite the commit log.
-> v2-->v3
-> 1. Fixed the error when HCC is field is not zero.
-> 2. Modifiy the commit log.
-> 
->  drivers/irqchip/irq-gic-v3-its.c   | 67 +++++++++++++++++++++++++++++++-------
->  include/linux/irqchip/arm-gic-v3.h |  3 ++
->  2 files changed, 58 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
-> index 0ec2b1e1df75..c37e010fd50c 100644
-> --- a/drivers/irqchip/irq-gic-v3-its.c
-> +++ b/drivers/irqchip/irq-gic-v3-its.c
-> @@ -126,6 +126,7 @@ struct its_node {
->  #define is_v4(its)		(!!((its)->typer & GITS_TYPER_VLPIS))
->  #define is_v4_1(its)		(!!((its)->typer & GITS_TYPER_VMAPP))
->  #define device_ids(its)		(FIELD_GET(GITS_TYPER_DEVBITS, (its)->typer) + 1)
-> +#define collection_ids(its)	(FIELD_GET(GITS_TYPER_CIDBITS, (its)->typer) + 1)
->  
->  #define ITS_ITT_ALIGN		SZ_256
->  
-> @@ -2626,6 +2627,10 @@ static int its_alloc_tables(struct its_node *its)
->  			indirect = its_parse_indirect_baser(its, baser, &order,
->  							    ITS_MAX_VPEID_BITS);
->  			break;
-> +		case GITS_BASER_TYPE_COLLECTION:
-> +			indirect = its_parse_indirect_baser(its, baser, &order,
-> +							    order_base_2(num_possible_cpus()));
-> +			break;
->  		}
->  
->  		err = its_setup_baser(its, baser, cache, shr, order, indirect); @@ -3230,18 +3235,6 @@ static void its_cpu_init_collection(struct its_node *its)
->  	its_send_invall(its, &its->collections[cpu]);  }
->  
-> -static void its_cpu_init_collections(void) -{
-> -	struct its_node *its;
-> -
-> -	raw_spin_lock(&its_lock);
-> -
-> -	list_for_each_entry(its, &its_nodes, entry)
-> -		its_cpu_init_collection(its);
-> -
-> -	raw_spin_unlock(&its_lock);
-> -}
-> -
->  static struct its_device *its_find_device(struct its_node *its, u32 dev_id)  {
->  	struct its_device *its_dev = NULL, *tmp; @@ -3316,6 +3309,56 @@ static bool its_alloc_table_entry(struct its_node *its,
->  	return true;
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 7823168c08a6..c1ab94d8694c 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -4055,14 +4055,6 @@ static int alloc_profile_is_valid(u64 flags, int extended)
+>         return has_single_bit_set(flags);
 >  }
 >  
-> +static bool its_alloc_collection_table(struct its_node *its, struct 
-> +its_baser *baser) {
-> +	int cpu = smp_processor_id();
-> +	int cpu_ids = 16;
-> +
-> +	if (its->typer & GITS_TYPER_CIL)
-> +		cpu_ids = collection_ids(its);
-> +
-> +	if (!(ilog2(cpu) < cpu_ids)) {
-> +		pr_warn("ITS: CPU%d out of Collection ID range for %dbits", cpu, cpu_ids);
-> +		return false;
-> +	}
-> +
-> +	if (!its_alloc_table_entry(its, baser, cpu)) {
-> +		pr_warn("ITS: CPU%d failed to allocate collection l2 table", cpu);
-> +		return false;
-> +	}
-> +
-> +	return true;
-> +}
-> +
-> +static bool its_cpu_init_collections(void) {
-> +	struct its_node *its;
-> +	struct its_baser *baser;
-> +	void __iomem *base;
-> +
-> +	raw_spin_lock(&its_lock);
-> +
-> +	list_for_each_entry(its, &its_nodes, entry) {
-> +		base = its->base;
-> +		if (!GITS_TYPER_HCC(gic_read_typer(base + GITS_TYPER))) {
-> +			baser = its_get_baser(its, GITS_BASER_TYPE_COLLECTION);
-> +			if (!baser) {
-> +				raw_spin_unlock(&its_lock);
-> +				return false;
-> +			}
-> +
-> +			if (!its_alloc_collection_table(its, baser)) {
-> +				raw_spin_unlock(&its_lock);
-> +				return false;
-> +			}
-> +		}
-> +
-> +		its_cpu_init_collection(its);
-> +	}
-> +	raw_spin_unlock(&its_lock);
-> +	return true;
-> +}
-> +
->  static bool its_alloc_device_table(struct its_node *its, u32 dev_id)  {
->  	struct its_baser *baser;
-> diff --git a/include/linux/irqchip/arm-gic-v3.h b/include/linux/irqchip/arm-gic-v3.h
-> index 728691365464..35e83da8961f 100644
-> --- a/include/linux/irqchip/arm-gic-v3.h
-> +++ b/include/linux/irqchip/arm-gic-v3.h
-> @@ -400,6 +400,9 @@
->  #define GITS_TYPER_PTA			(1UL << 19)
->  #define GITS_TYPER_HCC_SHIFT		24
->  #define GITS_TYPER_HCC(r)		(((r) >> GITS_TYPER_HCC_SHIFT) & 0xff)
-> +#define GITS_TYPER_CIDBITS_SHIFT	32
-> +#define GITS_TYPER_CIDBITS		GENMASK_ULL(35, 32)
-> +#define GITS_TYPER_CIL			(1ULL << 36)
->  #define GITS_TYPER_VMOVP		(1ULL << 37)
->  #define GITS_TYPER_VMAPP		(1ULL << 40)
->  #define GITS_TYPER_SVPET		GENMASK_ULL(42, 41)
-> --
-> 2.7.4
-> 
+> -static inline int balance_need_close(struct btrfs_fs_info *fs_info)
+> -{
+> -       /* cancel requested || normal exit path */
+> -       return atomic_read(&fs_info->balance_cancel_req) ||
+> -               (atomic_read(&fs_info->balance_pause_req) == 0 &&
+> -                atomic_read(&fs_info->balance_cancel_req) == 0);
+> -}
+> -
+>  /*
+>   * Validate target profile against allowed profiles and return true if it's OK.
+>   * Otherwise print the error message and return false.
+> @@ -4411,7 +4403,7 @@ int btrfs_balance(struct btrfs_fs_info *fs_info,
+>         }
+>  
+>         if ((ret && ret != -ECANCELED && ret != -ENOSPC) ||
+> -           balance_need_close(fs_info)) {
+> +           ret == -ECANCELED || ret == 0) {
+>                 reset_balance_state(fs_info);
+>                 btrfs_exclop_finish(fs_info);
+
+This is a similar patch to what Josef sent but not exactly the same,
+
+https://lore.kernel.org/linux-btrfs/9cdf58c2f045863e98a52d7f9d5102ba12b87f07.1687496547.git.josef@toxicpanda.com/
+
+Both remove balance_need_close but your version does not track the
+paused state. I haven't analyzed it closer, but it looks like you're
+missing some case. Josef's fix simplifies the error handling so we don't
+have te enumerate the errors.
+
+As you have a reproducer, can you please try it with this patch instead?
+It's possible that there are still some unhandled states so it would be
+good to check. Thanks.
