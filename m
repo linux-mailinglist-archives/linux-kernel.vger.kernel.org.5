@@ -2,177 +2,411 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D17A575310A
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 07:19:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 996BE753111
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 07:20:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234639AbjGNFTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 01:19:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53142 "EHLO
+        id S234693AbjGNFUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 01:20:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231254AbjGNFTA (ORCPT
+        with ESMTP id S234290AbjGNFUC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 01:19:00 -0400
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0984DCE
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 22:18:58 -0700 (PDT)
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com [209.85.216.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 3C90B3F18D
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 05:18:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1689311937;
-        bh=4RwCmrifjQAszMSdyafC6AItguqTd3yShrJPY3GuzKo=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=QQ3gBCdpdBSQygt0xnQGzNjc3esGtiEn5Dz4L/ojvbVzFQIBoOVIXcAaLqzSdXjhO
-         P/JzhH7RcYPksfPpoa5PQ5yx+K0RJ8OLThkEodqZndS0Rdjc4Q7UajM8anZg4jx6r7
-         IhbQy1HgR5JJjIACCRq48cKLoUEe12U+QuTE5gCgDumxwuWTWNK9OgvUaK0nbPnFga
-         EGks8trJzDzp7+Kkr2tlATWCLXZ03Kss0rsb6couo3cBfEOfGTpgsKS6FV/g5Rsa5+
-         3cSQsWwY3jV/ztKAzZzjI8y0/pbu9LPM2La/B8FmYjWvU2c297aclS5FFaxoarV6ul
-         OoPNrIa0KE8rA==
-Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-265826eef7fso1659452a91.0
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 22:18:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689311936; x=1691903936;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4RwCmrifjQAszMSdyafC6AItguqTd3yShrJPY3GuzKo=;
-        b=Wc3KnNQCZtc7v/0EgOQV/1CQMWTX11Mvgk9L1usOfiT26E4Ah+KbII/W+lysd21h+Z
-         rUZMDFuuXH9y0HG5tEjitu/oTVbxKgStZksesdM+GatcptnYU9XWzczLemIk5p6sFaBm
-         5i7l9DG2qIkrUXh3yaOWk0Y7xAOkW/5plQT/cvUUeHYo7rVqmWuxCRtQAHVJggrUdvCq
-         F+oRZfQbmSos/SJU0gghhDWRhcRL1D4ibmBDTsPpqo8z+G4Rh92BdDBn2q3RHC8/Mq52
-         o0/ZHzL8qK/P/L+j0R33dpM5uCQIhAK9QCcmOacwTt4NvSqMAqBdhRwHzx+P75Q1zsXk
-         nfxQ==
-X-Gm-Message-State: ABy/qLY/yOw/xbOEPsUaFyV7mQ59y8Cu+LG2DHAJLH4xo4XQehUVrM1Y
-        IYgY4oE3hKwAph5HGmlYD683rUVYLAyn0JyAXLuebufem9eZh03QLsCk2iqlqDlbgD4UIeR2cM6
-        uv/BKWv1yqdmuV3aixFiI8wVLm2yuSgIelnwtGWrd70ZE2/Mg/putMfFwFQ==
-X-Received: by 2002:a17:90b:1643:b0:261:110e:30c1 with SMTP id il3-20020a17090b164300b00261110e30c1mr2428903pjb.4.1689311935771;
-        Thu, 13 Jul 2023 22:18:55 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFPTMsnX8dr5FIZHQ03Hx09Ztz5Lxo0FqHU0UBxtvQNOQK3SfMNeJz5gWDCMTOZ2rKIk09TKJd+otiXntG6fG0=
-X-Received: by 2002:a17:90b:1643:b0:261:110e:30c1 with SMTP id
- il3-20020a17090b164300b00261110e30c1mr2428889pjb.4.1689311935452; Thu, 13 Jul
- 2023 22:18:55 -0700 (PDT)
+        Fri, 14 Jul 2023 01:20:02 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF0E42708;
+        Thu, 13 Jul 2023 22:19:59 -0700 (PDT)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36E58iLr016249;
+        Fri, 14 Jul 2023 05:19:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=mAK+nMiSDYYDFPw1jANolZTo85kOM5LA/GlpGJ8tLLY=;
+ b=a78aEyav64993u5TbbeUFdKBtPgBHJg+RshlP+ZqRacn4kBm1cP7s8sZC9P7L/cVmyvy
+ N5Eq7DSe1s2iIYRZ/dIDAVSSE0Cext2ltDKaNFV86DF+fSIVz5IcySHz57YvensMiQ2j
+ +6VoTqdcKAR1uOmN6E6IkbKtmXpUOkLN8DT8Tq6yLgsTC60Hb5zjzSsBBbhDeoYHV6nc
+ gvH/f5/9sAizTG7QKB2xB+qsXCTwfULXN33aIoXWJB9O4F3lC0ApcuPoD3lN055nJbiK
+ SI0TMvfwCg4S+gnBC7gngjRi2r8FohaNb6pQwv8pAW+FPaBBv3CfO4H86lhqt8+o5yFn ig== 
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rtpub8wkr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 14 Jul 2023 05:19:55 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36E5JsJa028068
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 14 Jul 2023 05:19:54 GMT
+Received: from [10.216.27.244] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 13 Jul
+ 2023 22:19:47 -0700
+Message-ID: <0019f59c-236f-4db9-825d-51bb9d655542@quicinc.com>
+Date:   Fri, 14 Jul 2023 10:49:00 +0530
 MIME-Version: 1.0
-References: <20230526163001.67626-1-aaron.ma@canonical.com> <20230607015646.558534-1-aaron.ma@canonical.com>
-In-Reply-To: <20230607015646.558534-1-aaron.ma@canonical.com>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Fri, 14 Jul 2023 13:18:44 +0800
-Message-ID: <CAAd53p4V36qjyL1fMF20pY9wD4sLXWLQyJVib5Zt4NGOgnF5yg@mail.gmail.com>
-Subject: Re: [Intel-wired-lan] [PATCH net v2] igb: fix hang issue of AER error
- during resume
-To:     Aaron Ma <aaron.ma@canonical.com>
-Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jeff Garzik <jgarzik@redhat.com>,
-        Auke Kok <auke-jan.h.kok@intel.com>,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH V3 6/6] clk: qcom: gcc-qdu1000: Update the RCGs ops
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "Michael Turquette" <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC:     Bjorn Andersson <andersson@kernel.org>,
+        Taniya Das <quic_tdas@quicinc.com>,
+        Melody Olvera <quic_molvera@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Jagadeesh Kona <quic_jkona@quicinc.com>,
+        Satya Priya Kakitapalli <quic_skakitap@quicinc.com>,
+        Ajit Pandey <quic_ajipan@quicinc.com>
+References: <20230706105045.633076-1-quic_imrashai@quicinc.com>
+ <20230706105045.633076-7-quic_imrashai@quicinc.com>
+ <fa24eaa0-c363-0694-76be-c14eba6999a1@linaro.org>
+Content-Language: en-US
+From:   Imran Shaik <quic_imrashai@quicinc.com>
+In-Reply-To: <fa24eaa0-c363-0694-76be-c14eba6999a1@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: DedRZOuI1EZUVU5ZY0PaP7vjQZEn3eRY
+X-Proofpoint-GUID: DedRZOuI1EZUVU5ZY0PaP7vjQZEn3eRY
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-14_02,2023-07-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
+ priorityscore=1501 spamscore=0 mlxlogscore=999 bulkscore=0 phishscore=0
+ suspectscore=0 adultscore=0 malwarescore=0 clxscore=1015
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307140048
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Aaron,
 
-On Wed, Jun 7, 2023 at 9:56=E2=80=AFAM Aaron Ma <aaron.ma@canonical.com> wr=
-ote:
->
-> PCIe AER error_detected caused a race issue with igb_resume.
-> Protect error_detected when igb is in down state.
->
-> Error logs:
-> kernel: igb 0000:02:00.0: disabling already-disabled device
-> kernel: WARNING: CPU: 0 PID: 277 at drivers/pci/pci.c:2248 pci_disable_de=
-vice+0xc4/0xf0
-> kernel: RIP: 0010:pci_disable_device+0xc4/0xf0
-> kernel: Call Trace:
-> kernel:  <TASK>
-> kernel:  igb_io_error_detected+0x3e/0x60
-> kernel:  report_error_detected+0xd6/0x1c0
-> kernel:  ? __pfx_report_normal_detected+0x10/0x10
-> kernel:  report_normal_detected+0x16/0x30
-> kernel:  pci_walk_bus+0x74/0xa0
-> kernel:  pcie_do_recovery+0xb9/0x340
-> kernel:  ? __pfx_aer_root_reset+0x10/0x10
-> kernel:  aer_process_err_devices+0x168/0x220
-> kernel:  aer_isr+0x1b5/0x1e0
-> kernel:  ? __pfx_irq_thread_fn+0x10/0x10
-> kernel:  irq_thread_fn+0x21/0x70
-> kernel:  irq_thread+0xf8/0x1c0
-> kernel:  ? __pfx_irq_thread_dtor+0x10/0x10
-> kernel:  ? __pfx_irq_thread+0x10/0x10
-> kernel:  kthread+0xef/0x120
-> kernel:  ? __pfx_kthread+0x10/0x10
-> kernel:  ret_from_fork+0x29/0x50
-> kernel:  </TASK>
-> kernel: ---[ end trace 0000000000000000 ]---
->
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=3D217446
-> Fixes: 9d5c824399de ("igb: PCI-Express 82575 Gigabit Ethernet driver")
-> Signed-off-by: Aaron Ma <aaron.ma@canonical.com>
-> Reviewed-by: Mateusz Palczewski <mateusz.palczewski@intel.com>
 
-Can you please give [1] a try?
-I think avoid using rtnl_lock() is more ideal.
+On 7/6/2023 7:46 PM, Dmitry Baryshkov wrote:
+> On 06/07/2023 13:50, Imran Shaik wrote:
+>> Update the SDCC clock RCG ops to floor_ops to avoid overclocking issues
+> 
+> Split, please.
+> 
 
-[1] https://lore.kernel.org/intel-wired-lan/20230714050541.2765246-1-kai.he=
-ng.feng@canonical.com/
+Sure, will split this patch in next series.
 
-Kai-Heng
+>> and remaining RCGs to shared_ops to park them at safe clock(XO) during
+>> disable.
+> 
+> Why are you doing this, is there any issue? Previously we had only a 
+> several clocks implemented this way, which were really shared with other 
+> subsystems (this is the where name _shared_ops comes from).
+> 
 
-> ---
-> V1->V2: Add target tree tag net and Fixes tag.
->
->  drivers/net/ethernet/intel/igb/igb_main.c | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethe=
-rnet/intel/igb/igb_main.c
-> index 58872a4c2540..8333d4ac8169 100644
-> --- a/drivers/net/ethernet/intel/igb/igb_main.c
-> +++ b/drivers/net/ethernet/intel/igb/igb_main.c
-> @@ -9581,14 +9581,21 @@ static pci_ers_result_t igb_io_error_detected(str=
-uct pci_dev *pdev,
->         struct net_device *netdev =3D pci_get_drvdata(pdev);
->         struct igb_adapter *adapter =3D netdev_priv(netdev);
->
-> +       if (test_bit(__IGB_DOWN, &adapter->state))
-> +               return PCI_ERS_RESULT_DISCONNECT;
-> +
-> +       rtnl_lock();
->         netif_device_detach(netdev);
->
-> -       if (state =3D=3D pci_channel_io_perm_failure)
-> +       if (state =3D=3D pci_channel_io_perm_failure) {
-> +               rtnl_unlock();
->                 return PCI_ERS_RESULT_DISCONNECT;
-> +       }
->
->         if (netif_running(netdev))
->                 igb_down(adapter);
->         pci_disable_device(pdev);
-> +       rtnl_unlock();
->
->         /* Request a slot reset. */
->         return PCI_ERS_RESULT_NEED_RESET;
-> --
-> 2.34.1
->
-> _______________________________________________
-> Intel-wired-lan mailing list
-> Intel-wired-lan@osuosl.org
-> https://lists.osuosl.org/mailman/listinfo/intel-wired-lan
+ From our clock hardware side, the expectation is to park the RCGs at XO 
+for most of the clocks and the shared_ops is the closest implementation 
+for the same. Hence updating the RCG ops to clk_rcg2_shared_ops.
+
+Thanks,
+Imran
+
+>>
+>> Co-developed-by: Taniya Das <quic_tdas@quicinc.com>
+>> Signed-off-by: Taniya Das <quic_tdas@quicinc.com>
+>> Signed-off-by: Imran Shaik <quic_imrashai@quicinc.com>
+>> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+>> ---
+>> Changes since v2:
+>>   - None
+>> Changes since v1:
+>>   - Newly added
+>>
+>>   drivers/clk/qcom/gcc-qdu1000.c | 62 +++++++++++++++++-----------------
+>>   1 file changed, 31 insertions(+), 31 deletions(-)
+>>
+>> diff --git a/drivers/clk/qcom/gcc-qdu1000.c 
+>> b/drivers/clk/qcom/gcc-qdu1000.c
+>> index 718c34dca6e8..de35cdc93732 100644
+>> --- a/drivers/clk/qcom/gcc-qdu1000.c
+>> +++ b/drivers/clk/qcom/gcc-qdu1000.c
+>> @@ -475,7 +475,7 @@ static struct clk_rcg2 
+>> gcc_aggre_noc_ecpri_dma_clk_src = {
+>>           .name = "gcc_aggre_noc_ecpri_dma_clk_src",
+>>           .parent_data = gcc_parent_data_4,
+>>           .num_parents = ARRAY_SIZE(gcc_parent_data_4),
+>> -        .ops = &clk_rcg2_ops,
+>> +        .ops = &clk_rcg2_shared_ops,
+>>       },
+>>   };
+>> @@ -495,7 +495,7 @@ static struct clk_rcg2 
+>> gcc_aggre_noc_ecpri_gsi_clk_src = {
+>>           .name = "gcc_aggre_noc_ecpri_gsi_clk_src",
+>>           .parent_data = gcc_parent_data_5,
+>>           .num_parents = ARRAY_SIZE(gcc_parent_data_5),
+>> -        .ops = &clk_rcg2_ops,
+>> +        .ops = &clk_rcg2_shared_ops,
+>>       },
+>>   };
+>> @@ -514,7 +514,7 @@ static struct clk_rcg2 gcc_gp1_clk_src = {
+>>           .name = "gcc_gp1_clk_src",
+>>           .parent_data = gcc_parent_data_1,
+>>           .num_parents = ARRAY_SIZE(gcc_parent_data_1),
+>> -        .ops = &clk_rcg2_ops,
+>> +        .ops = &clk_rcg2_shared_ops,
+>>       },
+>>   };
+>> @@ -528,7 +528,7 @@ static struct clk_rcg2 gcc_gp2_clk_src = {
+>>           .name = "gcc_gp2_clk_src",
+>>           .parent_data = gcc_parent_data_1,
+>>           .num_parents = ARRAY_SIZE(gcc_parent_data_1),
+>> -        .ops = &clk_rcg2_ops,
+>> +        .ops = &clk_rcg2_shared_ops,
+>>       },
+>>   };
+>> @@ -542,7 +542,7 @@ static struct clk_rcg2 gcc_gp3_clk_src = {
+>>           .name = "gcc_gp3_clk_src",
+>>           .parent_data = gcc_parent_data_1,
+>>           .num_parents = ARRAY_SIZE(gcc_parent_data_1),
+>> -        .ops = &clk_rcg2_ops,
+>> +        .ops = &clk_rcg2_shared_ops,
+>>       },
+>>   };
+>> @@ -561,7 +561,7 @@ static struct clk_rcg2 gcc_pcie_0_aux_clk_src = {
+>>           .name = "gcc_pcie_0_aux_clk_src",
+>>           .parent_data = gcc_parent_data_3,
+>>           .num_parents = ARRAY_SIZE(gcc_parent_data_3),
+>> -        .ops = &clk_rcg2_ops,
+>> +        .ops = &clk_rcg2_shared_ops,
+>>       },
+>>   };
+>> @@ -581,7 +581,7 @@ static struct clk_rcg2 
+>> gcc_pcie_0_phy_rchng_clk_src = {
+>>           .name = "gcc_pcie_0_phy_rchng_clk_src",
+>>           .parent_data = gcc_parent_data_0,
+>>           .num_parents = ARRAY_SIZE(gcc_parent_data_0),
+>> -        .ops = &clk_rcg2_ops,
+>> +        .ops = &clk_rcg2_shared_ops,
+>>       },
+>>   };
+>> @@ -600,7 +600,7 @@ static struct clk_rcg2 gcc_pdm2_clk_src = {
+>>           .name = "gcc_pdm2_clk_src",
+>>           .parent_data = gcc_parent_data_0,
+>>           .num_parents = ARRAY_SIZE(gcc_parent_data_0),
+>> -        .ops = &clk_rcg2_ops,
+>> +        .ops = &clk_rcg2_shared_ops,
+>>       },
+>>   };
+>> @@ -622,7 +622,7 @@ static struct clk_init_data 
+>> gcc_qupv3_wrap0_s0_clk_src_init = {
+>>       .name = "gcc_qupv3_wrap0_s0_clk_src",
+>>       .parent_data = gcc_parent_data_0,
+>>       .num_parents = ARRAY_SIZE(gcc_parent_data_0),
+>> -    .ops = &clk_rcg2_ops,
+>> +    .ops = &clk_rcg2_shared_ops,
+>>   };
+>>   static struct clk_rcg2 gcc_qupv3_wrap0_s0_clk_src = {
+>> @@ -638,7 +638,7 @@ static struct clk_init_data 
+>> gcc_qupv3_wrap0_s1_clk_src_init = {
+>>       .name = "gcc_qupv3_wrap0_s1_clk_src",
+>>       .parent_data = gcc_parent_data_0,
+>>       .num_parents = ARRAY_SIZE(gcc_parent_data_0),
+>> -    .ops = &clk_rcg2_ops,
+>> +    .ops = &clk_rcg2_shared_ops,
+>>   };
+>>   static struct clk_rcg2 gcc_qupv3_wrap0_s1_clk_src = {
+>> @@ -654,7 +654,7 @@ static struct clk_init_data 
+>> gcc_qupv3_wrap0_s2_clk_src_init = {
+>>       .name = "gcc_qupv3_wrap0_s2_clk_src",
+>>       .parent_data = gcc_parent_data_0,
+>>       .num_parents = ARRAY_SIZE(gcc_parent_data_0),
+>> -    .ops = &clk_rcg2_ops,
+>> +    .ops = &clk_rcg2_shared_ops,
+>>   };
+>>   static struct clk_rcg2 gcc_qupv3_wrap0_s2_clk_src = {
+>> @@ -670,7 +670,7 @@ static struct clk_init_data 
+>> gcc_qupv3_wrap0_s3_clk_src_init = {
+>>       .name = "gcc_qupv3_wrap0_s3_clk_src",
+>>       .parent_data = gcc_parent_data_0,
+>>       .num_parents = ARRAY_SIZE(gcc_parent_data_0),
+>> -    .ops = &clk_rcg2_ops,
+>> +    .ops = &clk_rcg2_shared_ops,
+>>   };
+>>   static struct clk_rcg2 gcc_qupv3_wrap0_s3_clk_src = {
+>> @@ -686,7 +686,7 @@ static struct clk_init_data 
+>> gcc_qupv3_wrap0_s4_clk_src_init = {
+>>       .name = "gcc_qupv3_wrap0_s4_clk_src",
+>>       .parent_data = gcc_parent_data_0,
+>>       .num_parents = ARRAY_SIZE(gcc_parent_data_0),
+>> -    .ops = &clk_rcg2_ops,
+>> +    .ops = &clk_rcg2_shared_ops,
+>>   };
+>>   static struct clk_rcg2 gcc_qupv3_wrap0_s4_clk_src = {
+>> @@ -707,7 +707,7 @@ static struct clk_init_data 
+>> gcc_qupv3_wrap0_s5_clk_src_init = {
+>>       .name = "gcc_qupv3_wrap0_s5_clk_src",
+>>       .parent_data = gcc_parent_data_0,
+>>       .num_parents = ARRAY_SIZE(gcc_parent_data_0),
+>> -    .ops = &clk_rcg2_ops,
+>> +    .ops = &clk_rcg2_shared_ops,
+>>   };
+>>   static struct clk_rcg2 gcc_qupv3_wrap0_s5_clk_src = {
+>> @@ -723,7 +723,7 @@ static struct clk_init_data 
+>> gcc_qupv3_wrap0_s6_clk_src_init = {
+>>       .name = "gcc_qupv3_wrap0_s6_clk_src",
+>>       .parent_data = gcc_parent_data_0,
+>>       .num_parents = ARRAY_SIZE(gcc_parent_data_0),
+>> -    .ops = &clk_rcg2_ops,
+>> +    .ops = &clk_rcg2_shared_ops,
+>>   };
+>>   static struct clk_rcg2 gcc_qupv3_wrap0_s6_clk_src = {
+>> @@ -739,7 +739,7 @@ static struct clk_init_data 
+>> gcc_qupv3_wrap0_s7_clk_src_init = {
+>>       .name = "gcc_qupv3_wrap0_s7_clk_src",
+>>       .parent_data = gcc_parent_data_0,
+>>       .num_parents = ARRAY_SIZE(gcc_parent_data_0),
+>> -    .ops = &clk_rcg2_ops,
+>> +    .ops = &clk_rcg2_shared_ops,
+>>   };
+>>   static struct clk_rcg2 gcc_qupv3_wrap0_s7_clk_src = {
+>> @@ -755,7 +755,7 @@ static struct clk_init_data 
+>> gcc_qupv3_wrap1_s0_clk_src_init = {
+>>       .name = "gcc_qupv3_wrap1_s0_clk_src",
+>>       .parent_data = gcc_parent_data_0,
+>>       .num_parents = ARRAY_SIZE(gcc_parent_data_0),
+>> -    .ops = &clk_rcg2_ops,
+>> +    .ops = &clk_rcg2_shared_ops,
+>>   };
+>>   static struct clk_rcg2 gcc_qupv3_wrap1_s0_clk_src = {
+>> @@ -771,7 +771,7 @@ static struct clk_init_data 
+>> gcc_qupv3_wrap1_s1_clk_src_init = {
+>>       .name = "gcc_qupv3_wrap1_s1_clk_src",
+>>       .parent_data = gcc_parent_data_0,
+>>       .num_parents = ARRAY_SIZE(gcc_parent_data_0),
+>> -    .ops = &clk_rcg2_ops,
+>> +    .ops = &clk_rcg2_shared_ops,
+>>   };
+>>   static struct clk_rcg2 gcc_qupv3_wrap1_s1_clk_src = {
+>> @@ -787,7 +787,7 @@ static struct clk_init_data 
+>> gcc_qupv3_wrap1_s2_clk_src_init = {
+>>       .name = "gcc_qupv3_wrap1_s2_clk_src",
+>>       .parent_data = gcc_parent_data_0,
+>>       .num_parents = ARRAY_SIZE(gcc_parent_data_0),
+>> -    .ops = &clk_rcg2_ops,
+>> +    .ops = &clk_rcg2_shared_ops,
+>>   };
+>>   static struct clk_rcg2 gcc_qupv3_wrap1_s2_clk_src = {
+>> @@ -803,7 +803,7 @@ static struct clk_init_data 
+>> gcc_qupv3_wrap1_s3_clk_src_init = {
+>>       .name = "gcc_qupv3_wrap1_s3_clk_src",
+>>       .parent_data = gcc_parent_data_0,
+>>       .num_parents = ARRAY_SIZE(gcc_parent_data_0),
+>> -    .ops = &clk_rcg2_ops,
+>> +    .ops = &clk_rcg2_shared_ops,
+>>   };
+>>   static struct clk_rcg2 gcc_qupv3_wrap1_s3_clk_src = {
+>> @@ -819,7 +819,7 @@ static struct clk_init_data 
+>> gcc_qupv3_wrap1_s4_clk_src_init = {
+>>       .name = "gcc_qupv3_wrap1_s4_clk_src",
+>>       .parent_data = gcc_parent_data_0,
+>>       .num_parents = ARRAY_SIZE(gcc_parent_data_0),
+>> -    .ops = &clk_rcg2_ops,
+>> +    .ops = &clk_rcg2_shared_ops,
+>>   };
+>>   static struct clk_rcg2 gcc_qupv3_wrap1_s4_clk_src = {
+>> @@ -835,7 +835,7 @@ static struct clk_init_data 
+>> gcc_qupv3_wrap1_s5_clk_src_init = {
+>>       .name = "gcc_qupv3_wrap1_s5_clk_src",
+>>       .parent_data = gcc_parent_data_0,
+>>       .num_parents = ARRAY_SIZE(gcc_parent_data_0),
+>> -    .ops = &clk_rcg2_ops,
+>> +    .ops = &clk_rcg2_shared_ops,
+>>   };
+>>   static struct clk_rcg2 gcc_qupv3_wrap1_s5_clk_src = {
+>> @@ -851,7 +851,7 @@ static struct clk_init_data 
+>> gcc_qupv3_wrap1_s6_clk_src_init = {
+>>       .name = "gcc_qupv3_wrap1_s6_clk_src",
+>>       .parent_data = gcc_parent_data_0,
+>>       .num_parents = ARRAY_SIZE(gcc_parent_data_0),
+>> -    .ops = &clk_rcg2_ops,
+>> +    .ops = &clk_rcg2_shared_ops,
+>>   };
+>>   static struct clk_rcg2 gcc_qupv3_wrap1_s6_clk_src = {
+>> @@ -867,7 +867,7 @@ static struct clk_init_data 
+>> gcc_qupv3_wrap1_s7_clk_src_init = {
+>>       .name = "gcc_qupv3_wrap1_s7_clk_src",
+>>       .parent_data = gcc_parent_data_0,
+>>       .num_parents = ARRAY_SIZE(gcc_parent_data_0),
+>> -    .ops = &clk_rcg2_ops,
+>> +    .ops = &clk_rcg2_shared_ops,
+>>   };
+>>   static struct clk_rcg2 gcc_qupv3_wrap1_s7_clk_src = {
+>> @@ -903,7 +903,7 @@ static struct clk_rcg2 gcc_sdcc5_apps_clk_src = {
+>>           .name = "gcc_sdcc5_apps_clk_src",
+>>           .parent_data = gcc_parent_data_8,
+>>           .num_parents = ARRAY_SIZE(gcc_parent_data_8),
+>> -        .ops = &clk_rcg2_ops,
+>> +        .ops = &clk_rcg2_floor_ops,
+>>       },
+>>   };
+>> @@ -922,7 +922,7 @@ static struct clk_rcg2 gcc_sdcc5_ice_core_clk_src = {
+>>           .name = "gcc_sdcc5_ice_core_clk_src",
+>>           .parent_data = gcc_parent_data_2,
+>>           .num_parents = ARRAY_SIZE(gcc_parent_data_2),
+>> -        .ops = &clk_rcg2_ops,
+>> +        .ops = &clk_rcg2_floor_ops,
+>>       },
+>>   };
+>> @@ -936,7 +936,7 @@ static struct clk_rcg2 gcc_sm_bus_xo_clk_src = {
+>>           .name = "gcc_sm_bus_xo_clk_src",
+>>           .parent_data = gcc_parent_data_2,
+>>           .num_parents = ARRAY_SIZE(gcc_parent_data_2),
+>> -        .ops = &clk_rcg2_ops,
+>> +        .ops = &clk_rcg2_shared_ops,
+>>       },
+>>   };
+>> @@ -955,7 +955,7 @@ static struct clk_rcg2 gcc_tsc_clk_src = {
+>>           .name = "gcc_tsc_clk_src",
+>>           .parent_data = gcc_parent_data_9,
+>>           .num_parents = ARRAY_SIZE(gcc_parent_data_9),
+>> -        .ops = &clk_rcg2_ops,
+>> +        .ops = &clk_rcg2_shared_ops,
+>>       },
+>>   };
+>> @@ -975,7 +975,7 @@ static struct clk_rcg2 
+>> gcc_usb30_prim_master_clk_src = {
+>>           .name = "gcc_usb30_prim_master_clk_src",
+>>           .parent_data = gcc_parent_data_0,
+>>           .num_parents = ARRAY_SIZE(gcc_parent_data_0),
+>> -        .ops = &clk_rcg2_ops,
+>> +        .ops = &clk_rcg2_shared_ops,
+>>       },
+>>   };
+>> @@ -989,7 +989,7 @@ static struct clk_rcg2 
+>> gcc_usb30_prim_mock_utmi_clk_src = {
+>>           .name = "gcc_usb30_prim_mock_utmi_clk_src",
+>>           .parent_data = gcc_parent_data_0,
+>>           .num_parents = ARRAY_SIZE(gcc_parent_data_0),
+>> -        .ops = &clk_rcg2_ops,
+>> +        .ops = &clk_rcg2_shared_ops,
+>>       },
+>>   };
+>> @@ -1003,7 +1003,7 @@ static struct clk_rcg2 
+>> gcc_usb3_prim_phy_aux_clk_src = {
+>>           .name = "gcc_usb3_prim_phy_aux_clk_src",
+>>           .parent_data = gcc_parent_data_3,
+>>           .num_parents = ARRAY_SIZE(gcc_parent_data_3),
+>> -        .ops = &clk_rcg2_ops,
+>> +        .ops = &clk_rcg2_shared_ops,
+>>       },
+>>   };
+> 
