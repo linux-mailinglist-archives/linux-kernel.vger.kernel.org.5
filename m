@@ -2,58 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FC437535F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:01:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E1747535FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:01:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235551AbjGNJBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 05:01:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36202 "EHLO
+        id S235714AbjGNJBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 05:01:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235779AbjGNJBD (ORCPT
+        with ESMTP id S235531AbjGNJBZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 05:01:03 -0400
-Received: from 167-179-156-38.a7b39c.syd.nbn.aussiebb.net (167-179-156-38.a7b39c.syd.nbn.aussiebb.net [167.179.156.38])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF66C270D;
-        Fri, 14 Jul 2023 02:00:43 -0700 (PDT)
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
-        by fornost.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1qKEfI-001Rit-8M; Fri, 14 Jul 2023 19:00:41 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 14 Jul 2023 19:00:33 +1000
-Date:   Fri, 14 Jul 2023 19:00:33 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Weili Qian <qianweili@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        liulongfang@huawei.com
-Subject: Re: [PATCH] crypto: hisilicon/hpre - ensure private key less than n
-Message-ID: <ZLEOsQ4RhUI8xAiQ@gondor.apana.org.au>
-References: <20230707131819.50016-1-qianweili@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230707131819.50016-1-qianweili@huawei.com>
-X-Spam-Status: No, score=2.7 required=5.0 tests=BAYES_00,HELO_DYNAMIC_IPADDR2,
-        RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,TVD_RCVD_IP,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: **
+        Fri, 14 Jul 2023 05:01:25 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 125282D50;
+        Fri, 14 Jul 2023 02:01:08 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9763661C9C;
+        Fri, 14 Jul 2023 09:01:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9B80C433C9;
+        Fri, 14 Jul 2023 09:01:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689325267;
+        bh=9aSAz0aIfqYogVI+EirWrWSKc2FYSWjc3BKCTzLQWpw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=USKyd0GvPzCSuQlVqgFlqHoATTWs5ikOi6rE7AXKALSgoXtE3VPNdPqYy94D3yDUY
+         wWBkyRkDAt8o0FrdbciWzvFotlESKSoAYEV3zr2EwzfcGO4vHQbox4mutEeiyDZGc7
+         qRRMdWboihnBZcXxFTTmyauK1x2CRoCGBCv5HTfoBZkm3jtzTp3mtQ2329P/CCsI29
+         6iTEcTpouaNbGIz2cd0hhrYl7Nn36JvcIfOT3XvcpVvY9QKgo8erOeGEbLY10lDA4D
+         2ipw50FfytpZXl0yaha690JCFzMEEIsNTYXcIwUgCxcTq915okX0P29MSqFHN61k+D
+         2MXZQmZbQpjVg==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qKEfg-00D3IW-EV;
+        Fri, 14 Jul 2023 10:01:04 +0100
+Date:   Fri, 14 Jul 2023 10:01:04 +0100
+Message-ID: <86jzv2vpdb.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Saravana Kannan <saravanak@google.com>,
+        Anup Patel <apatel@ventanamicro.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Sunil V L <sunilvl@ventanamicro.com>,
+        Conor Dooley <conor@kernel.org>,
+        Anup Patel <anup@brainfault.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v5 7/9] irqchip: Add RISC-V advanced PLIC driver
+In-Reply-To: <CAGETcx8kH8cJVdhcv5K4qNUo58godFZEBnOfTGKUUQ6VuUguvQ@mail.gmail.com>
+References: <20230710094321.1378351-1-apatel@ventanamicro.com>
+        <20230710094321.1378351-8-apatel@ventanamicro.com>
+        <CAGETcx8kH8cJVdhcv5K4qNUo58godFZEBnOfTGKUUQ6VuUguvQ@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: saravanak@google.com, apatel@ventanamicro.com, palmer@dabbelt.com, paul.walmsley@sifive.com, tglx@linutronix.de, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, atishp@atishpatra.org, ajones@ventanamicro.com, sunilvl@ventanamicro.com, conor@kernel.org, anup@brainfault.org, linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 07, 2023 at 09:18:19PM +0800, Weili Qian wrote:
-> The private key of the curve key size generated by stdrng, which maybe
-> not less than n. Therefore, the private key with the curve key size
-> minus 1 is generated to ensure that the private key is less than n.
-> 
-> Signed-off-by: Weili Qian <qianweili@huawei.com>
-> ---
->  drivers/crypto/hisilicon/hpre/hpre_crypto.c | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
+Anup,
 
-Patch applied.  Thanks.
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+On Fri, 14 Jul 2023 00:56:22 +0100,
+Saravana Kannan <saravanak@google.com> wrote:
+>=20
+> On Mon, Jul 10, 2023 at 2:44=E2=80=AFAM Anup Patel <apatel@ventanamicro.c=
+om> wrote:
+> >
+> > The RISC-V advanced interrupt architecture (AIA) specification defines
+> > a new interrupt controller for managing wired interrupts on a RISC-V
+> > platform. This new interrupt controller is referred to as advanced
+> > platform-level interrupt controller (APLIC) which can forward wired
+> > interrupts to CPUs (or HARTs) as local interrupts OR as message
+> > signaled interrupts.
+> > (For more details refer https://github.com/riscv/riscv-aia)
+> >
+> > This patch adds an irqchip driver for RISC-V APLIC found on RISC-V
+> > platforms.
+> >
+> > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+
+[...]
+
+> > +static int __init aplic_dt_init(struct device_node *node,
+> > +                               struct device_node *parent)
+> > +{
+> > +       /*
+> > +        * The APLIC platform driver needs to be probed early
+> > +        * so for device tree:
+> > +        *
+> > +        * 1) Set the FWNODE_FLAG_BEST_EFFORT flag in fwnode which
+> > +        *    provides a hint to the device driver core to probe the
+> > +        *    platform driver early.
+> > +        * 2) Clear the OF_POPULATED flag in device_node because
+> > +        *    of_irq_init() sets it which prevents creation of
+> > +        *    platform device.
+> > +        */
+> > +       node->fwnode.flags |=3D FWNODE_FLAG_BEST_EFFORT;
+>=20
+> Please stop spamming us with broken patches. Already told you this is
+> not an option.
+>=20
+> Nack.
+
+What puzzles me here is that *no other arch* requires this sort of
+hack. What is so special about the APLIC that it requires it? I see
+nothing in this patch that even hints at it, despite the "discussion"
+in the last round.
+
+The rules are simple:
+
+- either the APLIC is so fundamental to the system that it has to be
+  initialised super early, much like the GIC on arm64, at which point
+  it cannot be a platform device, and the story is pretty simple.
+
+- or it isn't that fundamental, and it can be probed as a platform
+  device using the dependency infrastructure that is already used by
+  multiple other interrupt controller drivers, without any need to
+  mess with internal flags. Again, this should be simple enough.
+
+If these rules don't apply to your stuff, please explain what is so
+different. And I mean actually explain the issue. Which isn't telling
+us "it doesn't work without it". Because as things stand, there is no
+way I will even consider taking this ugly mix of probing methods.
+
+In any case, reposting the same stuff ad nauseam is only going to
+result in this series being ignored, which I don't think is what you
+want.
+
+Thanks,
+
+	M.
+
+--=20
+Without deviation from the norm, progress is not possible.
