@@ -2,188 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06FF175384B
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 12:37:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC5FF75385E
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 12:39:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235675AbjGNKhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 06:37:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44102 "EHLO
+        id S235925AbjGNKj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 06:39:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232239AbjGNKhW (ORCPT
+        with ESMTP id S232239AbjGNKj2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 06:37:22 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD70A2D7D;
-        Fri, 14 Jul 2023 03:37:19 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 48A0061CDC;
-        Fri, 14 Jul 2023 10:37:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDD8DC433C8;
-        Fri, 14 Jul 2023 10:37:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689331038;
-        bh=yDdkJOgrvmSQrdXTqJZxaDqdiuAutO48CkzNaUjj3QQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=NOP4owO1hizD1r2742ms3u2QC8Mg4XtUg5+1ds5rwsd1U/MQKOVQ3PNOnsxqri5sb
-         hZqiaILge0JCOoW1d9tTLtqYI2LpjJIv7Qwy7zXD9f7gTYY3W1nDaiWZ4g4Qxmsh1c
-         8fv81moXKd6s47JHYqel0QnkTFqLaAc2YzBA4qC4zOcggCLsW+VzRZeNs8jxYmDGHa
-         3uJFP+P7mxtdsP17Cfw6cKe9cUk1RJLzdnlLMK7gQiZbOb08O2mbGXHJ0IYcWUNXdr
-         Whmf+1JxPtH/Ci0Jw6Y/ijfYFAh62ZZOgJRNlXpo4OPgepnCugdVOGqRd6w0Dy2mLu
-         gwVx/siuoVC4A==
-From:   guoren@kernel.org
-To:     guoren@kernel.org, palmer@rivosinc.com, paul.walmsley@sifive.com,
-        zong.li@sifive.com, atishp@atishpatra.org, alex@ghiti.fr,
-        jszhang@kernel.org, bjorn@kernel.org, xingxg2008@163.com
-Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Alexandre Ghiti <alexghiti@rivosinc.com>
-Subject: [PATCH V4] riscv: kexec: Fixup synchronization problem between init_mm and active_mm
-Date:   Fri, 14 Jul 2023 06:36:59 -0400
-Message-Id: <20230714103659.3146949-1-guoren@kernel.org>
-X-Mailer: git-send-email 2.36.1
+        Fri, 14 Jul 2023 06:39:28 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 181A12D7D;
+        Fri, 14 Jul 2023 03:39:27 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36EAchJs006972;
+        Fri, 14 Jul 2023 10:39:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=ft8y8++W0gSJktzj4w4rwWHPmb7Ali0hWzn+S1ORFBg=;
+ b=M2cduogny9IEsGHVgoJvIGUTSnlEbKGJcdV/Il99wrPm2HIvyA0tOfmmKCkIl3XwF2Vh
+ CaAIx/8SpPnZxJlHdyIFeFeM2tHG8jSGaJlK22Ft/jEn7BZdG4nU0FhhBzvp9sQHcgoI
+ Lrui8E2b/asDNxDuQ70bCLlaOGLycW/920kGbS1icKv/70KZM1TJegH8yvNi8vnq0Ez4
+ GXYs66WGO5fcmulCAOYDSkJNtPOrDeg2S+yGal5aUIVtWlfFg7ACwi0mafZikiVhttHL
+ ouwoYjbgV7ti28u2CyrMU4sDNAVPt/c6Y+8GBq6d8UECt+gsP6Vdepa4vEJ2Vzudy/84 /w== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rtptp9g7t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 14 Jul 2023 10:39:12 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36EAcsKJ026243
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 14 Jul 2023 10:38:54 GMT
+Received: from [10.216.17.90] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Fri, 14 Jul
+ 2023 03:38:48 -0700
+Message-ID: <f02104c0-d177-0e4e-dcb0-ffca589c8b00@quicinc.com>
+Date:   Fri, 14 Jul 2023 16:08:45 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.1
+Subject: Re: [PATCH v8 6/9] usb: dwc3: qcom: Add multiport controller support
+ for qcom wrapper
+To:     Johan Hovold <johan@kernel.org>,
+        Wesley Cheng <quic_wcheng@quicinc.com>,
+        Jack Pham <quic_jackp@quicinc.com>
+CC:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "Andy Gross" <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        "Konrad Dybcio" <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Felipe Balbi <balbi@kernel.org>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <quic_pkondeti@quicinc.com>,
+        <quic_ppratap@quicinc.com>, <ahalaney@redhat.com>
+References: <20230514054917.21318-1-quic_kriskura@quicinc.com>
+ <20230514054917.21318-7-quic_kriskura@quicinc.com>
+ <ZIB1JEmLCw41v_4e@hovoldconsulting.com>
+ <ZJsDpqttBYtbQ0yg@hovoldconsulting.com>
+ <26ae15d1-4e13-3ab7-6844-3a7d3ed03af4@quicinc.com>
+ <ZLEOk-9VImJNHYHa@hovoldconsulting.com>
+Content-Language: en-US
+From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+In-Reply-To: <ZLEOk-9VImJNHYHa@hovoldconsulting.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: ZFsK8WVLL5aJ51KGivOWNh6MsZzmpxk8
+X-Proofpoint-ORIG-GUID: ZFsK8WVLL5aJ51KGivOWNh6MsZzmpxk8
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-14_05,2023-07-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 spamscore=0 adultscore=0 mlxlogscore=697 impostorscore=0
+ mlxscore=0 clxscore=1011 bulkscore=0 priorityscore=1501 phishscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307140097
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guo Ren <guoren@linux.alibaba.com>
 
-The machine_kexec() uses set_memory_x to modify the direct mapping
-attributes from RW to RWX. The current implementation of set_memory_x
-does not split hugepages in the linear mapping and then when a PGD
-mapping is used, the whole PGD is marked as executable. But changing
-the permissions at the PGD level must be propagated to all the page
-tables. When kexec jumps into control_buffer, the instruction page
-fault happens, and there is no minor_pagefault for it, then panic.
 
-The bug is found on an MMU_sv39 machine, and the direct mapping used a
-1GB PUD, the pgd entries. Here is the bug output:
+On 7/14/2023 2:30 PM, Johan Hovold wrote:
+> On Mon, Jul 03, 2023 at 12:35:48AM +0530, Krishna Kurapati PSSNV wrote:
+>> On 6/27/2023 9:13 PM, Johan Hovold wrote:
+>>> On Wed, Jun 07, 2023 at 02:16:37PM +0200, Johan Hovold wrote:
+>>>> On Sun, May 14, 2023 at 11:19:14AM +0530, Krishna Kurapati wrote:
+> 
+>>>>> -	val = readl(qcom->qscratch_base + PWR_EVNT_IRQ_STAT_REG);
+>>>>> -	if (!(val & PWR_EVNT_LPM_IN_L2_MASK))
+>>>>> -		dev_err(qcom->dev, "HS-PHY not in L2\n");
+>>>>> +	for (i = 0; i < dwc->num_usb2_ports; i++) {
+>>>>> +		val = readl(qcom->qscratch_base + pwr_evnt_irq_stat_reg_offset[i]);
+>>>>> +		if (!(val & PWR_EVNT_LPM_IN_L2_MASK))
+>>>>> +			dev_err(qcom->dev, "HS-PHY%d not in L2\n", i);
+>>>>> +	}
+>>>
+>>>> When testing this on the X13s I get:
+>>>>
+>>>> 	dwc3-qcom a4f8800.usb: HS-PHY2 not in L2
+>>>>
+>>>> for the third port, whose status registers always seems to return zero
+>>>> (e.g. as if we're checking the wrong register?):
+>>>>
+>>>> dwc3-qcom a4f8800.usb: dwc3_qcom_suspend - phy 0, pwr_event_stat = 38103c
+>>>> dwc3-qcom a4f8800.usb: dwc3_qcom_suspend - phy 1, pwr_event_stat = 38103c
+>>>> dwc3-qcom a4f8800.usb: dwc3_qcom_suspend - phy 2, pwr_event_stat = 00
+>>>> dwc3-qcom a4f8800.usb: dwc3_qcom_suspend - phy 3, pwr_event_stat = 140030
+>>>>
+>>>> I verified that everything appears to work as expected on sa8295p-adp.
+>>>>
+>>>> Do you have any idea of what may be causing this?
+>>>
+>>> You never replied to this; do you have any idea why the status register
+>>> for the second port seemingly always read back as 0 on the X13s?
+> 
+>>    Missed this mail. This never popped up on my system. So no idea what
+>> is different in Lenovo X13s. Might need to check with team internally.
+> 
+> Did you hear anything back regarding the above?
+> 
+> Could it even be that the register offset it not correct for sc8280xp?
+>
 
- kexec_core: Starting new kernel
- Will call new kernel at 00300000 from hart id 0
- FDT image at 747c7000
- Bye...
- Unable to handle kernel paging request at virtual address ffffffda23b0d000
- Oops [#1]
- Modules linked in:
- CPU: 0 PID: 53 Comm: uinit Not tainted 6.4.0-rc6 #15
- Hardware name: Sophgo Mango (DT)
- epc : 0xffffffda23b0d000
-  ra : machine_kexec+0xa6/0xb0
- epc : ffffffda23b0d000 ra : ffffffff80008272 sp : ffffffc80c173d10
-  gp : ffffffff8150e1e0 tp : ffffffd9073d2c40 t0 : 0000000000000000
-  t1 : 0000000000000042 t2 : 6567616d69205444 s0 : ffffffc80c173d50
-  s1 : ffffffd9076c4800 a0 : ffffffd9076c4800 a1 : 0000000000300000
-  a2 : 00000000747c7000 a3 : 0000000000000000 a4 : ffffffd800000000
-  a5 : 0000000000000000 a6 : ffffffd903619c40 a7 : ffffffffffffffff
-  s2 : ffffffda23b0d000 s3 : 0000000000300000 s4 : 00000000747c7000
-  s5 : 0000000000000000 s6 : 0000000000000000 s7 : 0000000000000000
-  s8 : 0000000000000000 s9 : 0000000000000000 s10: 0000000000000000
-  s11: 0000003f940001a0 t3 : ffffffff815351af t4 : ffffffff815351af
-  t5 : ffffffff815351b0 t6 : ffffffc80c173b50
- status: 0000000200000100 badaddr: ffffffda23b0d000 cause: 000000000000000c
+Hi Johan,
 
-Given the current flaw in the set_memory_x implementation, the simplest
-solution is to fix machine_kexec() to remap control code page outside
-the linear mapping. Because the control code buffer was moved from the
-direct mapping area to the vmalloc location, we need an additional
-va_va_offset to fix up va_pa_offset.
+No. I rechecked the register offsets and they are proper. (same as what 
+we are using in downstream).
 
-Fixes: 3335068f8721 ("riscv: Use PUD/P4D/PGD pages for the linear mapping")
-Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-Reported-by: Xing XiaoGuang <xingxg2008@163.com>
-Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-Signed-off-by: Guo Ren <guoren@kernel.org>
----
-Changelog:
-V4:
- - Fixup va_pa_offset with additional va_va_offset.
- - Add Reported-by tag.
+Adding Jack and Wesley to help with any suggestions here.
 
-V3:
- - Resume set_memory_x to set the _PAGE_EXEC attribute
- - Optimize the commit log with Alexandre advice
-
-V2:
- - Use vm_map_ram instead of modifying set_memory_x
- - Correct Fixes tag
----
- arch/riscv/include/asm/kexec.h    |  1 +
- arch/riscv/kernel/machine_kexec.c | 18 +++++++++++++++---
- 2 files changed, 16 insertions(+), 3 deletions(-)
-
-diff --git a/arch/riscv/include/asm/kexec.h b/arch/riscv/include/asm/kexec.h
-index 2b56769cb530..17456e91476e 100644
---- a/arch/riscv/include/asm/kexec.h
-+++ b/arch/riscv/include/asm/kexec.h
-@@ -41,6 +41,7 @@ crash_setup_regs(struct pt_regs *newregs,
- struct kimage_arch {
- 	void *fdt; /* For CONFIG_KEXEC_FILE */
- 	unsigned long fdt_addr;
-+	void *control_code_buffer;
- };
- 
- extern const unsigned char riscv_kexec_relocate[];
-diff --git a/arch/riscv/kernel/machine_kexec.c b/arch/riscv/kernel/machine_kexec.c
-index 2d139b724bc8..60c1ef3c2232 100644
---- a/arch/riscv/kernel/machine_kexec.c
-+++ b/arch/riscv/kernel/machine_kexec.c
-@@ -86,7 +86,14 @@ machine_kexec_prepare(struct kimage *image)
- 
- 	/* Copy the assembler code for relocation to the control page */
- 	if (image->type != KEXEC_TYPE_CRASH) {
--		control_code_buffer = page_address(image->control_code_page);
-+		control_code_buffer = vm_map_ram(&image->control_code_page,
-+						 KEXEC_CONTROL_PAGE_SIZE/PAGE_SIZE,
-+						 NUMA_NO_NODE);
-+		if (control_code_buffer == NULL) {
-+			pr_err("Failed to vm_map control page\n");
-+			return -ENOMEM;
-+		}
-+
- 		control_code_buffer_sz = page_size(image->control_code_page);
- 
- 		if (unlikely(riscv_kexec_relocate_size > control_code_buffer_sz)) {
-@@ -99,6 +106,8 @@ machine_kexec_prepare(struct kimage *image)
- 
- 		/* Mark the control page executable */
- 		set_memory_x((unsigned long) control_code_buffer, 1);
-+
-+		internal->control_code_buffer = control_code_buffer;
- 	}
- 
- 	return 0;
-@@ -211,7 +220,10 @@ machine_kexec(struct kimage *image)
- 	unsigned long this_cpu_id = __smp_processor_id();
- 	unsigned long this_hart_id = cpuid_to_hartid_map(this_cpu_id);
- 	unsigned long fdt_addr = internal->fdt_addr;
--	void *control_code_buffer = page_address(image->control_code_page);
-+	void *control_code_buffer = internal->control_code_buffer;
-+	unsigned long va_va_offset =
-+			(unsigned long) page_address(image->control_code_page)
-+		      - (unsigned long) control_code_buffer;
- 	riscv_kexec_method kexec_method = NULL;
- 
- #ifdef CONFIG_SMP
-@@ -234,6 +246,6 @@ machine_kexec(struct kimage *image)
- 	/* Jump to the relocation code */
- 	pr_notice("Bye...\n");
- 	kexec_method(first_ind_entry, jump_addr, fdt_addr,
--		     this_hart_id, kernel_map.va_pa_offset);
-+		     this_hart_id, kernel_map.va_pa_offset - va_va_offset);
- 	unreachable();
- }
--- 
-2.36.1
-
+Regards,
+Krishna,
