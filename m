@@ -2,90 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FC1675304D
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 06:01:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8EAE753024
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 05:47:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234930AbjGNEBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 00:01:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57522 "EHLO
+        id S234901AbjGNDrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 23:47:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234697AbjGNEA5 (ORCPT
+        with ESMTP id S234864AbjGNDrO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 00:00:57 -0400
-Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CF31172C
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 21:00:57 -0700 (PDT)
-Received: by mail-oo1-xc2d.google.com with SMTP id 006d021491bc7-564e4656fecso1017159eaf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 21:00:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1689307256; x=1691899256;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xTZJyJNrNsnTJoZ6pMSnfeTnYDCP+/B8VhZBixHLWGI=;
-        b=JdJesVToWjK7nwS/DLOk6n0JQRPhcQM27Jx08NI/Ctm5K4BPo0i7S6Nzi8M4HT7Z3d
-         zc1NJ4E/oJkBw+K/0Rf8EgqjgAYtgMiA2Wqj1r/4dP1dvmDtso/bYldPfBpApIBqrVjq
-         4scllsOHNgqPHZVQhp+nFe1+4eBUTNGW6Ql0I=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689307256; x=1691899256;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xTZJyJNrNsnTJoZ6pMSnfeTnYDCP+/B8VhZBixHLWGI=;
-        b=PCvMwpXQIvHmtMVX49/QA+O3DJfz9w0o0ebJBR3MjOA9T+ICYeKECH3gN0fv/c86BK
-         s7evbIpcAER8p42+B1Giq3NziP+fn2Cf0evjxx2E4Olcl1pwdSD6pUMOUh+fumN3mYqw
-         JA/oUF4kvvldiGhfSJZLWZZbxUS6GgF1l4pSEkedlXRNd3CaNMkyWT1k2IE3wywIM9Ef
-         oe22Ommg9P4I5HhFYlH3RINnGzURGaOB8BiY1KzsWTAsDpCSxIVpxP6X4MHIjt2rpSd/
-         S0pYYnLAQKBzYeEgg60bgzrGa0umcAW/nwrRnlWDbOBwYoJQKomiqgc72X8RBkH6sNSP
-         yVWA==
-X-Gm-Message-State: ABy/qLYB+xnH9S30Dfu79jgjR3n3c4TwPS1vvD+9RPArLLgrjlS8mBAa
-        M/6rDVKZMlUId4jklmWrNDmeKA==
-X-Google-Smtp-Source: APBJJlEI+S5ilDDwjyQL7jv635Ny5eUpeo0Dqyx861m5EA7MeVgoJcf86sOHtuLLtgrxJ4hYEvb1bA==
-X-Received: by 2002:a05:6358:280d:b0:12f:2573:45b4 with SMTP id k13-20020a056358280d00b0012f257345b4mr4457182rwb.26.1689307256206;
-        Thu, 13 Jul 2023 21:00:56 -0700 (PDT)
-Received: from google.com ([110.11.159.72])
-        by smtp.gmail.com with ESMTPSA id g8-20020aa78188000000b00678afd48250sm6071772pfi.218.2023.07.13.21.00.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Jul 2023 21:00:55 -0700 (PDT)
-Date:   Fri, 14 Jul 2023 13:00:49 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     John Ogness <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        Thu, 13 Jul 2023 23:47:14 -0400
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2E2F26B7
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 20:47:12 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4R2HV31K4bz4f3kjB
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 11:47:07 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+        by APP4 (Coremail) with SMTP id gCh0CgBnTbE8xbBk4HW0Nw--.17751S2;
+        Fri, 14 Jul 2023 11:47:09 +0800 (CST)
+From:   Kemeng Shi <shikemeng@huaweicloud.com>
+To:     akpm@linux-foundation.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH printk v2 2/5] printk: Add NMI safety to
- console_flush_on_panic() and console_unblank()
-Message-ID: <20230714040049.GA81525@google.com>
-References: <20230710134524.25232-1-john.ogness@linutronix.de>
- <20230710134524.25232-3-john.ogness@linutronix.de>
- <ZK14p-ocWuuHkSAQ@alley>
- <878rbkrg16.fsf@jogness.linutronix.de>
- <ZLANiK_1YoBu1YpU@alley>
+Cc:     shikemeng@huaweicloud.com
+Subject: [PATCH 0/3] minor cleanups for page_ext
+Date:   Fri, 14 Jul 2023 19:47:46 +0800
+Message-Id: <20230714114749.1743032-1-shikemeng@huaweicloud.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZLANiK_1YoBu1YpU@alley>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FSL_HELO_FAKE,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgBnTbE8xbBk4HW0Nw--.17751S2
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUY27AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E
+        6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l87I20VAvwVAaII0Ic2I_JF
+        v_Gryl8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AK
+        xVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aV
+        AFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x2
+        0xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18Mc
+        Ij6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l
+        F7I21c0EjII2zVCS5cI20VAGYxC7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
+        1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CE
+        b7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0x
+        vE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI
+        42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxh
+        VjvjDU0xZFpf9x0pRVc_3UUUUU=
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
+        MAY_BE_FORGED,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (23/07/13 16:43), Petr Mladek wrote:
-> 
-> Simple removal of console_trylock() in console_flush_on_panic() would
-> cause that other CPUs might still be able to take it and race.
-> The problem is avoided by checking panic_in_progress() in console_lock()
-> and console_trylock(). They will never succeed on non-panic CPUs.
-> 
+Hi all, this series contains some random minor cleanups for page_ext.
+More details can be found in respective patches. Thanks!
 
-In theory, we also can have non-panic CPU in console_flush_all(),
-which should let panic CPU to take over the next time it checks
-abandon_console_lock_in_panic() (other_cpu_in_panic() after 5/5),
-but it may not happen immediately. I wonder if we somehow can/want
-to "wait" in console_flush_on_panic() for non-panic CPU handover?
+Kemeng Shi (3):
+  mm/page_ext: remove unused return value of offline_page_ext
+  mm/page_ext: remove rollback for untouched mem_section in
+    online_page_ext
+  mm/page_ext: move functions around for minor cleanups to page_ext
+
+ mm/page_ext.c | 101 ++++++++++++++++++++++++--------------------------
+ 1 file changed, 48 insertions(+), 53 deletions(-)
+
+-- 
+2.30.0
+
