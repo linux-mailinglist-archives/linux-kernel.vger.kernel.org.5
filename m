@@ -2,118 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD54375305D
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 06:10:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF102753066
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 06:12:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233638AbjGNEKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 00:10:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59498 "EHLO
+        id S234567AbjGNEMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 00:12:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234931AbjGNEKK (ORCPT
+        with ESMTP id S232770AbjGNEMV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 00:10:10 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23CFE2719
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 21:10:09 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-992ca792065so193587266b.2
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 21:10:09 -0700 (PDT)
+        Fri, 14 Jul 2023 00:12:21 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A090C271E
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 21:12:19 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-3143798f542so1584773f8f.2
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 21:12:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689307807; x=1691899807;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LQeLL7yucbWziupvS5Xb8lpNweQHJYTP0AzdJBC+cOA=;
-        b=JJbN3WNatS/+7/otmtG1ut5N43O0WU2oCSGIbfu0MUL9+HAYUFhHYtD6qLcvvQpRjJ
-         7krgBcG4KOYrQPYiCqjgOv+oEduSBAcEhiqyPlAnq0+6v47zZbVX1/cHoDjgvlz4bjog
-         9naz+BbioEiN1MkvMss7grPLAVGgpPwxFaHYqYh0me/W4rTe8iNUpQ0OgDJBPp7lQFPW
-         2YZfUpFnycPEnd8NersiU4HY7MB6+h+eBRT3RVnvuHlMscf5zKBe47YwQOo33nAP8F21
-         VqG6PJOkZGw0Pozl6Z0Zbf9Z8jLWiXyQaRNgui5xUynRluhQ/LrhbAFx18UroHOSgBvK
-         ZRtg==
+        d=linaro.org; s=google; t=1689307938; x=1691899938;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=f8CTz13Ju/w9ax8ItZAVN5IBS20v8dpfE5mavSr6QmY=;
+        b=d8qAos+3KnkGz93yO8WWHVCCKmxnxkGJKeWhWxHc2Xf0lWJ+2zUVBs2HZFPYhq/2Pm
+         4zPX3OgolxCGO1rMqd6s88CbhTvUOVLtmkJOQEsFPl7k0lGsxYnVaXJvROUB0NDjbo3l
+         2/o94arb7IgUTDblGtpvp94s9BD8UFCD9+ak0hrLyz3PzaQ2mvVaEk7jJeNC7Yjsqs4d
+         GxfZ2oZhhx3TUj2HxkSv0bxAAJySlFXwP5Qa9rJ/Xd/4NtTwoIp6z3ekzp1TMkM8qa6b
+         zzrC7qElNpYTiy9Oe6fJVxL+2uEOUqefUOWv/DXabeqQP3kJnrAlKD/B4fI/vz1h8U96
+         njYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689307807; x=1691899807;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LQeLL7yucbWziupvS5Xb8lpNweQHJYTP0AzdJBC+cOA=;
-        b=g2bDXYcqeKLGMmERMEbBU2FA6pMVS9CCwYxx2eHQRHtZS4tnHDCgzcCBUY8Xx3kFKS
-         6LF3hGZvKR89AjD9w6QFfPgiVu8r/9Tv7+e1PW9EYJgc3EOCW50s29lZdHjrzWghbTx4
-         wWu3LVLl+E0puQPstw8+RNDoOpuBz3/xKp3u4Y8sAAjCmfu/Uaq3vvqMkhdPDjBon45Q
-         SoGDPoxqdjPeUccbtEXIP9Lap7mKqb3SG58k7Iiho5K9nn5IjZkDFuYylP9jVZHDdc67
-         tL5Uec9+Qs3fiVLEQa051JeE7krOV5Mn8a2pOjgJ2BWLO2gLLYaMXpvCEbivBarpzHvK
-         dJig==
-X-Gm-Message-State: ABy/qLZE9BjwV7tix012KbQmSXHfyaWr/YnsQMbEc6fe8YddMZXVixw7
-        +7NC226/HU60Kr/fPbFYMQVzuA==
-X-Google-Smtp-Source: APBJJlEvSuFIaTgobSWO26XSkfmzThp3Re5ekkZqgTD13PdPbzSAZZZZUjDhEkH06V7JpD7uKAvieQ==
-X-Received: by 2002:a17:906:7a0b:b0:994:4ebe:7a6d with SMTP id d11-20020a1709067a0b00b009944ebe7a6dmr357321ejo.19.1689307807456;
-        Thu, 13 Jul 2023 21:10:07 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id ss14-20020a170907038e00b009926928d486sm4818308ejb.35.2023.07.13.21.10.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Jul 2023 21:10:06 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     treding@nvidia.com, jonathanh@nvidia.com,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        Sumit Gupta <sumitg@nvidia.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        bbasu@nvidia.com, talho@nvidia.com
-Subject: Re: [Patch RESEND 0/4] Tegra234 Memory Interconnect followup changes
-Date:   Fri, 14 Jul 2023 06:10:04 +0200
-Message-Id: <168930776405.4539.5215502650424893821.b4-ty@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230621134400.23070-1-sumitg@nvidia.com>
-References: <20230621134400.23070-1-sumitg@nvidia.com>
+        d=1e100.net; s=20221208; t=1689307938; x=1691899938;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=f8CTz13Ju/w9ax8ItZAVN5IBS20v8dpfE5mavSr6QmY=;
+        b=RMKG3j8uLyk6sgll/XWo++ubcS9BWDK+QM36j7enH5mev+0rPvcfhuse0N6JlAQNW0
+         2TudBZcr0URtMSsq/drfTL49oGMX5Fr6rMgC5rWweyDD0IyTsymCA4jLYEniczlRkcvn
+         YuX9mrp33qF2PJPIhY7FVAU0mU/VfTRb4W+GEatyJjSJXmK2IVUocsS6huSv4T7ZHdbn
+         08FtoxCtBlxTgkAgmArdKw2Nuo/6qAtFd2dDUy5x1NR1raiQNYboYDWuvJJpaEJ5nz7i
+         poFtD1Hv6enfMxNGbH2KRN03zrjYrjSNdCTbIraBmt6aBiLPlC1g95Vm5ErctgXMdL5P
+         Hv4Q==
+X-Gm-Message-State: ABy/qLa7uCNkDfaiRkPae3UQyVFOcmPUvvkIEWccMtjGLupBwPDDerGx
+        exolxrAaFHHzNyYwQHNW7EMP/A==
+X-Google-Smtp-Source: APBJJlEiIEZ5oNA1kHIlijl6CR0KNtgyfSCPe+BnecIDGB/eed9crKM0HAEf5FXJE7lQ0/sQpDohiw==
+X-Received: by 2002:a5d:68c6:0:b0:313:f235:cd17 with SMTP id p6-20020a5d68c6000000b00313f235cd17mr3038668wrw.40.1689307938125;
+        Thu, 13 Jul 2023 21:12:18 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id r12-20020a0560001b8c00b003141b9ddab3sm9566447wru.114.2023.07.13.21.12.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 Jul 2023 21:12:17 -0700 (PDT)
+Message-ID: <627bcf48-d9fb-5bfc-f45b-f9cf614d081d@linaro.org>
+Date:   Fri, 14 Jul 2023 06:12:15 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 0/2] Add Facebook Yosemite V4 (AST2600) BMC
+Content-Language: en-US
+To:     Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>, patrick@stwcx.xyz
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <20230712073752.54624-3-Delphine_CC_Chiu@wiwynn.com>
+ <20230714023502.3225096-1-Delphine_CC_Chiu@wiwynn.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230714023502.3225096-1-Delphine_CC_Chiu@wiwynn.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Wed, 21 Jun 2023 19:13:56 +0530, Sumit Gupta wrote:
-> This patch set adds VIC, NVDEC, NVENC, NVJPG, NVDISPLAY clients
-> of Memory Controller to the Tegra234 MC clients table. It also
-> improves error handling when some MRQ's are not supported by a
-> platform. For Example:
-> - Avoid "tegra186_emc_probe" failure if the "MRQ_EMC_DVFS_LATENCY"
->   is not supported.
-> - Avoid Error returned by icc_set_bw() in the MC client drivers if
->   the "MRQ_BWMGR_INT" is not supported.
+On 14/07/2023 04:34, Delphine CC Chiu wrote:
+> v2 - Add Facebook Yosemite V4 (AST2600) BMC
 > 
-> [...]
 
-Applied, thanks!
-
-[1/4] memory: tegra: sort tegra234_mc_clients table as per register offsets
-      https://git.kernel.org/krzk/linux-mem-ctrl/c/01c70c8e52c5579de0c3fff81f81778a570a8643
-[2/4] memory: tegra: Add clients used by DRM in Tegra234
-      https://git.kernel.org/krzk/linux-mem-ctrl/c/9d0bd0e535953886cd1a1335941c5afbe4d7df32
-[3/4] memory: tegra: add check if MRQ_EMC_DVFS_LATENCY is supported
-      https://git.kernel.org/krzk/linux-mem-ctrl/c/8fda1018ca68e7b8fa860087e3069c3be476148f
-
-Checkpatch errors (I guess expected due to code move):
-WARNING: Symbolic permissions 'S_IRUGO' are not preferred. Consider using octal permissions '0444'.
-#86: FILE: drivers/memory/tegra/tegra186-emc.c:215:
-+	debugfs_create_file("available_rates", S_IRUGO, emc->debugfs.root,
-
-WARNING: Symbolic permissions 'S_IRUGO | S_IWUSR' are not preferred. Consider using octal permissions '0644'.
-#88: FILE: drivers/memory/tegra/tegra186-emc.c:217:
-+	debugfs_create_file("min_rate", S_IRUGO | S_IWUSR, emc->debugfs.root,
-
-WARNING: Symbolic permissions 'S_IRUGO | S_IWUSR' are not preferred. Consider using octal permissions '0644'.
-#90: FILE: drivers/memory/tegra/tegra186-emc.c:219:
-+	debugfs_create_file("max_rate", S_IRUGO | S_IWUSR, emc->debugfs.root,
-
-
-[4/4] memory: tegra: make icc_set_bw return zero if BWMGR not supported
-      https://git.kernel.org/krzk/linux-mem-ctrl/c/3d7cfb8d6142c1d681eb70eae7fb1950b59fc0dc
+Do not attach (thread) your patchsets to some other threads (unrelated
+or older versions). This buries them deep in the mailbox and might
+interfere with applying entire sets.
 
 Best regards,
--- 
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Krzysztof
+
