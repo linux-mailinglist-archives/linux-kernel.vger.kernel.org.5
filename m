@@ -2,51 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E339753FBD
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 18:18:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32485753FC1
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 18:20:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236210AbjGNQSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 12:18:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48530 "EHLO
+        id S235873AbjGNQU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 12:20:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236379AbjGNQRx (ORCPT
+        with ESMTP id S235759AbjGNQU1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 12:17:53 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5E96A30DC
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 09:17:51 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5789215BF;
-        Fri, 14 Jul 2023 09:18:33 -0700 (PDT)
-Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0B8643F740;
-        Fri, 14 Jul 2023 09:17:48 -0700 (PDT)
-From:   Ryan Roberts <ryan.roberts@arm.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Ryan Roberts <ryan.roberts@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH v3 4/4] arm64: mm: Override arch_wants_pte_order()
-Date:   Fri, 14 Jul 2023 17:17:33 +0100
-Message-Id: <20230714161733.4144503-4-ryan.roberts@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230714160407.4142030-1-ryan.roberts@arm.com>
-References: <20230714160407.4142030-1-ryan.roberts@arm.com>
+        Fri, 14 Jul 2023 12:20:27 -0400
+Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0E0E1FD4;
+        Fri, 14 Jul 2023 09:20:26 -0700 (PDT)
+Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-7835ffc53bfso47415139f.1;
+        Fri, 14 Jul 2023 09:20:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689351625; x=1691943625;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ks/N8qO3TGYZSSU8M3e1qV+E67ZahtCJLwxQg7T5z6Y=;
+        b=YIqi9O9wm4/nvKpvj9jf2ux2OtM1qmW63jx0KZzRqpOPUSnRMofz9t8uZdW/VJdkU1
+         JC48qAX+qAqX6SUvNIuO0GQDezG1M6aCTxKw/4PF9g3qSeOhy+wnxbFf9+XT47w3D+87
+         jJbI03+lFQO8BxOUhZ9yX0NHL/On/SSGlZ7By8smE0kuVCkNklnBgey8vqzEbvkTl9RJ
+         L8jXdE24/XVC+Lzcvn2WuAgs4FKetyJrYYnB4fRQ+LAaOvD7iFb/JTHzLiixGfliUn6b
+         H2iWfsch4f7Xrz1T1z3k/M3v3GBpQq7/+VSQhJIsOwpt9Ek3W3hEZ8lf44afd2jpnP0v
+         UC1A==
+X-Gm-Message-State: ABy/qLa/BuoEb1Qsj6zhsFONpl4twKRFm6wgP5dWErQhoQVc2aFBBgMJ
+        1Nu0zW2PYUy+t3rmwhJZ9g==
+X-Google-Smtp-Source: APBJJlHfUJOPb77/ZakiHQ7/15o5r47CcF5ODwjLT23eGq28ZdiCY+FAsp/pZrrMo8lGwTb9HK1bew==
+X-Received: by 2002:a5e:c602:0:b0:787:147b:b54f with SMTP id f2-20020a5ec602000000b00787147bb54fmr2243528iok.3.1689351625671;
+        Fri, 14 Jul 2023 09:20:25 -0700 (PDT)
+Received: from robh_at_kernel.org ([64.188.179.250])
+        by smtp.gmail.com with ESMTPSA id h2-20020a6bfb02000000b0078680780694sm2744063iog.34.2023.07.14.09.20.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Jul 2023 09:20:25 -0700 (PDT)
+Received: (nullmailer pid 3945795 invoked by uid 1000);
+        Fri, 14 Jul 2023 16:20:23 -0000
+Date:   Fri, 14 Jul 2023 10:20:23 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Richard Weinberger <richard@nod.at>,
+        linux-mtd@lists.infradead.org,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] dt-bindings: mtd: Add SEAMA partition bindings
+Message-ID: <168935162277.3945742.14750868917438308947.robh@kernel.org>
+References: <20230713-seama-partitions-v4-0-69e577453d40@linaro.org>
+ <20230713-seama-partitions-v4-1-69e577453d40@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230713-seama-partitions-v4-1-69e577453d40@linaro.org>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,32 +74,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Define an arch-specific override of arch_wants_pte_order() so that when
-FLEXIBLE_THP is enabled, large folios will be allocated for anonymous
-memory with an order that is compatible with arm64's contpte mappings.
 
-Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
----
- arch/arm64/include/asm/pgtable.h | 6 ++++++
- 1 file changed, 6 insertions(+)
+On Thu, 13 Jul 2023 00:16:41 +0200, Linus Walleij wrote:
+> This types of NAND partitions appear in OpenWrt and
+> U-Boot.
+> 
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> ---
+> ChangeLog v3->v4:
+> - Drop false flagged cells etc.
+> ChangeLog v2->v3:
+> - Drop reference from partitions.yaml again
+> - Drop select: false
+> - Use unevaluatedProperties
+> ChangeLog v1->v2:
+> - Fix up the binding to be childless
+> ---
+>  .../devicetree/bindings/mtd/partitions/seama.yaml  | 44 ++++++++++++++++++++++
+>  1 file changed, 44 insertions(+)
+> 
 
-diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-index 0bd18de9fd97..d00bb26fe28f 100644
---- a/arch/arm64/include/asm/pgtable.h
-+++ b/arch/arm64/include/asm/pgtable.h
-@@ -1106,6 +1106,12 @@ extern pte_t ptep_modify_prot_start(struct vm_area_struct *vma,
- extern void ptep_modify_prot_commit(struct vm_area_struct *vma,
- 				    unsigned long addr, pte_t *ptep,
- 				    pte_t old_pte, pte_t new_pte);
-+
-+#define arch_wants_pte_order arch_wants_pte_order
-+static inline int arch_wants_pte_order(void)
-+{
-+	return CONT_PTE_SHIFT - PAGE_SHIFT;
-+}
- #endif /* !__ASSEMBLY__ */
- 
- #endif /* __ASM_PGTABLE_H */
--- 
-2.25.1
+Reviewed-by: Rob Herring <robh@kernel.org>
 
