@@ -2,89 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CB9B7542D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 20:50:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B84637542D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 20:51:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236538AbjGNSuc convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 14 Jul 2023 14:50:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54312 "EHLO
+        id S236121AbjGNSvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 14:51:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236091AbjGNSu3 (ORCPT
+        with ESMTP id S230149AbjGNSvd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 14:50:29 -0400
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 865F22D6B;
-        Fri, 14 Jul 2023 11:50:28 -0700 (PDT)
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-98273ae42d0so66269466b.0;
-        Fri, 14 Jul 2023 11:50:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689360627; x=1691952627;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=adQmepUMEILo4i9YF6QGGhgy8BgLhz/J2d2M4gDP5H0=;
-        b=Wa2KNQWkzjGRfhd+bH171bIF5pH4w/k+zzwqqSLZQ0dYv5Ktb8iIFtiBBTLNZSkoRc
-         DNZKnzlladKQQwjjcS/7tnle1GDejlqCWmo/x8zr6GEwwn161KNtou5K+GWxP6kKBjbf
-         MAW835FrbUhlqmhOgiuNTs6MUZkeudMZveDisG/NLutriOmuUJYy4qB654mAg5l05KwE
-         HZu+jbk6LU/vTigPIwWhdk0V/FIbjRQ3gyItU7HZmXfmqIjAEfDmMDNEpES3B1hON8Ic
-         2ml+TKtUyITiBe4PgHZOSA509hgcvuEKmRWbkSUsfR6Q0sQCgBV0Qxu1uTql+bUitPOw
-         oALw==
-X-Gm-Message-State: ABy/qLZNuleYq67THuHJCeaPlapNRC1zoqV/kTlPely1SP69mp1FjkXy
-        qvzLf/2B4IQbfApCgqw/0Bvh0qS4PSEWtZ3eoNOAD0pY
-X-Google-Smtp-Source: APBJJlG+fOXTah1oUMq+Er4XcRfzAi8ABmvH8xenkIVLFs3e2oUYV7T4xQkMcf8QXZqk9t9h6g2wv0AitEG8JwET4PM=
-X-Received: by 2002:a17:906:778e:b0:988:3171:df06 with SMTP id
- s14-20020a170906778e00b009883171df06mr62199ejm.2.1689360626755; Fri, 14 Jul
- 2023 11:50:26 -0700 (PDT)
+        Fri, 14 Jul 2023 14:51:33 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB0B62D6B;
+        Fri, 14 Jul 2023 11:51:32 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6642A61CEA;
+        Fri, 14 Jul 2023 18:51:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC148C433C7;
+        Fri, 14 Jul 2023 18:51:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689360691;
+        bh=75P5bsMunT6wijRx+XHlIke36CUI4vRQg315QeNciy8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Bx45JmWpw3YldzFhH5s6ix/Rdr46B/eBj7iAH367RmnbohY7JRDobL8hUeX0QE1KN
+         KNP8spldtJRSz8iF7X2sx3IpZXAtOuMwpXe6cmm0R8FTLs99BcFRtDiu4a1dMwzzLo
+         0wwTu1ijAw70sv/lB3BPPty4yS+6fWjN9lQWKZ8OH7+sVQBwRhS5spTQqbBqXVWM0B
+         0jNrwkOGIRmXsfODczggwzths92xZqqUHA7a923G0fvVHcC1fBJZdTcpW4CgmnZn07
+         bT8F4SfYnJFfPOSUdOZ8xVJYOmPs59277wdk6MPsw4y1bk5rozKtOBx25BjfthBx6e
+         NKlSMBMPJCc3Q==
+Date:   Fri, 14 Jul 2023 19:51:27 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Subject: Re: [PATCH] soc: microchip: Explicitly include correct DT includes
+Message-ID: <20230714-handcart-batting-e805e7567231@spud>
+References: <20230714175139.4067685-1-robh@kernel.org>
 MIME-Version: 1.0
-References: <20230714110051.4575ffbe@canb.auug.org.au> <71f62e49-3f2f-a8bf-2347-061902d39f7e@intel.com>
-In-Reply-To: <71f62e49-3f2f-a8bf-2347-061902d39f7e@intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 14 Jul 2023 20:50:15 +0200
-Message-ID: <CAJZ5v0iLuGSHkJjhhtxveD-0N0rp+vOg=Qwz5DvdqhXHghetJw@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the pm tree
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        linux-pm@vger.kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="jizOvC+TdPQbkhjW"
+Content-Disposition: inline
+In-Reply-To: <20230714175139.4067685-1-robh@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 8:20 PM Wysocki, Rafael J
-<rafael.j.wysocki@intel.com> wrote:
->
-> Daniel,
->
-> On 7/14/2023 3:00 AM, Stephen Rothwell wrote:
-> > Hi all,
-> >
-> > After merging the pm tree, today's linux-next build (x86_64
-> > allmodconfig) failed like this:
-> >
-> > In file included from drivers/thermal/tegra/soctherm.c:36:
-> > drivers/thermal/tegra/../thermal_core.h:18:2: error: #warning This header can only be included by the thermal core code [-Werror-cpp]
-> >     18 | #warning This header can only be included by the thermal core code
-> >        |  ^~~~~~~
-> >
-> > Introduced by commit
-> >
-> >    bc1bb350b534 ("thermal/core: Hardening the self-encapsulation")
->
-> I'll drop this patch.  I think that the rest of the series doesn't
-> really depend on it.
 
-The second patch in the series does depend on it, so I had to drop
-them both.  Please fix and resend.
+--jizOvC+TdPQbkhjW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks!
+On Fri, Jul 14, 2023 at 11:51:38AM -0600, Rob Herring wrote:
+> The DT of_device.h and of_platform.h date back to the separate
+> of_platform_bus_type before it as merged into the regular platform bus.
+> As part of that merge prepping Arm DT support 13 years ago, they
+> "temporarily" include each other. They also include platform_device.h
+> and of.h. As a result, there's a pretty much random mix of those include
+> files used throughout the tree. In order to detangle these headers and
+> replace the implicit includes with struct declarations, users need to
+> explicitly include the correct includes.
+>=20
+> Signed-off-by: Rob Herring <robh@kernel.org>
+
+Hmm, usually these go to different places. I'll push them both to the
+at91 repo.
+
+> ---
+>  drivers/soc/atmel/sfr.c                     | 1 -
+>  drivers/soc/microchip/mpfs-sys-controller.c | 2 +-
+>  2 files changed, 1 insertion(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/soc/atmel/sfr.c b/drivers/soc/atmel/sfr.c
+> index 0525eef49d1a..cc94ca1b494c 100644
+> --- a/drivers/soc/atmel/sfr.c
+> +++ b/drivers/soc/atmel/sfr.c
+> @@ -10,7 +10,6 @@
+>  #include <linux/nvmem-provider.h>
+>  #include <linux/random.h>
+>  #include <linux/of.h>
+> -#include <linux/of_device.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/regmap.h>
+> =20
+> diff --git a/drivers/soc/microchip/mpfs-sys-controller.c b/drivers/soc/mi=
+crochip/mpfs-sys-controller.c
+> index 216d9f4ea0ce..fbcd5fd24d7c 100644
+> --- a/drivers/soc/microchip/mpfs-sys-controller.c
+> +++ b/drivers/soc/microchip/mpfs-sys-controller.c
+> @@ -13,7 +13,7 @@
+>  #include <linux/module.h>
+>  #include <linux/jiffies.h>
+>  #include <linux/interrupt.h>
+> -#include <linux/of_platform.h>
+> +#include <linux/of.h>
+>  #include <linux/mailbox_client.h>
+>  #include <linux/platform_device.h>
+>  #include <soc/microchip/mpfs.h>
+> --=20
+> 2.40.1
+>=20
+>=20
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+
+--jizOvC+TdPQbkhjW
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZLGZLwAKCRB4tDGHoIJi
+0jrYAQDw7C52D/rlhw9ADfh3Tidha+PsWlRE8UAzBK5ZyW8ZfAD+M+zjTm+uTux4
+jG/xdu1L8A0cXPKX4J+cAJDgImqV5Aw=
+=jETL
+-----END PGP SIGNATURE-----
+
+--jizOvC+TdPQbkhjW--
