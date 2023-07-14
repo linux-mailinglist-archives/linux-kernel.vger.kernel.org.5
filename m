@@ -2,251 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E90F2753F0B
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 17:35:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A28C753F11
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 17:36:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236233AbjGNPfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 11:35:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55938 "EHLO
+        id S236411AbjGNPgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 11:36:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236408AbjGNPfY (ORCPT
+        with ESMTP id S236016AbjGNPgd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 11:35:24 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D966B3A8E;
-        Fri, 14 Jul 2023 08:35:12 -0700 (PDT)
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36EFMZLs012619;
-        Fri, 14 Jul 2023 15:35:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=ulu5vJbACvbiSK46ko2yUJA6DNl8Z+GY2OmXOKSupq0=;
- b=jaZH2lNGYV2tcInAEhA1Pm7nnEwBDz5nM2uK2uAoNR8oUP9HIUg+VwTaUjJ6MtL5IqHn
- dFxBQ2HyccguC+VHz2SJSIkIZXIbD9dbKYc1GWY+ddMoLqDN496TWO5N+FBhthFDmn8g
- SRFJXenNrncdHYXTm9a7mA9XbcL8rrvGc9CyjWmOGzfW9XpcNZP8qtpd4zAnTFc4q1Q0
- 5nazqsWhuTJyZ3j8jJCfCWLey4iSHduFUv2eiVA1041eulnHB0z6gAatOmsCOLU23w1i
- lLRHQNznjcbJHoXwrc1zp6ngYH8y89ETajSdVtrWfHvHRqV9TcJ1Elp6+xsJrOZFu/tW NQ== 
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ru8xx89h6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 14 Jul 2023 15:35:01 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36EDO0Vf007362;
-        Fri, 14 Jul 2023 15:34:59 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3rtpvs217b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 14 Jul 2023 15:34:59 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36EFYuDq17433334
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 14 Jul 2023 15:34:56 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6E1D72004B;
-        Fri, 14 Jul 2023 15:34:56 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4185E20040;
-        Fri, 14 Jul 2023 15:34:54 +0000 (GMT)
-Received: from li-4b5937cc-25c4-11b2-a85c-cea3a66903e4.ibm.com (unknown [9.61.52.39])
-        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Fri, 14 Jul 2023 15:34:54 +0000 (GMT)
-From:   Nayna Jain <nayna@linux.ibm.com>
-To:     linux-integrity@vger.kernel.org
-Cc:     Mimi Zohar <zohar@linux.ibm.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Eric Snowberg <eric.snowberg@oracle.com>,
-        Paul Moore <paul@paul-moore.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Nayna Jain <nayna@linux.ibm.com>
-Subject: [PATCH 6/6] integrity: PowerVM support for loading third party code signing keys
-Date:   Fri, 14 Jul 2023 11:34:35 -0400
-Message-Id: <20230714153435.28155-7-nayna@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20230714153435.28155-1-nayna@linux.ibm.com>
-References: <20230714153435.28155-1-nayna@linux.ibm.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: HwOzgwTify1fGTbAt7-M_LdjlMbR_BHa
-X-Proofpoint-GUID: HwOzgwTify1fGTbAt7-M_LdjlMbR_BHa
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-14_06,2023-07-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
- mlxlogscore=999 suspectscore=0 spamscore=0 clxscore=1015
- priorityscore=1501 adultscore=0 malwarescore=0 lowpriorityscore=0
- impostorscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2306200000 definitions=main-2307140141
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 14 Jul 2023 11:36:33 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83AC13C3C;
+        Fri, 14 Jul 2023 08:36:11 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-66767d628e2so1378476b3a.2;
+        Fri, 14 Jul 2023 08:36:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689348970; x=1691940970;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Fpz2cT1U0dIEg2tdq492uCXBZjuIPKBmJ/ufwC84Axw=;
+        b=D/MfzZQPzXbyphdVAKY+n1yWRwuQBRtRNDXrr/lrTlscIlsD3cpJGt0YHN/DTsDwop
+         aHXpVEcS5UOsrDjKvepVBobvquuwQJHfNPs0W6FkPS3cS/NXfuBNF/tGxE2RBZEpkWrG
+         RfcZVCJuOY0kpS/HrHB62kFzA7JYOWcGEqUwS7HUEDPA4DWUs1pPeoD7Hjguapt0OCZs
+         psIQWo9LHX3hw1fcbvsRwyuIrHPfmTrRp0fA/3vgJ+0FBUhlexlVRsOrWfA7+NrHOT5g
+         Wvh07epPduxmWURcEqg7KsQp/Pk7d01yPbIvpEY6soFffGaKrg9kgJySGYrcP5LQaMKm
+         ZglQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689348970; x=1691940970;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Fpz2cT1U0dIEg2tdq492uCXBZjuIPKBmJ/ufwC84Axw=;
+        b=DRq/BeFGOY7o+7mYNC3l9d3EMyMzcYtxBAqM0JQCa3BuoJdWHYOfB+6GjQ4QuJq2OA
+         fXknwXWSJaQSjZYQWW9YmLVp30jxl+w/Yi2/efocIsaK4q2CFXja6K1f4xMo3MpmShTr
+         eIkdNBfRN6i46F4lL9U8zIEotKRr+YhqQjrtQGLet0wRuNcevFM8Ans4pZWOUz3U43JI
+         pSTkadRNupGy7ZwkkAxCnCykvdEUsXuby8OqUnCco82yoCm1HOPc8aJJ9Jaq6r5of5ZP
+         mOrOiAD0y8CpHfpm+I2Goo7LFvRLG6dNIqnSFVHxKMRSkjCktCjY+GmNgz5riAZ4RX+X
+         0zFQ==
+X-Gm-Message-State: ABy/qLYY+kEaBMgNgyeqcgp4hpMVcCcmn6xy7fwcmzBMNgpZhUwR92nM
+        cLzGtdF6+dMzwghE7ABl/Rs=
+X-Google-Smtp-Source: APBJJlHBJdkxDW050IMIR4XLuEleCEyFXsRGr4qAiwb/yUkzTuJWrCEAfmfUXn76DOtOmGxcYD5KSw==
+X-Received: by 2002:a05:6a20:144b:b0:12d:e596:df21 with SMTP id a11-20020a056a20144b00b0012de596df21mr4329858pzi.7.1689348970485;
+        Fri, 14 Jul 2023 08:36:10 -0700 (PDT)
+Received: from smtpclient.apple ([2402:d0c0:2:a2a::1])
+        by smtp.gmail.com with ESMTPSA id e26-20020a62aa1a000000b006749c22d079sm7248937pff.167.2023.07.14.08.35.54
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 14 Jul 2023 08:36:10 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.400.51.1.1\))
+Subject: Re: [PATCH v1] rcu: Fix and improve RCU read lock checks when
+ !CONFIG_DEBUG_LOCK_ALLOC
+From:   Alan Huang <mmpgouride@gmail.com>
+In-Reply-To: <7d433fac-a62d-4e81-b8e5-57cf5f2d1d55@paulmck-laptop>
+Date:   Fri, 14 Jul 2023 23:35:41 +0800
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        Gao Xiang <hsiangkao@linux.alibaba.com>,
+        Sandeep Dhavale <dhavale@google.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-erofs@lists.ozlabs.org, xiang@kernel.org,
+        Will Shiu <Will.Shiu@mediatek.com>, kernel-team@android.com,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <F160D7F8-57DC-4986-90A9-EB50F7C89891@gmail.com>
+References: <20230713003201.GA469376@google.com>
+ <161f1615-3d85-cf47-d2d5-695adf1ca7d4@linux.alibaba.com>
+ <0d9e7b4d-6477-47a6-b3d2-2c9d9b64903d@paulmck-laptop>
+ <f124e041-6a82-2069-975c-4f393e5c4137@linux.alibaba.com>
+ <87292a44-cc02-4d95-940e-e4e31d0bc6f2@paulmck-laptop>
+ <f1c60dcb-e32f-7b7e-bf0d-5dec999e9299@linux.alibaba.com>
+ <CAEXW_YSODXRfgkR0D2G-x=0uZdsqvF3kZL+LL3DcRX-5CULJ1Q@mail.gmail.com>
+ <894a3b64-a369-7bc6-c8a8-0910843cc587@linux.alibaba.com>
+ <CAEXW_YSM1yik4yWTgZoxCS9RM6TbsL26VCVCH=41+uMA8chfAQ@mail.gmail.com>
+ <58b661d0-0ebb-4b45-a10d-c5927fb791cd@paulmck-laptop>
+ <7d433fac-a62d-4e81-b8e5-57cf5f2d1d55@paulmck-laptop>
+To:     paulmck@kernel.org
+X-Mailer: Apple Mail (2.3731.400.51.1.1)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On secure boot enabled PowerVM LPAR, third party code signing keys are
-needed during early boot to verify signed third party modules. These
-third party keys are stored in moduledb object in the Platform
-KeyStore(PKS).
 
-Load third party code signing keys onto .secondary_trusted_keys keyring.
+> 2023=E5=B9=B47=E6=9C=8814=E6=97=A5 10:16=EF=BC=8CPaul E. McKenney =
+<paulmck@kernel.org> =E5=86=99=E9=81=93=EF=BC=9A
+>=20
+> On Thu, Jul 13, 2023 at 09:33:35AM -0700, Paul E. McKenney wrote:
+>> On Thu, Jul 13, 2023 at 11:33:24AM -0400, Joel Fernandes wrote:
+>>> On Thu, Jul 13, 2023 at 10:34=E2=80=AFAM Gao Xiang =
+<hsiangkao@linux.alibaba.com> wrote:
+>>>> On 2023/7/13 22:07, Joel Fernandes wrote:
+>>>>> On Thu, Jul 13, 2023 at 12:59=E2=80=AFAM Gao Xiang =
+<hsiangkao@linux.alibaba.com> wrote:
+>>>>>> On 2023/7/13 12:52, Paul E. McKenney wrote:
+>>>>>>> On Thu, Jul 13, 2023 at 12:41:09PM +0800, Gao Xiang wrote:
+>>>>>>=20
+>>>>>> ...
+>>>>>>=20
+>>>>>>>>=20
+>>>>>>>> There are lots of performance issues here and even a plumber
+>>>>>>>> topic last year to show that, see:
+>>>>>>>>=20
+>>>>>>>> [1] =
+https://lore.kernel.org/r/20230519001709.2563-1-tj@kernel.org
+>>>>>>>> [2] =
+https://lore.kernel.org/r/CAHk-=3DwgE9kORADrDJ4nEsHHLirqPCZ1tGaEPAZejHdZ03=
+qCOGg@mail.gmail.com
+>>>>>>>> [3] =
+https://lore.kernel.org/r/CAB=3DBE-SBtO6vcoyLNA9F-9VaN5R0t3o_Zn+FW8GbO6wyU=
+qFneQ@mail.gmail.com
+>>>>>>>> [4] https://lpc.events/event/16/contributions/1338/
+>>>>>>>> and more.
+>>>>>>>>=20
+>>>>>>>> I'm not sure if it's necessary to look info all of that,
+>>>>>>>> andSandeep knows more than I am (the scheduling issue
+>>>>>>>> becomes vital on some aarch64 platform.)
+>>>>>>>=20
+>>>>>>> Hmmm...  Please let me try again.
+>>>>>>>=20
+>>>>>>> Assuming that this approach turns out to make sense, the =
+resulting
+>>>>>>> patch will need to clearly state the performance benefits =
+directly in
+>>>>>>> the commit log.
+>>>>>>>=20
+>>>>>>> And of course, for the approach to make sense, it must avoid =
+breaking
+>>>>>>> the existing lockdep-RCU debugging code.
+>>>>>>>=20
+>>>>>>> Is that more clear?
+>>>>>>=20
+>>>>>> Personally I'm not working on Android platform any more so I =
+don't
+>>>>>> have a way to reproduce, hopefully Sandeep could give actually
+>>>>>> number _again_ if dm-verity is enabled and trigger another
+>>>>>> workqueue here and make a comparsion why the scheduling latency =
+of
+>>>>>> the extra work becomes unacceptable.
+>>>>>>=20
+>>>>>=20
+>>>>> Question from my side, are we talking about only performance =
+issues or
+>>>>> also a crash? It appears z_erofs_decompress_pcluster() takes
+>>>>> mutex_lock(&pcl->lock);
+>>>>>=20
+>>>>> So if it is either in an RCU read-side critical section or in an
+>>>>> atomic section, like the softirq path, then it may
+>>>>> schedule-while-atomic or trigger RCU warnings.
+>>>>>=20
+>>>>> z_erofs_decompressqueue_endio
+>>>>> -> z_erofs_decompress_kickoff
+>>>>>  ->z_erofs_decompressqueue_work
+>>>>>   ->z_erofs_decompress_queue
+>>>>>    -> z_erofs_decompress_pcluster
+>>>>>     -> mutex_lock
+>>>>>=20
+>>>>=20
+>>>> Why does the softirq path not trigger a workqueue instead?
+>>>=20
+>>> I said "if it is". I was giving a scenario. mutex_lock() is not
+>>> allowed in softirq context or in an RCU-reader.
+>>>=20
+>>>>> Per Sandeep in [1], this stack happens under RCU read-lock in:
+>>>>>=20
+>>>>> #define __blk_mq_run_dispatch_ops(q, check_sleep, dispatch_ops) \
+>>>>> [...]
+>>>>>                 rcu_read_lock();
+>>>>>                 (dispatch_ops);
+>>>>>                 rcu_read_unlock();
+>>>>> [...]
+>>>>>=20
+>>>>> Coming from:
+>>>>> blk_mq_flush_plug_list ->
+>>>>>                            blk_mq_run_dispatch_ops(q,
+>>>>>                                 __blk_mq_flush_plug_list(q, =
+plug));
+>>>>>=20
+>>>>> and __blk_mq_flush_plug_list does this:
+>>>>>           q->mq_ops->queue_rqs(&plug->mq_list);
+>>>>>=20
+>>>>> This somehow ends up calling the bio_endio and the
+>>>>> z_erofs_decompressqueue_endio which grabs the mutex.
+>>>>>=20
+>>>>> So... I have a question, it looks like one of the paths in
+>>>>> __blk_mq_run_dispatch_ops() uses SRCU.  Where are as the alternate
+>>>>> path uses RCU. Why does this alternate want to block even if it is =
+not
+>>>>> supposed to? Is the real issue here that the BLK_MQ_F_BLOCKING =
+should
+>>>>> be set? It sounds like you want to block in the "else" path even
+>>>>> though BLK_MQ_F_BLOCKING is not set:
+>>>>=20
+>>>> BLK_MQ_F_BLOCKING is not a flag that a filesystem can do anything =
+with.
+>>>> That is block layer and mq device driver stuffs. filesystems cannot =
+set
+>>>> this value.
+>>>>=20
+>>>> As I said, as far as I understand, previously,
+>>>> .end_io() can only be called without RCU context, so it will be =
+fine,
+>>>> but I don't know when .end_io() can be called under some RCU =
+context
+>>>> now.
+>>>=20
+>>>> =46rom what Sandeep described, the code path is in an RCU reader. =
+My
+>>> question is more, why doesn't it use SRCU instead since it clearly
+>>> does so if BLK_MQ_F_BLOCKING. What are the tradeoffs? IMHO, a deeper
+>>> dive needs to be made into that before concluding that the fix is to
+>>> use rcu_read_lock_any_held().
+>>=20
+>> How can this be solved?
+>>=20
+>> 1. Always use a workqueue.  Simple, but is said to have performance
+>> issues.
+>>=20
+>> 2. Pass a flag in that indicates whether or not the caller is in an
+>> RCU read-side critical section.  Conceptually simple, but might
+>> or might not be reasonable to actually implement in the code as
+>> it exists now. (You tell me!)
+>>=20
+>> 3. Create a function in z_erofs that gives you a decent
+>> approximation, maybe something like the following.
+>>=20
+>> 4. Other ideas here.
+>=20
+> 5. #3 plus make the corresponding Kconfig option select
+> PREEMPT_COUNT, assuming that any users needing compression in
+> non-preemptible kernels are OK with PREEMPT_COUNT being set.
+> (Some users of non-preemptible kernels object strenuously
+> to the added overhead from CONFIG_PREEMPT_COUNT=3Dy.)
 
-Signed-off-by: Nayna Jain <nayna@linux.ibm.com>
----
-Jarkko, this patch is based on Linus master tree branch, which does
-not contain the following commits yet:
+6. Set one bit in bio->bi_private, check the bit and flip it in =
+rcu_read_lock() path,
+then in z_erofs_decompressqueue_endio, check if the bit has changed.
 
-c9d004712300 integrity: Enforce digitalSignature usage in the ima and
-evm keyrings
-59b656eb58fe KEYS: DigitalSignature link restriction
+Not sure if this is feasible or acceptable. :)
 
- certs/system_keyring.c                        | 22 +++++++++++++++++++
- include/keys/system_keyring.h                 |  8 +++++++
- security/integrity/integrity.h                |  1 +
- .../platform_certs/keyring_handler.c          |  8 +++++++
- .../platform_certs/keyring_handler.h          |  5 +++++
- .../integrity/platform_certs/load_powerpc.c   | 18 ++++++++++++++-
- 6 files changed, 61 insertions(+), 1 deletion(-)
+>=20
+> Thanx, Paul
+>=20
+>> The following is untested, and is probably quite buggy, but it should
+>> provide you with a starting point.
+>>=20
+>> static bool z_erofs_wq_needed(void)
+>> {
+>> if (IS_ENABLED(CONFIG_PREEMPTION) && rcu_preempt_depth())
+>> return true;  // RCU reader
+>> if (IS_ENABLED(CONFIG_PREEMPT_COUNT) && !preemptible())
+>> return true;  // non-preemptible
+>> if (!IS_ENABLED(CONFIG_PREEMPT_COUNT))
+>> return true;  // non-preeemptible kernel, so play it safe
+>> return false;
+>> }
+>>=20
+>> You break it, you buy it!  ;-)
+>>=20
+>> Thanx, Paul
 
-diff --git a/certs/system_keyring.c b/certs/system_keyring.c
-index a7a49b17ceb1..b0235732c1d4 100644
---- a/certs/system_keyring.c
-+++ b/certs/system_keyring.c
-@@ -347,3 +347,25 @@ void __init set_platform_trusted_keys(struct key *keyring)
- 	platform_trusted_keys = keyring;
- }
- #endif
-+
-+void __init add_to_secondary_keyring(const char *source, const void *data,
-+				     size_t len)
-+{
-+	key_ref_t key;
-+	key_perm_t perm;
-+	int rc = 0;
-+
-+	perm = (KEY_POS_ALL & ~KEY_POS_SETATTR) | KEY_USR_VIEW;
-+
-+	key = key_create_or_update(make_key_ref(secondary_trusted_keys, 1), "asymmetric",
-+				   NULL, data, len, perm,
-+				   KEY_ALLOC_NOT_IN_QUOTA);
-+	if (IS_ERR(key)) {
-+		rc = PTR_ERR(key);
-+		pr_err("Problem loading X.509 certificate %d\n", rc);
-+	} else {
-+		pr_notice("Loaded X.509 cert '%s'\n",
-+			  key_ref_to_ptr(key)->description);
-+		key_ref_put(key);
-+	}
-+}
-diff --git a/include/keys/system_keyring.h b/include/keys/system_keyring.h
-index 91e080efb918..a57a77ccf003 100644
---- a/include/keys/system_keyring.h
-+++ b/include/keys/system_keyring.h
-@@ -41,8 +41,16 @@ extern int restrict_link_by_builtin_and_secondary_trusted(
- 	const struct key_type *type,
- 	const union key_payload *payload,
- 	struct key *restriction_key);
-+
-+void __init add_to_secondary_keyring(const char *source, const void *data,
-+				     size_t len);
-+
- #else
- #define restrict_link_by_builtin_and_secondary_trusted restrict_link_by_builtin_trusted
-+void __init add_to_secondary_keyring(const char *source, const void *data,
-+				     size_t len)
-+{
-+}
- #endif
- 
- #ifdef CONFIG_INTEGRITY_MACHINE_KEYRING
-diff --git a/security/integrity/integrity.h b/security/integrity/integrity.h
-index d7553c93f5c0..efaa2eb789ad 100644
---- a/security/integrity/integrity.h
-+++ b/security/integrity/integrity.h
-@@ -228,6 +228,7 @@ static inline int __init integrity_load_cert(const unsigned int id,
- {
- 	return 0;
- }
-+
- #endif /* CONFIG_INTEGRITY_SIGNATURE */
- 
- #ifdef CONFIG_INTEGRITY_ASYMMETRIC_KEYS
-diff --git a/security/integrity/platform_certs/keyring_handler.c b/security/integrity/platform_certs/keyring_handler.c
-index b3e5df136e50..6095df043498 100644
---- a/security/integrity/platform_certs/keyring_handler.c
-+++ b/security/integrity/platform_certs/keyring_handler.c
-@@ -77,6 +77,14 @@ __init efi_element_handler_t get_handler_for_ca_keys(const efi_guid_t *sig_type)
- 	return NULL;
- }
- 
-+__init efi_element_handler_t get_handler_for_code_signing_keys(const efi_guid_t *sig_type)
-+{
-+	if (efi_guidcmp(*sig_type, efi_cert_x509_guid) == 0)
-+		return add_to_secondary_keyring;
-+
-+	return NULL;
-+}
-+
- /*
-  * Return the appropriate handler for particular signature list types found in
-  * the UEFI dbx and MokListXRT tables.
-diff --git a/security/integrity/platform_certs/keyring_handler.h b/security/integrity/platform_certs/keyring_handler.h
-index 6f15bb4cc8dc..f92895cc50f6 100644
---- a/security/integrity/platform_certs/keyring_handler.h
-+++ b/security/integrity/platform_certs/keyring_handler.h
-@@ -34,6 +34,11 @@ efi_element_handler_t get_handler_for_mok(const efi_guid_t *sig_type);
-  */
- efi_element_handler_t get_handler_for_ca_keys(const efi_guid_t *sig_type);
- 
-+/*
-+ * Return the handler for particular signature list types for code signing keys.
-+ */
-+efi_element_handler_t get_handler_for_code_signing_keys(const efi_guid_t *sig_type);
-+
- /*
-  * Return the handler for particular signature list types found in the dbx.
-  */
-diff --git a/security/integrity/platform_certs/load_powerpc.c b/security/integrity/platform_certs/load_powerpc.c
-index 6263ce3b3f1e..32c4e5fbf0fb 100644
---- a/security/integrity/platform_certs/load_powerpc.c
-+++ b/security/integrity/platform_certs/load_powerpc.c
-@@ -59,7 +59,7 @@ static __init void *get_cert_list(u8 *key, unsigned long keylen, u64 *size)
- static int __init load_powerpc_certs(void)
- {
- 	void *db = NULL, *dbx = NULL, *data = NULL;
--	void *trustedca = NULL;
-+	void *trustedca = NULL, *moduledb = NULL;
- 	u64 dsize = 0;
- 	u64 offset = 0;
- 	int rc = 0;
-@@ -137,6 +137,22 @@ static int __init load_powerpc_certs(void)
- 		kfree(data);
- 	}
- 
-+	data = get_cert_list("moduledb", 9,  &dsize);
-+	if (!data) {
-+		pr_info("Couldn't get moduledb list from firmware\n");
-+	} else if (IS_ERR(data)) {
-+		rc = PTR_ERR(data);
-+		pr_err("Error reading moduledb from firmware: %d\n", rc);
-+	} else {
-+		extract_esl(moduledb, data, dsize, offset);
-+
-+		rc = parse_efi_signature_list("powerpc:moduledb", moduledb, dsize,
-+					      get_handler_for_code_signing_keys);
-+		if (rc)
-+			pr_err("Couldn't parse moduledb signatures: %d\n", rc);
-+		kfree(data);
-+	}
-+
- 	return rc;
- }
- late_initcall(load_powerpc_certs);
--- 
-2.31.1
 
