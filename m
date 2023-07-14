@@ -2,91 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F2D87544F0
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 00:27:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BCF47544F2
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 00:29:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230061AbjGNW1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 18:27:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59358 "EHLO
+        id S229914AbjGNW3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 18:29:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjGNW1c (ORCPT
+        with ESMTP id S229437AbjGNW3A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 18:27:32 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A5C22D48;
-        Fri, 14 Jul 2023 15:27:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
-        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
-        In-Reply-To:References; bh=GtEHO/Q5Yft3ebwH0TleGwrRN8mzf3QmoyzqWl6nYKM=; b=ym
-        o0JOGxQh+RWTLHKKBgk/FszLD0slJ+4eMe5bujgGYhxet/rTB0QEnkKhFckrzTXcLLQy/EWlW282S
-        Pxv5vXxwqKWIaBXMVsIeVOv78ReLBmgF8ekOB6tFU10kGvJRHRsjm/ow9MSjMRVd7KlBtNrfMzoNm
-        uWQO8Nvn6SoKznw=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qKRFw-001OX4-2q; Sat, 15 Jul 2023 00:27:20 +0200
-Date:   Sat, 15 Jul 2023 00:27:20 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Alexandru Ardelean <alex@shruggie.ro>
-Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        olteanv@gmail.com, marius.muresan@mxt.ro
-Subject: Re: [PATCH v2 1/2 net-next] net: phy: mscc: add support for CLKOUT
- ctrl reg for VSC8531 and similar
-Message-ID: <ab0ca942-5e84-4663-a0ed-689f023624b6@lunn.ch>
-References: <20230713202123.231445-1-alex@shruggie.ro>
- <cad1d05d-acdd-454b-a9f8-06262cf8495b@lunn.ch>
- <CAH3L5QrtFwTqqFKjPrMFCz4JgUWOFWFUJXpN71Gyprcd33A7hg@mail.gmail.com>
+        Fri, 14 Jul 2023 18:29:00 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6023A2D48
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 15:28:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=IH4aCn7uI47PWMEX6NV44WzFJn96ucP8E4Lo9lRw3Cc=; b=CHlw76PjliLPZuJwx1rhULQjRq
+        qZJo4tsd5E24AZDxsLjElyZOAph2RffbK4yoc+NPQC3HFOiLL/tDaXH58GwP7gITIGidOC2pvUUbJ
+        8ooOj2Q4SHKfaVewx3FgPBkN7e6dj0NZtJfiKVylg46mFTFMrIYUsC2ovB/qgxSqu6WVvIN60D/wv
+        p3nlSNtFG9CNQYPv8TKZhjlznYS/b3Q5eqOZ1VOHtBq6bVN8FyYljdat+Py0ob3sPqxjNwZ1p3BEl
+        0n0EPIMneqRKzb8sloQXVOaPxIUzWtluuHXojkrZXRSjPwwQWouhvIJZlKgBltFUeeRv8ufGBazXl
+        L9ENsS2w==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qKRHF-001Tij-3b; Fri, 14 Jul 2023 22:28:41 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D6C7C30007E;
+        Sat, 15 Jul 2023 00:28:39 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B0555245CA115; Sat, 15 Jul 2023 00:28:39 +0200 (CEST)
+Date:   Sat, 15 Jul 2023 00:28:39 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Arjan van de Ven <arjan@linux.intel.com>
+Cc:     "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
+        Bruno Goncalves <bgoncalv@redhat.com>, x86@kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [6.5.0-rc1] unchecked MSR access error: RDMSR from 0xe2 at rIP:
+ 0xffffffff87090227 (native_read_msr+0x7/0x40) (intel_idle_init_cstates_icpu)
+Message-ID: <20230714222839.GD3273303@hirez.programming.kicks-ass.net>
+References: <CA+QYu4qSBdhEgFURu+ouAf2d_JNPbZgCSUaxCLoGzMqDQOLWsQ@mail.gmail.com>
+ <20230711112421.GI3062772@hirez.programming.kicks-ass.net>
+ <CA+QYu4qzJgiiU1qsjtWb9OU3=C=hb_c-Ag5Y4c=Xp_ObfGH=hg@mail.gmail.com>
+ <20230711125557.GM3062772@hirez.programming.kicks-ass.net>
+ <20230711132553.GN3062772@hirez.programming.kicks-ass.net>
+ <0837a34c-f66e-aa04-d4a7-b032d3dbab7a@intel.com>
+ <20230714211021.GB3275140@hirez.programming.kicks-ass.net>
+ <ab419bb9-1065-5200-5b22-32f36b0426a8@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAH3L5QrtFwTqqFKjPrMFCz4JgUWOFWFUJXpN71Gyprcd33A7hg@mail.gmail.com>
+In-Reply-To: <ab419bb9-1065-5200-5b22-32f36b0426a8@linux.intel.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 09:09:14AM +0300, Alexandru Ardelean wrote:
-> On Thu, Jul 13, 2023 at 11:35 PM Andrew Lunn <andrew@lunn.ch> wrote:
-> >
-> > > +set_reg:
-> > > +     mutex_lock(&phydev->lock);
-> > > +     rc = phy_modify_paged(phydev, MSCC_PHY_PAGE_EXTENDED_GPIO,
-> > > +                           VSC8531_CLKOUT_CNTL, mask, set);
-> > > +     mutex_unlock(&phydev->lock);
-> >
-> > What is this mutex protecting?
+On Fri, Jul 14, 2023 at 02:45:21PM -0700, Arjan van de Ven wrote:
+> On 7/14/2023 2:10 PM, Peter Zijlstra wrote:
+> > On Tue, Jul 11, 2023 at 08:37:51PM +0200, Wysocki, Rafael J wrote:
+> > 
+> > > > Rafael, can we please just pull these patches and try again later?
+> > > 
+> > > I think you mean "revert"?
+> > 
+> > Yes, revert. The whole premise with the unparsable changelog that
+> > babbles about TLB invalidates without any performance data-so-ever
+> > should've been a red-flag.
+> > 
+> > That whole TLB angle is nonsense. We have paravirt TLB invalidation for
+> > this.
 > 
-> This was inspired by vsc85xx_edge_rate_cntl_set().
-> Which has the same format.
+> for kvm and hyperv. not for vmware etc.
 
-phy_modify_paged() locks the MDIO bus while it swaps the page, so
-nothing else can use it. That also protects the read/modify/write.
+And for everybody that does play ball, this will be a net negative by
+causing extra TLB invalidations :/
 
-Nothing is modifying phydev, so the lock is not needed for that
-either.
-
-> I'll re-test with this lock removed.
-> I may be misremembering (or maybe I did something silly at some
-> point), but there was a weird stack-trace warning before adding this
-> lock there.
-> This was with a 5.10.116 kernel version.
-
-This patch is for net-next, please test there.
-
-When testing for locking issues, and when doing development in
-general, it is a good idea to turn on CONFIG_PROVE_LOCKING and
-CONFIG_DEBUG_ATOMIC_SLEEP.
-
-	Andrew
