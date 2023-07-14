@@ -2,71 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DC6E7543B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 22:26:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD8DB7543B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 22:27:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236147AbjGNU0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 16:26:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57446 "EHLO
+        id S236477AbjGNU1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 16:27:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236158AbjGNU0n (ORCPT
+        with ESMTP id S235858AbjGNU1U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 16:26:43 -0400
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A6AF35A0;
-        Fri, 14 Jul 2023 13:26:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689366402; x=1720902402;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=hN1j+GFrFTi2sMdb0x6EvEauXOQiHe+xtthEmkTSYxI=;
-  b=bisEsH+RDsJv3bzPwySZf3SxqsJzyymVWfNewe80yQEgKrvhaMOUQSZw
-   +pQNIHO2r1xq4iJaB7fZ2m3tvYXCCWJqLP36rNudlfGwKXth4LfECZsxG
-   O2hutCfIaMR4nQob3CAE0PgR67Q4AHshG6KCdIsT88iZ7otFwCLOfVnQW
-   UREH6/xjlc9/eQdrB+szPx8c5YJcRXQotuawhYude4YWIqNFcZe0qPnfS
-   DK1Bo9zVmiMSfTkYn/bSgjKUIdajkP9VzGj9JKO8DVj3gmu7DFiUnPlFa
-   4RspIqvr3hGYB9/xgxWYjABYq+cEiYuT5r1237rMQDSe+91NgSGyE+N3Q
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10771"; a="363032479"
-X-IronPort-AV: E=Sophos;i="6.01,206,1684825200"; 
-   d="scan'208";a="363032479"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 13:26:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10771"; a="969152359"
-X-IronPort-AV: E=Sophos;i="6.01,206,1684825200"; 
-   d="scan'208";a="969152359"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.18.126])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 14 Jul 2023 13:26:39 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To:     jarkko@kernel.org, dave.hansen@linux.intel.com, tj@kernel.org,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
-        cgroups@vger.kernel.org, "Thomas Gleixner" <tglx@linutronix.de>,
-        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        "Haitao Huang" <haitao.huang@linux.intel.com>
-Cc:     kai.huang@intel.com, reinette.chatre@intel.com,
-        "Kristen Carlson Accardi" <kristen@linux.intel.com>,
-        zhiquan1.li@intel.com, seanjc@google.com, bagasdotme@gmail.com,
-        linux-doc@vger.kernel.org, zhanb@microsoft.com,
-        anakrish@microsoft.com, mikko.ylinen@linux.intel.com
-Subject: Re: [PATCH v3 22/28] Docs/x86/sgx: Add description for cgroup support
-References: <20230712230202.47929-1-haitao.huang@linux.intel.com>
- <20230712230202.47929-23-haitao.huang@linux.intel.com>
-Date:   Fri, 14 Jul 2023 15:26:38 -0500
+        Fri, 14 Jul 2023 16:27:20 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EADE1995;
+        Fri, 14 Jul 2023 13:27:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0D48C61DF0;
+        Fri, 14 Jul 2023 20:27:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE78AC433C7;
+        Fri, 14 Jul 2023 20:27:16 +0000 (UTC)
+Date:   Fri, 14 Jul 2023 16:27:14 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Ajay Kaher <akaher@vmware.com>
+Cc:     shuah@kernel.org, mhiramat@kernel.org, chinglinyu@google.com,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, lkp@intel.com,
+        namit@vmware.com, oe-lkp@lists.linux.dev, amakhalov@vmware.com,
+        er.ajay.kaher@gmail.com, srivatsa@csail.mit.edu, tkundu@vmware.com,
+        vsirnapalli@vmware.com
+Subject: Re: [PATCH v4 08/10] eventfs: Implement tracefs_inode_cache
+Message-ID: <20230714162714.2f33e884@gandalf.local.home>
+In-Reply-To: <1689248004-8158-9-git-send-email-akaher@vmware.com>
+References: <1689248004-8158-1-git-send-email-akaher@vmware.com>
+        <1689248004-8158-9-git-send-email-akaher@vmware.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-From:   "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.1729qobwwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <20230712230202.47929-23-haitao.huang@linux.intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -74,10 +51,108 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+I wonder if this should be patch 2?
+
+On Thu, 13 Jul 2023 17:03:22 +0530
+Ajay Kaher <akaher@vmware.com> wrote:
+
+> Creating tracefs_inode_cache which is a cache of tracefs_inode.
+
+Create a kmem cache of tracefs_inodes. To be more efficient, as there are
+lots of tracefs inodes, create its own cache. This also allows to see how
+many tracefs inodes have been created.
+
+> Adding helping functions:
+
+Add helper functions:
+
+> tracefs_alloc_inode()
+> tracefs_free_inode()
+> 
+
+-- Steve
+
+> Signed-off-by: Ajay Kaher <akaher@vmware.com>
+> Co-developed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> Tested-by: Ching-lin Yu <chinglinyu@google.com>
+> ---
+>  fs/tracefs/inode.c | 39 +++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 39 insertions(+)
+> 
+> diff --git a/fs/tracefs/inode.c b/fs/tracefs/inode.c
+> index 7dc692a5fee1..76820d3e97eb 100644
+> --- a/fs/tracefs/inode.c
+> +++ b/fs/tracefs/inode.c
+> @@ -21,13 +21,33 @@
+>  #include <linux/parser.h>
+>  #include <linux/magic.h>
+>  #include <linux/slab.h>
+> +#include "internal.h"
+>  
+>  #define TRACEFS_DEFAULT_MODE	0700
+> +static struct kmem_cache *tracefs_inode_cachep __ro_after_init;
+>  
+>  static struct vfsmount *tracefs_mount;
+>  static int tracefs_mount_count;
+>  static bool tracefs_registered;
+>  
+> +static struct inode *tracefs_alloc_inode(struct super_block *sb)
+> +{
+> +	struct tracefs_inode *ti;
 > +
-> +  misc.events
-> +	A read-write flat-keyed file which exists on non-root cgroups.
+> +	ti = kmem_cache_alloc(tracefs_inode_cachep, GFP_KERNEL);
+> +	if (!ti)
+> +		return NULL;
+> +
+> +	ti->flags = 0;
+> +
+> +	return &ti->vfs_inode;
+> +}
+> +
+> +static void tracefs_free_inode(struct inode *inode)
+> +{
+> +	kmem_cache_free(tracefs_inode_cachep, get_tracefs(inode));
+> +}
+> +
+>  static ssize_t default_read_file(struct file *file, char __user *buf,
+>  				 size_t count, loff_t *ppos)
+>  {
+> @@ -346,6 +366,9 @@ static int tracefs_show_options(struct seq_file *m, struct dentry *root)
+>  }
+>  
+>  static const struct super_operations tracefs_super_operations = {
+> +	.alloc_inode    = tracefs_alloc_inode,
+> +	.free_inode     = tracefs_free_inode,
+> +	.drop_inode     = generic_delete_inode,
+>  	.statfs		= simple_statfs,
+>  	.remount_fs	= tracefs_remount,
+>  	.show_options	= tracefs_show_options,
+> @@ -675,10 +698,26 @@ bool tracefs_initialized(void)
+>  	return tracefs_registered;
+>  }
+>  
+> +static void init_once(void *foo)
+> +{
+> +	struct tracefs_inode *ti = (struct tracefs_inode *) foo;
+> +
+> +	inode_init_once(&ti->vfs_inode);
+> +}
+> +
+>  static int __init tracefs_init(void)
+>  {
+>  	int retval;
+>  
+> +	tracefs_inode_cachep = kmem_cache_create("tracefs_inode_cache",
+> +						 sizeof(struct tracefs_inode),
+> +						 0, (SLAB_RECLAIM_ACCOUNT|
+> +						     SLAB_MEM_SPREAD|
+> +						     SLAB_ACCOUNT),
+> +						 init_once);
+> +	if (!tracefs_inode_cachep)
+> +		return -ENOMEM;
+> +
+>  	retval = sysfs_create_mount_point(kernel_kobj, "tracing");
+>  	if (retval)
+>  		return -EINVAL;
 
-It's actually read-only for this file. Will fix.
-
-Haitao
