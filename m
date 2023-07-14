@@ -2,168 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C2F0753843
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 12:35:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06FF175384B
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 12:37:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235908AbjGNKfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 06:35:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43688 "EHLO
+        id S235675AbjGNKhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 06:37:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232239AbjGNKf3 (ORCPT
+        with ESMTP id S232239AbjGNKhW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 06:35:29 -0400
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 727F7A2;
-        Fri, 14 Jul 2023 03:35:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689330928; x=1720866928;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version:content-id;
-  bh=ii4cvoqnoqZ+3sJH7xharBOhi935BhebVSR23hdE2OM=;
-  b=h+IjKrcDFlwsLVaHyH626qdBADnjTdArmbaXG8fE1kXsZyznUcV1veu5
-   MmrTmMzhHnBEyhwFN+KoYYFf3tCty8D0dnHE/ZnBz3pdRplRaOhF7gkr7
-   YXBUV2dSmT8Hai0sJ/w5aYtuW53ZmhHI9f7kll0N2kqr+NhECyCWXnzKQ
-   F2Gm9s5e4KeATUhsqBIyan8Z8my94TRItqNyWOeqFRjIwMdnc4EXBfL9N
-   nlAcoZNvtKKdeFMV2xAWszwdnGsH7LDJPHYz3STyiRueGrFkKJCsBYDCM
-   eKH1WnfDNKvdjKKCTsyKpYkHAeXJW8tSacTp6xCjVuEWbBx+NnG8kCTDD
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="431615806"
-X-IronPort-AV: E=Sophos;i="6.01,205,1684825200"; 
-   d="scan'208";a="431615806"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 03:35:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="812381155"
-X-IronPort-AV: E=Sophos;i="6.01,205,1684825200"; 
-   d="scan'208";a="812381155"
-Received: from rchauhax-mobl1.gar.corp.intel.com ([10.249.35.123])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 03:35:25 -0700
-Date:   Fri, 14 Jul 2023 13:35:22 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>
-cc:     linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
-        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Sai Praneeth Prakhya <sai.praneeth.prakhya@intel.com>,
-        Babu Moger <babu.moger@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 04/19] selftests/resctrl: Close perf value read fd on
- errors
-In-Reply-To: <a4fa6303-4637-815a-e0fa-57f33babfb10@intel.com>
-Message-ID: <c14286ec-807c-8613-a4cc-d8ac733a87a1@linux.intel.com>
-References: <20230713131932.133258-1-ilpo.jarvinen@linux.intel.com> <20230713131932.133258-5-ilpo.jarvinen@linux.intel.com> <a4fa6303-4637-815a-e0fa-57f33babfb10@intel.com>
+        Fri, 14 Jul 2023 06:37:22 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD70A2D7D;
+        Fri, 14 Jul 2023 03:37:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 48A0061CDC;
+        Fri, 14 Jul 2023 10:37:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDD8DC433C8;
+        Fri, 14 Jul 2023 10:37:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689331038;
+        bh=yDdkJOgrvmSQrdXTqJZxaDqdiuAutO48CkzNaUjj3QQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=NOP4owO1hizD1r2742ms3u2QC8Mg4XtUg5+1ds5rwsd1U/MQKOVQ3PNOnsxqri5sb
+         hZqiaILge0JCOoW1d9tTLtqYI2LpjJIv7Qwy7zXD9f7gTYY3W1nDaiWZ4g4Qxmsh1c
+         8fv81moXKd6s47JHYqel0QnkTFqLaAc2YzBA4qC4zOcggCLsW+VzRZeNs8jxYmDGHa
+         3uJFP+P7mxtdsP17Cfw6cKe9cUk1RJLzdnlLMK7gQiZbOb08O2mbGXHJ0IYcWUNXdr
+         Whmf+1JxPtH/Ci0Jw6Y/ijfYFAh62ZZOgJRNlXpo4OPgepnCugdVOGqRd6w0Dy2mLu
+         gwVx/siuoVC4A==
+From:   guoren@kernel.org
+To:     guoren@kernel.org, palmer@rivosinc.com, paul.walmsley@sifive.com,
+        zong.li@sifive.com, atishp@atishpatra.org, alex@ghiti.fr,
+        jszhang@kernel.org, bjorn@kernel.org, xingxg2008@163.com
+Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Alexandre Ghiti <alexghiti@rivosinc.com>
+Subject: [PATCH V4] riscv: kexec: Fixup synchronization problem between init_mm and active_mm
+Date:   Fri, 14 Jul 2023 06:36:59 -0400
+Message-Id: <20230714103659.3146949-1-guoren@kernel.org>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="8323329-782494842-1689327854=:1695"
-Content-ID: <a04ebfa5-62bf-328d-457c-43abfcbef33a@linux.intel.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+From: Guo Ren <guoren@linux.alibaba.com>
 
---8323329-782494842-1689327854=:1695
-Content-Type: text/plain; CHARSET=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
-Content-ID: <42226133-5e22-b1fa-fb3-7cc2ac9b62@linux.intel.com>
+The machine_kexec() uses set_memory_x to modify the direct mapping
+attributes from RW to RWX. The current implementation of set_memory_x
+does not split hugepages in the linear mapping and then when a PGD
+mapping is used, the whole PGD is marked as executable. But changing
+the permissions at the PGD level must be propagated to all the page
+tables. When kexec jumps into control_buffer, the instruction page
+fault happens, and there is no minor_pagefault for it, then panic.
 
-On Thu, 13 Jul 2023, Reinette Chatre wrote:
+The bug is found on an MMU_sv39 machine, and the direct mapping used a
+1GB PUD, the pgd entries. Here is the bug output:
 
-> Hi Ilpo,
-> 
-> On 7/13/2023 6:19 AM, Ilpo Järvinen wrote:
-> > Perf event fd (fd_lm) is not closed on some error paths.
-> > 
-> > Always close fd_lm in get_llc_perf() and add close into an error
-> > handling block in cat_val().
-> > 
-> > Fixes: 790bf585b0ee ("selftests/resctrl: Add Cache Allocation Technology (CAT) selftest")
-> > Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-> > ---
-> >  tools/testing/selftests/resctrl/cache.c | 10 +++++-----
-> >  1 file changed, 5 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/tools/testing/selftests/resctrl/cache.c b/tools/testing/selftests/resctrl/cache.c
-> > index 8a4fe8693be6..ced47b445d1e 100644
-> > --- a/tools/testing/selftests/resctrl/cache.c
-> > +++ b/tools/testing/selftests/resctrl/cache.c
-> > @@ -87,21 +87,20 @@ static int reset_enable_llc_perf(pid_t pid, int cpu_no)
-> >  static int get_llc_perf(unsigned long *llc_perf_miss)
-> >  {
-> >  	__u64 total_misses;
-> > +	int ret;
-> >  
-> >  	/* Stop counters after one span to get miss rate */
-> >  
-> >  	ioctl(fd_lm, PERF_EVENT_IOC_DISABLE, 0);
-> >  
-> > -	if (read(fd_lm, &rf_cqm, sizeof(struct read_format)) == -1) {
-> > +	ret = read(fd_lm, &rf_cqm, sizeof(struct read_format));
-> > +	close(fd_lm);
-> > +	if (ret == -1) {
-> >  		perror("Could not get llc misses through perf");
-> > -
-> >  		return -1;
-> >  	}
-> >  
-> >  	total_misses = rf_cqm.values[0].value;
-> > -
-> > -	close(fd_lm);
-> > -
-> >  	*llc_perf_miss = total_misses;
-> >  
-> >  	return 0;
-> > @@ -253,6 +252,7 @@ int cat_val(struct resctrl_val_param *param)
-> >  					 memflush, operation, resctrl_val)) {
-> >  				fprintf(stderr, "Error-running fill buffer\n");
-> >  				ret = -1;
-> > +				close(fd_lm);
-> >  				break;
-> >  			}
-> >  
-> 
-> Instead of fixing these existing patterns I think it would make the code
-> easier to understand and maintain if it is made symmetrical.
-> Having the perf event fd opened in one place but its close()
-> scattered elsewhere has the potential for confusion and making later
-> mistakes easy to miss.
-> 
-> What if perf event fd is closed in a new "disable_llc_perf()" that
-> is matched with "reset_enable_llc_perf()" and called
-> from cat_val()?
-> 
-> I think this raises another issue with the test trickery where
-> measure_cache_vals() has some assumptions about state based on the
-> test name.
+ kexec_core: Starting new kernel
+ Will call new kernel at 00300000 from hart id 0
+ FDT image at 747c7000
+ Bye...
+ Unable to handle kernel paging request at virtual address ffffffda23b0d000
+ Oops [#1]
+ Modules linked in:
+ CPU: 0 PID: 53 Comm: uinit Not tainted 6.4.0-rc6 #15
+ Hardware name: Sophgo Mango (DT)
+ epc : 0xffffffda23b0d000
+  ra : machine_kexec+0xa6/0xb0
+ epc : ffffffda23b0d000 ra : ffffffff80008272 sp : ffffffc80c173d10
+  gp : ffffffff8150e1e0 tp : ffffffd9073d2c40 t0 : 0000000000000000
+  t1 : 0000000000000042 t2 : 6567616d69205444 s0 : ffffffc80c173d50
+  s1 : ffffffd9076c4800 a0 : ffffffd9076c4800 a1 : 0000000000300000
+  a2 : 00000000747c7000 a3 : 0000000000000000 a4 : ffffffd800000000
+  a5 : 0000000000000000 a6 : ffffffd903619c40 a7 : ffffffffffffffff
+  s2 : ffffffda23b0d000 s3 : 0000000000300000 s4 : 00000000747c7000
+  s5 : 0000000000000000 s6 : 0000000000000000 s7 : 0000000000000000
+  s8 : 0000000000000000 s9 : 0000000000000000 s10: 0000000000000000
+  s11: 0000003f940001a0 t3 : ffffffff815351af t4 : ffffffff815351af
+  t5 : ffffffff815351b0 t6 : ffffffc80c173b50
+ status: 0000000200000100 badaddr: ffffffda23b0d000 cause: 000000000000000c
 
-I very much agree on the principle here, and thus I already have created 
-patches which will do a major cleanup on this area. The cleaned-up code 
-has pe_fd local var to cat_val() and handles closing it in cat_val() with 
-the usual patterns.
+Given the current flaw in the set_memory_x implementation, the simplest
+solution is to fix machine_kexec() to remap control code page outside
+the linear mapping. Because the control code buffer was moved from the
+direct mapping area to the vmalloc location, we need an additional
+va_va_offset to fix up va_pa_offset.
 
-However, the patch is currently resides post L3 CAT test rewrite. 
-Backporting the cleanups/refactors into this series would require 
-considerable effort due to how convoluted all those n-step cleanup patches 
-and L3 CAT test rewrite are in this area. There's just very much to 
-cleanup here and L3 rewrite will touch the same areas so its a net 
-full of conflicts.
+Fixes: 3335068f8721 ("riscv: Use PUD/P4D/PGD pages for the linear mapping")
+Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+Reported-by: Xing XiaoGuang <xingxg2008@163.com>
+Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+Signed-off-by: Guo Ren <guoren@kernel.org>
+---
+Changelog:
+V4:
+ - Fixup va_pa_offset with additional va_va_offset.
+ - Add Reported-by tag.
 
-Do you want me to spend the effort to backport them into this series 
-(I expect will take some time)?
+V3:
+ - Resume set_memory_x to set the _PAGE_EXEC attribute
+ - Optimize the commit log with Alexandre advice
 
-I currently have these items pending besides this series (in order):
-- L3 CAT test rewrite and its preparatory patches
-- More cleanups (including the pe_fd cleanup)
-- New generalized test framework
-- L2 CAT test
+V2:
+ - Use vm_map_ram instead of modifying set_memory_x
+ - Correct Fixes tag
+---
+ arch/riscv/include/asm/kexec.h    |  1 +
+ arch/riscv/kernel/machine_kexec.c | 18 +++++++++++++++---
+ 2 files changed, 16 insertions(+), 3 deletions(-)
 
+diff --git a/arch/riscv/include/asm/kexec.h b/arch/riscv/include/asm/kexec.h
+index 2b56769cb530..17456e91476e 100644
+--- a/arch/riscv/include/asm/kexec.h
++++ b/arch/riscv/include/asm/kexec.h
+@@ -41,6 +41,7 @@ crash_setup_regs(struct pt_regs *newregs,
+ struct kimage_arch {
+ 	void *fdt; /* For CONFIG_KEXEC_FILE */
+ 	unsigned long fdt_addr;
++	void *control_code_buffer;
+ };
+ 
+ extern const unsigned char riscv_kexec_relocate[];
+diff --git a/arch/riscv/kernel/machine_kexec.c b/arch/riscv/kernel/machine_kexec.c
+index 2d139b724bc8..60c1ef3c2232 100644
+--- a/arch/riscv/kernel/machine_kexec.c
++++ b/arch/riscv/kernel/machine_kexec.c
+@@ -86,7 +86,14 @@ machine_kexec_prepare(struct kimage *image)
+ 
+ 	/* Copy the assembler code for relocation to the control page */
+ 	if (image->type != KEXEC_TYPE_CRASH) {
+-		control_code_buffer = page_address(image->control_code_page);
++		control_code_buffer = vm_map_ram(&image->control_code_page,
++						 KEXEC_CONTROL_PAGE_SIZE/PAGE_SIZE,
++						 NUMA_NO_NODE);
++		if (control_code_buffer == NULL) {
++			pr_err("Failed to vm_map control page\n");
++			return -ENOMEM;
++		}
++
+ 		control_code_buffer_sz = page_size(image->control_code_page);
+ 
+ 		if (unlikely(riscv_kexec_relocate_size > control_code_buffer_sz)) {
+@@ -99,6 +106,8 @@ machine_kexec_prepare(struct kimage *image)
+ 
+ 		/* Mark the control page executable */
+ 		set_memory_x((unsigned long) control_code_buffer, 1);
++
++		internal->control_code_buffer = control_code_buffer;
+ 	}
+ 
+ 	return 0;
+@@ -211,7 +220,10 @@ machine_kexec(struct kimage *image)
+ 	unsigned long this_cpu_id = __smp_processor_id();
+ 	unsigned long this_hart_id = cpuid_to_hartid_map(this_cpu_id);
+ 	unsigned long fdt_addr = internal->fdt_addr;
+-	void *control_code_buffer = page_address(image->control_code_page);
++	void *control_code_buffer = internal->control_code_buffer;
++	unsigned long va_va_offset =
++			(unsigned long) page_address(image->control_code_page)
++		      - (unsigned long) control_code_buffer;
+ 	riscv_kexec_method kexec_method = NULL;
+ 
+ #ifdef CONFIG_SMP
+@@ -234,6 +246,6 @@ machine_kexec(struct kimage *image)
+ 	/* Jump to the relocation code */
+ 	pr_notice("Bye...\n");
+ 	kexec_method(first_ind_entry, jump_addr, fdt_addr,
+-		     this_hart_id, kernel_map.va_pa_offset);
++		     this_hart_id, kernel_map.va_pa_offset - va_va_offset);
+ 	unreachable();
+ }
 -- 
- i.
---8323329-782494842-1689327854=:1695--
+2.36.1
+
