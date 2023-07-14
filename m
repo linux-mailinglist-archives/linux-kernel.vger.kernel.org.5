@@ -2,122 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1C1C753B00
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 14:30:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0301B753B0E
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 14:32:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235591AbjGNMaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 08:30:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41790 "EHLO
+        id S235723AbjGNMcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 08:32:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235628AbjGNMaB (ORCPT
+        with ESMTP id S235016AbjGNMcj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 08:30:01 -0400
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13F9C3C20;
-        Fri, 14 Jul 2023 05:29:37 -0700 (PDT)
+        Fri, 14 Jul 2023 08:32:39 -0400
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4A013AAD
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 05:32:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689337778; x=1720873778;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=paNCn0i0ocmnyoUcYofPrK6VJYyVDAF9BUUDGQr8dR0=;
-  b=fB+bX9BCf2hjN44fGIOxz+dmN9pnLcu2JEC5cCf9/lcXP4Ht7V4sy0ST
-   eDc/oHbuhPA/noOk0qEMj0n0+G47NAsTmVXC2o9jH2owUwZMo0LBSEgXi
-   slK20vSAb4yS36DkVoaJE8W+Eogg9OJHUs5EED6Pw7RRnVkuUyGL74oBO
-   C1thX1Wo4ImeeppsEdM+YizULrvgRzQiHAgQ8vve9mzhzWBbNlazWdzQt
-   FODhPD+rPSjlbH7PxSlER65DgnkErReRus8gbXFaSkyHbRWPV7rlIhf49
-   eqwUBSPzBFe0U/UOmdjejjyIFF287nj8RcG5kAy+uEJaBbfKwNy6yqopl
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="368101721"
+  t=1689337933; x=1720873933;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=JdFpBHyC/qLU5qvdOKxXfGdeJI86rvSkdXEkIR/E2gc=;
+  b=ZAIJAAvVaEZfBvYmFYUp4E7egCIX26yj0VLCGLcW8q+VM12JpTce6e+x
+   J65JZDhkLYmtt7QV4UdqJwHcAYOJJU6nIs9olN6F/dKK/KgJh8zFZMxZN
+   BBS5WhMM9ZwsGMa/DkaF7KRvna9uDXGOatEuub7xw6+7Ah+Uc+uSupRjW
+   KgWNapVSjblI+6heXKCRNxXAuySL7ZgL8uQ3O4IF09Tj+Um9w7AJrmO6f
+   mWWm7ucMzPBdXrVjEVRAJizsHIGhsHuVtLbmnPH4mVgUbLL9FALK4BMyo
+   vTv+coRUWNVdk6Ldf+6emrTFYhrGC9tgRejJl5HggVWroba1/w9BerfJD
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="431634503"
 X-IronPort-AV: E=Sophos;i="6.01,205,1684825200"; 
-   d="scan'208";a="368101721"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 05:29:16 -0700
+   d="scan'208";a="431634503"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 05:30:31 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="812415922"
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="716323813"
 X-IronPort-AV: E=Sophos;i="6.01,205,1684825200"; 
-   d="scan'208";a="812415922"
-Received: from rchauhax-mobl1.gar.corp.intel.com ([10.249.35.123])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 05:29:12 -0700
-Date:   Fri, 14 Jul 2023 15:29:09 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     =?ISO-8859-2?Q?Amadeusz_S=B3awi=F1ski?= 
-        <amadeuszx.slawinski@linux.intel.com>
-cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
-        alsa-devel@alsa-project.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v3 07/15] ALSA: hda/i915:  Use global PCI match macro
-In-Reply-To: <20230714202457.423866-8-amadeuszx.slawinski@linux.intel.com>
-Message-ID: <9d3c56af-e9ff-7791-1644-2d362e428f48@linux.intel.com>
-References: <20230714202457.423866-1-amadeuszx.slawinski@linux.intel.com> <20230714202457.423866-8-amadeuszx.slawinski@linux.intel.com>
+   d="scan'208";a="716323813"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga007.jf.intel.com with ESMTP; 14 Jul 2023 05:30:28 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qKHwI-002eu6-1E;
+        Fri, 14 Jul 2023 15:30:26 +0300
+Date:   Fri, 14 Jul 2023 15:30:26 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Alexander Potapenko <glider@google.com>
+Cc:     William Breathitt Gray <william.gray@linaro.org>,
+        catalin.marinas@arm.com, will@kernel.org, pcc@google.com,
+        andreyknvl@gmail.com, linux@rasmusvillemoes.dk,
+        yury.norov@gmail.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, eugenis@google.com
+Subject: Re: [v2 1/5] lib/bitmap: add bitmap_{set,get}_value_unaligned()
+Message-ID: <ZLE/4ihjymUbtXj6@smile.fi.intel.com>
+References: <20230713125706.2884502-1-glider@google.com>
+ <20230713125706.2884502-2-glider@google.com>
+ <ZLA0TwHZOgAGCgKX@smile.fi.intel.com>
+ <CAG_fn=WsPC_qMZfbVQHbXq_cGXP4ZfYkyGyJPzaAKSqurxoibw@mail.gmail.com>
+ <ZLEBgGSsmOPs4Zu5@smile.fi.intel.com>
+ <ZLEvM1s65L1k0PTx@fedora>
+ <ZLExRvCytbxBcUef@smile.fi.intel.com>
+ <CAG_fn=XFBFByn7i1aw69rttJK9GZWSge81aa8yTK=qFZYAE7AQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1404882682-1689337755=:1695"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAG_fn=XFBFByn7i1aw69rttJK9GZWSge81aa8yTK=qFZYAE7AQ@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Fri, Jul 14, 2023 at 02:07:45PM +0200, Alexander Potapenko wrote:
+> On Fri, Jul 14, 2023 at 1:28 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> > On Fri, Jul 14, 2023 at 07:19:15AM -0400, William Breathitt Gray wrote:
+> > > On Fri, Jul 14, 2023 at 11:04:16AM +0300, Andy Shevchenko wrote:
+> > > > On Thu, Jul 13, 2023 at 08:05:34PM +0200, Alexander Potapenko wrote:
 
---8323329-1404882682-1689337755=:1695
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+...
 
-Hi,
+> > > > William, what do you think on this?
+> > > >
+> > > > I'm personally prefer William's version as not only it was published first
+> > > > it was carefully designed and got a lot of review already. We just hadn't had
+> > > > the user for it that time.
+> > >
+> > > Yes, that version went through several revisions so it's been well
+> > > tested and known to work -- as you pointed out it just lacked the users
+> > > to warrant merging it into the tree. If it statisfies the use-case
+> > > required here now, then I think we should it pick it up rather than
+> > > reinvent the solution again.
+> > >
+> > > Also, we probably don't need the "clump" code in there, so perhaps
+> > > splitting it out to just the bitmap_{set,get}_value relevant code is
+> > > fine.
+> >
+> > Agree, thank you for your comments!
 
-Just a small nit, you have an extra space in the shortlog line.
+> So would it be fine if I split off bitmap_set_value() and
+> bitmap_get_value() from that series and send it (with the appropriate
+> attribution) instead of my patch 1/5?
+> We'll probably still need to retain patch 2/5 (with the function names
+> changed).
+
+Sounds good to me.
 
 -- 
- i.
+With Best Regards,
+Andy Shevchenko
 
-On Fri, 14 Jul 2023, Amadeusz Sławiński wrote:
 
-> Instead of using local macro to match PCI device, use global one.
-> 
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
-> ---
->  sound/hda/hdac_i915.c | 7 +------
->  1 file changed, 1 insertion(+), 6 deletions(-)
-> 
-> diff --git a/sound/hda/hdac_i915.c b/sound/hda/hdac_i915.c
-> index 161a9711cd63..2a451ff4fe6a 100644
-> --- a/sound/hda/hdac_i915.c
-> +++ b/sound/hda/hdac_i915.c
-> @@ -11,11 +11,6 @@
->  #include <sound/hda_i915.h>
->  #include <sound/hda_register.h>
->  
-> -#define IS_HSW_CONTROLLER(pci) (((pci)->device == 0x0a0c) || \
-> -				((pci)->device == 0x0c0c) || \
-> -				((pci)->device == 0x0d0c) || \
-> -				((pci)->device == 0x160c))
-> -
->  /**
->   * snd_hdac_i915_set_bclk - Reprogram BCLK for HSW/BDW
->   * @bus: HDA core bus
-> @@ -39,7 +34,7 @@ void snd_hdac_i915_set_bclk(struct hdac_bus *bus)
->  
->  	if (!acomp || !acomp->ops || !acomp->ops->get_cdclk_freq)
->  		return; /* only for i915 binding */
-> -	if (!IS_HSW_CONTROLLER(pci))
-> +	if (!HDA_CONTROLLER_IS_HSW(pci))
->  		return; /* only HSW/BDW */
->  
->  	cdclk_freq = acomp->ops->get_cdclk_freq(acomp->dev);
-> 
---8323329-1404882682-1689337755=:1695--
