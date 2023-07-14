@@ -2,96 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B7A57531E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 08:24:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABD137531EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 08:27:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235151AbjGNGX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 02:23:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52768 "EHLO
+        id S235184AbjGNG1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 02:27:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229950AbjGNGXz (ORCPT
+        with ESMTP id S234660AbjGNG1r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 02:23:55 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD3792D57
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 23:23:52 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R2Lys3sVnzBR9sN
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 14:23:49 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689315829; x=1691907830; bh=22hHmkRO9TkU+Wjx8NhVjpSomcy
-        bO0NSKa3A1lNZF14=; b=n91HPB3XgnslP02udG3Do0NmQKoiitEAyz4nKJ+gWEc
-        9yxvXvjrwUw8izpYXSjoT0hBxURswf+JCngR2vfAbqyKOn1xcT9TG67UyDhrLgSS
-        SovEydUEdgWBQOZfwjz2ycFMaBFAeL8ms4WdHIYVbShoKut4pQboaynhSzqJ8nqY
-        YfL3QG7Zxptqe247DOh3KjOdaJUkWk2mALqoV7u7cSTInDYT70jl5K9NsE7532Mw
-        Octolhxtvm+p/7BXPpegZgMSXaFsoyR9e4f4A+YidNQa9t5Ipds4s0GlHKJgHf2l
-        GcyRpTLZs10tpoaFuJJimqIK0GMyxopgUfbi/xAXvpg==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id p7x_Q7Xa17rw for <linux-kernel@vger.kernel.org>;
-        Fri, 14 Jul 2023 14:23:49 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R2Lys1d27zBJFS7;
-        Fri, 14 Jul 2023 14:23:49 +0800 (CST)
+        Fri, 14 Jul 2023 02:27:47 -0400
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E92C110FA;
+        Thu, 13 Jul 2023 23:27:44 -0700 (PDT)
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+        by ex01.ufhost.com (Postfix) with ESMTP id 1A84324E2E3;
+        Fri, 14 Jul 2023 14:27:42 +0800 (CST)
+Received: from EXMBX061.cuchost.com (172.16.6.61) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 14 Jul
+ 2023 14:27:42 +0800
+Received: from [192.168.125.128] (183.27.98.46) by EXMBX061.cuchost.com
+ (172.16.6.61) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 14 Jul
+ 2023 14:27:40 +0800
+Message-ID: <1b55f255-a9b2-1f0a-9b8b-11c787e76a75@starfivetech.com>
+Date:   Fri, 14 Jul 2023 14:24:28 +0800
 MIME-Version: 1.0
-Date:   Fri, 14 Jul 2023 14:23:49 +0800
-From:   sunran001@208suo.com
-To:     airlied@gmail.com, daniel@ffwll.ch
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/amd: open brace '{' following struct go on the same line
-In-Reply-To: <20230714062152.13738-1-xujianghui@cdjrlc.com>
-References: <20230714062152.13738-1-xujianghui@cdjrlc.com>
-User-Agent: Roundcube Webmail
-Message-ID: <41b04a00f926becfd2ca9cd4c5406074@208suo.com>
-X-Sender: sunran001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [RESEND PATCH v6 1/7] dt-bindings: clock: Add StarFive JH7110 PLL
+ clock generator
+Content-Language: en-US
+To:     Emil Renner Berthing <emil.renner.berthing@canonical.com>
+CC:     <linux-riscv@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        "Michael Turquette" <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Conor Dooley <conor@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Hal Feng" <hal.feng@starfivetech.com>,
+        William Qiu <william.qiu@starfivetech.com>,
+        <linux-kernel@vger.kernel.org>, <linux-clk@vger.kernel.org>
+References: <20230704064610.292603-1-xingyu.wu@starfivetech.com>
+ <20230704064610.292603-2-xingyu.wu@starfivetech.com>
+ <CAJM55Z8vj6KvpKZxRVh0+G_LCXrpnXzOR+oBad-igkHVTD_J=Q@mail.gmail.com>
+From:   Xingyu Wu <xingyu.wu@starfivetech.com>
+In-Reply-To: <CAJM55Z8vj6KvpKZxRVh0+G_LCXrpnXzOR+oBad-igkHVTD_J=Q@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-Originating-IP: [183.27.98.46]
+X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX061.cuchost.com
+ (172.16.6.61)
+X-YovoleRuleAgent: yovoleflag
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the checkpatch error as open brace '{' following struct should
-go on the same line.
+On 2023/7/13 20:26, Emil Renner Berthing wrote:
+> On Tue, 4 Jul 2023 at 08:49, Xingyu Wu <xingyu.wu@starfivetech.com> wrote:
+>>
+>> Add bindings for the PLL clock generator on the JH7110 RISC-V SoC.
+>>
+>> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+>> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>> Signed-off-by: Xingyu Wu <xingyu.wu@starfivetech.com>
+>> ---
+>>  .../bindings/clock/starfive,jh7110-pll.yaml   | 46 +++++++++++++++++++
+>>  .../dt-bindings/clock/starfive,jh7110-crg.h   |  6 +++
+>>  2 files changed, 52 insertions(+)
+>>  create mode 100644 Documentation/devicetree/bindings/clock/starfive,jh7110-pll.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/clock/starfive,jh7110-pll.yaml b/Documentation/devicetree/bindings/clock/starfive,jh7110-pll.yaml
+>> new file mode 100644
+>> index 000000000000..beb78add5a8d
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/clock/starfive,jh7110-pll.yaml
+>> @@ -0,0 +1,46 @@
+>> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/clock/starfive,jh7110-pll.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: StarFive JH7110 PLL Clock Generator
+>> +
+>> +description:
+>> +  These PLLs are high speed, low jitter frequency synthesizers in JH7110.
+> 
+> ..synthesizers in the JH7110.
 
-Signed-off-by: Ran Sun <sunran001@208suo.com>
----
-  drivers/gpu/drm/amd/include/atomfirmwareid.h | 6 ++----
-  1 file changed, 2 insertions(+), 4 deletions(-)
+Will fix.
 
-diff --git a/drivers/gpu/drm/amd/include/atomfirmwareid.h 
-b/drivers/gpu/drm/amd/include/atomfirmwareid.h
-index e6256efd03ae..1ca5fe7b131b 100644
---- a/drivers/gpu/drm/amd/include/atomfirmwareid.h
-+++ b/drivers/gpu/drm/amd/include/atomfirmwareid.h
-@@ -28,8 +28,7 @@
-  #ifndef _ATOMFIRMWAREID_H_
-  #define _ATOMFIRMWAREID_H_
+> 
+>> +  Each PLL works in integer mode or fraction mode, with configuration
+>> +  registers in the sys syscon. So the PLLs node should be a child of
+>> +  SYS-SYSCON node.
+>> +  The formula for calculating frequency is
+>> +  Fvco = Fref * (NI + NF) / M / Q1
+>> +
+>> +maintainers:
+>> +  - Xingyu Wu <xingyu.wu@starfivetech.com>
+>> +
+>> +properties:
+>> +  compatible:
+>> +    const: starfive,jh7110-pll
+>> +
+>> +  clocks:
+>> +    maxItems: 1
+>> +    description: Main Oscillator (24 MHz)
+>> +
+>> +  '#clock-cells':
+>> +    const: 1
+>> +    description:
+>> +      See <dt-bindings/clock/starfive,jh7110-crg.h> for valid indices.
+>> +
+>> +required:
+>> +  - compatible
+>> +  - clocks
+>> +  - '#clock-cells'
+>> +
+>> +additionalProperties: false
+>> +
+>> +examples:
+>> +  - |
+>> +    clock-controller {
+>> +      compatible = "starfive,jh7110-pll";
+>> +      clocks = <&osc>;
+>> +      #clock-cells = <1>;
+>> +    };
+>> diff --git a/include/dt-bindings/clock/starfive,jh7110-crg.h b/include/dt-bindings/clock/starfive,jh7110-crg.h
+>> index 06257bfd9ac1..086a6ddcf380 100644
+>> --- a/include/dt-bindings/clock/starfive,jh7110-crg.h
+>> +++ b/include/dt-bindings/clock/starfive,jh7110-crg.h
+>> @@ -6,6 +6,12 @@
+>>  #ifndef __DT_BINDINGS_CLOCK_STARFIVE_JH7110_CRG_H__
+>>  #define __DT_BINDINGS_CLOCK_STARFIVE_JH7110_CRG_H__
+>>
+>> +/* PLL clocks */
+>> +#define JH7110_CLK_PLL0_OUT                    0
+>> +#define JH7110_CLK_PLL1_OUT                    1
+>> +#define JH7110_CLK_PLL2_OUT                    2
+>> +#define JH7110_PLLCLK_END                      3
+> 
+> It would be nice if these names followed the same pattern as the
+> clocks below. Eg. something like JH7110_PLLCLK_PLL?_OUT and
+> JH7110_PLLCLK_END.
+> 
+> But maybe these defines are not even needed, since you just do <&pll
+> 0>, <&pll 1> and it's obvious what that means.
 
--enum atom_master_data_table_id
--{
-+enum atom_master_data_table_id {
-      VBIOS_DATA_TBL_ID__UTILITY_PIPELINE,
-      VBIOS_DATA_TBL_ID__MULTIMEDIA_INF,
-      VBIOS_DATA_TBL_ID__FIRMWARE_INF,
-@@ -51,8 +50,7 @@ enum atom_master_data_table_id
-      VBIOS_DATA_TBL_ID__UNDEFINED,
-  };
+I prefer to keep these names because they are used in the PLL driver
+and are more easy to understand than numbers.
+I will use the JH7110_PLLCLK_PLL?_OUT to follow the same pattern
+in next version.
 
--enum atom_master_command_table_id
--{
-+enum atom_master_command_table_id {
-      VBIOS_CMD_TBL_ID__ASIC_INIT,
-      VBIOS_CMD_TBL_ID__DIGX_ENCODER_CONTROL,
-      VBIOS_CMD_TBL_ID__SET_ENGINE_CLOCK,
+Best regards,
+Xingyu Wu
+
+> 
+>>  /* SYSCRG clocks */
+>>  #define JH7110_SYSCLK_CPU_ROOT                 0
+>>  #define JH7110_SYSCLK_CPU_CORE                 1
+>> --
+>> 2.25.1
+>>
+
