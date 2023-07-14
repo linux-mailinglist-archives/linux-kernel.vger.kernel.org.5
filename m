@@ -2,120 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C6717536CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:41:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8C597536D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:44:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235650AbjGNJlw convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 14 Jul 2023 05:41:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36514 "EHLO
+        id S235642AbjGNJoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 05:44:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235642AbjGNJls (ORCPT
+        with ESMTP id S235522AbjGNJoL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 05:41:48 -0400
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84B0B1989
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 02:41:45 -0700 (PDT)
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-5700b15c12fso15885067b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 02:41:45 -0700 (PDT)
+        Fri, 14 Jul 2023 05:44:11 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72DC710EA
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 02:44:10 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-57325434999so14417177b3.1
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 02:44:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689327849; x=1691919849;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FQulSBzim5w5xsl3zfUAjtDmEmIk8kUKUMOuRvJ6ZCs=;
+        b=DQpb4IPB+IEOr1+4EUQM2FmUBJw5xH7JV8ghu2wughEM1EpQiUxBQZ5zjqURzdywtg
+         tTQXaa6b3GEFmZFpbMJYgihDJYXbins0NvNDWbPyFwdUePob9m927o2lx2j5Ob/BPSjv
+         nMhdBDga2+kWHumNaj3xqYgTl03NBH5mjktuZ1BEs/tzloL8RpHiHHvIeUy1SM2Vg7id
+         idOuWKpM9chwHBoRaScpj896NxhPaVjKVYqn/QBLqdqba0Gepx1461g1W/WXcNiXslMI
+         llxiWcfZ8KGZXYjvApsptsIedYoxGdrh6HHfWmq+4cO7S6OLBmSHb4aH6QLdQXYrBAnb
+         By3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689327704; x=1691919704;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PvsgLCUoUYBwVIo5eyZX62ki0sLhfFVAuP7bUgSk5YE=;
-        b=gwKKHPsZCo7N6OglpxMUJbxAZTCOag0hJmklAKjab9/G4nm/HNJ2nQ+3NzTLnOIVly
-         Wc8+TRkm9x3ZsAlptqePc2zZ+w3RMe3p7tmHh39l0lwtM3lIzpX0nFUyxSNvj9w25zoL
-         gUhd+z/6+8+Z0E8MVLZJWa8jmn3DU8G1+KP5YNHhjvaCGcjD+e6ItEIsqOI6aqauRbSa
-         BevSP5QABmnWVEhcX8y1gmxKKV381zNqKqVxm754UZlhv9l10hgn7n8YaBwc4/Mtfs+/
-         Z2bkIOkTOlLP82X7DRrY07SiiXtwelSuK+/5gW/XYlu+mEDWYpVgcgLDA21iJQR/yhpM
-         K7Hg==
-X-Gm-Message-State: ABy/qLakSu/k73VQgAVhy1JSPbd/PqQhc1+qlvvHNbQ0jCTc/dwvllCc
-        Fv2XPG8udUse3cSsD4NwGzC/GufoJjBvmMKe
-X-Google-Smtp-Source: APBJJlGh7nWS9Sbgo7su7PrGhtsrH075KFF8rrPk+nfLnIVQEv74f7JQS0wveMmBG9KVV+DYduu51A==
-X-Received: by 2002:a0d:c341:0:b0:562:1060:f2c9 with SMTP id f62-20020a0dc341000000b005621060f2c9mr4980883ywd.13.1689327704353;
-        Fri, 14 Jul 2023 02:41:44 -0700 (PDT)
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com. [209.85.219.178])
-        by smtp.gmail.com with ESMTPSA id j12-20020a81920c000000b0056d2a19ad91sm2200954ywg.103.2023.07.14.02.41.43
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 Jul 2023 02:41:43 -0700 (PDT)
-Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-cae693192d1so1632636276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 02:41:43 -0700 (PDT)
-X-Received: by 2002:a25:b44:0:b0:bd7:545e:ab41 with SMTP id
- 65-20020a250b44000000b00bd7545eab41mr3609366ybl.27.1689327702982; Fri, 14 Jul
- 2023 02:41:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1689252746.git.geert@linux-m68k.org> <54deec2ec533e90544faa8c60a0c2518c58f3e9c.1689252746.git.geert@linux-m68k.org>
- <87r0pau99o.fsf@minerva.mail-host-address-is-not-set>
-In-Reply-To: <87r0pau99o.fsf@minerva.mail-host-address-is-not-set>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 14 Jul 2023 11:41:27 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVAXPqjSNGMrZQ2g8FNNL4f7PbdoUCi17g9YOdoqmjFpQ@mail.gmail.com>
-Message-ID: <CAMuHMdVAXPqjSNGMrZQ2g8FNNL4f7PbdoUCi17g9YOdoqmjFpQ@mail.gmail.com>
-Subject: Re: [PATCH 1/8] drm/ssd130x: Fix pitch calculation in ssd130x_fb_blit_rect()
-To:     Javier Martinez Canillas <javierm@redhat.com>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
+        d=1e100.net; s=20221208; t=1689327849; x=1691919849;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FQulSBzim5w5xsl3zfUAjtDmEmIk8kUKUMOuRvJ6ZCs=;
+        b=Bbl2yId+x1/De/CQoNn7pfyNUMpHCJvkYaOil56lb9rc73mH/QcB7my8SFhAxM0DYJ
+         HVYoB0qvdBZ3WhGTztiMryDTthzAjjuv6c3N3hrzqELl216eHdBAaejZKVzcP607cfoo
+         Zy33q1KPED/3P+VmO3m/+UlcosqWpVf+kxseMW/ENYmP24D5A7m7c2txc3LAV6XiWVNA
+         UoANznfcF+RoRhkwWPUIoAwl4371i9P2Yl9TljsstRq9F3wogA8EalInoNgJ11iiFREd
+         W2nzJW/Z2JX+tNCyNWHtaTURZ59fLHqd9lET8mGh7sJC1mCTHVcwX7/mSoj07alj4kuT
+         FY/g==
+X-Gm-Message-State: ABy/qLbZLVsOa7mnFpeRXr0lFgy/MOpjCLXh7hjIrMwQWnOXiU8uH0D4
+        OBqnRGdcZ1JvlpHZ05SbHn1zPWSFAU+UCTY=
+X-Google-Smtp-Source: APBJJlFkOynd+DZBQ11JhDvwFzakuB2FgEeg8+O6Um/oHo+JsjuP3TedLZMe2EG99Wz7Gm+tf4lfq7SZ9BPMf/c=
+X-Received: from aliceryhl.c.googlers.com ([fda3:e722:ac3:cc00:31:98fb:c0a8:6c8])
+ (user=aliceryhl job=sendgmr) by 2002:a81:b3c4:0:b0:576:de5f:95e1 with SMTP id
+ r187-20020a81b3c4000000b00576de5f95e1mr27471ywh.1.1689327849767; Fri, 14 Jul
+ 2023 02:44:09 -0700 (PDT)
+Date:   Fri, 14 Jul 2023 09:44:07 +0000
+In-Reply-To: <20230714-zeroed-v1-1-494d6820d61b@asahilina.net>
+Mime-Version: 1.0
+References: <20230714-zeroed-v1-1-494d6820d61b@asahilina.net>
+X-Mailer: git-send-email 2.41.0.255.g8b1d071c50-goog
+Message-ID: <20230714094407.2188895-1-aliceryhl@google.com>
+Subject: Re: [PATCH] rust: init: Implement Zeroable::zeroed()
+From:   Alice Ryhl <aliceryhl@google.com>
+To:     lina@asahilina.net
+Cc:     alex.gaynor@gmail.com, benno.lossin@proton.me,
+        bjorn3_gh@protonmail.com, boqun.feng@gmail.com, gary@garyguo.net,
+        linux-kernel@vger.kernel.org, ojeda@kernel.org,
+        rust-for-linux@vger.kernel.org, wedsonaf@gmail.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Javier,
+Asahi Lina <lina@asahilina.net> writes:
+> +pub unsafe trait Zeroable: core::marker::Sized {
+> +    /// Create a new zeroed T.
+> +    ///
+> +    /// Directly returns a zeroed T, analogous to Default::default().
+> +    fn zeroed() -> Self {
+> +        unsafe { core::mem::zeroed() }
+> +    }
+> +}
 
-On Fri, Jul 14, 2023 at 11:34 AM Javier Martinez Canillas
-<javierm@redhat.com> wrote:
-> Geert Uytterhoeven <geert@linux-m68k.org> writes:
-> > The page height must be taken into account only for vertical coordinates
-> > and heights, not for horizontal coordinates and widths.
-> >
-> > Fixes: 179a790aaf2a0127 ("drm/ssd130x: Set the page height value in the device info data")
-> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+I don't think this trait needs to require `Sized`. How about the
+following alternate implementation?
 
-> > --- a/drivers/gpu/drm/solomon/ssd130x.c
-> > +++ b/drivers/gpu/drm/solomon/ssd130x.c
-> > @@ -596,7 +596,7 @@ static int ssd130x_fb_blit_rect(struct drm_framebuffer *fb, const struct iosys_m
-> >       rect->y1 = round_down(rect->y1, page_height);
-> >       rect->y2 = min_t(unsigned int, round_up(rect->y2, page_height), ssd130x->height);
-> >
-> > -     dst_pitch = DIV_ROUND_UP(drm_rect_width(rect), page_height);
-> > +     dst_pitch = DIV_ROUND_UP(drm_rect_width(rect), 8);
-> >
->
-> That's true for ssd130x controllers that use R1, but when doing that
-> change one of my goals was to prepare the driver for supporting the
-> ssd132x family that use a 16-grayscale pixel format (R4).
->
-> For those controllers, the pixels are encoded in 4-bit and each page
-> has two pixels. So for those controllers the dst_pitch will need to
-> be DIV_ROUND_UP(drm_rect_width(rect), 2) instead since the width is
-> not 8 in that case.
->
-> So I would prefer to skip this patch from your set, because otherwise
-> we will need to revert it when adding support for SSD132x controllers.
+pub unsafe trait Zeroable {
+    /// Create a new zeroed T.
+    ///
+    /// Directly returns a zeroed T, analogous to Default::default().
+    fn zeroed() -> Self
+    where
+        Self: core::marker::Sized,
+    {
+        unsafe { core::mem::zeroed() }
+    }
+}
 
-My point is that the 8 as used here is related to the number of bits per pixel,
-not to the page height.  The page height might also be impacted by the
-number of bits per pixel, but that is orthogonal.
+Then types like [T] can also implement Zeroable when T does.
 
-Gr{oetje,eeting}s,
+If you make the above change, then you may add my
+  Reviewed-by: Alice Ryhl <aliceryhl@google.com>
 
-                        Geert
+Alice
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
