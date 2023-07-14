@@ -2,100 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB8D67535B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 10:52:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6687C7535BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 10:53:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235691AbjGNIwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 04:52:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57156 "EHLO
+        id S231362AbjGNIxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 04:53:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235672AbjGNIwg (ORCPT
+        with ESMTP id S235727AbjGNIw4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 04:52:36 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40BD31FFC;
-        Fri, 14 Jul 2023 01:52:35 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B618D61CAA;
-        Fri, 14 Jul 2023 08:52:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25D9BC43397;
-        Fri, 14 Jul 2023 08:52:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689324754;
-        bh=zSjLJFb39FNBSOh5wQyvDIfWzbGx5usUOhILzUK9hgs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=tz23xm0/NIzfbUxiApNIthA8Rcr9DIQ7TVF9IxLipiJb1+QiOh44dsMidIFkgDXCh
-         kImpco0A227V59OzDVFOdwXayLJdMO6NXLzQgLlQBnVuGifGD4jw1aos2xA0dDJfaq
-         HmSiivVZMfjF3usBlAhLVOrLyBSd/OB9tDpz8W5jIfVDqZVKMVS9fKPC9w7BwoVwdV
-         qM8UY/UylCxQMn+Ub+gcRaxaDXpOLzqvUcMgdgQ/M0c1PZ5QtWZQnsoDlivt6JRZ93
-         sDYgc3xVodvHfYigw/pspBEL87/l4GaNFWH8jU62bjZc+vDlCNLZISO31x7GFxOrpL
-         HXwZCANd3xlKA==
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2b703c900e3so24858461fa.1;
-        Fri, 14 Jul 2023 01:52:34 -0700 (PDT)
-X-Gm-Message-State: ABy/qLa85wLjV0CXrk1LHbeKgCXwIsrTKxtgdlaFLePJRUwczF6ecGOB
-        Iwt2vrgl0PKmbzQjtx70UFibor90Qi1CgYQqj+E=
-X-Google-Smtp-Source: APBJJlFEqHPtKKojrVgR815jlkZl11nKWRhLDK1jKEM81agbwtKiMMPmhZ5Nb8C6x/joRm/aVgcl/ga8lRPud1iVfdg=
-X-Received: by 2002:a2e:9b15:0:b0:2b6:ec2b:659 with SMTP id
- u21-20020a2e9b15000000b002b6ec2b0659mr3473777lji.17.1689324752099; Fri, 14
- Jul 2023 01:52:32 -0700 (PDT)
+        Fri, 14 Jul 2023 04:52:56 -0400
+Received: from 167-179-156-38.a7b39c.syd.nbn.aussiebb.net (167-179-156-38.a7b39c.syd.nbn.aussiebb.net [167.179.156.38])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B443C1FC8;
+        Fri, 14 Jul 2023 01:52:55 -0700 (PDT)
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
+        by fornost.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
+        id 1qKEXd-001Rdy-Ls; Fri, 14 Jul 2023 18:52:46 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 14 Jul 2023 18:52:38 +1000
+Date:   Fri, 14 Jul 2023 18:52:38 +1000
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Mahmoud Adam <mngyadam@amazon.com>
+Cc:     dhowells@redhat.com, davem@davemloft.net, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] KEYS: use kfree_sensitive with key
+Message-ID: <ZLEM1gNhynPTgsLq@gondor.apana.org.au>
+References: <20230622124719.93393-1-mngyadam@amazon.com>
 MIME-Version: 1.0
-References: <20230711154449.1378385-1-eesposit@redhat.com> <ZK/9MlTh435FP5Ji@gambale.home>
- <ZLABozIRVGmwuIBf@gambale.home> <CAMw=ZnSF_s-+74gURPpXCU+YSTeXDAYfVp_A9DOFoW7oL2T_Hw@mail.gmail.com>
-In-Reply-To: <CAMw=ZnSF_s-+74gURPpXCU+YSTeXDAYfVp_A9DOFoW7oL2T_Hw@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Fri, 14 Jul 2023 10:52:20 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXG1Sk1G=3PCRmiHZ24qPdUYiGRkSbq57u1-KUbyorX8Lg@mail.gmail.com>
-Message-ID: <CAMj1kXG1Sk1G=3PCRmiHZ24qPdUYiGRkSbq57u1-KUbyorX8Lg@mail.gmail.com>
-Subject: Re: [RFC PATCH v2] x86/boot: add .sbat section to the bzImage
-To:     Luca Boccassi <bluca@debian.org>, Peter Jones <pjones@redhat.com>,
-        Matthew Garrett <mjg59@srcf.ucam.org>
-Cc:     Emanuele Giuseppe Esposito <eesposit@redhat.com>, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>, lennart@poettering.net,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        =?UTF-8?Q?Daniel_P_=2E_Berrang=C3=A9?= <berrange@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-efi@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230622124719.93393-1-mngyadam@amazon.com>
+X-Spam-Status: No, score=2.7 required=5.0 tests=BAYES_00,HELO_DYNAMIC_IPADDR2,
+        RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,TVD_RCVD_IP,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(cc Peter and Matthew)
+On Thu, Jun 22, 2023 at 12:47:22PM +0000, Mahmoud Adam wrote:
+> key might contain private part of the key, so better use
+> kfree_sensitive to free it
+> ---
+> v1: conflicts with c3d03e8e35e0:
+> KEYS: asymmetric: Copy sig and digest in public_key_verify_signature()
+> kfree_sensitive the buf variable also because it might has private
+> part
+> 
+>  crypto/asymmetric_keys/public_key.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 
-On Fri, 14 Jul 2023 at 00:32, Luca Boccassi <bluca@debian.org> wrote:
->
-> On Thu, 13 Jul 2023 at 14:52, Ard Biesheuvel <ardb@kernel.org> wrote:
-> >
-> >
-> > Note that by Windows-crippled, I mean x86 PCs built by OEMs who care
-> > about nothing other than the Windows logo sticker. These PCs often don't
-> > allow secure boot keys to be modified by the owner of the machine, or
-> > secure boot to be disabled at all. This is why shim exists, not because
-> > UEFI secure boot is broken by design.
->
-> AFAIK that's not only against the spec but also the logo
-> certification, which x86 OEMs are doing that and in which models?
-> Happy to flag that and inquire.
-
-Thanks. My Yoga C630 Snapdragon laptop definitely does not allow me to
-update the keys from the UI, but it does allow me to disable secure
-boot. It might work with SetVariable() directly but I've never tried.
-
-Maybe the OEMs have gotten better at this over the years, but it is
-definitely not possible for the distros to rely on being able to get
-their own cert into KEK and sign their builds directly.
+Patch applied.  Thanks.
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
