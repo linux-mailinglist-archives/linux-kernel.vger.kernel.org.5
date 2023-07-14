@@ -2,113 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AFE4753B37
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 14:41:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D04A9753B39
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 14:41:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235890AbjGNMlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 08:41:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49158 "EHLO
+        id S235881AbjGNMlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 08:41:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235620AbjGNMlA (ORCPT
+        with ESMTP id S235894AbjGNMlG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 08:41:00 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4563D30F5
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 05:40:57 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-4fcd615d7d6so2381047e87.3
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 05:40:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689338455; x=1691930455;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=uO3BaxYCZ+L/uORC+pf07E8D9o0fBToXSlhtH2de7rw=;
-        b=oxGZgrpIfJhQzZIJqF+aBM+mmaE/bK4naa7fvpgtwek3knax53LGE17XpfHcoS3xJn
-         D2ZvIAugeRv+VGHitrRirxUNf87rDIlel0AAT72jssZzbzlpv4CUt+f8lr4B6M1h3jHM
-         g4vfDbzXoldY4o33AmlhFZkSEN0DZNT8RXX8Jtue5cDwZEj4WTj9d8sBIxAGf3T10fRC
-         vmjqbSwVdd4ExBWkuzSB4hJgG/3dXR9deUWKg/pgdXo8IZMDyZ9srMieLZ78bsaA0xJA
-         EPI9sh3PRjXxpoU5GlP1ihK/PGvQyLwWWkl2UvYQZ8A/UBPd7qliGheUntGi69zj5pA2
-         0tcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689338455; x=1691930455;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uO3BaxYCZ+L/uORC+pf07E8D9o0fBToXSlhtH2de7rw=;
-        b=AKgit+ysV962sCjKMWtenxSYElbqAZK4GqAfKdDTmB4FNLrqLp+y+jmlBC5I1c9LMa
-         A6GzI9fRWdsr4Ey93eqcPv/qx1qAwzHl6cckPb0Ugd975ewDVVm27DN+b8D/tQtHDcbx
-         zXWjDYGKNigfwBY5XhRA49982iG1DGQPvHlsT/ZFDmbPWd1ctZqPhJvEhmP/Tet5CDCn
-         TozMg6LkaNI2itywZzRriZTQRW0deX8AjN30ZVdAJ2FRve54mV0/zHwljixx+eCi27Ht
-         zmcqkNGYPoJoNYwhS6SKamithd3+v+5+01Sfiv0S03AZ1p5/qOa821T4ll6VQV8Bjiz1
-         yNLQ==
-X-Gm-Message-State: ABy/qLbte/CzKMsuSB7HZ/nnaaYUmz1/h0tVQv76UrcsAQ++8wFJ3SXK
-        H3kFLLx7/bDFFGuu6UAVRM2VBA==
-X-Google-Smtp-Source: APBJJlHlAddaubQ/zueOeGxnPlLqyGKtU17F4/ArIFEtjLQai74eAepMpx7KknX5mdh58a5qmuwxRQ==
-X-Received: by 2002:a05:6512:3705:b0:4fb:7a4e:b573 with SMTP id z5-20020a056512370500b004fb7a4eb573mr3610408lfr.5.1689338455608;
-        Fri, 14 Jul 2023 05:40:55 -0700 (PDT)
-Received: from [192.168.1.101] (abxj146.neoplus.adsl.tpnet.pl. [83.9.3.146])
-        by smtp.gmail.com with ESMTPSA id b6-20020ac25e86000000b004fb2244563fsm1482588lfq.289.2023.07.14.05.40.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 05:40:55 -0700 (PDT)
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Date:   Fri, 14 Jul 2023 14:40:48 +0200
-Subject: [PATCH 3/3] arm64: dts: qcom: sc7280: Remove qcom,adsp-bypass-mode
+        Fri, 14 Jul 2023 08:41:06 -0400
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2582D269F;
+        Fri, 14 Jul 2023 05:41:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689338462; x=1720874462;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=kOKU0Oxxh2EfZONWCEwEiRbt3oUTbJJvsq5FBiKlLUE=;
+  b=WLc2MOSX2pjMOz1yMPVBQxpF/nz5R2ILh4I1QBVarpiIghIbEosKECOB
+   WaVj3Nc5cZ4/fuBJKLRHMDAyhaSCRI8fu6mJGRIa+cYZXlSjs5JOGqxJJ
+   AfWL8ArWKI7QRsAPxzVNb8fXtPZIa6gz7mW3thVFFHwyA86z8EZorr9Ck
+   a2xe7iQwxpd1loC1iAvciZ1eEsoAwvStN30V192/U5EvfnpNpffnNE7OP
+   yY6hq1BIc/zM+qfuywAI4y18xWuxW5PiyQXuOJJ3KbahVPvMivWxl+EtP
+   Bw+Dd9zx3F1n2yP8soGS65xy31UjoyzUNa7zDqGYiaWgh8pYB6llgIZcA
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="368103722"
+X-IronPort-AV: E=Sophos;i="6.01,205,1684825200"; 
+   d="scan'208";a="368103722"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 05:41:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="812421841"
+X-IronPort-AV: E=Sophos;i="6.01,205,1684825200"; 
+   d="scan'208";a="812421841"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by FMSMGA003.fm.intel.com with ESMTP; 14 Jul 2023 05:40:58 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1qKI6S-002f1l-2H;
+        Fri, 14 Jul 2023 15:40:56 +0300
+Date:   Fri, 14 Jul 2023 15:40:56 +0300
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Amadeusz =?utf-8?B?U8WCYXdpxYRza2k=?= 
+        <amadeuszx.slawinski@linux.intel.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        alsa-devel@alsa-project.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH v3 15/15] ASoC: Intel: sst: Convert to PCI device IDs
+ defines
+Message-ID: <ZLFCWKqiaJZhx6ci@smile.fi.intel.com>
+References: <20230714202457.423866-1-amadeuszx.slawinski@linux.intel.com>
+ <20230714202457.423866-16-amadeuszx.slawinski@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230714-topic-lpass_lpi_cleanup-v1-3-dc18b5bd14f7@linaro.org>
-References: <20230714-topic-lpass_lpi_cleanup-v1-0-dc18b5bd14f7@linaro.org>
-In-Reply-To: <20230714-topic-lpass_lpi_cleanup-v1-0-dc18b5bd14f7@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        cros-qcom-dts-watchers@chromium.org
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1689338449; l=730;
- i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=DyK40mymfrvw8k/ltntuGU1sfhX2SFcLdrpfHTNW0dU=;
- b=qBnOkFZmC996wH1CYdwJcNu3hlwhZiyzrwhXN24QgaMwaVqj+hEgRFwf2kwMfKM31XoMQltpX
- SPVdPsAQ8r9BXTtayuWOtbsupyVAclRjwoHW2RQCeF7FbIyodHXeW5A
-X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
- pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230714202457.423866-16-amadeuszx.slawinski@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This property isn't used or defined anymore. Get rid of it.
+On Fri, Jul 14, 2023 at 10:24:57PM +0200, Amadeusz Sławiński wrote:
+> Use PCI device IDs from pci_ids.h header. BSW replaces CHV, as 0x22a8
+> was added in PCI header as BSW ID for consistency, as they are same
+> (similar) platforms. The ACPI IDs are used only internally and lower
+> 16 bits uniquely define the device as vendor ID for Intel is 8086 for
+> all of them. Use PCI_DEVICE_DATA() to match PCI device to be consistent
+> with other Intel audio drivers.
 
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
----
- arch/arm64/boot/dts/qcom/sc7280.dtsi | 1 -
- 1 file changed, 1 deletion(-)
+One nit-pick below, otherwise
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index 925428a5f6ae..ce7d318afd57 100644
---- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -2510,7 +2510,6 @@ lpass_tlmm: pinctrl@33c0000 {
- 			compatible = "qcom,sc7280-lpass-lpi-pinctrl";
- 			reg = <0 0x033c0000 0x0 0x20000>,
- 				<0 0x03550000 0x0 0x10000>;
--			qcom,adsp-bypass-mode;
- 			gpio-controller;
- 			#gpio-cells = <2>;
- 			gpio-ranges = <&lpass_tlmm 0 0 15>;
+...
+
+> -	unsigned int		dev_id;
+> +	unsigned short		dev_id;
+
+Thinking more about this change I would probably add a comment on top of
+sst_alloc_drv_context() call in sst_acpi.c to tell that in this case the
+driver handles PCI IDs in ACPI and we are using only device ID part.
+(If real ACPI ID appears, the kstrtouint() returns error, so we are fine
+ with the change)
+
+So, summarize above and add a comment.
 
 -- 
-2.41.0
+With Best Regards,
+Andy Shevchenko
+
 
