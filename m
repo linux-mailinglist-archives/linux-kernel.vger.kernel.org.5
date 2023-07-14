@@ -2,80 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E35CE753E83
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 17:11:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32674753E86
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 17:11:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236299AbjGNPLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 11:11:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43362 "EHLO
+        id S236363AbjGNPLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 11:11:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236349AbjGNPLd (ORCPT
+        with ESMTP id S235723AbjGNPLp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 11:11:33 -0400
-Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com [209.85.210.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A91BB30D8
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 08:11:32 -0700 (PDT)
-Received: by mail-ot1-f71.google.com with SMTP id 46e09a7af769-6b86c0d3b5eso3248290a34.3
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 08:11:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689347492; x=1691939492;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CCLOxUsPk9gij7lrd4gl3ju7/pLr9suuyXvJ5OtLAUQ=;
-        b=VnWPTfNAYcuYIr8jm6puOP13zh0IaQZPqfvKEn4OZSUm8HGksxrt7E2M2PN7y5jmK7
-         5leDQBl2DDt3y/kRyWG0mzQH8q4kafqYRQ0kkaE3Hu3CwneynzKNMojEMvw/0Atz0N1c
-         FFIGzXsqFQ+23ajpDYf0P8s+NQWwfEHBNPwpDGCGhbT3QcJ2X8ySLrzOY6EhGeDba35w
-         nS5qvr/ZlsgyLLTqikPAOaGI1Ssr8OABqG5zgqdJD0YSdLAAsI3Hf4s1cArIliOjtjtj
-         Wpqs877FO1YKW1MWhsLde4Tg8XsdW/CAR3fFCrnslmRxJ1stk5z8sV+jOy96uiQX+ivT
-         aQQw==
-X-Gm-Message-State: ABy/qLY7fTc2xn9+vQFuflBUWfvlMXy6gQ3sov51HgIbIcXpvYHJsbOu
-        yuowFOB6wnrVXwnpPSDIAgnojnuL+ZZYkZB9M3L5Fm3ubdpm
-X-Google-Smtp-Source: APBJJlE6TyCcdhAUrsmWbb8fvxPE8mWG/ukHNruZoQLsPGdacASBBgg9EA/N2Q99G1L6A2y+bsP1WGM7Wx8B6uHLvOQRaJVtfrE4
+        Fri, 14 Jul 2023 11:11:45 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43B0630F2;
+        Fri, 14 Jul 2023 08:11:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=RgISAtnie1KjrmoNex1ps1jVxgVlVHi0wuwdiZIjY3g=; b=LBq+zkLscVVIWra6YTXm/DpAK5
+        /r3UFOA65TvW6v2MAklyS3Os6+nJLFHz+NfoSrGVg4xtutr4ectKhIR7ELImmtWYm81+0FNIibnfk
+        51co6KaPTxao4ZxQ20TbcnhXsjegZ5rOjTzCaoyMympZeVHJpp5XdB/YD+WxlRa3fWbjGgyaf9YQ7
+        au/cfQprF7c6XIbZNZWm4KBUJ+H9uMRhLoo3XxMFDLIk6uBXW0F67sTf83Xl9txwB0EanNPHGtDYK
+        vAYSzxYWMlpSX1UmNOplFpa1siQEW34ym9j0fDl6iMwVX4+89tIpRf+fFnwPSxg2b0KCGpaKdrhWX
+        MkHf6CEg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qKKSJ-0019Rx-S2; Fri, 14 Jul 2023 15:11:40 +0000
+Date:   Fri, 14 Jul 2023 16:11:39 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     tglx@linutronix.de, axboe@kernel.dk, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, dvhart@infradead.org, dave@stgolabs.net,
+        andrealmeid@igalia.com, Andrew Morton <akpm@linux-foundation.org>,
+        urezki@gmail.com, hch@infradead.org, lstoakes@gmail.com,
+        Arnd Bergmann <arnd@arndb.de>, linux-api@vger.kernel.org,
+        linux-mm@kvack.org, linux-arch@vger.kernel.org,
+        malteskarupke@web.de
+Subject: Re: [RFC][PATCH 05/10] mm: Add vmalloc_huge_node()
+Message-ID: <ZLFlq3T13G2Zb7ey@casper.infradead.org>
+References: <20230714133859.305719029@infradead.org>
+ <20230714141218.947137012@infradead.org>
+ <ZLFdstLtPGcNsLGL@casper.infradead.org>
+ <20230714150948.GC3261758@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-X-Received: by 2002:a9d:7488:0:b0:6b8:8894:e4ac with SMTP id
- t8-20020a9d7488000000b006b88894e4acmr4268213otk.3.1689347492003; Fri, 14 Jul
- 2023 08:11:32 -0700 (PDT)
-Date:   Fri, 14 Jul 2023 08:11:31 -0700
-In-Reply-To: <0000000000005921ef05ffddc3b7@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000029c576060073dd62@google.com>
-Subject: Re: [syzbot] [f2fs?] possible deadlock in f2fs_getxattr
-From:   syzbot <syzbot+e5600587fa9cbf8e3826@syzkaller.appspotmail.com>
-To:     chao@kernel.org, jaegeuk@kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230714150948.GC3261758@hirez.programming.kicks-ass.net>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
+On Fri, Jul 14, 2023 at 05:09:48PM +0200, Peter Zijlstra wrote:
+> On Fri, Jul 14, 2023 at 03:37:38PM +0100, Matthew Wilcox wrote:
+> > On Fri, Jul 14, 2023 at 03:39:04PM +0200, Peter Zijlstra wrote:
+> > > +void *vmalloc_huge_node(unsigned long size, gfp_t gfp_mask, int node)
+> > > +{
+> > > +	return __vmalloc_node_range(size, 1, VMALLOC_START, VMALLOC_END,
+> > > +				    gfp_mask, PAGE_KERNEL, VM_ALLOW_HUGE_VMAP,
+> > > +				    node, __builtin_return_address(0));
+> > > +}
+> > > +
+> > >  /**
+> > >   * vmalloc_huge - allocate virtually contiguous memory, allow huge pages
+> > >   * @size:      allocation size
+> > > @@ -3430,9 +3437,7 @@ EXPORT_SYMBOL(vmalloc);
+> > >   */
+> > >  void *vmalloc_huge(unsigned long size, gfp_t gfp_mask)
+> > >  {
+> > > -	return __vmalloc_node_range(size, 1, VMALLOC_START, VMALLOC_END,
+> > > -				    gfp_mask, PAGE_KERNEL, VM_ALLOW_HUGE_VMAP,
+> > > -				    NUMA_NO_NODE, __builtin_return_address(0));
+> > > +	return vmalloc_huge_node(size, gfp_mask, NUMA_NO_NODE);
+> > >  }
+> > 
+> > Isn't this going to result in the "caller" being always recorded as
+> > vmalloc_huge() instead of the caller of vmalloc_huge()?
+> 
+> Durr, I missed that, but it depends, not if the compiler inlines it.
+> 
+> I'll make a common __always_inline helper to cure this.
 
-commit 5eda1ad1aaffdfebdecf7a164e586060a210f74f
-Author: Jaegeuk Kim <jaegeuk@kernel.org>
-Date:   Wed Jun 28 08:00:56 2023 +0000
-
-    f2fs: fix deadlock in i_xattr_sem and inode page lock
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1177322aa80000
-start commit:   3f01e9fed845 Merge tag 'linux-watchdog-6.5-rc2' of git://w..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1377322aa80000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1577322aa80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=29fd3392a08741ef
-dashboard link: https://syzkaller.appspot.com/bug?extid=e5600587fa9cbf8e3826
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1336f364a80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=130a365aa80000
-
-Reported-by: syzbot+e5600587fa9cbf8e3826@syzkaller.appspotmail.com
-Fixes: 5eda1ad1aaff ("f2fs: fix deadlock in i_xattr_sem and inode page lock")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+... or just don't change vmalloc_huge()?  Or make the common helper take
+the __builtin_return_address as a parameter?
