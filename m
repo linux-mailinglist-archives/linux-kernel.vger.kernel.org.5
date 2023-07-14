@@ -2,122 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AA8E75348D
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 10:04:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B17B2753490
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 10:04:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235236AbjGNIEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 04:04:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55714 "EHLO
+        id S235471AbjGNIEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 04:04:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235264AbjGNIDi (ORCPT
+        with ESMTP id S235359AbjGNIEQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 04:03:38 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E98563C1F;
-        Fri, 14 Jul 2023 01:01:17 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 843231FD8E;
-        Fri, 14 Jul 2023 08:01:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1689321676; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Q8U17kbz9Qkptcs1GwSYT3csRlRYjC4fhM5H0d02U/E=;
-        b=odJB0X3qOZtM7xGukmtCbfRh9tQcXwNUCh9xJy4OArvO5BukiOADI4s2idS1syBbnam+zD
-        lxM+AW7ZV44CSH2OfWt/HqRBVGBYbjc23WFlgJKVwi30/2qgAuciKunAbz+0yZjcXABs2k
-        Gz5+uU4OkOrF2XIoQ5OGsLiIfkH0Urg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1689321676;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Q8U17kbz9Qkptcs1GwSYT3csRlRYjC4fhM5H0d02U/E=;
-        b=aQQaKGxcoITzKyKP44+lF3oiDzLXl6huK7wAVryUOU7dge/jmHI5/IDab+h8UHpYUQ+8+C
-        iLYe1lUDzp8idCDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4513513A15;
-        Fri, 14 Jul 2023 08:01:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id KeAdEMwAsWQDSAAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Fri, 14 Jul 2023 08:01:16 +0000
-Message-ID: <7c33a6c3-4ded-e0e4-820d-ffc337da9800@suse.cz>
-Date:   Fri, 14 Jul 2023 10:01:15 +0200
+        Fri, 14 Jul 2023 04:04:16 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D18BB4C27
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 01:01:41 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2b701e1ca63so24628591fa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 01:01:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=atishpatra.org; s=google; t=1689321700; x=1691913700;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ShjQafFlxwj0ZbXGvO6wNGgWYgf4xaRFZkYq02YP6kc=;
+        b=NxLgPV4I19f8IiP60ZnGFSeHPxtkexY32ZSMloC+h1rGlZvabpR6A/95fQRFz3JYYl
+         mA3aygOemm5vn9YIIfhjVvgiQfzkmba/RYXwnACWZ9QvSY934p3EaqHuKQndThA/Ncol
+         PPB/1ojsJfRmvkFBS7VpyIdsWANx5SGYvfneQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689321700; x=1691913700;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ShjQafFlxwj0ZbXGvO6wNGgWYgf4xaRFZkYq02YP6kc=;
+        b=aeXwJ9Wg/hkaCnbUa8jN30b61yblsbz90yS1yAHTAsbvKkKJG59HGQN8f23MBQ75Tj
+         yZbtTz/AsiMtX0p5yZTjueX7gvYNduLDLUciRdzTK9o5YcgxH48fP5yWi/DO7ebHFTNc
+         JXNDkWchPAxVdUJJT6M32fnY+EPgxNTuxzUV44XmrrNdUTvgCK7rn7FWaFdBQ1z7TGeF
+         0/z+4YRvt5MVPFTcBv+Ndwk3CCLGAm95kFRU0F0mZO1Eo663FVQ8U48o8XO2CubhYmBP
+         l2mc8ntH7OTvjgvlvq0wi6gss8fM+zSJRQclxs+hERDRueOp3jYOY3cX9LEUSifXv9R2
+         4Cjw==
+X-Gm-Message-State: ABy/qLbIRdvQFdL9lxUhqlsrAxlaaZ/ympvQwrVOcqYr5zZP+KgEa1Lo
+        VYcUQu0MyYizEfJ+s7XK+052tQlpEPUNs6davhoW
+X-Google-Smtp-Source: APBJJlG8yJgz5jfm4hlpuw8sREsVvtiALqK/rKnopveB5SJ1Aggbn1Z9er70e9nUIoAw3y4SZLdpoCvsmxLPKA6jdac=
+X-Received: by 2002:a2e:8082:0:b0:2b6:d8d5:15b1 with SMTP id
+ i2-20020a2e8082000000b002b6d8d515b1mr2761616ljg.50.1689321700031; Fri, 14 Jul
+ 2023 01:01:40 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 2/2] mm/slub: remove freelist_dereference()
-From:   Vlastimil Babka <vbabka@suse.cz>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>, linux-mm@kvack.org,
-        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Matteo Rizzo <matteorizzo@google.com>,
-        Jann Horn <jannh@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Marco Elver <elver@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        kasan-dev@googlegroups.com, linux-hardening@vger.kernel.org
-References: <20230711134623.12695-3-vbabka@suse.cz>
- <20230711134623.12695-4-vbabka@suse.cz> <202307110917.DEED145F0@keescook>
- <b18ca2ce-5ebc-1a38-bb9d-a8bb9070cdb1@suse.cz>
-Content-Language: en-US
-In-Reply-To: <b18ca2ce-5ebc-1a38-bb9d-a8bb9070cdb1@suse.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+References: <20230703124647.215952-1-alexghiti@rivosinc.com> <20230703124647.215952-5-alexghiti@rivosinc.com>
+In-Reply-To: <20230703124647.215952-5-alexghiti@rivosinc.com>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Fri, 14 Jul 2023 01:01:28 -0700
+Message-ID: <CAOnJCULCcPaHL5WeF=1L=Ge22M6CgGHLPVh7z1dOyhT7S0V5+Q@mail.gmail.com>
+Subject: Re: [PATCH v4 04/10] drivers: perf: Rename riscv pmu sbi driver
+To:     Alexandre Ghiti <alexghiti@rivosinc.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Anup Patel <anup@brainfault.org>,
+        Will Deacon <will@kernel.org>, Rob Herring <robh@kernel.org>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/13/23 09:44, Vlastimil Babka wrote:
-> On 7/11/23 18:21, Kees Cook wrote:
->> On Tue, Jul 11, 2023 at 03:46:25PM +0200, Vlastimil Babka wrote:
->>>  
->>>  #ifndef CONFIG_SLUB_TINY
->>> -- 
->>> 2.41.0
->>> 
->> 
->> I like reducing the complexity here, but I find dropping the "object"
->> reassignment makes this a bit harder to read. What about:
-> 
-> Alright.
-> 
->> 	object = kasan_reset_tag(object);
->> 	unsigned long ptr_addr = (unsigned long)object + s->offset;
->> 	freeptr_t p = *(freeptr_t *)(ptr_addr);
-> 
-> Are we really so benevolent with declaration-after-statement now? :)
+On Mon, Jul 3, 2023 at 5:50=E2=80=AFAM Alexandre Ghiti <alexghiti@rivosinc.=
+com> wrote:
+>
+> That's just cosmetic, no functional changes.
+>
+> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+> Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+> ---
+>  drivers/perf/riscv_pmu_sbi.c   | 4 ++--
+>  include/linux/perf/riscv_pmu.h | 2 +-
+>  2 files changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/perf/riscv_pmu_sbi.c b/drivers/perf/riscv_pmu_sbi.c
+> index 4f3ac296b3e2..83c3f1c4d2f1 100644
+> --- a/drivers/perf/riscv_pmu_sbi.c
+> +++ b/drivers/perf/riscv_pmu_sbi.c
+> @@ -914,7 +914,7 @@ static int pmu_sbi_device_probe(struct platform_devic=
+e *pdev)
+>  static struct platform_driver pmu_sbi_driver =3D {
+>         .probe          =3D pmu_sbi_device_probe,
+>         .driver         =3D {
+> -               .name   =3D RISCV_PMU_PDEV_NAME,
+> +               .name   =3D RISCV_PMU_SBI_PDEV_NAME,
+>         },
+>  };
+>
+> @@ -941,7 +941,7 @@ static int __init pmu_sbi_devinit(void)
+>         if (ret)
+>                 return ret;
+>
+> -       pdev =3D platform_device_register_simple(RISCV_PMU_PDEV_NAME, -1,=
+ NULL, 0);
+> +       pdev =3D platform_device_register_simple(RISCV_PMU_SBI_PDEV_NAME,=
+ -1, NULL, 0);
+>         if (IS_ERR(pdev)) {
+>                 platform_driver_unregister(&pmu_sbi_driver);
+>                 return PTR_ERR(pdev);
+> diff --git a/include/linux/perf/riscv_pmu.h b/include/linux/perf/riscv_pm=
+u.h
+> index 9f70d94942e0..5deeea0be7cb 100644
+> --- a/include/linux/perf/riscv_pmu.h
+> +++ b/include/linux/perf/riscv_pmu.h
+> @@ -21,7 +21,7 @@
+>
+>  #define RISCV_MAX_COUNTERS     64
+>  #define RISCV_OP_UNSUPP                (-EOPNOTSUPP)
+> -#define RISCV_PMU_PDEV_NAME    "riscv-pmu"
+> +#define RISCV_PMU_SBI_PDEV_NAME        "riscv-pmu-sbi"
+>  #define RISCV_PMU_LEGACY_PDEV_NAME     "riscv-pmu-legacy"
+>
+>  #define RISCV_PMU_STOP_FLAG_RESET 1
+> --
+> 2.39.2
+>
 
-I've left the declarations separate for now so it's similar to
-get_freepointer_safe(). Pushed the result to slab/for-6.6/cleanup and
-for-next. Thanks for the reviews!
 
->> 	return freelist_ptr_decode(s, p, ptr_addr);
->> 
->> ?
->> 
->> They're the same result, so either way:
->> 
->> Acked-by: Kees Cook <keescook@chromium.org>
->> 
-> 
-
+Reviewed-by: Atish Patra <atishp@rivosinc.com>
+--=20
+Regards,
+Atish
