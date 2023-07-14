@@ -2,84 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A7A8753B3D
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 14:43:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36BE5753B3E
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 14:43:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234873AbjGNMnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 08:43:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51022 "EHLO
+        id S235469AbjGNMnr convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 14 Jul 2023 08:43:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233758AbjGNMnN (ORCPT
+        with ESMTP id S233758AbjGNMnp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 08:43:13 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33487CE
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 05:42:49 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1b9cdef8619so11664445ad.0
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 05:42:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1689338568; x=1691930568;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pF1G5UAt4ngbjaLsrBFjCg7Dq+2zgqRM/LN9T1v8nyg=;
-        b=NgFvlWvTGo9DYMha3A94fzJBndVcnWYji22YaijvG+0d+GApKV/cYu+6u+Fjf5kS9K
-         z1OVexdj/rlvANRRTiGZWDH2gGo3uKGsPBtL5vyGAxR6lxVt08PmwjeF4ByVn8Z4MiY7
-         o+290JxXvejhqM5y6Dq3YGTZGztijMGhxzn4FwOZjFIxYDuBy93diopz57H0+QPTCkVX
-         MnPU3IWLT1pkwqTTteG2exsP8HA/QPKdHlUiXhBdtDG76+Uz6jJbnzdlQePmQAwxhjsP
-         rVzJpUgS4tIMFcMnXzkPIRyRri3Gc/yrxeV6KnFxVpa4Tk9X9O8yzRXw0YOEh1YaLTzl
-         LwZw==
+        Fri, 14 Jul 2023 08:43:45 -0400
+Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B189ACE
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 05:43:44 -0700 (PDT)
+Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6b9aadde448so1528638a34.0
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 05:43:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689338568; x=1691930568;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=pF1G5UAt4ngbjaLsrBFjCg7Dq+2zgqRM/LN9T1v8nyg=;
-        b=DKcgmqj54YGvlrJEulsFa7568ZUZ6vUQzel8tQQ7DaF3iTy4ug5jac5wAXCq0bs+xv
-         9Bz5hPF8t4dTKazI5VJrcXT5iUOcRBSUX0VjD9Amf2w/xhgqsGLve/neshhzIJbzRiKu
-         ffEW11242INFOBnb0WFppkFw1qVS2tdN/NuwipCG6S3Lkh6EHuGvWiE/jbsFAGRR/naj
-         tOgIX9nL8J335LYafORRTd0r/Ap5Da3RcCsEXtrrDsOyRfGPzT3STh/5sP64SCh37jxW
-         rAeVdvyXCf/yubjxHkEJwk28WAZG066CX5sNsijuR04eD6xsB0mz2QXW6pOk74sKjSOH
-         b4bQ==
-X-Gm-Message-State: ABy/qLZdLJdhQBRPQ0Ht6+rnDJEHzjlaq1jd6kB58gcLPPUiUiXzsnn9
-        rr/44lbyd72rPwGaReaCyaFM3A==
-X-Google-Smtp-Source: APBJJlEwKO1cf0BnnNyxJZUVxF++J3zFgCa9Ts4HV53LHXpyuTDUBEfPR336c2pNThJdrVSUO0ukbg==
-X-Received: by 2002:a17:902:8689:b0:1bb:1a64:5a74 with SMTP id g9-20020a170902868900b001bb1a645a74mr598470plo.33.1689338568711;
-        Fri, 14 Jul 2023 05:42:48 -0700 (PDT)
-Received: from [10.254.16.139] ([139.177.225.225])
-        by smtp.gmail.com with ESMTPSA id b14-20020a170903228e00b001b890b3bbb1sm7667622plh.211.2023.07.14.05.42.44
+        d=1e100.net; s=20221208; t=1689338624; x=1691930624;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Px1vO0AvllUBalN0eYcohDkgadNEXWhdZtlNo8lqudc=;
+        b=SWtJxpg+6y+jYP6i1TsEDNn2ddWYeWc25pMRLbN/yXpT6ZJ/tm/XPydn1KOfM2QRD7
+         aqn3Bf6yACZirGZfAEHED8VxcCmQa51OY0OLnmp/JhFu6wImjoJJoiT/amlvzz8CNqyE
+         xMd6zt0O5u9926tIKGwEoYgRlG12s7Ge1FApoTQYGSULVyXITgagEs2GmWI29TiFSQ6C
+         at81gcv78CiAwAZbIdjbaIpeta3nkJ+eoUcgjA1zoCDBIAaiimDv3gE45iK7MTkiIx2R
+         q9rGlniL9akFA5DjXcnkjnftEM/CfUIg6kD/u6EahyysYVD9CwvL7ID/amyViVCooLSN
+         /3ig==
+X-Gm-Message-State: ABy/qLauylRIG3k72Z9+c3QiJ0hLKiuE1kE1a+9yTzKDqeQfg0s+rRg4
+        unS37im7x47g5R77kvn0yaAPlGO9nPngbA==
+X-Google-Smtp-Source: APBJJlHO/ngT5hlOAbejQ5+Nx8tCaVbNAqQ8YhuwEZ7fs5gcvgNslg/CdlGbJKMkG9/YngxQgx5t/w==
+X-Received: by 2002:a05:6870:d214:b0:1b3:e267:68ab with SMTP id g20-20020a056870d21400b001b3e26768abmr4972311oac.53.1689338623834;
+        Fri, 14 Jul 2023 05:43:43 -0700 (PDT)
+Received: from mail-oo1-f43.google.com (mail-oo1-f43.google.com. [209.85.161.43])
+        by smtp.gmail.com with ESMTPSA id 62-20020a4a1a41000000b00566270e616dsm3845347oof.38.2023.07.14.05.43.42
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 Jul 2023 05:42:48 -0700 (PDT)
-Message-ID: <710342c1-eccd-d2ad-9206-f8770ad30ace@bytedance.com>
-Date:   Fri, 14 Jul 2023 20:42:42 +0800
+        Fri, 14 Jul 2023 05:43:43 -0700 (PDT)
+Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-563439ea4a2so1244580eaf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 05:43:42 -0700 (PDT)
+X-Received: by 2002:a05:6358:913:b0:131:b4c:b868 with SMTP id
+ r19-20020a056358091300b001310b4cb868mr5242387rwi.3.1689338622730; Fri, 14 Jul
+ 2023 05:43:42 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH v2] mm: kfence: allocate kfence_metadata at runtime
-To:     glider@google.com, elver@google.com, dvyukov@google.com,
-        akpm@linux-foundation.org
-Cc:     kasan-dev@googlegroups.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, muchun.song@linux.dev,
-        Peng Zhang <zhangpeng.00@bytedance.com>
-References: <20230712081616.45177-1-zhangpeng.00@bytedance.com>
-From:   Peng Zhang <zhangpeng.00@bytedance.com>
-In-Reply-To: <20230712081616.45177-1-zhangpeng.00@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <cover.1689252746.git.geert@linux-m68k.org> <72746f6d9c47f09fc057ad7a4bbb3b7f423af803.1689252746.git.geert@linux-m68k.org>
+ <87ilamu7e3.fsf@minerva.mail-host-address-is-not-set> <CAMuHMdV1MXexXuRuvW2ap5KA51q_3h9X8jXdYXtFb2RF-BBLnw@mail.gmail.com>
+ <875y6macxu.fsf@minerva.mail-host-address-is-not-set>
+In-Reply-To: <875y6macxu.fsf@minerva.mail-host-address-is-not-set>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 14 Jul 2023 14:43:27 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUrqwQAaNFONO0KOktrRY_twpktAP6=AeKv_8jjdb5_fA@mail.gmail.com>
+Message-ID: <CAMuHMdUrqwQAaNFONO0KOktrRY_twpktAP6=AeKv_8jjdb5_fA@mail.gmail.com>
+Subject: Re: [PATCH 4/8] drm/ssd130x: Add support for DRM_FORMAT_R1
+To:     Javier Martinez Canillas <javierm@redhat.com>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+Hi Javier,
 
-Are there any other comments here?
-Welcome any comments.
+On Fri, Jul 14, 2023 at 2:35 PM Javier Martinez Canillas
+<javierm@redhat.com> wrote:
+> Geert Uytterhoeven <geert@linux-m68k.org> writes:
+> > On Fri, Jul 14, 2023 at 12:14 PM Javier Martinez Canillas
+> > <javierm@redhat.com> wrote:
+> >> Geert Uytterhoeven <geert@linux-m68k.org> writes:
+> >> Thanks a lot for your patch, this has been on my TODO for some time!
+> >>
+> >> > The native display format is monochrome light-on-dark (R1).
+> >> > Hence add support for R1, so monochrome applications can avoid the
+> >> > overhead of back-and-forth conversions between R1 and XR24.
+> >> >
+> >> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Thanks,
-Peng
+> >> > Probably ssd130x->buffer should be allocated on first use.
+> >>
+> >> Yes, that makes sense.
+> >>
+> >> > And why not allocate the buffers using devm_kcalloc()?
+> >>
+> >> I think there are some lifetimes discrepancies between struct device and
+> >> struct drm_device objects. But we could use drm_device managed resources
+> >> helpers, i.e: drmm_kzalloc().
+> >
+> > The display should not be updated after .remove(), so I think plain
+> > devm_kcalloc() should be fine.
+>
+> That was precisely my point, that there could be atomic commits even after
+> the driver has been removed (e.g: if using DRM fbdev emulation, user-space
+> can keep the /dev/fb0 opened and continue updating the framebuffer. That's
+> not released until the fd is closed and struct fb_ops .fb_destroy called.
+>
+> But that's a general rule in DRM, any user-visible resource must not be
+> allocated using device managed resources and instead use the drm_device
+> managed resources helpers. To make sure that are not released until the
+> last call to drm_dev_put():
+
+These buffers are not user-visible, so they should not be accessed
+after .remove().  When these are accessed, the next step would be
+to write the buffer data to the device, which would also fail miserably,
+as the regmap, GPIO, and regulator are hardware resources managed
+through devm_*().
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
