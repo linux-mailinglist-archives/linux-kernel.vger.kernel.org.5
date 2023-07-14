@@ -2,213 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63430754554
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 01:21:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7FDB754558
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 01:23:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229839AbjGNXVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 19:21:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45032 "EHLO
+        id S230079AbjGNXXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 19:23:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229513AbjGNXVX (ORCPT
+        with ESMTP id S229513AbjGNXXH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 19:21:23 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 200E9268F
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 16:21:21 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-3143b88faebso2653508f8f.3
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 16:21:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google; t=1689376879; x=1691968879;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=y5M2QgZVGBb+VWeFQWAnvqfHXL1WLvKX5iBA+CamO0U=;
-        b=mYiMJDc3pl8zJhkYt0b2rx/ph6OSwAAQkDx0dj9Zk3Ey3Lp/5yOwQZUR+mwnNgbDHP
-         kQkw3pWLQuDIVt8NRPr/OSh0XlHTA7hYuU78+IrwtLqKK/FaXqNaQiK0tQ+6Q5fYph/E
-         itGumv5ZLJGhBMTNePzYuYE6FsYbwCSa7Dm+s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689376879; x=1691968879;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=y5M2QgZVGBb+VWeFQWAnvqfHXL1WLvKX5iBA+CamO0U=;
-        b=QTIyJhOJxgHwI7CGkBi+bv5psvWQaGoo5jkqvreOtI8vplq9DDlzvKFZdOjV3nPOVB
-         d4xNZgfHbsxmb/Iih85yflmd3EkJyUZESxX1OrlXQC9x6FIGUfu/Ez8qtHYfPdFebvRX
-         Vz+wwM9wL1feCPgX29Kw7+kU3Ser5zOMci//wg53JuCqYRf62PHOklY3RRdcnEmKydv8
-         KwVgPZjzF1QxHEQjjiW2ejI0eGSctPaMXJqIbDvL1V3ndAXlNT5TzXZY/+PPV0QTth4o
-         URkfyOb96eS4bGpaptZpaEzE2XUByW3gc/CzE10R3H1nw7zxrYKHkCP2fuTW5mredwzb
-         W+gQ==
-X-Gm-Message-State: ABy/qLabMHgNW8bhRm/orcBGCbjuVJdoeUxJ/XpeqoB9AWx1zNk5fLkY
-        lr+aEwi1aw6RHEL5x7Cqh22lt1FLI2EY1vVFe9dDcw==
-X-Google-Smtp-Source: APBJJlEo64DFA6PS7UtIQ6aAUlcMfGL/4400GwDL3YlqJiAftD4NxitH+Xg/lmZ4jTqRv5KShS8My2baDTsH3cRyxNc=
-X-Received: by 2002:adf:eb87:0:b0:314:3864:d3d0 with SMTP id
- t7-20020adfeb87000000b003143864d3d0mr5532920wrn.25.1689376879540; Fri, 14 Jul
- 2023 16:21:19 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230711043453.64095-1-ivan@cloudflare.com> <20230711193612.22c9bc04@kernel.org>
- <CAO3-PbrZHn1syvhb3V57oeXigE_roiHCbzYz5Mi4wiymogTg2A@mail.gmail.com>
- <20230712104210.3b86b779@kernel.org> <CABWYdi3VJU7HUxzKJBKgX9wF9GRvmA0TKVpjuHvJyz_EdpxZFA@mail.gmail.com>
- <20230713201427.2c50fc7b@kernel.org>
-In-Reply-To: <20230713201427.2c50fc7b@kernel.org>
-From:   Ivan Babrou <ivan@cloudflare.com>
-Date:   Fri, 14 Jul 2023 16:21:08 -0700
-Message-ID: <CABWYdi2BGi=iRCfLhmQCqO=1eaQ1WaCG7F9WsJrz-7==ocZidg@mail.gmail.com>
-Subject: Re: [RFC PATCH net-next] tcp: add a tracepoint for tcp_listen_queue_drop
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Yan Zhai <yan@cloudflare.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@cloudflare.com,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Paolo Abeni <pabeni@redhat.com>,
+        Fri, 14 Jul 2023 19:23:07 -0400
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AC7B198A
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 16:23:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689376986; x=1720912986;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=UFNjXLKITbspSo/eDpkcEH18zDiE7dmQzWrzA+9BOXk=;
+  b=lkBV0mrmri4X1qLdl3vJ7Ato2IeceF3qs0dNNU5vsR8yE+5a2uLwjiuF
+   gbuan7YQM/vzSL3Kvfg1AUOX4BM0B8eWFnllsbajRVQoHiqH15sQe/wwc
+   zeISkkyPg3up97eHClB+kCqbAeI/BI9MeNIhxpe9AUzQnMXF9VvcJUV1T
+   LuFpxrshsCfHvvQGo1yJjD9OTuHKL8GfWKIANbFeiW3b2990jVordJZT/
+   BBfFBEHENctbuQcV1yz0rxmODQNIpU6zDkqVH0rTnPo07U8HJm54uFzrI
+   5Viw7W/DON9pmaUf+eqXsbTre4p56Hc618daqaJuBvlfnklv+aCFTGmYl
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10771"; a="350470827"
+X-IronPort-AV: E=Sophos;i="6.01,206,1684825200"; 
+   d="scan'208";a="350470827"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 16:23:05 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10771"; a="1053239783"
+X-IronPort-AV: E=Sophos;i="6.01,206,1684825200"; 
+   d="scan'208";a="1053239783"
+Received: from bmuller-mobl.amr.corp.intel.com (HELO [10.209.37.94]) ([10.209.37.94])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 16:23:04 -0700
+Message-ID: <8333da418828569495f3b92919e6980a5dac0295.camel@linux.intel.com>
+Subject: Re: [Patch v3 3/6] sched/fair: Implement prefer sibling imbalance
+ calculation between asymmetric groups
+From:   Tim Chen <tim.c.chen@linux.intel.com>
+To:     Shrikanth Hegde <sshegde@linux.vnet.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Ricardo Neri <ricardo.neri@intel.com>,
+        "Ravi V . Shankar" <ravi.v.shankar@intel.com>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Len Brown <len.brown@intel.com>, Mel Gorman <mgorman@suse.de>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        David Ahern <dsahern@kernel.org>
+        Valentin Schneider <vschneid@redhat.com>,
+        Ionela Voinescu <ionela.voinescu@arm.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        naveen.n.rao@linux.vnet.ibm.com,
+        Yicong Yang <yangyicong@hisilicon.com>,
+        Barry Song <v-songbaohua@oppo.com>,
+        Chen Yu <yu.c.chen@intel.com>, Hillf Danton <hdanton@sina.com>,
+        Tobias Huschle <huschle@linux.ibm.com>
+Date:   Fri, 14 Jul 2023 16:23:04 -0700
+In-Reply-To: <f9a51b01bdddd739faedb196156e69fbad41f9f5.camel@linux.intel.com>
+References: <cover.1688770494.git.tim.c.chen@linux.intel.com>
+         <4eacbaa236e680687dae2958378a6173654113df.1688770494.git.tim.c.chen@linux.intel.com>
+         <c5a49136-3549-badd-ec8f-3de4e7bb7b7d@linux.vnet.ibm.com>
+         <f9a51b01bdddd739faedb196156e69fbad41f9f5.camel@linux.intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 8:14=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wr=
-ote:
-> > I don't know why kfree_skb is called so much. I also don't agree with
-> > Yan that it's not actually too much, because it's a lot (especially
-> > compared with near zero for my proposed tracepoint). I can easily see
-> > 300-500k calls per second into it:
-> >
-> > $ perf stat -I 1000 -a -e skb:kfree_skb -- sleep 10
-> > #           time             counts unit events
-> >      1.000520165             10,108      skb:kfree_skb
-> >      2.010494526             11,178      skb:kfree_skb
-> >      3.075503743             10,770      skb:kfree_skb
-> >      4.122814843             11,334      skb:kfree_skb
-> >      5.128518432             12,020      skb:kfree_skb
-> >      6.176504094             11,117      skb:kfree_skb
-> >      7.201504214             12,753      skb:kfree_skb
-> >      8.229523643             10,566      skb:kfree_skb
-> >      9.326499044            365,239      skb:kfree_skb
-> >     10.002106098            313,105      skb:kfree_skb
-> > $ perf stat -I 1000 -a -e skb:kfree_skb -- sleep 10
-> > #           time             counts unit events
-> >      1.000767744             52,240      skb:kfree_skb
-> >      2.069762695            508,310      skb:kfree_skb
-> >      3.102763492            417,895      skb:kfree_skb
-> >      4.142757608            385,981      skb:kfree_skb
-> >      5.190759795            430,154      skb:kfree_skb
-> >      6.243765384            405,707      skb:kfree_skb
-> >      7.290818228            362,934      skb:kfree_skb
-> >      8.297764298            336,702      skb:kfree_skb
-> >      9.314287243            353,039      skb:kfree_skb
-> >     10.002288423            251,414      skb:kfree_skb
-> >
-> > Most of it is NOT_SPECIFIED (1s data from one CPU during a spike):
-> >
-> > $ perf script | sed 's/.*skbaddr=3D//' | awk '{ print $NF }' | sort |
-> > uniq -c | sort -n | tail
-> >       1 TCP_CLOSE
-> >       2 NO_SOCKET
-> >       4 TCP_INVALID_SEQUENCE
-> >       4 TCP_RESET
-> >      13 TCP_OLD_DATA
-> >      14 NETFILTER_DROP
-> >    4594 NOT_SPECIFIED
-> >
-> > We can start a separate discussion to break it down by category if it
-> > would help. Let me know what kind of information you would like us to
-> > provide to help with that. I assume you're interested in kernel stacks
-> > leading to kfree_skb with NOT_SPECIFIED reason, but maybe there's
-> > something else.
->
-> Just the stacks.
+On Fri, 2023-07-14 at 13:44 -0700, Tim Chen wrote:
+> > >=20
+> > > +static inline long sibling_imbalance(struct lb_env *env,
+> > > +				    struct sd_lb_stats *sds,
+> > > +				    struct sg_lb_stats *busiest,
+> > > +				    struct sg_lb_stats *local)
+> > > +{
+> > > +	int ncores_busiest, ncores_local;
+> > > +	long imbalance;
+> >=20
+> > can imbalance be unsigned int or unsigned long? as sum_nr_running is un=
+signed int.
+>=20
+> It could be made unsigned long.=20
+>=20
+>=20
+Though in theory the imbalance can be both positive or negative. We are
+considering only positive imbalance here as we only pull task to local grou=
+p
+and do not push task from local group.
 
-Here you go: https://lore.kernel.org/netdev/CABWYdi00L+O30Q=3DZah28QwZ_5RU-=
-xcxLFUK2Zj08A8MrLk9jzg@mail.gmail.com/
-
-> > Even if I was only interested in one specific reason, I would still
-> > have to arm the whole tracepoint and route a ton of skbs I'm not
-> > interested in into my bpf code. This seems like a lot of overhead,
-> > especially if I'm dropping some attack packets.
->
-> That's what I meant with my drop vs exception comment. We already have
-> two tracepoints on the skb free path (free and consume), adding another
-> shouldn't rise too many eyebrows.
-
-I'm a bit confused. Previously you said:
-
-> Specifically what I'm wondering is whether we should also have
-> a separation between policy / "firewall drops" and error / exception
-> drops. Within the skb drop reason codes, I mean.
-
-My understanding was that you proposed adding more SKB_DROP_REASON_*,
-but now you seem to imply that we might want to add another
-tracepoint. Could you clarify which path you have in mind?
-
-We can add a few reasons that would satisfy my need by covering
-whatever results into tcp_listendrop() calls today. The problem is:
-unless we remove some other reasons from kfree_skb, adding more
-reasons for firewall drops / exceptions wouldn't change the cost at
-all. We'd still have the same number of calls into the tracepoint and
-the condition to find "interesting" reasons would be the same:
-
-if (reason =3D=3D SKB_DROP_REASON_TCP_OVERFLOW_OR_SOMETHING)
-
-It still seems very expensive to consume a firehose of kfree_skb just
-to find some rare nuggets.
-
-> > Perhaps a lot of extra NOT_SPECIFIED stuff can be fixed and removed
-> > from kfree_skb. It's not something I can personally do as it requires
-> > much deeper network code understanding than I possess. For TCP we'll
-> > also have to add some extra reasons for kfree_skb, because currently
-> > it's all NOT_SPECIFIED (no reason set in the accept path):
-> >
-> > * https://elixir.bootlin.com/linux/v6.5-rc1/source/net/ipv4/tcp_input.c=
-#L6499
-> > * https://elixir.bootlin.com/linux/v6.5-rc1/source/net/ipv4/tcp_ipv4.c#=
-L1749
-> >
-> > For UDP we already have SKB_DROP_REASON_SOCKET_RCVBUFF, so I tried my
-> > best to implement what I wanted based on that. It's not very
-> > approachable, as you'd have to extract the destination port yourself
-> > from the raw skb. As Yan said, for TCP people often rely on skb->sk,
-> > which is just not present when the incoming SYN is dropped. I failed
-> > to find a good example of extracting a destination port that I could
-> > replicate. So far I have just a per-reason breakdown working:
-> >
-> > * https://github.com/cloudflare/ebpf_exporter/pull/233
-> >
-> > If you have an ebpf example that would help me extract the destination
-> > port from an skb in kfree_skb, I'd be interested in taking a look and
-> > trying to make it work.
-> >
-> > The need to extract the protocol level information in ebpf is only
-> > making kfree_skb more expensive for the needs of catching rare cases
-> > when we run out of buffer space (UDP) or listen queue (TCP). These two
-> > cases are very common failure scenarios that people are interested in
-> > catching with straightforward tracepoints that can give them the
-> > needed information easily and cheaply.
-> >
-> > I sympathize with the desire to keep the number of tracepoints in
-> > check, but I also feel like UDP buffer drops and TCP listen drops
-> > tracepoints are very much justified to exist.
->
-> I'm not completely opposed to the tracepoints where needed. It's more
-> of trying to make sure we do due diligence on the existing solutions.
-> Or maybe not even due diligence as much as pay off some technical debt.
-
-The arguments for a new tracepoint from my due diligence:
-
-1. There are too many calls into kfree_skb. Maybe that's fixable to a
-degree, but there would still be a big discrepancy in the number of
-calls between my proposed targeted tracepoint and skb:kfree_skb. For
-some setups this might not be feasible.
-2. It's hard to extract the necessary information from skb without an
-sk attached. Both from usability perspective (you need to parse the
-network header yourself with a non-trivial amount of code) and from
-cost perspective (parsing is not zero cost). The latter doesn't matter
-as much if we target a specific reason.
+Tim
