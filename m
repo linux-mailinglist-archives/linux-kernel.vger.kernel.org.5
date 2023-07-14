@@ -2,160 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D75A2752E5A
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 02:45:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F1C7752E5C
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 02:47:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234498AbjGNApp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 20:45:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47942 "EHLO
+        id S232649AbjGNArl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 20:47:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231292AbjGNApn (ORCPT
+        with ESMTP id S230454AbjGNArj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 20:45:43 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DDC026B6;
-        Thu, 13 Jul 2023 17:45:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1689295542; x=1720831542;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=BZyAeb29yLT1h4dm/ASvrLm3jTIvvdsnRAwPfvo9k6Y=;
-  b=wPR/h9pUAbRgrOesG4OAObdrWH0pS56u5+xTUOrtC0OPyVZiVRaJMF6+
-   8L1ut+JxP/JsF5LpnhNPE5WBonSRP272b+c20/1IovniN9kKGLeX45Xt2
-   9BIgv8Vf8V0PedJTnjx/Zaw7/UuuBLk1KVM1kmlB/OAucDaSiK9qz18VD
-   b3J+q3grW7jLsnQmB2HXd1lfByD5HyrQ/rmvtgl65R5dNPCkSd+Eaa0Jn
-   I4rAhNYw/HLCX4L4dalLs6glBVnqXC88sAXn4vIq2Mx0IrjlVAAzw71Ax
-   UWNVlmHKzLgMvcztH4+gyHhRz8kyayR1+fuhmnfeIilaq3Tle9S5YXUk+
-   Q==;
-X-IronPort-AV: E=Sophos;i="6.01,204,1684825200"; 
-   d="scan'208";a="224602311"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 13 Jul 2023 17:45:40 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Thu, 13 Jul 2023 17:45:39 -0700
-Received: from hat-linux.microchip.com (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2507.21 via Frontend Transport; Thu, 13 Jul 2023 17:45:39 -0700
-From:   <Tristram.Ha@microchip.com>
-To:     Michael Grzeschik <m.grzeschik@pengutronix.de>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        "Andrew Lunn" <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "Vladimir Oltean" <olteanv@gmail.com>, <netdev@vger.kernel.org>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        <linux-kernel@vger.kernel.org>, <UNGLinuxDriver@microchip.com>,
-        Tristram Ha <Tristram.Ha@microchip.com>
-Subject: [PATCH v2 net] net: dsa: microchip: correct KSZ8795 static MAC table access
-Date:   Thu, 13 Jul 2023 17:46:22 -0700
-Message-ID: <1689295582-2726-1-git-send-email-Tristram.Ha@microchip.com>
-X-Mailer: git-send-email 1.9.1
+        Thu, 13 Jul 2023 20:47:39 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 766D81BEB
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 17:47:38 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-4f122ff663eso2322050e87.2
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 17:47:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1689295656; x=1691887656;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=k7y296KedplM2A3mke9UNwqTxqKMP8WdPVepgqrON6E=;
+        b=QPK4Vb9V1JiKbKNNG1W4kMrTt/sbfQYFbO+F+IzDPH4/Sc61AQqk0LodIW9hZeZYj8
+         a/yP5YwNng8/3JemhpHqBe3ELJQgYkgSm3tSyjJLb4657jtRsucgRZUKGy0rcJVvWgOl
+         V78bOBdfllbw8T5Ws3BnF2hFlJpaxWMKPWvcM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689295656; x=1691887656;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=k7y296KedplM2A3mke9UNwqTxqKMP8WdPVepgqrON6E=;
+        b=JJeDHElJjYSx4hgts+j3ITaEgaMkcIBSB7vsSMV4sHd9jU8FVKBR18LnsQlG0QfeHw
+         FPw4Yxv6whYqytokXTvX4BXL5/PVMispZUaS6/RYDxr186dOY22K/pQ8P7S9cla/g2N9
+         X5b9zHqZ+OwaXVBxtyg5/Y6yj5aZDjvCmKy5kRdzmGcDkIz6VDkglE0vvS+g6FpwefL5
+         BjccLbLhsxOaQYA4QPWa1y8rXa6H6tIqKARUTmsCYOoxo4oHWQnsSN840nhS5Jbb/qHX
+         4tBSAxMtSUvQoJscSsirR+ZDJmZ63s5XDJNNjlc8Q8km08Hn8VO73PYwlnIg0CBviDCp
+         0z2g==
+X-Gm-Message-State: ABy/qLYWv2BwfGkOM4iMmUSRLcBTVhzB1kw1KnsIPVgtt3vtHlGDS+ml
+        JYDg3deCzvd4bcGd9KPHZMpFVn4VvlFB7eqtp0BJMWC7
+X-Google-Smtp-Source: APBJJlEqVWixmoHMC2VHiHC/eEAiN/ERKcQakw7+RbAHcV4hAWrCaznrh7o3NDcXdtIdpVavzVGmRw==
+X-Received: by 2002:a19:8c04:0:b0:4f8:75cf:fdd7 with SMTP id o4-20020a198c04000000b004f875cffdd7mr2166485lfd.22.1689295656347;
+        Thu, 13 Jul 2023 17:47:36 -0700 (PDT)
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
+        by smtp.gmail.com with ESMTPSA id m8-20020ac24248000000b004f76658694csm1282559lfl.238.2023.07.13.17.47.35
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 Jul 2023 17:47:35 -0700 (PDT)
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-4fb7589b187so2337582e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 17:47:35 -0700 (PDT)
+X-Received: by 2002:ac2:5388:0:b0:4f6:3677:54e with SMTP id
+ g8-20020ac25388000000b004f63677054emr2106458lfh.36.1689295655179; Thu, 13 Jul
+ 2023 17:47:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230713230417.1504773-1-kuba@kernel.org>
+In-Reply-To: <20230713230417.1504773-1-kuba@kernel.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 13 Jul 2023 17:47:18 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiyGEZKpb1h=OTYzxaam_g0ek4GKyCPCvVz4fOh+BzCEA@mail.gmail.com>
+Message-ID: <CAHk-=wiyGEZKpb1h=OTYzxaam_g0ek4GKyCPCvVz4fOh+BzCEA@mail.gmail.com>
+Subject: Re: [PATCH docs] docs: maintainers: suggest including lore link for
+ conflicts known to linux-next
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     corbet@lwn.net, workflows@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tristram Ha <Tristram.Ha@microchip.com>
+On Thu, 13 Jul 2023 at 16:04, Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> I'm not completely sure what is the best practice for notifying Linus
+> about conflicts which have already been resolved in linux-next.
+> I presume they are a no-op to him, so maybe we shouldn't even call
+> them out?
 
-The KSZ8795 driver code was modified to use on KSZ8863/73, which has
-different register definitions.  Some of the new KSZ8795 register
-information are wrong compared to previous code.
+No, I do *not* somehow auto-merge stuff that has been merged in
+linux-next. I will do my own merge, and see the conflicts, and I will
+resolve them independently of anything that has happened in
+linux-next.
 
-KSZ8795 also behaves differently in that the STATIC_MAC_TABLE_USE_FID
-and STATIC_MAC_TABLE_FID bits are off by 1 when doing MAC table reading
-than writing.  To compensate that a special code was added to shift the
-register value by 1 before applying those bits.  This is wrong when the
-code is running on KSZ8863, so this special code is only executed when
-KSZ8795 is detected.
+I may then check what linux-next did, particularly if the merge was
+non-trivial, but honestly, that's fairly rare. And if the merge was so
+non-trivial that I check what happened in linux-next, it's actually
+not all that unlikely that I ended up resolving it differently anyway.
+I send out emails saying "that was wrong in linux-next" somewhat
+regularly.
 
-Fixes: 4b20a07e103f ("net: dsa: microchip: ksz8795: add support for ksz88xx chips")
-Signed-off-by: Tristram Ha <Tristram.Ha@microchip.com>
-Reviewed-by: Horatiu Vultur <horatiu.vultur@microchip.com>
----
-v2
-- Send to more maintainers.  Add review from Horatiu Vultur
+So if you were notified by Stephen that there is a conflict in
+linux-next, and it has been resolved there, that means that as far as
+linux-next is concerned - and *only* as fat as linux-next is concerned
+- that resolution will now continue to be done in linux-next.
 
-v1
-- Use correct commit for fixes
+But you should preferably mention said conflict when you then send the
+pull request to me.
 
- drivers/net/dsa/microchip/ksz8795.c    | 8 +++++++-
- drivers/net/dsa/microchip/ksz_common.c | 8 ++++----
- drivers/net/dsa/microchip/ksz_common.h | 7 +++++++
- 3 files changed, 18 insertions(+), 5 deletions(-)
+It's perfectly fine to just mention it - say "there's a conflict in
+so-and-so with the pull from tree so-and-so". That will give me a
+heads-up to not be surprised about it.
 
-diff --git a/drivers/net/dsa/microchip/ksz8795.c b/drivers/net/dsa/microchip/ksz8795.c
-index 84d502589f8e..91aba470fb2f 100644
---- a/drivers/net/dsa/microchip/ksz8795.c
-+++ b/drivers/net/dsa/microchip/ksz8795.c
-@@ -506,7 +506,13 @@ static int ksz8_r_sta_mac_table(struct ksz_device *dev, u16 addr,
- 		(data_hi & masks[STATIC_MAC_TABLE_FWD_PORTS]) >>
- 			shifts[STATIC_MAC_FWD_PORTS];
- 	alu->is_override = (data_hi & masks[STATIC_MAC_TABLE_OVERRIDE]) ? 1 : 0;
--	data_hi >>= 1;
-+
-+	/* KSZ8795 family switches have STATIC_MAC_TABLE_USE_FID and
-+	 * STATIC_MAC_TABLE_FID definitions off by 1 when doing read on the
-+	 * static MAC table compared to doing write.
-+	 */
-+	if (ksz_is_ksz87xx(dev))
-+		data_hi >>= 1;
- 	alu->is_static = true;
- 	alu->is_use_fid = (data_hi & masks[STATIC_MAC_TABLE_USE_FID]) ? 1 : 0;
- 	alu->fid = (data_hi & masks[STATIC_MAC_TABLE_FID]) >>
-diff --git a/drivers/net/dsa/microchip/ksz_common.c b/drivers/net/dsa/microchip/ksz_common.c
-index 813b91a816bb..b18cd170ec06 100644
---- a/drivers/net/dsa/microchip/ksz_common.c
-+++ b/drivers/net/dsa/microchip/ksz_common.c
-@@ -331,13 +331,13 @@ static const u32 ksz8795_masks[] = {
- 	[STATIC_MAC_TABLE_VALID]	= BIT(21),
- 	[STATIC_MAC_TABLE_USE_FID]	= BIT(23),
- 	[STATIC_MAC_TABLE_FID]		= GENMASK(30, 24),
--	[STATIC_MAC_TABLE_OVERRIDE]	= BIT(26),
--	[STATIC_MAC_TABLE_FWD_PORTS]	= GENMASK(24, 20),
-+	[STATIC_MAC_TABLE_OVERRIDE]	= BIT(22),
-+	[STATIC_MAC_TABLE_FWD_PORTS]	= GENMASK(20, 16),
- 	[DYNAMIC_MAC_TABLE_ENTRIES_H]	= GENMASK(6, 0),
--	[DYNAMIC_MAC_TABLE_MAC_EMPTY]	= BIT(8),
-+	[DYNAMIC_MAC_TABLE_MAC_EMPTY]	= BIT(7),
- 	[DYNAMIC_MAC_TABLE_NOT_READY]	= BIT(7),
- 	[DYNAMIC_MAC_TABLE_ENTRIES]	= GENMASK(31, 29),
--	[DYNAMIC_MAC_TABLE_FID]		= GENMASK(26, 20),
-+	[DYNAMIC_MAC_TABLE_FID]		= GENMASK(22, 16),
- 	[DYNAMIC_MAC_TABLE_SRC_PORT]	= GENMASK(26, 24),
- 	[DYNAMIC_MAC_TABLE_TIMESTAMP]	= GENMASK(28, 27),
- 	[P_MII_TX_FLOW_CTRL]		= BIT(5),
-diff --git a/drivers/net/dsa/microchip/ksz_common.h b/drivers/net/dsa/microchip/ksz_common.h
-index 28444e5924f9..a4de58847dea 100644
---- a/drivers/net/dsa/microchip/ksz_common.h
-+++ b/drivers/net/dsa/microchip/ksz_common.h
-@@ -601,6 +601,13 @@ static inline void ksz_regmap_unlock(void *__mtx)
- 	mutex_unlock(mtx);
- }
- 
-+static inline bool ksz_is_ksz87xx(struct ksz_device *dev)
-+{
-+	return dev->chip_id == KSZ8795_CHIP_ID ||
-+	       dev->chip_id == KSZ8794_CHIP_ID ||
-+	       dev->chip_id == KSZ8765_CHIP_ID;
-+}
-+
- static inline bool ksz_is_ksz88x3(struct ksz_device *dev)
- {
- 	return dev->chip_id == KSZ8830_CHIP_ID;
--- 
-2.17.1
+You can point to the email that Stephen sent (using lore), or you can
+quote his resolution (or your own, if you do a test-merge, like many
+people do) if you want.  It's not a requirement.
 
+But I do kind of want to see the "there's a conflict" mention, not
+just to have a heads-up. It's also a sign that you are actually
+keeping track of what happens in linux-next and are on top of things.
+
+Because I've had _too_ many pull requests that actually turned out to
+have had problems in linux-next - merge related or not - and the
+developer having not tracked anything at all despite having been told
+about said problems, and just sent the resulting untested crap to me.
+
+So the "there's a conflict" note ends up having that kind of secondary
+meaning. It gives me the warm and fuzzies that the developer has
+actually reacted to what happened in linux-next.
+
+The corollary to that is that when I see a conflict - even if it's
+completely trivial - and I see it in linux-next too, and the conflict
+was never mentioned, I go "ok, this maintainer never actually reacted
+to anything that Stephen said about his tree".
+
+That often says more about the situation in general than about the
+particular conflict.
+
+             Linus
