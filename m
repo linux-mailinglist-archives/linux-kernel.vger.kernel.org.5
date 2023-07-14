@@ -2,57 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CEFA752FA0
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 04:57:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54D63752FA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 04:57:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231547AbjGNC5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 22:57:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33344 "EHLO
+        id S234646AbjGNC54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 22:57:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232573AbjGNC5B (ORCPT
+        with ESMTP id S234671AbjGNC5x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 22:57:01 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D116198A;
-        Thu, 13 Jul 2023 19:56:59 -0700 (PDT)
-Received: from dggpeml500026.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4R2GKR2KRlzLnmC;
-        Fri, 14 Jul 2023 10:54:35 +0800 (CST)
-Received: from [10.174.178.66] (10.174.178.66) by
- dggpeml500026.china.huawei.com (7.185.36.106) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 14 Jul 2023 10:56:56 +0800
-Message-ID: <3d5a0d6c-1dcd-7a0d-1f5c-a38e0e15fd85@huawei.com>
-Date:   Fri, 14 Jul 2023 10:56:56 +0800
+        Thu, 13 Jul 2023 22:57:53 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 344542D61;
+        Thu, 13 Jul 2023 19:57:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689303473; x=1720839473;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=Tkvgh+OdvlZ0aXoaPxIcbLqEf8O6M8/JMk2iz07gXdU=;
+  b=JlwmdNv6xDQoOrsFPvj6d6W4eET3fgu4bf70+KmSQ8CNKvOrz6/C2jpr
+   xP7W4dgvnn6VAFDEdF2Kn6RzPl3ALmtgdR9k5HSaQ4A6Z22NGCGUpPQ32
+   CD+gZxTselkUuveATPNu2kBk2wP9e1w9lE5HMCdaTiEYYOTmZMUPfRgj4
+   EVVTo06hbJUa4UG61WIxRlJmisfHEUrb2yrklLWboTZK41rAsv17miaFp
+   kFlpKvFmCBG0Y3xsqGWSTPzAWUdfr4+V6wlot040bB1BPA+WJv4N92iul
+   G3aD6l1DrcfWxCUm7n3Y0v+110fL+hs7nEMcVKBL6oA0thxewCrgv/aDq
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="368927127"
+X-IronPort-AV: E=Sophos;i="6.01,204,1684825200"; 
+   d="scan'208";a="368927127"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2023 19:57:52 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="846303604"
+X-IronPort-AV: E=Sophos;i="6.01,204,1684825200"; 
+   d="scan'208";a="846303604"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.252.191.49]) ([10.252.191.49])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2023 19:57:45 -0700
+Message-ID: <362e4343-dcf1-58fc-7ac9-756c65bb0df6@linux.intel.com>
+Date:   Fri, 14 Jul 2023 10:57:38 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.0.2
-Subject: Re: [PATCH net 2/3] selftests: tc: add 'ct' action kconfig dep
-To:     Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>, Shuah Khan <shuah@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Paul Blakey <paulb@mellanox.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        <mptcp@lists.linux.dev>
-CC:     Pedro Tammela <pctammela@mojatatu.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>, <stable@vger.kernel.org>
-References: <20230713-tc-selftests-lkft-v1-0-1eb4fd3a96e7@tessares.net>
- <20230713-tc-selftests-lkft-v1-2-1eb4fd3a96e7@tessares.net>
-From:   shaozhengchao <shaozhengchao@huawei.com>
-In-Reply-To: <20230713-tc-selftests-lkft-v1-2-1eb4fd3a96e7@tessares.net>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+ Thunderbird/102.13.0
+Cc:     baolu.lu@linux.intel.com, opensource.kernel@vivo.com,
+        Thierry Reding <treding@nvidia.com>
+Subject: Re: [PATCH v4] iommu: remove redundant parameter check in
+ tegra_smmu_debugfs_init()
+Content-Language: en-US
+To:     Minjie Du <duminjie@vivo.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        "open list:TEGRA IOMMU DRIVERS" <linux-tegra@vger.kernel.org>,
+        "open list:IOMMU SUBSYSTEM" <iommu@lists.linux.dev>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20230713072825.10348-1-duminjie@vivo.com>
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <20230713072825.10348-1-duminjie@vivo.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.66]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500026.china.huawei.com (7.185.36.106)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,40 +73,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2023/7/13 15:28, Minjie Du wrote:
+> debugfs_create_file() will return early if smmu->debugfs is an error
+> pointer, so an extra error check is not needed.
+> 
+> Signed-off-by: Minjie Du<duminjie@vivo.com>
+> Acked-by: Thierry Reding<treding@nvidia.com>
 
+Greg keeps reminding that no error branch for debugfs, so
 
-On 2023/7/14 5:16, Matthieu Baerts wrote:
-> When looking for something else in LKFT reports [1], I noticed most of
-> the tests were skipped because the "teardown stage" did not complete
-> successfully.
-> 
-> Pedro found out this is due to the fact CONFIG_NF_FLOW_TABLE is required
-> but not listed in the 'config' file. Adding it to the list fixes the
-> issues on LKFT side. CONFIG_NET_ACT_CT is now set to 'm' in the final
-> kconfig.
-> 
-> Fixes: c34b961a2492 ("net/sched: act_ct: Create nf flow table per zone")
-> Cc: stable@vger.kernel.org
-> Link: https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230711/testrun/18267241/suite/kselftest-tc-testing/test/tc-testing_tdc_sh/log [1]
-> Link: https://lore.kernel.org/netdev/0e061d4a-9a23-9f58-3b35-d8919de332d7@tessares.net/T/ [2]
-> Suggested-by: Pedro Tammela <pctammela@mojatatu.com>
-> Signed-off-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-> ---
->   tools/testing/selftests/tc-testing/config | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/tools/testing/selftests/tc-testing/config b/tools/testing/selftests/tc-testing/config
-> index 6e73b09c20c8..d1ad29040c02 100644
-> --- a/tools/testing/selftests/tc-testing/config
-> +++ b/tools/testing/selftests/tc-testing/config
-> @@ -5,6 +5,7 @@ CONFIG_NF_CONNTRACK=m
->   CONFIG_NF_CONNTRACK_MARK=y
->   CONFIG_NF_CONNTRACK_ZONES=y
->   CONFIG_NF_CONNTRACK_LABELS=y
-> +CONFIG_NF_FLOW_TABLE=m
->   CONFIG_NF_NAT=m
->   CONFIG_NETFILTER_XT_TARGET_LOG=m
->   
-> 
+Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
 
-Tested-by: Zhengchao Shao <shaozhengchao@huawei.com>
+Best regards,
+baolu
