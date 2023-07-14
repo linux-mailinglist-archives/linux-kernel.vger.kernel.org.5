@@ -2,98 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56A0375429B
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 20:34:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ED677542A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 20:35:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236730AbjGNSeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 14:34:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46070 "EHLO
+        id S236879AbjGNSe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 14:34:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235790AbjGNSeV (ORCPT
+        with ESMTP id S236871AbjGNSey (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 14:34:21 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E2D4C6;
-        Fri, 14 Jul 2023 11:34:20 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2EB0961DC2;
-        Fri, 14 Jul 2023 18:34:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3688CC433C7;
-        Fri, 14 Jul 2023 18:34:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689359659;
-        bh=WCHZqBac1jgCHUwyQJ8QVnJ2MMfqq+0zZRukAUThmGY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=V7+5HVNbJ+kVtknpGS3EVELMYaJkXEDkYUDOz/24CouQom4qQTS9GLJHRCSuUhv8Q
-         A88iqTZdapvFE6Px0Qoe8iUwkyXx2OI8vDikvNtQfsmBXdg0RQWDsLTmYzVziHgGP/
-         sTWBmPzxpMJc9RK6a8fIGsNJeflF8UJELz1lzh3usMe6fWIX5dcDIiPKzwne0s8k/A
-         c8DTZN4KzG2u+ck6g/I/lXX+4kc7+gwtFTy16lP2FCBCIgwh5XQscj28lOQE13Dtvb
-         i3EDdo+MO36q5ebAup9NVKZuZSCfaY4ELOWhg+AT6noUngBXfQQD6HB5NaiPBW05a3
-         xA1SVc9sKB+pQ==
-Date:   Fri, 14 Jul 2023 11:34:18 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Thorsten Leemhuis <linux@leemhuis.info>, corbet@lwn.net,
-        workflows@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org
-Subject: Re: [PATCH docs] docs: maintainer: document expectations of small
- time maintainers
-Message-ID: <20230714113418.49dfac7e@kernel.org>
-In-Reply-To: <a7d0381c-c99e-4dba-9156-cc07a86bdc39@sirena.org.uk>
-References: <20230713223432.1501133-1-kuba@kernel.org>
-        <f61a12c6-9587-9cb4-122e-dc3a74e58bd1@leemhuis.info>
-        <20230714102218.687ee2ea@kernel.org>
-        <a7d0381c-c99e-4dba-9156-cc07a86bdc39@sirena.org.uk>
+        Fri, 14 Jul 2023 14:34:54 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CB3B2D79
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 11:34:51 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id e9e14a558f8ab-3460770afe2so14485ab.1
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 11:34:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689359690; x=1691951690;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MoxXHdLDuf7uBFW6SzS0r7koKHamZIMQJhfLSozBhPo=;
+        b=CoJVUT8LU2AtfsX0295LW0wALbl6vjYJVVvw4PYNsoOUACUrTE5e7vF2/JNBuTVytu
+         1YN5mfJ5LmOjGrkFWCjokami+/m/20rMXkXJE+kyg8lWJV1fM/eT2A5BSdTJVC10fUVP
+         m/jcur+F1HfXOrnBNG3g4Z19YMly7vmf9OEGqCUncUEzhxkpRosdoOP4mfNJoabA4aFt
+         bFSjNtQ8UDmaME5akhRaiUq6QjCF6ow/oqaG67xGj8OmK0bkihegJlrVL02S3uaHb+gx
+         KJOLY1eELEHcsQjQJkzgzu2IlUsCPPJn84DLtUo2c4kVvsCgeYxQ7CLrtnN9yNYVzjuO
+         7vsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689359690; x=1691951690;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MoxXHdLDuf7uBFW6SzS0r7koKHamZIMQJhfLSozBhPo=;
+        b=TjsFDk/08yDjPGH2vnIZ0W1TBuNU7yTA2oN5XMsNQuyZHTbwULGnlSvoiw++3sl8VV
+         hGIjLEOsq6aOFDm9xqk9Ot4ifXFnxVXT2A9HHjXg5EN2hjw9FJDTqAdPoTgxwDVx/jkK
+         1quPXETmXCSzEU8HkPOd048DVC/DNY9Q8XhR1w84ME2n5TWAwRvisVALrFArV5TEn2e6
+         fbwXwQme8XORQFc2h2AE5vG6dCiPodVvoqFmdb9KE+OPuYNvvn0c51lTkxXTxzhtGekF
+         jM21sVUqGM1QejzGkY/JNnh1D2DZbD64vvGddzC4vITEqq9oC3EGscsEBnsMAi9HCwe2
+         hHiQ==
+X-Gm-Message-State: ABy/qLYN0SZnkMeiPyN2eS+hfjHqzBnJD8w10auRTFiXa44FdH7JqEr+
+        WoKbzMjyQYaKrpuR6g4/GJyvaDNkherjq5Aby6co3g==
+X-Google-Smtp-Source: APBJJlFBXB7QiI9ztuQ6QNS2GQgouY4NGeveevYonN6Nbqt7+SK1nGopO9WtPJnQWR/2BpnoHFgPXaVz7Pqdzg6CKF4=
+X-Received: by 2002:a05:6e02:1a61:b0:33d:8f9f:9461 with SMTP id
+ w1-20020a056e021a6100b0033d8f9f9461mr972322ilv.18.1689359690226; Fri, 14 Jul
+ 2023 11:34:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <1687443219-11946-1-git-send-email-yangtiezhu@loongson.cn> <1412dbaf-56f4-418b-85ea-681b1c44cc26@app.fastmail.com>
+In-Reply-To: <1412dbaf-56f4-418b-85ea-681b1c44cc26@app.fastmail.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Fri, 14 Jul 2023 11:34:38 -0700
+Message-ID: <CAP-5=fWmPQ9vtH1t9pSPCPBiOFxQQe43C7Bk4amLS08ASAnwGg@mail.gmail.com>
+Subject: Re: [PATCH v3 0/2] Unify uapi bitsperlong.h
+To:     Arnd Bergmann <arnd@arndb.de>, Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, loongarch@lists.linux.dev,
+        Linux-Arch <linux-arch@vger.kernel.org>, bpf@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, loongson-kernel@lists.loongnix.cn
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 14 Jul 2023 18:59:08 +0100 Mark Brown wrote:
-> > If we try to fend off anyone who doesn't understand common meaning 
-> > of words the document will be very long and painful to read.  
-> 
-> That's true, but "bug" is one of those things where there is a frequent
-> disconnect on definitions, and when coupled with the must respond bit I
-> can see things going wrong.
+On Thu, Jun 22, 2023 at 8:10=E2=80=AFAM Arnd Bergmann <arnd@arndb.de> wrote=
+:
+>
+> On Thu, Jun 22, 2023, at 16:13, Tiezhu Yang wrote:
+> > v3:
+> >   -- Check the definition of __BITS_PER_LONG first at
+> >      the beginning of uapi/asm-generic/bitsperlong.h
+> >
 
-Right, I agree the "what's a bug" arguments often happen but they
-happen primarily when people are trying to get Greg to pull patches
-into stable. Or when people try to fast path their "oh, so important
-feature" into Linus's tree skipping -next.
+Thanks for doing this cleanup! I just wanted to report an issue I ran
+into with building the Linux perf tool. The header guard in:
+tools/include/asm-generic/bitsperlong.h
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/too=
+ls/include/asm-generic/bitsperlong.h
 
-The simple way to put it would be if the resulting code goes to stable
-or linux/master then it was a bug.
+Caused an issue with building:
+tools/perf/util/cs-etm.c
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/too=
+ls/perf/util/cs-etm.c
 
-But we can't expect from the user to know if the problem is stable
-material, or even whether their problem is a bug in the first place.
-Simple example - WiFi cards which don't support AP mode. User may try
-to run an AP, and report it doesn't work. They may not know whether
-it's HW limitation or a bug. The maintainer responding with "it's not
-supported, sorry" does not seem to me to be a high bar.
+The issue was that cs-etm.c would #include a system header, which
+would transitively include a header with the same header guard. This
+led to the tools/include/asm-generic/bitsperlong.h being ignored and
+the compilation of tools/perf/util/cs-etm.c failing due to a missing
+define. My local workaround is:
 
-Also, in my defense, I do give a rough ballpark of what we consider to
-be a problem we expect to be addressed:
+```
+diff --git a/tools/include/asm-generic/bitsperlong.h
+b/tools/include/asm-generic/bitsperlong.h
+index 2093d56ddd11..88508a35cb45 100644
+--- a/tools/include/asm-generic/bitsperlong.h
++++ b/tools/include/asm-generic/bitsperlong.h
+@@ -1,6 +1,6 @@
+/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef __ASM_GENERIC_BITS_PER_LONG
+-#define __ASM_GENERIC_BITS_PER_LONG
++#ifndef __LINUX_TOOLS_ASM_GENERIC_BITS_PER_LONG
++#define __LINUX_TOOLS_ASM_GENERIC_BITS_PER_LONG
+#include <uapi/asm-generic/bitsperlong.h>
+@@ -21,4 +21,4 @@
+#define small_const_nbits(nbits) \
+(__builtin_constant_p(nbits) && (nbits) <=3D BITS_PER_LONG && (nbits) > 0)
+-#endif /* __ASM_GENERIC_BITS_PER_LONG */
++#endif /* __LINUX_TOOLS_ASM_GENERIC_BITS_PER_LONG */
+```
 
-  ... bug reports of reasonable quality. The bug reports range from
-  users reporting real life crashes, thru errors discovered in fuzzing
-  to reports of issues with the code found by static analysis tools 
-  and new compiler warnings.
+I'm not sure if a wider fix is necessary for this, but I thought it
+worthwhile to report that there are potential issues. I don't think we
+can use #pragma once, as an alternative to header guards, to avoid
+this kind of name collision.
 
-Just in case someone thought that maintainers are their tech support.
-Then again, I don't want to completely exclude technical questions which
-aren't straight up crashes because some of those are reasonable, should
-be answered or even result in improving docs or error reporting.
+Thanks,
+Ian
 
-It's a balancing act :(
+
+> > v2:
+> >   -- Check __CHAR_BIT__ and __SIZEOF_LONG__ rather than
+> >      __aarch64__, __riscv, __loongarch__, thanks Ruoyao
+> >   -- Update the code comment and commit message
+> >
+> > v1:
+> >   -- Rebase on 6.4-rc6
+> >   -- Only unify uapi bitsperlong.h for arm64, riscv and loongarch
+> >   -- Remove uapi bitsperlong.h of hexagon and microblaze in a new patch
+> >
+> > Here is the RFC patch:
+> > https://lore.kernel.org/linux-arch/1683615903-10862-1-git-send-email-ya=
+ngtiezhu@loongson.cn/
+>
+> I've applied these to the asm-generic tree now
+>
+> Thanks,
+>
+>    Arnd
