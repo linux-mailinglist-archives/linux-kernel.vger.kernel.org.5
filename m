@@ -2,134 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD786753A5B
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 14:08:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6D54753A5F
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 14:09:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235679AbjGNMIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 08:08:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56348 "EHLO
+        id S235713AbjGNMJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 08:09:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230101AbjGNMIX (ORCPT
+        with ESMTP id S235703AbjGNMJD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 08:08:23 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF51730ED
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 05:08:22 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id ca18e2360f4ac-783698a37beso73060939f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 05:08:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689336502; x=1691928502;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=16R55gbmSXiUXNQxWIymx0I+9penedcTPq9wO+7lCos=;
-        b=y7REO+92dtiIq5DKsoK3i79K/GnZSa/0jsg3cYmJ61hmgl+xGQi99YOyPD8I6hC90M
-         uEVjY0HxmwMjSqIBEW2L2jSWB7fPRl+viANMkl6lB12vQamLIfw6RX96y17x8aZrOnZE
-         FJKVhrTYfT7jR4HCSsvJhujjait9JKKT2rxxcljLx1DYdJT+MfehkAGS2szwGq/+YV7e
-         oiMcVoajwbImsrbWDE8CQI72B0O8XgrU2KlzdweygcP7IPBPblgFPLkZec/FvOk4rbTu
-         w9Qsg++U0F2Z7Fv3DpwvEhzezoSeZKdg/1R24iTz/Vs//zsr4EFutglEzCa7uwQTbgcH
-         2Clw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689336502; x=1691928502;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=16R55gbmSXiUXNQxWIymx0I+9penedcTPq9wO+7lCos=;
-        b=NGXgGyStUjohafNPUs4Rvmko2bSrRVTTARmmCOl1KpbAMmFA7fv6OXQlvjsDRUcJbC
-         PntlK93daz+RFa7Y7yU4elDaxAHnu6iq/GOO/P4TEmF3EsRVt6iPAnkpJ2KFsm4LHnC/
-         oDMlkmC3XY0Po+abA5g2AMpAfwuCylhemGGXVlzQ6r5Gqr3UjC/Pyye1VksOHbZZ+d22
-         ryjsQmYyM91m7BR87PHJuHFpohoghVfbRXxWlx/17eNGAZ/jUw/XD5hWWxraCNEJ+QCW
-         dnvGCwCoRxzo94NKJCPOXpON/DlTTjNrdMCW7BJrAwDnU6ppuC0ydxS7ePR0jP6ft1mX
-         SYrg==
-X-Gm-Message-State: ABy/qLYPtwjUE+O1gJasSb3FqBsmZfZV/hQNstKgDhBJWt3z2kpN13j1
-        tHnB1gPdSLCWk0sVHJyk6mYB1f2zprLpZ4YKIDcvzA==
-X-Google-Smtp-Source: APBJJlEwFYgIUXPPJElRO68HwWFqWYYSyd6C+l4du1rFD3cDPeB7/6KVej7KINqm9RfTK1Q8xzx//FIEVChIy9gkIZ8=
-X-Received: by 2002:a6b:3c0c:0:b0:785:ff35:f340 with SMTP id
- k12-20020a6b3c0c000000b00785ff35f340mr4602898iob.14.1689336502095; Fri, 14
- Jul 2023 05:08:22 -0700 (PDT)
+        Fri, 14 Jul 2023 08:09:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41BFC212B
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 05:09:00 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CAC9D61D0B
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 12:08:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82604C433C7;
+        Fri, 14 Jul 2023 12:08:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689336539;
+        bh=ueNI3t0Mv8sO9gYq/lortMTOageznrbcZc2q6B44u3Y=;
+        h=From:To:Cc:Subject:Date:From;
+        b=TzSasItR7UHGVQ8cCetOx6g7JiXeMStQYKcjT/xkP6QKqg0fHijzi4DyvHfMQKwyt
+         xdP8NO5QP3yEm5X0hS00Cq2l5QxpJUf+36hukZovjlw01f4taXtfXk7iyXr8uAmatc
+         EcjLSDp9WjuqtidXX7sq5k56fezrKHo/osy5/bKItxPMDKYOB8qa/7AyomN5IyUNj5
+         fy5A6NHTsRTywff+hA+dk75BBqy5EzilTCcloJH1gykb1PvaIRn3PVeOUXjLRRyvlC
+         dYYvz44k8798Qbb7OSu0rf9ZYee0K+bLvchE/Crba7TqG8PAqxpJqC4Bn1iws8NUNc
+         HxB0Cb6F06LgQ==
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Anna-Maria Behnsen <anna-maria@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: [PATCH 0/3] tick/nohz cleanups
+Date:   Fri, 14 Jul 2023 14:08:49 +0200
+Message-Id: <20230714120852.23573-1-frederic@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230713125706.2884502-1-glider@google.com> <20230713125706.2884502-2-glider@google.com>
- <ZLA0TwHZOgAGCgKX@smile.fi.intel.com> <CAG_fn=WsPC_qMZfbVQHbXq_cGXP4ZfYkyGyJPzaAKSqurxoibw@mail.gmail.com>
- <ZLEBgGSsmOPs4Zu5@smile.fi.intel.com> <ZLEvM1s65L1k0PTx@fedora> <ZLExRvCytbxBcUef@smile.fi.intel.com>
-In-Reply-To: <ZLExRvCytbxBcUef@smile.fi.intel.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Fri, 14 Jul 2023 14:07:45 +0200
-Message-ID: <CAG_fn=XFBFByn7i1aw69rttJK9GZWSge81aa8yTK=qFZYAE7AQ@mail.gmail.com>
-Subject: Re: [v2 1/5] lib/bitmap: add bitmap_{set,get}_value_unaligned()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     William Breathitt Gray <william.gray@linaro.org>,
-        catalin.marinas@arm.com, will@kernel.org, pcc@google.com,
-        andreyknvl@gmail.com, linux@rasmusvillemoes.dk,
-        yury.norov@gmail.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, eugenis@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 1:28=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Fri, Jul 14, 2023 at 07:19:15AM -0400, William Breathitt Gray wrote:
-> > On Fri, Jul 14, 2023 at 11:04:16AM +0300, Andy Shevchenko wrote:
-> > > On Thu, Jul 13, 2023 at 08:05:34PM +0200, Alexander Potapenko wrote:
-> > > > On Thu, Jul 13, 2023 at 7:29=E2=80=AFPM Andy Shevchenko
-> > > > <andriy.shevchenko@linux.intel.com> wrote:
-> > > > > On Thu, Jul 13, 2023 at 02:57:01PM +0200, Alexander Potapenko wro=
-te:
-> > > > > > The two new functions allow setting/getting values of length up=
- to
-> > > > > > BITS_PER_LONG bits at arbitrary position in the bitmap.
-> > > > >
-> > > > > A couple of years (?) ago it was a series to achieve something li=
-ke this with
-> > > > > better (?) code. Why not resurrect that one?
-> > > > >
-> > > > > https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg2195=
-426.html
-> > > >
-> > > > It looks more compact thanks to GENMASK, I can cook something based=
- on
-> > > > the proposed bitmap_{set,get}_value (and change the names if you
-> > > > prefer the shorter ones).
-> > > > But I'd better avoid pulling in the rest of that series without a s=
-trong need.
-> > >
-> > > William, what do you think on this?
-> > >
-> > > I'm personally prefer William's version as not only it was published =
-first
-> > > it was carefully designed and got a lot of review already. We just ha=
-dn't had
-> > > the user for it that time.
-> >
-> > Yes, that version went through several revisions so it's been well
-> > tested and known to work -- as you pointed out it just lacked the users
-> > to warrant merging it into the tree. If it statisfies the use-case
-> > required here now, then I think we should it pick it up rather than
-> > reinvent the solution again.
-> >
-> > Also, we probably don't need the "clump" code in there, so perhaps
-> > splitting it out to just the bitmap_{set,get}_value relevant code is
-> > fine.
->
-> Agree, thank you for your comments!
->
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
-So would it be fine if I split off bitmap_set_value() and
-bitmap_get_value() from that series and send it (with the appropriate
-attribution) instead of my patch 1/5?
-We'll probably still need to retain patch 2/5 (with the function names chan=
-ged).
+After a few exchanges with Joel I realized that some things in tick/nohz
+are really not welcoming reviewers. Here's just a few cleanups.
+
+Frederic Weisbecker (3):
+  tick/nohz: Rename the tick handlers to more self-explanatory names
+  tick/nohz: Update obsolete comments
+  tick/nohz: Don't shutdown the lowres tick from itself
+
+ kernel/time/tick-sched.c | 78 +++++++++++++++++++++++++++-------------
+ 1 file changed, 53 insertions(+), 25 deletions(-)
+
+-- 
+2.34.1
+
