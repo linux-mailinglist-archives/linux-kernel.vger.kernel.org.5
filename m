@@ -2,159 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C731F753D16
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 16:20:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D76B753D2A
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 16:22:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235833AbjGNOU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 10:20:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36800 "EHLO
+        id S235346AbjGNOWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 10:22:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235553AbjGNOUM (ORCPT
+        with ESMTP id S235407AbjGNOWV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 10:20:12 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE05312E
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 07:20:00 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9939fbb7191so398766166b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 07:20:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1689344399; x=1691936399;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TL4iPDnWm7LI7dooTGYVCYljPJYJzbf9kW0UMI/E3E8=;
-        b=fET5mheW2k8XUXyCZgr27r2S9eemW47Zml2RjJmVZyJa6RxgKX38TLREi0uUyQ65yK
-         jSGBL1/GR3mB13uvWizvy6Tx1Co8Sv9uFVxkTHU1HA6DT+PaSInTystxarYkKtyDTgd8
-         KrL6NGvz/vVSNmANyBpD4E7mcuQSp8VB3UIRBXInlWxCmPxprdUcZ5Q5cRifRqP5FMCY
-         cDoOhltg0/cfN5w2vBvmO3IK4d4YIOVBppyzkcEEMPbbC+uNzVR3BCB+ojAZuDLIGRIV
-         ScLMdhan5tSU1Yww7m2rFz5bIwIdG1kTi5rSEIxRDYLHiHYoTDS0Z48DW7PKBs2QrhRH
-         lLOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689344399; x=1691936399;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TL4iPDnWm7LI7dooTGYVCYljPJYJzbf9kW0UMI/E3E8=;
-        b=EWGvA5lhpWXIRZKIjapi8T/dSaX6fk1rVhChXS17PGC4VpP6bWLyIeTGQ5HD3avLsz
-         6G4bMfF0GJtufiZH0btjSHZoMbpBlUSVzkdPTkh6sQ/GpabMlT+D+gAuiO4mS7+P+zqX
-         a3ZvsJdNmMGJQ1VCznno7RX14ghmcSZsMvEyFah3qBmOYdtXs4g+2kZKfor3Nsc3gqMf
-         BxsqkpBG8HEBwa+WDK0OOu92brF8ZHNu/Bvg74QOGAAwoBs2FMp+TiVsZFmUp/CTm7mb
-         sC9TiNGc5XQBOqSFJ/yxHLcQ32Tt/I07mZfyRIDHo7cXAD5nVbkixO9mxaLP4ULF0xb1
-         Ox/g==
-X-Gm-Message-State: ABy/qLYGlRLZ2d2BWkJv8hgTGW4smjrrEKuLF47iNclzq6ehENAbSIEK
-        TrIDJ/HIC/ktzIid0T7qgRV7Tw==
-X-Google-Smtp-Source: APBJJlEQIvA3n/Prr51crDxtReiG/q/Se2PDT6dKD9tdWOl1w72csMERG1dYfF3M+wYIMbNXDH9elQ==
-X-Received: by 2002:a17:907:6d19:b0:98d:abd4:4000 with SMTP id sa25-20020a1709076d1900b0098dabd44000mr3312257ejc.35.1689344399312;
-        Fri, 14 Jul 2023 07:19:59 -0700 (PDT)
-Received: from zh-lab-node-5.home ([2a02:168:f656:0:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id n11-20020a1709061d0b00b00982cfe1fe5dsm5469294ejh.65.2023.07.14.07.19.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 07:19:58 -0700 (PDT)
-From:   Anton Protopopov <aspsk@isovalent.com>
-To:     Martin KaFai Lau <martin.lau@linux.dev>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Hou Tao <houtao1@huawei.com>, Joe Stringer <joe@isovalent.com>,
-        Anton Protopopov <aspsk@isovalent.com>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf-next 3/3] bpf: allow any program to use the bpf_map_sum_elem_count kfunc
-Date:   Fri, 14 Jul 2023 14:21:00 +0000
-Message-Id: <20230714142100.42265-4-aspsk@isovalent.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230714142100.42265-1-aspsk@isovalent.com>
-References: <20230714141747.41560-1-aspsk@isovalent.com>
- <20230714142100.42265-1-aspsk@isovalent.com>
+        Fri, 14 Jul 2023 10:22:21 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 893749B;
+        Fri, 14 Jul 2023 07:22:20 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 25BA061D27;
+        Fri, 14 Jul 2023 14:22:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDF5AC433C7;
+        Fri, 14 Jul 2023 14:22:18 +0000 (UTC)
+Date:   Fri, 14 Jul 2023 10:22:17 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Zheng Yejian <zhengyejian1@huawei.com>
+Subject: Re: [PATCH 2/2] tracing: Add free_trace_iter_content() helper
+ function
+Message-ID: <20230714102217.35e2153c@gandalf.local.home>
+In-Reply-To: <20230714174757.4ab9157a2edb32d35224edfb@kernel.org>
+References: <20230713114510.04c452ca@gandalf.local.home>
+        <20230713114700.450e7a17@gandalf.local.home>
+        <20230714174757.4ab9157a2edb32d35224edfb@kernel.org>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Register the bpf_map_sum_elem_count func for all programs, and update the
-map_ptr subtest of the test_progs test to test the new functionality.
+On Fri, 14 Jul 2023 17:47:57 +0900
+Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
 
-The usage is allowed as long as the pointer to the map is trusted (when
-using tracing programs) or is a const pointer to map, as in the following
-example:
+> > @@ -6709,7 +6723,12 @@ static int tracing_open_pipe(struct inode *inode, struct file *filp)
+> >  	}
+> >  
+> >  	trace_seq_init(&iter->seq);
+> > -	iter->trace = tr->current_trace;
+> > +
+> > +	iter->trace = kzalloc(sizeof(*iter->trace), GFP_KERNEL);
+> > +	if (!iter->trace)
+> > +		goto fail;
+> > +
+> > +	*iter->trace = *tr->current_trace;  
+> 
+> Hmm, you allocate iter->trace here (again)
 
-    struct {
-            __uint(type, BPF_MAP_TYPE_HASH);
-            ...
-    } hash SEC(".maps");
+Bah, that looks like it got out of sync with the previous patch (which
+removed that). That's not suppose to be there.
 
-    ...
+I'll fix this an send out a v2. Thanks for catching that!
 
-    static inline int some_bpf_prog(void)
-    {
-            struct bpf_map *map = (struct bpf_map *)&hash;
-            __s64 count;
-
-            count = bpf_map_sum_elem_count(map);
-
-            ...
-    }
-
-Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
----
- kernel/bpf/map_iter.c                            | 2 +-
- tools/testing/selftests/bpf/progs/map_ptr_kern.c | 5 +++++
- 2 files changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/bpf/map_iter.c b/kernel/bpf/map_iter.c
-index 011adb41858e..6fc9dae9edc8 100644
---- a/kernel/bpf/map_iter.c
-+++ b/kernel/bpf/map_iter.c
-@@ -226,6 +226,6 @@ static const struct btf_kfunc_id_set bpf_map_iter_kfunc_set = {
- 
- static int init_subsystem(void)
- {
--	return register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &bpf_map_iter_kfunc_set);
-+	return register_btf_kfunc_id_set(BPF_PROG_TYPE_UNSPEC, &bpf_map_iter_kfunc_set);
- }
- late_initcall(init_subsystem);
-diff --git a/tools/testing/selftests/bpf/progs/map_ptr_kern.c b/tools/testing/selftests/bpf/progs/map_ptr_kern.c
-index db388f593d0a..3325da17ec81 100644
---- a/tools/testing/selftests/bpf/progs/map_ptr_kern.c
-+++ b/tools/testing/selftests/bpf/progs/map_ptr_kern.c
-@@ -103,6 +103,8 @@ struct {
- 	__type(value, __u32);
- } m_hash SEC(".maps");
- 
-+__s64 bpf_map_sum_elem_count(struct bpf_map *map) __ksym;
-+
- static inline int check_hash(void)
- {
- 	struct bpf_htab *hash = (struct bpf_htab *)&m_hash;
-@@ -115,6 +117,8 @@ static inline int check_hash(void)
- 	VERIFY(hash->elem_size == 64);
- 
- 	VERIFY(hash->count.counter == 0);
-+	VERIFY(bpf_map_sum_elem_count(map) == 0);
-+
- 	for (i = 0; i < HALF_ENTRIES; ++i) {
- 		const __u32 key = i;
- 		const __u32 val = 1;
-@@ -123,6 +127,7 @@ static inline int check_hash(void)
- 			return 0;
- 	}
- 	VERIFY(hash->count.counter == HALF_ENTRIES);
-+	VERIFY(bpf_map_sum_elem_count(map) == HALF_ENTRIES);
- 
- 	return 1;
- }
--- 
-2.34.1
-
+-- Steve
