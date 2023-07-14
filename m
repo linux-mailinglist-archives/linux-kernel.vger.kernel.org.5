@@ -2,108 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E167753717
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:50:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B6CD75371A
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:51:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235958AbjGNJuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 05:50:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40306 "EHLO
+        id S234549AbjGNJvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 05:51:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236019AbjGNJuM (ORCPT
+        with ESMTP id S236019AbjGNJvC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 05:50:12 -0400
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 348783AA8;
-        Fri, 14 Jul 2023 02:49:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689328196; x=1720864196;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=3F1gJUZuwGS/+WhrOPDx6vo6HdvA/IOcyCdKuC7K65g=;
-  b=j6VGNL60jqczI4B2aFdELMDzQNATqfD+1WdIdT/wJtNsnvf7omryd3OZ
-   EQh9BarpsaZjLdR0dN9Wrwg2kfkDB/B1ob6P1RWNdRx5c5p5l6lnVP7m5
-   kMVViHYAbJ5ZjSNnXrtrgJ3mZbPJmt3rRzFCUzOXmrRdRv6nsCb8bieXS
-   g1INdMZmIbetItvFkmg9oK7Nw3MwVSDA1Ssc30YY35EMU4wJtkS0rK3Oj
-   t74gNG2KNjgQbu1r8/UbKy+o/44GxqvsQGrCDo6roe05MClExF09yi5xD
-   cdPlpcEZGV10/ssbLESY9d6J9lX4NbNSFvs1v92EEUp/cSFSG2nvcWebt
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="368985776"
-X-IronPort-AV: E=Sophos;i="6.01,204,1684825200"; 
-   d="scan'208";a="368985776"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 02:49:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="716284935"
-X-IronPort-AV: E=Sophos;i="6.01,204,1684825200"; 
-   d="scan'208";a="716284935"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.49.109])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 02:49:53 -0700
-Message-ID: <af01d060-dbaa-aa54-8203-3da5fcbc0a79@intel.com>
-Date:   Fri, 14 Jul 2023 12:49:48 +0300
+        Fri, 14 Jul 2023 05:51:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC6681BD4
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 02:50:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689328215;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tBjp82gLLLlocN70gzT39Xi/h+/6LoHEroJf4qpzUyQ=;
+        b=Vg/STtZ0aJv8jCD9kFc5pmA6vETyBGgIPTpPBjAioD5tO0Io1QmWJ1cj/iHcL7Q2/11wMt
+        8HwESYrkWL1SGHomRwxQAu3k/2A7/ZAQfAD+O++a8uhR6hRqwjZtzSPo3twBfZWAnhgUDq
+        FU2fMXMzu+cwN8G6kp3AzYHV/74aBx0=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-638-dAtySRrUNHmm1ql7wZKQwg-1; Fri, 14 Jul 2023 05:50:14 -0400
+X-MC-Unique: dAtySRrUNHmm1ql7wZKQwg-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-315998d6e7fso1013033f8f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 02:50:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689328213; x=1691920213;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tBjp82gLLLlocN70gzT39Xi/h+/6LoHEroJf4qpzUyQ=;
+        b=kSb9HSLbxJe9u5InDJgbs80stXB8dzr6yd7hg9ClnCfKnxd1HjvXJCIA6ydaNLNDns
+         aHI6vJYWc5cUDMzIVL/qgISOGcBejuFtHZLd4KuLilc9wK6l2mXAXgh63zBcmX6jqJHq
+         65nQINi8JUFdnZMB1hWMg4mqz4ZJ/O7840CGkPoVgA/hip0Ch80Ecw028JIZm+tBNp86
+         uqf15sm51AEdXfWsYsOKGCNLTPvFSUrFc3W8vXoAPdSGFNcSa5QhlkLHAZyJyACjgpHP
+         AWcv9hcGjESE9meYzUHmQpgGL5kMPrPRoq5BKhoPEPTEgGqseL9lRfkayDvuIbiCAxMX
+         5P5w==
+X-Gm-Message-State: ABy/qLbToOOzqHShv/5u1iUXjLkp43lp8JT1X68gnsZFaNiZPWr2miq2
+        4bux7SsSrYNOmDHdOucKXNCG2tw/nx4l4xaIAn3KepwjetctNaMunN+HxqHWpM1/Nun/EWTF932
+        QNpAg3AWQt+7T6ItBDQKZ2Wdc
+X-Received: by 2002:adf:ea10:0:b0:314:35ce:a0e7 with SMTP id q16-20020adfea10000000b0031435cea0e7mr3545416wrm.16.1689328213582;
+        Fri, 14 Jul 2023 02:50:13 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlFh1wPKblkmTBw8OQ1NLIUngbHtYwtP+MmS66mPVwKsVEsfrpflPboxtBmMk3of1k+PN6KJlg==
+X-Received: by 2002:adf:ea10:0:b0:314:35ce:a0e7 with SMTP id q16-20020adfea10000000b0031435cea0e7mr3545397wrm.16.1689328213266;
+        Fri, 14 Jul 2023 02:50:13 -0700 (PDT)
+Received: from localhost ([91.126.32.244])
+        by smtp.gmail.com with ESMTPSA id g12-20020a5d46cc000000b0031455482d1fsm10372260wrs.47.2023.07.14.02.50.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Jul 2023 02:50:12 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 2/8] drm/dumb-buffers: Fix drm_mode_create_dumb() for
+ bpp < 8
+In-Reply-To: <5ba8ac5e465121b646a59487dc75b27017e0c769.1689252746.git.geert@linux-m68k.org>
+References: <cover.1689252746.git.geert@linux-m68k.org>
+ <5ba8ac5e465121b646a59487dc75b27017e0c769.1689252746.git.geert@linux-m68k.org>
+Date:   Fri, 14 Jul 2023 11:50:11 +0200
+Message-ID: <87o7keu8j0.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [PATCH 09/58] mmc: sdhci-pic32: Convert to platform remove
- callback returning void
-Content-Language: en-US
-To:     Yangtao Li <frank.li@vivo.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230713080807.69999-1-frank.li@vivo.com>
- <20230713080807.69999-9-frank.li@vivo.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <20230713080807.69999-9-frank.li@vivo.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/07/23 11:07, Yangtao Li wrote:
-> The .remove() callback for a platform driver returns an int which makes
-> many driver authors wrongly assume it's possible to do error handling by
-> returning an error code. However the value returned is (mostly) ignored
-> and this typically results in resource leaks. To improve here there is a
-> quest to make the remove callback return void. In the first step of this
-> quest all drivers are converted to .remove_new() which already returns
-> void.
-> 
-> Trivially convert this driver from always returning zero in the remove
-> callback to the void returning variant.
-> 
-> Cc: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> Signed-off-by: Yangtao Li <frank.li@vivo.com>
+Geert Uytterhoeven <geert@linux-m68k.org> writes:
 
-For the following patches:
+> drm_mode_create_dumb() calculates the number of characters per pixel
+> from the number of bits per pixel by rounding up, which is not correct
+> as the actual value of cpp may be non-integer.  While we do not need to
+> care here about complex formats like YUV, bpp < 8 is a valid use case.
+>
+>   - The overflow check for the buffer width is not correct if bpp < 8.
+>     However, it doesn't hurt, as widths larger than U32_MAX / 8 should
+>     not happen for real anyway.  Add a comment to clarify.
+>   - Calculating the stride from the number of characters per pixel is
+>     not correct.  Fix this by calculating it from the number of bits per
+>     pixel instead.
+>
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+> Why is drm_mode_create_dumb.size __u64?  The test for "args->height >
 
-[PATCH 09_58] mmc: sdhci-pic32: Convert to platform remove callback returning void - Yangtao Li <frank.li@vivo.com> - 2023-07-13 1107
-[PATCH 10_58] mmc: sdhci: milbeaut: Convert to platform remove callback returning void - Yangtao Li <frank.li@vivo.com> - 2023-07-13 1107
-[PATCH 12_58] mmc: sdhci-of-at91: Convert to platform remove callback returning void - Yangtao Li <frank.li@vivo.com> - 2023-07-13 1107
-[PATCH 15_58] mmc: sdhci-pxav3: Convert to platform remove callback returning void - Yangtao Li <frank.li@vivo.com> - 2023-07-13 1107
-[PATCH 19_58] mmc: xenon: Convert to platform remove callback returning void - Yangtao Li <frank.li@vivo.com> - 2023-07-13 1107
-[PATCH 20_58] mmc: sdhci-s3c: Convert to platform remove callback returning void - Yangtao Li <frank.li@vivo.com> - 2023-07-13 1107
-[PATCH 27_58] mmc: sdhci-of-arasan: Convert to platform remove callback returning void - Yangtao Li <frank.li@vivo.com> - 2023-07-13 1107
-[PATCH 28_58] mmc: sdhci-of-dwcmshc: Convert to platform remove callback returning void - Yangtao Li <frank.li@vivo.com> - 2023-07-13 1107
-[PATCH 33_58] mmc: sdhci-omap: Convert to platform remove callback returning void - Yangtao Li <frank.li@vivo.com> - 2023-07-13 1107
-[PATCH 34_58] mmc: sdhci-of-aspeed: Convert to platform remove callback returning void - Yangtao Li <frank.li@vivo.com> - 2023-07-13 1107
-[PATCH 36_58] mmc: sdhci-sprd: Convert to platform remove callback returning void - Yangtao Li <frank.li@vivo.com> - 2023-07-13 1107
-[PATCH 37_58] mmc: sdhci-tegra: Convert to platform remove callback returning void - Yangtao Li <frank.li@vivo.com> - 2023-07-13 1107
-[PATCH 38_58] mmc: sdhci-acpi: Convert to platform remove callback returning void - Yangtao Li <frank.li@vivo.com> - 2023-07-13 1107
-[PATCH 39_58] mmc: sdhci-esdhc-imx: Convert to platform remove callback returning void - Yangtao Li <frank.li@vivo.com> - 2023-07-13 1107
-[PATCH 40_58] mmc: sdhci-msm: Convert to platform remove callback returning void - Yangtao Li <frank.li@vivo.com> - 2023-07-13 1107
-[PATCH 47_58] mmc: sdhci-st: Convert to platform remove callback returning void - Yangtao Li <frank.li@vivo.com> - 2023-07-13 1107
-[PATCH 49_58] mmc: sdhci-esdhc-mcf: Convert to platform remove callback returning void - Yangtao Li <frank.li@vivo.com> - 2023-07-13 1107
-[PATCH 51_58] mmc: sdhci-spear: Convert to platform remove callback returning void - Yangtao Li <frank.li@vivo.com> - 2023-07-13 1108
+I don't think can be changed since is a DRM_IOCTL_MODE_CREATE_DUMB uAPI ?
 
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+> U32_MAX / stride" rejects all sizes not fitting in __u32 anyway.
+
+Hmm, wonder if should be U64_MAX instead ?
+
+> ---
+>  drivers/gpu/drm/drm_dumb_buffers.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/drm_dumb_buffers.c b/drivers/gpu/drm/drm_dumb_buffers.c
+> index 70032bba1c97e787..21a04c32a5e3d785 100644
+> --- a/drivers/gpu/drm/drm_dumb_buffers.c
+> +++ b/drivers/gpu/drm/drm_dumb_buffers.c
+> @@ -71,10 +71,11 @@ int drm_mode_create_dumb(struct drm_device *dev,
+>  	/* overflow checks for 32bit size calculations */
+>  	if (args->bpp > U32_MAX - 8)
+>  		return -EINVAL;
+> +	/* Incorrect (especially if bpp < 8), but doesn't hurt much */
+>  	cpp = DIV_ROUND_UP(args->bpp, 8);
+>  	if (cpp > U32_MAX / args->width)
+>  		return -EINVAL;
+> -	stride = cpp * args->width;
+> +	stride = DIV_ROUND_UP(args->bpp * args->width, 8);
+>  	if (args->height > U32_MAX / stride)
+>  		return -EINVAL;
+>  
+
+Good catch.
+
+Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
+
+-- 
+Best regards,
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
 
