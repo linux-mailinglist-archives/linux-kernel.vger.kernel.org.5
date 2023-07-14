@@ -2,132 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 090E0753640
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:17:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A704575364B
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:20:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235470AbjGNJRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 05:17:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46862 "EHLO
+        id S234642AbjGNJUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 05:20:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234953AbjGNJRt (ORCPT
+        with ESMTP id S229492AbjGNJUo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 05:17:49 -0400
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AA4B211C;
-        Fri, 14 Jul 2023 02:17:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689326268; x=1720862268;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=3dTgIUvDYhlnavXOxaZLL1p9dKAgNDGlalBZILcSqRs=;
-  b=BhhCLTE1MFAnNbrfcS+QIW5/jHf9m0AXXqASs9f9rEIqw9QLVLJYhDaI
-   NwsLQTbAv5CnqZSE8OXJTvCxmI/UlZ67orZOXJLWPmO/wqywZG8iA3mvV
-   GL5yS4WGnIPrbI5/R0Kr9FqSor1TVHxJTUS8R9Co9VuWkvEy7poq04Mnu
-   tw8Awp9aVpxqRGe1NBBB8aRq8UUlJomhtz/S3UL+UidGDsO5o2+qKzy1x
-   ceCbb1lWtx2XAbf5AYXBhhMBzwTiO70hg7b8KQXQ04kie1l2VyGzZw8nw
-   NLqjRzYhRJ+shTCOM/Z1TpxjZ/k/AkO17v/CJM9XB5JigajgiUvXpVEv4
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="362897874"
-X-IronPort-AV: E=Sophos;i="6.01,204,1684825200"; 
-   d="scan'208";a="362897874"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 02:17:46 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="812357261"
-X-IronPort-AV: E=Sophos;i="6.01,204,1684825200"; 
-   d="scan'208";a="812357261"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by FMSMGA003.fm.intel.com with ESMTP; 14 Jul 2023 02:17:44 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id AB94A3E3; Fri, 14 Jul 2023 12:17:50 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Mark Brown <broonie@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Subject: [PATCH v4 4/4] spi: Use struct_size() helper
-Date:   Fri, 14 Jul 2023 12:17:48 +0300
-Message-Id: <20230714091748.89681-5-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
-In-Reply-To: <20230714091748.89681-1-andriy.shevchenko@linux.intel.com>
-References: <20230714091748.89681-1-andriy.shevchenko@linux.intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 14 Jul 2023 05:20:44 -0400
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53D931FC9
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 02:20:43 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 8B4295C014B;
+        Fri, 14 Jul 2023 05:20:42 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Fri, 14 Jul 2023 05:20:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+        :feedback-id:from:from:in-reply-to:message-id:reply-to:sender
+        :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
+        :x-me-sender:x-sasl-enc; s=fm3; t=1689326442; x=1689412842; bh=C
+        UU0jwNG9bxZhQYjqoco/N3UYanNTl9IfLoCIygLPCE=; b=xRK0MFSg0Tfd+UPh3
+        4sIYWeLJseBMTisLDxwbOuuZQ/noP2ZL4gDS2XV1fRf1lwRSqOwWLgAaA2BcO96J
+        QGUHo0liV2TsPNY0eQBM7q2kKCxvldR/vwYXoIUJek3CmJ1ZIOdV7FBwpAL+pmua
+        i4HAAMw8jyGLoF9UJXt/QdWPTaaM0kDiEAORz/maOoGfnlmdf7MhCk25CSoJ1NoX
+        XXj1uXhmBqXsGaFfGqK/Pmgmq2AMiTtZ+BNa/WUfyuyfa7eAgdOPuOdpOyA/GBS+
+        NooZYXQ4TDmp1x8g8V9GJydBZMCWG4FqSwUcyc7ITUlyI56G5j64OQXs+cA4t3pZ
+        zrv8g==
+X-ME-Sender: <xms:aROxZHHvnklftP8I_ct3rlmHfO8RXJbxdXpvPJz4F67mh1sXuR_XHA>
+    <xme:aROxZEWV7SU9M7ZEaxfSRv9zj2M0LFs00o7WxknaiVYu0Wdq6khvcPQW3tlA6IFzr
+    3eSfM_ujld8jW3w98o>
+X-ME-Received: <xmr:aROxZJLkQAMauiR5nLoLp2LLMvxVaLHbhbnFB5euTLtRGjHGlVSkPG4cyMFqiqW2cOhjGdkJ80XsSdCqAOlkHZvK0tZCl4fLUhU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrfeeigddugecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefvvefkhffuffestddtredttddttdenucfhrhhomhephfhinhhnucfvhhgrihhn
+    uceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrthhtvghrnh
+    epheffgfegfeevgeevtdeiffefveeutdeghfeuheeiteffjeefgfegveefuedvudelnecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfhhthhgrih
+    hnsehlihhnuhigqdhmieekkhdrohhrgh
+X-ME-Proxy: <xmx:aROxZFHqd0c0Co27g9g4n8QIhJXa4lVMkCl69gggIUC6Ob8rW9xOaw>
+    <xmx:aROxZNVOg6eS98FSeo2KCtJRgSyxcspxQPXOZLCwRmgi1sQBrFVWXA>
+    <xmx:aROxZAOL_i7NYYfeVUCvW-EJDE8VEkMGHFsDAIjoMsMY1vZyXzua8w>
+    <xmx:ahOxZGNA37d1u9YkjuMBA_VY_FteU5NdAaLtfuN5AI2kaUQmLL1qTw>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 14 Jul 2023 05:20:38 -0400 (EDT)
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>
+Cc:     "Thomas Gleixner" <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Message-Id: <44ad7a7afa1b8b1383426971402d2901361db1c5.1689326311.git.fthain@linux-m68k.org>
+From:   Finn Thain <fthain@linux-m68k.org>
+Subject: [PATCH] sched: Optimize in_task() and in_interrupt() a bit
+Date:   Fri, 14 Jul 2023 19:18:31 +1000
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Documentation/process/deprecated.rst suggests to use flexible array
-members to provide a way to declare having a dynamically sized set of
-trailing elements in a structure.This makes code robust agains bunch of
-the issues described in the documentation, main of which is about the
-correctness of the sizeof() calculation for this data structure.
+Except on x86, preempt_count is always accessed with READ_ONCE.
+Repeated invocations in macros like irq_count() produce repeated loads.
+These redundant instructions appear in various fast paths. In the one
+shown below, for example, irq_count() is evaluated during kernel entry
+if !tick_nohz_full_cpu(smp_processor_id()).
 
-Due to above, prefer struct_size() over open-coded versions.
+0001ed0a <irq_enter_rcu>:
+   1ed0a:       4e56 0000       linkw %fp,#0
+   1ed0e:       200f            movel %sp,%d0
+   1ed10:       0280 ffff e000  andil #-8192,%d0
+   1ed16:       2040            moveal %d0,%a0
+   1ed18:       2028 0008       movel %a0@(8),%d0
+   1ed1c:       0680 0001 0000  addil #65536,%d0
+   1ed22:       2140 0008       movel %d0,%a0@(8)
+   1ed26:       082a 0001 000f  btst #1,%a2@(15)
+   1ed2c:       670c            beqs 1ed3a <irq_enter_rcu+0x30>
+   1ed2e:       2028 0008       movel %a0@(8),%d0
+   1ed32:       2028 0008       movel %a0@(8),%d0
+   1ed36:       2028 0008       movel %a0@(8),%d0
+   1ed3a:       4e5e            unlk %fp
+   1ed3c:       4e75            rts
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+This patch doesn't prevent the pointless btst and beqs instructions
+above, but it does eliminate 2 of the 3 pointless move instructions
+here and elsewhere.
+
+On x86, preempt_count is per-cpu data and the problem does not arise
+perhaps because the compiler is free to perform similar optimizations.
+
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Fixes: 15115830c887 ("preempt: Cleanup the macro maze a bit")
+Signed-off-by: Finn Thain <fthain@linux-m68k.org>
 ---
- include/linux/spi/spi.h | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+This patch was tested on m68k and x86. I was expecting no changes
+to object code for x86 and mostly that's what I saw. However, there
+were a few places where code generation was perturbed for some reason.
+---
+ include/linux/preempt.h | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
-index 04daf61dfd3f..7f8b478fdeb3 100644
---- a/include/linux/spi/spi.h
-+++ b/include/linux/spi/spi.h
-@@ -13,6 +13,7 @@
- #include <linux/gpio/consumer.h>
- #include <linux/kthread.h>
- #include <linux/mod_devicetable.h>
-+#include <linux/overflow.h>
- #include <linux/scatterlist.h>
- #include <linux/slab.h>
- #include <linux/u64_stats_sync.h>
-@@ -1085,6 +1086,8 @@ struct spi_transfer {
-  * @state: for use by whichever driver currently owns the message
-  * @resources: for resource management when the SPI message is processed
-  * @prepared: spi_prepare_message was called for the this message
-+ * @t: for use with spi_message_alloc() when message and transfers have
-+ *	been allocated together
-  *
-  * A @spi_message is used to execute an atomic sequence of data transfers,
-  * each represented by a struct spi_transfer.  The sequence is "atomic"
-@@ -1139,6 +1142,9 @@ struct spi_message {
+diff --git a/include/linux/preempt.h b/include/linux/preempt.h
+index 0df425bf9bd7..953358e40291 100644
+--- a/include/linux/preempt.h
++++ b/include/linux/preempt.h
+@@ -102,10 +102,11 @@ static __always_inline unsigned char interrupt_context_level(void)
+ #define hardirq_count()	(preempt_count() & HARDIRQ_MASK)
+ #ifdef CONFIG_PREEMPT_RT
+ # define softirq_count()	(current->softirq_disable_cnt & SOFTIRQ_MASK)
++# define irq_count()		((preempt_count() & (NMI_MASK | HARDIRQ_MASK)) | softirq_count())
+ #else
+ # define softirq_count()	(preempt_count() & SOFTIRQ_MASK)
++# define irq_count()		(preempt_count() & (NMI_MASK | HARDIRQ_MASK | SOFTIRQ_MASK))
+ #endif
+-#define irq_count()	(nmi_count() | hardirq_count() | softirq_count())
  
- 	/* List of spi_res resources when the SPI message is processed */
- 	struct list_head        resources;
-+
-+	/* For embedding transfers into the memory of the message */
-+	struct spi_transfer	t[];
- };
+ /*
+  * Macros to retrieve the current execution context:
+@@ -118,7 +119,11 @@ static __always_inline unsigned char interrupt_context_level(void)
+ #define in_nmi()		(nmi_count())
+ #define in_hardirq()		(hardirq_count())
+ #define in_serving_softirq()	(softirq_count() & SOFTIRQ_OFFSET)
+-#define in_task()		(!(in_nmi() | in_hardirq() | in_serving_softirq()))
++#ifdef CONFIG_PREEMPT_RT
++# define in_task()		(!((preempt_count() & (NMI_MASK | HARDIRQ_MASK)) | in_serving_softirq()))
++#else
++# define in_task()		(!(preempt_count() & (NMI_MASK | HARDIRQ_MASK | SOFTIRQ_OFFSET)))
++#endif
  
- static inline void spi_message_init_no_memset(struct spi_message *m)
-@@ -1199,16 +1205,13 @@ static inline struct spi_message *spi_message_alloc(unsigned ntrans, gfp_t flags
- {
- 	struct spi_message *m;
- 
--	m = kzalloc(sizeof(struct spi_message)
--			+ ntrans * sizeof(struct spi_transfer),
--			flags);
-+	m = kzalloc(struct_size(m, t, ntrans), flags);
- 	if (m) {
- 		unsigned i;
--		struct spi_transfer *t = (struct spi_transfer *)(m + 1);
- 
- 		spi_message_init_no_memset(m);
--		for (i = 0; i < ntrans; i++, t++)
--			spi_message_add_tail(t, m);
-+		for (i = 0; i < ntrans; i++)
-+			spi_message_add_tail(&m->t[i], m);
- 	}
- 	return m;
- }
+ /*
+  * The following macros are deprecated and should not be used in new code:
 -- 
-2.40.0.1.gaa8946217a0b
+2.39.3
 
