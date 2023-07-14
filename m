@@ -2,249 +2,349 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94240753E32
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 16:56:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C9D4753E2F
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 16:55:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236104AbjGNO4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 10:56:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32908 "EHLO
+        id S236196AbjGNOzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 10:55:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236206AbjGNOz5 (ORCPT
+        with ESMTP id S236207AbjGNOzi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 10:55:57 -0400
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FAEC30FC;
-        Fri, 14 Jul 2023 07:55:37 -0700 (PDT)
-Received: from leknes.fjasle.eu ([46.142.49.15]) by mrelayeu.kundenserver.de
- (mreue106 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1MDgxt-1qCs4B330p-00Aqpq; Fri, 14 Jul 2023 16:54:52 +0200
-Received: by leknes.fjasle.eu (Postfix, from userid 1000)
-        id 1C8F13E8B6; Fri, 14 Jul 2023 16:54:49 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fjasle.eu; s=mail;
-        t=1689346489; bh=9SBx+6DitAvBfqKdQ3mIQDbBGQuj0uRqTboPv0OMpb8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=N1xryw6UYWfAsC7ggiLVWbAuteSX/ud0dZ5CQJNALGCibjQpQowDMGH0jdtC9GCS0
-         ewOIF1nRD/E5P3FJPf3fCpLOJcGSbKOHs7dXzFYjGEqbIBEL1NpxgeHkQES2USXDeU
-         r4S6ug3IJDcmiE2Xm0hamE4JjOEhJ1Fk1JWEzsww=
-Date:   Fri, 14 Jul 2023 16:54:49 +0200
-From:   Nicolas Schier <nicolas@fjasle.eu>
-To:     Michal =?utf-8?Q?Such=EF=BF=BDnek?= <msuchanek@suse.de>
-Cc:     linux-modules@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
-        Lucas De Marchi <lucas.de.marchi@gmail.com>,
-        Michal =?utf-8?B?S291dG7vv70=?= <mkoutny@suse.com>,
-        Jiri Slaby <jslaby@suse.com>, Jan Engelhardt <jengelh@inai.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] depmod: Handle installing modules under a prefix
-Message-ID: <ZLFhuf95srX2wvJc@fjasle.eu>
+        Fri, 14 Jul 2023 10:55:38 -0400
+Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com [IPv6:2607:f8b0:4864:20::a2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15F283AB8
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 07:55:27 -0700 (PDT)
+Received: by mail-vk1-xa2c.google.com with SMTP id 71dfb90a1353d-4816078ab3cso1045916e0c.1
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 07:55:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689346527; x=1691938527;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lvhGhwK3hQYyA21peYmIOow9+J4vgG6yjc5ZbzkLWoM=;
+        b=isA2RXNjdhF7BOs33nOBn3lihMCe3kNYZD3BN3FIEdKzVqlcWyzk8XpFLn258zHyEx
+         HZOASVCBXuVm91A+F7BWUEYVD4jZGITprf9R/xww+VODmQp3M1QPjuTOsPlKg0PGqS6t
+         9vac0rtvOFw92FOBg/eEOJ68XftLNynN/g7COuISgMOGRfLAoHin6HKDhyVfm3W2rVs/
+         J381i1bCkLsUZp2vPLZ+dLZmgojIu1+dqrbD7g9LEp69nM30B6nNSSDxB7CDUYyAfUpg
+         P9z/I7nISrbUKQ2sJfi4DNan84G5015UYVOFe72As/l7uxSrGtCM7gZYuBxQIYgasUbh
+         nnqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689346527; x=1691938527;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lvhGhwK3hQYyA21peYmIOow9+J4vgG6yjc5ZbzkLWoM=;
+        b=Y2iJQIZcsEJ+DfKRzAZm+zFMRywpMCUmMjtD+IEYPk007nVBXPNAzoT1C94ey+GJu0
+         oslEmk97DmZcXl5pY/QkN8hckO9jjI7QZx7lcUmraIZ6wDtM+BridKiABDocp957Cb1z
+         /Ryt9puvq3G0oUlpWgeleS71iSPor1SVf0PdXY3Ly6QqvH4fFwGewSh7G8C7QJOBX7eL
+         HRf49KcE2m0AFzAAoGvur2pemFFNC+EygGz+Ef88SjibcufL5JuSNJOysK7Pzr4Ge1Z8
+         A1DdAs3FMF9dizxEJb8Vl2e+iVSKvjE/Eq40KJW5DXYLCW9X/uC/fOWqMO6gTCnoOSNV
+         3Peg==
+X-Gm-Message-State: ABy/qLYnKNEny4AQnsm1pizb3k2c5gjkGlJcDMoi6Ly4VyJIq01FMDd2
+        45wSSiCMwKYAKo1mr34gY18w+1bGWkpT5giw6tegRQ==
+X-Google-Smtp-Source: APBJJlFBpLWkkLl2CX8PmjOhecvGDRkTotYcCL9xT6rQwbez+/O2UZuGeqOlALIkH5NJmj0CD30GBsPbAGECLf0e6Os=
+X-Received: by 2002:a1f:a289:0:b0:481:2ff9:fc3f with SMTP id
+ l131-20020a1fa289000000b004812ff9fc3fmr1025156vke.5.1689346526764; Fri, 14
+ Jul 2023 07:55:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="mfoKlNUZR6w/MbrO"
-Content-Disposition: inline
-In-Reply-To: <20230714143002.GL9196@kitsune.suse.cz>
-X-Provags-ID: V03:K1:M0zQXyytWpq15DFeDxHX9TI4m9bUGxU3J6PM1EjSsos/hDxTXOH
- PkhEZLg7pZT2Qc+sZB9N4N33+2viHKGKPYuzj647HfMfFiP8KlVIRKZbmou6v03wAnpMJDR
- DzFN6l4w1IGuXI98y0tl/oeyCZxpHjfz4/0/xIVXt580QK23xEOZ0F9I+HUPQE1Q0sWJJqE
- cBOmgfLJFHk2xB2eEwOVw==
-UI-OutboundReport: notjunk:1;M01:P0:y4Dx1EyoPzI=;wbSEiaVjDihK96Ytv+cFxJMvb3K
- xuO7D7hx6vwO7THuHA7RgpZJDdlfpHk8+7KvcfFgUpml+l721XTIu8b4nNbNQEZXMqbWuJZfE
- fUYqIoaXfMYx5gUIaJhGtCuWg56GiXML3G6e8/2qAhqomHRMoDZW0LV/t6L1M2c7f9h9EZEf0
- 4KS/RhhYH/8fIgr4BcBFnG9TZiSB8qWBmiwh7HX4khzYh1N10wVZWM1TszhebJ8Qs2YB+y24C
- 2IcqfKay7RONMOX9tGNkqofi8bNcnFeJGX4A+C0AMz2MsnPD5TjHuX6fWSo726bq8pS+2hLa1
- 6XjtMzEchwxk0U8mvjrdOkqS9KYwZE/vQdQ2ZYex5Y4a92GPmGCDTDHycOHEhtCDbdNNfvqqv
- swVODOmTTN9yRIV+6g2XP/98iI3feP0JpfwQP3DkhIhyMbABAH4j+1BNZeWePe1yRLux8+0eR
- 7nos/Rc3pEoMXR2kQXVCu/Q4nM4AntTFpZogfnwE5kXn7tX9PWHnLrZxkA4oevf5pOt88Utqi
- zX9HdxwMDvsJedNWBvvy7nJ2C19muIDsuPYu2a8vrT02ORAbSK9SunsvcA1AhFsKtYaC7498s
- cT/ZoPY5q43030gO7ZqGmh/oLmNCyCx8uWFlagyl5sD0TgL7ApSfhBI3gmFlzpkWsCawS+eIo
- I8jJMYlcA4p0Vgxr66oKurJXtIa11FCw0Pmbhc39BA==
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,T_SPF_TEMPERROR,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20230710215906.49514550@kernel.org> <20230711050445.GA19323@lst.de>
+ <ZK1FbjG+VP/zxfO1@ziepe.ca> <20230711090047.37d7fe06@kernel.org>
+ <04187826-8dad-d17b-2469-2837bafd3cd5@kernel.org> <20230711093224.1bf30ed5@kernel.org>
+ <CAHS8izNHkLF0OowU=p=mSNZss700HKAzv1Oxqu2bvvfX_HxttA@mail.gmail.com>
+ <20230711133915.03482fdc@kernel.org> <2263ae79-690e-8a4d-fca2-31aacc5c9bc6@kernel.org>
+ <CAHS8izP=k8CqUZk7bGUx4ctm4m2kRC2MyEJv+N4+b0cHVkTQmA@mail.gmail.com>
+ <ZK6kOBl4EgyYPtaD@ziepe.ca> <CAHS8izNuda2DXKTFAov64F7J2_BbMPaqJg1NuMpWpqGA20+S_Q@mail.gmail.com>
+ <143a7ca4-e695-db98-9488-84cf8b78cf86@amd.com>
+In-Reply-To: <143a7ca4-e695-db98-9488-84cf8b78cf86@amd.com>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Fri, 14 Jul 2023 07:55:15 -0700
+Message-ID: <CAHS8izPm6XRS54LdCDZVd0C75tA1zHSu6jLVO8nzTLXCc=H7Nw@mail.gmail.com>
+Subject: Re: Memory providers multiplexing (Was: [PATCH net-next v4 4/5]
+ page_pool: remove PP_FLAG_PAGE_FRAG flag)
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Hari Ramakrishnan <rharix@google.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, David Ahern <dsahern@kernel.org>,
+        Samiullah Khawaja <skhawaja@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jesper Dangaard Brouer <jbrouer@redhat.com>,
+        brouer@redhat.com, Alexander Duyck <alexander.duyck@gmail.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
+        pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        hariprasad <hkelam@marvell.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Shayne Chen <shayne.chen@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Kalle Valo <kvalo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Jonathan Lemon <jonathan.lemon@gmail.com>, logang@deltatee.com,
+        Bjorn Helgaas <bhelgaas@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 13, 2023 at 12:56=E2=80=AFAM Christian K=C3=B6nig
+<christian.koenig@amd.com> wrote:
+>
+> Am 12.07.23 um 22:16 schrieb Mina Almasry:
+> > On Wed, Jul 12, 2023 at 6:01=E2=80=AFAM Jason Gunthorpe <jgg@ziepe.ca> =
+wrote:
+> >> On Tue, Jul 11, 2023 at 08:42:24PM -0700, Mina Almasry wrote:
+> >>
+> >>> 1. The device memory driver would be the p2pdma provider. It would
+> >>> expose a user API which allocates a device memory region, calls
+> >>> pci_p2pdma_add_resource() and pci_p2pmem_publish() on it, and returns
+> >>> a reference to it to the userspace.
+> >> This is not quite right, if you convert any of the GPU drivers to use
+> >> P2PDMA you are going to need to restructure the p2pmem stuff to
+> >> seperate the genalloc. The GPU driver must continue to be the owner
+> >> and allocator of the MMIO memory it already controls, we can't have
+> >> two allocators working in parallel.
+> >>
+> >> The genalloc stuff supports the special NVMe use case, I don't know of
+> >> anything else that would like to work that way.
+> >>
+> > I think maybe you misunderstood the proposal. AFAICT the genalloc
+> > stuff works for us, although there are other issues with p2pdma that I
+> > need to solve.
+> >
+> > The proposal was that the uapi in step #1 allocates a region of GPU
+> > memory, and sets up a p2pdma provider for this region of memory. From
+> > the perspective of the GPU, the memory is allocated, and in use by the
+> > user. The p2pdma provider uses genalloc to give out 4K regions with
+> > struct pages to in-kernel allocators from this memory region. Why
+> > would that not work?
+>
+> Oh well, where should I start.
+>
+> struct page is used in the various I/O  subsystems instead of DMA
+> addresses because it allows for a wider range of operations.
+>
+> For example when a page is acquired using get_user_pages() somebody can
+> use the rmap to figure out where a page is mapped and eventually unmap
+> it, map it read only or change the caching attributes etc...
+>
+> Then you have the ability to grab a reference to a page, this for
+> example allows I/O operations to complete and not access freed memory
+> even when the application has already long died.
+>
+> Then a very common use case is that you need to fallback to a CPU copy
+> because the data inside the page isn't aligned or outside the physical
+> reach of a device.
+>
+> The are just numerous issues with what I listed above, for example some
+> of those use cases only work with pagecache pages.
+>
+> Approaching it from the user side, with GPUs there is usually no
+> guarantee that stuff is coherent. E.g. a network card wouldn't
+> automatically see the results of a calculation.
+>
+> Then GPUs usually have tons of memory which isn't CPU accessible or even
+> PCIe bus accessible. So a bounce buffer done with a CPU copy won't work,
+> you need to bounce this with a hw assisted copy. Or you have inter
+> device connections. For example ethernet over HDMI links would be able
+> to access all of the internal GPU resources.
+>
+> Then GPUs often need to shuffle memory around, e.g. similar
+> functionality to ___GFP_MOVABLE. Just with stuff not CPU accessible nor
+> mapped into CPU page tables.
+>
+> ...
+>
+> I mean I can go with this list for quite some time :)
+>
+> > Looking at the code, that seems to be how p2pdma
+> > works today. The p2pdma provider does p2pdma_add_resource() on a chunk
+> > of its memory, and the genalloc allocates memory from that chunk?
+>
+> Well this is how it works for NVMe, that doesn't mean this way works for
+> GPUs or acceleration devices.
+>
 
---mfoKlNUZR6w/MbrO
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks Christian, yes, I misunderstood how this works and I apologize
+for that. From reading the p2pdma interface it looked to me like it
+takes a buffer as input and goes ahead and allocates the struct pages
+for it and exports them as a provider. As you and Jason have
+repeatedly tried to explain to me this bit is NVMe specific and as
+Jason puts it it is a "big ask to P2P enable any of the DRM drivers".
 
-On Fri, Jul 14, 2023 at 04:30:02PM +0200, Michal Such=EF=BF=BDnek wrote:
-> Hello,
->=20
-> On Fri, Jul 14, 2023 at 04:05:10PM +0200, Nicolas Schier wrote:
-> > On Fri, Jul 14, 2023 at 02:21:08PM +0200 Michal Suchanek wrote:
-> > > Some distributions aim at not shipping any files in / outside of usr.
-> >=20
-> > For me, preventing negation often makes things easier, e.g.: "... aim at
-> > shipping files only below /usr".
-> >=20
-> > >=20
-> > > The path under which kernel modules are installed is hardcoded to /lib
-> > > which conflicts with this goal.
-> > >=20
-> > > When kmod provides the config command, use it to determine the correct
-> > > module installation prefix.
-> > >=20
-> > > This is a prefix under which the modules are searched by kmod on the
-> > > system, and is separate from the temporary staging location already
-> > > supported by INSTALL_MOD_PATH.
-> > >=20
-> > > With kmod that does not provide the config command empty prefix is us=
-ed
-> > > as before.
-> > >=20
-> > > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
-> > > ---
-> > > v2: Avoid error on systems with kmod that does not support config
-> > > command
-> > > v3: More verbose commit message
-> > > ---
-> > >  Makefile          | 4 +++-
-> > >  scripts/depmod.sh | 8 ++++----
-> > >  2 files changed, 7 insertions(+), 5 deletions(-)
-> > >=20
-> > > diff --git a/Makefile b/Makefile
-> > > index 47690c28456a..b1fea135bdec 100644
-> > > --- a/Makefile
-> > > +++ b/Makefile
-> > > @@ -1165,7 +1165,9 @@ export INSTALL_DTBS_PATH ?=3D $(INSTALL_PATH)/d=
-tbs/$(KERNELRELEASE)
-> > >  # makefile but the argument can be passed to make if needed.
-> > >  #
-> > > =20
-> > > -MODLIB	=3D $(INSTALL_MOD_PATH)/lib/modules/$(KERNELRELEASE)
-> > > +export KERNEL_MODULE_PREFIX :=3D $(shell kmod config &> /dev/null &&=
- kmod config | jq -r .module_prefix)
-> >=20
-> > All other calls of `jq` that I could find are located at tools/; as thi=
-s here
-> > is evaluated on each invocation, this should probably be documented in
-> > Documentation/process/changes.rst?
-> >=20
-> > (Absence of `jq` will cause error messages, even with CONFIG_MODULES=3D=
-n.)
->=20
-> That's a good point.
->=20
-> >=20
-> > > +
-> > > +MODLIB	=3D $(INSTALL_MOD_PATH)$(KERNEL_MODULE_PREFIX)/lib/modules/$(=
-KERNELRELEASE)
-> > >  export MODLIB
-> > > =20
-> > >  PHONY +=3D prepare0
-> > > diff --git a/scripts/depmod.sh b/scripts/depmod.sh
-> > > index 3643b4f896ed..88ac79056153 100755
-> > > --- a/scripts/depmod.sh
-> > > +++ b/scripts/depmod.sh
-> > > @@ -27,16 +27,16 @@ fi
-> > >  # numbers, so we cheat with a symlink here
-> > >  depmod_hack_needed=3Dtrue
-> > >  tmp_dir=3D$(mktemp -d ${TMPDIR:-/tmp}/depmod.XXXXXX)
-> > > -mkdir -p "$tmp_dir/lib/modules/$KERNELRELEASE"
-> > > +mkdir -p "$tmp_dir$KERNEL_MODULE_PREFIX/lib/modules/$KERNELRELEASE"
-> > >  if "$DEPMOD" -b "$tmp_dir" $KERNELRELEASE 2>/dev/null; then
-> > > -	if test -e "$tmp_dir/lib/modules/$KERNELRELEASE/modules.dep" -o \
-> > > -		-e "$tmp_dir/lib/modules/$KERNELRELEASE/modules.dep.bin"; then
-> > > +	if test -e "$tmp_dir$KERNEL_MODULE_PREFIX/lib/modules/$KERNELRELEAS=
-E/modules.dep" -o \
-> > > +		-e "$tmp_dir$KERNEL_MODULE_PREFIX/lib/modules/$KERNELRELEASE/modul=
-es.dep.bin"; then
-> > >  		depmod_hack_needed=3Dfalse
-> > >  	fi
-> > >  fi
-> >=20
-> > I'd like to come back to the statement from Masahiro: Is the check abov=
+I am facing some logistical issues as well. My use case requires NIC
+with special features, and even getting access to the appropriate
+hardware may be an issue for me.
+
+I guess the remaining option not fully explored is the idea of getting
+the networking stack to consume the scatterlist that
+dma_buf_map_attachment() provides for the device memory. The very
+rough approach I have in mind (for the RX path) is:
+
+1. Some uapi that binds a dmabuf to an RX queue. It will do a
+dma_buf_map_attachment() and get the sg table.
+
+2. We need to feed the scratterlist entries to some allocator that
+will chunk it up into pieces that can be allocated by the NIC for
+incoming traffic. I'm thinking genalloc may work for this as-is, but I
+may need to add one or use something else if I run into some issue.
+
+3. We can implement a memory_provider that allocates these chunks and
+wraps them in a struct new_abstraction (as David called it) and feeds
+those into the page pool.
+
+4. The page pool would need to be able to process these struct
+new_abstraction alongside the struct pages it normally gets from
+providers. This is maybe the most complicated part, but looking at the
+page pool code it doesn't seem that big of a hurdle (but I have not
+tried a POC yet).
+
+5. The drivers (I looked at mlx5) seem to avoid making any mm calls on
+the struct pages returned by the pool; the pool abstracts everything
+already. The changes to the drivers may be minimal..?
+
+6. We would need to add a new helper, skb_add_rx_new_abstraction_frag
+that creates a frag out of new_abstraction rather than a struct page.
+
+Once the skb frags with struct new_abstraction are in the TCP stack,
+they will need some special handling in code accessing the frags. But
+my RFC already addressed that somewhat because the frags were
+inaccessible in that case. In this case the frags will be both
+inaccessible and will not be struct pages at all (things like
+get_page() will not work), so more special handling will be required,
+maybe.
+
+I imagine the TX path would be considerably less complicated because
+the allocator and page pool are not involved (I think).
+
+Anyone see any glaring issues with this approach?
+
+> Regards,
+> Christian.
+>
+> >
+> > The actual issues I see with this approach are:
+> >
+> > 1. There is no way for the p2pdma provider to relinquish back the
+> > memory it has provided via pci_p2pdma_add_resource(), in the case that
+> > the user crashed or would like to free the GPU buffer. I would need to
+> > add a pci_p2pdma_remove_resource(). Would that be  acceptable?
+> >
+> > 2. The p2pdma semantics seem to be global to the pci device. I.e., 1
+> > GPU can export 1 p2pdma resource at a time (the way I'm reading the
+> > API). This is not usable for my use case. I would need multiple users
+> > to be able to use the uapi in step #1 simultaneously. I would need the
+> > same pci device to export different p2pdma resources simultaneously
+> > and the p2pdma clients would need to be able to import some of the
+> > resources. I would likely need to add an api like this:
+> >
+> > diff --git a/include/linux/pci-p2pdma.h b/include/linux/pci-p2pdma.h
+> > index 8318a97c9c61..c9d754713fdc 100644
+> > --- a/include/linux/pci-p2pdma.h
+> > +++ b/include/linux/pci-p2pdma.h
+> > @@ -19,6 +19,33 @@ struct scatterlist;
+> >   #ifdef CONFIG_PCI_P2PDMA
+> >   int pci_p2pdma_add_resource(struct pci_dev *pdev, int bar, size_t siz=
 e,
-> > against some very old versions of depmod [1], the only reason for this =
-patch? =20
-> >=20
-> > If we could remove that, would
-> >=20
-> >     make INSTALL_MOD_PATH=3D"$(kmod config | jq -r .module_prefix)" mod=
-ules_install
-> >=20
-> > be sufficient?
->=20
-> No, the INSTALL_MOD_PATH is passed as the -b argument to depmod while
-> the newly added part is not because it's integral part of where the
-> modules are installed on the system, and not the staging area path.
+> >                  u64 offset);
+> > +
+> > +/* Adds a resource similar to pci_p2pdma_add_resource, and returns a f=
+ile
+> > + * handle referring to this resource. Multiple such resources can be e=
+xported
+> > + * by the same pci device.
+> > + */
+> > +struct file *pci_p2pdma_add_resource_with_handle(struct pci_dev *pdev,
+> > +               int bar,
+> > +               size_t size,
+> > +               u64 offset);
+> > +
+> > +/* Remove a resource added via pci_p2pdma_add_resource_with_handle() *=
+/
+> > +struct file *pci_p2pdma_remove_resource_with_handle(
+> > +               struct file *p2pdma_resource_file);
+> > +
+> > +/* Allocates memory from a resource created using
+> > + * pci_p2pdma_add_resource_with_handle()
+> > + */
+> > +void *pci_alloc_p2pmem_from_handle(struct file *p2pdma_resource_file,
+> > +               size_t size);
+> > +
+> > +/* Frees p2pmem to a resource created using
+> > + * pci_p2pdma_add_resource_with_handle()
+> > + */
+> > +void pci_free_p2pmem_to_handle(struct pci_dev *p2pdma_resource_file,
+> > +               void *addr,
+> > +               size_t size);
+> > +
+> >
+> > Looking for feedback from anyone knowledgeable, but the p2pdma
+> > maintainers as well if possibl.
+> >
+> >>> 2. The NIC driver would be the p2pdma client and orchestrator. It
+> >>> would expose a user API which binds an rxq to a pci device. Prior to
+> >>> the bind the user API would check that the pci device has published
+> >>> p2p memory (pci_has_p2pmem()), and check the the p2p mem is accessibl=
+e
+> >>> to the driver (pci_p2pdma_distance() I think), etc.
+> >> This doesn't fit the programming model for GPUs at all. You don't want
+> >> to get packets landing in random GPU memory that a kernel side
+> >> allocator selects, you want packets landing in GPU memory owned by a
+> >> specific process that owns the TCP connection.
+> >>
+> > I think this comment is maybe a side effect of the misunderstanding.
+> > In the proposal, the user allocates a GPU buffer using the API in step
+> > #1, and then binds the memory to the NIC rx queue using the API
+> > specified in step #2. We use flow steering & RSS to steer this user's
+> > TCP traffic to the buffer owned by them.
+> >
+> >> This is why DMABUF is used here as it gives a handle to the GPU
+> >> memory. What you want is to get the P2P pages either directly from the
+> >> DMABUF or via pin_user_pages() on the DMABUF's mmap.
+> >>
+> >>> AFAICT, all the concerns brought up in this thread are sidestepped by
+> >>> using p2pdma. I need not allocate struct pages in the core dma-buf
+> >>> code anymore (or anywhere), and I need not allocate pgmaps. I would
+> >>> just re-use the p2pdma support.
+> >> Well, as I said it is going to be a big ask to P2P enable any of the
+> >> DRM drivers.
+> >>
+> >> And you still have the netmem vs zone_device struct page conflict to
+> >> figure out
+> >>
+> >> But it is alot closer to reasonable than this RFC.
+> >>
+> >> Jason
+>
 
-Ah, thanks.  So just for my understanding, could this be a (non-gentle)
-alternative version of your patch, w/o modifying top-level Makefile?
 
-diff --git a/scripts/depmod.sh b/scripts/depmod.sh
-index 3643b4f896ed..72c819de0669 100755
---- a/scripts/depmod.sh
-+++ b/scripts/depmod.sh
-@@ -1,4 +1,4 @@
--#!/bin/sh
-+#!/bin/bash
- # SPDX-License-Identifier: GPL-2.0
- #
- # A depmod wrapper used by the toplevel Makefile
-@@ -23,6 +23,8 @@ if [ -z $(command -v $DEPMOD) ]; then
-        exit 0
- fi
-=20
-+kmod_version=3D$(( $(kmod --version | sed -rne 's/^kmod version ([0-9]+).*=
-$/\1/p') ))
-+
- # older versions of depmod require the version string to start with three
- # numbers, so we cheat with a symlink here
- depmod_hack_needed=3Dtrue
-@@ -35,6 +37,13 @@ if "$DEPMOD" -b "$tmp_dir" $KERNELRELEASE 2>/dev/null; t=
-hen
-        fi
- fi
- rm -rf "$tmp_dir"
-+
-+if [ "${kmod_version}" -gt 32 ]; then
-+       kmod_prefix=3D"$(kmod config | jq -r .module_prefix)"
-+       INSTALL_MOD_PATH=3D"${INSTALL_MOD_PATH#${kmod_prefix}"
-+       depmod_hack_needed=3Dfalse
-+fi
-+
- if $depmod_hack_needed; then
-        symlink=3D"$INSTALL_MOD_PATH/lib/modules/99.98.$KERNELRELEASE"
-        ln -s "$KERNELRELEASE" "$symlink"
-
-(untested, and assuming that kmod module prefix is in kmod >=3D 32)
-
-Or are I am still missing something?
-
-> Was busybox ever fixed to not require the hack?
-
-I haven't checked that, yet.
-
-Kind regards,
-Nicolas
-
---mfoKlNUZR6w/MbrO
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEh0E3p4c3JKeBvsLGB1IKcBYmEmkFAmSxYbgACgkQB1IKcBYm
-Emky/w/8CMs2Qbg7YBCBb4Nw/bnCSKtD7J/at2AHkgRV/X5t8r7pXJ19UMbdahjK
-zbBSj6VNhrhTGa/xXlrTYNpT/dCAMOw7FGy0eridQ9y0eHuc4HDyl2L+iy1p7+JF
-rmg0Zd1wYZ1AirukHNdfc0aerlFSzLJd6ilnhh6+O3+v8rkcUF2rT0SgqhP78GMW
-ujqqj7DTcRCVUN1xqcUhw/veUxh96jp0at76mIlOGs/mSaja8201SPfyqQ+9CiUX
-yWpZCmdpf3IFXDLzg4TNPfasTDDLIBHIs+cGpqSpQRhN+gwowTy2EHJ75QjfLZvy
-R8mg4CHQVxklDUSFXmywfi/eQ0Eu8Vim2yhH1d8/JupUKcu6ZoiertbfAv85nUPK
-AOZ5Bb7XdTRCjp7FYcG78vVkf/VIyA+ukuWtGputWk5ckEimBOdOZqLG4D1aJYQz
-KPRlIkqtcg9X9bMCCPizCuuTZPAUXXWGuw5R9bgVdzGRRV6S+0mH0/5zaa4/MWlM
-mlVM1nzJ0lEbxtNhwOmpOFkNm1jkXo56GRyzG/FK1IipY9UL6w9swMKzNqhOjRpa
-UrakFJHnk60nutQ+OWeZjHZ6x7qFV+j6hCRGXC/HHbnO4bijSydqMMQrHmL+8okh
-ePCvY91QlTt2oMXBb4l5oxQXxgkJu9qRYVoJb6pbabwbLFYnito=
-=UB7N
------END PGP SIGNATURE-----
-
---mfoKlNUZR6w/MbrO--
+--=20
+Thanks,
+Mina
