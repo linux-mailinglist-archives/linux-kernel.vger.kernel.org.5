@@ -2,91 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B29775426E
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 20:16:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D500754273
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 20:18:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236577AbjGNSQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 14:16:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36208 "EHLO
+        id S236637AbjGNSSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 14:18:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235958AbjGNSQo (ORCPT
+        with ESMTP id S233200AbjGNSSF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 14:16:44 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33E66B4;
-        Fri, 14 Jul 2023 11:16:43 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:73::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id A0F9B5BF;
-        Fri, 14 Jul 2023 18:16:42 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net A0F9B5BF
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1689358602; bh=jm+R7vHwwOq2dhTjthyZ/gNcY4UldlFgG2p6s1wdco4=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=TXltqLpgWcA0ukU8yA1pgoc5eRXYGuiVDgH7RZU7clEhEfmZQddYbR2lsDE+9vqnt
-         6lbFcgjl1LPrY0Hv2gG8c2ZK/xrnwmqQg6Iv1IXCPNh6GBOTGnkdSQCHDh3hyyPR50
-         weYzwJjmQF/nUnUf3FBTxoFGM+FMj8YmU6M9xJ60iDNTOgMbd6M3qmk50FiMD8aygu
-         zY6QFng7Drvgl+f8lErXUD47QWu5uEwlv5s8tqpMKFiIfG5DVfUsOoSX+nYnJ+y1UV
-         loTp5VeS0VjRE6bzDxC/m4nAPcm/XH/2aR2wpicvpH2WK+tWJSh/utM6qSVjiyRmkN
-         nDTyZ+38z8ZMQ==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     workflows@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH docs v2] MAINTAINERS: treat Documentation/maintainer as
- process docs
-In-Reply-To: <20230713230713.1505561-1-kuba@kernel.org>
-References: <20230713230713.1505561-1-kuba@kernel.org>
-Date:   Fri, 14 Jul 2023 12:16:41 -0600
-Message-ID: <87o7ke1hpy.fsf@meer.lwn.net>
+        Fri, 14 Jul 2023 14:18:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 384AB109
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 11:17:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689358637;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hk6SCuBB1VWMrgz6HbTiscgnqy5TrgcBcKbev/PC7PQ=;
+        b=Y+XMxaFZbrg6WWbUD9gZdTMcGyDKqgLTauibT4xpiVlNt7s9AM5lEqkRguK9VrFRy4MzMU
+        iaWKANtSIuJ0br+oL53paZFu7MikycgOxfIZmMLpvJaP7THFYljtx8x2V2BsQ3QP0MHJm4
+        6VKoVzv2n7rpwBa+zEuaebkfPySi2LI=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-402-gWIR6kE6PzGpKslMoK-u0Q-1; Fri, 14 Jul 2023 14:17:16 -0400
+X-MC-Unique: gWIR6kE6PzGpKslMoK-u0Q-1
+Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-403c1294d95so24486861cf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 11:17:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689358635; x=1691950635;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hk6SCuBB1VWMrgz6HbTiscgnqy5TrgcBcKbev/PC7PQ=;
+        b=mEdJjv2lXCECry1C31dLkT1Mi0PK/Bj6S7Tt7BT+Oxsdde3READALJBTl51aDEY3i2
+         KlGoAl0JaGipok4OD1jbvcGZQuIQ5CKmlLRs/c+uXXhOklZctIwW1GSYEc5XUDxdiHyh
+         0WJSRl09D0qcdWEad8i5GY4880WJYwLWG6AfYel564cfAIyolXqE97ZHuR7OtlqWVnjp
+         wujN5kh6UVlIcsNKER9w0NerPJrUTw151xl5gZUhkw0hPZJYeT1C7M6vtlJOnDIt3eVs
+         Kt11KU+bZW42Crfb+EhI1rGgLnEFdafRe68Hexjh0V6m6PL5UDoPBg6pi1V2KsRjywuT
+         PG3A==
+X-Gm-Message-State: ABy/qLaFQwAOBC1oLi/yXhnhmTxUl/gmsKKsuVTVkM4h3KBxS65dLTMm
+        lgnv0nSFrP/WUAHtHmHAC4o64RIF0lzK+OzdVZD1Cec2oH6y/EVns4pOgWcOfMjS7FnnLlmPhLH
+        2UAk0+IA8ISHXoLz626CvgfO8rpMyr/Pk
+X-Received: by 2002:ac8:598b:0:b0:403:b969:a80c with SMTP id e11-20020ac8598b000000b00403b969a80cmr8280840qte.23.1689358635436;
+        Fri, 14 Jul 2023 11:17:15 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlE0Z++4VssRRjhM9Urv92cMb5fKLeaRS4Y79rMc+mqJqlStyBpQdoJ89Vie/9RF3194St3JCQ==
+X-Received: by 2002:ac8:598b:0:b0:403:b969:a80c with SMTP id e11-20020ac8598b000000b00403b969a80cmr8280820qte.23.1689358635128;
+        Fri, 14 Jul 2023 11:17:15 -0700 (PDT)
+Received: from fedora ([2600:1700:1ff0:d0e0::17])
+        by smtp.gmail.com with ESMTPSA id a21-20020aed2795000000b004039e9199cesm4144405qtd.60.2023.07.14.11.17.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Jul 2023 11:17:14 -0700 (PDT)
+Date:   Fri, 14 Jul 2023 13:17:12 -0500
+From:   Andrew Halaney <ahalaney@redhat.com>
+To:     Ninad Naik <quic_ninanaik@quicinc.com>
+Cc:     andersson@kernel.org, agross@kernel.org, konrad.dybcio@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, quic_ppareek@quicinc.com,
+        psodagud@quicinc.com, quic_kprasan@quicinc.com
+Subject: Re: [PATCH] pinctrl: qcom: Add intr_target_width to define
+ intr_target_bit field width
+Message-ID: <p5vyji2weclwgshyxbf2evzpzefckzyecjnoada7dvzbuenxsb@55abp36rrbub>
+References: <20230714061010.15817-1-quic_ninanaik@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230714061010.15817-1-quic_ninanaik@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jakub Kicinski <kuba@kernel.org> writes:
+On Fri, Jul 14, 2023 at 11:40:09AM +0530, Ninad Naik wrote:
+> SA8775 and newer target have added support for an increased number of
+> interrupt targets. To implement this change, the intr_target field, which
+> is used to configure the interrupt target in the interrupt configuration
+> register is increased from 3 bits to 4 bits.
+> 
+> In accordance to these updates, a new intr_target_width member is
+> introduced in msm_pingroup structure. This member stores the value of
+> width of intr_target field in the interrupt configuration register. This
+> value is used to dynamically calculate and generate mask for setting the
+> intr_target field. By default, this mask is set to 3 bit wide, to ensure
+> backward compatibility with the older targets.
+> 
+> Signed-off-by: Ninad Naik <quic_ninanaik@quicinc.com>
 
-> A handful of people got caught out by the recent changes in git
-> which changed the format of Message-ID and broke our recommended
-> applyhook for adding lore links.
->
-> This was fixed in the docs by commit 2bb19e740e9b ("Documentation:
-> update git configuration for Link: tag") but it seems like few people
-> have noticed. Add maintainer directory to the process entry so that
-> workflows@ gets CCed.
->
-> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-> ---
-> v2:
->  - fix order of entries
-> v1: https://lore.kernel.org/all/20230712161011.1339829-1-kuba@kernel.org/
-> ---
->  MAINTAINERS | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 3be1bdfe8ecc..fff7e50948b6 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -6206,6 +6206,7 @@ DOCUMENTATION PROCESS
->  M:	Jonathan Corbet <corbet@lwn.net>
->  L:	workflows@vger.kernel.org
->  S:	Maintained
-> +F:	Documentation/maintainer/
->  F:	Documentation/process/
+Thanks for the patch. Naive question (without really reading the code),
+but what practical affect does this have?
 
-So what this may really be telling us is that we should move the
-maintainer directory under Documentation/process/.  But applying this
-patch is easier, so that's what I've done for now :)
+i.e. does this change behavior of how IRQs were handled before this
+patch vs after on this platform?
+
+To shed some light on the question, there's a GPIO IRQ for the ethernet
+phy on this platform that is purposely _not_ described because it didn't
+ever trigger, resulting in the interface staying down. Things work
+fine without the IRQ (the driver goes into polling mode).
+The explanation I got was very brief and attributed it to a "hardware issue".
+
+I'm wondering if I should re-evaluate that, and if this was the
+"hardware issue".
 
 Thanks,
+Andrew
 
-jon
