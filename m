@@ -2,51 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3F08753D06
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 16:19:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B306753D10
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 16:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235256AbjGNOTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 10:19:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35696 "EHLO
+        id S233758AbjGNOUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 10:20:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234916AbjGNOTI (ORCPT
+        with ESMTP id S235407AbjGNOUL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 10:19:08 -0400
-Received: from mail.8bytes.org (mail.8bytes.org [IPv6:2a01:238:42d9:3f00:e505:6202:4f0c:f051])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7945B2D57
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 07:18:31 -0700 (PDT)
-Received: from 8bytes.org (p200300f6af03f600fd690381fa83412b.dip0.t-ipconnect.de [IPv6:2003:f6:af03:f600:fd69:381:fa83:412b])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.8bytes.org (Postfix) with ESMTPSA id 047AA28012B;
-        Fri, 14 Jul 2023 16:18:30 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=8bytes.org;
-        s=default; t=1689344310;
-        bh=x48tQJuhRIcBK8H22bowqvguJJwO4RiPk3c8qAoIwxM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Dp0bpR/TN6JUtC2kVopJCIWL6JgKs6ep/uDNil4nOncAjdx8i5643rC7XpfbQz/oJ
-         wgX9d0iHrf47FXFmQrKlkn0a5k+oRW/Rjt5TwtyqQEDOR7pfTD8WHZw/UCRS/LIveP
-         OSmROeqVdXZUilMAGUgu/5sGLXgLm49sLKwT7kn9SDvlImkJH9oNxb703qm7xKePAX
-         PBM6w4VEduBYW2BkfgUdSLjpn1OFW1KX9lVucEWP0DXrMJnJfvV91CTMOIl4+y9qIW
-         h9QFUSCMuH/lBX/VDf+rJh4J74YqmNnc7QumgOwcWATRgJkKv5DQt1+D14HLkRoQNi
-         /TGV0Evt5GVKg==
-Date:   Fri, 14 Jul 2023 16:18:28 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Jonas Karlman <jonas@kwiboo.se>
-Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        iommu@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/2] iommu: rockchip: Fix directory table address
- encoding
-Message-ID: <ZLFZNH_6HIxkYS4n@8bytes.org>
-References: <20230617182540.3091374-1-jonas@kwiboo.se>
+        Fri, 14 Jul 2023 10:20:11 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88CAC35B1
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 07:19:58 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2b701e1ca63so30548071fa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 07:19:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent.com; s=google; t=1689344396; x=1691936396;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DOM71+GU+T1T1qOu5w/HL2SfWMg9bTGekah19LwcmD0=;
+        b=UI7yA0NCljyPV90x5iH2UZm+0KKrA8N7HkpLhvBx5YI45KWnVP0X+lfmDOcGRqzgv1
+         BcCQDP6dU/L9fQzql4WNP9zBQ0eUWzVxsDihjm+oP2cPd12NoUxq2veYH3d4P9XEW83f
+         rznnZrUsJO/6XSu/0n6dQAIw5GIrXtW9VtmJd6SXXp9XzDm+6KQ4sQblfQPUNnSjQPb6
+         uV+G2waAqi0kYaY1DT+4F6SjMimbLaxEJv4B30RbzTxBxcsgoyZJv34S3xFKBu/2NaWZ
+         5B4KMaLrawhOyN51NWUzN9y3VfpH9r3WVj5l63BbsiO5QVPKkr/olFiimbG30XSwcoX/
+         xg9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689344396; x=1691936396;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DOM71+GU+T1T1qOu5w/HL2SfWMg9bTGekah19LwcmD0=;
+        b=LKrF7bh4rDkqoACQFJ9atnk4t3a5+hLHLQZrnTaGKeFh+5siCZu3Si12yrHHCh80yG
+         AodAgv/cigTwNRmkgeu0EQL8w5O7MsbHe23ckxfzGBAM/Za3W7NDQ+M24zOH6mhoICmn
+         EO52f895EcnhF+ctNobxPNKn1gbUtPakcK3PQVzWm/DzxIU4+zpyRLkY8rejdR/IVink
+         EzMHx+q9xMKepuz5KZ03Hsy6IgRzd4YIQpguKgfooU3otIn69iBp8wdIaczgbrY6b+As
+         bMUAFqrLe+I90wQ05shzQm/Qzh+GhMdlfurjsCl3u8+RMNZWt4kOMPHsdsRKY6TfbSnE
+         /KEA==
+X-Gm-Message-State: ABy/qLb05EUq4hx+dE09bjUTOWI0otTEHREGkgmoc9M8RgrKvKYsZzAY
+        /0HuBmQyip2jhROsVLZlOXg3sA==
+X-Google-Smtp-Source: APBJJlEEewGkR5M6G3Z2O889CSsBBwJRRRpEHhz3Y1u3wjPnDAdOkxed/DQqLQQrANnekX7C0UO28g==
+X-Received: by 2002:a2e:3503:0:b0:2b7:764:3caf with SMTP id z3-20020a2e3503000000b002b707643cafmr3610916ljz.10.1689344396601;
+        Fri, 14 Jul 2023 07:19:56 -0700 (PDT)
+Received: from zh-lab-node-5.home ([2a02:168:f656:0:1ac0:4dff:fe0f:3782])
+        by smtp.gmail.com with ESMTPSA id n11-20020a1709061d0b00b00982cfe1fe5dsm5469294ejh.65.2023.07.14.07.19.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Jul 2023 07:19:56 -0700 (PDT)
+From:   Anton Protopopov <aspsk@isovalent.com>
+To:     Martin KaFai Lau <martin.lau@linux.dev>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Hou Tao <houtao1@huawei.com>, Joe Stringer <joe@isovalent.com>,
+        Anton Protopopov <aspsk@isovalent.com>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: [PATCH bpf-next 0/3] allow bpf_map_sum_elem_count for all program types
+Date:   Fri, 14 Jul 2023 14:20:57 +0000
+Message-Id: <20230714142100.42265-1-aspsk@isovalent.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230714141747.41560-1-aspsk@isovalent.com>
+References: <20230714141747.41560-1-aspsk@isovalent.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230617182540.3091374-1-jonas@kwiboo.se>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
@@ -57,13 +82,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 17, 2023 at 06:25:43PM +0000, Jonas Karlman wrote:
-> Jonas Karlman (2):
->   iommu: rockchip: Fix directory table address encoding
->   iommu: rockchip: Allocate tables from all available memory for IOMMU
->     v2
-> 
->  drivers/iommu/rockchip-iommu.c | 50 +++++++---------------------------
->  1 file changed, 10 insertions(+), 40 deletions(-)
+This short series is a follow up to the recent series [1] which added
+per-cpu insert/delete statistics for maps. The bpf_map_sum_elem_count
+kfunc presented in the original series was only available to tracing
+programs, so let's make it available to all.
 
-Applied, thanks.
+The first patch allows to treat CONST_PTR_TO_MAP as trusted pointers
+from kfunc's point of view.
+
+The second patch just adds const to the map argument of the
+bpf_map_sum_elem_count kfunc.
+
+The third patch registers the bpf_map_sum_elem_count for all programs,
+and patches selftests correspondingly.
+
+Anton Protopopov (3):
+  bpf: consider CONST_PTR_TO_MAP as trusted pointer to struct bpf_map
+  bpf: make an argument const in the bpf_map_sum_elem_count kfunc
+  bpf: allow any program to use the bpf_map_sum_elem_count kfunc
+
+ include/linux/btf_ids.h                          | 1 +
+ kernel/bpf/map_iter.c                            | 7 +++----
+ kernel/bpf/verifier.c                            | 5 ++++-
+ tools/testing/selftests/bpf/progs/map_ptr_kern.c | 5 +++++
+ 4 files changed, 13 insertions(+), 5 deletions(-)
+
+-- 
+2.34.1
+
