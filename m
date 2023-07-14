@@ -2,169 +2,325 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11438753751
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 12:01:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72F20753754
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 12:02:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235930AbjGNKB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 06:01:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48360 "EHLO
+        id S235636AbjGNKCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 06:02:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234972AbjGNKBR (ORCPT
+        with ESMTP id S235746AbjGNKCD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 06:01:17 -0400
-Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B237235A5;
-        Fri, 14 Jul 2023 03:01:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1689328866; x=1720864866;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=frcCV1k9oG9oKj3dpUqdJg1PxRT2RSN/XKdLCPjaYaY=;
-  b=mXI9UeUYqNskBhhz2mKZZ9iJX1pVRRLVaQXYJrMaIdmt8omo8NKEnsfP
-   AQ81v4J2C89PNlO766DJAiVRmxElflLw6z0f+wt9bg78WERCHp+iBUSQp
-   JoHwSfbL1ezJdvcoZ+5BN0tXB2DhChqBqKTPb+04lW50NI35dUn7gxT1V
-   7Mb1Vczt3FTSZv+ZDUGgPA+SrOFK0oozyTNHDJJTiMGBjwqdT7/Ktowdc
-   kcSZ18r/atmjA0ZO/dPGy14wYGyvsVU9K6VwDjmD8hTBYER4ODPkfQWnD
-   9TwiZBgDB1xhGa/Q9FLCitryE0+OrJKzSNNrDQdXMOOfXd6frwtqHMhd4
-   Q==;
-X-IronPort-AV: E=Sophos;i="6.01,204,1684771200"; 
-   d="scan'208";a="349958354"
-Received: from mail-bn7nam10lp2101.outbound.protection.outlook.com (HELO NAM10-BN7-obe.outbound.protection.outlook.com) ([104.47.70.101])
-  by ob1.hgst.iphmx.com with ESMTP; 14 Jul 2023 18:00:52 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EuXTJBxo9baIjhrL6KJzLr3SOiwj/xK8rp/ntHJtabyP64V7HJG0C1H+ix7cD+gP3CFYRr/YMaFuRfDuOO8RcuJ7QsMvDZskH6jYQ0Vzwrts4j2L1NnB9jtgoHfOlwEcI0mlb+QgEkqY1+7KK3a0aqFsMiaVUUU6pIw95JvMbk7o6AsmLRHMSel8uUJbk+nAu3eFIyhDm4UWuSsjEw6dUEry/keAzj+gUvl+zQXiwg8KYJypEk6rjmdNPCOIJRfK5r5OeHx3UU6gge6UHugxB6WJG8VGt0hZNg4q48ZVLdWHfVEt2uFYe+RgVG5c3U3OTHLI5HpNsxpF8LVo4UzhmQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
- b=fjztMnGS/NInU5CtufFcPWVaY2fG0NEU78atlUcO8rC0PJg35fv4DWf94CjGl7z/YI44dl9+KTDLho+0bJdJfLhHwFKzmqMxDWpfsz15xTas66pic4ow1SiD6ZvHPBxiTvzG39Qlwa/BxhCl+pD/F1ew1+zcpV2JEC/Hr/DmJifVyLHfTjUv+4QGi44tG/J47DqCx8PEKmX1VzLCGcvH5FSyI9cLIFTr8z4G9NQ7TwLKWnwf10PmFvHjkOWc8apF/8LU5etvBRLgzZX3P4tTC9O+m1fAvhHzZuGiJiWj+6q7gqIxbFUG9lPemMya3N/OzDFUV9m3/RBl9dyZsrZyXA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        Fri, 14 Jul 2023 06:02:03 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26BCE26B7;
+        Fri, 14 Jul 2023 03:02:01 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id 98e67ed59e1d1-2633fe9b6c0so1976324a91.1;
+        Fri, 14 Jul 2023 03:02:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
- b=XuBqBpkxIDRai5iaBeAU4kbB1ppVUfZRn5AFrRS+b5twGbRaXyv+6vlkK8QfC0qqMIH3iqWhCaY8Yr13VG5pukH3OkeQ4t6LnyUAH+tGoUZfvmeFT3X59che9zTY5FXnClH8BpqYBOzmgWvj1QIIYkFpaLr5IQg9tTpkh3UL9Jk=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by MN2PR04MB6431.namprd04.prod.outlook.com (2603:10b6:208:1ae::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.27; Fri, 14 Jul
- 2023 10:00:50 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::d10e:18ac:726d:ffe0]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::d10e:18ac:726d:ffe0%4]) with mapi id 15.20.6588.027; Fri, 14 Jul 2023
- 10:00:50 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Andreas Hindborg <nmi@metaspace.dk>, Ming Lei <ming.lei@redhat.com>
-CC:     =?iso-8859-1?Q?Matias_Bj=F8rling?= <Matias.Bjorling@wdc.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "gost.dev@samsung.com" <gost.dev@samsung.com>,
-        "hch@infradead.org" <hch@infradead.org>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Johannes Thumshirn <jth@kernel.org>,
-        Aravind Ramesh <Aravind.Ramesh@wdc.com>,
-        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
-        Hans Holmberg <Hans.Holmberg@wdc.com>,
-        Minwoo Im <minwoo.im.dev@gmail.com>
-Subject: Re: [PATCH v9 1/2] ublk: add helper to check if device supports user
- copy
-Thread-Topic: [PATCH v9 1/2] ublk: add helper to check if device supports user
- copy
-Thread-Index: AQHZtiRn8ykWGlFi00yWssXHYCKmPQ==
-Date:   Fri, 14 Jul 2023 10:00:50 +0000
-Message-ID: <PH0PR04MB74162DD9A22DC6CC609436AE9B34A@PH0PR04MB7416.namprd04.prod.outlook.com>
-References: <20230714072510.47770-1-nmi@metaspace.dk>
- <20230714072510.47770-2-nmi@metaspace.dk>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|MN2PR04MB6431:EE_
-x-ms-office365-filtering-correlation-id: 0da0dfc7-ea10-4ffa-7774-08db8451342d
-x-ld-processed: b61c8803-16f3-4c35-9b17-6f65f441df86,ExtAddr
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: yIxwFvkd7xKiKyCF0RB+kB6cW65DlTLRmvf/yNDXCyCb/4+enGMFKl0MoOyHT8F+VISDSImnjIqu7YgTGBShe0iZroT9iLv0N1hbvS2R/R6LrSTB84C8fD6c39OIxQucYiOcPTygZacUGIDV8OeOo+yNIBgkKqxOOx5n8M5OtDjPvFS5z/cb6/y8o3uDEwmPyDaJvGJxcjot2zzB3WLbnSRDCSWM95aI1+PpyWazSkV99OCpuOrxDwWku/+V//nhG7U0Hv3tB6k6zD8VVqup8BXhQq7bnVmg18F7PnjSDf6+nOLXyr2Y+7iuggVjajNNtmcImSQs7SRO8I0BOGKuyOao7xtqlrVIeZAU8gVEres=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(366004)(346002)(39860400002)(376002)(136003)(451199021)(55016003)(86362001)(33656002)(122000001)(38070700005)(82960400001)(38100700002)(478600001)(2906002)(71200400001)(7696005)(110136005)(6506007)(9686003)(26005)(8676002)(8936002)(316002)(41300700001)(7416002)(66946007)(66556008)(76116006)(54906003)(91956017)(52536014)(4326008)(66476007)(66446008)(64756008)(73894004)(621065003)(186003)(4270600006);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?wVi/Lm4YQ4gb4PLS+P4nSoXqSHvHQ/WoXorVvJZa25wlrJT+Nkbayn/kTE?=
- =?iso-8859-1?Q?aph9gHZYYNM+Ug0orPHppwAbUBjQFpKDvdN64dQp3FK5tFtcylOezjn1eh?=
- =?iso-8859-1?Q?G2MCTbmBn+r40A9RMjXrTStlL/vCFLqXj80hqs/Wbw7+SMO6TeKg7/ir9f?=
- =?iso-8859-1?Q?ilKg8edv5bhYOxW2UYKzc0zCaSB0VhY8vKTQ6aCBczfv2a7nIv6/Do1uba?=
- =?iso-8859-1?Q?bRdxpzM41NrAkRLvjKC0XWJ76ZDOQ1dZIhppBiaWSLHsL8+YzLgeImvrzJ?=
- =?iso-8859-1?Q?H4BXAwcEWSnj1vv3vbWusD5SH29EJaMXIIOKkKZCFjFQfXYtFnuqp1N1zY?=
- =?iso-8859-1?Q?65WV958ZLNxqFp7NU7onQ2/XIu5nWLlQTq19g4prFYucmPoomW+wpXR+qc?=
- =?iso-8859-1?Q?ZH3QTnK2Z6723MNQkbjP0LQOznR2LrjyGhQUCAPz+GRG9bzGwSgWX18C8/?=
- =?iso-8859-1?Q?t/Vn0VfdNP+G8hRM8Jc0SygzPvOrruedPCUQkNV2paSGLWa4t66Z2C9KIt?=
- =?iso-8859-1?Q?GmkJX9lGxEq9+u323PHaANhNDMxw0u9BGZ2KPictc1LTDvlfG3ltyqauFD?=
- =?iso-8859-1?Q?IlnNiw+LC/hfmxRNyVr0bpyIxgV3vo40W4VYFmc6bnryq28YmIMCpGnapy?=
- =?iso-8859-1?Q?EMTUBGJoMhfdlFZvD72+otdxfEYqedDWiVK2tCCgqdkfAUKJtFHwT006fo?=
- =?iso-8859-1?Q?up+AvUBpnrsY5y1kHXiq7CxiJisWSldQxAMYsxsGXDumlBw3PJciQeaH/1?=
- =?iso-8859-1?Q?D9MWxrxkmr7TYVv2QB3zbyUI9A9CeHl9crBAstL8NLWU1i8/d7z/CT8Tt6?=
- =?iso-8859-1?Q?DWl9eV0xUW2oQESW6LpsafwlsoT2qLJmjRUcqDveUg5e37i5zTk6Aa2TYe?=
- =?iso-8859-1?Q?RFT9so177Ki9phr8v51BPSJOxztOT68PvpZSCVkJbERuak05kHOdbWDFOT?=
- =?iso-8859-1?Q?PUbOvYclksR9R8thyvhtasTBZczozJEtv7MoXzeksZznZCxbVIRqBePCjg?=
- =?iso-8859-1?Q?tiogKvzsGkclOVsaunoQXKRywgWAwPYeY9hu1mnswPqsQhRwAOhUgVguF4?=
- =?iso-8859-1?Q?dIWNCwcPbNWdYfi0qnq/yxbXOYBPZMeYRAVcu0jqnV2qtzk4iagKnykSJa?=
- =?iso-8859-1?Q?Ef2gLbB7rnPd4D6HJCxC93XUlJNrGNv4hr1tnpK3Xin/XngdKx+KFfikB6?=
- =?iso-8859-1?Q?uLVJ+pQEpM8uCJk/h92TXXejvvxoy8m3mfD9lGphDNmPwVh8fkc2cFWFnZ?=
- =?iso-8859-1?Q?ThdZ+II4uhbsj3JSWhLMa3AKQEEVIEVkye6EWpBuWddThgQ5TbTjuOFk+X?=
- =?iso-8859-1?Q?QZyQJFevPMBaMpfyu1acc0MEqX9kwqX+P4xvzdIpGHQSz6Ih2jlEslK5tz?=
- =?iso-8859-1?Q?KVNOuKRR5KEsD5MNoDUnciStM3PM9996HRE2zFWls6369zCm6Z5AdrWUpL?=
- =?iso-8859-1?Q?IXZHYh1sN2l0sSmK64XIuw87gMFNw5uDfIbvR1BmGa9Pw55utP3tlKiTwY?=
- =?iso-8859-1?Q?HwhQWpcpq4pzzHLu3DaczpYDaito2a5L4T+uEAulJxWEXA7vsg8oKgS14l?=
- =?iso-8859-1?Q?Gj+C3EqxUofqU0C4bpM0gZxcB/eUJFxr8gXvZ2VGYVEy/CFODP4tvzD8rr?=
- =?iso-8859-1?Q?3bWsU099I/OtGePTXqCIz/jE5AuaD52EvEzaXrI+IPYqBxS32YptgNzw?=
- =?iso-8859-1?Q?=3D=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20221208; t=1689328920; x=1691920920;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CEvX4KPZZMtAxsaBUd2aHjaev/UBEibxCwQJvNcdreQ=;
+        b=LlIXvZElFSwPQQP3EdOQW7/Ccpi+mGJa/+kHElIUP2221clCruGTO6JDTjGt/70Br9
+         +1jYKgFH/pQQg+JwFLZRLt6g8zW7LKsjh90racIMltSY2Vv0DEpvQgAyPV2I6Sx7pylL
+         OxeKUmfQeU4JaMFZMU3bnaZAw6qC2BewSuTP8+zi76DWflHKcVMMvQELCNe2zqV98zcb
+         Y7Jg1odbeGGH4vHC3FvYTR9A3FrxVE1p5IPGp2rTmUKMloK+warj+83wmXRD1aWGeLXq
+         I3rSJfHnSZQICUBq2VvGBaiSZaBc2nGUkEeSyPUuW8M4Q7RK13Jm+rl+NtMRJssLPkjF
+         5OZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689328920; x=1691920920;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CEvX4KPZZMtAxsaBUd2aHjaev/UBEibxCwQJvNcdreQ=;
+        b=H9FtCXaoFx0PLF6Wr2cwrWZtjWmrg+MC2/a1ZahWZMFhx02zm7yAxBUxvJuuXMOUQk
+         azPgANhZyRnLeYtbPC7/nMdoxDyRyfMg/D3H+PUvhYFR7QX36T+Vw1eVQ7TfaNA/RY1N
+         QnEqcxvdgnNBwjL9GWRu7ZTX6dGu4UHG8wV7LI7eMogBySQwzjIfBDcTARhpH4vJX3xV
+         tac/I9FV3XGTVIoQx/1qwpwJ7OHJ+mb/CORJXc9gC0gqktkKNbmzH4KjEnG5+tkPoLFG
+         YP+n+MKFOpWWsVcp1L5n9jvahuMGPuAFDlOWl1KKR8tBHclJwfXdpNx9t2XBpyX1zw3F
+         Js7Q==
+X-Gm-Message-State: ABy/qLbhltfLhJz6jbtSMgkJaQGT9KxWYeqXE0mmJ4Y2qSYCg+2IZunJ
+        83zS/ECj6Y0H1lzSbqFealawzKK4gc2tyuPbkkQU+EyRmqk=
+X-Google-Smtp-Source: APBJJlEwVJsZaXO2FCJthIep9FGM1eQnwxZKx86rxSc6rbfeUDXAbsdfqzs4ccD0qyM5FOmAtAUIB80E5VDO8647wzY=
+X-Received: by 2002:a17:90a:72c8:b0:25e:fb6d:ce68 with SMTP id
+ l8-20020a17090a72c800b0025efb6dce68mr3102557pjk.6.1689328920447; Fri, 14 Jul
+ 2023 03:02:00 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?iso-8859-1?Q?e3rh334ZWb6IwY8D4Fh/dghcEMGSjyvJEE8f6vnupof13x5we8TQSa9aV5?=
- =?iso-8859-1?Q?kpxRkJELnSlQXM2N8W24aUBvzK3t2ZRO43bNxfcpi+t3shlt1LHtgdGG4c?=
- =?iso-8859-1?Q?Y6ziHEWy4+DoW5wQtUjVv5KzhhopRFzVzBGRXAxuMGDh36OVo52tqHh3tR?=
- =?iso-8859-1?Q?DW7TRMGI1krgLREYcpQXAvBxDlnhwnYG+fH47OotfHt8sWAainvGhe4jhK?=
- =?iso-8859-1?Q?MfAzEeDaxVng0GzQJeHClo7YuqUOC4yiASmU2UZnG5wVgEnkUwe4hBUBGv?=
- =?iso-8859-1?Q?A/jsNERzh2JL+bO/zu5FrenS/iMORwt0PJ+Qm1oiiasJL3VKJzcFIbOvfe?=
- =?iso-8859-1?Q?GKHJwlkSw9TpoeCeraZI/ILjYLteKgIefIgRxgxHhk11Z2N07ENKKBasfP?=
- =?iso-8859-1?Q?9pbbAk5W2z8PX7gHOimS99aCoX3iPYqsLDvUfsmJoKOIS6zth0/mB/id6a?=
- =?iso-8859-1?Q?LSgG9cj4HU7NxdtWTh8QmkY0pJauFOnjdnaP6vQSQb5CZ/94jbzq6BGX2w?=
- =?iso-8859-1?Q?m5om9emzyGS0K1+rf/46ODRFWzJuFNR8gzVNxS0F+Lip1NOWhPVDNBBZ1Z?=
- =?iso-8859-1?Q?1pqpou/rmDtPMvxFStIgxbohCKpirqNOP9/0lEEJRqKN814zO+u6PN9SXv?=
- =?iso-8859-1?Q?T/a3qwXTAeopTdegiHvbcPa594FJfUWaajfbBPvm3PWpREFzsv4NLW1GFa?=
- =?iso-8859-1?Q?Nb2Is8e7OR5zarXR5Ee3s4kSWubkbDxBEGYf0vabKaotBM0b3iSqExRTcq?=
- =?iso-8859-1?Q?6bQCT3jSOYhvSpjL2hG4ja2FUivgZUMBtuAaMBkYWK2Aka7/G+M/ydjuDW?=
- =?iso-8859-1?Q?TMMKj99rfXmquPVT9XojMc4GIYPT6eB2XpbnWa7xdukXeutwF6rtlDe43d?=
- =?iso-8859-1?Q?sa38Wy5c/7yw9FbkPvkFmpO4FyBRf1w2MVAnYsqy84wUrX005QhooYHoR8?=
- =?iso-8859-1?Q?chapnRAc7XfhsV/eFaxmD3FegIlhlKi7lPQngxxWZJVjYFmC+p+gVysafd?=
- =?iso-8859-1?Q?W12OY6S9A8rQlZsRmBm709FcrBVxdjFBMyPalf?=
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0da0dfc7-ea10-4ffa-7774-08db8451342d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Jul 2023 10:00:50.5332
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ySmkmn9TIuBQtR70VKKS88AnzQL9lSsIZhuYSj4MlOCcu3Ba0v7Ie0lNG/yhLilwpgUTvGFX14sX6hjAdBgN8pnE+XwfovNkylkBFwDBvxo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR04MB6431
+References: <0000000000009db51a06005b64e9@google.com> <CALm+0cXi-YsnJBdBt38v4gEoR7oEeaoj3wXjEw3m=25RSLEs8g@mail.gmail.com>
+ <CANp29Y6P06Hd0x+oovcL480pHmFnkxqDN9AaEnjbdwGrbqzDzg@mail.gmail.com>
+In-Reply-To: <CANp29Y6P06Hd0x+oovcL480pHmFnkxqDN9AaEnjbdwGrbqzDzg@mail.gmail.com>
+From:   Z qiang <qiang.zhang1211@gmail.com>
+Date:   Fri, 14 Jul 2023 18:01:48 +0800
+Message-ID: <CALm+0cUKu7eNg6iaw6fmNA8aubrS46ookSNxx4LM-qtMffRQmA@mail.gmail.com>
+Subject: Re: [syzbot] [usb?] memory leak in raw_open
+To:     Aleksandr Nogikh <nogikh@google.com>
+Cc:     syzbot <syzbot+feb045d335c1fdde5bf7@syzkaller.appspotmail.com>,
+        andreyknvl@gmail.com, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,EMPTY_MESSAGE,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jul 14, 2023 at 5:47=E2=80=AFPM Aleksandr Nogikh <nogikh@google.com=
+> wrote:
+>
+> Hi,
+>
+> On Fri, Jul 14, 2023 at 9:12=E2=80=AFAM Z qiang <qiang.zhang1211@gmail.co=
+m> wrote:
+> >
+> > >
+> > > Hello,
+> > >
+> > > syzbot found the following issue on:
+> > >
+> > > HEAD commit:    1c7873e33645 mm: lock newly mapped VMA with corrected=
+ orde..
+> > > git tree:       upstream
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=3D1517663ca=
+80000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D832b404e0=
+95b70c0
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=3Dfeb045d335c=
+1fdde5bf7
+> > > compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Bi=
+nutils for Debian) 2.35.2
+> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D1776519=
+ca80000
+> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D117f9778a=
+80000
+> > >
+> > > Downloadable assets:
+> > > disk image: https://storage.googleapis.com/syzbot-assets/43b42bd2cf70=
+/disk-1c7873e3.raw.xz
+> > > vmlinux: https://storage.googleapis.com/syzbot-assets/011ba1b9e8c1/vm=
+linux-1c7873e3.xz
+> > > kernel image: https://storage.googleapis.com/syzbot-assets/18b3493425=
+95/bzImage-1c7873e3.xz
+> > >
+> > > IMPORTANT: if you fix the issue, please add the following tag to the =
+commit:
+> > > Reported-by: syzbot+feb045d335c1fdde5bf7@syzkaller.appspotmail.com
+> > >
+> > > BUG: memory leak
+> > > unreferenced object 0xffff88810b172000 (size 4096):
+> > >   comm "syz-executor103", pid 5067, jiffies 4294964128 (age 13.070s)
+> > >   hex dump (first 32 bytes):
+> > >     01 00 00 00 00 00 00 00 00 bc 96 0e 81 88 ff ff  ................
+> > >     5d b6 9e 85 ff ff ff ff 03 00 00 00 00 00 00 00  ]...............
+> > >   backtrace:
+> > >     [<ffffffff8154bf94>] kmalloc_trace+0x24/0x90 mm/slab_common.c:107=
+6
+> > >     [<ffffffff8347eb55>] kmalloc include/linux/slab.h:582 [inline]
+> > >     [<ffffffff8347eb55>] kzalloc include/linux/slab.h:703 [inline]
+> > >     [<ffffffff8347eb55>] dev_new drivers/usb/gadget/legacy/raw_gadget=
+.c:191 [inline]
+> > >     [<ffffffff8347eb55>] raw_open+0x45/0x110 drivers/usb/gadget/legac=
+y/raw_gadget.c:385
+> > >     [<ffffffff827d1d09>] misc_open+0x1a9/0x1f0 drivers/char/misc.c:16=
+5
+> > >     [<ffffffff8166763b>] chrdev_open+0x11b/0x340 fs/char_dev.c:414
+> > >     [<ffffffff8165573f>] do_dentry_open+0x30f/0x990 fs/open.c:914
+> > >     [<ffffffff8167cabb>] do_open fs/namei.c:3636 [inline]
+> > >     [<ffffffff8167cabb>] path_openat+0x178b/0x1b20 fs/namei.c:3793
+> > >     [<ffffffff8167e995>] do_filp_open+0xc5/0x1b0 fs/namei.c:3820
+> > >     [<ffffffff81659453>] do_sys_openat2+0xe3/0x140 fs/open.c:1407
+> > >     [<ffffffff81659de3>] do_sys_open fs/open.c:1422 [inline]
+> > >     [<ffffffff81659de3>] __do_sys_openat fs/open.c:1438 [inline]
+> > >     [<ffffffff81659de3>] __se_sys_openat fs/open.c:1433 [inline]
+> > >     [<ffffffff81659de3>] __x64_sys_openat+0x83/0xe0 fs/open.c:1433
+> > >     [<ffffffff84a77ff9>] do_syscall_x64 arch/x86/entry/common.c:50 [i=
+nline]
+> > >     [<ffffffff84a77ff9>] do_syscall_64+0x39/0xb0 arch/x86/entry/commo=
+n.c:80
+> > >     [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> > >
+> > > BUG: memory leak
+> > > unreferenced object 0xffff88810ad20d60 (size 32):
+> > >   comm "syz-executor103", pid 5067, jiffies 4294964128 (age 13.070s)
+> > >   hex dump (first 32 bytes):
+> > >     72 61 77 2d 67 61 64 67 65 74 2e 30 00 00 00 00  raw-gadget.0....
+> > >     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+> > >   backtrace:
+> > >     [<ffffffff8154bf94>] kmalloc_trace+0x24/0x90 mm/slab_common.c:107=
+6
+> > >     [<ffffffff8347cd2f>] kmalloc include/linux/slab.h:582 [inline]
+> > >     [<ffffffff8347cd2f>] raw_ioctl_init+0xdf/0x410 drivers/usb/gadget=
+/legacy/raw_gadget.c:460
+> > >     [<ffffffff8347dfe9>] raw_ioctl+0x5f9/0x1120 drivers/usb/gadget/le=
+gacy/raw_gadget.c:1250
+> > >     [<ffffffff81685173>] vfs_ioctl fs/ioctl.c:51 [inline]
+> > >     [<ffffffff81685173>] __do_sys_ioctl fs/ioctl.c:870 [inline]
+> > >     [<ffffffff81685173>] __se_sys_ioctl fs/ioctl.c:856 [inline]
+> > >     [<ffffffff81685173>] __x64_sys_ioctl+0x103/0x140 fs/ioctl.c:856
+> > >     [<ffffffff84a77ff9>] do_syscall_x64 arch/x86/entry/common.c:50 [i=
+nline]
+> > >     [<ffffffff84a77ff9>] do_syscall_64+0x39/0xb0 arch/x86/entry/commo=
+n.c:80
+> > >     [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> > >
+> > > BUG: memory leak
+> > > unreferenced object 0xffff88810e96bc00 (size 128):
+> > >   comm "syz-executor103", pid 5067, jiffies 4294964128 (age 13.070s)
+> > >   hex dump (first 32 bytes):
+> > >     64 75 6d 6d 79 5f 75 64 63 00 00 00 00 00 00 00  dummy_udc.......
+> > >     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+> > >   backtrace:
+> > >     [<ffffffff8154bf94>] kmalloc_trace+0x24/0x90 mm/slab_common.c:107=
+6
+> > >     [<ffffffff8347cd6d>] kmalloc include/linux/slab.h:582 [inline]
+> > >     [<ffffffff8347cd6d>] raw_ioctl_init+0x11d/0x410 drivers/usb/gadge=
+t/legacy/raw_gadget.c:468
+> > >     [<ffffffff8347dfe9>] raw_ioctl+0x5f9/0x1120 drivers/usb/gadget/le=
+gacy/raw_gadget.c:1250
+> > >     [<ffffffff81685173>] vfs_ioctl fs/ioctl.c:51 [inline]
+> > >     [<ffffffff81685173>] __do_sys_ioctl fs/ioctl.c:870 [inline]
+> > >     [<ffffffff81685173>] __se_sys_ioctl fs/ioctl.c:856 [inline]
+> > >     [<ffffffff81685173>] __x64_sys_ioctl+0x103/0x140 fs/ioctl.c:856
+> > >     [<ffffffff84a77ff9>] do_syscall_x64 arch/x86/entry/common.c:50 [i=
+nline]
+> > >     [<ffffffff84a77ff9>] do_syscall_64+0x39/0xb0 arch/x86/entry/commo=
+n.c:80
+> > >     [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> > >
+> > > BUG: memory leak
+> > > unreferenced object 0xffff88810e96ba80 (size 128):
+> > >   comm "syz-executor103", pid 5067, jiffies 4294964128 (age 13.070s)
+> > >   hex dump (first 32 bytes):
+> > >     64 75 6d 6d 79 5f 75 64 63 2e 30 00 00 00 00 00  dummy_udc.0.....
+> > >     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+> > >   backtrace:
+> > >     [<ffffffff8154bf94>] kmalloc_trace+0x24/0x90 mm/slab_common.c:107=
+6
+> > >     [<ffffffff8347cdfc>] kmalloc include/linux/slab.h:582 [inline]
+> > >     [<ffffffff8347cdfc>] raw_ioctl_init+0x1ac/0x410 drivers/usb/gadge=
+t/legacy/raw_gadget.c:479
+> > >     [<ffffffff8347dfe9>] raw_ioctl+0x5f9/0x1120 drivers/usb/gadget/le=
+gacy/raw_gadget.c:1250
+> > >     [<ffffffff81685173>] vfs_ioctl fs/ioctl.c:51 [inline]
+> > >     [<ffffffff81685173>] __do_sys_ioctl fs/ioctl.c:870 [inline]
+> > >     [<ffffffff81685173>] __se_sys_ioctl fs/ioctl.c:856 [inline]
+> > >     [<ffffffff81685173>] __x64_sys_ioctl+0x103/0x140 fs/ioctl.c:856
+> > >     [<ffffffff84a77ff9>] do_syscall_x64 arch/x86/entry/common.c:50 [i=
+nline]
+> > >     [<ffffffff84a77ff9>] do_syscall_64+0x39/0xb0 arch/x86/entry/commo=
+n.c:80
+> > >     [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> > >
+> > > BUG: memory leak
+> > > unreferenced object 0xffff88810e96bd00 (size 128):
+> > >   comm "syz-executor103", pid 5067, jiffies 4294964128 (age 13.070s)
+> > >   hex dump (first 32 bytes):
+> > >     00 bd 96 0e 81 88 ff ff 00 bd 96 0e 81 88 ff ff  ................
+> > >     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+> > >   backtrace:
+> > >     [<ffffffff8154bf94>] kmalloc_trace+0x24/0x90 mm/slab_common.c:107=
+6
+> > >     [<ffffffff833ecc6a>] kmalloc include/linux/slab.h:582 [inline]
+> > >     [<ffffffff833ecc6a>] kzalloc include/linux/slab.h:703 [inline]
+> > >     [<ffffffff833ecc6a>] dummy_alloc_request+0x5a/0xe0 drivers/usb/ga=
+dget/udc/dummy_hcd.c:665
+> > >     [<ffffffff833e9132>] usb_ep_alloc_request+0x22/0xd0 drivers/usb/g=
+adget/udc/core.c:196
+> > >     [<ffffffff8347f13d>] gadget_bind+0x6d/0x370 drivers/usb/gadget/le=
+gacy/raw_gadget.c:292
+> > >     [<ffffffff833e9e83>] gadget_bind_driver+0xe3/0x2e0 drivers/usb/ga=
+dget/udc/core.c:1591
+> > >     [<ffffffff82ba069d>] call_driver_probe drivers/base/dd.c:579 [inl=
+ine]
+> > >     [<ffffffff82ba069d>] really_probe+0x12d/0x430 drivers/base/dd.c:6=
+58
+> > >     [<ffffffff82ba0a61>] __driver_probe_device+0xc1/0x1a0 drivers/bas=
+e/dd.c:798
+> > >     [<ffffffff82ba0b6a>] driver_probe_device+0x2a/0x120 drivers/base/=
+dd.c:828
+> > >     [<ffffffff82ba0eae>] __driver_attach drivers/base/dd.c:1214 [inli=
+ne]
+> > >     [<ffffffff82ba0eae>] __driver_attach+0xfe/0x1f0 drivers/base/dd.c=
+:1154
+> > >     [<ffffffff82b9d985>] bus_for_each_dev+0xa5/0x110 drivers/base/bus=
+.c:368
+> > >     [<ffffffff82b9f486>] bus_add_driver+0x126/0x2a0 drivers/base/bus.=
+c:673
+> > >     [<ffffffff82ba25da>] driver_register+0x8a/0x190 drivers/base/driv=
+er.c:246
+> > >     [<ffffffff833e7524>] usb_gadget_register_driver_owner+0x64/0x160 =
+drivers/usb/gadget/udc/core.c:1665
+> > >     [<ffffffff8347e0e6>] raw_ioctl_run drivers/usb/gadget/legacy/raw_=
+gadget.c:546 [inline]
+> > >     [<ffffffff8347e0e6>] raw_ioctl+0x6f6/0x1120 drivers/usb/gadget/le=
+gacy/raw_gadget.c:1253
+> > >     [<ffffffff81685173>] vfs_ioctl fs/ioctl.c:51 [inline]
+> > >     [<ffffffff81685173>] __do_sys_ioctl fs/ioctl.c:870 [inline]
+> > >     [<ffffffff81685173>] __se_sys_ioctl fs/ioctl.c:856 [inline]
+> > >     [<ffffffff81685173>] __x64_sys_ioctl+0x103/0x140 fs/ioctl.c:856
+> > >     [<ffffffff84a77ff9>] do_syscall_x64 arch/x86/entry/common.c:50 [i=
+nline]
+> > >     [<ffffffff84a77ff9>] do_syscall_64+0x39/0xb0 arch/x86/entry/commo=
+n.c:80
+> > >
+> > >
+> >
+> >
+> > #syz test: git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-nex=
+t.git
+> >   master
+> >
+> >
+> > --- a/drivers/usb/gadget/legacy/raw_gadget.c
+> > +++ b/drivers/usb/gadget/legacy/raw_gadget.c
+> > @@ -310,12 +310,15 @@ static int gadget_bind(struct usb_gadget *gadget,
+> >         dev->eps_num =3D i;
+> >         spin_unlock_irqrestore(&dev->lock, flags);
+> >
+>
+> syzbot expects that every line of the git diff patch begins with some
+> character (unchanged lines with space, added/deleted with + and -
+> correspondingly). Here you have an empty line and syzbot thinks it's
+> already the end of the patch. Therefore the patch testing fails.
+>
 
+Thanks for your remind and I also sent a patch :)
+
+Thanks
+Zqiang
+
+
+>
+> > -       /* Matches kref_put() in gadget_unbind(). */
+> > -       kref_get(&dev->count);
+> > -
+> >         ret =3D raw_queue_event(dev, USB_RAW_EVENT_CONNECT, 0, NULL);
+> > -       if (ret < 0)
+> > +       if (ret < 0) {
+> >                 dev_err(&gadget->dev, "failed to queue event\n");
+> > +               set_gadget_data(gadget, NULL);
+> > +               return ret;
+> > +       }
+> > +
+> > +       /* Matches kref_put() in gadget_unbind(). */
+> > +       kref_get(&dev->count);
+> >
+> >         return ret;
+> >  }
+> >
+> > --
+> > You received this message because you are subscribed to the Google Grou=
+ps "syzkaller-bugs" group.
+> > To unsubscribe from this group and stop receiving emails from it, send =
+an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> > To view this discussion on the web visit https://groups.google.com/d/ms=
+gid/syzkaller-bugs/CALm%2B0cXi-YsnJBdBt38v4gEoR7oEeaoj3wXjEw3m%3D25RSLEs8g%=
+40mail.gmail.com.
