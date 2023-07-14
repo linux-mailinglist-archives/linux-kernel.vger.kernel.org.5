@@ -2,163 +2,294 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00DA1753F59
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 17:53:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 386C0753F5E
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 17:55:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235821AbjGNPxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 11:53:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36330 "EHLO
+        id S236235AbjGNPz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 11:55:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235238AbjGNPxV (ORCPT
+        with ESMTP id S236199AbjGNPz1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 11:53:21 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18C8B30F8
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 08:53:20 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9BEA861D50
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 15:53:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9E4FC433C8;
-        Fri, 14 Jul 2023 15:53:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1689349999;
-        bh=wx9/stCOK6tVTVAIk1uVT+YCeNX56QbGnv/MydW9lrk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=IMhi1IXoGNaItUMs4EZhV1/NVA6UWt6yyi+CYsiKTiN8M012QKXfcXPVs8Hbq70se
-         tEuAXaiGt9fHus2GMb2Ym0+tx1+jmZvoeYfIiyPLFw9DdFhFx/Yj0+tuA2GiPk3QYP
-         mh3kt2R12g07vpCojalIs4AJlufNbWMdrFg1SIN4=
-Date:   Fri, 14 Jul 2023 08:53:17 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     syzbot <syzbot+42309678e0bc7b32f8e9@syzkaller.appspotmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        syzkaller-bugs@googlegroups.com,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Peter Xu <peterx@redhat.com>
-Subject: Re: [syzbot] [mm?] kernel BUG in mfill_atomic_copy
-Message-Id: <20230714085317.751f7d309116daa78ebedc14@linux-foundation.org>
-In-Reply-To: <0000000000004edae006006a2109@google.com>
-References: <0000000000004edae006006a2109@google.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 14 Jul 2023 11:55:27 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F264A35A5;
+        Fri, 14 Jul 2023 08:55:24 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-666e64e97e2so1436389b3a.1;
+        Fri, 14 Jul 2023 08:55:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689350124; x=1691942124;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NqpmYVnbbHnWcNUmmhC8NRk/JXLwLEr9LrHoxThT/cY=;
+        b=d13J78Hae+iUwr3wrXVIbKZGmYbkfAut0VdeD0DMDSWYuc5Ae+8BKpnTACIzYGzUSr
+         xgaceyN8+odllP4SgLtjA1yGOuhSjlEklNahp9nGFh9khSJfarg4RfEGlpMjngPfDV3t
+         uLMW+Z6G0NxBau/8Dw8UlB1Oeyq5BMqoWK2/sOjRU1m3vFWSshRKP+QpACOdTldQplni
+         FmucbEuWy0I1djDWT32XMtsXST1X1izEqeqTKslbASkaIPNb5nnWlqkht/jdX+ZhA1xr
+         m2aJniiHAH7WfQdM/JrTjGr9plc+V3BaE96BJ09aZjPfhFKSfdYNvE25DUNFatCwgG44
+         4+RA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689350124; x=1691942124;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NqpmYVnbbHnWcNUmmhC8NRk/JXLwLEr9LrHoxThT/cY=;
+        b=RTCPLIRZut36wBVDJWVSdLmBmRKL4D7g8XsThxBJu0TJFQIDKHh2uDLhvddaf+SaEU
+         nLPvcyjqPj+LlHH4akDTYh9aOcMrXor4fOWZiayWGr6dCh6yL7Pu3GT+8ZAlWw4O1el4
+         s4LQJJI2CX5yTuqFuNRnO3YWIwUH/Zrw+TrKjt1wGRbEIqUaUWuCSpbv2DSfm331mfL5
+         P5Ssc+ex+FaiJCfWtPPan3Hkf25kGC8iU8hOokndIHHZ31HoDelN4GAezI3/Eby/IMSn
+         OT7K5EVtUP03x765lvHgZkZ2kRJIS5xcYkRadq32FPa2ZNqK9d6LNsg465Xxrh8WEofH
+         vCTw==
+X-Gm-Message-State: ABy/qLZPqNq43QI0sJO0wvOZuDnNpix1AvdaGHDJuRPLyWbDc51r5mGm
+        bi+Y7YkgchdG1XjhJzxu16g=
+X-Google-Smtp-Source: APBJJlFLtHyaTBNofj23qOOxXXlk4tAx2QA0XgqPxV6RE2bcgC1mkUTiSZRm/PZ3ZVGkQtzOGNrZSw==
+X-Received: by 2002:a05:6a20:101a:b0:12d:8d4d:27e9 with SMTP id gs26-20020a056a20101a00b0012d8d4d27e9mr3678882pzc.15.1689350124359;
+        Fri, 14 Jul 2023 08:55:24 -0700 (PDT)
+Received: from smtpclient.apple ([2402:d0c0:2:a2a::1])
+        by smtp.gmail.com with ESMTPSA id s4-20020a63b404000000b0055adced9e13sm7098528pgf.0.2023.07.14.08.55.01
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 14 Jul 2023 08:55:23 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.400.51.1.1\))
+Subject: Re: [PATCH v1] rcu: Fix and improve RCU read lock checks when
+ !CONFIG_DEBUG_LOCK_ALLOC
+From:   Alan Huang <mmpgouride@gmail.com>
+In-Reply-To: <F160D7F8-57DC-4986-90A9-EB50F7C89891@gmail.com>
+Date:   Fri, 14 Jul 2023 23:54:47 +0800
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        Gao Xiang <hsiangkao@linux.alibaba.com>,
+        Sandeep Dhavale <dhavale@google.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-erofs@lists.ozlabs.org, xiang@kernel.org,
+        Will Shiu <Will.Shiu@mediatek.com>, kernel-team@android.com,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <6E5326AD-9A5D-4570-906A-BDE8257B6F0C@gmail.com>
+References: <20230713003201.GA469376@google.com>
+ <161f1615-3d85-cf47-d2d5-695adf1ca7d4@linux.alibaba.com>
+ <0d9e7b4d-6477-47a6-b3d2-2c9d9b64903d@paulmck-laptop>
+ <f124e041-6a82-2069-975c-4f393e5c4137@linux.alibaba.com>
+ <87292a44-cc02-4d95-940e-e4e31d0bc6f2@paulmck-laptop>
+ <f1c60dcb-e32f-7b7e-bf0d-5dec999e9299@linux.alibaba.com>
+ <CAEXW_YSODXRfgkR0D2G-x=0uZdsqvF3kZL+LL3DcRX-5CULJ1Q@mail.gmail.com>
+ <894a3b64-a369-7bc6-c8a8-0910843cc587@linux.alibaba.com>
+ <CAEXW_YSM1yik4yWTgZoxCS9RM6TbsL26VCVCH=41+uMA8chfAQ@mail.gmail.com>
+ <58b661d0-0ebb-4b45-a10d-c5927fb791cd@paulmck-laptop>
+ <7d433fac-a62d-4e81-b8e5-57cf5f2d1d55@paulmck-laptop>
+ <F160D7F8-57DC-4986-90A9-EB50F7C89891@gmail.com>
+To:     paulmck@kernel.org
+X-Mailer: Apple Mail (2.3731.400.51.1.1)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 13 Jul 2023 20:34:45 -0700 syzbot <syzbot+42309678e0bc7b32f8e9@syzkaller.appspotmail.com> wrote:
 
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    fe57d0d86f03 Add linux-next specific files for 20230710
-> git tree:       linux-next
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=14d46ed8a80000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=eaa6217eed71d333
-> dashboard link: https://syzkaller.appspot.com/bug?extid=42309678e0bc7b32f8e9
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14b63e18a80000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13784d64a80000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/9e7627fb1623/disk-fe57d0d8.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/848a690045db/vmlinux-fe57d0d8.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/36e5c3ae635e/bzImage-fe57d0d8.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+42309678e0bc7b32f8e9@syzkaller.appspotmail.com
-> 
-> ------------[ cut here ]------------
-> kernel BUG at mm/userfaultfd.c:573!
+> 2023=E5=B9=B47=E6=9C=8814=E6=97=A5 23:35=EF=BC=8CAlan Huang =
+<mmpgouride@gmail.com> =E5=86=99=E9=81=93=EF=BC=9A
+>=20
+>>=20
+>> 2023=E5=B9=B47=E6=9C=8814=E6=97=A5 10:16=EF=BC=8CPaul E. McKenney =
+<paulmck@kernel.org> =E5=86=99=E9=81=93=EF=BC=9A
+>>=20
+>> On Thu, Jul 13, 2023 at 09:33:35AM -0700, Paul E. McKenney wrote:
+>>> On Thu, Jul 13, 2023 at 11:33:24AM -0400, Joel Fernandes wrote:
+>>>> On Thu, Jul 13, 2023 at 10:34=E2=80=AFAM Gao Xiang =
+<hsiangkao@linux.alibaba.com> wrote:
+>>>>> On 2023/7/13 22:07, Joel Fernandes wrote:
+>>>>>> On Thu, Jul 13, 2023 at 12:59=E2=80=AFAM Gao Xiang =
+<hsiangkao@linux.alibaba.com> wrote:
+>>>>>>> On 2023/7/13 12:52, Paul E. McKenney wrote:
+>>>>>>>> On Thu, Jul 13, 2023 at 12:41:09PM +0800, Gao Xiang wrote:
+>>>>>>>=20
+>>>>>>> ...
+>>>>>>>=20
+>>>>>>>>>=20
+>>>>>>>>> There are lots of performance issues here and even a plumber
+>>>>>>>>> topic last year to show that, see:
+>>>>>>>>>=20
+>>>>>>>>> [1] =
+https://lore.kernel.org/r/20230519001709.2563-1-tj@kernel.org
+>>>>>>>>> [2] =
+https://lore.kernel.org/r/CAHk-=3DwgE9kORADrDJ4nEsHHLirqPCZ1tGaEPAZejHdZ03=
+qCOGg@mail.gmail.com
+>>>>>>>>> [3] =
+https://lore.kernel.org/r/CAB=3DBE-SBtO6vcoyLNA9F-9VaN5R0t3o_Zn+FW8GbO6wyU=
+qFneQ@mail.gmail.com
+>>>>>>>>> [4] https://lpc.events/event/16/contributions/1338/
+>>>>>>>>> and more.
+>>>>>>>>>=20
+>>>>>>>>> I'm not sure if it's necessary to look info all of that,
+>>>>>>>>> andSandeep knows more than I am (the scheduling issue
+>>>>>>>>> becomes vital on some aarch64 platform.)
+>>>>>>>>=20
+>>>>>>>> Hmmm...  Please let me try again.
+>>>>>>>>=20
+>>>>>>>> Assuming that this approach turns out to make sense, the =
+resulting
+>>>>>>>> patch will need to clearly state the performance benefits =
+directly in
+>>>>>>>> the commit log.
+>>>>>>>>=20
+>>>>>>>> And of course, for the approach to make sense, it must avoid =
+breaking
+>>>>>>>> the existing lockdep-RCU debugging code.
+>>>>>>>>=20
+>>>>>>>> Is that more clear?
+>>>>>>>=20
+>>>>>>> Personally I'm not working on Android platform any more so I =
+don't
+>>>>>>> have a way to reproduce, hopefully Sandeep could give actually
+>>>>>>> number _again_ if dm-verity is enabled and trigger another
+>>>>>>> workqueue here and make a comparsion why the scheduling latency =
+of
+>>>>>>> the extra work becomes unacceptable.
+>>>>>>>=20
+>>>>>>=20
+>>>>>> Question from my side, are we talking about only performance =
+issues or
+>>>>>> also a crash? It appears z_erofs_decompress_pcluster() takes
+>>>>>> mutex_lock(&pcl->lock);
+>>>>>>=20
+>>>>>> So if it is either in an RCU read-side critical section or in an
+>>>>>> atomic section, like the softirq path, then it may
+>>>>>> schedule-while-atomic or trigger RCU warnings.
+>>>>>>=20
+>>>>>> z_erofs_decompressqueue_endio
+>>>>>> -> z_erofs_decompress_kickoff
+>>>>>> ->z_erofs_decompressqueue_work
+>>>>>>  ->z_erofs_decompress_queue
+>>>>>>   -> z_erofs_decompress_pcluster
+>>>>>>    -> mutex_lock
+>>>>>>=20
+>>>>>=20
+>>>>> Why does the softirq path not trigger a workqueue instead?
+>>>>=20
+>>>> I said "if it is". I was giving a scenario. mutex_lock() is not
+>>>> allowed in softirq context or in an RCU-reader.
+>>>>=20
+>>>>>> Per Sandeep in [1], this stack happens under RCU read-lock in:
+>>>>>>=20
+>>>>>> #define __blk_mq_run_dispatch_ops(q, check_sleep, dispatch_ops) \
+>>>>>> [...]
+>>>>>>                rcu_read_lock();
+>>>>>>                (dispatch_ops);
+>>>>>>                rcu_read_unlock();
+>>>>>> [...]
+>>>>>>=20
+>>>>>> Coming from:
+>>>>>> blk_mq_flush_plug_list ->
+>>>>>>                           blk_mq_run_dispatch_ops(q,
+>>>>>>                                __blk_mq_flush_plug_list(q, =
+plug));
+>>>>>>=20
+>>>>>> and __blk_mq_flush_plug_list does this:
+>>>>>>          q->mq_ops->queue_rqs(&plug->mq_list);
+>>>>>>=20
+>>>>>> This somehow ends up calling the bio_endio and the
+>>>>>> z_erofs_decompressqueue_endio which grabs the mutex.
+>>>>>>=20
+>>>>>> So... I have a question, it looks like one of the paths in
+>>>>>> __blk_mq_run_dispatch_ops() uses SRCU.  Where are as the =
+alternate
+>>>>>> path uses RCU. Why does this alternate want to block even if it =
+is not
+>>>>>> supposed to? Is the real issue here that the BLK_MQ_F_BLOCKING =
+should
+>>>>>> be set? It sounds like you want to block in the "else" path even
+>>>>>> though BLK_MQ_F_BLOCKING is not set:
+>>>>>=20
+>>>>> BLK_MQ_F_BLOCKING is not a flag that a filesystem can do anything =
+with.
+>>>>> That is block layer and mq device driver stuffs. filesystems =
+cannot set
+>>>>> this value.
+>>>>>=20
+>>>>> As I said, as far as I understand, previously,
+>>>>> .end_io() can only be called without RCU context, so it will be =
+fine,
+>>>>> but I don't know when .end_io() can be called under some RCU =
+context
+>>>>> now.
+>>>>=20
+>>>>> =46rom what Sandeep described, the code path is in an RCU reader. =
+My
+>>>> question is more, why doesn't it use SRCU instead since it clearly
+>>>> does so if BLK_MQ_F_BLOCKING. What are the tradeoffs? IMHO, a =
+deeper
+>>>> dive needs to be made into that before concluding that the fix is =
+to
+>>>> use rcu_read_lock_any_held().
+>>>=20
+>>> How can this be solved?
+>>>=20
+>>> 1. Always use a workqueue.  Simple, but is said to have performance
+>>> issues.
+>>>=20
+>>> 2. Pass a flag in that indicates whether or not the caller is in an
+>>> RCU read-side critical section.  Conceptually simple, but might
+>>> or might not be reasonable to actually implement in the code as
+>>> it exists now. (You tell me!)
+>>>=20
+>>> 3. Create a function in z_erofs that gives you a decent
+>>> approximation, maybe something like the following.
+>>>=20
+>>> 4. Other ideas here.
+>>=20
+>> 5. #3 plus make the corresponding Kconfig option select
+>> PREEMPT_COUNT, assuming that any users needing compression in
+>> non-preemptible kernels are OK with PREEMPT_COUNT being set.
+>> (Some users of non-preemptible kernels object strenuously
+>> to the added overhead from CONFIG_PREEMPT_COUNT=3Dy.)
+>=20
+> 6. Set one bit in bio->bi_private, check the bit and flip it in =
+rcu_read_lock() path,
+> then in z_erofs_decompressqueue_endio, check if the bit has changed.
 
-Thanks.  cc's added.
+Seems bad, read and modify bi_private is a bad idea.
 
-> invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-> CPU: 1 PID: 5031 Comm: syz-executor410 Not tainted 6.5.0-rc1-next-20230710-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/03/2023
-> RIP: 0010:mfill_atomic mm/userfaultfd.c:573 [inline]
-> RIP: 0010:mfill_atomic_copy+0x9ed/0x17e0 mm/userfaultfd.c:725
-> Code: 8d 8c 24 a8 00 00 00 4c 89 e7 e8 be 54 d9 ff 4c 63 f0 e9 71 fc ff ff e8 51 eb a1 ff 0f 0b e8 4a eb a1 ff 0f 0b e8 43 eb a1 ff <0f> 0b e8 3c eb a1 ff 0f 0b 49 c7 c6 ef ff ff ff e9 54 fd ff ff e8
-> RSP: 0018:ffffc9000395fb48 EFLAGS: 00010293
-> RAX: 0000000000000000 RBX: dffffc0000000000 RCX: 0000000000000000
-> RDX: ffff88801f67bb80 RSI: ffffffff81e32bad RDI: 0000000000000006
-> RBP: 0000000000000000 R08: 0000000000000006 R09: ffffffffffffffff
-> R10: 0000000005ffffff R11: 0000000000000001 R12: 0000200000000000
-> R13: 00005ffffffff001 R14: ffffffffffffffff R15: 0000000005ffffff
-> FS:  00005555571e03c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000020000060 CR3: 000000002ba7a000 CR4: 00000000003506e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  <TASK>
->  userfaultfd_copy fs/userfaultfd.c:1766 [inline]
->  userfaultfd_ioctl+0xe43/0x4c40 fs/userfaultfd.c:2098
->  vfs_ioctl fs/ioctl.c:51 [inline]
->  __do_sys_ioctl fs/ioctl.c:870 [inline]
->  __se_sys_ioctl fs/ioctl.c:856 [inline]
->  __x64_sys_ioctl+0x19d/0x210 fs/ioctl.c:856
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> RIP: 0033:0x7f2e41c4b4b9
-> Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007fff13a95188 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-> RAX: ffffffffffffffda RBX: 00007fff13a95198 RCX: 00007f2e41c4b4b9
-> RDX: 0000000020000040 RSI: 00000000c028aa03 RDI: 0000000000000003
-> RBP: 00007fff13a95190 R08: 00007fff13a95190 R09: 00007f2e41c0e380
-> R10: 00007fff13a95190 R11: 0000000000000246 R12: 0000000000000000
-> R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
->  </TASK>
-> Modules linked in:
-> ---[ end trace 0000000000000000 ]---
-> RIP: 0010:mfill_atomic mm/userfaultfd.c:573 [inline]
-> RIP: 0010:mfill_atomic_copy+0x9ed/0x17e0 mm/userfaultfd.c:725
-> Code: 8d 8c 24 a8 00 00 00 4c 89 e7 e8 be 54 d9 ff 4c 63 f0 e9 71 fc ff ff e8 51 eb a1 ff 0f 0b e8 4a eb a1 ff 0f 0b e8 43 eb a1 ff <0f> 0b e8 3c eb a1 ff 0f 0b 49 c7 c6 ef ff ff ff e9 54 fd ff ff e8
-> RSP: 0018:ffffc9000395fb48 EFLAGS: 00010293
-> RAX: 0000000000000000 RBX: dffffc0000000000 RCX: 0000000000000000
-> RDX: ffff88801f67bb80 RSI: ffffffff81e32bad RDI: 0000000000000006
-> RBP: 0000000000000000 R08: 0000000000000006 R09: ffffffffffffffff
-> R10: 0000000005ffffff R11: 0000000000000001 R12: 0000200000000000
-> R13: 00005ffffffff001 R14: ffffffffffffffff R15: 0000000005ffffff
-> FS:  00005555571e03c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000020000060 CR3: 000000002ba7a000 CR4: 00000000003506e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> 
-> 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> 
-> If the bug is already fixed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
-> 
-> If you want syzbot to run the reproducer, reply with:
-> #syz test: git://repo/address.git branch-or-commit-hash
-> If you attach or paste a git patch, syzbot will apply it before testing.
-> 
-> If you want to change bug's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
-> 
-> If the bug is a duplicate of another bug, reply with:
-> #syz dup: exact-subject-of-another-report
-> 
-> If you want to undo deduplication, reply with:
-> #syz undup
+>=20
+> Not sure if this is feasible or acceptable. :)
+>=20
+>>=20
+>> Thanx, Paul
+>>=20
+>>> The following is untested, and is probably quite buggy, but it =
+should
+>>> provide you with a starting point.
+>>>=20
+>>> static bool z_erofs_wq_needed(void)
+>>> {
+>>> if (IS_ENABLED(CONFIG_PREEMPTION) && rcu_preempt_depth())
+>>> return true;  // RCU reader
+>>> if (IS_ENABLED(CONFIG_PREEMPT_COUNT) && !preemptible())
+>>> return true;  // non-preemptible
+>>> if (!IS_ENABLED(CONFIG_PREEMPT_COUNT))
+>>> return true;  // non-preeemptible kernel, so play it safe
+>>> return false;
+>>> }
+>>>=20
+>>> You break it, you buy it!  ;-)
+>>>=20
+>>> Thanx, Paul
+
+
