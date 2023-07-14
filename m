@@ -2,82 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1C1675456C
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 01:36:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA7FB75456F
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 01:36:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229854AbjGNXfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 19:35:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47850 "EHLO
+        id S230012AbjGNXgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 19:36:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbjGNXfP (ORCPT
+        with ESMTP id S229483AbjGNXgJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 19:35:15 -0400
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 074CA12E
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 16:35:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689377715; x=1720913715;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=PsnfcAi00CmyOQ4zOWY7RzNc3RqYgCQ5wfN+k3Nx+tA=;
-  b=gdufMpTU0hldNAcxNMaHq73YP9n67z2V5Pkal1noZDfW0YqjhE9AOLD7
-   05TpWGvTcDCbd+fuh4wLe2uImhP1YJreh+Z8qc9XcdkTvPVemW5geR72O
-   z7stwP1VqFl3seh3+9UDe1LrH2f7yIPrXAFqoMJJ9lfu0sBw+v0pOcPUj
-   eiJFc/c7bgU+BVdbkG4o+T9H/naMvCkF374ECd/qG+VOHLy10mv9ccgPI
-   CpUAwpXmmJGAWUIoKdwhPaybG0YUUeoeTny9i50Qg4tCyVAYP7wGd1GRi
-   rHlgLx17Qck0hvEHyhqwxSHkf5zmAeH/IqbGG01bBR2fk6LE9u6UE7aIk
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10771"; a="363067118"
-X-IronPort-AV: E=Sophos;i="6.01,206,1684825200"; 
-   d="scan'208";a="363067118"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 16:35:14 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10771"; a="812616513"
-X-IronPort-AV: E=Sophos;i="6.01,206,1684825200"; 
-   d="scan'208";a="812616513"
-Received: from bmuller-mobl.amr.corp.intel.com (HELO [10.209.37.94]) ([10.209.37.94])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 16:35:13 -0700
-Message-ID: <1fa026a44ed4d31254396e5ed6cfda1dc68c837d.camel@linux.intel.com>
-Subject: Re: [Patch v3 3/6] sched/fair: Implement prefer sibling imbalance
- calculation between asymmetric groups
-From:   Tim Chen <tim.c.chen@linux.intel.com>
-To:     Tobias Huschle <huschle@linux.ibm.com>,
-        Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Ricardo Neri <ricardo.neri@intel.com>,
-        "Ravi V . Shankar" <ravi.v.shankar@intel.com>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Len Brown <len.brown@intel.com>, Mel Gorman <mgorman@suse.de>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Ionela Voinescu <ionela.voinescu@arm.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        naveen.n.rao@linux.vnet.ibm.com,
-        Yicong Yang <yangyicong@hisilicon.com>,
-        Barry Song <v-songbaohua@oppo.com>,
-        Chen Yu <yu.c.chen@intel.com>, Hillf Danton <hdanton@sina.com>
-Date:   Fri, 14 Jul 2023 16:35:12 -0700
-In-Reply-To: <b119d88384584e603056cec942c47e14@linux.ibm.com>
-References: <cover.1688770494.git.tim.c.chen@linux.intel.com>
-         <4eacbaa236e680687dae2958378a6173654113df.1688770494.git.tim.c.chen@linux.intel.com>
-         <c5a49136-3549-badd-ec8f-3de4e7bb7b7d@linux.vnet.ibm.com>
-         <b119d88384584e603056cec942c47e14@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
+        Fri, 14 Jul 2023 19:36:09 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF7753A92;
+        Fri, 14 Jul 2023 16:36:08 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3C4F061E15;
+        Fri, 14 Jul 2023 23:36:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 925F2C433C9;
+        Fri, 14 Jul 2023 23:36:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689377767;
+        bh=QeueiOpDQZwo6rtEiZoJ8qhJKkd5jWANfodFVO3UgnI=;
+        h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
+        b=XZqdXW3oB1OA9npd73eLtv/UBG5Scu7Gm/HetbtRBr1UGMYwh65+KUMe01Kn4GgU4
+         q2Jz1V+G92sDeoO2CF5EyqhvK70W+MGZ8Z2NFCeTu+96ikE+QHnKU9GelJZJwRQMTU
+         niqyUujd0BW+4UYKz3YPXgknNQgGSoO/u2x3ctS2qt9lO9U/xsWMDjr151ZYOO7MR5
+         nuJHn+QT3CGYqdKbcAXhbF44rNZI9bnMIllNVQhZieAU4QUHqKRkelJFkDsWxHFHNd
+         erynCy1bOqvj9GHi/Y0qWMaPqGL+ro5IyFAxmVFh454+4vvM131WG/AK9dRlm6OgS8
+         AAzAjvKAleHJg==
+Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-56597d949b1so1689905eaf.1;
+        Fri, 14 Jul 2023 16:36:07 -0700 (PDT)
+X-Gm-Message-State: ABy/qLYXvUZteR0AZK79E2TF+/9r69cqJhWPRvf/LXNl2rGlwyPEJNRj
+        aBHB7NoFWSgwk98YQ8IikvHn0fwkJwRlnGat28k=
+X-Google-Smtp-Source: APBJJlEFqDCFObfCfrVlv0+B4OnBTopnGMsqKu25XX1NhpPE9jqO/7EtxY8CDN72Va1Re9Ujl3gcn9mGcMs+qhDJkEI=
+X-Received: by 2002:a05:6870:c588:b0:1b7:613c:2eb2 with SMTP id
+ ba8-20020a056870c58800b001b7613c2eb2mr8323917oab.6.1689377766742; Fri, 14 Jul
+ 2023 16:36:06 -0700 (PDT)
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+Received: by 2002:a8a:4c7:0:b0:4e8:f6ff:2aab with HTTP; Fri, 14 Jul 2023
+ 16:36:06 -0700 (PDT)
+In-Reply-To: <20230714084354.1959951-1-sj1557.seo@samsung.com>
+References: <CGME20230714084427epcas1p2ce3efb1524c8efae6038d1940149ae54@epcas1p2.samsung.com>
+ <20230714084354.1959951-1-sj1557.seo@samsung.com>
+From:   Namjae Jeon <linkinjeon@kernel.org>
+Date:   Sat, 15 Jul 2023 08:36:06 +0900
+X-Gmail-Original-Message-ID: <CAKYAXd-+_M=7b-E7RyJj+S3w=_WF8VDRyunYdXPdpD1dTtRA=Q@mail.gmail.com>
+Message-ID: <CAKYAXd-+_M=7b-E7RyJj+S3w=_WF8VDRyunYdXPdpD1dTtRA=Q@mail.gmail.com>
+Subject: Re: [PATCH] exfat: release s_lock before calling dir_emit()
+To:     Sungjong Seo <sj1557.seo@samsung.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org,
+        syzbot+1741a5d9b79989c10bdc@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,84 +67,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-07-14 at 16:22 +0200, Tobias Huschle wrote:
->=20
-> >=20
-> > Could this work for case where number of CPU/cores would differ
-> > between two sched groups in a sched domain? Such as problem pointed
-> > by tobias on S390. It would be nice if this patch can work for that=20
-> > case
-> > as well. Ran numbers for a few cases. It looks to work.
-> > https://lore.kernel.org/lkml/20230704134024.GV4253@hirez.programming.ki=
-cks-ass.net/T/#rb0a7dcd28532cafc24101e1d0aed79e6342e3901
-> >=20
->=20
->=20
-> Just stumbled upon this patch series as well. In this version it looks
-> similar to the prototypes I played around with, but more complete.
-> So I'm happy that my understanding of the load balancer was kinda=20
-> correct :)
->=20
->  From a functional perspective this appears to address the issues we saw=
-=20
-> on s390.
-
-Glad that this patch addresses this common issue across architectures.
-I did aim to address the asymmetric groups balancing in general.
-Peter pointed out this problem that's inherent when he reviewed the first
-version of my patchset.=20
-
-Tim
-
->=20
-> >=20
-> >=20
-> > > +	/* Take advantage of resource in an empty sched group */
-> > > +	if (imbalance =3D=3D 0 && local->sum_nr_running =3D=3D 0 &&
-> > > +	    busiest->sum_nr_running > 1)
-> > > +		imbalance =3D 2;
-> > > +
-> >=20
-> > I don't see how this case would be true. When there are unequal number
-> > of cores and local->sum_nr_ruuning
-> > is 0, and busiest->sum_nr_running is atleast 2, imbalance will be=20
-> > atleast 1.
-> >=20
-> >=20
-> > Reviewed-by: Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
-> >=20
-> > > +	return imbalance;
-> > > +}
-> > > +
-> > >  static inline bool
-> > >  sched_reduced_capacity(struct rq *rq, struct sched_domain *sd)
-> > >  {
-> > > @@ -10230,14 +10265,12 @@ static inline void=20
-> > > calculate_imbalance(struct lb_env *env, struct sd_lb_stats *s
-> > >  		}
-> > >=20
-> > >  		if (busiest->group_weight =3D=3D 1 || sds->prefer_sibling) {
-> > > -			unsigned int nr_diff =3D busiest->sum_nr_running;
-> > >  			/*
-> > >  			 * When prefer sibling, evenly spread running tasks on
-> > >  			 * groups.
-> > >  			 */
-> > >  			env->migration_type =3D migrate_task;
-> > > -			lsub_positive(&nr_diff, local->sum_nr_running);
-> > > -			env->imbalance =3D nr_diff;
-> > > +			env->imbalance =3D sibling_imbalance(env, sds, busiest, local);
-> > >  		} else {
-> > >=20
-> > >  			/*
-> > > @@ -10424,7 +10457,7 @@ static struct sched_group=20
-> > > *find_busiest_group(struct lb_env *env)
-> > >  	 * group's child domain.
-> > >  	 */
-> > >  	if (sds.prefer_sibling && local->group_type =3D=3D group_has_spare =
-&&
-> > > -	    busiest->sum_nr_running > local->sum_nr_running + 1)
-> > > +	    sibling_imbalance(env, &sds, busiest, local) > 1)
-> > >  		goto force_balance;
-> > >=20
-> > >  	if (busiest->group_type !=3D group_overloaded) {
-
+2023-07-14 17:43 GMT+09:00, Sungjong Seo <sj1557.seo@samsung.com>:
+> There is a potential deadlock reported by syzbot as below:
+>
+> ======================================================
+> WARNING: possible circular locking dependency detected
+> 6.4.0-next-20230707-syzkaller #0 Not tainted
+> ------------------------------------------------------
+> syz-executor330/5073 is trying to acquire lock:
+> ffff8880218527a0 (&mm->mmap_lock){++++}-{3:3}, at: mmap_read_lock_killable
+> include/linux/mmap_lock.h:151 [inline]
+> ffff8880218527a0 (&mm->mmap_lock){++++}-{3:3}, at: get_mmap_lock_carefully
+> mm/memory.c:5293 [inline]
+> ffff8880218527a0 (&mm->mmap_lock){++++}-{3:3}, at:
+> lock_mm_and_find_vma+0x369/0x510 mm/memory.c:5344
+> but task is already holding lock:
+> ffff888019f760e0 (&sbi->s_lock){+.+.}-{3:3}, at: exfat_iterate+0x117/0xb50
+> fs/exfat/dir.c:232
+>
+> which lock already depends on the new lock.
+>
+> Chain exists of:
+>   &mm->mmap_lock --> mapping.invalidate_lock#3 --> &sbi->s_lock
+>
+>  Possible unsafe locking scenario:
+>
+>        CPU0                    CPU1
+>        ----                    ----
+>   lock(&sbi->s_lock);
+>                                lock(mapping.invalidate_lock#3);
+>                                lock(&sbi->s_lock);
+>   rlock(&mm->mmap_lock);
+>
+> Let's try to avoid above potential deadlock condition by moving dir_emit*()
+> out of sbi->s_lock coverage.
+>
+> Fixes: ca06197382bd ("exfat: add directory operations")
+> Cc: stable@vger.kernel.org #v5.7+
+> Reported-by: syzbot+1741a5d9b79989c10bdc@syzkaller.appspotmail.com
+> Link:
+> https://lore.kernel.org/lkml/00000000000078ee7e060066270b@google.com/T/#u
+> Signed-off-by: Sungjong Seo <sj1557.seo@samsung.com>
+Applied it to #dev, Thanks for your patch!
