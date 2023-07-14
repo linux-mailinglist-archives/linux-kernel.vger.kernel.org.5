@@ -2,55 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21754753158
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 07:36:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61159753159
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 07:37:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234697AbjGNFgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 01:36:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60086 "EHLO
+        id S234567AbjGNFhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 01:37:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235094AbjGNFgN (ORCPT
+        with ESMTP id S233638AbjGNFh3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 01:36:13 -0400
+        Fri, 14 Jul 2023 01:37:29 -0400
 Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F5AF2D79
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 22:35:38 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99B5C2738
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 22:37:26 -0700 (PDT)
 Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R2Kv96qxWzBR9sT
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 13:35:33 +0800 (CST)
+        by mail.208.org (Postfix) with ESMTP id 4R2KxH5cp1zBR9sN
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 13:37:23 +0800 (CST)
 Authentication-Results: mail.208.org (amavisd-new); dkim=pass
         reason="pass (just generated, assumed good)" header.d=208.org
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
         content-transfer-encoding:content-type:message-id:user-agent
         :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689312933; x=1691904934; bh=gK7OprNNceFo1/5i9J6sc3labxZ
-        QSM4pPR64BkZs428=; b=l7xv629ePLJGpQM3RAx01xvNGyOjVn+M9SN8p8cXPBV
-        2nzy+d40AhZPhM8g4Lg++HheDAKIF+XMBo5DOjjFQS7+QNNoDk9rI7uwUnw3veLE
-        8ebRbEQYmsuRo5uNjPh5WjX4JUCKpHRgs9nPh2diq/etCS+TfDLijdsV/YH16K2I
-        tyW/cbp6hY6CjThf2sMts6x0YP4gPMAIyfk405Ds5eRDaSLblCU0o26mfDqw3MOK
-        rMrmynSEOyQ6Q4fkzXLePRvQ8rA2fkIuIMU1kPn95s62VTYB2f6CrjzEBVXxy43P
-        F3bAPwZ+NW9ljx1Hv/RDYpWK854X4YwhD6XTVAWrcuQ==
+        dkim; t=1689313043; x=1691905044; bh=8BNA5nZF9onPgOovnxahcOKlTIQ
+        u2zsyuHGyYIxstW8=; b=PRbyWFPip4xtVRJBxFYm4+QckfVQSA38NjNC01+WYzQ
+        FtKDrVu2Nf8BsZCABcoJ1AuqNdxf/Xcsdy8qZDRe7oaFR9p7pzTpSi0KbK1rgpOW
+        PK6eYTbGD5zdvnkCs5474PUWMcAwSuaq7CHBcUwuYCj1z8cWVS9T3MQSU4PKIPYN
+        enJfNAljYodSDLsmZgSLk3UwMwSFQuBaJXYL52ju7qMNkW5cbvQAUqwhKXStTuGi
+        HtkZ0pXPcIZnENwnOVVg7pJb9ckIS2aFTbq+6cTNLyKsj6mzGjK+DcSLBLXNrBFh
+        XkzL0SAvWz6WkXYu7M1uDdA4pHbqZgFAHIMVjkrMhdQ==
 X-Virus-Scanned: amavisd-new at mail.208.org
 Received: from mail.208.org ([127.0.0.1])
         by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id O1sVSCOTaab3 for <linux-kernel@vger.kernel.org>;
-        Fri, 14 Jul 2023 13:35:33 +0800 (CST)
+        with ESMTP id 1llbn-__IcmC for <linux-kernel@vger.kernel.org>;
+        Fri, 14 Jul 2023 13:37:23 +0800 (CST)
 Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R2Kv9304TzBR7bB;
-        Fri, 14 Jul 2023 13:35:33 +0800 (CST)
+        by mail.208.org (Postfix) with ESMTPSA id 4R2KxH3Lr1zBR5C9;
+        Fri, 14 Jul 2023 13:37:23 +0800 (CST)
 MIME-Version: 1.0
-Date:   Fri, 14 Jul 2023 13:35:33 +0800
-From:   shijie001@208suo.com
-To:     alexander.deucher@amd.com, christian.koenig@amd.com,
-        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/radeon: ERROR: "(foo*)" should be "(foo *)"
-In-Reply-To: <tencent_16FACBDCDA61595C4219E185613C85C8BF0A@qq.com>
-References: <tencent_16FACBDCDA61595C4219E185613C85C8BF0A@qq.com>
+Date:   Fri, 14 Jul 2023 13:37:23 +0800
+From:   chenqingyun001@208suo.com
+To:     catalin.marinas@arm.com, will@kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: extable:"(foo*)" should be "(foo *)"
+In-Reply-To: <tencent_1DFBBBDD0C944F003E04996E11065CA32906@qq.com>
+References: <tencent_1DFBBBDD0C944F003E04996E11065CA32906@qq.com>
 User-Agent: Roundcube Webmail
-Message-ID: <26d3424f83f1f394614e2a774d1bf1e9@208suo.com>
-X-Sender: shijie001@208suo.com
+Message-ID: <74dd71ee7fa975cec2927d291936207b@208suo.com>
+X-Sender: chenqingyun001@208suo.com
 Content-Type: text/plain; charset=US-ASCII;
  format=flowed
 Content-Transfer-Encoding: 7bit
@@ -64,25 +62,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix one occurrence of the checkpatch.pl error:
-ERROR: "(foo*)" should be "(foo *)"
+The variable name of the needle type is preceded
+by parentheses without a space between the
+parentheses and the asterisk. This will make
+the code look unclear, and may conflict with
+some tools or compilers.
 
-Signed-off-by: Jie Shi <shijie001@208suo.com>
+Signed-off-by: Qingyun Chen <chenqingyun001@208suo.com>
 ---
-  drivers/gpu/drm/radeon/uvd_v1_0.c | 2 +-
+  arch/arm64/mm/extable.c | 2 +-
   1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/radeon/uvd_v1_0.c 
-b/drivers/gpu/drm/radeon/uvd_v1_0.c
-index 58557c2263a7..5684639d20a6 100644
---- a/drivers/gpu/drm/radeon/uvd_v1_0.c
-+++ b/drivers/gpu/drm/radeon/uvd_v1_0.c
-@@ -142,7 +142,7 @@ int uvd_v1_0_resume(struct radeon_device *rdev)
-      addr = (rdev->uvd.gpu_addr >> 32) & 0xFF;
-      WREG32(UVD_LMI_EXT40_ADDR, addr | (0x9 << 16) | (0x1 << 31));
+diff --git a/arch/arm64/mm/extable.c b/arch/arm64/mm/extable.c
+index 228d681a8715..c89a52870ca9 100644
+--- a/arch/arm64/mm/extable.c
++++ b/arch/arm64/mm/extable.c
+@@ -42,7 +42,7 @@ ex_handler_load_unaligned_zeropad(const struct 
+exception_table_entry *ex,
+      offset = addr & 0x7UL;
+      addr &= ~0x7UL;
 
--    WREG32(UVD_FW_START, *((uint32_t*)rdev->uvd.cpu_addr));
-+    WREG32(UVD_FW_START, *((uint32_t *)rdev->uvd.cpu_addr));
+-    data = *(unsigned long*)addr;
++    data = *(unsigned long *)addr;
 
-      return 0;
-  }
+  #ifndef __AARCH64EB__
+      data >>= 8 * offset;
