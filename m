@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6687C7535BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 10:53:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25DF77535BF
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 10:53:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231362AbjGNIxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 04:53:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58552 "EHLO
+        id S235685AbjGNIxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 04:53:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235727AbjGNIw4 (ORCPT
+        with ESMTP id S234915AbjGNIxo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 04:52:56 -0400
+        Fri, 14 Jul 2023 04:53:44 -0400
 Received: from 167-179-156-38.a7b39c.syd.nbn.aussiebb.net (167-179-156-38.a7b39c.syd.nbn.aussiebb.net [167.179.156.38])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B443C1FC8;
-        Fri, 14 Jul 2023 01:52:55 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF0F82120;
+        Fri, 14 Jul 2023 01:53:42 -0700 (PDT)
 Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
         by fornost.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1qKEXd-001Rdy-Ls; Fri, 14 Jul 2023 18:52:46 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 14 Jul 2023 18:52:38 +1000
-Date:   Fri, 14 Jul 2023 18:52:38 +1000
+        id 1qKEYR-001Re6-UD; Fri, 14 Jul 2023 18:53:37 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 14 Jul 2023 18:53:29 +1000
+Date:   Fri, 14 Jul 2023 18:53:29 +1000
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Mahmoud Adam <mngyadam@amazon.com>
-Cc:     dhowells@redhat.com, davem@davemloft.net, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] KEYS: use kfree_sensitive with key
-Message-ID: <ZLEM1gNhynPTgsLq@gondor.apana.org.au>
-References: <20230622124719.93393-1-mngyadam@amazon.com>
+To:     Mario Limonciello <mario.limonciello@amd.com>
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
+        John Allen <john.allen@amd.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org
+Subject: Re: [PATCH v5 00/11] Add dynamic boost control support
+Message-ID: <ZLENCbG+Fa20MNsD@gondor.apana.org.au>
+References: <20230623135001.18672-1-mario.limonciello@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230622124719.93393-1-mngyadam@amazon.com>
+In-Reply-To: <20230623135001.18672-1-mario.limonciello@amd.com>
 X-Spam-Status: No, score=2.7 required=5.0 tests=BAYES_00,HELO_DYNAMIC_IPADDR2,
         RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,TVD_RCVD_IP,
         T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
@@ -42,19 +44,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 22, 2023 at 12:47:22PM +0000, Mahmoud Adam wrote:
-> key might contain private part of the key, so better use
-> kfree_sensitive to free it
-> ---
-> v1: conflicts with c3d03e8e35e0:
-> KEYS: asymmetric: Copy sig and digest in public_key_verify_signature()
-> kfree_sensitive the buf variable also because it might has private
-> part
+On Fri, Jun 23, 2023 at 08:49:50AM -0500, Mario Limonciello wrote:
+> Dynamic boost control is a feature of some SoCs that allows
+> an authenticated entity to send commands to the security processor
+> to control certain SOC characteristics with the intention to improve
+> performance.
 > 
->  crypto/asymmetric_keys/public_key.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+> This is implemented via a mechanism that a userspace application would
+> authenticate using a nonce and key exchange over an IOCTL interface.
+> 
+> After authentication is complete an application can exchange signed
+> messages with the security processor and both ends can validate the
+> data transmitted.
+> 
+> This series includes a test suite that can be run on real hardware
+> to ensure that the communication works as expected.  This can also be
+> used for an application to model the communication path.
+> 
+> Two sysfs files are introduced for reading the PSP bootloader version
+> as well as TEE version which can be useful data points for debugging
+> communication problems.
+> 
+> v4->v5:
+>  * Pick up tags
+>  * Pick up a static fix
+>  * Fix a mistake found in dbc_cli
+> 
+> Mario Limonciello (11):
+>   crypto: ccp: Rename macro for security attributes
+>   crypto: ccp: Add support for displaying PSP firmware versions
+>   crypto: ccp: Add bootloader and TEE version offsets
+>   crypto: ccp: move setting PSP master to earlier in the init
+>   crypto: ccp: Add support for fetching a nonce for dynamic boost
+>     control
+>   crypto: ccp: Add support for setting user ID for dynamic boost control
+>   crypto: ccp: Add support for getting and setting DBC parameters
+>   crypto: ccp: Add a sample library for ioctl use
+>   crypto: ccp: Add a sample python script for Dynamic Boost Control
+>   crypto: ccp: Add unit tests for dynamic boost control
+>   crypto: ccp: Add Mario to MAINTAINERS
+> 
+>  Documentation/ABI/testing/sysfs-driver-ccp |  18 ++
+>  MAINTAINERS                                |  12 +
+>  drivers/crypto/ccp/Makefile                |   3 +-
+>  drivers/crypto/ccp/dbc.c                   | 250 +++++++++++++++++++
+>  drivers/crypto/ccp/dbc.h                   |  56 +++++
+>  drivers/crypto/ccp/psp-dev.c               |  19 +-
+>  drivers/crypto/ccp/psp-dev.h               |   1 +
+>  drivers/crypto/ccp/sp-dev.h                |   7 +
+>  drivers/crypto/ccp/sp-pci.c                |  96 +++++++-
+>  include/linux/psp-platform-access.h        |   4 +
+>  include/uapi/linux/psp-dbc.h               | 147 ++++++++++++
+>  tools/crypto/ccp/.gitignore                |   1 +
+>  tools/crypto/ccp/Makefile                  |  13 +
+>  tools/crypto/ccp/dbc.c                     |  72 ++++++
+>  tools/crypto/ccp/dbc.py                    |  64 +++++
+>  tools/crypto/ccp/dbc_cli.py                | 134 +++++++++++
+>  tools/crypto/ccp/test_dbc.py               | 266 +++++++++++++++++++++
+>  17 files changed, 1146 insertions(+), 17 deletions(-)
+>  create mode 100644 drivers/crypto/ccp/dbc.c
+>  create mode 100644 drivers/crypto/ccp/dbc.h
+>  create mode 100644 include/uapi/linux/psp-dbc.h
+>  create mode 100644 tools/crypto/ccp/.gitignore
+>  create mode 100644 tools/crypto/ccp/Makefile
+>  create mode 100644 tools/crypto/ccp/dbc.c
+>  create mode 100644 tools/crypto/ccp/dbc.py
+>  create mode 100755 tools/crypto/ccp/dbc_cli.py
+>  create mode 100755 tools/crypto/ccp/test_dbc.py
+> 
+> 
+> base-commit: b335f258e8ddafec0e8ae2201ca78d29ed8f85eb
+> -- 
+> 2.34.1
 
-Patch applied.  Thanks.
+All applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
