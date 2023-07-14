@@ -2,130 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C064E75367D
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:30:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2506B753682
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:30:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235826AbjGNJaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 05:30:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54154 "EHLO
+        id S235843AbjGNJai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 05:30:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235791AbjGNJaL (ORCPT
+        with ESMTP id S235140AbjGNJae (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 05:30:11 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F9532D5F
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 02:30:09 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2b701e1c80fso24820831fa.2
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 02:30:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google; t=1689327008; x=1691919008;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dosegy5s6S3Py/sYCBb7fr6YwHTMUrv8EM9f77WeMOc=;
-        b=Xqcw23ipPcPee2KGDUUmScxC6YI+Lt+tpZLhyiWzpqBFRO340fdakn0xdVV1NlwZYo
-         8LZbDjW6NUOsDs0GB/lm0oM1oxUlYm5/QtzGj1+yTps3jl6EW1l2EbnJeFvc6s69+PMu
-         3etpZNsNrgUTw2j28xUGW6FsyP7PGWyvOkhIA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689327008; x=1691919008;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dosegy5s6S3Py/sYCBb7fr6YwHTMUrv8EM9f77WeMOc=;
-        b=M+DtQBWiwDIqVmkJnLhdVFObnulm3VnfBZ0Ky8NAr03FDNUGmTPHLuTUale0TzLAng
-         3Hgl3VrmvC1n28bCZ6xWx4XoLbrS1S7h/BsADjNoG3YDVQAN2HEPrWNS6N8bMxbhBmrp
-         uhYU2dTL3otMdVcZcPBHgWCrEmujJM/tjji+rdCac1rbQAnQRpg4uSDa4K8r87b2TpmL
-         3YtEuxnwsMWAi/UpMGxxl+Z4PpF6NWzsXR5kdnnn/NHEiI4CNgcv6KUrei1qLpM3ANV3
-         b7xQefTZjvJjpv7KLKWsX7rHJZ8rsWLtCeHZsszUwMTR9eLc8jVHAw4tMnBnPXHuzkXG
-         pKlQ==
-X-Gm-Message-State: ABy/qLZG9g4Ddz4WT1Iqk/Nu3UXIJMJ8INhjIVRh07s/n97Ll1BfiPBT
-        9l1KcnnDQ8N6+QUTm+kgCQg3ONcwAh0KSLGoYKv0
-X-Google-Smtp-Source: APBJJlEPgo1IICV+iHBqiUW+Vh3Nr2Vbvx10CePV36LNEMGHrNoz3v5ECTBa/vGZDHxkGoGYB97wfvhB3JFhCknlnkc=
-X-Received: by 2002:a2e:a16f:0:b0:2b6:d57f:d81 with SMTP id
- u15-20020a2ea16f000000b002b6d57f0d81mr3198367ljl.53.1689327007925; Fri, 14
- Jul 2023 02:30:07 -0700 (PDT)
+        Fri, 14 Jul 2023 05:30:34 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E9AD359E;
+        Fri, 14 Jul 2023 02:30:24 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A989661CC7;
+        Fri, 14 Jul 2023 09:30:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 0B67AC433C7;
+        Fri, 14 Jul 2023 09:30:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689327021;
+        bh=IIWAe0NQt7hQ52AYeH7Fl8uRHTVIRV1HOhISTeoKp4k=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=JJL43PYwtuw22nfaCtzyQV901socAiuVhOT4jCeHewKIpKvLtasXZ00VnnweXy088
+         JwVV23M1nzjEP3DojBGqNyOiChphOlYH4Orh6ALso35jneLiZgr6aSjeRhRoZ6GcDZ
+         eYpoBNFuJ2Hl9NCKx4b2o9NTzmsjOqvHnWwKMVXvH4MTpIBzpcaJMAjme0F2Bc5weW
+         rTtvIGh3aVRKz4waeygyPaIkVRCoyakXdagqvR7i9gbGKC2RC0DXxdO386GCRIIN3K
+         mUykM0pYhdPMjiPsuuGiB+qYPZcY41+sE/pKWDVw7pjtsxT98I0yctJgMH+1xb2a4u
+         nUF94pLyvYcBw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E45F4E49BBF;
+        Fri, 14 Jul 2023 09:30:20 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20230703124647.215952-1-alexghiti@rivosinc.com> <20230703124647.215952-11-alexghiti@rivosinc.com>
-In-Reply-To: <20230703124647.215952-11-alexghiti@rivosinc.com>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Fri, 14 Jul 2023 02:29:56 -0700
-Message-ID: <CAOnJCUJcYAX3=h=O6nCjN+hAL9cT8Cmw5sgXa1MZpKEPCuyM-A@mail.gmail.com>
-Subject: Re: [PATCH v4 10/10] perf: tests: Adapt mmap-basic.c for riscv
-To:     Alexandre Ghiti <alexghiti@rivosinc.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anup Patel <anup@brainfault.org>,
-        Will Deacon <will@kernel.org>, Rob Herring <robh@kernel.org>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2 net] gso: fix dodgy bit handling for GSO_UDP_L4
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <168932702093.18845.9473507199122445355.git-patchwork-notify@kernel.org>
+Date:   Fri, 14 Jul 2023 09:30:20 +0000
+References: <ZLA0ILTAZsIzxR6c@debian.debian>
+In-Reply-To: <ZLA0ILTAZsIzxR6c@debian.debian>
+To:     Yan Zhai <yan@cloudflare.com>
+Cc:     netdev@vger.kernel.org, kernel-team@cloudflare.com,
+        edumazet@google.com, davem@davemloft.net, dsahern@kernel.org,
+        kuba@kernel.org, pabeni@redhat.com, marcelo.leitner@gmail.com,
+        lucien.xin@gmail.com, herbert@gondor.apana.org.au,
+        andrew@daynix.com, jasowang@redhat.com,
+        willemdebruijn.kernel@gmail.com, linux-kernel@vger.kernel.org,
+        linux-sctp@vger.kernel.org
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 3, 2023 at 5:57=E2=80=AFAM Alexandre Ghiti <alexghiti@rivosinc.=
-com> wrote:
->
-> riscv now supports mmaping hardware counters to userspace so adapt the te=
-st
-> to run on this architecture.
->
-> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-> Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
-> ---
->  tools/perf/tests/mmap-basic.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/tools/perf/tests/mmap-basic.c b/tools/perf/tests/mmap-basic.=
-c
-> index e68ca6229756..f5075ca774f8 100644
-> --- a/tools/perf/tests/mmap-basic.c
-> +++ b/tools/perf/tests/mmap-basic.c
-> @@ -284,7 +284,7 @@ static struct test_case tests__basic_mmap[] =3D {
->                          "permissions"),
->         TEST_CASE_REASON("User space counter reading of instructions",
->                          mmap_user_read_instr,
-> -#if defined(__i386__) || defined(__x86_64__) || defined(__aarch64__)
-> +#if defined(__i386__) || defined(__x86_64__) || defined(__aarch64__) || =
-__riscv_xlen =3D=3D 64
->                          "permissions"
->  #else
->                          "unsupported"
-> @@ -292,7 +292,7 @@ static struct test_case tests__basic_mmap[] =3D {
->                 ),
->         TEST_CASE_REASON("User space counter reading of cycles",
->                          mmap_user_read_cycles,
-> -#if defined(__i386__) || defined(__x86_64__) || defined(__aarch64__)
-> +#if defined(__i386__) || defined(__x86_64__) || defined(__aarch64__) || =
-__riscv_xlen =3D=3D 64
->                          "permissions"
->  #else
->                          "unsupported"
-> --
-> 2.39.2
->
+Hello:
+
+This patch was applied to netdev/net.git (main)
+by David S. Miller <davem@davemloft.net>:
+
+On Thu, 13 Jul 2023 10:28:00 -0700 you wrote:
+> Commit 1fd54773c267 ("udp: allow header check for dodgy GSO_UDP_L4
+> packets.") checks DODGY bit for UDP, but for packets that can be fed
+> directly to the device after gso_segs reset, it actually falls through
+> to fragmentation:
+> 
+> https://lore.kernel.org/all/CAJPywTKDdjtwkLVUW6LRA2FU912qcDmQOQGt2WaDo28KzYDg+A@mail.gmail.com/
+> 
+> [...]
+
+Here is the summary with links:
+  - [v2,net] gso: fix dodgy bit handling for GSO_UDP_L4
+    https://git.kernel.org/netdev/net/c/9840036786d9
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-Reviewed-by: Atish Patra <atishp@rivosinc.com>
---=20
-Regards,
-Atish
