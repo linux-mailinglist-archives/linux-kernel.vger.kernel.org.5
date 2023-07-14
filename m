@@ -2,191 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0510B75457D
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 01:48:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19B0F754583
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 01:57:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230044AbjGNXsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 19:48:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50856 "EHLO
+        id S230092AbjGNX5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 19:57:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229949AbjGNXs2 (ORCPT
+        with ESMTP id S229455AbjGNX46 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 19:48:28 -0400
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A54F23A92
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 16:48:27 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id 6D7F75C00F1;
-        Fri, 14 Jul 2023 19:48:24 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Fri, 14 Jul 2023 19:48:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1689378504; x=1689464904; bh=teMqNN02RSJ2b
-        kTjzb3BWQ6jP2WdqFm/hOsAEhSxC/c=; b=D0jV7YjtYWohs+zi3ANkBfczlK6J4
-        MdQVGx/kKvgjR8R5lT0LMjFH1gfZL7MPHcoCvSAto8kkI6MK6PgLKJKAXRh2Obkn
-        3XGZE/IPYrusXOUfkBg3v5CPzMmAc53cVn/RGuFxDRdo4hWJcMSWMa3hxzlv/+/S
-        3qOHhbLAJ4lxPDf2U3Syz/fvM5AXNtEJN293tZ7bgphqQezhe0K5uHvIeu8BhaWJ
-        D9evAT0SpQQoh8BB3k4t+DXqthHA+mpnjBn7bTTxH1xy/zBsH8ZaD1DOB0RSy3VH
-        t6LGwutKt7DTt9DNhBCTuU5lweByEMhy20tp02ifjrW3N3T86ZbTda+MA==
-X-ME-Sender: <xms:x96xZGPtztdBBx9NI5PCD8wXaqXtsS7qgPCzr0pBJXzniNwhN5yU3Q>
-    <xme:x96xZE8hnMV2e93JaY29mgwt2fA8mG10EjwvG3gclZ7U4h0ZErVUaM2SGPImO239P
-    b7S5zn4tekgANV53Fc>
-X-ME-Received: <xmr:x96xZNSAm5fSSBtQ7b7yeK89C7CHbBb1P0DRGHSAE0kJCyZrK6k78m5dGoQAIw4Elor75PMnVwDSVwTP_NcCA_PoGsQzs4HP3-I>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrfeejgddvgecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvvefujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfv
-    hhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrth
-    htvghrnhepleeuheelheekgfeuvedtveetjeekhfffkeeffffftdfgjeevkeegfedvueeh
-    ueelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepfh
-    hthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgh
-X-ME-Proxy: <xmx:x96xZGu-RyNVnX05zK_h-_z-XSwXuWzcDl8v9PSEXsrt4qWL8-2p3Q>
-    <xmx:x96xZOf5hwtL1YOPs6fOUb6Ib2SU3jI7UxBu-dzQr1wTF7ymnTAIGw>
-    <xmx:x96xZK2NRUddmavCzg4DLUl9DUHSSLPwiqzHP-Vh6j835rnnyqdvUA>
-    <xmx:yN6xZPXTjGp19PiTBlRouucbbit8S_4ESr2oe63xn_-cWTw3A8o8KQ>
-Feedback-ID: i58a146ae:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 14 Jul 2023 19:48:20 -0400 (EDT)
-Date:   Sat, 15 Jul 2023 09:48:14 +1000 (AEST)
-From:   Finn Thain <fthain@linux-m68k.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sched: Optimize in_task() and in_interrupt() a bit
-In-Reply-To: <ZLE5bSAy6857cq9B@lothringen>
-Message-ID: <e6212d06-821b-f879-862d-fef8090fdde7@linux-m68k.org>
-References: <44ad7a7afa1b8b1383426971402d2901361db1c5.1689326311.git.fthain@linux-m68k.org> <ZLE5bSAy6857cq9B@lothringen>
+        Fri, 14 Jul 2023 19:56:58 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 317573A95;
+        Fri, 14 Jul 2023 16:56:57 -0700 (PDT)
+Received: by linux.microsoft.com (Postfix, from userid 1052)
+        id 7335221C4688; Fri, 14 Jul 2023 16:56:56 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7335221C4688
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1689379016;
+        bh=55GL66P8Iq71LDl/wSLZ+IYTZ6btVclWUBP4727ThRM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AKVTgQCUWoa+NO1kegUiZiU3vjAzVsrbk+5FDPZI3It2c1vylgnJYSBa47ruMgJnL
+         w6yL2PZSPw5z6/2js00CimaEgCQTc8kqGyDTHgJXT74S+x4epf9KEj8ajgO7MsuqPE
+         O2sBiqkUBD047ZJkwQ81OnXZ7aDN1pjUo7X57ozQ=
+Date:   Fri, 14 Jul 2023 16:56:56 -0700
+From:   Fan Wu <wufan@linux.microsoft.com>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org,
+        serge@hallyn.com, tytso@mit.edu, ebiggers@kernel.org,
+        axboe@kernel.dk, agk@redhat.com, snitzer@kernel.org,
+        eparis@redhat.com, linux-doc@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
+        dm-devel@redhat.com, audit@vger.kernel.org,
+        roberto.sassu@huawei.com, linux-kernel@vger.kernel.org,
+        Deven Bowers <deven.desai@linux.microsoft.com>
+Subject: Re: [PATCH RFC v10 5/17] ipe: introduce 'boot_verified' as a trust
+  provider
+Message-ID: <20230714235656.GD15267@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1687986571-16823-6-git-send-email-wufan@linux.microsoft.com>
+ <7b0f16fd49fb3490af1018eba986d0e4.paul@paul-moore.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7b0f16fd49fb3490af1018eba986d0e4.paul@paul-moore.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Frederic,
-
-Thanks for your review.
-
-On Fri, 14 Jul 2023, Frederic Weisbecker wrote:
-
-> On Fri, Jul 14, 2023 at 07:18:31PM +1000, Finn Thain wrote:
-> > Except on x86, preempt_count is always accessed with READ_ONCE.
-> > Repeated invocations in macros like irq_count() produce repeated loads.
-> > These redundant instructions appear in various fast paths. In the one
-> > shown below, for example, irq_count() is evaluated during kernel entry
-> > if !tick_nohz_full_cpu(smp_processor_id()).
+On Sat, Jul 08, 2023 at 12:23:02AM -0400, Paul Moore wrote:
+> On Jun 28, 2023 Fan Wu <wufan@linux.microsoft.com> wrote:
 > > 
-> > 0001ed0a <irq_enter_rcu>:
-> >    1ed0a:       4e56 0000       linkw %fp,#0
-> >    1ed0e:       200f            movel %sp,%d0
-> >    1ed10:       0280 ffff e000  andil #-8192,%d0
-> >    1ed16:       2040            moveal %d0,%a0
-> >    1ed18:       2028 0008       movel %a0@(8),%d0
-> >    1ed1c:       0680 0001 0000  addil #65536,%d0
-> >    1ed22:       2140 0008       movel %d0,%a0@(8)
-> >    1ed26:       082a 0001 000f  btst #1,%a2@(15)
-> >    1ed2c:       670c            beqs 1ed3a <irq_enter_rcu+0x30>
-> >    1ed2e:       2028 0008       movel %a0@(8),%d0
-> >    1ed32:       2028 0008       movel %a0@(8),%d0
-> >    1ed36:       2028 0008       movel %a0@(8),%d0
-> >    1ed3a:       4e5e            unlk %fp
-> >    1ed3c:       4e75            rts
+> > IPE is designed to provide system level trust guarantees, this usually
+> > implies that trust starts from bootup with a hardware root of trust,
+> > which validates the bootloader. After this, the bootloader verifies the
+> > kernel and the initramfs.
 > > 
-> > This patch doesn't prevent the pointless btst and beqs instructions
-> > above, but it does eliminate 2 of the 3 pointless move instructions
-> > here and elsewhere.
+> > As there's no currently supported integrity method for initramfs, and
+> > it's typically already verified by the bootloader, introduce a property
+> > that causes the first superblock to have an execution to be "pinned",
+> > which is typically initramfs.
 > > 
-> > On x86, preempt_count is per-cpu data and the problem does not arise
-> > perhaps because the compiler is free to perform similar optimizations.
+> > When the "pinned" device is unmounted, it will be "unpinned" and
+> > `boot_verified` property will always evaluate to false afterward.
 > > 
-> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > Fixes: 15115830c887 ("preempt: Cleanup the macro maze a bit")
-> 
-> Does this optimization really deserves a "Fixes:" tag?
-> 
-
-If commit 15115830c887 produced a performance regression then the fixes 
-tag is required by Documentation/process/handling-regressions.rst. 
-
-I didn't tackle that question because the m68k port doesn't have high 
-resolution timers or hardware instrumentation like those available on say, 
-arm64 or ppc64.
-
-Perhaps someone could submit this patch for automated testing on a 
-suitable architecture?
-
-> > Signed-off-by: Finn Thain <fthain@linux-m68k.org>
+> > We use a pointer with a spin_lock to "pin" the device instead of rcu
+> > because rcu synchronization may sleep, which is not allowed when
+> > unmounting a device.
+> > 
+> > Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
+> > Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
 > > ---
-> > This patch was tested on m68k and x86. I was expecting no changes
-> > to object code for x86 and mostly that's what I saw. However, there
-> > were a few places where code generation was perturbed for some reason.
-> > ---
-> >  include/linux/preempt.h | 9 +++++++--
-> >  1 file changed, 7 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/include/linux/preempt.h b/include/linux/preempt.h
-> > index 0df425bf9bd7..953358e40291 100644
-> > --- a/include/linux/preempt.h
-> > +++ b/include/linux/preempt.h
-> > @@ -102,10 +102,11 @@ static __always_inline unsigned char interrupt_context_level(void)
-> >  #define hardirq_count()	(preempt_count() & HARDIRQ_MASK)
-> >  #ifdef CONFIG_PREEMPT_RT
-> >  # define softirq_count()	(current->softirq_disable_cnt & SOFTIRQ_MASK)
-> > +# define irq_count()		((preempt_count() & (NMI_MASK | HARDIRQ_MASK)) | softirq_count())
-> >  #else
-> >  # define softirq_count()	(preempt_count() & SOFTIRQ_MASK)
-> > +# define irq_count()		(preempt_count() & (NMI_MASK | HARDIRQ_MASK | SOFTIRQ_MASK))
-> >  #endif
-> > -#define irq_count()	(nmi_count() | hardirq_count() | softirq_count())
+> >  security/ipe/eval.c          | 72 +++++++++++++++++++++++++++++++++++-
+> >  security/ipe/eval.h          |  2 +
+> >  security/ipe/hooks.c         | 12 ++++++
+> >  security/ipe/hooks.h         |  2 +
+> >  security/ipe/ipe.c           |  1 +
+> >  security/ipe/policy.h        |  2 +
+> >  security/ipe/policy_parser.c | 37 +++++++++++++++++-
+> >  7 files changed, 126 insertions(+), 2 deletions(-)
 > 
-> Perhaps add a comment as to why you're making these two versions (ie: 
-> because that avoids three consecutive reads), otherwise people may be 
-> tempted to roll that back again in the future to make the code shorter.
+> The compilation errors continue into this patch.
 > 
+Sorry again for the header file problem.
 
-OK.
-
+> > diff --git a/security/ipe/policy_parser.c b/security/ipe/policy_parser.c
+> > index 27e5767480b0..28c14adfe6d2 100644
+> > --- a/security/ipe/policy_parser.c
+> > +++ b/security/ipe/policy_parser.c
+> > @@ -265,6 +265,12 @@ static enum ipe_action_type parse_action(char *t)
+> >  	return match_token(t, action_tokens, args);
+> >  }
 > >  
-> >  /*
-> >   * Macros to retrieve the current execution context:
-> > @@ -118,7 +119,11 @@ static __always_inline unsigned char interrupt_context_level(void)
-> >  #define in_nmi()		(nmi_count())
-> >  #define in_hardirq()		(hardirq_count())
-> >  #define in_serving_softirq()	(softirq_count() & SOFTIRQ_OFFSET)
-> > -#define in_task()		(!(in_nmi() | in_hardirq() | in_serving_softirq()))
-> > +#ifdef CONFIG_PREEMPT_RT
-> > +# define in_task()		(!((preempt_count() & (NMI_MASK | HARDIRQ_MASK)) | in_serving_softirq()))
-> > +#else
-> > +# define in_task()		(!(preempt_count() & (NMI_MASK | HARDIRQ_MASK | SOFTIRQ_OFFSET)))
-> > +#endif
+> > +static const match_table_t property_tokens = {
+> > +	{__IPE_PROP_BOOT_VERIFIED_FALSE,	"boot_verified=FALSE"},
+> > +	{__IPE_PROP_BOOT_VERIFIED_TRUE,		"boot_verified=TRUE"},
+> > +	{__IPE_PROP_INVALID,			NULL}
+> > +};
+> > +
+> >  /**
+> >   * parse_property - Parse the property type given a token string.
+> >   * @t: Supplies the token string to be parsed.
+> > @@ -277,7 +283,36 @@ static enum ipe_action_type parse_action(char *t)
+> >   */
+> >  static int parse_property(char *t, struct ipe_rule *r)
+> >  {
+> > -	return -EBADMSG;
+> > +	substring_t args[MAX_OPT_ARGS];
+> > +	struct ipe_prop *p = NULL;
+> > +	int rc = 0;
+> > +	int token;
+> > +
+> > +	p = kzalloc(sizeof(*p), GFP_KERNEL);
+> > +	if (!p)
+> > +		return -ENOMEM;
+> > +
+> > +	token = match_token(t, property_tokens, args);
+> > +
+> > +	switch (token) {
+> > +	case __IPE_PROP_BOOT_VERIFIED_FALSE:
+> > +	case __IPE_PROP_BOOT_VERIFIED_TRUE:
+> > +		p->type = token;
+> > +		break;
+> > +	case __IPE_PROP_INVALID:
 > 
-> Same here, thanks!
+> You generally don't need to explicitly specify a case if the code
+> immediately falls through to 'default'.
 > 
+Got it, I will remove this line.
 
-Will do.
+> > +	default:
+> > +		rc = -EBADMSG;
+> > +		break;
+> > +	}
+> > +	if (rc)
+> > +		goto err;
+> > +	list_add_tail(&p->next, &r->props);
+> > +
+> > +out:
+> > +	return rc;
+> > +err:
+> > +	kfree(p);
+> > +	goto out;
+> 
+> Once again, don't use a goto when the jump destination simply does a
+> return, do the return directly.
+> 
+Sure, I will replace the goto with return.
 
+-Fan
+> >  }
 > >  
-> >  /*
-> >   * The following macros are deprecated and should not be used in new code:
+> >  /**
 > > -- 
-> > 2.39.3
-> > 
+> > 2.25.1
 > 
+> --
+> paul-moore.com
