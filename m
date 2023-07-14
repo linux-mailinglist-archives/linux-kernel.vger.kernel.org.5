@@ -2,75 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28D4675324D
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 08:55:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB8CC753319
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 09:23:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234729AbjGNGzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 02:55:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41954 "EHLO
+        id S234394AbjGNHW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 03:22:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232239AbjGNGzo (ORCPT
+        with ESMTP id S235395AbjGNHWv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 02:55:44 -0400
-Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com [209.85.210.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E10911FC9
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 23:55:42 -0700 (PDT)
-Received: by mail-ot1-f69.google.com with SMTP id 46e09a7af769-6b75153caabso2533818a34.0
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 23:55:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689317742; x=1691909742;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=iRxM1ic75/5PISaRQM3Zs6NAL5LM0bTj1rOpZijgN4Y=;
-        b=EK/M7OW9iJ24qdcI9M8aIYmjKrBPzAtBZ0h5pdCDKi83uCdjvCcfT6qYqShPHDKEMx
-         Q0htdi66Pu21qvf+xRMIcKx5JO1umO5n/PFMB4vZ7Jz6vYz91qBaKBHCXxCMpBPAQ4FW
-         Jh0HhIZbE96z/BLWR3R28H6mhsSBoU+kwyyfRDctmoD/NfrQ8ucKBfPJkzCpLGn6YIvZ
-         /DurV/jVLbexzeCx+quMIw0tv9oQ8n0GhRJ3nib8zMNvvqEJOlZJyThLZD3PXkCCO2J0
-         tZ1nTca404qdyVgSq0NlamkVy4GtL+FY7gU59Dg6dl3bjVLH6+jEC/sIQbaLjTbFq7jA
-         9L1Q==
-X-Gm-Message-State: ABy/qLaUVnBu+9q8x9AmPDZWl6Y+HLrTrMqbQwlPKPDFWhOlCGtLVUBv
-        EaahZgCi09RReJZeuC75AYkCt6Kpj5rtIAUns8rrx3tq7LOQ
-X-Google-Smtp-Source: APBJJlGSZXo0hUPRjLJVOTelbgDqRovbf4jU5qkU76ZsEms/mBxYXaATIacI3TIKgtacnPBlsB3jRLOCNWk1+Mu5sZAkXl2NDoCz
-MIME-Version: 1.0
-X-Received: by 2002:a05:6870:8c1a:b0:1aa:22cd:8ad1 with SMTP id
- ec26-20020a0568708c1a00b001aa22cd8ad1mr3530441oab.11.1689317742266; Thu, 13
- Jul 2023 23:55:42 -0700 (PDT)
-Date:   Thu, 13 Jul 2023 23:55:42 -0700
-In-Reply-To: <CALm+0cWBh+4GMzfRKR6rE4H4JR5aRW_m1KVdTLZLJuQyE_smRg@mail.gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f0ce0206006cef79@google.com>
-Subject: Re: [syzbot] [usb?] memory leak in raw_open
-From:   syzbot <syzbot+feb045d335c1fdde5bf7@syzkaller.appspotmail.com>
-To:     andreyknvl@gmail.com, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        qiang.zhang1211@gmail.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+        Fri, 14 Jul 2023 03:22:51 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A7C0358C;
+        Fri, 14 Jul 2023 00:22:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689319359; x=1720855359;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references;
+  bh=dXHUrVqTsBzck553w5GbptEVC8cgKTaiRMcUQpmhAWg=;
+  b=m6TyDK4673WDnKHhPDlm+0HlRumfU4GdMCQAx//Vdxp2ZzK+G5w2nPCt
+   /8uyqiYBRlbfuQblzkUvHFMj4vHxlmUC9Hts5kWb8D0xwR2U6InA/K4pX
+   iOSHpd5OBCU7QanafFHAIf1cgvinTeiioU2IhW3SiA5Hh7nZcecZhyUoe
+   yGlI53CaArmQJZi83hsNei5A88fBvqKKhkxXBf0deaBeK9xxQWg68mEPB
+   6HnsBihHhJ0KT8RcpaSxu9164+pAw/WXm1flVsn/8r/pLw+wTNhAHpAr/
+   BqpOrevwZAAb24QgPdXTR/C+Y4xlrauyg+HJ3yRUafoRuiFe+OevqFrCk
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="345727883"
+X-IronPort-AV: E=Sophos;i="6.01,204,1684825200"; 
+   d="scan'208";a="345727883"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 00:22:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="896317393"
+X-IronPort-AV: E=Sophos;i="6.01,204,1684825200"; 
+   d="scan'208";a="896317393"
+Received: from yzhao56-desk.sh.intel.com ([10.239.159.62])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 00:22:36 -0700
+From:   Yan Zhao <yan.y.zhao@intel.com>
+To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     pbonzini@redhat.com, seanjc@google.com, chao.gao@intel.com,
+        kai.huang@intel.com, robert.hoo.linux@gmail.com,
+        yuan.yao@linux.intel.com, Yan Zhao <yan.y.zhao@intel.com>
+Subject: [PATCH v4 11/12] KVM: x86/mmu: split a single gfn zap range when guest MTRRs are honored
+Date:   Fri, 14 Jul 2023 14:56:02 +0800
+Message-Id: <20230714065602.20805-1-yan.y.zhao@intel.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20230714064656.20147-1-yan.y.zhao@intel.com>
+References: <20230714064656.20147-1-yan.y.zhao@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Split a single gfn zap range (specifially range [0, ~0UL)) to smaller
+ranges according to current memslot layout when guest MTRRs are honored.
 
-syzbot tried to test the proposed patch but the build/boot failed:
+Though vCPUs have been serialized to perform kvm_zap_gfn_range() for MTRRs
+updates and CR0.CD toggles, contention caused rescheduling cost is still
+huge when there're concurrent page fault holding mmu_lock for read.
 
-failed to apply patch:
-checking file drivers/usb/gadget/legacy/raw_gadget.c
-patch: **** unexpected end of file in patch
+Split a single huge zap range according to the actual memslot layout can
+reduce unnecessary transversal and yielding cost in tdp mmu.
+Also, it can increase the chances for larger ranges to find existing ranges
+to zap in zap list.
 
+Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
+---
+ arch/x86/kvm/mtrr.c | 39 +++++++++++++++++++++++++++++++--------
+ 1 file changed, 31 insertions(+), 8 deletions(-)
 
-
-Tested on:
-
-commit:         7c2878be Add linux-next specific files for 20230714
-git tree:       linux-next
-dashboard link: https://syzkaller.appspot.com/bug?extid=feb045d335c1fdde5bf7
-compiler:       
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=14266bcca80000
+diff --git a/arch/x86/kvm/mtrr.c b/arch/x86/kvm/mtrr.c
+index 9fdbdbf874a8..00e98dfc4b0d 100644
+--- a/arch/x86/kvm/mtrr.c
++++ b/arch/x86/kvm/mtrr.c
+@@ -909,21 +909,44 @@ static void kvm_zap_or_wait_mtrr_zap_list(struct kvm *kvm)
+ static void kvm_mtrr_zap_gfn_range(struct kvm_vcpu *vcpu,
+ 				   gfn_t gfn_start, gfn_t gfn_end)
+ {
++	int idx = srcu_read_lock(&vcpu->kvm->srcu);
++	const struct kvm_memory_slot *memslot;
+ 	struct mtrr_zap_range *range;
++	struct kvm_memslot_iter iter;
++	struct kvm_memslots *slots;
++	gfn_t start, end;
++	int i;
+ 
+-	range = kmalloc(sizeof(*range), GFP_KERNEL_ACCOUNT);
+-	if (!range)
+-		goto fail;
+-
+-	range->start = gfn_start;
+-	range->end = gfn_end;
+-
+-	kvm_add_mtrr_zap_list(vcpu->kvm, range);
++	for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
++		slots = __kvm_memslots(vcpu->kvm, i);
++		kvm_for_each_memslot_in_gfn_range(&iter, slots, gfn_start, gfn_end) {
++			memslot = iter.slot;
++			start = max(gfn_start, memslot->base_gfn);
++			end = min(gfn_end, memslot->base_gfn + memslot->npages);
++			if (WARN_ON_ONCE(start >= end))
++				continue;
++
++			range = kmalloc(sizeof(*range), GFP_KERNEL_ACCOUNT);
++			if (!range)
++				goto fail;
++
++			range->start = start;
++			range->end = end;
++
++			/*
++			 * Redundent ranges in different address space will be
++			 * removed in kvm_add_mtrr_zap_list().
++			 */
++			kvm_add_mtrr_zap_list(vcpu->kvm, range);
++		}
++	}
++	srcu_read_unlock(&vcpu->kvm->srcu, idx);
+ 
+ 	kvm_zap_or_wait_mtrr_zap_list(vcpu->kvm);
+ 	return;
+ 
+ fail:
++	srcu_read_unlock(&vcpu->kvm->srcu, idx);
+ 	kvm_zap_gfn_range(vcpu->kvm, gfn_start, gfn_end);
+ }
+ 
+-- 
+2.17.1
 
