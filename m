@@ -2,75 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 373997536C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:39:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64AF87536C9
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:39:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234300AbjGNJj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 05:39:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34808 "EHLO
+        id S235649AbjGNJjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 05:39:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232526AbjGNJjY (ORCPT
+        with ESMTP id S235459AbjGNJjd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 05:39:24 -0400
-Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com [209.85.161.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7148512C
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 02:39:22 -0700 (PDT)
-Received: by mail-oo1-f71.google.com with SMTP id 006d021491bc7-56690d62b50so2461514eaf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 02:39:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689327562; x=1691919562;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4KHHzU7x7Uj0oUhbg7yvB3g2/zOBU5hseuF/BXLOMt0=;
-        b=k8cYbHQNQW8Fyg975uv19Zhz0T5gHZemlFwecozHfTBxINtF0t0HuX8wJl+BAs/RQV
-         /5w1SJqwqvxy7v96u5lidtI+FwZq0t5KYFjuQ2zxjF+XM0XAguZ11TQs2QVaO1TIGXrW
-         kRr9e36v61Jd31V4vbPmyMh8ZOyddW5Zo3AJo9HGTc57fY36IL7Nz8kJKnZcawSkVkgh
-         cmj7UchnBk+FDlDfd1siwx7V1Q4HRzn2xJh4QYLy2vw8++C9/CuuFjvdXICat9YY4F12
-         BYQUMmKZH/DcKVKaWhEe7wkGi0fAi/f8mSI5w6XyrOD0HK5tCjgk3e/J2nhiKJy65j8X
-         Mgjw==
-X-Gm-Message-State: ABy/qLYenhfIDGexKU7N/xfat15m6jjJMzJb86F4r0WT+fDnSG4oLYZ6
-        dWxrT2q5EwTrP2hc6r3mQavGW257amBlOOgRV6d9kPrrMzOV
-X-Google-Smtp-Source: APBJJlECE/T73Vf3y+9L5a/sFYEvp9yWUZCY5KubJr49qX1T/Yq21R4eLmkgdx54Nu3PRiX6hQF471EOVA43hTqQHT9AITWgBoP6
+        Fri, 14 Jul 2023 05:39:33 -0400
+X-Greylist: delayed 4674 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 14 Jul 2023 02:39:30 PDT
+Received: from mail.marcansoft.com (marcansoft.com [212.63.210.85])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD3361727;
+        Fri, 14 Jul 2023 02:39:30 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: lina@asahilina.net)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 606425BC37;
+        Fri, 14 Jul 2023 09:39:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=asahilina.net;
+        s=default; t=1689327569;
+        bh=Eo0bdJOxddjkJgrxpD2ISre7ur+ps1dvERsgKuIIp2w=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=UmO/JBwFBdyJU6DmJJlrlj69WA3ro+j7eoBPv/TBGWG+v+e73+63Z2B7h14oc1mwY
+         XQcW9dKU6Dz6nqkzYqT3/KWCmsyUmvj9XzU18gp/84OEqyWSyFlYpkhq7wS0kj7+vT
+         MbJCB9HiVnxolhmSf+HJRKZSRImv62z4IePNubKwjlyXgdj5iuLpqnC5MBeoWBkZ9r
+         BFRpYtz2Hyvk4UhUB+twADUyX3+P+wTK916lt5OVHXhLYr6QJIWu0R48QcS849joi9
+         xaXh9ZVjRhxn00j4NyZglN+hljHpu7p9iFLlA01D37ANXmQqYjlgwUMjzDobCgfzUs
+         rsSwsG34r9sXA==
+Message-ID: <6ba6827b-ab2b-1c03-2c72-eb3f6da7e719@asahilina.net>
+Date:   Fri, 14 Jul 2023 18:39:23 +0900
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:70a:b0:1b0:77e0:3cdc with SMTP id
- ea10-20020a056870070a00b001b077e03cdcmr4072235oab.4.1689327561878; Fri, 14
- Jul 2023 02:39:21 -0700 (PDT)
-Date:   Fri, 14 Jul 2023 02:39:21 -0700
-In-Reply-To: <CALm+0cXi-YsnJBdBt38v4gEoR7oEeaoj3wXjEw3m=25RSLEs8g@mail.gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003c330106006f39b9@google.com>
-Subject: Re: [syzbot] [usb?] memory leak in raw_open
-From:   syzbot <syzbot+feb045d335c1fdde5bf7@syzkaller.appspotmail.com>
-To:     andreyknvl@gmail.com, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        qiang.zhang1211@gmail.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH 1/3] drm/scheduler: Add more documentation
+To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Luben Tuikov <luben.tuikov@amd.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>
+Cc:     Faith Ekstrand <faith.ekstrand@collabora.com>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, asahi@lists.linux.dev
+References: <20230714-drm-sched-fixes-v1-0-c567249709f7@asahilina.net>
+ <20230714-drm-sched-fixes-v1-1-c567249709f7@asahilina.net>
+ <332e031c-c04e-998c-e401-685c817ea2a1@amd.com>
+Content-Language: en-US
+From:   Asahi Lina <lina@asahilina.net>
+In-Reply-To: <332e031c-c04e-998c-e401-685c817ea2a1@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 14/07/2023 17.40, Christian König wrote:
+> Am 14.07.23 um 10:21 schrieb Asahi Lina:
+>> Document the implied lifetime rules of the scheduler (or at least the
+>> intended ones), as well as the expectations of how resource acquisition
+>> should be handled.
+>>
+>> Signed-off-by: Asahi Lina <lina@asahilina.net>
+>> ---
+>>    drivers/gpu/drm/scheduler/sched_main.c | 58 ++++++++++++++++++++++++++++++++--
+>>    1 file changed, 55 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/scheduler/sched_main.c b/drivers/gpu/drm/scheduler/sched_main.c
+>> index 7b2bfc10c1a5..1f3bc3606239 100644
+>> --- a/drivers/gpu/drm/scheduler/sched_main.c
+>> +++ b/drivers/gpu/drm/scheduler/sched_main.c
+>> @@ -43,9 +43,61 @@
+>>     *
+>>     * The jobs in a entity are always scheduled in the order that they were pushed.
+>>     *
+>> - * Note that once a job was taken from the entities queue and pushed to the
+>> - * hardware, i.e. the pending queue, the entity must not be referenced anymore
+>> - * through the jobs entity pointer.
+>> + * Lifetime rules
+>> + * --------------
+>> + *
+>> + * Getting object lifetimes right across the stack is critical to avoid UAF
+>> + * issues. The DRM scheduler has the following lifetime rules:
+>> + *
+>> + * - The scheduler must outlive all of its entities.
+>> + * - Jobs pushed to the scheduler are owned by it, and must only be freed
+>> + *   after the free_job() callback is called.
+>> + * - Scheduler fences are reference-counted and may outlive the scheduler.
+> 
+>> + * - The scheduler *may* be destroyed while jobs are still in flight.
+> 
+> That's not correct. The scheduler can only be destroyed after all the
+> entities serving it have been destroyed as well as all the jobs already
+> pushed to the hw finished.
 
-syzbot tried to test the proposed patch but the build/boot failed:
+The point of this series is to change this behavior so I can actually 
+use the scheduler in my use case, and that begins with formally 
+documenting it as Daniel suggested. That is, I need it to be safe for 
+jobs to not be yet complete before the scheduler is destroyed (the 
+entities do get destroyed first, that's the first bullet point).
 
-failed to apply patch:
-checking file drivers/usb/gadget/legacy/raw_gadget.c
-patch: **** unexpected end of file in patch
+We already had this discussion. Without this guarantee, I cannot build a 
+reasonable safe Rust abstraction. Unless you have another suggestion, as 
+far as I can tell it's either this or I give up on using the DRM 
+scheduler entirely and reimplement something else on my own.
 
+> What might be possible to add is that the hw is still working on the
+> already pushed jobs, but so far that was rejected as undesirable.
 
+Where was this rejected?
 
-Tested on:
+>> + * - There is no guarantee that all jobs have been freed when all entities
+>> + *   and the scheduled have been destroyed. Jobs may be freed asynchronously
+>> + *   after this point.
+>> + * - Once a job is taken from the entity's queue and pushed to the hardware,
+>> + *   i.e. the pending queue, the entity must not be referenced any more
+>> + *   through the job's entity pointer. In other words, entities are not
+>> + *   required to outlive job execution.
+>> + *
+>> + * If the scheduler is destroyed with jobs in flight, the following
+>> + * happens:
+>> + *
+>> + * - Jobs that were pushed but have not yet run will be destroyed as part
+>> + *   of the entity cleanup (which must happen before the scheduler itself
+>> + *   is destroyed, per the first rule above). This signals the job
+>> + *   finished fence with an error flag. This process runs asynchronously
+>> + *   after drm_sched_entity_destroy() returns.
+>> + * - Jobs that are in-flight on the hardware are "detached" from their
+>> + *   driver fence (the fence returned from the run_job() callback). In
+>> + *   this case, it is up to the driver to ensure that any bookkeeping or
+>> + *   internal data structures have separately managed lifetimes and that
+>> + *   the hardware either cancels the jobs or runs them to completion.
+>> + *   The DRM scheduler itself will immediately signal the job complete
+>> + *   fence (with an error flag) and then call free_job() as part of the
+>> + *   cleanup process.
+>> + *
+>> + * After the scheduler is destroyed, drivers *may* (but are not required to)
+>> + * skip signaling their remaining driver fences, as long as they have only ever
+>> + * been returned to the scheduler being destroyed as the return value from
+>> + * run_job() and not passed anywhere else.
+> 
+> This is an outright NAK to this. Fences must always be cleanly signaled.
 
-commit:         7c2878be Add linux-next specific files for 20230714
-git tree:       linux-next
-dashboard link: https://syzkaller.appspot.com/bug?extid=feb045d335c1fdde5bf7
-compiler:       
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=1310af86a80000
+This is just documenting the fact that the DRM scheduler no longer cares 
+about the fences after it is destroyed. I can remove it from the docs if 
+you want, I don't rely on this behavior.
+
+> IIRC Daniel documented this as mandatory on the dma_fence behavior.
+
+Right, in the general case all dma_fences must be signaled, that's why I 
+explicitly said this only applies if the scheduler is the *only* user of 
+those fences.
+
+If you don't think this should be a guarantee the scheduler officially 
+makes, I'll remove it from the text.
+
+~~ Lina
 
