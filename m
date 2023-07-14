@@ -2,93 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09D39754472
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 23:47:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7A28754474
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 23:52:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229745AbjGNVrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 17:47:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49420 "EHLO
+        id S229601AbjGNVwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 17:52:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbjGNVrf (ORCPT
+        with ESMTP id S229452AbjGNVwG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 17:47:35 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D12B3A86
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 14:47:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689371246; x=1720907246;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=U9IYjXe1hVbKh6J8z4uLxx2x7zmV/SMrJyKMB29SNcw=;
-  b=OdynOHxOsm6+NDAeWFIKlGRGlFOrUYVa0dX16KJbQx44AkAN0vUJ1aRQ
-   oY9sXEZk7vkjxTgx/ruK3NCTsFWYO9lVBK/WOocUGgFIpdNgCvD02PKK7
-   ZZ45OO0ss2spUwbEwpE4BgQxp7N0D2LQI0xYBOChMCOb/2AtV4U9q/6j/
-   ZJI8Yr/OuPJAT4E86N8MD8GcAE3nEdgc24gVVydw3U0xwTvPYdkH2HBaT
-   qptChdVLHG2ptSHiSMwbeB3xOsSu3lMeGjnGPg6Ijz0gxLyGporBwVZ1k
-   /nOm4MS6Ywv4bkaXDDh5FHm8p+mpeyL/62yQwGlfeXJT7Omu3WdzdMYCZ
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10771"; a="365623674"
-X-IronPort-AV: E=Sophos;i="6.01,206,1684825200"; 
-   d="scan'208";a="365623674"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 14:47:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10771"; a="792552670"
-X-IronPort-AV: E=Sophos;i="6.01,206,1684825200"; 
-   d="scan'208";a="792552670"
-Received: from avandeve-mobl1.amr.corp.intel.com (HELO [10.251.9.164]) ([10.251.9.164])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 14:47:25 -0700
-Message-ID: <6ce7c4d8-3320-7712-a562-a43224c2602b@linux.intel.com>
-Date:   Fri, 14 Jul 2023 14:47:24 -0700
+        Fri, 14 Jul 2023 17:52:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20A9235A6
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 14:51:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689371478;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=8Hxo+RkWpN14XLiWcgexFQoX59W2A8cV2w6hOlqdXYc=;
+        b=VNfjDqnfrBrNxOPVNlhYQ/vf+n6J7yYF0K3x74avT6yvpyjf7GI0qxae3PZskDldFJvzSC
+        XkCdCNaqCIjTj4CecIB0jbGSWEICUaYEEdtdv0PzrVhxFZRr7UW+mT45vrxW3ZGNILCgU3
+        fOtWsFfblAWGmLMzLdBTvSnYNAzSzFc=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-396-UsYhiLZYOeqe-HaEq60pkA-1; Fri, 14 Jul 2023 17:51:16 -0400
+X-MC-Unique: UsYhiLZYOeqe-HaEq60pkA-1
+Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-635325b87c9so23806966d6.1
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 14:51:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689371476; x=1691963476;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8Hxo+RkWpN14XLiWcgexFQoX59W2A8cV2w6hOlqdXYc=;
+        b=LDEL9bUPpez6FUy3MxnE2PZWJMhTPBbUKUezG6pdwxXDHctpSjRfMiRMeexJtuq0qX
+         sFNJYHpZtvxrj+OU6Lr6A9+Ayeik2aq2+bPwbFRZxY9AcYzREONTjpHqWr90D5YEjI+b
+         t2ROGRcKw0JrhSWipVWl03xLM2haWeqpVia8Na3kF6QXpM9aYIVpNgrLiU1uS6pbyf7c
+         e4YAnnwaCyyR1tYgofOJXWMh8J+wB9zfmMpm4TlJhJNcjGa8sHZSUAkIyInFAE/IzwoA
+         aidvriF9d8wDpU7+vFD1BEmJ2gQeZu7CH6ppVzA/dnT2oKizCjH2ac1dE7x2AfSy+vFp
+         5pwA==
+X-Gm-Message-State: ABy/qLYH1BeMu1N2Yj/lHs1W0FUJw10lXGwLX+S68Rzck2rha0uzya4a
+        2nFob+riWAVhLRcHRSh+bWTBUAETBZCn109sakBHc7uf63cH1LGwQ0LYrpQa9rjNJVXgaqTPZH/
+        wPxTWyrJ/hx1PfWVaFRvfIbcO+peUctKI
+X-Received: by 2002:a0c:f452:0:b0:635:e209:178c with SMTP id h18-20020a0cf452000000b00635e209178cmr5074117qvm.10.1689371476121;
+        Fri, 14 Jul 2023 14:51:16 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlECeKhR/HE5D/xADqgqYjum7rx4dSsBrkvBGCkPPWkWzdk7JOvc6oRDSx7upiK11VtkOw7Wtg==
+X-Received: by 2002:a0c:f452:0:b0:635:e209:178c with SMTP id h18-20020a0cf452000000b00635e209178cmr5074111qvm.10.1689371475858;
+        Fri, 14 Jul 2023 14:51:15 -0700 (PDT)
+Received: from dell-per740-01.7a2m.lab.eng.bos.redhat.com (nat-pool-bos-t.redhat.com. [66.187.233.206])
+        by smtp.gmail.com with ESMTPSA id t10-20020a0c8d8a000000b00626362f1bf1sm4276508qvb.63.2023.07.14.14.51.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Jul 2023 14:51:15 -0700 (PDT)
+From:   Tom Rix <trix@redhat.com>
+To:     akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] shmem: set variable shmem_mark_dquot_dirty and shmem_dquot_write_info storage-class-specifier to static
+Date:   Fri, 14 Jul 2023 17:51:13 -0400
+Message-Id: <20230714215113.3919026-1-trix@redhat.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [6.5.0-rc1] unchecked MSR access error: RDMSR from 0xe2 at rIP:
- 0xffffffff87090227 (native_read_msr+0x7/0x40) (intel_idle_init_cstates_icpu)
-Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
-        Bruno Goncalves <bgoncalv@redhat.com>, x86@kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-References: <CA+QYu4qSBdhEgFURu+ouAf2d_JNPbZgCSUaxCLoGzMqDQOLWsQ@mail.gmail.com>
- <20230711112421.GI3062772@hirez.programming.kicks-ass.net>
- <CA+QYu4qzJgiiU1qsjtWb9OU3=C=hb_c-Ag5Y4c=Xp_ObfGH=hg@mail.gmail.com>
- <20230711125557.GM3062772@hirez.programming.kicks-ass.net>
- <20230711132553.GN3062772@hirez.programming.kicks-ass.net>
- <0837a34c-f66e-aa04-d4a7-b032d3dbab7a@intel.com>
- <b672c500-5f2f-d60c-84da-80269b8b420f@linux.intel.com>
- <20230714211109.GC3275140@hirez.programming.kicks-ass.net>
-From:   Arjan van de Ven <arjan@linux.intel.com>
-In-Reply-To: <20230714211109.GC3275140@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/14/2023 2:11 PM, Peter Zijlstra wrote:
-> On Tue, Jul 11, 2023 at 11:39:53AM -0700, Arjan van de Ven wrote:
->> On
->>> I think you mean "revert"?
->>>
->>> That can be done, but maybe it can be fixed instead?
->>
->> this specific issue I will fix shortly (together with the RDMSR thing)
-> 
-> I still don't know why this needs to be in intel_idle.
+smatch reports
+mm/shmem_quota.c:318:5: warning: symbol 'shmem_mark_dquot_dirty'
+  was not declared. Should it be static?
+mm/shmem_quota.c:323:5: warning: symbol 'shmem_dquot_write_info'
+  was not declared. Should it be static?
 
-we can do a seperate idle driver; it'll still be x86 specific (since idle really is arch specific)...
-and then the umwait parts of this will be Intel specific.. as well any future idle methods ..
-and I'm not sure the AMD folks would even want it used .... at which point it ends up Intel
-specific fully and we now have 2 Intel idle drivers.
-I don't see how that makes sense.
+These variables are only used in their defining file, so it should be static.
 
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ mm/shmem_quota.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/mm/shmem_quota.c b/mm/shmem_quota.c
+index e349c0901bce..062d1c1097ae 100644
+--- a/mm/shmem_quota.c
++++ b/mm/shmem_quota.c
+@@ -315,12 +315,12 @@ static int shmem_release_dquot(struct dquot *dquot)
+ 	return 0;
+ }
+ 
+-int shmem_mark_dquot_dirty(struct dquot *dquot)
++static int shmem_mark_dquot_dirty(struct dquot *dquot)
+ {
+ 	return 0;
+ }
+ 
+-int shmem_dquot_write_info(struct super_block *sb, int type)
++static int shmem_dquot_write_info(struct super_block *sb, int type)
+ {
+ 	return 0;
+ }
+-- 
+2.27.0
 
