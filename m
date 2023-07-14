@@ -2,191 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 972BC752E79
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 03:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25D08752E81
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 03:23:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231303AbjGNBOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 21:14:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53918 "EHLO
+        id S232513AbjGNBXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 21:23:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229580AbjGNBOf (ORCPT
+        with ESMTP id S231282AbjGNBXD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 21:14:35 -0400
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2073.outbound.protection.outlook.com [40.107.237.73])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA12C2D5D
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 18:14:33 -0700 (PDT)
+        Thu, 13 Jul 2023 21:23:03 -0400
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2100.outbound.protection.outlook.com [40.107.215.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ED042D57;
+        Thu, 13 Jul 2023 18:22:58 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Wq1L2EPNRbWHjMNw7xuoPs3KR1Syen48ITpmdGrMU5KhCFtwK3yS92vm3EQhUkAtk/LCgTCpPw4yai0pib4SOqfLJvgjzTF+SznLN53dOGy6tXd6PZlxNslqjHz7dY8TjLMRWcT4ty3duld1s98o/DmTlsA3VfX3hyheG74otDnbn+3p1MEXUK2NO3oa5P/AqV8ljT+eG2FjMWjtgWT0FDyJStOTPxl8xHKWDv5KB5X3+isEGTthlKDfUhhmQyYD+QrsNyHFk7MSnGtVgpc1FN3uwcliiKDKfPkF0oLJ7/KbU7ZqeGclE63Tjc+wkYvnvIuM9xi/HdFUvRKNiWfPxw==
+ b=Ya8JCFhUTfxXD8ZCPttccxEucdNxHeVfEatLAeQIRlrlqDdokI2+l1kkqO66xgL0ZwsE4TKkTxHxgwFiuuQmdAmaYdpuQQZDxtJ4pkNX7ff8WSc1I8MpqmbKKpCndpj2uRAPUyduE8Bo0a84vQCXtie/l2so6j3Mx00CHsU636dbu0tfmgVfYxqSit40hOnu3tnnVp6P8zcE5Idn7C4MpYhn2yJ6F53hojbOsqFcvVDEL5/xVxTQ7/7RrWewtgIBKyEckcJ43WJoRTSG8v5XsJJPrsKQHygsijdkaI1bUQCiZ0CBqbcrxwV6n/fkKesVWAMOoz3gy8YeDw1dafjOhQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3srNnLNk0dXD8RZ9+KBUjJqTFaUUeDM55+yUk604/+s=;
- b=SVJIs7EUeSt1NGgRKxV4oxcPe8yxvFAvzLxPx2NEF4uw5Q4EECgfxo8G+yLHCRKcbe7IrnPIqN76A8o8OSR6FUswvQGPiInGkTsolOXr3OHLuRwgiKdjZR+8GrD+W2NZv83yQqyc1SXEma7l/EmLrnOgGmCa0R0pqu93+AcZBwTymyDo+6+nxOat9JQlSLIJzNroMmO4lWaAEk61riFrU6qG7QpqwbyH0WHeHktvyi4t2PicZF5W/W8CHx74ExYUMHEM7OC7IldiqHqK0Wt/XXcqRn8k/DpZ8GtcipNebfwJyt/hwkoOGopzpO1uZowFaGVXuWwpHNJEKd+zF6KElg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.232) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
+ bh=Q/m9bRD3YAbAWoCnvtHtIkgQHAON3iapVh0xCMWw4Dc=;
+ b=Up0/guRVRgLl4+ntbsI7HcnKki21NjRxS24lrkNCfBqfgGkx7fGBs6udG9Mw8fMxYRaYJXTKmWfeFExlQMvTnNDQ4yJwNvLeA+cSkhKSHg3WrcZFVugnpsvDL3Bb+Qy2X+xiBAOKQPlXk8lwb9dwqnwXsla2bnW/FKkHHZeUzQ2ZD0RsRCiK91nMWYKJZKBXIYkj6PgytDp0SU8fxrg2C4e60Sg8E2uny4pRTnmt8nXLe9lQaxfzTv+2O/nZFNVFXidvg2HZe1T8j9I/KpU+/QFQZUp1QUlOZ1FjU4gLFIJw/OsMIxz3v4NaBhsO6dy33/7+JbHLRjJ7aa+b2x7Ebg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3srNnLNk0dXD8RZ9+KBUjJqTFaUUeDM55+yUk604/+s=;
- b=D32vdqjlRTlQY1YWKEFz9cHKclQH3JwQLGpkDDeep+gBdPEIOgZp7yAgjKvV6APqCpVN+wECKekFULpEKXVDeZr0Gqy6njZZ0YzRbYhKh4zM7gfBEVoLL2Lj/vcDaPD0UFcgugDrTVxiqJy0RLMGHHhDgVRCuvA4V9yIcSt0nqqm9p6dVw7S5QznNog+Znc0NcAIonVzbFq48b83Nvgvt44NAbgrv1Ynhsj4IBcglewrnTVJMkUIZG2/NvM1EH8R42I8OosIxA+f4CjZEninHZxfukYP4C9Sc1ntCM2R93ajb9TeSqXpIu2XcDrCy358MKE4/fF3WTTpavFCIapR9w==
-Received: from DS7PR03CA0029.namprd03.prod.outlook.com (2603:10b6:5:3b8::34)
- by SA3PR12MB7859.namprd12.prod.outlook.com (2603:10b6:806:305::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.27; Fri, 14 Jul
- 2023 01:14:31 +0000
-Received: from DM6NAM11FT099.eop-nam11.prod.protection.outlook.com
- (2603:10b6:5:3b8:cafe::62) by DS7PR03CA0029.outlook.office365.com
- (2603:10b6:5:3b8::34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.24 via Frontend
- Transport; Fri, 14 Jul 2023 01:14:31 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.232) by
- DM6NAM11FT099.mail.protection.outlook.com (10.13.172.241) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6588.27 via Frontend Transport; Fri, 14 Jul 2023 01:14:31 +0000
-Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
- (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Thu, 13 Jul 2023
- 18:14:29 -0700
-Received: from drhqmail202.nvidia.com (10.126.190.181) by
- drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.37; Thu, 13 Jul 2023 18:14:28 -0700
-Received: from Asurada-Nvidia (10.127.8.13) by mail.nvidia.com
- (10.126.190.181) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37 via Frontend
- Transport; Thu, 13 Jul 2023 18:14:28 -0700
-Date:   Thu, 13 Jul 2023 18:14:27 -0700
-From:   Nicolin Chen <nicolinc@nvidia.com>
-To:     Michael Shavit <mshavit@google.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-CC:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        "Joerg Roedel" <joro@8bytes.org>, <jean-philippe@linaro.org>,
-        <baolu.lu@linux.intel.com>, <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux.dev>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 02/13] iommu/arm-smmu-v3: Add smmu_s1_cfg to
- smmu_master
-Message-ID: <ZLChc4A58PkU2Fe5@Asurada-Nvidia>
-References: <20230621063825.268890-1-mshavit@google.com>
- <20230621063825.268890-3-mshavit@google.com>
- <ZK9RycgNAVrxe343@Asurada-Nvidia>
- <CAKHBV26wi+xKnNjo-R+QOcVLPH2KJTFP+mF4CW1xE61nOdF5GA@mail.gmail.com>
- <ZLAKQw+DzcpSRSyi@nvidia.com>
- <CAKHBV25YadRVFiag5z5Yc13L093ScWkCjAOCd=VuGm2RUaDyzA@mail.gmail.com>
- <ZLApQjaqoOshT2TJ@nvidia.com>
- <ZLBWh370pPjx2B+z@Asurada-Nvidia>
- <ZLCNUNRsWy/YuHhQ@nvidia.com>
+ bh=Q/m9bRD3YAbAWoCnvtHtIkgQHAON3iapVh0xCMWw4Dc=;
+ b=R9NRI/lWwXXThNgLuNRmVJvRo2dlJvAtHElMNRva9PONYXnxLOgYf7KfQKBLtkPgDvrwkTZlxztalO/OYp/keNhTqNzJfGDXdXAeyMtL8ftjza+vzS5xAkp7bOxwZWFh6cDS5twy2RYHBfJnEwcaLIozCjpS7j24yj5aqG8BaNxlgeG0YGycEC8VjWUoxXpRGib5V3bkrN8Cbf8+sOXg88dCYOdrQ/JeW9uolepO2r/AtmcQwKc8UDQm1JtvIu3kkW0ZWaancMqiUbKD2eQ24hqb4HctPXX3tOOLxfeiT5JTjr+QVuj4ezwo9B+FmbnMpZH3tqbHtiQbuYXdP75bbA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from SG2PR06MB5288.apcprd06.prod.outlook.com (2603:1096:4:1dc::9) by
+ JH0PR06MB6655.apcprd06.prod.outlook.com (2603:1096:990:3d::13) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6588.24; Fri, 14 Jul 2023 01:22:55 +0000
+Received: from SG2PR06MB5288.apcprd06.prod.outlook.com
+ ([fe80::f9b8:80b5:844e:f49a]) by SG2PR06MB5288.apcprd06.prod.outlook.com
+ ([fe80::f9b8:80b5:844e:f49a%6]) with mapi id 15.20.6565.037; Fri, 14 Jul 2023
+ 01:22:55 +0000
+From:   Minjie Du <duminjie@vivo.com>
+To:     dkirjanov@suse.de, Horatiu Vultur <horatiu.vultur@microchip.com>,
+        UNGLinuxDriver@microchip.com (maintainer:MICROCHIP LAN966X ETHERNET
+        DRIVER), "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        netdev@vger.kernel.org (open list:MICROCHIP LAN966X ETHERNET DRIVER),
+        linux-kernel@vger.kernel.org (open list)
+Cc:     opensource.kernel@vivo.com, Minjie Du <duminjie@vivo.com>
+Subject: [PATCH v2] net: lan966x: fix parameter check in two functions
+Date:   Fri, 14 Jul 2023 09:22:19 +0800
+Message-Id: <20230714012220.891-1-duminjie@vivo.com>
+X-Mailer: git-send-email 2.39.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR02CA0065.apcprd02.prod.outlook.com
+ (2603:1096:4:54::29) To SG2PR06MB5288.apcprd06.prod.outlook.com
+ (2603:1096:4:1dc::9)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZLCNUNRsWy/YuHhQ@nvidia.com>
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6NAM11FT099:EE_|SA3PR12MB7859:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5c28f3a1-98fa-4e9a-0462-08db8407ad87
+X-MS-TrafficTypeDiagnostic: SG2PR06MB5288:EE_|JH0PR06MB6655:EE_
+X-MS-Office365-Filtering-Correlation-Id: cb75d3a4-0e69-409a-f53a-08db8408d9b7
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /2/3VnkTt+KuVkV70lCxCjOKLcCqG1NjHghjOcX37I45P0i7EcRiRlr8r+nTy/s8CH1JxG9fQ5YqUcVTvBdE37TIk9JIMlj32Zu8vu7PNGzb98S/xqMW8DOF6nGb8Gi1WpZ4+CQ8O54CpPL97DEoIzH7uiQG3hsnqJVRZ+QJfEID/nl8Zkl5HRDhEIySpLODWIEUb7ZmUejJkwWq249xRm9qpJidWBDabSTF7bSXefoOHFvPjYvMZIzlW/SHYnSoW6NZtswNOeTSUz7Uj0rjEtvIUfr6H1jzms4v8+yI4RX+pfIV4LuJnNEeiTVb223Ro32LYAa2F4tSjgYgPbSfP3viKyYKkUFalmnunA+93XPmVCscut6k43JEqa40bMC+1Okd4jNovgvwPaAFho3XzScPT7Z21Xf0EVs05typzVytQ0gyHl4FX+I8rNDr5+9VfBm1+W1ZZ/9iTkV+vBD3nmI87hyelwXf4WQCgm/8wSUWUm1ohzvtYalNS63OFSQFUHzF2y8ADtJwFBuNzmAsNpeCz7b5O1CKpPohDDXmWu4HTk+KH7aVrY3Nw9LeIhZXQT8XRys8ceQ2zKRWpB8bAzduCvILe7hgNgK1o/4X0bEoN3KH4JSvkHCO5Blrl/poDLKjXko9oXu24Eh9csZYniusraxj/O3/aByB5Gm4xnuI3DsJuJKyBQHKnJWVxFnqDThvOynWWrUew5w7/gCorfaoOfd2j4pyW64py3gdkksy98lPx4PO4x9J5ipvuodR
-X-Forefront-Antispam-Report: CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(396003)(376002)(136003)(346002)(451199021)(40470700004)(46966006)(36840700001)(40460700003)(36860700001)(83380400001)(47076005)(186003)(336012)(426003)(33716001)(82310400005)(7636003)(86362001)(356005)(82740400003)(26005)(9686003)(40480700001)(55016003)(70586007)(70206006)(6636002)(4326008)(54906003)(110136005)(41300700001)(5660300002)(316002)(8676002)(8936002)(2906002)(478600001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jul 2023 01:14:31.2595
+X-Microsoft-Antispam-Message-Info: L8+CEbWhzJU+da2PgMY0aV8HJhf71Z6dLMhrCM8wCO9EauvP1Kwnxlsdx4KL4CEHekCFrMm6pllMyIfnhHQpENOwUz52AUAYyzwLFIt34N0BEMGWKw1DK1rYcHPN3EQowetoJo2EkSnBNDrFwPVEM9k0tZ2Jg6OEuNZ66ifedestYrmMw89uQUMeciCWPgtWu9jue7+hOaUZZ9LeAGHs7lfRoE1YpvZaI2QKpuouT945j8x9URgPFa8NRYfefWIVH5NC1aQJIpZSM/2sIssrMstmbJXpa3tBs1ztzid68IzTmSQacxJLg4Tupmt/SKrR9MVa0+ubmMhG5ON7ifb3XiX+3INeHpGy7c8bWFP4MA93fPes9IcHiCWXp5RK1Nkzgp9SY3T3bXkUC7C3U2bNnBBTGFPTzNdV/4XN8mXgRnEX9zHo1417d4AVImIxjCAvbCqqujgRm5ldmx5wLyisZj38meIv03/bNeCoZOFhicHxnf2UjgLavKOMmcOPxCzw/IT9aqGQ+qFiP3vvK0bjXfBXkrzd39rURvxFSmTQKUD2vexXIURb2GchC3rqnVpL0Aq5cEgJ3IPtUbN76Wy0ia0314jyLiemDNwMhdNgxianOmW4jm67PKrfoz0/251X3zhBjAZJlTkhfhzZf7oTSQILs4DOTbQTyFHUALZj6PUSjWj9K3OnQ2qM7ekQqkwT
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB5288.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(376002)(346002)(136003)(39860400002)(366004)(451199021)(52116002)(478600001)(6486002)(6666004)(110136005)(2616005)(83380400001)(86362001)(36756003)(2906002)(316002)(26005)(1076003)(186003)(6506007)(107886003)(6512007)(66476007)(38350700002)(38100700002)(921005)(66946007)(8936002)(41300700001)(66556008)(4326008)(5660300002)(7416002)(8676002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?po30seB0PmFDzjq0onr1kJ6F91A9IpgXLH0Rz9iSEIIyG1UCrswmI0BLj8+8?=
+ =?us-ascii?Q?UOuIWcWyM66rkrBfND/NLb1xW0TKWFYVTRIdSelTH76xKfbMKe4/fnwP8vmv?=
+ =?us-ascii?Q?Yft7Yjh5gu6ZZl/uqccVPXWAcIZemHEqB9GJKthBQTbA/ZnfTalQrYTNhac0?=
+ =?us-ascii?Q?QHjbvaAg3B04WCqX35iswXdhd59wAG1YExKqabI0HNZy5SzuEdiqNP2NcVPj?=
+ =?us-ascii?Q?60LmiaoiWI8HsUncLFs6Ja6UIN70kqFnz32Rvok9V+x5ujMdwMgcYyDmRDgP?=
+ =?us-ascii?Q?5A9Ym5Y17SsYYX/OJsNAEny9cZQTW3KS7GA2t/6kjq+BI0lnNgseLCiWYoBZ?=
+ =?us-ascii?Q?kfpqmmE7pJdyWHKbb7JGorT3UvOQwiSJLszMj7j98GgG1ekn7/z1jigzNoX8?=
+ =?us-ascii?Q?msTuovffLm1ShA9mu1KaVXX+yh95KGXoW0/TNPhjNTYJ1mSu9jg7eqjtmMj/?=
+ =?us-ascii?Q?vBP+sWcoXAoauB3Z43Z6qvCm7z7TJsk16vQZETciunMDFpxNySrfGrYAXNFu?=
+ =?us-ascii?Q?tG7Jb6gwGomGbtFguaBTzA3pH6vGNeOvA9kGsFAXutFZLRU4DAFR2QNJQez/?=
+ =?us-ascii?Q?tObKHP/dDVA15rjoqAJKDJjZTKzFuFyjR0T4ksw3mxnMSTqdehHNgYiLB77S?=
+ =?us-ascii?Q?xVcl3+g2CA5pdzwM+94xFAUgxaxgRw6XFNGgLVf3JdyJbVc3afqUnA0wESiR?=
+ =?us-ascii?Q?+H+FBuiIdrdhcfGymZcmmnX93BsMq5VErEQU6pe4PY8ghajAIHzDC4bvi9/E?=
+ =?us-ascii?Q?xb61dQ+3ske0MrTu4zR4BBYuhXhz2Fch7jO1Xa/dGSf6FpEeTzQ2KSV7D74t?=
+ =?us-ascii?Q?G/x1VO++gMkB1fRinQmlQOdt9mu4++9dWkiVoPVikVYPBGvA82o1rYnuUVFd?=
+ =?us-ascii?Q?kVYU/q0xpN3b9G4CP4x0u2QT1oki1xqxBi/bzeb0tkE4LtM6mydB9q0i/X0M?=
+ =?us-ascii?Q?hI0PXWo29bA/XEu/1Wt0y0e5SefXOTsusKg5QyXOvd+rlwwhlEs9gLo8TZVd?=
+ =?us-ascii?Q?SnLzhC0z/47yDD9Rt0yg3w7kuMMzEqQckAKMph60s4PHsu47N13rjDNiqwvS?=
+ =?us-ascii?Q?tS8lWsw+HlXQVwtNJX6t5UrthsOpjQyeNI4KEZFWFIPGsgYSPeuS1IUuqJNE?=
+ =?us-ascii?Q?Dl722bMyP4KtO9at0bg4KBeKHOfCW32OJkPNRzw0zjUwUyIzMdosJEA5jcvY?=
+ =?us-ascii?Q?ERXP7evbpgZ1Zp3h8mYgCQgf1f4WecmNzgS82vRiTC7UOTWgabEAh7m2ZNRA?=
+ =?us-ascii?Q?1qcCJvkfMQ4pts/HMs1q8PnBcS1ZdDUv6vW76wQhx39CfOEYXlkJh/wgSkCF?=
+ =?us-ascii?Q?OI66y6X/Z9XHM+EFHW8qG3JFsgGJaRRn4rZjdY0jFjDdsBmOgfZBkl8+P7JD?=
+ =?us-ascii?Q?aBmt9MK1Bodtb90H4OGwS/pnj+F4p0hvvwXgYXN9sXHz3mGZKZ0P8ZBcCkJD?=
+ =?us-ascii?Q?VY+UystBzLAsl+v73SguEmtOae7jR03zAau2ywPacdbRR9eWj3y8EhWuYJf2?=
+ =?us-ascii?Q?/gEhLMbROANHLS9ewssQNKy9WgjdBDWR7x0ElnAxO5xpoB0+GpIO7EfJTfaA?=
+ =?us-ascii?Q?4/XYxtIWZEHQBNLba2bZgBDPVoXWWiHdrwuPTWzh?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cb75d3a4-0e69-409a-f53a-08db8408d9b7
+X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB5288.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jul 2023 01:22:55.2042
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5c28f3a1-98fa-4e9a-0462-08db8407ad87
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT099.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB7859
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: sfUnAVoeYmffKgqzvidy5X084cpOTstLjJHZ0oNDyu7VlUGOVyV7L3WLW4Zcn6c02FNeheoh4o2SYSxaWz6Nxg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: JH0PR06MB6655
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 08:48:32PM -0300, Jason Gunthorpe wrote:
+Make IS_ERR_OR_NULL() judge the vcap_get_rule() function return.
+in lan966x_ptp_add_trap() and lan966x_ptp_del_trap().
+
+Fixes: 72df3489fb10 ("net: lan966x: Add ptp trap rules")
+Signed-off-by: Minjie Du <duminjie@vivo.com>
+---
+ drivers/net/ethernet/microchip/lan966x/lan966x_ptp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_ptp.c b/drivers/net/ethernet/microchip/lan966x/lan966x_ptp.c
+index 266a21a2d..59dd14247 100644
+--- a/drivers/net/ethernet/microchip/lan966x/lan966x_ptp.c
++++ b/drivers/net/ethernet/microchip/lan966x/lan966x_ptp.c
+@@ -59,7 +59,7 @@ static int lan966x_ptp_add_trap(struct lan966x_port *port,
+ 	int err;
  
-> > For struct arm_smmu_domain, it still has a union of a CD (for an
-> > S1 domain) or an s2_cfg (for an S2 domain). Or we could select
-> > a better naming for s2_cfg too, since s1_cfg is gone.
-> 
-> By spec it should be called CD and STE value, but frankly I like CDTE
-> and STE a little better (context descriptor table entry) as it evokes
-> a sense of similarity. I don't care for the words 's1_cfg' and
-> 's2_cfg' to represent the CD and STE, that is pretty confusing now
-> that we have more uses for the CD and STE's than simple s1/s2 IO page
-> tables.
+ 	vrule = vcap_get_rule(lan966x->vcap_ctrl, rule_id);
+-	if (vrule) {
++	if (!IS_ERR_OR_NULL(vrule)) {
+ 		u32 value, mask;
+ 
+ 		/* Just modify the ingress port mask and exit */
+@@ -106,7 +106,7 @@ static int lan966x_ptp_del_trap(struct lan966x_port *port,
+ 	int err;
+ 
+ 	vrule = vcap_get_rule(lan966x->vcap_ctrl, rule_id);
+-	if (!vrule)
++	if (IS_ERR_OR_NULL(vrule))
+ 		return -EEXIST;
+ 
+ 	vcap_rule_get_key_u32(vrule, VCAP_KF_IF_IGR_PORT_MASK, &value, &mask);
+-- 
+2.39.0
 
-We have STE and PTE, so CDTE sounds legit to me, though probably
-it'd be safer by just following the spec? We can always add kdoc
-and comments to make things clear.
-
-@Michael,
-Would it be possible for you to update a v5, following Jason's
-suggestion overall? And I think we can have a smaller refactor
-series first without set_dev_pasid, to have a common codeline
-sooner for us to add new features, such as set_dev_pasid, the
-use case of IDENTITY default substream, and the nesting series.
-I will help testing with some pasid/non-pasid use cases too.
-
-> > Yet two cases that would waste the preallocated CD table:
-> > 1) If a master with ssid_bits=0 gets attached to an IDENITY S1
-> >    domain, it sets CONFIG=BYPASS in the STE, which wastes the
-> >    single-entry CD table, unlike currently the driver bypassing
-> >    the allocation of a CD table at all.
-> > 2) When enabling nested translation, we should replace all the
-> >    S1 fields in the STE with guest/user values. So, the kernel-
-> >    level CD table (either single-entry or multi-entry) in the
-> >    master struct will not be used. Although this seems to be
-> >    unchanged since currently the driver wastes this too in the
-> >    default domain?
-> 
-> As we discussed in another thread dynamic resizing of the CD table
-> makes some sense. Eg keep it at one entry until PASID mode is enabled
-> then resize it to the max PASID bits.
-
-I see.
-
-> But I view that as an improvement beyond here. It seems fine for now
-> to pre allocate the full CD table and waste the memory. PASID capable
-> devices are rare.
-
-Yea, that'd be easier for us to move forward other features :)
-
-> > With that, I still feel it clear and flexible. And I can simply
-> > add my use case of attaching an IDENITY domain to the default
-> > substream when having a multi-entry CD table.
-> 
-> Yes, with the above note about dynamically resizing the CD table, I
-> think we generally have the idea that programming the CD, eg by
-> installing an entry, can cause the CD tables's STE to (atomically)
-> change.
-> 
-> Eg to toggle the S1DSS bit if the PASID 0 is IDENTITY, or to resize
-> the table if we exceed the PASID space.
-
-Yea, we have enable_pasid() so probably can resize over there.
-
-> Longer term we'd also need a way to setup IDENTITY domains for !0
-> substreams as well too (eg for SIOV). It is too bad the CDTE doesn't
-> have a bit for bypass. I suppose it will need dummy 1:1 IO page tables
-> or something.
-
-Oh. I haven't thought about that far. Noted it down.
-
-Thanks
-Nicolin
