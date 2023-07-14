@@ -2,107 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8127E7534BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 10:09:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9E267534C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 10:10:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235458AbjGNIJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 04:09:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59522 "EHLO
+        id S235535AbjGNIKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 04:10:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235104AbjGNIJE (ORCPT
+        with ESMTP id S235494AbjGNIKK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 04:09:04 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41D533C2B
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 01:06:47 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R2PFc5LgbzBR9sg
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 16:06:44 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689322004; x=1691914005; bh=XnHXJPirhwWBp38ABP/TuJuTwR8
-        3qRslG4kr4zY2jQE=; b=prRBxH8oaDBDTnR82sVlKMzhnplxgraSpUiFkTrSEAi
-        PL/0jsa+/sZJSgNgjvqdrFQxajScW/0VMmk1IkERiOJnCxIrMehW37VmPbLwXLTz
-        4/Gg6Epqe4zEUM8ajdjI6Emvj6lYvp3VJs3ihqxvcok75YhIfp5jDc/08LR4ZkJY
-        DJR48ZTH6xczM1qTomDWaAvfVGKk2V529dYKCtUB80aGWWZ/CX6qltAQ3ViLWxqD
-        lnf1NQjE0i2Pt5XDCz6HEsa2yzHyW+YTtD0wixN1haz5NiBN1wLqxmY+PHSop7WZ
-        EGAY3AuUQCUrdLd8ZPKP/0alZxTnW14UuYWckTM1FFw==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id e8oICkZVoc43 for <linux-kernel@vger.kernel.org>;
-        Fri, 14 Jul 2023 16:06:44 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R2PFc412lzBR9sc;
-        Fri, 14 Jul 2023 16:06:44 +0800 (CST)
+        Fri, 14 Jul 2023 04:10:10 -0400
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2350B359B
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 01:07:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689322080; x=1720858080;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=CgZXYqhZ35zPyxRRZNLQUNIhUn27suwkGUDknpm9M4E=;
+  b=e2NVZZhDzRITzbJbWircw5WtTxFxOiETtW3V8P170dZsNm/sASK3AxB7
+   XwGpzlxZ1U5aGhTV3m/5eU730M5/L0CzrBVqYeYagFSGaU1fqFdFLtUO9
+   7AeqeKvvBSBBuMNdxGgo5WO8NHV/1jCjOUfuxVI98bMg0MtD4h9UEm2xW
+   +i/iyN32kcAmZGAQ2ziYqCl05PKZH+QeP2Uk04E+3VVIOSXM2c4SIqDDv
+   QlD+MfrXdi1laz4TOcSZ9AOdkjRNIYPdgtRPobc2JYvG/H4M8UR78bgUo
+   gov+Vnf8RYOxYOYBI3mml3zrpDjvLYmDzrDat/CyNh++jZm/HBWOmN1dJ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="431590678"
+X-IronPort-AV: E=Sophos;i="6.01,204,1684825200"; 
+   d="scan'208";a="431590678"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 01:07:44 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="896328208"
+X-IronPort-AV: E=Sophos;i="6.01,204,1684825200"; 
+   d="scan'208";a="896328208"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga005.jf.intel.com with ESMTP; 14 Jul 2023 01:07:29 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qKDpn-002bDV-1M;
+        Fri, 14 Jul 2023 11:07:27 +0300
+Date:   Fri, 14 Jul 2023 11:07:27 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Li kunyu <kunyu@nfschina.com>
+Cc:     dan.j.williams@intel.com, gregkh@linuxfoundation.org,
+        Jonathan.Cameron@huawei.com, ira.weiny@intel.com,
+        bhelgaas@google.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] kernel: =?utf-8?Q?resource?=
+ =?utf-8?B?OiBSZW1vdmUgdW5uZWNlc3Nhcnkg4oCYMOKAmQ==?= values from err
+Message-ID: <ZLECP7KmESS1pkha@smile.fi.intel.com>
+References: <20230715182428.3348-1-kunyu@nfschina.com>
 MIME-Version: 1.0
-Date:   Fri, 14 Jul 2023 16:06:44 +0800
-From:   sunran001@208suo.com
-To:     mchehab@kernel.org
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] media: dvb: remove spaces before '['
-In-Reply-To: <20230714080514.14297-1-xujianghui@cdjrlc.com>
-References: <20230714080514.14297-1-xujianghui@cdjrlc.com>
-User-Agent: Roundcube Webmail
-Message-ID: <ad3e13dcf101ff613c7fc72c99db8dd2@208suo.com>
-X-Sender: sunran001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230715182428.3348-1-kunyu@nfschina.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove spaces to clear checkpatch errors.
+On Sun, Jul 16, 2023 at 02:24:28AM +0800, Li kunyu wrote:
+> err is assigned first, so it does not need to initialize the assignment.
+> Modify __find_resource execution syntax to make it more in line with
+> commonly used styles.
 
-ERROR: space prohibited before open square bracket '['
+FWIW,
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Signed-off-by: Ran Sun <sunran001@208suo.com>
----
-  drivers/media/dvb-frontends/tda826x.c | 6 +++---
-  1 file changed, 3 insertions(+), 3 deletions(-)
+> Signed-off-by: Li kunyu <kunyu@nfschina.com>
+> ---
+>  v2:
+>    Modify __find_resource Execution Syntax.
+> 
+>  kernel/resource.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/resource.c b/kernel/resource.c
+> index b1763b2fd7ef..ee79e8f4f422 100644
+> --- a/kernel/resource.c
+> +++ b/kernel/resource.c
+> @@ -656,13 +656,14 @@ static int reallocate_resource(struct resource *root, struct resource *old,
+>  			       resource_size_t newsize,
+>  			       struct resource_constraint *constraint)
+>  {
+> -	int err=0;
+> +	int err;
+>  	struct resource new = *old;
+>  	struct resource *conflict;
+>  
+>  	write_lock(&resource_lock);
+>  
+> -	if ((err = __find_resource(root, old, &new, newsize, constraint)))
+> +	err = __find_resource(root, old, &new, newsize, constraint);
+> +	if (err)
+>  		goto out;
+>  
+>  	if (resource_contains(&new, old)) {
+> -- 
+> 2.18.2
+> 
 
-diff --git a/drivers/media/dvb-frontends/tda826x.c 
-b/drivers/media/dvb-frontends/tda826x.c
-index f9703a1dd758..7f17efe17d11 100644
---- a/drivers/media/dvb-frontends/tda826x.c
-+++ b/drivers/media/dvb-frontends/tda826x.c
-@@ -38,7 +38,7 @@ static int tda826x_sleep(struct dvb_frontend *fe)
-  {
-      struct tda826x_priv *priv = fe->tuner_priv;
-      int ret;
--    u8 buf [] = { 0x00, 0x8d };
-+    u8 buf[] = { 0x00, 0x8d };
-      struct i2c_msg msg = { .addr = priv->i2c_address, .flags = 0, .buf 
-= buf, .len = 2 };
+-- 
+With Best Regards,
+Andy Shevchenko
 
-      dprintk("%s:\n", __func__);
-@@ -65,7 +65,7 @@ static int tda826x_set_params(struct dvb_frontend *fe)
-      u32 div;
-      u32 ksyms;
-      u32 bandwidth;
--    u8 buf [11];
-+    u8 buf[11];
-      struct i2c_msg msg = { .addr = priv->i2c_address, .flags = 0, .buf 
-= buf, .len = 11 };
 
-      dprintk("%s:\n", __func__);
-@@ -130,7 +130,7 @@ static const struct dvb_tuner_ops tda826x_tuner_ops 
-= {
-  struct dvb_frontend *tda826x_attach(struct dvb_frontend *fe, int addr, 
-struct i2c_adapter *i2c, int has_loopthrough)
-  {
-      struct tda826x_priv *priv = NULL;
--    u8 b1 [] = { 0, 0 };
-+    u8 b1[] = { 0, 0 };
-      struct i2c_msg msg[2] = {
-          { .addr = addr, .flags = 0,        .buf = NULL, .len = 0 },
-          { .addr = addr, .flags = I2C_M_RD, .buf = b1, .len = 2 }
