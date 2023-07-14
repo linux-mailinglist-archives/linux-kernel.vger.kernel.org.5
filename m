@@ -2,113 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FD32753A32
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 13:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9837753A35
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 13:53:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235673AbjGNLwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 07:52:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50670 "EHLO
+        id S235675AbjGNLxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 07:53:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235666AbjGNLwM (ORCPT
+        with ESMTP id S235689AbjGNLwz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 07:52:12 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A8FA30CB;
-        Fri, 14 Jul 2023 04:52:11 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Fri, 14 Jul 2023 07:52:55 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66410136;
+        Fri, 14 Jul 2023 04:52:54 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1F3BE61C01;
-        Fri, 14 Jul 2023 11:52:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A81EC433C8;
-        Fri, 14 Jul 2023 11:52:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689335530;
-        bh=DmeN79exEsvAJkYJDMMvtjBsg+ueHrWKD/Uu8Yhd95s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZFgr2mIbpn5LNqHS9h3NzsCoyBKi3V2KXEm12VaSFzsIAt/Ou+NJQaiJDjs5qJGNj
-         qD3XdXf3qAflXE6sVsXlVfbCVQoJf2N/fMyyM3oKy5EVlC9+bMcMnEVUcsJYelbk0R
-         TcDR3gTCvxKdaC4oeXurBvlb3DCosJKfgSSW0M6vyJNO+9ZAVCPxStVKFHpnGLumJG
-         JdaVa4AVGlF8AXCs1TjqoJOGbeDmfTjEKPw6/Vod1glWLKb13LWtxAlLP09uWoJ+Rn
-         Dtj7SAvA0tJq9OFY6FX7xexEI+g0gKFLh4PirN/RNhi765CFK223rdSxLo8B1g1NOG
-         PRVe4do9xGLHw==
-Date:   Fri, 14 Jul 2023 12:52:04 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     William Qiu <william.qiu@starfivetech.com>
-Cc:     Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        devicetree@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH v2 2/3] dt-bindings: spi: constrain minItems of clocks
- and clock-names
-Message-ID: <9891a7e3-0fce-4d05-8ead-3c0ed155d725@sirena.org.uk>
-References: <20230713090015.127541-1-william.qiu@starfivetech.com>
- <20230713090015.127541-3-william.qiu@starfivetech.com>
- <c5ad1e1c-58f4-4833-b9c7-8876c1a0dc27@sirena.org.uk>
- <e3fd0d3f-3fe4-2e23-2548-ecbd487e9c9f@linaro.org>
- <20230713145724.GA3975811-robh@kernel.org>
- <df9de3d8-09da-2b80-b2b4-626cd92fe971@starfivetech.com>
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 01A3B2215C;
+        Fri, 14 Jul 2023 11:52:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1689335573; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8KDV1nJ5Jz4wRDhIKmz6NBTzJCSWRm0jEnj5bKK8jms=;
+        b=RaI2ovdDvUPrEZfWKhoWhNZo8wczuah4soS9qZNmjNs4m77GOOhIkliWi0AW6JeIY2bpTl
+        sS1XdU5o65Y83yhWiMvQHDPuT8pXn8OAcj/xhWpT2sCettpHZpXHdcAwUxw32zO95FET5+
+        a7afrjnmliXMK10v/s4xRw7EosrSLdQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1689335573;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8KDV1nJ5Jz4wRDhIKmz6NBTzJCSWRm0jEnj5bKK8jms=;
+        b=Xwjlf4wtU20I149ib7jAHqHYtFJHRAEQ7KLGUG/IqQ27Glob67oL5W1MoWY3aYVfy9nRQk
+        tVWwL8O32q1ldDBQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DBF04138F8;
+        Fri, 14 Jul 2023 11:52:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id vwKmNRQ3sWT7PwAAMHmgww
+        (envelope-from <chrubis@suse.cz>); Fri, 14 Jul 2023 11:52:52 +0000
+Date:   Fri, 14 Jul 2023 13:53:58 +0200
+From:   Cyril Hrubis <chrubis@suse.cz>
+To:     Jan Stancek <jstancek@redhat.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Matthew Wilcox <willy@infradead.org>, cluster-devel@redhat.com,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Chao Yu <chao@kernel.org>, oe-lkp@lists.linux.dev,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Xiubo Li <xiubli@redhat.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        ltp@lists.linux.it, lkp@intel.com, Jens Axboe <axboe@kernel.dk>,
+        Christian Brauner <brauner@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        kernel test robot <oliver.sang@intel.com>,
+        Anna Schumaker <anna@kernel.org>,
+        linux-fsdevel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hannes Reinecke <hare@suse.de>
+Subject: Re: [LTP] [linus:master] [iomap] 219580eea1: ltp.writev07.fail
+Message-ID: <ZLE3Vh5yHq_floF7@yuki>
+References: <202307132107.2ce4ea2f-oliver.sang@intel.com>
+ <20230713150923.GA28246@lst.de>
+ <ZLAZn_SBmoIFG5F5@yuki>
+ <CAASaF6xbgSf+X+SF8wLjFrsMA4=XxHti0SXDZQP1ZqdGYp4aUQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="klm57L7u8qYMNEjf"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <df9de3d8-09da-2b80-b2b4-626cd92fe971@starfivetech.com>
-X-Cookie: Preserve the old, but know the new.
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <CAASaF6xbgSf+X+SF8wLjFrsMA4=XxHti0SXDZQP1ZqdGYp4aUQ@mail.gmail.com>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi!
+> > > I can't reproduce this on current mainline.  Is this a robust failure
+> > > or flapping test?  Especiall as the FAIL conditions look rather
+> > > unrelated.
+> 
+> It's consistently reproducible for me on xfs with HEAD at:
+> eb26cbb1a754 ("Merge tag 'platform-drivers-x86-v6.5-2' of
+> git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86")
 
---klm57L7u8qYMNEjf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Should be fixed by https://lore.kernel.org/linux-fsdevel/20230714085124.548920-1-hch@lst.de/T/#t
 
-On Fri, Jul 14, 2023 at 03:14:59PM +0800, William Qiu wrote:
-> On 2023/7/13 22:57, Rob Herring wrote:
-
-> > I suspect that PCLK and SSPCLK are tied to the same clock source. There=
-=20
-> > must be an SSPCLK because that is the one used to clock the SPI bus and=
-=20
-> > we need to know the frequency of it.
-
-> After communicating with colleagues in SoC FE, I learned that PCLK and
-> SSPCLK were homologous on JH7110. He said that SSPCLK would divide the
-> frequency internally anyway, and there was no need for external part freq=
-uency,
-> so he directly gave them together.
-
-> So, should I call this clock ssp_apb or keep it SSPCLK?
-
-I'd expect this to be handled in the DTS for the SoC - connect both
-clocks the binding requires to whatever the upstream clock is, it's not
-clear to me that any binding change is required.
-
---klm57L7u8qYMNEjf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmSxNuQACgkQJNaLcl1U
-h9BFZgf9HdG+QzvFSo2OFGvw81HEFNCptH1B6hNOBEplLpmTioP2hTn7SE22nAoP
-M8yy78/dMrerUMSs8l8nTWX2MvtyEhMPWrYi3vUyQhzDz1vPAj2ao4V/5zBD2P/s
-xQ00phl+51kJqZ+YX5WXydz9G5EP+usoFq2i2R9ZNPgCm9Y9txRr3+CVOXQOBixW
-dOFZYO+/6jfEoEOZyL1Ine5ggi4tD5Q9Q8zLMhS47XKv3me71twVFVxatUate6Cu
-gg8tpmFVCiR63fSnrgbRunZjF7R2Ogfg3M7Pg5AUSiJjbMMPAnTKcZrIRM9q11sg
-hZ+IpYQkDLUbk5g9cJlhw+cy1Y2egw==
-=1P4J
------END PGP SIGNATURE-----
-
---klm57L7u8qYMNEjf--
+-- 
+Cyril Hrubis
+chrubis@suse.cz
