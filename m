@@ -2,122 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0455C7531D5
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 08:13:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C54A7531D6
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 08:14:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235139AbjGNGNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 02:13:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50318 "EHLO
+        id S234930AbjGNGOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 02:14:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234930AbjGNGNu (ORCPT
+        with ESMTP id S234757AbjGNGOv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 02:13:50 -0400
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FCC830D7;
-        Thu, 13 Jul 2023 23:13:43 -0700 (PDT)
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-98dfb3f9af6so200646466b.2;
-        Thu, 13 Jul 2023 23:13:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689315222; x=1691907222;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nQL/qYQdlzMuXAZovBDIHb8pZCn9R3HPgbRx22grkvk=;
-        b=S01bSmXNm68Q2Ld7vIFfYMNZBuBUjt/Zon+BbZTta47WL4zOUAVpgHiZPpiW19TMyp
-         so07Ox0WJd50kolyqAxHHsm1cI2n5zdTxsVq57KoRGPo5xXChzaimVNTi/1ev6x6I6dB
-         Hxe3n6yZmOiod+O9uw06rBUVlt7g//LLcmSrOSUeGp0/s1CXASMvrg1oK8Ggri/cMEfY
-         lb5oRG18oQlMpbXSL9/QFBZSHzFIUlnpXnEzaJmZm0n9nJvivcYrkMn6cuEodRHhFqSd
-         +P6wiZ17YT3qhgfTftk9/ScarWCAKYEsnRLuIQxOZepkZqIUvWbvhcgpKUBP3by2y1Nm
-         wRzg==
-X-Gm-Message-State: ABy/qLbfvZ81WFN7j92K0RaZNerpwm+T9zD4VVcLtbgfmVX5Gsyp3bPm
-        QXibZZPYy/Dx9yyK9eaHgzPPW/tpv6g=
-X-Google-Smtp-Source: APBJJlF3yullhgWPZb3fuRYXrHOVlzSOsUCysSELc1CaC2BqaY3XSsU7ttx+2aeOqQIoL6huzIBqXw==
-X-Received: by 2002:a17:906:7a4d:b0:993:d97f:ae06 with SMTP id i13-20020a1709067a4d00b00993d97fae06mr3359129ejo.13.1689315221819;
-        Thu, 13 Jul 2023 23:13:41 -0700 (PDT)
-Received: from [192.168.1.58] (185-219-167-24-static.vivo.cz. [185.219.167.24])
-        by smtp.gmail.com with ESMTPSA id jo26-20020a170906f6da00b0099315454e76sm4924061ejb.211.2023.07.13.23.13.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 Jul 2023 23:13:41 -0700 (PDT)
-Message-ID: <a68eae4c-a991-ff15-3800-86d39b4e4868@kernel.org>
-Date:   Fri, 14 Jul 2023 08:13:40 +0200
+        Fri, 14 Jul 2023 02:14:51 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0D8602680
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 23:14:48 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C25591570;
+        Thu, 13 Jul 2023 23:15:29 -0700 (PDT)
+Received: from a077893.arm.com (unknown [10.163.49.147])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id B3B4B3F73F;
+        Thu, 13 Jul 2023 23:14:44 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-mm@kvack.org
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Hugh Dickins <hughd@google.com>,
+        David Hildenbrand <david@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] mm/rmap: Convert rmap_t into enum rmap_flags
+Date:   Fri, 14 Jul 2023 11:44:38 +0530
+Message-Id: <20230714061438.122391-1-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v4] wifi: ath5k: remove parameter check in
- ath5k_debug_init_device()
-Content-Language: en-US
-To:     Minjie Du <duminjie@vivo.com>,
-        Nick Kossifidis <mickflemm@gmail.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kalle Valo <kvalo@kernel.org>,
-        "open list:ATHEROS ATH5K WIRELESS DRIVER" 
-        <linux-wireless@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Cc:     opensource.kernel@vivo.com
-References: <20230713082433.11485-1-duminjie@vivo.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-In-Reply-To: <20230713082433.11485-1-duminjie@vivo.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13. 07. 23, 10:24, Minjie Du wrote:
-> The parameter 'phydir' error check is mistake.
+rmap_t tracks bitwise positions for various page reverse map related flags.
+enum could provide more compact representation. This converts these flags
+into an enum listing, without any functional change.
 
-It's not actually a parameter.
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+---
+This applies on v6.5-rc1
 
-> debugfs_create_file() will return early if 'phydir' is an error pointer,
-> so the error check is removed.
+ include/linux/rmap.h | 26 +++++++-------------------
+ mm/huge_memory.c     |  2 +-
+ mm/memory.c          |  2 +-
+ mm/migrate.c         |  2 +-
+ mm/rmap.c            |  4 ++--
+ mm/swapfile.c        |  2 +-
+ 6 files changed, 13 insertions(+), 25 deletions(-)
 
-What about something like:
-Subject: wifi: ath5k: remove phydir check from ath5k_debug_init_device()
-
-'phydir' returned from debugfs_create_dir() is checked against NULL. As 
-the debugfs API returns an error pointer, the returned value can never 
-be NULL.
-
-So instead, remove the check completely as it is unneeded as per 
-documentation. (Other debugfs calls are a nop in the error case.)
-
-?
-
-Or something like that, feel free to reword.
-
-
-> Signed-off-by: Minjie Du <duminjie@vivo.com>
-> ---
-> v1: use IS_ERR() to error check.
-> v2: use IS_ERR_OR_NULL() to error check.
-> v3: remove the error check.
-> v4: fix the patch format.
-> ---
->   drivers/net/wireless/ath/ath5k/debug.c | 2 --
->   1 file changed, 2 deletions(-)
-> 
-> diff --git a/drivers/net/wireless/ath/ath5k/debug.c b/drivers/net/wireless/ath/ath5k/debug.c
-> index 4b41160e5..ec130510a 100644
-> --- a/drivers/net/wireless/ath/ath5k/debug.c
-> +++ b/drivers/net/wireless/ath/ath5k/debug.c
-> @@ -982,8 +982,6 @@ ath5k_debug_init_device(struct ath5k_hw *ah)
->   	ah->debug.level = ath5k_debug;
->   
->   	phydir = debugfs_create_dir("ath5k", ah->hw->wiphy->debugfsdir);
-> -	if (!phydir)
-> -		return;
->   
->   	debugfs_create_file("debug", 0600, phydir, ah, &fops_debug);
->   	debugfs_create_file("registers", 0400, phydir, ah, &registers_fops);
-
+diff --git a/include/linux/rmap.h b/include/linux/rmap.h
+index b87d01660412..aee6ee7ddac6 100644
+--- a/include/linux/rmap.h
++++ b/include/linux/rmap.h
+@@ -168,30 +168,18 @@ static inline void anon_vma_merge(struct vm_area_struct *vma,
+ 
+ struct anon_vma *folio_get_anon_vma(struct folio *folio);
+ 
+-/* RMAP flags, currently only relevant for some anon rmap operations. */
+-typedef int __bitwise rmap_t;
+-
+-/*
+- * No special request: if the page is a subpage of a compound page, it is
+- * mapped via a PTE. The mapped (sub)page is possibly shared between processes.
+- */
+-#define RMAP_NONE		((__force rmap_t)0)
+-
+-/* The (sub)page is exclusive to a single process. */
+-#define RMAP_EXCLUSIVE		((__force rmap_t)BIT(0))
+-
+-/*
+- * The compound page is not mapped via PTEs, but instead via a single PMD and
+- * should be accounted accordingly.
+- */
+-#define RMAP_COMPOUND		((__force rmap_t)BIT(1))
++enum rmap_flags {
++	RMAP_NONE	= 0x0,	/* No special request - (sub)page is mapped via a single PTE */
++	RMAP_EXCLUSIVE	= 0x1,	/* The (sub)page is exclusive to a single process */
++	RMAP_COMPOUND	= 0x2,	/* The compound page is mapped via a single PMD */
++};
+ 
+ /*
+  * rmap interfaces called when adding or removing pte of page
+  */
+ void page_move_anon_rmap(struct page *, struct vm_area_struct *);
+ void page_add_anon_rmap(struct page *, struct vm_area_struct *,
+-		unsigned long address, rmap_t flags);
++		unsigned long address, enum rmap_flags flags);
+ void page_add_new_anon_rmap(struct page *, struct vm_area_struct *,
+ 		unsigned long address);
+ void folio_add_new_anon_rmap(struct folio *, struct vm_area_struct *,
+@@ -202,7 +190,7 @@ void page_remove_rmap(struct page *, struct vm_area_struct *,
+ 		bool compound);
+ 
+ void hugepage_add_anon_rmap(struct page *, struct vm_area_struct *,
+-		unsigned long address, rmap_t flags);
++		unsigned long address, enum rmap_flags flags);
+ void hugepage_add_new_anon_rmap(struct folio *, struct vm_area_struct *,
+ 		unsigned long address);
+ 
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index 965d845d73fc..79a790d1cfa8 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -3297,7 +3297,7 @@ void remove_migration_pmd(struct page_vma_mapped_walk *pvmw, struct page *new)
+ 		pmde = pmd_mkdirty(pmde);
+ 
+ 	if (PageAnon(new)) {
+-		rmap_t rmap_flags = RMAP_COMPOUND;
++		enum rmap_flags rmap_flags = RMAP_COMPOUND;
+ 
+ 		if (!is_readable_migration_entry(entry))
+ 			rmap_flags |= RMAP_EXCLUSIVE;
+diff --git a/mm/memory.c b/mm/memory.c
+index 01f39e8144ef..1710aa6826d4 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -3717,7 +3717,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+ 	struct folio *swapcache, *folio = NULL;
+ 	struct page *page;
+ 	struct swap_info_struct *si = NULL;
+-	rmap_t rmap_flags = RMAP_NONE;
++	enum rmap_flags rmap_flags = RMAP_NONE;
+ 	bool exclusive = false;
+ 	swp_entry_t entry;
+ 	pte_t pte;
+diff --git a/mm/migrate.c b/mm/migrate.c
+index 24baad2571e3..bdb73b11845a 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -186,7 +186,7 @@ static bool remove_migration_pte(struct folio *folio,
+ 	DEFINE_FOLIO_VMA_WALK(pvmw, old, vma, addr, PVMW_SYNC | PVMW_MIGRATION);
+ 
+ 	while (page_vma_mapped_walk(&pvmw)) {
+-		rmap_t rmap_flags = RMAP_NONE;
++		enum rmap_flags rmap_flags = RMAP_NONE;
+ 		pte_t old_pte;
+ 		pte_t pte;
+ 		swp_entry_t entry;
+diff --git a/mm/rmap.c b/mm/rmap.c
+index 0c0d8857dfce..4d4c821d8e56 100644
+--- a/mm/rmap.c
++++ b/mm/rmap.c
+@@ -1213,7 +1213,7 @@ static void __page_check_anon_rmap(struct page *page,
+  * (but PageKsm is never downgraded to PageAnon).
+  */
+ void page_add_anon_rmap(struct page *page, struct vm_area_struct *vma,
+-		unsigned long address, rmap_t flags)
++		unsigned long address, enum rmap_flags flags)
+ {
+ 	struct folio *folio = page_folio(page);
+ 	atomic_t *mapped = &folio->_nr_pages_mapped;
+@@ -2539,7 +2539,7 @@ void rmap_walk_locked(struct folio *folio, struct rmap_walk_control *rwc)
+  * RMAP_COMPOUND is ignored.
+  */
+ void hugepage_add_anon_rmap(struct page *page, struct vm_area_struct *vma,
+-			    unsigned long address, rmap_t flags)
++			    unsigned long address, enum rmap_flags flags)
+ {
+ 	struct folio *folio = page_folio(page);
+ 	struct anon_vma *anon_vma = vma->anon_vma;
+diff --git a/mm/swapfile.c b/mm/swapfile.c
+index 8e6dde68b389..3a9b1d8b3151 100644
+--- a/mm/swapfile.c
++++ b/mm/swapfile.c
+@@ -1788,7 +1788,7 @@ static int unuse_pte(struct vm_area_struct *vma, pmd_t *pmd,
+ 	inc_mm_counter(vma->vm_mm, MM_ANONPAGES);
+ 	get_page(page);
+ 	if (page == swapcache) {
+-		rmap_t rmap_flags = RMAP_NONE;
++		enum rmap_flags rmap_flags = RMAP_NONE;
+ 
+ 		/*
+ 		 * See do_swap_page(): PageWriteback() would be problematic.
 -- 
-js
-suse labs
+2.30.2
 
