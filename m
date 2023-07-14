@@ -2,70 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E07EC753F62
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 17:56:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6AA7753F68
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 18:00:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236248AbjGNP4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 11:56:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37672 "EHLO
+        id S235911AbjGNQAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 12:00:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235974AbjGNP4C (ORCPT
+        with ESMTP id S235571AbjGNP76 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 11:56:02 -0400
-Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B385135A8;
-        Fri, 14 Jul 2023 08:55:57 -0700 (PDT)
-Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-78625caa702so81240139f.1;
-        Fri, 14 Jul 2023 08:55:57 -0700 (PDT)
+        Fri, 14 Jul 2023 11:59:58 -0400
+Received: from mail-io1-f47.google.com (mail-io1-f47.google.com [209.85.166.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBF3830F8;
+        Fri, 14 Jul 2023 08:59:57 -0700 (PDT)
+Received: by mail-io1-f47.google.com with SMTP id ca18e2360f4ac-78666994bc2so84840039f.0;
+        Fri, 14 Jul 2023 08:59:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689350156; x=1691942156;
+        d=1e100.net; s=20221208; t=1689350397; x=1691942397;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=YNZFP4mW99DwtXznitHmmJIt+x4d+svOUE0Ehy3Kg9c=;
-        b=AE9bMdabTXyw5SK9sUTYRXuyMcFtz5sThJTd7w/88yS+58+J1pQJhzA6GqrU0f9zy2
-         4qRAhIpa7yhpeFS0whOeR+qsgdyjVOrgTgKcUb564mxeXlCBMcl77HCz9hUNmPSBBcMZ
-         KTUqMKLHM1kgPpsWn2QvuWJBU590xWahHW+0+07KhLobFtLtd15RqCsRfAP7CVHBd6Xz
-         1qLX90Zvi4MKH11A5QEQ0tDGxSMHitoiV+kz+vFC05pkt4eyW6EGjoCE7yw2u77EDGv5
-         54RlhB890ptYqRVW/IjYg5QylO6tiAC5TmNRp09SlcmnadIdVrfQTX3Mu+G9Hk0XcjHh
-         BICg==
-X-Gm-Message-State: ABy/qLaxDHVPeaBcPLwK7NAi1H6JudwbfYTi3LFBL2Q2gJYh5uostM8p
-        Y2qdxZgbdtK6hfs9yPZZgw==
-X-Google-Smtp-Source: APBJJlE4L549pt9iOdB31Vv+jb4GGXjOF7BIKHFlzpjgKeW0XdyUUPL86H99oVrbGwrQ07NryN3fzQ==
-X-Received: by 2002:a5d:9b0d:0:b0:785:d4f5:2225 with SMTP id y13-20020a5d9b0d000000b00785d4f52225mr5028184ion.19.1689350156613;
-        Fri, 14 Jul 2023 08:55:56 -0700 (PDT)
+        bh=XhWilL1LDJclcIynNiV1DfwyLs7Tb6ThykZ+9i/Tj/s=;
+        b=AyQCq31PWcf+xJWbX3WPnMVFXenety75Jgmny6/rMC7YS4Bt39gNOPCQMPmzYs2vVG
+         zgI7lSEW77jxZN/FbL7DwHILwX3UB3N5KP1F9bt9eEAm3USBOW+c6ksXLGOVSz6WJhSg
+         Hyf8vtJ4yfbga2zHb0F9+sJ0RIL4gIjkYF5N5OZdhqfirci+iT2tCgnKxxxR+PSrKK/m
+         7SCY2Znxvili4PECdOlxziWTxYwyySoYQa/ms0ZZJ++R9juNBdORpOr6emB8k9M8jZY3
+         5ksa+CwZ2OjD6pUDbJU1laB6xxdCokx3x55KGbZpD4NZKIX2AVgECQFqSv+m4UhhvId7
+         +q/Q==
+X-Gm-Message-State: ABy/qLZmje//VacPH3qPqbmlFHpkC7C8WDAzm9S06dBAjvk3VSGHpDBj
+        zVH0gf0iPvT+upY+6mUWtg==
+X-Google-Smtp-Source: APBJJlHl4igHd55kIg5JA+/Gp6qSaP9UI5ls1BVwtIgtbGzvXbIWy/f2aaX7CDOchUR55xiohqRasg==
+X-Received: by 2002:a6b:4906:0:b0:786:71d0:ff9b with SMTP id u6-20020a6b4906000000b0078671d0ff9bmr4867420iob.10.1689350397087;
+        Fri, 14 Jul 2023 08:59:57 -0700 (PDT)
 Received: from robh_at_kernel.org ([64.188.179.250])
-        by smtp.gmail.com with ESMTPSA id h17-20020a02c4d1000000b0042b8566a982sm2648207jaj.41.2023.07.14.08.55.54
+        by smtp.gmail.com with ESMTPSA id cu5-20020a05663848c500b0042b37080b23sm2526351jab.73.2023.07.14.08.59.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 08:55:55 -0700 (PDT)
-Received: (nullmailer pid 3916353 invoked by uid 1000);
-        Fri, 14 Jul 2023 15:55:53 -0000
-Date:   Fri, 14 Jul 2023 09:55:53 -0600
+        Fri, 14 Jul 2023 08:59:56 -0700 (PDT)
+Received: (nullmailer pid 3920717 invoked by uid 1000);
+        Fri, 14 Jul 2023 15:59:54 -0000
+Date:   Fri, 14 Jul 2023 09:59:54 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Arseniy Krasnov <AVKrasnov@sberdevices.ru>
-Cc:     Liang Yang <liang.yang@amlogic.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
+To:     Kathiravan T <quic_kathirav@quicinc.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        oxffffaa@gmail.com, kernel@sberdevices.ru,
-        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v3 2/3] dt-bindings: nand: meson: make ECC properties
- dependent
-Message-ID: <20230714155553.GA3913802-robh@kernel.org>
-References: <20230711122129.2635558-1-AVKrasnov@sberdevices.ru>
- <20230711122129.2635558-3-AVKrasnov@sberdevices.ru>
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, quic_saahtoma@quicinc.com
+Subject: Re: [PATCH V2 1/2] dt-bindings: arm: qcom,ids: drop the IPQ5019 SoC
+ ID
+Message-ID: <20230714155954.GA3919199-robh@kernel.org>
+References: <20230712041912.398724-1-quic_kathirav@quicinc.com>
+ <20230712041912.398724-2-quic_kathirav@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230711122129.2635558-3-AVKrasnov@sberdevices.ru>
+In-Reply-To: <20230712041912.398724-2-quic_kathirav@quicinc.com>
 X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
         FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
@@ -77,37 +70,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 11, 2023 at 03:21:28PM +0300, Arseniy Krasnov wrote:
-> ECC properties 'nand-ecc-strength' and 'nand-ecc-step-size' depends on
-> each other, so they must be both either set or not set. 
+On Wed, Jul 12, 2023 at 09:49:11AM +0530, Kathiravan T wrote:
+> IPQ5019 SoC is never productized. So lets drop it.
 
-Is that true for all drivers or just meson?
+You need to remove the user before removing the definition.
 
-> In first case
-> ECC core will try to use these values if possible (by checking ECC caps
-> provided by driver), in second case ECC core will select most optimal
-> values for both properties.
 > 
-> Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+> Signed-off-by: Kathiravan T <quic_kathirav@quicinc.com>
 > ---
->  Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml | 4 ++++
->  1 file changed, 4 insertions(+)
+> Changes in V2:
+> 	- Updated the commit message with the precise information for
+> 	  dropping this ID
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
-> index e81757c9e0ed..4f6e56542a7e 100644
-> --- a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
-> +++ b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
-> @@ -58,6 +58,10 @@ patternProperties:
->              meson-gxl-nfc 8, 16, 24, 30, 40, 50, 60
->              meson-axg-nfc 8
->  
-> +    dependencies:
-> +      nand-ecc-strength: ['nand-ecc-step-size']
-> +      nand-ecc-step-size: ['nand-ecc-strength']
-> +
->  required:
->    - compatible
->    - reg
+>  include/dt-bindings/arm/qcom,ids.h | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/include/dt-bindings/arm/qcom,ids.h b/include/dt-bindings/arm/qcom,ids.h
+> index bcbe9ee2cdaf..179dd56b2d95 100644
+> --- a/include/dt-bindings/arm/qcom,ids.h
+> +++ b/include/dt-bindings/arm/qcom,ids.h
+> @@ -250,7 +250,6 @@
+>  #define QCOM_ID_QRU1000			539
+>  #define QCOM_ID_QDU1000			545
+>  #define QCOM_ID_QDU1010			587
+> -#define QCOM_ID_IPQ5019			569
+>  #define QCOM_ID_QRU1032			588
+>  #define QCOM_ID_QRU1052			589
+>  #define QCOM_ID_QRU1062			590
 > -- 
-> 2.35.0
+> 2.34.1
 > 
