@@ -2,97 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32485753FC1
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 18:20:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50589753FC5
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 18:21:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235873AbjGNQU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 12:20:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50296 "EHLO
+        id S235803AbjGNQVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 12:21:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235759AbjGNQU1 (ORCPT
+        with ESMTP id S235737AbjGNQVX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 12:20:27 -0400
-Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0E0E1FD4;
-        Fri, 14 Jul 2023 09:20:26 -0700 (PDT)
-Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-7835ffc53bfso47415139f.1;
-        Fri, 14 Jul 2023 09:20:26 -0700 (PDT)
+        Fri, 14 Jul 2023 12:21:23 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E2631FD4
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 09:21:22 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id ca18e2360f4ac-7835bbeb6a0so15245439f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 09:21:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1689351682; x=1689956482;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=A/cGtvz8XeWSeI/2ga1OjJQj7bUnENfy64USXIaMRls=;
+        b=RTwPA+NsI6EAvbf0dITS+kJ/8I1AiDxT76aDhGrwVCcUXQHiHHE4v6UFSNUq+aSCGz
+         ToMxIEC7pWGZ+ZkD9fJRjfauM1HZR7/7FeFewmmlGFuMG/RV7V2idZaUWL/l5TVTJhye
+         aU3ntOHO9Kgu0L7KelkSP4IN/giRFc4qwLS5M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689351625; x=1691943625;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ks/N8qO3TGYZSSU8M3e1qV+E67ZahtCJLwxQg7T5z6Y=;
-        b=YIqi9O9wm4/nvKpvj9jf2ux2OtM1qmW63jx0KZzRqpOPUSnRMofz9t8uZdW/VJdkU1
-         JC48qAX+qAqX6SUvNIuO0GQDezG1M6aCTxKw/4PF9g3qSeOhy+wnxbFf9+XT47w3D+87
-         jJbI03+lFQO8BxOUhZ9yX0NHL/On/SSGlZ7By8smE0kuVCkNklnBgey8vqzEbvkTl9RJ
-         L8jXdE24/XVC+Lzcvn2WuAgs4FKetyJrYYnB4fRQ+LAaOvD7iFb/JTHzLiixGfliUn6b
-         H2iWfsch4f7Xrz1T1z3k/M3v3GBpQq7/+VSQhJIsOwpt9Ek3W3hEZ8lf44afd2jpnP0v
-         UC1A==
-X-Gm-Message-State: ABy/qLa/BuoEb1Qsj6zhsFONpl4twKRFm6wgP5dWErQhoQVc2aFBBgMJ
-        1Nu0zW2PYUy+t3rmwhJZ9g==
-X-Google-Smtp-Source: APBJJlHfUJOPb77/ZakiHQ7/15o5r47CcF5ODwjLT23eGq28ZdiCY+FAsp/pZrrMo8lGwTb9HK1bew==
-X-Received: by 2002:a5e:c602:0:b0:787:147b:b54f with SMTP id f2-20020a5ec602000000b00787147bb54fmr2243528iok.3.1689351625671;
-        Fri, 14 Jul 2023 09:20:25 -0700 (PDT)
-Received: from robh_at_kernel.org ([64.188.179.250])
-        by smtp.gmail.com with ESMTPSA id h2-20020a6bfb02000000b0078680780694sm2744063iog.34.2023.07.14.09.20.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 09:20:25 -0700 (PDT)
-Received: (nullmailer pid 3945795 invoked by uid 1000);
-        Fri, 14 Jul 2023 16:20:23 -0000
-Date:   Fri, 14 Jul 2023 10:20:23 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Richard Weinberger <richard@nod.at>,
-        linux-mtd@lists.infradead.org,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 1/2] dt-bindings: mtd: Add SEAMA partition bindings
-Message-ID: <168935162277.3945742.14750868917438308947.robh@kernel.org>
-References: <20230713-seama-partitions-v4-0-69e577453d40@linaro.org>
- <20230713-seama-partitions-v4-1-69e577453d40@linaro.org>
+        d=1e100.net; s=20221208; t=1689351682; x=1689956482;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=A/cGtvz8XeWSeI/2ga1OjJQj7bUnENfy64USXIaMRls=;
+        b=Z19LuqxZyyRJ01IHIZLyrKwrsQBVIBGJdS/ZEfp5dFWYqHNfC93QlKr+Y5GV93bMUm
+         WpYvzYZxLCcP4IszBCKcSYBp3YFslwyZ28XiWGRDkleCLYxdC0DlyGaUh4MnzOGFq16N
+         BiLjqP/QltfS1yWWvJaIkvO9CjIG790SPIzaS2EFyYn0b4xH9gJVsmBDt3ABGJQnwB06
+         ydPO4dV4vDUlnc23Cd7azbT/e8V55CFb2psPpNN2RTmMJf08wgwUPjzazhk3gSLE6f8q
+         pZ2ylNEkdsb863t8+thcAVWYxh5vIlaXQNvmv4PMDyoE9WYSQHeS8gpVV8nh9kuELsLc
+         0e2w==
+X-Gm-Message-State: ABy/qLZF4v72R4Bx8vgyLaBbM7oSSqUnggqv67VLglmA2jf2nBs700qU
+        WeR+H91UnzfxoJsJ+Xvmm7mzTBXtU7Vwdoiuaqiw0iMt
+X-Google-Smtp-Source: APBJJlErVRJu0xQzt35AjSZhJIyGKrlyeOor51Wp+cBkXt8k2AEbxMVRN9RtunAybX6H+lLgyy/vbQ==
+X-Received: by 2002:a05:6602:3ce:b0:780:c6bb:ad8d with SMTP id g14-20020a05660203ce00b00780c6bbad8dmr5651673iov.0.1689351681771;
+        Fri, 14 Jul 2023 09:21:21 -0700 (PDT)
+Received: from [192.168.1.128] ([38.15.45.1])
+        by smtp.gmail.com with ESMTPSA id f9-20020a056602038900b007862a536f21sm2745024iov.14.2023.07.14.09.21.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 14 Jul 2023 09:21:21 -0700 (PDT)
+Message-ID: <ecf66ba7-6e63-5ee3-acce-b2da9327b76f@linuxfoundation.org>
+Date:   Fri, 14 Jul 2023 10:21:20 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230713-seama-partitions-v4-1-69e577453d40@linaro.org>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2] selftests: prctl: Add new prctl test for PR_SET_NAME
+To:     Osama Muhammad <osmtendev@gmail.com>
+Cc:     shuah@kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20230607153600.15816-1-osmtendev@gmail.com>
+ <b7a3219e-4e0a-7a08-439a-a8a6e35271ca@linuxfoundation.org>
+ <CAK6rUAMODPLQeUawXMW_RNiJFdukOqdhS5GA5XRAq4U9bnQdNg@mail.gmail.com>
+ <3c03e28b-8006-a4ac-30bc-6aaf83ccb5d5@linuxfoundation.org>
+ <CAK6rUAObT-kQVGddhvxxtaKPcuaDddM6ipEDXuECCFtpR-GV6w@mail.gmail.com>
+ <CAK6rUAMuYTUhqcGmDrmeEWnigy3X4OxNb4zmHc0TmcVJ79MyHg@mail.gmail.com>
+Content-Language: en-US
+From:   Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <CAK6rUAMuYTUhqcGmDrmeEWnigy3X4OxNb4zmHc0TmcVJ79MyHg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Thu, 13 Jul 2023 00:16:41 +0200, Linus Walleij wrote:
-> This types of NAND partitions appear in OpenWrt and
-> U-Boot.
+On 6/26/23 12:36, Osama Muhammad wrote:
+> Hi Shuah,
 > 
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-> ---
-> ChangeLog v3->v4:
-> - Drop false flagged cells etc.
-> ChangeLog v2->v3:
-> - Drop reference from partitions.yaml again
-> - Drop select: false
-> - Use unevaluatedProperties
-> ChangeLog v1->v2:
-> - Fix up the binding to be childless
-> ---
->  .../devicetree/bindings/mtd/partitions/seama.yaml  | 44 ++++++++++++++++++++++
->  1 file changed, 44 insertions(+)
+> Any feedback on this patch?.
+> 
+> Thanks,
+> Osama
+> 
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Please don't top post when you are responding on kernel
+mailing lists. It gets very difficult to follow the
+comments in the email thread.
 
+> On Sat, 17 Jun 2023 at 18:01, Osama Muhammad <osmtendev@gmail.com> wrote:
+>>
+>> Hi,
+>>
+>> Yes, I did install the latest kernel headers and TASK_COMM_LEN is not
+>> accessible in userspace.
+>>
+>> I looked into the test which uses TASK_COMM_LEN but the test defines
+>> it in its own header file.
+>>
+>> Example:  https://elixir.bootlin.com/linux/latest/source/tools/testing/selftests/bpf/progs/pyperf.h#L13
+
+bfp test does things differently because its dependencies
+on run-time environment.
+
+>>
+>> TASK_COMM_LEN is defined in include/linux/sched.h, but this header
+>> file is not exposed to userspace.
+
+Correct. you can include linux/sched.h like other tests do
+Take a look at tools/testing/selftests/clone3
+
+thanks,
+-- Shuah
