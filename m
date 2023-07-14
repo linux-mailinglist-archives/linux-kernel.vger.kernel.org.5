@@ -2,151 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7692075454D
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 01:10:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63430754554
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 01:21:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229530AbjGNXKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 19:10:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43822 "EHLO
+        id S229839AbjGNXVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 19:21:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229800AbjGNXKE (ORCPT
+        with ESMTP id S229513AbjGNXVX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 19:10:04 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C6883589
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 16:10:03 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-51e5e4c6026so2989717a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 16:10:03 -0700 (PDT)
+        Fri, 14 Jul 2023 19:21:23 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 200E9268F
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 16:21:21 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-3143b88faebso2653508f8f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 16:21:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689376202; x=1691968202;
+        d=cloudflare.com; s=google; t=1689376879; x=1691968879;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CtlXy1KLlp4Z9yr6f0vE8608JmRv00GbNepTwupN+LE=;
-        b=E9WUWUwO4fT8t1PSs2eneHvRvExhJfDAB1Eiz7qKASKfVkyOHvYwhqSlb7jDvR7Cp2
-         wH/kkMTysu7N+XClYuMaQDyCdxSSXS2qg6KcjPj7SHIU5wFPX0fyat9Hva9Oe3CHEEcy
-         8dAY0aoypyRqpn+6CxjyzHYrBgviVStGJPhXdJcFNwsPDZX9WRmZKZ5t56f228q5Kkb7
-         cJCYrrtypevJTCjG4uyS1tW3Sgc2UwRZXhT9KzT2O+E0cOfeSq0rCBPg0Fp5nKS2hlOu
-         Q0OI8Mvra8I0kZKkuee6umJ5KvaUQ4wzBCgQtctCxdPJ5DXcWhY68iy9Cm05c6UXtrIo
-         Lrhg==
+        bh=y5M2QgZVGBb+VWeFQWAnvqfHXL1WLvKX5iBA+CamO0U=;
+        b=mYiMJDc3pl8zJhkYt0b2rx/ph6OSwAAQkDx0dj9Zk3Ey3Lp/5yOwQZUR+mwnNgbDHP
+         kQkw3pWLQuDIVt8NRPr/OSh0XlHTA7hYuU78+IrwtLqKK/FaXqNaQiK0tQ+6Q5fYph/E
+         itGumv5ZLJGhBMTNePzYuYE6FsYbwCSa7Dm+s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689376202; x=1691968202;
+        d=1e100.net; s=20221208; t=1689376879; x=1691968879;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=CtlXy1KLlp4Z9yr6f0vE8608JmRv00GbNepTwupN+LE=;
-        b=cvQuHo8FWquBs1zdy6O1tM/Jd/W8pPULqUahggK42RPmkKOUoEq/w6nhuSx+xPp5VJ
-         r0+6cD96ptcNbYLvLIvVZrvKezgBUKWqIIdz3HE3VVuly2I+rJ77gTAME2aFUdURdbcJ
-         WNbYR6X5ycczgH6T+yXzFzrG+yyKGDvn3roKJCDDhptoaAulkRwKda51UUVh4VUBrys7
-         ybNULA7Idt4r7ljtoVAW6UmyQhFDLsIYy/sNQG4cqbsG8jLdA4bAiIDuvk0jW9whLbWR
-         sVHHs6E984lDOlbqz9Qy02GggD2VR2azBikIQgnNTXcgBDXBBg7wGDEru+2XW1f68d9v
-         7wyA==
-X-Gm-Message-State: ABy/qLYLniuSdYF3Qy16q+1SkPCVspD3DxJ6dkHErk2ZlaWEMZPZi14n
-        Nb/uSfnfyBAjCM9xMPKQNQXJmmDBG9vOqLMCUD1EDA==
-X-Google-Smtp-Source: APBJJlEWt+RnTz5aE6m/JAWabL+RG8/hq9gYwcXNzUAKsTyzNO+L298+3KtLUjnyJkm89EAh80GKMWiiPRpnSTIGYKI=
-X-Received: by 2002:a17:906:20dd:b0:98d:5293:55f7 with SMTP id
- c29-20020a17090620dd00b0098d529355f7mr5323184ejc.6.1689376201775; Fri, 14 Jul
- 2023 16:10:01 -0700 (PDT)
+        bh=y5M2QgZVGBb+VWeFQWAnvqfHXL1WLvKX5iBA+CamO0U=;
+        b=QTIyJhOJxgHwI7CGkBi+bv5psvWQaGoo5jkqvreOtI8vplq9DDlzvKFZdOjV3nPOVB
+         d4xNZgfHbsxmb/Iih85yflmd3EkJyUZESxX1OrlXQC9x6FIGUfu/Ez8qtHYfPdFebvRX
+         Vz+wwM9wL1feCPgX29Kw7+kU3Ser5zOMci//wg53JuCqYRf62PHOklY3RRdcnEmKydv8
+         KwVgPZjzF1QxHEQjjiW2ejI0eGSctPaMXJqIbDvL1V3ndAXlNT5TzXZY/+PPV0QTth4o
+         URkfyOb96eS4bGpaptZpaEzE2XUByW3gc/CzE10R3H1nw7zxrYKHkCP2fuTW5mredwzb
+         W+gQ==
+X-Gm-Message-State: ABy/qLabMHgNW8bhRm/orcBGCbjuVJdoeUxJ/XpeqoB9AWx1zNk5fLkY
+        lr+aEwi1aw6RHEL5x7Cqh22lt1FLI2EY1vVFe9dDcw==
+X-Google-Smtp-Source: APBJJlEo64DFA6PS7UtIQ6aAUlcMfGL/4400GwDL3YlqJiAftD4NxitH+Xg/lmZ4jTqRv5KShS8My2baDTsH3cRyxNc=
+X-Received: by 2002:adf:eb87:0:b0:314:3864:d3d0 with SMTP id
+ t7-20020adfeb87000000b003143864d3d0mr5532920wrn.25.1689376879540; Fri, 14 Jul
+ 2023 16:21:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <ZFWli2/H5M8MZRiY@google.com> <diqzr0pb2zws.fsf@ackerleytng-ctop.c.googlers.com>
- <ZLGiEfJZTyl7M8mS@google.com>
-In-Reply-To: <ZLGiEfJZTyl7M8mS@google.com>
-From:   Vishal Annapurve <vannapurve@google.com>
-Date:   Fri, 14 Jul 2023 16:09:50 -0700
-Message-ID: <CAGtprH-VCqUgqK8gk40KaQZD8trXbWYk8KmA612Og1ep1Dko=Q@mail.gmail.com>
-Subject: Re: Rename restrictedmem => guardedmem? (was: Re: [PATCH v10 0/9]
- KVM: mm: fd-based approach for supporting KVM)
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Ackerley Tng <ackerleytng@google.com>, david@redhat.com,
-        chao.p.peng@linux.intel.com, pbonzini@redhat.com,
-        vkuznets@redhat.com, jmattson@google.com, joro@8bytes.org,
-        mail@maciej.szmigiero.name, vbabka@suse.cz,
-        yu.c.zhang@linux.intel.com, kirill.shutemov@linux.intel.com,
-        dhildenb@redhat.com, qperret@google.com, tabba@google.com,
-        michael.roth@amd.com, wei.w.wang@intel.com, rppt@kernel.org,
-        liam.merwick@oracle.com, isaku.yamahata@gmail.com,
-        jarkko@kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, hughd@google.com, brauner@kernel.org
+References: <20230711043453.64095-1-ivan@cloudflare.com> <20230711193612.22c9bc04@kernel.org>
+ <CAO3-PbrZHn1syvhb3V57oeXigE_roiHCbzYz5Mi4wiymogTg2A@mail.gmail.com>
+ <20230712104210.3b86b779@kernel.org> <CABWYdi3VJU7HUxzKJBKgX9wF9GRvmA0TKVpjuHvJyz_EdpxZFA@mail.gmail.com>
+ <20230713201427.2c50fc7b@kernel.org>
+In-Reply-To: <20230713201427.2c50fc7b@kernel.org>
+From:   Ivan Babrou <ivan@cloudflare.com>
+Date:   Fri, 14 Jul 2023 16:21:08 -0700
+Message-ID: <CABWYdi2BGi=iRCfLhmQCqO=1eaQ1WaCG7F9WsJrz-7==ocZidg@mail.gmail.com>
+Subject: Re: [RFC PATCH net-next] tcp: add a tracepoint for tcp_listen_queue_drop
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Yan Zhai <yan@cloudflare.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@cloudflare.com,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        David Ahern <dsahern@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 12:29=E2=80=AFPM Sean Christopherson <seanjc@google=
-.com> wrote:
-> ...
-> And _if_ there is a VMM that instantiates memory before KVM_CREATE_VM, IM=
-O making
-> the ioctl() /dev/kvm scoped would have no meaningful impact on adapting u=
-serspace
-> to play nice with the required ordering.  If userspace can get at /dev/kv=
-m, then
-> it can do KVM_CREATE_VM, because the only input to KVM_CREATE_VM is the t=
-ype, i.e.
-> the only dependencies for KVM_CREATE_VM should be known/resolved long bef=
-ore the
-> VMM knows it wants to use gmem.
-
-I am not sure about the benefits of tying gmem creation to any given
-kvm instance. I think the most important requirement here is that a
-given gmem range is always tied to a single VM - This can be enforced
-when memslots are bound to the gmem files.
-
-I believe "Required ordering" is that gmem files are created first and
-then supplied while creating the memslots whose gpa ranges can
-generate private memory accesses.
-Is there any other ordering we want to enforce here?
-
-> ...
-> Practically, I think that gives us a clean, intuitive way to handle intra=
--host
-> migration.  Rather than transfer ownership of the file, instantiate a new=
- file
-> for the target VM, using the gmem inode from the source VM, i.e. create a=
- hard
-> link.  That'd probably require new uAPI, but I don't think that will be h=
-ugely
-> problematic.  KVM would need to ensure the new VM's guest_memfd can't be =
-mapped
-> until KVM_CAP_VM_MOVE_ENC_CONTEXT_FROM (which would also need to verify t=
-he
-> memslots/bindings are identical), but that should be easy enough to enfor=
-ce.
+On Thu, Jul 13, 2023 at 8:14=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wr=
+ote:
+> > I don't know why kfree_skb is called so much. I also don't agree with
+> > Yan that it's not actually too much, because it's a lot (especially
+> > compared with near zero for my proposed tracepoint). I can easily see
+> > 300-500k calls per second into it:
+> >
+> > $ perf stat -I 1000 -a -e skb:kfree_skb -- sleep 10
+> > #           time             counts unit events
+> >      1.000520165             10,108      skb:kfree_skb
+> >      2.010494526             11,178      skb:kfree_skb
+> >      3.075503743             10,770      skb:kfree_skb
+> >      4.122814843             11,334      skb:kfree_skb
+> >      5.128518432             12,020      skb:kfree_skb
+> >      6.176504094             11,117      skb:kfree_skb
+> >      7.201504214             12,753      skb:kfree_skb
+> >      8.229523643             10,566      skb:kfree_skb
+> >      9.326499044            365,239      skb:kfree_skb
+> >     10.002106098            313,105      skb:kfree_skb
+> > $ perf stat -I 1000 -a -e skb:kfree_skb -- sleep 10
+> > #           time             counts unit events
+> >      1.000767744             52,240      skb:kfree_skb
+> >      2.069762695            508,310      skb:kfree_skb
+> >      3.102763492            417,895      skb:kfree_skb
+> >      4.142757608            385,981      skb:kfree_skb
+> >      5.190759795            430,154      skb:kfree_skb
+> >      6.243765384            405,707      skb:kfree_skb
+> >      7.290818228            362,934      skb:kfree_skb
+> >      8.297764298            336,702      skb:kfree_skb
+> >      9.314287243            353,039      skb:kfree_skb
+> >     10.002288423            251,414      skb:kfree_skb
+> >
+> > Most of it is NOT_SPECIFIED (1s data from one CPU during a spike):
+> >
+> > $ perf script | sed 's/.*skbaddr=3D//' | awk '{ print $NF }' | sort |
+> > uniq -c | sort -n | tail
+> >       1 TCP_CLOSE
+> >       2 NO_SOCKET
+> >       4 TCP_INVALID_SEQUENCE
+> >       4 TCP_RESET
+> >      13 TCP_OLD_DATA
+> >      14 NETFILTER_DROP
+> >    4594 NOT_SPECIFIED
+> >
+> > We can start a separate discussion to break it down by category if it
+> > would help. Let me know what kind of information you would like us to
+> > provide to help with that. I assume you're interested in kernel stacks
+> > leading to kfree_skb with NOT_SPECIFIED reason, but maybe there's
+> > something else.
 >
-> That way, a VM, its memslots, and its SPTEs are tied to the file, while a=
-llowing
-> the memory and the *contents* of memory to outlive the VM, i.e. be effect=
-ively
-> transfered to the new target VM.  And we'll maintain the invariant that e=
-ach
-> guest_memfd is bound 1:1 with a single VM.
->
-> As above, that should also help us draw the line between mapping memory i=
-nto a
-> VM (file), and freeing/reclaiming the memory (inode).
->
-> There will be extra complexity/overhead as we'll have to play nice with t=
-he
-> possibility of multiple files per inode, e.g. to zap mappings across all =
-files
-> when punching a hole, but the extra complexity is quite small, e.g. we ca=
-n use
-> address_space.private_list to keep track of the guest_memfd instances ass=
-ociated
-> with the inode.
+> Just the stacks.
 
-Are we talking about a different usecase of sharing gmem fd across VMs
-other than intra-host migration?
-If not, ideally only one of the files should be catering to the guest
-memory mappings at any given time. i.e. any inode should be ideally
-bound to (through the file) a single kvm instance, as we we are
-planning to ensure that guest_memfd can't be mapped until
-KVM_CAP_VM_MOVE_ENC_CONTEXT_FROM is invoked on the target side.
+Here you go: https://lore.kernel.org/netdev/CABWYdi00L+O30Q=3DZah28QwZ_5RU-=
+xcxLFUK2Zj08A8MrLk9jzg@mail.gmail.com/
+
+> > Even if I was only interested in one specific reason, I would still
+> > have to arm the whole tracepoint and route a ton of skbs I'm not
+> > interested in into my bpf code. This seems like a lot of overhead,
+> > especially if I'm dropping some attack packets.
+>
+> That's what I meant with my drop vs exception comment. We already have
+> two tracepoints on the skb free path (free and consume), adding another
+> shouldn't rise too many eyebrows.
+
+I'm a bit confused. Previously you said:
+
+> Specifically what I'm wondering is whether we should also have
+> a separation between policy / "firewall drops" and error / exception
+> drops. Within the skb drop reason codes, I mean.
+
+My understanding was that you proposed adding more SKB_DROP_REASON_*,
+but now you seem to imply that we might want to add another
+tracepoint. Could you clarify which path you have in mind?
+
+We can add a few reasons that would satisfy my need by covering
+whatever results into tcp_listendrop() calls today. The problem is:
+unless we remove some other reasons from kfree_skb, adding more
+reasons for firewall drops / exceptions wouldn't change the cost at
+all. We'd still have the same number of calls into the tracepoint and
+the condition to find "interesting" reasons would be the same:
+
+if (reason =3D=3D SKB_DROP_REASON_TCP_OVERFLOW_OR_SOMETHING)
+
+It still seems very expensive to consume a firehose of kfree_skb just
+to find some rare nuggets.
+
+> > Perhaps a lot of extra NOT_SPECIFIED stuff can be fixed and removed
+> > from kfree_skb. It's not something I can personally do as it requires
+> > much deeper network code understanding than I possess. For TCP we'll
+> > also have to add some extra reasons for kfree_skb, because currently
+> > it's all NOT_SPECIFIED (no reason set in the accept path):
+> >
+> > * https://elixir.bootlin.com/linux/v6.5-rc1/source/net/ipv4/tcp_input.c=
+#L6499
+> > * https://elixir.bootlin.com/linux/v6.5-rc1/source/net/ipv4/tcp_ipv4.c#=
+L1749
+> >
+> > For UDP we already have SKB_DROP_REASON_SOCKET_RCVBUFF, so I tried my
+> > best to implement what I wanted based on that. It's not very
+> > approachable, as you'd have to extract the destination port yourself
+> > from the raw skb. As Yan said, for TCP people often rely on skb->sk,
+> > which is just not present when the incoming SYN is dropped. I failed
+> > to find a good example of extracting a destination port that I could
+> > replicate. So far I have just a per-reason breakdown working:
+> >
+> > * https://github.com/cloudflare/ebpf_exporter/pull/233
+> >
+> > If you have an ebpf example that would help me extract the destination
+> > port from an skb in kfree_skb, I'd be interested in taking a look and
+> > trying to make it work.
+> >
+> > The need to extract the protocol level information in ebpf is only
+> > making kfree_skb more expensive for the needs of catching rare cases
+> > when we run out of buffer space (UDP) or listen queue (TCP). These two
+> > cases are very common failure scenarios that people are interested in
+> > catching with straightforward tracepoints that can give them the
+> > needed information easily and cheaply.
+> >
+> > I sympathize with the desire to keep the number of tracepoints in
+> > check, but I also feel like UDP buffer drops and TCP listen drops
+> > tracepoints are very much justified to exist.
+>
+> I'm not completely opposed to the tracepoints where needed. It's more
+> of trying to make sure we do due diligence on the existing solutions.
+> Or maybe not even due diligence as much as pay off some technical debt.
+
+The arguments for a new tracepoint from my due diligence:
+
+1. There are too many calls into kfree_skb. Maybe that's fixable to a
+degree, but there would still be a big discrepancy in the number of
+calls between my proposed targeted tracepoint and skb:kfree_skb. For
+some setups this might not be feasible.
+2. It's hard to extract the necessary information from skb without an
+sk attached. Both from usability perspective (you need to parse the
+network header yourself with a non-trivial amount of code) and from
+cost perspective (parsing is not zero cost). The latter doesn't matter
+as much if we target a specific reason.
