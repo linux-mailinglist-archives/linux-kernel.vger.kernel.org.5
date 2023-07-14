@@ -2,125 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FF3D7539C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 13:42:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 767477539E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 13:44:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235425AbjGNLmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 07:42:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44932 "EHLO
+        id S235450AbjGNLoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 07:44:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234567AbjGNLm2 (ORCPT
+        with ESMTP id S234267AbjGNLoM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 07:42:28 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8627535B3
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 04:41:58 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 00ADA2209F;
-        Fri, 14 Jul 2023 11:41:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1689334890; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iilSheHIUhgnsn15zN9O4xrXzcgpGmmRPakgPtr45AM=;
-        b=XQo5MHIA02k7FaZ/QWVO6OpYvFpMXlPWusvgWQ6WpC3IdDJEGdWpcJkM/nwl/8we72XFfn
-        Z5QLr1PW+J58HRL0qHho+YJUudt5t25D5W8L8XaWxuG4iQuhm76O/EDDoBjLEO38ArXIUI
-        pG7wRONnYxbgMTQrMgxR97oqYr79nFo=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D588F138F8;
-        Fri, 14 Jul 2023 11:41:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id Gbf1MWk0sWTdOQAAMHmgww
-        (envelope-from <mhocko@suse.com>); Fri, 14 Jul 2023 11:41:29 +0000
-Date:   Fri, 14 Jul 2023 13:41:28 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Huang Ying <ying.huang@intel.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Arjan Van De Ven <arjan@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Johannes Weiner <jweiner@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: Re: [RFC 2/2] mm: alloc/free depth based PCP high auto-tuning
-Message-ID: <ZLE0aF/pT9zZeoGt@dhcp22.suse.cz>
-References: <20230710065325.290366-1-ying.huang@intel.com>
- <20230710065325.290366-3-ying.huang@intel.com>
- <ZK060sMG0GfC5gUS@dhcp22.suse.cz>
- <20230712090526.thk2l7sbdcdsllfi@techsingularity.net>
+        Fri, 14 Jul 2023 07:44:12 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FFE8E65;
+        Fri, 14 Jul 2023 04:44:11 -0700 (PDT)
+Received: from kwepemm600009.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R2V3k5p0GzhXXj;
+        Fri, 14 Jul 2023 19:43:30 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Fri, 14 Jul 2023 19:44:08 +0800
+From:   Weili Qian <qianweili@huawei.com>
+To:     <herbert@gondor.apana.org.au>
+CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+        <liulongfang@huawei.com>
+Subject: [PATCH 0/4] crypto: hisilicon - misc fixes
+Date:   Fri, 14 Jul 2023 19:41:34 +0800
+Message-ID: <20230714114138.1582-1-qianweili@huawei.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230712090526.thk2l7sbdcdsllfi@techsingularity.net>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,T_SPF_HELO_TEMPERROR,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemm600009.china.huawei.com (7.193.23.164)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 12-07-23 10:05:26, Mel Gorman wrote:
-> On Tue, Jul 11, 2023 at 01:19:46PM +0200, Michal Hocko wrote:
-> > On Mon 10-07-23 14:53:25, Huang Ying wrote:
-> > > To auto-tune PCP high for each CPU automatically, an
-> > > allocation/freeing depth based PCP high auto-tuning algorithm is
-> > > implemented in this patch.
-> > > 
-> > > The basic idea behind the algorithm is to detect the repetitive
-> > > allocation and freeing pattern with short enough period (about 1
-> > > second).  The period needs to be short to respond to allocation and
-> > > freeing pattern changes quickly and control the memory wasted by
-> > > unnecessary caching.
-> > 
-> > 1s is an ethernity from the allocation POV. Is a time based sampling
-> > really a good choice? I would have expected a natural allocation/freeing
-> > feedback mechanism. I.e. double the batch size when the batch is
-> > consumed and it requires to be refilled and shrink it under memory
-> > pressure (GFP_NOWAIT allocation fails) or when the surplus grows too
-> > high over batch (e.g. twice as much).  Have you considered something as
-> > simple as that?
-> > Quite honestly I am not sure time based approach is a good choice
-> > because memory consumptions tends to be quite bulky (e.g. application
-> > starts or workload transitions based on requests).
-> >  
-> 
-> I tend to agree. Tuning based on the recent allocation pattern without frees
-> would make more sense and also be symmetric with how free_factor works. I
-> suspect that time-based may be heavily orientated around the will-it-scale
-> benchmark. While I only glanced at this, a few things jumped out
-> 
-> 1. Time-based heuristics are not ideal. congestion_wait() and
->    friends was an obvious case where time-based heuristics fell apart even
->    before the event it waited on was removed. For congestion, it happened to
->    work for slow storage for a while but that was about it.  For allocation
->    stream detection, it has a similar problem. If a process is allocating
->    heavily, then fine, if it's in bursts of less than a second more than one
->    second apart then it will not adapt. While I do not think it is explicitly
->    mentioned anywhere, my understanding was that heuristics like this within
->    mm/ should be driven by explicit events as much as possible and not time.
+This patchset fixes some issues in qm.c and enables hpre device
+sva error reporting for possible error debugging.
 
-Agreed. I would also like to point out that it is also important to
-realize those events that we should care about. Remember the primary
-motivation of the tuning is to reduce the lock contention. That being
-said, it is less of a problem to have stream or bursty demand for
-memory if that doesn't really cause the said contention, right? So any
-auto-tuning should consider that as well and do not inflate the batch
-in an absense of the contention. That of course means that a solely
-deallocation based monitoring.
+Weili Qian (4):
+  crypto: hisilicon/qm - flush all work before driver removed
+  crypto: hisilicon/qm - stop function and write data to memory
+  crypto: hisilicon/qm - increase device doorbell timeout
+  crypto: hisilicon/hpre - enable sva error interrupt event
+
+ drivers/crypto/hisilicon/hpre/hpre_main.c |  5 +++-
+ drivers/crypto/hisilicon/qm.c             | 28 ++++++++++++++++++-----
+ include/linux/hisi_acc_qm.h               |  2 +-
+ 3 files changed, 27 insertions(+), 8 deletions(-)
 
 -- 
-Michal Hocko
-SUSE Labs
+2.33.0
+
