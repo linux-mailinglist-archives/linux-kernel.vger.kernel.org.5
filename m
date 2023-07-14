@@ -2,125 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8972B753795
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 12:12:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E94C753791
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 12:11:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236044AbjGNKMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 06:12:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56058 "EHLO
+        id S236039AbjGNKLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 06:11:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235677AbjGNKMQ (ORCPT
+        with ESMTP id S236033AbjGNKLe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 06:12:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D2742D75
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 03:11:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689329468;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=r6h8n6y8+PJ4gKntsTRte1y/a/DZfytgEmy6WKp/h+o=;
-        b=Sh5g+el/2q8kbbLeVwF8+DJuFRM0kRm+0xfV1m0KAzraDbzyyrr8Rl+eeRVnWVrzbikEuM
-        1t+fPWqB1ZdiVJ8QpMWEDwc+jxh3K/nAY9ZXcRoDmJW2oB8rxwDBC57aB1sPZR5wRaChe2
-        J7n4AGelVDtZoi6lmRABOKpbzTzx+FE=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-408-Kt8o6HFSM9KOsCh1EI_Inw-1; Fri, 14 Jul 2023 06:11:07 -0400
-X-MC-Unique: Kt8o6HFSM9KOsCh1EI_Inw-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-9928b4f1612so98041866b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 03:11:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689329466; x=1691921466;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=r6h8n6y8+PJ4gKntsTRte1y/a/DZfytgEmy6WKp/h+o=;
-        b=Bxzf2kZOI1gqlDc+qME8ut90ppKk/hd1B/vFPDdjlt9njrc5w1jUKbq/6eX1unUb1l
-         gbCa71SCaQZXZN7E/KiaCamro9H39UPU5JsuQJPjMSOOXvqcgqdnvfeVAQI9oMVNYsM5
-         FHPKEnbdQAm6fM2AawsYl7zaN6/3BDfmT3cesY+5AIks0YTS1doDLdjJTLyPHozHHElm
-         ar+Zx2AMEKQoh7lBXR6c0LrNc54U8eWPdAIdJPwIhfI2gOcOMP9PUMl4peB0a6CJokfR
-         sEqKXLEykHrTZwA6TPjwER4kqevL6mNPcu1x0lbQFcJDZ724vqdkQwHcoygLBu8b8vRI
-         yEWQ==
-X-Gm-Message-State: ABy/qLbTsGr5hUuE/QL/waaDb9HZCQ5nyDsMx5cGduzeCgHxxwt0GaHO
-        lMK5QKPfUiWFiVvmt1fbgoGExTOKrisbLx63g0hSjeGK9oXBmJ+MeqL6CBGJJ9jbhY9ek2Q9n3I
-        Vqenor2YWx8N+EXTV12K8arY8
-X-Received: by 2002:a17:906:224a:b0:991:caa8:fc3a with SMTP id 10-20020a170906224a00b00991caa8fc3amr3843243ejr.72.1689329466163;
-        Fri, 14 Jul 2023 03:11:06 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGC1hijiNkUKr+wy7gnsAFubiIwRdiNE71erOBSHtFCTEGwGSRtlVxuWPGBDnSDCfKaCc0tag==
-X-Received: by 2002:a17:906:224a:b0:991:caa8:fc3a with SMTP id 10-20020a170906224a00b00991caa8fc3amr3843226ejr.72.1689329465894;
-        Fri, 14 Jul 2023 03:11:05 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id y24-20020a170906471800b00992b71d8f19sm5196588ejq.133.2023.07.14.03.11.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 Jul 2023 03:11:05 -0700 (PDT)
-Message-ID: <ac49e4a3-8fe1-b501-2a62-7c06a9ed36b6@redhat.com>
-Date:   Fri, 14 Jul 2023 12:11:04 +0200
+        Fri, 14 Jul 2023 06:11:34 -0400
+Received: from esa6.hc3370-68.iphmx.com (esa6.hc3370-68.iphmx.com [216.71.155.175])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C49826BC;
+        Fri, 14 Jul 2023 03:11:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=citrix.com; s=securemail; t=1689329473;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=dTC6edpovjQeO4taZ580kPMKMfE3II88gvz0it+T+DI=;
+  b=YxLqgjPKmW+h9zEvc1M8lCWFgSY3UR19CSKm7HmARhCqBs/Kvp/GijEx
+   IkeKO+YtxR1FED00fEzS4aGqYNr/saMHGqmL8LqO8FGSE3UR9uuOsbQ66
+   zdScTVkgrNpZX1niTIleOhp5bsSoX7nqIQW7/mRNu5J2pVdajXhcI6556
+   E=;
+Authentication-Results: esa6.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
+X-SBRS: 4.0
+X-MesageID: 115513386
+X-Ironport-Server: esa6.hc3370-68.iphmx.com
+X-Remote-IP: 162.221.156.123
+X-Policy: $RELAYED
+IronPort-Data: A9a23:xagDfqhrwjdHqTuMjUdX8QX9X161QBAKZh0ujC45NGQN5FlHY01je
+ htvWWmFM/aDMGbzLd0nOtzn8hsAvJLdmN4yHVM/q3pkF3wb9cadCdqndUqhZCn6wu8v7q5Ex
+ 55HNoSfdpBcolv0/ErF3m3J9CEkvU2wbuOgTrWCYmYpHlUMpB4J0XpLg/Q+jpNjne+3CgaMv
+ cKai8DEMRqu1iUc3lg8sspvkzsx+qyr0N8klgZmP6sT4waCzyB94K83fsldEVOpGuG4IcbiL
+ wrz5OnR1n/U+R4rFuSknt7TGqHdauePVeQmoiM+t5mK2nCulARrukoIHKN0hXNsoyeIh7hMJ
+ OBl7vRcf+uL0prkw4zxWzEAe8130DYvFLXveRBTuuTLp6HKnueFL1yDwyjaMKVBktubD12i+
+ tQzOikdTEncmN6n+4+HQMU8ps0udND0adZ3VnFIlVk1DN4jSJHHBa7L+cVZzHE7gcUm8fT2P
+ pRDL2A1NVKZPkMJYw1MYH49tL7Aan3XaTpDsxSRrKU6+XfayAhZ27nxKtvFPNeNQK25m27B/
+ z+bpj+iUk9y2Nq3+B6MriOXltD1xQDyQ6UND6y0zsYwjwjGroAUIEJPDgbqyRWjsWa+UNJ3K
+ koa4CMioKE+skuxQbHVVg2yp3OsvRMGXddUVeE5gCmJy6zJ80OTAm8PTRZfZ9E88sw7Xzon0
+ hmOhdyBLThutqCFDHGQ7LGZqRusNiUPa2wPfykJSU0C+daLnW0opkuRFJA5Svfz14CrX2iqm
+ FhmsRTSmZ04n9cb9fzk4mzWuA+QrLSZbgc4vhzICzfNAhxCWGK1W2C5wQGFvacbdt7JFgbpU
+ GsswJbHsr1XZX2ZvGnUGbhWQun0jxqQGGeE6WODCaXN4NhEF5SLWYlLqA9zK05yWirvUW+4O
+ RSD0e+9CXI6AZdLUUOUS9jrYyjS5fK8fekJr9iNBja0XrB/dRWc4AZlblOK0mbmnSAEyP9va
+ M3EKp7zUShHWcyLKQZaoc9HitfHIQhnlQvuqW3TlUz7gdJymlbIIVv6DLd+Rr9gt/7VyOkk2
+ 91eK9GL231ivB7WO0HqHXooBQlSdxATXMmmw/G7g8bfemKK7kl9Ua6OqV7gEqQ595loehDgo
+ ivlBBIHlAKm3BUq62yiMxheVV8mZr4nxVpTAMDmFQzAN6QLCWp30JoiSg==
+IronPort-HdrOrdr: A9a23:6IO9aazqiLd2HfVB2rhHKrPwIL1zdoMgy1knxilNoRw8SKKlfq
+ eV7ZAmPH7P+VAssR4b+exoVJPtfZq+z+8R3WByB8bAYOCOggLBR+sO0WKL+UyGJ8SUzI9gPM
+ lbHJSWcOeAb2RHsQ==
+X-Talos-CUID: 9a23:vrIsZ22XLsEgd9w4k5j+trxfMdI8Yl+Ek2jsMnSFNWxFGJ2cRAeJ5/Yx
+X-Talos-MUID: 9a23:rNjukwivUOLX8qgx7002CcMpBeNhv/WVGH83ybYPoO6bLj18Aw/Hg2Hi
+X-IronPort-AV: E=Sophos;i="6.01,205,1684814400"; 
+   d="scan'208";a="115513386"
+From:   Ross Lagerwall <ross.lagerwall@citrix.com>
+To:     Christoph Hellwig <hch@infradead.org>, Jens Axboe <axboe@kernel.dk>
+CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Ross Lagerwall" <ross.lagerwall@citrix.com>
+Subject: [PATCH v2] blk-mq: Fix stall due to recursive flush plug
+Date:   Fri, 14 Jul 2023 11:11:06 +0100
+Message-ID: <20230714101106.3635611-1-ross.lagerwall@citrix.com>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v2 0/3] platform/x86: simatic-ipc: add another model and
- hwmon module loading
-Content-Language: en-US, nl
-To:     Henning Schild <henning.schild@siemens.com>,
-        Mark Gross <markgross@kernel.org>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Tobias Schaffner <tobias.schaffner@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>
-References: <20230713144832.26473-1-henning.schild@siemens.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20230713144832.26473-1-henning.schild@siemens.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+We have seen rare IO stalls as follows:
 
-On 7/13/23 16:48, Henning Schild wrote:
-> cahnged since v1:
->  - switch to using a list of modules per device
->  - add p3 and make the watchdog module load code use what p2 created
-> 
-> The first patch just adds a device that is pretty similar to another one
-> we already had here.
-> 
-> The second patch loads modules for hwmon support, should they be
-> available. That will save users the need to detect and manually load
-> those modules after a machine has been clearly identified by its Siemens
-> Simatic IPC station id.
-> 
-> And finally p3 changes another request_module call to use the mechanism
-> introduced in p2.
-> 
-> Henning Schild (3):
->   platform/x86: simatic-ipc: add another model
->   platform/x86: simatic-ipc: add auto-loading of hwmon modules
->   platform/x86: simatic-ipc: use extra module loading for watchdog
+* blk_mq_plug_issue_direct() is entered with an mq_list containing two
+requests.
+* For the first request, it sets last == false and enters the driver's
+queue_rq callback.
+* The driver queue_rq callback indirectly calls schedule() which calls
+blk_flush_plug(). This may happen if the driver has the
+BLK_MQ_F_BLOCKING flag set and is allowed to sleep in ->queue_rq.
+* blk_flush_plug() handles the remaining request in the mq_list. mq_list
+is now empty.
+* The original call to queue_rq resumes (with last == false).
+* The loop in blk_mq_plug_issue_direct() terminates because there are no
+remaining requests in mq_list.
 
-Thank you. I've merged this into the new platform-drivers-x86-simatic-ipc
-branch where I'm collecting all the pending platform/x86: simatic-ipc
-work.
+The IO is now stalled because the last request submitted to the driver
+had last == false and there was no subsequent call to commit_rqs().
 
-Regards,
+Fix this by returning early in blk_mq_flush_plug_list() if rq_count is 0
+which it will be in the recursive case, rather than checking if the
+mq_list is empty. At the same time, adjust one of the callers to skip
+the mq_list empty check as it is not necessary.
 
-Hans
+Fixes: dc5fc361d891 ("block: attempt direct issue of plug list")
+Signed-off-by: Ross Lagerwall <ross.lagerwall@citrix.com>
+---
 
+In v2:
+* Update commit message and add a comment.
 
+ block/blk-core.c | 3 +--
+ block/blk-mq.c   | 9 ++++++++-
+ 2 files changed, 9 insertions(+), 3 deletions(-)
 
-
->  drivers/platform/x86/simatic-ipc.c            | 74 ++++++++++++++-----
->  include/linux/platform_data/x86/simatic-ipc.h |  1 +
->  2 files changed, 57 insertions(+), 18 deletions(-)
-> 
+diff --git a/block/blk-core.c b/block/blk-core.c
+index 99d8b9812b18..90de50082146 100644
+--- a/block/blk-core.c
++++ b/block/blk-core.c
+@@ -1144,8 +1144,7 @@ void __blk_flush_plug(struct blk_plug *plug, bool from_schedule)
+ {
+ 	if (!list_empty(&plug->cb_list))
+ 		flush_plug_callbacks(plug, from_schedule);
+-	if (!rq_list_empty(plug->mq_list))
+-		blk_mq_flush_plug_list(plug, from_schedule);
++	blk_mq_flush_plug_list(plug, from_schedule);
+ 	/*
+ 	 * Unconditionally flush out cached requests, even if the unplug
+ 	 * event came from schedule. Since we know hold references to the
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index 5504719b970d..e6bd9c5f42bb 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -2742,7 +2742,14 @@ void blk_mq_flush_plug_list(struct blk_plug *plug, bool from_schedule)
+ {
+ 	struct request *rq;
+ 
+-	if (rq_list_empty(plug->mq_list))
++	/*
++	 * We may have been called recursively midway through handling
++	 * plug->mq_list via a schedule() in the driver's queue_rq() callback.
++	 * To avoid mq_list changing under our feet, clear rq_count early and
++	 * bail out specifically if rq_count is 0 rather than checking
++	 * whether the mq_list is empty.
++	 */
++	if (plug->rq_count == 0)
+ 		return;
+ 	plug->rq_count = 0;
+ 
+-- 
+2.39.3
 
