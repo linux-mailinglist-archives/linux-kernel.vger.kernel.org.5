@@ -2,59 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AE03754110
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 19:49:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BD7075412B
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 19:49:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236211AbjGNRsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 13:48:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35006 "EHLO
+        id S235667AbjGNRsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 13:48:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236458AbjGNRsB (ORCPT
+        with ESMTP id S236511AbjGNRsI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 13:48:01 -0400
-Received: from mail-il1-f174.google.com (mail-il1-f174.google.com [209.85.166.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 441ECE4F;
-        Fri, 14 Jul 2023 10:47:42 -0700 (PDT)
-Received: by mail-il1-f174.google.com with SMTP id e9e14a558f8ab-345d3c10bdfso9621955ab.2;
-        Fri, 14 Jul 2023 10:47:42 -0700 (PDT)
+        Fri, 14 Jul 2023 13:48:08 -0400
+Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42CEB270A;
+        Fri, 14 Jul 2023 10:47:48 -0700 (PDT)
+Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-7835ae70e46so89119439f.3;
+        Fri, 14 Jul 2023 10:47:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689356829; x=1691948829;
+        d=1e100.net; s=20221208; t=1689356840; x=1691948840;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=D5kyFLxcFf28C4xAlfiZC8aBDg3X1GkkexShGXOhf5Q=;
-        b=apBiZkb/qMovIJHt8wf8E2fa6ZIMQ1rUlEF21JcKAyZ0paIAwVvzEDIAMidm+evptV
-         QbIU1CEUionoZEdPDKhHdIYiteQya9iMINscnBzITCLPvKbiYzSLWO1ImiCEJhcZNgkY
-         C+dkPC5OVg5+kTX+EUQttWsOI05Xd1fF7pqXiEUyQC8rj6yltBwmIcDQiRIYLjSYz0qb
-         r9vpkOcfyqBPU935p2nXpey40zKBWHFQWIskzNZckDxDgK0lQATMkplmws2uu0vAUout
-         l7Aem1ya0eGsuZnebcqRE7hOtwKFw7l3G2vl4fJ6B+N7Cf3RIddGc2COqe22uIMj0lco
-         7RUg==
-X-Gm-Message-State: ABy/qLabeskL6qFy9H5wWm6yxotmTclPelEBme9DlzQ2BLmBvNLy6qw8
-        7L011XEPKM7SzKkNEDUkaQ==
-X-Google-Smtp-Source: APBJJlGzW/bj6MXlxr0qrKz4Hhu7XzH+1onl+UixPsg/LSIkCxNFlpKp8c9aZSX7kZcWE0JPfiCpHA==
-X-Received: by 2002:a05:6e02:1544:b0:348:4ab6:98cc with SMTP id j4-20020a056e02154400b003484ab698ccmr3137663ilu.14.1689356828681;
-        Fri, 14 Jul 2023 10:47:08 -0700 (PDT)
+        bh=ZsEsfKX6fx2CPTk8lEiCg36FX1KD3cI2EzS3pEP/M1Y=;
+        b=Iz+iZ4mY9aEioEgjtcQS8qN8ehsbWSu7h84PGSz3DqxYz+TjMq+n8lzBxNyKo30c14
+         cr1S7bQd3pWe9ata1tsIDgYVDS0kYLZ4OBFlrokmZ8dLPWdhPRh55gbGJooHigfmBTOv
+         njuXzt2ZtWYClBt1UiPJKkYfg10paOQy3Nu1wcHRlBoRYr2mPzIq87oKZc0TwEg1Dj01
+         yCAp3VS78ZiY322kMyMKTiCaZJvnLIuCXyAztvqqM1HQL/EW8dnClIjYILZS3KvHTYmf
+         7UNheC+DmVBQAcCgXL3Kl9WsU4PdacnmUFFhCpcVy6yIbyYv3YUNP4oAGwrFdEtzTdf3
+         Jx8A==
+X-Gm-Message-State: ABy/qLYkbHvukrVG4T3pRmy5wgVlnnTlzeriz5snMfuCL0OdMG32QSKp
+        5SdKmV7cwyul8XOQgktPdg==
+X-Google-Smtp-Source: APBJJlHtkf2StfuBbwBf8coPVemYiYLnfRrMm7RxOWmK/J92J/Cq3PmUW0tNGo59CjkyVi79zBYnag==
+X-Received: by 2002:a5e:da4c:0:b0:783:5e4e:b785 with SMTP id o12-20020a5eda4c000000b007835e4eb785mr5813551iop.19.1689356840237;
+        Fri, 14 Jul 2023 10:47:20 -0700 (PDT)
 Received: from robh_at_kernel.org ([64.188.179.250])
-        by smtp.gmail.com with ESMTPSA id q16-20020a920510000000b00345a769de67sm2919502ile.15.2023.07.14.10.47.07
+        by smtp.gmail.com with ESMTPSA id b25-20020a05663801b900b0042b3a328ee0sm2682686jaq.166.2023.07.14.10.47.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 10:47:07 -0700 (PDT)
-Received: (nullmailer pid 4058855 invoked by uid 1000);
-        Fri, 14 Jul 2023 17:46:54 -0000
+        Fri, 14 Jul 2023 10:47:19 -0700 (PDT)
+Received: (nullmailer pid 4059057 invoked by uid 1000);
+        Fri, 14 Jul 2023 17:47:01 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
-        Vadim Pasternak <vadimp@nvidia.com>,
-        Riku Voipio <riku.voipio@iki.fi>
-Cc:     devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
+To:     Colin Leroy <colin@colino.net>
+Cc:     devicetree@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] leds: Explicitly include correct DT includes
-Date:   Fri, 14 Jul 2023 11:46:50 -0600
-Message-Id: <20230714174651.4058753-1-robh@kernel.org>
+Subject: [PATCH] macintosh: Explicitly include correct DT includes
+Date:   Fri, 14 Jul 2023 11:46:54 -0600
+Message-Id: <20230714174654.4058898-1-robh@kernel.org>
 X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
         FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -74,187 +72,154 @@ explicitly include the correct includes.
 
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- drivers/leds/leds-ariel.c         | 2 +-
- drivers/leds/leds-cpcap.c         | 2 +-
- drivers/leds/leds-cr0014114.c     | 2 +-
- drivers/leds/leds-is31fl32xx.c    | 1 -
- drivers/leds/leds-mlxreg.c        | 1 -
- drivers/leds/leds-pca9532.c       | 1 -
- drivers/leds/leds-pm8058.c        | 1 -
- drivers/leds/leds-pwm.c           | 2 +-
- drivers/leds/leds-spi-byte.c      | 2 +-
- drivers/leds/leds-syscon.c        | 3 +--
- drivers/leds/leds-ti-lmu-common.c | 2 +-
- drivers/leds/leds-tlc591xx.c      | 1 -
- drivers/leds/rgb/leds-qcom-lpg.c  | 1 -
- 13 files changed, 7 insertions(+), 14 deletions(-)
+ drivers/macintosh/ams/ams.h              |  1 -
+ drivers/macintosh/smu.c                  |  1 +
+ drivers/macintosh/therm_adt746x.c        |  2 ++
+ drivers/macintosh/therm_windtunnel.c     | 22 ++++++++++++----------
+ drivers/macintosh/windfarm_lm75_sensor.c |  4 ++--
+ 5 files changed, 17 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/leds/leds-ariel.c b/drivers/leds/leds-ariel.c
-index 49e1bddaa15e..dd319c7e385f 100644
---- a/drivers/leds/leds-ariel.c
-+++ b/drivers/leds/leds-ariel.c
-@@ -7,8 +7,8 @@
+diff --git a/drivers/macintosh/ams/ams.h b/drivers/macintosh/ams/ams.h
+index 2c159c8844c1..e053c1515460 100644
+--- a/drivers/macintosh/ams/ams.h
++++ b/drivers/macintosh/ams/ams.h
+@@ -8,7 +8,6 @@
+ #include <linux/mutex.h>
+ #include <linux/spinlock.h>
+ #include <linux/types.h>
+-#include <linux/of_device.h>
  
- #include <linux/module.h>
- #include <linux/leds.h>
+ enum ams_irq {
+ 	AMS_IRQ_FREEFALL = 0x01,
+diff --git a/drivers/macintosh/smu.c b/drivers/macintosh/smu.c
+index 5183a00529f5..b2b78a53e532 100644
+--- a/drivers/macintosh/smu.c
++++ b/drivers/macintosh/smu.c
+@@ -37,6 +37,7 @@
+ #include <linux/of_address.h>
+ #include <linux/of_irq.h>
+ #include <linux/of_platform.h>
 +#include <linux/platform_device.h>
- #include <linux/regmap.h>
--#include <linux/of_platform.h>
+ #include <linux/slab.h>
+ #include <linux/sched/signal.h>
  
- enum ec_index {
- 	EC_BLUE_LED	= 0x01,
-diff --git a/drivers/leds/leds-cpcap.c b/drivers/leds/leds-cpcap.c
-index 7d41ce8c9bb1..87354f17644b 100644
---- a/drivers/leds/leds-cpcap.c
-+++ b/drivers/leds/leds-cpcap.c
-@@ -7,7 +7,7 @@
- #include <linux/mfd/motorola-cpcap.h>
- #include <linux/module.h>
- #include <linux/mutex.h>
--#include <linux/of_device.h>
+diff --git a/drivers/macintosh/therm_adt746x.c b/drivers/macintosh/therm_adt746x.c
+index 53ea56b286f9..00693741f744 100644
+--- a/drivers/macintosh/therm_adt746x.c
++++ b/drivers/macintosh/therm_adt746x.c
+@@ -25,7 +25,9 @@
+ #include <linux/kthread.h>
+ #include <linux/moduleparam.h>
+ #include <linux/freezer.h>
 +#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/regmap.h>
- #include <linux/regulator/consumer.h>
-diff --git a/drivers/leds/leds-cr0014114.c b/drivers/leds/leds-cr0014114.c
-index c87686bd7c18..b33bca397ea6 100644
---- a/drivers/leds/leds-cr0014114.c
-+++ b/drivers/leds/leds-cr0014114.c
-@@ -4,8 +4,8 @@
+ #include <linux/of_platform.h>
++#include <linux/platform_device.h>
  
- #include <linux/delay.h>
- #include <linux/leds.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
- #include <linux/spi/spi.h>
- #include <linux/workqueue.h>
- 
-diff --git a/drivers/leds/leds-is31fl32xx.c b/drivers/leds/leds-is31fl32xx.c
-index 72cb56d305c4..b0a0be77bb33 100644
---- a/drivers/leds/leds-is31fl32xx.c
-+++ b/drivers/leds/leds-is31fl32xx.c
-@@ -15,7 +15,6 @@
- #include <linux/leds.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- 
- /* Used to indicate a device has no such register */
- #define IS31FL32XX_REG_NONE 0xFF
-diff --git a/drivers/leds/leds-mlxreg.c b/drivers/leds/leds-mlxreg.c
-index b7855c93bd72..39210653acf7 100644
---- a/drivers/leds/leds-mlxreg.c
-+++ b/drivers/leds/leds-mlxreg.c
-@@ -8,7 +8,6 @@
- #include <linux/io.h>
- #include <linux/leds.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
- #include <linux/platform_data/mlxreg.h>
- #include <linux/platform_device.h>
- #include <linux/regmap.h>
-diff --git a/drivers/leds/leds-pca9532.c b/drivers/leds/leds-pca9532.c
-index 8b5c62083e50..bf8bb8fc007c 100644
---- a/drivers/leds/leds-pca9532.c
-+++ b/drivers/leds/leds-pca9532.c
-@@ -18,7 +18,6 @@
- #include <linux/leds-pca9532.h>
- #include <linux/gpio/driver.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- 
- /* m =  num_leds*/
- #define PCA9532_REG_INPUT(i)	((i) >> 3)
-diff --git a/drivers/leds/leds-pm8058.c b/drivers/leds/leds-pm8058.c
-index b9233f14b646..3f49a5181892 100644
---- a/drivers/leds/leds-pm8058.c
-+++ b/drivers/leds/leds-pm8058.c
-@@ -4,7 +4,6 @@
- #include <linux/leds.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/pm.h>
- #include <linux/regmap.h>
-diff --git a/drivers/leds/leds-pwm.c b/drivers/leds/leds-pwm.c
-index 29194cc382af..38624e5161d8 100644
---- a/drivers/leds/leds-pwm.c
-+++ b/drivers/leds/leds-pwm.c
-@@ -12,7 +12,7 @@
- #include <linux/module.h>
- #include <linux/kernel.h>
- #include <linux/platform_device.h>
--#include <linux/of_platform.h>
-+#include <linux/of.h>
- #include <linux/leds.h>
- #include <linux/err.h>
- #include <linux/pwm.h>
-diff --git a/drivers/leds/leds-spi-byte.c b/drivers/leds/leds-spi-byte.c
-index 2c7ffc3c78e6..9d91f21842f2 100644
---- a/drivers/leds/leds-spi-byte.c
-+++ b/drivers/leds/leds-spi-byte.c
-@@ -30,7 +30,7 @@
- 
- #include <linux/leds.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/spi/spi.h>
- #include <linux/mutex.h>
- #include <uapi/linux/uleds.h>
-diff --git a/drivers/leds/leds-syscon.c b/drivers/leds/leds-syscon.c
-index e38abb5e60c1..360a376fa738 100644
---- a/drivers/leds/leds-syscon.c
-+++ b/drivers/leds/leds-syscon.c
-@@ -7,8 +7,7 @@
+ #include <asm/machdep.h>
+ #include <asm/io.h>
+diff --git a/drivers/macintosh/therm_windtunnel.c b/drivers/macintosh/therm_windtunnel.c
+index 18a982454321..52289de15058 100644
+--- a/drivers/macintosh/therm_windtunnel.c
++++ b/drivers/macintosh/therm_windtunnel.c
+@@ -1,9 +1,9 @@
+-/* 
++/*
+  *   Creation Date: <2003/03/14 20:54:13 samuel>
+  *   Time-stamp: <2004/03/20 14:20:59 samuel>
+- *   
++ *
+  *	<therm_windtunnel.c>
+- *	
++ *
+  *	The G4 "windtunnel" has a single fan controlled by an
+  *	ADM1030 fan controller and a DS1775 thermostat.
+  *
+@@ -20,11 +20,11 @@
+  *   Copyright (C) 2003, 2004 Samuel Rydh (samuel@ibrium.se)
+  *
+  *   Loosely based upon 'thermostat.c' written by Benjamin Herrenschmidt
+- *   
++ *
+  *   This program is free software; you can redistribute it and/or
+  *   modify it under the terms of the GNU General Public License
+  *   as published by the Free Software Foundation
+- *   
++ *
   */
- #include <linux/io.h>
+ 
+ #include <linux/types.h>
+@@ -36,7 +36,9 @@
+ #include <linux/i2c.h>
  #include <linux/init.h>
--#include <linux/of_device.h>
--#include <linux/of_address.h>
+ #include <linux/kthread.h>
 +#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/stat.h>
- #include <linux/slab.h>
-diff --git a/drivers/leds/leds-ti-lmu-common.c b/drivers/leds/leds-ti-lmu-common.c
-index d7f10ad721ba..b2491666b5dc 100644
---- a/drivers/leds/leds-ti-lmu-common.c
-+++ b/drivers/leds/leds-ti-lmu-common.c
-@@ -7,7 +7,7 @@
+ #include <linux/of_platform.h>
++#include <linux/platform_device.h>
  
- #include <linux/bitops.h>
- #include <linux/err.h>
+ #include <asm/machdep.h>
+ #include <asm/io.h>
+@@ -48,10 +50,10 @@
+ static struct {
+ 	volatile int		running;
+ 	struct task_struct	*poll_task;
+-	
++
+ 	struct mutex	 	lock;
+ 	struct platform_device	*of_dev;
+-	
++
+ 	struct i2c_client	*thermostat;
+ 	struct i2c_client	*fan;
+ 
+@@ -127,7 +129,7 @@ write_reg( struct i2c_client *cl, int reg, int data, int len )
+ 	tmp[1] = (len == 1) ? data : (data >> 8);
+ 	tmp[2] = data;
+ 	len++;
+-	
++
+ 	if( i2c_master_send(cl, tmp, len) != len )
+ 		return -ENODEV;
+ 	return 0;
+@@ -369,7 +371,7 @@ attach_fan( struct i2c_client *cl )
+ }
+ 
+ static int
+-attach_thermostat( struct i2c_client *cl ) 
++attach_thermostat( struct i2c_client *cl )
+ {
+ 	int hyst_temp, os_temp, temp;
+ 
+@@ -378,7 +380,7 @@ attach_thermostat( struct i2c_client *cl )
+ 
+ 	if( (temp=read_reg(cl, 0, 2)) < 0 )
+ 		goto out;
+-	
++
+ 	/* temperature sanity check */
+ 	if( temp < 0x1600 || temp > 0x3c00 )
+ 		goto out;
+diff --git a/drivers/macintosh/windfarm_lm75_sensor.c b/drivers/macintosh/windfarm_lm75_sensor.c
+index 48dbdb2bda15..6b26e0f92105 100644
+--- a/drivers/macintosh/windfarm_lm75_sensor.c
++++ b/drivers/macintosh/windfarm_lm75_sensor.c
+@@ -14,7 +14,7 @@
+ #include <linux/init.h>
+ #include <linux/wait.h>
+ #include <linux/i2c.h>
 -#include <linux/of_device.h>
-+#include <linux/property.h>
++#include <linux/of.h>
+ #include <asm/machdep.h>
+ #include <asm/io.h>
+ #include <asm/sections.h>
+@@ -128,7 +128,7 @@ static int wf_lm75_probe(struct i2c_client *client)
+ 		name = "cpu-inlet-temp-1";
+ 	else
+ 		return -ENXIO;
+- 	
++
  
- #include <linux/leds-ti-lmu-common.h>
- 
-diff --git a/drivers/leds/leds-tlc591xx.c b/drivers/leds/leds-tlc591xx.c
-index dfc6fb2b3e52..945e831ef4ac 100644
---- a/drivers/leds/leds-tlc591xx.c
-+++ b/drivers/leds/leds-tlc591xx.c
-@@ -8,7 +8,6 @@
- #include <linux/leds.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/regmap.h>
- #include <linux/slab.h>
- 
-diff --git a/drivers/leds/rgb/leds-qcom-lpg.c b/drivers/leds/rgb/leds-qcom-lpg.c
-index 59581b3e25ca..fd7676aa243d 100644
---- a/drivers/leds/rgb/leds-qcom-lpg.c
-+++ b/drivers/leds/rgb/leds-qcom-lpg.c
-@@ -9,7 +9,6 @@
- #include <linux/led-class-multicolor.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/pwm.h>
- #include <linux/regmap.h>
+ 	lm = kzalloc(sizeof(struct wf_lm75_sensor), GFP_KERNEL);
+ 	if (lm == NULL)
 -- 
 2.40.1
 
