@@ -2,82 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F41EF7538AB
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 12:47:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F31D7538AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 12:47:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236148AbjGNKrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 06:47:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48806 "EHLO
+        id S236202AbjGNKra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 06:47:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234989AbjGNKrF (ORCPT
+        with ESMTP id S235776AbjGNKr2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 06:47:05 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA67B1720;
-        Fri, 14 Jul 2023 03:47:04 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 7ECEB1FD8E;
-        Fri, 14 Jul 2023 10:47:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1689331623; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=i6h55HQftgQvvkADA67nYyBV+C/0slxTlkvYG6YPBpQ=;
-        b=JZN2yI8rzL18Kd+zDHxd/TnFZF8NcWznRSUZbF+sDr4OinPC2cSxFcSkTAzJSwhPTy5GER
-        8RR7GB8vyS+yJ9Vrf2sPB8e5nfnWH646KN34d0NT1VKITWZcIQd3H5Uf54bGaP42JBn9z2
-        caBWuuGKXdn5VW0NsACfB7CapldgqfM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1689331623;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=i6h55HQftgQvvkADA67nYyBV+C/0slxTlkvYG6YPBpQ=;
-        b=/epw2TagvC6JEinSwpHEJxmj1PG/pM/YY2ZPJdrmm2KOfeJr3f2ATmf8+LQH8TDFG9gdkX
-        Z7hM/OF80gyVoJCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 060C213A15;
-        Fri, 14 Jul 2023 10:47:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id qw1yO6YnsWQgHgAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Fri, 14 Jul 2023 10:47:02 +0000
-Message-ID: <12d980f4-e681-378d-6d94-da5cc6be5210@suse.de>
-Date:   Fri, 14 Jul 2023 12:47:02 +0200
+        Fri, 14 Jul 2023 06:47:28 -0400
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DBE430FF
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 03:47:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689331646; x=1720867646;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=tOsxOI6FQngHJON6MN20wMAy7jjyncONocREl6UC/8c=;
+  b=B1AX2F0P/lJKdAyXD9Ok3WDlWGQ6KdNjJ0Jv9OE56OK7nlBmTYMDKPFe
+   17VJ1rkRR9KtHxp2JjPLHQoUX2CNdZcVzFYpQmXX1FcVq7ww2qnM46Foy
+   xYFxyJWAu7PCsImxAsupN36FT1Andz5By4RvJxg9auOxZ6Fo/tdFp5SLV
+   2cMxzc8BmWV79rbFJR+eLIbteZNuftWNdwbMNDAiQ6dmWww5bMP99/Svs
+   KtUmIcRji4Nn1mUHHEA2O9BPBtDYUEPWh1+GeAuTzl1BesvTf6FaSJcdZ
+   iRk1ssDNk+0W3kN4anrnNmytq6TVWL396kBAivTGjTnI82GRfLQMXXimn
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="429210058"
+X-IronPort-AV: E=Sophos;i="6.01,205,1684825200"; 
+   d="scan'208";a="429210058"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 03:47:25 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="835990500"
+X-IronPort-AV: E=Sophos;i="6.01,205,1684825200"; 
+   d="scan'208";a="835990500"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP; 14 Jul 2023 03:47:22 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qKGKX-002dBW-0w;
+        Fri, 14 Jul 2023 13:47:21 +0300
+Date:   Fri, 14 Jul 2023 13:47:21 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Alexander Potapenko <glider@google.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org, pcc@google.com,
+        andreyknvl@gmail.com, linux@rasmusvillemoes.dk,
+        yury.norov@gmail.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, eugenis@google.com
+Subject: Re: [v2 3/5] arm64: mte: implement CONFIG_ARM64_MTE_COMP
+Message-ID: <ZLEnublo8C5yX3si@smile.fi.intel.com>
+References: <20230713125706.2884502-1-glider@google.com>
+ <20230713125706.2884502-4-glider@google.com>
+ <ZLAzG+Ue3JqDM/F3@smile.fi.intel.com>
+ <CAG_fn=W4Uv2YaO=Udwo80_f74y8o0+WWVVqTNK3iW5VDs5B8+w@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v3 00/18] fbdev: Remove FBINFO_DEFAULT and
- FBINFO_FLAG_DEFAULT flags
-Content-Language: en-US
-To:     Dan Carpenter <dan.carpenter@linaro.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-fbdev@vger.kernel.org, kvm@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-sh@vger.kernel.org,
-        deller@gmx.de, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        javierm@redhat.com, dri-devel@lists.freedesktop.org,
-        linux-input@vger.kernel.org, linux-nvidia@lists.surfsouth.com,
-        linux-omap@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-geode@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
-References: <20230714075155.5686-1-tzimmermann@suse.de>
- <CAMuHMdWoeyJPAgPgFi545SJFcaVCgZi1-zW2N5cBeU9BnHgo1w@mail.gmail.com>
- <47a3ab8d-5e8c-db2c-fcde-5c2b1bac32aa@suse.de>
- <b3c23ea3-f46c-43b9-b12a-9f55de2294c6@kadam.mountain>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-In-Reply-To: <b3c23ea3-f46c-43b9-b12a-9f55de2294c6@kadam.mountain>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------vCsdIumFTGHoRkqMx9FMKvYN"
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAG_fn=W4Uv2YaO=Udwo80_f74y8o0+WWVVqTNK3iW5VDs5B8+w@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,76 +71,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------vCsdIumFTGHoRkqMx9FMKvYN
-Content-Type: multipart/mixed; boundary="------------Nh1ETrjj519EbQRvF1jjXvLz";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-fbdev@vger.kernel.org,
- kvm@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-sh@vger.kernel.org,
- deller@gmx.de, linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
- amd-gfx@lists.freedesktop.org, javierm@redhat.com,
- dri-devel@lists.freedesktop.org, linux-input@vger.kernel.org,
- linux-nvidia@lists.surfsouth.com, linux-omap@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-geode@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
-Message-ID: <12d980f4-e681-378d-6d94-da5cc6be5210@suse.de>
-Subject: Re: [PATCH v3 00/18] fbdev: Remove FBINFO_DEFAULT and
- FBINFO_FLAG_DEFAULT flags
-References: <20230714075155.5686-1-tzimmermann@suse.de>
- <CAMuHMdWoeyJPAgPgFi545SJFcaVCgZi1-zW2N5cBeU9BnHgo1w@mail.gmail.com>
- <47a3ab8d-5e8c-db2c-fcde-5c2b1bac32aa@suse.de>
- <b3c23ea3-f46c-43b9-b12a-9f55de2294c6@kadam.mountain>
-In-Reply-To: <b3c23ea3-f46c-43b9-b12a-9f55de2294c6@kadam.mountain>
+On Fri, Jul 14, 2023 at 11:25:41AM +0200, Alexander Potapenko wrote:
 
---------------Nh1ETrjj519EbQRvF1jjXvLz
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+...
 
-SGkNCg0KQW0gMTQuMDcuMjMgdW0gMTI6Mjkgc2NocmllYiBEYW4gQ2FycGVudGVyOg0KPiBP
-biBGcmksIEp1bCAxNCwgMjAyMyBhdCAxMjoyNDowNVBNICswMjAwLCBUaG9tYXMgWmltbWVy
-bWFubiB3cm90ZToNCj4+Pg0KPj4+PiAgICAgZmJkZXY6IFJlbW92ZSBmbGFnIEZCSU5GT19E
-RUZBVUxUIGZyb20gZmJkZXYgZHJpdmVycw0KPj4+PiAgICAgZmJkZXY6IFJlbW92ZSBmbGFn
-IEZCSU5GT19ERUZBVUxUIGZyb20gZmJkZXYgZHJpdmVycw0KPj4+PiAgICAgZmJkZXY6IFJl
-bW92ZSBmbGFnIEZCSU5GT19ERUZBVUxUIGZyb20gZmJkZXYgZHJpdmVycw0KPj4+PiAgICAg
-ZmJkZXY6IFJlbW92ZSBmbGFnIEZCSU5GT19ERUZBVUxUIGZyb20gZmJkZXYgZHJpdmVycw0K
-Pj4NCj4+DQo+PiBJIHdhc24ndCBoYXBweSBhYm91dCB0aGlzIGVpdGhlci4gQnV0IEkgY291
-bGQgbm90IGNvbWUgdXAgd2l0aCBhIGRlc2NyaXB0aW9uDQo+PiB0aGF0IGZpdHMgaW50byB0
-aGUgNzQtY2hhciBsaW1pdCBmb3IgZWFjaCBjb21taXQuIFRoZXkgb25seSBkaWZmZXIgaW4g
-dGhlDQo+PiBtZXRob2Qgb2YgbWVtb3J5IGFsbG9jYXRpb24uIERvIHlvdSBoYXZlIGFueSBp
-ZGVhcz8NCj4gDQo+IGZiZGV2OiBSZW1vdmUgRkJJTkZPX0RFRkFVTFQgZnJvbSBzdGF0aWMg
-c3RydWN0cw0KPiBmYmRldjogUmVtb3ZlIEZCSU5GT19ERUZBVUxUIGZyb20ga3phbGxvYygp
-IHN0cnVjdHMNCj4gZmJkZXY6IFJlbW92ZSBGQklORk9fREVGQVVMVCBmcm9tIGRldm1fa3ph
-bGxvYygpIHN0cnVjdHMNCg0KU291bmRzIGdvb2QsIEknbGwgdXNlIHRoYXQuIFRoYW5rcyEN
-Cg0KQmVzdCByZWdhcmRzDQpUaG9tYXMNCg0KPiANCj4gcmVnYXJkcywNCj4gZGFuIGNhcnBl
-bnRlcg0KPiANCg0KLS0gDQpUaG9tYXMgWmltbWVybWFubg0KR3JhcGhpY3MgRHJpdmVyIERl
-dmVsb3Blcg0KU1VTRSBTb2Z0d2FyZSBTb2x1dGlvbnMgR2VybWFueSBHbWJIDQpGcmFua2Vu
-c3RyYXNzZSAxNDYsIDkwNDYxIE51ZXJuYmVyZywgR2VybWFueQ0KR0Y6IEl2byBUb3Rldiwg
-QW5kcmV3IE15ZXJzLCBBbmRyZXcgTWNEb25hbGQsIEJvdWRpZW4gTW9lcm1hbg0KSFJCIDM2
-ODA5IChBRyBOdWVybmJlcmcpDQo=
+> > Not sure why fls() / BIT() can't be used directly instead of these functions,
+> > but okay, they are not too ugly.
+> 
+> They can't be used directly because 128 maps to 0, but I can sure
+> simplify them a bit.
 
---------------Nh1ETrjj519EbQRvF1jjXvLz--
+Right, that's why I'm okay with the current implementation. But
+if you want to rewrite, up to you.
 
---------------vCsdIumFTGHoRkqMx9FMKvYN
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+...
 
------BEGIN PGP SIGNATURE-----
+> > > +                     if (pos % 2 == 0)
+> >
+> > Would be better to keep this aligned with above?
+> >
+> >                         if (pos % 2)
+> >                                 ...
+> >                         else
+> >                                 ...
+> 
+> It would, but i % 2 above didn't survive the rewrite, so I assume it
+> is fine to keep pos % 2 == 0 as is.
 
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmSxJ6YFAwAAAAAACgkQlh/E3EQov+Bc
-Ww//WC0tumM5S+EfD4Q3tfllL5EPhego1FSEQVXnQdTPZc8IN3W/NQ8i9WsQ6fo9LKFvVgpf95fb
-Kfd8xqKPvezuQuHVb2IAFP7ibxikAyWlb4WNOFJB4Ah0CMaPvo84TGqc1PsVTLxN4RjfxW1TIWo/
-tTSL1DLFkQcZyyf9Ob45Xhziifbry/gBRBLnFod84polfZ43cqBSY3/Hq2LjXpJCQTj9Hqr46qe6
-B48hMgAHnh80y+nol5nDEpssM51l6ZHeoHTjmyzfZRGqSKVPLWqIj+ptehPA119yW2bUvFILYbJy
-RbZitdzmNooqtDyQ+6Pz4UKvyYr0nROzPQSwNoOLXMl8RZ5THCdy0yS734X7KL5NoVH0CM7O7olG
-5tDK5ZzrMItI+Q1OZALGcEJ6T+gFPn+lIvE8EIeY0aFS+rrtSYA2ATXOjI08LVKAF9ATH7+RiDQX
-owVo7azYHBZshazZ1oYIzErxlpf1eBhF9c8I2+nL7uVgG4QtfFt/xIVifp/DOWfRdRNKgelVhi33
-a9bW51tp/GdqwqIdJ/QeLWUpbJT7kDVinHpA8PqYaTI3Z6TlWR1n+/2UN7pj2QE3YSwIwLBMdgv4
-ZD+RBXHdIo8W4ChCFELPyYjW9ixpmLgCNjta6dhBpYODkuM0XtTLdHmTqOkISlup+qdi9vk/9H8t
-Cbg=
-=ZWbe
------END PGP SIGNATURE-----
+Not big deal, but less characters improve the brain process, so
 
---------------vCsdIumFTGHoRkqMx9FMKvYN--
+	if (pos % 2)
+
+kinda quicker to read and understand in my opinion.
+
+...
+
+> > > +EXPORT_SYMBOL(ea0_storage_size);
+> >
+> > Btw, can we go to the namespaced export from day 1?
+> 
+> Am I getting it right that I just need to change EXPORT_SYMBOL to
+> EXPORT_SYMBOL_NS and import the namespace in
+> arch/arm64/mm/test_mtecomp.c?
+> I.e. MODULE_IMPORT_NS is not needed in mteswap_comp.c, because it is
+> linked into the kernel?
+
+I think you always need to include MODULE_IMPORT_NS for the sake of
+robustness of the code.
+
+...
+
+> > > +             if (sizes[i] > largest) {
+> > > +                     largest = sizes[i];
+> > > +                     largest_idx = i;
+> > > +             }
+> >
+> > (alas max_array() can't be used here)
+> There's no max_array() in the kernel, am I missing something?
+
+There will be (via ASoC tree and maybe IIO tree later on) in v6.6-rc1, but
+as I think it can't be used anyway because you need the index of the value
+as well.
+
+...
+
+> > > +void ea0_release_handle(u64 handle)
+> > > +{
+> > > +     void *storage = ea0_storage(handle);
+> > > +     int size = ea0_storage_size(handle);
+> > > +     struct kmem_cache *c;
+> >
+> > > +     if (!handle || !storage)
+> > > +             return;
+> >
+> > You use handle before this check. Haven't you run static analysers?
+> 
+> Sparse doesn't report anything in these files, are there any
+> alternatives adopted in the kernel?
+> 
+> Note that handle is not dereferenced above, so there's no error per se.
+
+Even if it's a simple pointer arithmetics, the storage might (theoretically?)
+have a dangling pointer, no?
+
+> Yet (as pointed out below) these checks are redundant, so I'll remove
+> some of them.
+
+...
+
+> > > +
+> >
+> > Unneeded blank line.
+> 
+> I think there's no agreement on this in the kernel code, but my
+> version is more popular:
+> 
+> $ git grep -B2 '^module_init(' | grep '\-}' -A2 | grep module_init | wc
+>    2688    2707  164023
+> $ git grep -B2 '^module_init(' | grep '\-}' -A1 | grep module_init | wc
+>     505     523   30989
+
+Even though, there is no need for this blank line. And note, for better
+argument, compare this for the new code added let's say for the past 2
+years. I believe numbers will tend to my variant.
+
+I.o.w. you need to count on trends and not only on frequencies.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
