@@ -2,113 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C461B753E8B
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 17:13:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9EED753E99
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 17:16:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236108AbjGNPN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 11:13:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44584 "EHLO
+        id S236065AbjGNPQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 11:16:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235268AbjGNPN2 (ORCPT
+        with ESMTP id S235872AbjGNPQm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 11:13:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A4162D4B;
-        Fri, 14 Jul 2023 08:13:26 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2270361D43;
-        Fri, 14 Jul 2023 15:13:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80E96C433C7;
-        Fri, 14 Jul 2023 15:13:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689347605;
-        bh=/ms++gXmzcCxNeQJmcaIIDi2dWJOZMkl3ilZS245fbU=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=e9mTxiqT5SFcazYh/KzxJ9wXw+vBIuFDC8WF4/Okvoij7KXNzYOfm/RvZSWaTD8bk
-         nUptLTKsO/05/Wh8tKRGkHihY0wSXI4vimazLsZU168iyWjdxaJCgDVoVz7LoYIY3L
-         7q6/PMuoR0I5oCKZ6WQd4yNHt2rZptHITESUDPUYoc4wPjfNgejAa2ut6QoK115L8e
-         5NyTlO5PXgsHtrE4ApKb00z4ugJQWbtVIM8acy9YeG4fuZVv0XV4v5ectSv7UzbUV3
-         ahQMO2L7JTXmc9ldAL0BnrnNqXo9kYd/JsM8tAjwIE92XDtrbRzldP2YbHZt7qvSQn
-         mXYFq2F+eWAMQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 194ABCE0093; Fri, 14 Jul 2023 08:13:25 -0700 (PDT)
-Date:   Fri, 14 Jul 2023 08:13:25 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Gao Xiang <hsiangkao@linux.alibaba.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sandeep Dhavale <dhavale@google.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-erofs@lists.ozlabs.org, xiang@kernel.org,
-        Will Shiu <Will.Shiu@mediatek.com>, kernel-team@android.com,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH v1] rcu: Fix and improve RCU read lock checks when
- !CONFIG_DEBUG_LOCK_ALLOC
-Message-ID: <41a364d7-9dfa-4cd6-95f0-63f09c3a84b6@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <f1c60dcb-e32f-7b7e-bf0d-5dec999e9299@linux.alibaba.com>
- <CAEXW_YSODXRfgkR0D2G-x=0uZdsqvF3kZL+LL3DcRX-5CULJ1Q@mail.gmail.com>
- <894a3b64-a369-7bc6-c8a8-0910843cc587@linux.alibaba.com>
- <CAEXW_YSM1yik4yWTgZoxCS9RM6TbsL26VCVCH=41+uMA8chfAQ@mail.gmail.com>
- <58b661d0-0ebb-4b45-a10d-c5927fb791cd@paulmck-laptop>
- <7d433fac-a62d-4e81-b8e5-57cf5f2d1d55@paulmck-laptop>
- <058e7ee9-0380-eb1b-d9a8-b184cba6ed53@linux.alibaba.com>
- <CAEXW_YQCpUsPz24H4Mux6wOH1=RFRR-gsXLFTbJ37MgUJo3kCw@mail.gmail.com>
- <fccca41d-8a72-27cf-e589-409f54cd5811@linux.alibaba.com>
- <20230714105615.1ff9b8d2@gandalf.local.home>
+        Fri, 14 Jul 2023 11:16:42 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69D552D43;
+        Fri, 14 Jul 2023 08:16:41 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-314172bac25so2134298f8f.3;
+        Fri, 14 Jul 2023 08:16:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689347800; x=1691939800;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=02O0pKuXfrVTJZa3UAhgaDlxYfuP+KHC2VebuqxgPlk=;
+        b=AKf8ll+oHQglE5FvBsDTP5P2sfOnQrZU4KTSe02P+DsU4oLOeB8mR4sLlH+/Hh5lDY
+         TWoqx0/KE9cVCMHGiINt4KV5WgkWyruO0CQ4p2rvcjkl9mx8HtkFOOcBXaK5Jv2igjqH
+         VsS55c4/0KdSbRbq/zVqKjlUMY+chN8HlvJKRcLVdkW8O+9Od131ib3d4a+H66d22hl6
+         tNkXRH2Z5FJwryeALcv1rtX5nZ36jYHXIjXu8akuwHOIQ8k1BviU4K/8CZS0JHfzCR/7
+         HWgmFhy7MuN+xAerjqfKNAG5OuYD89uKCb23Y3MAPmcnqT2U/rgi6OiRc++3xycrnlve
+         ZpJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689347800; x=1691939800;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=02O0pKuXfrVTJZa3UAhgaDlxYfuP+KHC2VebuqxgPlk=;
+        b=R9alCmA06S/vA16UU6IcK24s/LoywQi+ZdCKCRDaX45pwyIkgVdxg/JEa8+UPlRNPc
+         F4AhKzwVi3tmCo+1mQYqP3b3JyZRnGGirFbglXaIDSWUvMnlMNinhrfU+KXH7ZMSku7k
+         nUW706EfAhkUCSDpNgdObZ9I3k6lmTgS56FAEkWTcnCUcSLFh328efWdhzJkb4Ds+Q3r
+         foBlJewNW+hEHWHC7QfNpNIwSbcw7eES+dRKkQb1wbQ0ijkVw+s4LwFGP4kK3j5k0J//
+         YLLCxmDTx76FqGe7hIz4Q7L0oJeg07rzhzJ7VRClLnjKfBGNLHgIlC9NarHz1ISXKiyd
+         eomQ==
+X-Gm-Message-State: ABy/qLaIs7FF+51r+Ixx09KihsRO6Lzatrrx4WGBZDdYrdn7Zm37J7Ew
+        EUy12c8avHH7ooIW8EefK22osvdmvCY=
+X-Google-Smtp-Source: APBJJlEIjmdgCDyZsZ9yyMxpzDJFKfMwl7Xlg0BiCo4BzrG/uHwZFMPyV+RSM3ljlf9LghJuwoAxfQ==
+X-Received: by 2002:a05:6000:1084:b0:313:e971:53af with SMTP id y4-20020a056000108400b00313e97153afmr4527897wrw.32.1689347799535;
+        Fri, 14 Jul 2023 08:16:39 -0700 (PDT)
+Received: from zambezi.local (ip-94-112-104-28.bb.vodafone.cz. [94.112.104.28])
+        by smtp.gmail.com with ESMTPSA id d9-20020adff2c9000000b00313e4d02be8sm11118922wrp.55.2023.07.14.08.16.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Jul 2023 08:16:38 -0700 (PDT)
+From:   Ilya Dryomov <idryomov@gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Ceph fix for 6.5-rc2
+Date:   Fri, 14 Jul 2023 17:16:21 +0200
+Message-ID: <20230714151629.69199-1-idryomov@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230714105615.1ff9b8d2@gandalf.local.home>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 10:56:15AM -0400, Steven Rostedt wrote:
-> On Fri, 14 Jul 2023 21:51:16 +0800
-> Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
-> 
-> > >> we need to work on
-> > >> CONFIG_PREEMPT_COUNT=n (why not?), we could just always trigger a
-> > >> workqueue for this.
-> > >>  
-> > > 
-> > > So CONFIG_PREEMPT_COUNT=n users don't deserve good performance? ;-)  
-> > 
-> > I'm not sure if non-preemptible kernel users really care about
-> > such sensitive latencies, I don't know, my 2 cents.
-> 
-> CONFIG_PREEMPT_COUNT=n is for *performance* but not for *latency*. That is,
-> they care about the overall performance (batch processing) but not
-> interactive performance.
+Hi Linus,
 
-Users of CONFIG_PREEMPT_COUNT=n do care about latency, but normally not
-in the sub-millisecond range.  If the February posting is representative
-(no idea, myself), these latencies are in the tens of milliseconds.
+The following changes since commit 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5:
 
-So one question is "why not both?"
+  Linux 6.5-rc1 (2023-07-09 13:53:13 -0700)
 
-One way would be for the call chain to indicate when in atomic context,
-and another would be use of SRCU, to Joel's earlier point.
+are available in the Git repository at:
 
-							Thanx, Paul
+  https://github.com/ceph/ceph-client.git tags/ceph-for-6.5-rc2
+
+for you to fetch changes up to a282a2f10539dce2aa619e71e1817570d557fc97:
+
+  libceph: harden msgr2.1 frame segment length checks (2023-07-13 13:18:57 +0200)
+
+----------------------------------------------------------------
+A fix to prevent a potential buffer overrun in the messenger, marked
+for stable.
+
+----------------------------------------------------------------
+Ilya Dryomov (1):
+      libceph: harden msgr2.1 frame segment length checks
+
+ net/ceph/messenger_v2.c | 41 ++++++++++++++++++++++++++---------------
+ 1 file changed, 26 insertions(+), 15 deletions(-)
