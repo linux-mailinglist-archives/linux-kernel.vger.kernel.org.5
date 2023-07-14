@@ -2,59 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57626753F7E
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 18:06:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DCF1753F90
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 18:11:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235835AbjGNQGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 12:06:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41708 "EHLO
+        id S236057AbjGNQLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 12:11:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235666AbjGNQGd (ORCPT
+        with ESMTP id S236016AbjGNQLB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 12:06:33 -0400
-Received: from mail.helmholz.de (mail.helmholz.de [217.6.86.34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F10D35A2
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 09:06:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=helmholz.de
-        ; s=dkim1; h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From:
-        Sender:Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=1k5GroWq4JCpJQz7Xqh6qwVBRPC8oeGSG7kWkRzGWT4=; b=KG4Aa75e/6yy5taZ7i3d7bcLJS
-        05lY5mkAPtUaQBFxHv50OoSOxUqXDQ2WReZ1UeuEDfPwVNhtl+KDPGfgP3r+CWIZsdQ81mNmsP1M3
-        3WGkDT6YMqOAHEf0QYa5EmzNSUGacZRxixlvVVQ7oFgUlmNSb2Gw3o2S3dVQbhKObepbdPgY3So/f
-        kmoPRB1IaQcTz3eXssfojTSkt/2lgmm6m6PIfM5Y7r72AizHwm2hF2GhwNWTI8EZnqjeUAz6rmiqX
-        ODYiFKBkqO1ZJ4pVb19JW4mxzOOeP4GLH+kLFWRQO3SXvLQs42zVOnk1kb1kjDXX9TtJK7p0Imst9
-        OOleXz7A==;
-Received: from [192.168.1.4] (port=29409 helo=SH-EX2013.helmholz.local)
-        by mail.helmholz.de with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
-        (Exim 4.96)
-        (envelope-from <Ante.Knezic@helmholz.de>)
-        id 1qKLJL-0000Qk-1M;
-        Fri, 14 Jul 2023 18:06:27 +0200
-Received: from linuxdev.helmholz.local (192.168.6.7) by
- SH-EX2013.helmholz.local (192.168.1.4) with Microsoft SMTP Server (TLS) id
- 15.0.1497.48; Fri, 14 Jul 2023 18:06:26 +0200
-From:   Ante Knezic <ante.knezic@helmholz.de>
-To:     <netdev@vger.kernel.org>
-CC:     <andrew@lunn.ch>, <f.fainelli@gmail.com>, <olteanv@gmail.com>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <linux-kernel@vger.kernel.org>,
-        Ante Knezic <ante.knezic@helmholz.de>
-Subject: [PATCH net-next v2] net: dsa: mv88e6xxx: Add erratum 3.14 for 88E6390X and 88E6190X
-Date:   Fri, 14 Jul 2023 18:06:12 +0200
-Message-ID: <20230714160612.11701-1-ante.knezic@helmholz.de>
-X-Mailer: git-send-email 2.11.0
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [192.168.6.7]
-X-ClientProxiedBy: SH-EX2013.helmholz.local (192.168.1.4) To
- SH-EX2013.helmholz.local (192.168.1.4)
-X-EXCLAIMER-MD-CONFIG: 2ae5875c-d7e5-4d7e-baa3-654d37918933
+        Fri, 14 Jul 2023 12:11:01 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D329B35A2;
+        Fri, 14 Jul 2023 09:10:58 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-668709767b1so1556729b3a.2;
+        Fri, 14 Jul 2023 09:10:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689351058; x=1691943058;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cJT4JvcoBJI1s+TLldc7ex2Zu19/5zU0zWJ4jSuF7fQ=;
+        b=CtXXldw+iZHVpX6qIr9p4KT37Kx7qBmRnpnq+S3lRaLk5dlTZ9RHGMt9UfPqB1dfEy
+         e7Pn1VYiykKBznEhBrSEDwFC466zDTJgOeYNcLthON3YP7It/50qqhCczUfwZzWGquq0
+         bYCkmdo1NsVyX/q/7a2PxHxJx73MhScc19QsQpSlK7+dbfsffeA1yJ+3B7fD0Tae0m12
+         V6haBs8KDTlG35Hy2gYqyjurxzyfukTCi9FY8tht9CzBbmTfydy0RBC2CpkYusld/06m
+         OxGR+GH4YeG1xEc+6HdjU2QgsODBNnkMT94yrqtpjDUoRneboKqhAfbSdV8p0cHBHS8k
+         qE/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689351058; x=1691943058;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cJT4JvcoBJI1s+TLldc7ex2Zu19/5zU0zWJ4jSuF7fQ=;
+        b=Ty4PZKUKF/DE+EVcVy2ZYy8fGcsamiY/qlaUKg7n3DDn9K9nWAl6xdMGkKw9uOCzWC
+         SoI83E4FBsyZRKbPIxwmile88Y9d8Ex6iWrL/GG82+DiMSs8zPx6iGr19tqacuTOiiph
+         Tw0SipwNSLpF1QmA1UhmvhMM88X0nY8JS5dG+mrkVRN+9CsJA9F4A2/sPNqU+G/eLdep
+         3c6jnADQl+788HNKPg3+BBTXxxJQUTtl/L+BISHTDG3g3H2yPLeWJ28HHEw0rNl0s8lK
+         oVs14n1NiFc6XJ9C1bZrl7+QfyydWwjisUlkV4okWSlBE8kAfLSeFaNM1bhDMQodoXIK
+         iWnA==
+X-Gm-Message-State: ABy/qLZhTQw+Tk3w8pP8FsdBv99Y1mWDtFt6AzvVJbMYhnLq2R1c8SA3
+        p4+2EgRkmDlBjr3sAlU0LbE29KV8xG4=
+X-Google-Smtp-Source: APBJJlFZoztqjGGEvX5dj7b03i4Z8unODw3IQSxPkgJjXaAt3iwb1U1omDrUXzc3dlyNX+gL8T9Cvw==
+X-Received: by 2002:a05:6a00:2386:b0:682:b6c8:2eb with SMTP id f6-20020a056a00238600b00682b6c802ebmr4754758pfc.1.1689351058162;
+        Fri, 14 Jul 2023 09:10:58 -0700 (PDT)
+Received: from linux-l9pv.suse ([124.11.22.254])
+        by smtp.gmail.com with ESMTPSA id b30-20020a63931e000000b0055bbc746272sm7544607pge.17.2023.07.14.09.10.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 14 Jul 2023 09:10:57 -0700 (PDT)
+From:   "Lee, Chun-Yi" <joeyli.kernel@gmail.com>
+X-Google-Original-From: "Lee, Chun-Yi" <jlee@suse.com>
+To:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        "Lee, Chun-Yi" <jlee@suse.com>
+Subject: [PATCH] Bluetooth: hci_ldisc: check HCI_UART_PROTO_READY flag in HCIUARTGETPROTO
+Date:   Sat, 15 Jul 2023 00:08:54 +0800
+Message-Id: <20230714160854.20562-1-jlee@suse.com>
+X-Mailer: git-send-email 2.12.3
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,78 +69,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes XAUI/RXAUI lane alignment errors.
-Issue causes dropped packets when trying to communicate over
-fiber via SERDES lanes of port 9 and 10.
-Errata document applies only to 88E6190X and 88E6390X devices.
-Requires poking in undocumented registers.
+This patch adds code to check HCI_UART_PROTO_READY flag before
+accessing hci_uart->proto. It fixs the race condition in
+hci_uart_tty_ioctl() between HCIUARTSETPROTO and HCIUARTGETPROTO.
+This issue bug found by Yu Hao and Weiteng Chen:
 
-Signed-off-by: Ante Knezic <ante.knezic@helmholz.de>
----
-V2 : Rework as suggested by Andrew Lunn <andrew@lun.ch> 
- * make int lanes[] const 
- * reorder prod_nums
- * update commit message to indicate we are dealing with
-   undocumented Marvell registers and magic values
----
- drivers/net/dsa/mv88e6xxx/serdes.c | 37 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
+BUG: general protection fault in hci_uart_tty_ioctl [1]
 
-diff --git a/drivers/net/dsa/mv88e6xxx/serdes.c b/drivers/net/dsa/mv88e6xxx/serdes.c
-index 80167d53212f..b36049595c6b 100644
---- a/drivers/net/dsa/mv88e6xxx/serdes.c
-+++ b/drivers/net/dsa/mv88e6xxx/serdes.c
-@@ -829,6 +829,37 @@ static int mv88e6390_serdes_enable_checker(struct mv88e6xxx_chip *chip, int lane
- 				      MV88E6390_PG_CONTROL, reg);
- }
+The information of C reproducer can also reference the link [2]
+
+Reported-by: Yu Hao <yhao016@ucr.edu>
+Closes: https://lore.kernel.org/all/CA+UBctC3p49aTgzbVgkSZ2+TQcqq4fPDO7yZitFT5uBPDeCO2g@mail.gmail.com/ [1]
+Reported-by: Weiteng Chen <wchen130@ucr.edu>
+Closes: https://lore.kernel.org/lkml/CA+UBctDPEvHdkHMwD340=n02rh+jNRJNNQ5LBZNA+Wm4Keh2ow@mail.gmail.com/T/ [2]
+Signed-off-by: "Lee, Chun-Yi" <jlee@suse.com>
+---
+ drivers/bluetooth/hci_ldisc.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/bluetooth/hci_ldisc.c b/drivers/bluetooth/hci_ldisc.c
+index efdda2c3fce8..a76eb98c0047 100644
+--- a/drivers/bluetooth/hci_ldisc.c
++++ b/drivers/bluetooth/hci_ldisc.c
+@@ -770,7 +770,8 @@ static int hci_uart_tty_ioctl(struct tty_struct *tty, unsigned int cmd,
+ 		break;
  
-+static int mv88e6390x_serdes_erratum_3_14(struct mv88e6xxx_chip *chip)
-+{
-+	const int lanes[] = { MV88E6390_PORT9_LANE0, MV88E6390_PORT9_LANE1,
-+		MV88E6390_PORT9_LANE2, MV88E6390_PORT9_LANE3,
-+		MV88E6390_PORT10_LANE0, MV88E6390_PORT10_LANE1,
-+		MV88E6390_PORT10_LANE2, MV88E6390_PORT10_LANE3 };
-+	int err, i;
-+
-+	/* 88e6190x and 88e6390x errata 3.14:
-+	 * After chip reset, SERDES reconfiguration or SERDES core
-+	 * Software Reset, the SERDES lanes may not be properly aligned
-+	 * resulting in CRC errors
-+	 */
-+
-+	for (i = 0; i < ARRAY_SIZE(lanes); i++) {
-+		err = mv88e6390_serdes_write(chip, lanes[i],
-+					     MDIO_MMD_PHYXS,
-+					     0xf054, 0x400C);
-+		if (err)
-+			return err;
-+
-+		err = mv88e6390_serdes_write(chip, lanes[i],
-+					     MDIO_MMD_PHYXS,
-+					     0xf054, 0x4000);
-+		if (err)
-+			return err;
-+	}
-+
-+	return 0;
-+}
-+
- int mv88e6390_serdes_power(struct mv88e6xxx_chip *chip, int port, int lane,
- 			   bool up)
- {
-@@ -853,6 +884,12 @@ int mv88e6390_serdes_power(struct mv88e6xxx_chip *chip, int port, int lane,
- 	if (!err && up)
- 		err = mv88e6390_serdes_enable_checker(chip, lane);
- 
-+	if (!err && up) {
-+		if (chip->info->prod_num == MV88E6XXX_PORT_SWITCH_ID_PROD_6190X ||
-+		    chip->info->prod_num == MV88E6XXX_PORT_SWITCH_ID_PROD_6390X)
-+			err = mv88e6390x_serdes_erratum_3_14(chip);
-+	}
-+
- 	return err;
- }
- 
+ 	case HCIUARTGETPROTO:
+-		if (test_bit(HCI_UART_PROTO_SET, &hu->flags))
++		if (test_bit(HCI_UART_PROTO_SET, &hu->flags) &&
++		    test_bit(HCI_UART_PROTO_READY, &hu->flags))
+ 			err = hu->proto->id;
+ 		else
+ 			err = -EUNATCH;
 -- 
-2.11.0
+2.35.3
 
