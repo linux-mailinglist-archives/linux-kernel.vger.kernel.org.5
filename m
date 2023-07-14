@@ -2,140 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84250754535
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 00:57:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5518754538
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 00:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229974AbjGNW53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 18:57:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40318 "EHLO
+        id S229909AbjGNW6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 18:58:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229950AbjGNW50 (ORCPT
+        with ESMTP id S229478AbjGNW63 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 18:57:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30B063593;
-        Fri, 14 Jul 2023 15:57:25 -0700 (PDT)
+        Fri, 14 Jul 2023 18:58:29 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA7BB35A4;
+        Fri, 14 Jul 2023 15:58:28 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B3D4A61E07;
-        Fri, 14 Jul 2023 22:57:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73C28C433C8;
-        Fri, 14 Jul 2023 22:57:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689375444;
-        bh=P8clI5KtqQRzgFfns22g81I3g6E4+6MLCwEqWyZYU68=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qjATGNeW2AnMB8iSVCidFlZhH9OfkN7bAt2p7ldacOlxk00MBC0K43n0wGgdC/kES
-         5er615dq9DLL0q9cE1VNLaWlbFSi2IfYsicV7umDzTZyH4W2s60ky3l5tGI2zapesZ
-         a6IFRb5wsW2IyAbgdPu3qj324ZAqxXKa5uD5MSOHkbg0ycP0RX1WKos7Wx9s9h14c7
-         mr09nK6DvKTxBa912H2K859rBf/1exfAJQyuctMgVjw5UcRvPGqHIzg/7kZ1W2WHDS
-         fPdS6OedIvs2Ff2PDWFgTKxBrTglm+398FEIc7xd983iXS7+gUDgWarryvZetDtEg3
-         d1Xp1VJIV7NTA==
-Date:   Fri, 14 Jul 2023 23:57:06 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Rick Edgecombe <rick.p.edgecombe@intel.com>
-Cc:     x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H . J . Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        John Allen <john.allen@amd.com>, kcc@google.com,
-        eranian@google.com, rppt@kernel.org, jamorris@linux.microsoft.com,
-        dethoma@microsoft.com, akpm@linux-foundation.org,
-        Andrew.Cooper3@citrix.com, christina.schimpe@intel.com,
-        david@redhat.com, debug@rivosinc.com, szabolcs.nagy@arm.com,
-        torvalds@linux-foundation.org, linux-alpha@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        Michal Simek <monstr@monstr.eu>,
-        Dinh Nguyen <dinguyen@kernel.org>, linux-mips@vger.kernel.org,
-        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
-        Linus Torvalds <torvalds@linuxfoundation.org>
-Subject: Re: [PATCH v9 01/42] mm: Rename arch pte_mkwrite()'s to
- pte_mkwrite_novma()
-Message-ID: <b389274a-abed-40dc-8e33-7ce922ea9b61@sirena.org.uk>
-References: <20230613001108.3040476-1-rick.p.edgecombe@intel.com>
- <20230613001108.3040476-2-rick.p.edgecombe@intel.com>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5EC9C61E07;
+        Fri, 14 Jul 2023 22:58:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32E7EC433C7;
+        Fri, 14 Jul 2023 22:58:26 +0000 (UTC)
+Date:   Fri, 14 Jul 2023 18:58:24 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Ajay Kaher <akaher@vmware.com>
+Cc:     shuah@kernel.org, mhiramat@kernel.org, chinglinyu@google.com,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, lkp@intel.com,
+        namit@vmware.com, oe-lkp@lists.linux.dev, amakhalov@vmware.com,
+        er.ajay.kaher@gmail.com, srivatsa@csail.mit.edu, tkundu@vmware.com,
+        vsirnapalli@vmware.com
+Subject: Re: [PATCH v4 00/10] tracing: introducing eventfs
+Message-ID: <20230714185824.62556254@gandalf.local.home>
+In-Reply-To: <1689248004-8158-1-git-send-email-akaher@vmware.com>
+References: <1689248004-8158-1-git-send-email-akaher@vmware.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Om+vkuYZS0OLKEiC"
-Content-Disposition: inline
-In-Reply-To: <20230613001108.3040476-2-rick.p.edgecombe@intel.com>
-X-Cookie: Preserve the old, but know the new.
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 13 Jul 2023 17:03:14 +0530
+Ajay Kaher <akaher@vmware.com> wrote:
 
---Om+vkuYZS0OLKEiC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> Events Tracing infrastructure contains lot of files, directories
+> (internally in terms of inodes, dentries). And ends up by consuming
+> memory in MBs. We can have multiple events of Events Tracing, which
+> further requires more memory.
+> 
+> Instead of creating inodes/dentries, eventfs could keep meta-data and
+> skip the creation of inodes/dentries. As and when require, eventfs will
+> create the inodes/dentries only for required files/directories.
+> Also eventfs would delete the inodes/dentries once no more requires
+> but preserve the meta data.
+> 
+> Tracing events took ~9MB, with this approach it took ~4.5MB
+> for ~10K files/dir.
 
-On Mon, Jun 12, 2023 at 05:10:27PM -0700, Rick Edgecombe wrote:
-> The x86 Shadow stack feature includes a new type of memory called shadow
-> stack. This shadow stack memory has some unusual properties, which requires
-> some core mm changes to function properly.
+I think we are very close to getting this in for the next merge window. I
+ran several tests and so far it's holding up!
 
-This seems to break sparc64_defconfig when applied on top of v6.5-rc1:
+I made a bunch of nits for this series, but nothing major. Mostly fixing up
+change logs and comments, as well as some naming conventions and
+reorganizing the series a little bit.
 
-In file included from /home/broonie/git/bisect/include/linux/mm.h:29,
-                 from /home/broonie/git/bisect/net/core/skbuff.c:40:
-/home/broonie/git/bisect/include/linux/pgtable.h: In function 'pmd_mkwrite':
-/home/broonie/git/bisect/include/linux/pgtable.h:528:9: error: implicit declaration of function 'pmd_mkwrite_novma'; did you mean 'pte_mkwrite_novma'? [-Werror=implicit-function-declaration]
-  return pmd_mkwrite_novma(pmd);
-         ^~~~~~~~~~~~~~~~~
-         pte_mkwrite_novma
-/home/broonie/git/bisect/include/linux/pgtable.h:528:9: error: incompatible types when returning type 'int' but 'pmd_t' {aka 'struct <anonymous>'} was expected
-  return pmd_mkwrite_novma(pmd);
-         ^~~~~~~~~~~~~~~~~~~~~~
+Anyway, I'm hoping that v5 will be ready to go into linux-next.
 
-The same issue seems to apply with the version that was in -next based
-on v6.4-rc4 too.
+Thanks a lot Ajay for working on this!
 
---Om+vkuYZS0OLKEiC
-Content-Type: application/pgp-signature; name="signature.asc"
+-- Steve
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmSx0sEACgkQJNaLcl1U
-h9Cgsgf+I5DDysBO4SJ+jmxeXww6HYCycJsoc6oA/wVf/wO7aTv89RFcAPpwMOoq
-jZKiD/xiUtCMUcNE+ZtCQIYVymIrK1BBcNPzgflt5fa50gm53Hp2mcNFaUeriWjC
-x2DfyH1wsfgAjwv14aKu1m59Y7xdhIQWZ4HTezaEFND/3GQTrvGy8tHMDL07GKWz
-qL1gMkJ7kYVKEAf86IsSwbDBcSa/SV5cLbsL4S5GEm5K/hQcLwUqSw4WYuMLfNip
-Eb4Napl5JYGKJcb/IQIm/PGQbmnKgijPg7mR0lvF6RWZk39wCFxKQizahf6cRCwv
-HSMmlXJHILeOK57vaStYZJvapWZzdg==
-=/plS
------END PGP SIGNATURE-----
+> 
+> v3:
+> Patch 3,4,5,7,9:
+>          removed all the eventfs_rwsem code and replaced it with an srcu
+>          lock for the readers, and a mutex to synchronize the writers of
+>          the list.
+> 
+> Patch 2: moved 'tracefs_inode' and 'get_tracefs()' to v4 03/10
+> 
+> Patch 3: moved the struct eventfs_file and eventfs_inode into event_inode.c
+>          as it really should not be exposed to all users.
+> 
+> Patch 5: added a recursion check to eventfs_remove_rec() as it is really
+>          dangerous to have unchecked recursion in the kernel (we do have
+>          a fixed size stack).
+> 
+>          have the free use srcu callbacks. After the srcu grace periods
+>          are done, it adds the eventfs_file onto a llist (lockless link
+>          list) and wakes up a work queue. Then the work queue does the
+>          freeing (this needs to be done in task/workqueue context, as
+>          srcu callbacks are done in softirq context).
+> 
+> Patch 6: renamed:
+>          eventfs_create_file() -> create_file()
+>          eventfs_create_dir() -> create_dir()
+> 
+> v2:
+> Patch 01: new patch:'Require all trace events to have a TRACE_SYSTEM'
+> Patch 02: moved from v1 1/9
+> Patch 03: moved from v1 2/9
+>           As suggested by Zheng Yejian, introduced eventfs_prepare_ef()
+>           helper function to add files or directories to eventfs
+>           fix WARNING reported by kernel test robot in v1 8/9
+> Patch 04: moved from v1 3/9
+>           used eventfs_prepare_ef() to add files
+>           fix WARNING reported by kernel test robot in v1 8/9
+> Patch 05: moved from v1 4/9
+>           fix compiling warning reported by kernel test robot in v1 4/9
+> Patch 06: moved from v1 5/9
+> Patch 07: moved from v1 6/9
+> Patch 08: moved from v1 7/9
+> Patch 09: moved from v1 8/9
+>           rebased because of v3 01/10
+> Patch 10: moved from v1 9/9
+> 
+> v1:
+> Patch 1: add header file
+> Patch 2: resolved kernel test robot issues
+>          protecting eventfs lists using nested eventfs_rwsem
+> Patch 3: protecting eventfs lists using nested eventfs_rwsem
+> Patch 4: improve events cleanup code to fix crashes
+> Patch 5: resolved kernel test robot issues
+>          removed d_instantiate_anon() calls
+> Patch 6: resolved kernel test robot issues
+>          fix kprobe test in eventfs_root_lookup()
+>          protecting eventfs lists using nested eventfs_rwsem
+> Patch 7: remove header file
+> Patch 8: pass eventfs_rwsem as argument to eventfs functions
+>          called eventfs_remove_events_dir() instead of tracefs_remove()
+>          from event_trace_del_tracer()
+> Patch 9: new patch to fix kprobe test case
+> 
+> Ajay Kaher (9):
+>   tracefs: Rename some tracefs function
+>   eventfs: Implement eventfs dir creation functions
+>   eventfs: Implement eventfs file add functions
+>   eventfs: Implement eventfs file, directory remove function
+>   eventfs: Implement functions to create eventfs files and directories
+>   eventfs: Implement eventfs lookup, read, open functions
+>   eventfs: Implement tracefs_inode_cache
+>   eventfs: Move tracing/events to eventfs
+>   test: ftrace: Fix kprobe test for eventfs
+> 
+> Steven Rostedt (Google) (1):
+>   tracing: Require all trace events to have a TRACE_SYSTEM
+> 
+>  fs/tracefs/Makefile                           |   1 +
+>  fs/tracefs/event_inode.c                      | 711 ++++++++++++++++++
+>  fs/tracefs/inode.c                            | 124 ++-
+>  fs/tracefs/internal.h                         |  25 +
+>  include/linux/trace_events.h                  |   1 +
+>  include/linux/tracefs.h                       |  32 +
+>  kernel/trace/trace.h                          |   2 +-
+>  kernel/trace/trace_events.c                   |  78 +-
+>  .../ftrace/test.d/kprobe/kprobe_args_char.tc  |   4 +-
+>  .../test.d/kprobe/kprobe_args_string.tc       |   4 +-
+>  10 files changed, 930 insertions(+), 52 deletions(-)
+>  create mode 100644 fs/tracefs/event_inode.c
+>  create mode 100644 fs/tracefs/internal.h
+> 
 
---Om+vkuYZS0OLKEiC--
