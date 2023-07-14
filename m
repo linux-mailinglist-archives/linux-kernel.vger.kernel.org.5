@@ -2,169 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EE877532B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 09:12:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74AB07532AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 09:12:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235296AbjGNHMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 03:12:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50768 "EHLO
+        id S235259AbjGNHMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 03:12:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235242AbjGNHMV (ORCPT
+        with ESMTP id S235238AbjGNHMG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 03:12:21 -0400
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F30A30D0;
-        Fri, 14 Jul 2023 00:12:11 -0700 (PDT)
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36DLUPrF029957;
-        Fri, 14 Jul 2023 00:12:05 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=pfpt0220;
- bh=KtQ2DusuHWM+v6Ohvrsv+L0wkXSMe1qiUkwM+fmfqi4=;
- b=HlJDo6S6xTolGgVfhrvcviOS5ZBOiBEDqbKPwYMv8XphbRMXaQ4/LLkng7C1mr4P0fFZ
- Dy8AG9f69fGjJA0N7iK31Q3E5mu3GcBQTN/3wsI7PFX43gSCpRgjyFhdRirz4qQPLbsY
- Fb0I9a61S1eHJdUthvelr9AtIiCwo+NnFBYO62HorlF158fo+KteUeyA3RrCGjMqec6N
- gEO6PikdECh94ElJr1ZNv/n+65j86eGXgtpuELHS7aBHGnfhF5Zs4tCzQJbcIuFxx1p/
- OVlN2azXGw3bUjeB+Abf6ZMMVnlg+fbyuzBnm1C6g4WD1TP4X/4o6YtlOe5ZdzUUuG4Q 8A== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3rtptx9sws-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Fri, 14 Jul 2023 00:12:05 -0700
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 14 Jul
- 2023 00:12:02 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Fri, 14 Jul 2023 00:12:02 -0700
-Received: from localhost.localdomain (unknown [10.28.36.166])
-        by maili.marvell.com (Postfix) with ESMTP id 978E33F7064;
-        Fri, 14 Jul 2023 00:11:59 -0700 (PDT)
-From:   Suman Ghosh <sumang@marvell.com>
-To:     <sgoutham@marvell.com>, <gakula@marvell.com>,
-        <sbhatta@marvell.com>, <hkelam@marvell.com>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Suman Ghosh <sumang@marvell.com>
-Subject: [net PATCH V2 3/3] octeontx2-af: Fix hash configuration for both source and destination IPv6
-Date:   Fri, 14 Jul 2023 12:41:41 +0530
-Message-ID: <20230714071141.2428144-4-sumang@marvell.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230714071141.2428144-1-sumang@marvell.com>
-References: <20230714071141.2428144-1-sumang@marvell.com>
+        Fri, 14 Jul 2023 03:12:06 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C10C730EB;
+        Fri, 14 Jul 2023 00:12:02 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id 98e67ed59e1d1-263374f2f17so785557a91.0;
+        Fri, 14 Jul 2023 00:12:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689318722; x=1691910722;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=/tGvLNLCyMOtWr+ysz5thUq15EAXHgxFHlXO6MNNxEY=;
+        b=XfzKYJbLTg4H8KKy8LXYC9oBCTS0ylC6t3amOQ0tOc7Bg7NsnB4jtdkYWRvSHNHZTQ
+         4ZHR85XjbTF9t99ZvMbsZmRJFtlVrXcIAvohE/H1L3H2/WD/cLSiPM+1/q7DCrcZczBN
+         pwtX4TS5eD5hFRM2OqzCVGpFGZzligekZXgQbW+e1F/fNsGaACyErirAhMJr8FpPqkon
+         oJC1oowEgUAwrII7DE/21vrlJv5pQFON3tHW/tU+EsQnBZ/NcGUIQRinj0qM9VU6N+BK
+         Q7CVjXRwb6y6R5RdMnPYKv0ofvQa3oBKFMOMoTiF3W5lZZnR6jCzJ54h8dmom7uVQcYM
+         uyzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689318722; x=1691910722;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/tGvLNLCyMOtWr+ysz5thUq15EAXHgxFHlXO6MNNxEY=;
+        b=Cz/Sy/+xLb9ixJtWvT1mjxEeCvoPJzdNJuNgGBrObshJQZXqoyDjus0nEL4px+yrw6
+         ATif7tAv3cehDiVy9Q/vuID7mTnc1QdTA1fonasJYJZUxOLVdFjXaZRB5cpGsM4iq9am
+         CsxHitOUPQNGYai+CC4ZgsIy/iKEnTbuzxuhksIRVuR+O45ZMotGEkusg52p5tipRwMs
+         4oVSuFWI/crzSEOMGqDy0qlqyOAldXkcEXaviDugFzqzL7bAv78jxarhfWWP81NkLcxe
+         PtjUIJymBEy8RYVZUawEqMra3KKSgv1Eu/xv0VzeVef2bpdETrgGJvQoLsFJagSbQPqQ
+         TPXQ==
+X-Gm-Message-State: ABy/qLYeD32r+0Q8HDIsfLsXVX3RduV09zADb7nJo5F16LVMuixDiFcz
+        ir4oYGViTzB1Q+zzGjcWtE121f+bYclzxYkkAx/vrRRcw8A=
+X-Google-Smtp-Source: APBJJlFndUhA3nvPZN3auuCKpCK0JYhtdUm0rTQXu2Sd/zlhNY0hGzwO93kDgCrBTDEa0xVqlTMw2J0DQrZwebhI6BU=
+X-Received: by 2002:a17:90b:11c2:b0:263:2335:5946 with SMTP id
+ gv2-20020a17090b11c200b0026323355946mr2325746pjb.40.1689318721886; Fri, 14
+ Jul 2023 00:12:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: uLBX0LUQdTF32zJdNs5Mtv5NcmRJlE0Y
-X-Proofpoint-ORIG-GUID: uLBX0LUQdTF32zJdNs5Mtv5NcmRJlE0Y
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-14_04,2023-07-13_01,2023-05-22_02
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <0000000000009db51a06005b64e9@google.com>
+In-Reply-To: <0000000000009db51a06005b64e9@google.com>
+From:   Z qiang <qiang.zhang1211@gmail.com>
+Date:   Fri, 14 Jul 2023 15:11:50 +0800
+Message-ID: <CALm+0cXi-YsnJBdBt38v4gEoR7oEeaoj3wXjEw3m=25RSLEs8g@mail.gmail.com>
+Subject: Re: [syzbot] [usb?] memory leak in raw_open
+To:     syzbot <syzbot+feb045d335c1fdde5bf7@syzkaller.appspotmail.com>
+Cc:     andreyknvl@gmail.com, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As of today, hash reduction was supported only for source IPv6 address
-and that calculation also was not correct. This patch fixes that and adds
-supports for both source and destination IPv6 address.
+>
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    1c7873e33645 mm: lock newly mapped VMA with corrected orde..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1517663ca80000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=832b404e095b70c0
+> dashboard link: https://syzkaller.appspot.com/bug?extid=feb045d335c1fdde5bf7
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1776519ca80000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=117f9778a80000
+>
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/43b42bd2cf70/disk-1c7873e3.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/011ba1b9e8c1/vmlinux-1c7873e3.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/18b349342595/bzImage-1c7873e3.xz
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+feb045d335c1fdde5bf7@syzkaller.appspotmail.com
+>
+> BUG: memory leak
+> unreferenced object 0xffff88810b172000 (size 4096):
+>   comm "syz-executor103", pid 5067, jiffies 4294964128 (age 13.070s)
+>   hex dump (first 32 bytes):
+>     01 00 00 00 00 00 00 00 00 bc 96 0e 81 88 ff ff  ................
+>     5d b6 9e 85 ff ff ff ff 03 00 00 00 00 00 00 00  ]...............
+>   backtrace:
+>     [<ffffffff8154bf94>] kmalloc_trace+0x24/0x90 mm/slab_common.c:1076
+>     [<ffffffff8347eb55>] kmalloc include/linux/slab.h:582 [inline]
+>     [<ffffffff8347eb55>] kzalloc include/linux/slab.h:703 [inline]
+>     [<ffffffff8347eb55>] dev_new drivers/usb/gadget/legacy/raw_gadget.c:191 [inline]
+>     [<ffffffff8347eb55>] raw_open+0x45/0x110 drivers/usb/gadget/legacy/raw_gadget.c:385
+>     [<ffffffff827d1d09>] misc_open+0x1a9/0x1f0 drivers/char/misc.c:165
+>     [<ffffffff8166763b>] chrdev_open+0x11b/0x340 fs/char_dev.c:414
+>     [<ffffffff8165573f>] do_dentry_open+0x30f/0x990 fs/open.c:914
+>     [<ffffffff8167cabb>] do_open fs/namei.c:3636 [inline]
+>     [<ffffffff8167cabb>] path_openat+0x178b/0x1b20 fs/namei.c:3793
+>     [<ffffffff8167e995>] do_filp_open+0xc5/0x1b0 fs/namei.c:3820
+>     [<ffffffff81659453>] do_sys_openat2+0xe3/0x140 fs/open.c:1407
+>     [<ffffffff81659de3>] do_sys_open fs/open.c:1422 [inline]
+>     [<ffffffff81659de3>] __do_sys_openat fs/open.c:1438 [inline]
+>     [<ffffffff81659de3>] __se_sys_openat fs/open.c:1433 [inline]
+>     [<ffffffff81659de3>] __x64_sys_openat+0x83/0xe0 fs/open.c:1433
+>     [<ffffffff84a77ff9>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>     [<ffffffff84a77ff9>] do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+>     [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+>
+> BUG: memory leak
+> unreferenced object 0xffff88810ad20d60 (size 32):
+>   comm "syz-executor103", pid 5067, jiffies 4294964128 (age 13.070s)
+>   hex dump (first 32 bytes):
+>     72 61 77 2d 67 61 64 67 65 74 2e 30 00 00 00 00  raw-gadget.0....
+>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>   backtrace:
+>     [<ffffffff8154bf94>] kmalloc_trace+0x24/0x90 mm/slab_common.c:1076
+>     [<ffffffff8347cd2f>] kmalloc include/linux/slab.h:582 [inline]
+>     [<ffffffff8347cd2f>] raw_ioctl_init+0xdf/0x410 drivers/usb/gadget/legacy/raw_gadget.c:460
+>     [<ffffffff8347dfe9>] raw_ioctl+0x5f9/0x1120 drivers/usb/gadget/legacy/raw_gadget.c:1250
+>     [<ffffffff81685173>] vfs_ioctl fs/ioctl.c:51 [inline]
+>     [<ffffffff81685173>] __do_sys_ioctl fs/ioctl.c:870 [inline]
+>     [<ffffffff81685173>] __se_sys_ioctl fs/ioctl.c:856 [inline]
+>     [<ffffffff81685173>] __x64_sys_ioctl+0x103/0x140 fs/ioctl.c:856
+>     [<ffffffff84a77ff9>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>     [<ffffffff84a77ff9>] do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+>     [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+>
+> BUG: memory leak
+> unreferenced object 0xffff88810e96bc00 (size 128):
+>   comm "syz-executor103", pid 5067, jiffies 4294964128 (age 13.070s)
+>   hex dump (first 32 bytes):
+>     64 75 6d 6d 79 5f 75 64 63 00 00 00 00 00 00 00  dummy_udc.......
+>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>   backtrace:
+>     [<ffffffff8154bf94>] kmalloc_trace+0x24/0x90 mm/slab_common.c:1076
+>     [<ffffffff8347cd6d>] kmalloc include/linux/slab.h:582 [inline]
+>     [<ffffffff8347cd6d>] raw_ioctl_init+0x11d/0x410 drivers/usb/gadget/legacy/raw_gadget.c:468
+>     [<ffffffff8347dfe9>] raw_ioctl+0x5f9/0x1120 drivers/usb/gadget/legacy/raw_gadget.c:1250
+>     [<ffffffff81685173>] vfs_ioctl fs/ioctl.c:51 [inline]
+>     [<ffffffff81685173>] __do_sys_ioctl fs/ioctl.c:870 [inline]
+>     [<ffffffff81685173>] __se_sys_ioctl fs/ioctl.c:856 [inline]
+>     [<ffffffff81685173>] __x64_sys_ioctl+0x103/0x140 fs/ioctl.c:856
+>     [<ffffffff84a77ff9>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>     [<ffffffff84a77ff9>] do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+>     [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+>
+> BUG: memory leak
+> unreferenced object 0xffff88810e96ba80 (size 128):
+>   comm "syz-executor103", pid 5067, jiffies 4294964128 (age 13.070s)
+>   hex dump (first 32 bytes):
+>     64 75 6d 6d 79 5f 75 64 63 2e 30 00 00 00 00 00  dummy_udc.0.....
+>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>   backtrace:
+>     [<ffffffff8154bf94>] kmalloc_trace+0x24/0x90 mm/slab_common.c:1076
+>     [<ffffffff8347cdfc>] kmalloc include/linux/slab.h:582 [inline]
+>     [<ffffffff8347cdfc>] raw_ioctl_init+0x1ac/0x410 drivers/usb/gadget/legacy/raw_gadget.c:479
+>     [<ffffffff8347dfe9>] raw_ioctl+0x5f9/0x1120 drivers/usb/gadget/legacy/raw_gadget.c:1250
+>     [<ffffffff81685173>] vfs_ioctl fs/ioctl.c:51 [inline]
+>     [<ffffffff81685173>] __do_sys_ioctl fs/ioctl.c:870 [inline]
+>     [<ffffffff81685173>] __se_sys_ioctl fs/ioctl.c:856 [inline]
+>     [<ffffffff81685173>] __x64_sys_ioctl+0x103/0x140 fs/ioctl.c:856
+>     [<ffffffff84a77ff9>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>     [<ffffffff84a77ff9>] do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+>     [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
+>
+> BUG: memory leak
+> unreferenced object 0xffff88810e96bd00 (size 128):
+>   comm "syz-executor103", pid 5067, jiffies 4294964128 (age 13.070s)
+>   hex dump (first 32 bytes):
+>     00 bd 96 0e 81 88 ff ff 00 bd 96 0e 81 88 ff ff  ................
+>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>   backtrace:
+>     [<ffffffff8154bf94>] kmalloc_trace+0x24/0x90 mm/slab_common.c:1076
+>     [<ffffffff833ecc6a>] kmalloc include/linux/slab.h:582 [inline]
+>     [<ffffffff833ecc6a>] kzalloc include/linux/slab.h:703 [inline]
+>     [<ffffffff833ecc6a>] dummy_alloc_request+0x5a/0xe0 drivers/usb/gadget/udc/dummy_hcd.c:665
+>     [<ffffffff833e9132>] usb_ep_alloc_request+0x22/0xd0 drivers/usb/gadget/udc/core.c:196
+>     [<ffffffff8347f13d>] gadget_bind+0x6d/0x370 drivers/usb/gadget/legacy/raw_gadget.c:292
+>     [<ffffffff833e9e83>] gadget_bind_driver+0xe3/0x2e0 drivers/usb/gadget/udc/core.c:1591
+>     [<ffffffff82ba069d>] call_driver_probe drivers/base/dd.c:579 [inline]
+>     [<ffffffff82ba069d>] really_probe+0x12d/0x430 drivers/base/dd.c:658
+>     [<ffffffff82ba0a61>] __driver_probe_device+0xc1/0x1a0 drivers/base/dd.c:798
+>     [<ffffffff82ba0b6a>] driver_probe_device+0x2a/0x120 drivers/base/dd.c:828
+>     [<ffffffff82ba0eae>] __driver_attach drivers/base/dd.c:1214 [inline]
+>     [<ffffffff82ba0eae>] __driver_attach+0xfe/0x1f0 drivers/base/dd.c:1154
+>     [<ffffffff82b9d985>] bus_for_each_dev+0xa5/0x110 drivers/base/bus.c:368
+>     [<ffffffff82b9f486>] bus_add_driver+0x126/0x2a0 drivers/base/bus.c:673
+>     [<ffffffff82ba25da>] driver_register+0x8a/0x190 drivers/base/driver.c:246
+>     [<ffffffff833e7524>] usb_gadget_register_driver_owner+0x64/0x160 drivers/usb/gadget/udc/core.c:1665
+>     [<ffffffff8347e0e6>] raw_ioctl_run drivers/usb/gadget/legacy/raw_gadget.c:546 [inline]
+>     [<ffffffff8347e0e6>] raw_ioctl+0x6f6/0x1120 drivers/usb/gadget/legacy/raw_gadget.c:1253
+>     [<ffffffff81685173>] vfs_ioctl fs/ioctl.c:51 [inline]
+>     [<ffffffff81685173>] __do_sys_ioctl fs/ioctl.c:870 [inline]
+>     [<ffffffff81685173>] __se_sys_ioctl fs/ioctl.c:856 [inline]
+>     [<ffffffff81685173>] __x64_sys_ioctl+0x103/0x140 fs/ioctl.c:856
+>     [<ffffffff84a77ff9>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>     [<ffffffff84a77ff9>] do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
+>
+>
 
-Fixes: a95ab93550d3 ("octeontx2-af: Use hashed field in MCAM key")
-Signed-off-by: Suman Ghosh <sumang@marvell.com>
----
- .../marvell/octeontx2/af/rvu_npc_hash.c       | 37 +++++++++----------
- 1 file changed, 18 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_hash.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_hash.c
-index 76553e0c216f..e7b71f2f3ad3 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_hash.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_hash.c
-@@ -100,20 +100,20 @@ u32 npc_field_hash_calc(u64 *ldata, struct npc_get_field_hash_info_rsp rsp,
- 	return field_hash;
- }
- 
--static u64 npc_update_use_hash(int lt, int ld)
-+static u64 npc_update_use_hash(struct rvu *rvu, int blkaddr,
-+			       u8 intf, int lid, int lt, int ld)
- {
--	u64 cfg = 0;
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+  master
+
+
+--- a/drivers/usb/gadget/legacy/raw_gadget.c
++++ b/drivers/usb/gadget/legacy/raw_gadget.c
+@@ -310,12 +310,15 @@ static int gadget_bind(struct usb_gadget *gadget,
+        dev->eps_num = i;
+        spin_unlock_irqrestore(&dev->lock, flags);
+
+-       /* Matches kref_put() in gadget_unbind(). */
+-       kref_get(&dev->count);
 -
--	switch (lt) {
--	case NPC_LT_LC_IP6:
--		/* Update use_hash(bit-20) and bytesm1 (bit-16:19)
--		 * in KEX_LD_CFG
--		 */
--		cfg = KEX_LD_CFG_USE_HASH(0x1, 0x03,
--					  ld ? 0x8 : 0x18,
--					  0x1, 0x0, 0x10);
--		break;
--	}
-+	u8 hdr, key;
-+	u64 cfg;
+        ret = raw_queue_event(dev, USB_RAW_EVENT_CONNECT, 0, NULL);
+-       if (ret < 0)
++       if (ret < 0) {
+                dev_err(&gadget->dev, "failed to queue event\n");
++               set_gadget_data(gadget, NULL);
++               return ret;
++       }
 +
-+	cfg = rvu_read64(rvu, blkaddr, NPC_AF_INTFX_LIDX_LTX_LDX_CFG(intf, lid, lt, ld));
-+	hdr = FIELD_GET(NPC_HDR_OFFSET, cfg);
-+	key = FIELD_GET(NPC_KEY_OFFSET, cfg);
-+
-+	/* Update use_hash(bit-20) to 'true' and
-+	 * bytesm1(bit-16:19) to '0x3' in KEX_LD_CFG
-+	 */
-+	cfg = KEX_LD_CFG_USE_HASH(0x1, 0x03, hdr, 0x1, 0x0, key);
- 
- 	return cfg;
- }
-@@ -132,12 +132,12 @@ static void npc_program_mkex_hash_rx(struct rvu *rvu, int blkaddr,
- 		for (lt = 0; lt < NPC_MAX_LT; lt++) {
- 			for (ld = 0; ld < NPC_MAX_LD; ld++) {
- 				if (mkex_hash->lid_lt_ld_hash_en[intf][lid][lt][ld]) {
--					u64 cfg = npc_update_use_hash(lt, ld);
-+					u64 cfg;
- 
--					hash_cnt++;
- 					if (hash_cnt == NPC_MAX_HASH)
- 						return;
- 
-+					cfg = npc_update_use_hash(rvu, blkaddr, intf, lid, lt, ld);
- 					/* Set updated KEX configuration */
- 					SET_KEX_LD(intf, lid, lt, ld, cfg);
- 					/* Set HASH configuration */
-@@ -149,6 +149,7 @@ static void npc_program_mkex_hash_rx(struct rvu *rvu, int blkaddr,
- 							     mkex_hash->hash_mask[intf][ld][1]);
- 					SET_KEX_LD_HASH_CTRL(intf, ld,
- 							     mkex_hash->hash_ctrl[intf][ld]);
-+					hash_cnt++;
- 				}
- 			}
- 		}
-@@ -169,12 +170,12 @@ static void npc_program_mkex_hash_tx(struct rvu *rvu, int blkaddr,
- 		for (lt = 0; lt < NPC_MAX_LT; lt++) {
- 			for (ld = 0; ld < NPC_MAX_LD; ld++)
- 				if (mkex_hash->lid_lt_ld_hash_en[intf][lid][lt][ld]) {
--					u64 cfg = npc_update_use_hash(lt, ld);
-+					u64 cfg;
- 
--					hash_cnt++;
- 					if (hash_cnt == NPC_MAX_HASH)
- 						return;
- 
-+					cfg = npc_update_use_hash(rvu, blkaddr, intf, lid, lt, ld);
- 					/* Set updated KEX configuration */
- 					SET_KEX_LD(intf, lid, lt, ld, cfg);
- 					/* Set HASH configuration */
-@@ -187,8 +188,6 @@ static void npc_program_mkex_hash_tx(struct rvu *rvu, int blkaddr,
- 					SET_KEX_LD_HASH_CTRL(intf, ld,
- 							     mkex_hash->hash_ctrl[intf][ld]);
- 					hash_cnt++;
--					if (hash_cnt == NPC_MAX_HASH)
--						return;
- 				}
- 		}
- 	}
--- 
-2.25.1
++       /* Matches kref_put() in gadget_unbind(). */
++       kref_get(&dev->count);
 
+        return ret;
+ }
