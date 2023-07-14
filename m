@@ -2,127 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB6CE753BEA
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 15:38:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9AB8753BF0
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 15:42:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235753AbjGNNia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 09:38:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41752 "EHLO
+        id S235698AbjGNNm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 09:42:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235219AbjGNNi3 (ORCPT
+        with ESMTP id S234688AbjGNNmY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 09:38:29 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33AA41991;
-        Fri, 14 Jul 2023 06:38:28 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C6C5761CD5;
-        Fri, 14 Jul 2023 13:38:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3470CC433C8;
-        Fri, 14 Jul 2023 13:38:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689341907;
-        bh=bUxjcLeAY5nIECnt1V9XKVqDTQ0Fxu1nGmYGL6iJWj8=;
-        h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
-        b=fZXaUyKZpntNYWTsZRsmqHEuzDq+s4G8mPDBm5SiKY9g5Y23Fer815ETZHU2PF40d
-         nFdrKVE2d07u4dg/+ZKvrAWk1Bz1Er/2Da5jO61g0aZSfCZShGUeAWOk+RzPzV3ksk
-         emjo08uAXF5pZDEaaPrNp6E8qqTGWbYBf8m8Y7H55TS/Rxlq+DYqZUsS8SWwsIMV0N
-         WnWwqy9ka39gfYVq4uF0hwIq6rcgvUkA78w0LrR15HTNm2GKzcd3tuD/wSDHvv5iNX
-         fdX1t/ak54TaW4wUXNPRV1f3heo0gSGmsUwDMxgPwoyrlQmrmUwOXA54gsuY0cY0Y/
-         xjODPRecC/JJw==
-Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-1b05d63080cso1549949fac.2;
-        Fri, 14 Jul 2023 06:38:27 -0700 (PDT)
-X-Gm-Message-State: ABy/qLbCVlBgJo9FVnDHz1hDZhyLquvo5e8Boji1KTo8QiVqRVBHkvkU
-        nFnhJ8pi4e5W8RD5nMihkpr3SEi7POtDrdFS2F4=
-X-Google-Smtp-Source: APBJJlFRldI+k7i6UuMj6WVmDvr/ssBP3tk9bsHdkvSAXr6iJd4PRk7tNWLDXCI7+VLj8e9aqYnm8y5C+ztx5pm25Qc=
-X-Received: by 2002:a05:6871:58c:b0:1b0:897d:183d with SMTP id
- u12-20020a056871058c00b001b0897d183dmr6110643oan.20.1689341906330; Fri, 14
- Jul 2023 06:38:26 -0700 (PDT)
+        Fri, 14 Jul 2023 09:42:24 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 098C01991
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 06:42:23 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2b703c900e3so29339541fa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 06:42:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1689342141; x=1691934141;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FKmPqGb1g30twwWqaJ5CUfJThJzoEqQ8H0HnZr1gDBk=;
+        b=JVbrQ9XHrBarwjW6smOjpuQfehr7HlZKI1aPI45qO5NxlJLulfdIWmx79hksCqkAqX
+         1tF6nWBXJdq92p4ytUVujUPXZVyNM0BD7hpfWsmpBtJ26/vJk8QwJ53TbSoRjsvwq2z7
+         X2QZ9OCZaYFFCwr9olRkaAP4Za62lZv7AETBE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689342141; x=1691934141;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FKmPqGb1g30twwWqaJ5CUfJThJzoEqQ8H0HnZr1gDBk=;
+        b=QOEm5YqrGLTTqB92jHJe3S3SIG3PdROwQ9PjrHC9lNkJkA/frUDZkfzkx3eq0cJAA+
+         tBhlGAuDwf2JENPkXur7mVQb5sqxMtQdU4APJdzWpI96iqYxSYHypx06MDwUDtmpiLl1
+         VxEceidAwWrYeYuaIEc1H41JXZLTaXRDuBeiW9wsu1KN+VOl0tSrJLoA3VVuj7vg6r9+
+         kjsqjh/FCviwWGqqsNdg9n/gb1fT2vawUcw887CEDsT4WztzfL8cT9uaYib9r1i4zVqa
+         jnYhfZsXH0jNWkr029FTAC22T7QzGJdYtcnIV1+ucJlARlw/0MZl1fgCOUuJTVcdCNxD
+         Oalg==
+X-Gm-Message-State: ABy/qLZOfzHeJN7+tpUluRRIA8OuJcalSjFquE9kXEthnn7ExQwTBQnp
+        fbnfeYxndiWL3hwiBfXt49aeDyEwC0AHTfmvk09p7Q==
+X-Google-Smtp-Source: APBJJlH1WlIL+So7XPu4cswA6dYrMzMWL7p+KH+gVJRpdkuvvZwGD/w94Pdv9W6rq0jyEEhBOw2A3nnL6lODP8EX8Ss=
+X-Received: by 2002:a2e:3c0c:0:b0:2b6:d137:b61c with SMTP id
+ j12-20020a2e3c0c000000b002b6d137b61cmr3810480lja.39.1689342140935; Fri, 14
+ Jul 2023 06:42:20 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a8a:4c7:0:b0:4e8:f6ff:2aab with HTTP; Fri, 14 Jul 2023
- 06:38:25 -0700 (PDT)
-In-Reply-To: <00000000000075fd0505ff917517@google.com>
-References: <00000000000075fd0505ff917517@google.com>
-From:   Namjae Jeon <linkinjeon@kernel.org>
-Date:   Fri, 14 Jul 2023 22:38:25 +0900
-X-Gmail-Original-Message-ID: <CAKYAXd9Wv5Swj4fouCLYbdyjWYhT39C3TiHgm-fRiKS_2=zsTA@mail.gmail.com>
-Message-ID: <CAKYAXd9Wv5Swj4fouCLYbdyjWYhT39C3TiHgm-fRiKS_2=zsTA@mail.gmail.com>
-Subject: Re: [syzbot] Monthly fat report (Jul 2023)
-To:     syzbot <syzbot+list96b6ab127c02d379290b@syzkaller.appspotmail.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sj1557.seo@samsung.com, syzkaller-bugs@googlegroups.com
+References: <20230713003201.GA469376@google.com> <161f1615-3d85-cf47-d2d5-695adf1ca7d4@linux.alibaba.com>
+ <0d9e7b4d-6477-47a6-b3d2-2c9d9b64903d@paulmck-laptop> <f124e041-6a82-2069-975c-4f393e5c4137@linux.alibaba.com>
+ <87292a44-cc02-4d95-940e-e4e31d0bc6f2@paulmck-laptop> <f1c60dcb-e32f-7b7e-bf0d-5dec999e9299@linux.alibaba.com>
+ <CAEXW_YSODXRfgkR0D2G-x=0uZdsqvF3kZL+LL3DcRX-5CULJ1Q@mail.gmail.com>
+ <894a3b64-a369-7bc6-c8a8-0910843cc587@linux.alibaba.com> <CAEXW_YSM1yik4yWTgZoxCS9RM6TbsL26VCVCH=41+uMA8chfAQ@mail.gmail.com>
+ <58b661d0-0ebb-4b45-a10d-c5927fb791cd@paulmck-laptop> <7d433fac-a62d-4e81-b8e5-57cf5f2d1d55@paulmck-laptop>
+ <058e7ee9-0380-eb1b-d9a8-b184cba6ed53@linux.alibaba.com>
+In-Reply-To: <058e7ee9-0380-eb1b-d9a8-b184cba6ed53@linux.alibaba.com>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Fri, 14 Jul 2023 09:42:08 -0400
+Message-ID: <CAEXW_YQCpUsPz24H4Mux6wOH1=RFRR-gsXLFTbJ37MgUJo3kCw@mail.gmail.com>
+Subject: Re: [PATCH v1] rcu: Fix and improve RCU read lock checks when !CONFIG_DEBUG_LOCK_ALLOC
+To:     Gao Xiang <hsiangkao@linux.alibaba.com>
+Cc:     paulmck@kernel.org, Sandeep Dhavale <dhavale@google.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-erofs@lists.ozlabs.org, xiang@kernel.org,
+        Will Shiu <Will.Shiu@mediatek.com>, kernel-team@android.com,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2023-07-03 18:04 GMT+09:00, syzbot
-<syzbot+list96b6ab127c02d379290b@syzkaller.appspotmail.com>:
-> Hello fat maintainers/developers,
-Hi Syzbot,
+On Thu, Jul 13, 2023 at 11:17=E2=80=AFPM Gao Xiang <hsiangkao@linux.alibaba=
+.com> wrote:
+>
+>
+>
+> On 2023/7/14 10:16, Paul E. McKenney wrote:
+> > On Thu, Jul 13, 2023 at 09:33:35AM -0700, Paul E. McKenney wrote:
+> >> On Thu, Jul 13, 2023 at 11:33:24AM -0400, Joel Fernandes wrote:
+>
+> ...
+>
+> >>>
+> >>> >From what Sandeep described, the code path is in an RCU reader. My
+> >>> question is more, why doesn't it use SRCU instead since it clearly
+> >>> does so if BLK_MQ_F_BLOCKING. What are the tradeoffs? IMHO, a deeper
+> >>> dive needs to be made into that before concluding that the fix is to
+> >>> use rcu_read_lock_any_held().
+> >>
+> >> How can this be solved?
+> >>
+> >> 1.   Always use a workqueue.  Simple, but is said to have performance
+> >>      issues.
+> >>
+> >> 2.   Pass a flag in that indicates whether or not the caller is in an
+> >>      RCU read-side critical section.  Conceptually simple, but might
+> >>      or might not be reasonable to actually implement in the code as
+> >>      it exists now.  (You tell me!)
+> >>
+> >> 3.   Create a function in z_erofs that gives you a decent
+> >>      approximation, maybe something like the following.
+> >>
+> >> 4.   Other ideas here.
+> >
+> > 5.    #3 plus make the corresponding Kconfig option select
+> >       PREEMPT_COUNT, assuming that any users needing compression in
+> >       non-preemptible kernels are OK with PREEMPT_COUNT being set.
+> >       (Some users of non-preemptible kernels object strenuously
+> >       to the added overhead from CONFIG_PREEMPT_COUNT=3Dy.)
+>
+> I'm not sure if it's a good idea
 
-It's not fat, it's exfat :)
->
-> This is a 31-day syzbot report for the fat subsystem.
-> All related reports/information can be found at:
-> https://syzkaller.appspot.com/upstream/s/fat
->
-> During the period, 3 new issues were detected and 0 were fixed.
-> In total, 11 issues are still open and 20 have been fixed so far.
->
-> Some of the still happening issues:
->
-> Ref Crashes Repro Title
-> <1> 347     Yes   possible deadlock in filemap_fault
->
-> https://syzkaller.appspot.com/bug?extid=7736960b837908f3a81d
-> <2> 257     Yes   possible deadlock in exfat_get_block
->
-> https://syzkaller.appspot.com/bug?extid=247e66a2c3ea756332c7
-> <3> 181     Yes   possible deadlock in exfat_iterate
->
-> https://syzkaller.appspot.com/bug?extid=38655f1298fefc58a904
-> <4> 100     Yes   possible deadlock in exc_page_fault
->
-> https://syzkaller.appspot.com/bug?extid=6d274a5dc4fa0974d4ad
-> <5> 39      Yes   possible deadlock in do_user_addr_fault
->
-> https://syzkaller.appspot.com/bug?extid=278098b0faaf0595072b
-> <6> 2       Yes   KASAN: slab-use-after-free Write in
-> collect_expired_timers
->
-> https://syzkaller.appspot.com/bug?extid=fb8d39ebb665f80c2ec1
-> <7> 1       Yes   BUG: corrupted list in __mark_inode_dirty
->
-> https://syzkaller.appspot.com/bug?extid=4a16683f5520de8e47c4
+I think it is a fine idea.
+
+> we need to work on
+> CONFIG_PREEMPT_COUNT=3Dn (why not?), we could just always trigger a
+> workqueue for this.
 >
 
-Can you check if deadlock problem(<1>, <2>, <3>, <4>, <5>, <6>) are
-fixed with the following patch ?
-https://lore.kernel.org/lkml/20230714084354.1959951-1-sj1557.seo@samsung.com/T/#u
+So CONFIG_PREEMPT_COUNT=3Dn users don't deserve good performance? ;-)
 
-Numbers <6>, <7> are not exfat issues. Can you remove them in your list?
+thanks,
 
-Thanks.
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> To disable reminders for individual bugs, reply with the following command:
-> #syz set <Ref> no-reminders
->
-> To change bug's subsystems, reply with:
-> #syz set <Ref> subsystems: new-subsystem
->
-> You may send multiple commands in a single email message.
->
+ - Joel
