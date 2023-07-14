@@ -2,146 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5387675416B
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 19:55:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 546C9754186
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 19:55:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235946AbjGNRvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 13:51:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35668 "EHLO
+        id S236477AbjGNRwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 13:52:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235954AbjGNRuv (ORCPT
+        with ESMTP id S236501AbjGNRwb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 13:50:51 -0400
-Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D48333ABE
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 10:50:21 -0700 (PDT)
-Received: by mail-oo1-xc32.google.com with SMTP id 006d021491bc7-565f3881cbeso1524030eaf.2
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 10:50:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20221208.gappssmtp.com; s=20221208; t=1689356948; x=1691948948;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=I7DDN8GbZMG3KlpuHTN+v0LnOTBPGrIWfYxu7LMvL/8=;
-        b=EsObdH5GmfJY05wMbzoDxMZl7qGlDG1hB3mWeD4J9KH+vhPUO8vzmrTibNYCg3HFsX
-         N/yHTsKtySUpQBqoznTOulPdXkVf5BdhhRbu9EJ5Plf9zeBRSvrgCTYrz9g9r9YKgv7P
-         /THveqSATuTYP4pJoUUX65Uan3QgCrP+vldmXjs13ym6CziZ2rBvZP2Xn0T2UKRIVHRM
-         AochMDIvMr3iWvDt4ot+U2i+6lwRdJJyOJtOSxXxo0HTi0zV9wlssvgbjSZEyuoRkFiD
-         d7e0tq9zTPgg6hRtHTm4SCr/NXDD25LFVWKsc5TWQsXVNx76aIbvTrm0/36SWRYONc5H
-         2iZA==
+        Fri, 14 Jul 2023 13:52:31 -0400
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 526EF35BD;
+        Fri, 14 Jul 2023 10:52:00 -0700 (PDT)
+Received: by mail-il1-x134.google.com with SMTP id e9e14a558f8ab-34642952736so9742245ab.3;
+        Fri, 14 Jul 2023 10:52:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689356948; x=1691948948;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=I7DDN8GbZMG3KlpuHTN+v0LnOTBPGrIWfYxu7LMvL/8=;
-        b=PB4QiH4tkOAqSiisKso2y3n1ZsHoRtXoFwgv+bURakGR10tfd4v+UcjsSTM+lS3Byf
-         z2qYTxRdv1iCAEEK1fBBni/AgttBRY1XFR00ZFIT+iH9FKf5gvtT297i+0mPx6c3T9Ao
-         1m04w1GpBP2OJEIuhcsh9L6BMF4xbEV61Pu0mUZZ9Ad5f16amy1F8HCE0E0WAJ0G8zvH
-         FLbjC4eEindNb+wNqasaIA/F1Q4vwsqKU7YnEGIm0tfjxULU5OJznV3ioBdzNkqEFTtg
-         mYiVf2NjWb1gtvVNZBAh9v622h9qbKofI2VdQXVy9N99vvQV8nMtFGc4oUU60KKQAA4e
-         rgxQ==
-X-Gm-Message-State: ABy/qLaOVfZa03qkp56j2gCFqFSDre2KmRMI9Q194BKzPFVnRxB3I6t6
-        IoHkGp28dRo5uf9jywHN3/08Yw==
-X-Google-Smtp-Source: APBJJlEFEC11jJ2OVWqVyq80ycE+Wi778tCXgrJAAGfwWU4P6AqQ9H0EWkwamlDgNCerFGk1EU/3MA==
-X-Received: by 2002:a4a:d298:0:b0:566:6928:2e3c with SMTP id h24-20020a4ad298000000b0056669282e3cmr5186911oos.9.1689356947824;
-        Fri, 14 Jul 2023 10:49:07 -0700 (PDT)
-Received: from ?IPV6:2804:14d:5c5e:44fb:860d:7d54:c6cc:ceb3? ([2804:14d:5c5e:44fb:860d:7d54:c6cc:ceb3])
-        by smtp.gmail.com with ESMTPSA id 184-20020a4a1dc1000000b0055e3dd89c12sm3065807oog.1.2023.07.14.10.49.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 Jul 2023 10:49:07 -0700 (PDT)
-Message-ID: <deeb8fe7-1f0e-bc1c-cde5-74e9af160bf7@mojatatu.com>
-Date:   Fri, 14 Jul 2023 14:49:01 -0300
+        d=1e100.net; s=20221208; t=1689356996; x=1691948996;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9Zl9ZOznQn0z/OyvCDvuTYi3+h4lEQZHsyG8cOFSOc4=;
+        b=UMYJ96ozF+0SIe4quJoX52ECLx3VaiRKC5AslwyKwjesNVre5X80h87qTyMbYAeeWC
+         0fbE7M3GVD+jxjSaDHBylML27YaC1cTnwEENVtfFCY/c41Rav/DXe/rSKPwxBRW5SplN
+         BdBHcvmX0kwNLMJXNRAxghAjQjYHu6NzXq4JPJdNYxLRkj5pKUBHzKfseX3NwhyX641N
+         GQrrlK5tv32IdxON0PZ2e0eIxfTuAdt80opEz4QaDZyZXUmvByMQzHR4HppohwHPrQAI
+         PFoZX4ZuGoeUp97P1q45Kf7AJ45MTclSEE+cjFebz+ui7oQmtvnWN7RTYW9Cc77ShABS
+         txqg==
+X-Gm-Message-State: ABy/qLbh+UCAgo/6zzDTApF9lxWvrAEBWLVC/3d3foNTN/BAG9dQEook
+        +SfGqUd18gZz55zw3EM4iw==
+X-Google-Smtp-Source: APBJJlHyhOQHM8DYxUbkCpRl+VNuf7Fk5/wUH7gPm88oLEInYJkKFUKSDSTtUF7PbOeG9gGJZIAX0Q==
+X-Received: by 2002:a05:6e02:933:b0:346:50ce:d602 with SMTP id o19-20020a056e02093300b0034650ced602mr4857766ilt.1.1689356996535;
+        Fri, 14 Jul 2023 10:49:56 -0700 (PDT)
+Received: from robh_at_kernel.org ([64.188.179.250])
+        by smtp.gmail.com with ESMTPSA id h7-20020a02b607000000b0042b1d495aecsm2711161jam.123.2023.07.14.10.49.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Jul 2023 10:49:55 -0700 (PDT)
+Received: (nullmailer pid 4062949 invoked by uid 1000);
+        Fri, 14 Jul 2023 17:49:17 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Benson Leung <bleung@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Vadim Pasternak <vadimp@nvidia.com>
+Cc:     devicetree@vger.kernel.org, chrome-platform@lists.linux.dev,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
+Subject: [PATCH] platform: Explicitly include correct DT includes
+Date:   Fri, 14 Jul 2023 11:49:09 -0600
+Message-Id: <20230714174909.4062739-1-robh@kernel.org>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH net 1/3] selftests: tc: set timeout to 15 minutes
-Content-Language: en-US
-To:     shaozhengchao <shaozhengchao@huawei.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>, Shuah Khan <shuah@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Paul Blakey <paulb@mellanox.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        mptcp@lists.linux.dev
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, stable@vger.kernel.org
-References: <20230713-tc-selftests-lkft-v1-0-1eb4fd3a96e7@tessares.net>
- <20230713-tc-selftests-lkft-v1-1-1eb4fd3a96e7@tessares.net>
- <bf7f8867-6b14-dd53-a6e4-2addee4a5ad8@huawei.com>
-From:   Pedro Tammela <pctammela@mojatatu.com>
-In-Reply-To: <bf7f8867-6b14-dd53-a6e4-2addee4a5ad8@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/07/2023 23:25, shaozhengchao wrote:
-> 
-> 
-> On 2023/7/14 5:16, Matthieu Baerts wrote:
->> When looking for something else in LKFT reports [1], I noticed that the
->> TC selftest ended with a timeout error:
->>
->>    not ok 1 selftests: tc-testing: tdc.sh # TIMEOUT 45 seconds
->>
->> The timeout had been introduced 3 years ago, see the Fixes commit below.
->>
->> This timeout is only in place when executing the selftests via the
->> kselftests runner scripts. I guess this is not what most TC devs are
->> using and nobody noticed the issue before.
->>
->> The new timeout is set to 15 minutes as suggested by Pedro [2]. It looks
->> like it is plenty more time than what it takes in "normal" conditions.
->>
->> Fixes: 852c8cbf34d3 ("selftests/kselftest/runner.sh: Add 45 second 
->> timeout per test")
->> Cc: stable@vger.kernel.org
->> Link: 
->> https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230711/testrun/18267241/suite/kselftest-tc-testing/test/tc-testing_tdc_sh/log [1]
->> Link: 
->> https://lore.kernel.org/netdev/0e061d4a-9a23-9f58-3b35-d8919de332d7@tessares.net/T/ [2]
->> Suggested-by: Pedro Tammela <pctammela@mojatatu.com>
->> Signed-off-by: Matthieu Baerts <matthieu.baerts@tessares.net>
->> ---
->>   tools/testing/selftests/tc-testing/settings | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/tools/testing/selftests/tc-testing/settings 
->> b/tools/testing/selftests/tc-testing/settings
->> new file mode 100644
->> index 000000000000..e2206265f67c
->> --- /dev/null
->> +++ b/tools/testing/selftests/tc-testing/settings
->> @@ -0,0 +1 @@
->> +timeout=900
->>
-> I remember last year when I tested all the tdc cases（qdisc + filter +
-> action + infra） in my vm machine, it took me nearly 20 minutes.
-> So I think it should be more than 1200 seconds if all cases need to be
-> tested.
-> 
-> Maybe we should really optimize the parallel execution process of tdc.
+The DT of_device.h and of_platform.h date back to the separate
+of_platform_bus_type before it as merged into the regular platform bus.
+As part of that merge prepping Arm DT support 13 years ago, they
+"temporarily" include each other. They also include platform_device.h
+and of.h. As a result, there's a pretty much random mix of those include
+files used throughout the tree. In order to detangle these headers and
+replace the implicit includes with struct declarations, users need to
+explicitly include the correct includes.
 
-Let's try to spend some cycles improving the tdc code performance first.
-TDC boils down essentially to:
-- Setup namespace (if needed)
-- Setup network interfaces
-- Spawn a few processes
-- Match a regex
-- Bring down namespace
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+ drivers/platform/chrome/cros_ec.c          | 1 +
+ drivers/platform/mellanox/mlxreg-hotplug.c | 1 -
+ drivers/platform/mellanox/mlxreg-io.c      | 1 -
+ 3 files changed, 1 insertion(+), 2 deletions(-)
 
-Nothing above screams expensive, so I'm sure there are some low hanging 
-fruits to improve the overall wall time even in debug kernels.
+diff --git a/drivers/platform/chrome/cros_ec.c b/drivers/platform/chrome/cros_ec.c
+index 8b7949220382..5d36fbc75e1b 100644
+--- a/drivers/platform/chrome/cros_ec.c
++++ b/drivers/platform/chrome/cros_ec.c
+@@ -12,6 +12,7 @@
+ #include <linux/interrupt.h>
+ #include <linux/module.h>
+ #include <linux/of_platform.h>
++#include <linux/platform_device.h>
+ #include <linux/platform_data/cros_ec_commands.h>
+ #include <linux/platform_data/cros_ec_proto.h>
+ #include <linux/slab.h>
+diff --git a/drivers/platform/mellanox/mlxreg-hotplug.c b/drivers/platform/mellanox/mlxreg-hotplug.c
+index b7dcc64cd238..6ddfea0d4c5b 100644
+--- a/drivers/platform/mellanox/mlxreg-hotplug.c
++++ b/drivers/platform/mellanox/mlxreg-hotplug.c
+@@ -12,7 +12,6 @@
+ #include <linux/i2c.h>
+ #include <linux/interrupt.h>
+ #include <linux/module.h>
+-#include <linux/of_device.h>
+ #include <linux/platform_data/mlxreg.h>
+ #include <linux/platform_device.h>
+ #include <linux/spinlock.h>
+diff --git a/drivers/platform/mellanox/mlxreg-io.c b/drivers/platform/mellanox/mlxreg-io.c
+index ddc08abf398c..83ba037408cd 100644
+--- a/drivers/platform/mellanox/mlxreg-io.c
++++ b/drivers/platform/mellanox/mlxreg-io.c
+@@ -11,7 +11,6 @@
+ #include <linux/hwmon.h>
+ #include <linux/hwmon-sysfs.h>
+ #include <linux/module.h>
+-#include <linux/of_device.h>
+ #include <linux/platform_data/mlxreg.h>
+ #include <linux/platform_device.h>
+ #include <linux/regmap.h>
+-- 
+2.40.1
 
