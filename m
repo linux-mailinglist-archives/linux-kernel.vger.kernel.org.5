@@ -2,179 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A06747536D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:44:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADDC57536D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:44:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235699AbjGNJoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 05:44:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37318 "EHLO
+        id S235826AbjGNJoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 05:44:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235713AbjGNJoU (ORCPT
+        with ESMTP id S235865AbjGNJo3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 05:44:20 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CFFBA1BD4;
-        Fri, 14 Jul 2023 02:44:17 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8FB7E1570;
-        Fri, 14 Jul 2023 02:44:59 -0700 (PDT)
-Received: from [10.57.76.27] (unknown [10.57.76.27])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9CBF23F740;
-        Fri, 14 Jul 2023 02:44:15 -0700 (PDT)
-Message-ID: <7935c31a-6c47-95c8-d6bd-176b81046699@arm.com>
-Date:   Fri, 14 Jul 2023 10:44:14 +0100
+        Fri, 14 Jul 2023 05:44:29 -0400
+Received: from mail.marcansoft.com (marcansoft.com [212.63.210.85])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D02C26AE;
+        Fri, 14 Jul 2023 02:44:26 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: lina@asahilina.net)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 9FF985BC37;
+        Fri, 14 Jul 2023 09:44:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=asahilina.net;
+        s=default; t=1689327864;
+        bh=2gCMoY94/ESU27ff3B7Nnjye7UV/M5FZXhxeO4nGMuc=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=mAJmPi2op48Hb4dON0tfHReK27/tgzVEWLOaJggy1nSyhAtKmrBJYJ+WgA8dn0/pb
+         QUPW6CZCfJf+OxysqpTk8dRJ1sg7r8KuCnrcI95UuBIWSzCZmd1a3fyHQw8Gf1rWdS
+         EJ8zpMxNZmWr/MhMPgo5BrsxyzLheRq8dK85Qrwf8PiBA0rDGPA6VvEFxdNvRuPkku
+         hL5CdeJvRFW2C1opfSYtEg5ZgGoyowK2licKSBrrhEG2atsDzvmnmYvPaZ26eylRxH
+         VfnL2B9licbkQO4SGdtMrB34oSks+S4N8G97+rLvFu1vZrhzGKB3FMBxz7NeS0/FYz
+         q7NHxkvXS+Y+w==
+Message-ID: <5c7278b9-e63e-4ddf-1988-1e02087fb988@asahilina.net>
+Date:   Fri, 14 Jul 2023 18:44:20 +0900
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH v1 2/9] selftests/mm: Give scripts execute permission
-To:     SeongJae Park <sj@kernel.org>, David Hildenbrand <david@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Mark Brown <broonie@kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Florent Revest <revest@chromium.org>,
-        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
-References: <20230713173237.66285-1-sj@kernel.org>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20230713173237.66285-1-sj@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH 2/3] drm/scheduler: Fix UAF in
+ drm_sched_fence_get_timeline_name
+Content-Language: en-US
+To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Luben Tuikov <luben.tuikov@amd.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>
+Cc:     Faith Ekstrand <faith.ekstrand@collabora.com>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, asahi@lists.linux.dev
+References: <20230714-drm-sched-fixes-v1-0-c567249709f7@asahilina.net>
+ <20230714-drm-sched-fixes-v1-2-c567249709f7@asahilina.net>
+ <bef7ef62-3cd9-6ceb-5eb4-5ae0c0236778@amd.com>
+From:   Asahi Lina <lina@asahilina.net>
+In-Reply-To: <bef7ef62-3cd9-6ceb-5eb4-5ae0c0236778@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/07/2023 18:32, SeongJae Park wrote:
-> On Thu, 13 Jul 2023 16:39:33 +0200 David Hildenbrand <david@redhat.com> wrote:
+On 14/07/2023 17.43, Christian König wrote:
+> Am 14.07.23 um 10:21 schrieb Asahi Lina:
+>> A signaled scheduler fence can outlive its scheduler, since fences are
+>> independencly reference counted. Therefore, we can't reference the
+>> scheduler in the get_timeline_name() implementation.
+>>
+>> Fixes oopses on `cat /sys/kernel/debug/dma_buf/bufinfo` when shared
+>> dma-bufs reference fences from GPU schedulers that no longer exist.
+>>
+>> Signed-off-by: Asahi Lina <lina@asahilina.net>
+>> ---
+>>    drivers/gpu/drm/scheduler/sched_entity.c | 7 ++++++-
+>>    drivers/gpu/drm/scheduler/sched_fence.c  | 4 +++-
+>>    include/drm/gpu_scheduler.h              | 5 +++++
+>>    3 files changed, 14 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/scheduler/sched_entity.c b/drivers/gpu/drm/scheduler/sched_entity.c
+>> index b2bbc8a68b30..17f35b0b005a 100644
+>> --- a/drivers/gpu/drm/scheduler/sched_entity.c
+>> +++ b/drivers/gpu/drm/scheduler/sched_entity.c
+>> @@ -389,7 +389,12 @@ static bool drm_sched_entity_add_dependency_cb(struct drm_sched_entity *entity)
+>>    
+>>    		/*
+>>    		 * Fence is from the same scheduler, only need to wait for
+>> -		 * it to be scheduled
+>> +		 * it to be scheduled.
+>> +		 *
+>> +		 * Note: s_fence->sched could have been freed and reallocated
+>> +		 * as another scheduler. This false positive case is okay, as if
+>> +		 * the old scheduler was freed all of its jobs must have
+>> +		 * signaled their completion fences.
 > 
->> On 13.07.23 15:54, Ryan Roberts wrote:
->>> When run under run_vmtests.sh, test scripts were failing to run with
->>> "permission denied" due to the scripts not being executable.
->>>
->>> It is also annoying not to be able to directly invoke run_vmtests.sh,
->>> which is solved by giving also it the execute permission.
->>>
->>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->>> ---
->>>   tools/testing/selftests/mm/charge_reserved_hugetlb.sh  | 0
->>>   tools/testing/selftests/mm/check_config.sh             | 0
->>>   tools/testing/selftests/mm/hugetlb_reparenting_test.sh | 0
->>>   tools/testing/selftests/mm/run_vmtests.sh              | 0
->>>   tools/testing/selftests/mm/test_hmm.sh                 | 0
->>>   tools/testing/selftests/mm/test_vmalloc.sh             | 0
->>>   tools/testing/selftests/mm/va_high_addr_switch.sh      | 0
->>>   tools/testing/selftests/mm/write_hugetlb_memory.sh     | 0
->>>   8 files changed, 0 insertions(+), 0 deletions(-)
->>>   mode change 100644 => 100755 tools/testing/selftests/mm/charge_reserved_hugetlb.sh
->>>   mode change 100644 => 100755 tools/testing/selftests/mm/check_config.sh
->>>   mode change 100644 => 100755 tools/testing/selftests/mm/hugetlb_reparenting_test.sh
->>>   mode change 100644 => 100755 tools/testing/selftests/mm/run_vmtests.sh
->>>   mode change 100644 => 100755 tools/testing/selftests/mm/test_hmm.sh
->>>   mode change 100644 => 100755 tools/testing/selftests/mm/test_vmalloc.sh
->>>   mode change 100644 => 100755 tools/testing/selftests/mm/va_high_addr_switch.sh
->>>   mode change 100644 => 100755 tools/testing/selftests/mm/write_hugetlb_memory.sh
->>>
->>> diff --git a/tools/testing/selftests/mm/charge_reserved_hugetlb.sh b/tools/testing/selftests/mm/charge_reserved_hugetlb.sh
->>> old mode 100644
->>> new mode 100755
->>> diff --git a/tools/testing/selftests/mm/check_config.sh b/tools/testing/selftests/mm/check_config.sh
->>> old mode 100644
->>> new mode 100755
->>> diff --git a/tools/testing/selftests/mm/hugetlb_reparenting_test.sh b/tools/testing/selftests/mm/hugetlb_reparenting_test.sh
->>> old mode 100644
->>> new mode 100755
->>> diff --git a/tools/testing/selftests/mm/run_vmtests.sh b/tools/testing/selftests/mm/run_vmtests.sh
->>> old mode 100644
->>> new mode 100755
->>> diff --git a/tools/testing/selftests/mm/test_hmm.sh b/tools/testing/selftests/mm/test_hmm.sh
->>> old mode 100644
->>> new mode 100755
->>> diff --git a/tools/testing/selftests/mm/test_vmalloc.sh b/tools/testing/selftests/mm/test_vmalloc.sh
->>> old mode 100644
->>> new mode 100755
->>> diff --git a/tools/testing/selftests/mm/va_high_addr_switch.sh b/tools/testing/selftests/mm/va_high_addr_switch.sh
->>> old mode 100644
->>> new mode 100755
->>> diff --git a/tools/testing/selftests/mm/write_hugetlb_memory.sh b/tools/testing/selftests/mm/write_hugetlb_memory.sh
->>> old mode 100644
->>> new mode 100755
->>
->> Sounds reasonable to me.
->>
->> Probably due to:
->>
->> commit baa489fabd01596d5426d6e112b34ba5fb59ab82
->> Author: SeongJae Park <sj@kernel.org>
->> Date:   Tue Jan 3 18:07:53 2023 +0000
->>
->>      selftests/vm: rename selftests/vm to selftests/mm
->>      
->>      Rename selftets/vm to selftests/mm for being more consistent with the
->>      code, documentation, and tools directories, and won't be confused with
->>      virtual machines.
->>
->>
->> and indeed, it contains
->>
->> diff --git a/tools/testing/selftests/vm/run_vmtests.sh b/tools/testing/selftests/mm/run_vmtests.sh
->> old mode 100755
->> new mode 100644
->> similarity index 100%
->> rename from tools/testing/selftests/vm/run_vmtests.sh
->> rename to tools/testing/selftests/mm/run_vmtests.sh
+> This is outright nonsense. As long as an entity for a scheduler exists
+> it is not allowed to free up this scheduler.
 > 
-> Thank you for tracking this and kindly Cc-ing me!  I'd like to clarify a little
-> bit more, though.  The permission change has made by the commit as you found.
-> Nevertheless, the submitted version[1] of the patch didn't change the
-> permission.  I guess the change was made while managing it via some file
-> permission unsupported patches management tool.
+> So this function can't be called like this.
 > 
-> I had a similar issue with DAMON selftest and sent a patch restoring the
-> permission.  Greg suggested me to update the framework instead, to support such
-> management tool[2], so I made it[3].  It recently also merged into 5.15.y for
-> DAMON selftests[4].
+>>    		 */
+>>    		fence = dma_fence_get(&s_fence->scheduled);
+>>    		dma_fence_put(entity->dependency);
+>> diff --git a/drivers/gpu/drm/scheduler/sched_fence.c b/drivers/gpu/drm/scheduler/sched_fence.c
+>> index ef120475e7c6..06a0eebcca10 100644
+>> --- a/drivers/gpu/drm/scheduler/sched_fence.c
+>> +++ b/drivers/gpu/drm/scheduler/sched_fence.c
+>> @@ -68,7 +68,7 @@ static const char *drm_sched_fence_get_driver_name(struct dma_fence *fence)
+>>    static const char *drm_sched_fence_get_timeline_name(struct dma_fence *f)
+>>    {
+>>    	struct drm_sched_fence *fence = to_drm_sched_fence(f);
+>> -	return (const char *)fence->sched->name;
+>> +	return (const char *)fence->sched_name;
+>>    }
+>>    
+>>    static void drm_sched_fence_free_rcu(struct rcu_head *rcu)
+>> @@ -216,6 +216,8 @@ void drm_sched_fence_init(struct drm_sched_fence *fence,
+>>    	unsigned seq;
+>>    
+>>    	fence->sched = entity->rq->sched;
+>> +	strlcpy(fence->sched_name, entity->rq->sched->name,
+>> +		sizeof(fence->sched_name));
+>>    	seq = atomic_inc_return(&entity->fence_seq);
+>>    	dma_fence_init(&fence->scheduled, &drm_sched_fence_ops_scheduled,
+>>    		       &fence->lock, entity->fence_context, seq);
+>> diff --git a/include/drm/gpu_scheduler.h b/include/drm/gpu_scheduler.h
+>> index e95b4837e5a3..4fa9523bd47d 100644
+>> --- a/include/drm/gpu_scheduler.h
+>> +++ b/include/drm/gpu_scheduler.h
+>> @@ -305,6 +305,11 @@ struct drm_sched_fence {
+>>             * @lock: the lock used by the scheduled and the finished fences.
+>>             */
+>>    	spinlock_t			lock;
+>> +        /**
+>> +         * @sched_name: the name of the scheduler that owns this fence. We
+>> +	 * keep a copy here since fences can outlive their scheduler.
+>> +         */
+>> +	char sched_name[16];
 > 
-> I have no strong opinion about whether we need to keep the permission or it's
-> good to have no execute permission since kselftest framework supports it.  I
-> just wanted to clarify the events I've shown.  Please correct me if I missed or
-> wrong something.  Cc-ing Greg, since he might have an opinion.
+> This just mitigates the problem, but doesn't fix it.
 
-Thanks for the detailed explanation. Are you effectively saying this patch will
-turn into a no-op once its been munged through the various patch management
-tools? That's disappointing because it's a pain to have to invoke everything
-though bash explicitly. Many other scripts manage to have the correct execute
-permission set (see everything in ./scripts for example).
+Could you point out any remaining issues so we can fix them? Right now 
+this absolutely *is* broken and this fixes the breakage I observed. If 
+there are other bugs remaining, I'd like to know what they are so I can 
+fix them.
 
-Personally I'd rather keep this patch and try rather than proactively do a work
-around.
+> The real issue is that the hw fence is kept around much longer than that.
 
+As far as I know, the whole point of scheduler fences is to decouple the 
+hw fences from the consumers. I already talked with Daniel about this. 
+The current behavior is broken. These fences can live forever. It is 
+broken to require that they outlive the driver that produced them.
 
-> 
-> [1] https://lore.kernel.org/all/20230103180754.129637-5-sj@kernel.org/
-> [2] https://lore.kernel.org/mm-commits/YRJisBs9AunccCD4@kroah.com/
-> [3] https://lore.kernel.org/all/20210810164534.25902-1-sj38.park@gmail.com/
-> [4] https://lore.kernel.org/stable/2023042743-cheesy-parasitic-206d@gregkh/
-> 
-> 
-> Thanks,
-> SJ
-> 
->>
->>
->> Reviewed-by: David Hildenbrand <david@redhat.com>
->>
->> -- 
->> Cheers,
->>
->> David / dhildenb
->>
->>
->>
+> Additional to that I'm not willing to increase the scheduler fence size
+> like that just to decouple them from the scheduler.
+
+Did you read my explanation on the cover letter as to how this is just 
+broken right now? We need to fix this. If you have a better suggestion 
+I'll take it. Doing nothing is not an option.
+
+~~ Lina
 
