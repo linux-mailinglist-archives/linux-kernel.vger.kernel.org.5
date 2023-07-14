@@ -2,104 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6070F753E02
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 16:48:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C645753E09
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 16:49:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236024AbjGNOsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 10:48:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56736 "EHLO
+        id S236100AbjGNOtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 10:49:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234562AbjGNOsK (ORCPT
+        with ESMTP id S234562AbjGNOtp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 10:48:10 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D541D2690;
-        Fri, 14 Jul 2023 07:48:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=njTLHLFMh16HuHE6NvqX3Yjrmk8yNTzTQKCOyHUveJs=; b=WZYk4jxaFlnChcvddb0bl2o/as
-        xkSs+mNy8/ZsEWQhsbL0TVjICEaLcZIVyHbJOqK4v9MskwnDo/Mzay+QctqXTWBD1JqUmBM1TYEas
-        B8kItNsA2ZcQ+/ThLZqrtLu4b1Kw37BQo50qAh2QDK0KMODZ6xWrRJ/nYSMuNqhvA0oKdXDm5k7wv
-        F7VAGnV9cuJub90tZH8EXoE7I/MZ+Ei7W+djkMs4XEhT6bsd0/hSrcYTlfXNDVH5pKaSFFwVNEzrs
-        QhCfu3gEXGnjOCfmXegxdbtMbLPEp/4SLHPuXl3PTfsnckUSMJKfd2lPDA0+LNFf7wmVY808dcM8p
-        CmySDnkA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qKK5G-006J0O-1m;
-        Fri, 14 Jul 2023 14:47:50 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 542A53001E7;
-        Fri, 14 Jul 2023 16:47:49 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3AEB8213728A5; Fri, 14 Jul 2023 16:47:49 +0200 (CEST)
-Date:   Fri, 14 Jul 2023 16:47:49 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, Jens Axboe <axboe@kernel.dk>,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Darren Hart <dvhart@infradead.org>, dave@stgolabs.net,
-        andrealmeid@igalia.com, Andrew Morton <akpm@linux-foundation.org>,
-        urezki@gmail.com, Christoph Hellwig <hch@infradead.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        linux-api@vger.kernel.org, linux-mm@kvack.org,
-        Linux-Arch <linux-arch@vger.kernel.org>, malteskarupke@web.de
-Subject: Re: [RFC][PATCH 04/10] futex: Add sys_futex_wake()
-Message-ID: <20230714144749.GA3261758@hirez.programming.kicks-ass.net>
-References: <20230714133859.305719029@infradead.org>
- <20230714141218.879715585@infradead.org>
- <c5a09710-a7a1-43df-ac25-42e8f3983f9c@app.fastmail.com>
+        Fri, 14 Jul 2023 10:49:45 -0400
+Received: from out-55.mta1.migadu.com (out-55.mta1.migadu.com [IPv6:2001:41d0:203:375::37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02F022698
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 07:49:41 -0700 (PDT)
+Message-ID: <8631f3e6-fef1-bff1-a793-b6e7410802b1@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1689346179;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jNvYQmJsQDwLhpPtJsjHCKzbrGa1338Fhf7Ke/A5vME=;
+        b=kvZPY1hUQNc1/e3a70dR5t4yOP1b8V1BkJHZz7ZUjXmORtlMZ9OzICY3+hpc+3/8GROxFR
+        HbJbPtan5hvTHVoCjkgy3BqbZXgUTQBVwnzuyiptALmQgQnU+mh9Y0xC1nRkeXDDNyw9IL
+        EuyW4qtgzTqgh019qQZtYrmKi31m0sE=
+Date:   Fri, 14 Jul 2023 22:49:13 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c5a09710-a7a1-43df-ac25-42e8f3983f9c@app.fastmail.com>
+Subject: Re: [PATCH v5] blk-mq: fix start_time_ns and alloc_time_ns for
+ pre-allocated rq
+Content-Language: en-US
+To:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>
+Cc:     hch@lst.de, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ming.lei@redhat.com,
+        zhouchengming@bytedance.com
+References: <20230710105516.2053478-1-chengming.zhou@linux.dev>
+ <aa813164-9a6a-53bd-405b-ba4cc1f1b656@kernel.dk>
+ <63f93f1c-98da-4c09-b3d8-711f6953d8b7@linux.dev>
+ <ZLA7QAfSojxu_FMW@slm.duckdns.org>
+ <5be1cba6-b141-3a05-f801-3af7d2092674@linux.dev>
+ <4dc89f6c-ab93-d3e7-5b5a-4b2f34e2fcac@kernel.dk>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Chengming Zhou <chengming.zhou@linux.dev>
+In-Reply-To: <4dc89f6c-ab93-d3e7-5b5a-4b2f34e2fcac@kernel.dk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 04:26:45PM +0200, Arnd Bergmann wrote:
-> On Fri, Jul 14, 2023, at 15:39, Peter Zijlstra wrote:
-> >
-> > +++ b/include/linux/syscalls.h
-> > @@ -563,6 +563,9 @@ asmlinkage long sys_set_robust_list(stru
-> >  asmlinkage long sys_futex_waitv(struct futex_waitv *waiters,
-> >  				unsigned int nr_futexes, unsigned int flags,
-> >  				struct __kernel_timespec __user *timeout, clockid_t clockid);
-> > +
-> > +asmlinkage long sys_futex_wake(void __user *uaddr, int nr, unsigned 
-> > int flags, u64 mask);
-> > +
+On 2023/7/14 22:43, Jens Axboe wrote:
+> On 7/14/23 5:31?AM, Chengming Zhou wrote:
+>> On 2023/7/14 01:58, Tejun Heo wrote:
+>>> Hello,
+>>>
+>>> On Thu, Jul 13, 2023 at 08:25:50PM +0800, Chengming Zhou wrote:
+>>>> Ok, this version will only get time stamp once for one request, it's actually
+>>>> not worse than the current code, which will get start time stamp once for each
+>>>> request even in the batch allocation.
+>>>>
+>>>> But yes, maybe we can also set the start time stamp in the batch mode, and only
+>>>> update the time stamp in the block case, like you said, has better performance.
+>>>>
+>>>> The first version [1] I posted actually just did this, in which use a nr_flush counter
+>>>> in plug to indicate that we blocked & flushed plug. Tejun and I think it seems fragile.
+>>>> So go to this way that only set time stamp once when the request actually used.
+>>>>
+>>>> [1] https://lore.kernel.org/all/20230601053919.3639954-1-chengming.zhou@linux.dev/
+>>>>
+>>>> Another way I can think of is to make rq_qos_throttle() return a bool to indicate
+>>>> if it blocked. Tejun and Jens, how do you think about this way?
+>>>>
+>>>> Although it's better performance, in case of preemption, the time stamp maybe not accurate.
+>>>
+>>> Trying to manually optimized timestamp reads seems like a bit of fool's
+>>> errand to me. I don't think anyone cares about nanosec accuracy, so there
+>>> are ample opportunities for generically caching timestamp so that we don't
+>>> have to contort code to optimzie timestamp calls.
+>>>
+>>> It's a bit out of scope for this patchset but I think it might make sense to
+>>> build a timestamp caching infrastructure. The cached timestamp can be
+>>> invalidated on context switches (block layer already hooks into them) and
+>>> issue and other path boundaries (e.g. at the end of plug flush).
+>>>
+>>
+>> Yes, this is a really great idea. It has better performance and is
+>> more generic.
 > 
-> You can't really use 'u64' arguments in portable syscalls, it causes
-> a couple of problems, both with defining the user space wrappers,
-> and with compat mode.
+> Do you want to work on that approach? I pretty much outlined how I think
+> it'd work in the previous reply.
 > 
-> Variants that would work include:
-> 
-> - using 'unsigned long' instead of 'u64'
-> - passing 'mask' by reference, as in splice()
-> - passing the mask in two u32-bit arguments like in llseek()
-> 
-> Not sure if any of the above work for you.
 
-Durr, I was hoping they'd use register pairs, but yeah I can see how
-that would be very hard to do in generic code.
+Ok, I want to do it. Your outline is clear, will implement and test it.
 
-Hurmph.. using 2 u32s is unfortunate on 64bit, while unsigned long
-would limit 64bit futexes to 64bit machines (perhaps not too bad).
+Thanks!
 
-Using unsigned long would help with the futex_wait() thing as well.
-
-I'll ponder things a bit.
-
-Obviously I only did build x86_64 ;-)
