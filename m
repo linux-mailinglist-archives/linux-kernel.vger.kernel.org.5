@@ -2,94 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85EA975339D
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 09:52:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE24F753398
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 09:52:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235515AbjGNHwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 03:52:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235503AbjGNHv7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S235490AbjGNHv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 14 Jul 2023 03:51:59 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04F2B30DC
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 00:51:56 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R2NwP61ghzBR9sk
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 15:51:49 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689321109; x=1691913110; bh=IaiEwpWcOFHXscK+oYD5U76t98y
-        szi7NqZeEKNSqRBk=; b=UPQQYe7d9sTS+WovY2u4zuZoESRBRfC2obBygIUenvk
-        z+wc5Wqx6ZLK5zRG1FRiVTN5Fwgu8+RkZeh/3DF44CP5kskmtX6+25sx7WWQ2PP4
-        Jk+28ueE9oZ/iwYObD3oRidI3DwWNiAbmCeqeWtj/Q8X/Lgyr8+tFpmr+6NIv0DI
-        5bgtqM/1Qh0dD0yAyQ+rjfHOtI0+WE2thbhhzvSQhPuz2fIobgxXH34wwXf8HL2a
-        MB6vUuO4Kb+9BBYcYZyF4/CmyvXxxoowaItvrFfLh400OYfgC3G75lRGaX0V6x8X
-        u5O5tH5Zu/gEwaXt1KyvWUpuku19I4KBK15C3JveYeA==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id lj8EFzDTeEsl for <linux-kernel@vger.kernel.org>;
-        Fri, 14 Jul 2023 15:51:49 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R2NwP1rV8zBJYck;
-        Fri, 14 Jul 2023 15:51:49 +0800 (CST)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233638AbjGNHv5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 Jul 2023 03:51:57 -0400
+Received: from muru.com (muru.com [72.249.23.125])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 33C9E30EA;
+        Fri, 14 Jul 2023 00:51:56 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 79C9A80A8;
+        Fri, 14 Jul 2023 07:51:55 +0000 (UTC)
+Date:   Fri, 14 Jul 2023 10:51:54 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Nishanth Menon <nm@ti.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Tero Kristo <kristo@kernel.org>
+Subject: Re: [PATCH 15/18] soc: ti: Mover power-domain drivers to the genpd
+ dir
+Message-ID: <20230714075154.GD5194@atomide.com>
+References: <20230707140434.723349-1-ulf.hansson@linaro.org>
+ <20230707140434.723349-16-ulf.hansson@linaro.org>
+ <20230707175048.6yees6d3evcomyux@vacation>
+ <CAPDyKFoc0hr=9LEtwwwe3R6rMn0b7TB1MCZN0ArUq+h9Pud08Q@mail.gmail.com>
+ <20230711124901.7b3tw374n7eldjpj@puppy>
 MIME-Version: 1.0
-Date:   Fri, 14 Jul 2023 15:51:49 +0800
-From:   hanyu001@208suo.com
-To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH] drivers/net/slip: Add space after that ','
-In-Reply-To: <tencent_222320492FD62B52855A0449D87275D0CD0A@qq.com>
-References: <tencent_222320492FD62B52855A0449D87275D0CD0A@qq.com>
-User-Agent: Roundcube Webmail
-Message-ID: <05e49e0f838eb127cbaee30f1b404c19@208suo.com>
-X-Sender: hanyu001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230711124901.7b3tw374n7eldjpj@puppy>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix Error reported by checkpatch.pl
+* Nishanth Menon <nm@ti.com> [230711 12:49]:
+> On 11:16-20230711, Ulf Hansson wrote:
+> > On Fri, 7 Jul 2023 at 19:50, Nishanth Menon <nm@ti.com> wrote:
+> > >
+> > > On 16:04-20230707, Ulf Hansson wrote:
+> > > > Cc: Nishanth Menon <nm@ti.com>
+> > > > Cc: Santosh Shilimkar <ssantosh@kernel.org>
+> > > > Cc: Tero Kristo <kristo@kernel.org>
+> > > > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+> > > > ---
+> > > >  MAINTAINERS                                   | 3 ++-
+> > > >  drivers/genpd/Makefile                        | 1 +
+> > > >  drivers/genpd/ti/Makefile                     | 3 +++
+> > > >  drivers/{soc => genpd}/ti/omap_prm.c          | 0
+> > > >  drivers/{soc => genpd}/ti/ti_sci_pm_domains.c | 0
+> > > >  drivers/soc/ti/Makefile                       | 2 --
+> > > >  6 files changed, 6 insertions(+), 3 deletions(-)
+> > > >  create mode 100644 drivers/genpd/ti/Makefile
+> > > >  rename drivers/{soc => genpd}/ti/omap_prm.c (100%)
+> > > >  rename drivers/{soc => genpd}/ti/ti_sci_pm_domains.c (100%)
+> > > >
+> > > > diff --git a/MAINTAINERS b/MAINTAINERS
+> > > > index 9e580df3e5db..3cf16ffac892 100644
+> > > > --- a/MAINTAINERS
+> > > > +++ b/MAINTAINERS
+> > > > @@ -21101,7 +21101,7 @@ F:    drivers/irqchip/irq-ti-sci-inta.c
+> > > >  F:   drivers/irqchip/irq-ti-sci-intr.c
+> > > >  F:   drivers/reset/reset-ti-sci.c
+> > > >  F:   drivers/soc/ti/ti_sci_inta_msi.c
+> > > > -F:   drivers/soc/ti/ti_sci_pm_domains.c
+> > > > +F:   drivers/genpd/ti/ti_sci_pm_domains.c
+> > > >  F:   include/dt-bindings/soc/ti,sci_pm_domain.h
+> > > >  F:   include/linux/soc/ti/ti_sci_inta_msi.h
+> > > >  F:   include/linux/soc/ti/ti_sci_protocol.h
+> > > > @@ -21335,6 +21335,7 @@ L:    linux-kernel@vger.kernel.org
+> > > >  L:   linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+> > > >  S:   Maintained
+> > > >  T:   git git://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
+> > > > +F:   drivers/genpd/ti/omap_prm.c
+> > >
+> > > Probably the wrong place for this as omap_prm is'nt a keystone navigator
+> > > driver set. Maybe Tony has a suggestion?
+> > 
+> > I guess we could add it to the OMAP2+ section then?
+> 
+> That would be my suggestion.
 
-./drivers/net/slip/slhc.c:476: ERROR: space required after that ',' 
-(ctx:VxV)
-./drivers/net/slip/slhc.c:476: ERROR: space required after that ',' 
-(ctx:VxV)
-./drivers/net/slip/slhc.c:477: ERROR: space required after that ',' 
-(ctx:VxV)
-./drivers/net/slip/slhc.c:477: ERROR: space required after that ',' 
-(ctx:VxV)
+Makes sense to me too.
 
-Signed-off-by: maqimei <2433033762@qq.com>
----
-  drivers/net/slip/slhc.c | 4 ++--
-  1 file changed, 2 insertions(+), 2 deletions(-)
+Regards,
 
-diff --git a/drivers/net/slip/slhc.c b/drivers/net/slip/slhc.c
-index 0011915..befdf4a 100644
---- a/drivers/net/slip/slhc.c
-+++ b/drivers/net/slip/slhc.c
-@@ -473,8 +473,8 @@ struct slcompress *
-       * to use on future compressed packets in the protocol field).
-       */
-  uncompressed:
--    memcpy(&cs->cs_ip,ip,20);
--    memcpy(&cs->cs_tcp,th,20);
-+    memcpy(&cs->cs_ip, ip, 20);
-+    memcpy(&cs->cs_tcp, th, 20);
-      if (ip->ihl > 5)
-        memcpy(cs->cs_ipopt, ip+1, ((ip->ihl) - 5) * 4);
-      if (th->doff > 5)
+Tony
