@@ -2,101 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3B26753C6A
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 16:02:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D90EE753C70
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 16:02:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235772AbjGNOCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 10:02:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55200 "EHLO
+        id S234638AbjGNOCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 10:02:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234638AbjGNOCF (ORCPT
+        with ESMTP id S235679AbjGNOCc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 10:02:05 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F2431989
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 07:02:04 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-c83284edf0eso1698217276.3
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 07:02:04 -0700 (PDT)
+        Fri, 14 Jul 2023 10:02:32 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 828A126B5
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 07:02:29 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-c01e1c0402cso1742222276.0
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 07:02:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689343323; x=1691935323;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2RX/r2ODC8fCu29Ed3cujFRc453JSyfT5sPImsob4JU=;
-        b=BwbXGxAdGDSa8Hh7hYoUt1tjxNITodRy4Ie5C9Ve5VjqA6Jp+nyRz/A8pfmVILcQ64
-         waqrj3jD33fIlouxPLj8xVZ7jMJXPFpzZZfFIhJRa14Ko7B0PJ9XRY1ZTwTG/bpqLs6Y
-         BruFqcKyT0EUFnXIdp0TIxtA3LQR0nYcxTlVMiwkz4IRgvYemxzWVSA3T8g404mRVp3+
-         3dri6WPbfsCB8AwLXDoA9muP0F2W+o/cAaLBQOFQLs1sYckvS7fBVKqH65bEOBGc7dsw
-         FK3QzCp5BfBLk4FUwZ4FZA1gNaX3R8wrbNX3RrAAV2tNGAFQZlGdMBItHrESM9ihMcph
-         sZHQ==
+        d=edgeble-ai.20221208.gappssmtp.com; s=20221208; t=1689343348; x=1691935348;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=UE2pP3kr6N661bURVuxZqsXqodClTm8wp0msbgmiIH4=;
+        b=MXEeWfqY2mgAgr5E9wbHzY4ZYoUoDnUnhnH4sh3G0mbF5ftopFspvE0b0UDi/Ug00R
+         bdzDD0NyPXjiv2DGQDScCJQjNWryU+un5bh5PRJtmFqlaHXEW2gT7cLW8JMqe4lbWR/6
+         rvPCprvTemiHzugEoTDCEYpBx+neVJ2NGR7cwzULmmwuLKQEpMsuW3KwtoPxa8V6EEIJ
+         LV+3UTfp3xaO9qaX/7Oizkx27gThCe6Uv+EX/h1qsAAMkE6bPKQvnLScK2XPXqSKay91
+         jKdsQXWuPuP7NWN2cScAslRKio3KZP7YyR/II1Jl/SiIYnxXp6gT552refvlEYL9HgMI
+         L7LQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689343323; x=1691935323;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2RX/r2ODC8fCu29Ed3cujFRc453JSyfT5sPImsob4JU=;
-        b=lAtBpE6CXhK11cK4kbL2qnsXq7tK6nSSKBYmnshGY1cZJNz+0wqf+WcWCuyLdPr5K6
-         y+nCf/ZEuVX1wQG93hO6eU/KnYjZqh+wyd54TFt0Vlk7KxG13pfiwmZYlO0VEbrkqxFl
-         pv9/3Sm341ICbOKiLIz+ruy4V8zwKrA7WE/4hwtb+zo05LideqtWfgQN0Rw9mFuimsPR
-         AYttU/K0o/apHj8SBM3f4pNeDrY96p/iQU6F2Gpml3i+4DkcHbJ5nxHkVevjMszHAv8d
-         tFswlU3FoVguUXRxy691UFvBUpugHv2SQOPuJ+2FFezPsokNpZRlGn7H6qbScvw29lCh
-         0q3Q==
-X-Gm-Message-State: ABy/qLamAojypK6U2srBHCHAgKAfcL9jSH0/+ixmHF/Tri9iNpsXb7Xs
-        c2Hfxu40B46gJH0ZBAcbAI4cKz4f16GUflg=
-X-Google-Smtp-Source: APBJJlGzu1LO19CXBMx8FKjaV6KIVSfUtdfZqayTOkYrzFmODQN5OrWCNNNYNkUzckjgrty4qCCNo3lYvl3ikgU=
-X-Received: from aliceryhl.c.googlers.com ([fda3:e722:ac3:cc00:31:98fb:c0a8:6c8])
- (user=aliceryhl job=sendgmr) by 2002:a25:d8d6:0:b0:c62:d787:3acc with SMTP id
- p205-20020a25d8d6000000b00c62d7873accmr25193ybg.2.1689343323690; Fri, 14 Jul
- 2023 07:02:03 -0700 (PDT)
-Date:   Fri, 14 Jul 2023 14:02:01 +0000
-In-Reply-To: <CAPDJoNv1HW-5uCj21PX3t23rJ+sbTL4Gm5pDis8HGJ-VTr4dug@mail.gmail.com>
-Mime-Version: 1.0
-References: <CAPDJoNv1HW-5uCj21PX3t23rJ+sbTL4Gm5pDis8HGJ-VTr4dug@mail.gmail.com>
-X-Mailer: git-send-email 2.41.0.255.g8b1d071c50-goog
-Message-ID: <20230714140201.383439-1-aliceryhl@google.com>
-Subject: Re: [PATCH] rust: kernel: str: Implement Debug for CString
-From:   Alice Ryhl <aliceryhl@google.com>
-To:     ariel.miculas@gmail.com
-Cc:     alex.gaynor@gmail.com, asahi@lists.linux.dev,
-        benno.lossin@proton.me, bjorn3_gh@protonmail.com,
-        boqun.feng@gmail.com, gary@garyguo.net, lina@asahilina.net,
-        linux-kernel@vger.kernel.org, ojeda@kernel.org,
-        rust-for-linux@vger.kernel.org, wedsonaf@gmail.com
+        d=1e100.net; s=20221208; t=1689343348; x=1691935348;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UE2pP3kr6N661bURVuxZqsXqodClTm8wp0msbgmiIH4=;
+        b=RgMohThqO0nMMBL4GiaEvzu2VZ86IxyLZz+zBFoXW4sQ/5T8jfCXhq4GCX3WnlZAyq
+         ZEDYjcQ9LXPe5eDkNhoBy255wdxpZJoOf2SCvpxc75j6TGZZhpPMfjgITqr0DGKBso5L
+         vblvFFSQIUCPM/CX4kaTPqgOSEGzk2d+XYHjCECrG0gKKA0Z78jESr677RFh74Q+K9LT
+         aBfptU8aVLevQr6BtpaaIm0y61KG7WsyO98iYYYs1EoGQ3m0PzuviAAJ2atU/DCxtfUV
+         sx637DTsvDccmI4/cMSfllSgqHURnbNR0IlGkR0GE3MnSQuQ5zjNxBxNUl1r/tfbFa5R
+         pPIw==
+X-Gm-Message-State: ABy/qLZpZG754fjRXL+fUFVwvrFi2I1CIpYd+OvFpsak2J9PaJuX+ktO
+        obHbp/p5tGMj8pCsNy0xTzGg5QGDiN6LISuiXsv+SQ==
+X-Google-Smtp-Source: APBJJlHS/oqNNmU6mDCZBTm1FqpDFiEIjuyfTLPHbX8EIeNAEAfjvZr6HPwCNvC67uJvxzFt9wasxruRv+DK3J/Qu3c=
+X-Received: by 2002:a25:e7c3:0:b0:c12:fb0e:52a0 with SMTP id
+ e186-20020a25e7c3000000b00c12fb0e52a0mr4112693ybh.19.1689343348754; Fri, 14
+ Jul 2023 07:02:28 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230713171851.73052-1-sebastian.reichel@collabora.com> <20230713171851.73052-4-sebastian.reichel@collabora.com>
+In-Reply-To: <20230713171851.73052-4-sebastian.reichel@collabora.com>
+From:   Jagan Teki <jagan@edgeble.ai>
+Date:   Fri, 14 Jul 2023 19:32:17 +0530
+Message-ID: <CA+VMnFzh1-rnDoY_hS-iqjDrOYwDAQXBBg9KUHAVBvaoUH=ZoQ@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] arm64: dts: rockchip: rk3588: add PCIe2 support
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     linux-pci@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Simon Xue <xxm@rock-chips.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kernel@collabora.com, Kever Yang <kever.yang@rock-chips.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Asahi Lina <lina@asahilina.net> writes:
-> On 14/07/2023 18.48, Alice Ryhl wrote:
->> Asahi Lina <lina@asahilina.net> writes:
->>> Trivial implementation.
->>>
->>> Signed-off-by: Asahi Lina <lina@asahilina.net>
->> 
->> The commit message is a bit short, but the change itself looks fine.
->> 
->> Reviewed-by: Alice Ryhl <aliceryhl@google.com>
-> 
-> It's so trivial I just didn't know what else to write... suggestions 
-> welcome (for this or next time I have a patch like this) ^^
-> 
-> ~ Lina
+On Thu, 13 Jul 2023 at 22:49, Sebastian Reichel
+<sebastian.reichel@collabora.com> wrote:
+>
+> Add all three PCIe2 IP blocks to the RK3588 DT. Note, that RK3588
+> also has two PCIe3 IP blocks, that will be handled separately.
+>
+> Co-developed-by: Kever Yang <kever.yang@rock-chips.com>
+> Signed-off-by: Kever Yang <kever.yang@rock-chips.com>
+> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> ---
 
-Adding some sort of motivation usually works quite well, e.g.:
+Tested all pcie2x1l0 and pcie2x1l1 IP blocks in edgeble-neu6a, 6b.
 
-Make it possible to use a CString with the `pr_*` macros directly, that
-is, instead of
-
-	pr_debug!("trying to open {:?}\n", &*filename);
-
-we can now write
-
-	pr_debug!("trying to open {:?}\n", filename);
-
-Alice
-
+Tested-by: Jagan Teki <jagan@edgeble.ai> # edgeble-neu6a, 6b
+Reviewed-by: Jagan Teki <jagan@edgeble.ai>
