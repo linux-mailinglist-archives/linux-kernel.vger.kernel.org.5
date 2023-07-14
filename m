@@ -2,253 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6448C75401C
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 19:02:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE85F754020
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 19:03:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235905AbjGNRCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 13:02:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37174 "EHLO
+        id S235941AbjGNRDc convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 14 Jul 2023 13:03:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235199AbjGNRCN (ORCPT
+        with ESMTP id S235470AbjGNRDa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 13:02:13 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91DC31992;
-        Fri, 14 Jul 2023 10:02:11 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1F14A61D66;
-        Fri, 14 Jul 2023 17:02:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 754D8C433C8;
-        Fri, 14 Jul 2023 17:02:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689354130;
-        bh=jY6JZxKceDtVZD4Gt1yOdz9n+P+MKOe0fgA+nUL1asY=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=lVDdgcy6wu6DgGYTSgR37ppjVW6mcMp7lZ+9syQr5XuU9PVInkTh8p+1zs8uUv23H
-         ERsMBzcIO+Nnq2qgU2LUsvZGA6LXRvy3ITeapw95JehlLDCY1x+m1xrQNkVLtsPRby
-         9Ct2BLyGq3pUyrhc3SJ6hgKK5wJGi4knIU98s//qe+J/xPOWqBFMv1vEznnT4/u2eO
-         fL1kmvuAMS/8XFpOrIf40/rcfHTaevI21jB6Rn4Em1gmUPrdt5BSiFxc1ZBcuJNo+Y
-         3wgNkiGu1QSHbreTAqP+NBA9airT5t6KwlYjQfOVBxITLeIQl3VmS75u+Eo/Efz2A0
-         4Yh24fqoZXBfQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 13CC3CE03B3; Fri, 14 Jul 2023 10:02:10 -0700 (PDT)
-Date:   Fri, 14 Jul 2023 10:02:10 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Alan Huang <mmpgouride@gmail.com>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        Gao Xiang <hsiangkao@linux.alibaba.com>,
-        Sandeep Dhavale <dhavale@google.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-erofs@lists.ozlabs.org, xiang@kernel.org,
-        Will Shiu <Will.Shiu@mediatek.com>, kernel-team@android.com,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH v1] rcu: Fix and improve RCU read lock checks when
- !CONFIG_DEBUG_LOCK_ALLOC
-Message-ID: <e8ee7006-c1d0-4c04-bd25-0f518fb6534b@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <f124e041-6a82-2069-975c-4f393e5c4137@linux.alibaba.com>
- <87292a44-cc02-4d95-940e-e4e31d0bc6f2@paulmck-laptop>
- <f1c60dcb-e32f-7b7e-bf0d-5dec999e9299@linux.alibaba.com>
- <CAEXW_YSODXRfgkR0D2G-x=0uZdsqvF3kZL+LL3DcRX-5CULJ1Q@mail.gmail.com>
- <894a3b64-a369-7bc6-c8a8-0910843cc587@linux.alibaba.com>
- <CAEXW_YSM1yik4yWTgZoxCS9RM6TbsL26VCVCH=41+uMA8chfAQ@mail.gmail.com>
- <58b661d0-0ebb-4b45-a10d-c5927fb791cd@paulmck-laptop>
- <7d433fac-a62d-4e81-b8e5-57cf5f2d1d55@paulmck-laptop>
- <F160D7F8-57DC-4986-90A9-EB50F7C89891@gmail.com>
- <6E5326AD-9A5D-4570-906A-BDE8257B6F0C@gmail.com>
+        Fri, 14 Jul 2023 13:03:30 -0400
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5093510EA;
+        Fri, 14 Jul 2023 10:03:29 -0700 (PDT)
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-94ea38c90ccso58901166b.1;
+        Fri, 14 Jul 2023 10:03:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689354208; x=1691946208;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+w920JXIkybPetWi046ZRPSw5JR8m5DRlgdvfm2InwE=;
+        b=H0zynSgGU/bMGzV/Rh8XzKo/pCD/njfFU4id4Eb3kgjs5kPjYLzHYU9Iei7aAY9/2H
+         nICoekjfUzlHTDG/vBvVb9EH5KbkfLlrd+/Y34FBPyMvONRcbekOBNvrKNRAEczw0jwv
+         Lv0Rxijb8+uH/TizRt7BIg5aEnGD+ClnI8ivRbaCLtZvhGqJU+pVud7nMA7LBNsbP8LH
+         yTv54FeYi/S8aEf9p+rcKc7nENAVumAyMMCLpi8nou9Pcl3J6K54ZuyZbjiIX29uAdE3
+         W/onUSlOn6kjwMPLrxtoFt6izSgB/J6KoQqwshGF3mHwIdMAN+uNXKNxYCipLFil2tNY
+         gsaw==
+X-Gm-Message-State: ABy/qLZwrx1h3CJ0qH0VnAEK0buKI9Mhbn6XE3H7MCGucFX8wEuzGy3v
+        wkOuGrN26fKN1inkGWAWPgwtOvQEkG14+F8z1pL2qjYG
+X-Google-Smtp-Source: APBJJlFWCHKgeuKLMNl7eaHbz8gcf8jN858tJqH96sfgN3uW24NsbLp55ZfNoLGMu2IWNlOHM84r5nnzzB7FaGfF4vI=
+X-Received: by 2002:a17:906:de:b0:993:d5e7:80f8 with SMTP id
+ 30-20020a17090600de00b00993d5e780f8mr4216969eji.7.1689354207604; Fri, 14 Jul
+ 2023 10:03:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6E5326AD-9A5D-4570-906A-BDE8257B6F0C@gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230703080252.2899090-1-michal.wilczynski@intel.com>
+In-Reply-To: <20230703080252.2899090-1-michal.wilczynski@intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 14 Jul 2023 19:03:16 +0200
+Message-ID: <CAJZ5v0gGoMOwWbEzMTkX3ShQU2_iq8fn6OwQ2GJu+YJ2Q=u9uw@mail.gmail.com>
+Subject: Re: [PATCH v7 0/9] Remove .notify callback in acpi_device_ops
+To:     Michal Wilczynski <michal.wilczynski@intel.com>
+Cc:     linux-acpi@vger.kernel.org, rafael@kernel.org,
+        dan.j.williams@intel.com, vishal.l.verma@intel.com,
+        lenb@kernel.org, dave.jiang@intel.com, ira.weiny@intel.com,
+        rui.zhang@intel.com, linux-kernel@vger.kernel.org,
+        nvdimm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 11:54:47PM +0800, Alan Huang wrote:
-> 
-> > 2023年7月14日 23:35，Alan Huang <mmpgouride@gmail.com> 写道：
-> > 
-> >> 
-> >> 2023年7月14日 10:16，Paul E. McKenney <paulmck@kernel.org> 写道：
-> >> 
-> >> On Thu, Jul 13, 2023 at 09:33:35AM -0700, Paul E. McKenney wrote:
-> >>> On Thu, Jul 13, 2023 at 11:33:24AM -0400, Joel Fernandes wrote:
-> >>>> On Thu, Jul 13, 2023 at 10:34 AM Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
-> >>>>> On 2023/7/13 22:07, Joel Fernandes wrote:
-> >>>>>> On Thu, Jul 13, 2023 at 12:59 AM Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
-> >>>>>>> On 2023/7/13 12:52, Paul E. McKenney wrote:
-> >>>>>>>> On Thu, Jul 13, 2023 at 12:41:09PM +0800, Gao Xiang wrote:
-> >>>>>>> 
-> >>>>>>> ...
-> >>>>>>> 
-> >>>>>>>>> 
-> >>>>>>>>> There are lots of performance issues here and even a plumber
-> >>>>>>>>> topic last year to show that, see:
-> >>>>>>>>> 
-> >>>>>>>>> [1] https://lore.kernel.org/r/20230519001709.2563-1-tj@kernel.org
-> >>>>>>>>> [2] https://lore.kernel.org/r/CAHk-=wgE9kORADrDJ4nEsHHLirqPCZ1tGaEPAZejHdZ03qCOGg@mail.gmail.com
-> >>>>>>>>> [3] https://lore.kernel.org/r/CAB=BE-SBtO6vcoyLNA9F-9VaN5R0t3o_Zn+FW8GbO6wyUqFneQ@mail.gmail.com
-> >>>>>>>>> [4] https://lpc.events/event/16/contributions/1338/
-> >>>>>>>>> and more.
-> >>>>>>>>> 
-> >>>>>>>>> I'm not sure if it's necessary to look info all of that,
-> >>>>>>>>> andSandeep knows more than I am (the scheduling issue
-> >>>>>>>>> becomes vital on some aarch64 platform.)
-> >>>>>>>> 
-> >>>>>>>> Hmmm...  Please let me try again.
-> >>>>>>>> 
-> >>>>>>>> Assuming that this approach turns out to make sense, the resulting
-> >>>>>>>> patch will need to clearly state the performance benefits directly in
-> >>>>>>>> the commit log.
-> >>>>>>>> 
-> >>>>>>>> And of course, for the approach to make sense, it must avoid breaking
-> >>>>>>>> the existing lockdep-RCU debugging code.
-> >>>>>>>> 
-> >>>>>>>> Is that more clear?
-> >>>>>>> 
-> >>>>>>> Personally I'm not working on Android platform any more so I don't
-> >>>>>>> have a way to reproduce, hopefully Sandeep could give actually
-> >>>>>>> number _again_ if dm-verity is enabled and trigger another
-> >>>>>>> workqueue here and make a comparsion why the scheduling latency of
-> >>>>>>> the extra work becomes unacceptable.
-> >>>>>>> 
-> >>>>>> 
-> >>>>>> Question from my side, are we talking about only performance issues or
-> >>>>>> also a crash? It appears z_erofs_decompress_pcluster() takes
-> >>>>>> mutex_lock(&pcl->lock);
-> >>>>>> 
-> >>>>>> So if it is either in an RCU read-side critical section or in an
-> >>>>>> atomic section, like the softirq path, then it may
-> >>>>>> schedule-while-atomic or trigger RCU warnings.
-> >>>>>> 
-> >>>>>> z_erofs_decompressqueue_endio
-> >>>>>> -> z_erofs_decompress_kickoff
-> >>>>>> ->z_erofs_decompressqueue_work
-> >>>>>>  ->z_erofs_decompress_queue
-> >>>>>>   -> z_erofs_decompress_pcluster
-> >>>>>>    -> mutex_lock
-> >>>>>> 
-> >>>>> 
-> >>>>> Why does the softirq path not trigger a workqueue instead?
-> >>>> 
-> >>>> I said "if it is". I was giving a scenario. mutex_lock() is not
-> >>>> allowed in softirq context or in an RCU-reader.
-> >>>> 
-> >>>>>> Per Sandeep in [1], this stack happens under RCU read-lock in:
-> >>>>>> 
-> >>>>>> #define __blk_mq_run_dispatch_ops(q, check_sleep, dispatch_ops) \
-> >>>>>> [...]
-> >>>>>>                rcu_read_lock();
-> >>>>>>                (dispatch_ops);
-> >>>>>>                rcu_read_unlock();
-> >>>>>> [...]
-> >>>>>> 
-> >>>>>> Coming from:
-> >>>>>> blk_mq_flush_plug_list ->
-> >>>>>>                           blk_mq_run_dispatch_ops(q,
-> >>>>>>                                __blk_mq_flush_plug_list(q, plug));
-> >>>>>> 
-> >>>>>> and __blk_mq_flush_plug_list does this:
-> >>>>>>          q->mq_ops->queue_rqs(&plug->mq_list);
-> >>>>>> 
-> >>>>>> This somehow ends up calling the bio_endio and the
-> >>>>>> z_erofs_decompressqueue_endio which grabs the mutex.
-> >>>>>> 
-> >>>>>> So... I have a question, it looks like one of the paths in
-> >>>>>> __blk_mq_run_dispatch_ops() uses SRCU.  Where are as the alternate
-> >>>>>> path uses RCU. Why does this alternate want to block even if it is not
-> >>>>>> supposed to? Is the real issue here that the BLK_MQ_F_BLOCKING should
-> >>>>>> be set? It sounds like you want to block in the "else" path even
-> >>>>>> though BLK_MQ_F_BLOCKING is not set:
-> >>>>> 
-> >>>>> BLK_MQ_F_BLOCKING is not a flag that a filesystem can do anything with.
-> >>>>> That is block layer and mq device driver stuffs. filesystems cannot set
-> >>>>> this value.
-> >>>>> 
-> >>>>> As I said, as far as I understand, previously,
-> >>>>> .end_io() can only be called without RCU context, so it will be fine,
-> >>>>> but I don't know when .end_io() can be called under some RCU context
-> >>>>> now.
-> >>>> 
-> >>>>> From what Sandeep described, the code path is in an RCU reader. My
-> >>>> question is more, why doesn't it use SRCU instead since it clearly
-> >>>> does so if BLK_MQ_F_BLOCKING. What are the tradeoffs? IMHO, a deeper
-> >>>> dive needs to be made into that before concluding that the fix is to
-> >>>> use rcu_read_lock_any_held().
-> >>> 
-> >>> How can this be solved?
-> >>> 
-> >>> 1. Always use a workqueue.  Simple, but is said to have performance
-> >>> issues.
-> >>> 
-> >>> 2. Pass a flag in that indicates whether or not the caller is in an
-> >>> RCU read-side critical section.  Conceptually simple, but might
-> >>> or might not be reasonable to actually implement in the code as
-> >>> it exists now. (You tell me!)
-> >>> 
-> >>> 3. Create a function in z_erofs that gives you a decent
-> >>> approximation, maybe something like the following.
-> >>> 
-> >>> 4. Other ideas here.
-> >> 
-> >> 5. #3 plus make the corresponding Kconfig option select
-> >> PREEMPT_COUNT, assuming that any users needing compression in
-> >> non-preemptible kernels are OK with PREEMPT_COUNT being set.
-> >> (Some users of non-preemptible kernels object strenuously
-> >> to the added overhead from CONFIG_PREEMPT_COUNT=y.)
-> > 
-> > 6. Set one bit in bio->bi_private, check the bit and flip it in rcu_read_lock() path,
-> > then in z_erofs_decompressqueue_endio, check if the bit has changed.
-> 
-> Seems bad, read and modify bi_private is a bad idea.
+On Mon, Jul 3, 2023 at 10:03 AM Michal Wilczynski
+<michal.wilczynski@intel.com> wrote:
+>
+> *** IMPORTANT ***
+> This is part 1 - only drivers in acpi directory to ease up review
+> process. Rest of the drivers will be handled in separate patchsets.
+>
+> Currently drivers support ACPI event handlers by defining .notify
+> callback in acpi_device_ops. This solution is suboptimal as event
+> handler installer installs intermediary function acpi_notify_device as a
+> handler in every driver. Also this approach requires extra variable
+> 'flags' for specifying event types that the driver want to subscribe to.
+> Additionally this is a pre-work required to align acpi_driver with
+> platform_driver and eventually replace acpi_driver with platform_driver.
+>
+> Remove .notify callback from the acpi_device_ops. Replace it with each
+> driver installing and removing it's event handlers.
+>
+> This is part 1 - only drivers in acpi directory to ease up review
+> process.
+>
+> v7:
+>  - fix warning by declaring acpi_nfit_remove_notify_handler() as static
+>
+> v6:
+>  - fixed unnecessary RCT in all drivers, as it's not a purpose of
+>    this patch series
+>  - changed error label names to simplify them
+>  - dropped commit that remove a comma
+>  - squashed commit moving code for nfit
+>  - improved nfit driver to use devm instead of .remove()
+>  - re-based as Rafael changes [1] are merged already
+>
+> v5:
+>  - rebased on top of Rafael changes [1], they're not merged yet
+>  - fixed rollback in multiple drivers so they don't leak resources on
+>    failure
+>  - made this part 1, meaning only drivers in acpi directory, rest of
+>    the drivers will be handled in separate patchsets to ease up review
+>
+> v4:
+>  - added one commit for previously missed driver sony-laptop,
+>    refactored return statements, added NULL check for event installer
+> v3:
+>  - lkp still reported some failures for eeepc, fujitsu and
+>    toshiba_bluetooth, fix those
+> v2:
+>  - fix compilation errors for drivers
+>
+> [1]: https://lore.kernel.org/linux-acpi/1847933.atdPhlSkOF@kreacher/
+>
+> Michal Wilczynski (9):
+>   acpi/bus: Introduce wrappers for ACPICA event handler install/remove
+>   acpi/bus: Set driver_data to NULL every time .add() fails
+>   acpi/ac: Move handler installing logic to driver
+>   acpi/video: Move handler installing logic to driver
+>   acpi/battery: Move handler installing logic to driver
+>   acpi/hed: Move handler installing logic to driver
+>   acpi/nfit: Move handler installing logic to driver
+>   acpi/nfit: Remove unnecessary .remove callback
+>   acpi/thermal: Move handler installing logic to driver
 
-Is there some other field that would work?
+Dan hasn't spoken up yet, but I went ahead and queued up the patches
+(with some modifications) for 6.6.
 
-							Thanx, Paul
+I've edited the subjects and rewritten the changelogs and I've
+adjusted some white space around function calls (nothing major).
 
-> > Not sure if this is feasible or acceptable. :)
-> > 
-> >> 
-> >> Thanx, Paul
-> >> 
-> >>> The following is untested, and is probably quite buggy, but it should
-> >>> provide you with a starting point.
-> >>> 
-> >>> static bool z_erofs_wq_needed(void)
-> >>> {
-> >>> if (IS_ENABLED(CONFIG_PREEMPTION) && rcu_preempt_depth())
-> >>> return true;  // RCU reader
-> >>> if (IS_ENABLED(CONFIG_PREEMPT_COUNT) && !preemptible())
-> >>> return true;  // non-preemptible
-> >>> if (!IS_ENABLED(CONFIG_PREEMPT_COUNT))
-> >>> return true;  // non-preeemptible kernel, so play it safe
-> >>> return false;
-> >>> }
-> >>> 
-> >>> You break it, you buy it!  ;-)
-> >>> 
-> >>> Thanx, Paul
-> 
-> 
+Thanks!
