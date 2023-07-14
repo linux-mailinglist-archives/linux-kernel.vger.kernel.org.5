@@ -2,196 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC0AF7542A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 20:36:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE2087542A6
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 20:36:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236195AbjGNSgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 14:36:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47318 "EHLO
+        id S236170AbjGNSga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 14:36:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236359AbjGNSf5 (ORCPT
+        with ESMTP id S236024AbjGNSg2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 14:35:57 -0400
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDF902713
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 11:35:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689359755; x=1720895755;
-  h=subject:to:cc:from:date:message-id;
-  bh=RM+pHRHKF+8YJpmpDpn+bO78EGAQDWmUFEfGvyROyRQ=;
-  b=XbYCLtC62j+zlVe1/XSSnhZWAHBLjF09WdRu17N2AhGnu0r4Heku9isx
-   7wWUOGGRWJiO3NcIdxRKZnY8cHxn+ARdGXcneijuMJRluH7MpYAqwTYFb
-   YugiAnBzZXR7CSEBGcGI3ah0E+B3PWy6SrkpHs0GdsMwriCnzQNeWMQRL
-   c056RswzHCC3wbaCbVdOkMV9BtO9g1YbgAdH8sFScewZql2r4L2uiov+x
-   91hGRtMI5ZD28ek/ecrlARRm3rD/u5z5gYoiJCQvyVu2w6odOmi6gpf4o
-   j74Dytccz0L4gqrH4KoPjMWyiODQwNJOdE7FDN4F+H7CEJbN+5PRqaYt/
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10771"; a="396360508"
-X-IronPort-AV: E=Sophos;i="6.01,206,1684825200"; 
-   d="scan'208";a="396360508"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 11:35:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10771"; a="846552085"
-X-IronPort-AV: E=Sophos;i="6.01,206,1684825200"; 
-   d="scan'208";a="846552085"
-Received: from davehans-spike.ostc.intel.com (HELO localhost.localdomain) ([10.165.164.11])
-  by orsmga004.jf.intel.com with ESMTP; 14 Jul 2023 11:35:55 -0700
-Subject: [PATCH] x86/mm: Remove "INVPCID single" feature tracking
-To:     dave.hansen@intel.com
-Cc:     linux-kernel@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>, jannh@google.com,
-        x86@kernel.org, luto@kernel.org, peterz@infradead.org,
-        andrew.cooper3@citrix.com
-From:   Dave Hansen <dave.hansen@linux.intel.com>
-Date:   Fri, 14 Jul 2023 11:35:55 -0700
-Message-Id: <20230714183555.7DD052F4@davehans-spike.ostc.intel.com>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Fri, 14 Jul 2023 14:36:28 -0400
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2055.outbound.protection.outlook.com [40.107.102.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 651ABC6;
+        Fri, 14 Jul 2023 11:36:27 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KB+o2ySmh/MWUQlFZHrbrRMDZrHsmgxg1yiFWhvp7rwxHI752FylVkqFbkA+hYT1C9lPQTK7HpS7oOfI+MGRQMAliLWKyy0UK6Sil91asBE8Am/YVJIHGqhoUNJiovV5KfvYOtI6GeeUjVY/w7rPiIDwVORb3y3Vqp8XkRaLcqfmT743s32DVIXKT9a/5XwH/18y1DpcCbEh5TyRCgpPrtRH8LIvDw0RxX+Jqp/G2ZXD/tb3mAepHT2JIyxWdupqkbDr0AQ5KicnlrDLmQnVzbouoRUqu9tdMY0WVtQCuz9j5ebY7tAigF1OGUYuLyK5+sPYFcWVWS7d9hXRI9wSzg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=xeiY26Gr/0ZdN7UbwOkyeAZp4jheTHUCjbyjG0lSPgE=;
+ b=BAf8YfYw6JZFpF6lmyctpzwTYa8vwN/Pc7fjWGHVmDtmgc+GRhgpuZeIhxUQOOGBaIenAQJLOXKUG3O5k8xaJ3rFjBQjI+ZyMfkqQloD6Ccl9GN1khkvoU0PcFhDcnFX+14KkiDqARQZe1/DlKattV9e+d9bb+nWNDsRTDmtVUIrfarqmBL+plKDuY//MIgAW4RiEswQAzTAU/qqn16zEq28DD/KRF30qfJSIQDKMHhVmgffBD0VwFJWk6iEuwy2Ow2n/IIoquPSZgtjdeLiiaTFtcUI+GBVoniLd7kKgacZuvVDncCvhklCgQL5WN3YBv/Tw7f6fStVmKvqka4cZw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xeiY26Gr/0ZdN7UbwOkyeAZp4jheTHUCjbyjG0lSPgE=;
+ b=Z8vwxVB4eEROkDoNH+NEfBr6RWmNW3QSf9yFta1Cra7y4av1XxEyISyY2cE3lFCbfTLbrWNMSv1dWBXTJfg/yDDKTyOPgF9bOVaY7ZN1lJeXwzhbaYeud0zCs39uze+hp9+2DOEPJTORNWUNDfwN4MHP3GXj27L3nOfU25U7QcIk+SiYoIzojr0MpIGkCA5qYVga/w8KqspRasRziu0YnEHiHWGs0fsQARHaT0Ku3XGdg72WDTvDPGBtzi9rTwNUC21/fPYBN7xg08ZZb6936CMoWVifb7HSx12k3btIZ6InysVYsvDooqtoObBWNi+dzppYCwTpni0ZHjUGGmwf8w==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB4140.namprd12.prod.outlook.com (2603:10b6:5:221::13)
+ by DS7PR12MB6214.namprd12.prod.outlook.com (2603:10b6:8:96::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.27; Fri, 14 Jul
+ 2023 18:36:22 +0000
+Received: from DM6PR12MB4140.namprd12.prod.outlook.com
+ ([fe80::a8da:fee3:b3db:432c]) by DM6PR12MB4140.namprd12.prod.outlook.com
+ ([fe80::a8da:fee3:b3db:432c%6]) with mapi id 15.20.6588.027; Fri, 14 Jul 2023
+ 18:36:22 +0000
+Message-ID: <5e5bf5c0-bcda-ec2a-ba4c-5f35dcfbc373@nvidia.com>
+Date:   Fri, 14 Jul 2023 11:36:16 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] selftests: Fix arm64 test installation
+Content-Language: en-US
+To:     Shuah Khan <skhan@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Mark Brown <broonie@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Muhammad Usama Anjum <usama.anjum@collabora.com>,
+        Ryan Roberts <ryan.roberts@arm.com>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Alexandre Ghiti <alex@ghiti.fr>
+References: <20230710-kselftest-fix-arm64-v1-1-48e872844f25@kernel.org>
+ <8d944238-1a9a-e93e-fdab-54e74fa12e11@linuxfoundation.org>
+ <785e1c1c-84d8-e87d-f22f-9a53d27f30f6@nvidia.com>
+ <620a5b91-9715-ee28-423c-851506b10832@linuxfoundation.org>
+ <421bebb3-19e9-47a7-8b2b-f69f125df22f@sirena.org.uk>
+ <f479b731-7782-0417-2d4c-31a7c3c9491c@nvidia.com>
+ <20230714112653.0b42d3c9818b038d219b5e41@linux-foundation.org>
+ <68ccfd77-ce2f-857a-37a7-e9b3edcd495d@linuxfoundation.org>
+From:   John Hubbard <jhubbard@nvidia.com>
+In-Reply-To: <68ccfd77-ce2f-857a-37a7-e9b3edcd495d@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BYAPR06CA0026.namprd06.prod.outlook.com
+ (2603:10b6:a03:d4::39) To DM6PR12MB4140.namprd12.prod.outlook.com
+ (2603:10b6:5:221::13)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4140:EE_|DS7PR12MB6214:EE_
+X-MS-Office365-Filtering-Correlation-Id: 27d69634-dabb-4896-0e86-08db8499379f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: G34IMuYZCP5Zpf9p1hmn3N1w64qimXyf4XelgwM6Zu6web8uEQ/pXPepFrYHyz7+OXOCynweA5hhuNL2TKhhYyi7ApCbikVgPWaHuOrhpgP7nw7t1m8f48AyMrQMiZYfPP+gGOaeyVzMeFVOYtRaznX5o/Zhqopv9oiGu6JLZWWZXgcQ4zrcMzo+fxepXNk0RjCXuM0VBbWdDNElF/0m59/My8LcEUQfOCFpvSmpOkUKWDM53Z9jV9qW2b0Ftbo10kdxRR7jRzxtJmF51AnzLu1zJGKH1hhetKVeyItr/i+efPQN2vITAjIXJVVaXKjdWwaVwp/AHzZLtN9ZYlo9DxaVYbiTwaoXLHlCEkp3nNgAErE8MHOVGzpnW6QwwwNsInqaTeSQIv0NU/d/qKFz+5fg3IrsH1qWIB4NncSBqxgHLni2Ch4vTkWS8s3RpQsuZvxuW0J93fGePNQLeXTy91mq2hgK2Fk77mHYXesih/OAkUo5nJTWd9/seaCHVdApWhHrWx7Im7eN/zM8wckpg2lySHgi8rEFTiLE6hSb4ArlmavIlxObJii8PBexj3gzkoILnVW7F/EIzBlWJ+vpuPgCERap3cyTmg4OCWi+r5hLS5XE+iBhTfs1MAH9syH6DBTnWTqwCahFKSAmxEsNkfLqETGoXaZIB9EAJwPeMcZJEFf/ZvRNsZl+TMr4qCQjqKWQHxEL0OXsC0pfQqgUCtU3mXLfNdSysuMEkonkQfA=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB4140.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(396003)(366004)(136003)(39860400002)(376002)(451199021)(2616005)(6486002)(6666004)(186003)(36756003)(83380400001)(6512007)(6506007)(26005)(53546011)(966005)(31696002)(66946007)(66476007)(66556008)(4326008)(478600001)(31686004)(110136005)(54906003)(316002)(41300700001)(38100700002)(5660300002)(8936002)(7416002)(8676002)(86362001)(2906002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bFhDSmZndE9HSytBakRuQzFWL3hYcFg0L0QwS0R5Zmd6dnFjUTRxWTNxeGdT?=
+ =?utf-8?B?WUR5ZDI0MVBJZVBjK1llaEY3WVhMcVNZT2JHYm14UHR5clczVHQ4SWZ0WmxS?=
+ =?utf-8?B?bEkvbTJaUUZ6UW0wYVVSMTRqcVI4TUt0c2JCcXF2UGU2cEpWWlFzQWlHL3Vx?=
+ =?utf-8?B?WEtrSkVjUjhMQldpN1krT2JlVEtrZDdmWDlzZFFCc25FaVhIcC9KSTRXV2VW?=
+ =?utf-8?B?V3FKVGVNYXRBT093S09HZzk1N1F5UDRLRElqcG5iemFIdGNBQ283Ry9HR0ZE?=
+ =?utf-8?B?NjBNcFk0d3NYQVM5YURNVHR3c09PbFhVSGlsbnNsZDhVSDJNN0xobFVrcTdk?=
+ =?utf-8?B?eVpWUERvSFBTRjZidEoxYlpjaDcrWVM3QTRLeW9aMHdwWkZqeWswaGNweEhL?=
+ =?utf-8?B?dkpveVJkdUxYWHB3U1R5OFRIb2wwQ1FBaXNlb2lDWWEyc0UwWmsrNkc0QnVU?=
+ =?utf-8?B?MVNkU0ZUQnpzVXVNOWVuTENIWmdZcXVBWUNCdVRsUE9oUjJFQzVMZmJTOUM0?=
+ =?utf-8?B?d2xTdzhjRk5hM2kvM09vMG5xL1VyZXRjcms3QmlEWXdjU0Exei9hU2lrUHB6?=
+ =?utf-8?B?bXNBTHROaUpzUzM3R3hRTW9kVjZzYXppcFR1c3dHZTNZb2xsd0VIWkVINFN3?=
+ =?utf-8?B?d1ZTZnBMcDB2UnJaRFFEaDg2eTUxaXFXNDJ0b3IyeEljOStMVUdiZHJ1R0ZT?=
+ =?utf-8?B?cUVQUVF2alN2WjhXWmdsZzBJZFpBRi80a1pDYVpISVEzV1N2NWNENWNvTkdM?=
+ =?utf-8?B?Rjc4VTVDY2RrSVpiM1pzUGNRWXFwNHptb3pZa2l5bzFCZkpyTHpzNFI3OXVJ?=
+ =?utf-8?B?NzFta25URFZkcDdFZjhLdnVkRHk4ZDFKd0t6R1hQdFhRVHBnN2NuNW02V3Nx?=
+ =?utf-8?B?dW16TStKeGV3dnZwSGJKMzNNZDQxc2p6RzcxVC91ckNxZ2lUcDNUTXMzQWZa?=
+ =?utf-8?B?dWV1alNaYnlpY3hDZ2FNRmkwdXpoV2dLQVJuMzAxWXZYVmdyeU4zcjhrWnZp?=
+ =?utf-8?B?ejRpM0RTL25WOTJaNlZxUEZMVXBwVk8vWVBNd0lUb080ZVNGL0ltSzZnVGFE?=
+ =?utf-8?B?dXMxcEFvYzFRbXoxejNrUXMwMWhGSWx5dlQwdnI2dEZ0MVFtYW54R1VHaHlM?=
+ =?utf-8?B?WGdyMzgwZzZiRWNtK3ZRTmJJU0UxTHRVWjJtNTVoNUpVelpQaFlRaXJObnVD?=
+ =?utf-8?B?S2NYMG5majJQVGJoMks5cXVVUS9ucTBZelJtc2lDQ245aWxpYklsRDFCZml1?=
+ =?utf-8?B?ZGFRdjNWL2pRM0htSlVQL0YrTG9waEd4ZFhPODBJbks1WWI4dTF5MU5VQ2tw?=
+ =?utf-8?B?bjMrV3g0UE4rYVp6M3lyZnpJNHpLUEw5YTh4ekpSU05RekRtWGZWQTlXbXQ0?=
+ =?utf-8?B?aCtRcXZJZmVIbXlBZmVldjI2TTFOTENldkZBV0doamM5SHpoMXI4cWRVa3I4?=
+ =?utf-8?B?eTI3S0VzeHZDbE9icFlsYmhBZ3ptQ2RRUXd3UzBkM0JiUVllZjVFSEtwSDlZ?=
+ =?utf-8?B?Yi9KVjNVNFZqLytMUko0U1pZZ0wyd3N2VzYyRGR3Z1JiSWx3RjI4Smc5Yzdk?=
+ =?utf-8?B?WEV2Qlh3MHp3MlpzQUhBN0xCTzJEVXQ1NVE5MjNLb0dxVysrNmFyRmdEOWJq?=
+ =?utf-8?B?ZjJCWjkvODgrN0pBMXJieHNkWEh1b2twZ3hBdTlZQVNaUE9BTjlEcUdEWFQ3?=
+ =?utf-8?B?dUhsT3J4aGd5NjFwSjN4c3hlNDJYdEpQUHNrYU1HN0tJM2FKV2M5ZkN0RkFD?=
+ =?utf-8?B?N3gzZ2pkYkM4MXFQWTljZlRxZk9jQ05HNjVHTER0d2d2MlJiODNaVUJGblUv?=
+ =?utf-8?B?RWwxdGsxSWFzeDFqNElUWkRIQXQ0M01wN1h0SUpsSXQ4NkVRaWNUdEpDZ1BN?=
+ =?utf-8?B?WUFRSXg0blFjc1B1bnFHYjQwQnFKYnl0U3VxWDVhaXVzcy9OZ0NFeklaYzFE?=
+ =?utf-8?B?V1FiQjZPSlhJL0FId05aZk9LeDJlVUQ1eXNCNU9oWG5wZVRyT2dEZE0rZ2tj?=
+ =?utf-8?B?TlNvV09ZWDdOUDhXNEVnSjBZUlc5MXNCcEEzRmVVcFROekQ4VmlYSCtRZGMy?=
+ =?utf-8?B?WXo1dHVjT3duaEV0bHFkbXRnZHFyV2tWbHVjc2VXM01CZWtHcUVEbjJGL2h4?=
+ =?utf-8?Q?dMN7YNu1Znin+jw8Y2vmvf6yG?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 27d69634-dabb-4896-0e86-08db8499379f
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB4140.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jul 2023 18:36:22.6161
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: xvcInNkeSnBJjTzvQmdy61/urHXm5gTCC3+JpQ/dtWtV8GtvVA2cPWJFc56OxcAELgJz0HCHm5GnielpQ4/pDQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB6214
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 7/14/23 11:32, Shuah Khan wrote:
+> On 7/14/23 12:26, Andrew Morton wrote:
+>> On Fri, 14 Jul 2023 11:19:11 -0700 John Hubbard <jhubbard@nvidia.com> wrote:
+>>
+>>> On 7/14/23 11:09, Mark Brown wrote:
+>>>> On Fri, Jul 14, 2023 at 11:48:51AM -0600, Shuah Khan wrote:
+>>>>> On 7/13/23 14:16, John Hubbard wrote:
+>>>>
+>>>>>> Actually, I was hoping that my two fixes [1], [2] could be used, instead
+>>>>>> of reverting the feature.
+>>>>
+>>>>> Mark! Are you good with taking these two - do these fix the
+>>>>> problems you are seeing?
+>>>>
+>>>> I reviewed the one that's relevant to me already, the arm64 one, I'd not
+>>>> seen or tested the RISC-V one but that looks fine too.  I'm pretty sure
+>>>
+>>> That riscv patch already has a Tested-by from Alexandre Ghiti:
+>>>
+>>> https://lore.kernel.org/f903634d-851f-af64-8d9a-6b13d813587c@ghiti.fr
+>>>
+>>>
+>>>> Andrew queued it already though ICBW.  Either way it'd be good to get
+>>>> this into -rc2, this is seriously disrupting arm64 CI and I'm guessing
+>>>> the RISC-V CI too.
+>>>
+>>
+>> I just dropped
+>> selftests-arm64-fix-build-failure-during-the-emit_tests-step.patch and
+>> selftests-fix-arm64-test-installation.patch, as Shuah is merging them.
+>>
+>> This is all rather confusing.  Perhaps a full resend of everything will
+>> help.  I'll assume that Shuah will be handling them.
+> 
+> Yes. Andrew - I am applying both as we speak. I found the right versions
+> with Tested-by tags.
 
-From: Dave Hansen <dave.hansen@linux.intel.com>
+Thanks, Shuah.
 
-tl;dr: Replace a synthetic X86_FEATURE with a hardware X86_FEATURE
-       and check of existing per-cpu state.
+Just to be clear, when you say you're applying "both", I'm hoping you mean
+both of these:
 
-== Background ==
 
-There are three features in play here:
- 1. Good old Page Table Isolation (PTI)
- 2. Process Context IDentifiers (PCIDs) which allow entries from
-    multiple address spaces to be in the TLB at once.
- 3. Support for the "Invalidate PCID" (INVPCID) instruction,
-    specifically the "individual address" mode (aka. mode 0).
+[1] https://lore.kernel.org/all/20230711005629.2547838-1-jhubbard@nvidia.com/
+[2] https://lore.kernel.org/all/20230712193514.740033-1-jhubbard@nvidia.com/
 
-When all *three* of these are in place, INVPCID can and should be used
-to flush out individual addresses in the PTI user address space.
+?  (As opposed to both of the ones that Andrew lists above.)
+thanks,
+-- 
+John Hubbard
+NVIDIA
 
-But there's a wrinkle or two: First, this INVPCID mode is dependent on
-CR4.PCIDE.  Even if X86_FEATURE_INVPCID==1, the instruction may #GP
-without setting up CR4.  Second, TLB flushing is done very early, even
-before CR4 is fully set up.  That means even if PTI, PCID and INVPCID
-are supported, there is *still* a window where INVPCID can #GP.
-
-== Problem ==
-
-The current code seems to work, but mostly by chance and there are a
-bunch of ways it can go wrong.  It's also somewhat hard to follow
-since X86_FEATURE_INVPCID_SINGLE is set far away from its lone user.
-
-== Solution ==
-
-Make "INVPCID single" more robust and easier to follow by placing all
-the logic in one place.  Remove X86_FEATURE_INVPCID_SINGLE.
-
-Make two explicit checks before using INVPCID:
- 1. Check that the system supports INVPCID itself (boot_cpu_has())
- 2. Then check the CR4.PCIDE shadow to ensures that the CPU
-    can safely use INVPCID for individual address invalidation.
-
-The CR4 check *always* works and is not affected by any X86_FEATURE_*
-twiddling or inconsistencies between the boot and secondary CPUs.
-
-This has been tested on non-Meltdown hardware by using pti=on and
-then flipping PCID and INVPCID support with qemu.
-
-== Aside ==
-
-How does this code even work today?  By chance, I think.  First, PTI
-is initialized around the same time that the boot CPU sets
-CR4.PCIDE=1.  There are currently no TLB invalidations when PTI=1 but
-CR4.PCIDE=0.  That means that the X86_FEATURE_INVPCID_SINGLE check is
-never even reached.
-
-this_cpu_has() is also very nasty to use in this context because the
-boot CPU reaches here before cpu_data(0) has been initialized.  It
-happens to work for X86_FEATURE_INVPCID_SINGLE since it's a
-software-defined feature but it would fall over for a hardware-
-derived X86_FEATURE.
-
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-Reported-by: Jann Horn <jannh@google.com>
-Cc: x86@kernel.org
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Andrew Cooper <andrew.cooper3@citrix.com>
----
-
- b/arch/x86/include/asm/cpufeatures.h |    1 -
- b/arch/x86/mm/init.c                 |    9 ---------
- b/arch/x86/mm/tlb.c                  |   14 +++++++++-----
- 3 files changed, 9 insertions(+), 15 deletions(-)
-
-diff -puN arch/x86/include/asm/cpufeatures.h~remove-invpcid-single arch/x86/include/asm/cpufeatures.h
---- a/arch/x86/include/asm/cpufeatures.h~remove-invpcid-single	2023-07-14 08:29:08.661225942 -0700
-+++ b/arch/x86/include/asm/cpufeatures.h	2023-07-14 08:29:08.673225955 -0700
-@@ -198,7 +198,6 @@
- #define X86_FEATURE_CAT_L3		( 7*32+ 4) /* Cache Allocation Technology L3 */
- #define X86_FEATURE_CAT_L2		( 7*32+ 5) /* Cache Allocation Technology L2 */
- #define X86_FEATURE_CDP_L3		( 7*32+ 6) /* Code and Data Prioritization L3 */
--#define X86_FEATURE_INVPCID_SINGLE	( 7*32+ 7) /* Effectively INVPCID && CR4.PCIDE=1 */
- #define X86_FEATURE_HW_PSTATE		( 7*32+ 8) /* AMD HW-PState */
- #define X86_FEATURE_PROC_FEEDBACK	( 7*32+ 9) /* AMD ProcFeedbackInterface */
- #define X86_FEATURE_XCOMPACTED		( 7*32+10) /* "" Use compacted XSTATE (XSAVES or XSAVEC) */
-diff -puN arch/x86/mm/init.c~remove-invpcid-single arch/x86/mm/init.c
---- a/arch/x86/mm/init.c~remove-invpcid-single	2023-07-14 08:29:08.665225945 -0700
-+++ b/arch/x86/mm/init.c	2023-07-14 08:29:08.673225955 -0700
-@@ -307,15 +307,6 @@ static void setup_pcid(void)
- 		 * start_secondary().
- 		 */
- 		cr4_set_bits(X86_CR4_PCIDE);
--
--		/*
--		 * INVPCID's single-context modes (2/3) only work if we set
--		 * X86_CR4_PCIDE, *and* we INVPCID support.  It's unusable
--		 * on systems that have X86_CR4_PCIDE clear, or that have
--		 * no INVPCID support at all.
--		 */
--		if (boot_cpu_has(X86_FEATURE_INVPCID))
--			setup_force_cpu_cap(X86_FEATURE_INVPCID_SINGLE);
- 	} else {
- 		/*
- 		 * flush_tlb_all(), as currently implemented, won't work if
-diff -puN arch/x86/mm/tlb.c~remove-invpcid-single arch/x86/mm/tlb.c
---- a/arch/x86/mm/tlb.c~remove-invpcid-single	2023-07-14 08:29:08.665225945 -0700
-+++ b/arch/x86/mm/tlb.c	2023-07-14 08:29:08.673225955 -0700
-@@ -1141,20 +1141,24 @@ void flush_tlb_one_kernel(unsigned long
- STATIC_NOPV void native_flush_tlb_one_user(unsigned long addr)
- {
- 	u32 loaded_mm_asid = this_cpu_read(cpu_tlbstate.loaded_mm_asid);
-+	bool cpu_pcide     = this_cpu_read(cpu_tlbstate.cr4) & X86_CR4_PCIDE;
- 
-+	/* Flush 'addr' from the kernel PCID: */
- 	asm volatile("invlpg (%0)" ::"r" (addr) : "memory");
- 
-+	/* If PTI is off there is no user PCID and nothing to flush. */
- 	if (!static_cpu_has(X86_FEATURE_PTI))
- 		return;
- 
- 	/*
--	 * Some platforms #GP if we call invpcid(type=1/2) before CR4.PCIDE=1.
--	 * Just use invalidate_user_asid() in case we are called early.
-+	 * invpcid_flush_one(pcid>0) will #GP if CR4.PCIDE==0.  Check
-+	 * 'cpu_pcide' to ensure that *this* CPU will not trigger those
-+	 * #GP's even if called before CR4.PCIDE has been initialized.
- 	 */
--	if (!this_cpu_has(X86_FEATURE_INVPCID_SINGLE))
--		invalidate_user_asid(loaded_mm_asid);
--	else
-+	if (boot_cpu_has(X86_FEATURE_INVPCID) && cpu_pcide)
- 		invpcid_flush_one(user_pcid(loaded_mm_asid), addr);
-+	else
-+		invalidate_user_asid(loaded_mm_asid);
- }
- 
- void flush_tlb_one_user(unsigned long addr)
-_
