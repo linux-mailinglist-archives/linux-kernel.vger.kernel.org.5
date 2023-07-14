@@ -2,146 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 176BE753B11
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 14:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACDE2753B16
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 14:36:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235836AbjGNMdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 08:33:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45590 "EHLO
+        id S235671AbjGNMgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 08:36:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235392AbjGNMdo (ORCPT
+        with ESMTP id S235247AbjGNMgC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 08:33:44 -0400
-Received: from mail-oi1-f208.google.com (mail-oi1-f208.google.com [209.85.167.208])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29335173B
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 05:33:43 -0700 (PDT)
-Received: by mail-oi1-f208.google.com with SMTP id 5614622812f47-39ec7630322so2935189b6e.0
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 05:33:43 -0700 (PDT)
+        Fri, 14 Jul 2023 08:36:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B733E68
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 05:35:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689338113;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=r4YYFQeFF+tmW56W+2YbpK+12pRE5g3fji817lOXKvo=;
+        b=FE+4Xny7KnU8gv1pk7lgRkmgzV//gHe554TL9AMhShfqlo/AI4CJ5HkKO9UYfAOtDGzUVg
+        +HygDI+eKbtvlLPUhD7JSO1Nymhm75EIqkRBJ15gLghkj1HNG+umNTBe+Y82qaTBCrtjKC
+        KXRchci/8reNgXDmySW68dB4GLrSHRw=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-225-TUcYZ-AqMPuDjZTscpsMYg-1; Fri, 14 Jul 2023 08:35:12 -0400
+X-MC-Unique: TUcYZ-AqMPuDjZTscpsMYg-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3fc08035926so12753265e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 05:35:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689338022; x=1691930022;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=a/PtvzxIas2zR1ya8bd5qiSh+Ju/22GKnM05TIFi9sA=;
-        b=UgLEzMpWwHhOSf9ermwmH1hXsfZ1RlvaoYrN66p2rViRrojq+oJyluwT9TQ5HrkLhC
-         S5fW9Fi/1zkI0gjMAcbs7u7l4KPRmqG1u+pW9+Sg4RyRAIJ+2ZufgVpnsdd5rM+SVUqz
-         MR4c7FxAue1wzufdJs6b1zW43oI4rmgvx4X82ooabWgNGL4VSwz0GT2Qship85TCiAqc
-         z5oD4HRoV2hx8hnfPVlR+ORtVspXlsm1aybpUmfLrj8M2LBoImracBSP89+IgXSLvz5F
-         bh1tjhfPlzk91Lq5AA2mzjZu41/+HaQ+PstCSKf3drt9Vb9dyoF2VJJPz4He5CMOWMKa
-         71PQ==
-X-Gm-Message-State: ABy/qLYU2LklJ33us86yz03sSzbOSL8hp6ZK2EmgDhUuD7s2xxndvrOY
-        e0mZ0C1dxm1r8GH3vUahQKlu7Nn8XSO2Bi+tWPuqRbWOIygC
-X-Google-Smtp-Source: APBJJlHLvOcL6iCTX34qlHFrOnRO9iN4WebS97Ae10RYVI9fSHmlaDKYPARf+F/In8VOIyTdLvssnN3HESdSnB4MQK77WeWf+/Ij
+        d=1e100.net; s=20221208; t=1689338111; x=1691930111;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=r4YYFQeFF+tmW56W+2YbpK+12pRE5g3fji817lOXKvo=;
+        b=WqXrxjAIDKdaSLK1OXP3afNJhzNReXyyhFTZYTW7wkJ7bbmA+PLeEZSUEIX9Uq6ndM
+         1c9k4Lmtc4dse+B4kEbz44PXgrOhTnBF6ZTRCXcHUk9wOo3q5p49RyD10FYK6eTlruVa
+         43W5VZNedYMh2EkkP0fTEJsoUsiHBAIdwUChryY2j7rGX6sjtx/W4ku3Le0gtLyOu/du
+         DBKUxn5CBNM7eZHAlh1WbbfAk41Y67qRVZxvoJ/J7sZlWXv2DZcMSrx0dwM/v0OrUOan
+         gVgcdIUWR95QaxvgeEhwhtjp1m1zQUTqUeUqyMBgKcdfmd7LqVr/qFDdWrRt4cIhg/Jb
+         IaJw==
+X-Gm-Message-State: ABy/qLZGJBFNo6y5FRJ4WC+79nr5Y8UbupvC9+AlCGMDyNd9c7g6yH6X
+        kaIjej1eQ18SIpK9mc3Mi7SiL8+OrbV7z6qYFhtEJkjS8IeLYtijYhiwb363tWBoXnmTD3t5OiZ
+        UrVaBb3knW1yGNguOVRDyCQ/g
+X-Received: by 2002:a05:600c:3c82:b0:3fa:821e:1fb5 with SMTP id bg2-20020a05600c3c8200b003fa821e1fb5mr2350934wmb.5.1689338111127;
+        Fri, 14 Jul 2023 05:35:11 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlH9jx6L5IrTf9LzMzlaRmSACtru8z+t6WqE3jtnwWMGELxmr4yY71Dv3BxD0LDKeBPRdZryjQ==
+X-Received: by 2002:a05:600c:3c82:b0:3fa:821e:1fb5 with SMTP id bg2-20020a05600c3c8200b003fa821e1fb5mr2350920wmb.5.1689338110820;
+        Fri, 14 Jul 2023 05:35:10 -0700 (PDT)
+Received: from localhost (208.red-88-2-40.staticip.rima-tde.net. [88.2.40.208])
+        by smtp.gmail.com with ESMTPSA id n22-20020a7bcbd6000000b003fb225d414fsm1326015wmi.21.2023.07.14.05.35.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Jul 2023 05:35:10 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/8] drm/ssd130x: Add support for DRM_FORMAT_R1
+In-Reply-To: <CAMuHMdV1MXexXuRuvW2ap5KA51q_3h9X8jXdYXtFb2RF-BBLnw@mail.gmail.com>
+References: <cover.1689252746.git.geert@linux-m68k.org>
+ <72746f6d9c47f09fc057ad7a4bbb3b7f423af803.1689252746.git.geert@linux-m68k.org>
+ <87ilamu7e3.fsf@minerva.mail-host-address-is-not-set>
+ <CAMuHMdV1MXexXuRuvW2ap5KA51q_3h9X8jXdYXtFb2RF-BBLnw@mail.gmail.com>
+Date:   Fri, 14 Jul 2023 14:35:09 +0200
+Message-ID: <875y6macxu.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:e82:b0:3a4:1e93:8988 with SMTP id
- k2-20020a0568080e8200b003a41e938988mr6542129oil.10.1689338022584; Fri, 14 Jul
- 2023 05:33:42 -0700 (PDT)
-Date:   Fri, 14 Jul 2023 05:33:42 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000bde775060071a8d7@google.com>
-Subject: [syzbot] [crypto?] KMSAN: uninit-value in af_alg_free_resources
-From:   syzbot <syzbot+cba21d50095623218389@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, herbert@gondor.apana.org.au,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_DIGITS,
-        FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Geert Uytterhoeven <geert@linux-m68k.org> writes:
 
-syzbot found the following issue on:
+Hello Geert,
 
-HEAD commit:    3f01e9fed845 Merge tag 'linux-watchdog-6.5-rc2' of git://w..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=14bac16aa80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1542573e31cfbec5
-dashboard link: https://syzkaller.appspot.com/bug?extid=cba21d50095623218389
-compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15dd215aa80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14530318a80000
+> Hi Javier,
+>
+> On Fri, Jul 14, 2023 at 12:14=E2=80=AFPM Javier Martinez Canillas
+> <javierm@redhat.com> wrote:
+>> Geert Uytterhoeven <geert@linux-m68k.org> writes:
+>> Thanks a lot for your patch, this has been on my TODO for some time!
+>>
+>> > The native display format is monochrome light-on-dark (R1).
+>> > Hence add support for R1, so monochrome applications can avoid the
+>> > overhead of back-and-forth conversions between R1 and XR24.
+>> >
+>> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>> > ---
+>> > This work interfered with commit 49d7d581ceaf4cf8 ("drm/ssd130x: Don't
+>> > allocate buffers on each plane update") in drm-misc/for-linux-next,
+>> > which always allocates the buffer upfront, while it is no longer needed
+>> > when never using XR24.
+>>
+>> you mean R1 here, right ?
+>
+> I did mean R1. I think you missed the double negation.
+>
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/4f212a7e36fe/disk-3f01e9fe.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/de6b12daf908/vmlinux-3f01e9fe.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/2c1992ff2aaa/bzImage-3f01e9fe.xz
+I did indeed. As a non-native english speaker, I find it very hard to
+parse double negations :)
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+cba21d50095623218389@syzkaller.appspotmail.com
+>> It's still used in ssd130x_clear_screen() though.
+>
+> I guess it became worthwhile to make ssd130x_clear_screen()
+> do memset(data_array, 0, ...) and call ssd130x_write_data() directly,
+> avoiding the pointless reshuffling of black pixels in
+> ssd130x_update_rect()?
+>
 
-=====================================================
-BUG: KMSAN: uninit-value in af_alg_free_sg crypto/af_alg.c:545 [inline]
-BUG: KMSAN: uninit-value in af_alg_free_areq_sgls crypto/af_alg.c:778 [inline]
-BUG: KMSAN: uninit-value in af_alg_free_resources+0x3d1/0xf60 crypto/af_alg.c:1117
- af_alg_free_sg crypto/af_alg.c:545 [inline]
- af_alg_free_areq_sgls crypto/af_alg.c:778 [inline]
- af_alg_free_resources+0x3d1/0xf60 crypto/af_alg.c:1117
- _skcipher_recvmsg crypto/algif_skcipher.c:144 [inline]
- skcipher_recvmsg+0x6a0/0x1a20 crypto/algif_skcipher.c:157
- sock_recvmsg_nosec net/socket.c:1020 [inline]
- sock_recvmsg net/socket.c:1041 [inline]
- __sys_recvfrom+0x505/0x810 net/socket.c:2186
- __do_sys_recvfrom net/socket.c:2204 [inline]
- __se_sys_recvfrom net/socket.c:2200 [inline]
- __x64_sys_recvfrom+0x126/0x1d0 net/socket.c:2200
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
+I think so, yeah.
 
-Uninit was created at:
- slab_post_alloc_hook+0x12f/0xb70 mm/slab.h:767
- slab_alloc_node mm/slub.c:3470 [inline]
- __kmem_cache_alloc_node+0x536/0x8d0 mm/slub.c:3509
- __do_kmalloc_node mm/slab_common.c:984 [inline]
- __kmalloc+0x121/0x3c0 mm/slab_common.c:998
- kmalloc include/linux/slab.h:586 [inline]
- sock_kmalloc+0x128/0x1c0 net/core/sock.c:2683
- af_alg_alloc_areq+0x41/0x2a0 crypto/af_alg.c:1188
- _skcipher_recvmsg crypto/algif_skcipher.c:71 [inline]
- skcipher_recvmsg+0x514/0x1a20 crypto/algif_skcipher.c:157
- sock_recvmsg_nosec net/socket.c:1020 [inline]
- sock_recvmsg net/socket.c:1041 [inline]
- __sys_recvfrom+0x505/0x810 net/socket.c:2186
- __do_sys_recvfrom net/socket.c:2204 [inline]
- __se_sys_recvfrom net/socket.c:2200 [inline]
- __x64_sys_recvfrom+0x126/0x1d0 net/socket.c:2200
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
+>> > Probably ssd130x->buffer should be allocated on first use.
+>>
+>> Yes, that makes sense.
+>>
+>> > And why not allocate the buffers using devm_kcalloc()?
+>>
+>> I think there are some lifetimes discrepancies between struct device and
+>> struct drm_device objects. But we could use drm_device managed resources
+>> helpers, i.e: drmm_kzalloc().
+>
+> The display should not be updated after .remove(), so I think plain
+> devm_kcalloc() should be fine.
+>
 
-CPU: 0 PID: 5031 Comm: syz-executor370 Not tainted 6.5.0-rc1-syzkaller-00006-g3f01e9fed845 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/03/2023
-=====================================================
+That was precisely my point, that there could be atomic commits even after
+the driver has been removed (e.g: if using DRM fbdev emulation, user-space
+can keep the /dev/fb0 opened and continue updating the framebuffer. That's
+not released until the fd is closed and struct fb_ops .fb_destroy called.
 
+But that's a general rule in DRM, any user-visible resource must not be
+allocated using device managed resources and instead use the drm_device
+managed resources helpers. To make sure that are not released until the
+last call to drm_dev_put():
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+https://docs.kernel.org/gpu/drm-internals.html#device-instance-and-driver-h=
+andling
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+--=20
+Best regards,
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+Javier Martinez Canillas
+Core Platforms
+Red Hat
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to change bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
