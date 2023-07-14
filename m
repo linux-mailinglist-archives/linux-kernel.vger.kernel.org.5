@@ -2,169 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 873BB75428D
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 20:29:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8DA1754292
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 20:29:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236846AbjGNS3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 14:29:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43586 "EHLO
+        id S236560AbjGNS3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 14:29:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236842AbjGNS3J (ORCPT
+        with ESMTP id S236842AbjGNS3n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 14:29:09 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3199626BB
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 11:29:07 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2b6fbf0c0e2so34252101fa.2
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 11:29:07 -0700 (PDT)
+        Fri, 14 Jul 2023 14:29:43 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 458A026BC
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 11:29:42 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-c4f27858e4eso1824921276.1
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 11:29:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689359345; x=1691951345;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=V8Wt8cMGCqy9CZq6012XBPM2kyz2Mn90yzkk5uGQWyU=;
-        b=mvajMGQNG+5AvAaKOl4BVvuCD4zs13l7V8u70iG64R7IMoL+YUkkqskXvWa83uZY/G
-         tU2iLxRoo/usmgBwqJQk4hnIuumPHp19LW+BiipO4d1rxi2u/CW7DEk8Yt9q13RhReES
-         2p//ZDhe8aHwjamAXl7mWylHty+53enF4TOZDB36PCmCe8ivLlh7OtkCMjTN7rzH+Gbm
-         YDFDQWE4OvKL1PwI3DpuPkZDOYfDT9tMiURUd6t+IOFsBp7ANcagPRbr84Wtyp46RDXV
-         jtSrCA7MfuO5SyUHaqx/HwpKeFeC69gB1NJpbjhEI6uEEppjTmShQZkt5zvClfZNim9b
-         zbdQ==
+        d=google.com; s=20221208; t=1689359381; x=1691951381;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=yxAUfh9tXsKn2HpY20y1qdPrUCx+3NBgZb4IkMtE0Gs=;
+        b=mRXoMTCmgDEUqGGQOSIsn5uuIWxzrKXnwuch52uQZkXJzVeF5h7KiOw042B2VG4MjP
+         Ud668hnCaHqrAsJelWng9Y2s3bZEVDGgCwmtA+RKaeDYCfKMRATcF36o9bwXZSjLJXmD
+         xGwtxtYrORJWP/GtvcdJ6DB3nWNbNp1NNsvwoy5dkJJkXV1mjG4ZyIAPBxa0ZeJy47wC
+         lRAwtwRfLuaZHPN6fZIxopQbbbLZSH+r7pelwbYbHYvr6TN2ykZ5n8m7RT6Rx1PDAv41
+         itfOO1Y5wnapfiZ17WHQSzoXlIaDEkigdLEJ+n13E7rjAc5bMhn9nmE0OvXONw09Gqtv
+         LCkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689359345; x=1691951345;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=V8Wt8cMGCqy9CZq6012XBPM2kyz2Mn90yzkk5uGQWyU=;
-        b=e5OBuLjgXuC+CW1HwsX1iToYClNvyDUzQcJ7YyNNef9vJRigh9QlblVV//nKrN7Nz2
-         meJvsakQItrjwtT1LXaRwQN9bM0DZZcR7P/htBjcGJXosT6vEk9+BRW4GG7GupV1xuHg
-         EHah9SM54dVO7oYVnYikn6ayhM6VBHmXDttYAxnBUdcFhWwq2qMdVIWY41bynDYufyyE
-         fhFNerm8gL7JkPkpnH1lnithuPqAa91bzp4NAZTbJFMnLikQNvWSjGJhrL+5Ia+Okaor
-         1ItWDdxYu4Fa/4gYLpC7bjVe34VUfK1SXJOGBeZuYkJXEQjDEOV7AKPnnyARFB9imgBN
-         9qBA==
-X-Gm-Message-State: ABy/qLYIulcgLuR79DqxWeFMvXVpmeYDmURd7JXk5LE4gg6dDUm5ozFs
-        O6R8wHLFAouiIsLZUPalHjxMFw==
-X-Google-Smtp-Source: APBJJlHCw4a7udF2Olxu1CeYC6D6ejTjPUE0r4lNRWXVSMD4v6zAA/CEHUxPcOzwszw4xt6K9ozOZA==
-X-Received: by 2002:a2e:9c93:0:b0:2b6:e536:a2a9 with SMTP id x19-20020a2e9c93000000b002b6e536a2a9mr4728029lji.47.1689359345403;
-        Fri, 14 Jul 2023 11:29:05 -0700 (PDT)
-Received: from [127.0.1.1] ([85.235.12.238])
-        by smtp.gmail.com with ESMTPSA id f21-20020a2e9e95000000b002b1b92910c8sm2092229ljk.86.2023.07.14.11.29.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 11:29:05 -0700 (PDT)
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 14 Jul 2023 20:29:03 +0200
-Subject: [PATCH v3] mtd: spi-nor: Correct flags for Winbond w25q128
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230714-spi-nor-winbond-w25q128-v3-1-bdb2192f079b@linaro.org>
-X-B4-Tracking: v=1; b=H4sIAO6TsWQC/43NTQrCMBCG4auUrI1kJvZHV95DXKRN0g5IUhNJl
- dK7mxZcuBBcvh/MMzOLJpCJ7FTMLJhEkbzLIXcF6wblesNJ52YoUIoagMeRuPOBT+Ra7zSfsLw
- DNlwiqEqgMVjVLF+PwVh6bvLlmnug+PDhtT1KsK4fE3+aCThwWzdWtu0BFXTnGzkV/N6Hnq1ow
- j8hzFApuqMFXTa6+oaWZXkD23C8bggBAAA=
-To:     Tudor Ambarus <tudor.ambarus@linaro.org>,
-        Pratyush Yadav <pratyush@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1689359381; x=1691951381;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=yxAUfh9tXsKn2HpY20y1qdPrUCx+3NBgZb4IkMtE0Gs=;
+        b=S7hpBXipz5uAjkng/PmGTO7oWInREI6R5HEm321KXtDuF9kO8Q8R4rBnBQMaIAceqa
+         PWoMQLzYKqpl4WTAAF57gJ9c1iKLSzIyVJwxW1H59aVdR6kDuKwQXMfPd14+2WSwaTng
+         nD+xfHO5fmt31bMqO5dxGuSc6yZG/W1ooW5X1TtFKuFUTCmTbFdgwychDMkhw2KrZSnN
+         8GsCYAmmZ/3LeFEurkrO6NDBQZtg2z7zhsZ65gog5pPwwZYYPl0LBjK9FRgQwkMXa67O
+         xroOI6O7eNAgJaySVJCtU+DNI7WYbcaHn3zG63Uh6ASxTx99tUTrZ/0/ep3dl/ViX8cE
+         KBZQ==
+X-Gm-Message-State: ABy/qLasva48ehc50DFXg0oVLlHcqDCJxvgtSt1BJkzfbZZVIoufbHm2
+        74R8ypqDD7jlBFzbXAdJMOw0zlgS8eIfBu+Grt/k
+X-Google-Smtp-Source: APBJJlHJ/kyB4gtYJRA2tBe4+IdzDMyqED2Fs1IG5ccfZHYtkPxqRy1tdgRGDnnyoyPph5LKlnKkyWQ84gNPe3dqgbnb
+X-Received: from axel.svl.corp.google.com ([2620:15c:2a3:200:eeac:4e26:b121:5ef2])
+ (user=axelrasmussen job=sendgmr) by 2002:a25:4157:0:b0:c10:8d28:d3ae with
+ SMTP id o84-20020a254157000000b00c108d28d3aemr26174yba.8.1689359381331; Fri,
+ 14 Jul 2023 11:29:41 -0700 (PDT)
+Date:   Fri, 14 Jul 2023 11:29:32 -0700
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.41.0.255.g8b1d071c50-goog
+Message-ID: <20230714182932.2608735-1-axelrasmussen@google.com>
+Subject: [PATCH mm-unstable fix] mm: userfaultfd: check for start + len
+ overflow in validate_range: fix
+From:   Axel Rasmussen <axelrasmussen@google.com>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Brian Geffon <bgeffon@google.com>,
+        Christian Brauner <brauner@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Gaosheng Cui <cuigaosheng1@huawei.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Hugh Dickins <hughd@google.com>,
+        James Houghton <jthoughton@google.com>,
+        Jiaqi Yan <jiaqiyan@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        "Mike Rapoport (IBM)" <rppt@kernel.org>,
+        Muchun Song <muchun.song@linux.dev>,
+        Nadav Amit <namit@vmware.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Peter Xu <peterx@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Steven Barrett <steven@liquorix.net>,
+        Suleiman Souhlal <suleiman@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        "T.J. Alumbaugh" <talumbau@google.com>,
+        Yu Zhao <yuzhao@google.com>,
+        ZhangPeng <zhangpeng362@huawei.com>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        syzbot+42309678e0bc7b32f8e9@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED,USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Winbond "w25q128" (actual vendor name W25Q128JV) has
-exactly the same flags as the sibling device "w25q128jv".
-The devices both require unlocking to enable write access.
+This commit removed an extra check for zero-length ranges, and folded it
+into the common validate_range() helper used by all UFFD ioctls.
 
-The actual product naming between devices vs the Linux
-strings in winbond.c:
+It failed to notice though that UFFDIO_COPY *only* called validate_range
+on the dst range, not the src range. So removing this check actually let
+us proceed with zero-length source ranges, eventually hitting a BUG
+further down in the call stack.
 
-0xef4018: "w25q128"   W25Q128JV-IM/JM
-0xef7018: "w25q128jv" W25Q128JV-IN/IQ/JQ
+The correct fix seems clear: call validate_range() on the src range too.
 
-The latter device, "w25q128jv" supports features named DTQ
-and QPI, otherwise it is the same.
+Other ioctls are not affected by this, as they only have one range, not
+two (src + dst).
 
-Not having the right flags has the annoying side effect
-that write access does not work.
-
-After this patch I can write to the flash on the Inteno
-XG6846 router.
-
-The flash memory also supports dual and quad SPI modes.
-This does not currently manifest, but by turning on SFDP
-parsing, the right SPI modes are emitted in
-/sys/kernel/debug/spi-nor/spi1.0/capabilities
-for this chip, so we also turn on this.
-
-Since we suspect that older chips may be using the same
-device ID, we need to keep NO_SFDP_FLAGS(SECT_4K) as these
-older chips may not support SFDP.
-
-cat jedec_id
-ef4018
-cat manufacturer
-winbond
-cat partname
-w25q128
-hexdump -v -C sfdp
-00000000  53 46 44 50 05 01 00 ff  00 05 01 10 80 00 00 ff
-00000010  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
-00000020  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
-00000030  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
-00000040  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
-00000050  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
-00000060  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
-00000070  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
-00000080  e5 20 f9 ff ff ff ff 07  44 eb 08 6b 08 3b 42 bb
-00000090  fe ff ff ff ff ff 00 00  ff ff 40 eb 0c 20 0f 52
-000000a0  10 d8 00 00 36 02 a6 00  82 ea 14 c9 e9 63 76 33
-000000b0  7a 75 7a 75 f7 a2 d5 5c  19 f7 4d ff e9 30 f8 80
-
-Cc: stable@vger.kernel.org
-Suggested-by: Michael Walle <michael@walle.cc>
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Reported-by: syzbot+42309678e0bc7b32f8e9@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=42309678e0bc7b32f8e9
+Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
 ---
-Changes in v3:
-- Keep NO_SFDP_FLAGS(SECT_4K) around.
-- Update commit message
-- Link to v2: https://lore.kernel.org/r/20230712-spi-nor-winbond-w25q128-v2-1-50c9f1d58d6c@linaro.org
+ fs/userfaultfd.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Changes in v2:
-- Only add the write access flags.
-- Use SFDP parsing to properly detect the various
-  available SPI modes.
-- Link to v1: https://lore.kernel.org/r/20230712-spi-nor-winbond-w25q128-v1-1-f78f3bb42a1c@linaro.org
----
- drivers/mtd/spi-nor/winbond.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
-index 834d6ba5ce70..8f30a67cd27a 100644
---- a/drivers/mtd/spi-nor/winbond.c
-+++ b/drivers/mtd/spi-nor/winbond.c
-@@ -121,6 +121,8 @@ static const struct flash_info winbond_nor_parts[] = {
- 	{ "w25q80bl", INFO(0xef4014, 0, 64 * 1024,  16)
- 		NO_SFDP_FLAGS(SECT_4K) },
- 	{ "w25q128", INFO(0xef4018, 0, 64 * 1024, 256)
-+		PARSE_SFDP
-+		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
- 		NO_SFDP_FLAGS(SECT_4K) },
- 	{ "w25q256", INFO(0xef4019, 0, 64 * 1024, 512)
- 		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
-
----
-base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
-change-id: 20230711-spi-nor-winbond-w25q128-321a602ee267
-
-Best regards,
+diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
+index 53a7220c4679..36d233759233 100644
+--- a/fs/userfaultfd.c
++++ b/fs/userfaultfd.c
+@@ -1759,6 +1759,9 @@ static int userfaultfd_copy(struct userfaultfd_ctx *ctx,
+ 			   sizeof(uffdio_copy)-sizeof(__s64)))
+ 		goto out;
+ 
++	ret = validate_range(ctx->mm, uffdio_copy.src, uffdio_copy.len);
++	if (ret)
++		goto out;
+ 	ret = validate_range(ctx->mm, uffdio_copy.dst, uffdio_copy.len);
+ 	if (ret)
+ 		goto out;
 -- 
-Linus Walleij <linus.walleij@linaro.org>
+2.41.0.255.g8b1d071c50-goog
 
