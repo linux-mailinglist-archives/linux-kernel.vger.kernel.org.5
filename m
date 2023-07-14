@@ -2,404 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EF4A75307B
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 06:18:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6F0C75307F
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 06:19:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234985AbjGNESP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 00:18:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34112 "EHLO
+        id S234693AbjGNETR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 00:19:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232770AbjGNESN (ORCPT
+        with ESMTP id S232770AbjGNETO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 00:18:13 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7A98C106;
-        Thu, 13 Jul 2023 21:18:11 -0700 (PDT)
-Received: by linux.microsoft.com (Postfix, from userid 1052)
-        id CED5321C4671; Thu, 13 Jul 2023 21:18:10 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com CED5321C4671
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1689308290;
-        bh=1gEl/GRj6c25B7r9dHqS3pawBqKkEdHWIHvR4HQj6sU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Oal6HR6h4sgrZUtnk3MlRaBzwN7QdW1Gc4+tOBT7PmbOeNpZCqr3pN14m8kZ8i39X
-         ipr2fevWdb2kJ2e48Pqt4ojbmsCIpM0R++7n6rIcCeCsY3Gxkkdj3F/7+JDK2c91eL
-         /l+HeHh9TpGqUna+1UTD9QWbL963n6ytqKUYhKxQ=
-Date:   Thu, 13 Jul 2023 21:18:10 -0700
-From:   Fan Wu <wufan@linux.microsoft.com>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org,
-        serge@hallyn.com, tytso@mit.edu, ebiggers@kernel.org,
-        axboe@kernel.dk, agk@redhat.com, snitzer@kernel.org,
-        eparis@redhat.com, linux-doc@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
-        dm-devel@redhat.com, audit@vger.kernel.org,
-        roberto.sassu@huawei.com, linux-kernel@vger.kernel.org,
-        Deven Bowers <deven.desai@linux.microsoft.com>
-Subject: Re: [PATCH RFC v10 2/17] ipe: add policy parser
-Message-ID: <20230714041810.GA15267@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1687986571-16823-3-git-send-email-wufan@linux.microsoft.com>
- <b2abfd3883dce682ee911413fea2ec66.paul@paul-moore.com>
+        Fri, 14 Jul 2023 00:19:14 -0400
+Received: from mail-vk1-xa30.google.com (mail-vk1-xa30.google.com [IPv6:2607:f8b0:4864:20::a30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 058CC2699
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 21:19:13 -0700 (PDT)
+Received: by mail-vk1-xa30.google.com with SMTP id 71dfb90a1353d-45739737afcso416467e0c.2
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 21:19:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1689308352; x=1691900352;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tJ25wMfM7kSzvTpXtpsgLxWUjdQihI5rOBPsjaMGVAo=;
+        b=VWDDDPziqbsgTDMNy7zZmb86l38MhITudT4cM4e/pk1R5tTaVbJ7SRftIJBTiTKnLE
+         hAJr+PC2+Cgo9c9NFnBydJLfeEDX3tIo/F8OHlWUnYrdH0hB4A5e4/IlSMIsOM2cy1h8
+         6UqNOkaZG3cUSiU7I6riqPP49XUbPxoejek2E=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689308352; x=1691900352;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tJ25wMfM7kSzvTpXtpsgLxWUjdQihI5rOBPsjaMGVAo=;
+        b=BhOAaQOTmxMXIXqV7C25D1XVZ4y6wWPPxZZzK5j658d6oYHD2BkM/TjNmYhFsEbZKz
+         ow8Sjx1KKq1fF3pzO5Q+Fo4UAj05UUV0HAtN/QCsMACVgzELCT1zKGDlrnHZzUzSvkj7
+         916nzwJIDNe2OeNDe0poKn0V+68jfh2pgSFyBzjfXL39UNz5vOkYQiQjCNGQgFJRAZMq
+         qUmnwfkSCgjIyMm4xy0Uxg+zfJdk0sOCePgNDDMW0gngzoT2P9cr7QS8j1zBNf9zgDkF
+         Upx9IhsSj7te2ASGP/4DrLKuedUCvUpLsktHTy7SHbHp5uiFIwRLDgY8BP+FOHNry+wW
+         ofcA==
+X-Gm-Message-State: ABy/qLZcjqIhoXP/PBuGdlWVZHPjUIpMpZS2Y8fKRaMXzGp6W4LaWCww
+        mnXPXqnR3/R8T/ab5dq5+WoRsZ7d+yjBvPuALqxWsQ==
+X-Google-Smtp-Source: APBJJlEzmNK7jvt1ONHasiafzxX7B304oncYEYsEDIFGu363Kn4Q4BRNgW0aGtp4K7TFa8nhJnTX03CsOGRtGuS3/8w=
+X-Received: by 2002:a67:fe17:0:b0:443:5b1f:12e4 with SMTP id
+ l23-20020a67fe17000000b004435b1f12e4mr1511250vsr.9.1689308352063; Thu, 13 Jul
+ 2023 21:19:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b2abfd3883dce682ee911413fea2ec66.paul@paul-moore.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230713072138.84117-1-angelogioacchino.delregno@collabora.com>
+ <20230713072138.84117-3-angelogioacchino.delregno@collabora.com> <9a0817c2-4101-5c21-977d-77ac0d83a067@baylibre.com>
+In-Reply-To: <9a0817c2-4101-5c21-977d-77ac0d83a067@baylibre.com>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Fri, 14 Jul 2023 12:19:00 +0800
+Message-ID: <CAGXv+5E7YYdkG7GtxG90KzdAG8Kke+74Amtbw4mmyVNZgDZHRA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] clk: mediatek: mt8195-topckgen: Refactor parents for
+ top_dp/edp muxes
+To:     Alexandre Mergnat <amergnat@baylibre.com>
+Cc:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, sboyd@kernel.org,
+        mturquette@baylibre.com, matthias.bgg@gmail.com, msp@baylibre.com,
+        yangyingliang@huawei.com, u.kleine-koenig@pengutronix.de,
+        miles.chen@mediatek.com, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, kernel@collabora.com,
+        mripard@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 08, 2023 at 12:23:00AM -0400, Paul Moore wrote:
-> On Jun 28, 2023 Fan Wu <wufan@linux.microsoft.com> wrote:
-> > 
-> > IPE's interpretation of the what the user trusts is accomplished through
-> > its policy. IPE's design is to not provide support for a single trust
-> > provider, but to support multiple providers to enable the end-user to
-> > choose the best one to seek their needs.
-> > 
-> > This requires the policy to be rather flexible and modular so that
-> > integrity providers, like fs-verity, dm-verity, dm-integrity, or
-> > some other system, can plug into the policy with minimal code changes.
-> > 
-> > Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
-> > Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
+On Thu, Jul 13, 2023 at 9:22=E2=80=AFPM Alexandre Mergnat <amergnat@baylibr=
+e.com> wrote:
+> On 13/07/2023 09:21, AngeloGioacchino Del Regno wrote:
+> > The top_dp and top_edp muxes can be both parented to either TVDPLL1
+> > or TVDPLL2, two identically specced PLLs for the specific purpose of
+> > giving out pixel clock: this becomes a problem when the MediaTek
+> > DisplayPort Interface (DPI) driver tries to set the pixel clock rate.
+> >
+> > In the usecase of two simultaneous outputs (using two controllers),
+> > it was seen that one of the displays would sometimes display garbled
+> > output (if any at all) and this was because:
+> >   - top_edp was set to TVDPLL1, outputting X GHz
+> >   - top_dp was set to TVDPLL2, outputting Y GHz
+> >     - mtk_dpi calls clk_set_rate(top_edp, Z GHz)
+> >       - top_dp is switched to TVDPLL1
+> >       - TVDPLL1 changes its rate, top_edp outputs the wrong rate.
+> >       - eDP display is garbled
+> >
+> > To solve this issue, remove all TVDPLL1 parents from `top_dp` and
+> > all TVDPLL2 parents from `top_edp`, plus, necessarily switch both
+> > clocks to use the new MUX_GATE_CLR_SET_UPD_INDEXED() macro to be
+> > able to use the right bit index for the new parents list.
+> >
+> > Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@co=
+llabora.com>
 > > ---
-> >  security/ipe/Makefile        |   2 +
-> >  security/ipe/policy.c        |  97 +++++++
-> >  security/ipe/policy.h        |  83 ++++++
-> >  security/ipe/policy_parser.c | 488 +++++++++++++++++++++++++++++++++++
-> >  security/ipe/policy_parser.h |  11 +
-> >  5 files changed, 681 insertions(+)
-> >  create mode 100644 security/ipe/policy.c
-> >  create mode 100644 security/ipe/policy.h
-> >  create mode 100644 security/ipe/policy_parser.c
-> >  create mode 100644 security/ipe/policy_parser.h
-> 
-> ...
-> 
-> > diff --git a/security/ipe/policy.c b/security/ipe/policy.c
-> > new file mode 100644
-> > index 000000000000..4069ff075093
-> > --- /dev/null
-> > +++ b/security/ipe/policy.c
-> > @@ -0,0 +1,97 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Copyright (C) Microsoft Corporation. All rights reserved.
-> > + */
+> >   drivers/clk/mediatek/clk-mt8195-topckgen.c | 22 ++++++++++++++-------=
+-
+> >   1 file changed, 14 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/drivers/clk/mediatek/clk-mt8195-topckgen.c b/drivers/clk/m=
+ediatek/clk-mt8195-topckgen.c
+> > index 81daa24cadde..abb3721f6e1b 100644
+> > --- a/drivers/clk/mediatek/clk-mt8195-topckgen.c
+> > +++ b/drivers/clk/mediatek/clk-mt8195-topckgen.c
+> > @@ -417,15 +417,21 @@ static const char * const pwrmcu_parents[] =3D {
+> >
+> >   static const char * const dp_parents[] =3D {
+> >       "clk26m",
+> > -     "tvdpll1_d2",
+> >       "tvdpll2_d2",
+> > -     "tvdpll1_d4",
+> >       "tvdpll2_d4",
+> > -     "tvdpll1_d8",
+> >       "tvdpll2_d8",
+> > -     "tvdpll1_d16",
+> >       "tvdpll2_d16"
+> >   };
+> > +static const u8 dp_parents_idx[] =3D { 0, 2, 4, 6, 8 };
 > > +
-> > +#include <linux/errno.h>
-> > +#include <linux/verification.h>
-> > +
-> > +#include "ipe.h"
-> > +#include "policy.h"
-> > +#include "policy_parser.h"
-> > +
-> > +/**
-> > + * ipe_free_policy - Deallocate a given IPE policy.
-> > + * @p: Supplies the policy to free.
-> > + *
-> > + * Safe to call on IS_ERR/NULL.
-> > + */
-> > +void ipe_free_policy(struct ipe_policy *p)
-> > +{
-> > +	if (IS_ERR_OR_NULL(p))
-> > +		return;
-> > +
-> > +	free_parsed_policy(p->parsed);
-> > +	if (!p->pkcs7)
-> > +		kfree(p->text);
-> 
-> Since it's safe to kfree(NULL), you could kfree(p->text) without
-> having to check if p->pkcs7 was non-NULL, correct?
-> 
-when p->pkcs7 is not NULL, p->text points to the plain text policy area inside
-the data of p->pkcs7, for such cases p->text is not really an allocated memory chunk
-so it cannot be passed to kfree.
-
-I might better add a comment here to avoid confusion in the future.
-
-> > +	kfree(p->pkcs7);
-> > +	kfree(p);
-> > +}
-> 
-> ...
-> 
-> > diff --git a/security/ipe/policy.h b/security/ipe/policy.h
-> > new file mode 100644
-> > index 000000000000..113a037f0d71
-> > --- /dev/null
-> > +++ b/security/ipe/policy.h
-> > @@ -0,0 +1,83 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +/*
-> > + * Copyright (C) Microsoft Corporation. All rights reserved.
-> > + */
-> > +#ifndef _IPE_POLICY_H
-> > +#define _IPE_POLICY_H
-> > +
-> > +#include <linux/list.h>
-> > +#include <linux/types.h>
-> > +
-> > +enum ipe_op_type {
-> > +	__IPE_OP_EXEC = 0,
-> > +	__IPE_OP_FIRMWARE,
-> > +	__IPE_OP_KERNEL_MODULE,
-> > +	__IPE_OP_KEXEC_IMAGE,
-> > +	__IPE_OP_KEXEC_INITRAMFS,
-> > +	__IPE_OP_IMA_POLICY,
-> > +	__IPE_OP_IMA_X509,
-> > +	__IPE_OP_MAX
+> > +static const char * const edp_parents[] =3D {
+> > +     "clk26m",
+> > +     "tvdpll1_d2",
+> > +     "tvdpll1_d4",
+> > +     "tvdpll1_d8",
+> > +     "tvdpll1_d16"
 > > +};
-> 
-> Thanks for capitalizing the enums, that helps make IPE consistent with
-> the majority of the kernel.  However, when I talked about using
-> underscores for "__IPE_OP_MAX", I was talking about *only*
-> "__IPE_OP_MAX" to help indicate it is a sentinel value and not an enum
-> value that would normally be used by itself.
-> 
-> Here is what I was intending:
-> 
-> enum ipe_op_type {
->   IPE_OP_EXEC = 0,
->   IPE_OP_FIRMWARE,
->   ...
->   IPE_OP_IMA_X509,
->   __IPE_OP_MAX
-> };
-> 
-> > +#define __IPE_OP_INVALID __IPE_OP_MAX
-> 
-> Similarly, I would remove the underscores from "__IPE_OP_INVALID":
-> 
-> #define IPE_OP_INVALID __IPE_OP_MAX
-> 
-> Both of these comments would apply to the other IPE enums as well.
-> 
-Sorry for the mistake, I will update them.
+> > +static const u8 edp_parents_idx[] =3D { 0, 1, 3, 5, 7 };
+>
+> AFAII your solution is to force a specific TVDPLLX for each display, and
+> it isn't dynamic.
+>
+> Do you think it's possible to do that using the DTS ? I'm asking
+> because, IMHO, this kind of setup is more friendly/readable/flexible in
+> the DTS than hardcoded into the driver.
 
-> > diff --git a/security/ipe/policy_parser.c b/security/ipe/policy_parser.c
-> > new file mode 100644
-> > index 000000000000..27e5767480b0
-> > --- /dev/null
-> > +++ b/security/ipe/policy_parser.c
-> > @@ -0,0 +1,488 @@
-> 
-> ...
-> 
-> > +/**
-> > + * parse_header - Parse policy header information.
-> > + * @line: Supplies header line to be parsed.
-> > + * @p: Supplies the partial parsed policy.
-> > + *
-> > + * Return:
-> > + * * 0	- OK
-> > + * * !0	- Standard errno
-> > + */
-> > +static int parse_header(char *line, struct ipe_parsed_policy *p)
-> > +{
-> > +	int rc = 0;
-> > +	char *t, *ver = NULL;
-> > +	substring_t args[MAX_OPT_ARGS];
-> > +	size_t idx = 0;
-> > +
-> > +	while ((t = strsep(&line, " \t")) != NULL) {
-> 
-> It might be nice to define a macro to help reinforce that " \t" are
-> the IPE policy delimiters, how about IPE_POLICY_DELIM?
-> 
-> #define IPE_POLICY_DELIM " \t"
-> 
-Sure, this is better, I will take this idea.
+(CC-ing Maxime, who has some experience in the matter.)
 
-> > +		int token;
-> > +
-> > +		if (*t == '\0')
-> > +			continue;
-> 
-> Why would you want to continue if you run into a NUL byte?  You would
-> only run into a NUL byte if the line was trimmed due to comments or
-> whitespace, correct?  If that is the case, wouldn't you want to
-> break out of this loop when hitting a NUL byte?
-> 
-This happens when two spaces are passed, for example "DEFAULT<space><space>action=DENY"
-has two spaces inside, the strsep will create a NUL string when it sees the first space,
-so for such cases I think we should just skip to the next token.
+assigned-parents doesn't prevent your system from reparenting the clocks
+back to a conflicting configuration.
 
-> > +		if (idx >= __IPE_HEADER_MAX) {
-> > +			rc = -EBADMSG;
-> > +			goto err;
-> > +		}
-> > +
-> > +		token = match_token(t, header_tokens, args);
-> > +		if (token != idx) {
-> > +			rc = -EBADMSG;
-> > +			goto err;
-> > +		}
-> > +
-> > +		switch (token) {
-> > +		case __IPE_HEADER_POLICY_NAME:
-> > +			p->name = match_strdup(&args[0]);
-> > +			if (!p->name)
-> > +				rc = -ENOMEM;
-> > +			break;
-> > +		case __IPE_HEADER_POLICY_VERSION:
-> > +			ver = match_strdup(&args[0]);
-> > +			if (!ver) {
-> > +				rc = -ENOMEM;
-> > +				break;
-> > +			}
-> > +			rc = parse_version(ver, p);
-> > +			break;
-> > +		default:
-> > +			rc = -EBADMSG;
-> > +		}
-> > +		if (rc)
-> > +			goto err;
-> > +		++idx;
-> > +	}
-> > +
-> > +	if (idx != __IPE_HEADER_MAX) {
-> > +		rc = -EBADMSG;
-> > +		goto err;
-> > +	}
-> > +
-> > +out:
-> > +	kfree(ver);
-> > +	return rc;
-> > +err:
-> > +	kfree(p->name);
-> > +	p->name = NULL;
-> > +	goto out;
-> 
-> Do we need to worry about ipe_parsed_policy::name here?  If we are
-> returning an error the caller will call free_parsed_policy() for us,
-> right?  This would allow us to get rid of the 'err' jump label and
-> simply use 'out' for both success and failure.
-> 
-Yes this is not necessary, I will remove this part.
+AFAIK the recommended way to deal with this is to use
+clk_set_rate_exclusive() and co. in whatever consumer driver that needs
+exclusive control on the clock rate. However I'm not sure if that works
+for parents. It should, given the original use case was for the sunxi
+platforms, which like the MediaTek platform here has 2 PLLs for video
+related consumers, but I couldn't find code verifying it.
 
-> > +}
-> 
-> ...
-> 
-> > +/**
-> > + * parse_rule - parse a policy rule line.
-> > + * @line: Supplies rule line to be parsed.
-> > + * @p: Supplies the partial parsed policy.
-> > + *
-> > + * Return:
-> > + * * !IS_ERR	- OK
-> > + * * -ENOMEM	- Out of memory
-> > + * * -EBADMSG	- Policy syntax error
-> > + */
-> > +static int parse_rule(char *line, struct ipe_parsed_policy *p)
-> > +{
-> > +	int rc = 0;
-> > +	bool first_token = true, is_default_rule = false;
-> > +	bool op_parsed = false;
-> > +	enum ipe_op_type op = __IPE_OP_INVALID;
-> > +	enum ipe_action_type action = __IPE_ACTION_INVALID;
-> > +	struct ipe_rule *r = NULL;
-> > +	char *t;
-> > +
-> > +	r = kzalloc(sizeof(*r), GFP_KERNEL);
-> > +	if (!r)
-> > +		return -ENOMEM;
-> > +
-> > +	INIT_LIST_HEAD(&r->next);
-> > +	INIT_LIST_HEAD(&r->props);
-> > +
-> > +	while (t = strsep(&line, " \t"), line) {
-> 
-> See my previous comment about IPE_POLICY_DELIM.
-> 
-> > +		if (*t == '\0')
-> > +			continue;
-> 
-> I still wonder why continuing here is the desired behavior, can you
-> help me understand?
-This one is the same to the parse header function, when two consecutive
-delimitators is passed to strsep it will generate a '\0'.
 
-> 
-> > +		if (first_token && token_default(t)) {
-> > +			is_default_rule = true;
-> > +		} else {
-> > +			if (!op_parsed) {
-> > +				op = parse_operation(t);
-> > +				if (op == __IPE_OP_INVALID)
-> > +					rc = -EBADMSG;
-> > +				else
-> > +					op_parsed = true;
-> > +			} else {
-> > +				rc = parse_property(t, r);
-> > +			}
-> > +		}
-> > +
-> > +		if (rc)
-> > +			goto err;
-> > +		first_token = false;
-> > +	}
-> > +
-> > +	action = parse_action(t);
-> > +	if (action == __IPE_ACTION_INVALID) {
-> > +		rc = -EBADMSG;
-> > +		goto err;
-> > +	}
-> > +
-> > +	if (is_default_rule) {
-> > +		if (!list_empty(&r->props)) {
-> > +			rc = -EBADMSG;
-> > +		} else if (op == __IPE_OP_INVALID) {
-> > +			if (p->global_default_action != __IPE_ACTION_INVALID)
-> > +				rc = -EBADMSG;
-> > +			else
-> > +				p->global_default_action = action;
-> > +		} else {
-> > +			if (p->rules[op].default_action != __IPE_ACTION_INVALID)
-> > +				rc = -EBADMSG;
-> > +			else
-> > +				p->rules[op].default_action = action;
-> > +		}
-> > +	} else if (op != __IPE_OP_INVALID && action != __IPE_ACTION_INVALID) {
-> > +		r->op = op;
-> > +		r->action = action;
-> > +	} else {
-> > +		rc = -EBADMSG;
-> > +	}
-> > +
-> > +	if (rc)
-> > +		goto err;
-> > +	if (!is_default_rule)
-> > +		list_add_tail(&r->next, &p->rules[op].rules);
-> > +	else
-> > +		free_rule(r);
-> > +
-> > +out:
-> > +	return rc;
-> > +err:
-> > +	free_rule(r);
-> > +	goto out;
-> 
-> In keeping with the rule of not jumping to a label only to
-> immediately return, and considering that the only place where we jump
-> to 'out' is in the 'err' code, let's get rid of the 'out' label and
-> have 'err' "return rc" instead of "goto out".
-> 
-Sure I can change this part, yeah I agree this looks weird. 
+ChenYu
 
--Fan
-> > +}
-> 
+> >
+> >   static const char * const disp_pwm_parents[] =3D {
+> >       "clk26m",
+> > @@ -957,11 +963,11 @@ static const struct mtk_mux top_mtk_muxes[] =3D {
+> >       MUX_GATE_CLR_SET_UPD_FLAGS(CLK_TOP_PWRMCU, "top_pwrmcu",
+> >               pwrmcu_parents, 0x08C, 0x090, 0x094, 16, 3, 23, 0x08, 6,
+> >               CLK_IS_CRITICAL | CLK_SET_RATE_PARENT),
+> > -     MUX_GATE_CLR_SET_UPD(CLK_TOP_DP, "top_dp",
+> > -             dp_parents, 0x08C, 0x090, 0x094, 24, 4, 31, 0x08, 7),
+> > +     MUX_GATE_CLR_SET_UPD_INDEXED(CLK_TOP_DP, "top_dp",
+> > +             dp_parents, dp_parents_idx, 0x08C, 0x090, 0x094, 24, 4, 3=
+1, 0x08, 7),
+> >       /* CLK_CFG_10 */
+> > -     MUX_GATE_CLR_SET_UPD(CLK_TOP_EDP, "top_edp",
+> > -             dp_parents, 0x098, 0x09C, 0x0A0, 0, 4, 7, 0x08, 8),
+> > +     MUX_GATE_CLR_SET_UPD_INDEXED(CLK_TOP_EDP, "top_edp",
+> > +             edp_parents, edp_parents_idx, 0x098, 0x09C, 0x0A0, 0, 4, =
+7, 0x08, 8),
+> >       MUX_GATE_CLR_SET_UPD(CLK_TOP_DPI, "top_dpi",
+> >               dp_parents, 0x098, 0x09C, 0x0A0, 8, 4, 15, 0x08, 9),
+> >       MUX_GATE_CLR_SET_UPD(CLK_TOP_DISP_PWM0, "top_disp_pwm0",
+>
 > --
-> paul-moore.com
+> Regards,
+> Alexandre
