@@ -2,90 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93D38752F8E
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 04:51:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FB8C752F94
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 04:53:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234079AbjGNCvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 22:51:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59176 "EHLO
+        id S234296AbjGNCxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 22:53:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234066AbjGNCvS (ORCPT
+        with ESMTP id S231873AbjGNCxh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 22:51:18 -0400
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA2D52D6B;
-        Thu, 13 Jul 2023 19:51:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689303067; x=1720839067;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=3ItH7GDLekgA6ZJq1QFTHSD2GE2/QqQMe4ZG5EQNPz4=;
-  b=CN0vSYmwiDh3p/zuVm9jZrfAgRkn3uE4+MtK38IGFFHvuSxbunmr1mqB
-   ihzdjfe8wrOR57eYoL/LT0x7tZpZZbazas3utxTqj9WUEuIYUBjgEm8G+
-   svehUu4ndn/JT/n2G3XaYWvQrXpsuZzx9AzV+g9guhR+H2/HqbVj0tYF0
-   JDqf7+84rPDIj6VO5yZ9lnztGz++XdiaGIXtx28t2ISAkpzk2pcVxVbUw
-   QId3loo1EjEqxYHGFnErVJeVNWSMqRQmq4fAUOR2g8kshnimEBGTuWIwn
-   u7MRiwbRhOrzi94czmLr2DOQDexxZCS60I1TZEZWLvFni7p4PO8xfOTcv
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="362837721"
-X-IronPort-AV: E=Sophos;i="6.01,204,1684825200"; 
-   d="scan'208";a="362837721"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2023 19:51:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="716174394"
-X-IronPort-AV: E=Sophos;i="6.01,204,1684825200"; 
-   d="scan'208";a="716174394"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.252.191.49]) ([10.252.191.49])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2023 19:51:01 -0700
-Message-ID: <ed4200bb-d7e8-b8b5-bfb6-510bebbb8808@linux.intel.com>
-Date:   Fri, 14 Jul 2023 10:50:57 +0800
+        Thu, 13 Jul 2023 22:53:37 -0400
+Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75D5F2D48
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 19:53:35 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0VnJxHjT_1689303210;
+Received: from localhost(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0VnJxHjT_1689303210)
+          by smtp.aliyun-inc.com;
+          Fri, 14 Jul 2023 10:53:31 +0800
+From:   Jingbo Xu <jefflexu@linux.alibaba.com>
+To:     hsiangkao@linux.alibaba.com, chao@kernel.org, huyue2@coolpad.com,
+        linux-erofs@lists.ozlabs.org
+Cc:     linux-kernel@vger.kernel.org, alexl@redhat.com
+Subject: [PATCH v4 0/3] erofs-utils: introduce xattr name bloom filter
+Date:   Fri, 14 Jul 2023 10:53:27 +0800
+Message-Id: <20230714025330.42950-1-jefflexu@linux.alibaba.com>
+X-Mailer: git-send-email 2.19.1.6.gb485710b
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Cc:     baolu.lu@linux.intel.com,
-        "opensource.kernel" <opensource.kernel@vivo.com>,
-        Thierry Reding <treding@nvidia.com>
-Subject: =?UTF-8?B?UmU6IOWbnuWkjTogW1BBVENIIHY0XSBpb21tdTogcmVtb3ZlIHJlZHVu?=
- =?UTF-8?Q?dant_parameter_check_in_tegra=5fsmmu=5fdebugfs=5finit=28=29?=
-Content-Language: en-US
-To:     =?UTF-8?B?5p2c5pWP5p2w?= <duminjie@vivo.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Krishna Reddy <vdumpa@nvidia.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        "open list:TEGRA IOMMU DRIVERS" <linux-tegra@vger.kernel.org>,
-        "open list:IOMMU SUBSYSTEM" <iommu@lists.linux.dev>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20230713072825.10348-1-duminjie@vivo.com>
- <61f31b3e-b618-88db-a07c-f6761c1c7d06@linux.intel.com>
- <SG2PR06MB5288E9FC9B6EA21E20BB011EAE34A@SG2PR06MB5288.apcprd06.prod.outlook.com>
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <SG2PR06MB5288E9FC9B6EA21E20BB011EAE34A@SG2PR06MB5288.apcprd06.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,URIBL_BLOCKED,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/7/14 10:38, 杜敏杰 wrote:
-> Hi baolu!
-> 
-> Thanks for your suggestion!
-> 
-> You say:
->> Next time when you send a new version of a patch, please don't forget to add the change log after the tear line. This way, people can know how the patch evolved into this way.
-> Do I need to submit a new patch?
+changes since v3:
+- patch 3: "-Exattr-name-filter" option rather than "--xattr-filter"
+  option is newly introduced to enable this feature (Gao Xiang)
 
-Oh no. Just a kind remind. :-)
+changes since v2:
+- patch 2: introduce xattr_filter_reserved in on-disk superblock;
+  remove EROFS_XATTR_FILTER_MASK
+- patch 3: xattr_filter_reserved is always initialized to 0 by default
 
-Best regards,
-baolu
+
+changes since RFC:
+- the number of hash functions is 1, and now it's implemented as:
+    xxh32(name, strlen(name), EROFS_XATTR_FILTER_SEED + index),
+  where the constant magic number EROFS_XATTR_FILTER_SEED [*] is used to
+  give a better spread for the mapping. (Alexander Larsson)
+- fix the value of EROFS_FEATURE_COMPAT_XATTR_FILTER; rename
+  EROFS_XATTR_BLOOM_* to EROFS_XATTR_FILTER_* (Gao Xiang)
+
+
+RFC: https://lore.kernel.org/all/20230621083939.128961-1-jefflexu@linux.alibaba.com/
+v2: https://lore.kernel.org/all/20230705071017.104130-1-jefflexu@linux.alibaba.com/
+v3: https://lore.kernel.org/all/20230712121331.99671-1-jefflexu@linux.alibaba.com/
+
+The xattr bloom filter feature is used to boost the negative xattr
+lookup.
+
+Refer to the kernel patch set [*] for more details.
+
+[*] https://lore.kernel.org/all/20230705070427.92579-1-jefflexu@linux.alibaba.com/
+
+
+Jingbo Xu (3):
+  erofs-utils: add xxh32 library
+  erofs-utils: update on-disk format for xattr name filter
+  erofs-utils: mkfs: enable xattr name filter
+
+ include/erofs/config.h   |  1 +
+ include/erofs/internal.h |  1 +
+ include/erofs/xxhash.h   | 35 +++++++++++++++++
+ include/erofs_fs.h       | 12 +++++-
+ lib/Makefile.am          |  3 +-
+ lib/xattr.c              | 74 ++++++++++++++++++++++++++--------
+ lib/xxhash.c             | 85 ++++++++++++++++++++++++++++++++++++++++
+ mkfs/main.c              |  7 ++++
+ 8 files changed, 199 insertions(+), 19 deletions(-)
+ create mode 100644 include/erofs/xxhash.h
+ create mode 100644 lib/xxhash.c
+
+-- 
+2.19.1.6.gb485710b
+
