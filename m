@@ -2,146 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F06867543CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 22:36:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFF8C7543D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 22:37:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235987AbjGNUgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 16:36:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32862 "EHLO
+        id S236246AbjGNUhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 16:37:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233301AbjGNUf7 (ORCPT
+        with ESMTP id S235734AbjGNUh3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 16:35:59 -0400
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85D7235AD;
-        Fri, 14 Jul 2023 13:35:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689366958; x=1720902958;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=zDj72u9E9a3wZCG32UrWexGXSZP8EqG3M+2b/gTOMaY=;
-  b=d4zUPIa6tE0doq0jVFhKGkM+fa86i7T8mQecal3NgcL7bBmPgd9xovmU
-   ZL8MoUEKkCkZP0dyHyjZIYl7IbFtPRpX5huyrclMBK0Ublg8XfqKbMHCg
-   aCf0nzPQaS5K6nGjRX6GxXqXW8xzFYh5Z/uksVgPacXlnCthKsRjI7eLj
-   U2RNylrq6tYAAhuHTdguqgVgfTb21rcz5wFE9Wbg54nOLBB6NFI+E/qq3
-   bbhx+xRiq+EAX8ta1Q5SSUUZegEyIwkfX3bzt4EMEia39DMdh8OkpSp1i
-   Ur8xU3FekS0d77Vx+0O192ldrvGPG6pW5f7BGKpmBLjgQqbiLnnP6FyGm
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10771"; a="431749280"
-X-IronPort-AV: E=Sophos;i="6.01,206,1684825200"; 
-   d="scan'208";a="431749280"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 13:35:57 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10771"; a="1053197010"
-X-IronPort-AV: E=Sophos;i="6.01,206,1684825200"; 
-   d="scan'208";a="1053197010"
-Received: from jkchitra-mobl1.amr.corp.intel.com (HELO vcostago-mobl3) ([10.209.5.179])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 13:35:56 -0700
-From:   Vinicius Costa Gomes <vinicius.gomes@intel.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        linux-pci@vger.kernel.org,
-        "Guilherme G . Piccoli" <gpiccoli@igalia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Tony Luck <tony.luck@intel.com>,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2] igc: Ignore AER reset when device is suspended
-In-Reply-To: <20230714145445.GA354014@bhelgaas>
-References: <20230714145445.GA354014@bhelgaas>
-Date:   Fri, 14 Jul 2023 13:35:55 -0700
-Message-ID: <874jm6nsd0.fsf@intel.com>
+        Fri, 14 Jul 2023 16:37:29 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 423F410EA
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 13:37:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=wrUsX+fGObyqWFLpJoZXsYVL4Y4Pkz1ztByvASSpKFo=; b=DVw+JntWvLjM2IFhSOsUO5+3AA
+        5JgQdgrRboH3sfu3M4EAJ34CbQcU5e9D+pSgjqC3u/yRHCsJ184hwlX/jIngm1Lrvs2zVWaR2AOQ5
+        zHTMs7aZJRQLATfPqQFSuJXSjh6Ld5K2O1IQJI/MuhAsHkYuulS5eheNEKxDzP5o3GWlb96YJNen1
+        rrFw/eV4gW2F53Q4rzy47OyCAstakgOMZTwEdS1QHMgtjck/53+8wX+RQTIYh82HhVl4WqmA0sCVH
+        YpklrDcNRVakT26Swff8MZWUG/dWuLhtaGgliluNlD4fF76B8Es8vvjy2apzXtrcoYChOEcHk+M6W
+        gAeuu7iQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qKPXX-006Mye-1M;
+        Fri, 14 Jul 2023 20:37:23 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 67F793001FD;
+        Fri, 14 Jul 2023 22:37:22 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4CC4F245CA115; Fri, 14 Jul 2023 22:37:22 +0200 (CEST)
+Date:   Fri, 14 Jul 2023 22:37:22 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] x86/urgent for v6.5-rc2
+Message-ID: <20230714203722.GA3273303@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bjorn Helgaas <helgaas@kernel.org> writes:
+Hi Linus,
 
-> On Fri, Jul 14, 2023 at 01:05:41PM +0800, Kai-Heng Feng wrote:
->> When a system that connects to a Thunderbolt dock equipped with I225,
->> like HP Thunderbolt Dock G4, I225 stops working after S3 resume:
->> ...
->
->> The issue is that the PTM requests are sending before driver resumes the
->> device. Since the issue can also be observed on Windows, it's quite
->> likely a firmware/hardware limitation.
->
-> Does this mean we didn't disable PTM correctly on suspend?  Or is the
-> device defective and sending PTM requests even though PTM is disabled?
->
+please pull a bunch of CFI fixes for 6.5-rc2.
 
-The way I understand the hardware bug, the device is defective, as you
-said, the device sends PTM messages when "busmastering" is disabled.
+Thanks!
 
-> If the latter, I vote for a quirk that just disables PTM completely
-> for this device.
->
+(also yeah, sometimes I can't type -- I only now noticed :/)
 
-My suggestion is that adding this quirk would be a last resort kind of
-thing. There are users/customers that depend on the increased time
-synchronization accuracy that PTM provides.
+---
 
-> This check in .error_detected() looks out of place to me because
-> there's no connection between AER and PTM, there's no connection
-> between PTM and the device being enabled, and the connection between
-> the device being enabled and being fully resumed is a little tenuous.
->
-> If we must do it this way, maybe add a comment about *why* we're
-> checking pci_is_enabled().  Otherwise this will be copied to other
-> drivers that don't need it.
+The following changes since commit 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5:
 
-Makes total sense, from my side.
+  Linux 6.5-rc1 (2023-07-09 13:53:13 -0700)
 
->
->> So avoid resetting the device if it's not resumed. Once the device is
->> fully resumed, the device can work normally.
->> 
->> Link: https://bugzilla.kernel.org/show_bug.cgi?id=216850
->> Reviewed-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
->> Acked-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
->> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
->> 
->> ---
->> v2:
->>  - Fix typo.
->>  - Mention the product name.
->> 
->>  drivers/net/ethernet/intel/igc/igc_main.c | 3 +++
->>  1 file changed, 3 insertions(+)
->> 
->> diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
->> index 9f93f0f4f752..8c36bbe5e428 100644
->> --- a/drivers/net/ethernet/intel/igc/igc_main.c
->> +++ b/drivers/net/ethernet/intel/igc/igc_main.c
->> @@ -7115,6 +7115,9 @@ static pci_ers_result_t igc_io_error_detected(struct pci_dev *pdev,
->>  	struct net_device *netdev = pci_get_drvdata(pdev);
->>  	struct igc_adapter *adapter = netdev_priv(netdev);
->>  
->> +	if (!pci_is_enabled(pdev))
->> +		return 0;
->> +
->>  	netif_device_detach(netdev);
->>  
->>  	if (state == pci_channel_io_perm_failure)
->> -- 
->> 2.34.1
->> 
->
+are available in the Git repository at:
 
--- 
-Vinicius
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_urgent_for_6.5_rc2
+
+for you to fetch changes up to 535d0ae39185a266536a1e97ff9a8956d7fbb9df:
+
+  x86/cfi: Only define poison_cfi() if CONFIG_X86_KERNEL_IBT=y (2023-07-11 10:17:55 +0200)
+
+----------------------------------------------------------------
+Fix kCFI/FineIBT weaknesses
+
+The primary bug Alyssa noticed was that with FineIBT enabled function
+prologues have a spurious ENDBR instruction:
+
+  __cfi_foo:
+	endbr64
+	subl	$hash, %r10d
+	jz	1f
+	ud2
+	nop
+  1:
+  foo:
+	endbr64 <--- *sadface*
+
+This means that any indirect call that fails to target the __cfi symbol
+and instead targets (the regular old) foo+0, will succeed due to that
+second ENDBR.
+
+Fixing this lead to the discovery of a single indirect call that was
+still doing this: ret_from_fork(), since that's an assembly stub the
+compmiler would not generate the proper kCFI indirect call magic and it
+would not get patched.
+
+Brian came up with the most comprehensive fix -- convert the thing to C
+with only a very thin asm wrapper. This ensures the kernel thread
+boostrap is a proper kCFI call.
+
+While discussing all this, Kees noted that kCFI hashes could/should be
+poisoned to seal all functions whose address is never taken, further
+limiting the valid kCFI targets -- much like we already do for IBT.
+
+So what was a 'simple' observation and fix cascaded into a bunch of
+inter-related CFI infrastructure fixes.
+
+----------------------------------------------------------------
+Brian Gerst (2):
+      x86/32: Remove schedule_tail_wrapper()
+      x86: Rewrite ret_from_fork() in C
+
+Ingo Molnar (1):
+      x86/cfi: Only define poison_cfi() if CONFIG_X86_KERNEL_IBT=y
+
+Peter Zijlstra (4):
+      x86/cfi: Extend {JMP,CAKK}_NOSPEC comment
+      x86/alternative: Rename apply_ibt_endbr()
+      x86/cfi: Extend ENDBR sealing to kCFI
+      x86/fineibt: Poison ENDBR at +0
+
+ arch/um/kernel/um_arch.c             |  2 +-
+ arch/x86/entry/entry_32.S            | 53 +++++++--------------------
+ arch/x86/entry/entry_64.S            | 33 ++++-------------
+ arch/x86/include/asm/alternative.h   |  2 +-
+ arch/x86/include/asm/ibt.h           |  2 +-
+ arch/x86/include/asm/nospec-branch.h |  4 ++
+ arch/x86/include/asm/switch_to.h     |  4 +-
+ arch/x86/kernel/alternative.c        | 71 ++++++++++++++++++++++++++++++++++--
+ arch/x86/kernel/module.c             |  2 +-
+ arch/x86/kernel/process.c            | 22 ++++++++++-
+ 10 files changed, 120 insertions(+), 75 deletions(-)
