@@ -2,156 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28F0D7534FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 10:24:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 905F2753500
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 10:26:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235212AbjGNIX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 04:23:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42634 "EHLO
+        id S235321AbjGNI0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 04:26:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235059AbjGNIX5 (ORCPT
+        with ESMTP id S234889AbjGNI0K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 04:23:57 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C65909B;
-        Fri, 14 Jul 2023 01:23:55 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Fri, 14 Jul 2023 04:26:10 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E0869B;
+        Fri, 14 Jul 2023 01:26:09 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 655DF61C61;
-        Fri, 14 Jul 2023 08:23:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87BBAC433C8;
-        Fri, 14 Jul 2023 08:23:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689323034;
-        bh=vzHIGLT92Won/B+RdarvMWgfIJZa19KQoX8ChdEHMg8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AskWsqQaO75T/DiVs/BB5UDGtJvAKhKPuM097sDiW6fUZOYHFrFKYQ5y9pu0Dlgj3
-         go1lNSQtftxWnc8pIgT9bexrb5IrtorOqcnQfX5n5CkbdVZ9lSZmvUrHhJNlttGx3s
-         phXYBswGDYE+qruo00bdQ83nCIhwMJYcCX4PTvi4HtR21J6j/kCA3KSUsRjtZuT/cr
-         0kQa1AHRxdpKKDIMOmgUjO4VcMl2PxG3vtMEDR41p/UTZ05l9/O8cNuPxzzopWK+or
-         F0osdwWgs8io0eK2jKPRFJisr565qCNZ9cPI7OSiuKMPlUTADqqtImqDCJUDk/rEO2
-         +zuUDEzTXaQWg==
-Date:   Fri, 14 Jul 2023 09:23:48 +0100
-From:   Will Deacon <will@kernel.org>
-To:     "Aiqun(Maria) Yu" <quic_aiquny@quicinc.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>, corbet@lwn.net,
-        catalin.marinas@arm.com, maz@kernel.org, quic_pkondeti@quicinc.com,
-        quic_kaushalk@quicinc.com, quic_satyap@quicinc.com,
-        quic_shashim@quicinc.com, quic_songxue@quicinc.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] arm64: Add the arm64.nolse_atomics command line option
-Message-ID: <20230714082348.GA5240@willie-the-truck>
-References: <20230711082226.GA1554@willie-the-truck>
- <84f0994a-26de-c20a-a32f-ec8fe41df3a3@quicinc.com>
- <20230711102510.GA1809@willie-the-truck>
- <67c2621f-4cad-2495-9785-7737246d3e90@quicinc.com>
- <ZK5X9bXQT7GBxNHj@FVFF77S0Q05N.emea.arm.com>
- <604ac52d-4336-744f-2ab8-44d1c93fbaa8@quicinc.com>
- <ZK_d86ApI1FCHhTL@FVFF77S0Q05N.cambridge.arm.com>
- <e02b9969-a3ca-a80d-1d32-25d2bf4c72b6@quicinc.com>
- <ZLBLwG2LJ4gZLfbh@FVFF77S0Q05N.cambridge.arm.com>
- <6d1a6691-f858-71bf-97fe-97e13fcb93b6@quicinc.com>
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 43CA91FD8E;
+        Fri, 14 Jul 2023 08:26:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1689323168; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fks1WScsSrOgkleCsjnUGYtvL8hJjpfw+GXcKVrd4Cc=;
+        b=WulcpL0qvQltYlR9ph9oGtrmlDGzPveFHunO2MGoiLrwrMpp9JHS4u16B4gHtodoBuGZCS
+        CKCo2FxPqOueJOeaZlsjfrGRIba6MSZDlRvbCet4KO6g/2t5skOpN8DRFsq4RWQAXdOgL9
+        JKLB4M/ftVP5RQh1S2j8Z8MuhsRNbPc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1689323168;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fks1WScsSrOgkleCsjnUGYtvL8hJjpfw+GXcKVrd4Cc=;
+        b=DERqA/i5gSqcbt3I3iT9HLa67XOi7yzmv5oKPmqERX0k+bLFm6qlso+QHecdA3yu1psp6D
+        FAzxXJJz2h1/2HCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DB98413A15;
+        Fri, 14 Jul 2023 08:26:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id G1jjNJ8GsWQOVAAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Fri, 14 Jul 2023 08:26:07 +0000
+Message-ID: <d9f96152-e48e-7a1f-cd00-b7d508c5560f@suse.cz>
+Date:   Fri, 14 Jul 2023 10:26:07 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6d1a6691-f858-71bf-97fe-97e13fcb93b6@quicinc.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v5] Randomized slab caches for kmalloc()
+Content-Language: en-US
+To:     "GONG, Ruiqi" <gongruiqi@huaweicloud.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        David Rientjes <rientjes@google.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Christoph Lameter <cl@linux.com>, Tejun Heo <tj@kernel.org>,
+        Dennis Zhou <dennis@kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>
+Cc:     Roman Gushchin <roman.gushchin@linux.dev>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Lobakin <aleksander.lobakin@intel.com>,
+        Pedro Falcato <pedro.falcato@gmail.com>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Wang Weiyang <wangweiyang2@huawei.com>,
+        Xiu Jianfeng <xiujianfeng@huawei.com>, linux-mm@kvack.org,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gongruiqi1@huawei.com
+References: <20230714064422.3305234-1-gongruiqi@huaweicloud.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20230714064422.3305234-1-gongruiqi@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 09:56:27AM +0800, Aiqun(Maria) Yu wrote:
-> On 7/14/2023 3:08 AM, Mark Rutland wrote:
-> > On Thu, Jul 13, 2023 at 10:08:34PM +0800, Aiqun(Maria) Yu wrote:
-> > > On 7/13/2023 7:20 PM, Mark Rutland wrote:
-> > > > Are you saying that LSE atomics to *cacheable* mappings do not work on your
-> > > > system?
-> > > > 
-> > > > Specifically, when using a Normal Inner-Shareable Inner-Writeback
-> > > > Outer-Writeback mapping, do the LSE atomics work or not work?
-> > > *cacheable* mapping have the LSE atomic is not working if far atomic is
-> > > performed.
-> > 
-> > Thanks for confirming; the fact that this doesn't work on *cacheable* memory is
-> > definitely a major issue. I think everyone is confused here because of the
-> > earlier mention of non-cachable accesses (which don't matter).
-> > 
-> Maybe I can have the information collected in a summary to see if that
-> helps.
-> > I know that some CPU implementations have EL3 control bits to force LSE atomics
-> > to be performed near (e.g. in Cortex-A55, the CPUECTLR.ATOM control bits),
-> > which would avoid the issue while still allowing the LSE atomics to be used.
-> > 
-> > If those can be configured in EL3 firmware, that would be a preferable
-> > workaround.
-> > 
-> > Can you say which CPUs are integrated in this system? and/or can you check if
-> > such control bits exist?
+On 7/14/23 08:44, GONG, Ruiqi wrote:
+> When exploiting memory vulnerabilities, "heap spraying" is a common
+> technique targeting those related to dynamic memory allocation (i.e. the
+> "heap"), and it plays an important role in a successful exploitation.
+> Basically, it is to overwrite the memory area of vulnerable object by
+> triggering allocation in other subsystems or modules and therefore
+> getting a reference to the targeted memory location. It's usable on
+> various types of vulnerablity including use after free (UAF), heap out-
+> of-bound write and etc.
 > 
-> We have CPUECTLR_EL1.ATOM bit can force LSE atomics to be perform near.
-> CPUECTLR_EL1 is also an option to EL1 kernel drivers to be configuarable.
+> There are (at least) two reasons why the heap can be sprayed: 1) generic
+> slab caches are shared among different subsystems and modules, and
+> 2) dedicated slab caches could be merged with the generic ones.
+> Currently these two factors cannot be prevented at a low cost: the first
+> one is a widely used memory allocation mechanism, and shutting down slab
+> merging completely via `slub_nomerge` would be overkill.
 > 
-> Try to a detailed summarise of the whole discussions, anyone can ignore some
-> part if you are already know.
+> To efficiently prevent heap spraying, we propose the following approach:
+> to create multiple copies of generic slab caches that will never be
+> merged, and random one of them will be used at allocation. The random
+> selection is based on the address of code that calls `kmalloc()`, which
+> means it is static at runtime (rather than dynamically determined at
+> each time of allocation, which could be bypassed by repeatedly spraying
+> in brute force). In other words, the randomness of cache selection will
+> be with respect to the code address rather than time, i.e. allocations
+> in different code paths would most likely pick different caches,
+> although kmalloc() at each place would use the same cache copy whenever
+> it is executed. In this way, the vulnerable object and memory allocated
+> in other subsystems and modules will (most probably) be on different
+> slab caches, which prevents the object from being sprayed.
 > 
-> * Part 1: Solution for this issue.
-> While we still want to have options to let third party and end users can
-> have options:
->   1.Disable lse atomic cap.
->   2.*Disallow* far atomic by "CPUECTLR_EL1.atom force near atomic" and
-> non-cachable mappling for lse atomic only.
+> Meanwhile, the static random selection is further enhanced with a
+> per-boot random seed, which prevents the attacker from finding a usable
+> kmalloc that happens to pick the same cache with the vulnerable
+> subsystem/module by analyzing the open source code. In other words, with
+> the per-boot seed, the random selection is static during each time the
+> system starts and runs, but not across different system startups.
+> 
+> The overhead of performance has been tested on a 40-core x86 server by
+> comparing the results of `perf bench all` between the kernels with and
+> without this patch based on the latest linux-next kernel, which shows
+> minor difference. A subset of benchmarks are listed below:
+> 
+>                 sched/  sched/  syscall/       mem/       mem/
+>              messaging    pipe     basic     memcpy     memset
+>                  (sec)   (sec)     (sec)   (GB/sec)   (GB/sec)
+> 
+> control1         0.019   5.459     0.733  15.258789  51.398026
+> control2         0.019   5.439     0.730  16.009221  48.828125
+> control3         0.019   5.282     0.735  16.009221  48.828125
+> control_avg      0.019   5.393     0.733  15.759077  49.684759
+> 
+> experiment1      0.019   5.374     0.741  15.500992  46.502976
+> experiment2      0.019   5.440     0.746  16.276042  51.398026
+> experiment3      0.019   5.242     0.752  15.258789  51.398026
+> experiment_avg   0.019   5.352     0.746  15.678608  49.766343
+> 
+> The overhead of memory usage was measured by executing `free` after boot
+> on a QEMU VM with 1GB total memory, and as expected, it's positively
+> correlated with # of cache copies:
+> 
+>            control  4 copies  8 copies  16 copies
+> 
+> total       969.8M    968.2M    968.2M     968.2M
+> used         20.0M     21.9M     24.1M      26.7M
+> free        936.9M    933.6M    931.4M     928.6M
+> available   932.2M    928.8M    926.6M     923.9M
+> 
+> Co-developed-by: Xiu Jianfeng <xiujianfeng@huawei.com>
+> Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
+> Signed-off-by: GONG, Ruiqi <gongruiqi@huaweicloud.com>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Sorry, but this still isn't making sense to me. Which CPUs do you have on
-this SoC?
+Thanks! Pushed to slab/for-6.6/random_kmalloc and for-next.
 
-My understanding of the CPUs from ARM is that LSE atomics are not supposed
-to be sent to blocks that don't support them. That doesn't mean you have to
-do everything near, however -- you can still execute them at e.g. L2.
 
-For example, the Cortex-X1 TRM states:
-
-  | Atomic instructions to cacheable memory can be performed as either
-  | near atomics or far atomics, depending on where the cache line
-  | containing the data resides.
-  |
-  | When an instruction hits in the L1 data cache in a unique state, then
-  | it is performed as a near atomic in the L1 memory system. If the atomic
-  | operation misses in the L1 cache, or the line is shared with another
-  | core, then the atomic is sent as a far atomic on the core CHI interface.
-  |
-  | If the operation misses everywhere within the cluster, and the
-  | interconnect supports far atomics, then the atomic is passed on to the
-  | interconnect to perform the operation.
-  | 
-  | When the operation hits anywhere inside the cluster, or when an
-  | interconnect does not support atomics, the L3 memory system performs
-  | the atomic operation. If the line is not already there, it allocates
-  | the line into the L3 cache. This depends on whether the DSU is configured
-  | with an L3 cache.
-
-So something doesn't add up.
-
-> * Part 2: Why we need the solution
-> 1. There is also some case far atomic is better performance than near
-> atomic. end user may still can still try to do allow far atomic.
-> while this driver is also use kerenl LSE ATOMIC macro, so it can be running
-> on cpu don't support lse atomic and cpu support lse atomic already.
-> while current system, cpu have feature register said lse atomic is
-> supported, but memory controller is not supported is currently not yet
-> supported.
-
-I think you're forgetting the fact that these instructions can be executed
-by userspace, so the kernel option is completely bogus. If you're saying
-that cacheable atomics can cause external aborts, then I can write an app
-which will crash your device even if you've set this command line option.
-
-Will
