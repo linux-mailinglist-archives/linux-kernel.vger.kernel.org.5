@@ -2,102 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BF557531B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 08:04:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3031A7531B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 08:04:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235025AbjGNGEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 02:04:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46252 "EHLO
+        id S234775AbjGNGEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 02:04:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234851AbjGNGE0 (ORCPT
+        with ESMTP id S233207AbjGNGEU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 02:04:26 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43EE9271F;
-        Thu, 13 Jul 2023 23:04:25 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2b8392076c9so9956771fa.1;
-        Thu, 13 Jul 2023 23:04:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689314663; x=1691906663;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gjmA4vOTkGwFP6byVeuNX5GJuZ4Uxjvbd1dybkUi9gI=;
-        b=gPhvisrPuH0rQjgD5Hi9MFnrsv910eO34eUc1RGHcccB844nvWd9hml7pRuR4djqUU
-         cG8EI/0uXHzF7oSZ3I0YZ9PNlXVXi9kTLPaSVVr4cqC6EpouWqnYfMLMKdTPiMrbhpws
-         zm8W9vljDAm+eVQF41e+vjsPJb8p2YBW9Vy8kM7V0ISRzb4imcwL/S+VTSk8LwTa/105
-         SGaCs4aHpTIXbgw00XXKhhdzSVEhfTrY+LAetqiCDF8LhZNnHmIMq9xDcca7fEejLE+g
-         M0Hwx+8zPik68+9+YPJMQk3O1ZDOEV+FJ9glwThDS+6IEwiBx048z2+bYRbF7cp74ZNX
-         9GTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689314663; x=1691906663;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gjmA4vOTkGwFP6byVeuNX5GJuZ4Uxjvbd1dybkUi9gI=;
-        b=OzUiesCbLh0aNbMa2S578LzP2NB0IOTQKYbmDYoDYYAij/kCpBpBHKNyUaVhvirSY7
-         wuj8Z7DiAyWn/E0EaJf3+qTT7yTOy8HG7ZOElNBpYS3q+Jl0BaU8WsxrU1NmRKsOUdha
-         COfv/MDI8mTly8illbiLM3lJmLuqdtfrmxBcvjReK/aD5ct4xZXjdeyPSQbqMvnbSm8b
-         r8I5dqSyHGD/D+y7J9NDWmNfbcnpfNNzByp7DbOD9o1blFR83sDtkeobOgG3Lpn7YR3+
-         mfmLrDS1SbCZ1HzYdzEbebzCgcpTLHFDm4ACjVTvCPUGIUe6OUPxoB/2bxtZ1L07aBBF
-         ig8w==
-X-Gm-Message-State: ABy/qLYP8cmzWaQ/Wx5Hy7KSMeWAveWIQjtV7UKiZIT8t7Ji6Eeuez8T
-        7hIivsvf6to/midq01TbC/W3h6TaKJtf4EYXYwsnm1DJ
-X-Google-Smtp-Source: APBJJlEyzFmZTxDSLZlKXTyqY5UP1cP5IIpdqO6/ly8Nf2PhalxOwEhK/FxafwqY0Azgc1rBday0xBVHfmmMuvLx1L8=
-X-Received: by 2002:a2e:9b8b:0:b0:2b7:3b73:2589 with SMTP id
- z11-20020a2e9b8b000000b002b73b732589mr3103159lji.32.1689314663201; Thu, 13
- Jul 2023 23:04:23 -0700 (PDT)
+        Fri, 14 Jul 2023 02:04:20 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96687271F
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 23:04:19 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R2LXG3d6GzBR9tM
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 14:04:14 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1689314654; x=1691906655; bh=ezthta+WZ36eYrWV9Zb+A2N7VbH
+        gwUOqc/NALhwnFGo=; b=eTtIg3AT72wukEEUEmZQSOsx+up3ItDoggfAIb3yyM4
+        Fdl8UPMTwtMiMAm56tEAbkEkZCiN6MmPTmrwH/kNBZJ/ikNZvCeFawbsrFkvVdOJ
+        oGKfl/3JxmMI2XZcCiFtX7LRdaIJP6Koic95sIled4YTrC7/2hzzRBCAC4Tn16mv
+        Dm75ZwI5Olm4j7f3Smx8Mbg1SgMFLx+k3094V42YGK6QgblZJFyh5dKlHnOfV8aC
+        iY+OEz81pFW4ukB8TVN0n6umpdv2GQ4qTYnKjqLNtL61iUMbDtyUxpvQSsnYEPDF
+        SGOjkFXqGiUo0eijxglHPLdOPXBTLHt7+xCAs6FEezQ==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id iApVlYYNNFxh for <linux-kernel@vger.kernel.org>;
+        Fri, 14 Jul 2023 14:04:14 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R2LXF6blyzBR9t9;
+        Fri, 14 Jul 2023 14:04:13 +0800 (CST)
 MIME-Version: 1.0
-References: <20230714144330.3c0a4074@canb.auug.org.au> <6f655ef5-b236-4683-92b0-da8b19e79eca@paulmck-laptop>
-In-Reply-To: <6f655ef5-b236-4683-92b0-da8b19e79eca@paulmck-laptop>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 13 Jul 2023 23:04:11 -0700
-Message-ID: <CAADnVQLF0BP-_Fjxi1S-0Shus38vAVdNbB2JHsBd6_RudYWF0A@mail.gmail.com>
-Subject: Re: linux-next: duplicate patch in the rcu tree
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Date:   Fri, 14 Jul 2023 14:04:13 +0800
+From:   sunran001@208suo.com
+To:     airlied@gmail.com, daniel@ffwll.ch
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/amd: open brace '{' following struct go on the same line
+In-Reply-To: <20230714060105.13377-1-xujianghui@cdjrlc.com>
+References: <20230714060105.13377-1-xujianghui@cdjrlc.com>
+User-Agent: Roundcube Webmail
+Message-ID: <e565a40b4ae73352204fbf49e55de452@208suo.com>
+X-Sender: sunran001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 9:50=E2=80=AFPM Paul E. McKenney <paulmck@kernel.or=
-g> wrote:
->
-> On Fri, Jul 14, 2023 at 02:43:30PM +1000, Stephen Rothwell wrote:
-> > Hi all,
-> >
-> > The following commit is also in net-next tree as a different commit
-> > (but the same patch):
-> >
-> >   a2b38823280d ("rcu: Export rcu_request_urgent_qs_task()")
-> >
-> > This is commit
-> >
-> >   43a89baecfe2 ("rcu: Export rcu_request_urgent_qs_task()")
-> >
-> > in the net-next tree.
->
-> The net-next tree needs it for BPF, correct?
+Fix the checkpatch error as open brace '{' following struct should
+go on the same line.
 
-yes.
+Signed-off-by: Ran Sun <sunran001@208suo.com>
+---
+  drivers/gpu/drm/amd/include/yellow_carp_offset.h | 6 ++----
+  1 file changed, 2 insertions(+), 4 deletions(-)
 
-> So if you guys intend to
-> push it to mainline, I will be happy to drop if from -rcu.
+diff --git a/drivers/gpu/drm/amd/include/yellow_carp_offset.h 
+b/drivers/gpu/drm/amd/include/yellow_carp_offset.h
+index 0fea6a746611..a2c8dca2425e 100644
+--- a/drivers/gpu/drm/amd/include/yellow_carp_offset.h
++++ b/drivers/gpu/drm/amd/include/yellow_carp_offset.h
+@@ -7,13 +7,11 @@
+  #define MAX_SEGMENT                                         6
 
-That's the intent. Please drop it from -rcu.
-Thank you!
+-struct IP_BASE_INSTANCE
+-{
++struct IP_BASE_INSTANCE {
+      unsigned int segment[MAX_SEGMENT];
+  } __maybe_unused;
+
+-struct IP_BASE
+-{
++struct IP_BASE {
+      struct IP_BASE_INSTANCE instance[MAX_INSTANCE];
+  } __maybe_unused;
