@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C744A7534BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 10:09:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DF137534BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 10:09:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235428AbjGNIJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 04:09:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59736 "EHLO
+        id S235465AbjGNIJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 04:09:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235093AbjGNIJE (ORCPT
+        with ESMTP id S234549AbjGNIJF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 04:09:04 -0400
+        Fri, 14 Jul 2023 04:09:05 -0400
 Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2114.outbound.protection.outlook.com [40.107.255.114])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 421143ABD;
-        Fri, 14 Jul 2023 01:06:46 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 036F83C3C;
+        Fri, 14 Jul 2023 01:06:48 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TGGfURbNU1t7V8A86NyBj4BS+/El9bcDntrr4Hg4CZQfsmNy7HPsPNzyAxF1DcAeF314H5MFZ3gRb08IfiHXntcw/AwsZR02YiV9Y0Qd+JMKBuft14If9pQB85xHq2nGFuN9xwGCSFMB9rNgGNLBthvlbv2DIBWblqQL3ozA9cm1sr2ACmasyV3ge9VNAFUsFFWL4E85xuDmUXQCJfGpbObAZFWSpUOAN/h6cYsE4aTzk7Uyj7FAckY485xrd45qpTmgEl4KM+WiA1EmOysT3GP2lAmJr5wbyoJx1yhUuL8ur/WFj7abkmRuuV2Nth8kqkEUjjrY1yaJuna/Uj2XIg==
+ b=ecQZH+5oOoSCkvBqb0h5OR04mIcXixXgNGsdiXSaChQ1YoJ5Xe7NMLSy1oWUFQtRVaHWboB+zzTZT/NXgu/IkcbBWzFYvHtC2H+4T/f5YMzEzMEpn93Qz29nnC1PUeTNDfHWeN9PLNMV+lbts8F9DdPWFYuT1njjHA9S2nnhHO6Va6zx1L7eV2I9wMbtto7mYoxKsVfGiSuiI25ZLE+sbmx0QFKfGtQot+qxTjneQnLVD74yhBQHEDsOoIc+papmvzjOfZU6GJRTtKGjlsEZPqUwOrfpt2NF+ksVLRKhz+pa52TPPm835+n7wzy5woc5KuxiBPwYU51IBUTtVU0TEQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9re4Q/gFRNAj1/PcQBh25BKohWB/YpuBuRQVOHii2Jg=;
- b=dAW9h74EiVKxl1+YAjdgJj3jKt4EoO4gVxbLE0TTexSxSF5v0VrVKrE3JtweFpwN24v8xkw3y3I3O9wfaPhDvkz+J+rTu2EGEzuqA1urX/vj+WW/6pnLC7+ERz5p9ZG8sa25H9dvizxY9q3hAnZA9d5eWUAoQxooYraGikNy7Mk3Yqip4sq7eRS88RwyAiUNMIK4hDCbNpTDXDsUONvVLZ01OYc1DG/dC8z4NQhCWA0M5B0syfHFjF/m45zsKERWlNg2yJTwWi39d7sPkQFA5qmxooR8ajYKH9LXFKkviYklnKEvJkXWadjY6H4E+dEBM7J9NpswYQuLDIBT1r4MsA==
+ bh=XYvLDm/pKKUutNnQiuINiUO7YGK/iWMOkQoVBqqH2OI=;
+ b=D431eI1VRkLfGWfSLHjAqvyh2CXGzUZGPt+6hK7CbBgyDAgIV6KtseJ8FzjFoNid+puoYh4Jvk4eFdtcjmubtj5oqjf3RPNGyekY/iFUK8YIHiex5z+l+oSIB7ET7RqiRaJae+LhI9inYhcuVHaJJVqoIMcMtjMV310zakaCmYG4XxCjVvfs6OLo8CE8L9t1SIbvBa2/unTRgAXXK7oEjOoTp9GIXvzvgpK9RWDwmW9dIJFAo98AWVmpBXiKLtIZ21cQ+f1/2JZ7N59qlmon91RwUCQw30EswREjild8yKTRHJxMoU0tDYeQYgSvcN8UbB3Ue5AyxuH65mQCnAhchw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
  dkim=pass header.d=vivo.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9re4Q/gFRNAj1/PcQBh25BKohWB/YpuBuRQVOHii2Jg=;
- b=EjX5b6a+SNEYIxFaKFO35Zqgundj7Nnnm/JkRvTSoZVM+SCiDCszQ2V9V+hmmluCT+5RCjHf1dC7XkRzavyzYgh9wOvr9ub+om06Bt4UjiDCK4ZueDfIN7AfoqDyet8amcyicmhAejfI9a4WKWC5SQjA7+y0nX/qIK6q11Xc2HFPF6otIkxa/OkQkQy5hAcWK8lhBENOHeKmVMRBjlGQBbmsA3rh9JSlB3UouZwBwSEwPpS7h3AqcrsYyhN0neT76hlCX3qYwyN9Cuy58VZYMnVHn5Pe9W7lJhTlc0BgoYd5XWMtG5eT3df313l8RRl2EX7O/COb7xaBqlneQ7iJyw==
+ bh=XYvLDm/pKKUutNnQiuINiUO7YGK/iWMOkQoVBqqH2OI=;
+ b=KJH9+z0x2BnDbYxyxrI+kWOzqvjcwcgiDBk/4f72mHHLEuuTc5ShV4DdjLZp9qZBScYrPnlEW+HNarOWHkfVWYIsQnOVtwyOx+PIW+WpoHRoBgwdY0RilDbhPt4TVYRub5vjSpYnYS9yiJ8zNkHb/1AzuL1aEwNZIK9V0CUrlPyYcSUWfPOwDtZ5iJWxWdjBqGPScyhZJZ5/eU/q+qIepTHmwPkvJYb1ZKiSyROfHxnhU2ynIg4mGQ3oxhxRz2B8B4igJy0wqxEwZngktjc7FFh+zMC0U2oUs7nCy1iB8STwNEGqufcn8qS/KrM7wqIbuZdowdpdAeKyLrraBhMmvw==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=vivo.com;
 Received: from SEZPR06MB5269.apcprd06.prod.outlook.com (2603:1096:101:78::6)
  by SI2PR06MB4059.apcprd06.prod.outlook.com (2603:1096:4:f4::13) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.27; Fri, 14 Jul
- 2023 08:06:29 +0000
+ 2023 08:06:30 +0000
 Received: from SEZPR06MB5269.apcprd06.prod.outlook.com
  ([fe80::fa0e:6c06:7474:285c]) by SEZPR06MB5269.apcprd06.prod.outlook.com
  ([fe80::fa0e:6c06:7474:285c%5]) with mapi id 15.20.6565.028; Fri, 14 Jul 2023
- 08:06:29 +0000
+ 08:06:30 +0000
 From:   Yangtao Li <frank.li@vivo.com>
 To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Cc:     Yangtao Li <frank.li@vivo.com>, linux-input@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 7/8] Input: qt2160 - convert to use devm_* api
-Date:   Fri, 14 Jul 2023 16:06:10 +0800
-Message-Id: <20230714080611.81302-7-frank.li@vivo.com>
+Subject: [PATCH 8/8] Input: lm8323 - convert to use devm_* api
+Date:   Fri, 14 Jul 2023 16:06:11 +0800
+Message-Id: <20230714080611.81302-8-frank.li@vivo.com>
 X-Mailer: git-send-email 2.39.0
 In-Reply-To: <20230714080611.81302-1-frank.li@vivo.com>
 References: <20230714080611.81302-1-frank.li@vivo.com>
@@ -58,50 +58,50 @@ X-ClientProxiedBy: TYCPR01CA0108.jpnprd01.prod.outlook.com
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: SEZPR06MB5269:EE_|SI2PR06MB4059:EE_
-X-MS-Office365-Filtering-Correlation-Id: c1fe677b-081c-44d4-db32-08db84413a4b
+X-MS-Office365-Filtering-Correlation-Id: 4a00ad3a-11b6-451a-f6e7-08db84413aed
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xITJtHK0mdxG8AJuUA+ACoYUH8DjnYML8bOK77yCgHFZkuiowFl/2l6X1+EQzrnX1G5LwEGhDn3l7GPJiSY7prbQ643WNxkq6qW+MVtBP8rwbc4PeqettTrGw1U+G+Gl+WxNPap/L7sU6kYRHd0GkTdQ1XpEdugHK0go1+GHIh4Skl8jqEDf4Ge1vzCeQexquU5FA05g9MEK93L3Mg98P6XbHONQMetjH3lgdZ+/ZSz2pzav1Y8aaZr0Kt3MXj9xm0rb96b84WOHDvGGMGAQ9qgX1/qmsoGtTtOt+5jJrTnyZ8i7h7itv5fKYejN/RdmRhQPU5GGZGOUC97tgl0fyQ4bAPf3b8XPVxF2JjbKf5oFSyzxtYdAXnrJ3M2yQFF7m6wdYv75sElyzmuKmIgX/yPFCFsES7Isyqzorawwa3H9fzWQJ03gnM7ngz4AsmJB7hhSwveBUi3k3GgGEG7VziYZtp5Rvf8UYg4ab9486HcBscK8vq/Z5ChsX1mdKZsQgSuXp0IqbNBCMO1IYk1LUDDu6+MizYE7QeaEN2mKoA+O/BJNqRbD1Yi+Tq/W4sk1FlnBMqif1xqR5pJGYwFB7KZ2ZdHLpH6u0XmiJIvpcEKMPrJQWXZDFIuhcupZm3wQ
+X-Microsoft-Antispam-Message-Info: /cdqYTyD/DaekipDicjJSwTo1T1+08mjFU6DdYzJWK1UQ5slinLwxnDcpN8wP8VEI+PVOog6yCKz2IEeKN2zzdJm5hK619cVEhcKu/P+UPrvB4JUvPXIzXbE5N5XN8FCEX1w1MAyW7JB1qht95eEl/tknZ9LyMcCIXE8yugSrW2AIPNYSK1lsXcMaY4L/6oQSOYy7l5j+bfNXX4Oy9+6DxnJxfy8oDL/LaE0zeCuE2gbC8ztczMrV/NB5g6GltT8scntEVHN9gDa523adEwTkaDQ8YsGFwJZSz8Nnqk+blG9j2eAXBxtGfDW6Vk67NySb48rJ1FYPLRgnLa++0GiH2pcgI72qH1DQ1LMIPNFsFPWYwEg++njpA/qRXTUKq1uSCcNgFQl6rCM3OR1xDeKp1X3fAsLFGerwWzhx16GyOsBSgwWfPJRri4lXq56tUYkXoJ+A2b4JySjzElH325JIfI/15/tgcDkxnxVL72Jgq2RYMl3yXTD9sinVc7QzgVAts0jx3xGsaQOMFP/USALBF9qs4N2UPSYqAfrOaNqa6N0fVvfvQrBGo9Y8enxjE7JoDK2wAd0VpdVIe8eNTJsEokF47DwfRVBS/q28tO80Ec4iWrCme+vUDtSlfBchsXd
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEZPR06MB5269.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(136003)(346002)(366004)(396003)(39860400002)(451199021)(52116002)(6486002)(6666004)(478600001)(2616005)(83380400001)(36756003)(86362001)(2906002)(26005)(186003)(1076003)(6506007)(6512007)(316002)(38100700002)(38350700002)(66556008)(66476007)(6916009)(4326008)(66946007)(41300700001)(8936002)(8676002)(5660300002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?i0pMh7e7Nh6qAnY5GtwgFM7bgbnzE0UCaUA78G8nLXFXdl8OVd4Ugj1Eiagj?=
- =?us-ascii?Q?GRhQi3iHf7jh7yRvskr540mM+NJawPVTSN3WdrngM7gpLcfpQxNfUHHtvt2R?=
- =?us-ascii?Q?R2IIm0eU/UksogDNFSbdTo5DXAfr0xPnvcOZ9yb2+pFLx+I0uzqN73pH7LrW?=
- =?us-ascii?Q?WvTgM9ZF/y+SMu/lK0APhtEI4nv2P/oGe8SLRkePaWwp9FnzCN6zkLqiRWUS?=
- =?us-ascii?Q?mC7ZQhrV2EqZuhEavnqt6pf49fcaxBPPZ3eOE1mfsDG41aMk+XtP2QvBLaqO?=
- =?us-ascii?Q?6JB+6BHnkJl6IwHYJGbAebSYpxl0zeqyxObI349Qh7IDk3rwg3GB0ovvwH0v?=
- =?us-ascii?Q?r4gvJh6Ic/dP2T1E9dzvTZGBh3JfSeT563kd9t2KIrfUeHa2EfizPvv/wy/d?=
- =?us-ascii?Q?Qt7xai4EkCvyqFU/xUyKfPVLlERF4m514KkF3OgZM1em+XC2oQ1i120l57wt?=
- =?us-ascii?Q?fJsAKTc74id4rbCytGu+8Av3JoocTZeMO+hYU8DPCxEhNmRfDmjFy5kJvxln?=
- =?us-ascii?Q?6kEi8PY0cItHLCBMiNYFTWBmCB3CSCrbYo6xJs9zf0DH9fE3WhthpEOV++0b?=
- =?us-ascii?Q?ypEm46hIx+0uh0Yp71PYKYFtHvJfXa7Vhxgf6zmcu6NtVBR+Y69u+KD5Yum3?=
- =?us-ascii?Q?tefzYX66johQheOZFJWwr4XiI4XQz6XDMogWs5E3Y7YelYPd5/jg9YOxH/79?=
- =?us-ascii?Q?N9KPPVLJcYbKGIw4AVL1svurG/etZznoiJRFDGjt0laZg1RNRE/lRkHSvdAb?=
- =?us-ascii?Q?RdyM+yICJsMHf2VDJ4bxH/ENJq/Gp6vOt5cZOuqyVhUaHj1Ox2HJHKVPIDhU?=
- =?us-ascii?Q?JgknQLifKEujqe5CWYxbypv2yUAZ2/65W0P8n7ZGaDVpq/q3C6/EDdFGJtXG?=
- =?us-ascii?Q?Q6ifB/CAOUsU4AvkFg535wiz7xzG333zR+dJRlk5iM8ClEdnt4lxDTcciRN6?=
- =?us-ascii?Q?pgnTNiW+d03YnRzGgNYnHalBB5P8MPKJ2Xy4LTzJY+Nd+bP0tJdEzQxl+CG4?=
- =?us-ascii?Q?QxkY20LfHoU/bo+CZv6wQgL3ofApvi4jlO3CJ00NvvWdK2hotPRKYIkRgxAC?=
- =?us-ascii?Q?xA2uWBFreQlsiWxbpNvZ/yeNhZxBeB9tziK8N6RuYw65RDr2pxWo14ZWIoIi?=
- =?us-ascii?Q?QXWgImOSA3MwFW7ZstB7CzLOV5tLvJ/IKake1at+H35Eb31xuc15b4fGJpze?=
- =?us-ascii?Q?Lj6YAH1rBex9p8DUGTnjyQOj2EUTQRXnNJml+In//93fdYfdGYJylLfJRLcZ?=
- =?us-ascii?Q?NVrE/tPCZUxGBkGaTzmRG4WwxXg5+0CxFKs/l+dMRn/TLfsirZ8vsKjhrlQs?=
- =?us-ascii?Q?uRLmjlbY6/nEVnBNOtekb7JPUGbnmymEELp/6LBLlwFONx++JwQXe1lQTSl/?=
- =?us-ascii?Q?7ZHSqjV7V2iOAmKIoOGEyU3COQY8JjPK35GFka3ROqBo4DWKIa+yGW3hSoJv?=
- =?us-ascii?Q?sg+0776u5EUHy2iYc7bY4D+n8g4AkZlD4dCYzXppGflKJHSzweuZ4KjTgaE+?=
- =?us-ascii?Q?Lc86Y9x7JZ1GjWTGJot2NKqx3JN0vlz+ve/QTSt8Kk2SJ6S2MXUgKEjLys6U?=
- =?us-ascii?Q?6AhXTJnDdjf2s/S6dTusigUSdqHtD+n4F0WPYoUB?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?0gmXTj38e/u9IFdO55QhtleawSuFqOC0/2QK8KKwv9wlhtJZol76n+foiDic?=
+ =?us-ascii?Q?QIdLxxgQH+hAndCeo7l/JEMIrLBJIaodiwrLW52O2e7D70daOp27nu88e1QW?=
+ =?us-ascii?Q?UpM25CfZ7SrqSUOQWHKm3PUjViZCJtPUiUMhMZbXD1gJnlerGJO3m1m1TAWg?=
+ =?us-ascii?Q?mi+zmMqhNzre4QwaBHOxBWPRg+YI/614ZKVcrTVELYu3kRJ0DFazFSHa9mSi?=
+ =?us-ascii?Q?P8SChfX1AMpapYRF+C7C7oN+NC/bhbKFd92wUI5zJ67AEII6V4W7G+TNL/bQ?=
+ =?us-ascii?Q?Tgw47H1zjqCMAL7pDUQX6YR032t4gcdbq6ZvdYHQ6OZ81uP2BMobALovkFDs?=
+ =?us-ascii?Q?NnYC2xeJrsusiydnCbKLy2RwLIsWn27SG09hdeSlYWdMHJoKAGzsQNDKdnW/?=
+ =?us-ascii?Q?a362gdC8jotA6NaNY5OhiL6uuBnWp+zXhy7tmNmO6ZSfqtzkGOQ9qPg0qqay?=
+ =?us-ascii?Q?KQwU4r35pACsZRSri4n0fyVvuaeGKsS+//xBPhjRXyiDKkAbLtLMTTvTESDf?=
+ =?us-ascii?Q?pQU0Ura0TJex5x7rRQ4xpgRaTGDmV5w7MA3iZ+YZ0wTTo2Tnxm/6sViQAxnx?=
+ =?us-ascii?Q?1zRcycUHsQFU+KY7tkbm0H7UP1ZjiaeJ1Pt6nGPSQUU3DFFf8GFISG8vVWeA?=
+ =?us-ascii?Q?pGmeVenIMINJmCr/qxqsSMNL4+ywN9vq/bLruTzJlXnDKCr6dEFQJQI1sh8U?=
+ =?us-ascii?Q?IAMgHCIrOikWT3Af9ybf3j9aXd7EX5118xr/teZ5w8DB84B+v3ZRxbH/LjMo?=
+ =?us-ascii?Q?yji8NOB+olX3LfgVHlRt/jzv+axoIO0mttCHhF+ZNbTsDqVg4th6dldGvs2R?=
+ =?us-ascii?Q?+t/bEngfrcIZ6KZB2pi1CWl1CaO5Rp/NfGDHRxFZY3Nz9qQ/RgMQlGJJ6WC/?=
+ =?us-ascii?Q?0rp3gonUjLe+Qs45MQnJ7ARLjBpBOaYjlF1l7I9URCFd6j9gxyk15TgngVqa?=
+ =?us-ascii?Q?FFh6XfETzTC+UvL1YhuN9leJLLc26gCbwW+rWiZ/vC3pEP2OAj5Yzi9iJgiy?=
+ =?us-ascii?Q?dX88apxoPVplVPfATLaG0uZOEIoU5d2atyKYHACiAoGAPIEZSmORpOjQrxgw?=
+ =?us-ascii?Q?geLSaVCMRufeaqbcwkuFLSiuH0+A37kPPIOXmrtWY/Q4BrHUP6gtRe5VBkqY?=
+ =?us-ascii?Q?8uSMQutwkxnelUF1XU0vef9J+A61BfdHyBdgUG5X1xG4D9/fksMX73VX3Q4E?=
+ =?us-ascii?Q?B9uwqYqYl9Oo4ALAXSFcXmDeQ0fU4VtWNYMio7fjIBg+Zbs1ncJ3LSZ6Pf9r?=
+ =?us-ascii?Q?VNmkOzrYLvs7vDTLS5oXXkF0+g3BfsEiMhYAvy7kSTuRR+aGQ7eC0rNvDoTy?=
+ =?us-ascii?Q?1BcE049h1OilAovbVmq8t8GOa4Zzu+LL26acHUdvqnjkwZCI4VSmkhQY2r/C?=
+ =?us-ascii?Q?3hRTdXI/zdvSjdz7wX/zm089PIhYqAEC8oS0SC5x0WK2n1CRbFo0vlHVU8bJ?=
+ =?us-ascii?Q?GpLWh2NK3FYFaFjphKHjZgUU1kDgTceHuHMBiGuig8EYEtqC5vWGvadvhlxd?=
+ =?us-ascii?Q?lhTLM7MwB55Z5YT8G6nlQPUiIDc3h7k4s3RE4Wbj9qrTXg4l7a19ItAQy+pq?=
+ =?us-ascii?Q?9JVaKr5I97GoSc+ACWaaXerB8pA9XXbMUduRN1TI?=
 X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c1fe677b-081c-44d4-db32-08db84413a4b
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4a00ad3a-11b6-451a-f6e7-08db84413aed
 X-MS-Exchange-CrossTenant-AuthSource: SEZPR06MB5269.apcprd06.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jul 2023 08:06:29.0419
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jul 2023 08:06:30.0976
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: b9yYkJikc4tEcfYvUO/OvRyLBTDLymFbYz025RBaaR9kdJDm0YuVbXq0RZm7lnpIHLzaRpuwZRGxTM+3sJFW1Q==
+X-MS-Exchange-CrossTenant-UserPrincipalName: Zvp//BzT1wK1sKkQtafs35lsyVZRMbKujMZDq+B8jxzlXbsnG0xqOP25VkBv11EVfPv3rkSos3cWeBqZvG8uxA==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: SI2PR06MB4059
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -118,98 +118,121 @@ release resources.
 
 Signed-off-by: Yangtao Li <frank.li@vivo.com>
 ---
- drivers/input/keyboard/qt2160.c | 30 +++++++++++-------------------
- 1 file changed, 11 insertions(+), 19 deletions(-)
+ drivers/input/keyboard/lm8323.c | 41 +++++++++++----------------------
+ 1 file changed, 14 insertions(+), 27 deletions(-)
 
-diff --git a/drivers/input/keyboard/qt2160.c b/drivers/input/keyboard/qt2160.c
-index 599ea85cfd30..218ef92b8c2b 100644
---- a/drivers/input/keyboard/qt2160.c
-+++ b/drivers/input/keyboard/qt2160.c
-@@ -340,6 +340,7 @@ static bool qt2160_identify(struct i2c_client *client)
- 
- static int qt2160_probe(struct i2c_client *client)
+diff --git a/drivers/input/keyboard/lm8323.c b/drivers/input/keyboard/lm8323.c
+index 3964f6e0f6af..d6aa4daad3ef 100644
+--- a/drivers/input/keyboard/lm8323.c
++++ b/drivers/input/keyboard/lm8323.c
+@@ -618,6 +618,7 @@ static DEVICE_ATTR(disable_kp, 0644, lm8323_show_disable, lm8323_set_disable);
+ static int lm8323_probe(struct i2c_client *client)
  {
+ 	struct lm8323_platform_data *pdata = dev_get_platdata(&client->dev);
 +	struct device *dev = &client->dev;
- 	struct qt2160_data *qt2160;
- 	struct input_dev *input;
- 	int i;
-@@ -358,12 +359,11 @@ static int qt2160_probe(struct i2c_client *client)
- 		return -ENODEV;
+ 	struct input_dev *idev;
+ 	struct lm8323_chip *lm;
+ 	int pwm;
+@@ -642,12 +643,10 @@ static int lm8323_probe(struct i2c_client *client)
+ 		return -EINVAL;
+ 	}
  
- 	/* Chip is valid and active. Allocate structure */
--	qt2160 = kzalloc(sizeof(struct qt2160_data), GFP_KERNEL);
--	input = input_allocate_device();
-+	qt2160 = devm_kzalloc(dev, sizeof(struct qt2160_data), GFP_KERNEL);
-+	input = devm_input_allocate_device(dev);
- 	if (!qt2160 || !input) {
- 		dev_err(&client->dev, "insufficient memory\n");
--		error = -ENOMEM;
--		goto err_free_mem;
+-	lm = kzalloc(sizeof *lm, GFP_KERNEL);
+-	idev = input_allocate_device();
+-	if (!lm || !idev) {
+-		err = -ENOMEM;
+-		goto fail1;
+-	}
++	lm = devm_kzalloc(dev, sizeof(*lm), GFP_KERNEL);
++	idev = devm_input_allocate_device(dev);
++	if (!lm || !idev)
 +		return -ENOMEM;
+ 
+ 	lm->client = client;
+ 	lm->idev = idev;
+@@ -684,21 +683,20 @@ static int lm8323_probe(struct i2c_client *client)
+ 	/* If a true probe check the device */
+ 	if (lm8323_read_id(lm, data) != 0) {
+ 		dev_err(&client->dev, "device not found\n");
+-		err = -ENODEV;
+-		goto fail1;
++		return -ENODEV;
  	}
  
- 	qt2160->client = client;
-@@ -389,23 +389,23 @@ static int qt2160_probe(struct i2c_client *client)
- 	error = qt2160_write(client, QT2160_CMD_CALIBRATE, 1);
- 	if (error) {
- 		dev_err(&client->dev, "failed to calibrate device\n");
--		goto err_free_mem;
-+		return error;
+ 	for (pwm = 0; pwm < LM8323_NUM_PWMS; pwm++) {
+ 		err = init_pwm(lm, pwm + 1, &client->dev,
+ 			       pdata->pwm_names[pwm]);
+ 		if (err < 0)
+-			goto fail2;
++			goto fail1;
  	}
  
- 	if (client->irq) {
--		error = request_irq(client->irq, qt2160_irq,
--				    IRQF_TRIGGER_FALLING, "qt2160", qt2160);
-+		error = devm_request_irq(dev, client->irq, qt2160_irq,
-+					 IRQF_TRIGGER_FALLING, "qt2160", qt2160);
- 		if (error) {
- 			dev_err(&client->dev,
- 				"failed to allocate irq %d\n", client->irq);
--			goto err_free_mem;
-+			return error;
- 		}
+ 	lm->kp_enabled = true;
+ 	err = device_create_file(&client->dev, &dev_attr_disable_kp);
+ 	if (err < 0)
+-		goto fail2;
++		goto fail1;
+ 
+ 	idev->name = pdata->name ? : "LM8323 keypad";
+ 	snprintf(lm->phys, sizeof(lm->phys),
+@@ -719,14 +717,14 @@ static int lm8323_probe(struct i2c_client *client)
+ 	err = input_register_device(idev);
+ 	if (err) {
+ 		dev_dbg(&client->dev, "error registering input device\n");
+-		goto fail3;
++		goto fail2;
  	}
  
- 	error = qt2160_register_leds(qt2160);
- 	if (error) {
- 		dev_err(&client->dev, "Failed to register leds\n");
--		goto err_free_irq;
-+		return error;
+-	err = request_threaded_irq(client->irq, NULL, lm8323_irq,
+-			  IRQF_TRIGGER_LOW|IRQF_ONESHOT, "lm8323", lm);
++	err = devm_request_threaded_irq(dev, client->irq, NULL, lm8323_irq,
++					IRQF_TRIGGER_LOW|IRQF_ONESHOT, "lm8323", lm);
+ 	if (err) {
+ 		dev_err(&client->dev, "could not get IRQ %d\n", client->irq);
+-		goto fail4;
++		goto fail2;
  	}
  
- 	error = input_register_device(qt2160->input);
-@@ -422,29 +422,21 @@ static int qt2160_probe(struct i2c_client *client)
+ 	i2c_set_clientdata(client, lm);
+@@ -736,18 +734,12 @@ static int lm8323_probe(struct i2c_client *client)
  
- err_unregister_leds:
- 	qt2160_unregister_leds(qt2160);
--err_free_irq:
--	if (client->irq)
--		free_irq(client->irq, qt2160);
--err_free_mem:
--	input_free_device(input);
--	kfree(qt2160);
- 	return error;
+ 	return 0;
+ 
+-fail4:
+-	input_unregister_device(idev);
+-	idev = NULL;
+-fail3:
+-	device_remove_file(&client->dev, &dev_attr_disable_kp);
+ fail2:
++	device_remove_file(&client->dev, &dev_attr_disable_kp);
++fail1:
+ 	while (--pwm >= 0)
+ 		if (lm->pwm[pwm].enabled)
+ 			led_classdev_unregister(&lm->pwm[pwm].cdev);
+-fail1:
+-	input_free_device(idev);
+-	kfree(lm);
+ 	return err;
  }
  
- static void qt2160_remove(struct i2c_client *client)
- {
- 	struct qt2160_data *qt2160 = i2c_get_clientdata(client);
-+	struct device *dev = &client->dev;
+@@ -757,17 +749,12 @@ static void lm8323_remove(struct i2c_client *client)
+ 	int i;
  
- 	qt2160_unregister_leds(qt2160);
- 
- 	/* Release IRQ so no queue will be scheduled */
- 	if (client->irq)
--		free_irq(client->irq, qt2160);
-+		devm_free_irq(dev, client->irq, qt2160);
- 
- 	cancel_delayed_work_sync(&qt2160->dwork);
+ 	disable_irq_wake(client->irq);
+-	free_irq(client->irq, lm);
 -
--	input_unregister_device(qt2160->input);
--	kfree(qt2160);
+-	input_unregister_device(lm->idev);
+ 
+ 	device_remove_file(&lm->client->dev, &dev_attr_disable_kp);
+ 
+ 	for (i = 0; i < 3; i++)
+ 		if (lm->pwm[i].enabled)
+ 			led_classdev_unregister(&lm->pwm[i].cdev);
+-
+-	kfree(lm);
  }
  
- static const struct i2c_device_id qt2160_idtable[] = {
+ /*
 -- 
 2.39.0
 
