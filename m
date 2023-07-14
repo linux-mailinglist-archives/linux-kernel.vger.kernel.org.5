@@ -2,113 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C48C4753D2E
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 16:23:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD7D7753D8D
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 16:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235487AbjGNOXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 10:23:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39790 "EHLO
+        id S236023AbjGNOed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 10:34:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234930AbjGNOXg (ORCPT
+        with ESMTP id S235984AbjGNOea (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 10:23:36 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A509E1989
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 07:23:35 -0700 (PDT)
-Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36EEFmMo004203;
-        Fri, 14 Jul 2023 14:23:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : in-reply-to : references : message-id : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=qDUC/BWDvdnxDGxf/kA3D9poCce32j4DyQ9kk0eF81I=;
- b=g5GHfmfKX8in0UV980DT0nbAqzoFB+QFSdvsGLYmilXLzsDmmaS4zi8WnzRl3oqq1AOC
- hvOvSHtB/g3yLV5Jg+YRUunxoCu04TlYoMoYiiwnaOm8nP8mHBMmSNZkHAJeQ8mEd+++
- 99MYLtLztX3feSRdxo+ePySu34s5yL8KTjljS8mtJvqNq4NfyRNjBKz03TMbLGRVSMJc
- q3pgevbsH9TNi+KKoW4OGow5tfxTSfMMWwpOd8rRV+78wQj5882KUt6jhL7im+hXuBMB
- +j41jHc9mVfhm3tf/4Ja0Ix2yTfbHdr9e1M3lhEqYxV415HgyCPA6rA7dMCgyfILDb6C CQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ru76d1ve5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 14 Jul 2023 14:23:01 +0000
-Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36EEF8SA001855;
-        Fri, 14 Jul 2023 14:23:00 GMT
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ru76d1vd5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 14 Jul 2023 14:23:00 +0000
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36EDwTnv008407;
-        Fri, 14 Jul 2023 14:22:59 GMT
-Received: from smtprelay02.wdc07v.mail.ibm.com ([9.208.129.120])
-        by ppma04dal.us.ibm.com (PPS) with ESMTPS id 3rtq33pa4c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 14 Jul 2023 14:22:59 +0000
-Received: from smtpav04.dal12v.mail.ibm.com (smtpav04.dal12v.mail.ibm.com [10.241.53.103])
-        by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36EEMvqA64618852
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 14 Jul 2023 14:22:57 GMT
-Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 73F6D58056;
-        Fri, 14 Jul 2023 14:22:57 +0000 (GMT)
-Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 608EF58052;
-        Fri, 14 Jul 2023 14:22:56 +0000 (GMT)
-Received: from ltc.linux.ibm.com (unknown [9.5.196.140])
-        by smtpav04.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Fri, 14 Jul 2023 14:22:56 +0000 (GMT)
-Date:   Fri, 14 Jul 2023 16:22:56 +0200
-From:   Tobias Huschle <huschle@linux.ibm.com>
-To:     Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
-Cc:     Tim Chen <tim.c.chen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Ricardo Neri <ricardo.neri@intel.com>,
-        "Ravi V . Shankar" <ravi.v.shankar@intel.com>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Len Brown <len.brown@intel.com>, Mel Gorman <mgorman@suse.de>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Ionela Voinescu <ionela.voinescu@arm.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        naveen.n.rao@linux.vnet.ibm.com,
-        Yicong Yang <yangyicong@hisilicon.com>,
-        Barry Song <v-songbaohua@oppo.com>,
-        Chen Yu <yu.c.chen@intel.com>, Hillf Danton <hdanton@sina.com>
-Subject: Re: [Patch v3 3/6] sched/fair: Implement prefer sibling imbalance
- calculation between asymmetric groups
-In-Reply-To: <c5a49136-3549-badd-ec8f-3de4e7bb7b7d@linux.vnet.ibm.com>
-References: <cover.1688770494.git.tim.c.chen@linux.intel.com>
- <4eacbaa236e680687dae2958378a6173654113df.1688770494.git.tim.c.chen@linux.intel.com>
- <c5a49136-3549-badd-ec8f-3de4e7bb7b7d@linux.vnet.ibm.com>
-Message-ID: <b119d88384584e603056cec942c47e14@linux.ibm.com>
-X-Sender: huschle@linux.ibm.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: x4fP2Kbm7SmaVyZtr8AWSdnategrfnV9
-X-Proofpoint-ORIG-GUID: PrBxZ7kOq7lnNk58PuxeO1m-HPFztuda
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Fri, 14 Jul 2023 10:34:30 -0400
+Received: from mx07-00376f01.pphosted.com (mx07-00376f01.pphosted.com [185.132.180.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E973F3A98
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 07:34:01 -0700 (PDT)
+Received: from pps.filterd (m0168889.ppops.net [127.0.0.1])
+        by mx07-00376f01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 36EBJNfk020760;
+        Fri, 14 Jul 2023 15:24:21 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=imgtec.com; h=
+        from:to:cc:subject:date:message-id:content-transfer-encoding
+        :content-type:mime-version; s=dk201812; bh=8ApKk9SwiEAvpPOCeaH9r
+        bqohRi0OejEsJPEp1sThjw=; b=mWIjf/THfoyBR1XnS0kCxfRBfL4ZHpzT+dwS8
+        i6NSGsAyUZTVwmUlUPw2UWprudnsDuudmHhCFNNmJuF95TZhqEwO9twcSvfBw+ki
+        46kgtO3yAKopK9abRjMDaGQFN5C0O1SUeP3XheS2tKcw9V5daskYyq3phX6ZLH9y
+        ia30cGT4o3q0mcOPFz+hELJKDIjQCSVJ07PKTjYMwBhq1gGVtm8sEEmhndDrvFQ8
+        BQQ4eA0cQgyXPvP2HKPCxWqgaYcjXT99afLStGWM9fIKTmEWzgnapwlLQ9AVVSsk
+        JPWTMjWCa5iDSix7iSWr5XMgg4JDAOJyJYBF3wf5dB5jCDvRA==
+Received: from hhmail05.hh.imgtec.org ([217.156.249.195])
+        by mx07-00376f01.pphosted.com (PPS) with ESMTPS id 3rtpu8gmaa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 14 Jul 2023 15:24:21 +0100 (BST)
+Received: from HHMAIL05.hh.imgtec.org (10.100.10.120) by
+ HHMAIL05.hh.imgtec.org (10.100.10.120) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Fri, 14 Jul 2023 15:24:20 +0100
+Received: from GBR01-LO2-obe.outbound.protection.outlook.com (104.47.21.58) by
+ email.imgtec.com (10.100.10.121) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27 via Frontend
+ Transport; Fri, 14 Jul 2023 15:24:20 +0100
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FD8dFXNbssz/4JDnP5Kr5kMxlTqi5ZS0GfhCqpj/us5koTaCgARMJpEsTZXcAtkr9R33Blsl46/I6BlSNlX3jlPXSYuhxGjGuU+elQ/nuXoUfqlbT0oWgLsLCiQIDFXWkWKWxzq1jdEBoz219mExHa8dBKb73Jt4xvzfbrrtXbQIibZDU11j33XIMxfsDeELOR6RYzxal9iiNdVlhg3CfDSkNfIviqMZCy29z9QworCYbLKOhpStKrHwqaoXLS/p4qpx+JfVaF1ndHFQCd3f50qn/dFJlv0K8C1qP3Wo1zHV6ntKogde28LeDGt7dSKuJO2xkm2f5WfkfwxLLTCK9A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8ApKk9SwiEAvpPOCeaH9rbqohRi0OejEsJPEp1sThjw=;
+ b=nBug34DexEWLg5xSOUa1N0my0mCDL67IID8wihP7voOUjNsaW4ct1+8iNvv7uOLdVqdHn0C2xqbjFZNSIxQf9Qlzu0rBuNGjGhyDByGEgVyXAmVb2Y0PMQXG92BBg0KQJ3iV4QOmflV718k3ZBcfHksOe4+xOUmMsA3aL27Cmx/NqdwIe4fbNArKdMzWx1N23vYVP2ScbdRfJk6XSWjMo9F7kvs6DCVOvhUjjzzE2vnx/a7G5rw0Ae10tbvLyVGiz1OHxuCE+dPaNfy8N7aekgsZiGthMpQzncgf1Chp/E1MDsCrUcGI8XYB8uZ6Su1PmaWkuXsVRTVIg49QS7qsmg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=imgtec.com; dmarc=pass action=none header.from=imgtec.com;
+ dkim=pass header.d=imgtec.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=IMGTecCRM.onmicrosoft.com; s=selector2-IMGTecCRM-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8ApKk9SwiEAvpPOCeaH9rbqohRi0OejEsJPEp1sThjw=;
+ b=DHiHz//G2M7riQVMQ3Couj/PcO2M5JyzZ9noCpCyWgdPkSozcUHieIIdfvCJXjH3jt4pXQ66ZxMIlrfSRP+6OMwP81mGHXc2AKjUvhBmZBH8dXVtiDFkp0p+myEhvpVfOCiz+IjhcAzSULYblWPD+xc/a370itCtxtGi3ZG0pzg=
+Received: from CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:170::9)
+ by LOYP265MB2077.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:11f::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.27; Fri, 14 Jul
+ 2023 14:24:18 +0000
+Received: from CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::f042:5122:eb28:4131]) by CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::f042:5122:eb28:4131%5]) with mapi id 15.20.6588.027; Fri, 14 Jul 2023
+ 14:24:18 +0000
+From:   Sarah Walker <sarah.walker@imgtec.com>
+To:     <dri-devel@lists.freedesktop.org>
+CC:     <frank.binns@imgtec.com>, <donald.robson@imgtec.com>,
+        <boris.brezillon@collabora.com>, <faith.ekstrand@collabora.com>,
+        <airlied@gmail.com>, <daniel@ffwll.ch>,
+        <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
+        <tzimmermann@suse.de>, <afd@ti.com>, <hns@goldelico.com>,
+        <matthew.brost@intel.com>, <christian.koenig@amd.com>,
+        <luben.tuikov@amd.com>, <dakr@redhat.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v4 00/17] Imagination Technologies PowerVR DRM driver
+Date:   Fri, 14 Jul 2023 15:23:55 +0100
+Message-Id: <20230714142355.111382-1-sarah.walker@imgtec.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: LO4P265CA0071.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:2af::13) To CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:400:170::9)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-14_06,2023-07-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
- adultscore=0 impostorscore=0 mlxscore=0 mlxlogscore=999 clxscore=1011
- bulkscore=0 phishscore=0 priorityscore=1501 spamscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2307140128
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CWLP265MB4817:EE_|LOYP265MB2077:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9c814eb3-708f-43d1-7db2-08db84760214
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 5k/mgCG28evgQReNVQGsjtvAjM9yARwnq5X2PLePmefnl3E66ED5MB+OBZQ6C6f2iCFX2I+/QJY3GwXV0w1MjTSWMoaPQ+jTtE389m9BPv8dk6njyVyZL6uzzzxpz61Nwl07htzszUpvACDSAXlHoWlxB+ixwx9HPWY7GvABhdW/gR95lFzFNBssMHys5MLSspuoezglOqMvylyArhnXJBtubr35n2RC2vgI9C4weCiAT0nNiNqTTawKwO3r64XjsCe4T3ZeL7NOlhdGcFA3HSQixT0fRXm9i8Kr+0cw+r9MDd0h0OfuAmOKYENHw3NMQfnp5fXXCfeojo9pLL/mbFqWxNn+/YMpiURjdaxXYCl01WOvSZ/bDuPCZZdk7xtCX1/sQvVqTXoS5oU0Z1Bd4zb28SijoD41vCydharyl8BQPBnhCS43QIc9v+hKl3DU0ZlYWZotCdwRmVNHM3U0EEuFmUwB2ny508Hvi//hgIg43DbScDaV8PmMPbGegsEtoRujU0UeBDxppWmkBSA+5Ai2fJ8It4Miyjt0eKrAzzVOI2DX7vBqAKqU/KUZhGH74DGzaunHnK0MGqVAp7m10vHRZnLktgnTWEKn+k0UJLE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230028)(346002)(136003)(366004)(376002)(396003)(39850400004)(451199021)(41300700001)(44832011)(66476007)(7416002)(4326008)(66946007)(66556008)(6916009)(478600001)(30864003)(5660300002)(2906002)(316002)(8936002)(8676002)(6666004)(6486002)(52116002)(966005)(6512007)(86362001)(1076003)(26005)(6506007)(186003)(83380400001)(36756003)(38350700002)(2616005)(38100700002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?+MKRRwlYN/OiYH52NqdBixfXteYfPLlXOdHOIyYjlGUlAonyJN54J9kxG/NL?=
+ =?us-ascii?Q?gYNK1WdlG5KpJZl2uMzpBZ1DhlGZUV5/OC3xg++zP/YU08kmpysiMsMmCvPV?=
+ =?us-ascii?Q?tB3PGYcOv7eBrQRFRBOJ495EY16QHEDdqS6487C20eIm23+6mKSds7PnlLUO?=
+ =?us-ascii?Q?sABqxoOrzMlSEiBLWbXUwUH5fcVHGiRsP/wV6iZXvFXerHYxHmzADuv+ejsq?=
+ =?us-ascii?Q?0BRRY0wyju9ggS5CGdWJ6W8pGCcowU+p4cd9vKpZp+cvtpKMJ+TukU/Cb0+4?=
+ =?us-ascii?Q?uyxKK/EcHvYLmHMbTrWEYjB/Mj84XvgEQ82xol2DjoyYvevCcVpTygHuArz3?=
+ =?us-ascii?Q?J7edWtVmTgNs0V20ghGW/tr1sJXf5rk1gHMWao81zYm0c6oxdSGJHljDPb41?=
+ =?us-ascii?Q?PknZg44/5laWbmStlF2ojxM+B7D5RDpCqWGUODRf2GP7vEiDFHc6CzWwq0BP?=
+ =?us-ascii?Q?Y/5hV9doOS7ZgjAhk4YrUwnNARYlFzzafDpvvO9//JPot1/AVbOIxANda9vf?=
+ =?us-ascii?Q?e6aUAJUCjtlQ1oxBQy6TzTW6f6K740D1NKnLpy8wiFKd6Rt2kv+35Y+uA/h5?=
+ =?us-ascii?Q?ViC4151DHsVp0mmqBBNAoEMOOGnnJJ9kct/tmAMXUsAzl4H2tR4CJxtxMSZf?=
+ =?us-ascii?Q?x3FK+4Ga6Z8+1ZMzbN1NAUABycRUFRzu3IktF/lFadNDfO01vBE53H4jopLd?=
+ =?us-ascii?Q?QowQbI75RtXSGRdQLdLi8c1RSSgaQj/Lop6MyEdDDkf9ntdRQOUhK4NzfI/K?=
+ =?us-ascii?Q?rl88qosomLx2YAQVRI6Wao1J5h/9U0YNZ1CK+IMMKTznIjJShvKhNxjA/+UU?=
+ =?us-ascii?Q?H0vyE2T1o8vrzRc3NKI9vOpMHncSdSB+gPOR9RTD4P3aJuoAtCShhv5/4Cfk?=
+ =?us-ascii?Q?x8GbmLhx/+6rrzeaOFvnAW500W0OXbdvYPliZ6u5jZi1QnspF+P1FBJO1+Hx?=
+ =?us-ascii?Q?mx+6+CkkeZYIF2/ERvG/mHMUDCXcmapVxDVV8z62al6YAFPA696S0vwepuCQ?=
+ =?us-ascii?Q?8KOz3h/jNwwUAcYAxkRhp5k5CwGjNmSMhH5jzpp7f50J+9ugZPSYyRJ717GM?=
+ =?us-ascii?Q?/Syf01PHlsefpUXDfxH5V0wWSv8FU0kpbnAfkCi6d+QUX/bCfD0GFnQiNYod?=
+ =?us-ascii?Q?iICsbIcN1lMfdhaF5MTAKa8+6ucnVRk4A+V8Y5tDtnWhCwTAKQC1/wMD5mjt?=
+ =?us-ascii?Q?MiSYpitVNm7olOR4hATBVvTYcIvlOmZj0v8XzFPTRpPLD6Q8ZUPWmsBPlscl?=
+ =?us-ascii?Q?Yi2DhU6ceF/Y0EW8dxTW9+qLuSA9mAsoPwp3KkMQyzXdAgmzYZCNWasff9HU?=
+ =?us-ascii?Q?ye0H9WprbT0/Fy65HcLsB2AXi4qSKlqqjGuDw2necLOgyKNzLPU1mAn6Biml?=
+ =?us-ascii?Q?nzl93fFsKVMxLV6FZfyBUH2zG/KIf3kVGdR4JZZpSo7hAxG50YsZmtOVKe5I?=
+ =?us-ascii?Q?HwBfu7jVb/jFH2BwZCfDozqj6bADqxmF2tNZOnAjMPru45rgk+SYT5+MTWnK?=
+ =?us-ascii?Q?K77grEbeeoR2C4Q51qheGH2I1U7iRLexZu1cQIkjUezoDaUmfQ0SNBm16pgK?=
+ =?us-ascii?Q?a5/5wpWgkJ2ARnAkCLVYR+NwHZQkIXFtKVY8nJSz95Ms3eyBHrLGYYz0pIye?=
+ =?us-ascii?Q?AA=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9c814eb3-708f-43d1-7db2-08db84760214
+X-MS-Exchange-CrossTenant-AuthSource: CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jul 2023 14:24:18.1827
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 0d5fd8bb-e8c2-4e0a-8dd5-2c264f7140fe
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: JwcvpZ+B8YctYaRM3Ajqz6Up/S1qgELPUAyOMM4G9lo0i9Hb50jX3b1vGjI52R2AhPRJOIU5hewTlqS8+2z6pA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LOYP265MB2077
+X-OriginatorOrg: imgtec.com
+X-EXCLAIMER-MD-CONFIG: 15a78312-3e47-46eb-9010-2e54d84a9631
+X-Proofpoint-GUID: EGRwX7471kI2Ppt2I0ectx-PwZnslXzQ
+X-Proofpoint-ORIG-GUID: EGRwX7471kI2Ppt2I0ectx-PwZnslXzQ
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -116,140 +144,282 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-07-14 15:14, Shrikanth Hegde wrote:
-> On 7/8/23 4:27 AM, Tim Chen wrote:
->> From: Tim C Chen <tim.c.chen@linux.intel.com>
->> 
->> In the current prefer sibling load balancing code, there is an 
->> implicit
->> assumption that the busiest sched group and local sched group are
->> equivalent, hence the tasks to be moved is simply the difference in
->> number of tasks between the two groups (i.e. imbalance) divided by 
->> two.
->> 
->> However, we may have different number of cores between the cluster 
->> groups,
->> say when we take CPU offline or we have hybrid groups.  In that case,
->> we should balance between the two groups such that #tasks/#cores ratio
->> is the same between the same between both groups.  Hence the imbalance
-> 
-> nit: type here. the same between is repeated.
-> 
->> computed will need to reflect this.
->> 
->> Adjust the sibling imbalance computation to take into account of the
->> above considerations.
->> 
->> Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
->> ---
->>  kernel/sched/fair.c | 41 +++++++++++++++++++++++++++++++++++++----
->>  1 file changed, 37 insertions(+), 4 deletions(-)
->> 
->> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
->> index f636d6c09dc6..f491b94908bf 100644
->> --- a/kernel/sched/fair.c
->> +++ b/kernel/sched/fair.c
->> @@ -9372,6 +9372,41 @@ static inline bool smt_balance(struct lb_env 
->> *env, struct sg_lb_stats *sgs,
->>  	return false;
->>  }
->> 
->> +static inline long sibling_imbalance(struct lb_env *env,
->> +				    struct sd_lb_stats *sds,
->> +				    struct sg_lb_stats *busiest,
->> +				    struct sg_lb_stats *local)
->> +{
->> +	int ncores_busiest, ncores_local;
->> +	long imbalance;
-> 
-> can imbalance be unsigned int or unsigned long? as sum_nr_running is
-> unsigned int.
-> 
->> +
->> +	if (env->idle == CPU_NOT_IDLE || !busiest->sum_nr_running)
->> +		return 0;
->> +
->> +	ncores_busiest = sds->busiest->cores;
->> +	ncores_local = sds->local->cores;
->> +
->> +	if (ncores_busiest == ncores_local) {
->> +		imbalance = busiest->sum_nr_running;
->> +		lsub_positive(&imbalance, local->sum_nr_running);
->> +		return imbalance;
->> +	}
->> +
->> +	/* Balance such that nr_running/ncores ratio are same on both groups 
->> */
->> +	imbalance = ncores_local * busiest->sum_nr_running;
->> +	lsub_positive(&imbalance, ncores_busiest * local->sum_nr_running);
->> +	/* Normalize imbalance and do rounding on normalization */
->> +	imbalance = 2 * imbalance + ncores_local + ncores_busiest;
->> +	imbalance /= ncores_local + ncores_busiest;
->> +
-> 
-> Could this work for case where number of CPU/cores would differ
-> between two sched groups in a sched domain? Such as problem pointed
-> by tobias on S390. It would be nice if this patch can work for that 
-> case
-> as well. Ran numbers for a few cases. It looks to work.
-> https://lore.kernel.org/lkml/20230704134024.GV4253@hirez.programming.kicks-ass.net/T/#rb0a7dcd28532cafc24101e1d0aed79e6342e3901
-> 
+This patch series adds the initial DRM driver for Imagination Technologies PowerVR
+GPUs, starting with those based on our Rogue architecture. It's worth pointing
+out that this is a new driver, written from the ground up, rather than a
+refactored version of our existing downstream driver (pvrsrvkm).
 
+This new DRM driver supports:
+- GEM shmem allocations
+- dma-buf / PRIME
+- Per-context userspace managed virtual address space
+- DRM sync objects (binary and timeline)
+- Power management suspend / resume
+- GPU job submission (geometry, fragment, compute, transfer)
+- META firmware processor
+- MIPS firmware processor
+- GPU hang detection and recovery
 
-Just stumbled upon this patch series as well. In this version it looks
-similar to the prototypes I played around with, but more complete.
-So I'm happy that my understanding of the load balancer was kinda 
-correct :)
+Currently our main focus is on the AXE-1-16M GPU. Testing so far has been done
+using a TI SK-AM62 board (AXE-1-16M GPU). Firmware for the AXE-1-16M can be
+found here:
+https://gitlab.freedesktop.org/frankbinns/linux-firmware/-/tree/powervr
 
- From a functional perspective this appears to address the issues we saw 
-on s390.
+A Vulkan driver that works with our downstream kernel driver has already been
+merged into Mesa [1][2]. Support for this new DRM driver is being maintained in
+a draft merge request [3], with the branch located here:
+https://gitlab.freedesktop.org/frankbinns/mesa/-/tree/powervr-winsys
 
-> 
-> 
->> +	/* Take advantage of resource in an empty sched group */
->> +	if (imbalance == 0 && local->sum_nr_running == 0 &&
->> +	    busiest->sum_nr_running > 1)
->> +		imbalance = 2;
->> +
-> 
-> I don't see how this case would be true. When there are unequal number
-> of cores and local->sum_nr_ruuning
-> is 0, and busiest->sum_nr_running is atleast 2, imbalance will be 
-> atleast 1.
-> 
-> 
-> Reviewed-by: Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
-> 
->> +	return imbalance;
->> +}
->> +
->>  static inline bool
->>  sched_reduced_capacity(struct rq *rq, struct sched_domain *sd)
->>  {
->> @@ -10230,14 +10265,12 @@ static inline void 
->> calculate_imbalance(struct lb_env *env, struct sd_lb_stats *s
->>  		}
->> 
->>  		if (busiest->group_weight == 1 || sds->prefer_sibling) {
->> -			unsigned int nr_diff = busiest->sum_nr_running;
->>  			/*
->>  			 * When prefer sibling, evenly spread running tasks on
->>  			 * groups.
->>  			 */
->>  			env->migration_type = migrate_task;
->> -			lsub_positive(&nr_diff, local->sum_nr_running);
->> -			env->imbalance = nr_diff;
->> +			env->imbalance = sibling_imbalance(env, sds, busiest, local);
->>  		} else {
->> 
->>  			/*
->> @@ -10424,7 +10457,7 @@ static struct sched_group 
->> *find_busiest_group(struct lb_env *env)
->>  	 * group's child domain.
->>  	 */
->>  	if (sds.prefer_sibling && local->group_type == group_has_spare &&
->> -	    busiest->sum_nr_running > local->sum_nr_running + 1)
->> +	    sibling_imbalance(env, &sds, busiest, local) > 1)
->>  		goto force_balance;
->> 
->>  	if (busiest->group_type != group_overloaded) {
+Job stream formats are documented at:
+https://gitlab.freedesktop.org/mesa/mesa/-/blob/f8d2b42ae65c2f16f36a43e0ae39d288431e4263/src/imagination/csbgen/rogue_kmd_stream.xml
+
+The Vulkan driver is progressing towards Vulkan 1.0. We're code complete, and
+are working towards passing conformance. The current combination of this kernel
+driver with the Mesa Vulkan driver achieves 86.2% conformance.
+
+The code in this patch series, along with some of its history, can also be found here:
+https://gitlab.freedesktop.org/frankbinns/powervr/-/tree/powervr-next
+
+This patch series has dependencies on a number of patches not yet merged. They
+are listed below :
+
+maple_tree: split up MA_STATE() macro:
+  https://lore.kernel.org/dri-devel/20230606223130.6132-3-dakr@redhat.com/
+drm: manager to keep track of GPUs VA mappings:
+  https://lore.kernel.org/dri-devel/20230606223130.6132-4-dakr@redhat.com/
+drm/sched: Convert drm scheduler to use a work queue rather than kthread:
+  https://lore.kernel.org/dri-devel/20230404002211.3611376-2-matthew.brost@intel.com/
+drm/sched: Move schedule policy to scheduler / entity:
+  https://lore.kernel.org/dri-devel/20230404002211.3611376-3-matthew.brost@intel.com/
+drm/sched: Add DRM_SCHED_POLICY_SINGLE_ENTITY scheduling policy:
+  https://lore.kernel.org/dri-devel/20230404002211.3611376-4-matthew.brost@intel.com/
+drm/sched: Start run wq before TDR in drm_sched_start:
+  https://lore.kernel.org/dri-devel/20230404002211.3611376-6-matthew.brost@intel.com/
+drm/sched: Submit job before starting TDR:
+  https://lore.kernel.org/dri-devel/20230404002211.3611376-7-matthew.brost@intel.com/
+drm/sched: Add helper to set TDR timeout:
+  https://lore.kernel.org/dri-devel/20230404002211.3611376-8-matthew.brost@intel.com/
+drm/sched: Make sure we wait for all dependencies in kill_jobs_cb():
+  https://lore.kernel.org/dri-devel/20230619071921.3465992-1-boris.brezillon@collabora.com/
+drm/sched: Call drm_sched_fence_set_parent() from drm_sched_fence_scheduled():
+  https://lore.kernel.org/dri-devel/20230623075204.382350-1-boris.brezillon@collabora.com/
+
+[1] https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/15243
+[2] https://gitlab.freedesktop.org/mesa/mesa/-/tree/main/src/imagination/vulkan
+[3] https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/15507
+
+High level summary of changes:
+
+v4:
+* Implemented hang recovery via firmware hard reset
+* Add support for partial render jobs
+* Move to a threaded IRQ
+* Remove unnecessary read/write and clock helpers
+* Remove device tree elements not relevant to AXE-1-16M
+* Clean up resource acquisition
+* Remove unused DT binding attributes
+
+v3:
+* Use drm_sched for scheduling
+* Use GPU VA manager
+* Use runtime PM
+* Use drm_gem_shmem
+* GPU watchdog and device loss handling
+* DT binding changes: remove unused attributes, add additionProperties:false
+
+v2:
+* Redesigned and simplified UAPI based on RFC feedback from XDC 2022
+* Support for transfer and partial render jobs
+* Support for timeline sync objects
+
+RFC v1: https://lore.kernel.org/dri-devel/20220815165156.118212-1-sarah.walker@imgtec.com/
+
+RFC v2: https://lore.kernel.org/dri-devel/20230413103419.293493-1-sarah.walker@imgtec.com/
+
+v3: https://lore.kernel.org/dri-devel/20230613144800.52657-1-sarah.walker@imgtec.com/
+
+Matt Coster (1):
+  sizes.h: Add entries between 32G and 64T
+
+Sarah Walker (16):
+  dt-bindings: gpu: Add Imagination Technologies PowerVR GPU
+  drm/imagination/uapi: Add PowerVR driver UAPI
+  drm/imagination: Add skeleton PowerVR driver
+  drm/imagination: Get GPU resources
+  drm/imagination: Add GPU register and FWIF headers
+  drm/imagination: Add GPU ID parsing and firmware loading
+  drm/imagination: Add GEM and VM related code
+  drm/imagination: Implement power management
+  drm/imagination: Implement firmware infrastructure and META FW support
+  drm/imagination: Implement MIPS firmware processor and MMU support
+  drm/imagination: Implement free list and HWRT create and destroy
+    ioctls
+  drm/imagination: Implement context creation/destruction ioctls
+  drm/imagination: Implement job submission and scheduling
+  drm/imagination: Add firmware trace to debugfs
+  drm/imagination: Add driver documentation
+  arm64: dts: ti: k3-am62-main: Add GPU device node [DO NOT MERGE]
+
+ .../devicetree/bindings/gpu/img,powervr.yaml  |   68 +
+ Documentation/gpu/drivers.rst                 |    2 +
+ Documentation/gpu/imagination/index.rst       |   14 +
+ Documentation/gpu/imagination/uapi.rst        |  174 +
+ .../gpu/imagination/virtual_memory.rst        |  462 ++
+ MAINTAINERS                                   |   10 +
+ arch/arm64/boot/dts/ti/k3-am62-main.dtsi      |   13 +
+ drivers/gpu/drm/Kconfig                       |    2 +
+ drivers/gpu/drm/Makefile                      |    1 +
+ drivers/gpu/drm/imagination/Kconfig           |   15 +
+ drivers/gpu/drm/imagination/Makefile          |   35 +
+ drivers/gpu/drm/imagination/pvr_ccb.c         |  642 ++
+ drivers/gpu/drm/imagination/pvr_ccb.h         |   71 +
+ drivers/gpu/drm/imagination/pvr_cccb.c        |  268 +
+ drivers/gpu/drm/imagination/pvr_cccb.h        |  109 +
+ drivers/gpu/drm/imagination/pvr_context.c     |  461 ++
+ drivers/gpu/drm/imagination/pvr_context.h     |  205 +
+ drivers/gpu/drm/imagination/pvr_debugfs.c     |   53 +
+ drivers/gpu/drm/imagination/pvr_debugfs.h     |   29 +
+ drivers/gpu/drm/imagination/pvr_device.c      |  656 ++
+ drivers/gpu/drm/imagination/pvr_device.h      |  723 ++
+ drivers/gpu/drm/imagination/pvr_device_info.c |  227 +
+ drivers/gpu/drm/imagination/pvr_device_info.h |  135 +
+ drivers/gpu/drm/imagination/pvr_drv.c         | 1530 ++++
+ drivers/gpu/drm/imagination/pvr_drv.h         |  129 +
+ drivers/gpu/drm/imagination/pvr_free_list.c   |  639 ++
+ drivers/gpu/drm/imagination/pvr_free_list.h   |  195 +
+ drivers/gpu/drm/imagination/pvr_fw.c          | 1452 ++++
+ drivers/gpu/drm/imagination/pvr_fw.h          |  506 ++
+ drivers/gpu/drm/imagination/pvr_fw_info.h     |  115 +
+ drivers/gpu/drm/imagination/pvr_fw_meta.c     |  569 ++
+ drivers/gpu/drm/imagination/pvr_fw_meta.h     |   14 +
+ drivers/gpu/drm/imagination/pvr_fw_mips.c     |  261 +
+ drivers/gpu/drm/imagination/pvr_fw_mips.h     |   38 +
+ .../gpu/drm/imagination/pvr_fw_startstop.c    |  302 +
+ .../gpu/drm/imagination/pvr_fw_startstop.h    |   13 +
+ drivers/gpu/drm/imagination/pvr_fw_trace.c    |  517 ++
+ drivers/gpu/drm/imagination/pvr_fw_trace.h    |   78 +
+ drivers/gpu/drm/imagination/pvr_gem.c         |  388 ++
+ drivers/gpu/drm/imagination/pvr_gem.h         |  194 +
+ drivers/gpu/drm/imagination/pvr_hwrt.c        |  552 ++
+ drivers/gpu/drm/imagination/pvr_hwrt.h        |  165 +
+ drivers/gpu/drm/imagination/pvr_job.c         |  605 ++
+ drivers/gpu/drm/imagination/pvr_job.h         |  161 +
+ drivers/gpu/drm/imagination/pvr_mmu.c         | 2431 +++++++
+ drivers/gpu/drm/imagination/pvr_mmu.h         |  103 +
+ drivers/gpu/drm/imagination/pvr_params.c      |  147 +
+ drivers/gpu/drm/imagination/pvr_params.h      |   72 +
+ drivers/gpu/drm/imagination/pvr_power.c       |  421 ++
+ drivers/gpu/drm/imagination/pvr_power.h       |   39 +
+ drivers/gpu/drm/imagination/pvr_queue.c       | 1457 ++++
+ drivers/gpu/drm/imagination/pvr_queue.h       |  179 +
+ .../gpu/drm/imagination/pvr_rogue_cr_defs.h   | 6193 +++++++++++++++++
+ .../imagination/pvr_rogue_cr_defs_client.h    |  159 +
+ drivers/gpu/drm/imagination/pvr_rogue_defs.h  |  179 +
+ drivers/gpu/drm/imagination/pvr_rogue_fwif.h  | 2208 ++++++
+ .../drm/imagination/pvr_rogue_fwif_check.h    |  491 ++
+ .../drm/imagination/pvr_rogue_fwif_client.h   |  371 +
+ .../imagination/pvr_rogue_fwif_client_check.h |  133 +
+ .../drm/imagination/pvr_rogue_fwif_common.h   |   60 +
+ .../pvr_rogue_fwif_resetframework.h           |   28 +
+ .../gpu/drm/imagination/pvr_rogue_fwif_sf.h   | 1648 +++++
+ .../drm/imagination/pvr_rogue_fwif_shared.h   |  258 +
+ .../imagination/pvr_rogue_fwif_shared_check.h |  108 +
+ .../drm/imagination/pvr_rogue_fwif_stream.h   |   78 +
+ .../drm/imagination/pvr_rogue_heap_config.h   |  113 +
+ drivers/gpu/drm/imagination/pvr_rogue_meta.h  |  356 +
+ drivers/gpu/drm/imagination/pvr_rogue_mips.h  |  335 +
+ .../drm/imagination/pvr_rogue_mips_check.h    |   58 +
+ .../gpu/drm/imagination/pvr_rogue_mmu_defs.h  |  136 +
+ drivers/gpu/drm/imagination/pvr_stream.c      |  285 +
+ drivers/gpu/drm/imagination/pvr_stream.h      |   75 +
+ drivers/gpu/drm/imagination/pvr_stream_defs.c |  351 +
+ drivers/gpu/drm/imagination/pvr_stream_defs.h |   16 +
+ drivers/gpu/drm/imagination/pvr_sync.c        |  287 +
+ drivers/gpu/drm/imagination/pvr_sync.h        |   84 +
+ drivers/gpu/drm/imagination/pvr_vm.c          |  948 +++
+ drivers/gpu/drm/imagination/pvr_vm.h          |   60 +
+ drivers/gpu/drm/imagination/pvr_vm_mips.c     |  209 +
+ drivers/gpu/drm/imagination/pvr_vm_mips.h     |   22 +
+ include/linux/sizes.h                         |    9 +
+ include/uapi/drm/pvr_drm.h                    | 1304 ++++
+ 82 files changed, 34209 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/gpu/img,powervr.yaml
+ create mode 100644 Documentation/gpu/imagination/index.rst
+ create mode 100644 Documentation/gpu/imagination/uapi.rst
+ create mode 100644 Documentation/gpu/imagination/virtual_memory.rst
+ create mode 100644 drivers/gpu/drm/imagination/Kconfig
+ create mode 100644 drivers/gpu/drm/imagination/Makefile
+ create mode 100644 drivers/gpu/drm/imagination/pvr_ccb.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_ccb.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_cccb.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_cccb.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_context.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_context.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_debugfs.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_debugfs.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_device.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_device.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_device_info.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_device_info.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_drv.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_drv.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_free_list.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_free_list.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_fw.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_fw.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_fw_info.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_fw_meta.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_fw_meta.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_fw_mips.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_fw_mips.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_fw_startstop.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_fw_startstop.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_fw_trace.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_fw_trace.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_gem.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_gem.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_hwrt.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_hwrt.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_job.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_job.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_mmu.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_mmu.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_params.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_params.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_power.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_power.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_queue.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_queue.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_cr_defs.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_cr_defs_client.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_defs.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_fwif.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_fwif_check.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_fwif_client.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_fwif_client_check.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_fwif_common.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_fwif_resetframework.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_fwif_sf.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_fwif_shared.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_fwif_shared_check.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_fwif_stream.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_heap_config.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_meta.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_mips.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_mips_check.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_rogue_mmu_defs.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_stream.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_stream.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_stream_defs.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_stream_defs.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_sync.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_sync.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_vm.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_vm.h
+ create mode 100644 drivers/gpu/drm/imagination/pvr_vm_mips.c
+ create mode 100644 drivers/gpu/drm/imagination/pvr_vm_mips.h
+ create mode 100644 include/uapi/drm/pvr_drm.h
+
+-- 
+2.41.0
+
