@@ -2,180 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDA01753DAC
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 16:38:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4626753DB1
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 16:39:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236077AbjGNOis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 10:38:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51426 "EHLO
+        id S236085AbjGNOjx convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 14 Jul 2023 10:39:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236007AbjGNOiq (ORCPT
+        with ESMTP id S235798AbjGNOjv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 10:38:46 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B434C1
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 07:38:45 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mfe@pengutronix.de>)
-        id 1qKJwC-0006LT-5p; Fri, 14 Jul 2023 16:38:28 +0200
-Received: from mfe by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <mfe@pengutronix.de>)
-        id 1qKJwA-0005b8-QV; Fri, 14 Jul 2023 16:38:26 +0200
-Date:   Fri, 14 Jul 2023 16:38:26 +0200
-From:   Marco Felsch <m.felsch@pengutronix.de>
-To:     Fabio Estevam <festevam@gmail.com>
-Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, shawnguo@kernel.org, kernel@pengutronix.de,
-        linux-imx@nxp.com, marex@denx.de, frieder.schrempf@kontron.de,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 3/3] arm64: dts: freescale: Add DEBIX SOM A and SOM A I/O
- Board support
-Message-ID: <20230714143826.p3blstr5dpsgr46j@pengutronix.de>
-References: <20230704184109.991104-1-m.felsch@pengutronix.de>
- <20230704184109.991104-3-m.felsch@pengutronix.de>
- <CAOMZO5C21f9+ByLVHMaK9wHcCSF3R9W1c1ZCfirx7TuX=786Rw@mail.gmail.com>
+        Fri, 14 Jul 2023 10:39:51 -0400
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A244BC1;
+        Fri, 14 Jul 2023 07:39:50 -0700 (PDT)
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-98e1fc9d130so55767066b.0;
+        Fri, 14 Jul 2023 07:39:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689345589; x=1691937589;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Uqk2kWFpKCNIHS0V3Eun0NY/W3j63YHRH1/UBNPRx40=;
+        b=l0wxbSkAh1fESKqddeMcijJa3scTgSqRyKFp5emISDGaQmOfBnK/6Yx/zDv2n6d95S
+         5MTuKyYnnDbCdBe91jzEwbvMf2SV3dUsTMKIukV7znzD+5NHZ+f1F5XYTKiuze89DZTH
+         20gklicBscJpwVH14mwYsF1DlUz1FQEXMs83rJf0GdvfHCuukZvuTVZG6LUgbCccCm1Y
+         QB2cyepUZs92wKbc5ZpC4u29X/6auoRxiwTUt2IOZmrLtDWMaYJTwgiipegd2Kmn5aCt
+         zWevuTB7fGS41YOMLPrj5YY9KIYS1o8ycwS7+9rOGxeV7ViGFyEJ/swTNGMvsoJyITTH
+         Ymzw==
+X-Gm-Message-State: ABy/qLYv+hdkb4f/96KWN5einQAYXHSAuR+h8k6AVRRuFQGLCWTqe0kO
+        D8fsriA0bHmqSrLVOxFisOkh56PYR/tAwDKJuwY=
+X-Google-Smtp-Source: APBJJlF49+bXOJw780PQQaOR/4uepS5BzQy3qzM2cgHLnsecGTO4wWEMweEjE0fJTDoer0NalhruZAbc60zTD44a8x0=
+X-Received: by 2002:a17:906:77cd:b0:994:33b2:c32d with SMTP id
+ m13-20020a17090677cd00b0099433b2c32dmr3809694ejn.5.1689345588930; Fri, 14 Jul
+ 2023 07:39:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOMZO5C21f9+ByLVHMaK9wHcCSF3R9W1c1ZCfirx7TuX=786Rw@mail.gmail.com>
-User-Agent: NeoMutt/20180716
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: mfe@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <20230704050238.712223-1-rui.zhang@intel.com> <CAJZ5v0gZz1RCqp=Do0RTOCwPvWW9E_SQSyFjuRVuBkR9jxCJjw@mail.gmail.com>
+ <a6d032df2b664950a63518c83a7db3f3@AcuMS.aculab.com>
+In-Reply-To: <a6d032df2b664950a63518c83a7db3f3@AcuMS.aculab.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 14 Jul 2023 16:39:35 +0200
+Message-ID: <CAJZ5v0hu2Gimbxv+RSQVRyLXOPSCNSzQDdneS8ig4zn63VkUKA@mail.gmail.com>
+Subject: Re: [PATCH] powercap: intel_rapl_tpmi: Fix a sparse warning
+To:     David Laight <David.Laight@aculab.com>,
+        Zhang Rui <rui.zhang@intel.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "rafael.j.wysocki@intel.com" <rafael.j.wysocki@intel.com>,
+        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "lkp@intel.com" <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Fabio,
+On Fri, Jul 14, 2023 at 3:34 PM David Laight <David.Laight@aculab.com> wrote:
+>
+> From: Rafael J. Wysocki
+> > Sent: 11 July 2023 19:14
+> ...
+> > On Tue, Jul 4, 2023 at 7:02 AM Zhang Rui <rui.zhang@intel.com> wrote:
+> > >
+> > > Fix a sparse warning in intel_rapl_tpmi driver.
+> > >
+> > > ../drivers/powercap/intel_rapl_tpmi.c:141:41: sparse: warning: incorrect type in initializer
+> > (different address spaces)
+> > > ../drivers/powercap/intel_rapl_tpmi.c:141:41: sparse:    expected unsigned long long [usertype]
+> > *tpmi_rapl_regs
+> > > ../drivers/powercap/intel_rapl_tpmi.c:141:41: sparse:    got void [noderef] __iomem *
+> > >
+> > > Fixes: 9eef7f9da928 ("powercap: intel_rapl: Introduce RAPL TPMI interface driver")
+> > > Reported-by: kernel test robot <lkp@intel.com>
+> > > Closes: https://lore.kernel.org/oe-kbuild-all/202307031405.dy3druuy-lkp@intel.com/
+> > > Signed-off-by: Zhang Rui <rui.zhang@intel.com>
+> > > ---
+> > >  drivers/powercap/intel_rapl_tpmi.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/powercap/intel_rapl_tpmi.c b/drivers/powercap/intel_rapl_tpmi.c
+> > > index 4f4f13ded225..05f664a096ab 100644
+> > > --- a/drivers/powercap/intel_rapl_tpmi.c
+> > > +++ b/drivers/powercap/intel_rapl_tpmi.c
+> > > @@ -138,7 +138,7 @@ static int parse_one_domain(struct tpmi_rapl_package *trp, u32 offset)
+> > >         enum tpmi_rapl_register reg_index;
+> > >         enum rapl_domain_reg_id reg_id;
+> > >         int tpmi_domain_size, tpmi_domain_flags;
+> > > -       u64 *tpmi_rapl_regs = trp->base + offset;
+> > > +       u64 *tpmi_rapl_regs = (u64 *)(trp->base + offset);
+> > >         u64 tpmi_domain_header = readq((void __iomem *)tpmi_rapl_regs);
+>
+> Isn't the correct fix to add __iomem to the definition of
+> tpmi_rapi_regs and also remove the cast from the following
+> readq() line?
 
-On 23-07-04, Fabio Estevam wrote:
-> Hi Marco,
-> 
-> On Tue, Jul 4, 2023 at 3:41 PM Marco Felsch <m.felsch@pengutronix.de> wrote:
-> 
-> > +&fec {
-> > +       pinctrl-names = "default";
-> > +       pinctrl-0 = <&pinctrl_fec>;
-> > +       phy-mode = "rgmii-id";
-> > +       phy-handle = <&ethphy1>;
-> > +       fsl,magic-packet;
-> > +       phy-reset-gpios = <&gpio4 19 GPIO_ACTIVE_LOW>;
-> > +       phy-reset-duration = <10>;
-> > +       phy-reset-post-delay = <150>;
-> 
-> These properties are deprecated. Please move them under the mdio node.
+Good point.
 
-right
-
-> > +               /*
-> > +                * Since USB1 is binded to peripheral mode we need to ensure
-> 
-> s/binded/bound
-
-sure
-
-> > +/* µSD Card */
-> > +&usdhc2 {
-> > +       pinctrl-names = "default", "state_100mhz", "state_200mhz";
-> > +       pinctrl-0 = <&pinctrl_usdhc2>;
-> > +       pinctrl-1 = <&pinctrl_usdhc2_100mhz>;
-> > +       pinctrl-2 = <&pinctrl_usdhc2_200mhz>;
-> > +       vmmc-supply = <&reg_usdhc2_vmmc>;
-> > +       bus-width = <4>;
-> > +       disable-wp;
-> > +       no-sdio;
-> > +       no-mmc;
-> > +
-> 
-> No need for this blank line.
-
-I added the blank lines for a better separation, but I can drop these.
-
-> > +       assigned-clocks = <&clk IMX8MP_CLK_USDHC2>;
-> > +       assigned-clock-rates = <400000000>;
-> > +
-> 
-> Ditto.
-> 
-> > +
-> > +       pmic@25 {
-> > +               compatible = "nxp,pca9450c";
-> > +               reg = <0x25>;
-> > +               pinctrl-names = "default";
-> > +               pinctrl-0 = <&pinctrl_pmic>;
-> > +
-> > +               interrupt-parent = <&gpio1>;
-> > +               interrupts = <3 GPIO_ACTIVE_LOW>;
-> > +
-> > +               regulators {
-> > +                       buck1: BUCK1 {
-> > +                               regulator-name = "BUCK1";
-> > +                               regulator-min-microvolt = <600000>;
-> > +                               regulator-max-microvolt = <2187500>;
-> > +                               regulator-boot-on;
-> > +                               regulator-always-on;
-> > +                               regulator-ramp-delay = <3125>;
-> > +                       };
-> > +
-> > +                       buck2: BUCK2 {
-> > +                               regulator-name = "BUCK2";
-> > +                               regulator-min-microvolt = <600000>;
-> > +                               regulator-max-microvolt = <2187500>;
-> > +                               regulator-boot-on;
-> > +                               regulator-always-on;
-> > +                               regulator-ramp-delay = <3125>;
-> > +                               nxp,dvs-run-voltage = <950000>;
-> > +                               nxp,dvs-standby-voltage = <850000>;
-> > +                       };
-> > +
-> > +                       buck4: BUCK4{
-> 
-> Missing space after BUCK4.
-
-yes.
-
-> > +                               regulator-name = "BUCK4";
-> > +                               regulator-min-microvolt = <600000>;
-> > +                               regulator-max-microvolt = <3400000>;
-> > +                               regulator-boot-on;
-> > +                               regulator-always-on;
-> > +                       };
-> > +
-> > +                       buck5: BUCK5{
-> 
-> Ditto.
-
-yes.
-
-> > +&usdhc3 {
-> > +       pinctrl-names = "default", "state_100mhz", "state_200mhz";
-> > +       pinctrl-0 = <&pinctrl_usdhc3>;
-> > +       pinctrl-1 = <&pinctrl_usdhc3_100mhz>;
-> > +       pinctrl-2 = <&pinctrl_usdhc3_200mhz>;
-> > +       bus-width = <8>;
-> > +       non-removable;
-> > +
-> 
-> No need for this blank line.
-> 
-> 
-> > +       assigned-clocks = <&clk IMX8MP_CLK_USDHC3>;
-> > +       assigned-clock-rates = <400000000>;
-> > +
-> 
-> Ditto.
-
-Removed these as well. Thanks for your review :)
-
-Regards,
-  Marco
+Rui, can you take another look at this, please?
