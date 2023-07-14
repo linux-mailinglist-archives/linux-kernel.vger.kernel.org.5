@@ -2,141 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7E16754521
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 00:48:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCA0B754527
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 00:53:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230174AbjGNWsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 18:48:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38936 "EHLO
+        id S230043AbjGNWxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 18:53:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjGNWsW (ORCPT
+        with ESMTP id S229483AbjGNWxT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 18:48:22 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60B282113;
-        Fri, 14 Jul 2023 15:48:21 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1b895a06484so15313405ad.1;
-        Fri, 14 Jul 2023 15:48:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689374901; x=1691966901;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=1KPDXw6d9QZoIdRyusRX5j718BfWZgOZEixbpaIJv+E=;
-        b=CT3GBfawVE1QNsKfAqGgoFAV5+9AozosB89w0/RPQcLvMiyt1nscbONtsTPyOqTf8y
-         ObnOutT/we3CUiebSmY+6b+DKsyyI8rVQXYmawwYIVPrfz4jxO2th8IKyJ3Lz+MiEyf+
-         W+BomqV7BoZoMV3fZseTlKXjvJYJ9LqCPzqnk4JXFjxQdsOTDuVmyCRSlBeiFJ6grlld
-         jpxDeannYcDPCS09Wext4Hay9562AUSrc08lGVKEjd15TA+wt0frX3h6/+hewRB7iyKm
-         GAplpYWmB4RBUb1PW8gepE79Yp5hDzdoAy+2KoGFGfvIZnKHzuI5NdRtd57XQkftM1g+
-         kp+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689374901; x=1691966901;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1KPDXw6d9QZoIdRyusRX5j718BfWZgOZEixbpaIJv+E=;
-        b=dSAei/v4n1tX/GUD5dZj3jOr509eM1sZC73TdXCzFeljXW4jv7mJgJXfhrXv9iWNrv
-         nclhbxSNxNKbKKab2XRdNmoVAFPLhhI450NX24KvFB2B8jXRmOEJauDGlcmkR0zhR2Lh
-         xG3TBQEAtKAa9CoRRRIvhwCH9QpwWLZY1JH70d5UImSYnhAkBW42XZRX4s703YOH7/YW
-         be7YjL3zvUoPpueB2J9jCJ3cd+SzkcKRKfCWIbtOouaKg9t+Yk2DkWEyhbiF96hiPU+f
-         hv2XfDHSue2XFTtAgE0W6t6Tx5G9FgSPgoJgSvA+VZbCkGNL9OnVMIec12YXygXMVKuf
-         tBkA==
-X-Gm-Message-State: ABy/qLYoeDgykoZuq9gm5Dxmz+YqAlwvJfPQDy7EFqb4Gl9Cc4fATt42
-        p9VEE7uNzAU02lz60kYZgAQCXjocohXIc+ViCiU=
-X-Google-Smtp-Source: APBJJlHYQrcEFpBZFB5cptzfdbqr9WU1KqJqnCs5O9HDa+wA+G7yJUhsSDWj8HCnaHgx8UaubdXMxw==
-X-Received: by 2002:a17:903:2343:b0:1b8:77b3:6bf6 with SMTP id c3-20020a170903234300b001b877b36bf6mr5726230plh.33.1689374900748;
-        Fri, 14 Jul 2023 15:48:20 -0700 (PDT)
-Received: from localhost.localdomain ([221.231.171.18])
-        by smtp.gmail.com with ESMTPSA id ja22-20020a170902efd600b001b8c6662094sm8260845plb.188.2023.07.14.15.48.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 15:48:20 -0700 (PDT)
-From:   Polaris Pi <pinkperfect2021@gmail.com>
-To:     kuba@kernel.org, matthewmwang@chromium.org, kuabhs@chromium.org,
-        amitkarwar@gmail.com, kvalo@kernel.org, ganapathi017@gmail.com,
-        sharvari.harisangam@nxp.com, huxinming820@gmail.com
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Polaris Pi <pinkperfect2021@gmail.com>
-Subject: [PATCH v6] wifi: mwifiex: Fix OOB and integer underflow when rx packets
-Date:   Fri, 14 Jul 2023 22:48:09 +0000
-Message-Id: <20230714224809.3929539-1-pinkperfect2021@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 14 Jul 2023 18:53:19 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17838358E;
+        Fri, 14 Jul 2023 15:53:16 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36EMqefp069962;
+        Fri, 14 Jul 2023 17:52:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1689375160;
+        bh=Xdl/UIJvXkslSce1VW8MpUQaW13x/VEKlIU83ycgctw=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=U5X1TK5CFUbSdhtkTtJhReDA0kFL8/EfI/E8YnqoRW/TMI3fH/H/GsIzFVpfkRJUe
+         sxUWnGMgy3b/zmjbr9VApwWF3Yzd1Hei3fIpzs4y9NA0J8iZHfll/GiHtn+qR3ssRz
+         H7H6ss7DNJeGUu+YnTRMpH9SpPLJ52y+fvuc3nG4=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36EMqeBU012952
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 14 Jul 2023 17:52:40 -0500
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 14
+ Jul 2023 17:52:40 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 14 Jul 2023 17:52:40 -0500
+Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36EMqeCX093307;
+        Fri, 14 Jul 2023 17:52:40 -0500
+Date:   Fri, 14 Jul 2023 17:52:40 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     <huaqian.li@siemens.com>
+CC:     <wim@linux-watchdog.org>, <linux@roeck-us.net>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <huaqianlee@gmail.com>, <vigneshr@ti.com>,
+        <kristo@kernel.org>, <linux-watchdog@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <jan.kiszka@siemens.com>,
+        <baocheng.su@siemens.com>
+Subject: Re: [PATCH v3 2/3] arm64: dts: ti: Add reserved memory for watchdog
+Message-ID: <20230714225240.dvlwqaodp2l3cczm@disfigure>
+References: <20230713095127.1230109-1-huaqian.li@siemens.com>
+ <20230713095127.1230109-3-huaqian.li@siemens.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230713095127.1230109-3-huaqian.li@siemens.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make sure mwifiex_process_mgmt_packet and its callers
-mwifiex_process_sta_rx_packet and mwifiex_process_uap_rx_packet
-not out-of-bounds access the skb->data buffer.
+On 17:51-20230713, huaqian.li@siemens.com wrote:
+> From: Li Hua Qian <huaqian.li@siemens.com>
 
-Fixes: 2dbaf751b1de ("mwifiex: report received management frames to cfg80211")
-Signed-off-by: Polaris Pi <pinkperfect2021@gmail.com>
----
-V5: Follow chromeos comments: preserve the original flow of mwifiex_process_uap_rx_packet
-V6: Simplify check in mwifiex_process_uap_rx_packet
----
- drivers/net/wireless/marvell/mwifiex/sta_rx.c   |  3 ++-
- drivers/net/wireless/marvell/mwifiex/uap_txrx.c | 10 ++++++++++
- drivers/net/wireless/marvell/mwifiex/util.c     |  5 +++++
- 3 files changed, 17 insertions(+), 1 deletion(-)
+I guess I should be explicit about this: Lets keep this dts patch as
+"DONOTMERGE" in subject line for driver subsystem maintainer (I don't
+want a repeat of cpufreq maintainers picking up dts and associated
+warnings that are now pending fixes), resubmit at next rc1 and I can
+queue up the dts once the maintainers pick up the driver and bindings.
 
-diff --git a/drivers/net/wireless/marvell/mwifiex/sta_rx.c b/drivers/net/wireless/marvell/mwifiex/sta_rx.c
-index 13659b02ba88..88aaec645291 100644
---- a/drivers/net/wireless/marvell/mwifiex/sta_rx.c
-+++ b/drivers/net/wireless/marvell/mwifiex/sta_rx.c
-@@ -194,7 +194,8 @@ int mwifiex_process_sta_rx_packet(struct mwifiex_private *priv,
- 
- 	rx_pkt_hdr = (void *)local_rx_pd + rx_pkt_offset;
- 
--	if ((rx_pkt_offset + rx_pkt_length) > (u16) skb->len) {
-+	if ((rx_pkt_offset + rx_pkt_length) > (u16)skb->len ||
-+	    skb->len - rx_pkt_offset < sizeof(*rx_pkt_hdr)) {
- 		mwifiex_dbg(adapter, ERROR,
- 			    "wrong rx packet: len=%d, rx_pkt_offset=%d, rx_pkt_length=%d\n",
- 			    skb->len, rx_pkt_offset, rx_pkt_length);
-diff --git a/drivers/net/wireless/marvell/mwifiex/uap_txrx.c b/drivers/net/wireless/marvell/mwifiex/uap_txrx.c
-index e495f7eaea03..f0711b73ba3e 100644
---- a/drivers/net/wireless/marvell/mwifiex/uap_txrx.c
-+++ b/drivers/net/wireless/marvell/mwifiex/uap_txrx.c
-@@ -367,6 +367,16 @@ int mwifiex_process_uap_rx_packet(struct mwifiex_private *priv,
- 	rx_pkt_type = le16_to_cpu(uap_rx_pd->rx_pkt_type);
- 	rx_pkt_hdr = (void *)uap_rx_pd + le16_to_cpu(uap_rx_pd->rx_pkt_offset);
- 
-+	if (le16_to_cpu(uap_rx_pd->rx_pkt_offset) + sizeof(*rx_pkt_hdr) > skb->len) {
-+		mwifiex_dbg(adapter, ERROR,
-+			    "wrong rx packet offset: len=%d, offset=%d\n",
-+			    skb->len, le16_to_cpu(uap_rx_pd->rx_pkt_offset));
-+		priv->stats.rx_dropped++;
-+
-+		dev_kfree_skb_any(skb);
-+		return 0;
-+	}
-+
- 	ether_addr_copy(ta, rx_pkt_hdr->eth803_hdr.h_source);
- 
- 	if ((le16_to_cpu(uap_rx_pd->rx_pkt_offset) +
-diff --git a/drivers/net/wireless/marvell/mwifiex/util.c b/drivers/net/wireless/marvell/mwifiex/util.c
-index 94c2d219835d..31e1a82883e4 100644
---- a/drivers/net/wireless/marvell/mwifiex/util.c
-+++ b/drivers/net/wireless/marvell/mwifiex/util.c
-@@ -399,6 +399,11 @@ mwifiex_process_mgmt_packet(struct mwifiex_private *priv,
- 
- 	pkt_len = le16_to_cpu(rx_pd->rx_pkt_length);
- 
-+	if (pkt_len < sizeof(struct ieee80211_hdr) || skb->len < pkt_len) {
-+		mwifiex_dbg(priv->adapter, ERROR, "invalid rx_pkt_length");
-+		return -1;
-+	}
-+
- 	ieee_hdr = (void *)skb->data;
- 	if (ieee80211_is_mgmt(ieee_hdr->frame_control)) {
- 		if (mwifiex_parse_mgmt_packet(priv, (u8 *)ieee_hdr,
+Ref: https://lore.kernel.org/all/20230714084725.27847-1-krzysztof.kozlowski@linaro.org/
+
+> 
+> This patch adds a reserved memory for the TI AM65X platform watchdog to
+> reserve the specific info, triggering the watchdog reset in last boot,
+> to know if the board reboot is due to a watchdog reset.
+> 
+> Signed-off-by: Li Hua Qian <huaqian.li@siemens.com>
+> ---
+>  arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
+> index e26bd988e522..4bb20d493651 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
+> @@ -63,6 +63,12 @@ rtos_ipc_memory_region: ipc-memories@a2000000 {
+>  			alignment = <0x1000>;
+>  			no-map;
+>  		};
+> +
+> +		/* To reserve the power-on(PON) reason for watchdog reset */
+> +		wdt_reset_memory_region: wdt-memory@a2200000 {
+> +			reg = <0x00 0xa2200000 0x00 0x1000>;
+> +			no-map;
+> +		};
+>  	};
+>  
+>  	leds {
+> @@ -718,3 +724,7 @@ &mcu_r5fss0_core1 {
+>  			<&mcu_r5fss0_core1_memory_region>;
+>  	mboxes = <&mailbox0_cluster1>, <&mbox_mcu_r5fss0_core1>;
+>  };
+> +
+> +&mcu_rti1 {
+> +	memory-region = <&wdt_reset_memory_region>;
+> +};
+> -- 
+> 2.34.1
+> 
+
 -- 
-2.25.1
-
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
