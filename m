@@ -2,140 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2D29753A7E
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 14:14:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6345753A89
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 14:16:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235762AbjGNMOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 08:14:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59978 "EHLO
+        id S235396AbjGNMQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 08:16:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235752AbjGNMOw (ORCPT
+        with ESMTP id S234493AbjGNMQk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 08:14:52 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B900830C6;
-        Fri, 14 Jul 2023 05:14:50 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-51e99584a82so2322995a12.1;
-        Fri, 14 Jul 2023 05:14:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689336889; x=1691928889;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TgPMyqhcYOSoB/wLOssO63qlIlM49Q140+nxqiBvG58=;
-        b=EbmcQKgul6r57U77VkLKxO0Std3+UK3ldoAw+5il/pbmMcEIV1j+yevY/ZXv9VkR1J
-         +/4YKAtOae75xN9J3tA3yU6G/kVO8Gp0bFwl5dIJuAwF2wZIh3TyV4U7YEdginHL/7Wb
-         7Q1POHwuTeLeqtDaHV/M3Jf86N/52phGiATyqOFX3N/F+/oJdH8fEQuZ8P4tssx7VF0i
-         cnKyIvsUWZ8cnnyPsUwLjS0mxRidx3JCST4tNTSARsNIg+Uq4qVposX3W9wSB2mTqIYb
-         deDgxSM8kXx180pIPlKeKPAAvQEkHfxRwlsp0RxiOIOL/chzdSVfhdoEG8qejnhK4qJg
-         EGMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689336889; x=1691928889;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TgPMyqhcYOSoB/wLOssO63qlIlM49Q140+nxqiBvG58=;
-        b=J4m0ASrhAdtqOWC6961OqdEcxQowHTt9QXvx0HHbSuvhn9IYW5OcOBuzXbZ6c0NxlV
-         aKrx/enIQwN+7KRk7ugmf+P3YeTQuXaWGFLQ95VYFWRj/lnmdq1kmWoTomHShvOQrKV/
-         YYiV2ZgFVcA+McNU8TX9fjhrsydLnWgdez8uqVebnXqRy4satd3Anx1jzVTkaQC0f5QK
-         6h2s2+8jIjaT/0EwQsvA+sFw/zotM/7ocluprpYdfi/jKk3UDxMkxgApizievSljDlEB
-         O6qpWMiwzFPle7LwSuD6L6ORnzrZLg63HSO69xw3d6o2ei4OExf+Ml0nFWcRtCBF9tm1
-         PvtA==
-X-Gm-Message-State: ABy/qLaHEic7zGGanZgnK7Y6qDVw4Iz3WrtPcEdPFjNkrGkR5an0zAW3
-        CIn8xsx0leEvs9FcgHTbPxg=
-X-Google-Smtp-Source: APBJJlGCZk5eIAzsAIRe5sakyckPhJ0aqKFTBus5ia20xD48WrEFzxV5rsu/e+vLMLzskRlnKNWdwQ==
-X-Received: by 2002:a50:fa98:0:b0:51e:4bc7:3976 with SMTP id w24-20020a50fa98000000b0051e4bc73976mr5022133edr.10.1689336888953;
-        Fri, 14 Jul 2023 05:14:48 -0700 (PDT)
-Received: from tablet.my.domain (ip-37-248-157-105.multi.internet.cyfrowypolsat.pl. [37.248.157.105])
-        by smtp.gmail.com with ESMTPSA id r16-20020aa7d150000000b0051e19bf66a4sm5680666edo.83.2023.07.14.05.14.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 05:14:48 -0700 (PDT)
-From:   Artur Weber <aweber.kernel@gmail.com>
-To:     Lee Jones <lee@kernel.org>
-Cc:     Daniel Thompson <daniel.thompson@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Helge Deller <deller@gmx.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Artur Weber <aweber.kernel@gmail.com>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-Subject: [PATCH 2/2] backlight: lp855x: Catch errors when changing brightness
-Date:   Fri, 14 Jul 2023 14:14:40 +0200
-Message-ID: <20230714121440.7717-3-aweber.kernel@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230714121440.7717-1-aweber.kernel@gmail.com>
-References: <20230714121440.7717-1-aweber.kernel@gmail.com>
+        Fri, 14 Jul 2023 08:16:40 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B48A2722;
+        Fri, 14 Jul 2023 05:16:38 -0700 (PDT)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4R2VnB2Q2dz18Lkm;
+        Fri, 14 Jul 2023 20:15:58 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 14 Jul
+ 2023 20:16:35 +0800
+Subject: Re: [PATCH v5 RFC 1/6] page_pool: frag API support for 32-bit arch
+ with 64-bit DMA
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     Alexander Lobakin <aleksander.lobakin@intel.com>,
+        Yunsheng Lin <yunshenglin0825@gmail.com>,
+        <davem@davemloft.net>, <pabeni@redhat.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Liang Chen <liangchen.linux@gmail.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        <linux-rdma@vger.kernel.org>
+References: <20230629120226.14854-1-linyunsheng@huawei.com>
+ <20230629120226.14854-2-linyunsheng@huawei.com>
+ <20230707170157.12727e44@kernel.org>
+ <3d973088-4881-0863-0207-36d61b4505ec@gmail.com>
+ <20230710113841.482cbeac@kernel.org>
+ <8639b838-8284-05a2-dbc3-7e4cb45f163a@intel.com>
+ <20230711093705.45454e41@kernel.org>
+ <1bec23ff-d38b-3fdf-1bb3-89658c1d465a@intel.com>
+ <46ad09d9-6596-cf07-5cab-d6ceb1e36f3c@huawei.com>
+ <20230712102603.5038980e@kernel.org>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <9a5b4c50-2401-b3e7-79aa-33d3ccee41c5@huawei.com>
+Date:   Fri, 14 Jul 2023 20:16:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230712102603.5038980e@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The lp855x_bl_update_status function's return type is int, but
-it always returns 0, without checking for the results of the
-write_byte/pwm_ctrl functions called within.
+On 2023/7/13 1:26, Jakub Kicinski wrote:
+> On Wed, 12 Jul 2023 20:34:12 +0800 Yunsheng Lin wrote:
+>>>> C sources can include $path/page_pool.h, headers should generally only
+>>>> include $path/page_pool/types.h.  
+>>
+>> Does spliting the page_pool.h as above fix the problem about including
+>> a ton of static inline functions from "linux/dma-mapping.h" in skbuff.c?
+>>
+>> As the $path/page_pool/helpers.h which uses dma_get_cache_alignment()
+>> must include the "linux/dma-mapping.h" which has dma_get_cache_alignment()
+>> defining as a static inline function.
+>> and if skbuff.c include $path/page_pool.h or $path/page_pool/helpers.h,
+>> doesn't we still have the same problem? Or do I misunderstand something
+>> here?
+> 
+> I should have clarified that "types.h" should also include pure
+> function declarations (and possibly static line wrappers like
+> pure get/set functions which only need locally defined types).
 
-Make this function return the return values of the functions it
-calls, and modify the lp855x_pwm_ctrl function to return errors.
+So "types.h" is not supposed/allowed to include any header and
+it can include any function declarations and static line wrappers
+which do not depend on any other header? It means we need to forward
+declaring a lot of 'struct' type for function declarations, right?
+If it is the case, the "types.h" does not seems to match it's
+naming when we can not really define most of the 'struct' in "types.h",
+such as 'struct page_pool' need to include some header in order to
+have definition of 'struct delayed_work'.
+Similar issue for 'helpers.h', as it will include most of the
+definition of 'struct', which are not really helpers, right?
 
-Signed-off-by: Artur Weber <aweber.kernel@gmail.com>
----
- drivers/video/backlight/lp855x_bl.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+> 
+> The skbuff.h only needs to include $path/page_pool/types.h, right?
 
-diff --git a/drivers/video/backlight/lp855x_bl.c b/drivers/video/backlight/lp855x_bl.c
-index 349ec324bc1e..61a7f45bfad8 100644
---- a/drivers/video/backlight/lp855x_bl.c
-+++ b/drivers/video/backlight/lp855x_bl.c
-@@ -217,7 +217,7 @@ static int lp855x_configure(struct lp855x *lp)
- 	return ret;
- }
- 
--static void lp855x_pwm_ctrl(struct lp855x *lp, int br, int max_br)
-+static int lp855x_pwm_ctrl(struct lp855x *lp, int br, int max_br)
- {
- 	struct pwm_state state;
- 
-@@ -234,23 +234,26 @@ static void lp855x_pwm_ctrl(struct lp855x *lp, int br, int max_br)
- 	state.duty_cycle = div_u64(br * state.period, max_br);
- 	state.enabled = state.duty_cycle;
- 
--	pwm_apply_state(lp->pwm, &state);
-+	return pwm_apply_state(lp->pwm, &state);
- }
- 
- static int lp855x_bl_update_status(struct backlight_device *bl)
- {
- 	struct lp855x *lp = bl_get_data(bl);
- 	int brightness = bl->props.brightness;
-+	int ret;
- 
- 	if (bl->props.state & (BL_CORE_SUSPENDED | BL_CORE_FBBLANK))
- 		brightness = 0;
- 
- 	if (lp->mode == PWM_BASED)
--		lp855x_pwm_ctrl(lp, brightness, bl->props.max_brightness);
-+		ret = lp855x_pwm_ctrl(lp, brightness,
-+				      bl->props.max_brightness);
- 	else if (lp->mode == REGISTER_BASED)
--		lp855x_write_byte(lp, lp->cfg->reg_brightness, (u8)brightness);
-+		ret = lp855x_write_byte(lp, lp->cfg->reg_brightness,
-+					(u8)brightness);
- 
--	return 0;
-+	return ret;
- }
- 
- static const struct backlight_ops lp855x_bl_ops = {
--- 
-2.41.0
+It seems doable, it need trying to prove it is indeed that case.
 
+> 
+> I know that Olek has a plan to remove the skbuff dependency completely
+> but functionally / for any future dependencies - this should work?
+
+I am not experienced and confident enough to say about this for now.
