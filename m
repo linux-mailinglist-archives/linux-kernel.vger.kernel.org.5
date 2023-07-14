@@ -2,164 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F371753B98
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 15:14:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 066C0753B94
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 15:13:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235945AbjGNNOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 09:14:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32890 "EHLO
+        id S235942AbjGNNNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 09:13:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235923AbjGNNOJ (ORCPT
+        with ESMTP id S235767AbjGNNNq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 09:14:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A400530DB
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 06:13:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689340400;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=36HhvwwCwNRISkyKnM/sv2zqdgTqt3zr0Ydeg6lZGjI=;
-        b=IJfBXw/v8K9Jz6psuZkLikq/RAOxGtb3Tkv05E8CRRBAaJhM5lAUzqp6Df012BkYiNveNA
-        iUeBR7ryXefLa/Vz3y0+WECW8ykUisnrIE4dNQA567zI1e4wyMEK6+DHL/GPTILVmrsKWD
-        vQ9rwwBFaP8zHvkdzOi8Il86OQ6Oocc=
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
- [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-235-oy8lqhxKM82uRTMyeMN59A-1; Fri, 14 Jul 2023 09:13:19 -0400
-X-MC-Unique: oy8lqhxKM82uRTMyeMN59A-1
-Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2b70bfcd15aso17370111fa.0
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 06:13:18 -0700 (PDT)
+        Fri, 14 Jul 2023 09:13:46 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30B2F30EB
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 06:13:45 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1b8ad907ba4so11087025ad.0
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 06:13:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689340424; x=1691932424;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=lPSms7Svt0v1FhaYrBtasQxf1zX/2vOpkMaaCXfzVv8=;
+        b=bNQIefppjIKFx2HPNJdWZwzu4OATM5y1y4LiD6TulYlcu56jrK+c5SB7HqUXz9pG9/
+         hDVMAZg6iKi7PoVjsiB7rc1CcXKhawfmWm8dazwFZLsmnzUqAkXmFIANnx82k/t07rzb
+         MJ91IlNG8xCEdVeCXIOPO9GiczWZjAAvguQ7H1RdSGd0Q9a6VtHYIH10dmykKYrMuBsT
+         0PT5jvXjsMeyYhiXDacDPRG1vZ94QnpiRMbNqZKp08wMef9f5NwWoiFq3mal6w+KsNCK
+         3US3dBBZqKyK33isSGsIP6cPmmLInGhg/7JRDVWO8iEWXq5mUXj7DOGd8RQxDqIee9gj
+         4jzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689340397; x=1691932397;
-        h=content-transfer-encoding:in-reply-to:references:to
-         :content-language:subject:cc:user-agent:mime-version:date:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=36HhvwwCwNRISkyKnM/sv2zqdgTqt3zr0Ydeg6lZGjI=;
-        b=VjwBMZRLKhS5rvm1nX9f/AgdBV1q89STgzo3ZBKvPM3RYmwYXhyD+DPsHFtgjhu7Z7
-         h6TixRrvQKg2oSJgllXHGrF9/mP80bt6qHXkiMCYLMctKsM4GYmDHEzbJZBD6P9WiHZJ
-         QI1E+xHy/oMa9JS0wSRKeouRN5YeAmwd+NOhp39yVLu/O+PwwZhSbLX3Qhr2LeM7icBH
-         S93F/pv5l3ktqSSfuCYa/49sfEfVHIbiGmFRUD4UmH2uxEL9HYdYzSQRvi9H0oWfqt26
-         JMK2cFcMi1lF9BHpkB1OOBmhUYQdEjO2lffRk+1p7jZ7Ekq2A18IKovGTz8U92EwnCq7
-         +Zew==
-X-Gm-Message-State: ABy/qLbwee7ARJh+pUNMId/iBgJ+LNBftK0nuYtHjsKkF1ZngXV2GPjC
-        8QWd+XH/jpRP1HqGTaAkf6Y8yWPENYfT3l1kVXBdB4Q8yCRwB9iu8IrxDksanAdoEX/Osp9Fo2h
-        HWggjTZVkAnmPOCDeHtyNngzh
-X-Received: by 2002:a05:6512:114e:b0:4f8:5e8b:5ec8 with SMTP id m14-20020a056512114e00b004f85e8b5ec8mr4799858lfg.9.1689340397781;
-        Fri, 14 Jul 2023 06:13:17 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGUZKsDBZIffHa15ofyhKzNHwZj9wwVByfwtni8shzuZklgsuym2B+BpTxYpImmZmtelIMblA==
-X-Received: by 2002:a05:6512:114e:b0:4f8:5e8b:5ec8 with SMTP id m14-20020a056512114e00b004f85e8b5ec8mr4799812lfg.9.1689340397336;
-        Fri, 14 Jul 2023 06:13:17 -0700 (PDT)
-Received: from [192.168.42.100] (194-45-78-10.static.kviknet.net. [194.45.78.10])
-        by smtp.gmail.com with ESMTPSA id y17-20020aa7c251000000b0050bc4600d38sm5686281edo.79.2023.07.14.06.13.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 Jul 2023 06:13:16 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <3b043a95-a4bc-bbaf-c8e0-240e8ddea62f@redhat.com>
-Date:   Fri, 14 Jul 2023 15:13:15 +0200
+        d=1e100.net; s=20221208; t=1689340424; x=1691932424;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lPSms7Svt0v1FhaYrBtasQxf1zX/2vOpkMaaCXfzVv8=;
+        b=Mo5fPlLYdv/7CPKaDo4dIovUPN/8NjWlZWCvMUWef9hkkacIqqzWesavJJumnb7zgA
+         VD80ABTRu8oE4qUz3FjjCjI7RnZ8KROYRuvwwD5PN5F07hCz6ZjQh1O3KKnvNRS//l9h
+         +HZAHcmoeypPe3XVoRWqd8Uw7NFd1tPAtCYwmaqP0QpssNbHiqRwFfkxlnGMKR8CnidR
+         bWihjxELDJ3h3ASkwXKls5hIWVewI8bSnHzSUUn8/9DhSA8R1yRC8he1Crs1i6cq7ZEg
+         X96upDA5uYs5bPatulS4BjVp76FWzzx0Dhy4j65fqeYSDcOIxvqFCr1yfkxJvt3ThtD1
+         cgBw==
+X-Gm-Message-State: ABy/qLbDSN0GIy9LaEg8gfpSf0mSa7EUGoD4sUZrhuuBj15ODpqtLgcV
+        YJ3cM4TVg3LbLc5jy5Qs4jwZntmnzn+JMFk/doikog==
+X-Google-Smtp-Source: APBJJlGL9JGLy10O73QK3szm+DEF7SAKVndVH3a3mA6KEGtyxifInalzNWCIpWbxy0wzSqsUngr6tw==
+X-Received: by 2002:a17:902:704c:b0:1ba:fe63:6616 with SMTP id h12-20020a170902704c00b001bafe636616mr3242178plt.6.1689340424527;
+        Fri, 14 Jul 2023 06:13:44 -0700 (PDT)
+Received: from localhost.localdomain ([103.156.184.205])
+        by smtp.gmail.com with ESMTPSA id x21-20020a170902b41500b001b3bf8001a9sm7777905plr.48.2023.07.14.06.13.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Jul 2023 06:13:44 -0700 (PDT)
+From:   Han Gao <highenthalpyh@gmail.com>
+To:     kbusch@kernel.org, axboe@kernel.dk, hch@lst.de, sagi@grimberg.me
+Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Han Gao <highenthalpyh@gmail.com>, David Xu <xuwd1@hotmail.com>
+Subject: [PATCH] nvme-pci: add NVME_QUIRK_DELAY_BEFORE_CHK_RDY for MAXIO MAP1602
+Date:   Fri, 14 Jul 2023 21:13:33 +0800
+Message-ID: <20230714131333.5858-1-highenthalpyh@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Cc:     brouer@redhat.com,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Paul Rosswurm <paulros@microsoft.com>,
-        "olaf@aepfle.de" <olaf@aepfle.de>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        Long Li <longli@microsoft.com>,
-        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        Ajay Sharma <sharmaajay@microsoft.com>,
-        "hawk@kernel.org" <hawk@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "shradhagupta@linux.microsoft.com" <shradhagupta@linux.microsoft.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Subject: Re: [PATCH net-next] net: mana: Add page pool for RX buffers
-Content-Language: en-US
-To:     Haiyang Zhang <haiyangz@microsoft.com>,
-        Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>
-References: <1689259687-5231-1-git-send-email-haiyangz@microsoft.com>
- <20230713205326.5f960907@kernel.org>
- <85bfa818-6856-e3ea-ef4d-16646c57d1cc@redhat.com>
- <PH7PR21MB31166EF9DB2F453999D2E92ECA34A@PH7PR21MB3116.namprd21.prod.outlook.com>
-In-Reply-To: <PH7PR21MB31166EF9DB2F453999D2E92ECA34A@PH7PR21MB3116.namprd21.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+4TB SSD with MAXIO MAP1602 controller is cannot by initialised
+in nvme_enable_ctrl with a high probability, which causeds the system
+to be unable to use SSD, and SSD device only be shown in lspci.
 
+dmesg output of problem
 
-On 14/07/2023 14.51, Haiyang Zhang wrote:
-> 
-> 
->> -----Original Message-----
->> From: Jesper Dangaard Brouer <jbrouer@redhat.com>
->> On 14/07/2023 05.53, Jakub Kicinski wrote:
->>> On Thu, 13 Jul 2023 14:48:45 +0000 Haiyang Zhang wrote:
->>>> Add page pool for RX buffers for faster buffer cycle and reduce CPU
->>>> usage.
->>>>
->>>> Get an extra ref count of a page after allocation, so after upper
->>>> layers put the page, it's still referenced by the pool. We can reuse
->>>> it as RX buffer without alloc a new page.
->>>
->>> Please use the real page_pool API from include/net/page_pool.h
->>> We've moved past every driver reinventing the wheel, sorry.
->>
->> +1
->>
->> Quoting[1]: Documentation/networking/page_pool.rst
->>
->>    Basic use involves replacing alloc_pages() calls with the
->> page_pool_alloc_pages() call.
->>    Drivers should use page_pool_dev_alloc_pages() replacing
->> dev_alloc_pages().
->   
-> Thank Jakub and Jesper for the reviews.
-> I'm aware of the page_pool.rst doc, and actually tried it before this
-> patch, but I got lower perf. If I understand correctly, we should call
-> page_pool_release_page() before passing the SKB to napi_gro_receive().
-> 
-> I found the page_pool_dev_alloc_pages() goes through the slow path,
-> because the page_pool_release_page() let the page leave the pool.
-> 
-> Do we have to call page_pool_release_page() before passing the SKB
-> to napi_gro_receive()? Any better way to recycle the pages from the
-> upper layer of non-XDP case?
-> 
+----------
+nvme nvme1: Device not ready; aborting initialisation, CSTS=0x0
+----------
 
-Today SKB "upper layers" can recycle page_pool backed packet data/page.
+Problem and fix are verified with my MAP1602 controller SSD device.
 
-Just use skb_mark_for_recycle(skb), then you don't need 
-page_pool_release_page().
+Signed-off-by: Han Gao <highenthalpyh@gmail.com>
+Signed-off-by: David Xu <xuwd1@hotmail.com>
+---
+ drivers/nvme/host/pci.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-I guess, we should update the documentation, mentioning this.
-
---Jesper
-
+diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+index 492f319ebdf3..f75c27730bde 100644
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -3425,7 +3425,8 @@ static const struct pci_device_id nvme_id_table[] = {
+ 	{ PCI_DEVICE(0x1e4B, 0x1202),   /* MAXIO MAP1202 */
+ 		.driver_data = NVME_QUIRK_BOGUS_NID, },
+ 	{ PCI_DEVICE(0x1e4B, 0x1602),   /* MAXIO MAP1602 */
+-		.driver_data = NVME_QUIRK_BOGUS_NID, },
++		.driver_data = NVME_QUIRK_BOGUS_NID |
++				NVME_QUIRK_DELAY_BEFORE_CHK_RDY, },
+ 	{ PCI_DEVICE(0x1cc1, 0x5350),   /* ADATA XPG GAMMIX S50 */
+ 		.driver_data = NVME_QUIRK_BOGUS_NID, },
+ 	{ PCI_DEVICE(0x1dbe, 0x5236),   /* ADATA XPG GAMMIX S70 */
+-- 
+2.41.0
 
