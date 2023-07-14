@@ -2,88 +2,300 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA196752FFF
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 05:32:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E94C752FFC
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 05:30:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234709AbjGNDcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 23:32:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46278 "EHLO
+        id S234538AbjGNDaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 23:30:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232670AbjGNDcj (ORCPT
+        with ESMTP id S233535AbjGNDaH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 23:32:39 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 187E1CD
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 20:32:37 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R2H9F3xvQzBRSVM
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 11:32:33 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689305553; x=1691897554; bh=AuYDgHFbLdSKDR3AAWF4AJBZRCt
-        ktO5bYp21CycLwUE=; b=McsvLIXk3Bq/oQFGBcT9NxaV4fR5oNcfADN/MOcZkf/
-        7jpZKdjDofruNkcpeo92d+oQXZ7Eqh+ne6aO2bHucugCK7iFs22Ht0l/nYXpjq6A
-        ZsT2PHkcBSQjDtn/38q1M912cIvvZcAzBHQn7tJcDMPtau0I2ibpnrNlf5qSV5dS
-        K6gH7cfK5IKmWSj2Otq3ChNYX8YBUBdhqKQxjgpcgohP1knRP7tXFkwPh7LL4OlA
-        CwNOHQf+ENhj4wtDL2ezdM9Gk2qWM155lk/fbAFjkDOfAJHUTLHhLHxvMWGdeYUQ
-        QouhNLwLPdouWJD9KyE/FiYmd8JeSm1RAAp06ste8qQ==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id fJUgIz04IL7N for <linux-kernel@vger.kernel.org>;
-        Fri, 14 Jul 2023 11:32:33 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R2H9D5yklzBHXhS;
-        Fri, 14 Jul 2023 11:32:32 +0800 (CST)
+        Thu, 13 Jul 2023 23:30:07 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97CE41727;
+        Thu, 13 Jul 2023 20:30:05 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2C3D961A0D;
+        Fri, 14 Jul 2023 03:30:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9AF8C433C8;
+        Fri, 14 Jul 2023 03:30:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689305404;
+        bh=r5BgOqjclAtqUQp1hraka226NEScyIQcgZdeBe+qihE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IBxz5gezLDgg1xKxxuIzbXI+K52o+kD1+XMMT1n5kokPz8c5UYmVauHoBCupNHfOT
+         s7kuZrwAqpRIDibGyhPEoSRo3Mm0drw20/YQQPKtr9WqGwEMjASlOjIvL4b8lgvDWi
+         nGDjI4l09okAFobR2rY23vJV6vzSPah65yd66Vd+3QppmxGmNsAUkrB7Toyw8KIZcK
+         +zziLJxloG/IFz1Vz3b1QMBOewi3pZtmi+pB1APQYtE74H+0eKYTY0vFYt1t1tqJn6
+         dARRS4jm7GOHvBraotYGR1otAzKX6ONPynr+wvryOSuSZe94gsu5QDRQsiZFp6Y6kV
+         HB4ujjUNh7dnw==
+Date:   Thu, 13 Jul 2023 20:33:34 -0700
+From:   Bjorn Andersson <andersson@kernel.org>
+To:     Minghao Zhang <quic_minghao@quicinc.com>
+Cc:     agross@kernel.org, konrad.dybcio@somainline.org,
+        linus.walleij@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_satyap@quicinc.com, quic_tsoni@quicinc.com
+Subject: Re: [PATCH V3] pinctrl: qcom: Add support to log pin status before
+ suspend for TLMM
+Message-ID: <ztp67pftiuwirfkfqqx76j4mgm4t7mxdgahsiip6lxiszf6lxg@zfkyqtsx2zoo>
+References: <20230712105200.26012-1-quic_minghao@quicinc.com>
 MIME-Version: 1.0
-Date:   Fri, 14 Jul 2023 11:32:32 +0800
-From:   shijie001@208suo.com
-To:     airlied@gmail.com, daniel@ffwll.ch, alexander.deucher@amd.com,
-        christian.koenig@amd.com, Xinhui.Pan@amd.com
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/radeon: ERROR: spaces required around that '+=' (ctx:VxV)
-In-Reply-To: <tencent_90453D41C9A3FB57DCCA60655D9218D1870A@qq.com>
-References: <tencent_90453D41C9A3FB57DCCA60655D9218D1870A@qq.com>
-User-Agent: Roundcube Webmail
-Message-ID: <97d2ba38071e5c650894c01a56a2533a@208suo.com>
-X-Sender: shijie001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230712105200.26012-1-quic_minghao@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix two occurrences of the checkpatch.pl error:
-ERROR: spaces required around that '+=' (ctx:VxV)
+On Wed, Jul 12, 2023 at 06:52:00PM +0800, Minghao Zhang wrote:
+> This change supports to print pin status before device suspend
+> to debug for TLMM. And expose 2 APIs to enable/disable this
+> functionality.
+> 
 
-Signed-off-by: Jie Shi <shijie001@208suo.com>
----
-  drivers/gpu/drm/radeon/r100.c | 2 +-
-  1 file changed, 1 insertion(+), 1 deletion(-)
+This sounds like a quite useful feature, can it be implemented in the
+framework instead, to ensure it's applicable to other gpio drivers?
 
-diff --git a/drivers/gpu/drm/radeon/r100.c 
-b/drivers/gpu/drm/radeon/r100.c
-index affa9e0309b2..2f0470f927f1 100644
---- a/drivers/gpu/drm/radeon/r100.c
-+++ b/drivers/gpu/drm/radeon/r100.c
-@@ -1327,7 +1327,7 @@ int r100_packet3_load_vbpntr(struct 
-radeon_cs_parser *p,
-          return -EINVAL;
-      }
-      track->num_arrays = c;
--    for (i = 0; i < (c - 1); i+=2, idx+=3) {
-+    for (i = 0; i < (c - 1); i += 2, idx += 3) {
-          r = radeon_cs_packet_next_reloc(p, &reloc, 0);
-          if (r) {
-              DRM_ERROR("No reloc for packet3 %d\n",
+> Signed-off-by: Minghao Zhang <quic_minghao@quicinc.com>
+> ---
+
+Please include a list of changes made since previous versions of your
+patches.
+
+>  drivers/pinctrl/qcom/pinctrl-msm.c | 133 ++++++++++++++++++++++-------
+>  drivers/pinctrl/qcom/pinctrl-msm.h |   4 +
+>  2 files changed, 108 insertions(+), 29 deletions(-)
+> 
+> diff --git a/drivers/pinctrl/qcom/pinctrl-msm.c b/drivers/pinctrl/qcom/pinctrl-msm.c
+> index 2585ef2b2793..ed1c5b2817aa 100644
+> --- a/drivers/pinctrl/qcom/pinctrl-msm.c
+> +++ b/drivers/pinctrl/qcom/pinctrl-msm.c
+> @@ -82,6 +82,21 @@ struct msm_pinctrl {
+>  	u32 phys_base[MAX_NR_TILES];
+>  };
+>  
+> +static bool pinctrl_msm_log_mask;
+
+Other symbols are prefixed with "msm_gpio_", so perhaps
+msm_gpio_suspend_log?
+
+> +
+> +static const char * const pulls_keeper[] = {
+> +	"no pull",
+> +	"pull down",
+> +	"keeper",
+> +	"pull up"
+> +};
+> +
+> +static const char * const pulls_no_keeper[] = {
+> +	"no pull",
+> +	"pull down",
+> +	"pull up",
+> +};
+> +
+>  #define MSM_ACCESSOR(name) \
+>  static u32 msm_readl_##name(struct msm_pinctrl *pctrl, \
+>  			    const struct msm_pingroup *g) \
+> @@ -653,6 +668,29 @@ static void msm_gpio_set(struct gpio_chip *chip, unsigned offset, int value)
+>  	raw_spin_unlock_irqrestore(&pctrl->lock, flags);
+>  }
+>  
+> +static void msm_gpio_pin_status_get(struct msm_pinctrl *pctrl, const struct msm_pingroup *g,
+> +				    unsigned int offset, int *is_out, unsigned int *func,
+> +				    int *drive, int *pull, int *egpio_enable, int *val)
+> +{
+> +	u32 ctl_reg, io_reg;
+> +
+> +	ctl_reg = msm_readl_ctl(pctrl, g);
+> +	io_reg = msm_readl_io(pctrl, g);
+> +
+> +	*is_out = !!(ctl_reg & BIT(g->oe_bit));
+> +	*func = (ctl_reg >> g->mux_bit) & 7;
+> +	*drive = (ctl_reg >> g->drv_bit) & 7;
+> +	*pull = (ctl_reg >> g->pull_bit) & 3;
+> +	*egpio_enable = 0;
+> +	if (pctrl->soc->egpio_func && ctl_reg & BIT(g->egpio_present))
+> +		*egpio_enable = !(ctl_reg & BIT(g->egpio_enable));
+> +
+> +	if (*is_out)
+> +		*val = !!(io_reg & BIT(g->out_bit));
+> +	else
+> +		*val = !!(io_reg & BIT(g->in_bit));
+> +}
+> +
+>  #ifdef CONFIG_DEBUG_FS
+>  
+>  static void msm_gpio_dbg_show_one(struct seq_file *s,
+> @@ -669,40 +707,13 @@ static void msm_gpio_dbg_show_one(struct seq_file *s,
+>  	int pull;
+>  	int val;
+>  	int egpio_enable;
+> -	u32 ctl_reg, io_reg;
+> -
+> -	static const char * const pulls_keeper[] = {
+> -		"no pull",
+> -		"pull down",
+> -		"keeper",
+> -		"pull up"
+> -	};
+> -
+> -	static const char * const pulls_no_keeper[] = {
+> -		"no pull",
+> -		"pull down",
+> -		"pull up",
+> -	};
+>  
+>  	if (!gpiochip_line_is_valid(chip, offset))
+>  		return;
+>  
+>  	g = &pctrl->soc->groups[offset];
+> -	ctl_reg = msm_readl_ctl(pctrl, g);
+> -	io_reg = msm_readl_io(pctrl, g);
+> -
+> -	is_out = !!(ctl_reg & BIT(g->oe_bit));
+> -	func = (ctl_reg >> g->mux_bit) & 7;
+> -	drive = (ctl_reg >> g->drv_bit) & 7;
+> -	pull = (ctl_reg >> g->pull_bit) & 3;
+> -	egpio_enable = 0;
+> -	if (pctrl->soc->egpio_func && ctl_reg & BIT(g->egpio_present))
+> -		egpio_enable = !(ctl_reg & BIT(g->egpio_enable));
+> -
+> -	if (is_out)
+> -		val = !!(io_reg & BIT(g->out_bit));
+> -	else
+> -		val = !!(io_reg & BIT(g->in_bit));
+> +	msm_gpio_pin_status_get(pctrl, g, offset, &is_out, &func,
+> +					&drive, &pull, &egpio_enable, &val);
+>  
+>  	if (egpio_enable) {
+>  		seq_printf(s, " %-8s: egpio\n", g->grp.name);
+> @@ -732,6 +743,39 @@ static void msm_gpio_dbg_show(struct seq_file *s, struct gpio_chip *chip)
+>  #define msm_gpio_dbg_show NULL
+>  #endif
+>  
+> +static void msm_gpio_log_pin_status(struct gpio_chip *chip, unsigned int offset)
+> +{
+> +	const struct msm_pingroup *g;
+> +	struct msm_pinctrl *pctrl = gpiochip_get_data(chip);
+> +	unsigned int func;
+> +	int is_out;
+> +	int drive;
+> +	int pull;
+> +	int val;
+> +	int egpio_enable;
+> +
+> +	if (!gpiochip_line_is_valid(chip, offset))
+> +		return;
+> +
+> +	g = &pctrl->soc->groups[offset];
+> +	msm_gpio_pin_status_get(pctrl, g, offset, &is_out, &func,
+> +					&drive, &pull, &egpio_enable, &val);
+> +
+> +	pr_debug("%s: %s, %s, func%d, %dmA, %s\n",
+> +		g->grp.name, is_out ? "out" : "in",
+> +		val ? "high" : "low", func,
+> +		msm_regval_to_drive(drive),
+> +		pctrl->soc->pull_no_keeper ? pulls_no_keeper[pull] : pulls_keeper[pull]);
+> +}
+> +
+> +static void msm_gpios_status(struct gpio_chip *chip)
+> +{
+> +	unsigned int i;
+> +
+> +	for (i = 0; i < chip->ngpio; i++)
+> +		msm_gpio_log_pin_status(chip, i);
+> +}
+> +
+>  static int msm_gpio_init_valid_mask(struct gpio_chip *gc,
+>  				    unsigned long *valid_mask,
+>  				    unsigned int ngpios)
+> @@ -1475,6 +1519,35 @@ SIMPLE_DEV_PM_OPS(msm_pinctrl_dev_pm_ops, msm_pinctrl_suspend,
+>  
+>  EXPORT_SYMBOL(msm_pinctrl_dev_pm_ops);
+>  
+> +void debug_pintctrl_msm_enable(void)
+
+Inconsistent naming here as well.
+
+> +{
+> +	pinctrl_msm_log_mask = true;
+> +}
+> +EXPORT_SYMBOL(debug_pintctrl_msm_enable);
+> +
+> +void debug_pintctrl_msm_disable(void)
+> +{
+> +	pinctrl_msm_log_mask = false;
+> +}
+> +EXPORT_SYMBOL(debug_pintctrl_msm_disable);
+> +
+> +static __maybe_unused int noirq_msm_pinctrl_suspend(struct device *dev)
+> +{
+> +	struct msm_pinctrl *pctrl = dev_get_drvdata(dev);
+> +
+> +	if (pinctrl_msm_log_mask) {
+> +		pr_debug("%s\n", pctrl->chip.label);
+> +		msm_gpios_status(&pctrl->chip);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +const struct dev_pm_ops noirq_msm_pinctrl_dev_pm_ops = {
+> +	.suspend_noirq = noirq_msm_pinctrl_suspend,
+> +};
+> +EXPORT_SYMBOL(noirq_msm_pinctrl_dev_pm_ops);
+
+Same here.
+
+> +
+>  int msm_pinctrl_probe(struct platform_device *pdev,
+>  		      const struct msm_pinctrl_soc_data *soc_data)
+>  {
+> @@ -1536,6 +1609,8 @@ int msm_pinctrl_probe(struct platform_device *pdev,
+>  	if (ret)
+>  		return ret;
+>  
+> +	pinctrl_msm_log_mask = false;
+
+This is already false.
+
+> +
+>  	platform_set_drvdata(pdev, pctrl);
+>  
+>  	dev_dbg(&pdev->dev, "Probed Qualcomm pinctrl driver\n");
+> diff --git a/drivers/pinctrl/qcom/pinctrl-msm.h b/drivers/pinctrl/qcom/pinctrl-msm.h
+> index 5e4410bed823..60e0257dafbf 100644
+> --- a/drivers/pinctrl/qcom/pinctrl-msm.h
+> +++ b/drivers/pinctrl/qcom/pinctrl-msm.h
+> @@ -161,6 +161,10 @@ struct msm_pinctrl_soc_data {
+>  };
+>  
+>  extern const struct dev_pm_ops msm_pinctrl_dev_pm_ops;
+> +extern const struct dev_pm_ops noirq_msm_pinctrl_dev_pm_ops;
+> +
+> +void debug_pintctrl_msm_enable(void);
+> +void debug_pintctrl_msm_disable(void);
+
+Without someone calling either of these functions this patch is just
+dead code. Please include the entire solution.
+
+Regards,
+Bjorn
+
+>  
+>  int msm_pinctrl_probe(struct platform_device *pdev,
+>  		      const struct msm_pinctrl_soc_data *soc_data);
+> -- 
+> 2.17.1
+> 
