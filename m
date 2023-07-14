@@ -2,349 +2,322 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C9D4753E2F
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 16:55:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D93DD753E2A
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 16:55:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236196AbjGNOzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 10:55:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60778 "EHLO
+        id S235395AbjGNOzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 10:55:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236207AbjGNOzi (ORCPT
+        with ESMTP id S236195AbjGNOzF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 10:55:38 -0400
-Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com [IPv6:2607:f8b0:4864:20::a2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15F283AB8
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 07:55:27 -0700 (PDT)
-Received: by mail-vk1-xa2c.google.com with SMTP id 71dfb90a1353d-4816078ab3cso1045916e0c.1
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 07:55:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689346527; x=1691938527;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lvhGhwK3hQYyA21peYmIOow9+J4vgG6yjc5ZbzkLWoM=;
-        b=isA2RXNjdhF7BOs33nOBn3lihMCe3kNYZD3BN3FIEdKzVqlcWyzk8XpFLn258zHyEx
-         HZOASVCBXuVm91A+F7BWUEYVD4jZGITprf9R/xww+VODmQp3M1QPjuTOsPlKg0PGqS6t
-         9vac0rtvOFw92FOBg/eEOJ68XftLNynN/g7COuISgMOGRfLAoHin6HKDhyVfm3W2rVs/
-         J381i1bCkLsUZp2vPLZ+dLZmgojIu1+dqrbD7g9LEp69nM30B6nNSSDxB7CDUYyAfUpg
-         P9z/I7nISrbUKQ2sJfi4DNan84G5015UYVOFe72As/l7uxSrGtCM7gZYuBxQIYgasUbh
-         nnqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689346527; x=1691938527;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lvhGhwK3hQYyA21peYmIOow9+J4vgG6yjc5ZbzkLWoM=;
-        b=Y2iJQIZcsEJ+DfKRzAZm+zFMRywpMCUmMjtD+IEYPk007nVBXPNAzoT1C94ey+GJu0
-         oslEmk97DmZcXl5pY/QkN8hckO9jjI7QZx7lcUmraIZ6wDtM+BridKiABDocp957Cb1z
-         /Ryt9puvq3G0oUlpWgeleS71iSPor1SVf0PdXY3Ly6QqvH4fFwGewSh7G8C7QJOBX7eL
-         HRf49KcE2m0AFzAAoGvur2pemFFNC+EygGz+Ef88SjibcufL5JuSNJOysK7Pzr4Ge1Z8
-         A1DdAs3FMF9dizxEJb8Vl2e+iVSKvjE/Eq40KJW5DXYLCW9X/uC/fOWqMO6gTCnoOSNV
-         3Peg==
-X-Gm-Message-State: ABy/qLYnKNEny4AQnsm1pizb3k2c5gjkGlJcDMoi6Ly4VyJIq01FMDd2
-        45wSSiCMwKYAKo1mr34gY18w+1bGWkpT5giw6tegRQ==
-X-Google-Smtp-Source: APBJJlFBpLWkkLl2CX8PmjOhecvGDRkTotYcCL9xT6rQwbez+/O2UZuGeqOlALIkH5NJmj0CD30GBsPbAGECLf0e6Os=
-X-Received: by 2002:a1f:a289:0:b0:481:2ff9:fc3f with SMTP id
- l131-20020a1fa289000000b004812ff9fc3fmr1025156vke.5.1689346526764; Fri, 14
- Jul 2023 07:55:26 -0700 (PDT)
+        Fri, 14 Jul 2023 10:55:05 -0400
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD23930D8;
+        Fri, 14 Jul 2023 07:54:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1689346493;
+        bh=XADEfjndjszbVYJrrMYipbQN7ysubBOBpXKhMIrWSxo=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=UeOIcxZ9v19yUjgSe0SAT7wmloUiDstYjIl0ayAcL5+Eotjs7Hta+skMi5HA55xkQ
+         vd8tRyMFEGW0jEO3tMsSQrtLUh/MPLU2zvPPz+x4u+ZW/4loji/pvrQX4jSlSn49n/
+         Ns1hWErTRmU2/Swz1LdlqkurShKI1HqyoyV82a1PqAPexQX/0UVoCfxCYaFeKPNhi9
+         oxOwWKLlcNz67QbK6FFEcJAJgJvIt4HZEFKYsvBYYNVSkQmDgt80aFo6r3X1zHPhDT
+         TiXAzBH3zJDy8Zpj7fakWFPwhn5LRDF7mjd+sFxW22H2BhrqSetci7PcXMXJA85dcU
+         FjS313RKqgQ+g==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4R2ZJY2njrz1Hrt;
+        Fri, 14 Jul 2023 10:54:53 -0400 (EDT)
+Message-ID: <794520d1-8cfa-0b81-a8d6-2c2bf4b55eb9@efficios.com>
+Date:   Fri, 14 Jul 2023 10:55:32 -0400
 MIME-Version: 1.0
-References: <20230710215906.49514550@kernel.org> <20230711050445.GA19323@lst.de>
- <ZK1FbjG+VP/zxfO1@ziepe.ca> <20230711090047.37d7fe06@kernel.org>
- <04187826-8dad-d17b-2469-2837bafd3cd5@kernel.org> <20230711093224.1bf30ed5@kernel.org>
- <CAHS8izNHkLF0OowU=p=mSNZss700HKAzv1Oxqu2bvvfX_HxttA@mail.gmail.com>
- <20230711133915.03482fdc@kernel.org> <2263ae79-690e-8a4d-fca2-31aacc5c9bc6@kernel.org>
- <CAHS8izP=k8CqUZk7bGUx4ctm4m2kRC2MyEJv+N4+b0cHVkTQmA@mail.gmail.com>
- <ZK6kOBl4EgyYPtaD@ziepe.ca> <CAHS8izNuda2DXKTFAov64F7J2_BbMPaqJg1NuMpWpqGA20+S_Q@mail.gmail.com>
- <143a7ca4-e695-db98-9488-84cf8b78cf86@amd.com>
-In-Reply-To: <143a7ca4-e695-db98-9488-84cf8b78cf86@amd.com>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Fri, 14 Jul 2023 07:55:15 -0700
-Message-ID: <CAHS8izPm6XRS54LdCDZVd0C75tA1zHSu6jLVO8nzTLXCc=H7Nw@mail.gmail.com>
-Subject: Re: Memory providers multiplexing (Was: [PATCH net-next v4 4/5]
- page_pool: remove PP_FLAG_PAGE_FRAG flag)
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Hari Ramakrishnan <rharix@google.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, David Ahern <dsahern@kernel.org>,
-        Samiullah Khawaja <skhawaja@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        brouer@redhat.com, Alexander Duyck <alexander.duyck@gmail.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
-        pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        hariprasad <hkelam@marvell.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Felix Fietkau <nbd@nbd.name>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Shayne Chen <shayne.chen@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Kalle Valo <kvalo@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Jonathan Lemon <jonathan.lemon@gmail.com>, logang@deltatee.com,
-        Bjorn Helgaas <bhelgaas@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [tip: sched/core] sched: Fix performance regression introduced by
+ mm_cid
+Content-Language: en-US
+To:     Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        Aaron Lu <aaron.lu@intel.com>, x86@kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <168214940343.404.10896712987516429042.tip-bot2@tip-bot2>
+ <09e0f469-a3f7-62ef-75a1-e64cec2dcfc5@amd.com>
+ <20230620091139.GZ4253@hirez.programming.kicks-ass.net>
+ <44428f1e-ca2c-466f-952f-d5ad33f12073@amd.com>
+ <3e9eaed6-4708-9e58-c80d-143760d6b23a@efficios.com>
+ <ddbd1564-8135-5bc3-72b4-afb7c6e9caba@amd.com>
+ <a73761e4-b791-e9a2-a276-e1551628e33b@efficios.com>
+ <ae21fca4-68ad-0599-39b6-028ade02b813@amd.com>
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <ae21fca4-68ad-0599-39b6-028ade02b813@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 12:56=E2=80=AFAM Christian K=C3=B6nig
-<christian.koenig@amd.com> wrote:
->
-> Am 12.07.23 um 22:16 schrieb Mina Almasry:
-> > On Wed, Jul 12, 2023 at 6:01=E2=80=AFAM Jason Gunthorpe <jgg@ziepe.ca> =
-wrote:
-> >> On Tue, Jul 11, 2023 at 08:42:24PM -0700, Mina Almasry wrote:
-> >>
-> >>> 1. The device memory driver would be the p2pdma provider. It would
-> >>> expose a user API which allocates a device memory region, calls
-> >>> pci_p2pdma_add_resource() and pci_p2pmem_publish() on it, and returns
-> >>> a reference to it to the userspace.
-> >> This is not quite right, if you convert any of the GPU drivers to use
-> >> P2PDMA you are going to need to restructure the p2pmem stuff to
-> >> seperate the genalloc. The GPU driver must continue to be the owner
-> >> and allocator of the MMIO memory it already controls, we can't have
-> >> two allocators working in parallel.
-> >>
-> >> The genalloc stuff supports the special NVMe use case, I don't know of
-> >> anything else that would like to work that way.
-> >>
-> > I think maybe you misunderstood the proposal. AFAICT the genalloc
-> > stuff works for us, although there are other issues with p2pdma that I
-> > need to solve.
-> >
-> > The proposal was that the uapi in step #1 allocates a region of GPU
-> > memory, and sets up a p2pdma provider for this region of memory. From
-> > the perspective of the GPU, the memory is allocated, and in use by the
-> > user. The p2pdma provider uses genalloc to give out 4K regions with
-> > struct pages to in-kernel allocators from this memory region. Why
-> > would that not work?
->
-> Oh well, where should I start.
->
-> struct page is used in the various I/O  subsystems instead of DMA
-> addresses because it allows for a wider range of operations.
->
-> For example when a page is acquired using get_user_pages() somebody can
-> use the rmap to figure out where a page is mapped and eventually unmap
-> it, map it read only or change the caching attributes etc...
->
-> Then you have the ability to grab a reference to a page, this for
-> example allows I/O operations to complete and not access freed memory
-> even when the application has already long died.
->
-> Then a very common use case is that you need to fallback to a CPU copy
-> because the data inside the page isn't aligned or outside the physical
-> reach of a device.
->
-> The are just numerous issues with what I listed above, for example some
-> of those use cases only work with pagecache pages.
->
-> Approaching it from the user side, with GPUs there is usually no
-> guarantee that stuff is coherent. E.g. a network card wouldn't
-> automatically see the results of a calculation.
->
-> Then GPUs usually have tons of memory which isn't CPU accessible or even
-> PCIe bus accessible. So a bounce buffer done with a CPU copy won't work,
-> you need to bounce this with a hw assisted copy. Or you have inter
-> device connections. For example ethernet over HDMI links would be able
-> to access all of the internal GPU resources.
->
-> Then GPUs often need to shuffle memory around, e.g. similar
-> functionality to ___GFP_MOVABLE. Just with stuff not CPU accessible nor
-> mapped into CPU page tables.
->
-> ...
->
-> I mean I can go with this list for quite some time :)
->
-> > Looking at the code, that seems to be how p2pdma
-> > works today. The p2pdma provider does p2pdma_add_resource() on a chunk
-> > of its memory, and the genalloc allocates memory from that chunk?
->
-> Well this is how it works for NVMe, that doesn't mean this way works for
-> GPUs or acceleration devices.
->
+On 7/14/23 02:02, Swapnil Sapkal wrote:
+> Hello Mathieu,
+> 
+> On 6/22/2023 12:21 AM, Mathieu Desnoyers wrote:
+>> On 6/21/23 12:36, Swapnil Sapkal wrote:
+>>> Hello Mathieu,
+>>>
+>> [...]
+>>>>
+>>>> I suspect the regression is caused by the mm_count cache line bouncing.
+>>>>
+>>>> Please try with this additional patch applied:
+>>>>
+>>>> https://lore.kernel.org/lkml/20230515143536.114960-1-mathieu.desnoyers@efficios.com/
+>>>
+>>> Thanks for the suggestion. I tried out with the patch you suggested. 
+>>> I am seeing
+>>> improvement in hackbench numbers with mm_count padding. But this is 
+>>> not matching
+>>> with what we achieved through reverting the new mm_cid patch.
+>>>
+>>> Below are the results on the 1 Socket 4th Generation EPYC Processor 
+>>> (1 x 96C/192T):
+>>>
+>>> Threads:
+>>>
+>>> Test:              Base (v6.4-rc1)   Base + new_mmcid_reverted  Base 
+>>> + mm_count_padding
+>>>   1-groups:         5.23 (0.00 pct)         4.61 (11.85 pct)        
+>>> 5.11 (2.29 pct)
+>>>   2-groups:         4.99 (0.00 pct)         4.72 (5.41 pct)         
+>>> 5.00 (-0.20 pct)
+>>>   4-groups:         5.96 (0.00 pct)         4.87 (18.28 pct)        
+>>> 5.86 (1.67 pct)
+>>>   8-groups:         6.58 (0.00 pct)         5.44 (17.32 pct)        
+>>> 6.20 (5.77 pct)
+>>> 16-groups:        11.48 (0.00 pct)         8.07 (29.70 pct)       
+>>> 10.68 (6.96 pct)
+>>>
+>>> Processes:
+>>>
+>>> Test:              Base (v6.4-rc1)  Base + new_mmcid_reverted   Base 
+>>> + mm_count_padding
+>>>   1-groups:         5.19 (0.00 pct)         4.90 (5.58 pct)         
+>>> 5.19 (0.00 pct)
+>>>   2-groups:         5.44 (0.00 pct)         5.39 (0.91 pct)         
+>>> 5.39 (0.91 pct)
+>>>   4-groups:         5.69 (0.00 pct)         5.64 (0.87 pct)         
+>>> 5.64 (0.87 pct)
+>>>   8-groups:         6.08 (0.00 pct)         6.01 (1.15 pct)         
+>>> 6.04 (0.65 pct)
+>>> 16-groups:        10.87 (0.00 pct)        10.83 (0.36 pct)        
+>>> 10.93 (-0.55 pct)
+>>>
+>>> The ibs profile shows that function __switch_to_asm() is coming at 
+>>> top in baseline
+>>> run and is not seen with mm_count padding patch. Will be attaching 
+>>> full ibs profile
+>>> data for all the 3 runs:
+>>>
+>>> # Base (v6.4-rc1)
+>>> Threads:
+>>> Total time: 11.486 [sec]
+>>>
+>>>     5.15%  sched-messaging  [kernel.vmlinux]      [k] __switch_to_asm
+>>>     4.31%  sched-messaging  [kernel.vmlinux]      [k] copyout
+>>>     4.29%  sched-messaging  [kernel.vmlinux]      [k] 
+>>> native_queued_spin_lock_slowpath
+>>>     4.22%  sched-messaging  [kernel.vmlinux]      [k] copyin
+>>>     3.92%  sched-messaging  [kernel.vmlinux]      [k] 
+>>> apparmor_file_permission
+>>>     2.91%  sched-messaging  [kernel.vmlinux]      [k] __schedule
+>>>     2.34%  swapper          [kernel.vmlinux]      [k] __switch_to_asm
+>>>     2.10%  sched-messaging  [kernel.vmlinux]      [k] 
+>>> prepare_to_wait_event
+>>>     2.10%  sched-messaging  [kernel.vmlinux]      [k] try_to_wake_up
+>>>     2.07%  sched-messaging  [kernel.vmlinux]      [k] 
+>>> finish_task_switch.isra.0
+>>>     2.00%  sched-messaging  [kernel.vmlinux]      [k] pipe_write
+>>>     1.82%  sched-messaging  [kernel.vmlinux]      [k] 
+>>> check_preemption_disabled
+>>>     1.73%  sched-messaging  [kernel.vmlinux]      [k] 
+>>> exit_to_user_mode_prepare
+>>>     1.52%  sched-messaging  [kernel.vmlinux]      [k] __entry_text_start
+>>>     1.49%  sched-messaging  [kernel.vmlinux]      [k] osq_lock
+>>>     1.45%  sched-messaging  libc.so.6             [.] write
+>>>     1.44%  swapper          [kernel.vmlinux]      [k] native_sched_clock
+>>>     1.38%  sched-messaging  [kernel.vmlinux]      [k] psi_group_change
+>>>     1.38%  sched-messaging  [kernel.vmlinux]      [k] pipe_read
+>>>     1.37%  sched-messaging  libc.so.6             [.] read
+>>>     1.06%  sched-messaging  [kernel.vmlinux]      [k] vfs_read
+>>>     1.01%  swapper          [kernel.vmlinux]      [k] psi_group_change
+>>>     1.00%  sched-messaging  [kernel.vmlinux]      [k] update_curr
+>>>
+>>> # Base + mm_count_padding
+>>> Threads:
+>>> Total time: 11.384 [sec]
+>>>
+>>>     4.43%  sched-messaging  [kernel.vmlinux]         [k] copyin
+>>>     4.39%  sched-messaging  [kernel.vmlinux]         [k] 
+>>> native_queued_spin_lock_slowpath
+>>>     4.07%  sched-messaging  [kernel.vmlinux]         [k] 
+>>> apparmor_file_permission
+>>>     4.07%  sched-messaging  [kernel.vmlinux]         [k] copyout
+>>>     2.49%  sched-messaging  [kernel.vmlinux]         [k] 
+>>> entry_SYSCALL_64
+>>>     2.37%  sched-messaging  [kernel.vmlinux]         [k] 
+>>> update_cfs_group
+>>>     2.19%  sched-messaging  [kernel.vmlinux]         [k] pipe_write
+>>>     2.00%  sched-messaging  [kernel.vmlinux]         [k] 
+>>> check_preemption_disabled
+>>>     1.93%  swapper          [kernel.vmlinux]         [k] update_load_avg
+>>>     1.81%  sched-messaging  [kernel.vmlinux]         [k] 
+>>> exit_to_user_mode_prepare
+>>>     1.69%  sched-messaging  [kernel.vmlinux]         [k] try_to_wake_up
+>>>     1.58%  sched-messaging  libc.so.6                [.] write
+>>>     1.53%  sched-messaging  [kernel.vmlinux]         [k] 
+>>> psi_group_change
+>>>     1.50%  sched-messaging  libc.so.6                [.] read
+>>>     1.50%  sched-messaging  [kernel.vmlinux]         [k] pipe_read
+>>>     1.39%  sched-messaging  [kernel.vmlinux]         [k] update_load_avg
+>>>     1.39%  sched-messaging  [kernel.vmlinux]         [k] osq_lock
+>>>     1.30%  sched-messaging  [kernel.vmlinux]         [k] update_curr
+>>>     1.28%  swapper          [kernel.vmlinux]         [k] 
+>>> psi_group_change
+>>>     1.16%  sched-messaging  [kernel.vmlinux]         [k] vfs_read
+>>>     1.12%  sched-messaging  [kernel.vmlinux]         [k] vfs_write
+>>>     1.10%  sched-messaging  [kernel.vmlinux]         [k] 
+>>> entry_SYSRETQ_unsafe_stack
+>>>     1.09%  sched-messaging  [kernel.vmlinux]         [k] __switch_to_asm
+>>>     1.08%  sched-messaging  [kernel.vmlinux]         [k] do_syscall_64
+>>>     1.06%  sched-messaging  [kernel.vmlinux]         [k] 
+>>> select_task_rq_fair
+>>>     1.03%  swapper          [kernel.vmlinux]         [k] 
+>>> update_cfs_group
+>>>     1.00%  swapper          [kernel.vmlinux]         [k] rb_insert_color
+>>>
+>>> # Base + reverted_new_mm_cid
+>>> Threads:
+>>> Total time: 7.847 [sec]
+>>>
+>>>    12.14%  sched-messaging  [kernel.vmlinux]      [k] 
+>>> native_queued_spin_lock_slowpath
+>>>     8.86%  swapper          [kernel.vmlinux]      [k] 
+>>> native_queued_spin_lock_slowpath
+>>>     6.13%  sched-messaging  [kernel.vmlinux]      [k] copyin
+>>>     5.54%  sched-messaging  [kernel.vmlinux]      [k] 
+>>> apparmor_file_permission
+>>>     3.59%  sched-messaging  [kernel.vmlinux]      [k] copyout
+>>>     2.61%  sched-messaging  [kernel.vmlinux]      [k] osq_lock
+>>>     2.48%  sched-messaging  [kernel.vmlinux]      [k] pipe_write
+>>>     2.33%  sched-messaging  [kernel.vmlinux]      [k] 
+>>> exit_to_user_mode_prepare
+>>>     2.01%  sched-messaging  [kernel.vmlinux]      [k] 
+>>> check_preemption_disabled
+>>>     1.96%  sched-messaging  [kernel.vmlinux]      [k] __entry_text_start
+>>>     1.91%  sched-messaging  libc.so.6             [.] write
+>>>     1.77%  sched-messaging  libc.so.6             [.] read
+>>>     1.64%  sched-messaging  [kernel.vmlinux]      [k] 
+>>> mutex_spin_on_owner
+>>>     1.58%  sched-messaging  [kernel.vmlinux]      [k] pipe_read
+>>>     1.52%  sched-messaging  [kernel.vmlinux]      [k] try_to_wake_up
+>>>     1.38%  sched-messaging  [kernel.vmlinux]      [k] 
+>>> ktime_get_coarse_real_ts64
+>>>     1.35%  sched-messaging  [kernel.vmlinux]      [k] vfs_write
+>>>     1.28%  sched-messaging  [kernel.vmlinux]      [k] 
+>>> entry_SYSRETQ_unsafe_stack
+>>>     1.28%  sched-messaging  [kernel.vmlinux]      [k] vfs_read
+>>>     1.25%  sched-messaging  [kernel.vmlinux]      [k] do_syscall_64
+>>>     1.22%  sched-messaging  [kernel.vmlinux]      [k] __fget_light
+>>>     1.18%  sched-messaging  [kernel.vmlinux]      [k] mutex_lock
+>>>     1.12%  sched-messaging  [kernel.vmlinux]      [k] file_update_time
+>>>     1.04%  sched-messaging  [kernel.vmlinux]      [k] _copy_from_iter
+>>>     1.01%  sched-messaging  [kernel.vmlinux]      [k] current_time
+>>>
+>>> So with the reverted new_mm_cid patch, we are seeing a lot of time 
+>>> being spent in
+>>> native_queued_spin_lock_slowpath and yet, hackbench finishes faster.
+>>>
+>>> I keep further digging into this please let me know if you have any 
+>>> pointers for me.
+>>
+>> Do you have CONFIG_SECURITY_APPARMOR=y ? Can you try without ?
+>>
+> Sorry for the delay in response. My system was busy running some 
+> workloads. I tried
+> running hackbench disabling apparmor, looks like apparmor is not the 
+> culprit here.
+> Below are the results with apparmor disabled:
+> 
+> Test:                   Base            Base + Reverted_new_mmcid   
+> Base+Apparmour_disabled
+>   1-groups:         2.81 (0.00 pct)         2.79 (0.71 pct)              
+> 2.79 (0.71 pct)
+>   2-groups:         3.25 (0.00 pct)         3.25 (0.00 pct)              
+> 3.20 (1.53 pct)
+>   4-groups:         3.44 (0.00 pct)         3.28 (4.65 pct)              
+> 3.43 (0.29 pct)
+>   8-groups:         3.52 (0.00 pct)         3.42 (2.84 pct)              
+> 3.53 (-0.28 pct)
+> 16-groups:         5.65 (0.00 pct)         4.52 (20.00 pct)             
+> 5.67 (-0.35 pct)
 
-Thanks Christian, yes, I misunderstood how this works and I apologize
-for that. From reading the p2pdma interface it looked to me like it
-takes a buffer as input and goes ahead and allocates the struct pages
-for it and exports them as a provider. As you and Jason have
-repeatedly tried to explain to me this bit is NVMe specific and as
-Jason puts it it is a "big ask to P2P enable any of the DRM drivers".
+Can you provide the kernel config file associated with this
+test ? I would also need to see ibs profiles showing the
+functions using most cpu, especially spinlocks and their
+callers.
 
-I am facing some logistical issues as well. My use case requires NIC
-with special features, and even getting access to the appropriate
-hardware may be an issue for me.
+My working hypothesis is that adding the rseq-mm-cid spinlock
+in the scheduler improves performances of your benchmark because
+it lessens the contention on _another_ lock somewhere else.
 
-I guess the remaining option not fully explored is the idea of getting
-the networking stack to consume the scatterlist that
-dma_buf_map_attachment() provides for the device memory. The very
-rough approach I have in mind (for the RX path) is:
+Note that we've just received a brand new 2 sockets,
+96 cores/socket AMD machine at EfficiOS. We've bought it to
+increase our coverage of scalability testing. With this I should
+be able to reproduce those regressions on my end, which should
+facilitate the investigation.
 
-1. Some uapi that binds a dmabuf to an RX queue. It will do a
-dma_buf_map_attachment() and get the sg table.
+Thanks!
 
-2. We need to feed the scratterlist entries to some allocator that
-will chunk it up into pieces that can be allocated by the NIC for
-incoming traffic. I'm thinking genalloc may work for this as-is, but I
-may need to add one or use something else if I run into some issue.
-
-3. We can implement a memory_provider that allocates these chunks and
-wraps them in a struct new_abstraction (as David called it) and feeds
-those into the page pool.
-
-4. The page pool would need to be able to process these struct
-new_abstraction alongside the struct pages it normally gets from
-providers. This is maybe the most complicated part, but looking at the
-page pool code it doesn't seem that big of a hurdle (but I have not
-tried a POC yet).
-
-5. The drivers (I looked at mlx5) seem to avoid making any mm calls on
-the struct pages returned by the pool; the pool abstracts everything
-already. The changes to the drivers may be minimal..?
-
-6. We would need to add a new helper, skb_add_rx_new_abstraction_frag
-that creates a frag out of new_abstraction rather than a struct page.
-
-Once the skb frags with struct new_abstraction are in the TCP stack,
-they will need some special handling in code accessing the frags. But
-my RFC already addressed that somewhat because the frags were
-inaccessible in that case. In this case the frags will be both
-inaccessible and will not be struct pages at all (things like
-get_page() will not work), so more special handling will be required,
-maybe.
-
-I imagine the TX path would be considerably less complicated because
-the allocator and page pool are not involved (I think).
-
-Anyone see any glaring issues with this approach?
-
-> Regards,
-> Christian.
->
-> >
-> > The actual issues I see with this approach are:
-> >
-> > 1. There is no way for the p2pdma provider to relinquish back the
-> > memory it has provided via pci_p2pdma_add_resource(), in the case that
-> > the user crashed or would like to free the GPU buffer. I would need to
-> > add a pci_p2pdma_remove_resource(). Would that be  acceptable?
-> >
-> > 2. The p2pdma semantics seem to be global to the pci device. I.e., 1
-> > GPU can export 1 p2pdma resource at a time (the way I'm reading the
-> > API). This is not usable for my use case. I would need multiple users
-> > to be able to use the uapi in step #1 simultaneously. I would need the
-> > same pci device to export different p2pdma resources simultaneously
-> > and the p2pdma clients would need to be able to import some of the
-> > resources. I would likely need to add an api like this:
-> >
-> > diff --git a/include/linux/pci-p2pdma.h b/include/linux/pci-p2pdma.h
-> > index 8318a97c9c61..c9d754713fdc 100644
-> > --- a/include/linux/pci-p2pdma.h
-> > +++ b/include/linux/pci-p2pdma.h
-> > @@ -19,6 +19,33 @@ struct scatterlist;
-> >   #ifdef CONFIG_PCI_P2PDMA
-> >   int pci_p2pdma_add_resource(struct pci_dev *pdev, int bar, size_t siz=
-e,
-> >                  u64 offset);
-> > +
-> > +/* Adds a resource similar to pci_p2pdma_add_resource, and returns a f=
-ile
-> > + * handle referring to this resource. Multiple such resources can be e=
-xported
-> > + * by the same pci device.
-> > + */
-> > +struct file *pci_p2pdma_add_resource_with_handle(struct pci_dev *pdev,
-> > +               int bar,
-> > +               size_t size,
-> > +               u64 offset);
-> > +
-> > +/* Remove a resource added via pci_p2pdma_add_resource_with_handle() *=
-/
-> > +struct file *pci_p2pdma_remove_resource_with_handle(
-> > +               struct file *p2pdma_resource_file);
-> > +
-> > +/* Allocates memory from a resource created using
-> > + * pci_p2pdma_add_resource_with_handle()
-> > + */
-> > +void *pci_alloc_p2pmem_from_handle(struct file *p2pdma_resource_file,
-> > +               size_t size);
-> > +
-> > +/* Frees p2pmem to a resource created using
-> > + * pci_p2pdma_add_resource_with_handle()
-> > + */
-> > +void pci_free_p2pmem_to_handle(struct pci_dev *p2pdma_resource_file,
-> > +               void *addr,
-> > +               size_t size);
-> > +
-> >
-> > Looking for feedback from anyone knowledgeable, but the p2pdma
-> > maintainers as well if possibl.
-> >
-> >>> 2. The NIC driver would be the p2pdma client and orchestrator. It
-> >>> would expose a user API which binds an rxq to a pci device. Prior to
-> >>> the bind the user API would check that the pci device has published
-> >>> p2p memory (pci_has_p2pmem()), and check the the p2p mem is accessibl=
-e
-> >>> to the driver (pci_p2pdma_distance() I think), etc.
-> >> This doesn't fit the programming model for GPUs at all. You don't want
-> >> to get packets landing in random GPU memory that a kernel side
-> >> allocator selects, you want packets landing in GPU memory owned by a
-> >> specific process that owns the TCP connection.
-> >>
-> > I think this comment is maybe a side effect of the misunderstanding.
-> > In the proposal, the user allocates a GPU buffer using the API in step
-> > #1, and then binds the memory to the NIC rx queue using the API
-> > specified in step #2. We use flow steering & RSS to steer this user's
-> > TCP traffic to the buffer owned by them.
-> >
-> >> This is why DMABUF is used here as it gives a handle to the GPU
-> >> memory. What you want is to get the P2P pages either directly from the
-> >> DMABUF or via pin_user_pages() on the DMABUF's mmap.
-> >>
-> >>> AFAICT, all the concerns brought up in this thread are sidestepped by
-> >>> using p2pdma. I need not allocate struct pages in the core dma-buf
-> >>> code anymore (or anywhere), and I need not allocate pgmaps. I would
-> >>> just re-use the p2pdma support.
-> >> Well, as I said it is going to be a big ask to P2P enable any of the
-> >> DRM drivers.
-> >>
-> >> And you still have the netmem vs zone_device struct page conflict to
-> >> figure out
-> >>
-> >> But it is alot closer to reasonable than this RFC.
-> >>
-> >> Jason
->
+Mathieu
 
 
---=20
-Thanks,
-Mina
+> 
+> Thanks,
+> Swapnil
+> 
+>> I notice that apparmor_file_permission appears near the top of your
+>> profiles, and apparmor uses an internal aa_buffers_lock spinlock,
+>> which could possibly explain the top hits for
+>> native_queued_spin_lock_slowpath. My current suspicion is that
+>> the raw spinlock that was taken by "Base + reverted_new_mm_cid"
+>> changed the contention pattern on the apparmor lock enough to
+>> speed things up by pure accident.
+>>
+>> Thanks,
+>>
+>> Mathieu
+>>
+>>
+>>>
+>>>>
+>>>> This patch has recently been merged into the mm tree.
+>>>>
+>>>> Thanks,
+>>>>
+>>>> Mathieu
+>>>>
+>>> -- 
+>>> Thanks and Regards,
+>>> Swapnil
+>>
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
+
