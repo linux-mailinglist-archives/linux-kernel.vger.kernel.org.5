@@ -2,145 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A46B7537B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 12:15:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40516753786
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 12:09:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236118AbjGNKPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 06:15:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59118 "EHLO
+        id S236024AbjGNKJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 06:09:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236102AbjGNKPK (ORCPT
+        with ESMTP id S232239AbjGNKJf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 06:15:10 -0400
-Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BD24359E
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 03:14:38 -0700 (PDT)
-Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20230714101436epoutp0334184c575f181c8567923c1a498ad506~xtGPUqsI10695706957epoutp03t
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 10:14:36 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20230714101436epoutp0334184c575f181c8567923c1a498ad506~xtGPUqsI10695706957epoutp03t
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1689329676;
-        bh=BUueTlTb1GY44yfxXatx1oK5LtS9J3wrB4ATu5iHCOw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=anLk/lIjdijFmnS+utmBp1wSoI/LlEFuwiXfWkRW8tKTkXSSZcjvyr4z8Htpqcl72
-         bLyBBakFSYNYIBdYDy8Km3/48vhJrRiGnzGYq1lsmp7fI8tpiZNlN/Tr/oa/v9UnUV
-         mXoQ34SSC6jeC84KnQ58ltpaatqoRijh9gTJECy0=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas2p3.samsung.com (KnoxPortal) with ESMTP id
-        20230714101435epcas2p3b2a1986051f6adc541e33336e32d6fd1~xtGOm9PEF0818708187epcas2p3R;
-        Fri, 14 Jul 2023 10:14:35 +0000 (GMT)
-Received: from epsmges2p1.samsung.com (unknown [182.195.36.99]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4R2S570Bgcz4x9Pp; Fri, 14 Jul
-        2023 10:14:35 +0000 (GMT)
-Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
-        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        F6.8B.49913.A0021B46; Fri, 14 Jul 2023 19:14:34 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas2p3.samsung.com (KnoxPortal) with ESMTPA id
-        20230714101434epcas2p3e2475698c527ca72dee797225d3dad37~xtGNedua00818708187epcas2p3P;
-        Fri, 14 Jul 2023 10:14:34 +0000 (GMT)
-Received: from epsmgmcp1.samsung.com (unknown [182.195.42.82]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20230714101434epsmtrp1e978c725921bcfca415f5a51b811ad95~xtGNdwh6N1161511615epsmtrp1i;
-        Fri, 14 Jul 2023 10:14:34 +0000 (GMT)
-X-AuditID: b6c32a45-5cfff7000000c2f9-95-64b1200a172d
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgmcp1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        5D.E9.64355.90021B46; Fri, 14 Jul 2023 19:14:34 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.229.9.55]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20230714101433epsmtip1c6794cab3d2c11f4be5799b9bd8640b6~xtGNQKFAY0144301443epsmtip1K;
-        Fri, 14 Jul 2023 10:14:33 +0000 (GMT)
-From:   Jaewon Kim <jaewon02.kim@samsung.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>
-Cc:     linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org,
-        Chanho Park <chanho61.park@samsung.com>,
-        Jaewon Kim <jaewon02.kim@samsung.com>
-Subject: [PATCH v2 2/3] pwm: samsung: Add compatible for ExynosAutov9 SoC
-Date:   Fri, 14 Jul 2023 19:09:28 +0900
-Message-Id: <20230714100929.94563-3-jaewon02.kim@samsung.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230714100929.94563-1-jaewon02.kim@samsung.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpgk+LIzCtJLcpLzFFi42LZdljTQpdLYWOKwfGpVhYP5m1js7i8X9ti
-        zd5zTBbzj5xjtdjRcITVou/FQ2aLTY+vsVpc3jWHzeLu3VWMFjPO72OyaN17hN3i5655LBa3
-        J05mdOD12DnrLrvHplWdbB53ru1h89i8pN6j/6+BR9+WVYwenzfJBbBHZdtkpCampBYppOYl
-        56dk5qXbKnkHxzvHm5oZGOoaWlqYKynkJeam2iq5+AToumXmAN2qpFCWmFMKFApILC5W0rez
-        KcovLUlVyMgvLrFVSi1IySkwL9ArTswtLs1L18tLLbEyNDAwMgUqTMjOOPHmO3vBEraKU5vk
-        GxhXs3YxcnJICJhIPDm1iL2LkYtDSGAHo0Tvxc/MEM4nRok3896xwjlb2/8wwrTMvfiCESKx
-        k1Hi5uNeqKqPjBIzpnSDDWYT0Jb4vn4xmC0isJBJ4tn9MhCbWeAbo8TkPzwgtrCAp8TmC4tZ
-        QGwWAVWJax/vgG3gFbCVmLZtERPENnmJ1RsOMIPYnAJ2Es/+bWIDWSYh8JNd4u6/z1AnuUjM
-        2XMfqkFY4tXxLewQtpTEy/42KDtbon36H6ivKyQubpjNBmEbS8x61g40hwPoOE2J9bv0QUwJ
-        AWWJI7dYIE7mk+g4/JcdIswr0dEmBNGoJnF/6jmoITISk46shDrAQ+LEgTvQIJkIDJK/hxkn
-        MMrNQliwgJFxFaNYakFxbnpqsVGBITzCkvNzNzGCk6KW6w7GyW8/6B1iZOJgPMQowcGsJMKr
-        sm1dihBvSmJlVWpRfnxRaU5q8SFGU2DYTWSWEk3OB6blvJJ4QxNLAxMzM0NzI1MDcyVx3nut
-        c1OEBNITS1KzU1MLUotg+pg4OKUamNL2OXGclY3Uvi3PLv629+y8Z4fqpdYcPvzw/cno2Ufm
-        8voteLNgV8Uzk+lOgtPnXXh34+TlDpt4RvdzWkrccQam7x4divd9+zDL1OTCv4dx5j+KWbbs
-        dF5e2HnJtUnpxa5Tm25eW7dHnvWtbIiSR8qb8qIMLk6lSRsMvuj9nlt68bLBdT/Nidp1V8WE
-        /ZVkNjVvLL+UsPX9Im62T9dLJuXtszx7X7f4+9ae2s7u8/+qPp5dFHlR48bft7sm7+ouKu1K
-        /8WhVxpSnadv86axTWn50e1BRt+OqQfM3dJ18FTijquOsR5PlwvUpfra269t+vPweUZtV6/m
-        dd2N+Zee5318YDff5OdEJaZHehJL7E8rsRRnJBpqMRcVJwIA/S9NKRMEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrJLMWRmVeSWpSXmKPExsWy7bCSnC6XwsYUg8Z2JosH87axWVzer22x
-        Zu85Jov5R86xWuxoOMJq0ffiIbPFpsfXWC0u75rDZnH37ipGixnn9zFZtO49wm7xc9c8Fovb
-        EyczOvB67Jx1l91j06pONo871/aweWxeUu/R/9fAo2/LKkaPz5vkAtijuGxSUnMyy1KL9O0S
-        uDJOvPnOXrCEreLUJvkGxtWsXYycHBICJhJzL75g7GLk4hAS2M4o8WvJYRaIhIzE8md9bBC2
-        sMT9liOsEEXvGSWWrp3IBJJgE9CW+L5+MVhCRGAxk8Sb7odgDrPAH0aJ/qYVYDuEBTwlNl9Y
-        DDaWRUBV4trHO4wgNq+ArcS0bYuYIFbIS6zecIAZxOYUsJN49m8T2GohoJoPj38wTWDkW8DI
-        sIpRNLWgODc9N7nAUK84Mbe4NC9dLzk/dxMjOHS1gnYwLlv/V+8QIxMH4yFGCQ5mJRFelW3r
-        UoR4UxIrq1KL8uOLSnNSiw8xSnOwKInzKud0pggJpCeWpGanphakFsFkmTg4pRqYNDQsvNb+
-        SQtuVH8e+NjPvPN8zdTrCd4v6wyOqF1MWMH2a/fT8lTRzXpq2xZZL7P1tou5lPtA48nG10w7
-        vkRtNq56mz5lvoO16/3POZuc929xTPzLIFrxhkVgscdDuWY5E6Xapvt5guYmETLx2559scpg
-        t0xIvfR138EnjSwdd29K/5hs1a+otj1s29k+9nccW2TTMhKrX/uf4friMSFt2t0DPx/7m4vJ
-        JwktV8lfYfpCyHy1wmmW6FvvGIo3TZuotPdUv9XUkrfO651rxKujf04/xvA7ouP2C36W9avv
-        2/kaWK9miVs2WXZdsela+2g1M3aB4y1yd2onO7xR9N4rLlN8q+XRPD6tuZ6afn+VWIozEg21
-        mIuKEwEK9A30zAIAAA==
-X-CMS-MailID: 20230714101434epcas2p3e2475698c527ca72dee797225d3dad37
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20230714101434epcas2p3e2475698c527ca72dee797225d3dad37
-References: <20230714100929.94563-1-jaewon02.kim@samsung.com>
-        <CGME20230714101434epcas2p3e2475698c527ca72dee797225d3dad37@epcas2p3.samsung.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Fri, 14 Jul 2023 06:09:35 -0400
+Received: from mailbox.box.xen0n.name (mail.xen0n.name [115.28.160.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5419C110;
+        Fri, 14 Jul 2023 03:09:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xen0n.name; s=mail;
+        t=1689329370; bh=hWCZsyTolyvqPpsniqfV8YykEWr5h1TsQRZZ3uupfmc=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=cKQxoE2Sm5xJiKVY3pkRGCOdcSFxLuZrJwnG+HIAI8y6KvYL0E0chTFy921VZEYE2
+         EZRpgjWNMRbJKXfcnskcgxZAlhIV7/TaB6a/qxDBFRnbE9S5HMtz6PY3ADbiHFvUL7
+         atXKbhbri0M0orIyqABNdhZ5getNR7XeyZnc56OA=
+Received: from [100.100.34.13] (unknown [220.248.53.61])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id 48F4460148;
+        Fri, 14 Jul 2023 18:09:30 +0800 (CST)
+Message-ID: <63b68574-4af7-3524-4fc7-edac7ec82d84@xen0n.name>
+Date:   Fri, 14 Jul 2023 18:09:29 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH v16 05/30] LoongArch: KVM: Add vcpu related header files
+Content-Language: en-US
+To:     bibo mao <maobibo@loongson.cn>, Huacai Chen <chenhuacai@kernel.org>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        loongarch@lists.linux.dev, Jens Axboe <axboe@kernel.dk>,
+        Mark Brown <broonie@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Xi Ruoyao <xry111@xry111.site>, hejinyang@loongson.cn,
+        Tianrui Zhao <zhaotianrui@loongson.cn>
+References: <20230629075538.4063701-1-zhaotianrui@loongson.cn>
+ <20230629075538.4063701-6-zhaotianrui@loongson.cn>
+ <CAAhV-H7P_GSsoo+g5o0BTCzK4fxwH5d2dQOYde-VpcGvn4SXQA@mail.gmail.com>
+ <152f7869-d591-0134-cf9d-b55774a135e8@loongson.cn>
+ <CAAhV-H4N2wdB8n7Pindv9WdVPLPOboK0Ys75SWOkMZU+=NWEbQ@mail.gmail.com>
+ <aa3a99cf-ec23-3094-b6c8-1b433ddcb409@loongson.cn>
+From:   WANG Xuerui <kernel@xen0n.name>
+In-Reply-To: <aa3a99cf-ec23-3094-b6c8-1b433ddcb409@loongson.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add new compatible string to support ExynosAutov9 SoC.
+On 2023/7/14 17:58, bibo mao wrote:
+> 
+> 
+> 在 2023/7/14 17:22, Huacai Chen 写道:
+>> Hi, Bibo,
+>>
+>> On Fri, Jul 14, 2023 at 3:45 PM bibo mao <maobibo@loongson.cn> wrote:
+>>>
+>>>
+>>>
+>>> 在 2023/7/14 15:11, Huacai Chen 写道:
+>>>> Hi, Tianrui,
+>>>>
+>>>> On Thu, Jun 29, 2023 at 3:55 PM Tianrui Zhao <zhaotianrui@loongson.cn> wrote:
+>>>>>
+>>>>> Add LoongArch vcpu related header files, including vcpu csr
+>>>>> information, irq number defines, and some vcpu interfaces.
+>>>>>
+>>>>> Reviewed-by: Bibo Mao <maobibo@loongson.cn>
+>>>>> Signed-off-by: Tianrui Zhao <zhaotianrui@loongson.cn>
+>>>>> ---
+>>>>>   arch/loongarch/include/asm/insn-def.h  |  55 ++++++
+>>>>>   arch/loongarch/include/asm/kvm_csr.h   | 231 +++++++++++++++++++++++++
+>>>>>   arch/loongarch/include/asm/kvm_vcpu.h  |  97 +++++++++++
+>>>>>   arch/loongarch/include/asm/loongarch.h |  20 ++-
+>>>>>   arch/loongarch/kvm/trace.h             | 168 ++++++++++++++++++
+>>>>>   5 files changed, 566 insertions(+), 5 deletions(-)
+>>>>>   create mode 100644 arch/loongarch/include/asm/insn-def.h
+>>>>>   create mode 100644 arch/loongarch/include/asm/kvm_csr.h
+>>>>>   create mode 100644 arch/loongarch/include/asm/kvm_vcpu.h
+>>>>>   create mode 100644 arch/loongarch/kvm/trace.h
+>>>>>
+>>>>> diff --git a/arch/loongarch/include/asm/insn-def.h b/arch/loongarch/include/asm/insn-def.h
+>>>>> new file mode 100644
+>>>>> index 000000000000..e285ee108fb0
+>>>>> --- /dev/null
+>>>>> +++ b/arch/loongarch/include/asm/insn-def.h
+>>>>> @@ -0,0 +1,55 @@
+>>>>> +/* SPDX-License-Identifier: GPL-2.0-only */
+>>>>> +
+>>>>> +#ifndef __ASM_INSN_DEF_H
+>>>>> +#define __ASM_INSN_DEF_H
+>>>>> +
+>>>>> +#include <linux/stringify.h>
+>>>>> +#include <asm/gpr-num.h>
+>>>>> +#include <asm/asm.h>
+>>>>> +
+>>>>> +#define INSN_STR(x)            __stringify(x)
+>>>>> +#define CSR_RD_SHIFT           0
+>>>>> +#define CSR_RJ_SHIFT           5
+>>>>> +#define CSR_SIMM14_SHIFT       10
+>>>>> +#define CSR_OPCODE_SHIFT       24
+>>>> As all needed instructions have already upstream in binutils now and
+>>>> binutils 2.41 will be released soon, I suggest again to introduce
+>>>> AS_HAS_LVZ_EXTENSION and make KVM depend on AS_HAS_LVZ_EXTENSION.
+>>> It is a good news that binutils 2.41 has supported LVZ assemble language.
+>>> we will add AS_HAS_LVZ_EXTENSION support, however KVM need not depend on
+>>> AS_HAS_LVZ_EXTENSION since bintuils 2.41 is not popularly used. yeap we
+>>> need write beautiful code, also we should write code with pratical usage.
+>> 1, For pure upstream: the CI toolchain comes from
+>> https://mirrors.edge.kernel.org/pub/tools/crosstool/. Since binutils
+>> 2.41 will be released soon, CI toolchain will also be updated soon.
+>>
+>> 2, For community distributions, such as Fedora rawhide, Debian
+>> unstable and Arch: they usually choose the latest released version, so
+>> binutils 2.41 will be used quickly.
+>>
+>> 3, For downstream distributions, such as UOS and Kylin: if they choose
+>> kernel as new as 6.6, they may probably choose binutils as new as
+>> 2.41; if they choose an LTS kernel (e.g., 6.1), they should backport
+>> KVM support to the kernel, then they don't have any reason to not
+>> backport LVZ instructions support to binutils.
+>>
+>> Huacai
+> If so, could you post patch to x86 or riscv to remove hardcode binary
+> assemble code? If x86 or riscv agree, I do not object.
 
-Signed-off-by: Jaewon Kim <jaewon02.kim@samsung.com>
----
- drivers/pwm/pwm-samsung.c | 1 +
- 1 file changed, 1 insertion(+)
+Don't panic my friend, and generally please don't (figuratively) point 
+finger at people :)
 
-diff --git a/drivers/pwm/pwm-samsung.c b/drivers/pwm/pwm-samsung.c
-index e8828f57ab15..50a88565c440 100644
---- a/drivers/pwm/pwm-samsung.c
-+++ b/drivers/pwm/pwm-samsung.c
-@@ -513,6 +513,7 @@ static const struct of_device_id samsung_pwm_matches[] = {
- 	{ .compatible = "samsung,s5p6440-pwm", .data = &s5p64x0_variant },
- 	{ .compatible = "samsung,s5pc100-pwm", .data = &s5pc100_variant },
- 	{ .compatible = "samsung,exynos4210-pwm", .data = &s5p64x0_variant },
-+	{ .compatible = "samsung,exynosautov9-pwm", .data = &s5p64x0_variant },
- 	{},
- };
- MODULE_DEVICE_TABLE(of, samsung_pwm_matches);
+As a newcomer architecture, I'd argue we're in a different position than 
+them. The other arches already have a sizable group of developers 
+running existing systems from some time ago, so the cumulative migration 
+cost may be too high for them to drop the compatibility code path.
+
+But AFAIK the LoongArch ecosystem simply doesn't have comparable number 
+of infra developers (to the point that most of the prominent maintainers 
+and coders can be reached in some <5 WeChat groups), and they invariably 
+update the dev rigs frequently, so the migration cost for us should be 
+significantly lower. (While the total number of LoongArch end-users and 
+app developers may be higher, I expect some 5000~10000 of them, most of 
+them don't compile their own kernels. So it's really just the kernel and 
+distro devs.)
+
 -- 
-2.17.1
+WANG "xen0n" Xuerui
+
+Linux/LoongArch mailing list: https://lore.kernel.org/loongarch/
 
