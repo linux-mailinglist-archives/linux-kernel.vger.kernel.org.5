@@ -2,59 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88BBF753DF9
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 16:45:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6070F753E02
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 16:48:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235883AbjGNOpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 10:45:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56050 "EHLO
+        id S236024AbjGNOsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 10:48:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234757AbjGNOpo (ORCPT
+        with ESMTP id S234562AbjGNOsK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 10:45:44 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45447213F;
-        Fri, 14 Jul 2023 07:45:44 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Fri, 14 Jul 2023 10:48:10 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D541D2690;
+        Fri, 14 Jul 2023 07:48:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=njTLHLFMh16HuHE6NvqX3Yjrmk8yNTzTQKCOyHUveJs=; b=WZYk4jxaFlnChcvddb0bl2o/as
+        xkSs+mNy8/ZsEWQhsbL0TVjICEaLcZIVyHbJOqK4v9MskwnDo/Mzay+QctqXTWBD1JqUmBM1TYEas
+        B8kItNsA2ZcQ+/ThLZqrtLu4b1Kw37BQo50qAh2QDK0KMODZ6xWrRJ/nYSMuNqhvA0oKdXDm5k7wv
+        F7VAGnV9cuJub90tZH8EXoE7I/MZ+Ei7W+djkMs4XEhT6bsd0/hSrcYTlfXNDVH5pKaSFFwVNEzrs
+        QhCfu3gEXGnjOCfmXegxdbtMbLPEp/4SLHPuXl3PTfsnckUSMJKfd2lPDA0+LNFf7wmVY808dcM8p
+        CmySDnkA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qKK5G-006J0O-1m;
+        Fri, 14 Jul 2023 14:47:50 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BFED361D27;
-        Fri, 14 Jul 2023 14:45:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51C58C433C7;
-        Fri, 14 Jul 2023 14:45:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689345943;
-        bh=DGbd0VWtacVrAzm6zW6x+FrQbCSf5aCaCOwo48a615k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BaU6WuOYZ0qIb0SGT+qZ7g+1HDR1xa6fwdGlCBrv+juQ3mUwbywqWoMw55ThCYVpE
-         EgLRU7fZxJUGskYxdVBe27myjZt+7xXjarUSP51q9fu23KOJFuaTiq6mAoR48oe+Z9
-         yS+Ty74blHdkrLGfbgHfhtHezDQlRDjlIL5B+B1Jt9xc7SHjHrUYe07gjg7fM3Phhy
-         ut1FcAlTG7ooKHCYtXQiFSX/ZwlnvC2Lh4eKmJh1/hFSGeoxOrhthzUr6milR/nZDD
-         uo7BtjbyFdhcn0kCK1q/om+8KnS7PDAszSQsyZ1u3bAvCWue6VCMEr7Hvi19Vz4Utf
-         rmJcyL5hRbOwg==
-Date:   Fri, 14 Jul 2023 20:15:38 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Changhuang Liang <changhuang.liang@starfivetech.com>
-Cc:     Kishon Vijay Abraham I <kishon@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Jack Zhu <jack.zhu@starfivetech.com>,
-        linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 2/2] phy: starfive: Add mipi dphy rx support
-Message-ID: <ZLFfkhnxZbRS7s9y@matsya>
-References: <20230630093056.46904-1-changhuang.liang@starfivetech.com>
- <20230630093056.46904-3-changhuang.liang@starfivetech.com>
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 542A53001E7;
+        Fri, 14 Jul 2023 16:47:49 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 3AEB8213728A5; Fri, 14 Jul 2023 16:47:49 +0200 (CEST)
+Date:   Fri, 14 Jul 2023 16:47:49 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, Jens Axboe <axboe@kernel.dk>,
+        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Darren Hart <dvhart@infradead.org>, dave@stgolabs.net,
+        andrealmeid@igalia.com, Andrew Morton <akpm@linux-foundation.org>,
+        urezki@gmail.com, Christoph Hellwig <hch@infradead.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        linux-api@vger.kernel.org, linux-mm@kvack.org,
+        Linux-Arch <linux-arch@vger.kernel.org>, malteskarupke@web.de
+Subject: Re: [RFC][PATCH 04/10] futex: Add sys_futex_wake()
+Message-ID: <20230714144749.GA3261758@hirez.programming.kicks-ass.net>
+References: <20230714133859.305719029@infradead.org>
+ <20230714141218.879715585@infradead.org>
+ <c5a09710-a7a1-43df-ac25-42e8f3983f9c@app.fastmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230630093056.46904-3-changhuang.liang@starfivetech.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+In-Reply-To: <c5a09710-a7a1-43df-ac25-42e8f3983f9c@app.fastmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,23 +67,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30-06-23, 02:30, Changhuang Liang wrote:
-> Add mipi dphy rx support for the StarFive JH7110 SoC. It is used to
-> transfer CSI camera data.
+On Fri, Jul 14, 2023 at 04:26:45PM +0200, Arnd Bergmann wrote:
+> On Fri, Jul 14, 2023, at 15:39, Peter Zijlstra wrote:
+> >
+> > +++ b/include/linux/syscalls.h
+> > @@ -563,6 +563,9 @@ asmlinkage long sys_set_robust_list(stru
+> >  asmlinkage long sys_futex_waitv(struct futex_waitv *waiters,
+> >  				unsigned int nr_futexes, unsigned int flags,
+> >  				struct __kernel_timespec __user *timeout, clockid_t clockid);
+> > +
+> > +asmlinkage long sys_futex_wake(void __user *uaddr, int nr, unsigned 
+> > int flags, u64 mask);
+> > +
 > 
-> Signed-off-by: Changhuang Liang <changhuang.liang@starfivetech.com>
-> ---
->  MAINTAINERS                                 |   7 +
->  drivers/phy/Kconfig                         |   1 +
->  drivers/phy/Makefile                        |   1 +
->  drivers/phy/starfive/Kconfig                |  13 ++
->  drivers/phy/starfive/Makefile               |   2 +
->  drivers/phy/starfive/phy-starfive-dphy-rx.c | 230 ++++++++++++++++++++
->  6 files changed, 254 insertions(+)
->  create mode 100644 drivers/phy/starfive/Kconfig
->  create mode 100644 drivers/phy/starfive/Makefile
+> You can't really use 'u64' arguments in portable syscalls, it causes
+> a couple of problems, both with defining the user space wrappers,
+> and with compat mode.
+> 
+> Variants that would work include:
+> 
+> - using 'unsigned long' instead of 'u64'
+> - passing 'mask' by reference, as in splice()
+> - passing the mask in two u32-bit arguments like in llseek()
+> 
+> Not sure if any of the above work for you.
 
-This need rebase as files exist now
+Durr, I was hoping they'd use register pairs, but yeah I can see how
+that would be very hard to do in generic code.
 
--- 
-~Vinod
+Hurmph.. using 2 u32s is unfortunate on 64bit, while unsigned long
+would limit 64bit futexes to 64bit machines (perhaps not too bad).
+
+Using unsigned long would help with the futex_wait() thing as well.
+
+I'll ponder things a bit.
+
+Obviously I only did build x86_64 ;-)
