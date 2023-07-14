@@ -2,102 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F4F9753C55
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 15:59:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61BD7753C5C
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 15:59:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235416AbjGNN7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 09:59:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53080 "EHLO
+        id S235900AbjGNN7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 09:59:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235844AbjGNN7E (ORCPT
+        with ESMTP id S235849AbjGNN7V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 09:59:04 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A6BF270B
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 06:59:00 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1b9c5e07c1bso14496545ad.2
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 06:59:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1689343139; x=1691935139;
-        h=message-id:to:from:cc:subject:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6n+At+8xi69gBbD6TfRysRNivcXiaDRsl+xovEf19KU=;
-        b=jo5k+NLAbC/ndaJ1oHqHaiBNHxfJ607vhJ4LfTdmfny/4ckLBwprejctuwuS0VNzMK
-         +jJ+dI5QCMPBSX0JY5JvL4rtTII2EyRE/kvaaTCOAzBnolGPwkQ3+pe0AAHv8RTbvvqZ
-         QvbTqIaPuSprIoMffFy+BEaG0UDjdPSAqVj0sLhISM7Ax9hgut3PP0v4XlKqiQS7JDq6
-         +u6NjjKeXYCl8mL6nytd/6YcXBNF57O3tCS5md3/I090wtCkJryXTDqbFDky5KPHy9JF
-         dRbfRdutxwfss87WHUmGjy0+MMt2slwqGTEi+dvTyC9sKIERHepsuaCjA4VU871rnU7p
-         t2mw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689343139; x=1691935139;
-        h=message-id:to:from:cc:subject:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6n+At+8xi69gBbD6TfRysRNivcXiaDRsl+xovEf19KU=;
-        b=IJgF3P6ELZO2VHUn3RlyZBgPGxPj2+6UDORSTh91dePlrUyInd597mm3DwennI8nFg
-         tV1mE/wf3L475cw0dzAn3yCY+omVGA8FsejN5uXjQaCZuAEQU25eT+V4Xl+s8MepmWkw
-         /jl2KMgEfRngqR3takVZsbTpRf9UBfquECppFq5Y0JVL2mpy5ISJug54DGCGL3dmqiS5
-         +UT+F1JR0CAAdkQCLPd49HTxc4FqoHsELG2X90a2RIPevTbKnyFuHiVwOKXxMoZiuV00
-         bqPcNLBnLIxNR5t5vMifNBdg+mF+2ROWAi/ZjVA8oeLugwm8VaBqWmTZtYHTsB8tWulS
-         kS3Q==
-X-Gm-Message-State: ABy/qLbfst7UO4qxGnCjE+cfoDwPdAztsrP+r4568AdVjockjTWXu+fS
-        jYSY7SWdZ6C9oalpBYyYdkHLmdaaUvuZ/xqcTMI=
-X-Google-Smtp-Source: APBJJlGBde31pPNZ6ICzy2zL2r0ulqrihLJzktzlepVmoM6plKTmCCyZATGupOaAIEyGfD+moxNK4A==
-X-Received: by 2002:a17:902:d382:b0:1b9:cb8b:3bd3 with SMTP id e2-20020a170902d38200b001b9cb8b3bd3mr4656013pld.31.1689343139306;
-        Fri, 14 Jul 2023 06:58:59 -0700 (PDT)
-Received: from localhost ([50.173.2.66])
-        by smtp.gmail.com with ESMTPSA id o2-20020a170902d4c200b001ab39cd875csm5645732plg.133.2023.07.14.06.58.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 06:58:58 -0700 (PDT)
-Date:   Fri, 14 Jul 2023 06:58:58 -0700 (PDT)
-X-Google-Original-Date: Fri, 14 Jul 2023 06:57:36 PDT (-0700)
-Subject: [GIT PULL] RISC-V Fixes for 6.5-rc2
-CC:        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-From:   Palmer Dabbelt <palmer@rivosinc.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Message-ID: <mhng-c0a9115b-10ec-4bf0-8c4f-af009c34423f@palmer-ri-x1c9a>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 14 Jul 2023 09:59:21 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD5CF2708;
+        Fri, 14 Jul 2023 06:59:20 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 66682220DA;
+        Fri, 14 Jul 2023 13:59:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1689343159; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=971iQ9AGUSNF0XgKLALtIXjvlYcq/Akq7wgISeHEfjI=;
+        b=ahegt4WZRpcUhEtPmf6KV/zPWl0VszIuhyctJuOD8gAXPhuPaXh8+wlj336usPRSRQm7Zk
+        upg+cjimedHbZ6nRFicirXUfgEHhe8s2Ul53c8ohc5ILjbRbWuz/lwan36YnQcZPVyX15q
+        4Y9GHiTN/WXvLgE4NJ38EPGzM9t9h/Q=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2E121138F8;
+        Fri, 14 Jul 2023 13:59:19 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id yQVJCrdUsWS6DwAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Fri, 14 Jul 2023 13:59:19 +0000
+Date:   Fri, 14 Jul 2023 15:59:17 +0200
+From:   Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To:     Jan Engelhardt <jengelh@inai.de>
+Cc:     Michal Suchanek <msuchanek@suse.de>, linux-modules@vger.kernel.org,
+        Takashi Iwai <tiwai@suse.com>,
+        Lucas De Marchi <lucas.de.marchi@gmail.com>,
+        Jiri Slaby <jslaby@suse.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] depmod: Handle installing modules under a prefix
+Message-ID: <mg5c43nynzgrp6mn47shxjobquqjs3klxwwheesjmsotvlalbx@axhwgiehelfx>
+References: <30d8c675-e769-e567-a81f-c1b59c66ad67@suse.com>
+ <20230714122111.7528-1-msuchanek@suse.de>
+ <s4sr75q4-5120-5sp5-7751-noqs9q67904q@vanv.qr>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="7wpvbt37zgrl7ken"
+Content-Disposition: inline
+In-Reply-To: <s4sr75q4-5120-5sp5-7751-noqs9q67904q@vanv.qr>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5:
 
-  Linux 6.5-rc1 (2023-07-09 13:53:13 -0700)
+--7wpvbt37zgrl7ken
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-are available in the Git repository at:
+On Fri, Jul 14, 2023 at 03:38:18PM +0200, Jan Engelhardt <jengelh@inai.de> wrote:
+> Ok, so if the problem statement is that hardcoded paths are bad, then why
+> continue to hardcode the "/lib/modules" fragment? Just make it so that
+> KERNEL_MODULE_PREFIX can be set to the exact string "/usr/lib/modules" and not
+> just "/usr".
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-6.5-rc2
+That sounds cleaner but I'm worried it would be a BC break in setups
+that expect the existing layout under INSTALL_MOD_PATH, wouldn't it?
 
-for you to fetch changes up to ab2dbc7accedc2e98eb7d8b8878d337e3b36c95d:
+Michal
 
-  RISC-V: Don't include Zicsr or Zifencei in I from ACPI (2023-07-12 10:04:40 -0700)
+--7wpvbt37zgrl7ken
+Content-Type: application/pgp-signature; name="signature.asc"
 
-----------------------------------------------------------------
-RISC-V Fixes for 6.5-rc2
+-----BEGIN PGP SIGNATURE-----
 
-* A fix for a formatting error in the hwprobe documentation.
-* A fix for a spurious warning in the RISC-V PMU driver.
-* A fix for memory detection on rv32, which does not manifest on any
-  known system.
-* A fix to avoid parsing legacy parsing of I in ACPI ISA strings.
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZLFUswAKCRAGvrMr/1gc
+jq8fAP9QUfy7J0GWTgsdUWNVhpouCUlQBkAT3u/M/BymxjbfHgD+L8w8hVaJPhOv
+MhrghO6GZrd0Ynt/nc/A0csJDBITaQE=
+=zM4P
+-----END PGP SIGNATURE-----
 
-----------------------------------------------------------------
-Eric Lin (1):
-      perf: RISC-V: Remove PERF_HES_STOPPED flag checking in riscv_pmu_start()
-
-Jisheng Zhang (1):
-      riscv: mm: fix truncation warning on RV32
-
-Palmer Dabbelt (2):
-      Documentation: RISC-V: hwprobe: Fix a formatting error
-      RISC-V: Don't include Zicsr or Zifencei in I from ACPI
-
- Documentation/riscv/hwprobe.rst | 2 +-
- arch/riscv/kernel/cpufeature.c  | 9 ++-------
- arch/riscv/mm/init.c            | 2 +-
- drivers/perf/riscv_pmu.c        | 3 ---
- 4 files changed, 4 insertions(+), 12 deletions(-)
+--7wpvbt37zgrl7ken--
