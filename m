@@ -2,131 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99E92753458
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 09:54:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 533D6753456
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 09:54:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235784AbjGNHym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 03:54:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46688 "EHLO
+        id S235780AbjGNHyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 03:54:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235590AbjGNHyS (ORCPT
+        with ESMTP id S235590AbjGNHxq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 03:54:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60FFC3C16
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 00:52:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689321144;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WC74EEKhJlhJoUZcemPJUMicIDs5RJVsAsHWl0ODu1o=;
-        b=B1FVXscX/vAUXM3fualnOl4msSqjyk4iqJCrmjLi9L0iIUQmW4sLmVC5D4iUtP3n9w8Oo7
-        ciRg/n8dV50CT2aCh3y22mhAac3KbrZGaaavy5dHvolrLimJMdWzpXncvD4DNe500wIJXH
-        7EiNy9o0+VSNPKRK9IzA5IzNjW0/Mz4=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-616-BqRCDpe7PJWuJQlLvrSH-g-1; Fri, 14 Jul 2023 03:52:22 -0400
-X-MC-Unique: BqRCDpe7PJWuJQlLvrSH-g-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-3fa9a282fffso8876095e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 00:52:22 -0700 (PDT)
+        Fri, 14 Jul 2023 03:53:46 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBD54420A
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 00:52:31 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-991fe70f21bso221881466b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 00:52:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689321147; x=1691913147;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=sOVlS2YAuvrsf20+jrFcg/um5olVmnGgBe34iQHZIlQ=;
+        b=e7zQskFd1+/J6qaQJ5w9NuZJXYRISLqdmLBz8C6tlCDh6ZJ5vUxguMbOYC0DDc4c2t
+         rZifVjB7YG1xrGJoJJY0nDROdlpjM5kuYO9I2cTR1d4T5F7Crp0dFpVGY+MNDr5wyxLv
+         HG40R6eeryGox0pzOYqyKA+JAB+asg66z1fPpliAnVGtbNEqQkSA0LWfnlbZrptfs7qp
+         d/p6hl8IoyX1SjHF5lYfDLRgfXNcQIzSHFnDSnqU0XTzl6hiUxXqDrWzcahK00YItxTe
+         PnJ6M/MQyLIiG93/2obyg8ku9yWCdUreFrP2z2OdjLE/xGxJauW/kwg1Y0aFnMrJbMCp
+         dEHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689321141; x=1691913141;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WC74EEKhJlhJoUZcemPJUMicIDs5RJVsAsHWl0ODu1o=;
-        b=e04syFlVWRZuwNvD8S2XvwbYAYIkl9JXcK9WxB20G69+/+KGWZtPrZrAZsMLKRAZ1c
-         CCnR6nhGkSCs+wX4Xjwrc78zjKSZfGKeKD+weqXMtyfpSHWhPPf7pxBNRJKjys0PMjes
-         o5MN8xWZ/+ufoqMbyPxu+dHSGWNJlmrp7Xzr0glDSB/CX9ISPC1bgMR76qLTU0//EH+D
-         AQ6SqyqqDzJqQ2vuz8KcHoeHeNOWrUqD43EjZ3OhgFre/svUT6752zhFWx+HtzfvroVt
-         Bn+ludvapp+yXr4EcdfZvLbY3ix7y8nM+FeV0e/qbnvw0ECCOmIsYrJUPbn03rKOXF9f
-         j6JQ==
-X-Gm-Message-State: ABy/qLaQXVoEO0sM63sklM0UZbwUYB8MXmDZ+fT6bGgY3UyfzRhgBl/D
-        4x3W+9TKDMOQnLotBJzJ/QZQ8Rd2mkpfzYuqaQQYE0tdP2sLm5yY49G5r89fAM9WL5nU2qrhYpd
-        hs14TQAVCwf9qyes+rxho4x+h
-X-Received: by 2002:a7b:c04b:0:b0:3fa:97ad:2ba5 with SMTP id u11-20020a7bc04b000000b003fa97ad2ba5mr3249063wmc.31.1689321141245;
-        Fri, 14 Jul 2023 00:52:21 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlEC1xgj6rDpPbnDj033RgOCZB0seoIVN0Wc0wMxtKEDxY5P9kWVI1zu27Jcd8L02JWvRUJPHA==
-X-Received: by 2002:a7b:c04b:0:b0:3fa:97ad:2ba5 with SMTP id u11-20020a7bc04b000000b003fa97ad2ba5mr3249050wmc.31.1689321140927;
-        Fri, 14 Jul 2023 00:52:20 -0700 (PDT)
-Received: from localhost ([90.167.94.6])
-        by smtp.gmail.com with ESMTPSA id c7-20020a5d4147000000b003141a3c4353sm10130634wrq.30.2023.07.14.00.52.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 00:52:20 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     Aradhya Bhatia <a-bhatia1@ti.com>, Sam Ravnborg <sam@ravnborg.org>
-Cc:     Tomi Valkeinen <tomba@kernel.org>, Jyri Sarha <jyri.sarha@iki.fi>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Swapnil Jakhade <sjakhade@cadence.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Francesco Dolcini <francesco@dolcini.it>,
-        Nishanth Menon <nm@ti.com>,
-        Jayesh Choudhary <j-choudhary@ti.com>,
-        Rahul T R <r-ravikumar@ti.com>,
-        Devarsh Thakkar <devarsht@ti.com>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        DRI Development List <dri-devel@lists.freedesktop.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH v7 5/8] drm/bridge: sii902x: Support format negotiation
- hooks
-In-Reply-To: <5bf5e4d1-546f-19fc-1647-7ece567d52f1@ti.com>
-References: <20230606082142.23760-1-a-bhatia1@ti.com>
- <20230606082142.23760-6-a-bhatia1@ti.com>
- <20230710150822.GA5237@ravnborg.org>
- <5bf5e4d1-546f-19fc-1647-7ece567d52f1@ti.com>
-Date:   Fri, 14 Jul 2023 09:52:19 +0200
-Message-ID: <87wmz3szf0.fsf@minerva.mail-host-address-is-not-set>
+        d=1e100.net; s=20221208; t=1689321147; x=1691913147;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sOVlS2YAuvrsf20+jrFcg/um5olVmnGgBe34iQHZIlQ=;
+        b=NekaLCRPmolYX81Xffh4R/ReZAp41edatoCAUyHwebD/OXq2CYFu5kuF2lauOtu8bH
+         8E1RI6DaB5wh2AoYMTpPxaOFXBQZplnGKyo8TzNbNCucZuNU32f80kKKoCAazZ+LkPbY
+         MYMKxyk1AJET99FPH6fYVZgbHSRghmBLwQSbDERJFzM1cOaw1HT7dfp4n8u6VjqHN7uy
+         mMfQbcW3rmAIN257c8d2eIJtFpDSZBmj3oPTwBCDmUxiGg0OhQicjA+wIQQDjyLDUGpJ
+         1v2KIqNmUEDZRHSrTNxPdk9otvoPFmG48S6Xscxp0E8Pjf06GrbZU98rptTittOaXwA0
+         ivrQ==
+X-Gm-Message-State: ABy/qLYqn+yKR9Q/IWLQGxrIUeySI7d+MbpYnXqdq4nNg4mDwhwlPNaG
+        PElO/2WeTmmlNQz7nuMHpGKUJN3Zy90=
+X-Google-Smtp-Source: APBJJlFJqBvBNQDT0oi8m1LKbRiN/jcbi6Zg8upgZIA9EcHPBqmkQw/o1nmRpJunvMsqiX8DwkdHyQ==
+X-Received: by 2002:a17:907:767b:b0:988:8be0:3077 with SMTP id kk27-20020a170907767b00b009888be03077mr3466572ejc.31.1689321146417;
+        Fri, 14 Jul 2023 00:52:26 -0700 (PDT)
+Received: from ?IPV6:2a00:e180:156e:8700:817e:6375:6a13:2da9? ([2a00:e180:156e:8700:817e:6375:6a13:2da9])
+        by smtp.gmail.com with ESMTPSA id lf16-20020a170907175000b00993928e4d1bsm5046737ejc.24.2023.07.14.00.52.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 14 Jul 2023 00:52:25 -0700 (PDT)
+Message-ID: <72a40172-86a8-64c0-0c06-cbc670503370@gmail.com>
+Date:   Fri, 14 Jul 2023 09:52:24 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 4/6] drm/amdgpu: Limit info in coredump for kernel
+ threads
+Content-Language: en-US
+To:     =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     pierre-eric.pelloux-prayer@amd.com,
+        =?UTF-8?B?J01hcmVrIE9sxaHDoWsn?= <maraeo@gmail.com>,
+        =?UTF-8?Q?Timur_Krist=c3=b3f?= <timur.kristof@gmail.com>,
+        michel.daenzer@mailbox.org,
+        Samuel Pitoiset <samuel.pitoiset@gmail.com>,
+        kernel-dev@igalia.com, Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>,
+        alexander.deucher@amd.com, christian.koenig@amd.com
+References: <20230713213242.680944-1-andrealmeid@igalia.com>
+ <20230713213242.680944-5-andrealmeid@igalia.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
+In-Reply-To: <20230713213242.680944-5-andrealmeid@igalia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Aradhya Bhatia <a-bhatia1@ti.com> writes:
 
-Hello Aradhya,
 
-> Hi Sam,
+Am 13.07.23 um 23:32 schrieb André Almeida:
+> If a kernel thread caused the reset, the information available to be
+> logged will be limited, so return early in the dump function.
+
+Why? The register values and vram lost state should still be valid.
+
+Christian.
+
 >
-
-[...]
-
->> 
->> It would be even better to walk through other implementations of
->> get_input_bus_fmts and update them accordingly.
->> 
->> Again, sorry for being late here. Feel free to ignore if you already
->> moved on with something else.
->> 
+> Signed-off-by: André Almeida <andrealmeid@igalia.com>
+> ---
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 6 +++++-
+>   1 file changed, 5 insertions(+), 1 deletion(-)
 >
-> I am working on adding OLDI support for tidss, but if we can resolve the
-> above concern, and Javier agrees, I will be happy to add an incremental
-> fix for this! =)
->
->
-
-Yes, an incremental patch on top of what has already been merged in
-drm-misc-next works. Thanks!
-
--- 
-Best regards,
-
-Javier Martinez Canillas
-Core Platforms
-Red Hat
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+> index e80670420586..07546781b8b8 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+> @@ -4988,10 +4988,14 @@ static ssize_t amdgpu_devcoredump_read(char *buffer, loff_t offset,
+>   	drm_printf(&p, "kernel: " UTS_RELEASE "\n");
+>   	drm_printf(&p, "module: " KBUILD_MODNAME "\n");
+>   	drm_printf(&p, "time: %lld.%09ld\n", coredump->reset_time.tv_sec, coredump->reset_time.tv_nsec);
+> -	if (coredump->reset_task_info.pid)
+> +	if (coredump->reset_task_info.pid) {
+>   		drm_printf(&p, "process_name: %s PID: %d\n",
+>   			   coredump->reset_task_info.process_name,
+>   			   coredump->reset_task_info.pid);
+> +	} else {
+> +		drm_printf(&p, "GPU reset caused by a kernel thread\n");
+> +		return count - iter.remain;
+> +	}
+>   
+>   	if (coredump->reset_vram_lost)
+>   		drm_printf(&p, "VRAM is lost due to GPU reset!\n");
 
