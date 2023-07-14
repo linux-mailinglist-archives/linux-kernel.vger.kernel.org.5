@@ -2,86 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 018DD75358B
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 10:50:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C966075359A
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 10:51:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235462AbjGNIuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 04:50:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56130 "EHLO
+        id S235596AbjGNIvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 04:51:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235439AbjGNIuX (ORCPT
+        with ESMTP id S235535AbjGNIvA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 04:50:23 -0400
-Received: from 167-179-156-38.a7b39c.syd.nbn.aussiebb.net (167-179-156-38.a7b39c.syd.nbn.aussiebb.net [167.179.156.38])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C78C12710;
-        Fri, 14 Jul 2023 01:50:18 -0700 (PDT)
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
-        by fornost.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1qKEV3-001RdB-GM; Fri, 14 Jul 2023 18:50:06 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 14 Jul 2023 18:49:58 +1000
-Date:   Fri, 14 Jul 2023 18:49:58 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Danny Tsen <dtsen@linux.ibm.com>
-Cc:     linux-crypto@vger.kernel.org, leitao@debian.org,
-        nayna@linux.ibm.com, appro@cryptogams.org,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        mpe@ellerman.id.au, ltcgcw@linux.vnet.ibm.com, dtsen@us.ibm.com
-Subject: Re: [PATCH v2 0/5] crypto: Accelerated Chacha20/Poly1305
- implementation
-Message-ID: <ZLEMNpZ4M4U/4t6j@gondor.apana.org.au>
-References: <20230426191147.60610-1-dtsen@linux.ibm.com>
+        Fri, 14 Jul 2023 04:51:00 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD85426AF
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 01:50:58 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R2QDb42LSzBR9sj
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 16:50:55 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1689324655; x=1691916656; bh=OE0KQdUdTOFnvUpaKsCK2w+k4oS
+        NXvvG4m4MI6Kr+6Y=; b=NoTp3I8D/qQHqwYowoCmrYyzree13827DHVHHlaJ731
+        5+trslYMKaWZbOG5U/Ur0JiuPFhexsHTxjhJCYD4kexHSe5yPCFQjWEjy6WEEz+R
+        5Hu3oGopmJOvFiP0ubpCeEXcCfSW1Ng165SeM8pOOS/yquiZraZQ/04/eEdJZ5DA
+        TGhev57lShWV0DdvZBWr8F9PjfXA30IwyO2dA1eE9X/jSErE9OJ0TwfeC4hqPc4+
+        mDsKVD6d30re0Nd+NP4venizykseSNzdhuyKABWO2kEYXgG7wsl5AEnRQ1juQQYO
+        l175z/6X7TdZ94oqmlaQFn+egb2SLoB5Hc4PHEYXjcA==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id VETfRJTkjWuv for <linux-kernel@vger.kernel.org>;
+        Fri, 14 Jul 2023 16:50:55 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R2QDb2RqPzBR9sf;
+        Fri, 14 Jul 2023 16:50:55 +0800 (CST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230426191147.60610-1-dtsen@linux.ibm.com>
-X-Spam-Status: No, score=2.7 required=5.0 tests=BAYES_00,HELO_DYNAMIC_IPADDR2,
-        RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,TVD_RCVD_IP,
+Date:   Fri, 14 Jul 2023 16:50:55 +0800
+From:   sunran001@208suo.com
+To:     mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] media: add missing spaces before '*' and remove spaces after
+ '*'
+In-Reply-To: <20230714084941.14803-1-xujianghui@cdjrlc.com>
+References: <20230714084941.14803-1-xujianghui@cdjrlc.com>
+User-Agent: Roundcube Webmail
+Message-ID: <603b287b9f153389d8ccf87c21ae8a2d@208suo.com>
+X-Sender: sunran001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
         T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
         version=3.4.6
-X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 26, 2023 at 03:11:42PM -0400, Danny Tsen wrote:
-> This patch series provide an accelerated/optimized Chacha20 and Poly1305
-> implementation for Power10 or later CPU (ppc64le).  This module
-> implements algorithm specified in RFC7539.  The implementation
-> provides 3.5X better performance than the baseline for Chacha20 and
-> Poly1305 individually and 1.5X improvement for Chacha20/Poly1305
-> operation.
-> 
-> This patch has been tested with the kernel crypto module tcrypt.ko and
-> has passed the selftest.  The patch is also tested with
-> CONFIG_CRYPTO_MANAGER_EXTRA_TESTS enabled.
-> 
-> 
-> Danny Tsen (5):
->   An optimized Chacha20 implementation with 8-way unrolling for ppc64le.
->   Glue code for optmized Chacha20 implementation for ppc64le.
->   An optimized Poly1305 implementation with 4-way unrolling for ppc64le.
->   Glue code for optmized Poly1305 implementation for ppc64le.
->   Update Kconfig and Makefile.
-> 
->  arch/powerpc/crypto/Kconfig             |   26 +
->  arch/powerpc/crypto/Makefile            |    4 +
->  arch/powerpc/crypto/chacha-p10-glue.c   |  221 +++++
->  arch/powerpc/crypto/chacha-p10le-8x.S   |  842 ++++++++++++++++++
->  arch/powerpc/crypto/poly1305-p10-glue.c |  186 ++++
->  arch/powerpc/crypto/poly1305-p10le_64.S | 1075 +++++++++++++++++++++++
->  6 files changed, 2354 insertions(+)
->  create mode 100644 arch/powerpc/crypto/chacha-p10-glue.c
->  create mode 100644 arch/powerpc/crypto/chacha-p10le-8x.S
->  create mode 100644 arch/powerpc/crypto/poly1305-p10-glue.c
->  create mode 100644 arch/powerpc/crypto/poly1305-p10le_64.S
-> 
-> -- 
-> 2.31.1
+Add missing spaces to clear checkpatch errors.
 
-All applied.  Thanks.
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+ERROR: "foo* bar" should be "foo *bar"
+ERROR: else should follow close brace '}'
+
+Signed-off-by: Ran Sun <sunran001@208suo.com>
+---
+  drivers/media/dvb-frontends/bsbe1.h | 36 ++++++++++++++---------------
+  1 file changed, 18 insertions(+), 18 deletions(-)
+
+diff --git a/drivers/media/dvb-frontends/bsbe1.h 
+b/drivers/media/dvb-frontends/bsbe1.h
+index 7ca1bdc08177..89ca9b14a740 100644
+--- a/drivers/media/dvb-frontends/bsbe1.h
++++ b/drivers/media/dvb-frontends/bsbe1.h
+@@ -36,24 +36,24 @@ static int alps_bsbe1_set_symbol_rate(struct 
+dvb_frontend *fe, u32 srate, u32 ra
+      u8 aclk = 0;
+      u8 bclk = 0;
+
+-    if (srate < 1500000) {
+-        aclk = 0xb7;
+-        bclk = 0x47;
+-    } else if (srate < 3000000) {
+-        aclk = 0xb7;
+-        bclk = 0x4b;
+-    } else if (srate < 7000000) {
+-        aclk = 0xb7;
+-        bclk = 0x4f;
+-    } else if (srate < 14000000) {
+-        aclk = 0xb7;
+-        bclk = 0x53;
+-    } else if (srate < 30000000) {
+-        aclk = 0xb6;
+-        bclk = 0x53;
+-    } else if (srate < 45000000) {
+-        aclk = 0xb4;
+-        bclk = 0x51;
++    if (srate < 1500000) {
++        aclk = 0xb7;
++        bclk = 0x47;
++    } else if (srate < 3000000) {
++        aclk = 0xb7;
++        bclk = 0x4b;
++    } else if (srate < 7000000) {
++        aclk = 0xb7;
++        bclk = 0x4f;
++    } else if (srate < 14000000) {
++        aclk = 0xb7;
++        bclk = 0x53;
++    } else if (srate < 30000000) {
++        aclk = 0xb6;
++        bclk = 0x53;
++    } else if (srate < 45000000) {
++        aclk = 0xb4;
++        bclk = 0x51;
+      }
+
+      stv0299_writereg(fe, 0x13, aclk);
