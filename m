@@ -2,104 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA1C8753713
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:50:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 873F5753715
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:50:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236012AbjGNJuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 05:50:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41584 "EHLO
+        id S235985AbjGNJua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 05:50:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236023AbjGNJtr (ORCPT
+        with ESMTP id S235965AbjGNJuI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 05:49:47 -0400
-Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FE343A99
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 02:49:41 -0700 (PDT)
-Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-57eb0df5265so15032457b3.3
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 02:49:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689328180; x=1691920180;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=pVRCcYI6KU6X2B0QhZtXZV8P/Bq4K8WpsLsWqaeiYCY=;
-        b=gckjdvJRp7dj9kX3fVv1PBsM74FxOMPv7eGl7UHbw1mKUmPJBuLDyZ1FAr4eVA4o1v
-         rBibOLpivXX/JCTEEjCrpLdnqJsMYOsn1FzkSTAV6okwfMODHbpyTON+1Az87iHfHJsY
-         XPB8k6zzS738KAS9EG9otMF5gcnA7YktUltPe2QFwij/5nvM4gtlTxtbEkPrVivZL6wC
-         6xk8Lk8n1YZlmXpMwFurWfGRESRMaQZeX2TtzW0d89Z+/A905x2Pbez3JAAyDBpSVRHK
-         RzCadUngjUi5FP5+Q3XE/Tclu+hIAVzQ5QBTYthZ9FeJ2qP06Oydu9Cl/kJC+5oFmjtF
-         i3vQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689328180; x=1691920180;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pVRCcYI6KU6X2B0QhZtXZV8P/Bq4K8WpsLsWqaeiYCY=;
-        b=JhH6QnLK6iCAYpjKWN1sx5hCiQBHtcCbbfze11p81f4yznZ+OzKvj5BrKjyqoEDc0M
-         6jk441NMa7FjRZl6KetP5Q+9CRdIkSkp9aW9JXuCpsLMWIA+JhDlvm1YPWd0k0ni8ZvB
-         /cQfrxEteAnJeyydxGJC18DrPjVbgm6MIKSy6xel/RForA869nn6ebq4k7Kbib7Xacdh
-         F96oRs7EPTczVIvanZ0iFPwn8RvefxPkddaBDlDDpqtS+iVd8GiWjBeTUOWx8IZ7NZ5D
-         noiRZKtkFq4eAwd8ekang15nLnlOhJIFsdTbDjSRQqY1DVTUFFU/vdkYsAVsVD6eHfxY
-         6LgQ==
-X-Gm-Message-State: ABy/qLaAYg7RCoiTMYcKe5iSs2WUtk4Xu2JoShk5MFKE/cOgZYJ+F0hF
-        O09j7hNTIuglb0I5CraBk3XiRym3fwu6Xpg+3j1vMQ==
-X-Google-Smtp-Source: APBJJlFca572uyzN1V9nYArOEOjIGhR/em7iLkLtW0EDTtrrbLU4GkrmLpU04a4+yN1UuV1I+6cTxksR5yc7sbgM3ww=
-X-Received: by 2002:a0d:eec3:0:b0:577:3fb4:f245 with SMTP id
- x186-20020a0deec3000000b005773fb4f245mr4757025ywe.19.1689328180403; Fri, 14
- Jul 2023 02:49:40 -0700 (PDT)
+        Fri, 14 Jul 2023 05:50:08 -0400
+Received: from mail.marcansoft.com (marcansoft.com [212.63.210.85])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 358D930EF;
+        Fri, 14 Jul 2023 02:49:50 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: lina@asahilina.net)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 9CAD05BC37;
+        Fri, 14 Jul 2023 09:49:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=asahilina.net;
+        s=default; t=1689328188;
+        bh=PC7GXXNDk15CT3rU7hYCpLMfS9lNq6DXUxfJ9HZPrS8=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=IPcsl7xZXqCSToAEy5I5oBtveILmM0LY+CIKTH+8cdBXnHWwvnXsOO1cLA46v9EfB
+         xKmn/5TjJe3mMVTePdJ6HnHIQ1iNSWbNCduyWSaxLJnQbJ3TQMrgDFxLZ8ki1p1y66
+         DZwq3nqBRlNzHp+5kXs+g7FttPXb8lTbV3zR1lFc37QCtDh5vky4MOnIpeXd+jKwKM
+         MCQ7P5+87K6HuPRVJ+J8GZAzfSkNyc9Cj6ZcHiqrK+gojmeo+T7mwV1i2hOxw/V+UG
+         RX3Q+PiMLcg1aANo/TfYm8M7Fn7dBQr1KQOiTvfyZ4eNDnf/XFMQAY0ZjS9bdHWIVI
+         yL2JF5gtnDbTA==
+Message-ID: <de502b41-2864-db1e-16a0-8a5d5e0e4ad3@asahilina.net>
+Date:   Fri, 14 Jul 2023 18:49:44 +0900
 MIME-Version: 1.0
-References: <8b57db8d-1d3a-883e-eb8f-ddf15f19d823@gmail.com>
-In-Reply-To: <8b57db8d-1d3a-883e-eb8f-ddf15f19d823@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 14 Jul 2023 11:49:04 +0200
-Message-ID: <CAPDyKFpUV=Ko5J1nQOgZGYJUuifMFGYe_xwBJtK3zkFNFQ=GRA@mail.gmail.com>
-Subject: Re: [PATCH] mmc: davinci: Make SDIO irq truly optional
-To:     Julien Delbergue <j.delbergue.foss@gmail.com>
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        brgl@bgdev.pl
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH 2/3] drm/scheduler: Fix UAF in
+ drm_sched_fence_get_timeline_name
+Content-Language: en-US
+To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Luben Tuikov <luben.tuikov@amd.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>
+Cc:     Faith Ekstrand <faith.ekstrand@collabora.com>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, asahi@lists.linux.dev
+References: <20230714-drm-sched-fixes-v1-0-c567249709f7@asahilina.net>
+ <20230714-drm-sched-fixes-v1-2-c567249709f7@asahilina.net>
+ <bef7ef62-3cd9-6ceb-5eb4-5ae0c0236778@amd.com>
+From:   Asahi Lina <lina@asahilina.net>
+In-Reply-To: <bef7ef62-3cd9-6ceb-5eb4-5ae0c0236778@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 13 Jul 2023 at 11:31, Julien Delbergue
-<j.delbergue.foss@gmail.com> wrote:
->
-> The following error is printed on Logic PD's DA850 EVM:
->   davinci_mmc 1c40000.mmc: error -ENXIO: IRQ index 1 not found
->
-> Depending on the board, the SDIO interrupt may not be present, so use
-> the correct function to reflect that and prevent logging an error.
->
-> Signed-off-by: Julien Delbergue <j.delbergue.foss@gmail.com>
+On 14/07/2023 17.43, Christian König wrote:
+> Am 14.07.23 um 10:21 schrieb Asahi Lina:
+>> A signaled scheduler fence can outlive its scheduler, since fences are
+>> independencly reference counted. Therefore, we can't reference the
+>> scheduler in the get_timeline_name() implementation.
+>>
+>> Fixes oopses on `cat /sys/kernel/debug/dma_buf/bufinfo` when shared
+>> dma-bufs reference fences from GPU schedulers that no longer exist.
+>>
+>> Signed-off-by: Asahi Lina <lina@asahilina.net>
+>> ---
+>>    drivers/gpu/drm/scheduler/sched_entity.c | 7 ++++++-
+>>    drivers/gpu/drm/scheduler/sched_fence.c  | 4 +++-
+>>    include/drm/gpu_scheduler.h              | 5 +++++
+>>    3 files changed, 14 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/scheduler/sched_entity.c b/drivers/gpu/drm/scheduler/sched_entity.c
+>> index b2bbc8a68b30..17f35b0b005a 100644
+>> --- a/drivers/gpu/drm/scheduler/sched_entity.c
+>> +++ b/drivers/gpu/drm/scheduler/sched_entity.c
+>> @@ -389,7 +389,12 @@ static bool drm_sched_entity_add_dependency_cb(struct drm_sched_entity *entity)
+>>    
+>>    		/*
+>>    		 * Fence is from the same scheduler, only need to wait for
+>> -		 * it to be scheduled
+>> +		 * it to be scheduled.
+>> +		 *
+>> +		 * Note: s_fence->sched could have been freed and reallocated
+>> +		 * as another scheduler. This false positive case is okay, as if
+>> +		 * the old scheduler was freed all of its jobs must have
+>> +		 * signaled their completion fences.
+> 
+> This is outright nonsense. As long as an entity for a scheduler exists
+> it is not allowed to free up this scheduler.
+> 
+> So this function can't be called like this.
 
-Applied for next, thanks!
+As I already explained, the fences can outlive their scheduler. That 
+means *this* entity certainly exists for *this* scheduler, but the 
+*dependency* fence might have come from a past scheduler that was 
+already destroyed along with all of its entities, and its address reused.
 
-Kind regards
-Uffe
+Christian, I'm really getting tired of your tone. I don't appreciate 
+being told my comments are "outright nonsense" when you don't even take 
+the time to understand what the issue is and what I'm trying to 
+do/document. If you aren't interested in working with me, I'm just going 
+to give up on drm_sched, wait until Rust gets workqueue support, and 
+reimplement it in Rust. You can keep your broken fence lifetime 
+semantics and I'll do my own thing.
 
+~~ Lina
 
-> ---
->  drivers/mmc/host/davinci_mmc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/mmc/host/davinci_mmc.c b/drivers/mmc/host/davinci_mmc.c
-> index 7138dfa065bf..fb686c0d171c 100644
-> --- a/drivers/mmc/host/davinci_mmc.c
-> +++ b/drivers/mmc/host/davinci_mmc.c
-> @@ -1257,7 +1257,7 @@ static int davinci_mmcsd_probe(struct platform_device *pdev)
->
->         host->use_dma = use_dma;
->         host->mmc_irq = irq;
-> -       host->sdio_irq = platform_get_irq(pdev, 1);
-> +       host->sdio_irq = platform_get_irq_optional(pdev, 1);
->
->         if (host->use_dma) {
->                 ret = davinci_acquire_dma_channels(host);
-> --
-> 2.34.1
