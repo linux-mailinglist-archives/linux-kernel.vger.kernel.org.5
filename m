@@ -2,189 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7958752FCB
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 05:14:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51AE7752FDB
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 05:17:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234753AbjGNDOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 23:14:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39784 "EHLO
+        id S232573AbjGNDRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 23:17:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234410AbjGNDOb (ORCPT
+        with ESMTP id S234845AbjGNDRV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 23:14:31 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E445D2D69
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 20:14:29 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 79DFA61BD4
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 03:14:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66436C433C8;
-        Fri, 14 Jul 2023 03:14:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689304468;
-        bh=G0wOFd16i2t4/e9fIRlP6CAsoeA68X4NI5FK14YAD8Y=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ZNu7xBxCf9Vsw1SJPsfLP5h3K0zgfNky+Dl7SEL6cbFiCwahG6nG1vxDbnk0Nh9wz
-         aEgChbG8fFTbUExxLEkqZWsiwlwwpQnMQ9BJTt5yG3M2nUsie0dlAv6HXNYN2X+XN9
-         I+KlTryRVt5+ax5h0fZMbqjJKuj13cIKJwYl3wbVorIyXoX/e8cAcelGTOt6wBFhj8
-         roTRejPe0FoC2+fakAWhpLP+IFCYq+NikUIJwkPUzBPQcqL0JTXOqoFnjSwYMfkR6W
-         +6KKvoc3M9o/ZQsZ2vGOZgMx7j5DKeNJ/FVS7axS1Smc08k5/P0hjFCDEj56uWHlpq
-         VoOHF4atR0jdw==
-Date:   Thu, 13 Jul 2023 20:14:27 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Ivan Babrou <ivan@cloudflare.com>
-Cc:     Yan Zhai <yan@cloudflare.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@cloudflare.com,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        David Ahern <dsahern@kernel.org>
-Subject: Re: [RFC PATCH net-next] tcp: add a tracepoint for
- tcp_listen_queue_drop
-Message-ID: <20230713201427.2c50fc7b@kernel.org>
-In-Reply-To: <CABWYdi3VJU7HUxzKJBKgX9wF9GRvmA0TKVpjuHvJyz_EdpxZFA@mail.gmail.com>
-References: <20230711043453.64095-1-ivan@cloudflare.com>
-        <20230711193612.22c9bc04@kernel.org>
-        <CAO3-PbrZHn1syvhb3V57oeXigE_roiHCbzYz5Mi4wiymogTg2A@mail.gmail.com>
-        <20230712104210.3b86b779@kernel.org>
-        <CABWYdi3VJU7HUxzKJBKgX9wF9GRvmA0TKVpjuHvJyz_EdpxZFA@mail.gmail.com>
+        Thu, 13 Jul 2023 23:17:21 -0400
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7D7F30C3
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 20:17:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689304633; x=1720840633;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=3vjrBGuntp7lEx8CYlhUTCyMW8/To8SeAOuZ7EMQM2I=;
+  b=XhUI1SMeMmIDdvXibKcEHfvA/AhhWGfA6Ih9R/HVinAcSjCw68713WMm
+   +0IN+LxY9TEZFeshMA011VsODBISvkWaltwALscPAKN4LyKWa9sgSumWq
+   DSkQiAc094COikeGBrnb2L1C4rdW1f5cMwlN9hicVEbqC8Qk8g2Kqi7P/
+   bpN5J73yUSuRSWfRhk1TsSYz4atwFfXNOxzO/FxF7lt/vVZnnxd4Lr22B
+   mOnNW6XFXmWC3JYF93SkjH0SXprulbwfWvv1sPeXwKeZl+dOV94ylrUZ2
+   I2MrGgGie7n+ociCduvJPujO0w/RTpwfrMzjv7+nG92J7JBpZpU9F9JG/
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="451739235"
+X-IronPort-AV: E=Sophos;i="6.01,204,1684825200"; 
+   d="scan'208";a="451739235"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2023 20:16:23 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="699521154"
+X-IronPort-AV: E=Sophos;i="6.01,204,1684825200"; 
+   d="scan'208";a="699521154"
+Received: from lkp-server01.sh.intel.com (HELO c544d7fc5005) ([10.239.97.150])
+  by orsmga006.jf.intel.com with ESMTP; 13 Jul 2023 20:16:20 -0700
+Received: from kbuild by c544d7fc5005 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qK9I4-000787-0A;
+        Fri, 14 Jul 2023 03:16:20 +0000
+Date:   Fri, 14 Jul 2023 11:16:18 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Yangtao Li <frank.li@vivo.com>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
+        Chao Yu <yuchao0@huawei.com>, Chao Yu <chao@kernel.org>
+Subject: fs/f2fs/gc.c:744:5: warning: stack frame size (1712) exceeds limit
+ (1024) in 'f2fs_get_victim'
+Message-ID: <202307141107.xoC7milY-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 13 Jul 2023 16:17:31 -0700 Ivan Babrou wrote:
-> On Wed, Jul 12, 2023 at 10:42=E2=80=AFAM Jakub Kicinski <kuba@kernel.org>=
- wrote:
-> > On Wed, 12 Jul 2023 11:42:26 -0500 Yan Zhai wrote: =20
-> > >   The issue with kfree_skb is not that it fires too frequently (not in
-> > > the 6.x kernel now). Rather, it is unable to locate the socket info
-> > > when a SYN is dropped due to the accept queue being full. The sk is
-> > > stolen upon inet lookup, e.g. in tcp_v4_rcv. This makes it unable to
-> > > tell in kfree_skb which socket a SYN skb is targeting (when TPROXY or
-> > > socket lookup are used). A tracepoint with sk information will be more
-> > > useful to monitor accurately which service/socket is involved. =20
-> >
-> > No doubt that kfree_skb isn't going to solve all our needs, but I'd
-> > really like you to clean up the unnecessary callers on your systems
-> > first, before adding further tracepoints. That way we'll have a clear
-> > picture of which points can be solved by kfree_skb and where we need
-> > further work. =20
->=20
-> The existing UDP tracepoint was there for 12 years and it's a part of
-> what kernel exposes to userspace, so I don't think it's fair to remove
-> this and break its consumers. I think "do not break userspace" applies
-> here. The proposed TCP tracepoint mostly mirrors it, so I think it's
-> fair to have it.
->=20
-> I don't know why kfree_skb is called so much. I also don't agree with
-> Yan that it's not actually too much, because it's a lot (especially
-> compared with near zero for my proposed tracepoint). I can easily see
-> 300-500k calls per second into it:
->=20
-> $ perf stat -I 1000 -a -e skb:kfree_skb -- sleep 10
-> #           time             counts unit events
->      1.000520165             10,108      skb:kfree_skb
->      2.010494526             11,178      skb:kfree_skb
->      3.075503743             10,770      skb:kfree_skb
->      4.122814843             11,334      skb:kfree_skb
->      5.128518432             12,020      skb:kfree_skb
->      6.176504094             11,117      skb:kfree_skb
->      7.201504214             12,753      skb:kfree_skb
->      8.229523643             10,566      skb:kfree_skb
->      9.326499044            365,239      skb:kfree_skb
->     10.002106098            313,105      skb:kfree_skb
-> $ perf stat -I 1000 -a -e skb:kfree_skb -- sleep 10
-> #           time             counts unit events
->      1.000767744             52,240      skb:kfree_skb
->      2.069762695            508,310      skb:kfree_skb
->      3.102763492            417,895      skb:kfree_skb
->      4.142757608            385,981      skb:kfree_skb
->      5.190759795            430,154      skb:kfree_skb
->      6.243765384            405,707      skb:kfree_skb
->      7.290818228            362,934      skb:kfree_skb
->      8.297764298            336,702      skb:kfree_skb
->      9.314287243            353,039      skb:kfree_skb
->     10.002288423            251,414      skb:kfree_skb
->=20
-> Most of it is NOT_SPECIFIED (1s data from one CPU during a spike):
->=20
-> $ perf script | sed 's/.*skbaddr=3D//' | awk '{ print $NF }' | sort |
-> uniq -c | sort -n | tail
->       1 TCP_CLOSE
->       2 NO_SOCKET
->       4 TCP_INVALID_SEQUENCE
->       4 TCP_RESET
->      13 TCP_OLD_DATA
->      14 NETFILTER_DROP
->    4594 NOT_SPECIFIED
->=20
-> We can start a separate discussion to break it down by category if it
-> would help. Let me know what kind of information you would like us to
-> provide to help with that. I assume you're interested in kernel stacks
-> leading to kfree_skb with NOT_SPECIFIED reason, but maybe there's
-> something else.
+Hi Yangtao,
 
-Just the stacks.
+FYI, the error/warning still remains.
 
-> Even if I was only interested in one specific reason, I would still
-> have to arm the whole tracepoint and route a ton of skbs I'm not
-> interested in into my bpf code. This seems like a lot of overhead,
-> especially if I'm dropping some attack packets.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   4b810bf037e524b54669acbe4e0df54b15d87ea1
+commit: 19e0e21a51183d4e0784602f27e4db7b965077be f2fs: remove struct victim_selection default_v_ops
+date:   3 months ago
+config: riscv-randconfig-r003-20230713 (https://download.01.org/0day-ci/archive/20230714/202307141107.xoC7milY-lkp@intel.com/config)
+compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
+reproduce: (https://download.01.org/0day-ci/archive/20230714/202307141107.xoC7milY-lkp@intel.com/reproduce)
 
-That's what I meant with my drop vs exception comment. We already have
-two tracepoints on the skb free path (free and consume), adding another
-shouldn't rise too many eyebrows.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307141107.xoC7milY-lkp@intel.com/
 
-> Perhaps a lot of extra NOT_SPECIFIED stuff can be fixed and removed
-> from kfree_skb. It's not something I can personally do as it requires
-> much deeper network code understanding than I possess. For TCP we'll
-> also have to add some extra reasons for kfree_skb, because currently
-> it's all NOT_SPECIFIED (no reason set in the accept path):
->=20
-> * https://elixir.bootlin.com/linux/v6.5-rc1/source/net/ipv4/tcp_input.c#L=
-6499
-> * https://elixir.bootlin.com/linux/v6.5-rc1/source/net/ipv4/tcp_ipv4.c#L1=
-749
->=20
-> For UDP we already have SKB_DROP_REASON_SOCKET_RCVBUFF, so I tried my
-> best to implement what I wanted based on that. It's not very
-> approachable, as you'd have to extract the destination port yourself
-> from the raw skb. As Yan said, for TCP people often rely on skb->sk,
-> which is just not present when the incoming SYN is dropped. I failed
-> to find a good example of extracting a destination port that I could
-> replicate. So far I have just a per-reason breakdown working:
->=20
-> * https://github.com/cloudflare/ebpf_exporter/pull/233
->=20
-> If you have an ebpf example that would help me extract the destination
-> port from an skb in kfree_skb, I'd be interested in taking a look and
-> trying to make it work.
->=20
-> The need to extract the protocol level information in ebpf is only
-> making kfree_skb more expensive for the needs of catching rare cases
-> when we run out of buffer space (UDP) or listen queue (TCP). These two
-> cases are very common failure scenarios that people are interested in
-> catching with straightforward tracepoints that can give them the
-> needed information easily and cheaply.
->=20
-> I sympathize with the desire to keep the number of tracepoints in
-> check, but I also feel like UDP buffer drops and TCP listen drops
-> tracepoints are very much justified to exist.
+All warnings (new ones prefixed by >>):
 
-I'm not completely opposed to the tracepoints where needed. It's more=20
-of trying to make sure we do due diligence on the existing solutions.
-Or maybe not even due diligence as much as pay off some technical debt.
+>> fs/f2fs/gc.c:744:5: warning: stack frame size (1712) exceeds limit (1024) in 'f2fs_get_victim' [-Wframe-larger-than]
+   int f2fs_get_victim(struct f2fs_sb_info *sbi, unsigned int *result,
+       ^
+   1 warning generated.
+
+
+vim +/f2fs_get_victim +744 fs/f2fs/gc.c
+
+   735	
+   736	/*
+   737	 * This function is called from two paths.
+   738	 * One is garbage collection and the other is SSR segment selection.
+   739	 * When it is called during GC, it just gets a victim segment
+   740	 * and it does not remove it from dirty seglist.
+   741	 * When it is called from SSR segment selection, it finds a segment
+   742	 * which has minimum valid blocks and removes it from dirty seglist.
+   743	 */
+ > 744	int f2fs_get_victim(struct f2fs_sb_info *sbi, unsigned int *result,
+   745				int gc_type, int type, char alloc_mode,
+   746				unsigned long long age)
+   747	{
+   748		struct dirty_seglist_info *dirty_i = DIRTY_I(sbi);
+   749		struct sit_info *sm = SIT_I(sbi);
+   750		struct victim_sel_policy p;
+   751		unsigned int secno, last_victim;
+   752		unsigned int last_segment;
+   753		unsigned int nsearched;
+   754		bool is_atgc;
+   755		int ret = 0;
+   756	
+   757		mutex_lock(&dirty_i->seglist_lock);
+   758		last_segment = MAIN_SECS(sbi) * sbi->segs_per_sec;
+   759	
+   760		p.alloc_mode = alloc_mode;
+   761		p.age = age;
+   762		p.age_threshold = sbi->am.age_threshold;
+   763	
+   764	retry:
+   765		select_policy(sbi, gc_type, type, &p);
+   766		p.min_segno = NULL_SEGNO;
+   767		p.oldest_age = 0;
+   768		p.min_cost = get_max_cost(sbi, &p);
+   769	
+   770		is_atgc = (p.gc_mode == GC_AT || p.alloc_mode == AT_SSR);
+   771		nsearched = 0;
+   772	
+   773		if (is_atgc)
+   774			SIT_I(sbi)->dirty_min_mtime = ULLONG_MAX;
+   775	
+   776		if (*result != NULL_SEGNO) {
+   777			if (!get_valid_blocks(sbi, *result, false)) {
+   778				ret = -ENODATA;
+   779				goto out;
+   780			}
+   781	
+   782			if (sec_usage_check(sbi, GET_SEC_FROM_SEG(sbi, *result)))
+   783				ret = -EBUSY;
+   784			else
+   785				p.min_segno = *result;
+   786			goto out;
+   787		}
+   788	
+   789		ret = -ENODATA;
+   790		if (p.max_search == 0)
+   791			goto out;
+   792	
+   793		if (__is_large_section(sbi) && p.alloc_mode == LFS) {
+   794			if (sbi->next_victim_seg[BG_GC] != NULL_SEGNO) {
+   795				p.min_segno = sbi->next_victim_seg[BG_GC];
+   796				*result = p.min_segno;
+   797				sbi->next_victim_seg[BG_GC] = NULL_SEGNO;
+   798				goto got_result;
+   799			}
+   800			if (gc_type == FG_GC &&
+   801					sbi->next_victim_seg[FG_GC] != NULL_SEGNO) {
+   802				p.min_segno = sbi->next_victim_seg[FG_GC];
+   803				*result = p.min_segno;
+   804				sbi->next_victim_seg[FG_GC] = NULL_SEGNO;
+   805				goto got_result;
+   806			}
+   807		}
+   808	
+   809		last_victim = sm->last_victim[p.gc_mode];
+   810		if (p.alloc_mode == LFS && gc_type == FG_GC) {
+   811			p.min_segno = check_bg_victims(sbi);
+   812			if (p.min_segno != NULL_SEGNO)
+   813				goto got_it;
+   814		}
+   815	
+   816		while (1) {
+   817			unsigned long cost, *dirty_bitmap;
+   818			unsigned int unit_no, segno;
+   819	
+   820			dirty_bitmap = p.dirty_bitmap;
+   821			unit_no = find_next_bit(dirty_bitmap,
+   822					last_segment / p.ofs_unit,
+   823					p.offset / p.ofs_unit);
+   824			segno = unit_no * p.ofs_unit;
+   825			if (segno >= last_segment) {
+   826				if (sm->last_victim[p.gc_mode]) {
+   827					last_segment =
+   828						sm->last_victim[p.gc_mode];
+   829					sm->last_victim[p.gc_mode] = 0;
+   830					p.offset = 0;
+   831					continue;
+   832				}
+   833				break;
+   834			}
+   835	
+   836			p.offset = segno + p.ofs_unit;
+   837			nsearched++;
+   838	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
