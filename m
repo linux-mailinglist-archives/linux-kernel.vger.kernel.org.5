@@ -2,105 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DCF1753F90
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 18:11:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7D13753F88
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 18:09:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236057AbjGNQLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 12:11:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43366 "EHLO
+        id S235924AbjGNQJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 12:09:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236016AbjGNQLB (ORCPT
+        with ESMTP id S235303AbjGNQJQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 12:11:01 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D329B35A2;
-        Fri, 14 Jul 2023 09:10:58 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-668709767b1so1556729b3a.2;
-        Fri, 14 Jul 2023 09:10:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689351058; x=1691943058;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cJT4JvcoBJI1s+TLldc7ex2Zu19/5zU0zWJ4jSuF7fQ=;
-        b=CtXXldw+iZHVpX6qIr9p4KT37Kx7qBmRnpnq+S3lRaLk5dlTZ9RHGMt9UfPqB1dfEy
-         e7Pn1VYiykKBznEhBrSEDwFC466zDTJgOeYNcLthON3YP7It/50qqhCczUfwZzWGquq0
-         bYCkmdo1NsVyX/q/7a2PxHxJx73MhScc19QsQpSlK7+dbfsffeA1yJ+3B7fD0Tae0m12
-         V6haBs8KDTlG35Hy2gYqyjurxzyfukTCi9FY8tht9CzBbmTfydy0RBC2CpkYusld/06m
-         OxGR+GH4YeG1xEc+6HdjU2QgsODBNnkMT94yrqtpjDUoRneboKqhAfbSdV8p0cHBHS8k
-         qE/A==
+        Fri, 14 Jul 2023 12:09:16 -0400
+Received: from mail-io1-f54.google.com (mail-io1-f54.google.com [209.85.166.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4B1630F4;
+        Fri, 14 Jul 2023 09:09:15 -0700 (PDT)
+Received: by mail-io1-f54.google.com with SMTP id ca18e2360f4ac-78374596182so84065139f.0;
+        Fri, 14 Jul 2023 09:09:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689351058; x=1691943058;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cJT4JvcoBJI1s+TLldc7ex2Zu19/5zU0zWJ4jSuF7fQ=;
-        b=Ty4PZKUKF/DE+EVcVy2ZYy8fGcsamiY/qlaUKg7n3DDn9K9nWAl6xdMGkKw9uOCzWC
-         SoI83E4FBsyZRKbPIxwmile88Y9d8Ex6iWrL/GG82+DiMSs8zPx6iGr19tqacuTOiiph
-         Tw0SipwNSLpF1QmA1UhmvhMM88X0nY8JS5dG+mrkVRN+9CsJA9F4A2/sPNqU+G/eLdep
-         3c6jnADQl+788HNKPg3+BBTXxxJQUTtl/L+BISHTDG3g3H2yPLeWJ28HHEw0rNl0s8lK
-         oVs14n1NiFc6XJ9C1bZrl7+QfyydWwjisUlkV4okWSlBE8kAfLSeFaNM1bhDMQodoXIK
-         iWnA==
-X-Gm-Message-State: ABy/qLZhTQw+Tk3w8pP8FsdBv99Y1mWDtFt6AzvVJbMYhnLq2R1c8SA3
-        p4+2EgRkmDlBjr3sAlU0LbE29KV8xG4=
-X-Google-Smtp-Source: APBJJlFZoztqjGGEvX5dj7b03i4Z8unODw3IQSxPkgJjXaAt3iwb1U1omDrUXzc3dlyNX+gL8T9Cvw==
-X-Received: by 2002:a05:6a00:2386:b0:682:b6c8:2eb with SMTP id f6-20020a056a00238600b00682b6c802ebmr4754758pfc.1.1689351058162;
-        Fri, 14 Jul 2023 09:10:58 -0700 (PDT)
-Received: from linux-l9pv.suse ([124.11.22.254])
-        by smtp.gmail.com with ESMTPSA id b30-20020a63931e000000b0055bbc746272sm7544607pge.17.2023.07.14.09.10.56
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 14 Jul 2023 09:10:57 -0700 (PDT)
-From:   "Lee, Chun-Yi" <joeyli.kernel@gmail.com>
-X-Google-Original-From: "Lee, Chun-Yi" <jlee@suse.com>
-To:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        "Lee, Chun-Yi" <jlee@suse.com>
-Subject: [PATCH] Bluetooth: hci_ldisc: check HCI_UART_PROTO_READY flag in HCIUARTGETPROTO
-Date:   Sat, 15 Jul 2023 00:08:54 +0800
-Message-Id: <20230714160854.20562-1-jlee@suse.com>
-X-Mailer: git-send-email 2.12.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1689350955; x=1691942955;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xwfN0AjJiCW6P2GxSV3v/bOqQB8wMErVeNdQNrLkhjY=;
+        b=EuZU2lHh06H2deH6cjyvesoaqDI6fxVzSOeF3It1eWiAPyWti74IGr0t7NtLUVIIfs
+         w3lIB9ZYyKW0VYejEc+uTkmMuzB7oENlWxDj1xcChqmkOZu1m279jZXEFsdRBNRXj3Pg
+         vbe1QQm0HRzyiq17zeEwBSxX7RwFGO+kibgd29hQpVaRy/g3ANXvTpXKLTa93S3Doj61
+         bjVl1dFdM8FN7H0BXFdLTQaGyiC/hKW4j7V3wi3WC3gk679aNyIRJZBhoh+3gJ7l6t1h
+         lxUqvzHNCZ6OBmLOwhWbz1//D2owmK2SHuj+zU+Dl+af/YreFFiq53D1j/kS4hhWRiCO
+         AC6g==
+X-Gm-Message-State: ABy/qLZfUFkZZCw909+YXXDkPNq0jKogTkxezpYdJ7N3jJQ5OHIi4TWK
+        1kfE9rGeWZ1sn0sCIdzwpoMctPPOlA==
+X-Google-Smtp-Source: APBJJlHy30Aj8mI9J3Q4ry+hIBPJNXFvDCtic8YvzqUB9GkTBi83GV3C1ObysRCXM79iRuwMEJ9PJA==
+X-Received: by 2002:a6b:f21a:0:b0:77a:e86a:c24b with SMTP id q26-20020a6bf21a000000b0077ae86ac24bmr5412087ioh.6.1689350954857;
+        Fri, 14 Jul 2023 09:09:14 -0700 (PDT)
+Received: from robh_at_kernel.org ([64.188.179.250])
+        by smtp.gmail.com with ESMTPSA id k1-20020a02a701000000b0042b2df337ccsm2504326jam.76.2023.07.14.09.09.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Jul 2023 09:09:14 -0700 (PDT)
+Received: (nullmailer pid 3933554 invoked by uid 1000);
+        Fri, 14 Jul 2023 16:09:12 -0000
+Date:   Fri, 14 Jul 2023 10:09:12 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Kyle Tso <kyletso@google.com>
+Cc:     krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux@roeck-us.net, heikki.krogerus@linux.intel.com,
+        gregkh@linuxfoundation.org, badhri@google.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: connector: Add child nodes for multiple
+ PD capabilities
+Message-ID: <20230714160912.GA3920890-robh@kernel.org>
+References: <20230712072853.1755559-1-kyletso@google.com>
+ <20230712072853.1755559-2-kyletso@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230712072853.1755559-2-kyletso@google.com>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds code to check HCI_UART_PROTO_READY flag before
-accessing hci_uart->proto. It fixs the race condition in
-hci_uart_tty_ioctl() between HCIUARTSETPROTO and HCIUARTGETPROTO.
-This issue bug found by Yu Hao and Weiteng Chen:
+On Wed, Jul 12, 2023 at 03:28:52PM +0800, Kyle Tso wrote:
+> Define a new optional property "capabilities" which is a child node
+> under connector to contain multiple USB Power Delivery capabilities.
 
-BUG: general protection fault in hci_uart_tty_ioctl [1]
+Is multiple capabilities a USB spec thing or some Linux feature? I think 
+DT should only define the limits of the h/w capabilities and if the OS 
+wants to define multiple profiles within those limits that's its 
+problem.
 
-The information of C reproducer can also reference the link [2]
+> 
+> Define a new property with pattern (e.g. caps0, caps1) which is a child
+> node under "capabilities". Each node contains PDO data of a selectable
+> Power Delivery capability.
+> 
+> Signed-off-by: Kyle Tso <kyletso@google.com>
+> ---
+>  .../bindings/connector/usb-connector.yaml     | 44 +++++++++++++++++++
+>  1 file changed, 44 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/connector/usb-connector.yaml b/Documentation/devicetree/bindings/connector/usb-connector.yaml
+> index 1c4d3eb87763..b8c96d0a127a 100644
+> --- a/Documentation/devicetree/bindings/connector/usb-connector.yaml
+> +++ b/Documentation/devicetree/bindings/connector/usb-connector.yaml
+> @@ -228,6 +228,50 @@ properties:
+>        SNK_READY for non-pd link.
+>      type: boolean
+>  
+> +  capabilities:
+> +    description: A child node to contain all the selectable USB Power Delivery capabilities.
+> +    type: object
+> +
+> +    patternProperties:
+> +      "^caps[0-9]+$":
 
-Reported-by: Yu Hao <yhao016@ucr.edu>
-Closes: https://lore.kernel.org/all/CA+UBctC3p49aTgzbVgkSZ2+TQcqq4fPDO7yZitFT5uBPDeCO2g@mail.gmail.com/ [1]
-Reported-by: Weiteng Chen <wchen130@ucr.edu>
-Closes: https://lore.kernel.org/lkml/CA+UBctDPEvHdkHMwD340=n02rh+jNRJNNQ5LBZNA+Wm4Keh2ow@mail.gmail.com/T/ [2]
-Signed-off-by: "Lee, Chun-Yi" <jlee@suse.com>
----
- drivers/bluetooth/hci_ldisc.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+caps-[0-9] is more the convention.
 
-diff --git a/drivers/bluetooth/hci_ldisc.c b/drivers/bluetooth/hci_ldisc.c
-index efdda2c3fce8..a76eb98c0047 100644
---- a/drivers/bluetooth/hci_ldisc.c
-+++ b/drivers/bluetooth/hci_ldisc.c
-@@ -770,7 +770,8 @@ static int hci_uart_tty_ioctl(struct tty_struct *tty, unsigned int cmd,
- 		break;
- 
- 	case HCIUARTGETPROTO:
--		if (test_bit(HCI_UART_PROTO_SET, &hu->flags))
-+		if (test_bit(HCI_UART_PROTO_SET, &hu->flags) &&
-+		    test_bit(HCI_UART_PROTO_READY, &hu->flags))
- 			err = hu->proto->id;
- 		else
- 			err = -EUNATCH;
--- 
-2.35.3
+> +        description: Child nodes under "capabilities" node. Each node contains a selectable USB
+> +          Power Delivery capability.
+> +        type: object
+> +
+> +        properties:
+> +          source-pdos:
 
+You are now defining the same property twice. You can use '$defs' to 
+define common properties and then reference them. Or put all the PD 
+properties into its own schema file and reference it.
+
+> +            description: An array of u32 with each entry providing supported power
+> +              source data object(PDO), the detailed bit definitions of PDO can be found
+> +              in "Universal Serial Bus Power Delivery Specification" chapter 6.4.1.2
+> +              Source_Capabilities Message, the order of each entry(PDO) should follow
+> +              the PD spec chapter 6.4.1. Required for power source and power dual role.
+> +              User can specify the source PDO array via PDO_FIXED/BATT/VAR/PPS_APDO()
+> +              defined in dt-bindings/usb/pd.h.
+> +            $ref: /schemas/types.yaml#/definitions/uint32-array
+> +            minItems: 1
+> +            maxItems: 7
+> +
+> +          sink-pdos:
+> +            description: An array of u32 with each entry providing supported power sink
+> +              data object(PDO), the detailed bit definitions of PDO can be found in
+> +              "Universal Serial Bus Power Delivery Specification" chapter 6.4.1.3
+> +              Sink Capabilities Message, the order of each entry(PDO) should follow the
+> +              PD spec chapter 6.4.1. Required for power sink and power dual role. User
+> +              can specify the sink PDO array via PDO_FIXED/BATT/VAR/PPS_APDO() defined
+> +              in dt-bindings/usb/pd.h.
+> +            $ref: /schemas/types.yaml#/definitions/uint32-array
+> +            minItems: 1
+> +            maxItems: 7
+> +
+> +          op-sink-microwatt:
+> +            description: Sink required operating power in microwatt, if source can't
+> +              offer the power, Capability Mismatch is set. Required for power sink and
+> +              power dual role.
+> +
+> +        additionalProperties: false
+> +
+> +    additionalProperties: false
+> +
+>  dependencies:
+>    sink-vdos-v1: [ 'sink-vdos' ]
+>    sink-vdos: [ 'sink-vdos-v1' ]
+> -- 
+> 2.41.0.255.g8b1d071c50-goog
+> 
