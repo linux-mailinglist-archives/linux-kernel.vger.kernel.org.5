@@ -2,63 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 515CB753E49
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 17:01:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 903D8753E50
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 17:02:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236252AbjGNPBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 11:01:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35762 "EHLO
+        id S236260AbjGNPC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 11:02:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235671AbjGNPBV (ORCPT
+        with ESMTP id S236281AbjGNPC0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 11:01:21 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6828D1BD4;
-        Fri, 14 Jul 2023 08:01:19 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-51e28cac164so6752197a12.1;
-        Fri, 14 Jul 2023 08:01:19 -0700 (PDT)
+        Fri, 14 Jul 2023 11:02:26 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E80F3AB1;
+        Fri, 14 Jul 2023 08:02:06 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-c7a5600d04dso1932730276.3;
+        Fri, 14 Jul 2023 08:02:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689346878; x=1691938878;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=OBiuXyNTy9aeHUsfvyqBHVosTB7b4gg8TsCFhpUvqn4=;
-        b=XfAD/DafZbSVSiMjR9lYFamyWdiGMGRrT8yuGyCxh7lAj0OF48e8VBQERSx7/Kz3Jy
-         FZmWDto+LoelVYG/6sMMkJ0UOX8lIOn9WxnX41onAVpo/97SacKCvUCB4zgS53zLLc5j
-         H5WV9ltzloa725w/qrVuRJY3HsCZtgCXPnxOm966vKFPM3STSg99jTndNuhP9UZQ36Tq
-         L6EgkReMesSodfuWKbvXnZn5xkONXP4pZpHJNHPIMfmOmSE6jzVQCG9r+mnl7W6tp2no
-         BmGKKed2QWBVN9kvOzYYCOVxZrr4Z5Hxo/CIcya9Vz4h57uWTnvO/KDUWw/tTBK/0Krs
-         xEWQ==
+        d=gmail.com; s=20221208; t=1689346925; x=1691938925;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WZZ9EOh8YDl35VB0YBYDo9hjgSAIvlerdtM+lWHSm5g=;
+        b=JTzzYDbIAeBHNT3Mk2cmNycCC3b97HGw6Wa6P0kp0mxr2C0KJFDPLSxJq8Pd6EzUUh
+         bIjQvzVXcsD1bkZFQ3umgFq9TqY3tY8Vprh3ciL/qkwidOnt0es1ZnABBhViELmcW8yE
+         7hdoifxju13ojhAoxCW+wwfWHB4F/2wrVUxW2PJQxG+IMSqKaI+ydKOWklkKQA4Wto5C
+         rogJtvx1NQYCG44jC1GrVj0i//rc8q1aYevxx9mKh/QMzrQE31PClFfhAFpn5qJoA6/B
+         PFHvMyG72+PLz7aLqg3R3/vCyN/mdmHx0ftxLv9lQP4Bawm7+5d8f4tAFt0fKL0pnrXL
+         xAwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689346878; x=1691938878;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OBiuXyNTy9aeHUsfvyqBHVosTB7b4gg8TsCFhpUvqn4=;
-        b=gWApjvDbEHugxD3h8SDknbcV3FNI1kg5JP1vb1+paUzWebMmb7LqrKgD4Dc/79JFIv
-         1vbadwXHMgkrb/ulye1Zvov9ADvExL8uw4cmpzZFN4yk31SSNWRggZclXlzwm2bMKcKT
-         reW8FoNDqQ5bGtvKnfD9hh+eDMbiFLdEmcsWVcasctEjEaVjKwN/d5nxoINILWEVmZjW
-         6FNYf0VUuofxn2taMX8EcWUtQZYqmRW2eQCqwidggShoktg1Q3syhHgq5+uhuaEg34+v
-         saepN4YjFgplHo0gmfNrQSX86kY+vKBKqbsXJ/qGzf4KCswiH/B3EpJhjPUf6qQLtwxD
-         zN0Q==
-X-Gm-Message-State: ABy/qLZJ4Zp7sw4VHBrPwZhquQy6Y7q4+aZgOd256hZC++aQvfClIgNL
-        C8q0NRWtDjOkcDxZXamHM1w=
-X-Google-Smtp-Source: APBJJlGZSJEhe35uZt2LG+EAKzrk1g4oIdIDQc/dv4+9CYi4WJ8TsT9Xpt0xtHjhWZZ6jlvq+Fww6w==
-X-Received: by 2002:a17:906:20dd:b0:993:d920:87d2 with SMTP id c29-20020a17090620dd00b00993d92087d2mr3581918ejc.30.1689346877330;
-        Fri, 14 Jul 2023 08:01:17 -0700 (PDT)
-Received: from localhost (p200300e41f4b7100f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f4b:7100:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id i7-20020a17090671c700b0098cf565d98asm5495728ejk.22.2023.07.14.08.01.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 08:01:16 -0700 (PDT)
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Jon Hunter <jonathanh@nvidia.com>, Sumit Gupta <sumitg@nvidia.com>,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] memory: tegra: Prefer octal over symbolic permissions
-Date:   Fri, 14 Jul 2023 17:01:16 +0200
-Message-ID: <20230714150116.2823766-1-thierry.reding@gmail.com>
-X-Mailer: git-send-email 2.41.0
+        d=1e100.net; s=20221208; t=1689346925; x=1691938925;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WZZ9EOh8YDl35VB0YBYDo9hjgSAIvlerdtM+lWHSm5g=;
+        b=PxMj2tMt/UKeITmp5r8EnLseSb+7IYXMhiRmeRfDW0actOv8WF30os3MmwCSyZeIv3
+         fFQyetMZ+tNYWD+v/AGnq0CEgBpQ7cRGMFhuLOt126IOhX9TP1rN/sH4eD07W5IoGR9y
+         e1MVGd44f70IgqQsXRXniyjnpuZ3XFKMRxGvnl0S1z4LDRsDgeVqjTeabfvmkemN/jel
+         3bJ4UAoSZRzH3nvPtAKxxZ6CrZZDouyKGB6if/4Rx/qOzqoBCSYGsTyFJxdQIjxns6a+
+         1npIPfO0oj8LjfXzrW3N+CNIXsgtdaMs3qFiHF9J6jQPPUy/Nsvm4LBA4ndpSr0i6+Ya
+         FCQw==
+X-Gm-Message-State: ABy/qLa08wVdTttKyRLBSHOVuVcX+KRANvU2t/o/OWEcCLK6SbHV6NV2
+        diMDIzhiYzDp/Lv8ZKgRewN+7/kXZft643SQfLE=
+X-Google-Smtp-Source: APBJJlERpcU28hgT0T3bIglk0iGT0bmn1uOnaSOpkfR/IyTnKpYwVO97D+A/LlLF6zHeeOjIm0fNWn+04UB37NV0GbY=
+X-Received: by 2002:a25:c0c8:0:b0:c4f:43d7:7daf with SMTP id
+ c191-20020a25c0c8000000b00c4f43d77dafmr4055869ybf.1.1689346925288; Fri, 14
+ Jul 2023 08:02:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAPDJoNv1HW-5uCj21PX3t23rJ+sbTL4Gm5pDis8HGJ-VTr4dug@mail.gmail.com>
+ <20230714140201.383439-1-aliceryhl@google.com>
+In-Reply-To: <20230714140201.383439-1-aliceryhl@google.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Fri, 14 Jul 2023 17:01:53 +0200
+Message-ID: <CANiq72n8-b992D4RbwUtuEUxXfJYQLNwfibgWSyspx-HYJ8+8A@mail.gmail.com>
+Subject: Re: [PATCH] rust: kernel: str: Implement Debug for CString
+To:     Alice Ryhl <aliceryhl@google.com>
+Cc:     ariel.miculas@gmail.com, alex.gaynor@gmail.com,
+        asahi@lists.linux.dev, benno.lossin@proton.me,
+        bjorn3_gh@protonmail.com, boqun.feng@gmail.com, gary@garyguo.net,
+        lina@asahilina.net, linux-kernel@vger.kernel.org, ojeda@kernel.org,
+        rust-for-linux@vger.kernel.org, wedsonaf@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -69,40 +73,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thierry Reding <treding@nvidia.com>
+On Fri, Jul 14, 2023 at 4:02=E2=80=AFPM Alice Ryhl <aliceryhl@google.com> w=
+rote:
+>
+> Adding some sort of motivation usually works quite well, e.g.:
+>
+> Make it possible to use a CString with the `pr_*` macros directly, that
+> is, instead of
+>
+>         pr_debug!("trying to open {:?}\n", &*filename);
+>
+> we can now write
+>
+>         pr_debug!("trying to open {:?}\n", filename);
 
-checkpatch recommends using octal permissions instead of symbolic
-permissions. Switch the debugfs files to use the former to silence
-these warnings.
+Indeed, this would be the most important bit, i.e. answering the "why?".
 
-Signed-off-by: Thierry Reding <treding@nvidia.com>
----
- drivers/memory/tegra/tegra186-emc.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+The "what?" and the "how?" are pretty much explained by the title, but
+it is also fine giving more details (but if the implementation
+requires an explanation, then it is usually best to write an actual
+source code comment instead).
 
-diff --git a/drivers/memory/tegra/tegra186-emc.c b/drivers/memory/tegra/tegra186-emc.c
-index 83981ae3ea86..4007f4e16d74 100644
---- a/drivers/memory/tegra/tegra186-emc.c
-+++ b/drivers/memory/tegra/tegra186-emc.c
-@@ -212,12 +212,12 @@ static int tegra186_emc_get_emc_dvfs_latency(struct tegra186_emc *emc)
- 	}
- 
- 	emc->debugfs.root = debugfs_create_dir("emc", NULL);
--	debugfs_create_file("available_rates", S_IRUGO, emc->debugfs.root,
--			    emc, &tegra186_emc_debug_available_rates_fops);
--	debugfs_create_file("min_rate", S_IRUGO | S_IWUSR, emc->debugfs.root,
--			    emc, &tegra186_emc_debug_min_rate_fops);
--	debugfs_create_file("max_rate", S_IRUGO | S_IWUSR, emc->debugfs.root,
--			    emc, &tegra186_emc_debug_max_rate_fops);
-+	debugfs_create_file("available_rates", 0444, emc->debugfs.root, emc,
-+			    &tegra186_emc_debug_available_rates_fops);
-+	debugfs_create_file("min_rate", 0644, emc->debugfs.root, emc,
-+			    &tegra186_emc_debug_min_rate_fops);
-+	debugfs_create_file("max_rate", 0644, emc->debugfs.root, emc,
-+			    &tegra186_emc_debug_max_rate_fops);
- 
- 	return 0;
- }
--- 
-2.41.0
-
+Cheers,
+Miguel
