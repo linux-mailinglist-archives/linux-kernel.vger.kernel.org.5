@@ -2,149 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28AEB754651
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 04:43:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB753754658
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 04:43:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230122AbjGOCnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 22:43:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51954 "EHLO
+        id S230192AbjGOCnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 22:43:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229796AbjGOCnL (ORCPT
+        with ESMTP id S230156AbjGOCnW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 22:43:11 -0400
+        Fri, 14 Jul 2023 22:43:22 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 380E235AC;
-        Fri, 14 Jul 2023 19:43:07 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8653635B3;
+        Fri, 14 Jul 2023 19:43:17 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9182C61E1B;
-        Sat, 15 Jul 2023 02:43:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D15D8C433C8;
-        Sat, 15 Jul 2023 02:42:56 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EB2CD61E2F;
+        Sat, 15 Jul 2023 02:43:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 126BCC433CA;
+        Sat, 15 Jul 2023 02:43:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689388985;
-        bh=/K8sAwy3ddTHJ7iZOsozCcqPijpsQjWvdFKW4CzAawE=;
+        s=k20201202; t=1689388996;
+        bh=RuDoz5aPqD3aUOvDQSAThUCLEL5M1SgbHJ5N/FMTEyk=;
         h=From:To:Cc:Subject:Date:From;
-        b=lxDu9HxHl9XJPtRL/ts2JtWaPhEIvloYhe3caviNr4aLTDw8/znS9FMzVwMvR1QFz
-         mfsykFkYHkGE4ctA6cBk5UwUZGCWEsLgr3wX5F1ymqbDmlSpacw4t0aQPzDewOjmZK
-         89brcj920+P6cbGtQMGAkOymptJgaG8UuVBN+eJSMPhuCSnXu8zAOwHCJAEHwRxuZA
-         J56kgvO5PJYzwaHgjA1X180zZhMCZlYG5VPuq6RHJheh1tp1V+en9Ynb57o7HS/quC
-         8vtWqSfIQVUrq3L22jdP1sxmlaFX97cbRTf6riSWrdMJyJOKYRyAACP0oogzCcv/hB
-         v6ITWvx+QCQrA==
-Received: (nullmailer pid 4056631 invoked by uid 1000);
-        Fri, 14 Jul 2023 17:45:49 -0000
+        b=WyYizL8g2SP9GuYPsxUP8ZDy4T0ftbFERGpKPkypIfBnsJE/Qwo2A4Ui40tCNu94u
+         aAh3BtuR8duQ9xCEzbFnVvAFiI1eNdjBxqfq2tZMUJh8slq15Xb8M9gw5EQGSKbe2d
+         b/XuuxXvIUPUtthUrxt1A+1Khy6FfsKHypSlZQ0qKeIc8oMiVOXVo1VkfTVeR7uQF0
+         fbHdKHUejOo2nOwT8OhHKJ/75P7A/8F1hmaSwqFdXRXD3gqjK4X2ggQpdgDu0Ak/45
+         1H51T/Tjglptg+xeUOVCA4IJs4dUHnkeo8/ymqXKTv++MwjXjaH+AH7JVvlWJ07pf2
+         bIHl5yX6bbtZA==
+Received: (nullmailer pid 4061163 invoked by uid 1000);
+        Fri, 14 Jul 2023 17:48:13 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Liviu Dudau <liviu.dudau@arm.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
+To:     Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
+        Chen-Yu Tsai <wens@csie.org>,
         Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Liu Ying <victor.liu@nxp.com>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Inki Dae <inki.dae@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Xinliang Liu <xinliang.liu@linaro.org>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Yongqin Liu <yongqin.liu@linaro.org>,
-        John Stultz <jstultz@google.com>,
-        Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Qiang Yu <yuq825@gmail.com>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
+        Samuel Holland <samuel@sholland.org>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
         Matthias Brugger <matthias.bgg@gmail.com>,
         AngeloGioacchino Del Regno 
         <angelogioacchino.delregno@collabora.com>,
+        Cla udiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        =?UTF-8?q?Alvin=20=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        George McCollister <george.mccollister@gmail.com>,
+        Andreas Larsson <andreas@gaisler.com>,
+        Iyappan Subramanian <iyappan@os.amperecomputing.com>,
+        Keyur Chudgar <keyur@os.amperecomputing.com>,
+        Chris Snook <chris.snook@gmail.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Madalin Bucur <madalin.bucur@nxp.com>,
+        Wei Fang <wei.fang@nxp.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sean Anderson <sean.anderson@seco.com>,
+        Pantelis Antoniou <pantelis.antoniou@gmail.com>,
+        Li Yang <leoyang.li@nxp.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Douglas Miller <dougmill@linux.ibm.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Tara s Chornyi <taras.chornyi@plvision.eu>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        Timur Tabi <timur@kernel.org>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Steve Glendinning <steve.glendinning@shawell.net>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
         Kevin Hilman <khilman@baylibre.com>,
         Jerome Brunet <jbrunet@baylibre.com>,
         Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Marek Vasut <marex@denx.de>, Stefan Agner <stefan@agner.ch>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Jerry Han <hanxu5@huaqin.corp-partner.google.com>,
-        Icenowy Zheng <icenowy@aosc.io>, Ondrej Jirman <megi@xff.cz>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>,
-        Purism Kernel Team <kernel@puri.sm>,
-        Jianhua Lu <lujianhua000@gmail.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Artur Weber <aweber.kernel@gmail.com>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Steven Price <steven.price@arm.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        Emma Anholt <emma@anholt.net>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Sandy Huang <hjc@rock-chips.com>,
-        =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Alain Volmat <alain.volmat@foss.st.com>,
-        Yannick Fertre <yannick.fertre@foss.st.com>,
-        Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>,
-        Philippe Cornu <philippe.cornu@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Samuel Holland <samuel@sholland.org>,
+        Vinod Ko ul <vkoul@kernel.org>,
+        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Samin Guo <samin.guo@starfivetech.com>,
         Thierry Reding <thierry.reding@gmail.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
-        Jyri Sarha <jyri.sarha@iki.fi>,
-        Tomi Valkeinen <tomba@kernel.org>,
-        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
-Cc:     devicetree@vger.kernel.org, Ondrej Jirman <megous@megous.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        etnaviv@lists.freedesktop.org, linux-samsung-soc@vger.kernel.org,
-        linux-mips@vger.kernel.org, lima@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org,
-        linux-rpi-kernel@lists.infradead.org,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Kevin Brace <kevinbrace@bracecomputerlab.com>,
+        Francois Romieu <romieu@fr.zoreil.com>,
+        Michal Simek <michal.simek@amd.com>,
+        Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>,
+        Alexander Aring <alex.aring@gmail.com>,
+        Stefan Schmidt <stefan@datenfreihafen.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Alex Elder <elder@kernel.org>,
+        =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <clement.leger@bootlin.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        SkyLake Huang <SkyLake.Huang@mediatek.com>,
+        Kalle Valo <kvalo@kernel.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Shayne Chen <shayne.chen@mediatek.com>,
+        =?UTF-8?q?J=C3=A9r=C3=B4me=20Pouille r?= 
+        <jerome.pouiller@silabs.com>,
+        Richard Cochran <richardcochran@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-mediatek@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
         linux-renesas-soc@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
         linux-stm32@st-md-mailman.stormreply.com,
-        linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
-        xen-devel@lists.xenproject.org
-Subject: [PATCH] drm: Explicitly include correct DT includes
-Date:   Fri, 14 Jul 2023 11:45:34 -0600
-Message-Id: <20230714174545.4056287-1-robh@kernel.org>
+        linux-amlogic@lists.infradead.org, linux-oxnas@groups.io,
+        linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-wpan@vger.kernel.org, ath10k@lists.infradead.org,
+        linux-wireless@vger.kernel.org, ath11k@lists.infradead.org,
+        wcn36xx@lists.infradead.org
+Subject: [PATCH] net: Explicitly include correct DT includes
+Date:   Fri, 14 Jul 2023 11:48:00 -0600
+Message-Id: <20230714174809.4060885-1-robh@kernel.org>
 X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAD_ENC_HEADER,BAYES_00,
+        DKIM_INVALID,DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -163,2137 +171,1834 @@ explicitly include the correct includes.
 
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- drivers/gpu/drm/arm/display/komeda/komeda_dev.c       | 2 +-
- drivers/gpu/drm/arm/malidp_drv.c                      | 1 +
- drivers/gpu/drm/bridge/adv7511/adv7511_cec.c          | 1 -
- drivers/gpu/drm/bridge/adv7511/adv7511_drv.c          | 2 +-
- drivers/gpu/drm/bridge/cadence/cdns-dsi-core.c        | 3 +--
- drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c   | 1 -
- drivers/gpu/drm/bridge/chipone-icn6211.c              | 2 +-
- drivers/gpu/drm/bridge/display-connector.c            | 1 -
- drivers/gpu/drm/bridge/fsl-ldb.c                      | 1 -
- drivers/gpu/drm/bridge/imx/imx8qm-ldb.c               | 2 +-
- drivers/gpu/drm/bridge/imx/imx8qxp-ldb.c              | 1 +
- drivers/gpu/drm/bridge/lontium-lt9211.c               | 1 -
- drivers/gpu/drm/bridge/lvds-codec.c                   | 1 -
- drivers/gpu/drm/bridge/nwl-dsi.c                      | 2 +-
- drivers/gpu/drm/bridge/parade-ps8622.c                | 1 -
- drivers/gpu/drm/bridge/samsung-dsim.c                 | 3 ++-
- drivers/gpu/drm/bridge/simple-bridge.c                | 3 ++-
- drivers/gpu/drm/bridge/synopsys/dw-hdmi.c             | 2 +-
- drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c         | 2 +-
- drivers/gpu/drm/bridge/ti-sn65dsi83.c                 | 2 +-
- drivers/gpu/drm/drm_mipi_dsi.c                        | 1 +
- drivers/gpu/drm/etnaviv/etnaviv_gpu.c                 | 2 +-
- drivers/gpu/drm/exynos/exynos5433_drm_decon.c         | 2 +-
- drivers/gpu/drm/exynos/exynos7_drm_decon.c            | 1 -
- drivers/gpu/drm/exynos/exynos_drm_dsi.c               | 3 ++-
- drivers/gpu/drm/exynos/exynos_drm_fimd.c              | 1 -
- drivers/gpu/drm/exynos/exynos_drm_rotator.c           | 2 +-
- drivers/gpu/drm/exynos/exynos_drm_scaler.c            | 2 +-
- drivers/gpu/drm/exynos/exynos_hdmi.c                  | 2 +-
- drivers/gpu/drm/exynos/exynos_mixer.c                 | 1 -
- drivers/gpu/drm/hisilicon/kirin/kirin_drm_drv.c       | 2 +-
- drivers/gpu/drm/imx/dcss/dcss-dev.c                   | 5 +++--
- drivers/gpu/drm/imx/lcdc/imx-lcdc.c                   | 2 +-
- drivers/gpu/drm/ingenic/ingenic-drm-drv.c             | 2 +-
- drivers/gpu/drm/ingenic/ingenic-ipu.c                 | 2 +-
- drivers/gpu/drm/lima/lima_drv.c                       | 3 ++-
- drivers/gpu/drm/logicvc/logicvc_drm.c                 | 2 +-
- drivers/gpu/drm/mcde/mcde_drv.c                       | 2 +-
- drivers/gpu/drm/mediatek/mtk_disp_aal.c               | 3 +--
- drivers/gpu/drm/mediatek/mtk_disp_ccorr.c             | 3 +--
- drivers/gpu/drm/mediatek/mtk_disp_color.c             | 3 +--
- drivers/gpu/drm/mediatek/mtk_disp_gamma.c             | 3 +--
- drivers/gpu/drm/mediatek/mtk_disp_merge.c             | 3 +--
- drivers/gpu/drm/mediatek/mtk_disp_ovl.c               | 3 +--
- drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c       | 3 ++-
- drivers/gpu/drm/mediatek/mtk_disp_rdma.c              | 3 +--
- drivers/gpu/drm/mediatek/mtk_dpi.c                    | 1 -
- drivers/gpu/drm/mediatek/mtk_drm_crtc.c               | 1 +
- drivers/gpu/drm/mediatek/mtk_drm_drv.c                | 3 ++-
- drivers/gpu/drm/mediatek/mtk_ethdr.c                  | 2 +-
- drivers/gpu/drm/mediatek/mtk_mdp_rdma.c               | 3 +--
- drivers/gpu/drm/meson/meson_drv.h                     | 1 -
- drivers/gpu/drm/meson/meson_dw_hdmi.c                 | 3 ++-
- drivers/gpu/drm/meson/meson_dw_mipi_dsi.c             | 3 ++-
- drivers/gpu/drm/meson/meson_encoder_dsi.c             | 1 -
- drivers/gpu/drm/meson/meson_encoder_hdmi.c            | 4 +++-
- drivers/gpu/drm/msm/adreno/a6xx_gmu.c                 | 2 ++
- drivers/gpu/drm/msm/dp/dp_audio.c                     | 2 +-
- drivers/gpu/drm/msm/dsi/dsi_host.c                    | 2 +-
- drivers/gpu/drm/msm/hdmi/hdmi.c                       | 2 ++
- drivers/gpu/drm/msm/hdmi/hdmi_phy.c                   | 3 ++-
- drivers/gpu/drm/msm/msm_mdss.c                        | 2 ++
- drivers/gpu/drm/mxsfb/lcdif_drv.c                     | 1 -
- drivers/gpu/drm/panel/panel-abt-y030xx067a.c          | 3 ++-
- drivers/gpu/drm/panel/panel-auo-a030jtn01.c           | 2 +-
- drivers/gpu/drm/panel/panel-boe-himax8279d.c          | 1 -
- drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c        | 1 -
- drivers/gpu/drm/panel/panel-dsi-cm.c                  | 2 +-
- drivers/gpu/drm/panel/panel-feixin-k101-im2ba02.c     | 1 -
- drivers/gpu/drm/panel/panel-feiyang-fy07024di26a30d.c | 2 +-
- drivers/gpu/drm/panel/panel-himax-hx8394.c            | 2 +-
- drivers/gpu/drm/panel/panel-ilitek-ili9322.c          | 3 ++-
- drivers/gpu/drm/panel/panel-ilitek-ili9341.c          | 2 +-
- drivers/gpu/drm/panel/panel-ilitek-ili9881c.c         | 2 +-
- drivers/gpu/drm/panel/panel-innolux-ej030na.c         | 3 ++-
- drivers/gpu/drm/panel/panel-innolux-p079zca.c         | 1 -
- drivers/gpu/drm/panel/panel-jadard-jd9365da-h3.c      | 2 +-
- drivers/gpu/drm/panel/panel-leadtek-ltk050h3146w.c    | 1 -
- drivers/gpu/drm/panel/panel-lvds.c                    | 2 +-
- drivers/gpu/drm/panel/panel-magnachip-d53e6ea8966.c   | 1 -
- drivers/gpu/drm/panel/panel-mantix-mlaf057we51.c      | 2 +-
- drivers/gpu/drm/panel/panel-newvision-nv3051d.c       | 2 +-
- drivers/gpu/drm/panel/panel-newvision-nv3052c.c       | 3 ++-
- drivers/gpu/drm/panel/panel-novatek-nt35510.c         | 2 +-
- drivers/gpu/drm/panel/panel-novatek-nt35560.c         | 1 -
- drivers/gpu/drm/panel/panel-novatek-nt35950.c         | 2 +-
- drivers/gpu/drm/panel/panel-novatek-nt36523.c         | 2 +-
- drivers/gpu/drm/panel/panel-novatek-nt36672a.c        | 1 -
- drivers/gpu/drm/panel/panel-novatek-nt39016.c         | 1 -
- drivers/gpu/drm/panel/panel-orisetech-ota5601a.c      | 1 -
- drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c | 1 -
- drivers/gpu/drm/panel/panel-samsung-s6d16d0.c         | 2 +-
- drivers/gpu/drm/panel/panel-samsung-s6d7aa0.c         | 1 -
- drivers/gpu/drm/panel/panel-samsung-s6e3ha2.c         | 2 +-
- drivers/gpu/drm/panel/panel-samsung-s6e63m0-dsi.c     | 2 +-
- drivers/gpu/drm/panel/panel-samsung-sofef00.c         | 1 -
- drivers/gpu/drm/panel/panel-sitronix-st7701.c         | 2 +-
- drivers/gpu/drm/panel/panel-sitronix-st7703.c         | 2 +-
- drivers/gpu/drm/panel/panel-sony-td4353-jdi.c         | 1 -
- drivers/gpu/drm/panel/panel-truly-nt35597.c           | 2 +-
- drivers/gpu/drm/panel/panel-visionox-rm69299.c        | 2 +-
- drivers/gpu/drm/panfrost/panfrost_drv.c               | 3 ++-
- drivers/gpu/drm/pl111/pl111_versatile.c               | 1 +
- drivers/gpu/drm/renesas/rcar-du/rcar_du_drv.c         | 2 +-
- drivers/gpu/drm/renesas/rcar-du/rcar_du_kms.c         | 2 ++
- drivers/gpu/drm/renesas/rcar-du/rcar_du_vsp.c         | 1 +
- drivers/gpu/drm/renesas/rcar-du/rcar_mipi_dsi.c       | 1 -
- drivers/gpu/drm/renesas/rcar-du/rzg2l_mipi_dsi.c      | 1 -
- drivers/gpu/drm/rockchip/analogix_dp-rockchip.c       | 3 ++-
- drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c       | 2 ++
- drivers/gpu/drm/rockchip/inno_hdmi.c                  | 3 ++-
- drivers/gpu/drm/rockchip/rockchip_drm_drv.c           | 1 +
- drivers/gpu/drm/rockchip/rockchip_drm_vop.c           | 1 -
- drivers/gpu/drm/rockchip/rockchip_drm_vop2.c          | 1 -
- drivers/gpu/drm/sprd/sprd_dpu.c                       | 4 +---
- drivers/gpu/drm/sprd/sprd_drm.c                       | 3 ++-
- drivers/gpu/drm/sprd/sprd_dsi.c                       | 6 ++----
- drivers/gpu/drm/sti/sti_drv.c                         | 2 ++
- drivers/gpu/drm/stm/drv.c                             | 3 ++-
- drivers/gpu/drm/stm/ltdc.c                            | 1 -
- drivers/gpu/drm/sun4i/sun4i_frontend.c                | 2 +-
- drivers/gpu/drm/sun4i/sun4i_frontend.h                | 1 +
- drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c                | 2 +-
- drivers/gpu/drm/sun4i/sun4i_tcon.c                    | 6 +++---
- drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c                 | 2 +-
- drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c                | 3 ++-
- drivers/gpu/drm/sun4i/sun8i_mixer.c                   | 2 ++
- drivers/gpu/drm/sun4i/sun8i_tcon_top.c                | 2 +-
- drivers/gpu/drm/tegra/dc.c                            | 3 ++-
- drivers/gpu/drm/tegra/dpaux.c                         | 2 +-
- drivers/gpu/drm/tegra/gr2d.c                          | 3 ++-
- drivers/gpu/drm/tegra/gr3d.c                          | 2 +-
- drivers/gpu/drm/tegra/hdmi.c                          | 3 ++-
- drivers/gpu/drm/tegra/hub.c                           | 2 +-
- drivers/gpu/drm/tegra/nvdec.c                         | 2 --
- drivers/gpu/drm/tegra/sor.c                           | 2 +-
- drivers/gpu/drm/tegra/vic.c                           | 2 --
- drivers/gpu/drm/tidss/tidss_dispc.c                   | 2 --
- drivers/gpu/drm/tidss/tidss_drv.c                     | 2 +-
- drivers/gpu/drm/vc4/vc4_crtc.c                        | 3 ++-
- drivers/gpu/drm/vc4/vc4_dpi.c                         | 4 ++--
- drivers/gpu/drm/vc4/vc4_drv.c                         | 2 +-
- drivers/gpu/drm/vc4/vc4_dsi.c                         | 3 ++-
- drivers/gpu/drm/vc4/vc4_hdmi.c                        | 2 +-
- drivers/gpu/drm/vc4/vc4_txp.c                         | 4 ++--
- drivers/gpu/drm/vc4/vc4_vec.c                         | 4 ++--
- drivers/gpu/drm/xen/xen_drm_front.c                   | 1 -
- drivers/gpu/ipu-v3/ipu-common.c                       | 2 +-
- 148 files changed, 152 insertions(+), 156 deletions(-)
+ drivers/net/can/bxcan.c                                 | 1 -
+ drivers/net/can/ifi_canfd/ifi_canfd.c                   | 1 -
+ drivers/net/can/m_can/m_can.c                           | 1 -
+ drivers/net/can/m_can/m_can.h                           | 1 -
+ drivers/net/can/rcar/rcar_canfd.c                       | 1 -
+ drivers/net/can/sja1000/sja1000_platform.c              | 1 -
+ drivers/net/can/sun4i_can.c                             | 1 -
+ drivers/net/can/ti_hecc.c                               | 1 -
+ drivers/net/dsa/b53/b53_mdio.c                          | 1 +
+ drivers/net/dsa/b53/b53_mmap.c                          | 1 +
+ drivers/net/dsa/hirschmann/hellcreek.c                  | 1 -
+ drivers/net/dsa/hirschmann/hellcreek_ptp.c              | 1 +
+ drivers/net/dsa/lan9303-core.c                          | 1 +
+ drivers/net/dsa/microchip/ksz8863_smi.c                 | 3 +++
+ drivers/net/dsa/microchip/ksz_common.c                  | 2 +-
+ drivers/net/dsa/mt7530-mmio.c                           | 3 ++-
+ drivers/net/dsa/mv88e6xxx/chip.c                        | 2 +-
+ drivers/net/dsa/ocelot/felix_vsc9959.c                  | 1 +
+ drivers/net/dsa/ocelot/seville_vsc9953.c                | 3 ++-
+ drivers/net/dsa/qca/qca8k-leds.c                        | 1 +
+ drivers/net/dsa/realtek/realtek-mdio.c                  | 2 +-
+ drivers/net/dsa/realtek/realtek-smi.c                   | 1 -
+ drivers/net/dsa/sja1105/sja1105_main.c                  | 1 -
+ drivers/net/dsa/vitesse-vsc73xx-core.c                  | 1 -
+ drivers/net/dsa/xrs700x/xrs700x.c                       | 2 +-
+ drivers/net/ethernet/aeroflex/greth.c                   | 4 ++--
+ drivers/net/ethernet/amd/sunlance.c                     | 2 +-
+ drivers/net/ethernet/apm/xgene-v2/main.h                | 1 +
+ drivers/net/ethernet/arc/emac_main.c                    | 2 +-
+ drivers/net/ethernet/atheros/ag71xx.c                   | 3 ++-
+ drivers/net/ethernet/cadence/macb_main.c                | 1 -
+ drivers/net/ethernet/cirrus/cs89x0.c                    | 1 -
+ drivers/net/ethernet/ezchip/nps_enet.c                  | 5 ++---
+ drivers/net/ethernet/freescale/dpaa/dpaa_eth.c          | 3 ++-
+ drivers/net/ethernet/freescale/dpaa/dpaa_ethtool.c      | 2 ++
+ drivers/net/ethernet/freescale/enetc/enetc_ierb.c       | 2 +-
+ drivers/net/ethernet/freescale/fec_mpc52xx.c            | 4 ++--
+ drivers/net/ethernet/freescale/fec_mpc52xx_phy.c        | 3 ++-
+ drivers/net/ethernet/freescale/fec_ptp.c                | 1 -
+ drivers/net/ethernet/freescale/fman/fman.c              | 1 +
+ drivers/net/ethernet/freescale/fman/fman_port.c         | 1 +
+ drivers/net/ethernet/freescale/fman/mac.c               | 2 ++
+ drivers/net/ethernet/freescale/fs_enet/mac-fcc.c        | 1 -
+ drivers/net/ethernet/freescale/fs_enet/mac-fec.c        | 1 -
+ drivers/net/ethernet/freescale/fs_enet/mac-scc.c        | 1 -
+ drivers/net/ethernet/freescale/fsl_pq_mdio.c            | 1 +
+ drivers/net/ethernet/freescale/gianfar.c                | 2 +-
+ drivers/net/ethernet/freescale/gianfar_ethtool.c        | 2 ++
+ drivers/net/ethernet/freescale/ucc_geth.c               | 3 ++-
+ drivers/net/ethernet/freescale/xgmac_mdio.c             | 4 ++--
+ drivers/net/ethernet/hisilicon/hns/hns_dsaf_ppe.c       | 3 ---
+ drivers/net/ethernet/hisilicon/hns/hns_dsaf_rcb.c       | 4 ----
+ drivers/net/ethernet/ibm/ehea/ehea_main.c               | 1 +
+ drivers/net/ethernet/ibm/emac/core.c                    | 1 +
+ drivers/net/ethernet/ibm/emac/core.h                    | 1 -
+ drivers/net/ethernet/ibm/emac/mal.c                     | 2 ++
+ drivers/net/ethernet/ibm/emac/rgmii.c                   | 2 ++
+ drivers/net/ethernet/ibm/emac/tah.c                     | 2 ++
+ drivers/net/ethernet/ibm/emac/zmii.c                    | 2 ++
+ drivers/net/ethernet/korina.c                           | 2 +-
+ drivers/net/ethernet/marvell/mvmdio.c                   | 2 +-
+ drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c         | 1 -
+ drivers/net/ethernet/marvell/prestera/prestera_rxtx.c   | 3 ---
+ drivers/net/ethernet/marvell/sky2.c                     | 1 -
+ drivers/net/ethernet/mediatek/mtk_eth_soc.c             | 3 ++-
+ drivers/net/ethernet/mediatek/mtk_star_emac.c           | 1 -
+ drivers/net/ethernet/mediatek/mtk_wed.c                 | 1 +
+ drivers/net/ethernet/mediatek/mtk_wed_wo.c              | 3 +--
+ drivers/net/ethernet/microchip/lan966x/lan966x_main.c   | 3 ++-
+ drivers/net/ethernet/mscc/ocelot_fdma.c                 | 1 -
+ drivers/net/ethernet/mscc/ocelot_vsc7514.c              | 3 ++-
+ drivers/net/ethernet/ni/nixge.c                         | 5 ++---
+ drivers/net/ethernet/qualcomm/emac/emac-sgmii.c         | 2 ++
+ drivers/net/ethernet/qualcomm/emac/emac.c               | 1 -
+ drivers/net/ethernet/qualcomm/qca_spi.c                 | 1 -
+ drivers/net/ethernet/qualcomm/qca_uart.c                | 1 -
+ drivers/net/ethernet/renesas/ravb_main.c                | 3 +--
+ drivers/net/ethernet/renesas/rswitch.c                  | 3 +--
+ drivers/net/ethernet/renesas/sh_eth.c                   | 2 --
+ drivers/net/ethernet/smsc/smsc911x.c                    | 1 -
+ drivers/net/ethernet/socionext/sni_ave.c                | 3 ++-
+ drivers/net/ethernet/stmicro/stmmac/dwmac-dwc-qos-eth.c | 2 +-
+ drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c         | 1 -
+ drivers/net/ethernet/stmicro/stmmac/dwmac-ingenic.c     | 1 -
+ drivers/net/ethernet/stmicro/stmmac/dwmac-mediatek.c    | 2 +-
+ drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c     | 2 +-
+ drivers/net/ethernet/stmicro/stmmac/dwmac-oxnas.c       | 1 -
+ drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c | 1 -
+ drivers/net/ethernet/stmicro/stmmac/dwmac-rk.c          | 2 +-
+ drivers/net/ethernet/stmicro/stmmac/dwmac-starfive.c    | 4 +++-
+ drivers/net/ethernet/stmicro/stmmac/dwmac-sti.c         | 1 -
+ drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c       | 1 -
+ drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c       | 3 ++-
+ drivers/net/ethernet/stmicro/stmmac/dwmac-tegra.c       | 2 +-
+ drivers/net/ethernet/stmicro/stmmac/dwmac-visconti.c    | 3 ++-
+ drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c   | 1 -
+ drivers/net/ethernet/sun/niu.c                          | 2 +-
+ drivers/net/ethernet/sun/sunbmac.c                      | 2 +-
+ drivers/net/ethernet/sun/sungem.c                       | 1 +
+ drivers/net/ethernet/sun/sunhme.c                       | 3 ++-
+ drivers/net/ethernet/sun/sunqe.c                        | 2 +-
+ drivers/net/ethernet/ti/am65-cpsw-nuss.c                | 1 +
+ drivers/net/ethernet/ti/cpsw-common.c                   | 1 -
+ drivers/net/ethernet/ti/cpsw-phy-sel.c                  | 1 -
+ drivers/net/ethernet/ti/davinci_mdio.c                  | 1 -
+ drivers/net/ethernet/via/via-rhine.c                    | 2 +-
+ drivers/net/ethernet/via/via-velocity.c                 | 2 +-
+ drivers/net/ethernet/xilinx/ll_temac.h                  | 1 +
+ drivers/net/ethernet/xilinx/ll_temac_main.c             | 4 +---
+ drivers/net/ethernet/xilinx/ll_temac_mdio.c             | 2 +-
+ drivers/net/ethernet/xilinx/xilinx_axienet_main.c       | 3 ++-
+ drivers/net/ethernet/xilinx/xilinx_emaclite.c           | 4 ++--
+ drivers/net/ieee802154/ca8210.c                         | 1 -
+ drivers/net/ipa/ipa_main.c                              | 2 +-
+ drivers/net/pcs/pcs-rzn1-miic.c                         | 1 +
+ drivers/net/phy/marvell-88x2222.c                       | 1 -
+ drivers/net/phy/mediatek-ge-soc.c                       | 2 --
+ drivers/net/wireless/ath/ath10k/ahb.c                   | 2 +-
+ drivers/net/wireless/ath/ath11k/qmi.c                   | 1 -
+ drivers/net/wireless/ath/wcn36xx/main.c                 | 3 +--
+ drivers/net/wireless/intersil/orinoco/airport.c         | 2 +-
+ drivers/net/wireless/mediatek/mt76/mt7915/soc.c         | 1 -
+ drivers/net/wireless/silabs/wfx/bus_sdio.c              | 2 +-
+ net/core/of_net.c                                       | 1 +
+ 124 files changed, 110 insertions(+), 120 deletions(-)
 
-diff --git a/drivers/gpu/drm/arm/display/komeda/komeda_dev.c b/drivers/gpu/drm/arm/display/komeda/komeda_dev.c
-index cc7664c95a54..14ee79becacb 100644
---- a/drivers/gpu/drm/arm/display/komeda/komeda_dev.c
-+++ b/drivers/gpu/drm/arm/display/komeda/komeda_dev.c
-@@ -6,7 +6,7 @@
-  */
- #include <linux/io.h>
- #include <linux/iommu.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/of_graph.h>
- #include <linux/of_reserved_mem.h>
- #include <linux/platform_device.h>
-diff --git a/drivers/gpu/drm/arm/malidp_drv.c b/drivers/gpu/drm/arm/malidp_drv.c
-index c03cfd57b752..a5a9534d4353 100644
---- a/drivers/gpu/drm/arm/malidp_drv.c
-+++ b/drivers/gpu/drm/arm/malidp_drv.c
-@@ -12,6 +12,7 @@
- #include <linux/of_device.h>
- #include <linux/of_graph.h>
- #include <linux/of_reserved_mem.h>
-+#include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/debugfs.h>
- 
-diff --git a/drivers/gpu/drm/bridge/adv7511/adv7511_cec.c b/drivers/gpu/drm/bridge/adv7511/adv7511_cec.c
-index 99964f5a5457..2a6b91f752cb 100644
---- a/drivers/gpu/drm/bridge/adv7511/adv7511_cec.c
-+++ b/drivers/gpu/drm/bridge/adv7511/adv7511_cec.c
-@@ -7,7 +7,6 @@
- 
- #include <linux/device.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
- #include <linux/slab.h>
- #include <linux/clk.h>
- 
-diff --git a/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c b/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
-index 2254457ab5d0..b9957da0f55a 100644
---- a/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
-+++ b/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
-@@ -9,7 +9,7 @@
- #include <linux/device.h>
- #include <linux/gpio/consumer.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/slab.h>
- 
- #include <media/cec.h>
-diff --git a/drivers/gpu/drm/bridge/cadence/cdns-dsi-core.c b/drivers/gpu/drm/bridge/cadence/cdns-dsi-core.c
-index f50d65f54314..7457d38622b0 100644
---- a/drivers/gpu/drm/bridge/cadence/cdns-dsi-core.c
-+++ b/drivers/gpu/drm/bridge/cadence/cdns-dsi-core.c
-@@ -14,8 +14,7 @@
- #include <linux/interrupt.h>
- #include <linux/iopoll.h>
- #include <linux/module.h>
--#include <linux/of_address.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/of_graph.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
-diff --git a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
-index f6822dfa3805..4aff817f82ce 100644
---- a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
-+++ b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
-@@ -29,7 +29,6 @@
- #include <linux/media-bus-format.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/phy/phy.h>
- #include <linux/phy/phy-dp.h>
- #include <linux/platform_device.h>
-diff --git a/drivers/gpu/drm/bridge/chipone-icn6211.c b/drivers/gpu/drm/bridge/chipone-icn6211.c
-index 8bfce21d6b90..d205e755e524 100644
---- a/drivers/gpu/drm/bridge/chipone-icn6211.c
-+++ b/drivers/gpu/drm/bridge/chipone-icn6211.c
-@@ -17,7 +17,7 @@
- #include <linux/i2c.h>
- #include <linux/media-bus-format.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/regmap.h>
- #include <linux/regulator/consumer.h>
- 
-diff --git a/drivers/gpu/drm/bridge/display-connector.c b/drivers/gpu/drm/bridge/display-connector.c
-index f7f436cf96e0..08bd5695ddae 100644
---- a/drivers/gpu/drm/bridge/display-connector.c
-+++ b/drivers/gpu/drm/bridge/display-connector.c
-@@ -10,7 +10,6 @@
- #include <linux/module.h>
- #include <linux/mutex.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/regulator/consumer.h>
- 
-diff --git a/drivers/gpu/drm/bridge/fsl-ldb.c b/drivers/gpu/drm/bridge/fsl-ldb.c
-index b8e52156b07a..0e4bac7dd04f 100644
---- a/drivers/gpu/drm/bridge/fsl-ldb.c
-+++ b/drivers/gpu/drm/bridge/fsl-ldb.c
-@@ -8,7 +8,6 @@
+diff --git a/drivers/net/can/bxcan.c b/drivers/net/can/bxcan.c
+index 39de7164bc4e..49cf9682b925 100644
+--- a/drivers/net/can/bxcan.c
++++ b/drivers/net/can/bxcan.c
+@@ -23,7 +23,6 @@
  #include <linux/mfd/syscon.h>
  #include <linux/module.h>
  #include <linux/of.h>
 -#include <linux/of_device.h>
- #include <linux/of_graph.h>
  #include <linux/platform_device.h>
  #include <linux/regmap.h>
-diff --git a/drivers/gpu/drm/bridge/imx/imx8qm-ldb.c b/drivers/gpu/drm/bridge/imx/imx8qm-ldb.c
-index 386032a02599..21471a9a28b2 100644
---- a/drivers/gpu/drm/bridge/imx/imx8qm-ldb.c
-+++ b/drivers/gpu/drm/bridge/imx/imx8qm-ldb.c
-@@ -9,9 +9,9 @@
- #include <linux/mfd/syscon.h>
+ 
+diff --git a/drivers/net/can/ifi_canfd/ifi_canfd.c b/drivers/net/can/ifi_canfd/ifi_canfd.c
+index 1d6642c94f2f..72307297d75e 100644
+--- a/drivers/net/can/ifi_canfd/ifi_canfd.c
++++ b/drivers/net/can/ifi_canfd/ifi_canfd.c
+@@ -20,7 +20,6 @@
  #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/of_graph.h>
- #include <linux/phy/phy.h>
-+#include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/regmap.h>
- 
-diff --git a/drivers/gpu/drm/bridge/imx/imx8qxp-ldb.c b/drivers/gpu/drm/bridge/imx/imx8qxp-ldb.c
-index c806576b1e22..7984da9c0a35 100644
---- a/drivers/gpu/drm/bridge/imx/imx8qxp-ldb.c
-+++ b/drivers/gpu/drm/bridge/imx/imx8qxp-ldb.c
-@@ -12,6 +12,7 @@
- #include <linux/of_device.h>
- #include <linux/of_graph.h>
- #include <linux/phy/phy.h>
-+#include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/regmap.h>
- 
-diff --git a/drivers/gpu/drm/bridge/lontium-lt9211.c b/drivers/gpu/drm/bridge/lontium-lt9211.c
-index aa8d47e7f40d..4d404f5ef87e 100644
---- a/drivers/gpu/drm/bridge/lontium-lt9211.c
-+++ b/drivers/gpu/drm/bridge/lontium-lt9211.c
-@@ -16,7 +16,6 @@
- #include <linux/i2c.h>
- #include <linux/media-bus-format.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
- #include <linux/of_graph.h>
- #include <linux/regmap.h>
- #include <linux/regulator/consumer.h>
-diff --git a/drivers/gpu/drm/bridge/lvds-codec.c b/drivers/gpu/drm/bridge/lvds-codec.c
-index 67368f23d4aa..8c5668dca0c4 100644
---- a/drivers/gpu/drm/bridge/lvds-codec.c
-+++ b/drivers/gpu/drm/bridge/lvds-codec.c
-@@ -7,7 +7,6 @@
- #include <linux/gpio/consumer.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/of_graph.h>
- #include <linux/platform_device.h>
- #include <linux/regulator/consumer.h>
-diff --git a/drivers/gpu/drm/bridge/nwl-dsi.c b/drivers/gpu/drm/bridge/nwl-dsi.c
-index 4a5f5c4f5dcc..8d54091ec66e 100644
---- a/drivers/gpu/drm/bridge/nwl-dsi.c
-+++ b/drivers/gpu/drm/bridge/nwl-dsi.c
-@@ -16,8 +16,8 @@
- #include <linux/module.h>
- #include <linux/mux/consumer.h>
- #include <linux/of.h>
--#include <linux/of_platform.h>
- #include <linux/phy/phy.h>
-+#include <linux/platform_device.h>
- #include <linux/regmap.h>
- #include <linux/reset.h>
- #include <linux/sys_soc.h>
-diff --git a/drivers/gpu/drm/bridge/parade-ps8622.c b/drivers/gpu/drm/bridge/parade-ps8622.c
-index c9b6cb7678e3..ae3ab9262ef1 100644
---- a/drivers/gpu/drm/bridge/parade-ps8622.c
-+++ b/drivers/gpu/drm/bridge/parade-ps8622.c
-@@ -12,7 +12,6 @@
- #include <linux/i2c.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/pm.h>
- #include <linux/regulator/consumer.h>
- 
-diff --git a/drivers/gpu/drm/bridge/samsung-dsim.c b/drivers/gpu/drm/bridge/samsung-dsim.c
-index 043b8109e64a..46b2c5027690 100644
---- a/drivers/gpu/drm/bridge/samsung-dsim.c
-+++ b/drivers/gpu/drm/bridge/samsung-dsim.c
-@@ -16,8 +16,9 @@
- #include <linux/delay.h>
- #include <linux/irq.h>
- #include <linux/media-bus-format.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/phy/phy.h>
-+#include <linux/platform_device.h>
- 
- #include <video/mipi_display.h>
- 
-diff --git a/drivers/gpu/drm/bridge/simple-bridge.c b/drivers/gpu/drm/bridge/simple-bridge.c
-index d85d9ee463b8..cbe8e778d7c7 100644
---- a/drivers/gpu/drm/bridge/simple-bridge.c
-+++ b/drivers/gpu/drm/bridge/simple-bridge.c
-@@ -8,8 +8,9 @@
- 
- #include <linux/gpio/consumer.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/of_graph.h>
-+#include <linux/platform_device.h>
- #include <linux/regulator/consumer.h>
- 
- #include <drm/drm_atomic_helper.h>
-diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
-index 9d6dcaf317a1..9df19d7b8445 100644
---- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
-+++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
-@@ -14,7 +14,7 @@
- #include <linux/irq.h>
- #include <linux/module.h>
- #include <linux/mutex.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/pinctrl/consumer.h>
- #include <linux/regmap.h>
- #include <linux/dma-mapping.h>
-diff --git a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-index b2efecf7d160..5cc9a63a65ff 100644
---- a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-+++ b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-@@ -13,7 +13,7 @@
- #include <linux/debugfs.h>
- #include <linux/iopoll.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/reset.h>
- 
-diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi83.c b/drivers/gpu/drm/bridge/ti-sn65dsi83.c
-index 7e9f4ec8e780..061e8bd5915d 100644
---- a/drivers/gpu/drm/bridge/ti-sn65dsi83.c
-+++ b/drivers/gpu/drm/bridge/ti-sn65dsi83.c
-@@ -31,7 +31,7 @@
- #include <linux/i2c.h>
- #include <linux/media-bus-format.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/of_graph.h>
- #include <linux/regmap.h>
- #include <linux/regulator/consumer.h>
-diff --git a/drivers/gpu/drm/drm_mipi_dsi.c b/drivers/gpu/drm/drm_mipi_dsi.c
-index 6252ac01e945..14201f73aab1 100644
---- a/drivers/gpu/drm/drm_mipi_dsi.c
-+++ b/drivers/gpu/drm/drm_mipi_dsi.c
-@@ -27,6 +27,7 @@
- 
- #include <linux/device.h>
- #include <linux/module.h>
-+#include <linux/of.h>
- #include <linux/of_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/slab.h>
-diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
-index de8c9894967c..bbc9c54871f4 100644
---- a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
-+++ b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
-@@ -8,8 +8,8 @@
- #include <linux/delay.h>
- #include <linux/dma-fence.h>
- #include <linux/dma-mapping.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/regulator/consumer.h>
-diff --git a/drivers/gpu/drm/exynos/exynos5433_drm_decon.c b/drivers/gpu/drm/exynos/exynos5433_drm_decon.c
-index 2867b39fa35e..4d986077738b 100644
---- a/drivers/gpu/drm/exynos/exynos5433_drm_decon.c
-+++ b/drivers/gpu/drm/exynos/exynos5433_drm_decon.c
-@@ -12,7 +12,7 @@
- #include <linux/iopoll.h>
- #include <linux/irq.h>
- #include <linux/mfd/syscon.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/regmap.h>
-diff --git a/drivers/gpu/drm/exynos/exynos7_drm_decon.c b/drivers/gpu/drm/exynos/exynos7_drm_decon.c
-index 3126f735dedc..0156a5e94435 100644
---- a/drivers/gpu/drm/exynos/exynos7_drm_decon.c
-+++ b/drivers/gpu/drm/exynos/exynos7_drm_decon.c
-@@ -12,7 +12,6 @@
- #include <linux/kernel.h>
- #include <linux/of.h>
- #include <linux/of_address.h>
--#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- 
-diff --git a/drivers/gpu/drm/exynos/exynos_drm_dsi.c b/drivers/gpu/drm/exynos/exynos_drm_dsi.c
-index fc81f728e6ba..69ea33cae651 100644
---- a/drivers/gpu/drm/exynos/exynos_drm_dsi.c
-+++ b/drivers/gpu/drm/exynos/exynos_drm_dsi.c
-@@ -8,7 +8,8 @@
-  */
- 
- #include <linux/component.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
- 
- #include <drm/bridge/samsung-dsim.h>
- #include <drm/drm_probe_helper.h>
-diff --git a/drivers/gpu/drm/exynos/exynos_drm_fimd.c b/drivers/gpu/drm/exynos/exynos_drm_fimd.c
-index 7f4a0be03dd1..8dde7b1e9b35 100644
---- a/drivers/gpu/drm/exynos/exynos_drm_fimd.c
-+++ b/drivers/gpu/drm/exynos/exynos_drm_fimd.c
-@@ -12,7 +12,6 @@
- #include <linux/kernel.h>
- #include <linux/mfd/syscon.h>
+ #include <linux/netdevice.h>
  #include <linux/of.h>
 -#include <linux/of_device.h>
  #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/regmap.h>
-diff --git a/drivers/gpu/drm/exynos/exynos_drm_rotator.c b/drivers/gpu/drm/exynos/exynos_drm_rotator.c
-index 8706f377c349..ffb327c5139e 100644
---- a/drivers/gpu/drm/exynos/exynos_drm_rotator.c
-+++ b/drivers/gpu/drm/exynos/exynos_drm_rotator.c
-@@ -12,7 +12,7 @@
- #include <linux/interrupt.h>
- #include <linux/io.h>
- #include <linux/kernel.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/sizes.h>
-diff --git a/drivers/gpu/drm/exynos/exynos_drm_scaler.c b/drivers/gpu/drm/exynos/exynos_drm_scaler.c
-index 20608e9780ce..f2b8b09a6b4e 100644
---- a/drivers/gpu/drm/exynos/exynos_drm_scaler.c
-+++ b/drivers/gpu/drm/exynos/exynos_drm_scaler.c
-@@ -11,7 +11,7 @@
- #include <linux/interrupt.h>
- #include <linux/io.h>
- #include <linux/kernel.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
  
-diff --git a/drivers/gpu/drm/exynos/exynos_hdmi.c b/drivers/gpu/drm/exynos/exynos_hdmi.c
-index b7c11bdce2c8..f3aaa4ea3e68 100644
---- a/drivers/gpu/drm/exynos/exynos_hdmi.c
-+++ b/drivers/gpu/drm/exynos/exynos_hdmi.c
-@@ -21,8 +21,8 @@
- #include <linux/irq.h>
- #include <linux/kernel.h>
- #include <linux/mfd/syscon.h>
-+#include <linux/of.h>
- #include <linux/of_address.h>
--#include <linux/of_device.h>
- #include <linux/of_graph.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
-diff --git a/drivers/gpu/drm/exynos/exynos_mixer.c b/drivers/gpu/drm/exynos/exynos_mixer.c
-index 8d333db813b7..b302392ff0d7 100644
---- a/drivers/gpu/drm/exynos/exynos_mixer.c
-+++ b/drivers/gpu/drm/exynos/exynos_mixer.c
+ #include <linux/can/dev.h>
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index c5af92bcc9c9..4e76cd9c02b0 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
 @@ -18,7 +18,6 @@
- #include <linux/kernel.h>
- #include <linux/ktime.h>
+ #include <linux/module.h>
+ #include <linux/netdevice.h>
  #include <linux/of.h>
 -#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/regulator/consumer.h>
-diff --git a/drivers/gpu/drm/hisilicon/kirin/kirin_drm_drv.c b/drivers/gpu/drm/hisilicon/kirin/kirin_drm_drv.c
-index 9c5d49bf40c9..711f7ce9894a 100644
---- a/drivers/gpu/drm/hisilicon/kirin/kirin_drm_drv.c
-+++ b/drivers/gpu/drm/hisilicon/kirin/kirin_drm_drv.c
-@@ -11,9 +11,9 @@
-  *	Xinwei Kong <kong.kongxinwei@hisilicon.com>
-  */
- 
--#include <linux/of_platform.h>
- #include <linux/component.h>
- #include <linux/module.h>
-+#include <linux/of.h>
- #include <linux/of_graph.h>
- #include <linux/platform_device.h>
- 
-diff --git a/drivers/gpu/drm/imx/dcss/dcss-dev.c b/drivers/gpu/drm/imx/dcss/dcss-dev.c
-index 5d1779ab65c0..4f3af0dfb344 100644
---- a/drivers/gpu/drm/imx/dcss/dcss-dev.c
-+++ b/drivers/gpu/drm/imx/dcss/dcss-dev.c
-@@ -4,8 +4,9 @@
-  */
- 
- #include <linux/clk.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/of_graph.h>
-+#include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/slab.h>
- #include <drm/drm_bridge_connector.h>
-@@ -198,7 +199,7 @@ struct dcss_dev *dcss_dev_create(struct device *dev, bool hdmi_output)
- 
- 	dcss->of_port = of_graph_get_port_by_id(dev->of_node, 0);
- 	if (!dcss->of_port) {
--		dev_err(dev, "no port@0 node in %s\n", dev->of_node->full_name);
-+		dev_err(dev, "no port@0 node in %pOF\n", dev->of_node);
- 		ret = -ENODEV;
- 		goto clks_err;
- 	}
-diff --git a/drivers/gpu/drm/imx/lcdc/imx-lcdc.c b/drivers/gpu/drm/imx/lcdc/imx-lcdc.c
-index 277ead6a459a..22b65f4a0e30 100644
---- a/drivers/gpu/drm/imx/lcdc/imx-lcdc.c
-+++ b/drivers/gpu/drm/imx/lcdc/imx-lcdc.c
-@@ -19,8 +19,8 @@
- #include <linux/bitfield.h>
- #include <linux/clk.h>
- #include <linux/dma-mapping.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
- #include <linux/platform_device.h>
- 
- #define IMX21LCDC_LSSAR         0x0000 /* LCDC Screen Start Address Register */
-diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-index 5ec75e9ba499..8dbd4847d3a6 100644
---- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-+++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-@@ -14,7 +14,7 @@
- #include <linux/media-bus-format.h>
- #include <linux/module.h>
- #include <linux/mutex.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/of_reserved_mem.h>
- #include <linux/platform_device.h>
- #include <linux/pm.h>
-diff --git a/drivers/gpu/drm/ingenic/ingenic-ipu.c b/drivers/gpu/drm/ingenic/ingenic-ipu.c
-index 7a43505011a5..6d236547f611 100644
---- a/drivers/gpu/drm/ingenic/ingenic-ipu.c
-+++ b/drivers/gpu/drm/ingenic/ingenic-ipu.c
-@@ -14,7 +14,7 @@
- #include <linux/interrupt.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
-+#include <linux/platform_device.h>
- #include <linux/regmap.h>
- #include <linux/time.h>
- 
-diff --git a/drivers/gpu/drm/lima/lima_drv.c b/drivers/gpu/drm/lima/lima_drv.c
-index 39cab4a55f57..39c725958ef3 100644
---- a/drivers/gpu/drm/lima/lima_drv.c
-+++ b/drivers/gpu/drm/lima/lima_drv.c
-@@ -2,7 +2,8 @@
- /* Copyright 2017-2019 Qiang Yu <yuq825@gmail.com> */
- 
- #include <linux/module.h>
--#include <linux/of_platform.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
- #include <linux/uaccess.h>
- #include <linux/slab.h>
- #include <linux/pm_runtime.h>
-diff --git a/drivers/gpu/drm/logicvc/logicvc_drm.c b/drivers/gpu/drm/logicvc/logicvc_drm.c
-index c35c453fd025..e6b68c2e249b 100644
---- a/drivers/gpu/drm/logicvc/logicvc_drm.c
-+++ b/drivers/gpu/drm/logicvc/logicvc_drm.c
-@@ -10,8 +10,8 @@
- #include <linux/module.h>
- #include <linux/of.h>
- #include <linux/of_address.h>
--#include <linux/of_device.h>
- #include <linux/of_reserved_mem.h>
-+#include <linux/platform_device.h>
- #include <linux/regmap.h>
- #include <linux/types.h>
- 
-diff --git a/drivers/gpu/drm/mcde/mcde_drv.c b/drivers/gpu/drm/mcde/mcde_drv.c
-index a8cd86c06c14..5d68d0f27212 100644
---- a/drivers/gpu/drm/mcde/mcde_drv.c
-+++ b/drivers/gpu/drm/mcde/mcde_drv.c
-@@ -471,7 +471,7 @@ static const struct of_device_id mcde_of_match[] = {
- static struct platform_driver mcde_driver = {
- 	.driver = {
- 		.name           = "mcde",
--		.of_match_table = of_match_ptr(mcde_of_match),
-+		.of_match_table = mcde_of_match,
- 	},
- 	.probe = mcde_probe,
- 	.remove = mcde_remove,
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_aal.c b/drivers/gpu/drm/mediatek/mtk_disp_aal.c
-index 434e8a9ce8ab..cdbec79474d1 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_aal.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_aal.c
-@@ -6,8 +6,7 @@
- #include <linux/clk.h>
- #include <linux/component.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
--#include <linux/of_irq.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/soc/mediatek/mtk-cmdq.h>
- 
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_ccorr.c b/drivers/gpu/drm/mediatek/mtk_disp_ccorr.c
-index 1773379b2439..7c5e04ee5b9f 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_ccorr.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_ccorr.c
-@@ -6,8 +6,7 @@
- #include <linux/clk.h>
- #include <linux/component.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
--#include <linux/of_irq.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/soc/mediatek/mtk-cmdq.h>
- 
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_color.c b/drivers/gpu/drm/mediatek/mtk_disp_color.c
-index cac9206079e7..0b9b4b06d19c 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_color.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_color.c
-@@ -6,8 +6,7 @@
- #include <linux/clk.h>
- #include <linux/component.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
--#include <linux/of_irq.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/soc/mediatek/mtk-cmdq.h>
- 
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_gamma.c b/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
-index c844942603f7..7746dceadb20 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
-@@ -6,8 +6,7 @@
- #include <linux/clk.h>
- #include <linux/component.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
--#include <linux/of_irq.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/soc/mediatek/mtk-cmdq.h>
- 
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_merge.c b/drivers/gpu/drm/mediatek/mtk_disp_merge.c
-index 6428b6203ffe..bea8a0d8040a 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_merge.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_merge.c
-@@ -5,8 +5,7 @@
- 
- #include <linux/clk.h>
- #include <linux/component.h>
--#include <linux/of_device.h>
--#include <linux/of_irq.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/reset.h>
- #include <linux/soc/mediatek/mtk-cmdq.h>
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_ovl.c b/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
-index 8f52cc1f3fba..73320a7425cd 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
-@@ -10,8 +10,7 @@
- #include <linux/clk.h>
- #include <linux/component.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
--#include <linux/of_irq.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/soc/mediatek/mtk-cmdq.h>
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c b/drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c
-index c0a38f5217ee..878575bb9671 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c
-@@ -7,8 +7,9 @@
- #include <drm/drm_of.h>
- #include <linux/clk.h>
- #include <linux/component.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/of_address.h>
-+#include <linux/of_platform.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/reset.h>
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_rdma.c b/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
-index d4df17ad600a..a12c05786d28 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
-@@ -8,8 +8,7 @@
- #include <linux/clk.h>
- #include <linux/component.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
--#include <linux/of_irq.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/soc/mediatek/mtk-cmdq.h>
-diff --git a/drivers/gpu/drm/mediatek/mtk_dpi.c b/drivers/gpu/drm/mediatek/mtk_dpi.c
-index 948a53f1f4b3..28bdb1f427ff 100644
---- a/drivers/gpu/drm/mediatek/mtk_dpi.c
-+++ b/drivers/gpu/drm/mediatek/mtk_dpi.c
-@@ -10,7 +10,6 @@
- #include <linux/kernel.h>
- #include <linux/media-bus-format.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/of_graph.h>
- #include <linux/pinctrl/consumer.h>
- #include <linux/platform_device.h>
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-index d40142842f85..8a43656ecc30 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-@@ -6,6 +6,7 @@
- #include <linux/clk.h>
- #include <linux/dma-mapping.h>
- #include <linux/mailbox_controller.h>
-+#include <linux/of.h>
- #include <linux/pm_runtime.h>
- #include <linux/soc/mediatek/mtk-cmdq.h>
- #include <linux/soc/mediatek/mtk-mmsys.h>
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-index 6dcb4ba2466c..e01427717912 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-@@ -7,8 +7,9 @@
- #include <linux/component.h>
- #include <linux/iommu.h>
- #include <linux/module.h>
--#include <linux/of_address.h>
-+#include <linux/of.h>
- #include <linux/of_platform.h>
-+#include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/dma-mapping.h>
- 
-diff --git a/drivers/gpu/drm/mediatek/mtk_ethdr.c b/drivers/gpu/drm/mediatek/mtk_ethdr.c
-index 73dc4da3ba3b..db7ac666ec5e 100644
---- a/drivers/gpu/drm/mediatek/mtk_ethdr.c
-+++ b/drivers/gpu/drm/mediatek/mtk_ethdr.c
-@@ -7,7 +7,7 @@
- #include <drm/drm_framebuffer.h>
- #include <linux/clk.h>
- #include <linux/component.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/of_address.h>
- #include <linux/platform_device.h>
- #include <linux/reset.h>
-diff --git a/drivers/gpu/drm/mediatek/mtk_mdp_rdma.c b/drivers/gpu/drm/mediatek/mtk_mdp_rdma.c
-index e06db6e56b5f..4806bdd4b8fa 100644
---- a/drivers/gpu/drm/mediatek/mtk_mdp_rdma.c
-+++ b/drivers/gpu/drm/mediatek/mtk_mdp_rdma.c
-@@ -6,8 +6,7 @@
- #include <drm/drm_fourcc.h>
- #include <linux/clk.h>
- #include <linux/component.h>
--#include <linux/of_address.h>
--#include <linux/of_device.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/soc/mediatek/mtk-cmdq.h>
-diff --git a/drivers/gpu/drm/meson/meson_drv.h b/drivers/gpu/drm/meson/meson_drv.h
-index b23009a3380f..3f9345c14f31 100644
---- a/drivers/gpu/drm/meson/meson_drv.h
-+++ b/drivers/gpu/drm/meson/meson_drv.h
-@@ -9,7 +9,6 @@
- 
- #include <linux/device.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/regmap.h>
- 
- struct drm_crtc;
-diff --git a/drivers/gpu/drm/meson/meson_dw_hdmi.c b/drivers/gpu/drm/meson/meson_dw_hdmi.c
-index 3d046878ce6c..63206535de65 100644
---- a/drivers/gpu/drm/meson/meson_dw_hdmi.c
-+++ b/drivers/gpu/drm/meson/meson_dw_hdmi.c
-@@ -9,8 +9,9 @@
- #include <linux/component.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/of_graph.h>
-+#include <linux/platform_device.h>
- #include <linux/regulator/consumer.h>
- #include <linux/reset.h>
- 
-diff --git a/drivers/gpu/drm/meson/meson_dw_mipi_dsi.c b/drivers/gpu/drm/meson/meson_dw_mipi_dsi.c
-index 57447abf1a29..e5fe4e994f43 100644
---- a/drivers/gpu/drm/meson/meson_dw_mipi_dsi.c
-+++ b/drivers/gpu/drm/meson/meson_dw_mipi_dsi.c
-@@ -7,9 +7,10 @@
- 
- #include <linux/clk.h>
- #include <linux/kernel.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
- #include <linux/of_graph.h>
-+#include <linux/platform_device.h>
- #include <linux/reset.h>
  #include <linux/phy/phy.h>
- #include <linux/bitfield.h>
-diff --git a/drivers/gpu/drm/meson/meson_encoder_dsi.c b/drivers/gpu/drm/meson/meson_encoder_dsi.c
-index 812e172dec63..3f93c70488ca 100644
---- a/drivers/gpu/drm/meson/meson_encoder_dsi.c
-+++ b/drivers/gpu/drm/meson/meson_encoder_dsi.c
-@@ -7,7 +7,6 @@
- 
- #include <linux/kernel.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
- #include <linux/of_graph.h>
- 
- #include <drm/drm_atomic_helper.h>
-diff --git a/drivers/gpu/drm/meson/meson_encoder_hdmi.c b/drivers/gpu/drm/meson/meson_encoder_hdmi.c
-index 53231bfdf7e2..9913971fa5d2 100644
---- a/drivers/gpu/drm/meson/meson_encoder_hdmi.c
-+++ b/drivers/gpu/drm/meson/meson_encoder_hdmi.c
-@@ -9,8 +9,10 @@
- #include <linux/component.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/of_graph.h>
-+#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
- #include <linux/regulator/consumer.h>
- #include <linux/reset.h>
- 
-diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-index 5deb79924897..b20ef6c8ea26 100644
---- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-+++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
-@@ -3,6 +3,8 @@
- 
- #include <linux/clk.h>
- #include <linux/interconnect.h>
-+#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
- #include <linux/pm_domain.h>
- #include <linux/pm_opp.h>
- #include <soc/qcom/cmd-db.h>
-diff --git a/drivers/gpu/drm/msm/dp/dp_audio.c b/drivers/gpu/drm/msm/dp/dp_audio.c
-index 1245c7aa49df..4a2e479723a8 100644
---- a/drivers/gpu/drm/msm/dp/dp_audio.c
-+++ b/drivers/gpu/drm/msm/dp/dp_audio.c
-@@ -6,7 +6,7 @@
- 
- #define pr_fmt(fmt)	"[drm-dp] %s: " fmt, __func__
- 
--#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
- 
- #include <drm/display/drm_dp_helper.h>
- #include <drm/drm_edid.h>
-diff --git a/drivers/gpu/drm/msm/dsi/dsi_host.c b/drivers/gpu/drm/msm/dsi/dsi_host.c
-index 3f6dfb4f9d5a..4c6d73e24bb5 100644
---- a/drivers/gpu/drm/msm/dsi/dsi_host.c
-+++ b/drivers/gpu/drm/msm/dsi/dsi_host.c
-@@ -10,7 +10,7 @@
- #include <linux/gpio/consumer.h>
- #include <linux/interrupt.h>
- #include <linux/mfd/syscon.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/of_graph.h>
- #include <linux/of_irq.h>
  #include <linux/pinctrl/consumer.h>
-diff --git a/drivers/gpu/drm/msm/hdmi/hdmi.c b/drivers/gpu/drm/msm/hdmi/hdmi.c
-index 3132105a2a43..60509fb39710 100644
---- a/drivers/gpu/drm/msm/hdmi/hdmi.c
-+++ b/drivers/gpu/drm/msm/hdmi/hdmi.c
-@@ -7,6 +7,8 @@
- 
- #include <linux/of_irq.h>
- #include <linux/of_gpio.h>
-+#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
- 
- #include <drm/drm_bridge_connector.h>
- #include <drm/drm_of.h>
-diff --git a/drivers/gpu/drm/msm/hdmi/hdmi_phy.c b/drivers/gpu/drm/msm/hdmi/hdmi_phy.c
-index 9780107e1cc9..3e00fb8190b2 100644
---- a/drivers/gpu/drm/msm/hdmi/hdmi_phy.c
-+++ b/drivers/gpu/drm/msm/hdmi/hdmi_phy.c
-@@ -3,7 +3,8 @@
-  * Copyright (c) 2016, The Linux Foundation. All rights reserved.
-  */
- 
+ #include <linux/platform_device.h>
+diff --git a/drivers/net/can/m_can/m_can.h b/drivers/net/can/m_can/m_can.h
+index a839dc71dc9b..267d06ce6ade 100644
+--- a/drivers/net/can/m_can/m_can.h
++++ b/drivers/net/can/m_can/m_can.h
+@@ -22,7 +22,6 @@
+ #include <linux/module.h>
+ #include <linux/netdevice.h>
+ #include <linux/of.h>
 -#include <linux/of_device.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
- 
- #include "hdmi.h"
- 
-diff --git a/drivers/gpu/drm/msm/msm_mdss.c b/drivers/gpu/drm/msm/msm_mdss.c
-index 05648c910c68..6bf6c4a0f550 100644
---- a/drivers/gpu/drm/msm/msm_mdss.c
-+++ b/drivers/gpu/drm/msm/msm_mdss.c
-@@ -10,6 +10,8 @@
- #include <linux/irqchip.h>
- #include <linux/irqdesc.h>
- #include <linux/irqchip/chained_irq.h>
-+#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
+ #include <linux/phy/phy.h>
+ #include <linux/pinctrl/consumer.h>
  #include <linux/pm_runtime.h>
+diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
+index e4d748913439..b82842718735 100644
+--- a/drivers/net/can/rcar/rcar_canfd.c
++++ b/drivers/net/can/rcar/rcar_canfd.c
+@@ -34,7 +34,6 @@
+ #include <linux/moduleparam.h>
+ #include <linux/netdevice.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/phy/phy.h>
+ #include <linux/platform_device.h>
  #include <linux/reset.h>
+diff --git a/drivers/net/can/sja1000/sja1000_platform.c b/drivers/net/can/sja1000/sja1000_platform.c
+index 4e59952c66d4..33f0e46ab1c2 100644
+--- a/drivers/net/can/sja1000/sja1000_platform.c
++++ b/drivers/net/can/sja1000/sja1000_platform.c
+@@ -17,7 +17,6 @@
+ #include <linux/clk.h>
+ #include <linux/io.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
  
-diff --git a/drivers/gpu/drm/mxsfb/lcdif_drv.c b/drivers/gpu/drm/mxsfb/lcdif_drv.c
-index c9d8cbb21407..5e8dc88efea1 100644
---- a/drivers/gpu/drm/mxsfb/lcdif_drv.c
-+++ b/drivers/gpu/drm/mxsfb/lcdif_drv.c
-@@ -10,7 +10,6 @@
+ #include "sja1000.h"
+ 
+diff --git a/drivers/net/can/sun4i_can.c b/drivers/net/can/sun4i_can.c
+index 0827830bbf28..b493a3d8ea9a 100644
+--- a/drivers/net/can/sun4i_can.c
++++ b/drivers/net/can/sun4i_can.c
+@@ -59,7 +59,6 @@
  #include <linux/io.h>
  #include <linux/module.h>
  #include <linux/of.h>
 -#include <linux/of_device.h>
- #include <linux/of_graph.h>
  #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
-diff --git a/drivers/gpu/drm/panel/panel-abt-y030xx067a.c b/drivers/gpu/drm/panel/panel-abt-y030xx067a.c
-index 1cc0f1d09684..662c7bcbe6e5 100644
---- a/drivers/gpu/drm/panel/panel-abt-y030xx067a.c
-+++ b/drivers/gpu/drm/panel/panel-abt-y030xx067a.c
-@@ -11,7 +11,8 @@
- #include <linux/gpio/consumer.h>
- #include <linux/media-bus-format.h>
- #include <linux/module.h>
+ #include <linux/reset.h>
+ 
+diff --git a/drivers/net/can/ti_hecc.c b/drivers/net/can/ti_hecc.c
+index 54284661992e..a8243acde92d 100644
+--- a/drivers/net/can/ti_hecc.c
++++ b/drivers/net/can/ti_hecc.c
+@@ -21,7 +21,6 @@
+ #include <linux/clk.h>
+ #include <linux/io.h>
+ #include <linux/of.h>
 -#include <linux/of_device.h>
+ #include <linux/regulator/consumer.h>
+ 
+ #include <linux/can/dev.h>
+diff --git a/drivers/net/dsa/b53/b53_mdio.c b/drivers/net/dsa/b53/b53_mdio.c
+index 8b422b298cd5..4d55d8d18376 100644
+--- a/drivers/net/dsa/b53/b53_mdio.c
++++ b/drivers/net/dsa/b53/b53_mdio.c
+@@ -19,6 +19,7 @@
+ #include <linux/kernel.h>
+ #include <linux/phy.h>
+ #include <linux/module.h>
 +#include <linux/of.h>
-+#include <linux/platform_device.h>
- #include <linux/regmap.h>
- #include <linux/regulator/consumer.h>
- #include <linux/spi/spi.h>
-diff --git a/drivers/gpu/drm/panel/panel-auo-a030jtn01.c b/drivers/gpu/drm/panel/panel-auo-a030jtn01.c
-index 3c976a98de6a..6c86ebf2cad7 100644
---- a/drivers/gpu/drm/panel/panel-auo-a030jtn01.c
-+++ b/drivers/gpu/drm/panel/panel-auo-a030jtn01.c
-@@ -11,8 +11,8 @@
- #include <linux/device.h>
- #include <linux/gpio/consumer.h>
- #include <linux/media-bus-format.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
- #include <linux/regmap.h>
- #include <linux/regulator/consumer.h>
- #include <linux/spi/spi.h>
-diff --git a/drivers/gpu/drm/panel/panel-boe-himax8279d.c b/drivers/gpu/drm/panel/panel-boe-himax8279d.c
-index d879b3b14c48..11b64acbe8a9 100644
---- a/drivers/gpu/drm/panel/panel-boe-himax8279d.c
-+++ b/drivers/gpu/drm/panel/panel-boe-himax8279d.c
-@@ -10,7 +10,6 @@
+ #include <linux/delay.h>
+ #include <linux/brcmphy.h>
+ #include <linux/rtnetlink.h>
+diff --git a/drivers/net/dsa/b53/b53_mmap.c b/drivers/net/dsa/b53/b53_mmap.c
+index 5db1ed26f03a..5e39641ea887 100644
+--- a/drivers/net/dsa/b53/b53_mmap.c
++++ b/drivers/net/dsa/b53/b53_mmap.c
+@@ -19,6 +19,7 @@
+ #include <linux/bits.h>
  #include <linux/kernel.h>
  #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- 
- #include <linux/gpio/consumer.h>
- #include <linux/regulator/consumer.h>
-diff --git a/drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c b/drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c
-index dc276c346fd1..5ac926281d2c 100644
---- a/drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c
-+++ b/drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c
-@@ -8,7 +8,6 @@
- #include <linux/gpio/consumer.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/regulator/consumer.h>
- 
- #include <drm/drm_connector.h>
-diff --git a/drivers/gpu/drm/panel/panel-dsi-cm.c b/drivers/gpu/drm/panel/panel-dsi-cm.c
-index ba17bcc4461c..6b3f4d664d2a 100644
---- a/drivers/gpu/drm/panel/panel-dsi-cm.c
-+++ b/drivers/gpu/drm/panel/panel-dsi-cm.c
-@@ -11,7 +11,7 @@
- #include <linux/gpio/consumer.h>
- #include <linux/jiffies.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
 +#include <linux/of.h>
- #include <linux/regulator/consumer.h>
- 
- #include <drm/drm_connector.h>
-diff --git a/drivers/gpu/drm/panel/panel-feixin-k101-im2ba02.c b/drivers/gpu/drm/panel/panel-feixin-k101-im2ba02.c
-index 76572c922983..986e3e192881 100644
---- a/drivers/gpu/drm/panel/panel-feixin-k101-im2ba02.c
-+++ b/drivers/gpu/drm/panel/panel-feixin-k101-im2ba02.c
-@@ -7,7 +7,6 @@
- #include <linux/delay.h>
- #include <linux/mod_devicetable.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
- #include <linux/regulator/consumer.h>
- 
- #include <drm/drm_mipi_dsi.h>
-diff --git a/drivers/gpu/drm/panel/panel-feiyang-fy07024di26a30d.c b/drivers/gpu/drm/panel/panel-feiyang-fy07024di26a30d.c
-index df493da50afe..48e3acaecdf3 100644
---- a/drivers/gpu/drm/panel/panel-feiyang-fy07024di26a30d.c
-+++ b/drivers/gpu/drm/panel/panel-feiyang-fy07024di26a30d.c
-@@ -11,7 +11,7 @@
- #include <linux/gpio/consumer.h>
- #include <linux/delay.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/regulator/consumer.h>
- 
- #define FEIYANG_INIT_CMD_LEN	2
-diff --git a/drivers/gpu/drm/panel/panel-himax-hx8394.c b/drivers/gpu/drm/panel/panel-himax-hx8394.c
-index d4fb5d1b295b..c73243d85de7 100644
---- a/drivers/gpu/drm/panel/panel-himax-hx8394.c
-+++ b/drivers/gpu/drm/panel/panel-himax-hx8394.c
-@@ -15,7 +15,7 @@
- #include <linux/media-bus-format.h>
- #include <linux/mod_devicetable.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/regulator/consumer.h>
- 
- #include <video/mipi_display.h>
-diff --git a/drivers/gpu/drm/panel/panel-ilitek-ili9322.c b/drivers/gpu/drm/panel/panel-ilitek-ili9322.c
-index 3dfafa585127..61c872f0f7ca 100644
---- a/drivers/gpu/drm/panel/panel-ilitek-ili9322.c
-+++ b/drivers/gpu/drm/panel/panel-ilitek-ili9322.c
-@@ -22,7 +22,8 @@
- #include <linux/bitops.h>
- #include <linux/gpio/consumer.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
- #include <linux/regmap.h>
- #include <linux/regulator/consumer.h>
- #include <linux/spi/spi.h>
-diff --git a/drivers/gpu/drm/panel/panel-ilitek-ili9341.c b/drivers/gpu/drm/panel/panel-ilitek-ili9341.c
-index 3fdf884b3257..3574681891e8 100644
---- a/drivers/gpu/drm/panel/panel-ilitek-ili9341.c
-+++ b/drivers/gpu/drm/panel/panel-ilitek-ili9341.c
-@@ -23,7 +23,7 @@
- #include <linux/delay.h>
- #include <linux/gpio/consumer.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/regulator/consumer.h>
- #include <linux/spi/spi.h>
- 
-diff --git a/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c b/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c
-index 1ec696adf9de..72dbb8184280 100644
---- a/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c
-+++ b/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c
-@@ -9,7 +9,7 @@
- #include <linux/errno.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- 
- #include <linux/gpio/consumer.h>
- #include <linux/regulator/consumer.h>
-diff --git a/drivers/gpu/drm/panel/panel-innolux-ej030na.c b/drivers/gpu/drm/panel/panel-innolux-ej030na.c
-index b2b0ebc9e943..8fdbda59be48 100644
---- a/drivers/gpu/drm/panel/panel-innolux-ej030na.c
-+++ b/drivers/gpu/drm/panel/panel-innolux-ej030na.c
-@@ -11,7 +11,8 @@
- #include <linux/gpio/consumer.h>
- #include <linux/media-bus-format.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
- #include <linux/regmap.h>
- #include <linux/regulator/consumer.h>
- #include <linux/spi/spi.h>
-diff --git a/drivers/gpu/drm/panel/panel-innolux-p079zca.c b/drivers/gpu/drm/panel/panel-innolux-p079zca.c
-index 9992d0d4c0e5..485178a99910 100644
---- a/drivers/gpu/drm/panel/panel-innolux-p079zca.c
-+++ b/drivers/gpu/drm/panel/panel-innolux-p079zca.c
-@@ -7,7 +7,6 @@
- #include <linux/gpio/consumer.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/regulator/consumer.h>
- 
- #include <video/mipi_display.h>
-diff --git a/drivers/gpu/drm/panel/panel-jadard-jd9365da-h3.c b/drivers/gpu/drm/panel/panel-jadard-jd9365da-h3.c
-index 323c33c9c37a..4879835fe101 100644
---- a/drivers/gpu/drm/panel/panel-jadard-jd9365da-h3.c
-+++ b/drivers/gpu/drm/panel/panel-jadard-jd9365da-h3.c
-@@ -16,7 +16,7 @@
- #include <linux/gpio/consumer.h>
- #include <linux/delay.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/regulator/consumer.h>
- 
- #define JD9365DA_INIT_CMD_LEN		2
-diff --git a/drivers/gpu/drm/panel/panel-leadtek-ltk050h3146w.c b/drivers/gpu/drm/panel/panel-leadtek-ltk050h3146w.c
-index d2efd887484b..d41482d3a34f 100644
---- a/drivers/gpu/drm/panel/panel-leadtek-ltk050h3146w.c
-+++ b/drivers/gpu/drm/panel/panel-leadtek-ltk050h3146w.c
-@@ -8,7 +8,6 @@
- #include <linux/media-bus-format.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/regulator/consumer.h>
- 
- #include <video/display_timing.h>
-diff --git a/drivers/gpu/drm/panel/panel-lvds.c b/drivers/gpu/drm/panel/panel-lvds.c
-index de8758c30e6e..6c46985237c6 100644
---- a/drivers/gpu/drm/panel/panel-lvds.c
-+++ b/drivers/gpu/drm/panel/panel-lvds.c
-@@ -10,7 +10,7 @@
- 
- #include <linux/gpio/consumer.h>
- #include <linux/module.h>
--#include <linux/of_platform.h>
-+#include <linux/of.h>
+ #include <linux/io.h>
  #include <linux/platform_device.h>
- #include <linux/regulator/consumer.h>
- #include <linux/slab.h>
-diff --git a/drivers/gpu/drm/panel/panel-magnachip-d53e6ea8966.c b/drivers/gpu/drm/panel/panel-magnachip-d53e6ea8966.c
-index 26d358b9b85a..799c2161fc85 100644
---- a/drivers/gpu/drm/panel/panel-magnachip-d53e6ea8966.c
-+++ b/drivers/gpu/drm/panel/panel-magnachip-d53e6ea8966.c
-@@ -18,7 +18,6 @@
- #include <linux/media-bus-format.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/regulator/consumer.h>
- #include <linux/spi/spi.h>
- 
-diff --git a/drivers/gpu/drm/panel/panel-mantix-mlaf057we51.c b/drivers/gpu/drm/panel/panel-mantix-mlaf057we51.c
-index 9243b2ad828d..ea4a6bf6d35b 100644
---- a/drivers/gpu/drm/panel/panel-mantix-mlaf057we51.c
-+++ b/drivers/gpu/drm/panel/panel-mantix-mlaf057we51.c
-@@ -10,7 +10,7 @@
- #include <linux/gpio/consumer.h>
- #include <linux/media-bus-format.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/regulator/consumer.h>
- 
- #include <video/mipi_display.h>
-diff --git a/drivers/gpu/drm/panel/panel-newvision-nv3051d.c b/drivers/gpu/drm/panel/panel-newvision-nv3051d.c
-index a07958038ffd..ad98dd9322b4 100644
---- a/drivers/gpu/drm/panel/panel-newvision-nv3051d.c
-+++ b/drivers/gpu/drm/panel/panel-newvision-nv3051d.c
-@@ -13,7 +13,7 @@
- #include <linux/gpio/consumer.h>
- #include <linux/media-bus-format.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/regulator/consumer.h>
- 
- #include <video/display_timing.h>
-diff --git a/drivers/gpu/drm/panel/panel-newvision-nv3052c.c b/drivers/gpu/drm/panel/panel-newvision-nv3052c.c
-index cf078f0d3cd3..71e57de6d8b2 100644
---- a/drivers/gpu/drm/panel/panel-newvision-nv3052c.c
-+++ b/drivers/gpu/drm/panel/panel-newvision-nv3052c.c
-@@ -11,7 +11,8 @@
- #include <linux/gpio/consumer.h>
- #include <linux/media-bus-format.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
- #include <linux/regulator/consumer.h>
- #include <linux/spi/spi.h>
- #include <video/mipi_display.h>
-diff --git a/drivers/gpu/drm/panel/panel-novatek-nt35510.c b/drivers/gpu/drm/panel/panel-novatek-nt35510.c
-index 493c3c23f0d6..d6dceb858008 100644
---- a/drivers/gpu/drm/panel/panel-novatek-nt35510.c
-+++ b/drivers/gpu/drm/panel/panel-novatek-nt35510.c
-@@ -26,7 +26,7 @@
- #include <linux/bitops.h>
- #include <linux/gpio/consumer.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/regmap.h>
- #include <linux/regulator/consumer.h>
- 
-diff --git a/drivers/gpu/drm/panel/panel-novatek-nt35560.c b/drivers/gpu/drm/panel/panel-novatek-nt35560.c
-index cc7f96d70826..5bbea734123b 100644
---- a/drivers/gpu/drm/panel/panel-novatek-nt35560.c
-+++ b/drivers/gpu/drm/panel/panel-novatek-nt35560.c
-@@ -18,7 +18,6 @@
- #include <linux/gpio/consumer.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/regulator/consumer.h>
- 
- #include <video/mipi_display.h>
-diff --git a/drivers/gpu/drm/panel/panel-novatek-nt35950.c b/drivers/gpu/drm/panel/panel-novatek-nt35950.c
-index 8b108ac80b55..412ca84d0581 100644
---- a/drivers/gpu/drm/panel/panel-novatek-nt35950.c
-+++ b/drivers/gpu/drm/panel/panel-novatek-nt35950.c
-@@ -8,7 +8,7 @@
- #include <linux/delay.h>
- #include <linux/gpio/consumer.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/of_graph.h>
- #include <linux/regulator/consumer.h>
- 
-diff --git a/drivers/gpu/drm/panel/panel-novatek-nt36523.c b/drivers/gpu/drm/panel/panel-novatek-nt36523.c
-index c3befa7f253d..9632b9e95b71 100644
---- a/drivers/gpu/drm/panel/panel-novatek-nt36523.c
-+++ b/drivers/gpu/drm/panel/panel-novatek-nt36523.c
-@@ -9,7 +9,7 @@
- #include <linux/delay.h>
- #include <linux/gpio/consumer.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/of_graph.h>
- #include <linux/regulator/consumer.h>
- 
-diff --git a/drivers/gpu/drm/panel/panel-novatek-nt36672a.c b/drivers/gpu/drm/panel/panel-novatek-nt36672a.c
-index 73bcffa1e0c1..33fb3d715e54 100644
---- a/drivers/gpu/drm/panel/panel-novatek-nt36672a.c
-+++ b/drivers/gpu/drm/panel/panel-novatek-nt36672a.c
-@@ -16,7 +16,6 @@
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- 
- #include <linux/gpio/consumer.h>
- #include <linux/pinctrl/consumer.h>
-diff --git a/drivers/gpu/drm/panel/panel-novatek-nt39016.c b/drivers/gpu/drm/panel/panel-novatek-nt39016.c
-index f58cfb10b58a..059260262b5a 100644
---- a/drivers/gpu/drm/panel/panel-novatek-nt39016.c
-+++ b/drivers/gpu/drm/panel/panel-novatek-nt39016.c
-@@ -12,7 +12,6 @@
- #include <linux/media-bus-format.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/regmap.h>
- #include <linux/regulator/consumer.h>
- #include <linux/spi/spi.h>
-diff --git a/drivers/gpu/drm/panel/panel-orisetech-ota5601a.c b/drivers/gpu/drm/panel/panel-orisetech-ota5601a.c
-index e46be5014d42..c415dacf1816 100644
---- a/drivers/gpu/drm/panel/panel-orisetech-ota5601a.c
-+++ b/drivers/gpu/drm/panel/panel-orisetech-ota5601a.c
-@@ -12,7 +12,6 @@
- #include <linux/media-bus-format.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/regmap.h>
- #include <linux/regulator/consumer.h>
- #include <linux/spi/spi.h>
-diff --git a/drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c b/drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c
-index 90ea91e4311d..4618c892cdd6 100644
---- a/drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c
-+++ b/drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c
-@@ -47,7 +47,6 @@
- #include <linux/media-bus-format.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/of_graph.h>
- #include <linux/pm.h>
- 
-diff --git a/drivers/gpu/drm/panel/panel-samsung-s6d16d0.c b/drivers/gpu/drm/panel/panel-samsung-s6d16d0.c
-index 008e2b0d6652..79f611963c61 100644
---- a/drivers/gpu/drm/panel/panel-samsung-s6d16d0.c
-+++ b/drivers/gpu/drm/panel/panel-samsung-s6d16d0.c
-@@ -11,7 +11,7 @@
- #include <linux/gpio/consumer.h>
- #include <linux/regulator/consumer.h>
- #include <linux/delay.h>
--#include <linux/of_device.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/module.h>
- 
- struct s6d16d0 {
-diff --git a/drivers/gpu/drm/panel/panel-samsung-s6d7aa0.c b/drivers/gpu/drm/panel/panel-samsung-s6d7aa0.c
-index 102e1fc7ee38..0755f85a44bd 100644
---- a/drivers/gpu/drm/panel/panel-samsung-s6d7aa0.c
-+++ b/drivers/gpu/drm/panel/panel-samsung-s6d7aa0.c
+ #include <linux/platform_data/b53.h>
+diff --git a/drivers/net/dsa/hirschmann/hellcreek.c b/drivers/net/dsa/hirschmann/hellcreek.c
+index af50001ccdd4..720f4e4ed0b0 100644
+--- a/drivers/net/dsa/hirschmann/hellcreek.c
++++ b/drivers/net/dsa/hirschmann/hellcreek.c
 @@ -11,7 +11,6 @@
  #include <linux/module.h>
- #include <linux/regulator/consumer.h>
+ #include <linux/device.h>
  #include <linux/of.h>
 -#include <linux/of_device.h>
+ #include <linux/of_mdio.h>
+ #include <linux/platform_device.h>
+ #include <linux/bitops.h>
+diff --git a/drivers/net/dsa/hirschmann/hellcreek_ptp.c b/drivers/net/dsa/hirschmann/hellcreek_ptp.c
+index 3e44ccb7db84..5249a1c2a80b 100644
+--- a/drivers/net/dsa/hirschmann/hellcreek_ptp.c
++++ b/drivers/net/dsa/hirschmann/hellcreek_ptp.c
+@@ -9,6 +9,7 @@
+  *	    Kurt Kanzenbach <kurt@linutronix.de>
+  */
  
- #include <video/mipi_display.h>
- #include <drm/drm_mipi_dsi.h>
-diff --git a/drivers/gpu/drm/panel/panel-samsung-s6e3ha2.c b/drivers/gpu/drm/panel/panel-samsung-s6e3ha2.c
-index 39eef3dce7c9..639a4fdf57bb 100644
---- a/drivers/gpu/drm/panel/panel-samsung-s6e3ha2.c
-+++ b/drivers/gpu/drm/panel/panel-samsung-s6e3ha2.c
-@@ -12,7 +12,7 @@
- #include <linux/delay.h>
- #include <linux/gpio/consumer.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
 +#include <linux/of.h>
- #include <linux/regulator/consumer.h>
+ #include <linux/ptp_clock_kernel.h>
+ #include "hellcreek.h"
+ #include "hellcreek_ptp.h"
+diff --git a/drivers/net/dsa/lan9303-core.c b/drivers/net/dsa/lan9303-core.c
+index ff76444057d2..02e93559d536 100644
+--- a/drivers/net/dsa/lan9303-core.c
++++ b/drivers/net/dsa/lan9303-core.c
+@@ -8,6 +8,7 @@
+ #include <linux/regmap.h>
+ #include <linux/mutex.h>
+ #include <linux/mii.h>
++#include <linux/of.h>
+ #include <linux/phy.h>
+ #include <linux/if_bridge.h>
+ #include <linux/if_vlan.h>
+diff --git a/drivers/net/dsa/microchip/ksz8863_smi.c b/drivers/net/dsa/microchip/ksz8863_smi.c
+index fd6e2e69a42a..5711a59e2ac9 100644
+--- a/drivers/net/dsa/microchip/ksz8863_smi.c
++++ b/drivers/net/dsa/microchip/ksz8863_smi.c
+@@ -5,6 +5,9 @@
+  * Copyright (C) 2019 Pengutronix, Michael Grzeschik <kernel@pengutronix.de>
+  */
  
- #include <drm/drm_mipi_dsi.h>
-diff --git a/drivers/gpu/drm/panel/panel-samsung-s6e63m0-dsi.c b/drivers/gpu/drm/panel/panel-samsung-s6e63m0-dsi.c
-index ed3895e4ca5e..a89d925fdfb2 100644
---- a/drivers/gpu/drm/panel/panel-samsung-s6e63m0-dsi.c
-+++ b/drivers/gpu/drm/panel/panel-samsung-s6e63m0-dsi.c
-@@ -6,7 +6,7 @@
- 
- #include <linux/module.h>
- #include <linux/delay.h>
--#include <linux/of_device.h>
 +#include <linux/mod_devicetable.h>
++#include <linux/property.h>
++
+ #include "ksz8.h"
+ #include "ksz_common.h"
  
- #include <drm/drm_mipi_dsi.h>
- #include <drm/drm_print.h>
-diff --git a/drivers/gpu/drm/panel/panel-samsung-sofef00.c b/drivers/gpu/drm/panel/panel-samsung-sofef00.c
-index 1ebb79e3103c..cbf9607dd576 100644
---- a/drivers/gpu/drm/panel/panel-samsung-sofef00.c
-+++ b/drivers/gpu/drm/panel/panel-samsung-sofef00.c
-@@ -8,7 +8,6 @@
- #include <linux/gpio/consumer.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/regulator/consumer.h>
- #include <linux/backlight.h>
- 
-diff --git a/drivers/gpu/drm/panel/panel-sitronix-st7701.c b/drivers/gpu/drm/panel/panel-sitronix-st7701.c
-index 7eae83aa0ea1..0459965e1b4f 100644
---- a/drivers/gpu/drm/panel/panel-sitronix-st7701.c
-+++ b/drivers/gpu/drm/panel/panel-sitronix-st7701.c
-@@ -12,7 +12,7 @@
- #include <linux/gpio/consumer.h>
- #include <linux/delay.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
+diff --git a/drivers/net/dsa/microchip/ksz_common.c b/drivers/net/dsa/microchip/ksz_common.c
+index 813b91a816bb..3662bb791afb 100644
+--- a/drivers/net/dsa/microchip/ksz_common.c
++++ b/drivers/net/dsa/microchip/ksz_common.c
+@@ -18,8 +18,8 @@
+ #include <linux/if_vlan.h>
+ #include <linux/irq.h>
+ #include <linux/irqdomain.h>
 +#include <linux/of.h>
- #include <linux/regulator/consumer.h>
- 
- #include <video/mipi_display.h>
-diff --git a/drivers/gpu/drm/panel/panel-sitronix-st7703.c b/drivers/gpu/drm/panel/panel-sitronix-st7703.c
-index 3aa31f3d6157..6a3945639535 100644
---- a/drivers/gpu/drm/panel/panel-sitronix-st7703.c
-+++ b/drivers/gpu/drm/panel/panel-sitronix-st7703.c
-@@ -13,7 +13,7 @@
- #include <linux/media-bus-format.h>
- #include <linux/mod_devicetable.h>
- #include <linux/module.h>
+ #include <linux/of_mdio.h>
 -#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/regulator/consumer.h>
+ #include <linux/of_net.h>
+ #include <linux/micrel_phy.h>
+ #include <net/dsa.h>
+diff --git a/drivers/net/dsa/mt7530-mmio.c b/drivers/net/dsa/mt7530-mmio.c
+index 1a3d4b692f34..0a6a2fe34e64 100644
+--- a/drivers/net/dsa/mt7530-mmio.c
++++ b/drivers/net/dsa/mt7530-mmio.c
+@@ -1,7 +1,8 @@
+ // SPDX-License-Identifier: GPL-2.0-only
  
- #include <video/display_timing.h>
-diff --git a/drivers/gpu/drm/panel/panel-sony-td4353-jdi.c b/drivers/gpu/drm/panel/panel-sony-td4353-jdi.c
-index 8d8813dbaa45..1bde2f01786b 100644
---- a/drivers/gpu/drm/panel/panel-sony-td4353-jdi.c
-+++ b/drivers/gpu/drm/panel/panel-sony-td4353-jdi.c
-@@ -14,7 +14,6 @@
- #include <linux/gpio/consumer.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/regulator/consumer.h>
- 
- #include <video/mipi_display.h>
-diff --git a/drivers/gpu/drm/panel/panel-truly-nt35597.c b/drivers/gpu/drm/panel/panel-truly-nt35597.c
-index b31cffb660a7..4f4009f9fe25 100644
---- a/drivers/gpu/drm/panel/panel-truly-nt35597.c
-+++ b/drivers/gpu/drm/panel/panel-truly-nt35597.c
-@@ -7,7 +7,7 @@
- #include <linux/delay.h>
- #include <linux/gpio/consumer.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/of_graph.h>
- #include <linux/pinctrl/consumer.h>
- #include <linux/regulator/consumer.h>
-diff --git a/drivers/gpu/drm/panel/panel-visionox-rm69299.c b/drivers/gpu/drm/panel/panel-visionox-rm69299.c
-index ec228c269146..c2806e4fd553 100644
---- a/drivers/gpu/drm/panel/panel-visionox-rm69299.c
-+++ b/drivers/gpu/drm/panel/panel-visionox-rm69299.c
-@@ -5,7 +5,7 @@
- 
- #include <linux/delay.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
 +#include <linux/mod_devicetable.h>
- #include <linux/gpio/consumer.h>
- #include <linux/regulator/consumer.h>
- 
-diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/panfrost/panfrost_drv.c
-index bbada731bbbd..20c25c836198 100644
---- a/drivers/gpu/drm/panfrost/panfrost_drv.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
-@@ -4,8 +4,9 @@
- /* Copyright 2019 Collabora ltd. */
- 
  #include <linux/module.h>
 -#include <linux/of_platform.h>
-+#include <linux/of.h>
- #include <linux/pagemap.h>
 +#include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <drm/panfrost_drm.h>
- #include <drm/drm_drv.h>
-diff --git a/drivers/gpu/drm/pl111/pl111_versatile.c b/drivers/gpu/drm/pl111/pl111_versatile.c
-index 00c3ebd32359..1e4b28d03f4d 100644
---- a/drivers/gpu/drm/pl111/pl111_versatile.c
-+++ b/drivers/gpu/drm/pl111/pl111_versatile.c
-@@ -15,6 +15,7 @@
+ #include <linux/regmap.h>
+ #include <linux/regulator/consumer.h>
+ #include <linux/reset.h>
+diff --git a/drivers/net/dsa/mv88e6xxx/chip.c b/drivers/net/dsa/mv88e6xxx/chip.c
+index 8b51756bd805..77f078995e04 100644
+--- a/drivers/net/dsa/mv88e6xxx/chip.c
++++ b/drivers/net/dsa/mv88e6xxx/chip.c
+@@ -23,7 +23,7 @@
+ #include <linux/list.h>
+ #include <linux/mdio.h>
  #include <linux/module.h>
+-#include <linux/of_device.h>
++#include <linux/of.h>
+ #include <linux/of_irq.h>
+ #include <linux/of_mdio.h>
+ #include <linux/platform_data/mv88e6xxx.h>
+diff --git a/drivers/net/dsa/ocelot/felix_vsc9959.c b/drivers/net/dsa/ocelot/felix_vsc9959.c
+index bb39fedd46c7..d2af1896527b 100644
+--- a/drivers/net/dsa/ocelot/felix_vsc9959.c
++++ b/drivers/net/dsa/ocelot/felix_vsc9959.c
+@@ -16,6 +16,7 @@
+ #include <net/pkt_sched.h>
+ #include <linux/iopoll.h>
+ #include <linux/mdio.h>
++#include <linux/of.h>
+ #include <linux/pci.h>
+ #include <linux/time.h>
+ #include "felix.h"
+diff --git a/drivers/net/dsa/ocelot/seville_vsc9953.c b/drivers/net/dsa/ocelot/seville_vsc9953.c
+index 15003b2af264..8f912bda120b 100644
+--- a/drivers/net/dsa/ocelot/seville_vsc9953.c
++++ b/drivers/net/dsa/ocelot/seville_vsc9953.c
+@@ -2,13 +2,14 @@
+ /* Distributed Switch Architecture VSC9953 driver
+  * Copyright (C) 2020, Maxim Kochetkov <fido_max@inbox.ru>
+  */
++#include <linux/platform_device.h>
+ #include <linux/types.h>
+ #include <soc/mscc/ocelot_vcap.h>
+ #include <soc/mscc/ocelot_sys.h>
+ #include <soc/mscc/ocelot.h>
+ #include <linux/mdio/mdio-mscc-miim.h>
++#include <linux/mod_devicetable.h>
+ #include <linux/of_mdio.h>
+-#include <linux/of_platform.h>
+ #include <linux/pcs-lynx.h>
+ #include <linux/dsa/ocelot.h>
+ #include <linux/iopoll.h>
+diff --git a/drivers/net/dsa/qca/qca8k-leds.c b/drivers/net/dsa/qca/qca8k-leds.c
+index 1261e0bb21ef..e8c16e76e34b 100644
+--- a/drivers/net/dsa/qca/qca8k-leds.c
++++ b/drivers/net/dsa/qca/qca8k-leds.c
+@@ -1,4 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0
++#include <linux/property.h>
+ #include <linux/regmap.h>
+ #include <net/dsa.h>
+ 
+diff --git a/drivers/net/dsa/realtek/realtek-mdio.c b/drivers/net/dsa/realtek/realtek-mdio.c
+index 5a8fe707ca25..4310e7793e58 100644
+--- a/drivers/net/dsa/realtek/realtek-mdio.c
++++ b/drivers/net/dsa/realtek/realtek-mdio.c
+@@ -20,7 +20,7 @@
+  */
+ 
+ #include <linux/module.h>
+-#include <linux/of_device.h>
++#include <linux/of.h>
+ #include <linux/overflow.h>
+ #include <linux/regmap.h>
+ 
+diff --git a/drivers/net/dsa/realtek/realtek-smi.c b/drivers/net/dsa/realtek/realtek-smi.c
+index 1b447d96b9c4..c2bd8bb6c9c2 100644
+--- a/drivers/net/dsa/realtek/realtek-smi.c
++++ b/drivers/net/dsa/realtek/realtek-smi.c
+@@ -31,7 +31,6 @@
+ #include <linux/spinlock.h>
+ #include <linux/skbuff.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/of_mdio.h>
+ #include <linux/delay.h>
+ #include <linux/gpio/consumer.h>
+diff --git a/drivers/net/dsa/sja1105/sja1105_main.c b/drivers/net/dsa/sja1105/sja1105_main.c
+index 3529a565b4aa..b74300d38943 100644
+--- a/drivers/net/dsa/sja1105/sja1105_main.c
++++ b/drivers/net/dsa/sja1105/sja1105_main.c
+@@ -15,7 +15,6 @@
+ #include <linux/of.h>
+ #include <linux/of_net.h>
+ #include <linux/of_mdio.h>
+-#include <linux/of_device.h>
+ #include <linux/pcs/pcs-xpcs.h>
+ #include <linux/netdev_features.h>
+ #include <linux/netdevice.h>
+diff --git a/drivers/net/dsa/vitesse-vsc73xx-core.c b/drivers/net/dsa/vitesse-vsc73xx-core.c
+index ef1a4a7c47b2..4f09e7438f3b 100644
+--- a/drivers/net/dsa/vitesse-vsc73xx-core.c
++++ b/drivers/net/dsa/vitesse-vsc73xx-core.c
+@@ -18,7 +18,6 @@
+ #include <linux/module.h>
+ #include <linux/device.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/of_mdio.h>
+ #include <linux/bitops.h>
+ #include <linux/if_bridge.h>
+diff --git a/drivers/net/dsa/xrs700x/xrs700x.c b/drivers/net/dsa/xrs700x/xrs700x.c
+index fa622639d640..753fef757f11 100644
+--- a/drivers/net/dsa/xrs700x/xrs700x.c
++++ b/drivers/net/dsa/xrs700x/xrs700x.c
+@@ -7,7 +7,7 @@
+ #include <net/dsa.h>
+ #include <linux/etherdevice.h>
+ #include <linux/if_bridge.h>
+-#include <linux/of_device.h>
++#include <linux/of.h>
+ #include <linux/netdev_features.h>
+ #include <linux/if_hsr.h>
+ #include "xrs700x.h"
+diff --git a/drivers/net/ethernet/aeroflex/greth.c b/drivers/net/ethernet/aeroflex/greth.c
+index aa0d2f3aaeaa..597a02c75d52 100644
+--- a/drivers/net/ethernet/aeroflex/greth.c
++++ b/drivers/net/ethernet/aeroflex/greth.c
+@@ -29,9 +29,9 @@
+ #include <linux/io.h>
+ #include <linux/crc32.h>
+ #include <linux/mii.h>
+-#include <linux/of_device.h>
++#include <linux/of.h>
+ #include <linux/of_net.h>
+-#include <linux/of_platform.h>
++#include <linux/platform_device.h>
+ #include <linux/slab.h>
+ #include <asm/cacheflush.h>
+ #include <asm/byteorder.h>
+diff --git a/drivers/net/ethernet/amd/sunlance.c b/drivers/net/ethernet/amd/sunlance.c
+index 68ca1225eedc..33bb539ad70a 100644
+--- a/drivers/net/ethernet/amd/sunlance.c
++++ b/drivers/net/ethernet/amd/sunlance.c
+@@ -92,7 +92,7 @@ static char lancestr[] = "LANCE";
+ #include <linux/bitops.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
++#include <linux/platform_device.h>
+ #include <linux/gfp.h>
+ #include <linux/pgtable.h>
+ 
+diff --git a/drivers/net/ethernet/apm/xgene-v2/main.h b/drivers/net/ethernet/apm/xgene-v2/main.h
+index b3985a7be59d..7be6f83e22fe 100644
+--- a/drivers/net/ethernet/apm/xgene-v2/main.h
++++ b/drivers/net/ethernet/apm/xgene-v2/main.h
+@@ -22,6 +22,7 @@
+ #include <linux/of_mdio.h>
+ #include <linux/prefetch.h>
+ #include <linux/phy.h>
++#include <linux/platform_device.h>
+ #include <net/ip.h>
+ #include "mac.h"
+ #include "enet.h"
+diff --git a/drivers/net/ethernet/arc/emac_main.c b/drivers/net/ethernet/arc/emac_main.c
+index 2b427d8a1831..31ee477dd131 100644
+--- a/drivers/net/ethernet/arc/emac_main.c
++++ b/drivers/net/ethernet/arc/emac_main.c
+@@ -15,11 +15,11 @@
+ #include <linux/interrupt.h>
+ #include <linux/io.h>
+ #include <linux/module.h>
++#include <linux/of.h>
+ #include <linux/of_address.h>
+ #include <linux/of_irq.h>
+ #include <linux/of_mdio.h>
+ #include <linux/of_net.h>
+-#include <linux/of_platform.h>
+ 
+ #include "emac.h"
+ 
+diff --git a/drivers/net/ethernet/atheros/ag71xx.c b/drivers/net/ethernet/atheros/ag71xx.c
+index ff1a5edf8df1..009e0b3066fa 100644
+--- a/drivers/net/ethernet/atheros/ag71xx.c
++++ b/drivers/net/ethernet/atheros/ag71xx.c
+@@ -29,9 +29,10 @@
+ 
+ #include <linux/if_vlan.h>
+ #include <linux/mfd/syscon.h>
++#include <linux/of.h>
+ #include <linux/of_mdio.h>
+ #include <linux/of_net.h>
+-#include <linux/of_platform.h>
++#include <linux/platform_device.h>
+ #include <linux/phylink.h>
+ #include <linux/regmap.h>
+ #include <linux/reset.h>
+diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
+index f6a0f12a6d52..b61566afb2f4 100644
+--- a/drivers/net/ethernet/cadence/macb_main.c
++++ b/drivers/net/ethernet/cadence/macb_main.c
+@@ -26,7 +26,6 @@
+ #include <linux/platform_device.h>
+ #include <linux/phylink.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/of_gpio.h>
+ #include <linux/of_mdio.h>
+ #include <linux/of_net.h>
+diff --git a/drivers/net/ethernet/cirrus/cs89x0.c b/drivers/net/ethernet/cirrus/cs89x0.c
+index 276c32c3926a..7c51fd9fc9be 100644
+--- a/drivers/net/ethernet/cirrus/cs89x0.c
++++ b/drivers/net/ethernet/cirrus/cs89x0.c
+@@ -54,7 +54,6 @@
+ #include <linux/netdevice.h>
+ #include <linux/etherdevice.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/platform_device.h>
+ #include <linux/kernel.h>
+ #include <linux/types.h>
+diff --git a/drivers/net/ethernet/ezchip/nps_enet.c b/drivers/net/ethernet/ezchip/nps_enet.c
+index f1eb660aaee2..edf000e7bab4 100644
+--- a/drivers/net/ethernet/ezchip/nps_enet.c
++++ b/drivers/net/ethernet/ezchip/nps_enet.c
+@@ -6,10 +6,9 @@
+ #include <linux/module.h>
+ #include <linux/etherdevice.h>
+ #include <linux/interrupt.h>
+-#include <linux/of_address.h>
+-#include <linux/of_irq.h>
++#include <linux/mod_devicetable.h>
+ #include <linux/of_net.h>
+-#include <linux/of_platform.h>
++#include <linux/platform_device.h>
+ #include "nps_enet.h"
+ 
+ #define DRV_NAME			"nps_mgt_enet"
+diff --git a/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c b/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
+index 431f8917dc39..7cbfc5864ade 100644
+--- a/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
++++ b/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
+@@ -7,8 +7,8 @@
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+ 
+ #include <linux/init.h>
++#include <linux/mod_devicetable.h>
+ #include <linux/module.h>
+-#include <linux/of_platform.h>
+ #include <linux/of_mdio.h>
+ #include <linux/of_net.h>
+ #include <linux/io.h>
+@@ -17,6 +17,7 @@
+ #include <linux/icmp.h>
+ #include <linux/ip.h>
+ #include <linux/ipv6.h>
++#include <linux/platform_device.h>
+ #include <linux/udp.h>
+ #include <linux/tcp.h>
+ #include <linux/net.h>
+diff --git a/drivers/net/ethernet/freescale/dpaa/dpaa_ethtool.c b/drivers/net/ethernet/freescale/dpaa/dpaa_ethtool.c
+index 9c71cbbb13d8..5bd0b36d1feb 100644
+--- a/drivers/net/ethernet/freescale/dpaa/dpaa_ethtool.c
++++ b/drivers/net/ethernet/freescale/dpaa/dpaa_ethtool.c
+@@ -6,7 +6,9 @@
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+ 
+ #include <linux/string.h>
++#include <linux/of.h>
+ #include <linux/of_platform.h>
++#include <linux/platform_device.h>
+ #include <linux/net_tstamp.h>
+ #include <linux/fsl/ptp_qoriq.h>
+ 
+diff --git a/drivers/net/ethernet/freescale/enetc/enetc_ierb.c b/drivers/net/ethernet/freescale/enetc/enetc_ierb.c
+index b307bef4dc29..d39617ab9306 100644
+--- a/drivers/net/ethernet/freescale/enetc/enetc_ierb.c
++++ b/drivers/net/ethernet/freescale/enetc/enetc_ierb.c
+@@ -18,8 +18,8 @@
+  */
+ 
+ #include <linux/io.h>
++#include <linux/mod_devicetable.h>
+ #include <linux/module.h>
+-#include <linux/of_device.h>
+ #include <linux/pci.h>
+ #include <linux/platform_device.h>
+ #include "enetc.h"
+diff --git a/drivers/net/ethernet/freescale/fec_mpc52xx.c b/drivers/net/ethernet/freescale/fec_mpc52xx.c
+index b88816b71ddf..f843ea0df065 100644
+--- a/drivers/net/ethernet/freescale/fec_mpc52xx.c
++++ b/drivers/net/ethernet/freescale/fec_mpc52xx.c
+@@ -29,12 +29,12 @@
+ #include <linux/crc32.h>
+ #include <linux/hardirq.h>
+ #include <linux/delay.h>
++#include <linux/of.h>
+ #include <linux/of_address.h>
+-#include <linux/of_device.h>
+ #include <linux/of_irq.h>
+ #include <linux/of_mdio.h>
+ #include <linux/of_net.h>
+-#include <linux/of_platform.h>
++#include <linux/platform_device.h>
+ 
+ #include <linux/netdevice.h>
+ #include <linux/etherdevice.h>
+diff --git a/drivers/net/ethernet/freescale/fec_mpc52xx_phy.c b/drivers/net/ethernet/freescale/fec_mpc52xx_phy.c
+index 95f778cce98c..894130985e2c 100644
+--- a/drivers/net/ethernet/freescale/fec_mpc52xx_phy.c
++++ b/drivers/net/ethernet/freescale/fec_mpc52xx_phy.c
+@@ -13,10 +13,11 @@
+ #include <linux/module.h>
+ #include <linux/netdevice.h>
+ #include <linux/phy.h>
+-#include <linux/of_platform.h>
+ #include <linux/slab.h>
++#include <linux/of.h>
+ #include <linux/of_address.h>
+ #include <linux/of_mdio.h>
++#include <linux/platform_device.h>
+ #include <asm/io.h>
+ #include <asm/mpc52xx.h>
+ #include "fec_mpc52xx.h"
+diff --git a/drivers/net/ethernet/freescale/fec_ptp.c b/drivers/net/ethernet/freescale/fec_ptp.c
+index ab86bb8562ef..9428a06b6a87 100644
+--- a/drivers/net/ethernet/freescale/fec_ptp.c
++++ b/drivers/net/ethernet/freescale/fec_ptp.c
+@@ -30,7 +30,6 @@
+ #include <linux/phy.h>
+ #include <linux/fec.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/of_gpio.h>
+ #include <linux/of_net.h>
+ 
+diff --git a/drivers/net/ethernet/freescale/fman/fman.c b/drivers/net/ethernet/freescale/fman/fman.c
+index 9d85fb136e34..d96028f01770 100644
+--- a/drivers/net/ethernet/freescale/fman/fman.c
++++ b/drivers/net/ethernet/freescale/fman/fman.c
+@@ -7,6 +7,7 @@
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+ 
+ #include <linux/fsl/guts.h>
++#include <linux/platform_device.h>
+ #include <linux/slab.h>
+ #include <linux/delay.h>
+ #include <linux/module.h>
+diff --git a/drivers/net/ethernet/freescale/fman/fman_port.c b/drivers/net/ethernet/freescale/fman/fman_port.c
+index ab90fe2bee5e..406e75e9e5ea 100644
+--- a/drivers/net/ethernet/freescale/fman/fman_port.c
++++ b/drivers/net/ethernet/freescale/fman/fman_port.c
+@@ -6,6 +6,7 @@
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+ 
+ #include <linux/io.h>
++#include <linux/platform_device.h>
+ #include <linux/slab.h>
+ #include <linux/module.h>
+ #include <linux/interrupt.h>
+diff --git a/drivers/net/ethernet/freescale/fman/mac.c b/drivers/net/ethernet/freescale/fman/mac.c
+index 43665806c590..57de8a6ab180 100644
+--- a/drivers/net/ethernet/freescale/fman/mac.c
++++ b/drivers/net/ethernet/freescale/fman/mac.c
+@@ -12,12 +12,14 @@
+ #include <linux/of_net.h>
+ #include <linux/of_mdio.h>
+ #include <linux/device.h>
++#include <linux/of_platform.h>
+ #include <linux/phy.h>
+ #include <linux/netdevice.h>
+ #include <linux/phy_fixed.h>
+ #include <linux/phylink.h>
+ #include <linux/etherdevice.h>
+ #include <linux/libfdt_env.h>
++#include <linux/platform_device.h>
+ 
+ #include "mac.h"
+ #include "fman_mac.h"
+diff --git a/drivers/net/ethernet/freescale/fs_enet/mac-fcc.c b/drivers/net/ethernet/freescale/fs_enet/mac-fcc.c
+index b47490be872c..925428f1b0c8 100644
+--- a/drivers/net/ethernet/freescale/fs_enet/mac-fcc.c
++++ b/drivers/net/ethernet/freescale/fs_enet/mac-fcc.c
+@@ -32,7 +32,6 @@
+ #include <linux/platform_device.h>
+ #include <linux/phy.h>
+ #include <linux/of_address.h>
+-#include <linux/of_device.h>
+ #include <linux/of_irq.h>
+ #include <linux/gfp.h>
+ #include <linux/pgtable.h>
+diff --git a/drivers/net/ethernet/freescale/fs_enet/mac-fec.c b/drivers/net/ethernet/freescale/fs_enet/mac-fec.c
+index 61f4b6e50d29..f609dc112458 100644
+--- a/drivers/net/ethernet/freescale/fs_enet/mac-fec.c
++++ b/drivers/net/ethernet/freescale/fs_enet/mac-fec.c
+@@ -32,7 +32,6 @@
+ #include <linux/fs.h>
+ #include <linux/platform_device.h>
+ #include <linux/of_address.h>
+-#include <linux/of_device.h>
+ #include <linux/of_irq.h>
+ #include <linux/gfp.h>
+ 
+diff --git a/drivers/net/ethernet/freescale/fs_enet/mac-scc.c b/drivers/net/ethernet/freescale/fs_enet/mac-scc.c
+index 64300ac13e02..66d40da5cde0 100644
+--- a/drivers/net/ethernet/freescale/fs_enet/mac-scc.c
++++ b/drivers/net/ethernet/freescale/fs_enet/mac-scc.c
+@@ -32,7 +32,6 @@
+ #include <linux/platform_device.h>
+ #include <linux/of_address.h>
+ #include <linux/of_irq.h>
+-#include <linux/of_platform.h>
+ 
+ #include <asm/irq.h>
+ #include <linux/uaccess.h>
+diff --git a/drivers/net/ethernet/freescale/fsl_pq_mdio.c b/drivers/net/ethernet/freescale/fsl_pq_mdio.c
+index 9d58d8334467..647a499fe84b 100644
+--- a/drivers/net/ethernet/freescale/fsl_pq_mdio.c
++++ b/drivers/net/ethernet/freescale/fsl_pq_mdio.c
+@@ -12,6 +12,7 @@
+  */
+ 
+ #include <linux/kernel.h>
++#include <linux/platform_device.h>
+ #include <linux/string.h>
+ #include <linux/errno.h>
+ #include <linux/slab.h>
+diff --git a/drivers/net/ethernet/freescale/gianfar.c b/drivers/net/ethernet/freescale/gianfar.c
+index 38d5013c6fed..4f0099ce8f1e 100644
+--- a/drivers/net/ethernet/freescale/gianfar.c
++++ b/drivers/net/ethernet/freescale/gianfar.c
+@@ -60,6 +60,7 @@
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+ 
+ #include <linux/kernel.h>
++#include <linux/platform_device.h>
+ #include <linux/string.h>
+ #include <linux/errno.h>
+ #include <linux/unistd.h>
+@@ -75,7 +76,6 @@
+ #include <linux/of_address.h>
+ #include <linux/of_irq.h>
+ #include <linux/of_mdio.h>
+-#include <linux/of_platform.h>
+ #include <linux/ip.h>
+ #include <linux/tcp.h>
+ #include <linux/udp.h>
+diff --git a/drivers/net/ethernet/freescale/gianfar_ethtool.c b/drivers/net/ethernet/freescale/gianfar_ethtool.c
+index b2b0d3c26fcc..7a15b9245698 100644
+--- a/drivers/net/ethernet/freescale/gianfar_ethtool.c
++++ b/drivers/net/ethernet/freescale/gianfar_ethtool.c
+@@ -38,7 +38,9 @@
+ #include <linux/phy.h>
+ #include <linux/sort.h>
+ #include <linux/if_vlan.h>
++#include <linux/of.h>
+ #include <linux/of_platform.h>
++#include <linux/platform_device.h>
+ #include <linux/fsl/ptp_qoriq.h>
+ 
+ #include "gianfar.h"
+diff --git a/drivers/net/ethernet/freescale/ucc_geth.c b/drivers/net/ethernet/freescale/ucc_geth.c
+index 7a4cb4f07c32..49e759f24444 100644
+--- a/drivers/net/ethernet/freescale/ucc_geth.c
++++ b/drivers/net/ethernet/freescale/ucc_geth.c
+@@ -28,11 +28,12 @@
+ #include <linux/phy.h>
+ #include <linux/phy_fixed.h>
+ #include <linux/workqueue.h>
++#include <linux/of.h>
+ #include <linux/of_address.h>
+ #include <linux/of_irq.h>
+ #include <linux/of_mdio.h>
+ #include <linux/of_net.h>
+-#include <linux/of_platform.h>
++#include <linux/platform_device.h>
+ 
+ #include <linux/uaccess.h>
+ #include <asm/irq.h>
+diff --git a/drivers/net/ethernet/freescale/xgmac_mdio.c b/drivers/net/ethernet/freescale/xgmac_mdio.c
+index a13b4ba4d6e1..65dc07d0df0f 100644
+--- a/drivers/net/ethernet/freescale/xgmac_mdio.c
++++ b/drivers/net/ethernet/freescale/xgmac_mdio.c
+@@ -19,10 +19,10 @@
+ #include <linux/kernel.h>
+ #include <linux/mdio.h>
+ #include <linux/module.h>
+-#include <linux/of_address.h>
++#include <linux/of.h>
+ #include <linux/of_mdio.h>
+-#include <linux/of_platform.h>
+ #include <linux/phy.h>
++#include <linux/platform_device.h>
+ #include <linux/slab.h>
+ 
+ /* Number of microseconds to wait for a register to respond */
+diff --git a/drivers/net/ethernet/hisilicon/hns/hns_dsaf_ppe.c b/drivers/net/ethernet/hisilicon/hns/hns_dsaf_ppe.c
+index a7eb87da4e70..a08d1f0a5a16 100644
+--- a/drivers/net/ethernet/hisilicon/hns/hns_dsaf_ppe.c
++++ b/drivers/net/ethernet/hisilicon/hns/hns_dsaf_ppe.c
+@@ -9,9 +9,6 @@
+ #include <linux/netdevice.h>
+ #include <linux/etherdevice.h>
+ #include <linux/platform_device.h>
+-#include <linux/of.h>
+-#include <linux/of_address.h>
+-#include <linux/of_platform.h>
+ 
+ #include "hns_dsaf_ppe.h"
+ 
+diff --git a/drivers/net/ethernet/hisilicon/hns/hns_dsaf_rcb.c b/drivers/net/ethernet/hisilicon/hns/hns_dsaf_rcb.c
+index e2ff3ca198d1..93344563a259 100644
+--- a/drivers/net/ethernet/hisilicon/hns/hns_dsaf_rcb.c
++++ b/drivers/net/ethernet/hisilicon/hns/hns_dsaf_rcb.c
+@@ -11,10 +11,6 @@
+ #include <linux/etherdevice.h>
+ #include <asm/cacheflush.h>
+ #include <linux/platform_device.h>
+-#include <linux/of.h>
+-#include <linux/of_address.h>
+-#include <linux/of_platform.h>
+-#include <linux/of_irq.h>
+ #include <linux/spinlock.h>
+ 
+ #include "hns_dsaf_main.h"
+diff --git a/drivers/net/ethernet/ibm/ehea/ehea_main.c b/drivers/net/ethernet/ibm/ehea/ehea_main.c
+index 858c71ef5213..997e41c4f05e 100644
+--- a/drivers/net/ethernet/ibm/ehea/ehea_main.c
++++ b/drivers/net/ethernet/ibm/ehea/ehea_main.c
+@@ -31,6 +31,7 @@
+ #include <linux/prefetch.h>
  #include <linux/of.h>
  #include <linux/of_platform.h>
 +#include <linux/platform_device.h>
- #include <linux/regmap.h>
- #include <linux/vexpress.h>
  
-diff --git a/drivers/gpu/drm/renesas/rcar-du/rcar_du_drv.c b/drivers/gpu/drm/renesas/rcar-du/rcar_du_drv.c
-index 1ffde19cb87f..3904b0cca814 100644
---- a/drivers/gpu/drm/renesas/rcar-du/rcar_du_drv.c
-+++ b/drivers/gpu/drm/renesas/rcar-du/rcar_du_drv.c
-@@ -12,7 +12,7 @@
+ #include <net/ip.h>
+ 
+diff --git a/drivers/net/ethernet/ibm/emac/core.c b/drivers/net/ethernet/ibm/emac/core.c
+index c97095abd26a..0c314bf97480 100644
+--- a/drivers/net/ethernet/ibm/emac/core.c
++++ b/drivers/net/ethernet/ibm/emac/core.c
+@@ -38,6 +38,7 @@
+ #include <linux/of_irq.h>
+ #include <linux/of_net.h>
+ #include <linux/of_mdio.h>
++#include <linux/of_platform.h>
+ #include <linux/platform_device.h>
+ #include <linux/slab.h>
+ 
+diff --git a/drivers/net/ethernet/ibm/emac/core.h b/drivers/net/ethernet/ibm/emac/core.h
+index 89a1b0fea158..295516b07662 100644
+--- a/drivers/net/ethernet/ibm/emac/core.h
++++ b/drivers/net/ethernet/ibm/emac/core.h
+@@ -27,7 +27,6 @@
+ #include <linux/netdevice.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/spinlock.h>
+-#include <linux/of_platform.h>
+ #include <linux/slab.h>
+ 
+ #include <asm/io.h>
+diff --git a/drivers/net/ethernet/ibm/emac/mal.c b/drivers/net/ethernet/ibm/emac/mal.c
+index ff5487bbebe3..c3236b59e7e9 100644
+--- a/drivers/net/ethernet/ibm/emac/mal.c
++++ b/drivers/net/ethernet/ibm/emac/mal.c
+@@ -22,7 +22,9 @@
+ 
+ #include <linux/delay.h>
+ #include <linux/slab.h>
++#include <linux/of.h>
+ #include <linux/of_irq.h>
++#include <linux/platform_device.h>
+ 
+ #include "core.h"
+ #include <asm/dcr-regs.h>
+diff --git a/drivers/net/ethernet/ibm/emac/rgmii.c b/drivers/net/ethernet/ibm/emac/rgmii.c
+index 50358cf00130..fd437f986edf 100644
+--- a/drivers/net/ethernet/ibm/emac/rgmii.c
++++ b/drivers/net/ethernet/ibm/emac/rgmii.c
+@@ -19,7 +19,9 @@
+ #include <linux/slab.h>
+ #include <linux/kernel.h>
+ #include <linux/ethtool.h>
++#include <linux/of.h>
+ #include <linux/of_address.h>
++#include <linux/platform_device.h>
+ #include <asm/io.h>
+ 
+ #include "emac.h"
+diff --git a/drivers/net/ethernet/ibm/emac/tah.c b/drivers/net/ethernet/ibm/emac/tah.c
+index 008bbdaf1204..aae9a88d95d7 100644
+--- a/drivers/net/ethernet/ibm/emac/tah.c
++++ b/drivers/net/ethernet/ibm/emac/tah.c
+@@ -14,7 +14,9 @@
+  *
+  * Copyright (c) 2005 Eugene Surovegin <ebs@ebshome.net>
+  */
++#include <linux/mod_devicetable.h>
+ #include <linux/of_address.h>
++#include <linux/platform_device.h>
+ #include <asm/io.h>
+ 
+ #include "emac.h"
+diff --git a/drivers/net/ethernet/ibm/emac/zmii.c b/drivers/net/ethernet/ibm/emac/zmii.c
+index 57a25c7a9e70..6337388ee5f4 100644
+--- a/drivers/net/ethernet/ibm/emac/zmii.c
++++ b/drivers/net/ethernet/ibm/emac/zmii.c
+@@ -19,7 +19,9 @@
+ #include <linux/slab.h>
+ #include <linux/kernel.h>
+ #include <linux/ethtool.h>
++#include <linux/mod_devicetable.h>
+ #include <linux/of_address.h>
++#include <linux/platform_device.h>
+ #include <asm/io.h>
+ 
+ #include "emac.h"
+diff --git a/drivers/net/ethernet/korina.c b/drivers/net/ethernet/korina.c
+index 2b9335cb4bb3..41f3f3df6ec3 100644
+--- a/drivers/net/ethernet/korina.c
++++ b/drivers/net/ethernet/korina.c
+@@ -33,6 +33,7 @@
+  *  should stick to this procedure.
+  */
+ 
++#include <linux/mod_devicetable.h>
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/moduleparam.h>
+@@ -43,7 +44,6 @@
+ #include <linux/ioport.h>
+ #include <linux/iopoll.h>
+ #include <linux/in.h>
+-#include <linux/of_device.h>
+ #include <linux/of_net.h>
+ #include <linux/slab.h>
+ #include <linux/string.h>
+diff --git a/drivers/net/ethernet/marvell/mvmdio.c b/drivers/net/ethernet/marvell/mvmdio.c
+index 8662543ca5c8..a1a80f13b1e8 100644
+--- a/drivers/net/ethernet/marvell/mvmdio.c
++++ b/drivers/net/ethernet/marvell/mvmdio.c
+@@ -24,8 +24,8 @@
+ #include <linux/interrupt.h>
  #include <linux/io.h>
+ #include <linux/kernel.h>
++#include <linux/mod_devicetable.h>
+ #include <linux/module.h>
+-#include <linux/of_device.h>
+ #include <linux/of_mdio.h>
+ #include <linux/phy.h>
+ #include <linux/platform_device.h>
+diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+index 1fec84b4c068..9e1b596c8f08 100644
+--- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
++++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+@@ -24,7 +24,6 @@
+ #include <linux/of_mdio.h>
+ #include <linux/of_net.h>
+ #include <linux/of_address.h>
+-#include <linux/of_device.h>
+ #include <linux/phy.h>
+ #include <linux/phylink.h>
+ #include <linux/phy/phy.h>
+diff --git a/drivers/net/ethernet/marvell/prestera/prestera_rxtx.c b/drivers/net/ethernet/marvell/prestera/prestera_rxtx.c
+index 9277a8fd1339..cc2a9ae794be 100644
+--- a/drivers/net/ethernet/marvell/prestera/prestera_rxtx.c
++++ b/drivers/net/ethernet/marvell/prestera/prestera_rxtx.c
+@@ -5,9 +5,6 @@
+ #include <linux/dmapool.h>
+ #include <linux/etherdevice.h>
+ #include <linux/if_vlan.h>
+-#include <linux/of_address.h>
+-#include <linux/of_device.h>
+-#include <linux/of.h>
+ #include <linux/platform_device.h>
+ 
+ #include "prestera_dsa.h"
+diff --git a/drivers/net/ethernet/marvell/sky2.c b/drivers/net/ethernet/marvell/sky2.c
+index 7c487f9b36ec..c4cca27fb0d5 100644
+--- a/drivers/net/ethernet/marvell/sky2.c
++++ b/drivers/net/ethernet/marvell/sky2.c
+@@ -32,7 +32,6 @@
+ #include <linux/prefetch.h>
+ #include <linux/debugfs.h>
+ #include <linux/mii.h>
+-#include <linux/of_device.h>
+ #include <linux/of_net.h>
+ #include <linux/dmi.h>
+ 
+diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
+index 834c644b67db..e76ca9489149 100644
+--- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
++++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
+@@ -6,11 +6,12 @@
+  *   Copyright (C) 2013-2016 Michael Lee <igvtee@gmail.com>
+  */
+ 
+-#include <linux/of_device.h>
++#include <linux/of.h>
+ #include <linux/of_mdio.h>
+ #include <linux/of_net.h>
+ #include <linux/of_address.h>
+ #include <linux/mfd/syscon.h>
++#include <linux/platform_device.h>
+ #include <linux/regmap.h>
+ #include <linux/clk.h>
+ #include <linux/pm_runtime.h>
+diff --git a/drivers/net/ethernet/mediatek/mtk_star_emac.c b/drivers/net/ethernet/mediatek/mtk_star_emac.c
+index 02c03325911f..31aebeb2e285 100644
+--- a/drivers/net/ethernet/mediatek/mtk_star_emac.c
++++ b/drivers/net/ethernet/mediatek/mtk_star_emac.c
+@@ -17,7 +17,6 @@
+ #include <linux/module.h>
+ #include <linux/netdevice.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/of_mdio.h>
+ #include <linux/of_net.h>
+ #include <linux/platform_device.h>
+diff --git a/drivers/net/ethernet/mediatek/mtk_wed.c b/drivers/net/ethernet/mediatek/mtk_wed.c
+index 985cff910f30..52688cbaa7b4 100644
+--- a/drivers/net/ethernet/mediatek/mtk_wed.c
++++ b/drivers/net/ethernet/mediatek/mtk_wed.c
+@@ -2,6 +2,7 @@
+ /* Copyright (C) 2021 Felix Fietkau <nbd@nbd.name> */
+ 
+ #include <linux/kernel.h>
++#include <linux/platform_device.h>
+ #include <linux/slab.h>
+ #include <linux/module.h>
+ #include <linux/bitfield.h>
+diff --git a/drivers/net/ethernet/mediatek/mtk_wed_wo.c b/drivers/net/ethernet/mediatek/mtk_wed_wo.c
+index 69fba29055e9..3bd51a3d6650 100644
+--- a/drivers/net/ethernet/mediatek/mtk_wed_wo.c
++++ b/drivers/net/ethernet/mediatek/mtk_wed_wo.c
+@@ -7,10 +7,9 @@
+ 
+ #include <linux/kernel.h>
+ #include <linux/dma-mapping.h>
+-#include <linux/of_platform.h>
+ #include <linux/interrupt.h>
+-#include <linux/of_address.h>
+ #include <linux/mfd/syscon.h>
++#include <linux/of.h>
+ #include <linux/of_irq.h>
+ #include <linux/bitfield.h>
+ 
+diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_main.c b/drivers/net/ethernet/microchip/lan966x/lan966x_main.c
+index fbb0bb4594cd..73f20683210e 100644
+--- a/drivers/net/ethernet/microchip/lan966x/lan966x_main.c
++++ b/drivers/net/ethernet/microchip/lan966x/lan966x_main.c
+@@ -5,9 +5,10 @@
+ #include <linux/if_vlan.h>
+ #include <linux/iopoll.h>
+ #include <linux/ip.h>
+-#include <linux/of_platform.h>
++#include <linux/of.h>
+ #include <linux/of_net.h>
+ #include <linux/phy/phy.h>
++#include <linux/platform_device.h>
+ #include <linux/reset.h>
+ #include <net/addrconf.h>
+ 
+diff --git a/drivers/net/ethernet/mscc/ocelot_fdma.c b/drivers/net/ethernet/mscc/ocelot_fdma.c
+index 8e3894cf5f7c..41efdc836580 100644
+--- a/drivers/net/ethernet/mscc/ocelot_fdma.c
++++ b/drivers/net/ethernet/mscc/ocelot_fdma.c
+@@ -12,7 +12,6 @@
+ #include <linux/dmapool.h>
+ #include <linux/dsa/ocelot.h>
+ #include <linux/netdevice.h>
+-#include <linux/of_platform.h>
+ #include <linux/skbuff.h>
+ 
+ #include "ocelot_fdma.h"
+diff --git a/drivers/net/ethernet/mscc/ocelot_vsc7514.c b/drivers/net/ethernet/mscc/ocelot_vsc7514.c
+index 97e90e2869d4..151b42465348 100644
+--- a/drivers/net/ethernet/mscc/ocelot_vsc7514.c
++++ b/drivers/net/ethernet/mscc/ocelot_vsc7514.c
+@@ -10,8 +10,9 @@
+ #include <linux/of_net.h>
+ #include <linux/netdevice.h>
+ #include <linux/phylink.h>
++#include <linux/of.h>
+ #include <linux/of_mdio.h>
+-#include <linux/of_platform.h>
++#include <linux/platform_device.h>
+ #include <linux/mfd/syscon.h>
+ #include <linux/skbuff.h>
+ #include <net/switchdev.h>
+diff --git a/drivers/net/ethernet/ni/nixge.c b/drivers/net/ethernet/ni/nixge.c
+index 0fd156286d4d..ba27bbc68f85 100644
+--- a/drivers/net/ethernet/ni/nixge.c
++++ b/drivers/net/ethernet/ni/nixge.c
+@@ -7,11 +7,10 @@
+ #include <linux/etherdevice.h>
+ #include <linux/module.h>
+ #include <linux/netdevice.h>
+-#include <linux/of_address.h>
++#include <linux/of.h>
+ #include <linux/of_mdio.h>
+ #include <linux/of_net.h>
+-#include <linux/of_platform.h>
+-#include <linux/of_irq.h>
++#include <linux/platform_device.h>
+ #include <linux/skbuff.h>
+ #include <linux/phy.h>
+ #include <linux/mii.h>
+diff --git a/drivers/net/ethernet/qualcomm/emac/emac-sgmii.c b/drivers/net/ethernet/qualcomm/emac/emac-sgmii.c
+index 802ef81493e0..e4bc18009d08 100644
+--- a/drivers/net/ethernet/qualcomm/emac/emac-sgmii.c
++++ b/drivers/net/ethernet/qualcomm/emac/emac-sgmii.c
+@@ -8,7 +8,9 @@
+ #include <linux/interrupt.h>
+ #include <linux/iopoll.h>
+ #include <linux/acpi.h>
++#include <linux/of.h>
+ #include <linux/of_device.h>
++#include <linux/of_platform.h>
+ #include "emac.h"
+ #include "emac-mac.h"
+ #include "emac-sgmii.h"
+diff --git a/drivers/net/ethernet/qualcomm/emac/emac.c b/drivers/net/ethernet/qualcomm/emac/emac.c
+index eaa50050aa0b..19bb16daf4e7 100644
+--- a/drivers/net/ethernet/qualcomm/emac/emac.c
++++ b/drivers/net/ethernet/qualcomm/emac/emac.c
+@@ -11,7 +11,6 @@
+ #include <linux/module.h>
+ #include <linux/of.h>
+ #include <linux/of_net.h>
+-#include <linux/of_device.h>
+ #include <linux/phy.h>
+ #include <linux/platform_device.h>
+ #include <linux/acpi.h>
+diff --git a/drivers/net/ethernet/qualcomm/qca_spi.c b/drivers/net/ethernet/qualcomm/qca_spi.c
+index 4a1b94e5a8ea..bec723028e96 100644
+--- a/drivers/net/ethernet/qualcomm/qca_spi.c
++++ b/drivers/net/ethernet/qualcomm/qca_spi.c
+@@ -35,7 +35,6 @@
+ #include <linux/moduleparam.h>
+ #include <linux/netdevice.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/of_net.h>
+ #include <linux/sched.h>
+ #include <linux/skbuff.h>
+diff --git a/drivers/net/ethernet/qualcomm/qca_uart.c b/drivers/net/ethernet/qualcomm/qca_uart.c
+index 26646cb6a20a..ace99c62d03a 100644
+--- a/drivers/net/ethernet/qualcomm/qca_uart.c
++++ b/drivers/net/ethernet/qualcomm/qca_uart.c
+@@ -32,7 +32,6 @@
+ #include <linux/module.h>
+ #include <linux/netdevice.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/of_net.h>
+ #include <linux/sched.h>
+ #include <linux/serdev.h>
+diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+index 4d6b3b7d6abb..7df9f9f8e134 100644
+--- a/drivers/net/ethernet/renesas/ravb_main.c
++++ b/drivers/net/ethernet/renesas/ravb_main.c
+@@ -21,10 +21,9 @@
+ #include <linux/module.h>
+ #include <linux/net_tstamp.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+-#include <linux/of_irq.h>
+ #include <linux/of_mdio.h>
+ #include <linux/of_net.h>
++#include <linux/platform_device.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/slab.h>
+ #include <linux/spinlock.h>
+diff --git a/drivers/net/ethernet/renesas/rswitch.c b/drivers/net/ethernet/renesas/rswitch.c
+index 4e412ac0965a..0ba7fb75d589 100644
+--- a/drivers/net/ethernet/renesas/rswitch.c
++++ b/drivers/net/ethernet/renesas/rswitch.c
+@@ -12,11 +12,10 @@
+ #include <linux/module.h>
+ #include <linux/net_tstamp.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+-#include <linux/of_irq.h>
+ #include <linux/of_mdio.h>
+ #include <linux/of_net.h>
+ #include <linux/phy/phy.h>
++#include <linux/platform_device.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/rtnetlink.h>
+ #include <linux/slab.h>
+diff --git a/drivers/net/ethernet/renesas/sh_eth.c b/drivers/net/ethernet/renesas/sh_eth.c
+index d8ec729825be..274ea16c0a1f 100644
+--- a/drivers/net/ethernet/renesas/sh_eth.c
++++ b/drivers/net/ethernet/renesas/sh_eth.c
+@@ -19,8 +19,6 @@
+ #include <linux/mdio-bitbang.h>
+ #include <linux/netdevice.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+-#include <linux/of_irq.h>
+ #include <linux/of_net.h>
+ #include <linux/phy.h>
+ #include <linux/cache.h>
+diff --git a/drivers/net/ethernet/smsc/smsc911x.c b/drivers/net/ethernet/smsc/smsc911x.c
+index 174dc8908b72..2f755722e858 100644
+--- a/drivers/net/ethernet/smsc/smsc911x.c
++++ b/drivers/net/ethernet/smsc/smsc911x.c
+@@ -43,7 +43,6 @@
+ #include <linux/smsc911x.h>
+ #include <linux/device.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/of_gpio.h>
+ #include <linux/of_net.h>
+ #include <linux/acpi.h>
+diff --git a/drivers/net/ethernet/socionext/sni_ave.c b/drivers/net/ethernet/socionext/sni_ave.c
+index 492c39c08af1..4838d2383a43 100644
+--- a/drivers/net/ethernet/socionext/sni_ave.c
++++ b/drivers/net/ethernet/socionext/sni_ave.c
+@@ -15,10 +15,11 @@
+ #include <linux/mii.h>
+ #include <linux/module.h>
+ #include <linux/netdevice.h>
++#include <linux/of.h>
+ #include <linux/of_net.h>
+ #include <linux/of_mdio.h>
+-#include <linux/of_platform.h>
+ #include <linux/phy.h>
++#include <linux/platform_device.h>
+ #include <linux/regmap.h>
+ #include <linux/reset.h>
+ #include <linux/types.h>
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-dwc-qos-eth.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-dwc-qos-eth.c
+index 9f88530c5e8c..2bf74efbf2eb 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-dwc-qos-eth.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-dwc-qos-eth.c
+@@ -14,7 +14,7 @@
+ #include <linux/iopoll.h>
+ #include <linux/ioport.h>
+ #include <linux/module.h>
+-#include <linux/of_device.h>
++#include <linux/of.h>
+ #include <linux/of_net.h>
+ #include <linux/mfd/syscon.h>
+ #include <linux/platform_device.h>
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c
+index b9378a63f0e8..92e06a96757a 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c
+@@ -12,7 +12,6 @@
+ #include <linux/mfd/syscon.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/of_net.h>
+ #include <linux/phy.h>
+ #include <linux/platform_device.h>
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-ingenic.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-ingenic.c
+index 8063ba1c3ce8..e22ef0d6bc73 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-ingenic.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-ingenic.c
+@@ -11,7 +11,6 @@
+ #include <linux/mfd/syscon.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/of_net.h>
+ #include <linux/phy.h>
+ #include <linux/platform_device.h>
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-mediatek.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-mediatek.c
+index 73c1dfa7ecb1..e301bf7fc30f 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-mediatek.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-mediatek.c
+@@ -7,8 +7,8 @@
+ #include <linux/mfd/syscon.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/of_net.h>
++#include <linux/platform_device.h>
+ #include <linux/regmap.h>
+ #include <linux/stmmac.h>
+ 
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c
+index 92b16048f91c..0b159dc0d5f6 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c
+@@ -13,7 +13,7 @@
+ #include <linux/io.h>
+ #include <linux/ioport.h>
+ #include <linux/module.h>
+-#include <linux/of_device.h>
++#include <linux/of.h>
+ #include <linux/of_net.h>
+ #include <linux/mfd/syscon.h>
+ #include <linux/platform_device.h>
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-oxnas.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-oxnas.c
+index 42954020de2c..f91753565d60 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-oxnas.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-oxnas.c
+@@ -12,7 +12,6 @@
+ #include <linux/io.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/platform_device.h>
+ #include <linux/regmap.h>
+ #include <linux/mfd/syscon.h>
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
+index e62940414e54..fa791f0f24ad 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
+@@ -3,7 +3,6 @@
+ 
+ #include <linux/module.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/platform_device.h>
+ #include <linux/phy.h>
+ #include <linux/phy/phy.h>
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-rk.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-rk.c
+index d81591b470a2..35789cb549f7 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-rk.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-rk.c
+@@ -14,8 +14,8 @@
+ #include <linux/of_net.h>
+ #include <linux/gpio.h>
+ #include <linux/module.h>
++#include <linux/of.h>
+ #include <linux/of_gpio.h>
+-#include <linux/of_device.h>
+ #include <linux/platform_device.h>
+ #include <linux/regulator/consumer.h>
+ #include <linux/delay.h>
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-starfive.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-starfive.c
+index d3a39d2fb3a9..b1c5f2527c0d 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-starfive.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-starfive.c
+@@ -7,8 +7,10 @@
+  *
+  */
+ 
++#include <linux/mod_devicetable.h>
++#include <linux/platform_device.h>
++#include <linux/property.h>
+ #include <linux/mfd/syscon.h>
+-#include <linux/of_device.h>
+ #include <linux/regmap.h>
+ 
+ #include "stmmac_platform.h"
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-sti.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-sti.c
+index dcbb17c4f07a..ef03e4669491 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-sti.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-sti.c
+@@ -17,7 +17,6 @@
+ #include <linux/regmap.h>
+ #include <linux/clk.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/of_net.h>
+ 
+ #include "stmmac_platform.h"
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
+index bdb4de59a672..3a09085819dc 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-stm32.c
+@@ -11,7 +11,6 @@
+ #include <linux/mfd/syscon.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/of_net.h>
+ #include <linux/phy.h>
+ #include <linux/platform_device.h>
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
+index 1e714380d125..2885d8568d4b 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
+@@ -11,9 +11,10 @@
+ #include <linux/mdio-mux.h>
+ #include <linux/mfd/syscon.h>
+ #include <linux/module.h>
+-#include <linux/of_device.h>
++#include <linux/of.h>
+ #include <linux/of_mdio.h>
+ #include <linux/of_net.h>
++#include <linux/of_platform.h>
+ #include <linux/phy.h>
+ #include <linux/platform_device.h>
+ #include <linux/pm_runtime.h>
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-tegra.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-tegra.c
+index f8367c5b490b..65ddf6ce1535 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-tegra.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-tegra.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ #include <linux/platform_device.h>
+-#include <linux/of_device.h>
++#include <linux/of.h>
+ #include <linux/module.h>
+ #include <linux/stmmac.h>
+ #include <linux/clk.h>
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-visconti.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-visconti.c
+index acbb284be174..a8731ce0fff0 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-visconti.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-visconti.c
+@@ -6,7 +6,8 @@
+  */
+ 
+ #include <linux/module.h>
+-#include <linux/of_device.h>
++#include <linux/of.h>
++#include <linux/platform_device.h>
+ #include <linux/of_net.h>
+ #include <linux/stmmac.h>
+ 
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+index 231152ee5a32..85ec9d975a55 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+@@ -15,7 +15,6 @@
+ #include <linux/io.h>
+ #include <linux/of.h>
+ #include <linux/of_net.h>
+-#include <linux/of_device.h>
+ #include <linux/of_mdio.h>
+ 
+ #include "stmmac.h"
+diff --git a/drivers/net/ethernet/sun/niu.c b/drivers/net/ethernet/sun/niu.c
+index 7a2e76776297..011d74087f86 100644
+--- a/drivers/net/ethernet/sun/niu.c
++++ b/drivers/net/ethernet/sun/niu.c
+@@ -31,7 +31,7 @@
+ #include <linux/slab.h>
+ 
+ #include <linux/io.h>
+-#include <linux/of_device.h>
++#include <linux/of.h>
+ 
+ #include "niu.h"
+ 
+diff --git a/drivers/net/ethernet/sun/sunbmac.c b/drivers/net/ethernet/sun/sunbmac.c
+index 34b94153bf0c..cc34d92d2e3d 100644
+--- a/drivers/net/ethernet/sun/sunbmac.c
++++ b/drivers/net/ethernet/sun/sunbmac.c
+@@ -25,7 +25,7 @@
+ #include <linux/bitops.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
++#include <linux/platform_device.h>
+ #include <linux/gfp.h>
+ 
+ #include <asm/auxio.h>
+diff --git a/drivers/net/ethernet/sun/sungem.c b/drivers/net/ethernet/sun/sungem.c
+index 4154e68639ac..9bd1df8308d2 100644
+--- a/drivers/net/ethernet/sun/sungem.c
++++ b/drivers/net/ethernet/sun/sungem.c
+@@ -40,6 +40,7 @@
+ #include <linux/bitops.h>
+ #include <linux/mm.h>
+ #include <linux/gfp.h>
++#include <linux/of.h>
+ 
+ #include <asm/io.h>
+ #include <asm/byteorder.h>
+diff --git a/drivers/net/ethernet/sun/sunhme.c b/drivers/net/ethernet/sun/sunhme.c
+index b93613cd1994..b983b9c23be6 100644
+--- a/drivers/net/ethernet/sun/sunhme.c
++++ b/drivers/net/ethernet/sun/sunhme.c
+@@ -32,9 +32,10 @@
  #include <linux/mm.h>
  #include <linux/module.h>
+ #include <linux/netdevice.h>
 -#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/pm.h>
- #include <linux/slab.h>
-diff --git a/drivers/gpu/drm/renesas/rcar-du/rcar_du_kms.c b/drivers/gpu/drm/renesas/rcar-du/rcar_du_kms.c
-index adfb36b0e815..9ff4537c26c8 100644
---- a/drivers/gpu/drm/renesas/rcar-du/rcar_du_kms.c
-+++ b/drivers/gpu/drm/renesas/rcar-du/rcar_du_kms.c
-@@ -20,8 +20,10 @@
- 
- #include <linux/device.h>
- #include <linux/dma-buf.h>
-+#include <linux/of.h>
- #include <linux/of_graph.h>
- #include <linux/of_platform.h>
+ #include <linux/of.h>
++#include <linux/of_device.h>
+ #include <linux/pci.h>
 +#include <linux/platform_device.h>
- #include <linux/wait.h>
- 
- #include "rcar_du_crtc.h"
-diff --git a/drivers/gpu/drm/renesas/rcar-du/rcar_du_vsp.c b/drivers/gpu/drm/renesas/rcar-du/rcar_du_vsp.c
-index 45c05d0ffc70..9cbb5e6e2cba 100644
---- a/drivers/gpu/drm/renesas/rcar-du/rcar_du_vsp.c
-+++ b/drivers/gpu/drm/renesas/rcar-du/rcar_du_vsp.c
-@@ -22,6 +22,7 @@
+ #include <linux/random.h>
+ #include <linux/skbuff.h>
+ #include <linux/slab.h>
+diff --git a/drivers/net/ethernet/sun/sunqe.c b/drivers/net/ethernet/sun/sunqe.c
+index 6418fcc3139f..b37360f44972 100644
+--- a/drivers/net/ethernet/sun/sunqe.c
++++ b/drivers/net/ethernet/sun/sunqe.c
+@@ -27,8 +27,8 @@
  #include <linux/bitops.h>
  #include <linux/dma-mapping.h>
- #include <linux/of_platform.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/pgtable.h>
 +#include <linux/platform_device.h>
- #include <linux/scatterlist.h>
- #include <linux/slab.h>
- #include <linux/videodev2.h>
-diff --git a/drivers/gpu/drm/renesas/rcar-du/rcar_mipi_dsi.c b/drivers/gpu/drm/renesas/rcar-du/rcar_mipi_dsi.c
-index e10e4d4b89a2..db2e6f16f954 100644
---- a/drivers/gpu/drm/renesas/rcar-du/rcar_mipi_dsi.c
-+++ b/drivers/gpu/drm/renesas/rcar-du/rcar_mipi_dsi.c
-@@ -12,7 +12,6 @@
- #include <linux/math64.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/of_graph.h>
- #include <linux/platform_device.h>
- #include <linux/reset.h>
-diff --git a/drivers/gpu/drm/renesas/rcar-du/rzg2l_mipi_dsi.c b/drivers/gpu/drm/renesas/rcar-du/rzg2l_mipi_dsi.c
-index aa95b85a2964..8048bdca2d6c 100644
---- a/drivers/gpu/drm/renesas/rcar-du/rzg2l_mipi_dsi.c
-+++ b/drivers/gpu/drm/renesas/rcar-du/rzg2l_mipi_dsi.c
-@@ -10,7 +10,6 @@
- #include <linux/iopoll.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/of_graph.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
-diff --git a/drivers/gpu/drm/rockchip/analogix_dp-rockchip.c b/drivers/gpu/drm/rockchip/analogix_dp-rockchip.c
-index ad2d3ae7e621..255e6eab8544 100644
---- a/drivers/gpu/drm/rockchip/analogix_dp-rockchip.c
-+++ b/drivers/gpu/drm/rockchip/analogix_dp-rockchip.c
-@@ -10,8 +10,9 @@
  
- #include <linux/component.h>
- #include <linux/mfd/syscon.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/of_graph.h>
-+#include <linux/platform_device.h>
- #include <linux/regmap.h>
- #include <linux/reset.h>
- #include <linux/clk.h>
-diff --git a/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c b/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c
-index 917e79951aac..2744d8f4a6fa 100644
---- a/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c
-+++ b/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c
-@@ -12,7 +12,9 @@
- #include <linux/mfd/syscon.h>
- #include <linux/module.h>
+ #include <asm/io.h>
+ #include <asm/dma.h>
+diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+index bebcfd5e6b57..bea6fc0f324c 100644
+--- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
++++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+@@ -19,6 +19,7 @@
+ #include <linux/of_mdio.h>
+ #include <linux/of_net.h>
  #include <linux/of_device.h>
 +#include <linux/of_platform.h>
+ #include <linux/phylink.h>
  #include <linux/phy/phy.h>
-+#include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/regmap.h>
- 
-diff --git a/drivers/gpu/drm/rockchip/inno_hdmi.c b/drivers/gpu/drm/rockchip/inno_hdmi.c
-index 9afb889963c1..751e694b39cd 100644
---- a/drivers/gpu/drm/rockchip/inno_hdmi.c
-+++ b/drivers/gpu/drm/rockchip/inno_hdmi.c
-@@ -11,9 +11,10 @@
- #include <linux/err.h>
- #include <linux/hdmi.h>
- #include <linux/mfd/syscon.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/module.h>
- #include <linux/mutex.h>
--#include <linux/of_device.h>
-+#include <linux/platform_device.h>
- 
- #include <drm/drm_atomic_helper.h>
- #include <drm/drm_edid.h>
-diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_drv.c b/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
-index d97f2edc646b..01954a0b5696 100644
---- a/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
-+++ b/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
-@@ -7,6 +7,7 @@
-  */
- 
- #include <linux/dma-mapping.h>
-+#include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/module.h>
- #include <linux/of_graph.h>
-diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop.c b/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
-index a530ecc4d207..86fd9f51c692 100644
---- a/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
-+++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
-@@ -12,7 +12,6 @@
- #include <linux/log2.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/overflow.h>
  #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
-diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
-index ca73b8ccc29f..583df4d22f7e 100644
---- a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
-+++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
-@@ -13,7 +13,6 @@
- #include <linux/mfd/syscon.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/of_graph.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
-diff --git a/drivers/gpu/drm/sprd/sprd_dpu.c b/drivers/gpu/drm/sprd/sprd_dpu.c
-index b96fc6837b0d..48183bbd0590 100644
---- a/drivers/gpu/drm/sprd/sprd_dpu.c
-+++ b/drivers/gpu/drm/sprd/sprd_dpu.c
-@@ -9,10 +9,8 @@
- #include <linux/io.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_address.h>
--#include <linux/of_device.h>
- #include <linux/of_graph.h>
--#include <linux/of_irq.h>
-+#include <linux/platform_device.h>
- #include <linux/wait.h>
- #include <linux/workqueue.h>
- 
-diff --git a/drivers/gpu/drm/sprd/sprd_drm.c b/drivers/gpu/drm/sprd/sprd_drm.c
-index be60c0d546a3..0aa39156f2fa 100644
---- a/drivers/gpu/drm/sprd/sprd_drm.c
-+++ b/drivers/gpu/drm/sprd/sprd_drm.c
-@@ -5,10 +5,11 @@
- 
- #include <linux/component.h>
- #include <linux/dma-mapping.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/module.h>
- #include <linux/mutex.h>
- #include <linux/of_graph.h>
--#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
- 
- #include <drm/drm_atomic_helper.h>
- #include <drm/drm_drv.h>
-diff --git a/drivers/gpu/drm/sprd/sprd_dsi.c b/drivers/gpu/drm/sprd/sprd_dsi.c
-index ab0e5cce7adb..d7b143a75601 100644
---- a/drivers/gpu/drm/sprd/sprd_dsi.c
-+++ b/drivers/gpu/drm/sprd/sprd_dsi.c
-@@ -5,10 +5,8 @@
- 
- #include <linux/component.h>
- #include <linux/module.h>
--#include <linux/of_address.h>
--#include <linux/of_device.h>
--#include <linux/of_irq.h>
--#include <linux/of_graph.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
- #include <video/mipi_display.h>
- 
- #include <drm/drm_atomic_helper.h>
-diff --git a/drivers/gpu/drm/sti/sti_drv.c b/drivers/gpu/drm/sti/sti_drv.c
-index 1b87b5899f9e..deb75b61e4cf 100644
---- a/drivers/gpu/drm/sti/sti_drv.c
-+++ b/drivers/gpu/drm/sti/sti_drv.c
-@@ -8,7 +8,9 @@
- #include <linux/dma-mapping.h>
+diff --git a/drivers/net/ethernet/ti/cpsw-common.c b/drivers/net/ethernet/ti/cpsw-common.c
+index bfa81bbfce3f..26dc906eae90 100644
+--- a/drivers/net/ethernet/ti/cpsw-common.c
++++ b/drivers/net/ethernet/ti/cpsw-common.c
+@@ -3,7 +3,6 @@
  #include <linux/kernel.h>
  #include <linux/module.h>
-+#include <linux/of.h>
- #include <linux/of_platform.h>
-+#include <linux/platform_device.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/regmap.h>
+ #include <linux/mfd/syscon.h>
  
- #include <drm/drm_atomic.h>
- #include <drm/drm_atomic_helper.h>
-diff --git a/drivers/gpu/drm/stm/drv.c b/drivers/gpu/drm/stm/drv.c
-index cb4404b3ce62..e507739ced0c 100644
---- a/drivers/gpu/drm/stm/drv.c
-+++ b/drivers/gpu/drm/stm/drv.c
-@@ -10,8 +10,9 @@
+diff --git a/drivers/net/ethernet/ti/cpsw-phy-sel.c b/drivers/net/ethernet/ti/cpsw-phy-sel.c
+index 25e707d7b87c..4edb7963f856 100644
+--- a/drivers/net/ethernet/ti/cpsw-phy-sel.c
++++ b/drivers/net/ethernet/ti/cpsw-phy-sel.c
+@@ -12,7 +12,6 @@
+ #include <linux/netdevice.h>
+ #include <linux/phy.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
  
- #include <linux/component.h>
- #include <linux/dma-mapping.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/module.h>
--#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
+ #include "cpsw.h"
+ 
+diff --git a/drivers/net/ethernet/ti/davinci_mdio.c b/drivers/net/ethernet/ti/davinci_mdio.c
+index 23169e36a3d4..89b6d23e9937 100644
+--- a/drivers/net/ethernet/ti/davinci_mdio.c
++++ b/drivers/net/ethernet/ti/davinci_mdio.c
+@@ -23,7 +23,6 @@
  #include <linux/pm_runtime.h>
- 
- #include <drm/drm_aperture.h>
-diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
-index b8be4c1db423..5576fdae4962 100644
---- a/drivers/gpu/drm/stm/ltdc.c
-+++ b/drivers/gpu/drm/stm/ltdc.c
-@@ -14,7 +14,6 @@
- #include <linux/interrupt.h>
- #include <linux/media-bus-format.h>
- #include <linux/module.h>
--#include <linux/of_address.h>
- #include <linux/of_graph.h>
+ #include <linux/davinci_emac.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/of_mdio.h>
  #include <linux/pinctrl/consumer.h>
- #include <linux/platform_device.h>
-diff --git a/drivers/gpu/drm/sun4i/sun4i_frontend.c b/drivers/gpu/drm/sun4i/sun4i_frontend.c
-index 799ab7460ae5..e156a9e97fd8 100644
---- a/drivers/gpu/drm/sun4i/sun4i_frontend.c
-+++ b/drivers/gpu/drm/sun4i/sun4i_frontend.c
-@@ -7,7 +7,7 @@
- #include <linux/clk.h>
- #include <linux/component.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/regmap.h>
-diff --git a/drivers/gpu/drm/sun4i/sun4i_frontend.h b/drivers/gpu/drm/sun4i/sun4i_frontend.h
-index 2e7b76e50c2b..61c24088772c 100644
---- a/drivers/gpu/drm/sun4i/sun4i_frontend.h
-+++ b/drivers/gpu/drm/sun4i/sun4i_frontend.h
-@@ -8,6 +8,7 @@
- #define _SUN4I_FRONTEND_H_
- 
- #include <linux/list.h>
-+#include <linux/mod_devicetable.h>
- 
- #define SUN4I_FRONTEND_EN_REG			0x000
- #define SUN4I_FRONTEND_EN_EN				BIT(0)
-diff --git a/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c b/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c
-index c0df5e892fa7..ac4e07142378 100644
---- a/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c
-+++ b/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c
-@@ -10,7 +10,7 @@
- #include <linux/i2c.h>
- #include <linux/iopoll.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/regmap.h>
-diff --git a/drivers/gpu/drm/sun4i/sun4i_tcon.c b/drivers/gpu/drm/sun4i/sun4i_tcon.c
-index 6a52fb12cbfb..662027f137a6 100644
---- a/drivers/gpu/drm/sun4i/sun4i_tcon.c
-+++ b/drivers/gpu/drm/sun4i/sun4i_tcon.c
-@@ -10,9 +10,9 @@
+ #include <linux/mdio-bitbang.h>
+diff --git a/drivers/net/ethernet/via/via-rhine.c b/drivers/net/ethernet/via/via-rhine.c
+index d716e6fe26e1..3e09e5036490 100644
+--- a/drivers/net/ethernet/via/via-rhine.c
++++ b/drivers/net/ethernet/via/via-rhine.c
+@@ -94,7 +94,7 @@ static const int multicast_filter_limit = 32;
  #include <linux/ioport.h>
- #include <linux/media-bus-format.h>
- #include <linux/module.h>
+ #include <linux/interrupt.h>
+ #include <linux/pci.h>
+-#include <linux/of_device.h>
++#include <linux/of.h>
+ #include <linux/of_irq.h>
+ #include <linux/platform_device.h>
+ #include <linux/dma-mapping.h>
+diff --git a/drivers/net/ethernet/via/via-velocity.c b/drivers/net/ethernet/via/via-velocity.c
+index 86f7843b4591..731f689412e6 100644
+--- a/drivers/net/ethernet/via/via-velocity.c
++++ b/drivers/net/ethernet/via/via-velocity.c
+@@ -57,8 +57,8 @@
+ #include <linux/if.h>
+ #include <linux/uaccess.h>
+ #include <linux/proc_fs.h>
++#include <linux/of.h>
+ #include <linux/of_address.h>
+-#include <linux/of_device.h>
+ #include <linux/of_irq.h>
+ #include <linux/inetdevice.h>
+ #include <linux/platform_device.h>
+diff --git a/drivers/net/ethernet/xilinx/ll_temac.h b/drivers/net/ethernet/xilinx/ll_temac.h
+index 6668d1b760d8..90d122d5475c 100644
+--- a/drivers/net/ethernet/xilinx/ll_temac.h
++++ b/drivers/net/ethernet/xilinx/ll_temac.h
+@@ -5,6 +5,7 @@
+ 
+ #include <linux/netdevice.h>
+ #include <linux/of.h>
++#include <linux/platform_device.h>
+ #include <linux/spinlock.h>
+ 
+ #ifdef CONFIG_PPC_DCR
+diff --git a/drivers/net/ethernet/xilinx/ll_temac_main.c b/drivers/net/ethernet/xilinx/ll_temac_main.c
+index e0ac1bcd9925..0bf9cdee1df2 100644
+--- a/drivers/net/ethernet/xilinx/ll_temac_main.c
++++ b/drivers/net/ethernet/xilinx/ll_temac_main.c
+@@ -35,12 +35,10 @@
+ #include <linux/netdevice.h>
+ #include <linux/if_ether.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/of_irq.h>
+ #include <linux/of_mdio.h>
+ #include <linux/of_net.h>
+-#include <linux/of_platform.h>
 -#include <linux/of_address.h>
++#include <linux/platform_device.h>
+ #include <linux/skbuff.h>
+ #include <linux/spinlock.h>
+ #include <linux/tcp.h>      /* needed for sizeof(tcphdr) */
+diff --git a/drivers/net/ethernet/xilinx/ll_temac_mdio.c b/drivers/net/ethernet/xilinx/ll_temac_mdio.c
+index 2371c072b53f..07a9fb49eda1 100644
+--- a/drivers/net/ethernet/xilinx/ll_temac_mdio.c
++++ b/drivers/net/ethernet/xilinx/ll_temac_mdio.c
+@@ -10,8 +10,8 @@
+ #include <linux/mutex.h>
+ #include <linux/phy.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/of_address.h>
++#include <linux/platform_device.h>
+ #include <linux/slab.h>
+ #include <linux/of_mdio.h>
+ #include <linux/platform_data/xilinx-ll-temac.h>
+diff --git a/drivers/net/ethernet/xilinx/xilinx_axienet_main.c b/drivers/net/ethernet/xilinx/xilinx_axienet_main.c
+index 8e32dc50a408..b7ec4dafae90 100644
+--- a/drivers/net/ethernet/xilinx/xilinx_axienet_main.c
++++ b/drivers/net/ethernet/xilinx/xilinx_axienet_main.c
+@@ -27,11 +27,12 @@
+ #include <linux/etherdevice.h>
+ #include <linux/module.h>
+ #include <linux/netdevice.h>
++#include <linux/of.h>
+ #include <linux/of_mdio.h>
+ #include <linux/of_net.h>
+-#include <linux/of_platform.h>
+ #include <linux/of_irq.h>
+ #include <linux/of_address.h>
++#include <linux/platform_device.h>
+ #include <linux/skbuff.h>
+ #include <linux/math64.h>
+ #include <linux/phy.h>
+diff --git a/drivers/net/ethernet/xilinx/xilinx_emaclite.c b/drivers/net/ethernet/xilinx/xilinx_emaclite.c
+index ad2c30d9a482..b358ecc67227 100644
+--- a/drivers/net/ethernet/xilinx/xilinx_emaclite.c
++++ b/drivers/net/ethernet/xilinx/xilinx_emaclite.c
+@@ -8,6 +8,7 @@
+  */
+ 
+ #include <linux/module.h>
++#include <linux/platform_device.h>
+ #include <linux/uaccess.h>
+ #include <linux/netdevice.h>
+ #include <linux/etherdevice.h>
+@@ -15,9 +16,8 @@
+ #include <linux/ethtool.h>
+ #include <linux/io.h>
+ #include <linux/slab.h>
++#include <linux/of.h>
+ #include <linux/of_address.h>
+-#include <linux/of_device.h>
+-#include <linux/of_platform.h>
+ #include <linux/of_mdio.h>
+ #include <linux/of_net.h>
+ #include <linux/phy.h>
+diff --git a/drivers/net/ieee802154/ca8210.c b/drivers/net/ieee802154/ca8210.c
+index f9b10e84de06..aebb19f1b3a4 100644
+--- a/drivers/net/ieee802154/ca8210.c
++++ b/drivers/net/ieee802154/ca8210.c
+@@ -57,7 +57,6 @@
+ #include <linux/io.h>
+ #include <linux/kfifo.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/of_gpio.h>
+ #include <linux/module.h>
+ #include <linux/mutex.h>
+diff --git a/drivers/net/ipa/ipa_main.c b/drivers/net/ipa/ipa_main.c
+index 6a2f2fc2f501..da853353a5c7 100644
+--- a/drivers/net/ipa/ipa_main.c
++++ b/drivers/net/ipa/ipa_main.c
+@@ -13,8 +13,8 @@
+ #include <linux/firmware.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/of_address.h>
++#include <linux/platform_device.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/firmware/qcom/qcom_scm.h>
+ #include <linux/soc/qcom/mdt_loader.h>
+diff --git a/drivers/net/pcs/pcs-rzn1-miic.c b/drivers/net/pcs/pcs-rzn1-miic.c
+index 323bec5e57f8..e5d642c67a2c 100644
+--- a/drivers/net/pcs/pcs-rzn1-miic.c
++++ b/drivers/net/pcs/pcs-rzn1-miic.c
+@@ -12,6 +12,7 @@
+ #include <linux/of_platform.h>
+ #include <linux/pcs-rzn1-miic.h>
+ #include <linux/phylink.h>
++#include <linux/platform_device.h>
+ #include <linux/pm_runtime.h>
+ #include <dt-bindings/net/pcs-rzn1-miic.h>
+ 
+diff --git a/drivers/net/phy/marvell-88x2222.c b/drivers/net/phy/marvell-88x2222.c
+index f83cae64585d..e3aa30dad2e6 100644
+--- a/drivers/net/phy/marvell-88x2222.c
++++ b/drivers/net/phy/marvell-88x2222.c
+@@ -14,7 +14,6 @@
+ #include <linux/mdio.h>
+ #include <linux/marvell_phy.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/of_gpio.h>
+ #include <linux/sfp.h>
+ #include <linux/netdevice.h>
+diff --git a/drivers/net/phy/mediatek-ge-soc.c b/drivers/net/phy/mediatek-ge-soc.c
+index 95369171a7ba..da512fab0eb0 100644
+--- a/drivers/net/phy/mediatek-ge-soc.c
++++ b/drivers/net/phy/mediatek-ge-soc.c
+@@ -2,8 +2,6 @@
+ #include <linux/bitfield.h>
+ #include <linux/module.h>
+ #include <linux/nvmem-consumer.h>
+-#include <linux/of_address.h>
+-#include <linux/of_platform.h>
+ #include <linux/pinctrl/consumer.h>
+ #include <linux/phy.h>
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/ahb.c b/drivers/net/wireless/ath/ath10k/ahb.c
+index 4a006fb4d424..76efea2f1138 100644
+--- a/drivers/net/wireless/ath/ath10k/ahb.c
++++ b/drivers/net/wireless/ath/ath10k/ahb.c
+@@ -5,7 +5,7 @@
+  */
+ #include <linux/module.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
++#include <linux/platform_device.h>
+ #include <linux/clk.h>
+ #include <linux/reset.h>
+ #include "core.h"
+diff --git a/drivers/net/wireless/ath/ath11k/qmi.c b/drivers/net/wireless/ath/ath11k/qmi.c
+index d4eaf7d2ba84..98efa0f299ca 100644
+--- a/drivers/net/wireless/ath/ath11k/qmi.c
++++ b/drivers/net/wireless/ath/ath11k/qmi.c
+@@ -13,7 +13,6 @@
+ #include <linux/of_address.h>
+ #include <linux/ioport.h>
+ #include <linux/firmware.h>
+-#include <linux/of_device.h>
+ #include <linux/of_irq.h>
+ 
+ #define SLEEP_CLOCK_SELECT_INTERNAL_BIT	0x02
+diff --git a/drivers/net/wireless/ath/wcn36xx/main.c b/drivers/net/wireless/ath/wcn36xx/main.c
+index 8dbd115a393c..2bd1163177f0 100644
+--- a/drivers/net/wireless/ath/wcn36xx/main.c
++++ b/drivers/net/wireless/ath/wcn36xx/main.c
+@@ -19,9 +19,8 @@
+ #include <linux/module.h>
+ #include <linux/firmware.h>
+ #include <linux/platform_device.h>
++#include <linux/of.h>
+ #include <linux/of_address.h>
 -#include <linux/of_device.h>
 -#include <linux/of_irq.h>
-+#include <linux/of.h>
-+#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
- #include <linux/regmap.h>
- #include <linux/reset.h>
+ #include <linux/rpmsg.h>
+ #include <linux/soc/qcom/smem_state.h>
+ #include <linux/soc/qcom/wcnss_ctrl.h>
+diff --git a/drivers/net/wireless/intersil/orinoco/airport.c b/drivers/net/wireless/intersil/orinoco/airport.c
+index a890bfa0d5cc..45ac00fdafa5 100644
+--- a/drivers/net/wireless/intersil/orinoco/airport.c
++++ b/drivers/net/wireless/intersil/orinoco/airport.c
+@@ -18,7 +18,7 @@
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+ #include <linux/delay.h>
+-#include <linux/of_device.h>
++#include <linux/mod_devicetable.h>
+ #include <asm/pmac_feature.h>
  
-diff --git a/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c b/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c
-index 7cab4213a680..a450f33fb02a 100644
---- a/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c
-+++ b/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c
-@@ -5,7 +5,7 @@
- 
- #include <linux/component.h>
- #include <linux/module.h>
+ #include "orinoco.h"
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/soc.c b/drivers/net/wireless/mediatek/mt76/mt7915/soc.c
+index 32c137066e7f..701a27ffa4c2 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7915/soc.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7915/soc.c
+@@ -6,7 +6,6 @@
+ #include <linux/platform_device.h>
+ #include <linux/pinctrl/consumer.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/of_reserved_mem.h>
+ #include <linux/of_gpio.h>
+ #include <linux/iopoll.h>
+diff --git a/drivers/net/wireless/silabs/wfx/bus_sdio.c b/drivers/net/wireless/silabs/wfx/bus_sdio.c
+index 51a0d58a9070..909d5f346a01 100644
+--- a/drivers/net/wireless/silabs/wfx/bus_sdio.c
++++ b/drivers/net/wireless/silabs/wfx/bus_sdio.c
+@@ -10,7 +10,7 @@
+ #include <linux/mmc/sdio_func.h>
+ #include <linux/mmc/card.h>
+ #include <linux/interrupt.h>
 -#include <linux/of_device.h>
 +#include <linux/of.h>
- #include <linux/platform_device.h>
- 
- #include <drm/drm_modeset_helper_vtables.h>
-diff --git a/drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c b/drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c
-index ca53b5e9fffc..4fa69c463dc4 100644
---- a/drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c
-+++ b/drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c
-@@ -4,8 +4,9 @@
-  */
- 
- #include <linux/delay.h>
--#include <linux/of_address.h>
-+#include <linux/of.h>
+ #include <linux/of_irq.h>
+ #include <linux/irq.h>
+ #include <linux/align.h>
+diff --git a/net/core/of_net.c b/net/core/of_net.c
+index 55d3fe229269..93ea425b9248 100644
+--- a/net/core/of_net.c
++++ b/net/core/of_net.c
+@@ -8,6 +8,7 @@
+ #include <linux/kernel.h>
+ #include <linux/of_net.h>
  #include <linux/of_platform.h>
 +#include <linux/platform_device.h>
- 
- #include "sun8i_dw_hdmi.h"
- 
-diff --git a/drivers/gpu/drm/sun4i/sun8i_mixer.c b/drivers/gpu/drm/sun4i/sun8i_mixer.c
-index 11d5244a5aa5..dac442f94128 100644
---- a/drivers/gpu/drm/sun4i/sun8i_mixer.c
-+++ b/drivers/gpu/drm/sun4i/sun8i_mixer.c
-@@ -10,8 +10,10 @@
- #include <linux/component.h>
- #include <linux/dma-mapping.h>
- #include <linux/module.h>
-+#include <linux/of.h>
- #include <linux/of_device.h>
- #include <linux/of_graph.h>
-+#include <linux/platform_device.h>
- #include <linux/reset.h>
- 
- #include <drm/drm_atomic_helper.h>
-diff --git a/drivers/gpu/drm/sun4i/sun8i_tcon_top.c b/drivers/gpu/drm/sun4i/sun8i_tcon_top.c
-index da97682b6835..a7cb2b0ffb02 100644
---- a/drivers/gpu/drm/sun4i/sun8i_tcon_top.c
-+++ b/drivers/gpu/drm/sun4i/sun8i_tcon_top.c
-@@ -7,7 +7,7 @@
+ #include <linux/phy.h>
+ #include <linux/export.h>
  #include <linux/device.h>
- #include <linux/io.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/of_graph.h>
- #include <linux/platform_device.h>
- 
-diff --git a/drivers/gpu/drm/tegra/dc.c b/drivers/gpu/drm/tegra/dc.c
-index 6e78416e64b0..13b182ab905f 100644
---- a/drivers/gpu/drm/tegra/dc.c
-+++ b/drivers/gpu/drm/tegra/dc.c
-@@ -11,7 +11,8 @@
- #include <linux/iommu.h>
- #include <linux/interconnect.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
- #include <linux/pm_domain.h>
- #include <linux/pm_opp.h>
- #include <linux/pm_runtime.h>
-diff --git a/drivers/gpu/drm/tegra/dpaux.c b/drivers/gpu/drm/tegra/dpaux.c
-index 4d2677dcd831..96a8afcab3ef 100644
---- a/drivers/gpu/drm/tegra/dpaux.c
-+++ b/drivers/gpu/drm/tegra/dpaux.c
-@@ -8,7 +8,7 @@
- #include <linux/interrupt.h>
- #include <linux/io.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/pinctrl/pinconf-generic.h>
- #include <linux/pinctrl/pinctrl.h>
- #include <linux/pinctrl/pinmux.h>
-diff --git a/drivers/gpu/drm/tegra/gr2d.c b/drivers/gpu/drm/tegra/gr2d.c
-index 50f77fddda54..4c55133467a0 100644
---- a/drivers/gpu/drm/tegra/gr2d.c
-+++ b/drivers/gpu/drm/tegra/gr2d.c
-@@ -7,7 +7,8 @@
- #include <linux/delay.h>
- #include <linux/iommu.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/reset.h>
- 
-diff --git a/drivers/gpu/drm/tegra/gr3d.c b/drivers/gpu/drm/tegra/gr3d.c
-index c026c2c916c1..2768f8f073ed 100644
---- a/drivers/gpu/drm/tegra/gr3d.c
-+++ b/drivers/gpu/drm/tegra/gr3d.c
-@@ -9,7 +9,7 @@
- #include <linux/host1x.h>
- #include <linux/iommu.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/pm_domain.h>
- #include <linux/pm_opp.h>
-diff --git a/drivers/gpu/drm/tegra/hdmi.c b/drivers/gpu/drm/tegra/hdmi.c
-index 6eac54ae1205..00be307ca070 100644
---- a/drivers/gpu/drm/tegra/hdmi.c
-+++ b/drivers/gpu/drm/tegra/hdmi.c
-@@ -10,7 +10,8 @@
- #include <linux/hdmi.h>
- #include <linux/math64.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
- #include <linux/pm_opp.h>
- #include <linux/pm_runtime.h>
- #include <linux/regulator/consumer.h>
-diff --git a/drivers/gpu/drm/tegra/hub.c b/drivers/gpu/drm/tegra/hub.c
-index 916857361a91..1af5f8318d91 100644
---- a/drivers/gpu/drm/tegra/hub.c
-+++ b/drivers/gpu/drm/tegra/hub.c
-@@ -9,8 +9,8 @@
- #include <linux/host1x.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/of_graph.h>
-+#include <linux/of_platform.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/reset.h>
-diff --git a/drivers/gpu/drm/tegra/nvdec.c b/drivers/gpu/drm/tegra/nvdec.c
-index ae78a81e5eef..f821e36111a7 100644
---- a/drivers/gpu/drm/tegra/nvdec.c
-+++ b/drivers/gpu/drm/tegra/nvdec.c
-@@ -11,8 +11,6 @@
- #include <linux/iopoll.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
--#include <linux/of_platform.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/reset.h>
-diff --git a/drivers/gpu/drm/tegra/sor.c b/drivers/gpu/drm/tegra/sor.c
-index abd6e3b92293..93471b70e180 100644
---- a/drivers/gpu/drm/tegra/sor.c
-+++ b/drivers/gpu/drm/tegra/sor.c
-@@ -8,7 +8,7 @@
- #include <linux/debugfs.h>
- #include <linux/io.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/regulator/consumer.h>
-diff --git a/drivers/gpu/drm/tegra/vic.c b/drivers/gpu/drm/tegra/vic.c
-index da7a038dca20..5da989ac700e 100644
---- a/drivers/gpu/drm/tegra/vic.c
-+++ b/drivers/gpu/drm/tegra/vic.c
-@@ -10,8 +10,6 @@
- #include <linux/iommu.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
--#include <linux/of_platform.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/reset.h>
-diff --git a/drivers/gpu/drm/tidss/tidss_dispc.c b/drivers/gpu/drm/tidss/tidss_dispc.c
-index dca077411f77..da6b2b01f7bd 100644
---- a/drivers/gpu/drm/tidss/tidss_dispc.c
-+++ b/drivers/gpu/drm/tidss/tidss_dispc.c
-@@ -15,8 +15,6 @@
- #include <linux/module.h>
- #include <linux/mfd/syscon.h>
- #include <linux/of.h>
--#include <linux/of_graph.h>
--#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/regmap.h>
-diff --git a/drivers/gpu/drm/tidss/tidss_drv.c b/drivers/gpu/drm/tidss/tidss_drv.c
-index 3f5f27fb6ebc..1f06a6284770 100644
---- a/drivers/gpu/drm/tidss/tidss_drv.c
-+++ b/drivers/gpu/drm/tidss/tidss_drv.c
-@@ -5,7 +5,7 @@
-  */
- 
- #include <linux/console.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/module.h>
- #include <linux/pm_runtime.h>
- 
-diff --git a/drivers/gpu/drm/vc4/vc4_crtc.c b/drivers/gpu/drm/vc4/vc4_crtc.c
-index bef9d45ef1df..7b30e4675559 100644
---- a/drivers/gpu/drm/vc4/vc4_crtc.c
-+++ b/drivers/gpu/drm/vc4/vc4_crtc.c
-@@ -31,7 +31,8 @@
- 
- #include <linux/clk.h>
- #include <linux/component.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- 
- #include <drm/drm_atomic.h>
-diff --git a/drivers/gpu/drm/vc4/vc4_dpi.c b/drivers/gpu/drm/vc4/vc4_dpi.c
-index e68c07d86040..333f77609dba 100644
---- a/drivers/gpu/drm/vc4/vc4_dpi.c
-+++ b/drivers/gpu/drm/vc4/vc4_dpi.c
-@@ -22,8 +22,8 @@
- #include <linux/clk.h>
- #include <linux/component.h>
- #include <linux/media-bus-format.h>
--#include <linux/of_graph.h>
--#include <linux/of_platform.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/platform_device.h>
- #include "vc4_drv.h"
- #include "vc4_regs.h"
- 
-diff --git a/drivers/gpu/drm/vc4/vc4_drv.c b/drivers/gpu/drm/vc4/vc4_drv.c
-index 823395c23cc3..272c6503aac9 100644
---- a/drivers/gpu/drm/vc4/vc4_drv.c
-+++ b/drivers/gpu/drm/vc4/vc4_drv.c
-@@ -26,7 +26,7 @@
- #include <linux/dma-mapping.h>
- #include <linux/io.h>
- #include <linux/module.h>
--#include <linux/of_platform.h>
-+#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- 
-diff --git a/drivers/gpu/drm/vc4/vc4_dsi.c b/drivers/gpu/drm/vc4/vc4_dsi.c
-index 9e0c355b236f..46f28e04cefc 100644
---- a/drivers/gpu/drm/vc4/vc4_dsi.c
-+++ b/drivers/gpu/drm/vc4/vc4_dsi.c
-@@ -25,8 +25,9 @@
- #include <linux/dma-mapping.h>
- #include <linux/dmaengine.h>
- #include <linux/io.h>
-+#include <linux/of.h>
- #include <linux/of_address.h>
--#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- 
- #include <drm/drm_atomic_helper.h>
-diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
-index 5261526d286f..a9515eb7b587 100644
---- a/drivers/gpu/drm/vc4/vc4_hdmi.c
-+++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-@@ -41,8 +41,8 @@
- #include <linux/component.h>
- #include <linux/gpio/consumer.h>
- #include <linux/i2c.h>
-+#include <linux/of.h>
- #include <linux/of_address.h>
--#include <linux/of_platform.h>
- #include <linux/pm_runtime.h>
- #include <linux/rational.h>
- #include <linux/reset.h>
-diff --git a/drivers/gpu/drm/vc4/vc4_txp.c b/drivers/gpu/drm/vc4/vc4_txp.c
-index c5abdec03103..136fb4f4fe7a 100644
---- a/drivers/gpu/drm/vc4/vc4_txp.c
-+++ b/drivers/gpu/drm/vc4/vc4_txp.c
-@@ -9,8 +9,8 @@
- 
- #include <linux/clk.h>
- #include <linux/component.h>
--#include <linux/of_graph.h>
--#include <linux/of_platform.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- 
- #include <drm/drm_atomic.h>
-diff --git a/drivers/gpu/drm/vc4/vc4_vec.c b/drivers/gpu/drm/vc4/vc4_vec.c
-index d6e6a1a22eba..26441be41265 100644
---- a/drivers/gpu/drm/vc4/vc4_vec.c
-+++ b/drivers/gpu/drm/vc4/vc4_vec.c
-@@ -21,8 +21,8 @@
- #include <drm/drm_simple_kms_helper.h>
- #include <linux/clk.h>
- #include <linux/component.h>
--#include <linux/of_graph.h>
--#include <linux/of_platform.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- 
- #include "vc4_drv.h"
-diff --git a/drivers/gpu/drm/xen/xen_drm_front.c b/drivers/gpu/drm/xen/xen_drm_front.c
-index 90996c108146..a83f054d0a8b 100644
---- a/drivers/gpu/drm/xen/xen_drm_front.c
-+++ b/drivers/gpu/drm/xen/xen_drm_front.c
-@@ -11,7 +11,6 @@
- #include <linux/delay.h>
- #include <linux/dma-mapping.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
- 
- #include <drm/drm_atomic_helper.h>
- #include <drm/drm_drv.h>
-diff --git a/drivers/gpu/ipu-v3/ipu-common.c b/drivers/gpu/ipu-v3/ipu-common.c
-index c35eac1116f5..71ec1e7f657a 100644
---- a/drivers/gpu/ipu-v3/ipu-common.c
-+++ b/drivers/gpu/ipu-v3/ipu-common.c
-@@ -18,7 +18,7 @@
- #include <linux/irq.h>
- #include <linux/irqchip/chained_irq.h>
- #include <linux/irqdomain.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/of_graph.h>
- 
- #include <drm/drm_fourcc.h>
 -- 
 2.40.1
 
