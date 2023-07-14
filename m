@@ -2,114 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3F087534E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 10:17:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C0697534F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 10:21:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235526AbjGNIQ6 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 14 Jul 2023 04:16:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35882 "EHLO
+        id S235083AbjGNIVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 04:21:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235500AbjGNIQp (ORCPT
+        with ESMTP id S235028AbjGNIVd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 04:16:45 -0400
-Received: from gate.crashing.org (gate.crashing.org [63.228.1.57])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AC4EE3580;
-        Fri, 14 Jul 2023 01:16:23 -0700 (PDT)
-Received: from [IPv6:::1] (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 36E8Adte003053;
-        Fri, 14 Jul 2023 03:10:40 -0500
-Message-ID: <67a7374a72053107661ecc2b2f36fdb3ff6cc6ae.camel@kernel.crashing.org>
-Subject: Re: [PATCH v3 1/6] kvm: determine memory type from VMA
-From:   Benjamin Herrenschmidt <benh@kernel.crashing.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Marc Zyngier <maz@kernel.org>, ankita@nvidia.com,
-        alex.williamson@redhat.com, naoya.horiguchi@nec.com,
-        oliver.upton@linux.dev, aniketa@nvidia.com, cjia@nvidia.com,
-        kwankhede@nvidia.com, targupta@nvidia.com, vsethi@nvidia.com,
-        acurrid@nvidia.com, apopple@nvidia.com, jhubbard@nvidia.com,
-        danw@nvidia.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Clint Sbisa <csbisa@amazon.com>, osamaabb@amazon.com
-Date:   Fri, 14 Jul 2023 18:10:39 +1000
-In-Reply-To: <ZHcxHbCb439I1Uk2@arm.com>
-References: <20230405180134.16932-1-ankita@nvidia.com>
-         <20230405180134.16932-2-ankita@nvidia.com> <86r0spl18x.wl-maz@kernel.org>
-         <ZDarrZmLWlA+BHQG@nvidia.com> <ZHcxHbCb439I1Uk2@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.44.4-0ubuntu1 
+        Fri, 14 Jul 2023 04:21:33 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1C62134
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 01:21:31 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R2PLD2GM4zBR9sj
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 16:10:44 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1689322244; x=1691914245; bh=hi2JCXpuWCGnO3LedqdVgh9QV7J
+        Qv/56InerFXZUi1A=; b=ke5oI5HFDNgABUfbDVVgWGOlDL0tSk2hQxlS+KgL1ex
+        vjiJVU3ZmQUgFRCmTgsC7tdzEo5DlXUW4Ynl4aQiKT0Yfyf40SnXtuRotp9UdDEK
+        ub2G7TOWWAJjbe94lZfNOF9Gc2vOiEnZaMoUhxj6M8wIjIbOmKNpwUnXUspK8jNN
+        23v1bbgafhHnkXI85gvPNyE9izI9GFhB9HvAq60OXgZA5uvO94zdvI0P/ijTcNYa
+        xSj91mMgWXrHYWOJ6ljqCBZ9VUxJmlxasWjWWwZlrP3x0g3qAjgZJi8SUSXaTrpo
+        H6MT9uLpG7pdGKq3evCqCtomDwoLOI0M8mZc/VxVRfg==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id D9g_QrEBbjdh for <linux-kernel@vger.kernel.org>;
+        Fri, 14 Jul 2023 16:10:44 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R2PLD0RjgzBR9sc;
+        Fri, 14 Jul 2023 16:10:44 +0800 (CST)
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Date:   Fri, 14 Jul 2023 16:10:43 +0800
+From:   hanyu001@208suo.com
+To:     jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Fwd: [PATCH] scsi: be2iscsi: wacom: convert sysfs sprintf/snprintf
+ family to sysfs_emit
+In-Reply-To: <tencent_A27502E2D5B495E4E319441AB4B3B5F7E708@qq.com>
+References: <tencent_A27502E2D5B495E4E319441AB4B3B5F7E708@qq.com>
+User-Agent: Roundcube Webmail
+Message-ID: <a70b030b0e0bdf224d35dec9aecc7371@208suo.com>
+X-Sender: hanyu001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-05-31 at 12:35 +0100, Catalin Marinas wrote:
-> There were several off-list discussions, I'm trying to summarise my
-> understanding here. This series aims to relax the VFIO mapping to
-> cacheable and have KVM map it into the guest with the same attributes.
-> Somewhat related past threads also tried to relax the KVM device
-> pass-through mapping from Device_nGnRnE (pgprot_noncached) to Normal_NC
-> (pgprot_writecombine). Those were initially using the PCIe prefetchable
-> BAR attribute but that's not a reliable means to infer whether Normal vs
-> Device is safe. Anyway, I think we'd need to unify these threads and
-> come up with some common handling that can cater for various attributes
-> required by devices/drivers. Therefore replying in this thread.
+Fix the following coccicheck warning:
 
-So picking up on this as I was just trying to start a separate
-discussion
-on the subject for write combine :-)
+./drivers/hid/wacom_sys.c:1828:8-16: WARNING: use scnprintf or sprintf.
 
-In this case, not so much for KVM as much as for VFIO to userspace
-though.
+./drivers/scsi/be2iscsi/be_mgmt.c:1251:9-17: WARNING: use scnprintf or 
+sprintf
+./drivers/scsi/be2iscsi/be_mgmt.c:1145:8-16: WARNING: use scnprintf or 
+sprintf
+./drivers/scsi/be2iscsi/be_mgmt.c:1164:8-16: WARNING: use scnprintf or 
+sprintf
+./drivers/scsi/be2iscsi/be_mgmt.c:1280:8-16: WARNING: use scnprintf or 
+sprintf
 
-The rough idea is that the "userspace driver" (ie DPDK or equivalent)
-for the device is the one to "know" wether a BAR or portion of a BAR
-can/should be mapped write-combine, and is expected to also "know"
-what to do to enforce ordering when necessary.
+Signed-off-by: ztt <1549089851@qq.com>
+---
+  drivers/scsi/be2iscsi/be_mgmt.c | 8 ++++----
+  1 file changed, 4 insertions(+), 4 deletions(-)
 
-So the userspace component needs to be responsible for selecting the
-mapping, the same way using the PCI sysfs resource files today allows
-to do that by selecting the _wc variant.
+diff --git a/drivers/scsi/be2iscsi/be_mgmt.c 
+b/drivers/scsi/be2iscsi/be_mgmt.c
+index 4e899ec1477d..4916ce9c36a6 100644
+--- a/drivers/scsi/be2iscsi/be_mgmt.c
++++ b/drivers/scsi/be2iscsi/be_mgmt.c
+@@ -1142,7 +1142,7 @@ ssize_t
+  beiscsi_drvr_ver_disp(struct device *dev, struct device_attribute 
+*attr,
+                 char *buf)
+  {
+-    return snprintf(buf, PAGE_SIZE, BE_NAME "\n");
++    return scnprintf(buf, PAGE_SIZE, BE_NAME "\n");
+  }
 
-I posted a separate message that Lorenzo CCed back to some of you, but
-let's recap here to keep the discussion localized.
+  /**
+@@ -1161,7 +1161,7 @@ beiscsi_fw_ver_disp(struct device *dev, struct 
+device_attribute *attr,
+      struct Scsi_Host *shost = class_to_shost(dev);
+      struct beiscsi_hba *phba = iscsi_host_priv(shost);
 
-I don't know how much of this makes sense for KVM, but I think what we
-really want is for userspace to be able to specify some "attributes"
-(which we can initially limit to writecombine, full cachability
-probably requires a device specific kernel driver providing adequate
-authority, separate discussion in any case), for all or a portion of a
-BAR mapping.
+-    return snprintf(buf, PAGE_SIZE, "%s\n", phba->fw_ver_str);
++    return scnprintf(buf, PAGE_SIZE, "%s\n", phba->fw_ver_str);
+  }
 
-The easy way is an ioctl to affect the attributes of the next mmap but
-it's a rather gross interface.
+  /**
+@@ -1248,7 +1248,7 @@ beiscsi_adap_family_disp(struct device *dev, 
+struct device_attribute *attr,
+      case BE_DEVICE_ID1:
+      case OC_DEVICE_ID1:
+      case OC_DEVICE_ID2:
+-        return snprintf(buf, PAGE_SIZE,
++        return scnprintf(buf, PAGE_SIZE,
+                  "Obsolete/Unsupported BE2 Adapter Family\n");
+      case BE_DEVICE_ID2:
+      case OC_DEVICE_ID3:
+@@ -1277,7 +1277,7 @@ beiscsi_phys_port_disp(struct device *dev, struct 
+device_attribute *attr,
+      struct Scsi_Host *shost = class_to_shost(dev);
+      struct beiscsi_hba *phba = iscsi_host_priv(shost);
 
-A better approach (still requires some coordination but not nearly as
-bad) would be to have an ioctl to create "subregions", ie, dynamically
-add new "struct vfio_pci_region" (using the existing dynamic index
-API), which are children of existing regions (including real BARs) and
-provide different attributes, which mmap can then honor.
-
-This is particularly suited for the case (which used to exist, I don't
-know if it still does) where the buffer that wants write combining
-reside in the same BAR as registers that otherwise don't.
-
-A simpler compromise if that latter case is deemed irrelevant would be
-an ioctl to selectively set a region index (including BARs) to be WC
-prior to mmap.
-
-I don't know if that fits in the ideas you have for KVM, I think it
-could by having the userspace component require mappings using a
-"special" attribute which we could define as being the most relaxed
-allowed to pass to a VM, which can then be architecture defined. The
-guest can then enforce specifics. Does this make sense ?
-
-Cheers
-Ben.
+-    return snprintf(buf, PAGE_SIZE, "Port Identifier : %u\n",
++    return scnprintf(buf, PAGE_SIZE, "Port Identifier : %u\n",
+              phba->fw_config.phys_port);
+  }
