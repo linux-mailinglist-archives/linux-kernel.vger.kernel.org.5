@@ -2,101 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1C22753727
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:53:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E4BF753730
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:56:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235131AbjGNJxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 05:53:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44268 "EHLO
+        id S235749AbjGNJ4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 05:56:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233269AbjGNJxU (ORCPT
+        with ESMTP id S231362AbjGNJ4U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 05:53:20 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1127B12C
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 02:53:19 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3fb4146e8deso16817885e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 02:53:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689328397; x=1691920397;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RkZHHcRsX6xT5CwFSt0BPE87o3Wbf8EEmNwVu3AS04s=;
-        b=dK3IFU+sdFFeYFy+O2s+OJ9hivKr3h30WV1HuYXwbxE+ae6q9bUwX55R5WRM6On8Ab
-         koPOe8Bj5neJBcTC+v53ZbKTQgrkcItOrR7t7AJonM3RFzPSd2/oXmC9OkyDZENVCir1
-         wUkb69ymsyIwKYwksfRva0r9kQcVW3yGnSJTe5snk6ZSLODIH9JkO6hUtedGH6xV00YO
-         0wTj4IyxDv6T/OHqBJkuc9+nZfbU1KMf94zJwJODs2u2i2AU7nsSW9oqMyAxbhWKDP0w
-         5a74osDolzaa48qbTbXtkw7lTxKNmptnTipbVhcQ27Xt5x8WRzm7nglOEW4hd1uv09do
-         hZdg==
+        Fri, 14 Jul 2023 05:56:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2138A7
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 02:55:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689328532;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kf132iRZ20EenuRtRXLIaAVz4mLH2YgT891kbbdMT6M=;
+        b=SL3uT16hIKbhjOnnRKKbbBZVj1/FgJelEKWlzj0rvRc7vczXbcpFm4uCAbehtlwrAV+6Wf
+        VAek4L43DACF8oJb3c/cCKf3Fht3gNANJzHS5X6oFx/bC3H6F8foAOua2NzrirUdUm9NPI
+        OPlXyGIzvdC0qEyMGKEpv73lYYhcKIo=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-48-CHRHn0HDOAqLS3Ur8nwQWQ-1; Fri, 14 Jul 2023 05:55:30 -0400
+X-MC-Unique: CHRHn0HDOAqLS3Ur8nwQWQ-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-31429e93f26so1136075f8f.2
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 02:55:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689328397; x=1691920397;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RkZHHcRsX6xT5CwFSt0BPE87o3Wbf8EEmNwVu3AS04s=;
-        b=a93gX4EeJoEPYENrWIS9hQ4R5i1JpCw9bWp8xjTou76kIsPfxkN+i7krkgV1JH5D2H
-         gpwAI0kzhNT+CEar4lu4OM1jrocvbLJcBBAraBMW0Formo9KL8ds2TygwQ/+JPXW+WYJ
-         HChvW6s4FzONJvPBVaiJgvgP3gKpoEMW35kGY8fyuNRpWx5p7p9uDRmC/gSpuUc+HNkD
-         ZolF3LWJltHXILATihis0Jo94mxPcqN2dFwADayemooCXFLW5fIfMQAi4sN3uS6PCn8x
-         Nw1BMMO2bWIj4sxlOUIdEojJG1DW10XH2gTZi2VwFtv+jJUpdb4I882RdH/ECVjYDCYz
-         AOiw==
-X-Gm-Message-State: ABy/qLYwlEZcUah5X4KCzQXwVjTGsxIOhbqxQhHTaQ74lItReMjo6sR+
-        MGeFvaDBzulPLOynssQM9rgDJg==
-X-Google-Smtp-Source: APBJJlEeo9gAOUZlKead1BmpWj8b5QWJLKPIK39T1k2tRBtPjxfuO88MJ87xg7EaQbkJrOjP2zZ8qA==
-X-Received: by 2002:a05:600c:214d:b0:3fa:aeac:e96c with SMTP id v13-20020a05600c214d00b003faaeace96cmr4384362wml.9.1689328397419;
-        Fri, 14 Jul 2023 02:53:17 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id l18-20020a5d6752000000b0031434cebcd8sm10304400wrw.33.2023.07.14.02.53.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 02:53:14 -0700 (PDT)
-Date:   Fri, 14 Jul 2023 12:53:11 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Tree Davies <tdavies@darkphysics.net>
-Cc:     gregkh@linuxfoundation.org, philipp.g.hortmann@gmail.com,
-        anjan@momi.ca, error27@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 09/12] Staging: rtl8192e: Rename variable pBA
-Message-ID: <da405689-d41d-4633-acdc-1c03d35cb871@kadam.mountain>
-References: <ZK84sYjc9uHIWZcr@basil>
+        d=1e100.net; s=20221208; t=1689328529; x=1691920529;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kf132iRZ20EenuRtRXLIaAVz4mLH2YgT891kbbdMT6M=;
+        b=ag0VhTD+JAsHd8iasIRBSRvEUJRzReQfCwAMVTjDVIb6hN/c3Q7acVRKAAsycRN4CE
+         Tx5cdAqnx2Q7ilJUgvhD7KQY0/j5lCc6DTKMQwBw63FaeRYj8Vs8pkM1XhhId+FwysHL
+         3e84wBJo8xqVUiWVKCA25aV+tAUooKPku8O1m1Ypalpml7Q1iq4Up03jlAr81WjbFpk7
+         UJSordPMiYG6QZug670b08xO4qUlLnVygQfehwIGu1uky3UGpFz42H6oWrzR/9SGtTtG
+         Meypt/6hkYVjL8fw+ZXxLaWcZDeAZWDGIz4y6j3rN2oMuWaxwNuYGvOtIDr6YUiiqJeX
+         EHMA==
+X-Gm-Message-State: ABy/qLb8wd7Vr64GMfiRmILycuLpVh4ayf2M3NLt+LPuDT5BZy9fjnTz
+        iVaKSsRbIpYfnNwXRR/8Xog+nBv4tGMIuUrBiyiZHynMij53yZPe/VdDvAubvV/uP3oWqK+MV0J
+        zvvazdg1OGbUDaX7X8Fi6GvdG
+X-Received: by 2002:a5d:67d0:0:b0:313:fbd0:9813 with SMTP id n16-20020a5d67d0000000b00313fbd09813mr3466956wrw.28.1689328529634;
+        Fri, 14 Jul 2023 02:55:29 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlEdlUo+JN4v1o9lTJZqXuq/+tLZCVapgyI00wczrknXcEiLAc8BYt3hBc2KTjJX7LpL9n/i0g==
+X-Received: by 2002:a5d:67d0:0:b0:313:fbd0:9813 with SMTP id n16-20020a5d67d0000000b00313fbd09813mr3466946wrw.28.1689328529256;
+        Fri, 14 Jul 2023 02:55:29 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c70a:4500:8a9e:a24a:133d:86bb? (p200300cbc70a45008a9ea24a133d86bb.dip0.t-ipconnect.de. [2003:cb:c70a:4500:8a9e:a24a:133d:86bb])
+        by smtp.gmail.com with ESMTPSA id w16-20020a5d6810000000b003144b50034esm10371315wru.110.2023.07.14.02.55.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 14 Jul 2023 02:55:28 -0700 (PDT)
+Message-ID: <e609bed0-b6c2-1905-36a8-f94b85fd350b@redhat.com>
+Date:   Fri, 14 Jul 2023 11:55:28 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZK84sYjc9uHIWZcr@basil>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v1 0/4] virtio-mem: memory unplug/offlining related
+ cleanups
+Content-Language: en-US
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        virtualization@lists.linux-foundation.org,
+        Jason Wang <jasowang@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+References: <20230713145551.2824980-1-david@redhat.com>
+ <20230713110235-mutt-send-email-mst@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <20230713110235-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 04:35:13PM -0700, Tree Davies wrote:
-> Rename variable pBA to pba in order to Fix checkpatch
-> warning: Avoid CamelCase
+On 13.07.23 17:03, Michael S. Tsirkin wrote:
+> On Thu, Jul 13, 2023 at 04:55:47PM +0200, David Hildenbrand wrote:
+>> Some cleanups+optimizations primarily around offline_and_remove_memory().
+>>
+>> Patch #1 drops the "unsafe unplug" feature where we might get stuck in
+>> offline_and_remove_memory() forever.
+>>
+>> Patch #2 handles unexpected errors from offline_and_remove_memory() a bit
+>> nicer.
+>>
+>> Patch #3 handles the case where offline_and_remove_memory() failed and
+>> we want to retry later to remove a completely unplugged Linux memory
+>> block, to not have them waste memory forever.
+>>
+>> Patch #4 something I had lying around for longer, which reacts faster
+>> on config changes when unplugging memory.
+>>
+>> Cc: "Michael S. Tsirkin" <mst@redhat.com>
+>> Cc: Jason Wang <jasowang@redhat.com>
+>> Cc: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 > 
-> Signed-off-by: Tree Davies <tdavies@darkphysics.net>
-> ---
->  drivers/staging/rtl8192e/rtl819x_BAProc.c | 106 +++++++++++-----------
->  drivers/staging/rtl8192e/rtllib.h         |   2 +-
->  2 files changed, 54 insertions(+), 54 deletions(-)
-> 
-> diff --git a/drivers/staging/rtl8192e/rtl819x_BAProc.c b/drivers/staging/rtl8192e/rtl819x_BAProc.c
-> index 6b5da38353ee..43ee1bd4a6ed 100644
-> --- a/drivers/staging/rtl8192e/rtl819x_BAProc.c
-> +++ b/drivers/staging/rtl8192e/rtl819x_BAProc.c
-> @@ -10,17 +10,17 @@
->  #include "rtllib.h"
->  #include "rtl819x_BA.h"
->  
-> -static void activate_ba_entry(struct ba_record *pBA, u16 Time)
-> +static void activate_ba_entry(struct ba_record *pba, u16 Time)
+> This looks like something that's reasonable to put in this linux, right?
+> These are fixes even though they are for theoretical issues.
 
-Here the "p" stands for "pointer".  This style of naming is not allowed
-in the Linux kernel.  Just use "ba" as a name.  This happens in a couple
-other patches as well so fix those too.
+Yes, but these are not high-priority fixes+optimizations. So if you feel 
+like we should be delaying them, fine with me.
 
-regards,
-dan carpenter
+On the other hand, getting them in now also shouldn't really hurt. 
+Especially patch #1 might be better of just going in soner than later.
+
+-- 
+Cheers,
+
+David / dhildenb
 
