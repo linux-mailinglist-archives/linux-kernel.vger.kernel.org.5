@@ -2,62 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C43375335C
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 09:42:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AFFD753364
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 09:43:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235321AbjGNHmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 03:42:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40234 "EHLO
+        id S232382AbjGNHnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 03:43:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234995AbjGNHmX (ORCPT
+        with ESMTP id S234892AbjGNHnx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 03:42:23 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A9CC2D78
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 00:42:22 -0700 (PDT)
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1qKDRB-0000Y7-NC; Fri, 14 Jul 2023 09:42:01 +0200
-Received: from pengutronix.de (unknown [172.20.34.65])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 3A2BA1F0C60;
-        Fri, 14 Jul 2023 07:42:00 +0000 (UTC)
-Date:   Fri, 14 Jul 2023 09:41:59 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Kumari Pallavi <kumari.pallavi@intel.com>
-Cc:     "rcsekar@samsung.com" <rcsekar@samsung.com>,
-        "Sangannavar, Mallikarjunappa" 
-        <mallikarjunappa.sangannavar@intel.com>,
-        "Nikula, Jarkko" <jarkko.nikula@intel.com>,
-        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Thokala, Srikanth" <srikanth.thokala@intel.com>
-Subject: Re: RE: RE: [RESEND] [PATCH 1/1] can: m_can: Control tx and rx flow
- to avoid communication stall
-Message-ID: <20230714-sublime-vanilla-239fd808904c-mkl@pengutronix.de>
-References: <20230623085920.12904-1-kumari.pallavi@intel.com>
- <20230705-return-slogan-36c499673bb6-mkl@pengutronix.de>
- <SJ1PR11MB608478D62EDFAEDDBE8C0890872DA@SJ1PR11MB6084.namprd11.prod.outlook.com>
- <20230707-breeder-shaft-61b826633b7e-mkl@pengutronix.de>
- <SJ1PR11MB60842B19103EC186A4FDB0838734A@SJ1PR11MB6084.namprd11.prod.outlook.com>
+        Fri, 14 Jul 2023 03:43:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F42392D78
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 00:43:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689320590;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8RV6VmoCSDJlQIGxTSc2C/ilkhOc2GYT+YQNbt5Ygqs=;
+        b=SSiSM5y49LUXpUkW0/9WbSqHAemtIBFfXzMYiceVspuKJSqfEcped1p8VMzrwEzUYkCPN2
+        mfJUCKYR7PcPPshVcQdrTUCywggkW5a9VZx1fy491AaVvc8AXMu0tfcpHL/YCFdoRtSmmg
+        L0ttbGMv3cmFC/UMN+ebIUec+hD7d5A=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-480-iM6GisGFMAePcvptulKrvg-1; Fri, 14 Jul 2023 03:43:07 -0400
+X-MC-Unique: iM6GisGFMAePcvptulKrvg-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-94a356c74e0so90815366b.2
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 00:43:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689320586; x=1691912586;
+        h=content-transfer-encoding:in-reply-to:references:to
+         :content-language:subject:cc:user-agent:mime-version:date:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8RV6VmoCSDJlQIGxTSc2C/ilkhOc2GYT+YQNbt5Ygqs=;
+        b=PdmeBR1MqzX2fNplA+8s4PMID/MwBS2SeQmyifun+qi0USUs04MRfWc+YjVVKT2xFb
+         dJvaJYJls7VNlXHYwboBmwk9tseWLNe1fPX9qcVCYbVWM1AfgMzabDommjwFdxVARHqG
+         So7dgaIGVU958Aoh4hFjevWxYP30QwB6Q8beZpCGwJQVeGDWDL82PAM/OTllIUOYvocd
+         xbTyHQGOsmeT4Ik6SFlxG0601aR0a/+ZNe+WJjP26f10PSam+s1cR1I9hsigbwrf7cdo
+         etUlYei/3VPI1jOWzY1rgcFy/uH761jwMfq9v81toaP+WpojZ0tLJsLg2P6y+D5xoeub
+         yanA==
+X-Gm-Message-State: ABy/qLbq7afa7uo0tpzNJAOZNQnc4IeaBbo/2bhjwAV0IKXTZVs7d+SY
+        nmtmeLAMxYGtRX+rhGrCxHn3/W4nT1gYmd5HSiJ+1NH+Qb5Q0D8/aM7GyLFQevi+KLTEf3XyipN
+        BmcvqaW7bv8oJ5P9h+rbSxUnb
+X-Received: by 2002:a17:906:22db:b0:991:b613:9b65 with SMTP id q27-20020a17090622db00b00991b6139b65mr2766725eja.37.1689320586277;
+        Fri, 14 Jul 2023 00:43:06 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGkVCdUgKT4CuozT1y45CBxqcp7kgkZtxRkxzueS/PYGMNLQEIkj3Ux6bf9a7KqgPcPlaagDg==
+X-Received: by 2002:a17:906:22db:b0:991:b613:9b65 with SMTP id q27-20020a17090622db00b00991b6139b65mr2766691eja.37.1689320585955;
+        Fri, 14 Jul 2023 00:43:05 -0700 (PDT)
+Received: from [192.168.42.100] (194-45-78-10.static.kviknet.net. [194.45.78.10])
+        by smtp.gmail.com with ESMTPSA id d20-20020a170906371400b0098e2eaec395sm5074876ejc.130.2023.07.14.00.43.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 14 Jul 2023 00:43:05 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Message-ID: <85bfa818-6856-e3ea-ef4d-16646c57d1cc@redhat.com>
+Date:   Fri, 14 Jul 2023 09:43:04 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="miqxsq6fpespuq3y"
-Content-Disposition: inline
-In-Reply-To: <SJ1PR11MB60842B19103EC186A4FDB0838734A@SJ1PR11MB6084.namprd11.prod.outlook.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:b01:1d::7b
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Cc:     brouer@redhat.com,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Paul Rosswurm <paulros@microsoft.com>,
+        "olaf@aepfle.de" <olaf@aepfle.de>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        Long Li <longli@microsoft.com>,
+        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        Ajay Sharma <sharmaajay@microsoft.com>,
+        "hawk@kernel.org" <hawk@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "shradhagupta@linux.microsoft.com" <shradhagupta@linux.microsoft.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Subject: Re: [PATCH net-next] net: mana: Add page pool for RX buffers
+Content-Language: en-US
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Haiyang Zhang <haiyangz@microsoft.com>
+References: <1689259687-5231-1-git-send-email-haiyangz@microsoft.com>
+ <20230713205326.5f960907@kernel.org>
+In-Reply-To: <20230713205326.5f960907@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -65,80 +110,28 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---miqxsq6fpespuq3y
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On 14.07.2023 07:26:01, Kumari Pallavi wrote:
-> > On 07.07.2023 05:38:09, Kumari Pallavi wrote:
-> > > > >  			if (netif_queue_stopped(dev) &&
-> > > > >  			    !m_can_tx_fifo_full(cdev))
-> > > > >  				netif_wake_queue(dev);
-> > > > > @@ -1787,6 +1787,7 @@ static netdev_tx_t m_can_start_xmit(struct
-> > > > > sk_buff
-> > > > *skb,
-> > > > >  		}
-> > > > >  	} else {
-> > > > >  		cdev->tx_skb =3D skb;
-> > > > > +		m_can_write(cdev, M_CAN_IE, IR_ALL_INT & (IR_TEFN));
-> > > >
-> > > > - What's the purpose of  "()" around IR_TEFN?
-> > > > - "IR_ALL_INT & (IR_TEFN)" is equal to IR_TEFN, isn't it?
-> > > > - This basically disables all other interrupts, is this what you wa=
-nt to
-> > > >   do?
-> > > > - What happens if the bus is busy with high prio CAN frames and you=
- want
-> > > >   to send low prio ones? You will not get any RX-IRQ, this doesn't =
-look
-> > > >   correct to me.
-> > > >
-> > >
-> > > Even though the RX interrupt is disabled (in IE), if there is an TX
-> > > interrupt and the RF0N bit is set (in IR), the RX packet will still be
-> > > serviced because the TX and RX share the same IRQ handler.
-> >=20
-> > If the bus is busy with high prio CAN frames and the m_can wants to sen=
-d a low
-> > prio frame, the m_can will not be able to send it's CAN frame, there wi=
-ll be not
-> > TX interrupt. If there are enough high prio CAN frames the RX buffer wi=
-ll
-> > overflow.
->=20
-> Sorry for late reply, I agree let me see if I can try to simulate this
-> scenario using CAN analyzer. I already stressed the current solution
-> for more than 10 days and didn't observe any issue. However, I will
-> try to incorporate this scenario for stress as well and come back.
+On 14/07/2023 05.53, Jakub Kicinski wrote:
+> On Thu, 13 Jul 2023 14:48:45 +0000 Haiyang Zhang wrote:
+>> Add page pool for RX buffers for faster buffer cycle and reduce CPU
+>> usage.
+>>
+>> Get an extra ref count of a page after allocation, so after upper
+>> layers put the page, it's still referenced by the pool. We can reuse
+>> it as RX buffer without alloc a new page.
+> 
+> Please use the real page_pool API from include/net/page_pool.h
+> We've moved past every driver reinventing the wheel, sorry.
 
-=46rom my point of view, this is a conceptional problem of this
-workaround.
++1
 
-To test this issue, saturate the bus with CAN frames ID 0x0. Then on the
-m_can send CAN frames with ID=3D0x7ff.
+Quoting[1]: Documentation/networking/page_pool.rst
 
-Marc
+  Basic use involves replacing alloc_pages() calls with the 
+page_pool_alloc_pages() call.
+  Drivers should use page_pool_dev_alloc_pages() replacing 
+dev_alloc_pages().
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
---miqxsq6fpespuq3y
-Content-Type: application/pgp-signature; name="signature.asc"
+[1] https://kernel.org/doc/html/latest/networking/page_pool.html
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmSw/EUACgkQvlAcSiqK
-BOhcVgf9FVeqrRcMiUN45YcPm3fqfWnz9r+Y6QUSPJtSjJQF+Q3+eXW3MpR2MLII
-meoPMDZpPYd7EDwGW9syPTz0bC5TNFn+YGwsiLZDhCsj6vMXoan+pOrqq9DdrN61
-avCLdSGN51pfw5lqyc/RelE8ffHljCjrSpqogLUt7+M4qqeW9z7PZS1yv+lL4mj9
-J7sqRa3aK8mElz5cqeknElDATEkmVWrlHW3WIosWgB54/C8J+zbDrTTjipS5eww6
-STj2jtlFIyUibyxqkL8Edf8k65wxRlyyN7dc/LdDEpQhuf50qVKE1iMSayOMSJ7R
-ZATUbj82zvuju12MGl6yYZMO/s7pVw==
-=NiAl
------END PGP SIGNATURE-----
-
---miqxsq6fpespuq3y--
