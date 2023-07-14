@@ -2,91 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A31E7530B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 06:48:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B0527530B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 06:50:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234534AbjGNEs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 00:48:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41532 "EHLO
+        id S234394AbjGNEu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 00:50:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjGNEsY (ORCPT
+        with ESMTP id S232340AbjGNEu0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 00:48:24 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA8226B3;
-        Thu, 13 Jul 2023 21:48:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1689310102;
-        bh=M3lL3WHQDYxE+bFRWIvFm67fzAQGZlCTeaYweTGu04M=;
-        h=Date:From:To:Cc:Subject:From;
-        b=jkb/fFngNxB1tW6+G6M2Jn/bCL6sxJ4SNhZfGVAVPGao2RaJZAYGASCCAtjB5kpn0
-         6oUJuPPd1fwMqdUZq46RPLvBf4lFeMsx04rfnlUkooRe9QQv7q+zqEXY2zQPmdHa9j
-         +tadpVAzeO08U2RsD7jwTCpMsr4LZzOSyu80+bwXfQG/eqGUcwU3JS8Dg1bpi4bilb
-         ppPCQCiC5Oz6BCZFDYe08ILbFxeErqlfqP4bFrxkK6Vor1ihicGgNjTnVWWmgUVFlA
-         tyU8TQtuQ7b8hhu0ipU0o7oP+bN+lJo93/7Wbj8mCUNIUkbutxlmcBWAHwRR8Tu9zK
-         EajGUeqaxAgHQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4R2Jrj3ffPz4wb0;
-        Fri, 14 Jul 2023 14:48:21 +1000 (AEST)
-Date:   Fri, 14 Jul 2023 14:48:20 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patch in the sysctl tree
-Message-ID: <20230714144820.6724ce15@canb.auug.org.au>
+        Fri, 14 Jul 2023 00:50:26 -0400
+Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4344726B3
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 21:50:24 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0VnKIG.z_1689310219;
+Received: from 30.221.157.198(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0VnKIG.z_1689310219)
+          by smtp.aliyun-inc.com;
+          Fri, 14 Jul 2023 12:50:20 +0800
+Message-ID: <82251dbb-6fb2-63a5-d15b-ba68ec75b4b2@linux.alibaba.com>
+Date:   Fri, 14 Jul 2023 12:50:16 +0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/0CuX7tQI1O1Ka2iUMsuOqoF";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH] erofs: deprecate superblock checksum feature
+Content-Language: en-US
+To:     Gao Xiang <hsiangkao@linux.alibaba.com>, chao@kernel.org,
+        huyue2@coolpad.com, linux-erofs@lists.ozlabs.org
+Cc:     linux-kernel@vger.kernel.org, pratikshinde320@gmail.com
+References: <20230714033832.111740-1-jefflexu@linux.alibaba.com>
+ <8a896983-ec76-d705-b4af-b34ffe529a81@linux.alibaba.com>
+From:   Jingbo Xu <jefflexu@linux.alibaba.com>
+In-Reply-To: <8a896983-ec76-d705-b4af-b34ffe529a81@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/0CuX7tQI1O1Ka2iUMsuOqoF
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-The following commit is also in Linus Torvalds' tree as a different
-commit (but the same patch):
+On 7/14/23 12:29 PM, Gao Xiang wrote:
+> 
+> 
+> On 2023/7/14 11:38, Jingbo Xu wrote:
+>> Later we're going to introduce fs-verity based verification for the
+>> whole image.  Make the superblock checksum feature deprecated.
+> 
+> I'd suggest that
+> 
+> 
+> "Later we're going to try the self-contained image verification.
+>  The current superblock checksum feature has quite limited
+>  functionality, instead, merkle trees can provide better protection
+>  for image integrity.
+> 
+>  Since the superblock checksum is a compatible feature, just
+>  deprecate now. "
+>  
 
-  5664eaac4dcf ("sysctl: fix unused proc_cap_handler() function warning")
+Yeah, another concern is that xxhash is used in the following xattr name
+filter feature [1] which is on the way.  It may be redundant to use two
+hashing algorithms for one filesystem.
 
-This is commit
 
-  554588e8e932 ("sysctl: fix unused proc_cap_handler() function warning")
+[1]
+https://lore.kernel.org/all/20230714031034.53210-1-jefflexu@linux.alibaba.com/
 
-in Linus' tree.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/0CuX7tQI1O1Ka2iUMsuOqoF
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmSw05QACgkQAVBC80lX
-0GwHugf/Zdw2+j/nXOpKwZqBRR8ux7tneyRAAjEwQNb6++GJuqvc3wfktBd7mfLV
-SkmzeXX6ePzQgTjEpfyeItT67UXjlirYRBfCIKHByefIJnPDtsmahPY0XSFtrel5
-+FHeXLYP0zlmAGrj51AJFCBJ8ly5xRnIpwLj4a4/IDgEY8FErbu/FhNzcTeLjTcV
-fgyUkLB6EDbaN3mkVcCLFGv502xgDK87z6O9g86+ENkVsLuaVeA3xI2yFhoH9xPT
-lzyRIccbOCjbrQcrK6UKkSFnJi+x2poiOqS+iK+a1hs66k2U3MRuvjlJeCgzGFt/
-8I4suUb3GiZok0m/ACxHZ4RnUPG70A==
-=RJsT
------END PGP SIGNATURE-----
-
---Sig_/0CuX7tQI1O1Ka2iUMsuOqoF--
+-- 
+Thanks,
+Jingbo
