@@ -2,235 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 798607541E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 19:55:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A248754201
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 20:01:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236791AbjGNRzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 13:55:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40166 "EHLO
+        id S236806AbjGNR4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 13:56:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236550AbjGNRz1 (ORCPT
+        with ESMTP id S236820AbjGNR4D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 13:55:27 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 972FB272B;
-        Fri, 14 Jul 2023 10:54:51 -0700 (PDT)
-Received: from jupiter.universe (dyndsl-091-248-208-179.ewe-ip-backbone.de [91.248.208.179])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sre)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 56B4D660705F;
-        Fri, 14 Jul 2023 18:53:46 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1689357226;
-        bh=fGlSMsKWMzL+vLAsojC3j/NluxPVAZbuMrm90oW6/3A=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gNthRf1s5IXke6d0bCNH0vmadOB4ZmyoYpBSynrwrBoOZcRx0zp+yJhIAE1Ph0eV3
-         Ci+9Kkht+prB95dClBYSoJpS7pd80mg2j4vfOHLWEUoitvkLhe6m8IlcNw8jwEk5SS
-         5Hazknj4nBJlcUOhE+csL7job24Xm0eUK8tV+TN8m3BdUBnW5mM7Uo8yWsled4k1Ue
-         GCfwCiWupCEJdkRlOfD+wJWDA8eMU9VEOoQQNAK2RxwmEn1Qo7YMBo2bTgclsLPjbs
-         eFx1R7TaHGbRy99/D7vl/RZIEQ6ZZvw0O5X686y33SRZEcYcmwWRP7AKFJYZHex/Ia
-         /ZTv1GyJV8uJw==
-Received: by jupiter.universe (Postfix, from userid 1000)
-        id C335B4805CC; Fri, 14 Jul 2023 19:53:43 +0200 (CEST)
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     linux-phy@lists.infradead.org, linux-rockchip@lists.infradead.org
-Cc:     Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Simon Xue <xxm@rock-chips.com>, John Clark <inindev@gmail.com>,
-        Qu Wenruo <wqu@suse.com>, devicetree@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        kernel@collabora.com
-Subject: [PATCH v1 2/2] arm64: dts: rockchip: rk3588: add PCIe3 support
-Date:   Fri, 14 Jul 2023 19:53:31 +0200
-Message-Id: <20230714175331.112923-3-sebastian.reichel@collabora.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230714175331.112923-1-sebastian.reichel@collabora.com>
-References: <20230714175331.112923-1-sebastian.reichel@collabora.com>
+        Fri, 14 Jul 2023 13:56:03 -0400
+Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 023E24234;
+        Fri, 14 Jul 2023 10:55:33 -0700 (PDT)
+Received: by mail-oo1-xc31.google.com with SMTP id 006d021491bc7-56597d949b1so1499528eaf.1;
+        Fri, 14 Jul 2023 10:55:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689357265; x=1691949265;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=HhWHTihqEVGZ7UbRv5sTAqbNbXFXUqhxoeSzHop6+CY=;
+        b=ZqnJP5TgvB9Lbcr1drQHWN2xw4IoFriyJOsINZdBIg8yPdKqgUpTyWotRA4+3dAd7x
+         qCCrJGHQsZc1Ylu3vyhfwJWHNHpicMGfwx6yZ69c/uT49vlFsAF52jfi+xXzi6rpGWCO
+         71oMDwUet79DbxBmbD4fGEw+qbDrnSM/2Pf6xDGOtBO/5JJuL5vQI4hnEpBJNWdj+5nb
+         XOXBCTN64a/bvOG7KesoCIZ/GeHerSQ4Z2Rz48W8Ag/uu1V1W9STrnzE4/LYbsOwlUWY
+         W3Ws+tGgBmTo42GqwBXjVyIRosbhl0Tv92zfyO/HZM171bjctfcvALC0gTvQSN/OT9ap
+         5xJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689357265; x=1691949265;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HhWHTihqEVGZ7UbRv5sTAqbNbXFXUqhxoeSzHop6+CY=;
+        b=FudmG3DSHt41Aqxri/RnnHO5O8h1MXgvFXsmRN/RcMcCo57L4eAF7vWitV1MJx+bZT
+         Ir96wEf8H4AwopqO5lSLcaDGZkZ9a4La55e3DaJW9/6pmyLwE4n0wtjXLCfTkX7xBLpH
+         r1QjuDdkWVIIWhMUe4L4lQJjd7fai+JTjj4mtIHGrNXP4fNAwBshzPbtPOz7ijpuHTva
+         1CCAY5OhwyKYjxlRCtVXpqOVY5HSARgFQ2OyjJeXO1xStRUSUa7zX+sHqAuvQAIMvEhC
+         L5NX3wHnmbmbSsS8y8Ii7KLlL55zKzLss5oyhFaISxnM2nCnHFxMZtM4DkWiZ8Q3AQV/
+         FKVQ==
+X-Gm-Message-State: ABy/qLYF+E6QaJtWIV2yMv8fFOko9jqMmERf8j8SJrN2uIAEJlHStqN6
+        vmUvvs93OKU5uQYdY/z9rG8=
+X-Google-Smtp-Source: APBJJlFRMJy3SCUvftpzui2PVWcCf3sofTpwhHmYLPTFjbDJmiarSyS69sn5j+6JI+Ew88FEBQR/Ow==
+X-Received: by 2002:a4a:92ce:0:b0:566:f94f:cd28 with SMTP id j14-20020a4a92ce000000b00566f94fcd28mr4605215ooh.3.1689357264827;
+        Fri, 14 Jul 2023 10:54:24 -0700 (PDT)
+Received: from localhost.localdomain ([216.130.59.33])
+        by smtp.gmail.com with ESMTPSA id i19-20020a4a8d93000000b005660ed0becesm4116129ook.39.2023.07.14.10.54.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Jul 2023 10:54:24 -0700 (PDT)
+Sender: Larry Finger <larry.finger@gmail.com>
+From:   Larry Finger <Larry.Finger@lwfinger.net>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-wireless@vger.kernel.org,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        syzbot+cf71097ffb6755df8251@syzkaller.appspotmail.com,
+        stable@vger.kernel.org, Nam Cao <namcaov@gmail.com>
+Subject: [PATCH v2] staging: r8712: Fix memory leak in _r8712_init_xmit_priv()
+Date:   Fri, 14 Jul 2023 12:54:17 -0500
+Message-ID: <20230714175417.18578-1-Larry.Finger@lwfinger.net>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add both PCIe3 controllers together with the shared PHY.
+In the above mentioned routine, memory is allocated in several places.
+If the first succeeds and a later one fails, the routine will leak memory.
+This patch fixes commit 2865d42c78a9 ("staging: r8712u: Add the new driver
+to the mainline kernel"). A potential memory leak in
+r8712_xmit_resource_alloc() is also addressed.
 
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Fixes: 2865d42c78a9 ("staging: r8712u: Add the new driver to the mainline kernel")
+Reported-by: syzbot+cf71097ffb6755df8251@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/x/log.txt?x=11ac3fa0a80000
+Cc: stable@vger.kernel.org
+Cc: Nam Cao <namcaov@gmail.com>
+Signed-off-by: Larry Finger <Larry.Finger@lwfinger.net>
 ---
- arch/arm64/boot/dts/rockchip/rk3588.dtsi | 128 +++++++++++++++++++++++
- 1 file changed, 128 insertions(+)
+v2 - Added allocations within the loop and urb allocations as suppested by Nam Cao
+---
+ drivers/staging/rtl8712/rtl871x_xmit.c | 43 ++++++++++++++++++++------
+ drivers/staging/rtl8712/xmit_linux.c   |  6 ++++
+ 2 files changed, 40 insertions(+), 9 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3588.dtsi b/arch/arm64/boot/dts/rockchip/rk3588.dtsi
-index 4d66ca6c2e4c..af6f52afbaff 100644
---- a/arch/arm64/boot/dts/rockchip/rk3588.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3588.dtsi
-@@ -7,6 +7,11 @@
- #include "rk3588-pinctrl.dtsi"
+diff --git a/drivers/staging/rtl8712/rtl871x_xmit.c b/drivers/staging/rtl8712/rtl871x_xmit.c
+index 090345bad223..6353dbe554d3 100644
+--- a/drivers/staging/rtl8712/rtl871x_xmit.c
++++ b/drivers/staging/rtl8712/rtl871x_xmit.c
+@@ -21,6 +21,7 @@
+ #include "osdep_intf.h"
+ #include "usb_ops.h"
  
- / {
-+	pcie30_phy_grf: syscon@fd5b8000 {
-+		compatible = "rockchip,rk3588-pcie3-phy-grf", "syscon";
-+		reg = <0x0 0xfd5b8000 0x0 0x10000>;
-+	};
-+
- 	pipe_phy1_grf: syscon@fd5c0000 {
- 		compatible = "rockchip,rk3588-pipe-phy-grf", "syscon";
- 		reg = <0x0 0xfd5c0000 0x0 0x100>;
-@@ -80,6 +85,116 @@ i2s10_8ch: i2s@fde00000 {
- 		status = "disabled";
- 	};
++#include <linux/usb.h>
+ #include <linux/ieee80211.h>
  
-+	pcie3x4: pcie@fe150000 {
-+		compatible = "rockchip,rk3588-pcie", "rockchip,rk3568-pcie";
-+		#address-cells = <3>;
-+		#size-cells = <2>;
-+		bus-range = <0x00 0x0f>;
-+		clocks = <&cru ACLK_PCIE_4L_MSTR>, <&cru ACLK_PCIE_4L_SLV>,
-+			 <&cru ACLK_PCIE_4L_DBI>, <&cru PCLK_PCIE_4L>,
-+			 <&cru CLK_PCIE_AUX0>, <&cru CLK_PCIE4L_PIPE>;
-+		clock-names = "aclk_mst", "aclk_slv",
-+			      "aclk_dbi", "pclk",
-+			      "aux", "pipe";
-+		device_type = "pci";
-+		interrupts = <GIC_SPI 263 IRQ_TYPE_LEVEL_HIGH 0>,
-+			     <GIC_SPI 262 IRQ_TYPE_LEVEL_HIGH 0>,
-+			     <GIC_SPI 261 IRQ_TYPE_LEVEL_HIGH 0>,
-+			     <GIC_SPI 260 IRQ_TYPE_LEVEL_HIGH 0>,
-+			     <GIC_SPI 259 IRQ_TYPE_LEVEL_HIGH 0>;
-+		interrupt-names = "sys", "pmc", "msg", "legacy", "err";
-+		#interrupt-cells = <1>;
-+		interrupt-map-mask = <0 0 0 7>;
-+		interrupt-map = <0 0 0 1 &pcie3x4_intc 0>,
-+				<0 0 0 2 &pcie3x4_intc 1>,
-+				<0 0 0 3 &pcie3x4_intc 2>,
-+				<0 0 0 4 &pcie3x4_intc 3>;
-+		linux,pci-domain = <0>;
-+		num-ib-windows = <16>;
-+		num-ob-windows = <16>;
-+		num-viewport = <8>;
-+		max-link-speed = <3>;
-+		msi-map = <0x0000 &its1 0x0000 0x1000>;
-+		num-lanes = <4>;
-+		phys = <&pcie30phy>;
-+		phy-names = "pcie-phy";
-+		power-domains = <&power RK3588_PD_PCIE>;
-+		ranges = <0x01000000 0x0 0xf0100000 0x0 0xf0100000 0x0 0x00100000>,
-+			 <0x02000000 0x0 0xf0200000 0x0 0xf0200000 0x0 0x00e00000>,
-+			 <0x03000000 0x0 0x40000000 0x9 0x00000000 0x0 0x40000000>;
-+		reg = <0xa 0x40000000 0x0 0x00400000>,
-+		      <0x0 0xfe150000 0x0 0x00010000>,
-+		      <0x0 0xf0000000 0x0 0x00100000>;
-+		reg-names = "dbi", "apb", "config";
-+		resets = <&cru SRST_PCIE0_POWER_UP>, <&cru SRST_P_PCIE0>;
-+		reset-names = "pwr", "pipe";
-+		rockchip,pipe-grf = <&php_grf>;
-+		status = "disabled";
+ static const u8 P802_1H_OUI[P80211_OUI_LEN] = {0x00, 0x00, 0xf8};
+@@ -55,6 +56,7 @@ int _r8712_init_xmit_priv(struct xmit_priv *pxmitpriv,
+ 	sint i;
+ 	struct xmit_buf *pxmitbuf;
+ 	struct xmit_frame *pxframe;
++	int j;
+ 
+ 	memset((unsigned char *)pxmitpriv, 0, sizeof(struct xmit_priv));
+ 	spin_lock_init(&pxmitpriv->lock);
+@@ -117,11 +119,8 @@ int _r8712_init_xmit_priv(struct xmit_priv *pxmitpriv,
+ 	_init_queue(&pxmitpriv->pending_xmitbuf_queue);
+ 	pxmitpriv->pallocated_xmitbuf =
+ 		kmalloc(NR_XMITBUFF * sizeof(struct xmit_buf) + 4, GFP_ATOMIC);
+-	if (!pxmitpriv->pallocated_xmitbuf) {
+-		kfree(pxmitpriv->pallocated_frame_buf);
+-		pxmitpriv->pallocated_frame_buf = NULL;
+-		return -ENOMEM;
+-	}
++	if (!pxmitpriv->pallocated_xmitbuf)
++		goto clean_up_frame_buf;
+ 	pxmitpriv->pxmitbuf = pxmitpriv->pallocated_xmitbuf + 4 -
+ 			      ((addr_t)(pxmitpriv->pallocated_xmitbuf) & 3);
+ 	pxmitbuf = (struct xmit_buf *)pxmitpriv->pxmitbuf;
+@@ -129,13 +128,17 @@ int _r8712_init_xmit_priv(struct xmit_priv *pxmitpriv,
+ 		INIT_LIST_HEAD(&pxmitbuf->list);
+ 		pxmitbuf->pallocated_buf =
+ 			kmalloc(MAX_XMITBUF_SZ + XMITBUF_ALIGN_SZ, GFP_ATOMIC);
+-		if (!pxmitbuf->pallocated_buf)
+-			return -ENOMEM;
++		if (!pxmitbuf->pallocated_buf) {
++			j = 0;
++			goto clean_up_alloc_buf;
++		}
+ 		pxmitbuf->pbuf = pxmitbuf->pallocated_buf + XMITBUF_ALIGN_SZ -
+ 				 ((addr_t) (pxmitbuf->pallocated_buf) &
+ 				 (XMITBUF_ALIGN_SZ - 1));
+-		if (r8712_xmit_resource_alloc(padapter, pxmitbuf))
+-			return -ENOMEM;
++		if (r8712_xmit_resource_alloc(padapter, pxmitbuf)) {
++			j = 1;
++			goto clean_up_alloc_buf;
++		}
+ 		list_add_tail(&pxmitbuf->list,
+ 				 &(pxmitpriv->free_xmitbuf_queue.queue));
+ 		pxmitbuf++;
+@@ -146,6 +149,28 @@ int _r8712_init_xmit_priv(struct xmit_priv *pxmitpriv,
+ 	init_hwxmits(pxmitpriv->hwxmits, pxmitpriv->hwxmit_entry);
+ 	tasklet_setup(&pxmitpriv->xmit_tasklet, r8712_xmit_bh);
+ 	return 0;
 +
-+		pcie3x4_intc: legacy-interrupt-controller {
-+			interrupt-controller;
-+			#address-cells = <0>;
-+			#interrupt-cells = <1>;
-+			interrupt-parent = <&gic>;
-+			interrupts = <GIC_SPI 260 IRQ_TYPE_EDGE_RISING 0>;
-+		};
-+	};
++clean_up_alloc_buf:
++	if (j) {
++		/* failure happened in r8712_xmit_resource_alloc()
++		 * delete extra pxmitbuf->pallocated_buf
++		 */
++		kfree(pxmitbuf->pallocated_buf);
++	}
++	for (j = 0; j < i; j++) {
++		int k;
 +
-+	pcie3x2: pcie@fe160000 {
-+		compatible = "rockchip,rk3588-pcie", "rockchip,rk3568-pcie";
-+		#address-cells = <3>;
-+		#size-cells = <2>;
-+		bus-range = <0x10 0x1f>;
-+		clocks = <&cru ACLK_PCIE_2L_MSTR>, <&cru ACLK_PCIE_2L_SLV>,
-+			 <&cru ACLK_PCIE_2L_DBI>, <&cru PCLK_PCIE_2L>,
-+			 <&cru CLK_PCIE_AUX1>, <&cru CLK_PCIE2L_PIPE>;
-+		clock-names = "aclk_mst", "aclk_slv",
-+			      "aclk_dbi", "pclk",
-+			      "aux", "pipe";
-+		device_type = "pci";
-+		interrupts = <GIC_SPI 258 IRQ_TYPE_LEVEL_HIGH 0>,
-+			     <GIC_SPI 257 IRQ_TYPE_LEVEL_HIGH 0>,
-+			     <GIC_SPI 256 IRQ_TYPE_LEVEL_HIGH 0>,
-+			     <GIC_SPI 255 IRQ_TYPE_LEVEL_HIGH 0>,
-+			     <GIC_SPI 254 IRQ_TYPE_LEVEL_HIGH 0>;
-+		interrupt-names = "sys", "pmc", "msg", "legacy", "err";
-+		#interrupt-cells = <1>;
-+		interrupt-map-mask = <0 0 0 7>;
-+		interrupt-map = <0 0 0 1 &pcie3x2_intc 0>,
-+				<0 0 0 2 &pcie3x2_intc 1>,
-+				<0 0 0 3 &pcie3x2_intc 2>,
-+				<0 0 0 4 &pcie3x2_intc 3>;
-+		linux,pci-domain = <1>;
-+		num-ib-windows = <16>;
-+		num-ob-windows = <16>;
-+		num-viewport = <8>;
-+		max-link-speed = <3>;
-+		msi-map = <0x1000 &its1 0x1000 0x1000>;
-+		num-lanes = <2>;
-+		phys = <&pcie30phy>;
-+		phy-names = "pcie-phy";
-+		power-domains = <&power RK3588_PD_PCIE>;
-+		ranges = <0x01000000 0x0 0xf1100000 0x0 0xf1100000 0x0 0x00100000>,
-+			 <0x02000000 0x0 0xf1200000 0x0 0xf1200000 0x0 0x00e00000>,
-+			 <0x03000000 0x0 0x40000000 0x9 0x40000000 0x0 0x40000000>;
-+		reg = <0xa 0x40400000 0x0 0x00400000>,
-+		      <0x0 0xfe160000 0x0 0x00010000>,
-+		      <0x0 0xf1000000 0x0 0x00100000>;
-+		reg-names = "dbi", "apb", "config";
-+		resets = <&cru SRST_PCIE1_POWER_UP>, <&cru SRST_P_PCIE1>;
-+		reset-names = "pwr", "pipe";
-+		rockchip,pipe-grf = <&php_grf>;
-+		status = "disabled";
++		pxmitbuf--;			/* reset pointer */
++		kfree(pxmitbuf->pallocated_buf);
++		for (k = 0; k < 8; k++)		/* delete xmit urb's */
++			usb_free_urb(pxmitbuf->pxmit_urb[k]);
++	}
++	kfree(pxmitpriv->pallocated_xmitbuf);
++	pxmitpriv->pallocated_xmitbuf = NULL;
++clean_up_frame_buf:
++	kfree(pxmitpriv->pallocated_frame_buf);
++	pxmitpriv->pallocated_frame_buf = NULL;
++	return -ENOMEM;
+ }
+ 
+ void _free_xmit_priv(struct xmit_priv *pxmitpriv)
+diff --git a/drivers/staging/rtl8712/xmit_linux.c b/drivers/staging/rtl8712/xmit_linux.c
+index 132afbf49dde..ceb6b590b310 100644
+--- a/drivers/staging/rtl8712/xmit_linux.c
++++ b/drivers/staging/rtl8712/xmit_linux.c
+@@ -112,6 +112,12 @@ int r8712_xmit_resource_alloc(struct _adapter *padapter,
+ 	for (i = 0; i < 8; i++) {
+ 		pxmitbuf->pxmit_urb[i] = usb_alloc_urb(0, GFP_KERNEL);
+ 		if (!pxmitbuf->pxmit_urb[i]) {
++			int k;
 +
-+		pcie3x2_intc: legacy-interrupt-controller {
-+			interrupt-controller;
-+			#address-cells = <0>;
-+			#interrupt-cells = <1>;
-+			interrupt-parent = <&gic>;
-+			interrupts = <GIC_SPI 255 IRQ_TYPE_EDGE_RISING 0>;
-+		};
-+	};
-+
- 	pcie2x1l0: pcie@fe170000 {
- 		compatible = "rockchip,rk3588-pcie", "rockchip,rk3568-pcie";
- 		#address-cells = <3>;
-@@ -221,4 +336,17 @@ combphy1_ps: phy@fee10000 {
- 		rockchip,pipe-phy-grf = <&pipe_phy1_grf>;
- 		status = "disabled";
- 	};
-+
-+	pcie30phy: phy@fee80000 {
-+		compatible = "rockchip,rk3588-pcie3-phy";
-+		reg = <0x0 0xfee80000 0x0 0x20000>;
-+		#phy-cells = <0>;
-+		clocks = <&cru PCLK_PCIE_COMBO_PIPE_PHY>;
-+		clock-names = "pclk";
-+		resets = <&cru SRST_PCIE30_PHY>;
-+		reset-names = "phy";
-+		rockchip,pipe-grf = <&php_grf>;
-+		rockchip,phy-grf = <&pcie30_phy_grf>;
-+		status = "disabled";
-+	};
- };
++			for (k = i - 1; k >= 0; k--) {
++				/* handle allocation errors part way through loop */
++				usb_free_urb(pxmitbuf->pxmit_urb[k]);
++			}
+ 			netdev_err(padapter->pnetdev, "pxmitbuf->pxmit_urb[i] == NULL\n");
+ 			return -ENOMEM;
+ 		}
 -- 
-2.40.1
+2.41.0
 
