@@ -2,136 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C953C753967
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 13:19:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4F5F75396B
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 13:20:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235423AbjGNLTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 07:19:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35056 "EHLO
+        id S234954AbjGNLUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 07:20:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234890AbjGNLTW (ORCPT
+        with ESMTP id S231362AbjGNLUb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 07:19:22 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFE042D78;
-        Fri, 14 Jul 2023 04:19:20 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 8C5322211E;
-        Fri, 14 Jul 2023 11:19:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1689333559; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lNe+Gf3I5enTnyuL0ajOVSEMvthYdstQw6XyBnmILFY=;
-        b=O41kwjgRAMaULzdkdj+t8Kn7PFn4h+EElN6WrgqfDgNFlAGcnZVM6UNjlcbe/9OmxdaXNJ
-        sEMHVL1Wz4GkD+m8raS7dc/OJNIpDsz5IT6NmjqqtpFoU8hZqZHHLDTtDp6+X+NI99BuNN
-        gf9hRNRIQFZyGGIFCz3h3dKlszOsg0g=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1689333559;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lNe+Gf3I5enTnyuL0ajOVSEMvthYdstQw6XyBnmILFY=;
-        b=nKvtNnfDq3yztDN/UtUFpaunYtesuG/jPByktklTQY+bW+GEut3Xpz3Vann0xzLvBq8GI3
-        sxxnUrKXWHgN4+AQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 467CA138F8;
-        Fri, 14 Jul 2023 11:19:19 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id WCPlDzcvsWThLgAAMHmgww
-        (envelope-from <trenn@suse.de>); Fri, 14 Jul 2023 11:19:19 +0000
-From:   Thomas Renninger <trenn@suse.de>
-To:     trenn@suse.com, shuah@kernel.org, Wyes Karny <wyes.karny@amd.com>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rafael@kernel.org, gautham.shenoy@amd.com,
-        Mario.Limonciello@amd.com, Ray.Huang@amd.com, Perry.Yuan@amd.com,
-        Wyes Karny <wyes.karny@amd.com>
-Subject: Re: [PATCH v3 0/5] cpupower: Add various feature control support for
- amd_pstate
-Date:   Fri, 14 Jul 2023 13:19:18 +0200
-Message-ID: <1896655.g5d078U9FE@p200300d2573c9800520d172709106850.dip0.t-ipconnect.de>
-In-Reply-To: <20230619190503.4061-1-wyes.karny@amd.com>
-References: <20230619190503.4061-1-wyes.karny@amd.com>
+        Fri, 14 Jul 2023 07:20:31 -0400
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5568D2D63;
+        Fri, 14 Jul 2023 04:20:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689333630; x=1720869630;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=TWbTERSN9sck8s9p2NkrzXtIVeCq+h7as7v69ZZ4WlY=;
+  b=RW6C2LF7fh3ymFSxDdfO6UxcSHLmN8XVDFy09q+wcNWFqf/yFrm8uzq4
+   hRSAksRU0RASksHPPB2aoKx1hglHtQgOcoN1g932o6Xxqx86Qt+HRLegG
+   BmEEKmVdBzC0jW5jfWQIsWGKnfBOCf8d1Z0Xd53Bt/ETPoxCZFregvsBe
+   +Jk5eUmMn5Kz+kQgI/g9HN8T1ZnLafWRLtUzA6iBlM9gFa3/aAlzy/DzU
+   NfCYakEYMCBrAasfwPPhkmpW+yDEeHpuOCyhwAwx7qoDoLtbtIflFBJfz
+   CC+/eIeUWLCGnQDkLMR+5vGeryrKCS1v0Ykrr6CfMfT27DAsbb9G2BGR2
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="431622432"
+X-IronPort-AV: E=Sophos;i="6.01,205,1684825200"; 
+   d="scan'208";a="431622432"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 04:20:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="896388420"
+X-IronPort-AV: E=Sophos;i="6.01,205,1684825200"; 
+   d="scan'208";a="896388420"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga005.jf.intel.com with ESMTP; 14 Jul 2023 04:20:09 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1qKGqF-002dxf-0y;
+        Fri, 14 Jul 2023 14:20:07 +0300
+Date:   Fri, 14 Jul 2023 14:20:07 +0300
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Amadeusz =?utf-8?B?U8WCYXdpxYRza2k=?= 
+        <amadeuszx.slawinski@linux.intel.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        alsa-devel@alsa-project.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH v2 07/15] ALSA: hda/i915:  Use global PCI match macro
+Message-ID: <ZLEvZ3Ss05A+x1ty@smile.fi.intel.com>
+References: <20230714185615.370597-1-amadeuszx.slawinski@linux.intel.com>
+ <20230714185615.370597-8-amadeuszx.slawinski@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230714185615.370597-8-amadeuszx.slawinski@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Jul 14, 2023 at 08:56:07PM +0200, Amadeusz Sławiński wrote:
+> Instead of using local macro to match PCI device, use global one.
 
-sorry for the late answer, I wanted to give this a test, but could not
-make it (yet).
+...
 
-My 2 cents on this one:
+> @@ -2718,7 +2718,6 @@
+>  #define PCI_DEVICE_ID_INTEL_82840_HB	0x1a21
+>  #define PCI_DEVICE_ID_INTEL_82845_HB	0x1a30
+>  #define PCI_DEVICE_ID_INTEL_IOAT	0x1a38
+> -#define PCI_DEVICE_ID_INTEL_HDA_APL_T	0x1a98
+>  #define PCI_DEVICE_ID_INTEL_HDA_CPT	0x1c20
+>  #define PCI_DEVICE_ID_INTEL_COUGARPOINT_LPC_MIN	0x1c41
+>  #define PCI_DEVICE_ID_INTEL_COUGARPOINT_LPC_MAX	0x1c5f
 
-what Ray already mentioned is greatly appreciated: Find common APIs, not only 
-AMD vs Intel, but general ones, outside of the driver specific sysfs dir, e.g.:
-/sys/devices/system/cpu/cpufreq/...
+Looks like it should be a separate change.
 
-But not at all costs and if the epp part is (AMD) specific and varies to others 
-in meaning or in values, it has to be a specific file/API.
-
-(Another Example/Request at the end)
-
-And...: It would be nice to see some documentation in form of manpage 
-enhancements. At least for the newly introduced arguments.
-If not yet, there should be: possible value range, which machines (CPU flags, 
-Zen 4, ...), if more complex technology, some kind of introduction or 
-reference where to find things would be really great.
-
-I wonder whether it could be possible to connect this with:
-Documentation/admin-guide/pm/intel_pstate.rst
-Documentation/admin-guide/pm/amd-pstate.rst
-
-I guess there is a static web site address people could rely on where above
-kernel docs are hosted forever?
-Then it would make sense to link the cpupower manpage with it and keep the 
-description short and avoid duplication?
-
-             Thomas
-
-
-Another Example/Request at the end:
-
-One example I recently got asked for, the bug is private:
-"cpupower is not returning max turbo active cores information on latest Intel 
-processors."
-
-Here are examples of 2 newer cpus that don't return the active core 
-information like this: 
-    3600 MHz max turbo 4 active cores
-    3600 MHz max turbo 3 active cores
-    3700 MHz max turbo 2 active cores
-    3800 MHz max turbo 1 active cores
-
-Not sure whether there finally is some kind of consolidation on turbo/boost/
-dynamic/hw/bios interfaces in respect to turbo/boosting technology. But if 
-anyhow possible and it makes sense, it would be really great to see one sysfs 
-file exposed to userspace to read/enable/disable.
-
-Possible cpufreqs (including or only) boost freqs, maybe with active cores if 
-this is a general technique optionally added if avail?
-
-Nothing which has to be implemented at all costs and right now, just an idea 
-on how things could be consolidated at some point of time which might be wise 
-to think about now already...
-
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
