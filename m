@@ -2,119 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B11EA7540F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 19:46:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 208E8754124
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 19:49:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236337AbjGNRpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 13:45:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60998 "EHLO
+        id S235463AbjGNRrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 13:47:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236281AbjGNRpo (ORCPT
+        with ESMTP id S236249AbjGNRr1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 13:45:44 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C6DB3A87;
-        Fri, 14 Jul 2023 10:45:12 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-307d58b3efbso2319908f8f.0;
-        Fri, 14 Jul 2023 10:45:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689356703; x=1691948703;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=pZ8IZ8lNs4pM9mPhnJiJ66il3qOi6HFdQct21c/MdmM=;
-        b=BIT/8Qw4WSsENwEntqu8li1JhIeyfnGuk4INah5C2gJZRATQi/5hWatMBpoCH//TLx
-         NrsCIiuUzg/ENxdptrTeyvRYCGrNtSO68fTFtp6mLxUOkqZ2vB/1mxps+QwY58xvR7g5
-         kDzSAmOl2/epOon9ZqgBinIOHNqeXEiEtQxbkWqahFtkXlSuGXY1Bok3Ix0NL6uFbtnr
-         7LHwprgle081B5el7N0aYu4jrnNCgLYcNO3sSifjOeQlBqj1MdymdRRdjXL4aHrKDUSL
-         KDcMJmL4Arp9nanj9FbxJwGHWqRmesIngi2bRnyrqLa/42wSxLB+w3rnkys9C0Y9sgxU
-         bYzw==
+        Fri, 14 Jul 2023 13:47:27 -0400
+Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C8953AB5;
+        Fri, 14 Jul 2023 10:47:00 -0700 (PDT)
+Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-78666f06691so88274039f.0;
+        Fri, 14 Jul 2023 10:47:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689356703; x=1691948703;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pZ8IZ8lNs4pM9mPhnJiJ66il3qOi6HFdQct21c/MdmM=;
-        b=beqP2QnwuBlvmyfqJm7xqDHaDUBse8krZjfV2DmN+Ml7GtTV/77pVZhcUy55DB13K5
-         bDgcRlq1gHnxLU9sarYFeYQDksLYAauYGtJoBq6DTpxKPZPUxvSn6DarF7y94+4eUwfe
-         0IROGWDIioY4ISAUHrW3pqbLCiw3SnRcTBgVxt1WbMun+uObOZSzCaFfMInSXAkdegMw
-         tZGLSs1FVS50oTu36e7PgxMyCJLbK8VgDZr097h1FQwHSveMRQg54vjQh/ZQkfGYdsao
-         2OhOviC8jgwEm3GEP6s1479TQDPCOSRH3uIULsvlJ8IglVQqtdwdAXaWEmqtWv2tl4rw
-         Jpzg==
-X-Gm-Message-State: ABy/qLbJIzDzce3fwbVL2+HY4dnXuOHs3I7O5MuZaHlGt24UNlwDhrog
-        sCUz5rz/IPJRHIgU5cwgf9OZlx1Vdw==
-X-Google-Smtp-Source: APBJJlHPR0EHXofkrCZdaso3z451jhgkwG0CPlBxQBlyX/lq+JyTD9+Pro49H67ErbelTVw4A5KdUg==
-X-Received: by 2002:adf:de12:0:b0:315:8a13:ef16 with SMTP id b18-20020adfde12000000b003158a13ef16mr5056464wrm.69.1689356703273;
-        Fri, 14 Jul 2023 10:45:03 -0700 (PDT)
-Received: from p183 ([46.53.248.195])
-        by smtp.gmail.com with ESMTPSA id f10-20020adff98a000000b003159d2dabbasm11423415wrr.94.2023.07.14.10.45.02
+        d=1e100.net; s=20221208; t=1689356757; x=1691948757;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ASjrxMFGfI2mQtSCo+tL5VWD7Mqm7tMyxd3We8wcpHw=;
+        b=WoUt32GyMkc/4F9zeZohGtiyFl4tzAJWDPu60bbfx29rqG6b2XTZhqLibHGgGR1lE4
+         rDNtP+BDPARI8NfK9O1XivOyAPx1w+WyIwSPa2udKD0iz56v820BlUj0kyhcLqWUrLm/
+         iGl9cmBM3lbnDt1TFv8YXH/7GJRgeNAqCkKRHi5XPR+jS2TUL2G6IFUh82NnSxEU5DbV
+         iEX4rYpDpREn2FUs03MNOoKPRkIONiaiak7BnFejwHlRshfeCXnyfAQiHBFf6OpVOo1d
+         YGNlgBH9Oi6aP5thz+t4OJv1INZqnKd8MBIUMk+jUIg1I3fAmSBHLYiSNyu7BRiFMw0D
+         VdqQ==
+X-Gm-Message-State: ABy/qLb1pz/xrwp6zdYlquxcBHejGankgJ6CEAhpLu2CD7/Cb+esbbUE
+        AV3uVDCvaK4aU2FSkICq00XVlyx6iQ==
+X-Google-Smtp-Source: APBJJlHuso8S9Bt7JOE/amuqp1QRpWb0gkLH6g4sDyXSdQBCVP4PpFjXy2a6cRQm/j9Ech1mQSqMHw==
+X-Received: by 2002:a6b:760e:0:b0:787:f94:5133 with SMTP id g14-20020a6b760e000000b007870f945133mr4910825iom.2.1689356757494;
+        Fri, 14 Jul 2023 10:45:57 -0700 (PDT)
+Received: from robh_at_kernel.org ([64.188.179.250])
+        by smtp.gmail.com with ESMTPSA id f8-20020a056638022800b0042b2959e6dcsm2716939jaq.87.2023.07.14.10.45.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 10:45:02 -0700 (PDT)
-Date:   Fri, 14 Jul 2023 20:45:00 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     Nicolas Schier <nicolas@fjasle.eu>
-Cc:     akpm@linux-foundation.org, masahiroy@kernel.org, nathan@kernel.org,
-        ndesaulniers@google.com, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org
-Subject: Re: [PATCH] kbuild: flatten KBUILD_CFLAGS
-Message-ID: <4dc7e56c-6692-4d4c-a8d2-05abe4501e66@p183>
-References: <4f414a87-0c54-44bd-b218-f6f0b22c57ef@p183>
- <ZLEmgxm73zzmffWD@fjasle.eu>
+        Fri, 14 Jul 2023 10:45:56 -0700 (PDT)
+Received: (nullmailer pid 4056808 invoked by uid 1000);
+        Fri, 14 Jul 2023 17:45:54 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] gpu/host1x: Explicitly include correct DT includes
+Date:   Fri, 14 Jul 2023 11:45:49 -0600
+Message-Id: <20230714174549.4056675-1-robh@kernel.org>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZLEmgxm73zzmffWD@fjasle.eu>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 12:42:11PM +0200, Nicolas Schier wrote:
-> On Thu, Jul 13, 2023 at 09:52:28PM +0300, Alexey Dobriyan wrote:
-> > Make it slightly easier to see which compiler options are added and
-> > removed (and not worry about column limit too!).
-> > 
-> > Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
-> > ---
-> > 
-> >  Makefile |   22 +++++++++++++++++-----
-> >  1 file changed, 17 insertions(+), 5 deletions(-)
-> > 
-> > --- a/Makefile
-> > +++ b/Makefile
-> > @@ -555,11 +555,23 @@ LINUXINCLUDE    := \
-> >  		$(USERINCLUDE)
-> >  
-> >  KBUILD_AFLAGS   := -D__ASSEMBLY__ -fno-PIE
-> > -KBUILD_CFLAGS   := -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs \
-> > -		   -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE \
-> > -		   -Werror=implicit-function-declaration -Werror=implicit-int \
-> > -		   -Werror=return-type -Wno-format-security -funsigned-char \
-> > -		   -std=gnu11
-> > +
-> > +KBUILD_CFLAGS :=
-> > +KBUILD_CFLAGS += -std=gnu11
-> 
-> If you want to put -std at top, on contrast to the sorted options below,
-> you could also merge the two lines above.
+The DT of_device.h and of_platform.h date back to the separate
+of_platform_bus_type before it as merged into the regular platform bus.
+As part of that merge prepping Arm DT support 13 years ago, they
+"temporarily" include each other. They also include platform_device.h
+and of.h. As a result, there's a pretty much random mix of those include
+files used throughout the tree. In order to detangle these headers and
+replace the implicit includes with struct declarations, users need to
+explicitly include the correct includes.
 
-I don't know. Standard choice is arguably the most important option
-so I put it first.
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+ drivers/gpu/host1x/context.c | 2 +-
+ drivers/gpu/host1x/dev.c     | 3 ++-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-> > +KBUILD_CFLAGS += -fshort-wchar
-> > +KBUILD_CFLAGS += -funsigned-char
-> > +KBUILD_CFLAGS += -fno-common
-> > +KBUILD_CFLAGS += -fno-PIE
-> > +KBUILD_CFLAGS += -fno-strict-aliasing
-> > +KBUILD_CFLAGS += -Wall
-> > +KBUILD_CFLAGS += -Wundef
-> > +KBUILD_CFLAGS += -Werror=implicit-function-declaration
-> > +KBUILD_CFLAGS += -Werror=implicit-int
-> > +KBUILD_CFLAGS += -Werror=return-type
-> > +KBUILD_CFLAGS += -Werror=strict-prototypes
-> > +KBUILD_CFLAGS += -Wno-format-security
-> > +KBUILD_CFLAGS += -Wno-trigraphs
+diff --git a/drivers/gpu/host1x/context.c b/drivers/gpu/host1x/context.c
+index 9ad89d22c0ca..c000d4e0c2c6 100644
+--- a/drivers/gpu/host1x/context.c
++++ b/drivers/gpu/host1x/context.c
+@@ -6,7 +6,7 @@
+ #include <linux/device.h>
+ #include <linux/kref.h>
+ #include <linux/of.h>
+-#include <linux/of_platform.h>
++#include <linux/of_device.h>
+ #include <linux/pid.h>
+ #include <linux/slab.h>
+ 
+diff --git a/drivers/gpu/host1x/dev.c b/drivers/gpu/host1x/dev.c
+index aae2efeef503..7c6699aed7d2 100644
+--- a/drivers/gpu/host1x/dev.c
++++ b/drivers/gpu/host1x/dev.c
+@@ -11,8 +11,9 @@
+ #include <linux/io.h>
+ #include <linux/list.h>
+ #include <linux/module.h>
+-#include <linux/of_device.h>
+ #include <linux/of.h>
++#include <linux/of_platform.h>
++#include <linux/platform_device.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/slab.h>
+ 
+-- 
+2.40.1
+
