@@ -2,94 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83BD6753032
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 05:53:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA5FD753035
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 05:53:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234964AbjGNDxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 23:53:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54718 "EHLO
+        id S234963AbjGNDxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 23:53:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234920AbjGNDxh (ORCPT
+        with ESMTP id S234952AbjGNDxn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 23:53:37 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C38BB2D79
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 20:53:24 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R2HdD4tjTzBRSVj
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 11:53:20 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689306800; x=1691898801; bh=H7Hb8eUO+kbWVHQppS8k4ZwpO67
-        +dUJb9HgXomBv17g=; b=OKBRLz93NvnK/HMQrs9SRiM4YwwG72eR+vXj/WQXmtZ
-        g+0OOPP3XKahriNdb7BBHhRNZvrK1EoT53aMDWTY8jHVZu1lcHFAMNo8AecAswHG
-        MIOpijx7LlxaG+BK11pWcZOiN5laImOlWzfXyGiQyrsGxQZyvdCFADmm7Z9oOiNA
-        yNvQ6Ye6B9vIcXsKksqGdhYNU9VaJeN17lWaYJ8Jbv0nYO+8stlLyyDIFCIITS9f
-        QEyDfLArGSNzBFtj8yVuP47UH1/H9NuDXSOcRPJCp1NulGcbVem0tobbGUd5ut3e
-        fcYS7OFgCzREUodkwjYHcoTvmsmCXOrBsF1TD9FLAGw==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id iKgyTRh4_9es for <linux-kernel@vger.kernel.org>;
-        Fri, 14 Jul 2023 11:53:20 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R2HdD21wDzBJk54;
-        Fri, 14 Jul 2023 11:53:20 +0800 (CST)
+        Thu, 13 Jul 2023 23:53:43 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A14830D7;
+        Thu, 13 Jul 2023 20:53:29 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3686B61BE6;
+        Fri, 14 Jul 2023 03:53:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F456C433C8;
+        Fri, 14 Jul 2023 03:53:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689306808;
+        bh=+Fwviehmwgt9m79rlkMZy9sX+Vt3vd0g3UBMQgLjJSE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Oe5GldKdTBTA4XQjk58S0OXHh+EuHdGsss8/xGKrhDOPhwAHK1FI0eq0kJnvMlgXJ
+         zWMyLRPMe7jckoV247ZCMBDzuM54nqWJZmwREKMYtgM8Ll4b2Q4ADi7FMuy7tGSq43
+         TbX4m++CTLhdyMV8oo96GBk00rJqIlohbJy3Yt56nd1V31Yiagil5P/Hs44FhvW3UD
+         9Ej+6w1zkIvRVU1K5UcGyqmBQZq/WNnuEijCEVzBcsxRVTMmsu+4MVnw7CF/vRwasH
+         lAJHnrJ5DLXVqSwkd5V4xIVztAAKZero3ZhbDh3dkiD+vsYGoNPtLK6PIN4t1rz16e
+         aLFT8rQM4LfsQ==
+Date:   Thu, 13 Jul 2023 20:53:26 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Haiyang Zhang <haiyangz@microsoft.com>
+Cc:     "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Paul Rosswurm <paulros@microsoft.com>,
+        "olaf@aepfle.de" <olaf@aepfle.de>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        Long Li <longli@microsoft.com>,
+        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        Ajay Sharma <sharmaajay@microsoft.com>,
+        "hawk@kernel.org" <hawk@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "shradhagupta@linux.microsoft.com" <shradhagupta@linux.microsoft.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next] net: mana: Add page pool for RX buffers
+Message-ID: <20230713205326.5f960907@kernel.org>
+In-Reply-To: <1689259687-5231-1-git-send-email-haiyangz@microsoft.com>
+References: <1689259687-5231-1-git-send-email-haiyangz@microsoft.com>
 MIME-Version: 1.0
-Date:   Fri, 14 Jul 2023 11:53:20 +0800
-From:   hanyu001@208suo.com
-To:     bp@alien8.de, tony.luck@intel.com, james.morse@arm.com,
-        mchehab@kernel.org, rric@kernel.org
-Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drivers: edac: add missing spaces after ','
-In-Reply-To: <tencent_9292C0A2AD2275684250A6AD5447F83C1706@qq.com>
-References: <tencent_9292C0A2AD2275684250A6AD5447F83C1706@qq.com>
-User-Agent: Roundcube Webmail
-Message-ID: <89259619b487552623c8ab80c143e550@208suo.com>
-X-Sender: hanyu001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes checkpatch.pl error:
+On Thu, 13 Jul 2023 14:48:45 +0000 Haiyang Zhang wrote:
+> Add page pool for RX buffers for faster buffer cycle and reduce CPU
+> usage.
+> 
+> Get an extra ref count of a page after allocation, so after upper
+> layers put the page, it's still referenced by the pool. We can reuse
+> it as RX buffer without alloc a new page.
 
-drivers/edac/edac_device_sysfs.c:322: ERROR: space required after that 
-',' (ctx:VxV)
-drivers/edac/edac_device_sysfs.c:322: ERROR: space required after that 
-',' (ctx:VxV)
-
-Signed-off-by: maqimei <2433033762@qq.com>
----
-  drivers/edac/edac_device_sysfs.c | 2 +-
-  1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/edac/edac_device_sysfs.c 
-b/drivers/edac/edac_device_sysfs.c
-index 95e4249..05d4353 100644
---- a/drivers/edac/edac_device_sysfs.c
-+++ b/drivers/edac/edac_device_sysfs.c
-@@ -319,7 +319,7 @@ static ssize_t instance_ce_count_show(struct 
-edac_device_instance *instance,
-  }
-
-  #define to_instance(k) container_of(k, struct edac_device_instance, 
-kobj)
--#define to_instance_attr(a) container_of(a,struct 
-instance_attribute,attr)
-+#define to_instance_attr(a) container_of(a, struct instance_attribute, 
-attr)
-
-  /* DEVICE instance kobject release() function */
-  static void edac_device_ctrl_instance_release(struct kobject *kobj)
+Please use the real page_pool API from include/net/page_pool.h
+We've moved past every driver reinventing the wheel, sorry.
+-- 
+pw-bot: cr
