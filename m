@@ -2,65 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BCDB753E6B
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 17:08:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1B6D753E6E
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 17:09:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236309AbjGNPII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 11:08:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40558 "EHLO
+        id S236321AbjGNPJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 11:09:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234425AbjGNPIG (ORCPT
+        with ESMTP id S235235AbjGNPI6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 11:08:06 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6086F2702;
-        Fri, 14 Jul 2023 08:08:05 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Fri, 14 Jul 2023 11:08:58 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 534A62700;
+        Fri, 14 Jul 2023 08:08:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=bk+FJ5y1FZ468j4zK+Q82PqwGRIC7IeBtGlwB2J1sZs=; b=fHeliTIg/93p/aGBuNLOKhpw0x
+        iXwrkANZc+tyWcCQW/N4ZSJbiUz/RgbCWGFB2M08Fu15z/dAjUOST4IdJrMRTbS5iNkAeccse7aSe
+        ++enCI5aLk+oyR2by2+xAWKkNYJ9yrjmxlXVKdxXJUXgmBpIR5hSzPPz3R+Xe9Z6WoDEwyM4FkGxz
+        AGExAhgx9QmUQwWh+bQ1MW/0GTRkvIxv6adgXqw28E2k9/haA6o7Ok1mPQJC5ABXL+7Oge/P9/GhX
+        +4ntawyskutGsajeaQsOhxrdmIJvYRTMEfauXYHrmpSdIG0IEGxVgjZFTy7g8d+8sldaiFfo1+mjQ
+        JEm56Fag==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qKKPb-006JCe-1Y;
+        Fri, 14 Jul 2023 15:08:51 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F349761D48;
-        Fri, 14 Jul 2023 15:08:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 591D0C433C7;
-        Fri, 14 Jul 2023 15:08:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689347284;
-        bh=ocPhOzFijupIUUD2Bp7JtiNo8d0/cn/ky2mmjm36hgQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RcszFiUEGzq3FlUItGxNuvKWEHBh1AfacWryEi7hRHmCJ4Fd51i5qSG18fpY+OoNM
-         as8q7Ii0vpGch75W8Tqc5213EyPArf+Um+Ic3cT47a/lfbyL7rwZboh/m/Yyevdc7A
-         erYd1dUsqwryTaIohi60la+dY8EVLXwvJTlf3/tDcE3hlwdSoeKM3xKVKxVxprLoVz
-         Vwh5sXKBmLQuRWFmOgtcaXx7CStoALoolBrdO1aYmDhVU++VNpmTWxtEmLUQ4ZsjAW
-         Yf+8SgCp1dMQb64QanX1u9q8bKDcPQWQBhR/D62RAHmdYAqsuc1naL2IWaDyQE9lqT
-         S+YTUzUN7dfpA==
-Received: from johan by xi.lan with local (Exim 4.96)
-        (envelope-from <johan@kernel.org>)
-        id 1qKKOr-0004qL-0l;
-        Fri, 14 Jul 2023 17:08:05 +0200
-Date:   Fri, 14 Jul 2023 17:08:05 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     Johan Hovold <johan+linaro@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Rajendra Nayak <quic_rjendra@quicinc.com>,
-        Matthias Kaehlcke <mka@chromium.org>
-Subject: Re: [PATCH 1/2] serial: qcom-geni: fix opp vote on shutdown
-Message-ID: <ZLFk1Q0pTfYmB5EU@hovoldconsulting.com>
-References: <20230714130214.14552-1-johan+linaro@kernel.org>
- <20230714130214.14552-2-johan+linaro@kernel.org>
- <e99b5975-b770-5460-1ce4-cd4eb1a50291@linaro.org>
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1DC733001E7;
+        Fri, 14 Jul 2023 17:08:50 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id CA10721372B62; Fri, 14 Jul 2023 17:08:50 +0200 (CEST)
+Date:   Fri, 14 Jul 2023 17:08:50 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, andres@anarazel.de
+Subject: Re: [PATCH 4/8] io_uring: add support for futex wake and wait
+Message-ID: <20230714150850.GB3261758@hirez.programming.kicks-ass.net>
+References: <20230712162017.391843-1-axboe@kernel.dk>
+ <20230712162017.391843-5-axboe@kernel.dk>
+ <20230713111513.GH3138667@hirez.programming.kicks-ass.net>
+ <20230713172455.GA3191007@hirez.programming.kicks-ass.net>
+ <bcf174d8-607b-e61a-2091-eccd3ffe0dfe@kernel.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e99b5975-b770-5460-1ce4-cd4eb1a50291@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+In-Reply-To: <bcf174d8-607b-e61a-2091-eccd3ffe0dfe@kernel.dk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,29 +63,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 04:29:08PM +0200, Konrad Dybcio wrote:
-> On 14.07.2023 15:02, Johan Hovold wrote:
-> > The operating-performance-point vote needs to be dropped when shutting
-> > down the port to avoid wasting power by keeping resources like power
-> > domains in an unnecessarily high performance state (e.g. when a UART
-> > connected Bluetooth controller is not in use).
-> > 
-> > Fixes: a5819b548af0 ("tty: serial: qcom_geni_serial: Use OPP API to set clk/perf state")
-> > Cc: stable@vger.kernel.org      # 5.9
-> > Cc: Rajendra Nayak <quic_rjendra@quicinc.com>
-> > Cc: Matthias Kaehlcke <mka@chromium.org>
-> > Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
-> > ---
-> I don't know a whole lot about this subsystem, but the PM call has
-> a pointer to uport which already contains this clock rate.. Is it
-> zeroed out by the core before we reach it, which would prevent us
-> from reusing it?
+On Fri, Jul 14, 2023 at 08:52:40AM -0600, Jens Axboe wrote:
+> Saw your series - I'll take a look. In terms of staging when we get
+> there, would it be possible to split your flags series into the bare
+> minimum and trivial, and then have that as a dependency for this series
+> and the rest of your series?
 
-No, but this driver has other issues and I couldn't be arsed fixing them
-before addressing this bug.
+I think you only really need the first three patches, and I hope those
+are the least controversial of the lot.
 
-Specifically that uartclk variable can currently be set by userspace...
+After those, I can implement the extra flags independently of the
+io_uring thing and all interfaces should just have it work.
 
-I'll fix that up next week.
-
-Johan
+So yes :-)
