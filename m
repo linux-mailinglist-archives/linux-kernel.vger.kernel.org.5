@@ -2,54 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 921D8752E46
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 02:25:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4469752E48
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 02:29:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234101AbjGNAZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 20:25:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44082 "EHLO
+        id S234458AbjGNA3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 20:29:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231905AbjGNAY6 (ORCPT
+        with ESMTP id S232532AbjGNA3i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 20:24:58 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B31E7B7;
-        Thu, 13 Jul 2023 17:24:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1689294295;
-        bh=ZTS627h4WMNjCWOzP3MLK0RMweGInem4XpdDyBIq//0=;
-        h=Date:From:To:Cc:Subject:From;
-        b=l5DKcJXeYke+n6b6c0Qe66/ixYSzCkGjiA+OYenB/KjD2aK3NcKYZ65ZRVNexVG7J
-         GNQRwBtV5Z/lyviFx8loM4MoQ/gNEFSP2+LhNEPzsSa7PpveRlhqDY5ikn99/2UZWu
-         RlTMnCgSL62TnQNuwtnIOrLxBZ8U4zbtf2Z94N1MMzJfWHbMwsshqG+vqduWTw0338
-         +vruYj8cPSclbvIPZNiqq5SSGNVx68zvxqbQrnRFSJ+OmguATC5DBuULHtG8iMq75R
-         9jldWHUfrtvp6k9oUz3qjf13qh6sCMX9/wGiHWe9kSZtw8fce/ibbPfd6aB4ViVqZW
-         4MtbETJ1gfeSw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4R2C0l0Gnpz4whq;
-        Fri, 14 Jul 2023 10:24:55 +1000 (AEST)
-Date:   Fri, 14 Jul 2023 10:24:53 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Christian Brauner <brauner@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Carlos Maiolino <cem@kernel.org>,
-        Carlos Maiolino <cmaiolino@redhat.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Lukas Czerner <lczerner@redhat.com>
-Subject: linux-next: manual merge of the vfs-brauner tree with the mm tree
-Message-ID: <20230714102453.4399f059@canb.auug.org.au>
+        Thu, 13 Jul 2023 20:29:38 -0400
+Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D09BD2D51
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 17:29:36 -0700 (PDT)
+Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-bfe6ea01ff5so1229714276.3
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 17:29:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689294576; x=1691886576;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+qw14nvwJzqP0HPM9ddRLG0layDa0DvKHJGWB8R9CtU=;
+        b=X9+vi3pOmHBvjYUYxcixHwaKwD4vSY0HVUwFEUmM9tvW3qbZiV52xIQOpomTRcLRar
+         vpQj+A/UwHsoLkBvZ0PgAv4dweSfEj7ziTQfmaMw9pu/YrVOAcTTatmqTEcNLWXr9mPD
+         k3GYBAvKwOtwjRP0BrXljkceQLkTKfdFFop1qzE2xzzhKwYRkmKM/D6Xv5ciOVDtyy/M
+         j9SbHXAKI2QaQXwxEkZ8hD7GqrwN8e1WIAGbreCpeUiUYhHIEbz+FN4XMUhsxzGwll4w
+         JBq9vgTx/A7+/FsCq0y+XXpIcmVQ7hwQ1NPVlgLKLFloNQ9I4osIOXH0r6m7+kRJXTyS
+         75RQ==
+X-Gm-Message-State: ABy/qLafjM8uNONZLh/oW52zotzGM6372j0Zbep6IP984ch46ZcPX2HX
+        R7nSAka/25S6wV8Wl3uQ28tFPA0ERKpwZQ==
+X-Google-Smtp-Source: APBJJlFlQlBm+r4RtYkUGfkYjQYMK6Gf/bvXhvwzKUOqSuQ9Nc1bZHZjFWCYK46ERBunbywbXnQ9dQ==
+X-Received: by 2002:a0d:c1c2:0:b0:577:bc0:2d55 with SMTP id c185-20020a0dc1c2000000b005770bc02d55mr3717640ywd.33.1689294575876;
+        Thu, 13 Jul 2023 17:29:35 -0700 (PDT)
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com. [209.85.128.182])
+        by smtp.gmail.com with ESMTPSA id l186-20020a0dc9c3000000b0057725aeb4afsm2042318ywd.84.2023.07.13.17.29.35
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 Jul 2023 17:29:35 -0700 (PDT)
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-5776312eaddso12687507b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 17:29:35 -0700 (PDT)
+X-Received: by 2002:a0d:c443:0:b0:576:a91d:d3ee with SMTP id
+ g64-20020a0dc443000000b00576a91dd3eemr3512271ywd.42.1689294573773; Thu, 13
+ Jul 2023 17:29:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/UOry.mrWJAqD+NOCCZero8/";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+References: <2023071200-unopposed-unbuckled-cde8@gregkh> <CAMw=ZnTVRaqRmtz+sDj7AeAS7xivSu+56UgKbzmuW9+K6TTx1A@mail.gmail.com>
+ <2023071239-progress-molasses-3b3d@gregkh> <CAMw=ZnRheXk7W_r-32bGymbHKdXc7aKUpwGAOX+k7DJkN+DiCQ@mail.gmail.com>
+ <2023071229-dusk-repacking-da3a@gregkh> <CAMw=ZnSmZTBs+bJsQ_Y2CVO8K3OTuHOZDKW4cbxKpGbo4Vgs7Q@mail.gmail.com>
+ <2023071226-crafty-deviator-12e2@gregkh> <CAMw=ZnRjnxWnmoFuw2prxFS55vAGQ1hpfKeHYFfG5Oa0LB_jYA@mail.gmail.com>
+ <2023071233-empirical-overturn-744c@gregkh> <CAMw=ZnRRviBNi_LK9VOSUV9PNHe3jurUcLfgLpbTOsp_eE4WyA@mail.gmail.com>
+ <2023071350-specked-botanist-6ba8@gregkh>
+In-Reply-To: <2023071350-specked-botanist-6ba8@gregkh>
+From:   Luca Boccassi <bluca@debian.org>
+Date:   Fri, 14 Jul 2023 01:29:20 +0100
+X-Gmail-Original-Message-ID: <CAMw=ZnQZ9ds3xsa2AZv_F13dB6rR4XzGPrBjJHSga1oU5xRezQ@mail.gmail.com>
+Message-ID: <CAMw=ZnQZ9ds3xsa2AZv_F13dB6rR4XzGPrBjJHSga1oU5xRezQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v2] x86/boot: add .sbat section to the bzImage
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     =?UTF-8?Q?Daniel_P=2E_Berrang=C3=A9?= <berrange@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>, lennart@poettering.net,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,269 +83,140 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/UOry.mrWJAqD+NOCCZero8/
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, 13 Jul 2023 at 07:09, Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Wed, Jul 12, 2023 at 10:50:45PM +0100, Luca Boccassi wrote:
+> > > Who is going to be responsible for determining that this number needs to
+> > > be updated?
+> >
+> > Most likely those who understand the problem space - largely the group
+> > of people maintaining the EFI stack, with various inputs, I imagine.
+> > That's how it currently works for various bootloaders.
+>
+> We need specifics and to have people agree to do this, otherwise, again,
+> this patch is useless.
 
-Hi all,
+Not really, as this is about mechanism, not process.
 
-Today's linux-next merge of the vfs-brauner tree got a conflict in:
+> > > How are they going to determine this?
+> >
+> > Again, very coarsely: does the current generation allow a secure boot
+> > bypass -> revoked, else -> no change
+>
+> And how are you going to do that testing?  Who is going to do that?
+> Does it happen today?
 
-  mm/shmem.c
+Of course it happens today, it even gets fancy names - black lotus,
+boot hole, etc. If you want to know how it happens, read some papers,
+join a security team, or a university research group, or some other
+place that works in the specific field.
 
-between commits:
+> > > What is their response time?
+> > >
+> > > Who will they be submitting the patch to this string in order to have it
+> > > change?
+> >
+> > A bit too soon for exact details on processes given where we are, I think.
+>
+> Not at all, this is a proposal for a "security flag" for the kernel,
+> getting this all decided now is the only correct way to determine if
+> this is actually something that can work properly.
 
-  3c37c527bbf9 ("shmem: make shmem_get_inode() return ERR_PTR instead of NU=
-LL")
-  1a93dd24f1be ("shmem: quota support")
+No, the question here was about mechanism and storage. And it already
+works btw, it's just the kernel that's lagging behind, as usual.
 
-from the mm tree and commits:
+> To just go "we are going to randomly add a number that will sometimes be
+> incremented in the future to determine the buggyness of the kernel
+> without saying who will control this, or how it will be done" is crazy.
+>
+> Would other operating systems or projects accept such a change without
+> this information?
+>
+> Would you take this patch if you were responsible for kernel releases?
 
-  ad9717ca487a ("shmem: stable directory offsets")
-  fa6c36fb3f24 ("shmem: convert to ctime accessor functions")
+I think you are still missing one tiny bit of information: it is
+already used in other projects
 
-from the vfs-brauner tree.
+$ sudo objcopy -O binary --only-section=.sbat
+/boot/efi/EFI/Debian/grubx64.efi /dev/stdout
+sbat,1,SBAT Version,sbat,1,https://github.com/rhboot/shim/blob/main/SBAT.md
+grub,3,Free Software Foundation,grub,2.06,https://www.gnu.org/software/grub/
+grub.debian,4,Debian,grub2,2.06-13,https://tracker.debian.org/pkg/grub2
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
+> > > And how is any of this going to interact with stable kernel releases,
+> > > long term kernel releases and end-of-life kernel releases?
+> >
+> > As above: does the current generation allow a secure boot bypass ->
+> > revoked, else -> no change
+>
+> For all stable releases?
 
---=20
-Cheers,
-Stephen Rothwell
+Doesn't matter how you call it, only if it's signed for the shim+3rd
+party CA workflow
 
-diff --cc mm/shmem.c
-index c35717763dcc,310b0544eae3..000000000000
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@@ -2445,83 -2355,81 +2445,89 @@@ static void shmem_set_inode_flags(struc
-  #define shmem_initxattrs NULL
-  #endif
- =20
-+ static struct offset_ctx *shmem_get_offset_ctx(struct inode *inode)
-+ {
-+ 	return &SHMEM_I(inode)->dir_offsets;
-+ }
-+=20
- -static struct inode *shmem_get_inode(struct mnt_idmap *idmap, struct supe=
-r_block *sb,
- -				     struct inode *dir, umode_t mode, dev_t dev,
- -				     unsigned long flags)
- +static struct inode *__shmem_get_inode(struct mnt_idmap *idmap,
- +					     struct super_block *sb,
- +					     struct inode *dir, umode_t mode,
- +					     dev_t dev, unsigned long flags)
-  {
-  	struct inode *inode;
-  	struct shmem_inode_info *info;
-  	struct shmem_sb_info *sbinfo =3D SHMEM_SB(sb);
-  	ino_t ino;
- +	int err;
- +
- +	err =3D shmem_reserve_inode(sb, &ino);
- +	if (err)
- +		return ERR_PTR(err);
- =20
- -	if (shmem_reserve_inode(sb, &ino))
- -		return NULL;
- =20
-  	inode =3D new_inode(sb);
- -	if (inode) {
- -		inode->i_ino =3D ino;
- -		inode_init_owner(idmap, inode, dir, mode);
- -		inode->i_blocks =3D 0;
- -		inode->i_atime =3D inode->i_mtime =3D inode_set_ctime_current(inode);
- -		inode->i_generation =3D get_random_u32();
- -		info =3D SHMEM_I(inode);
- -		memset(info, 0, (char *)inode - (char *)info);
- -		spin_lock_init(&info->lock);
- -		atomic_set(&info->stop_eviction, 0);
- -		info->seals =3D F_SEAL_SEAL;
- -		info->flags =3D flags & VM_NORESERVE;
- -		info->i_crtime =3D inode->i_mtime;
- -		info->fsflags =3D (dir =3D=3D NULL) ? 0 :
- -			SHMEM_I(dir)->fsflags & SHMEM_FL_INHERITED;
- -		if (info->fsflags)
- -			shmem_set_inode_flags(inode, info->fsflags);
- -		INIT_LIST_HEAD(&info->shrinklist);
- -		INIT_LIST_HEAD(&info->swaplist);
- -		if (sbinfo->noswap)
- -			mapping_set_unevictable(inode->i_mapping);
- -		simple_xattrs_init(&info->xattrs);
- -		cache_no_acl(inode);
- -		mapping_set_large_folios(inode->i_mapping);
- =20
- -		switch (mode & S_IFMT) {
- -		default:
- -			inode->i_op =3D &shmem_special_inode_operations;
- -			init_special_inode(inode, mode, dev);
- -			break;
- -		case S_IFREG:
- -			inode->i_mapping->a_ops =3D &shmem_aops;
- -			inode->i_op =3D &shmem_inode_operations;
- -			inode->i_fop =3D &shmem_file_operations;
- -			mpol_shared_policy_init(&info->policy,
- -						 shmem_get_sbmpol(sbinfo));
- -			break;
- -		case S_IFDIR:
- -			inc_nlink(inode);
- -			/* Some things misbehave if size =3D=3D 0 on a directory */
- -			inode->i_size =3D 2 * BOGO_DIRENT_SIZE;
- -			inode->i_op =3D &shmem_dir_inode_operations;
- -			inode->i_fop =3D &simple_offset_dir_operations;
- -			simple_offset_init(shmem_get_offset_ctx(inode));
- -			break;
- -		case S_IFLNK:
- -			/*
- -			 * Must not load anything in the rbtree,
- -			 * mpol_free_shared_policy will not be called.
- -			 */
- -			mpol_shared_policy_init(&info->policy, NULL);
- -			break;
- -		}
- -
- -		lockdep_annotate_inode_mutex_key(inode);
- -	} else
- +	if (!inode) {
-  		shmem_free_inode(sb);
- +		return ERR_PTR(-ENOSPC);
- +	}
- +
- +	inode->i_ino =3D ino;
- +	inode_init_owner(idmap, inode, dir, mode);
- +	inode->i_blocks =3D 0;
-- 	inode->i_atime =3D inode->i_mtime =3D inode->i_ctime =3D current_time(in=
-ode);
-++	inode->i_atime =3D inode->i_mtime =3D inode_set_ctime_current(inode);
- +	inode->i_generation =3D get_random_u32();
- +	info =3D SHMEM_I(inode);
- +	memset(info, 0, (char *)inode - (char *)info);
- +	spin_lock_init(&info->lock);
- +	atomic_set(&info->stop_eviction, 0);
- +	info->seals =3D F_SEAL_SEAL;
- +	info->flags =3D flags & VM_NORESERVE;
- +	info->i_crtime =3D inode->i_mtime;
- +	info->fsflags =3D (dir =3D=3D NULL) ? 0 :
- +		SHMEM_I(dir)->fsflags & SHMEM_FL_INHERITED;
- +	if (info->fsflags)
- +		shmem_set_inode_flags(inode, info->fsflags);
- +	INIT_LIST_HEAD(&info->shrinklist);
- +	INIT_LIST_HEAD(&info->swaplist);
- +	INIT_LIST_HEAD(&info->swaplist);
- +	if (sbinfo->noswap)
- +		mapping_set_unevictable(inode->i_mapping);
- +	simple_xattrs_init(&info->xattrs);
- +	cache_no_acl(inode);
- +	mapping_set_large_folios(inode->i_mapping);
- +
- +	switch (mode & S_IFMT) {
- +	default:
- +		inode->i_op =3D &shmem_special_inode_operations;
- +		init_special_inode(inode, mode, dev);
- +		break;
- +	case S_IFREG:
- +		inode->i_mapping->a_ops =3D &shmem_aops;
- +		inode->i_op =3D &shmem_inode_operations;
- +		inode->i_fop =3D &shmem_file_operations;
- +		mpol_shared_policy_init(&info->policy,
- +					 shmem_get_sbmpol(sbinfo));
- +		break;
- +	case S_IFDIR:
- +		inc_nlink(inode);
- +		/* Some things misbehave if size =3D=3D 0 on a directory */
- +		inode->i_size =3D 2 * BOGO_DIRENT_SIZE;
- +		inode->i_op =3D &shmem_dir_inode_operations;
-- 		inode->i_fop =3D &simple_dir_operations;
-++		inode->i_fop =3D &simple_offset_dir_operations;
-++		simple_offset_init(shmem_get_offset_ctx(inode));
- +		break;
- +	case S_IFLNK:
- +		/*
- +		 * Must not load anything in the rbtree,
- +		 * mpol_free_shared_policy will not be called.
- +		 */
- +		mpol_shared_policy_init(&info->policy, NULL);
- +		break;
- +	}
- +
- +	lockdep_annotate_inode_mutex_key(inode);
-  	return inode;
-  }
- =20
-@@@ -3203,30 -3075,30 +3209,33 @@@ shmem_mknod(struct mnt_idmap *idmap, st
-  	    struct dentry *dentry, umode_t mode, dev_t dev)
-  {
-  	struct inode *inode;
- -	int error =3D -ENOSPC;
- +	int error;
- =20
-  	inode =3D shmem_get_inode(idmap, dir->i_sb, dir, mode, dev, VM_NORESERVE=
-);
- -	if (inode) {
- -		error =3D simple_acl_create(dir, inode);
- -		if (error)
- -			goto out_iput;
- -		error =3D security_inode_init_security(inode, dir,
- -						     &dentry->d_name,
- -						     shmem_initxattrs, NULL);
- -		if (error && error !=3D -EOPNOTSUPP)
- -			goto out_iput;
- =20
- -		error =3D simple_offset_add(shmem_get_offset_ctx(dir), dentry);
- -		if (error)
- -			goto out_iput;
- +	if (IS_ERR(inode))
- +		return PTR_ERR(inode);
- =20
- -		dir->i_size +=3D BOGO_DIRENT_SIZE;
- -		dir->i_mtime =3D inode_set_ctime_current(dir);
- -		inode_inc_iversion(dir);
- -		d_instantiate(dentry, inode);
- -		dget(dentry); /* Extra count - pin the dentry in core */
- -	}
- +	error =3D simple_acl_create(dir, inode);
- +	if (error)
- +		goto out_iput;
- +	error =3D security_inode_init_security(inode, dir,
- +					     &dentry->d_name,
- +					     shmem_initxattrs, NULL);
- +	if (error && error !=3D -EOPNOTSUPP)
- +		goto out_iput;
- +
-- 	error =3D 0;
-++	error =3D simple_offset_add(shmem_get_offset_ctx(dir), dentry);
-++	if (error)
-++		goto out_iput;
-++
- +	dir->i_size +=3D BOGO_DIRENT_SIZE;
-- 	dir->i_ctime =3D dir->i_mtime =3D current_time(dir);
-++	dir->i_mtime =3D inode_set_ctime_current(dir);
- +	inode_inc_iversion(dir);
- +	d_instantiate(dentry, inode);
- +	dget(dentry); /* Extra count - pin the dentry in core */
-  	return error;
- +
-  out_iput:
-  	iput(inode);
-  	return error;
+> > > How long will this feature have to be maintained?
+> >
+> > Until something else supplants EFI, I'd imagine
+>
+> So 40+ years, great, who is going to fund that?
 
---Sig_/UOry.mrWJAqD+NOCCZero8/
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Who funds EFI work?
 
------BEGIN PGP SIGNATURE-----
+> > > > The only thing that matters is, "if we had infinite space in DBX and
+> > > > sensible ways to service it and nvram didn't wear down, would we
+> > > > blocklist this component version" - if the answer is no, then nothing
+> > > > happens. If the answer is yes, then the counter goes up.
+> > >
+> > > I suggest you all take a look at the past 10 years of kernel releases
+> > > and changes (to pick a simple number) and determine what the number
+> > > would be now if you were to start counting then.  Is it 10?  100?
+> > > 10000?  What do you think it will be in the next 40 years?
+> >
+> > What do you think that would look like if it was all individual hashes
+> > blocklisted in DBX instead? Because this is what we are talking about.
+> > And, for the nth time, this is not about identifying individual bugs.
+> > You do what, 3 releases a year? So 10 years time 3,
+>
+> I do a release or two a week across multiple stable kernel versions.
+> For you to not notice that means that either the process is working
+> really well, or that this type of function does not match how we do
+> development and releases at all.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmSwldUACgkQAVBC80lX
-0GwJuggApQnnJZyeEQTbLULEik8RAetfFB/ejdjqjmuYu7M++Qls3rRY/frNg5Im
-YJcgrHx9bo03DWm5neHAEwe0BLM1KBB340k1zm2nNarF1z17AE3NYv2VDqWXEcTE
-OHXqel4BZPFL5+X1t4hhd6zTKvLRNju+Kb+xKnEQo64dQKNTzg4oQ+ld0Ibjh0/Q
-4ZbpRdU4fYs3Vn31LFdQnxLjKxfkEUxDQvz3MWpVLE7NfD9pX3XhvRnTEqeRGU5n
-X7L7cF/AbRIY/j5e46mLmM4KbABcX78usK3H/m0gqXi7c92e+j2TjoKPaDHMrDZU
-vHpkLfnlWcpZRp8MeLkZya/+u04Bqw==
-=QTwM
------END PGP SIGNATURE-----
+Or, third option, that's irrelevant for the case at hand.
 
---Sig_/UOry.mrWJAqD+NOCCZero8/--
+> > then assuming
+> > every single release you have made is completely and hopelessly broken
+> > in different ways, but each is only discovered one at a time exactly
+> > once per release, then the generation counter would be 30. That's your
+> > absolutely worst case scenario. Now try to think about how hash
+> > entries we'd need in DBX for the exact same worst case scenario, and
+> > the reason SBAT has been implemented should become very obvious, very
+> > quickly.
+>
+> I'm not saying "individual hashes" anymore, sure, I'll give you your one
+> number, but even then, I don't see how it makes any sense at all in our
+> current ecosystem of releases.
+>
+> So I need to see this documented very very well to even be able to
+> consider it.
+
+Well then, it's your lucky day! As it is documented, with examples and all:
+
+https://github.com/rhboot/shim/blob/main/SBAT.example.md
+
+the kernel is just one of many consumers of this protocol, so
+obviously the documentation for it lives with the protocol owner,
+which is Shim.
+
+> > > We have a plethora of kernel changes in our history to learn from here,
+> > > please do so and show how this will affect us going forward based on our
+> > > past, otherwise we have no way of knowing how any of this is going to
+> > > work.
+> >
+> > I am not aware of anything similar enough, but please do point those
+> > out if you are.
+>
+> Audit our past history and document when the number would have changed
+> please.
+
+Sure, where do I send the invoice?
