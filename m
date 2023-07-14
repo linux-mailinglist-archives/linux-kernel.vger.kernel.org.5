@@ -2,205 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 165AB75332B
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 09:27:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43204753278
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 09:02:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235413AbjGNH1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 03:27:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35074 "EHLO
+        id S232382AbjGNHC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 03:02:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235238AbjGNH1J (ORCPT
+        with ESMTP id S229492AbjGNHCZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 03:27:09 -0400
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 150F1C0;
-        Fri, 14 Jul 2023 00:27:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689319627; x=1720855627;
-  h=date:from:to:subject:message-id:reply-to:references:
-   in-reply-to:mime-version;
-  bh=RGYEifSwaeUDByXP5rA5fVwOiR3+Q3R4yprTDj/FcBY=;
-  b=BhFEW0x/qOeYXk0NVeUc7gA55zPOdo0P+Y54rRrsHClvmzXhmjngOVck
-   dOxz4qTeMIKl4ZzZPkvPwMT5cgecJQjUJcGimxdcHG59314L33a5I1sHO
-   PGHmaB5QZiCneD6odpSVeGFCYyLbzYHreXpqpWAyygcIsRyaGsXz1eOzW
-   tvL0ix87xdRLjLwPElutacopyiAM5J+GNUuQkqlIJ8rrUZeBwU+b/ujLs
-   GagyW0gbEx3kHq5KdBWV+43M0cMWR52eQKc8eI1QiNKR5w4rhn8BjZfdT
-   CtlIZOk4o7w+YLmZa0asD5d9z4hTvMQwxd4KcAdeUz6pJAo5js6VtyHxf
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="396223645"
-X-IronPort-AV: E=Sophos;i="6.01,204,1684825200"; 
-   d="scan'208";a="396223645"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 00:27:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="1052959703"
-X-IronPort-AV: E=Sophos;i="6.01,204,1684825200"; 
-   d="scan'208";a="1052959703"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmsmga005.fm.intel.com with ESMTP; 14 Jul 2023 00:27:07 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 14 Jul 2023 00:27:07 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Fri, 14 Jul 2023 00:27:07 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Fri, 14 Jul 2023 00:27:07 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MfTPheC+FGTLxKwD1Miwv6YPaaCQmBVRdLuKlIthOrMuWSKisShziCiW/JtqxiCzbtjBqIgs3mzv9spN82vwP7JeXQ9A8MX/8sMBc4qNmTa63/IiXVPyq9KsqDF6/1c1iQ5KeFFtFu0wrGKkBLO5ojwOuhmhQZs0fi8EZZD9VbNzdUH+B+IEklTa37hAsZwQ2Q5/ETnmPfHtSdwGXJjFw5PkgoHKy1QxsFJhquDslc5CEhrbOQ5M7gdBvHG88B3V/RROigeWuH3vCq4V2TTvN9d5H5VQuM/bnBNiOPttFrcyHMFSOa1LLHMgaUN2fpyx83fF4E6Tb7dT5ixPSxeJLQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=XdsUkmXrdnwcsLwK3qNdZvo4UJVJ8Z7JPe2lgKNe8hA=;
- b=TNzJw7RzWarajQ7bfi9aDWJmJqnFvDV6Rq/TQIPHLtjWZNh9PMAhvPuXu60nLYpibIx+s/o9n24iJhk6L0bhnOX47w60WYqhCeZ5OaLlXMP9fjm3nc+DbCikZClYmdVtnWKiDvkyDIGgrZ0tYaH1LUcH0OzQdoFZSDoolsG4YMVsSuHFfs/KLRPfSHN6e1ckONhhPzSTkEYTdT08JKuW3Y1jmKtZJkcRH+UzAGCGKlkfUNlHGATbwplSzJgOQDFjMazc9nwuoqnrCpTfSSMqDg9Mn6AVdHM7nFsmdg9paSIuT9MM1fAIdRhU40SMnmph4LP/8d+Ug/iFSCE8WAP94g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DS7PR11MB5966.namprd11.prod.outlook.com (2603:10b6:8:71::6) by
- SA2PR11MB4956.namprd11.prod.outlook.com (2603:10b6:806:112::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.27; Fri, 14 Jul
- 2023 07:27:04 +0000
-Received: from DS7PR11MB5966.namprd11.prod.outlook.com
- ([fe80::c7b3:8ced:860d:6fe6]) by DS7PR11MB5966.namprd11.prod.outlook.com
- ([fe80::c7b3:8ced:860d:6fe6%4]) with mapi id 15.20.6588.027; Fri, 14 Jul 2023
- 07:27:04 +0000
-Date:   Fri, 14 Jul 2023 15:00:23 +0800
-From:   Yan Zhao <yan.y.zhao@intel.com>
-To:     Sean Christopherson <seanjc@google.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <pbonzini@redhat.com>,
-        <chao.gao@intel.com>, <kai.huang@intel.com>,
-        <robert.hoo.linux@gmail.com>
-Subject: Re: [PATCH v3 08/11] KVM: x86: move vmx code to get EPT memtype when
- CR0.CD=1 to x86 common code
-Message-ID: <ZLDyh4eKFh4u1DU/@yzhao56-desk.sh.intel.com>
-Reply-To: Yan Zhao <yan.y.zhao@intel.com>
-References: <20230616023101.7019-1-yan.y.zhao@intel.com>
- <20230616023858.7503-1-yan.y.zhao@intel.com>
- <ZJy6xcIsOknHPQ9w@google.com>
- <ZJzWZEsRWOUrF7TG@yzhao56-desk.sh.intel.com>
- <ZJ3sxm6CngYC7pno@google.com>
- <ZJ6I9vEfbaSPR7Rk@yzhao56-desk.sh.intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZJ6I9vEfbaSPR7Rk@yzhao56-desk.sh.intel.com>
-X-ClientProxiedBy: SG2PR04CA0215.apcprd04.prod.outlook.com
- (2603:1096:4:187::14) To DS7PR11MB5966.namprd11.prod.outlook.com
- (2603:10b6:8:71::6)
+        Fri, 14 Jul 2023 03:02:25 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9070171D;
+        Fri, 14 Jul 2023 00:02:24 -0700 (PDT)
+Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36E6k8mC003711;
+        Fri, 14 Jul 2023 07:02:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=VSZ2cLwX/EHXnaRmoVY3Q/CXPd3lzNMShf9VQsHYbZM=;
+ b=F9jCkLDwZECEsSzd4c6/nNh7238079QEjvVzPfQGvKY7NYKkJe6sHLh2yBuemM8yVbD5
+ 1OgIqxdFL3buUzxlRvmqAbO5SAOrv9Q6lHVT4FhLaNmgJdyoIVad8ymQCBkcGBaraZIE
+ Q0YcddfEwR5OqccLNuwbPYgPmwmbfIKTTizg93pai56lKG8IoKTjbb3yooEm4WEniI4M
+ XBAZdlPseoF3Sp/8JwOuiitNDZdKv83I2wE6rJ/rRKU2iYoTDiv7sTuZcsJGuXiYeatm
+ bQC+7ESQqP2t1deFANp+x+mIRZeaPpqznkreVjBF5ocvnHzJHt9Sni2UMfZd3Up1DooA qQ== 
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ru1cjrbgq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 14 Jul 2023 07:02:09 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36E4xAPA007392;
+        Fri, 14 Jul 2023 07:02:09 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3rtpvs1420-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 14 Jul 2023 07:02:09 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36E726BT20578820
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 14 Jul 2023 07:02:06 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 00AD52004E;
+        Fri, 14 Jul 2023 07:02:06 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F3CE12004B;
+        Fri, 14 Jul 2023 07:02:03 +0000 (GMT)
+Received: from [9.43.21.134] (unknown [9.43.21.134])
+        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Fri, 14 Jul 2023 07:02:03 +0000 (GMT)
+Message-ID: <d91cee25-19d6-2eaa-1ad3-94718fa253cb@linux.ibm.com>
+Date:   Fri, 14 Jul 2023 12:32:02 +0530
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR11MB5966:EE_|SA2PR11MB4956:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3ff90102-1c9a-4526-fff1-08db843bb881
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: pryG74X/ANL0rr4IYHQDBvhLiwfeHZOW3P9ss5JENjaXrE5mxFI/tr+iCLtDmThrEMW6OwwNR/B0eZhsbeJa14LjnsRlonIjNddw3J9yitPxLFH74v8x1Cdq2ZHXsxiO//RLYhrSrm2pI4FiMItja/tOYiosyOhNuPZjvCzfNV5XDOGIFxhOY80T8LjT4dtWsfNiyTw155dgOiBr9cRrE787IM2QkPyLNzNAAD9cy6g//C3QVL+Hjhx4aIxSbGVYuzYrAPG2OSOxxc1UzhKexgDmIoFXSMKsy9RU9O9ABG1aMv57LQRSOy2DVqlk0rh2Axjlgkn96QJ9CYgfAhUnuouNR/wfu+a6fpzPxaoiukHDALZXYSZBvISjzpuo8EutOrtUuNr1h+NmyZiHeewk9omknGU9RiqfqJxmlrNttFwsIO/FeLJr6FG81ZEI+NczmevrdM3KhuGZv1zk2nWKezqpDUAoKEZeSlrv2hQIgub1+cRSrV2tudpQemcNHeliz3lM0D/DrNxIHwewLAmZ2OqBaZdwZZtknu88ibiA5lI=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR11MB5966.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(376002)(39860400002)(396003)(366004)(346002)(136003)(451199021)(6486002)(6512007)(966005)(6666004)(186003)(83380400001)(6506007)(86362001)(38100700002)(82960400001)(26005)(66476007)(66946007)(66556008)(41300700001)(2906002)(316002)(3450700001)(5660300002)(8676002)(8936002)(110136005)(478600001)(66899021);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?p14QCr0clkNr+6id0Z+e9M22Bh4HcXxgYD8nuTwEgGA8gPqrlD+vw/U0nFd7?=
- =?us-ascii?Q?466x6LaH2x3jAM8okHqlDaOxoEk/+Hy4NwulyrvQLmnuydMjCwXiqJftEqGT?=
- =?us-ascii?Q?+fCjIhQKvd77RIZFuevJXVWh7rl+eYJBu1rVeFtaRrCby0suVzAsfHVLDKQI?=
- =?us-ascii?Q?Lstb2ftkrm/j53juADf/c+N1cF2yrV9jEHQ/8ttHrOFaFYS/2LtG1mj0uhpX?=
- =?us-ascii?Q?uKhmXkTQ6FvYtakr7OO2nPXKscTbUQrFKgNOWkk77sa/9lwTiS7+7UcwTE7U?=
- =?us-ascii?Q?8tczIfoY/Iarx733CjzloksqDEI+BiaPe6YKoaDYXj/RzE9xnRUfwfavgwy4?=
- =?us-ascii?Q?e4y4D4DoMAJh/DQIlO5hyGZ/y1oRQmcPSCyjOyeB7Y7d5+T2My3JwBayBRTT?=
- =?us-ascii?Q?sKzn+vYJhUx6Bzr7ha8fxcEYUVnGNKeNMvOWyvCzHzXStL8xrEXu+6M/l6uL?=
- =?us-ascii?Q?ll8xGqmjCSYykrXnG0N2CUmVRBBLNByoo2iN9NDtixaqOgNtghevlOxRSL9f?=
- =?us-ascii?Q?sw16bXfvFoMO4+KYu7ywVwy6QzSXIC5WGViT+Mnk753Wv259f7NUaxyNmV1r?=
- =?us-ascii?Q?suwzjRHG+WvULtaNsXurzsfq0jjUcuiRGiAGJ1JATTgzye+hJqqG5Kcm4c+J?=
- =?us-ascii?Q?ReL/CbMI2PkGzRNXhzIx4UHOwdHgyah0EMMkyT+vrlZLozhDt3D3Y9dqKVaz?=
- =?us-ascii?Q?NkY1GnyuIADzngxxHzMN6EIMqlAHLOHYJWKie6ALn51e5m6kF1YSftOnltno?=
- =?us-ascii?Q?p/CT7CqyKxjSGFW2k64znssqbqr5864v6c/J1xCNNQnXuuwl0785W4TsMTH7?=
- =?us-ascii?Q?81Mf7mtdXR1LTTD7o5Rwepy/zf65GciHUwWwfJ3jlzB1uJBjWBJbBvTtlrbD?=
- =?us-ascii?Q?FGq1v9jZegWJjWLddX2MgIdVA0Ak8uj8QAQbh8qCxP1o66OVR6R64bDISQ4L?=
- =?us-ascii?Q?WmPewLUPtk2PniFyWwD8WOhUWHP7bz2zrUZmKxmibuL/S5sPINfgTqwIbI2d?=
- =?us-ascii?Q?OvK1YxJbpWiksiv8Lt+q2z7nn9+eArE7P0rTLZoZPBsiuRuSVeVHZ3oTFZGw?=
- =?us-ascii?Q?3tq5B2qJZpnzuvRzmDjI7lL/sI+4I+DjNnUeGq/8J0Ua5TIHLk8y8uTn0Ki4?=
- =?us-ascii?Q?Tni/ILvQEIPuTC5pWSzMW1M6KO1yhs4DXbw3Cx/vBhKJdxyp9h+SIRUXj8Fu?=
- =?us-ascii?Q?Hrk1aTwoBlzN+U+djxT632ExLqzCE982t9POwyugl3sm6M7fRoH1ogsz482V?=
- =?us-ascii?Q?irMb4iHLmh9UUyMPEAHBX+jDVrEt2JpaRTEfv1vCBwsrwmZ8zPBS9mGvxJSp?=
- =?us-ascii?Q?FWzHiuAa3a8UW0v8bJ/uqJHfTrLvkxCod4osnyvec7UAnXfiZQfe6K4DSPOn?=
- =?us-ascii?Q?OjKnJpNcW80onHeAsQy3jOruqvmP90iruARPvHe+HP406D62GOfGpQIG1gha?=
- =?us-ascii?Q?b5/2ECxnrokkgoGk1dcVgrMUX1xp4NvawOsRBrxnpxKMQF8ZKglisWHIF8fi?=
- =?us-ascii?Q?d9MtGSYQiD0rnXUz2nbSWZmY6J4GLYCZC6XXswt2mp6iqqpSBJR6fkcnt2xS?=
- =?us-ascii?Q?zlWS30W0Wl3u+zKmkfly85O+MljndUhJiEAauE3g?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3ff90102-1c9a-4526-fff1-08db843bb881
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR11MB5966.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jul 2023 07:27:03.9248
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: gpZfnKRkuiHnxxvI4/HFsyeZYa6a+6fm7XLJAIPhbG/8fEDsIPN4fnGhQlAlpmzeiXO33JefPI2EZmEwGNWN4w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB4956
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v2 02/10] docs: ABI:
+ sysfs-bus-event_source-devices-hv_gpci: Document processor_bus_topology sysfs
+ interface file
+To:     Randy Dunlap <rdunlap@infradead.org>, mpe@ellerman.id.au
+Cc:     linuxppc-dev@lists.ozlabs.org, maddy@linux.ibm.com,
+        atrajeev@linux.vnet.ibm.com, disgoel@linux.ibm.com,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230710092717.55317-1-kjain@linux.ibm.com>
+ <20230710092717.55317-3-kjain@linux.ibm.com>
+ <4418618a-ac75-f824-ec6d-984421dd5c6b@infradead.org>
+Content-Language: en-US
+From:   kajoljain <kjain@linux.ibm.com>
+In-Reply-To: <4418618a-ac75-f824-ec6d-984421dd5c6b@infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: -6e-aaptf8lQBw9POaytQSMl9XXfYxQy
+X-Proofpoint-ORIG-GUID: -6e-aaptf8lQBw9POaytQSMl9XXfYxQy
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-14_03,2023-07-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
+ priorityscore=1501 spamscore=0 mlxlogscore=999 impostorscore=0
+ phishscore=0 lowpriorityscore=0 malwarescore=0 adultscore=0 mlxscore=0
+ bulkscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307140059
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 30, 2023 at 03:49:10PM +0800, Yan Zhao wrote:
-> On Thu, Jun 29, 2023 at 01:42:46PM -0700, Sean Christopherson wrote:
-> > On Thu, Jun 29, 2023, Yan Zhao wrote:
-> > > On Wed, Jun 28, 2023 at 03:57:09PM -0700, Sean Christopherson wrote:
-> > > > On Fri, Jun 16, 2023, Yan Zhao wrote:
-> ...
-> > > > > +void kvm_mtrr_get_cd_memory_type(struct kvm_vcpu *vcpu, u8 *type, bool *ipat)
-> > > > 
-> > > > Hmm, I'm not convinced that this logic is subtle enough to warrant a common
-> > > I added this patch because the memtype to use under CR0.CD=1 is determined by
-> > > vmx specific code (i.e. vmx.c), while mtrr.c is a common code for x86.
-> > > 
-> > > I don't know if it's good to assume what vmx.c will return as in below open code. 
-> > > (e.g. if someone added IPAT bit for CR0.CD=1 under the quirk, and forgot
-> > > to update the code here, we actually need to zap everything rather than
-> > > zap only non-WB ranges).
-> > > 
-> > > That's why I want to introduce a helper and let vmx.c call into it.
-> > > (sorry, I didn't write a good commit message to explain the real intent).
-> > 
-> > No need to apologize, I fully understood the intent.  I'm just not convinced that
-> > the risk of us screwing up this particular case is worth the extra layers of crud
-> > that are necessary to let VMX and MTRRs share the core logic.
-> > 
-> > Absent emulating CR0.CD=1 with UC, setting IPAT is complete nonsense when KVM is
-> > honoring the guest memtype.
-> Yes, I'm just paranoid :)
+
+
+
+
+
+
+
+
+
+
+Thanks Randy for the review comments, I will do these updates
+for all documentation patches in my next version of patchset.
+
+Thanks,
+Kajol Jain
+
+On 7/12/23 02:22, Randy Dunlap wrote:
+> Hi--
 > 
-> > 
-> > I 100% agree that splitting the logic is less than ideal, but providing a common
-> > helper feels forced and IMO yields significantly less readable code.  And exporting
-What about renaming it to kvm_honors_guest_mtrrs_get_cd_memtype()?
-Then it's only needed to be called when guest mtrrs are honored and provides a
-kind of enforcement. So that if there're other x86 participants (besides VMX/SVM)
-who want to honor guest mtrr, the same memtype is used with CR0.CD=1.
-(I know there might never be such kind of participants, or you may want to
-update the code until they appear)
-
-I tried in this way in v4 here
-https://lore.kernel.org/all/20230714065356.20620-1-yan.y.zhao@intel.com/.
-Feel free to ask me to drop it if you still don't like it :)
-
-> > kvm_mtrr_get_cd_memory_type() only adds to the confusion because calling it on
-> > SVM, which can't fully ignore gPAT, is also nonsensical.
-> Ok. I get your concern now. You are right.
-> Looks the easiest way now is to add some comments in VMM to caution that
-> changes in memtype when noncoherent DMA present and CR0.CD=1 may lead to
-> update of code for GFN zap.
-> Or, do you think it's worth adding a new callback in kvm_x86_ops, e.g.
-> static_call_cond(kvm_x86_get_cd_mt_honor_guest_mtrr)()?
+> On 7/10/23 02:27, Kajol Jain wrote:
+>> Add details of the new hv-gpci interface file called
+>> "processor_bus_topology" in the ABI documentation.
+>>
+>> Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
+>> ---
+>>  .../sysfs-bus-event_source-devices-hv_gpci    | 32 +++++++++++++++++++
+>>  1 file changed, 32 insertions(+)
+>>
+>> diff --git a/Documentation/ABI/testing/sysfs-bus-event_source-devices-hv_gpci b/Documentation/ABI/testing/sysfs-bus-event_source-devices-hv_gpci
+>> index 12e2bf92783f..2eeeab9a20fa 100644
+>> --- a/Documentation/ABI/testing/sysfs-bus-event_source-devices-hv_gpci
+>> +++ b/Documentation/ABI/testing/sysfs-bus-event_source-devices-hv_gpci
+>> @@ -80,3 +80,35 @@ Contact:	Linux on PowerPC Developer List <linuxppc-dev@lists.ozlabs.org>
+>>  Description:	read only
+>>  		This sysfs file exposes the cpumask which is designated to make
+>>  		HCALLs to retrieve hv-gpci pmu event counter data.
+>> +
+>> +What:		/sys/devices/hv_gpci/interface/processor_bus_topology
+>> +Date:		July 2023
+>> +Contact:	Linux on PowerPC Developer List <linuxppc-dev@lists.ozlabs.org>
+>> +Description:	admin read only
+>> +		This sysfs file exposes the system topology information by making HCALL
+>> +		H_GET_PERF_COUNTER_INFO. The HCALL is made with counter request value
+>> +		PROCESSOR_BUS_TOPOLOGY(0xD0).
+>> +
+>> +		* This sysfs file will be created only for power10 and above platforms.
+>> +
+>> +		* User needs root privileges to read data from this sysfs file.
+>> +
+>> +		* This sysfs file will be created, only when the HCALL returns "H_SUCESS",
+> 
+> 		                                                                H_SUCCESS
+> 
+>> +		  "H_AUTHORITY" and "H_PARAMETER" as the return type.
+> 
+> 		            s/and/or/
+> 
+>> +
+>> +		  HCALL with return error type "H_AUTHORITY", can be resolved during
+> 
+> 		                             Drop the comma ^
+> 
+>> +		  runtime by setting "Enable Performance Information Collection" option.
+>> +
+>> +		* The end user reading this sysfs file must decode the content as per
+>> +		  underlying platform/firmware.
+>> +
+>> +		Possible error codes while reading this sysfs file:
+>> +
+>> +		* "-EPERM" : Partition is not permitted to retrieve performance information,
+>> +			    required to set "Enable Performance Information Collection" option.
+>> +
+>> +		* "-EIO" : Can't retrieve system information because of invalid buffer length/invalid address
+>> +			   or because of some hardware error. Refer getPerfCountInfo documentation for
+> 
+> 			                                      Refer to
+> 
+>> +			   more information.
+>> +
+>> +		* "-EFBIG" : System information exceeds PAGE_SIZE.
+> 
