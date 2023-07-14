@@ -2,119 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7450075360C
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:06:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E9C9753617
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:08:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235470AbjGNJGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 05:06:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40146 "EHLO
+        id S235517AbjGNJIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 05:08:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234562AbjGNJGc (ORCPT
+        with ESMTP id S235834AbjGNJIE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 05:06:32 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE1D330E9;
-        Fri, 14 Jul 2023 02:06:04 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 301E961CBD;
-        Fri, 14 Jul 2023 09:05:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 849BBC433C7;
-        Fri, 14 Jul 2023 09:05:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689325543;
-        bh=WvoBK4BO8pPPux6zd3qw6bxteYzOyTTKLiAplHoONqg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oYQOx+Bf0l+WC841uAxl+EmnmXnIWq6H+9fTX5BHU8AjkSu6g7L7b+35oANMDJ728
-         nF07kgeXFpmztoS8zKDGp2Mz27GCeCt7JKD3hff8XA2o0mBZk4Nge8EXeaoSA0qqDd
-         qNhuCMiEmA07Rm3MnKJy4sU6OriXo4GOhrwjDy9Ec9Pc5KjCTBevCk0VOxFNM3CYsD
-         ptVnuN5pjFgKZDeLU1O5hmNDvs7hmiq9gVknilZkJs2L9wKbYIskaGlSsxtuIOsPB1
-         F2Cf3t/QymtdnWVbbWqiqcXn3WoABZ99gxrxT+xscG187m1AvLnsv/Pm4NX2dphzmo
-         xUI0zL6JveEkw==
-Received: from johan by xi.lan with local (Exim 4.96)
-        (envelope-from <johan@kernel.org>)
-        id 1qKEkC-0006bZ-0a;
-        Fri, 14 Jul 2023 11:05:44 +0200
-Date:   Fri, 14 Jul 2023 11:05:44 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-Cc:     Bjorn Andersson <andersson@kernel.org>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        quic_pkondeti@quicinc.com, quic_ppratap@quicinc.com,
-        quic_jackp@quicinc.com, quic_harshq@quicinc.com,
-        ahalaney@redhat.com, quic_shazhuss@quicinc.com
-Subject: Re: [PATCH v9 06/10] usb: dwc3: qcom: Add support to read IRQ's
- related to multiport
-Message-ID: <ZLEP6Ekh3unSTiCL@hovoldconsulting.com>
-References: <20230621043628.21485-1-quic_kriskura@quicinc.com>
- <20230621043628.21485-7-quic_kriskura@quicinc.com>
- <ZK6YrLMn9r39zEeB@hovoldconsulting.com>
- <ef29e520-7b9c-f581-e70a-250df80d3821@quicinc.com>
+        Fri, 14 Jul 2023 05:08:04 -0400
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D5DD2D66;
+        Fri, 14 Jul 2023 02:07:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689325678; x=1720861678;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=EeCmo5QPrerXx59WQvD8Hi1p50w/XswlhljpvGAX/l0=;
+  b=Kzd8PExYdJI8uEMEX+QeCOaNmP7rF5BwCHzpkzNZMbwuRTnboV0sx7jp
+   u99IdVs01CqYfiLkKnCZ0G35mr/9fgi4TBBwX1NqH0YQV7srqv3NWG2TT
+   34VfCqKpdbZj1n1Xrhb5vNXYa639ntOQiTXVtOl+lOs9YBJAhKir95oRf
+   wIaGLECJfxyKKhux1k9FHrYmpM2vT5ayAj8SLs0LR+Yk8QCEA3HB0iaxA
+   7Ct1JeDxW6DXIuKRbYu+kpxIGpdd7xRDkgnJwG+oxcTimI8E4eGsFH+3p
+   QO/3VogGYU7K8GereWjL+YelZm2EXrMIUAIBOf1NtameI2FkMG3czplfL
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="364303219"
+X-IronPort-AV: E=Sophos;i="6.01,204,1684825200"; 
+   d="scan'208";a="364303219"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 02:06:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="672626070"
+X-IronPort-AV: E=Sophos;i="6.01,204,1684825200"; 
+   d="scan'208";a="672626070"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga003.jf.intel.com with ESMTP; 14 Jul 2023 02:06:03 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qKEkS-002bvt-2C;
+        Fri, 14 Jul 2023 12:06:00 +0300
+Date:   Fri, 14 Jul 2023 12:06:00 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc:     linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Jesse Barnes <jbarnes@virtuousgeek.org>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Shaohua Li <shaohua.li@intel.com>,
+        Thomas Renninger <trenn@suse.de>,
+        Greg Kroah-Hartman <gregkh@suse.de>,
+        linux-kernel@vger.kernel.org,
+        Dean Luick <dean.luick@cornelisnetworks.com>,
+        Jonas =?iso-8859-1?Q?Dre=DFler?= <verdre@v0yd.nl>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v4 04/11] PCI/ASPM: Use RMW accessors for changing LNKCTL
+Message-ID: <ZLEP+FPwsvk8jw5E@smile.fi.intel.com>
+References: <20230713124505.94866-1-ilpo.jarvinen@linux.intel.com>
+ <20230713124505.94866-5-ilpo.jarvinen@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <ef29e520-7b9c-f581-e70a-250df80d3821@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230713124505.94866-5-ilpo.jarvinen@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 12, 2023 at 11:56:33PM +0530, Krishna Kurapati PSSNV wrote:
-> On 7/12/2023 5:42 PM, Johan Hovold wrote:
-> > On Wed, Jun 21, 2023 at 10:06:24AM +0530, Krishna Kurapati wrote:
-> >> Add support to read Multiport IRQ's related to quad port controller
-> >> of SA8295 Device.
-> >>
-> >> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
-> >> ---
-> >>   drivers/usb/dwc3/dwc3-qcom.c | 108 +++++++++++++++++++++++++++++------
-> >>   1 file changed, 91 insertions(+), 17 deletions(-)
-> > 
-> >> +static int dwc3_qcom_setup_mp_irq(struct platform_device *pdev)
-> >> +{
-> >> +	struct dwc3_qcom *qcom = platform_get_drvdata(pdev);
-> >> +	char irq_name[15];
-> > 
-> > The interrupt device-name string can not be allocated on the stack or
-> > reused as it is stored directly in each irqaction structure.
-> > 
-> > This can otherwise lead to random crashes when accessing
-> > /proc/interrupts:
-> > 
-> > 	https://lore.kernel.org/lkml/ZK6IV_jJPICX5r53@hovoldconsulting.com/
+On Thu, Jul 13, 2023 at 03:44:58PM +0300, Ilpo Järvinen wrote:
+> Don't assume that the device is fully under the control of ASPM and use
+> RMW capability accessors which do proper locking to avoid losing
+> concurrent updates to the register values.
+> 
+> If configuration fails in pcie_aspm_configure_common_clock(), the
+> function attempts to restore the old PCI_EXP_LNKCTL_CCC settings. Store
+> only the old PCI_EXP_LNKCTL_CCC bit for the relevant devices rather
+> than the content of the whole LNKCTL registers. It aligns better with
+> how pcie_lnkctl_clear_and_set() expects its parameter and makes the
+> code more obvious to understand.
 
->    Sure, will create a static array of names if possible in global 
-> section of file and use it to read interrupts.
+...
 
-Or just use devm_kasprintf(), which should allow for a cleaner
-implementation.
+>  	int same_clock = 1;
+> -	u16 reg16, parent_reg, child_reg[8];
+> +	u16 reg16, parent_old_ccc, child_old_ccc[8];
 
-I've fixed it up like this for my X13s wip branches:
+	u16 ccc;
 
-	https://github.com/jhovold/linux/commit/0898b54456bc2f4bd4d420480db98e6758771ace
- 
->    Are you fine with seperating out setup_irq and setup_mp_irq functions 
-> ? Can you please review comments and suggestion on [1].
+>  	struct pci_dev *child, *parent = link->pdev;
+>  	struct pci_bus *linkbus = parent->subordinate;
 
-I haven't had time to look at your latest replies yet, but as I already
-said when reviewing v9, it seems you should be using a common helper for
-non-mp and mp.
+...
 
-Johan
+	ccc = same_clock ? PCI_EXP_LNKCTL_CCC : 0);
+
+>  	/* Configure downstream component, all functions */
+>  	list_for_each_entry(child, &linkbus->devices, bus_list) {
+>  		pcie_capability_read_word(child, PCI_EXP_LNKCTL, &reg16);
+> -		child_reg[PCI_FUNC(child->devfn)] = reg16;
+> -		if (same_clock)
+> -			reg16 |= PCI_EXP_LNKCTL_CCC;
+> -		else
+> -			reg16 &= ~PCI_EXP_LNKCTL_CCC;
+> -		pcie_capability_write_word(child, PCI_EXP_LNKCTL, reg16);
+> +		child_old_ccc[PCI_FUNC(child->devfn)] = reg16 & PCI_EXP_LNKCTL_CCC;
+> +		pcie_capability_clear_and_set_word(child, PCI_EXP_LNKCTL,
+> +						   PCI_EXP_LNKCTL_CCC,
+> +						   same_clock ? PCI_EXP_LNKCTL_CCC : 0);
+
+		pcie_capability_clear_and_set_word(child, PCI_EXP_LNKCTL,
+						   PCI_EXP_LNKCTL_CCC, ccc);
+
+>  	}
+
+...
+
+> +	pcie_capability_clear_and_set_word(parent, PCI_EXP_LNKCTL,
+> +					   PCI_EXP_LNKCTL_CCC,
+> +					   same_clock ? PCI_EXP_LNKCTL_CCC : 0);
+
+	pcie_capability_clear_and_set_word(parent, PCI_EXP_LNKCTL,
+					   PCI_EXP_LNKCTL_CCC, ccc);
+
+?
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
