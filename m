@@ -2,86 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 990F0752F78
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 04:38:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54033752F7A
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 04:38:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233484AbjGNChz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 22:37:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54728 "EHLO
+        id S234018AbjGNCiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 22:38:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229580AbjGNChy (ORCPT
+        with ESMTP id S234464AbjGNCiE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 22:37:54 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AF87F2121
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 19:37:51 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 85EEF1570;
-        Thu, 13 Jul 2023 19:38:33 -0700 (PDT)
-Received: from [10.163.47.78] (unknown [10.163.47.78])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 858723F67D;
-        Thu, 13 Jul 2023 19:37:44 -0700 (PDT)
-Message-ID: <713a99fe-8c43-b416-a574-db235705693d@arm.com>
-Date:   Fri, 14 Jul 2023 08:07:42 +0530
+        Thu, 13 Jul 2023 22:38:04 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D2312D4B;
+        Thu, 13 Jul 2023 19:38:02 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 22C4261BCD;
+        Fri, 14 Jul 2023 02:38:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3470C433C7;
+        Fri, 14 Jul 2023 02:37:59 +0000 (UTC)
+Date:   Thu, 13 Jul 2023 22:37:58 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Ajay Kaher <akaher@vmware.com>
+Cc:     shuah@kernel.org, mhiramat@kernel.org, chinglinyu@google.com,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, lkp@intel.com,
+        namit@vmware.com, oe-lkp@lists.linux.dev, amakhalov@vmware.com,
+        er.ajay.kaher@gmail.com, srivatsa@csail.mit.edu, tkundu@vmware.com,
+        vsirnapalli@vmware.com
+Subject: Re: [PATCH v4 10/10] test: ftrace: Fix kprobe test for eventfs
+Message-ID: <20230713223758.31a1e391@rorschach.local.home>
+In-Reply-To: <1689248004-8158-11-git-send-email-akaher@vmware.com>
+References: <1689248004-8158-1-git-send-email-akaher@vmware.com>
+        <1689248004-8158-11-git-send-email-akaher@vmware.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH] mm: remove some useless comments of node_stat_item
-To:     Matthew Wilcox <willy@infradead.org>,
-        Miaohe Lin <linmiaohe@huawei.com>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20230713114915.74671-1-linmiaohe@huawei.com>
- <ZK/ppvBO00rbspa8@casper.infradead.org>
- <55c255df-9c7c-744f-e1a1-27602fcb5509@huawei.com>
- <ZK/uukqNMQYyyNif@casper.infradead.org>
-Content-Language: en-US
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <ZK/uukqNMQYyyNif@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 13 Jul 2023 17:03:24 +0530
+Ajay Kaher <akaher@vmware.com> wrote:
 
+> kprobe_args_char.tc, kprobe_args_string.tc has validation check
+> for tracefs_create_dir, for eventfs it should be eventfs_create_dir.
+> 
+> Signed-off-by: Ajay Kaher <akaher@vmware.com>
+> Co-developed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> Tested-by: Ching-lin Yu <chinglinyu@google.com>
+> Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-On 7/13/23 18:01, Matthew Wilcox wrote:
-> On Thu, Jul 13, 2023 at 08:18:29PM +0800, Miaohe Lin wrote:
->> On 2023/7/13 20:10, Matthew Wilcox wrote:
->>> On Thu, Jul 13, 2023 at 07:49:15PM +0800, Miaohe Lin wrote:
->>>> Some comments of node_stat_item are not that helpful and even confusing,
->>>> so remove them. No functional change intended.
->>>
->>> No, that's very useful and important.  Why does it confuse you?
->>
->> Thanks for your quick respond.
->>
->> I just can't figure out what these comments want to tell. Could you help explain these?
-> 
-> Don't snip the thing you want explained to you!
-> 
->         NR_INACTIVE_ANON = NR_LRU_BASE, /* must match order of LRU_[IN]ACTIVE */
-> -       NR_ACTIVE_ANON,         /*  "     "     "   "       "         */
-> -       NR_INACTIVE_FILE,       /*  "     "     "   "       "         */
-> -       NR_ACTIVE_FILE,         /*  "     "     "   "       "         */
-> -       NR_UNEVICTABLE,         /*  "     "     "   "       "         */
-> +	NR_ACTIVE_ANON,
-> +       NR_INACTIVE_FILE,
-> +       NR_ACTIVE_FILE,
-> +	NR_UNEVICTABLE,
-> 
-> What this is communicating to me is that these five items
-> (NR_INACTIVE_ANON to NR_UNEVICTABLE) must stay in the same order with
-> LRU_INACTIVE and LRU_ACTIVE.  By removing the ditto-marks from the
-> subsequent four lines, you've made the comment say that this one line
-> must stay in the same order as LRU_INACTIVE and LRU_ACTIVE ... which
-> makes no sense at all.
+As this patch as is will break when running on older kernels, I was
+wondering if we should do this instead?
 
-Just wondering - would it be better to repeat these comments in words for
-each line than use "ditto-marks" ?
+diff --git a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_char.tc b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_char.tc
+index 285b4770efad..ff7499eb98d6 100644
+--- a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_char.tc
++++ b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_char.tc
+@@ -34,14 +34,19 @@ mips*)
+ esac
+ 
+ : "Test get argument (1)"
+-echo "p:testprobe tracefs_create_dir arg1=+0(${ARG1}):char" > kprobe_events
++if grep -q eventfs_add_dir available_filter_functions; then
++  DIR_NAME="eventfs_add_dir"
++else
++  DIR_NAME="tracefs_create_dir"
++fi
++echo "p:testprobe ${DIR_NAME} arg1=+0(${ARG1}):char" > kprobe_events
+ echo 1 > events/kprobes/testprobe/enable
+ echo "p:test $FUNCTION_FORK" >> kprobe_events
+ grep -qe "testprobe.* arg1='t'" trace
+ 
+ echo 0 > events/kprobes/testprobe/enable
+ : "Test get argument (2)"
+-echo "p:testprobe tracefs_create_dir arg1=+0(${ARG1}):char arg2=+0(${ARG1}):char[4]" > kprobe_events
++echo "p:testprobe ${DIR_NAME} arg1=+0(${ARG1}):char arg2=+0(${ARG1}):char[4]" > kprobe_events
+ echo 1 > events/kprobes/testprobe/enable
+ echo "p:test $FUNCTION_FORK" >> kprobe_events
+ grep -qe "testprobe.* arg1='t' arg2={'t','e','s','t'}" trace
+diff --git a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_string.tc b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_string.tc
+index a4f8e7c53c1f..a202b2ea4baf 100644
+--- a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_string.tc
++++ b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_string.tc
+@@ -37,14 +37,19 @@ loongarch*)
+ esac
+ 
+ : "Test get argument (1)"
+-echo "p:testprobe tracefs_create_dir arg1=+0(${ARG1}):string" > kprobe_events
++if grep -q eventfs_add_dir available_filter_functions; then
++  DIR_NAME="eventfs_add_dir"
++else
++  DIR_NAME="tracefs_create_dir"
++fi
++echo "p:testprobe ${DIR_NAME} arg1=+0(${ARG1}):string" > kprobe_events
+ echo 1 > events/kprobes/testprobe/enable
+ echo "p:test $FUNCTION_FORK" >> kprobe_events
+ grep -qe "testprobe.* arg1=\"test\"" trace
+ 
+ echo 0 > events/kprobes/testprobe/enable
+ : "Test get argument (2)"
+-echo "p:testprobe tracefs_create_dir arg1=+0(${ARG1}):string arg2=+0(${ARG1}):string" > kprobe_events
++echo "p:testprobe ${DIR_NAME} arg1=+0(${ARG1}):string arg2=+0(${ARG1}):string" > kprobe_events
+ echo 1 > events/kprobes/testprobe/enable
+ echo "p:test $FUNCTION_FORK" >> kprobe_events
+ grep -qe "testprobe.* arg1=\"test\" arg2=\"test\"" trace
+
+-- Steve
+
+> ---
+>  .../selftests/ftrace/test.d/kprobe/kprobe_args_char.tc        | 4 ++--
+>  .../selftests/ftrace/test.d/kprobe/kprobe_args_string.tc      | 4 ++--
+>  2 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_char.tc b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_char.tc
+> index 285b4770efad..523cfb64539f 100644
+> --- a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_char.tc
+> +++ b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_char.tc
+> @@ -34,14 +34,14 @@ mips*)
+>  esac
+>  
+>  : "Test get argument (1)"
+> -echo "p:testprobe tracefs_create_dir arg1=+0(${ARG1}):char" > kprobe_events
+> +echo "p:testprobe eventfs_add_dir arg1=+0(${ARG1}):char" > kprobe_events
+>  echo 1 > events/kprobes/testprobe/enable
+>  echo "p:test $FUNCTION_FORK" >> kprobe_events
+>  grep -qe "testprobe.* arg1='t'" trace
+>  
+>  echo 0 > events/kprobes/testprobe/enable
+>  : "Test get argument (2)"
+> -echo "p:testprobe tracefs_create_dir arg1=+0(${ARG1}):char arg2=+0(${ARG1}):char[4]" > kprobe_events
+> +echo "p:testprobe eventfs_add_dir arg1=+0(${ARG1}):char arg2=+0(${ARG1}):char[4]" > kprobe_events
+>  echo 1 > events/kprobes/testprobe/enable
+>  echo "p:test $FUNCTION_FORK" >> kprobe_events
+>  grep -qe "testprobe.* arg1='t' arg2={'t','e','s','t'}" trace
+> diff --git a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_string.tc b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_string.tc
+> index a4f8e7c53c1f..b9f8c3f8bae8 100644
+> --- a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_string.tc
+> +++ b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_string.tc
+> @@ -37,14 +37,14 @@ loongarch*)
+>  esac
+>  
+>  : "Test get argument (1)"
+> -echo "p:testprobe tracefs_create_dir arg1=+0(${ARG1}):string" > kprobe_events
+> +echo "p:testprobe eventfs_add_dir arg1=+0(${ARG1}):string" > kprobe_events
+>  echo 1 > events/kprobes/testprobe/enable
+>  echo "p:test $FUNCTION_FORK" >> kprobe_events
+>  grep -qe "testprobe.* arg1=\"test\"" trace
+>  
+>  echo 0 > events/kprobes/testprobe/enable
+>  : "Test get argument (2)"
+> -echo "p:testprobe tracefs_create_dir arg1=+0(${ARG1}):string arg2=+0(${ARG1}):string" > kprobe_events
+> +echo "p:testprobe eventfs_add_dir arg1=+0(${ARG1}):string arg2=+0(${ARG1}):string" > kprobe_events
+>  echo 1 > events/kprobes/testprobe/enable
+>  echo "p:test $FUNCTION_FORK" >> kprobe_events
+>  grep -qe "testprobe.* arg1=\"test\" arg2=\"test\"" trace
+
