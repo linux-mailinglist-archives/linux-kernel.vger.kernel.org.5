@@ -2,108 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08EAC7544C9
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 00:02:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F3C07543D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 22:37:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229677AbjGNWCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 18:02:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52494 "EHLO
+        id S236091AbjGNUhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 16:37:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbjGNWCK (ORCPT
+        with ESMTP id S236254AbjGNUhi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 18:02:10 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6F511BF3
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 15:02:09 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-66f5faba829so1826467b3a.3
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 15:02:09 -0700 (PDT)
+        Fri, 14 Jul 2023 16:37:38 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9747035B0;
+        Fri, 14 Jul 2023 13:37:37 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id 5614622812f47-3a36b30aa7bso1796383b6e.3;
+        Fri, 14 Jul 2023 13:37:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689372129; x=1691964129;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=B3DZ3QodLkTjKM8tLx8t86MoU1m0TSwGIA4Lmr1eciw=;
-        b=xO0lJMv5ZVBnZmrsoKXYHg+5jX2CO6Anylt5EKGGHaPYsJyD2naV+Einq1HkpCbDEd
-         70g3nFQQ/zzIUxit73R0+RWL+bRmq2+ip05QObmumBglucmYVvdzTpLteGwAbhKjoq2b
-         YM6y7rH7FaDGcK4LloKDQHGr7mnuu+MWuAj/yt50MH2uvmPMHONXXCWiB7SkMzHWuHhc
-         pZa/D0c3BSbMEde+jqms0oOT04fw9S8YbwAdQDmsvvaAUTiC/aLViiREOs8Ud8kkmyRu
-         Ov5ek9e56Lx9wWpZVgKFDBXGRgOIHepnFTjp9MqaotCy6mue0pws3PGWTFKzQca6squv
-         iD7w==
+        d=gmail.com; s=20221208; t=1689367057; x=1691959057;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mY5r74EsToyg15WyPiWjX1ZroHWYpVw9giMGrKp5JHA=;
+        b=AJN5/qxg8i0gT7b4C7JV8YxHIbBH13eMOg2DhSZgcyeTwVmINt+uIR1UC7cffKvHa3
+         3/bfbVb6OaoeS+/kSx4ONT1rQ/JADd8D03xutMFZu50rbkjCAOBm3ChncdDakkAjvCFR
+         ZTMcUD0KglBQXRLgl0tkuw3bitTlQsJPYbqMNdxy5iNvBK2Lj1VgPfzPX4jgEu5V0fhN
+         TbV2oVtYFJfwHCp9DGcH6P7H8JzVT5Q4lnmDf7b6cnveNHDh+oOz/kVQ4T61RQyMn+WY
+         f7JBbUX7nXRprPIfE5Y1dCdU39NH5n5LQ18IzlSkyVG6yThBm+YX6MPtt9t+zXi3amdh
+         a0bA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689372129; x=1691964129;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=B3DZ3QodLkTjKM8tLx8t86MoU1m0TSwGIA4Lmr1eciw=;
-        b=I9QJYGItXpv3gopelGvcG3UlieRPulzFx0HAZAQvNXmY4F5YaoVdtgbozjM2Lw0PSU
-         WqjqWo3+2KJOI2ky7GJmFTeXMmU2Ig0hFqdtEhU2jw2+7ve7/gSSJXlHYv6oa+ZFmul6
-         U7ixu055isAb30dMawDxHNtyc0W9cgr25S3d0eE7YilZWiW9qxv5/r0CC7L6AHj5f7zX
-         y5bJpwWIhNeLvz/e2hEHWyFx0QJp/eGx1ixPS/tzEGSrwOjT2SIM/F01cy7zRdvVGc7k
-         vGybAmhLDbkUy184tPAVCz+jXhSyhop9e1MxphoFShHBtACYL9sWMfMlKkj5yUncJxsH
-         dfyQ==
-X-Gm-Message-State: ABy/qLYPB2Jf95RjIZggiSxSrXvvp8He7RjVJMIo12wkuDAXVPjgvpqc
-        ZWC0BCIM+lVgbc2/0GANG8J3yA==
-X-Google-Smtp-Source: APBJJlEPhk3QAeLODRppoEJ8Y7tCUc2xqclRZUChAEpPHOArrhf5SttTvbB0tk/lqEdMIxDEWm45Bw==
-X-Received: by 2002:a05:6a00:cc5:b0:668:846b:9b5d with SMTP id b5-20020a056a000cc500b00668846b9b5dmr7234962pfv.5.1689372129136;
-        Fri, 14 Jul 2023 15:02:09 -0700 (PDT)
-Received: from fedora (61-114-134-192.ppp.bbiq.jp. [61.114.134.192])
-        by smtp.gmail.com with ESMTPSA id a12-20020aa7864c000000b00666e649ca46sm7608915pfo.101.2023.07.14.15.02.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 15:02:08 -0700 (PDT)
-Date:   Fri, 14 Jul 2023 07:34:03 -0400
-From:   William Breathitt Gray <william.gray@linaro.org>
-To:     Anh Tuan Phan <tuananhlfc@gmail.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org, rongtao@cestc.cn,
-        ricardo@pardini.net, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tools/counter: Add checking directory exists for make
- clean
-Message-ID: <ZLEyq1Nx085jlxDr@fedora>
-References: <362e127d-6018-5fc6-247b-3c729b99d946@gmail.com>
- <ZKtZ1WB9LdszbxU+@fedora>
- <e62f481d-f939-a12b-7f8a-ec1db95c7b8e@gmail.com>
+        d=1e100.net; s=20221208; t=1689367057; x=1691959057;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mY5r74EsToyg15WyPiWjX1ZroHWYpVw9giMGrKp5JHA=;
+        b=H7x2884KuYQ1AtyKgnGxhCW7BPHq0LSSSstIq3Kp/Kyj5duI807B/RnUuHSvXswsRE
+         r6Ti69Fp9EG0BeEYrVQVbbxDSCVv9R+L7E/n2dwoqnffPZbxgMLlEDv+TC1QKSCd5VIu
+         kbbBzSQ9pL9rcfWre89GOHhj009iFLALvdk+Xcf6lQECASXgGjpJuem9QslaLnvu73XQ
+         ZSNimcfRCgh7O3YZA1MBNoxEg+NNvSPAfywuuYiso/w0dWHtUoupOXGvj/nr2dpgQqSg
+         wwXDj8psWd5OLS5ArpGwO0OhVXcVgH568S5gAU5ys6mmaVIttXXH7R6xDmKyj4yFLoIU
+         ZPFQ==
+X-Gm-Message-State: ABy/qLZdv69vWES69S3hknf8LK06A9FzSgLN5lyiMA6y+KxwhycXR5e5
+        6rAq0/h7n4OmPjHWwBFhqtI=
+X-Google-Smtp-Source: APBJJlFBrF1UdrLk9k1UzyB21a0BPI2S3IPzkt81x9e58ufSqkaA21DfyAMl9+w9uwHwKMk7wMrhDA==
+X-Received: by 2002:a05:6808:d47:b0:396:e3a:9f2f with SMTP id w7-20020a0568080d4700b003960e3a9f2fmr6910430oik.5.1689367056789;
+        Fri, 14 Jul 2023 13:37:36 -0700 (PDT)
+Received: from [192.168.54.90] (static.220.238.itcsa.net. [190.15.220.238])
+        by smtp.gmail.com with ESMTPSA id bk12-20020a0568081a0c00b003a44b425c18sm293034oib.43.2023.07.14.13.37.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 14 Jul 2023 13:37:36 -0700 (PDT)
+Message-ID: <72aca706-c2ff-b363-717c-323ea24d3908@gmail.com>
+Date:   Fri, 14 Jul 2023 11:28:37 -0300
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="kbfYM6KMOcOKmno2"
-Content-Disposition: inline
-In-Reply-To: <e62f481d-f939-a12b-7f8a-ec1db95c7b8e@gmail.com>
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH RFC 04/11] rust: siphash: Add a simple siphash abstraction
+Content-Language: en-US
+To:     Asahi Lina <lina@asahilina.net>, Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=c3=b6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>, Tom Rix <trix@redhat.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     Hector Martin <marcan@marcan.st>, Sven Peter <sven@svenpeter.dev>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        asahi@lists.linux.dev, rust-for-linux@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        llvm@lists.linux.dev
+References: <20230714-classless_lockdep-v1-0-229b9671ce31@asahilina.net>
+ <20230714-classless_lockdep-v1-4-229b9671ce31@asahilina.net>
+From:   Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+In-Reply-To: <20230714-classless_lockdep-v1-4-229b9671ce31@asahilina.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.7 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 7/14/23 06:13, Asahi Lina wrote:
+> This simple wrapper allows Rust code to use the Hasher interface with
+> the kernel siphash implementation. No fancy features supported for now,
+> just basic bag-of-bytes hashing. No guarantee that hash outputs will
+> remain stable in the future either.
+> 
+> Signed-off-by: Asahi Lina <lina@asahilina.net>
+> ---
+> [...]
+> --- /dev/null
+> +++ b/rust/kernel/siphash.rs
+> @@ -0,0 +1,39 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +//! A core::hash::Hasher wrapper for the kernel siphash implementation.
+> +//!
+> +//! This module allows Rust code to use the kernel's siphash implementation
+> +//! to hash Rust objects.
+> +
+> +use core::hash::Hasher;
+> +
+> +/// A Hasher implementation that uses the kernel siphash implementation.
+> +#[derive(Default)]
+> +pub struct SipHasher {
+> +    // SipHash state is 4xu64, but the Linux implementation
+> +    // doesn't expose incremental hashing so let's just chain
+> +    // individual SipHash calls for now, which return a u64
+> +    // hash.
 
---kbfYM6KMOcOKmno2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Isn't this detail relevant to mention in the doc comment? At least to
+explain the difference between them.
 
-On Fri, Jul 14, 2023 at 08:57:21PM +0700, Anh Tuan Phan wrote:
-> Hi William, the race condition possibility is a good point. Thanks for
-> suggesting me. Will send a new version with using `rm -df` instead and
-> add the appropriate CC lists. Thank you!
-
-Hi Anh,
-
-Because this will fix a failure, please include a Fixes tag as well that
-references the commit that introduces the rmdir line.
-
-Thanks,
-
-William Breathitt Gray
-
---kbfYM6KMOcOKmno2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQSNN83d4NIlKPjon7a1SFbKvhIjKwUCZLEyqwAKCRC1SFbKvhIj
-K+ziAQCGY7jdv3OM3sbn+dCb3FZsFSrqndT/N7q7OXZdDBiEwwD9GrllxnmAAjJU
-2pmDiD0aeGvLOlLxjxi7SHSWcRRAZQs=
-=CrFK
------END PGP SIGNATURE-----
-
---kbfYM6KMOcOKmno2--
+> +    state: u64,
+> +}
+> [...]
