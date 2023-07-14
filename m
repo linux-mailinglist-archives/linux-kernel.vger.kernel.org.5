@@ -2,172 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88B847531C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 08:11:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A69B07531D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 08:13:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235115AbjGNGLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 02:11:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49198 "EHLO
+        id S235140AbjGNGNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 02:13:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234025AbjGNGLU (ORCPT
+        with ESMTP id S234617AbjGNGN2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 02:11:20 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78D3F2D43;
-        Thu, 13 Jul 2023 23:11:18 -0700 (PDT)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36E4orFL007494;
-        Fri, 14 Jul 2023 06:11:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=qcppdkim1;
- bh=XNyGBpgmXZcDx0JKcJhuGD4lyAwgbe6qFtTUWsyW+/Q=;
- b=pMToL/y6WOl3v6H68fw1Y2t6vj883OmRY4oiVEeH4A9DZ8UTsKdH2ZFwdbkxoD498oA/
- Wl9VgWMO+zNo721FQhRUDcj2zM7b+yD4DM4ayuYLe7e2ILEtF3r44cQDwxWEjy7TU5iA
- EIrThtCdsBD3jDltt/GoRMHC6D9crbp/+G5KoZDDZThl3xhi4E7XKTkT6i0eI3w8DSRy
- 8AiBThnsiwiZ//Y5/9MsIkljE2c+4vzinKLKillglTzNC1aLVX7wlE8WCevdQv+ys5QW
- BmVsCNqleNYwADYDGZxhb8yORGSpqJqwTxWPDaf6z2xNRlckSPfrJNzMnEgsKPASg1OB PQ== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rtpugrynq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 14 Jul 2023 06:11:12 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36E6BBlE027394
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 14 Jul 2023 06:11:11 GMT
-Received: from hu-ninanaik-blr.qualcomm.com (10.80.80.8) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Thu, 13 Jul 2023 23:11:08 -0700
-From:   Ninad Naik <quic_ninanaik@quicinc.com>
-To:     <andersson@kernel.org>, <agross@kernel.org>,
-        <konrad.dybcio@linaro.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_ppareek@quicinc.com>,
-        <psodagud@quicinc.com>, <quic_kprasan@quicinc.com>,
-        Ninad Naik <quic_ninanaik@quicinc.com>
-Subject: [PATCH] pinctrl: qcom: Add intr_target_width to define intr_target_bit field width
-Date:   Fri, 14 Jul 2023 11:40:09 +0530
-Message-ID: <20230714061010.15817-1-quic_ninanaik@quicinc.com>
-X-Mailer: git-send-email 2.41.0
+        Fri, 14 Jul 2023 02:13:28 -0400
+Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C79472680
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 23:13:26 -0700 (PDT)
+Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20230714061324epoutp018ee1a6ea65ea1d65c6b52ecece936c78~xpzqA-3Jf1139511395epoutp01i
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 06:13:24 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20230714061324epoutp018ee1a6ea65ea1d65c6b52ecece936c78~xpzqA-3Jf1139511395epoutp01i
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1689315204;
+        bh=azLmA+oEU0Tyzhclaxzw2p+bZdMaW0V0aaD5/qMcV8M=;
+        h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
+        b=fTODH7czn0vecZ9fy4yEMnEM9BJBoagaIYNay7JmYvsi5eZM4QSdGglmPZHORxJ+s
+         iSmG+UUuZq1zDf8RdTT5V5B/zdZWph4SVgklA+vLdJgIajyQaP/ca6uKmEzsNVoIdI
+         Eb2AAzBDCkcesJXvU/9l6U9CAQfyMjmMWNAoKU5Q=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
+        20230714061324epcas2p184cb966d0072272800b674f6a38d848d~xpzpZ2p5g2011120111epcas2p1r;
+        Fri, 14 Jul 2023 06:13:24 +0000 (GMT)
+Received: from epsmges2p4.samsung.com (unknown [182.195.36.90]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4R2Lkq5N3Dz4x9Q2; Fri, 14 Jul
+        2023 06:13:23 +0000 (GMT)
+Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
+        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        45.6A.32393.387E0B46; Fri, 14 Jul 2023 15:13:23 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTPA id
+        20230714061323epcas2p11c4689adee180698c083d96879141175~xpzofHq1s2261622616epcas2p1T;
+        Fri, 14 Jul 2023 06:13:23 +0000 (GMT)
+Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20230714061323epsmtrp2b9f835b1351a4b876b98b61158a550c4~xpzoeTcsX2960329603epsmtrp2M;
+        Fri, 14 Jul 2023 06:13:23 +0000 (GMT)
+X-AuditID: b6c32a48-adffa70000007e89-de-64b0e7832370
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        B0.E5.30535.387E0B46; Fri, 14 Jul 2023 15:13:23 +0900 (KST)
+Received: from [10.229.8.168] (unknown [10.229.8.168]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20230714061322epsmtip2184eb180a288744a183882b4b7226d89~xpzoK2ge31244412444epsmtip2Z;
+        Fri, 14 Jul 2023 06:13:22 +0000 (GMT)
+Message-ID: <b737369d-b443-26dd-e4a4-b5906b70ec71@samsung.com>
+Date:   Fri, 14 Jul 2023 15:10:50 +0900
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: WLdza96FjgxL1yGeY5OVyz6QXWOx9e6T
-X-Proofpoint-ORIG-GUID: WLdza96FjgxL1yGeY5OVyz6QXWOx9e6T
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-14_02,2023-07-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- spamscore=0 mlxscore=0 clxscore=1011 bulkscore=0 priorityscore=1501
- phishscore=0 impostorscore=0 suspectscore=0 malwarescore=0 adultscore=0
- mlxlogscore=932 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307140056
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+        Thunderbird/102.11.0
+Subject: Re: [PATCH] arm64: dts: exynos: add pwm node for exynosautov9-sadk
+Content-Language: en-US
+To:     Chanho Park <chanho61.park@samsung.com>,
+        'Krzysztof Kozlowski' <krzysztof.kozlowski@linaro.org>,
+        'Rob Herring' <robh+dt@kernel.org>,
+        'Krzysztof Kozlowski' <krzysztof.kozlowski+dt@linaro.org>,
+        'Conor Dooley' <conor+dt@kernel.org>,
+        'Alim Akhtar' <alim.akhtar@samsung.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+From:   Jaewon Kim <jaewon02.kim@samsung.com>
+In-Reply-To: <000401d9b618$59a29d80$0ce7d880$@samsung.com>
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrMJsWRmVeSWpSXmKPExsWy7bCmmW7z8w0pBtPXq1s8mLeNzeLyfm2L
+        NXvPMVnMP3KO1aLvxUNmi72vt7JbbHp8jdXi8q45bBYzzu9jsmjde4Tdgctj06pONo871/aw
+        eWxeUu/Rt2UVo8fnTXIBrFHZNhmpiSmpRQqpecn5KZl56bZK3sHxzvGmZgaGuoaWFuZKCnmJ
+        uam2Si4+AbpumTlANykplCXmlAKFAhKLi5X07WyK8ktLUhUy8otLbJVSC1JyCswL9IoTc4tL
+        89L18lJLrAwNDIxMgQoTsjNmPNvMUrCCpWLpnfnsDYxzmbsYOTkkBEwk7s/ZxwRiCwnsYJS4
+        vp+1i5ELyP7EKNGy6BA7hPONUWLC0z1MMB0zWrcxQ3TsZZR4/FEToug1o8TUezdYQBK8AnYS
+        n6YsYwOxWQRUJX6unAgVF5Q4OfMJmC0qEC3Ruuw+WI2wgLfEglWNYHFmAXGJW0/mM4EMFRGY
+        ziRx4ko/G4jDLNDOKHFqzg12kCo2AW2J7+sXs4LYnAJWEpe/nmCH6JaX2P52DtRzCzkkZm0z
+        h7BdJH7df8cCYQtLvDq+hR3ClpL4/G4vG4SdLdE+/Q8rhF0hcXHDbKi4scSsZ+2MXYwcQPM1
+        Jdbv0gcxJQSUJY7cgrqZT6Lj8F92iDCvREebEESjmsT9qeeghshITDqyEhqGHhKP+54yTmBU
+        nIUUKrOQfD8LyS+zEPYuYGRZxSiWWlCcm55abFRgAo/r5PzcTYzg1KrlsYNx9tsPeocYmTgY
+        DzFKcDArifCqbFuXIsSbklhZlVqUH19UmpNafIjRFBg3E5mlRJPzgck9ryTe0MTSwMTMzNDc
+        yNTAXEmc917r3BQhgfTEktTs1NSC1CKYPiYOTqkGJt1v+7cKrXl+aWmViq7inPvPJ+99OZ9n
+        +4m6NQ8lWRet/r43qIuJe4L1ymN2K2f/zNW/ZjfzSdzrNwuUC9j+fj6ZviI77OfhXsEUtu96
+        yWpLj92Vunxuy8rJCfJGckHh3alfH77vvrjUWHBpwh1JmRi5iywmGnnJrslXTjf5XWg4eu05
+        7/Fv9ziaVxmkG3x8c2xNHuua8jkTj+6t+v57TbFpcqNeJ0vy3qvWxw5v3qh9XOt8jbH/s5wS
+        L9/iPY721Z+LgqUYGmedOdYyUT18p96RTtMtU6c+mdPo9fvjhdhjJu+mn/m2vXe5+YzC3Z/O
+        MYeqfrz/WO238s/nH76+fVn23j7yZe5XnU2NXQmzS1dMUGIpzkg01GIuKk4EABeh0lo2BAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpnkeLIzCtJLcpLzFFi42LZdlhJXrf5+YYUg2u3uC0ezNvGZnF5v7bF
+        mr3nmCzmHznHatH34iGzxd7XW9ktNj2+xmpxedccNosZ5/cxWbTuPcLuwOWxaVUnm8eda3vY
+        PDYvqffo27KK0ePzJrkA1igum5TUnMyy1CJ9uwSujBnPNrMUrGCpWHpnPnsD41zmLkZODgkB
+        E4kZrduAbC4OIYHdjBJP7j9jh0jISCx/1scGYQtL3G85wgpR9JJRYvmuS2BFvAJ2Ep+mLAMr
+        YhFQlfi5ciILRFxQ4uTMJ2C2qEC0xOrPF1hBbGEBb4kFqxrB4swC4hK3nsxnAhkqIjCTSeLt
+        zr/sIA6zQDujxJ23s9kg1n1llFj3/hPYCjYBbYnv6xeDjeIUsJK4/PUEO8QoM4murV2MELa8
+        xPa3c5gnMArNQnLJLCQbZyFpmYWkZQEjyypGydSC4tz03GLDAqO81HK94sTc4tK8dL3k/NxN
+        jOC40tLawbhn1Qe9Q4xMHIyHGCU4mJVEeFW2rUsR4k1JrKxKLcqPLyrNSS0+xCjNwaIkzvvt
+        dW+KkEB6YklqdmpqQWoRTJaJg1OqgclnUsuX3NPnD97vOXF3AvPma9cl7qn2/vnBr+Eoq/fx
+        e5um9QKbaxKXzz7xWxkW8cL3wfpOrgTPgl93JpRv2vmtrmfL9E+MSy0LbpgJtFkfjN7Omf6N
+        7Z/ronovdafmQxc2nbgs3Cr12/d8fFSLj1prfY7U2RSz+yE5Dzl6uyvrylds43Gu/Du17ald
+        gVWRTXObkZDIbr0Jl5pYGjqenlzMfMj5Y/xO8fIjTSEcp7nsuWUWlh/+lJQf8L/ExDnj7dOV
+        0WKfbsdOapW56/fAUjUh6m3Wj/dnlmp+cH6yb5f8X98Ktrkmqnsqwlb26T0X9Or5WP/B8Nat
+        ExusPq2Rbpr1/NnK9e8fZDFqqC4Lu6XEUpyRaKjFXFScCADaQ3xvGgMAAA==
+X-CMS-MailID: 20230714061323epcas2p11c4689adee180698c083d96879141175
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20230714052025epcas2p46d5485a277c9f21ace14300dd9d7b4d8
+References: <CGME20230714052025epcas2p46d5485a277c9f21ace14300dd9d7b4d8@epcas2p4.samsung.com>
+        <20230714051521.22720-1-jaewon02.kim@samsung.com>
+        <3bc9c34a-ba55-61c5-87ea-80b369841873@linaro.org>
+        <000401d9b618$59a29d80$0ce7d880$@samsung.com>
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SA8775 and newer target have added support for an increased number of
-interrupt targets. To implement this change, the intr_target field, which
-is used to configure the interrupt target in the interrupt configuration
-register is increased from 3 bits to 4 bits.
 
-In accordance to these updates, a new intr_target_width member is
-introduced in msm_pingroup structure. This member stores the value of
-width of intr_target field in the interrupt configuration register. This
-value is used to dynamically calculate and generate mask for setting the
-intr_target field. By default, this mask is set to 3 bit wide, to ensure
-backward compatibility with the older targets.
+On 23. 7. 14. 14:59, Chanho Park wrote:
+>>> +			reg = <0x103f0000 0x100>;
+>>> +			samsung,pwm-outputs = <0>, <1>, <2>, <3>;
+>>> +			#pwm-cells = <3>;
+>>> +			clocks = <&xtcxo>;
+>> This does not look like correct clock. Are you sure XTCXO goes to PWM?
+> Yes. XTXCO is the source clock of the pwm. Unlike any other exynos SoCs, the clock is directly derived from the external OSC.
+> Thus, it cannot be controllable such as gating.
 
-Signed-off-by: Ninad Naik <quic_ninanaik@quicinc.com>
----
- drivers/pinctrl/qcom/pinctrl-msm.c     | 9 ++++++---
- drivers/pinctrl/qcom/pinctrl-msm.h     | 2 ++
- drivers/pinctrl/qcom/pinctrl-sa8775p.c | 1 +
- 3 files changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/pinctrl/qcom/pinctrl-msm.c b/drivers/pinctrl/qcom/pinctrl-msm.c
-index 2585ef2b2793..6ebcaa2220af 100644
---- a/drivers/pinctrl/qcom/pinctrl-msm.c
-+++ b/drivers/pinctrl/qcom/pinctrl-msm.c
-@@ -1038,6 +1038,7 @@ static int msm_gpio_irq_set_type(struct irq_data *d, unsigned int type)
- 	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
- 	struct msm_pinctrl *pctrl = gpiochip_get_data(gc);
- 	const struct msm_pingroup *g;
-+	u32 intr_target_mask = 0x7;
- 	unsigned long flags;
- 	bool was_enabled;
- 	u32 val;
-@@ -1074,13 +1075,15 @@ static int msm_gpio_irq_set_type(struct irq_data *d, unsigned int type)
- 	 * With intr_target_use_scm interrupts are routed to
- 	 * application cpu using scm calls.
- 	 */
-+	if (g->intr_target_width)
-+		intr_target_mask = GENMASK(g->intr_target_width - 1, 0);
-+
- 	if (pctrl->intr_target_use_scm) {
- 		u32 addr = pctrl->phys_base[0] + g->intr_target_reg;
- 		int ret;
- 
- 		qcom_scm_io_readl(addr, &val);
--
--		val &= ~(7 << g->intr_target_bit);
-+		val &= ~(intr_target_mask << g->intr_target_bit);
- 		val |= g->intr_target_kpss_val << g->intr_target_bit;
- 
- 		ret = qcom_scm_io_writel(addr, val);
-@@ -1090,7 +1093,7 @@ static int msm_gpio_irq_set_type(struct irq_data *d, unsigned int type)
- 				d->hwirq);
- 	} else {
- 		val = msm_readl_intr_target(pctrl, g);
--		val &= ~(7 << g->intr_target_bit);
-+		val &= ~(intr_target_mask << g->intr_target_bit);
- 		val |= g->intr_target_kpss_val << g->intr_target_bit;
- 		msm_writel_intr_target(val, pctrl, g);
- 	}
-diff --git a/drivers/pinctrl/qcom/pinctrl-msm.h b/drivers/pinctrl/qcom/pinctrl-msm.h
-index 5e4410bed823..1d2f2e904da1 100644
---- a/drivers/pinctrl/qcom/pinctrl-msm.h
-+++ b/drivers/pinctrl/qcom/pinctrl-msm.h
-@@ -59,6 +59,7 @@ struct pinctrl_pin_desc;
-  * @intr_status_bit:      Offset in @intr_status_reg for reading and acking the interrupt
-  *                        status.
-  * @intr_target_bit:      Offset in @intr_target_reg for configuring the interrupt routing.
-+ * @intr_target_width:    Number of bits used for specifying interrupt routing target.
-  * @intr_target_kpss_val: Value in @intr_target_bit for specifying that the interrupt from
-  *                        this gpio should get routed to the KPSS processor.
-  * @intr_raw_status_bit:  Offset in @intr_cfg_reg for the raw status bit.
-@@ -100,6 +101,7 @@ struct msm_pingroup {
- 	unsigned intr_ack_high:1;
- 
- 	unsigned intr_target_bit:5;
-+	unsigned intr_target_width:5;
- 	unsigned intr_target_kpss_val:5;
- 	unsigned intr_raw_status_bit:5;
- 	unsigned intr_polarity_bit:5;
-diff --git a/drivers/pinctrl/qcom/pinctrl-sa8775p.c b/drivers/pinctrl/qcom/pinctrl-sa8775p.c
-index 8a5cd15512b9..8fdea25d8d67 100644
---- a/drivers/pinctrl/qcom/pinctrl-sa8775p.c
-+++ b/drivers/pinctrl/qcom/pinctrl-sa8775p.c
-@@ -46,6 +46,7 @@
- 		.intr_enable_bit = 0,		\
- 		.intr_status_bit = 0,		\
- 		.intr_target_bit = 5,		\
-+		.intr_target_width = 4,		\
- 		.intr_target_kpss_val = 3,	\
- 		.intr_raw_status_bit = 4,	\
- 		.intr_polarity_bit = 1,		\
--- 
-2.41.0
+Thanks Chanho.
+
+I miss this comment.
+
+
+>
+> Best Regards,
+> Chanho Park
+>
+>
+
+Thanks
+
+Jaewon Kim
 
