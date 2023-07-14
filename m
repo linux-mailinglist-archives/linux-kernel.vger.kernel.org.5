@@ -2,353 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04AD0753FD7
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 18:28:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 986FC753FDE
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 18:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236116AbjGNQ2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 12:28:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54074 "EHLO
+        id S235596AbjGNQfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 12:35:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236407AbjGNQ2d (ORCPT
+        with ESMTP id S229557AbjGNQfm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 12:28:33 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83891272B;
-        Fri, 14 Jul 2023 09:28:30 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4R2cKr749Qz6J6f6;
-        Sat, 15 Jul 2023 00:26:08 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 14 Jul
- 2023 17:28:26 +0100
-Date:   Fri, 14 Jul 2023 17:28:25 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-CC:     <linux-coco@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-        <kvm@vger.kernel.org>, <kvmarm@lists.linux.dev>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Andrew Jones <andrew.jones@linux.dev>,
-        "Catalin Marinas" <catalin.marinas@arm.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Christoffer Dall <christoffer.dall@arm.com>,
-        Fuad Tabba <tabba@google.com>,
-        James Morse <james.morse@arm.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Joey Gouly <Joey.Gouly@arm.com>, Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        "Paolo Bonzini" <pbonzini@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        "Sean Christopherson" <seanjc@google.com>,
-        Steven Price <steven.price@arm.com>,
-        Thomas Huth <thuth@redhat.com>, Will Deacon <will@kernel.org>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        <kvmarm@lists.cs.columbia.edu>
-Subject: Re: [RFC] Support for Arm CCA VMs on Linux
-Message-ID: <20230714172825.00003e81@Huawei.com>
-In-Reply-To: <42cbffac-05a8-a279-9bdb-f76354c1a1b1@arm.com>
-References: <20230127112248.136810-1-suzuki.poulose@arm.com>
-        <20230714144657.000064ef@Huawei.com>
-        <42cbffac-05a8-a279-9bdb-f76354c1a1b1@arm.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Fri, 14 Jul 2023 12:35:42 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66917273F;
+        Fri, 14 Jul 2023 09:35:41 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id F27FD61D60;
+        Fri, 14 Jul 2023 16:35:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0B6EC433C7;
+        Fri, 14 Jul 2023 16:35:38 +0000 (UTC)
+Date:   Fri, 14 Jul 2023 12:35:37 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Ajay Kaher <akaher@vmware.com>
+Cc:     shuah@kernel.org, mhiramat@kernel.org, chinglinyu@google.com,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, lkp@intel.com,
+        namit@vmware.com, oe-lkp@lists.linux.dev, amakhalov@vmware.com,
+        er.ajay.kaher@gmail.com, srivatsa@csail.mit.edu, tkundu@vmware.com,
+        vsirnapalli@vmware.com
+Subject: Re: [PATCH v4 05/10] eventfs: Implement eventfs file, directory
+ remove function
+Message-ID: <20230714123537.3c397d83@gandalf.local.home>
+In-Reply-To: <1689248004-8158-6-git-send-email-akaher@vmware.com>
+References: <1689248004-8158-1-git-send-email-akaher@vmware.com>
+        <1689248004-8158-6-git-send-email-akaher@vmware.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml500005.china.huawei.com (7.191.163.240) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 14 Jul 2023 16:03:37 +0100
-Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
+Some more nits:
 
-> Hi Jonathan
-> 
-> On 14/07/2023 14:46, Jonathan Cameron wrote:
-> > On Fri, 27 Jan 2023 11:22:48 +0000
-> > Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
-> > 
-> > 
-> > Hi Suzuki,
-> > 
-> > Looking at this has been on the backlog for a while from our side and we are finally
-> > getting to it.  So before we dive in and given it's been 6 months, I wanted to check
-> > if you expect to post a new version shortly or if there is a rebased tree available?  
-> 
-> Thanks for your interest. We have been updating our trees to the latest
-> RMM specification (v1.0-eac2 now) and also rebasing Linux/KVM on top of
-> v6.5-rc1. We will post this as soon as we have all the components ready
-> (and the TF-RMM). At the earliest, this would be around early September.
-> 
-> That said, the revised version will have the following changes :
->   - Changes to the Stage2 management
->   - Changes to RMM memory management for Realm
->   - PMU/SVE support
-> 
-> Otherwise, most of the changes remain the same (e.g., UABI). Happy to
-> hear feedback on those areas.
+Subject:
 
-Hi Suzuki,
+ eventfs: Implement removal of meta data from eventfs
 
-Thanks for the update.  If there is any chance of visibility of changes
-via a git tree etc that would be great in the meantime.  If not, such is life
-and I'll try to wait patiently :) + we'll review the existing code.
 
-Jonathan
+On Thu, 13 Jul 2023 17:03:19 +0530
+Ajay Kaher <akaher@vmware.com> wrote:
+
+> Adding eventfs_remove(), this function will recursively remove
+> dir or file info from eventfs.
+
+ When events are removed from tracefs, the eventfs must be aware of this.
+ The eventfs_remove() removes the meta data from eventfs so that it will no
+ longer create the files associated with that event.
+
+ When an instance is removed from tracefs, eventfs_remove_events_dir() will
+ remove and clean up the entire "events" directory.
+
 
 > 
+> added a recursion check to eventfs_remove_rec() as it is really
+> dangerous to have unchecked recursion in the kernel (we do have
+> a fixed size stack).
+
+The above doesn't need to be in the change log. It's an update from the
+previous version. The eventfs_remove_rec() is added here, so the recursion
+check was not.
+
 > 
-> Kind regards
-> Suzuki
+> have the free use srcu callbacks. After the srcu grace periods
+> are done, it adds the eventfs_file onto a llist (lockless link
+> list) and wakes up a work queue. Then the work queue does the
+> freeing (this needs to be done in task/workqueue context, as
+> srcu callbacks are done in softirq context).
+
+If you want to document the above, we can say:
+
+ The helper function eventfs_remove_rec() is used to clean up and free the
+ associated data from eventfs for both of the added functions. SRCU is used
+ to protect the lists of meta data stored in the eventfs. The eventfs_mutex
+ is used to protect the content of the items in the list.
+
+ As lookups may be happening as deletions of events are made, the freeing
+ of of dentry/inodes and relative information is done after the SRCU grace
+ period has passed. As the callback of SRCU is in a softirq context, a work
+ queue is added to perform the cleanups in a task context.
+
+ The struct evenfs_file is given a union of an rcu_head and a llist_node.
+ The SRCU callback uses the rcu_head from this structure to insert it into
+ the SRCU queue. When the SRCU grace periods are complete, the callback
+ will then insert the eventfs_file struct onto a lockless llist using the
+ llist_node of the structure. A union is used as this process is just a
+ hand off from SRCU to workqueue, and only one field is necessary for this
+ to work.
+
+You can also add the above as a comment in the code (and keep it in the
+change log as well).
+
+-- Steve
+
+
 > 
-> > 
-> > Jonathan
-> >      
-> >> We are happy to announce the early RFC version of the Arm
-> >> Confidential Compute Architecture (CCA) support for the Linux
-> >> stack. The intention is to seek early feedback in the following areas:
-> >>   * KVM integration of the Arm CCA
-> >>   * KVM UABI for managing the Realms, seeking to generalise the operations
-> >>     wherever possible with other Confidential Compute solutions.
-> >>     Note: This version doesn't support Guest Private memory, which will be added
-> >>     later (see below).
-> >>   * Linux Guest support for Realms
-> >>
-> >> Arm CCA Introduction
-> >> =====================
-> >>
-> >> The Arm CCA is a reference software architecture and implementation that builds
-> >> on the Realm Management Extension (RME), enabling the execution of Virtual
-> >> machines, while preventing access by more privileged software, such as hypervisor.
-> >> The Arm CCA allows the hypervisor to control the VM, but removes the right for
-> >> access to the code, register state or data that is used by VM.
-> >> More information on the architecture is available here[0].
-> >>
-> >>      Arm CCA Reference Software Architecture
-> >>
-> >>          Realm World    ||    Normal World   ||  Secure World  ||
-> >>                         ||        |          ||                ||
-> >>   EL0 x-------x         || x----x | x------x ||                ||
-> >>       | Realm |         || |    | | |      | ||                ||
-> >>       |       |         || | VM | | |      | ||                ||
-> >>   ----|  VM*  |---------||-|    |---|      |-||----------------||
-> >>       |       |         || |    | | |  H   | ||                ||
-> >>   EL1 x-------x         || x----x | |      | ||                ||
-> >>           ^             ||        | |  o   | ||                ||
-> >>           |             ||        | |      | ||                ||
-> >>   ------- R*------------------------|  s  -|---------------------
-> >>           S             ||          |      | ||                ||
-> >>           I             ||          |  t   | ||                ||
-> >>           |             ||          |      | ||                ||
-> >>           v             ||          x------x ||                ||
-> >>   EL2    RMM*           ||              ^    ||                ||
-> >>           ^             ||              |    ||                ||
-> >>   ========|=============================|========================
-> >>           |                             | SMC
-> >>           x--------- *RMI* -------------x
-> >>
-> >>   EL3                   Root World
-> >>                         EL3 Firmware
-> >>   ===============================================================
-> >> Where :
-> >>   RMM - Realm Management Monitor
-> >>   RMI - Realm Management Interface
-> >>   RSI - Realm Service Interface
-> >>   SMC - Secure Monitor Call
-> >>
-> >> RME introduces a new security state "Realm world", in addition to the
-> >> traditional Secure and Non-Secure states. The Arm CCA defines a new component,
-> >> Realm Management Monitor (RMM) that runs at R-EL2. This is a standard piece of
-> >> firmware, verified, installed and loaded by the EL3 firmware (e.g, TF-A), at
-> >> system boot.
-> >>
-> >> The RMM provides standard interfaces - Realm Management Interface (RMI) - to the
-> >> Normal world hypervisor to manage the VMs running in the Realm world (also called
-> >> Realms in short). These are exposed via SMC and are routed through the EL3
-> >> firmwre.
-> >> The RMI interface includes:
-> >>    - Move a physical page from the Normal world to the Realm world
-> >>    - Creating a Realm with requested parameters, tracked via Realm Descriptor (RD)
-> >>    - Creating VCPUs aka Realm Execution Context (REC), with initial register state.
-> >>    - Create stage2 translation table at any level.
-> >>    - Load initial images into Realm Memory from normal world memory
-> >>    - Schedule RECs (vCPUs) and handle exits
-> >>    - Inject virtual interrupts into the Realm
-> >>    - Service stage2 runtime faults with pages (provided by host, scrubbed by RMM).
-> >>    - Create "shared" mappings that can be accessed by VMM/Hyp.
-> >>    - Reclaim the memory allocated for the RAM and RTTs (Realm Translation Tables)
-> >>
-> >> However v1.0 of RMM specifications doesn't support:
-> >>   - Paging protected memory of a Realm VM. Thus the pages backing the protected
-> >>     memory region must be pinned.
-> >>   - Live migration of Realms.
-> >>   - Trusted Device assignment.
-> >>   - Physical interrupt backed Virtual interrupts for Realms
-> >>
-> >> RMM also provides certain services to the Realms via SMC, called Realm Service
-> >> Interface (RSI). These include:
-> >>   - Realm Guest Configuration.
-> >>   - Attestation & Measurement services
-> >>   - Managing the state of an Intermediate Physical Address (IPA aka GPA) page.
-> >>   - Host Call service (Communication with the Normal world Hypervisor)
-> >>
-> >> The specifications for the RMM software is currently at *v1.0-Beta2* and the
-> >> latest version is available here [1].
-> >>
-> >> The Trusted Firmware foundation has an implementation of the RMM - TF-RMM -
-> >> available here [3].
-> >>
-> >> Implementation
-> >> =================
-> >>
-> >> This version of the stack is based on the RMM specification v1.0-Beta0[2], with
-> >> following exceptions :
-> >>    - TF-RMM/KVM currently doesn't support the optional features of PMU,
-> >>       SVE and Self-hosted debug (coming soon).
-> >>    - The RSI_HOST_CALL structure alignment requirement is reduced to match
-> >>       RMM v1.0 Beta1
-> >>    - RMI/RSI version numbers do not match the RMM spec. This will be
-> >>      resolved once the spec/implementation is complete, across TF-RMM+Linux stack.
-> >>
-> >> We plan to update the stack to support the latest version of the RMMv1.0 spec
-> >> in the coming revisions.
-> >>
-> >> This release includes the following components :
-> >>
-> >>   a) Linux Kernel
-> >>       i) Host / KVM support - Support for driving the Realms via RMI. This is
-> >>       dependent on running in the Kernel at EL2 (aka VHE mode). Also provides
-> >>       UABI for VMMs to manage the Realm VMs. The support is restricted to 4K page
-> >>       size, matching the Stage2 granule supported by RMM. The VMM is responsible
-> >>       for making sure the guest memory is locked.
-> >>
-> >>         TODO: Guest Private memory[10] integration - We have been following the
-> >>         series and support will be added once it is merged upstream.
-> >>       
-> >>       ii) Guest support - Support for a Linux Kernel to run in the Realm VM at
-> >>       Realm-EL1, using RSI services. This includes virtio support (virtio-v1.0
-> >>       only). All I/O are treated as non-secure/shared.
-> >>   
-> >>   c) kvmtool - VMM changes required to manage Realm VMs. No guest private memory
-> >>      as mentioned above.
-> >>   d) kvm-unit-tests - Support for running in Realms along with additional tests
-> >>      for RSI ABI.
-> >>
-> >> Running the stack
-> >> ====================
-> >>
-> >> To run/test the stack, you would need the following components :
-> >>
-> >> 1) FVP Base AEM RevC model with FEAT_RME support [4]
-> >> 2) TF-A firmware for EL3 [5]
-> >> 3) TF-A RMM for R-EL2 [3]
-> >> 4) Linux Kernel [6]
-> >> 5) kvmtool [7]
-> >> 6) kvm-unit-tests [8]
-> >>
-> >> Instructions for building the firmware components and running the model are
-> >> available here [9]. Once, the host kernel is booted, a Realm can be launched by
-> >> invoking the `lkvm` commad as follows:
-> >>
-> >>   $ lkvm run --realm 				 \
-> >> 	 --measurement-algo=["sha256", "sha512"] \
-> >> 	 --disable-sve				 \
-> >> 	 <normal-vm-options>
-> >>
-> >> Where:
-> >>   * --measurement-algo (Optional) specifies the algorithm selected for creating the
-> >>     initial measurements by the RMM for this Realm (defaults to sha256).
-> >>   * GICv3 is mandatory for the Realms.
-> >>   * SVE is not yet supported in the TF-RMM, and thus must be disabled using
-> >>     --disable-sve
-> >>
-> >> You may also run the kvm-unit-tests inside the Realm world, using the similar
-> >> options as above.
-> >>
-> >>
-> >> Links
-> >> ============
-> >>
-> >> [0] Arm CCA Landing page (See Key Resources section for various documentations)
-> >>      https://www.arm.com/architecture/security-features/arm-confidential-compute-architecture
-> >>
-> >> [1] RMM Specification Latest
-> >>      https://developer.arm.com/documentation/den0137/latest
-> >>
-> >> [2] RMM v1.0-Beta0 specification
-> >>      https://developer.arm.com/documentation/den0137/1-0bet0/
-> >>
-> >> [3] Trusted Firmware RMM - TF-RMM
-> >>      https://www.trustedfirmware.org/projects/tf-rmm/
-> >>      GIT: https://git.trustedfirmware.org/TF-RMM/tf-rmm.git
-> >>
-> >> [4] FVP Base RevC AEM Model (available on x86_64 / Arm64 Linux)
-> >>      https://developer.arm.com/Tools%20and%20Software/Fixed%20Virtual%20Platforms
-> >>
-> >> [5] Trusted Firmware for A class
-> >>      https://www.trustedfirmware.org/projects/tf-a/
-> >>
-> >> [6] Linux kernel support for Arm-CCA
-> >>      https://gitlab.arm.com/linux-arm/linux-cca
-> >>      Host Support branch:	cca-host/rfc-v1
-> >>      Guest Support branch:	cca-guest/rfc-v1
-> >>
-> >> [7] kvmtool support for Arm CCA
-> >>      https://gitlab.arm.com/linux-arm/kvmtool-cca cca/rfc-v1
-> >>
-> >> [8] kvm-unit-tests support for Arm CCA
-> >>      https://gitlab.arm.com/linux-arm/kvm-unit-tests-cca  cca/rfc-v1
-> >>
-> >> [9] Instructions for Building Firmware components and running the model, see
-> >>      section 4.19.2 "Building and running TF-A with RME"
-> >>      https://trustedfirmware-a.readthedocs.io/en/latest/components/realm-management-extension.html#building-and-running-tf-a-with-rme
-> >>
-> >> [10] fd based Guest Private memory for KVM
-> >>     https://lkml.kernel.org/r/20221202061347.1070246-1-chao.p.peng@linux.intel.com
-> >>
-> >> Cc: Alexandru Elisei <alexandru.elisei@arm.com>
-> >> Cc: Andrew Jones <andrew.jones@linux.dev>
-> >> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> >> Cc: Chao Peng <chao.p.peng@linux.intel.com>
-> >> Cc: Christoffer Dall <christoffer.dall@arm.com>
-> >> Cc: Fuad Tabba <tabba@google.com>
-> >> Cc: James Morse <james.morse@arm.com>
-> >> Cc: Jean-Philippe Brucker <jean-philippe@linaro.org>
-> >> Cc: Joey Gouly <Joey.Gouly@arm.com>
-> >> Cc: Marc Zyngier <maz@kernel.org>
-> >> Cc: Mark Rutland <mark.rutland@arm.com>
-> >> Cc: Oliver Upton <oliver.upton@linux.dev>
-> >> Cc: Paolo Bonzini <pbonzini@redhat.com>
-> >> Cc: Quentin Perret <qperret@google.com>
-> >> Cc: Sean Christopherson <seanjc@google.com>
-> >> Cc: Steven Price <steven.price@arm.com>
-> >> Cc: Thomas Huth <thuth@redhat.com>
-> >> Cc: Will Deacon <will@kernel.org>
-> >> Cc: Zenghui Yu <yuzenghui@huawei.com>
-> >> To: linux-coco@lists.linux.dev
-> >> To: kvmarm@lists.linux.dev
-> >> Cc: kvmarm@lists.cs.columbia.edu
-> >> Cc: linux-arm-kernel@lists.infradead.org
-> >> To: linux-kernel@vger.kernel.org
-> >> To: kvm@vger.kernel.org
-> >>
-> >> _______________________________________________
-> >> linux-arm-kernel mailing list
-> >> linux-arm-kernel@lists.infradead.org
-> >> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel  
-> >   
+> Signed-off-by: Ajay Kaher <akaher@vmware.com>
+> Co-developed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> Tested-by: Ching-lin Yu <chinglinyu@google.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202305030611.Kas747Ev-lkp@intel.com/
+> ---
+>  fs/tracefs/event_inode.c | 110 +++++++++++++++++++++++++++++++++++++++
+>  include/linux/tracefs.h  |   4 ++
+>  2 files changed, 114 insertions(+)
 > 
-> 
+> diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
+> index 75dc8953d813..322a77be5a56 100644
+> --- a/fs/tracefs/event_inode.c
+> +++ b/fs/tracefs/event_inode.c
+> @@ -45,6 +45,7 @@ struct eventfs_file {
+>  };
+>  
+>  static DEFINE_MUTEX(eventfs_mutex);
+> +DEFINE_STATIC_SRCU(eventfs_srcu);
+>  
+>  static const struct file_operations eventfs_file_operations = {
+>  };
+> @@ -299,3 +300,112 @@ int eventfs_add_file(const char *name, umode_t mode,
+>  	mutex_unlock(&eventfs_mutex);
+>  	return 0;
+>  }
+> +
+> +static LLIST_HEAD(free_list);
+> +
+> +static void eventfs_workfn(struct work_struct *work)
+> +{
+> +	struct eventfs_file *ef, *tmp;
+> +	struct llist_node *llnode;
+> +
+> +	llnode = llist_del_all(&free_list);
+> +	llist_for_each_entry_safe(ef, tmp, llnode, llist) {
+> +		if (ef->created && ef->dentry)
+> +			dput(ef->dentry);
+> +		kfree(ef->name);
+> +		kfree(ef->ei);
+> +		kfree(ef);
+> +	}
+> +}
+> +
+> +DECLARE_WORK(eventfs_work, eventfs_workfn);
+> +
+> +static void free_ef(struct rcu_head *head)
+> +{
+> +	struct eventfs_file *ef = container_of(head, struct eventfs_file, rcu);
+> +
+> +	if (!llist_add(&ef->llist, &free_list))
+> +		return;
+> +
+> +	queue_work(system_unbound_wq, &eventfs_work);
+> +}
+> +
+> +
+> +
+> +/**
+> + * eventfs_remove_rec - remove eventfs dir or file from list
+> + * @ef: eventfs_file to be removed.
+> + *
+> + * This function recursively remove eventfs_file which
+> + * contains info of file or dir.
+> + */
+> +static void eventfs_remove_rec(struct eventfs_file *ef, int level)
+> +{
+> +	struct eventfs_file *ef_child;
+> +
+> +	if (!ef)
+> +		return;
+> +	/*
+> +	 * Check recursion depth. It should never be greater than 3:
+> +	 * 0 - events/
+> +	 * 1 - events/group/
+> +	 * 2 - events/group/event/
+> +	 * 3 - events/group/event/file
+> +	 */
+> +	if (WARN_ON_ONCE(level > 3))
+> +		return;
+> +
+> +	if (ef->ei) {
+> +		/* search for nested folders or files */
+> +		list_for_each_entry_srcu(ef_child, &ef->ei->e_top_files, list,
+> +					 lockdep_is_held(&eventfs_mutex)) {
+> +			eventfs_remove_rec(ef_child, level + 1);
+> +		}
+> +	}
+> +
+> +	if (ef->created && ef->dentry)
+> +		d_invalidate(ef->dentry);
+> +
+> +	list_del_rcu(&ef->list);
+> +	call_srcu(&eventfs_srcu, &ef->rcu, free_ef);
+> +}
+> +
+> +/**
+> + * eventfs_remove - remove eventfs dir or file from list
+> + * @ef: eventfs_file to be removed.
+> + *
+> + * This function acquire the eventfs_mutex lock and call eventfs_remove_rec()
+> + */
+> +void eventfs_remove(struct eventfs_file *ef)
+> +{
+> +	if (!ef)
+> +		return;
+> +
+> +	mutex_lock(&eventfs_mutex);
+> +	eventfs_remove_rec(ef, 0);
+> +	mutex_unlock(&eventfs_mutex);
+> +}
+> +
+> +/**
+> + * eventfs_remove_events_dir - remove eventfs dir or file from list
+> + * @dentry: events's dentry to be removed.
+> + *
+> + * This function remove events main directory
+> + */
+> +void eventfs_remove_events_dir(struct dentry *dentry)
+> +{
+> +	struct tracefs_inode *ti;
+> +	struct eventfs_inode *ei;
+> +
+> +	if (!dentry || !dentry->d_inode)
+> +		return;
+> +
+> +	ti = get_tracefs(dentry->d_inode);
+> +	if (!ti || !(ti->flags & TRACEFS_EVENT_INODE))
+> +		return;
+> +
+> +	ei = ti->private;
+> +	d_invalidate(dentry);
+> +	dput(dentry);
+> +	kfree(ei);
+> +}
+> diff --git a/include/linux/tracefs.h b/include/linux/tracefs.h
+> index a51312ff803c..2c08edd4a739 100644
+> --- a/include/linux/tracefs.h
+> +++ b/include/linux/tracefs.h
+> @@ -40,6 +40,10 @@ int eventfs_add_top_file(const char *name, umode_t mode,
+>  			 struct dentry *parent, void *data,
+>  			 const struct file_operations *fops);
+>  
+> +void eventfs_remove(struct eventfs_file *ef);
+> +
+> +void eventfs_remove_events_dir(struct dentry *dentry);
+> +
+>  struct dentry *tracefs_create_file(const char *name, umode_t mode,
+>  				   struct dentry *parent, void *data,
+>  				   const struct file_operations *fops);
 
