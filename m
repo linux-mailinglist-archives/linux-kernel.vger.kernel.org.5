@@ -2,186 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25D537531C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 08:09:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6790F7531C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 08:09:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235095AbjGNGJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 02:09:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48504 "EHLO
+        id S235103AbjGNGJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 02:09:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235037AbjGNGJW (ORCPT
+        with ESMTP id S235037AbjGNGJ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 02:09:22 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A70A02680
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 23:09:21 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 43B0061C2A
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 06:09:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3408C433CC
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 06:09:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689314960;
-        bh=slzIiL6xjyC+ErFwviINtFj+XbEUUfTGNLb5qKtDnjQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Mo6SGS+I1QZh6r5JlfWB8tsP1LVnZWUvX03GzACeAIPrwGkBy51RlHoQYP28L0mc2
-         WhtJLFANwEBg6C6G8KleO5499965FPWrf9KWkx645wo8QAxl2aBNmK3d5+RqkDx3aP
-         wis8133MRCRDznQZlhmiobUTRF/gkmvn1n8uOxX5SxFQWu9PuiX3q6e4ho2z7bV6tb
-         tRVhO3gOnW2sUaZ9Gyewo9dVbpYOM9nYz6UoUzq63bCbBBu5LsicajsEf4wynHvRAy
-         uG+ehu9berGAgBYtUKCktKBzMCKJVbn8kQPTHreN6nohsWaE6yyK+kWQ3lyiKHPCDU
-         CV/WnAdirZc2g==
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-51bece5d935so1799559a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 23:09:20 -0700 (PDT)
-X-Gm-Message-State: ABy/qLbghZuPwI2o0eY8T8qWoJ+ZWSiuysuFbK5XTVbJjowstzWsZ/pk
-        BkuNipEEbU+ZyMOB4KqoF6ggQ6oXjlVm0l971JU=
-X-Google-Smtp-Source: APBJJlHfV5uiYflQg3lVk1S8v8wZqfsuPJV95ftgyLUWRrw1yNa2k6uF6bsu8xdjpw3t4q8w5GV5+HQYzW953OLn3I0=
-X-Received: by 2002:a05:6402:2038:b0:51e:293b:e1ce with SMTP id
- ay24-20020a056402203800b0051e293be1cemr3546076edb.31.1689314958865; Thu, 13
- Jul 2023 23:09:18 -0700 (PDT)
+        Fri, 14 Jul 2023 02:09:28 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 232DC2724
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 23:09:27 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2b6f943383eso22586781fa.2
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 23:09:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shruggie-ro.20221208.gappssmtp.com; s=20221208; t=1689314965; x=1691906965;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=orndSSj2UwJllcFmURUAszpsDxToWW+bTCSrpDuMB50=;
+        b=rSEucAgbUYeHVSTSXbX4h9GDYS7AeA8YfypaK3t0f6sWPqzBWQ/QvuRZTL8H2O6J1X
+         zaZ2wmQb0KGIHIikVtnGAD1g4DfHldSNxbhWr1jKDz1mauD7+5RnWspMa4fLwtvagkMK
+         wRPzB99gpXTCYAWWelL1AcWzOUjnPSspm6YWQhRlL9KARAvHdzc3c+bjQxEL7q/L52cq
+         EFU9PekimSQVQl5N0LgDJ1Sdsh+D3Yr39lZpEq+etM8KnUCAHoKLdW8QGrTMFcQc13/3
+         TO1Mw4QglCtfnsDEfqJ7KGed8AxkbcPl129VsMSxvmn84pht1j7uG9ZJW9Z5Xat/cyoR
+         N7tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689314965; x=1691906965;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=orndSSj2UwJllcFmURUAszpsDxToWW+bTCSrpDuMB50=;
+        b=iW/b8D91ANL1L/NW55SPK/UN34BgRoRMEKMFNB/cIZAbyLw44EzwgwoFlH2HQBN/uv
+         JzferSaADB+MUqm4Zm7xF+YzDKiWCfPhEpK5h3CP8vySnLJ6P7v2DycBOdqDNGn+uFKD
+         zI7dQWn7wby8LuuXGYFuakZTrDgdrT8cYGznvVeRRsGN+9cGkAWc2eJBDujjO6ZGYwc5
+         y/igPABxzQu7cTYntjGf7mxjpjaL0gCFJeU3PSpjq3XxkdWOHu3iarOf3y05dDHTMRAH
+         eslTLsG35jaCgBhtB+USo/FjTW6+dLPbkg2pWDvO1kJjolyFD4ektrYUZgUdkWzG1FGK
+         H7qA==
+X-Gm-Message-State: ABy/qLaI2o41UBDVI1bb1QYB6m9gba8mOMBxPgAbKPPOV/1dQcXzAe1T
+        /GjP4VQBV4k1VjsEmcVzv7pyT1Of1bWNcQNLJ5vNTw==
+X-Google-Smtp-Source: APBJJlFjLd9SWBhGndhtxU1nyRlXyT203Tkpfb7Enzl8TGvLVxH8C8IUB34raRw1SX1qPqj8h/XE/oW4vWlS8LF/62A=
+X-Received: by 2002:a2e:9284:0:b0:2b5:8a21:5627 with SMTP id
+ d4-20020a2e9284000000b002b58a215627mr3394159ljh.51.1689314965292; Thu, 13 Jul
+ 2023 23:09:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230712101344.2714626-1-chenhuacai@loongson.cn>
- <CA+fCnZd1nhG9FDzkeW42jFbPuGKZms-HzHXBiO5YTSnkmsZoZQ@mail.gmail.com>
- <CAAhV-H4nuwBJHE3VPj6yE2HUw3tDaLtgeRQ5mj0SRV6RoD8-9Q@mail.gmail.com>
- <CANpmjNM_FEpXPVgoAbUwEK+9m90X54ykWnMvpUP2ZQ8sjoSByg@mail.gmail.com>
- <CAAhV-H4WUXVYv5er7UpPHKQDdBheT-UgEsOnBmPGPJ=LKWh4PQ@mail.gmail.com> <CANpmjNN-zypOUdJ-7XW0nN+gbGFwxC-JPFs=WA8FipsKiBhbKw@mail.gmail.com>
-In-Reply-To: <CANpmjNN-zypOUdJ-7XW0nN+gbGFwxC-JPFs=WA8FipsKiBhbKw@mail.gmail.com>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Fri, 14 Jul 2023 14:09:07 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H7YLDQjVi8YKSv2ezz+d_wj3RPhnNchsh=HRwrf02rrCw@mail.gmail.com>
-Message-ID: <CAAhV-H7YLDQjVi8YKSv2ezz+d_wj3RPhnNchsh=HRwrf02rrCw@mail.gmail.com>
-Subject: Re: [PATCH] kasan: Fix tests by removing -ffreestanding
-To:     Marco Elver <elver@google.com>
-Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org
+References: <20230713202123.231445-1-alex@shruggie.ro> <cad1d05d-acdd-454b-a9f8-06262cf8495b@lunn.ch>
+In-Reply-To: <cad1d05d-acdd-454b-a9f8-06262cf8495b@lunn.ch>
+From:   Alexandru Ardelean <alex@shruggie.ro>
+Date:   Fri, 14 Jul 2023 09:09:14 +0300
+Message-ID: <CAH3L5QrtFwTqqFKjPrMFCz4JgUWOFWFUJXpN71Gyprcd33A7hg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2 net-next] net: phy: mscc: add support for CLKOUT
+ ctrl reg for VSC8531 and similar
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        olteanv@gmail.com, marius.muresan@mxt.ro
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Marco,
-
-On Thu, Jul 13, 2023 at 6:09=E2=80=AFPM Marco Elver <elver@google.com> wrot=
-e:
->
-> On Thu, 13 Jul 2023 at 11:58, Huacai Chen <chenhuacai@kernel.org> wrote:
-> >
-> > Hi, Marco,
-> >
-> > On Thu, Jul 13, 2023 at 4:12=E2=80=AFPM Marco Elver <elver@google.com> =
-wrote:
-> > >
-> > > On Thu, 13 Jul 2023 at 06:33, Huacai Chen <chenhuacai@kernel.org> wro=
-te:
-> > > >
-> > > > Hi, Andrey,
-> > > >
-> > > > On Thu, Jul 13, 2023 at 12:12=E2=80=AFAM Andrey Konovalov <andreykn=
-vl@gmail.com> wrote:
-> > > > > On Wed, Jul 12, 2023 at 12:14=E2=80=AFPM Huacai Chen <chenhuacai@=
-loongson.cn> wrote:
-> > > > > >
-> > > > > > CONFIG_CC_HAS_KASAN_MEMINTRINSIC_PREFIX hopes -fbuiltin for mem=
-set()/
-> > > > > > memcpy()/memmove() if instrumentation is needed. This is the de=
-fault
-> > > > > > behavior but some archs pass -ffreestanding which implies -fno-=
-builtin,
-> > > > > > and then causes some kasan tests fail. So we remove -ffreestand=
-ing for
-> > > > > > kasan tests.
-> > > > >
-> > > > > Could you clarify on which architecture you observed tests failur=
-es?
-> > > > Observed on LoongArch [1], KASAN for LoongArch was planned to be
-> > > > merged in 6.5, but at the last minute I found some tests fail with
-> > > > GCC14 (CONFIG_CC_HAS_KASAN_MEMINTRINSIC_PREFIX) so the patches are
-> > > > dropped. After some debugging we found the root cause is
-> > > > -ffreestanding.
-> > > [...]
-> > > > > >  CFLAGS_kasan_test.o :=3D $(CFLAGS_KASAN_TEST)
-> > > > > > +CFLAGS_REMOVE_kasan_test.o :=3D -ffreestanding
-> > > > > >  CFLAGS_kasan_test_module.o :=3D $(CFLAGS_KASAN_TEST)
-> > > > > > +CFLAGS_REMOVE_kasan_test_module.o :=3D -ffreestanding
-> > >
-> > > It makes sense that if -ffreestanding is added everywhere, that this
-> > > patch fixes the test. Also see:
-> > > https://lkml.kernel.org/r/20230224085942.1791837-3-elver@google.com
-> > >
-> > > -ffreestanding implies -fno-builtin, which used to be added to the
-> > > test where !CC_HAS_KASAN_MEMINTRINSIC_PREFIX (old compilers).
-> > >
-> > > But ideally, the test doesn't have any special flags to make it pass,
-> > > because ultimately we want the test setup to be as close to other
-> > > normal kernel code.
-> > >
-> > > What this means for LoongArch, is that the test legitimately is
-> > > pointing out an issue: namely that with newer compilers, your current
-> > > KASAN support for LoongArch is failing to detect bad accesses within
-> > > mem*() functions.
-> > >
-> > > The reason newer compilers should emit __asan_mem*() functions and
-> > > replace normal mem*() functions, is that making mem*() functions
-> > > always instrumented is not safe when e.g. called from uninstrumented
-> > > code. One problem is that compilers will happily generate
-> > > memcpy/memset calls themselves for e.g. variable initialization or
-> > > struct copies - and unfortunately -ffreestanding does _not_ prohibit
-> > > compilers from doing so: https://godbolt.org/z/hxGvdo4P9
-> > >
-> > > I would propose 2 options:
-> > >
-> > > 1. Removing -ffreestanding from LoongArch. It is unclear to me why
-> > > this is required. As said above, -ffreestanding does not actually
-> > > prohibit the compiler from generating implicit memset/memcpy. It
-> > > prohibits some other optimizations, but in the kernel, you might even
-> > > want those optimizations if common libcalls are already implemented
-> > > (which they should be?).
-> > >
-> > > 2. If KASAN is enabled on LoongArch, make memset/memcpy/memmove
-> > > aliases to __asan_memset/__asan_memcpy/__asan_memmove. That means
-> > > you'd have to invert how you currently set up __mem and mem functions=
+On Thu, Jul 13, 2023 at 11:35=E2=80=AFPM Andrew Lunn <andrew@lunn.ch> wrote=
 :
-> > > the implementation is in __mem*, and mem* functions alias __mem* -or-
-> > > if KASAN is enabled __asan_mem* functions (ifdef
-> > > CONFIG_CC_HAS_KASAN_MEMINTRINSIC_PREFIX to make old compilers work as
-> > > well).
-> > >
-> > > If you go with option #2 you are accepting the risk of using
-> > > instrumented mem* functions from uninstrumented files/functions. This
-> > > has been an issue for other architectures. In many cases you might ge=
-t
-> > > lucky enough that it doesn't cause issues, but that's not guaranteed.
-> > Thank you for your advice, but we should keep -ffreestanding for
-> > LoongArch, even if it may cause failing to detect bad accesses.
-> > Because now the __builtin_memset() assumes hardware supports unaligned
-> > access, which is not the case for Loongson-2K series. If removing
-> > -ffreestanding, Loongson-2K gets a poor performance.
-> >
-> > On the other hand, LoongArch is not the only architecture use
-> > -ffreestanding, e.g., MIPS, X86_32, M68K and Xtensa also use, so the
-> > tests should get fixed.
 >
-> That's fair - in which case, I would recommend option #2 or some
-> variant of it. Because fixing the test by removing -ffreestanding is
-> just hiding that there's a real issue that needs to be fixed to have
-> properly working KASAN on LoongArch.
-After some thinking, I found we can remove -ffreestanding in the arch
-Makefile when KASAN is enabled -- because it is not the performance
-critical configuration. And then, this patch can be dropped, thank
-you.
+> > +set_reg:
+> > +     mutex_lock(&phydev->lock);
+> > +     rc =3D phy_modify_paged(phydev, MSCC_PHY_PAGE_EXTENDED_GPIO,
+> > +                           VSC8531_CLKOUT_CNTL, mask, set);
+> > +     mutex_unlock(&phydev->lock);
+>
+> What is this mutex protecting?
 
-Huacai
+This was inspired by vsc85xx_edge_rate_cntl_set().
+Which has the same format.
+
+I'll re-test with this lock removed.
+I may be misremembering (or maybe I did something silly at some
+point), but there was a weird stack-trace warning before adding this
+lock there.
+This was with a 5.10.116 kernel version.
+
+>
+>      Andrew
