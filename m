@@ -2,171 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 161857536F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:47:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A9557536F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:47:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235569AbjGNJr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 05:47:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39682 "EHLO
+        id S235906AbjGNJro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 05:47:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235403AbjGNJrK (ORCPT
+        with ESMTP id S235403AbjGNJrm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 05:47:10 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 622611989;
-        Fri, 14 Jul 2023 02:47:09 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-993a37b79e2so236863266b.1;
-        Fri, 14 Jul 2023 02:47:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689328028; x=1691920028;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gGYaz8TI1Z5CW1NeLVdMshEDbPGg3BH2iJl5JNjpBz0=;
-        b=KsCWr/be2NLFDsr3/LF1j284UjHOJwn1Qpf3oCg8dSpwZtDVBHOSVtSX1n/LQyhxiv
-         MeRE0QfWBqDg92FWFFrkbESBhL0M5YTFDuP+31wRQnR/etR+/Jmfu3gsnbQd+V4DQA5o
-         Ydtaju5Q9jvSOf3K90R4x27DBP3widQLdnRrsND7wgFpol3L53oP0e1Se3DEXc9+mhDq
-         SBlIXawiJdI/SpOoIQp5E3/ykOytWAYHgnsfLiC+INpOWr88TEI9JOeWEmmOMfvaaFUb
-         gk6yHRZ3cRCVh0NFYm9wBb2HTxL1i+9oYtUbeWwGHOKula7SQlpVLJAr/+mCXrz0vJ+G
-         d8iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689328028; x=1691920028;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gGYaz8TI1Z5CW1NeLVdMshEDbPGg3BH2iJl5JNjpBz0=;
-        b=jr/N8rf7TtrFHicFy9jlQweumnMUKKmQQsnukY6UigUsImqBXEtLMMF8HdxYyec0fM
-         e82j4/SY9rE4+Y9pt1Fv3M7r69n4zbJSl0qdVKlDH4p+aoSEV8Dg91m9Ptl1J4KIlOhn
-         2po1hJtD0Zm6bE7TTlimmvlwtjgZBzVoJqfUHJ2TZagS6xPrYxY4Q0hDoutgcXQtg/NK
-         4AiqNsuT3HrswMq072TZz1vdnytsmdqahv2ifhbhdUCrAjLMA7WDy85UJPsTTRAhmEom
-         Mldd/NnNT0lIH+TlYB3qMrPwnzJDGikGWMO9BAIYv6Ma50cHqA0cIlgCKGCQkzB1m9U8
-         h9YQ==
-X-Gm-Message-State: ABy/qLYFCaYYHTOzRw2U+tfNPr3QkOMCAkupKyc7ppgAQ+oVn1znijDT
-        zAYIMabI+43OQH26RKgmEQA=
-X-Google-Smtp-Source: APBJJlHsNtW8rKB0/w075MJIN4AQGD8aoS9UNYvKSGyyr903BkaCado4wm2Z2NSukoD+Hl5YCYM5HA==
-X-Received: by 2002:a17:906:c:b0:993:f611:7c95 with SMTP id 12-20020a170906000c00b00993f6117c95mr4038435eja.39.1689328027556;
-        Fri, 14 Jul 2023 02:47:07 -0700 (PDT)
-Received: from orome (p200300e41f4b7100f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f4b:7100:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id h14-20020a170906110e00b009829dc0f2a0sm5237469eja.111.2023.07.14.02.47.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 02:47:07 -0700 (PDT)
-Date:   Fri, 14 Jul 2023 11:47:05 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Prathamesh Shete <pshete@nvidia.com>
-Cc:     linus.walleij@linaro.org, jonathanh@nvidia.com,
-        linux-gpio@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] pinctrl: tegra: Add support to display pin function
-Message-ID: <ZLEZmX0LzwCNvf5h@orome>
-References: <ZK7BRXa9geC8SAGs@orome>
- <20230713082106.838-1-pshete@nvidia.com>
+        Fri, 14 Jul 2023 05:47:42 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4D1C1BD4;
+        Fri, 14 Jul 2023 02:47:36 -0700 (PDT)
+X-QQ-mid: bizesmtp62t1689328045tm68xu8h
+Received: from linux-lab-host.localdomain ( [116.30.126.249])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Fri, 14 Jul 2023 17:47:23 +0800 (CST)
+X-QQ-SSF: 01200000000000D0W000000A0000000
+X-QQ-FEAT: KzokuMsy9J2dExfopL72Ou8SQB4ufmpc2edexHmD9pZynHiKLM3kn8fgnrdKm
+        NuQx63Ef2sNPFCDr9Pj7e8W8+7Qh0+AfEZSDK+Wd/Jdqr4HUpr75zWTQcozvdnOVdFjUvvT
+        r1J/NYxQjGKk5z8npamq0tUCzUb0KyN72a4bBJLuRtkcRdMmec++zjEvOEk9DsPhh1xNVgb
+        gipSy9t2a8hH+wsFfm8SJrxPGoZFI9HtAGuWIl1h/Bj8gxf8chPbHKlLBkG4lKl8nfMtD4s
+        RmH5/eU0a/vSAPd3Ob37CcREa1nUoihilMoJOgBwifNlgXzot5+4uF0aMY9mvuAzX7B8hx6
+        ladYaq1EMx2sDeKKPt3BNFGWTOHjxqRPPF76UDd5fZZgYhGWoCCagkMibtrkQ==
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 13031537347454340989
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     thomas@t-8ch.de
+Cc:     arnd@arndb.de, falcon@tinylab.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, w@1wt.eu
+Subject: Re: [PATCH v3 02/11] tools/nolibc: add new crt.h with _start_c
+Date:   Fri, 14 Jul 2023 17:47:23 +0800
+Message-Id: <20230714094723.140603-1-falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <63476acf-9e65-4ab0-8e9b-bc35b12710d5@t-8ch.de>
+References: <63476acf-9e65-4ab0-8e9b-bc35b12710d5@t-8ch.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Fvj6s3HeolWgeMJN"
-Content-Disposition: inline
-In-Reply-To: <20230713082106.838-1-pshete@nvidia.com>
-User-Agent: Mutt/2.2.10 (2023-03-25)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> On 2023-07-14 13:58:13+0800, Zhangjin Wu wrote:
+>
+> > [..]
+>
+> > Which one do you prefer? the one with local variables may be more readable (not
+> > that much), the one with global variables has smaller text size (and therefore
+> > smaller memory footprint).
+>
+> The one with local variables. But not by much.
+>
+> > BTW, just found an arch-<ARCH>.h bug with -O0, seems the
+> > 'optimize("omit-frame-pointer")' attribute not really work as expected with
+> > -O0. It uses frame pointer for _start eventually and breaks the stack pointer
+> > variable (a push 'rbp' inserted at the begging of _start, so, the real rsp has
+> > an offset), so, therefore, it is not able to get the right argc, argv, environ
+> > and _auxv with -O0 currently. A solution is reverting _start to pure assembly.
+> >
+> > For the above tests, I manually reverted the arch-x86_64.h to:
+> >
+> >     __asm__(
+> >             ".text\n"
+> >             ".weak _start\n"
+> >             "_start:\n"
+> >     #ifdef _NOLIBC_STACKPROTECTOR
+> >             "call __stack_chk_init\n" /* initialize stack protector                      */
+> >     #endif
+> >             "xor  %ebp, %ebp\n"       /* zero the stack frame                            */
+> >             "mov  %rsp, %rdi\n"       /* save stack pointer to %rdi, as arg1 of _start_c */
+> >             "and  $-16, %rsp\n"       /* %rsp must be 16-byte aligned before call        */
+> >             "call _start_c\n"         /* transfer to c runtime                           */
+> >             "hlt\n"                   /* ensure it does not return                       */
+> >     );
+> >
+> >
+> > 'man gcc' shows:
+> >
+> >     Most optimizations are completely disabled at -O0 or if an -O level is not set on the command line, even if individual optimization flags are specified.
+> >
+> > To want -O0 work again, since now we have C _start_c, is it ok for us to revert
+> > the commit 7f8548589661 ("tools/nolibc: make compiler and assembler agree on
+> > the section around _start") and the later __no_stack_protector changes?
+>
+> This commit explicitly mentions being tested with -O0 on x86_64.
 
---Fvj6s3HeolWgeMJN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yeah, I was worried about that the old tests didn't use any of the startup
+variables, but the getpagesize test may be a very old test, It uses _auxv and
+should fail If -O0 not work.
 
-On Thu, Jul 13, 2023 at 01:51:06PM +0530, Prathamesh Shete wrote:
-> The current function for a given pin is not displayed via the debugfs.
-> Add support to display the current function that is set for each pin.
->=20
-> Signed-off-by: Prathamesh Shete <pshete@nvidia.com>
-> ---
->  drivers/pinctrl/tegra/pinctrl-tegra.c | 19 +++++++++++++++++--
->  drivers/pinctrl/tegra/pinctrl-tegra.h |  2 ++
->  2 files changed, 19 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/pinctrl/tegra/pinctrl-tegra.c b/drivers/pinctrl/tegr=
-a/pinctrl-tegra.c
-> index 4547cf66d03b..4da8873942cf 100644
-> --- a/drivers/pinctrl/tegra/pinctrl-tegra.c
-> +++ b/drivers/pinctrl/tegra/pinctrl-tegra.c
-> @@ -96,6 +96,7 @@ static const struct cfg_param {
->  	{"nvidia,slew-rate-falling",	TEGRA_PINCONF_PARAM_SLEW_RATE_FALLING},
->  	{"nvidia,slew-rate-rising",	TEGRA_PINCONF_PARAM_SLEW_RATE_RISING},
->  	{"nvidia,drive-type",		TEGRA_PINCONF_PARAM_DRIVE_TYPE},
-> +	{"nvidia,function",			TEGRA_PINCONF_PARAM_FUNCTION},
->  };
-> =20
->  static int tegra_pinctrl_dt_subnode_to_map(struct pinctrl_dev *pctldev,
-> @@ -470,6 +471,12 @@ static int tegra_pinconf_reg(struct tegra_pmx *pmx,
->  		*bit =3D g->drvtype_bit;
->  		*width =3D 2;
->  		break;
-> +	case TEGRA_PINCONF_PARAM_FUNCTION:
-> +		*bank =3D g->mux_bank;
-> +		*reg =3D g->mux_reg;
-> +		*bit =3D g->mux_bit;
-> +		*width =3D 2;
-> +		break;
->  	default:
->  		dev_err(pmx->dev, "Invalid config param %04x\n", param);
->  		return -ENOTSUPP;
-> @@ -620,6 +627,7 @@ static void tegra_pinconf_group_dbg_show(struct pinct=
-rl_dev *pctldev,
->  	s8 bank, bit, width;
->  	s32 reg;
->  	u32 val;
-> +	u8 idx;
+> I was also not able to reproduce the issue.
+>
 
-This declaration could be moved into the only conditional that uses this
-variable...
+Thanks very much for your 'reproduce' result, It is so weird, just
+rechecked the toolchain, 13.1.0 from https://mirrors.edge.kernel.org/ is
+ok, gcc 9, gcc 10.3 not work.
 
-> =20
->  	g =3D &pmx->soc->groups[group];
-> =20
-> @@ -633,8 +641,15 @@ static void tegra_pinconf_group_dbg_show(struct pinc=
-trl_dev *pctldev,
->  		val >>=3D bit;
->  		val &=3D (1 << width) - 1;
-> =20
-> -		seq_printf(s, "\n\t%s=3D%u",
-> -			   strip_prefix(cfg_params[i].property), val);
-> +		if (cfg_params[i].param =3D=3D TEGRA_PINCONF_PARAM_FUNCTION) {
-> +			idx =3D pmx->soc->groups[group].funcs[val];
+But even in the page of 13.1.0 [1], we still see this line:
 
-=2E.. so that this would become:
+    Most optimizations are completely disabled at -O0 or if an -O level is not set on the command line, even if individual optimization flags are specified.
 
-			u8 idx =3D ...;
+Not sure if "individual optimization flags" also means the optimize()
+flags in gcc attributes. or the doc is not updated yet?
 
-Either way:
+And further found gcc 11.1.0 is ok, gcc 10.4 still not work, so, gcc
+11.1.0 may changed something to let the "individual optimization flags"
+work with -O0.
 
-Acked-by: Thierry Reding <treding@nvidia.com>
+We may need to at least document this issue in some files, -O0 is not such a
+frequently-used option, not sure if we still need -O0 work with the older gcc <
+11.1.0 ;-)
 
---Fvj6s3HeolWgeMJN
-Content-Type: application/pgp-signature; name="signature.asc"
+Willy, I'm not sure if the issues solved by the commit 7f8548589661
+("tools/nolibc: make compiler and assembler agree on the section around
+_start") still exist after we using _start_c()?
 
------BEGIN PGP SIGNATURE-----
+Thomas, because we plan to move the stackprotector init to _start_c(), If using
+pure assembly _start, we may also not need the __no_stack_protector macro too?
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmSxGZcACgkQ3SOs138+
-s6HAexAAueTXvqtLfeJE+GYFXpZP8Axd/wMGl3np/2XP3uMuonlW0YolTmJ9nZKO
-9MILPsKn1/TYL8AsdeRRHCnCDdl5LrZTzbr01hCJof63V01co5KSKZ2lq5WU+0qX
-3l0E9BmyEY2/hqv1Od3zBlaliwoYQOFe4gp496/gRK2gjtq/yuL3pTjnFKrdbWCs
-z9rRdt/NTrRkr2t/PrWS5BZAvzWt9zivRY3GAdft12vnmGWEksm6IWbZzJH+qS2A
-blSwPeYapQqMVYziEO2YSRmYG3YR0+p2TFVTcBGAUK75ayrRtYtUcIS9v6sJqh+F
-kZxb/8aQcmE0OdJBa31ozsIBzK9vkagvO+FfTS1SfYg4njJRq+IDdqZzEzb132nZ
-wCspM5Sn+LrERg+H2GYRV5LKZwjqTdVL56YOhcp+RwtfmdqdCVdqA79q4Ku1PIdi
-nZeoj8/5NrbVnaO/yYo7orJin76cfkOufSNu9+d1P9WASe29GkPcYcpGwHCDAC/D
-Ke67A2gWTUxIWHZCnasCj3aVrwNFPlhgWbmoV2qENR5Km0PCL9R2YZmN5RR+ApRg
-FGB8OPov0nK6Net9yuY72oaPIRBaja+BMXFT1zYh4pLELVdUw7Aa2NamnZNPyvHT
-DM9WNr7+eZLzKvN5sG1b5AydSSPj78wRlgTJMJtxSCJ2oG6Jnnw=
-=UDaz
------END PGP SIGNATURE-----
+Welcome more discussion. 
 
---Fvj6s3HeolWgeMJN--
+[1]: https://gcc.gnu.org/onlinedocs/gcc-13.1.0/gcc/Optimize-Options.html
+
+> Before doing any reverts I think some more investigation is in order.
+> Can you provide exact reproduction steps?
+>
+
+some startup variables related tests failed with gcc 9 and gcc 10 (even with
+gcc 10.4.0):
+
+    $ x86_64-linux-gcc --version
+    x86_64-linux-gcc (GCC) 10.4.0
+    Copyright (C) 2020 Free Software Foundation, Inc.
+    This is free software; see the source for copying conditions.  There is NO
+    warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+    $ make run-user CROSS_COMPILE=x86_64-linux-
+    0 argc = 0                                                      [FAIL]
+    3 argv_total = 0                                                [FAIL]
+    4 argv0_addr = <0x1>                                            [FAIL]
+    5 argv0_str = <(null)>                                          [FAIL]
+    6 argv0_len = 0                                                 [FAIL]
+    14 chmod_argv0 = -1 EFAULT                                      [FAIL]
+    19 chroot_exe = -1 EFAULT  != (-1 ENOTDIR)                      [FAIL]
+    0 getenv_TERM = <(null)>                                        [FAIL]
+
+> > At the same time, to verify such issues, as Thomas suggested, in this series,
+> > we may need to add more startup tests to verify argc, argv, environ, _auxv, do
+> > we need to add a standalone run_startup (or run_crt) test entry just like
+> > run_syscall? or, let's simply add more in the run_stdlib, like the environ test
+> > added by Thomas.  seems, the argc test is necessary one currently missing (argc
+> > >= 1):
+> >
+> >     CASE_TEST(argc);               EXPECT_GE(1, test_argc, 1); break;
+> >
+> > As we summarized before, the related test cases are:
+> >
+> > argv0:
+> >
+> >     CASE_TEST(chmod_argv0);       EXPECT_SYSZR(1, chmod(test_argv0, 0555)); break;
+> >     CASE_TEST(chroot_exe);        EXPECT_SYSER(1, chroot(test_argv0), -1, ENOTDIR); break;
+> >
+> > environ:
+> >
+> >     CASE_TEST(chdir_root);        EXPECT_SYSZR(1, chdir("/")); chdir(getenv("PWD")); break;
+> >     CASE_TEST(environ);            EXPECT_PTREQ(1, environ, test_envp); break;
+> >     CASE_TEST(getenv_TERM);        EXPECT_STRNZ(1, getenv("TERM")); break;
+> >     CASE_TEST(getenv_blah);        EXPECT_STRZR(1, getenv("blah")); break;
+> >
+> > auxv:
+> >
+> >     CASE_TEST(getpagesize);       EXPECT_SYSZR(1, test_getpagesize()); break;
+> >
+> > The above tests are in different test group and are not aimed to startup test,
+> > we'd better add a run_startup (or run_crt) test group before any other tests,
+> > it is a requiremnt of the others, we at least have these ones:
+> >
+> >     +int run_startup(int min, int max)
+> >     +{
+> >     +       int test;
+> >     +       int tmp;
+> >     +       int ret = 0;
+> >     +
+> >     +       for (test = min; test >= 0 && test <= max; test++) {
+> >     +               int llen = 0; /* line length */
+> >     +
+> >     +               /* avoid leaving empty lines below, this will insert holes into
+> >     +                * test numbers.
+> >     +                */
+> >     +               switch (test + __LINE__ + 1) {
+> >     +               CASE_TEST(argc);               EXPECT_GE(1, test_argc, 1); break;
+> >     +               CASE_TEST(argv_addr);          EXPECT_PTRNZ(1, test_argv); break;
+> >     +               CASE_TEST(argv_total);         EXPECT_EQ(1, environ - test_argv - 1, test_argc); break;
+> >     +               CASE_TEST(argv0_addr);         EXPECT_PTRNZ(1, argv0); break;
+> >     +               CASE_TEST(argv0_str);          EXPECT_STRNZ(1, argv0); break;
+> >     +               CASE_TEST(argv0_len);          EXPECT_GE(1, strlen(argv0), 1); break;
+> >     +               CASE_TEST(environ_addr);       EXPECT_PTRNZ(1, environ); break;
+> >     +               CASE_TEST(environ_envp);       EXPECT_PTREQ(1, environ, test_envp); break;
+> >     +               CASE_TEST(environ_total);      EXPECT_GE(1, (void *)_auxv - (void *)environ - 1, 1); break;
+> >     +               CASE_TEST(_auxv_addr);         EXPECT_PTRNZ(1, _auxv); break;
+> >     +               case __LINE__:
+> >     +                       return ret; /* must be last */
+> >     +               /* note: do not set any defaults so as to permit holes above */
+> >     +               }
+> >     +       }
+> >     +       return ret;
+> >     +}
+> >
+> > Any more?
+>
+> My original idea was to have tests that exec /proc/self/exe or argv0.
+> This way we can actually pass and validate arbitrary argc, argv and
+> environ values.
+>
+> But looking at your list, that should be enough.
+>
+
+Ok.
+
+Best regards,
+Zhangjin
+
+> > [..]
