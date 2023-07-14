@@ -2,123 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB0E67534A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 10:09:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FA687534A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 10:09:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234814AbjGNIJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 04:09:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59772 "EHLO
+        id S235159AbjGNIJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 04:09:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234797AbjGNIIm (ORCPT
+        with ESMTP id S234942AbjGNIIr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 04:08:42 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6B933C02
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 01:06:21 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R2PF602H7zBR9sm
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 16:06:17 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689321977; x=1691913978; bh=dzkqdXBCjh2/hP0nLSBmNUO8a0p
-        M8KMO6JR7JU7+9WA=; b=pAFYueIN9JkTRCC7sXygcbgO1RcfVrRLw0yT+gN63Fw
-        zXbzpXYwPSZel728WkxaRV8BQ4qkNFD9hD6BKDHgGdnk/WEwdTGg/svCLQCZGyQA
-        0h8mlJTq6jDJeCg/8wR9IvseARV5esDIZS9gixdLPTk5BjX6pz/10G1QXx889ize
-        jo+zAYD82LvbJyc5ZW45Ex5C9i+zhfhV8XZVpzRiL/wfrflddQHBD9h/eo2q8CgS
-        yqsYZeLN+KCZG/kgO2BNL/Vlg0xuQ4FgfV0R2rqYDkVarAQmbJB6Ev3NCPrz5aWV
-        DrsrXAHwQqG0crA2sfHJgacxJBm+nKn1bIKgIsbQkcg==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id VNLDK-LFSLHF for <linux-kernel@vger.kernel.org>;
-        Fri, 14 Jul 2023 16:06:17 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R2PF53MTwzBR9sg;
-        Fri, 14 Jul 2023 16:06:17 +0800 (CST)
-MIME-Version: 1.0
-Date:   Fri, 14 Jul 2023 16:06:17 +0800
-From:   shijie001@208suo.com
-To:     alexander.deucher@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
-        daniel@ffwll.ch
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/radeon: ERROR: "foo* bar" should be "foo *bar"
-In-Reply-To: <tencent_09B72958FF97A0465961F04F38F298FE6E08@qq.com>
-References: <tencent_09B72958FF97A0465961F04F38F298FE6E08@qq.com>
-User-Agent: Roundcube Webmail
-Message-ID: <22e66975eb7b90c1e10527cc6dd76e99@208suo.com>
-X-Sender: shijie001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+        Fri, 14 Jul 2023 04:08:47 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBBBE46AC
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 01:06:26 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 78F5661C50
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 08:06:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD84EC433C8;
+        Fri, 14 Jul 2023 08:06:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689321985;
+        bh=8fkv5Z3JDvK51lTR1yWQV4fSQJNMTls7B4SFTYDOZX4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=MWwSI981GhhulKk6IfWArGkWpGleBKhJkY51q/UpyViAI5DtQrGP2cjBTLJUvR9X1
+         ksXy4VA9G1izcLDHoT20QYUkLWogqjz7cDEHOrQzqmd/bDPKefFku3aLiAVANB2sGh
+         Litd2VHp/+trk0jDaBnv6AcSbaySwYDv9jUubS/8qXcXrOUaWgU1EJK7b654lRbGEO
+         C6EVty2fw8AOfND5lMrRyCt0GDzCx6oZe9gg+u48BgCSh5+PcGxSUtP0rrrJtoMKSl
+         lwMw8uy3oyKWa4NjBgmVZ2u9YGHl89bZMy1zKAM4QxFBP71OZhVQ2LU4MKyj5tLQEb
+         KoXC734GWS6SA==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qKDol-00D1q4-Po;
+        Fri, 14 Jul 2023 09:06:23 +0100
+Date:   Fri, 14 Jul 2023 09:06:23 +0100
+Message-ID: <86mszyvrwg.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     liubin001@208suo.com
+Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: Fwd: [PATCH] irqchip:Use the "put_device" function to release the memory after calling the of_find_device_by_node function.
+In-Reply-To: <66d48e6ce0db4f89737172a2963195a9@208suo.com>
+References: <tencent_C69953B5D14B406504315830D8DE7112EC0A@qq.com>
+        <66d48e6ce0db4f89737172a2963195a9@208suo.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: liubin001@208suo.com, tglx@linutronix.de, linux-kernel@vger.kernel.org, geert@linux-m68k.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix five occurrences of the checkpatch.pl error:
-ERROR: "foo* bar" should be "foo *bar"
-ERROR: that open brace { should be on the previous line
+Please don't forward emails like this. If you've missed a recipient,
+repost it.
 
-Signed-off-by: Jie Shi <shijie001@208suo.com>
----
-  drivers/gpu/drm/radeon/radeon_audio.c | 11 +++++------
-  1 file changed, 5 insertions(+), 6 deletions(-)
++Geert for the Renesas stuff.
 
-diff --git a/drivers/gpu/drm/radeon/radeon_audio.c 
-b/drivers/gpu/drm/radeon/radeon_audio.c
-index d6ccaf24ee0c..a010bc2c155c 100644
---- a/drivers/gpu/drm/radeon/radeon_audio.c
-+++ b/drivers/gpu/drm/radeon/radeon_audio.c
-@@ -35,15 +35,14 @@
+On Fri, 14 Jul 2023 04:43:28 +0100,
+liubin001@208suo.com wrote:
+> 
+> Write the put_device function before return
 
-  void dce6_audio_enable(struct radeon_device *rdev, struct 
-r600_audio_pin *pin,
-          u8 enable_mask);
--struct r600_audio_pin* r600_audio_get_pin(struct radeon_device *rdev);
--struct r600_audio_pin* dce6_audio_get_pin(struct radeon_device *rdev);
-+struct r600_audio_pin *r600_audio_get_pin(struct radeon_device *rdev);
-+struct r600_audio_pin *dce6_audio_get_pin(struct radeon_device *rdev);
-  static void radeon_audio_hdmi_mode_set(struct drm_encoder *encoder,
-      struct drm_display_mode *mode);
-  static void radeon_audio_dp_mode_set(struct drm_encoder *encoder,
-      struct drm_display_mode *mode);
+Why? What is wrong with the current code? What does it affect?
 
--static const u32 pin_offsets[7] =
--{
-+static const u32 pin_offsets[7] = {
-      (0x5e00 - 0x5e00),
-      (0x5e18 - 0x5e00),
-      (0x5e30 - 0x5e00),
-@@ -359,7 +358,7 @@ static void radeon_audio_write_latency_fields(struct 
-drm_encoder *encoder,
-          radeon_encoder->audio->write_latency_fields(encoder, connector, 
-mode);
-  }
+> 
+> Signed-off-by: Liu Bin <liubin001@208suo.com>
+> ---
+>  drivers/irqchip/irq-renesas-rzg2l.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/irqchip/irq-renesas-rzg2l.c
+> b/drivers/irqchip/irq-renesas-rzg2l.c
+> index 4bbfa2b0a4df..a9d75135ba24 100644
+> --- a/drivers/irqchip/irq-renesas-rzg2l.c
+> +++ b/drivers/irqchip/irq-renesas-rzg2l.c
+> @@ -325,35 +325,42 @@ static int rzg2l_irqc_init(struct device_node
+> *node, struct device_node *parent)
+> 
+>      pdev = of_find_device_by_node(node);
+>      if (!pdev)
+> +        put_device(pdev);
+>          return -ENODEV;
+> 
+>      parent_domain = irq_find_host(parent);
+>      if (!parent_domain) {
+>          dev_err(&pdev->dev, "cannot find parent domain\n");
+> +        put_device(pdev);
+>          return -ENODEV;
+>      }
+> 
+>      priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+>      if (!priv)
+> +        put_device(pdev);
+>          return -ENOMEM;
+> 
+>      priv->base = devm_of_iomap(&pdev->dev, pdev->dev.of_node, 0, NULL);
+>      if (IS_ERR(priv->base))
+> +        put_device(pdev);
+>          return PTR_ERR(priv->base);
+> 
+>      ret = rzg2l_irqc_parse_interrupts(priv, node);
+>      if (ret) {
+>          dev_err(&pdev->dev, "cannot parse interrupts: %d\n", ret);
+> +        put_device(pdev);
+>          return ret;
+>      }
+> 
+>      resetn = devm_reset_control_get_exclusive(&pdev->dev, NULL);
+>      if (IS_ERR(resetn))
+> +        put_device(pdev);
+>          return PTR_ERR(resetn);
+> 
+>      ret = reset_control_deassert(resetn);
+>      if (ret) {
+>          dev_err(&pdev->dev, "failed to deassert resetn pin, %d\n",
+> ret);
+> +        put_device(pdev);
+>          return ret;
+>      }
+> 
+> @@ -374,7 +381,7 @@ static int rzg2l_irqc_init(struct device_node
+> *node, struct device_node *parent)
+>          ret = -ENOMEM;
+>          goto pm_put;
+>      }
+> -
+> +    put_device(pdev);
+>      return 0;
+> 
+>  pm_put:
+> @@ -382,6 +389,7 @@ static int rzg2l_irqc_init(struct device_node
+> *node, struct device_node *parent)
+>  pm_disable:
+>      pm_runtime_disable(&pdev->dev);
+>      reset_control_assert(resetn);
+> +    put_device(pdev);
+>      return ret;
+>  }
 
--struct r600_audio_pin* radeon_audio_get_pin(struct drm_encoder 
-*encoder)
-+struct r600_audio_pin *radeon_audio_get_pin(struct drm_encoder 
-*encoder)
-  {
-      struct radeon_device *rdev = encoder->dev->dev_private;
-      struct radeon_encoder *radeon_encoder = to_radeon_encoder(encoder);
-@@ -526,7 +525,7 @@ static void radeon_audio_calc_cts(unsigned int 
-clock, int *CTS, int *N, int freq
-          *N, *CTS, freq);
-  }
+Can't you spot an easy way to make the whole thing more readable and
+less error prone? Such as having a *single* exit point to the
+function, doing the put_device() and returning the error code?
 
--static const struct radeon_hdmi_acr* radeon_audio_acr(unsigned int 
-clock)
-+static const struct radeon_hdmi_acr *radeon_audio_acr(unsigned int 
-clock)
-  {
-      static struct radeon_hdmi_acr res;
-      u8 i;
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
