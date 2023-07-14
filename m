@@ -2,79 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A9A6753C8E
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 16:07:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 394AA753C92
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 16:08:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235536AbjGNOHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 10:07:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58708 "EHLO
+        id S235439AbjGNOIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 10:08:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234943AbjGNOHl (ORCPT
+        with ESMTP id S234555AbjGNOIc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 10:07:41 -0400
-Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com [209.85.210.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7BE71989
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 07:07:36 -0700 (PDT)
-Received: by mail-ot1-f72.google.com with SMTP id 46e09a7af769-6b75153caabso3152504a34.0
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 07:07:36 -0700 (PDT)
+        Fri, 14 Jul 2023 10:08:32 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7858B173B
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 07:08:31 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-3143ccb0f75so2173917f8f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 07:08:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689343710; x=1691935710;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=CCTxlwbQxhJI8AjrVEOUZWY0xdsbdlM7lzLUFvpZaOw=;
+        b=Epxzr3XL5e4l4EW5F1qcJuGwFaWaAKMyUrJ6o8b9279TiYT1DPkVw9n9VyrGKX81VP
+         4NMMaNt9bNTbaumv8RDjF4SPxWB2+OVYzGd+RorQnp4PSz0JVqwBsWY3ZvjV1c2+e319
+         wLcI3SUl86ka89+CZQup0ABsPjOAO3BJRaRldRraShuo9NTqY8nBZ/ZBHaRF7+z1INi6
+         wq20yT1l0CJRZ4zpVx8A6mE5Cuyo8AIK6EkYe+HlsLcefR5mfxjdPBn8R6+/HFAl+9O9
+         KaD9e7obgvyO8cfpJfNwZuHuaXeyPCsbPQUvAVrDq6g3PnESr2GoKBe0pqt233Ed2LLT
+         wIfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689343656; x=1691935656;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
+        d=1e100.net; s=20221208; t=1689343710; x=1691935710;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0IOprrGGFnJfjtmwD1fUwfmPU7ypMqJTctMsOUFhMYs=;
-        b=aEbpKB1Gmc1pgDVgQCctRH0QAjENL55HipyjjMpk+UfjSPB0Xj5Agz3h1jRJ7Dbeah
-         S+J0gi1nsXzNptu2rqi+BgIqut71arZTWSCvhmjNWypThNTaETicHY5jC35wB/4BnwSP
-         uImjyuZpV1HPCFzvAUhGau6rH0vRsoCnhW6GSrV5DvJVAguFR5G9UzP5NC98d8g+Kl0A
-         agAU+ivRHncLrhQ1ZCEjKVucRAJUeVzKhmy50+zjYAAl+R+qeuQoiM03dHzG+E8r/0OC
-         VnQaFYG5+h3mz2V2SBnDCG6rVDoqHbRVzS4+Shemu7NsmbASUGZkI+u6OT5kpEuLdNPQ
-         sclw==
-X-Gm-Message-State: ABy/qLas/Iq+fEH8GnFuoIpe/FsRchnKqkw9UeJXVuNapDQUnoYFJskO
-        uxIlbVVEzNZalY/SnRuGGpl15V+Ja4tK5y0g6iW78MYD9GTO
-X-Google-Smtp-Source: APBJJlF1wPeUkxXiemiD+WX9+Ix0pvCKt0Kf7QBQmQ79wbSRipTvlhdd2qP6SyM5cV0i5dmwv4KRRpoQc1x3w3jvc+B2yk/Zmk2e
+        bh=CCTxlwbQxhJI8AjrVEOUZWY0xdsbdlM7lzLUFvpZaOw=;
+        b=hRp8pcbFn+ZALbDRnE4Yk/1UExbRap7dQ6g7RRrQdyP++2C0HAZdtPYVWWqkVSqu/2
+         KS6nN5g1JloGVSKYBfScVFNtO/UXUEJa8BPYqux4wNCunLfRHpZPdx2PHrYBdq8OUQol
+         aHRnzNpLHD2PPyvzXbiqdB1U+OPCxdr5quCOZuXcreytsMF3tMe4xv8dYxRltMntdiM8
+         entiwb1vnAmYxkGoGfT/jEdS3NR4Zz4xhOYBHABaX2dJv7Zrv0P6rohU/JwCovA1lZSE
+         45+qoyUQi9NVb2CM/1c7jLXCe/tloDdelq9UYp+Z8jOBKdqKe6RK+DwjWlNnkaRE1mbb
+         Nvkw==
+X-Gm-Message-State: ABy/qLa9qZy6kpGJffwNHLu/IOC9TgqukdvwHs5pvIvtfx6BRXdeIwPA
+        SIgHlHwW7amvEKAMCQCCrttNy3D+gh0E2tOAeFc=
+X-Google-Smtp-Source: APBJJlEpU6teBRxalbQaxqFA5Wcp9eZRMT6nz+si2nYovlnOj8Uco3YCmrFRlWeYn7N8iuMrMlbkbQ==
+X-Received: by 2002:adf:f106:0:b0:316:efb9:101d with SMTP id r6-20020adff106000000b00316efb9101dmr1848531wro.25.1689343709864;
+        Fri, 14 Jul 2023 07:08:29 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id s14-20020adfea8e000000b00301a351a8d6sm11057698wrm.84.2023.07.14.07.08.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Jul 2023 07:08:27 -0700 (PDT)
+Date:   Fri, 14 Jul 2023 17:08:24 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Markus Elfring <Markus.Elfring@web.de>
+Cc:     Serge Semin <fancer.lancer@gmail.com>, Wang Ming <machel@vivo.com>,
+        opensource.kernel@vivo.com, kernel-janitors@vger.kernel.org,
+        ntb@lists.linux.dev, Allen Hubbe <allenbh@gmail.com>,
+        Dan Carpenter <error27@gmail.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Jiasheng Jiang <jiasheng@iscas.ac.cn>,
+        Jon Mason <jdmason@kudzu.us>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Minjie Du <duminjie@vivo.com>
+Subject: Re: [PATCH v3] ntb: Remove error checking for debugfs_create_dir()
+Message-ID: <5d0cd0e0-d92e-42d3-a6d9-ec9fc3229b7b@kadam.mountain>
+References: <ag2uziaj2mbsqryo6ss25w5s3ryenshoylraejtgp46gxce6hh@qcggqjnqheb5>
+ <b5139e22-cf5e-e95c-fd33-7e1b9b4d665b@web.de>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:98b5:b0:1b0:59e5:2300 with SMTP id
- eg53-20020a05687098b500b001b059e52300mr4191351oab.8.1689343656165; Fri, 14
- Jul 2023 07:07:36 -0700 (PDT)
-Date:   Fri, 14 Jul 2023 07:07:36 -0700
-In-Reply-To: <0000000000001b4f6505fd59fb12@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000878978060072f85a@google.com>
-Subject: Re: [syzbot] [ext4?] WARNING: locking bug in __ext4_ioctl
-From:   syzbot <syzbot+a537ff48a9cb940d314c@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b5139e22-cf5e-e95c-fd33-7e1b9b4d665b@web.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
+On Fri, Jul 14, 2023 at 02:44:11PM +0200, Markus Elfring wrote:
+> > > It is expected that most callers should _ignore_ the errors
+> > > return by debugfs_create_dir() in tool_setup_dbgfs()
+> …
+> > The patch itself is correct for sure:
+> > Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
+> 
+> How does such information fit to the Linux development requirement
+> for imperative change descriptions?
+> 
 
-commit aff3bea95388299eec63440389b4545c8041b357
-Author: Theodore Ts'o <tytso@mit.edu>
-Date:   Wed May 24 03:49:51 2023 +0000
+Markus, you already replied to this thread.
 
-    ext4: add lockdep annotations for i_data_sem for ea_inode's
+Greg, HCH, Matthew Wilcox and Krzysztof Kozlowski have all asked you to
+stop.  Those are respected kernel maintainers.  You should listen to
+them.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=121e2492a80000
-start commit:   a901a3568fd2 Merge tag 'iomap-6.5-merge-1' of git://git.ke..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=111e2492a80000
-console output: https://syzkaller.appspot.com/x/log.txt?x=161e2492a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=12d3428a307a1111
-dashboard link: https://syzkaller.appspot.com/bug?extid=a537ff48a9cb940d314c
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1489ffb8a80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=145c302ca80000
+If you see a bug, that's useful.  But if you're just nitpicking the
+commit message, that's not useful.  We have explained this many times as
+clearly as we know how.
 
-Reported-by: syzbot+a537ff48a9cb940d314c@syzkaller.appspotmail.com
-Fixes: aff3bea95388 ("ext4: add lockdep annotations for i_data_sem for ea_inode's")
+> See also:
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?h=v6.5-rc1#n94
+> 
+> 
+> How do you think about to add the tag “Fixes” because of the deletion
+> of an inappropriate error detection?
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+No.  It's not a bug fix so a Fixes tag is innappropriate.
+
+regards,
+dan carpenter
+
