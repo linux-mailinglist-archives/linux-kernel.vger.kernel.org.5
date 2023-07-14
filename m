@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9EAE752EB4
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 03:38:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80653752EAF
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 03:38:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234482AbjGNBiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 21:38:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58536 "EHLO
+        id S234609AbjGNBi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 21:38:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233757AbjGNBiG (ORCPT
+        with ESMTP id S233799AbjGNBiH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 21:38:06 -0400
+        Thu, 13 Jul 2023 21:38:07 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0B522D63;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC2782D66;
         Thu, 13 Jul 2023 18:38:05 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 34BC161BB2;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 353D161BB9;
         Fri, 14 Jul 2023 01:38:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57E31C433C8;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 581D1C433CB;
         Fri, 14 Jul 2023 01:38:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1689298684;
-        bh=9ICj2srZUkHSM8Oenv3/OJ/dpUwH5604BWTzaI6ATYk=;
+        bh=pHG+mTF3Sqq4Dyhp7e3fM2xvT8KCo3Hc4liBMTVZVOg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dIch2TxBnNHsz+EJC/0LWNpKTydIiP8kB+DqKl4Jhc0oaYZRA2/2p5hqGrB3Wb/Yw
-         rrzK/1MLSqstwk+3l6N3BYx9AgeHDM5vbm+7ktU1Sgz6FbTTcYxGEsydMWKDozWkbr
-         lpmafKMRSdARDvcQlVYGPY0pBjHJ0a7xe81Sv2W0bN1ZviC6ZaHzG27YeDN7eDVFQn
-         /3f5G8E2XJXYAU9WMylKRqQBekReQM3ot5/x6ZYByhCyG4veVzKZo/ennEDWVvkYAU
-         xp2dSWjOcKA9GBfAhRGnd6RGyKc5vxsYJ+/PyWEV7miJhtT5MQtobAqhWJ7wKFukq4
-         mR19+FbLKrxoA==
+        b=jcobtyHoeNyuILr2XEO5I4hFwKoTCvji/RQFFN4rJXcJn8ldgZrRtumRdxsmLzDAl
+         TF3fWQFpUhlCtRfrI8NSYv7VHedxNEz6gAHWN5o7A2XFWwrckHcIctWvEhXjDGHfhR
+         P/l1czEkG1foF2ESTVmjPtnLrbetDqZ1d3fmBPgb2w6ZUTbS4UqibPz25ye8E/27rj
+         87CAO8XzMhJUo/yciroYpWw3s16fQO+VRNlBe7CHLDtedEciSv+Xx9Lbmb0pD3z9Yg
+         sj4+cTkOpOcbQAHgsms06lQ4praeRHvGBVCPWXDc6+JyhyWi2bMslRc7Aisrm5YQhF
+         8Rnho0zq6hUlg==
 Received: by mercury (Postfix, from userid 1000)
-        id DFC3110676F1; Fri, 14 Jul 2023 03:37:58 +0200 (CEST)
+        id E249B10676F2; Fri, 14 Jul 2023 03:37:58 +0200 (CEST)
 From:   Sebastian Reichel <sre@kernel.org>
 To:     Sebastian Reichel <sre@kernel.org>
 Cc:     Gerald Loacker <gerald.loacker@wolfvision.net>,
@@ -48,9 +48,9 @@ Cc:     Gerald Loacker <gerald.loacker@wolfvision.net>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
         devicetree@vger.kernel.org
-Subject: [PATCH v3 09/19] drm/panel: sitronix-st7789v: avoid hardcoding panel size
-Date:   Fri, 14 Jul 2023 03:37:46 +0200
-Message-Id: <20230714013756.1546769-10-sre@kernel.org>
+Subject: [PATCH v3 10/19] drm/panel: sitronix-st7789v: add media bus format
+Date:   Fri, 14 Jul 2023 03:37:47 +0200
+Message-Id: <20230714013756.1546769-11-sre@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230714013756.1546769-1-sre@kernel.org>
 References: <20230714013756.1546769-1-sre@kernel.org>
@@ -66,40 +66,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move the panel size information to the mode struct, so
-that different panel sizes can be specified depending
-on the panel type.
+Add support for describing the media bus format in the
+panel configuration and expose that to userspace. Since
+both supported formats (RGB565 and RGB666) are using 6
+bits per color also hardcode that information.
 
 Reviewed-by: Michael Riesch <michael.riesch@wolfvision.net>
 Signed-off-by: Sebastian Reichel <sre@kernel.org>
 ---
- drivers/gpu/drm/panel/panel-sitronix-st7789v.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ .../gpu/drm/panel/panel-sitronix-st7789v.c    | 26 ++++++++++++++++---
+ 1 file changed, 23 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/gpu/drm/panel/panel-sitronix-st7789v.c b/drivers/gpu/drm/panel/panel-sitronix-st7789v.c
-index 24c5bec6ce31..aa11a1dc0752 100644
+index aa11a1dc0752..d05d7a9caefc 100644
 --- a/drivers/gpu/drm/panel/panel-sitronix-st7789v.c
 +++ b/drivers/gpu/drm/panel/panel-sitronix-st7789v.c
-@@ -163,6 +163,8 @@ static const struct drm_display_mode default_mode = {
- 	.vsync_start = 320 + 8,
- 	.vsync_end = 320 + 8 + 4,
- 	.vtotal = 320 + 8 + 4 + 4,
-+	.width_mm = 61,
-+	.height_mm = 103,
+@@ -10,6 +10,7 @@
+ #include <linux/spi/spi.h>
+ 
+ #include <video/mipi_display.h>
++#include <linux/media-bus-format.h>
+ 
+ #include <drm/drm_device.h>
+ #include <drm/drm_modes.h>
+@@ -110,6 +111,7 @@
+ 
+ struct st7789_panel_info {
+ 	const struct drm_display_mode *mode;
++	u32 bus_format;
  };
  
+ struct st7789v {
+@@ -169,6 +171,7 @@ static const struct drm_display_mode default_mode = {
+ 
  static const struct st7789_panel_info default_panel = {
-@@ -188,8 +190,8 @@ static int st7789v_get_modes(struct drm_panel *panel,
+ 	.mode = &default_mode,
++	.bus_format = MEDIA_BUS_FMT_RGB666_1X18,
+ };
+ 
+ static int st7789v_get_modes(struct drm_panel *panel,
+@@ -190,8 +193,11 @@ static int st7789v_get_modes(struct drm_panel *panel,
  	mode->type = DRM_MODE_TYPE_DRIVER | DRM_MODE_TYPE_PREFERRED;
  	drm_mode_probed_add(connector, mode);
  
--	connector->display_info.width_mm = 61;
--	connector->display_info.height_mm = 103;
-+	connector->display_info.width_mm = ctx->info->mode->width_mm;
-+	connector->display_info.height_mm = ctx->info->mode->height_mm;
++	connector->display_info.bpc = 6;
+ 	connector->display_info.width_mm = ctx->info->mode->width_mm;
+ 	connector->display_info.height_mm = ctx->info->mode->height_mm;
++	drm_display_info_set_bus_formats(&connector->display_info,
++					 &ctx->info->bus_format, 1);
  
  	return 1;
  }
+@@ -199,8 +205,24 @@ static int st7789v_get_modes(struct drm_panel *panel,
+ static int st7789v_prepare(struct drm_panel *panel)
+ {
+ 	struct st7789v *ctx = panel_to_st7789v(panel);
++	u8 pixel_fmt;
+ 	int ret;
+ 
++	switch (ctx->info->bus_format) {
++	case MEDIA_BUS_FMT_RGB666_1X18:
++		pixel_fmt = MIPI_DCS_PIXEL_FMT_18BIT;
++		break;
++	case MEDIA_BUS_FMT_RGB565_1X16:
++		pixel_fmt = MIPI_DCS_PIXEL_FMT_16BIT;
++		break;
++	default:
++		dev_err(panel->dev, "unsupported bus format: %d\n",
++			ctx->info->bus_format);
++		return -EINVAL;
++	}
++
++	pixel_fmt = (pixel_fmt << 4) | pixel_fmt;
++
+ 	ret = regulator_enable(ctx->power);
+ 	if (ret)
+ 		return ret;
+@@ -221,9 +243,7 @@ static int st7789v_prepare(struct drm_panel *panel)
+ 
+ 	ST7789V_TEST(ret, st7789v_write_command(ctx,
+ 						MIPI_DCS_SET_PIXEL_FORMAT));
+-	ST7789V_TEST(ret, st7789v_write_data(ctx,
+-					     (MIPI_DCS_PIXEL_FMT_18BIT << 4) |
+-					     (MIPI_DCS_PIXEL_FMT_18BIT)));
++	ST7789V_TEST(ret, st7789v_write_data(ctx, pixel_fmt));
+ 
+ 	ST7789V_TEST(ret, st7789v_write_command(ctx, ST7789V_PORCTRL_CMD));
+ 	ST7789V_TEST(ret, st7789v_write_data(ctx, 0xc));
 -- 
 2.40.1
 
