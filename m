@@ -2,107 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C39875306A
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 06:12:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C30BF75306D
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 06:13:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234979AbjGNEMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 00:12:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60090 "EHLO
+        id S234950AbjGNENd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 00:13:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234938AbjGNEM3 (ORCPT
+        with ESMTP id S234954AbjGNENX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 00:12:29 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CD832733
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 21:12:27 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-3142970df44so1517670f8f.3
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 21:12:27 -0700 (PDT)
+        Fri, 14 Jul 2023 00:13:23 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A48762D45
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 21:13:21 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-307d20548adso1538636f8f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 21:13:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689307946; x=1691899946;
+        d=linaro.org; s=google; t=1689308000; x=1691900000;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=F0om7TZyUtm78+G+6P856aCHHrm1f5f1KaX3wUrCTAY=;
-        b=ccczWNKODZuxkRpCg56pFlAaZdQRexz9nkS8tlC/ZdzAfGtdQ7nZ1awhlh+/BomWyx
-         5BdcclPjEkThLWEV8IH5urqxA2zYVv3RSNPbwp+Ldrkk68PnG/DDzCTpNjxtmxn9bbu8
-         sScBjzCiOzSl26cwhrYen9VMYqMOWNP9a0EBjrokc2xFiuRz9EVmEL8RqB029L+4IpTu
-         5K7L6NNTrMK5+dnmEMxrRuvwRIqBNp5eyMjp6EIMkDr2ve9FGv/xzhDZWkIckiUF6pVt
-         /KaJ0PKvC6H4DbG2iqHFmWn02efNj6CIx67rNmxCdhyiDAxMunEIaoB9FMFDxnRwZqZP
-         gnBg==
+        bh=YABg4OT5HskdCrnMy3fonfRSK+TYxksn1HKEflOmZ9U=;
+        b=O0qZyyZtLoQCGZgpM5FaFcrYrvzYbXDbUSz53lM6i3M6/HLdU9T/ifHsOzhdd1If50
+         B67DARaGITXXc3IkD81uMnpTZwp0iR0anyYLo537xVo3TA6dJnwiFYcnX7qnOjaJpyy2
+         yU6+2aKAfe2CFemet11kGNUBBCF3428QtyvQGWcAR0iM5tnoAGrZj0ognuG/INgIm4t0
+         jOEsMpFvM873U3Ds5HZiKaZQfFKo8QuC1r0v0UOEUT1meKC3/kKhKIZWJXbHEXXtOi+C
+         ur6e6xbYWFwrx8ej5s6dgXtYU8IK4QuUv4Hy4+pL2/qMHpPkmEkQguL6on6HRo5g7ytv
+         hrJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689307946; x=1691899946;
+        d=1e100.net; s=20221208; t=1689308000; x=1691900000;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=F0om7TZyUtm78+G+6P856aCHHrm1f5f1KaX3wUrCTAY=;
-        b=Yu0RA9VYaQRcdJpbxlDUb2WCzPQ5zbAfGT4/fTurxQQg4Y8+anDmvrDnJ2lKaxVWd7
-         qkyZ/bNG+LuMnoXgg+DeHjZQrDcMggZkc3FiQSuExN+j2WcwvoBiVKeaPk0n12pDNz/D
-         sKiPcCBcBvj62NK9jL8V4pb8TWLa9ZLitJmClU0xaochgRNghQnI2ZIxPHhVTfYPbiYp
-         wo4aScxnTZ+VYPa8/ltgfNmeOQUl0hFDYwodisYAkVy05x8l6mCOiuxZC5x9D5otfNMc
-         c/bY1hdJeWJ475hdrNyTd50bgAGrFFToOvN3HrApiALLZgksz1xDl61Vu8PIbIXTK8Jn
-         YIVw==
-X-Gm-Message-State: ABy/qLbSKZNbHg3XKxw2LP/p45ixNriAEjxyyCNAOHq9uU2gtzjB3WvZ
-        Z7e2hoBakxJu7ENc5DiISC71gw==
-X-Google-Smtp-Source: APBJJlFirpaQfMgeNnJNmqD/IIFh+MZqYnv5ScO0xHnlU6ErTOZlfdl92D5b5W6MJdqzRwxs+uoReg==
-X-Received: by 2002:a5d:4641:0:b0:313:f0ef:1e55 with SMTP id j1-20020a5d4641000000b00313f0ef1e55mr2799626wrs.37.1689307946155;
-        Thu, 13 Jul 2023 21:12:26 -0700 (PDT)
+        bh=YABg4OT5HskdCrnMy3fonfRSK+TYxksn1HKEflOmZ9U=;
+        b=WENx78rEc3bDvvy3Q7xLZzeyZ9+1VaGrMMaUf4Z5JkDDntyXcvQGiGx7p4NAX+Qadm
+         wFEwmONFc++r78K506skeg635Y2Q8StsNiJkNk17JUPN7MrZjmZHUYK9QfZFautuzg23
+         El2rdsQPjpE31Bzd4n3lha7rZ/7HkC8VDHYvxGvNdJrhKLbA0fXVeRKnoQ8PKT+7J5S5
+         EoyGbc4lfS24SDymyLSMMOMU353FEw+rrEg18mYIAkyNftEOFvuvAg7XqCb4efjFh27P
+         81bsgNDZLus5qDzk5nfeqaz5nkllh8uVukbw7Mg3KLQsiyVp8JSXlOAOIr8yG7bib9Ch
+         J2Nw==
+X-Gm-Message-State: ABy/qLagubeqLpbIn31jVIYRgsTfgmvVE5fErvDjHx61cWC/by47Y1MJ
+        pTGfnHXxRu8TEQT/jMBypuNnlw==
+X-Google-Smtp-Source: APBJJlHErXViedgAwi0LK++yL/hAfrmgSIvP0b1Uv4Vp3sj3YrfFJ573oWAV2G9T1wg1jFToFKR6Pg==
+X-Received: by 2002:a5d:4649:0:b0:30e:590f:78d1 with SMTP id j9-20020a5d4649000000b0030e590f78d1mr3120118wrs.63.1689308000246;
+        Thu, 13 Jul 2023 21:13:20 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id r7-20020a5d6947000000b00313fd294d6csm9783978wrw.7.2023.07.13.21.12.24
+        by smtp.gmail.com with ESMTPSA id x3-20020a5d60c3000000b0030ae499da59sm9591129wrt.111.2023.07.13.21.13.17
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 Jul 2023 21:12:25 -0700 (PDT)
-Message-ID: <58b40977-5223-7431-3c0e-dcf87bf1ef3f@linaro.org>
-Date:   Fri, 14 Jul 2023 06:12:23 +0200
+        Thu, 13 Jul 2023 21:13:19 -0700 (PDT)
+Message-ID: <0e6e32db-40e1-aa9f-fc05-20f2c5bf544d@linaro.org>
+Date:   Fri, 14 Jul 2023 06:13:17 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH v2 1/2] dt-bindings: arm: aspeed: add Facebook Yosemite V4
- board
+Subject: Re: [PATCH v2 2/2] ARM: dts: aspeed: yosemitev4: add Facebook
+ Yosemite V4 BMC
 Content-Language: en-US
 To:     Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>, patrick@stwcx.xyz,
-        Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org, Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
         Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@aj.id.au>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
 References: <20230712073752.54624-3-Delphine_CC_Chiu@wiwynn.com>
  <20230714023502.3225096-1-Delphine_CC_Chiu@wiwynn.com>
- <20230714023502.3225096-2-Delphine_CC_Chiu@wiwynn.com>
+ <20230714023502.3225096-3-Delphine_CC_Chiu@wiwynn.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230714023502.3225096-2-Delphine_CC_Chiu@wiwynn.com>
+In-Reply-To: <20230714023502.3225096-3-Delphine_CC_Chiu@wiwynn.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/07/2023 04:34, Delphine CC Chiu wrote:
-> Document the new compatibles used on Facebook Yosemite V4.
+On 14/07/2023 04:35, Delphine CC Chiu wrote:
+> Add linux device tree entry related to
+> Yosemite V4 specific devices connected to BMC SoC.
 > 
 > Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
 > ---
+>  arch/arm/boot/dts/Makefile                    |   1 +
+>  .../dts/aspeed-bmc-facebook-yosemitev4.dts    | 577 ++++++++++++++++++
+>  2 files changed, 578 insertions(+)
+>  create mode 100644 arch/arm/boot/dts/aspeed-bmc-facebook-yosemitev4.dts
+> 
+> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+> index 59829fc90315..871e6d271262 100644
+> --- a/arch/arm/boot/dts/Makefile
+> +++ b/arch/arm/boot/dts/Makefile
+> @@ -1631,6 +1631,7 @@ dtb-$(CONFIG_ARCH_ASPEED) += \
+>  	aspeed-bmc-facebook-galaxy100.dtb \
+>  	aspeed-bmc-facebook-greatlakes.dtb \
+>  	aspeed-bmc-facebook-minipack.dtb \
+> +	aspeed-bmc-facebook-yosemitev4.dtb \
+>  	aspeed-bmc-facebook-tiogapass.dtb \
+>  	aspeed-bmc-facebook-wedge40.dtb \
+>  	aspeed-bmc-facebook-wedge100.dtb \
+> diff --git a/arch/arm/boot/dts/aspeed-bmc-facebook-yosemitev4.dts b/arch/arm/boot/dts/aspeed-bmc-facebook-yosemitev4.dts
+> new file mode 100644
+> index 000000000000..cfe4838fae5a
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/aspeed-bmc-facebook-yosemitev4.dts
+> @@ -0,0 +1,577 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +// Copyright 2022 Facebook Inc.
+> +
+> +/dts-v1/;
+> +#include "aspeed-g6.dtsi"
+> +#include <dt-bindings/gpio/aspeed-gpio.h>
+> +#include <dt-bindings/leds/leds-pca955x.h>
+> +#include <dt-bindings/i2c/i2c.h>
+> +
+> +/ {
+> +	model = "Facebook Yosemite V4 BMC";
+> +	compatible = "facebook,yosemitev4-bmc", "aspeed,ast2600";
+> +
+> +	aliases {
+> +		serial4 = &uart5;
+> +		serial5 = &uart6;
+> +		serial6 = &uart7;
+> +		serial7 = &uart8;
+> +		serial8 = &uart9;
+> +	};
+> +
+> +	chosen {
+> +		bootargs = "console=ttyS4,57600n8";
 
-This is a friendly reminder during the review process.
+Nothing improved, so you just ignored entire feedback and resent the same.
 
-It looks like you received a tag and forgot to add it.
+Sorry, that's not how responding to feedback works.
 
-If you do not know the process, here is a short explanation:
-Please add Acked-by/Reviewed-by/Tested-by tags when posting new
-versions. However, there's no need to repost patches *only* to add the
-tags. The upstream maintainer will do that for acks received on the
-version they apply.
-
-https://elixir.bootlin.com/linux/v6.4/source/Documentation/process/submitting-patches.rst#L552
-
-If a tag was not added on purpose, please state why and what changed.
+NAK
 
 Best regards,
 Krzysztof
