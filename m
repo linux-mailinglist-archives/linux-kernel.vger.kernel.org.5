@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE78B7543D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 22:38:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98EE07543DB
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 22:38:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236288AbjGNUh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 16:37:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34240 "EHLO
+        id S236377AbjGNUiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 16:38:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236307AbjGNUhx (ORCPT
+        with ESMTP id S236503AbjGNUiF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 16:37:53 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBFDC35AD;
-        Fri, 14 Jul 2023 13:37:45 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id 5614622812f47-3a43cbb432aso1046097b6e.3;
-        Fri, 14 Jul 2023 13:37:45 -0700 (PDT)
+        Fri, 14 Jul 2023 16:38:05 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E747735B0;
+        Fri, 14 Jul 2023 13:37:53 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id 5614622812f47-3a36b309524so1948773b6e.3;
+        Fri, 14 Jul 2023 13:37:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689367065; x=1691959065;
+        d=gmail.com; s=20221208; t=1689367073; x=1691959073;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=CBhsitCN/onNBslnPmHliBhOeMbP9ETZwhScILes7/c=;
-        b=UEJWiFUENx9+IWthbK2MR3Dum7I5bsNUdoAbviRfxNPKoyZtx/CiAKNZTLgQlZAlH7
-         zkLfcyDS5vB5efbFjE3GMQiy7RFvJ8Ag/r4TR7auplMMcAazICba8NnfnvZxksXSevbK
-         lQuo0OtRmr6lwthdLHrddZJxRS2b/JVFvWHU/TNf7RYWtaiEjwigtv114EojL2HeIAFT
-         ba492OcU4rWcK5pQgDe16AYQoHhZjzAVn4ehJQAfxblLjs0jZj3Wd0zuZ4OBiFlbrEqd
-         glHTlGOTb8ER8syvWOUY13ND52F0WzgYWIz3HUgAoffkniES8u4Ttmyg+koz6c7V5r3D
-         at9g==
+        bh=6PYAqewVax5HL+fWUDbqh6UrtMzJWX9lEo4WEAOX/mI=;
+        b=D3xt2IHKlZYOWMGKxFcdpr3Ci7XvlhAh0yS7s9RFAhvwgK0Hf4F2xW4bMpvXHfwN+F
+         AbHlA7upHcu6RM89upM0WgFJOcdD9T8tx0qkymY4pFpI+XbK5QZrVz9mYDrBpIpVRgwb
+         47pveQDNymhrkrQ28Hz4bV4pKivFcY3bixNSdRAI5rQhWyl1A6x03ZvBU1X9Z6nKqys+
+         hi7zK5cU+Wp3OM4BmDlyWQpcjwBNfN2U8nQKB0MBPyVvxtk8+5+bv0SUd0FJacsAb935
+         CokPEFGGA9F8QeZb2XUaV56LNzuBHnSESIcW3dgQwddxRqIejj5xF15MigNLY0qyI6Od
+         tKuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689367065; x=1691959065;
+        d=1e100.net; s=20221208; t=1689367073; x=1691959073;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CBhsitCN/onNBslnPmHliBhOeMbP9ETZwhScILes7/c=;
-        b=SYIGOei6zHR94ab4PByRvmbd/Cw49tT4mJCYB//E5fT0kg+mDF6u0YYduF8RoNioX9
-         oCgVnYJmp03iYee+UK42Jeo58vPrZnyzG1l4kMNndN+BlNGRcbhX9JLZYQNzxV1SwxCc
-         Z5SmpW5/a5P5BcHVaLr1rGrJdd7wKYCBSuocZP6OZ7GZZXeE+DU99L2B4j91c6TS0vd0
-         ziCRjjWGkYGMBcS5evRZfnEpNIMJXBBtMHu0OTesDdLC88iEEr/qTyE/xceL4k6Tt5fT
-         lXrAuf6WpAI0ktoK8HlkyREzPrxyfFPGEZv2aL5q0JM1YfxMV9ugCyXPa36Gbkc5KtYC
-         ye1g==
-X-Gm-Message-State: ABy/qLYvy90mobq4eZcIxioLiakG1pgXJ7nontb71YNUj2InxQ1WyK8k
-        dDL4dCIpzgCMV5dP2/nwwqc=
-X-Google-Smtp-Source: APBJJlEVOJ+/DXr8bZrvrs3Adv7LDMFMrgmR+jF30O8qsjsCFQr/Fn1n9BaZFaImkMmSFCRLfxuASQ==
-X-Received: by 2002:a05:6808:118c:b0:3a3:f45b:aa5f with SMTP id j12-20020a056808118c00b003a3f45baa5fmr7902058oil.52.1689367064944;
-        Fri, 14 Jul 2023 13:37:44 -0700 (PDT)
+        bh=6PYAqewVax5HL+fWUDbqh6UrtMzJWX9lEo4WEAOX/mI=;
+        b=huyI1dK8le3KFSA43TDHWK4DpvhLpUp6t61OIbXW/5GdmlfC1JszkV46srH9UWlxSr
+         L2+sJfyBK66IvjfEeFHcAH7iWXP2X3NlDNPQurruKbqW2GDEGROjo/1G8kE4zqVmuIUa
+         Vus0FfzDEABWuXHpLd56s96/Vrx5mi9QUvBxM1mQZwTUS+joFLLP8Fuu4QsB7x5LP7ch
+         Tx1N63805DjPtzjdxPGNIPBgrkoIpYGAu9XYrO6hRCRX8ElCVulFUD+874kmQXq7l9Sn
+         rXFBMXAyVyYobEAv2UUYds8IG0c8uCOL2Rjy3eAy9Ch5FlbbyYAd1o/oROEu0UFSfiDc
+         zDRg==
+X-Gm-Message-State: ABy/qLbOmzRuxeTyU1owhVgNp169rG7QZrEVqFkjatESeroq6qVt4Az3
+        l1ZaaAzrv5UG7gQpUZ0vOfE=
+X-Google-Smtp-Source: APBJJlHswb6iEr1H/PIicl7XpNnngq1kB50YKs3UNb3s0g+wwQ3pmylrmgZchXnE1uKK+53fNTQ+kg==
+X-Received: by 2002:a05:6808:13c9:b0:3a3:f67b:876f with SMTP id d9-20020a05680813c900b003a3f67b876fmr7967810oiw.46.1689367073159;
+        Fri, 14 Jul 2023 13:37:53 -0700 (PDT)
 Received: from [192.168.54.90] (static.220.238.itcsa.net. [190.15.220.238])
-        by smtp.gmail.com with ESMTPSA id bm40-20020a0568081aa800b0039ee0778048sm4305714oib.37.2023.07.14.13.37.40
+        by smtp.gmail.com with ESMTPSA id j5-20020a544805000000b0039ee1de4e6esm4255680oij.38.2023.07.14.13.37.47
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 Jul 2023 13:37:44 -0700 (PDT)
-Message-ID: <eea05d26-653e-9cf7-57ce-c5f725e8d6d1@gmail.com>
-Date:   Fri, 14 Jul 2023 11:57:58 -0300
+        Fri, 14 Jul 2023 13:37:52 -0700 (PDT)
+Message-ID: <75146bf9-7bd3-d638-5c6b-23c7327a6f49@gmail.com>
+Date:   Fri, 14 Jul 2023 12:10:19 -0300
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH RFC 05/11] rust: sync: Add dummy LockClassKey
- implementation for !CONFIG_LOCKDEP
+Subject: Re: [PATCH RFC 06/11] rust: sync: Replace static LockClassKey refs
+ with a pointer wrapper
 Content-Language: en-US
 To:     Asahi Lina <lina@asahilina.net>, Miguel Ojeda <ojeda@kernel.org>,
         Alex Gaynor <alex.gaynor@gmail.com>,
@@ -75,14 +75,14 @@ Cc:     Hector Martin <marcan@marcan.st>, Sven Peter <sven@svenpeter.dev>,
         linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
         llvm@lists.linux.dev
 References: <20230714-classless_lockdep-v1-0-229b9671ce31@asahilina.net>
- <20230714-classless_lockdep-v1-5-229b9671ce31@asahilina.net>
+ <20230714-classless_lockdep-v1-6-229b9671ce31@asahilina.net>
 From:   Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-In-Reply-To: <20230714-classless_lockdep-v1-5-229b9671ce31@asahilina.net>
+In-Reply-To: <20230714-classless_lockdep-v1-6-229b9671ce31@asahilina.net>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -92,46 +92,67 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 7/14/23 06:13, Asahi Lina wrote:
-> Lock classes aren't used without lockdep. The C side declares the key
-> as an empty struct in that case, but let's make it an explicit ZST in
-> Rust, implemented in a separate module. This allows us to more easily
-> guarantee that the lockdep code will be trivially optimized out without
-> CONFIG_LOCKDEP, including LockClassKey arguments that are passed around.
+> We want to be able to handle dynamic lock class creation and using
+> pointers to things that aren't a real lock_class_key as lock classes.
+> Doing this by casting around Rust references is difficult without
+> accidentally invoking UB.
 > 
-> Depending on whether CONFIG_LOCKDEP is enabled or not, we then import
-> the real lockdep implementation or the dummy one.
+> Instead, switch LockClassKey to being a raw pointer wrapper around a
+> lock_class_key, which means there is no UB possible on the Rust side
+> just by creating and consuming these objects. The C code also should
+> never actually dereference lock classes, only use their address
+> (possibly with an offset).
+> 
+> We still provide a dummy ZST version of this wrapper, to be used when
+> lockdep is disabled.
 > 
 > Signed-off-by: Asahi Lina <lina@asahilina.net>
 > ---
->   rust/kernel/sync.rs            | 29 ++++++++---------------------
->   rust/kernel/sync/lockdep.rs    | 27 +++++++++++++++++++++++++++
->   rust/kernel/sync/no_lockdep.rs | 19 +++++++++++++++++++
->   3 files changed, 54 insertions(+), 21 deletions(-)
-> 
-> diff --git a/rust/kernel/sync.rs b/rust/kernel/sync.rs
-> index d219ee518eff..352472c6b77a 100644
-> --- a/rust/kernel/sync.rs
-> +++ b/rust/kernel/sync.rs
-> @@ -5,37 +5,24 @@
->   //! This module contains the kernel APIs related to synchronisation that have been ported or
->   //! wrapped for usage by Rust code in the kernel.
+> [...]
+> diff --git a/rust/kernel/sync/lockdep.rs b/rust/kernel/sync/lockdep.rs
+> index cb68b18dc0ad..d8328f4275fb 100644
+> --- a/rust/kernel/sync/lockdep.rs
+> +++ b/rust/kernel/sync/lockdep.rs
+> @@ -9,19 +9,36 @@
 >   
-> -use crate::types::Opaque;
-> -
->   mod arc;
->   mod condvar;
->   pub mod lock;
->   mod locked_by;
+>   /// Represents a lockdep class. It's a wrapper around C's `lock_class_key`.
+>   #[repr(transparent)]
+> -pub struct LockClassKey(Opaque<bindings::lock_class_key>);
+> +pub struct StaticLockClassKey(Opaque<bindings::lock_class_key>);
 >   
-> +#[cfg(CONFIG_LOCKDEP)]
-> +mod lockdep;
-> +#[cfg(not(CONFIG_LOCKDEP))]
-> +mod no_lockdep;
+> -impl LockClassKey {
+> +impl StaticLockClassKey {
+>       /// Creates a new lock class key.
+>       pub const fn new() -> Self {
+>           Self(Opaque::uninit())
+>       }
+>   
+> +    /// Returns the lock class key reference for this static lock class.
+> +    pub const fn key(&self) -> LockClassKey {
+> +        LockClassKey(self.0.get())
 
-Some care must be taken wrt how is it going to appear in the resulting
-documentation, I think it can lead to missing details. `#[cfg(doc)]`
-should be considered.
+`Opaque::get` is not a `const fn` so this will not compile.
 
-> +#[cfg(not(CONFIG_LOCKDEP))]
-> +use no_lockdep as lockdep;
+> +    }
+> +}
+> +
+> +// SAFETY: `bindings::lock_class_key` just represents an opaque memory location, and is never
+> +// actually dereferenced.
+> +unsafe impl Sync for StaticLockClassKey {}
+> +
+> +/// A reference to a lock class key. This is a raw pointer to a lock_class_key,
+> +/// which is required to have a static lifetime.
+> +#[derive(Copy, Clone)]
+> +pub struct LockClassKey(*mut bindings::lock_class_key);
+> +
+> +impl LockClassKey {
+>       pub(crate) fn as_ptr(&self) -> *mut bindings::lock_class_key {
+
+I think this can be made into a `const fn`. What do you all think?
+
+> -        self.0.get()
+> +        self.0
+>       }
+>   }
+>   
 > [...]
