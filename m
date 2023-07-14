@@ -2,252 +2,341 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 646F675406A
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 19:25:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A190475406D
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 19:26:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235868AbjGNRZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 13:25:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49554 "EHLO
+        id S235931AbjGNR0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 13:26:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235954AbjGNRZQ (ORCPT
+        with ESMTP id S235519AbjGNR0A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 13:25:16 -0400
-Received: from mail-vk1-xa36.google.com (mail-vk1-xa36.google.com [IPv6:2607:f8b0:4864:20::a36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 904723A84
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 10:25:12 -0700 (PDT)
-Received: by mail-vk1-xa36.google.com with SMTP id 71dfb90a1353d-48133dc9820so589665e0c.3
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 10:25:12 -0700 (PDT)
+        Fri, 14 Jul 2023 13:26:00 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 090B03593;
+        Fri, 14 Jul 2023 10:25:59 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-4f4b2bc1565so3647558e87.2;
+        Fri, 14 Jul 2023 10:25:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1689355511; x=1691947511;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZwgCPPbBkchF0RJ84B5/5F8PIdazAR42CJmMhfBtzss=;
-        b=M2Zym/1gNnm+1zAWBiHZzC7rsXnxJgAQM8emy5bFRjvQK0vo2cZJBG3RD562Td1uzQ
-         sROGtC5csy2vn7ADUiEA+MBSxlyK1qjtOBWKwEfGnZEhPXZNJ2ClOdDDapNCQMuZwZbW
-         oLOvBInUbEdXB6txWlVgR83/acHxJx81M9GbM=
+        d=gmail.com; s=20221208; t=1689355557; x=1691947557;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ww5uJ/kx1wfWM4Xur4cXw8tinYasBTMoIjV5PBf4gjU=;
+        b=I0fxvmInW8sNnGe01PIwOZmewXIoHduL/HlegqaiGExAAGi+p3n09de0huGb8EaFKO
+         kCl/bXaNPoL91fvm66qdZ35BrpoRk/1eJLPmGmdzvP4Yu7KwE+OIS/zSy7dAl6V+JirW
+         jSagclYVn7FZQf7iwl3y5lAgsR9nsm3JTStlFd+32uvj1C2uRLGwfDxWvjNwMq1Me2QX
+         jfilnSG2WYOQ2wffuEdhhlYN8zZ31w8VGT7v/Zu8JMcZaujRINyDI86YhZ/C4kADAGFz
+         8+LhuVRJs3IUyIbaEmykfaQr+CJWhcIAtAj+cl0vD8nZVQQeFpz5EGWLxEv+NdF+yL5q
+         FGAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689355511; x=1691947511;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZwgCPPbBkchF0RJ84B5/5F8PIdazAR42CJmMhfBtzss=;
-        b=Zs0o2BSf0w/tq/PrTSs3xIynLfGBFwUFAO4zOp4sN1fIeGpOHEcT1UoCRlETWYNhL1
-         yC2hW8VmcSnPO8asCu0W5ln/SBKLuejHbWF+dfbajeaKAB0SB2lTAGnQeVS7ua1KZBxZ
-         IKlxISIoDZDHN5hCygrAeQ2SsJBQnscwb5wT2iYWSw0ROWj1GXdsKrc4/n9OuaQczrXI
-         hbV6sjM3JQqQIHNB44wEJGYiiS6+mk40XMuFDMx81hiW5hn9S1ay8wXPk4ompLazgnC2
-         l7iyvh88y89op5+67BvpWGKrkAp0UOensdOPKSRksqVVgugQKtJD94HlY8WQBZbrAYP3
-         UY6Q==
-X-Gm-Message-State: ABy/qLZHYZBTLyNHngTbsmuaW4VH6kceH99mOL61wtInWKjsSWOVf0Ex
-        8WEE5G3JsfrCSCGr55ftKEg+PpsTXOQ9fbKbAnU=
-X-Google-Smtp-Source: APBJJlFnSoC+Nu0+T6QNCeH9vejzAddfZ4xrnfPsyfGpX8OQPE7Kbl/d9AO9qWpJTVb9nHXLyCsiPA==
-X-Received: by 2002:a1f:cac1:0:b0:471:13f7:548e with SMTP id a184-20020a1fcac1000000b0047113f7548emr2004590vkg.9.1689355511658;
-        Fri, 14 Jul 2023 10:25:11 -0700 (PDT)
-Received: from mail-ua1-f44.google.com (mail-ua1-f44.google.com. [209.85.222.44])
-        by smtp.gmail.com with ESMTPSA id j25-20020ac5c659000000b0048138190696sm753242vkl.13.2023.07.14.10.25.11
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 Jul 2023 10:25:11 -0700 (PDT)
-Received: by mail-ua1-f44.google.com with SMTP id a1e0cc1a2514c-791b8500a1dso605150241.1
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 10:25:11 -0700 (PDT)
-X-Received: by 2002:a67:e897:0:b0:443:7bd9:3fea with SMTP id
- x23-20020a67e897000000b004437bd93feamr2265868vsn.23.1689355511009; Fri, 14
- Jul 2023 10:25:11 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689355557; x=1691947557;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ww5uJ/kx1wfWM4Xur4cXw8tinYasBTMoIjV5PBf4gjU=;
+        b=hge+ewns41e9O7ahbJdoVLT2HOBrnX3Ta57u5iddvHlBx7N6+mkReAdHc45QLyGCyx
+         BLbPbaIO0o5ByKmZLkSmzPMrGK4ZpQMkZIpgCXoh7Mjv+kUNeMgrdgUy7Axok1+ctlUK
+         JGU/4cSARk9Wy/hA0WkiSNJWNry0tMlSPPRueO+pl2uWJ9gzWQKN3ASXG/wQwT8XJwQ0
+         i2S9BPSwpHG9i5DyfWdYJiHpCNh1RKozyUAKmkxwgpEpQwLJcUiBnIt5DIEafsAQ2VGl
+         XXJut5mKi8F8n7Fp7YIvsWdDA9eTr32fpvuZikjel5fMVwvIDoI/s4DV64zmTp70Zz14
+         VuWA==
+X-Gm-Message-State: ABy/qLabk1wQyPCbJxL5d+coNcnwD2rm/m7JFZ7TT70eYkj/ibJwACPA
+        pSm2U+EgFQMgYmAoylXJG3c=
+X-Google-Smtp-Source: APBJJlGQ5pQ9sQipWBgmbsSHJXr1DZi9MEQZKP8iArAD2FG3Fpih0+NmK1CLpCo+IBW0kWX8/J7Hwg==
+X-Received: by 2002:a05:6512:1110:b0:4fc:6e21:ff51 with SMTP id l16-20020a056512111000b004fc6e21ff51mr4622039lfg.40.1689355556883;
+        Fri, 14 Jul 2023 10:25:56 -0700 (PDT)
+Received: from mobilestation ([85.249.18.201])
+        by smtp.gmail.com with ESMTPSA id n4-20020ac24904000000b004f1383d57ecsm1546224lfi.202.2023.07.14.10.25.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Jul 2023 10:25:56 -0700 (PDT)
+Date:   Fri, 14 Jul 2023 20:25:52 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh@kernel.org>
+Cc:     linux-pci@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Simon Xue <xxm@rock-chips.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kernel@collabora.com
+Subject: Re: [PATCH v2 1/3] dt-bindings: PCI: dwc: rockchip: Fix
+ interrupt-names issue
+Message-ID: <mikpjlkg65ubb75jrcrbiomzq6npte5iheuoexgrtu4kqej5do@qbwcbcgorg3k>
+References: <20230713171851.73052-1-sebastian.reichel@collabora.com>
+ <20230713171851.73052-2-sebastian.reichel@collabora.com>
 MIME-Version: 1.0
-References: <20230707191721.1.Id08823b2f848237ae90ce5c5fa7e027e97c33ad3@changeid>
- <b32ae8af-7950-c725-5632-6ec13420bf77@infradead.org> <6101a3bb-30eb-97fc-3a8e-6d15afc4efb5@amd.com>
- <3de1ff24-3970-6e22-a73c-70446b8de4bd@infradead.org> <CAHQZ30BLb13Mz5+3MCgV30eG-LiU-6-4F7AEinGQmsgiyzD-yA@mail.gmail.com>
- <ZLF5_dJyQgzNnrnO@alley> <CAHQZ30DjZE6Mg-KUrLQOLHh+OxNHZXRDkuZopxJb3F7G29TsXA@mail.gmail.com>
-In-Reply-To: <CAHQZ30DjZE6Mg-KUrLQOLHh+OxNHZXRDkuZopxJb3F7G29TsXA@mail.gmail.com>
-From:   Raul Rangel <rrangel@chromium.org>
-Date:   Fri, 14 Jul 2023 11:24:59 -0600
-X-Gmail-Original-Message-ID: <CAHQZ30Bt9ijVMcg_yjOrWO1+i4fFqJMfzUMGcpOy-OHDWjsASg@mail.gmail.com>
-Message-ID: <CAHQZ30Bt9ijVMcg_yjOrWO1+i4fFqJMfzUMGcpOy-OHDWjsASg@mail.gmail.com>
-Subject: Re: [PATCH] init: Don't proxy console= to earlycon
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kramasub@chromium.org, Alexander Potapenko <glider@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Li Zhe <lizhe.67@bytedance.com>,
-        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Zhou jie <zhoujie@nfschina.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230713171851.73052-2-sebastian.reichel@collabora.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 11:21=E2=80=AFAM Raul Rangel <rrangel@chromium.org>=
- wrote:
->
-> On Fri, Jul 14, 2023 at 10:38=E2=80=AFAM Petr Mladek <pmladek@suse.com> w=
-rote:
-> >
-> > On Mon 2023-07-10 09:30:19, Raul Rangel wrote:
-> > > On Sun, Jul 9, 2023 at 8:43=E2=80=AFPM Randy Dunlap <rdunlap@infradea=
-d.org> wrote:
-> > > >
-> > > >
-> > > >
-> > > > On 7/9/23 18:15, Mario Limonciello wrote:
-> > > > > On 7/9/23 18:46, Randy Dunlap wrote:
-> > > > >>
-> > > > >>
-> > > > >> On 7/7/23 18:17, Raul E Rangel wrote:
-> > > > >>> Right now we are proxying the `console=3DXXX` command line args=
- to the
-> > > > >>> param_setup_earlycon. This is done because the following are
-> > > > >>> equivalent:
-> > > > >>>
-> > > > >>>      console=3Duart[8250],mmio,<addr>[,options]
-> > > > >>>      earlycon=3Duart[8250],mmio,<addr>[,options]
-> > > > >>>
-> > > > >>> In addition, when `earlycon=3D` or just `earlycon` is specified=
- on the
-> > > > >>> command line, we look at the SPCR table or the DT to extract th=
-e device
-> > > > >>> options.
-> > > > >>>
-> > > > >>> When `console=3D` is specified on the command line, it's intent=
-ion is to
-> > > > >>> disable the console. Right now since we are proxying the `conso=
-le=3D`
-> > > > >>
-> > > > >> How do you figure this (its intention is to disable the console)=
-?
-> > > > >
-> > >
-> > > https://www.kernel.org/doc/html/v6.1/admin-guide/kernel-parameters.ht=
-ml
-> > > says the following:
-> > > console=3D
-> > >     { null | "" }
-> > >             Use to disable console output, i.e., to have kernel
-> > >             console messages discarded.
-> > >             This must be the only console=3D parameter used on the
-> > >             kernel command line.
-> > >
-> > >         earlycon=3D       [KNL] Output early console device and optio=
-ns.
-> > >
-> > >             When used with no options, the early console is
-> > >             determined by stdout-path property in device tree's
-> > >             chosen node or the ACPI SPCR table if supported by
-> > >             the platform.
-> >
-> > Sigh, I wasn't aware of this when we discussed the console=3D handling.
->
-> It took a bit of digging to figure out what the actual intention was :)
->
-> >
-> > > The reason this bug showed up is that ChromeOS has set `console=3D` f=
-or a
-> > > very long time:
-> > > https://chromium.googlesource.com/chromiumos/platform/crosutils/+/mai=
-n/build_kernel_image.sh#282
-> > > I'm not sure on the exact history, but AFAIK, we don't have the ttyX =
-devices.
-> > >
-> > > Coreboot recently added support for the ACPI SPCR table which in
-> > > combination with the
-> > > `console=3D` arg, we are now seeing earlycon enabled when it shouldn'=
-t be.
-> >
-> > But this happens only when both "earlycon" and "console=3D" parameters
-> > are used together. Do I get it correctly?
->
-> The bug shows up when an SPCR table is present and the `console=3D`
-> parameter is set. No need to specify `earlycon` on the command line.
->
-> >
-> > This combination is ambiguous on its own. Why would anyone add
-> > "earlycon" parameter and wanted to keep it disabled?
->
-> This is not the case I'm hitting. I'm honestly not sure what the
-> behavior should be in the `earlycon console=3D` case?
->
-> >
-> > > > >>> diff --git a/init/main.c b/init/main.c
-> > > > >>> index aa21add5f7c54..f72bf644910c1 100644
-> > > > >>> --- a/init/main.c
-> > > > >>> +++ b/init/main.c
-> > > > >>> @@ -738,8 +738,7 @@ static int __init do_early_param(char *para=
-m, char *val,
-> > > > >>>       for (p =3D __setup_start; p < __setup_end; p++) {
-> > > > >>>           if ((p->early && parameq(param, p->str)) ||
-> > > > >>>               (strcmp(param, "console") =3D=3D 0 &&
-> > > > >>> -             strcmp(p->str, "earlycon") =3D=3D 0)
-> > > > >>> -        ) {
-> > > > >>> +             strcmp(p->str, "earlycon") =3D=3D 0 && val && val=
-[0])) {
-> > > > >>>               if (p->setup_func(val) !=3D 0)
-> > > > >>>                   pr_warn("Malformed early option '%s'\n", para=
-m);
-> > > > >>>           }
-> >
-> > Huh, this is getting more and more complicated.
-> >
-> > You know, it is already bad that:
-> >
-> >     + "console" enables the default console which might be overridden
-> >       by ACPI SPCR and devicetree
->
-> That's what this patch fixes. You need to specify `earlycon` in order
-> to get the ACPI SPCR or DT console.
->
-> >
-> >     + "console=3D" causes that "ttynull" console is preferred,
-> >           it might cause that no console is registered at all
->
-> This patch also makes it so `console=3D` no longer enables the earlycon.
->
-> >
-> >     + both "earlyconsole" and "earlyconsole=3D" cause that
-> >
-> >      consoles is enabled
-> >
-> >
-> > It is already bad that "earlycon" and "console" handle the empty value
-> > a different way. But this makes it even worse. The behaviour
-> > would depend on a subtle difference whether "console" or
-> > "console=3D" is used.
->
-> This patch makes it so that `console` or `console=3D` don't enable
-> earlycon. Earlycon can only be enabled via `earlycon` or `earlycon=3D`.
+Hi Sebastian
 
-Sorry, I misspoke. Earlycon that is configured using the SPCR/DT can
-only be enabled via `earlycon` or `earlycon=3D`. You can still enable
-`earlycon` via `earlycon=3Duart,mmio32,0xFFFFFFFF` or
-`console=3Duart,mmio32,0xFFFFFFFF`.
+On Thu, Jul 13, 2023 at 07:18:49PM +0200, Sebastian Reichel wrote:
+> The RK356x (and RK3588) have 5 ganged interrupts. For example the
+> "legacy" interrupt combines "inta/intb/intc/intd" with a register
+> providing the details.
+> 
+> Currently the binding is not specifying these interrupts resulting
+> in a bunch of errors for all rk356x boards using PCIe.
+> 
+> Fix this by specifying the interrupts and add them to the example
+> to prevent regressions.
+> 
+> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> ---
+>  .../bindings/pci/rockchip-dw-pcie.yaml        | 18 +++++
+>  .../devicetree/bindings/pci/snps,dw-pcie.yaml | 76 ++++++++++++++++++-
+>  2 files changed, 93 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/pci/rockchip-dw-pcie.yaml b/Documentation/devicetree/bindings/pci/rockchip-dw-pcie.yaml
+> index a4f61ced5e88..aad53c7d8485 100644
+> --- a/Documentation/devicetree/bindings/pci/rockchip-dw-pcie.yaml
+> +++ b/Documentation/devicetree/bindings/pci/rockchip-dw-pcie.yaml
+> @@ -60,6 +60,17 @@ properties:
+>        - const: aux
+>        - const: pipe
+>  
+> +  interrupts:
+> +    maxItems: 5
+> +
+> +  interrupt-names:
+> +    items:
+> +      - const: sys
+> +      - const: pmc
+> +      - const: msg
+> +      - const: legacy
+> +      - const: err
+> +
+>    msi-map: true
+>  
+>    num-lanes: true
+> @@ -108,6 +119,7 @@ unevaluatedProperties: false
+>  
+>  examples:
+>    - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+>  
+>      bus {
+>          #address-cells = <2>;
+> @@ -127,6 +139,12 @@ examples:
+>                            "aclk_dbi", "pclk",
+>                            "aux";
+>              device_type = "pci";
+> +            interrupts = <GIC_SPI 160 IRQ_TYPE_LEVEL_HIGH>,
+> +                         <GIC_SPI 159 IRQ_TYPE_LEVEL_HIGH>,
+> +                         <GIC_SPI 158 IRQ_TYPE_LEVEL_HIGH>,
+> +                         <GIC_SPI 157 IRQ_TYPE_LEVEL_HIGH>,
+> +                         <GIC_SPI 156 IRQ_TYPE_LEVEL_HIGH>;
+> +            interrupt-names = "sys", "pmc", "msg", "legacy", "err";
+>              linux,pci-domain = <2>;
+>              max-link-speed = <2>;
+>              msi-map = <0x2000 &its 0x2000 0x1000>;
+> diff --git a/Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml b/Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml
+> index 1a83f0f65f19..973bf8f2730d 100644
+> --- a/Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml
+> +++ b/Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml
+> @@ -193,9 +193,83 @@ properties:
+>            oneOf:
+>              - description: See native "app" IRQ for details
+>                enum: [ intr ]
+> +        - description:
+> +            Combined legacy interrupt, which is used to signal the following
+> +            interrupts
+> +              * inta
+> +              * intb
+> +              * intc
+> +              * intd
+> +          const: legacy
+> +        - description:
+> +            Combined system interrupt, which is used to signal the following
+> +            interrupts
+> +              * phy_link_up
+> +              * dll_link_up
+> +              * link_req_rst_not
+> +              * hp_pme
+> +              * hp
+> +              * hp_msi
+> +              * link_auto_bw
+> +              * link_auto_bw_msi
+> +              * bw_mgt
+> +              * bw_mgt_msi
+> +              * edma_wr
+> +              * edma_rd
+> +              * dpa_sub_upd
+> +              * rbar_update
+> +              * link_eq_req
+> +              * ep_elbi_app
+> +          const: sys
+> +        - description:
+> +            Combined PM interrupt, which is used to signal the following
+> +            interrupts
+> +              * linkst_in_l1sub
+> +              * linkst_in_l1
+> +              * linkst_in_l2
+> +              * linkst_in_l0s
+> +              * linkst_out_l1sub
+> +              * linkst_out_l1
+> +              * linkst_out_l2
+> +              * linkst_out_l0s
+> +              * pm_dstate_update
+> +          const: pmc
+> +        - description:
+> +            Combined message interrupt, which is used to signal the following
+> +            interrupts
+> +              * ven_msg
+> +              * unlock_msg
+> +              * ltr_msg
+> +              * cfg_pme
+> +              * cfg_pme_msi
+> +              * pm_pme
+> +              * pm_to_ack
+> +              * pm_turnoff
 
->
-> I don't see the `console` (without the =3D) documented:
-> https://www.kernel.org/doc/html/v6.1/admin-guide/kernel-parameters.html.
-> I'm guessing this is an undocumented "feature" that snuck in while the
-> `earlycon` stuff was being added.
->
-> >
-> >
-> >
-> > > > >>
-> > > > >
-> > > >
-> > > > --
-> > > > ~Randy
->
-> Thanks for reviewing,
-> Raul
+> +              * obff_idle
+> +              * obff_obff
+> +              * obff_cpu_active
+
+These are marked is "inputs" (from the DW PCIe controller point of
+view) in the HW manual. Are you sure they are supposed to generate any
+IRQ? Based on the DW PCIe HW-manual they are supposed to be set by the
+_application_ (a.k.a your driver or vendor-specific RTL block) as a
+request to the DW PCIe controller to emit an OBFF message. There is a
+signal marked as "output" and named as "app_obff_msg_grant" which most
+likely is relevant here.
+
+> +          const: msg
+> +        - description:
+> +            Combined error interrupt, which is used to signal the following
+> +            interrupts
+> +              * aer_rc_err
+> +              * aer_rc_err_msi
+> +              * rx_cpl_timeout
+> +              * tx_cpl_timeout
+> +              * cor_err_sent
+> +              * nf_err_sent
+> +              * f_err_sent
+> +              * cor_err_rx
+> +              * nf_err_rx
+> +              * f_err_rx
+> +              * radm_qoverflow
+> +          const: err
+
+The most of the signals you cited in the description properties are a
+part of the so called "System Information Interface" defined in the DW
+PCIe databook. Here is what the doc says regarding these signals:
+
+"The SII exchanges various system-related information between the
+controller and your application. Most of the SII signals are provided
+for flexibility. Your application is not required to use all of the
+SII signals. Your application logic is expected to drive and monitor
+the signals that it needs to function correctly. SII inputs that your
+application does not require, must be driven to 0."
+
+Amongst tons of various informational signals available in the
+framework of SII, there is "SII: Interrupt Signals" which are normally
+utilized by the vendor-specific controller implementations and which
+are defined as generic in this DT-bindings. (MSI IRQ signal is defined
+separately from SII as "MSI Interface Signals".)
+
+What is normally expected is that all the generic SII IRQs are
+supplied as the separate signals meanwhile the rest of the SII signals
+are combined in an additional line named like "app".
+
+In your case we find an intermix of the SII generic IRQs and some SII
+signals (though some of the names listed in your descriptions don't
+match to what is defined in the DW PCIe HW manual). So what you said
+in v1:
+
+On Thu, Jul 13, 2023 at 7:47PM +0200, Sebastian Reichel wrote:
+> I suppose "sys", "pmc", "msg" and "err" all fit for "app", since
+> they are vendor specific with the extra layer? But obviously I
+> cannot specify "app" more than once."
+
+is mainly correct. For instance, the most of the generic SII interrupt
+signals are combined in your "sys" IRQ, like "hp", "bw_au", "bw_mg",
+"dma", "l_eq"; your "pmc" and "msg" IRQs are a set of the SII signals
+not listed in the "SII Interrupt Signals" list; the "err" IRQ has the
+"aer" generic SII Interrupt, but the rest of the signals are common SII
+signals.
+
+I am not fully certain of what to do in this case. Some possible options:
+
+1. Keep the names defined as is, add them to the list of generic IRQ
+names, describe them as "Combined IRQ signals" but with no specific
+signals listed and with some generic meaningful description.
+Alternatively create a separate sub-schema in the generic
+"interrupt-names" property constraints in the same way as it's done
+for the "vendor-specific IRQ names" and do the same with the names
+descriptions. In anyway move your detailed descriptions to the
+Rockchip DW PCIe DT-schema. In this case we imply that your names
+could be re-used for some other device bindings.
+
+2. Keep the names defined as is, add them to the list of
+"vendor-specific IRQ names" sub-schema in the "interrupt-names"
+property, describe each of them as "Combined IRQ signals" but with no
+specific signals listed and with some generic meaningful description.
+Move your detailed descriptions to the Rockchip DW PCIe DT-schema.
+
+3. Add "app_" prefix to all your IRQs (except "legacy") and convert
+the generic "app" IRQ name constraint to accepting a pattern like
+'^app(_.*)?$' or similar. Move your detailed descriptions to the
+Rockchip DW PCIe DT-schema.
+
+4. Add Rockchip-specific prefix to the names (except "legacy"), add
+all of them (for instance as a pattern-like schema) to the
+vendor-specific IRQ names part of the "interrupt-names" items list
+with a description referring to the Rockchip DT-bindings. Move your
+detailed descriptions to the Rockchip DW PCIe DT-schema.
+
+Doubtfully the categorization chosen by the Rockchip HW designers is
+fully universal so the names could be utilized for other devices. Thus
+IMO the options 2-4 might be more preferable over 1.
+
+In anyway the detailed descriptions with the listed lines should be
+in the Rockchip DW PCIe DT-bindings since they are definitely
+vendor-specific.
+
+Regarding the "legacy" name used as a combined "int(a|b|c|d)" IRQ.
+Alas we can't change it. So it's either option 1 or 2. 
+
+What do you think? Rob, Krzysztof, any better idea?
+
+> +
+
+>      allOf:
+>        - contains:
+> -          const: msi
+> +          enum:
+> +            - msi
+> +            - msg
+
+Based on the above the "msg" interrupt doesn't get to be required.
+Rob, is it possible to have a constraint which would require either
+the "msi" IRQ name or the "msi-map" DT-property or both?
+
+-Serge(y)
+
+>  
+>  additionalProperties: true
+>  
+> -- 
+> 2.40.1
+> 
