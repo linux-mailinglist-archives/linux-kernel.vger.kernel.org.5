@@ -2,205 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20E35753D71
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 16:30:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCFA4753E1F
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 16:53:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235860AbjGNOaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 10:30:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42514 "EHLO
+        id S236165AbjGNOxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 10:53:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235843AbjGNO1u (ORCPT
+        with ESMTP id S236077AbjGNOxd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 10:27:50 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3B9035A7;
-        Fri, 14 Jul 2023 07:27:21 -0700 (PDT)
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36EEL3DA031786;
-        Fri, 14 Jul 2023 14:25:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=RaYm3+iL2nRghkV2cl2HfIFU9xG0uue+t8rOf4tDuVE=;
- b=HeSCuPPFwIWrH+993IvTtMuMziGA0FY3styoQdJklfhKV0Nqcs8mHSNKsyLdWDckgvzq
- 0z44+Sx91mHSUNkkSwrenTPdvX4f//mC0Nye0MMce2+ZqxlYnFOTmHBG2AoLVQ+p0JGE
- YqtcpmAyDS9hV0MABQwj6HZbk6I+W6a4b9bwwvJEc+Dz2JVR12lz/W5WdlQmpmbpLqPA
- wOrCP2yxcMnk/0fnUtQFbN6UVbNteA6I4Z8Q74RqKzq7UNIioin5RT9NKhWBdvv5vFD/
- SC7XHDWaEbSrMWZi5SNJ8WoUQGSLmj72aHNZbZdpuo7AE0+W7OASAPXvRgwBTeISFmzM Cg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ru82082a9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 14 Jul 2023 14:25:23 +0000
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36EEMJhG002383;
-        Fri, 14 Jul 2023 14:25:23 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ru820829k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 14 Jul 2023 14:25:23 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36EDKsSo007376;
-        Fri, 14 Jul 2023 14:25:22 GMT
-Received: from smtprelay06.wdc07v.mail.ibm.com ([172.16.1.73])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3rtpvs1vxy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 14 Jul 2023 14:25:22 +0000
-Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
-        by smtprelay06.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36EEPKSk57934270
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 14 Jul 2023 14:25:20 GMT
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9651358063;
-        Fri, 14 Jul 2023 14:25:20 +0000 (GMT)
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6AB9A58056;
-        Fri, 14 Jul 2023 14:25:12 +0000 (GMT)
-Received: from [9.171.88.96] (unknown [9.171.88.96])
-        by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Fri, 14 Jul 2023 14:25:12 +0000 (GMT)
-Message-ID: <6006810f-6419-bc39-7eff-1bd31a572631@linux.vnet.ibm.com>
-Date:   Fri, 14 Jul 2023 19:55:10 +0530
+        Fri, 14 Jul 2023 10:53:33 -0400
+X-Greylist: delayed 1604 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 14 Jul 2023 07:53:32 PDT
+Received: from mx08-00376f01.pphosted.com (mx08-00376f01.pphosted.com [91.207.212.86])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 264E126A5;
+        Fri, 14 Jul 2023 07:53:31 -0700 (PDT)
+Received: from pps.filterd (m0168888.ppops.net [127.0.0.1])
+        by mx08-00376f01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 36EBtqSa022399;
+        Fri, 14 Jul 2023 15:25:39 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=imgtec.com; h=
+        from:to:cc:subject:date:message-id:content-transfer-encoding
+        :content-type:mime-version; s=dk201812; bh=lJF9YwzBSbKwzuwNVB9O/
+        3JaF/reeNNDtpItKVJUM9M=; b=AF7FLPxzTWKokhvzVYCCvqwegF+SVqO9ftfhI
+        wVR7eDn+2FxDs8zyT16uXvcEdIe8jdrI6MwlPUBjIMKuX+S0TKL0DInHrKVZN3Fj
+        j2IpAmbarWzw3IsgCKQn/d5EAJXJ7GwVAj+iL3E1zE+axwdHMqZr9+WPFf3+nP6J
+        EcFkYV/UomoZrgzPHg+UYoSiXpJOr89kHgOwp6iIgFSuzS+vPKy/71iOBJDQmfQS
+        XCtgi3m+U8pgSGmsVfbz7trtJS96uNiteLw8KjllpMjUPaMntPV6nePjLbr7VZsA
+        8q7c7TYzzHV0fhE34wLcCXdA4WBFD74/O2vDn7NXBd+zzz0Sw==
+Received: from hhmail05.hh.imgtec.org ([217.156.249.195])
+        by mx08-00376f01.pphosted.com (PPS) with ESMTPS id 3rtpu80m4r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 14 Jul 2023 15:25:38 +0100 (BST)
+Received: from HHMAIL05.hh.imgtec.org (10.100.10.120) by
+ HHMAIL05.hh.imgtec.org (10.100.10.120) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Fri, 14 Jul 2023 15:25:38 +0100
+Received: from GBR01-LO2-obe.outbound.protection.outlook.com (104.47.21.55) by
+ email.imgtec.com (10.100.10.121) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27 via Frontend
+ Transport; Fri, 14 Jul 2023 15:25:37 +0100
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kmB689WxLM1xxpTYqVMvzs47PnLyu/DeADmsOtmZD9A8c2QtR0T0Et0whUw7NQr/ScqZbou9PSkZC7evhdfDTvt5FqEoDU2fpYFbOpU21ziDqovonc4yy4oNQjh1vneKzmBU5uQ0TP1Yjab7zECsqLnPYom49Vu4duU7yL//RVcYTybZP6GmQUhe87NeZtHQLJdjS3Kx5JX4URhawVFbf+Xm01VngvMckIWGf6AmZvliAWpsG/OdzaCcNVp2ZQY4l6CVaEquCzyh4b5yqKl3ZYHjnrOtNdlVieb+KrYV6MZ84XatsSW9Zpwbe/9k6QWbaiRBnAJQ8anbGIDdalDUfA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=lJF9YwzBSbKwzuwNVB9O/3JaF/reeNNDtpItKVJUM9M=;
+ b=VcDHQsqWA/lWBms3qUWb0zSaQ0GJ1gni8J7kR8YO+IsgVaxu7fMi4iCaJj2qJ4sQJykMNdNqpk6rJa1axyeqNOlwv3Rc/CKH+jcJvp9XiW/+yjJEm+5VYnDDBUAp2QCMQzowskOFuAIv3n16W3NzMk/adE5Ou8D5idpPGa9YF4y138KRFP5e9cbp5Mho3YyOdLRBAJUqpNvGEMbwzD5coXZSRGGibwICw9OjA9DicZTe7KY6L8Vf6NBBBW4c+HoVo7KI0aCT9u0/igTxcGnOXaiyXXiMe3fkPNFNoph1bdF0IW8rJuJquf5lpHmtWYCHrnGK1sgM+2J0+xOHTemfBQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=imgtec.com; dmarc=pass action=none header.from=imgtec.com;
+ dkim=pass header.d=imgtec.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=IMGTecCRM.onmicrosoft.com; s=selector2-IMGTecCRM-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lJF9YwzBSbKwzuwNVB9O/3JaF/reeNNDtpItKVJUM9M=;
+ b=Tb7fovW8cU38Ldjw1b3LcB1ledItzhsBFosP5dyJS57TnHIMr28J18KJGMXRHQbyJEyRW7DnWaMcE8rRfmvBX5M1DJwClpReucRrgBRKhH+zbAFAeO7K0MKoS+TImGif0m4BgNchyjjqMP+ww6yGuyRlgec06ZFRK7tIkS35QIE=
+Received: from CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:170::9)
+ by LOYP265MB2077.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:11f::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.27; Fri, 14 Jul
+ 2023 14:25:37 +0000
+Received: from CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::f042:5122:eb28:4131]) by CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::f042:5122:eb28:4131%5]) with mapi id 15.20.6588.027; Fri, 14 Jul 2023
+ 14:25:37 +0000
+From:   Sarah Walker <sarah.walker@imgtec.com>
+To:     <dri-devel@lists.freedesktop.org>
+CC:     <frank.binns@imgtec.com>, <donald.robson@imgtec.com>,
+        <boris.brezillon@collabora.com>, <faith.ekstrand@collabora.com>,
+        <airlied@gmail.com>, <daniel@ffwll.ch>,
+        <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
+        <tzimmermann@suse.de>, <afd@ti.com>, <hns@goldelico.com>,
+        <matthew.brost@intel.com>, <christian.koenig@amd.com>,
+        <luben.tuikov@amd.com>, <dakr@redhat.com>,
+        <linux-kernel@vger.kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <devicetree@vger.kernel.org>
+Subject: [PATCH v4 02/17] dt-bindings: gpu: Add Imagination Technologies PowerVR GPU
+Date:   Fri, 14 Jul 2023 15:25:26 +0100
+Message-Id: <20230714142526.111569-1-sarah.walker@imgtec.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: LO2P265CA0453.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:e::33) To CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:400:170::9)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [RFC][PATCH] sched: Rename DIE domain
-Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     juri.lelli@redhat.com, dave.hansen@linux.intel.com,
-        bsegall@google.com, hpa@zytor.com, agordeev@linux.ibm.com,
-        linux-s390@vger.kernel.org, vincent.guittot@linaro.org,
-        x86@kernel.org, mingo@redhat.com, mgorman@suse.de,
-        borntraeger@linux.ibm.com, gor@linux.ibm.com, hca@linux.ibm.com,
-        npiggin@gmail.com, bp@alien8.de, rostedt@goodmis.org,
-        dietmar.eggemann@arm.com, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, svens@linux.ibm.com,
-        bristot@redhat.com, Thomas Gleixner <tglx@linutronix.de>,
-        Valentin Schneider <vschneid@redhat.com>
-References: <20230712141056.GI3100107@hirez.programming.kicks-ass.net>
- <xhsmh1qhduq9d.mognet@vschneid.remote.csb>
-From:   Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
-In-Reply-To: <xhsmh1qhduq9d.mognet@vschneid.remote.csb>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: BKnNwJuVQ5CqwoS76-lOVcxFsFRUxIUy
-X-Proofpoint-GUID: JY7YoTQ-OZAhgvru9YZBX9Ytl2G47lgR
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-14_06,2023-07-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
- malwarescore=0 lowpriorityscore=0 suspectscore=0 priorityscore=1501
- mlxlogscore=999 phishscore=0 clxscore=1011 bulkscore=0 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307140128
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CWLP265MB4817:EE_|LOYP265MB2077:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3622dca5-bb47-4291-4cc0-08db84763126
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 1YZ3kQw5xMxm1T8I8yGtOeou3PyXJdHp3Dslxte1+eNHMcS6lGeroZ5+XubopJRp7UIWGnd8yT7VqjYFW/nGPF5o0bW+kM+WyUTe+/9gloI+LsCE1omXpn7w9rkHweq4o0K1K1dTvkk7u8m8ukV3HHkJD3Yis/D9y0J1dDLjgYNI3gWEu2eRMqWmyL3VnFINVofoI6kAsi/TlwZV7L4sj0265yV7B8pZofPVdWH4aLF/+Lqz6iKCdbiX0KCyh5gYTkyedOOureY3krJrD2CYX5u85e1ivPHx4rH+gSyinfV4SOOiXi7lrdbwonKKkprsAb+81IoMUyBupBCPOrwRxH9UtLaEKRUS79eLsgWgdBsmhqBzl7zyMa1bgw72MzohSa+MVltobtwNjx31QXm/7+i6Y0d+9dDZY3LCyED94Y/PDEbpSKemKVpOKXZ+b6mFgwL6AKi8kQl1W4JqIvxUuvd6ZOteJII3f/RsdmhKAmpMpLq2vtz/PLHuqwtYHsI9FKyzlw74N0pnf/igOXwcwnzxbfnk2bTMs9Lg/PMA6nUFh4vvQ7kgh7rcYzlXlB4lMIbwfT7HpAkHOJUC76Wg870Sn/HUCzMSpsh9XTbrAZM=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230028)(346002)(136003)(366004)(376002)(396003)(39850400004)(451199021)(41300700001)(44832011)(66476007)(7416002)(4326008)(66946007)(66556008)(6916009)(478600001)(5660300002)(2906002)(316002)(8936002)(8676002)(6666004)(6486002)(52116002)(966005)(6512007)(86362001)(1076003)(26005)(6506007)(186003)(83380400001)(36756003)(38350700002)(2616005)(38100700002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?P+48hmJ7FMr9tUCHqcpMY2+r/9GkvPurnsOlTmpONZuceeTvvM13UwOmeAzi?=
+ =?us-ascii?Q?7R57nzSf1cLZGnwcTde2CmrwcfV03bW5sCINTyEc+qpG491ZSWJTFswTGj1K?=
+ =?us-ascii?Q?irOW9e1ICCtwc4Lz05Tifshts1LPuhFo1rqG6+yzQcw/rZJM6hH8/hT1pVjU?=
+ =?us-ascii?Q?bKM+cpetbKUMp1y8TRfjEp6qGzwfVg4DQKfJTKM4/WYHyJ9FLf0PVVekLgEv?=
+ =?us-ascii?Q?PnC2Ot0GkdVLVhM3DnlV+GQUha1U5b1w/uPhgg48cxAKgA/SrUf9rxw2yb3t?=
+ =?us-ascii?Q?C+t3cX0CVzAEQSCTjhath1otfh5NsP9GGC36UkOnis6XyWmBRDRwyte2ryg1?=
+ =?us-ascii?Q?nSbAcDW5sgwXF792hjkUXhrfYaQAHuWHse1BvTWP2y3TAvbZ26css8/wC9q3?=
+ =?us-ascii?Q?2IHC9j2i1g6EWbs2IkTMyhHYHXodePQMzWrSdhhB4KjLFH8lIHvYoYnmhk3e?=
+ =?us-ascii?Q?JV0UgOexdQtiR9dhJSxunAoVBcOkn6KCRrBuK4zCJSefSzCt/ZPOpkHl1Vrk?=
+ =?us-ascii?Q?zNqFXPD/SqkQ02hFt+s+gU4RHUVFJi3r3QBP+VEhSoOcpv4A1mV695e0cm87?=
+ =?us-ascii?Q?mqFtqhH4pmS7TFeis4hUKMO+PEBim1L5GbQeCcHNe5syUk/2XZp2alK3m94Y?=
+ =?us-ascii?Q?R9VEU40FsKA6nHe6VT/NNt/eQ4eBtmau8lpxMHqZBzvPEHq2nLxhKau/kaqL?=
+ =?us-ascii?Q?/JOUKP+0FFYftcRA2iErY59A5nM0GclC7YadGhympBP7WSZDu0w1wFPpFqbs?=
+ =?us-ascii?Q?Q8gJa8Htyrltc3tWgmUJZ2r25cZtuZ5N2HviZaPUCJcngqx80yOop4gJa4XU?=
+ =?us-ascii?Q?hBGg6Sj16CMGZuXOBK26ELg9NQE+m6M3FZH7TDizGZYzwYPzzKdlXLl7cdXZ?=
+ =?us-ascii?Q?kmyApdpahE0OxzFXxdOIVPfWyow67yo5V8QlS5Xeu1SozpyDiulbxMw+88wq?=
+ =?us-ascii?Q?2bplv2+QawwW0hRIGeTWj0xQiQL3zIIC7BK6kJsoVoYtt/g/Q51HBxTdIT/j?=
+ =?us-ascii?Q?3ez6UsAU2vB1j0wUySoOw1WGTp8otfC7z+3OeOx1x+6NU2RqqyvJhxCY5Vvs?=
+ =?us-ascii?Q?zydyWZfYzrVAp2XusniELwJD9x0eTmhBILHV7yNByv1XG80/feXSXHPEAcx+?=
+ =?us-ascii?Q?dPq1KJFu7kKhVBmRewmHEm6aQD4Ql1X+8suNVF+CuIlL47PqO8BWEOoew8tx?=
+ =?us-ascii?Q?AobDkpppR//aSRpmVlCbXYNDukmHvJRNuYYhqTrQOimSblF9HpCDGZQ7+5K2?=
+ =?us-ascii?Q?LxvM5jV7nAsofD+LutGVdhQYeFNZYlW6NUU9RZKsciSQPp6TJwRPagqYZmMF?=
+ =?us-ascii?Q?uaz+/bP/BcGHRQNkcMiCdQNxPhShugckvKIZfygJQ1v9WEKshHoyCfOqmSdJ?=
+ =?us-ascii?Q?ysiz8iyusj+2rKmpp0AAoGZ9RfneMsQVedr/155r6+TIp7XMwho+JSTTQIo8?=
+ =?us-ascii?Q?drLQP9jhw0gLNXJenqqBjdv1TGflAOu2B71cpfCTMkXiQ+7LdZKsr70tr3dE?=
+ =?us-ascii?Q?3z8jFYfD2sjW0Edt/PnzIl6j3Y9N7+Pmd4lrHZpeLcOvrwsJp/nB3vkZOgLp?=
+ =?us-ascii?Q?QLG+b284SlIvDd91tPT5y1BqfcwHlumFEksF0PKGXlruyzXi3rU9x48j+LuC?=
+ =?us-ascii?Q?9w=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3622dca5-bb47-4291-4cc0-08db84763126
+X-MS-Exchange-CrossTenant-AuthSource: CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jul 2023 14:25:36.9943
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 0d5fd8bb-e8c2-4e0a-8dd5-2c264f7140fe
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Z+7xIHIMtAIxqulwcUdImp3nlR3ZTgXSgUzdGoYNJujX76cj3j6U8uhA4WaKSzVyo4RKv9qn8BkL+PMYuJqvIg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LOYP265MB2077
+X-OriginatorOrg: imgtec.com
+X-EXCLAIMER-MD-CONFIG: 15a78312-3e47-46eb-9010-2e54d84a9631
+X-Proofpoint-ORIG-GUID: FP64EOKhokCop1KTsu6mJuCImfC3KIyE
+X-Proofpoint-GUID: FP64EOKhokCop1KTsu6mJuCImfC3KIyE
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add the device tree binding documentation for the Series AXE GPU used in
+TI AM62 SoCs.
 
+Changes since v3:
+- Remove oneOf in compatible property
+- Remove power-supply (not used on AM62)
 
-On 7/12/23 8:32 PM, Valentin Schneider wrote:
-> On 12/07/23 16:10, Peter Zijlstra wrote:
->> Hi
->>
->> Thomas just tripped over the x86 topology setup creating a 'DIE' domain
->> for the package mask :-)
->>
->> Since these names are SCHED_DEBUG only, rename them.
->> I don't think anybody *should* be relying on this, but who knows.
->>
-> 
-> FWIW I don't care much about the actual name.
-> 
-> There are some stray references to DIE in comments - see below. Bit funny
-> to see:
-> - *  - Package (DIE)
-> + *  - Package (PKG)
-> 
-> With that:
-> Acked-by: Valentin Schneider <vschneid@redhat.com>
-> 
-> ---
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index a80a73909dc2a..190a647534984 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -9439,7 +9439,7 @@ static bool sched_use_asym_prio(struct sched_domain *sd, int cpu)
->   * can only do it if @group is an SMT group and has exactly on busy CPU. Larger
->   * imbalances in the number of CPUS are dealt with in find_busiest_group().
->   *
-> - * If we are balancing load within an SMT core, or at DIE domain level, always
-> + * If we are balancing load within an SMT core, or at PKG domain level, always
->   * proceed.
->   *
->   * Return: true if @env::dst_cpu can do with asym_packing load balance. False
-> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-> index e9d9cf776b7ab..2cdcfec1d1c89 100644
-> --- a/kernel/sched/topology.c
-> +++ b/kernel/sched/topology.c
-> @@ -1118,7 +1118,7 @@ build_overlap_sched_groups(struct sched_domain *sd, int cpu)
->   *
->   *  - Simultaneous multithreading (SMT)
->   *  - Multi-Core Cache (MC)
-> - *  - Package (DIE)
-> + *  - Package (PKG)
->   *
->   * Where the last one more or less denotes everything up to a NUMA node.
->   *
-> @@ -1140,13 +1140,13 @@ build_overlap_sched_groups(struct sched_domain *sd, int cpu)
->   *
->   * CPU   0   1   2   3   4   5   6   7
->   *
-> - * DIE  [                             ]
-> + * PKG  [                             ]
->   * MC   [             ] [             ]
->   * SMT  [     ] [     ] [     ] [     ]
->   *
->   *  - or -
->   *
-> - * DIE  0-7 0-7 0-7 0-7 0-7 0-7 0-7 0-7
-> + * PKG  0-7 0-7 0-7 0-7 0-7 0-7 0-7 0-7
->   * MC	0-3 0-3 0-3 0-3 4-7 4-7 4-7 4-7
->   * SMT  0-1 0-1 2-3 2-3 4-5 4-5 6-7 6-7
->   *
-> 
+Changes since v2:
+- Add commit message description
+- Remove mt8173-gpu support (not currently supported)
+- Drop quotes from $id and $schema
+- Remove reg: minItems
+- Drop _clk suffixes from clock-names
+- Remove operating-points-v2 property and cooling-cells (not currently
+  used)
+- Add additionalProperties: false
+- Remove stray blank line at the end of file
 
-A couple of comments missing the change still? Not sure if it taken care already.
-
+Signed-off-by: Sarah Walker <sarah.walker@imgtec.com>
 ---
- arch/powerpc/kernel/smp.c | 2 +-
- arch/x86/kernel/smpboot.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ .../devicetree/bindings/gpu/img,powervr.yaml  | 68 +++++++++++++++++++
+ MAINTAINERS                                   |  7 ++
+ 2 files changed, 75 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/gpu/img,powervr.yaml
 
-diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
-index fbbb695bae3d..9b1853bf6b1d 100644
---- a/arch/powerpc/kernel/smp.c
-+++ b/arch/powerpc/kernel/smp.c
-@@ -1588,7 +1588,7 @@ static void add_cpu_to_masks(int cpu)
- 	/* Skip all CPUs already part of current CPU core mask */
- 	cpumask_andnot(mask, cpu_online_mask, cpu_core_mask(cpu));
+diff --git a/Documentation/devicetree/bindings/gpu/img,powervr.yaml b/Documentation/devicetree/bindings/gpu/img,powervr.yaml
+new file mode 100644
+index 000000000000..3292a0440465
+--- /dev/null
++++ b/Documentation/devicetree/bindings/gpu/img,powervr.yaml
+@@ -0,0 +1,68 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++# Copyright (c) 2022 Imagination Technologies Ltd.
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/gpu/img,powervr.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Imagination Technologies PowerVR GPU
++
++maintainers:
++  - Sarah Walker <sarah.walker@imgtec.com>
++
++properties:
++  compatible:
++    items:
++      - enum:
++          - ti,am62-gpu
++      - const: img,powervr-seriesaxe
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    minItems: 1
++    maxItems: 3
++
++  clock-names:
++    items:
++      - const: core
++      - const: mem
++      - const: sys
++    minItems: 1
++
++  interrupts:
++    items:
++      - description: GPU interrupt
++
++  interrupt-names:
++    items:
++      - const: gpu
++
++  power-domains:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - clock-names
++  - interrupts
++  - interrupt-names
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++
++    gpu: gpu@fd00000 {
++        compatible = "ti,am62-gpu", "img,powervr-seriesaxe";
++        reg = <0x0fd00000 0x20000>;
++        power-domains = <&some_pds 187>;
++        clocks = <&k3_clks 187 0>;
++        clock-names = "core";
++        interrupts = <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>;
++        interrupt-names = "gpu";
++    };
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 9852d6bfdb95..0763388b31ef 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -10099,6 +10099,13 @@ IMGTEC IR DECODER DRIVER
+ S:	Orphan
+ F:	drivers/media/rc/img-ir/
  
--	/* If chip_id is -1; limit the cpu_core_mask to within DIE*/
-+	/* If chip_id is -1; limit the cpu_core_mask to within PKG*/
- 	if (chip_id == -1)
- 		cpumask_and(mask, mask, cpu_cpu_mask(cpu));
- 
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index e1aa2cd7734b..3f175e70eb7a 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -647,7 +647,7 @@ static void __init build_sched_topology(void)
- 	};
- #endif
- 	/*
--	 * When there is NUMA topology inside the package skip the DIE domain
-+	 * When there is NUMA topology inside the package skip the PKG domain
- 	 * since the NUMA domains will auto-magically create the right spanning
- 	 * domains based on the SLIT.
- 	 */
++IMGTEC POWERVR DRM DRIVER
++M:	Frank Binns <frank.binns@imgtec.com>
++M:	Sarah Walker <sarah.walker@imgtec.com>
++M:	Donald Robson <donald.robson@imgtec.com>
++S:	Supported
++F:	Documentation/devicetree/bindings/gpu/img,powervr.yaml
++
+ IMON SOUNDGRAPH USB IR RECEIVER
+ M:	Sean Young <sean@mess.org>
+ L:	linux-media@vger.kernel.org
+-- 
+2.41.0
+
