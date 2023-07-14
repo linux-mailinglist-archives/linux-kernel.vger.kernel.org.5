@@ -2,120 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9BC3753781
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 12:08:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62B1A753763
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 12:04:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236018AbjGNKIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 06:08:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54166 "EHLO
+        id S235787AbjGNKEY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 14 Jul 2023 06:04:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235170AbjGNKIX (ORCPT
+        with ESMTP id S231584AbjGNKEV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 06:08:23 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 879EDE44;
-        Fri, 14 Jul 2023 03:08:22 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 3FAE31FD60;
-        Fri, 14 Jul 2023 10:08:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1689329301;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=e7Rv1H6fjmBW7mfZ+ZrZR0i86EmB3mqsT9/DnQrSAjs=;
-        b=qsMmse8mTusoohv3JefPmD7rtFAwwKNHClCQ0HTfc641h+qO4HfMWLwAUw6JK/6NdBGaZ3
-        4mipH79Z+CbRfFNEwjSAWOdpJgWjT6dfbedZgIbWGQt/uhlHLzPYxioXVlqC/+QpWZux4K
-        Y3ZQdJycLUZW19YxqTjIVmg1M2Ij6cc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1689329301;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=e7Rv1H6fjmBW7mfZ+ZrZR0i86EmB3mqsT9/DnQrSAjs=;
-        b=Lw/3NxXsnUVhBmQlwadstME3Do+Rr7Sg2IMERJuFKXIfMrLHOVUqp+ivNvM2lvKfellMa2
-        2bzVGhMBJJmvnGDA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EEB3413A15;
-        Fri, 14 Jul 2023 10:08:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id R0lGOZQesWSrCgAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Fri, 14 Jul 2023 10:08:20 +0000
-Date:   Fri, 14 Jul 2023 12:01:44 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     xiaoshoukui <xiaoshoukui@gmail.com>
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        xiaoshoukui <xiaoshoukui@ruijie.com.cn>
-Subject: Re: [PATCH] btrfs: fix balance_ctl not free properly in btrfs_balance
-Message-ID: <20230714100143.GE20457@suse.cz>
-Reply-To: dsterba@suse.cz
-References: <20230714071548.45825-1-xiaoshoukui@gmail.com>
+        Fri, 14 Jul 2023 06:04:21 -0400
+Received: from mail-oa1-f42.google.com (mail-oa1-f42.google.com [209.85.160.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C127E1989;
+        Fri, 14 Jul 2023 03:04:20 -0700 (PDT)
+Received: by mail-oa1-f42.google.com with SMTP id 586e51a60fabf-1b730eb017bso1347303fac.1;
+        Fri, 14 Jul 2023 03:04:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689329059; x=1691921059;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cbFWyufa2I/dKrp5bYUBMB1ESShCcC04UZ0ziSB/4oc=;
+        b=WfuT62NAV/KEOKYAM9BHIMuHz6YRXnm7xoKdh+sZy9BOPjP8rgufGPlDP3wS4WSFx4
+         h7WbwjM0kI1vmGswHdrRNY5eqObFdrhpyeePmwzSkCxyCGkNNK5apfe0Z3voHsdHJJT7
+         tb6Wg0LNGs25QAQAkX1XSj9Lv613AXcD2pv8ijii7HM/KEiU5vWBLmIpKnDt7TvPxi9j
+         jSRmulr3xPLJCqwO+J5vysW5lDYIzj+df7ZTVf41ctwTsFcqgHpieUKAnTIIAuUgzyEC
+         qS4C0mddn/PtCJYOIsVReiT5jNn1mRz1CkNrgm0WViRn1vCY19+z6c3ymeQehI9SFa8v
+         1S1A==
+X-Gm-Message-State: ABy/qLasugcuzUO4sK3pOfm7xGhSQJ3QJrvNl2FH27Eqqm1CcAc7M6Zu
+        vOT1Owh1jKH/iaOREVbj2jd+9zh/u3Ruvg==
+X-Google-Smtp-Source: APBJJlHiD3v2u63KmBepFncsWakaeIp+xHYTm685RSMvB9XoC7cFtMO4232Sujt30xadpzbv8+Rh9w==
+X-Received: by 2002:a05:6870:b48b:b0:1b0:7078:58ad with SMTP id y11-20020a056870b48b00b001b0707858admr5618059oap.38.1689329059529;
+        Fri, 14 Jul 2023 03:04:19 -0700 (PDT)
+Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com. [209.85.210.42])
+        by smtp.gmail.com with ESMTPSA id t2-20020a056870e74200b001a697e75260sm3776688oak.58.2023.07.14.03.04.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 14 Jul 2023 03:04:18 -0700 (PDT)
+Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-6b711c3ad1fso1399321a34.0;
+        Fri, 14 Jul 2023 03:04:18 -0700 (PDT)
+X-Received: by 2002:a05:6358:591d:b0:135:43da:b16d with SMTP id
+ g29-20020a056358591d00b0013543dab16dmr4868202rwf.11.1689329058168; Fri, 14
+ Jul 2023 03:04:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230714071548.45825-1-xiaoshoukui@gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230714075155.5686-1-tzimmermann@suse.de>
+In-Reply-To: <20230714075155.5686-1-tzimmermann@suse.de>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 14 Jul 2023 12:04:03 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWoeyJPAgPgFi545SJFcaVCgZi1-zW2N5cBeU9BnHgo1w@mail.gmail.com>
+Message-ID: <CAMuHMdWoeyJPAgPgFi545SJFcaVCgZi1-zW2N5cBeU9BnHgo1w@mail.gmail.com>
+Subject: Re: [PATCH v3 00/18] fbdev: Remove FBINFO_DEFAULT and
+ FBINFO_FLAG_DEFAULT flags
+To:     Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     deller@gmx.de, javierm@redhat.com, linux-sh@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, linux-input@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        linux-staging@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org,
+        linux-geode@lists.infradead.org, linux-nvidia@lists.surfsouth.com,
+        linux-hyperv@vger.kernel.org, linux-omap@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, kvm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 03:15:48AM -0400, xiaoshoukui wrote:
-> Signed-off-by: xiaoshoukui <xiaoshoukui@ruijie.com.cn>
-> ---
->  fs/btrfs/volumes.c | 10 +---------
->  1 file changed, 1 insertion(+), 9 deletions(-)
-> 
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 7823168c08a6..c1ab94d8694c 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -4055,14 +4055,6 @@ static int alloc_profile_is_valid(u64 flags, int extended)
->         return has_single_bit_set(flags);
->  }
->  
-> -static inline int balance_need_close(struct btrfs_fs_info *fs_info)
-> -{
-> -       /* cancel requested || normal exit path */
-> -       return atomic_read(&fs_info->balance_cancel_req) ||
-> -               (atomic_read(&fs_info->balance_pause_req) == 0 &&
-> -                atomic_read(&fs_info->balance_cancel_req) == 0);
-> -}
-> -
->  /*
->   * Validate target profile against allowed profiles and return true if it's OK.
->   * Otherwise print the error message and return false.
-> @@ -4411,7 +4403,7 @@ int btrfs_balance(struct btrfs_fs_info *fs_info,
->         }
->  
->         if ((ret && ret != -ECANCELED && ret != -ENOSPC) ||
-> -           balance_need_close(fs_info)) {
-> +           ret == -ECANCELED || ret == 0) {
->                 reset_balance_state(fs_info);
->                 btrfs_exclop_finish(fs_info);
+Hi Thomas,
 
-This is a similar patch to what Josef sent but not exactly the same,
+On Fri, Jul 14, 2023 at 9:53 AM Thomas Zimmermann <tzimmermann@suse.de> wrote:
+> Remove the unused flags FBINFO_DEFAULT and FBINFO_FLAG_DEFAULT from
+> fbdev and drivers, as briefly discussed at [1]. Both flags were maybe
+> useful when fbdev had special handling for driver modules. With
+> commit 376b3ff54c9a ("fbdev: Nuke FBINFO_MODULE"), they are both 0
+> and have no further effect.
+>
+> Patches 1 to 7 remove FBINFO_DEFAULT from drivers. Patches 2 to 5
+> split this by the way the fb_info struct is being allocated. All flags
+> are cleared to zero during the allocation.
+>
+> Patches 8 to 16 do the same for FBINFO_FLAG_DEFAULT. Patch 8 fixes
+> an actual bug in how arch/sh uses the token for struct fb_videomode,
+> which is unrelated.
+>
+> Patch 17 removes both flag constants from <linux/fb.h> and patch 18
+> documents the zero'ed memory returned by framebuffer_alloc().
+>
+> v3:
+>         * sh: include board name in commit message (Adrian)
+>         * docs: reword text (Miguel)
 
-https://lore.kernel.org/linux-btrfs/9cdf58c2f045863e98a52d7f9d5102ba12b87f07.1687496547.git.josef@toxicpanda.com/
+Thanks for the update!
 
-Both remove balance_need_close but your version does not track the
-paused state. I haven't analyzed it closer, but it looks like you're
-missing some case. Josef's fix simplifies the error handling so we don't
-have te enumerate the errors.
+>   fbdev: Remove flag FBINFO_DEFAULT from fbdev drivers
+>   fbdev: Remove flag FBINFO_DEFAULT from fbdev drivers
+>   fbdev: Remove flag FBINFO_DEFAULT from fbdev drivers
+>   fbdev: Remove flag FBINFO_DEFAULT from fbdev drivers
 
-As you have a reproducer, can you please try it with this patch instead?
-It's possible that there are still some unhandled states so it would be
-good to check. Thanks.
+Four patches with the exact same one-line summary. Please make them
+unique.
+
+>   fbdev: Remove flag FBINFO_FLAG_DEFAULT from fbdev drivers
+>   fbdev: Remove flag FBINFO_FLAG_DEFAULT from fbdev drivers
+
+Two patches with the exact same one-line summary. Please make them
+unique.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
