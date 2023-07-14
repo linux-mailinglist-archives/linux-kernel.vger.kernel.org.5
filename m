@@ -2,91 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28347754264
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 20:14:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B29775426E
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 20:16:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236610AbjGNSN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 14:13:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60766 "EHLO
+        id S236577AbjGNSQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 14:16:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236551AbjGNSNy (ORCPT
+        with ESMTP id S235958AbjGNSQo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 14:13:54 -0400
-Received: from omta038.useast.a.cloudfilter.net (omta038.useast.a.cloudfilter.net [44.202.169.37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8E6E3A8F
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 11:13:33 -0700 (PDT)
-Received: from eig-obgw-6009a.ext.cloudfilter.net ([10.0.30.184])
-        by cmsmtp with ESMTP
-        id KM9IqfG6TWU1cKNHeq1S2V; Fri, 14 Jul 2023 18:12:51 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with ESMTPS
-        id KNHdqHBNq9oEhKNHeqNAQv; Fri, 14 Jul 2023 18:12:50 +0000
-X-Authority-Analysis: v=2.4 cv=WtE4jPTv c=1 sm=1 tr=0 ts=64b19022
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=ws7JD89P4LkA:10 a=wYkD_t78qR0A:10 a=QX4gbG5DAAAA:8
- a=snExLxxF2foCdKK6ZiwA:9 a=QEXdDO2ut3YA:10 a=AbAUZ8qAyYyZVLSsDulk:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=KCsVJp5qnfX7Jssk4LxDYEngrFE1DQACmhXzG+7FPBA=; b=M2IOJ51RbQeLWTH+hDTujo/BcT
-        FNGZuK6zQ5WsYaZHqy6e15H9gS0lstlxNAYl6nkOh9BrObTSI01DAmMJe+kH1UJWGrbwfRjKj3wVZ
-        w+XvmqONUISjI0gjmhcYyH0Shq8M7WpiSJLsFGokjDm3VPjHFrCKY2/l5PKU9/TZ7VaSJR3Kd7u1p
-        uTY2pS3Eb6v6ATGGsMcFTfxWmCiptiGBISG4owzTHEMkGc7IF+IN/YI17JqIeJf2KLdhqg8DfDyiN
-        J+jUs0Lu3d/IszVp55sQ2rf2wsCXnNhmQPTNBlgQqMxittAJ9wmHEw3lkzaCGock2N4feeHIM7DfP
-        vXjo6oYg==;
-Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:55814 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1qKNHc-002I2a-1y;
-        Fri, 14 Jul 2023 13:12:49 -0500
-Message-ID: <442403e3-317e-8744-3348-dc9823c22074@embeddedor.com>
-Date:   Fri, 14 Jul 2023 12:13:28 -0600
+        Fri, 14 Jul 2023 14:16:44 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33E66B4;
+        Fri, 14 Jul 2023 11:16:43 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:73::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id A0F9B5BF;
+        Fri, 14 Jul 2023 18:16:42 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net A0F9B5BF
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1689358602; bh=jm+R7vHwwOq2dhTjthyZ/gNcY4UldlFgG2p6s1wdco4=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=TXltqLpgWcA0ukU8yA1pgoc5eRXYGuiVDgH7RZU7clEhEfmZQddYbR2lsDE+9vqnt
+         6lbFcgjl1LPrY0Hv2gG8c2ZK/xrnwmqQg6Iv1IXCPNh6GBOTGnkdSQCHDh3hyyPR50
+         weYzwJjmQF/nUnUf3FBTxoFGM+FMj8YmU6M9xJ60iDNTOgMbd6M3qmk50FiMD8aygu
+         zY6QFng7Drvgl+f8lErXUD47QWu5uEwlv5s8tqpMKFiIfG5DVfUsOoSX+nYnJ+y1UV
+         loTp5VeS0VjRE6bzDxC/m4nAPcm/XH/2aR2wpicvpH2WK+tWJSh/utM6qSVjiyRmkN
+         nDTyZ+38z8ZMQ==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     workflows@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH docs v2] MAINTAINERS: treat Documentation/maintainer as
+ process docs
+In-Reply-To: <20230713230713.1505561-1-kuba@kernel.org>
+References: <20230713230713.1505561-1-kuba@kernel.org>
+Date:   Fri, 14 Jul 2023 12:16:41 -0600
+Message-ID: <87o7ke1hpy.fsf@meer.lwn.net>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] drm/amdgpu: replace 1-element arrays with flexible arrays
-Content-Language: en-US
-To:     Alex Deucher <alexdeucher@gmail.com>,
-        =?UTF-8?Q?Ricardo_Ca=c3=b1uelo?= <ricardo.canuelo@collabora.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Paulo Miguel Almeida <paulo.miguel.almeida.rodenas@gmail.com>
-Cc:     alexander.deucher@amd.com, kernel@collabora.com,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        linux-hardening@vger.kernel.org
-References: <20230712083137.1080883-1-ricardo.canuelo@collabora.com>
- <CADnq5_OUS=JDfCdrCsuzTB0xD5yeX7piEDEqkRO-ffPTFVYs3g@mail.gmail.com>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <CADnq5_OUS=JDfCdrCsuzTB0xD5yeX7piEDEqkRO-ffPTFVYs3g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.21.192
-X-Source-L: No
-X-Exim-ID: 1qKNHc-002I2a-1y
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.8]) [187.162.21.192]:55814
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 3
-X-Org:  HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfCWN5E+A21o7qlnfGrkwqe1rJilXbZuu6J/t+F6pPCy9b5ncvOpAow3Ggam8SQj0gLA5V8KuW7uNp0uDHCxyLsD7ofYlpkgV2IhcxbOKPfU5Pa+puLBv
- eIWnjrg7r3JeKBVItBmQHelWnTB4YQDkQMGT1C/0nOj33ZOlm0ohfztMKtJ9y3r9T1CKK+ZLqYvcJnG/Ya5O8tbqPh+ewnHOOY+4qDD7BWbO/+poqWcmq58g
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -95,44 +52,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Jakub Kicinski <kuba@kernel.org> writes:
 
+> A handful of people got caught out by the recent changes in git
+> which changed the format of Message-ID and broke our recommended
+> applyhook for adding lore links.
+>
+> This was fixed in the docs by commit 2bb19e740e9b ("Documentation:
+> update git configuration for Link: tag") but it seems like few people
+> have noticed. Add maintainer directory to the process entry so that
+> workflows@ gets CCed.
+>
+> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> ---
+> v2:
+>  - fix order of entries
+> v1: https://lore.kernel.org/all/20230712161011.1339829-1-kuba@kernel.org/
+> ---
+>  MAINTAINERS | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 3be1bdfe8ecc..fff7e50948b6 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -6206,6 +6206,7 @@ DOCUMENTATION PROCESS
+>  M:	Jonathan Corbet <corbet@lwn.net>
+>  L:	workflows@vger.kernel.org
+>  S:	Maintained
+> +F:	Documentation/maintainer/
+>  F:	Documentation/process/
 
-On 7/12/23 08:12, Alex Deucher wrote:
-> On Wed, Jul 12, 2023 at 8:04 AM Ricardo Cañuelo
-> <ricardo.canuelo@collabora.com> wrote:
->>
->> UBSAN complains about out-of-bounds array indexes on all 1-element
->> arrays defined on this driver:
->>
->> UBSAN: array-index-out-of-bounds in /home/rcn/work/repos/kernelci/kernelci-core/linux_kernel_mainline/drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/processpptables.c:1249:61
->>
->> Substitute them with proper flexible arrays.
-> 
-> + Gustavo, Paulo
-> 
-> I haven't kept up with the flexible arrays stuff.  Is this equivalent
-> to a zero sized array?  We've been bitten by these kind of changes in
+So what this may really be telling us is that we should move the
+maintainer directory under Documentation/process/.  But applying this
+patch is easier, so that's what I've done for now :)
 
-In terms of size, yes: the size of each array declaration does not
-contribute to the overall size of its containing structure.
+Thanks,
 
-However, in these cases, using the DECLARE_FLEX_ARRAY() helper is not
-required. Simply removing the '1' from the array declaration will suffice.
-This helper was created to declare flex-array members in unions, as well
-as in structs that contain no other members aside from the array.
-
-In any case, these changes are not complete, as they're only modifying
-the struct declaration, hence the size of the struct is affected. Now
-the rest of the code where these structs are involved should be audited
-and adjusted to accommodate the change in the sizes of the structs.
-
-> the past.  These structures define the layout of data in a rom image
-> on the board.  If the struct size changes, that could lead to errors
-> in the code that deals with these structures.
-> 
-> Alex
-> 
-
-Thanks
---
-Gustavo
+jon
