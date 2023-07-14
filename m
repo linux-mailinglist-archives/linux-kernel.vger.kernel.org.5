@@ -2,109 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 782A9753728
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:53:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1C22753727
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:53:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235571AbjGNJxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 05:53:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44252 "EHLO
+        id S235131AbjGNJxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 05:53:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234757AbjGNJxw (ORCPT
+        with ESMTP id S233269AbjGNJxU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 05:53:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E79E4110
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 02:53:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689328390;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KlmnwrOAUra2AoR+OJzQ3RSTdF5SRC5OBuyPhzlD+D4=;
-        b=gRPvk++efwUgOOlFoZmkn8wjLSM8NVGkrU/6ZQLWSIK1RBB9mY2j6Yiw2syW1spqbjziwI
-        vWsJSEX674Ui3x3LhdoH0MEit1s56v3kFO26ozqVOTsM08H0MK4K1HOOsPReWk4/fzWuRD
-        Iq96Vz/zF5Cv3jocDgGmbc8EagvFoXA=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-637-NcL-6kFDM4K_eAap1bky8A-1; Fri, 14 Jul 2023 05:53:08 -0400
-X-MC-Unique: NcL-6kFDM4K_eAap1bky8A-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-3fb416d7731so9207655e9.2
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 02:53:08 -0700 (PDT)
+        Fri, 14 Jul 2023 05:53:20 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1127B12C
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 02:53:19 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3fb4146e8deso16817885e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 02:53:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689328397; x=1691920397;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RkZHHcRsX6xT5CwFSt0BPE87o3Wbf8EEmNwVu3AS04s=;
+        b=dK3IFU+sdFFeYFy+O2s+OJ9hivKr3h30WV1HuYXwbxE+ae6q9bUwX55R5WRM6On8Ab
+         koPOe8Bj5neJBcTC+v53ZbKTQgrkcItOrR7t7AJonM3RFzPSd2/oXmC9OkyDZENVCir1
+         wUkb69ymsyIwKYwksfRva0r9kQcVW3yGnSJTe5snk6ZSLODIH9JkO6hUtedGH6xV00YO
+         0wTj4IyxDv6T/OHqBJkuc9+nZfbU1KMf94zJwJODs2u2i2AU7nsSW9oqMyAxbhWKDP0w
+         5a74osDolzaa48qbTbXtkw7lTxKNmptnTipbVhcQ27Xt5x8WRzm7nglOEW4hd1uv09do
+         hZdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689328387; x=1691920387;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KlmnwrOAUra2AoR+OJzQ3RSTdF5SRC5OBuyPhzlD+D4=;
-        b=XktLwLCrvDnBul24nqBr8cKac/xMIuP7FyVfl3yDFp4SdiqJw4y6eR6LRay46k8wlb
-         HyrGzMhmsoJf7joO7YV69awuecXhZX5CRKiRmV6pROBayiOW0IMg1BBeTv+1eJ89mMLh
-         K9aNeo9NTeJJlLhGf01XGaBopaqgpjMbKsYUt4r8pya16AacTTurh2gJKmQHEMUzWoO1
-         xkhdA7VKCXBbmbuQ66UoU4fAYe37nMa8UzHn+0K8WiWQnVilhmhXxZkoPVOJ2Z5hksm8
-         AiLih9Iq7O2Sac/DC66RP8W/Hj5A7QlZCU6rD3b4hh2C9slOl3IevMMnq6+SJIOaG6JE
-         IXxQ==
-X-Gm-Message-State: ABy/qLaWNnUYQxDEgSVXpEMTaHKApxmIYhYGsE8gKyGvGukiFOzAi8Jn
-        keZVw1CgkCWQ3/0isYfHt70wL2T9ObBpv8YUn/Iy43FRk7wy/kd/c3w+h1IvnV525q1B+NClU+S
-        HeCo2Khs5UxPNQPUK7nm+Y878ZJYCq3mv
-X-Received: by 2002:a1c:730c:0:b0:3fb:b890:128b with SMTP id d12-20020a1c730c000000b003fbb890128bmr3533490wmb.27.1689328387425;
-        Fri, 14 Jul 2023 02:53:07 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlHvOU+9K7pwTaUjbeyVj4C118cz2Lb7TksNLyej8j96izGIKkwzzu/6INZY3dAM1ldj6NHi3w==
-X-Received: by 2002:a1c:730c:0:b0:3fb:b890:128b with SMTP id d12-20020a1c730c000000b003fbb890128bmr3533477wmb.27.1689328387167;
-        Fri, 14 Jul 2023 02:53:07 -0700 (PDT)
-Received: from localhost ([91.126.32.244])
-        by smtp.gmail.com with ESMTPSA id f14-20020a5d58ee000000b003143c532431sm10406287wrd.27.2023.07.14.02.53.06
+        d=1e100.net; s=20221208; t=1689328397; x=1691920397;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RkZHHcRsX6xT5CwFSt0BPE87o3Wbf8EEmNwVu3AS04s=;
+        b=a93gX4EeJoEPYENrWIS9hQ4R5i1JpCw9bWp8xjTou76kIsPfxkN+i7krkgV1JH5D2H
+         gpwAI0kzhNT+CEar4lu4OM1jrocvbLJcBBAraBMW0Formo9KL8ds2TygwQ/+JPXW+WYJ
+         HChvW6s4FzONJvPBVaiJgvgP3gKpoEMW35kGY8fyuNRpWx5p7p9uDRmC/gSpuUc+HNkD
+         ZolF3LWJltHXILATihis0Jo94mxPcqN2dFwADayemooCXFLW5fIfMQAi4sN3uS6PCn8x
+         Nw1BMMO2bWIj4sxlOUIdEojJG1DW10XH2gTZi2VwFtv+jJUpdb4I882RdH/ECVjYDCYz
+         AOiw==
+X-Gm-Message-State: ABy/qLYwlEZcUah5X4KCzQXwVjTGsxIOhbqxQhHTaQ74lItReMjo6sR+
+        MGeFvaDBzulPLOynssQM9rgDJg==
+X-Google-Smtp-Source: APBJJlEeo9gAOUZlKead1BmpWj8b5QWJLKPIK39T1k2tRBtPjxfuO88MJ87xg7EaQbkJrOjP2zZ8qA==
+X-Received: by 2002:a05:600c:214d:b0:3fa:aeac:e96c with SMTP id v13-20020a05600c214d00b003faaeace96cmr4384362wml.9.1689328397419;
+        Fri, 14 Jul 2023 02:53:17 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id l18-20020a5d6752000000b0031434cebcd8sm10304400wrw.33.2023.07.14.02.53.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 02:53:06 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH/RFC 3/8] drm/ssd130x: Bail out early if data_array is
- not yet available
-In-Reply-To: <c1030f3a445ee130c6a582fe10431c90018278e5.1689252746.git.geert@linux-m68k.org>
-References: <cover.1689252746.git.geert@linux-m68k.org>
- <c1030f3a445ee130c6a582fe10431c90018278e5.1689252746.git.geert@linux-m68k.org>
-Date:   Fri, 14 Jul 2023 11:53:06 +0200
-Message-ID: <87lefiu8e5.fsf@minerva.mail-host-address-is-not-set>
+        Fri, 14 Jul 2023 02:53:14 -0700 (PDT)
+Date:   Fri, 14 Jul 2023 12:53:11 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Tree Davies <tdavies@darkphysics.net>
+Cc:     gregkh@linuxfoundation.org, philipp.g.hortmann@gmail.com,
+        anjan@momi.ca, error27@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 09/12] Staging: rtl8192e: Rename variable pBA
+Message-ID: <da405689-d41d-4633-acdc-1c03d35cb871@kadam.mountain>
+References: <ZK84sYjc9uHIWZcr@basil>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZK84sYjc9uHIWZcr@basil>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Geert Uytterhoeven <geert@linux-m68k.org> writes:
+On Wed, Jul 12, 2023 at 04:35:13PM -0700, Tree Davies wrote:
+> Rename variable pBA to pba in order to Fix checkpatch
+> warning: Avoid CamelCase
+> 
+> Signed-off-by: Tree Davies <tdavies@darkphysics.net>
+> ---
+>  drivers/staging/rtl8192e/rtl819x_BAProc.c | 106 +++++++++++-----------
+>  drivers/staging/rtl8192e/rtllib.h         |   2 +-
+>  2 files changed, 54 insertions(+), 54 deletions(-)
+> 
+> diff --git a/drivers/staging/rtl8192e/rtl819x_BAProc.c b/drivers/staging/rtl8192e/rtl819x_BAProc.c
+> index 6b5da38353ee..43ee1bd4a6ed 100644
+> --- a/drivers/staging/rtl8192e/rtl819x_BAProc.c
+> +++ b/drivers/staging/rtl8192e/rtl819x_BAProc.c
+> @@ -10,17 +10,17 @@
+>  #include "rtllib.h"
+>  #include "rtl819x_BA.h"
+>  
+> -static void activate_ba_entry(struct ba_record *pBA, u16 Time)
+> +static void activate_ba_entry(struct ba_record *pba, u16 Time)
 
-> Calling ssd130x_buf_alloc() from ssd130x_encoder_helper_atomic_enable()
-> is too late, causing a NULL pointer dereference:
->
->     ssd130x_update_rect.isra.0+0x13c/0x340
->     ssd130x_primary_plane_helper_atomic_update+0x26c/0x284
->     drm_atomic_helper_commit_planes+0xfc/0x27c
->
-> Work around that by checking if data_array is valid.
->
-> Obviously this needs a better fix...
->
+Here the "p" stands for "pointer".  This style of naming is not allowed
+in the Linux kernel.  Just use "ba" as a name.  This happens in a couple
+other patches as well so fix those too.
 
-This should be fixed by [0] so we can drop this patch from the set.
-
-[0]: https://lists.freedesktop.org/archives/dri-devel/2023-July/413630.html
-
--- 
-Best regards,
-
-Javier Martinez Canillas
-Core Platforms
-Red Hat
+regards,
+dan carpenter
 
