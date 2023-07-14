@@ -2,79 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16489753620
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:09:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7FE27535FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235726AbjGNJJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 05:09:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42918 "EHLO
+        id S234735AbjGNJE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 05:04:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235741AbjGNJJI (ORCPT
+        with ESMTP id S231235AbjGNJEz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 05:09:08 -0400
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BDC1273B;
-        Fri, 14 Jul 2023 02:09:00 -0700 (PDT)
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2b6fbf0c0e2so25131971fa.2;
-        Fri, 14 Jul 2023 02:08:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689325738; x=1691917738;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TdRsR8YRDgCpf3JqoOFF+bQW1ohuAihWJ9VTwgaDoqg=;
-        b=IbORsJ1u5yTATlncNkpaSwf1Cf+xMct6aUGnO8nlcFYZgFJNUYwGP/BNhAYvNLtIKD
-         j1jKn6IEBojPLnc6UtQDxJYvCp3VAfqfnSmREIVh+KmMs4kzlJc1kX5n92vEAHjH7iEL
-         NNnuwfSCKWugwmmYiDw+oM1R95xdbAUUWfUWRYE2Rt6TwouLE/0e+15CsMmqVG8ZQnPt
-         gYU/1/A3yGIwJW5F3aCYvuvEEAdXwarTWNvksnllMA0ESvT0AI/ngLXta4TE7n6jBPyg
-         gs+J4MwfgqxpSIfGQDleSPxRAB/8T/naioQ1H/HvjwzWaU7CNFQZNBXWIlOLslV0I2W2
-         9QJw==
-X-Gm-Message-State: ABy/qLaW6OuW9b81NIAcLOA/MevD5VdTNgWyKPuAQD5YS/9uTvrHJlLE
-        4mnrgCEtb2ELz9HjUgoajuY=
-X-Google-Smtp-Source: APBJJlGrcnxUBMVYnH8d74zVifPJhU2JvGYoSdj3bkLw0oGeOQxTe3zdBKvT+ASDv/yJ/WnkC4GbYQ==
-X-Received: by 2002:a2e:908d:0:b0:2b5:7dd9:74f5 with SMTP id l13-20020a2e908d000000b002b57dd974f5mr3543932ljg.21.1689325737793;
-        Fri, 14 Jul 2023 02:08:57 -0700 (PDT)
-Received: from snowbird ([2001:bb6:b684:2b58:2af8:32c4:c966:5890])
-        by smtp.gmail.com with ESMTPSA id n2-20020a05600c294200b003fbd9e390e1sm910916wmd.47.2023.07.14.02.08.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 02:08:57 -0700 (PDT)
-Date:   Fri, 14 Jul 2023 02:08:52 -0700
-From:   Dennis Zhou <dennis@kernel.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     "GONG, Ruiqi" <gongruiqi@huaweicloud.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        David Rientjes <rientjes@google.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Christoph Lameter <cl@linux.com>, Tejun Heo <tj@kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Jann Horn <jannh@google.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Pedro Falcato <pedro.falcato@gmail.com>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Wang Weiyang <wangweiyang2@huawei.com>,
-        Xiu Jianfeng <xiujianfeng@huawei.com>, linux-mm@kvack.org,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gongruiqi1@huawei.com
-Subject: Re: [PATCH v5] Randomized slab caches for kmalloc()
-Message-ID: <ZLEQpOxxBvduUs/4@snowbird>
-References: <20230714064422.3305234-1-gongruiqi@huaweicloud.com>
- <e87cf343-4e91-5555-4993-480f9e3f191c@suse.cz>
+        Fri, 14 Jul 2023 05:04:55 -0400
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2071.outbound.protection.outlook.com [40.107.7.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C20BFE65
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 02:04:54 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IBLUYmduY3eaiTQkhQq7dbu7Qc0C28WSDAvA8l88uNEwNeaYDsasZle3Nv6PaliIcmcKAA2VyIMoyWO25JvYT6obKsb0Y0PPOTiJwA7W3nqwxHHI40RijKC3iwI4z0sWpgwND4WF6zMI9w0Cmo14RjzPsZQRKKOS280hPRKAI+/quS0LFaVaIDrsG7SbQZpUMDrUURRnWbYgnPG0WJQsajv0iJyVuBLLhQ1+8/5cbfBAwAAIOcrF12CNqPnBpNlPi0y0Nc2NfyANwfnkgjApkRoziDFvtfRKow23n8Vd/Jt0syyTQMF+f+LxxlbJ6sIFtv2r544W7LNCCCdoNYt3Nw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=CanF7n+OLLutOd3VBiQIjbDc2uzD/NwEsUI0ySCkOUo=;
+ b=dAaL9KkNZms7RNqFTtYN45Se3ZbQU0F1K80I5EGvQZl4uc90r2g0iZgdf+61AGqIlmVwzE3mHTAay+EWBk0mZlfM/VPRPc99WdLl1DqZre89oB7qpZsT9Lit/7MokQQ+2k+ScVK42h/GUf9lsiT3nPOVoWJZmM+01Xkuh/l0W2CvVUDi6mubdbHdunBIRsHYkQdw4RIg28Yw1BIg+s78+ctbfnbrvVQlV0I/lPCWDORAC3dpwvG3jESDxiDBdTyd4m28d8P4qVXL0ajieDxhH6BZ4sHu7RvaHDVRBsrdaX2BitBVbjoQw4Js0yx1i0Aj/obod2AqWpupWSGR+o7fFg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CanF7n+OLLutOd3VBiQIjbDc2uzD/NwEsUI0ySCkOUo=;
+ b=A+WY8QwMMDakhcKoACpLpiMbM5ojy9VNTy+5uaWKUtBBr3YFux/pjDTjrSR+FAXdAAspLVME9CZK+IQ9881J7XQavN2YR/yJxm7ZVfFqIJB5lA0enJmYRxEW3KeewI4OIhRzWBdk4USnYKRTT7JFUTv9FpOsQhkb+eEG4dU9xqQ=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=oss.nxp.com;
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
+ by AS8PR04MB7736.eurprd04.prod.outlook.com (2603:10a6:20b:2af::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.27; Fri, 14 Jul
+ 2023 09:04:51 +0000
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::5c40:ed07:b875:18c0]) by DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::5c40:ed07:b875:18c0%3]) with mapi id 15.20.6588.027; Fri, 14 Jul 2023
+ 09:04:50 +0000
+From:   "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+To:     shawnguo@kernel.org, s.hauer@pengutronix.de
+Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        Frank.Li@nxp.com, aisheng.dong@nxp.com,
+        marcel.ziswiler@toradex.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH 0/7] firmware: imx: scu-pd: misc update
+Date:   Fri, 14 Jul 2023 17:09:29 +0800
+Message-Id: <20230714090936.937344-1-peng.fan@oss.nxp.com>
+X-Mailer: git-send-email 2.37.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR02CA0130.apcprd02.prod.outlook.com
+ (2603:1096:4:188::8) To DU0PR04MB9417.eurprd04.prod.outlook.com
+ (2603:10a6:10:358::11)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e87cf343-4e91-5555-4993-480f9e3f191c@suse.cz>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DU0PR04MB9417:EE_|AS8PR04MB7736:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2b900a61-bf68-424a-5900-08db84496165
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-LD-Processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Q4IJ+FiD0hkQMG4tedwxawoQeWfixJcxih6sz6xjRrhSOYLQKZ7Q6EEcLIi3afDSxKqlCj7A4C80WqU16Bm98aRe/0Oe76Qb3ghtSR4psLxZYufx+LnQLObA6NnhlVGgK8D3D0R4sG4e5xxcZpKW2NhamUuIxUXLCqYMRtao3DWEee5H1vKBrvAXHNJqgaixfreR6nFD7Zt8OvJgnMHdPpONoo4N3pHYrwvfJLq71kN/RIRvnECIAyjruAZhvs67wiODD90fHRFvabrkex1rx0H2/QJO1zj3jpEjRIQ8NGtuuR0w0MNilavxKZEXA/3EiXn+Suc5AYhEnQsZKc4SYaiDcGVL2pziuPCvMaTZTaVdRG3Ssr29ALYyPKposApR2aBCk07JoGZ7wvzzge5VGbG24OinvdyNpOm1MrmDHr34f4qmh+HKFNA2jC/ekIJsGTAxN+60uMsnJkVaVUk5bRXZXdgt3Ak318tZI/3wfV5CFJFcahTGP4Y+0ulLK460oV/RdFlhXb5AgH8ufTUbWBDhnId/Fqf1aFM6lWE4IHoG3gbe3Qzjz7z70U+W0xvshUkdg5TvWrpJ6ureOdjlYzPM+3BWPvpEm2vkyecJ9ADGLpTbD5TQ0vbEZPRqXPwu
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(376002)(346002)(366004)(396003)(136003)(451199021)(38100700002)(38350700002)(86362001)(8936002)(6506007)(5660300002)(6666004)(1076003)(8676002)(41300700001)(26005)(186003)(2616005)(4744005)(2906002)(15650500001)(83380400001)(6512007)(66556008)(52116002)(316002)(4326008)(478600001)(66946007)(66476007)(6486002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Uof4KCjyD+HN8Tp0ihBsZNJshk4VtP0MtPWV9qKBWgs6z+KYnIaEbXHOGd9p?=
+ =?us-ascii?Q?Ki/sOddKG+TNlvszYCyx01k51c+ikPSnJn80ZtWXEjW8StH2/h8qLwdsDe5+?=
+ =?us-ascii?Q?eVYbp2p+X5kqvNBa3CvrwSJFWRmnK46tv+gS1xH+2Lx/sioxPx2yE2f6hKOK?=
+ =?us-ascii?Q?1j0uZVxglHRqYd71SWk3fnWsBWYQ83o60KA0/WbLxxHLjIpj/hffl5k513fU?=
+ =?us-ascii?Q?56qSJNCmil3RzbUEaqNhUS/NN1RbHcTsDLG8+/KhCbQWlf/LlkHO7fJYQSUc?=
+ =?us-ascii?Q?m9E6osNEgTRkuoaz0s8n3F5htMxzimmNxIysNlkNZj2AgUWWygaEgjKeLosA?=
+ =?us-ascii?Q?GQaFDj6c5oR+qi2TW2hVjo3TqZuqTsbNm/iIf2/SxTL1sO0w6vQxCfj9gpeR?=
+ =?us-ascii?Q?JyoCytH14I5B/zL6s4is9xMejfEnknYH3LD7Y95FZljrjHRPbbCBXJ0lQ9X/?=
+ =?us-ascii?Q?2CTyBHHclNenZmv99LyptKFqOg6HSbAm9DSmlHrxpCD8VzDtV0D/0osMWKzO?=
+ =?us-ascii?Q?Ari+kx7uXy3k4iHAkkbyX7CzAkxw1iHGupa5bFId72T572JGPBX98pQQqeGu?=
+ =?us-ascii?Q?eT6wrYlUiBi+p+kNS9uU3L5cFjVYVchflQORBk5osXBkL8xc/h8xcGIPxIsb?=
+ =?us-ascii?Q?q6P/ahg6tcHXFhMmJRn2J0oWxvzA1By4zbYyCZWpL7BlUTUgQPKJudBr9fRe?=
+ =?us-ascii?Q?/jZUVhRZ18REqEN+Wcp55tdVlO0Fo685WbI+d95R9hBtfpMmfPJaJQcMFdZP?=
+ =?us-ascii?Q?43ENynJP1aiUYeYR9SNIJUw285HDtIwE3XRwEGJgizia5gHQcFsDIiaddKgc?=
+ =?us-ascii?Q?sMxHowGigBbUo6OXCwO8TIhpKvNTPT0m8VO8pZ5LlDYJxTH+XtKhZ7hDhRsQ?=
+ =?us-ascii?Q?WB0dCaOeMxXrZbYjuhH+6ccf2vkz2UYBDE57AZTWOML8cl58a6ATaeJKDtfm?=
+ =?us-ascii?Q?9Q52OSUU6Ej6/ZVp1qRtVDI6GRhON1Dc+FHH/c6D61HMRoT0yxkzX9RmwjIN?=
+ =?us-ascii?Q?2I5bFWhBJ1Hvujt8SkFGbaf39/Dr7J9CqaMKmJzlGJENM8fjUcwBVT9gtTTX?=
+ =?us-ascii?Q?K+Q4c9M1zXWLz4bYeqD5QBWk7BzTn6uqEj3hNN0YGRXquEFPQSHvMW+95QN5?=
+ =?us-ascii?Q?kJaUXISfT4pkI4ALkEBttKzUi0cVhRH3aue4+pJBzcyqiZ8n1C99kPf5N+5g?=
+ =?us-ascii?Q?oQkIBHjYXTqSLSI4vXLaCMEhPjGrW4lYpcGxfyzo4z+3O2TxoLCZv4xAfKbg?=
+ =?us-ascii?Q?IORLvmGRdviOgoj6rLcQLhnTJ1r1exjVuP6K13OMbuznR557BNDxzmFwhXgl?=
+ =?us-ascii?Q?y2ke4TyejgmSofdMSvwjnG2Hd2R0VooXCxkSKIIgA3BRxKskl/jgU630sWJ9?=
+ =?us-ascii?Q?08oIV56TVNlZcC7WQcm/qKUzgZtI1HCrQml5dVU7EPDi5WKl/jSGQDulFWQ+?=
+ =?us-ascii?Q?fMLzCUBbsrLubBAANIjCwuLRsEq3lIZmyOn/oE2Pv5jhEs0qvlKcpldwKEDT?=
+ =?us-ascii?Q?4dhGXUzl8w6AzhWOnvboNKKIR6GL2TK/3mGriXuBrTyo8r8pdjsayEbGc6N4?=
+ =?us-ascii?Q?Pya9aUSzjmgFy2BKf477hAmbzsquI3dm1VYqNmKw?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2b900a61-bf68-424a-5900-08db84496165
+X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jul 2023 09:04:50.9075
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: GePfBhrdm2DLNkuNRf4wNsQdMI4DebWoGygbM7oqmfhvMdCeiOiC89Kq4CgCNpCK917vv6foMsyfGczDXX7CaA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB7736
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,451 +117,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+From: Peng Fan <peng.fan@nxp.com>
 
-On Fri, Jul 14, 2023 at 10:31:35AM +0200, Vlastimil Babka wrote:
-> +CC also percpu maintainers for awareness/review of the percpu.h changes
-> 
-> On 7/14/23 08:44, GONG, Ruiqi wrote:
-> > When exploiting memory vulnerabilities, "heap spraying" is a common
-> > technique targeting those related to dynamic memory allocation (i.e. the
-> > "heap"), and it plays an important role in a successful exploitation.
-> > Basically, it is to overwrite the memory area of vulnerable object by
-> > triggering allocation in other subsystems or modules and therefore
-> > getting a reference to the targeted memory location. It's usable on
-> > various types of vulnerablity including use after free (UAF), heap out-
-> > of-bound write and etc.
-> > 
-> > There are (at least) two reasons why the heap can be sprayed: 1) generic
-> > slab caches are shared among different subsystems and modules, and
-> > 2) dedicated slab caches could be merged with the generic ones.
-> > Currently these two factors cannot be prevented at a low cost: the first
-> > one is a widely used memory allocation mechanism, and shutting down slab
-> > merging completely via `slub_nomerge` would be overkill.
-> > 
-> > To efficiently prevent heap spraying, we propose the following approach:
-> > to create multiple copies of generic slab caches that will never be
-> > merged, and random one of them will be used at allocation. The random
-> > selection is based on the address of code that calls `kmalloc()`, which
-> > means it is static at runtime (rather than dynamically determined at
-> > each time of allocation, which could be bypassed by repeatedly spraying
-> > in brute force). In other words, the randomness of cache selection will
-> > be with respect to the code address rather than time, i.e. allocations
-> > in different code paths would most likely pick different caches,
-> > although kmalloc() at each place would use the same cache copy whenever
-> > it is executed. In this way, the vulnerable object and memory allocated
-> > in other subsystems and modules will (most probably) be on different
-> > slab caches, which prevents the object from being sprayed.
-> > 
-> > Meanwhile, the static random selection is further enhanced with a
-> > per-boot random seed, which prevents the attacker from finding a usable
-> > kmalloc that happens to pick the same cache with the vulnerable
-> > subsystem/module by analyzing the open source code. In other words, with
-> > the per-boot seed, the random selection is static during each time the
-> > system starts and runs, but not across different system startups.
-> > 
-> > The overhead of performance has been tested on a 40-core x86 server by
-> > comparing the results of `perf bench all` between the kernels with and
-> > without this patch based on the latest linux-next kernel, which shows
-> > minor difference. A subset of benchmarks are listed below:
-> > 
-> >                 sched/  sched/  syscall/       mem/       mem/
-> >              messaging    pipe     basic     memcpy     memset
-> >                  (sec)   (sec)     (sec)   (GB/sec)   (GB/sec)
-> > 
-> > control1         0.019   5.459     0.733  15.258789  51.398026
-> > control2         0.019   5.439     0.730  16.009221  48.828125
-> > control3         0.019   5.282     0.735  16.009221  48.828125
-> > control_avg      0.019   5.393     0.733  15.759077  49.684759
-> > 
-> > experiment1      0.019   5.374     0.741  15.500992  46.502976
-> > experiment2      0.019   5.440     0.746  16.276042  51.398026
-> > experiment3      0.019   5.242     0.752  15.258789  51.398026
-> > experiment_avg   0.019   5.352     0.746  15.678608  49.766343
-> > 
-> > The overhead of memory usage was measured by executing `free` after boot
-> > on a QEMU VM with 1GB total memory, and as expected, it's positively
-> > correlated with # of cache copies:
-> > 
-> >            control  4 copies  8 copies  16 copies
-> > 
-> > total       969.8M    968.2M    968.2M     968.2M
-> > used         20.0M     21.9M     24.1M      26.7M
-> > free        936.9M    933.6M    931.4M     928.6M
-> > available   932.2M    928.8M    926.6M     923.9M
-> > 
-> > Co-developed-by: Xiu Jianfeng <xiujianfeng@huawei.com>
-> > Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
-> > Signed-off-by: GONG, Ruiqi <gongruiqi@huaweicloud.com>
-> > Reviewed-by: Kees Cook <keescook@chromium.org>
-> > ---
-> > 
-> > v5:
-> >   - Rebase to the latest linux-next.
-> >   - Make CONFIG_RANDOM_KMALLOC_CACHES depends on !SLUB_TINY.
-> >   - Rephrase parts of CONFIG_RANDOM_KMALLOC_CACHES's help paragraph.
-> >   - Pass 0 as caller at places where the real caller is not needed.
-> >   - Restore KMALLOC_NORMAL to 0, and move KMALLOC_RANDOM_* after it.
-> >   - Change RANDOM_KMALLOC_CACHES_NR to 15, and adjust the kmalloc rnd
-> >     name accordingly.
-> >   - Replace RANDOM_KMALLOC_CACHES_BITS via ilog2(..._NR + 1).
-> > 
-> > v4:
-> >   - Set # of caches to 16 and remove config selection.
-> >   - Shorten "kmalloc-random-" to "kmalloc-rnd-".
-> >   - Update commit log and config's help paragraph.
-> >   - Fine-tune PERCPU_DYNAMIC_SIZE_SHIFT to 12 instead of 13 (enough to
-> >     pass compilation with allmodconfig and CONFIG_SLUB_TINY=n).
-> >   - Some cleanup and typo fixing.
-> >   - Link: https://lore.kernel.org/all/20230626031835.2279738-1-gongruiqi@huaweicloud.com/
-> > 
-> > v3:
-> >   - Replace SLAB_RANDOMSLAB with the new existing SLAB_NO_MERGE flag.
-> >   - Shorten long code lines by wrapping and renaming.
-> >   - Update commit message with latest perf benchmark and additional
-> >     theorectical explanation.
-> >   - Remove "RFC" from patch title and make it a formal patch
-> >   - Link: https://lore.kernel.org/all/20230616111843.3677378-1-gongruiqi@huaweicloud.com/
-> > 
-> > v2:
-> >   - Use hash_64() and a per-boot random seed to select kmalloc() caches.
-> >   - Change acceptable # of caches from [4,16] to {2,4,8,16}, which is
-> >     more compatible with hashing.
-> >   - Supplement results of performance and memory overhead tests.
-> >   - Link: https://lore.kernel.org/all/20230508075507.1720950-1-gongruiqi1@huawei.com/
-> > 
-> > v1:
-> >   - Link: https://lore.kernel.org/all/20230315095459.186113-1-gongruiqi1@huawei.com/
-> > 
-> >  include/linux/percpu.h  | 12 +++++++---
-> >  include/linux/slab.h    | 23 ++++++++++++++++---
-> >  mm/Kconfig              | 17 ++++++++++++++
-> >  mm/kfence/kfence_test.c |  7 ++++--
-> >  mm/slab.c               |  2 +-
-> >  mm/slab.h               |  2 +-
-> >  mm/slab_common.c        | 49 ++++++++++++++++++++++++++++++++++++-----
-> >  7 files changed, 97 insertions(+), 15 deletions(-)
-> > 
-> > diff --git a/include/linux/percpu.h b/include/linux/percpu.h
-> > index b3b458442330..68fac2e7cbe6 100644
-> > --- a/include/linux/percpu.h
-> > +++ b/include/linux/percpu.h
-> > @@ -35,6 +35,12 @@
-> >  #define PCPU_BITMAP_BLOCK_BITS		(PCPU_BITMAP_BLOCK_SIZE >>	\
-> >  					 PCPU_MIN_ALLOC_SHIFT)
-> >  
-> > +#ifdef CONFIG_RANDOM_KMALLOC_CACHES
-> > +#define PERCPU_DYNAMIC_SIZE_SHIFT      12
-> > +#else
-> > +#define PERCPU_DYNAMIC_SIZE_SHIFT      10
-> > +#endif
-> > +
-> >  /*
-> >   * Percpu allocator can serve percpu allocations before slab is
-> >   * initialized which allows slab to depend on the percpu allocator.
-> > @@ -42,7 +48,7 @@
-> >   * for this.  Keep PERCPU_DYNAMIC_RESERVE equal to or larger than
-> >   * PERCPU_DYNAMIC_EARLY_SIZE.
-> >   */
-> > -#define PERCPU_DYNAMIC_EARLY_SIZE	(20 << 10)
-> > +#define PERCPU_DYNAMIC_EARLY_SIZE	(20 << PERCPU_DYNAMIC_SIZE_SHIFT)
-> >  
-> >  /*
-> >   * PERCPU_DYNAMIC_RESERVE indicates the amount of free area to piggy
-> > @@ -56,9 +62,9 @@
-> >   * intelligent way to determine this would be nice.
-> >   */
-> >  #if BITS_PER_LONG > 32
-> > -#define PERCPU_DYNAMIC_RESERVE		(28 << 10)
-> > +#define PERCPU_DYNAMIC_RESERVE		(28 << PERCPU_DYNAMIC_SIZE_SHIFT)
-> >  #else
-> > -#define PERCPU_DYNAMIC_RESERVE		(20 << 10)
-> > +#define PERCPU_DYNAMIC_RESERVE		(20 << PERCPU_DYNAMIC_SIZE_SHIFT)
-> >  #endif
-> >  
+This patchset is to upstream NXP downstream scu-pd driver patches.
+patch 1,2 is to support more PDs
+patch 3 is to not power off console when no console suspend
+patch 4 is to suppress bind
+patch 5 is to make genpd align with HW state
+patch 6 is to support LP mode in runtime suspend, OFF mode in system suspend.
+patch 7 is to change init level to avoid uneccessary defer probe
 
-I'm not in love with being dynamic against BITS_PER_LONG and now
-CONFIG_RANDOM_KMALLOC_CACHES. It's been a while since these numbers have
-been re-evaluated. I have some draft patches to do batch percpu
-allocation. Once I get around to mailing those out, I can try and clean
-this up too.
+Dong Aisheng (2):
+  firmware: imx: scu-pd: do not power off console if no_console_suspend
+  firmware: imx: scu-pd: change init level to subsys_initcall
 
-Acked-by: Dennis Zhou <dennis@kernel.org>
+Peng Fan (5):
+  firmware: imx: scu-pd: enlarge PD range
+  firmware: imx: scu-pd: add more PDs
+  firmware: imx: scu-pd: Suppress bind attrs
+  firmware: imx: scu-pd: initialize is_off according to HW state
+  firmware: imx: scu-pd: add multi states support
 
-Thanks,
-Dennis
+ drivers/firmware/imx/scu-pd.c | 193 ++++++++++++++++++++++++++++++++--
+ 1 file changed, 182 insertions(+), 11 deletions(-)
 
-> >  extern void *pcpu_base_addr;
-> > diff --git a/include/linux/slab.h b/include/linux/slab.h
-> > index 848c7c82ad5a..8228d1276a2f 100644
-> > --- a/include/linux/slab.h
-> > +++ b/include/linux/slab.h
-> > @@ -19,6 +19,7 @@
-> >  #include <linux/workqueue.h>
-> >  #include <linux/percpu-refcount.h>
-> >  #include <linux/cleanup.h>
-> > +#include <linux/hash.h>
-> >  
-> >  
-> >  /*
-> > @@ -345,6 +346,12 @@ static inline unsigned int arch_slab_minalign(void)
-> >  #define SLAB_OBJ_MIN_SIZE      (KMALLOC_MIN_SIZE < 16 ? \
-> >                                 (KMALLOC_MIN_SIZE) : 16)
-> >  
-> > +#ifdef CONFIG_RANDOM_KMALLOC_CACHES
-> > +#define RANDOM_KMALLOC_CACHES_NR	15 // # of cache copies
-> > +#else
-> > +#define RANDOM_KMALLOC_CACHES_NR	0
-> > +#endif
-> > +
-> >  /*
-> >   * Whenever changing this, take care of that kmalloc_type() and
-> >   * create_kmalloc_caches() still work as intended.
-> > @@ -361,6 +368,8 @@ enum kmalloc_cache_type {
-> >  #ifndef CONFIG_MEMCG_KMEM
-> >  	KMALLOC_CGROUP = KMALLOC_NORMAL,
-> >  #endif
-> > +	KMALLOC_RANDOM_START = KMALLOC_NORMAL,
-> > +	KMALLOC_RANDOM_END = KMALLOC_RANDOM_START + RANDOM_KMALLOC_CACHES_NR,
-> >  #ifdef CONFIG_SLUB_TINY
-> >  	KMALLOC_RECLAIM = KMALLOC_NORMAL,
-> >  #else
-> > @@ -386,14 +395,22 @@ kmalloc_caches[NR_KMALLOC_TYPES][KMALLOC_SHIFT_HIGH + 1];
-> >  	(IS_ENABLED(CONFIG_ZONE_DMA)   ? __GFP_DMA : 0) |	\
-> >  	(IS_ENABLED(CONFIG_MEMCG_KMEM) ? __GFP_ACCOUNT : 0))
-> >  
-> > -static __always_inline enum kmalloc_cache_type kmalloc_type(gfp_t flags)
-> > +extern unsigned long random_kmalloc_seed;
-> > +
-> > +static __always_inline enum kmalloc_cache_type kmalloc_type(gfp_t flags, unsigned long caller)
-> >  {
-> >  	/*
-> >  	 * The most common case is KMALLOC_NORMAL, so test for it
-> >  	 * with a single branch for all the relevant flags.
-> >  	 */
-> >  	if (likely((flags & KMALLOC_NOT_NORMAL_BITS) == 0))
-> > +#ifdef CONFIG_RANDOM_KMALLOC_CACHES
-> > +		/* RANDOM_KMALLOC_CACHES_NR (=15) copies + the KMALLOC_NORMAL */
-> > +		return KMALLOC_RANDOM_START + hash_64(caller ^ random_kmalloc_seed,
-> > +						      ilog2(RANDOM_KMALLOC_CACHES_NR + 1));
-> > +#else
-> >  		return KMALLOC_NORMAL;
-> > +#endif
-> >  
-> >  	/*
-> >  	 * At least one of the flags has to be set. Their priorities in
-> > @@ -580,7 +597,7 @@ static __always_inline __alloc_size(1) void *kmalloc(size_t size, gfp_t flags)
-> >  
-> >  		index = kmalloc_index(size);
-> >  		return kmalloc_trace(
-> > -				kmalloc_caches[kmalloc_type(flags)][index],
-> > +				kmalloc_caches[kmalloc_type(flags, _RET_IP_)][index],
-> >  				flags, size);
-> >  	}
-> >  	return __kmalloc(size, flags);
-> > @@ -596,7 +613,7 @@ static __always_inline __alloc_size(1) void *kmalloc_node(size_t size, gfp_t fla
-> >  
-> >  		index = kmalloc_index(size);
-> >  		return kmalloc_node_trace(
-> > -				kmalloc_caches[kmalloc_type(flags)][index],
-> > +				kmalloc_caches[kmalloc_type(flags, _RET_IP_)][index],
-> >  				flags, node, size);
-> >  	}
-> >  	return __kmalloc_node(size, flags, node);
-> > diff --git a/mm/Kconfig b/mm/Kconfig
-> > index 22acffd9009d..989ab72bbecc 100644
-> > --- a/mm/Kconfig
-> > +++ b/mm/Kconfig
-> > @@ -337,6 +337,23 @@ config SLUB_CPU_PARTIAL
-> >  	  which requires the taking of locks that may cause latency spikes.
-> >  	  Typically one would choose no for a realtime system.
-> >  
-> > +config RANDOM_KMALLOC_CACHES
-> > +	default n
-> > +	depends on SLUB && !SLUB_TINY
-> > +	bool "Randomize slab caches for normal kmalloc"
-> > +	help
-> > +	  A hardening feature that creates multiple copies of slab caches for
-> > +	  normal kmalloc allocation and makes kmalloc randomly pick one based
-> > +	  on code address, which makes the attackers more difficult to spray
-> > +	  vulnerable memory objects on the heap for the purpose of exploiting
-> > +	  memory vulnerabilities.
-> > +
-> > +	  Currently the number of copies is set to 16, a reasonably large value
-> > +	  that effectively diverges the memory objects allocated for different
-> > +	  subsystems or modules into different caches, at the expense of a
-> > +	  limited degree of memory and CPU overhead that relates to hardware and
-> > +	  system workload.
-> > +
-> >  endmenu # SLAB allocator options
-> >  
-> >  config SHUFFLE_PAGE_ALLOCATOR
-> > diff --git a/mm/kfence/kfence_test.c b/mm/kfence/kfence_test.c
-> > index 9e008a336d9f..95b2b84c296d 100644
-> > --- a/mm/kfence/kfence_test.c
-> > +++ b/mm/kfence/kfence_test.c
-> > @@ -212,7 +212,9 @@ static void test_cache_destroy(void)
-> >  
-> >  static inline size_t kmalloc_cache_alignment(size_t size)
-> >  {
-> > -	return kmalloc_caches[kmalloc_type(GFP_KERNEL)][__kmalloc_index(size, false)]->align;
-> > +	/* just to get ->align so no need to pass in the real caller */
-> > +	enum kmalloc_cache_type type = kmalloc_type(GFP_KERNEL, 0);
-> > +	return kmalloc_caches[type][__kmalloc_index(size, false)]->align;
-> >  }
-> >  
-> >  /* Must always inline to match stack trace against caller. */
-> > @@ -282,8 +284,9 @@ static void *test_alloc(struct kunit *test, size_t size, gfp_t gfp, enum allocat
-> >  
-> >  		if (is_kfence_address(alloc)) {
-> >  			struct slab *slab = virt_to_slab(alloc);
-> > +			enum kmalloc_cache_type type = kmalloc_type(GFP_KERNEL, _RET_IP_);
-> >  			struct kmem_cache *s = test_cache ?:
-> > -					kmalloc_caches[kmalloc_type(GFP_KERNEL)][__kmalloc_index(size, false)];
-> > +					kmalloc_caches[type][__kmalloc_index(size, false)];
-> >  
-> >  			/*
-> >  			 * Verify that various helpers return the right values
-> > diff --git a/mm/slab.c b/mm/slab.c
-> > index 88194391d553..9ad3d0f2d1a5 100644
-> > --- a/mm/slab.c
-> > +++ b/mm/slab.c
-> > @@ -1670,7 +1670,7 @@ static size_t calculate_slab_order(struct kmem_cache *cachep,
-> >  			if (freelist_size > KMALLOC_MAX_CACHE_SIZE) {
-> >  				freelist_cache_size = PAGE_SIZE << get_order(freelist_size);
-> >  			} else {
-> > -				freelist_cache = kmalloc_slab(freelist_size, 0u);
-> > +				freelist_cache = kmalloc_slab(freelist_size, 0u, _RET_IP_);
-> >  				if (!freelist_cache)
-> >  					continue;
-> >  				freelist_cache_size = freelist_cache->size;
-> > diff --git a/mm/slab.h b/mm/slab.h
-> > index 9c0e09d0f81f..799a315695c6 100644
-> > --- a/mm/slab.h
-> > +++ b/mm/slab.h
-> > @@ -282,7 +282,7 @@ void setup_kmalloc_cache_index_table(void);
-> >  void create_kmalloc_caches(slab_flags_t);
-> >  
-> >  /* Find the kmalloc slab corresponding for a certain size */
-> > -struct kmem_cache *kmalloc_slab(size_t, gfp_t);
-> > +struct kmem_cache *kmalloc_slab(size_t size, gfp_t flags, unsigned long caller);
-> >  
-> >  void *__kmem_cache_alloc_node(struct kmem_cache *s, gfp_t gfpflags,
-> >  			      int node, size_t orig_size,
-> > diff --git a/mm/slab_common.c b/mm/slab_common.c
-> > index d1555ea2981a..01cdbf122463 100644
-> > --- a/mm/slab_common.c
-> > +++ b/mm/slab_common.c
-> > @@ -678,6 +678,11 @@ kmalloc_caches[NR_KMALLOC_TYPES][KMALLOC_SHIFT_HIGH + 1] __ro_after_init =
-> >  { /* initialization for https://bugs.llvm.org/show_bug.cgi?id=42570 */ };
-> >  EXPORT_SYMBOL(kmalloc_caches);
-> >  
-> > +#ifdef CONFIG_RANDOM_KMALLOC_CACHES
-> > +unsigned long random_kmalloc_seed __ro_after_init;
-> > +EXPORT_SYMBOL(random_kmalloc_seed);
-> > +#endif
-> > +
-> >  /*
-> >   * Conversion table for small slabs sizes / 8 to the index in the
-> >   * kmalloc array. This is necessary for slabs < 192 since we have non power
-> > @@ -720,7 +725,7 @@ static inline unsigned int size_index_elem(unsigned int bytes)
-> >   * Find the kmem_cache structure that serves a given size of
-> >   * allocation
-> >   */
-> > -struct kmem_cache *kmalloc_slab(size_t size, gfp_t flags)
-> > +struct kmem_cache *kmalloc_slab(size_t size, gfp_t flags, unsigned long caller)
-> >  {
-> >  	unsigned int index;
-> >  
-> > @@ -735,7 +740,7 @@ struct kmem_cache *kmalloc_slab(size_t size, gfp_t flags)
-> >  		index = fls(size - 1);
-> >  	}
-> >  
-> > -	return kmalloc_caches[kmalloc_type(flags)][index];
-> > +	return kmalloc_caches[kmalloc_type(flags, caller)][index];
-> >  }
-> >  
-> >  size_t kmalloc_size_roundup(size_t size)
-> > @@ -752,8 +757,11 @@ size_t kmalloc_size_roundup(size_t size)
-> >  	if (size > KMALLOC_MAX_CACHE_SIZE)
-> >  		return PAGE_SIZE << get_order(size);
-> >  
-> > -	/* The flags don't matter since size_index is common to all. */
-> > -	c = kmalloc_slab(size, GFP_KERNEL);
-> > +	/*
-> > +	 * The flags don't matter since size_index is common to all.
-> > +	 * Neither does the caller for just getting ->object_size.
-> > +	 */
-> > +	c = kmalloc_slab(size, GFP_KERNEL, 0);
-> >  	return c ? c->object_size : 0;
-> >  }
-> >  EXPORT_SYMBOL(kmalloc_size_roundup);
-> > @@ -776,12 +784,35 @@ EXPORT_SYMBOL(kmalloc_size_roundup);
-> >  #define KMALLOC_RCL_NAME(sz)
-> >  #endif
-> >  
-> > +#ifdef CONFIG_RANDOM_KMALLOC_CACHES
-> > +#define __KMALLOC_RANDOM_CONCAT(a, b) a ## b
-> > +#define KMALLOC_RANDOM_NAME(N, sz) __KMALLOC_RANDOM_CONCAT(KMA_RAND_, N)(sz)
-> > +#define KMA_RAND_1(sz)                  .name[KMALLOC_RANDOM_START +  1] = "kmalloc-rnd-01-" #sz,
-> > +#define KMA_RAND_2(sz)  KMA_RAND_1(sz)  .name[KMALLOC_RANDOM_START +  2] = "kmalloc-rnd-02-" #sz,
-> > +#define KMA_RAND_3(sz)  KMA_RAND_2(sz)  .name[KMALLOC_RANDOM_START +  3] = "kmalloc-rnd-03-" #sz,
-> > +#define KMA_RAND_4(sz)  KMA_RAND_3(sz)  .name[KMALLOC_RANDOM_START +  4] = "kmalloc-rnd-04-" #sz,
-> > +#define KMA_RAND_5(sz)  KMA_RAND_4(sz)  .name[KMALLOC_RANDOM_START +  5] = "kmalloc-rnd-05-" #sz,
-> > +#define KMA_RAND_6(sz)  KMA_RAND_5(sz)  .name[KMALLOC_RANDOM_START +  6] = "kmalloc-rnd-06-" #sz,
-> > +#define KMA_RAND_7(sz)  KMA_RAND_6(sz)  .name[KMALLOC_RANDOM_START +  7] = "kmalloc-rnd-07-" #sz,
-> > +#define KMA_RAND_8(sz)  KMA_RAND_7(sz)  .name[KMALLOC_RANDOM_START +  8] = "kmalloc-rnd-08-" #sz,
-> > +#define KMA_RAND_9(sz)  KMA_RAND_8(sz)  .name[KMALLOC_RANDOM_START +  9] = "kmalloc-rnd-09-" #sz,
-> > +#define KMA_RAND_10(sz) KMA_RAND_9(sz)  .name[KMALLOC_RANDOM_START + 10] = "kmalloc-rnd-10-" #sz,
-> > +#define KMA_RAND_11(sz) KMA_RAND_10(sz) .name[KMALLOC_RANDOM_START + 11] = "kmalloc-rnd-11-" #sz,
-> > +#define KMA_RAND_12(sz) KMA_RAND_11(sz) .name[KMALLOC_RANDOM_START + 12] = "kmalloc-rnd-12-" #sz,
-> > +#define KMA_RAND_13(sz) KMA_RAND_12(sz) .name[KMALLOC_RANDOM_START + 13] = "kmalloc-rnd-13-" #sz,
-> > +#define KMA_RAND_14(sz) KMA_RAND_13(sz) .name[KMALLOC_RANDOM_START + 14] = "kmalloc-rnd-14-" #sz,
-> > +#define KMA_RAND_15(sz) KMA_RAND_14(sz) .name[KMALLOC_RANDOM_START + 15] = "kmalloc-rnd-15-" #sz,
-> > +#else // CONFIG_RANDOM_KMALLOC_CACHES
-> > +#define KMALLOC_RANDOM_NAME(N, sz)
-> > +#endif
-> > +
-> >  #define INIT_KMALLOC_INFO(__size, __short_size)			\
-> >  {								\
-> >  	.name[KMALLOC_NORMAL]  = "kmalloc-" #__short_size,	\
-> >  	KMALLOC_RCL_NAME(__short_size)				\
-> >  	KMALLOC_CGROUP_NAME(__short_size)			\
-> >  	KMALLOC_DMA_NAME(__short_size)				\
-> > +	KMALLOC_RANDOM_NAME(RANDOM_KMALLOC_CACHES_NR, __short_size)	\
-> >  	.size = __size,						\
-> >  }
-> >  
-> > @@ -890,6 +921,11 @@ new_kmalloc_cache(int idx, enum kmalloc_cache_type type, slab_flags_t flags)
-> >  		flags |= SLAB_CACHE_DMA;
-> >  	}
-> >  
-> > +#ifdef CONFIG_RANDOM_KMALLOC_CACHES
-> > +	if (type >= KMALLOC_RANDOM_START && type <= KMALLOC_RANDOM_END)
-> > +		flags |= SLAB_NO_MERGE;
-> > +#endif
-> > +
-> >  	/*
-> >  	 * If CONFIG_MEMCG_KMEM is enabled, disable cache merging for
-> >  	 * KMALLOC_NORMAL caches.
-> > @@ -941,6 +977,9 @@ void __init create_kmalloc_caches(slab_flags_t flags)
-> >  				new_kmalloc_cache(2, type, flags);
-> >  		}
-> >  	}
-> > +#ifdef CONFIG_RANDOM_KMALLOC_CACHES
-> > +	random_kmalloc_seed = get_random_u64();
-> > +#endif
-> >  
-> >  	/* Kmalloc array is now usable */
-> >  	slab_state = UP;
-> > @@ -976,7 +1015,7 @@ void *__do_kmalloc_node(size_t size, gfp_t flags, int node, unsigned long caller
-> >  		return ret;
-> >  	}
-> >  
-> > -	s = kmalloc_slab(size, flags);
-> > +	s = kmalloc_slab(size, flags, caller);
-> >  
-> >  	if (unlikely(ZERO_OR_NULL_PTR(s)))
-> >  		return s;
-> 
-> 
+-- 
+2.37.1
+
