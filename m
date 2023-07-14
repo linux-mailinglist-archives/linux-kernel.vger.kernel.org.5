@@ -2,282 +2,308 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A28C753F11
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 17:36:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A74B753F12
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 17:37:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236411AbjGNPgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 11:36:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57322 "EHLO
+        id S236320AbjGNPhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 11:37:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236016AbjGNPgd (ORCPT
+        with ESMTP id S236407AbjGNPgv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 11:36:33 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83AC13C3C;
-        Fri, 14 Jul 2023 08:36:11 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-66767d628e2so1378476b3a.2;
-        Fri, 14 Jul 2023 08:36:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689348970; x=1691940970;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Fpz2cT1U0dIEg2tdq492uCXBZjuIPKBmJ/ufwC84Axw=;
-        b=D/MfzZQPzXbyphdVAKY+n1yWRwuQBRtRNDXrr/lrTlscIlsD3cpJGt0YHN/DTsDwop
-         aHXpVEcS5UOsrDjKvepVBobvquuwQJHfNPs0W6FkPS3cS/NXfuBNF/tGxE2RBZEpkWrG
-         RfcZVCJuOY0kpS/HrHB62kFzA7JYOWcGEqUwS7HUEDPA4DWUs1pPeoD7Hjguapt0OCZs
-         psIQWo9LHX3hw1fcbvsRwyuIrHPfmTrRp0fA/3vgJ+0FBUhlexlVRsOrWfA7+NrHOT5g
-         Wvh07epPduxmWURcEqg7KsQp/Pk7d01yPbIvpEY6soFffGaKrg9kgJySGYrcP5LQaMKm
-         ZglQ==
+        Fri, 14 Jul 2023 11:36:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAA2E4224
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 08:35:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689348951;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4XubpuuxHa0Lt4jRayW4IHWNvBqhaB5kCijr8kSTTd0=;
+        b=DZLFA3rP24LEtfgQNhLpEUtkHyokfdAS17f/c4gsHdvtHrGEyG2JyT0ZSMeg9XMhjhzKTX
+        V0SE9ZJuIxf5qUwYz5o+T5VIRJgtVKWgV4Ck6Nn1nrZZXLpR1Cv4Rgqt7b+BGeQoCuJ/rn
+        0uQfvBc8NIlsG9g7MkeVh8uDVBUEfDY=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-20-WpCZ2-syMomOCeRYCq0LKQ-1; Fri, 14 Jul 2023 11:35:50 -0400
+X-MC-Unique: WpCZ2-syMomOCeRYCq0LKQ-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-2f2981b8364so1166933f8f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 08:35:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689348970; x=1691940970;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Fpz2cT1U0dIEg2tdq492uCXBZjuIPKBmJ/ufwC84Axw=;
-        b=DRq/BeFGOY7o+7mYNC3l9d3EMyMzcYtxBAqM0JQCa3BuoJdWHYOfB+6GjQ4QuJq2OA
-         fXknwXWSJaQSjZYQWW9YmLVp30jxl+w/Yi2/efocIsaK4q2CFXja6K1f4xMo3MpmShTr
-         eIkdNBfRN6i46F4lL9U8zIEotKRr+YhqQjrtQGLet0wRuNcevFM8Ans4pZWOUz3U43JI
-         pSTkadRNupGy7ZwkkAxCnCykvdEUsXuby8OqUnCco82yoCm1HOPc8aJJ9Jaq6r5of5ZP
-         mOrOiAD0y8CpHfpm+I2Goo7LFvRLG6dNIqnSFVHxKMRSkjCktCjY+GmNgz5riAZ4RX+X
-         0zFQ==
-X-Gm-Message-State: ABy/qLYY+kEaBMgNgyeqcgp4hpMVcCcmn6xy7fwcmzBMNgpZhUwR92nM
-        cLzGtdF6+dMzwghE7ABl/Rs=
-X-Google-Smtp-Source: APBJJlHBJdkxDW050IMIR4XLuEleCEyFXsRGr4qAiwb/yUkzTuJWrCEAfmfUXn76DOtOmGxcYD5KSw==
-X-Received: by 2002:a05:6a20:144b:b0:12d:e596:df21 with SMTP id a11-20020a056a20144b00b0012de596df21mr4329858pzi.7.1689348970485;
-        Fri, 14 Jul 2023 08:36:10 -0700 (PDT)
-Received: from smtpclient.apple ([2402:d0c0:2:a2a::1])
-        by smtp.gmail.com with ESMTPSA id e26-20020a62aa1a000000b006749c22d079sm7248937pff.167.2023.07.14.08.35.54
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 14 Jul 2023 08:36:10 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.400.51.1.1\))
-Subject: Re: [PATCH v1] rcu: Fix and improve RCU read lock checks when
- !CONFIG_DEBUG_LOCK_ALLOC
-From:   Alan Huang <mmpgouride@gmail.com>
-In-Reply-To: <7d433fac-a62d-4e81-b8e5-57cf5f2d1d55@paulmck-laptop>
-Date:   Fri, 14 Jul 2023 23:35:41 +0800
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        Gao Xiang <hsiangkao@linux.alibaba.com>,
-        Sandeep Dhavale <dhavale@google.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-erofs@lists.ozlabs.org, xiang@kernel.org,
-        Will Shiu <Will.Shiu@mediatek.com>, kernel-team@android.com,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <F160D7F8-57DC-4986-90A9-EB50F7C89891@gmail.com>
-References: <20230713003201.GA469376@google.com>
- <161f1615-3d85-cf47-d2d5-695adf1ca7d4@linux.alibaba.com>
- <0d9e7b4d-6477-47a6-b3d2-2c9d9b64903d@paulmck-laptop>
- <f124e041-6a82-2069-975c-4f393e5c4137@linux.alibaba.com>
- <87292a44-cc02-4d95-940e-e4e31d0bc6f2@paulmck-laptop>
- <f1c60dcb-e32f-7b7e-bf0d-5dec999e9299@linux.alibaba.com>
- <CAEXW_YSODXRfgkR0D2G-x=0uZdsqvF3kZL+LL3DcRX-5CULJ1Q@mail.gmail.com>
- <894a3b64-a369-7bc6-c8a8-0910843cc587@linux.alibaba.com>
- <CAEXW_YSM1yik4yWTgZoxCS9RM6TbsL26VCVCH=41+uMA8chfAQ@mail.gmail.com>
- <58b661d0-0ebb-4b45-a10d-c5927fb791cd@paulmck-laptop>
- <7d433fac-a62d-4e81-b8e5-57cf5f2d1d55@paulmck-laptop>
-To:     paulmck@kernel.org
-X-Mailer: Apple Mail (2.3731.400.51.1.1)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1689348949; x=1691940949;
+        h=content-transfer-encoding:in-reply-to:subject:organization:from
+         :references:cc:to:content-language:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4XubpuuxHa0Lt4jRayW4IHWNvBqhaB5kCijr8kSTTd0=;
+        b=GeDNmoXe0mLc4aCi3gXqPsPxrcIgoz7mVvjcELeH/4NrGJnFeaTBJFztMGelUkNRoB
+         OxGQYb7OB3kbITyK99BHXvw/zD3KAy43pUSSA19tHacxMpJx1f36tWE8sFDKyRSuRyH9
+         sa0iHNmFSRSx1TVJ+XNZBa10sB+cnWtdPoqu0/e0C8Z90ygwnOAWRhX8H8HoUNDoFoLE
+         15o2DGbhzuDaJFNWKTpwijYxIlndPw+h5pvpsWP40v2zOwqM0nJFVXB75jAGwJ8lLFpj
+         Rq89nykPZDHFF/p0r+V3xRl3AgtOc9yNkCSoG/nyRzwA11CaRkdwCMdGj/eZSpDhO/hM
+         oXGg==
+X-Gm-Message-State: ABy/qLZYEODQ7Ms5rnNZBOg9miC7e4xtA+iT7TAHwxLl9weKx16nid+N
+        gfLL1R6PKdcJIFeBKc7GyWRfcWMaJZvCL0s78SWRow81mFd1lDwW2Ig+j4N1jauzpv/ZeBSQnC5
+        APOCIAueJjXcxVOo3bEROh9Yh
+X-Received: by 2002:adf:f9c9:0:b0:313:f59c:95ec with SMTP id w9-20020adff9c9000000b00313f59c95ecmr4860822wrr.28.1689348949124;
+        Fri, 14 Jul 2023 08:35:49 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlFam3ZktFrXziKA7D/qjzWbbSlb1kQ0WfzOzDNq5cjQg26F0TiQV+yVsMTRBbl6luEeWln9zw==
+X-Received: by 2002:adf:f9c9:0:b0:313:f59c:95ec with SMTP id w9-20020adff9c9000000b00313f59c95ecmr4860815wrr.28.1689348948712;
+        Fri, 14 Jul 2023 08:35:48 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c70a:4500:8a9e:a24a:133d:86bb? (p200300cbc70a45008a9ea24a133d86bb.dip0.t-ipconnect.de. [2003:cb:c70a:4500:8a9e:a24a:133d:86bb])
+        by smtp.gmail.com with ESMTPSA id k10-20020a5d66ca000000b00313f9085119sm11191454wrw.113.2023.07.14.08.35.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 14 Jul 2023 08:35:48 -0700 (PDT)
+Message-ID: <a61e73a7-87ef-4f1a-be5c-e9bf57dc1475@redhat.com>
+Date:   Fri, 14 Jul 2023 17:35:46 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Content-Language: en-US
+To:     Zi Yan <ziy@nvidia.com>
+Cc:     Yu Zhao <yuzhao@google.com>,
+        "Yin, Fengwei" <fengwei.yin@intel.com>,
+        Minchan Kim <minchan@kernel.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        willy@infradead.org, ryan.roberts@arm.com, shy828301@gmail.com,
+        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+References: <20230713150558.200545-1-fengwei.yin@intel.com>
+ <CAOUHufb0zxKvmvEXfG4kySenxyPtagnr_cf4Ms-6si3bQTybGQ@mail.gmail.com>
+ <8547495c-9051-faab-a47d-1962f2e0b1da@intel.com>
+ <CAOUHufY-edD2j2Nfz3xrObF2ERAGKecjFr_1Qarh5aDwyDGS2A@mail.gmail.com>
+ <d024fa03-ca51-632b-9a01-bbdc75543f5d@redhat.com>
+ <6C3EFBC6-DC59-4167-B51A-7231A55FE1D5@nvidia.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [RFC PATCH] madvise: make madvise_cold_or_pageout_pte_range()
+ support large folio
+In-Reply-To: <6C3EFBC6-DC59-4167-B51A-7231A55FE1D5@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-> 2023=E5=B9=B47=E6=9C=8814=E6=97=A5 10:16=EF=BC=8CPaul E. McKenney =
-<paulmck@kernel.org> =E5=86=99=E9=81=93=EF=BC=9A
->=20
-> On Thu, Jul 13, 2023 at 09:33:35AM -0700, Paul E. McKenney wrote:
->> On Thu, Jul 13, 2023 at 11:33:24AM -0400, Joel Fernandes wrote:
->>> On Thu, Jul 13, 2023 at 10:34=E2=80=AFAM Gao Xiang =
-<hsiangkao@linux.alibaba.com> wrote:
->>>> On 2023/7/13 22:07, Joel Fernandes wrote:
->>>>> On Thu, Jul 13, 2023 at 12:59=E2=80=AFAM Gao Xiang =
-<hsiangkao@linux.alibaba.com> wrote:
->>>>>> On 2023/7/13 12:52, Paul E. McKenney wrote:
->>>>>>> On Thu, Jul 13, 2023 at 12:41:09PM +0800, Gao Xiang wrote:
->>>>>>=20
->>>>>> ...
->>>>>>=20
->>>>>>>>=20
->>>>>>>> There are lots of performance issues here and even a plumber
->>>>>>>> topic last year to show that, see:
->>>>>>>>=20
->>>>>>>> [1] =
-https://lore.kernel.org/r/20230519001709.2563-1-tj@kernel.org
->>>>>>>> [2] =
-https://lore.kernel.org/r/CAHk-=3DwgE9kORADrDJ4nEsHHLirqPCZ1tGaEPAZejHdZ03=
-qCOGg@mail.gmail.com
->>>>>>>> [3] =
-https://lore.kernel.org/r/CAB=3DBE-SBtO6vcoyLNA9F-9VaN5R0t3o_Zn+FW8GbO6wyU=
-qFneQ@mail.gmail.com
->>>>>>>> [4] https://lpc.events/event/16/contributions/1338/
->>>>>>>> and more.
->>>>>>>>=20
->>>>>>>> I'm not sure if it's necessary to look info all of that,
->>>>>>>> andSandeep knows more than I am (the scheduling issue
->>>>>>>> becomes vital on some aarch64 platform.)
->>>>>>>=20
->>>>>>> Hmmm...  Please let me try again.
->>>>>>>=20
->>>>>>> Assuming that this approach turns out to make sense, the =
-resulting
->>>>>>> patch will need to clearly state the performance benefits =
-directly in
->>>>>>> the commit log.
->>>>>>>=20
->>>>>>> And of course, for the approach to make sense, it must avoid =
-breaking
->>>>>>> the existing lockdep-RCU debugging code.
->>>>>>>=20
->>>>>>> Is that more clear?
->>>>>>=20
->>>>>> Personally I'm not working on Android platform any more so I =
-don't
->>>>>> have a way to reproduce, hopefully Sandeep could give actually
->>>>>> number _again_ if dm-verity is enabled and trigger another
->>>>>> workqueue here and make a comparsion why the scheduling latency =
-of
->>>>>> the extra work becomes unacceptable.
->>>>>>=20
->>>>>=20
->>>>> Question from my side, are we talking about only performance =
-issues or
->>>>> also a crash? It appears z_erofs_decompress_pcluster() takes
->>>>> mutex_lock(&pcl->lock);
->>>>>=20
->>>>> So if it is either in an RCU read-side critical section or in an
->>>>> atomic section, like the softirq path, then it may
->>>>> schedule-while-atomic or trigger RCU warnings.
->>>>>=20
->>>>> z_erofs_decompressqueue_endio
->>>>> -> z_erofs_decompress_kickoff
->>>>>  ->z_erofs_decompressqueue_work
->>>>>   ->z_erofs_decompress_queue
->>>>>    -> z_erofs_decompress_pcluster
->>>>>     -> mutex_lock
->>>>>=20
->>>>=20
->>>> Why does the softirq path not trigger a workqueue instead?
->>>=20
->>> I said "if it is". I was giving a scenario. mutex_lock() is not
->>> allowed in softirq context or in an RCU-reader.
->>>=20
->>>>> Per Sandeep in [1], this stack happens under RCU read-lock in:
->>>>>=20
->>>>> #define __blk_mq_run_dispatch_ops(q, check_sleep, dispatch_ops) \
->>>>> [...]
->>>>>                 rcu_read_lock();
->>>>>                 (dispatch_ops);
->>>>>                 rcu_read_unlock();
->>>>> [...]
->>>>>=20
->>>>> Coming from:
->>>>> blk_mq_flush_plug_list ->
->>>>>                            blk_mq_run_dispatch_ops(q,
->>>>>                                 __blk_mq_flush_plug_list(q, =
-plug));
->>>>>=20
->>>>> and __blk_mq_flush_plug_list does this:
->>>>>           q->mq_ops->queue_rqs(&plug->mq_list);
->>>>>=20
->>>>> This somehow ends up calling the bio_endio and the
->>>>> z_erofs_decompressqueue_endio which grabs the mutex.
->>>>>=20
->>>>> So... I have a question, it looks like one of the paths in
->>>>> __blk_mq_run_dispatch_ops() uses SRCU.  Where are as the alternate
->>>>> path uses RCU. Why does this alternate want to block even if it is =
-not
->>>>> supposed to? Is the real issue here that the BLK_MQ_F_BLOCKING =
-should
->>>>> be set? It sounds like you want to block in the "else" path even
->>>>> though BLK_MQ_F_BLOCKING is not set:
->>>>=20
->>>> BLK_MQ_F_BLOCKING is not a flag that a filesystem can do anything =
-with.
->>>> That is block layer and mq device driver stuffs. filesystems cannot =
-set
->>>> this value.
->>>>=20
->>>> As I said, as far as I understand, previously,
->>>> .end_io() can only be called without RCU context, so it will be =
-fine,
->>>> but I don't know when .end_io() can be called under some RCU =
-context
->>>> now.
->>>=20
->>>> =46rom what Sandeep described, the code path is in an RCU reader. =
-My
->>> question is more, why doesn't it use SRCU instead since it clearly
->>> does so if BLK_MQ_F_BLOCKING. What are the tradeoffs? IMHO, a deeper
->>> dive needs to be made into that before concluding that the fix is to
->>> use rcu_read_lock_any_held().
->>=20
->> How can this be solved?
->>=20
->> 1. Always use a workqueue.  Simple, but is said to have performance
->> issues.
->>=20
->> 2. Pass a flag in that indicates whether or not the caller is in an
->> RCU read-side critical section.  Conceptually simple, but might
->> or might not be reasonable to actually implement in the code as
->> it exists now. (You tell me!)
->>=20
->> 3. Create a function in z_erofs that gives you a decent
->> approximation, maybe something like the following.
->>=20
->> 4. Other ideas here.
->=20
-> 5. #3 plus make the corresponding Kconfig option select
-> PREEMPT_COUNT, assuming that any users needing compression in
-> non-preemptible kernels are OK with PREEMPT_COUNT being set.
-> (Some users of non-preemptible kernels object strenuously
-> to the added overhead from CONFIG_PREEMPT_COUNT=3Dy.)
-
-6. Set one bit in bio->bi_private, check the bit and flip it in =
-rcu_read_lock() path,
-then in z_erofs_decompressqueue_endio, check if the bit has changed.
-
-Not sure if this is feasible or acceptable. :)
-
->=20
-> Thanx, Paul
->=20
->> The following is untested, and is probably quite buggy, but it should
->> provide you with a starting point.
->>=20
->> static bool z_erofs_wq_needed(void)
+On 14.07.23 16:41, Zi Yan wrote:
+> On 14 Jul 2023, at 3:31, David Hildenbrand wrote:
+> 
+>> On 14.07.23 05:23, Yu Zhao wrote:
+>>> On Thu, Jul 13, 2023 at 9:10 PM Yin, Fengwei <fengwei.yin@intel.com> wrote:
+>>>>
+>>>>
+>>>>
+>>>> On 7/14/2023 10:08 AM, Yu Zhao wrote:
+>>>>> On Thu, Jul 13, 2023 at 9:06 AM Yin Fengwei <fengwei.yin@intel.com> wrote:
+>>>>>>
+>>>>>> Current madvise_cold_or_pageout_pte_range() has two problems for
+>>>>>> large folio support:
+>>>>>>     - Using folio_mapcount() with large folio prevent large folio from
+>>>>>>       picking up.
+>>>>>>     - If large folio is in the range requested, shouldn't split it
+>>>>>>       in madvise_cold_or_pageout_pte_range().
+>>>>>>
+>>>>>> Fix them by:
+>>>>>>     - Use folio_estimated_sharers() with large folio
+>>>>>>     - If large folio is in the range requested, don't split it. Leave
+>>>>>>       to page reclaim phase.
+>>>>>>
+>>>>>> For large folio cross boundaries of requested range, skip it if it's
+>>>>>> page cache. Try to split it if it's anonymous folio. If splitting
+>>>>>> fails, skip it.
+>>>>>
+>>>>> For now, we may not want to change the existing semantic (heuristic).
+>>>>> IOW, we may want to stick to the "only owner" condition:
+>>>>>
+>>>>>     - if (folio_mapcount(folio) != 1)
+>>>>>     + if (folio_entire_mapcount(folio) ||
+>>>>>     +     (any_page_within_range_has_mapcount > 1))
+>>>>>
+>>>>> +Minchan Kim
+>>>> The folio_estimated_sharers() was discussed here:
+>>>> https://lore.kernel.org/linux-mm/20230118232219.27038-6-vishal.moola@gmail.com/
+>>>> https://lore.kernel.org/linux-mm/20230124012210.13963-2-vishal.moola@gmail.com/
+>>>>
+>>>> Yes. It's accurate to check each page of large folio. But it may be over killed in
+>>>> some cases (And I think madvise is one of the cases not necessary to be accurate.
+>>>> So folio_estimated_sharers() is enough. Correct me if I am wrong).
+>>>
+>>> I see. Then it's possible this is also what the original commit wants
+>>> to do -- Minchan, could you clarify?
+>>>
+>>> Regardless, I think we can have the following fix, potentially cc'ing stable:
+>>>
+>>> -  if (folio_mapcount(folio) != 1)
+>>> +  if (folio_estimated_sharers(folio) != 1)
+>>>
+>>> Sounds good?
+>>
+>> Adding to the discussion, currently the COW selftest always skips a PTE-mapped THP.
+>>
+>>
+>> For example:
+>>
+>> # [INFO] Anonymous memory tests in private mappings
+>> # [RUN] Basic COW after fork() ... with base page
+>> ok 1 No leak from parent into child
+>> # [RUN] Basic COW after fork() ... with swapped out base page
+>> ok 2 No leak from parent into child
+>> # [RUN] Basic COW after fork() ... with THP
+>> ok 3 No leak from parent into child
+>> # [RUN] Basic COW after fork() ... with swapped-out THP
+>> ok 4 No leak from parent into child
+>> # [RUN] Basic COW after fork() ... with PTE-mapped THP
+>> ok 5 No leak from parent into child
+>> # [RUN] Basic COW after fork() ... with swapped-out, PTE-mapped THP
+>> ok 6 # SKIP MADV_PAGEOUT did not work, is swap enabled?
+>> ...
+>>
+>>
+>> The commit that introduced that change is:
+>>
+>> commit 07e8c82b5eff8ef34b74210eacb8d9c4a2886b82
+>> Author: Vishal Moola (Oracle) <vishal.moola@gmail.com>
+>> Date:   Wed Dec 21 10:08:46 2022 -0800
+>>
+>>      madvise: convert madvise_cold_or_pageout_pte_range() to use folios
+>>
+>>      This change removes a number of calls to compound_head(), and saves
+>>      1729 bytes of kernel text.
+>>
+>>
+>>
+>> folio_mapcount(folio) is wrong, because that never works on a PTE-mapped THP (well, unless only a single subpage is still mapped ...).
+>>
+>> page_mapcount(folio) was wrong, because it ignored all other subpages, but at least it worked in some cases.
+>>
+>> folio_estimated_sharers(folio) is similarly wrong like page_mapcount(), as it's essentially a page_mapcount() of the first subpage.
+>>
+>> (ignoring that a lockless mapcount-based check is always kind-of unreliable, but that's msotly acceptable for these kind of things)
+>>
+>>
+>> So, unfortunately, page_mapcount() / folio_estimated_sharers() is best we can do for now, but they miss to detect some cases of sharing of the folio -- false negatives to detect sharing.
+>>
+>>
+>> Ideally we want something like folio_maybe_mapped_shared(), and get rid of folio_estimated_sharers(), we better to guess the exact number, simply works towards an answer that tells us "yep, this may be mapped by multiple sharers" vs. "no, this is definitely not mapped by multiple sharers".
+>>
+>> The "mapped" part of it indicates that this does not catch all cases of sharing. But it should handle most of the cases we care about.
+>>
+>>
+>> There, we can then implement something better than what folio_estimated_sharers() currently does:
+>>
+>> static inline bool folio_maybe_mapped_shared(folio)
 >> {
->> if (IS_ENABLED(CONFIG_PREEMPTION) && rcu_preempt_depth())
->> return true;  // RCU reader
->> if (IS_ENABLED(CONFIG_PREEMPT_COUNT) && !preemptible())
->> return true;  // non-preemptible
->> if (!IS_ENABLED(CONFIG_PREEMPT_COUNT))
->> return true;  // non-preeemptible kernel, so play it safe
->> return false;
+>> 	if (likely(!folio_test_large(folio)))
+>> 		return atomic_read(&folio->_mapcount) > 0;
+>>
+>> 	/* Mapped multiple times via PMD? */
+>> 	if (folio_test_pmd_mappable(folio)
+>> 		return folio_entire_mapcount() > 1;
+>>
+>> 	/*
+>> 	 * First subpage is mapped multiple times (especially also via
+>> 	 * PMDs)?
+>>           */
+>> 	if (page_mapcount(folio_page(folio, 0) > 1)
+>> 		return true;
+>>
+>> 	/* TODO: also test last subpage? */
+>> 	
+>> 	/* Definitely shared if we're mapping a page multiple times. */
+>> 	return folio_total_mapcount(folio) > folio_nr_pages(folio);
 >> }
->>=20
->> You break it, you buy it!  ;-)
->>=20
->> Thanx, Paul
+>>
+>> There are some more things we could optimize for.
+> 
+> Before jumping into the mapcount, I would like to get some clarification
+> on "sharer". Does it mean a page is mapped/shared by more than one page
+> table entry or is mapped/shared by more than one process? Your function
 
+:) I think it depends. For a order-0 page it is "more than one page 
+table entry", which is is what the order-0 mapcount expresses.
+
+
+So let's focus on order > 0 (and keep KSM out of the picture). There, it 
+is different.
+
+We're talking about "logical mapping" of the page. So a single logical 
+mapping == one sharer.
+
+
+1) Anon pages
+
+For the time being, it really is "mapped by one process" -> exclusively 
+mapped, "mapped by more than one process" -> mapped shared.
+
+It's not "mapped into multiple page tables" or "mapped into multiple VMAs".
+
+[That doesn't necessarily have to be that way for ever -- imagine we'd 
+ever support a mremap(KEEP) with COW semantics -- but think there would 
+be ways to handle that].
+
+
+2) Pagecache pages
+
+It really depends what we want. Either
+
+(a) "mapped via a single logical mmap() operation"
+      mapped.
+
+(b) "mapped from a single open() operation"
+
+(c) mapped by a single process.
+
+Of course, mremap() is weird.
+
+
+Currently, with the order-0 mapcount (and we cannot really change these 
+semantics easily because we don't have any space to store additional 
+information), it would be (a).
+
+For example, mremap(KEEP) or a second mmap() creates a new logical mapping.
+
+But the pagecache is kind-of weird: anybody could immediately map a page 
+after we detected it as "exclusive" -- and eventually even concurrently. 
+So this detection of "shared" is inherently problematic.
+
+
+My primary focus is anon pages for now (as so often :) ). Anon is hard 
+but eventually a bit easier to handle -- famous last words.
+
+> indicates it is the former, but for madvise_cold_or_pageout_pte_range(),
+> I am not sure that is what we want. What if user wants to page out a
+> page that is mapped by the same process twice? With current method
+> or any existing proposals, it will fail undesirably. It will only work
+> as expect with your creator proposal[1].
+
+For anon pages it's fairly easy IMHO. For pagecache pages, I guess we 
+should keep it the way it was for order-0 pages: individual logical 
+mmap() operations -- (a). It's sub-optimal, but the way it used to be 
+for order-0.
+
+
+> 
+> Other places like auto NUMA migration also use mapcount to check if
+> a page is mapped by multiple process with the assumption that a page will
+> only be mapped by one process once.
+
+Right, most of these cases might be able to use 
+folio_maybe_mapped_shared() to detect "currently the whole folio is 
+mapped exclusively by a single logical mapping". That makes a lot of 
+sense in most cases that want to mess with a folio (e.g., migration, 
+pageout, NUMA).
+
+-- 
+Cheers,
+
+David / dhildenb
 
