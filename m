@@ -2,147 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0531753C59
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 15:59:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F4F9753C55
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 15:59:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235909AbjGNN7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 09:59:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53208 "EHLO
+        id S235416AbjGNN7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 09:59:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235900AbjGNN7L (ORCPT
+        with ESMTP id S235844AbjGNN7E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 09:59:11 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91EE426B5;
-        Fri, 14 Jul 2023 06:59:06 -0700 (PDT)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36EBrE9l028598;
-        Fri, 14 Jul 2023 13:58:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : from : to : cc : references : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=RKiLvVyTbirgw09WubHCuDGi667YE5Ck8Aegz+gLNbk=;
- b=Al2Dhd4xiOamIye89agaIWhnNhc/BlrNT7N3XJa4RqaMarZvbamrlnv52XUB6S8oAOfB
- 0RKpRZRbDKII9zSuqE4UpBU80qiieWFSb0qk75O/ihlKjM7UXjlPRDKbd0whSI5qleSK
- 1DaKLX4r2hAxO6MfHJVm+GJ2HlRg1+/EhPck6s/Ft4rP+cxzDXSm/01eo3taVy42tjSi
- Y2/tSKc82lZOallt1HERDil5XoOd2+6uGMYjpDg70DlJRKWYhfaBQ+9Z0ZSOVRvQ7sE5
- YQ1Qu2dYhdo5NrNC/NixI0viBZiB6P42+wsocoujQD3bld14zVdt+/Qjo9lwDdk5oruY 9A== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rtpuksum6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 14 Jul 2023 13:58:37 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36EDwaIP008960
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 14 Jul 2023 13:58:36 GMT
-Received: from [10.216.8.198] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Fri, 14 Jul
- 2023 06:58:29 -0700
-Message-ID: <99084f51-f156-664b-cd69-51bf224674ac@quicinc.com>
-Date:   Fri, 14 Jul 2023 19:28:24 +0530
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.0
-Subject: Re: [PATCH V2] firmware: qcom_scm: use the SCM_CONVENTION based on
- ARM / ARM64
-From:   Kathiravan T <quic_kathirav@quicinc.com>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Elliot Berman <eberman@codeaurora.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <quic_eberman@quicinc.com>, <stable@vger.kernel.org>
-References: <20230607045345.25049-1-quic_kathirav@quicinc.com>
- <2f915104-952f-3e3d-b3d5-4c0400b4f331@quicinc.com>
-Content-Language: en-US
-In-Reply-To: <2f915104-952f-3e3d-b3d5-4c0400b4f331@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: fzRa-E1oNp2sYMYiiNvpk4tNU_tm9ao7
-X-Proofpoint-GUID: fzRa-E1oNp2sYMYiiNvpk4tNU_tm9ao7
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-14_06,2023-07-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- adultscore=0 lowpriorityscore=0 impostorscore=0 clxscore=1011 bulkscore=0
- phishscore=0 suspectscore=0 mlxlogscore=999 priorityscore=1501 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2307140126
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 14 Jul 2023 09:59:04 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A6BF270B
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 06:59:00 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1b9c5e07c1bso14496545ad.2
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 06:59:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1689343139; x=1691935139;
+        h=message-id:to:from:cc:subject:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6n+At+8xi69gBbD6TfRysRNivcXiaDRsl+xovEf19KU=;
+        b=jo5k+NLAbC/ndaJ1oHqHaiBNHxfJ607vhJ4LfTdmfny/4ckLBwprejctuwuS0VNzMK
+         +jJ+dI5QCMPBSX0JY5JvL4rtTII2EyRE/kvaaTCOAzBnolGPwkQ3+pe0AAHv8RTbvvqZ
+         QvbTqIaPuSprIoMffFy+BEaG0UDjdPSAqVj0sLhISM7Ax9hgut3PP0v4XlKqiQS7JDq6
+         +u6NjjKeXYCl8mL6nytd/6YcXBNF57O3tCS5md3/I090wtCkJryXTDqbFDky5KPHy9JF
+         dRbfRdutxwfss87WHUmGjy0+MMt2slwqGTEi+dvTyC9sKIERHepsuaCjA4VU871rnU7p
+         t2mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689343139; x=1691935139;
+        h=message-id:to:from:cc:subject:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6n+At+8xi69gBbD6TfRysRNivcXiaDRsl+xovEf19KU=;
+        b=IJgF3P6ELZO2VHUn3RlyZBgPGxPj2+6UDORSTh91dePlrUyInd597mm3DwennI8nFg
+         tV1mE/wf3L475cw0dzAn3yCY+omVGA8FsejN5uXjQaCZuAEQU25eT+V4Xl+s8MepmWkw
+         /jl2KMgEfRngqR3takVZsbTpRf9UBfquECppFq5Y0JVL2mpy5ISJug54DGCGL3dmqiS5
+         +UT+F1JR0CAAdkQCLPd49HTxc4FqoHsELG2X90a2RIPevTbKnyFuHiVwOKXxMoZiuV00
+         bqPcNLBnLIxNR5t5vMifNBdg+mF+2ROWAi/ZjVA8oeLugwm8VaBqWmTZtYHTsB8tWulS
+         kS3Q==
+X-Gm-Message-State: ABy/qLbfst7UO4qxGnCjE+cfoDwPdAztsrP+r4568AdVjockjTWXu+fS
+        jYSY7SWdZ6C9oalpBYyYdkHLmdaaUvuZ/xqcTMI=
+X-Google-Smtp-Source: APBJJlGBde31pPNZ6ICzy2zL2r0ulqrihLJzktzlepVmoM6plKTmCCyZATGupOaAIEyGfD+moxNK4A==
+X-Received: by 2002:a17:902:d382:b0:1b9:cb8b:3bd3 with SMTP id e2-20020a170902d38200b001b9cb8b3bd3mr4656013pld.31.1689343139306;
+        Fri, 14 Jul 2023 06:58:59 -0700 (PDT)
+Received: from localhost ([50.173.2.66])
+        by smtp.gmail.com with ESMTPSA id o2-20020a170902d4c200b001ab39cd875csm5645732plg.133.2023.07.14.06.58.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Jul 2023 06:58:58 -0700 (PDT)
+Date:   Fri, 14 Jul 2023 06:58:58 -0700 (PDT)
+X-Google-Original-Date: Fri, 14 Jul 2023 06:57:36 PDT (-0700)
+Subject: [GIT PULL] RISC-V Fixes for 6.5-rc2
+CC:        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+From:   Palmer Dabbelt <palmer@rivosinc.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Message-ID: <mhng-c0a9115b-10ec-4bf0-8c4f-af009c34423f@palmer-ri-x1c9a>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following changes since commit 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5:
 
-On 6/20/2023 11:43 AM, Kathiravan T wrote:
->
-> On 6/7/2023 10:23 AM, Kathiravan T wrote:
->> During SCM probe, to identify the SCM convention, scm call is made with
->> SMC_CONVENTION_ARM_64 followed by SMC_CONVENTION_ARM_32. Based on the
->> result what convention to be used is decided.
->>
->> IPQ chipsets starting from IPQ807x, supports both 32bit and 64bit kernel
->> variants, however TZ firmware runs in 64bit mode. When running on 32bit
->> kernel, scm call is made with SMC_CONVENTION_ARM_64 is causing the
->> system crash, due to the difference in the register sets between ARM and
->> AARCH64, which is accessed by the TZ.
->>
->> To avoid this, use SMC_CONVENTION_ARM_64 only on ARM64 builds.
->
->
-> Gentle Reminder...
+  Linux 6.5-rc1 (2023-07-09 13:53:13 -0700)
 
+are available in the Git repository at:
 
-Bjorn,
+  git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-6.5-rc2
 
-Can you share your thoughts on this patch?
+for you to fetch changes up to ab2dbc7accedc2e98eb7d8b8878d337e3b36c95d:
 
+  RISC-V: Don't include Zicsr or Zifencei in I from ACPI (2023-07-12 10:04:40 -0700)
 
-Thanks, Kathiravan T.
+----------------------------------------------------------------
+RISC-V Fixes for 6.5-rc2
 
+* A fix for a formatting error in the hwprobe documentation.
+* A fix for a spurious warning in the RISC-V PMU driver.
+* A fix for memory detection on rv32, which does not manifest on any
+  known system.
+* A fix to avoid parsing legacy parsing of I in ACPI ISA strings.
 
->
->
->>
->> Cc: stable@vger.kernel.org
->> Fixes: 9a434cee773a ("firmware: qcom_scm: Dynamically support SMCCC 
->> and legacy conventions")
->> Signed-off-by: Kathiravan T <quic_kathirav@quicinc.com>
->> ---
->> Changes in V2:
->>     - Added the Fixes tag and cc'd stable mailing list
->>
->>   drivers/firmware/qcom_scm.c | 2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
->> index fde33acd46b7..db6754db48a0 100644
->> --- a/drivers/firmware/qcom_scm.c
->> +++ b/drivers/firmware/qcom_scm.c
->> @@ -171,6 +171,7 @@ static enum qcom_scm_convention 
->> __get_convention(void)
->>       if (likely(qcom_scm_convention != SMC_CONVENTION_UNKNOWN))
->>           return qcom_scm_convention;
->>   +#if IS_ENABLED(CONFIG_ARM64)
->>       /*
->>        * Device isn't required as there is only one argument - no device
->>        * needed to dma_map_single to secure world
->> @@ -191,6 +192,7 @@ static enum qcom_scm_convention 
->> __get_convention(void)
->>           forced = true;
->>           goto found;
->>       }
->> +#endif
->>         probed_convention = SMC_CONVENTION_ARM_32;
->>       ret = __scm_smc_call(NULL, &desc, probed_convention, &res, true);
+----------------------------------------------------------------
+Eric Lin (1):
+      perf: RISC-V: Remove PERF_HES_STOPPED flag checking in riscv_pmu_start()
+
+Jisheng Zhang (1):
+      riscv: mm: fix truncation warning on RV32
+
+Palmer Dabbelt (2):
+      Documentation: RISC-V: hwprobe: Fix a formatting error
+      RISC-V: Don't include Zicsr or Zifencei in I from ACPI
+
+ Documentation/riscv/hwprobe.rst | 2 +-
+ arch/riscv/kernel/cpufeature.c  | 9 ++-------
+ arch/riscv/mm/init.c            | 2 +-
+ drivers/perf/riscv_pmu.c        | 3 ---
+ 4 files changed, 4 insertions(+), 12 deletions(-)
