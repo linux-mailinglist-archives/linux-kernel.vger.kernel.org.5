@@ -2,228 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FFCF7537A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 12:14:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 604C97537BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 12:16:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236076AbjGNKOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 06:14:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58134 "EHLO
+        id S236119AbjGNKQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 06:16:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236061AbjGNKON (ORCPT
+        with ESMTP id S236111AbjGNKQJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 06:14:13 -0400
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F2731989;
-        Fri, 14 Jul 2023 03:14:11 -0700 (PDT)
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id 3FCA724E16E;
-        Fri, 14 Jul 2023 18:14:10 +0800 (CST)
-Received: from EXMBX062.cuchost.com (172.16.6.62) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 14 Jul
- 2023 18:14:10 +0800
-Received: from starfive-sdk.starfivetech.com (171.223.208.138) by
- EXMBX062.cuchost.com (172.16.6.62) with Microsoft SMTP Server (TLS) id
- 15.0.1497.42; Fri, 14 Jul 2023 18:14:08 +0800
-From:   Samin Guo <samin.guo@starfivetech.com>
-To:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <netdev@vger.kernel.org>, Peter Geis <pgwipeout@gmail.com>,
-        Frank <Frank.Sae@motor-comm.com>
-CC:     "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "Russell King" <linux@armlinux.org.uk>,
-        Samin Guo <samin.guo@starfivetech.com>,
-        "Yanhong Wang" <yanhong.wang@starfivetech.com>
-Subject: [PATCH v4 2/2] net: phy: motorcomm: Add pad drive strength cfg support
-Date:   Fri, 14 Jul 2023 18:14:06 +0800
-Message-ID: <20230714101406.17686-3-samin.guo@starfivetech.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230714101406.17686-1-samin.guo@starfivetech.com>
-References: <20230714101406.17686-1-samin.guo@starfivetech.com>
+        Fri, 14 Jul 2023 06:16:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDDB82708
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 03:14:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689329689;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VDPdK5Oor5Kw2bqZn3fIKe7+JBJ69095qwlRLBTDYJc=;
+        b=P/y12WEDXtw5lGtPOgdQUxRTkUvOgTk9sZIUuiEfi73+6FZ/uPw3Cxzf7D/ecyEl9JdKGE
+        d9w9E4e+EnUZ1h+48afm8aQVCuAktPIytyU5CytDwT1X9B0+E0JhhnPYmSFxW/aEU6aMrr
+        Ab7g8lL7diCteBtXXWIE32AYE7XMDc4=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-675-KdZTUNPQPFmT2RsUlc4CBQ-1; Fri, 14 Jul 2023 06:14:47 -0400
+X-MC-Unique: KdZTUNPQPFmT2RsUlc4CBQ-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-3fbe590234aso10075535e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 03:14:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689329686; x=1691921686;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VDPdK5Oor5Kw2bqZn3fIKe7+JBJ69095qwlRLBTDYJc=;
+        b=ex5kr2PkmvtRU7+hdNKTNJMMs6OKCSB09YsZQWmC7hmyrLD0EsI8UT/OZwMIE+cTbt
+         kyQuiUbqbAwcb7E+9qZl9cUxfHlF+Rb0W7hrbasCiJnveQM1R4wDfcKrRIu7x1MX36XA
+         iKxnW4TW3Rehix768w6HxhBUHapfd5x1/75yXgsTjdLpbTSSt/9RaX9SF/9/kJmEF/b3
+         JYRpQ/BTTh7xecMBIOb6s3x8bR8erQ/e/sPft82LvzJaiszlovxpDxt9ZkAxRvxqtR07
+         0+Jce7zzSKI1Bb7OwV1YhGnx6jEWEJq14URHKC4Fzm6YtCyEbre+iVtPdUR23stuHvSn
+         Ejbg==
+X-Gm-Message-State: ABy/qLb3c+LopiImQdxH2CnIvmCogWcvULlpMyPNW/WnB5Ds6lP+s2tl
+        dXXfCOny/VWEdHf4vGEbrGKcndo2Jd8XX9uGNOFIQzPE/NbZ8Yx38hSeD4Fs1zEikUp27rBShSu
+        YguIgPgOl74vTMLTmywp2tyEv
+X-Received: by 2002:a5d:4acc:0:b0:315:99be:6fe4 with SMTP id y12-20020a5d4acc000000b0031599be6fe4mr4197170wrs.69.1689329686469;
+        Fri, 14 Jul 2023 03:14:46 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlFWG05PEub0RlJ3ldMFlpn9gHopzRMDXENCQEZqn/pCYz8EFuUfF/KoRBPBx6rx56Ah0A3k1g==
+X-Received: by 2002:a5d:4acc:0:b0:315:99be:6fe4 with SMTP id y12-20020a5d4acc000000b0031599be6fe4mr4197153wrs.69.1689329686102;
+        Fri, 14 Jul 2023 03:14:46 -0700 (PDT)
+Received: from localhost ([91.126.32.244])
+        by smtp.gmail.com with ESMTPSA id z13-20020adfe54d000000b003143ac73fd0sm10526624wrm.1.2023.07.14.03.14.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Jul 2023 03:14:45 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 4/8] drm/ssd130x: Add support for DRM_FORMAT_R1
+In-Reply-To: <72746f6d9c47f09fc057ad7a4bbb3b7f423af803.1689252746.git.geert@linux-m68k.org>
+References: <cover.1689252746.git.geert@linux-m68k.org>
+ <72746f6d9c47f09fc057ad7a4bbb3b7f423af803.1689252746.git.geert@linux-m68k.org>
+Date:   Fri, 14 Jul 2023 12:14:44 +0200
+Message-ID: <87ilamu7e3.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [171.223.208.138]
-X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX062.cuchost.com
- (172.16.6.62)
-X-YovoleRuleAgent: yovoleflag
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The motorcomm phy (YT8531) supports the ability to adjust the drive
-strength of the rx_clk/rx_data, and the default strength may not be
-suitable for all boards. So add configurable options to better match
-the boards.(e.g. StarFive VisionFive 2)
+Geert Uytterhoeven <geert@linux-m68k.org> writes:
 
-When we configure the drive strength, we need to read the current
-LDO voltage value to ensure that it is a legal value at that LDO
-voltage.
+Hello Geert,
 
-Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
-Signed-off-by: Samin Guo <samin.guo@starfivetech.com>
----
- drivers/net/phy/motorcomm.c | 114 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 114 insertions(+)
+Thanks a lot for your patch, this has been on my TODO for some time!
 
-diff --git a/drivers/net/phy/motorcomm.c b/drivers/net/phy/motorcomm.c
-index 2fa5a90e073b..857a451fa35e 100644
---- a/drivers/net/phy/motorcomm.c
-+++ b/drivers/net/phy/motorcomm.c
-@@ -163,6 +163,10 @@
- 
- #define YT8521_CHIP_CONFIG_REG			0xA001
- #define YT8521_CCR_SW_RST			BIT(15)
-+#define YT8531_RGMII_LDO_VOL_MASK		GENMASK(5, 4)
-+#define YT8531_LDO_VOL_3V3			0x0
-+#define YT8531_LDO_VOL_1V8			0x2
-+
- /* 1b0 disable 1.9ns rxc clock delay  *default*
-  * 1b1 enable 1.9ns rxc clock delay
-  */
-@@ -236,6 +240,12 @@
-  */
- #define YTPHY_WCR_TYPE_PULSE			BIT(0)
- 
-+#define YTPHY_PAD_DRIVE_STRENGTH_REG		0xA010
-+#define YT8531_RGMII_RXC_DS_MASK		GENMASK(15, 13)
-+#define YT8531_RGMII_RXD_DS_HI_MASK		BIT(12)		/* Bit 2 of rxd_ds */
-+#define YT8531_RGMII_RXD_DS_LOW_MASK		GENMASK(5, 4)	/* Bit 1/0 of rxd_ds */
-+#define YT8531_RGMII_RX_DS_DEFAULT		0x3
-+
- #define YTPHY_SYNCE_CFG_REG			0xA012
- #define YT8521_SCR_SYNCE_ENABLE			BIT(5)
- /* 1b0 output 25m clock
-@@ -834,6 +844,106 @@ static int ytphy_rgmii_clk_delay_config_with_lock(struct phy_device *phydev)
- 	return ret;
- }
- 
-+/**
-+ * struct ytphy_ldo_vol_map - map a current value to a register value
-+ * @vol: ldo voltage
-+ * @ds:  value in the register
-+ * @cur: value in device configuration
-+ */
-+struct ytphy_ldo_vol_map {
-+	u32 vol;
-+	u32 ds;
-+	u32 cur;
-+};
-+
-+static const struct ytphy_ldo_vol_map yt8531_ldo_vol[] = {
-+	{.vol = YT8531_LDO_VOL_1V8, .ds = 0, .cur = 1200},
-+	{.vol = YT8531_LDO_VOL_1V8, .ds = 1, .cur = 2100},
-+	{.vol = YT8531_LDO_VOL_1V8, .ds = 2, .cur = 2700},
-+	{.vol = YT8531_LDO_VOL_1V8, .ds = 3, .cur = 2910},
-+	{.vol = YT8531_LDO_VOL_1V8, .ds = 4, .cur = 3110},
-+	{.vol = YT8531_LDO_VOL_1V8, .ds = 5, .cur = 3600},
-+	{.vol = YT8531_LDO_VOL_1V8, .ds = 6, .cur = 3970},
-+	{.vol = YT8531_LDO_VOL_1V8, .ds = 7, .cur = 4350},
-+	{.vol = YT8531_LDO_VOL_3V3, .ds = 0, .cur = 3070},
-+	{.vol = YT8531_LDO_VOL_3V3, .ds = 1, .cur = 4080},
-+	{.vol = YT8531_LDO_VOL_3V3, .ds = 2, .cur = 4370},
-+	{.vol = YT8531_LDO_VOL_3V3, .ds = 3, .cur = 4680},
-+	{.vol = YT8531_LDO_VOL_3V3, .ds = 4, .cur = 5020},
-+	{.vol = YT8531_LDO_VOL_3V3, .ds = 5, .cur = 5450},
-+	{.vol = YT8531_LDO_VOL_3V3, .ds = 6, .cur = 5740},
-+	{.vol = YT8531_LDO_VOL_3V3, .ds = 7, .cur = 6140},
-+};
-+
-+static u32 yt8531_get_ldo_vol(struct phy_device *phydev)
-+{
-+	u32 val;
-+
-+	val = ytphy_read_ext_with_lock(phydev, YT8521_CHIP_CONFIG_REG);
-+	val = FIELD_GET(YT8531_RGMII_LDO_VOL_MASK, val);
-+
-+	return val <= YT8531_LDO_VOL_1V8 ? val : YT8531_LDO_VOL_1V8;
-+}
-+
-+static u32 yt8531_get_ds_map(struct phy_device *phydev, u32 cur)
-+{
-+	u32 vol;
-+	int i;
-+
-+	vol = yt8531_get_ldo_vol(phydev);
-+	for (i = 0; i < ARRAY_SIZE(yt8531_ldo_vol); i++) {
-+		if (yt8531_ldo_vol[i].vol == vol && yt8531_ldo_vol[i].cur == cur)
-+			return yt8531_ldo_vol[i].ds;
-+	}
-+
-+	phydev_warn(phydev,
-+		    "No matching current value was found %d, Use default value.\n", cur);
-+
-+	return YT8531_RGMII_RX_DS_DEFAULT;
-+}
-+
-+static int yt8531_set_ds(struct phy_device *phydev)
-+{
-+	struct device_node *node = phydev->mdio.dev.of_node;
-+	u32 ds_field_low, ds_field_hi;
-+	u32 ds, val;
-+	int ret;
-+
-+	/* set rgmii rx clk driver strength */
-+	if (!of_property_read_u32(node, "motorcomm,rx-clk-driver-strength", &val))
-+		ds = yt8531_get_ds_map(phydev, val);
-+	else
-+		ds = YT8531_RGMII_RX_DS_DEFAULT;
-+
-+	ret = ytphy_modify_ext_with_lock(phydev,
-+					 YTPHY_PAD_DRIVE_STRENGTH_REG,
-+					 YT8531_RGMII_RXC_DS_MASK,
-+					 FIELD_PREP(YT8531_RGMII_RXC_DS_MASK, ds));
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set rgmii rx data driver strength */
-+	if (!of_property_read_u32(node, "motorcomm,rx-data-driver-strength", &val))
-+		ds = yt8531_get_ds_map(phydev, val);
-+	else
-+		ds = YT8531_RGMII_RX_DS_DEFAULT;
-+
-+	ds_field_hi = FIELD_GET(BIT(2), ds);
-+	ds_field_hi = FIELD_PREP(YT8531_RGMII_RXD_DS_HI_MASK, ds_field_hi);
-+
-+	ds_field_low = FIELD_GET(GENMASK(1, 0), ds);
-+	ds_field_low = FIELD_PREP(YT8531_RGMII_RXD_DS_LOW_MASK, ds_field_low);
-+
-+	ret = ytphy_modify_ext_with_lock(phydev,
-+					 YTPHY_PAD_DRIVE_STRENGTH_REG,
-+					 YT8531_RGMII_RXD_DS_LOW_MASK | YT8531_RGMII_RXD_DS_HI_MASK,
-+					 ds_field_low | ds_field_hi);
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
- /**
-  * yt8521_probe() - read chip config then set suitable polling_mode
-  * @phydev: a pointer to a &struct phy_device
-@@ -1518,6 +1628,10 @@ static int yt8531_config_init(struct phy_device *phydev)
- 			return ret;
- 	}
- 
-+	ret = yt8531_set_ds(phydev);
-+	if (ret < 0)
-+		return ret;
-+
- 	return 0;
- }
- 
+> The native display format is monochrome light-on-dark (R1).
+> Hence add support for R1, so monochrome applications can avoid the
+> overhead of back-and-forth conversions between R1 and XR24.
+>
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+> This work interfered with commit 49d7d581ceaf4cf8 ("drm/ssd130x: Don't
+> allocate buffers on each plane update") in drm-misc/for-linux-next,
+> which always allocates the buffer upfront, while it is no longer needed
+> when never using XR24.
+>
+
+you mean R1 here, right ? It's still used in ssd130x_clear_screen() though.
+
+> Probably ssd130x->buffer should be allocated on first use.
+
+Yes, that makes sense.
+
+> And why not allocate the buffers using devm_kcalloc()?
+
+I think there are some lifetimes discrepancies between struct device and
+struct drm_device objects. But we could use drm_device managed resources
+helpers, i.e: drmm_kzalloc().
+
+> ---
+>  drivers/gpu/drm/solomon/ssd130x.c | 57 ++++++++++++++++++++++---------
+>  1 file changed, 40 insertions(+), 17 deletions(-)
+>
+
+[...]
+
+> +	case DRM_FORMAT_XRGB8888:
+> +		dst_pitch = DIV_ROUND_UP(drm_rect_width(rect), 8);
+> +		buf = ssd130x->buffer;
+> +		if (!buf)
+> +			return 0;
+> +
+
+I think this check is not needed anymore now that the driver won't attempt
+to update planes for disabled CRTCs ?
+
+It's OK for me to be paranoid though, specially after the other issue that
+you found. So I'll let you decide if you think is worth to keep the check.
+
+Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
+
 -- 
-2.17.1
+Best regards,
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
 
