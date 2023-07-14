@@ -2,72 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E94C753791
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 12:11:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB9DA753797
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 12:12:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236039AbjGNKLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 06:11:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56074 "EHLO
+        id S236050AbjGNKMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 06:12:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236033AbjGNKLe (ORCPT
+        with ESMTP id S235677AbjGNKMU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 06:11:34 -0400
-Received: from esa6.hc3370-68.iphmx.com (esa6.hc3370-68.iphmx.com [216.71.155.175])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C49826BC;
-        Fri, 14 Jul 2023 03:11:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=citrix.com; s=securemail; t=1689329473;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=dTC6edpovjQeO4taZ580kPMKMfE3II88gvz0it+T+DI=;
-  b=YxLqgjPKmW+h9zEvc1M8lCWFgSY3UR19CSKm7HmARhCqBs/Kvp/GijEx
-   IkeKO+YtxR1FED00fEzS4aGqYNr/saMHGqmL8LqO8FGSE3UR9uuOsbQ66
-   zdScTVkgrNpZX1niTIleOhp5bsSoX7nqIQW7/mRNu5J2pVdajXhcI6556
-   E=;
-Authentication-Results: esa6.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
-X-SBRS: 4.0
-X-MesageID: 115513386
-X-Ironport-Server: esa6.hc3370-68.iphmx.com
-X-Remote-IP: 162.221.156.123
-X-Policy: $RELAYED
-IronPort-Data: A9a23:xagDfqhrwjdHqTuMjUdX8QX9X161QBAKZh0ujC45NGQN5FlHY01je
- htvWWmFM/aDMGbzLd0nOtzn8hsAvJLdmN4yHVM/q3pkF3wb9cadCdqndUqhZCn6wu8v7q5Ex
- 55HNoSfdpBcolv0/ErF3m3J9CEkvU2wbuOgTrWCYmYpHlUMpB4J0XpLg/Q+jpNjne+3CgaMv
- cKai8DEMRqu1iUc3lg8sspvkzsx+qyr0N8klgZmP6sT4waCzyB94K83fsldEVOpGuG4IcbiL
- wrz5OnR1n/U+R4rFuSknt7TGqHdauePVeQmoiM+t5mK2nCulARrukoIHKN0hXNsoyeIh7hMJ
- OBl7vRcf+uL0prkw4zxWzEAe8130DYvFLXveRBTuuTLp6HKnueFL1yDwyjaMKVBktubD12i+
- tQzOikdTEncmN6n+4+HQMU8ps0udND0adZ3VnFIlVk1DN4jSJHHBa7L+cVZzHE7gcUm8fT2P
- pRDL2A1NVKZPkMJYw1MYH49tL7Aan3XaTpDsxSRrKU6+XfayAhZ27nxKtvFPNeNQK25m27B/
- z+bpj+iUk9y2Nq3+B6MriOXltD1xQDyQ6UND6y0zsYwjwjGroAUIEJPDgbqyRWjsWa+UNJ3K
- koa4CMioKE+skuxQbHVVg2yp3OsvRMGXddUVeE5gCmJy6zJ80OTAm8PTRZfZ9E88sw7Xzon0
- hmOhdyBLThutqCFDHGQ7LGZqRusNiUPa2wPfykJSU0C+daLnW0opkuRFJA5Svfz14CrX2iqm
- FhmsRTSmZ04n9cb9fzk4mzWuA+QrLSZbgc4vhzICzfNAhxCWGK1W2C5wQGFvacbdt7JFgbpU
- GsswJbHsr1XZX2ZvGnUGbhWQun0jxqQGGeE6WODCaXN4NhEF5SLWYlLqA9zK05yWirvUW+4O
- RSD0e+9CXI6AZdLUUOUS9jrYyjS5fK8fekJr9iNBja0XrB/dRWc4AZlblOK0mbmnSAEyP9va
- M3EKp7zUShHWcyLKQZaoc9HitfHIQhnlQvuqW3TlUz7gdJymlbIIVv6DLd+Rr9gt/7VyOkk2
- 91eK9GL231ivB7WO0HqHXooBQlSdxATXMmmw/G7g8bfemKK7kl9Ua6OqV7gEqQ595loehDgo
- ivlBBIHlAKm3BUq62yiMxheVV8mZr4nxVpTAMDmFQzAN6QLCWp30JoiSg==
-IronPort-HdrOrdr: A9a23:6IO9aazqiLd2HfVB2rhHKrPwIL1zdoMgy1knxilNoRw8SKKlfq
- eV7ZAmPH7P+VAssR4b+exoVJPtfZq+z+8R3WByB8bAYOCOggLBR+sO0WKL+UyGJ8SUzI9gPM
- lbHJSWcOeAb2RHsQ==
-X-Talos-CUID: 9a23:vrIsZ22XLsEgd9w4k5j+trxfMdI8Yl+Ek2jsMnSFNWxFGJ2cRAeJ5/Yx
-X-Talos-MUID: 9a23:rNjukwivUOLX8qgx7002CcMpBeNhv/WVGH83ybYPoO6bLj18Aw/Hg2Hi
-X-IronPort-AV: E=Sophos;i="6.01,205,1684814400"; 
-   d="scan'208";a="115513386"
-From:   Ross Lagerwall <ross.lagerwall@citrix.com>
-To:     Christoph Hellwig <hch@infradead.org>, Jens Axboe <axboe@kernel.dk>
-CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Ross Lagerwall" <ross.lagerwall@citrix.com>
-Subject: [PATCH v2] blk-mq: Fix stall due to recursive flush plug
-Date:   Fri, 14 Jul 2023 11:11:06 +0100
-Message-ID: <20230714101106.3635611-1-ross.lagerwall@citrix.com>
-X-Mailer: git-send-email 2.39.3
+        Fri, 14 Jul 2023 06:12:20 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFAA01BB;
+        Fri, 14 Jul 2023 03:12:18 -0700 (PDT)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36E6HxIq029244;
+        Fri, 14 Jul 2023 10:12:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=RR+/IxyhJsXlxLzbwwwL7vp7nrADziSnHJ10gpkT6K0=;
+ b=Wqgrlv7qtvnN7Lznqqo8URJMR7ogpQMuTLSNVV7MqZLxvSLmD5BGCk6caG2ASD+nDpvM
+ G5Cv50EWP9AW4rLxw/5WtS4sKYWP3nw+IjTKIiALjp5qdrlV4YX6eCX7DLu61tc8mB8K
+ dzNhQjolIyuDtPxLLmvqZaDHK82Y9gz9Ukq03w77auoqrWoXt+vyGUKs+kU5WMFA6XI2
+ mKNhx0DsFNr7mT2DepUreT1EAI5oPdvBDYSL2FHPUqI632L4XDu4CSAETNYzhs+iPaX2
+ rW3ZCWF1eydFc/WMmXz9ornrRRwYX779WcDTUxvfWPhe1zTYYI/ODPq9i3aOIspNOLgv QA== 
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rtpu91ecc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 14 Jul 2023 10:12:09 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36EAC8ZF019373
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 14 Jul 2023 10:12:08 GMT
+Received: from [10.239.133.73] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Fri, 14 Jul
+ 2023 03:12:05 -0700
+Message-ID: <b76c7a9b-8ed6-97da-bdfa-47cc7db51ff5@quicinc.com>
+Date:   Fri, 14 Jul 2023 18:12:02 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.2
+Subject: Re: [PATCH] arm64: Add the arm64.nolse_atomics command line option
+To:     Will Deacon <will@kernel.org>
+CC:     Mark Rutland <mark.rutland@arm.com>, <corbet@lwn.net>,
+        <catalin.marinas@arm.com>, <maz@kernel.org>,
+        <quic_pkondeti@quicinc.com>, <quic_kaushalk@quicinc.com>,
+        <quic_satyap@quicinc.com>, <quic_shashim@quicinc.com>,
+        <quic_songxue@quicinc.com>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20230711082226.GA1554@willie-the-truck>
+ <84f0994a-26de-c20a-a32f-ec8fe41df3a3@quicinc.com>
+ <20230711102510.GA1809@willie-the-truck>
+ <67c2621f-4cad-2495-9785-7737246d3e90@quicinc.com>
+ <ZK5X9bXQT7GBxNHj@FVFF77S0Q05N.emea.arm.com>
+ <604ac52d-4336-744f-2ab8-44d1c93fbaa8@quicinc.com>
+ <ZK_d86ApI1FCHhTL@FVFF77S0Q05N.cambridge.arm.com>
+ <e02b9969-a3ca-a80d-1d32-25d2bf4c72b6@quicinc.com>
+ <ZLBLwG2LJ4gZLfbh@FVFF77S0Q05N.cambridge.arm.com>
+ <6d1a6691-f858-71bf-97fe-97e13fcb93b6@quicinc.com>
+ <20230714082348.GA5240@willie-the-truck>
+From:   "Aiqun(Maria) Yu" <quic_aiquny@quicinc.com>
+In-Reply-To: <20230714082348.GA5240@willie-the-truck>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: ocEaWh3K4kLE3lDSXpUuBQnFcI3-ftKt
+X-Proofpoint-ORIG-GUID: ocEaWh3K4kLE3lDSXpUuBQnFcI3-ftKt
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-14_04,2023-07-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ priorityscore=1501 mlxlogscore=999 clxscore=1015 adultscore=0 spamscore=0
+ impostorscore=0 lowpriorityscore=0 bulkscore=0 malwarescore=0 phishscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307140091
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,74 +93,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We have seen rare IO stalls as follows:
+On 7/14/2023 4:23 PM, Will Deacon wrote:
+> On Fri, Jul 14, 2023 at 09:56:27AM +0800, Aiqun(Maria) Yu wrote:
+>> On 7/14/2023 3:08 AM, Mark Rutland wrote:
+>>> On Thu, Jul 13, 2023 at 10:08:34PM +0800, Aiqun(Maria) Yu wrote:
+>>>> On 7/13/2023 7:20 PM, Mark Rutland wrote:
+>>>>> Are you saying that LSE atomics to *cacheable* mappings do not work on your
+>>>>> system?
+>>>>>
+>>>>> Specifically, when using a Normal Inner-Shareable Inner-Writeback
+>>>>> Outer-Writeback mapping, do the LSE atomics work or not work?
+>>>> *cacheable* mapping have the LSE atomic is not working if far atomic is
+>>>> performed.
+>>>
+>>> Thanks for confirming; the fact that this doesn't work on *cacheable* memory is
+>>> definitely a major issue. I think everyone is confused here because of the
+>>> earlier mention of non-cachable accesses (which don't matter).
+>>>
+>> Maybe I can have the information collected in a summary to see if that
+>> helps.
+>>> I know that some CPU implementations have EL3 control bits to force LSE atomics
+>>> to be performed near (e.g. in Cortex-A55, the CPUECTLR.ATOM control bits),
+>>> which would avoid the issue while still allowing the LSE atomics to be used.
+>>>
+>>> If those can be configured in EL3 firmware, that would be a preferable
+>>> workaround.
+>>>
+>>> Can you say which CPUs are integrated in this system? and/or can you check if
+>>> such control bits exist?
+>>
+>> We have CPUECTLR_EL1.ATOM bit can force LSE atomics to be perform near.
+>> CPUECTLR_EL1 is also an option to EL1 kernel drivers to be configuarable.
+>>
+>> Try to a detailed summarise of the whole discussions, anyone can ignore some
+>> part if you are already know.
+>>
+>> * Part 1: Solution for this issue.
+>> While we still want to have options to let third party and end users can
+>> have options:
+>>    1.Disable lse atomic cap.
+>>    2.*Disallow* far atomic by "CPUECTLR_EL1.atom force near atomic" and
+>> non-cachable mappling for lse atomic only.
+> 
+> Sorry, but this still isn't making sense to me. Which CPUs do you have on
+> this SoC?
+cpu is cortex A78/A55.
+> 
+> My understanding of the CPUs from ARM is that LSE atomics are not supposed
+> to be sent to blocks that don't support them. That doesn't mean you have to
+> do everything near, however -- you can still execute them at e.g. L2.
+> 
+> For example, the Cortex-X1 TRM states:
+> 
+>    | Atomic instructions to cacheable memory can be performed as either
+>    | near atomics or far atomics, depending on where the cache line
+>    | containing the data resides.
+>    |
+>    | When an instruction hits in the L1 data cache in a unique state, then
+>    | it is performed as a near atomic in the L1 memory system. If the atomic
+>    | operation misses in the L1 cache, or the line is shared with another
+>    | core, then the atomic is sent as a far atomic on the core CHI interface.
+lse atomic is optional to CHI-B for example, some system may have cpu 
+feature register have lse atomic feature, but the far atomic is not 
+accpeted by CHI side. It will be simiar issue that we do.
+>    |
+>    | If the operation misses everywhere within the cluster, and the
+>    | interconnect supports far atomics, then the atomic is passed on to the
+>    | interconnect to perform the operation.
+>    |
+>    | When the operation hits anywhere inside the cluster, or when an
+>    | interconnect does not support atomics, the L3 memory system performs
+>    | the atomic operation. If the line is not already there, it allocates
+>    | the line into the L3 cache. This depends on whether the DSU is configured
+>    | with an L3 cache.
+> 
+> So something doesn't add up.
+> 
+>> * Part 2: Why we need the solution
+>> 1. There is also some case far atomic is better performance than near
+>> atomic. end user may still can still try to do allow far atomic.
+>> while this driver is also use kerenl LSE ATOMIC macro, so it can be running
+>> on cpu don't support lse atomic and cpu support lse atomic already.
+>> while current system, cpu have feature register said lse atomic is
+>> supported, but memory controller is not supported is currently not yet
+>> supported.
+> 
+> I think you're forgetting the fact that these instructions can be executed
+> by userspace, so the kernel option is completely bogus. If you're saying
+> that cacheable atomics can cause external aborts, then I can write an app
+> which will crash your device even if you've set this command line option.
+> 
+For apps like userspace also needed to check the system capbility as far 
+as I know.
+> Will
 
-* blk_mq_plug_issue_direct() is entered with an mq_list containing two
-requests.
-* For the first request, it sets last == false and enters the driver's
-queue_rq callback.
-* The driver queue_rq callback indirectly calls schedule() which calls
-blk_flush_plug(). This may happen if the driver has the
-BLK_MQ_F_BLOCKING flag set and is allowed to sleep in ->queue_rq.
-* blk_flush_plug() handles the remaining request in the mq_list. mq_list
-is now empty.
-* The original call to queue_rq resumes (with last == false).
-* The loop in blk_mq_plug_issue_direct() terminates because there are no
-remaining requests in mq_list.
-
-The IO is now stalled because the last request submitted to the driver
-had last == false and there was no subsequent call to commit_rqs().
-
-Fix this by returning early in blk_mq_flush_plug_list() if rq_count is 0
-which it will be in the recursive case, rather than checking if the
-mq_list is empty. At the same time, adjust one of the callers to skip
-the mq_list empty check as it is not necessary.
-
-Fixes: dc5fc361d891 ("block: attempt direct issue of plug list")
-Signed-off-by: Ross Lagerwall <ross.lagerwall@citrix.com>
----
-
-In v2:
-* Update commit message and add a comment.
-
- block/blk-core.c | 3 +--
- block/blk-mq.c   | 9 ++++++++-
- 2 files changed, 9 insertions(+), 3 deletions(-)
-
-diff --git a/block/blk-core.c b/block/blk-core.c
-index 99d8b9812b18..90de50082146 100644
---- a/block/blk-core.c
-+++ b/block/blk-core.c
-@@ -1144,8 +1144,7 @@ void __blk_flush_plug(struct blk_plug *plug, bool from_schedule)
- {
- 	if (!list_empty(&plug->cb_list))
- 		flush_plug_callbacks(plug, from_schedule);
--	if (!rq_list_empty(plug->mq_list))
--		blk_mq_flush_plug_list(plug, from_schedule);
-+	blk_mq_flush_plug_list(plug, from_schedule);
- 	/*
- 	 * Unconditionally flush out cached requests, even if the unplug
- 	 * event came from schedule. Since we know hold references to the
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index 5504719b970d..e6bd9c5f42bb 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -2742,7 +2742,14 @@ void blk_mq_flush_plug_list(struct blk_plug *plug, bool from_schedule)
- {
- 	struct request *rq;
- 
--	if (rq_list_empty(plug->mq_list))
-+	/*
-+	 * We may have been called recursively midway through handling
-+	 * plug->mq_list via a schedule() in the driver's queue_rq() callback.
-+	 * To avoid mq_list changing under our feet, clear rq_count early and
-+	 * bail out specifically if rq_count is 0 rather than checking
-+	 * whether the mq_list is empty.
-+	 */
-+	if (plug->rq_count == 0)
- 		return;
- 	plug->rq_count = 0;
- 
 -- 
-2.39.3
+Thx and BRs,
+Aiqun(Maria) Yu
 
