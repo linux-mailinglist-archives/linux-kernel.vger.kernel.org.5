@@ -2,206 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E4AA753896
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 12:45:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11C457538D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 12:53:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236147AbjGNKpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 06:45:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47772 "EHLO
+        id S235526AbjGNKxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 06:53:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235212AbjGNKpa (ORCPT
+        with ESMTP id S234735AbjGNKxe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 06:45:30 -0400
-Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAAFD30EF;
-        Fri, 14 Jul 2023 03:45:26 -0700 (PDT)
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 8916024DD81;
-        Fri, 14 Jul 2023 18:45:25 +0800 (CST)
-Received: from EXMBX062.cuchost.com (172.16.6.62) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 14 Jul
- 2023 18:45:25 +0800
-Received: from starfive-sdk.starfivetech.com (171.223.208.138) by
- EXMBX062.cuchost.com (172.16.6.62) with Microsoft SMTP Server (TLS) id
- 15.0.1497.42; Fri, 14 Jul 2023 18:45:23 +0800
-From:   Samin Guo <samin.guo@starfivetech.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     Emil Renner Berthing <kernel@esmil.dk>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        Conor Dooley <conor@kernel.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Richard Cochran <richardcochran@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Yanhong Wang <yanhong.wang@starfivetech.com>,
-        Samin Guo <samin.guo@starfivetech.com>,
-        Tommaso Merciai <tomm.merciai@gmail.com>
-Subject: [PATCH v1 2/2] riscv: dts: starfive: visionfive 2: Add configuration of gmac and phy
-Date:   Fri, 14 Jul 2023 18:45:21 +0800
-Message-ID: <20230714104521.18751-3-samin.guo@starfivetech.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230714104521.18751-1-samin.guo@starfivetech.com>
-References: <20230714104521.18751-1-samin.guo@starfivetech.com>
+        Fri, 14 Jul 2023 06:53:34 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9512130D1;
+        Fri, 14 Jul 2023 03:53:33 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 4FA4A22113;
+        Fri, 14 Jul 2023 10:53:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1689332012;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0qQY0pMf/UabBAcvhkGlUgib+9xhl7v6k8CF4e0RVcM=;
+        b=neMayiXn+Ro3eLm/nmp5aFdNYcam8bFb0D3F0bV2ZrkrvvPBCN6ndp9h3Fh1YR2pf6n24y
+        iz0TYWgtW1fQVPkgFZvNMuqSgi6fm3KBiBxPtyjp9zKlAjf+qM7jo7waDTHkBTEIddG1Pc
+        jGrcxYqBWTpQFfJWkFZ9S1P3JN6jE5c=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1689332012;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0qQY0pMf/UabBAcvhkGlUgib+9xhl7v6k8CF4e0RVcM=;
+        b=F+7Y+yB92SLJegc4FRZD3HtAk4Wp0LEHVtC1EEWGpPrfzMj9nI7te9xDzYAVovYlrmhkGy
+        xeP9leyDppFvxGAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 25411138F8;
+        Fri, 14 Jul 2023 10:53:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Kjo/CCwpsWSKIQAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Fri, 14 Jul 2023 10:53:32 +0000
+Date:   Fri, 14 Jul 2023 12:46:55 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     huzhi001@208suo.com
+Cc:     dsterba@suse.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] VFS: Fix seven errors in bitmap.c
+Message-ID: <20230714104655.GH20457@suse.cz>
+Reply-To: dsterba@suse.cz
+References: <tencent_CE461BFFDACFEA943A778650FB672D9E3207@qq.com>
+ <80ff0222e0fc0b8e25ae4837b76bce2d@208suo.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [171.223.208.138]
-X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX062.cuchost.com
- (172.16.6.62)
-X-YovoleRuleAgent: yovoleflag
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <80ff0222e0fc0b8e25ae4837b76bce2d@208suo.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-v1.3B:
-  v1.3B uses motorcomm YT8531(rgmii-id phy) x2, need delay and
-  inverse configurations.
-  The tx_clk of v1.3B uses an external clock and needs to be
-  switched to an external clock source.
+On Fri, Jul 14, 2023 at 03:14:18PM +0800, huzhi001@208suo.com wrote:
+> The following checkpatch errors are removed:
+> ERROR: space required after that ',' (ctx:VxV)
+> ERROR: space required after that ',' (ctx:VxV)
+> ERROR: space required after that ',' (ctx:VxV)
+> ERROR: space required after that ',' (ctx:VxV)
+> ERROR: space required after that ',' (ctx:VxV)
+> ERROR: space required after that ',' (ctx:VxV)
+> ERROR: space required after that ',' (ctx:VxV)
 
-v1.2A:
-  v1.2A gmac0 uses motorcomm YT8531(rgmii-id) PHY, and needs delay
-  configurations.
-  v1.2A gmac1 uses motorcomm YT8512(rmii) PHY, and needs to
-  switch rx and rx to external clock sources.
+The AFFS module gets only bug fixes (as can be seen in the MAINTAINERS
+file) or API updates, not coding style fixes.
 
-Tested-by: Tommaso Merciai <tomm.merciai@gmail.com>
-Signed-off-by: Samin Guo <samin.guo@starfivetech.com>
----
- .../jh7110-starfive-visionfive-2-v1.2a.dts    | 13 +++++++
- .../jh7110-starfive-visionfive-2-v1.3b.dts    | 31 +++++++++++++++++
- .../jh7110-starfive-visionfive-2.dtsi         | 34 +++++++++++++++++++
- 3 files changed, 78 insertions(+)
+The sources have way more stylistic things that checkpatch does not like
+but we are not going to fix them:
 
-diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2-v1.2a.dts b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2-v1.2a.dts
-index 4af3300f3cf3..205a13d8c8b1 100644
---- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2-v1.2a.dts
-+++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2-v1.2a.dts
-@@ -11,3 +11,16 @@
- 	model = "StarFive VisionFive 2 v1.2A";
- 	compatible = "starfive,visionfive-2-v1.2a", "starfive,jh7110";
- };
-+
-+&gmac1 {
-+	phy-mode = "rmii";
-+	assigned-clocks = <&syscrg JH7110_SYSCLK_GMAC1_TX>,
-+			  <&syscrg JH7110_SYSCLK_GMAC1_RX>;
-+	assigned-clock-parents = <&syscrg JH7110_SYSCLK_GMAC1_RMII_RTX>,
-+				 <&syscrg JH7110_SYSCLK_GMAC1_RMII_RTX>;
-+};
-+
-+&phy0 {
-+	rx-internal-delay-ps = <1900>;
-+	tx-internal-delay-ps = <1350>;
-+};
-diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2-v1.3b.dts b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2-v1.3b.dts
-index 9230cc3d8946..36f74d4eda01 100644
---- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2-v1.3b.dts
-+++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2-v1.3b.dts
-@@ -11,3 +11,34 @@
- 	model = "StarFive VisionFive 2 v1.3B";
- 	compatible = "starfive,visionfive-2-v1.3b", "starfive,jh7110";
- };
-+
-+&gmac0 {
-+	starfive,tx-use-rgmii-clk;
-+	assigned-clocks = <&aoncrg JH7110_AONCLK_GMAC0_TX>;
-+	assigned-clock-parents = <&aoncrg JH7110_AONCLK_GMAC0_RMII_RTX>;
-+};
-+
-+&gmac1 {
-+	starfive,tx-use-rgmii-clk;
-+	assigned-clocks = <&syscrg JH7110_SYSCLK_GMAC1_TX>;
-+	assigned-clock-parents = <&syscrg JH7110_SYSCLK_GMAC1_RMII_RTX>;
-+};
-+
-+&phy0 {
-+	motorcomm,tx-clk-adj-enabled;
-+	motorcomm,tx-clk-100-inverted;
-+	motorcomm,tx-clk-1000-inverted;
-+	motorcomm,rx-clk-driver-strength = <3970>;
-+	motorcomm,rx-data-driver-strength = <2910>;
-+	rx-internal-delay-ps = <1500>;
-+	tx-internal-delay-ps = <1500>;
-+};
-+
-+&phy1 {
-+	motorcomm,tx-clk-adj-enabled;
-+	motorcomm,tx-clk-100-inverted;
-+	motorcomm,rx-clk-driver-strength = <3970>;
-+	motorcomm,rx-data-driver-strength = <2910>;
-+	rx-internal-delay-ps = <300>;
-+	tx-internal-delay-ps = <0>;
-+};
-diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-index fa0061eb33a7..fcb45db42df5 100644
---- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-+++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-@@ -11,6 +11,8 @@
- 
- / {
- 	aliases {
-+		ethernet0 = &gmac0;
-+		ethernet1 = &gmac1;
- 		i2c0 = &i2c0;
- 		i2c2 = &i2c2;
- 		i2c5 = &i2c5;
-@@ -86,6 +88,38 @@
- 	clock-frequency = <49152000>;
- };
- 
-+&gmac0 {
-+	phy-handle = <&phy0>;
-+	phy-mode = "rgmii-id";
-+	status = "okay";
-+
-+	mdio {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		compatible = "snps,dwmac-mdio";
-+
-+		phy0: ethernet-phy@0 {
-+			reg = <0>;
-+		};
-+	};
-+};
-+
-+&gmac1 {
-+	phy-handle = <&phy1>;
-+	phy-mode = "rgmii-id";
-+	status = "okay";
-+
-+	mdio {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		compatible = "snps,dwmac-mdio";
-+
-+		phy1: ethernet-phy@1 {
-+			reg = <0>;
-+		};
-+	};
-+};
-+
- &i2c0 {
- 	clock-frequency = <100000>;
- 	i2c-sda-hold-time-ns = <300>;
--- 
-2.17.1
-
+total: 0 errors, 1 warnings, 189 lines checked
+total: 1 errors, 5 warnings, 543 lines checked
+total: 7 errors, 4 warnings, 365 lines checked
+total: 1 errors, 1 warnings, 144 lines checked
+total: 2 errors, 13 warnings, 1009 lines checked
+total: 8 errors, 12 warnings, 422 lines checked
+total: 0 errors, 2 warnings, 584 lines checked
+total: 15 errors, 13 warnings, 681 lines checked
+total: 1 errors, 2 warnings, 77 lines checked
+total: 4 errors, 10 warnings, 328 lines checked
+total: 4 errors, 0 warnings, 148 lines checked
