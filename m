@@ -2,73 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7771F754066
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 19:24:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6479E754069
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 19:25:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235689AbjGNRYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 13:24:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48920 "EHLO
+        id S235829AbjGNRYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 13:24:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233301AbjGNRYg (ORCPT
+        with ESMTP id S235772AbjGNRYs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 13:24:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAE682691
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 10:23:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689355427;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IjSCUEVQqiObQodmnZyPQvDEZ31gPn7XJ/bLLSzzo2c=;
-        b=YolIWghA4llRqvQWD1hyTOG0g0WM9IPvPbVJMwgH5h1IFNqBju2y2c6FHYvDsrjLrIQ0rq
-        mYvfYQ/aTvCFEJQo7Hi/0bVTf5bLgHAfDjQ4ZPrdYhuwiUVe0dtLiw5hBzbbjMNx1/IRGT
-        kIt0dJbXu57F5CkKJ6vImspD5umVdgM=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-250-1q70EXljPLGuQ4wmDRDicA-1; Fri, 14 Jul 2023 13:23:44 -0400
-X-MC-Unique: 1q70EXljPLGuQ4wmDRDicA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E4614185A78F;
-        Fri, 14 Jul 2023 17:23:43 +0000 (UTC)
-Received: from [10.22.9.81] (unknown [10.22.9.81])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 35CD5C2C856;
-        Fri, 14 Jul 2023 17:23:43 +0000 (UTC)
-Message-ID: <fea3587a-ca6a-6930-bd3d-c4f7f330be67@redhat.com>
-Date:   Fri, 14 Jul 2023 13:23:42 -0400
+        Fri, 14 Jul 2023 13:24:48 -0400
+Received: from mail-io1-f48.google.com (mail-io1-f48.google.com [209.85.166.48])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D56F359F;
+        Fri, 14 Jul 2023 10:24:47 -0700 (PDT)
+Received: by mail-io1-f48.google.com with SMTP id ca18e2360f4ac-78654448524so84110739f.2;
+        Fri, 14 Jul 2023 10:24:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689355487; x=1691947487;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=38SB8JSzOcrI7IJ42Nd3yrcEKyK7JHRpErlbmfrx1QM=;
+        b=IFHlsFRi5A8Ypk73xX5Y2EU5uoXdG9OSeBoq4Jrsd0ai+NyGLKmlzZh08DABKIfJO2
+         C4HwnPqh8bgSaN17Yp4GbnOKLi6VUO7ml9GX+AzJ61hA8hiQZ9Go1Q70i2zG9WAac1X1
+         UjE2jH8xhfjp/fIQI/BAWfpoGwa5fxpzYB8ZSM/e/0JWMQtOIPNAUTX4MXfic6XJ+Zyf
+         FQcCU72PjX0vkb1+0gHVB/gfvoM4bawe9Al8WGkQi+Gpq8srCKDzU0pZaP91kwSA38Yt
+         EMC1q2smOcUosDHg0w/4AEqSY7AMgULOzPhTSOexZejW63lEYe1ic6Q6GSaQK2xoRvf/
+         ipFg==
+X-Gm-Message-State: ABy/qLafDmh9CnWaiNi7+6MUqiPl58+DqqkrDt5zDbYXTTSxd0GTtBLg
+        Gcfo4X1y/SOfLi1yIX+T0Q==
+X-Google-Smtp-Source: APBJJlHjy7NQb45aTJubpQC/KkFW4I126CzjwcHnZGS3P92nyelRg6dygeLUfW1iOMQHcZqRO1g6jg==
+X-Received: by 2002:a6b:c40a:0:b0:783:344d:6b46 with SMTP id y10-20020a6bc40a000000b00783344d6b46mr5039194ioa.21.1689355486815;
+        Fri, 14 Jul 2023 10:24:46 -0700 (PDT)
+Received: from robh_at_kernel.org ([64.188.179.250])
+        by smtp.gmail.com with ESMTPSA id u6-20020a02cb86000000b0042b298507b3sm2722992jap.42.2023.07.14.10.24.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Jul 2023 10:24:46 -0700 (PDT)
+Received: (nullmailer pid 4013008 invoked by uid 1000);
+        Fri, 14 Jul 2023 17:24:44 -0000
+Date:   Fri, 14 Jul 2023 11:24:44 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Alexandru Ardelean <alex@shruggie.ro>
+Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        olteanv@gmail.com, marius.muresan@mxt.ro
+Subject: Re: [PATCH v2 2/2] dt-bindings: net: phy: vsc8531: document
+ 'vsc8531,clkout-freq-mhz' property
+Message-ID: <20230714172444.GA4003281-robh@kernel.org>
+References: <20230713202123.231445-1-alex@shruggie.ro>
+ <20230713202123.231445-2-alex@shruggie.ro>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: Expensive memory.stat + cpu.stat reads
-Content-Language: en-US
-To:     Ivan Babrou <ivan@cloudflare.com>
-Cc:     Shakeel Butt <shakeelb@google.com>, cgroups@vger.kernel.org,
-        Linux MM <linux-mm@kvack.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <CABWYdi0c6__rh-K7dcM_pkf9BJdTRtAU08M43KO9ME4-dsgfoQ@mail.gmail.com>
- <20230706062045.xwmwns7cm4fxd7iu@google.com>
- <CABWYdi2pBaCrdKcM37oBomc+5W8MdRp1HwPpOExBGYfZitxyWA@mail.gmail.com>
- <d3f3a7bc-b181-a408-af1d-dd401c172cbf@redhat.com>
- <CABWYdi2iWYT0sHpK74W6=Oz6HA_3bAqKQd4h+amK0n3T3nge6g@mail.gmail.com>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <CABWYdi2iWYT0sHpK74W6=Oz6HA_3bAqKQd4h+amK0n3T3nge6g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230713202123.231445-2-alex@shruggie.ro>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,105 +69,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/13/23 19:25, Ivan Babrou wrote:
-> On Mon, Jul 10, 2023 at 5:44 PM Waiman Long <longman@redhat.com> wrote:
->> On 7/10/23 19:21, Ivan Babrou wrote:
->>> On Wed, Jul 5, 2023 at 11:20 PM Shakeel Butt <shakeelb@google.com> wrote:
->>>> On Fri, Jun 30, 2023 at 04:22:28PM -0700, Ivan Babrou wrote:
->>>>> Hello,
->>>>>
->>>>> We're seeing CPU load issues with cgroup stats retrieval. I made a
->>>>> public gist with all the details, including the repro code (which
->>>>> unfortunately requires heavily loaded hardware) and some flamegraphs:
->>>>>
->>>>> * https://gist.github.com/bobrik/5ba58fb75a48620a1965026ad30a0a13
->>>>>
->>>>> I'll repeat the gist of that gist here. Our repro has the following
->>>>> output after a warm-up run:
->>>>>
->>>>> completed:  5.17s [manual / mem-stat + cpu-stat]
->>>>> completed:  5.59s [manual / cpu-stat + mem-stat]
->>>>> completed:  0.52s [manual / mem-stat]
->>>>> completed:  0.04s [manual / cpu-stat]
->>>>>
->>>>> The first two lines do effectively the following:
->>>>>
->>>>> for _ in $(seq 1 1000); do cat /sys/fs/cgroup/system.slice/memory.stat
->>>>> /sys/fs/cgroup/system.slice/cpu.stat > /dev/null
->>>>>
->>>>> The latter two are the same thing, but via two loops:
->>>>>
->>>>> for _ in $(seq 1 1000); do cat /sys/fs/cgroup/system.slice/cpu.stat >
->>>>> /dev/null; done
->>>>> for _ in $(seq 1 1000); do cat /sys/fs/cgroup/system.slice/memory.stat
->>>>>> /dev/null; done
->>>>> As you might've noticed from the output, splitting the loop into two
->>>>> makes the code run 10x faster. This isn't great, because most
->>>>> monitoring software likes to get all stats for one service before
->>>>> reading the stats for the next one, which maps to the slow and
->>>>> expensive way of doing this.
->>>>>
->>>>> We're running Linux v6.1 (the output is from v6.1.25) with no patches
->>>>> that touch the cgroup or mm subsystems, so you can assume vanilla
->>>>> kernel.
->>>>>
->>>>>   From the flamegraph it just looks like rstat flushing takes longer. I
->>>>> used the following flags on an AMD EPYC 7642 system (our usual pick
->>>>> cpu-clock was blaming spinlock irqrestore, which was questionable):
->>>>>
->>>>> perf -e cycles -g --call-graph fp -F 999 -- /tmp/repro
->>>>>
->>>>> Naturally, there are two questions that arise:
->>>>>
->>>>> * Is this expected (I guess not, but good to be sure)?
->>>>> * What can we do to make this better?
->>>>>
->>>>> I am happy to try out patches or to do some tracing to help understand
->>>>> this better.
->>>> Hi Ivan,
->>>>
->>>> Thanks a lot, as always, for reporting this. This is not expected and
->>>> should be fixed. Is the issue easy to repro or some specific workload or
->>>> high load/traffic is required? Can you repro this with the latest linus
->>>> tree? Also do you see any difference of root's cgroup.stat where this
->>>> issue happens vs good state?
->>> I'm afraid there's no easy way to reproduce. We see it from time to
->>> time in different locations. The one that I was looking at for the
->>> initial email does not reproduce it anymore:
->> My understanding of mem-stat and cpu-stat is that they are independent
->> of each other. In theory, reading one shouldn't affect the performance
->> of reading the others. Since you are doing mem-stat and cpu-stat reading
->> repetitively in a loop, it is likely that all the data are in the cache
->> most of the time resulting in very fast processing time. If it happens
->> that the specific memory location of mem-stat and cpu-stat data are such
->> that reading one will cause the other data to be flushed out of the
->> cache and have to be re-read from memory again, you could see
->> significant performance regression.
->>
->> It is one of the possible causes, but I may be wrong.
-> Do you think it's somewhat similar to how iterating a matrix in rows
-> is faster than in columns due to sequential vs random memory reads?
->
-> * https://stackoverflow.com/q/9936132
-> * https://en.wikipedia.org/wiki/Row-_and_column-major_order
-> * https://en.wikipedia.org/wiki/Loop_interchange
+On Thu, Jul 13, 2023 at 11:21:23PM +0300, Alexandru Ardelean wrote:
+> For VSC8351 and similar PHYs, a new property was added to generate a clock
+> signal on the CLKOUT pin.
 
-Yes, it is similar to what is being described in those articles.
+Sorry, didn't think about it on v1, but I would imagine other vendors' 
+PHYs have similar functionality. We should have something common. We 
+have the clock binding for clocks already, so we should consider if 
+that should be used here. It may look like an overkill for what you 
+need, but things always start out that way. What if you want to turn the 
+clock on and off as well?
 
+> This change documents the change in the device-tree bindings doc.
 
->
-> I've had a similar suspicion and it would be good to confirm whether
-> it's that or something else. I can probably collect perf counters for
-> different runs, but I'm not sure which ones I'll need.
->
-> In a similar vein, if we could come up with a tracepoint that would
-> tell us the amount of work done (or any other relevant metric that
-> would help) during rstat flushing, I can certainly collect that
-> information as well for every reading combination.
+That's obvious.
 
-The perf-c2c tool may be able to help. The data to look for is how often 
-the data is from caches vs direct memory load/store.
-
-Cheers,
-Longman
-
+> 
+> Signed-off-by: Alexandru Ardelean <alex@shruggie.ro>
+> ---
+> 
+> Changelog v1 -> v2:
+> * https://lore.kernel.org/netdev/20230706081554.1616839-2-alex@shruggie.ro/
+> * changed property name 'vsc8531,clkout-freq-mhz' -> 'mscc,clkout-freq-mhz'
+>   as requested by Rob
+> * added 'net-next' tag as requested by Andrew
+> 
+>  Documentation/devicetree/bindings/net/mscc-phy-vsc8531.txt | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/net/mscc-phy-vsc8531.txt b/Documentation/devicetree/bindings/net/mscc-phy-vsc8531.txt
+> index 0a3647fe331b..085d0e8a834e 100644
+> --- a/Documentation/devicetree/bindings/net/mscc-phy-vsc8531.txt
+> +++ b/Documentation/devicetree/bindings/net/mscc-phy-vsc8531.txt
+> @@ -31,6 +31,10 @@ Optional properties:
+>  			  VSC8531_LINK_100_ACTIVITY (2),
+>  			  VSC8531_LINK_ACTIVITY (0) and
+>  			  VSC8531_DUPLEX_COLLISION (8).
+> +- mscc,clkout-freq-mhz	: For VSC8531 and similar PHYs, this will output
+> +			  a clock signal on the CLKOUT pin of the chip.
+> +			  The supported values are 25, 50 & 125 Mhz.
+> +			  Default value is no clock signal on the CLKOUT pin.
+>  - load-save-gpios	: GPIO used for the load/save operation of the PTP
+>  			  hardware clock (PHC).
+>  
+> @@ -69,5 +73,6 @@ Example:
+>                  vsc8531,edge-slowdown	= <7>;
+>                  vsc8531,led-0-mode	= <VSC8531_LINK_1000_ACTIVITY>;
+>                  vsc8531,led-1-mode	= <VSC8531_LINK_100_ACTIVITY>;
+> +                mscc,clkout-freq-mhz	= <50>;
+>  		load-save-gpios		= <&gpio 10 GPIO_ACTIVE_HIGH>;
+>          };
+> -- 
+> 2.41.0
+> 
