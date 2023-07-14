@@ -2,62 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 208E8754124
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 19:49:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C3617541D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 19:55:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235463AbjGNRrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 13:47:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34476 "EHLO
+        id S236548AbjGNRxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 13:53:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236249AbjGNRr1 (ORCPT
+        with ESMTP id S236557AbjGNRwv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 13:47:27 -0400
-Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C8953AB5;
-        Fri, 14 Jul 2023 10:47:00 -0700 (PDT)
-Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-78666f06691so88274039f.0;
-        Fri, 14 Jul 2023 10:47:00 -0700 (PDT)
+        Fri, 14 Jul 2023 13:52:51 -0400
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37F733AAE;
+        Fri, 14 Jul 2023 10:52:11 -0700 (PDT)
+Received: by mail-il1-x134.google.com with SMTP id e9e14a558f8ab-3456fda4ed1so10442625ab.0;
+        Fri, 14 Jul 2023 10:52:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689356757; x=1691948757;
+        d=1e100.net; s=20221208; t=1689356771; x=1691948771;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=ASjrxMFGfI2mQtSCo+tL5VWD7Mqm7tMyxd3We8wcpHw=;
-        b=WoUt32GyMkc/4F9zeZohGtiyFl4tzAJWDPu60bbfx29rqG6b2XTZhqLibHGgGR1lE4
-         rDNtP+BDPARI8NfK9O1XivOyAPx1w+WyIwSPa2udKD0iz56v820BlUj0kyhcLqWUrLm/
-         iGl9cmBM3lbnDt1TFv8YXH/7GJRgeNAqCkKRHi5XPR+jS2TUL2G6IFUh82NnSxEU5DbV
-         iEX4rYpDpREn2FUs03MNOoKPRkIONiaiak7BnFejwHlRshfeCXnyfAQiHBFf6OpVOo1d
-         YGNlgBH9Oi6aP5thz+t4OJv1INZqnKd8MBIUMk+jUIg1I3fAmSBHLYiSNyu7BRiFMw0D
-         VdqQ==
-X-Gm-Message-State: ABy/qLb1pz/xrwp6zdYlquxcBHejGankgJ6CEAhpLu2CD7/Cb+esbbUE
-        AV3uVDCvaK4aU2FSkICq00XVlyx6iQ==
-X-Google-Smtp-Source: APBJJlHuso8S9Bt7JOE/amuqp1QRpWb0gkLH6g4sDyXSdQBCVP4PpFjXy2a6cRQm/j9Ech1mQSqMHw==
-X-Received: by 2002:a6b:760e:0:b0:787:f94:5133 with SMTP id g14-20020a6b760e000000b007870f945133mr4910825iom.2.1689356757494;
-        Fri, 14 Jul 2023 10:45:57 -0700 (PDT)
+        bh=gvpPOhyiOh3yD5ckolCJs7/jsewuEi/UtNcofsHWiUI=;
+        b=DrLckZi09VeG1IG0R0Y5yA7R5/a9hNd1qA9c8W42Y5MgY6k5R/p5en30xJN8lC8s9D
+         VgxcmHIqfUD05QEw28iqRsPxofiguR5Uf+Sw3Iwtv0J0mGdrIhlu3RZi4AjVWvNFAflZ
+         6RLhFD5rb56JgTyN7WOYlFNfJmIZPVwBKP3XZRJ2APuneQq4VhI2F/mX18aj5ycS312T
+         s4CsR0cI6h29ctTS+KepCOOMjDpVOs9wTPBa0IJ017goQqe9MbzTLwnFdMgATTgUZ37W
+         RFaEIulSSVzFV7k7x4gPCjwljFU/4ZKwLyaIN6aoT5xQqXdSyG3AbbBxIx/078ZxkkxA
+         KPJQ==
+X-Gm-Message-State: ABy/qLZdJDEZs9d1OKu1+DqvHume7utt6Aro/HazTeLwZyyDIrzmrTsE
+        ES+6mVgCNJuZT2aCwgSZj5xTSd7Wrg==
+X-Google-Smtp-Source: APBJJlEL/wWzdm4NOF7GUdE2JbXnddL7ORxSEBMTz29cuUVmEyalK0t4rkP/sMbFXR0nWOasAipLjg==
+X-Received: by 2002:a92:d905:0:b0:346:7c6e:1497 with SMTP id s5-20020a92d905000000b003467c6e1497mr5348597iln.21.1689356771318;
+        Fri, 14 Jul 2023 10:46:11 -0700 (PDT)
 Received: from robh_at_kernel.org ([64.188.179.250])
-        by smtp.gmail.com with ESMTPSA id f8-20020a056638022800b0042b2959e6dcsm2716939jaq.87.2023.07.14.10.45.56
+        by smtp.gmail.com with ESMTPSA id t3-20020a05663801e300b0042b52dc77e3sm2646184jaq.158.2023.07.14.10.46.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 10:45:56 -0700 (PDT)
-Received: (nullmailer pid 4056808 invoked by uid 1000);
-        Fri, 14 Jul 2023 17:45:54 -0000
+        Fri, 14 Jul 2023 10:46:10 -0700 (PDT)
+Received: (nullmailer pid 4056998 invoked by uid 1000);
+        Fri, 14 Jul 2023 17:46:00 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] gpu/host1x: Explicitly include correct DT includes
-Date:   Fri, 14 Jul 2023 11:45:49 -0600
-Message-Id: <20230714174549.4056675-1-robh@kernel.org>
+To:     Sebastian Reichel <sre@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] hsi: omap_ssi: Explicitly include correct DT includes
+Date:   Fri, 14 Jul 2023 11:45:54 -0600
+Message-Id: <20230714174554.4056851-1-robh@kernel.org>
 X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
         FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -75,38 +71,21 @@ explicitly include the correct includes.
 
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- drivers/gpu/host1x/context.c | 2 +-
- drivers/gpu/host1x/dev.c     | 3 ++-
- 2 files changed, 3 insertions(+), 2 deletions(-)
+ drivers/hsi/controllers/omap_ssi_core.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/host1x/context.c b/drivers/gpu/host1x/context.c
-index 9ad89d22c0ca..c000d4e0c2c6 100644
---- a/drivers/gpu/host1x/context.c
-+++ b/drivers/gpu/host1x/context.c
-@@ -6,7 +6,7 @@
- #include <linux/device.h>
- #include <linux/kref.h>
- #include <linux/of.h>
--#include <linux/of_platform.h>
-+#include <linux/of_device.h>
- #include <linux/pid.h>
- #include <linux/slab.h>
- 
-diff --git a/drivers/gpu/host1x/dev.c b/drivers/gpu/host1x/dev.c
-index aae2efeef503..7c6699aed7d2 100644
---- a/drivers/gpu/host1x/dev.c
-+++ b/drivers/gpu/host1x/dev.c
-@@ -11,8 +11,9 @@
- #include <linux/io.h>
- #include <linux/list.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
- #include <linux/of.h>
-+#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
+diff --git a/drivers/hsi/controllers/omap_ssi_core.c b/drivers/hsi/controllers/omap_ssi_core.c
+index 84ba8b875199..4c1a00f9929e 100644
+--- a/drivers/hsi/controllers/omap_ssi_core.c
++++ b/drivers/hsi/controllers/omap_ssi_core.c
+@@ -25,6 +25,7 @@
+ #include <linux/debugfs.h>
+ #include <linux/pinctrl/consumer.h>
  #include <linux/pm_runtime.h>
- #include <linux/slab.h>
- 
++#include <linux/of.h>
+ #include <linux/of_platform.h>
+ #include <linux/hsi/hsi.h>
+ #include <linux/idr.h>
 -- 
 2.40.1
 
