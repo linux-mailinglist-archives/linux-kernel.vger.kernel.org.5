@@ -2,138 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 005D3753742
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:59:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C71D75374C
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 12:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235563AbjGNJ7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 05:59:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47504 "EHLO
+        id S235462AbjGNKBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 06:01:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234881AbjGNJ7p (ORCPT
+        with ESMTP id S235680AbjGNKAy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 05:59:45 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C328E211E;
-        Fri, 14 Jul 2023 02:59:43 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1b852785a65so11004165ad.0;
-        Fri, 14 Jul 2023 02:59:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689328783; x=1691920783;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=vShZQMcarPkzUmWVXK6Ziq55LsnSbqaxjxY6sf8cpZQ=;
-        b=K4QzBf7A6YFEWHUA6ixpR5W1HoUYkbJ4J1W17P4+oIwAt4hv00eR5M3A3DYwAiyYjl
-         Cjhii1S2FLEqAefU1CBl2X9rFNItYL/fGQlJMxPXKPyUGG4FDXri1Ih33KHD/9hn/lMN
-         NQ0G9M7ye3B4cQl1ZvnapuP2jXPAHTKFlVrBt23TKLyNNc7zAp1PHl7yViwtSvzO0bqV
-         liXLvZ3vVOMKUviDUwGEALJnSnSmTuxXNrUATYeEnDbMAiHwPUvuzG43gGffELywmCcf
-         jM7gPAux+Gc5dhxfbdaHdPyoX6/L4dCz+Kxd4eSHxIoem3MZU0hK60IE1u6b6YMy7vw2
-         L/Fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689328783; x=1691920783;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vShZQMcarPkzUmWVXK6Ziq55LsnSbqaxjxY6sf8cpZQ=;
-        b=XldzDDrr4CkKSAT2cNl+Umw9pKrYOMV6pTANsp0fzuQEcJbraD5zTUSvF2h3Mc4Y0b
-         pDMTNLHySh+eFteNHOZriopV5ObS9drBSTTJuTAB2ClC/mK04nI+aRWne1hGoEgA3e0I
-         SaUTHfQ8EzZTjupeN24qV9EgYSBZpciKWueXtQvxKQxrCru2CZgyf+Ke1SGPXqcax99c
-         RsgK1kLS9RghdehPCsYp4g/46eBUHWSSHPQd6UulWCeOCWSL+Wtn4dtHTrbKir4Alrkt
-         lP+pjAXqiEtKnP9WFSGHIiTwKx9IQ8tCRQdFmiGNkREpotZpbc+zfdZ6aJMIIDQFvtVm
-         WOgw==
-X-Gm-Message-State: ABy/qLbu87vwBhWz6nrcpPirWkr7y///AC7NYNMUGmdvJkO4qEPUo2Fm
-        BfogrxC6rQg5MO8WagpSNhk=
-X-Google-Smtp-Source: APBJJlHHDmGNSykHBKxMZGwxSLLnEVvuoPUPo9OdWpoStDfN/OVYQwEXP4FINTJblZuIsfG93KAeHQ==
-X-Received: by 2002:a17:902:f2d4:b0:1b8:a39e:ff4b with SMTP id h20-20020a170902f2d400b001b8a39eff4bmr1847417plc.32.1689328782949;
-        Fri, 14 Jul 2023 02:59:42 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id c1-20020a170902848100b001b801044466sm7400745plo.114.2023.07.14.02.59.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 Jul 2023 02:59:42 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <0ba3767c-d481-6e2c-2d32-b79af0e1efd8@roeck-us.net>
-Date:   Fri, 14 Jul 2023 02:59:40 -0700
+        Fri, 14 Jul 2023 06:00:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA92DE44
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 03:00:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689328804;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:in-reply-to:in-reply-to:  references:references;
+        bh=eKV/7hFuiV30Ml3tisHE3vvK+gLZw+sge5BSt5/bp7c=;
+        b=C8NqPxjIyANirS1GefiLFg+01bxVKpUPf8uFFH5rwEPsVeAEsKL13WqClGDRexiKc70uq4
+        rkASO69bShEbFvyKwg1qRcdu/eqSC8iDhLOCkLFIZM5Qr1ys72A8X6junQNHHXO9TerxjL
+        xaKddPyb2UwVKGVSBxvcoEbPxLu5dyQ=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-214-xCQsnt1fN5O_RplVmRGsaw-1; Fri, 14 Jul 2023 06:00:02 -0400
+X-MC-Unique: xCQsnt1fN5O_RplVmRGsaw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B7B0C3C01DB0;
+        Fri, 14 Jul 2023 10:00:01 +0000 (UTC)
+Received: from redhat.com (unknown [10.42.28.44])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A65701454142;
+        Fri, 14 Jul 2023 09:59:47 +0000 (UTC)
+Date:   Fri, 14 Jul 2023 10:59:44 +0100
+From:   Daniel =?utf-8?B?UC4gQmVycmFuZ8Op?= <berrange@redhat.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Luca Boccassi <bluca@debian.org>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        lennart@poettering.net, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v2] x86/boot: add .sbat section to the bzImage
+Message-ID: <ZLEckECoBwzxLPAD@redhat.com>
+Reply-To: Daniel =?utf-8?B?UC4gQmVycmFuZ8Op?= <berrange@redhat.com>
+References: <20230711154449.1378385-1-eesposit@redhat.com>
+ <ZK/9MlTh435FP5Ji@gambale.home>
+ <CAMw=ZnRQ0qNg0hT27DWvfZ1DH3dLdu0U7zYN8HvJDx7NPVy_pQ@mail.gmail.com>
+ <CAMj1kXEAmsLM0kXLyjRX5bK3b0EzRCGBkUq2DdXknLhwDc7Krg@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [v6 2/4] dt-bindings: hwmon: Add ASPEED TACH Control
- documentation
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        =?UTF-8?B?6JSh5om/6YGU?= <billyking19920205@gmail.com>,
-        "jdelvare@suse.com" <jdelvare@suse.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "joel@jms.id.au" <joel@jms.id.au>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
-        "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "patrick@stwcx.xyz" <patrick@stwcx.xyz>,
-        Billy Tsai <billy_tsai@aspeedtech.com>
-References: <CAGUgbhCqOJaEPjS96o2au21uW4NhqFScm4Ayd8PzOQvqxQ94SQ@mail.gmail.com>
- <0b9dd5cf-f4ca-2e6b-624d-0b451bbc2f30@linaro.org>
-From:   Guenter Roeck <linux@roeck-us.net>
-In-Reply-To: <0b9dd5cf-f4ca-2e6b-624d-0b451bbc2f30@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXEAmsLM0kXLyjRX5bK3b0EzRCGBkUq2DdXknLhwDc7Krg@mail.gmail.com>
+User-Agent: Mutt/2.2.9 (2022-11-12)
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/14/23 00:13, Krzysztof Kozlowski wrote:
-> On 14/07/2023 09:04, 蔡承達 wrote:
+On Fri, Jul 14, 2023 at 11:33:44AM +0200, Ard Biesheuvel wrote:
+> On Fri, 14 Jul 2023 at 01:13, Luca Boccassi <bluca@debian.org> wrote:
+> >
+> > On Thu, 13 Jul 2023 at 14:33, Ard Biesheuvel <ardb@kernel.org> wrote:
+> > > Therefore, I don't think it makes sense for the upstream kernel source
+> > > to carry a revocation index. It is ultimately up to the owner of the
+> > > signing key to decide which value gets signed along with the image, and
+> > > this is fundamentally part of the configure/build/release workflow.  No
+> > > distro builds and signs the upstream sources unmodified, so each signed
+> > > release is a fork anyway, making a upstream revocation index almost
+> > > meaningless. Also, while backporting revocation index bumps to -stable
+> > > should not result in any issues, I don't think the associated
+> > > bookkeeping belongs in the hands of the stable tree maintainers.
+> >
+> > The reason it's a good idea to store it here is because otherwise
+> > there would need to be another external "registry" that matches 1:1,
+> > and that is maintained identical everywhere, perfectly in sync,
+> > forever, and any 'new' distro and/or distro maintainer would have to
+> > discover and use that registry, and would be completely oblivious to
+> > it otherwise.
+> >
 > 
->>          > This is because our register layout for PWM and Tach is not
->> continuous.
->>
->>          > PWM0 used 0x0 0x4, Tach0 used 0x8 0xc
->>
->>          > PWM1 used 0x10 0x14, Tach1 used 0x18 0x1c
->>
->>          > ...
->>
->>          > Each PWM/Tach instance has its own controller register and is not
->> dependent on others.
-> 
-> Your email reply quoting style is very difficult to read.
-> 
->>
->>
->>
->> Hi Guenter,
->>
->>
->>
->> Did you receive a response to my previous email?
->>
->> I would like to inquire if you have any further concerns regarding the PWM
->> and Tach with 16 instances.
-> 
-> But isn't like this in all PWMs in all SoCs?
-> 
+> But why does there need to be a single, shared upstream 'generation
+> id' in the first place? The upstream is just a bunch of source files
+> that can be built in a million different ways, including for different
+> architectures that can all boot via EFI.
 
-Correct, pretty much every fan controller is implemented that way.
-I don't understand the logic.
+To be clear, having an upstream SBAT component & generation id is
+not a hard requirement.
 
-Guenter
+It was/is just a best practice, based on the general OSS principal that
+if every downstream consumer ends up mostly duplicating each others'
+work, then it is usually a better idea to collaborate in the upstream
+context and thus do it only once.
 
+This is likely to be less error prone, because while some downstreams
+may be informed enough to keep track of everythying an do updates at
+the right time, others may not be.
+
+That does put some of the burden onto the upstream maintainer instead,
+but that may be tempered by the downstream maintainers responding to a
+security issue doing the triage & submitting the needed change (if any)
+back to upstream.
+
+If the ultimate outcome of the discussion is that the kernel rejects
+the idea of maintaining this info upstream, then downstreams will just
+have to do the work individually & try to collaborate in other contexts
+to get consistency in their approach. I think that'd be disappointing,
+but it wouldn't be show-stopper.
+
+
+The generation ID is intentionally coarse/crude, because its hard the
+requirement of minimizing NVRAM storage over time. So it doesn't try
+to distinguish amongst scenarios where some compilation configurations
+are vulnerable and some are not. If one scenario needs revoking then
+every scenario gets revoked. That's an unfortunate tradeoff, but one
+that was / is not easy to avoid given the EFI NVRAM limitations.
+
+It could be possible to have a distinct SBAT component ID per kernel
+architecture, if it is anticipated that SecureBoot related flaws might
+commonly only affect 1 arch, not all. Separate SBAT component per
+arch shouldn't negatively impact NVRAM usage, as any deployment only
+needs to deal with its own native arch.
+
+With regards,
+Daniel
+-- 
+|: https://berrange.com      -o-    https://www.flickr.com/photos/dberrange :|
+|: https://libvirt.org         -o-            https://fstop138.berrange.com :|
+|: https://entangle-photo.org    -o-    https://www.instagram.com/dberrange :|
 
