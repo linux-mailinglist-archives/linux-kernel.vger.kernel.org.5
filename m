@@ -2,192 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07255753933
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 13:04:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC734753937
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 13:04:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234814AbjGNLEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 07:04:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57874 "EHLO
+        id S235023AbjGNLE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 07:04:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232382AbjGNLEG (ORCPT
+        with ESMTP id S234860AbjGNLEY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 07:04:06 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FF2CC0;
-        Fri, 14 Jul 2023 04:04:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689332645; x=1720868645;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=14/EGw9zs/MnEK47r/Ig3i5bPbQSg8aFLqH9hbjcMao=;
-  b=nRXb2ndWRn+79+viyLqgsi/KlFwaxnbXJFCH23fVGtRDEFSeyj82oVMO
-   5UgdOYmTFrGveAu+QcE3E66+2mBR34g2Lpg1AxrNgvGks4xEZjsG5fgTX
-   3Feu9J1vNOUQcJMuyn6ykdQXPGTIcPGvG9zL2RVxv0Oi3yUIWQuIKFX//
-   wkyWyJzwp1JmKMjNIfLVpwwVlaybkQ0b/RdtL9CZjF2kzj7oXwW8XtkdK
-   +Emvkf1YPwHFnE3QjIgnysn//bKdoNS2mL1qo52fZyI33sC4YBQSPXSDY
-   /RoJbbmIYIcPurprFjkU2q9MbmxxZV6lOfK0ctW5R9hCShEB35ILqhoPB
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="365485612"
-X-IronPort-AV: E=Sophos;i="6.01,205,1684825200"; 
-   d="scan'208";a="365485612"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 04:03:52 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="672653053"
-X-IronPort-AV: E=Sophos;i="6.01,205,1684825200"; 
-   d="scan'208";a="672653053"
-Received: from rchauhax-mobl1.gar.corp.intel.com ([10.249.35.123])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 04:03:49 -0700
-Date:   Fri, 14 Jul 2023 14:03:47 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>
-cc:     linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
-        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 07/19] selftests/resctrl: Refactor remount_resctrl(bool
- mum_resctrlfs) to mount_resctrl()
-In-Reply-To: <09605219-19db-ba2d-aaad-9e279543f461@intel.com>
-Message-ID: <2c1f4d5f-7d6f-1178-7ec4-7f8b862b26e9@linux.intel.com>
-References: <20230713131932.133258-1-ilpo.jarvinen@linux.intel.com> <20230713131932.133258-8-ilpo.jarvinen@linux.intel.com> <09605219-19db-ba2d-aaad-9e279543f461@intel.com>
+        Fri, 14 Jul 2023 07:04:24 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CAB830C4;
+        Fri, 14 Jul 2023 04:04:21 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qKGav-000446-TI; Fri, 14 Jul 2023 13:04:17 +0200
+Message-ID: <c7461674-6be8-9438-55fa-ae6b4d56d3b5@leemhuis.info>
+Date:   Fri, 14 Jul 2023 13:04:16 +0200
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1368666242-1689332631=:1695"
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] arm64: dts: qcom: sdm845-db845c: Move LVS regulator nodes
+ up
+Content-Language: en-US, de-DE
+To:     Amit Pundir <amit.pundir@linaro.org>,
+        Linux regressions mailing list <regressions@lists.linux.dev>
+Cc:     Bjorn Andersson <andersson@kernel.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Caleb Connolly <caleb.connolly@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        dt <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+References: <20230602161246.1855448-1-amit.pundir@linaro.org>
+ <358c69ad-fa8a-7386-fe75-92369883ee48@leemhuis.info>
+ <0f6c9dcb-b7f6-fff9-6bed-f4585ea8e487@linaro.org>
+ <CAD=FV=Xt2KYGY15+f+nHxkzKnwhHzw1A7=o+5kgCDWvHDv0DNg@mail.gmail.com>
+ <20230620155902.clspxncyvpodixft@ripper>
+ <5240ce3f-37fa-2747-92ee-23d71619f3ef@leemhuis.info>
+ <CAMi1Hd2zunc=WNUE7KT-423RXTiX6LrY2hcWQdV3Dp3o8RdJtg@mail.gmail.com>
+ <CAMi1Hd2L-j9GHQH+4O6j6m2+HGy5oEsdMv6Qyp4RaWZDNCj-Bw@mail.gmail.com>
+From:   "Linux regression tracking #update (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <CAMi1Hd2L-j9GHQH+4O6j6m2+HGy5oEsdMv6Qyp4RaWZDNCj-Bw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1689332661;26172418;
+X-HE-SMSGID: 1qKGav-000446-TI
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---8323329-1368666242-1689332631=:1695
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-
-On Thu, 13 Jul 2023, Reinette Chatre wrote:
-> On 7/13/2023 6:19 AM, Ilpo Järvinen wrote:
-> > Mount/umount of the resctrl FS is now paired nicely per test.
-> > 
-> > Rename remount_resctrl(bool mum_resctrlfs) to mount_resctrl(). Make
-> > it unconditionally try to mount the resctrl FS and return error if
-> > resctrl FS was mounted already.
-> > 
-> > While at it, group the mount/umount prototypes in the header.
-> > 
-> > Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-> > ---
-> >  tools/testing/selftests/resctrl/resctrl.h     |  2 +-
-> >  .../testing/selftests/resctrl/resctrl_tests.c |  8 ++++----
-> >  tools/testing/selftests/resctrl/resctrlfs.c   | 20 +++++--------------
-> >  3 files changed, 10 insertions(+), 20 deletions(-)
-> > 
-> > diff --git a/tools/testing/selftests/resctrl/resctrl.h b/tools/testing/selftests/resctrl/resctrl.h
-> > index f455f0b7e314..23af3fb73cb4 100644
-> > --- a/tools/testing/selftests/resctrl/resctrl.h
-> > +++ b/tools/testing/selftests/resctrl/resctrl.h
-> > @@ -85,8 +85,8 @@ extern char llc_occup_path[1024];
-> >  int get_vendor(void);
-> >  bool check_resctrlfs_support(void);
-> >  int filter_dmesg(void);
-> > -int remount_resctrlfs(bool mum_resctrlfs);
-> >  int get_resource_id(int cpu_no, int *resource_id);
-> > +int mount_resctrlfs(void);
-> >  int umount_resctrlfs(void);
-> >  int validate_bw_report_request(char *bw_report);
-> >  bool validate_resctrl_feature_request(const char *resctrl_val);
-> > diff --git a/tools/testing/selftests/resctrl/resctrl_tests.c b/tools/testing/selftests/resctrl/resctrl_tests.c
-> > index a421d045de08..3f26d2279f75 100644
-> > --- a/tools/testing/selftests/resctrl/resctrl_tests.c
-> > +++ b/tools/testing/selftests/resctrl/resctrl_tests.c
-> > @@ -77,7 +77,7 @@ static void run_mbm_test(bool has_ben, char **benchmark_cmd, int span,
-> >  
-> >  	ksft_print_msg("Starting MBM BW change ...\n");
-> >  
-> > -	res = remount_resctrlfs(true);
-> > +	res = mount_resctrlfs();
-> >  	if (res) {
-> >  		ksft_exit_fail_msg("Failed to mount resctrl FS\n");
-> >  		return;
-> > @@ -106,7 +106,7 @@ static void run_mba_test(bool has_ben, char **benchmark_cmd, int span,
-> >  
-> >  	ksft_print_msg("Starting MBA Schemata change ...\n");
-> >  
-> > -	res = remount_resctrlfs(true);
-> > +	res = mount_resctrlfs();
-> >  	if (res) {
-> >  		ksft_exit_fail_msg("Failed to mount resctrl FS\n");
-> >  		return;
-> > @@ -132,7 +132,7 @@ static void run_cmt_test(bool has_ben, char **benchmark_cmd, int cpu_no)
-> >  
-> >  	ksft_print_msg("Starting CMT test ...\n");
-> >  
-> > -	res = remount_resctrlfs(true);
-> > +	res = mount_resctrlfs();
-> >  	if (res) {
-> >  		ksft_exit_fail_msg("Failed to mount resctrl FS\n");
-> >  		return;
-> > @@ -160,7 +160,7 @@ static void run_cat_test(int cpu_no, int no_of_bits)
-> >  
-> >  	ksft_print_msg("Starting CAT test ...\n");
-> >  
-> > -	res = remount_resctrlfs(true);
-> > +	res = mount_resctrlfs();
-> >  	if (res) {
-> >  		ksft_exit_fail_msg("Failed to mount resctrl FS\n");
-> >  		return;
-> > diff --git a/tools/testing/selftests/resctrl/resctrlfs.c b/tools/testing/selftests/resctrl/resctrlfs.c
-> > index b3a05488d360..f622245adafe 100644
-> > --- a/tools/testing/selftests/resctrl/resctrlfs.c
-> > +++ b/tools/testing/selftests/resctrl/resctrlfs.c
-> > @@ -48,29 +48,19 @@ static int find_resctrl_mount(char *buffer)
-> >  }
-> >  
-> >  /*
-> > - * remount_resctrlfs - Remount resctrl FS at /sys/fs/resctrl
-> > - * @mum_resctrlfs:	Should the resctrl FS be remounted?
-> > + * mount_resctrlfs - Mount resctrl FS at /sys/fs/resctrl
-> >   *
-> >   * If not mounted, mount it.
-> > - * If mounted and mum_resctrlfs then remount resctrl FS.
-> > - * If mounted and !mum_resctrlfs then noop
-> >   *
-> >   * Return: 0 on success, non-zero on failure
-> >   */
+On 07.07.23 07:08, Amit Pundir wrote:
+> On Thu, 22 Jun 2023 at 17:18, Amit Pundir <amit.pundir@linaro.org> wrote:
+>> On Thu, 22 Jun 2023 at 13:17, Linux regression tracking (Thorsten
+>> Leemhuis) <regressions@leemhuis.info> wrote:
+>>>
+>>> As Linus will likely release 6.4 on this or the following Sunday a quick
+>>> status inquiry so I can brief him appropriately: is there any hope the
+>>> regression this patch tried to fix will be resolved any time soon?
+>>
+>> We are most likely to miss v6.4. I'm trying to reproduce the crash
+>> with tracing enabled, to share some more debug information.
 > 
-> Since it is not obviously a "failure" I do think it will help to
-> add to the comments that resctrl already being mounted is treated as
-> a failure.
-> 
-> > -int remount_resctrlfs(bool mum_resctrlfs)
-> > +int mount_resctrlfs(void)
-> >  {
-> > -	char mountpoint[256];
-> >  	int ret;
-> >  
-> > -	ret = find_resctrl_mount(mountpoint);
-> > -	if (ret)
-> > -		strcpy(mountpoint, RESCTRL_PATH);
-> > -
-> > -	if (!ret && mum_resctrlfs && umount(mountpoint))
-> > -		ksft_print_msg("Fail: unmounting \"%s\"\n", mountpoint);
-> > -
-> > -	if (!ret && !mum_resctrlfs)
-> > -		return 0;
-> > +	ret = find_resctrl_mount(NULL);
-> > +	if (!ret)
-> > +		return -1;
-> 
-> This treats "ret == 0" as a failure. What about -ENXIO? It seems to
-> me that only "ret == -ENOENT" is "success".
+> FWIW, I couldn't reproduce this bug on v6.5 merge window commit
+> d528014517f2 (Revert ".gitignore: ignore *.cover and *.mbx")
+> on 100+ boot tests last night.
+> For the time being I'm keeping an eye on it and will trigger the boot
+> tests occasionally in the v6.5 development cycle.
 
-Yes, it's a good catch.
+No update since then, so I assume this remains fixed. I'll thus remove
+this from the tracking; please holler if you think it might make sense
+to continue tracking this.
 
--- 
- i.
---8323329-1368666242-1689332631=:1695--
+#regzbot resolved: apparently solved with during the 6.5 merge window
+#regzbot ignore-activity
+
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+That page also explains what to do if mails like this annoy you.
