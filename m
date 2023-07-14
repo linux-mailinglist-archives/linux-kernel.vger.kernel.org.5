@@ -2,63 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A8AA754187
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 19:55:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99C9B7541FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 20:01:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236653AbjGNRyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 13:54:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40258 "EHLO
+        id S236617AbjGNR7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 13:59:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236593AbjGNRyJ (ORCPT
+        with ESMTP id S236810AbjGNR6G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 13:54:09 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78A5B35A9;
-        Fri, 14 Jul 2023 10:53:39 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id ca18e2360f4ac-78625caa702so86653839f.1;
-        Fri, 14 Jul 2023 10:53:39 -0700 (PDT)
+        Fri, 14 Jul 2023 13:58:06 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97E493AAE;
+        Fri, 14 Jul 2023 10:57:44 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id e9e14a558f8ab-3458a08310aso9713395ab.3;
+        Fri, 14 Jul 2023 10:57:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689357097; x=1691949097;
+        d=1e100.net; s=20221208; t=1689357099; x=1691949099;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=jV0ZVw+tXJJaX6sFXrDUifNmdjozDg0jsFO9uzlP0KY=;
-        b=cPBFD0+0ZAT47fCARQ4DMoaLwmgvXdA8q0XnfdAoKqEKrWFjmGVJUF/8jHW49OEUPe
-         wseip/TK4akX1j9D40GNK9oQ7FsIHx7um1Xb9fzm0oTaCOxNcTo6L/heLw3GNf6KMMsq
-         ySsaDsKLlcSXTAaTNS+Dw7/nLZe0hQq8VIvKAyXCG9IS1ynM+KAf5I4+jkiEkEbjEKnw
-         cs4hd7awRB8cQrlZy5AH7z3AmxPstnnGT5HG/J0+7sugNz3PHc4ONrdwjoNwf6+zmsCR
-         GYZSNKKQnKtyXhq7yDF2o45RYf+CZIn4ISr3yjCaONC59biwpiPJWuRcmc7/EcDiA/re
-         d0UA==
-X-Gm-Message-State: ABy/qLYTauG3IKsAN2tyL6jm25xW8UsWYkCK72ETtGEiA0PrXrRECORK
-        NT2hgcwi4u9KdLcmOCtAHQ==
-X-Google-Smtp-Source: APBJJlGxSu03yLG4CUI74yCQInNqkiQy4rOqdX6zUkTVngY8Cs5QXVjapqeBVhmSeXBcmI8RKct4iA==
-X-Received: by 2002:a6b:db02:0:b0:783:5e93:1e7f with SMTP id t2-20020a6bdb02000000b007835e931e7fmr5310749ioc.18.1689357096822;
-        Fri, 14 Jul 2023 10:51:36 -0700 (PDT)
+        bh=44RGqmRByB++x0pZyV4QqL+0qOBYQ4NNQZsvR4a019o=;
+        b=fMmUUyEmP0KZCUKGJc9zpSfzaNjBNV/kWO9aLt5y8KsZeghmf8f9f0w+t8Ul3M/lT9
+         E+p1fubO5i7nFcPeCF8X5j59ATal0ZN0y0HzBslKqxzFCsE8sq8I4dXz0d/xIu2cXc0q
+         bthq8R5/vs6OKEfKOlRRMSo7Fkb3bvnmaQUXDunFmzPmj8OjKrZYRAWQ25s56gbkGzHj
+         9o/SqVWi7pUS+lVXQ0eRAfbH1Gyr0TTaiJIL6xqcSEbZF5J2/s+BSHtFvZMOtcufDxah
+         Bdfr4Tzr0wrlTZ+cYmSF9+VzJJmlwynx+Ynb9r4S7YQnhMWiOux8lgC8tYTW/8mK8FUz
+         JNKA==
+X-Gm-Message-State: ABy/qLY9cApvsEPjo2fzAv8i+QN50qbS4/ZLeUOuazbxEWqPl6dY4FQV
+        jG3VX56Gdg3TgF1JbqMg4qD+qwABmoli
+X-Google-Smtp-Source: APBJJlFe8SbQNbUlRMjsEqT0wEurF1xR5zSupzRA6oiQW5V/ooxSS6/xkhT3s1UdMoYitGoipqxc+w==
+X-Received: by 2002:a92:d181:0:b0:346:3920:5df2 with SMTP id z1-20020a92d181000000b0034639205df2mr4817458ilz.21.1689357098955;
+        Fri, 14 Jul 2023 10:51:38 -0700 (PDT)
 Received: from robh_at_kernel.org ([64.188.179.250])
-        by smtp.gmail.com with ESMTPSA id i10-20020a02b68a000000b004290fd3a68dsm2731869jam.1.2023.07.14.10.51.35
+        by smtp.gmail.com with ESMTPSA id q16-20020a056e02079000b00345d5a3748csm2855615ils.63.2023.07.14.10.51.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 10:51:36 -0700 (PDT)
-Received: (nullmailer pid 4066909 invoked by uid 1000);
-        Fri, 14 Jul 2023 17:51:23 -0000
+        Fri, 14 Jul 2023 10:51:38 -0700 (PDT)
+Received: (nullmailer pid 4067080 invoked by uid 1000);
+        Fri, 14 Jul 2023 17:51:28 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>
-Cc:     devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-Subject: [PATCH] ALSA: Explicitly include correct DT includes
-Date:   Fri, 14 Jul 2023 11:51:08 -0600
-Message-Id: <20230714175109.4066599-1-robh@kernel.org>
+To:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] soc: amlogic: Explicitly include correct DT includes
+Date:   Fri, 14 Jul 2023 11:51:23 -0600
+Message-Id: <20230714175124.4066972-1-robh@kernel.org>
 X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
         FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -78,133 +75,75 @@ explicitly include the correct includes.
 
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- sound/atmel/ac97c.c            | 3 +--
- sound/drivers/serial-generic.c | 2 +-
- sound/pci/hda/hda_tegra.c      | 3 ++-
- sound/ppc/awacs.c              | 1 +
- sound/ppc/burgundy.c           | 1 +
- sound/sparc/amd7930.c          | 3 +--
- sound/sparc/cs4231.c           | 2 +-
- sound/sparc/dbri.c             | 2 +-
- 8 files changed, 9 insertions(+), 8 deletions(-)
+ drivers/soc/amlogic/meson-canvas.c      | 1 +
+ drivers/soc/amlogic/meson-ee-pwrc.c     | 3 +--
+ drivers/soc/amlogic/meson-gx-pwrc-vpu.c | 3 +--
+ drivers/soc/amlogic/meson-secure-pwrc.c | 2 +-
+ 4 files changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/sound/atmel/ac97c.c b/sound/atmel/ac97c.c
-index c8912b8a1dc5..402b5f66dcc3 100644
---- a/sound/atmel/ac97c.c
-+++ b/sound/atmel/ac97c.c
-@@ -12,13 +12,12 @@
- #include <linux/gpio/consumer.h>
- #include <linux/init.h>
- #include <linux/interrupt.h>
-+#include <linux/mod_devicetable.h>
+diff --git a/drivers/soc/amlogic/meson-canvas.c b/drivers/soc/amlogic/meson-canvas.c
+index 383b0cfc584e..b6e06c4d2117 100644
+--- a/drivers/soc/amlogic/meson-canvas.c
++++ b/drivers/soc/amlogic/meson-canvas.c
+@@ -8,6 +8,7 @@
+ #include <linux/kernel.h>
+ #include <linux/mfd/syscon.h>
  #include <linux/module.h>
++#include <linux/platform_device.h>
+ #include <linux/regmap.h>
+ #include <linux/soc/amlogic/meson-canvas.h>
+ #include <linux/of_address.h>
+diff --git a/drivers/soc/amlogic/meson-ee-pwrc.c b/drivers/soc/amlogic/meson-ee-pwrc.c
+index f54acffc83f9..cfb796d40d9d 100644
+--- a/drivers/soc/amlogic/meson-ee-pwrc.c
++++ b/drivers/soc/amlogic/meson-ee-pwrc.c
+@@ -4,13 +4,12 @@
+  * Author: Neil Armstrong <narmstrong@baylibre.com>
+  */
+ 
+-#include <linux/of_address.h>
  #include <linux/platform_device.h>
- #include <linux/mutex.h>
- #include <linux/types.h>
- #include <linux/io.h>
--#include <linux/of.h>
--#include <linux/of_device.h>
- 
- #include <sound/core.h>
- #include <sound/initval.h>
-diff --git a/sound/drivers/serial-generic.c b/sound/drivers/serial-generic.c
-index e1f864dc7939..b0262541802a 100644
---- a/sound/drivers/serial-generic.c
-+++ b/sound/drivers/serial-generic.c
-@@ -16,7 +16,7 @@
- #include <linux/io.h>
- #include <linux/ioport.h>
- #include <linux/module.h>
+ #include <linux/pm_domain.h>
+ #include <linux/bitfield.h>
+ #include <linux/regmap.h>
+ #include <linux/mfd/syscon.h>
 -#include <linux/of_device.h>
 +#include <linux/of.h>
- #include <linux/serdev.h>
- #include <linux/serial_reg.h>
- #include <linux/slab.h>
-diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
-index 9d0ab043880b..39fa036616ce 100644
---- a/sound/pci/hda/hda_tegra.c
-+++ b/sound/pci/hda/hda_tegra.c
-@@ -16,7 +16,8 @@
- #include <linux/module.h>
- #include <linux/moduleparam.h>
- #include <linux/mutex.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
+ #include <linux/reset-controller.h>
  #include <linux/reset.h>
- #include <linux/slab.h>
- #include <linux/time.h>
-diff --git a/sound/ppc/awacs.c b/sound/ppc/awacs.c
-index 53d558b2806c..659866cfe3b4 100644
---- a/sound/ppc/awacs.c
-+++ b/sound/ppc/awacs.c
-@@ -11,6 +11,7 @@
- #include <asm/nvram.h>
- #include <linux/init.h>
- #include <linux/delay.h>
+ #include <linux/clk.h>
+diff --git a/drivers/soc/amlogic/meson-gx-pwrc-vpu.c b/drivers/soc/amlogic/meson-gx-pwrc-vpu.c
+index 5d4f12800d93..33df520eab95 100644
+--- a/drivers/soc/amlogic/meson-gx-pwrc-vpu.c
++++ b/drivers/soc/amlogic/meson-gx-pwrc-vpu.c
+@@ -5,13 +5,12 @@
+  * SPDX-License-Identifier: GPL-2.0+
+  */
+ 
+-#include <linux/of_address.h>
+ #include <linux/platform_device.h>
+ #include <linux/pm_domain.h>
+ #include <linux/bitfield.h>
+ #include <linux/regmap.h>
+ #include <linux/mfd/syscon.h>
+-#include <linux/of_device.h>
 +#include <linux/of.h>
- #include <linux/slab.h>
- #include <sound/core.h>
- #include "pmac.h"
-diff --git a/sound/ppc/burgundy.c b/sound/ppc/burgundy.c
-index 4fb990ab2ceb..400a886562b1 100644
---- a/sound/ppc/burgundy.c
-+++ b/sound/ppc/burgundy.c
-@@ -9,6 +9,7 @@
- #include <linux/io.h>
- #include <linux/init.h>
- #include <linux/delay.h>
-+#include <linux/of.h>
- #include <sound/core.h>
- #include "pmac.h"
- #include "burgundy.h"
-diff --git a/sound/sparc/amd7930.c b/sound/sparc/amd7930.c
-index c434b69a83f1..0fea04acc3ea 100644
---- a/sound/sparc/amd7930.c
-+++ b/sound/sparc/amd7930.c
-@@ -37,7 +37,7 @@
- #include <linux/interrupt.h>
- #include <linux/moduleparam.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
-+#include <linux/platform_device.h>
- #include <linux/io.h>
- 
- #include <sound/core.h>
-@@ -47,7 +47,6 @@
- #include <sound/initval.h>
- 
- #include <asm/irq.h>
--#include <asm/prom.h>
- 
- static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 0-MAX */
- static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
-diff --git a/sound/sparc/cs4231.c b/sound/sparc/cs4231.c
-index 31bac355ec4d..c2ad3fa2f25a 100644
---- a/sound/sparc/cs4231.c
-+++ b/sound/sparc/cs4231.c
-@@ -18,7 +18,7 @@
- #include <linux/irq.h>
- #include <linux/io.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
-+#include <linux/platform_device.h>
- 
- #include <sound/core.h>
- #include <sound/pcm.h>
-diff --git a/sound/sparc/dbri.c b/sound/sparc/dbri.c
-index 376aed136a45..050e98f32d36 100644
---- a/sound/sparc/dbri.c
-+++ b/sound/sparc/dbri.c
-@@ -69,7 +69,7 @@
- #include <sound/initval.h>
- 
- #include <linux/of.h>
--#include <linux/of_device.h>
-+#include <linux/platform_device.h>
- #include <linux/atomic.h>
+ #include <linux/reset.h>
+ #include <linux/clk.h>
  #include <linux/module.h>
+diff --git a/drivers/soc/amlogic/meson-secure-pwrc.c b/drivers/soc/amlogic/meson-secure-pwrc.c
+index 25b4b71df9b8..b994f03380b0 100644
+--- a/drivers/soc/amlogic/meson-secure-pwrc.c
++++ b/drivers/soc/amlogic/meson-secure-pwrc.c
+@@ -7,7 +7,7 @@
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
  
+ #include <linux/io.h>
+-#include <linux/of_device.h>
++#include <linux/of.h>
+ #include <linux/platform_device.h>
+ #include <linux/pm_domain.h>
+ #include <dt-bindings/power/meson-a1-power.h>
 -- 
 2.40.1
 
