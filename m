@@ -2,223 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BEF1752E20
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 02:05:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C44F9752E22
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 02:06:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234383AbjGNAFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 20:05:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37628 "EHLO
+        id S234438AbjGNAF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 20:05:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229976AbjGNAFi (ORCPT
+        with ESMTP id S229976AbjGNAF5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 20:05:38 -0400
-Received: from bee.birch.relay.mailchannels.net (bee.birch.relay.mailchannels.net [23.83.209.14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E35FC26B5
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 17:05:36 -0700 (PDT)
-X-Sender-Id: dreamhost|x-authsender|kjlx@templeofstupid.com
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-        by relay.mailchannels.net (Postfix) with ESMTP id 253FC100E6A
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 00:05:36 +0000 (UTC)
-Received: from pdx1-sub0-mail-a234.dreamhost.com (unknown [127.0.0.6])
-        (Authenticated sender: dreamhost)
-        by relay.mailchannels.net (Postfix) with ESMTPA id 8A956100814
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 00:05:35 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1689293135; a=rsa-sha256;
-        cv=none;
-        b=bd2NfzLDfgPaWoLTFL6q3TpTvoLtt3Qc0O2lxLSQVhrhcz6yMYXcWpGusyFrLy0tW5/9VG
-        WR9N5z0M5pLvJj+OymCM9i6kZ/Rx+Ufm4eHLyNed5aLM5gh7mOX5hve8P8RIdFBVVysRzO
-        mdyXxp0rf1+1mnX9S/L4CipfkfCp0BH0KZ0qt0OSidW0TxbhcITxpzVyle/81mGZdwbkvm
-        EUoimlfufxJhk25DgL0Zy9ByrtG/evV8uVYXDNGDCAB4f8dxopNeSXooNWNRHAk+RO9UR4
-        Gik4BNxrsr2M6p4ChUsDmO2eFvfxqkYAers5TVCdTuAAbeczyBUa5hSQhTQ9fA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-        s=arc-2022; t=1689293135;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references:dkim-signature;
-        bh=R8IPVAKRYoAh+2qBZdjxKyh15eT0GXaiYypTj4LP2gA=;
-        b=FhFuDWOsfVWInyfMJ70oC2kISxRQtJeh1F0PCRDgFtyD5DaSYJcK900DbCZCT5j7hWZ1qZ
-        j+fOaNBpnH1FN4mKfp9lT2HlwPVNl1QvtIBd7ctr6ziBHxDFKLO8x2YFxyM58hYQhgkZ7E
-        KiVMfDJo1jnRSLuv/Gn6Q95UXLUIA0ntbe7sGdSXZFwtLxpj5gDuVhCYFsQEMAFHbr/Exd
-        ipKJ253L3yPy0zAw0sDkSBRQTNh7qEGgz0WPX8yqjhCsTGotDgv9Wp3WSnnIv1n7Fu/w7P
-        qeXkBC7XXJgqxZKHw9sErCxzsfa0fTInbTpb135TJY8ntv8asZaQgIjjNF8djA==
-ARC-Authentication-Results: i=1;
-        rspamd-7d9c4d5c9b-7xcz9;
-        auth=pass smtp.auth=dreamhost smtp.mailfrom=kjlx@templeofstupid.com
-X-Sender-Id: dreamhost|x-authsender|kjlx@templeofstupid.com
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: dreamhost|x-authsender|kjlx@templeofstupid.com
-X-MailChannels-Auth-Id: dreamhost
-X-Turn-Unite: 605f0c241f56d143_1689293135864_1302128198
-X-MC-Loop-Signature: 1689293135863:2415851277
-X-MC-Ingress-Time: 1689293135863
-Received: from pdx1-sub0-mail-a234.dreamhost.com (pop.dreamhost.com
- [64.90.62.162])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-        by 100.103.24.120 (trex/6.9.1);
-        Fri, 14 Jul 2023 00:05:35 +0000
-Received: from kmjvbox (unknown [71.198.86.198])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kjlx@templeofstupid.com)
-        by pdx1-sub0-mail-a234.dreamhost.com (Postfix) with ESMTPSA id 4R2BZP5rWJzyw
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 17:05:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=templeofstupid.com;
-        s=dreamhost; t=1689293133;
-        bh=R8IPVAKRYoAh+2qBZdjxKyh15eT0GXaiYypTj4LP2gA=;
-        h=Date:From:To:Cc:Subject:Content-Type;
-        b=FTUI5mVxk5yIpkR9Cj7ubkeVm6t9XunDqMWwtOmkdKrGFrvtMizro/R5MckVCw58/
-         Y1OM3pUQqibVsiXtenaMMqYx0N8ecAB/VPC0qSeFNVx6Ft1G0fzdLk0dekeKap8az5
-         t76G2oXgDgB4NQIdME84lhMZcWbkP6mHzqJLTAXg=
-Received: from johansen (uid 1000)
-        (envelope-from kjlx@templeofstupid.com)
-        id e00cb
-        by kmjvbox (DragonFly Mail Agent v0.12);
-        Thu, 13 Jul 2023 17:05:30 -0700
-Date:   Thu, 13 Jul 2023 17:05:30 -0700
-From:   Krister Johansen <kjlx@templeofstupid.com>
-To:     Shay Agroskin <shayagr@amazon.com>
-Cc:     Krister Johansen <kjlx@templeofstupid.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Arthur Kiyanovski <akiyano@amazon.com>,
-        David Arinzon <darinzon@amazon.com>,
-        Noam Dagan <ndagan@amazon.com>,
-        Saeed Bishara <saeedb@amazon.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>
-Subject: Re: [PATCH net] net: ena: fix shift-out-of-bounds in exponential
- backoff
-Message-ID: <20230714000530.GA1982@templeofstupid.com>
-References: <20230711013621.GE1926@templeofstupid.com>
- <pj41zllefmpbw7.fsf@u95c7fd9b18a35b.ant.amazon.com>
- <20230711225210.GA2088@templeofstupid.com>
- <pj41zlilao9rqt.fsf@u95c7fd9b18a35b.ant.amazon.com>
+        Thu, 13 Jul 2023 20:05:57 -0400
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDE922D5D;
+        Thu, 13 Jul 2023 17:05:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689293150; x=1720829150;
+  h=message-id:date:subject:to:references:from:in-reply-to:
+   content-transfer-encoding:mime-version;
+  bh=kUsmTXhmzLzRYQtB5qPPUTP10WoH7a/qctBWdfdj2g4=;
+  b=aajO9z/NiFi1jxFDpXZVQTM7XZnVqlmnvRNp4QM7w34tGJoJblI+Ld8r
+   SX8FyyU2gtlq8XwxKyumXfWx1d7seG4kVTX/unEPJY6SRCikh3MeM5zWC
+   gLp1KFiN56Lc8V3pdWF+91TfcZHXuFj0JTJnmsbgyjuiaw9ZTjwah9gfz
+   bM/bChMJLDfcHoz/X0MYpTA/PATrDZvMRuZ0oFDcrfA/43uKRwla7xW7h
+   y3ei6JILPSfquSc2q+hLMlXtXdaVx+ZNbjgJ8qGmwovGG3L6wTKR5czpw
+   XXUHLcRQCoctg0+L0sR+L+UI5h1KQzjKQ4XQicLrx8qXGV7aBWlpwD1My
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="365385128"
+X-IronPort-AV: E=Sophos;i="6.01,204,1684825200"; 
+   d="scan'208";a="365385128"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2023 17:05:50 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="896207003"
+X-IronPort-AV: E=Sophos;i="6.01,204,1684825200"; 
+   d="scan'208";a="896207003"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orsmga005.jf.intel.com with ESMTP; 13 Jul 2023 17:05:49 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Thu, 13 Jul 2023 17:05:49 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Thu, 13 Jul 2023 17:05:46 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Thu, 13 Jul 2023 17:05:46 -0700
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.43) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Thu, 13 Jul 2023 17:05:46 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZspdTFAGmkDI0mQisNsPlNXJ3z6sNLMBisWgPT2RxitaNOZjnCmCWEC4Bh0aGRLGrh8wEG4vksndqFwXaImdmS65pLYpDjKLpvDhJM9dEfdRRPY/S3Z2NRTcwwzj6noDo4GOjoC9AgZXzobmbhbkgdogdX26iUIDJe/IzOmFEk4VPIobcu095+1iJ8af119I4xgukA7Xnz2P1PsH7ydN1gyl1y+BdfsDE24Uf1fV12uQNvGvM7PUpaRZXi7MCMgyjkm7/foAly5mF6ZrIIpTrlJ4FUkwe1IYm5Nel9dBW76POfO7IlKz4fIQJgdmkn08fXEzpUgev5KDr8RXVlLz4w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2lvmuqyMvF+UFslxdcITun1S2LVJGvK3qKxYV3skUPk=;
+ b=dFZtZCoP9CjWb4X7+jI+NQR/vWVfMCc2A5PLHQO14IujhCjrbnKmy7RV7AhHi3eO7evGtYUnQqfdNgHNDcwGNCiiCAraqBzS03aMxogo/YOMxPgcaXAO2vl1Os2FtwRoBzonoXa8Gynwe73U87HAiKDA5o77HUAg1nJSe9IsBmin6VAG0h43ulkY4XWrR4hP9Aa0QN0nQ3c4CfFWZ+Us4OSrAjCR75MwnxFqO8CfES9WkaUPlsRDJOigONA285NBIcaKZXAlrQHW95Lj8KcbfZCARbxlRzl8RbCzt44RejoS21lTm+vSH242sh9xJvhrZsiB8s6SY62TgX0Sj72yZw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
+ by MW4PR11MB5890.namprd11.prod.outlook.com (2603:10b6:303:188::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6565.31; Fri, 14 Jul
+ 2023 00:05:39 +0000
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::3b1a:8ccf:e7e4:e9fa]) by SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::3b1a:8ccf:e7e4:e9fa%4]) with mapi id 15.20.6588.017; Fri, 14 Jul 2023
+ 00:05:39 +0000
+Message-ID: <76b47b61-f54b-78a1-17de-998b2cc47bd8@intel.com>
+Date:   Thu, 13 Jul 2023 17:05:37 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Subject: Re: [PATCH v4 18/19] selftests/resctrl: Pass the real number of tests
+ to show_cache_info()
+Content-Language: en-US
+To:     =?UTF-8?Q?Ilpo_J=c3=a4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
+        "Shaopeng Tan" <tan.shaopeng@jp.fujitsu.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        <linux-kernel@vger.kernel.org>
+References: <20230713131932.133258-1-ilpo.jarvinen@linux.intel.com>
+ <20230713131932.133258-19-ilpo.jarvinen@linux.intel.com>
+From:   Reinette Chatre <reinette.chatre@intel.com>
+In-Reply-To: <20230713131932.133258-19-ilpo.jarvinen@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: MW4P222CA0020.NAMP222.PROD.OUTLOOK.COM
+ (2603:10b6:303:114::25) To SJ2PR11MB7573.namprd11.prod.outlook.com
+ (2603:10b6:a03:4d2::10)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <pj41zlilao9rqt.fsf@u95c7fd9b18a35b.ant.amazon.com>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|MW4PR11MB5890:EE_
+X-MS-Office365-Filtering-Correlation-Id: 044c179c-2aa8-440d-529d-08db83fe0e41
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: rstcSuB//d8KG3aV3AldFnu/P9kgLBBRxeG58sPItq3YP246dYJiehnZ3IOFyYn7GTl1uCKypdIzxUJCQmHG1XZT0KYSbHmHCfkVF9tBuM+ifbQqtaSYyWZ9XHj3GMRNbWZAGGqmHfltPIrdnMmVdB+AzlAXDTI2YDiblNprPrJMbm2MOgHo8pTDQb5a/zxrSdliKAfXhEYXqUcYbZYxWRQq/h/B0LbSJksxiWKeGdluydBaE63KiCiTq8b96edg8rLxBqYB117AbgxMfyvIqfzHNdekAM64/YwyBF1lpP9hwEtmHoLKf62E9monaa0/2XEOTySZS78mKelEV+pS6NhZz7xCp2IZlL/PFNldd44S4Bws1BkDsCVUahbp7I/rwNijEawIOmakBVa35qY2PM0vsj3Sn0KR2BmoSaeNubTlr1bSdXqx0i8ohTVFnaurpqXiziLocIb9E9ll+aHGKW6EZLG1bZAww2wE9CQoa87NTueiAHRlmYIadra+5YctFaZFkfSlzmc+mb67WKE6X8ExYBAwMKnVaea84uu7hT+ykYvtyeyWKUQ6MnTn6B2coLlibvqcYPiII6MIZkQ8xx0tEWygT790OMcbFYxyZZ9jExbH9pK3niWxJHmbpm8SuoslIwehUCPivWxRMouehw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(346002)(39860400002)(376002)(396003)(366004)(136003)(451199021)(53546011)(26005)(186003)(478600001)(110136005)(41300700001)(316002)(66946007)(66556008)(66476007)(8936002)(8676002)(5660300002)(6486002)(6512007)(31686004)(6506007)(44832011)(2616005)(2906002)(4744005)(31696002)(38100700002)(82960400001)(36756003)(86362001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RWRHVTZTMmZPLytiY0dCQXpVNXF0Zk9zTnFXeVBIT2hLb2xHMVV1YmdjN0R5?=
+ =?utf-8?B?NzM5cVF3SVV3RTFEbFNnTGM2NVdiUmM0eUppaVk3dUxzOFlOMnc5WlZOdEk3?=
+ =?utf-8?B?TW4yNnNkazVUQjY1VThMaHFRaXYxWXJ4a1IwZUY4L3hLRXU0eElndWplQU1K?=
+ =?utf-8?B?Y3JIWE9yZXM2NVhnSG1EVVdXYmgzdnlENmxIbkVOa25NdUJIdlowRzVZSnRR?=
+ =?utf-8?B?eTV1SW9Wb3NGOHNuTzRWaW8vU0FiNjRRL1hiWklyTWZmdG94VzRoeWN0aDRz?=
+ =?utf-8?B?ZzEwREwvOUFUdTNPRXhvL2R1cjRqRjYrLy9QTUVxbWdxblV3TVYzcXQ3SGM0?=
+ =?utf-8?B?V3hHaUpYMk5NaERwWW52RVhtTjFVc1kxNmpRMDk1dTZ5ZHNxR0lUUGFqV2pr?=
+ =?utf-8?B?NU5ESUphK3BiVXZQd1U5Z250bmp5M3ZMdXZlc2hnU1kwNnJRL2d5U2ZJb08y?=
+ =?utf-8?B?Ujk4ZUllRDhpMnE2VE9tc1h0ZlIxVmNvOHE4YitoclRvRExHMzkzdlFNb2FZ?=
+ =?utf-8?B?VFdkN00rRU56RzJWZmZqQ29QdStDb3dMNmwySDhxS2c3T20xN1Avd3Raencr?=
+ =?utf-8?B?TjgramwxUkpCNWxpSGl3NVhVNENFREk4eUxobkhJbDhzaWE4ZnkwNitYN3gx?=
+ =?utf-8?B?MENOZDhwN1d4djkrTE94ZGJvRDczenZZL0VWNWRxbFBmWWViK25DSVBzQU9V?=
+ =?utf-8?B?NWhia3YyOHd0NmV6dW1JRXAyZUdwalpkWUZmckIwaTl4R3BHd3R1dXEzOVNk?=
+ =?utf-8?B?SmJoazlmMTdUdHptemhwNTR0eXhoUVRiL0ExcStSWUtKODNhWEJLL2hyTEo2?=
+ =?utf-8?B?eTBUcnU5UUpqdVZWUWwxOWR2VENUVGlFMXI0Q3lhVkdxUFpmdkE3bGg4YVlN?=
+ =?utf-8?B?WFNHdW4xS0x3NllzQit5Y3NjMW9kajV5TzlNdlNEUUhQcjhFemk3OHR0alhw?=
+ =?utf-8?B?UXZuaEZJNEYxV3NHK2JFWnF6K0E1QTJxS0JyaWhmU1RVSHYvbVdnTkljTG5R?=
+ =?utf-8?B?TTFLdmo1dmdkancwMmMvREJTUjJPU3h2YVpOdkF5V3UzOTlmNVRSYktYSGJK?=
+ =?utf-8?B?dlEwUzFBRjBNV1ZqTUpLL2NETUVGRnNjaXVsb0g2alpUUDJQVWIxbktCMGlU?=
+ =?utf-8?B?YjYrMHNOdENFVkJ4RkdTcHc4b0o0cTUyU0tmckl6VHBWNnhwNnV6V0MrT2U3?=
+ =?utf-8?B?U05OUWZxWVBiUTJCZnIwL0M4QXE1SklpREpSU201bnJhV0ZBZmdKTmV5V0J4?=
+ =?utf-8?B?S2laNjd1RkhYREJTYnREbDAydmdpeXRNUHc0c0pTbjQwbDQ2ZEE1dis1N25a?=
+ =?utf-8?B?aitRc0VmYStMOU9DMWtNN3lweWoyczFLOXk1bWtGeCtmS05LOEZyWjlidEE4?=
+ =?utf-8?B?MGRPUjFoZFZBOTh1Sjl3Z3Jna3p1d3o2VW1FdXlLSVE2dnlyN0c2eWFFNlpR?=
+ =?utf-8?B?QVIrNDB4ZWE4bTZqUmtnMlZ6VEdLVitzTUdadUE1c0NyWkdlWXBYSmNIU2VR?=
+ =?utf-8?B?UUVmZ1FMUzVFd3JBTk9zMWxmUmRaZlJ4WFk1K2hLVEYvM1BZbThnNkNnTXFj?=
+ =?utf-8?B?d1gyTGI3aEwxUy9iTllRYWdXN1M5SVhZL2ZFS0liYTJ2czg2YWFsRGFjdEMz?=
+ =?utf-8?B?NzhsYTl4QXI1SXhweGRHUDRlME1vWnpYWUExL080VXZMZ2o1MGRwVFhsQ0Nm?=
+ =?utf-8?B?dkZCcDI4ZSs5YnFQZ2pxQ0ovSmtRd1Y3QWY4aE04RmIrTmxORFhVblNlVWFy?=
+ =?utf-8?B?TUNSZkgzekJKbzRTWU5SZ1AxVjI3dDVUc2E1cnQzU0l3TDFkMi9YdWs3Z0lF?=
+ =?utf-8?B?bTNBQXVKNmdONENUS3RzWWUrT3NsVHRhazRtaWFMOTRhUTN0akJDMXE0NGdX?=
+ =?utf-8?B?dWp2RzVDQnJ5ZWtnS20xb0FjeE5uc0RyclVWd2RReUhkazY3aUk0S1QrSEJk?=
+ =?utf-8?B?cUU2YWhVUlI2aCsvRTdxMC96SXpXVjVNZXZKZ0ZQbjE4RkVCTlhqWXdudEdk?=
+ =?utf-8?B?aVZ4SmJGTlpMcnZEZjNlNDFjMDFoNmVKQnMxby9LS1RvcWlib2ZwdmpWbHZT?=
+ =?utf-8?B?VDZtSzQraCszRGtPNmxudDZDNmFZWmw2SzdHZ3ZrQVBobTBNcWtEZmtpc2ZX?=
+ =?utf-8?B?Z1k5MGhFaGFCYVNrRTRoUnM3WVhscDNoRFFTWTBTWHBrRGtBdE1CWjJqZVhV?=
+ =?utf-8?B?RFE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 044c179c-2aa8-440d-529d-08db83fe0e41
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jul 2023 00:05:38.8635
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: dIS+vLW79ZNUUhsExGo5RypEEBg64r828t7rC+4adddjGC1AzUXBCFlJCasiS+2n///AEQxq+NkqpFbcN5VA+ktfoO+QYMS4sGqgffcih4I=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB5890
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 10:46:55AM +0300, Shay Agroskin wrote:
-> 
-> Krister Johansen <kjlx@templeofstupid.com> writes:
-> 
-> > 
-> > On Tue, Jul 11, 2023 at 08:47:32PM +0300, Shay Agroskin wrote:
-> > > 
-> > > Krister Johansen <kjlx@templeofstupid.com> writes:
-> > > 
-> > > > diff --git a/drivers/net/ethernet/amazon/ena/ena_com.c
-> > > > b/drivers/net/ethernet/amazon/ena/ena_com.c
-> > > > index 451c3a1b6255..633b321d7fdd 100644
-> > > > --- a/drivers/net/ethernet/amazon/ena/ena_com.c
-> > > > +++ b/drivers/net/ethernet/amazon/ena/ena_com.c
-> > > > @@ -35,6 +35,8 @@
-> > > >  #define ENA_REGS_ADMIN_INTR_MASK 1
-> > > > +#define ENA_MAX_BACKOFF_DELAY_EXP 16U
-> > > > +
-> > > >  #define ENA_MIN_ADMIN_POLL_US 100
-> > > >  #define ENA_MAX_ADMIN_POLL_US 5000
-> > > > @@ -536,6 +538,7 @@ static int >
-> > > ena_com_comp_status_to_errno(struct
-> > > > ena_com_admin_queue *admin_queue,
-> > > >    static void ena_delay_exponential_backoff_us(u32 exp, u32 >
-> > > delay_us)
-> > > >  {
-> > > > +   exp = min_t(u32, exp, ENA_MAX_BACKOFF_DELAY_EXP);
-> > > >     delay_us = max_t(u32, ENA_MIN_ADMIN_POLL_US, delay_us);
-> > > >     delay_us = min_t(u32, delay_us * (1U << exp), >
-> > > ENA_MAX_ADMIN_POLL_US);
-> > > >     usleep_range(delay_us, 2 * delay_us);
-> > > 
-> > > Hi, thanks for submitting this patch (:
-> > 
-> > Absolutely; thanks for the review!
-> > 
-> > > Going over the logic here, the driver sleeps for `delay_us`
-> > > micro-seconds in
-> > > each iteration that this function gets called.
-> > > 
-> > > For an exp = 14 it'd sleep (I added units notation)
-> > > delay_us * (2 ^ exp) us = 100 * (2 ^ 14) us = (10 * (2 ^ 14)) /
-> > > (1000000) s
-> > > = 1.6 s
-> > > 
-> > > For an exp = 15 it'd sleep
-> > > (10 * (2 ^ 15)) / (1000000) = 3.2s
-> > > 
-> > > To even get close to an overflow value, say exp=29 the driver would
-> > > sleep in
-> > > a single iteration
-> > > 53687 s = 14.9 hours.
-> > > 
-> > > The driver should stop trying to get a response from the device
-> > > after a
-> > > timeout period received from the device which is 3 seconds by
-> > > default.
-> > > 
-> > > The point being, it seems very unlikely to hit this overflow. Did
-> > > you
-> > > experience it or was the issue discovered by a static analyzer ?
-> > 
-> > No, no use of fuzzing or static analysis.  This was hit on a production
-> > instance that was having ENA trouble.
-> > 
-> > I'm apparently reading the code differently.  I thought this line:
-> > 
-> > > >     delay_us = min_t(u32, delay_us * (1U << exp), >
-> > > ENA_MAX_ADMIN_POLL_US);
-> > 
-> > Was going to cap that delay_us at (delay_us * (1U << exp)) or
-> > 5000us, whichever is smaller.  By that measure, if delay_us is 100 and
-> > ENA_MAX_ADMIN_POLL_US is 5000, this should start getting capped after
-> > exp = 6, correct?  By my estimate, that puts it at between 160ms and
-> > 320ms of sleeping before one could hit this problem.
-> > 
-> > I went and pulled the logs out of the archive and have the following
-> > timeline.  This is seconds from boot as reported by dmesg:
-> > 
-> >    11244.226583 - ena warns TX not completed on time, 10112000    usecs
-> > since
-> >     last napi execution, missing tx timeout val of 5000 msec
-> > 
-> >    11245.190453 - netdev watchdog fires
-> > 
-> >    11245.190781 - ena records Transmit timeout
-> >    11245.250739 - ena records Trigger reset on
-> > 
-> >    11246.812620 - UBSAN message to console
-> > 
-> >    11248.590441 - ena reports Reset inidication didn't turn off
-> >    11250.633545 - ena reports failure to reset device
-> >    12013.529338 - last logline before new boot
-> > 
-> > While the difference between the panic and the trigger reset is more
-> > than 320ms, it is definitely on the order of seconds instead of hours.
-> > 
-> 
-> Yup you're right. I was so entangled in my exponent calculations that I
-> completely missed the min_t expression there.
-> 
-> That's quite an awkward design to be honest, I hope to submit a re-write for
-> it in one of the releases.
-> 
-> Thanks again for the work you've put into it
+Hi Ilpo,
 
-Totally welcome. I appreciate the speedy reviews from you and Leon.
+On 7/13/2023 6:19 AM, Ilpo Järvinen wrote:
+> Results include warm-up test which is discarded before passing the sum
+> to show_cache_info(). show_cache_info() handles this by subtracting one
+> from the number of tests in divisor. It is a trappy construct to have
+> sum and number of tests parameters to disagree like this.
+> 
+> A more logical place for subtracting the skipped tests is where the sum
+> is calculated so move it there. Pass the correct number of tests to
+> show_cache_info() so it can be used directly as the divisor for
+> calculating the average.
+> 
+> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> ---
 
-Thanks again,
+Thank you.
 
--K
+Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+
+Reinette
