@@ -2,110 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36819753D91
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 16:35:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02B1C753D96
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 16:35:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236046AbjGNOe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 10:34:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47998 "EHLO
+        id S236051AbjGNOfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 10:35:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236005AbjGNOeg (ORCPT
+        with ESMTP id S236075AbjGNOfN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 10:34:36 -0400
-Received: from mail-il1-f174.google.com (mail-il1-f174.google.com [209.85.166.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 719193AA9;
-        Fri, 14 Jul 2023 07:34:09 -0700 (PDT)
-Received: by mail-il1-f174.google.com with SMTP id e9e14a558f8ab-3461053677eso4406275ab.0;
-        Fri, 14 Jul 2023 07:34:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689345238; x=1691937238;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zgiht/lCckduqQild9xWBFcr10Bz7Z0qNdMiS2Y+g2s=;
-        b=Yk8qBH59huSWzSFAUZHWkSmfcXa48bAwO08SVsP8GihivmnhD3/Oh5dmHeZbzWNNcG
-         Gp66tSimm950RgodlZ+P/dJxmpHzhydsKsVIiE0krkm5HGQPkLSBlwwt6aE+OekQJ0PP
-         uCnfCa/NeZZhqS/ZHswILiqex/TQtcuYxNNr1muHnYg0t30vgh028OFfWL5C5CBhkCwC
-         m2gPJg/NwhpRrgQE4U8RkyZXK/AHKCGqtKhaB6r4nxeOkRxNHxi3v2QAP7BRlfkP1lWq
-         KJsgSLXaIB9E5kVdEQgr4GpQE42o3rbFfJQPR+3cTlzSUR6D2J14bcg10fsoyiCvDzw7
-         XMFw==
-X-Gm-Message-State: ABy/qLaBccxP6fppoHfe/NIXzPeoCWBMzklck6qeo9dMMd6uY2GykZTw
-        CjCdt7ygbGr58GLLlaBmBA==
-X-Google-Smtp-Source: APBJJlHc87RGDE4ioh1yw30FaD7V2nkRtIdOKWEAEqqS4SeVwBEFRxF8hNU6UpuUILrr1/1c601qQw==
-X-Received: by 2002:a92:d083:0:b0:345:b4e0:35d3 with SMTP id h3-20020a92d083000000b00345b4e035d3mr1939585ilh.9.1689345238217;
-        Fri, 14 Jul 2023 07:33:58 -0700 (PDT)
-Received: from robh_at_kernel.org ([64.188.179.250])
-        by smtp.gmail.com with ESMTPSA id w17-20020a92c891000000b0034233fd80d3sm2788841ilo.22.2023.07.14.07.33.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 07:33:57 -0700 (PDT)
-Received: (nullmailer pid 3490019 invoked by uid 1000);
-        Fri, 14 Jul 2023 14:33:55 -0000
-Date:   Fri, 14 Jul 2023 08:33:55 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Stanley Chang <stanley_chang@realtek.com>
-Cc:     Vinod Koul <vkoul@kernel.org>, Flavio Suligoi <f.suligoi@asem.it>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Roy Luo <royluo@google.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-kernel@vger.kernel.org, Matthias Kaehlcke <mka@chromium.org>,
-        linux-usb@vger.kernel.org, linux-phy@lists.infradead.org,
-        devicetree@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Ray Chi <raychi@google.com>
-Subject: Re: [PATCH v7 5/5] dt-bindings: phy: realtek: Add Realtek DHC RTD
- SoC USB 3.0 PHY
-Message-ID: <168934521641.3489578.4865141978582966306.robh@kernel.org>
-References: <20230707064725.25291-1-stanley_chang@realtek.com>
- <20230707064725.25291-5-stanley_chang@realtek.com>
+        Fri, 14 Jul 2023 10:35:13 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3734330F8;
+        Fri, 14 Jul 2023 07:34:48 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id EAEA01F747;
+        Fri, 14 Jul 2023 14:34:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1689345286; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1XAhxBqyavPKKiCIsZyWgV67fhIxl0ST4aikj1J+tkI=;
+        b=ZsM4+BcFWVLl/wAs4b/YLl068yXfKEFNzT435VUO9+J1i4LePJoLWQHjfLAI4pyN2kVqzb
+        lozi3PZ+MfAmK4vzdRJL0uwX1gIsKRuTHcxahecc0AoHAukPkhzQJo2rMCQZxa3ODgiJEP
+        O1Fec9Yb9F6Wj0Bxtf8YBe9Fk4UrPcE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1689345286;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1XAhxBqyavPKKiCIsZyWgV67fhIxl0ST4aikj1J+tkI=;
+        b=s7HPsZbFrKx5gTQ3CHN/4oZJwqknSsvrsIMSLPA27f7S7lna7b9W/b9ATcCMj74lopGI1C
+        HxVexwa8tm3OChDw==
+Received: from kitsune.suse.cz (kitsune.suse.cz [10.100.12.127])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id AC53A2C142;
+        Fri, 14 Jul 2023 14:34:46 +0000 (UTC)
+Date:   Fri, 14 Jul 2023 16:34:45 +0200
+From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+To:     Nicolas Schier <nicolas@fjasle.eu>
+Cc:     linux-modules@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+        Lucas De Marchi <lucas.de.marchi@gmail.com>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Jiri Slaby <jslaby@suse.com>, Jan Engelhardt <jengelh@inai.de>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH kmod v2 2/4] libkmod, depmod: Load modprobe.d, depmod.d
+ from $prefix/lib.
+Message-ID: <20230714143445.GM9196@kitsune.suse.cz>
+References: <20230711153126.28876-1-msuchanek@suse.de>
+ <20230712140103.5468-2-msuchanek@suse.de>
+ <ZLFYzDyjP8sQPQOy@fjasle.eu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230707064725.25291-5-stanley_chang@realtek.com>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+In-Reply-To: <ZLFYzDyjP8sQPQOy@fjasle.eu>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Fri, 07 Jul 2023 14:47:04 +0800, Stanley Chang wrote:
-> Document the USB PHY bindings for Realtek SoCs.
-> Realtek DHC (digital home center) RTD SoCs support DWC3 XHCI USB
-> controller and using USB 3.0 PHY transceiver.
+On Fri, Jul 14, 2023 at 04:16:44PM +0200, Nicolas Schier wrote:
+> On Wed, Jul 12, 2023 at 04:00:46PM +0200 Michal Suchanek wrote:
+> > There is an ongoing effort to limit use of files outside of /usr (or
+> > $prefix on general). Currently all modprobe.d paths are hardcoded to
+> > outside of $prefix. Teach kmod to load modprobe.d from $prefix/lib.
+> > 
+> > On some distributions /usr/lib and /lib are the same directory because
+> > of a compatibility symlink, and it is possible to craft configuration
+> > files with sideeffects that would behave differently when loaded twice.
+> > However, the override semantic ensures that one 'overrides' the other,
+> > and only one configuration file of the same name is loaded from any of
+> > the search directories.
+> > 
+> > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+> > ---
+> > v2: Fix commit message typo
+> > ---
+> >  Makefile.am        | 1 +
+> >  libkmod/libkmod.c  | 3 ++-
+> >  man/Makefile.am    | 9 +++++++--
+> >  man/depmod.d.xml   | 1 +
+> >  man/modprobe.d.xml | 1 +
+> >  tools/depmod.c     | 1 +
+> >  6 files changed, 13 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/Makefile.am b/Makefile.am
+> > index 8ba85c91a0f3..7aa5bfa5638d 100644
+> > --- a/Makefile.am
+> > +++ b/Makefile.am
+> > @@ -19,6 +19,7 @@ AM_CPPFLAGS = \
+> >  	-include $(top_builddir)/config.h \
+> >  	-I$(top_srcdir) \
+> >  	-DSYSCONFDIR=\""$(sysconfdir)"\" \
+> > +	-DPREFIX=\""$(prefix)"\" \
+> >  	${zlib_CFLAGS}
+> >  
+> >  AM_CFLAGS = $(OUR_CFLAGS)
+> > diff --git a/libkmod/libkmod.c b/libkmod/libkmod.c
+> > index 2670f9a4611a..13c82b069e84 100644
+> > --- a/libkmod/libkmod.c
+> > +++ b/libkmod/libkmod.c
+> > @@ -65,6 +65,7 @@ static const char *const default_config_paths[] = {
+> >  	SYSCONFDIR "/modprobe.d",
+> >  	"/run/modprobe.d",
+> >  	"/usr/local/lib/modprobe.d",
+> > +	PREFIX "/lib/modprobe.d",
+> >  	"/lib/modprobe.d",
+> >  	NULL
+> >  };
+> > @@ -237,7 +238,7 @@ static char *get_kernel_release(const char *dirname)
+> >   *                to load from user-defined configuration parameters such as
+> >   *                alias, blacklists, commands (install, remove). If NULL
+> >   *                defaults to /etc/modprobe.d, /run/modprobe.d,
+> > - *                /usr/local/lib/modprobe.d and /lib/modprobe.d. Give an empty
+> > + *                /usr/local/lib/modprobe.d and PREFIX/lib/modprobe.d. Give an empty
 > 
-> Signed-off-by: Stanley Chang <stanley_chang@realtek.com>
-> ---
-> v6 to v7 change:
->     Revise the commit message.
-> v5 to v6 change:
->     Drop the labels of example.
-> v4 to v5 change:
->     1. Remove the compatible realtek,usb3phy.
->     2. Add the default of the property.
-> v3 to v4 change:
->     1. Remove the parameter and non hardware properties from dts.
->     2. Using the compatible data included the config and parameter
->        in driver.
-> v2 to v3 change:
->     1. Broken down into two patches, one for each of USB 2 & 3.
->     2. Add more description about Realtek RTD SoCs architecture.
->     3. Removed parameter v1 support for simplification.
->     4. Revised the compatible name for fallback compatible.
->     5. Remove some properties that can be set in the driver.
-> v1 to v2 change:
->     Add phy-cells for generic phy driver
-> ---
->  .../bindings/phy/realtek,usb3phy.yaml         | 107 ++++++++++++++++++
->  1 file changed, 107 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/phy/realtek,usb3phy.yaml
-> 
+> In the chunk above, there still is /lib/modprobe.d included in the
+> default_config_paths array.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Indeed, if this is rendered as documentation somewhere this would be
+misleading.
 
+Thanks
+
+Michal
