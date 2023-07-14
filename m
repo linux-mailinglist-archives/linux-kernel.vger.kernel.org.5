@@ -2,169 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54033752F7A
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 04:38:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCCFF752F85
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 04:49:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234018AbjGNCiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 22:38:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54850 "EHLO
+        id S234425AbjGNCt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 22:49:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234464AbjGNCiE (ORCPT
+        with ESMTP id S234050AbjGNCtY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 22:38:04 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D2312D4B;
-        Thu, 13 Jul 2023 19:38:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 22C4261BCD;
-        Fri, 14 Jul 2023 02:38:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3470C433C7;
-        Fri, 14 Jul 2023 02:37:59 +0000 (UTC)
-Date:   Thu, 13 Jul 2023 22:37:58 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Ajay Kaher <akaher@vmware.com>
-Cc:     shuah@kernel.org, mhiramat@kernel.org, chinglinyu@google.com,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, lkp@intel.com,
-        namit@vmware.com, oe-lkp@lists.linux.dev, amakhalov@vmware.com,
-        er.ajay.kaher@gmail.com, srivatsa@csail.mit.edu, tkundu@vmware.com,
-        vsirnapalli@vmware.com
-Subject: Re: [PATCH v4 10/10] test: ftrace: Fix kprobe test for eventfs
-Message-ID: <20230713223758.31a1e391@rorschach.local.home>
-In-Reply-To: <1689248004-8158-11-git-send-email-akaher@vmware.com>
-References: <1689248004-8158-1-git-send-email-akaher@vmware.com>
-        <1689248004-8158-11-git-send-email-akaher@vmware.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Thu, 13 Jul 2023 22:49:24 -0400
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8499B2D4B;
+        Thu, 13 Jul 2023 19:49:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689302961; x=1720838961;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=XQ9ZNDLXRYxR2/glWQTMI+edqAw/ek5JcdoktMjwEi0=;
+  b=i6uyo8nlC36MrjMtAm/g94ryqPRK89oTB9Ri4DOaT945STWP4O7IDQjy
+   8INnWDmjMVdPk9zqFwmQL4whzXv7uKWRZvxWLgA9kiw+uuSbPhFBNNpbB
+   DvkD4QbrBw6bdO84FfJAhruXYTy1KvvFBZwA+lLw1eFb7HYGncP5OfQ5h
+   HrzEF4A8Li7gYR1YicjVw5uFuFpSqwKJn1wn9MLhUw3lu/Qk9Seyl9ZTr
+   y2Z0U5kL3p8I2Wrj5oW8Z77vyNfWTueXgWUN8xwrol+YnxMMgXfXUf8eT
+   /FqO99s0oQ/V+hc1U+sv59BIkmMQ7kdzn2b7StplF0K37HyPADduXIfku
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="365412025"
+X-IronPort-AV: E=Sophos;i="6.01,204,1684825200"; 
+   d="scan'208";a="365412025"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2023 19:49:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="968853209"
+X-IronPort-AV: E=Sophos;i="6.01,204,1684825200"; 
+   d="scan'208";a="968853209"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.252.191.49]) ([10.252.191.49])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2023 19:49:16 -0700
+Message-ID: <cd2db502-90a7-7adb-4948-eafc013c687e@linux.intel.com>
+Date:   Fri, 14 Jul 2023 10:49:12 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 9/9] iommu: Use fault cookie to store iopf_param
+Content-Language: en-US
+To:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>
+References: <20230711010642.19707-1-baolu.lu@linux.intel.com>
+ <20230711010642.19707-10-baolu.lu@linux.intel.com>
+ <20230711150249.62917dad@jacob-builder>
+ <e26db44c-ec72-085d-13ee-597237ba2134@linux.intel.com>
+ <BN9PR11MB527640E6FBD5271E8AF9D59B8C37A@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <cf793119-591f-19b5-b708-45c6f3eadc79@linux.intel.com>
+ <BN9PR11MB527682E9AD97033D694A564B8C37A@BN9PR11MB5276.namprd11.prod.outlook.com>
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <BN9PR11MB527682E9AD97033D694A564B8C37A@BN9PR11MB5276.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 13 Jul 2023 17:03:24 +0530
-Ajay Kaher <akaher@vmware.com> wrote:
-
-> kprobe_args_char.tc, kprobe_args_string.tc has validation check
-> for tracefs_create_dir, for eventfs it should be eventfs_create_dir.
+On 2023/7/13 16:01, Tian, Kevin wrote:
+>> From: Baolu Lu <baolu.lu@linux.intel.com>
+>> Sent: Thursday, July 13, 2023 11:44 AM
+>>
+>> On 2023/7/13 11:24, Tian, Kevin wrote:
+>>>> From: Baolu Lu <baolu.lu@linux.intel.com>
+>>>> Sent: Wednesday, July 12, 2023 11:13 AM
+>>>>
+>>>> On 2023/7/12 6:02, Jacob Pan wrote:
+>>>>> On Tue, 11 Jul 2023 09:06:42 +0800, Lu Baolu<baolu.lu@linux.intel.com>
+>>>>> wrote:
+>>>>>
+>>>>>> @@ -158,7 +158,7 @@ int iommu_queue_iopf(struct iommu_fault
+>> *fault,
+>>>>>> struct device *dev)
+>>>>>>     	 * As long as we're holding param->lock, the queue can't be
+>>>>>> unlinked
+>>>>>>     	 * from the device and therefore cannot disappear.
+>>>>>>     	 */
+>>>>>> -	iopf_param = param->iopf_param;
+>>>>>> +	iopf_param = iommu_get_device_fault_cookie(dev, 0);
+>>>>> I am not sure I understand how does it know the cookie type is
+>> iopf_param
+>>>>> for PASID 0?
+>>>>>
+>>>>> Between IOPF and IOMMUFD use of the cookie, cookie types are
+>> different,
+>>>>> right?
+>>>>>
+>>>>
+>>>> The fault cookie is managed by the code that delivers or handles the
+>>>> faults. The sva and IOMMUFD paths are exclusive.
+>>>>
+>>>
+>>> what about siov? A siov-capable device can support sva and iommufd
+>>> simultaneously.
+>>
+>> For siov case, the pasid should be global. RID and each pasid are still
+>> exclusive, so I don't see any problem. Did I overlook anything?
+>>
 > 
-> Signed-off-by: Ajay Kaher <akaher@vmware.com>
-> Co-developed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> Tested-by: Ching-lin Yu <chinglinyu@google.com>
-> Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-
-As this patch as is will break when running on older kernels, I was
-wondering if we should do this instead?
-
-diff --git a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_char.tc b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_char.tc
-index 285b4770efad..ff7499eb98d6 100644
---- a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_char.tc
-+++ b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_char.tc
-@@ -34,14 +34,19 @@ mips*)
- esac
- 
- : "Test get argument (1)"
--echo "p:testprobe tracefs_create_dir arg1=+0(${ARG1}):char" > kprobe_events
-+if grep -q eventfs_add_dir available_filter_functions; then
-+  DIR_NAME="eventfs_add_dir"
-+else
-+  DIR_NAME="tracefs_create_dir"
-+fi
-+echo "p:testprobe ${DIR_NAME} arg1=+0(${ARG1}):char" > kprobe_events
- echo 1 > events/kprobes/testprobe/enable
- echo "p:test $FUNCTION_FORK" >> kprobe_events
- grep -qe "testprobe.* arg1='t'" trace
- 
- echo 0 > events/kprobes/testprobe/enable
- : "Test get argument (2)"
--echo "p:testprobe tracefs_create_dir arg1=+0(${ARG1}):char arg2=+0(${ARG1}):char[4]" > kprobe_events
-+echo "p:testprobe ${DIR_NAME} arg1=+0(${ARG1}):char arg2=+0(${ARG1}):char[4]" > kprobe_events
- echo 1 > events/kprobes/testprobe/enable
- echo "p:test $FUNCTION_FORK" >> kprobe_events
- grep -qe "testprobe.* arg1='t' arg2={'t','e','s','t'}" trace
-diff --git a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_string.tc b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_string.tc
-index a4f8e7c53c1f..a202b2ea4baf 100644
---- a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_string.tc
-+++ b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_string.tc
-@@ -37,14 +37,19 @@ loongarch*)
- esac
- 
- : "Test get argument (1)"
--echo "p:testprobe tracefs_create_dir arg1=+0(${ARG1}):string" > kprobe_events
-+if grep -q eventfs_add_dir available_filter_functions; then
-+  DIR_NAME="eventfs_add_dir"
-+else
-+  DIR_NAME="tracefs_create_dir"
-+fi
-+echo "p:testprobe ${DIR_NAME} arg1=+0(${ARG1}):string" > kprobe_events
- echo 1 > events/kprobes/testprobe/enable
- echo "p:test $FUNCTION_FORK" >> kprobe_events
- grep -qe "testprobe.* arg1=\"test\"" trace
- 
- echo 0 > events/kprobes/testprobe/enable
- : "Test get argument (2)"
--echo "p:testprobe tracefs_create_dir arg1=+0(${ARG1}):string arg2=+0(${ARG1}):string" > kprobe_events
-+echo "p:testprobe ${DIR_NAME} arg1=+0(${ARG1}):string arg2=+0(${ARG1}):string" > kprobe_events
- echo 1 > events/kprobes/testprobe/enable
- echo "p:test $FUNCTION_FORK" >> kprobe_events
- grep -qe "testprobe.* arg1=\"test\" arg2=\"test\"" trace
-
--- Steve
-
-> ---
->  .../selftests/ftrace/test.d/kprobe/kprobe_args_char.tc        | 4 ++--
->  .../selftests/ftrace/test.d/kprobe/kprobe_args_string.tc      | 4 ++--
->  2 files changed, 4 insertions(+), 4 deletions(-)
+> they are exclusive but it's weird to see some pasids (for sva) on this
+> device are tracked by slot#0 while other pasids (for iommufd) occupies
+> per-pasid slot.
 > 
-> diff --git a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_char.tc b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_char.tc
-> index 285b4770efad..523cfb64539f 100644
-> --- a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_char.tc
-> +++ b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_char.tc
-> @@ -34,14 +34,14 @@ mips*)
->  esac
->  
->  : "Test get argument (1)"
-> -echo "p:testprobe tracefs_create_dir arg1=+0(${ARG1}):char" > kprobe_events
-> +echo "p:testprobe eventfs_add_dir arg1=+0(${ARG1}):char" > kprobe_events
->  echo 1 > events/kprobes/testprobe/enable
->  echo "p:test $FUNCTION_FORK" >> kprobe_events
->  grep -qe "testprobe.* arg1='t'" trace
->  
->  echo 0 > events/kprobes/testprobe/enable
->  : "Test get argument (2)"
-> -echo "p:testprobe tracefs_create_dir arg1=+0(${ARG1}):char arg2=+0(${ARG1}):char[4]" > kprobe_events
-> +echo "p:testprobe eventfs_add_dir arg1=+0(${ARG1}):char arg2=+0(${ARG1}):char[4]" > kprobe_events
->  echo 1 > events/kprobes/testprobe/enable
->  echo "p:test $FUNCTION_FORK" >> kprobe_events
->  grep -qe "testprobe.* arg1='t' arg2={'t','e','s','t'}" trace
-> diff --git a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_string.tc b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_string.tc
-> index a4f8e7c53c1f..b9f8c3f8bae8 100644
-> --- a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_string.tc
-> +++ b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_string.tc
-> @@ -37,14 +37,14 @@ loongarch*)
->  esac
->  
->  : "Test get argument (1)"
-> -echo "p:testprobe tracefs_create_dir arg1=+0(${ARG1}):string" > kprobe_events
-> +echo "p:testprobe eventfs_add_dir arg1=+0(${ARG1}):string" > kprobe_events
->  echo 1 > events/kprobes/testprobe/enable
->  echo "p:test $FUNCTION_FORK" >> kprobe_events
->  grep -qe "testprobe.* arg1=\"test\"" trace
->  
->  echo 0 > events/kprobes/testprobe/enable
->  : "Test get argument (2)"
-> -echo "p:testprobe tracefs_create_dir arg1=+0(${ARG1}):string arg2=+0(${ARG1}):string" > kprobe_events
-> +echo "p:testprobe eventfs_add_dir arg1=+0(${ARG1}):string arg2=+0(${ARG1}):string" > kprobe_events
->  echo 1 > events/kprobes/testprobe/enable
->  echo "p:test $FUNCTION_FORK" >> kprobe_events
->  grep -qe "testprobe.* arg1=\"test\" arg2=\"test\"" trace
+> why not generalizing them given you name it as "per-pasid fault cookie"?
 
+Yeah! Get your point now. At least the partial list should be per-pasid.
+
+Let me invest more time on this.
+
+Best regards,
+baolu
