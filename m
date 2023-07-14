@@ -2,225 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DE807542DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 20:54:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B35CB7542E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 20:54:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236452AbjGNSyH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 14 Jul 2023 14:54:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55768 "EHLO
+        id S236494AbjGNSy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 14:54:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235463AbjGNSyF (ORCPT
+        with ESMTP id S236439AbjGNSy2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 14:54:05 -0400
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0BDF3586;
-        Fri, 14 Jul 2023 11:54:02 -0700 (PDT)
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-991f9148334so51459166b.1;
-        Fri, 14 Jul 2023 11:54:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689360841; x=1689965641;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9B/F9N2Gv0nlKZ4Pjku6eVDXCPCkPx+J5+8KkbLiGiY=;
-        b=HZXLGzpH3vPpK7NRw3FD5rPViSg3WOZy+nqv9WMjT7G2Hq7w5vmDx2Ey8sWD1xlNbW
-         X6KGPoZKoHUviU4bgetkMaeuGszg4RrZXkwFXg2KAHK5S7OQ8JJ80TkM/alab7H/FK6S
-         kFmpkylOcxl7EZJ9O2tKiKFcPFcPQnDSTQw9FD2wHNAkr0enhQzt+DM7cVypYCNgHnI2
-         eV78XGLnUUrh3VsTePn/HJwAVkzrlmV2O1tyJvRwlUrAB3p/Osv0SBG30LeelfJo2De8
-         HWIVja0xc3TpeVYG/3gGMrRnp1JgBygD7ovD2QnpEMBP311LCAAck2P1f6HMdmOVUiN7
-         7clg==
-X-Gm-Message-State: ABy/qLYiR/qpZ2hQJs0w7p+b2G2i/dWACwk/+tgzOib9DcVVXDjgz75k
-        NS79n+OfU30cMIW/j0ydWRKzfT/xAcWMlj9UBfI=
-X-Google-Smtp-Source: APBJJlF43PZ1lXNODVSZ5tLMcK1J342n26C3wDGe2qLpc28UYX43wFxXrau7trMesO0FmTeAhdOBJDUWmhSkVS1o3IE=
-X-Received: by 2002:a17:906:d4:b0:993:d88e:41e3 with SMTP id
- 20-20020a17090600d400b00993d88e41e3mr3819919eji.4.1689360841175; Fri, 14 Jul
- 2023 11:54:01 -0700 (PDT)
+        Fri, 14 Jul 2023 14:54:28 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06BDA30FC;
+        Fri, 14 Jul 2023 11:54:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=iJvvs9dOIGayOcerhrBaLhd0TaO38lkSU2S3p/bJwE8=; b=BJInmMfmI+72o4t0/qKzcQD2zi
+        8VH4rFNHZmk5NRtlCUqYHzlzRFrQLrNhnYi0ym5fM28T+ItwzIDA34QcOw5cTgfdFoDrM4EaI9Is7
+        G2ckWv6hyIO2QVmNEVCb7B11QeLghcNUOk4p7hCQLvzcvM+qb2gedx42ctNs41OGgiGs=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qKNvr-001Nlf-TA; Fri, 14 Jul 2023 20:54:23 +0200
+Date:   Fri, 14 Jul 2023 20:54:23 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Samin Guo <samin.guo@starfivetech.com>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        netdev@vger.kernel.org, Peter Geis <pgwipeout@gmail.com>,
+        Frank <Frank.Sae@motor-comm.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Conor Dooley <conor@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Yanhong Wang <yanhong.wang@starfivetech.com>
+Subject: Re: [PATCH v4 1/2] dt-bindings: net: motorcomm: Add pad driver
+ strength cfg
+Message-ID: <4efd8643-455e-4f7f-b031-a0a02dd65210@lunn.ch>
+References: <20230714101406.17686-1-samin.guo@starfivetech.com>
+ <20230714101406.17686-2-samin.guo@starfivetech.com>
 MIME-Version: 1.0
-References: <20230714174414.4054011-1-robh@kernel.org>
-In-Reply-To: <20230714174414.4054011-1-robh@kernel.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 14 Jul 2023 20:53:50 +0200
-Message-ID: <CAJZ5v0giP7EXPdkcgXa0QP4nLg7ZutVcO60BMcQHSVdVAUDLjw@mail.gmail.com>
-Subject: Re: [PATCH] cpufreq: Explicitly include correct DT includes
-To:     Rob Herring <robh@kernel.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Ilia Lin <ilia.lin@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        Liviu Dudau <liviu.dudau@arm.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-mediatek@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230714101406.17686-2-samin.guo@starfivetech.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 7:44 PM Rob Herring <robh@kernel.org> wrote:
->
-> The DT of_device.h and of_platform.h date back to the separate
-> of_platform_bus_type before it as merged into the regular platform bus.
-> As part of that merge prepping Arm DT support 13 years ago, they
-> "temporarily" include each other. They also include platform_device.h
-> and of.h. As a result, there's a pretty much random mix of those include
-> files used throughout the tree. In order to detangle these headers and
-> replace the implicit includes with struct declarations, users need to
-> explicitly include the correct includes.
->
-> Signed-off-by: Rob Herring <robh@kernel.org>
+> +  motorcomm,rx-clk-driver-strength:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: |
+> +      drive strength of rx_clk rgmii pad.
+> +      |----------------------------------|
+> +      |        rx_clk ds map table       |
+> +      |----------------------------------|
+> +      | DS(3b) |  wol@1.8v  |  wol@3.3v  |
+> +      |________|_________________________|
+> +      |        | current(uA)| current(uA)|
+> +      |   000  |     1200   |    3070    |
+> +      |   001  |     2100   |    4080    |
+> +      |   010  |     2700   |    4370    |
+> +      |   011  |     2910   |    4680    |
+> +      |   100  |     3110   |    5020    |
+> +      |   101  |     3600   |    5450    |
+> +      |   110  |     3970   |    5740    |
+> +      |   111  |     4350   |    6140    |
+> +      |--------|------------|------------|
+> +    enum: [ 1200, 2100, 2700, 2910, 3070, 3110, 3600, 3970,
+> +            4080, 4350, 4370, 4680, 5020, 5450, 5740, 6140 ]
+> +    default: 2910
 
-Acked-by: Rafael J. Wysocki <rafael@kernel.org>
+The DS(3b) value is not relevant to the binding. It is a driver
+detail. So i would not bother listing it.
 
-> ---
->  drivers/cpufreq/armada-37xx-cpufreq.c  | 4 +---
->  drivers/cpufreq/mediatek-cpufreq-hw.c  | 3 ++-
->  drivers/cpufreq/ppc_cbe_cpufreq.c      | 2 +-
->  drivers/cpufreq/ppc_cbe_cpufreq_pmi.c  | 1 -
->  drivers/cpufreq/qcom-cpufreq-nvmem.c   | 1 -
->  drivers/cpufreq/scpi-cpufreq.c         | 2 +-
->  drivers/cpufreq/sti-cpufreq.c          | 2 +-
->  drivers/cpufreq/ti-cpufreq.c           | 2 +-
->  drivers/cpufreq/vexpress-spc-cpufreq.c | 1 -
->  9 files changed, 7 insertions(+), 11 deletions(-)
->
-> diff --git a/drivers/cpufreq/armada-37xx-cpufreq.c b/drivers/cpufreq/armada-37xx-cpufreq.c
-> index b74289a95a17..bea41ccabf1f 100644
-> --- a/drivers/cpufreq/armada-37xx-cpufreq.c
-> +++ b/drivers/cpufreq/armada-37xx-cpufreq.c
-> @@ -14,10 +14,8 @@
->  #include <linux/interrupt.h>
->  #include <linux/io.h>
->  #include <linux/mfd/syscon.h>
-> +#include <linux/mod_devicetable.h>
->  #include <linux/module.h>
-> -#include <linux/of_address.h>
-> -#include <linux/of_device.h>
-> -#include <linux/of_irq.h>
->  #include <linux/platform_device.h>
->  #include <linux/pm_opp.h>
->  #include <linux/regmap.h>
-> diff --git a/drivers/cpufreq/mediatek-cpufreq-hw.c b/drivers/cpufreq/mediatek-cpufreq-hw.c
-> index b22f5cc8a463..c93e14eb6221 100644
-> --- a/drivers/cpufreq/mediatek-cpufreq-hw.c
-> +++ b/drivers/cpufreq/mediatek-cpufreq-hw.c
-> @@ -10,8 +10,9 @@
->  #include <linux/iopoll.h>
->  #include <linux/kernel.h>
->  #include <linux/module.h>
-> -#include <linux/of_address.h>
-> +#include <linux/of.h>
->  #include <linux/of_platform.h>
-> +#include <linux/platform_device.h>
->  #include <linux/slab.h>
->
->  #define LUT_MAX_ENTRIES                        32U
-> diff --git a/drivers/cpufreq/ppc_cbe_cpufreq.c b/drivers/cpufreq/ppc_cbe_cpufreq.c
-> index e3313ce63b38..88afc49941b7 100644
-> --- a/drivers/cpufreq/ppc_cbe_cpufreq.c
-> +++ b/drivers/cpufreq/ppc_cbe_cpufreq.c
-> @@ -9,7 +9,7 @@
->
->  #include <linux/cpufreq.h>
->  #include <linux/module.h>
-> -#include <linux/of_platform.h>
-> +#include <linux/of.h>
->
->  #include <asm/machdep.h>
->  #include <asm/cell-regs.h>
-> diff --git a/drivers/cpufreq/ppc_cbe_cpufreq_pmi.c b/drivers/cpufreq/ppc_cbe_cpufreq_pmi.c
-> index 4fba3637b115..6f0c32592416 100644
-> --- a/drivers/cpufreq/ppc_cbe_cpufreq_pmi.c
-> +++ b/drivers/cpufreq/ppc_cbe_cpufreq_pmi.c
-> @@ -11,7 +11,6 @@
->  #include <linux/types.h>
->  #include <linux/timer.h>
->  #include <linux/init.h>
-> -#include <linux/of_platform.h>
->  #include <linux/pm_qos.h>
->  #include <linux/slab.h>
->
-> diff --git a/drivers/cpufreq/qcom-cpufreq-nvmem.c b/drivers/cpufreq/qcom-cpufreq-nvmem.c
-> index a88b6fe5db50..4590c2570086 100644
-> --- a/drivers/cpufreq/qcom-cpufreq-nvmem.c
-> +++ b/drivers/cpufreq/qcom-cpufreq-nvmem.c
-> @@ -22,7 +22,6 @@
->  #include <linux/module.h>
->  #include <linux/nvmem-consumer.h>
->  #include <linux/of.h>
-> -#include <linux/of_device.h>
->  #include <linux/platform_device.h>
->  #include <linux/pm_domain.h>
->  #include <linux/pm_opp.h>
-> diff --git a/drivers/cpufreq/scpi-cpufreq.c b/drivers/cpufreq/scpi-cpufreq.c
-> index fd2c16821d54..ac719aca49b7 100644
-> --- a/drivers/cpufreq/scpi-cpufreq.c
-> +++ b/drivers/cpufreq/scpi-cpufreq.c
-> @@ -14,7 +14,7 @@
->  #include <linux/cpumask.h>
->  #include <linux/export.h>
->  #include <linux/module.h>
-> -#include <linux/of_platform.h>
-> +#include <linux/platform_device.h>
->  #include <linux/pm_opp.h>
->  #include <linux/scpi_protocol.h>
->  #include <linux/slab.h>
-> diff --git a/drivers/cpufreq/sti-cpufreq.c b/drivers/cpufreq/sti-cpufreq.c
-> index 1a63aeea8711..9c542e723a15 100644
-> --- a/drivers/cpufreq/sti-cpufreq.c
-> +++ b/drivers/cpufreq/sti-cpufreq.c
-> @@ -13,7 +13,7 @@
->  #include <linux/mfd/syscon.h>
->  #include <linux/module.h>
->  #include <linux/of.h>
-> -#include <linux/of_platform.h>
-> +#include <linux/platform_device.h>
->  #include <linux/pm_opp.h>
->  #include <linux/regmap.h>
->
-> diff --git a/drivers/cpufreq/ti-cpufreq.c b/drivers/cpufreq/ti-cpufreq.c
-> index d5cd2fd25cad..3c37d7899660 100644
-> --- a/drivers/cpufreq/ti-cpufreq.c
-> +++ b/drivers/cpufreq/ti-cpufreq.c
-> @@ -12,7 +12,7 @@
->  #include <linux/module.h>
->  #include <linux/init.h>
->  #include <linux/of.h>
-> -#include <linux/of_platform.h>
-> +#include <linux/platform_device.h>
->  #include <linux/pm_opp.h>
->  #include <linux/regmap.h>
->  #include <linux/slab.h>
-> diff --git a/drivers/cpufreq/vexpress-spc-cpufreq.c b/drivers/cpufreq/vexpress-spc-cpufreq.c
-> index d295f405c4bb..865e50164803 100644
-> --- a/drivers/cpufreq/vexpress-spc-cpufreq.c
-> +++ b/drivers/cpufreq/vexpress-spc-cpufreq.c
-> @@ -18,7 +18,6 @@
->  #include <linux/device.h>
->  #include <linux/module.h>
->  #include <linux/mutex.h>
-> -#include <linux/of_platform.h>
->  #include <linux/platform_device.h>
->  #include <linux/pm_opp.h>
->  #include <linux/slab.h>
-> --
-> 2.40.1
->
+Please add a comment explaining what wol is. 
+
+       Andrew
