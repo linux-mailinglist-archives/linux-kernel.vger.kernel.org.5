@@ -2,169 +2,337 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 971D47534C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 10:10:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BAD17534F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 10:21:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235521AbjGNIK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 04:10:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59460 "EHLO
+        id S235007AbjGNIVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 04:21:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235461AbjGNIJz (ORCPT
+        with ESMTP id S234619AbjGNIVL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 04:09:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A1313590
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 01:07:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689322029;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1+9ZBEjT3mFJea6YptXe/CBaBHfnJsPQnoZEZ+DpvPs=;
-        b=Ow669B2RPwtRufEkrH+DIruk5erl4LMYHiBtPulUTaG5zZkwEt6wXdCsK8C4NFnbkLQYjL
-        B6+USE3Tk3rbdoB947kU0DZMoZrJ1RMSnKnd4PDB3E2FdF+IPwhpQFnvWcgEGxwin0jVfy
-        quR4ufyxG2cvFKvcjB0bf+hpPz3rr+Y=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-258-0ua4jPjLNkONWG-yHejRjg-1; Fri, 14 Jul 2023 03:53:40 -0400
-X-MC-Unique: 0ua4jPjLNkONWG-yHejRjg-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-315926005c9so985550f8f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 00:53:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689321219; x=1691913219;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1+9ZBEjT3mFJea6YptXe/CBaBHfnJsPQnoZEZ+DpvPs=;
-        b=SAMfsjYW2GJV0ZK2OPlS9o+5ZrP7cjduNgKxCQM77GZLKQASKHN3bzRjYcAWDLetIx
-         /FAgxxeMxJ+bQ81M4UIRzsunfCkPnQvHgxYkzIlXw+2RCynCLFh8MuX5dWRemaJ6DXGk
-         de3b7iUBctrIb72oiME/iIaLiPIBEdcP0Y2z2rGaCIKtGZ94/dk9JTUc8ri1AnLFI373
-         m40u46vAY88QQMLuQpMwxOi6NayBP4rNx051fv3m9J3lg0NxY1k4vc+jrL2bGSXSu+0C
-         TRJXwjCOjtTe+6xHEpWd9SAgdgl4rBqXgkys71P4Yc15z4u9V3GDdCW4uKcYDKRFDtd8
-         CG8w==
-X-Gm-Message-State: ABy/qLYdt4IqPQmag2vIokEtiUF9B9PReVBRZ/qSpKDxJlWx+3LFzcVP
-        wAjvC1l92Rr/TDpQYC2LPfD7pWfbXlQrkdTCyM+GZ0acePLQMlSeSTreGUeHBMzSobnnT5RR12O
-        yFLhibYv5JqtfRDfzUWtPvMJh
-X-Received: by 2002:a5d:4bcc:0:b0:314:11ab:11a0 with SMTP id l12-20020a5d4bcc000000b0031411ab11a0mr3311915wrt.34.1689321219589;
-        Fri, 14 Jul 2023 00:53:39 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFADpuHUbZdK5ADJswylCCcQ4pxYAN8eI2QEsyDhW7qoWJSX8qkK3H+kEbsI7p7RxibRp7P/Q==
-X-Received: by 2002:a5d:4bcc:0:b0:314:11ab:11a0 with SMTP id l12-20020a5d4bcc000000b0031411ab11a0mr3311905wrt.34.1689321219190;
-        Fri, 14 Jul 2023 00:53:39 -0700 (PDT)
-Received: from localhost ([90.167.94.6])
-        by smtp.gmail.com with ESMTPSA id l13-20020a5d560d000000b0031590317c26sm10103869wrv.61.2023.07.14.00.53.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 00:53:39 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-kernel@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH] drm/ssd130x: Fix an oops when attempting to update a
- disabled plane
-In-Reply-To: <CAMuHMdXbboXGYVezzw3_TEu8U6WR=q2x2NjD-aqeF91-DXOD3Q@mail.gmail.com>
-References: <20230713163213.1028952-1-javierm@redhat.com>
- <CAMuHMdXbboXGYVezzw3_TEu8U6WR=q2x2NjD-aqeF91-DXOD3Q@mail.gmail.com>
-Date:   Fri, 14 Jul 2023 09:53:38 +0200
-Message-ID: <87ttu7szct.fsf@minerva.mail-host-address-is-not-set>
+        Fri, 14 Jul 2023 04:21:11 -0400
+X-Greylist: delayed 900 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 14 Jul 2023 01:21:08 PDT
+Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 903539B;
+        Fri, 14 Jul 2023 01:21:08 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: linasend@asahilina.net)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 269E95BAE8;
+        Fri, 14 Jul 2023 07:55:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=asahilina.net;
+        s=default; t=1689321319;
+        bh=7J6No4Uq+18pRNDNsxGUwdq6k7ZetFTxJmVCqu0gelc=;
+        h=From:Date:Subject:To:Cc;
+        b=0XXctXa8kAUwqUR/n14lJzAp1QSwB4QVYeTBiOsv07KBbD6NvF6XF73BDiRjxaldA
+         L2A7a62Y5JE8n4pAqEf4GGzbkejs/EuMTKpOIlxO6oMAxZ7d4mpT2x7jOZJXCxFb2S
+         iIHDs92fj0sV4K48baDpfQdTTWaTKcLuQU7JwUN4uo34nWeLtCMMVxxOQeh0aouLg6
+         zlaXXK8eVEREW+a1ZIF7LE93+fo/vVZa0iR367TjUSSOpeisKx5Y+gq7AD0m9d5Irj
+         WExg0duPuLNEP3ehs0DOUCo890NEr5Ql1OsX7Q0Sk5uM1btsArfvz9I/Zafk2K5uNq
+         c7tnSZxM5TxXA==
+From:   Asahi Lina <lina@asahilina.net>
+Date:   Fri, 14 Jul 2023 16:55:01 +0900
+Subject: [PATCH v2] rust: time: New module for timekeeping functions
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230714-rust-time-v2-1-f5aed84218c4@asahilina.net>
+X-B4-Tracking: v=1; b=H4sIAFT/sGQC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyjHQUlJIzE
+ vPSU3UzU4B8JSMDI2MDc0MT3aLS4hLdkszcVF1Dg5QUy9QUI1NjY2MloPqCotS0zAqwWdGxtbU
+ AYS2TUFsAAAA=
+To:     Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?utf-8?q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Josh Stone <jistone@redhat.com>,
+        Gaelan Steele <gbs@canishe.com>,
+        Heghedus Razvan <heghedus.razvan@protonmail.com>
+Cc:     linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org,
+        asahi@lists.linux.dev, Asahi Lina <lina@asahilina.net>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1689321314; l=8468;
+ i=lina@asahilina.net; s=20230221; h=from:subject:message-id;
+ bh=7J6No4Uq+18pRNDNsxGUwdq6k7ZetFTxJmVCqu0gelc=;
+ b=HpiQKFG0rAdsT7ooEpKBQ1fhz3+0ARMyc8DgriWfRofBJbVXrK3y3rBG0HRIM0Ja4hnOFqG8e
+ O6Bd+SjWBAZB2M8WGX8ZawAVdoKqD+hx6KCJhJjK/5HojC5Vm5BNgDD
+X-Developer-Key: i=lina@asahilina.net; a=ed25519;
+ pk=Qn8jZuOtR1m5GaiDfTrAoQ4NE1XoYVZ/wmt5YtXWFC4=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Geert Uytterhoeven <geert@linux-m68k.org> writes:
+This module is intended to contain functions related to kernel
+timekeeping and time.
 
-Hello Geert,
+Initially, this implements an abstraction for a time Instant (analogous
+to the Rust std::time::Instant) that represents an opaque instant in
+time. Unlike the std Instant, this is a generic type that is bound to a
+specific clock source, so that only Instants from the same clock source
+can be subtracted/compared.
 
-> Hi Javier,
->
-> On Thu, Jul 13, 2023 at 6:32=E2=80=AFPM Javier Martinez Canillas
-> <javierm@redhat.com> wrote:
->> Geert reports that the following NULL pointer dereference happens for him
->> after commit 49d7d581ceaf ("drm/ssd130x: Don't allocate buffers on each
->> plane update"):
->>
->>     [drm] Initialized ssd130x 1.0.0 20220131 for 0-003c on minor 0
->>     ssd130x-i2c 0-003c: [drm] surface width(128), height(32), bpp(1)
->>     and format(R1   little-endian (0x20203152))
->>     Unable to handle kernel NULL pointer dereference at virtual address =
-00000000
->>     Oops [#1]
->>     CPU: 0 PID: 1 Comm: swapper Not tainted
->>     6.5.0-rc1-orangecrab-02219-g0a529a1e4bf4 #565
->>     epc : ssd130x_update_rect.isra.0+0x13c/0x340
->>      ra : ssd130x_update_rect.isra.0+0x2bc/0x340
->>     ...
->>     status: 00000120 badaddr: 00000000 cause: 0000000f
->>     [<c0303d90>] ssd130x_update_rect.isra.0+0x13c/0x340
->>     [<c0304200>] ssd130x_primary_plane_helper_atomic_update+0x26c/0x284
->>     [<c02f8d54>] drm_atomic_helper_commit_planes+0xfc/0x27c
->>     [<c02f9314>] drm_atomic_helper_commit_tail+0x5c/0xb4
->>     [<c02f94fc>] commit_tail+0x190/0x1b8
->>     [<c02f99fc>] drm_atomic_helper_commit+0x194/0x1c0
->>     [<c02c5d00>] drm_atomic_commit+0xa4/0xe4
->>     [<c02cce40>] drm_client_modeset_commit_atomic+0x244/0x278
->>     [<c02ccef0>] drm_client_modeset_commit_locked+0x7c/0x1bc
->>     [<c02cd064>] drm_client_modeset_commit+0x34/0x64
->>     [<c0301a78>] __drm_fb_helper_restore_fbdev_mode_unlocked+0xc4/0xe8
->>     [<c0303424>] drm_fb_helper_set_par+0x38/0x58
->>     [<c027c410>] fbcon_init+0x294/0x534
->>     ...
->>
->> The problem is that fbcon calls fbcon_init() which triggers a DRM modeset
->> and this leads to drm_atomic_helper_commit_planes() attempting to commit
->> the atomic state for all planes, even the ones whose CRTC is not enabled.
->>
->> Since the primary plane buffer is allocated in the encoder .atomic_enable
->> callback, this happens after that initial modeset commit and leads to the
->> mentioned NULL pointer dereference.
->>
->> Fix this by not using the default drm_atomic_helper_commit_tail() helper,
->> but instead the drm_atomic_helper_commit_tail_rpm() function that doesn't
->> attempt to commit the atomic state for planes related to inactive CRTCs.
->>
->> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
->> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
->
-> Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
->
+Then we implement the relevant clocks available to the kernel:
+KernelTime (CLOCK_MONOTONIC), BootTime (CLOCK_BOOTTIME),
+RealTime (CLOCK_REALTIME), and TaiTime.
 
-Thanks for reporting the issue in the first place and for the testing!
+Co-developed-by: Heghedus Razvan <heghedus.razvan@protonmail.com>
+Signed-off-by: Asahi Lina <lina@asahilina.net>
+---
 
->> --- a/drivers/gpu/drm/solomon/ssd130x.c
->> +++ b/drivers/gpu/drm/solomon/ssd130x.c
->> @@ -795,6 +795,10 @@ static const struct drm_mode_config_funcs ssd130x_m=
-ode_config_funcs =3D {
->>         .atomic_commit =3D drm_atomic_helper_commit,
->>  };
->>
->> +static const struct drm_mode_config_helper_funcs ssd130x_mode_config_he=
-lpers =3D {
->> +       .atomic_commit_tail =3D drm_atomic_helper_commit_tail_rpm,
->
-> The docs say this is intended for drivers that support runtime_pm or
-> need the CRTC to be enabled to perform a commit.  Might be worthwhile
-> to add basic Runtime PM, so the I2C controller can go to sleep when
-> the display is not used.
->
+Based on the feedback to v1, now we have proper type checking for kernel
+time. I decided to implement marker traits for monotonic vs. wallclock
+time sources, since it's useful to be able to safely implement different
+semantics conditional on that, but that left me with a name conflict of
+the Monotonic trait with the CLOCK_MONOTONIC / "default ktime" clock
+source. I ended up calling it KernelTime since it's the most fundamental
+kernel timesource, but suggestions welcome!
 
-Indeed, I thought the same. But I believe we can do that as a follow-up pat=
-ch.
+Heghedus: I think I need a signoff on this since this is based on the
+playground demo you wrote in the feedback to v1. Can you provide that? I
+can fold it into v3 (if there is one, otherwise Miguel can probably just
+add it when he applies it). Thanks!
+---
+ rust/bindings/bindings_helper.h |   2 +
+ rust/helpers.c                  |  16 +++++
+ rust/kernel/lib.rs              |   1 +
+ rust/kernel/time.rs             | 150 ++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 169 insertions(+)
 
---=20
-Best regards,
+diff --git a/rust/bindings/bindings_helper.h b/rust/bindings/bindings_helper.h
+index 3e601ce2548d..eddfdf887364 100644
+--- a/rust/bindings/bindings_helper.h
++++ b/rust/bindings/bindings_helper.h
+@@ -8,9 +8,11 @@
+ 
+ #include <linux/errname.h>
+ #include <linux/slab.h>
++#include <linux/ktime.h>
+ #include <linux/refcount.h>
+ #include <linux/wait.h>
+ #include <linux/sched.h>
++#include <linux/timekeeping.h>
+ 
+ /* `bindgen` gets confused at certain things. */
+ const gfp_t BINDINGS_GFP_KERNEL = GFP_KERNEL;
+diff --git a/rust/helpers.c b/rust/helpers.c
+index bb594da56137..eff092302e23 100644
+--- a/rust/helpers.c
++++ b/rust/helpers.c
+@@ -26,6 +26,7 @@
+ #include <linux/mutex.h>
+ #include <linux/spinlock.h>
+ #include <linux/sched/signal.h>
++#include <linux/timekeeping.h>
+ #include <linux/wait.h>
+ 
+ __noreturn void rust_helper_BUG(void)
+@@ -135,6 +136,21 @@ void rust_helper_put_task_struct(struct task_struct *t)
+ }
+ EXPORT_SYMBOL_GPL(rust_helper_put_task_struct);
+ 
++ktime_t rust_helper_ktime_get_real(void) {
++	return ktime_get_real();
++}
++EXPORT_SYMBOL_GPL(rust_helper_ktime_get_real);
++
++ktime_t rust_helper_ktime_get_boottime(void) {
++	return ktime_get_boottime();
++}
++EXPORT_SYMBOL_GPL(rust_helper_ktime_get_boottime);
++
++ktime_t rust_helper_ktime_get_clocktai(void) {
++	return ktime_get_clocktai();
++}
++EXPORT_SYMBOL_GPL(rust_helper_ktime_get_clocktai);
++
+ /*
+  * We use `bindgen`'s `--size_t-is-usize` option to bind the C `size_t` type
+  * as the Rust `usize` type, so we can use it in contexts where Rust
+diff --git a/rust/kernel/lib.rs b/rust/kernel/lib.rs
+index 85b261209977..52c91484c5d8 100644
+--- a/rust/kernel/lib.rs
++++ b/rust/kernel/lib.rs
+@@ -42,6 +42,7 @@
+ pub mod str;
+ pub mod sync;
+ pub mod task;
++pub mod time;
+ pub mod types;
+ 
+ #[doc(hidden)]
+diff --git a/rust/kernel/time.rs b/rust/kernel/time.rs
+new file mode 100644
+index 000000000000..f3bfeed20145
+--- /dev/null
++++ b/rust/kernel/time.rs
+@@ -0,0 +1,150 @@
++// SPDX-License-Identifier: GPL-2.0
++
++//! Timekeeping functions.
++//!
++//! C header: [`include/linux/ktime.h`](../../../../include/linux/ktime.h)
++//! C header: [`include/linux/timekeeping.h`](../../../../include/linux/timekeeping.h)
++
++use crate::{bindings, pr_err};
++use core::marker::PhantomData;
++use core::time::Duration;
++
++/// Represents a clock, that is, a unique time source.
++pub trait Clock: Sized {}
++
++/// A time source that can be queried for the current time.
++pub trait Now: Clock {
++    /// Returns the current time for this clock.
++    fn now() -> Instant<Self>;
++}
++
++/// Marker trait for clock sources that are guaranteed to be monotonic.
++pub trait Monotonic {}
++
++/// Marker trait for clock sources that represent a calendar (wall clock)
++/// relative to the UNIX epoch.
++pub trait WallTime {}
++
++/// An instant in time associated with a given clock source.
++#[derive(Debug)]
++pub struct Instant<T: Clock> {
++    nanoseconds: i64,
++    _type: PhantomData<T>,
++}
++
++impl<T: Clock> Clone for Instant<T> {
++    fn clone(&self) -> Self {
++        *self
++    }
++}
++
++impl<T: Clock> Copy for Instant<T> {}
++
++impl<T: Clock> Instant<T> {
++    fn new(nanoseconds: i64) -> Self {
++        Instant {
++            nanoseconds,
++            _type: PhantomData,
++        }
++    }
++
++    /// Returns the time elapsed since an earlier Instant<t>, or
++    /// None if the argument is a later Instant.
++    pub fn since(&self, earlier: Instant<T>) -> Option<Duration> {
++        if earlier.nanoseconds > self.nanoseconds {
++            None
++        } else {
++            // Casting to u64 and subtracting is guaranteed to give the right
++            // result for all inputs, as long as the condition we checked above
++            // holds.
++            Some(Duration::from_nanos(
++                self.nanoseconds as u64 - earlier.nanoseconds as u64,
++            ))
++        }
++    }
++}
++
++impl<T: Clock + Now + Monotonic> Instant<T> {
++    /// Returns the time elapsed since this Instant<T>.
++    ///
++    /// This is guaranteed to return a positive result, since
++    /// it is only implemented for monotonic clocks.
++    pub fn elapsed(&self) -> Duration {
++        T::now().since(*self).unwrap_or_else(|| {
++            pr_err!(
++                "Monotonic clock {} went backwards!",
++                core::any::type_name::<T>()
++            );
++            Duration::ZERO
++        })
++    }
++}
++
++/// Contains the various clock source types available to the kernel.
++pub mod clock {
++    use super::*;
++
++    /// A clock representing the default kernel time source.
++    ///
++    /// This is `CLOCK_MONOTONIC` (though it is not the only
++    /// monotonic clock) and also the default clock used by
++    /// `ktime_get()` in the C API.
++    ///
++    /// This is like `BootTime`, but does not include time
++    /// spent sleeping.
++
++    pub struct KernelTime;
++
++    impl Clock for KernelTime {}
++    impl Monotonic for KernelTime {}
++    impl Now for KernelTime {
++        fn now() -> Instant<Self> {
++            Instant::<Self>::new(unsafe { bindings::ktime_get() })
++        }
++    }
++
++    /// A clock representing the time elapsed since boot.
++    ///
++    /// This is `CLOCK_MONOTONIC` (though it is not the only
++    /// monotonic clock) and also the default clock used by
++    /// `ktime_get()` in the C API.
++    ///
++    /// This is like `KernelTime`, but does include time
++    /// spent sleeping.
++    pub struct BootTime;
++
++    impl Clock for BootTime {}
++    impl Monotonic for BootTime {}
++    impl Now for BootTime {
++        fn now() -> Instant<Self> {
++            Instant::<Self>::new(unsafe { bindings::ktime_get_boottime() })
++        }
++    }
++
++    /// A clock representing TAI time.
++    ///
++    /// This clock is not monotonic and can be changed from userspace.
++    /// However, it is not affected by leap seconds.
++    pub struct TaiTime;
++
++    impl Clock for TaiTime {}
++    impl WallTime for TaiTime {}
++    impl Now for TaiTime {
++        fn now() -> Instant<Self> {
++            Instant::<Self>::new(unsafe { bindings::ktime_get_clocktai() })
++        }
++    }
++
++    /// A clock representing wall clock time.
++    ///
++    /// This clock is not monotonic and can be changed from userspace.
++    pub struct RealTime;
++
++    impl Clock for RealTime {}
++    impl WallTime for RealTime {}
++    impl Now for RealTime {
++        fn now() -> Instant<Self> {
++            Instant::<Self>::new(unsafe { bindings::ktime_get_real() })
++        }
++    }
++}
 
-Javier Martinez Canillas
-Core Platforms
-Red Hat
+---
+base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
+change-id: 20230714-rust-time-10dd9ed25333
+
+Thank you,
+~~ Lina
 
