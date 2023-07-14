@@ -2,94 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F4DF75386F
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 12:41:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A9A875387F
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 12:43:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236138AbjGNKlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 06:41:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45950 "EHLO
+        id S235772AbjGNKnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 06:43:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235717AbjGNKlW (ORCPT
+        with ESMTP id S234953AbjGNKnC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 06:41:22 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4A3E2D7D;
-        Fri, 14 Jul 2023 03:41:21 -0700 (PDT)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36E7KGh3032681;
-        Fri, 14 Jul 2023 10:41:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=ZMmeuoidqMwO6OJvJtXuIzl+yCguX0bVr2pvJkfGWBY=;
- b=JoQDbe4oU5n5Qd8WPMD/xgq42AydXSxN12U2UrBxqYwuBP6R56Htgamen85yRo7ItaFP
- COJWNpg++yQ1ywwFuerr5W8EZrsfJN80049PsJth1R0keEUrSLi3Jo2gYlj7z4VT4XaM
- 3nIyXJjlmhF5k/tuKVuh4jSVVMGMb78rnRa/0vgLHX47ujWTq2n0SoZ+M0IXECuFqExT
- tmE2+hgJedjuiz7th0VeVcd4tIGO0wZbZU38jWhcQ5hT7kPnu924OmpSDiqTwCUsL6kZ
- /Vy/UAAnw7syTHNjTWpDMPDMnp4VwhO9uegveGvLDmyZy0r1MqP98PdokhKLH3rM1uUT Pw== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rtptw1gbm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 14 Jul 2023 10:41:07 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36EAf6Mg011077
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 14 Jul 2023 10:41:06 GMT
-Received: from [10.216.17.90] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Fri, 14 Jul
- 2023 03:41:00 -0700
-Message-ID: <7c04ebd9-4def-87d6-0640-35fd0ccd20f5@quicinc.com>
-Date:   Fri, 14 Jul 2023 16:10:57 +0530
+        Fri, 14 Jul 2023 06:43:02 -0400
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 481A72D7D;
+        Fri, 14 Jul 2023 03:42:53 -0700 (PDT)
+Received: from leknes.fjasle.eu ([46.142.49.15]) by mrelayeu.kundenserver.de
+ (mreue012 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1N5lvf-1ps8Ok2epH-017CtL; Fri, 14 Jul 2023 12:42:13 +0200
+Received: by leknes.fjasle.eu (Postfix, from userid 1000)
+        id D561D3E8B6; Fri, 14 Jul 2023 12:42:11 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fjasle.eu; s=mail;
+        t=1689331332; bh=VbtTiOb3pj67buXnCTmEAlGgzMMxWUTXwxnvZuk4Xp4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=d3/gxwudV53G2YvmCI65zt4LtGzb9FXtZXtieUiGSHZk5qU58I1WZiQNlyh0XJG2m
+         UMQrTV8h9Eu/Bx17sfKcntheRBLqnjovLaQzWmV2c0273qt0RJ2R70PCxRps2I4trW
+         VpWavTKE35DqWLzdQuGxjCV20s+lBPlGgQcQQsJk=
+Date:   Fri, 14 Jul 2023 12:42:11 +0200
+From:   Nicolas Schier <nicolas@fjasle.eu>
+To:     Alexey Dobriyan <adobriyan@gmail.com>
+Cc:     akpm@linux-foundation.org, masahiroy@kernel.org, nathan@kernel.org,
+        ndesaulniers@google.com, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org
+Subject: Re: [PATCH] kbuild: flatten KBUILD_CFLAGS
+Message-ID: <ZLEmgxm73zzmffWD@fjasle.eu>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.1
-Subject: Re: [PATCH v9 06/10] usb: dwc3: qcom: Add support to read IRQ's
- related to multiport
-Content-Language: en-US
-To:     Johan Hovold <johan@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-CC:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "Andy Gross" <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <quic_pkondeti@quicinc.com>, <quic_ppratap@quicinc.com>,
-        <quic_jackp@quicinc.com>, <ahalaney@redhat.com>,
-        <quic_shazhuss@quicinc.com>
-References: <20230621043628.21485-1-quic_kriskura@quicinc.com>
- <20230621043628.21485-7-quic_kriskura@quicinc.com>
- <ZK6YrLMn9r39zEeB@hovoldconsulting.com>
- <ef29e520-7b9c-f581-e70a-250df80d3821@quicinc.com>
- <ZLEP6Ekh3unSTiCL@hovoldconsulting.com>
-From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-In-Reply-To: <ZLEP6Ekh3unSTiCL@hovoldconsulting.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: fLGcEm4dkghEiJNpTJriALWOjls5kLyX
-X-Proofpoint-GUID: fLGcEm4dkghEiJNpTJriALWOjls5kLyX
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-14_04,2023-07-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- adultscore=0 priorityscore=1501 suspectscore=0 phishscore=0 malwarescore=0
- spamscore=0 clxscore=1015 impostorscore=0 mlxscore=0 mlxlogscore=809
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307140097
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="0Cqt7gF9l+Mxlu9M"
+Content-Disposition: inline
+In-Reply-To: <4f414a87-0c54-44bd-b218-f6f0b22c57ef@p183>
+X-Provags-ID: V03:K1:pXlRpCei6t48Xe832x9jG0u+dF34XzEwMra9E3u68U7X4sJ1nZL
+ E8WgYvFA0Z/Ai6uJsuHLXgUHBMZnAE+AegVRoFnk3A/YFOPN54RviliNMOm4/jR9UU4wPRg
+ IRHaH+HAWQcPe15etQSE24X7V5CcHiQqO1PV1Ter0mIHx8A+y1nqeBYQgzbedH8t9SszLp/
+ d9PMLrUVJwSPWRBetY/lA==
+UI-OutboundReport: notjunk:1;M01:P0:iiBMgfWDDUg=;BvGKpF2FEwM6xE6lGgOv+mD2TER
+ R27VwYXzkvrcAcxMksWWxp+hHczreaVtafh0F0BdvuI0RisWXMzZ4mDqLAt1WRTX5NQwaZ96l
+ eM27sLrb7/gB+X1//ZXm7j8mS0xNKs/mz853VnfwVfwHnaSe869bsmWp+mBQCWv01avfFT1Lk
+ leleFY/4izgNpZks+5mRm3KnjERo1Y8FFjiDrpHwX2YFXHOWLRxmKJtdXAmaPIBllluOOgLHz
+ hE+xwhMBUhzU9RWtPszy9sJdoXzV81rPooLPEUzZFCxz0+1QPbK0Ijx9XBbsz1tLNS8hcGCHk
+ 1ThAXjWfj65rkRwEfxYK/LHZieMR66jk+aV8WprTxWTw+G1L6nzQYOQaK1vBMBIeqGje9ikoV
+ tuRj1xebbP4If1exXGat4LeJy4e6NE/Azq0IZofnwhhidie/s41ex+YS7HZGQv4cpNZ/A8vwX
+ WLMExJYax5cVtpY6912nfMm9LI4Duae9suB7ovbs8/rcg9dL8SjumuzTPbPbaAcpMqDrAbInB
+ 8tcOB/N4LYTM3oO3kDf4rpJlqcJcaH2XfRQaFRSnjrNmYlGQopywuYP1/cIz3TcxOJALHJZUL
+ HSwCgDXOaAnUx/AmDcEn3YjyKyR2q4Pxa2VGL9MTyxLscrUIdUk0p3abh7tiTSRFLvzjlNy7g
+ B8roXL388xSPw9blrX3gC4F+4FjDZ80ZgyVmH1SdNQ==
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,T_SPF_TEMPERROR,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -97,56 +65,85 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--0Cqt7gF9l+Mxlu9M
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 7/14/2023 2:35 PM, Johan Hovold wrote:
-> On Wed, Jul 12, 2023 at 11:56:33PM +0530, Krishna Kurapati PSSNV wrote:
->> On 7/12/2023 5:42 PM, Johan Hovold wrote:
->>> On Wed, Jun 21, 2023 at 10:06:24AM +0530, Krishna Kurapati wrote:
->>>> Add support to read Multiport IRQ's related to quad port controller
->>>> of SA8295 Device.
->>>>
->>>> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
->>>> ---
->>>>    drivers/usb/dwc3/dwc3-qcom.c | 108 +++++++++++++++++++++++++++++------
->>>>    1 file changed, 91 insertions(+), 17 deletions(-)
->>>
->>>> +static int dwc3_qcom_setup_mp_irq(struct platform_device *pdev)
->>>> +{
->>>> +	struct dwc3_qcom *qcom = platform_get_drvdata(pdev);
->>>> +	char irq_name[15];
->>>
->>> The interrupt device-name string can not be allocated on the stack or
->>> reused as it is stored directly in each irqaction structure.
->>>
->>> This can otherwise lead to random crashes when accessing
->>> /proc/interrupts:
->>>
->>> 	https://lore.kernel.org/lkml/ZK6IV_jJPICX5r53@hovoldconsulting.com/
-> 
->>     Sure, will create a static array of names if possible in global
->> section of file and use it to read interrupts.
-> 
-> Or just use devm_kasprintf(), which should allow for a cleaner
-> implementation.
-> 
-> I've fixed it up like this for my X13s wip branches:
-> 
-> 	https://github.com/jhovold/linux/commit/0898b54456bc2f4bd4d420480db98e6758771ace
->   
->>     Are you fine with seperating out setup_irq and setup_mp_irq functions
->> ? Can you please review comments and suggestion on [1].
-> 
-> I haven't had time to look at your latest replies yet, but as I already
-> said when reviewing v9, it seems you should be using a common helper for
-> non-mp and mp.
-> 
-Hi Johan,
+On Thu, Jul 13, 2023 at 09:52:28PM +0300, Alexey Dobriyan wrote:
+> Make it slightly easier to see which compiler options are added and
+> removed (and not worry about column limit too!).
+>=20
+> Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+> ---
+>=20
+>  Makefile |   22 +++++++++++++++++-----
+>  1 file changed, 17 insertions(+), 5 deletions(-)
+>=20
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -555,11 +555,23 @@ LINUXINCLUDE    :=3D \
+>  		$(USERINCLUDE)
+> =20
+>  KBUILD_AFLAGS   :=3D -D__ASSEMBLY__ -fno-PIE
+> -KBUILD_CFLAGS   :=3D -Wall -Wundef -Werror=3Dstrict-prototypes -Wno-trig=
+raphs \
+> -		   -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE \
+> -		   -Werror=3Dimplicit-function-declaration -Werror=3Dimplicit-int \
+> -		   -Werror=3Dreturn-type -Wno-format-security -funsigned-char \
+> -		   -std=3Dgnu11
+> +
+> +KBUILD_CFLAGS :=3D
+> +KBUILD_CFLAGS +=3D -std=3Dgnu11
 
-  The gist of my mail was to see if I can defer qcom probe when dwc3 
-probe fails/or doesn't happen on of_plat_pop (which is logical) so that 
-we can move setup_irq to after dwc3_register_core so that we know 
-whether we are MP capable or not. This would help us move all IRQ 
-reading into one function.
+If you want to put -std at top, on contrast to the sorted options below,
+you could also merge the two lines above.
 
-Regards,
-Krishna,
+> +KBUILD_CFLAGS +=3D -fshort-wchar
+> +KBUILD_CFLAGS +=3D -funsigned-char
+> +KBUILD_CFLAGS +=3D -fno-common
+> +KBUILD_CFLAGS +=3D -fno-PIE
+> +KBUILD_CFLAGS +=3D -fno-strict-aliasing
+> +KBUILD_CFLAGS +=3D -Wall
+> +KBUILD_CFLAGS +=3D -Wundef
+> +KBUILD_CFLAGS +=3D -Werror=3Dimplicit-function-declaration
+> +KBUILD_CFLAGS +=3D -Werror=3Dimplicit-int
+> +KBUILD_CFLAGS +=3D -Werror=3Dreturn-type
+> +KBUILD_CFLAGS +=3D -Werror=3Dstrict-prototypes
+> +KBUILD_CFLAGS +=3D -Wno-format-security
+> +KBUILD_CFLAGS +=3D -Wno-trigraphs
+> +
+>  KBUILD_CPPFLAGS :=3D -D__KERNEL__
+>  KBUILD_RUSTFLAGS :=3D $(rust_common_flags) \
+>  		    --target=3D$(objtree)/scripts/target.json \
+
+Thanks for the patch.
+
+Reviewed-by: Nicolas Schier <n.schier@avm.de>
+
+--=20
+epost|xmpp: nicolas@fjasle.eu          irc://oftc.net/nsc
+=E2=86=B3 gpg: 18ed 52db e34f 860e e9fb  c82b 7d97 0932 55a0 ce7f
+     -- frykten for herren er opphav til kunnskap --
+
+--0Cqt7gF9l+Mxlu9M
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEh0E3p4c3JKeBvsLGB1IKcBYmEmkFAmSxJoMACgkQB1IKcBYm
+EmlvNQ//cAJl2yEh6GztQ9N5MczsTK+goBJfyZT930kb7ogIqrUu2mL7WzbPEMou
+fcb+DIWEwoc+WSmRawUf2k9aGEkuiGzY4sVWFfDIxbJyfHaQEnIdQbFpP7Wg4iFW
+DAtlH8H2bi3sQgzPXDJHPbL+GmzppQHO/iEqUX8sco8Ti0N0vBt5foYSH8pgU3rZ
+V6g5sTxZ4potPKgA9T/686AkEGDwLgFz8OgdEz01lzOZ+Gwh+nXSDZRhjvachVGr
+C5d/cSno7DPDFmYK+JVkdXFi/waobG9agHW7YoqPMGBjCBvTH2Ojnm0mzIk5V5mf
+DsP2ZME0Hjn9mncuYDJCnb2CTPn6wG4qqlMz4I6S52Hfy7Y39YUpDdAilu/bWruE
+avCR2jQAtM7aOrRjuou1E8KzXJpPLAB+8OB8Lae6gadRPqRral3LdUcW9rJnXHOw
+nQUZaQmgtYgMyeMgPf3jYVpnWbKh2wze5O7aYiYG3ERs+S0vReW/u5KPXUxDhmHy
+s/Vy0FqgSHjyWimy/ie8cxl9gpkjuYYhKEn973/GtOl6IcA3VdA5kuwYGXXixiyV
+C3ofKI3HbCs02chIpTdlzIgoEVzq/FtKvXa9Fby15zzWt4ySCtv939r5P7OIzpbL
+dpMo9jhN8bEB/wpswoTRuscEHpP5AhAm2obe1A4NY6OJoONCKsw=
+=QTTE
+-----END PGP SIGNATURE-----
+
+--0Cqt7gF9l+Mxlu9M--
