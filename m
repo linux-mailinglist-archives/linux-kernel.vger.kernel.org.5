@@ -2,42 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B0527530B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 06:50:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63B4B7530B6
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 06:50:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234394AbjGNEu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 00:50:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41990 "EHLO
+        id S234596AbjGNEuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 00:50:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232340AbjGNEu0 (ORCPT
+        with ESMTP id S232340AbjGNEuu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 00:50:26 -0400
-Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4344726B3
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 21:50:24 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0VnKIG.z_1689310219;
-Received: from 30.221.157.198(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0VnKIG.z_1689310219)
-          by smtp.aliyun-inc.com;
-          Fri, 14 Jul 2023 12:50:20 +0800
-Message-ID: <82251dbb-6fb2-63a5-d15b-ba68ec75b4b2@linux.alibaba.com>
-Date:   Fri, 14 Jul 2023 12:50:16 +0800
+        Fri, 14 Jul 2023 00:50:50 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A6242D5F;
+        Thu, 13 Jul 2023 21:50:50 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9388A616D1;
+        Fri, 14 Jul 2023 04:50:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E998CC433C7;
+        Fri, 14 Jul 2023 04:50:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689310249;
+        bh=EcQVGwWcJPMYxthhMryajaVCcmz6AHwCcf1NupuDKag=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=PqKLZx74vek/k7fNDzHgHyawsDb7rqGJEP79fRXcwxTZBz68d8p5lzJNzHDVe8wKT
+         Gg7/Fl2pGNt/+zOppdhDpNO6uSRwKUVCxApEKODxem54Ym9KFTQyM7BWBcqW1G+huK
+         TX0C3Q5GEkEq1+zOgnGJv46D7fiUrXQ0uLbBvIj8XYX7PZ8Lne4m+NrgY3Q4kdd7LE
+         sSNIm50wnH8GieelBGg/tC4cAQD03tA6BMxdyWEcdqESmKJ9pdDaXcdvifHrGPh26k
+         AiVdOqiuINwuS2ylsZR8/LcsrQihKmZ7UxwaLMoC33bj7UMjYvcVe4lpxtkYYrtrHa
+         QQPrkgVWH2SaQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 7C613CE009E; Thu, 13 Jul 2023 21:50:43 -0700 (PDT)
+Date:   Thu, 13 Jul 2023 21:50:43 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: duplicate patch in the rcu tree
+Message-ID: <6f655ef5-b236-4683-92b0-da8b19e79eca@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230714144330.3c0a4074@canb.auug.org.au>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH] erofs: deprecate superblock checksum feature
-Content-Language: en-US
-To:     Gao Xiang <hsiangkao@linux.alibaba.com>, chao@kernel.org,
-        huyue2@coolpad.com, linux-erofs@lists.ozlabs.org
-Cc:     linux-kernel@vger.kernel.org, pratikshinde320@gmail.com
-References: <20230714033832.111740-1-jefflexu@linux.alibaba.com>
- <8a896983-ec76-d705-b4af-b34ffe529a81@linux.alibaba.com>
-From:   Jingbo Xu <jefflexu@linux.alibaba.com>
-In-Reply-To: <8a896983-ec76-d705-b4af-b34ffe529a81@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230714144330.3c0a4074@canb.auug.org.au>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -45,35 +63,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/14/23 12:29 PM, Gao Xiang wrote:
+On Fri, Jul 14, 2023 at 02:43:30PM +1000, Stephen Rothwell wrote:
+> Hi all,
 > 
+> The following commit is also in net-next tree as a different commit
+> (but the same patch):
 > 
-> On 2023/7/14 11:38, Jingbo Xu wrote:
->> Later we're going to introduce fs-verity based verification for the
->> whole image.  Make the superblock checksum feature deprecated.
+>   a2b38823280d ("rcu: Export rcu_request_urgent_qs_task()")
 > 
-> I'd suggest that
+> This is commit
 > 
+>   43a89baecfe2 ("rcu: Export rcu_request_urgent_qs_task()")
 > 
-> "Later we're going to try the self-contained image verification.
->  The current superblock checksum feature has quite limited
->  functionality, instead, merkle trees can provide better protection
->  for image integrity.
-> 
->  Since the superblock checksum is a compatible feature, just
->  deprecate now. "
->  
+> in the net-next tree.
 
-Yeah, another concern is that xxhash is used in the following xattr name
-filter feature [1] which is on the way.  It may be redundant to use two
-hashing algorithms for one filesystem.
+The net-next tree needs it for BPF, correct?  So if you guys intend to
+push it to mainline, I will be happy to drop if from -rcu.
 
+Either way, please let me know!
 
-[1]
-https://lore.kernel.org/all/20230714031034.53210-1-jefflexu@linux.alibaba.com/
-
--- 
-Thanks,
-Jingbo
+							Thanx, Paul
