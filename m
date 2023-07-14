@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 003ED753C26
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 15:52:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0271E753C28
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 15:52:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235958AbjGNNwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 09:52:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47392 "EHLO
+        id S235934AbjGNNwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 09:52:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235881AbjGNNvs (ORCPT
+        with ESMTP id S235909AbjGNNvt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 09:51:48 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E25683A82
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 06:51:38 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-992f15c36fcso252908266b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 06:51:38 -0700 (PDT)
+        Fri, 14 Jul 2023 09:51:49 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C6093A87
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 06:51:40 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-98de21518fbso262577066b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 06:51:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=9elements.com; s=google; t=1689342697; x=1691934697;
+        d=9elements.com; s=google; t=1689342698; x=1691934698;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=NHXEv10hBdP+g4q7rSvrgYwQ+atbmqNIuqpCrMhKX+g=;
-        b=c1Vs56fgyh1Kds4GklD5N3Wl7ycrlA+IAH1+0fmHoRAFn7X8ddeYo59DBANRqjH6Im
-         Ebjq/LvLnSBL14jcKcWy3K/oAOGR8NIPK79Z86zyCq5ecXsgBGAHAhpZXpMi9AhilcBZ
-         uX/xQl3TgBChomZgSaiLt8Lel2vvEwOQb/qYDhfQTKMfiEhYg7t5nwkbUtVh2r7UBbd9
-         YLYCbkwJXy5xyl6RlP4icGKqb4+noTFoSVEQXXan7tldmouKYx1Iyjmm3mG0c4iR3/ZE
-         UMmXgdJg7yg9gnjWspAYLSg1fW/f0TcOlBSQg/kRsP8XumslV5FGihI+p8hIgHMKYQg4
-         hENw==
+        bh=fdgHEMDPNwZTClo7TJkF0JFchHkoo0pFMs1tP6LyZ7c=;
+        b=ESj93/DcEtn8N12L37as3AsAa/dMoBEb28eGurPie63+8CX7MkNPa9tikHUMtv3bZw
+         cj4egn825D41nTObupSy8dkAk0iKnbzS1Pnj4wpXqKkXG1hfSVR0hYLjfx3ZJwmJxiKj
+         t4Xky/3tbecEinUr5OALSDfE5KL188zJUarlmcsg/lMybvZwzfX44N+3Mh6YdtuxsQMg
+         bwK2ympV4UFxbpYNbfV8npkoVO/Yvsl9YWbz5HDUG1p2xmKZPHV7NVn6BJ3t7zjOzyEX
+         xRUUy+Lh/xwy+k7M1p211kQaeMEAi6JRmHhJt2IcyQgm8aXBWx7bxFD/QKCfQYOMHUvm
+         7TCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689342697; x=1691934697;
+        d=1e100.net; s=20221208; t=1689342698; x=1691934698;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=NHXEv10hBdP+g4q7rSvrgYwQ+atbmqNIuqpCrMhKX+g=;
-        b=O4LztxssJHNpIIQGlF95n62h10XaXhXOyGWXciQW+BD6uE+cK7ksra7rRSrURhpFI0
-         jngz6QWb+KewdjCedI7AwZuRVyDrR7Ob9H7x24jui8W3PJ7xLF+CPmYGH9mNEUqPalLX
-         GRuPqgzj1okcYJy1kfIfGMxXxVejwqbIuGX6Of1D1YoWb198x2WYtkVaB9MYueFA6Jni
-         yyOkatbSi47k7uCq1hZsIuU+deN0q1zwUjnmSJXi0Us2s/3EbJnulrJfCn9lIk7NzLWA
-         q7Nf41N+jY2jpqeuvDU2auF9B1PmaZAhddWEmeA3U27tze3GMc2XnYBKem7wqypI+yAB
-         /KHA==
-X-Gm-Message-State: ABy/qLZNZf0DR8juTiQGMlN681MBg0QiFseWG0ADUnWBTyxzQSJy4WeK
-        CfOAVzIyTZeAoXnexPVbJdOmAbvsRaWFHMCBGaafKQ==
-X-Google-Smtp-Source: APBJJlEdHgcVQIaCpSmrBRIjYGzE2AT6yKq4E2S2S2aosOymNYV67To3p+ioZhjomR7A8vl4poXm3w==
-X-Received: by 2002:a17:906:74d1:b0:993:e752:1a6a with SMTP id z17-20020a17090674d100b00993e7521a6amr4464650ejl.21.1689342697333;
-        Fri, 14 Jul 2023 06:51:37 -0700 (PDT)
+        bh=fdgHEMDPNwZTClo7TJkF0JFchHkoo0pFMs1tP6LyZ7c=;
+        b=GoVlvXDIyL3G4W3moJQL8C4Lic3RRZZymjUghZHEyutAqzldPCgC8t5HRmS7eXicNn
+         T6dMPjWZFveZcdvhY0CsVTnPRdNxCVDydC2oHB5+O1QpgGOVOm7cF+L29bTgPJH5JJW1
+         cBTrqgO9FaLERgvGgLmgndkYmoBACZs8fNJQlPSb/hIiJQmbu9pqB+ZISAlsFY6h8B/g
+         dvRAa2nyIWr45Z+z9DkVrHhpHnlazQH4MSfR2VXOpfFs1HkErhJlYMsT9y507lRLMmBS
+         Aw1jjocpLKutwCf2ztbzwjhcD3xzm8gnh8KKchSnbX6DuGBWZhQmBrxUrDVvrMS/ifbo
+         3APA==
+X-Gm-Message-State: ABy/qLY4SCs1oGpCyLj5oT8cKP/B8qRimDVy/bdiYmYB7flghGe2RvE/
+        DKceEbWkQy9ixtL8z+vtcbrrxA==
+X-Google-Smtp-Source: APBJJlHNtkaVoV4y9yoqqAHFVEBrADZm+aYjlN08Z943Y1F/j6BnTWJFbAEAyeDm2B8HoZII2m95kA==
+X-Received: by 2002:a17:907:9726:b0:989:450:e56a with SMTP id jg38-20020a170907972600b009890450e56amr5452450ejc.76.1689342698583;
+        Fri, 14 Jul 2023 06:51:38 -0700 (PDT)
 Received: from stroh80.sec.9e.network (ip-078-094-000-051.um19.pools.vodafone-ip.de. [78.94.0.51])
-        by smtp.gmail.com with ESMTPSA id h21-20020a170906261500b0099236e3f270sm5405991ejc.58.2023.07.14.06.51.36
+        by smtp.gmail.com with ESMTPSA id h21-20020a170906261500b0099236e3f270sm5405991ejc.58.2023.07.14.06.51.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 06:51:36 -0700 (PDT)
+        Fri, 14 Jul 2023 06:51:38 -0700 (PDT)
 From:   Naresh Solanki <naresh.solanki@9elements.com>
 X-Google-Original-From: Naresh Solanki <Naresh.Solanki@9elements.com>
 To:     devicetree@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
@@ -57,9 +57,9 @@ To:     devicetree@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
 Cc:     linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
         Patrick Rudolph <patrick.rudolph@9elements.com>,
         Naresh Solanki <Naresh.Solanki@9elements.com>
-Subject: [PATCH v2 7/8] hwmon: (pmbus/mp2975) Add regulator support
-Date:   Fri, 14 Jul 2023 15:51:15 +0200
-Message-ID: <20230714135124.2645339-7-Naresh.Solanki@9elements.com>
+Subject: [PATCH v2 8/8] hwmon: (pmbus/mp2975) Add OCP limit
+Date:   Fri, 14 Jul 2023 15:51:16 +0200
+Message-ID: <20230714135124.2645339-8-Naresh.Solanki@9elements.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230714135124.2645339-1-Naresh.Solanki@9elements.com>
 References: <20230714135124.2645339-1-Naresh.Solanki@9elements.com>
@@ -77,85 +77,139 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Patrick Rudolph <patrick.rudolph@9elements.com>
 
-Add support to expose the PMBUS regulator.
-
-Tested on MP2973 and MP2971.
+Add support for PMBUS_IOUT_OC_FAULT_LIMIT.
+Add a helper function to convert the limit to LINEAR11 format
+and read data->info.phases[0] on MP2971 and MP2973 as well.
 
 Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
 Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
 ---
-Changes in V2:
-- Use IS_ENABLED for configs in if statement.
----
- drivers/hwmon/pmbus/Kconfig  |  7 +++++++
- drivers/hwmon/pmbus/mp2975.c | 15 +++++++++++++++
- 2 files changed, 22 insertions(+)
+ drivers/hwmon/pmbus/mp2975.c | 76 ++++++++++++++++++++++++++++++------
+ 1 file changed, 65 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
-index 270b6336b76d..b4e93bd5835e 100644
---- a/drivers/hwmon/pmbus/Kconfig
-+++ b/drivers/hwmon/pmbus/Kconfig
-@@ -317,6 +317,13 @@ config SENSORS_MP2975
- 	  This driver can also be built as a module. If so, the module will
- 	  be called mp2975.
- 
-+config SENSORS_MP2975_REGULATOR
-+	depends on SENSORS_MP2975 && REGULATOR
-+	bool "Regulator support for MPS MP2975"
-+	help
-+	  If you say yes here you get regulator support for MPS MP2975
-+	  Dual Loop Digital Multi-Phase Controller.
-+
- config SENSORS_MP5023
- 	tristate "MPS MP5023"
- 	help
 diff --git a/drivers/hwmon/pmbus/mp2975.c b/drivers/hwmon/pmbus/mp2975.c
-index 4d72ed18cc8c..7684f8667657 100644
+index 7684f8667657..0b1983d5998b 100644
 --- a/drivers/hwmon/pmbus/mp2975.c
 +++ b/drivers/hwmon/pmbus/mp2975.c
-@@ -115,6 +115,11 @@ static const struct i2c_device_id mp2975_id[] = {
+@@ -65,6 +65,10 @@
+ #define MP2973_VID_STEP_SEL_R2		BIT(3)
+ #define MP2973_IMVP9_EN_R2		BIT(13)
  
- MODULE_DEVICE_TABLE(i2c, mp2975_id);
- 
-+static const struct regulator_desc __maybe_unused mp2975_reg_desc[] = {
-+	PMBUS_REGULATOR("vout", 0),
-+	PMBUS_REGULATOR("vout", 1),
-+};
++#define MP2973_MFR_OCP_TOTAL_SET	0x5f
++#define MP2973_OCP_TOTAL_CUR_MASK	GENMASK(6, 0)
++#define MP2973_MFR_OCP_LEVEL_RES	BIT(15)
 +
- #define to_mp2975_data(x)  container_of(x, struct mp2975_data, info)
+ #define MP2973_MFR_READ_IOUT_PK		0x90
+ #define MP2973_MFR_READ_POUT_PK		0x91
  
+@@ -153,6 +157,41 @@ mp2975_vid2direct(int vrf, int val)
+ 	return 0;
+ }
+ 
++#define MAX_LIN_MANTISSA	(1023 * 1000)
++#define MIN_LIN_MANTISSA	(511 * 1000)
++
++/* Converts a milli-unit DIRECT value to LINEAR11 format */
++static u16 mp2975_data2reg_linear11(s64 val)
++{
++	s16 exponent = 0, mantissa;
++	bool negative = false;
++
++	/* simple case */
++	if (val == 0)
++		return 0;
++
++	/* Reduce large mantissa until it fits into 10 bit */
++	while (val >= MAX_LIN_MANTISSA && exponent < 15) {
++		exponent++;
++		val >>= 1;
++	}
++	/* Increase small mantissa to improve precision */
++	while (val < MIN_LIN_MANTISSA && exponent > -15) {
++		exponent--;
++		val <<= 1;
++	}
++
++	/* Convert mantissa from milli-units to units */
++	mantissa = clamp_val(DIV_ROUND_CLOSEST_ULL(val, 1000), 0, 0x3ff);
++
++	/* restore sign */
++	if (negative)
++		mantissa = -mantissa;
++
++	/* Convert to 5 bit exponent, 11 bit mantissa */
++	return (mantissa & 0x7ff) | ((exponent << 11) & 0xf800);
++}
++
  static int
-@@ -806,6 +811,10 @@ static struct pmbus_driver_info mp2975_info = {
- 		PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP | PMBUS_HAVE_POUT |
- 		PMBUS_HAVE_PIN | PMBUS_HAVE_STATUS_INPUT | PMBUS_PHASE_VIRTUAL,
- 	.read_word_data = mp2975_read_word_data,
-+#if IS_ENABLED(CONFIG_SENSORS_MP2975_REGULATOR)
-+	.num_regulators = 1,
-+	.reg_desc = mp2975_reg_desc,
-+#endif
- };
+ mp2975_read_phase(struct i2c_client *client, struct mp2975_data *data,
+ 		  int page, int phase, u8 reg)
+@@ -297,6 +336,20 @@ static int mp2973_read_word_data(struct i2c_client *client, int page,
+ 		ret = pmbus_read_word_data(client, page, phase,
+ 					   MP2973_MFR_READ_IOUT_PK);
+ 		break;
++	case PMBUS_IOUT_OC_FAULT_LIMIT:
++		ret = mp2975_read_word_helper(client, page, phase,
++					      MP2973_MFR_OCP_TOTAL_SET,
++					      GENMASK(15, 0));
++		if (ret < 0)
++			return ret;
++
++		if (ret & MP2973_MFR_OCP_LEVEL_RES)
++			ret = 2 * (ret & MP2973_OCP_TOTAL_CUR_MASK);
++		else
++			ret = ret & MP2973_OCP_TOTAL_CUR_MASK;
++
++		ret = mp2975_data2reg_linear11(ret * info->phases[page] * 1000);
++		break;
+ 	case PMBUS_UT_WARN_LIMIT:
+ 	case PMBUS_UT_FAULT_LIMIT:
+ 	case PMBUS_VIN_UV_WARN_LIMIT:
+@@ -307,7 +360,6 @@ static int mp2973_read_word_data(struct i2c_client *client, int page,
+ 	case PMBUS_IIN_OC_FAULT_LIMIT:
+ 	case PMBUS_IOUT_OC_LV_FAULT_LIMIT:
+ 	case PMBUS_IOUT_OC_WARN_LIMIT:
+-	case PMBUS_IOUT_OC_FAULT_LIMIT:
+ 	case PMBUS_IOUT_UC_FAULT_LIMIT:
+ 	case PMBUS_POUT_OP_FAULT_LIMIT:
+ 	case PMBUS_POUT_OP_WARN_LIMIT:
+@@ -481,11 +533,13 @@ mp2975_identify_multiphase(struct i2c_client *client, struct mp2975_data *data,
+ 	if (info->phases[0] > data->max_phases[0])
+ 		return -EINVAL;
  
- static struct pmbus_driver_info mp2973_info = {
-@@ -823,6 +832,10 @@ static struct pmbus_driver_info mp2973_info = {
- 		PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP | PMBUS_HAVE_POUT |
- 		PMBUS_HAVE_PIN | PMBUS_HAVE_STATUS_INPUT,
- 	.read_word_data = mp2973_read_word_data,
-+#if IS_ENABLED(CONFIG_SENSORS_MP2975_REGULATOR)
-+	.num_regulators = 1,
-+	.reg_desc = mp2975_reg_desc,
-+#endif
- };
+-	mp2975_set_phase_rail1(info);
+-	num_phases2 = min(data->max_phases[0] - info->phases[0],
+-			  data->max_phases[1]);
+-	if (info->phases[1] && info->phases[1] <= num_phases2)
+-		mp2975_set_phase_rail2(info, num_phases2);
++	if (data->chip_id == mp2975) {
++		mp2975_set_phase_rail1(info);
++		num_phases2 = min(data->max_phases[0] - info->phases[0],
++				  data->max_phases[1]);
++		if (info->phases[1] && info->phases[1] <= num_phases2)
++			mp2975_set_phase_rail2(info, num_phases2);
++	}
  
- static int mp2975_probe(struct i2c_client *client)
-@@ -861,6 +874,8 @@ static int mp2975_probe(struct i2c_client *client)
- 		data->info.pages = MP2975_PAGE_NUM;
- 		data->info.phases[1] = ret;
- 		data->info.func[1] = MP2975_RAIL2_FUNC;
-+		if (IS_ENABLED(CONFIG_SENSORS_MP2975_REGULATOR))
-+			data->info.num_regulators = MP2975_PAGE_NUM;
+ 	return 0;
+ }
+@@ -878,12 +932,12 @@ static int mp2975_probe(struct i2c_client *client)
+ 			data->info.num_regulators = MP2975_PAGE_NUM;
  	}
  
- 	if (data->chip_id == mp2975) {
+-	if (data->chip_id == mp2975) {
+-		/* Identify multiphase configuration. */
+-		ret = mp2975_identify_multiphase(client, data, info);
+-		if (ret)
+-			return ret;
++	/* Identify multiphase configuration. */
++	ret = mp2975_identify_multiphase(client, data, info);
++	if (ret)
++		return ret;
+ 
++	if (data->chip_id == mp2975) {
+ 		/* Identify VID setting per rail. */
+ 		ret = mp2975_identify_rails_vid(client, data, info);
+ 		if (ret < 0)
 -- 
 2.41.0
 
