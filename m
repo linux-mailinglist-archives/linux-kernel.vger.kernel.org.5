@@ -2,145 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA99E753909
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 12:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2FBD753AAA
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 14:21:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236380AbjGNK4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 06:56:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51440 "EHLO
+        id S235796AbjGNMVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 08:21:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236346AbjGNK4a (ORCPT
+        with ESMTP id S235408AbjGNMVk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 06:56:30 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 454223C3A;
-        Fri, 14 Jul 2023 03:55:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689332154; x=1720868154;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=g0WaMz10MmiDZgZOz+x0E2A2UYntgNbZ+38tvXaJXpM=;
-  b=D64CT1E3SqX3NRwbNMQvX6mFFbzpI1kQCvyjwUwoUUn7SjJXYT7gZQWz
-   NG9IYgSaC8eX3LK92b79B9sS5eu0nDLYvXhdnSJrfghI5YFU+4GtOcpeg
-   EguEljdAbbu7XDPXXFXn6Z3Cn65Io4vtHkb10VP0HDRGK7/KgA6u1VtOi
-   IgZvzRZVYcWIdY0KGlOHLmQsbaEiCT2ksWVB5rkkQVqXIgJq9SSDg6zLF
-   MoBn0lUTlbugVGzOQdiVqPaq27mwVqUqP9fGUopSDllxyJUUmrjGoPykc
-   VcVUd4MdOWiOgFn9jOzwqe/I0XogYSLjNzh0v92rpJZoztZ1fA7RO/QVT
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="364321261"
-X-IronPort-AV: E=Sophos;i="6.01,205,1684825200"; 
-   d="scan'208";a="364321261"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 03:55:48 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="722365649"
-X-IronPort-AV: E=Sophos;i="6.01,205,1684825200"; 
-   d="scan'208";a="722365649"
-Received: from dev2 (HELO DEV2.igk.intel.com) ([10.237.148.94])
-  by orsmga002.jf.intel.com with ESMTP; 14 Jul 2023 03:55:45 -0700
-From:   =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= 
-        <amadeuszx.slawinski@linux.intel.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
-Cc:     alsa-devel@alsa-project.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= 
-        <amadeuszx.slawinski@linux.intel.com>
-Subject: [PATCH v2 15/15] ASoC: Intel: sst: Convert to PCI device IDs defines
-Date:   Fri, 14 Jul 2023 20:56:15 +0200
-Message-Id: <20230714185615.370597-16-amadeuszx.slawinski@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230714185615.370597-1-amadeuszx.slawinski@linux.intel.com>
-References: <20230714185615.370597-1-amadeuszx.slawinski@linux.intel.com>
+        Fri, 14 Jul 2023 08:21:40 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A0E63589
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 05:21:37 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-517bdc9e81dso841676a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 05:21:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=9elements.com; s=google; t=1689337297; x=1691929297;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=vKPCYi6KH5ixV5Dyvebx4XZChTDDw8w3UlWPbSm3lU8=;
+        b=KtiElmlb3CgSrlUVicYRXjQ/XqqtuVJKzBYOd4mPPyTCmzmOF99bc4smFNRnkzEdOV
+         ja9Ef76Rzhcg2BI2I8QkhBWwTEl55sQ7HtnkPG6UNL4LnHiUs2LfhLrMxo2gsIDJ/Ytp
+         rWCMvP1oSoy8dGxYpkbzpmYkQibESzrlBznET3zQRnKUfss8bfbIBpAg6TiMPrpOS3pf
+         UvyY6q5+BaqL3bdkFshqY//L5dOJgPRVYIZyIhir9KXnvpwuOYW57IMrXPvzF1Ho+U8H
+         IHsoYCWdcbSJRbnU2tq3F1OCJo0jKqFtz2CxAwIwBjPNVYveZvUkeG8H9MeuSzXBMgO0
+         NPKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689337297; x=1691929297;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vKPCYi6KH5ixV5Dyvebx4XZChTDDw8w3UlWPbSm3lU8=;
+        b=gap6PcVAzjT+I9Ce/Go/4bAq0PS3lpntE95VQ+eNk6tbgkeK0Ab16+D7gpgMDd3vfz
+         awM21AqTlTGye7XxAN/84dvcRJ+G70++nImzIeTxjKpTTTNn0OzANy60gOA0+PZMr3iw
+         xSwxCFYMBrvDC7QCwkunaQ6VGHkZKy80A51wdqlBWdqY5gbTcnqSvD1a70dYzqTktYhY
+         0++uRt1JH/s3r2n/zzZai2glXJ/ffgJeCa4RzXAQCLguHZw60nihIo4Zs+yjhedmWg9o
+         pBZVaPsTTIx0rFKJeV5ukJG4Sgc1MbTzv38oY8s6Xck10jIwt++1sOukQ1UbI3b1JvM4
+         r22Q==
+X-Gm-Message-State: ABy/qLavdr7jGQAegyCHjrBl5SG/g77BfjC+vgzmOT/5MSxfoVZ13+2I
+        g12HRsYrFhde1BZUqDF/Yy43EsiwWaLj1k9MNKCAM6B7eoJFSO6mF4NL4w==
+X-Google-Smtp-Source: APBJJlFaY1AZjySEwrcQoAaRIWzNqIw/3VXJQbvL09Jy8JFNwV/tPuhq1DMwL3B40xDM6NGLU6GNjHpUyRIzJ4ZjWC4=
+X-Received: by 2002:a17:90b:388:b0:263:abea:94d1 with SMTP id
+ ga8-20020a17090b038800b00263abea94d1mr2879280pjb.44.1689337296871; Fri, 14
+ Jul 2023 05:21:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
-        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230712114754.500477-1-Naresh.Solanki@9elements.com>
+ <20230712114754.500477-4-Naresh.Solanki@9elements.com> <38157958-9723-73bc-f79a-1ac8c80c512e@roeck-us.net>
+In-Reply-To: <38157958-9723-73bc-f79a-1ac8c80c512e@roeck-us.net>
+From:   Naresh Solanki <naresh.solanki@9elements.com>
+Date:   Fri, 14 Jul 2023 13:23:26 +0200
+Message-ID: <CABqG17gHj+wAVqHR0o9ospcAMYPTnO0xtcPGPc8GqNb03mO58w@mail.gmail.com>
+Subject: Re: [PATCH 4/8] hwmon: (pmbus/mp2975) Simplify VOUT code
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     devicetree@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        Patrick Rudolph <patrick.rudolph@9elements.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use PCI device IDs from pci_ids.h header.
+Hi Guenter,
 
-Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
----
- sound/soc/intel/atom/sst/sst.c     | 7 ++++---
- sound/soc/intel/atom/sst/sst.h     | 3 ---
- sound/soc/intel/atom/sst/sst_pci.c | 4 ++--
- 3 files changed, 6 insertions(+), 8 deletions(-)
+On Wed, 12 Jul 2023 at 17:50, Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> On 7/12/23 04:47, Naresh Solanki wrote:
+> > From: Patrick Rudolph <patrick.rudolph@9elements.com>
+> >
+> > In order to upstream MP2973/MP2971 simplify the code by removing support
+> > for various VOUT formats. The MP2973 and MP2971 supports all PMBUS
+> > supported formats for VOUT, while the MP2975 only support DIRECT and
+> > VID for VOUT.
+> >
+> > In DIRECT mode all chips report the voltage in 1mV/LSB.
+> >
+> > Configure the chip to use DIRECT format for VOUT and drop the code
+> > conversion code for other formats. The to be added chips MP2973/MP2971
+> > will be configured to also report VOUT in DIRECT format.
+> >
+> > The maximum voltage that can be reported in DIRECT format is 32768mV.
+> > This is sufficient as the maximum output voltage for VR12/VR13 is
+> > 3040 mV.
+> >
+> > Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
+> > Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
+> > ---
+> >   drivers/hwmon/pmbus/mp2975.c | 54 ++++++------------------------------
+> >   1 file changed, 8 insertions(+), 46 deletions(-)
+> >
+> > diff --git a/drivers/hwmon/pmbus/mp2975.c b/drivers/hwmon/pmbus/mp2975.c
+> > index 04778f2dcbdb..ebc9a84b8ad3 100644
+> > --- a/drivers/hwmon/pmbus/mp2975.c
+> > +++ b/drivers/hwmon/pmbus/mp2975.c
+> > @@ -70,7 +70,6 @@ struct mp2975_data {
+> >       int vref_off[MP2975_PAGE_NUM];
+> >       int vout_max[MP2975_PAGE_NUM];
+> >       int vout_ov_fixed[MP2975_PAGE_NUM];
+> > -     int vout_format[MP2975_PAGE_NUM];
+> >       int curr_sense_gain[MP2975_PAGE_NUM];
+> >   };
+> >
+> > @@ -83,22 +82,6 @@ MODULE_DEVICE_TABLE(i2c, mp2975_id);
+> >
+> >   #define to_mp2975_data(x)  container_of(x, struct mp2975_data, info)
+> >
+> > -static int mp2975_read_byte_data(struct i2c_client *client, int page, int reg)
+> > -{
+> > -     switch (reg) {
+> > -     case PMBUS_VOUT_MODE:
+> > -             /*
+> > -              * Enforce VOUT direct format, since device allows to set the
+> > -              * different formats for the different rails. Conversion from
+> > -              * VID to direct provided by driver internally, in case it is
+> > -              * necessary.
+> > -              */
+> > -             return PB_VOUT_MODE_DIRECT;
+> > -     default:
+> > -             return -ENODATA;
+> > -     }
+> > -}
+> > -
+> >   static int
+> >   mp2975_read_word_helper(struct i2c_client *client, int page, int phase, u8 reg,
+> >                       u16 mask)
+> > @@ -273,24 +256,6 @@ static int mp2975_read_word_data(struct i2c_client *client, int page,
+> >               ret = DIV_ROUND_CLOSEST(data->vref[page] * 10 - 50 *
+> >                                       (ret + 1) * data->vout_scale, 10);
+> >               break;
+> > -     case PMBUS_READ_VOUT:
+> > -             ret = mp2975_read_word_helper(client, page, phase, reg,
+> > -                                           GENMASK(11, 0));
+> > -             if (ret < 0)
+> > -                     return ret;
+> > -
+> > -             /*
+> > -              * READ_VOUT can be provided in VID or direct format. The
+> > -              * format type is specified by bit 15 of the register
+> > -              * MP2975_MFR_DC_LOOP_CTRL. The driver enforces VOUT direct
+> > -              * format, since device allows to set the different formats for
+> > -              * the different rails and also all VOUT limits registers are
+> > -              * provided in a direct format. In case format is VID - convert
+> > -              * to direct.
+> > -              */
+> > -             if (data->vout_format[page] == vid)
+> > -                     ret = mp2975_vid2direct(info->vrm_version[page], ret);
+> > -             break;
+> >       case PMBUS_VIRT_READ_POUT_MAX:
+> >               ret = mp2975_read_word_helper(client, page, phase,
+> >                                             MP2975_MFR_READ_POUT_PK,
+> > @@ -578,20 +543,18 @@ mp2975_vout_max_get(struct i2c_client *client, struct mp2975_data *data,
+> >   }
+> >
+> >   static int
+> > -mp2975_identify_vout_format(struct i2c_client *client,
+> > -                         struct mp2975_data *data, int page)
+> > +mp2975_set_vout_format(struct i2c_client *client,
+> > +                    struct mp2975_data *data, int page)
+> >   {
+> >       int ret;
+> >
+> >       ret = i2c_smbus_read_word_data(client, MP2975_MFR_DC_LOOP_CTRL);
+> >       if (ret < 0)
+> >               return ret;
+> > -
+> > -     if (ret & MP2975_VOUT_FORMAT)
+> > -             data->vout_format[page] = vid;
+> > -     else
+> > -             data->vout_format[page] = direct;
+> > -     return 0;
+> > +     /* Enable DIRECT VOUT format 1mV/LSB */
+> > +     ret &= ~MP2975_VOUT_FORMAT;
+> > +     ret = i2c_smbus_write_word_data(client, MP2975_MFR_DC_LOOP_CTRL, ret);
+>
+> Writing this back is only needed if MP2975_VOUT_FORMAT was not already cleared.
+Yes. Will optimize it as:
+if (ret & MP2975_VOUT_FORMAT) {
+ret &= ~MP2975_VOUT_FORMAT;
+ret = i2c_smbus_write_word_data(client, MP2975_MFR_DC_LOOP_CTRL, ret);
+}
 
-diff --git a/sound/soc/intel/atom/sst/sst.c b/sound/soc/intel/atom/sst/sst.c
-index a0d29510d2bc..74614f9b086a 100644
---- a/sound/soc/intel/atom/sst/sst.c
-+++ b/sound/soc/intel/atom/sst/sst.c
-@@ -16,6 +16,7 @@
- #include <linux/interrupt.h>
- #include <linux/io.h>
- #include <linux/firmware.h>
-+#include <linux/pci.h>
- #include <linux/pm_runtime.h>
- #include <linux/pm_qos.h>
- #include <linux/async.h>
-@@ -174,9 +175,9 @@ int sst_driver_ops(struct intel_sst_drv *sst)
- {
- 
- 	switch (sst->dev_id) {
--	case SST_MRFLD_PCI_ID:
--	case SST_BYT_ACPI_ID:
--	case SST_CHV_ACPI_ID:
-+	case PCI_DEVICE_ID_INTEL_SST_TNG:
-+	case PCI_DEVICE_ID_INTEL_SST_BYT:
-+	case PCI_DEVICE_ID_INTEL_SST_CHV:
- 		sst->tstamp = SST_TIME_STAMP_MRFLD;
- 		sst->ops = &mrfld_ops;
- 		return 0;
-diff --git a/sound/soc/intel/atom/sst/sst.h b/sound/soc/intel/atom/sst/sst.h
-index 4d37d39fd8f4..eab374bf0066 100644
---- a/sound/soc/intel/atom/sst/sst.h
-+++ b/sound/soc/intel/atom/sst/sst.h
-@@ -20,9 +20,6 @@
- 
- /* driver names */
- #define SST_DRV_NAME "intel_sst_driver"
--#define SST_MRFLD_PCI_ID 0x119A
--#define SST_BYT_ACPI_ID	0x80860F28
--#define SST_CHV_ACPI_ID	0x808622A8
- 
- #define SST_SUSPEND_DELAY 2000
- #define FW_CONTEXT_MEM (64*1024)
-diff --git a/sound/soc/intel/atom/sst/sst_pci.c b/sound/soc/intel/atom/sst/sst_pci.c
-index 4058b4f80a0c..7ed142bb3dc0 100644
---- a/sound/soc/intel/atom/sst/sst_pci.c
-+++ b/sound/soc/intel/atom/sst/sst_pci.c
-@@ -32,7 +32,7 @@ static int sst_platform_get_resources(struct intel_sst_drv *ctx)
- 
- 	/* map registers */
- 	/* DDR base */
--	if (ctx->dev_id == SST_MRFLD_PCI_ID) {
-+	if (ctx->dev_id == PCI_DEVICE_ID_INTEL_SST_TNG) {
- 		ctx->ddr_base = pci_resource_start(pci, 0);
- 		/* check that the relocated IMR base matches with FW Binary */
- 		ddr_base = relocate_imr_addr_mrfld(ctx->ddr_base);
-@@ -173,7 +173,7 @@ static void intel_sst_remove(struct pci_dev *pci)
- 
- /* PCI Routines */
- static const struct pci_device_id intel_sst_ids[] = {
--	{ PCI_VDEVICE(INTEL, SST_MRFLD_PCI_ID), 0},
-+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_SST_TNG), 0},
- 	{ 0, }
- };
- 
--- 
-2.34.1
 
+>
+> > +     return ret;
+> >   }
+> >
+> >   static int
+> > @@ -650,11 +613,11 @@ mp2975_vout_per_rail_config_get(struct i2c_client *client,
+> >                       return ret;
+> >
+> >               /*
+> > -              * Get VOUT format for READ_VOUT command : VID or direct.
+> > +              * Set VOUT format for READ_VOUT command : direct.
+> >                * Pages on same device can be configured with different
+> >                * formats.
+>
+> Not sure if this comment still makes sense.
+Yes. Updated the comment as below:
+/* Set VOUT format for READ_VOUT command : direct. */
+ret = mp2975_set_vout_format(....
+
+>
+> >                */
+> > -             ret = mp2975_identify_vout_format(client, data, i);
+> > +             ret = mp2975_set_vout_format(client, data, i);
+> >               if (ret < 0)
+> >                       return ret;
+> >
+> > @@ -689,7 +652,6 @@ static struct pmbus_driver_info mp2975_info = {
+> >               PMBUS_HAVE_IIN | PMBUS_HAVE_IOUT | PMBUS_HAVE_STATUS_IOUT |
+> >               PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP | PMBUS_HAVE_POUT |
+> >               PMBUS_HAVE_PIN | PMBUS_HAVE_STATUS_INPUT | PMBUS_PHASE_VIRTUAL,
+> > -     .read_byte_data = mp2975_read_byte_data,
+> >       .read_word_data = mp2975_read_word_data,
+> >   };
+> >
+>
+
+Regards,
+Naresh Solanki
