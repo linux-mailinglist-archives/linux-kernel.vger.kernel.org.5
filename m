@@ -2,83 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97CFF752FD5
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 05:16:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A357752FE0
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 05:20:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234769AbjGNDQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 23:16:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40690 "EHLO
+        id S234727AbjGNDUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 23:20:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234348AbjGNDQr (ORCPT
+        with ESMTP id S233753AbjGNDUx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 23:16:47 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0434E269D;
-        Thu, 13 Jul 2023 20:16:47 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8EEE261BDC;
-        Fri, 14 Jul 2023 03:16:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 168F5C433C8;
-        Fri, 14 Jul 2023 03:16:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689304605;
-        bh=e0i15wf+juQwjhj8xsVBTzQPejbjMVB43hjyJlpR3+w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UbuR3nTRpwIexQVOtZD4uEfYnY+WDhU0xWsLcySwYa1GkdrJ0mTJ8bAgTQhrWu0dB
-         XM7kY9iIbeSmepk4moiR8ELNTbJSttE7FPQhlcJk2Ljn9bMvB328FdwjK7Ai9oelQM
-         gLJ4PFxHEo0v0PMdftqYlcPg/PylC+gicqBI+xVp5ut13a5FEvCNTBsdM5B3foBRnr
-         WRPF62xlmut6RlOTsm/XAIzerTMZP4Pq7kFpci6jmlaIMucDj1a7/X9ZT06An9XUCs
-         bmqkPp4j7QrtVGqkmDNeglawAR6FNaa0jv8ML3YoODrywmMpmN2mGTOOx7mZR01pmy
-         8Ov6Ye56RZapQ==
-Date:   Thu, 13 Jul 2023 20:20:15 -0700
-From:   Bjorn Andersson <andersson@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     David Heidelberg <david@ixit.cz>, Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: usb: qcom,dwc3: document extcon property
-Message-ID: <k3szwvlfadcymr6yfxln7hsm4vcym6wauglhmkbhekrvnzuqvn@pygu7iybuldl>
-References: <20230712235902.98557-1-david@ixit.cz>
- <84d88d8b-25a1-9b0f-d779-325d048909b7@linaro.org>
+        Thu, 13 Jul 2023 23:20:53 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8E121B5
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 20:20:51 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R2Gvg6TFHzBRSVY
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 11:20:47 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1689304847; x=1691896848; bh=4RThHj/DNsNyooB75oPh9gIzWA4
+        yeEuFdFd3SjfPcMY=; b=xbbO6lOgpFwD/BA1IFiZVSZDjHtlJSe9RMNxTkie6D9
+        yU19LkyjYjax75jtvCX/ukSR8nupYhmz73JowPy7Y9HpgwTxvrc7k/5gRrGqdYml
+        okGjarGNTNipRvqbWzqXy0hmwCOKGfRa2C5n2rfHEj1nlf/xXshg3egeOuhujlTY
+        171xj6+ajhU0z4wqn+GOQZbxhclll25GXm/JUchqMzYmAs4VyJryaW71SxYmXjd0
+        21eGWKUtZcpLXaShyOz3er0/UVS5X573SoKij3/4WTJIrIOtEYFFlO6DISkSUZnj
+        Yf0aqfBgy2y6cl5jJ9AuFd4RD681IsP4boe8WUzi4TQ==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id CFTrLuV3HVAY for <linux-kernel@vger.kernel.org>;
+        Fri, 14 Jul 2023 11:20:47 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R2Gvg3pGGzBJk54;
+        Fri, 14 Jul 2023 11:20:47 +0800 (CST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <84d88d8b-25a1-9b0f-d779-325d048909b7@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Date:   Fri, 14 Jul 2023 11:20:47 +0800
+From:   shijie001@208suo.com
+To:     airlied@gmail.com, daniel@ffwll.ch, christian.koenig@amd.com,
+        alexander.deucher@amd.com, Xinhui.Pan@amd.com
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/radeon: ERROR: open brace '{' following function
+ definitions go on the next line
+In-Reply-To: <tencent_21616D4FB2F221FE67B71858B197C646AB08@qq.com>
+References: <tencent_21616D4FB2F221FE67B71858B197C646AB08@qq.com>
+User-Agent: Roundcube Webmail
+Message-ID: <50bf0cff1b048f24484f32ff0e5015f6@208suo.com>
+X-Sender: shijie001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 08:37:55AM +0200, Krzysztof Kozlowski wrote:
-> On 13/07/2023 01:59, David Heidelberg wrote:
-> > The driver has support for it already. Only missing bit is dt-binding entry.
-> 
-> No, because the child node already has it. We do not need to extcons for
-> one USB. Also another reason is that it should be deprecated.
-> 
+Fix four occurrences of the checkpatch.pl error:
+ERROR: open brace '{' following function definitions go on the next line
 
-In the current design of the Linux dwc3 driver we actually need both
-nodes to be extcon targets, as both device drivers needs to react to the
-role change. So I think the patch accurately describes the intended
-design of today.
+Signed-off-by: Jie Shi <shijie001@208suo.com>
+---
+  drivers/gpu/drm/radeon/radeon_atpx_handler.c | 12 ++++++++----
+  1 file changed, 8 insertions(+), 4 deletions(-)
 
-That said, we do not want to do this for the Type-C case, where we use a
-full port node. Combined with other reasons, we really should fix the
-dwc3 driver model so that the core propagates the role changes to the
-glue drivers, and as such I agree that we shouldn't pick this patch.
+diff --git a/drivers/gpu/drm/radeon/radeon_atpx_handler.c 
+b/drivers/gpu/drm/radeon/radeon_atpx_handler.c
+index 6f93f54bf651..2a3c3f8b02e2 100644
+--- a/drivers/gpu/drm/radeon/radeon_atpx_handler.c
++++ b/drivers/gpu/drm/radeon/radeon_atpx_handler.c
+@@ -61,19 +61,23 @@ struct atpx_mux {
+      u16 mux;
+  } __packed;
 
-Regards,
-Bjorn
+-bool radeon_has_atpx(void) {
++bool radeon_has_atpx(void)
++{
+      return radeon_atpx_priv.atpx_detected;
+  }
+
+-bool radeon_has_atpx_dgpu_power_cntl(void) {
++bool radeon_has_atpx_dgpu_power_cntl(void)
++{
+      return radeon_atpx_priv.atpx.functions.power_cntl;
+  }
+
+-bool radeon_is_atpx_hybrid(void) {
++bool radeon_is_atpx_hybrid(void)
++{
+      return radeon_atpx_priv.atpx.is_hybrid;
+  }
+
+-bool radeon_atpx_dgpu_req_power_for_displays(void) {
++bool radeon_atpx_dgpu_req_power_for_displays(void)
++{
+      return radeon_atpx_priv.atpx.dgpu_req_power_for_displays;
+  }
