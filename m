@@ -2,117 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50589753FC5
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 18:21:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAD30753FC6
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 18:22:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235803AbjGNQVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 12:21:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50730 "EHLO
+        id S235737AbjGNQWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 12:22:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235737AbjGNQVX (ORCPT
+        with ESMTP id S235746AbjGNQWH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 12:21:23 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E2631FD4
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 09:21:22 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id ca18e2360f4ac-7835bbeb6a0so15245439f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 09:21:22 -0700 (PDT)
+        Fri, 14 Jul 2023 12:22:07 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C093E5C
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 09:22:06 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-98e011f45ffso260647466b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 09:22:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1689351682; x=1689956482;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=A/cGtvz8XeWSeI/2ga1OjJQj7bUnENfy64USXIaMRls=;
-        b=RTwPA+NsI6EAvbf0dITS+kJ/8I1AiDxT76aDhGrwVCcUXQHiHHE4v6UFSNUq+aSCGz
-         ToMxIEC7pWGZ+ZkD9fJRjfauM1HZR7/7FeFewmmlGFuMG/RV7V2idZaUWL/l5TVTJhye
-         aU3ntOHO9Kgu0L7KelkSP4IN/giRFc4qwLS5M=
+        d=linux-foundation.org; s=google; t=1689351725; x=1691943725;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=rFEjcMXqBZrAZsK+2fE1V7QZr5MeKAXaA74Ueb4SV2s=;
+        b=a1WhRuL0BZgTm8AuZVAmExteF2/lMnb5W5IAKnI3MkLdc4lrjyuQ81GWOA7h8N0Gn7
+         o2649bvARu3akwfmjcq1x9fJ48MYE5zsDYuKkzfmFf9P0kOpEIl0ZkzW7KQjPnAkqMWI
+         1/3DASJ/PNY7Y7H8JK+xPLUKajNq273pit/I4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689351682; x=1689956482;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=A/cGtvz8XeWSeI/2ga1OjJQj7bUnENfy64USXIaMRls=;
-        b=Z19LuqxZyyRJ01IHIZLyrKwrsQBVIBGJdS/ZEfp5dFWYqHNfC93QlKr+Y5GV93bMUm
-         WpYvzYZxLCcP4IszBCKcSYBp3YFslwyZ28XiWGRDkleCLYxdC0DlyGaUh4MnzOGFq16N
-         BiLjqP/QltfS1yWWvJaIkvO9CjIG790SPIzaS2EFyYn0b4xH9gJVsmBDt3ABGJQnwB06
-         ydPO4dV4vDUlnc23Cd7azbT/e8V55CFb2psPpNN2RTmMJf08wgwUPjzazhk3gSLE6f8q
-         pZ2ylNEkdsb863t8+thcAVWYxh5vIlaXQNvmv4PMDyoE9WYSQHeS8gpVV8nh9kuELsLc
-         0e2w==
-X-Gm-Message-State: ABy/qLZF4v72R4Bx8vgyLaBbM7oSSqUnggqv67VLglmA2jf2nBs700qU
-        WeR+H91UnzfxoJsJ+Xvmm7mzTBXtU7Vwdoiuaqiw0iMt
-X-Google-Smtp-Source: APBJJlErVRJu0xQzt35AjSZhJIyGKrlyeOor51Wp+cBkXt8k2AEbxMVRN9RtunAybX6H+lLgyy/vbQ==
-X-Received: by 2002:a05:6602:3ce:b0:780:c6bb:ad8d with SMTP id g14-20020a05660203ce00b00780c6bbad8dmr5651673iov.0.1689351681771;
-        Fri, 14 Jul 2023 09:21:21 -0700 (PDT)
-Received: from [192.168.1.128] ([38.15.45.1])
-        by smtp.gmail.com with ESMTPSA id f9-20020a056602038900b007862a536f21sm2745024iov.14.2023.07.14.09.21.20
+        d=1e100.net; s=20221208; t=1689351725; x=1691943725;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rFEjcMXqBZrAZsK+2fE1V7QZr5MeKAXaA74Ueb4SV2s=;
+        b=K2eVmnBulYmn3vufGbEQqVuQXfcgIGJ1ErxBBObYJ+HOFqX9Oea+gD97xQGLt6FIFU
+         2Q1jqt7K4bX7ZPy4DQs07pse38c2PgT556EXtCRxO6no8AEUze5D6qJviYxF5etxyJSS
+         kTbAUiIoKE2fkSCsB1W2xonJpEiEETEYWUGCRMPyUYoFRC1kuReU/EHHQNrO/h6IsAkH
+         WCtSqzw9ocw3tTo4UbxpuwEJ4KR6JMcZfV9Z4CW67DuTvQJqKvxtLRerePpkPCbDNhER
+         //Ak7mMa7qR0Wf2IfDxpRT7SMKJS6Iz3ULJnUtUxMXRLkJXTnDpykOC6KLwDHs8MrZhP
+         Lbxw==
+X-Gm-Message-State: ABy/qLZ7aidvNEnzBBr5mLI6d/KLN1AkITYo4R88X7N+VGj442mQ5Ry8
+        mL/4CgG963qGCr0QjMqmWVwk11V0G2wIKIXsM7aR7HMr
+X-Google-Smtp-Source: APBJJlEET1c/H2QnX/Cf1NwJZO96bJd30+XvECQNPgQwJ0IQFdnVd9C2+yoaHDZcXMcf7y8SbeVorQ==
+X-Received: by 2002:a17:906:5354:b0:988:9621:d855 with SMTP id j20-20020a170906535400b009889621d855mr4562433ejo.61.1689351724773;
+        Fri, 14 Jul 2023 09:22:04 -0700 (PDT)
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com. [209.85.208.46])
+        by smtp.gmail.com with ESMTPSA id lc20-20020a170906dff400b00992f2befcbcsm5619058ejc.180.2023.07.14.09.22.04
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 Jul 2023 09:21:21 -0700 (PDT)
-Message-ID: <ecf66ba7-6e63-5ee3-acce-b2da9327b76f@linuxfoundation.org>
-Date:   Fri, 14 Jul 2023 10:21:20 -0600
+        Fri, 14 Jul 2023 09:22:04 -0700 (PDT)
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-51ff0e3d8c1so2468521a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 09:22:04 -0700 (PDT)
+X-Received: by 2002:aa7:d5c1:0:b0:51e:2a1b:6de with SMTP id
+ d1-20020aa7d5c1000000b0051e2a1b06demr3609121eds.40.1689351724042; Fri, 14 Jul
+ 2023 09:22:04 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2] selftests: prctl: Add new prctl test for PR_SET_NAME
-To:     Osama Muhammad <osmtendev@gmail.com>
-Cc:     shuah@kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20230607153600.15816-1-osmtendev@gmail.com>
- <b7a3219e-4e0a-7a08-439a-a8a6e35271ca@linuxfoundation.org>
- <CAK6rUAMODPLQeUawXMW_RNiJFdukOqdhS5GA5XRAq4U9bnQdNg@mail.gmail.com>
- <3c03e28b-8006-a4ac-30bc-6aaf83ccb5d5@linuxfoundation.org>
- <CAK6rUAObT-kQVGddhvxxtaKPcuaDddM6ipEDXuECCFtpR-GV6w@mail.gmail.com>
- <CAK6rUAMuYTUhqcGmDrmeEWnigy3X4OxNb4zmHc0TmcVJ79MyHg@mail.gmail.com>
-Content-Language: en-US
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <CAK6rUAMuYTUhqcGmDrmeEWnigy3X4OxNb4zmHc0TmcVJ79MyHg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+References: <20230714115803.111346-1-jarkko@kernel.org>
+In-Reply-To: <20230714115803.111346-1-jarkko@kernel.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 14 Jul 2023 09:21:46 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wj_qyDXCvjkb4GAh--OtaHQYCx8gSaX9HF-RfT=dNnvEA@mail.gmail.com>
+Message-ID: <CAHk-=wj_qyDXCvjkb4GAh--OtaHQYCx8gSaX9HF-RfT=dNnvEA@mail.gmail.com>
+Subject: Re: [GIT PULL] tpmdd changes for v6.5-rc2
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Lino Sanfilippo <l.sanfilippo@kunbus.com>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/26/23 12:36, Osama Muhammad wrote:
-> Hi Shuah,
-> 
-> Any feedback on this patch?.
-> 
-> Thanks,
-> Osama
-> 
-> 
+On Fri, 14 Jul 2023 at 04:58, Jarkko Sakkinen <jarkko@kernel.org> wrote:
+>
+>   git://git.kernel.org/pub/scm/linux/kernel/git/jarkkojs/linux-tpmdd.git/ tpmdd-v6.5-rc2
 
-Please don't top post when you are responding on kernel
-mailing lists. It gets very difficult to follow the
-comments in the email thread.
+That does not exist.
 
-> On Sat, 17 Jun 2023 at 18:01, Osama Muhammad <osmtendev@gmail.com> wrote:
->>
->> Hi,
->>
->> Yes, I did install the latest kernel headers and TASK_COMM_LEN is not
->> accessible in userspace.
->>
->> I looked into the test which uses TASK_COMM_LEN but the test defines
->> it in its own header file.
->>
->> Example:  https://elixir.bootlin.com/linux/latest/source/tools/testing/selftests/bpf/progs/pyperf.h#L13
+The "jarkkojs" should be just "jarkko".
 
-bfp test does things differently because its dependencies
-on run-time environment.
+This is the *same* problem that we had in May. I'll wait for you to
+fix whatever completely broken flow you have, I'm not dealing with
+this AGAIN.
 
->>
->> TASK_COMM_LEN is defined in include/linux/sched.h, but this header
->> file is not exposed to userspace.
-
-Correct. you can include linux/sched.h like other tests do
-Take a look at tools/testing/selftests/clone3
-
-thanks,
--- Shuah
+                   Linus
