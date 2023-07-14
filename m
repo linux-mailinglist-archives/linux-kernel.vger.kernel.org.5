@@ -2,93 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9EED753E99
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 17:16:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A960B753E9C
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 17:17:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236065AbjGNPQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 11:16:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45508 "EHLO
+        id S236279AbjGNPRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 11:17:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235872AbjGNPQm (ORCPT
+        with ESMTP id S235942AbjGNPRG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 11:16:42 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69D552D43;
-        Fri, 14 Jul 2023 08:16:41 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-314172bac25so2134298f8f.3;
-        Fri, 14 Jul 2023 08:16:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689347800; x=1691939800;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=02O0pKuXfrVTJZa3UAhgaDlxYfuP+KHC2VebuqxgPlk=;
-        b=AKf8ll+oHQglE5FvBsDTP5P2sfOnQrZU4KTSe02P+DsU4oLOeB8mR4sLlH+/Hh5lDY
-         TWoqx0/KE9cVCMHGiINt4KV5WgkWyruO0CQ4p2rvcjkl9mx8HtkFOOcBXaK5Jv2igjqH
-         VsS55c4/0KdSbRbq/zVqKjlUMY+chN8HlvJKRcLVdkW8O+9Od131ib3d4a+H66d22hl6
-         tNkXRH2Z5FJwryeALcv1rtX5nZ36jYHXIjXu8akuwHOIQ8k1BviU4K/8CZS0JHfzCR/7
-         HWgmFhy7MuN+xAerjqfKNAG5OuYD89uKCb23Y3MAPmcnqT2U/rgi6OiRc++3xycrnlve
-         ZpJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689347800; x=1691939800;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=02O0pKuXfrVTJZa3UAhgaDlxYfuP+KHC2VebuqxgPlk=;
-        b=R9alCmA06S/vA16UU6IcK24s/LoywQi+ZdCKCRDaX45pwyIkgVdxg/JEa8+UPlRNPc
-         F4AhKzwVi3tmCo+1mQYqP3b3JyZRnGGirFbglXaIDSWUvMnlMNinhrfU+KXH7ZMSku7k
-         nUW706EfAhkUCSDpNgdObZ9I3k6lmTgS56FAEkWTcnCUcSLFh328efWdhzJkb4Ds+Q3r
-         foBlJewNW+hEHWHC7QfNpNIwSbcw7eES+dRKkQb1wbQ0ijkVw+s4LwFGP4kK3j5k0J//
-         YLLCxmDTx76FqGe7hIz4Q7L0oJeg07rzhzJ7VRClLnjKfBGNLHgIlC9NarHz1ISXKiyd
-         eomQ==
-X-Gm-Message-State: ABy/qLaIs7FF+51r+Ixx09KihsRO6Lzatrrx4WGBZDdYrdn7Zm37J7Ew
-        EUy12c8avHH7ooIW8EefK22osvdmvCY=
-X-Google-Smtp-Source: APBJJlEIjmdgCDyZsZ9yyMxpzDJFKfMwl7Xlg0BiCo4BzrG/uHwZFMPyV+RSM3ljlf9LghJuwoAxfQ==
-X-Received: by 2002:a05:6000:1084:b0:313:e971:53af with SMTP id y4-20020a056000108400b00313e97153afmr4527897wrw.32.1689347799535;
-        Fri, 14 Jul 2023 08:16:39 -0700 (PDT)
-Received: from zambezi.local (ip-94-112-104-28.bb.vodafone.cz. [94.112.104.28])
-        by smtp.gmail.com with ESMTPSA id d9-20020adff2c9000000b00313e4d02be8sm11118922wrp.55.2023.07.14.08.16.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 08:16:38 -0700 (PDT)
-From:   Ilya Dryomov <idryomov@gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Ceph fix for 6.5-rc2
-Date:   Fri, 14 Jul 2023 17:16:21 +0200
-Message-ID: <20230714151629.69199-1-idryomov@gmail.com>
-X-Mailer: git-send-email 2.41.0
+        Fri, 14 Jul 2023 11:17:06 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1033B2117
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 08:17:06 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mfe@pengutronix.de>)
+        id 1qKKXO-0002E1-CI; Fri, 14 Jul 2023 17:16:54 +0200
+Received: from mfe by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <mfe@pengutronix.de>)
+        id 1qKKXN-0007t7-F1; Fri, 14 Jul 2023 17:16:53 +0200
+Date:   Fri, 14 Jul 2023 17:16:53 +0200
+From:   Marco Felsch <m.felsch@pengutronix.de>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Ahmad Fatoum <a.fatoum@pengutronix.de>, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        shawnguo@kernel.org, kernel@pengutronix.de, festevam@gmail.com,
+        linux-imx@nxp.com, marex@denx.de, frieder.schrempf@kontron.de,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 1/3] dt-bindings: arm: fsl: fix DEBIX binding
+Message-ID: <20230714151653.7xqrerpmxzv7crel@pengutronix.de>
+References: <20230704184109.991104-1-m.felsch@pengutronix.de>
+ <6f7586ee-257b-35b5-f986-0d2b370e4035@linaro.org>
+ <61e9e380-dcb0-4dd4-562d-bffea2da5097@pengutronix.de>
+ <2d9b2341-84ca-d152-8a42-90b815c66125@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2d9b2341-84ca-d152-8a42-90b815c66125@linaro.org>
+User-Agent: NeoMutt/20180716
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: mfe@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On 23-07-05, Krzysztof Kozlowski wrote:
+> On 05/07/2023 11:28, Ahmad Fatoum wrote:
+> >>> +        items:
+> >>> +          - enum:
+> >>> +              - polyhex,imx8mp-debix-model-a        # Polyhex Debix Model A Board
+> >>> +          - const: polyhex,imx8mp-debix             # Polyhex Debix boards
+> >>
+> >> Same comments as for patch #2. I think this should be rather deprecated
+> >> - not a good pattern.
+> > 
+> > The middle compatible was my suggestion, because there's also the Debix Model
+> > B Standard and Model B SE, which is the same board, but different SoC variant:
+> > 
+> >  Model A:          Commercial Temperature Grade
+> >  Model B Standard: Industrial Temperature Grade
+> >  Model B SE:       Industrial Temperature Grate, but i.MX8MP Lite
+> >                    (No Neural/Video/Image accelerators).
+> > 
+> > As everything outside the SoC is the same, I wanted a generic board
+> > compatible that bootloaders can match against. The SoMs should probably
+> > not reuse it, but I think it should be kept (perhaps renamed?) for the
+> > SBCs that don't utilize the Debix SoM.
 
-The following changes since commit 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5:
+The SoM may come also in a 'Standard' and 'SE' edition.
 
-  Linux 6.5-rc1 (2023-07-09 13:53:13 -0700)
+> The order of compatibles in patch two does not really look correct,
+> although it is accepted in some cases (e.g. Renesas). But anyway "Debix"
+> sounds like a vendor - they even have website - so compatible for all
+> boards seems too generic. This should be compatible for one specific
+> board. I understand that one board can have different SoMs (it is
+> common, just look at Toradex or Variscite), but it does not mean that
+> board should be unspecific.
 
-are available in the Git repository at:
+I reused the "polyhex,imx8mp-debix" compatible since we already have a
+user [1] and there are no differences.
 
-  https://github.com/ceph/ceph-client.git tags/ceph-for-6.5-rc2
+I can drop it for the SoM case but for the SBC case I can't since this
+would break current users [1].
 
-for you to fetch changes up to a282a2f10539dce2aa619e71e1817570d557fc97:
+Regards,
+  Marco
 
-  libceph: harden msgr2.1 frame segment length checks (2023-07-13 13:18:57 +0200)
-
-----------------------------------------------------------------
-A fix to prevent a potential buffer overrun in the messenger, marked
-for stable.
-
-----------------------------------------------------------------
-Ilya Dryomov (1):
-      libceph: harden msgr2.1 frame segment length checks
-
- net/ceph/messenger_v2.c | 41 ++++++++++++++++++++++++++---------------
- 1 file changed, 26 insertions(+), 15 deletions(-)
+[1] https://elixir.bootlin.com/barebox/v2023.07.1/source/arch/arm/boards/polyhex-debix/board.c#L38
