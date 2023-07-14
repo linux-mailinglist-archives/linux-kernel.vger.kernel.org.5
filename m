@@ -2,152 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55AAC753CDC
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 16:16:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 428CB753C85
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 16:06:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235842AbjGNOQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 10:16:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33226 "EHLO
+        id S235946AbjGNOGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 10:06:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234555AbjGNOQf (ORCPT
+        with ESMTP id S235685AbjGNOFz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 10:16:35 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6852912E;
-        Fri, 14 Jul 2023 07:16:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=GuDJ92pMIScKKU1gBauDG1HK4VUsLXyIVGMSjzGcY4Y=; b=vBKCfPzsXlmZQm0fbY9sm4XN73
-        kHbqhYPRg24KF+nwElURpqsTJDlryKmDUOG3hRkpWvd0PhoT+M+UUAAfZagygwwYN+EQF96rxRzwh
-        y6Ksh55FaQO2qES2eZnYAQMF0W7I/N7hS39vamjL/ghCgcLWgEwlM2yccrC8KGWmH4aRt4oV3JFNS
-        hotzaBdyxJlbgmQPxYdyPurXiCwYhcjscrxIqsdlOamEmJ65hOEFV33r2X0xNYQURheEouIYUgXH7
-        LZl2gTROHDF1JASKWhc+5uERTwqfjo5eGhlgZOjCV9CM0JpWWZtTMWyghP3XtRYjLU3AJZkGy2PqC
-        A1aFb12A==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qKJah-0016z8-NN; Fri, 14 Jul 2023 14:16:15 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        Fri, 14 Jul 2023 10:05:55 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 688103580;
+        Fri, 14 Jul 2023 07:05:53 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B952E301A2F;
-        Fri, 14 Jul 2023 16:16:14 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 8BA61245EFFAB; Fri, 14 Jul 2023 16:16:13 +0200 (CEST)
-Message-ID: <20230714141219.282650897@infradead.org>
-User-Agent: quilt/0.66
-Date:   Fri, 14 Jul 2023 15:39:09 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     tglx@linutronix.de, axboe@kernel.dk
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
-        mingo@redhat.com, dvhart@infradead.org, dave@stgolabs.net,
-        andrealmeid@igalia.com, Andrew Morton <akpm@linux-foundation.org>,
-        urezki@gmail.com, hch@infradead.org, lstoakes@gmail.com,
-        Arnd Bergmann <arnd@arndb.de>, linux-api@vger.kernel.org,
-        linux-mm@kvack.org, linux-arch@vger.kernel.org,
-        malteskarupke@web.de
-Subject: [HACK][PATCH 10/10] futex: Munge size and numa into the legacy interface
-References: <20230714133859.305719029@infradead.org>
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id D2D961F747;
+        Fri, 14 Jul 2023 14:05:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1689343551;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WfJYvmV12IuAluB3xxpilLWbnnbGqme6TLcXjOvVTys=;
+        b=qOb3n5CgUl/kxztnUq+EG3DQjjAw7kU0gPdV+91ITOdnPR5Ruh2eoXbnOwJ1jIVbrkvdTa
+        deCwzyBOT7WtSLgxmEYtUL2D6Abfza5mkN4mZ6MTQTxFr/7E/I83KlVs+Z2kIa58M5H9F7
+        P152JWT0JFnKDyAikCQCl1wns3Y6bxU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1689343551;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WfJYvmV12IuAluB3xxpilLWbnnbGqme6TLcXjOvVTys=;
+        b=8SacSFrMGznoswC3DLlSI9eAQn481Dq8gZ3qFdvYfFr/5pVQhmCFltTS3Vrh5kJCPOvliz
+        +xMjlRGwh91cZzCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 62C1E138F8;
+        Fri, 14 Jul 2023 14:05:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id XKdBFz9WsWRNEwAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Fri, 14 Jul 2023 14:05:51 +0000
+Date:   Fri, 14 Jul 2023 15:59:14 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Conor Dooley <conor@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Nishanth Menon <nm@ti.com>, linux-riscv@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org, workflows@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH 2/3] Documentation/process: maintainer-soc: add clean
+ platforms profile
+Message-ID: <20230714135914.GI20457@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20230714084725.27847-1-krzysztof.kozlowski@linaro.org>
+ <20230714084725.27847-2-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230714084725.27847-2-krzysztof.kozlowski@linaro.org>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Avert your eyes...
+On Fri, Jul 14, 2023 at 10:47:24AM +0200, Krzysztof Kozlowski wrote:
+> +Overview
+> +--------
+> +
+> +SoC platforms or subarchitectures follow all the rules from
+> +Documentation/process/maintainer-soc.rst.  However platforms referencing this
 
-Arguably just the NUMA thing wouldn't be too bad.
-
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- include/uapi/linux/futex.h |   15 ++++++++++++---
- kernel/futex/futex.h       |    9 ++++++++-
- kernel/futex/syscalls.c    |   18 ++++++++++++++++++
- 3 files changed, 38 insertions(+), 4 deletions(-)
-
---- a/include/uapi/linux/futex.h
-+++ b/include/uapi/linux/futex.h
-@@ -23,9 +23,18 @@
- #define FUTEX_CMP_REQUEUE_PI	12
- #define FUTEX_LOCK_PI2		13
- 
--#define FUTEX_PRIVATE_FLAG	128
--#define FUTEX_CLOCK_REALTIME	256
--#define FUTEX_CMD_MASK		~(FUTEX_PRIVATE_FLAG | FUTEX_CLOCK_REALTIME)
-+#define FUTEX_PRIVATE_FLAG	(1 << 7)
-+#define FUTEX_CLOCK_REALTIME	(1 << 8)
-+#define FUTEX_NUMA		(1 << 9)
-+#define FUTEX_SIZE_32		(0 << 10) /* backwards compat */
-+#define FUTEX_SIZE_64		(1 << 10)
-+#define FUTEX_SIZE_8		(2 << 10)
-+#define FUTEX_SIZE_16		(3 << 10)
-+
-+#define FUTEX_CMD_MASK		~(FUTEX_PRIVATE_FLAG	|	\
-+				  FUTEX_CLOCK_REALTIME	|	\
-+				  FUTEX_NUMA		|	\
-+				  FUTEX_SIZE_16)
- 
- #define FUTEX_WAIT_PRIVATE	(FUTEX_WAIT | FUTEX_PRIVATE_FLAG)
- #define FUTEX_WAKE_PRIVATE	(FUTEX_WAKE | FUTEX_PRIVATE_FLAG)
---- a/kernel/futex/futex.h
-+++ b/kernel/futex/futex.h
-@@ -39,7 +39,7 @@
- /* FUTEX_ to FLAGS_ */
- static inline unsigned int futex_to_flags(unsigned int op)
- {
--	unsigned int flags = FLAGS_SIZE_32;
-+	unsigned int sz, flags = 0;
- 
- 	if (!(op & FUTEX_PRIVATE_FLAG))
- 		flags |= FLAGS_SHARED;
-@@ -47,6 +47,13 @@ static inline unsigned int futex_to_flag
- 	if (op & FUTEX_CLOCK_REALTIME)
- 		flags |= FLAGS_CLOCKRT;
- 
-+	if (op & FUTEX_NUMA)
-+		flags |= FLAGS_NUMA;
-+
-+	/* { 2,3,0,1 } -> { 0,1,2,3 } */
-+	sz = ((op + FUTEX_SIZE_8) & FUTEX_SIZE_16) >> 10;
-+	flags |= sz;
-+
- 	return flags;
- }
- 
---- a/kernel/futex/syscalls.c
-+++ b/kernel/futex/syscalls.c
-@@ -95,6 +95,24 @@ long do_futex(u32 __user *uaddr, int op,
- 			return -ENOSYS;
- 	}
- 
-+	/* can't support u64 with a u32 based interface */
-+	if ((flags & FLAGS_SIZE_MASK) == FLAGS_SIZE_64)
-+		return -ENOSYS;
-+
-+	switch (cmd) {
-+	case FUTEX_WAIT:
-+	case FUTEX_WAIT_BITSET:
-+	case FUTEX_WAKE:
-+	case FUTEX_WAKE_BITSET:
-+		/* u8, u16, u32 */
-+		break;
-+
-+	default:
-+		/* only u32 for now */
-+		if ((flags & FLAGS_SIZE_MASK) != FLAGS_SIZE_32)
-+			return -ENOSYS;
-+	}
-+
- 	switch (cmd) {
- 	case FUTEX_WAIT:
- 		val3 = FUTEX_BITSET_MATCH_ANY;
-
-
+Just a drive by comment, references to highly relevant documents should
+be clickable, so :doc:`Documentation/process/maintainer-soc` , with
+exceptions like if the document has been referenced already.
