@@ -2,61 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F72A753240
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 08:48:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FF4B7532EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 09:18:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233081AbjGNGsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 02:48:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40162 "EHLO
+        id S235271AbjGNHR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 03:17:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234959AbjGNGrq (ORCPT
+        with ESMTP id S235221AbjGNHRu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 02:47:46 -0400
-Received: from mailrelay1-1.pub.mailoutpod2-cph3.one.com (mailrelay1-1.pub.mailoutpod2-cph3.one.com [IPv6:2a02:2350:5:400::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C91230F3
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 23:47:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ravnborg.org; s=rsa1;
-        h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
-         from:date:from;
-        bh=zHLVNT4Ib177dr3Dr0VkglUlA6GRR6rwSc8RKuf20vE=;
-        b=JjWKJR1TKMraQKPyb0o1cIyIx1nkuUOkvLCRB769LmWfTe+/QCCx5M2Z2ftVNTnaVW6U8IN2lF99l
-         HYOHwwUuDgyhXmSiVZbLpWpanKMBWWglnCB9E0lY9GOp7tCz/U99hBGlyvcD2PyXVSNsRtR+QG2A+K
-         OReMdDQwIiio44SvqOUIMURmw/dI2BhuFSHcZabubL+4ei9Pe7M03aB1rQyWmqmuppJFFSHRdnTP1l
-         e/n891r7+vuOBZEv+mRFyZkjE8tm47fmWE/mN7YS2CGIUEEw+vdHB1nqAwfUCBpR+Ru3JHPUjYQ79E
-         FKwoAxryblPIhSRwI+SCe5MyDlBiUgw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
-        d=ravnborg.org; s=ed1;
-        h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
-         from:date:from;
-        bh=zHLVNT4Ib177dr3Dr0VkglUlA6GRR6rwSc8RKuf20vE=;
-        b=m9xlOM3tF8rFO7Yh0b3YBT+kcTTk+KqPvZWhPjEBT4CMLTQmaFG7tDZs2dU2+9AViXPo3QGHoY8UZ
-         w1MD83TAQ==
-X-HalOne-ID: 541fafe2-2212-11ee-9df5-99461c6a3fe8
-Received: from ravnborg.org (2-105-2-98-cable.dk.customer.tdc.net [2.105.2.98])
-        by mailrelay1 (Halon) with ESMTPSA
-        id 541fafe2-2212-11ee-9df5-99461c6a3fe8;
-        Fri, 14 Jul 2023 06:47:42 +0000 (UTC)
-Date:   Fri, 14 Jul 2023 08:47:41 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     liubin001@208suo.com
-Cc:     davem@davemloft.net, sparclinux@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] floppy:ERROR: missing put_device; call
- of_find_device_by_node on line 589, but without a corresponding object
- release within this function. Add the put_device function before return to
- release memory
-Message-ID: <20230714064741.GA53474@ravnborg.org>
-References: <tencent_0C9506095848D9427102ED415071D0F3420A@qq.com>
- <0f4dc280605c4700556d88d6f59cd1c4@208suo.com>
- <20230714060655.GA50441@ravnborg.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230714060655.GA50441@ravnborg.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        Fri, 14 Jul 2023 03:17:50 -0400
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9049126B3;
+        Fri, 14 Jul 2023 00:17:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689319069; x=1720855069;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references;
+  bh=ut2e3J98JDctUs6MMT7+OPH8GV0+N2ela+vuLlRy0YU=;
+  b=YndcM5mn3lBZKgh+LzVexAQHPVUIrMy0yPzV8Y+ZJ984DB1+ZbgWnBeK
+   CJmgltDgKzDYgSqh7vXXh/2vur7DpnZA3rZsFV6VO4WQR2Qwg8rML8oNK
+   xOTu9J9VDNyvXaGTbbwQzNFruaTeHhVnCJtqyjisbZOfzOeuqG9AVcNIh
+   3VzCy7MsIJo8aWdWbHXCymuc7Om3npoXKonmgPmkBx5jaMZl+Y2LcxAte
+   RUJDi+Kfe0ACzHnNOOlHoK/irI/OmnJW406nvdj3eSue4dcPduv9wO4BD
+   r5JlEVwBFDVreMms+9dPal+LmaF1BCcpd/tP7ImwTwqnvH3urOUiXbN+A
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="396221566"
+X-IronPort-AV: E=Sophos;i="6.01,204,1684825200"; 
+   d="scan'208";a="396221566"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 00:16:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="1052955616"
+X-IronPort-AV: E=Sophos;i="6.01,204,1684825200"; 
+   d="scan'208";a="1052955616"
+Received: from yzhao56-desk.sh.intel.com ([10.239.159.62])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 00:16:46 -0700
+From:   Yan Zhao <yan.y.zhao@intel.com>
+To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     pbonzini@redhat.com, seanjc@google.com, chao.gao@intel.com,
+        kai.huang@intel.com, robert.hoo.linux@gmail.com,
+        yuan.yao@linux.intel.com, Yan Zhao <yan.y.zhao@intel.com>
+Subject: [PATCH v4 01/12] KVM: x86/mmu: helpers to return if KVM honors guest MTRRs
+Date:   Fri, 14 Jul 2023 14:50:06 +0800
+Message-Id: <20230714065006.20201-1-yan.y.zhao@intel.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20230714064656.20147-1-yan.y.zhao@intel.com>
+References: <20230714064656.20147-1-yan.y.zhao@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,41 +61,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi LiuBin.
+Added helpers to check if KVM honors guest MTRRs.
+The inner helper __kvm_mmu_honors_guest_mtrrs() is also provided to
+outside callers for the purpose of checking if guest MTRRs were honored
+before stopping non-coherent DMA.
 
-On Fri, Jul 14, 2023 at 08:06:55AM +0200, Sam Ravnborg wrote:
-> Hi LiuBin
-> 
-> On Fri, Jul 14, 2023 at 12:56:29PM +0800, liubin001@208suo.com wrote:
-> > Signed-off-by: LiuBin <liubin001@208suo.com>
-> > ---
-> >  arch/sparc/include/asm/floppy_64.h | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/arch/sparc/include/asm/floppy_64.h
-> > b/arch/sparc/include/asm/floppy_64.h
-> > index 070c8c1f5c8f..c4c51f494f25 100644
-> > --- a/arch/sparc/include/asm/floppy_64.h
-> > +++ b/arch/sparc/include/asm/floppy_64.h
-> > @@ -588,6 +588,7 @@ static unsigned long __init sun_floppy_init(void)
-> > 
-> >          op = of_find_device_by_node(dp);
-> >          if (!op)
-> > +            put_device(op);
-> >              return 0;
-> 
-> This does not look right as the code will always return 0 now,
-> independent on the if test. You missed a set of curly braces.
+Suggested-by: Sean Christopherson <seanjc@google.com>
+Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
+---
+ arch/x86/kvm/mmu.h     |  7 +++++++
+ arch/x86/kvm/mmu/mmu.c | 15 +++++++++++++++
+ 2 files changed, 22 insertions(+)
 
-Two more notes.
-Please put the description of the fix in the body of the mail.
-Right now it is a very long subject - and we try to keep subject shorter
-than ~70 chars.
+diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
+index 92d5a1924fc1..38bd449226f6 100644
+--- a/arch/x86/kvm/mmu.h
++++ b/arch/x86/kvm/mmu.h
+@@ -235,6 +235,13 @@ static inline u8 permission_fault(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu,
+ 	return -(u32)fault & errcode;
+ }
+ 
++bool __kvm_mmu_honors_guest_mtrrs(struct kvm *kvm, bool vm_has_noncoherent_dma);
++
++static inline bool kvm_mmu_honors_guest_mtrrs(struct kvm *kvm)
++{
++	return __kvm_mmu_honors_guest_mtrrs(kvm, kvm_arch_has_noncoherent_dma(kvm));
++}
++
+ void kvm_zap_gfn_range(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_end);
+ 
+ int kvm_arch_write_log_dirty(struct kvm_vcpu *vcpu);
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 1e5db621241f..b4f89f015c37 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -4516,6 +4516,21 @@ static int kvm_tdp_mmu_page_fault(struct kvm_vcpu *vcpu,
+ }
+ #endif
+ 
++bool __kvm_mmu_honors_guest_mtrrs(struct kvm *kvm, bool vm_has_noncoherent_dma)
++{
++	/*
++	 * If the TDP is enabled, the host MTRRs are ignored by TDP
++	 * (shadow_memtype_mask is non-zero), and the VM has non-coherent DMA
++	 * (DMA doesn't snoop CPU caches), KVM's ABI is to honor the memtype
++	 * from the guest's MTRRs so that guest accesses to memory that is
++	 * DMA'd aren't cached against the guest's wishes.
++	 *
++	 * Note, KVM may still ultimately ignore guest MTRRs for certain PFNs,
++	 * e.g. KVM will force UC memtype for host MMIO.
++	 */
++	return vm_has_noncoherent_dma && tdp_enabled && shadow_memtype_mask;
++}
++
+ int kvm_tdp_page_fault(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault)
+ {
+ 	/*
+-- 
+2.17.1
 
-> > Signed-off-by: LiuBin <liubin001@208suo.com>
-You are expected to sign-off the patch with you name and not a nickname.
-If LiuBin is indeed you name then sorry and ignore this comment.
-
-I look forward to the updated patch.
-
-	Sam
