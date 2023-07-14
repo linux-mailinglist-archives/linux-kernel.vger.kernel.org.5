@@ -2,340 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0541775309E
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 06:39:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 713257530A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 06:43:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234769AbjGNEj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 00:39:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39208 "EHLO
+        id S234290AbjGNEnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 00:43:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233939AbjGNEjw (ORCPT
+        with ESMTP id S229463AbjGNEnf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 00:39:52 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC28E211F
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 21:39:50 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-992f15c36fcso192794766b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 21:39:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689309589; x=1691901589;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=CcH/aystrJ6CXZA8qG6BNZCfnNcu6DPOcQ2YDR7bZSY=;
-        b=k7n5n485J1PiibEInR+NucF0IFX6VaNJKOxdlB+4JT14IV9tLE85n2oBtfv27e315U
-         l4f+Lw0gE3ozgZWAq+6pggNNRfAa/JpxUMlKLAAV28wT4NzfY1U6+nPr1dVw7Hn36DJL
-         teW3DKfnO+06lZCijccCFZdGcMZ71Vv5MmQ1Sx8RCX69nIRVIveknuYnjaVx6YlRdwgo
-         Vb4YbieQFQs7zqfSB16rX231WnbzWM9+GZ6Mb1pluy4jOoVcQ5m6n4ge1nwU8yKrrSNk
-         0OnVDNHnFlRGCCDYk1zbqTxAlDuQ8OL2+9cJRhgjbcAAJXeSwtMZ1SCHgiMG1ebkf69W
-         Mp6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689309589; x=1691901589;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CcH/aystrJ6CXZA8qG6BNZCfnNcu6DPOcQ2YDR7bZSY=;
-        b=fJNjeHNMUPUMOzcCSsfuJEfa8Sx9zVkDI7uXaOE/tpWNbDCnWNnt+E/LICvyUUwd5d
-         TnwZQ2lhXhNb58ovueZFJBCG+NfYhKAvbjFNTdx+T1QNmtQxKmaqgSe0ATFK3h6Iuau5
-         fF/XMyOKQe7+HUwNWzzEJR7LphEDyCc0cFB6pO6YTew4j3NISntMmo8DAPYcX4O+ydCe
-         Zdd6vsPH77gzg2Is2GaNT/2DSUiygJR/AdBiUjge5TXrbhyK8iiZFIzVxYMwMaQGT6Ob
-         0kXHKnb6PCo61BaJmAp0yJWW/yWuo7CGccb4Hf3CfWGJFnzfRayvJ6DHqoAcTdEe9tUq
-         /khw==
-X-Gm-Message-State: ABy/qLaCRr7KmNjXTbku73yQ2ajfTNvpRUgeUJO/e+BBy+fR+vRBHPxH
-        ndR4HT2mZfp1567uuY0xqjGw9ifVHfISHqTI3mQEYkhPS5s=
-X-Google-Smtp-Source: APBJJlEuq+iUhWyYpsiUm7tLfKO5iMwpDe3tQbjuHaLQsslI+h6Nmr2eiYZ0ugup+KCTh47JYItZ7XNRevGp7Hl0lw0=
-X-Received: by 2002:a17:907:bc7:b0:993:f4cd:34b5 with SMTP id
- ez7-20020a1709070bc700b00993f4cd34b5mr2630462ejc.29.1689309589187; Thu, 13
- Jul 2023 21:39:49 -0700 (PDT)
+        Fri, 14 Jul 2023 00:43:35 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A729F1BFB;
+        Thu, 13 Jul 2023 21:43:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1689309813;
+        bh=0EAZQF0ZRvJDuijbB6biXRyMvZyzpAoOGlG+iMDWv2M=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ZNgq8rwfLyRlq8jvPoLsN0heU/A8fVoEGg4JlIhNc0a7LcCqBMUgM5iZvTfagEdh3
+         SvI+U2YetrRCyrGtRpehcavtw0/Lo6JD9QkmlBywgwfJZd1TehDz7MSn5U365crKpY
+         xG8ZdDs4CEJg5DGpJfxvWi8/0NB98oavDyqY1xmfSsnAsSN8Pais//B6lfv4VNomlT
+         ziqqYcl/AKAxeEVLFT3X6DVCyAFowAT6PELcHoZmgZ51uKFNoATDEgud9Sh270q8RM
+         ABeDGFOzChG6ilvmqGRmUjNnJQBz7zTPqW44JQuri+RyFE0AGYW5EVK/enfJvlfZcE
+         chCrSCxHJfyZQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4R2Jl72KNVz4whq;
+        Fri, 14 Jul 2023 14:43:31 +1000 (AEST)
+Date:   Fri, 14 Jul 2023 14:43:30 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Paul E. McKenney" <paulmck@kernel.org>,
+        David Miller <davem@davemloft.net>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: duplicate patch in the rcu tree
+Message-ID: <20230714144330.3c0a4074@canb.auug.org.au>
 MIME-Version: 1.0
-From:   Dave Airlie <airlied@gmail.com>
-Date:   Fri, 14 Jul 2023 14:39:37 +1000
-Message-ID: <CAPM=9txdhgYF63eL7VMpc3gmnvCz=gnxLW=HwTRNHNU8geU5Ww@mail.gmail.com>
-Subject: [git pull] drm fixes for 6.5-rc2
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/fKTn6Q5x31rwAq0GXu9+Y2N";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Linus,
+--Sig_/fKTn6Q5x31rwAq0GXu9+Y2N
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-There were a bunch of fixes lined up for 2 weeks, so we have quite a
-few scattered fixes, mostly amdgpu and i915, but ttm has a bunch and
-nouveau makes an appearance.
+Hi all,
 
-So a bit busier than usual for rc2, but nothing seems out of the ordinary.
+The following commit is also in net-next tree as a different commit
+(but the same patch):
 
-Dave.
+  a2b38823280d ("rcu: Export rcu_request_urgent_qs_task()")
 
-drm-fixes-2023-07-14-1:
-drm fixes for 6.5-rc2
+This is commit
 
-fbdev:
-- dma: Fix documented default preferred_bpp value
+  43a89baecfe2 ("rcu: Export rcu_request_urgent_qs_task()")
 
-ttm:
-- fix warning that we shouldn't mix && and ||
-- never consider pinned BOs for eviction&swap
-- Don't leak a resource on eviction error
-- Don't leak a resource on swapout move error
-- fix bulk_move corruption when adding a entry
+in the net-next tree.
 
-client:
-- Send hotplug event after registering a client
+--=20
+Cheers,
+Stephen Rothwell
 
-dma-buf:
-- keep the signaling time of merged fences v3
-- fix an error pointer vs NULL bug
+--Sig_/fKTn6Q5x31rwAq0GXu9+Y2N
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-sched:
-- wait for all deps in kill jobs
-- call set fence parent from scheduled
+-----BEGIN PGP SIGNATURE-----
 
-i915:
-- Don't preserve dpll_hw_state for slave crtc in Bigjoiner
-- Consider OA buffer boundary when zeroing out reports
-- Remove dead code from gen8_pte_encode
-- Fix one wrong caching mode enum usage
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmSw0nIACgkQAVBC80lX
+0GxejQgAgCLh4rcnJq9lOAVUVp0lfT6cl9uQwYMnoeOGHYwtnx97bCjvpihuF9D8
+0GUPuA+3gDUGH/87myiM9aa4UbSOvxzterLoI34mFN/aUVsbm0aVwFtYrCDqAnGL
+ChF89g2lJpA70HsCip6+QPZAolasAGSL+5rO1HRr2edwJ6oH2qffnTT6Kp0mPa0X
+LzqId9kuUfjydDVc/FITHJ2nWWfj214+Bz9v4SQcmRHDO91XBmChyjp1NvOg/5ev
+/O+gPspr3Tvx+eWrbO9Mxrejy2GOufHvS2h3Kd9qAXG1morzKX4XE1nCGfOu2Yxp
+GBXkt5cKi/+gPGjA2LyDG718wY/tZw==
+=uFFH
+-----END PGP SIGNATURE-----
 
-amdgpu:
-- SMU i2c locking fix
-- Fix a possible deadlock in process restoration for ROCm apps
-- Disable PCIe lane/speed switching on Intel platforms (the platforms
-don't support it)
-
-nouveau:
-- disp: fix HDMI on gt215+
-- disp/g94: enable HDMI
-- acr: Abort loading ACR if no firmware was found
-- bring back blit subchannel for pre nv50 GPUs
-- Fix drm_dp_remove_payload() invocation
-
-ivpu:
-- Fix VPU register access in irq disable
-- Clear specific interrupt status bits on C0
-
-bridge:
-- dw_hdmi: fix connector access for scdc
-- ti-sn65dsi86: Fix auxiliary bus lifetime
-
-panel:
-- simple: Add connector_type for innolux_at043tn24
-- simple: Add Powertip PH800480T013 drm_display_mode flags
-The following changes since commit 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5=
-:
-
-  Linux 6.5-rc1 (2023-07-09 13:53:13 -0700)
-
-are available in the Git repository at:
-
-  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2023-07-14-1
-
-for you to fetch changes up to 38d88d5e97c9032ebeca092b9372209f2ca92cdf:
-
-  Merge tag 'amd-drm-fixes-6.5-2023-07-12' of
-https://gitlab.freedesktop.org/agd5f/linux into drm-fixes (2023-07-14
-13:19:54 +1000)
-
-----------------------------------------------------------------
-drm fixes for 6.5-rc2
-
-fbdev:
-- dma: Fix documented default preferred_bpp value
-
-ttm:
-- fix warning that we shouldn't mix && and ||
-- never consider pinned BOs for eviction&swap
-- Don't leak a resource on eviction error
-- Don't leak a resource on swapout move error
-- fix bulk_move corruption when adding a entry
-
-client:
-- Send hotplug event after registering a client
-
-dma-buf:
-- keep the signaling time of merged fences v3
-- fix an error pointer vs NULL bug
-
-sched:
-- wait for all deps in kill jobs
-- call set fence parent from scheduled
-
-i915:
-- Don't preserve dpll_hw_state for slave crtc in Bigjoiner
-- Consider OA buffer boundary when zeroing out reports
-- Remove dead code from gen8_pte_encode
-- Fix one wrong caching mode enum usage
-
-amdgpu:
-- SMU i2c locking fix
-- Fix a possible deadlock in process restoration for ROCm apps
-- Disable PCIe lane/speed switching on Intel platforms (the platforms
-don't support it)
-
-nouveau:
-- disp: fix HDMI on gt215+
-- disp/g94: enable HDMI
-- acr: Abort loading ACR if no firmware was found
-- bring back blit subchannel for pre nv50 GPUs
-- Fix drm_dp_remove_payload() invocation
-
-ivpu:
-- Fix VPU register access in irq disable
-- Clear specific interrupt status bits on C0
-
-bridge:
-- dw_hdmi: fix connector access for scdc
-- ti-sn65dsi86: Fix auxiliary bus lifetime
-
-panel:
-- simple: Add connector_type for innolux_at043tn24
-- simple: Add Powertip PH800480T013 drm_display_mode flags
-
-----------------------------------------------------------------
-Adri=C3=A1n Larumbe (1):
-      drm: bridge: dw_hdmi: fix connector access for scdc
-
-Boris Brezillon (2):
-      drm/sched: Make sure we wait for all dependencies in kill_jobs_cb()
-      drm/sched: Call drm_sched_fence_set_parent() from
-drm_sched_fence_scheduled()
-
-Christian K=C3=B6nig (3):
-      drm/ttm: fix warning that we shouldn't mix && and ||
-      dma-buf: keep the signaling time of merged fences v3
-      drm/ttm: never consider pinned BOs for eviction&swap
-
-Dan Carpenter (1):
-      dma-buf: fix an error pointer vs NULL bug
-
-Dave Airlie (3):
-      Merge tag 'drm-misc-fixes-2023-07-13' of
-ssh://git.freedesktop.org/git/drm/drm-misc into drm-fixes
-      Merge tag 'drm-intel-fixes-2023-07-13' of
-git://anongit.freedesktop.org/drm/drm-intel into drm-fixes
-      Merge tag 'amd-drm-fixes-6.5-2023-07-12' of
-https://gitlab.freedesktop.org/agd5f/linux into drm-fixes
-
-Douglas Anderson (1):
-      drm/bridge: ti-sn65dsi86: Fix auxiliary bus lifetime
-
-Evan Quan (1):
-      drm/amd/pm: share the code around SMU13 pcie parameters update
-
-Fabio Estevam (1):
-      drm/panel: simple: Add connector_type for innolux_at043tn24
-
-Geert Uytterhoeven (1):
-      drm/fbdev-dma: Fix documented default preferred_bpp value
-
-Karol Herbst (4):
-      drm/nouveau/disp: fix HDMI on gt215+
-      drm/nouveau/disp/g94: enable HDMI
-      drm/nouveau/acr: Abort loading ACR if no firmware was found
-      drm/nouveau: bring back blit subchannel for pre nv50 GPUs
-
-Karol Wachowski (2):
-      accel/ivpu: Fix VPU register access in irq disable
-      accel/ivpu: Clear specific interrupt status bits on C0
-
-Lyude Paul (1):
-      drm/nouveau/kms/nv50-: Fix drm_dp_remove_payload() invocation
-
-Marek Vasut (1):
-      drm/panel: simple: Add Powertip PH800480T013 drm_display_mode flags
-
-Mario Limonciello (3):
-      drm/amd/pm: conditionally disable pcie lane/speed switching for SMU13
-      drm/amd: Move helper for dynamic speed switch check out of smu13
-      drm/amd: Align SMU11 SMU_MSG_OverridePcieParameters
-implementation with SMU13
-
-Maxime Ripard (1):
-      Merge v6.5-rc1 into drm-misc-fixes
-
-Stanislav Lisovskiy (1):
-      drm/i915: Don't preserve dpll_hw_state for slave crtc in Bigjoiner
-
-Thomas Hellstr=C3=B6m (2):
-      drm/ttm: Don't leak a resource on eviction error
-      drm/ttm: Don't leak a resource on swapout move error
-
-Thomas Zimmermann (1):
-      drm/client: Send hotplug event after registering a client
-
-Tvrtko Ursulin (2):
-      drm/i915: Remove dead code from gen8_pte_encode
-      drm/i915: Fix one wrong caching mode enum usage
-
-Umesh Nerlige Ramappa (1):
-      drm/i915/perf: Consider OA buffer boundary when zeroing out reports
-
-Yang Wang (1):
-      drm/amd/pm: fix smu i2c data read risk
-
-Yunxiang Li (1):
-      drm/ttm: fix bulk_move corruption when adding a entry
-
-gaba (1):
-      drm/amdgpu: avoid restore process run into dead loop.
-
- drivers/accel/ivpu/ivpu_drv.h                      |  1 +
- drivers/accel/ivpu/ivpu_hw_mtl.c                   | 20 +++--
- drivers/dma-buf/dma-fence-unwrap.c                 | 26 ++++++-
- drivers/dma-buf/dma-fence.c                        |  7 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu.h                |  1 +
- drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c   |  3 +
- drivers/gpu/drm/amd/amdgpu/amdgpu_device.c         | 19 +++++
- drivers/gpu/drm/amd/pm/swsmu/inc/smu_v13_0.h       |  4 +
- drivers/gpu/drm/amd/pm/swsmu/smu11/arcturus_ppt.c  |  2 +-
- drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c    |  2 +-
- .../drm/amd/pm/swsmu/smu11/sienna_cichlid_ppt.c    | 91 +++++-------------=
-----
- drivers/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c |  2 +-
- drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0.c     | 48 ++++++++++++
- .../gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_0_ppt.c   | 35 +--------
- .../gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_6_ppt.c   |  2 +-
- .../gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_7_ppt.c   | 33 +-------
- drivers/gpu/drm/armada/armada_fbdev.c              |  4 -
- drivers/gpu/drm/bridge/synopsys/dw-hdmi.c          |  9 ++-
- drivers/gpu/drm/bridge/ti-sn65dsi86.c              | 35 +++++----
- drivers/gpu/drm/drm_client.c                       | 21 +++++
- drivers/gpu/drm/drm_fbdev_dma.c                    |  6 +-
- drivers/gpu/drm/drm_fbdev_generic.c                |  4 -
- drivers/gpu/drm/drm_syncobj.c                      |  6 +-
- drivers/gpu/drm/exynos/exynos_drm_fbdev.c          |  4 -
- drivers/gpu/drm/gma500/fbdev.c                     |  4 -
- drivers/gpu/drm/i915/display/intel_display.c       |  1 -
- drivers/gpu/drm/i915/gt/gen8_ppgtt.c               |  3 -
- drivers/gpu/drm/i915/gt/intel_gtt.c                |  2 +-
- drivers/gpu/drm/i915/i915_perf.c                   | 11 ++-
- drivers/gpu/drm/msm/msm_fbdev.c                    |  4 -
- drivers/gpu/drm/nouveau/dispnv50/disp.c            |  8 +-
- drivers/gpu/drm/nouveau/nouveau_chan.c             |  1 +
- drivers/gpu/drm/nouveau/nouveau_chan.h             |  1 +
- drivers/gpu/drm/nouveau/nouveau_drm.c              | 20 ++++-
- drivers/gpu/drm/nouveau/nvkm/engine/disp/g94.c     |  1 +
- drivers/gpu/drm/nouveau/nvkm/engine/disp/gt215.c   |  2 +-
- drivers/gpu/drm/nouveau/nvkm/subdev/acr/base.c     |  2 +-
- drivers/gpu/drm/omapdrm/omap_fbdev.c               |  4 -
- drivers/gpu/drm/panel/panel-simple.c               |  2 +
- drivers/gpu/drm/radeon/radeon_fbdev.c              |  4 -
- drivers/gpu/drm/scheduler/sched_entity.c           | 41 ++++++++--
- drivers/gpu/drm/scheduler/sched_fence.c            | 40 ++++++----
- drivers/gpu/drm/scheduler/sched_main.c             |  3 +-
- drivers/gpu/drm/tegra/fbdev.c                      |  4 -
- drivers/gpu/drm/ttm/ttm_bo.c                       | 29 ++++---
- drivers/gpu/drm/ttm/ttm_resource.c                 |  5 +-
- include/drm/gpu_scheduler.h                        |  5 +-
- include/linux/dma-fence.h                          |  2 +-
- 48 files changed, 318 insertions(+), 266 deletions(-)
+--Sig_/fKTn6Q5x31rwAq0GXu9+Y2N--
