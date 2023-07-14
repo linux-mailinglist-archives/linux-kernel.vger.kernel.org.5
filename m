@@ -2,132 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F883754338
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 21:31:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE977754336
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 21:30:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236377AbjGNTa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 15:30:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40194 "EHLO
+        id S236339AbjGNTaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 15:30:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230093AbjGNTa5 (ORCPT
+        with ESMTP id S230093AbjGNTaW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 15:30:57 -0400
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F04A3A84;
-        Fri, 14 Jul 2023 12:30:51 -0700 (PDT)
-Received: from leknes.fjasle.eu ([46.142.49.15]) by mrelayeu.kundenserver.de
- (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1MUGyh-1qTVA632tX-00REWL; Fri, 14 Jul 2023 21:30:13 +0200
-Received: by leknes.fjasle.eu (Postfix, from userid 1000)
-        id 249BC3E8B2; Fri, 14 Jul 2023 21:30:11 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fjasle.eu; s=mail;
-        t=1689363012; bh=CISj4qU9OcEeQGiukeYRyVdl6TwuDHKzkw84duv5uOg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TQhYJXlYNhUA8LuEu3QcFFlBGoJszh3QDoycoPRXrkQony/dLev6cSqroq1DNN34V
-         MzY3u/9fItFdTHT6t0UgBgfjLX0t7mkv7ke89PU3aykkr1uNJNFgeHn1jWJtsUCM7m
-         0PQO16AoHHweFpz4/lAhptzi/ISKnms/7g7iXZPE=
-Date:   Fri, 14 Jul 2023 21:30:11 +0200
-From:   Nicolas Schier <nicolas@fjasle.eu>
-To:     Alexey Dobriyan <adobriyan@gmail.com>
-Cc:     akpm@linux-foundation.org, masahiroy@kernel.org, nathan@kernel.org,
-        ndesaulniers@google.com, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org
-Subject: Re: [PATCH] kbuild: flatten KBUILD_CFLAGS
-Message-ID: <ZLGiQxF5ffbWR7tR@fjasle.eu>
-References: <4f414a87-0c54-44bd-b218-f6f0b22c57ef@p183>
- <ZLEmgxm73zzmffWD@fjasle.eu>
- <4dc7e56c-6692-4d4c-a8d2-05abe4501e66@p183>
+        Fri, 14 Jul 2023 15:30:22 -0400
+Received: from mail.3ffe.de (0001.3ffe.de [159.69.201.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE2703A86;
+        Fri, 14 Jul 2023 12:30:20 -0700 (PDT)
+Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.3ffe.de (Postfix) with ESMTPSA id 8A5319E3;
+        Fri, 14 Jul 2023 21:30:17 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+        t=1689363017;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ENvKCLxq5zLf8E0WPSbrdFAwoJ7ACgVSNM/TRb9/0ho=;
+        b=bB46+QMRneEu+kWHHE4SYl42hgTuLLopI5X8xILyfg2/0iY9eJW6gn0yvBjYqqWMPD5xXm
+        9dCPYu7w3AFDiKF8wWxuJFcTEPr85jkp8L7HL9yAosWSlwkqUQj5WJxSeo3FXQ/krNIIVF
+        83m9/D6XJqTrTbylwuJUvMYsTelXmXomydZ9zylh6OXq1ASYkC1AurgP2np3G+IAzkARDC
+        WOhevo9HzkGV27zU0DS3TZ666ZxetLtRCpL1f2lyYHvT4AWN/EbtciaEFHnOPJYO+VLrd5
+        hQ9HDwWFQ4ByCiUkMj5pVn9nUJiBl6I0pZcbPjymlA3Bzn+vdVPe1tmNTcbtpw==
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4dc7e56c-6692-4d4c-a8d2-05abe4501e66@p183>
-X-Provags-ID: V03:K1:RV94P47dRwqIWQzk2E1jpf7PQqVEUEbiiKo03YWPfAdjKM/YZSz
- XuOdV/Y1JikVgCIKGDJU5DMdgAjuEnV12nvb44/csvihOjs70L7PWppKOUQrytHOj9zwATH
- 8e11Ch1wLsUSMdkWdxoS+kGsu5PYcjo86oaSVaZ33E9gZnrRZcyFWC9vevHTk0LiQXEFsMi
- hsB/i+FwnLNXY3YGAW4sQ==
-UI-OutboundReport: notjunk:1;M01:P0:Uc1P/VNFwcE=;v+jzC2Sc9Qq7gBx8sn68yFh5AYB
- 0l9Rp0e2vuTltDs7wUfq9YrxoOonpuwYc9lHoZmO5THB+BvsJHy86xFbd8GtrHxiBLypA/cPW
- HV8MjW1mCqb4NeNR/oDvllhozSRbCA0bGfrvLmzq9xjpRJpIWbOGq+SNnVa6oDnSH1UScLzyb
- 86AXdewm8qv6sMek090zdsBetcKiZjjRO7sl9QzcpE6ZZ5J6aRn6Qc7Xq+MxkDMxiK6ZX5UjC
- BaV+FtrSf9hWKU7Z57ZiEm3iKlVPRR+Qucc/5IQdNu1WwrdeZElUw2lrv9ptwgOfrsuwShvuR
- J3n8BvXAIbs/vDjaM5k79wdjpDt7USi8+0A9oPgSoVG0Dg9kwrtMfRqV6+G8JI/INe63F6FEJ
- K3w2puoN3RF6adwIoADH5RMUw10A6UjZy8Px14PTFwpABhChGA7w/Gpi7PM3hU6wioJNzNijv
- 5exjSEAtO7sEZ6INSS/6ajMtV7WlejogYznHgNdO6CJivw0e1WHooVf2D+t0yKOldiUfd+nre
- l5IngG4LKP6HdL6J/ngrVANOsK4pyqgk+WB2gOCOL5Big0x4ZGyS9lvdiNjqPtXxmBfpKY5GW
- 1xTzi4i0sdTyy03PftY1O594OFKBJdIk1rsM62l5Y4PGQ8mBWFzaYJcgVfDefl7aheoQ6kpXc
- RlX0auM/QuXYGiRx4kx2ZxI1pIaj9WaSBnjVmS5GUg==
+Date:   Fri, 14 Jul 2023 21:30:17 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Tudor Ambarus <tudor.ambarus@linaro.org>,
+        Pratyush Yadav <pratyush@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH v3] mtd: spi-nor: Correct flags for Winbond w25q128
+In-Reply-To: <20230714-spi-nor-winbond-w25q128-v3-1-bdb2192f079b@linaro.org>
+References: <20230714-spi-nor-winbond-w25q128-v3-1-bdb2192f079b@linaro.org>
+Message-ID: <a5dd9f7d14c94c9be99c93b9475683bf@walle.cc>
+X-Sender: michael@walle.cc
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 08:45:00PM +0300 Alexey Dobriyan wrote:
-> On Fri, Jul 14, 2023 at 12:42:11PM +0200, Nicolas Schier wrote:
-> > On Thu, Jul 13, 2023 at 09:52:28PM +0300, Alexey Dobriyan wrote:
-> > > Make it slightly easier to see which compiler options are added and
-> > > removed (and not worry about column limit too!).
-> > > 
-> > > Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
-> > > ---
-> > > 
-> > >  Makefile |   22 +++++++++++++++++-----
-> > >  1 file changed, 17 insertions(+), 5 deletions(-)
-> > > 
-> > > --- a/Makefile
-> > > +++ b/Makefile
-> > > @@ -555,11 +555,23 @@ LINUXINCLUDE    := \
-> > >  		$(USERINCLUDE)
-> > >  
-> > >  KBUILD_AFLAGS   := -D__ASSEMBLY__ -fno-PIE
-> > > -KBUILD_CFLAGS   := -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs \
-> > > -		   -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE \
-> > > -		   -Werror=implicit-function-declaration -Werror=implicit-int \
-> > > -		   -Werror=return-type -Wno-format-security -funsigned-char \
-> > > -		   -std=gnu11
-> > > +
-> > > +KBUILD_CFLAGS :=
-> > > +KBUILD_CFLAGS += -std=gnu11
-> > 
-> > If you want to put -std at top, on contrast to the sorted options below,
-> > you could also merge the two lines above.
+Hi,
+
+Am 2023-07-14 20:29, schrieb Linus Walleij:
+> The Winbond "w25q128" (actual vendor name W25Q128JV) has
+> exactly the same flags as the sibling device "w25q128jv".
+> The devices both require unlocking to enable write access.
 > 
-> I don't know. Standard choice is arguably the most important option
-> so I put it first.
+> The actual product naming between devices vs the Linux
+> strings in winbond.c:
+> 
+> 0xef4018: "w25q128"   W25Q128JV-IM/JM
+> 0xef7018: "w25q128jv" W25Q128JV-IN/IQ/JQ
 
-yes, I think I would have put it on top, too.  I just would write it this way:
+This is still wrong btw. According to:
+https://www.winbond.com/resource-files/W25Q128JV%20RevI%2008232021%20Plus.pdf
 
-    KBUILD_CFLAGS := -std=gnu11
+This should be
+0xef4018: "w25q128"   W25Q128JV-IN/IQ/JQ
+0xef7018: "w25q128jv" W25Q128JV-IM/JM
 
-    KBUILD_CFLAGS += ...
+Otherwise, looks good. Either Tudor can change that in
+place while picking up the patch or you could send a new
+version.
 
-But it is bike-shedding, ignore it if you're not convinced.
+Either way:
+Reviewed-by: Michael Walle <michael@walle.cc>
 
-Kind regards,
-Nicolas
+Thanks!
+-michael
 
-
-> > > +KBUILD_CFLAGS += -fshort-wchar
-> > > +KBUILD_CFLAGS += -funsigned-char
-> > > +KBUILD_CFLAGS += -fno-common
-> > > +KBUILD_CFLAGS += -fno-PIE
-> > > +KBUILD_CFLAGS += -fno-strict-aliasing
-> > > +KBUILD_CFLAGS += -Wall
-> > > +KBUILD_CFLAGS += -Wundef
-> > > +KBUILD_CFLAGS += -Werror=implicit-function-declaration
-> > > +KBUILD_CFLAGS += -Werror=implicit-int
-> > > +KBUILD_CFLAGS += -Werror=return-type
-> > > +KBUILD_CFLAGS += -Werror=strict-prototypes
-> > > +KBUILD_CFLAGS += -Wno-format-security
-> > > +KBUILD_CFLAGS += -Wno-trigraphs
-
--- 
-epost|xmpp: nicolas@fjasle.eu          irc://oftc.net/nsc
-↳ gpg: 18ed 52db e34f 860e e9fb  c82b 7d97 0932 55a0 ce7f
-     -- frykten for herren er opphav til kunnskap --
+> The latter device, "w25q128jv" supports features named DTQ
+> and QPI, otherwise it is the same.
+> 
+> Not having the right flags has the annoying side effect
+> that write access does not work.
+> 
+> After this patch I can write to the flash on the Inteno
+> XG6846 router.
+> 
+> The flash memory also supports dual and quad SPI modes.
+> This does not currently manifest, but by turning on SFDP
+> parsing, the right SPI modes are emitted in
+> /sys/kernel/debug/spi-nor/spi1.0/capabilities
+> for this chip, so we also turn on this.
+> 
+> Since we suspect that older chips may be using the same
+> device ID, we need to keep NO_SFDP_FLAGS(SECT_4K) as these
+> older chips may not support SFDP.
+> 
+> cat jedec_id
+> ef4018
+> cat manufacturer
+> winbond
+> cat partname
+> w25q128
+> hexdump -v -C sfdp
+> 00000000  53 46 44 50 05 01 00 ff  00 05 01 10 80 00 00 ff
+> 00000010  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
+> 00000020  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
+> 00000030  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
+> 00000040  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
+> 00000050  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
+> 00000060  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
+> 00000070  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
+> 00000080  e5 20 f9 ff ff ff ff 07  44 eb 08 6b 08 3b 42 bb
+> 00000090  fe ff ff ff ff ff 00 00  ff ff 40 eb 0c 20 0f 52
+> 000000a0  10 d8 00 00 36 02 a6 00  82 ea 14 c9 e9 63 76 33
+> 000000b0  7a 75 7a 75 f7 a2 d5 5c  19 f7 4d ff e9 30 f8 80
+> 
+> Cc: stable@vger.kernel.org
+> Suggested-by: Michael Walle <michael@walle.cc>
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> ---
+> Changes in v3:
+> - Keep NO_SFDP_FLAGS(SECT_4K) around.
+> - Update commit message
+> - Link to v2: 
+> https://lore.kernel.org/r/20230712-spi-nor-winbond-w25q128-v2-1-50c9f1d58d6c@linaro.org
+> 
+> Changes in v2:
+> - Only add the write access flags.
+> - Use SFDP parsing to properly detect the various
+>   available SPI modes.
+> - Link to v1: 
+> https://lore.kernel.org/r/20230712-spi-nor-winbond-w25q128-v1-1-f78f3bb42a1c@linaro.org
+> ---
+>  drivers/mtd/spi-nor/winbond.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/mtd/spi-nor/winbond.c 
+> b/drivers/mtd/spi-nor/winbond.c
+> index 834d6ba5ce70..8f30a67cd27a 100644
+> --- a/drivers/mtd/spi-nor/winbond.c
+> +++ b/drivers/mtd/spi-nor/winbond.c
+> @@ -121,6 +121,8 @@ static const struct flash_info winbond_nor_parts[] 
+> = {
+>  	{ "w25q80bl", INFO(0xef4014, 0, 64 * 1024,  16)
+>  		NO_SFDP_FLAGS(SECT_4K) },
+>  	{ "w25q128", INFO(0xef4018, 0, 64 * 1024, 256)
+> +		PARSE_SFDP
+> +		FLAGS(SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
+>  		NO_SFDP_FLAGS(SECT_4K) },
+>  	{ "w25q256", INFO(0xef4019, 0, 64 * 1024, 512)
+>  		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)
+> 
+> ---
+> base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
+> change-id: 20230711-spi-nor-winbond-w25q128-321a602ee267
+> 
+> Best regards,
