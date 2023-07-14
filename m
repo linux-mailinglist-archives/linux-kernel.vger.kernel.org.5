@@ -2,75 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 149C4752FB8
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 05:10:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8B3B752FC6
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 05:14:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234671AbjGNDKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 23:10:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36772 "EHLO
+        id S234722AbjGNDN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 23:13:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233207AbjGNDKQ (ORCPT
+        with ESMTP id S234662AbjGNDNy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 23:10:16 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AF4C2D79;
-        Thu, 13 Jul 2023 20:10:15 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C077D61BCE;
-        Fri, 14 Jul 2023 03:10:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8144FC433C7;
-        Fri, 14 Jul 2023 03:10:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689304214;
-        bh=5BiAHoQrMXVFGK2y88m1p5rxNFrlfm6togR8WBdiPzE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=d5Z8F0bojb30ftX4eYrtpztZ+E+Q8wDW6CuUkAzohButY0tqtfYyHXJlJnU+LviD/
-         5ppTtiBGE4a/IlzAAejSr1l0hFNhpbdaTC2+EZKecpmHoo6WdEqVRxypxIMSe80KWx
-         7EXZ1taUSLG+ElAxfvWgMXGV2G8rRwnobiobNEN/nofrq3WUN7cu2VTAdyJS2nnwuw
-         ozZ+ln8wMoKPvhM+mLntb6lj1c6e3abuY/8Evj3+yNfIXp/lLW6eRyP8B6p/v9IvZE
-         KNITN8ei36/Z2YSVZ9VLwrk3lS5bJMRH4QTPvTADkyOE2U7NSlUk7lynrncuUrFHQB
-         I3OzJ+KTmOq6A==
-Date:   Thu, 13 Jul 2023 20:13:44 -0700
-From:   Bjorn Andersson <andersson@kernel.org>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v2 08/18] soc: qcom: Move power-domain drivers to the
- genpd dir
-Message-ID: <dapyfjkwlrdyybshbidrpuotz7eqsj27mr6z6rx7qekbps34lh@5swfpbhpzgf6>
-References: <20230711142124.751652-1-ulf.hansson@linaro.org>
+        Thu, 13 Jul 2023 23:13:54 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89E09269D
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 20:13:51 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R2Glc400RzBRSVc
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 11:13:48 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1689304428; x=1691896429; bh=tJ3pfxfwg/0mU23GPX8ocn8sdp0
+        ++B+RjM+EwDPz9us=; b=WSuj9BjG9Gizt7p9utfYJU/32UME9SPpx8XkeSsNeTj
+        xAVWJdo2KBCkgleuFztX3FSuzqKtmNMC/Gx9Z8dA8udCD5Vo8nC27tRZkwKdUq9R
+        APSeyY/Vfr77jWsn1gsyLNcxVEYkDjWcqvGJqanbrN9B7vLKndipnbaIwXj8XEOo
+        /7+dZCzXgi9zf6lrub17LXlTyI9t0a5jnGlaQtJnGH8OVoa+ByNlSrnHICNJ3IKa
+        WrzQnLE/b9cpVO4mdYXwfAr8Q05BfiVqAbfD3P7LClQpCYlmT/OHdAzcX+Y+V0VK
+        84KRCPjzheFBiSkYwS0E5bSDOHJ7EwX1j0LiywNUfXA==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id ODxarTMFw--A for <linux-kernel@vger.kernel.org>;
+        Fri, 14 Jul 2023 11:13:48 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R2Glc0lpJzBJk52;
+        Fri, 14 Jul 2023 11:13:48 +0800 (CST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230711142124.751652-1-ulf.hansson@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Date:   Fri, 14 Jul 2023 11:13:47 +0800
+From:   hanyu001@208suo.com
+To:     yazen.ghannam@amd.com, bp@alien8.de, tony.luck@intel.com,
+        james.morse@arm.com, mchehab@kernel.org, rric@kernel.org
+Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] rivers: edac Change 'unsigned' to 'unsigned int'
+In-Reply-To: <tencent_2B68DB16B103727E0949749158313DF42F05@qq.com>
+References: <tencent_2B68DB16B103727E0949749158313DF42F05@qq.com>
+User-Agent: Roundcube Webmail
+Message-ID: <68c3d51c4cbb17442ea522192ac1aaf2@208suo.com>
+X-Sender: hanyu001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 11, 2023 at 04:21:24PM +0200, Ulf Hansson wrote:
-> To simplify with maintenance let's move the qcom power-domain drivers to
-> the new genpd directory. Going forward, patches are intended to be managed
-> through a separate git tree, according to MAINTAINERS.
-> 
-> Cc: Bjorn Andersson <andersson@kernel.org>
-> Cc: Konrad Dybcio <konrad.dybcio@linaro.org>
-> Cc: Andy Gross <agross@kernel.org>
-> Cc: <linux-arm-msm@vger.kernel.org>
-> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 
-Acked-by: Bjorn Andersson <andersson@kernel.org>
+Fixes checkpatch.pl warning:
 
-Regards,
-Bjorn
+./drivers/edac/amd64_edac.c:2099: WARNING: Prefer 'unsigned int' to bare 
+use of 'unsigned'
+
+Signed-off-by: maqimei <2433033762@qq.com>
+---
+  drivers/edac/amd64_edac.c | 2 +-
+  1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/edac/amd64_edac.c b/drivers/edac/amd64_edac.c
+index 5d2c9bb..d99828d 100644
+--- a/drivers/edac/amd64_edac.c
++++ b/drivers/edac/amd64_edac.c
+@@ -2096,7 +2096,7 @@ static void k8_map_sysaddr_to_csrow(struct 
+mem_ctl_info *mci, u64 sys_addr,
+
+  static int ddr2_cs_size(unsigned int i, bool dct_width)
+  {
+-    unsigned shift = 0;
++    unsigned int shift = 0;
+
+      if (i <= 2)
+          shift = i;
