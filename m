@@ -2,78 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 630A2754297
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 20:33:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06AC7754299
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 20:33:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236839AbjGNSdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 14:33:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45208 "EHLO
+        id S236866AbjGNSdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 14:33:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235910AbjGNSc7 (ORCPT
+        with ESMTP id S235910AbjGNSdg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 14:32:59 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB15CC6;
-        Fri, 14 Jul 2023 11:32:58 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:73::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 670D82DC;
-        Fri, 14 Jul 2023 18:32:58 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 670D82DC
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1689359578; bh=4IjIrs1NuNwhNKtAS+I2TgTV+5V38m0w2jZr7bn8Xjg=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=rlxk5C6Zp6EhKs8e3qxRXgAmqOjQk6tu7+jvS5784QXzl1bWhfAcG8KNxgBzRvpAp
-         9qAKgvkGngGD2nT9z8RbPlfREqyFn821iffzQ3JPLgGnCyfceTLwo6vqwoKbpyNCpE
-         jsDM2LL+B/POBFpIeqaM0smT8UG21tIN7DefFlwVDM35edxZic6iaJKA0R3oZ1+U8c
-         L6w37p4h5IPNXrmOh77ofAZydrAeNLubH1jathBqpDxLYmqX87F25UBaa7NygnMrBh
-         RBx12I6VRDTikrPpHYv/AbNQoIdVUh3brGdtEomsuRb+96Ytfcs8ABuS/tU0fqqu+/
-         HpJJbXrXlTEVw==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     workflows@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH docs] docs: maintainers: add missing 's' in https for
- the base lore link
-In-Reply-To: <20230713230510.1505201-1-kuba@kernel.org>
-References: <20230713230510.1505201-1-kuba@kernel.org>
-Date:   Fri, 14 Jul 2023 12:32:57 -0600
-Message-ID: <87fs5q1gyu.fsf@meer.lwn.net>
-MIME-Version: 1.0
-Content-Type: text/plain
+        Fri, 14 Jul 2023 14:33:36 -0400
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB5BEC6;
+        Fri, 14 Jul 2023 11:33:35 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.nyi.internal (Postfix) with ESMTP id A6B2F5C00DA;
+        Fri, 14 Jul 2023 14:33:32 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Fri, 14 Jul 2023 14:33:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
+        1689359612; x=1689446012; bh=1QsNfDDyhcBoTHL2dhcRk5OXIDoFbkHDAQj
+        OIzYIvug=; b=nvl1TKklNGn9d8aPp5gyt2KCexkoc9wZ3VO7E4qCeR0v52F88b4
+        3tg3vSFNCgrCqxyHtn6aX+pxTSutexgGcBP2ZLzTULh3Fg2nrZygqkYe8zTRRPOD
+        dcMMcvvSknxos/3Ueq+KOk2BdtGDFTc8zhymdHAtxBvCK6jaeuk7K7IMvQDzHxu7
+        +1bXzSDx1h+dGZJR3zM+t9mRCqSr4KFTOimFjAh9CybR7dOQDvOQt8bpzeXBc6IO
+        JOaKusyY1Xb5IBnoTkXtD05bsR9C90wcuxPps+tyHzSS2Yp/jVTKNIYMEj2G7i7i
+        X33ZAcbhQga0ym+QlljbS0ETtcjsGl0DA0w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+        1689359612; x=1689446012; bh=1QsNfDDyhcBoTHL2dhcRk5OXIDoFbkHDAQj
+        OIzYIvug=; b=qaCVZnIp/sXHFtC0VUzp+tuz45buonTg8aft7r8VSvROka3Mbfc
+        oxwzmkAv1mmrj1XElnv8rpsZPf//gm+XSa9ddcMXvDtDo2/7wYMGhmsWmWUMDdqn
+        pxzItwOMbFrNs0EUA1cypOPrsfsNOnc8YLs9hz4UUJzLduW7UGnt2EU6VqBwRJjN
+        oedwslK0D0KEIeWpFc+vOYi0Iv4WUFkCozkDMljx0Mwb3Il/eaRkNTXylxWMOzGe
+        fb4PpvxktNJBUU4rA85whmkHUvHMU7Uvlx5FdNqJpfn65CdB1XCv1TTVwB6CFDVw
+        N4qBCzdCewqbw/zc1e1CfFOz0vh65t8JE2g==
+X-ME-Sender: <xms:_JSxZLy2se-eG09L2CeD6QC3DrmGxNdQv7jpGe1D9lUZjf2rq93VuA>
+    <xme:_JSxZDTSHX6cZKrkqjEFHuYtBDCOmXdTjakZgtG4SXVaafmeBoWR8v0dpy7IwqFky
+    5JPv63rPrvXS2EDOs0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrfeeigdduvdeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
+    htthgvrhhnpeduudehudeukeegkeduieeghfdvvdeiudegueehvdfgheekgedugfdujeeu
+    feefjeenucffohhmrghinhepkhgvrhhnvghlrdgukhenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:_JSxZFWQ3VTsm3n6YM3b8kCFcme3dz7YuxW6SGsHL7h4iO12RqmzEg>
+    <xmx:_JSxZFg-QjvWSZlJuCagPueA6tUqNYm2RTeANU97KUfehXjMRcFkoQ>
+    <xmx:_JSxZNBfm8SSnnEf_Vw6kIDaMAvEm1sTPDkPIL3WGaoIVQJg7dfy0g>
+    <xmx:_JSxZK68UY7Edv6vG5HHJopR6NA15grfqP3p5yFZqZb54kyhRNRQrg>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 377BEB60086; Fri, 14 Jul 2023 14:33:32 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-531-gfdfa13a06d-fm-20230703.001-gfdfa13a0
+Mime-Version: 1.0
+Message-Id: <d53ed71a-3f57-4c5e-9117-82535aae7855@app.fastmail.com>
+In-Reply-To: <20230714-grummeln-sitzgelegenheit-1157c2feac71@brauner>
+References: <20230711204352.214086-1-axboe@kernel.dk>
+ <20230711204352.214086-6-axboe@kernel.dk>
+ <8431d207-5e52-4f8c-a12d-276836174bad@app.fastmail.com>
+ <048cfbce-5238-2580-2d53-2ca740e72d79@kernel.dk>
+ <bbc5f3cf-99f8-0695-1367-979301c64ecb@kernel.dk>
+ <20230714-grummeln-sitzgelegenheit-1157c2feac71@brauner>
+Date:   Fri, 14 Jul 2023 20:33:11 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Christian Brauner" <brauner@kernel.org>,
+        "Jens Axboe" <axboe@kernel.dk>
+Cc:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/5] io_uring: add IORING_OP_WAITID support
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jakub Kicinski <kuba@kernel.org> writes:
+On Fri, Jul 14, 2023, at 17:47, Christian Brauner wrote:
+> On Tue, Jul 11, 2023 at 04:18:13PM -0600, Jens Axboe wrote:
+>> On 7/11/23 3:22=E2=80=AFPM, Jens Axboe wrote:
+>> > On 7/11/23 3:11?PM, Arnd Bergmann wrote:
 
-> The example and the git hook use HTTPS but the text for some
-> reason links to the non-SSL version.
+>> >> Does this require argument conversion for compat tasks?
+>> >>
+>> >> Even without the rusage argument, I think the siginfo
+>> >> remains incompatible with 32-bit tasks, unfortunately.
+>> >=20
+>> > Hmm yes good point, if compat_siginfo and siginfo are different, th=
+en it
+>> > does need handling for that. Would be a trivial addition, I'll make=
+ that
+>> > change. Thanks Arnd!
+>>=20
+>> Should be fixed in the current version:
+>>=20
+>> https://git.kernel.dk/cgit/linux/commit/?h=3Dio_uring-waitid&id=3D08f=
+3dc9b7cedbd20c0f215f25c9a7814c6c601cc
 >
-> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-> ---
->  Documentation/maintainer/configure-git.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/Documentation/maintainer/configure-git.rst b/Documentation/maintainer/configure-git.rst
-> index a054de0c50dc..b731e8b78565 100644
-> --- a/Documentation/maintainer/configure-git.rst
-> +++ b/Documentation/maintainer/configure-git.rst
-> @@ -38,7 +38,7 @@ You may also like to tell ``gpg`` which ``tty`` to use (add to your shell rc fil
->  Creating commit links to lore.kernel.org
->  ----------------------------------------
->  
-> -The web site http://lore.kernel.org is meant as a grand archive of all mail
-> +The web site https://lore.kernel.org is meant as a grand archive of all mail
->  list traffic concerning or influencing the kernel development. Storing archives
+> In kernel/signal.c in pidfd_send_signal() we have
+> copy_siginfo_from_user_any() it seems that a similar version
+> copy_siginfo_to_user_any() might be something to consider. We do have
+> copy_siginfo_to_user32() and copy_siginfo_to_user(). But I may lack
+> context why this wouldn't work here.
 
-Applied, thanks.
+We could add a copy_siginfo_to_user_any(), but I think open-coding
+it is easier here, since the in_compat_syscall() check does not
+work inside of the io_uring kernel thread, it has to be
+"if (req->ctx->compat)" in order to match the wordsize of the task
+that started the request.
 
-jon
+Using copy_siginfo_to_user32() and copy_siginfo_to_user() is
+probably a good idea though, it's often faster and less
+error-prone than writing each member separately.
+
+      Arnd
