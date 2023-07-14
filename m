@@ -2,99 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C473754172
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 19:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B7E77541E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 19:55:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236673AbjGNRyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 13:54:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40866 "EHLO
+        id S236710AbjGNRzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 13:55:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236551AbjGNRy3 (ORCPT
+        with ESMTP id S236765AbjGNRzY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 13:54:29 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB6D73AAB
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 10:53:52 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Fri, 14 Jul 2023 13:55:24 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9A914687;
+        Fri, 14 Jul 2023 10:54:47 -0700 (PDT)
+Received: from jupiter.universe (dyndsl-091-248-208-179.ewe-ip-backbone.de [91.248.208.179])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 37AA161D9B
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 17:52:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF584C433C7;
-        Fri, 14 Jul 2023 17:52:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689357136;
-        bh=Q9mezWlx47FebY29tWWEXbHoAxzft3y2EeUU3sZ0gkw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=FLwX4HmX2J4hRmpABq6/J0Cp639OF2XY5geuZlVWMHG8hD+tvdkhL3D7hXDw+XsVo
-         GTWzxiyFMqEbEQO48a8ctdZPliEp9bEvCwFEggf+uoD7jkhPzb+Bkj87TVDu6xaai9
-         luEPYgasVrQUleaJ/JkYvlR3s1cvUC66fjPn0GFBGxzy9h/pn90+oiZAnTDhfjxmEy
-         LUeOnU1au67JqPJBetoxluJm8r8IuFengcH/1micfGkjnT1KaOiqySmnGwnEsxM0l/
-         wAgzNyXJYun6Nu6qseq7LfnXh2YwU0nHmQHklFz5JtCGOw6aps5sf3BGEHY2Dn0BB1
-         7tNnToNT240yg==
-Date:   Fri, 14 Jul 2023 10:52:14 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Yunsheng Lin <yunshenglin0825@gmail.com>,
-        <davem@davemloft.net>, <pabeni@redhat.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Liang Chen <liangchen.linux@gmail.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Subject: Re: [PATCH v5 RFC 1/6] page_pool: frag API support for 32-bit arch
- with 64-bit DMA
-Message-ID: <20230714105214.39ad4e4d@kernel.org>
-In-Reply-To: <9a5b4c50-2401-b3e7-79aa-33d3ccee41c5@huawei.com>
-References: <20230629120226.14854-1-linyunsheng@huawei.com>
-        <20230629120226.14854-2-linyunsheng@huawei.com>
-        <20230707170157.12727e44@kernel.org>
-        <3d973088-4881-0863-0207-36d61b4505ec@gmail.com>
-        <20230710113841.482cbeac@kernel.org>
-        <8639b838-8284-05a2-dbc3-7e4cb45f163a@intel.com>
-        <20230711093705.45454e41@kernel.org>
-        <1bec23ff-d38b-3fdf-1bb3-89658c1d465a@intel.com>
-        <46ad09d9-6596-cf07-5cab-d6ceb1e36f3c@huawei.com>
-        <20230712102603.5038980e@kernel.org>
-        <9a5b4c50-2401-b3e7-79aa-33d3ccee41c5@huawei.com>
+        (Authenticated sender: sre)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 53ACE660705D;
+        Fri, 14 Jul 2023 18:53:46 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1689357226;
+        bh=FczUiEAzzQBtsoR9lRmrYRZD3J3QEHCfLQl3HWDnUwQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Wy1bcYH9MbPGBu4PRaxJWzSZljL9LaYiO7taf2v9yJttJucxlOoUBVr9L3YW067dj
+         cohcOyDK/L7T2W19rwR4Xd66NmcIFSTiXT4nIk+Cpx4flkVVIQZ4L6kWo4wMyJKk9F
+         DWrDCps4s9zVD59p6wQdYWND3LbvOEMLoNK9GBrTD44Nne41CSwA74N4GWdGTUKku5
+         yaqpGKGs49qxsSszQnrXZfAGaqv8N4YgC+uITs8FTVhjSHlYzERfBs3oWaDONmDQq7
+         1xQkfDCK++rkEjfhsd3hMf3mdw07BVXHEFKTFf6+hRuGvqubOVWodpvL7LF7ma0WR6
+         QrKR3owvuhqHA==
+Received: by jupiter.universe (Postfix, from userid 1000)
+        id C01224805A0; Fri, 14 Jul 2023 19:53:43 +0200 (CEST)
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     linux-phy@lists.infradead.org, linux-rockchip@lists.infradead.org
+Cc:     Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Simon Xue <xxm@rock-chips.com>, John Clark <inindev@gmail.com>,
+        Qu Wenruo <wqu@suse.com>, devicetree@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        kernel@collabora.com
+Subject: [PATCH v1 0/2] RK3588 PCIe3 support
+Date:   Fri, 14 Jul 2023 19:53:29 +0200
+Message-Id: <20230714175331.112923-1-sebastian.reichel@collabora.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 14 Jul 2023 20:16:34 +0800 Yunsheng Lin wrote:
-> > I should have clarified that "types.h" should also include pure
-> > function declarations (and possibly static line wrappers like
-> > pure get/set functions which only need locally defined types).  
-> 
-> So "types.h" is not supposed/allowed to include any header and
-> it can include any function declarations and static line wrappers
-> which do not depend on any other header? It means we need to forward
-> declaring a lot of 'struct' type for function declarations, right?
+Hi,
 
-Only those used in function prototypes. Pointers in structures 
-are somewhat special and don't require fwd declaration.
+This adds PCIe v3 support for RK3588. The series has been tested with
+Rockchip RK3588 EVB1 and a PCIe wlan card, I will also test Rock 5B
+next week. The series depends on the PCIe v2 series [0].
 
-> If it is the case, the "types.h" does not seems to match it's
-> naming when we can not really define most of the 'struct' in "types.h",
-> such as 'struct page_pool' need to include some header in order to
-> have definition of 'struct delayed_work'.
+Note, that the PCIe3 PHY driver is currently missing bifurcation
+support for RK3588. Thus after this series only PCIe3x4 is usable
+(in aggregated x4 mode) without adding support for the PHY's
+"rockchip,pcie30-phymode" DT property, which allows configuring
+how the lanes are distributed. Apparently this seems to be the
+most common configuration. Both EVB1 and Rock 5B use it, so I
+cannot test anything else anyways.
 
-Obviously. And refcount.h, and types.h.
+[0] https://lore.kernel.org/all/20230713171851.73052-1-sebastian.reichel@collabora.com/
 
-> Similar issue for 'helpers.h', as it will include most of the
-> definition of 'struct', which are not really helpers, right?
+-- Sebastian
+
+Sebastian Reichel (2):
+  dt-bindings: phy: rockchip: add RK3588 PCIe v3 phy
+  arm64: dts: rockchip: rk3588: add PCIe3 support
+
+ .../bindings/phy/rockchip,pcie3-phy.yaml      |  33 ++++-
+ arch/arm64/boot/dts/rockchip/rk3588.dtsi      | 128 ++++++++++++++++++
+ 2 files changed, 156 insertions(+), 5 deletions(-)
+
+-- 
+2.40.1
+
