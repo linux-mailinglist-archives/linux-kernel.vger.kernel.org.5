@@ -2,102 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 628D475383E
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 12:33:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 814F1753840
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 12:33:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236045AbjGNKcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 06:32:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42356 "EHLO
+        id S236240AbjGNKdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 06:33:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234072AbjGNKcy (ORCPT
+        with ESMTP id S235140AbjGNKdg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 06:32:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE288211C
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 03:32:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689330727;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bswM7v1JuTkyCrRrLUO+88+ZhMY73z5COH1v+XdpEac=;
-        b=L5J9+TQu4MTvO7pcBJZlNVpH3RCE66/oMja3yftXSQigfqi66MhVntmQMQX8Q/XXoyCMxJ
-        KsAPZJi1JuWVaDdCQOfoDaLlbZiOIQTrwFG9vN6JzJzYiKrHJutqudqJ/PKh/JY45r+y9r
-        wFMheWNFKXOzEXdvNW1lhSZiQCcU7fo=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-137-_eDNriJ4MNW9czX4QCJs_g-1; Fri, 14 Jul 2023 06:32:03 -0400
-X-MC-Unique: _eDNriJ4MNW9czX4QCJs_g-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-314394a798dso741882f8f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 03:32:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689330722; x=1691922722;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bswM7v1JuTkyCrRrLUO+88+ZhMY73z5COH1v+XdpEac=;
-        b=PYcJP2+htTHZT08AiWmEqgj8VSkn9Nq9oAIveC9Kf1zmHOFC1aaiGz6e+PPI/qC1Vl
-         cpjixU2G/9vsi0w2SeRi81bYjvZQnBnWzQRb5EmQ6cJ1crIJ74gIdbxk87OaDNBmhSCo
-         fLgb1eyvw+aJRDgMFOpfzn0BBic5YoGhorkGQoxk/0Ci7pugt7ssaWvUT42oJ3Vfe7/G
-         +Wc3k5/b4hpn9NU5hPly6BXMx9jtMvPRm6oL4OBaBPk59RUI2KhyaOvPDxB1l+yM6LVd
-         /4SucxNlwhItY1xCSQLJhSLakjh14o9TOCvEVNrjC9jlPj3dD9RwQf3WkQnskmEvgDHb
-         zCeQ==
-X-Gm-Message-State: ABy/qLb3OHaXd7X+2TSOAiqM9qrbjfdEOZK9aL7ycnAQ7hm02/KA+9X3
-        DH086/6/jfi9Ik/57Tg4wIBm1XjMeie3EulAHQpWt7HRT749ohljlSIqeIpIN9aKHJeAZblWEIE
-        zjOGNshGlK+mqmBR3h+HCiZ7G
-X-Received: by 2002:adf:f5ca:0:b0:315:acbc:cab6 with SMTP id k10-20020adff5ca000000b00315acbccab6mr1973689wrp.16.1689330722372;
-        Fri, 14 Jul 2023 03:32:02 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGLjBHCh4GeTwl+UYr12Fntv21WCEoSsC6SdOQUnI/JIxRF/C7Cx2SlNpcAwswe6YuPwABAbA==
-X-Received: by 2002:adf:f5ca:0:b0:315:acbc:cab6 with SMTP id k10-20020adff5ca000000b00315acbccab6mr1973674wrp.16.1689330722072;
-        Fri, 14 Jul 2023 03:32:02 -0700 (PDT)
-Received: from localhost ([91.126.32.244])
-        by smtp.gmail.com with ESMTPSA id s15-20020adff80f000000b00313f9a0c521sm10529733wrp.107.2023.07.14.03.32.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 03:32:01 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 8/8] drm/ssd130x: Switch preferred_bpp/depth to 1
-In-Reply-To: <6b97ca629131a8c1c047947a21b2c558ece9ce87.1689252746.git.geert@linux-m68k.org>
-References: <cover.1689252746.git.geert@linux-m68k.org>
- <6b97ca629131a8c1c047947a21b2c558ece9ce87.1689252746.git.geert@linux-m68k.org>
-Date:   Fri, 14 Jul 2023 12:32:00 +0200
-Message-ID: <877cr2u6lb.fsf@minerva.mail-host-address-is-not-set>
+        Fri, 14 Jul 2023 06:33:36 -0400
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3118430C6;
+        Fri, 14 Jul 2023 03:33:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689330812; x=1720866812;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version:content-id;
+  bh=thbBZkxQUOn7Q+OWCjpYAJ4zB0wuhOmBAj2580NuCJQ=;
+  b=WmTsU0Um50rvHaYgIhPH0tLDQ39n8eeaIIZsoK6/huPoKM0ZoSxpoF4L
+   fX6QWbTKnzO0WXZOVLPt9T/9R7r7VSw1bVLY+XAutkZiu5wldTeJi9zzn
+   ZqyJ1rN/ZUxcO7d90VfNp/5MT807woObd9T0O4QrudcXCMSbYVQH9z99k
+   QIGOwpBU0iu+o0DNGnheW24/1p8fUoWNzjBl36M0kcffE+zFiNJ+HA3IW
+   ou4nxODNwEjlm5H2Z1LwwbWUPDXlZcVpT67kee9qSFQys0UjLevOCP61T
+   UT/QtflxA3xTob4hS5/DfRJpDatmj041gd5cZl3c4pKEvAVG4YENUl5NS
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="429206795"
+X-IronPort-AV: E=Sophos;i="6.01,205,1684825200"; 
+   d="scan'208";a="429206795"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 03:33:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="835987464"
+X-IronPort-AV: E=Sophos;i="6.01,205,1684825200"; 
+   d="scan'208";a="835987464"
+Received: from rchauhax-mobl1.gar.corp.intel.com ([10.249.35.123])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 03:33:28 -0700
+Date:   Fri, 14 Jul 2023 13:33:25 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Reinette Chatre <reinette.chatre@intel.com>
+cc:     linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
+        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 09/19] selftests/resctrl: Convert span to size_t
+In-Reply-To: <92b3ef73-6347-b52a-69ed-c1b489b11d55@intel.com>
+Message-ID: <4969cf83-f070-f29-5489-1cc6a248c6a7@linux.intel.com>
+References: <20230713131932.133258-1-ilpo.jarvinen@linux.intel.com> <20230713131932.133258-10-ilpo.jarvinen@linux.intel.com> <92b3ef73-6347-b52a-69ed-c1b489b11d55@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; BOUNDARY="8323329-1953778464-1689329730=:1695"
+Content-ID: <bd9e6e9-6dd-9a8d-602c-837010c9891@linux.intel.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Geert Uytterhoeven <geert@linux-m68k.org> writes:
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-> The native display format is R1.  Hence change the preferred_depth and
-> preferred_bpp to 1, to avoid the overhead of using XR24 and the
-> associated conversions when using fbdev emulation and its text console.
->
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> ---
+--8323329-1953778464-1689329730=:1695
+Content-Type: text/plain; CHARSET=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
+Content-ID: <92a9314-13ff-8d2b-8649-b666807b483d@linux.intel.com>
 
-Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
+On Thu, 13 Jul 2023, Reinette Chatre wrote:
 
-Thanks again for the series!
+> Hi Ilpo,
+> 
+> On 7/13/2023 6:19 AM, Ilpo Järvinen wrote:
+> 
+> ...
+> 
+> > @@ -188,10 +188,10 @@ fill_cache(unsigned long long buf_size, int malloc_and_init, int memflush,
+> >  	return 0;
+> >  }
+> >  
+> > -int run_fill_buf(unsigned long span, int malloc_and_init_memory,
+> > -		 int memflush, int op, char *resctrl_val)
+> > +int run_fill_buf(size_t span, int malloc_and_init_memory, int memflush, int op,
+> > +		 char *resctrl_val)
+> >  {
+> > -	unsigned long long cache_size = span;
+> > +	size_t cache_size = span;
+> >  	int ret;
+> >  
+> >  	ret = fill_cache(cache_size, malloc_and_init_memory, memflush, op,
+> 
+> Any idea what the purpose being run_fill_buf() is? From what I can tell it is
+> an unnecessary level of indirection.
+
+You already mentioned it, fill_cache() could be included into 
+run_fill_buf() but it's not part of this series.
+
+> > diff --git a/tools/testing/selftests/resctrl/resctrlfs.c b/tools/testing/selftests/resctrl/resctrlfs.c
+> > index f622245adafe..8be5b745226d 100644
+> > --- a/tools/testing/selftests/resctrl/resctrlfs.c
+> > +++ b/tools/testing/selftests/resctrl/resctrlfs.c
+> > @@ -298,7 +298,7 @@ int taskset_benchmark(pid_t bm_pid, int cpu_no)
+> >  void run_benchmark(int signum, siginfo_t *info, void *ucontext)
+> >  {
+> >  	int operation, ret, malloc_and_init_memory, memflush;
+> > -	unsigned long span, buffer_span;
+> > +	size_t span, buffer_span;
+> >  	char **benchmark_cmd;
+> >  	char resctrl_val[64];
+> >  	FILE *fp;
+> 
+> Do we now need a cast in the initialization of span?
+
+I don't see any warning w/o cast, unsigned long -> size_t seems pretty 
+safe anyway. For internally provided values, overflow does not seem 
+possible even if the type sizes would disagree.
+
+There's no existing error checking for the command in the case where 
+"fill_buf" is used with -b (an orthogonal issue).
 
 -- 
-Best regards,
-
-Javier Martinez Canillas
-Core Platforms
-Red Hat
-
+ i.
+--8323329-1953778464-1689329730=:1695--
