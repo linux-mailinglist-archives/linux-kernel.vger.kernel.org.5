@@ -2,163 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE7FE754389
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 22:01:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 172FE75438D
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 22:02:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236162AbjGNUBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 16:01:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51460 "EHLO
+        id S236230AbjGNUCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 16:02:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233193AbjGNUBm (ORCPT
+        with ESMTP id S235873AbjGNUCT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 16:01:42 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11636E5C;
-        Fri, 14 Jul 2023 13:01:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689364899; x=1720900899;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=Lj8vg8jOLaTsAXgSd3nRi5F4zpkFRbSIEM4qtfnHOws=;
-  b=cfLVZ4eqHzOIGdPJ/UY03nKCHQgerGBRuHEC+aq5YilvzHEgDSIPerUy
-   p5LMB98Et8abcw/1oOLjJcYSkfYk8X83iJlG8WNRjwFvA4ZTZ93nTvi/M
-   lBMkoAZxq3IBJgPNRebFh+CpcfiQpfO1g0HqOiHsgsZ7Lk46O6K6syDBs
-   e0rHhuQS/Ld1foBoTAUDK68eeMO40V5lHxrr1eowjW7rfu8EUZRYK0ew+
-   ou66mUsW2QiONrkq6TeMbE/hlXultsJCbmH8DVDoPMz30LEOSvz9BIpN1
-   4M4K9JU+e7rH7mf4JFA4Yd4dhjVQgHPXUOqzliJBcXFiCb9w8mQldhHg+
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10771"; a="365603460"
-X-IronPort-AV: E=Sophos;i="6.01,206,1684825200"; 
-   d="scan'208";a="365603460"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 13:01:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10771"; a="672820930"
-X-IronPort-AV: E=Sophos;i="6.01,206,1684825200"; 
-   d="scan'208";a="672820930"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.18.126])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 14 Jul 2023 13:01:33 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To:     jarkko@kernel.org, dave.hansen@linux.intel.com, tj@kernel.org,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
-        cgroups@vger.kernel.org, "Thomas Gleixner" <tglx@linutronix.de>,
-        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        "Randy Dunlap" <rdunlap@infradead.org>
-Cc:     kai.huang@intel.com, reinette.chatre@intel.com,
-        "Kristen Carlson Accardi" <kristen@linux.intel.com>,
-        zhiquan1.li@intel.com, seanjc@google.com, bagasdotme@gmail.com,
-        linux-doc@vger.kernel.org, zhanb@microsoft.com,
-        anakrish@microsoft.com, mikko.ylinen@linux.intel.com
-Subject: Re: [PATCH v3 22/28] Docs/x86/sgx: Add description for cgroup support
-References: <20230712230202.47929-1-haitao.huang@linux.intel.com>
- <20230712230202.47929-23-haitao.huang@linux.intel.com>
- <f0dddc1a-6070-7e11-0458-b0db1f5ea671@infradead.org>
-Date:   Fri, 14 Jul 2023 15:01:32 -0500
+        Fri, 14 Jul 2023 16:02:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52C99E5C;
+        Fri, 14 Jul 2023 13:02:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DB5A261DE6;
+        Fri, 14 Jul 2023 20:02:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD564C433C8;
+        Fri, 14 Jul 2023 20:02:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689364937;
+        bh=UT9j9q6/BWfR67FxkI+ij2KTzELof0exJwjKYHRs4R8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YcBccN58eI766HtMQ2IQlB0kW1JvkiwsS5clOvALgM0UWC3MdI/3E5p+ACpxkHNQO
+         wYpxnKfUwZfM1qWLFdxScfAXt40ygyI+xRoOhsOOMA0UaRJYmVvQqMy+bwixSC3bao
+         19NUWX93HpVfXCXgnwZrNY4YqDvo7j7iBnaRnFKsse583R/hdW8UjXgCL8TNwJ/84U
+         WHvuC8iw+hx52up83YpirfblY1ButPG7w0SM/EiGNWC7c26iRdHX5C1X2JaeZItxza
+         PM7T2vItZzdSVitXTJTHHWyFuq9dJbgKxQatEYyROvSIrtdfAumRWioqrZhwvR7q0c
+         iipeLmo15v5BQ==
+Date:   Fri, 14 Jul 2023 21:02:12 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Thorsten Leemhuis <linux@leemhuis.info>, corbet@lwn.net,
+        workflows@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org
+Subject: Re: [PATCH docs] docs: maintainer: document expectations of small
+ time maintainers
+Message-ID: <a5fcc05c-3549-491e-b28f-68ceedceb75e@sirena.org.uk>
+References: <20230713223432.1501133-1-kuba@kernel.org>
+ <f61a12c6-9587-9cb4-122e-dc3a74e58bd1@leemhuis.info>
+ <20230714102218.687ee2ea@kernel.org>
+ <a7d0381c-c99e-4dba-9156-cc07a86bdc39@sirena.org.uk>
+ <20230714113418.49dfac7e@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From:   "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.1728kukvwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <f0dddc1a-6070-7e11-0458-b0db1f5ea671@infradead.org>
-User-Agent: Opera Mail/1.0 (Win32)
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ZMGLOwCUDl6aLp+8"
+Content-Disposition: inline
+In-Reply-To: <20230714113418.49dfac7e@kernel.org>
+X-Cookie: Preserve the old, but know the new.
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
 
-On Wed, 12 Jul 2023 19:10:59 -0500, Randy Dunlap <rdunlap@infradead.org>  
-wrote:
+--ZMGLOwCUDl6aLp+8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->> +
->> +
->> +Cgroup Support
->> +==============
->> +
->> +The "sgx_epc" resource within the Miscellaneous cgroup controller  
->> regulates
->> +distribution of SGX EPC memory, which is a subset of system RAM that
->> +is used to provide SGX-enabled applications with protected memory,
->> +and is otherwise inaccessible, i.e. shows up as reserved in
->> +/proc/iomem and cannot be read/written outside of an SGX enclave.
->> +
->> +Although current systems implement EPC by stealing memory from RAM,
->> +for all intents and purposes the EPC is independent from normal system
->> +memory, e.g. must be reserved at boot from RAM and cannot be converted
->> +between EPC and normal memory while the system is running.  The EPC is
->> +managed by the SGX subsystem and is not accounted by the memory
->> +controller.  Note that this is true only for EPC memory itself, i.e.
->> +normal memory allocations related to SGX and EPC memory, e.g. the
->> +backing memory for evicted EPC pages, are accounted, limited and
->> +protected by the memory controller.
->> +
->> +Much like normal system memory, EPC memory can be overcommitted via
->> +virtual memory techniques and pages can be swapped out of the EPC
->> +to their backing store (normal system memory allocated via shmem).
->> +The SGX EPC subsystem is analogous to the memory subsytem, and
->> +it implements limit and protection models for EPC memory.
->> +
->> +SGX EPC Interface Files
->> +-----------------------
->> +
->> +For a generic description of the Miscellaneous controller interface
->> +files, please see Documentation/admin-guide/cgroup-v2.rst
->> +
->> +All SGX EPC memory amounts are in bytes unless explicitly stated
->> +otherwise.  If a value which is not PAGE_SIZE aligned is written,
->> +the actual value used by the controller will be rounded down to
->> +the closest PAGE_SIZE multiple.
->> +
->> +  misc.capacity
->> +        A read-only flat-keyed file shown only in the root cgroup.
->> +        The sgx_epc resource will show the total amount of EPC
->> +        memory available on the platform.
->> +
->> +  misc.current
->> +        A read-only flat-keyed file shown in the non-root cgroups.
->> +        The sgx_epc resource will show the current active EPC memory
->> +        usage of the cgroup and its descendants. EPC pages that are
->> +        swapped out to backing RAM are not included in the current  
->> count.
->> +
->> +  misc.max
->> +        A read-write single value file which exists on non-root
->> +        cgroups. The sgx_epc resource will show the EPC usage
->> +        hard limit. The default is "max".
->> +
->> +        If a cgroup's EPC usage reaches this limit, EPC allocations,
->> +        e.g. for page fault handling, will be blocked until EPC can
->> +        be reclaimed from the cgroup.  If EPC cannot be reclaimed in
->> +        a timely manner, reclaim will be forced, e.g. by ignoring LRU.
->> +
->> +  misc.events
->> +	A read-write flat-keyed file which exists on non-root cgroups.
->> +	Writes to the file reset the event counters to zero.  A value
->> +	change in this file generates a file modified event.
->> +
->> +	  max
->> +		The number of times the cgroup has triggered a reclaim
->> +		due to its EPC usage approaching (or exceeding) its max
->> +		EPC boundary.
->
-> The indentation here (above) is a little confusing.
-> Is this formatted the way that is intended?
->
-max here is an entry in the misc.events file. So it needs be indented a  
-subsection.
-But I see spaces are used for indentation in sections above(misc.max,  
-misc.current and misc.capacity), and tabs are used in this section. So I  
-think maybe that's causing the confusing?
-I'll fix them using all tabs.
+On Fri, Jul 14, 2023 at 11:34:18AM -0700, Jakub Kicinski wrote:
+> On Fri, 14 Jul 2023 18:59:08 +0100 Mark Brown wrote:
+> > > If we try to fend off anyone who doesn't understand common meaning=20
+> > > of words the document will be very long and painful to read. =20
 
-Thanks
-Haitao
+> > That's true, but "bug" is one of those things where there is a frequent
+> > disconnect on definitions, and when coupled with the must respond bit I
+> > can see things going wrong.
+
+=2E..
+
+> But we can't expect from the user to know if the problem is stable
+> material, or even whether their problem is a bug in the first place.
+> Simple example - WiFi cards which don't support AP mode. User may try
+> to run an AP, and report it doesn't work. They may not know whether
+> it's HW limitation or a bug. The maintainer responding with "it's not
+> supported, sorry" does not seem to me to be a high bar.
+
+Sure, there's cases where it's really clear and people ought to reply
+but there's other things especially as you get into the automated
+reports - for things like the fuzzers with automated reports and
+sometimes janky bisection it's a lot more reasonable to just drop them
+on the floor.
+
+> Just in case someone thought that maintainers are their tech support.
+> Then again, I don't want to completely exclude technical questions which
+> aren't straight up crashes because some of those are reasonable, should
+> be answered or even result in improving docs or error reporting.
+
+> It's a balancing act :(
+
+Honestly I think a lot of it is the "must" rather than "should", it
+comes over as being a bit inflexible.
+
+--ZMGLOwCUDl6aLp+8
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmSxqcMACgkQJNaLcl1U
+h9BaWQf+ISEPJQXevs7v9RaLSpGDfpwmrHXZ2yL/97jE8US6G50yCCTI2pnHwDKA
+kO9VWuxFj/ZQMx8xrbVJTGmQ3YlohH+s6a6obkVoRb+qSP68Sw0ekiG6b2Yv1gip
+/RTHQ1rsigv+yFKd+n1n7tTKA8QLzHVJNlAN06Y8drdnNEGtyn+xMB2S3DQY1onb
+u/BgR4frCSl+BIIvfeTPHA5SeE1/Adpjir/0wZMO0s8W2K1fCVNVtQCsT+fEAn2L
+3qNYAjZIcCNTR1de44QGNY88zKYWQwTalrkTMYvxqmO/HlvhzeedwZIzsaHkjTQJ
+vfzjMPbVZ5ff/SuzBO8bxhf50YyYQw==
+=yOvy
+-----END PGP SIGNATURE-----
+
+--ZMGLOwCUDl6aLp+8--
