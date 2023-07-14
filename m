@@ -2,253 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 635D475376D
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 12:04:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98D30753770
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 12:04:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235948AbjGNKEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 06:04:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50790 "EHLO
+        id S235965AbjGNKEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 06:04:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235931AbjGNKEf (ORCPT
+        with ESMTP id S235949AbjGNKEu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 06:04:35 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBA972D63;
-        Fri, 14 Jul 2023 03:04:33 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9924ac01f98so227463866b.1;
-        Fri, 14 Jul 2023 03:04:33 -0700 (PDT)
+        Fri, 14 Jul 2023 06:04:50 -0400
+Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 477AF2702;
+        Fri, 14 Jul 2023 03:04:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1689329081; x=1720865081;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=frcCV1k9oG9oKj3dpUqdJg1PxRT2RSN/XKdLCPjaYaY=;
+  b=GL505xVTQDX3WqPFOIM5i0LkE/2lhQ75pXgxgoMD3ESvcBxld9XWsLaf
+   JKp4Nk3Qa5Lw//oCyrDGVrko4mZ+HUaXaPumJMvGoOsrOmCxVBZ1EAnNM
+   SySzaz6tziUeMdOAoQTT3hCTxYW5lHFXYXMZK5UKr0wTDyD2EG1L6JuGm
+   7UN4vW3xYWx6wTergL3lpizFLL4g0s/MKwIP8BZQr4ytJXx0d9DZLFJ7N
+   OZBdqKmf2U/56pgsO7Y7wFam/uJhF2R9w67AXMvLUyX92rBDvgWSxxIPQ
+   6dYqbg5tNsmu5kOFS+BhnHDXtIcew5cSegIvb7w55TX6NVMSS5j9U0Zbx
+   g==;
+X-IronPort-AV: E=Sophos;i="6.01,204,1684771200"; 
+   d="scan'208";a="343122003"
+Received: from mail-bn8nam12lp2170.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.170])
+  by ob1.hgst.iphmx.com with ESMTP; 14 Jul 2023 18:04:38 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MPaJ/CG7ZHdESF+jxn9E5k7xewMV2kADC1MOFBZzjqLvZnHqG9p0TtGmvDLvBUIjir7lCEqNbXD4usHJICt1EiuhMDNY5rn/G8hWLarW2RgHLJPbjlSomuy+fO5Cw+jX0kEGRzJa7B4HwuD6PF5DU4fjHFOZm66mr4JnPiSBsowsMABaCBhkmSGAFEl5Y5jgmvVTExzbEwF1fttFpR/qcsSYJtmhHkzm0PL43uWYBk+HPtfP4Cdhl5HA9pyrEyJJZz/ZzJ4cGh1LUR+LtE9wDlKQDZl8SK3Vm22Exrpq4Diwar5PNPE0J+aGK4L1YPuU3ekPm0faShU7Im8tgRVciw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
+ b=H/il+2HpTgBX+oJfi55rAgAqCtyFS3D9QRviCwIO3+kPiq0AOEi1ztfwBIHKoFoZYBRiNs09kyHlcR2nOpVvmFXqfovy+EB3EcQni4OInlnIyD5xYnNlYyGrssw9bC1+fuY8lJYfiPcJRxcrsdqGXWa9/Dn0hwCnNq5epgDUQ07sPfPWo9055bKErg6vdnSykyDllB3T4PBVMZrpOWALyUEHXvzuZy7tzbao68SHqZpypuj76sl0BhgkpFx6N3+cNxZpGjIzASEQBa6EiddRw0jVcbMV0IkqfuLn7YEk+odXjhWnGI8u2hnM99DraBATqNXOfURCqryQaAwLDxIZiw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689329072; x=1691921072;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pC/ekmqpW/98xWIWVd/9RI7IBbK7bLokWpnG3F0TMEs=;
-        b=KdeS9tXY3ojXr5cPM6vOzItutVezVCodV0EQVVq6PqzC5qtulq234RLWNCcMzac9vD
-         5itkDtJyQoO4oJzAW6nXnhzH+C5u5I619ssfl1zCKw1OGEoak0w8XflYutMQxamjM4SV
-         6GY2xA+C7niDtmyJZpC9orSrMIJR7C0FbleCEbNx+Kxi+j2NYSembuuSwHQqGMpX37xL
-         jU45XkASr6bH9iX2Zt9r52IoF0RyrBDFE8N3QeHwgII3UltuXlwDc4o7fAAR/+Fn7CoB
-         GovYmXXpnRId7VXUKzinFJfn/GgWtnYLrdnUmE2xf3m9u3iJtcYA+Ggt6cZhKVtgUpqk
-         6g8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689329072; x=1691921072;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pC/ekmqpW/98xWIWVd/9RI7IBbK7bLokWpnG3F0TMEs=;
-        b=be74CynDGlC6L5ibB3hTWrk4QaftHoPUZBzEVDGy4Gz9aXET6ipgf9luRJJwW34k+n
-         ya5fg47PXDui/M1M8eKG7ThkzjXQJ1o5280XLi0Q3OW7cNFsSU+PKiNSy63V7YUIM58L
-         A2ULSbxdysdtjZBNgiba20xEbRGI3ePWAAkLhAbJ9Y1gJYcKcrxuWqzhAkF2ZWlBuidR
-         Usv2DeK6eh1NrK9CJXui4h7dnR5X35XigCNChT0VjZ7EuqLaP4+uNscsWs5S3oIH9/GV
-         JXBTUw1Ilv2GWzed+tAKXImh/8tWUgXF6zF0Q2LJRqk12g4/7KnzQHIL1O/WaPeJtgtv
-         a5NQ==
-X-Gm-Message-State: ABy/qLYWWCcWEzuyoo+teTA1Ts+DZTYt6ptpt38pUnIdHBAzEnISU1+c
-        CkrYCCtPktnYSreNb/fneco=
-X-Google-Smtp-Source: APBJJlGC8Bunb6VpcozrBiN1HQSEO0w5JcMwd6tHxV2t9XojBMKGjN8qrlnM/OjUbW9gdqCkPnh4UA==
-X-Received: by 2002:a17:907:1a58:b0:992:c40e:3c17 with SMTP id mf24-20020a1709071a5800b00992c40e3c17mr3179674ejc.75.1689329072184;
-        Fri, 14 Jul 2023 03:04:32 -0700 (PDT)
-Received: from tablet.my.domain (ip-37-248-157-105.multi.internet.cyfrowypolsat.pl. [37.248.157.105])
-        by smtp.gmail.com with ESMTPSA id h7-20020a1709063c0700b0098e42bef736sm5215415ejg.176.2023.07.14.03.04.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 03:04:31 -0700 (PDT)
-From:   Artur Weber <aweber.kernel@gmail.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Artur Weber <aweber.kernel@gmail.com>
-Subject: [RESEND PATCH 2/2] Input: mms114 - add support for touch keys
-Date:   Fri, 14 Jul 2023 12:04:24 +0200
-Message-ID: <20230714100424.29798-3-aweber.kernel@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230714100424.29798-1-aweber.kernel@gmail.com>
-References: <20230714100424.29798-1-aweber.kernel@gmail.com>
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
+ b=ezkSpW1IeSUEMU22vMcY9J+rWyfwZFzF1XHtVzxraUOvOtMJHwwhRVao3PzSVp0LdTFWP7bXTukRhOUwB3ZL1XuysWqiLhndy1/JMVAVPitiorj6wZ48wPGF/2UcAjYmpl+meYGhpYzFsJi5f3Zwt6Uf30kwuNg9WTZVI3jdkD8=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by MN2PR04MB6431.namprd04.prod.outlook.com (2603:10b6:208:1ae::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.27; Fri, 14 Jul
+ 2023 10:04:35 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::d10e:18ac:726d:ffe0]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::d10e:18ac:726d:ffe0%4]) with mapi id 15.20.6588.027; Fri, 14 Jul 2023
+ 10:04:35 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Andreas Hindborg <nmi@metaspace.dk>, Ming Lei <ming.lei@redhat.com>
+CC:     =?iso-8859-1?Q?Matias_Bj=F8rling?= <Matias.Bjorling@wdc.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        "gost.dev@samsung.com" <gost.dev@samsung.com>,
+        "hch@infradead.org" <hch@infradead.org>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Johannes Thumshirn <jth@kernel.org>,
+        Aravind Ramesh <Aravind.Ramesh@wdc.com>,
+        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
+        Hans Holmberg <Hans.Holmberg@wdc.com>,
+        Minwoo Im <minwoo.im.dev@gmail.com>
+Subject: Re: [PATCH v9 2/2] ublk: enable zoned storage support
+Thread-Topic: [PATCH v9 2/2] ublk: enable zoned storage support
+Thread-Index: AQHZtiRmdnzuxLXksEWraWawgpENGg==
+Date:   Fri, 14 Jul 2023 10:04:35 +0000
+Message-ID: <PH0PR04MB74162D5799D1724F0FB8D3A29B34A@PH0PR04MB7416.namprd04.prod.outlook.com>
+References: <20230714072510.47770-1-nmi@metaspace.dk>
+ <20230714072510.47770-3-nmi@metaspace.dk>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|MN2PR04MB6431:EE_
+x-ms-office365-filtering-correlation-id: 653df2c7-22ed-4794-491e-08db8451ba6f
+x-ld-processed: b61c8803-16f3-4c35-9b17-6f65f441df86,ExtAddr
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: sXeazeOVMK09A7On+RmWV9tLK7xGX8yKxm9HpdFNx9Ua9Zlrb7mVMLhs4D/Y63lJzVTogrOxp45OUwXqeARF9rHsrUHlLHqBM4rHspv3LpuBgq4l7gvFzqnQW0mDkSj43t5OHwp648CHBB0A31a0wNNTAGTVUQTMqc2PNN6yFAhs1l5CCLJ3C7CSl672xi17n3InrXMt0o2bTwny7u2cZub5jdY8LToA6sObTiCT0prjjuPlcjq/fjUJSvCiSBc7ALKae2/pBNyqp04Pvv68VEp+w8OeEKlpE8rT+6LTsbEJda66qYyXkwOrmDRoyQJvlb27CTSA2SLiV+5pAf7z1Fjw/Fi8NyF6y94SnfmZkBE=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(366004)(346002)(39860400002)(376002)(136003)(451199021)(55016003)(86362001)(33656002)(122000001)(38070700005)(82960400001)(38100700002)(478600001)(2906002)(71200400001)(7696005)(110136005)(6506007)(9686003)(26005)(8676002)(8936002)(316002)(41300700001)(7416002)(66946007)(66556008)(76116006)(54906003)(91956017)(52536014)(4326008)(66476007)(66446008)(64756008)(73894004)(621065003)(186003)(4270600006);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?Tqrs+12thDUCq/uzK8lwD1k3+7AFgd9ax5CvmldEXk2XHCv9yOBsI9o8I1?=
+ =?iso-8859-1?Q?IytH3ZLSUQo6MlmwkH7F3rsL369c8qR7i8Pp1e6OmDS+GayA29nNqJ1x4I?=
+ =?iso-8859-1?Q?ajb+mLP118oiCylvK/fHTB0sEc5+K8H1kCSDI60+YBmnsKHwcdptzih/a6?=
+ =?iso-8859-1?Q?MbgSdIwKh/S4aOrLZfoBSGj1OmDhSjsvqACHLATaUealKNQSDcXoM83BT/?=
+ =?iso-8859-1?Q?hqY1uQqEqc8tYYYz0op/AdjAMq8VM0XVPHLA3Y3tDB2+2QgmPm9yAgDvAN?=
+ =?iso-8859-1?Q?FOWfdm3Vxc3IBueS7m+GmJJMEBSjsPDoS/+zutrRa9PgEM4NmZFlyi00Mo?=
+ =?iso-8859-1?Q?MRaeuCgbPzxOAWFpusWioExSx79oaAD33wm6ZIE0OIRvnE8FWL83mz+YUI?=
+ =?iso-8859-1?Q?c0v6ENCyB3Iw0NpuwGOti+XuuTRMicaowoMzcNIMZiQbwjg5CrdPVJ9Lji?=
+ =?iso-8859-1?Q?QE4nyP2NXmuk7wJZZCVaj9Ng5w2LpW0he/hdbQYxG/qSf2VlhJV0WiqRBM?=
+ =?iso-8859-1?Q?Wc3ti9W/g9FU81vt4pwEFRPFgEvSVDjySSmyzBHnkZ8nvRYegS1hdMhJsg?=
+ =?iso-8859-1?Q?ha+z5rDJb58m7C2ZkF/CysC70PDYq6OPj8/ziXd7UEocXeHpYAs7T/jsqC?=
+ =?iso-8859-1?Q?QVHCk788n9XYFKAWrxaxigs4EAmsMXwrftwUOwJkXs50y9/PxsMR21mHWe?=
+ =?iso-8859-1?Q?pGSiPjX79ilwtZJQ7OG+QjglvBRbguQds80gBGnH0M+iM4TiOs/7BLJ+k2?=
+ =?iso-8859-1?Q?IIcQnl7+pDEt1yB+kBEpZtLsQMf2hp601rUqK1NWZpp1iF/LH257ooWfVQ?=
+ =?iso-8859-1?Q?lJIWTnLBEJrcvBKHMZ9S1ZWj+9lE3PnrI3dU2z/QCrcTpamh15I1ZD8J8q?=
+ =?iso-8859-1?Q?X09mjg4r8wRuFTcyBH9tdNCWKI78tgwCRsx1Dbd3h2RlTCIaxuwJM/U5o+?=
+ =?iso-8859-1?Q?m7hfTIb0qDgr0Po0Wc3sUiPHNFXepkIq+VKihmXPhMEXQs4fXrOrY/U5eW?=
+ =?iso-8859-1?Q?tV+HipT85nH2DV9iGQX6kQT5PeT3UdDNepS2t/kULctQSxDxF5rTh+ipyK?=
+ =?iso-8859-1?Q?xj1DZDXrnnEFWAX3S5cqauHPMXeaXuTTvpbFXNafGvwbtsOnnjZ8601riP?=
+ =?iso-8859-1?Q?7b0NJw3W9tkxv+9IKGnxojZJT9v21MyM4UTnJF6Lt+vMdreaxkvfr7Q5YY?=
+ =?iso-8859-1?Q?coD47Xbb3TV7LCkAk2TkGi11K9I0Yky9xX7y9cpq0aDPc2moq3I+YDXyDL?=
+ =?iso-8859-1?Q?NUsMAy3rjUnBquFqduWdbx6EmEv+GvVDnwtFtcSlSqaPwKY5WC4FSbAJJ1?=
+ =?iso-8859-1?Q?F1d9zRSMwWPwuMR+EsUhAN/x8nLwmy1VdmFzKWdVFAlGx/IXy+BZD4hW7i?=
+ =?iso-8859-1?Q?8ztd+GBr/r+zXqruOCaofCykES6wYsnWzXBOpeenPXmRDdHF/QNSGXjplP?=
+ =?iso-8859-1?Q?l62wAfzU5Nf647jZlF7YKLH2oa96owvZmuphZ0IPhHQ/pWh+fHus4D9Ath?=
+ =?iso-8859-1?Q?UdxuTR6Uh+X9O5HDkT8CHf/b1h/M7Dbf3ypwaUlJ6Onagr03FPTT/7WaMz?=
+ =?iso-8859-1?Q?00qERZ45jkW8lzd+45Voy6jOC7qEfUSUV7lMqoKPNnNq5c+nY2tF3g/95R?=
+ =?iso-8859-1?Q?oSLMquaLokXiRqHob464Yka4ng9xrqu332AgrHHLEz1+ajb7zLoOr7RA?=
+ =?iso-8859-1?Q?=3D=3D?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?iso-8859-1?Q?mKytwxDZq01MQVKP7CJjYx7ItSbXpw364jYPfNdIUkNkLa1sSpqJvNoX30?=
+ =?iso-8859-1?Q?1Irlj/+K6mtBFqkQiId1LXfKXHHHrw90ulzozW4XNIcxA9PiyqW+KRHOd5?=
+ =?iso-8859-1?Q?i2sBn/ElPVS8Ekn0XaLYeVowmxLCVI2JZIBVfDWMjCKBQIcxsYcQn708EZ?=
+ =?iso-8859-1?Q?iqXKjF2mXjOJerkKj4/QsyxRPr/JtI27DvEIOxcY1kh9mPyueO6GCzft+r?=
+ =?iso-8859-1?Q?kPlDT4O1IIGJFZFlitI9Prdip4oljcVsbUsPFlkmyiuO6k0rYIlVIdXojm?=
+ =?iso-8859-1?Q?v326rWJg+Pd+O1cVztcD4qInLEkyIhFyUBMGNCXIb8MNEmy5/Ck7DqbxqW?=
+ =?iso-8859-1?Q?rtEixvLKFHmMLzXl6nTa849RALvWjkJxVqsLUcEDvCa2LiB0/OkXuqXGfV?=
+ =?iso-8859-1?Q?6mKmYLCZcYlYp0rmWG70kL6QvkWVrW5CoyXZkwcOsiLk1zRLQMJi21GmrU?=
+ =?iso-8859-1?Q?j6QEV3gy3LhdrDwKmMHkabRgTFI0odBQSRrooC2oiMLoC79cKCBeeG9dwG?=
+ =?iso-8859-1?Q?vsd6q8k8FHRE5TfN23CmEq5v6Pp6/OyAmF18pq2cKbq4UGBiRFL+VG2CSb?=
+ =?iso-8859-1?Q?h4nLRPnJ+wUYAKEJxXte54SicJ4vgGPVcnJj0BvPRKW/wTUac4f7cPwtX4?=
+ =?iso-8859-1?Q?OtmTNmcJ9s3ORdv6j13d6zADfj6y3hd00DgLMWllEO+yrssblqqYmb/waP?=
+ =?iso-8859-1?Q?Zhq6Y6hn8I2kZbqv0GE7sUKZpsD+AmK7+Ok3mQ1nAGMxAaGn2lIGzkkjKr?=
+ =?iso-8859-1?Q?K0WKuf83a6X7kdtfyrZ/1MEtEXUmmjWf+lqsrleezbSyRvXwcxFCb9ESkQ?=
+ =?iso-8859-1?Q?cKEz9l4U6eB1ZAOkOcPZzD7zEq2l4uQMagsinxZi87ErQzFrhk82fHG+qA?=
+ =?iso-8859-1?Q?bO9Gw9hoTSHEfBVNFW0Hho5Ee4wC6RGtjDY1X/5FkC+TKSDBr4rtSLt2av?=
+ =?iso-8859-1?Q?Cx2Ave7kQ9CryUBKdmezmsHH3slfbG4GdEpSBzQPKu5KW3zrGbiGF4GBKH?=
+ =?iso-8859-1?Q?Dg0Zwei5YuWNLu8puNkVGszvrkUBKYPrw40CmU?=
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 653df2c7-22ed-4794-491e-08db8451ba6f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Jul 2023 10:04:35.7929
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 7iCnZcJ2elg6IYFCT/2RV+FJkPfnDbVCIbXRpy80gaGILXs+ScUfzNooBH/7Gt3u9HEHqJ+BbYXgrYmAKlbO0d1ibIWGnAW7dRELLa1q7xc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR04MB6431
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,EMPTY_MESSAGE,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MELFAS MMS114 and similar touchscreens have support for touch keys.
-Enable support of them in the driver. The keycodes to emit can be
-controlled by the linux,keycodes DT property.
-
-Sidenote - the MAX_TOUCHKEYS value is set to 15, as that's the
-maximum value that the ID field can contain. I don't have access
-to any datasheets that could confirm or deny whether this is accurate.
-
-Most downstream drivers I've been able to find only use up to 2 keys
-(though I did find a driver that mentioned up to 4, but only 2 were
-used). They don't have any checks for a maximum keycode value, it is
-just extracted from the ID bits (0xf mask).
-
-The drivers I've been able to find also don't use touch ID 0; I assume
-that it is never used, so the keycodes provided in the DT start from
-touch ID 1. I suppose this is in-line with the regular behavior
-for touch IDs in touchscreen events, as there the provided touch ID
-is always lowered by 1, which would cause an overflow if it was 0...
-Just in case, we quietly return if the touch ID is set to 0 here.
-
-The implementation of the linux,keycodes property handling code was
-adapted from the msg2638 driver.
-
-Signed-off-by: Artur Weber <aweber.kernel@gmail.com>
----
- drivers/input/touchscreen/mms114.c | 88 +++++++++++++++++++++++++++---
- 1 file changed, 81 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/input/touchscreen/mms114.c b/drivers/input/touchscreen/mms114.c
-index ac12494c7930..14c0514a21ff 100644
---- a/drivers/input/touchscreen/mms114.c
-+++ b/drivers/input/touchscreen/mms114.c
-@@ -43,6 +43,7 @@
- /* Touchscreen absolute values */
- #define MMS114_MAX_AREA			0xff
- 
-+#define MMS114_MAX_TOUCHKEYS		15
- #define MMS114_MAX_TOUCH		10
- #define MMS114_EVENT_SIZE		8
- #define MMS136_EVENT_SIZE		6
-@@ -70,6 +71,9 @@ struct mms114_data {
- 	unsigned int		contact_threshold;
- 	unsigned int		moving_threshold;
- 
-+	u32 keycodes[MMS114_MAX_TOUCHKEYS];
-+	int num_keycodes;
-+
- 	/* Use cache data for mode control register(write only) */
- 	u8			cache_mode_control;
- };
-@@ -167,11 +171,6 @@ static void mms114_process_mt(struct mms114_data *data, struct mms114_touch *tou
- 		return;
- 	}
- 
--	if (touch->type != MMS114_TYPE_TOUCHSCREEN) {
--		dev_err(&client->dev, "Wrong touch type (%d)\n", touch->type);
--		return;
--	}
--
- 	id = touch->id - 1;
- 	x = touch->x_lo | touch->x_hi << 8;
- 	y = touch->y_lo | touch->y_hi << 8;
-@@ -191,9 +190,33 @@ static void mms114_process_mt(struct mms114_data *data, struct mms114_touch *tou
- 	}
- }
- 
-+static void mms114_process_touchkey(struct mms114_data *data,
-+				    struct mms114_touch *touch)
-+{
-+	struct i2c_client *client = data->client;
-+	struct input_dev *input_dev = data->input_dev;
-+	unsigned int keycode_id;
-+
-+	if (touch->id == 0)
-+		return;
-+
-+	if (touch->id > data->num_keycodes) {
-+		dev_err(&client->dev, "Wrong touch id for touchkey (%d)\n",
-+			touch->id);
-+		return;
-+	}
-+
-+	keycode_id = touch->id - 1;
-+	dev_dbg(&client->dev, "keycode id: %d, pressed: %d\n", keycode_id,
-+		touch->pressed);
-+
-+	input_report_key(input_dev, data->keycodes[keycode_id], touch->pressed);
-+}
-+
- static irqreturn_t mms114_interrupt(int irq, void *dev_id)
- {
- 	struct mms114_data *data = dev_id;
-+	struct i2c_client *client = data->client;
- 	struct input_dev *input_dev = data->input_dev;
- 	struct mms114_touch touch[MMS114_MAX_TOUCH];
- 	int packet_size;
-@@ -223,8 +246,22 @@ static irqreturn_t mms114_interrupt(int irq, void *dev_id)
- 	if (error < 0)
- 		goto out;
- 
--	for (index = 0; index < touch_size; index++)
--		mms114_process_mt(data, touch + index);
-+	for (index = 0; index < touch_size; index++) {
-+		switch (touch[index].type) {
-+		case MMS114_TYPE_TOUCHSCREEN:
-+			mms114_process_mt(data, touch + index);
-+			break;
-+
-+		case MMS114_TYPE_TOUCHKEY:
-+			mms114_process_touchkey(data, touch + index);
-+			break;
-+
-+		default:
-+			dev_err(&client->dev, "Wrong touch type (%d)\n",
-+				touch[index].type);
-+			break;
-+		}
-+	}
- 
- 	input_mt_report_pointer_emulation(data->input_dev, true);
- 	input_sync(data->input_dev);
-@@ -446,6 +483,7 @@ static int mms114_probe(struct i2c_client *client)
- 	struct input_dev *input_dev;
- 	const void *match_data;
- 	int error;
-+	int i;
- 
- 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
- 		dev_err(&client->dev, "Not supported I2C adapter\n");
-@@ -469,6 +507,42 @@ static int mms114_probe(struct i2c_client *client)
- 
- 	data->type = (enum mms_type)match_data;
- 
-+	data->num_keycodes = device_property_count_u32(&client->dev,
-+						       "linux,keycodes");
-+	if (data->num_keycodes == -EINVAL) {
-+		data->num_keycodes = 0;
-+	} else if (data->num_keycodes < 0) {
-+		dev_err(&client->dev,
-+			"Unable to parse linux,keycodes property: %d\n",
-+			data->num_keycodes);
-+		return data->num_keycodes;
-+	} else if (data->num_keycodes > MMS114_MAX_TOUCHKEYS) {
-+		dev_warn(&client->dev,
-+			"Found %d linux,keycodes but max is %zd, ignoring the rest\n",
-+			 data->num_keycodes, MMS114_MAX_TOUCHKEYS);
-+		data->num_keycodes = MMS114_MAX_TOUCHKEYS;
-+	}
-+
-+	if (data->num_keycodes > 0) {
-+		error = device_property_read_u32_array(&client->dev,
-+						       "linux,keycodes",
-+						       data->keycodes,
-+						       data->num_keycodes);
-+		if (error) {
-+			dev_err(&client->dev,
-+				"Unable to read linux,keycodes values: %d\n",
-+				error);
-+			return error;
-+		}
-+
-+		input_dev->keycode = data->keycodes;
-+		input_dev->keycodemax = data->num_keycodes;
-+		input_dev->keycodesize = sizeof(data->keycodes[0]);
-+		for (i = 0; i < data->num_keycodes; i++)
-+			input_set_capability(input_dev,
-+					     EV_KEY, data->keycodes[i]);
-+	}
-+
- 	input_set_capability(input_dev, EV_ABS, ABS_MT_POSITION_X);
- 	input_set_capability(input_dev, EV_ABS, ABS_MT_POSITION_Y);
- 	input_set_abs_params(input_dev, ABS_MT_PRESSURE, 0, 255, 0, 0);
--- 
-2.41.0
 
