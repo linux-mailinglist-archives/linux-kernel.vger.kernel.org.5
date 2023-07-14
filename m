@@ -2,58 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86DEE754288
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 20:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4120C75428A
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 20:28:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236677AbjGNS06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 14:26:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42212 "EHLO
+        id S236838AbjGNS2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 14:28:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235666AbjGNS04 (ORCPT
+        with ESMTP id S235666AbjGNS2W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 14:26:56 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D295526BB;
-        Fri, 14 Jul 2023 11:26:55 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6A09761D96;
-        Fri, 14 Jul 2023 18:26:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EC83C433C7;
-        Fri, 14 Jul 2023 18:26:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1689359214;
-        bh=Uqw01r9Q4nZaSGzSWhg/cFs1K2/ha6NQPIvt32ce+Kk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=MX55XQyE/P6pepwgUDQ/NMw+IrIagoENtcz2vTHQOrFVh7sSbxbT6IOUrcvo+3/LV
-         CuR9sSTdByUL1ulAhAXa/UiU5xuy8+29hj0rhSutkYXDUzK6Yz+btcLVjxG8iHmoh4
-         61RSmgVQw6cYBpXu2Rb64eTbz6FC98nJTgvM2iOo=
-Date:   Fri, 14 Jul 2023 11:26:53 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        Ryan Roberts <ryan.roberts@arm.com>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Alexandre Ghiti <alex@ghiti.fr>
-Subject: Re: [PATCH] selftests: Fix arm64 test installation
-Message-Id: <20230714112653.0b42d3c9818b038d219b5e41@linux-foundation.org>
-In-Reply-To: <f479b731-7782-0417-2d4c-31a7c3c9491c@nvidia.com>
-References: <20230710-kselftest-fix-arm64-v1-1-48e872844f25@kernel.org>
-        <8d944238-1a9a-e93e-fdab-54e74fa12e11@linuxfoundation.org>
-        <785e1c1c-84d8-e87d-f22f-9a53d27f30f6@nvidia.com>
-        <620a5b91-9715-ee28-423c-851506b10832@linuxfoundation.org>
-        <421bebb3-19e9-47a7-8b2b-f69f125df22f@sirena.org.uk>
-        <f479b731-7782-0417-2d4c-31a7c3c9491c@nvidia.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        Fri, 14 Jul 2023 14:28:22 -0400
+Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 514F0C6
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 11:28:21 -0700 (PDT)
+Received: by mail-vs1-xe33.google.com with SMTP id ada2fe7eead31-440ad406bc8so660953137.3
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 11:28:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1689359300; x=1691951300;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QEwh3jWpcS4Rr9/xa0HOrqWoe7wb9dJDR+SiTAkE0+w=;
+        b=GJB6wy00ho4cgQgXPNrW8Vi88apS61JH+hMIrk21zgvJ7QtBfaGWZFt0PmM503sWrN
+         4M+p7P9OaJPbgHHRkqEGUzGUaGL9IpKWXnEXT7IH8x2onT/EZeuepOF+QCabiWZeYe7J
+         djmtI1p5stNcz0bPDFeE9VMSIiGA5jzHSd3yI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689359300; x=1691951300;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QEwh3jWpcS4Rr9/xa0HOrqWoe7wb9dJDR+SiTAkE0+w=;
+        b=dXjhiOV1BhR9XtEfRnM4D60hN6bpA1dI+nOyR3EgWUpnt8gYUbmeQXpkgiaKob3PJx
+         a165Ip5ceEsxPvFftA1I662rkAtJy82gTjUZ8wVk0H18IfPRlGXOwhfb0uWXJ6qDLnDU
+         6FwHGNNQqsjDHbYH1aPIocnc6zJ1EhtqyDanRXvvN3i+fUtIMINy0Qk4mpRbwwLmuYaw
+         E0850ZyBOOSYTm1HH3ZaseQvX0yyxpRvTHt3iMlXHygzhHkaPDyzv1UgabmPoUc06zNY
+         jnVr+AUe9oTtyqsBc0GTUbOO33bFBLgWPd4O8lNJ0OPBNnlzUZjXyiqE1iugCZUA5ff7
+         qxLg==
+X-Gm-Message-State: ABy/qLZhMTSETKyjIG/s6AMLYBBj6hHX7K2N7cuqHPKAStkDRKTwZAOb
+        kh6vIOPMyQeZaboVykpxmqBtimis/IZ+71iVtTI=
+X-Google-Smtp-Source: APBJJlGtD9qXoeR5fHzlSeVWUzWN3w255qGeCaqVr8loJq6nkwqDxbR7oD6lizCs2R1szFh1Ou4dPA==
+X-Received: by 2002:a67:eb96:0:b0:445:20ba:fb16 with SMTP id e22-20020a67eb96000000b0044520bafb16mr2074462vso.25.1689359300197;
+        Fri, 14 Jul 2023 11:28:20 -0700 (PDT)
+Received: from [192.168.0.140] (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
+        by smtp.gmail.com with ESMTPSA id i13-20020a05620a150d00b00767660afed5sm3980568qkk.99.2023.07.14.11.28.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 14 Jul 2023 11:28:19 -0700 (PDT)
+Message-ID: <f61fa0cc-eca7-c04a-abf6-5ca5318bd2b8@joelfernandes.org>
+Date:   Fri, 14 Jul 2023 14:28:18 -0400
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 1/3] tick/nohz: Rename the tick handlers to more
+ self-explanatory names
+To:     Frederic Weisbecker <frederic@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+References: <20230714120852.23573-1-frederic@kernel.org>
+ <20230714120852.23573-2-frederic@kernel.org>
+Content-Language: en-US
+From:   Joel Fernandes <joel@joelfernandes.org>
+In-Reply-To: <20230714120852.23573-2-frederic@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
@@ -65,34 +74,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 14 Jul 2023 11:19:11 -0700 John Hubbard <jhubbard@nvidia.com> wrote:
+On 7/14/23 08:08, Frederic Weisbecker wrote:
+> The current name of the tick handlers don't tell much about what differ
+> between them. Use names that better reflect their role and resolution.
+> 
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> ---
+>   kernel/time/tick-sched.c | 8 ++++----
+>   1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+> index 89055050d1ac..a7b5960258f2 100644
+> --- a/kernel/time/tick-sched.c
+> +++ b/kernel/time/tick-sched.c
+> @@ -1355,7 +1355,7 @@ void tick_nohz_idle_exit(void)
+>   /*
+>    * The nohz low res interrupt handler
+>    */
+> -static void tick_nohz_handler(struct clock_event_device *dev)
+> +static void tick_lowres_handler(struct clock_event_device *dev)
 
-> On 7/14/23 11:09, Mark Brown wrote:
-> > On Fri, Jul 14, 2023 at 11:48:51AM -0600, Shuah Khan wrote:
-> >> On 7/13/23 14:16, John Hubbard wrote:
-> > 
-> >>> Actually, I was hoping that my two fixes [1], [2] could be used, instead
-> >>> of reverting the feature.
-> > 
-> >> Mark! Are you good with taking these two - do these fix the
-> >> problems you are seeing?
-> > 
-> > I reviewed the one that's relevant to me already, the arm64 one, I'd not
-> > seen or tested the RISC-V one but that looks fine too.  I'm pretty sure
-> 
-> That riscv patch already has a Tested-by from Alexandre Ghiti:
-> 
-> https://lore.kernel.org/f903634d-851f-af64-8d9a-6b13d813587c@ghiti.fr
-> 
-> 
-> > Andrew queued it already though ICBW.  Either way it'd be good to get
-> > this into -rc2, this is seriously disrupting arm64 CI and I'm guessing
-> > the RISC-V CI too.
-> 
+Maybe tick_nohz_lowres_handler() is better?
 
-I just dropped
-selftests-arm64-fix-build-failure-during-the-emit_tests-step.patch and
-selftests-fix-arm64-test-installation.patch, as Shuah is merging them.
+You also have tick_periodic which is also 'lowres'.
 
-This is all rather confusing.  Perhaps a full resend of everything will
-help.  I'll assume that Shuah will be handling them.
+That would also keep the "tick_nohz" prefix which is prevalent in this code.
+
+>   {
+>   	struct tick_sched *ts = this_cpu_ptr(&tick_cpu_sched);
+>   	struct pt_regs *regs = get_irq_regs();
+> @@ -1401,7 +1401,7 @@ static void tick_nohz_switch_to_nohz(void)
+>   	if (!tick_nohz_enabled)
+>   		return;
+>   
+> -	if (tick_switch_to_oneshot(tick_nohz_handler))
+> +	if (tick_switch_to_oneshot(tick_lowres_handler))
+>   		return;
+>   
+>   	/*
+> @@ -1464,7 +1464,7 @@ void tick_irq_enter(void)
+>    * We rearm the timer until we get disabled by the idle code.
+>    * Called with interrupts disabled.
+>    */
+> -static enum hrtimer_restart tick_sched_timer(struct hrtimer *timer)
+> +static enum hrtimer_restart tick_highres_handler(struct hrtimer *timer)
+
+This one looks good.
+
+thanks,
+
+  - Joel
+
+
+>   {
+>   	struct tick_sched *ts =
+>   		container_of(timer, struct tick_sched, sched_timer);
+> @@ -1513,7 +1513,7 @@ void tick_setup_sched_timer(void)
+>   	 * Emulate tick processing via per-CPU hrtimers:
+>   	 */
+>   	hrtimer_init(&ts->sched_timer, CLOCK_MONOTONIC, HRTIMER_MODE_ABS_HARD);
+> -	ts->sched_timer.function = tick_sched_timer;
+> +	ts->sched_timer.function = tick_highres_handler;
+>   
+>   	/* Get the next period (per-CPU) */
+>   	hrtimer_set_expires(&ts->sched_timer, tick_init_jiffy_update());
+
