@@ -2,114 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F9327535EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:00:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC3C27535EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 10:59:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235756AbjGNJAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 05:00:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35158 "EHLO
+        id S235750AbjGNI7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 04:59:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235178AbjGNI74 (ORCPT
+        with ESMTP id S235654AbjGNI7Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 04:59:56 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45027271F;
-        Fri, 14 Jul 2023 01:59:35 -0700 (PDT)
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36E8psNI032166;
-        Fri, 14 Jul 2023 08:59:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=FuK7WoDYFre2EusVTB41G7Abki8Ywsqo2h5RKmMHpdE=;
- b=OcSxFHlfEfzWKE9BPqGwNz88Ab4V1F/EcKPAWJIeuvgrAYlIbePx9x1QWDuNft0jpU6m
- Dm5lPd9kZSsRzvF1sj3pQKdKjPska6Hz8HrgidVI62y8cwwd+2MHk4xH003eM7QBbMqr
- C9NjjP9415hRAV4SbsJDcINlQ7cnj6XcyMFL78Ra6DfippPdX39ayJv6wbBgPpSNUupE
- 72V3qUFkFYfLwSdMdyRY3mI9dRb+GwiKBbfqbISxCX58j50iYJ7HyU2ol82Rxw/1g3lp
- /ND/Es60KvNvT5BQB7VyHUACathKiGGNf9JB9Ph8rcweWGpCzH2/6rpjMSXmDbcdDiyM jQ== 
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ru37pr4ax-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 14 Jul 2023 08:59:23 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36E4eU13007411;
-        Fri, 14 Jul 2023 08:59:22 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3rtpvs1aap-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 14 Jul 2023 08:59:22 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36E8xL3w15794852
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 14 Jul 2023 08:59:21 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0282B20043;
-        Fri, 14 Jul 2023 08:59:21 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 99F8A20040;
-        Fri, 14 Jul 2023 08:59:19 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.117.172])
-        by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Fri, 14 Jul 2023 08:59:19 +0000 (GMT)
-Date:   Fri, 14 Jul 2023 14:29:16 +0530
-From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Fixes tag needs some work in the ext4 tree
-Message-ID: <ZLEOZK7tOHNNFNlH@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-References: <20230714084334.23413801@canb.auug.org.au>
+        Fri, 14 Jul 2023 04:59:25 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2966C270B
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 01:59:22 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id A89AD22100;
+        Fri, 14 Jul 2023 08:59:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1689325160; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OD2Y8EYH4iQhl/uinOOqc2LyprUZwMqThWDOzf/DPgk=;
+        b=AQAUwUV19C/3BBTp78ZvdS/A9jzkyZrYU47ID+jQp5YfCXngJ9JYeQ9VHBZv/cgyMPwQtW
+        hec+5BnJFMYm77jUoXeS7yjLZPYmwu+UVvDAikEbBkAtjbzo1dEQ20Yq5KLrvQ3Kuaxy0V
+        85vGxifQdJrBjYcDTSsrIrHqBn8Y6o4=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8763B138F8;
+        Fri, 14 Jul 2023 08:59:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id HwIVHmgOsWTeZQAAMHmgww
+        (envelope-from <mhocko@suse.com>); Fri, 14 Jul 2023 08:59:20 +0000
+Date:   Fri, 14 Jul 2023 10:59:19 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Arjan Van De Ven <arjan@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Johannes Weiner <jweiner@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [RFC 1/2] mm: add framework for PCP high auto-tuning
+Message-ID: <ZLEOZ7ScEwnNpS0e@dhcp22.suse.cz>
+References: <20230710065325.290366-1-ying.huang@intel.com>
+ <20230710065325.290366-2-ying.huang@intel.com>
+ <ZK035Tl7lrCPk09r@dhcp22.suse.cz>
+ <87edldefnt.fsf@yhuang6-desk2.ccr.corp.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230714084334.23413801@canb.auug.org.au>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: nE83rdT1I6GgCvl278cXUZfzQNc5lgQv
-X-Proofpoint-ORIG-GUID: nE83rdT1I6GgCvl278cXUZfzQNc5lgQv
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-14_04,2023-07-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- impostorscore=0 phishscore=0 suspectscore=0 mlxscore=0 clxscore=1011
- mlxlogscore=999 bulkscore=0 adultscore=0 lowpriorityscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307140077
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <87edldefnt.fsf@yhuang6-desk2.ccr.corp.intel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 08:43:34AM +1000, Stephen Rothwell wrote:
-> Hi all,
+On Wed 12-07-23 15:45:58, Huang, Ying wrote:
+> Michal Hocko <mhocko@suse.com> writes:
 > 
-> In commit
+> > On Mon 10-07-23 14:53:24, Huang Ying wrote:
+> >> The page allocation performance requirements of different workloads
+> >> are usually different.  So, we often need to tune PCP (per-CPU
+> >> pageset) high to optimize the workload page allocation performance.
+> >> Now, we have a system wide sysctl knob (percpu_pagelist_high_fraction)
+> >> to tune PCP high by hand.  But, it's hard to find out the best value
+> >> by hand.  And one global configuration may not work best for the
+> >> different workloads that run on the same system.  One solution to
+> >> these issues is to tune PCP high of each CPU automatically.
+> >> 
+> >> This patch adds the framework for PCP high auto-tuning.  With it,
+> >> pcp->high will be changed automatically by tuning algorithm at
+> >> runtime.  Its default value (pcp->high_def) is the original PCP high
+> >> value calculated based on low watermark pages or
+> >> percpu_pagelist_high_fraction sysctl knob.  To avoid putting too many
+> >> pages in PCP, the original limit of percpu_pagelist_high_fraction
+> >> sysctl knob, MIN_PERCPU_PAGELIST_HIGH_FRACTION, is used to calculate
+> >> the max PCP high value (pcp->high_max).
+> >
+> > It would have been very helpful to describe the basic entry points to
+> > the auto-tuning. AFAICS the central place of the tuning is tune_pcp_high
+> > which is called from the freeing path. Why?  Is this really a good place
+> > considering this is a hot path? What about the allocation path? Isn't
+> > that a good spot to watch for the allocation demand? 
 > 
->   7c79210b15ef ("ext4: fix off by one issue in ext4_mb_choose_next_group_best_avail()")
-> 
-> Fixes tag
-> 
->   Fixes: 331122aa930 ("ext4: Add allocation criteria 1.5 (CR1_5)")
-> 
-> has these problem(s):
-> 
->   - SHA1 should be at least 12 digits long
->     This can be fixed for the future by setting core.abbrev to 12 (or
->     more) or (for git v2.11 or later) just making sure it is not set
->     (or set to "auto").
-Hi Stephen,
+> Yes.  The main entry point to the auto-tuning is tune_pcp_high().  Which
+> is called from the freeing path because pcp->high is only used by page
+> freeing.  It's possible to call it in allocation path instead.  The
+> drawback is that the pcp->high may be updated a little later in some
+> situations.  For example, if there are many page freeing but no page
+> allocation for quite long time.  But I don't think this is a serious
+> problem.
 
-Will keep this in mind.
+I consider it a serious flaw in the framework as it cannot cope with the
+transition of the allocation pattern (e.g. increasing the allocation
+pressure).
 
-Thank you,
-ojaswin
+> > Also this framework seems to be enabled by default. Is this really
+> > desirable? What about workloads tuning the pcp batch size manually?
+> > Shouldn't they override any auto-tuning?
 > 
-> -- 
-> Cheers,
-> Stephen Rothwell
+> In the current implementation, the pcp->high will be tuned between
+> original pcp high (default or tuned manually) and the max pcp high (via
+> MIN_PERCPU_PAGELIST_HIGH_FRACTION).  So the high value tuned manually is
+> respected at some degree.
+> 
+> So you think that it's better to disable auto-tuning if PCP high is
+> tuned manually?
 
-
+Yes, I think this is a much safer option. For two reasons 1) it is less
+surprising to setups which know what they are doing by configuring the
+batching and 2) the auto-tuning needs a way to get disabled in case
+there are pathological patterns in behavior.
+-- 
+Michal Hocko
+SUSE Labs
