@@ -2,141 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9AB8753BF0
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 15:42:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17FEA753BF2
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 15:43:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235698AbjGNNm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 09:42:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42730 "EHLO
+        id S235357AbjGNNnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 09:43:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234688AbjGNNmY (ORCPT
+        with ESMTP id S232239AbjGNNnb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 09:42:24 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 098C01991
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 06:42:23 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2b703c900e3so29339541fa.1
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 06:42:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1689342141; x=1691934141;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FKmPqGb1g30twwWqaJ5CUfJThJzoEqQ8H0HnZr1gDBk=;
-        b=JVbrQ9XHrBarwjW6smOjpuQfehr7HlZKI1aPI45qO5NxlJLulfdIWmx79hksCqkAqX
-         1tF6nWBXJdq92p4ytUVujUPXZVyNM0BD7hpfWsmpBtJ26/vJk8QwJ53TbSoRjsvwq2z7
-         X2QZ9OCZaYFFCwr9olRkaAP4Za62lZv7AETBE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689342141; x=1691934141;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FKmPqGb1g30twwWqaJ5CUfJThJzoEqQ8H0HnZr1gDBk=;
-        b=QOEm5YqrGLTTqB92jHJe3S3SIG3PdROwQ9PjrHC9lNkJkA/frUDZkfzkx3eq0cJAA+
-         tBhlGAuDwf2JENPkXur7mVQb5sqxMtQdU4APJdzWpI96iqYxSYHypx06MDwUDtmpiLl1
-         VxEceidAwWrYeYuaIEc1H41JXZLTaXRDuBeiW9wsu1KN+VOl0tSrJLoA3VVuj7vg6r9+
-         kjsqjh/FCviwWGqqsNdg9n/gb1fT2vawUcw887CEDsT4WztzfL8cT9uaYib9r1i4zVqa
-         jnYhfZsXH0jNWkr029FTAC22T7QzGJdYtcnIV1+ucJlARlw/0MZl1fgCOUuJTVcdCNxD
-         Oalg==
-X-Gm-Message-State: ABy/qLZOfzHeJN7+tpUluRRIA8OuJcalSjFquE9kXEthnn7ExQwTBQnp
-        fbnfeYxndiWL3hwiBfXt49aeDyEwC0AHTfmvk09p7Q==
-X-Google-Smtp-Source: APBJJlH1WlIL+So7XPu4cswA6dYrMzMWL7p+KH+gVJRpdkuvvZwGD/w94Pdv9W6rq0jyEEhBOw2A3nnL6lODP8EX8Ss=
-X-Received: by 2002:a2e:3c0c:0:b0:2b6:d137:b61c with SMTP id
- j12-20020a2e3c0c000000b002b6d137b61cmr3810480lja.39.1689342140935; Fri, 14
- Jul 2023 06:42:20 -0700 (PDT)
+        Fri, 14 Jul 2023 09:43:31 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37CC42D64
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 06:43:30 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C378461D08
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 13:43:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6B21C433C8;
+        Fri, 14 Jul 2023 13:43:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689342209;
+        bh=Wl+NOirb0+IZpn85ajXuMmTBackogxREuPeBWQEkt5w=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Ho7/7Y21p+m6b4dUaDJlBJM6AJap8U3+8SSpEAkHci19lT8AWN23RSrlaKJPBAEGL
+         1q03mv9Q72t3ZTwx9JJfCyOMnvRz162PD25BAZ2fuIe3J08nzwT0b9jsujbM+ZQYgT
+         WctExiXCKBY7ijwKp/tWw/TtSl2t3KwwcjEWd46rT8ye9iBYO6vlhyWgbKhFtaS0UI
+         qM3Gi1GfWQuvGZeIXlEVbmLtALdxCMqGSfbMHKitwOqPH6t/cMD3Ile3ZpaAlaNGwE
+         o2jETN1rHtlwaZ2PbGLgcZ0Mz9GBpFRJajckOVG8U4y+duOIqJt/HJ7ztLJ+2ZiYM7
+         sZJXRaeuHVXPw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 3A0AB40516; Fri, 14 Jul 2023 10:43:26 -0300 (-03)
+Date:   Fri, 14 Jul 2023 10:43:26 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Ali Saidi <alisaidi@amazon.com>,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Leo Yan <leo.yan@linaro.org>, Marc Zyngier <maz@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>
+Subject: [PATCH 1/1 fyi] tools headers arm64: Sync arm64's cputype.h with the
+ kernel sources
+Message-ID: <ZLFQ/tu/ATQwDEIW@kernel.org>
 MIME-Version: 1.0
-References: <20230713003201.GA469376@google.com> <161f1615-3d85-cf47-d2d5-695adf1ca7d4@linux.alibaba.com>
- <0d9e7b4d-6477-47a6-b3d2-2c9d9b64903d@paulmck-laptop> <f124e041-6a82-2069-975c-4f393e5c4137@linux.alibaba.com>
- <87292a44-cc02-4d95-940e-e4e31d0bc6f2@paulmck-laptop> <f1c60dcb-e32f-7b7e-bf0d-5dec999e9299@linux.alibaba.com>
- <CAEXW_YSODXRfgkR0D2G-x=0uZdsqvF3kZL+LL3DcRX-5CULJ1Q@mail.gmail.com>
- <894a3b64-a369-7bc6-c8a8-0910843cc587@linux.alibaba.com> <CAEXW_YSM1yik4yWTgZoxCS9RM6TbsL26VCVCH=41+uMA8chfAQ@mail.gmail.com>
- <58b661d0-0ebb-4b45-a10d-c5927fb791cd@paulmck-laptop> <7d433fac-a62d-4e81-b8e5-57cf5f2d1d55@paulmck-laptop>
- <058e7ee9-0380-eb1b-d9a8-b184cba6ed53@linux.alibaba.com>
-In-Reply-To: <058e7ee9-0380-eb1b-d9a8-b184cba6ed53@linux.alibaba.com>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Fri, 14 Jul 2023 09:42:08 -0400
-Message-ID: <CAEXW_YQCpUsPz24H4Mux6wOH1=RFRR-gsXLFTbJ37MgUJo3kCw@mail.gmail.com>
-Subject: Re: [PATCH v1] rcu: Fix and improve RCU read lock checks when !CONFIG_DEBUG_LOCK_ALLOC
-To:     Gao Xiang <hsiangkao@linux.alibaba.com>
-Cc:     paulmck@kernel.org, Sandeep Dhavale <dhavale@google.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-erofs@lists.ozlabs.org, xiang@kernel.org,
-        Will Shiu <Will.Shiu@mediatek.com>, kernel-team@android.com,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 11:17=E2=80=AFPM Gao Xiang <hsiangkao@linux.alibaba=
-.com> wrote:
->
->
->
-> On 2023/7/14 10:16, Paul E. McKenney wrote:
-> > On Thu, Jul 13, 2023 at 09:33:35AM -0700, Paul E. McKenney wrote:
-> >> On Thu, Jul 13, 2023 at 11:33:24AM -0400, Joel Fernandes wrote:
->
-> ...
->
-> >>>
-> >>> >From what Sandeep described, the code path is in an RCU reader. My
-> >>> question is more, why doesn't it use SRCU instead since it clearly
-> >>> does so if BLK_MQ_F_BLOCKING. What are the tradeoffs? IMHO, a deeper
-> >>> dive needs to be made into that before concluding that the fix is to
-> >>> use rcu_read_lock_any_held().
-> >>
-> >> How can this be solved?
-> >>
-> >> 1.   Always use a workqueue.  Simple, but is said to have performance
-> >>      issues.
-> >>
-> >> 2.   Pass a flag in that indicates whether or not the caller is in an
-> >>      RCU read-side critical section.  Conceptually simple, but might
-> >>      or might not be reasonable to actually implement in the code as
-> >>      it exists now.  (You tell me!)
-> >>
-> >> 3.   Create a function in z_erofs that gives you a decent
-> >>      approximation, maybe something like the following.
-> >>
-> >> 4.   Other ideas here.
-> >
-> > 5.    #3 plus make the corresponding Kconfig option select
-> >       PREEMPT_COUNT, assuming that any users needing compression in
-> >       non-preemptible kernels are OK with PREEMPT_COUNT being set.
-> >       (Some users of non-preemptible kernels object strenuously
-> >       to the added overhead from CONFIG_PREEMPT_COUNT=3Dy.)
->
-> I'm not sure if it's a good idea
+tldr; Just FYI, I'm carrying this on the perf tools tree.
 
-I think it is a fine idea.
+- Arnaldo
 
-> we need to work on
-> CONFIG_PREEMPT_COUNT=3Dn (why not?), we could just always trigger a
-> workqueue for this.
->
+Full explanation:
 
-So CONFIG_PREEMPT_COUNT=3Dn users don't deserve good performance? ;-)
+There used to be no copies, with tools/ code using kernel headers
+directly. From time to time tools/perf/ broke due to legitimate kernel
+hacking. At some point Linus complained about such direct usage. Then we
+adopted the current model.
 
-thanks,
+The way these headers are used in perf are not restricted to just
+including them to compile something.
 
- - Joel
+There are sometimes used in scripts that convert defines into string
+tables, etc, so some change may break one of these scripts, or new MSRs
+may use some different #define pattern, etc.
+
+E.g.:
+
+  $ ls -1 tools/perf/trace/beauty/*.sh | head -5
+  tools/perf/trace/beauty/arch_errno_names.sh
+  tools/perf/trace/beauty/drm_ioctl.sh
+  tools/perf/trace/beauty/fadvise.sh
+  tools/perf/trace/beauty/fsconfig.sh
+  tools/perf/trace/beauty/fsmount.sh
+  $
+  $ tools/perf/trace/beauty/fadvise.sh
+  static const char *fadvise_advices[] = {
+  	[0] = "NORMAL",
+  	[1] = "RANDOM",
+  	[2] = "SEQUENTIAL",
+  	[3] = "WILLNEED",
+  	[4] = "DONTNEED",
+  	[5] = "NOREUSE",
+  };
+  $
+
+The tools/perf/check-headers.sh script, part of the tools/ build
+process, points out changes in the original files.
+
+So its important not to touch the copies in tools/ when doing changes in
+the original kernel headers, that will be done later, when
+check-headers.sh inform about the change to the perf tools hackers.
+
+---
+
+To get the changes in:
+
+  e910baa9c1efdf76 ("KVM: arm64: vgic: Add Apple M2 PRO/MAX cpus to the list of broken SEIS implementations")
+
+That makes this perf source code to be rebuilt:
+
+  CC      /tmp/build/perf-tools/util/arm-spe.o
+
+The changes in the above patch don't affect things that are used in
+arm-spe.c (things like MIDR_NEOVERSE_N1, etc). Unsure if Apple M2 has
+SPE (Statistical Profiling Extension) :-)
+
+That addresses this perf build warning:
+
+  Warning: Kernel ABI header differences:
+    diff -u tools/arch/arm64/include/asm/cputype.h arch/arm64/include/asm/cputype.h
+
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Ali Saidi <alisaidi@amazon.com>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Leo Yan <leo.yan@linaro.org>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Link: https://lore.kernel.org/lkml/
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+ tools/arch/arm64/include/asm/cputype.h | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/tools/arch/arm64/include/asm/cputype.h b/tools/arch/arm64/include/asm/cputype.h
+index 683ca3af408485aa..5f6f84837a490375 100644
+--- a/tools/arch/arm64/include/asm/cputype.h
++++ b/tools/arch/arm64/include/asm/cputype.h
+@@ -126,6 +126,10 @@
+ #define APPLE_CPU_PART_M1_FIRESTORM_MAX	0x029
+ #define APPLE_CPU_PART_M2_BLIZZARD	0x032
+ #define APPLE_CPU_PART_M2_AVALANCHE	0x033
++#define APPLE_CPU_PART_M2_BLIZZARD_PRO	0x034
++#define APPLE_CPU_PART_M2_AVALANCHE_PRO	0x035
++#define APPLE_CPU_PART_M2_BLIZZARD_MAX	0x038
++#define APPLE_CPU_PART_M2_AVALANCHE_MAX	0x039
+ 
+ #define AMPERE_CPU_PART_AMPERE1		0xAC3
+ 
+@@ -181,6 +185,10 @@
+ #define MIDR_APPLE_M1_FIRESTORM_MAX MIDR_CPU_MODEL(ARM_CPU_IMP_APPLE, APPLE_CPU_PART_M1_FIRESTORM_MAX)
+ #define MIDR_APPLE_M2_BLIZZARD MIDR_CPU_MODEL(ARM_CPU_IMP_APPLE, APPLE_CPU_PART_M2_BLIZZARD)
+ #define MIDR_APPLE_M2_AVALANCHE MIDR_CPU_MODEL(ARM_CPU_IMP_APPLE, APPLE_CPU_PART_M2_AVALANCHE)
++#define MIDR_APPLE_M2_BLIZZARD_PRO MIDR_CPU_MODEL(ARM_CPU_IMP_APPLE, APPLE_CPU_PART_M2_BLIZZARD_PRO)
++#define MIDR_APPLE_M2_AVALANCHE_PRO MIDR_CPU_MODEL(ARM_CPU_IMP_APPLE, APPLE_CPU_PART_M2_AVALANCHE_PRO)
++#define MIDR_APPLE_M2_BLIZZARD_MAX MIDR_CPU_MODEL(ARM_CPU_IMP_APPLE, APPLE_CPU_PART_M2_BLIZZARD_MAX)
++#define MIDR_APPLE_M2_AVALANCHE_MAX MIDR_CPU_MODEL(ARM_CPU_IMP_APPLE, APPLE_CPU_PART_M2_AVALANCHE_MAX)
+ #define MIDR_AMPERE1 MIDR_CPU_MODEL(ARM_CPU_IMP_AMPERE, AMPERE_CPU_PART_AMPERE1)
+ 
+ /* Fujitsu Erratum 010001 affects A64FX 1.0 and 1.1, (v0r0 and v1r0) */
+-- 
+2.37.1
+
