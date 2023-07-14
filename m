@@ -2,116 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 435FA75372F
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:56:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13912753734
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:57:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235646AbjGNJ4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 05:56:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45340 "EHLO
+        id S235748AbjGNJ5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 05:57:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231362AbjGNJ4Q (ORCPT
+        with ESMTP id S232502AbjGNJ5O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 05:56:16 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F5E71989;
-        Fri, 14 Jul 2023 02:56:15 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id 3f1490d57ef6-c15a5ed884dso1607291276.2;
-        Fri, 14 Jul 2023 02:56:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689328574; x=1691920574;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iLc4IFOrSQMumdSS27cGww/H0solCQj99/m3cUx+za0=;
-        b=U0+zCc7J47tgv3aokD+C9AbGUM0547IcCiSQEMzpBI+mYOOCtmzjv7TLV+15+Way2l
-         uIapCaUXBbx/phM9GIB5BFOIQNEHzbA7jNpWh7+Q0iZmZlO65IBlPd0HnXlJWqMc85kk
-         H5Q4LKdYKUNGqjL37XpunuGMoJ+Mtpl/BpDiZ03rfuXmWzrYel5MjIzmIiBpL+k04NA0
-         kIairDRA5S1vy0oVMkSwlo7M5XJ/2BC54TEVtGPKe6UNZB69tMRoq1VkITMgaXFHnnev
-         jeNCPG4T6jWGDnPKvbonN9yBfdH9GzBYSvFo4RyjgabhCFa4S3I4hdoNRXo1mIFSILk5
-         15TA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689328574; x=1691920574;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iLc4IFOrSQMumdSS27cGww/H0solCQj99/m3cUx+za0=;
-        b=CuG1wJK4rCKUeQrs4VmvNSzlLQlFVi2ZuQygDuSfZpeJW8pGKCbMpHRdVSJP8Db4oL
-         56zM0z16dwhz9sA1lJL0osvIUQk6jzrJUgc3UzwKdFl9ta27kfGtWBTJB3UDp9CZBDDK
-         +Reah7AcM+F7LfkoqsTWJ2RZgKO8WBkc/NzoA16W0iH++2SJwbCu36WCFdNiRdMABnXm
-         XYSyXxUeRUldK3kvu4nqYFOdGt/lBiQBmwNUWiqtjvDjDqAyUlAedRRdkp6dXb3Dr58v
-         LZXtKZcMgVglCczkvX7ce3tqGJtOYEMEufR6vZTlFVPz4aHztjjVkfUf1n+lF/gTYYEv
-         03og==
-X-Gm-Message-State: ABy/qLZi4k6YPzzIMNE21fHX7+iga9kPqaweKN0mrem0do0+WlJpi+6S
-        BCPmf+ipdMuAcRyx7PmFtghOB9t/7S/wl4aChuI=
-X-Google-Smtp-Source: APBJJlEP9rHYkKqqEeB1DAv7b3BU8yZcSQXF4+FqdKNDY/5pBH0h3wFr0gaoNioOqIHxzaGSE7p70VM3SMLPFrINvDs=
-X-Received: by 2002:a25:32d8:0:b0:ba7:7664:916b with SMTP id
- y207-20020a2532d8000000b00ba77664916bmr3607425yby.20.1689328574374; Fri, 14
- Jul 2023 02:56:14 -0700 (PDT)
+        Fri, 14 Jul 2023 05:57:14 -0400
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2057.outbound.protection.outlook.com [40.107.94.57])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8237DE44;
+        Fri, 14 Jul 2023 02:57:13 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=d2htelgq7Glb6v3CoiwHuJlL3uF9HC+ZxSFSE2xnj1lix2CnPx75M4X7kuGtPE2Vn9kEf2plLtqn1oIMay3LB1QztKBUR67rOLiS8Oj5ZqHbyebK2jAWGvJR9xUXfAhTkzUjlsJOIVpXq7SoR0TSxcZ8H5v8IxtgMx0BpelQ9QOCaEapatEAHZq2BdgBk9bihHjPjpkGd68mUc2SfdjaTCdlbVLAWb4EMkdsLiUB4H3VWMXFxuSC/zn/DmnxNAAwIrdroYqtmXsPaYmRlcZxrfmcnmAr7CdHsvjfiZvvlWE9kgV6dF5dBYald7hg4SKPuenZVdK6rGjlYD/zGFkhSA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=zowt3R4gpRblp2S1kd007f/Xwd68vk6XjXZWASLYM0I=;
+ b=gnp6m56a5Otdzzp8ieLNYVo705OOm3So4K5QDqjtyPPlh8KndttVnubnKuMTuuL++wudJCaHxBGuw8MvIQ+TTkjY3Hg6443hr8ffCGGtcgvbFzTodmRXC0HarpDY4O43hvsLeBOt6SJuwsfMKKaeC2b4ftWFVlQ6/0PcPjOeKPuxgKxSZHx5q1rkAP8K7RSj+t8+nmFEVnBDGJPWvQeTVAQH+sMaR4feJrqhFO9sOKiJ9x9jc21SiyW6RqDt1y7lN1qPfC2Sj36zp7FkXpibG4MhNfzmcBt9N7JBZchk7IUoO8dguyC/4aKycvrcWnCEarMHyO5vh02HbNxMhFbpVg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zowt3R4gpRblp2S1kd007f/Xwd68vk6XjXZWASLYM0I=;
+ b=1+KAQQZneMJ8sd9mAwFkTbTL3+Ga4Syxm7/7Lc2yKZyiDkzTYb73qWv4gHPK7LP6VczTgnOzHIm89MSGDN5jLNxMulM2wyFRot1eQxasla/JWYLme1pGQEa/GPZPdbzL2G2ShRRQUlLM23IUb978nEYMxkDU6oGdTrIBXzORAfg=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
+ by SA3PR12MB7974.namprd12.prod.outlook.com (2603:10b6:806:307::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.27; Fri, 14 Jul
+ 2023 09:57:08 +0000
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::669f:5dca:d38a:9921]) by BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::669f:5dca:d38a:9921%4]) with mapi id 15.20.6588.027; Fri, 14 Jul 2023
+ 09:57:08 +0000
+Message-ID: <d9dc2fd5-d054-dbf3-72b7-fe9deaa46350@amd.com>
+Date:   Fri, 14 Jul 2023 11:57:02 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 2/3] drm/scheduler: Fix UAF in
+ drm_sched_fence_get_timeline_name
+Content-Language: en-US
+To:     Asahi Lina <lina@asahilina.net>,
+        Luben Tuikov <luben.tuikov@amd.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>
+Cc:     Faith Ekstrand <faith.ekstrand@collabora.com>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, asahi@lists.linux.dev
+References: <20230714-drm-sched-fixes-v1-0-c567249709f7@asahilina.net>
+ <20230714-drm-sched-fixes-v1-2-c567249709f7@asahilina.net>
+ <bef7ef62-3cd9-6ceb-5eb4-5ae0c0236778@amd.com>
+ <de502b41-2864-db1e-16a0-8a5d5e0e4ad3@asahilina.net>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+In-Reply-To: <de502b41-2864-db1e-16a0-8a5d5e0e4ad3@asahilina.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: FR3P281CA0053.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:4a::6) To BN8PR12MB3587.namprd12.prod.outlook.com
+ (2603:10b6:408:43::13)
 MIME-Version: 1.0
-References: <20230713112404.2022373-1-imagedong@tencent.com> <04a96ba2-6952-e6de-93a2-dc2998ce519d@infradead.org>
-In-Reply-To: <04a96ba2-6952-e6de-93a2-dc2998ce519d@infradead.org>
-From:   Menglong Dong <menglong8.dong@gmail.com>
-Date:   Fri, 14 Jul 2023 17:56:03 +0800
-Message-ID: <CADxym3Y2f6-FfyG3RfvPDXLS3b3FqUfxaDPgju6OoQPy-0i9bQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v2] net: tcp: support to probe tcp receiver OOM
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     edumazet@google.com, ncardwell@google.com, davem@davemloft.net,
-        kuba@kernel.org, pabeni@redhat.com, corbet@lwn.net,
-        dsahern@kernel.org, kuniyu@amazon.com, morleyd@google.com,
-        imagedong@tencent.com, mfreemon@cloudflare.com,
-        mubashirq@google.com, netdev@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN8PR12MB3587:EE_|SA3PR12MB7974:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5e8b3b93-8a35-40c5-50f4-08db8450af49
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 2J52WrKfa0XVqVr+zt0VYXceQfjCYKoYR6oMR2DbMRcCnPN8jNOpie9FtJgXGZuTAdj4IiCDJkoIEnMZ5di+w9l++u1wxagy3OcSW5lywpDMzjoxpvlwtkgiOT6BoSDZ6wFQvUDPsxkWz7gSKm1cpyer949597w7RYUJtEzciAki4gKt2JZCOf9UEoJumBIWdJMzxtJMCXY2/Jt9N28a0BiPMrOCCxn8cuLrohSaNVmaei9tSkMWOKqjfwMF0XKdKrFfC9whLZyFJ16Mu/mIQzhWptmJnUOhcFYivrMVX9Nfxr4kphGhda4Iz2piDaiFcYG2lu8IMr6JOB9c/QbCkLtbMDtgB3bdaGd6gS2dpz9z7L1Mn3Rb2AB1hXa84KM5s81tjbXSVTli3dtd1aeVOTNQhxD9zx1ZzkqclSLFZ/Xi42U1hJ4bhbgZ08l5uNVeoJkafpqQFgY8CZmD+BJcnJrlCHiK/TT9IQoiqqljkGRRfy1wVdhJPWHkKuJ5du+XSY9h7rYOpdIkz7Wle6r8a8bO0WWJzSBM08rYUw+LgnamFeTM0dHJ6Jn58PHSwfBwb+kTIu2ovk5MQ9oJFLe8bbptx0AYIFYq5U6JZYiJCRvM0M4dNl0jEMZGY9Y/xtqrF09MpocRlx3vj0/1lNcjrQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(376002)(366004)(39860400002)(396003)(136003)(451199021)(478600001)(66574015)(83380400001)(2616005)(6486002)(6512007)(6666004)(110136005)(4326008)(66946007)(66556008)(66476007)(54906003)(6506007)(186003)(31686004)(8936002)(8676002)(38100700002)(5660300002)(41300700001)(316002)(2906002)(31696002)(7416002)(86362001)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VnArSXA2UnZNalZQOWRVNUxhSXN4b010VGRWb0x1dlhCZ1FYMExkd0FqVjFD?=
+ =?utf-8?B?WUtKWmRYRWVyNk4vN3ZVUjdjUm93RW02blRYandkaG02Q1lwRVJKTjZ6bkxX?=
+ =?utf-8?B?aU9OM0R2V1JldTROQVUwdXJ2MDB3WVppSFNycGJmM0pEckN1OUhpN3FIc3po?=
+ =?utf-8?B?VFRSalJ2b0g3Vk55bXBYS3FsVG9sSS9MQTZUVkJyeE9OM1lpTlc5cjRnTGw1?=
+ =?utf-8?B?ZmxMcEhaOHJhZU9NR1B5SUJzTDhnWFZaUE13MlFSRHBybmxLNkJnOGhhdmo1?=
+ =?utf-8?B?TjdBUy9YR2hqV2p3MmpZYWRwNmZVSi9sMm9FNXFPUUhOcUFhVE9RcjRVYmVB?=
+ =?utf-8?B?NlBFYnkxT043cmsrV1pldk45MnpKTld0MW5qM1QvNHBOZ3dtRm13V1pKRmlB?=
+ =?utf-8?B?akpuRFluWFFCbDJUemh2ZHdEaHpsZmNVdVpVTEc0NktvTmdyZEJ1ZXpRa1Zh?=
+ =?utf-8?B?TlF0TTA1dFhCZzFQWCtCOFBYZnc2L2VOL3QwbndHMXpkZElmczFRTDZCNHA1?=
+ =?utf-8?B?TlhvWkJxa28wL3g4RVVYUW9nRXlrSWZuR2lzanNNMEdoelVVL2RlUGV1RHdw?=
+ =?utf-8?B?SndKeldxSHk3SHBXbU84UlZHL2ZRcm5pdHkxbGplRW02ME9CMzNFcFp3MWZ2?=
+ =?utf-8?B?eXZYVWVVSG9KODJqMFZDbWtjTHdzRGsxbzRWSkpBSGpFU3RRWUZMc0lyeUk2?=
+ =?utf-8?B?d25FY0tKMUV6SHoyelVCQjQvc0xsaDN0TXdhSHk1SUtRbnVseHF4NldzblV3?=
+ =?utf-8?B?Z3hpeGo3UUJnNU4zWnpjZkIwSWFiUk5YUGtrZUNJdW05TGtmd3hhZ00rcFZ0?=
+ =?utf-8?B?VU1VZkdWbUJGeFB5UEVkNHl6dnVySDVMVDNuL01ybnhtallFcllRTzZQZ2kz?=
+ =?utf-8?B?S0IwVHJ6bXNjYXlxbnVkdFRvUUcrR3R6UGRYVWN4a2FOQ3V1ZkppcXI5Nndx?=
+ =?utf-8?B?YnJsTVYxWm5ITFF5OGcwUldtYnF6WGJYd2ZMWnZmSnJ6S2xjRkhJY1E3RVZD?=
+ =?utf-8?B?RzgvTTR1SzVvU0tsTW5SazQ3MWt0azZWaFgyeWtPVmd0d1R0Um10VGp4RDB2?=
+ =?utf-8?B?L1ZiVEYvcCt4Sm9PL3hQMzhJK1lCOCtVZVVMS2VrREZiUTJ3Rk83MUozS2pF?=
+ =?utf-8?B?YlVIb1RET3M5bDc4bnNJYlBFNkFDaWczVDF2MXZkaE5QZHRJbzc1UkdOUUdk?=
+ =?utf-8?B?QnRIQVJvYUJFZHdIYm1MSFBUanpibnFaM0hRNkNSeXQzZFEvejE5cVhyVjNO?=
+ =?utf-8?B?L3R0c3JvaHlhUTBDRXJkbUNmc05oeFJaeWQ1dUFseSt4RmliOTUyb29Nakl2?=
+ =?utf-8?B?ajU5MThzcktnbkJWVDlaZnNSZzFLWUd6UFpWSjhmTk16eHpTb0wzVktHSHg2?=
+ =?utf-8?B?eHJJZUZFcnkrN3hWdUJubzZzbTVWblVvU0lBd2R5SzVieWM3VDVmT1cvZytF?=
+ =?utf-8?B?dXF6MzgycmN6Y3FIMnB6NWVJTFBBRGNoNHEzNDlqaUsvRG5jaXJPbjMrTVJR?=
+ =?utf-8?B?R3RFMjk0R2p5R0hPeE40TWZ6Sm1aU1F6TDZXMjAvc0IweUhZUG1mV2dRSmc0?=
+ =?utf-8?B?NExCdWt4SXhNTHlLRFIzRm40c1RMUW11T3BieFFJZ3VvOHNDNTJtc3Q4Uk85?=
+ =?utf-8?B?QU5EK2l2WC9VNm05aUE1WGhuUkhpRjBJRDVVeG5tSHMzMUFYbGVGY0l4V2ox?=
+ =?utf-8?B?aXBmQ0ZGaTUyVEVzZWs0U1JKQUlKRG9iaGtzeFloUmZWaHlUbEhKTE1FaklM?=
+ =?utf-8?B?Y3dmZ3pJVWVDVjc5OWJNbFFaY1NZblpGQUpoOURHUFJpUFh6OS9HeDBMdnYw?=
+ =?utf-8?B?d0FQeFJkZFZlYzQrZXVENEpVZ3hkaklFL09oeTNvZ3M0RVVhU0RnbVFSaGxQ?=
+ =?utf-8?B?WnJWTzNzTlFIZUxWTEVNeFRYSzZUR0R3Uy8vTmtOcGIxNWxaRVJWamxMcUNH?=
+ =?utf-8?B?MEZlbzc5dGlpV3JaanlkMWRtU1VkWDVFTGsvVzBwRXBOQml0YWEyVkpad0oy?=
+ =?utf-8?B?ZDduSmRvb0tXZHR2QWFqY1kwamk3MXAzVkxMWk5JWDduVHhBTVVjTWNnSm4y?=
+ =?utf-8?B?Nk5venh6eGNvbDFXWTZMVnc0cUNxN3V1OVN0V2JuVUJMQVo0clB0N1czS0J6?=
+ =?utf-8?B?Q0c5OXN6cjhMMnNPQUhzV2orb1ZNcHlVUmZNMm1DdVVjbkZ6aTk1eE9hQTVk?=
+ =?utf-8?Q?sV/4BI/1SYOshFacLhiCD37Ovf4K3JvlH+2Odzr7iMnP?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5e8b3b93-8a35-40c5-50f4-08db8450af49
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3587.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jul 2023 09:57:07.9736
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: kVfrTz4tkLGi2JRoKNYIocpnGqkptRDHhbL6DKIJkhlz4WdyHmazaW9ZcA9V3bBz
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB7974
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 11:43=E2=80=AFPM Randy Dunlap <rdunlap@infradead.or=
-g> wrote:
+Am 14.07.23 um 11:49 schrieb Asahi Lina:
+> On 14/07/2023 17.43, Christian König wrote:
+>> Am 14.07.23 um 10:21 schrieb Asahi Lina:
+>>> A signaled scheduler fence can outlive its scheduler, since fences are
+>>> independencly reference counted. Therefore, we can't reference the
+>>> scheduler in the get_timeline_name() implementation.
+>>>
+>>> Fixes oopses on `cat /sys/kernel/debug/dma_buf/bufinfo` when shared
+>>> dma-bufs reference fences from GPU schedulers that no longer exist.
+>>>
+>>> Signed-off-by: Asahi Lina <lina@asahilina.net>
+>>> ---
+>>>    drivers/gpu/drm/scheduler/sched_entity.c | 7 ++++++-
+>>>    drivers/gpu/drm/scheduler/sched_fence.c  | 4 +++-
+>>>    include/drm/gpu_scheduler.h              | 5 +++++
+>>>    3 files changed, 14 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/gpu/drm/scheduler/sched_entity.c 
+>>> b/drivers/gpu/drm/scheduler/sched_entity.c
+>>> index b2bbc8a68b30..17f35b0b005a 100644
+>>> --- a/drivers/gpu/drm/scheduler/sched_entity.c
+>>> +++ b/drivers/gpu/drm/scheduler/sched_entity.c
+>>> @@ -389,7 +389,12 @@ static bool 
+>>> drm_sched_entity_add_dependency_cb(struct drm_sched_entity *entity)
+>>>               /*
+>>>             * Fence is from the same scheduler, only need to wait for
+>>> -         * it to be scheduled
+>>> +         * it to be scheduled.
+>>> +         *
+>>> +         * Note: s_fence->sched could have been freed and reallocated
+>>> +         * as another scheduler. This false positive case is okay, 
+>>> as if
+>>> +         * the old scheduler was freed all of its jobs must have
+>>> +         * signaled their completion fences.
+>>
+>> This is outright nonsense. As long as an entity for a scheduler exists
+>> it is not allowed to free up this scheduler.
+>>
+>> So this function can't be called like this.
 >
+> As I already explained, the fences can outlive their scheduler. That 
+> means *this* entity certainly exists for *this* scheduler, but the 
+> *dependency* fence might have come from a past scheduler that was 
+> already destroyed along with all of its entities, and its address reused.
+
+Well this is function is not about fences, this function is a callback 
+for the entity.
+
 >
+> Christian, I'm really getting tired of your tone. I don't appreciate 
+> being told my comments are "outright nonsense" when you don't even 
+> take the time to understand what the issue is and what I'm trying to 
+> do/document. If you aren't interested in working with me, I'm just 
+> going to give up on drm_sched, wait until Rust gets workqueue support, 
+> and reimplement it in Rust. You can keep your broken fence lifetime 
+> semantics and I'll do my own thing.
+
+I'm certainly trying to help here, but you seem to have unrealistic 
+expectations.
+
+I perfectly understand what you are trying to do, but you don't seem to 
+understand that this functionality here isn't made for your use case.
+
+We can adjust the functionality to better match your requirements, but 
+you can't say it is broken because it doesn't work when you use it not 
+in the way it is intended to be used.
+
+You can go ahead and try to re-implement the functionality in Rust, but 
+then I would reject that pointing out that this should probably be an 
+extension to the existing code.
+
+Christian.
+
 >
-> On 7/13/23 04:24, menglong8.dong@gmail.com wrote:
-> > diff --git a/Documentation/networking/ip-sysctl.rst b/Documentation/net=
-working/ip-sysctl.rst
-> > index 4a010a7cde7f..3de2dce74037 100644
-> > --- a/Documentation/networking/ip-sysctl.rst
-> > +++ b/Documentation/networking/ip-sysctl.rst
-> > @@ -694,6 +694,20 @@ tcp_retries2 - INTEGER
-> >       RFC 1122 recommends at least 100 seconds for the timeout,
-> >       which corresponds to a value of at least 8.
-> >
-> > +tcp_oom_retries - INTEGER
-> > +     RTO retransmissions count of the receiver is recognised as OOM.
-> > +     Given a value N, a hypothetical TCP connection will enter probe
-> > +     state if N times RTO retransmissions performed and every
-> > +     retransmission gets a pure ack, who doesn't contain SACK block.
->
->                                    ACK
-> > +
-> > +     The default value is 0, which means disable the OOM detection.
-> > +     If disabled, skb will be dropped directly, without sending an
-> > +     ACK, when rmem schedule fails. The function is valid only if sack
->
->                                                                      SACK
->
-> > +     is enabled.
-> > +
-> > +     3 is the suggested value to enable this function. Do't make it
->
->                                                           Don't
->
-> > +     greater than tcp_retries2.
+> ~~ Lina
 >
 
-Thanks! I'll fix them in the next version.
-
-> --
-> ~Randy
