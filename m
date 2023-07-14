@@ -2,105 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F86F75397E
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 13:29:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C85D3753982
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 13:31:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235325AbjGNL3h convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 14 Jul 2023 07:29:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38640 "EHLO
+        id S235439AbjGNLbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 07:31:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233700AbjGNL3f (ORCPT
+        with ESMTP id S233700AbjGNLbJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 07:29:35 -0400
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD8D92D78
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 04:29:34 -0700 (PDT)
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-579d5d89b41so16764387b3.2
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 04:29:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689334174; x=1691926174;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IZ5pKNtQcVsctQLLt1fcBesVTk5WANpsrcd33LQmiMs=;
-        b=RJRjW9g6KIX9acLalUC4mUm+RJWFarYlrjp42tsJt5JNBTB9A/pMjIJagHEWt3ciz5
-         TTYeHQh2cSvXO2EscuKLyXSqVOP2JnMuP06XOejrPHBhfrXQxbSsDJ8muURYMWY9QhIj
-         hyI+vBozi8iqiOunTzBil0EqsQ6rh4rzQKt6ElVR/0e+a0VTDwvKqq0wl5TSqCt54AWX
-         0FVYYli63pgZt/E1Wdjyu5A6evpJ4k6XoB2DEHctHoa3DYKceixO7mhRayhtkifWwDg5
-         YMMz46yO8MDLSI3XKP3b++y30Zat9f8j8ILgHljb7hA+aQikNQn4qR8cy9APT1KRvRJV
-         SMPA==
-X-Gm-Message-State: ABy/qLZz6oELebIc9eh1tff/c/fHJtt8bSUlLCkbIjqeXW2D89Y++J3Y
-        8omKqHv881eiKBKYbfz3fC/eLw4j+CeVEw==
-X-Google-Smtp-Source: APBJJlGXFtxBSDdIh1pTZ+pCBIUckpwBbRUfQz3dOuOQo/ifIvDyLpMPXoeCCF3lNa0u0DLDba/Prw==
-X-Received: by 2002:a81:6cd1:0:b0:57a:8d74:5d9b with SMTP id h200-20020a816cd1000000b0057a8d745d9bmr4865701ywc.42.1689334173952;
-        Fri, 14 Jul 2023 04:29:33 -0700 (PDT)
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com. [209.85.219.170])
-        by smtp.gmail.com with ESMTPSA id b126-20020a0dc084000000b0056d443372f0sm2267976ywd.119.2023.07.14.04.29.33
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 Jul 2023 04:29:33 -0700 (PDT)
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-cae693192d1so1717515276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 04:29:33 -0700 (PDT)
-X-Received: by 2002:a25:d045:0:b0:ca9:395f:75f4 with SMTP id
- h66-20020a25d045000000b00ca9395f75f4mr3827226ybg.21.1689334173394; Fri, 14
- Jul 2023 04:29:33 -0700 (PDT)
+        Fri, 14 Jul 2023 07:31:09 -0400
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F7572D79;
+        Fri, 14 Jul 2023 04:31:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689334268; x=1720870268;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=l/yPvUfnmINX3xY/ZzG9EdykIUEiq+kKl0SYFBw42DA=;
+  b=YGydPW+rKFW6FbrcEpkSEmV0I1RfePl8cEexJLbI+PINU9azhediT4El
+   kzocxbQiqCU1mHgKn0lrI3ZYCGzTXLiSokj0wFCIsiXujAKByGyZoOmEM
+   X+tkKjUQDcR3qv0IdHs+VeUsbZBWkbFt8sKk1W+wrWIyueriFJB6gXRRl
+   Luvp9VEdKbKYyqKksrvHkupbzicOQl4wNZd53vxy+bd5B3JBp2k89+3bg
+   3GrYphaDkKUhvaeNDqmWyLIdyXBXZlTVTuRHOifx7k40e0c/uRqnc7qtk
+   VFLA0cWaZaGiE/Z9AOLXOFe9XOLo1ZDWiOqS1IQnr76zkNwiCmN5vWO2q
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="365490751"
+X-IronPort-AV: E=Sophos;i="6.01,205,1684825200"; 
+   d="scan'208";a="365490751"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 04:31:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="787823746"
+X-IronPort-AV: E=Sophos;i="6.01,205,1684825200"; 
+   d="scan'208";a="787823746"
+Received: from rchauhax-mobl1.gar.corp.intel.com ([10.249.35.123])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 04:31:05 -0700
+Date:   Fri, 14 Jul 2023 14:31:03 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Reinette Chatre <reinette.chatre@intel.com>
+cc:     linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
+        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 06/19] selftests/resctrl: Move resctrl FS mount/umount
+ to higher level
+In-Reply-To: <59fd7956-caf8-03de-10a5-f37036219134@intel.com>
+Message-ID: <07faf1f-cde-9d3c-1f15-bbe494466abf@linux.intel.com>
+References: <20230713131932.133258-1-ilpo.jarvinen@linux.intel.com> <20230713131932.133258-7-ilpo.jarvinen@linux.intel.com> <59fd7956-caf8-03de-10a5-f37036219134@intel.com>
 MIME-Version: 1.0
-References: <cover.1689252746.git.geert@linux-m68k.org> <9090c1b423e0b56c8e906155fe53ff0841830a03.1689252746.git.geert@linux-m68k.org>
- <0KNCLmzXJwmF0RTaQXUBd456dzaM5QsAot8g_yT36aNlEhJbSssTxBOS95x99DJHYkEzUJeMO7zJCX4JGjX6DEmY40BWtLKVZf6nB4HQMSc=@emersion.fr>
-In-Reply-To: <0KNCLmzXJwmF0RTaQXUBd456dzaM5QsAot8g_yT36aNlEhJbSssTxBOS95x99DJHYkEzUJeMO7zJCX4JGjX6DEmY40BWtLKVZf6nB4HQMSc=@emersion.fr>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 14 Jul 2023 13:29:18 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUWTse=bOPo7=_4SZK2+ifkpuwbzR797QNNGdy_babygA@mail.gmail.com>
-Message-ID: <CAMuHMdUWTse=bOPo7=_4SZK2+ifkpuwbzR797QNNGdy_babygA@mail.gmail.com>
-Subject: Re: [PATCH 5/8] drm/client: Convert drm_mode_create_dumb() to drm_mode_addfb2()
-To:     Simon Ser <contact@emersion.fr>
-Cc:     Javier Martinez Canillas <javierm@redhat.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="8323329-584909292-1689334267=:1695"
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Simon,
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-On Fri, Jul 14, 2023 at 1:01 PM Simon Ser <contact@emersion.fr> wrote:
-> On Thursday, July 13th, 2023 at 15:17, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > Currently drm_client_buffer_addfb() uses the legacy drm_mode_addfb(),
-> > which uses bpp and depth to guess the wanted buffer format.
-> > However, drm_client_buffer_addfb() already knows the exact buffer
-> > format, so there is no need to convert back and forth between buffer
-> > format and bpp/depth, and the function can just call drm_mode_addfb2()
-> > directly instead.
->
-> By any chance, is the commit message wrong? The title refers to
-> drm_mode_create_dumb(), but the description and code refer to
-> drm_client_buffer_addfb().
+--8323329-584909292-1689334267=:1695
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
-Yes it is, thanks.  Originally, I had copied-and-pasted the wrong
-function name. I thought I had fixed all references, but apparently
-I missed the one-line summary :-(
+On Thu, 13 Jul 2023, Reinette Chatre wrote:
 
-Will fix in v2.
+> Hi Ilpo,
+> 
+> On 7/13/2023 6:19 AM, Ilpo Järvinen wrote:
+> > A few places currently lack umounting resctrl FS on error paths:
+> >   - cmt_resctrl_val() has multiple error paths with direct return.
+> >   - cat_perf_miss_val() has multiple error paths with direct return.
+> > In addition, validate_resctrl_feature_request() is called by
+> > run_mbm_test() and run_mba_test(). Neither MBA nor MBM test tries to
+> > umount resctrl FS.
+> > 
+> > Each and every test does require resctrl FS to be present already for
+> > feature check. Thus, it makes sense to just mount it on higher level in
+> > resctrl_tests.c and properly pair it with umount.
+> > 
+> > Move resctrl FS (re)mount/unmount into each test function in
+> > resctrl_tests.c. Make feature validation to simply check that resctrl
+> > FS is mounted.
+> > 
+> > Fixes: 91db4fd9019a ("selftests/resctrl: Remove duplicate codes that clear each test result file")
+> 
+> Could you please elaborate how this commit is the culprit?
 
-Gr{oetje,eeting}s,
+Of course it isn't. I'm pretty sure I had some idea when that was added 
+but it was before the patches were rearranged/modified, maybe I 
+incorrectly thought that the cleanup functions do umount (but they don't).
 
-                        Geert
+I'll changed it to these:
+Fixes: f1dd71982d19 ("selftests/resctrl: Skip the test if requested resctrl feature is not supported")
+Fixes: 01fee6b4d1f9 ("selftests/resctrl: Add MBA test")
+Fixes: ecdbb911f22d ("selftests/resctrl: Add MBM test")
+Fixes: 790bf585b0ee ("selftests/resctrl: Add Cache Allocation Technology (CAT) selftest")
+Fixes: 78941183d1b1 ("selftests/resctrl: Add Cache QoS Monitoring (CQM) selftest")
+
+...however, I was also considering dropping Fixes completely because 
+main() has the final umount() at the end so no lingering resctrl FS after 
+tests, and inter-test issues are hard to track due to how complicated the 
+code is so I'm not entirely sure if there are real issues under any 
+combination of tests and all the mounting/unmounting going on).
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+ i.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+--8323329-584909292-1689334267=:1695--
