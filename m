@@ -2,310 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED1297537F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 12:24:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97E14753805
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 12:26:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236179AbjGNKYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 06:24:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37000 "EHLO
+        id S236239AbjGNK0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 06:26:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235584AbjGNKYj (ORCPT
+        with ESMTP id S235191AbjGNKZ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 06:24:39 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 851672733;
-        Fri, 14 Jul 2023 03:24:33 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6F3521570;
-        Fri, 14 Jul 2023 03:25:15 -0700 (PDT)
-Received: from [10.1.197.1] (ewhatever.cambridge.arm.com [10.1.197.1])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DA3FF3F67D;
-        Fri, 14 Jul 2023 03:24:30 -0700 (PDT)
-Message-ID: <4cfaad4f-8e0f-f550-5052-3a3fe54ec946@arm.com>
-Date:   Fri, 14 Jul 2023 11:24:29 +0100
+        Fri, 14 Jul 2023 06:25:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E19C12738
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 03:25:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689330313;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=99CCQV0ZC6Z3v4KeeI3589CkCiweHnTBxIfE2i437hQ=;
+        b=JOCCIArKzXDq6BW0BpUmi1Ehy5YgfwkHkKY0oPL1/5ly32swNeZiiXJ402fbW2yBlh0P5z
+        6IOZQW7nzlaAlG1clqlolG8qn6/Opvv2HLEWGCbrlQc4MlwvXCplnGQ7ZBYCIQLdgxQPxy
+        b9rKYHImOCLpBj9DA3gvJA2nSWPHLFQ=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-672-cTHc2Qy9MBysMgJ8-oCtEg-1; Fri, 14 Jul 2023 06:25:11 -0400
+X-MC-Unique: cTHc2Qy9MBysMgJ8-oCtEg-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-3fa8f8fb7b3so10094485e9.2
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 03:25:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689330310; x=1691922310;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=99CCQV0ZC6Z3v4KeeI3589CkCiweHnTBxIfE2i437hQ=;
+        b=HTfzwyt48LiXI7S0hK/SeVEzssWPNs3ju3wmeNqXjmPHIZGYMhqXKFdKUB5FZgOX9f
+         YpmBNKnOJBnJS28FzIb7WlpmVq8KxeO1FHGJZOol5XCPlhrp6PJ4p/fUcMhZv57hqw2V
+         ggMGqTtMic/IIyp5+QrZjjqu9kcKrhoX7QsppWGV9lPHdP0P3LTmSRhZx3ahORxnBaUO
+         +JPvkle93gzqlfV8jJBnuNuk4YrOxF4Y3t7LF2h29BlFBh7PzzNkaLE6lEo8E9CLOYDG
+         xD9B0AiecCB2Q8y5gXrXtOA00/ZUJ6NDuIhsCBWcQUPCzL8aPjRvRMxhViRyzftHAgJE
+         JQAw==
+X-Gm-Message-State: ABy/qLYxAWMK1DKzi2u89z85CgV3gvEZAJHhbNnT7y14cPXN/SUFYjhz
+        2aZpliAu7hamasXzK/Efp6X2GuXpinE5WCnrcumqHDQ9ra1EVta5u0TEmS3wT2czT35JhVS0tpM
+        bKJLPpTw81baejHWdhFpPYGbv
+X-Received: by 2002:a1c:f704:0:b0:3f5:fff8:d4f3 with SMTP id v4-20020a1cf704000000b003f5fff8d4f3mr4492216wmh.7.1689330310670;
+        Fri, 14 Jul 2023 03:25:10 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGcKXPZt/8xOGKWRtDHFsQt08ITixr5RAQtfS/O8OJsznodQIIOTbvwv/Fuw2cdRvp5PQbbpg==
+X-Received: by 2002:a1c:f704:0:b0:3f5:fff8:d4f3 with SMTP id v4-20020a1cf704000000b003f5fff8d4f3mr4492201wmh.7.1689330310365;
+        Fri, 14 Jul 2023 03:25:10 -0700 (PDT)
+Received: from localhost ([91.126.32.244])
+        by smtp.gmail.com with ESMTPSA id o4-20020a05600c378400b003fc3b03e41dsm917198wmr.0.2023.07.14.03.25.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Jul 2023 03:25:10 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 6/8] drm/fb-helper: Pass buffer format via
+ drm_fb_helper_surface_size
+In-Reply-To: <00790d022752b672a28256db7b9393eca0801b99.1689252746.git.geert@linux-m68k.org>
+References: <cover.1689252746.git.geert@linux-m68k.org>
+ <00790d022752b672a28256db7b9393eca0801b99.1689252746.git.geert@linux-m68k.org>
+Date:   Fri, 14 Jul 2023 12:25:09 +0200
+Message-ID: <87cz0uu6wq.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v6 09/13] Add nodes for dsb edge control
-To:     Tao Zhang <quic_taozha@quicinc.com>,
-        Mike Leach <mike.leach@linaro.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Konrad Dybcio <konradybcio@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Jinlong Mao <quic_jinlmao@quicinc.com>,
-        Leo Yan <leo.yan@linaro.org>, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Tingwei Zhang <quic_tingweiz@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
-        Trilok Soni <quic_tsoni@quicinc.com>,
-        Hao Zhang <quic_hazha@quicinc.com>,
-        linux-arm-msm@vger.kernel.org, andersson@kernel.org
-References: <1687246361-23607-1-git-send-email-quic_taozha@quicinc.com>
- <1687246361-23607-10-git-send-email-quic_taozha@quicinc.com>
- <2023062024-sincere-tripod-95dc@gregkh>
- <3aca4a55-0dc7-b34c-d2c0-111a96c33ec3@quicinc.com>
- <e82385f1-de55-4c70-5c5c-35b93a5b2488@arm.com>
- <d3849c2a-8826-62a7-1749-0d4b3ee47259@quicinc.com>
- <CAJ9a7VgRFDFoZgRQ_J62We7vJ2D_yULH18S5FwAnB4S+oi2npA@mail.gmail.com>
- <77343663-2d09-53bf-d463-36b979e433ea@arm.com>
- <8cc7b48f-7fde-2f0b-13ca-c8fb23806ded@quicinc.com>
- <edfd1a85-772d-01e1-12a1-61dcc1cc2068@arm.com>
- <1557f208-1fb7-095a-f57c-9509cbc62aaa@quicinc.com>
-Content-Language: en-US
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <1557f208-1fb7-095a-f57c-9509cbc62aaa@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/07/2023 06:50, Tao Zhang wrote:
-> 
-> On 7/14/2023 12:37 AM, Suzuki K Poulose wrote:
->> On 13/07/2023 17:13, Tao Zhang wrote:
->>>
->>> On 7/13/2023 5:34 PM, Suzuki K Poulose wrote:
->>>> On 13/07/2023 09:54, Mike Leach wrote:
->>>>> HI Tao,
->>>>>
->>>>> On Wed, 12 Jul 2023 at 14:53, Tao Zhang <quic_taozha@quicinc.com> 
->>>>> wrote:
->>>>>>
->>>>>>
->>>>>> On 6/20/2023 9:41 PM, Suzuki K Poulose wrote:
->>>>>>> On 20/06/2023 09:31, Tao Zhang wrote:
->>>>>>>>
->>>>>>>> On 6/20/2023 3:37 PM, Greg Kroah-Hartman wrote:
->>>>>>>>> On Tue, Jun 20, 2023 at 03:32:37PM +0800, Tao Zhang wrote:
->>>>>>>>>> Add the nodes to set value for DSB edge control and DSB edge
->>>>>>>>>> control mask. Each DSB subunit TPDM has maximum of n(n<16) EDCR
->>>>>>>>>> resgisters to configure edge control. DSB edge detection control
->>>>>>>>>> 00: Rising edge detection
->>>>>>>>>> 01: Falling edge detection
->>>>>>>>>> 10: Rising and falling edge detection (toggle detection)
->>>>>>>>>> And each DSB subunit TPDM has maximum of m(m<8) ECDMR 
->>>>>>>>>> registers to
->>>>>>>>>> configure mask. Eight 32 bit registers providing DSB interface
->>>>>>>>>> edge detection mask control.
->>>>>>>>>>
->>>>>>>>>> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
->>>>>>>>>> ---
->>>>>>>>>> .../ABI/testing/sysfs-bus-coresight-devices-tpdm |  32 +++++
->>>>>>>>>>    drivers/hwtracing/coresight/coresight-tpdm.c | 143
->>>>>>>>>> ++++++++++++++++++++-
->>>>>>>>>>    drivers/hwtracing/coresight/coresight-tpdm.h | 22 ++++
->>>>>>>>>>    3 files changed, 196 insertions(+), 1 deletion(-)
->>>>>>>>>>
->>>>>>>>>> diff --git
->>>>>>>>>> a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
->>>>>>>>>> b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
->>>>>>>>>> index 2a82cd0..34189e4a 100644
->>>>>>>>>> --- a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
->>>>>>>>>> +++ b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
->>>>>>>>>> @@ -60,3 +60,35 @@ Description:
->>>>>>>>>>            Bit[3] : Set to 0 for low performance mode.
->>>>>>>>>>                     Set to 1 for high performance mode.
->>>>>>>>>>            Bit[4:8] : Select byte lane for high performance mode.
->>>>>>>>>> +
->>>>>>>>>> +What: /sys/bus/coresight/devices/<tpdm-name>/dsb_edge_ctrl
->>>>>>>>>> +Date:        March 2023
->>>>>>>>>> +KernelVersion    6.5
->>>>>>>>>> +Contact:    Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao
->>>>>>>>>> Zhang (QUIC) <quic_taozha@quicinc.com>
->>>>>>>>>> +Description:
->>>>>>>>>> +        Read/Write a set of the edge control registers of the 
->>>>>>>>>> DSB
->>>>>>>>>> +        in TPDM.
->>>>>>>>>> +
->>>>>>>>>> +        Expected format is the following:
->>>>>>>>>> +        <integer1> <integer2> <integer3>
->>>>>>>>> sysfs is "one value", not 3.  Please never have to parse a 
->>>>>>>>> sysfs file.
->>>>>>>>
->>>>>>>> Do you mean sysfs file can only accept "one value"?
->>>>>>>>
->>>>>>>> I see that more than one value are written to the sysfs file
->>>>>>>> "trigout_attach".
->>>>>>>>
->>>>>>>>>
->>>>>>>>>> +static ssize_t dsb_edge_ctrl_show(struct device *dev,
->>>>>>>>>> +                       struct device_attribute *attr,
->>>>>>>>>> +                       char *buf)
->>>>>>>>>> +{
->>>>>>>>>> +    struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
->>>>>>>>>> +    ssize_t size = 0;
->>>>>>>>>> +    unsigned long bytes;
->>>>>>>>>> +    int i;
->>>>>>>>>> +
->>>>>>>>>> +    spin_lock(&drvdata->spinlock);
->>>>>>>>>> +    for (i = 0; i < TPDM_DSB_MAX_EDCR; i++) {
->>>>>>>>>> +        bytes = sysfs_emit_at(buf, size,
->>>>>>>>>> +                  "Index:0x%x Val:0x%x\n", i,
->>>>>>>>> Again, no, one value, no "string" needed to parse anything.
->>>>>>>>
->>>>>>>> I also see other sysfs files can be read more than one value in 
->>>>>>>> other
->>>>>>>> drivers.
->>>>>>>>
->>>>>>>> Is this "one value" limitation the usage rule of Linux sysfs 
->>>>>>>> system?
->>>>>>>>
->>>>>>>> Or am I misunderstanding what you mean?
->>>>>>>
->>>>>>> Please fix the other sysfs tunables in the following patches.
->>>>>>
->>>>>> List a new solution for the similar cases below, please see if this
->>>>>> design is reasonable?
->>>>>>
->>>>>> 1. Two SysFS files("dsb_edge_ctrl_idx" and "dsb_edge_ctrl_val") 
->>>>>> will be
->>>>>> created in this case.
->>>>>>
->>>>>> 2. First write to the node "dsb_edge_ctrl_idx" to set the index 
->>>>>> number
->>>>>> of the edge detection.
->>>>>>
->>>>>> 3. Then write to the node "dsb_edge_ctrl_val" to set the value of the
->>>>>> edge detection.
->>>>>>
->>>>>> For example, if we need need to set "Falling edge detection" to 
->>>>>> the edge
->>>>>> detection #220-#222, we can issue the following commands.
->>>>>>
->>>>>> echo 0xdc > tpdm1/dsb_edge_ctrl_idx
->>>>>>
->>>>>> echo 0x1 > tpdm1/dsb_edge_ctrl_val
->>>>>>
->>>>>> echo 0xdd > tpdm1/dsb_edge_ctrl_idx
->>>>>>
->>>>>> echo 0x1 > tpdm1/dsb_edge_ctrl_val
->>>>>>
->>>>>> echo 0xde > tpdm1/dsb_edge_ctrl_idx
->>>>>>
->>>>>> echo 0x1 > tpdm1/dsb_edge_ctrl_val
->>>>>>
->>>>>> If this design is acceptable, we will rewrite other similar nodes 
->>>>>> based
->>>>>> on this solution.
->>>>>>
->>>>>
->>>>> This index / value model is used in the coresight drivers so should be
->>>>> OK - eg etm4 has cntr_idx / cntrldvr / cntr_val / cntr_ctrl, where
->>>>> index selects the counter, and the other val registers are applied to
->>>>> that counter.
->>>>
->>>> True. That model is useful when there are variable number of 
->>>> "counters".
->>>> I guess it doesn't hurt to have a 64bit (or even 32bit) file for each
->>>> EDCR.
->>>>
->>>> e.g, edcr0...edcr15
->>>>
->>>> Given there are only 16 of them, it is fine to keep a file for each.
->>>> This may be grouped under "mgmt" similar to what we have for other
->>>> components. That way, it can be easily hidden by checking for the
->>>> presence of DSB.
->>>
->>> The number of EDCR registers is not fixed. The maximum range is [0:15].
->>>
->>> But the address of the maximum number of the registers will be 
->>> reserved first,
->>>
->>> and can be accessed safely even if the TPDM doesn't have the maximum 
->>> number
->>>
->>> of  EDCR registers.
->>>
->>> And we are not able to dynamically know the number of EDCR registers 
->>> per DSB
->>>
->>> TPDM.
->>>
->>> Can we use our proposal in this case?
->>
->> Please provide a file edcrN for each of the 0 <= N < 16. That way it is
->> easier to avoid locking the index. It doesn't matter how many EDCRs are
->> supported, there is a maximum limit and it is always guaranteed to be
->> write safe, if some are not implemented. Thus it is much easier from a 
->> programming perspective too.
-> 
-> Hi Suzuki,
-> 
-> 
-> Thanks for the suggestion.
-> 
-> I'd like to further clarify our proposal below in case I didn't express 
-> it clearly before.
-> 
-> 1. In our design, the users don't need to know the mapping between the 
-> number of the edge detection
-> 
-> and the control bits in EDCRN registers. They only need to focus on the 
-> edge detection they need, don't
-> 
-> need to care about the design of the HW.
+Geert Uytterhoeven <geert@linux-m68k.org> writes:
 
-Agreed
+> drm_fb_helper_single_fb_probe() first calls drm_fb_helper_find_sizes(),
+> followed by drm_fbdev_generic_helper_fb_probe():
+>   - The former tries to find a suitable buffer format, taking into
+>     account limitations of the whole display pipeline,
+>   - The latter just calls drm_mode_legacy_fb_format() again.
+>
+> Simplify this by passing the buffer format between these functions
+> via a new buffer format member in the drm_fb_helper_surface_size
+> structure.
+>
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
 
-> 
-> 2. For example, if there are two users configure in the same test. One 
-> needs to configure edge detection #7
-> 
-> as "Falling edge detection". The other one needs to configure edge 
-> detection #8 as "toggle detection". They will
-> 
-> issue the following commands to implement it.
-> 
-> echo 0x7 > tpdm1/dsb_edge_ctrl_idx
-> 
-> echo 0x1 > tpdm1/dsb_edge_ctrl_val
-> 
-> echo 0x8 > tpdm1/dsb_edge_ctrl_idx
-> 
-> echo 0x2 > tpdm1/dsb_edge_ctrl_val
-> 
-> The value written to edcr0 will be 0x24000 in our proposal.
-> 
-> But in the solution of "tpdm1/dsb_edge_ctrl/edcrN 0 <= N < 16".
-> 
-> One user calculates that he needs to write 0x4000 to edcr0.
-> 
-> echo 0x4000 > tpdm1/dsb_edge_ctrl/edcr0
-> 
-> The other one calculates that he needs to write 0x20000 to edcr0.
-> 
-> echo 0x20000 > tpdm1/dsb_edge_ctrl/edcr0
-> 
-> The last write will overwrite the previous value in this case and 0x20000
-> 
-> will be written to the edcr0 finally.
+[...]
 
-The solution of edcrN expects the users follow a Read-Modify-Write.
-But given you want to control individual lines separately (which are 256
-in number), I am fine with the _idx/value solution.
+> -	drm_dbg_kms(dev, "surface width(%d), height(%d) and bpp(%d)\n",
+> +	drm_info(dev, "surface width(%d), height(%d), bpp(%d) and format(%p4cc)\n",
 
-> 
-> 3. Some DSB TPDMs may not have 16 EDCR registers. For example, TPDM2
-> 
-> may only have 7 EDCR registers. If we still create 16 edcr file at 
-> tpdm2/dsb_edge_ctrl,
-> 
-> this may confuse users.
+You are promoting a debug printout here to info but that change is not
+mentioned in the commit message. If you think this will be useful, maybe
+do it as a separate patch ?
 
-This is not relevant. The user can't know the maximum number anyway. If 
-the user knows TPDM2 has only 7 EDCR, then don't bother about the other
-files.
+The rest of the patch looks good to me though.
 
-Please go ahead with the _idx /_value
+Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
 
-Suzuki
+-- 
+Best regards,
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
+
