@@ -2,249 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C99CE75311C
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 07:24:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAA1D75311F
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 07:27:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234016AbjGNFYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 01:24:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57142 "EHLO
+        id S234685AbjGNF1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 01:27:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbjGNFYh (ORCPT
+        with ESMTP id S234458AbjGNF1D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 01:24:37 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBD3C2D7D
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 22:24:35 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R2KfT3B7JzBR7bB
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 13:24:33 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689312273; x=1691904274; bh=MB2X2voEI1RI/eW6w5uT1Nbdk9m
-        LRbF+U3iPFy4BcKM=; b=GY7MRzAKFT+97mwY35NHFtzSn9WVphyGH+hrUtrbLSq
-        c2Jb751u1Z7UtLK3+WQFpjZmrxuTefy0/+39B4WuBn5ac+ZWt88fdtNqgtG2Sa55
-        UB0jTGXraTNRWulIPKJcJKodgRX5QlLha/DfgpQxZjVZsWNS7XDMQgeP6GTSElPu
-        QnCQhHDKwfkCY6166HsAGOfBAWU/Gv6CHt21RK27I5YXqQvj2O11rKlPd5P1CR+o
-        etJZnApt82GuZG4dGQmqb50mo03lWsqz+7Pcy5KGbXLuIImxLnadALnrY+6XEJxS
-        CEahcHGgmpCanhWb6GLBDlJ2XnoWNdSruRwvNdskYIA==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 4WaH4dcy63ZO for <linux-kernel@vger.kernel.org>;
-        Fri, 14 Jul 2023 13:24:33 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R2KfS6qSWzBR5C9;
-        Fri, 14 Jul 2023 13:24:32 +0800 (CST)
+        Fri, 14 Jul 2023 01:27:03 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C414A2683
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 22:27:01 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-991da766865so201788866b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 22:27:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689312420; x=1691904420;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Ft6IvjrZTPyPOF9DZulMSyZSaY4hCN4HAaLDF28wpRo=;
+        b=NRPm25RPoQ/OzSKh7eLutSSHgHv3MBss9UqNwO9Y2uqOz4AlqOTgkEMvnssEgrJO8Z
+         re/kDNrGgq3jIfURePWQQeRsXGuKUTKjZi18EseHW+cL+DN1B9Ms5Z9jO2jTgxZRBkWJ
+         pXgL6EJpkcvaxC2YuNio3Y5G1djM6cvbHZDSm8A+xItfU46RXpqJ76T6/VPXbf1VovkN
+         oZR+Rb7DRfBjLAuoFVfuISNK9aGRmuubwg7HPKyAbZjDpxuNbNYBjOOIB0UXBZ4n9IfA
+         Lt5p7ni7sr8WXj0nvTHbrl8tTLmKK+qVat5F5sjD5fiu6YWxF/zgO4t0gFdouFWCfLxy
+         dL+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689312420; x=1691904420;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ft6IvjrZTPyPOF9DZulMSyZSaY4hCN4HAaLDF28wpRo=;
+        b=eGSkb2aVy41zUBc0+0hvHfT1gNkbFm0kN0hYzbsEwf6bEcwa7V5S55d1uyR1sbQNtD
+         AnGdcywjtltCAq7P2/DiqhEOYl322PzWAAJju4W9ASEBCkOSyi0vUZ8TdiCJ8aUnRqiw
+         EmfP90KpP0s4H7naGi3aT5FGOaytO98OeDr6JSKY24dGLtynbSY9pCHNMkV8vXAo0yzE
+         HY4NirhmkXyfBTzbN2Eo+d2J5P1/Dqr5xBbLcxSs15M5txphofby5FqMu33BS4kLKYXW
+         x3VXfevgKfCr9c8C1SIyaI07+nAyMVsJM8eHCp+rtW+5ZTgze1EYpwAbOHhhvkku3NsV
+         lyKg==
+X-Gm-Message-State: ABy/qLZEyTMYEyzp/y7aLAD/nUC3H4SlQvOhm6nu5ThcjbkBlxMCWFZr
+        ishtRQsZdo76z2sKYwxXt/VE5A==
+X-Google-Smtp-Source: APBJJlEUp21s8VCMsojlIgbJv65jiwdNFkcOhUxHu5FPF7wxKX5riA03gHOpIdbFQg+VuLv8LDepQA==
+X-Received: by 2002:a17:906:1050:b0:991:f913:a479 with SMTP id j16-20020a170906105000b00991f913a479mr3377345ejj.2.1689312420297;
+        Thu, 13 Jul 2023 22:27:00 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.104])
+        by smtp.gmail.com with ESMTPSA id gz19-20020a170906f2d300b00992e94bcfabsm4809659ejb.167.2023.07.13.22.26.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 13 Jul 2023 22:26:59 -0700 (PDT)
+Message-ID: <3bc9c34a-ba55-61c5-87ea-80b369841873@linaro.org>
+Date:   Fri, 14 Jul 2023 07:26:57 +0200
 MIME-Version: 1.0
-Date:   Fri, 14 Jul 2023 13:24:32 +0800
-From:   shijie001@208suo.com
-To:     alexander.deucher@amd.com, christian.koenig@amd.com,
-        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/radeon: ERROR: open brace '{' following struct go on the
- same line
-In-Reply-To: <tencent_1C2FF78DB4C3129E02E585FC536F6FB07809@qq.com>
-References: <tencent_1C2FF78DB4C3129E02E585FC536F6FB07809@qq.com>
-User-Agent: Roundcube Webmail
-Message-ID: <f4a5c6ecc5679fb82df04eb0a06d04b8@208suo.com>
-X-Sender: shijie001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] arm64: dts: exynos: add pwm node for exynosautov9-sadk
+Content-Language: en-US
+To:     Jaewon Kim <jaewon02.kim@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chanho Park <chanho61.park@samsung.com>
+References: <CGME20230714052025epcas2p46d5485a277c9f21ace14300dd9d7b4d8@epcas2p4.samsung.com>
+ <20230714051521.22720-1-jaewon02.kim@samsung.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230714051521.22720-1-jaewon02.kim@samsung.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix seventeen occurrences of the checkpatch.pl error:
-ERROR: open brace '{' following struct go on the same line
+On 14/07/2023 07:15, Jaewon Kim wrote:
+> Add pwm node to support fan on exynosautov9-sadk board.
+> PWM channel 3 of ExynosAutov9 is connected to fan for SoC cooling
+> in SADK board.
+> 
+> Signed-off-by: Jaewon Kim <jaewon02.kim@samsung.com>
+> ---
+>  arch/arm64/boot/dts/exynos/exynosautov9-sadk.dts | 6 ++++++
+>  arch/arm64/boot/dts/exynos/exynosautov9.dtsi     | 9 +++++++++
+>  2 files changed, 15 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/exynos/exynosautov9-sadk.dts b/arch/arm64/boot/dts/exynos/exynosautov9-sadk.dts
+> index 898c2fc345ed..e717bb1cad81 100644
+> --- a/arch/arm64/boot/dts/exynos/exynosautov9-sadk.dts
+> +++ b/arch/arm64/boot/dts/exynos/exynosautov9-sadk.dts
+> @@ -50,6 +50,12 @@
+>  	};
+>  };
+>  
+> +&pwm {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pwm_tout3>;
+> +	status = "okay";
+> +};
+> +
+>  &serial_0 {
+>  	pinctrl-0 = <&uart0_bus_dual>;
+>  	status = "okay";
+> diff --git a/arch/arm64/boot/dts/exynos/exynosautov9.dtsi b/arch/arm64/boot/dts/exynos/exynosautov9.dtsi
+> index d3c5cdeff47f..e8860b03fe89 100644
+> --- a/arch/arm64/boot/dts/exynos/exynosautov9.dtsi
+> +++ b/arch/arm64/boot/dts/exynos/exynosautov9.dtsi
+> @@ -1560,6 +1560,15 @@
+>  			samsung,syscon-phandle = <&pmu_system_controller>;
+>  			samsung,cluster-index = <1>;
+>  		};
+> +
+> +		pwm: pwm@103f0000 {
+> +			compatible = "samsung,exynos4210-pwm";
 
-Signed-off-by: Jie Shi <shijie001@208suo.com>
----
-  drivers/gpu/drm/radeon/smu7_discrete.h | 51 +++++++++-----------------
-  1 file changed, 17 insertions(+), 34 deletions(-)
+Thanks for the patch. I think we should change existing practice for
+Samsung SoC and start adding dedicated specific compatible for such
+blocks. It's the same practice we follow in other SoCs. It's also
+recommendation I give to other platforms.
 
-diff --git a/drivers/gpu/drm/radeon/smu7_discrete.h 
-b/drivers/gpu/drm/radeon/smu7_discrete.h
-index 0b0b404ff091..1f63cbbd6515 100644
---- a/drivers/gpu/drm/radeon/smu7_discrete.h
-+++ b/drivers/gpu/drm/radeon/smu7_discrete.h
-@@ -35,8 +35,7 @@
-  #define SMU7_NUM_GPU_TES 1
-  #define SMU7_NUM_NON_TES 2
+Therefore this should be "samsung,exynosautov9-pwm",
+"samsung,exynos4210-pwm". Feel free to update other DTS as well.
 
--struct SMU7_SoftRegisters
--{
-+struct SMU7_SoftRegisters {
-      uint32_t        RefClockFrequency;
-      uint32_t        PmTimerP;
-      uint32_t        FeatureEnables;
-@@ -89,8 +88,7 @@ struct SMU7_SoftRegisters
+> +			reg = <0x103f0000 0x100>;
+> +			samsung,pwm-outputs = <0>, <1>, <2>, <3>;
+> +			#pwm-cells = <3>;
+> +			clocks = <&xtcxo>;
 
-  typedef struct SMU7_SoftRegisters SMU7_SoftRegisters;
+This does not look like correct clock. Are you sure XTCXO goes to PWM?
 
--struct SMU7_Discrete_VoltageLevel
--{
-+struct SMU7_Discrete_VoltageLevel {
-      uint16_t    Voltage;
-      uint16_t    StdVoltageHiSidd;
-      uint16_t    StdVoltageLoSidd;
-@@ -100,8 +98,7 @@ struct SMU7_Discrete_VoltageLevel
 
-  typedef struct SMU7_Discrete_VoltageLevel SMU7_Discrete_VoltageLevel;
 
--struct SMU7_Discrete_GraphicsLevel
--{
-+struct SMU7_Discrete_GraphicsLevel {
-      uint32_t    Flags;
-      uint32_t    MinVddc;
-      uint32_t    MinVddcPhases;
-@@ -131,8 +128,7 @@ struct SMU7_Discrete_GraphicsLevel
+Best regards,
+Krzysztof
 
-  typedef struct SMU7_Discrete_GraphicsLevel SMU7_Discrete_GraphicsLevel;
-
--struct SMU7_Discrete_ACPILevel
--{
-+struct SMU7_Discrete_ACPILevel {
-      uint32_t    Flags;
-      uint32_t    MinVddc;
-      uint32_t    MinVddcPhases;
-@@ -153,8 +149,7 @@ struct SMU7_Discrete_ACPILevel
-
-  typedef struct SMU7_Discrete_ACPILevel SMU7_Discrete_ACPILevel;
-
--struct SMU7_Discrete_Ulv
--{
-+struct SMU7_Discrete_Ulv {
-      uint32_t    CcPwrDynRm;
-      uint32_t    CcPwrDynRm1;
-      uint16_t    VddcOffset;
-@@ -165,8 +160,7 @@ struct SMU7_Discrete_Ulv
-
-  typedef struct SMU7_Discrete_Ulv SMU7_Discrete_Ulv;
-
--struct SMU7_Discrete_MemoryLevel
--{
-+struct SMU7_Discrete_MemoryLevel {
-      uint32_t    MinVddc;
-      uint32_t    MinVddcPhases;
-      uint32_t    MinVddci;
-@@ -206,8 +200,7 @@ struct SMU7_Discrete_MemoryLevel
-
-  typedef struct SMU7_Discrete_MemoryLevel SMU7_Discrete_MemoryLevel;
-
--struct SMU7_Discrete_LinkLevel
--{
-+struct SMU7_Discrete_LinkLevel {
-      uint8_t     PcieGenSpeed;
-      uint8_t     PcieLaneCount;
-      uint8_t     EnabledForActivity;
-@@ -220,8 +213,7 @@ struct SMU7_Discrete_LinkLevel
-  typedef struct SMU7_Discrete_LinkLevel SMU7_Discrete_LinkLevel;
-
--struct SMU7_Discrete_MCArbDramTimingTableEntry
--{
-+struct SMU7_Discrete_MCArbDramTimingTableEntry {
-      uint32_t McArbDramTiming;
-      uint32_t McArbDramTiming2;
-      uint8_t  McArbBurstTime;
-@@ -230,15 +222,13 @@ struct SMU7_Discrete_MCArbDramTimingTableEntry
-
-  typedef struct SMU7_Discrete_MCArbDramTimingTableEntry 
-SMU7_Discrete_MCArbDramTimingTableEntry;
-
--struct SMU7_Discrete_MCArbDramTimingTable
--{
-+struct SMU7_Discrete_MCArbDramTimingTable {
-      SMU7_Discrete_MCArbDramTimingTableEntry 
-entries[SMU__NUM_SCLK_DPM_STATE][SMU__NUM_MCLK_DPM_LEVELS];
-  };
-
-  typedef struct SMU7_Discrete_MCArbDramTimingTable 
-SMU7_Discrete_MCArbDramTimingTable;
-
--struct SMU7_Discrete_UvdLevel
--{
-+struct SMU7_Discrete_UvdLevel {
-      uint32_t VclkFrequency;
-      uint32_t DclkFrequency;
-      uint16_t MinVddc;
-@@ -250,8 +240,7 @@ struct SMU7_Discrete_UvdLevel
-
-  typedef struct SMU7_Discrete_UvdLevel SMU7_Discrete_UvdLevel;
-
--struct SMU7_Discrete_ExtClkLevel
--{
-+struct SMU7_Discrete_ExtClkLevel {
-      uint32_t Frequency;
-      uint16_t MinVoltage;
-      uint8_t  MinPhases;
-@@ -260,8 +249,7 @@ struct SMU7_Discrete_ExtClkLevel
-
-  typedef struct SMU7_Discrete_ExtClkLevel SMU7_Discrete_ExtClkLevel;
-
--struct SMU7_Discrete_StateInfo
--{
-+struct SMU7_Discrete_StateInfo {
-      uint32_t SclkFrequency;
-      uint32_t MclkFrequency;
-      uint32_t VclkFrequency;
-@@ -285,8 +273,7 @@ struct SMU7_Discrete_StateInfo
-  typedef struct SMU7_Discrete_StateInfo SMU7_Discrete_StateInfo;
-
--struct SMU7_Discrete_DpmTable
--{
-+struct SMU7_Discrete_DpmTable {
-      SMU7_PIDController                  GraphicsPIDController;
-      SMU7_PIDController                  MemoryPIDController;
-      SMU7_PIDController                  LinkPIDController;
-@@ -406,23 +393,20 @@ typedef struct SMU7_Discrete_DpmTable 
-SMU7_Discrete_DpmTable;
-  #define SMU7_DISCRETE_MC_REGISTER_ARRAY_SIZE 16
-  #define SMU7_DISCRETE_MC_REGISTER_ARRAY_SET_COUNT 
-SMU7_MAX_LEVELS_MEMORY
-
--struct SMU7_Discrete_MCRegisterAddress
--{
-+struct SMU7_Discrete_MCRegisterAddress {
-      uint16_t s0;
-      uint16_t s1;
-  };
-
-  typedef struct SMU7_Discrete_MCRegisterAddress 
-SMU7_Discrete_MCRegisterAddress;
-
--struct SMU7_Discrete_MCRegisterSet
--{
-+struct SMU7_Discrete_MCRegisterSet {
-      uint32_t value[SMU7_DISCRETE_MC_REGISTER_ARRAY_SIZE];
-  };
-
-  typedef struct SMU7_Discrete_MCRegisterSet SMU7_Discrete_MCRegisterSet;
-
--struct SMU7_Discrete_MCRegisters
--{
-+struct SMU7_Discrete_MCRegisters {
-      uint8_t                             last;
-      uint8_t                             reserved[3];
-      SMU7_Discrete_MCRegisterAddress     
-address[SMU7_DISCRETE_MC_REGISTER_ARRAY_SIZE];
-@@ -431,8 +415,7 @@ struct SMU7_Discrete_MCRegisters
-
-  typedef struct SMU7_Discrete_MCRegisters SMU7_Discrete_MCRegisters;
-
--struct SMU7_Discrete_FanTable
--{
-+struct SMU7_Discrete_FanTable {
-      uint16_t FdoMode;
-      int16_t  TempMin;
-      int16_t  TempMed;
