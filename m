@@ -2,100 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EE5A752E70
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 03:03:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03C21752E73
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 03:04:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234642AbjGNBDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 21:03:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50912 "EHLO
+        id S232666AbjGNBEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 21:04:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234482AbjGNBDU (ORCPT
+        with ESMTP id S233207AbjGNBEq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 21:03:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C9EE2D74
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 18:02:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689296548;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RCZyb3R24GuDipQIPDZ95wX4wOQwTE4wykLLz/wfDdA=;
-        b=UIdG4MNe07bfTv1OG8hYWIARq0uwzWYCDBzxERFnIp667ozNVxwUyeTPSsue5wE0wXvMfk
-        ExFAd0IShA0auZ2c2GlsLfwqlYEGvnRF3iPNLRqlch4H1ipXF3QujtNDaF0Wx4Fn16nFQP
-        8J3LuIYB4Fy5HTUXx9BHNu55z2Brzm0=
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
- [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-373-4VqpwyTRObmGz4Y2kVJ1lg-1; Thu, 13 Jul 2023 21:02:27 -0400
-X-MC-Unique: 4VqpwyTRObmGz4Y2kVJ1lg-1
-Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-26304c2e178so935490a91.3
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 18:02:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689296546; x=1691888546;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RCZyb3R24GuDipQIPDZ95wX4wOQwTE4wykLLz/wfDdA=;
-        b=Tz6Xa7hFsmTWvWRK5gOJoeThlPJV7VKH/3GEiR1tB71gtzCM3GIOxTZYFP9aNd8Qek
-         uO0arDfTDrrWxPZ8OLDQ1u+xz1C2qIeqltW14peXL0VaICzKceDjmY1Y2OrsxAngYWV0
-         9VNagP8LxqcXxQqJprh/zgwRVUEo7VJPd1EXh4YD3O6JZO5SrFIMB3OgzeAfimdbNJn+
-         /eatESY9/m/paCrd9V46wBRRmZme4IXN2eYlAhEsw/xEipq1NnHUdB31PdODKf3RLiKC
-         Ya2N5ltPlto0IfIKv3aHlCqQlV8VXQjM+axO27gPLOPi0IM99Rk/KZjBMQXzAsH8r+e5
-         934w==
-X-Gm-Message-State: ABy/qLZlPBu+BRt2DAv7QwcUvJA2UH40inih6o9yBA+m+HtFMfv6vTTv
-        33KUf/uu0GRUmfancwBLzoTd9lg3kdC6MIdtc8+GQOh7RA+B2EP3EZXTlxIqFPECYzUwNzFmyyA
-        lrUS8ZvTlX4xQ11Gj0aa1dxEO
-X-Received: by 2002:a17:90a:950b:b0:261:1141:b716 with SMTP id t11-20020a17090a950b00b002611141b716mr2709727pjo.33.1689296546061;
-        Thu, 13 Jul 2023 18:02:26 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFSSCf8gGL9MdVrTrliVfiTlZBbSVuaYTkwu2FoRn5pnrMxd9r/+WlBrcYEXoTEJAZF8xXaVA==
-X-Received: by 2002:a17:90a:950b:b0:261:1141:b716 with SMTP id t11-20020a17090a950b00b002611141b716mr2709710pjo.33.1689296545727;
-        Thu, 13 Jul 2023 18:02:25 -0700 (PDT)
-Received: from ?IPV6:2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5? ([2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5])
-        by smtp.gmail.com with ESMTPSA id 12-20020a17090a1a0c00b00263dfe1f8d8sm140821pjk.23.2023.07.13.18.02.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 Jul 2023 18:02:25 -0700 (PDT)
-Message-ID: <874fdca6-e029-98fe-8e6f-b21dc1eaa467@redhat.com>
-Date:   Fri, 14 Jul 2023 11:02:15 +1000
+        Thu, 13 Jul 2023 21:04:46 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2F70E2D53;
+        Thu, 13 Jul 2023 18:04:30 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.170])
+        by gateway (Coremail) with SMTP id _____8BxXescn7BkmacEAA--.7675S3;
+        Fri, 14 Jul 2023 09:04:29 +0800 (CST)
+Received: from [10.20.42.170] (unknown [10.20.42.170])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8DxJ80bn7BkG2ktAA--.59980S3;
+        Fri, 14 Jul 2023 09:04:27 +0800 (CST)
+Message-ID: <21d5a3fc-795f-bc4f-5db7-f6c0f8501927@loongson.cn>
+Date:   Fri, 14 Jul 2023 09:04:27 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.12.0
-Subject: Re: [RESEND PATCH v5 07/11] KVM: arm64: Define
- kvm_tlb_flush_vmid_range()
+Subject: Re: [PATCH] ACPI: processor_core: LoongArch: Get physical id from
+ MADT table
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230710063340.1716007-1-maobibo@loongson.cn>
+ <CAJZ5v0h8Bw9kS0tq8S1KJKZ+TW1xBSn=YhZXXjQuso2ydJjm_A@mail.gmail.com>
 Content-Language: en-US
-To:     Raghavendra Rao Ananta <rananta@google.com>
-Cc:     Oliver Upton <oliver.upton@linux.dev>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-References: <20230621175002.2832640-1-rananta@google.com>
- <20230621175002.2832640-8-rananta@google.com>
- <1fe280a7-0f10-e124-00aa-b137df722c33@redhat.com>
- <CAJHc60xQtjvVsWRE=w-pAioNJW6uh-qKuZz2wp6bkT=X4oCm5A@mail.gmail.com>
- <60ba5bb4-6fad-0e51-2cd5-845610e6631d@redhat.com>
- <CAJHc60y6AaAUVy=V6GHTpVhHGO3Bjn1vpTnYpdFiFLjS-vR-uA@mail.gmail.com>
-From:   Gavin Shan <gshan@redhat.com>
-In-Reply-To: <CAJHc60y6AaAUVy=V6GHTpVhHGO3Bjn1vpTnYpdFiFLjS-vR-uA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From:   bibo mao <maobibo@loongson.cn>
+In-Reply-To: <CAJZ5v0h8Bw9kS0tq8S1KJKZ+TW1xBSn=YhZXXjQuso2ydJjm_A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-CM-TRANSID: AQAAf8DxJ80bn7BkG2ktAA--.59980S3
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoWxurW7ZFWfGF18WFyUtw18Zwc_yoW5Gw13pF
+        y8tayYk3WUGFnIgF1Sqa45JFWYq3y09a4S9F4xG343tFnYkr1rXF47JryYgryDAF4rK3y0
+        vF48tFW8uFWUtFgCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
+        Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx1l5I
+        8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AK
+        xVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzV
+        AYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E
+        14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIx
+        kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAF
+        wI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r
+        4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1EksDUU
+        UUU==
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -103,101 +66,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Raghavendra,
 
-On 7/14/23 04:47, Raghavendra Rao Ananta wrote:
-> On Wed, Jul 5, 2023 at 5:04 PM Gavin Shan <gshan@redhat.com> wrote:
+
+在 2023/7/13 23:28, Rafael J. Wysocki 写道:
+> On Mon, Jul 10, 2023 at 8:33 AM Bibo Mao <maobibo@loongson.cn> wrote:
 >>
->> On 7/6/23 04:28, Raghavendra Rao Ananta wrote:
->>> On Tue, Jul 4, 2023 at 5:31 PM Gavin Shan <gshan@redhat.com> wrote:
->>>> On 6/22/23 03:49, Raghavendra Rao Ananta wrote:
->>>>> Implement the helper kvm_tlb_flush_vmid_range() that acts
->>>>> as a wrapper for range-based TLB invalidations. For the
->>>>> given VMID, use the range-based TLBI instructions to do
->>>>> the job or fallback to invalidating all the TLB entries.
->>>>>
->>>>> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
->>>>> ---
->>>>>     arch/arm64/include/asm/kvm_pgtable.h | 10 ++++++++++
->>>>>     arch/arm64/kvm/hyp/pgtable.c         | 20 ++++++++++++++++++++
->>>>>     2 files changed, 30 insertions(+)
->>>>>
->>>>
->>>> It may be reasonable to fold this to PATCH[08/11] since kvm_tlb_flush_vmid_range() is
->>>> only called by ARM64's kvm_arch_flush_remote_tlbs_range(), which is added by PATCH[08/11].
->>>> In either way, the changes look good to me:
->>>>
->>> Ah, the patches 10 and 11 also call kvm_tlb_flush_vmid_range(), so
->>> probably it's better to keep the definition isolated?
->>>
+>> With ACPI Spec 6.5 physical id can be parsed from MADT table for
+>> LoongArch system, also it can be used in MAT table for cpu hotplug
+>> stage. This patch adds physical id parsing for LoongArch system.
 >>
->> Thanks for your explanation. It's fine to have two separate patches in this
->> case. I still need to spend some time to look at PATCH[11/11] whose subject
->> includes typo (intructions -> instructions)
+>> Signed-off-by: Bibo Mao <maobibo@loongson.cn>
+>> ---
+>>  drivers/acpi/processor_core.c | 25 +++++++++++++++++++++++++
+>>  1 file changed, 25 insertions(+)
 >>
-> I'm planning to send v6 soon, but I'm happy to wait if you have any
-> other comments on v5 patch-11.
-> Appreciate your help with the reviews.
+>> diff --git a/drivers/acpi/processor_core.c b/drivers/acpi/processor_core.c
+>> index d6606a9f2da6..51239cd2a485 100644
+>> --- a/drivers/acpi/processor_core.c
+>> +++ b/drivers/acpi/processor_core.c
+>> @@ -132,6 +132,26 @@ static int map_rintc_hartid(struct acpi_subtable_header *entry,
+>>         return -EINVAL;
+>>  }
+>>
+>> +/*
+>> + * Retrieve LoongArch CPU physical id
+>> + */
+>> +static int map_core_pic_id(struct acpi_subtable_header *entry,
+>> +               int device_declaration, u32 acpi_id, phys_cpuid_t *apic_id)
+>> +{
+>> +       struct acpi_madt_core_pic *core_pic =
+>> +               container_of(entry, struct acpi_madt_core_pic, header);
+>> +
+>> +       if (!(core_pic->flags & ACPI_MADT_ENABLED))
+>> +               return -ENODEV;
+>> +
+>> +       if (device_declaration && (core_pic->processor_id == acpi_id)) {
+>> +               *apic_id = core_pic->core_id;
+>> +               return 0;
+>> +       }
+>> +
+>> +       return -EINVAL;
+>> +}
+>> +
+>>  static phys_cpuid_t map_madt_entry(struct acpi_table_madt *madt,
+>>                                    int type, u32 acpi_id)
+>>  {
+>> @@ -165,6 +185,9 @@ static phys_cpuid_t map_madt_entry(struct acpi_table_madt *madt,
+>>                 } else if (header->type == ACPI_MADT_TYPE_RINTC) {
+>>                         if (!map_rintc_hartid(header, type, acpi_id, &phys_id))
+>>                                 break;
+>> +               } else if (header->type == ACPI_MADT_TYPE_CORE_PIC) {
+>> +                       if (!map_core_pic_id(header, type, acpi_id, &phys_id))
 > 
+> Is ACPI_MADT_TYPE_CORE_PIC specific to LoongArch?  The changelog
+> should mention it if that's the case.
+Rafael,
 
-I didn't get a chance to look at PATCH[11/11] yet. Please post v6 and I will
-take a look on PATCH[v6 11/11]. Sorry for the delay.
+Thanks for reviewing my patch.
 
-Thanks,
-Gavin
+Yes, ACPI_MADT_TYPE_CORE_PIC is specific to LoongArch. And I will modify the changelog
+in the next version.
 
->>>> Reviewed-by: Gavin Shan <gshan@redhat.com>
->>>>
->>>>> diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
->>>>> index 4cd6762bda805..1b12295a83595 100644
->>>>> --- a/arch/arm64/include/asm/kvm_pgtable.h
->>>>> +++ b/arch/arm64/include/asm/kvm_pgtable.h
->>>>> @@ -682,4 +682,14 @@ enum kvm_pgtable_prot kvm_pgtable_stage2_pte_prot(kvm_pte_t pte);
->>>>>      *     kvm_pgtable_prot format.
->>>>>      */
->>>>>     enum kvm_pgtable_prot kvm_pgtable_hyp_pte_prot(kvm_pte_t pte);
->>>>> +
->>>>> +/**
->>>>> + * kvm_tlb_flush_vmid_range() - Invalidate/flush a range of TLB entries
->>>>> + *
->>>>> + * @mmu:     Stage-2 KVM MMU struct
->>>>> + * @addr:    The base Intermediate physical address from which to invalidate
->>>>> + * @size:    Size of the range from the base to invalidate
->>>>> + */
->>>>> +void kvm_tlb_flush_vmid_range(struct kvm_s2_mmu *mmu,
->>>>> +                             phys_addr_t addr, size_t size);
->>>>>     #endif      /* __ARM64_KVM_PGTABLE_H__ */
->>>>> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
->>>>> index 3d61bd3e591d2..df8ac14d9d3d4 100644
->>>>> --- a/arch/arm64/kvm/hyp/pgtable.c
->>>>> +++ b/arch/arm64/kvm/hyp/pgtable.c
->>>>> @@ -631,6 +631,26 @@ static bool stage2_has_fwb(struct kvm_pgtable *pgt)
->>>>>         return !(pgt->flags & KVM_PGTABLE_S2_NOFWB);
->>>>>     }
->>>>>
->>>>> +void kvm_tlb_flush_vmid_range(struct kvm_s2_mmu *mmu,
->>>>> +                             phys_addr_t addr, size_t size)
->>>>> +{
->>>>> +     unsigned long pages, inval_pages;
->>>>> +
->>>>> +     if (!system_supports_tlb_range()) {
->>>>> +             kvm_call_hyp(__kvm_tlb_flush_vmid, mmu);
->>>>> +             return;
->>>>> +     }
->>>>> +
->>>>> +     pages = size >> PAGE_SHIFT;
->>>>> +     while (pages > 0) {
->>>>> +             inval_pages = min(pages, MAX_TLBI_RANGE_PAGES);
->>>>> +             kvm_call_hyp(__kvm_tlb_flush_vmid_range, mmu, addr, inval_pages);
->>>>> +
->>>>> +             addr += inval_pages << PAGE_SHIFT;
->>>>> +             pages -= inval_pages;
->>>>> +     }
->>>>> +}
->>>>> +
->>>>>     #define KVM_S2_MEMATTR(pgt, attr) PAGE_S2_MEMATTR(attr, stage2_has_fwb(pgt))
->>>>>
->>>>>     static int stage2_set_prot_attr(struct kvm_pgtable *pgt, enum kvm_pgtable_prot prot,
->>
+Regards
+Bibo Mao
 > 
+>> +                               break;
+>>                 }
+>>                 entry += header->length;
+>>         }
+>> @@ -216,6 +239,8 @@ static phys_cpuid_t map_mat_entry(acpi_handle handle, int type, u32 acpi_id)
+>>                 map_x2apic_id(header, type, acpi_id, &phys_id);
+>>         else if (header->type == ACPI_MADT_TYPE_GENERIC_INTERRUPT)
+>>                 map_gicc_mpidr(header, type, acpi_id, &phys_id);
+>> +       else if (header->type == ACPI_MADT_TYPE_CORE_PIC)
+>> +               map_core_pic_id(header, type, acpi_id, &phys_id);
+>>
+>>  exit:
+>>         kfree(buffer.pointer);
+>> --
+>> 2.27.0
+>>
 
