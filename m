@@ -2,52 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0FC8754099
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 19:41:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6393D75409B
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 19:41:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236097AbjGNRkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 13:40:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55568 "EHLO
+        id S236133AbjGNRki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 13:40:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235749AbjGNRk1 (ORCPT
+        with ESMTP id S236126AbjGNRkd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 13:40:27 -0400
-Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 655F03A84;
-        Fri, 14 Jul 2023 10:40:26 -0700 (PDT)
-Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-7835e5fa459so85909739f.2;
-        Fri, 14 Jul 2023 10:40:26 -0700 (PDT)
+        Fri, 14 Jul 2023 13:40:33 -0400
+Received: from mail-io1-f42.google.com (mail-io1-f42.google.com [209.85.166.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1FBE3A94;
+        Fri, 14 Jul 2023 10:40:29 -0700 (PDT)
+Received: by mail-io1-f42.google.com with SMTP id ca18e2360f4ac-78666f06691so88019239f.0;
+        Fri, 14 Jul 2023 10:40:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689356425; x=1691948425;
+        d=1e100.net; s=20221208; t=1689356429; x=1691948429;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Kb4dR+z+OTgQHnETYo6UxSYgXlKF4+KcDIOkEstmL88=;
-        b=WWRgi3LgRp2uUy3NaxYM4yySlWTYlvGZbfYObAPl4igxHvgA/8Hji2vFaLyyVjFzIL
-         18U7/TvkstDzpxNJ+KUWP9xoF7Bym0+JOavkn4MV9QXYYb/0EEjk4AfUd3t1cbP0d/bT
-         aEA+uDvfmy01/cUpBAnSGwKq5WhFDzAT5IqJdqmj8gx0KGtQ/pTKsRxCRBrvupPA4i2v
-         nIo9fLozf/fJwHPWmhVnjofH0Q5CQCnBS2C1W6bxvNkc4Bin+TwmtFavN+piInf2K1UQ
-         2mBKi95JP4Dc5vf+dZLzl/3XFHxqUBjAQpBw6SHXgcyGXViX+8Rb5bwc25Jutzt/69o8
-         2eEg==
-X-Gm-Message-State: ABy/qLav7WPQE1QaLpBzKsJKqe4ajeEwvGvChctxJbcGQZLG72HE/31y
-        gWJUtxEoAmpNfIbxbwa9C2TnbdUULA==
-X-Google-Smtp-Source: APBJJlEBL3vIYFO5LMg3/N8C4xffY/g7NVOhko+tf5h+Zi20xBg5HDeMdJ4KgecQvDnjn4wWMSFFdQ==
-X-Received: by 2002:a6b:3c03:0:b0:783:7275:9c47 with SMTP id k3-20020a6b3c03000000b0078372759c47mr4957903iob.7.1689356425225;
-        Fri, 14 Jul 2023 10:40:25 -0700 (PDT)
+        bh=Me3eQAxtkYEt1As/TJ8gtlG9I7mp3faMQUIZ1X3guVM=;
+        b=EqVhtWli27ME9+FIFN/qQWDHJno30DtkuzDhhhIA5ecE1IxtKsoze647erJl5UMptz
+         s8JjQSVx4o5PG/c6/ojmyMhBsJF5cVUCX33apuAYms8bQAT4OBZrYchybes+tFT2v15k
+         X6Hn8AbXEQ3zf1RqaF+8NmjwhGGSTbRt9TKbiCSwqntkNwaHYQBdUgrZNqtz7EoX371S
+         6STyDlD1I54FZ8Mf6oId/TpFTd0stuw4wU4DgHqpxku90rKGuYEjH0Ss/6fmJTHsXdM/
+         BqtZLedePQQYe4ohLVkGvM0mUkxL47ODQ747bC+DfQmuTXiNObwCJIk0G/QzNo887+yW
+         /asw==
+X-Gm-Message-State: ABy/qLaa+9xGD4knNMk3LIiSpmrvzXIxQCkgO+WA/ijk08fr30A0wcso
+        XAajKSgxXH2Ewrjmkgtd6Onb6qSuUA==
+X-Google-Smtp-Source: APBJJlHxEqwUSGqf8oHHKwjtywph6EMwM1DtmtII+Y+8QWLovfd5P5qKIMaW4TcFAxw+Y4tCYFtzNA==
+X-Received: by 2002:a5d:924c:0:b0:785:d06d:7b04 with SMTP id e12-20020a5d924c000000b00785d06d7b04mr5250377iol.1.1689356429010;
+        Fri, 14 Jul 2023 10:40:29 -0700 (PDT)
 Received: from robh_at_kernel.org ([64.188.179.250])
-        by smtp.gmail.com with ESMTPSA id x11-20020a02ac8b000000b0042bb13cb80fsm2741577jan.120.2023.07.14.10.40.23
+        by smtp.gmail.com with ESMTPSA id i15-20020a02cc4f000000b0042b35c7b8c5sm2812180jaq.61.2023.07.14.10.40.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 10:40:24 -0700 (PDT)
-Received: (nullmailer pid 4039894 invoked by uid 1000);
-        Fri, 14 Jul 2023 17:40:23 -0000
+        Fri, 14 Jul 2023 10:40:28 -0700 (PDT)
+Received: (nullmailer pid 4040049 invoked by uid 1000);
+        Fri, 14 Jul 2023 17:40:27 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: Explicitly include correct DT includes
-Date:   Fri, 14 Jul 2023 11:40:20 -0600
-Message-Id: <20230714174021.4039807-1-robh@kernel.org>
+To:     Michal Simek <monstr@monstr.eu>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] microblaze: Explicitly include correct DT includes
+Date:   Fri, 14 Jul 2023 11:40:23 -0600
+Message-Id: <20230714174023.4039938-1-robh@kernel.org>
 X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -73,36 +71,21 @@ explicitly include the correct includes.
 
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- arch/arm64/kernel/cpuidle.c | 2 --
- arch/arm64/kernel/pci.c     | 2 --
- 2 files changed, 4 deletions(-)
+ arch/microblaze/kernel/reset.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/arm64/kernel/cpuidle.c b/arch/arm64/kernel/cpuidle.c
-index d1f68599c29f..f372295207fb 100644
---- a/arch/arm64/kernel/cpuidle.c
-+++ b/arch/arm64/kernel/cpuidle.c
-@@ -9,8 +9,6 @@
- #include <linux/acpi.h>
- #include <linux/cpuidle.h>
- #include <linux/cpu_pm.h>
--#include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/psci.h>
+diff --git a/arch/microblaze/kernel/reset.c b/arch/microblaze/kernel/reset.c
+index 5f4722908164..2f66c7963084 100644
+--- a/arch/microblaze/kernel/reset.c
++++ b/arch/microblaze/kernel/reset.c
+@@ -9,7 +9,6 @@
  
- #ifdef CONFIG_ACPI_PROCESSOR_IDLE
-diff --git a/arch/arm64/kernel/pci.c b/arch/arm64/kernel/pci.c
-index 2276689b5411..f872c57e9909 100644
---- a/arch/arm64/kernel/pci.c
-+++ b/arch/arm64/kernel/pci.c
-@@ -11,8 +11,6 @@
- #include <linux/io.h>
- #include <linux/kernel.h>
- #include <linux/mm.h>
--#include <linux/of_pci.h>
+ #include <linux/init.h>
+ #include <linux/delay.h>
 -#include <linux/of_platform.h>
- #include <linux/pci.h>
- #include <linux/pci-acpi.h>
- #include <linux/pci-ecam.h>
+ #include <linux/reboot.h>
+ 
+ void machine_shutdown(void)
 -- 
 2.40.1
 
