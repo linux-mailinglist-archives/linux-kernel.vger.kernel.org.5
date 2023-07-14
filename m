@@ -2,101 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45114753A5E
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 14:08:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0131C753A59
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 14:08:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235692AbjGNMIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 08:08:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56538 "EHLO
+        id S235667AbjGNMHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 08:07:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235132AbjGNMIh (ORCPT
+        with ESMTP id S230101AbjGNMHt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 08:08:37 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5210E358D;
-        Fri, 14 Jul 2023 05:08:34 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9922d6f003cso241551366b.0;
-        Fri, 14 Jul 2023 05:08:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689336512; x=1691928512;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=EIFl8xI2UuButzAPajsmIgl+1a2EybRrJWZfodELGUY=;
-        b=aVNQhIPQ1nkqW5pkVpZdSjcL6JZy9VedWY2TZHdFs0Lu7/c2LpssorRCvcSTCioaBA
-         iCNUmw5Efykan1bmbS11TBRHhNY3ryMQACoTDO11aEOvIA3kIgnLF6dBa9fZsYyxECFi
-         n9XU5n+danqERRXMIbR/IXKpBwwnrrhHFYBDH1Oi1mRB4ImVyNclf9Zjwq1/8V2jcMR/
-         n6p83BdU82ZU2WHwVFkNeZO3bAnDwdSeqEKNiA4spxHbzZQb+HBORs+Pks5oswT19hHG
-         V8ItEOdMC/5XGUFGzrKsqw3xUop9xFU6nkbZBGRUXJKabP834zs2VNGCbMlIUPr50Qcu
-         +y1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689336512; x=1691928512;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EIFl8xI2UuButzAPajsmIgl+1a2EybRrJWZfodELGUY=;
-        b=Fvug0N5fFmFXO4OnXDFiUkS/rDF2h1IMcfoqYYPAnVI6hRkmcO+5uwXCRKrEwhn7gt
-         1GZN+ZM4jXozC0UOY6hDvHFyxB2KFewCJxj8DPQ/zPmklCDYD5DQtIIuChmq2mNC0BOJ
-         zyYQgU1MASk+fBzVlHpxhHS3idsmYJBrbyiMHe6X7LeYTWbnZXbnUuz2G1j1upPI+ZVk
-         FWjHOWt5P84gN5oZNNYSg8Hn+BsrjuygIkGVUIAkoaiL2bGqNRZH6v63A/IbGO+BCTEk
-         37Uu/F+RsyGEPI58ARYzBV3ky0alyxIZNf03QT1Dn/doo3jaxRQWewNsihIZvKGcOUNR
-         h8zA==
-X-Gm-Message-State: ABy/qLb270s/iCuGMAr17mIeIs1H6sriNBgmQdfYBsztfOYbx8+bS0th
-        zP0tPgRg9npOIKeYxANZdNWmNrUrsLa7YA==
-X-Google-Smtp-Source: APBJJlH1q7yzLA0bE26y5w8EyiRv4iKEZe0nRQzu/y4KSzbt2jvjkm0gwGSyym2gR35OsQskcy8z0g==
-X-Received: by 2002:a17:906:ce3a:b0:988:9d0f:db52 with SMTP id sd26-20020a170906ce3a00b009889d0fdb52mr3941880ejb.35.1689336512361;
-        Fri, 14 Jul 2023 05:08:32 -0700 (PDT)
-Received: from fedora.. (cable-178-148-234-71.dynamic.sbb.rs. [178.148.234.71])
-        by smtp.gmail.com with ESMTPSA id hb24-20020a170906b89800b00977c7566ccbsm5238148ejb.164.2023.07.14.05.08.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 05:08:31 -0700 (PDT)
-From:   Aleksa Savic <savicaleksa83@gmail.com>
-To:     linux-hwmon@vger.kernel.org
-Cc:     Aleksa Savic <savicaleksa83@gmail.com>, stable@vger.kernel.org,
-        Jack Doan <me@jackdoan.com>, Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] hwmon: (aquacomputer_d5next) Fix incorrect PWM value readout
-Date:   Fri, 14 Jul 2023 14:07:11 +0200
-Message-ID: <20230714120712.16721-1-savicaleksa83@gmail.com>
-X-Mailer: git-send-email 2.41.0
+        Fri, 14 Jul 2023 08:07:49 -0400
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AED7212B;
+        Fri, 14 Jul 2023 05:07:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689336468; x=1720872468;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version:content-id;
+  bh=/htYl69qlNj31QSX3mVg5JuWkegOCtKSr3VzQLqpegg=;
+  b=IxfPROnrLQk9jqvbh2JGJ8sAIn0p6o/FwmYdKsvg9LLmHzi7c2aH/fuV
+   3r2oV4xTrObClI4urRlEIZNafbgSdWUhuvvjgGjvrup19vTjrvVvNDYgX
+   B7rAJdOoAbSZqDJyPWDt0d9GoZda6LhMjwatb5l0wUPNZbiXnpvj9D84/
+   ldvC6TU5x7E/n3VFW1MwfjMAaHrSO6m22Iwk4unlF4VT7M4UBvqqxWBtb
+   YeJoHj0lGn133RF9nUKRE+3IUxuAGo8VBDjZPt37mePAe34dT+D+YLSlz
+   ucdWvTAeIf5cg8nlVcgjgJEZ2kvpKV2HgZlQ4YE2WaQN9p65VvLMclLnj
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="362926043"
+X-IronPort-AV: E=Sophos;i="6.01,205,1684825200"; 
+   d="scan'208";a="362926043"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 05:07:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="846433196"
+X-IronPort-AV: E=Sophos;i="6.01,205,1684825200"; 
+   d="scan'208";a="846433196"
+Received: from rchauhax-mobl1.gar.corp.intel.com ([10.249.35.123])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 05:07:44 -0700
+Date:   Fri, 14 Jul 2023 15:07:42 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Ruihong Luo <colorsu1922@gmail.com>
+cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-serial <linux-serial@vger.kernel.org>,
+        stable@vger.kernel.org, luoruihong@xiaomi.com,
+        weipengliang@xiaomi.com, wengjinfei@xiaomi.com
+Subject: Re: [PATCH v4] serial: 8250_dw: Preserve original value of DLF
+ register
+In-Reply-To: <20230713004235.35904-1-colorsu1922@gmail.com>
+Message-ID: <5fac4a28-ff70-d6e6-dcee-8cb45916789@linux.intel.com>
+References: <20230713004235.35904-1-colorsu1922@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; BOUNDARY="8323329-16913354-1689336427=:1695"
+Content-ID: <93c61472-25c0-bc4d-bf2c-23a581131bc@linux.intel.com>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 662d20b3a5af ("hwmon: (aquacomputer_d5next) Add support for
-temperature sensor offsets") changed aqc_get_ctrl_val() to return
-the value through a parameter instead of through the return value,
-but didn't fix up a case that relied on the old behavior. Fix it
-to use the proper received value and not the return code.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Fixes: 662d20b3a5af ("hwmon: (aquacomputer_d5next) Add support for temperature sensor offsets")
+--8323329-16913354-1689336427=:1695
+Content-Type: text/plain; CHARSET=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
+Content-ID: <6b473574-4ff8-9b19-862f-115f12225a5@linux.intel.com>
+
+On Thu, 13 Jul 2023, Ruihong Luo wrote:
+
+> Preserve the original value of the Divisor Latch Fraction (DLF) register.
+> When the DLF register is modified without preservation, it can disrupt
+> the baudrate settings established by firmware or bootloader, leading to
+> data corruption and the generation of unreadable or distorted characters.
+> 
+> Fixes: 701c5e73b296 ("serial: 8250_dw: add fractional divisor support")
+
+You forgot to add:
+
 Cc: stable@vger.kernel.org
-Signed-off-by: Aleksa Savic <savicaleksa83@gmail.com>
----
- drivers/hwmon/aquacomputer_d5next.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/hwmon/aquacomputer_d5next.c b/drivers/hwmon/aquacomputer_d5next.c
-index a981f7086114..a997dbcb563f 100644
---- a/drivers/hwmon/aquacomputer_d5next.c
-+++ b/drivers/hwmon/aquacomputer_d5next.c
-@@ -1027,7 +1027,7 @@ static int aqc_read(struct device *dev, enum hwmon_sensor_types type, u32 attr,
- 			if (ret < 0)
- 				return ret;
- 
--			*val = aqc_percent_to_pwm(ret);
-+			*val = aqc_percent_to_pwm(*val);
- 			break;
- 		}
- 		break;
+> Signed-off-by: Ruihong Luo <colorsu1922@gmail.com>
+
+Other than that,
+
+Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+
 -- 
-2.35.0
+ i.
 
+> ---
+> v4:
+> * Use the old_dlf to hold the DLF register value
+> 
+>  drivers/tty/serial/8250/8250_dwlib.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/tty/serial/8250/8250_dwlib.c b/drivers/tty/serial/8250/8250_dwlib.c
+> index 75f32f054ebb..84843e204a5e 100644
+> --- a/drivers/tty/serial/8250/8250_dwlib.c
+> +++ b/drivers/tty/serial/8250/8250_dwlib.c
+> @@ -244,7 +244,7 @@ void dw8250_setup_port(struct uart_port *p)
+>  	struct dw8250_port_data *pd = p->private_data;
+>  	struct dw8250_data *data = to_dw8250_data(pd);
+>  	struct uart_8250_port *up = up_to_u8250p(p);
+> -	u32 reg;
+> +	u32 reg, old_dlf;
+>  
+>  	pd->hw_rs485_support = dw8250_detect_rs485_hw(p);
+>  	if (pd->hw_rs485_support) {
+> @@ -270,9 +270,11 @@ void dw8250_setup_port(struct uart_port *p)
+>  	dev_dbg(p->dev, "Designware UART version %c.%c%c\n",
+>  		(reg >> 24) & 0xff, (reg >> 16) & 0xff, (reg >> 8) & 0xff);
+>  
+> +	/* Preserve value written by firmware or bootloader  */
+> +	old_dlf = dw8250_readl_ext(p, DW_UART_DLF);
+>  	dw8250_writel_ext(p, DW_UART_DLF, ~0U);
+>  	reg = dw8250_readl_ext(p, DW_UART_DLF);
+> -	dw8250_writel_ext(p, DW_UART_DLF, 0);
+> +	dw8250_writel_ext(p, DW_UART_DLF, old_dlf);
+>  
+>  	if (reg) {
+>  		pd->dlf_size = fls(reg);
+> 
+--8323329-16913354-1689336427=:1695--
