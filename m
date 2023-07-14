@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B96F7542FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 21:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C4577542FA
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 21:03:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236659AbjGNTDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 15:03:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59542 "EHLO
+        id S236360AbjGNTDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 15:03:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235491AbjGNTDi (ORCPT
+        with ESMTP id S235666AbjGNTDi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 14 Jul 2023 15:03:38 -0400
 Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 761FF358D;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73C0D358C;
         Fri, 14 Jul 2023 12:03:35 -0700 (PDT)
 Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 9FC50100005;
+        by mx1.sberdevices.ru (Postfix) with ESMTP id DAB40100006;
         Fri, 14 Jul 2023 22:03:32 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 9FC50100005
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru DAB40100006
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
         s=mail; t=1689361412;
-        bh=UKToA8zywV8uXSaW87LKG0cPDy8zHjWEhriI54HK4g0=;
+        bh=Fb0dBL6rswv5znabzmWo6BH+sWIBGMpwWD/C6JhcIu4=;
         h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-        b=q/buLI26I/8SjpIeBae5BfI4vwuzW+zm5f/xBiuLAr/BXwspqTcgIFSjhQEDJyl+u
-         Tb3rGB2IfPHKqs+uZgfCCPjIj3mD3q/J7YA5ZxjYX/yzgZg6fdfqjcZRsLh3puOchJ
-         YkWLipxdnr5v7F40p2wPtgPyToPriSmE4cKbAmOn+BCLhrgpPWxmqelOSmyKcN4THs
-         460b8K74xsy6ao2Kw/b9W0aYA8yECYy860CSzkQCWI8InNC2jBtO4pkc3OcVxoRqlB
-         Hhm+bm9mQiurUfwNwMslT3Noz5d0Swk/7YNq+KVXyWCN33q60ezbhA/svzsSS+gO5G
-         mpeMoly+bffAA==
+        b=Uldy4UkG0hFpwUJ+wHAxNeY38ov1cYZUx+gIPVLrldD+FnP/kQ4c5bcPPjI7yCRi8
+         /t6bv60dz4CN9hUl/6RqTQ6fujEhxfrIUG1JCfMQDFcooMk9XvsekvlSZi7k0bj/y0
+         24gLctBZrwL67F7uCxNLVXsAZz1lJGzg/ujCpo9lJAn3ZEC7OYr23Jw7XZG0YHjJzU
+         87nXW4Y8X7+xSP5z6R0s1Ma5ikVOdVzJ/bsqY0r5wg8mbaFwSxRXYRM5nZsny/nW11
+         HnjVK2z+xXWon3EfIRnFn73lVSNd9LW/Y4gQkSW2kQ8/dLShsA18/hYCfc/hKAuVhR
+         ryicvlcjGuBfQ==
 Received: from p-i-exch-sc-m02.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
@@ -48,10 +48,12 @@ CC:     <linux-iio@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>,
         <linux-amlogic@lists.infradead.org>, <kernel@sberdevices.ru>
-Subject: [PATCH v1 0/1] iio: adc: meson: fix core clock enable/disable moment
-Date:   Fri, 14 Jul 2023 22:03:14 +0300
-Message-ID: <20230714190320.308320-1-gnstark@sberdevices.ru>
+Subject: [PATCH v1 1/1] iio: adc: meson: fix core clock enable/disable moment
+Date:   Fri, 14 Jul 2023 22:03:15 +0300
+Message-ID: <20230714190320.308320-2-gnstark@sberdevices.ru>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230714190320.308320-1-gnstark@sberdevices.ru>
+References: <20230714190320.308320-1-gnstark@sberdevices.ru>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -84,58 +86,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is a part of effort to support meson a1 SoC and make meson saradc driver
-independent from vendor boot code initialization in common.
+Enable core clock at probe stage and disable it at remove stage.
+Core clock is responsible for turning on/off the entire SoC module so
+it should be on before the first module register is touched and be off
+at very last moment.
 
-Core clock (passed to adc module thru dts) is supposed to be responsible for entier module
-and should be on before accessing modules' regs.
-
-I've made experiments and here are the results:
-
-on odroid-c1 (meson8) adc regs became readonly with core clock off:
-# disable clock (HHI_GCLK_MPEG0 bit 10)
-devmem 0xc1104140 32 0xBFFA72FF
-devmem 0xc110868C
-0xE3A851FF
-devmem 0xc110868C 32 0xE3A85100
-devmem 0xc110868C
-0xE3A851FF
-# enable clock
-devmem 0xc1104140 32 0xBFFA76FF
- devmem 0xc110868C
-0xE3A851FF
-devmem 0xc110868C 32 0xE3A85100
-devmem 0xc110868C
-0xE3A85100
-
-on vim3 (a311d) adc regs became readonly with core clock off:
-# disable adc core clock:
-devmem 0xff80004C 32 0xFFFFFEFF
-# the adc register become readonly:
-devmem 0xff80902c
-0x002C2002
-devmem 0xff80902c 32 0x002C2000
-devmem 0xff80902c
-0x002C2002
-
-on a1 adc registers are none-readable-writeable when adc core clock is off:
-devmem 0xfe002c2c
-0x00002003
-# disable clock
-devmem 0xfe00081c 32 0xFFFF9FFF
-devmem 0xfe002c2c
-0x00000000
-# enable clock
-devmem 0xfe00081c 32 0xFFFFFFFF
-devmem 0xfe002c2c
-0x00002003
-
-George Stark (1):
-  iio: adc: meson: fix core clock enable/disable moment
-
+Signed-off-by: George Stark <gnstark@sberdevices.ru>
+---
  drivers/iio/adc/meson_saradc.c | 20 ++++++++++----------
  1 file changed, 10 insertions(+), 10 deletions(-)
 
+diff --git a/drivers/iio/adc/meson_saradc.c b/drivers/iio/adc/meson_saradc.c
+index fe066c9fab83..5a5bb5cc1320 100644
+--- a/drivers/iio/adc/meson_saradc.c
++++ b/drivers/iio/adc/meson_saradc.c
+@@ -1055,12 +1055,6 @@ static int meson_sar_adc_hw_enable(struct iio_dev *indio_dev)
+ 		goto err_vref;
+ 	}
+ 
+-	ret = clk_prepare_enable(priv->core_clk);
+-	if (ret) {
+-		dev_err(dev, "failed to enable core clk\n");
+-		goto err_core_clk;
+-	}
+-
+ 	regval = FIELD_PREP(MESON_SAR_ADC_REG0_FIFO_CNT_IRQ_MASK, 1);
+ 	regmap_update_bits(priv->regmap, MESON_SAR_ADC_REG0,
+ 			   MESON_SAR_ADC_REG0_FIFO_CNT_IRQ_MASK, regval);
+@@ -1087,8 +1081,6 @@ static int meson_sar_adc_hw_enable(struct iio_dev *indio_dev)
+ 	regmap_update_bits(priv->regmap, MESON_SAR_ADC_REG3,
+ 			   MESON_SAR_ADC_REG3_ADC_EN, 0);
+ 	meson_sar_adc_set_bandgap(indio_dev, false);
+-	clk_disable_unprepare(priv->core_clk);
+-err_core_clk:
+ 	regulator_disable(priv->vref);
+ err_vref:
+ 	meson_sar_adc_unlock(indio_dev);
+@@ -1116,8 +1108,6 @@ static void meson_sar_adc_hw_disable(struct iio_dev *indio_dev)
+ 
+ 	meson_sar_adc_set_bandgap(indio_dev, false);
+ 
+-	clk_disable_unprepare(priv->core_clk);
+-
+ 	regulator_disable(priv->vref);
+ 
+ 	if (!ret)
+@@ -1420,6 +1410,12 @@ static int meson_sar_adc_probe(struct platform_device *pdev)
+ 			ARRAY_SIZE(meson_sar_adc_iio_channels);
+ 	}
+ 
++	ret = clk_prepare_enable(priv->core_clk);
++	if (ret) {
++		dev_err(dev, "failed to enable core clk\n");
++		goto err;
++	}
++
+ 	ret = meson_sar_adc_init(indio_dev);
+ 	if (ret)
+ 		goto err;
+@@ -1445,17 +1441,21 @@ static int meson_sar_adc_probe(struct platform_device *pdev)
+ err_hw:
+ 	meson_sar_adc_hw_disable(indio_dev);
+ err:
++	clk_disable_unprepare(priv->core_clk);
+ 	return ret;
+ }
+ 
+ static int meson_sar_adc_remove(struct platform_device *pdev)
+ {
+ 	struct iio_dev *indio_dev = platform_get_drvdata(pdev);
++	struct meson_sar_adc_priv *priv = iio_priv(indio_dev);
+ 
+ 	iio_device_unregister(indio_dev);
+ 
+ 	meson_sar_adc_hw_disable(indio_dev);
+ 
++	clk_disable_unprepare(priv->core_clk);
++
+ 	return 0;
+ }
+ 
 -- 
 2.38.4
 
