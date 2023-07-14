@@ -2,164 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61E7675364D
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:21:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E5F3753650
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:22:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234896AbjGNJVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 05:21:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49282 "EHLO
+        id S234954AbjGNJWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 05:22:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234317AbjGNJVs (ORCPT
+        with ESMTP id S234966AbjGNJWK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 05:21:48 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FCD4211C;
-        Fri, 14 Jul 2023 02:21:47 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 4E7606600357;
-        Fri, 14 Jul 2023 10:21:44 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1689326505;
-        bh=aQFzKq+ca3eHMYbMfFhasP40m7wIjw2gYDIjXkZhC3k=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=IRnpytYs7MityuQa2jBNUVOSa7U26dQHWq4XXuTfoiphZAAL+SS9DbCRYwhG3ALbn
-         8hU+02LtxjPHKtoDWKJ7r2pGGZYRyLqadZunMcIx3X7YqjiA3Ki9428ORvkgQlT/Zf
-         J6474xGUuDQ9PmlD+m0VpuU4fbllIEFNMs/p5VS1GyGmq4hXpXggL7dZIx3XE8mQDP
-         CZOmaY1yuSPQY8CInVSBjEEW7T0iI/f2lZS1fcX1MY1ftDHCpHoUXzL1XJpaJSLFfD
-         +uPrTENumZZ2ZiQJnQ1z026pP1H4aXiJkBVTSy+rCjWNtB5g/usENkkvlQNPW8nYak
-         C4FUn2IPogrsA==
-Message-ID: <0dc87b13-77f7-ff1e-f621-43e692b4b8ff@collabora.com>
-Date:   Fri, 14 Jul 2023 11:21:41 +0200
+        Fri, 14 Jul 2023 05:22:10 -0400
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24E122D63;
+        Fri, 14 Jul 2023 02:22:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689326529; x=1720862529;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=OMB/N6BPRDjZBe+8HIGutNalCNZjLvvhIVpbF29doEE=;
+  b=GbpGYqpXSfhYb494uaS3bSNDQEE38hRiHFEb27XJmkqdU7MY598sJYvw
+   H6BLmav5VsVyTXUnHnLBLLVWUd6uqjQZEw7b8QAEnJDnijP80oPIQ3NU8
+   QjsRgnEAp0kU88FGKslpKLm/TIyyB++Hb/egT6rXWE9dHUApVUUV60tTo
+   9CmGxGFdIw9LDdqy5c/ie3O3yL90ZvQ27KhQ1TZy8riyhvLvxNus9OakM
+   2zmQZLJGihzSLpkxiqpIxMX3y4XnsWchmabaO1bLMdsSVtzV1KvTWNo4H
+   fp3v/2ZMLPDGyk50k9nKMh3CyoFvtT5e8QqFLDuaj8pPuHUYGQLUs3EFT
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="362898759"
+X-IronPort-AV: E=Sophos;i="6.01,204,1684825200"; 
+   d="scan'208";a="362898759"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 02:22:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="812359420"
+X-IronPort-AV: E=Sophos;i="6.01,204,1684825200"; 
+   d="scan'208";a="812359420"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by FMSMGA003.fm.intel.com with ESMTP; 14 Jul 2023 02:21:55 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 77AC1379; Fri, 14 Jul 2023 12:22:01 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Alexander Sverdlin <alexander.sverdlin@nokia.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: [PATCH v2 1/1] range.h: Move resource API and constant to respective files
+Date:   Fri, 14 Jul 2023 12:22:00 +0300
+Message-Id: <20230714092200.1834-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH 2/2] clk: mediatek: mt8195-topckgen: Refactor parents for
- top_dp/edp muxes
-To:     Alexandre Mergnat <amergnat@baylibre.com>, sboyd@kernel.org
-Cc:     mturquette@baylibre.com, matthias.bgg@gmail.com,
-        wenst@chromium.org, msp@baylibre.com, yangyingliang@huawei.com,
-        u.kleine-koenig@pengutronix.de, miles.chen@mediatek.com,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, kernel@collabora.com
-References: <20230713072138.84117-1-angelogioacchino.delregno@collabora.com>
- <20230713072138.84117-3-angelogioacchino.delregno@collabora.com>
- <9a0817c2-4101-5c21-977d-77ac0d83a067@baylibre.com>
-Content-Language: en-US
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <9a0817c2-4101-5c21-977d-77ac0d83a067@baylibre.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 13/07/23 15:22, Alexandre Mergnat ha scritto:
-> 
-> 
-> On 13/07/2023 09:21, AngeloGioacchino Del Regno wrote:
->> The top_dp and top_edp muxes can be both parented to either TVDPLL1
->> or TVDPLL2, two identically specced PLLs for the specific purpose of
->> giving out pixel clock: this becomes a problem when the MediaTek
->> DisplayPort Interface (DPI) driver tries to set the pixel clock rate.
->>
->> In the usecase of two simultaneous outputs (using two controllers),
->> it was seen that one of the displays would sometimes display garbled
->> output (if any at all) and this was because:
->>   - top_edp was set to TVDPLL1, outputting X GHz
->>   - top_dp was set to TVDPLL2, outputting Y GHz
->>     - mtk_dpi calls clk_set_rate(top_edp, Z GHz)
->>       - top_dp is switched to TVDPLL1
->>       - TVDPLL1 changes its rate, top_edp outputs the wrong rate.
->>       - eDP display is garbled
->>
->> To solve this issue, remove all TVDPLL1 parents from `top_dp` and
->> all TVDPLL2 parents from `top_edp`, plus, necessarily switch both
->> clocks to use the new MUX_GATE_CLR_SET_UPD_INDEXED() macro to be
->> able to use the right bit index for the new parents list.
->>
->> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
->> ---
->>   drivers/clk/mediatek/clk-mt8195-topckgen.c | 22 ++++++++++++++--------
->>   1 file changed, 14 insertions(+), 8 deletions(-)
->>
->> diff --git a/drivers/clk/mediatek/clk-mt8195-topckgen.c 
->> b/drivers/clk/mediatek/clk-mt8195-topckgen.c
->> index 81daa24cadde..abb3721f6e1b 100644
->> --- a/drivers/clk/mediatek/clk-mt8195-topckgen.c
->> +++ b/drivers/clk/mediatek/clk-mt8195-topckgen.c
->> @@ -417,15 +417,21 @@ static const char * const pwrmcu_parents[] = {
->>   static const char * const dp_parents[] = {
->>       "clk26m",
->> -    "tvdpll1_d2",
->>       "tvdpll2_d2",
->> -    "tvdpll1_d4",
->>       "tvdpll2_d4",
->> -    "tvdpll1_d8",
->>       "tvdpll2_d8",
->> -    "tvdpll1_d16",
->>       "tvdpll2_d16"
->>   };
->> +static const u8 dp_parents_idx[] = { 0, 2, 4, 6, 8 };
->> +
->> +static const char * const edp_parents[] = {
->> +    "clk26m",
->> +    "tvdpll1_d2",
->> +    "tvdpll1_d4",
->> +    "tvdpll1_d8",
->> +    "tvdpll1_d16"
->> +};
->> +static const u8 edp_parents_idx[] = { 0, 1, 3, 5, 7 };
-> 
-> AFAII your solution is to force a specific TVDPLLX for each display, and it isn't 
-> dynamic.
-> 
-> Do you think it's possible to do that using the DTS ? I'm asking because, IMHO, 
-> this kind of setup is more friendly/readable/flexible in the DTS than hardcoded 
-> into the driver.
-> 
+range.h works with struct range data type. The resource_size_t
+is an alien here.
 
-No, there's no way. In DT you can assign one specific parent to a specific clock,
-but we need to dynamically switch between the TVDPLL dividers with clk_set_rate()
-calls.
+(1) Move cap_resource() implementation into its only user, and
+(2) rename and move RESOURCE_SIZE_MAX to limits.h.
 
-Besides, can you please explain why you're worried about having TVDPLL1 on DP
-instead of eDP and vice-versa?
-The two PLLs are powered from the same power domain and are identical in spec,
-so one or the other doesn't make any difference... you could use TVDPLL2 while
-TVDPLL1 is OFF and vice-versa too.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+---
+v2: added tag (Bjorn), massaged commit message (Bjorn)
+ arch/mips/cavium-octeon/setup.c | 2 +-
+ arch/x86/pci/amd_bus.c          | 8 ++++++++
+ arch/x86/pci/bus_numa.c         | 2 +-
+ include/linux/limits.h          | 2 ++
+ include/linux/range.h           | 8 --------
+ 5 files changed, 12 insertions(+), 10 deletions(-)
 
-Cheers,
-Angelo
-
->>   static const char * const disp_pwm_parents[] = {
->>       "clk26m",
->> @@ -957,11 +963,11 @@ static const struct mtk_mux top_mtk_muxes[] = {
->>       MUX_GATE_CLR_SET_UPD_FLAGS(CLK_TOP_PWRMCU, "top_pwrmcu",
->>           pwrmcu_parents, 0x08C, 0x090, 0x094, 16, 3, 23, 0x08, 6,
->>           CLK_IS_CRITICAL | CLK_SET_RATE_PARENT),
->> -    MUX_GATE_CLR_SET_UPD(CLK_TOP_DP, "top_dp",
->> -        dp_parents, 0x08C, 0x090, 0x094, 24, 4, 31, 0x08, 7),
->> +    MUX_GATE_CLR_SET_UPD_INDEXED(CLK_TOP_DP, "top_dp",
->> +        dp_parents, dp_parents_idx, 0x08C, 0x090, 0x094, 24, 4, 31, 0x08, 7),
->>       /* CLK_CFG_10 */
->> -    MUX_GATE_CLR_SET_UPD(CLK_TOP_EDP, "top_edp",
->> -        dp_parents, 0x098, 0x09C, 0x0A0, 0, 4, 7, 0x08, 8),
->> +    MUX_GATE_CLR_SET_UPD_INDEXED(CLK_TOP_EDP, "top_edp",
->> +        edp_parents, edp_parents_idx, 0x098, 0x09C, 0x0A0, 0, 4, 7, 0x08, 8),
->>       MUX_GATE_CLR_SET_UPD(CLK_TOP_DPI, "top_dpi",
->>           dp_parents, 0x098, 0x09C, 0x0A0, 8, 4, 15, 0x08, 9),
->>       MUX_GATE_CLR_SET_UPD(CLK_TOP_DISP_PWM0, "top_disp_pwm0",
-> 
+diff --git a/arch/mips/cavium-octeon/setup.c b/arch/mips/cavium-octeon/setup.c
+index c5561016f577..1ad2602a0383 100644
+--- a/arch/mips/cavium-octeon/setup.c
++++ b/arch/mips/cavium-octeon/setup.c
+@@ -1240,7 +1240,7 @@ static int __init octeon_no_pci_init(void)
+ 	 */
+ 	octeon_dummy_iospace = vzalloc(IO_SPACE_LIMIT);
+ 	set_io_port_base((unsigned long)octeon_dummy_iospace);
+-	ioport_resource.start = MAX_RESOURCE;
++	ioport_resource.start = RESOURCE_SIZE_MAX;
+ 	ioport_resource.end = 0;
+ 	return 0;
+ }
+diff --git a/arch/x86/pci/amd_bus.c b/arch/x86/pci/amd_bus.c
+index dd40d3fea74e..631512f7ec85 100644
+--- a/arch/x86/pci/amd_bus.c
++++ b/arch/x86/pci/amd_bus.c
+@@ -51,6 +51,14 @@ static struct pci_root_info __init *find_pci_root_info(int node, int link)
+ 	return NULL;
+ }
+ 
++static inline resource_size_t cap_resource(u64 val)
++{
++	if (val > RESOURCE_SIZE_MAX)
++		return RESOURCE_SIZE_MAX;
++
++	return val;
++}
++
+ /**
+  * early_root_info_init()
+  * called before pcibios_scan_root and pci_scan_bus
+diff --git a/arch/x86/pci/bus_numa.c b/arch/x86/pci/bus_numa.c
+index 2752c02e3f0e..e4a525e59eaf 100644
+--- a/arch/x86/pci/bus_numa.c
++++ b/arch/x86/pci/bus_numa.c
+@@ -101,7 +101,7 @@ void update_res(struct pci_root_info *info, resource_size_t start,
+ 	if (start > end)
+ 		return;
+ 
+-	if (start == MAX_RESOURCE)
++	if (start == RESOURCE_SIZE_MAX)
+ 		return;
+ 
+ 	if (!merge)
+diff --git a/include/linux/limits.h b/include/linux/limits.h
+index f6bcc9369010..38eb7f6f7e88 100644
+--- a/include/linux/limits.h
++++ b/include/linux/limits.h
+@@ -10,6 +10,8 @@
+ #define SSIZE_MAX	((ssize_t)(SIZE_MAX >> 1))
+ #define PHYS_ADDR_MAX	(~(phys_addr_t)0)
+ 
++#define RESOURCE_SIZE_MAX	((resource_size_t)~0)
++
+ #define U8_MAX		((u8)~0U)
+ #define S8_MAX		((s8)(U8_MAX >> 1))
+ #define S8_MIN		((s8)(-S8_MAX - 1))
+diff --git a/include/linux/range.h b/include/linux/range.h
+index 7efb6a9b069b..6ad0b73cb7ad 100644
+--- a/include/linux/range.h
++++ b/include/linux/range.h
+@@ -31,12 +31,4 @@ int clean_sort_range(struct range *range, int az);
+ 
+ void sort_range(struct range *range, int nr_range);
+ 
+-#define MAX_RESOURCE ((resource_size_t)~0)
+-static inline resource_size_t cap_resource(u64 val)
+-{
+-	if (val > MAX_RESOURCE)
+-		return MAX_RESOURCE;
+-
+-	return val;
+-}
+ #endif
+-- 
+2.40.0.1.gaa8946217a0b
 
