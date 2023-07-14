@@ -2,528 +2,315 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA1FA753513
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 10:32:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC884753515
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 10:33:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235472AbjGNIcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 04:32:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44050 "EHLO
+        id S235521AbjGNIcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 04:32:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235060AbjGNIbm (ORCPT
+        with ESMTP id S235591AbjGNIcZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 04:31:42 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE3F41BEB;
-        Fri, 14 Jul 2023 01:31:37 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 000F51FD8E;
-        Fri, 14 Jul 2023 08:31:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1689323496; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RPAZV3hZ10Ona6mt0z3fQFZM5iQTbnMqBlaClbqJ2OI=;
-        b=VVOTfB3S6u73Q317WvT0ZMCAlL6Z0VQF5Gb1whyit3rGKfSnyj26EUbwPGi/7JMz2lrU9/
-        kUMNekyP7jUAhcof78t4YnKNYznWvlbJGtWNkJ4QHzIr6J3ewbw/PdtJMHQz83kviDkrpy
-        RlQRoMjzT7OB7kdeohKYRXA2j1LlMkY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1689323496;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RPAZV3hZ10Ona6mt0z3fQFZM5iQTbnMqBlaClbqJ2OI=;
-        b=rU7y15SSBml/c7PhUkPezRXt/5kKeDlmozzxnzA5Qb51cfRg9r/hAGdtjyhubeEMc1hEIa
-        6z0dj4ZHqSy+M4BQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9D60B13A15;
-        Fri, 14 Jul 2023 08:31:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 9lyxJecHsWRLVwAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Fri, 14 Jul 2023 08:31:35 +0000
-Message-ID: <e87cf343-4e91-5555-4993-480f9e3f191c@suse.cz>
-Date:   Fri, 14 Jul 2023 10:31:35 +0200
+        Fri, 14 Jul 2023 04:32:25 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87A2B2121
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 01:31:53 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R2PpZ3M6tzBR9sl
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 16:31:50 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1689323510; x=1691915511; bh=wUAz80Gh0Z0D/BGyRr/WcEoBCY9
+        jnoASW6XecQdyeJs=; b=Ebbcb1BsZ9d9WEpvkHS7x3Drf5M6UgyzfBxXxwNdGrA
+        DNcWKg13/EKvYRCUGS144wVDHNCyBMrRrEuV5R2lSopnojlSixjwr3duPK1XmU1r
+        Zzw2klxO2OH+7Q/QYhmLLZ5FzuuEVE7i4bVMTJqShHDcyAut2kfR5nlKvZHQaUgS
+        zsMeJ0CwnAKWHaacSELD+MqTK7efNXswwLHjJoeMnfB+2ScvCP8k6Vvw+TnpMgtu
+        p7DX8cTkgBNpmyubihJjMu0g1IqHcTPIx+uFteEnopu92PmhUuzcEJLKflfWkqOJ
+        JOsg3c17ILY6o2GiSBHjUzmGn8Z0JdklobiwW0eaphw==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id siJhZdY-1Ie6 for <linux-kernel@vger.kernel.org>;
+        Fri, 14 Jul 2023 16:31:50 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R2PpZ1gYnzBR9sg;
+        Fri, 14 Jul 2023 16:31:50 +0800 (CST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v5] Randomized slab caches for kmalloc()
-Content-Language: en-US
-To:     "GONG, Ruiqi" <gongruiqi@huaweicloud.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        David Rientjes <rientjes@google.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Christoph Lameter <cl@linux.com>, Tejun Heo <tj@kernel.org>,
-        Dennis Zhou <dennis@kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Jann Horn <jannh@google.com>, Dennis Zhou <dennis@kernel.org>,
-        Tejun Heo <tj@kernel.org>
-Cc:     Roman Gushchin <roman.gushchin@linux.dev>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Pedro Falcato <pedro.falcato@gmail.com>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Wang Weiyang <wangweiyang2@huawei.com>,
-        Xiu Jianfeng <xiujianfeng@huawei.com>, linux-mm@kvack.org,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gongruiqi1@huawei.com
-References: <20230714064422.3305234-1-gongruiqi@huaweicloud.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20230714064422.3305234-1-gongruiqi@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8
+Date:   Fri, 14 Jul 2023 16:31:50 +0800
+From:   sunran001@208suo.com
+To:     mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] media: dvb: add missing spaces before '*' and around '=',
+ remove spaces after '*'
+In-Reply-To: <20230714083042.14458-1-xujianghui@cdjrlc.com>
+References: <20230714083042.14458-1-xujianghui@cdjrlc.com>
+User-Agent: Roundcube Webmail
+Message-ID: <ef55095b44ab1d31a65f1c662f33b60f@208suo.com>
+X-Sender: sunran001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+CC also percpu maintainers for awareness/review of the percpu.h changes
+Add missing spaces to clear checkpatch errors.
 
-On 7/14/23 08:44, GONG, Ruiqi wrote:
-> When exploiting memory vulnerabilities, "heap spraying" is a common
-> technique targeting those related to dynamic memory allocation (i.e. the
-> "heap"), and it plays an important role in a successful exploitation.
-> Basically, it is to overwrite the memory area of vulnerable object by
-> triggering allocation in other subsystems or modules and therefore
-> getting a reference to the targeted memory location. It's usable on
-> various types of vulnerablity including use after free (UAF), heap out-
-> of-bound write and etc.
-> 
-> There are (at least) two reasons why the heap can be sprayed: 1) generic
-> slab caches are shared among different subsystems and modules, and
-> 2) dedicated slab caches could be merged with the generic ones.
-> Currently these two factors cannot be prevented at a low cost: the first
-> one is a widely used memory allocation mechanism, and shutting down slab
-> merging completely via `slub_nomerge` would be overkill.
-> 
-> To efficiently prevent heap spraying, we propose the following approach:
-> to create multiple copies of generic slab caches that will never be
-> merged, and random one of them will be used at allocation. The random
-> selection is based on the address of code that calls `kmalloc()`, which
-> means it is static at runtime (rather than dynamically determined at
-> each time of allocation, which could be bypassed by repeatedly spraying
-> in brute force). In other words, the randomness of cache selection will
-> be with respect to the code address rather than time, i.e. allocations
-> in different code paths would most likely pick different caches,
-> although kmalloc() at each place would use the same cache copy whenever
-> it is executed. In this way, the vulnerable object and memory allocated
-> in other subsystems and modules will (most probably) be on different
-> slab caches, which prevents the object from being sprayed.
-> 
-> Meanwhile, the static random selection is further enhanced with a
-> per-boot random seed, which prevents the attacker from finding a usable
-> kmalloc that happens to pick the same cache with the vulnerable
-> subsystem/module by analyzing the open source code. In other words, with
-> the per-boot seed, the random selection is static during each time the
-> system starts and runs, but not across different system startups.
-> 
-> The overhead of performance has been tested on a 40-core x86 server by
-> comparing the results of `perf bench all` between the kernels with and
-> without this patch based on the latest linux-next kernel, which shows
-> minor difference. A subset of benchmarks are listed below:
-> 
->                 sched/  sched/  syscall/       mem/       mem/
->              messaging    pipe     basic     memcpy     memset
->                  (sec)   (sec)     (sec)   (GB/sec)   (GB/sec)
-> 
-> control1         0.019   5.459     0.733  15.258789  51.398026
-> control2         0.019   5.439     0.730  16.009221  48.828125
-> control3         0.019   5.282     0.735  16.009221  48.828125
-> control_avg      0.019   5.393     0.733  15.759077  49.684759
-> 
-> experiment1      0.019   5.374     0.741  15.500992  46.502976
-> experiment2      0.019   5.440     0.746  16.276042  51.398026
-> experiment3      0.019   5.242     0.752  15.258789  51.398026
-> experiment_avg   0.019   5.352     0.746  15.678608  49.766343
-> 
-> The overhead of memory usage was measured by executing `free` after boot
-> on a QEMU VM with 1GB total memory, and as expected, it's positively
-> correlated with # of cache copies:
-> 
->            control  4 copies  8 copies  16 copies
-> 
-> total       969.8M    968.2M    968.2M     968.2M
-> used         20.0M     21.9M     24.1M      26.7M
-> free        936.9M    933.6M    931.4M     928.6M
-> available   932.2M    928.8M    926.6M     923.9M
-> 
-> Co-developed-by: Xiu Jianfeng <xiujianfeng@huawei.com>
-> Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
-> Signed-off-by: GONG, Ruiqi <gongruiqi@huaweicloud.com>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> ---
-> 
-> v5:
->   - Rebase to the latest linux-next.
->   - Make CONFIG_RANDOM_KMALLOC_CACHES depends on !SLUB_TINY.
->   - Rephrase parts of CONFIG_RANDOM_KMALLOC_CACHES's help paragraph.
->   - Pass 0 as caller at places where the real caller is not needed.
->   - Restore KMALLOC_NORMAL to 0, and move KMALLOC_RANDOM_* after it.
->   - Change RANDOM_KMALLOC_CACHES_NR to 15, and adjust the kmalloc rnd
->     name accordingly.
->   - Replace RANDOM_KMALLOC_CACHES_BITS via ilog2(..._NR + 1).
-> 
-> v4:
->   - Set # of caches to 16 and remove config selection.
->   - Shorten "kmalloc-random-" to "kmalloc-rnd-".
->   - Update commit log and config's help paragraph.
->   - Fine-tune PERCPU_DYNAMIC_SIZE_SHIFT to 12 instead of 13 (enough to
->     pass compilation with allmodconfig and CONFIG_SLUB_TINY=n).
->   - Some cleanup and typo fixing.
->   - Link: https://lore.kernel.org/all/20230626031835.2279738-1-gongruiqi@huaweicloud.com/
-> 
-> v3:
->   - Replace SLAB_RANDOMSLAB with the new existing SLAB_NO_MERGE flag.
->   - Shorten long code lines by wrapping and renaming.
->   - Update commit message with latest perf benchmark and additional
->     theorectical explanation.
->   - Remove "RFC" from patch title and make it a formal patch
->   - Link: https://lore.kernel.org/all/20230616111843.3677378-1-gongruiqi@huaweicloud.com/
-> 
-> v2:
->   - Use hash_64() and a per-boot random seed to select kmalloc() caches.
->   - Change acceptable # of caches from [4,16] to {2,4,8,16}, which is
->     more compatible with hashing.
->   - Supplement results of performance and memory overhead tests.
->   - Link: https://lore.kernel.org/all/20230508075507.1720950-1-gongruiqi1@huawei.com/
-> 
-> v1:
->   - Link: https://lore.kernel.org/all/20230315095459.186113-1-gongruiqi1@huawei.com/
-> 
->  include/linux/percpu.h  | 12 +++++++---
->  include/linux/slab.h    | 23 ++++++++++++++++---
->  mm/Kconfig              | 17 ++++++++++++++
->  mm/kfence/kfence_test.c |  7 ++++--
->  mm/slab.c               |  2 +-
->  mm/slab.h               |  2 +-
->  mm/slab_common.c        | 49 ++++++++++++++++++++++++++++++++++++-----
->  7 files changed, 97 insertions(+), 15 deletions(-)
-> 
-> diff --git a/include/linux/percpu.h b/include/linux/percpu.h
-> index b3b458442330..68fac2e7cbe6 100644
-> --- a/include/linux/percpu.h
-> +++ b/include/linux/percpu.h
-> @@ -35,6 +35,12 @@
->  #define PCPU_BITMAP_BLOCK_BITS		(PCPU_BITMAP_BLOCK_SIZE >>	\
->  					 PCPU_MIN_ALLOC_SHIFT)
->  
-> +#ifdef CONFIG_RANDOM_KMALLOC_CACHES
-> +#define PERCPU_DYNAMIC_SIZE_SHIFT      12
-> +#else
-> +#define PERCPU_DYNAMIC_SIZE_SHIFT      10
-> +#endif
-> +
->  /*
->   * Percpu allocator can serve percpu allocations before slab is
->   * initialized which allows slab to depend on the percpu allocator.
-> @@ -42,7 +48,7 @@
->   * for this.  Keep PERCPU_DYNAMIC_RESERVE equal to or larger than
->   * PERCPU_DYNAMIC_EARLY_SIZE.
->   */
-> -#define PERCPU_DYNAMIC_EARLY_SIZE	(20 << 10)
-> +#define PERCPU_DYNAMIC_EARLY_SIZE	(20 << PERCPU_DYNAMIC_SIZE_SHIFT)
->  
->  /*
->   * PERCPU_DYNAMIC_RESERVE indicates the amount of free area to piggy
-> @@ -56,9 +62,9 @@
->   * intelligent way to determine this would be nice.
->   */
->  #if BITS_PER_LONG > 32
-> -#define PERCPU_DYNAMIC_RESERVE		(28 << 10)
-> +#define PERCPU_DYNAMIC_RESERVE		(28 << PERCPU_DYNAMIC_SIZE_SHIFT)
->  #else
-> -#define PERCPU_DYNAMIC_RESERVE		(20 << 10)
-> +#define PERCPU_DYNAMIC_RESERVE		(20 << PERCPU_DYNAMIC_SIZE_SHIFT)
->  #endif
->  
->  extern void *pcpu_base_addr;
-> diff --git a/include/linux/slab.h b/include/linux/slab.h
-> index 848c7c82ad5a..8228d1276a2f 100644
-> --- a/include/linux/slab.h
-> +++ b/include/linux/slab.h
-> @@ -19,6 +19,7 @@
->  #include <linux/workqueue.h>
->  #include <linux/percpu-refcount.h>
->  #include <linux/cleanup.h>
-> +#include <linux/hash.h>
->  
->  
->  /*
-> @@ -345,6 +346,12 @@ static inline unsigned int arch_slab_minalign(void)
->  #define SLAB_OBJ_MIN_SIZE      (KMALLOC_MIN_SIZE < 16 ? \
->                                 (KMALLOC_MIN_SIZE) : 16)
->  
-> +#ifdef CONFIG_RANDOM_KMALLOC_CACHES
-> +#define RANDOM_KMALLOC_CACHES_NR	15 // # of cache copies
-> +#else
-> +#define RANDOM_KMALLOC_CACHES_NR	0
-> +#endif
-> +
->  /*
->   * Whenever changing this, take care of that kmalloc_type() and
->   * create_kmalloc_caches() still work as intended.
-> @@ -361,6 +368,8 @@ enum kmalloc_cache_type {
->  #ifndef CONFIG_MEMCG_KMEM
->  	KMALLOC_CGROUP = KMALLOC_NORMAL,
->  #endif
-> +	KMALLOC_RANDOM_START = KMALLOC_NORMAL,
-> +	KMALLOC_RANDOM_END = KMALLOC_RANDOM_START + RANDOM_KMALLOC_CACHES_NR,
->  #ifdef CONFIG_SLUB_TINY
->  	KMALLOC_RECLAIM = KMALLOC_NORMAL,
->  #else
-> @@ -386,14 +395,22 @@ kmalloc_caches[NR_KMALLOC_TYPES][KMALLOC_SHIFT_HIGH + 1];
->  	(IS_ENABLED(CONFIG_ZONE_DMA)   ? __GFP_DMA : 0) |	\
->  	(IS_ENABLED(CONFIG_MEMCG_KMEM) ? __GFP_ACCOUNT : 0))
->  
-> -static __always_inline enum kmalloc_cache_type kmalloc_type(gfp_t flags)
-> +extern unsigned long random_kmalloc_seed;
-> +
-> +static __always_inline enum kmalloc_cache_type kmalloc_type(gfp_t flags, unsigned long caller)
->  {
->  	/*
->  	 * The most common case is KMALLOC_NORMAL, so test for it
->  	 * with a single branch for all the relevant flags.
->  	 */
->  	if (likely((flags & KMALLOC_NOT_NORMAL_BITS) == 0))
-> +#ifdef CONFIG_RANDOM_KMALLOC_CACHES
-> +		/* RANDOM_KMALLOC_CACHES_NR (=15) copies + the KMALLOC_NORMAL */
-> +		return KMALLOC_RANDOM_START + hash_64(caller ^ random_kmalloc_seed,
-> +						      ilog2(RANDOM_KMALLOC_CACHES_NR + 1));
-> +#else
->  		return KMALLOC_NORMAL;
-> +#endif
->  
->  	/*
->  	 * At least one of the flags has to be set. Their priorities in
-> @@ -580,7 +597,7 @@ static __always_inline __alloc_size(1) void *kmalloc(size_t size, gfp_t flags)
->  
->  		index = kmalloc_index(size);
->  		return kmalloc_trace(
-> -				kmalloc_caches[kmalloc_type(flags)][index],
-> +				kmalloc_caches[kmalloc_type(flags, _RET_IP_)][index],
->  				flags, size);
->  	}
->  	return __kmalloc(size, flags);
-> @@ -596,7 +613,7 @@ static __always_inline __alloc_size(1) void *kmalloc_node(size_t size, gfp_t fla
->  
->  		index = kmalloc_index(size);
->  		return kmalloc_node_trace(
-> -				kmalloc_caches[kmalloc_type(flags)][index],
-> +				kmalloc_caches[kmalloc_type(flags, _RET_IP_)][index],
->  				flags, node, size);
->  	}
->  	return __kmalloc_node(size, flags, node);
-> diff --git a/mm/Kconfig b/mm/Kconfig
-> index 22acffd9009d..989ab72bbecc 100644
-> --- a/mm/Kconfig
-> +++ b/mm/Kconfig
-> @@ -337,6 +337,23 @@ config SLUB_CPU_PARTIAL
->  	  which requires the taking of locks that may cause latency spikes.
->  	  Typically one would choose no for a realtime system.
->  
-> +config RANDOM_KMALLOC_CACHES
-> +	default n
-> +	depends on SLUB && !SLUB_TINY
-> +	bool "Randomize slab caches for normal kmalloc"
-> +	help
-> +	  A hardening feature that creates multiple copies of slab caches for
-> +	  normal kmalloc allocation and makes kmalloc randomly pick one based
-> +	  on code address, which makes the attackers more difficult to spray
-> +	  vulnerable memory objects on the heap for the purpose of exploiting
-> +	  memory vulnerabilities.
-> +
-> +	  Currently the number of copies is set to 16, a reasonably large value
-> +	  that effectively diverges the memory objects allocated for different
-> +	  subsystems or modules into different caches, at the expense of a
-> +	  limited degree of memory and CPU overhead that relates to hardware and
-> +	  system workload.
-> +
->  endmenu # SLAB allocator options
->  
->  config SHUFFLE_PAGE_ALLOCATOR
-> diff --git a/mm/kfence/kfence_test.c b/mm/kfence/kfence_test.c
-> index 9e008a336d9f..95b2b84c296d 100644
-> --- a/mm/kfence/kfence_test.c
-> +++ b/mm/kfence/kfence_test.c
-> @@ -212,7 +212,9 @@ static void test_cache_destroy(void)
->  
->  static inline size_t kmalloc_cache_alignment(size_t size)
->  {
-> -	return kmalloc_caches[kmalloc_type(GFP_KERNEL)][__kmalloc_index(size, false)]->align;
-> +	/* just to get ->align so no need to pass in the real caller */
-> +	enum kmalloc_cache_type type = kmalloc_type(GFP_KERNEL, 0);
-> +	return kmalloc_caches[type][__kmalloc_index(size, false)]->align;
->  }
->  
->  /* Must always inline to match stack trace against caller. */
-> @@ -282,8 +284,9 @@ static void *test_alloc(struct kunit *test, size_t size, gfp_t gfp, enum allocat
->  
->  		if (is_kfence_address(alloc)) {
->  			struct slab *slab = virt_to_slab(alloc);
-> +			enum kmalloc_cache_type type = kmalloc_type(GFP_KERNEL, _RET_IP_);
->  			struct kmem_cache *s = test_cache ?:
-> -					kmalloc_caches[kmalloc_type(GFP_KERNEL)][__kmalloc_index(size, false)];
-> +					kmalloc_caches[type][__kmalloc_index(size, false)];
->  
->  			/*
->  			 * Verify that various helpers return the right values
-> diff --git a/mm/slab.c b/mm/slab.c
-> index 88194391d553..9ad3d0f2d1a5 100644
-> --- a/mm/slab.c
-> +++ b/mm/slab.c
-> @@ -1670,7 +1670,7 @@ static size_t calculate_slab_order(struct kmem_cache *cachep,
->  			if (freelist_size > KMALLOC_MAX_CACHE_SIZE) {
->  				freelist_cache_size = PAGE_SIZE << get_order(freelist_size);
->  			} else {
-> -				freelist_cache = kmalloc_slab(freelist_size, 0u);
-> +				freelist_cache = kmalloc_slab(freelist_size, 0u, _RET_IP_);
->  				if (!freelist_cache)
->  					continue;
->  				freelist_cache_size = freelist_cache->size;
-> diff --git a/mm/slab.h b/mm/slab.h
-> index 9c0e09d0f81f..799a315695c6 100644
-> --- a/mm/slab.h
-> +++ b/mm/slab.h
-> @@ -282,7 +282,7 @@ void setup_kmalloc_cache_index_table(void);
->  void create_kmalloc_caches(slab_flags_t);
->  
->  /* Find the kmalloc slab corresponding for a certain size */
-> -struct kmem_cache *kmalloc_slab(size_t, gfp_t);
-> +struct kmem_cache *kmalloc_slab(size_t size, gfp_t flags, unsigned long caller);
->  
->  void *__kmem_cache_alloc_node(struct kmem_cache *s, gfp_t gfpflags,
->  			      int node, size_t orig_size,
-> diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index d1555ea2981a..01cdbf122463 100644
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -678,6 +678,11 @@ kmalloc_caches[NR_KMALLOC_TYPES][KMALLOC_SHIFT_HIGH + 1] __ro_after_init =
->  { /* initialization for https://bugs.llvm.org/show_bug.cgi?id=42570 */ };
->  EXPORT_SYMBOL(kmalloc_caches);
->  
-> +#ifdef CONFIG_RANDOM_KMALLOC_CACHES
-> +unsigned long random_kmalloc_seed __ro_after_init;
-> +EXPORT_SYMBOL(random_kmalloc_seed);
-> +#endif
-> +
->  /*
->   * Conversion table for small slabs sizes / 8 to the index in the
->   * kmalloc array. This is necessary for slabs < 192 since we have non power
-> @@ -720,7 +725,7 @@ static inline unsigned int size_index_elem(unsigned int bytes)
->   * Find the kmem_cache structure that serves a given size of
->   * allocation
->   */
-> -struct kmem_cache *kmalloc_slab(size_t size, gfp_t flags)
-> +struct kmem_cache *kmalloc_slab(size_t size, gfp_t flags, unsigned long caller)
->  {
->  	unsigned int index;
->  
-> @@ -735,7 +740,7 @@ struct kmem_cache *kmalloc_slab(size_t size, gfp_t flags)
->  		index = fls(size - 1);
->  	}
->  
-> -	return kmalloc_caches[kmalloc_type(flags)][index];
-> +	return kmalloc_caches[kmalloc_type(flags, caller)][index];
->  }
->  
->  size_t kmalloc_size_roundup(size_t size)
-> @@ -752,8 +757,11 @@ size_t kmalloc_size_roundup(size_t size)
->  	if (size > KMALLOC_MAX_CACHE_SIZE)
->  		return PAGE_SIZE << get_order(size);
->  
-> -	/* The flags don't matter since size_index is common to all. */
-> -	c = kmalloc_slab(size, GFP_KERNEL);
-> +	/*
-> +	 * The flags don't matter since size_index is common to all.
-> +	 * Neither does the caller for just getting ->object_size.
-> +	 */
-> +	c = kmalloc_slab(size, GFP_KERNEL, 0);
->  	return c ? c->object_size : 0;
->  }
->  EXPORT_SYMBOL(kmalloc_size_roundup);
-> @@ -776,12 +784,35 @@ EXPORT_SYMBOL(kmalloc_size_roundup);
->  #define KMALLOC_RCL_NAME(sz)
->  #endif
->  
-> +#ifdef CONFIG_RANDOM_KMALLOC_CACHES
-> +#define __KMALLOC_RANDOM_CONCAT(a, b) a ## b
-> +#define KMALLOC_RANDOM_NAME(N, sz) __KMALLOC_RANDOM_CONCAT(KMA_RAND_, N)(sz)
-> +#define KMA_RAND_1(sz)                  .name[KMALLOC_RANDOM_START +  1] = "kmalloc-rnd-01-" #sz,
-> +#define KMA_RAND_2(sz)  KMA_RAND_1(sz)  .name[KMALLOC_RANDOM_START +  2] = "kmalloc-rnd-02-" #sz,
-> +#define KMA_RAND_3(sz)  KMA_RAND_2(sz)  .name[KMALLOC_RANDOM_START +  3] = "kmalloc-rnd-03-" #sz,
-> +#define KMA_RAND_4(sz)  KMA_RAND_3(sz)  .name[KMALLOC_RANDOM_START +  4] = "kmalloc-rnd-04-" #sz,
-> +#define KMA_RAND_5(sz)  KMA_RAND_4(sz)  .name[KMALLOC_RANDOM_START +  5] = "kmalloc-rnd-05-" #sz,
-> +#define KMA_RAND_6(sz)  KMA_RAND_5(sz)  .name[KMALLOC_RANDOM_START +  6] = "kmalloc-rnd-06-" #sz,
-> +#define KMA_RAND_7(sz)  KMA_RAND_6(sz)  .name[KMALLOC_RANDOM_START +  7] = "kmalloc-rnd-07-" #sz,
-> +#define KMA_RAND_8(sz)  KMA_RAND_7(sz)  .name[KMALLOC_RANDOM_START +  8] = "kmalloc-rnd-08-" #sz,
-> +#define KMA_RAND_9(sz)  KMA_RAND_8(sz)  .name[KMALLOC_RANDOM_START +  9] = "kmalloc-rnd-09-" #sz,
-> +#define KMA_RAND_10(sz) KMA_RAND_9(sz)  .name[KMALLOC_RANDOM_START + 10] = "kmalloc-rnd-10-" #sz,
-> +#define KMA_RAND_11(sz) KMA_RAND_10(sz) .name[KMALLOC_RANDOM_START + 11] = "kmalloc-rnd-11-" #sz,
-> +#define KMA_RAND_12(sz) KMA_RAND_11(sz) .name[KMALLOC_RANDOM_START + 12] = "kmalloc-rnd-12-" #sz,
-> +#define KMA_RAND_13(sz) KMA_RAND_12(sz) .name[KMALLOC_RANDOM_START + 13] = "kmalloc-rnd-13-" #sz,
-> +#define KMA_RAND_14(sz) KMA_RAND_13(sz) .name[KMALLOC_RANDOM_START + 14] = "kmalloc-rnd-14-" #sz,
-> +#define KMA_RAND_15(sz) KMA_RAND_14(sz) .name[KMALLOC_RANDOM_START + 15] = "kmalloc-rnd-15-" #sz,
-> +#else // CONFIG_RANDOM_KMALLOC_CACHES
-> +#define KMALLOC_RANDOM_NAME(N, sz)
-> +#endif
-> +
->  #define INIT_KMALLOC_INFO(__size, __short_size)			\
->  {								\
->  	.name[KMALLOC_NORMAL]  = "kmalloc-" #__short_size,	\
->  	KMALLOC_RCL_NAME(__short_size)				\
->  	KMALLOC_CGROUP_NAME(__short_size)			\
->  	KMALLOC_DMA_NAME(__short_size)				\
-> +	KMALLOC_RANDOM_NAME(RANDOM_KMALLOC_CACHES_NR, __short_size)	\
->  	.size = __size,						\
->  }
->  
-> @@ -890,6 +921,11 @@ new_kmalloc_cache(int idx, enum kmalloc_cache_type type, slab_flags_t flags)
->  		flags |= SLAB_CACHE_DMA;
->  	}
->  
-> +#ifdef CONFIG_RANDOM_KMALLOC_CACHES
-> +	if (type >= KMALLOC_RANDOM_START && type <= KMALLOC_RANDOM_END)
-> +		flags |= SLAB_NO_MERGE;
-> +#endif
-> +
->  	/*
->  	 * If CONFIG_MEMCG_KMEM is enabled, disable cache merging for
->  	 * KMALLOC_NORMAL caches.
-> @@ -941,6 +977,9 @@ void __init create_kmalloc_caches(slab_flags_t flags)
->  				new_kmalloc_cache(2, type, flags);
->  		}
->  	}
-> +#ifdef CONFIG_RANDOM_KMALLOC_CACHES
-> +	random_kmalloc_seed = get_random_u64();
-> +#endif
->  
->  	/* Kmalloc array is now usable */
->  	slab_state = UP;
-> @@ -976,7 +1015,7 @@ void *__do_kmalloc_node(size_t size, gfp_t flags, int node, unsigned long caller
->  		return ret;
->  	}
->  
-> -	s = kmalloc_slab(size, flags);
-> +	s = kmalloc_slab(size, flags, caller);
->  
->  	if (unlikely(ZERO_OR_NULL_PTR(s)))
->  		return s;
+ERROR: "foo* bar" should be "foo *bar"
+ERROR: spaces required around that '=' (ctx:VxV)
+ERROR: that open brace { should be on the previous line
 
+Signed-off-by: Ran Sun <sunran001@208suo.com>
+---
+  drivers/media/dvb-frontends/mt352.c | 69 ++++++++++++++---------------
+  1 file changed, 34 insertions(+), 35 deletions(-)
+
+diff --git a/drivers/media/dvb-frontends/mt352.c 
+b/drivers/media/dvb-frontends/mt352.c
+index 399d5c519027..457deff9a364 100644
+--- a/drivers/media/dvb-frontends/mt352.c
++++ b/drivers/media/dvb-frontends/mt352.c
+@@ -28,7 +28,7 @@
+  #include "mt352.h"
+
+  struct mt352_state {
+-    struct i2c_adapter* i2c;
++    struct i2c_adapter *i2c;
+      struct dvb_frontend frontend;
+
+      /* configuration settings */
+@@ -43,7 +43,7 @@ static int debug;
+
+  static int mt352_single_write(struct dvb_frontend *fe, u8 reg, u8 val)
+  {
+-    struct mt352_state* state = fe->demodulator_priv;
++    struct mt352_state *state = fe->demodulator_priv;
+      u8 buf[2] = { reg, val };
+      struct i2c_msg msg = { .addr = state->config.demod_address, .flags 
+= 0,
+                     .buf = buf, .len = 2 };
+@@ -55,22 +55,22 @@ static int mt352_single_write(struct dvb_frontend 
+*fe, u8 reg, u8 val)
+      return 0;
+  }
+
+-static int _mt352_write(struct dvb_frontend* fe, const u8 ibuf[], int 
+ilen)
++static int _mt352_write(struct dvb_frontend *fe, const u8 ibuf[], int 
+ilen)
+  {
+-    int err,i;
+-    for (i=0; i < ilen-1; i++)
+-        if ((err = mt352_single_write(fe,ibuf[0]+i,ibuf[i+1])))
++    int err, i;
++    for (i = 0; i < ilen-1; i++)
++        if ((err = mt352_single_write(fe, ibuf[0]+i, ibuf[i+1])))
+              return err;
+
+      return 0;
+  }
+
+-static int mt352_read_register(struct mt352_state* state, u8 reg)
++static int mt352_read_register(struct mt352_state *state, u8 reg)
+  {
+      int ret;
+-    u8 b0 [] = { reg };
+-    u8 b1 [] = { 0 };
+-    struct i2c_msg msg [] = { { .addr = state->config.demod_address,
++    u8 b0[] = { reg };
++    u8 b1[] = { 0 };
++    struct i2c_msg msg[] = { { .addr = state->config.demod_address,
+                      .flags = 0,
+                      .buf = b0, .len = 1 },
+                    { .addr = state->config.demod_address,
+@@ -88,7 +88,7 @@ static int mt352_read_register(struct mt352_state* 
+state, u8 reg)
+      return b1[0];
+  }
+
+-static int mt352_sleep(struct dvb_frontend* fe)
++static int mt352_sleep(struct dvb_frontend *fe)
+  {
+      static u8 mt352_softdown[] = { CLOCK_CTL, 0x20, 0x08 };
+
+@@ -96,12 +96,12 @@ static int mt352_sleep(struct dvb_frontend* fe)
+      return 0;
+  }
+
+-static void mt352_calc_nominal_rate(struct mt352_state* state,
++static void mt352_calc_nominal_rate(struct mt352_state *state,
+                      u32 bandwidth,
+                      unsigned char *buf)
+  {
+      u32 adc_clock = 20480; /* 20.340 MHz */
+-    u32 bw,value;
++    u32 bw, value;
+
+      switch (bandwidth) {
+      case 6000000:
+@@ -126,12 +126,12 @@ static void mt352_calc_nominal_rate(struct 
+mt352_state* state,
+      buf[1] = lsb(value);
+  }
+
+-static void mt352_calc_input_freq(struct mt352_state* state,
++static void mt352_calc_input_freq(struct mt352_state *state,
+                    unsigned char *buf)
+  {
+      int adc_clock = 20480; /* 20.480000 MHz */
+      int if2       = 36167; /* 36.166667 MHz */
+-    int ife,value;
++    int ife, value;
+
+      if (state->config.adc_clock)
+          adc_clock = state->config.adc_clock;
+@@ -155,7 +155,7 @@ static void mt352_calc_input_freq(struct 
+mt352_state* state,
+  static int mt352_set_parameters(struct dvb_frontend *fe)
+  {
+      struct dtv_frontend_properties *op = &fe->dtv_property_cache;
+-    struct mt352_state* state = fe->demodulator_priv;
++    struct mt352_state *state = fe->demodulator_priv;
+      unsigned char buf[13];
+      static unsigned char tuner_go[] = { 0x5d, 0x01 };
+      static unsigned char fsm_go[]   = { 0x5e, 0x01 };
+@@ -298,15 +298,14 @@ static int mt352_set_parameters(struct 
+dvb_frontend *fe)
+      return 0;
+  }
+
+-static int mt352_get_parameters(struct dvb_frontend* fe,
++static int mt352_get_parameters(struct dvb_frontend *fe,
+                  struct dtv_frontend_properties *op)
+  {
+-    struct mt352_state* state = fe->demodulator_priv;
++    struct mt352_state *state = fe->demodulator_priv;
+      u16 tps;
+      u16 div;
+      u8 trl;
+-    static const u8 tps_fec_to_api[8] =
+-    {
++    static const u8 tps_fec_to_api[8] = {
+          FEC_1_2,
+          FEC_2_3,
+          FEC_3_4,
+@@ -317,7 +316,7 @@ static int mt352_get_parameters(struct dvb_frontend* 
+fe,
+          FEC_AUTO
+      };
+
+-    if ( (mt352_read_register(state,0x00) & 0xC0) != 0xC0 )
++    if ( (mt352_read_register(state, 0x00) & 0xC0) != 0xC0)
+          return -EINVAL;
+
+      /* Use TPS_RECEIVED-registers, not the TPS_CURRENT-registers 
+because
+@@ -406,7 +405,7 @@ static int mt352_get_parameters(struct dvb_frontend* 
+fe,
+
+  static int mt352_read_status(struct dvb_frontend *fe, enum fe_status 
+*status)
+  {
+-    struct mt352_state* state = fe->demodulator_priv;
++    struct mt352_state *state = fe->demodulator_priv;
+      int s0, s1, s3;
+
+      /* FIXME:
+@@ -458,9 +457,9 @@ static int mt352_read_ber(struct dvb_frontend* fe, 
+u32* ber)
+      return 0;
+  }
+
+-static int mt352_read_signal_strength(struct dvb_frontend* fe, u16* 
+strength)
++static int mt352_read_signal_strength(struct dvb_frontend *fe, u16 
+*strength)
+  {
+-    struct mt352_state* state = fe->demodulator_priv;
++    struct mt352_state *state = fe->demodulator_priv;
+
+      /* align the 12 bit AGC gain with the most significant bits */
+      u16 signal = ((mt352_read_register(state, AGC_GAIN_1) & 0x0f) << 
+12) |
+@@ -471,9 +470,9 @@ static int mt352_read_signal_strength(struct 
+dvb_frontend* fe, u16* strength)
+      return 0;
+  }
+
+-static int mt352_read_snr(struct dvb_frontend* fe, u16* snr)
++static int mt352_read_snr(struct dvb_frontend *fe, u16 *snr)
+  {
+-    struct mt352_state* state = fe->demodulator_priv;
++    struct mt352_state *state = fe->demodulator_priv;
+
+      u8 _snr = mt352_read_register (state, SNR);
+      *snr = (_snr << 8) | _snr;
+@@ -481,9 +480,9 @@ static int mt352_read_snr(struct dvb_frontend* fe, 
+u16* snr)
+      return 0;
+  }
+
+-static int mt352_read_ucblocks(struct dvb_frontend* fe, u32* ucblocks)
++static int mt352_read_ucblocks(struct dvb_frontend *fe, u32 *ucblocks)
+  {
+-    struct mt352_state* state = fe->demodulator_priv;
++    struct mt352_state *state = fe->demodulator_priv;
+
+      *ucblocks = (mt352_read_register (state,  RS_UBC_1) << 8) |
+              (mt352_read_register (state,  RS_UBC_0));
+@@ -491,7 +490,7 @@ static int mt352_read_ucblocks(struct dvb_frontend* 
+fe, u32* ucblocks)
+      return 0;
+  }
+
+-static int mt352_get_tune_settings(struct dvb_frontend* fe, struct 
+dvb_frontend_tune_settings* fe_tune_settings)
++static int mt352_get_tune_settings(struct dvb_frontend *fe, struct 
+dvb_frontend_tune_settings *fe_tune_settings)
+  {
+      fe_tune_settings->min_delay_ms = 800;
+      fe_tune_settings->step_size = 0;
+@@ -500,9 +499,9 @@ static int mt352_get_tune_settings(struct 
+dvb_frontend* fe, struct dvb_frontend_
+      return 0;
+  }
+
+-static int mt352_init(struct dvb_frontend* fe)
++static int mt352_init(struct dvb_frontend *fe)
+  {
+-    struct mt352_state* state = fe->demodulator_priv;
++    struct mt352_state *state = fe->demodulator_priv;
+
+      static u8 mt352_reset_attach [] = { RESET, 0xC0 };
+
+@@ -519,7 +518,7 @@ static int mt352_init(struct dvb_frontend* fe)
+      return 0;
+  }
+
+-static void mt352_release(struct dvb_frontend* fe)
++static void mt352_release(struct dvb_frontend *fe)
+  {
+      struct mt352_state* state = fe->demodulator_priv;
+      kfree(state);
+@@ -527,10 +526,10 @@ static void mt352_release(struct dvb_frontend* fe)
+
+  static const struct dvb_frontend_ops mt352_ops;
+
+-struct dvb_frontend* mt352_attach(const struct mt352_config* config,
+-                  struct i2c_adapter* i2c)
++struct dvb_frontend *mt352_attach(const struct mt352_config *config,
++                  struct i2c_adapter *i2c)
+  {
+-    struct mt352_state* state = NULL;
++    struct mt352_state *state = NULL;
+
+      /* allocate memory for the internal state */
+      state = kzalloc(sizeof(struct mt352_state), GFP_KERNEL);
