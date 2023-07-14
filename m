@@ -2,120 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7914B7532C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 09:14:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F23387532C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 09:15:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235276AbjGNHOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 03:14:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52944 "EHLO
+        id S235259AbjGNHPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 03:15:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235296AbjGNHO1 (ORCPT
+        with ESMTP id S235307AbjGNHPN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 03:14:27 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3545A270F
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 00:14:22 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R2N562g4bzBR9sm
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 15:14:18 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689318858; x=1691910859; bh=mJPR05Mlq6vXjU6nrDOaLf7AC+G
-        NK0Y1HzU7kJUXxcM=; b=wCuTZ2mi/h1LcH91SShJ/XTjrx/o6sYPkFFr7ls3I1n
-        X2Ga08YCzvz5HeaZDG9xANtOg3NvlELvysmzR/98KfW6teDkjrXRTiruV9S1vECA
-        NyFtMN1cO898xsmOWBKv9FlfZx8wsUp9y0y0xR7ndDFN13KN/8jZv40Z5Dq8WmJ5
-        WBAzIb/1vkVu42rqj57qSouC0nGBRLZULR7LG/B/NWBTDlqPV1EzAVwAGHEKxqBv
-        G0dqv71Ikyshe/77bevzzElOzRJjPNTELcKyFv/kxEkPFIANGWgLJ5Hcjjnn5NCx
-        JRgXfVSPjq/+9/alypuWx05J6iki3QvE0vps/K0naiA==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id UYOcNj9KdTHq for <linux-kernel@vger.kernel.org>;
-        Fri, 14 Jul 2023 15:14:18 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R2N560RHwzBHXhl;
-        Fri, 14 Jul 2023 15:14:18 +0800 (CST)
+        Fri, 14 Jul 2023 03:15:13 -0400
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CC4E30F2;
+        Fri, 14 Jul 2023 00:15:05 -0700 (PDT)
+Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
+        by ex01.ufhost.com (Postfix) with ESMTP id 2704924E31B;
+        Fri, 14 Jul 2023 15:15:02 +0800 (CST)
+Received: from EXMBX068.cuchost.com (172.16.6.68) by EXMBX165.cuchost.com
+ (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 14 Jul
+ 2023 15:15:02 +0800
+Received: from [192.168.120.57] (171.223.208.138) by EXMBX068.cuchost.com
+ (172.16.6.68) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 14 Jul
+ 2023 15:15:01 +0800
+Message-ID: <df9de3d8-09da-2b80-b2b4-626cd92fe971@starfivetech.com>
+Date:   Fri, 14 Jul 2023 15:14:59 +0800
 MIME-Version: 1.0
-Date:   Fri, 14 Jul 2023 15:14:18 +0800
-From:   huzhi001@208suo.com
-To:     dsterba@suse.com
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] VFS: Fix seven errors in bitmap.c
-In-Reply-To: <tencent_CE461BFFDACFEA943A778650FB672D9E3207@qq.com>
-References: <tencent_CE461BFFDACFEA943A778650FB672D9E3207@qq.com>
-User-Agent: Roundcube Webmail
-Message-ID: <80ff0222e0fc0b8e25ae4837b76bce2d@208suo.com>
-X-Sender: huzhi001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 2/3] dt-bindings: spi: constrain minItems of clocks and
+ clock-names
+To:     Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+CC:     Mark Brown <broonie@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "Emil Renner Berthing" <kernel@esmil.dk>,
+        Linus Walleij <linus.walleij@linaro.org>
+References: <20230713090015.127541-1-william.qiu@starfivetech.com>
+ <20230713090015.127541-3-william.qiu@starfivetech.com>
+ <c5ad1e1c-58f4-4833-b9c7-8876c1a0dc27@sirena.org.uk>
+ <e3fd0d3f-3fe4-2e23-2548-ecbd487e9c9f@linaro.org>
+ <20230713145724.GA3975811-robh@kernel.org>
+Content-Language: en-US
+From:   William Qiu <william.qiu@starfivetech.com>
+In-Reply-To: <20230713145724.GA3975811-robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-Originating-IP: [171.223.208.138]
+X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX068.cuchost.com
+ (172.16.6.68)
+X-YovoleRuleAgent: yovoleflag
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following checkpatch errors are removed:
-ERROR: space required after that ',' (ctx:VxV)
-ERROR: space required after that ',' (ctx:VxV)
-ERROR: space required after that ',' (ctx:VxV)
-ERROR: space required after that ',' (ctx:VxV)
-ERROR: space required after that ',' (ctx:VxV)
-ERROR: space required after that ',' (ctx:VxV)
-ERROR: space required after that ',' (ctx:VxV)
 
-Signed-off-by: ZhiHu <huzhi001@208suo.com>
----
-  fs/affs/bitmap.c | 8 ++++----
-  1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/fs/affs/bitmap.c b/fs/affs/bitmap.c
-index 5ba9ef2742f6..b1620b6ff8a9 100644
---- a/fs/affs/bitmap.c
-+++ b/fs/affs/bitmap.c
-@@ -87,19 +87,19 @@ affs_free_block(struct super_block *sb, u32 block)
-      return;
+On 2023/7/13 22:57, Rob Herring wrote:
+> On Thu, Jul 13, 2023 at 02:39:19PM +0200, Krzysztof Kozlowski wrote:
+>> On 13/07/2023 14:28, Mark Brown wrote:
+>> > On Thu, Jul 13, 2023 at 05:00:14PM +0800, William Qiu wrote:
+>> > 
+>> >> The SPI controller only need apb_pclk clock to work properly on JH7110 SoC,
+>> >> so there add minItems whose value is equal to 1. Other platforms do not
+>> >> have this constraint.
+>> > 
+>> > Presumably this means that this is some variant of the usual pl022 IP,
+>> 
+>> Hm, in such case this could mean we need dedicated compatible.
+> 
+> Except the vendor in the ID registers should be different if the IP is 
+> modified.
+> 
+> I suspect that PCLK and SSPCLK are tied to the same clock source. There 
+> must be an SSPCLK because that is the one used to clock the SPI bus and 
+> we need to know the frequency of it.
+> 
+> Rob
 
-  err_free:
--    affs_warning(sb,"affs_free_block","Trying to free block %u which is 
-already free", block);
-+    affs_warning(sb, "affs_free_block", "Trying to free block %u which 
-is already free", block);
-      mutex_unlock(&sbi->s_bmlock);
-      return;
+After communicating with colleagues in SoC FE, I learned that PCLK and
+SSPCLK were homologous on JH7110. He said that SSPCLK would divide the
+frequency internally anyway, and there was no need for external part frequency,
+so he directly gave them together.
 
-  err_bh_read:
--    affs_error(sb,"affs_free_block","Cannot read bitmap block %u", 
-bm->bm_key);
-+    affs_error(sb, "affs_free_block", "Cannot read bitmap block %u", 
-bm->bm_key);
-      sbi->s_bmap_bh = NULL;
-      sbi->s_last_bmap = ~0;
-      mutex_unlock(&sbi->s_bmlock);
-      return;
+So, should I call this clock ssp_apb or keep it SSPCLK?
 
-  err_range:
--    affs_error(sb, "affs_free_block","Block %u outside partition", 
-block);
-+    affs_error(sb, "affs_free_block", "Block %u outside partition", 
-block);
-  }
-
-  /*
-@@ -232,7 +232,7 @@ affs_alloc_block(struct inode *inode, u32 goal)
-      return blk;
-
-  err_bh_read:
--    affs_error(sb,"affs_read_block","Cannot read bitmap block %u", 
-bm->bm_key);
-+    affs_error(sb, "affs_read_block", "Cannot read bitmap block %u", 
-bm->bm_key);
-      sbi->s_bmap_bh = NULL;
-      sbi->s_last_bmap = ~0;
-  err_full:
+Best regards,
+William
