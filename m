@@ -2,52 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8D12754094
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 19:40:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D23675409E
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 19:41:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236054AbjGNRkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 13:40:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55398 "EHLO
+        id S236085AbjGNRkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 13:40:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235993AbjGNRkR (ORCPT
+        with ESMTP id S236063AbjGNRkX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 13:40:17 -0400
-Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C9D4359F;
-        Fri, 14 Jul 2023 10:40:16 -0700 (PDT)
-Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-78363cc070aso83370139f.1;
-        Fri, 14 Jul 2023 10:40:16 -0700 (PDT)
+        Fri, 14 Jul 2023 13:40:23 -0400
+Received: from mail-io1-f42.google.com (mail-io1-f42.google.com [209.85.166.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E89035A4;
+        Fri, 14 Jul 2023 10:40:23 -0700 (PDT)
+Received: by mail-io1-f42.google.com with SMTP id ca18e2360f4ac-78372b895d6so89133939f.2;
+        Fri, 14 Jul 2023 10:40:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689356415; x=1691948415;
+        d=1e100.net; s=20221208; t=1689356422; x=1691948422;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=0wG/8q5xFWyXnYo87cfTZCB7vaY55UNr931bp9kogVs=;
-        b=QHdbtvdeenL+OV5DA5WYLaQOrO14rJ35vwMrhBxpYuohDw17Z15X4G27QUOz+RN2Bx
-         7xR9z7lO48gjmp2UelmKOrw1qCm0iUMrPreacV6PIrh6AWL7nhrZLjijyBb+0h92VbSo
-         H7W3KGCEYbYBn7nMAJyi6FsA3SI7+UXNlupRG0ToMZ3CZtRNlsOw2VR2OH9VURI4DVvS
-         S2H7fKolRO9x3sbZ60ouA3N473IBQYXQEQi4KH8fdBdhkqe/t31KN0KdRRmzGfK8CiNG
-         yzE1aEA0bPSZV/hJRhsYphw/ziLxpSCnGOXiaivdMXdDXlOMq3gwoGMY5Cz4OdkOkfJI
-         6MAw==
-X-Gm-Message-State: ABy/qLYeqmnTSWnbaTSW4Iq9Lz01OkXoyxdEQaNInZi9PZ4ioiGZLFOy
-        xVBSvXv1i7kP2jBc9Y+xcg==
-X-Google-Smtp-Source: APBJJlH1ABKviOQ3klyYs/5okEJaPdSwOXPl2VLR63HMBrNOvjmqi4zLogp8x+sOD3uU5HMEnSlIHQ==
-X-Received: by 2002:a05:6e02:148:b0:33b:c0d8:26af with SMTP id j8-20020a056e02014800b0033bc0d826afmr4984504ilr.7.1689356415616;
-        Fri, 14 Jul 2023 10:40:15 -0700 (PDT)
+        bh=7kHAerUkbs1RohJjOwCTFu4xlcT9S1s0/Let059Z2xg=;
+        b=CupngxT0p+NFdPJ5HH0jmIqofC4fTXb9nnC867pZvqLUlsy6GepmQLmzuWTVGRQWdo
+         NycU8wmvOdqMOOu/u4mM1P7qdb5cx/n/Vc6j3yP2fbQY7t7LJ6FdIq4iacx57+a3a2mK
+         CuUiqpwBV91YMgDT6xyHJKU6qyh6rmpUL/rFRK/swnHMv4JmUuMIYPNL7llSauLnBuhA
+         Q+f5SEsiLe1vaslphyLJMu4yi1OuniTaQIRtDjGn0SK9pTocf4zWninrEPYeTdDIaqM7
+         rHGdu7HR4FaZGCqSOe95e+qMpN9GVhaDusmwywxlq7AL2XD2Kh5h9bYirG/vK7Z9bfZB
+         rhHQ==
+X-Gm-Message-State: ABy/qLbQGHBt/EDCEwOszjnggYmx6KEvGUEH7/8PKUJssFrd9zcfcATj
+        EQzS6Ztarr4usJQBHwKvXQ==
+X-Google-Smtp-Source: APBJJlFzSkB1qa3MKPkKdeVSqv6+ocZW+jua27gEw/v/06Z0vShwRdeeMZ9Q8qyEEEnAjtOwOcYg5A==
+X-Received: by 2002:a6b:d90e:0:b0:783:67a3:a69f with SMTP id r14-20020a6bd90e000000b0078367a3a69fmr6393180ioc.18.1689356422263;
+        Fri, 14 Jul 2023 10:40:22 -0700 (PDT)
 Received: from robh_at_kernel.org ([64.188.179.250])
-        by smtp.gmail.com with ESMTPSA id s7-20020a92d907000000b00345950d7e94sm2888274iln.20.2023.07.14.10.40.14
+        by smtp.gmail.com with ESMTPSA id y3-20020a6be503000000b00760f256037dsm2825959ioc.44.2023.07.14.10.40.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 10:40:14 -0700 (PDT)
-Received: (nullmailer pid 4039516 invoked by uid 1000);
-        Fri, 14 Jul 2023 17:40:13 -0000
+        Fri, 14 Jul 2023 10:40:21 -0700 (PDT)
+Received: (nullmailer pid 4039743 invoked by uid 1000);
+        Fri, 14 Jul 2023 17:40:20 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Alexey Brodkin <abrodkin@synopsys.com>,
-        Vineet Gupta <vgupta@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+To:     Russell King <linux@armlinux.org.uk>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] arc: Explicitly include correct DT includes
-Date:   Fri, 14 Jul 2023 11:39:49 -0600
-Message-Id: <20230714173949.4038981-1-robh@kernel.org>
+Subject: [PATCH] ARM: Explicitly include correct DT includes
+Date:   Fri, 14 Jul 2023 11:40:13 -0600
+Message-Id: <20230714174014.4039560-1-robh@kernel.org>
 X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -73,21 +72,38 @@ explicitly include the correct includes.
 
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- arch/arc/plat-axs10x/axs10x.c | 1 -
- 1 file changed, 1 deletion(-)
+ arch/arm/kernel/devtree.c | 1 -
+ arch/arm/kernel/setup.c   | 2 +-
+ 2 files changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/arc/plat-axs10x/axs10x.c b/arch/arc/plat-axs10x/axs10x.c
-index b821df7b0089..1feb990a56bc 100644
---- a/arch/arc/plat-axs10x/axs10x.c
-+++ b/arch/arc/plat-axs10x/axs10x.c
-@@ -6,7 +6,6 @@
-  */
- 
+diff --git a/arch/arm/kernel/devtree.c b/arch/arm/kernel/devtree.c
+index 264827281113..fdb74e64206a 100644
+--- a/arch/arm/kernel/devtree.c
++++ b/arch/arm/kernel/devtree.c
+@@ -13,7 +13,6 @@
+ #include <linux/of.h>
  #include <linux/of_fdt.h>
+ #include <linux/of_irq.h>
 -#include <linux/of_platform.h>
- #include <linux/libfdt.h>
+ #include <linux/smp.h>
  
- #include <asm/asm-offsets.h>
+ #include <asm/cputype.h>
+diff --git a/arch/arm/kernel/setup.c b/arch/arm/kernel/setup.c
+index c66b560562b3..15eca804239e 100644
+--- a/arch/arm/kernel/setup.c
++++ b/arch/arm/kernel/setup.c
+@@ -15,10 +15,10 @@
+ #include <linux/console.h>
+ #include <linux/seq_file.h>
+ #include <linux/screen_info.h>
+-#include <linux/of_platform.h>
+ #include <linux/init.h>
+ #include <linux/kexec.h>
+ #include <linux/libfdt.h>
++#include <linux/of.h>
+ #include <linux/of_fdt.h>
+ #include <linux/cpu.h>
+ #include <linux/interrupt.h>
 -- 
 2.40.1
 
