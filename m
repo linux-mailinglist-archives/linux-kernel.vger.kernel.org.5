@@ -2,51 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 174037541A1
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 19:55:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3AFF7541BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 19:55:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236621AbjGNRxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 13:53:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39792 "EHLO
+        id S236724AbjGNRxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 13:53:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236616AbjGNRw4 (ORCPT
+        with ESMTP id S236709AbjGNRxH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 13:52:56 -0400
-Received: from mail-il1-f177.google.com (mail-il1-f177.google.com [209.85.166.177])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0D4C1BEB;
-        Fri, 14 Jul 2023 10:52:25 -0700 (PDT)
-Received: by mail-il1-f177.google.com with SMTP id e9e14a558f8ab-3459baa237bso10154565ab.3;
-        Fri, 14 Jul 2023 10:52:25 -0700 (PDT)
+        Fri, 14 Jul 2023 13:53:07 -0400
+Received: from mail-il1-f172.google.com (mail-il1-f172.google.com [209.85.166.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61BBF3A95;
+        Fri, 14 Jul 2023 10:52:44 -0700 (PDT)
+Received: by mail-il1-f172.google.com with SMTP id e9e14a558f8ab-3461053677eso4994085ab.0;
+        Fri, 14 Jul 2023 10:52:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689357084; x=1691949084;
+        d=1e100.net; s=20221208; t=1689357088; x=1691949088;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=tcj+Lu95WaGqdnXjawPzrjgbPdO2x3dd2CTCL5XV5kg=;
-        b=O4UINdKJa253+8ufOmZWod/iL1nOBr6Pu6wq+u9HLD2Y+UURFKwr0aj6Nf1aaEK6hj
-         PiCt2KOPZpDsARyDrO/n14+NQjBmjEBqy2HZuWd897tXDzENcbRethSXp85XzAHBUgOm
-         74NRfYrJj+48/8V2C+5gpjMHUO4RGOgaxpMzrSt+JGRfsJlTGrSb2wNM4YRA8cH0x0MP
-         uPi8p3s/NGQkJo+TMENtOIOYNfHSVGLQYLc/Q5d4QHZIUFQNLGGctYCnYuSy/jg3GhNd
-         3e8rRVNv/Gy7ayTCxLc2lzAfS4BtfFjlVfkVIShxzM8/XT5So/IAp+2MTuPmawCVtE5R
-         racw==
-X-Gm-Message-State: ABy/qLbfYFaKAVZMA8rKW7309qvB1HKoPp5V2xmpKKTBoQrmMdFbMcTG
-        iGfYZOk8hYcc8dBoVHW4dSZ2x9nyUroN
-X-Google-Smtp-Source: APBJJlFpv7R3DclrHg1OXYuEl/PqL2pjxrt8slL0QvhD4Vhw9TW52BD+nTiDb0dGW+2l5tBDMhjUdQ==
-X-Received: by 2002:a92:de46:0:b0:346:5e1c:f01e with SMTP id e6-20020a92de46000000b003465e1cf01emr5194777ilr.5.1689357084378;
-        Fri, 14 Jul 2023 10:51:24 -0700 (PDT)
+        bh=5wIArphUUcrQTlGd9RIfHKu8moYjSLk6R16YZHfHviw=;
+        b=NTCRsad49bLrXdyuikSeGykEXMxrLMIPpqWu3VNTBblocDWb/SHipvdbvlpjzM12oa
+         MkYvfrP7M5qdOQdUibJCzl+pawec2x5j2EwWBYETa3ldccqu7s/miH2n6brq4uF97EJy
+         S8NR4TKi1EseLi5p/kmR/bWqq4O7tuGxLDFCryrgFYbBr4EOhM0UamQjGh/tcDPyAflz
+         6yoR6agL3B+e/jQVv32BLdhmMinXQ+h7EtR7ZthUTVt3/1P/bMsCjGARKv4FCKc36Um0
+         7v63xL23XnXyRsLupNjkGSYRMrhiwXjJl8MzyhrvdUKExOFTow6QQ73ElMQRMqtpZ2cR
+         5NLA==
+X-Gm-Message-State: ABy/qLY6Gbc8g+0hsK49SG+0dIIUcQVNwxoA8rR4zpoThiIvp8fJN+QW
+        xhB135bfbekVXZ9fDSNqYMH9pM3DSO3F
+X-Google-Smtp-Source: APBJJlEHfIxZJ0bPAvnN517DQfltLqPlRzXi9YGaDUls0sT+OG8W9oV02M0oDWythG0eSZqH+72VBw==
+X-Received: by 2002:a05:6e02:782:b0:346:3b4:8b77 with SMTP id q2-20020a056e02078200b0034603b48b77mr2452111ils.12.1689357088535;
+        Fri, 14 Jul 2023 10:51:28 -0700 (PDT)
 Received: from robh_at_kernel.org ([64.188.179.250])
-        by smtp.gmail.com with ESMTPSA id s9-20020a02c509000000b0042b4b55f46fsm2630872jam.117.2023.07.14.10.51.23
+        by smtp.gmail.com with ESMTPSA id 18-20020a92c652000000b00345ffd35a29sm2913154ill.68.2023.07.14.10.51.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 10:51:23 -0700 (PDT)
-Received: (nullmailer pid 4066092 invoked by uid 1000);
-        Fri, 14 Jul 2023 17:50:51 -0000
+        Fri, 14 Jul 2023 10:51:27 -0700 (PDT)
+Received: (nullmailer pid 4066254 invoked by uid 1000);
+        Fri, 14 Jul 2023 17:50:56 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     "David S. Miller" <davem@davemloft.net>
-Cc:     devicetree@vger.kernel.org, sparclinux@vger.kernel.org,
+To:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     devicetree@vger.kernel.org, linux-scsi@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] sbus: Explicitly include correct DT includes
-Date:   Fri, 14 Jul 2023 11:50:48 -0600
-Message-Id: <20230714175048.4066006-1-robh@kernel.org>
+Subject: [PATCH] scsi: Explicitly include correct DT includes
+Date:   Fri, 14 Jul 2023 11:50:52 -0600
+Message-Id: <20230714175052.4066150-1-robh@kernel.org>
 X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -72,107 +73,37 @@ explicitly include the correct includes.
 
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- drivers/sbus/char/bbc_envctrl.c | 2 +-
- drivers/sbus/char/bbc_i2c.c     | 3 ++-
- drivers/sbus/char/bbc_i2c.h     | 1 -
- drivers/sbus/char/display7seg.c | 2 +-
- drivers/sbus/char/envctrl.c     | 2 +-
- drivers/sbus/char/flash.c       | 2 +-
- drivers/sbus/char/uctrl.c       | 2 +-
- 7 files changed, 7 insertions(+), 7 deletions(-)
+ drivers/scsi/qlogicpti.c | 2 +-
+ drivers/scsi/sun_esp.c   | 3 ++-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/sbus/char/bbc_envctrl.c b/drivers/sbus/char/bbc_envctrl.c
-index 4f2dd21e44a0..23af4edd295b 100644
---- a/drivers/sbus/char/bbc_envctrl.c
-+++ b/drivers/sbus/char/bbc_envctrl.c
-@@ -9,8 +9,8 @@
- #include <linux/kmod.h>
- #include <linux/reboot.h>
+diff --git a/drivers/scsi/qlogicpti.c b/drivers/scsi/qlogicpti.c
+index 1e8fbd457248..f88a5421c483 100644
+--- a/drivers/scsi/qlogicpti.c
++++ b/drivers/scsi/qlogicpti.c
+@@ -28,7 +28,7 @@
+ #include <linux/jiffies.h>
+ #include <linux/dma-mapping.h>
  #include <linux/of.h>
-+#include <linux/platform_device.h>
- #include <linux/slab.h>
 -#include <linux/of_device.h>
- #include <asm/oplib.h>
++#include <linux/platform_device.h>
+ #include <linux/firmware.h>
+ #include <linux/pgtable.h>
  
- #include "bbc_i2c.h"
-diff --git a/drivers/sbus/char/bbc_i2c.c b/drivers/sbus/char/bbc_i2c.c
-index 537e55cd038d..1c76e27d527a 100644
---- a/drivers/sbus/char/bbc_i2c.c
-+++ b/drivers/sbus/char/bbc_i2c.c
-@@ -14,7 +14,8 @@
- #include <linux/delay.h>
- #include <linux/interrupt.h>
+diff --git a/drivers/scsi/sun_esp.c b/drivers/scsi/sun_esp.c
+index d06e933191a2..afa9d02a33ec 100644
+--- a/drivers/scsi/sun_esp.c
++++ b/drivers/scsi/sun_esp.c
+@@ -12,7 +12,8 @@
+ #include <linux/init.h>
+ #include <linux/dma-mapping.h>
  #include <linux/of.h>
 -#include <linux/of_device.h>
 +#include <linux/of_platform.h>
 +#include <linux/platform_device.h>
- #include <asm/bbc.h>
- #include <asm/io.h>
+ #include <linux/gfp.h>
  
-diff --git a/drivers/sbus/char/bbc_i2c.h b/drivers/sbus/char/bbc_i2c.h
-index c2d066d3fa41..7ffe908c62dc 100644
---- a/drivers/sbus/char/bbc_i2c.h
-+++ b/drivers/sbus/char/bbc_i2c.h
-@@ -3,7 +3,6 @@
- #define _BBC_I2C_H
- 
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/list.h>
- 
- struct bbc_i2c_client {
-diff --git a/drivers/sbus/char/display7seg.c b/drivers/sbus/char/display7seg.c
-index 5368b6ba2884..18e6f84e754f 100644
---- a/drivers/sbus/char/display7seg.c
-+++ b/drivers/sbus/char/display7seg.c
-@@ -16,7 +16,7 @@
- #include <linux/slab.h>
- #include <linux/mutex.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
-+#include <linux/platform_device.h>
- #include <linux/atomic.h>
- #include <linux/uaccess.h>		/* put_/get_user			*/
- #include <asm/io.h>
-diff --git a/drivers/sbus/char/envctrl.c b/drivers/sbus/char/envctrl.c
-index ea914a7eaa7f..3dd7274cb0a3 100644
---- a/drivers/sbus/char/envctrl.c
-+++ b/drivers/sbus/char/envctrl.c
-@@ -28,7 +28,7 @@
- #include <linux/reboot.h>
- #include <linux/slab.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
-+#include <linux/platform_device.h>
- 
- #include <linux/uaccess.h>
- #include <asm/envctrl.h>
-diff --git a/drivers/sbus/char/flash.c b/drivers/sbus/char/flash.c
-index 3adfef210d8e..ea2d903ba673 100644
---- a/drivers/sbus/char/flash.c
-+++ b/drivers/sbus/char/flash.c
-@@ -14,7 +14,7 @@
- #include <linux/spinlock.h>
- #include <linux/mm.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
-+#include <linux/platform_device.h>
- 
- #include <linux/uaccess.h>
- #include <asm/io.h>
-diff --git a/drivers/sbus/char/uctrl.c b/drivers/sbus/char/uctrl.c
-index 05de0ce79cb9..0660425e3a5a 100644
---- a/drivers/sbus/char/uctrl.c
-+++ b/drivers/sbus/char/uctrl.c
-@@ -15,7 +15,7 @@
- #include <linux/miscdevice.h>
- #include <linux/mm.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
-+#include <linux/platform_device.h>
- 
- #include <asm/openprom.h>
- #include <asm/oplib.h>
+ #include <asm/irq.h>
 -- 
 2.40.1
 
