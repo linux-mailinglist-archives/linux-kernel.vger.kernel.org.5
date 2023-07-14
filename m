@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11CFD75369F
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:32:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 234797536A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:32:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235959AbjGNJcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 05:32:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56422 "EHLO
+        id S235936AbjGNJc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 05:32:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235873AbjGNJcG (ORCPT
+        with ESMTP id S235922AbjGNJcH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 05:32:06 -0400
+        Fri, 14 Jul 2023 05:32:07 -0400
 Received: from mail.marcansoft.com (marcansoft.com [212.63.210.85])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77E413594;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3719235A7;
         Fri, 14 Jul 2023 02:31:42 -0700 (PDT)
 Received: from [127.0.0.1] (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: linasend@asahilina.net)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 5C0EA5BC40;
-        Fri, 14 Jul 2023 09:14:13 +0000 (UTC)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 6CA745BC42;
+        Fri, 14 Jul 2023 09:14:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=asahilina.net;
-        s=default; t=1689326058;
-        bh=y9j+fmO9oWE2TupvVpaaD80X7pDQKCp9sdvtdWdP4zM=;
+        s=default; t=1689326065;
+        bh=VAWao2XqqfaUrUG4eX38dF7EKCEUq2ZmTgp3mGFnUog=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc;
-        b=y84e2wXTjy0hzmtrX37Fvo6re+l/TXA0Bs5Kqc1RccJ2w8WblDu9BBWxmI8KYN6LL
-         7Hyq6eJjmnUvRTpLA4aXoIYlc1haDLCjd2dxkJpGyDwe8b4QRiMjNJdJUZseGW49Rb
-         iA8HP0D7u811zX8VDaFJgS11NguIUSnEnDszRH4HCZoVRAZIHhmysFsYsNM4Yt5C86
-         8PO0TP7/92gQybYXNgpEMxLGZX6LF97opbpfzb08ps5Y6KZhoYHucRMXk5jlMy61Ht
-         xe84AHM+oAuc5F3FnZBmfUUdgCaM3DOuixY90ZzdIyLh20o9uyeERVzb+7u2eVmwTn
-         WiIE1mlb/BQGg==
+        b=Rv070+McVf53L+fSrNOclnynR56VOM4amtL7xuLQwcaK+e19Wsy1rNkvqbg6WcsiY
+         0MnUjP+vlKz8e6ztLv/VZ9thIOOFcPh0OWjANftlA2mnzK0dim3oF0fgNYG43698xB
+         2hdwNHSrKhAT/ten+6mJY64iGCuS7pi9/uEKjn1hjFJZSnfhXRZNDVOMVr91DxgTgi
+         J0zWbSZ5CC8aYPK4M53RQmC7CirFTX2n9Tg6KW0Wujo0/4J7KIjn4pOV7Qtb/yJMH6
+         jcssZJ/U1sfZiokColgbsAoU+/s9Jf/eYAtM85nCAY7a0ZBn2JjFj9InCXH9KY+eOV
+         83Kma93HKnxpA==
 From:   Asahi Lina <lina@asahilina.net>
-Date:   Fri, 14 Jul 2023 18:13:54 +0900
-Subject: [PATCH RFC 02/11] rust: lock: Add Lock::pin_init()
+Date:   Fri, 14 Jul 2023 18:13:55 +0900
+Subject: [PATCH RFC 03/11] rust: Use absolute paths to build Rust objects
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230714-classless_lockdep-v1-2-229b9671ce31@asahilina.net>
+Message-Id: <20230714-classless_lockdep-v1-3-229b9671ce31@asahilina.net>
 References: <20230714-classless_lockdep-v1-0-229b9671ce31@asahilina.net>
 In-Reply-To: <20230714-classless_lockdep-v1-0-229b9671ce31@asahilina.net>
 To:     Miguel Ojeda <ojeda@kernel.org>,
@@ -58,11 +58,11 @@ Cc:     Hector Martin <marcan@marcan.st>, Sven Peter <sven@svenpeter.dev>,
         linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
         llvm@lists.linux.dev, Asahi Lina <lina@asahilina.net>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1689326040; l=3329;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1689326040; l=2695;
  i=lina@asahilina.net; s=20230221; h=from:subject:message-id;
- bh=y9j+fmO9oWE2TupvVpaaD80X7pDQKCp9sdvtdWdP4zM=;
- b=HldwayEzarn12NZLBONXhBl2dK70OLqVEoWxGybMgF5VMQyfeDLVYNVFYC4aOjRpascoC/fA3
- nN73G79SFLMD34bCpycjN0Re4OpiEh4nng1Q4gG2YqIe/f7m9yKlLsZ
+ bh=VAWao2XqqfaUrUG4eX38dF7EKCEUq2ZmTgp3mGFnUog=;
+ b=Mei8TIbhg8193HQ30Z4+6AvQI9I9bSJA87f41daFHByxLcwEs3OLPMiDdbvZqxkvrxSyz2Yw4
+ CfwDvXCA5JUDiUEQ/kiBq9bICTiHOt+It/8iffq7+3VXjaJJiug42AT
 X-Developer-Key: i=lina@asahilina.net; a=ed25519;
  pk=Qn8jZuOtR1m5GaiDfTrAoQ4NE1XoYVZ/wmt5YtXWFC4=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -75,94 +75,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow initializing a lock using pin_init!(), instead of requiring
-the inner data to be passed through the stack.
+We want to use caller_location to uniquely identify callsites, to
+automatically create lockdep classes without macros. The location
+filename in local code uses the relative path passed to the compiler,
+but if that code is generic and instantiated from another crate, the
+path becomes absolute.
+
+To make this work and keep the paths consistent, always pass an absolute
+path to the compiler. Then the Location path is always identical
+regardless of how the code is being compiled.
 
 Signed-off-by: Asahi Lina <lina@asahilina.net>
 ---
- rust/kernel/sync/lock.rs       | 30 +++++++++++++++++++++++++++++-
- rust/kernel/sync/lock/mutex.rs | 13 +++++++++++++
- 2 files changed, 42 insertions(+), 1 deletion(-)
+ rust/Makefile          | 2 +-
+ scripts/Makefile.build | 8 ++++----
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/rust/kernel/sync/lock.rs b/rust/kernel/sync/lock.rs
-index a2216325632d..d493c5d19104 100644
---- a/rust/kernel/sync/lock.rs
-+++ b/rust/kernel/sync/lock.rs
-@@ -6,7 +6,9 @@
- //! spinlocks, raw spinlocks) to be provided with minimal effort.
+diff --git a/rust/Makefile b/rust/Makefile
+index 7c9d9f11aec5..552f023099c8 100644
+--- a/rust/Makefile
++++ b/rust/Makefile
+@@ -369,7 +369,7 @@ quiet_cmd_rustc_library = $(if $(skip_clippy),RUSTC,$(RUSTC_OR_CLIPPY_QUIET)) L
+ 		--emit=dep-info=$(depfile) --emit=obj=$@ \
+ 		--emit=metadata=$(dir $@)$(patsubst %.o,lib%.rmeta,$(notdir $@)) \
+ 		--crate-type rlib -L$(objtree)/$(obj) \
+-		--crate-name $(patsubst %.o,%,$(notdir $@)) $< \
++		--crate-name $(patsubst %.o,%,$(notdir $@)) $(abspath $<) \
+ 	$(if $(rustc_objcopy),;$(OBJCOPY) $(rustc_objcopy) $@)
  
- use super::LockClassKey;
--use crate::{bindings, init::PinInit, pin_init, str::CStr, types::Opaque, types::ScopeGuard};
-+use crate::{
-+    bindings, init::PinInit, pin_init, str::CStr, try_pin_init, types::Opaque, types::ScopeGuard,
-+};
- use core::{cell::UnsafeCell, marker::PhantomData, marker::PhantomPinned};
- use macros::pin_data;
+ rust-analyzer:
+diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+index 6413342a03f4..c925b90ebd80 100644
+--- a/scripts/Makefile.build
++++ b/scripts/Makefile.build
+@@ -283,27 +283,27 @@ rust_common_cmd = \
+ # would not match each other.
  
-@@ -87,6 +89,7 @@ pub struct Lock<T: ?Sized, B: Backend> {
-     _pin: PhantomPinned,
+ quiet_cmd_rustc_o_rs = $(RUSTC_OR_CLIPPY_QUIET) $(quiet_modtag) $@
+-      cmd_rustc_o_rs = $(rust_common_cmd) --emit=obj=$@ $<
++      cmd_rustc_o_rs = $(rust_common_cmd) --emit=obj=$@ $(abspath $<)
  
-     /// The data protected by the lock.
-+    #[pin]
-     pub(crate) data: UnsafeCell<T>,
- }
+ $(obj)/%.o: $(src)/%.rs FORCE
+ 	$(call if_changed_dep,rustc_o_rs)
  
-@@ -111,6 +114,31 @@ pub fn new(t: T, name: &'static CStr, key: &'static LockClassKey) -> impl PinIni
-             }),
-         })
-     }
-+
-+    /// Constructs a new lock initialiser taking an initialiser.
-+    pub fn pin_init<E>(
-+        t: impl PinInit<T, E>,
-+        name: &'static CStr,
-+        key: &'static LockClassKey,
-+    ) -> impl PinInit<Self, E>
-+    where
-+        E: core::convert::From<core::convert::Infallible>,
-+    {
-+        try_pin_init!(Self {
-+            // SAFETY: We are just forwarding the initialization across a
-+            // cast away from UnsafeCell, so the pin_init_from_closure and
-+            // __pinned_init() requirements are in sync.
-+            data <- unsafe { crate::init::pin_init_from_closure(move |slot: *mut UnsafeCell<T>| {
-+                t.__pinned_init(slot as *mut T)
-+            })},
-+            _pin: PhantomPinned,
-+            // SAFETY: `slot` is valid while the closure is called and both `name` and `key` have
-+            // static lifetimes so they live indefinitely.
-+            state <- Opaque::ffi_init(|slot| unsafe {
-+                B::init(slot, name.as_char_ptr(), key.as_ptr())
-+            }),
-+        }? E)
-+    }
- }
+ quiet_cmd_rustc_rsi_rs = $(RUSTC_OR_CLIPPY_QUIET) $(quiet_modtag) $@
+       cmd_rustc_rsi_rs = \
+-	$(rust_common_cmd) -Zunpretty=expanded $< >$@; \
++	$(rust_common_cmd) -Zunpretty=expanded $(abspath $<) >$@; \
+ 	command -v $(RUSTFMT) >/dev/null && $(RUSTFMT) $@
  
- impl<T: ?Sized, B: Backend> Lock<T, B> {
-diff --git a/rust/kernel/sync/lock/mutex.rs b/rust/kernel/sync/lock/mutex.rs
-index 923472f04af4..06fe685501b4 100644
---- a/rust/kernel/sync/lock/mutex.rs
-+++ b/rust/kernel/sync/lock/mutex.rs
-@@ -18,6 +18,19 @@ macro_rules! new_mutex {
-     };
- }
+ $(obj)/%.rsi: $(src)/%.rs FORCE
+ 	$(call if_changed_dep,rustc_rsi_rs)
  
-+/// Creates a [`Mutex`] initialiser with the given name and a newly-created lock class,
-+/// given an initialiser for the inner type.
-+///
-+/// It uses the name if one is given, otherwise it generates one based on the file name and line
-+/// number.
-+#[macro_export]
-+macro_rules! new_mutex_pinned {
-+    ($inner:expr $(, $name:literal)? $(,)?) => {
-+        $crate::sync::Mutex::pin_init(
-+            $inner, $crate::optional_name!($($name)?), $crate::static_lock_class!())
-+    };
-+}
-+
- /// A mutual exclusion primitive.
- ///
- /// Exposes the kernel's [`struct mutex`]. When multiple threads attempt to lock the same mutex,
+ quiet_cmd_rustc_s_rs = $(RUSTC_OR_CLIPPY_QUIET) $(quiet_modtag) $@
+-      cmd_rustc_s_rs = $(rust_common_cmd) --emit=asm=$@ $<
++      cmd_rustc_s_rs = $(rust_common_cmd) --emit=asm=$@ $(abspath $<)
+ 
+ $(obj)/%.s: $(src)/%.rs FORCE
+ 	$(call if_changed_dep,rustc_s_rs)
+ 
+ quiet_cmd_rustc_ll_rs = $(RUSTC_OR_CLIPPY_QUIET) $(quiet_modtag) $@
+-      cmd_rustc_ll_rs = $(rust_common_cmd) --emit=llvm-ir=$@ $<
++      cmd_rustc_ll_rs = $(rust_common_cmd) --emit=llvm-ir=$@ $(abspath $<)
+ 
+ $(obj)/%.ll: $(src)/%.rs FORCE
+ 	$(call if_changed_dep,rustc_ll_rs)
 
 -- 
 2.40.1
