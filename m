@@ -2,221 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54957754016
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 19:01:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6448C75401C
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 19:02:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235723AbjGNRBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 13:01:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36678 "EHLO
+        id S235905AbjGNRCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 13:02:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235526AbjGNRBH (ORCPT
+        with ESMTP id S235199AbjGNRCN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 13:01:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D463358E
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 10:00:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689354018;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=N02ki8uvE+pJy/IlL5vbiclYkSO78Gu5qwE7U3vocZo=;
-        b=HYPHWupCraMugWzOwICBhbw0kpWFu0p+ejIeJPxGHajmz98Buy96lrL2RtjP1Q+YxhJfc0
-        lJS2K7ctzxEdkHyV/x0KO4Jq89AQhMXER4/pLKGyo/VC1w61lvOOKkNQnQPhzPFwIkMcwA
-        znnaOwXmgffmdvF5K9f7kLtlJwdLDJI=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-648-C8biaECoMg23eiDUWxVYnA-1; Fri, 14 Jul 2023 13:00:16 -0400
-X-MC-Unique: C8biaECoMg23eiDUWxVYnA-1
-Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-51e02395cf3so1182696a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 10:00:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689354015; x=1691946015;
-        h=in-reply-to:from:references:cc:to:content-language:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=N02ki8uvE+pJy/IlL5vbiclYkSO78Gu5qwE7U3vocZo=;
-        b=QwD7MLdP9wNOk3JqNoqQhfcZ5+KTpoRrdBVEKu2lZkV7C/TGXICt9KOvVfDjFikK4v
-         zatIOSOuLKVjWYXWDViUwKF632uvwoX/gqXCeqYyMdqkHcgOeGDSqL7F8upqf49gpzOe
-         RDW6u1ii9D9VX8o/WQi1B07GEvkKXjPfDYEUJ4Rc2jtHYcu3Y/D7RmvepQOTZvkKrb9Z
-         uxIZTgxm+9HJCVQPVy8wuhJDgXiPxqizycS3xsV+qVYiQfo/aQa800utyLaXjlxdKnf7
-         Izj2vX04ARd4DOvKibSx19kmrH6W2ftRkGJuMYGhJY1zrKWXClAYKXFHMMwRQMYVIi4V
-         +t3w==
-X-Gm-Message-State: ABy/qLZkE5s0/CROGnLGDIQ/4p0BsD6X3BwJxG+ZE1jEQiSn+BfTzRI/
-        Bi6N3ZidBZY4xLqiOqW9v9yqYf8w8j0RJOlBWaHLaoEeCmLYDT12W1IyqASCdOQqOmQ541KjT3R
-        jLtmjpURkxOa12BZp9z26eRZV
-X-Received: by 2002:aa7:cd16:0:b0:51b:c714:a2a1 with SMTP id b22-20020aa7cd16000000b0051bc714a2a1mr4919601edw.7.1689354014960;
-        Fri, 14 Jul 2023 10:00:14 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGHSotZVQrG7OiZfkMB68lmfzqaugn4uggppG/vYjJ0LbWV4JTr3t/Gno0oIURvY09bBN+QQA==
-X-Received: by 2002:aa7:cd16:0:b0:51b:c714:a2a1 with SMTP id b22-20020aa7cd16000000b0051bc714a2a1mr4919581edw.7.1689354014596;
-        Fri, 14 Jul 2023 10:00:14 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id w24-20020aa7cb58000000b0051e0f8aac74sm6010017edt.8.2023.07.14.10.00.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 Jul 2023 10:00:14 -0700 (PDT)
-Content-Type: multipart/mixed; boundary="------------wXV3NyKm5Y3zQIfoH2wA27S0"
-Message-ID: <4b7da537-8ec3-95e2-4053-871c56e980ea@redhat.com>
-Date:   Fri, 14 Jul 2023 19:00:13 +0200
+        Fri, 14 Jul 2023 13:02:13 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91DC31992;
+        Fri, 14 Jul 2023 10:02:11 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1F14A61D66;
+        Fri, 14 Jul 2023 17:02:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 754D8C433C8;
+        Fri, 14 Jul 2023 17:02:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689354130;
+        bh=jY6JZxKceDtVZD4Gt1yOdz9n+P+MKOe0fgA+nUL1asY=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=lVDdgcy6wu6DgGYTSgR37ppjVW6mcMp7lZ+9syQr5XuU9PVInkTh8p+1zs8uUv23H
+         ERsMBzcIO+Nnq2qgU2LUsvZGA6LXRvy3ITeapw95JehlLDCY1x+m1xrQNkVLtsPRby
+         9Ct2BLyGq3pUyrhc3SJ6hgKK5wJGi4knIU98s//qe+J/xPOWqBFMv1vEznnT4/u2eO
+         fL1kmvuAMS/8XFpOrIf40/rcfHTaevI21jB6Rn4Em1gmUPrdt5BSiFxc1ZBcuJNo+Y
+         3wgNkiGu1QSHbreTAqP+NBA9airT5t6KwlYjQfOVBxITLeIQl3VmS75u+Eo/Efz2A0
+         4Yh24fqoZXBfQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 13CC3CE03B3; Fri, 14 Jul 2023 10:02:10 -0700 (PDT)
+Date:   Fri, 14 Jul 2023 10:02:10 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Alan Huang <mmpgouride@gmail.com>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        Gao Xiang <hsiangkao@linux.alibaba.com>,
+        Sandeep Dhavale <dhavale@google.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-erofs@lists.ozlabs.org, xiang@kernel.org,
+        Will Shiu <Will.Shiu@mediatek.com>, kernel-team@android.com,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH v1] rcu: Fix and improve RCU read lock checks when
+ !CONFIG_DEBUG_LOCK_ALLOC
+Message-ID: <e8ee7006-c1d0-4c04-bd25-0f518fb6534b@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <f124e041-6a82-2069-975c-4f393e5c4137@linux.alibaba.com>
+ <87292a44-cc02-4d95-940e-e4e31d0bc6f2@paulmck-laptop>
+ <f1c60dcb-e32f-7b7e-bf0d-5dec999e9299@linux.alibaba.com>
+ <CAEXW_YSODXRfgkR0D2G-x=0uZdsqvF3kZL+LL3DcRX-5CULJ1Q@mail.gmail.com>
+ <894a3b64-a369-7bc6-c8a8-0910843cc587@linux.alibaba.com>
+ <CAEXW_YSM1yik4yWTgZoxCS9RM6TbsL26VCVCH=41+uMA8chfAQ@mail.gmail.com>
+ <58b661d0-0ebb-4b45-a10d-c5927fb791cd@paulmck-laptop>
+ <7d433fac-a62d-4e81-b8e5-57cf5f2d1d55@paulmck-laptop>
+ <F160D7F8-57DC-4986-90A9-EB50F7C89891@gmail.com>
+ <6E5326AD-9A5D-4570-906A-BDE8257B6F0C@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH] platform/x86/intel/hid: Add HP Dragonfly G2 to DMI quirks
-Content-Language: en-US, nl
-To:     Maxim Mikityanskiy <maxtram95@gmail.com>,
-        Alex Hung <alexhung@gmail.com>,
-        Mark Gross <markgross@kernel.org>
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Richard Hughes <hughsient@gmail.com>,
-        Jorge Lopez <jorge.lopez2@hp.com>
-References: <20230712175023.31651-1-maxtram95@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20230712175023.31651-1-maxtram95@gmail.com>
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6E5326AD-9A5D-4570-906A-BDE8257B6F0C@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------wXV3NyKm5Y3zQIfoH2wA27S0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-
-Hi Maxim,
-
-On 7/12/23 19:50, Maxim Mikityanskiy wrote:
-> SW_TABLET_MODE reports are broken on BIOS versions newer than 1.9.1 on
-> HP Elite Dragonfly G2. Analysis of SSDT9 shows that the BTNL method has
-> to be called to start getting 0xcc and 0xcd events. Apparently, the
-> button_array_present method used to return true on BIOS 1.9.1 and older,
-> but it returns false on newer BIOSes due to HEBC returning 0x000033f3
-> (bits 0x60000 and 0x20000 are not set).
+On Fri, Jul 14, 2023 at 11:54:47PM +0800, Alan Huang wrote:
 > 
-> Add this laptop to button_array_table to force the BTNL call, and also
-> add it to dmi_vgbs_allow_list to read the initial state and sync VBDS
-> with VBPS, because this laptop has a reliable VGBS method.
+> > 2023年7月14日 23:35，Alan Huang <mmpgouride@gmail.com> 写道：
+> > 
+> >> 
+> >> 2023年7月14日 10:16，Paul E. McKenney <paulmck@kernel.org> 写道：
+> >> 
+> >> On Thu, Jul 13, 2023 at 09:33:35AM -0700, Paul E. McKenney wrote:
+> >>> On Thu, Jul 13, 2023 at 11:33:24AM -0400, Joel Fernandes wrote:
+> >>>> On Thu, Jul 13, 2023 at 10:34 AM Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
+> >>>>> On 2023/7/13 22:07, Joel Fernandes wrote:
+> >>>>>> On Thu, Jul 13, 2023 at 12:59 AM Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
+> >>>>>>> On 2023/7/13 12:52, Paul E. McKenney wrote:
+> >>>>>>>> On Thu, Jul 13, 2023 at 12:41:09PM +0800, Gao Xiang wrote:
+> >>>>>>> 
+> >>>>>>> ...
+> >>>>>>> 
+> >>>>>>>>> 
+> >>>>>>>>> There are lots of performance issues here and even a plumber
+> >>>>>>>>> topic last year to show that, see:
+> >>>>>>>>> 
+> >>>>>>>>> [1] https://lore.kernel.org/r/20230519001709.2563-1-tj@kernel.org
+> >>>>>>>>> [2] https://lore.kernel.org/r/CAHk-=wgE9kORADrDJ4nEsHHLirqPCZ1tGaEPAZejHdZ03qCOGg@mail.gmail.com
+> >>>>>>>>> [3] https://lore.kernel.org/r/CAB=BE-SBtO6vcoyLNA9F-9VaN5R0t3o_Zn+FW8GbO6wyUqFneQ@mail.gmail.com
+> >>>>>>>>> [4] https://lpc.events/event/16/contributions/1338/
+> >>>>>>>>> and more.
+> >>>>>>>>> 
+> >>>>>>>>> I'm not sure if it's necessary to look info all of that,
+> >>>>>>>>> andSandeep knows more than I am (the scheduling issue
+> >>>>>>>>> becomes vital on some aarch64 platform.)
+> >>>>>>>> 
+> >>>>>>>> Hmmm...  Please let me try again.
+> >>>>>>>> 
+> >>>>>>>> Assuming that this approach turns out to make sense, the resulting
+> >>>>>>>> patch will need to clearly state the performance benefits directly in
+> >>>>>>>> the commit log.
+> >>>>>>>> 
+> >>>>>>>> And of course, for the approach to make sense, it must avoid breaking
+> >>>>>>>> the existing lockdep-RCU debugging code.
+> >>>>>>>> 
+> >>>>>>>> Is that more clear?
+> >>>>>>> 
+> >>>>>>> Personally I'm not working on Android platform any more so I don't
+> >>>>>>> have a way to reproduce, hopefully Sandeep could give actually
+> >>>>>>> number _again_ if dm-verity is enabled and trigger another
+> >>>>>>> workqueue here and make a comparsion why the scheduling latency of
+> >>>>>>> the extra work becomes unacceptable.
+> >>>>>>> 
+> >>>>>> 
+> >>>>>> Question from my side, are we talking about only performance issues or
+> >>>>>> also a crash? It appears z_erofs_decompress_pcluster() takes
+> >>>>>> mutex_lock(&pcl->lock);
+> >>>>>> 
+> >>>>>> So if it is either in an RCU read-side critical section or in an
+> >>>>>> atomic section, like the softirq path, then it may
+> >>>>>> schedule-while-atomic or trigger RCU warnings.
+> >>>>>> 
+> >>>>>> z_erofs_decompressqueue_endio
+> >>>>>> -> z_erofs_decompress_kickoff
+> >>>>>> ->z_erofs_decompressqueue_work
+> >>>>>>  ->z_erofs_decompress_queue
+> >>>>>>   -> z_erofs_decompress_pcluster
+> >>>>>>    -> mutex_lock
+> >>>>>> 
+> >>>>> 
+> >>>>> Why does the softirq path not trigger a workqueue instead?
+> >>>> 
+> >>>> I said "if it is". I was giving a scenario. mutex_lock() is not
+> >>>> allowed in softirq context or in an RCU-reader.
+> >>>> 
+> >>>>>> Per Sandeep in [1], this stack happens under RCU read-lock in:
+> >>>>>> 
+> >>>>>> #define __blk_mq_run_dispatch_ops(q, check_sleep, dispatch_ops) \
+> >>>>>> [...]
+> >>>>>>                rcu_read_lock();
+> >>>>>>                (dispatch_ops);
+> >>>>>>                rcu_read_unlock();
+> >>>>>> [...]
+> >>>>>> 
+> >>>>>> Coming from:
+> >>>>>> blk_mq_flush_plug_list ->
+> >>>>>>                           blk_mq_run_dispatch_ops(q,
+> >>>>>>                                __blk_mq_flush_plug_list(q, plug));
+> >>>>>> 
+> >>>>>> and __blk_mq_flush_plug_list does this:
+> >>>>>>          q->mq_ops->queue_rqs(&plug->mq_list);
+> >>>>>> 
+> >>>>>> This somehow ends up calling the bio_endio and the
+> >>>>>> z_erofs_decompressqueue_endio which grabs the mutex.
+> >>>>>> 
+> >>>>>> So... I have a question, it looks like one of the paths in
+> >>>>>> __blk_mq_run_dispatch_ops() uses SRCU.  Where are as the alternate
+> >>>>>> path uses RCU. Why does this alternate want to block even if it is not
+> >>>>>> supposed to? Is the real issue here that the BLK_MQ_F_BLOCKING should
+> >>>>>> be set? It sounds like you want to block in the "else" path even
+> >>>>>> though BLK_MQ_F_BLOCKING is not set:
+> >>>>> 
+> >>>>> BLK_MQ_F_BLOCKING is not a flag that a filesystem can do anything with.
+> >>>>> That is block layer and mq device driver stuffs. filesystems cannot set
+> >>>>> this value.
+> >>>>> 
+> >>>>> As I said, as far as I understand, previously,
+> >>>>> .end_io() can only be called without RCU context, so it will be fine,
+> >>>>> but I don't know when .end_io() can be called under some RCU context
+> >>>>> now.
+> >>>> 
+> >>>>> From what Sandeep described, the code path is in an RCU reader. My
+> >>>> question is more, why doesn't it use SRCU instead since it clearly
+> >>>> does so if BLK_MQ_F_BLOCKING. What are the tradeoffs? IMHO, a deeper
+> >>>> dive needs to be made into that before concluding that the fix is to
+> >>>> use rcu_read_lock_any_held().
+> >>> 
+> >>> How can this be solved?
+> >>> 
+> >>> 1. Always use a workqueue.  Simple, but is said to have performance
+> >>> issues.
+> >>> 
+> >>> 2. Pass a flag in that indicates whether or not the caller is in an
+> >>> RCU read-side critical section.  Conceptually simple, but might
+> >>> or might not be reasonable to actually implement in the code as
+> >>> it exists now. (You tell me!)
+> >>> 
+> >>> 3. Create a function in z_erofs that gives you a decent
+> >>> approximation, maybe something like the following.
+> >>> 
+> >>> 4. Other ideas here.
+> >> 
+> >> 5. #3 plus make the corresponding Kconfig option select
+> >> PREEMPT_COUNT, assuming that any users needing compression in
+> >> non-preemptible kernels are OK with PREEMPT_COUNT being set.
+> >> (Some users of non-preemptible kernels object strenuously
+> >> to the added overhead from CONFIG_PREEMPT_COUNT=y.)
+> > 
+> > 6. Set one bit in bio->bi_private, check the bit and flip it in rcu_read_lock() path,
+> > then in z_erofs_decompressqueue_endio, check if the bit has changed.
 > 
-> Tested with BIOS 1.13.1.
+> Seems bad, read and modify bi_private is a bad idea.
+
+Is there some other field that would work?
+
+							Thanx, Paul
+
+> > Not sure if this is feasible or acceptable. :)
+> > 
+> >> 
+> >> Thanx, Paul
+> >> 
+> >>> The following is untested, and is probably quite buggy, but it should
+> >>> provide you with a starting point.
+> >>> 
+> >>> static bool z_erofs_wq_needed(void)
+> >>> {
+> >>> if (IS_ENABLED(CONFIG_PREEMPTION) && rcu_preempt_depth())
+> >>> return true;  // RCU reader
+> >>> if (IS_ENABLED(CONFIG_PREEMPT_COUNT) && !preemptible())
+> >>> return true;  // non-preemptible
+> >>> if (!IS_ENABLED(CONFIG_PREEMPT_COUNT))
+> >>> return true;  // non-preeemptible kernel, so play it safe
+> >>> return false;
+> >>> }
+> >>> 
+> >>> You break it, you buy it!  ;-)
+> >>> 
+> >>> Thanx, Paul
 > 
-> Signed-off-by: Maxim Mikityanskiy <maxtram95@gmail.com>
-
-Thank you for figuring this out and thank you for the patch.
-
-WRT the need to call BTNL, I expect that if one laptop needs this likely more models will need it and I expect / hope that this will not cause any issues when called everywhere.
-
-So I think it would be better to instead of adding this model to the button_array_table[] it would be better to just always call BTNL (I suspect this is also what Windows does).
-
-Can you give the attached path to always call BTNL a try ?
-
-As for adding the model to dmi_vgbs_allow_list[] on many models it seems that the EC will send a 0xcc / 0xcd event at boot (now that I think about it I guess this may be in response to the BTNL call) and then on that event the SW_TABLET_STATE evdev gets registered and the first event also syncs the state.
-
-Can you check if just using the always call BTNL patch, without the quirk perhaps already makes the SW_TABLET_STATE evdev show up (including the correct state) ?
-
-If no event is send during boot, the n I'm fine with adding the model to the dmi_vgbs_allow_list[], but perhaps this is not necessary?
-
-Regards,
-
-Hans
-
-
-
-> ---
->  drivers/platform/x86/intel/hid.c | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
 > 
-> diff --git a/drivers/platform/x86/intel/hid.c b/drivers/platform/x86/intel/hid.c
-> index 5632bd3c534a..5c78b476ed1e 100644
-> --- a/drivers/platform/x86/intel/hid.c
-> +++ b/drivers/platform/x86/intel/hid.c
-> @@ -128,6 +128,13 @@ static const struct dmi_system_id button_array_table[] = {
->  			DMI_MATCH(DMI_PRODUCT_NAME, "Surface Go 3"),
->  		},
->  	},
-> +	{
-> +		.ident = "HP Elite Dragonfly G2",
-> +		.matches = {
-> +			DMI_MATCH(DMI_SYS_VENDOR, "HP"),
-> +			DMI_MATCH(DMI_PRODUCT_NAME, "HP Elite Dragonfly G2 Notebook PC"),
-> +		},
-> +	},
->  	{ }
->  };
->  
-> @@ -150,6 +157,12 @@ static const struct dmi_system_id dmi_vgbs_allow_list[] = {
->  			DMI_MATCH(DMI_PRODUCT_NAME, "Surface Go"),
->  		},
->  	},
-> +	{
-> +		.matches = {
-> +			DMI_MATCH(DMI_SYS_VENDOR, "HP"),
-> +			DMI_MATCH(DMI_PRODUCT_NAME, "HP Elite Dragonfly G2 Notebook PC"),
-> +		},
-> +	},
->  	{ }
->  };
->  
-
---------------wXV3NyKm5Y3zQIfoH2wA27S0
-Content-Type: text/x-patch; charset=UTF-8;
- name="0001-platform-x86-intel-hid-Always-call-BTNL-ACPI-method.patch"
-Content-Disposition: attachment;
- filename*0="0001-platform-x86-intel-hid-Always-call-BTNL-ACPI-method.pat";
- filename*1="ch"
-Content-Transfer-Encoding: base64
-
-RnJvbSAxZmI0NDNjYjFjYWY3M2U5NDBhNmIwNTUwYjdlNzljODZlZGYzYWVmIE1vbiBTZXAg
-MTcgMDA6MDA6MDAgMjAwMQpGcm9tOiBIYW5zIGRlIEdvZWRlIDxoZGVnb2VkZUByZWRoYXQu
-Y29tPgpEYXRlOiBGcmksIDE0IEp1bCAyMDIzIDE3OjUxOjM4ICswMjAwClN1YmplY3Q6IFtQ
-QVRDSF0gcGxhdGZvcm0veDg2OiBpbnRlbDogaGlkOiBBbHdheXMgY2FsbCBCVE5MIEFDUEkg
-bWV0aG9kCgpPbiBhIEhQIEVsaXRlIERyYWdvbmZseSBHMiB0aGUgMHhjYyBhbmQgMHhjZCBl
-dmVudHMgZm9yIFNXX1RBQkxFVF9NT0RFCmFyZSBvbmx5IHNlbmQgYWZ0ZXIgdGhlIEJUTkwg
-QUNQSSBtZXRob2QgaGFzIGJlZW4gY2FsbGVkLgoKTGlrZWx5IG1vcmUgZGV2aWNlcyBuZWVk
-IHRoaXMsIHNvIG1ha2UgdGhlIEJUTkwgQUNQSSBtZXRob2QgdW5jb25kaXRpb25hbAppbnN0
-ZWFkIG9mIG9ubHkgZG9pbmcgaXQgb24gZGV2aWNlcyB3aXRoIGEgNSBidXR0b24gYXJyYXku
-CgpOb3RlIHRoaXMgYWxzbyBtYWtlcyB0aGUgaW50ZWxfYnV0dG9uX2FycmF5X2VuYWJsZSgp
-IGNhbGwgaW4gcHJvYmUoKQp1bmNvbmRpdGlvbmFsLCB0aGF0IGZ1bmN0aW9uIGRvZXMgaXRz
-IG93biBwcml2LT5hcnJheSBjaGVjay4gVGhpcyBtYWtlcwp0aGUgaW50ZWxfYnV0dG9uX2Fy
-cmF5X2VuYWJsZSgpIGNhbGwgaW4gcHJvYmUoKSBjb25zaXN0ZW50IHdpdGggdGhlIGNhbGxz
-CmRvbmUgb24gc3VzcGVuZC9yZXN1bWUgd2hpY2ggYWxzbyByZWx5IG9uIHRoZSBwcml2LT5h
-cnJheSBjaGVjayBpbnNpZGUKdGhlIGZ1bmN0aW9uLgoKUmVwb3J0ZWQtYnk6IE1heGltIE1p
-a2l0eWFuc2tpeSA8bWF4dHJhbTk1QGdtYWlsLmNvbT4KQ2xvc2VzOiBodHRwczovL2xvcmUu
-a2VybmVsLm9yZy9wbGF0Zm9ybS1kcml2ZXIteDg2LzIwMjMwNzEyMTc1MDIzLjMxNjUxLTEt
-bWF4dHJhbTk1QGdtYWlsLmNvbS8KU2lnbmVkLW9mZi1ieTogSGFucyBkZSBHb2VkZSA8aGRl
-Z29lZGVAcmVkaGF0LmNvbT4KLS0tCiBkcml2ZXJzL3BsYXRmb3JtL3g4Ni9pbnRlbC9oaWQu
-YyB8IDIxICsrKysrKysrKy0tLS0tLS0tLS0tLQogMSBmaWxlIGNoYW5nZWQsIDkgaW5zZXJ0
-aW9ucygrKSwgMTIgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9wbGF0Zm9y
-bS94ODYvaW50ZWwvaGlkLmMgYi9kcml2ZXJzL3BsYXRmb3JtL3g4Ni9pbnRlbC9oaWQuYwpp
-bmRleCA1NjMyYmQzYzUzNGEuLjY0MWYyNzk3NDA2ZSAxMDA2NDQKLS0tIGEvZHJpdmVycy9w
-bGF0Zm9ybS94ODYvaW50ZWwvaGlkLmMKKysrIGIvZHJpdmVycy9wbGF0Zm9ybS94ODYvaW50
-ZWwvaGlkLmMKQEAgLTYyMCw3ICs2MjAsNyBAQCBzdGF0aWMgYm9vbCBidXR0b25fYXJyYXlf
-cHJlc2VudChzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpkZXZpY2UpCiBzdGF0aWMgaW50IGlu
-dGVsX2hpZF9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpkZXZpY2UpCiB7CiAJYWNw
-aV9oYW5kbGUgaGFuZGxlID0gQUNQSV9IQU5ETEUoJmRldmljZS0+ZGV2KTsKLQl1bnNpZ25l
-ZCBsb25nIGxvbmcgbW9kZTsKKwl1bnNpZ25lZCBsb25nIGxvbmcgbW9kZSwgZHVtbXk7CiAJ
-c3RydWN0IGludGVsX2hpZF9wcml2ICpwcml2OwogCWFjcGlfc3RhdHVzIHN0YXR1czsKIAlp
-bnQgZXJyOwpAQCAtNjkyLDE4ICs2OTIsMTUgQEAgc3RhdGljIGludCBpbnRlbF9oaWRfcHJv
-YmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqZGV2aWNlKQogCWlmIChlcnIpCiAJCWdvdG8g
-ZXJyX3JlbW92ZV9ub3RpZnk7CiAKLQlpZiAocHJpdi0+YXJyYXkpIHsKLQkJdW5zaWduZWQg
-bG9uZyBsb25nIGR1bW15OworCWludGVsX2J1dHRvbl9hcnJheV9lbmFibGUoJmRldmljZS0+
-ZGV2LCB0cnVlKTsKIAotCQlpbnRlbF9idXR0b25fYXJyYXlfZW5hYmxlKCZkZXZpY2UtPmRl
-diwgdHJ1ZSk7Ci0KLQkJLyogQ2FsbCBidXR0b24gbG9hZCBtZXRob2QgdG8gZW5hYmxlIEhJ
-RCBwb3dlciBidXR0b24gKi8KLQkJaWYgKCFpbnRlbF9oaWRfZXZhbHVhdGVfbWV0aG9kKGhh
-bmRsZSwgSU5URUxfSElEX0RTTV9CVE5MX0ZOLAotCQkJCQkgICAgICAgJmR1bW15KSkgewot
-CQkJZGV2X3dhcm4oJmRldmljZS0+ZGV2LAotCQkJCSAiZmFpbGVkIHRvIGVuYWJsZSBISUQg
-cG93ZXIgYnV0dG9uXG4iKTsKLQkJfQotCX0KKwkvKgorCSAqIENhbGwgYnV0dG9uIGxvYWQg
-bWV0aG9kIHRvIGVuYWJsZSBISUQgcG93ZXIgYnV0dG9uCisJICogQWx3YXlzIGRvIHRoaXMg
-c2luY2UgaXQgYWN0aXZhdGVzIGV2ZW50cyBvbiBzb21lIGRldmljZXMgd2l0aG91dAorCSAq
-IGEgYnV0dG9uIGFycmF5IHRvby4KKwkgKi8KKwlpZiAoIWludGVsX2hpZF9ldmFsdWF0ZV9t
-ZXRob2QoaGFuZGxlLCBJTlRFTF9ISURfRFNNX0JUTkxfRk4sICZkdW1teSkpCisJCWRldl93
-YXJuKCZkZXZpY2UtPmRldiwgImZhaWxlZCB0byBlbmFibGUgSElEIHBvd2VyIGJ1dHRvblxu
-Iik7CiAKIAlkZXZpY2VfaW5pdF93YWtldXAoJmRldmljZS0+ZGV2LCB0cnVlKTsKIAkvKgot
-LSAKMi40MS4wCgo=
-
---------------wXV3NyKm5Y3zQIfoH2wA27S0--
-
