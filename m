@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBC37752E6A
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 03:02:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8E61752E6B
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 03:02:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234627AbjGNBCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 21:02:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50964 "EHLO
+        id S234662AbjGNBCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 21:02:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234623AbjGNBCm (ORCPT
+        with ESMTP id S234613AbjGNBCn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 21:02:42 -0400
+        Thu, 13 Jul 2023 21:02:43 -0400
 Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2100.outbound.protection.outlook.com [40.107.236.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 232F72D6B;
-        Thu, 13 Jul 2023 18:02:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D72802D69;
+        Thu, 13 Jul 2023 18:02:41 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fHeU2yNLQDMVsU6RgKmeoOMkijXIkLhVg2rCgH75qH+xg1d/Vol6fL7kqn+eCyBS+ua4HWDJpy4z3QOpHonWSD4aXFs+iyl7b++phSWfuKX8Ubb4Wt4ofW8SGB2duHXpqkdFcAVGSgYVFSfgXx/cculF1oOlQbWGQecj9pO3KTskkjA7TDBhUuxxG+ecVLAUM+yBfgwQ7Gk/TE0bW3i+V5yOP3T0mPgMutKlxNPXZlBBr+neXkDV9DDf7Sfgt6Czsf9FNlPtPimoQaV7tl3sOgh3s0BoqtjkCeQlhNsWgmdRyEwbxhvwn/OXfd/VdZ6gFBUdFAm/moSNT4DlbvhjHg==
+ b=ZmEY7TvI9bnz0cTMlwVyy2i9GRMvm/h7xNthtzeSHl9sFtCoaUgZukrLv0mx3DTtMuYpU/QqsciWG4iEs+cCPAgRfbo5Y3IqKwfGWlf65bNon+8W2h6dFOc3THu7sA3Mb+8IKHHfUQY5BaevdvqX37+Rf+pfOSi+cbIk5UxG2JwJprTLYcREDL6uIDUWJfhN1fiF4dnbLG5Mgu7FqFCvhngXeZiyFTjaALO7SIDHZPfP6EYzsPSOLrWQeOo400ygpNUtmoU4iiR7zYy0J6BFVVFYuuolEVKd5W/llH69Unvan0VQ7wh7UcljTmpRpLY52Cn1zS+ecpomBkt6wyyPUw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Qoqy0gmISfnAljfEMv75zDnA84+ti8B1BA7M8aLiHP0=;
- b=JTeonWsYPwZ9gGlm9+kfV9XeU16G829FanVORThq+RLCKfhCzkF78dY3dd3RMSQO3VOKXetwtjE3U/PFz3naboIKxnKAvjJ39U0etW3oHhJsjuDs7MZjSB8KwyXhsE3mBWilNzegif+t37h9WvzG5eCf8f+gxw9jI1j2PunoribPzmQ6Dxdl7ZQrUKOw4bXfNKwUz7UZ0HuBQnJBrMPUfV+2rVePs92WkUUFn0XpscrcimV5MDkbGHcARaGLY5WQ4nc+89ajsFJ5JvKMlIvzb6P5pMuz4RdfJPAOwbIk6Z/QKGWLfKD6HWtPVf2sJeCSOPYBC6UvE9VlPl//1wOM9w==
+ bh=+9tazuVe05QCK17nT3MvqQqUmm72WRzCSQgnqL1GZGM=;
+ b=QZURTLfi6MOeCPNrtrAlEeFdhQn+UgZC3d9/zWKOu38Vm9w+oJziN/Zz+F9bzcDuOQ9cqWXZvP6cll0yBga7gSwsZjGBUo6Vo/fXtCsmnhq6NOrsJSPdTkvVbYkz+S7UYJw6vmYIIOFb9lQYlq9KZcaEDAb/gcijNmK37qx40xdWBeBeJDCuUR3Nxk+0JFRkYt8GJv4ZOkEcEj+OCc1Ipe8Au6Quw5QLE6XsHRsxd7r1S+ybBxkFwpNVoecaXAiURZ3BAhoPzLgZT2hPWF6GTMjpDk1WIf1V6u2/dMgpzQGxi7c3jBeSZY6B7ikNgAKhSeWEQW/+eTxUgFVf0vMg5w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
  header.from=os.amperecomputing.com; dkim=pass
@@ -29,18 +29,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=os.amperecomputing.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Qoqy0gmISfnAljfEMv75zDnA84+ti8B1BA7M8aLiHP0=;
- b=HNuVm+K1RvW/QGsC3Jhp9OV+/GKIAcWTorNfpvWH5+18F+YlRDKlcpTTby+ck3u6QrMgQ81fItd05mBSxK26TlydASVmmmpI5lvTf9Cnh3H+iikztYU3VzEBLQQ1Onufp68NDna+GJiwA0dgnpCdDEmkyVbp5bjR+aRTBl+YIbg=
+ bh=+9tazuVe05QCK17nT3MvqQqUmm72WRzCSQgnqL1GZGM=;
+ b=afUr4LR8ytU7YvSkWMALrkgsykVssMNCu60GY3wme04hMlOoIFvXuZetjaaMDrTsLTr5zA+tBlFSfsnkR8I0g+nHcjMKeWuiZ+WOWEfRGQBgDZ7TvRB2xaZPMSHlGYTku+Ot1ITGl5GrxwI+XBCXlCW2OW6s4v0LdfRq1Gn38cU=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
 Received: from DM5PR0102MB3590.prod.exchangelabs.com (2603:10b6:4:a4::25) by
  BY3PR01MB6611.prod.exchangelabs.com (2603:10b6:a03:36a::5) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6588.27; Fri, 14 Jul 2023 01:02:29 +0000
+ 15.20.6588.27; Fri, 14 Jul 2023 01:02:31 +0000
 Received: from DM5PR0102MB3590.prod.exchangelabs.com
  ([fe80::235a:622:9239:3963]) by DM5PR0102MB3590.prod.exchangelabs.com
  ([fe80::235a:622:9239:3963%7]) with mapi id 15.20.6588.017; Fri, 14 Jul 2023
- 01:02:28 +0000
+ 01:02:31 +0000
 From:   Ilkka Koskinen <ilkka@os.amperecomputing.com>
 To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
         Besar Wicaksono <bwicaksono@nvidia.com>,
@@ -51,9 +51,9 @@ To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
 Cc:     Ilkka Koskinen <ilkka@os.amperecomputing.com>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-doc@vger.kernel.org
-Subject: [PATCH v5 2/4] perf: arm_cspmu: Support implementation specific filters
-Date:   Thu, 13 Jul 2023 18:01:39 -0700
-Message-Id: <20230714010141.824226-3-ilkka@os.amperecomputing.com>
+Subject: [PATCH v5 3/4] perf: arm_cspmu: Support implementation specific validation
+Date:   Thu, 13 Jul 2023 18:01:40 -0700
+Message-Id: <20230714010141.824226-4-ilkka@os.amperecomputing.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230714010141.824226-1-ilkka@os.amperecomputing.com>
 References: <20230714010141.824226-1-ilkka@os.amperecomputing.com>
@@ -65,51 +65,51 @@ X-ClientProxiedBy: CH0P223CA0013.NAMP223.PROD.OUTLOOK.COM
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: DM5PR0102MB3590:EE_|BY3PR01MB6611:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8d4e5565-fa4b-4140-e6ec-08db8405fe6f
+X-MS-Office365-Filtering-Correlation-Id: dccc69be-d871-44f6-b83f-08db8406002d
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: blLD09utF7Y4Q84tvg5mA0Pa+ug8T5C1vuxOzC2305qBuxWOUg+J88j/GOuBBUmuSu2xKlGAIR3i1FhAzjIZFotdb3cbS+FPBAZ461bsfCZEnGl6a/jD7YU3GqtmazUB/BTohQxGDZO71ztNSu91A0C2H5nrbBrtADVaAFq/kzOamYbsNh6oKqL+5bftM0gT9eRntxKN7hjPK0ys+Hs/GX3f66JniIjppTJWzE+BbcY8jha3PpZMG3fIaJn9mTpt6lIOwx9akhME+/q9OIHALo+FEwPCkEX86l+5LKSX+JNGwdbYU5j6DpkW9TjVQUcOmEHuc9bxbbCDFug+sm+dAREq4LpJTX3889L6ZieFDb8V9Y7iVRtCK1naH2kb4DK4+6lxO/yWIlfoCmqDCijkMao6Rz/ZZ98lyGGBJ/VbHxD7aHNd+4vePRNTO9xoUQbHZsFHVamozeDESC6/n65SzBGdtJKpO8fU+j6aPaQjTr0fGRVTdDcgtt/jWna2t/gMFHSrdgb2wX9HMRst+WD0Zc3leFUBC2b+teaSrHuMyfNvgP8H88O6LB5l579V1dz9nLdbhGAhM2y5afKYb/dxnnvQo5sadBYxVeCW5hShg3Q=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR0102MB3590.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(366004)(346002)(136003)(39850400004)(376002)(451199021)(2906002)(38100700002)(966005)(38350700002)(6512007)(83380400001)(186003)(2616005)(26005)(1076003)(86362001)(6506007)(5660300002)(8676002)(8936002)(7416002)(110136005)(478600001)(6486002)(52116002)(6666004)(41300700001)(66946007)(66556008)(66476007)(316002)(4326008);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: kx4b5ouMq/YFSKJVYW96DTkOe9jF6CldRekkQKm52kNqaO++H9O2fRzB6urOBOGnt0KrE+L7vag3PcWwIVm3trG7makW8z0lydx6kB+eHTJssEypr83C+dRdPyImmVVl0ZGBjzNGYI120X5d4t1RBP6vka2T728BODh8XvjijQZ8xNkn3xtBEWTNUaRyg5WLkevBmf57nAtv5+BAzBjapbjho/uy0ssNeQkFJLKcXy+1PQBvwZAxSQ2lUMNl3V+1CYnawn0FDmHe0UPdBWwi0Cz/qdEXLXi1NA1hWkglSfGiJzgiF5qgSLfSCXzsaFptlcb/6DX2LBAgOQCJVpqwcLoKMg4DqU8EnTWwnbQRfoyBGzlpi6qNUX37iC2Jgt75Hb3BcpNLj9ZHBFSD00ZeycpmpRSAa1Coq5yYvTEwTufqrYXhwl1pM+Pn/9EIx2QAE5YRwTAHERO7AY3ttwyxrFu+YXYgY504IbpymbAbDJgFmP1TtHDAKj+ajs70SnX3Io3Ev1Ac1dV5Jo3SX2igYImce11/2FYE+SaiWwJcxqgskdf5Fw2iCGDXFc4Jiv19b+4SgmxESjH2JTb3m5AqKrLO+eTWjVsqC7sJymfu/3Za3048ijLLssiQl45rNLMO
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR0102MB3590.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(366004)(346002)(136003)(39850400004)(376002)(451199021)(2906002)(38100700002)(38350700002)(6512007)(83380400001)(186003)(2616005)(26005)(1076003)(86362001)(6506007)(5660300002)(8676002)(8936002)(7416002)(110136005)(478600001)(6486002)(52116002)(6666004)(41300700001)(66946007)(66556008)(66476007)(316002)(4326008);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?aAiIPmHOdsrvaWZkkgRuoExrV2NXHE+sTjPLOgEHhJGEDrDr1+BpSDZCFnXe?=
- =?us-ascii?Q?Bps+FIHL0Ol5CYYLeVYIB/R6xLWpYSept0hxLfhqzXgEs+xD26ckok6XEJwf?=
- =?us-ascii?Q?5F8KFCJWNnGCuGu3ZGGNfREtw/LYHGRY+PZsJPu8Lcll8rPD5DYFJJnVBsqZ?=
- =?us-ascii?Q?ZejaHGJjCuBXnzTluV/jbP4GBFRPztjOOCxiMt2hIkxDosFNVm3pVSfGrTsS?=
- =?us-ascii?Q?Pioqyh5wb8JJ9T6m+KkoGg26eBvAZfUrGTD1MimJyMdyQCITVInUxKedAgBF?=
- =?us-ascii?Q?yMogl41leql9tM2NroRZnBMhpErvncvMxb92xa54w2YNc54YlYwxxlCYV47d?=
- =?us-ascii?Q?JOv0E9rGeyBHyZ0xlXlJoAORShUIGkOATxVaf4Wtjpp9/y+cA9Y+u4o6xW8K?=
- =?us-ascii?Q?HI9sKxrWy8UF8Cr1irojdyIY5gCvP1mGeOukVFvz3/DNFpxxZC6WB+2AR1Qc?=
- =?us-ascii?Q?RMC82/9ZXYblVFlMhFNzx63lQkOgptwMlyaYRA8pLQu/+hZeFNPW3vst9crM?=
- =?us-ascii?Q?v1Y49NftLJkxa62G2z8xOId9lQ92ZG6Ag8djENzJa2SIf4WQZsQU6nr2w9JR?=
- =?us-ascii?Q?/qGsNG3ld4rRbrLGvw9lMujTA9OLLdzJ1uCyXFPnYXiKiP+YE2eWxyeWGZ24?=
- =?us-ascii?Q?utKJeHn2mafMBbJPTzSbjw4XFfBaLA6pu2tLz3+pwElDCAkXTImz5aBe2kbw?=
- =?us-ascii?Q?h4ToZVS66k+6ZlIwPlMxsdz93b90FZUvqvLX6xiMAcX4+CUW71v4lZsbHb7U?=
- =?us-ascii?Q?hcGh7uxVddTOCsZgPGgFC0V0Sk3XnJ27RTxkABtfURP5f5BRnK/eBjuwrDKH?=
- =?us-ascii?Q?9c5GqHd35fTshCV5ieAqTkZMjIVoEm+laT2JyPAarigvJAcpWF8JwJsWCFsp?=
- =?us-ascii?Q?60Xqahxx7EiLpwIeVdq2ad6QS9feRLWQHFFtq3DWbLxcd3VXt//aXInvwEaF?=
- =?us-ascii?Q?L+uNicBpPRJemZUDTde+G6FloMJ5wcKmn4OvxL5rR9GfNWE1OmfraQoGDbLN?=
- =?us-ascii?Q?Z8dvO5ru0Z7hZWpSY/FuuUjvMJv+qmbPySelisa2kCV/Yx4bp6ooz2HB8T64?=
- =?us-ascii?Q?NoTG8OKJ5PxAdObOs4fN8j70F5JBTAnBSH/+Z0PxKQC/7QA1aQ5N46zlDHOg?=
- =?us-ascii?Q?VpNKQSnvfDy4Ex3jDKPLixInwNEsvVudpHllDuPZnCmS1DCQGoDcu196PqMZ?=
- =?us-ascii?Q?VeOIwgs1FW0HAK+9phB791T1k3lF/+inz0Y++7Gf7QjecRbgVHbKS0U4nUMh?=
- =?us-ascii?Q?2JPgWCAGZ/ZxEykpC8cxqqbKhcYWLycaznSWS4H2DbiFOYaFlOqivm8sow1I?=
- =?us-ascii?Q?lWikOWUovJGOlECzidhIeGtWmpP21AIuMFktN8K955sMnWtkJpeFIFVXD5sA?=
- =?us-ascii?Q?rCtoH+lJ80joqBsryoDwiB1cnOzPXp+RcO5gLbcTMBswvIj1x7Lgl2upHDdU?=
- =?us-ascii?Q?O3sespab4OaUgmWvT/GI0JcSJOAdoqwCeYBDbC8grS4TL4S441jxC5z+gqY0?=
- =?us-ascii?Q?fEpXx3H8LbN5nuqJNnJmSvAf4vmB5AaIvGmxxPPL/7VP8LaA0RVL8S+AI83v?=
- =?us-ascii?Q?orW9sqDu38aQc7pHcTkbiLYcsOPHaBYwI38wTxIMl0zDaG6LSjVCb8ZIiOFt?=
- =?us-ascii?Q?OA=3D=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?0c7sVpTBWFN2ChyTz119wBvWNXTXcmHh8Gw2ZD8NNrUH7E8USNnzjOAu99Gy?=
+ =?us-ascii?Q?MfGESYnIFIxERTe9C+M8CZoA5/i5fPqSH0arszcb4w7BWcjy2+xaGvkZP5vw?=
+ =?us-ascii?Q?ELziwTV9jHsCSDe44PRXAyac/GDjEqAL5fzMiG1tBKRTNhdCbBVgxvLlFZbK?=
+ =?us-ascii?Q?4+bDlOSZCacyQ9/krUjDXMY950epQPqJD9ACkagAd2jsiijK023FV2ej18vx?=
+ =?us-ascii?Q?zqSdADDHUgzOY24iRtROIE0oCqe7LKYivCx3BdB1Rcrx7T0kop6KsapquVNk?=
+ =?us-ascii?Q?2VJb+KyxsJzkhr8foW6ZvjHOYzI1gOQGWe3uc0JsUggLl/9nuMjsmUANgvSp?=
+ =?us-ascii?Q?jaKtIk4Vgg19utKjjNehUiwtaQwgzqkdSHHUl7tkMHy61NCgvyvH4b4Kgvpk?=
+ =?us-ascii?Q?ehImvwklsZf4UnF7FnnX5o8Hg/7JmuzNegzrOlClHlVvdpZZ8R56B2uBfKNy?=
+ =?us-ascii?Q?aPyulaj52CUZ3cmHJELtHPh8T/o35WTusqD49y9/Y9as6NULvy8BhTpSgH+7?=
+ =?us-ascii?Q?Uz78IxLbLBgGKcTqbxXZQGUxRnVeLtpSeqxeenb4oWma3HxVGLunl8TwBhrN?=
+ =?us-ascii?Q?umaizXHmJBohbUNQ2f2dvd4xFtMqizfSC4P2KZoN8ZyrdI3kHGrdXM/neBJz?=
+ =?us-ascii?Q?CgDvm7OSxJTMkj5+uIY0Mt1mht/KDQOTlj+QCFqukqgMr120avqsDwfxVDAy?=
+ =?us-ascii?Q?42zQB5inxqtzSTt/xUWpW4qEcaWl5JY/rF8CgxxyHEFO69bk2eJmhcl1zPvk?=
+ =?us-ascii?Q?TQnseE6OEFlQw4e7Z9U0AZGOZAeSUyMJHcJmmSRsCsdcfIfzGpVx9u5ugOvG?=
+ =?us-ascii?Q?HgyurAoU+7MwXYZv5nmWSWeAcTArjAhwYxgmI5dPNz3HctuaA1+4OeqZeH/T?=
+ =?us-ascii?Q?cLMNTlXdc+M7IbUuD2rzL78WoR4HNc8F49G58wrzqZ+NpoeTtj42nAAEzWFM?=
+ =?us-ascii?Q?fvmdHN0xILz+WZshcXx+ZCPdhncc6db8fn9GkXWgiIBq9z0fQdUMMTbobNvE?=
+ =?us-ascii?Q?uRkBTfwD/YpDD1Vb/dN/gq+DiXlgyHbShuj379daB3//FQZy2wQ/zC9vTX/x?=
+ =?us-ascii?Q?rd1sYQNjdRKB6gvCwSw/msGOHWcD4q4ZIKTLtxt0lwmst5076fJumoGoFSOT?=
+ =?us-ascii?Q?/nbM4pP36h6RtxRdj0JzjDUksct7JdfWY6AVoJj/zpnDx5JTdKE+3zaqv6S0?=
+ =?us-ascii?Q?OUEuHhNQEapkEfLc6LZa5HBS0/yAxRNniaPhDXv58J8llYL1Aj9Sh7eOTIup?=
+ =?us-ascii?Q?QAX+HZhGHqhQprE+oIljFCHzVH6/6E9461WmSZGs+NhLIGSJtLOQYYPMAIpa?=
+ =?us-ascii?Q?6nOGKOzA48A/mv750RQL7TofpylPu2qMrAFDihgvetzNBrjIHOPlBJf8C6wq?=
+ =?us-ascii?Q?efnio1niSmR+SLgIXcquBv/H9AfByEhslsxTvDggunW/KJsQOH4F2y+7KYJC?=
+ =?us-ascii?Q?txmjTOZsBa8PHNX44AfSAB3MEZlDIjiIkEORO+VrcGKq/4n5jfPeQItGWMeM?=
+ =?us-ascii?Q?08YU3+YAv72BuCJu6Sb7E6U9IVSRFod5XG12p2vTDLabWn9+9AD82ZxuDEyZ?=
+ =?us-ascii?Q?IMOsmrRqjc+dNRDaysUr0xU7+ofFdnE9inBc08hdVN/StZuPqW7UjL0XvDip?=
+ =?us-ascii?Q?kHr63EWi5Fe2j634bNpAhVw=3D?=
 X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8d4e5565-fa4b-4140-e6ec-08db8405fe6f
+X-MS-Exchange-CrossTenant-Network-Message-Id: dccc69be-d871-44f6-b83f-08db8406002d
 X-MS-Exchange-CrossTenant-AuthSource: DM5PR0102MB3590.prod.exchangelabs.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jul 2023 01:02:28.3131
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jul 2023 01:02:31.2553
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0r5Na3f7pflSwPBg19EXTN0hoi8jCjxaIe/1ZLQis4y4IMMll4xudE6oxnPiC2tQfGar8xIAE6aJjAFOYn0UQe7MAhUFq0Z2/OX5wsyRyZ96di49QOct+uGLCq0i9qq5
+X-MS-Exchange-CrossTenant-UserPrincipalName: FFNDnIvJ1DniGw68Z/UZMvSgbAKGw6z7nUAgguYeH8XR2Mq4SjFR6Xccx9dD/LD3tRWUMUB/MryvID/Ov3RDG0dpMMh7Gw3rkqAM41z4R1Sj5wbFDX/7dn4OImT5rT5Z
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY3PR01MB6611
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
@@ -121,72 +121,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ARM Coresight PMU architecture specification [1] defines PMEVTYPER and
-PMEVFILT* registers as optional in Chapter 2.1. Moreover, implementers may
-choose to use PMIMPDEF* registers (offset: 0xD80-> 0xDFF) to filter the
-events. Add support for those by adding implementation specific filter
-callback function.
-
-[1] https://developer.arm.com/documentation/ihi0091/latest
+Some platforms may use e.g. different filtering mechanism and, thus,
+may need different way to validate the events and group.
 
 Signed-off-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
-Reviewed-by: Besar Wicaksono <bwicaksono@nvidia.com>
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 ---
- drivers/perf/arm_cspmu/arm_cspmu.c | 8 ++++++--
+ drivers/perf/arm_cspmu/arm_cspmu.c | 8 +++++++-
  drivers/perf/arm_cspmu/arm_cspmu.h | 3 +++
- 2 files changed, 9 insertions(+), 2 deletions(-)
+ 2 files changed, 10 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/perf/arm_cspmu/arm_cspmu.c b/drivers/perf/arm_cspmu/arm_cspmu.c
-index 0f517152cb4e..fafd734c3218 100644
+index fafd734c3218..471d6d7ac81a 100644
 --- a/drivers/perf/arm_cspmu/arm_cspmu.c
 +++ b/drivers/perf/arm_cspmu/arm_cspmu.c
-@@ -117,6 +117,9 @@
+@@ -553,7 +553,7 @@ static void arm_cspmu_disable(struct pmu *pmu)
+ static int arm_cspmu_get_event_idx(struct arm_cspmu_hw_events *hw_events,
+ 				struct perf_event *event)
+ {
+-	int idx;
++	int idx, ret;
+ 	struct arm_cspmu *cspmu = to_arm_cspmu(event->pmu);
  
- static unsigned long arm_cspmu_cpuhp_state;
+ 	if (supports_cycle_counter(cspmu)) {
+@@ -587,6 +587,12 @@ static int arm_cspmu_get_event_idx(struct arm_cspmu_hw_events *hw_events,
+ 	if (idx >= cspmu->num_logical_ctrs)
+ 		return -EAGAIN;
  
-+static void arm_cspmu_set_ev_filter(struct arm_cspmu *cspmu,
-+				    struct hw_perf_event *hwc, u32 filter);
++	if (cspmu->impl.ops.validate_event) {
++		ret = cspmu->impl.ops.validate_event(cspmu, event);
++		if (ret)
++			return ret;
++	}
 +
- static struct acpi_apmt_node *arm_cspmu_apmt_node(struct device *dev)
- {
- 	return *(struct acpi_apmt_node **)dev_get_platdata(dev);
-@@ -426,6 +429,7 @@ static int arm_cspmu_init_impl_ops(struct arm_cspmu *cspmu)
- 	CHECK_DEFAULT_IMPL_OPS(impl_ops, event_type);
- 	CHECK_DEFAULT_IMPL_OPS(impl_ops, event_filter);
- 	CHECK_DEFAULT_IMPL_OPS(impl_ops, event_attr_is_visible);
-+	CHECK_DEFAULT_IMPL_OPS(impl_ops, set_ev_filter);
+ 	set_bit(idx, hw_events->used_ctrs);
  
- 	return 0;
- }
-@@ -792,7 +796,7 @@ static inline void arm_cspmu_set_event(struct arm_cspmu *cspmu,
- 	writel(hwc->config, cspmu->base0 + offset);
- }
- 
--static inline void arm_cspmu_set_ev_filter(struct arm_cspmu *cspmu,
-+static void arm_cspmu_set_ev_filter(struct arm_cspmu *cspmu,
- 					   struct hw_perf_event *hwc,
- 					   u32 filter)
- {
-@@ -826,7 +830,7 @@ static void arm_cspmu_start(struct perf_event *event, int pmu_flags)
- 		arm_cspmu_set_cc_filter(cspmu, filter);
- 	} else {
- 		arm_cspmu_set_event(cspmu, hwc);
--		arm_cspmu_set_ev_filter(cspmu, hwc, filter);
-+		cspmu->impl.ops.set_ev_filter(cspmu, hwc, filter);
- 	}
- 
- 	hwc->state = 0;
+ 	return idx;
 diff --git a/drivers/perf/arm_cspmu/arm_cspmu.h b/drivers/perf/arm_cspmu/arm_cspmu.h
-index 83df53d1c132..d6d88c246a23 100644
+index d6d88c246a23..5070d34c2285 100644
 --- a/drivers/perf/arm_cspmu/arm_cspmu.h
 +++ b/drivers/perf/arm_cspmu/arm_cspmu.h
-@@ -101,6 +101,9 @@ struct arm_cspmu_impl_ops {
- 	u32 (*event_type)(const struct perf_event *event);
- 	/* Decode filter value from configs */
- 	u32 (*event_filter)(const struct perf_event *event);
-+	/* Set event filter */
-+	void (*set_ev_filter)(struct arm_cspmu *cspmu,
-+			      struct hw_perf_event *hwc, u32 filter);
+@@ -104,6 +104,9 @@ struct arm_cspmu_impl_ops {
+ 	/* Set event filter */
+ 	void (*set_ev_filter)(struct arm_cspmu *cspmu,
+ 			      struct hw_perf_event *hwc, u32 filter);
++	/* Implementation specific event validation */
++	int (*validate_event)(struct arm_cspmu *cspmu,
++			      struct perf_event *event);
  	/* Hide/show unsupported events */
  	umode_t (*event_attr_is_visible)(struct kobject *kobj,
  					 struct attribute *attr, int unused);
