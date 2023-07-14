@@ -2,63 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADDC57536D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:44:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 213E67536DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:45:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235826AbjGNJoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 05:44:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37574 "EHLO
+        id S235718AbjGNJpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 05:45:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235865AbjGNJo3 (ORCPT
+        with ESMTP id S235742AbjGNJpH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 05:44:29 -0400
-Received: from mail.marcansoft.com (marcansoft.com [212.63.210.85])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D02C26AE;
-        Fri, 14 Jul 2023 02:44:26 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: lina@asahilina.net)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 9FF985BC37;
-        Fri, 14 Jul 2023 09:44:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=asahilina.net;
-        s=default; t=1689327864;
-        bh=2gCMoY94/ESU27ff3B7Nnjye7UV/M5FZXhxeO4nGMuc=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=mAJmPi2op48Hb4dON0tfHReK27/tgzVEWLOaJggy1nSyhAtKmrBJYJ+WgA8dn0/pb
-         QUPW6CZCfJf+OxysqpTk8dRJ1sg7r8KuCnrcI95UuBIWSzCZmd1a3fyHQw8Gf1rWdS
-         EJ8zpMxNZmWr/MhMPgo5BrsxyzLheRq8dK85Qrwf8PiBA0rDGPA6VvEFxdNvRuPkku
-         hL5CdeJvRFW2C1opfSYtEg5ZgGoyowK2licKSBrrhEG2atsDzvmnmYvPaZ26eylRxH
-         VfnL2B9licbkQO4SGdtMrB34oSks+S4N8G97+rLvFu1vZrhzGKB3FMBxz7NeS0/FYz
-         q7NHxkvXS+Y+w==
-Message-ID: <5c7278b9-e63e-4ddf-1988-1e02087fb988@asahilina.net>
-Date:   Fri, 14 Jul 2023 18:44:20 +0900
+        Fri, 14 Jul 2023 05:45:07 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1433C12D;
+        Fri, 14 Jul 2023 02:45:05 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36E9idvV037509;
+        Fri, 14 Jul 2023 04:44:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1689327879;
+        bh=JgJ8BeqGQaKqtqCNNVADM5qKkyIQf09j4+gRu3wtn0Y=;
+        h=From:To:CC:Subject:Date;
+        b=t4yUFW68xARly0eWg9p6Roc8NkLyuh5Po3vDz3kOF1v8nc491HKwGGgTU6pNSrtUS
+         5OozVzp/2bLmnAn8+ohdhZ7/1jnnzRGvbPC5kVRaG7ir/b5ipKGidVWDj0EOIJJaav
+         c83zqX8xtsBGyFcboEKf3xfz543i0qyw79+pMlo8=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36E9idTT033909
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 14 Jul 2023 04:44:39 -0500
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 14
+ Jul 2023 04:44:39 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 14 Jul 2023 04:44:39 -0500
+Received: from lelv0854.itg.ti.com (lelv0854.itg.ti.com [10.181.64.140])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36E9idJ7026888;
+        Fri, 14 Jul 2023 04:44:39 -0500
+Received: from localhost (uda0501179.dhcp.ti.com [172.24.227.217])
+        by lelv0854.itg.ti.com (8.14.7/8.14.7) with ESMTP id 36E9icwX005774;
+        Fri, 14 Jul 2023 04:44:39 -0500
+From:   MD Danish Anwar <danishanwar@ti.com>
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Roger Quadros <rogerq@kernel.org>,
+        Simon Horman <simon.horman@corigine.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        MD Danish Anwar <danishanwar@ti.com>
+CC:     <nm@ti.com>, <srk@ti.com>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH v9 0/2] Introduce ICSSG based ethernet Driver
+Date:   Fri, 14 Jul 2023 15:14:30 +0530
+Message-ID: <20230714094432.1834489-1-danishanwar@ti.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH 2/3] drm/scheduler: Fix UAF in
- drm_sched_fence_get_timeline_name
-Content-Language: en-US
-To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Luben Tuikov <luben.tuikov@amd.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>
-Cc:     Faith Ekstrand <faith.ekstrand@collabora.com>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, asahi@lists.linux.dev
-References: <20230714-drm-sched-fixes-v1-0-c567249709f7@asahilina.net>
- <20230714-drm-sched-fixes-v1-2-c567249709f7@asahilina.net>
- <bef7ef62-3cd9-6ceb-5eb4-5ae0c0236778@amd.com>
-From:   Asahi Lina <lina@asahilina.net>
-In-Reply-To: <bef7ef62-3cd9-6ceb-5eb4-5ae0c0236778@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,102 +80,131 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/07/2023 17.43, Christian König wrote:
-> Am 14.07.23 um 10:21 schrieb Asahi Lina:
->> A signaled scheduler fence can outlive its scheduler, since fences are
->> independencly reference counted. Therefore, we can't reference the
->> scheduler in the get_timeline_name() implementation.
->>
->> Fixes oopses on `cat /sys/kernel/debug/dma_buf/bufinfo` when shared
->> dma-bufs reference fences from GPU schedulers that no longer exist.
->>
->> Signed-off-by: Asahi Lina <lina@asahilina.net>
->> ---
->>    drivers/gpu/drm/scheduler/sched_entity.c | 7 ++++++-
->>    drivers/gpu/drm/scheduler/sched_fence.c  | 4 +++-
->>    include/drm/gpu_scheduler.h              | 5 +++++
->>    3 files changed, 14 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/scheduler/sched_entity.c b/drivers/gpu/drm/scheduler/sched_entity.c
->> index b2bbc8a68b30..17f35b0b005a 100644
->> --- a/drivers/gpu/drm/scheduler/sched_entity.c
->> +++ b/drivers/gpu/drm/scheduler/sched_entity.c
->> @@ -389,7 +389,12 @@ static bool drm_sched_entity_add_dependency_cb(struct drm_sched_entity *entity)
->>    
->>    		/*
->>    		 * Fence is from the same scheduler, only need to wait for
->> -		 * it to be scheduled
->> +		 * it to be scheduled.
->> +		 *
->> +		 * Note: s_fence->sched could have been freed and reallocated
->> +		 * as another scheduler. This false positive case is okay, as if
->> +		 * the old scheduler was freed all of its jobs must have
->> +		 * signaled their completion fences.
-> 
-> This is outright nonsense. As long as an entity for a scheduler exists
-> it is not allowed to free up this scheduler.
-> 
-> So this function can't be called like this.
-> 
->>    		 */
->>    		fence = dma_fence_get(&s_fence->scheduled);
->>    		dma_fence_put(entity->dependency);
->> diff --git a/drivers/gpu/drm/scheduler/sched_fence.c b/drivers/gpu/drm/scheduler/sched_fence.c
->> index ef120475e7c6..06a0eebcca10 100644
->> --- a/drivers/gpu/drm/scheduler/sched_fence.c
->> +++ b/drivers/gpu/drm/scheduler/sched_fence.c
->> @@ -68,7 +68,7 @@ static const char *drm_sched_fence_get_driver_name(struct dma_fence *fence)
->>    static const char *drm_sched_fence_get_timeline_name(struct dma_fence *f)
->>    {
->>    	struct drm_sched_fence *fence = to_drm_sched_fence(f);
->> -	return (const char *)fence->sched->name;
->> +	return (const char *)fence->sched_name;
->>    }
->>    
->>    static void drm_sched_fence_free_rcu(struct rcu_head *rcu)
->> @@ -216,6 +216,8 @@ void drm_sched_fence_init(struct drm_sched_fence *fence,
->>    	unsigned seq;
->>    
->>    	fence->sched = entity->rq->sched;
->> +	strlcpy(fence->sched_name, entity->rq->sched->name,
->> +		sizeof(fence->sched_name));
->>    	seq = atomic_inc_return(&entity->fence_seq);
->>    	dma_fence_init(&fence->scheduled, &drm_sched_fence_ops_scheduled,
->>    		       &fence->lock, entity->fence_context, seq);
->> diff --git a/include/drm/gpu_scheduler.h b/include/drm/gpu_scheduler.h
->> index e95b4837e5a3..4fa9523bd47d 100644
->> --- a/include/drm/gpu_scheduler.h
->> +++ b/include/drm/gpu_scheduler.h
->> @@ -305,6 +305,11 @@ struct drm_sched_fence {
->>             * @lock: the lock used by the scheduled and the finished fences.
->>             */
->>    	spinlock_t			lock;
->> +        /**
->> +         * @sched_name: the name of the scheduler that owns this fence. We
->> +	 * keep a copy here since fences can outlive their scheduler.
->> +         */
->> +	char sched_name[16];
-> 
-> This just mitigates the problem, but doesn't fix it.
+The Programmable Real-time Unit and Industrial Communication Subsystem
+Gigabit (PRU_ICSSG) is a low-latency microcontroller subsystem in the TI
+SoCs. This subsystem is provided for the use cases like the implementation
+of custom peripheral interfaces, offloading of tasks from the other
+processor cores of the SoC, etc.
 
-Could you point out any remaining issues so we can fix them? Right now 
-this absolutely *is* broken and this fixes the breakage I observed. If 
-there are other bugs remaining, I'd like to know what they are so I can 
-fix them.
+The subsystem includes many accelerators for data processing like
+multiplier and multiplier-accumulator. It also has peripherals like
+UART, MII/RGMII, MDIO, etc. Every ICSSG core includes two 32-bit
+load/store RISC CPU cores called PRUs.
 
-> The real issue is that the hw fence is kept around much longer than that.
+The above features allow it to be used for implementing custom firmware
+based peripherals like ethernet.
 
-As far as I know, the whole point of scheduler fences is to decouple the 
-hw fences from the consumers. I already talked with Daniel about this. 
-The current behavior is broken. These fences can live forever. It is 
-broken to require that they outlive the driver that produced them.
+This series adds the YAML documentation and the driver with basic EMAC
+support for TI AM654 Silicon Rev 2 SoC with the PRU_ICSSG Sub-system.
+running dual-EMAC firmware.
+This currently supports basic EMAC with 1Gbps and 100Mbps link. 10M and
+half-duplex modes are not yet supported because they require the support
+of an IEP, which will be added later.
+Advanced features like switch-dev and timestamping will be added later. 
 
-> Additional to that I'm not willing to increase the scheduler fence size
-> like that just to decouple them from the scheduler.
+This is the v9 of the patch series [v1]. This version of the patchset 
+addresses comments made on v8.
 
-Did you read my explanation on the cover letter as to how this is just 
-broken right now? We need to fix this. If you have a better suggestion 
-I'll take it. Doing nothing is not an option.
+There series doesn't have any dependency.
 
-~~ Lina
+Changes from v8 to v9 :
+*) Rebased the series on latest net-next.
+*) Fixed smatch and sparse warnings as pointed by Simon.
+*) Fixed leaky ndev in prueth_netdev_init() as asked by Simon.
+
+Changes from v7 to v8 :
+*) Rebased the series on 6.5-rc1.
+*) Fixed few formattings. 
+
+Changes from v6 to v7 :
+*) Added RB tag of Rob in patch 1 of this series.
+*) Addressed Simon's comment on patch 2 of the series.
+*) Rebased patchset on next-20230428 linux-next.
+
+Changes from v5 to v6 :
+*) Added RB tag of Andrew Lunn in patch 2 of this series.
+*) Addressed Rob's comment on patch 1 of the series.
+*) Rebased patchset on next-20230421 linux-next.
+
+Changes from v4 to v5 :
+*) Re-arranged properties section in ti,icssg-prueth.yaml file.
+*) Added requirement for minimum one ethernet port.
+*) Fixed some minor formatting errors as asked by Krzysztof.
+*) Dropped SGMII mode from enum mii_mode as SGMII mode is not currently
+   supported by the driver.
+*) Added switch-case block to handle different phy modes by ICSSG driver.
+
+Changes from v3 to v4 :
+*) Addressed Krzysztof's comments and fixed dt_binding_check errors in 
+   patch 1/2.
+*) Added interrupt-extended property in ethernet-ports properties section.
+*) Fixed comments in file icssg_switch_map.h according to the Linux coding
+   style in patch 2/2. Added Documentation of structures in patch 2/2.
+
+Changes from v2 to v3 :
+*) Addressed Rob and Krzysztof's comments on patch 1 of this series.
+   Fixed indentation. Removed description and pinctrl section from 
+   ti,icssg-prueth.yaml file.
+*) Addressed Krzysztof, Paolo, Randy, Andrew and Christophe's comments on 
+   patch 2 of this seires.
+*) Fixed blanklines in Kconfig and Makefile. Changed structures to const 
+   as suggested by Krzysztof.
+*) Fixed while loop logic in emac_tx_complete_packets() API as suggested 
+   by Paolo. Previously in the loop's last iteration 'budget' was 0 and 
+   napi_consume_skb would wrongly assume the caller is not in NAPI context
+   Now, budget won't be zero in last iteration of loop. 
+*) Removed inline functions addr_to_da1() and addr_to_da0() as asked by 
+   Andrew.
+*) Added dev_err_probe() instead of dev_err() as suggested by Christophe.
+*) In ti,icssg-prueth.yaml file, in the patternProperties section of 
+   ethernet-ports, kept the port name as "port" instead of "ethernet-port" 
+   as all other drivers were using "port". Will change it if is compulsory 
+   to use "ethernet-port".
+
+[v1] https://lore.kernel.org/all/20220506052433.28087-1-p-mohan@ti.com/
+[v2] https://lore.kernel.org/all/20220531095108.21757-1-p-mohan@ti.com/
+[v3] https://lore.kernel.org/all/20221223110930.1337536-1-danishanwar@ti.com/
+[v4] https://lore.kernel.org/all/20230206060708.3574472-1-danishanwar@ti.com/
+[v5] https://lore.kernel.org/all/20230210114957.2667963-1-danishanwar@ti.com/
+[v6] https://lore.kernel.org/all/20230424053233.2338782-1-danishanwar@ti.com/
+[v7] https://lore.kernel.org/all/20230502061650.2716736-1-danishanwar@ti.com/
+[v8] https://lore.kernel.org/all/20230710053550.89160-1-danishanwar@ti.com/
+
+Thanks and Regards,
+Md Danish Anwar
+
+MD Danish Anwar (1):
+  dt-bindings: net: Add ICSSG Ethernet
+
+Roger Quadros (1):
+  net: ti: icssg-prueth: Add ICSSG ethernet driver
+
+ .../bindings/net/ti,icssg-prueth.yaml         |  184 ++
+ drivers/net/ethernet/ti/Kconfig               |   13 +
+ drivers/net/ethernet/ti/Makefile              |    2 +
+ drivers/net/ethernet/ti/icssg_classifier.c    |  367 ++++
+ drivers/net/ethernet/ti/icssg_config.c        |  450 ++++
+ drivers/net/ethernet/ti/icssg_config.h        |  200 ++
+ drivers/net/ethernet/ti/icssg_ethtool.c       |  326 +++
+ drivers/net/ethernet/ti/icssg_mii_cfg.c       |  120 ++
+ drivers/net/ethernet/ti/icssg_mii_rt.h        |  151 ++
+ drivers/net/ethernet/ti/icssg_prueth.c        | 1889 +++++++++++++++++
+ drivers/net/ethernet/ti/icssg_prueth.h        |  252 +++
+ drivers/net/ethernet/ti/icssg_queues.c        |   38 +
+ drivers/net/ethernet/ti/icssg_switch_map.h    |  234 ++
+ 13 files changed, 4226 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/ti,icssg-prueth.yaml
+ create mode 100644 drivers/net/ethernet/ti/icssg_classifier.c
+ create mode 100644 drivers/net/ethernet/ti/icssg_config.c
+ create mode 100644 drivers/net/ethernet/ti/icssg_config.h
+ create mode 100644 drivers/net/ethernet/ti/icssg_ethtool.c
+ create mode 100644 drivers/net/ethernet/ti/icssg_mii_cfg.c
+ create mode 100644 drivers/net/ethernet/ti/icssg_mii_rt.h
+ create mode 100644 drivers/net/ethernet/ti/icssg_prueth.c
+ create mode 100644 drivers/net/ethernet/ti/icssg_prueth.h
+ create mode 100644 drivers/net/ethernet/ti/icssg_queues.c
+ create mode 100644 drivers/net/ethernet/ti/icssg_switch_map.h
+
+-- 
+2.34.1
 
