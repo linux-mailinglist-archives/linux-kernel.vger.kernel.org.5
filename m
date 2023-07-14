@@ -2,70 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A057D754341
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 21:35:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0354754342
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 21:36:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236251AbjGNTfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 15:35:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41708 "EHLO
+        id S236420AbjGNTgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 15:36:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235705AbjGNTfB (ORCPT
+        with ESMTP id S235705AbjGNTgM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 15:35:01 -0400
+        Fri, 14 Jul 2023 15:36:12 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D504F12D;
-        Fri, 14 Jul 2023 12:34:59 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FC1612D;
+        Fri, 14 Jul 2023 12:36:11 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 67D0261DDB;
-        Fri, 14 Jul 2023 19:34:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A64C0C433C7;
-        Fri, 14 Jul 2023 19:34:56 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3493C61DDB;
+        Fri, 14 Jul 2023 19:36:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F33BC433C7;
+        Fri, 14 Jul 2023 19:36:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689363298;
-        bh=coJii5owjJT4psrykdkd2QZrVS8+72vCzDQtZKFwADs=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=Qs69AsxFTwxe7qQ9dAN1lLk532XZRcYbAlVYzjJD+j6L1k2cgP+nY21n8aKZ/xTqS
-         yIrUprT1gUdZd5+myyllx4fx2LY801n9XsQj9jB0Xv4vn8U95LkUyBsE6DQWUrtcaE
-         cfWcbUB5eykdGbpqw4cHUdzJkS423d39ApYdkQM2geD7Cl1DiHsuJmQNe5wuUVJIHF
-         ch+4A8vSG8vDxjMHCWdQ6oUXXQU5MBV0YIJS2gmEazA5YA3Y9sECSsM9D/DQ9+UYVp
-         V2VJbU8B0GRWLR4kA9/sBvV9Vu1sSV0YAreNqw0cWVX2eephIXifBN2sFYL8qEMnfH
-         sV5wF6scpfxDA==
-Message-ID: <dce45b56-2b2b-850b-e5b6-fdc98cfa04ee@kernel.org>
-Date:   Fri, 14 Jul 2023 14:34:55 -0500
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH] firmware: Explicitly include correct DT includes
-Content-Language: en-US
-To:     Rob Herring <robh@kernel.org>, Sudeep Holla <sudeep.holla@arm.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
+        s=k20201202; t=1689363370;
+        bh=Cysarz/hhMo/bK+dPUbL3TWMzv7sx9BTXTOdSSRZeOw=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=ega7w8KgFJ16HD1GYoX1h4GiocZpQVQFvGcEGonZbz750+cvVJnS222Rs1NkYmeur
+         FBlGhqgX+LkX6K1+6UT6Ynqb4157JHvh8IdnFy05pscRhGgf+h0vDoheEQjAPG6xGL
+         1DeTwrWjuxaWJKnSrSX9v70q6KjMdeenBZxKanBPFnjuNk8u973+Z6IrexuiSj5N3H
+         GsuJIC2hlA5j8tRu5QZSp/PxlVMMBIN0B28okP9XI4NnfjEzDsM5Lmhanpfr4kMCvR
+         2nJkQvIk4LCEpZsjDK8H3AQAXnq7vygyZC3ndShkjhwx/uKDAtTObQSXew1oI61EF7
+         EcQ/INrDH3TGA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 2DFB8CE009F; Fri, 14 Jul 2023 12:36:10 -0700 (PDT)
+Date:   Fri, 14 Jul 2023 12:36:10 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Sandeep Dhavale <dhavale@google.com>
+Cc:     Alan Huang <mmpgouride@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Gao Xiang <hsiangkao@linux.alibaba.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
         Matthias Brugger <matthias.bgg@gmail.com>,
         AngeloGioacchino Del Regno 
         <angelogioacchino.delregno@collabora.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Michal Simek <michal.simek@amd.com>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, linux-tegra@vger.kernel.org
-References: <20230714174438.4054854-1-robh@kernel.org>
-From:   Dinh Nguyen <dinguyen@kernel.org>
-In-Reply-To: <20230714174438.4054854-1-robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        linux-erofs@lists.ozlabs.org, xiang@kernel.org,
+        Will Shiu <Will.Shiu@mediatek.com>, kernel-team@android.com,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH v1] rcu: Fix and improve RCU read lock checks when
+ !CONFIG_DEBUG_LOCK_ALLOC
+Message-ID: <e8e1b75f-e631-4793-9130-472909264406@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <894a3b64-a369-7bc6-c8a8-0910843cc587@linux.alibaba.com>
+ <CAEXW_YSM1yik4yWTgZoxCS9RM6TbsL26VCVCH=41+uMA8chfAQ@mail.gmail.com>
+ <58b661d0-0ebb-4b45-a10d-c5927fb791cd@paulmck-laptop>
+ <7d433fac-a62d-4e81-b8e5-57cf5f2d1d55@paulmck-laptop>
+ <F160D7F8-57DC-4986-90A9-EB50F7C89891@gmail.com>
+ <6E5326AD-9A5D-4570-906A-BDE8257B6F0C@gmail.com>
+ <e8ee7006-c1d0-4c04-bd25-0f518fb6534b@paulmck-laptop>
+ <D042B1CB-2ED4-4DF9-8CF5-5E455E7EAB73@gmail.com>
+ <453bcbbd-94f4-46da-98f6-c9fa5f931231@paulmck-laptop>
+ <CAB=BE-TC0s++t_5H6NjVVcpNvvvubtUpJhRxPsqq2p3ZgaFo9A@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAB=BE-TC0s++t_5H6NjVVcpNvvvubtUpJhRxPsqq2p3ZgaFo9A@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -74,27 +85,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/14/23 12:44, Rob Herring wrote:
-> The DT of_device.h and of_platform.h date back to the separate
-> of_platform_bus_type before it as merged into the regular platform bus.
-> As part of that merge prepping Arm DT support 13 years ago, they
-> "temporarily" include each other. They also include platform_device.h
-> and of.h. As a result, there's a pretty much random mix of those include
-> files used throughout the tree. In order to detangle these headers and
-> replace the implicit includes with struct declarations, users need to
-> explicitly include the correct includes.
+On Fri, Jul 14, 2023 at 12:15:23PM -0700, Sandeep Dhavale wrote:
+> >
+> > Sandeep, thoughts?
+> >
+> I prefer to modify erofs check and contain the fix there as erofs
+> cares about it and it's
+> least invasive. For contexts where erofs cannot tell for sure, it will
+> always schedule kworker
+> (like CONFIG_PREEMPT_COUNT=n).
 > 
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->   drivers/firmware/arm_scmi/driver.c | 4 ++--
->   drivers/firmware/imx/imx-dsp.c     | 1 -
->   drivers/firmware/imx/imx-scu-irq.c | 1 +
->   drivers/firmware/imx/imx-scu.c     | 1 +
->   drivers/firmware/mtk-adsp-ipc.c    | 1 -
->   drivers/firmware/raspberrypi.c     | 1 +
->   drivers/firmware/scpi_pm_domain.c  | 3 ++-
->   drivers/firmware/stratix10-rsu.c   | 1 -
+> I will also do measurements to see if erofs should continue to check
+> for context and
+> what are the benefits.
 
-For stratix10-rsu.c, Acked-by: Dinh Nguyen <dinguyen@kernel.org>
+At the end of the day, I guess it is Gao Xiang's and Chao Yu's decision.
+
+							Thanx, Paul
