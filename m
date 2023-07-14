@@ -2,104 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C645753E09
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 16:49:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 743EB753E19
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 16:52:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236100AbjGNOtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 10:49:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57340 "EHLO
+        id S235960AbjGNOwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 10:52:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234562AbjGNOtp (ORCPT
+        with ESMTP id S235853AbjGNOwf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 10:49:45 -0400
-Received: from out-55.mta1.migadu.com (out-55.mta1.migadu.com [IPv6:2001:41d0:203:375::37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02F022698
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 07:49:41 -0700 (PDT)
-Message-ID: <8631f3e6-fef1-bff1-a793-b6e7410802b1@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1689346179;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jNvYQmJsQDwLhpPtJsjHCKzbrGa1338Fhf7Ke/A5vME=;
-        b=kvZPY1hUQNc1/e3a70dR5t4yOP1b8V1BkJHZz7ZUjXmORtlMZ9OzICY3+hpc+3/8GROxFR
-        HbJbPtan5hvTHVoCjkgy3BqbZXgUTQBVwnzuyiptALmQgQnU+mh9Y0xC1nRkeXDDNyw9IL
-        EuyW4qtgzTqgh019qQZtYrmKi31m0sE=
-Date:   Fri, 14 Jul 2023 22:49:13 +0800
+        Fri, 14 Jul 2023 10:52:35 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35BF426A5;
+        Fri, 14 Jul 2023 07:52:34 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-98dfb3f9af6so261540466b.2;
+        Fri, 14 Jul 2023 07:52:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689346352; x=1691938352;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=S+Y7J/CfROpAWdo0NFVfodvbCSxyNFMpV5vaNCFKuEA=;
+        b=HOCxu6W8gCA+Z01yLdgRwWPbWKx21vPpdKDTsF8DWYDTpqcmP+I+Fb41hjdLrvJzpH
+         O+EkcijxxzmjHTjFRv6/vVusSnJ6Ftu6akOZYMon4nM7zLkbEe6Mq3io/s5QywRnUPAE
+         EC/vlnTighBJXrdlTmrcfZr9wRQCvv/NsASzAvII/dnkMkMYYUpZWnV9VfRkD/7O3jU6
+         jKFQwztB5HTmpbcSW1zveO8+7gsir1+ti5n91HhzxeIxviEocBWBf6Xe3/8AwjuK3AjO
+         cQ48CvSOOnIOn+++QhjPSr3uOhQt2x/aBJzQs062IPauFtc04VQycNxXuKGBABt10GTe
+         ASwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689346352; x=1691938352;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=S+Y7J/CfROpAWdo0NFVfodvbCSxyNFMpV5vaNCFKuEA=;
+        b=QuiSRQrScEe+boGE0H/Y0sHdDek+gPjg1VFzsif5pttlKd6M7Ur2CAGzUGGr4Q6dO2
+         3WASQPGGGTE1TpLHfPFl4qn/9QDAygufBNUUwftvqKXVFvEbSMuB/OqPt0xtPH4sl3z9
+         m0WsK890t5ImUB8fSVVJaI3R624tbCsmyA3fsjRLa9Ke26o9nE8NZ2Nlxy7svK3zpBc5
+         u8edcHKk51bfzV98iofbGw2ifIAZlb1XFtCrXjfLTfFIqjO/1gB6YzawzUv3AArSLEU3
+         GDsVnlCP+o/eB95VhjyBK+jbzYPKFmDBj+G5C2dgf/7zZIu77HNMnd94Ko1QEVR4R0r1
+         N36g==
+X-Gm-Message-State: ABy/qLZZ4RarD0IPqa8ijDHg2DxEBvoCu4Vruhc5EcwlSMFY9raCCp8D
+        pz1HhrmFRs3huV8BYFWCrh4=
+X-Google-Smtp-Source: APBJJlG7OWa/0j2mFZ3Jz/CdSQr9e0vGXSmQRb7+u9Nnx2FGDHPrlREDkcmjngmV4/ockafeBw+Kbg==
+X-Received: by 2002:a17:906:b7d5:b0:992:c774:9415 with SMTP id fy21-20020a170906b7d500b00992c7749415mr4430305ejb.63.1689346352457;
+        Fri, 14 Jul 2023 07:52:32 -0700 (PDT)
+Received: from localhost (p200300e41f4b7100f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f4b:7100:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id a15-20020a17090680cf00b0099251a40184sm5536348ejx.99.2023.07.14.07.52.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Jul 2023 07:52:31 -0700 (PDT)
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, jonathanh@nvidia.com,
+        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Sumit Gupta <sumitg@nvidia.com>
+Cc:     bbasu@nvidia.com, shaochunk@nvidia.com
+Subject: Re: [Patch] arm64: tegra: update CPU OPP tables
+Date:   Fri, 14 Jul 2023 16:52:26 +0200
+Message-ID: <168934632798.2822346.11688804206324171987.b4-ty@nvidia.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230713133850.823-1-sumitg@nvidia.com>
+References: <20230713133850.823-1-sumitg@nvidia.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v5] blk-mq: fix start_time_ns and alloc_time_ns for
- pre-allocated rq
-Content-Language: en-US
-To:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>
-Cc:     hch@lst.de, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ming.lei@redhat.com,
-        zhouchengming@bytedance.com
-References: <20230710105516.2053478-1-chengming.zhou@linux.dev>
- <aa813164-9a6a-53bd-405b-ba4cc1f1b656@kernel.dk>
- <63f93f1c-98da-4c09-b3d8-711f6953d8b7@linux.dev>
- <ZLA7QAfSojxu_FMW@slm.duckdns.org>
- <5be1cba6-b141-3a05-f801-3af7d2092674@linux.dev>
- <4dc89f6c-ab93-d3e7-5b5a-4b2f34e2fcac@kernel.dk>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Chengming Zhou <chengming.zhou@linux.dev>
-In-Reply-To: <4dc89f6c-ab93-d3e7-5b5a-4b2f34e2fcac@kernel.dk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/7/14 22:43, Jens Axboe wrote:
-> On 7/14/23 5:31?AM, Chengming Zhou wrote:
->> On 2023/7/14 01:58, Tejun Heo wrote:
->>> Hello,
->>>
->>> On Thu, Jul 13, 2023 at 08:25:50PM +0800, Chengming Zhou wrote:
->>>> Ok, this version will only get time stamp once for one request, it's actually
->>>> not worse than the current code, which will get start time stamp once for each
->>>> request even in the batch allocation.
->>>>
->>>> But yes, maybe we can also set the start time stamp in the batch mode, and only
->>>> update the time stamp in the block case, like you said, has better performance.
->>>>
->>>> The first version [1] I posted actually just did this, in which use a nr_flush counter
->>>> in plug to indicate that we blocked & flushed plug. Tejun and I think it seems fragile.
->>>> So go to this way that only set time stamp once when the request actually used.
->>>>
->>>> [1] https://lore.kernel.org/all/20230601053919.3639954-1-chengming.zhou@linux.dev/
->>>>
->>>> Another way I can think of is to make rq_qos_throttle() return a bool to indicate
->>>> if it blocked. Tejun and Jens, how do you think about this way?
->>>>
->>>> Although it's better performance, in case of preemption, the time stamp maybe not accurate.
->>>
->>> Trying to manually optimized timestamp reads seems like a bit of fool's
->>> errand to me. I don't think anyone cares about nanosec accuracy, so there
->>> are ample opportunities for generically caching timestamp so that we don't
->>> have to contort code to optimzie timestamp calls.
->>>
->>> It's a bit out of scope for this patchset but I think it might make sense to
->>> build a timestamp caching infrastructure. The cached timestamp can be
->>> invalidated on context switches (block layer already hooks into them) and
->>> issue and other path boundaries (e.g. at the end of plug flush).
->>>
->>
->> Yes, this is a really great idea. It has better performance and is
->> more generic.
+From: Thierry Reding <treding@nvidia.com>
+
+
+On Thu, 13 Jul 2023 19:08:50 +0530, Sumit Gupta wrote:
+> Update the CPU OPP table to include all frequencies supported by
+> Tegra234. Different platforms can choose to keep all or few entries
+> based on their power and performance tunings.
 > 
-> Do you want to work on that approach? I pretty much outlined how I think
-> it'd work in the previous reply.
 > 
 
-Ok, I want to do it. Your outline is clear, will implement and test it.
+Applied, thanks!
 
-Thanks!
+[1/1] arm64: tegra: update CPU OPP tables
+      commit: d5b9d25d3fb6f63614ee00104f16e099e3497c65
 
+Best regards,
+-- 
+Thierry Reding <treding@nvidia.com>
