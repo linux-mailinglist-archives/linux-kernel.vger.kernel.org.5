@@ -2,83 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACA7775370B
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:49:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34EB675370C
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:49:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235510AbjGNJt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 05:49:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40858 "EHLO
+        id S235787AbjGNJt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 05:49:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235961AbjGNJtF (ORCPT
+        with ESMTP id S235534AbjGNJtI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 05:49:05 -0400
-Received: from mail-ed1-x549.google.com (mail-ed1-x549.google.com [IPv6:2a00:1450:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B93D73AB1
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 02:48:54 -0700 (PDT)
-Received: by mail-ed1-x549.google.com with SMTP id 4fb4d7f45d1cf-51d981149b5so1041114a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 02:48:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689328133; x=1691920133;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LgB9Mhn/4by5bCjJpUEX/UcsNdb0bdjrrqXERtCyeLI=;
-        b=C3GVqpZj6i0V8gkeGoO6N72GIt8HeLW1V5EMHZbZAE7/3bqd+2NE3EZ8b624qO0BD3
-         jTO0ejZIZ84R7+1oKeHt05CyuT8Yx571+hljrlG5bjx1A1tD1ebv55QLpfBRWvTwo4AF
-         GzCHxriMdWWJVLRQKR+UjdxcFE3HjYbbFlnfTPROo/NYJ+hrJAVz/+FBBQYzZd4j2l7+
-         NJDISCiRb0ci+5wZj6nIp6DrgMm7Wj6aX5gOS4SEwwMGtbmLUrQbwlhBZT/VSrNLaG1X
-         qJ5wEbRmzJVJbeja9uKq4s2N1dI/cKc9HshqAOGM81iO2tuSTFwCkfsqx/D/Rb7xc8X2
-         Bqlw==
+        Fri, 14 Jul 2023 05:49:08 -0400
+Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com [209.85.210.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C41D35AD
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 02:49:00 -0700 (PDT)
+Received: by mail-ot1-f72.google.com with SMTP id 46e09a7af769-6b8679998cbso2713201a34.1
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 02:49:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689328133; x=1691920133;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LgB9Mhn/4by5bCjJpUEX/UcsNdb0bdjrrqXERtCyeLI=;
-        b=fpRfNSj2JKEOfc0NnesP5RC98+P4EFnM8Uysw01gMjpEDlXNi3RvJzd/OygN97T2AE
-         S1Swx7KEXFXdjlmzIUUwDAvtzqDMjRVV9dYU4pP1sl+h4c1q/dgEIWNQY3BsWY4YJTap
-         KGD5MthjwbOEXqr4M/DpsryUga2HobdHHWn7SdWjS77bs176x5knd+w3EF2rnijHZ963
-         Xu3xHGXQBvNzDxS5guGQAkczqwoGZ/UorsQAd00faTDe4HsegwVFTH9IkdmB3XX0o1Xx
-         GCv51AgAqkB0cDBU9akfufvZHbcROl1vHTLejO+TXi6uivTbIxc0HHj2JTd0unAyZVVe
-         Qzwg==
-X-Gm-Message-State: ABy/qLaqhV5HrutcKoQandQFHJIstIVdDXK+yZtCItLpAuptRXs/FoJQ
-        /FZWAcMYA+4MGmotXLcxPncoM/jmkxLj3GE=
-X-Google-Smtp-Source: APBJJlFX3YPOyr7+HJnYzpBJU6w92y6qG7Iwif9vTDearcfvz9cn3ZRfZBU1/7bS7OzWLsIsm/mXxa4S1pwPyb0=
-X-Received: from aliceryhl.c.googlers.com ([fda3:e722:ac3:cc00:31:98fb:c0a8:6c8])
- (user=aliceryhl job=sendgmr) by 2002:a17:907:2c78:b0:98e:10f5:db52 with SMTP
- id ib24-20020a1709072c7800b0098e10f5db52mr9590ejc.7.1689328133162; Fri, 14
- Jul 2023 02:48:53 -0700 (PDT)
-Date:   Fri, 14 Jul 2023 09:48:44 +0000
-In-Reply-To: <20230714-cstring-debug-v1-1-4e7c3018dd4f@asahilina.net>
-Mime-Version: 1.0
-References: <20230714-cstring-debug-v1-1-4e7c3018dd4f@asahilina.net>
-X-Mailer: git-send-email 2.41.0.255.g8b1d071c50-goog
-Message-ID: <20230714094844.2189906-1-aliceryhl@google.com>
-Subject: Re: [PATCH] rust: kernel: str: Implement Debug for CString
-From:   Alice Ryhl <aliceryhl@google.com>
-To:     lina@asahilina.net
-Cc:     alex.gaynor@gmail.com, asahi@lists.linux.dev,
-        benno.lossin@proton.me, bjorn3_gh@protonmail.com,
-        boqun.feng@gmail.com, gary@garyguo.net,
-        linux-kernel@vger.kernel.org, ojeda@kernel.org,
-        rust-for-linux@vger.kernel.org, wedsonaf@gmail.com,
-        Alice Ryhl <aliceryhl@google.com>
+        d=1e100.net; s=20221208; t=1689328140; x=1691920140;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dIJT0ZLagHJlynN87dwgjc9pwkbprQ7JENblyAxgUpI=;
+        b=J4myhd0yktamI1KauSnYfk6NLwJczlELpBiJQzapyPNT2qo1zehvOU/I6xQ6Hkre5X
+         EdsdeSGhoRL6WbeaNSINt1PTCm/6VK2yd96h+RnH+LB32s3DRw8Vagf8Y71+uqJc4bW6
+         0oHa31GWbpD5Cl4WFg1hkRO3iVlUFJ21qYMIXexA+ZOefXyhQ9yf+lWjhiVeb9CUEelQ
+         y8VFt4vjbGbRY/GAhyOdxgifqhz0jxdwzbycR5lUTxcGLy6v5qfyQWhufxW0UDrbpFmf
+         lE5A1ETMK8Ec64MoIYq1yi4HrdkG7bMNqWyjhFgDdcPUo+VyQX6m+32XVtTG6D7aRGMQ
+         6o+w==
+X-Gm-Message-State: ABy/qLZxoKG9oqcI+FBfWwFlevaApJxrh18fFJ87hzWMlox96K+Oiq7C
+        3QrvboPujCZDYMHt0I++28Ym9gW6XfmvGryOFCJiKQ6xWMAj
+X-Google-Smtp-Source: APBJJlHaBvTxSTzaoCKzHeb7VIUiIrzCsedgZoxW6XeenbWmzrRrC0sG9tlKEsNnYR0dN+w8kgqAFrFtzAU2XEUxH7OA4JBgy0Q/
+MIME-Version: 1.0
+X-Received: by 2002:a9d:7618:0:b0:6b7:3eba:59d3 with SMTP id
+ k24-20020a9d7618000000b006b73eba59d3mr3509845otl.6.1689328140182; Fri, 14 Jul
+ 2023 02:49:00 -0700 (PDT)
+Date:   Fri, 14 Jul 2023 02:49:00 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b46bf806006f5b02@google.com>
+Subject: [syzbot] Monthly wireguard report (Jul 2023)
+From:   syzbot <syzbot+list1615f52d4d969bd05dc8@syzkaller.appspotmail.com>
+To:     Jason@zx2c4.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        wireguard@lists.zx2c4.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Asahi Lina <lina@asahilina.net> writes:
-> Trivial implementation.
-> 
-> Signed-off-by: Asahi Lina <lina@asahilina.net>
+Hello wireguard maintainers/developers,
 
-The commit message is a bit short, but the change itself looks fine.
+This is a 31-day syzbot report for the wireguard subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/wireguard
 
-Reviewed-by: Alice Ryhl <aliceryhl@google.com>
+During the period, 0 new issues were detected and 0 were fixed.
+In total, 3 issues are still open and 13 have been fixed so far.
 
+Some of the still happening issues:
+
+Ref Crashes Repro Title
+<1> 714     No    KCSAN: data-race in wg_packet_send_staged_packets / wg_packet_send_staged_packets (3)
+                  https://syzkaller.appspot.com/bug?extid=6ba34f16b98fe40daef1
+<2> 480     No    KCSAN: data-race in wg_packet_decrypt_worker / wg_packet_rx_poll (2)
+                  https://syzkaller.appspot.com/bug?extid=d1de830e4ecdaac83d89
+<3> 3       Yes   INFO: rcu detected stall in wg_packet_handshake_receive_worker
+                  https://syzkaller.appspot.com/bug?extid=dbb6a05624cf5064858c
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
+
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
