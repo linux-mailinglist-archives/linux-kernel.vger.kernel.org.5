@@ -2,202 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17EF3753B61
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 14:59:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68DB2753B62
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 14:59:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235764AbjGNM7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 08:59:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55948 "EHLO
+        id S235804AbjGNM7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 08:59:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229927AbjGNM7j (ORCPT
+        with ESMTP id S235651AbjGNM7l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 08:59:39 -0400
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D9AA2D48
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 05:59:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689339578; x=1720875578;
-  h=date:from:to:cc:subject:message-id;
-  bh=Kk+k/7Ad1GeQbwtz5m3NUt/j3wyRMTnX5hLFJpidpaY=;
-  b=krSB4S9ws3V2B9VsK/EA/33n3peFK4ANHexvX7AXARyH+3WwXj7DdHre
-   IcYiVWQbm7GEIthwuFHddKDuNK2dad/CXkbg1ERb4nLouJNkM63OycGNI
-   ozNninfwrresYF1z96wzjmVMMPNnI5UvU1PH4diQ5mxH1PV+RqIgZ9lx+
-   i1hUHC6qoiC760PbO6RbENqo7sr5ARcLMTSh28qkLNIXR2ok0fGIkUob0
-   iGL3/NUF7QXUpYs9KmAYskrQ5GrzAcMT3r1YllUA5gc5n8i2ZeGoBUbaL
-   vde6qQmJYavfVLQvuO3naXgXvnjMs0wf2pWIQmMfNFWmOxfENwumOzurM
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="396278273"
-X-IronPort-AV: E=Sophos;i="6.01,205,1684825200"; 
-   d="scan'208";a="396278273"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 05:59:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="752031323"
-X-IronPort-AV: E=Sophos;i="6.01,205,1684825200"; 
-   d="scan'208";a="752031323"
-Received: from lkp-server01.sh.intel.com (HELO c544d7fc5005) ([10.239.97.150])
-  by orsmga008.jf.intel.com with ESMTP; 14 Jul 2023 05:59:35 -0700
-Received: from kbuild by c544d7fc5005 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qKIOU-0007Ry-2X;
-        Fri, 14 Jul 2023 12:59:34 +0000
-Date:   Fri, 14 Jul 2023 20:58:51 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [paulmck-rcu:rcu/next] BUILD SUCCESS
- 7408340a707e48690cc2cf6d26e15f315d743e1f
-Message-ID: <202307142049.DL2XT15U-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Fri, 14 Jul 2023 08:59:41 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35133273F
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 05:59:40 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C79D261D11
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 12:59:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03FA4C433C9;
+        Fri, 14 Jul 2023 12:59:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689339579;
+        bh=xkMmZ3HjRvChUISkHAItxgCXPI4Pjj2KMRxqWgZUj54=;
+        h=Date:From:To:Cc:Subject:From;
+        b=d7nf/NIYKQpLbo8U9lYE+YVcw8gU2WgleRPKCw6IyXoiuH4AkwtPfsFRNxaDGuh/D
+         kDh8mWrfUqLRFNmqpK+LWmUZE/K7jILMU2kxuiknB2o/xHjAsZ0Ooff8AqYGtzAs2m
+         T+3PL4et2wdF0EiyJe57WMkYvz1e06x621Y8E2p18HuSLkQvXV4LJQlYpOet+W4YHi
+         BrXshfKCg8qtFYkD3Mwiqw1cvzpvr1JudwepAH1oG956tKWltwOZSgaqprk+h1vLwt
+         1fzlwNZO3f/5mgGxbXep843e3u/qxmudYpM9KURj7dMyOLlpFVMxfzS+lrwedqYoo6
+         06FzErGguhLZg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 5CAE440516; Fri, 14 Jul 2023 09:59:36 -0300 (-03)
+Date:   Fri, 14 Jul 2023 09:59:36 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+        David Howells <dhowells@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Ian Rogers <irogers@google.com>,
+        Jakub Kicinski <kuba@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>
+Subject: [PATCH 1/1 fyi] perf beauty: Update copy of linux/socket.h with the
+ kernel sources
+Message-ID: <ZLFGuHDwUGDGXdoR@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
-branch HEAD: 7408340a707e48690cc2cf6d26e15f315d743e1f  refscale: Add a "jiffies" test
+tldr; Just FYI, I'm carrying this on the perf tools tree.
 
-elapsed time: 724m
+- Arnaldo
 
-configs tested: 124
-configs skipped: 6
+Full explanation:
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+There used to be no copies, with tools/ code using kernel headers
+directly. From time to time tools/perf/ broke due to legitimate kernel
+hacking. At some point Linus complained about such direct usage. Then we
+adopted the current model.
 
-tested configs:
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-alpha                randconfig-r023-20230714   gcc  
-alpha                randconfig-r031-20230714   gcc  
-arc                              allyesconfig   gcc  
-arc                          axs101_defconfig   gcc  
-arc                                 defconfig   gcc  
-arc                  randconfig-r043-20230714   gcc  
-arc                        vdk_hs38_defconfig   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                       aspeed_g5_defconfig   gcc  
-arm                        clps711x_defconfig   gcc  
-arm                                 defconfig   gcc  
-arm                            qcom_defconfig   gcc  
-arm                  randconfig-r046-20230714   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                randconfig-r002-20230714   gcc  
-arm64                randconfig-r011-20230713   gcc  
-arm64                randconfig-r036-20230714   gcc  
-csky                                defconfig   gcc  
-csky                 randconfig-r012-20230713   gcc  
-csky                 randconfig-r035-20230714   gcc  
-hexagon              randconfig-r041-20230714   clang
-hexagon              randconfig-r045-20230714   clang
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-r004-20230713   clang
-i386         buildonly-randconfig-r005-20230713   clang
-i386         buildonly-randconfig-r006-20230713   clang
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-i001-20230713   clang
-i386                 randconfig-i002-20230713   clang
-i386                 randconfig-i003-20230713   clang
-i386                 randconfig-i004-20230713   clang
-i386                 randconfig-i005-20230713   clang
-i386                 randconfig-i006-20230713   clang
-i386                 randconfig-i011-20230714   clang
-i386                 randconfig-i012-20230714   clang
-i386                 randconfig-i013-20230714   clang
-i386                 randconfig-i014-20230714   clang
-i386                 randconfig-i015-20230714   clang
-i386                 randconfig-i016-20230714   clang
-i386                 randconfig-r003-20230714   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-m68k                             allmodconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                 randconfig-r006-20230714   gcc  
-m68k                 randconfig-r016-20230713   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                 randconfig-r021-20230714   gcc  
-nios2                               defconfig   gcc  
-nios2                randconfig-r033-20230714   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc               randconfig-r024-20230714   gcc  
-parisc               randconfig-r032-20230714   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc              randconfig-r014-20230713   gcc  
-powerpc              randconfig-r025-20230714   clang
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                randconfig-r042-20230714   clang
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r005-20230714   gcc  
-s390                 randconfig-r034-20230714   gcc  
-s390                 randconfig-r044-20230714   clang
-s390                       zfcpdump_defconfig   gcc  
-sh                               allmodconfig   gcc  
-sh                                  defconfig   gcc  
-sh                 kfr2r09-romimage_defconfig   gcc  
-sh                          landisk_defconfig   gcc  
-sh                           se7705_defconfig   gcc  
-sh                        sh7785lcr_defconfig   gcc  
-sh                            shmin_defconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64              randconfig-r004-20230714   gcc  
-sparc64              randconfig-r013-20230713   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                   randconfig-r001-20230714   clang
-um                           x86_64_defconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-r001-20230713   clang
-x86_64       buildonly-randconfig-r002-20230713   clang
-x86_64       buildonly-randconfig-r003-20230713   clang
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-x001-20230713   gcc  
-x86_64               randconfig-x002-20230713   gcc  
-x86_64               randconfig-x003-20230713   gcc  
-x86_64               randconfig-x004-20230713   gcc  
-x86_64               randconfig-x005-20230713   gcc  
-x86_64               randconfig-x006-20230713   gcc  
-x86_64               randconfig-x011-20230713   clang
-x86_64               randconfig-x012-20230713   clang
-x86_64               randconfig-x013-20230713   clang
-x86_64               randconfig-x014-20230713   clang
-x86_64               randconfig-x015-20230713   clang
-x86_64               randconfig-x016-20230713   clang
-x86_64                           rhel-8.3-bpf   gcc  
-x86_64                          rhel-8.3-func   gcc  
-x86_64                    rhel-8.3-kselftests   gcc  
-x86_64                         rhel-8.3-kunit   gcc  
-x86_64                           rhel-8.3-ltp   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                         virt_defconfig   gcc  
+The way these headers are used in perf are not restricted to just
+including them to compile something.
 
+There are sometimes used in scripts that convert defines into string
+tables, etc, so some change may break one of these scripts, or new MSRs
+may use some different #define pattern, etc.
+
+E.g.:
+
+  $ ls -1 tools/perf/trace/beauty/*.sh | head -5
+  tools/perf/trace/beauty/arch_errno_names.sh
+  tools/perf/trace/beauty/drm_ioctl.sh
+  tools/perf/trace/beauty/fadvise.sh
+  tools/perf/trace/beauty/fsconfig.sh
+  tools/perf/trace/beauty/fsmount.sh
+  $
+  $ tools/perf/trace/beauty/fadvise.sh
+  static const char *fadvise_advices[] = {
+  	[0] = "NORMAL",
+  	[1] = "RANDOM",
+  	[2] = "SEQUENTIAL",
+  	[3] = "WILLNEED",
+  	[4] = "DONTNEED",
+  	[5] = "NOREUSE",
+  };
+  $
+
+The tools/perf/check-headers.sh script, part of the tools/ build
+process, points out changes in the original files.
+
+So its important not to touch the copies in tools/ when doing changes in
+the original kernel headers, that will be done later, when
+check-headers.sh inform about the change to the perf tools hackers.
+
+---
+
+To pick the changes in:
+
+  b848b26c6672c9b9 ("net: Kill MSG_SENDPAGE_NOTLAST")
+  5e2ff6704a275be0 ("scm: add SO_PASSPIDFD and SCM_PIDFD")
+  4fe38acdac8a71f7 ("net: Block MSG_SENDPAGE_* from being passed to sendmsg() by userspace")
+  b841b901c452d926 ("net: Declare MSG_SPLICE_PAGES internal sendmsg() flag")
+
+That don't result in any changes in the tables generated from that
+header.
+
+But while updating I noticed we were not handling MSG_BATCH and MSG_ZEROCOPY in the
+hard coded table for the msg flags table, add them.
+
+This silences this perf build warning:
+
+  Warning: Kernel ABI header differences:
+    diff -u tools/perf/trace/beauty/include/linux/socket.h include/linux/socket.h
+
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Alexander Mikhalitsyn <alexander@mihalicyn.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: David S. Miller <davem@davemloft.net>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Link: https://lore.kernel.org/lkml/
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+ tools/perf/trace/beauty/include/linux/socket.h | 5 +++++
+ tools/perf/trace/beauty/msg_flags.c            | 8 ++++++++
+ 2 files changed, 13 insertions(+)
+
+diff --git a/tools/perf/trace/beauty/include/linux/socket.h b/tools/perf/trace/beauty/include/linux/socket.h
+index 3bef212a24d776c2..39b74d83c7c4a7e8 100644
+--- a/tools/perf/trace/beauty/include/linux/socket.h
++++ b/tools/perf/trace/beauty/include/linux/socket.h
+@@ -177,6 +177,7 @@ static inline size_t msg_data_left(struct msghdr *msg)
+ #define	SCM_RIGHTS	0x01		/* rw: access rights (array of int) */
+ #define SCM_CREDENTIALS 0x02		/* rw: struct ucred		*/
+ #define SCM_SECURITY	0x03		/* rw: security label		*/
++#define SCM_PIDFD	0x04		/* ro: pidfd (int)		*/
+ 
+ struct ucred {
+ 	__u32	pid;
+@@ -326,6 +327,7 @@ struct ucred {
+ 					  */
+ 
+ #define MSG_ZEROCOPY	0x4000000	/* Use user data in kernel path */
++#define MSG_SPLICE_PAGES 0x8000000	/* Splice the pages from the iterator in sendmsg() */
+ #define MSG_FASTOPEN	0x20000000	/* Send data in TCP SYN */
+ #define MSG_CMSG_CLOEXEC 0x40000000	/* Set close_on_exec for file
+ 					   descriptor received through
+@@ -336,6 +338,9 @@ struct ucred {
+ #define MSG_CMSG_COMPAT	0		/* We never have 32 bit fixups */
+ #endif
+ 
++/* Flags to be cleared on entry by sendmsg and sendmmsg syscalls */
++#define MSG_INTERNAL_SENDMSG_FLAGS \
++	(MSG_SPLICE_PAGES | MSG_SENDPAGE_NOPOLICY | MSG_SENDPAGE_DECRYPTED)
+ 
+ /* Setsockoptions(2) level. Thanks to BSD these must match IPPROTO_xxx */
+ #define SOL_IP		0
+diff --git a/tools/perf/trace/beauty/msg_flags.c b/tools/perf/trace/beauty/msg_flags.c
+index aa9934020232eaac..ed3ff969b5465bbf 100644
+--- a/tools/perf/trace/beauty/msg_flags.c
++++ b/tools/perf/trace/beauty/msg_flags.c
+@@ -8,6 +8,12 @@
+ #ifndef MSG_WAITFORONE
+ #define MSG_WAITFORONE		   0x10000
+ #endif
++#ifndef MSG_BATCH
++#define MSG_BATCH		   0x40000
++#endif
++#ifndef MSG_ZEROCOPY
++#define MSG_ZEROCOPY		 0x4000000
++#endif
+ #ifndef MSG_SPLICE_PAGES
+ #define MSG_SPLICE_PAGES	0x8000000
+ #endif
+@@ -50,6 +56,8 @@ static size_t syscall_arg__scnprintf_msg_flags(char *bf, size_t size,
+ 	P_MSG_FLAG(NOSIGNAL);
+ 	P_MSG_FLAG(MORE);
+ 	P_MSG_FLAG(WAITFORONE);
++	P_MSG_FLAG(BATCH);
++	P_MSG_FLAG(ZEROCOPY);
+ 	P_MSG_FLAG(SPLICE_PAGES);
+ 	P_MSG_FLAG(FASTOPEN);
+ 	P_MSG_FLAG(CMSG_CLOEXEC);
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.37.1
+
