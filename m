@@ -2,147 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63CE1754352
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 21:39:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9A7E754358
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 21:42:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236484AbjGNTjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 15:39:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44324 "EHLO
+        id S236488AbjGNTml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 15:42:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235609AbjGNTjp (ORCPT
+        with ESMTP id S236223AbjGNTmh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 15:39:45 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2070.outbound.protection.outlook.com [40.107.223.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F350612D;
-        Fri, 14 Jul 2023 12:39:44 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gpZ0PTr9upjpudu+yd6BY2VNMaGxKmzfEdUON2p5ra7duYvLxt9r3nAGbOlnIDIij8cTYlABa4EvZrCXbySiIcAli20wRmVYiN8N/pvN9OWI0HLf9d5dyBLPjjTu4JYsJ59MnQKPLH5tt6+CJxFU4w69FgRWY9zilQfiuv9v+cFAjhf4+MzP1iy1xoXj2PFqHBK17M9NQ+MvR9pz4cGWaesJuKVZN45uqu1xC1KdBYO8XnqrHghe1dr9gRiHafhhIZjLThcve+9wKRqiHmiKiVbj+Lnr5r2lSsGpq2tcvisQn6nqn507eJcspVFLa6mp/5paULcIPzdFfsotkHHasQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=x56ws1yb3vQZ/QvJoAxNWeUh90a63thf/HeGWzQao8s=;
- b=Uu4hRK+NhyTY1t4RAatQ9G1mtmnYVxJ22TbxGrxxrNYskro2oT/2RSOJnGnyh9iX8MTF8pI7bw7kmywu1kxaGpO9k4v/m25R5fPRbVM+dxH4y/QYExflQn3BiIPNpMn/pzAQqupUtuhwPCSZWPuIF7vSnZlqyyXN50vyCg+vBS/rWj7xWyd1vAb2DMSa/RXg9VHgFxg00lu5vB2HQPQP0LuD4zehrW3U/bjOB8k1i+aPwPOuRf2Ed1td3vXfVXtRc8cYY+edcVDwcjXDatqIXjDK0JovqmEmo1siwfmzi6uLWS3OT8gApjoKpudlG4jWDd37WTDBXIlG5nh/7XCj2g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=linuxfoundation.org
- smtp.mailfrom=nvidia.com; dmarc=pass (p=reject sp=reject pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=x56ws1yb3vQZ/QvJoAxNWeUh90a63thf/HeGWzQao8s=;
- b=m6QR6vVWGvd+r+xRIhnd22p15I5ThkbKbJtGwByosXbZ3pq5wHVnEfM5pzgejvNYMm2uYH/YyDYaLTQ+TnFxZm+uSmKz/NotfNZu+n2l3stK9p71rvpREo4EzKXpJ7X/YmNogpu1mZmhJsYWQJPtw/XFFohbs10Pj2cIH6IgHWzDbv3LCN78c4uf7v9XVzRLDy6PnItfj6Ig56ezIhm46AM0xoAxFUMenTgOBSTTUcP/to8HuuXKw6B7I2SKu1R+oJNo3UpS0PJKA8JL4HvQb05SB0bzT1+1halQJwLasJ/UGhnMA/F5Aa+5KJws6nGRTWgJ/qAWC1v9weInRUYgAg==
-Received: from BN0PR02CA0041.namprd02.prod.outlook.com (2603:10b6:408:e5::16)
- by CY8PR12MB8214.namprd12.prod.outlook.com (2603:10b6:930:76::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.28; Fri, 14 Jul
- 2023 19:39:43 +0000
-Received: from BN8NAM11FT056.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:e5:cafe::1f) by BN0PR02CA0041.outlook.office365.com
- (2603:10b6:408:e5::16) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.20 via Frontend
- Transport; Fri, 14 Jul 2023 19:39:42 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- BN8NAM11FT056.mail.protection.outlook.com (10.13.177.26) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6588.27 via Frontend Transport; Fri, 14 Jul 2023 19:39:42 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Fri, 14 Jul 2023
- 12:39:25 -0700
-Received: from [10.110.48.28] (10.126.231.35) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Fri, 14 Jul
- 2023 12:39:25 -0700
-Message-ID: <78861bf4-649f-5cd5-e2be-89f5d19a42d2@nvidia.com>
-Date:   Fri, 14 Jul 2023 12:39:24 -0700
+        Fri, 14 Jul 2023 15:42:37 -0400
+Received: from sonic303-28.consmr.mail.ne1.yahoo.com (sonic303-28.consmr.mail.ne1.yahoo.com [66.163.188.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A09F2D65
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 12:42:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1689363754; bh=l0rGytDiGCRVCZbAAcmCxtglkZvJz8nQZGXfKcFzPlg=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=U6rgyYNE4Y94w25EoMec7PvihKyVqC5k79VL3VHYbtDLDBlTFzzIyZrN94VVp726nRKcUE31EHT4z1VOqgfINtoZ67rOlBa5PJ/vzvqlNz7ieGz7E0tIY4woT0p+KAjcq3qQR/IQJEUp+ImF0vpFVz3CxHPQ4gqfy1ICkYNBIK9buW6iINF2eOstuCHk/i2OPyqv0gpMWnc1K0mEVDCNTHyXQXme0paLApqbrpGogP8fSX9EkIV7Iv+ti8lbqrR7VU2H48EnatPqt10BR0Q6T7KpUOcXw5GPJiPRANrEwThvymkzZoEoe0HQ2IgErimr5zeNoH8IKe3UNhgXvUCg9g==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1689363754; bh=6t4cF07m9PwGaN4ZvSvhXzGOd19OtMk7MYP78TWpkCJ=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=Hq3IDWopjWCB6c4m7MSdAgQkkmDP6U0Ny3pLqMorFkWN/FLV8XQha/rw3f7HSUUDfOoo1Gwh5mPWUPAYNlkoChUVG4BRh+uolzf2rEirigykJwn9TgIbh+NY8X64byc+vKuhUuAHKBq3XbGonK54aPstNmEQqI4sextjOdfHn0x3bC6VQg52+3BB35yz4UQSthomixNdY7eFsxzHR68JLUnjYEw41CxZbyw2SySuKm0o6VvqciDqop0bBlV09wRIX014I4v5JfyB2/6kqXlwonk9TwqVYThSu+8rxTQjHH8oxyWHHHaJG6L6PIAuOpQPtZmmjBjTkHwoBweozSElxQ==
+X-YMail-OSG: yWjPgg0VM1n_byWVKQACOimMjXX_WbKl600Xtu0fGSrkuyHQ7I2QAHSlFajLT78
+ uM6.no0F.WF.bqOLqgee1rnKBggIIvL0gtTaU3..fBryPB4zJwyfVAGm4ikRJYD.dr1Wz.XZQtoN
+ ozeH2U5RBHReys6MRREe3V.4VaYIbxLlBL5f9Us51EVgJIK3cump36_eEmkNyyWIKHYtfxqk_q6O
+ FPSlQznZKu9DGTt68hgpD2SwLUPfn5u8qIxanOCzN9nm8VlDFssa6oMzjUJaWUvBJq.yd8x.rDVn
+ jAmiye_EF10om8RYhj0Y8189eFlp7spcBLE4jZtA9KCKq3snLeWA1Pe1nLLBvyXuqRvT1HGQD2AZ
+ SLuSxzl5XT7Ku2LnMP.nSFrzGJXQ6QaS0OqLmXJoZOTQ0asGJIXzdLsrfHFQA6bpUU4dGCzesQcW
+ 6Gu.Cfn_zTTa6Zic0.H9.LSWkeQS7AI8ueSOtaqscoZ1Kb.fQLoV_acpGL7QVBcB64Hde2ln0JXb
+ PmEmq4flkQn_V6atz.TYnJ_yd4DvI4U0UKjlblqRhrDUgQtgy..zIC3qN16mS4flDdtErT4OAg8A
+ ApTQNER.SNDkdD72ctgc0jN76OcpBmSjDcm2o9J39qnU_nWdmQZ4T0Kxv3U3Ihx06rHo6LB2dpfo
+ pa60PX1RDa7Ej2lNqsvmIz9qv4lmnQOsiww74rJcvCprw8xrgL.ulILNYC9qt4Kyu0foU4d_IOvn
+ gZ5e0XLX6sQ7KQ4vgxuZYZb6enEwMG69Xt.bOs57vut4Qc0zpO_QdOvaSWXEVpgnrTd0DDaYEUkm
+ kyb9yDvxFC1ygfyYxUZsGg6fx8BcertJTnVvnzza79WWqOweaaZrv8aziKSclc.GEJ_.3I2I5f0P
+ MoVoaBgmzzQ1Pmp_rjyYdnJYdmAKsV.v7KU5IOQDJEV6Fi3dECV3buNZ0UgsmI4TTok3MDwqp0wT
+ 9NohgyI8CK_bSRjgMFD1Z8eV9iC2Sj6cCBc0ft3kvQipY1nOwIYi7AZLX.E0zlNJ1l0fjhc3Ku0K
+ NMcqX0xlmL4zDr5heHwzWKTy2q_K_s2z87m5Hf7ZmQk_DrwyrLJ1L1fkKSHpgWXl23EYyd1CKItA
+ MybLTJkzDTCEmRoE3cDzeFLSFv1JwxmgwP1LEHjzMjYQrwYFoC8O2JjG1mpo4FifOvP4l5TKMMjH
+ 35MJqc1kbIOo4WienEYktMWHoc1DiJN8TEex8ZwrA3S4QqmNluNnsAbyVEBzRby1g.0KLD7c1bjV
+ QHfFJBfPJhpYZybZhX26Y_hIde5JBE6l0rMhJHgcFuHLOS08xJzSROSRVOav8q1Xgoe6N3FGIKGm
+ vl36jr38H9iADK6A.2df63S_jnUDWaXfBxox6piaYVox_.SDAe7yyHuVLskHYK2qGU_znpEElP3u
+ DIeVjWVqCajlkcvPNc.o1bEyv_MD1.Kecszg99Os3fl3DRNPvPDc5qlo9qF7Qv6YqnoQVhYUbPrk
+ 2QYYS6_wCopne9NZOHmhxX8NsVYiRf8VQaA86T02.fMotvpDPc7CM.OwzbNCQe43HNhfQUZX3QIx
+ c9TUnOUpxEyVzLKXf0XfcVPCfOBztwLFkUNRvYq61Q09onWzxgqT7dW7B3s6T8GzycxjE9GgHbfQ
+ Nc03NSVae88L7FQCVi5pect2lwiDDRn1nSt4tUGo7WJCWvOYmS9Hs2rxTK40oi1chZxaMLohKHOq
+ zIkmKdpBne8BU0ZyN_65RTmHxVNM4_JeKGjVwN.dBIAnrfn68PUld5EJsPPu9R7NA.jwG3de6Kw6
+ aXMW1SyuCnDNdG9MGPcgGFyMd4LLt_9bmJJ8QKn.EG5JLtXLpBie0h39eiAJknC6Q6Ms7ySS.2Fv
+ ik_kgQOW2gbbuEIAqSATBPG8VLbkYVAWNBYtrzE9YtpIGTrs09HvVY0QXMLBSC5YjYbOm5Mcr0Jl
+ J2XKDjKG_fdy2W5CAogOcjW4NdcXZvpHt29AF02rq7m61LrhsTXVGV4FyXr283vF8laH8yItn25F
+ oKq5hxaS6N.o0CrmiMMyntnWVmuOtxc1MOAf9sQWEUqeX1sck8hNJ7oCFHS5PLDWybeYPFGp3zYR
+ 04ZqhBJW58UsbS6xEKWoJb.qvZ.2ir3IaEcCmHcv2p0A.0g2ay3Fq_OsRvc9DYEyb7CYFBRHPyJk
+ 3HX7rPXGTXgBsQ7YaNArC0e6MOP98kCQ7QVvbadLVzl9WQKCeOxutlhbrHtkuDKxOpaPoTMqC4j6
+ n6Hsbp9.TrlcjEAo78v0T25femUxfl65CDywAsj8lOcDJLhjDB6N2sQQUhc6Nrb2UCOX0c5jRFDO
+ l3v8-
+X-Sonic-MF: <casey@schaufler-ca.com>
+X-Sonic-ID: d538069e-f644-445a-aba7-f2d4eab3dd01
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic303.consmr.mail.ne1.yahoo.com with HTTP; Fri, 14 Jul 2023 19:42:34 +0000
+Received: by hermes--production-bf1-5d96b4b9f-chf5g (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 242c6527f086c2338252c12f27d389d8;
+          Fri, 14 Jul 2023 19:42:31 +0000 (UTC)
+Message-ID: <b711f8b4-f624-bb2b-1caf-90c674245135@schaufler-ca.com>
+Date:   Fri, 14 Jul 2023 12:42:27 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH] selftests: Fix arm64 test installation
+Subject: Re: [PATCH v12 02/11] LSM: Maintain a table of LSM attribute data
 Content-Language: en-US
-To:     Shuah Khan <skhan@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-CC:     Mark Brown <broonie@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        "Anders Roxell" <anders.roxell@linaro.org>,
-        Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        Ryan Roberts <ryan.roberts@arm.com>,
-        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Alexandre Ghiti <alex@ghiti.fr>
-References: <20230710-kselftest-fix-arm64-v1-1-48e872844f25@kernel.org>
- <8d944238-1a9a-e93e-fdab-54e74fa12e11@linuxfoundation.org>
- <785e1c1c-84d8-e87d-f22f-9a53d27f30f6@nvidia.com>
- <620a5b91-9715-ee28-423c-851506b10832@linuxfoundation.org>
- <421bebb3-19e9-47a7-8b2b-f69f125df22f@sirena.org.uk>
- <f479b731-7782-0417-2d4c-31a7c3c9491c@nvidia.com>
- <20230714112653.0b42d3c9818b038d219b5e41@linux-foundation.org>
- <68ccfd77-ce2f-857a-37a7-e9b3edcd495d@linuxfoundation.org>
- <5e5bf5c0-bcda-ec2a-ba4c-5f35dcfbc373@nvidia.com>
- <d03af9cc-c72e-d23f-73ad-ca0e079c3187@linuxfoundation.org>
-From:   John Hubbard <jhubbard@nvidia.com>
-In-Reply-To: <d03af9cc-c72e-d23f-73ad-ca0e079c3187@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.126.231.35]
-X-ClientProxiedBy: rnnvmail201.nvidia.com (10.129.68.8) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN8NAM11FT056:EE_|CY8PR12MB8214:EE_
-X-MS-Office365-Filtering-Correlation-Id: 20b6b029-d22f-4ccc-b13c-08db84a21240
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: trIDqlBMdTZlO1GvbnWZOZDar1dYkQwv2vfzKx0jvn8yCwMVP2EmdqlFQwIvDvLyZzQqVvUY0b+IDoGO83tZxCmHkGy1ZGFljlmdOrori9BmjjwKQeLiaTqTNTyi/wPdKYO6g79WvnrhjQ3Qu7KEsMa8nPTfxPPYghyZEoIbMgs+t3uk3Z7nmF2xyrXDEnqD72A9GqiRnHXRMNSQBvY4wftLiLqNyxCC7d4acPunM+3SFK9Oi839hQk1bDx6lV+oKyckX10upfcWxrf3Iyuir0cZh1ndPo5A0kR+PKCsmJePuDkD/nzk13K0ry51rOonJaICQqQ/HYApqOcY9apa7kazAMojy3TwQdbBrqO90E2muzwGaeq0HrNiii52QbFXt+JVGY1xwhQQPqTaCJWVYXibQu5e2wkyREPxq6brgWhG79YOwdCjt5ooYajGnKm0gHO4+77Y9KrXysaQyeSr2vyk1d0DOGZZH07kQMt6uRhEaxaHLPAJz74GguCReX1RaQKMWL8ELlowSQfE9GCX5xq/GSA4iJ5y/SF+e72nz5gfizF+Ezoyk2yomVWbx3kICdQxQ/zl29Q0XFfHp/3EhfZAGAjWsJDHr5hDf6ibZoYtCQLR+1Q+X1LxrNQMXRwuosc494U5zaFaDR6+ByGC27P8Cv0EnbT7LzgKaCrt1Qkl9W8awfSovshDIYyk8BRbOCrOuxGQNlTZNGjxkyKYubaRsWzaQY4v96CYrjeAjz8BcP0eg2jzORRW2LN7ACsjQyAmK95EquHE5TSp5tgvjHFLJWMXHhF+6lp/5CHMjRbvRAkl1gFbezYESRs4bZcuBl8SKt+bAZbJtX5zGYjkT/k5PEGrqs/yi9sxhEtBxVk=
-X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(346002)(136003)(39860400002)(396003)(376002)(451199021)(36840700001)(40470700004)(46966006)(8676002)(5660300002)(8936002)(316002)(16576012)(31686004)(70586007)(70206006)(4326008)(41300700001)(54906003)(110136005)(4744005)(2906002)(478600001)(966005)(26005)(53546011)(2616005)(16526019)(186003)(336012)(7416002)(426003)(83380400001)(47076005)(40480700001)(82310400005)(36860700001)(36756003)(86362001)(356005)(40460700003)(82740400003)(31696002)(7636003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jul 2023 19:39:42.6980
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 20b6b029-d22f-4ccc-b13c-08db84a21240
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT056.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB8214
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+To:     =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>,
+        paul@paul-moore.com, linux-security-module@vger.kernel.org
+Cc:     jmorris@namei.org, serge@hallyn.com, keescook@chromium.org,
+        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
+        stephen.smalley.work@gmail.com, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, Casey Schaufler <casey@schaufler-ca.com>
+References: <20230629195535.2590-1-casey@schaufler-ca.com>
+ <20230629195535.2590-3-casey@schaufler-ca.com>
+ <9b09c571-9288-73e1-18c5-9023b909a5d9@digikod.net>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+In-Reply-To: <9b09c571-9288-73e1-18c5-9023b909a5d9@digikod.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Mailer: WebService/1.1.21647 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/14/23 12:11, Shuah Khan wrote:
-...
->> Just to be clear, when you say you're applying "both", I'm hoping you mean
->> both of these:
+On 7/11/2023 8:35 AM, Mickaël Salaün wrote:
+>
+> On 29/06/2023 21:55, Casey Schaufler wrote:
+>> As LSMs are registered add their lsm_id pointers to a table.
+>> This will be used later for attribute reporting.
 >>
+>> Determine the number of possible security modules based on
+>> their respective CONFIG options. This allows the number to be
+>> known at build time. This allows data structures and tables
+>> to use the constant.
 >>
->> [1] https://lore.kernel.org/all/20230711005629.2547838-1-jhubbard@nvidia.com/
->> [2] https://lore.kernel.org/all/20230712193514.740033-1-jhubbard@nvidia.com/
+>> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+>> Reviewed-by: Kees Cook <keescook@chromium.org>
+>> Reviewed-by: Serge Hallyn <serge@hallyn.com>
+>> ---
+>>   include/linux/security.h |  2 ++
+>>   security/security.c      | 37 +++++++++++++++++++++++++++++++++++++
+>>   2 files changed, 39 insertions(+)
 >>
-> 
-> Right. The ones you have links to:
-> 
-> Please check the latest fixes to see if we are all squared away:
-> https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/log/?h=fixes
-> 
+>> diff --git a/include/linux/security.h b/include/linux/security.h
+>> index e2734e9e44d5..569b1d8ab002 100644
+>> --- a/include/linux/security.h
+>> +++ b/include/linux/security.h
+>> @@ -138,6 +138,8 @@ enum lockdown_reason {
+>>   };
+>>     extern const char *const
+>> lockdown_reasons[LOCKDOWN_CONFIDENTIALITY_MAX+1];
+>> +extern u32 lsm_active_cnt;
+>> +extern struct lsm_id *lsm_idlist[];
+>
+> extern const struct lsm_id *lsm_idlist[];
+>
+>>     /* These functions are in security/commoncap.c */
+>>   extern int cap_capable(const struct cred *cred, struct
+>> user_namespace *ns,
+>> diff --git a/security/security.c b/security/security.c
+>> index e56714ef045a..5a699e47478b 100644
+>> --- a/security/security.c
+>> +++ b/security/security.c
+>> @@ -36,6 +36,25 @@
+>>   /* How many LSMs were built into the kernel? */
+>>   #define LSM_COUNT (__end_lsm_info - __start_lsm_info)
+>>   +/*
+>> + * How many LSMs are built into the kernel as determined at
+>> + * build time. Used to determine fixed array sizes.
+>> + * The capability module is accounted for by CONFIG_SECURITY
+>> + */
+>> +#define LSM_CONFIG_COUNT ( \
+>> +    (IS_ENABLED(CONFIG_SECURITY) ? 1 : 0) + \
+>> +    (IS_ENABLED(CONFIG_SECURITY_SELINUX) ? 1 : 0) + \
+>> +    (IS_ENABLED(CONFIG_SECURITY_SMACK) ? 1 : 0) + \
+>> +    (IS_ENABLED(CONFIG_SECURITY_TOMOYO) ? 1 : 0) + \
+>> +    (IS_ENABLED(CONFIG_IMA) ? 1 : 0) + \
+>> +    (IS_ENABLED(CONFIG_SECURITY_APPARMOR) ? 1 : 0) + \
+>> +    (IS_ENABLED(CONFIG_SECURITY_YAMA) ? 1 : 0) + \
+>> +    (IS_ENABLED(CONFIG_SECURITY_LOADPIN) ? 1 : 0) + \
+>> +    (IS_ENABLED(CONFIG_SECURITY_SAFESETID) ? 1 : 0) + \
+>> +    (IS_ENABLED(CONFIG_SECURITY_LOCKDOWN_LSM) ? 1 : 0) + \
+>> +    (IS_ENABLED(CONFIG_BPF_LSM) ? 1 : 0) + \
+>> +    (IS_ENABLED(CONFIG_SECURITY_LANDLOCK) ? 1 : 0))
+>> +
+>>   /*
+>>    * These are descriptions of the reasons that can be passed to the
+>>    * security_locked_down() LSM hook. Placing this array here allows
+>> @@ -245,6 +264,12 @@ static void __init initialize_lsm(struct
+>> lsm_info *lsm)
+>>       }
+>>   }
+>>   +/*
+>> + * Current index to use while initializing the lsm id list.
+>> + */
+>> +u32 lsm_active_cnt __ro_after_init;
+>> +struct lsm_id *lsm_idlist[LSM_CONFIG_COUNT] __ro_after_init;
+>
+> const struct lsm_id *lsm_idlist[LSM_CONFIG_COUNT] __ro_after_init;
+>
+>
+>> +
+>>   /* Populate ordered LSMs list from comma-separated LSM name list. */
+>>   static void __init ordered_lsm_parse(const char *order, const char
+>> *origin)
+>>   {
+>> @@ -521,6 +546,18 @@ void __init security_add_hooks(struct
+>> security_hook_list *hooks, int count,
+>>   {
+>>       int i;
+>>   +    /*
+>> +     * A security module may call security_add_hooks() more
+>> +     * than once during initialization, and LSM initialization
+>> +     * is serialized. Landlock is one such case.
+>> +     * Look at the previous entry, if there is one, for duplication.
+>> +     */
+>> +    if (lsm_active_cnt == 0 || lsm_idlist[lsm_active_cnt - 1] !=
+>> lsmid) {
+>
+> Isn't it possible to have interleaved security_add_hooks() calls?
 
-Yes, the patches have made it into your tree safely, looks good!
+The initialization is serial and interleaving isn't possible.
 
+>
+>
+>> +        if (lsm_active_cnt >= LSM_CONFIG_COUNT)
+>> +            panic("%s Too many LSMs registered.\n", __func__);
+>
+> I'm not sure we should panic, but from a security point of view it is
+> critical enough…
 
-thanks,
--- 
-John Hubbard
-NVIDIA
+It's possible this should be a BUG() instance, but the panic() more
+closely resembles what's nearby in the code.
 
+>
+>
+>> +        lsm_idlist[lsm_active_cnt++] = lsmid;
+>> +    }
+>> +
+>>       for (i = 0; i < count; i++) {
+>>           hooks[i].lsmid = lsmid;
+>>           hlist_add_tail_rcu(&hooks[i].list, hooks[i].head);
