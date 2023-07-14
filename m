@@ -2,87 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34EB675370C
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:49:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA1C8753713
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:50:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235787AbjGNJt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 05:49:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41082 "EHLO
+        id S236012AbjGNJuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 05:50:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235534AbjGNJtI (ORCPT
+        with ESMTP id S236023AbjGNJtr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 05:49:08 -0400
-Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com [209.85.210.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C41D35AD
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 02:49:00 -0700 (PDT)
-Received: by mail-ot1-f72.google.com with SMTP id 46e09a7af769-6b8679998cbso2713201a34.1
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 02:49:00 -0700 (PDT)
+        Fri, 14 Jul 2023 05:49:47 -0400
+Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FE343A99
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 02:49:41 -0700 (PDT)
+Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-57eb0df5265so15032457b3.3
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 02:49:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689328180; x=1691920180;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=pVRCcYI6KU6X2B0QhZtXZV8P/Bq4K8WpsLsWqaeiYCY=;
+        b=gckjdvJRp7dj9kX3fVv1PBsM74FxOMPv7eGl7UHbw1mKUmPJBuLDyZ1FAr4eVA4o1v
+         rBibOLpivXX/JCTEEjCrpLdnqJsMYOsn1FzkSTAV6okwfMODHbpyTON+1Az87iHfHJsY
+         XPB8k6zzS738KAS9EG9otMF5gcnA7YktUltPe2QFwij/5nvM4gtlTxtbEkPrVivZL6wC
+         6xk8Lk8n1YZlmXpMwFurWfGRESRMaQZeX2TtzW0d89Z+/A905x2Pbez3JAAyDBpSVRHK
+         RzCadUngjUi5FP5+Q3XE/Tclu+hIAVzQ5QBTYthZ9FeJ2qP06Oydu9Cl/kJC+5oFmjtF
+         i3vQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689328140; x=1691920140;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dIJT0ZLagHJlynN87dwgjc9pwkbprQ7JENblyAxgUpI=;
-        b=J4myhd0yktamI1KauSnYfk6NLwJczlELpBiJQzapyPNT2qo1zehvOU/I6xQ6Hkre5X
-         EdsdeSGhoRL6WbeaNSINt1PTCm/6VK2yd96h+RnH+LB32s3DRw8Vagf8Y71+uqJc4bW6
-         0oHa31GWbpD5Cl4WFg1hkRO3iVlUFJ21qYMIXexA+ZOefXyhQ9yf+lWjhiVeb9CUEelQ
-         y8VFt4vjbGbRY/GAhyOdxgifqhz0jxdwzbycR5lUTxcGLy6v5qfyQWhufxW0UDrbpFmf
-         lE5A1ETMK8Ec64MoIYq1yi4HrdkG7bMNqWyjhFgDdcPUo+VyQX6m+32XVtTG6D7aRGMQ
-         6o+w==
-X-Gm-Message-State: ABy/qLZxoKG9oqcI+FBfWwFlevaApJxrh18fFJ87hzWMlox96K+Oiq7C
-        3QrvboPujCZDYMHt0I++28Ym9gW6XfmvGryOFCJiKQ6xWMAj
-X-Google-Smtp-Source: APBJJlHaBvTxSTzaoCKzHeb7VIUiIrzCsedgZoxW6XeenbWmzrRrC0sG9tlKEsNnYR0dN+w8kgqAFrFtzAU2XEUxH7OA4JBgy0Q/
+        d=1e100.net; s=20221208; t=1689328180; x=1691920180;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pVRCcYI6KU6X2B0QhZtXZV8P/Bq4K8WpsLsWqaeiYCY=;
+        b=JhH6QnLK6iCAYpjKWN1sx5hCiQBHtcCbbfze11p81f4yznZ+OzKvj5BrKjyqoEDc0M
+         6jk441NMa7FjRZl6KetP5Q+9CRdIkSkp9aW9JXuCpsLMWIA+JhDlvm1YPWd0k0ni8ZvB
+         /cQfrxEteAnJeyydxGJC18DrPjVbgm6MIKSy6xel/RForA869nn6ebq4k7Kbib7Xacdh
+         F96oRs7EPTczVIvanZ0iFPwn8RvefxPkddaBDlDDpqtS+iVd8GiWjBeTUOWx8IZ7NZ5D
+         noiRZKtkFq4eAwd8ekang15nLnlOhJIFsdTbDjSRQqY1DVTUFFU/vdkYsAVsVD6eHfxY
+         6LgQ==
+X-Gm-Message-State: ABy/qLaAYg7RCoiTMYcKe5iSs2WUtk4Xu2JoShk5MFKE/cOgZYJ+F0hF
+        O09j7hNTIuglb0I5CraBk3XiRym3fwu6Xpg+3j1vMQ==
+X-Google-Smtp-Source: APBJJlFca572uyzN1V9nYArOEOjIGhR/em7iLkLtW0EDTtrrbLU4GkrmLpU04a4+yN1UuV1I+6cTxksR5yc7sbgM3ww=
+X-Received: by 2002:a0d:eec3:0:b0:577:3fb4:f245 with SMTP id
+ x186-20020a0deec3000000b005773fb4f245mr4757025ywe.19.1689328180403; Fri, 14
+ Jul 2023 02:49:40 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a9d:7618:0:b0:6b7:3eba:59d3 with SMTP id
- k24-20020a9d7618000000b006b73eba59d3mr3509845otl.6.1689328140182; Fri, 14 Jul
- 2023 02:49:00 -0700 (PDT)
-Date:   Fri, 14 Jul 2023 02:49:00 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b46bf806006f5b02@google.com>
-Subject: [syzbot] Monthly wireguard report (Jul 2023)
-From:   syzbot <syzbot+list1615f52d4d969bd05dc8@syzkaller.appspotmail.com>
-To:     Jason@zx2c4.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        wireguard@lists.zx2c4.com
+References: <8b57db8d-1d3a-883e-eb8f-ddf15f19d823@gmail.com>
+In-Reply-To: <8b57db8d-1d3a-883e-eb8f-ddf15f19d823@gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 14 Jul 2023 11:49:04 +0200
+Message-ID: <CAPDyKFpUV=Ko5J1nQOgZGYJUuifMFGYe_xwBJtK3zkFNFQ=GRA@mail.gmail.com>
+Subject: Re: [PATCH] mmc: davinci: Make SDIO irq truly optional
+To:     Julien Delbergue <j.delbergue.foss@gmail.com>
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        brgl@bgdev.pl
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello wireguard maintainers/developers,
+On Thu, 13 Jul 2023 at 11:31, Julien Delbergue
+<j.delbergue.foss@gmail.com> wrote:
+>
+> The following error is printed on Logic PD's DA850 EVM:
+>   davinci_mmc 1c40000.mmc: error -ENXIO: IRQ index 1 not found
+>
+> Depending on the board, the SDIO interrupt may not be present, so use
+> the correct function to reflect that and prevent logging an error.
+>
+> Signed-off-by: Julien Delbergue <j.delbergue.foss@gmail.com>
 
-This is a 31-day syzbot report for the wireguard subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/wireguard
+Applied for next, thanks!
 
-During the period, 0 new issues were detected and 0 were fixed.
-In total, 3 issues are still open and 13 have been fixed so far.
+Kind regards
+Uffe
 
-Some of the still happening issues:
 
-Ref Crashes Repro Title
-<1> 714     No    KCSAN: data-race in wg_packet_send_staged_packets / wg_packet_send_staged_packets (3)
-                  https://syzkaller.appspot.com/bug?extid=6ba34f16b98fe40daef1
-<2> 480     No    KCSAN: data-race in wg_packet_decrypt_worker / wg_packet_rx_poll (2)
-                  https://syzkaller.appspot.com/bug?extid=d1de830e4ecdaac83d89
-<3> 3       Yes   INFO: rcu detected stall in wg_packet_handshake_receive_worker
-                  https://syzkaller.appspot.com/bug?extid=dbb6a05624cf5064858c
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
+> ---
+>  drivers/mmc/host/davinci_mmc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/mmc/host/davinci_mmc.c b/drivers/mmc/host/davinci_mmc.c
+> index 7138dfa065bf..fb686c0d171c 100644
+> --- a/drivers/mmc/host/davinci_mmc.c
+> +++ b/drivers/mmc/host/davinci_mmc.c
+> @@ -1257,7 +1257,7 @@ static int davinci_mmcsd_probe(struct platform_device *pdev)
+>
+>         host->use_dma = use_dma;
+>         host->mmc_irq = irq;
+> -       host->sdio_irq = platform_get_irq(pdev, 1);
+> +       host->sdio_irq = platform_get_irq_optional(pdev, 1);
+>
+>         if (host->use_dma) {
+>                 ret = davinci_acquire_dma_channels(host);
+> --
+> 2.34.1
