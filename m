@@ -2,101 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B25F47536CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:41:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C6717536CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 11:41:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235562AbjGNJle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 05:41:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36256 "EHLO
+        id S235650AbjGNJlw convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 14 Jul 2023 05:41:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234672AbjGNJld (ORCPT
+        with ESMTP id S235642AbjGNJls (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 05:41:33 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 054C712D
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 02:41:29 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id B976E22118;
-        Fri, 14 Jul 2023 09:41:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1689327687; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=V58G6k0S7NfSY//HiKoAYgvYkcXeF11/x3e2pQLhXQo=;
-        b=kHyK4fPd7F72876ra7gyB0ErqV52Ctd/8NgZkb+A2kMXzsMK2mP6lWEsqvjITdhQ9ZqNg5
-        RLztS7mqpab3NscxFdFBuWI/85RgwNMMTKPKIiCI/NnfAviToiaITeumGb82Y1Rp3GqTen
-        X3XjaPVmvaRLQ8esV9ah1dlb01d4FWc=
-Received: from suse.cz (unknown [10.100.208.146])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 92C2F2C142;
-        Fri, 14 Jul 2023 09:41:27 +0000 (UTC)
-Date:   Fri, 14 Jul 2023 11:41:27 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     John Ogness <john.ogness@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH printk v2 2/5] printk: Add NMI safety to
- console_flush_on_panic() and console_unblank()
-Message-ID: <ZLEYR-eaZTWXO2Ld@alley>
-References: <20230710134524.25232-1-john.ogness@linutronix.de>
- <20230710134524.25232-3-john.ogness@linutronix.de>
- <ZK14p-ocWuuHkSAQ@alley>
- <878rbkrg16.fsf@jogness.linutronix.de>
- <ZLANiK_1YoBu1YpU@alley>
- <20230714040049.GA81525@google.com>
+        Fri, 14 Jul 2023 05:41:48 -0400
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84B0B1989
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 02:41:45 -0700 (PDT)
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-5700b15c12fso15885067b3.1
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 02:41:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689327704; x=1691919704;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PvsgLCUoUYBwVIo5eyZX62ki0sLhfFVAuP7bUgSk5YE=;
+        b=gwKKHPsZCo7N6OglpxMUJbxAZTCOag0hJmklAKjab9/G4nm/HNJ2nQ+3NzTLnOIVly
+         Wc8+TRkm9x3ZsAlptqePc2zZ+w3RMe3p7tmHh39l0lwtM3lIzpX0nFUyxSNvj9w25zoL
+         gUhd+z/6+8+Z0E8MVLZJWa8jmn3DU8G1+KP5YNHhjvaCGcjD+e6ItEIsqOI6aqauRbSa
+         BevSP5QABmnWVEhcX8y1gmxKKV381zNqKqVxm754UZlhv9l10hgn7n8YaBwc4/Mtfs+/
+         Z2bkIOkTOlLP82X7DRrY07SiiXtwelSuK+/5gW/XYlu+mEDWYpVgcgLDA21iJQR/yhpM
+         K7Hg==
+X-Gm-Message-State: ABy/qLakSu/k73VQgAVhy1JSPbd/PqQhc1+qlvvHNbQ0jCTc/dwvllCc
+        Fv2XPG8udUse3cSsD4NwGzC/GufoJjBvmMKe
+X-Google-Smtp-Source: APBJJlGh7nWS9Sbgo7su7PrGhtsrH075KFF8rrPk+nfLnIVQEv74f7JQS0wveMmBG9KVV+DYduu51A==
+X-Received: by 2002:a0d:c341:0:b0:562:1060:f2c9 with SMTP id f62-20020a0dc341000000b005621060f2c9mr4980883ywd.13.1689327704353;
+        Fri, 14 Jul 2023 02:41:44 -0700 (PDT)
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com. [209.85.219.178])
+        by smtp.gmail.com with ESMTPSA id j12-20020a81920c000000b0056d2a19ad91sm2200954ywg.103.2023.07.14.02.41.43
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 14 Jul 2023 02:41:43 -0700 (PDT)
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-cae693192d1so1632636276.1
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 02:41:43 -0700 (PDT)
+X-Received: by 2002:a25:b44:0:b0:bd7:545e:ab41 with SMTP id
+ 65-20020a250b44000000b00bd7545eab41mr3609366ybl.27.1689327702982; Fri, 14 Jul
+ 2023 02:41:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230714040049.GA81525@google.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,T_SPF_HELO_TEMPERROR,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <cover.1689252746.git.geert@linux-m68k.org> <54deec2ec533e90544faa8c60a0c2518c58f3e9c.1689252746.git.geert@linux-m68k.org>
+ <87r0pau99o.fsf@minerva.mail-host-address-is-not-set>
+In-Reply-To: <87r0pau99o.fsf@minerva.mail-host-address-is-not-set>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 14 Jul 2023 11:41:27 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVAXPqjSNGMrZQ2g8FNNL4f7PbdoUCi17g9YOdoqmjFpQ@mail.gmail.com>
+Message-ID: <CAMuHMdVAXPqjSNGMrZQ2g8FNNL4f7PbdoUCi17g9YOdoqmjFpQ@mail.gmail.com>
+Subject: Re: [PATCH 1/8] drm/ssd130x: Fix pitch calculation in ssd130x_fb_blit_rect()
+To:     Javier Martinez Canillas <javierm@redhat.com>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 2023-07-14 13:00:49, Sergey Senozhatsky wrote:
-> On (23/07/13 16:43), Petr Mladek wrote:
-> > 
-> > Simple removal of console_trylock() in console_flush_on_panic() would
-> > cause that other CPUs might still be able to take it and race.
-> > The problem is avoided by checking panic_in_progress() in console_lock()
-> > and console_trylock(). They will never succeed on non-panic CPUs.
-> > 
-> 
-> In theory, we also can have non-panic CPU in console_flush_all(),
-> which should let panic CPU to take over the next time it checks
-> abandon_console_lock_in_panic() (other_cpu_in_panic() after 5/5),
-> but it may not happen immediately. I wonder if we somehow can/want
-> to "wait" in console_flush_on_panic() for non-panic CPU handover?
+Hi Javier,
 
-Good point. It might actually be any console_lock() owner,
-including printk() on other CPU.
+On Fri, Jul 14, 2023 at 11:34 AM Javier Martinez Canillas
+<javierm@redhat.com> wrote:
+> Geert Uytterhoeven <geert@linux-m68k.org> writes:
+> > The page height must be taken into account only for vertical coordinates
+> > and heights, not for horizontal coordinates and widths.
+> >
+> > Fixes: 179a790aaf2a0127 ("drm/ssd130x: Set the page height value in the device info data")
+> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-I think that we might need to add some wait() as we did in the last
-attempt, see the commit b87f02307d3cfbda76852 ("printk: Wait for
-the global console lock when the system is going down").
+> > --- a/drivers/gpu/drm/solomon/ssd130x.c
+> > +++ b/drivers/gpu/drm/solomon/ssd130x.c
+> > @@ -596,7 +596,7 @@ static int ssd130x_fb_blit_rect(struct drm_framebuffer *fb, const struct iosys_m
+> >       rect->y1 = round_down(rect->y1, page_height);
+> >       rect->y2 = min_t(unsigned int, round_up(rect->y2, page_height), ssd130x->height);
+> >
+> > -     dst_pitch = DIV_ROUND_UP(drm_rect_width(rect), page_height);
+> > +     dst_pitch = DIV_ROUND_UP(drm_rect_width(rect), 8);
+> >
+>
+> That's true for ssd130x controllers that use R1, but when doing that
+> change one of my goals was to prepare the driver for supporting the
+> ssd132x family that use a 16-grayscale pixel format (R4).
+>
+> For those controllers, the pixels are encoded in 4-bit and each page
+> has two pixels. So for those controllers the dst_pitch will need to
+> be DIV_ROUND_UP(drm_rect_width(rect), 2) instead since the width is
+> not 8 in that case.
+>
+> So I would prefer to skip this patch from your set, because otherwise
+> we will need to revert it when adding support for SSD132x controllers.
 
-Anyway, it will be more important after introducing the kthreads.
-There is a non-trivial chance that they would block the lock.
-They might be busy when handling a message printed right before
-the panic() was called. At least, this is what I saw in the last
-attempt to introduce the kthreads.
+My point is that the 8 as used here is related to the number of bits per pixel,
+not to the page height.  The page height might also be impacted by the
+number of bits per pixel, but that is orthogonal.
 
-But maybe, it will be somehow hidden in the new atomic lock.
-It might be passed to a printk context with a higher priority
-and it uses some wait internally, see the waiting in the patch
-https://lore.kernel.org/all/20230302195618.156940-7-john.ogness@linutronix.de/
+Gr{oetje,eeting}s,
 
-Anyway, this patch does not make it worse. It just ignores the
-potential console_lock owner in console_flush_on_panic() another
-way.
+                        Geert
 
-Best Regards,
-Petr
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
