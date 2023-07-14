@@ -2,81 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18BCA753E37
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 16:56:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E54753E3A
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 16:57:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235526AbjGNO4h convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 14 Jul 2023 10:56:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33504 "EHLO
+        id S235400AbjGNO5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 10:57:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235908AbjGNO4e (ORCPT
+        with ESMTP id S236246AbjGNO5J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 10:56:34 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38A6F358C
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 07:56:21 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-249-MHkvfUD6Oua9lH8dct48VA-1; Fri, 14 Jul 2023 15:56:18 +0100
-X-MC-Unique: MHkvfUD6Oua9lH8dct48VA-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 14 Jul
- 2023 15:56:17 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Fri, 14 Jul 2023 15:56:17 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     "'hanyu001@208suo.com'" <hanyu001@208suo.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
-Subject: RE: [PATCH] scsi: snic: Convert snprintf to scnprintf
-Thread-Topic: [PATCH] scsi: snic: Convert snprintf to scnprintf
-Thread-Index: AQHZtKnxEf7Ym24Gz0mmUQRzpLpcvK+5XNpA
-Date:   Fri, 14 Jul 2023 14:56:17 +0000
-Message-ID: <7cd26b15c9214e7c9b5c76ad67cebb9e@AcuMS.aculab.com>
-References: <tencent_D20A645667548A8D5B1261D32ED4369FD70A@qq.com>
- <fe09ebd8774d05dc4038e640d7ddb2e4@208suo.com>
-In-Reply-To: <fe09ebd8774d05dc4038e640d7ddb2e4@208suo.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Fri, 14 Jul 2023 10:57:09 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75F22359F;
+        Fri, 14 Jul 2023 07:56:58 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2b83969d625so13571811fa.1;
+        Fri, 14 Jul 2023 07:56:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689346616; x=1691938616;
+        h=in-reply-to:from:references:to:content-language:subject:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4ZEmcmnPKVyQByO618jb6eb3a7gSnqqcu00C8M1jvmA=;
+        b=Dg1UJ8dYzY601p2JNpTJauqatYXYKV/p2+JqBL9TdFB4QKExv6C7QiHCdmMbbQJan0
+         HYLWG6lOAt64JbMWhjp8Lb+XljPa4cPtm9UgWIz5KZ3wuBruM8eiYZYWndvKj2LV7TL5
+         Vkoow1Rq/G8CzFCvBf7J8vrCDl3X1xQnj3rtKRYjXp+lj9+O5RlTFq22IrHbP01G2J+T
+         g1fgfOeerqZj1NAopQuz674FsDcuhRsl+lkc1vThmyUMb8t3yJE4swCJOYkt/BB5w9mx
+         FyvpqKk+TP2qhm34UlCWjUzFYk/u/QSOSG2t4kQME/mdiIYq7qNN5RnctF0EhefUIzkR
+         DOmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689346616; x=1691938616;
+        h=in-reply-to:from:references:to:content-language:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=4ZEmcmnPKVyQByO618jb6eb3a7gSnqqcu00C8M1jvmA=;
+        b=RmVhQs7/QYXKFiGvqNsclYNU4ZNi/IZwwhVk+5lBdz2lXaj3Kwy345bAs6PUd4SeSP
+         aFDm8ITXjVUkubWOH3x/FvCtYpprfAL5cQjUGxshUXuJVvBAjC1LHzjVEQrhD7xAzc5R
+         kjPBzYDfvNktD0g5gkS8DcT0432EBsWsrAyE5NvWdnw9Ait+8yJnEUkh/OT/WkKbGm0p
+         nYAK3aaZZtno5J7mhk2e27g5VA+Gxl+1zkIOH/p3qOyDh92VDL5W/FQePaKJP1h8zJq8
+         DSv3xAH6+nohJHfHDT7cWAyK+EKdvWOvDHRCT1lXnx/YDkCkJqjU59qqscevgJ0eb59S
+         z8hw==
+X-Gm-Message-State: ABy/qLYkT8JAxY13noyVbkz7D4i21144hpIERapanWeNIY7buWIX90P+
+        xdkU3973Y3WWbNZX12/k20mbhy1/6jJT+g==
+X-Google-Smtp-Source: APBJJlEf3KLRAD+1U56dLeqZJsyYvhjxdom7LDxUZFOUgLIIJm1m4YBnIjCqeBIAak0MFEiYeEx8Bw==
+X-Received: by 2002:a2e:b0ef:0:b0:2b6:eceb:9b8 with SMTP id h15-20020a2eb0ef000000b002b6eceb09b8mr1208719ljl.10.1689346616181;
+        Fri, 14 Jul 2023 07:56:56 -0700 (PDT)
+Received: from ?IPV6:2a00:1370:8180:6b00:a1a8:4887:1af4:637a? ([2a00:1370:8180:6b00:a1a8:4887:1af4:637a])
+        by smtp.gmail.com with ESMTPSA id j5-20020a2eb705000000b002a7746800d0sm2025273ljo.130.2023.07.14.07.56.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 14 Jul 2023 07:56:55 -0700 (PDT)
+Content-Type: multipart/mixed; boundary="------------WS1iwDWS0LHmbVFGzfdOwRnK"
+Message-ID: <9f0365cb-413f-2395-2219-748f77dd95a4@gmail.com>
+Date:   Fri, 14 Jul 2023 17:56:54 +0300
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [syzbot] [crypto?] KMSAN: uninit-value in af_alg_free_resources
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,PDS_BAD_THREAD_QP_64,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+To:     syzbot <syzbot+cba21d50095623218389@syzkaller.appspotmail.com>,
+        davem@davemloft.net, herbert@gondor.apana.org.au,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+References: <000000000000bde775060071a8d7@google.com>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+In-Reply-To: <000000000000bde775060071a8d7@google.com>
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: hanyu001@208suo.com
-> Sent: 12 July 2023 11:16
+This is a multi-part message in MIME format.
+--------------WS1iwDWS0LHmbVFGzfdOwRnK
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+
+Hi Syzbot,
+
+Syzbot <syzbot+cba21d50095623218389@syzkaller.appspotmail.com> says:
+> Hello,
 > 
-> Coccinelle reports a warning:
+> syzbot found the following issue on:
 > 
-> drivers/scsi/snic/snic_attrs.c:35: WARNING: use scnprintf or sprintf
-> drivers/scsi/snic/snic_attrs.c:48: WARNING: use scnprintf or sprintf
-> drivers/scsi/snic/snic_attrs.c:26: WARNING: use scnprintf or sprintf:
+> HEAD commit:    3f01e9fed845 Merge tag 'linux-watchdog-6.5-rc2' of git://w..
+> git tree:       upstream
+> console+strace: https://syzkaller.appspot.com/x/log.txt?x=14bac16aa80000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=1542573e31cfbec5
+> dashboard link: https://syzkaller.appspot.com/bug?extid=cba21d50095623218389
+> compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15dd215aa80000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14530318a80000
+> 
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/4f212a7e36fe/disk-3f01e9fe.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/de6b12daf908/vmlinux-3f01e9fe.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/2c1992ff2aaa/bzImage-3f01e9fe.xz
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+cba21d50095623218389@syzkaller.appspotmail.com
 
-The function you are looking for is (probably) sysfs_emit().
+#syz test
+git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 
-The PAGE_SIZE constant ought to be a good hint that neither
-sprintf, snprintf or scnprintf is actually right.
 
-	David
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
 
+
+With regards,
+Pavel Skripkin
+--------------WS1iwDWS0LHmbVFGzfdOwRnK
+Content-Type: text/plain; charset=UTF-8; name="ph1"
+Content-Disposition: attachment; filename="ph1"
+Content-Transfer-Encoding: base64
+
+ZGlmZiAtLWdpdCBhL2NyeXB0by9hZl9hbGcuYyBiL2NyeXB0by9hZl9hbGcuYwppbmRleCAw
+NmIxNWI5ZjY2MWMuLjRlNGYyZDgzNzQ4MSAxMDA2NDQKLS0tIGEvY3J5cHRvL2FmX2FsZy5j
+CisrKyBiL2NyeXB0by9hZl9hbGcuYwpAQCAtMTI0MSw2ICsxMjQxLDggQEAgaW50IGFmX2Fs
+Z19nZXRfcnNnbChzdHJ1Y3Qgc29jayAqc2ssIHN0cnVjdCBtc2doZHIgKm1zZywgaW50IGZs
+YWdzLAogCQkJCXJldHVybiAtRU5PTUVNOwogCQl9CiAKKwkJcnNnbC0+c2dsLm5lZWRfdW5w
+aW4gPSAwOworCiAJCXJzZ2wtPnNnbC5zZ3Quc2dsID0gcnNnbC0+c2dsLnNnbDsKIAkJcnNn
+bC0+c2dsLnNndC5uZW50cyA9IDA7CiAJCXJzZ2wtPnNnbC5zZ3Qub3JpZ19uZW50cyA9IDA7
+Cg==
+
+--------------WS1iwDWS0LHmbVFGzfdOwRnK--
