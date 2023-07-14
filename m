@@ -2,75 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43154753D2D
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 16:22:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C48C4753D2E
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 16:23:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235720AbjGNOWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 10:22:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39298 "EHLO
+        id S235487AbjGNOXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 10:23:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235407AbjGNOWp (ORCPT
+        with ESMTP id S234930AbjGNOXg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 10:22:45 -0400
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F18A02D57;
-        Fri, 14 Jul 2023 07:22:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689344564; x=1720880564;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=t8gi0W6VgdCgIQNzzU6F2i4utOg/7MiKkJKT13Uo8zk=;
-  b=j1XrNOao9zuwdvJgJBWh3T0dhh9F9o0mTRhiTXwr5oEX4dDt59Ibcczg
-   jxJbn7+a5BRXSa0cGN1wYPpwctDh8C/01wzaBnon7W65EVXAvshuGTTD1
-   mn6xLM6gOjCGOyvGrTNbLfETnx+ImlBiN+STYHW6F4l5G332Kdc0AkulL
-   TKF9qHxEuqExbUbq/oqH3sm5xz/qoZjubFUxLIikbfBa8yGxs67keoeSl
-   BJeJy7ue0iU9OqIVogP/OujPyWZNYTl4sKWBFa358ci+SG1Iq8MooYdly
-   KMONlPuxdKtV5g4ENI82tU65mXB2FN0PTvFUiwYckFj3aN3pJMnDmfDoQ
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10771"; a="431657590"
-X-IronPort-AV: E=Sophos;i="6.01,205,1684825200"; 
-   d="scan'208";a="431657590"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 07:22:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10771"; a="725721623"
-X-IronPort-AV: E=Sophos;i="6.01,205,1684825200"; 
-   d="scan'208";a="725721623"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga007.fm.intel.com with ESMTP; 14 Jul 2023 07:22:37 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 11E2B385; Fri, 14 Jul 2023 17:22:43 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        David Gow <davidgow@google.com>,
-        Daniel Latypov <dlatypov@google.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Steven Rostedt (Google)" <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-pci@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Brendan Higgins <brendan.higgins@linux.dev>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH v2 1/1] kernel.h: Split out COUNT_ARGS() and CONCATENATE() to args.h
-Date:   Fri, 14 Jul 2023 17:22:37 +0300
-Message-Id: <20230714142237.21836-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
+        Fri, 14 Jul 2023 10:23:36 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A509E1989
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 07:23:35 -0700 (PDT)
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36EEFmMo004203;
+        Fri, 14 Jul 2023 14:23:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : in-reply-to : references : message-id : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=qDUC/BWDvdnxDGxf/kA3D9poCce32j4DyQ9kk0eF81I=;
+ b=g5GHfmfKX8in0UV980DT0nbAqzoFB+QFSdvsGLYmilXLzsDmmaS4zi8WnzRl3oqq1AOC
+ hvOvSHtB/g3yLV5Jg+YRUunxoCu04TlYoMoYiiwnaOm8nP8mHBMmSNZkHAJeQ8mEd+++
+ 99MYLtLztX3feSRdxo+ePySu34s5yL8KTjljS8mtJvqNq4NfyRNjBKz03TMbLGRVSMJc
+ q3pgevbsH9TNi+KKoW4OGow5tfxTSfMMWwpOd8rRV+78wQj5882KUt6jhL7im+hXuBMB
+ +j41jHc9mVfhm3tf/4Ja0Ix2yTfbHdr9e1M3lhEqYxV415HgyCPA6rA7dMCgyfILDb6C CQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ru76d1ve5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 14 Jul 2023 14:23:01 +0000
+Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36EEF8SA001855;
+        Fri, 14 Jul 2023 14:23:00 GMT
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ru76d1vd5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 14 Jul 2023 14:23:00 +0000
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36EDwTnv008407;
+        Fri, 14 Jul 2023 14:22:59 GMT
+Received: from smtprelay02.wdc07v.mail.ibm.com ([9.208.129.120])
+        by ppma04dal.us.ibm.com (PPS) with ESMTPS id 3rtq33pa4c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 14 Jul 2023 14:22:59 +0000
+Received: from smtpav04.dal12v.mail.ibm.com (smtpav04.dal12v.mail.ibm.com [10.241.53.103])
+        by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36EEMvqA64618852
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 14 Jul 2023 14:22:57 GMT
+Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 73F6D58056;
+        Fri, 14 Jul 2023 14:22:57 +0000 (GMT)
+Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 608EF58052;
+        Fri, 14 Jul 2023 14:22:56 +0000 (GMT)
+Received: from ltc.linux.ibm.com (unknown [9.5.196.140])
+        by smtpav04.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Fri, 14 Jul 2023 14:22:56 +0000 (GMT)
+Date:   Fri, 14 Jul 2023 16:22:56 +0200
+From:   Tobias Huschle <huschle@linux.ibm.com>
+To:     Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+Cc:     Tim Chen <tim.c.chen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Ricardo Neri <ricardo.neri@intel.com>,
+        "Ravi V . Shankar" <ravi.v.shankar@intel.com>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Len Brown <len.brown@intel.com>, Mel Gorman <mgorman@suse.de>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Ionela Voinescu <ionela.voinescu@arm.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        naveen.n.rao@linux.vnet.ibm.com,
+        Yicong Yang <yangyicong@hisilicon.com>,
+        Barry Song <v-songbaohua@oppo.com>,
+        Chen Yu <yu.c.chen@intel.com>, Hillf Danton <hdanton@sina.com>
+Subject: Re: [Patch v3 3/6] sched/fair: Implement prefer sibling imbalance
+ calculation between asymmetric groups
+In-Reply-To: <c5a49136-3549-badd-ec8f-3de4e7bb7b7d@linux.vnet.ibm.com>
+References: <cover.1688770494.git.tim.c.chen@linux.intel.com>
+ <4eacbaa236e680687dae2958378a6173654113df.1688770494.git.tim.c.chen@linux.intel.com>
+ <c5a49136-3549-badd-ec8f-3de4e7bb7b7d@linux.vnet.ibm.com>
+Message-ID: <b119d88384584e603056cec942c47e14@linux.ibm.com>
+X-Sender: huschle@linux.ibm.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: x4fP2Kbm7SmaVyZtr8AWSdnategrfnV9
+X-Proofpoint-ORIG-GUID: PrBxZ7kOq7lnNk58PuxeO1m-HPFztuda
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-14_06,2023-07-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
+ adultscore=0 impostorscore=0 mlxscore=0 mlxlogscore=999 clxscore=1011
+ bulkscore=0 phishscore=0 priorityscore=1501 spamscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
+ definitions=main-2307140128
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,246 +116,140 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kernel.h is being used as a dump for all kinds of stuff for a long time.
-The COUNT_ARGS() and CONCATENATE() macros may be used in some places
-without need of the full kernel.h dependency train with it.
+On 2023-07-14 15:14, Shrikanth Hegde wrote:
+> On 7/8/23 4:27 AM, Tim Chen wrote:
+>> From: Tim C Chen <tim.c.chen@linux.intel.com>
+>> 
+>> In the current prefer sibling load balancing code, there is an 
+>> implicit
+>> assumption that the busiest sched group and local sched group are
+>> equivalent, hence the tasks to be moved is simply the difference in
+>> number of tasks between the two groups (i.e. imbalance) divided by 
+>> two.
+>> 
+>> However, we may have different number of cores between the cluster 
+>> groups,
+>> say when we take CPU offline or we have hybrid groups.  In that case,
+>> we should balance between the two groups such that #tasks/#cores ratio
+>> is the same between the same between both groups.  Hence the imbalance
+> 
+> nit: type here. the same between is repeated.
+> 
+>> computed will need to reflect this.
+>> 
+>> Adjust the sibling imbalance computation to take into account of the
+>> above considerations.
+>> 
+>> Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
+>> ---
+>>  kernel/sched/fair.c | 41 +++++++++++++++++++++++++++++++++++++----
+>>  1 file changed, 37 insertions(+), 4 deletions(-)
+>> 
+>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+>> index f636d6c09dc6..f491b94908bf 100644
+>> --- a/kernel/sched/fair.c
+>> +++ b/kernel/sched/fair.c
+>> @@ -9372,6 +9372,41 @@ static inline bool smt_balance(struct lb_env 
+>> *env, struct sg_lb_stats *sgs,
+>>  	return false;
+>>  }
+>> 
+>> +static inline long sibling_imbalance(struct lb_env *env,
+>> +				    struct sd_lb_stats *sds,
+>> +				    struct sg_lb_stats *busiest,
+>> +				    struct sg_lb_stats *local)
+>> +{
+>> +	int ncores_busiest, ncores_local;
+>> +	long imbalance;
+> 
+> can imbalance be unsigned int or unsigned long? as sum_nr_running is
+> unsigned int.
+> 
+>> +
+>> +	if (env->idle == CPU_NOT_IDLE || !busiest->sum_nr_running)
+>> +		return 0;
+>> +
+>> +	ncores_busiest = sds->busiest->cores;
+>> +	ncores_local = sds->local->cores;
+>> +
+>> +	if (ncores_busiest == ncores_local) {
+>> +		imbalance = busiest->sum_nr_running;
+>> +		lsub_positive(&imbalance, local->sum_nr_running);
+>> +		return imbalance;
+>> +	}
+>> +
+>> +	/* Balance such that nr_running/ncores ratio are same on both groups 
+>> */
+>> +	imbalance = ncores_local * busiest->sum_nr_running;
+>> +	lsub_positive(&imbalance, ncores_busiest * local->sum_nr_running);
+>> +	/* Normalize imbalance and do rounding on normalization */
+>> +	imbalance = 2 * imbalance + ncores_local + ncores_busiest;
+>> +	imbalance /= ncores_local + ncores_busiest;
+>> +
+> 
+> Could this work for case where number of CPU/cores would differ
+> between two sched groups in a sched domain? Such as problem pointed
+> by tobias on S390. It would be nice if this patch can work for that 
+> case
+> as well. Ran numbers for a few cases. It looks to work.
+> https://lore.kernel.org/lkml/20230704134024.GV4253@hirez.programming.kicks-ass.net/T/#rb0a7dcd28532cafc24101e1d0aed79e6342e3901
+> 
 
-Here is the attempt on cleaning it up by splitting out these macros().
 
-While at it, include new header where it's being used and drop custom
-implementation of these macros and document how it works.
+Just stumbled upon this patch series as well. In this version it looks
+similar to the prototypes I played around with, but more complete.
+So I'm happy that my understanding of the load balancer was kinda 
+correct :)
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
-v2: converted existing users at the same time, documented (Andrew, Rasmus)
- arch/x86/include/asm/rmwcc.h      | 11 +++--------
- include/kunit/test.h              |  1 +
- include/linux/args.h              | 28 ++++++++++++++++++++++++++++
- include/linux/arm-smccc.h         | 27 ++++++++++-----------------
- include/linux/genl_magic_struct.h |  8 +++-----
- include/linux/kernel.h            |  7 -------
- include/linux/pci.h               |  2 +-
- include/trace/bpf_probe.h         |  2 ++
- 8 files changed, 48 insertions(+), 38 deletions(-)
- create mode 100644 include/linux/args.h
+ From a functional perspective this appears to address the issues we saw 
+on s390.
 
-diff --git a/arch/x86/include/asm/rmwcc.h b/arch/x86/include/asm/rmwcc.h
-index 7fa611216417..4b081e0d3306 100644
---- a/arch/x86/include/asm/rmwcc.h
-+++ b/arch/x86/include/asm/rmwcc.h
-@@ -2,12 +2,7 @@
- #ifndef _ASM_X86_RMWcc
- #define _ASM_X86_RMWcc
- 
--/* This counts to 12. Any more, it will return 13th argument. */
--#define __RMWcc_ARGS(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _n, X...) _n
--#define RMWcc_ARGS(X...) __RMWcc_ARGS(, ##X, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
--
--#define __RMWcc_CONCAT(a, b) a ## b
--#define RMWcc_CONCAT(a, b) __RMWcc_CONCAT(a, b)
-+#include <linux/args.h>
- 
- #define __CLOBBERS_MEM(clb...)	"memory", ## clb
- 
-@@ -48,7 +43,7 @@ cc_label:	c = true;						\
- #define GEN_UNARY_RMWcc_3(op, var, cc)					\
- 	GEN_UNARY_RMWcc_4(op, var, cc, "%[var]")
- 
--#define GEN_UNARY_RMWcc(X...) RMWcc_CONCAT(GEN_UNARY_RMWcc_, RMWcc_ARGS(X))(X)
-+#define GEN_UNARY_RMWcc(X...)	CONCATENATE(GEN_UNARY_RMWcc_, COUNT_ARGS(X))(X)
- 
- #define GEN_BINARY_RMWcc_6(op, var, cc, vcon, _val, arg0)		\
- 	__GEN_RMWcc(op " %[val], " arg0, var, cc,			\
-@@ -57,7 +52,7 @@ cc_label:	c = true;						\
- #define GEN_BINARY_RMWcc_5(op, var, cc, vcon, val)			\
- 	GEN_BINARY_RMWcc_6(op, var, cc, vcon, val, "%[var]")
- 
--#define GEN_BINARY_RMWcc(X...) RMWcc_CONCAT(GEN_BINARY_RMWcc_, RMWcc_ARGS(X))(X)
-+#define GEN_BINARY_RMWcc(X...)	CONCATENATE(GEN_BINARY_RMWcc_, COUNT_ARGS(X))(X)
- 
- #define GEN_UNARY_SUFFIXED_RMWcc(op, suffix, var, cc, clobbers...)	\
- 	__GEN_RMWcc(op " %[var]\n\t" suffix, var, cc,			\
-diff --git a/include/kunit/test.h b/include/kunit/test.h
-index 23120d50499e..107c81431634 100644
---- a/include/kunit/test.h
-+++ b/include/kunit/test.h
-@@ -12,6 +12,7 @@
- #include <kunit/assert.h>
- #include <kunit/try-catch.h>
- 
-+#include <linux/args.h>
- #include <linux/compiler.h>
- #include <linux/container_of.h>
- #include <linux/err.h>
-diff --git a/include/linux/args.h b/include/linux/args.h
-new file mode 100644
-index 000000000000..8ff60a54eb7d
---- /dev/null
-+++ b/include/linux/args.h
-@@ -0,0 +1,28 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#ifndef _LINUX_ARGS_H
-+#define _LINUX_ARGS_H
-+
-+/*
-+ * How do these macros work?
-+ *
-+ * In __COUNT_ARGS() _0 to _12 are just placeholders from the start
-+ * in order to make sure _n is positioned over the correct number
-+ * from 12 to 0 (depending on X, which is a variadic argument list).
-+ * They serve no purpose other than occupying a position. Since each
-+ * macro parameter must have a distinct identifier, those identifiers
-+ * are as good as any.
-+ *
-+ * In COUNT_ARGS() we use actual integers, so __COUNT_ARGS() returns
-+ * that as _n.
-+ */
-+
-+/* This counts to 12. Any more, it will return 13th argument. */
-+#define __COUNT_ARGS(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _n, X...) _n
-+#define COUNT_ARGS(X...) __COUNT_ARGS(, ##X, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
-+
-+/* Concatenate two parameters, but allow them to be expanded beforehand. */
-+#define __CONCAT(a, b) a ## b
-+#define CONCATENATE(a, b) __CONCAT(a, b)
-+
-+#endif	/* _LINUX_ARGS_H */
-diff --git a/include/linux/arm-smccc.h b/include/linux/arm-smccc.h
-index f196c19f8e55..2865b14c2bba 100644
---- a/include/linux/arm-smccc.h
-+++ b/include/linux/arm-smccc.h
-@@ -5,6 +5,7 @@
- #ifndef __LINUX_ARM_SMCCC_H
- #define __LINUX_ARM_SMCCC_H
- 
-+#include <linux/args.h>
- #include <linux/init.h>
- #include <uapi/linux/const.h>
- 
-@@ -413,11 +414,6 @@ asmlinkage void __arm_smccc_hvc(unsigned long a0, unsigned long a1,
- 
- #endif
- 
--#define ___count_args(_0, _1, _2, _3, _4, _5, _6, _7, _8, x, ...) x
--
--#define __count_args(...)						\
--	___count_args(__VA_ARGS__, 7, 6, 5, 4, 3, 2, 1, 0)
--
- #define __constraint_read_0	"r" (arg0)
- #define __constraint_read_1	__constraint_read_0, "r" (arg1)
- #define __constraint_read_2	__constraint_read_1, "r" (arg2)
-@@ -475,14 +471,6 @@ asmlinkage void __arm_smccc_hvc(unsigned long a0, unsigned long a1,
- 	__declare_arg_6(a0, a1, a2, a3, a4, a5, a6, res);		\
- 	register typeof(a7) arg7 asm("r7") = __a7
- 
--#define ___declare_args(count, ...) __declare_arg_ ## count(__VA_ARGS__)
--#define __declare_args(count, ...)  ___declare_args(count, __VA_ARGS__)
--
--#define ___constraints(count)						\
--	: __constraint_read_ ## count					\
--	: smccc_sve_clobbers "memory"
--#define __constraints(count)	___constraints(count)
--
- /*
-  * We have an output list that is not necessarily used, and GCC feels
-  * entitled to optimise the whole sequence away. "volatile" is what
-@@ -494,11 +482,13 @@ asmlinkage void __arm_smccc_hvc(unsigned long a0, unsigned long a1,
- 		register unsigned long r1 asm("r1");			\
- 		register unsigned long r2 asm("r2");			\
- 		register unsigned long r3 asm("r3"); 			\
--		__declare_args(__count_args(__VA_ARGS__), __VA_ARGS__);	\
-+		CONCATENATE(__declare_arg_, COUNT_ARGS(__VA_ARGS__));	\
- 		asm volatile(SMCCC_SVE_CHECK				\
- 			     inst "\n" :				\
- 			     "=r" (r0), "=r" (r1), "=r" (r2), "=r" (r3)	\
--			     __constraints(__count_args(__VA_ARGS__)));	\
-+			     : CONCATENATE(__constraint_read_,		\
-+					   COUNT_ARGS(__VA_ARGS__))	\
-+			     : smccc_sve_clobbers "memory");		\
- 		if (___res)						\
- 			*___res = (typeof(*___res)){r0, r1, r2, r3};	\
- 	} while (0)
-@@ -542,8 +532,11 @@ asmlinkage void __arm_smccc_hvc(unsigned long a0, unsigned long a1,
-  */
- #define __fail_smccc_1_1(...)						\
- 	do {								\
--		__declare_args(__count_args(__VA_ARGS__), __VA_ARGS__);	\
--		asm ("" : __constraints(__count_args(__VA_ARGS__)));	\
-+		CONCATENATE(__declare_arg_, COUNT_ARGS(__VA_ARGS__));	\
-+		asm ("" :						\
-+		     : CONCATENATE(__constraint_read_,			\
-+				   COUNT_ARGS(__VA_ARGS__))		\
-+		     : smccc_sve_clobbers "memory");			\
- 		if (___res)						\
- 			___res->a0 = SMCCC_RET_NOT_SUPPORTED;		\
- 	} while (0)
-diff --git a/include/linux/genl_magic_struct.h b/include/linux/genl_magic_struct.h
-index f81d48987528..a419d93789ff 100644
---- a/include/linux/genl_magic_struct.h
-+++ b/include/linux/genl_magic_struct.h
-@@ -14,14 +14,12 @@
- # error "you need to define GENL_MAGIC_INCLUDE_FILE before inclusion"
- #endif
- 
-+#include <linux/args.h>
- #include <linux/genetlink.h>
- #include <linux/types.h>
- 
--#define CONCAT__(a,b)	a ## b
--#define CONCAT_(a,b)	CONCAT__(a,b)
--
--extern int CONCAT_(GENL_MAGIC_FAMILY, _genl_register)(void);
--extern void CONCAT_(GENL_MAGIC_FAMILY, _genl_unregister)(void);
-+extern int CONCATENATE(GENL_MAGIC_FAMILY, _genl_register)(void);
-+extern void CONCATENATE(GENL_MAGIC_FAMILY, _genl_unregister)(void);
- 
- /*
-  * Extension of genl attribute validation policies			{{{2
-diff --git a/include/linux/kernel.h b/include/linux/kernel.h
-index 0b00e1aef33d..15d9496db169 100644
---- a/include/linux/kernel.h
-+++ b/include/linux/kernel.h
-@@ -419,13 +419,6 @@ ftrace_vprintk(const char *fmt, va_list ap)
- static inline void ftrace_dump(enum ftrace_dump_mode oops_dump_mode) { }
- #endif /* CONFIG_TRACING */
- 
--/* This counts to 12. Any more, it will return 13th argument. */
--#define __COUNT_ARGS(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _n, X...) _n
--#define COUNT_ARGS(X...) __COUNT_ARGS(, ##X, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
--
--#define __CONCAT(a, b) a ## b
--#define CONCATENATE(a, b) __CONCAT(a, b)
--
- /* Rebuild everything on CONFIG_FTRACE_MCOUNT_RECORD */
- #ifdef CONFIG_FTRACE_MCOUNT_RECORD
- # define REBUILD_DUE_TO_FTRACE_MCOUNT_RECORD
-diff --git a/include/linux/pci.h b/include/linux/pci.h
-index 0ff7500772e6..eeb2e6f6130f 100644
---- a/include/linux/pci.h
-+++ b/include/linux/pci.h
-@@ -23,7 +23,7 @@
- #ifndef LINUX_PCI_H
- #define LINUX_PCI_H
- 
--
-+#include <linux/args.h>
- #include <linux/mod_devicetable.h>
- 
- #include <linux/types.h>
-diff --git a/include/trace/bpf_probe.h b/include/trace/bpf_probe.h
-index 1f7fc1fc590c..e609cd7da47e 100644
---- a/include/trace/bpf_probe.h
-+++ b/include/trace/bpf_probe.h
-@@ -12,6 +12,8 @@
- #undef __perf_task
- #define __perf_task(t)	(t)
- 
-+#include <linux/args.h>
-+
- /* cast any integer, pointer, or small struct to u64 */
- #define UINTTYPE(size) \
- 	__typeof__(__builtin_choose_expr(size == 1,  (u8)1, \
--- 
-2.40.0.1.gaa8946217a0b
-
+> 
+> 
+>> +	/* Take advantage of resource in an empty sched group */
+>> +	if (imbalance == 0 && local->sum_nr_running == 0 &&
+>> +	    busiest->sum_nr_running > 1)
+>> +		imbalance = 2;
+>> +
+> 
+> I don't see how this case would be true. When there are unequal number
+> of cores and local->sum_nr_ruuning
+> is 0, and busiest->sum_nr_running is atleast 2, imbalance will be 
+> atleast 1.
+> 
+> 
+> Reviewed-by: Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+> 
+>> +	return imbalance;
+>> +}
+>> +
+>>  static inline bool
+>>  sched_reduced_capacity(struct rq *rq, struct sched_domain *sd)
+>>  {
+>> @@ -10230,14 +10265,12 @@ static inline void 
+>> calculate_imbalance(struct lb_env *env, struct sd_lb_stats *s
+>>  		}
+>> 
+>>  		if (busiest->group_weight == 1 || sds->prefer_sibling) {
+>> -			unsigned int nr_diff = busiest->sum_nr_running;
+>>  			/*
+>>  			 * When prefer sibling, evenly spread running tasks on
+>>  			 * groups.
+>>  			 */
+>>  			env->migration_type = migrate_task;
+>> -			lsub_positive(&nr_diff, local->sum_nr_running);
+>> -			env->imbalance = nr_diff;
+>> +			env->imbalance = sibling_imbalance(env, sds, busiest, local);
+>>  		} else {
+>> 
+>>  			/*
+>> @@ -10424,7 +10457,7 @@ static struct sched_group 
+>> *find_busiest_group(struct lb_env *env)
+>>  	 * group's child domain.
+>>  	 */
+>>  	if (sds.prefer_sibling && local->group_type == group_has_spare &&
+>> -	    busiest->sum_nr_running > local->sum_nr_running + 1)
+>> +	    sibling_imbalance(env, &sds, busiest, local) > 1)
+>>  		goto force_balance;
+>> 
+>>  	if (busiest->group_type != group_overloaded) {
