@@ -2,177 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3CEF753D80
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 16:33:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4445753D85
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 16:33:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235868AbjGNOdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 10:33:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46556 "EHLO
+        id S235976AbjGNOd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 10:33:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235460AbjGNOdD (ORCPT
+        with ESMTP id S235918AbjGNOdZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 10:33:03 -0400
-Received: from mx08-00376f01.pphosted.com (mx08-00376f01.pphosted.com [91.207.212.86])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 679BC35B7
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 07:32:09 -0700 (PDT)
-Received: from pps.filterd (m0168888.ppops.net [127.0.0.1])
-        by mx08-00376f01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 36ECVfNx003176;
-        Fri, 14 Jul 2023 15:30:46 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=imgtec.com; h=
-        from:to:cc:subject:date:message-id:content-transfer-encoding
-        :content-type:mime-version; s=dk201812; bh=jIpBcKM9SkvEMFV+nVff0
-        E5FaQZxh7jpAXOjfxrjU3k=; b=txRjPy7EQgqCMru9D/9FihB9TaGg3Y4UbndW+
-        kEWRVOO2tMy/xTPaT9BUwiF2JA24aw9rFy26Gkb8ydVj/JF5pYN0LIcYAM473FQe
-        XsGMAyShe3RB3llw6SXlG4+Dgz11Z9yX41oaLQZG1GZREDv1WKNIKuhvMt0ztspw
-        hNFpxRZ42SHN1dhkyPMb0skXeE+5LfvKZWSiYruIYhUi0JRLDRlGvulgKiCLzbab
-        bUJeqCxI8BfDJNu2f4Q2lxYoA16I/8t1G7zs/AWyFgvfjGJ9NhWXZCQP2Xu62KyZ
-        bTeRMtbhJW8OqbtabFWBI8HAwuFT9qkwuEJWRZtL70aWXk/bw==
-Received: from hhmail04.hh.imgtec.org ([217.156.249.195])
-        by mx08-00376f01.pphosted.com (PPS) with ESMTPS id 3rtpu80m95-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 14 Jul 2023 15:30:46 +0100 (BST)
-Received: from HHMAIL05.hh.imgtec.org (10.100.10.120) by
- HHMAIL04.hh.imgtec.org (10.100.10.119) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 14 Jul 2023 15:30:45 +0100
-Received: from GBR01-CWX-obe.outbound.protection.outlook.com (104.47.85.49) by
- email.imgtec.com (10.100.10.121) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27 via Frontend
- Transport; Fri, 14 Jul 2023 15:30:45 +0100
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=U1oN+KM1swfQsL8V63ZhrGzgojlKW38RaLVyDhrP8dN9Brq47foGzPlp+UrvjL+CgG9nePJFxkton5/q3dyJcIcueQxgmGMEYQSmEm2OgMo2tnnEjKLCI1kwzD/3JXjofr7TA76/Orsve66Fxdpm5mq2YekLKBYB8F4aAoEx0AA3eV4SGM2JsOTowG/CfuNdvJiZXpajFEQgIZpt3Z/FQsf7jbD+1YYt1y3EKFM23iYf51xMXs01m+pD4c8g7O74YvY9AD376rJtpULeq447tEEF2mfwma7L9UQv6kPKVFiq1v6kNDYNT5Wf0E8QhwRetFcyTcbGUbw1TPz6S5H7ZA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jIpBcKM9SkvEMFV+nVff0E5FaQZxh7jpAXOjfxrjU3k=;
- b=EprWLM4WgcGOeYeZ3T5RG/bjzfovpxluuxsTcZxMzQgkN+73KQfqgQVn5O9izQJYzw4T1q8w0qPVdG9YTjLsP2mbEctu5zd1wnRh4fmBlmO3dJ+fbx7+g0aw5TEWxqOiT4vec6tmLxhCe0XOUZSkvFw0O7znWegVcAb0stGgPlkLUCNNwaV1QYQwGzAMiWejpn0716fjdNgZY9e3GNZJKG8rnElKw8LIcc1M+3aAYocRHYQsAG1p4NuPyiHBJEkfJYDxZq8smC7W5i0yqNZHJDIlXxRXw4xsZnrEPAQaMlG6MSMHcT3WwCl6Db0XTQl1jQzuNn77uzJ+6LAR9aJQmg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=imgtec.com; dmarc=pass action=none header.from=imgtec.com;
- dkim=pass header.d=imgtec.com; arc=none
+        Fri, 14 Jul 2023 10:33:25 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E374235A9
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 07:32:37 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-4fba03becc6so3993978e87.0
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 07:32:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=IMGTecCRM.onmicrosoft.com; s=selector2-IMGTecCRM-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jIpBcKM9SkvEMFV+nVff0E5FaQZxh7jpAXOjfxrjU3k=;
- b=eK0Id8+9sc1ep4W26qKpf1RgIxLzWW3u061W5PgFQbjPk1i5Jz6OtzMDnSncVKzscQnVCBWYLevfaRc0p9xHgGWWatvtsPp+BU2eFOY+7lvNWzdf8rtSEw0n4Q3qcfv/8btkifZgJQ9fev/lBWa3+ALSdcSgP0AA9+1O9v/1wWU=
-Received: from CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:170::9)
- by LO4P265MB6853.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:34b::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.27; Fri, 14 Jul
- 2023 14:30:43 +0000
-Received: from CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM
- ([fe80::f042:5122:eb28:4131]) by CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM
- ([fe80::f042:5122:eb28:4131%5]) with mapi id 15.20.6588.027; Fri, 14 Jul 2023
- 14:30:43 +0000
-From:   Sarah Walker <sarah.walker@imgtec.com>
-To:     <dri-devel@lists.freedesktop.org>
-CC:     <frank.binns@imgtec.com>, <donald.robson@imgtec.com>,
-        <boris.brezillon@collabora.com>, <faith.ekstrand@collabora.com>,
-        <airlied@gmail.com>, <daniel@ffwll.ch>,
-        <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
-        <tzimmermann@suse.de>, <afd@ti.com>, <hns@goldelico.com>,
-        <matthew.brost@intel.com>, <christian.koenig@amd.com>,
-        <luben.tuikov@amd.com>, <dakr@redhat.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v4 17/17] arm64: dts: ti: k3-am62-main: Add GPU device node [DO NOT MERGE]
-Date:   Fri, 14 Jul 2023 15:30:33 +0100
-Message-Id: <20230714143033.112624-1-sarah.walker@imgtec.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: LO2P123CA0009.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:a6::21) To CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:400:170::9)
+        d=linaro.org; s=google; t=1689345152; x=1691937152;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=s1NAGJKSZNME/ufDdSZLdTSg+2nkMD1y8BbgNjzMbFc=;
+        b=aTOWcE1zHEq2JiQ2evcaK1j562NOcJxwlxyiM1wNh/nY/Aq3L7Kycdk5ueWoDrY6Z4
+         WNqOV1tx/tunxBW1wRzGZeajlyCW1Cuc9Gw6Ll1W95Yp9GVUdtRz4iIVv/UJUEU3nu3f
+         5qA5PquwRg6IBJ8fQ/327K1Y35FQDfrXVssEDy02pgn4o1QNnBr7OoCUzW0Z8S3vQZax
+         fawycB+sRbWj28D3bzKIMzLtsbHlZsMKnTp+GKPjguOMJ3GlxEz+vBE2/ofv/o/sROxf
+         WJAkYp7SG7mKssOzZvcGFq+VycZu4jCOyiJ4YtcoqMwG2mVyocJJEEGMNTk78OMe55UC
+         74kA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689345152; x=1691937152;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=s1NAGJKSZNME/ufDdSZLdTSg+2nkMD1y8BbgNjzMbFc=;
+        b=e2ed3KFxs30DraI5fpHhYbaRhFhG4utrkZ0VonuEbHsHO/HiYA0jdXYDwD1FJgn2er
+         CBx1OQBIcHmZ3mloah1w+8/fR63eG+qQQ1HLCI8XsqsOg5s/eaWA+FQCf8EzHbfBo+Hw
+         CvJW4PGwy/MMNX7mYmkzFQ5Feyr9V0OjGtN8gL2thlW/jxFbER4aQmnfIrKHya4mzQDc
+         23syzjP6wMKvcg9yw4/zxUi5FZXPA59YdnmAa7c8wxi8dIEdVSh5lRfVRZwn6xgJOvca
+         YyiTG2ijBrYcb5snAoPCqH7x6ypS40j9lF+NPp6i2NWIxKWpqE4JxZx71zE02Bx/g356
+         tySA==
+X-Gm-Message-State: ABy/qLb8kq5o6WHV4H98fV3IZgxoaHZjjyw0y3rFhQs+s188xAgj/GwJ
+        xALc/CalujbfWw6Rx+LiQDdaTw==
+X-Google-Smtp-Source: APBJJlGtbkPxQHR9k71996y+hIr9CmSCiybVaqnnmBBjO1lkXWyFmx/JesUalIfC2HQ1ymc4p5D39g==
+X-Received: by 2002:a05:6512:202d:b0:4f8:6253:540 with SMTP id s13-20020a056512202d00b004f862530540mr1005744lfs.19.1689345152563;
+        Fri, 14 Jul 2023 07:32:32 -0700 (PDT)
+Received: from [192.168.1.101] (abxj146.neoplus.adsl.tpnet.pl. [83.9.3.146])
+        by smtp.gmail.com with ESMTPSA id d28-20020ac244dc000000b004fba1288ab9sm1518364lfm.99.2023.07.14.07.32.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 14 Jul 2023 07:32:31 -0700 (PDT)
+Message-ID: <ebfbfdf5-2537-e3ce-8416-d80a9bd862d1@linaro.org>
+Date:   Fri, 14 Jul 2023 16:32:30 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CWLP265MB4817:EE_|LO4P265MB6853:EE_
-X-MS-Office365-Filtering-Correlation-Id: e8ba3b6c-e6d2-4138-20ad-08db8476e7d0
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ZgLcQ71J99bTrCZHzUieF9TH2rUL57d9huQnHuDolSPeHRaS2SCVq+1uUnGLwtLCUCYgIUYtnaoYLIAqRLN/g5F0JYqAjBNhrhKUmpnZBDxTM0h7C64IEp83lBvttV7CRRu46GV8QqIykParNXMIaOnRwkRNoz5ClPsGq5Q9dy4Q3FWTuAdyURMNTE87SdqhEIrfGvmHlctBuXFtEx2dnyZ6GkYE2faH8ljaeqkGUqRnt/unV7BGmQ6Lpk+Yz0EkTdBJ/ld7zG+aVsWyhniQLFGscLct/fPrEMGZ/TD+yt9xTtVcmehE408YNIjBdzZHl9MYnZbQIWP7ipv90YGj+HXTvhP3eN5spyLZCJA/oRRaPtulDwBk9tNZNH616tXAB3++e8Og3jhPDDi3M2OsdfccO+LAJWJjy9EkC3BOHKdJPFf3Nd4RM8n3FRzCkGEDAHDF9YUxfq1kbZtPbR4uA+K+h6mrt49KGf+fWRflarwAhCb/FCNFPL5z9aQ1adAlPVCe96Y/v3wzVsqoWJHB06OA01AqZDmqYot48wCTe5gO2bmrs4TuwEpoANOGDt5JGmbHBy8Zz1Sev9n+ITiojoYuJk2o0rxS2uZEZDTKxyP+biQmurQHQJFPdKmijYBh
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230028)(376002)(346002)(136003)(366004)(39850400004)(396003)(451199021)(41300700001)(44832011)(66476007)(7416002)(4326008)(66946007)(66556008)(6916009)(478600001)(4744005)(5660300002)(2906002)(8936002)(8676002)(316002)(6666004)(6486002)(52116002)(6512007)(26005)(1076003)(6506007)(86362001)(186003)(83380400001)(36756003)(38350700002)(2616005)(38100700002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?67XNNJXxLZIk+cJ6gRbyNjApuixfbegz+cschRFtsFvrIM+1aDMZ8g8C0lGg?=
- =?us-ascii?Q?FTOcYf+pwZTgL9HgA10Z71IaezxKX8ZYfq10qS5iXCnhalGRoXTW6veM3Dil?=
- =?us-ascii?Q?PZRkhrufXT5Bku0dNe6JrqjFJwSlh8ZKMur5IK0SzkZC7vK8aFksGDgdTbNP?=
- =?us-ascii?Q?4QxQcHLJzy/JGrc/xMrQDgbKKhkKjj2fGNRtJPo+fF0eHmxyOrJlzBaxv27G?=
- =?us-ascii?Q?pS1jLxNcA4vcrBF2ak8mh3Vw1FkqyIK2tgk1T7NOtei8ukCziL1OQ88n8VMQ?=
- =?us-ascii?Q?v7OOfpAAvXfGTlFx9jNj5LR6/tpmHQxwb3jJYqGb3usIuoLS02pJEXgaNQ8+?=
- =?us-ascii?Q?HbyPg0jZ8kDzfd+AfRtB2ChG/mGjhjoIdeWrxHfTjO3KGF2DXfpB88dOihOr?=
- =?us-ascii?Q?WOm0In/ZFPaGBQPqD8H5DjBDN8Ka/vfMKGZECQ6VJR/A0tm6VKNaRfsI2RQ3?=
- =?us-ascii?Q?lV2DKZubfo7iXKlcoIzvkitMUnFv/LCHWII3PvmYi1xvjUVe03dfLEARSiyc?=
- =?us-ascii?Q?ZtKFCH3bDDwlz0I1deUqaYxyKjeuwonDfpbEKuUz+E2nhmxBkDw6M1SUXJog?=
- =?us-ascii?Q?i3EWnx8ANDQ9KPo0/KW0V3DIKxg5BrHewKCn/dSMOAdOn978t645fwD4Wrla?=
- =?us-ascii?Q?Y4ROVBXSF1krYJfpqgrZJm//BGn7MuYSL0Nt5ZxyazqI9twRGuuOhtZBvICW?=
- =?us-ascii?Q?2oucZEHILwQd/FSuJYfInfOgqJmKrkT8qcL8E+FL9nYIExew41qxcVBfk18W?=
- =?us-ascii?Q?/AkDjMS2QSfJ16Y+N0xBCv5+RKS6jIWV/QmqSadoM96Z6s5Np5wblUoCY6oD?=
- =?us-ascii?Q?GWdftEQbhNRDMAwLYhk1G72m20e4TGakEt2qnznfkcXI0v86wXDRR08Azamc?=
- =?us-ascii?Q?eD1Z3goBR6XhozZ2rncZCAGSWTvQlNxiu3D53Mg+/AJE1PHmqjLwLAFluvi6?=
- =?us-ascii?Q?/HJXTfD79gSyJZvF7AegotJHa4hODNCtrF9PsnMiFUpi7KdPiBiHSxWcWxY+?=
- =?us-ascii?Q?ijJYyOsiOn9PH+d2LZWvGMzP7nscdMJ03hSEeh2dyxcaGwRQWjX0xEqSxJsq?=
- =?us-ascii?Q?7yt3cmu0IdZEwVbBARwSxcVYI1umlLExCfJLIQGCJcoTrpz3wIbzFNFAqmOQ?=
- =?us-ascii?Q?IhY0tj1XZyqJ6+YF7zb1YVgTHq8plIixFpPgmN+Va62uW6eBN113W6InapxO?=
- =?us-ascii?Q?Hsh50Aaapf5UsxnQLLZaIPRIHCmod5qhBwYZTgQYPTQPNeRZm/uyPJKXrdZn?=
- =?us-ascii?Q?86hbBF8yOchcwspEw3u2LCYFfaP/6F+kOznRCNCsIuiaxw0gmqClkgUJ9OID?=
- =?us-ascii?Q?v+vVKItg1QphkDBtU0ClrQB20evQ4k/B/5sr59uLtcD7uo8dveOWpouKPDb1?=
- =?us-ascii?Q?581x3mALEt1xbFtEYhpWFTj6ykmUAfuJZP8v8nVYAJ6amYdhkJC4vWouBDoq?=
- =?us-ascii?Q?udGeEu6i48x3gf2VJqILqDNffEMIW/785djB3Lk6U8c2yOV3dPuFkTpVeeZI?=
- =?us-ascii?Q?K2U3QtV+dBbj0D8xeRNP+RmH36sjY0Dbm1m/lqGsU3tIOrfDQGPkhBwlGhHw?=
- =?us-ascii?Q?DDEXb07EM2d70hsvJcFCaIhCcD4rPlD7YBB3EubegCs5yZt3va7nw9nRDLRY?=
- =?us-ascii?Q?xw=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: e8ba3b6c-e6d2-4138-20ad-08db8476e7d0
-X-MS-Exchange-CrossTenant-AuthSource: CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jul 2023 14:30:43.4377
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 0d5fd8bb-e8c2-4e0a-8dd5-2c264f7140fe
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4EkhEUY1qEKfG/Ue0pT1ymtl4b3n1Rmk9RTfDyXA83CMKbmzXYQovAz4Y44B2c5RYKTPxV7yccx+qymRgU4tJA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LO4P265MB6853
-X-OriginatorOrg: imgtec.com
-X-EXCLAIMER-MD-CONFIG: 15a78312-3e47-46eb-9010-2e54d84a9631
-X-Proofpoint-ORIG-GUID: _5gi-iKkgSD6RB7LWu_0zOKGjZYVg003
-X-Proofpoint-GUID: _5gi-iKkgSD6RB7LWu_0zOKGjZYVg003
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] pinctrl: qcom: Add intr_target_width to define
+ intr_target_bit field width
+Content-Language: en-US
+To:     Ninad Naik <quic_ninanaik@quicinc.com>, andersson@kernel.org,
+        agross@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, quic_ppareek@quicinc.com,
+        psodagud@quicinc.com, quic_kprasan@quicinc.com
+References: <20230714061010.15817-1-quic_ninanaik@quicinc.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20230714061010.15817-1-quic_ninanaik@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the Series AXE GPU node to the AM62 device tree.
+On 14.07.2023 08:10, Ninad Naik wrote:
+> SA8775 and newer target have added support for an increased number of
+> interrupt targets. To implement this change, the intr_target field, which
+> is used to configure the interrupt target in the interrupt configuration
+> register is increased from 3 bits to 4 bits.
+> 
+> In accordance to these updates, a new intr_target_width member is
+> introduced in msm_pingroup structure. This member stores the value of
+> width of intr_target field in the interrupt configuration register. This
+> value is used to dynamically calculate and generate mask for setting the
+> intr_target field. By default, this mask is set to 3 bit wide, to ensure
+> backward compatibility with the older targets.
+> 
+> Signed-off-by: Ninad Naik <quic_ninanaik@quicinc.com>
+> ---
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-Signed-off-by: Sarah Walker <sarah.walker@imgtec.com>
----
- arch/arm64/boot/dts/ti/k3-am62-main.dtsi | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+one nit below
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
-index b3e4857bbbe4..ad13414acf18 100644
---- a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
-@@ -892,4 +892,17 @@ mcasp2: audio-controller@2b20000 {
- 		power-domains = <&k3_pds 192 TI_SCI_PD_EXCLUSIVE>;
- 		status = "disabled";
- 	};
-+
-+        gpu: gpu@fd00000 {
-+                compatible = "ti,am62-gpu", "img,powervr-seriesaxe";
-+                reg = <0 0x0fd00000 0 0x20000>;
-+                power-domains = <&k3_pds 187 TI_SCI_PD_EXCLUSIVE>;
-+                clocks = <&k3_clks 187 0>;
-+                clock-names = "core";
-+                interrupts = <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>;
-+                interrupt-names = "gpu";
-+                #cooling-cells = <2>;
-+                #cooling-min-level = <0>;
-+                #cooling-max-level = <3>;
-+        };
- };
--- 
-2.41.0
+>  drivers/pinctrl/qcom/pinctrl-msm.c     | 9 ++++++---
+>  drivers/pinctrl/qcom/pinctrl-msm.h     | 2 ++
+>  drivers/pinctrl/qcom/pinctrl-sa8775p.c | 1 +
+>  3 files changed, 9 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/pinctrl/qcom/pinctrl-msm.c b/drivers/pinctrl/qcom/pinctrl-msm.c
+> index 2585ef2b2793..6ebcaa2220af 100644
+> --- a/drivers/pinctrl/qcom/pinctrl-msm.c
+> +++ b/drivers/pinctrl/qcom/pinctrl-msm.c
+> @@ -1038,6 +1038,7 @@ static int msm_gpio_irq_set_type(struct irq_data *d, unsigned int type)
+>  	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
+>  	struct msm_pinctrl *pctrl = gpiochip_get_data(gc);
+>  	const struct msm_pingroup *g;
+> +	u32 intr_target_mask = 0x7;
+This could be GENMASK(2, 0)
 
+Konrad
+>  	unsigned long flags;
+>  	bool was_enabled;
+>  	u32 val;
+> @@ -1074,13 +1075,15 @@ static int msm_gpio_irq_set_type(struct irq_data *d, unsigned int type)
+>  	 * With intr_target_use_scm interrupts are routed to
+>  	 * application cpu using scm calls.
+>  	 */
+> +	if (g->intr_target_width)
+> +		intr_target_mask = GENMASK(g->intr_target_width - 1, 0);
+> +
+>  	if (pctrl->intr_target_use_scm) {
+>  		u32 addr = pctrl->phys_base[0] + g->intr_target_reg;
+>  		int ret;
+>  
+>  		qcom_scm_io_readl(addr, &val);
+> -
+> -		val &= ~(7 << g->intr_target_bit);
+> +		val &= ~(intr_target_mask << g->intr_target_bit);
+>  		val |= g->intr_target_kpss_val << g->intr_target_bit;
+>  
+>  		ret = qcom_scm_io_writel(addr, val);
+> @@ -1090,7 +1093,7 @@ static int msm_gpio_irq_set_type(struct irq_data *d, unsigned int type)
+>  				d->hwirq);
+>  	} else {
+>  		val = msm_readl_intr_target(pctrl, g);
+> -		val &= ~(7 << g->intr_target_bit);
+> +		val &= ~(intr_target_mask << g->intr_target_bit);
+>  		val |= g->intr_target_kpss_val << g->intr_target_bit;
+>  		msm_writel_intr_target(val, pctrl, g);
+>  	}
+> diff --git a/drivers/pinctrl/qcom/pinctrl-msm.h b/drivers/pinctrl/qcom/pinctrl-msm.h
+> index 5e4410bed823..1d2f2e904da1 100644
+> --- a/drivers/pinctrl/qcom/pinctrl-msm.h
+> +++ b/drivers/pinctrl/qcom/pinctrl-msm.h
+> @@ -59,6 +59,7 @@ struct pinctrl_pin_desc;
+>   * @intr_status_bit:      Offset in @intr_status_reg for reading and acking the interrupt
+>   *                        status.
+>   * @intr_target_bit:      Offset in @intr_target_reg for configuring the interrupt routing.
+> + * @intr_target_width:    Number of bits used for specifying interrupt routing target.
+>   * @intr_target_kpss_val: Value in @intr_target_bit for specifying that the interrupt from
+>   *                        this gpio should get routed to the KPSS processor.
+>   * @intr_raw_status_bit:  Offset in @intr_cfg_reg for the raw status bit.
+> @@ -100,6 +101,7 @@ struct msm_pingroup {
+>  	unsigned intr_ack_high:1;
+>  
+>  	unsigned intr_target_bit:5;
+> +	unsigned intr_target_width:5;
+>  	unsigned intr_target_kpss_val:5;
+>  	unsigned intr_raw_status_bit:5;
+>  	unsigned intr_polarity_bit:5;
+> diff --git a/drivers/pinctrl/qcom/pinctrl-sa8775p.c b/drivers/pinctrl/qcom/pinctrl-sa8775p.c
+> index 8a5cd15512b9..8fdea25d8d67 100644
+> --- a/drivers/pinctrl/qcom/pinctrl-sa8775p.c
+> +++ b/drivers/pinctrl/qcom/pinctrl-sa8775p.c
+> @@ -46,6 +46,7 @@
+>  		.intr_enable_bit = 0,		\
+>  		.intr_status_bit = 0,		\
+>  		.intr_target_bit = 5,		\
+> +		.intr_target_width = 4,		\
+>  		.intr_target_kpss_val = 3,	\
+>  		.intr_raw_status_bit = 4,	\
+>  		.intr_polarity_bit = 1,		\
