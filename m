@@ -2,86 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C0B07534A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 10:08:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76D577534B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 10:09:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229492AbjGNII3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 04:08:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59462 "EHLO
+        id S235273AbjGNIJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 04:09:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235589AbjGNIID (ORCPT
+        with ESMTP id S234939AbjGNIIw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 04:08:03 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 611F35270
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 01:05:47 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E58AB61C50
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 08:05:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E0B9C433C7;
-        Fri, 14 Jul 2023 08:05:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689321946;
-        bh=oytKwMj95473zu5Ab+t1wCWp1rgXlx7Cj+HneDgfVw8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OwnDIlQSZYD/Dn12tbw4y63iG53MxqrrMLR0wTS5/iDR0LH02TtgynD9V6ErsNFR+
-         g2pLgvualq83QpFvfw3Y6HNrbhY/Jl09x2n4xzK1bOAsEN3VVuRdHi9Kma5rYH7OTm
-         2Zysyfw0nYRLSDdMup7LnFbZzU8LKyk3qEDFApT8bGFReRuh9u6mhLU0aZ4pnN3Ktz
-         2pQV07kBQ/n2rwYc0BBOJcYq++VsCj33pUqqzA2yMGIqnnGnD1d5uw6nGTjtMoh4Tm
-         dqF27qb4DQuxbGP6UoMW19NPNovVySDJ/s6TRdwDMRrSg+xr3Z2mFbISQm0+D/sGSH
-         hLOh9yjd87gsg==
-Date:   Fri, 14 Jul 2023 09:05:41 +0100
-From:   Will Deacon <will@kernel.org>
-To:     chenqingyun001@208suo.com
-Cc:     catalin.marinas@arm.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: arm64:#include <linux/cacheflush.h> instead of
- <asm/cacheflush.h>
-Message-ID: <20230714080541.GA5117@willie-the-truck>
-References: <tencent_6FFBC70CAC8F277E10997551331C8029D006@qq.com>
- <31be9696f7a019a700176a2549992bfd@208suo.com>
+        Fri, 14 Jul 2023 04:08:52 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4864D46B6;
+        Fri, 14 Jul 2023 01:06:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689321990; x=1720857990;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=fkEz5ngu5Jx0yxp4LTMvoYpwTKcv6182sEOb+9SRMDc=;
+  b=oJ5rrXQeMX7aUpi15rx0ixnvmLEjJoIk6kCwYR60N7KRnPFZkCYM6Ja8
+   RvH/9N5yRb55b3IqJ1bGCBuOvS8ohxqlrpvVelzd/U6Nk+KLbR10ThMWj
+   ETvRpCz6093gquQI0cBhlm1jUvXkzsCaughntPJuKvD3bc0upqEf7szSM
+   If1MuViNl9wmv6UjEW4h1T/NeD6kmAnfPCiTMbzAon5PsfypWtdbHgTLw
+   rEZG/c3+dHa9x3zzYXt8iTe0Ddo24pUs+nH+YWYrMdBPtfCFMfkZHQSa2
+   8ZHeQHWV4G9pcWwzZF9DDrvl/F39f6zm8J7XknHIlTJS1Wkr4z7Bs7jQh
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="345014317"
+X-IronPort-AV: E=Sophos;i="6.01,204,1684825200"; 
+   d="scan'208";a="345014317"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 01:06:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="812338488"
+X-IronPort-AV: E=Sophos;i="6.01,204,1684825200"; 
+   d="scan'208";a="812338488"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by FMSMGA003.fm.intel.com with ESMTP; 14 Jul 2023 01:05:58 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qKDoL-002bC8-1D;
+        Fri, 14 Jul 2023 11:05:57 +0300
+Date:   Fri, 14 Jul 2023 11:05:57 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     luoruihong <colorsu1922@gmail.com>
+Cc:     ilpo.jarvinen@linux.intel.com, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org, luoruihong@xiaomi.com,
+        weipengliang@xiaomi.com, wengjinfei@xiaomi.com
+Subject: Re:
+Message-ID: <ZLEB5fxhJ/GDVX4W@smile.fi.intel.com>
+References: <64b09dbb.630a0220.e80b9.e2ed@mx.google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <31be9696f7a019a700176a2549992bfd@208suo.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <64b09dbb.630a0220.e80b9.e2ed@mx.google.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 01:09:10PM +0800, chenqingyun001@208suo.com wrote:
-> <linux/cacheflush.h> is a generic header file,
-> while <asm/cacheflush.h> is an x86
-> architecture-specific header file
-
-wut?
-
-Will
-
-> Signed-off-by: Qingyun Chen <chenqingyun001@208suo.com>
-> ---
->  arch/arm64/lib/uaccess_flushcache.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+On Fri, Jul 14, 2023 at 08:58:29AM +0800, luoruihong wrote:
+> On Thu, Jul 13, 2023 at 07:51:14PM +0300, Andy Shevchenko wrote:
+> > On Thu, Jul 13, 2023 at 08:42:36AM +0800, Ruihong Luo wrote:
+> > > Preserve the original value of the Divisor Latch Fraction (DLF) register.
+> > > When the DLF register is modified without preservation, it can disrupt
+> > > the baudrate settings established by firmware or bootloader, leading to
+> > > data corruption and the generation of unreadable or distorted characters.
+> >
+> > You forgot to add my tag. Why? Do you think the name of variable warrants this?
+> > Whatever,
+> > Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> >
+> > Next time if you don't pick up somebody's tag, care to explain in the changelog
+> > why.
+> >
+> > > Fixes: 701c5e73b296 ("serial: 8250_dw: add fractional divisor support")
+> > > Signed-off-by: Ruihong Luo <colorsu1922@gmail.com>
 > 
-> diff --git a/arch/arm64/lib/uaccess_flushcache.c
-> b/arch/arm64/lib/uaccess_flushcache.c
-> index 7510d1a23124..cf8052f6e091 100644
-> --- a/arch/arm64/lib/uaccess_flushcache.c
-> +++ b/arch/arm64/lib/uaccess_flushcache.c
-> @@ -5,7 +5,7 @@
-> 
->  #include <linux/uaccess.h>
->  #include <asm/barrier.h>
-> -#include <asm/cacheflush.h>
-> +#include <linux/cacheflush.h>
-> 
->  void memcpy_flushcache(void *dst, const void *src, size_t cnt)
->  {
+> I'm sorry, I didn't know about this rule. Thank you for helping me add
+> the missing tags back and for all your previous kind assistance.
+
+For now no need to do anything, just wait for Ilpo's and/or Greg's answer(s),
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
