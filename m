@@ -2,180 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DFD6753D8A
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 16:34:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20E35753D71
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 16:30:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236015AbjGNOeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 10:34:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47912 "EHLO
+        id S235860AbjGNOaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 10:30:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233638AbjGNOe3 (ORCPT
+        with ESMTP id S235843AbjGNO1u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 10:34:29 -0400
-Received: from mx07-00376f01.pphosted.com (mx07-00376f01.pphosted.com [185.132.180.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7C4430D7
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 07:34:01 -0700 (PDT)
-Received: from pps.filterd (m0168889.ppops.net [127.0.0.1])
-        by mx07-00376f01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 36EBU213000769;
-        Fri, 14 Jul 2023 15:24:37 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=imgtec.com; h=
-        from:to:cc:subject:date:message-id:content-transfer-encoding
-        :content-type:mime-version; s=dk201812; bh=2JlrcO76QfHGQi9RSMwwr
-        m3ohkOuHCDQJ90Fn2fC5do=; b=JH0wM6USwg3me1VdgD6CPft2byYAHd930ErfK
-        A5DID+Ux07tuOTZbkYQGS5Ck0OADrfWkubE3JCdLNr92kosUFWfgg37SwPemRnkw
-        KqTBbvWbWVXT2yoWCrapaH678Jx8ZM0x/D38FFIyKogHhpPGVnj0NLoFSf2rTUxq
-        Oo+suLUXDHgjzf/EyOshLS8hGgyLjCHgq51yPrbEE3TOLPp1o4zPs71bVLhqJcjx
-        soaKPMyCoaGioavjdTEOWHuxhhaT+O5KkbWL4T0+bzG+hKPf0AoJESDqyXRT+2Du
-        Xp+xTOJ9L1TvR47uXEcAzGlAXZf8/ccO2lLOovigpfE7rYLAQ==
-Received: from hhmail04.hh.imgtec.org ([217.156.249.195])
-        by mx07-00376f01.pphosted.com (PPS) with ESMTPS id 3rtpu8gmad-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 14 Jul 2023 15:24:37 +0100 (BST)
-Received: from HHMAIL05.hh.imgtec.org (10.100.10.120) by
- HHMAIL04.hh.imgtec.org (10.100.10.119) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 14 Jul 2023 15:24:36 +0100
-Received: from GBR01-LO2-obe.outbound.protection.outlook.com (104.47.21.56) by
- email.imgtec.com (10.100.10.121) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27 via Frontend
- Transport; Fri, 14 Jul 2023 15:24:36 +0100
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UkGP6bwmjDZDrzKnyljJJnrTAITKG3SCWl9SKfSVaA+YhZ0E9JaGHWQ9w/bpQ93AvdWkgNiemxf/lso/5u9Mvf0x7/cQ5Aix5oRGBK0sgHI9SIqFCvckB9LtgDhMMxSjIik2pUmMtx6VZmxc4Tr/EUy6ccIS/vSLF0TMJedOHseFHmnu81KBMeIjZpYoQ3yK7CRXfKjx2wAQXVM4EICB1AVdLs4OY6wC6TEkFPsRuj7yeb/ExBnzBRJw4OFQIBx3AcRmJWFQfoN/oWoFHnRqJjTkuhG9/4c2wXg6AULGHS8ahU6vhTq3vr87HMwkrC+6G1PGGfdHTl9rnAEPSGMQTw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2JlrcO76QfHGQi9RSMwwrm3ohkOuHCDQJ90Fn2fC5do=;
- b=FCIvsmTzSwyKYkWFDET4tkyntOvOLA9cZBMJ+CUELNbkm4SVlUJou1H9Z8DoHL1TsivEJFMUXI2o/PHZBAr78sCS8M1M0Wo7fVtMf8prkYK5t7OkGmoHxGl0qnEj8b21pGR1c4ltXS+hFJ0UUGUfPIKZ86nVlIco/iu7tIWfugJ187z/HvZLjRS+JjG39AvQN04Tk7LDF6noInpxz0zYObsJgoTm8CpCOLPUcfu/Z7k9wmNLVIc3KSY1d2AMlWFlRHs9zRHkSuhVq0g5cTXbJ5USB0ohYE2ICvbaTKh24hff0x11vg8dkZpVz7vgVgLYMzhalzSOiJ7vbI3sxaHJvA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=imgtec.com; dmarc=pass action=none header.from=imgtec.com;
- dkim=pass header.d=imgtec.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=IMGTecCRM.onmicrosoft.com; s=selector2-IMGTecCRM-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2JlrcO76QfHGQi9RSMwwrm3ohkOuHCDQJ90Fn2fC5do=;
- b=AFtRgeltw2ainhoHd7mfB1rknM7HNVlDvSHE7s+ZHzw3WvNyKBFH2WoKIComrXjmwRwOyUe/xpZl2kpMEDGvR+qhLCrJc8+G+l3DDFh7Vh3Ry2Z2K8EK+UXnmlRVV7wbNxCpyhLbEATNQxzbNEqkzDKd+W6y6Zc3T3qpxv+sHvo=
-Received: from CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:170::9)
- by LOYP265MB2077.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:11f::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.27; Fri, 14 Jul
- 2023 14:24:34 +0000
-Received: from CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM
- ([fe80::f042:5122:eb28:4131]) by CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM
- ([fe80::f042:5122:eb28:4131%5]) with mapi id 15.20.6588.027; Fri, 14 Jul 2023
- 14:24:34 +0000
-From:   Sarah Walker <sarah.walker@imgtec.com>
-To:     <dri-devel@lists.freedesktop.org>
-CC:     <frank.binns@imgtec.com>, <donald.robson@imgtec.com>,
-        <boris.brezillon@collabora.com>, <faith.ekstrand@collabora.com>,
-        <airlied@gmail.com>, <daniel@ffwll.ch>,
-        <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
-        <tzimmermann@suse.de>, <afd@ti.com>, <hns@goldelico.com>,
-        <matthew.brost@intel.com>, <christian.koenig@amd.com>,
-        <luben.tuikov@amd.com>, <dakr@redhat.com>,
-        <linux-kernel@vger.kernel.org>,
-        Matt Coster <matt.coster@imgtec.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH v4 01/17] sizes.h: Add entries between 32G and 64T
-Date:   Fri, 14 Jul 2023 15:24:24 +0100
-Message-Id: <20230714142424.111465-1-sarah.walker@imgtec.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: LO2P265CA0298.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:a5::22) To CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:400:170::9)
+        Fri, 14 Jul 2023 10:27:50 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3B9035A7;
+        Fri, 14 Jul 2023 07:27:21 -0700 (PDT)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36EEL3DA031786;
+        Fri, 14 Jul 2023 14:25:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=RaYm3+iL2nRghkV2cl2HfIFU9xG0uue+t8rOf4tDuVE=;
+ b=HeSCuPPFwIWrH+993IvTtMuMziGA0FY3styoQdJklfhKV0Nqcs8mHSNKsyLdWDckgvzq
+ 0z44+Sx91mHSUNkkSwrenTPdvX4f//mC0Nye0MMce2+ZqxlYnFOTmHBG2AoLVQ+p0JGE
+ YqtcpmAyDS9hV0MABQwj6HZbk6I+W6a4b9bwwvJEc+Dz2JVR12lz/W5WdlQmpmbpLqPA
+ wOrCP2yxcMnk/0fnUtQFbN6UVbNteA6I4Z8Q74RqKzq7UNIioin5RT9NKhWBdvv5vFD/
+ SC7XHDWaEbSrMWZi5SNJ8WoUQGSLmj72aHNZbZdpuo7AE0+W7OASAPXvRgwBTeISFmzM Cg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ru82082a9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 14 Jul 2023 14:25:23 +0000
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36EEMJhG002383;
+        Fri, 14 Jul 2023 14:25:23 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ru820829k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 14 Jul 2023 14:25:23 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36EDKsSo007376;
+        Fri, 14 Jul 2023 14:25:22 GMT
+Received: from smtprelay06.wdc07v.mail.ibm.com ([172.16.1.73])
+        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3rtpvs1vxy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 14 Jul 2023 14:25:22 +0000
+Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
+        by smtprelay06.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36EEPKSk57934270
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 14 Jul 2023 14:25:20 GMT
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9651358063;
+        Fri, 14 Jul 2023 14:25:20 +0000 (GMT)
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6AB9A58056;
+        Fri, 14 Jul 2023 14:25:12 +0000 (GMT)
+Received: from [9.171.88.96] (unknown [9.171.88.96])
+        by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Fri, 14 Jul 2023 14:25:12 +0000 (GMT)
+Message-ID: <6006810f-6419-bc39-7eff-1bd31a572631@linux.vnet.ibm.com>
+Date:   Fri, 14 Jul 2023 19:55:10 +0530
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CWLP265MB4817:EE_|LOYP265MB2077:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0338399f-2efa-4e55-3ebe-08db84760c12
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: NfYBX5SEgucTCe/cETrVNwo4fiwWE2dh/FV0u1YdBAI58ApgLz22o631ENSrEmNQsebFyP+gCnAG4dNXYbp4WoAOIKVvDcBwysVc5U/l1SY3VikADznF+euiEqRPaauTt8UFM2eFU3OFJth9FkczcrERHS3nlQb4ldJBMde7SCJDlNoKsjzkm9ieK/c4cAuURDS+zxZ2uSuUTy4fm8/yXvqVG89Mh+lhH9Agfz9Iya5QqhfX3g5QCq9eFmAwS1P4Z+9lHBWJS6Yr6kjt29Wx0rzgMudR6D0WYzmx9zGJHjzo2TLkva2aCK4uspCOtJ8A2x4qznKOe7iYkqEOXOUmH67ejIQMXE05vXZd0m32sGXmql6Gear+DqeKTXuPEibiDNXC6aAZKPZ2KgX9AmlSB0TA0B2SoTIPflKXn3ZFlz98t0M/eeRt0qkJiJ/TPXvqobAlWMcURq8ZdmtKkwzck16brWTUvdyewTytH8CPP04BS+j46f9HRWpyzCPP3vrS4ffHyqQll7OZ54KwYkY2ZRVhPGNy88QCsONG2ZvGuHuSgEGr5EGazWAQGJqs0vrrpZR5ndV8GfH1a4nJe2KuExRv2400lpLHBH+1vqLc4bgkaSh1ELYrrrT0nMVkP+9v
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230028)(346002)(136003)(366004)(376002)(396003)(39850400004)(451199021)(41300700001)(44832011)(54906003)(66476007)(7416002)(4326008)(66946007)(66556008)(6916009)(478600001)(4744005)(5660300002)(2906002)(316002)(8936002)(8676002)(6666004)(6486002)(52116002)(6512007)(86362001)(1076003)(26005)(6506007)(186003)(36756003)(38350700002)(2616005)(38100700002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Moq/zLMgq4D+n+OHjLWqUoEbSITmC1c0jWKorD+1J5+5dCOIgtFZVCHZK7Iq?=
- =?us-ascii?Q?Mo20/PdX4mVvlAXdHHfKzq3al4VepS3BM5NqeKd/Ru40gUwRTtvcrtM9cXfp?=
- =?us-ascii?Q?mn7otNUvrpPY93ICiaExLPgs50HmDX2tXS/WT/ndBlBZDFp64e+E4zsxtzIA?=
- =?us-ascii?Q?hlq2DSZRWk9uFat9d5AI3ZHpXsEY/T5G5Cx/VbwfHqhiyqOTTygbGkS0srf+?=
- =?us-ascii?Q?p55x0kssqTriKNWR3W7+3a+0egtpdz1tFpz1tIzExwLYEUcACxSd79v96cTB?=
- =?us-ascii?Q?bzXXQRmw+RuLOzufyGYn6ERZSxVQsqMVv7kKYHJsGh/sAPdHAgTZHo54iTl3?=
- =?us-ascii?Q?A/7obRNeuL8NALJounss8UJN+m5+6SuAjewtjXJ0wXZFYVhhUH2qEM5udgRb?=
- =?us-ascii?Q?Y/OGF9eprWjTw0AQyr5qerK463eWgdPQQpyLTjH53tchn2/mlOxm4+vZtp9Q?=
- =?us-ascii?Q?xFraTQQ4m59K4jrlygxIWXDgDbbF30oYYoSXwpRyH8VFh9hZmzNpJ/VIwh7Q?=
- =?us-ascii?Q?TsqtBEgmKZ/wGUAbsQ5FttWQAvet+bnFaCIsbjwD0nruZrhi6eUJJ90l80pq?=
- =?us-ascii?Q?F9jc1PzH0TicNj/xLoctBcNrhi5DlEV44q5en4sdl7KJl4t7M+gw5DpIvDEy?=
- =?us-ascii?Q?QC/WRk0H3MABVFheAwEkKCvrC3cxDHkP8CitgUOLvzel6VgBvKAN4TvDDHvR?=
- =?us-ascii?Q?SMJk2akAMfyfqfttPUdo1vTpmXEsyvif+WjKJJbA6LtKflORRHzAxqT3IGv8?=
- =?us-ascii?Q?NNf/m4CYWdeDMPKTH027OKwTfTPUBweqVqO8uBp5B/tZpxFVQbDdjdLGGXvV?=
- =?us-ascii?Q?qCdTedN3lcrMGWkOraC5KFs1HD+zeKEq7y5vTNik/RED0ZvSM4fbCrUWRxhq?=
- =?us-ascii?Q?APBR4ool6ggPUyojYuvF35sapmmFRsuYv1sp9QrHa3DoOpuBGkzJ7w/RFa7F?=
- =?us-ascii?Q?Tg/QgRqHUhAzAO7jTGdokX40u7x8i6e2vHWYAR0eVdf+kCxL1WtZfa/kEUIR?=
- =?us-ascii?Q?H0vu7rktG1zn9AkROcEiYmxE9gDT+69Mou+Rdch0QApGkkQcHKtf+c7Zi7hf?=
- =?us-ascii?Q?D+5f0HCY8ewtoKm3xy8jxcEXjgsLgbsHybOhKwyLr8rN4arsoW+MAKuahSqa?=
- =?us-ascii?Q?L5gWjqBK2UYnwH5vdMh5lo1quz5B5LdCBbm4+YF+6q+a2w4XqAvFqMp0K/em?=
- =?us-ascii?Q?bRIY3NQOg7Kr0GJVqU5v3zhEf6N5GVjLGnGnTx42tLzY9gWm+ZgB8bha+2FB?=
- =?us-ascii?Q?V1j/LGsm4bMFYP3KOpY5X3+FuBUgeSley1KH7cEZyrKADd/fm9fZIZ+4jT1v?=
- =?us-ascii?Q?MWKfTvgSwM0CoM00pqtZR2k/ufolnXi5eFGNPP1vo+sQOQb1CMTTY1F/P5YF?=
- =?us-ascii?Q?bqOrbki4JFu0WgXsmF/oM1ksmMfAbhwYrFbEwD4IE93kRpRYkY0iiH6PBzVJ?=
- =?us-ascii?Q?55ZzNHr0xFeYn5aLVl6h0VO3M8MbxNGOQigjHGO4Cxlx+ItCwj5mKS+VizpB?=
- =?us-ascii?Q?DP7Fu/33SDJ+GOgnKt4MS/OKedN4tHZm+Z9yWnd7/2urf3wcJcE1yFUfahdt?=
- =?us-ascii?Q?M7fC6HiNgdcju1FpHvI7wJNt0bhjx4Ipv7VVMRQ2yzjIFbFRAHLvRh8m9MS8?=
- =?us-ascii?Q?EQ=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0338399f-2efa-4e55-3ebe-08db84760c12
-X-MS-Exchange-CrossTenant-AuthSource: CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jul 2023 14:24:34.7630
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 0d5fd8bb-e8c2-4e0a-8dd5-2c264f7140fe
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: PdwBhjnCQ10NJUpUf2pzuAYQf6FKqYmVoZZ8OK8XkRRHEulP3KYbcMFKrVE2A8H2SHLreenufCFI/D6Eq7OAKw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LOYP265MB2077
-X-OriginatorOrg: imgtec.com
-X-EXCLAIMER-MD-CONFIG: 15a78312-3e47-46eb-9010-2e54d84a9631
-X-Proofpoint-GUID: ySa2DRCMY62YT-u8zB5eO0jlm0QxcP2I
-X-Proofpoint-ORIG-GUID: ySa2DRCMY62YT-u8zB5eO0jlm0QxcP2I
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [RFC][PATCH] sched: Rename DIE domain
+Content-Language: en-US
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     juri.lelli@redhat.com, dave.hansen@linux.intel.com,
+        bsegall@google.com, hpa@zytor.com, agordeev@linux.ibm.com,
+        linux-s390@vger.kernel.org, vincent.guittot@linaro.org,
+        x86@kernel.org, mingo@redhat.com, mgorman@suse.de,
+        borntraeger@linux.ibm.com, gor@linux.ibm.com, hca@linux.ibm.com,
+        npiggin@gmail.com, bp@alien8.de, rostedt@goodmis.org,
+        dietmar.eggemann@arm.com, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, svens@linux.ibm.com,
+        bristot@redhat.com, Thomas Gleixner <tglx@linutronix.de>,
+        Valentin Schneider <vschneid@redhat.com>
+References: <20230712141056.GI3100107@hirez.programming.kicks-ass.net>
+ <xhsmh1qhduq9d.mognet@vschneid.remote.csb>
+From:   Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+In-Reply-To: <xhsmh1qhduq9d.mognet@vschneid.remote.csb>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: BKnNwJuVQ5CqwoS76-lOVcxFsFRUxIUy
+X-Proofpoint-GUID: JY7YoTQ-OZAhgvru9YZBX9Ytl2G47lgR
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-14_06,2023-07-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
+ malwarescore=0 lowpriorityscore=0 suspectscore=0 priorityscore=1501
+ mlxlogscore=999 phishscore=0 clxscore=1011 bulkscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307140128
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matt Coster <matt.coster@imgtec.com>
 
-Signed-off-by: Matt Coster <matt.coster@imgtec.com>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+
+On 7/12/23 8:32 PM, Valentin Schneider wrote:
+> On 12/07/23 16:10, Peter Zijlstra wrote:
+>> Hi
+>>
+>> Thomas just tripped over the x86 topology setup creating a 'DIE' domain
+>> for the package mask :-)
+>>
+>> Since these names are SCHED_DEBUG only, rename them.
+>> I don't think anybody *should* be relying on this, but who knows.
+>>
+> 
+> FWIW I don't care much about the actual name.
+> 
+> There are some stray references to DIE in comments - see below. Bit funny
+> to see:
+> - *  - Package (DIE)
+> + *  - Package (PKG)
+> 
+> With that:
+> Acked-by: Valentin Schneider <vschneid@redhat.com>
+> 
+> ---
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index a80a73909dc2a..190a647534984 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -9439,7 +9439,7 @@ static bool sched_use_asym_prio(struct sched_domain *sd, int cpu)
+>   * can only do it if @group is an SMT group and has exactly on busy CPU. Larger
+>   * imbalances in the number of CPUS are dealt with in find_busiest_group().
+>   *
+> - * If we are balancing load within an SMT core, or at DIE domain level, always
+> + * If we are balancing load within an SMT core, or at PKG domain level, always
+>   * proceed.
+>   *
+>   * Return: true if @env::dst_cpu can do with asym_packing load balance. False
+> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+> index e9d9cf776b7ab..2cdcfec1d1c89 100644
+> --- a/kernel/sched/topology.c
+> +++ b/kernel/sched/topology.c
+> @@ -1118,7 +1118,7 @@ build_overlap_sched_groups(struct sched_domain *sd, int cpu)
+>   *
+>   *  - Simultaneous multithreading (SMT)
+>   *  - Multi-Core Cache (MC)
+> - *  - Package (DIE)
+> + *  - Package (PKG)
+>   *
+>   * Where the last one more or less denotes everything up to a NUMA node.
+>   *
+> @@ -1140,13 +1140,13 @@ build_overlap_sched_groups(struct sched_domain *sd, int cpu)
+>   *
+>   * CPU   0   1   2   3   4   5   6   7
+>   *
+> - * DIE  [                             ]
+> + * PKG  [                             ]
+>   * MC   [             ] [             ]
+>   * SMT  [     ] [     ] [     ] [     ]
+>   *
+>   *  - or -
+>   *
+> - * DIE  0-7 0-7 0-7 0-7 0-7 0-7 0-7 0-7
+> + * PKG  0-7 0-7 0-7 0-7 0-7 0-7 0-7 0-7
+>   * MC	0-3 0-3 0-3 0-3 4-7 4-7 4-7 4-7
+>   * SMT  0-1 0-1 2-3 2-3 4-5 4-5 6-7 6-7
+>   *
+> 
+
+A couple of comments missing the change still? Not sure if it taken care already.
+
 ---
- include/linux/sizes.h | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ arch/powerpc/kernel/smp.c | 2 +-
+ arch/x86/kernel/smpboot.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/sizes.h b/include/linux/sizes.h
-index 84aa448d8bb3..c3a00b967d18 100644
---- a/include/linux/sizes.h
-+++ b/include/linux/sizes.h
-@@ -47,8 +47,17 @@
- #define SZ_8G				_AC(0x200000000, ULL)
- #define SZ_16G				_AC(0x400000000, ULL)
- #define SZ_32G				_AC(0x800000000, ULL)
-+#define SZ_64G				_AC(0x1000000000, ULL)
-+#define SZ_128G				_AC(0x2000000000, ULL)
-+#define SZ_256G				_AC(0x4000000000, ULL)
-+#define SZ_512G				_AC(0x8000000000, ULL)
+diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
+index fbbb695bae3d..9b1853bf6b1d 100644
+--- a/arch/powerpc/kernel/smp.c
++++ b/arch/powerpc/kernel/smp.c
+@@ -1588,7 +1588,7 @@ static void add_cpu_to_masks(int cpu)
+ 	/* Skip all CPUs already part of current CPU core mask */
+ 	cpumask_andnot(mask, cpu_online_mask, cpu_core_mask(cpu));
  
- #define SZ_1T				_AC(0x10000000000, ULL)
-+#define SZ_2T				_AC(0x20000000000, ULL)
-+#define SZ_4T				_AC(0x40000000000, ULL)
-+#define SZ_8T				_AC(0x80000000000, ULL)
-+#define SZ_16T				_AC(0x100000000000, ULL)
-+#define SZ_32T				_AC(0x200000000000, ULL)
- #define SZ_64T				_AC(0x400000000000, ULL)
+-	/* If chip_id is -1; limit the cpu_core_mask to within DIE*/
++	/* If chip_id is -1; limit the cpu_core_mask to within PKG*/
+ 	if (chip_id == -1)
+ 		cpumask_and(mask, mask, cpu_cpu_mask(cpu));
  
- #endif /* __LINUX_SIZES_H__ */
--- 
-2.41.0
-
+diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+index e1aa2cd7734b..3f175e70eb7a 100644
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -647,7 +647,7 @@ static void __init build_sched_topology(void)
+ 	};
+ #endif
+ 	/*
+-	 * When there is NUMA topology inside the package skip the DIE domain
++	 * When there is NUMA topology inside the package skip the PKG domain
+ 	 * since the NUMA domains will auto-magically create the right spanning
+ 	 * domains based on the SLIT.
+ 	 */
