@@ -2,84 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8012D754276
+	by mail.lfdr.de (Postfix) with ESMTP id C5E8E754277
 	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 20:19:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236816AbjGNSTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 14:19:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37944 "EHLO
+        id S236802AbjGNSTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 14:19:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236739AbjGNSTD (ORCPT
+        with ESMTP id S236845AbjGNSTQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 14:19:03 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1CF11BD;
-        Fri, 14 Jul 2023 11:19:02 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:73::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Fri, 14 Jul 2023 14:19:16 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0B29270A
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 11:19:10 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 669CA5BF;
-        Fri, 14 Jul 2023 18:19:02 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 669CA5BF
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1689358742; bh=kKXWA+c2Cm/Sw1VCTU1wLREs010/IyM3OtFfP0eC0lc=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=otSdXOsZUpCOtpqFHl615W5pfjTrD/1DfP4VQa7iLzHprdJvvZZ6lfyDA0VHM68Za
-         xTd4HNpMWsioqpUCTwBC5E5Np5pd5DW5n1YrTlfUBkz03+pbuZ1FcQY+/biRpxumtz
-         HMNM58WSKaP4EKoqIgBYCgThpGiK61mokZ6FlE38kmOHY27CU6MzdgQ1HX+gv6TMM8
-         eg8pVaAqw6M54TjWyDrot6dvdV8Gp4IYmhr6Ozf6yOXM6M4p6hm9IcXuu5nwZJdMI/
-         WNaoZ27O/Ue8/WfCwTxJ925b4Ae3PLeMFFsHEDNB1J7SzheH21YKfAtgo0ly2Pj8iM
-         7O1wyA8hfvdeQ==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     workflows@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH docs] docs: maintainers: mention tag -s for signed tags
-In-Reply-To: <20230713230606.1505458-1-kuba@kernel.org>
-References: <20230713230606.1505458-1-kuba@kernel.org>
-Date:   Fri, 14 Jul 2023 12:19:01 -0600
-Message-ID: <87jzv21hm2.fsf@meer.lwn.net>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 22C2E61CEA
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 18:19:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 885F5C433C7;
+        Fri, 14 Jul 2023 18:19:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689358749;
+        bh=mMTJnIUl0Ox4s3zJ8S50GDtIkriWNwEZTt9R8QIGuD4=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=gJmU92OcKsrZvBjxBWlQL+GVOYH4c7fVM1cygpF0FmGJLSYF9pxJAt5TzFkteY3R0
+         BLl9oG6iweWOk7xndgEDCdmxZ9REJqQjBMevcFWS7UmcKPG5qmtoomazGAz7K5ArHw
+         8bj9rsO7QT3XKUHFIuuIK9T8InHhEmUa19ZLdqS1MK2M3cJa37dGRjy9GPMzh9+upk
+         +iP8fcMtwV7uQQt3GG8nULXbFquh7yf3wWiEI/8buo+UbD5JuMQOpIdb66Ppz7Z98Z
+         jYVA4IkZ4X5rtsL6AH7VEXPw3OJanndfRtS4E5Xjif1rCrW4uFi/cWKb1chTAmca78
+         5LuKNInbg6J0w==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 751C3E4508D;
+        Fri, 14 Jul 2023 18:19:09 +0000 (UTC)
+Subject: Re: [GIT PULL] RISC-V Fixes for 6.5-rc2
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <mhng-c0a9115b-10ec-4bf0-8c4f-af009c34423f@palmer-ri-x1c9a>
+References: <mhng-c0a9115b-10ec-4bf0-8c4f-af009c34423f@palmer-ri-x1c9a>
+X-PR-Tracked-List-Id: <linux-riscv.lists.infradead.org>
+X-PR-Tracked-Message-Id: <mhng-c0a9115b-10ec-4bf0-8c4f-af009c34423f@palmer-ri-x1c9a>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-6.5-rc2
+X-PR-Tracked-Commit-Id: ab2dbc7accedc2e98eb7d8b8878d337e3b36c95d
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 2772d7df3c93f15e5b2119bd9e14724db6a21a04
+Message-Id: <168935874947.6403.5064105455791400018.pr-tracker-bot@kernel.org>
+Date:   Fri, 14 Jul 2023 18:19:09 +0000
+To:     Palmer Dabbelt <palmer@rivosinc.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jakub Kicinski <kuba@kernel.org> writes:
+The pull request you sent on Fri, 14 Jul 2023 06:58:58 -0700 (PDT):
 
-> The documentation talks about -u and how to configure the default
-> key. It does not mention that once the default key is set one
-> should use the -s flag. Which is likely what most people end up
-> using.
->
-> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-> ---
->  Documentation/maintainer/configure-git.rst | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
->
-> diff --git a/Documentation/maintainer/configure-git.rst b/Documentation/maintainer/configure-git.rst
-> index ec0ddfb9cdd3..a054de0c50dc 100644
-> --- a/Documentation/maintainer/configure-git.rst
-> +++ b/Documentation/maintainer/configure-git.rst
-> @@ -7,9 +7,10 @@ This chapter describes maintainer level git configuration.
->  
->  Tagged branches used in :ref:`Documentation/maintainer/pull-requests.rst
->  <pullrequests>` should be signed with the developers public GPG key. Signed
-> -tags can be created by passing the ``-u`` flag to ``git tag``. However,
-> -since you would *usually* use the same key for the same project, you can
-> -set it once with
-> +tags can be created by passing ``-u <key-id>`` to ``git tag``. However,
-> +since you would *usually* use the same key for the project, you can
-> +set it in the configuration and use the ``-s`` flag. To set the default
-> +``key-id`` use
->  ::
+> git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-6.5-rc2
 
-Applied, thanks.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/2772d7df3c93f15e5b2119bd9e14724db6a21a04
 
-jon
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
