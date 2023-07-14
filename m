@@ -2,175 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36FA3754548
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 01:08:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACC3F75454B
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 01:09:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229974AbjGNXH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 19:07:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42882 "EHLO
+        id S229796AbjGNXJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 19:09:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbjGNXH4 (ORCPT
+        with ESMTP id S229530AbjGNXJF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 19:07:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AB501980
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 16:07:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689376034;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pqDiqY4N3zDWFlHFUlK8i/J+HIGUbJcqEkShbsY9GIc=;
-        b=f9et3qhpSwLrtPcgCY38XnaG/DuBMVVRKerQVi8WgEQUliqz+1ZUUOQJJN89xOTSFWudI5
-        c0YQILwGVvkzu4fAklrjI7ltP9dh7bF/luHDwxJHqPhUy0MPaBQrMGR2p/rKxBT+AzIIOL
-        n7Bq8G/Sh+5SPjGz7XkDwCrkAhmUQyM=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-167-_VJNrJFENIG_QznVHihixg-1; Fri, 14 Jul 2023 19:07:13 -0400
-X-MC-Unique: _VJNrJFENIG_QznVHihixg-1
-Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-635e6c83cf0so24725926d6.3
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 16:07:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689376032; x=1691968032;
-        h=mime-version:user-agent:content-transfer-encoding:organization
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pqDiqY4N3zDWFlHFUlK8i/J+HIGUbJcqEkShbsY9GIc=;
-        b=LTOjmjscyBHxrSnna/eV2vfF1Sll60ADezYHgeqCXBG0n7PcOehgKsC590CPzrZXWF
-         itC1HWhy8ZGpmKNeP6nY7l91ZFgB7NTX9wpN++hxQuh5uhy5k23mDrfYGRHhOyzfF6LV
-         jF006puWXfFTbMnpyJ7Ox96whazawV2Wdp2r/br3RyqJJ7ilvSDsLVfMHn7waVH1Lb7N
-         eJyzHB2jE1/ZJF0BYpSfFQxJ5sdiOsmfh2xqlb2E2rzChNKM/5oBjZe6kz+lmKn6wpeL
-         XqcXfNnEQjEmJYX4romwaph2VxRe++Br1/g7adt1A19srvU/gL4pDW2c/Tpd6Ga5GL5I
-         1Q6w==
-X-Gm-Message-State: ABy/qLa/xA1+VLLhuVvApq/nKgBzTDbty5WJSnFiiFhXKtVAA7YDBZa6
-        QJGtjHN0g3EOWQVwuissXShVpZ/t5eaqthPc4/SbpENySvwwypmVU3RL2eMagRxjG/7TZ1tCGxh
-        3YUJMl8iKoC/EG0J0UGYVCrph
-X-Received: by 2002:a05:622a:11ca:b0:400:91d8:a704 with SMTP id n10-20020a05622a11ca00b0040091d8a704mr8261747qtk.47.1689376032712;
-        Fri, 14 Jul 2023 16:07:12 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFEDeUJQAf5GAAHKm0EYcAKtwaaDfwtH7D7qV8NAv+bu8ED8AvVMP5+iouCbmTPPgwbpF9k0w==
-X-Received: by 2002:a05:622a:11ca:b0:400:91d8:a704 with SMTP id n10-20020a05622a11ca00b0040091d8a704mr8261731qtk.47.1689376032460;
-        Fri, 14 Jul 2023 16:07:12 -0700 (PDT)
-Received: from ?IPv6:2600:4040:5c62:8200::feb? ([2600:4040:5c62:8200::feb])
-        by smtp.gmail.com with ESMTPSA id x24-20020ac87318000000b00402364e77dcsm4334646qto.7.2023.07.14.16.07.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 16:07:11 -0700 (PDT)
-Message-ID: <856d1130fad58062ea454da297fa64348382bda2.camel@redhat.com>
-Subject: Re: [PATCH] drm/nouveau/fifo:Fix Nineteen occurrences of the
- gk104.c error: ERROR: : trailing statements should be on next line
-From:   Lyude Paul <lyude@redhat.com>
-To:     huzhi001@208suo.com, bskeggs@redhat.com, kherbst@redhat.com,
-        airlied@gmail.com, daniel@ffwll.ch
-Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Date:   Fri, 14 Jul 2023 19:07:10 -0400
-In-Reply-To: <0ad4154429aaa41ca26da859c3f35784@208suo.com>
-References: <5c894d0a8a178628ca200d054004be3c@208suo.com>
-         <f25017a660f8a3a4e49258a1d96003dc@208suo.com>
-         <2f4a7303e305d07fdd9c15a9dc95dc5f@208suo.com>
-         <d0d767fb0dd3a9b7642559f379dbb0d6@208suo.com>
-         <0ad4154429aaa41ca26da859c3f35784@208suo.com>
-Organization: Red Hat Inc.
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.3 (3.48.3-1.fc38) 
+        Fri, 14 Jul 2023 19:09:05 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D34F1980;
+        Fri, 14 Jul 2023 16:09:02 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36EN8hp5083478;
+        Fri, 14 Jul 2023 18:08:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1689376123;
+        bh=SZjFVexzAzCIFb7LhRueGNFgHJ3Wlc+le9rBmsPg1lM=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=Ww2zlbnsUPJiW/yP8H2gOWAdZOa9jg2kaF7U2+ANd/n21k7r+3K1rkLLkXD7qKXx3
+         Uzbgjb0uerq+1dZ/403lDgbDT2kH8hSshDbmen3+fVoC5HR8aYdYFtfZdYdl3fprqF
+         SEsUZgcSI+y2DbGSISeaO8y8/7VvLHF3PMETY3EM=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36EN8h8r023251
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 14 Jul 2023 18:08:43 -0500
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 14
+ Jul 2023 18:08:43 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 14 Jul 2023 18:08:43 -0500
+Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36EN8hXc103404;
+        Fri, 14 Jul 2023 18:08:43 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, Nishanth Menon <nm@ti.com>
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Tero Kristo <kristo@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [PATCH] arm64: dts: ti: Fix compatible of ti,*-ehrpwm-tbclk
+Date:   Fri, 14 Jul 2023 18:08:42 -0500
+Message-ID: <168937611061.3756376.9972114281282940088.b4-ty@ti.com>
+X-Mailer: git-send-email 2.40.0
+In-Reply-To: <20230713184759.3336536-1-nm@ti.com>
+References: <20230713184759.3336536-1-nm@ti.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-NAK - checkpatch.pl is a (strongish) guideline, but not a rule. In the case=
-s
-corrected in the patch series here, we format the switch cases on single li=
-nes
-as it dramatically improves the readability of what is otherwise just a /lo=
-ng/
-list of slightly different static mappings. I don't believe we're the only
-part of the kernel to do this either.
+Hi Nishanth Menon,
 
-On Fri, 2023-07-14 at 14:58 +0800, huzhi001@208suo.com wrote:
-> Signed-off-by: ZhiHu <huzhi001@208suo.com>
-> ---
->   .../gpu/drm/nouveau/nvkm/engine/fifo/gk104.c  | 40 ++++++++++++++-----
->   1 file changed, 29 insertions(+), 11 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/fifo/gk104.c=20
-> b/drivers/gpu/drm/nouveau/nvkm/engine/fifo/gk104.c
-> index d8a4d773a58c..b99e0a7c96bb 100644
-> --- a/drivers/gpu/drm/nouveau/nvkm/engine/fifo/gk104.c
-> +++ b/drivers/gpu/drm/nouveau/nvkm/engine/fifo/gk104.c
-> @@ -137,15 +137,29 @@ gk104_ectx_bind(struct nvkm_engn *engn, struct=20
-> nvkm_cctx *cctx, struct nvkm_chan
->       u64 addr =3D 0ULL;
->=20
->       switch (engn->engine->subdev.type) {
-> -    case NVKM_ENGINE_SW    : return;
-> -    case NVKM_ENGINE_GR    : ptr0 =3D 0x0210; break;
-> -    case NVKM_ENGINE_SEC   : ptr0 =3D 0x0220; break;
-> -    case NVKM_ENGINE_MSPDEC: ptr0 =3D 0x0250; break;
-> -    case NVKM_ENGINE_MSPPP : ptr0 =3D 0x0260; break;
-> -    case NVKM_ENGINE_MSVLD : ptr0 =3D 0x0270; break;
-> -    case NVKM_ENGINE_VIC   : ptr0 =3D 0x0280; break;
-> -    case NVKM_ENGINE_MSENC : ptr0 =3D 0x0290; break;
-> -    case NVKM_ENGINE_NVDEC :
-> +    case NVKM_ENGINE_SW:
-> +        return;
-> +    case NVKM_ENGINE_GR:
-> +        ptr0 =3D 0x0210;
-> +        break;
-> +    case NVKM_ENGINE_SEC:
-> +        ptr0 =3D 0x0220;
-> +        break;
-> +    case NVKM_ENGINE_MSPDEC:
-> +        ptr0 =3D 0x0250;
-> +        break;
-> +    case NVKM_ENGINE_MSPPP:
-> +        ptr0 =3D 0x0260;
-> +        break;
-> +    case NVKM_ENGINE_MSVLD:
-> +        ptr0 =3D 0x0270;
-> +        break;
-> +    case NVKM_ENGINE_VIC:
-> +        ptr0 =3D 0x0280; break;
-> +    case NVKM_ENGINE_MSENC:
-> +        ptr0 =3D 0x0290;
-> +        break;
-> +    case NVKM_ENGINE_NVDEC:
->           ptr1 =3D 0x0270;
->           ptr0 =3D 0x0210;
->           break;
-> @@ -435,8 +449,12 @@ gk104_runl_commit(struct nvkm_runl *runl, struct=20
-> nvkm_memory *memory, u32 start,
->       int target;
->=20
->       switch (nvkm_memory_target(memory)) {
-> -    case NVKM_MEM_TARGET_VRAM: target =3D 0; break;
-> -    case NVKM_MEM_TARGET_NCOH: target =3D 3; break;
-> +    case NVKM_MEM_TARGET_VRAM:
-> +        target =3D 0;
-> +        break;
-> +    case NVKM_MEM_TARGET_NCOH:
-> +        target =3D 3;
-> +        break;
+On Thu, 13 Jul 2023 13:47:59 -0500, Nishanth Menon wrote:
+> TI EHRPWM compatible is just ti,*-ehrpwm-tbclk without needing a
+> syscon compatibility.
+> 
+> Fixes the following dtbs_check warnings:
+>  compatible: [''ti,am654-ehrpwm-tbclk, 'syscon'] is too long
+>  compatible: ['ti,am64-epwm-tbclk', 'syscon'] is too long
+>  compatible: ['ti,am62-epwm-tbclk', 'syscon'] is too long
+> 
+> [...]
 
-This one isn't very long, but I'd still say it's definitely a lot easier to
-read in the compact form. If anything, the only change I would make here is
-formatting the default: case to be on a single line as well
+I have applied the following to branch ti-k3-dts-next on [1].
+Thank you!
 
->       default:
->           WARN_ON(1);
->           return;
+[1/1] arm64: dts: ti: Fix compatible of ti,*-ehrpwm-tbclk
+      commit: 2a7cc7bedb58d4eedc177e642efedc25d713445a
 
---=20
-Cheers,
- Lyude Paul (she/her)
- Software Engineer at Red Hat
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent up the chain during
+the next merge window (or sooner if it is a relevant bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+[1] git://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
 
