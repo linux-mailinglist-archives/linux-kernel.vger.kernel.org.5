@@ -2,110 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42B307537C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 12:17:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B8B37537C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 12:17:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235754AbjGNKRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 06:17:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60324 "EHLO
+        id S236133AbjGNKRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 06:17:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236136AbjGNKRa (ORCPT
+        with ESMTP id S236113AbjGNKRA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 06:17:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AD733AB9
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 03:16:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689329783;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AgsO0LIwFs+B/IpMLrCbpX0oHYjYTeHY2o/wR8hTZgM=;
-        b=TFNfsQT3TF1bFr/VEqqwr8z9+pKtHImbIxNvrctWComU8ju3SNyJxV++BbPECS0xuoKf4L
-        3pPcU1oxAO83Yc2qTQgQ4eNCDP+aG+kuExEzMlG00WWme1rhvsWVMRcYZq99pmU0M9h3rk
-        33yTan7f6maWLR3J/0u21DY8NZEm4Gs=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-468-yKZaCAX5M4auamfUeF4uBA-1; Fri, 14 Jul 2023 06:16:22 -0400
-X-MC-Unique: yKZaCAX5M4auamfUeF4uBA-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-30e4943ca7fso1025866f8f.3
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 03:16:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689329781; x=1691921781;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AgsO0LIwFs+B/IpMLrCbpX0oHYjYTeHY2o/wR8hTZgM=;
-        b=RqGTKDE4eZG3q35s4PCA54iYVb+9Ak+qL9RGeHifciHY2GK5kNSb1pLNaKLUt6VKGf
-         GNJU4SHfaYz2ftvs5XiY5P28buD8h2FDO6cDPO2KG1a+T2/RkD9+uizSM5VgtmefpMYJ
-         L8Xb+fIe+2Vbv4A+QmGMQ67bqjE/RNZoAmDC1wTgAKugc71yv0/mQyOv1UJJvSXqB/Xd
-         tK8W5+WSew9kucsB0lMXF7blw01m7pbdlPV5rvRMJP1YWRwpxHp/XtyF9mFnyuA18FUn
-         mWzWl+SBjhBb3tkYz4G7Qj7DGDGtxEIaizBltPY2vS/1wbkT9x99DWfdqoxzoIvGKIU3
-         drkQ==
-X-Gm-Message-State: ABy/qLZ9WOC2dpAtWgLT32oe+enbmRPzzXQiAeVunqzfyIXiY0/n2xyT
-        h7KuvkAZpmnsp94HHJXsqVo9myaTpPLjLYJj/BNT5BKoVwVFkD8zT7jMlq08DFavx6HiLh7jVeW
-        eCTlTb5wJku0huxelHaUC/UBh
-X-Received: by 2002:adf:e58e:0:b0:315:a773:394b with SMTP id l14-20020adfe58e000000b00315a773394bmr3559366wrm.53.1689329781189;
-        Fri, 14 Jul 2023 03:16:21 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlF0HtgY6sDDD86tg8fCCTMHAGpwz2OXVfooT8l8cpyZ4ClOcAcJV3byx1AlvhsmA2qwNg6c+g==
-X-Received: by 2002:adf:e58e:0:b0:315:a773:394b with SMTP id l14-20020adfe58e000000b00315a773394bmr3559356wrm.53.1689329780953;
-        Fri, 14 Jul 2023 03:16:20 -0700 (PDT)
-Received: from localhost ([91.126.32.244])
-        by smtp.gmail.com with ESMTPSA id j1-20020a5d4641000000b0031434936f0dsm10378831wrs.68.2023.07.14.03.16.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 03:16:20 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 5/8] drm/client: Convert drm_mode_create_dumb() to
- drm_mode_addfb2()
-In-Reply-To: <9090c1b423e0b56c8e906155fe53ff0841830a03.1689252746.git.geert@linux-m68k.org>
-References: <cover.1689252746.git.geert@linux-m68k.org>
- <9090c1b423e0b56c8e906155fe53ff0841830a03.1689252746.git.geert@linux-m68k.org>
-Date:   Fri, 14 Jul 2023 12:16:19 +0200
-Message-ID: <87fs5qu7bg.fsf@minerva.mail-host-address-is-not-set>
+        Fri, 14 Jul 2023 06:17:00 -0400
+Received: from mailbox.box.xen0n.name (mail.xen0n.name [115.28.160.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC2422D7B;
+        Fri, 14 Jul 2023 03:16:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xen0n.name; s=mail;
+        t=1689329811; bh=MUuVfpygMgCjNoB7gN0GB11/GGdd69MXDcvHP5s3tIM=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=f4aSnAyMFo6We3UVVj1NzubCIPGSRgGoyXxxzVMvjpBfmPU4JEvlJPOhUpDb7sKx/
+         UZxlSaFjnB0eI8LkK3R+r1BZQ1VPQ8BBXbhdnivkl2mZ8iseHoZ+va6NnS5pLP+4a0
+         7SZYzZWQpMJrVXAm6ueMxJ214iqWLH7WW1w288T8=
+Received: from [100.100.34.13] (unknown [220.248.53.61])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id C25A560148;
+        Fri, 14 Jul 2023 18:16:50 +0800 (CST)
+Message-ID: <d58a20c9-1f52-c398-292b-2d2501a302e6@xen0n.name>
+Date:   Fri, 14 Jul 2023 18:16:50 +0800
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH v16 05/30] LoongArch: KVM: Add vcpu related header files
+Content-Language: en-US
+To:     bibo mao <maobibo@loongson.cn>, Huacai Chen <chenhuacai@kernel.org>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        loongarch@lists.linux.dev, Jens Axboe <axboe@kernel.dk>,
+        Mark Brown <broonie@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Xi Ruoyao <xry111@xry111.site>, hejinyang@loongson.cn,
+        Tianrui Zhao <zhaotianrui@loongson.cn>
+References: <20230629075538.4063701-1-zhaotianrui@loongson.cn>
+ <20230629075538.4063701-6-zhaotianrui@loongson.cn>
+ <CAAhV-H7P_GSsoo+g5o0BTCzK4fxwH5d2dQOYde-VpcGvn4SXQA@mail.gmail.com>
+ <152f7869-d591-0134-cf9d-b55774a135e8@loongson.cn>
+ <CAAhV-H4N2wdB8n7Pindv9WdVPLPOboK0Ys75SWOkMZU+=NWEbQ@mail.gmail.com>
+ <152fbdd1-a21c-8ee1-d386-ec7f80b0bb97@loongson.cn>
+From:   WANG Xuerui <kernel@xen0n.name>
+In-Reply-To: <152fbdd1-a21c-8ee1-d386-ec7f80b0bb97@loongson.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Geert Uytterhoeven <geert@linux-m68k.org> writes:
+On 2023/7/14 18:10, bibo mao wrote:
+> 
+> 
+> 在 2023/7/14 17:22, Huacai Chen 写道:
+>> Hi, Bibo,
+>>
+>> On Fri, Jul 14, 2023 at 3:45 PM bibo mao <maobibo@loongson.cn> wrote:
+>>>
+>>>
+>>>
+>>> 在 2023/7/14 15:11, Huacai Chen 写道:
+>>>> Hi, Tianrui,
+>>>>
+>>>> On Thu, Jun 29, 2023 at 3:55 PM Tianrui Zhao <zhaotianrui@loongson.cn> wrote:
+>>>>>
+>>>>> Add LoongArch vcpu related header files, including vcpu csr
+>>>>> information, irq number defines, and some vcpu interfaces.
+>>>>>
+>>>>> Reviewed-by: Bibo Mao <maobibo@loongson.cn>
+>>>>> Signed-off-by: Tianrui Zhao <zhaotianrui@loongson.cn>
+>>>>> ---
+>>>>>   arch/loongarch/include/asm/insn-def.h  |  55 ++++++
+>>>>>   arch/loongarch/include/asm/kvm_csr.h   | 231 +++++++++++++++++++++++++
+>>>>>   arch/loongarch/include/asm/kvm_vcpu.h  |  97 +++++++++++
+>>>>>   arch/loongarch/include/asm/loongarch.h |  20 ++-
+>>>>>   arch/loongarch/kvm/trace.h             | 168 ++++++++++++++++++
+>>>>>   5 files changed, 566 insertions(+), 5 deletions(-)
+>>>>>   create mode 100644 arch/loongarch/include/asm/insn-def.h
+>>>>>   create mode 100644 arch/loongarch/include/asm/kvm_csr.h
+>>>>>   create mode 100644 arch/loongarch/include/asm/kvm_vcpu.h
+>>>>>   create mode 100644 arch/loongarch/kvm/trace.h
+>>>>>
+>>>>> diff --git a/arch/loongarch/include/asm/insn-def.h b/arch/loongarch/include/asm/insn-def.h
+>>>>> new file mode 100644
+>>>>> index 000000000000..e285ee108fb0
+>>>>> --- /dev/null
+>>>>> +++ b/arch/loongarch/include/asm/insn-def.h
+>>>>> @@ -0,0 +1,55 @@
+>>>>> +/* SPDX-License-Identifier: GPL-2.0-only */
+>>>>> +
+>>>>> +#ifndef __ASM_INSN_DEF_H
+>>>>> +#define __ASM_INSN_DEF_H
+>>>>> +
+>>>>> +#include <linux/stringify.h>
+>>>>> +#include <asm/gpr-num.h>
+>>>>> +#include <asm/asm.h>
+>>>>> +
+>>>>> +#define INSN_STR(x)            __stringify(x)
+>>>>> +#define CSR_RD_SHIFT           0
+>>>>> +#define CSR_RJ_SHIFT           5
+>>>>> +#define CSR_SIMM14_SHIFT       10
+>>>>> +#define CSR_OPCODE_SHIFT       24
+>>>> As all needed instructions have already upstream in binutils now and
+>>>> binutils 2.41 will be released soon, I suggest again to introduce
+>>>> AS_HAS_LVZ_EXTENSION and make KVM depend on AS_HAS_LVZ_EXTENSION.
+>>> It is a good news that binutils 2.41 has supported LVZ assemble language.
+>>> we will add AS_HAS_LVZ_EXTENSION support, however KVM need not depend on
+>>> AS_HAS_LVZ_EXTENSION since bintuils 2.41 is not popularly used. yeap we
+>>> need write beautiful code, also we should write code with pratical usage.
+>> 1, For pure upstream: the CI toolchain comes from
+>> https://mirrors.edge.kernel.org/pub/tools/crosstool/. Since binutils
+>> 2.41 will be released soon, CI toolchain will also be updated soon.
+>>
+>> 2, For community distributions, such as Fedora rawhide, Debian
+>> unstable and Arch: they usually choose the latest released version, so
+>> binutils 2.41 will be used quickly.
+>>
+>> 3, For downstream distributions, such as UOS and Kylin: if they choose
+>> kernel as new as 6.6, they may probably choose binutils as new as
+>> 2.41; if they choose an LTS kernel (e.g., 6.1), they should backport
+>> KVM support to the kernel, then they don't have any reason to not
+>> backport LVZ instructions support to binutils.
+> 
+> commit 616500232e632dba8b03981eeccadacf2fbf1c30
+> Author: Huacai Chen <chenhuacai@kernel.org>
+> Date:   Thu Jun 29 20:58:43 2023
+> 
+>      LoongArch: Add vector extensions support
+> 
+>      Introduce AS_HAS_LSX_EXTENSION and AS_HAS_LASX_EXTENSION to avoid non-
+>      vector toolchains complains unsupported instructions.
+>      
+>      Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+> 
+> The vector patch 616500232e63"Add vector extensions support" is merged
+> with any reviewed-by or acked, vector depends on AS_HAS_LSX, so it requires
+> all the patches obey this rule. I just think it bring thing to the wrong
+> way.
 
-> Currently drm_client_buffer_addfb() uses the legacy drm_mode_addfb(),
-> which uses bpp and depth to guess the wanted buffer format.
-> However, drm_client_buffer_addfb() already knows the exact buffer
-> format, so there is no need to convert back and forth between buffer
-> format and bpp/depth, and the function can just call drm_mode_addfb2()
-> directly instead.
->
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> ---
->  drivers/gpu/drm/drm_client.c | 13 +++++--------
->  1 file changed, 5 insertions(+), 8 deletions(-)
->
+For the record: I've gone through (earlier versions of) the patch but 
+simply didn't have time to do so for that last revision, to confidently 
+give my R-b. As can be seen from the Git history and mailing list 
+archives, my LoongArch time was fully allocated to ClangBuiltLinux (and 
+by extension, LLVM/Clang) at that time. By the time I was able to 
+properly look at this LSX/LASX patch, it was already in loongarch-next, 
+so even if I replied it'd be too late.
 
-Nice cleanup!
-
-Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
+And, to make it clear: I'm not opposing your upstreaming effort or 
+"conspiring against you" in any way. With all the replies I'm only 
+trying to explain why some code can be dropped so every upstream dev 
+will have to maintain less code paths and have an easier life.
 
 -- 
-Best regards,
+WANG "xen0n" Xuerui
 
-Javier Martinez Canillas
-Core Platforms
-Red Hat
+Linux/LoongArch mailing list: https://lore.kernel.org/loongarch/
 
