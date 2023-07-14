@@ -2,66 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8416E753A66
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 14:10:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14FEA753A6C
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 14:13:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235760AbjGNMJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 08:09:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58046 "EHLO
+        id S235500AbjGNMN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 08:13:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235739AbjGNMJ4 (ORCPT
+        with ESMTP id S230470AbjGNMN0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 08:09:56 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2952358E;
-        Fri, 14 Jul 2023 05:09:53 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Fri, 14 Jul 2023 08:13:26 -0400
+Received: from mail.marcansoft.com (marcansoft.com [212.63.210.85])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D77B2722;
+        Fri, 14 Jul 2023 05:13:23 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 632FF61D03;
-        Fri, 14 Jul 2023 12:09:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A65AC433C8;
-        Fri, 14 Jul 2023 12:09:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689336592;
-        bh=GqntrC5nJzIPRXSONxz2G9J4TDNYa4iq/zHDKdXGLro=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LMuNDWn3UjL4P0QKGpk+hpHq5gijkQBc3pv9mk1yb8Y9tRwDHvVi/aY3Bxey/st8d
-         XKMuD79se12hhzzpq7q4Lm32XQve8/0J2L8I+dQoaRL7qkbQ65ve90XALWNbAS4gxA
-         J1vjwpgEQr9Bx532eXdoDmDIZ3EqKKQ5tzMMdVUjzRtHXh8Rl0S07wbP7bveZogoAF
-         PbEbRHrPwmc9g1XeaWwWMZTa/OJJNZrfUUeqm06adzX7t5jR8XeHuvTzW66ZeDCsII
-         Sak4InAitreezr4A92xfabmJUcyH2ZTPHo3Ynz0vU39sFjaF6Jy74Ol1TScQ1dCg6D
-         YP8ZSuzzo1DaQ==
-Date:   Fri, 14 Jul 2023 13:09:46 +0100
-From:   Will Deacon <will@kernel.org>
-To:     "Aiqun(Maria) Yu" <quic_aiquny@quicinc.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>, corbet@lwn.net,
-        catalin.marinas@arm.com, maz@kernel.org, quic_pkondeti@quicinc.com,
-        quic_kaushalk@quicinc.com, quic_satyap@quicinc.com,
-        quic_shashim@quicinc.com, quic_songxue@quicinc.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] arm64: Add the arm64.nolse_atomics command line option
-Message-ID: <20230714120946.GA5597@willie-the-truck>
-References: <20230711102510.GA1809@willie-the-truck>
- <67c2621f-4cad-2495-9785-7737246d3e90@quicinc.com>
- <ZK5X9bXQT7GBxNHj@FVFF77S0Q05N.emea.arm.com>
- <604ac52d-4336-744f-2ab8-44d1c93fbaa8@quicinc.com>
- <ZK_d86ApI1FCHhTL@FVFF77S0Q05N.cambridge.arm.com>
- <e02b9969-a3ca-a80d-1d32-25d2bf4c72b6@quicinc.com>
- <ZLBLwG2LJ4gZLfbh@FVFF77S0Q05N.cambridge.arm.com>
- <6d1a6691-f858-71bf-97fe-97e13fcb93b6@quicinc.com>
- <20230714082348.GA5240@willie-the-truck>
- <b76c7a9b-8ed6-97da-bdfa-47cc7db51ff5@quicinc.com>
+        (Authenticated sender: lina@asahilina.net)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id E69225BC3A;
+        Fri, 14 Jul 2023 12:13:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=asahilina.net;
+        s=default; t=1689336801;
+        bh=DWYGMsjKYj46JY4sKn+xsGrKzmhqcYG/7k01RE2MggE=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=RNhUBcX3s0W+Zvu0qcG7y44YsnhK7RpOcztyyvrMh4jUpqdIFUVdsaAtArdvI1kvF
+         dDnG9Olp8Gy2TsoGTNCL+gDNa2Gw005Qp90wuziuT4GFdKqu5atYBh0k92rJ8CaCem
+         XklwuamNyNKzIhLkHHTkx4hOhA4OvR70m3hKOxwQgKV7w+AUDpmMjVfiItubxZv6TQ
+         8qxRm3K1ajK/2drxgdAttjR3J5mfWIlw66+Taag37MLlrZkYdwOnPOJzdgwMcLZeKW
+         pOtvcCgo4y+pwtfCIVXjlwysoirNNJfRqUHJsMMxwSGFjFTTCKdt8DTT301ONw5dfJ
+         232IHUwkNx4GA==
+Message-ID: <7e53bc1f-7d1e-fb1c-be45-f03c5bbb8965@asahilina.net>
+Date:   Fri, 14 Jul 2023 21:13:16 +0900
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b76c7a9b-8ed6-97da-bdfa-47cc7db51ff5@quicinc.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH 2/3] drm/scheduler: Fix UAF in
+ drm_sched_fence_get_timeline_name
+Content-Language: en-US
+To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Luben Tuikov <luben.tuikov@amd.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>
+Cc:     Faith Ekstrand <faith.ekstrand@collabora.com>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, asahi@lists.linux.dev
+References: <20230714-drm-sched-fixes-v1-0-c567249709f7@asahilina.net>
+ <20230714-drm-sched-fixes-v1-2-c567249709f7@asahilina.net>
+ <bef7ef62-3cd9-6ceb-5eb4-5ae0c0236778@amd.com>
+ <de502b41-2864-db1e-16a0-8a5d5e0e4ad3@asahilina.net>
+ <d9dc2fd5-d054-dbf3-72b7-fe9deaa46350@amd.com>
+ <6b473196-9f87-d6c8-b289-18f80de78f0a@asahilina.net>
+ <003eb810-654e-3a2b-0756-d62440c2d419@amd.com>
+From:   Asahi Lina <lina@asahilina.net>
+In-Reply-To: <003eb810-654e-3a2b-0756-d62440c2d419@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,64 +70,172 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 06:12:02PM +0800, Aiqun(Maria) Yu wrote:
-> On 7/14/2023 4:23 PM, Will Deacon wrote:
-> > On Fri, Jul 14, 2023 at 09:56:27AM +0800, Aiqun(Maria) Yu wrote:
-> > > Try to a detailed summarise of the whole discussions, anyone can ignore some
-> > > part if you are already know.
-> > > 
-> > > * Part 1: Solution for this issue.
-> > > While we still want to have options to let third party and end users can
-> > > have options:
-> > >    1.Disable lse atomic cap.
-> > >    2.*Disallow* far atomic by "CPUECTLR_EL1.atom force near atomic" and
-> > > non-cachable mappling for lse atomic only.
-> > 
-> > Sorry, but this still isn't making sense to me. Which CPUs do you have on
-> > this SoC?
-> cpu is cortex A78/A55.
-> > 
-> > My understanding of the CPUs from ARM is that LSE atomics are not supposed
-> > to be sent to blocks that don't support them. That doesn't mean you have to
-> > do everything near, however -- you can still execute them at e.g. L2.
-> > 
-> > For example, the Cortex-X1 TRM states:
-> > 
-> >    | Atomic instructions to cacheable memory can be performed as either
-> >    | near atomics or far atomics, depending on where the cache line
-> >    | containing the data resides.
-> >    |
-> >    | When an instruction hits in the L1 data cache in a unique state, then
-> >    | it is performed as a near atomic in the L1 memory system. If the atomic
-> >    | operation misses in the L1 cache, or the line is shared with another
-> >    | core, then the atomic is sent as a far atomic on the core CHI interface.
-> lse atomic is optional to CHI-B for example, some system may have cpu
-> feature register have lse atomic feature, but the far atomic is not accpeted
-> by CHI side. It will be simiar issue that we do.
+On 14/07/2023 19.18, Christian König wrote:
+> Am 14.07.23 um 12:06 schrieb Asahi Lina:
+>> On 14/07/2023 18.57, Christian König wrote:
+>>> Am 14.07.23 um 11:49 schrieb Asahi Lina:
+>>>> On 14/07/2023 17.43, Christian König wrote:
+>>>>> Am 14.07.23 um 10:21 schrieb Asahi Lina:
+>>>>>> A signaled scheduler fence can outlive its scheduler, since fences
+>>>>>> are
+>>>>>> independencly reference counted. Therefore, we can't reference the
+>>>>>> scheduler in the get_timeline_name() implementation.
+>>>>>>
+>>>>>> Fixes oopses on `cat /sys/kernel/debug/dma_buf/bufinfo` when shared
+>>>>>> dma-bufs reference fences from GPU schedulers that no longer exist.
+>>>>>>
+>>>>>> Signed-off-by: Asahi Lina <lina@asahilina.net>
+>>>>>> ---
+>>>>>>      drivers/gpu/drm/scheduler/sched_entity.c | 7 ++++++-
+>>>>>>      drivers/gpu/drm/scheduler/sched_fence.c  | 4 +++-
+>>>>>>      include/drm/gpu_scheduler.h              | 5 +++++
+>>>>>>      3 files changed, 14 insertions(+), 2 deletions(-)
+>>>>>>
+>>>>>> diff --git a/drivers/gpu/drm/scheduler/sched_entity.c
+>>>>>> b/drivers/gpu/drm/scheduler/sched_entity.c
+>>>>>> index b2bbc8a68b30..17f35b0b005a 100644
+>>>>>> --- a/drivers/gpu/drm/scheduler/sched_entity.c
+>>>>>> +++ b/drivers/gpu/drm/scheduler/sched_entity.c
+>>>>>> @@ -389,7 +389,12 @@ static bool
+>>>>>> drm_sched_entity_add_dependency_cb(struct drm_sched_entity *entity)
+>>>>>>                 /*
+>>>>>>               * Fence is from the same scheduler, only need to wait
+>>>>>> for
+>>>>>> -         * it to be scheduled
+>>>>>> +         * it to be scheduled.
+>>>>>> +         *
+>>>>>> +         * Note: s_fence->sched could have been freed and
+>>>>>> reallocated
+>>>>>> +         * as another scheduler. This false positive case is okay,
+>>>>>> as if
+>>>>>> +         * the old scheduler was freed all of its jobs must have
+>>>>>> +         * signaled their completion fences.
+>>>>>
+>>>>> This is outright nonsense. As long as an entity for a scheduler exists
+>>>>> it is not allowed to free up this scheduler.
+>>>>>
+>>>>> So this function can't be called like this.
+>>>>
+>>>> As I already explained, the fences can outlive their scheduler. That
+>>>> means *this* entity certainly exists for *this* scheduler, but the
+>>>> *dependency* fence might have come from a past scheduler that was
+>>>> already destroyed along with all of its entities, and its address
+>>>> reused.
+>>>
+>>> Well this is function is not about fences, this function is a callback
+>>> for the entity.
+>>
+>> That deals with dependency fences, which could have come from any
+>> arbitrary source, including another entity and another scheduler.
+> 
+> No, they can't. Signaling is certainly mandatory to happen before things
+> are released even if we allow to decouple the dma_fence from it's issuer.
 
-Again, that should not be a problem. Looking at the A55 TRM, it explicitly
-says that atomics will be done in the L3 if the interconnect does not
-support them. The A78 TRM doesn't talk about this at all, so I defer to
-Mark (or anybody else from Arm) on how that works, but one might assume
-that it does something similar to the other Arm cores.
+That's exactly what I'm saying in my comment. That the fence must be 
+signaled if its creator no longer exists, therefore it's okay to 
+inadvertently wait on its scheduled fence instead of its finished fence 
+(if that one was intended) since everything needs to be signaled at that 
+point anyway.
 
-> > > * Part 2: Why we need the solution
-> > > 1. There is also some case far atomic is better performance than near
-> > > atomic. end user may still can still try to do allow far atomic.
-> > > while this driver is also use kerenl LSE ATOMIC macro, so it can be running
-> > > on cpu don't support lse atomic and cpu support lse atomic already.
-> > > while current system, cpu have feature register said lse atomic is
-> > > supported, but memory controller is not supported is currently not yet
-> > > supported.
-> > 
-> > I think you're forgetting the fact that these instructions can be executed
-> > by userspace, so the kernel option is completely bogus. If you're saying
-> > that cacheable atomics can cause external aborts, then I can write an app
-> > which will crash your device even if you've set this command line option.
-> > 
-> For apps like userspace also needed to check the system capbility as far as
+>>
+>>>>
+>>>> Christian, I'm really getting tired of your tone. I don't appreciate
+>>>> being told my comments are "outright nonsense" when you don't even
+>>>> take the time to understand what the issue is and what I'm trying to
+>>>> do/document. If you aren't interested in working with me, I'm just
+>>>> going to give up on drm_sched, wait until Rust gets workqueue support,
+>>>> and reimplement it in Rust. You can keep your broken fence lifetime
+>>>> semantics and I'll do my own thing.
+>>>
+>>> I'm certainly trying to help here, but you seem to have unrealistic
+>>> expectations.
+>>
+>> I don't think expecting not to be told my changes are "outright
+>> nonsense" is an unrealistic expectation. If you think it is, maybe
+>> that's yet another indicator of the culture problems the kernel
+>> community has...
+> 
+> Well I'm just pointing out that you don't seem to understand the
+> background of the things and just think this is a bug instead of
+> intentional behavior.
 
-That's not something you can enforce, so a malicious application can easily
-crash your system.
+I made a change, I explained why that change works with a portion of the 
+existing code by updating a comment, and you called that nonsense. It's 
+not even a bug, I'm trying to explain why this part isn't a bug even 
+with the expectation that fences don't outlive the scheduler. This is 
+because I went through the code trying to find problems this approach 
+would cause, ran into this tricky case, thought about it for a while, 
+realized it wasn't a problem, and figured it needed a comment.
 
-Will
+>>> I perfectly understand what you are trying to do, but you don't seem to
+>>> understand that this functionality here isn't made for your use case.
+>>
+>> I do, that's why I'm trying to change things. Right now, this
+>> functionality isn't even properly documented, which is why I thought
+>> it could be used for my use case, and slowly discovered otherwise.
+>> Daniel suggested documenting it, then fixing the mismatches between
+>> documentation and reality, which is what I'm doing here.
+> 
+> Well I know Daniel for something like 10-15 years or so, I'm pretty sure
+> that he meant that you document the existing state because otherwise
+> this goes against usual patch submission approaches.
+> 
+>>
+>>> We can adjust the functionality to better match your requirements, but
+>>> you can't say it is broken because it doesn't work when you use it not
+>>> in the way it is intended to be used.
+>>
+>> I'm saying the idea that a random dma-buf holds onto a chain of
+>> references that prevents unloading a driver module that wrote into it
+>> (and keeps a bunch of random unrelated objects alive) is a broken
+>> state of affairs.
+> 
+> Well no, this is intentional design. Otherwise the module and with it
+> the operations pointer the fences rely on go away.
+
+But this is a drm_sched fence, not a driver fence. That's the point, 
+that they should be decoupled. The driver is free to unload and only 
+drm_sched would need to stay loaded so its fences continue to be valid. 
+Except that's not what happens right now. Right now the drm_sched fence 
+hangs onto the hw fence and the whole thing is supposed to keep the 
+whole scheduler alive for things not to go boom.
+
+> We already discussed
+> that over 10 years ago when Marten came up with the initial dma_fence
+> design.
+> 
+> The resulting problems are very well known and I completely agree that
+> they are undesirable, but this is how the framework works and not just
+> the scheduler but the rest of the DMA-buf framework as well.
+
+So it's undesirable but you don't want me to change things...
+
+> 
+>> It may or may not trickle down to actual problems for users (I would
+>> bet it does in some cases but I don't know for sure), but it's a
+>> situation that doesn't make any sense.
+>>
+>> I know I'm triggering actual breakage with my new use case due to
+>> this, which is why I'm trying to improve things. But the current state
+>> of affairs just doesn't make any sense even if it isn't causing kernel
+>> oopses today with other drivers.
+>>
+>>> You can go ahead and try to re-implement the functionality in Rust, but
+>>> then I would reject that pointing out that this should probably be an
+>>> extension to the existing code.
+>>
+>> You keep rejecting my attempts at extending the existing code...
+> 
+> Well I will try to improve here and push you into the right direction
+> instead.
+
+What is the right direction?
+
+So far it's looking more and more like wait until we get workqueues in 
+Rust, write a trivial scheduler in the driver, and give up on this whole 
+drm_sched thing. Please tell me if there is a better way, because so far 
+all you've done is tell me my attempts are not the right way, and 
+demotivated me from working on drm_sched at all.
+
+~~ Lina
+
