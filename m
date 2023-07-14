@@ -2,112 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDFA575323F
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 08:48:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF41475323D
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 08:47:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234493AbjGNGr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 02:47:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37464 "EHLO
+        id S232239AbjGNGrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 02:47:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234790AbjGNGrm (ORCPT
+        with ESMTP id S234986AbjGNGq6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 02:47:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B52826B7
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 23:46:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689317166;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KXpKPKHigpMkbl63W7aUxxwZsWxrC+5Af9bciMsQwRU=;
-        b=QdE2tDgkOElhRu8Z1bnFdSQH5kIiYYamk6kxGdD9221cJTU+VLYtU1y28Hm8av/YAPNEwe
-        GxHpGaIFUqGkwI+q2lzKzKzEvVfl+rf30YcsL5XVLw1L4us0NTuQrag6F9StCUDv0LLTSt
-        smQKIkiFOyKD6Mw6igULkQRVvv21V4A=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-145-8OtjsKBxNDeaE3fd7RBq7g-1; Fri, 14 Jul 2023 02:46:04 -0400
-X-MC-Unique: 8OtjsKBxNDeaE3fd7RBq7g-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-31437f02985so1064615f8f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 23:46:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689317163; x=1691909163;
-        h=content-transfer-encoding:in-reply-to:subject:organization:from
-         :content-language:references:cc:to:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KXpKPKHigpMkbl63W7aUxxwZsWxrC+5Af9bciMsQwRU=;
-        b=K2Twv6/KUBmT6NYdLALDKekEb/ABG5AT623OH4GmvyNtZgM2xFjVeqs7UQw277F2As
-         V6cKjbeOEYZdD7xV5p4ej0LYYBVQbE+ebDXJAGJanwyQYg+bF12Rb0SkcMtGXd20FwRH
-         dnVdBj0dffC3alGqDQ02uNeFogfyjFDQUbI9B6/8pY9ecEKPOdODNdLx/c8pYNwYxxvY
-         3JQdgO1lFcCigfkPvlWsJBknrdqWCDsopETCOv/IK4V7iLLTO0rQwrby8+gGNJSAIlJe
-         xnFMsaWuAx81maTCRE4Xg8LmozhecoHWmDXMeqxna9TSw/4xJtv3pZDk+/8u3QY/8h1M
-         r2dw==
-X-Gm-Message-State: ABy/qLbmSjXoWmsflXP98Oi2rMIbiuBCtD/qMimIkDZe5BLT2jXYV0GI
-        88bGqcCFh2nvFCRZkynjKHEUXUuy1BQrs2ZjaqDtypjfsZ6vIaCqO0en0J5A68Ak1AfjxIXvtyd
-        FFb8XXQNkRwPl7FXNr4i7u6Nu
-X-Received: by 2002:a5d:5506:0:b0:314:3358:d57f with SMTP id b6-20020a5d5506000000b003143358d57fmr3243367wrv.56.1689317163690;
-        Thu, 13 Jul 2023 23:46:03 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlH9IkQug2Vp8ewiaAGSY8AV3YvIspoKiJh6biwWXVoO5nvSCptVvP139urMCIqbtER0pDCkeQ==
-X-Received: by 2002:a5d:5506:0:b0:314:3358:d57f with SMTP id b6-20020a5d5506000000b003143358d57fmr3243347wrv.56.1689317163305;
-        Thu, 13 Jul 2023 23:46:03 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c70a:4500:8a9e:a24a:133d:86bb? (p200300cbc70a45008a9ea24a133d86bb.dip0.t-ipconnect.de. [2003:cb:c70a:4500:8a9e:a24a:133d:86bb])
-        by smtp.gmail.com with ESMTPSA id j11-20020a056000124b00b0031417fd473csm10024953wrx.78.2023.07.13.23.46.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 Jul 2023 23:46:02 -0700 (PDT)
-Message-ID: <2b5e55ae-b7c5-3274-a6e0-61951d0c9068@redhat.com>
-Date:   Fri, 14 Jul 2023 08:46:01 +0200
+        Fri, 14 Jul 2023 02:46:58 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CED430E2;
+        Thu, 13 Jul 2023 23:46:34 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36E6kBnn116158;
+        Fri, 14 Jul 2023 01:46:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1689317171;
+        bh=51ygtQqbjia4BNqCGeTzY/PWLEnrB51JEBAW1iWjYps=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=fJ+J0NHdY++G9H2fThwS039bgwc1y5MWHuZByQxeVy3Sow7VUXgkHMEvZkmZ8A4Bg
+         M5qln6ojA518kKzyjtG0oaLuqQW9hc1mYIAXCQ8dNlmBx0O2T0jflGRrejO1P8HG1S
+         2Wt+ZmSw0O8x2RfviukuPK8JC3dWVXViWUkJHJfM=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36E6kBwa051681
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 14 Jul 2023 01:46:11 -0500
+Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 14
+ Jul 2023 01:46:11 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 14 Jul 2023 01:46:11 -0500
+Received: from [172.24.19.15] (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36E6k7RU097881;
+        Fri, 14 Jul 2023 01:46:08 -0500
+Message-ID: <eb1dd448-8cec-13a0-c782-92950de52085@ti.com>
+Date:   Fri, 14 Jul 2023 12:16:07 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Hugh Dickins <hughd@google.com>, linux-kernel@vger.kernel.org
-References: <20230714061438.122391-1-anshuman.khandual@arm.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3] PCI: j721e: Delay 100ms T_PVPERL from power stable to
+ PERST# inactive
+To:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof Wilczy_ski <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+CC:     <linux-omap@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Achal Verma <a-verma1@ti.com>
+References: <20230707095119.447952-1-a-verma1@ti.com>
 Content-Language: en-US
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH] mm/rmap: Convert rmap_t into enum rmap_flags
-In-Reply-To: <20230714061438.122391-1-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From:   "Verma, Achal" <a-verma1@ti.com>
+In-Reply-To: <20230707095119.447952-1-a-verma1@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.07.23 08:14, Anshuman Khandual wrote:
-> rmap_t tracks bitwise positions for various page reverse map related flags.
-> enum could provide more compact representation. This converts these flags
-> into an enum listing, without any functional change.
+
+
+On 7/7/2023 3:21 PM, Achal Verma wrote:
+> As per the PCIe Card Electromechanical specification REV. 5.0, PERST#
+> signal should be de-asserted after minimum 100ms from the time power-rails
+> become stable. So, to ensure 100ms delay to give sufficient time for
+> power-rails and refclk to become stable, change delay from 100us to 100ms.
 > 
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-> Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-> Cc: Hugh Dickins <hughd@google.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: linux-mm@kvack.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>  From PCIe Card Electromechanical specification REV. 5.0 section 2.9.2:
+> TPVPERL: Power stable to PERST# inactive - 100ms
+> 
+> Fixes: f3e25911a430 ("PCI: j721e: Add TI J721E PCIe driver")
+> Signed-off-by: Achal Verma <a-verma1@ti.com>
+Hello Bjorn,
+
+Could you please bless this with "Reviewed-by" tag.
+
+Thanks,
+Achal Verma
 > ---
-> This applies on v6.5-rc1
-
-No,
-
-please read Documentation/dev-tools/sparse.rst for "Using sparse for typechecking".
-
--- 
-Cheers,
-
-David / dhildenb
-
+> 
+> Changes from v2:
+> * Fix commit message.
+> 
+> Change from v1:
+> * Add macro for delay value.
+> 
+>   drivers/pci/controller/cadence/pci-j721e.c | 11 +++++------
+>   drivers/pci/pci.h                          |  2 ++
+>   2 files changed, 7 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/cadence/pci-j721e.c b/drivers/pci/controller/cadence/pci-j721e.c
+> index e70213c9060a..32b6a7dc3cff 100644
+> --- a/drivers/pci/controller/cadence/pci-j721e.c
+> +++ b/drivers/pci/controller/cadence/pci-j721e.c
+> @@ -498,14 +498,13 @@ static int j721e_pcie_probe(struct platform_device *pdev)
+>   
+>   		/*
+>   		 * "Power Sequencing and Reset Signal Timings" table in
+> -		 * PCI EXPRESS CARD ELECTROMECHANICAL SPECIFICATION, REV. 3.0
+> -		 * indicates PERST# should be deasserted after minimum of 100us
+> -		 * once REFCLK is stable. The REFCLK to the connector in RC
+> -		 * mode is selected while enabling the PHY. So deassert PERST#
+> -		 * after 100 us.
+> +		 * PCI EXPRESS CARD ELECTROMECHANICAL SPECIFICATION, REV. 5.0
+> +		 * indicates PERST# should be deasserted after minimum of 100ms
+> +		 * after power rails achieve specified operating limits and
+> +		 * within this period reference clock should also become stable.
+>   		 */
+>   		if (gpiod) {
+> -			usleep_range(100, 200);
+> +			msleep(PCIE_TPVPERL_DELAY_MS);
+>   			gpiod_set_value_cansleep(gpiod, 1);
+>   		}
+>   
+> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+> index a4c397434057..6ab2367e5867 100644
+> --- a/drivers/pci/pci.h
+> +++ b/drivers/pci/pci.h
+> @@ -13,6 +13,8 @@
+>   
+>   #define PCIE_LINK_RETRAIN_TIMEOUT_MS	1000
+>   
+> +#define PCIE_TPVPERL_DELAY_MS	100	/* see PCIe CEM r5.0, sec 2.9.2 */
+> +
+>   extern const unsigned char pcie_link_speed[];
+>   extern bool pci_early_dump;
+>   
