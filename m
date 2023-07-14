@@ -2,99 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92A99753508
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 10:31:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE07F75350B
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 10:31:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234777AbjGNIbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 04:31:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44018 "EHLO
+        id S235283AbjGNIbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 04:31:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbjGNIbc (ORCPT
+        with ESMTP id S235060AbjGNIbf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 04:31:32 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BD8B1BF9;
-        Fri, 14 Jul 2023 01:31:30 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Fri, 14 Jul 2023 04:31:35 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF5111FDB;
+        Fri, 14 Jul 2023 01:31:33 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 9DB6A1FD60;
+        Fri, 14 Jul 2023 08:31:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1689323492; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5QhgMcxLrCOJceW2qDrEP0VVk9ydlAYkW2ZZG9lWHYU=;
+        b=FvvQ9YCvAdL4LvIgbXynv6ZhxMygRtwtwXrRd9977cNjSeMIoy1SrQCXnizsGWes5Xd0DJ
+        E5hKiEQ0gZkLux3MPF8vXU6Uh19yoBlbHHD9mDEZR9fSdWrhwmMXolBQCgDCLR8qGVySub
+        4c0wDldvEsZ94n0PtefUxR39MFGHI0I=
+Received: from suse.cz (unknown [10.100.208.146])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 31C4961BCB;
-        Fri, 14 Jul 2023 08:31:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4534DC433C7;
-        Fri, 14 Jul 2023 08:31:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689323489;
-        bh=mOp/R3MA1WgB2aSIsMXA6AzT7d3U2Y9fSh5X+yprt9k=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=OPrbxERWT526fi8A956vfRZeMSg4HyOJB8lpCxd/1njffucGHJ20Z8afB77WMuuyQ
-         16I8HYyZtW8WC7xXceKt00QYOgOqbYWngfeYnxFrRkMAYgoGr1vdZH1d6ps790E9SS
-         c7dmelsU0nkoYiQvsHSlvFEGqsY4j0152aMmx+uvf+wVpvOwxe4Lo+Mstqm1jGMUJ0
-         KQPpCdduzvYLtnLvCII8CWL2azGXmc/2C8Lz/mQHF4FMM494YKqi2ioULdQS4gqjqB
-         LzEaGMiQdNC8XXruKwksfJ7SwCgA3HOOhXEWWKep6Ugx/0h6N1W6uBOQotGNLbRSY5
-         WYPY67pXmuGqQ==
-Date:   Fri, 14 Jul 2023 17:31:26 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Akanksha J N <akanksha@linux.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>
-Subject: Re: linux-next: duplicate patches in the ftrace tree
-Message-Id: <20230714173126.37313c540cc998f5653a6848@kernel.org>
-In-Reply-To: <20230714145404.115c7be1@canb.auug.org.au>
-References: <20230714145404.115c7be1@canb.auug.org.au>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        by relay2.suse.de (Postfix) with ESMTPS id 721212C142;
+        Fri, 14 Jul 2023 08:31:32 +0000 (UTC)
+Date:   Fri, 14 Jul 2023 10:31:32 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     huzhi001@208suo.com
+Cc:     tglx@linutronix.de, senozhatsky@chromium.org, adobriyan@gmail.com,
+        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH] proc: Fix four errors in kmsg.c
+Message-ID: <ZLEH5AQKsfLfSxV7@alley>
+References: <tencent_053A1A860EFB7AAD92B2409B9D5AE06AB507@qq.com>
+ <2f88487fa9f29eeb5a5bd4b6946a7e4c@208suo.com>
+ <ZLEF16qgcTOaLMIk@alley>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZLEF16qgcTOaLMIk@alley>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the caution!
-
-On Fri, 14 Jul 2023 14:54:04 +1000
-Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-
-> Hi all,
+On Fri 2023-07-14 10:22:48, Petr Mladek wrote:
+> On Fri 2023-07-14 14:57:59, huzhi001@208suo.com wrote:
+> > The following checkpatch errors are removed:
+> > ERROR: "foo * bar" should be "foo *bar"
+> > ERROR: "foo * bar" should be "foo *bar"
+> > ERROR: "foo * bar" should be "foo *bar"
+> > ERROR: "foo * bar" should be "foo *bar"
 > 
-> The following commits are also in Linus Torvalds' tree as different
-> commits (but the same patches):
-> 
->   e46ad59233cf ("selftests/ftrace: Add new test case which checks for optimized probes")
->   bd2cdc432190 ("selftests/ftrace: Add new test case which adds multiple consecutive probes in a function")
+> Please, do not do fix these cosmetic issues reported by checkpatch.pl.
+> It is not worth the effort. In fact, it is contra productive.
+> It complicates the git history, backports.
 
-These are only in next-20230714.
+BTW, Did anyone suggest you to fix errors/warnings reported by
+checkpatch.pl?
 
-> 
-> These are commits
-> 
->   5985329c7073 ("selftests/ftrace: Add new test case which checks for optimized probes")
->   cf9071dd46e7 ("selftests/ftrace: Add new test case which adds multiple consecutive probes in a function")
+You seem to be 2nd person who sent similar patch from @suo.com
+within the last week. The first patch was rejected as well,
+see
+https://lore.kernel.org/all/f2d8eb955890bc1db1b307db713d4a4a@208suo.com/
 
-I confirmed the latter pair was pushed by my probes-v6.5.
-So the latter one should be kept.
+You might want to tell this person that there are better ways
+how to get involved into the kernel development.
 
-Ah, sorry, I missed to update probes/for-next. That caused this issue.
-Let me update the probes/for-next branch.
-
-Thank you,
-
-> 
-> in Linus' tree.
-> 
-> -- 
-> Cheers,
-> Stephen Rothwell
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Best Regards,
+Petr
