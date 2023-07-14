@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25D977539EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 13:44:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B3807539EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 13:44:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235624AbjGNLoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 07:44:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46946 "EHLO
+        id S235648AbjGNLoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 07:44:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235151AbjGNLoN (ORCPT
+        with ESMTP id S235273AbjGNLoN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 14 Jul 2023 07:44:13 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C12992D41;
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D61830CB;
         Fri, 14 Jul 2023 04:44:11 -0700 (PDT)
-Received: from kwepemm600009.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4R2V3m0xWyz18Lqp;
-        Fri, 14 Jul 2023 19:43:32 +0800 (CST)
+Received: from kwepemm600009.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4R2V0g61F5zNm5n;
+        Fri, 14 Jul 2023 19:40:51 +0800 (CST)
 Received: from localhost.localdomain (10.69.192.56) by
  kwepemm600009.china.huawei.com (7.193.23.164) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
@@ -26,9 +26,9 @@ From:   Weili Qian <qianweili@huawei.com>
 To:     <herbert@gondor.apana.org.au>
 CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
         <liulongfang@huawei.com>
-Subject: [PATCH 2/4] crypto: hisilicon/qm - stop function and write data to memory
-Date:   Fri, 14 Jul 2023 19:41:36 +0800
-Message-ID: <20230714114138.1582-3-qianweili@huawei.com>
+Subject: [PATCH 3/4] crypto: hisilicon/qm - increase device doorbell timeout
+Date:   Fri, 14 Jul 2023 19:41:37 +0800
+Message-ID: <20230714114138.1582-4-qianweili@huawei.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20230714114138.1582-1-qianweili@huawei.com>
 References: <20230714114138.1582-1-qianweili@huawei.com>
@@ -49,91 +49,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the system is shut down, the process is killed, but the
-accelerator device does not stop executing the tasks. If the
-accelerator device still accesses the memory and writes back data
-to the memory after the memory is reclaimed by the system,
-an NFE error may occur. Therefore, before the system is shut
-down, the driver needs to stop the device and write data back
-to the memory.
+When both the accelerator device and SMMU are busy,
+the processing time of the doorbell may be prolonged.
+As a result, the doorbell may timeout, especially in the sva
+scenario. Therefore, the doorbell timeout is increased.
 
 Signed-off-by: Weili Qian <qianweili@huawei.com>
 ---
- drivers/crypto/hisilicon/qm.c | 14 ++++++++------
- include/linux/hisi_acc_qm.h   |  2 +-
- 2 files changed, 9 insertions(+), 7 deletions(-)
+ drivers/crypto/hisilicon/qm.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
 diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index 81c21ca40375..fdff87c09aaf 100644
+index fdff87c09aaf..a99fd589445c 100644
 --- a/drivers/crypto/hisilicon/qm.c
 +++ b/drivers/crypto/hisilicon/qm.c
-@@ -1002,7 +1002,7 @@ static void qm_reset_function(struct hisi_qm *qm)
- 		return;
- 	}
+@@ -88,6 +88,8 @@
+ #define QM_DB_PRIORITY_SHIFT_V1		48
+ #define QM_PAGE_SIZE			0x0034
+ #define QM_QP_DB_INTERVAL		0x10000
++#define QM_DB_TIMEOUT_CFG		0x100074
++#define QM_DB_TIMEOUT_SET		0x1fffff
  
--	ret = hisi_qm_stop(qm, QM_FLR);
-+	ret = hisi_qm_stop(qm, QM_DOWN);
- 	if (ret) {
- 		dev_err(dev, "failed to stop qm when reset function\n");
- 		goto clear_bit;
-@@ -3251,7 +3251,7 @@ int hisi_qm_stop(struct hisi_qm *qm, enum qm_stop_reason r)
- 	}
+ #define QM_MEM_START_INIT		0x100040
+ #define QM_MEM_INIT_DONE		0x100044
+@@ -5381,6 +5383,8 @@ int hisi_qm_init(struct hisi_qm *qm)
+ 		goto err_pci_init;
  
- 	if (qm->status.stop_reason == QM_SOFT_RESET ||
--	    qm->status.stop_reason == QM_FLR) {
-+	    qm->status.stop_reason == QM_DOWN) {
- 		hisi_qm_set_hw_reset(qm, QM_RESET_STOP_TX_OFFSET);
- 		ret = qm_stop_started_qp(qm);
- 		if (ret < 0) {
-@@ -4547,11 +4547,11 @@ void hisi_qm_reset_prepare(struct pci_dev *pdev)
- 	if (qm->fun_type == QM_HW_PF)
- 		qm_cmd_uninit(qm);
+ 	if (qm->fun_type == QM_HW_PF) {
++		/* Set the doorbell timeout to QM_DB_TIMEOUT_CFG ns. */
++		writel(QM_DB_TIMEOUT_SET, qm->io_base + QM_DB_TIMEOUT_CFG);
+ 		qm_disable_clock_gate(qm);
+ 		ret = qm_dev_mem_reset(qm);
+ 		if (ret) {
+@@ -5548,6 +5552,8 @@ static int qm_rebuild_for_resume(struct hisi_qm *qm)
  
--	ret = qm_try_stop_vfs(qm, QM_PF_FLR_PREPARE, QM_FLR);
-+	ret = qm_try_stop_vfs(qm, QM_PF_FLR_PREPARE, QM_DOWN);
+ 	qm_cmd_init(qm);
+ 	hisi_qm_dev_err_init(qm);
++	/* Set the doorbell timeout to QM_DB_TIMEOUT_CFG ns. */
++	writel(QM_DB_TIMEOUT_SET, qm->io_base + QM_DB_TIMEOUT_CFG);
+ 	qm_disable_clock_gate(qm);
+ 	ret = qm_dev_mem_reset(qm);
  	if (ret)
- 		pci_err(pdev, "failed to stop vfs by pf in FLR.\n");
- 
--	ret = hisi_qm_stop(qm, QM_FLR);
-+	ret = hisi_qm_stop(qm, QM_DOWN);
- 	if (ret) {
- 		pci_err(pdev, "Failed to stop QM, ret = %d.\n", ret);
- 		hisi_qm_set_hw_reset(qm, QM_RESET_STOP_TX_OFFSET);
-@@ -4649,9 +4649,11 @@ void hisi_qm_dev_shutdown(struct pci_dev *pdev)
- 	struct hisi_qm *qm = pci_get_drvdata(pdev);
- 	int ret;
- 
--	ret = hisi_qm_stop(qm, QM_NORMAL);
-+	ret = hisi_qm_stop(qm, QM_DOWN);
- 	if (ret)
- 		dev_err(&pdev->dev, "Fail to stop qm in shutdown!\n");
-+
-+	hisi_qm_cache_wb(qm);
- }
- EXPORT_SYMBOL_GPL(hisi_qm_dev_shutdown);
- 
-@@ -4815,7 +4817,7 @@ static void qm_handle_cmd_msg(struct hisi_qm *qm, u32 fun_num)
- 	cmd = msg & QM_MB_CMD_DATA_MASK;
- 	switch (cmd) {
- 	case QM_PF_FLR_PREPARE:
--		qm_pf_reset_vf_process(qm, QM_FLR);
-+		qm_pf_reset_vf_process(qm, QM_DOWN);
- 		break;
- 	case QM_PF_SRST_PREPARE:
- 		qm_pf_reset_vf_process(qm, QM_SOFT_RESET);
-diff --git a/include/linux/hisi_acc_qm.h b/include/linux/hisi_acc_qm.h
-index a7d54d4d41fd..39fbfb4be944 100644
---- a/include/linux/hisi_acc_qm.h
-+++ b/include/linux/hisi_acc_qm.h
-@@ -104,7 +104,7 @@
- enum qm_stop_reason {
- 	QM_NORMAL,
- 	QM_SOFT_RESET,
--	QM_FLR,
-+	QM_DOWN,
- };
- 
- enum qm_state {
 -- 
 2.33.0
 
