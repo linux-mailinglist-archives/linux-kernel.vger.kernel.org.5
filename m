@@ -2,106 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A357752FE0
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 05:20:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26D8F752FE2
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 05:24:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234727AbjGNDUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 23:20:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43090 "EHLO
+        id S234619AbjGNDYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 23:24:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233753AbjGNDUx (ORCPT
+        with ESMTP id S231292AbjGNDYG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 23:20:53 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8E121B5
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 20:20:51 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R2Gvg6TFHzBRSVY
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 11:20:47 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689304847; x=1691896848; bh=4RThHj/DNsNyooB75oPh9gIzWA4
-        yeEuFdFd3SjfPcMY=; b=xbbO6lOgpFwD/BA1IFiZVSZDjHtlJSe9RMNxTkie6D9
-        yU19LkyjYjax75jtvCX/ukSR8nupYhmz73JowPy7Y9HpgwTxvrc7k/5gRrGqdYml
-        okGjarGNTNipRvqbWzqXy0hmwCOKGfRa2C5n2rfHEj1nlf/xXshg3egeOuhujlTY
-        171xj6+ajhU0z4wqn+GOQZbxhclll25GXm/JUchqMzYmAs4VyJryaW71SxYmXjd0
-        21eGWKUtZcpLXaShyOz3er0/UVS5X573SoKij3/4WTJIrIOtEYFFlO6DISkSUZnj
-        Yf0aqfBgy2y6cl5jJ9AuFd4RD681IsP4boe8WUzi4TQ==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id CFTrLuV3HVAY for <linux-kernel@vger.kernel.org>;
-        Fri, 14 Jul 2023 11:20:47 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R2Gvg3pGGzBJk54;
-        Fri, 14 Jul 2023 11:20:47 +0800 (CST)
+        Thu, 13 Jul 2023 23:24:06 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E6621FFC
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 20:24:01 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-51e55517de3so4237a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 20:24:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689305040; x=1691897040;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uAavaLmIeCwYclXN+9/jkCoblgrGrtrOk9lcsx3pq0w=;
+        b=KIXsfkQwyuSiZ7lAeGp6ZIlSb0TYvzb3dcNKFNJPdbKpiqxZ+wHFTp4eqzpe2tkANv
+         pv3Qs46L3I3UpQ0j2QoVYO25+jRodIjC+C9c/bxR/gB6H4P/n+bLdRYux3pWloWLyGQI
+         j6WetHkIsnSmEstipMxWommnaseemHOYIjBASDk4un8tR37s+zFnezjQEVbLP8ED1cWN
+         wHYhSa9pQNeUMkwc8oDEzSbLQdCquhS9w9+mjGMobinX5ubMFOn9sLy3m89W+wMX94j8
+         eMbBPGG9yOB3T8epjm+QMTFf39Obi/B9nahejQp89OKprTBRnVV1EVo32nh4ULZYLXIi
+         qKIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689305040; x=1691897040;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uAavaLmIeCwYclXN+9/jkCoblgrGrtrOk9lcsx3pq0w=;
+        b=Sojqg8a+J95CUdCGHvRYmn+AlZSZFH9mrerBRE06CLDzQnSHEK8rRbWgDv8VMWYcEb
+         Aa+7eThPcseZfU6pdjUCZY6i/9ccbAHfpD7AhAFZJv6eGbyCxPbiHSE5iHMuBWfVm/8f
+         4HAC/9oxRUNdxOP2eEC0JXGTc9NPtnim4ugeqLOAylnSAprte/1+OB8V/C4k2FAjjiGc
+         evx6xEHe2u9PZMlrApTXIrRTfInILWHIq7EsiztTsJ+gAOPdrOVzh0Tg7PyiucHd6bfC
+         3yhZRQjOiUpKsr4Ln8NrM84WtauChSo0SoXnO6Qkp1Cjr1FgLe/l7+Svaunv2xlr5Jkj
+         i20A==
+X-Gm-Message-State: ABy/qLZk0L8JWUzhtO3miQkogtR/nw+YSGD0sK5GF6qqml9KXq4xDF2a
+        zplkYKSZYqIWRblciQ6Oc2KnqN1KufJWdv1WMVj8Rg==
+X-Google-Smtp-Source: APBJJlGjG4qBbS0rwqfLUSuyZ1p0ktq+NWopDc8HyTh7i3Ug4Oz1bNDtDsEWrktWVlsA/CtTxe6Hum4AcDflwh3pwAY=
+X-Received: by 2002:a50:bb6a:0:b0:51e:5e41:a0b2 with SMTP id
+ y97-20020a50bb6a000000b0051e5e41a0b2mr341376ede.2.1689305039871; Thu, 13 Jul
+ 2023 20:23:59 -0700 (PDT)
 MIME-Version: 1.0
-Date:   Fri, 14 Jul 2023 11:20:47 +0800
-From:   shijie001@208suo.com
-To:     airlied@gmail.com, daniel@ffwll.ch, christian.koenig@amd.com,
-        alexander.deucher@amd.com, Xinhui.Pan@amd.com
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/radeon: ERROR: open brace '{' following function
- definitions go on the next line
-In-Reply-To: <tencent_21616D4FB2F221FE67B71858B197C646AB08@qq.com>
-References: <tencent_21616D4FB2F221FE67B71858B197C646AB08@qq.com>
-User-Agent: Roundcube Webmail
-Message-ID: <50bf0cff1b048f24484f32ff0e5015f6@208suo.com>
-X-Sender: shijie001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+References: <20230713150558.200545-1-fengwei.yin@intel.com>
+ <CAOUHufb0zxKvmvEXfG4kySenxyPtagnr_cf4Ms-6si3bQTybGQ@mail.gmail.com> <8547495c-9051-faab-a47d-1962f2e0b1da@intel.com>
+In-Reply-To: <8547495c-9051-faab-a47d-1962f2e0b1da@intel.com>
+From:   Yu Zhao <yuzhao@google.com>
+Date:   Thu, 13 Jul 2023 21:23:21 -0600
+Message-ID: <CAOUHufY-edD2j2Nfz3xrObF2ERAGKecjFr_1Qarh5aDwyDGS2A@mail.gmail.com>
+Subject: Re: [RFC PATCH] madvise: make madvise_cold_or_pageout_pte_range()
+ support large folio
+To:     "Yin, Fengwei" <fengwei.yin@intel.com>
+Cc:     Minchan Kim <minchan@kernel.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        willy@infradead.org, david@redhat.com, ryan.roberts@arm.com,
+        shy828301@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix four occurrences of the checkpatch.pl error:
-ERROR: open brace '{' following function definitions go on the next line
+On Thu, Jul 13, 2023 at 9:10=E2=80=AFPM Yin, Fengwei <fengwei.yin@intel.com=
+> wrote:
+>
+>
+>
+> On 7/14/2023 10:08 AM, Yu Zhao wrote:
+> > On Thu, Jul 13, 2023 at 9:06=E2=80=AFAM Yin Fengwei <fengwei.yin@intel.=
+com> wrote:
+> >>
+> >> Current madvise_cold_or_pageout_pte_range() has two problems for
+> >> large folio support:
+> >>   - Using folio_mapcount() with large folio prevent large folio from
+> >>     picking up.
+> >>   - If large folio is in the range requested, shouldn't split it
+> >>     in madvise_cold_or_pageout_pte_range().
+> >>
+> >> Fix them by:
+> >>   - Use folio_estimated_sharers() with large folio
+> >>   - If large folio is in the range requested, don't split it. Leave
+> >>     to page reclaim phase.
+> >>
+> >> For large folio cross boundaries of requested range, skip it if it's
+> >> page cache. Try to split it if it's anonymous folio. If splitting
+> >> fails, skip it.
+> >
+> > For now, we may not want to change the existing semantic (heuristic).
+> > IOW, we may want to stick to the "only owner" condition:
+> >
+> >   - if (folio_mapcount(folio) !=3D 1)
+> >   + if (folio_entire_mapcount(folio) ||
+> >   +     (any_page_within_range_has_mapcount > 1))
+> >
+> > +Minchan Kim
+> The folio_estimated_sharers() was discussed here:
+> https://lore.kernel.org/linux-mm/20230118232219.27038-6-vishal.moola@gmai=
+l.com/
+> https://lore.kernel.org/linux-mm/20230124012210.13963-2-vishal.moola@gmai=
+l.com/
+>
+> Yes. It's accurate to check each page of large folio. But it may be over =
+killed in
+> some cases (And I think madvise is one of the cases not necessary to be a=
+ccurate.
+> So folio_estimated_sharers() is enough. Correct me if I am wrong).
 
-Signed-off-by: Jie Shi <shijie001@208suo.com>
----
-  drivers/gpu/drm/radeon/radeon_atpx_handler.c | 12 ++++++++----
-  1 file changed, 8 insertions(+), 4 deletions(-)
+I see. Then it's possible this is also what the original commit wants
+to do -- Minchan, could you clarify?
 
-diff --git a/drivers/gpu/drm/radeon/radeon_atpx_handler.c 
-b/drivers/gpu/drm/radeon/radeon_atpx_handler.c
-index 6f93f54bf651..2a3c3f8b02e2 100644
---- a/drivers/gpu/drm/radeon/radeon_atpx_handler.c
-+++ b/drivers/gpu/drm/radeon/radeon_atpx_handler.c
-@@ -61,19 +61,23 @@ struct atpx_mux {
-      u16 mux;
-  } __packed;
+Regardless, I think we can have the following fix, potentially cc'ing stabl=
+e:
 
--bool radeon_has_atpx(void) {
-+bool radeon_has_atpx(void)
-+{
-      return radeon_atpx_priv.atpx_detected;
-  }
+-  if (folio_mapcount(folio) !=3D 1)
++  if (folio_estimated_sharers(folio) !=3D 1)
 
--bool radeon_has_atpx_dgpu_power_cntl(void) {
-+bool radeon_has_atpx_dgpu_power_cntl(void)
-+{
-      return radeon_atpx_priv.atpx.functions.power_cntl;
-  }
+Sounds good?
 
--bool radeon_is_atpx_hybrid(void) {
-+bool radeon_is_atpx_hybrid(void)
-+{
-      return radeon_atpx_priv.atpx.is_hybrid;
-  }
-
--bool radeon_atpx_dgpu_req_power_for_displays(void) {
-+bool radeon_atpx_dgpu_req_power_for_displays(void)
-+{
-      return radeon_atpx_priv.atpx.dgpu_req_power_for_displays;
-  }
+> > Also there is an existing bug here: the later commit 07e8c82b5eff8
+> > ("madvise: convert madvise_cold_or_pageout_pte_range() to use folios")
+> > is incorrect for sure; the original commit 9c276cc65a58f ("mm:
+> > introduce MADV_COLD") seems incorrect too.
+> >
+> > +Vishal Moola (Oracle)
+> >
+> > The "any_page_within_range_has_mapcount" test above seems to be the
+> > only correct to meet condition claimed by the comments, before or
+> > after the folio conversion, assuming here a THP page means the
+> > compound page without PMD mappings (PMD-split). Otherwise the test is
+> > always false (if it's also PMD mapped somewhere else).
+> >
+> >   /*
+> >    * Creating a THP page is expensive so split it only if we
+> >    * are sure it's worth. Split it if we are only owner.
+> >    */
