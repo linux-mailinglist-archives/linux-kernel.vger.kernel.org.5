@@ -2,45 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFC94753F20
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 17:39:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8A8A753F1F
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 17:39:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236016AbjGNPje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 11:39:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235868AbjGNPjb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S235914AbjGNPjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 14 Jul 2023 11:39:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235699AbjGNPj3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 14 Jul 2023 11:39:29 -0400
 Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDCA12D7B
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 08:39:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6998530C5;
+        Fri, 14 Jul 2023 08:39:28 -0700 (PDT)
 Received: from i53875a50.versanet.de ([83.135.90.80] helo=phil.lan)
         by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <heiko@sntech.de>)
-        id 1qKKt6-0004Kz-DV; Fri, 14 Jul 2023 17:39:20 +0200
+        id 1qKKt7-0004Kz-A3; Fri, 14 Jul 2023 17:39:21 +0200
 From:   Heiko Stuebner <heiko@sntech.de>
-To:     Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>,
+        linux-rockchip@lists.infradead.org
 Cc:     Heiko Stuebner <heiko@sntech.de>,
         linux-arm-kernel@lists.infradead.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Bjorn Andersson <quic_bjorande@quicinc.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        kernel@collabora.com, Arnd Bergmann <arnd@arndb.de>,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>, kernel@collabora.com,
         linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH RESEND] arm64: defconfig: Enable Rockchip OTP memory driver
-Date:   Fri, 14 Jul 2023 17:39:16 +0200
-Message-Id: <168934909035.2268788.9745451471454977135.b4-ty@sntech.de>
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v1 0/4] RK3588 USB2 support
+Date:   Fri, 14 Jul 2023 17:39:18 +0200
+Message-Id: <168934909031.2268788.17295705108647249284.b4-ty@sntech.de>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230710190107.32451-1-cristian.ciocaltea@collabora.com>
-References: <20230710190107.32451-1-cristian.ciocaltea@collabora.com>
+In-Reply-To: <20230712165106.65603-1-sebastian.reichel@collabora.com>
+References: <20230712165106.65603-1-sebastian.reichel@collabora.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -53,20 +48,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 10 Jul 2023 22:01:07 +0300, Cristian Ciocaltea wrote:
-> The Rockchip one-time programmable memory driver provides access to
-> various SoC specific information, e.g. leakage currents of the
-> CPU/GPU/NPU components found on a RK3588 SoC.
+On Wed, 12 Jul 2023 18:51:02 +0200, Sebastian Reichel wrote:
+> This adds USB2 support to Rock 5A, 5B and the EVB1. The necessary USB2 PHY
+> changes have been queued to the PHY tree and are available in linux-next.
 > 
-> Enable the driver as built-in to allow client device drivers (e.g.
-> cpufreq) to access the required data for proper settings adjustment.
+> -- Sebastian
+> 
+> Sebastian Reichel (4):
+>   arm64: dts: rockchip: rk3588: add USB2 support
+>   arm64: dts: rockchip: rk3588-evb1: add USB2
+>   arm64: dts: rockchip: rk3588-rock5b: add USB2
+>   arm64: dts: rockchip: rk3588s-rock5a: add USB2
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] arm64: defconfig: Enable Rockchip OTP memory driver
-      commit: 3526df3faf21b66904c47cc8814c177a890343b6
+Adapted the patch subjects to "arm64: dts: rockchip: description in prose"
+
+[1/4] arm64: dts: rockchip: rk3588: add USB2 support
+      commit: a684cb416414fdd2b2a33e691119608c0e2eba9f
+[2/4] arm64: dts: rockchip: rk3588-evb1: add USB2
+      commit: e39da1074c20d4fb1114ccafe07a142df5345a53
+[3/4] arm64: dts: rockchip: rk3588-rock5b: add USB2
+      commit: 488fc7ad2bc8d980cc0599bc1be951938df8a779
+[4/4] arm64: dts: rockchip: rk3588s-rock5a: add USB2
+      commit: 1642bf66e270d8de7ba27068d1a5ecdbdba14d3b
 
 Best regards,
 -- 
