@@ -2,51 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BD7075412B
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 19:49:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A8AE75411E
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 19:49:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235667AbjGNRsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 13:48:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34484 "EHLO
+        id S235894AbjGNRtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 13:49:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236511AbjGNRsI (ORCPT
+        with ESMTP id S235923AbjGNRsP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 13:48:08 -0400
-Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42CEB270A;
-        Fri, 14 Jul 2023 10:47:48 -0700 (PDT)
-Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-7835ae70e46so89119439f.3;
-        Fri, 14 Jul 2023 10:47:48 -0700 (PDT)
+        Fri, 14 Jul 2023 13:48:15 -0400
+Received: from mail-il1-f169.google.com (mail-il1-f169.google.com [209.85.166.169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2674E173B;
+        Fri, 14 Jul 2023 10:47:54 -0700 (PDT)
+Received: by mail-il1-f169.google.com with SMTP id e9e14a558f8ab-3465bd756afso10335135ab.3;
+        Fri, 14 Jul 2023 10:47:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689356840; x=1691948840;
+        d=1e100.net; s=20221208; t=1689356843; x=1691948843;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=ZsEsfKX6fx2CPTk8lEiCg36FX1KD3cI2EzS3pEP/M1Y=;
-        b=Iz+iZ4mY9aEioEgjtcQS8qN8ehsbWSu7h84PGSz3DqxYz+TjMq+n8lzBxNyKo30c14
-         cr1S7bQd3pWe9ata1tsIDgYVDS0kYLZ4OBFlrokmZ8dLPWdhPRh55gbGJooHigfmBTOv
-         njuXzt2ZtWYClBt1UiPJKkYfg10paOQy3Nu1wcHRlBoRYr2mPzIq87oKZc0TwEg1Dj01
-         yCAp3VS78ZiY322kMyMKTiCaZJvnLIuCXyAztvqqM1HQL/EW8dnClIjYILZS3KvHTYmf
-         7UNheC+DmVBQAcCgXL3Kl9WsU4PdacnmUFFhCpcVy6yIbyYv3YUNP4oAGwrFdEtzTdf3
-         Jx8A==
-X-Gm-Message-State: ABy/qLYkbHvukrVG4T3pRmy5wgVlnnTlzeriz5snMfuCL0OdMG32QSKp
-        5SdKmV7cwyul8XOQgktPdg==
-X-Google-Smtp-Source: APBJJlHtkf2StfuBbwBf8coPVemYiYLnfRrMm7RxOWmK/J92J/Cq3PmUW0tNGo59CjkyVi79zBYnag==
-X-Received: by 2002:a5e:da4c:0:b0:783:5e4e:b785 with SMTP id o12-20020a5eda4c000000b007835e4eb785mr5813551iop.19.1689356840237;
-        Fri, 14 Jul 2023 10:47:20 -0700 (PDT)
+        bh=QPqdUUqkc4rI75UMAc4Xs8y3YEcjzz1RiNA4x7IYBHU=;
+        b=DSV7d7Gi3N3EfMJsfSKQx3LaqqLecV4ge3OBFOMxA6oZcqeqN5SA0dFeSbExAt/LbS
+         tvB3E4B6ZCblf2yVnHgCEQU0q4FRMIFqwf3VNW9gF6kNvj6Y6MZIdbPfXiFVnGhWV/Om
+         nV9Ai9fuadYTSAdIskZcOfYeuueGuEdfi9riBgwXhk4usfWwPRjwcwNIAFRlzP7P9sz4
+         JUwWKVsAgyWqHbFa+WMZXNaZSSvZRktZqslXRQhMa2Nc23QxPtjbkiucajxTDSh04aIX
+         V1YFe8pciy9aZifJ6WVmReWM9Kreu74FAUGdi00dzUpQFy5Ls5dGriFMTLIoCj/bY04y
+         xUxg==
+X-Gm-Message-State: ABy/qLbRPse1Bdj9+jzY+dL8VAc9wTCwOuOlwk9904zfaF1fIexWbh7o
+        Qw/DbXrFNq8f1MIezht8GQ==
+X-Google-Smtp-Source: APBJJlE9mCouhYM8S5pU14gRiUMFnROknyjtSCY83LyzowqhqRu2tyhgLmXsFN5YRo8A9ohFE0CbNg==
+X-Received: by 2002:a92:c6ce:0:b0:346:46e:2099 with SMTP id v14-20020a92c6ce000000b00346046e2099mr5032285ilm.1.1689356843369;
+        Fri, 14 Jul 2023 10:47:23 -0700 (PDT)
 Received: from robh_at_kernel.org ([64.188.179.250])
-        by smtp.gmail.com with ESMTPSA id b25-20020a05663801b900b0042b3a328ee0sm2682686jaq.166.2023.07.14.10.47.19
+        by smtp.gmail.com with ESMTPSA id gu16-20020a0566382e1000b0042b534e9f52sm2642967jab.59.2023.07.14.10.47.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jul 2023 10:47:19 -0700 (PDT)
-Received: (nullmailer pid 4059057 invoked by uid 1000);
-        Fri, 14 Jul 2023 17:47:01 -0000
+        Fri, 14 Jul 2023 10:47:22 -0700 (PDT)
+Received: (nullmailer pid 4059270 invoked by uid 1000);
+        Fri, 14 Jul 2023 17:47:07 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Colin Leroy <colin@colino.net>
-Cc:     devicetree@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] macintosh: Explicitly include correct DT includes
-Date:   Fri, 14 Jul 2023 11:46:54 -0600
-Message-Id: <20230714174654.4058898-1-robh@kernel.org>
+To:     Jassi Brar <jassisinghbrar@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Michal Simek <michal.simek@amd.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        linux-rockchip@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-tegra@vger.kernel.org
+Subject: [PATCH] mailbox: Explicitly include correct DT includes
+Date:   Fri, 14 Jul 2023 11:47:01 -0600
+Message-Id: <20230714174702.4059100-1-robh@kernel.org>
 X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -72,154 +96,226 @@ explicitly include the correct includes.
 
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- drivers/macintosh/ams/ams.h              |  1 -
- drivers/macintosh/smu.c                  |  1 +
- drivers/macintosh/therm_adt746x.c        |  2 ++
- drivers/macintosh/therm_windtunnel.c     | 22 ++++++++++++----------
- drivers/macintosh/windfarm_lm75_sensor.c |  4 ++--
- 5 files changed, 17 insertions(+), 13 deletions(-)
+ drivers/mailbox/arm_mhu.c            | 1 +
+ drivers/mailbox/arm_mhu_db.c         | 1 -
+ drivers/mailbox/hi3660-mailbox.c     | 1 +
+ drivers/mailbox/hi6220-mailbox.c     | 1 +
+ drivers/mailbox/imx-mailbox.c        | 3 ++-
+ drivers/mailbox/mailbox-mpfs.c       | 1 +
+ drivers/mailbox/mailbox.c            | 1 +
+ drivers/mailbox/mtk-adsp-mailbox.c   | 3 ++-
+ drivers/mailbox/mtk-cmdq-mailbox.c   | 2 +-
+ drivers/mailbox/omap-mailbox.c       | 2 +-
+ drivers/mailbox/platform_mhu.c       | 1 +
+ drivers/mailbox/rockchip-mailbox.c   | 2 +-
+ drivers/mailbox/sprd-mailbox.c       | 2 +-
+ drivers/mailbox/stm32-ipcc.c         | 1 +
+ drivers/mailbox/tegra-hsp.c          | 1 -
+ drivers/mailbox/zynqmp-ipi-mailbox.c | 2 --
+ 16 files changed, 15 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/macintosh/ams/ams.h b/drivers/macintosh/ams/ams.h
-index 2c159c8844c1..e053c1515460 100644
---- a/drivers/macintosh/ams/ams.h
-+++ b/drivers/macintosh/ams/ams.h
-@@ -8,7 +8,6 @@
- #include <linux/mutex.h>
- #include <linux/spinlock.h>
- #include <linux/types.h>
+diff --git a/drivers/mailbox/arm_mhu.c b/drivers/mailbox/arm_mhu.c
+index 22243cabe056..537f7bfb7b06 100644
+--- a/drivers/mailbox/arm_mhu.c
++++ b/drivers/mailbox/arm_mhu.c
+@@ -12,6 +12,7 @@
+ #include <linux/io.h>
+ #include <linux/mailbox_controller.h>
+ #include <linux/module.h>
++#include <linux/of.h>
+ 
+ #define INTR_STAT_OFS	0x0
+ #define INTR_SET_OFS	0x8
+diff --git a/drivers/mailbox/arm_mhu_db.c b/drivers/mailbox/arm_mhu_db.c
+index aa0a4d83880f..27a510d46908 100644
+--- a/drivers/mailbox/arm_mhu_db.c
++++ b/drivers/mailbox/arm_mhu_db.c
+@@ -15,7 +15,6 @@
+ #include <linux/mailbox_controller.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
 -#include <linux/of_device.h>
  
- enum ams_irq {
- 	AMS_IRQ_FREEFALL = 0x01,
-diff --git a/drivers/macintosh/smu.c b/drivers/macintosh/smu.c
-index 5183a00529f5..b2b78a53e532 100644
---- a/drivers/macintosh/smu.c
-+++ b/drivers/macintosh/smu.c
-@@ -37,6 +37,7 @@
- #include <linux/of_address.h>
- #include <linux/of_irq.h>
- #include <linux/of_platform.h>
+ #define INTR_STAT_OFS	0x0
+ #define INTR_SET_OFS	0x8
+diff --git a/drivers/mailbox/hi3660-mailbox.c b/drivers/mailbox/hi3660-mailbox.c
+index ab24e731a782..17c29e960fbf 100644
+--- a/drivers/mailbox/hi3660-mailbox.c
++++ b/drivers/mailbox/hi3660-mailbox.c
+@@ -11,6 +11,7 @@
+ #include <linux/iopoll.h>
+ #include <linux/mailbox_controller.h>
+ #include <linux/module.h>
++#include <linux/of.h>
+ #include <linux/platform_device.h>
+ #include <linux/slab.h>
+ 
+diff --git a/drivers/mailbox/hi6220-mailbox.c b/drivers/mailbox/hi6220-mailbox.c
+index 1c73c63598f5..f77741ce42e7 100644
+--- a/drivers/mailbox/hi6220-mailbox.c
++++ b/drivers/mailbox/hi6220-mailbox.c
+@@ -15,6 +15,7 @@
+ #include <linux/kfifo.h>
+ #include <linux/mailbox_controller.h>
+ #include <linux/module.h>
++#include <linux/of.h>
+ #include <linux/platform_device.h>
+ #include <linux/slab.h>
+ 
+diff --git a/drivers/mailbox/imx-mailbox.c b/drivers/mailbox/imx-mailbox.c
+index 20f2ec880ad6..3ef4dd8adf5d 100644
+--- a/drivers/mailbox/imx-mailbox.c
++++ b/drivers/mailbox/imx-mailbox.c
+@@ -14,7 +14,8 @@
+ #include <linux/kernel.h>
+ #include <linux/mailbox_controller.h>
+ #include <linux/module.h>
+-#include <linux/of_device.h>
++#include <linux/of.h>
++#include <linux/platform_device.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/suspend.h>
+ #include <linux/slab.h>
+diff --git a/drivers/mailbox/mailbox-mpfs.c b/drivers/mailbox/mailbox-mpfs.c
+index 162df49654fb..20ee283a04cc 100644
+--- a/drivers/mailbox/mailbox-mpfs.c
++++ b/drivers/mailbox/mailbox-mpfs.c
+@@ -14,6 +14,7 @@
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/interrupt.h>
++#include <linux/mod_devicetable.h>
+ #include <linux/platform_device.h>
+ #include <linux/mailbox_controller.h>
+ #include <soc/microchip/mpfs.h>
+diff --git a/drivers/mailbox/mailbox.c b/drivers/mailbox/mailbox.c
+index adf36c05fa43..ebff3baf3045 100644
+--- a/drivers/mailbox/mailbox.c
++++ b/drivers/mailbox/mailbox.c
+@@ -17,6 +17,7 @@
+ #include <linux/bitops.h>
+ #include <linux/mailbox_client.h>
+ #include <linux/mailbox_controller.h>
++#include <linux/of.h>
+ 
+ #include "mailbox.h"
+ 
+diff --git a/drivers/mailbox/mtk-adsp-mailbox.c b/drivers/mailbox/mtk-adsp-mailbox.c
+index 14bc0057de81..91487aa4d7da 100644
+--- a/drivers/mailbox/mtk-adsp-mailbox.c
++++ b/drivers/mailbox/mtk-adsp-mailbox.c
+@@ -10,7 +10,8 @@
+ #include <linux/kernel.h>
+ #include <linux/mailbox_controller.h>
+ #include <linux/module.h>
+-#include <linux/of_device.h>
++#include <linux/of.h>
 +#include <linux/platform_device.h>
  #include <linux/slab.h>
- #include <linux/sched/signal.h>
  
-diff --git a/drivers/macintosh/therm_adt746x.c b/drivers/macintosh/therm_adt746x.c
-index 53ea56b286f9..00693741f744 100644
---- a/drivers/macintosh/therm_adt746x.c
-+++ b/drivers/macintosh/therm_adt746x.c
-@@ -25,7 +25,9 @@
- #include <linux/kthread.h>
- #include <linux/moduleparam.h>
- #include <linux/freezer.h>
-+#include <linux/of.h>
- #include <linux/of_platform.h>
-+#include <linux/platform_device.h>
- 
- #include <asm/machdep.h>
- #include <asm/io.h>
-diff --git a/drivers/macintosh/therm_windtunnel.c b/drivers/macintosh/therm_windtunnel.c
-index 18a982454321..52289de15058 100644
---- a/drivers/macintosh/therm_windtunnel.c
-+++ b/drivers/macintosh/therm_windtunnel.c
-@@ -1,9 +1,9 @@
--/* 
-+/*
-  *   Creation Date: <2003/03/14 20:54:13 samuel>
-  *   Time-stamp: <2004/03/20 14:20:59 samuel>
-- *   
-+ *
-  *	<therm_windtunnel.c>
-- *	
-+ *
-  *	The G4 "windtunnel" has a single fan controlled by an
-  *	ADM1030 fan controller and a DS1775 thermostat.
-  *
-@@ -20,11 +20,11 @@
-  *   Copyright (C) 2003, 2004 Samuel Rydh (samuel@ibrium.se)
-  *
-  *   Loosely based upon 'thermostat.c' written by Benjamin Herrenschmidt
-- *   
-+ *
-  *   This program is free software; you can redistribute it and/or
-  *   modify it under the terms of the GNU General Public License
-  *   as published by the Free Software Foundation
-- *   
-+ *
-  */
- 
- #include <linux/types.h>
-@@ -36,7 +36,9 @@
- #include <linux/i2c.h>
- #include <linux/init.h>
- #include <linux/kthread.h>
-+#include <linux/of.h>
- #include <linux/of_platform.h>
-+#include <linux/platform_device.h>
- 
- #include <asm/machdep.h>
- #include <asm/io.h>
-@@ -48,10 +50,10 @@
- static struct {
- 	volatile int		running;
- 	struct task_struct	*poll_task;
--	
-+
- 	struct mutex	 	lock;
- 	struct platform_device	*of_dev;
--	
-+
- 	struct i2c_client	*thermostat;
- 	struct i2c_client	*fan;
- 
-@@ -127,7 +129,7 @@ write_reg( struct i2c_client *cl, int reg, int data, int len )
- 	tmp[1] = (len == 1) ? data : (data >> 8);
- 	tmp[2] = data;
- 	len++;
--	
-+
- 	if( i2c_master_send(cl, tmp, len) != len )
- 		return -ENODEV;
- 	return 0;
-@@ -369,7 +371,7 @@ attach_fan( struct i2c_client *cl )
- }
- 
- static int
--attach_thermostat( struct i2c_client *cl ) 
-+attach_thermostat( struct i2c_client *cl )
- {
- 	int hyst_temp, os_temp, temp;
- 
-@@ -378,7 +380,7 @@ attach_thermostat( struct i2c_client *cl )
- 
- 	if( (temp=read_reg(cl, 0, 2)) < 0 )
- 		goto out;
--	
-+
- 	/* temperature sanity check */
- 	if( temp < 0x1600 || temp > 0x3c00 )
- 		goto out;
-diff --git a/drivers/macintosh/windfarm_lm75_sensor.c b/drivers/macintosh/windfarm_lm75_sensor.c
-index 48dbdb2bda15..6b26e0f92105 100644
---- a/drivers/macintosh/windfarm_lm75_sensor.c
-+++ b/drivers/macintosh/windfarm_lm75_sensor.c
-@@ -14,7 +14,7 @@
- #include <linux/init.h>
- #include <linux/wait.h>
- #include <linux/i2c.h>
+ struct mtk_adsp_mbox_priv {
+diff --git a/drivers/mailbox/mtk-cmdq-mailbox.c b/drivers/mailbox/mtk-cmdq-mailbox.c
+index b18d47ea13a0..4d62b07c1411 100644
+--- a/drivers/mailbox/mtk-cmdq-mailbox.c
++++ b/drivers/mailbox/mtk-cmdq-mailbox.c
+@@ -15,7 +15,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/mailbox_controller.h>
+ #include <linux/mailbox/mtk-cmdq-mailbox.h>
 -#include <linux/of_device.h>
 +#include <linux/of.h>
- #include <asm/machdep.h>
- #include <asm/io.h>
- #include <asm/sections.h>
-@@ -128,7 +128,7 @@ static int wf_lm75_probe(struct i2c_client *client)
- 		name = "cpu-inlet-temp-1";
- 	else
- 		return -ENXIO;
-- 	
-+
  
- 	lm = kzalloc(sizeof(struct wf_lm75_sensor), GFP_KERNEL);
- 	if (lm == NULL)
+ #define CMDQ_OP_CODE_MASK		(0xff << CMDQ_OP_CODE_SHIFT)
+ #define CMDQ_NUM_CMD(t)			(t->cmd_buf_size / CMDQ_INST_SIZE)
+diff --git a/drivers/mailbox/omap-mailbox.c b/drivers/mailbox/omap-mailbox.c
+index fa2ce3246b70..792bcaebbc9b 100644
+--- a/drivers/mailbox/omap-mailbox.c
++++ b/drivers/mailbox/omap-mailbox.c
+@@ -16,7 +16,7 @@
+ #include <linux/kfifo.h>
+ #include <linux/err.h>
+ #include <linux/module.h>
+-#include <linux/of_device.h>
++#include <linux/of.h>
+ #include <linux/platform_device.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/omap-mailbox.h>
+diff --git a/drivers/mailbox/platform_mhu.c b/drivers/mailbox/platform_mhu.c
+index a5922ac0b0bf..54161303a36b 100644
+--- a/drivers/mailbox/platform_mhu.c
++++ b/drivers/mailbox/platform_mhu.c
+@@ -15,6 +15,7 @@
+ #include <linux/slab.h>
+ #include <linux/err.h>
+ #include <linux/io.h>
++#include <linux/mod_devicetable.h>
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
+ #include <linux/mailbox_controller.h>
+diff --git a/drivers/mailbox/rockchip-mailbox.c b/drivers/mailbox/rockchip-mailbox.c
+index 116286ecc5a0..10c7bee2a915 100644
+--- a/drivers/mailbox/rockchip-mailbox.c
++++ b/drivers/mailbox/rockchip-mailbox.c
+@@ -8,8 +8,8 @@
+ #include <linux/io.h>
+ #include <linux/kernel.h>
+ #include <linux/mailbox_controller.h>
++#include <linux/of.h>
+ #include <linux/module.h>
+-#include <linux/of_device.h>
+ #include <linux/platform_device.h>
+ 
+ #define MAILBOX_A2B_INTEN		0x00
+diff --git a/drivers/mailbox/sprd-mailbox.c b/drivers/mailbox/sprd-mailbox.c
+index e3c899abeed8..9ae57de77d4d 100644
+--- a/drivers/mailbox/sprd-mailbox.c
++++ b/drivers/mailbox/sprd-mailbox.c
+@@ -11,7 +11,7 @@
+ #include <linux/io.h>
+ #include <linux/mailbox_controller.h>
+ #include <linux/module.h>
+-#include <linux/of_device.h>
++#include <linux/of.h>
+ #include <linux/platform_device.h>
+ #include <linux/clk.h>
+ 
+diff --git a/drivers/mailbox/stm32-ipcc.c b/drivers/mailbox/stm32-ipcc.c
+index 15d538fe2113..4ad3653f3866 100644
+--- a/drivers/mailbox/stm32-ipcc.c
++++ b/drivers/mailbox/stm32-ipcc.c
+@@ -11,6 +11,7 @@
+ #include <linux/io.h>
+ #include <linux/mailbox_controller.h>
+ #include <linux/module.h>
++#include <linux/of.h>
+ #include <linux/platform_device.h>
+ #include <linux/pm_wakeirq.h>
+ 
+diff --git a/drivers/mailbox/tegra-hsp.c b/drivers/mailbox/tegra-hsp.c
+index 7f98e7436d94..c87c2b900b64 100644
+--- a/drivers/mailbox/tegra-hsp.c
++++ b/drivers/mailbox/tegra-hsp.c
+@@ -8,7 +8,6 @@
+ #include <linux/io.h>
+ #include <linux/mailbox_controller.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/platform_device.h>
+ #include <linux/pm.h>
+ #include <linux/slab.h>
+diff --git a/drivers/mailbox/zynqmp-ipi-mailbox.c b/drivers/mailbox/zynqmp-ipi-mailbox.c
+index d097f45b0e5f..e4fcac97dbfa 100644
+--- a/drivers/mailbox/zynqmp-ipi-mailbox.c
++++ b/drivers/mailbox/zynqmp-ipi-mailbox.c
+@@ -16,8 +16,6 @@
+ #include <linux/module.h>
+ #include <linux/of.h>
+ #include <linux/of_address.h>
+-#include <linux/of_device.h>
+-#include <linux/of_irq.h>
+ #include <linux/platform_device.h>
+ 
+ /* IPI agent ID any */
 -- 
 2.40.1
 
