@@ -2,104 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F05BC753FFE
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 18:55:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 369DD754002
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 18:56:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236047AbjGNQzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 12:55:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33662 "EHLO
+        id S236076AbjGNQz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 12:55:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235640AbjGNQy6 (ORCPT
+        with ESMTP id S235323AbjGNQz4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 12:54:58 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C1DB1FC8
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 09:54:57 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id d75a77b69052e-4036bd4fff1so6821cf.0
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 09:54:57 -0700 (PDT)
+        Fri, 14 Jul 2023 12:55:56 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B30623594
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 09:55:55 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-55b1238cab4so1252091a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 09:55:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689353696; x=1691945696;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=z22Lji21DHhPyVayNZqqGmw+ssfxQ2kpwK4smkoUB/w=;
-        b=tKe/iovdH0qDwlwiziwLGPu9QaKUll2SxPp/gfkfKdoiHzE3qARf+GfzNRxPV1SBVO
-         b6ytSna0wEXaX3W2WsFPGMqlsKDEn8IjZxONJh8J/S61S1BvMAf4+fJbeFiaY8Jvlrti
-         nZ7vlQYIhHKZDKSrsfPNgVXWDZUoZQ/aiq3bjhlgl4CglxEm0JX90PgRnuoueJ+4sGUX
-         ziQ12PjguouQQc41xUgDygyCqZGufhI5IgFAREwOGMxlqEBBs2PXk7U4+/NnyYSr6aef
-         UWZAVqFNkd4Y+sBKSFqz6sXv7sejZlNdPONpaJ8XhqLld60yN45sf8uDZkFWoJDlw3BM
-         1vhA==
+        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1689353755; x=1689958555;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=u86Vccu0MjIpV1lk8gugdD4Hj3xwuyAB97KWj8HD83Y=;
+        b=DcSFI3El+kQ7LUhr7I9CNLzPEPRrFlKiPN0ROzCgA+1cx5EXlSbbSIgcwQR813I1L+
+         3uvoKmq2u01aQ1HX/F+kykKZKylNNs2J3TaYWmJfiC83cJEInBDz4UCDaT5YwZ28E5St
+         H4SWKBVBsD2CZuKTjWB7EmNUDRNO0LJL6JSIOLpEXHgP2Y0TUROAagLq2gTnozEMMH92
+         2lDqhD+T+AR9CiYZ0dScRh/n98YBFJOdLfHH+j2EkhhSk32EX6cf10DVILFLv9++ETt4
+         wXVVrJ8jvwSLjrVIHuumet2G6Uj24MK9BtcXy0zdk2NFm15eYGcfgjfjwSJyXAwIkWWZ
+         Nr3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689353696; x=1691945696;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=z22Lji21DHhPyVayNZqqGmw+ssfxQ2kpwK4smkoUB/w=;
-        b=fX7yyRAGauxCnuNZnXVVZWRzWxXSg0abynBYeRFqzbDDoFVDhqCyIMAI55vTX5YChP
-         jEhyOONCfWJ2YvIxUKDghTpSpYqe7Vx0gPi5U9KWpnW+Y9+E0FNuBz69x9g/lJaT+be0
-         vk7iin3aqOPcC+8EDkyuTTrNps4OyKSPCa15qKPkFBuD55NHM+mrHeu3c0c2yA6IK1oq
-         +eqHZ7UlQUTEBYX+5rzCOvqepDTcAJwAgBVnccdtT+3f08oxOdREdl7yHkk8x9cNOTUs
-         DpOHtWjweuVDx9KPfU88VdFDVCBm4Y2wAW1fjSHlMBTQ1rrtSJ7J+/VOUrpP7RD4By4i
-         BwiQ==
-X-Gm-Message-State: ABy/qLYCLrb9mL2hD0MZzqGT2mMxE7lhLFZ1HXoc1D/VMeAtWFQw9o+O
-        9espvbQ2YiAqiTFdkGSQQ/tPQrAcYVOAFe2HDAg0Pg==
-X-Google-Smtp-Source: APBJJlHncBuVEFEC55jlI7+mb7yJ4rrbwLngLi3+ds0/PMkK1w/AgZCCU6EOzolM/GD5bcXjFGoGEx2B+Si3CMfWcus=
-X-Received: by 2002:a05:622a:1994:b0:3ef:5f97:258f with SMTP id
- u20-20020a05622a199400b003ef5f97258fmr916843qtc.16.1689353696004; Fri, 14 Jul
- 2023 09:54:56 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689353755; x=1689958555;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=u86Vccu0MjIpV1lk8gugdD4Hj3xwuyAB97KWj8HD83Y=;
+        b=amj/to1229VakjdZjd/DkeZn6wGe0q19Yh5CkunYX/vvdpBlMvYUK3ksPIfTmaVLzo
+         bgYnRuvFpuN2AhU3gUCXKzImqbtbW6SVagZfg6PJJt0SElHyex+r9PlBegkcVUKL4dvZ
+         dC1lMugJWAd2xyaTMTDt6mYnkEKQzieoIgAdJWxBQM1+xFa7HQ/ogzHMii1yjlCfGFqM
+         Dn8voxok2V/9m/FiVi5pNbVHNtntHUsa8b9L4dJk3A6R84g4+fb1WdebefT1W5I0GDb1
+         VXgKaYuugEXKMNDMx0MlOiTu23iSwNPIp9/4xuwr6UzzIREpdZDGeyMlP95gvHP8dk2t
+         dpoQ==
+X-Gm-Message-State: ABy/qLbXB6tIsp2CT8ovwXxVy24Mym3mfNPBCFeunL2EzqmOJF+39r3A
+        /I4qcM2poG/VVKFaE3gdGVdEAg==
+X-Google-Smtp-Source: APBJJlGGxbl6qGLIF7f2rYJjwvRaITLsmSOC7pkB9qZSGRIv+YlRfSsJaker/tHyOogKYwVG0JmwNg==
+X-Received: by 2002:a17:903:2288:b0:1b8:af85:e959 with SMTP id b8-20020a170903228800b001b8af85e959mr4250415plh.53.1689353755192;
+        Fri, 14 Jul 2023 09:55:55 -0700 (PDT)
+Received: from charlie.ba.rivosinc.com ([66.220.2.162])
+        by smtp.gmail.com with ESMTPSA id s8-20020a170902b18800b001b694140d96sm8008081plr.170.2023.07.14.09.55.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Jul 2023 09:55:54 -0700 (PDT)
+From:   Charlie Jenkins <charlie@rivosinc.com>
+To:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     charlie@rivosinc.com, conor@kernel.org, paul.walmsley@sifive.com,
+        palmer@rivosinc.com, aou@eecs.berkeley.edu, anup@brainfault.org,
+        konstantin@linuxfoundation.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+        mick@ics.forth.gr, jrtc27@jrtc27.com, rdunlap@infradead.org,
+        alexghiti@rivosinc.com
+Subject: [PATCH v6 0/4] RISC-V: mm: Make SV48 the default address space
+Date:   Fri, 14 Jul 2023 09:54:48 -0700
+Message-ID: <20230714165508.94561-1-charlie@rivosinc.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-References: <20230714160407.4142030-1-ryan.roberts@arm.com> <20230714161733.4144503-2-ryan.roberts@arm.com>
-In-Reply-To: <20230714161733.4144503-2-ryan.roberts@arm.com>
-From:   Yu Zhao <yuzhao@google.com>
-Date:   Fri, 14 Jul 2023 10:54:20 -0600
-Message-ID: <CAOUHufZ7HJZW8Srwatyudf=FbwTGQtyq4DyL2SHwSg37N_Bo_A@mail.gmail.com>
-Subject: Re: [PATCH v3 2/4] mm: Default implementation of arch_wants_pte_order()
-To:     Ryan Roberts <ryan.roberts@arm.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 10:17=E2=80=AFAM Ryan Roberts <ryan.roberts@arm.com=
-> wrote:
->
-> arch_wants_pte_order() can be overridden by the arch to return the
-> preferred folio order for pte-mapped memory. This is useful as some
-> architectures (e.g. arm64) can coalesce TLB entries when the physical
-> memory is suitably contiguous.
->
-> The first user for this hint will be FLEXIBLE_THP, which aims to
-> allocate large folios for anonymous memory to reduce page faults and
-> other per-page operation costs.
->
-> Here we add the default implementation of the function, used when the
-> architecture does not define it, which returns -1, implying that the HW
-> has no preference. In this case, mm will choose it's own default order.
->
-> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+Make sv48 the default address space for mmap as some applications
+currently depend on this assumption. Users can now select a
+desired address space using a non-zero hint address to mmap. Previously,
+requesting the default address space from mmap by passing zero as the hint
+address would result in using the largest address space possible. Some
+applications depend on empty bits in the virtual address space, like Go and
+Java, so this patch provides more flexibility for application developers.
 
-Reviewed-by: Yu Zhao <yuzhao@google.com>
+-Charlie
 
-Thanks: -1 actually is better than 0 (what I suggested) for the obvious rea=
-son.
+---
+v6:
+- Rebase onto the correct base
+
+v5:
+- Minor wording change in documentation
+- Change some parenthesis in arch_get_mmap_ macros
+- Added case for addr==0 in arch_get_mmap_ because without this, programs would
+  crash if RLIMIT_STACK was modified before executing the program. This was
+  tested using the libhugetlbfs tests. 
+
+v4:
+- Split testcases/document patch into test cases, in-code documentation, and
+  formal documentation patches
+- Modified the mmap_base macro to be more legible and better represent memory
+  layout
+- Fixed documentation to better reflect the implmentation
+- Renamed DEFAULT_VA_BITS to MMAP_VA_BITS
+- Added additional test case for rlimit changes
+---
+
+Charlie Jenkins (4):
+  RISC-V: mm: Restrict address space for sv39,sv48,sv57
+  RISC-V: mm: Add tests for RISC-V mm
+  RISC-V: mm: Update pgtable comment documentation
+  RISC-V: mm: Document mmap changes
+
+ Documentation/riscv/vm-layout.rst             |  22 +++
+ arch/riscv/include/asm/elf.h                  |   2 +-
+ arch/riscv/include/asm/pgtable.h              |  20 ++-
+ arch/riscv/include/asm/processor.h            |  46 +++++-
+ tools/testing/selftests/riscv/Makefile        |   2 +-
+ tools/testing/selftests/riscv/mm/.gitignore   |   1 +
+ tools/testing/selftests/riscv/mm/Makefile     |  21 +++
+ .../selftests/riscv/mm/testcases/mmap.c       | 133 ++++++++++++++++++
+ 8 files changed, 234 insertions(+), 13 deletions(-)
+ create mode 100644 tools/testing/selftests/riscv/mm/.gitignore
+ create mode 100644 tools/testing/selftests/riscv/mm/Makefile
+ create mode 100644 tools/testing/selftests/riscv/mm/testcases/mmap.c
+
+-- 
+2.41.0
+
