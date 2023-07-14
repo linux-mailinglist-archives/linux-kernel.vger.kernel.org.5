@@ -2,166 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE494752E2A
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 02:12:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BBDC752E2E
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 02:14:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232919AbjGNAMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 20:12:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39942 "EHLO
+        id S233269AbjGNAOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 20:14:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229905AbjGNAMT (ORCPT
+        with ESMTP id S231852AbjGNAOw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 20:12:19 -0400
-Received: from JPN01-OS0-obe.outbound.protection.outlook.com (mail-os0jpn01on2128.outbound.protection.outlook.com [40.107.113.128])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9C812736
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 17:12:15 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SXTvjhCMidj+PDUwLHi5rLtGL7GLLGssJTJl2r1GHCMz9guPWIEy4saRlR/r2AkPFOGrJSgDA9MwfAzHVl9FT9UPpuveXmXl9Eu19PPJ6q0H+yeVDrOfYYgFp1zMsLQoAenbQ81GUrLzNCignoW9w5Gldw6KQ/L9qrESq6DOMqWMDA5qxIyKsUTKYWD5W3GZVlFUmtq6JdEi4O0J3JGfh4zYk7CLw7SKQui8TW67ZQdEl9nCyQRMfCvzFrSjQ9hwNwAnA9yd00QHbct1u6Q+J+iDVr3lXRHo+t3AzVB8/xeqwqLGx2oLQm3MHcZlIJ7Zgai2pQpyZs/QBKFBVYQ5Sg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=65dvQURReZd5nOIbfP0cmbR3T5UNISYONMzV6ib/VP0=;
- b=mGCcOyw/wpWueqZ7TXxtLYO9xSL41IbY7sDJpafwqUkacYc1HDEMprSzc+dxX6WmurhQ+zQgdFHwcRe230MfXgjp4UF2it8/mM/JMttD6OR37m0oOafsEQDyX6pFuqcvXcVN5mEqsySJCIqSW5jFQ08c/DceBOMTwAuzgY0mh8jcF7bnAUCFWx2FWrykWpheV/er16FUYBmnWj9MVNk7uqaxzFXNuPKttWbQwtsOz/7T0z1ZlbzReOISC3eiaeGpsifL6uXLQoISW4Dy1WOOTtBYIHqGyYWD1H+Y8zACEW36cH9Z99DhReG+a6ar60Qacaf5T90LMXHx5FBppX440Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
- dkim=pass header.d=renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=renesas.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=65dvQURReZd5nOIbfP0cmbR3T5UNISYONMzV6ib/VP0=;
- b=HOjjTE94AjmmfFhGwWN6x3i9G7V22ApALtW5rfL16sHFa7ou1uuT0QveRQwNkSYClw7Ot3TKgZGMhDcHszbZ/MeJk12wGep9yGEHW3yiRI4QctUZH2A68wdrW4diZX83EzdZmDvDvhP0DBeXrHY3XuJjGCNiNmEaCnqqolNObKo=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=renesas.com;
-Received: from OS3PR01MB8426.jpnprd01.prod.outlook.com (2603:1096:604:194::10)
- by TY3PR01MB9793.jpnprd01.prod.outlook.com (2603:1096:400:22b::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.27; Fri, 14 Jul
- 2023 00:12:11 +0000
-Received: from OS3PR01MB8426.jpnprd01.prod.outlook.com
- ([fe80::7d35:d426:d4e5:6e5d]) by OS3PR01MB8426.jpnprd01.prod.outlook.com
- ([fe80::7d35:d426:d4e5:6e5d%6]) with mapi id 15.20.6565.028; Fri, 14 Jul 2023
- 00:12:10 +0000
-Message-ID: <877cr3tkpy.wl-kuninori.morimoto.gx@renesas.com>
-From:   Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-To:     Maxim Kochetkov <fido_max@inbox.ru>
-Cc:     alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Herve Codina <herve.codina@bootlin.com>,
-        Sameer Pujar <spujar@nvidia.com>,
-        Astrid Rost <astrid.rost@axis.com>,
-        Aidan MacDonald <aidanmacdonald.0x0@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ASoC: simple-card: add trigger-stop entry parser
-In-Reply-To: <20230713193905.347588-1-fido_max@inbox.ru>
-References: <20230713193905.347588-1-fido_max@inbox.ru>
-User-Agent: Wanderlust/2.15.9 Emacs/27.1 Mule/6.0
-Content-Type: text/plain; charset=US-ASCII
-Date:   Fri, 14 Jul 2023 00:12:10 +0000
-X-ClientProxiedBy: TYAPR01CA0154.jpnprd01.prod.outlook.com
- (2603:1096:404:7e::22) To OS3PR01MB8426.jpnprd01.prod.outlook.com
- (2603:1096:604:194::10)
+        Thu, 13 Jul 2023 20:14:52 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F8CE2D46
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 17:14:51 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-666e3b15370so998158b3a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 17:14:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1689293690; x=1689898490;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=7dKdw/fRpGMhPZx5yucAo2VmH/W0zeKNkjERAr97oOc=;
+        b=DK487UlEpW2G5KFRjrV2Qfjy60Qn/3kFcFt39vvQNjsEy/EdjOhr/PmBjKDr5CA3ue
+         oNYqCOjXL+TSPHDxeqvlWpse/XFj2PCH5gOs1+zKgSASKGaJaZdpuXaFcEcq8Rnz3g+y
+         ts2DnoxMIPwZa5nAYgO2k12ohjijX+QJLCxmRGkoqm7IiF1YhtJDNVLQLoyjr/QWeryV
+         sLBQARcgGMGbDvBPNh+ho4raziT+pePlPpswVWZYtwuJDXPVf3INeH9eVA7RV0TqGEU+
+         p+gBY6VSbMqvdZfHFgkT4xA+5jHK7jye8x+ul57+5ybnNDFunisuInIaNp+Xb9wIXcyi
+         quGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689293690; x=1689898490;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7dKdw/fRpGMhPZx5yucAo2VmH/W0zeKNkjERAr97oOc=;
+        b=EqYW9ZPcC2sUaQlY6DRSxE0NZNxLOOERAz5tG7f4NVrc3NPp78SXNaX/TjphSndb8K
+         Wv9lrjbR6RHYLDbHp6Xu2s78LKLmCMVyT20+Z9RSkGEh6ukn6+D6LCgBnCdTF5c0PVs9
+         2oRtpD5sGsdsTx4edo5ogdB5DrzwojZG0o9HWMioDqCPpZCO3kBTxeTOpRqHzrJiyz+9
+         r6gcqyMTXeO5dUPS110y0OdW+Pjrg/E+gqeejjmLbzfFrqdyeG1sTZ3sEsJn7VYPHU/W
+         +6n4JPoCgUh1j4yWQ4o7PSBfInEvJ/W4GXCRWhXh9ua6CZ/iusqShPHTtQIABLfPbrkd
+         ojtg==
+X-Gm-Message-State: ABy/qLaiR9jbktn+MdEIdHmguHzuVyI4sBTOhG/Tq+QgEg0xxdyUzX9w
+        1dyNp8NEyzH7xOpfEb3RWIOFpX2/78gSH7ow6CY=
+X-Google-Smtp-Source: APBJJlGnN8YBws+YDNmDKckQ6/RCNHOhLy80mxzCgKrfd+QSmAYMBcKo9f0Tl8SPbx+/J+Wj39dEBQ==
+X-Received: by 2002:a05:6a20:394f:b0:12f:952:11ee with SMTP id r15-20020a056a20394f00b0012f095211eemr2554686pzg.43.1689293690271;
+        Thu, 13 Jul 2023 17:14:50 -0700 (PDT)
+Received: from charlie.ba.rivosinc.com ([66.220.2.162])
+        by smtp.gmail.com with ESMTPSA id x25-20020aa793b9000000b00673e652985esm5938107pff.44.2023.07.13.17.14.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Jul 2023 17:14:49 -0700 (PDT)
+From:   Charlie Jenkins <charlie@rivosinc.com>
+To:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Cc:     charlie@rivosinc.com, conor@kernel.org, paul.walmsley@sifive.com,
+        palmer@rivosinc.com, aou@eecs.berkeley.edu, anup@brainfault.org,
+        konstantin@linuxfoundation.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+        mick@ics.forth.gr, jrtc27@jrtc27.com, rdunlap@infradead.org,
+        alexghiti@rivosinc.com
+Subject: [PATCH v5 0/4] RISC-V: mm: Make SV48 the default address space
+Date:   Thu, 13 Jul 2023 17:13:59 -0700
+Message-ID: <20230714001430.75798-1-charlie@rivosinc.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: OS3PR01MB8426:EE_|TY3PR01MB9793:EE_
-X-MS-Office365-Filtering-Correlation-Id: 084975d3-81b2-4561-bd2c-08db83fef7f2
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: eWls1vL6FQ5Tvsg6QrIhVvdYcjiV6tfJYRwNGzODdv+NgZ692/H23HtYp23TY4aUauC9FHVXE3KNESqFrFTvMIk0NEaotfEECab0S6p6aJ0wZId6B1MvZyk5plgoWquKickEA6qEv9b3Wd9w6RoHk4EGTcYSj9AtsZTa1I3BPyiIhrh8bSQcI/5p8BxkReNjqTshUfElaW5IIvnP9z22njVVT7S0yHlVL39Gu2Ww4aGmqQSYeKnX15a52JzjcwTt5sZUqQconv6Z6Mu60PR6KvOMTwzOl7aSvIe6ygTfribXS6vQpmz2adOAT+WUbX5EtSN7aS6nptYabsfHoxqz0t+rkVKMB9yIUfRUMEKa75SAQnF8l8HFTrT47VrOPeX+MIhguBbVxcy6NcEf1NEfQGTTr612NOKyr3Y3HGwXwoSSB/8es7nOX/SBvEksGJzi1SEDU9nrPP4QjRcKXN8lFwkVgmeFGDa3m+ljVI7g41RztbSswC+AaauEHzCM7KpFruG/8QbdLzsn2AYqVnKluALxcucu4I7MPGkH3vcbn45cwIUPv2ZUbvyNUKQp6frjsXq+g6KKIDHGN2ZGhnrOoEIW4jMRMpOIxv7bnrgupo1rNFcS0ZVb+R/E/mUcVk+5
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS3PR01MB8426.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(396003)(366004)(136003)(346002)(376002)(451199021)(83380400001)(2906002)(4744005)(2616005)(66476007)(6486002)(6916009)(66556008)(66946007)(4326008)(316002)(52116002)(478600001)(54906003)(26005)(6506007)(186003)(7416002)(8676002)(41300700001)(5660300002)(8936002)(6512007)(38100700002)(38350700002)(86362001)(36756003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Ywf3+Fr3TvORWmniguTD/jKaK9hVavo9lpsyC7swudVAUgKHNjDTt2XhAfv8?=
- =?us-ascii?Q?MMAaEJuTvdlvbPV90frhE9LpmU1lAZ4AMsWAkdRjmckLcW9tQzI4Y1evKTtz?=
- =?us-ascii?Q?3kwGgdmsJI7FwMm+JBNJnaPcntcN1ct7Vv1LeyT3Aa1YyDa2RMxK53JWJ0wH?=
- =?us-ascii?Q?FoCeyPWjkvsPbqF2oke5ViOWb5q4SvIUN3oUGJidD8cKRTRCWikPHDDj5aHo?=
- =?us-ascii?Q?T2FDOzVpVAGqpvqhQMiJL6B2zm95g4Q6TJuf2ZwdvDGgMj+k7cMi1d0wwl4/?=
- =?us-ascii?Q?qVy+r06p09Z5tkrarnDgMXK3gOVh4HmrU50ZAJp8yQw9D9Ge9q9fglxjpbY0?=
- =?us-ascii?Q?GpghIPiIoHd5e5SIMCY1TBpG8hcTkFe1H6LI4CNsKCiUXzuILitZ3DO9K5rl?=
- =?us-ascii?Q?45/pNuEO5pce0CKJB5H/zaEqlmBMuZ73YTuwxUCpZeRMFWazCpYK2bWR/vQ1?=
- =?us-ascii?Q?Z+LvY50gKxFakIrDk6GUr/5I5l9ZRCQzEWEBvhfontuHWHwEHFtzG2VH+83W?=
- =?us-ascii?Q?wpubFLdkvv8/NpicJm+W9+7lFcM0TSQo4NoG2kivpnprg0OKKDvIiN+vfsTL?=
- =?us-ascii?Q?/Rpo6Arxv9nD8Cl57l9V/0AWHaouI+gjICI1StOoSkT+4siWWI9zCSWqNnaj?=
- =?us-ascii?Q?kjdCFMGZfc+TWnHQP0TQRty9bop/sLwrB+In5lx+oos6PL+M8aw+MgwyUwrY?=
- =?us-ascii?Q?Hv/NXS1rj0FopOukh7YWoUGULjUH+hZU+DfY7GMtdWhFXayuMluqnW3L3n7N?=
- =?us-ascii?Q?xtSyBkOcRjuSfhYWOi7czmyiMJOGwqikjSiVv91c33tWIOM1iOOHBfNsbMnr?=
- =?us-ascii?Q?4aRQpJUc4M5fD4+Tz250+dF4xoocUbPlpT9Bmo6Na43Gdl3sxsWU07WM5SL/?=
- =?us-ascii?Q?WCu3Ay6LxG7EAPfKjEPDG4FXirFtLKMZdwojUKld8x70tB0n/7T6O0NH2cei?=
- =?us-ascii?Q?b6Q5wDEFCVYJi08xX8KiCKDNhUNcMKhZ7DPn0tLCUQGnPKXGxixy29CidWOP?=
- =?us-ascii?Q?vJ82sfjpk65B6SSfTJnaEfPr3WYYKH5Up2L4ZLGVKY9RAnZZrUk5TD1pCjMt?=
- =?us-ascii?Q?BNqJgsMxxEbFUf2U4SbVbMbIkl0ubXo1bagz6E29DVbzwf+xLBJFkLG1qJKK?=
- =?us-ascii?Q?9YNCG/N51kQK+d4cDr+yBcrqXYX3oP1TlnTnaXFVQGD7bQBkiw70mir4ICSH?=
- =?us-ascii?Q?8opkkgsLOicQfJZeK0jZNo/tElY1BdpHLNltBTIYUDceR+AhnHWW/uInLxKn?=
- =?us-ascii?Q?teCrfr6/+Aclu5HuFcZzpR9Xpcz7YnxnfZ95HEe1E7RHX2QlGXiqb1FgdOzt?=
- =?us-ascii?Q?7N88MRITBcVX9Od4PxQ4YamhAcSTfah/PC4TGRUyGG1P0sthkdfe/z3+g2BT?=
- =?us-ascii?Q?t9IZsXyUFxGnxUvpMQHlHjcTdEBp/3GxtAxSR99KwHMp8+aR09oAsPhOKVqL?=
- =?us-ascii?Q?A1n6F1C+gWp0C55cDrZr5rnnjmWUt9DskjTxYi/Qr3vDOiBqF37XlHdrvyhp?=
- =?us-ascii?Q?KWSjkP++W8eoj3ct09jGo/BeneethM+hRnIYrz+cQ8Pwtb62mdubcasg20WE?=
- =?us-ascii?Q?mFg0yD9EgcWzfxg7NPposyecUWkD0Kydyn83D7m1/ZFUKl3WTY5j/t5+6mY2?=
- =?us-ascii?Q?zIrvJZbtHGv+K+jw6fqV3Ww=3D?=
-X-OriginatorOrg: renesas.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 084975d3-81b2-4561-bd2c-08db83fef7f2
-X-MS-Exchange-CrossTenant-AuthSource: OS3PR01MB8426.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jul 2023 00:12:10.9181
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: OGhmV09VkUCUOVJ/31iY66FC6o+44kupxwNwSNEpiDeIekGIrnNyMhJs5WBVSWtftKVneImBLJRxgRwOpWNGUZi+YhDpJFU4T6oDKGms4yl1HSHBZrLbaAe7iknFDbGb
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY3PR01MB9793
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Make sv48 the default address space for mmap as some applications
+currently depend on this assumption. Users can now select a
+desired address space using a non-zero hint address to mmap. Previously,
+requesting the default address space from mmap by passing zero as the hint
+address would result in using the largest address space possible. Some
+applications depend on empty bits in the virtual address space, like Go and
+Java, so this patch provides more flexibility for application developers.
 
-Hi Maxim
+-Charlie
 
-Thank you for your patch
-
-> It may be useful to specify trigger-stop for some DMA-based simple
-> audio card. So add this "trigger-stop" device tree entry parser.
-> 
-> Signed-off-by: Maxim Kochetkov <fido_max@inbox.ru>
-> ---
-(snip)
-> +	const char *str;
-> +	struct {
-> +		char *name;
-> +		unsigned int val;
-> +	} of_trigger_table[] = {
-> +		{ "default",	SND_SOC_TRIGGER_ORDER_DEFAULT },
-> +		{ "ldc",	SND_SOC_TRIGGER_ORDER_LDC },
-> +	};
-(snip)
-> +		ret = of_property_read_string(np, "trigger-stop", &str);
-
-The name of "LDC" is from initials of "Link -> DAI -> Component".
-Thus, people want to know what does it mean.
-You need to update DT doc/yaml too :)
-
-Or maybe like this ?
-
-	// 0 : Link
-	// 1 : DAI
-	// 2 : Component
-	trigger-stop = <0, 1, 2>; // default
-	trigger-stop = <0, 2, 1>; // LDC
-
-And please add paired "trigger-start" or add comment like
-/* ADD .trigger-start here */ or something.
-Unbalanced implementation is very confusable.
-
-
-Thank you for your help !!
-
-Best regards
 ---
-Kuninori Morimoto
+v5:
+- Minor wording change in documentation
+- Change some parenthesis in arch_get_mmap_ macros
+- Added case for addr==0 in arch_get_mmap_ because without this, programs would
+  crash if RLIMIT_STACK was modified before executing the program. This was
+  tested using the libhugetlbfs tests. 
+
+v4:
+- Split testcases/document patch into test cases, in-code documentation, and
+  formal documentation patches
+- Modified the mmap_base macro to be more legible and better represent memory
+  layout
+- Fixed documentation to better reflect the implmentation
+- Renamed DEFAULT_VA_BITS to MMAP_VA_BITS
+- Added additional test case for rlimit changes
+---
+
+Charlie Jenkins (4):
+  RISC-V: mm: Restrict address space for sv39,sv48,sv57
+  RISC-V: mm: Add tests for RISC-V mm
+  RISC-V: mm: Update pgtable comment documentation
+  RISC-V: mm: Document mmap changes
+
+ Documentation/riscv/vm-layout.rst             |  22 +++
+ arch/riscv/include/asm/elf.h                  |   2 +-
+ arch/riscv/include/asm/pgtable.h              |  20 ++-
+ arch/riscv/include/asm/processor.h            |  46 +++++-
+ tools/testing/selftests/riscv/Makefile        |   2 +-
+ tools/testing/selftests/riscv/mm/.gitignore   |   1 +
+ tools/testing/selftests/riscv/mm/Makefile     |  21 +++
+ .../selftests/riscv/mm/testcases/mmap.c       | 133 ++++++++++++++++++
+ 8 files changed, 234 insertions(+), 13 deletions(-)
+ create mode 100644 tools/testing/selftests/riscv/mm/.gitignore
+ create mode 100644 tools/testing/selftests/riscv/mm/Makefile
+ create mode 100644 tools/testing/selftests/riscv/mm/testcases/mmap.c
+
+-- 
+2.41.0
+
