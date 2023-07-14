@@ -2,134 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 405F1753772
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 12:05:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D14A753778
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 12:06:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235467AbjGNKFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 06:05:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52230 "EHLO
+        id S236004AbjGNKGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 06:06:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235800AbjGNKFw (ORCPT
+        with ESMTP id S235958AbjGNKGi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 06:05:52 -0400
-Received: from mail-ed1-x549.google.com (mail-ed1-x549.google.com [IPv6:2a00:1450:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E552E3A86
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 03:05:28 -0700 (PDT)
-Received: by mail-ed1-x549.google.com with SMTP id 4fb4d7f45d1cf-51dd4df2477so1038412a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 03:05:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689329127; x=1691921127;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q5MF44XQzouX2FbGdHpxAthvfg7u3iO2oNPh/cM8NKE=;
-        b=apJ81VA8GA3jTnw53j82PIZMpXO2K7A7oa/aWR/pG0xVkTrMRoSr2WO7woWzhaKgks
-         Qiu5Ef2OtOLcCCthMBik8jre5JgKbOQ296jPDHO+0XBtbeQZ3GCV++0K6RdSFg4RJLtx
-         HI5xt3Zx+SZVy5n98a+5XUHMB8tMTj6+uvbS9OppSt9LaXPRTaCyk7dj/0vpRi483Q/w
-         mMeuWWvg9oj5KISbLCA6AXRIem3Ndp1x+G4RQ0XIlDX39FHUS6Q4CERdEKP9pZtXSvxP
-         St538WJiTpZgiaPMGVu8ypTZGB9xPR5JNHSI92L2DHBK2iYWCB6Zt6EOsYaik2bKgOu7
-         3ZHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689329127; x=1691921127;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q5MF44XQzouX2FbGdHpxAthvfg7u3iO2oNPh/cM8NKE=;
-        b=XI773s93p9OP32+W8E7jfvwyHjwDGWfst6E14EFR7LKLra4ahWiUNJCeEf8cQUY67h
-         vVQ5ThQXwzjQfYBhJ77aZHABazcgIXM9Vb7YYRHfy9zmogbcPUqxJaDqY71Bihv+pilI
-         jxCjxn1tFrFA5RJbCq7FoCn6h2yhUbr2ZUSXwQzm6jfs6WJpFmGarDG6trxSDpWlj3Sf
-         svBRoXIJxs9LF2k9x3FtN3RuIAI/XkCMxgAtdscUuHaZ9mvtRBMzgtioNPc43k0lQCxD
-         mxNMN48C+9zOaClZS1u1sVGETNgbspeMdei31X/q7fSXC5DLLWNq8ZRLlotk40gYOtRg
-         84cw==
-X-Gm-Message-State: ABy/qLahyBBulqT7USx4Eu/Akv7nNrtI23KmSItt1fT9fSEoo83w+jVB
-        JHJHfDCdTEdHVd7ciPJIiGkNzWkBteMM0v4=
-X-Google-Smtp-Source: APBJJlHwVKX/eQQLU8nLjAGvJpMaB1Jw8Jm+qhCHiVH05w5ZGIxlbFTKtQ7Ig8Do+3M/gB90uk1NNJRpAEM9C74=
-X-Received: from aliceryhl.c.googlers.com ([fda3:e722:ac3:cc00:31:98fb:c0a8:6c8])
- (user=aliceryhl job=sendgmr) by 2002:a50:9f07:0:b0:510:dd95:da5d with SMTP id
- b7-20020a509f07000000b00510dd95da5dmr19412edf.4.1689329127461; Fri, 14 Jul
- 2023 03:05:27 -0700 (PDT)
-Date:   Fri, 14 Jul 2023 10:05:25 +0000
-In-Reply-To: <20230714-rust-time-v2-1-f5aed84218c4@asahilina.net>
-Mime-Version: 1.0
-References: <20230714-rust-time-v2-1-f5aed84218c4@asahilina.net>
-X-Mailer: git-send-email 2.41.0.255.g8b1d071c50-goog
-Message-ID: <20230714100525.2192448-1-aliceryhl@google.com>
-Subject: Re: [PATCH v2] rust: time: New module for timekeeping functions
-From:   Alice Ryhl <aliceryhl@google.com>
-To:     lina@asahilina.net
-Cc:     alex.gaynor@gmail.com, asahi@lists.linux.dev,
-        bjorn3_gh@protonmail.com, boqun.feng@gmail.com, gary@garyguo.net,
-        gbs@canishe.com, heghedus.razvan@protonmail.com,
-        jistone@redhat.com, jstultz@google.com,
-        linux-kernel@vger.kernel.org, ojeda@kernel.org,
-        rust-for-linux@vger.kernel.org, sboyd@kernel.org,
-        tglx@linutronix.de, wedsonaf@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Fri, 14 Jul 2023 06:06:38 -0400
+Received: from mail.marcansoft.com (marcansoft.com [212.63.210.85])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04B502D75;
+        Fri, 14 Jul 2023 03:06:31 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: lina@asahilina.net)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 117714258C;
+        Fri, 14 Jul 2023 10:06:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=asahilina.net;
+        s=default; t=1689329190;
+        bh=9QWl/AwKkqJIVfZsIvRKT61QtERPUmn6O/Rt/bWA6J8=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=DcwMypG1rCCpo1DjBZULFEiSjm2jugs4+T/om73xJh6DCpNnIBpPnruD4ZMoNlsrk
+         +wBm7aNUIfmDN6W2QzN7gUI3bWehBstiJBVqk+St4UBZhafAaLSx+t8ASGKadHueB2
+         GENvsra5bFsLmWn3ZoWp7xUvTNObvlgyewP7T9SKQw8ySL6jYiU2NYceUxhIfPbhB8
+         QtWbVuQQ9nlnK5WWnBDSYFmkhJST1z4z6rP0ESs26Fx5HtDDeWlaeSDCqvd1jH5mqy
+         553ACgMOQU1nAaP4mvYNKGfYVuvkM0LFuMetqRCkoz7I6k9gGEgD6mhBVCXUynr9q7
+         Aj+UYoO0hiMVA==
+Message-ID: <6b473196-9f87-d6c8-b289-18f80de78f0a@asahilina.net>
+Date:   Fri, 14 Jul 2023 19:06:25 +0900
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH 2/3] drm/scheduler: Fix UAF in
+ drm_sched_fence_get_timeline_name
+Content-Language: en-US
+To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Luben Tuikov <luben.tuikov@amd.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>
+Cc:     Faith Ekstrand <faith.ekstrand@collabora.com>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, asahi@lists.linux.dev
+References: <20230714-drm-sched-fixes-v1-0-c567249709f7@asahilina.net>
+ <20230714-drm-sched-fixes-v1-2-c567249709f7@asahilina.net>
+ <bef7ef62-3cd9-6ceb-5eb4-5ae0c0236778@amd.com>
+ <de502b41-2864-db1e-16a0-8a5d5e0e4ad3@asahilina.net>
+ <d9dc2fd5-d054-dbf3-72b7-fe9deaa46350@amd.com>
+From:   Asahi Lina <lina@asahilina.net>
+In-Reply-To: <d9dc2fd5-d054-dbf3-72b7-fe9deaa46350@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Asahi Lina <lina@asahilina.net> writes:
-> +/// Marker trait for clock sources that represent a calendar (wall clock)
-> +/// relative to the UNIX epoch.
-> +pub trait WallTime {}
+On 14/07/2023 18.57, Christian König wrote:
+> Am 14.07.23 um 11:49 schrieb Asahi Lina:
+>> On 14/07/2023 17.43, Christian König wrote:
+>>> Am 14.07.23 um 10:21 schrieb Asahi Lina:
+>>>> A signaled scheduler fence can outlive its scheduler, since fences are
+>>>> independencly reference counted. Therefore, we can't reference the
+>>>> scheduler in the get_timeline_name() implementation.
+>>>>
+>>>> Fixes oopses on `cat /sys/kernel/debug/dma_buf/bufinfo` when shared
+>>>> dma-bufs reference fences from GPU schedulers that no longer exist.
+>>>>
+>>>> Signed-off-by: Asahi Lina <lina@asahilina.net>
+>>>> ---
+>>>>     drivers/gpu/drm/scheduler/sched_entity.c | 7 ++++++-
+>>>>     drivers/gpu/drm/scheduler/sched_fence.c  | 4 +++-
+>>>>     include/drm/gpu_scheduler.h              | 5 +++++
+>>>>     3 files changed, 14 insertions(+), 2 deletions(-)
+>>>>
+>>>> diff --git a/drivers/gpu/drm/scheduler/sched_entity.c
+>>>> b/drivers/gpu/drm/scheduler/sched_entity.c
+>>>> index b2bbc8a68b30..17f35b0b005a 100644
+>>>> --- a/drivers/gpu/drm/scheduler/sched_entity.c
+>>>> +++ b/drivers/gpu/drm/scheduler/sched_entity.c
+>>>> @@ -389,7 +389,12 @@ static bool
+>>>> drm_sched_entity_add_dependency_cb(struct drm_sched_entity *entity)
+>>>>                /*
+>>>>              * Fence is from the same scheduler, only need to wait for
+>>>> -         * it to be scheduled
+>>>> +         * it to be scheduled.
+>>>> +         *
+>>>> +         * Note: s_fence->sched could have been freed and reallocated
+>>>> +         * as another scheduler. This false positive case is okay,
+>>>> as if
+>>>> +         * the old scheduler was freed all of its jobs must have
+>>>> +         * signaled their completion fences.
+>>>
+>>> This is outright nonsense. As long as an entity for a scheduler exists
+>>> it is not allowed to free up this scheduler.
+>>>
+>>> So this function can't be called like this.
+>>
+>> As I already explained, the fences can outlive their scheduler. That
+>> means *this* entity certainly exists for *this* scheduler, but the
+>> *dependency* fence might have come from a past scheduler that was
+>> already destroyed along with all of its entities, and its address reused.
+> 
+> Well this is function is not about fences, this function is a callback
+> for the entity.
 
-What's the purpose of this trait? Perhaps it should have a method to get
-the UNIX epoch as an Instant?
+That deals with dependency fences, which could have come from any 
+arbitrary source, including another entity and another scheduler.
 
-> +    /// Returns the time elapsed since an earlier Instant<t>, or
-> +    /// None if the argument is a later Instant.
-> +    pub fn since(&self, earlier: Instant<T>) -> Option<Duration> {
-> +        if earlier.nanoseconds > self.nanoseconds {
-> +            None
-> +        } else {
-> +            // Casting to u64 and subtracting is guaranteed to give the right
-> +            // result for all inputs, as long as the condition we checked above
-> +            // holds.
-> +            Some(Duration::from_nanos(
-> +                self.nanoseconds as u64 - earlier.nanoseconds as u64,
-> +            ))
+>>
+>> Christian, I'm really getting tired of your tone. I don't appreciate
+>> being told my comments are "outright nonsense" when you don't even
+>> take the time to understand what the issue is and what I'm trying to
+>> do/document. If you aren't interested in working with me, I'm just
+>> going to give up on drm_sched, wait until Rust gets workqueue support,
+>> and reimplement it in Rust. You can keep your broken fence lifetime
+>> semantics and I'll do my own thing.
+> 
+> I'm certainly trying to help here, but you seem to have unrealistic
+> expectations.
 
-It looks like you intend to use wrapping semantics for this subtraction
-so that self=1,earlier=-1 results in a difference of two.
+I don't think expecting not to be told my changes are "outright 
+nonsense" is an unrealistic expectation. If you think it is, maybe 
+that's yet another indicator of the culture problems the kernel 
+community has...
 
-In that case, you should explicitly use `.wrapping_sub` instead to
-convey your intent.
+> I perfectly understand what you are trying to do, but you don't seem to
+> understand that this functionality here isn't made for your use case.
 
-I guess you could also use `abs_diff`, which takes two i64s and returns
-an u64.
+I do, that's why I'm trying to change things. Right now, this 
+functionality isn't even properly documented, which is why I thought it 
+could be used for my use case, and slowly discovered otherwise. Daniel 
+suggested documenting it, then fixing the mismatches between 
+documentation and reality, which is what I'm doing here.
 
-> +/// Contains the various clock source types available to the kernel.
-> +pub mod clock {
-> +    use super::*;
-> +
-> +    /// A clock representing the default kernel time source.
-> +    ///
-> +    /// This is `CLOCK_MONOTONIC` (though it is not the only
-> +    /// monotonic clock) and also the default clock used by
-> +    /// `ktime_get()` in the C API.
-> +    ///
-> +    /// This is like `BootTime`, but does not include time
-> +    /// spent sleeping.
-> +
-> +    pub struct KernelTime;
-> +
-> +    impl Clock for KernelTime {}
-> +    impl Monotonic for KernelTime {}
-> +    impl Now for KernelTime {
-> +        fn now() -> Instant<Self> {
-> +            Instant::<Self>::new(unsafe { bindings::ktime_get() })
-> +        }
-> +    }
+> We can adjust the functionality to better match your requirements, but
+> you can't say it is broken because it doesn't work when you use it not
+> in the way it is intended to be used.
 
-We usually add a SAFETY comment even if it is trivial.
+I'm saying the idea that a random dma-buf holds onto a chain of 
+references that prevents unloading a driver module that wrote into it 
+(and keeps a bunch of random unrelated objects alive) is a broken state 
+of affairs. It may or may not trickle down to actual problems for users 
+(I would bet it does in some cases but I don't know for sure), but it's 
+a situation that doesn't make any sense.
 
-// SAFETY: Just an FFI call without any safety requirements.
+I know I'm triggering actual breakage with my new use case due to this, 
+which is why I'm trying to improve things. But the current state of 
+affairs just doesn't make any sense even if it isn't causing kernel 
+oopses today with other drivers.
 
-Alice
+> You can go ahead and try to re-implement the functionality in Rust, but
+> then I would reject that pointing out that this should probably be an
+> extension to the existing code.
+
+You keep rejecting my attempts at extending the existing code...
+
+~~ Lina
 
