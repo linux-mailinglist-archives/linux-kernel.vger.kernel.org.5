@@ -2,165 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 629E0753310
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 09:21:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20ACD75331C
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 09:23:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235318AbjGNHVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 03:21:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56938 "EHLO
+        id S235391AbjGNHXI convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 14 Jul 2023 03:23:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235215AbjGNHVr (ORCPT
+        with ESMTP id S235259AbjGNHXC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 03:21:47 -0400
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2060d.outbound.protection.outlook.com [IPv6:2a01:111:f400:7e8a::60d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 530EE30FF
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 00:21:29 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iTSJ1xqefU13CJuOEQ1Qgc+H9jvw+CWPlPb0HFzVJt2QNDyZCf6U+ybEog6zigjNtjqwsdQ5XW0ESPouZH9aDqFGb6dSlTkqIA68W8UUX0l3yZWLGqacjrNDUDnCy8Ga62wLWnXbbyaBqnIyUWTQvsVHOUcfGpvXlTcCqjVNZf13SWw9hPPHu5klhRQq8rfsMQ7qwiaSxo618AUFD7hL64O6b3sHdzQTLEoKeC/AFzzRf5kK2wsrUq5WJRF3g+Ff8n//3Q2bVV2l4QvNrCdXIktq03SkOK7zZHjO7u0uNafbBSNKr+QxY7rhg+SUw5ytdOWBTbcVJSVfvah0KN10UA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pWKYFT0H8s3jaQ5oCLcDSEZvUEhAGiDCRFphioCjcY4=;
- b=AvbkC1OFdS79vUrJAfEMPozAJGB6+n+8t2vOYSg1ZYeC3qHVa/NwHT9Maq/UvIesP/RqNuAOkbO0Vu/yT0lvm7q35WoytPlidLyu6mE5lLnNoFalw9wCRxRHKLnV9IKdFVObXPcUptdLFfav1BzKUO2wpgD9Kb7bilh1TJA2IUH+uRO2IWpaw0dy3Ga0cujDK0znwUJ06iuRWgmQ8g40UJ2FNSF6Unm1lPaAKtkDCFQZMsAPf1eYNgW5UXF0cphj0B0Yh5LCnRW9aiiK+rAbrxaREMbkcOb+vzfb5E4ukxwUgeWmt9YoJpMuo+aLm2inDsyilb1R6NbE4HwHTZod4Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pWKYFT0H8s3jaQ5oCLcDSEZvUEhAGiDCRFphioCjcY4=;
- b=ZQcn5mYLX1ZAQOpygD1Q0YCXvYqj+Fwv9C9FDRld+dTa41bSjlc2TOw/kqOMe9z1NSZyYvcCu5qXIC8s3t47QeKT13rHnz1RjgFcK2b9O//hUz/7zbHf3muGVWFrVF8JzoKHxJ3fPAWpPIn0Hajz+PXMohJKXqqg9rb4H6MFqLk=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
- by DS0PR12MB9038.namprd12.prod.outlook.com (2603:10b6:8:f2::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6565.30; Fri, 14 Jul
- 2023 07:21:23 +0000
-Received: from BN8PR12MB3587.namprd12.prod.outlook.com
- ([fe80::669f:5dca:d38a:9921]) by BN8PR12MB3587.namprd12.prod.outlook.com
- ([fe80::669f:5dca:d38a:9921%4]) with mapi id 15.20.6588.027; Fri, 14 Jul 2023
- 07:21:23 +0000
-Message-ID: <a96b79fb-3ad8-918f-d109-3da2121e4607@amd.com>
-Date:   Fri, 14 Jul 2023 09:21:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] drm/radeon: ERROR: "(foo*)" should be "(foo *)"
-Content-Language: en-US
-To:     shijie001@208suo.com, alexander.deucher@amd.com,
-        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <tencent_16FACBDCDA61595C4219E185613C85C8BF0A@qq.com>
- <26d3424f83f1f394614e2a774d1bf1e9@208suo.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-In-Reply-To: <26d3424f83f1f394614e2a774d1bf1e9@208suo.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: FR3P281CA0190.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:a4::8) To BN8PR12MB3587.namprd12.prod.outlook.com
- (2603:10b6:408:43::13)
+        Fri, 14 Jul 2023 03:23:02 -0400
+Received: from frasgout13.his.huawei.com (unknown [14.137.139.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 147F72722;
+        Fri, 14 Jul 2023 00:22:57 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.229])
+        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4R2N2D2s05z9xHf8;
+        Fri, 14 Jul 2023 15:11:48 +0800 (CST)
+Received: from [127.0.0.1] (unknown [10.204.63.22])
+        by APP2 (Coremail) with SMTP id GxC2BwC3hl2197BkUW5+BA--.7298S2;
+        Fri, 14 Jul 2023 08:22:37 +0100 (CET)
+Message-ID: <ecbf405c6806fa4706051e0bf946d742f3442367.camel@huaweicloud.com>
+Subject: Re: [PATCH v3] integrity: Always reference the blacklist keyring
+ with apprasial
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     Eric Snowberg <eric.snowberg@oracle.com>, zohar@linux.ibm.com
+Cc:     dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org,
+        serge@hallyn.com, roberto.sassu@huawei.com,
+        kanth.ghatraju@oracle.com, konrad.wilk@oracle.com,
+        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Date:   Fri, 14 Jul 2023 09:22:25 +0200
+In-Reply-To: <20230714011141.2288133-1-eric.snowberg@oracle.com>
+References: <20230714011141.2288133-1-eric.snowberg@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.44.4-0ubuntu1 
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN8PR12MB3587:EE_|DS0PR12MB9038:EE_
-X-MS-Office365-Filtering-Correlation-Id: b4f3ea81-86bc-445a-2015-08db843aed64
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: BXNzeQwTjnmKUS8Rdi2QBONJck0tmQSmNxQH+gge01e6pI8Vqi5FE62lZSexs/VLmBnXCckTKZzpNUBEuAOoYifsb2sdvoCg7armSpZhM4isYP1U7czFm+bKHCIof7P1S1/9H5AhPjCqhQDABq/SSRSBWSQ1JN0RkQndEfw5VyBaSs+FiZQpS2wbfm39B4y38Rt7wXcTpRhJSMfOCBVkoGSgjUQCdOoDjc4jXfyCyk1cP7/4vpD618fM0EH4BlBv9MuwUxWKMfBuifblA29d/MQs2+6mpek2/gKQI0FLY1Umn2dNnidgQ4z6nGzBBf/qnE3+ve/FDOObfG+hE+MY+Ac/C4oGttk4BJE32ocNLdmzC6nH1ZmapyqEo0s5rHKkpwJ9PcUZ7x5CP5XddGDSDMmHMcOTevgNye+oagZZgDRoEUat8iwCR7ZFnI5mSTTsdFQl3LFtfKhtUWmnkXDR+n6hLAa0J8El/fi1Y+ZFbPHox5cO/FD7R6acZ/LrbT5HgOjA0UGo+lFyWJW/utDXSPGGcsLIJd34oXquuQKE6yvIXdKv6G0JjK0XKH3I7d4dexrBZxGg3Mpsb3FS4jENSRJcMfE3RDe82cLBl+b1ND9FRhitYeOO8AVFXDA5ox1B42Y+robrArMsrJYmAYwMaw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(376002)(136003)(39860400002)(346002)(366004)(451199021)(31686004)(6506007)(4326008)(6666004)(478600001)(31696002)(83380400001)(2616005)(86362001)(36756003)(6512007)(38100700002)(6486002)(186003)(2906002)(8676002)(66946007)(316002)(8936002)(66556008)(41300700001)(66476007)(5660300002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MTFOUmpaNFlpNUVhemJZcHlKSlVxK09mSmpOcEZIYStYL3dJTmhCL3V4V1Ny?=
- =?utf-8?B?OGRrQ0xFdzA3NUU0ckpobVo2TkhGQzdoOU11dHFab3hzNW5OSWYyRnlSVURX?=
- =?utf-8?B?RUZibXdNOEkvNStiOURQSlcrN2RVM1d6K3pCVCs5QjBGcEVYWXBZSjQxRXRY?=
- =?utf-8?B?ZUtQVktRSktJOFQ2aFYvTlQrVkhxTEpUUVlKSitIam4xMUpRbXhkVTBEZUt1?=
- =?utf-8?B?ZEVJRTF1UHZ3cEtBamFjQkUwcjhrMHYxVmtnd3JtdHRFZy9zRjZ3eTRrUURV?=
- =?utf-8?B?NjUwRXNqaHJJcDM5RjlWRGR1bXAvS2R3KzZlS2lzdmNzY1oxSU5YNkZrYmRm?=
- =?utf-8?B?TzFQbFNYa3NPa0pIK210emFZWkZQa0NPb1NVNlYwYSt4VzhWRi94RTlXUzF2?=
- =?utf-8?B?SkNzeGdBMFFndE4xLzBuS1RiSFQzbVdyR0FYUm1zdFJXemNlMUtiQ1AyMHQr?=
- =?utf-8?B?NWNvWVVYMDBxY21Qa3locWVnWXkvOVBieDVEbXg0dC83UjBiSWI1SDhOa25R?=
- =?utf-8?B?Z0kycmx4TlR1MEJzY291a2tmWFYwUFIxMWdaNDhyRDEvcmlWRWxGQ0N3NUNp?=
- =?utf-8?B?T3ZhUkl6ZjhhanpuM29saXhGUEFhSTExMVhLYlBFbE44NDFmS3JqVFBPeTdH?=
- =?utf-8?B?T2NQS0x5emRDaDFNZXZRNDl1T0RwM2dWR2dXb2VqUmZjTnI4SnlmbEl5emkv?=
- =?utf-8?B?RnpHU1liM3VjMWtYSDIyYnR0RnhQZUcyT0puemZ3YlFOakdjQUNiblNpMnJS?=
- =?utf-8?B?STdFTWk4YTNRRWx5dTNZcFBxajU3R2wzS3lReXhFTUdMS2dacXdHbkdPSWpx?=
- =?utf-8?B?Y3FSbmhRWjYxZWtuNkN2b2lob2ZSWTFkbGRqOXk4Ykp3M1N3OXRiK1J3b0NP?=
- =?utf-8?B?WVBWUkdzWGxOaDNrS1UyWXVNekZjNyt0eHVNdWNnUDMwQXdwRDF6bDgyREox?=
- =?utf-8?B?blJhc3NQTElkUkpPL2tLLzBvTUFZSndTZ1hIT0JiVTRheWlZQy8wemQzemRX?=
- =?utf-8?B?NGVwalEwYzJYYmFxOGJPUEZNc0t6bDUyMVJ1MUVyYjZTQW9DMFhHN2tuZ2JJ?=
- =?utf-8?B?bnAwWEdIUFNwZHcvdHlSMXNYZTF0QkhvaVI2RTVURFpZVWJUMGRkNjlHWEt1?=
- =?utf-8?B?MGJudUx6MCsyVHlzenRwWVg1VVV4VW56ZVViOTV4cm1tejlwNHJRNkhvVEdE?=
- =?utf-8?B?djZYRHZ1RTR4aEdieU42V3d2OGh6YVNiMmxXUzNrTXp3TWJTUjVTOGtPSXgx?=
- =?utf-8?B?TEtXZnNQZW5CTWI0VXNQVWV2K2RFRUhlK2x5dVF4Q2lqN2Jza0dtQmNCVDc4?=
- =?utf-8?B?TXdtZ2FYbEV4RUttczVjbGxhdGFSU0dUQTN0c29XYXFmMEUwRXI1SjJIS0pJ?=
- =?utf-8?B?WFJkL2syc09MSisvYk1uUm8wMkdCSTlmSnpJWVVQSW1IblQ1TU00UTUzOE9R?=
- =?utf-8?B?a0NjVG5GVFdBVmJzSWRsM0d1Mmk1QlpwM0VScHEwclgxanI3eTVjalUvVHo0?=
- =?utf-8?B?cWhIK2h0enNqb0dobS9hYkdqTEQ5dkd3TUFqYXdVSllidmpRUmsvNTRHWHZ3?=
- =?utf-8?B?UmpRQ1lvK3h1ckRobVVDRktDdXR2NVk0RmVEcTBGVFl3eStBdkNYRjVPL2di?=
- =?utf-8?B?cVh5d2JZdEFQWDEyT1c3RVpEdy8xMjRsL1NZUXljcCtpK2RLZGYwd0V3dFJ5?=
- =?utf-8?B?Ni9pci8zS1JINStQMWNxSG9yeWFWTW5UZmZDWkFobWljQW12VnlMaFFnampO?=
- =?utf-8?B?MDZGUkptbS80ZkVyWk9GVkF2NFBndTdaYXdXSnZJY1NkMjk2aEV2SzRYM3pS?=
- =?utf-8?B?RlBkSUJ2ekZtVzYzNDNoT3lkT0xlVm1NMTk1TUMrQUlMR0ttMG5pazc1SzAz?=
- =?utf-8?B?ejdEZDA5MDIzRzk1a1NZQ25RcStCRzBUOW43b0VIMEdZcVVEYjZwZzFhVGUw?=
- =?utf-8?B?VzcrNFlpU0JoblN5L2VWcmFsU0RmS2Rrb2RseHNlWmJZeFY3a04zOFZFT2xB?=
- =?utf-8?B?eE1OK01LbXJTZlFzU3VDMXVzM3dvWTBtNllRMnRkc0t4WklaL1dlUE1IMnAv?=
- =?utf-8?B?eWpqTTBCMlFzbjFUeDF1ZjlNTHJoWGY1cGp2aGN1R204cEpDMlhvQjdPVEpK?=
- =?utf-8?B?VmZmNGFuRDZ4UnBrSWxITEc0V0dwKytSbG1rZFVtZXI5YjhVY1c1bkxuRW9k?=
- =?utf-8?Q?kh+hLXYI8g7BFQccugYQD9X2JOGgNMkdBAb+T5YUem50?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b4f3ea81-86bc-445a-2015-08db843aed64
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3587.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jul 2023 07:21:23.0344
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wve3EsJxPY9QhxDRQu8AqIgpLhJ0BJIzQCIvhae3LKpzwnLXsS66u8HfRiIrgOpz
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB9038
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-CM-TRANSID: GxC2BwC3hl2197BkUW5+BA--.7298S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3JFyxKF45Kw1rKF4DXr1xAFb_yoW3Xr4fpa
+        95tF1j9FyxGryIvFy7Aw4q9F4S9r4jqF4UCFZ8t340yFs5Xr10gr18GrZxZFWFkr95t3Z2
+        qF1UK3yUA3Wjq37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWUJVW8JwA2z4x0Y4vEx4A2jsIEc7CjxV
+        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgASBF1jj4xobAABss
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 14.07.23 um 07:35 schrieb shijie001@208suo.com:
-> Fix one occurrence of the checkpatch.pl error:
-> ERROR: "(foo*)" should be "(foo *)"
-
-It's nice to see all those little typos fixed, but I'm not sure how 
-feasible it is to send patches for each type individually.
-
-Maybe just merge them together into one patch for the whole radeon code 
-base.
-
-Additional to that I'm pretty sure that most of that stuff is already 
-fixed, so what base do you use for this?
-
-Regards,
-Christian.
-
->
-> Signed-off-by: Jie Shi <shijie001@208suo.com>
+On Thu, 2023-07-13 at 21:11 -0400, Eric Snowberg wrote:
+> Commit 273df864cf746 ("ima: Check against blacklisted hashes for files with
+> modsig") introduced an appraise_flag option for referencing the blacklist
+> keyring.  Any matching binary found on this keyring fails signature
+> validation. This flag only works with module appended signatures.
+> 
+> An important part of a PKI infrastructure is to have the ability to do
+> revocation at a later time should a vulnerability be found.  Expand the
+> revocation flag usage to all appraisal functions. The flag is now
+> enabled by default. Setting the flag with an IMA policy has been
+> deprecated. Without a revocation capability like this in place, only
+> authenticity can be maintained. With this change, integrity can now be
+> achieved with digital signature based IMA appraisal.
+> 
+> Signed-off-by: Eric Snowberg <eric.snowberg@oracle.com>
 > ---
->  drivers/gpu/drm/radeon/uvd_v1_0.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/radeon/uvd_v1_0.c 
-> b/drivers/gpu/drm/radeon/uvd_v1_0.c
-> index 58557c2263a7..5684639d20a6 100644
-> --- a/drivers/gpu/drm/radeon/uvd_v1_0.c
-> +++ b/drivers/gpu/drm/radeon/uvd_v1_0.c
-> @@ -142,7 +142,7 @@ int uvd_v1_0_resume(struct radeon_device *rdev)
->      addr = (rdev->uvd.gpu_addr >> 32) & 0xFF;
->      WREG32(UVD_LMI_EXT40_ADDR, addr | (0x9 << 16) | (0x1 << 31));
->
-> -    WREG32(UVD_FW_START, *((uint32_t*)rdev->uvd.cpu_addr));
-> +    WREG32(UVD_FW_START, *((uint32_t *)rdev->uvd.cpu_addr));
->
->      return 0;
->  }
+> v3 changes:
+>   No longer display appraise_flag=check_blacklist in the policy
+> v2 changes:
+>   Update the "case Opt_apprase_flag"
+>   Removed "appraise_flag=" in the powerpc arch specific policy rules
+> ---
+>  Documentation/ABI/testing/ima_policy  |  6 +++---
+>  arch/powerpc/kernel/ima_arch.c        |  8 ++++----
+>  security/integrity/ima/ima_appraise.c | 12 +++++++-----
+>  security/integrity/ima/ima_policy.c   | 17 +++++------------
+>  4 files changed, 19 insertions(+), 24 deletions(-)
+> 
+> diff --git a/Documentation/ABI/testing/ima_policy b/Documentation/ABI/testing/ima_policy
+> index 49db0ff288e5..a712c396f6e9 100644
+> --- a/Documentation/ABI/testing/ima_policy
+> +++ b/Documentation/ABI/testing/ima_policy
+> @@ -57,9 +57,9 @@ Description:
+>  				stored in security.ima xattr. Requires
+>  				specifying "digest_type=verity" first.)
+>  
+> -			appraise_flag:= [check_blacklist]
+> -			Currently, blacklist check is only for files signed with appended
+> -			signature.
+> +			appraise_flag:= [check_blacklist] (deprecated)
+> +			Setting the check_blacklist flag is no longer necessary.
+> +			All apprasial functions set it by default.
+
+Typo.
+
+>  			digest_type:= verity
+>  			    Require fs-verity's file digest instead of the
+>  			    regular IMA file hash.
+> diff --git a/arch/powerpc/kernel/ima_arch.c b/arch/powerpc/kernel/ima_arch.c
+> index 957abd592075..b7029beed847 100644
+> --- a/arch/powerpc/kernel/ima_arch.c
+> +++ b/arch/powerpc/kernel/ima_arch.c
+> @@ -23,9 +23,9 @@ bool arch_ima_get_secureboot(void)
+>   * is not enabled.
+>   */
+>  static const char *const secure_rules[] = {
+> -	"appraise func=KEXEC_KERNEL_CHECK appraise_flag=check_blacklist appraise_type=imasig|modsig",
+> +	"appraise func=KEXEC_KERNEL_CHECK appraise_type=imasig|modsig",
+>  #ifndef CONFIG_MODULE_SIG
+> -	"appraise func=MODULE_CHECK appraise_flag=check_blacklist appraise_type=imasig|modsig",
+> +	"appraise func=MODULE_CHECK appraise_type=imasig|modsig",
+>  #endif
+>  	NULL
+>  };
+> @@ -49,9 +49,9 @@ static const char *const trusted_rules[] = {
+>  static const char *const secure_and_trusted_rules[] = {
+>  	"measure func=KEXEC_KERNEL_CHECK template=ima-modsig",
+>  	"measure func=MODULE_CHECK template=ima-modsig",
+> -	"appraise func=KEXEC_KERNEL_CHECK appraise_flag=check_blacklist appraise_type=imasig|modsig",
+> +	"appraise func=KEXEC_KERNEL_CHECK appraise_type=imasig|modsig",
+>  #ifndef CONFIG_MODULE_SIG
+> -	"appraise func=MODULE_CHECK appraise_flag=check_blacklist appraise_type=imasig|modsig",
+> +	"appraise func=MODULE_CHECK appraise_type=imasig|modsig",
+>  #endif
+>  	NULL
+>  };
+> diff --git a/security/integrity/ima/ima_appraise.c b/security/integrity/ima/ima_appraise.c
+> index 491c1aca0b1c..870dde67707b 100644
+> --- a/security/integrity/ima/ima_appraise.c
+> +++ b/security/integrity/ima/ima_appraise.c
+> @@ -458,11 +458,13 @@ int ima_check_blacklist(struct integrity_iint_cache *iint,
+>  		ima_get_modsig_digest(modsig, &hash_algo, &digest, &digestsize);
+>  
+>  		rc = is_binary_blacklisted(digest, digestsize);
+> -		if ((rc == -EPERM) && (iint->flags & IMA_MEASURE))
+> -			process_buffer_measurement(&nop_mnt_idmap, NULL, digest, digestsize,
+> -						   "blacklisted-hash", NONE,
+> -						   pcr, NULL, false, NULL, 0);
+> -	}
+> +	} else if (iint->flags & IMA_DIGSIG_REQUIRED && iint->ima_hash)
+> +		rc = is_binary_blacklisted(iint->ima_hash->digest, iint->ima_hash->length);
+
+Curiosity (I didn't read the previous discussions), if you are checking
+if binaries are blacklisted, why not doing for the BPRM_CHECK hook?
+
+> +
+> +	if ((rc == -EPERM) && (iint->flags & IMA_MEASURE))
+
+Uhm, the measurement will be done only if you are also doing appraisal
+with digital signatures. But if you have only measure rules, you won't
+know. Shouldn't you run is_binary_blacklisted() also for measure rules?
+
+Thanks
+
+Roberto
+
+> +		process_buffer_measurement(&nop_mnt_idmap, NULL, digest, digestsize,
+> +					   "blacklisted-hash", NONE,
+> +					   pcr, NULL, false, NULL, 0);
+>  
+>  	return rc;
+>  }
+> diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+> index c9b3bd8f1bb9..69452b79686b 100644
+> --- a/security/integrity/ima/ima_policy.c
+> +++ b/security/integrity/ima/ima_policy.c
+> @@ -1280,7 +1280,7 @@ static bool ima_validate_rule(struct ima_rule_entry *entry)
+>  				     IMA_FSNAME | IMA_GID | IMA_EGID |
+>  				     IMA_FGROUP | IMA_DIGSIG_REQUIRED |
+>  				     IMA_PERMIT_DIRECTIO | IMA_VALIDATE_ALGOS |
+> -				     IMA_VERITY_REQUIRED))
+> +				     IMA_CHECK_BLACKLIST | IMA_VERITY_REQUIRED))
+>  			return false;
+>  
+>  		break;
+> @@ -1355,7 +1355,7 @@ static bool ima_validate_rule(struct ima_rule_entry *entry)
+>  
+>  	/* Ensure that combinations of flags are compatible with each other */
+>  	if (entry->flags & IMA_CHECK_BLACKLIST &&
+> -	    !(entry->flags & IMA_MODSIG_ALLOWED))
+> +	    !(entry->flags & IMA_DIGSIG_REQUIRED))
+>  		return false;
+>  
+>  	/*
+> @@ -1803,11 +1803,11 @@ static int ima_parse_rule(char *rule, struct ima_rule_entry *entry)
+>  				if (entry->flags & IMA_VERITY_REQUIRED)
+>  					result = -EINVAL;
+>  				else
+> -					entry->flags |= IMA_DIGSIG_REQUIRED;
+> +					entry->flags |= IMA_DIGSIG_REQUIRED | IMA_CHECK_BLACKLIST;
+>  			} else if (strcmp(args[0].from, "sigv3") == 0) {
+>  				/* Only fsverity supports sigv3 for now */
+>  				if (entry->flags & IMA_VERITY_REQUIRED)
+> -					entry->flags |= IMA_DIGSIG_REQUIRED;
+> +					entry->flags |= IMA_DIGSIG_REQUIRED | IMA_CHECK_BLACKLIST;
+>  				else
+>  					result = -EINVAL;
+>  			} else if (IS_ENABLED(CONFIG_IMA_APPRAISE_MODSIG) &&
+> @@ -1816,18 +1816,13 @@ static int ima_parse_rule(char *rule, struct ima_rule_entry *entry)
+>  					result = -EINVAL;
+>  				else
+>  					entry->flags |= IMA_DIGSIG_REQUIRED |
+> -						IMA_MODSIG_ALLOWED;
+> +						IMA_MODSIG_ALLOWED | IMA_CHECK_BLACKLIST;
+>  			} else {
+>  				result = -EINVAL;
+>  			}
+>  			break;
+>  		case Opt_appraise_flag:
+>  			ima_log_string(ab, "appraise_flag", args[0].from);
+> -			if (IS_ENABLED(CONFIG_IMA_APPRAISE_MODSIG) &&
+> -			    strstr(args[0].from, "blacklist"))
+> -				entry->flags |= IMA_CHECK_BLACKLIST;
+> -			else
+> -				result = -EINVAL;
+>  			break;
+>  		case Opt_appraise_algos:
+>  			ima_log_string(ab, "appraise_algos", args[0].from);
+> @@ -2271,8 +2266,6 @@ int ima_policy_show(struct seq_file *m, void *v)
+>  	}
+>  	if (entry->flags & IMA_VERITY_REQUIRED)
+>  		seq_puts(m, "digest_type=verity ");
+> -	if (entry->flags & IMA_CHECK_BLACKLIST)
+> -		seq_puts(m, "appraise_flag=check_blacklist ");
+>  	if (entry->flags & IMA_PERMIT_DIRECTIO)
+>  		seq_puts(m, "permit_directio ");
+>  	rcu_read_unlock();
 
