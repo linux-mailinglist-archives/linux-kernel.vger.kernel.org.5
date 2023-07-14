@@ -2,110 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA7FB75456F
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 01:36:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B49AA754573
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 01:38:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230012AbjGNXgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 19:36:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48220 "EHLO
+        id S229808AbjGNXiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 19:38:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjGNXgJ (ORCPT
+        with ESMTP id S229502AbjGNXiy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 19:36:09 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF7753A92;
-        Fri, 14 Jul 2023 16:36:08 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3C4F061E15;
-        Fri, 14 Jul 2023 23:36:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 925F2C433C9;
-        Fri, 14 Jul 2023 23:36:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689377767;
-        bh=QeueiOpDQZwo6rtEiZoJ8qhJKkd5jWANfodFVO3UgnI=;
-        h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
-        b=XZqdXW3oB1OA9npd73eLtv/UBG5Scu7Gm/HetbtRBr1UGMYwh65+KUMe01Kn4GgU4
-         q2Jz1V+G92sDeoO2CF5EyqhvK70W+MGZ8Z2NFCeTu+96ikE+QHnKU9GelJZJwRQMTU
-         niqyUujd0BW+4UYKz3YPXgknNQgGSoO/u2x3ctS2qt9lO9U/xsWMDjr151ZYOO7MR5
-         nuJHn+QT3CGYqdKbcAXhbF44rNZI9bnMIllNVQhZieAU4QUHqKRkelJFkDsWxHFHNd
-         erynCy1bOqvj9GHi/Y0qWMaPqGL+ro5IyFAxmVFh454+4vvM131WG/AK9dRlm6OgS8
-         AAzAjvKAleHJg==
-Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-56597d949b1so1689905eaf.1;
-        Fri, 14 Jul 2023 16:36:07 -0700 (PDT)
-X-Gm-Message-State: ABy/qLYXvUZteR0AZK79E2TF+/9r69cqJhWPRvf/LXNl2rGlwyPEJNRj
-        aBHB7NoFWSgwk98YQ8IikvHn0fwkJwRlnGat28k=
-X-Google-Smtp-Source: APBJJlEFqDCFObfCfrVlv0+B4OnBTopnGMsqKu25XX1NhpPE9jqO/7EtxY8CDN72Va1Re9Ujl3gcn9mGcMs+qhDJkEI=
-X-Received: by 2002:a05:6870:c588:b0:1b7:613c:2eb2 with SMTP id
- ba8-20020a056870c58800b001b7613c2eb2mr8323917oab.6.1689377766742; Fri, 14 Jul
- 2023 16:36:06 -0700 (PDT)
+        Fri, 14 Jul 2023 19:38:54 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDECB3A92
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 16:38:52 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-314172bac25so2553618f8f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 16:38:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google; t=1689377931; x=1691969931;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zBT3rUjJGAxYbppKiA656uXoRrGlh1XdLp4eh9nDCrQ=;
+        b=p2J7w1ajpOdvwrAGvge0quNYmL6gv7jREgk3lB+pZPHG8ZNS/mdOZ80VZXHKw3CVR3
+         tNLxlc1PxlmwAQSpmcMhF1laQQZL8/quot+4wRhUysKnqpDGqM/QPeUIvhj6rWzttEwj
+         OBviYO6vvg7P6SS6qBZc3j2mh77sZTstHPKyI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689377931; x=1691969931;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zBT3rUjJGAxYbppKiA656uXoRrGlh1XdLp4eh9nDCrQ=;
+        b=FnypPc1yulfTzLHWqI45St2cfXkGmxFXG4JWmbiPh2UL8nk80AWEVYp8MvZ4Musu2b
+         G92q/TbxGGWSk05TPTFDraKaeIohorFPdTFsj5kzwhMCg9Shg/NDpNZv0LcU8RnnR80O
+         c6iQaDHBI7G396VLb4/NSa1JLnh7thCHAF3lCFj1wiAPEqLhhM860dfu0bWwCHds7Ox3
+         eMGmTC5EBlNbZ5RI38Z+yLW3TAJZ8CbE4zmjkO7oadqFVtn/ApbsOAT1mI64tg7Pa9DR
+         EpwsEdvgh0AyYNvQjzQFoYLYLvAPPqUMumyhT8Sa356MWwdhZenSbNlsWJeRyxdMG5rw
+         e2mg==
+X-Gm-Message-State: ABy/qLYD46D7xry5TBYiwnmHcW/BEC+SXclaI3kq+4uEs4SYLB+YBMTL
+        vaPjz/1Ek4piVxZ6d8k9Zf3X2BR7LJE/EfNYpy5M0A==
+X-Google-Smtp-Source: APBJJlFI8UT7ttHWMWTChD+OoeAiz8TeEiUAizhofk5qBde1N/nlsvJ0HFW4KXpG76GQ43uNhHOFDgHRwjioOZyHVSY=
+X-Received: by 2002:a5d:5505:0:b0:313:f98a:1fd3 with SMTP id
+ b5-20020a5d5505000000b00313f98a1fd3mr5794979wrv.27.1689377931105; Fri, 14 Jul
+ 2023 16:38:51 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a8a:4c7:0:b0:4e8:f6ff:2aab with HTTP; Fri, 14 Jul 2023
- 16:36:06 -0700 (PDT)
-In-Reply-To: <20230714084354.1959951-1-sj1557.seo@samsung.com>
-References: <CGME20230714084427epcas1p2ce3efb1524c8efae6038d1940149ae54@epcas1p2.samsung.com>
- <20230714084354.1959951-1-sj1557.seo@samsung.com>
-From:   Namjae Jeon <linkinjeon@kernel.org>
-Date:   Sat, 15 Jul 2023 08:36:06 +0900
-X-Gmail-Original-Message-ID: <CAKYAXd-+_M=7b-E7RyJj+S3w=_WF8VDRyunYdXPdpD1dTtRA=Q@mail.gmail.com>
-Message-ID: <CAKYAXd-+_M=7b-E7RyJj+S3w=_WF8VDRyunYdXPdpD1dTtRA=Q@mail.gmail.com>
-Subject: Re: [PATCH] exfat: release s_lock before calling dir_emit()
-To:     Sungjong Seo <sj1557.seo@samsung.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org,
-        syzbot+1741a5d9b79989c10bdc@syzkaller.appspotmail.com
+References: <20230711043453.64095-1-ivan@cloudflare.com> <20230711193612.22c9bc04@kernel.org>
+ <CAO3-PbrZHn1syvhb3V57oeXigE_roiHCbzYz5Mi4wiymogTg2A@mail.gmail.com>
+ <20230712104210.3b86b779@kernel.org> <CABWYdi3VJU7HUxzKJBKgX9wF9GRvmA0TKVpjuHvJyz_EdpxZFA@mail.gmail.com>
+ <c015fdb8-9ac1-b45e-89a2-70e8ababae17@kernel.org>
+In-Reply-To: <c015fdb8-9ac1-b45e-89a2-70e8ababae17@kernel.org>
+From:   Ivan Babrou <ivan@cloudflare.com>
+Date:   Fri, 14 Jul 2023 16:38:40 -0700
+Message-ID: <CABWYdi010VpHHi6-PLyBB3F_btFggm7XLxstboCRBvBLdoKdmA@mail.gmail.com>
+Subject: Re: [RFC PATCH net-next] tcp: add a tracepoint for tcp_listen_queue_drop
+To:     David Ahern <dsahern@kernel.org>
+Cc:     Jakub Kicinski <kuba@kernel.org>, Yan Zhai <yan@cloudflare.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@cloudflare.com, Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2023-07-14 17:43 GMT+09:00, Sungjong Seo <sj1557.seo@samsung.com>:
-> There is a potential deadlock reported by syzbot as below:
+On Fri, Jul 14, 2023 at 8:09=E2=80=AFAM David Ahern <dsahern@kernel.org> wr=
+ote:
+> > We can start a separate discussion to break it down by category if it
+> > would help. Let me know what kind of information you would like us to
+> > provide to help with that. I assume you're interested in kernel stacks
+> > leading to kfree_skb with NOT_SPECIFIED reason, but maybe there's
+> > something else.
 >
-> ======================================================
-> WARNING: possible circular locking dependency detected
-> 6.4.0-next-20230707-syzkaller #0 Not tainted
-> ------------------------------------------------------
-> syz-executor330/5073 is trying to acquire lock:
-> ffff8880218527a0 (&mm->mmap_lock){++++}-{3:3}, at: mmap_read_lock_killable
-> include/linux/mmap_lock.h:151 [inline]
-> ffff8880218527a0 (&mm->mmap_lock){++++}-{3:3}, at: get_mmap_lock_carefully
-> mm/memory.c:5293 [inline]
-> ffff8880218527a0 (&mm->mmap_lock){++++}-{3:3}, at:
-> lock_mm_and_find_vma+0x369/0x510 mm/memory.c:5344
-> but task is already holding lock:
-> ffff888019f760e0 (&sbi->s_lock){+.+.}-{3:3}, at: exfat_iterate+0x117/0xb50
-> fs/exfat/dir.c:232
+> stack traces would be helpful.
+
+Here you go: https://lore.kernel.org/netdev/CABWYdi00L+O30Q=3DZah28QwZ_5RU-=
+xcxLFUK2Zj08A8MrLk9jzg@mail.gmail.com/
+
+> > Even if I was only interested in one specific reason, I would still
+> > have to arm the whole tracepoint and route a ton of skbs I'm not
+> > interested in into my bpf code. This seems like a lot of overhead,
+> > especially if I'm dropping some attack packets.
 >
-> which lock already depends on the new lock.
+> you can add a filter on the tracepoint event to limit what is passed
+> (although I have not tried the filter with an ebpf program - e.g.,
+> reason !=3D NOT_SPECIFIED).
+
+Absolutely, but isn't there overhead to even do just that for every freed s=
+kb?
+
+> > If you have an ebpf example that would help me extract the destination
+> > port from an skb in kfree_skb, I'd be interested in taking a look and
+> > trying to make it work.
 >
-> Chain exists of:
->   &mm->mmap_lock --> mapping.invalidate_lock#3 --> &sbi->s_lock
+> This is from 2020 and I forget which kernel version (pre-BTF), but it
+> worked at that time and allowed userspace to summarize drop reasons by
+> various network data (mac, L3 address, n-tuple, etc):
 >
->  Possible unsafe locking scenario:
+> https://github.com/dsahern/bpf-progs/blob/master/ksrc/pktdrop.c
+
+It doesn't seem to extract the L4 metadata (local port specifically),
+which is what I'm after.
+
+> > The need to extract the protocol level information in ebpf is only
+> > making kfree_skb more expensive for the needs of catching rare cases
+> > when we run out of buffer space (UDP) or listen queue (TCP). These two
+> > cases are very common failure scenarios that people are interested in
+> > catching with straightforward tracepoints that can give them the
+> > needed information easily and cheaply.
+> >
+> > I sympathize with the desire to keep the number of tracepoints in
+> > check, but I also feel like UDP buffer drops and TCP listen drops
+> > tracepoints are very much justified to exist.
 >
->        CPU0                    CPU1
->        ----                    ----
->   lock(&sbi->s_lock);
->                                lock(mapping.invalidate_lock#3);
->                                lock(&sbi->s_lock);
->   rlock(&mm->mmap_lock);
->
-> Let's try to avoid above potential deadlock condition by moving dir_emit*()
-> out of sbi->s_lock coverage.
->
-> Fixes: ca06197382bd ("exfat: add directory operations")
-> Cc: stable@vger.kernel.org #v5.7+
-> Reported-by: syzbot+1741a5d9b79989c10bdc@syzkaller.appspotmail.com
-> Link:
-> https://lore.kernel.org/lkml/00000000000078ee7e060066270b@google.com/T/#u
-> Signed-off-by: Sungjong Seo <sj1557.seo@samsung.com>
-Applied it to #dev, Thanks for your patch!
+> sure, kfree_skb is like the raw_syscall tracepoint - it can be more than
+> what you need for a specific problem, but it is also give you way more
+> than you are thinking about today.
+
+I really like the comparison to raw_syscall tracepoint. There are two flavo=
+rs:
+
+1. Catch-all: raw_syscalls:sys_enter, which is similar to skb:kfree_skb.
+2. Specific tracepoints: syscalls:sys_enter_* for every syscall.
+
+If you are interested in one rare syscall, you wouldn't attach to a
+catch-all firehose and the filter for id in post. Understandably, we
+probably can't have a separate skb:kfree_skb for every reason.
+However, some of them are more useful than others and I believe that
+tcp listen drops fall into that category.
+
+We went through a similar exercise with audit subsystem, which in fact
+always arms all syscalls even if you audit one of them:
+
+* https://lore.kernel.org/audit/20230523181624.19932-1-ivan@cloudflare.com/=
+T/#u
+
+With pictures, if you're interested:
+
+* https://mastodon.ivan.computer/@mastodon/110426498281603668
+
+Nobody audits futex(), but if you audit execve(), all the rules run
+for both. Some rules will run faster, but all of them will run. It's a
+lot of overhead with millions of CPUs, which I'm trying to avoid (the
+planet is hot as it is).
+
+Ultimately my arguments for a separate tracepoint for tcp listen drops
+are at the bottom of my reply to Jakub:
+
+* https://lore.kernel.org/netdev/CABWYdi2BGi=3DiRCfLhmQCqO=3D1eaQ1WaCG7F9Ws=
+Jrz-7=3D=3DocZidg@mail.gmail.com/
