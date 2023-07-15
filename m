@@ -2,106 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96BB475473A
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 09:22:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2D43754735
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 09:22:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229473AbjGOHWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 03:22:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33394 "EHLO
+        id S230293AbjGOHWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 03:22:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbjGOHW1 (ORCPT
+        with ESMTP id S229482AbjGOHWX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 03:22:27 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 563FE26B5
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 00:22:26 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qKZbW-0001bz-FF; Sat, 15 Jul 2023 09:22:10 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qKZbU-00EWXC-18; Sat, 15 Jul 2023 09:22:08 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qKZbT-0050eI-Ck; Sat, 15 Jul 2023 09:22:07 +0200
-Date:   Sat, 15 Jul 2023 09:22:03 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Jaewon Kim <jaewon02.kim@samsung.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org,
-        Chanho Park <chanho61.park@samsung.com>
-Subject: Re: [PATCH v2 2/3] pwm: samsung: Add compatible for ExynosAutov9 SoC
-Message-ID: <20230715072203.ecz7wg4novvhpyuj@pengutronix.de>
-References: <20230714100929.94563-1-jaewon02.kim@samsung.com>
- <CGME20230714101434epcas2p3e2475698c527ca72dee797225d3dad37@epcas2p3.samsung.com>
- <20230714100929.94563-3-jaewon02.kim@samsung.com>
+        Sat, 15 Jul 2023 03:22:23 -0400
+Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com [209.85.210.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A4B42121
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 00:22:19 -0700 (PDT)
+Received: by mail-ot1-f72.google.com with SMTP id 46e09a7af769-6b792b78e53so4008511a34.3
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 00:22:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689405738; x=1691997738;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=deZLZrvEZSfc6NLa+Id53ZoNS1q+sg7vXw6lADs5UZc=;
+        b=OBQFKNtPUeteJ0IHJriMe3tbqbEfEseorUtZfOiDNCZRgsTbZgU+lFl9uTSyGwyKhL
+         FCunsLk3bmObFjFRCKZGKtDAoo8GxtyuZlBueo/oKHvmTWVxWZ3f4buEjjOsXPjUXhKe
+         2xVpRgZw5stypKhU8sKiKAvKjdw80MC8OX22BvzMb2NjN03eA/6sKbj8Ry0VFMyrysGB
+         D9Q9BwYPKgU0fCZpr08gTkVu8yhafhCJGTMf2b2vI2j+Y8bsYFONk1wQT7sjj6iN7Fox
+         9tjlT+WNbh9WKhfVnIFw0fuHpUVa+IK07G0Wq+wzeCDbuhy4JJZV7T1ImcIVUhuHbcSk
+         CAMw==
+X-Gm-Message-State: ABy/qLatDfInd2SXNbj5nDyfNTgmUGYFYnnUdkMl8myH6tpHJFd4Hx84
+        ItMzDN9wbqUHq6wxknyzG1HjY0/S1GTb5IJ0ZNSMsV81MlyX
+X-Google-Smtp-Source: APBJJlHH3FSfjH01K1UTktigpFdlK7JuDCmmfNBSiY8NRr4eGW+fSxrKOo/LJfiNFaYQXY2HWu5EgCuMiPB05g3I5MvkoHyT3gES
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="kqo2ocrcjovppqzr"
-Content-Disposition: inline
-In-Reply-To: <20230714100929.94563-3-jaewon02.kim@samsung.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Received: by 2002:a9d:7406:0:b0:6b7:4ec4:cbb1 with SMTP id
+ n6-20020a9d7406000000b006b74ec4cbb1mr5640443otk.7.1689405738355; Sat, 15 Jul
+ 2023 00:22:18 -0700 (PDT)
+Date:   Sat, 15 Jul 2023 00:22:18 -0700
+In-Reply-To: <0000000000000de35905ead6dcc1@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ea91fa0600816cb8@google.com>
+Subject: Re: [syzbot] [afs?] general protection fault in skb_queue_tail (3)
+From:   syzbot <syzbot+160a7250e255d25725eb@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, edumazet@google.com, hdanton@sina.com,
+        kuba@kernel.org, kvalo@kernel.org, linux-afs@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        pabeni@redhat.com, pchelkin@ispras.ru, quic_kvalo@quicinc.com,
+        syzkaller-bugs@googlegroups.com, toke@toke.dk
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+syzbot suspects this issue was fixed by commit:
 
---kqo2ocrcjovppqzr
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+commit 061b0cb9327b80d7a0f63a33e7c3e2a91a71f142
+Author: Fedor Pchelkin <pchelkin@ispras.ru>
+Date:   Wed May 17 15:03:17 2023 +0000
 
-Hello,
+    wifi: ath9k: don't allow to overwrite ENDPOINT0 attributes
 
-On Fri, Jul 14, 2023 at 07:09:28PM +0900, Jaewon Kim wrote:
-> Add new compatible string to support ExynosAutov9 SoC.
->=20
-> Signed-off-by: Jaewon Kim <jaewon02.kim@samsung.com>
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12253b7ca80000
+start commit:   98555239e4c3 Merge tag 'arc-6.1-fixes' of git://git.kernel..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=701f2aae1cb0470e
+dashboard link: https://syzkaller.appspot.com/bug?extid=160a7250e255d25725eb
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1482f0b6880000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=119e4dce880000
 
-Looks good to me:
+If the result looks correct, please mark the issue as fixed by replying with:
 
-Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+#syz fix: wifi: ath9k: don't allow to overwrite ENDPOINT0 attributes
 
-What are the merge plans here? The whole series via pwm or a samsung
-tree? Or a mixture?
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---kqo2ocrcjovppqzr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmSySRoACgkQj4D7WH0S
-/k5f/wgAopsGxq70NXlUC/uGjOQh4t7xUaf3gadY0sFhLBGjxS0NEH/2RD1NNS1N
-4lJ8+t1dK5M6u1JWjIFQUKmUrxtur1g5Ziy4JDOM76OV7s270E5tOTyeaeKwHzYU
-YD6vLY3GF98CM7Z8zfR+n9Ucxfsyj2MOAjxkmkGDCk9kkbye08szbkFc/+t28V94
-X3iMPkKrGTN9Kt2NMGBGQ/5ejqZOyeMDB7gioobTciTJO5uqtoaH6r82eLemfYTa
-4mLyg7EGxhrHLXic9TaXzQpRK4uSzWjvaBSVH6b0gHMQTdPoBwAjv9tNnv9omyUH
-EmuybPj4oWswBnqf4MzVux1vpDevCQ==
-=K4Ru
------END PGP SIGNATURE-----
-
---kqo2ocrcjovppqzr--
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
