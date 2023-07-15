@@ -2,62 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1B7275474B
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 09:53:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AF1A754754
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 09:53:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230160AbjGOHw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 03:52:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36186 "EHLO
+        id S230355AbjGOHxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 03:53:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbjGOHw4 (ORCPT
+        with ESMTP id S229482AbjGOHxm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 03:52:56 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08C51358E;
-        Sat, 15 Jul 2023 00:52:55 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b6f943383eso40424631fa.2;
-        Sat, 15 Jul 2023 00:52:54 -0700 (PDT)
+        Sat, 15 Jul 2023 03:53:42 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB195358E;
+        Sat, 15 Jul 2023 00:53:41 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-315adee6ac8so2757927f8f.2;
+        Sat, 15 Jul 2023 00:53:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689407573; x=1691999573;
-        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=XICKv7iip3MX1RFnTjF/KQz1iwO2NUYvEEXm4nzQgNQ=;
-        b=n7GBFw0VA8g9+MovuidzqH1rtNUx4NWKs08ia7oDqD+egQk2zED4a5ArwLhc0H7xkr
-         1s6YxbUWC+aF1E+FBFRJEEdNe59Dah6E2YefZL8FxWM8cAIiB5OEjIkMcONnul4LUshj
-         NKELF2LPD/t6pzxOcRth+uxClGGR4/Q7Qiaz94uKJN12VTQ04boaYRRQs1VKZpfNKaQd
-         eB4aQrdj7vSHx+l5nDmtcCJpJBKpSn4RkSn/C0RkA3jGrzh5pf9l1uuKE3iy3eOZSACV
-         Qjc1hoF6KIunIvIaRzk+3eC/dWP7PvcOF7kA7pzFFs+dh+KR8z2ffmHesY7brEsClwRv
-         o9iw==
+        d=gmail.com; s=20221208; t=1689407620; x=1691999620;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=64bznzqz+bNp3VRLI2c/xdrX18bRuMWopVm8BVRqgP0=;
+        b=VJJE9KCuhs748Y/QWhkyhpIitB1/SZRCnYmn0PaN0lYUNcvEwRCl0Kiaj525mEA2cB
+         UoBH0zp7yukPGUi2/X7Cpk3OSa6GlvASRnxwhodHkMaHvJngyW4asJst498s1+MLQfEQ
+         JkhWyF9G4s+MUKBWL2BjnTzxJtgimeRz+5JUICyNun6llhihTqfr8U9l1a2ukCWuih1a
+         Gss03KIpSNNSGtOhBRNw8Sh0i9/M/MQKXe5AjQBar5r0Q/pBGnkwVzt6Z9t7FNnZcuUK
+         NMYkaeX8oBKxpYixvYS/jZKaoGFIFc1KQQ96BvGMYqFTcM2x3airBDrv8i5VhCp4320O
+         REkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689407573; x=1691999573;
-        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XICKv7iip3MX1RFnTjF/KQz1iwO2NUYvEEXm4nzQgNQ=;
-        b=hTpwyE8qNOpxVv9X/zi4NplW2UVEaQRIxFlCQ7QpqM+ecx3/Xlg1aCb8vAB2UszYhq
-         h4jjoZMGfI7Aj6DcKdqZHv9gbnjXEH8PBJXaxGT6vFL/9RFeJZR2k+/E1Tdiii2fZRVB
-         sZIZuctCqobTfqLt5e4HYOiH2m0UaBlWGGoQHa5s31Ck87Slnqd2AcDryGcwaV0lZfOe
-         Kzfk+KKx+N2dN+SlSBXooG7PfnocySkLlL1QwJJuGuGwHTRAF0Qdv3l1lyeZmasRCNXF
-         xKg97vLMG+tGoGWal3ki01V5kJ5NL6iFR+sSuS5/HtKP5ZbZcxviyd2WKzVjf0/dteLf
-         g3Ow==
-X-Gm-Message-State: ABy/qLYXzaJ1pWQlnz7xRhLgnXx1hzUfhmd3ftjRAJdc6he3JsqMqEbi
-        0ApNuRo3MwpuoTCg4L3wt2Qhlufyi7rkPHdT8rMWvhQb8zfFVQ==
-X-Google-Smtp-Source: APBJJlHuM5uaVxOoW6CXKvDuoa2N/p6vZb0IHe56Mkz0y4mpOlYt0tjacW01U5xP6PE4CX9/ET8ktR9Ec43kLf2A7cs=
-X-Received: by 2002:a19:f618:0:b0:4fb:74da:989a with SMTP id
- x24-20020a19f618000000b004fb74da989amr5403336lfe.3.1689407572670; Sat, 15 Jul
- 2023 00:52:52 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689407620; x=1691999620;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=64bznzqz+bNp3VRLI2c/xdrX18bRuMWopVm8BVRqgP0=;
+        b=hrJY2gjclJ3qgb8/ivOWJAqW+vm3zOCryls7KEuBm8xKic8oZsI/lBttN3bKZ2B76E
+         ugnJeBD6tABHoQ113U/5TfPds/R13Vi1oTlX1KG2wCJxK3690FIQuNON/EiJpgxnak5D
+         G/2H/j3IBcQG3xt3XuYh3VcaZlhEXURgy36MqjWebWQXfr0OeF2X9wBsLokx5xYtTE2A
+         qc8ClI6Toiy3ZYaxFAIV5sQhYEd42ngf0TUqVgdG8s0o65zTL5YCDDWI1rRfCCG2l6OL
+         MUFRC1P7JOlyi7ckdTVFTnpS3c+65CJMw4shOSuSlMH40RVYqmPBjqOy3FOVVFalRrGh
+         Lnog==
+X-Gm-Message-State: ABy/qLZKKANHGxIymKOBZrEn2eCm9LCh6/GK6+DZnCUu/3nMpHYs8GZx
+        03vztX0tNoLrNYI21AShzbI=
+X-Google-Smtp-Source: APBJJlF45C5ZuFjGUeHBUKG0OpMzU+pF0/JOQUtOx4YP4a9QoFrtFoTPDo1ESwV2fjqo7pxl11mGBw==
+X-Received: by 2002:adf:fc50:0:b0:313:e952:e500 with SMTP id e16-20020adffc50000000b00313e952e500mr5237036wrs.7.1689407619913;
+        Sat, 15 Jul 2023 00:53:39 -0700 (PDT)
+Received: from [127.0.1.1] ([91.230.2.244])
+        by smtp.gmail.com with ESMTPSA id f6-20020adff586000000b003142eb75724sm13001271wro.24.2023.07.15.00.53.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 15 Jul 2023 00:53:39 -0700 (PDT)
+From:   Benjamin Bara <bbara93@gmail.com>
+Subject: [PATCH v7 0/5] mfd: tps6586x: register restart handler
+Date:   Sat, 15 Jul 2023 09:53:22 +0200
+Message-Id: <20230327-tegra-pmic-reboot-v7-0-18699d5dcd76@skidata.com>
 MIME-Version: 1.0
-References: <20230708054052.45967-1-src.res.211@gmail.com> <87351q1fcw.fsf@meer.lwn.net>
- <d2da2720-ebcb-ee77-f732-a23184c560a6@gmail.com>
-In-Reply-To: <d2da2720-ebcb-ee77-f732-a23184c560a6@gmail.com>
-From:   src res <src.res.211@gmail.com>
-Date:   Sat, 15 Jul 2023 15:52:40 +0800
-Message-ID: <CADztU2OQ+5GWZrFw-2oXOGU99WGrs1tCT11vWXU0koN6T21Rog@mail.gmail.com>
-Subject: Fwd: [PATCH] docs/zh_TW: rewrite index.rst
-To:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAHJQsmQC/4XQz2rEIBAG8FdZPNfFP5OY9LTvUXoYzZhIm7ioh
+ JYl716TU8tCc/zQ+c3HPFimFCiz18uDJVpDDnGpwbxcmJtwGYmHoWamhNJCK8MLjQn5fQ6OJ7I
+ xFg7SNN53EhAsq3MWM3GbcHHTPjljLpT2h3siH76OZW/vNfsUZ16mRPh7hVBKaGiuElrddoZLb
+ i0m7PVtnDF8Xl2cd2wKucT0fRRf9U7+13HVXHDtBJFuWkMSbvkjDFjw4PYyK5waUA2rAL2Svbd
+ gno3m1GiqgVb0guqPDoZnoz012t3wUO/thk5R/9fYtu0Hw9zQHdYBAAA=
+To:     Wolfram Sang <wsa@kernel.org>, Lee Jones <lee@kernel.org>,
+        rafael.j.wysocki@intel.com,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     dmitry.osipenko@collabora.com, peterz@infradead.org,
+        jonathanh@nvidia.com, richard.leitner@linux.dev,
+        treding@nvidia.com, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
+        Benjamin Bara <benjamin.bara@skidata.com>,
+        stable@vger.kernel.org, Nishanth Menon <nm@ti.com>
+X-Mailer: b4 0.12.2
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,36 +81,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/7/15 03:07, Jonathan Corbet wrote:
-> Hu Haowen <src.res.211@gmail.com> writes:
->
->> Update zh_TW's index.rst to the version of commit 0c7b4366f1ab ("docs:
->> Rewrite the front page") with some reference from commit f4bf1cd4ac9c
->> ("docs: move asm-annotations.rst into core-api") and commit eef24f7054a6
->> ("docs/zh_CN: Rewrite the Chinese translation front page").
->>
->> Signed-off-by: Hu Haowen <src.res.211@gmail.com>
->> ---
->>   Documentation/translations/zh_TW/index.rst | 156 ++++++++-------------
->>   1 file changed, 56 insertions(+), 100 deletions(-)
->
-> So your two patches conflict with each other.  I've sorted it out and
-> applied this, but it would be nicer if I didn't have to do that...
+Hi!
 
-Sorry for bothering you. The conflict might be caused by my attempting
-to split the patches belonged to one ensemble originally into two
-independent parts. Only after sending the first one patch did I recall
-remaining some work which was supposed to be patched and sent together
-with the former. But that was late.
+The Tegra20 requires an enabled VDE power domain during startup. As the
+VDE is currently not used, it is disabled during runtime.
+Since 8f0c714ad9be, there is a workaround for the "normal restart path"
+which enables the VDE before doing PMC's warm reboot. This workaround is
+not executed in the "emergency restart path", leading to a hang-up
+during start.
 
-The next time I will check if my work is done wholly before sending and
-send the patches altogether so as to ensure that they won't cause any
-conflicts. Apologies to you again.
+This series implements and registers a new pmic-based restart handler
+for boards with tps6586x. This cold reboot ensures that the VDE power
+domain is enabled during startup on tegra20-based boards.
 
-Thanks,
-Hu
+Since bae1d3a05a8b, i2c transfers are non-atomic while preemption is
+disabled (which is e.g. done during panic()). This could lead to
+warnings ("Voluntary context switch within RCU") in i2c-based restart
+handlers during emergency restart. The state of preemption should be
+detected by i2c_in_atomic_xfer_mode() to use atomic i2c xfer when
+required. Beside the new system_state check, the check is the same as
+the one pre v5.2.
 
->
-> Thanks,
->
-> jon
+---
+v7:
+- 5/5: drop mode check (suggested by Dmitry)
+- Link to v6: https://lore.kernel.org/r/20230327-tegra-pmic-reboot-v6-0-af44a4cd82e9@skidata.com
+
+v6:
+- drop 4/6 to abort restart on unexpected failure (suggested by Dmitry)
+- 4,5: fix comments in handlers (suggested by Lee)
+- 4,5: same delay for both handlers (suggested by Lee)
+
+v5:
+- introduce new 3 & 4, therefore 3 -> 5, 4 -> 6
+- 3: provide dev to sys_off handler, if it is known
+- 4: return NOTIFY_DONE from sys_off_notify, to avoid skipping
+- 5: drop Reviewed-by from Dmitry, add poweroff timeout
+- 5,6: return notifier value instead of direct errno from handler
+- 5,6: use new dev field instead of passing dev as cb_data
+- 5,6: increase timeout values based on error observations
+- 6: skip unsupported reboot modes in restart handler
+
+---
+Benjamin Bara (5):
+      kernel/reboot: emergency_restart: set correct system_state
+      i2c: core: run atomic i2c xfer when !preemptible
+      kernel/reboot: add device to sys_off_handler
+      mfd: tps6586x: use devm-based power off handler
+      mfd: tps6586x: register restart handler
+
+ drivers/i2c/i2c-core.h |  2 +-
+ drivers/mfd/tps6586x.c | 50 ++++++++++++++++++++++++++++++++++++++++++--------
+ include/linux/reboot.h |  3 +++
+ kernel/reboot.c        |  4 ++++
+ 4 files changed, 50 insertions(+), 9 deletions(-)
+---
+base-commit: 197b6b60ae7bc51dd0814953c562833143b292aa
+change-id: 20230327-tegra-pmic-reboot-4175ff814a4b
+
+Best regards,
+-- 
+Benjamin Bara <benjamin.bara@skidata.com>
+
