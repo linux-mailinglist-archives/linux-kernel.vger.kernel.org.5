@@ -2,370 +2,293 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E8337549DA
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 17:41:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FF947549E0
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 17:46:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230146AbjGOPl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 11:41:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36296 "EHLO
+        id S230168AbjGOPqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 11:46:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbjGOPlZ (ORCPT
+        with ESMTP id S229441AbjGOPqG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 11:41:25 -0400
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::226])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB9282D7B;
-        Sat, 15 Jul 2023 08:41:22 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 0794BC0004;
-        Sat, 15 Jul 2023 15:41:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1689435679;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dx1hsltG+GS7GVxSpUxmJ8g4K6vQcrTXG0/HvBc/tbU=;
-        b=A0YL2XjHakazCSZxBEAgvvFz+zO/q6MvW/VWQbL4uXtrm77eLe7cnit7/T8i/AuGOl7OmT
-        YN++8QaxP9uM3tgqSVdbFUnWRWqxsOJV5bWYasJpx+Cy1LYzoD8PftOmoRYFj21IyBCAI5
-        JO0t/bxRZzXCQOfu1e9sM0qCXBwrcUQdH+RihsTsFt3DIFR2JQ1cDTr+Qcmrnb0SR6Ybme
-        fcXexHoisB0ENB+2rnbwpWzBjYQu7I5XizRbcqeC7dmqQaXYcWpZPzLjYOI2u7yUXhT3xr
-        SXoQdjTlkuldFhbZ0dpwyQkGtKicY/Lv7sYc5w9KkLSHvhRY8j1jFssNmZ8VQQ==
-Date:   Sat, 15 Jul 2023 17:41:12 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Fabrizio Castro <fabrizio.castro.jz@renesas.com>
-Cc:     Alexander Usyskin <alexander.usyskin@intel.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Tomas Winkler <tomas.winkler@intel.com>,
-        Vitaly Lubart <vitaly.lubart@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>,
-        Chris Paterson <Chris.Paterson2@renesas.com>
-Subject: Re: [PATCH 1/2] mtd: use refcount to prevent corruption
-Message-ID: <20230715174112.3909e43f@xps-13>
-In-Reply-To: <TYWPR01MB87756794A30EB389AB017EB1C234A@TYWPR01MB8775.jpnprd01.prod.outlook.com>
-References: <20230620131905.648089-1-alexander.usyskin@intel.com>
-        <20230620131905.648089-2-alexander.usyskin@intel.com>
-        <TYWPR01MB87756794A30EB389AB017EB1C234A@TYWPR01MB8775.jpnprd01.prod.outlook.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        Sat, 15 Jul 2023 11:46:06 -0400
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E8462D7B
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 08:46:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689435965; x=1720971965;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=TdOFQx8Xw8wGYYZnQLWKR6xssjx8vw+ImsQnbjJdtIg=;
+  b=TNvI8483sirnZ5iamQDxnvWoFzWNQSMXWFmi8LS641BMiIGpULuqMDyy
+   /K3I0wNf3Gd7lzgHc5AXFrK2+dzih9ZKDTV58sZlUokMigZPBCahOKt0R
+   ati2LVfS3hSLqYbK0aKDqpq70FCY4mD7lya74zDMhPZObehy19Q9AGlSn
+   BMRyUjfaBU/JiLgChE8uR9iXZcECIbNGDBX5FexecSlmvlK3ReE7sweEZ
+   PbBAO1T7gmOLpV14RW5O+a+FygdHAfvSSG9ckqmGyilPhIHDMCd6/7tib
+   HAzqP43QBsBeoxXdOm2fVujFe66+kBF/9iDu+6dXIPZHTDhTWgkItulOx
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10772"; a="368315028"
+X-IronPort-AV: E=Sophos;i="6.01,208,1684825200"; 
+   d="scan'208";a="368315028"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2023 08:46:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10772"; a="722725472"
+X-IronPort-AV: E=Sophos;i="6.01,208,1684825200"; 
+   d="scan'208";a="722725472"
+Received: from sbint17x-mobl.gar.corp.intel.com (HELO thellstr-mobl1.intel.com) ([10.249.254.142])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2023 08:46:01 -0700
+From:   =?UTF-8?q?Thomas=20Hellstr=C3=B6m?= 
+        <thomas.hellstrom@linux.intel.com>
+To:     intel-xe@lists.freedesktop.org
+Cc:     =?UTF-8?q?Thomas=20Hellstr=C3=B6m?= 
+        <thomas.hellstrom@linux.intel.com>,
+        Nirmoy Das <nirmoy.das@intel.com>,
+        Matthew Brost <matthew.brost@intel.com>,
+        Danilo Krummrich <dakr@redhat.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Oak Zeng <oak.zeng@intel.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Francois Dugast <francois.dugast@intel.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v5] Documentation/gpu: Add a VM_BIND async draft document
+Date:   Sat, 15 Jul 2023 17:45:43 +0200
+Message-ID: <20230715154543.13183-1-thomas.hellstrom@linux.intel.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Fabrizio,
+Add a motivation for and description of asynchronous VM_BIND operation
 
-fabrizio.castro.jz@renesas.com wrote on Fri, 14 Jul 2023 16:10:45 +0000:
+v2:
+- Fix typos (Nirmoy Das)
+- Improve the description of a memory fence (Oak Zeng)
+- Add a reference to the document in the Xe RFC.
+- Add pointers to sample uAPI suggestions
+v3:
+- Address review comments (Danilo Krummrich)
+- Formatting fixes
+v4:
+- Address typos (Francois Dugast)
+- Explain why in-fences are not allowed for VM_BIND operations for long-
+  running workloads (Matthew Brost)
+v5:
+- More typo- and style fixing
+- Further clarify the implications of disallowing in-fences for VM_BIND
+  operations for long-running workloads (Matthew Brost)
 
-> Dear All,
->=20
-> I am sorry for reopening this topic, but as it turns out (after bisecting
-> linux-next/master) this patch is interfering with a use case I am working
-> on.
->=20
-> I am using a Renesas RZ/V2M EVK v2.0 platform, I have an SPI NOR memory
-> ("micron,mt25ql256a") wired up to a connector on the platform, the SPI
-> master is using driver (built as module):
-> drivers/spi/spi-rzv2m-csi.c
->=20
-> Although the board device tree in mainline does not reflect the connection
-> of CSI4 (which is the SPI master) from the SoC to the "micron,mt25ql256a"
-> (SPI slave device), my local device tree comes with the necessary definit=
-ions.
->=20
-> Without this patch, when I load up the module, I get the below 3 devices:
-> /dev/mtd0
-> /dev/mtd0ro
-> /dev/mtdblock0
->=20
-> They get cleaned up correctly upon module removal.
-> I can reload the same module, and everything works just fine.
->=20
-> With this patch applied, when I load up the module, I get the same 3
-> devices:
-> /dev/mtd0
-> /dev/mtd0ro
-> /dev/mtdblock0
->=20
-> Upon removal, the below 2 devices still hang around:
-> /dev/mtd0
-> /dev/mtd0ro
+Signed-off-by: Thomas Hellström <thomas.hellstrom@linux.intel.com>
+Acked-by: Nirmoy Das <nirmoy.das@intel.com>
+---
+ Documentation/gpu/drm-vm-bind-async.rst | 171 ++++++++++++++++++++++++
+ Documentation/gpu/rfc/xe.rst            |   4 +-
+ 2 files changed, 173 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/gpu/drm-vm-bind-async.rst
 
-Looks like the refcounting change is still not even in some cases, can
-you investigate and come up with a proper patch? You can either improve
-the existing patch or revert it and try your own approach if deemed
-better.
+diff --git a/Documentation/gpu/drm-vm-bind-async.rst b/Documentation/gpu/drm-vm-bind-async.rst
+new file mode 100644
+index 000000000000..d2b02a38198a
+--- /dev/null
++++ b/Documentation/gpu/drm-vm-bind-async.rst
+@@ -0,0 +1,171 @@
++====================
++Asynchronous VM_BIND
++====================
++
++Nomenclature:
++=============
++
++* ``VRAM``: On-device memory. Sometimes referred to as device local memory.
++
++* ``gpu_vm``: A GPU address space. Typically per process, but can be shared by
++  multiple processes.
++
++* ``VM_BIND``: An operation or a list of operations to modify a gpu_vm using
++  an IOCTL. The operations include mapping and unmapping system- or
++  VRAM memory.
++
++* ``syncobj``: A container that abstracts synchronization objects. The
++  synchronization objects can be either generic, like dma-fences or
++  driver specific. A syncobj typically indicates the type of the
++  underlying synchronization object.
++
++* ``in-syncobj``: Argument to a VM_BIND IOCTL, the VM_BIND operation waits
++  for these before starting.
++
++* ``out-syncobj``: Argument to a VM_BIND_IOCTL, the VM_BIND operation
++  signals these when the bind operation is complete.
++
++* ``memory fence``: A synchronization object, different from a dma-fence.
++  A memory fence uses the value of a specified memory location to determine
++  signaled status. A memory fence can be awaited and signaled by both
++  the GPU and CPU. Memory fences are sometimes referred to as
++  user-fences, userspace-fences or gpu futexes and do not necessarily obey
++  the dma-fence rule of signaling within a "reasonable amount of time".
++  The kernel should thus avoid waiting for memory fences with locks held.
++
++* ``long-running workload``: A workload that may take more than the
++  current stipulated dma-fence maximum signal delay to complete and
++  which therefore needs to set the gpu_vm or the GPU execution context in
++  a certain mode that disallows completion dma-fences.
++
++* ``exec function``: An exec function is a function that revalidates all
++  affected gpu_vmas, submits a GPU command batch and registers the
++  dma_fence representing the GPU command's activity with all affected
++  dma_resvs. For completeness, although not covered by this document,
++  it's worth mentioning that an exec function may also be the
++  revalidation worker that is used by some drivers in compute /
++  long-running mode.
++
++* ``bind context``: A context identifier used for the VM_BIND
++  operation. VM_BIND operations that use the same bind context can be
++  assumed, where it matters, to complete in order of submission. No such
++  assumptions can be made for VM_BIND operations using separate bind contexts.
++
++* ``UMD``: User-mode driver.
++
++* ``KMD``: Kernel-mode driver.
++
++
++Synchronous / Asynchronous VM_BIND operation
++============================================
++
++Synchronous VM_BIND
++___________________
++With Synchronous VM_BIND, the VM_BIND operations all complete before the
++IOCTL returns. A synchronous VM_BIND takes neither in-fences nor
++out-fences. Synchronous VM_BIND may block and wait for GPU operations;
++for example swap-in or clearing, or even previous binds.
++
++Asynchronous VM_BIND
++____________________
++Asynchronous VM_BIND accepts both in-syncobjs and out-syncobjs. While the
++IOCTL may return immediately, the VM_BIND operations wait for the in-syncobjs
++before modifying the GPU page-tables, and signal the out-syncobjs when
++the modification is done in the sense that the next exec function that
++awaits for the out-syncobjs will see the change. Errors are reported
++synchronously assuming that the asynchronous part of the job never errors.
++In low-memory situations the implementation may block, performing the
++VM_BIND synchronously, because there might not be enough memory
++immediately available for preparing the asynchronous operation.
++
++If the VM_BIND IOCTL takes a list or an array of operations as an argument,
++the in-syncobjs needs to signal before the first operation starts to
++execute, and the out-syncobjs signal after the last operation
++completes. Operations in the operation list can be assumed, where it
++matters, to complete in order.
++
++Since asynchronous VM_BIND operations may use dma-fences embedded in
++out-syncobjs and internally in KMD to signal bind completion,  any
++memory fences given as VM_BIND in-fences need to be awaited
++synchronously before the VM_BIND ioctl returns, since dma-fences,
++required to signal in a reasonable amount of time, can never be made
++to depend on memory fences that don't have such a restriction.
++
++To aid in supporting user-space queues, the VM_BIND may take a bind context.
++
++The purpose of an Asynchronous VM_BIND operation is for user-mode
++drivers to be able to pipeline interleaved gpu_vm modifications and
++exec functions. For long-running workloads, such pipelining of a bind
++operation is not allowed and any in-fences need to be awaited
++synchronously. The reason for this is twofold. First, any memory
++fences gated by a long-running workload and used as in-syncobjs for the
++VM_BIND operation will need to be awaited synchronously anyway (see
++above). Second, any dma-fences used as in-syncobjs for VM_BIND
++operations for long-running workloads will not allow for pipelining
++anyway since long-running workloads don't allow for dma-fences as
++out-syncobjs, so while theoretically possible the use of them is
++questionable and should be rejected until there is a valuable use-case.
++Note that this is not a limitation imposed by dma-fence rules, but
++rather a limitation imposed to keep KMD implementation simple. It does
++not affect using dma-fences as dependencies for the long-running
++workload itself, which is allowed by dma-fence rules, but rather for
++the VM_BIND operation only.
++
++Also for VM_BINDS for long-running gpu_vms the user-mode driver should typically
++select memory fences as out-fences since that gives greater flexibility for
++the kernel mode driver to inject other operations into the bind /
++unbind operations. Like for example inserting breakpoints into batch
++buffers. The workload execution can then easily be pipelined behind
++the bind completion using the memory out-fence as the signal condition
++for a GPU semaphore embedded by UMD in the workload.
++
++Multi-operation VM_BIND IOCTL error handling and interrupts
++===========================================================
++
++The VM_BIND operations of the IOCTL may error due to lack of resources
++to complete and also due to interrupted waits. In both situations UMD
++should preferably restart the IOCTL after taking suitable action. If
++UMD has over-committed a memory resource, an -ENOSPC error will be
++returned, and UMD may then unbind resources that are not used at the
++moment and restart the IOCTL. On -EINTR, UMD should simply restart the
++IOCTL and on -ENOMEM user-space may either attempt to free known
++system memory resources or abort the operation. If aborting as a
++result of a failed operation in a list of operations, some operations
++may still have completed, and to get back to a known state, user-space
++should therefore attempt to unbind all virtual memory regions touched
++by the failing IOCTL.
++Unbind operations are guaranteed not to cause any errors due to
++resource constraints.
++In between a failed VM_BIND IOCTL and a successful restart there may
++be implementation defined restrictions on the use of the gpu_vm. For a
++description why, please see KMD implementation details under `error
++state saving`_.
++
++Sample uAPI implementations
++===========================
++Suggested uAPI implementations at the moment of writing can be found for
++the Nouveau driver `here
++<https://patchwork.freedesktop.org/patch/543260/?series=112994&rev=6>`_.
++and for the Xe driver `here
++<https://cgit.freedesktop.org/drm/drm-xe/diff/include/uapi/drm/xe_drm.h?h=drm-xe-next&id=9cb016ebbb6a275f57b1cb512b95d5a842391ad7>`_.
++
++KMD implementation details
++==========================
++
++Error state saving
++__________________
++Open: When the VM_BIND IOCTL returns an error, some or even parts of
++an operation may have been completed. If the IOCTL is restarted, in
++order to know where to restart, the KMD can either put the gpu_vm in
++an error state and save one instance of the needed restart state
++internally. In this case, KMD needs to block further modifications of
++the gpu_vm state that may cause additional failures requiring a
++restart state save, until the error has been fully resolved. If the
++uAPI instead defines a pointer to a UMD allocated cookie in the IOCTL
++struct, it could also choose to store the restart state in that cookie.
++
++The restart state may, for example, be the number of successfully
++completed operations.
++
++Easiest for UMD would of course be if KMD did a full unwind on error
++so that no error state needs to be saved.
+diff --git a/Documentation/gpu/rfc/xe.rst b/Documentation/gpu/rfc/xe.rst
+index 2516fe141db6..0f062e1346d2 100644
+--- a/Documentation/gpu/rfc/xe.rst
++++ b/Documentation/gpu/rfc/xe.rst
+@@ -138,8 +138,8 @@ memory fences. Ideally with helper support so people don't get it wrong in all
+ possible ways.
+ 
+ As a key measurable result, the benefits of ASYNC VM_BIND and a discussion of
+-various flavors, error handling and a sample API should be documented here or in
+-a separate document pointed to by this document.
++various flavors, error handling and sample API suggestions are documented in
++Documentation/gpu/drm-vm-bind-async.rst
+ 
+ Userptr integration and vm_bind
+ -------------------------------
+-- 
+2.40.1
 
-Thanks,
-Miqu=C3=A8l
-
-> Preventing the module from being (re)loaded correctly:
-> rzv2m_csi a4020200.spi: error -EBUSY: register controller failed
-> rzv2m_csi: probe of a4020200.spi failed with error -16
->=20
-> Are you guys aware of this sort of side effect?
->=20
-> Thanks,
-> Fab
->=20
-> > From: Alexander Usyskin <alexander.usyskin@intel.com>
-> > Subject: [PATCH 1/2] mtd: use refcount to prevent corruption
-> >=20
-> > From: Tomas Winkler <tomas.winkler@intel.com>
-> >=20
-> > When underlying device is removed mtd core will crash
-> > in case user space is holding open handle.
-> > Need to use proper refcounting so device is release
-> > only when has no users.
-> >=20
-> > Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
-> > Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
-> > ---
-> >  drivers/mtd/mtdcore.c   | 72 ++++++++++++++++++++++------------------
-> > -
-> >  drivers/mtd/mtdcore.h   |  1 +
-> >  drivers/mtd/mtdpart.c   | 14 ++++----
-> >  include/linux/mtd/mtd.h |  2 +-
-> >  4 files changed, 49 insertions(+), 40 deletions(-)
-> >=20
-> > diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> > index abf4cb58a8ab..84bd1878367d 100644
-> > --- a/drivers/mtd/mtdcore.c
-> > +++ b/drivers/mtd/mtdcore.c
-> > @@ -93,10 +93,33 @@ static void mtd_release(struct device *dev)
-> >  	struct mtd_info *mtd =3D dev_get_drvdata(dev);
-> >  	dev_t index =3D MTD_DEVT(mtd->index);
-> >=20
-> > +	if (mtd_is_partition(mtd))
-> > +		release_mtd_partition(mtd);
-> > +
-> >  	/* remove /dev/mtdXro node */
-> >  	device_destroy(&mtd_class, index + 1);
-> >  }
-> >=20
-> > +static void mtd_device_release(struct kref *kref)
-> > +{
-> > +	struct mtd_info *mtd =3D container_of(kref, struct mtd_info,
-> > refcnt);
-> > +
-> > +	debugfs_remove_recursive(mtd->dbg.dfs_dir);
-> > +
-> > +	/* Try to remove the NVMEM provider */
-> > +	nvmem_unregister(mtd->nvmem);
-> > +
-> > +	device_unregister(&mtd->dev);
-> > +
-> > +	/* Clear dev so mtd can be safely re-registered later if desired
-> > */
-> > +	memset(&mtd->dev, 0, sizeof(mtd->dev));
-> > +
-> > +	idr_remove(&mtd_idr, mtd->index);
-> > +	of_node_put(mtd_get_of_node(mtd));
-> > +
-> > +	module_put(THIS_MODULE);
-> > +}
-> > +
-> >  #define MTD_DEVICE_ATTR_RO(name) \
-> >  static DEVICE_ATTR(name, 0444, mtd_##name##_show, NULL)
-> >=20
-> > @@ -666,7 +689,7 @@ int add_mtd_device(struct mtd_info *mtd)
-> >  	}
-> >=20
-> >  	mtd->index =3D i;
-> > -	mtd->usecount =3D 0;
-> > +	kref_init(&mtd->refcnt);
-> >=20
-> >  	/* default value if not set by driver */
-> >  	if (mtd->bitflip_threshold =3D=3D 0)
-> > @@ -779,7 +802,6 @@ int del_mtd_device(struct mtd_info *mtd)
-> >  {
-> >  	int ret;
-> >  	struct mtd_notifier *not;
-> > -	struct device_node *mtd_of_node;
-> >=20
-> >  	mutex_lock(&mtd_table_mutex);
-> >=20
-> > @@ -793,28 +815,8 @@ int del_mtd_device(struct mtd_info *mtd)
-> >  	list_for_each_entry(not, &mtd_notifiers, list)
-> >  		not->remove(mtd);
-> >=20
-> > -	if (mtd->usecount) {
-> > -		printk(KERN_NOTICE "Removing MTD device #%d (%s) with use
-> > count %d\n",
-> > -		       mtd->index, mtd->name, mtd->usecount);
-> > -		ret =3D -EBUSY;
-> > -	} else {
-> > -		mtd_of_node =3D mtd_get_of_node(mtd);
-> > -		debugfs_remove_recursive(mtd->dbg.dfs_dir);
-> > -
-> > -		/* Try to remove the NVMEM provider */
-> > -		nvmem_unregister(mtd->nvmem);
-> > -
-> > -		device_unregister(&mtd->dev);
-> > -
-> > -		/* Clear dev so mtd can be safely re-registered later if
-> > desired */
-> > -		memset(&mtd->dev, 0, sizeof(mtd->dev));
-> > -
-> > -		idr_remove(&mtd_idr, mtd->index);
-> > -		of_node_put(mtd_of_node);
-> > -
-> > -		module_put(THIS_MODULE);
-> > -		ret =3D 0;
-> > -	}
-> > +	kref_put(&mtd->refcnt, mtd_device_release);
-> > +	ret =3D 0;
-> >=20
-> >  out_error:
-> >  	mutex_unlock(&mtd_table_mutex);
-> > @@ -1228,19 +1230,21 @@ int __get_mtd_device(struct mtd_info *mtd)
-> >  	if (!try_module_get(master->owner))
-> >  		return -ENODEV;
-> >=20
-> > +	kref_get(&mtd->refcnt);
-> > +
-> >  	if (master->_get_device) {
-> >  		err =3D master->_get_device(mtd);
-> >=20
-> >  		if (err) {
-> > +			kref_put(&mtd->refcnt, mtd_device_release);
-> >  			module_put(master->owner);
-> >  			return err;
-> >  		}
-> >  	}
-> >=20
-> > -	master->usecount++;
-> > -
-> >  	while (mtd->parent) {
-> > -		mtd->usecount++;
-> > +		if (IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER) || mtd- =20
-> > >parent !=3D master) =20
-> > +			kref_get(&mtd->parent->refcnt);
-> >  		mtd =3D mtd->parent;
-> >  	}
-> >=20
-> > @@ -1327,18 +1331,20 @@ void __put_mtd_device(struct mtd_info *mtd)
-> >  {
-> >  	struct mtd_info *master =3D mtd_get_master(mtd);
-> >=20
-> > -	while (mtd->parent) {
-> > -		--mtd->usecount;
-> > -		BUG_ON(mtd->usecount < 0);
-> > -		mtd =3D mtd->parent;
-> > -	}
-> > +	while (mtd !=3D master) {
-> > +		struct mtd_info *parent =3D mtd->parent;
-> >=20
-> > -	master->usecount--;
-> > +		kref_put(&mtd->refcnt, mtd_device_release);
-> > +		mtd =3D parent;
-> > +	}
-> >=20
-> >  	if (master->_put_device)
-> >  		master->_put_device(master);
-> >=20
-> >  	module_put(master->owner);
-> > +
-> > +	if (IS_ENABLED(CONFIG_MTD_PARTITIONED_MASTER))
-> > +		kref_put(&master->refcnt, mtd_device_release);
-> >  }
-> >  EXPORT_SYMBOL_GPL(__put_mtd_device);
-> >=20
-> > diff --git a/drivers/mtd/mtdcore.h b/drivers/mtd/mtdcore.h
-> > index b5eefeabf310..b014861a06a6 100644
-> > --- a/drivers/mtd/mtdcore.h
-> > +++ b/drivers/mtd/mtdcore.h
-> > @@ -12,6 +12,7 @@ int __must_check add_mtd_device(struct mtd_info
-> > *mtd);
-> >  int del_mtd_device(struct mtd_info *mtd);
-> >  int add_mtd_partitions(struct mtd_info *, const struct mtd_partition
-> > *, int);
-> >  int del_mtd_partitions(struct mtd_info *);
-> > +void release_mtd_partition(struct mtd_info *mtd);
-> >=20
-> >  struct mtd_partitions;
-> >=20
-> > diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-> > index a46affbb037d..23483db8f30c 100644
-> > --- a/drivers/mtd/mtdpart.c
-> > +++ b/drivers/mtd/mtdpart.c
-> > @@ -32,6 +32,12 @@ static inline void free_partition(struct mtd_info
-> > *mtd)
-> >  	kfree(mtd);
-> >  }
-> >=20
-> > +void release_mtd_partition(struct mtd_info *mtd)
-> > +{
-> > +	WARN_ON(!list_empty(&mtd->part.node));
-> > +	free_partition(mtd);
-> > +}
-> > +
-> >  static struct mtd_info *allocate_partition(struct mtd_info *parent,
-> >  					   const struct mtd_partition *part,
-> >  					   int partno, uint64_t cur_offset)
-> > @@ -309,13 +315,11 @@ static int __mtd_del_partition(struct mtd_info
-> > *mtd)
-> >=20
-> >  	sysfs_remove_files(&mtd->dev.kobj, mtd_partition_attrs);
-> >=20
-> > +	list_del_init(&mtd->part.node);
-> >  	err =3D del_mtd_device(mtd);
-> >  	if (err)
-> >  		return err;
-> >=20
-> > -	list_del(&mtd->part.node);
-> > -	free_partition(mtd);
-> > -
-> >  	return 0;
-> >  }
-> >=20
-> > @@ -333,6 +337,7 @@ static int __del_mtd_partitions(struct mtd_info
-> > *mtd)
-> >  			__del_mtd_partitions(child);
-> >=20
-> >  		pr_info("Deleting %s MTD partition\n", child->name);
-> > +		list_del_init(&child->part.node);
-> >  		ret =3D del_mtd_device(child);
-> >  		if (ret < 0) {
-> >  			pr_err("Error when deleting partition \"%s\" (%d)\n",
-> > @@ -340,9 +345,6 @@ static int __del_mtd_partitions(struct mtd_info
-> > *mtd)
-> >  			err =3D ret;
-> >  			continue;
-> >  		}
-> > -
-> > -		list_del(&child->part.node);
-> > -		free_partition(child);
-> >  	}
-> >=20
-> >  	return err;
-> > diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-> > index 7c58c44662b8..914a9f974baa 100644
-> > --- a/include/linux/mtd/mtd.h
-> > +++ b/include/linux/mtd/mtd.h
-> > @@ -379,7 +379,7 @@ struct mtd_info {
-> >=20
-> >  	struct module *owner;
-> >  	struct device dev;
-> > -	int usecount;
-> > +	struct kref refcnt;
-> >  	struct mtd_debug_info dbg;
-> >  	struct nvmem_device *nvmem;
-> >  	struct nvmem_device *otp_user_nvmem;
-> > --
-> > 2.34.1 =20
->=20
