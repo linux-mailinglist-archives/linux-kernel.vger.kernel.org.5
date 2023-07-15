@@ -2,116 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB226754926
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 16:08:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AE1D75492B
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 16:09:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230029AbjGOOIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 10:08:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39544 "EHLO
+        id S230095AbjGOOJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 10:09:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229968AbjGOOIn (ORCPT
+        with ESMTP id S229994AbjGOOJ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 10:08:43 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4ED9173F
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 07:08:40 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2b734aea34aso45175801fa.0
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 07:08:40 -0700 (PDT)
+        Sat, 15 Jul 2023 10:09:29 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89632173B
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 07:09:27 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4fbbfaacfc1so4794716e87.1
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 07:09:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689430119; x=1692022119;
+        d=linaro.org; s=google; t=1689430166; x=1692022166;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=6Ll+dFRODO/7ee6rRlWXrO/wH1U0TwY1Wqw8OK3QY9U=;
-        b=Kw7fSn1NkSVkKGb3Cl/TVCZFuPgCl18Mb1lDONdgsL1l72mZ/audBVhO2kdo4MNX3d
-         kfQpU7tgK7Y1/e4naNhimnpGpcatIcBjppEraE+KwYCm6eNXQavCMBjZqTWlddt4fWNo
-         j+bKCRbUVR/FvrOv1+C4OlUFhwLxV05C8Ft/AWz+juDr3xLzUqH1BtCmOyL5x/CB21zE
-         9WSqG0NWpadnB6XujTiqccMTV49m4tLJvrbgmtZVGHCXhaskyn0Qq0MBhlOLtromjzwI
-         ZiPwr8g9nE/Qhc4ZGA2wS4K1WNuQlMMyCW+GuU66eu+rlUX9yeVUzcNRkibnl5vKA9Ld
-         NHog==
+        bh=8c3FhnuVAoIEh1m/v2PXe+Qopk1wo7RCnRNOxCosjiA=;
+        b=SRyWifLQM8lGnNcJibPnls0Br53MotLEf9T+ors4EYaCedUkvFowDxfLjrqGoq7rNP
+         UR/mqktHZ6YqO7DOTp6M2QQ6ZB3FGGAnJEeQj07kKPDXtvzhjLfvuBbeZjf+/dfINfEr
+         skRcMhj+DFAaBV0gmEkUCGmkAh/qoPAZ30tHHiWrE+kAvqWRCnaKwp0hW4SH5P5zLiCH
+         +RgnHAHY/yW3SGNbJTBUYU4vxZAuZUzGkpA6Yhn9nDJhnjwKt/sS1DhsZ/BIb0pns8CT
+         DeTYmoIJvVjSP3+x0aSHFMlhYYMuZuQ4W4TMm3P0CgbiqeJ8pTcC0FJt0BCDZbozgytg
+         oS4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689430119; x=1692022119;
+        d=1e100.net; s=20221208; t=1689430166; x=1692022166;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6Ll+dFRODO/7ee6rRlWXrO/wH1U0TwY1Wqw8OK3QY9U=;
-        b=GcfTJCR/O+zJw0GTecwLXskKvJiXiRdDIg+vBwqEF4Vd4AKxpyarCf3dJf9Xl0DboF
-         8KvSWBkeXV2/TOCR5KNh/OGZsAUXDc0uofvRY7UdqxmFi+mBBdjKjXy/n74xevkf+/Um
-         sF/KcDG0Omh6FEyS1zIRxVluL05TJlgdvbkB+wsl0fo5jumsasRtzP4gDKJjUpM0Mn7e
-         jCufcqpIU26JFAJeMLGmqw5o6+4l6SDQrPvPX4yNQYnjJCa3W+QW/sgxzcGKDJkHwNhN
-         wJ6bWvfskAuZGhO4Fu6BozQtu5mN4xU89+ulGIfz/5vSfLWDEt+pV5ypzjnYfabQ6Y7h
-         V1tw==
-X-Gm-Message-State: ABy/qLZzKdRXIQH9Mgyj5/JKv0vajcZ3I8BPdzbJ5rYI2sTZEttOVUpR
-        NbIzjQ6pqgl05WGsG2htprLp9g==
-X-Google-Smtp-Source: APBJJlH7VKNPGyyy4U7Wb6bR6bZlBUUanCcsH6t6s5sQy0mmPU5TmlD3Ev1JRSoDGDOv2Wdn01X4wA==
-X-Received: by 2002:a05:6512:1190:b0:4fb:9f93:365e with SMTP id g16-20020a056512119000b004fb9f93365emr6344267lfr.41.1689430119087;
-        Sat, 15 Jul 2023 07:08:39 -0700 (PDT)
+        bh=8c3FhnuVAoIEh1m/v2PXe+Qopk1wo7RCnRNOxCosjiA=;
+        b=HXYfjukVtXzgvWuz7bBDNYvSCwYEXr1YYy7pxzWSe0GXeM6Qk8yGsxiyCbqKJXduV+
+         ATHrrw4ch5haTYbNaRcHJSO25B5H+N/T0CXCshclAJUXVbAxOQz4reeoIl2fQSrYPACP
+         +nQ2w62CeySscm/vfFZ9BvLrU3H5KWnYHdCEWDcG16JHrnDzcy4uXRfdsbNHpimkEOqJ
+         XjmMZPJdCVCS7FtkmNNXJkRUUx+S02N2y80yyiFmhGA7zv/O3tWketxgYdYwnT881oVZ
+         WjuX7F5xEZFIY8sZ8pdthBxt1Z2lzJcXtkjOnmUzUtpaseevM1l+1PESSuopJ+fqBdsS
+         ygfA==
+X-Gm-Message-State: ABy/qLag2KVOKfjoEHaB3DE+joIA06Y0TYSXvP5B/JgadmT2HfUzM3RW
+        ZMqn3jg/ePVhytHL59IsmMvtZg==
+X-Google-Smtp-Source: APBJJlGcsAZyewJWfNEYRjgpNsHGvO4EKx1LiJHueR7XkU5QBkJwd4Im2k/Wbqo7Co0s03P6JQzVOQ==
+X-Received: by 2002:ac2:58ed:0:b0:4f8:7568:e94b with SMTP id v13-20020ac258ed000000b004f87568e94bmr4872550lfo.56.1689430165843;
+        Sat, 15 Jul 2023 07:09:25 -0700 (PDT)
 Received: from [192.168.1.101] (abxi167.neoplus.adsl.tpnet.pl. [83.9.2.167])
-        by smtp.gmail.com with ESMTPSA id m26-20020ac24ada000000b004fcdea129b1sm581684lfp.279.2023.07.15.07.08.37
+        by smtp.gmail.com with ESMTPSA id g24-20020a19ee18000000b004fba0a9abf1sm1885495lfb.190.2023.07.15.07.09.24
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 15 Jul 2023 07:08:38 -0700 (PDT)
-Message-ID: <3275085e-e4ed-6b0b-c108-cde90a8283b8@linaro.org>
-Date:   Sat, 15 Jul 2023 16:08:37 +0200
+        Sat, 15 Jul 2023 07:09:25 -0700 (PDT)
+Message-ID: <0cf2a0f4-7f5d-78d5-0004-57c446adc883@linaro.org>
+Date:   Sat, 15 Jul 2023 16:09:24 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH] ARM: dts: qcom: msm8226: provide dsi phy clocks to mmcc
+Subject: Re: [PATCH V1] scsi: ufs: ufs-qcom: Update UFS devfreq Parameters
 Content-Language: en-US
-To:     Luca Weiss <luca@z3ntu.xyz>, ~postmarketos/upstreaming@lists.sr.ht,
-        phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230712-msm8226-dsi-clock-fixup-v1-1-71010b0b89ca@z3ntu.xyz>
+To:     Nitin Rawat <quic_nitirawa@quicinc.com>, mani@kernel.org,
+        quic_cang@quicinc.com, stanley.chu@mediatek.com,
+        bvanassche@acm.org, quic_asutoshd@quicinc.com, avri.altman@wdc.com,
+        martin.petersen@oracle.com, beanhuo@micron.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        agross@kernel.org, andersson@kernel.org, jejb@linux.ibm.com,
+        linux-arm-msm@vger.kernel.org, quic_ziqichen@quicinc.com
+References: <20230711104006.15872-1-quic_nitirawa@quicinc.com>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20230712-msm8226-dsi-clock-fixup-v1-1-71010b0b89ca@z3ntu.xyz>
+In-Reply-To: <20230711104006.15872-1-quic_nitirawa@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12.07.2023 09:52, Luca Weiss wrote:
-> Some mmcc clocks have dsi0pll & dsi0pllbyte as clock parents so we
-> should provide them in the dt, which I missed in the commit adding the
-> mdss nodes.
-> 
-> Fixes: d5fb01ad5eb4 ("ARM: dts: qcom: msm8226: Add mdss nodes")
-> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
-> ---
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+On 11.07.2023 12:40, Nitin Rawat wrote:
+> To support the periodic polling mode without stop
+> caused by CPU idle state, enable delayed timer
+> as default instead of deferrable timer for
+> qualcomm platforms.
+> And change UFS devfreq downdifferential threshold to 65
+> for less aggresive downscaling.
+Please wrap your commit messages at around 70 characters, 50
+makes it very hard to read.
 
 Konrad
->  arch/arm/boot/dts/qcom/qcom-msm8226.dtsi | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/arch/arm/boot/dts/qcom/qcom-msm8226.dtsi b/arch/arm/boot/dts/qcom/qcom-msm8226.dtsi
-> index b6ae4b7936e3..d2d09f2f3cee 100644
-> --- a/arch/arm/boot/dts/qcom/qcom-msm8226.dtsi
-> +++ b/arch/arm/boot/dts/qcom/qcom-msm8226.dtsi
-> @@ -404,8 +404,8 @@ mmcc: clock-controller@fd8c0000 {
->  				 <&gcc GPLL0_VOTE>,
->  				 <&gcc GPLL1_VOTE>,
->  				 <&rpmcc RPM_SMD_GFX3D_CLK_SRC>,
-> -				 <0>,
-> -				 <0>;
-> +				 <&mdss_dsi0_phy 1>,
-> +				 <&mdss_dsi0_phy 0>;
->  			clock-names = "xo",
->  				      "mmss_gpll0_vote",
->  				      "gpll0_vote",
-> 
+> Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
+> Signed-off-by: Asutosh Das <quic_asutoshd@quicinc.com>
 > ---
-> base-commit: 40b055fe7f276cf2c1da47316c52f2ff9255a68a
-> change-id: 20230712-msm8226-dsi-clock-fixup-ad8bfd411eb9
+>  drivers/ufs/host/ufs-qcom.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> Best regards,
+> diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
+> index 82d02e7f3b4f..a15815c951ca 100644
+> --- a/drivers/ufs/host/ufs-qcom.c
+> +++ b/drivers/ufs/host/ufs-qcom.c
+> @@ -1388,8 +1388,9 @@ static void ufs_qcom_config_scaling_param(struct ufs_hba *hba,
+>  					struct devfreq_simple_ondemand_data *d)
+>  {
+>  	p->polling_ms = 60;
+> +	p->timer = DEVFREQ_TIMER_DELAYED;
+>  	d->upthreshold = 70;
+> -	d->downdifferential = 5;
+> +	d->downdifferential = 65;
+>  }
+>  #else
+>  static void ufs_qcom_config_scaling_param(struct ufs_hba *hba,
+> --
+> 2.17.1
+> 
