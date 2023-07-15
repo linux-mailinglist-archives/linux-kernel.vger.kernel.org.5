@@ -2,123 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F57C754771
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 10:14:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C670D754775
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 10:17:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229819AbjGOIOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 04:14:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41360 "EHLO
+        id S230051AbjGOIRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 04:17:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjGOIOQ (ORCPT
+        with ESMTP id S229436AbjGOIRE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 04:14:16 -0400
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2371835AE;
-        Sat, 15 Jul 2023 01:14:14 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.nyi.internal (Postfix) with ESMTP id F41985C0100;
-        Sat, 15 Jul 2023 04:14:09 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Sat, 15 Jul 2023 04:14:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ryhl.io; h=cc:cc
-        :content-transfer-encoding:content-type:content-type:date:date
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
-        1689408849; x=1689495249; bh=Xoj9Xm8/Xd98EhXuvKJw7gbcAWTuMt5qlTz
-        hZaCUcZA=; b=czFIb1Ix5sBw+Rqrc0P3Peeqt0KeEURhXqDTthtOOBeUl9DvOuy
-        bEWb4uA2Bh6Pm37J7v7HCYowYHWxa0c1Y7OGzJGRh0IBk1NlTfGijlbNnp/noqmY
-        8dCtQJrn17wgj1qK0cLdwwW4b51NGP7SsxODD8o4dzlkXcdsz2H1E1/8WyXBVVq4
-        cRxd74RBWVkRQaIzefTOZcxf50OFDfLs/F7JyGyLB4wSe/ci0daNyJjdz7LHS+sj
-        /yblcF8x6vlAHH18XiyjY6RsMIzj8BYKdMImX/4BkoknrSTXIpHIkpfWGL/4Vec0
-        GFZlB/BpiJnieWC2YCw/5t9LkC42Pdpo5Qw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-        1689408849; x=1689495249; bh=Xoj9Xm8/Xd98EhXuvKJw7gbcAWTuMt5qlTz
-        hZaCUcZA=; b=gmeQg4/7x7VYZZrbBBgR60o0iPUsDUGHvlK3EnRnOp5kd5k6Evn
-        vyMM/w4/4/p4FkwBheuRofnr1p9aoRPizjlQMUjH7LxxmDxhk6QpDtZ4RQNXTJzT
-        nncO6Qor3DtZ2HOnKUljXNOroJoLDDA3qZfkUCyexBW+JEaf946uWn04I+iahg2f
-        EtJGYw+AA+N3GIXBcapXfGFiIf84ajxGq441FJ/3XShLT08lUnRg5asIanG6jE1X
-        o2+nwvlo0H6uxaryfSxdxzzWC0gwA+ZTBxwi5n489QZ6zGvv6THIXzBgQblB14zc
-        qzlvRQRfXGrWwFJI3hmomiBHkYqjjqgcvmA==
-X-ME-Sender: <xms:UVWyZJ_OJ7KSi3hE3G8ZZdKuyTLj3YLGXkOi8NWHpjPiEoS0gDps2A>
-    <xme:UVWyZNvvH0NEy3xVF2tNYbxszi5xgJ_MHL0lEn-mdaSVxRRfzAOz_mgxL5-V277su
-    0dwQzndOd7gB4pAuw>
-X-ME-Received: <xmr:UVWyZHA6XEUVhkAh_PhYMvw1OFLDJNfDGQs5z1NCZxxtEee1fgbl5snm8s4BLKdAcQJSxji4bbsWHnjAYDb16A6WaGbctVuUtJlAcw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrfeekgddtvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefkffggfgfuvfevfhfhjggtgfesthejredttdefjeenucfhrhhomheptehlihgt
-    vgcutfihhhhluceorghlihgtvgesrhihhhhlrdhioheqnecuggftrfgrthhtvghrnhephe
-    duuddvteekvdektdduledugfffhfdugeejgeeuvdevtdetveejheehiefffeegnecuvehl
-    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghlihgtvgesrh
-    ihhhhlrdhioh
-X-ME-Proxy: <xmx:UVWyZNft6Kic2apmVeAQTXD0roaE2Mgf-5apK0gRIZjvxlibVqwHjQ>
-    <xmx:UVWyZOMyVCEvfnUZecWmGTzX_cO3rCZRrz8BcwDwozoACLPpcMmwhw>
-    <xmx:UVWyZPk4vBrz0V-dp46IibsEqSjKOu-OI3WnvqwxIhwD8dvzKnTscQ>
-    <xmx:UVWyZFmVcr17fcBSgNQSE2YVSlB6pZGryGBHIh-rmPS90n5yK5LaCA>
-Feedback-ID: i56684263:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 15 Jul 2023 04:14:06 -0400 (EDT)
-Message-ID: <37795dc7-a121-b30b-76de-1ba6dd705c5e@ryhl.io>
-Date:   Sat, 15 Jul 2023 10:14:57 +0200
+        Sat, 15 Jul 2023 04:17:04 -0400
+Received: from out203-205-221-240.mail.qq.com (out203-205-221-240.mail.qq.com [203.205.221.240])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAD4A3A8E
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 01:17:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1689409019;
+        bh=IYNA/T8SwiQPcz1b4CrLywjEfP8ocEm4NvLV8lNv8kw=;
+        h=From:To:Cc:Subject:Date;
+        b=a2KV8qJ/rZstBzEyA8bb5wjb0f/kT13+dgI0iua3ubOBo7RA1CjoioH4GaOW27rcS
+         Ew7gvnsMvdGNTIZaO5sOnSb+TQyVDZ86L9HKPo5UbCTY2wqkgbefSKiuZIEVfm617t
+         HeNlXEBpVuOGuwsreWcTX+zW6kzNyYqKHqtz+XxI=
+Received: from KernelDevBox.byted.org ([180.184.51.40])
+        by newxmesmtplogicsvrsza10-0.qq.com (NewEsmtp) with SMTP
+        id 4391A0B9; Sat, 15 Jul 2023 16:16:57 +0800
+X-QQ-mid: xmsmtpt1689409017twy3nsj2q
+Message-ID: <tencent_DB7525706E9A6B13B7E6C1C43C36145A5009@qq.com>
+X-QQ-XMAILINFO: MRhkIe3mT0C6m1ATvlVQLha9jUu1RBv3lzuVv1YxAOKDB3WzREnvbushfWNJ4e
+         TPizoQAkpPBgxOsIBCf1fJG9we38ZE0kvpkyObiG9DDQZJ+S/tRdcDNMJUn3ivMKfkSeGGJCd9Ep
+         aOP52SiMeeYENmT8QbcdNN2wPIWxfdKryjv+29RPGpkVgv3hcoZ15umTZBE3iQMZOMVm09IEWv6j
+         qj+tHb/0w6w0gPkbCbtEQv6xEBGtwDz4/0kMTvkhKyRAuDFnNaeqGz0ufSB3MLl3/sWHCTX/3Uu0
+         IxW58m+Nch/pnUJDTGkzmDWDRIsNyPaJnZTnB8NO62aF0juZtNe+8+yVCs6TdPM/rGmbQ7Rh6vdL
+         eTlj/7dCNVoi40r77ojn1DClMGlrda1uYoOpkYK3h3LU46B7TYro9kS3TpGBjCaNP40akCSmtqL2
+         Mswu/kozly/H34ojBu1OEoO1pmlvfabOXsrX2HygpqSapV3f3w+KtprXJXuUDCzI+wOBZ90Mjfs9
+         +p9kNMzJDLw5ptzsz7jpv6316AwOwA3ORm9oICVgMZx2+WnqH9qDRePh19RCaBMgtkQFrWKl7oJ9
+         2bbx77sMkZe0sFVs3HtfwtpYlg1tMUE2i2ekWgaeS7l4D5YfkjoMUDh5uWkUDZcMTw5tYr4Rv/n1
+         LZyZdfSACCvqfDPNCpdA/NuHNInwOU9HJyppB6SOXYhiPR3cH45lAZ5Lrua7i6qzctcEEKxcDR8r
+         8VjhKVWm3P5Yf0ScRmg0jHrG2oebD3WrPe+S4cYTx99lFb9g0lYb0DyYtGYTa9vbFDOKbuiC07BL
+         DI3tFvfuYn3WJOGdexsKemvDBJx3OT8CSD1VBQcKavH0+4F0tdGU1jykxEMslNrfFFx6pEEoiirZ
+         ypOIfSBZgaQxkQuVE+/DAoTU+rexlAl3lZ6GhdX8bESitcRiU3q8TCvmNzK7FpxjyfTaazn0O7cH
+         rMt6jxwjwpx1tZcomNVPgy+DQp7JoD/KQNO9TSG+cw9XZiI5jJs1TeNrciFOGJ2aO2nRmrL+NHM2
+         OsFI/ZSA==
+X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
+From:   Zhang Shurong <zhang_shurong@foxmail.com>
+To:     deller@gmx.de
+Cc:     linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        Zhang Shurong <zhang_shurong@foxmail.com>
+Subject: [PATCH] fbdev: au1200fb: Fix missing IRQ check in au1200fb_drv_probe
+Date:   Sat, 15 Jul 2023 16:16:56 +0800
+X-OQ-MSGID: <20230715081656.1266601-1-zhang_shurong@foxmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2] rust: time: New module for timekeeping functions
-Content-Language: en-US, da
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org,
-        asahi@lists.linux.dev, Asahi Lina <lina@asahilina.net>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=c3=b6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        John Stultz <jstultz@google.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Josh Stone <jistone@redhat.com>,
-        Gaelan Steele <gbs@canishe.com>,
-        Heghedus Razvan <heghedus.razvan@protonmail.com>
-References: <20230714-rust-time-v2-1-f5aed84218c4@asahilina.net>
- <87r0pax9a6.ffs@tglx>
-From:   Alice Ryhl <alice@ryhl.io>
-In-Reply-To: <87r0pax9a6.ffs@tglx>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/15/23 03:17, Thomas Gleixner wrote:
-> On Fri, Jul 14 2023 at 16:55, Asahi Lina wrote:
->> +ktime_t rust_helper_ktime_get_real(void) {
->> +	return ktime_get_real();
->> +}
->> +EXPORT_SYMBOL_GPL(rust_helper_ktime_get_real);
-> 
-> Colour me confused. But why does this need another export?
-> 
-> This just creates yet another layer of duct tape. If it's unsafe from
-> the rust perspective then wrapping it into rust_"unsafe_function" does not
-> make it any better.
-> 
-> Why on earth can't you use the actual C interfaces diretly which are
-> already exported?
+This func misses checking for platform_get_irq()'s call and may passes the
+negative error codes to request_irq(), which takes unsigned IRQ #,
+causing it to fail with -EINVAL, overriding an original error code.
 
-Currently, you can't call inline C functions directly from Rust. So we 
-wrap them in non-inline functions for now.
+Fix this by stop calling request_irq() with invalid IRQ #s.
 
-It's something we definitely want to fix, but it hasn't been fixed yet.
+Fixes: 1630d85a8312 ("au1200fb: fix hardcoded IRQ")
+Signed-off-by: Zhang Shurong <zhang_shurong@foxmail.com>
+---
+ drivers/video/fbdev/au1200fb.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Alice
+diff --git a/drivers/video/fbdev/au1200fb.c b/drivers/video/fbdev/au1200fb.c
+index 5c232eb13724..c137d6afe484 100644
+--- a/drivers/video/fbdev/au1200fb.c
++++ b/drivers/video/fbdev/au1200fb.c
+@@ -1732,6 +1732,9 @@ static int au1200fb_drv_probe(struct platform_device *dev)
+ 
+ 	/* Now hook interrupt too */
+ 	irq = platform_get_irq(dev, 0);
++	if (irq < 0)
++		return irq;
++
+ 	ret = request_irq(irq, au1200fb_handle_irq,
+ 			  IRQF_SHARED, "lcd", (void *)dev);
+ 	if (ret) {
+-- 
+2.30.2
+
