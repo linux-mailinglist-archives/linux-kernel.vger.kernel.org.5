@@ -2,104 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71F3F754704
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 08:28:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27D29754716
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 08:37:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbjGOG2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 02:28:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54730 "EHLO
+        id S230136AbjGOGha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 02:37:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbjGOG2C (ORCPT
+        with ESMTP id S230024AbjGOGh2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 02:28:02 -0400
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0189F2726;
-        Fri, 14 Jul 2023 23:28:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689402481; x=1720938481;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=E4dw5jTyrhJfmTFYFax04Yvl6K/d06zT/oytzRcJ5aA=;
-  b=E7CgKL41W84x7OUnZcsK5BLzZGK2jtiUrgPT7XmpD8LCbYrp4ekMvQM8
-   gn42Oqz6u9iL3q5mhmfK//UYs73CY1RpZuDKiFfNotAA/eF1nFwBoD+zP
-   DDmrqiPxFj86q1VmPWrUkP68YwwLw6+utfoQbJIfraP8UV22+RnfaHpip
-   xgP7lh0YwCuYg5HEM+sFL4yJt+dHn79+OAl+AnMJLwXklhL+oYpvdlBnG
-   qMoxHMSz6G1rmVIJGuYZIX3fM6NIfxcv0Sv/KAEJm3yGBX9smZrWgMJBB
-   w3ARsi6RbmOQ7SXctUCZ1OALgq1ECrI6wLnbI5McfWGqRMzOTC6KjCjuw
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10771"; a="345949299"
-X-IronPort-AV: E=Sophos;i="6.01,207,1684825200"; 
-   d="scan'208";a="345949299"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 23:28:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10771"; a="812680999"
-X-IronPort-AV: E=Sophos;i="6.01,207,1684825200"; 
-   d="scan'208";a="812680999"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
-  by FMSMGA003.fm.intel.com with ESMTP; 14 Jul 2023 23:27:58 -0700
-Message-ID: <db554c27-f663-0146-5e5f-b319547757c3@linux.intel.com>
-Date:   Sat, 15 Jul 2023 14:26:10 +0800
+        Sat, 15 Jul 2023 02:37:28 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF2A6358E;
+        Fri, 14 Jul 2023 23:37:27 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 49FFC6092A;
+        Sat, 15 Jul 2023 06:37:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7665C433C7;
+        Sat, 15 Jul 2023 06:37:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689403046;
+        bh=28KkXXydks0YVAuGGcxT7Uv8avQHc6CF+wMoi/BVCVA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=TRpQSythwInhINm81lMZh3cQi4rlZZAyk7pLJIXuQFNdtadJtYBaM8MW6brMm9Bj2
+         52AXs3qLUk5PVZrAAS+IN8KVEPjWnv7364IdNxfsG/jkK7qz0GSmW051QaaZ4sUZPv
+         wFcCOUXDLwA16ZVcyFyuSrLmqBnc2Af8uYSFusbmD9l4eG8OCLAajQrFbl1vrIjmpV
+         M/wYLmA8E0WcYtWbSSAx8YHMOODK1NRjPyoLYPrgoXJVOwJOF4BZOVjuYTtWG1x3WS
+         WCKD4HbF8kTeksLHGcp+RmhgN+GBd4f3/jtw+m60RRQ93e8QLQwl1GoMLTdpVcv0JJ
+         cau2zFN2Uja7Q==
+Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-3a3c78ede4bso2004188b6e.2;
+        Fri, 14 Jul 2023 23:37:26 -0700 (PDT)
+X-Gm-Message-State: ABy/qLZriypHLL7pJwaVj5JvMQrHq7iXswv7TUMn5rPq5eKB67VfKrMW
+        wShQtwhtOfuXnXnpDX+43r0s12GBP7S7IKjsFCY=
+X-Google-Smtp-Source: APBJJlFp7nbzd8uDAVqcgzgy5GRnnYUdqE8yOpQlP+Z+az+qgEmTWQS1EB8pxuJCnpOMdHC+ZScm2Zm/lq9Bwa7mxB8=
+X-Received: by 2002:a05:6808:1384:b0:3a4:1f76:bdfb with SMTP id
+ c4-20020a056808138400b003a41f76bdfbmr7753259oiw.14.1689403045890; Fri, 14 Jul
+ 2023 23:37:25 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Cc:     baolu.lu@linux.intel.com, opensource.kernel@vivo.com
-Subject: Re: [PATCH v5] iommu: Fix an error check in tegra_smmu_debugfs_init()
-Content-Language: en-US
-To:     Minjie Du <duminjie@vivo.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Krishna Reddy <vdumpa@nvidia.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        "open list:TEGRA IOMMU DRIVERS" <linux-tegra@vger.kernel.org>,
-        "open list:IOMMU SUBSYSTEM" <iommu@lists.linux.dev>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20230714081320.1998-1-duminjie@vivo.com>
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <20230714081320.1998-1-duminjie@vivo.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <4f414a87-0c54-44bd-b218-f6f0b22c57ef@p183> <ZLEmgxm73zzmffWD@fjasle.eu>
+ <4dc7e56c-6692-4d4c-a8d2-05abe4501e66@p183> <ZLGiQxF5ffbWR7tR@fjasle.eu>
+In-Reply-To: <ZLGiQxF5ffbWR7tR@fjasle.eu>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sat, 15 Jul 2023 15:36:49 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARMT_RfCw3_Tv7VzdYJJFitMqrDG95pWeUTpcMZEr2Txg@mail.gmail.com>
+Message-ID: <CAK7LNARMT_RfCw3_Tv7VzdYJJFitMqrDG95pWeUTpcMZEr2Txg@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: flatten KBUILD_CFLAGS
+To:     Nicolas Schier <nicolas@fjasle.eu>
+Cc:     Alexey Dobriyan <adobriyan@gmail.com>, akpm@linux-foundation.org,
+        nathan@kernel.org, ndesaulniers@google.com,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/14/23 4:13 PM, Minjie Du wrote:
-> debugfs_create_dir() function returns an error value(PTR_ERR).
-> We need to evaluate the return value using IS_ERR,
-> rather than checking for NULL.
-> 
-> Fixes: d1313e7896e9 ("iommu/tegra-smmu: Add debugfs support")
-> Signed-off-by: Minjie Du<duminjie@vivo.com>
-> ---
-> V4 -> V5: debugfs needs to have error checking, so use IS_ERR() to error check.
+On Sat, Jul 15, 2023 at 4:30=E2=80=AFAM Nicolas Schier <nicolas@fjasle.eu> =
+wrote:
+>
+> On Fri, Jul 14, 2023 at 08:45:00PM +0300 Alexey Dobriyan wrote:
+> > On Fri, Jul 14, 2023 at 12:42:11PM +0200, Nicolas Schier wrote:
+> > > On Thu, Jul 13, 2023 at 09:52:28PM +0300, Alexey Dobriyan wrote:
+> > > > Make it slightly easier to see which compiler options are added and
+> > > > removed (and not worry about column limit too!).
+> > > >
+> > > > Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+> > > > ---
+> > > >
+> > > >  Makefile |   22 +++++++++++++++++-----
+> > > >  1 file changed, 17 insertions(+), 5 deletions(-)
+> > > >
+> > > > --- a/Makefile
+> > > > +++ b/Makefile
+> > > > @@ -555,11 +555,23 @@ LINUXINCLUDE    :=3D \
+> > > >           $(USERINCLUDE)
+> > > >
+> > > >  KBUILD_AFLAGS   :=3D -D__ASSEMBLY__ -fno-PIE
+> > > > -KBUILD_CFLAGS   :=3D -Wall -Wundef -Werror=3Dstrict-prototypes -Wn=
+o-trigraphs \
+> > > > -            -fno-strict-aliasing -fno-common -fshort-wchar -fno-PI=
+E \
+> > > > -            -Werror=3Dimplicit-function-declaration -Werror=3Dimpl=
+icit-int \
+> > > > -            -Werror=3Dreturn-type -Wno-format-security -funsigned-=
+char \
+> > > > -            -std=3Dgnu11
+> > > > +
+> > > > +KBUILD_CFLAGS :=3D
+> > > > +KBUILD_CFLAGS +=3D -std=3Dgnu11
+> > >
+> > > If you want to put -std at top, on contrast to the sorted options bel=
+ow,
+> > > you could also merge the two lines above.
+> >
+> > I don't know. Standard choice is arguably the most important option
+> > so I put it first.
+>
+> yes, I think I would have put it on top, too.  I just would write it this=
+ way:
+>
+>     KBUILD_CFLAGS :=3D -std=3Dgnu11
+>
+>     KBUILD_CFLAGS +=3D ...
+>
+> But it is bike-shedding, ignore it if you're not convinced.
+>
+> Kind regards,
+> Nicolas
 
-Why?
 
-[...]
-  * NOTE: it's expected that most callers should _ignore_ the errors 
-returned
-  * by this function. Other debugfs functions handle the fact that the 
-"dentry"
-  * passed to them could be an error and they don't crash in that case.
-  * Drivers should generally work fine even if debugfs fails to init anyway.
-  */
-struct dentry *debugfs_create_dir(const char *name, struct dentry *parent)
-{
-         struct dentry *dentry = start_creating(name, parent);
-         struct inode *inode;
 
-         if (IS_ERR(dentry))
-                 return dentry;
 
-[...]
 
-Best regards,
-baolu
+Starting line 813, we have more and more
+"KBUILD_CFLAGS +=3D" lines.
+
+
+I thought we perhaps could merge them in a single place.
+(but "KBUILD_CFLAGS :=3D " still must come before "export KBUILD_CFLAGS")
+
+
+[move everything to line 813]
+
+KBUILD_CFLAGS +=3D -std=3Dgnu11
+KBUILD_CFLAGS +=3D -fshort-wchar
+KBUILD_CFLAGS +=3D -funsigned-char
+KBUILD_CFLAGS +=3D -fno-common
+KBUILD_CFLAGS +=3D -fno-PIE
+KBUILD_CFLAGS +=3D -fno-strict-aliasing
+KBUILD_CFLAGS +=3D -Wall
+KBUILD_CFLAGS +=3D -Wundef
+KBUILD_CFLAGS +=3D -Werror=3Dimplicit-function-declaration
+KBUILD_CFLAGS +=3D -Werror=3Dimplicit-int
+KBUILD_CFLAGS +=3D -Werror=3Dreturn-type
+KBUILD_CFLAGS +=3D -Werror=3Dstrict-prototypes
+KBUILD_CFLAGS +=3D -Wno-format-security
+KBUILD_CFLAGS +=3D -Wno-trigraphs
+KBUILD_CFLAGS +=3D -fno-delete-null-pointer-checks
+KBUILD_CFLAGS +=3D $(call cc-disable-warning,frame-address,)
+KBUILD_CFLAGS +=3D $(call cc-disable-warning, format-truncation)
+KBUILD_CFLAGS +=3D $(call cc-disable-warning, format-overflow)
+KBUILD_CFLAGS +=3D $(call cc-disable-warning, address-of-packed-member)
+ ...
+
+
+
+
+That will change the order of compiler options
+because they cross line 760
+
+  include $(srctree)/arch/$(SRCARCH)/Makefile
+
+
+So, I think the patch is fine if we try to be safe.
+
+
+
+--=20
+Best Regards
+Masahiro Yamada
