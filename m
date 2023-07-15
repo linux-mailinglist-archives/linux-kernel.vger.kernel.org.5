@@ -2,77 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 265B6754877
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 13:45:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0767E754878
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 13:53:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229768AbjGOLpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 07:45:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49462 "EHLO
+        id S229927AbjGOLxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 07:53:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbjGOLpv (ORCPT
+        with ESMTP id S229483AbjGOLxP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 07:45:51 -0400
-Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6B9B135B7;
-        Sat, 15 Jul 2023 04:45:48 -0700 (PDT)
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 36FBjSYx025959;
-        Sat, 15 Jul 2023 13:45:28 +0200
-Date:   Sat, 15 Jul 2023 13:45:28 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Zhangjin Wu <falcon@tinylab.org>
-Cc:     arnd@arndb.de, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, thomas@t-8ch.de
-Subject: Re: [PATCH v3 01/11] tools/nolibc: remove the old sys_stat support
-Message-ID: <20230715114528.GA25953@1wt.eu>
-References: <20230715085942.GB24086@1wt.eu>
- <20230715103941.341262-1-falcon@tinylab.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230715103941.341262-1-falcon@tinylab.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Sat, 15 Jul 2023 07:53:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64B291B6
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 04:53:14 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E9A2B60B86
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 11:53:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95AF1C433C8;
+        Sat, 15 Jul 2023 11:53:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689421993;
+        bh=dLk6e0CuIngX8Oxe0o79snTusqw8srgVU9wSwuQf1pI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=dWOQHlTJGY4GxQ55r/cUdhdsOoTUMEwKJ0fMOZklCUaNO/2Bnu0v4hfD2VlTojJIM
+         eXs8ivPgxSTYnL7aaSHJQhLB2Cfp4J9yQXcqYXR79uemmcLWV7N/99b/a5/c561Ob1
+         kMD6WWNNbqT2iob3ozpQ+57BfYyvzcwNkZTR91HWTNlvWvDhudL1xwhFEJWQ8rkbhM
+         nhHjUqUgBPIxoK8EkMp7iEpCcpBatfXmmNlIDVoWd5ulElo6zTRm92Z+b4ez1pyet1
+         7AG2l7cRA3oSAaE5NJrdQc2uRHE17nX7oW+a13OKdDUi7gIqVv3OOE7m5n12MvAoMO
+         SrXomDXjj8Nmw==
+From:   Mark Brown <broonie@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+Subject: [GIT PULL] regmap fixes for v6.5-rc1
+Date:   Sat, 15 Jul 2023 12:53:04 +0100
+Message-Id: <20230715115312.95AF1C433C8@smtp.kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 15, 2023 at 06:39:41PM +0800, Zhangjin Wu wrote:
-> Just read the statx manpage again:
-> 
->     https://man7.org/linux/man-pages/man2/statx.2.html
-> 
-> It shows something about "Linux 4.11, glibc 2.28.
-> 
-> And 'git grep' shows it is true:
-> 
->     $ git grep -r statx v4.11 arch/ include/uapi/asm-generic/unistd.h | grep -E "aarch64|arm|mips|s390|x86|:include/uapi"
->     v4.11:arch/arm/tools/syscall.tbl:397	common	statx			sys_statx
->     v4.11:arch/arm64/include/asm/unistd32.h:#define __NR_statx 397
->     v4.11:arch/arm64/include/asm/unistd32.h:__SYSCALL(__NR_statx, sys_statx)
->     v4.11:arch/mips/include/uapi/asm/unistd.h:#define __NR_statx			(__NR_Linux + 366)
->     v4.11:arch/mips/include/uapi/asm/unistd.h:#define __NR_statx			(__NR_Linux + 326)
->     v4.11:arch/mips/include/uapi/asm/unistd.h:#define __NR_statx			(__NR_Linux + 330)
->     v4.11:arch/mips/kernel/scall32-o32.S:	PTR	sys_statx
->     v4.11:arch/mips/kernel/scall64-64.S:	PTR	sys_statx
->     v4.11:arch/mips/kernel/scall64-n32.S:	PTR	sys_statx			/* 6330 */
->     v4.11:arch/mips/kernel/scall64-o32.S:	PTR	sys_statx
->     v4.11:arch/s390/include/uapi/asm/unistd.h:#define __NR_statx		379
->     v4.11:arch/s390/kernel/compat_wrapper.c:COMPAT_SYSCALL_WRAP5(statx, int, dfd, const char __user *, path, unsigned, flags, unsigned, mask, struct statx __user *, buffer);
->     v4.11:arch/s390/kernel/syscalls.S:SYSCALL(sys_statx,compat_sys_statx)
->     v4.11:arch/x86/entry/syscalls/syscall_32.tbl:383	i386	statx			sys_statx
->     v4.11:arch/x86/entry/syscalls/syscall_64.tbl:332	common	statx			sys_statx
->     v4.11:include/uapi/asm-generic/unistd.h:#define __NR_statx 291
->     v4.11:include/uapi/asm-generic/unistd.h:__SYSCALL(__NR_statx,     sys_statx)
-> 
-> both riscv and loongarch use the generic unistd.h, so, all of our
-> supported archs should work as-is. riscv itself is added from v4.15,
-> loongarch itself is added from v5.19.
+The following changes since commit 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5:
 
-So that's perfect, thank you!
+  Linux 6.5-rc1 (2023-07-09 13:53:13 -0700)
 
-Willy
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git tags/regmap-fix-v6.5-rc1
+
+for you to fetch changes up to 963b54df82b6d6206d7def273390bf3f7af558e1:
+
+  regmap-irq: Fix out-of-bounds access when allocating config buffers (2023-07-12 12:05:10 +0100)
+
+----------------------------------------------------------------
+regmap: Fix for v6.5
+
+One fix for an out of bounds access in the interupt code here.
+
+----------------------------------------------------------------
+Isaac J. Manjarres (1):
+      regmap-irq: Fix out-of-bounds access when allocating config buffers
+
+ drivers/base/regmap/regmap-irq.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
