@@ -2,483 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8AC3754908
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 15:58:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C00F75491C
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 16:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229872AbjGON6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 09:58:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37246 "EHLO
+        id S229891AbjGOOFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 10:05:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbjGON6J (ORCPT
+        with ESMTP id S229549AbjGOOFo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 09:58:09 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBEE12D6B
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 06:58:07 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2b6fdaf6eefso43605181fa.0
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 06:58:07 -0700 (PDT)
+        Sat, 15 Jul 2023 10:05:44 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59029F3
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 07:05:41 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b933bbd3eeso5185821fa.1
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 07:05:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689429486; x=1692021486;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dvdKCYQuPX8/3jghEw7l+bBgatYxQRkdI1/Xcmy4Ga0=;
-        b=Y5hx1znOW6KyRAY1S4ztPoPn0TUEaB/CukRqFUBIwBYf44pxKAI8hnHWbRjICc2ct1
-         E9KQ1EJVP8HKVYNAy4wcIgmeKzp3sdH+TiY3sEAHO5IdRdfvF7PCnO1cyief5NQAM0xM
-         tb+bXs8yfCDD4eCaKuZu0gPs6JtfzRoTXvocjfQMyKZqa2Fm+ni8nwXVgWgxP3ed4Xlx
-         Pptomq4ScwyKBuoF7kD61jdBFS0FEd3J9J+1i2jU1OZ2KnlkWIsdfy8aSb1wdBlKKL8R
-         P6w4D7lm5GG1ZZM1GFGTzJN2NvN6Zdc2+8JX+P1uOAjoKq7lqLr70/W523VExm6PHANq
-         b9EQ==
+        d=linaro.org; s=google; t=1689429939; x=1692021939;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ib923rpivUZ1jvzbxCzQGvcnNRmC5ad0dwo5LcqVneA=;
+        b=J16ipK8TY987Danz8/Ldk4OTLh0OFfsEhXL/TufpPJtfbWHhmXjcnf/boZT+yyFAFS
+         hEmihbPJrjuh/Io66yBdu5Tw9PZEfCCL+nhpCr9r/r3ouSoEnI4a/1q4OtqzHeSQtC5+
+         huUOkbGCvwWPQx+DCu1yHxD5rChEZzlBq2H3HnW43GC9Z/B9/dpYprUZEPfUv3+fDWgo
+         6WfDu0LC/KnkyKtdsLa48dasT6dDTer8/9qHSsVxUzbZ0jKhRVYZdeYvyG3dagz+VZDF
+         1UMoYKnGpkPSq5vPlUeL2yo8dgUPM1esEyM466Jk0cAqzEGmXxEy80u3nxUj7or2fQqW
+         29zA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689429486; x=1692021486;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1689429939; x=1692021939;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dvdKCYQuPX8/3jghEw7l+bBgatYxQRkdI1/Xcmy4Ga0=;
-        b=Os5Dzigfm4jyY2zP7sTWX3be04L9ziJFr3sCkS34Ew3C9q/ntvetlkHZUX7FARLPSg
-         7W2i1LmoIY/r80t8lxlJhvOIPTp1sFeRTNnEk4YcXQStJouXuPPaEfsknXpOwgZftzVe
-         v2btDTo2KrfuH0e9Ubyjsg3rLAnBOOPy2jgOMpAojQjtjz8KzPXL61NVNWUX/S5XX0TX
-         clzT6D+mc9+b+JrZND1h5a00+iPbYnxdKpEmp4jLWDgP8kdsgePa+KTxQCKW3Q4Qff8p
-         XsOckb1vuuUEEypBv1tY4nDaXaiE7UCHb0tgi4ArKpCFZfSZdNF9fU+Jpk6ZACICKGcQ
-         +rGA==
-X-Gm-Message-State: ABy/qLYxVMldXeY0ElG4tHeS4r8s7K3SRIos0pQcj+Acp8piPT59M7rh
-        6DBuXaUahEBcefVhxRWzOw1jew==
-X-Google-Smtp-Source: APBJJlEjRTL0TYidciKAmwAEAEPl4C0orxedBlQS0O2ue/5+wcEzy9yftbj/TQPIxjOPHJiVP9xOUw==
-X-Received: by 2002:a2e:9bcb:0:b0:2b6:dec9:2813 with SMTP id w11-20020a2e9bcb000000b002b6dec92813mr6265513ljj.29.1689429486008;
-        Sat, 15 Jul 2023 06:58:06 -0700 (PDT)
+        bh=Ib923rpivUZ1jvzbxCzQGvcnNRmC5ad0dwo5LcqVneA=;
+        b=jqlmqt+4DcWnmcYzgqgAaJ1cBDdTn4lkWuN0Ua7QT8gId0DNvsWh2jF6vHDJJtB4Ww
+         smsyvwRLDvPex5pSOkKWA1WhUyY9sAfxcfZgNG/umpb10uCoJ0jUI/MDRlU2MWpZwzMN
+         ej6cCI3haRNhITTr3HYQN/gQq17vekHKtuft0rXA5pGEHejEuPPpIwAKj1Heawaq+h1H
+         guYKupPLe2N36lm0hvWimVJuPmMjtmxn77UHmlRe/nxgpiETTvU39q7Sl4LzHHWoJjbv
+         KssZaCWb2IQLSz2gxdWbTzGs9oPOyE5YpG1i3DeajSefMhZvYGfqn5py46yotB3rmGSp
+         9cKw==
+X-Gm-Message-State: ABy/qLapAmW4EJ+Leajc10ouF5cMiiC2XWAMEs2bXkPefqeccBIfSOlS
+        kXlQRKE+SwibHVYEUkQK/Uj/Cw==
+X-Google-Smtp-Source: APBJJlH8HGvdUBxHhBr4MrnT42WVCHdvTz+M9GgeVJLv+rJMwkztYrNCGZfRCWlQL8rK1xiYyn3UaQ==
+X-Received: by 2002:a2e:9583:0:b0:2b5:1b80:263a with SMTP id w3-20020a2e9583000000b002b51b80263amr6864972ljh.47.1689429939586;
+        Sat, 15 Jul 2023 07:05:39 -0700 (PDT)
 Received: from [192.168.1.101] (abxi167.neoplus.adsl.tpnet.pl. [83.9.2.167])
-        by smtp.gmail.com with ESMTPSA id e24-20020a2e9858000000b002b3318c8d6fsm2526278ljj.28.2023.07.15.06.58.04
+        by smtp.gmail.com with ESMTPSA id v11-20020a2e960b000000b002b6de6deb5asm2521884ljh.2.2023.07.15.07.05.38
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 15 Jul 2023 06:58:05 -0700 (PDT)
-Message-ID: <2bf7ac6e-eeba-a082-2b0e-4fc302bef70a@linaro.org>
-Date:   Sat, 15 Jul 2023 15:58:04 +0200
+        Sat, 15 Jul 2023 07:05:39 -0700 (PDT)
+Message-ID: <1fbb2e36-87d7-339d-ba2f-42916a213607@linaro.org>
+Date:   Sat, 15 Jul 2023 16:05:37 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH V2 1/2] arm64: dts: qcom: ipq9574: Add common RDP dtsi
- file
 Content-Language: en-US
-To:     Anusha Rao <quic_anusha@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+To:     Praveenkumar I <quic_ipkumar@quicinc.com>, amitk@kernel.org,
+        thara.gopinath@gmail.com, agross@kernel.org, andersson@kernel.org,
+        rafael@kernel.org, daniel.lezcano@linaro.org, rui.zhang@intel.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, linux-pm@vger.kernel.org,
         linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     quic_saahtoma@quicinc.com
-References: <20230713105909.14209-1-quic_anusha@quicinc.com>
- <20230713105909.14209-2-quic_anusha@quicinc.com>
+Cc:     quic_varada@quicinc.com
+References: <20230713052732.787853-1-quic_ipkumar@quicinc.com>
+ <20230713052732.787853-2-quic_ipkumar@quicinc.com>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20230713105909.14209-2-quic_anusha@quicinc.com>
+Subject: Re: [PATCH v3 1/5] thermal/drivers/tsens: Add TSENS enable and
+ calibration support for V2
+In-Reply-To: <20230713052732.787853-2-quic_ipkumar@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13.07.2023 12:59, Anusha Rao wrote:
-> Add a dtsi file to include interfaces that are common
-> across RDPs.
+On 13.07.2023 07:27, Praveenkumar I wrote:
+> SoCs without RPM have to enable sensors and calibrate from the kernel.
+> Though TSENS IP supports 16 sensors, not all are used. So used hw_id
+> to enable the relevant sensors.
 > 
-> Signed-off-by: Anusha Rao <quic_anusha@quicinc.com>
+> Added new calibration function for V2 as the tsens.c calib function
+> only supports V1.
+> 
+> Signed-off-by: Praveenkumar I <quic_ipkumar@quicinc.com>
 > ---
 [...]
 
->  		data-pins {
->  			pins = "gpio0", "gpio1", "gpio2",
-> -			       "gpio3", "gpio6", "gpio7",
-> -			       "gpio8", "gpio9";
-> +				"gpio3", "gpio6", "gpio7",
-> +				"gpio8", "gpio9";
-This (and a similar one in the other file) change looks unrelated
-and I think it makes the indentation worse :/
+>  
+>  /* ----- SROT ------ */
+>  #define SROT_HW_VER_OFF	0x0000
+>  #define SROT_CTRL_OFF		0x0004
+> +#define SROT_MEASURE_PERIOD	0x0008
+> +#define SROT_Sn_CONVERSION	0x0060
+> +#define V2_SHIFT_DEFAULT	0x0003
+> +#define V2_SLOPE_DEFAULT	0x0cd0
+> +#define V2_CZERO_DEFAULT	0x016a
+> +#define ONE_PT_SLOPE		0x0cd0
+> +#define TWO_PT_SHIFTED_GAIN	921600
+> +#define ONE_PT_CZERO_CONST	94
+> +#define SENSOR_CONVERSION(n)	(((n) * 4) + SROT_Sn_CONVERSION)
+> +#define CONVERSION_SLOPE_SHIFT	10
+> +#define CONVERSION_SHIFT_SHIFT	23
+Please define bitfields with GENMASK() and use FIELD_PREP/GET() helpers
+
+>  
+>  /* ----- TM ------ */
+>  #define TM_INT_EN_OFF			0x0004
+> @@ -59,6 +71,11 @@ static const struct reg_field tsens_v2_regfields[MAX_REGFIELDS] = {
+>  	/* CTRL_OFF */
+>  	[TSENS_EN]     = REG_FIELD(SROT_CTRL_OFF,    0,  0),
+>  	[TSENS_SW_RST] = REG_FIELD(SROT_CTRL_OFF,    1,  1),
+> +	[SENSOR_EN]    = REG_FIELD(SROT_CTRL_OFF,    3,  18),
+> +	[CODE_OR_TEMP] = REG_FIELD(SROT_CTRL_OFF,    21, 21),
+> +
+> +	/* MAIN_MEASURE_PERIOD */
+> +	[MAIN_MEASURE_PERIOD] = REG_FIELD(SROT_MEASURE_PERIOD, 0, 7),
+>  
+>  	/* ----- TM ------ */
+>  	/* INTERRUPT ENABLE */
+> @@ -104,6 +121,130 @@ static const struct reg_field tsens_v2_regfields[MAX_REGFIELDS] = {
+>  	[TRDY] = REG_FIELD(TM_TRDY_OFF, 0, 0),
+>  };
+>  
+> +static int tsens_v2_calibrate_sensor(struct device *dev, struct tsens_sensor *sensor,
+> +				     struct regmap *map,  u32 mode, u32 base0, u32 base1)
+> +{
+> +	u32 slope, czero, val;
+> +	char name[15];
+What's the rationale behind choosing 15 here?
+
+> +	int ret;
+> +
+[...]
+
+> +static int tsens_v2_calibration(struct tsens_priv *priv)
+> +{
+> +	struct device *dev = priv->dev;
+> +	u32 mode, base0, base1;
+> +	int i, ret;
+> +
+> +	if (priv->num_sensors > MAX_SENSORS)
+> +		return -EINVAL;
+> +
+> +	ret = nvmem_cell_read_variable_le_u32(priv->dev, "mode", &mode);
+> +	if (ret == -ENOENT)
+> +		dev_warn(priv->dev, "Calibration data not present in DT\n");
+I think bindings don't allow that anyway
+
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	dev_dbg(priv->dev, "calibration mode is %d\n", mode);
+> +
+> +	ret = nvmem_cell_read_variable_le_u32(priv->dev, "base0", &base0);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	ret = nvmem_cell_read_variable_le_u32(priv->dev, "base1", &base1);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	/* Calibrate each sensor */
+> +	for (i = 0; i < priv->num_sensors; i++) {
+> +		ret = tsens_v2_calibrate_sensor(dev, &priv->sensor[i], priv->srot_map,
+> +						mode, base0, base1);
+> +		if (ret < 0)
+> +			return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int __init init_tsens_v2_no_rpm(struct tsens_priv *priv)
+> +{
+> +	int i, ret;
+> +	u32 val = 0;
+> +	struct device *dev = priv->dev;
+Reverse-Christmas-tree, please.
+
+> +
+> +	ret = init_common(priv);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	priv->rf[CODE_OR_TEMP] = devm_regmap_field_alloc(dev, priv->srot_map,
+> +							 priv->fields[CODE_OR_TEMP]);
+> +	if (IS_ERR(priv->rf[CODE_OR_TEMP]))
+> +		return PTR_ERR(priv->rf[CODE_OR_TEMP]);
+> +
+> +	priv->rf[MAIN_MEASURE_PERIOD] = devm_regmap_field_alloc(dev, priv->srot_map,
+> +								priv->fields[MAIN_MEASURE_PERIOD]);
+> +	if (IS_ERR(priv->rf[MAIN_MEASURE_PERIOD]))
+> +		return PTR_ERR(priv->rf[MAIN_MEASURE_PERIOD]);
+> +
+> +	regmap_field_write(priv->rf[TSENS_SW_RST], 0x1);
+> +
+> +	/* Update measure period to 2ms */
+What's the unit? Can we name the 0x1 value?
+
+> +	regmap_field_write(priv->rf[MAIN_MEASURE_PERIOD], 0x1);
+> +
+> +	/* Enable available sensors */
+> +	for (i = 0; i < priv->num_sensors; i++)
+> +		val |= 1 << priv->sensor[i].hw_id;
+> +
+> +	regmap_field_write(priv->rf[SENSOR_EN], val);
+> +
+> +	/* Real temperature format */
+What does that mean?
+
+> +	regmap_field_write(priv->rf[CODE_OR_TEMP], 0x1);
+> +
+> +	regmap_field_write(priv->rf[TSENS_SW_RST], 0x0);
+> +
+> +	/* Enable TSENS */
+> +	regmap_field_write(priv->rf[TSENS_EN], 0x1);
+It would be really nice if you could provide the names of all these
+magic values.
 
 Konrad
->  			function = "sdc_data";
->  			drive-strength = <8>;
->  			bias-pull-up;
-> @@ -110,15 +60,4 @@
->  			bias-pull-down;
->  		};
->  	};
-> -
-> -	spi_0_pins: spi-0-state {
-> -		pins = "gpio11", "gpio12", "gpio13", "gpio14";
-> -		function = "blsp0_spi";
-> -		drive-strength = <8>;
-> -		bias-disable;
-> -	};
-> -};
-> -
-> -&xo_board_clk {
-> -	clock-frequency = <24000000>;
->  };
-> diff --git a/arch/arm64/boot/dts/qcom/ipq9574-rdp433.dts b/arch/arm64/boot/dts/qcom/ipq9574-rdp433.dts
-> index 877026ccc6e2..7685176f90ef 100644
-> --- a/arch/arm64/boot/dts/qcom/ipq9574-rdp433.dts
-> +++ b/arch/arm64/boot/dts/qcom/ipq9574-rdp433.dts
-> @@ -8,69 +8,11 @@
->  
->  /dts-v1/;
->  
-> -#include "ipq9574.dtsi"
-> +#include "ipq9574-rdp-common.dtsi"
->  
->  / {
->  	model = "Qualcomm Technologies, Inc. IPQ9574/AP-AL02-C7";
->  	compatible = "qcom,ipq9574-ap-al02-c7", "qcom,ipq9574";
-> -
-> -	aliases {
-> -		serial0 = &blsp1_uart2;
-> -	};
-> -
-> -	chosen {
-> -		stdout-path = "serial0:115200n8";
-> -	};
-> -
-> -	regulator_fixed_3p3: s3300 {
-> -		compatible = "regulator-fixed";
-> -		regulator-min-microvolt = <3300000>;
-> -		regulator-max-microvolt = <3300000>;
-> -		regulator-boot-on;
-> -		regulator-always-on;
-> -		regulator-name = "fixed_3p3";
-> -	};
-> -
-> -	regulator_fixed_0p925: s0925 {
-> -		compatible = "regulator-fixed";
-> -		regulator-min-microvolt = <925000>;
-> -		regulator-max-microvolt = <925000>;
-> -		regulator-boot-on;
-> -		regulator-always-on;
-> -		regulator-name = "fixed_0p925";
-> -	};
-> -};
-> -
-> -&blsp1_uart2 {
-> -	pinctrl-0 = <&uart2_pins>;
-> -	pinctrl-names = "default";
-> -	status = "okay";
-> -};
-> -
-> -&rpm_requests {
-> -	regulators {
-> -		compatible = "qcom,rpm-mp5496-regulators";
-> -
-> -		ipq9574_s1: s1 {
-> -		/*
-> -		 * During kernel bootup, the SoC runs at 800MHz with 875mV set by the bootloaders.
-> -		 * During regulator registration, kernel not knowing the initial voltage,
-> -		 * considers it as zero and brings up the regulators with minimum supported voltage.
-> -		 * Update the regulator-min-microvolt with SVS voltage of 725mV so that
-> -		 * the regulators are brought up with 725mV which is sufficient for all the
-> -		 * corner parts to operate at 800MHz
-> -		 */
-> -			regulator-min-microvolt = <725000>;
-> -			regulator-max-microvolt = <1075000>;
-> -		};
-> -
-> -		mp5496_l2: l2 {
-> -			regulator-min-microvolt = <1800000>;
-> -			regulator-max-microvolt = <1800000>;
-> -			regulator-always-on;
-> -			regulator-boot-on;
-> -		};
-> -	};
+> +
+> +	return 0;
+> +}
+> +
+>  static const struct tsens_ops ops_generic_v2 = {
+>  	.init		= init_common,
+>  	.get_temp	= get_temp_tsens_valid,
+> diff --git a/drivers/thermal/qcom/tsens.c b/drivers/thermal/qcom/tsens.c
+> index 98c356acfe98..9dc0c2150948 100644
+> --- a/drivers/thermal/qcom/tsens.c
+> +++ b/drivers/thermal/qcom/tsens.c
+> @@ -974,7 +974,7 @@ int __init init_common(struct tsens_priv *priv)
+>  	ret = regmap_field_read(priv->rf[TSENS_EN], &enabled);
+>  	if (ret)
+>  		goto err_put_device;
+> -	if (!enabled) {
+> +	if (!enabled && (tsens_version(priv) != VER_2_X_NO_RPM)) {
+>  		dev_err(dev, "%s: device not enabled\n", __func__);
+>  		ret = -ENODEV;
+>  		goto err_put_device;
+> diff --git a/drivers/thermal/qcom/tsens.h b/drivers/thermal/qcom/tsens.h
+> index 2805de1c6827..b2e8f0f2b466 100644
+> --- a/drivers/thermal/qcom/tsens.h
+> +++ b/drivers/thermal/qcom/tsens.h
+> @@ -35,6 +35,7 @@ enum tsens_ver {
+>  	VER_0_1,
+>  	VER_1_X,
+>  	VER_2_X,
+> +	VER_2_X_NO_RPM,
 >  };
 >  
->  &sdhc_1 {
-> @@ -85,10 +27,6 @@
->  	status = "okay";
->  };
+>  enum tsens_irq_type {
+> @@ -168,6 +169,8 @@ enum regfield_ids {
+>  	TSENS_SW_RST,
+>  	SENSOR_EN,
+>  	CODE_OR_TEMP,
+> +	/* MEASURE_PERIOD */
+> +	MAIN_MEASURE_PERIOD,
 >  
-> -&sleep_clk {
-> -	clock-frequency = <32000>;
-> -};
-> -
->  &tlmm {
->  	sdc_default_state: sdc-default-state {
->  		clk-pins {
-> @@ -107,8 +45,8 @@
->  
->  		data-pins {
->  			pins = "gpio0", "gpio1", "gpio2",
-> -			       "gpio3", "gpio6", "gpio7",
-> -			       "gpio8", "gpio9";
-> +				"gpio3", "gpio6", "gpio7",
-> +				"gpio8", "gpio9";
->  			function = "sdc_data";
->  			drive-strength = <8>;
->  			bias-pull-up;
-> @@ -122,30 +60,3 @@
->  		};
->  	};
->  };
-> -
-> -&usb_0_dwc3 {
-> -	dr_mode = "host";
-> -};
-> -
-> -&usb_0_qmpphy {
-> -	vdda-pll-supply = <&mp5496_l2>;
-> -	vdda-phy-supply = <&regulator_fixed_0p925>;
-> -
-> -	status = "okay";
-> -};
-> -
-> -&usb_0_qusbphy {
-> -	vdd-supply = <&regulator_fixed_0p925>;
-> -	vdda-pll-supply = <&mp5496_l2>;
-> -	vdda-phy-dpdm-supply = <&regulator_fixed_3p3>;
-> -
-> -	status = "okay";
-> -};
-> -
-> -&usb3 {
-> -	status = "okay";
-> -};
-> -
-> -&xo_board_clk {
-> -	clock-frequency = <24000000>;
-> -};
-> diff --git a/arch/arm64/boot/dts/qcom/ipq9574-rdp449.dts b/arch/arm64/boot/dts/qcom/ipq9574-rdp449.dts
-> index c8fa54e1a62c..d36d1078763e 100644
-> --- a/arch/arm64/boot/dts/qcom/ipq9574-rdp449.dts
-> +++ b/arch/arm64/boot/dts/qcom/ipq9574-rdp449.dts
-> @@ -8,73 +8,10 @@
->  
->  /dts-v1/;
->  
-> -#include "ipq9574.dtsi"
-> +#include "ipq9574-rdp-common.dtsi"
->  
->  / {
->  	model = "Qualcomm Technologies, Inc. IPQ9574/AP-AL02-C6";
->  	compatible = "qcom,ipq9574-ap-al02-c6", "qcom,ipq9574";
->  
-> -	aliases {
-> -		serial0 = &blsp1_uart2;
-> -	};
-> -
-> -	chosen {
-> -		stdout-path = "serial0:115200n8";
-> -	};
-> -};
-> -
-> -&blsp1_spi0 {
-> -	pinctrl-0 = <&spi_0_pins>;
-> -	pinctrl-names = "default";
-> -	status = "okay";
-> -
-> -	flash@0 {
-> -		compatible = "micron,n25q128a11", "jedec,spi-nor";
-> -		reg = <0>;
-> -		#address-cells = <1>;
-> -		#size-cells = <1>;
-> -		spi-max-frequency = <50000000>;
-> -	};
-> -};
-> -
-> -&blsp1_uart2 {
-> -	pinctrl-0 = <&uart2_pins>;
-> -	pinctrl-names = "default";
-> -	status = "okay";
-> -};
-> -
-> -&rpm_requests {
-> -	regulators {
-> -		compatible = "qcom,rpm-mp5496-regulators";
-> -
-> -		ipq9574_s1: s1 {
-> -		/*
-> -		 * During kernel bootup, the SoC runs at 800MHz with 875mV set by the bootloaders.
-> -		 * During regulator registration, kernel not knowing the initial voltage,
-> -		 * considers it as zero and brings up the regulators with minimum supported voltage.
-> -		 * Update the regulator-min-microvolt with SVS voltage of 725mV so that
-> -		 * the regulators are brought up with 725mV which is sufficient for all the
-> -		 * corner parts to operate at 800MHz
-> -		 */
-> -			regulator-min-microvolt = <725000>;
-> -			regulator-max-microvolt = <1075000>;
-> -		};
-> -	};
-> -};
-> -
-> -&sleep_clk {
-> -	clock-frequency = <32000>;
-> -};
-> -
-> -&tlmm {
-> -	spi_0_pins: spi-0-state {
-> -		pins = "gpio11", "gpio12", "gpio13", "gpio14";
-> -		function = "blsp0_spi";
-> -		drive-strength = <8>;
-> -		bias-disable;
-> -	};
-> -};
-> -
-> -&xo_board_clk {
-> -	clock-frequency = <24000000>;
->  };
-> diff --git a/arch/arm64/boot/dts/qcom/ipq9574-rdp453.dts b/arch/arm64/boot/dts/qcom/ipq9574-rdp453.dts
-> index f01de6628c3b..c30c9fbedf26 100644
-> --- a/arch/arm64/boot/dts/qcom/ipq9574-rdp453.dts
-> +++ b/arch/arm64/boot/dts/qcom/ipq9574-rdp453.dts
-> @@ -8,73 +8,10 @@
->  
->  /dts-v1/;
->  
-> -#include "ipq9574.dtsi"
-> +#include "ipq9574-rdp-common.dtsi"
->  
->  / {
->  	model = "Qualcomm Technologies, Inc. IPQ9574/AP-AL02-C8";
->  	compatible = "qcom,ipq9574-ap-al02-c8", "qcom,ipq9574";
->  
-> -	aliases {
-> -		serial0 = &blsp1_uart2;
-> -	};
-> -
-> -	chosen {
-> -		stdout-path = "serial0:115200n8";
-> -	};
-> -};
-> -
-> -&blsp1_spi0 {
-> -	pinctrl-0 = <&spi_0_pins>;
-> -	pinctrl-names = "default";
-> -	status = "okay";
-> -
-> -	flash@0 {
-> -		compatible = "micron,n25q128a11", "jedec,spi-nor";
-> -		reg = <0>;
-> -		#address-cells = <1>;
-> -		#size-cells = <1>;
-> -		spi-max-frequency = <50000000>;
-> -	};
-> -};
-> -
-> -&blsp1_uart2 {
-> -	pinctrl-0 = <&uart2_pins>;
-> -	pinctrl-names = "default";
-> -	status = "okay";
-> -};
-> -
-> -&rpm_requests {
-> -	regulators {
-> -		compatible = "qcom,rpm-mp5496-regulators";
-> -
-> -		ipq9574_s1: s1 {
-> -		/*
-> -		 * During kernel bootup, the SoC runs at 800MHz with 875mV set by the bootloaders.
-> -		 * During regulator registration, kernel not knowing the initial voltage,
-> -		 * considers it as zero and brings up the regulators with minimum supported voltage.
-> -		 * Update the regulator-min-microvolt with SVS voltage of 725mV so that
-> -		 * the regulators are brought up with 725mV which is sufficient for all the
-> -		 * corner parts to operate at 800MHz
-> -		 */
-> -			regulator-min-microvolt = <725000>;
-> -			regulator-max-microvolt = <1075000>;
-> -		};
-> -	};
-> -};
-> -
-> -&sleep_clk {
-> -	clock-frequency = <32000>;
-> -};
-> -
-> -&tlmm {
-> -	spi_0_pins: spi-0-state {
-> -		pins = "gpio11", "gpio12", "gpio13", "gpio14";
-> -		function = "blsp0_spi";
-> -		drive-strength = <8>;
-> -		bias-disable;
-> -	};
-> -};
-> -
-> -&xo_board_clk {
-> -	clock-frequency = <24000000>;
->  };
-> diff --git a/arch/arm64/boot/dts/qcom/ipq9574-rdp454.dts b/arch/arm64/boot/dts/qcom/ipq9574-rdp454.dts
-> index 6efae3426cb8..0dc382f5d5ec 100644
-> --- a/arch/arm64/boot/dts/qcom/ipq9574-rdp454.dts
-> +++ b/arch/arm64/boot/dts/qcom/ipq9574-rdp454.dts
-> @@ -8,73 +8,9 @@
->  
->  /dts-v1/;
->  
-> -#include "ipq9574.dtsi"
-> +#include "ipq9574-rdp-common.dtsi"
->  
->  / {
->  	model = "Qualcomm Technologies, Inc. IPQ9574/AP-AL02-C9";
->  	compatible = "qcom,ipq9574-ap-al02-c9", "qcom,ipq9574";
-> -
-> -	aliases {
-> -		serial0 = &blsp1_uart2;
-> -	};
-> -
-> -	chosen {
-> -		stdout-path = "serial0:115200n8";
-> -	};
-> -};
-> -
-> -&blsp1_spi0 {
-> -	pinctrl-0 = <&spi_0_pins>;
-> -	pinctrl-names = "default";
-> -	status = "okay";
-> -
-> -	flash@0 {
-> -		compatible = "micron,n25q128a11", "jedec,spi-nor";
-> -		reg = <0>;
-> -		#address-cells = <1>;
-> -		#size-cells = <1>;
-> -		spi-max-frequency = <50000000>;
-> -	};
-> -};
-> -
-> -&blsp1_uart2 {
-> -	pinctrl-0 = <&uart2_pins>;
-> -	pinctrl-names = "default";
-> -	status = "okay";
-> -};
-> -
-> -&rpm_requests {
-> -	regulators {
-> -		compatible = "qcom,rpm-mp5496-regulators";
-> -
-> -		ipq9574_s1: s1 {
-> -		/*
-> -		 * During kernel bootup, the SoC runs at 800MHz with 875mV set by the bootloaders.
-> -		 * During regulator registration, kernel not knowing the initial voltage,
-> -		 * considers it as zero and brings up the regulators with minimum supported voltage.
-> -		 * Update the regulator-min-microvolt with SVS voltage of 725mV so that
-> -		 * the regulators are brought up with 725mV which is sufficient for all the
-> -		 * corner parts to operate at 800MHz
-> -		 */
-> -			regulator-min-microvolt = <725000>;
-> -			regulator-max-microvolt = <1075000>;
-> -		};
-> -	};
-> -};
-> -
-> -&sleep_clk {
-> -	clock-frequency = <32000>;
-> -};
-> -
-> -&tlmm {
-> -	spi_0_pins: spi-0-state {
-> -		pins = "gpio11", "gpio12", "gpio13", "gpio14";
-> -		function = "blsp0_spi";
-> -		drive-strength = <8>;
-> -		bias-disable;
-> -	};
-> -};
-> -
-> -&xo_board_clk {
-> -	clock-frequency = <24000000>;
->  };
+>  	/* ----- TM ------ */
+>  	/* TRDY */
