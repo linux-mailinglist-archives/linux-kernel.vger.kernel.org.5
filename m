@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B2797547DC
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 11:21:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45C367547DB
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 11:21:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230452AbjGOJVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 05:21:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49686 "EHLO
+        id S231397AbjGOJVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 05:21:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230328AbjGOJU3 (ORCPT
+        with ESMTP id S230103AbjGOJU3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 15 Jul 2023 05:20:29 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 161543C05;
-        Sat, 15 Jul 2023 02:20:07 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fbc6ab5ff5so24484465e9.1;
-        Sat, 15 Jul 2023 02:20:07 -0700 (PDT)
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3498F3C0D;
+        Sat, 15 Jul 2023 02:20:08 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-3fbc59de0e2so24466965e9.3;
+        Sat, 15 Jul 2023 02:20:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689412805; x=1692004805;
+        d=gmail.com; s=20221208; t=1689412806; x=1692004806;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=16dil7uZ1WaYzCMze6Rz4ebNuwh6PjdbRucSC4l5wwA=;
-        b=PQ5HwDQAstwI8XvaYHRCnN5BPDOq3/zF/9r/cDfT7McPHFhmG+Z6SwIkBWvp5/lSLR
-         ru7sUyy4zDkce54S/UJk1eGyDpS0ym4THJQtJjoQiuLjAL0195zE4YCU8ee/s8/mGlwB
-         6XYnZkI8xD804+jk7R7mlTt/LN7ov6GuaVGDI43cr0nN3Q3jJFKZdbcu/8XoB/52qiId
-         h3cDKeMmCvyFgu018zO46oZVe+bD+ifPz8fqTAwBY10QgkCWXt/6V3RwclJanXqIrYMn
-         Oh8p8JTQhGA28pn6Iq9H2IzgYLxuFyEZpIR5/xrmflE4+6KhlkowDq85dUcTZH2xuuGr
-         AKcg==
+        bh=bcIHaSKrR4JjJODseymsMqDO3fa+MLFhDB6UjbjUTpo=;
+        b=AkcQaKMBERDjTs1UIrpydrPTPsZ61nJCxnccPi60KmmMOcsVgLNr9hUAMdXiNbzaD4
+         q1D1OxfcioUs9Y0IHhuHnOTZHlCSRLvY/AXq/5iLRbSDh129e2kTZIkQwa74UFhdfF00
+         ZqYbH3ua5FkBDYNC9r+yRk6d0lEMaKu5aoCkkR3rJZtjoApL46xbMcocRomRpZhtQxIz
+         A1ebtVVfQwgwNyGbir4Kr0yGMlt+XF4LJpbTBJcSOexSni0cnImqXhBU4Sfz9ZlAzVze
+         7IHwrHH4MJEP3f0IaqFeHs6qa0Ca6sBF8zEBhXLLOdyWMzxyvvDrolToQEhqW+7FORG5
+         J5ZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689412805; x=1692004805;
+        d=1e100.net; s=20221208; t=1689412806; x=1692004806;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=16dil7uZ1WaYzCMze6Rz4ebNuwh6PjdbRucSC4l5wwA=;
-        b=RRFlh+HdJRUOntNxW0iOT7l9i/ODl9oQzKEYpKu2SNp4WLd7zCBx9i8qHAM2Fcl8Mn
-         G3ROQ7LVo8EAQFAt+skznMN84SaZ9U3rAmZz8CNmwQXffBbP9aCRWLXPsivqrkjl09JJ
-         7UOjCMorpN3G6Cw/i7MavB0Q15qTq9OD3Hc+K5XTtM9ykH7QEfSRkaNvFN0hgmXQPs1s
-         IRlYHlv7PNwxvi+eiSpnzTcIfUSw5aXfqn9/JuTYgP/dxnhPJjl50q9FDk41xBN7XN6r
-         xIoTwz3cl+kb03J24cDeLTNnrMRp+PgZ5gEyZ2fV62lgLBeuiMsR2219I7N861Ccm7o2
-         k69A==
-X-Gm-Message-State: ABy/qLa1x11e+zos5yW2AIQOUUyIFCSJ1YKOEAsnIuknJQkPUJmBWH1J
-        gPvdW0IMZhKkkyvmz0SgZmk=
-X-Google-Smtp-Source: APBJJlHYP7HEns13EOIHz08VVyobQchPqzj3s+RZ6iWGV5V8JDGaWqeub3CgPcfCln225Ss0QmS8TA==
-X-Received: by 2002:a05:600c:22c4:b0:3fa:9767:c816 with SMTP id 4-20020a05600c22c400b003fa9767c816mr5339647wmg.39.1689412805593;
-        Sat, 15 Jul 2023 02:20:05 -0700 (PDT)
+        bh=bcIHaSKrR4JjJODseymsMqDO3fa+MLFhDB6UjbjUTpo=;
+        b=K4hmlOphbWgWV0rLwqUPoCjQx7y+tYGJtdPkfI1lESJx+l4I3k+Ao5yfO00dSLwfWW
+         zAcj46XCrCyFrHVpdpQpf3mdSGfmb+Qa+eznAKBEx5C4Za7fxSDrsPvoYOFmVJ45MK9M
+         ntYOWJDRu9ivvFcWEXX2FBiqzy58V456cyknYowyhZXKGeYZaHA2atoV9K4u4zZgstmk
+         +5t7qz77+6vJ6SFWDp/MbkYLDE96oxlYS30ih2pFJYd3/X4PyF3TX0Qm+VZM7jo+AQdb
+         ReIp67i3ONbm7SdKdZ9Q1pKxO/2r6c6oHt75SLtT/HZqlkxG2F1nZ0jZTpWoKMK8xpxw
+         ReHw==
+X-Gm-Message-State: ABy/qLZfJW8CYhjN3cr928FGQSQRItON1bdG378N+Q69KICxjy3D7202
+        /EKpe2xbWczstkWrlSPkTu3SqwUqIv0=
+X-Google-Smtp-Source: APBJJlGv8dHKCO/r29rQsgsQOIVVso/vVhMdbGJ51bXTdUlhMiljiUkWfMHrLjloHsgJomwyh1skMw==
+X-Received: by 2002:a05:600c:2489:b0:3fb:b3aa:1c8f with SMTP id 9-20020a05600c248900b003fbb3aa1c8fmr5896747wms.28.1689412806652;
+        Sat, 15 Jul 2023 02:20:06 -0700 (PDT)
 Received: from david-ryuzu.fritz.box ([188.195.202.152])
-        by smtp.googlemail.com with ESMTPSA id f22-20020a7bc8d6000000b003fbb5142c4bsm3238133wml.18.2023.07.15.02.20.04
+        by smtp.googlemail.com with ESMTPSA id f22-20020a7bc8d6000000b003fbb5142c4bsm3238133wml.18.2023.07.15.02.20.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 Jul 2023 02:20:05 -0700 (PDT)
+        Sat, 15 Jul 2023 02:20:06 -0700 (PDT)
 From:   David Wronek <davidwronek@gmail.com>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
@@ -64,11 +64,10 @@ Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
         ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
         cros-qcom-dts-watchers@chromium.org,
-        David Wronek <davidwronek@gmail.com>,
-        Nikita Travkin <nikita@trvn.ru>
-Subject: [PATCH v3 5/7] arm64: dts: qcom: pm6150: Add resin and rtc nodes
-Date:   Sat, 15 Jul 2023 11:16:11 +0200
-Message-ID: <20230715091932.161507-6-davidwronek@gmail.com>
+        David Wronek <davidwronek@gmail.com>
+Subject: [PATCH v3 6/7] arm64: dts: qcom: Add SM7125 device tree
+Date:   Sat, 15 Jul 2023 11:16:12 +0200
+Message-ID: <20230715091932.161507-7-davidwronek@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230715091932.161507-1-davidwronek@gmail.com>
 References: <20230715091932.161507-1-davidwronek@gmail.com>
@@ -84,49 +83,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the RTC which is the same as on other PMICs and add the
-resin child node to the PM6150 PON device, both disabled by default.
+The Snapdragon 720G (sm7125) is software-wise very similar to the
+Snapdragon 7c with minor differences in clock speeds and as added here,
+it uses the Kryo 465 instead of Kryo 468.
 
 Signed-off-by: David Wronek <davidwronek@gmail.com>
-Tested-by: Nikita Travkin <nikita@trvn.ru>
 ---
- arch/arm64/boot/dts/qcom/pm6150.dtsi | 16 ++++++++++++++++
+ arch/arm64/boot/dts/qcom/sm7125.dtsi | 16 ++++++++++++++++
  1 file changed, 16 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/qcom/sm7125.dtsi
 
-diff --git a/arch/arm64/boot/dts/qcom/pm6150.dtsi b/arch/arm64/boot/dts/qcom/pm6150.dtsi
-index 2e6afa296141..af51eb0646ba 100644
---- a/arch/arm64/boot/dts/qcom/pm6150.dtsi
-+++ b/arch/arm64/boot/dts/qcom/pm6150.dtsi
-@@ -53,6 +53,14 @@ pm6150_pwrkey: pwrkey {
- 				bias-pull-up;
- 				linux,code = <KEY_POWER>;
- 			};
+diff --git a/arch/arm64/boot/dts/qcom/sm7125.dtsi b/arch/arm64/boot/dts/qcom/sm7125.dtsi
+new file mode 100644
+index 000000000000..12dd72859a43
+--- /dev/null
++++ b/arch/arm64/boot/dts/qcom/sm7125.dtsi
+@@ -0,0 +1,16 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (c) 2021, The Linux Foundation. All rights reserved.
++ */
 +
-+			pm6150_resin: resin {
-+				compatible = "qcom,pm8941-resin";
-+				interrupts = <0x0 0x8 1 IRQ_TYPE_EDGE_BOTH>;
-+				debounce = <15625>;
-+				bias-pull-up;
-+				status = "disabled";
-+			};
- 		};
- 
- 		pm6150_temp: temp-alarm@2400 {
-@@ -88,6 +96,14 @@ pm6150_adc_tm: adc-tm@3500 {
- 			status = "disabled";
- 		};
- 
-+		pm6150_rtc: rtc@6000 {
-+			compatible = "qcom,pm8941-rtc";
-+			reg = <0x6000>, <0x6100>;
-+			reg-names = "rtc", "alarm";
-+			interrupts = <0x0 0x61 0x1 IRQ_TYPE_EDGE_RISING>;
-+			status = "disabled";
-+		};
++#include "sc7180.dtsi"
 +
- 		pm6150_gpios: gpio@c000 {
- 			compatible = "qcom,pm6150-gpio", "qcom,spmi-gpio";
- 			reg = <0xc000>;
++/* SM7125 uses Kryo 465 instead of Kryo 468 */
++&CPU0 { compatible = "qcom,kryo465"; };
++&CPU1 { compatible = "qcom,kryo465"; };
++&CPU2 { compatible = "qcom,kryo465"; };
++&CPU3 { compatible = "qcom,kryo465"; };
++&CPU4 { compatible = "qcom,kryo465"; };
++&CPU5 { compatible = "qcom,kryo465"; };
++&CPU6 { compatible = "qcom,kryo465"; };
++&CPU7 { compatible = "qcom,kryo465"; };
 -- 
 2.41.0
 
