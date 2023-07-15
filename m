@@ -2,76 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09A2F754857
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 13:03:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FAE475485F
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 13:07:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230217AbjGOLDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 07:03:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44532 "EHLO
+        id S230411AbjGOLHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 07:07:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjGOLDN (ORCPT
+        with ESMTP id S229768AbjGOLHK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 07:03:13 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C76C26AF;
-        Sat, 15 Jul 2023 04:03:12 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6687466137bso1959870b3a.0;
-        Sat, 15 Jul 2023 04:03:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689418992; x=1692010992;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=24wxBr9RJX3pgI/ht36f2xCi5Ssby9GZkRBl17Qpdd4=;
-        b=KbTMjOO08/oKB7Q+ynBDiQsvYeXJnc6a+SMiW0p1tRA+hPacBKwm/PyF1tdCWrDrON
-         MiQZpz2nuZrlWtmSD85bMWXiHpupkwB4w3kDxiTPbVRtQGGO/vXUGi2bi5URxe98f9kU
-         vgX9Ep6lDx/uhpJ7NaJO/vuPKX8AharQxvdVLX2/H6mveHKGIvd1Lp9QLcKhbOG2suf0
-         wi2ShFNFT9OylP7kJPuWvYqcevrJrWOsjgRdmB6hhEaYzgB9tvbrcrWxGQapXKZrQKMq
-         6eIv6eRnKmRCICyz5W4Tt+uPIuqJ0FckPOggh3CiMXRwi09ILjU5shueDysIc410nE9o
-         bqjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689418992; x=1692010992;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=24wxBr9RJX3pgI/ht36f2xCi5Ssby9GZkRBl17Qpdd4=;
-        b=RjSEum0NA08BxOaZveiMh8HA1pWQ7rhcPQM49Y/1iLrWs+E16pNaHcZtBIkcRzGHU8
-         vWY6g3WPS6Y7uR1xx1CQvom3Ck5uoL3RtlZvlBcJRnPEPvg++m/IUXKITIvmGSn9Af9l
-         JAgrLKF+exwmdTo5L1o0T2gsWrTUcF+FmmnyjvdzeUI8eO7Rg9PYusBnHZrGhWCW1+oO
-         P0mpiazrdbZ73UtYJN8vrZr2dQmxzhafgnz4Y2fl42hrGjdkUbjY447VBQXGOUXGnSAI
-         7a0a8GlCP5pxPxhe0UiwgIbtCrrqXD9MGco2yZqWwlOig24n7DFVSMBhTbUbvvXC/fbT
-         8mfg==
-X-Gm-Message-State: ABy/qLZTGW0Q/qYUqDEfOhj50bMbxe7NTzTFJQDTSIk2bbFYsj5de4Ui
-        /Tv2ueo87P34knOaLs+lb2fgjDEDcFKgJ01e
-X-Google-Smtp-Source: APBJJlHnqrTPEPJ1628fEi4wMsVBH9Uvsg4Su67fpENCC/jmlluIs/KOBhLoD6++FAZB4xTlp6K04g==
-X-Received: by 2002:a17:902:ee45:b0:1b8:5fb4:1c85 with SMTP id 5-20020a170902ee4500b001b85fb41c85mr5518120plo.16.1689418991928;
-        Sat, 15 Jul 2023 04:03:11 -0700 (PDT)
-Received: from [192.168.0.104] ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id p16-20020a170902b09000b001b8422f1000sm9249357plr.201.2023.07.15.04.03.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 15 Jul 2023 04:03:11 -0700 (PDT)
-Message-ID: <bfee63a3-16ee-0061-94c0-9c9af5318634@gmail.com>
-Date:   Sat, 15 Jul 2023 18:03:06 +0700
+        Sat, 15 Jul 2023 07:07:10 -0400
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFCD135AA;
+        Sat, 15 Jul 2023 04:07:06 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id D7A1F100005;
+        Sat, 15 Jul 2023 14:07:02 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru D7A1F100005
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
+        s=mail; t=1689419222;
+        bh=DW++SCgcxwIjmRUMsxVsWA8vee4FRUorFqSKgGAnm5g=;
+        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+        b=RAVAdQgyO96POnt/ovs5pN3Xx70UA5jxwWI3bLfn0GJagZ2V+jz1cCwKl4JSgehtI
+         8FVflHNL3jRqS7UCpiMgOz4A3cQMPE9kNTw2CiK+M5IXNpAJToy8OoPAPzra6iZVvg
+         amGSIA/W2rout6hgBVUg+Rkem85+SHODE8rmpAQiS2WfOwM+xrrIQUHkM5vkM8QHv3
+         y1HtjPAKAa4KZETc2wDrFBm0sxJpw2LCEAEXa62nUNtKL1SckxwdaJVAzP31zXtyyq
+         eh3O/2+brGdKVulnH08pAbZzKkVcOf3q6gc8gRLfUgFAO5HlOl4ONdw409pLXAvsj3
+         3dRWRVjLolMtg==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Sat, 15 Jul 2023 14:07:02 +0300 (MSK)
+Received: from localhost.localdomain (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Sat, 15 Jul 2023 14:06:22 +0300
+From:   George Stark <gnstark@sberdevices.ru>
+To:     <jic23@kernel.org>, <lars@metafoo.de>, <neil.armstrong@linaro.org>,
+        <khilman@baylibre.com>, <jbrunet@baylibre.com>,
+        <martin.blumenstingl@googlemail.com>,
+        <andriy.shevchenko@linux.intel.com>, <nuno.sa@analog.com>,
+        <gnstark@sberdevices.ru>
+CC:     <linux-iio@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-amlogic@lists.infradead.org>, <kernel@sberdevices.ru>
+Subject: [PATCH v1 0/3] iio: adc: meson: tune init sequence
+Date:   Sat, 15 Jul 2023 14:05:57 +0300
+Message-ID: <20230715110654.6035-1-gnstark@sberdevices.ru>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US
-To:     Alexander Stein <alexander.stein@ew.tq-group.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Tomasz Rostanski <tomasz.rostanski@thalesgroup.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux Stable <stable@vger.kernel.org>,
-        Linux USB <linux-usb@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-Subject: Fwd: dwc3: regression in USB DWC3 driver in kernel 5.15 branch
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 178635 [Jul 15 2023]
+X-KSMG-AntiSpam-Version: 5.9.59.0
+X-KSMG-AntiSpam-Envelope-From: GNStark@sberdevices.ru
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 523 523 523027ce26ed1d9067f7a52a4756a876e54db27c, {Tracking_from_domain_doesnt_match_to}, sberdevices.ru:5.0.1,7.1.1;100.64.160.123:7.1.2;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1, FromAlignment: s, {Tracking_white_helo}, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/07/15 07:52:00 #21618415
+X-KSMG-AntiVirus-Status: Clean, skipped
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,40 +84,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+This patch is a part of effort to support meson a1 SoC and make meson saradc driver
+independent from vendor boot code initialization in common.
 
-I notice a stable-specific regression on Bugzilla [1]. Quoting from it:
+Information was taken from vendor kernel 5.4, 4.19 and vendor uboot 2019.
+Most of the bits are undocumented at all or it's not said how they affect measuring.
 
-> The backport commit to 5.15 branch:
-> 9d4f84a15f9c9727bc07f59d9dafc89e65aadb34 "arm64: dts: imx8mp: Add snps,gfladj-refclk-lpm-sel quirk to USB nodes"  (from upstream commit 5c3d5ecf48ab06c709c012bf1e8f0c91e1fcd7ad)
-> switched from "snps,dis-u2-freeclk-exists-quirk" to "snps,gfladj-refclk-lpm-sel-quirk".
-> 
-> The problem is that the gfladj-refclk-lpm-sel-quirk quirk is not implemented / backported to 5.15 branch.
-> 
-> This commit should be either reverted, or the commit introducing gfladj-refclk-lpm-sel-quirk needs to be merged to 5.15 kernel branch.
-> 
-> As a result of this patch, on Gateworks Venice GW7400 revB board the USB 3.x devices which are connected to the USB Type C port does not enumerate and the following errors are generated:
-> 
-> [   14.906302] xhci-hcd xhci-hcd.0.auto: Timeout while waiting for setup device command
-> [   15.122383] usb 2-1: device not accepting address 2, error -62
-> [   25.282195] xhci-hcd xhci-hcd.0.auto: Abort failed to stop command ring: -110
-> [   25.297408] xhci-hcd xhci-hcd.0.auto: xHCI host controller not responding, assume dead
-> [   25.305345] xhci-hcd xhci-hcd.0.auto: HC died; cleaning up
-> [   25.311058] xhci-hcd xhci-hcd.0.auto: Timeout while waiting for stop endpoint command
-> [   25.334361] usb usb2-port1: couldn't allocate usb_device
-> 
-> When the commit is reverted the USB 3.x drives works fine.
+All those bits are already initialized in bl* code and since kernel driver dosn't
+rewrite or reset any registers but only changes some bits at init stage everything
+works fine.
 
-See Bugzilla for the full thread and attach dmesgs.
+Test procedure is rather simple - one can change those bits in runtime
+(e.g. using devmem) and try to read channels (cat /sys/bus/platform/drivers/meson-saradc/.../iio:device0/*)
+changing some of those bits leads to measure procedure errors or abnormal results.
+Another test is build meson saradc as module, reset adc by reset bit, reload module
+and compare measure results to those got before reset.
 
-Anyway, I'm adding it to regzbot:
+George Stark (3):
+  iio: adc: meson: init channels 0,1 input muxes
+  iio: adc: meson: init internal continuous ring counter
+  iio: adc: meson: init voltage control bits
 
-#regzbot introduced: 9d4f84a15f9c97 https://bugzilla.kernel.org/show_bug.cgi?id=217670
-#regzbot title: regression in USB DWC3 driver due to missing gfladj-refclk-lpm-sel-quirk quirk
-
-Thanks.
-
-[1]: https://bugzilla.kernel.org/show_bug.cgi?id=217670
+ drivers/iio/adc/meson_saradc.c | 73 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 73 insertions(+)
 
 -- 
-An old man doll... just what I always wanted! - Clara
+2.38.4
+
