@@ -2,269 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C00F75491C
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 16:05:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A640E75491E
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 16:06:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229891AbjGOOFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 10:05:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38054 "EHLO
+        id S229958AbjGOOGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 10:06:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbjGOOFo (ORCPT
+        with ESMTP id S229549AbjGOOG2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 10:05:44 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59029F3
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 07:05:41 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b933bbd3eeso5185821fa.1
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 07:05:41 -0700 (PDT)
+        Sat, 15 Jul 2023 10:06:28 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61216F3
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 07:06:27 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1b898cfa6a1so4009965ad.1
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 07:06:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689429939; x=1692021939;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ib923rpivUZ1jvzbxCzQGvcnNRmC5ad0dwo5LcqVneA=;
-        b=J16ipK8TY987Danz8/Ldk4OTLh0OFfsEhXL/TufpPJtfbWHhmXjcnf/boZT+yyFAFS
-         hEmihbPJrjuh/Io66yBdu5Tw9PZEfCCL+nhpCr9r/r3ouSoEnI4a/1q4OtqzHeSQtC5+
-         huUOkbGCvwWPQx+DCu1yHxD5rChEZzlBq2H3HnW43GC9Z/B9/dpYprUZEPfUv3+fDWgo
-         6WfDu0LC/KnkyKtdsLa48dasT6dDTer8/9qHSsVxUzbZ0jKhRVYZdeYvyG3dagz+VZDF
-         1UMoYKnGpkPSq5vPlUeL2yo8dgUPM1esEyM466Jk0cAqzEGmXxEy80u3nxUj7or2fQqW
-         29zA==
+        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1689429987; x=1690034787;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=NgkcBe+eB7Csc+Gi/e5UdYxcks5oWoeS5M2PXyiSPV4=;
+        b=gp6+jueB2lVhLbMiQMzs9xH/n17AiwvDryMVEdZMXMjZ1g/x8P03LSRxqWZepQ+GN9
+         AMxmFRQ/pgjlI5lTXHi14zhgU/tzUks6AzU9WWVXUbpCCzq6755r5Yev08oaVVNGKsrs
+         dmuzbz1KOzSGPMd936eDyeLB19mWm8ROOvX2krl+GZK0yJHIne56lkOVf6eYqRExVBz+
+         zCWpy5I/7PYqnsfCxdq+hPi2hKRav6AF7/iO8rDdQnpPIFrTzqU+tvM9L5TQyqF433ef
+         tzhm2Ew05gnmofai7TuPYlaRuL8RqFY34IHbgkGAgoqEap2jk6FxV2PflrwdkUPnpU+I
+         SKbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689429939; x=1692021939;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1689429987; x=1690034787;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ib923rpivUZ1jvzbxCzQGvcnNRmC5ad0dwo5LcqVneA=;
-        b=jqlmqt+4DcWnmcYzgqgAaJ1cBDdTn4lkWuN0Ua7QT8gId0DNvsWh2jF6vHDJJtB4Ww
-         smsyvwRLDvPex5pSOkKWA1WhUyY9sAfxcfZgNG/umpb10uCoJ0jUI/MDRlU2MWpZwzMN
-         ej6cCI3haRNhITTr3HYQN/gQq17vekHKtuft0rXA5pGEHejEuPPpIwAKj1Heawaq+h1H
-         guYKupPLe2N36lm0hvWimVJuPmMjtmxn77UHmlRe/nxgpiETTvU39q7Sl4LzHHWoJjbv
-         KssZaCWb2IQLSz2gxdWbTzGs9oPOyE5YpG1i3DeajSefMhZvYGfqn5py46yotB3rmGSp
-         9cKw==
-X-Gm-Message-State: ABy/qLapAmW4EJ+Leajc10ouF5cMiiC2XWAMEs2bXkPefqeccBIfSOlS
-        kXlQRKE+SwibHVYEUkQK/Uj/Cw==
-X-Google-Smtp-Source: APBJJlH8HGvdUBxHhBr4MrnT42WVCHdvTz+M9GgeVJLv+rJMwkztYrNCGZfRCWlQL8rK1xiYyn3UaQ==
-X-Received: by 2002:a2e:9583:0:b0:2b5:1b80:263a with SMTP id w3-20020a2e9583000000b002b51b80263amr6864972ljh.47.1689429939586;
-        Sat, 15 Jul 2023 07:05:39 -0700 (PDT)
-Received: from [192.168.1.101] (abxi167.neoplus.adsl.tpnet.pl. [83.9.2.167])
-        by smtp.gmail.com with ESMTPSA id v11-20020a2e960b000000b002b6de6deb5asm2521884ljh.2.2023.07.15.07.05.38
+        bh=NgkcBe+eB7Csc+Gi/e5UdYxcks5oWoeS5M2PXyiSPV4=;
+        b=gQya6pxSpRF6rDUwDmG5MJT0WgXGbuAWY6LlAJ7pqrMXe0LV0zQBb7vH8ECkUxCZF4
+         zXkkbknKmzToB5Twh9joM6rpGDkNjN8/khfc2Lfq0nw8Ijlluzr3TdK10Cp514fAFy5N
+         StZC0Yv9w1l8+Ok49DLbeFFC51C0uHvenG+9KzBIFcmm2udprbalYnRNQmJKgfu52ljV
+         LUDkS00k7Lc5H+7/WJIapXhjitiS5eVnCPM3AzERBaAEE7IOUPpsw3QDh9/LGXVeCxk8
+         WQ/wNwcOad7XPtZtQh6jDE6emmbV/c6HiNqMAD1bKLdbr0e4PlXgn4X+Ev5Y62VQXjVr
+         mlHw==
+X-Gm-Message-State: ABy/qLaff1NP1CRVHJLnS77CAQqJLKHiitAmSj1s2zm7iq8eIMmWGbhy
+        qVF97gqAA5YCW8khLW/zvLvNCg==
+X-Google-Smtp-Source: APBJJlEZRufq+8Gb5ptLTTr1Lhc6Tb3zHiF+nQYCYATu2/FAlgSyhD/d+cLHmvC4F8bTUoSVfwxDnw==
+X-Received: by 2002:a17:902:e84d:b0:1b3:d4bb:3515 with SMTP id t13-20020a170902e84d00b001b3d4bb3515mr2592580plg.0.1689429986748;
+        Sat, 15 Jul 2023 07:06:26 -0700 (PDT)
+Received: from [192.168.1.136] ([198.8.77.157])
+        by smtp.gmail.com with ESMTPSA id q1-20020a170902788100b001b80760fd04sm9522484pll.112.2023.07.15.07.06.25
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 15 Jul 2023 07:05:39 -0700 (PDT)
-Message-ID: <1fbb2e36-87d7-339d-ba2f-42916a213607@linaro.org>
-Date:   Sat, 15 Jul 2023 16:05:37 +0200
+        Sat, 15 Jul 2023 07:06:25 -0700 (PDT)
+Message-ID: <509f35fc-72dc-8676-4e3a-6bbc8d7eefb4@kernel.dk>
+Date:   Sat, 15 Jul 2023 08:06:24 -0600
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
+Subject: Re: [PATCH 5/5] io_uring: add IORING_OP_WAITID support
 Content-Language: en-US
-To:     Praveenkumar I <quic_ipkumar@quicinc.com>, amitk@kernel.org,
-        thara.gopinath@gmail.com, agross@kernel.org, andersson@kernel.org,
-        rafael@kernel.org, daniel.lezcano@linaro.org, rui.zhang@intel.com,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     quic_varada@quicinc.com
-References: <20230713052732.787853-1-quic_ipkumar@quicinc.com>
- <20230713052732.787853-2-quic_ipkumar@quicinc.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Subject: Re: [PATCH v3 1/5] thermal/drivers/tsens: Add TSENS enable and
- calibration support for V2
-In-Reply-To: <20230713052732.787853-2-quic_ipkumar@quicinc.com>
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Christian Brauner <brauner@kernel.org>
+Cc:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230711204352.214086-1-axboe@kernel.dk>
+ <20230711204352.214086-6-axboe@kernel.dk>
+ <8431d207-5e52-4f8c-a12d-276836174bad@app.fastmail.com>
+ <048cfbce-5238-2580-2d53-2ca740e72d79@kernel.dk>
+ <bbc5f3cf-99f8-0695-1367-979301c64ecb@kernel.dk>
+ <20230714-grummeln-sitzgelegenheit-1157c2feac71@brauner>
+ <d53ed71a-3f57-4c5e-9117-82535aae7855@app.fastmail.com>
+ <ca82bd8b-5868-8fbb-6701-061220a1ff97@kernel.dk>
+ <57926544-3936-410f-ae0e-6eff266ea59c@app.fastmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <57926544-3936-410f-ae0e-6eff266ea59c@app.fastmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13.07.2023 07:27, Praveenkumar I wrote:
-> SoCs without RPM have to enable sensors and calibrate from the kernel.
-> Though TSENS IP supports 16 sensors, not all are used. So used hw_id
-> to enable the relevant sensors.
+On 7/15/23 1:12 AM, Arnd Bergmann wrote:
+> On Fri, Jul 14, 2023, at 22:14, Jens Axboe wrote:
+>> On 7/14/23 12:33?PM, Arnd Bergmann wrote:
+>>> On Fri, Jul 14, 2023, at 17:47, Christian Brauner wrote:
+>>>> On Tue, Jul 11, 2023 at 04:18:13PM -0600, Jens Axboe wrote:
+>>>>>>> Does this require argument conversion for compat tasks?
+>>>>>>>
+>>>>>>> Even without the rusage argument, I think the siginfo
+>>>>>>> remains incompatible with 32-bit tasks, unfortunately.
+>>>>>>
+>>>>>> Hmm yes good point, if compat_siginfo and siginfo are different, then it
+>>>>>> does need handling for that. Would be a trivial addition, I'll make that
+>>>>>> change. Thanks Arnd!
+>>>>>
+>>>>> Should be fixed in the current version:
+>>>>>
+>>>>> https://git.kernel.dk/cgit/linux/commit/?h=io_uring-waitid&id=08f3dc9b7cedbd20c0f215f25c9a7814c6c601cc
+>>>>
+>>>> In kernel/signal.c in pidfd_send_signal() we have
+>>>> copy_siginfo_from_user_any() it seems that a similar version
+>>>> copy_siginfo_to_user_any() might be something to consider. We do have
+>>>> copy_siginfo_to_user32() and copy_siginfo_to_user(). But I may lack
+>>>> context why this wouldn't work here.
+>>>
+>>> We could add a copy_siginfo_to_user_any(), but I think open-coding
+>>> it is easier here, since the in_compat_syscall() check does not
+>>> work inside of the io_uring kernel thread, it has to be
+>>> "if (req->ctx->compat)" in order to match the wordsize of the task
+>>> that started the request.
+>>
+>> Yeah, unifying this stuff did cross my mind when adding another one.
+>> Which I think could still be done, you'd just need to pass in a 'compat'
+>> parameter similar to how it's done for iovec importing.
+>>
+>> But if it's ok with everybody I'd rather do that as a cleanup post this.
 > 
-> Added new calibration function for V2 as the tsens.c calib function
-> only supports V1.
+> Sure, keeping that separate seem best.
 > 
-> Signed-off-by: Praveenkumar I <quic_ipkumar@quicinc.com>
-> ---
-[...]
+> Looking at what copy_siginfo_from_user_any() actually does, I don't
+> even think it's worth adapting copy_siginfo_to_user_any() for io_uring,
+> since it's already just a trivial wrapper, and adding another
+> argument would add more complexity overall than it saves.
 
->  
->  /* ----- SROT ------ */
->  #define SROT_HW_VER_OFF	0x0000
->  #define SROT_CTRL_OFF		0x0004
-> +#define SROT_MEASURE_PERIOD	0x0008
-> +#define SROT_Sn_CONVERSION	0x0060
-> +#define V2_SHIFT_DEFAULT	0x0003
-> +#define V2_SLOPE_DEFAULT	0x0cd0
-> +#define V2_CZERO_DEFAULT	0x016a
-> +#define ONE_PT_SLOPE		0x0cd0
-> +#define TWO_PT_SHIFTED_GAIN	921600
-> +#define ONE_PT_CZERO_CONST	94
-> +#define SENSOR_CONVERSION(n)	(((n) * 4) + SROT_Sn_CONVERSION)
-> +#define CONVERSION_SLOPE_SHIFT	10
-> +#define CONVERSION_SHIFT_SHIFT	23
-Please define bitfields with GENMASK() and use FIELD_PREP/GET() helpers
+Yeah, took a look too this morning, and not sure there's much to reduce
+here that would make it cleaner. I'm going to send out a v2 with this
+unchanged, holler if people disagree.
 
->  
->  /* ----- TM ------ */
->  #define TM_INT_EN_OFF			0x0004
-> @@ -59,6 +71,11 @@ static const struct reg_field tsens_v2_regfields[MAX_REGFIELDS] = {
->  	/* CTRL_OFF */
->  	[TSENS_EN]     = REG_FIELD(SROT_CTRL_OFF,    0,  0),
->  	[TSENS_SW_RST] = REG_FIELD(SROT_CTRL_OFF,    1,  1),
-> +	[SENSOR_EN]    = REG_FIELD(SROT_CTRL_OFF,    3,  18),
-> +	[CODE_OR_TEMP] = REG_FIELD(SROT_CTRL_OFF,    21, 21),
-> +
-> +	/* MAIN_MEASURE_PERIOD */
-> +	[MAIN_MEASURE_PERIOD] = REG_FIELD(SROT_MEASURE_PERIOD, 0, 7),
->  
->  	/* ----- TM ------ */
->  	/* INTERRUPT ENABLE */
-> @@ -104,6 +121,130 @@ static const struct reg_field tsens_v2_regfields[MAX_REGFIELDS] = {
->  	[TRDY] = REG_FIELD(TM_TRDY_OFF, 0, 0),
->  };
->  
-> +static int tsens_v2_calibrate_sensor(struct device *dev, struct tsens_sensor *sensor,
-> +				     struct regmap *map,  u32 mode, u32 base0, u32 base1)
-> +{
-> +	u32 slope, czero, val;
-> +	char name[15];
-What's the rationale behind choosing 15 here?
+-- 
+Jens Axboe
 
-> +	int ret;
-> +
-[...]
 
-> +static int tsens_v2_calibration(struct tsens_priv *priv)
-> +{
-> +	struct device *dev = priv->dev;
-> +	u32 mode, base0, base1;
-> +	int i, ret;
-> +
-> +	if (priv->num_sensors > MAX_SENSORS)
-> +		return -EINVAL;
-> +
-> +	ret = nvmem_cell_read_variable_le_u32(priv->dev, "mode", &mode);
-> +	if (ret == -ENOENT)
-> +		dev_warn(priv->dev, "Calibration data not present in DT\n");
-I think bindings don't allow that anyway
-
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	dev_dbg(priv->dev, "calibration mode is %d\n", mode);
-> +
-> +	ret = nvmem_cell_read_variable_le_u32(priv->dev, "base0", &base0);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	ret = nvmem_cell_read_variable_le_u32(priv->dev, "base1", &base1);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	/* Calibrate each sensor */
-> +	for (i = 0; i < priv->num_sensors; i++) {
-> +		ret = tsens_v2_calibrate_sensor(dev, &priv->sensor[i], priv->srot_map,
-> +						mode, base0, base1);
-> +		if (ret < 0)
-> +			return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int __init init_tsens_v2_no_rpm(struct tsens_priv *priv)
-> +{
-> +	int i, ret;
-> +	u32 val = 0;
-> +	struct device *dev = priv->dev;
-Reverse-Christmas-tree, please.
-
-> +
-> +	ret = init_common(priv);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	priv->rf[CODE_OR_TEMP] = devm_regmap_field_alloc(dev, priv->srot_map,
-> +							 priv->fields[CODE_OR_TEMP]);
-> +	if (IS_ERR(priv->rf[CODE_OR_TEMP]))
-> +		return PTR_ERR(priv->rf[CODE_OR_TEMP]);
-> +
-> +	priv->rf[MAIN_MEASURE_PERIOD] = devm_regmap_field_alloc(dev, priv->srot_map,
-> +								priv->fields[MAIN_MEASURE_PERIOD]);
-> +	if (IS_ERR(priv->rf[MAIN_MEASURE_PERIOD]))
-> +		return PTR_ERR(priv->rf[MAIN_MEASURE_PERIOD]);
-> +
-> +	regmap_field_write(priv->rf[TSENS_SW_RST], 0x1);
-> +
-> +	/* Update measure period to 2ms */
-What's the unit? Can we name the 0x1 value?
-
-> +	regmap_field_write(priv->rf[MAIN_MEASURE_PERIOD], 0x1);
-> +
-> +	/* Enable available sensors */
-> +	for (i = 0; i < priv->num_sensors; i++)
-> +		val |= 1 << priv->sensor[i].hw_id;
-> +
-> +	regmap_field_write(priv->rf[SENSOR_EN], val);
-> +
-> +	/* Real temperature format */
-What does that mean?
-
-> +	regmap_field_write(priv->rf[CODE_OR_TEMP], 0x1);
-> +
-> +	regmap_field_write(priv->rf[TSENS_SW_RST], 0x0);
-> +
-> +	/* Enable TSENS */
-> +	regmap_field_write(priv->rf[TSENS_EN], 0x1);
-It would be really nice if you could provide the names of all these
-magic values.
-
-Konrad
-> +
-> +	return 0;
-> +}
-> +
->  static const struct tsens_ops ops_generic_v2 = {
->  	.init		= init_common,
->  	.get_temp	= get_temp_tsens_valid,
-> diff --git a/drivers/thermal/qcom/tsens.c b/drivers/thermal/qcom/tsens.c
-> index 98c356acfe98..9dc0c2150948 100644
-> --- a/drivers/thermal/qcom/tsens.c
-> +++ b/drivers/thermal/qcom/tsens.c
-> @@ -974,7 +974,7 @@ int __init init_common(struct tsens_priv *priv)
->  	ret = regmap_field_read(priv->rf[TSENS_EN], &enabled);
->  	if (ret)
->  		goto err_put_device;
-> -	if (!enabled) {
-> +	if (!enabled && (tsens_version(priv) != VER_2_X_NO_RPM)) {
->  		dev_err(dev, "%s: device not enabled\n", __func__);
->  		ret = -ENODEV;
->  		goto err_put_device;
-> diff --git a/drivers/thermal/qcom/tsens.h b/drivers/thermal/qcom/tsens.h
-> index 2805de1c6827..b2e8f0f2b466 100644
-> --- a/drivers/thermal/qcom/tsens.h
-> +++ b/drivers/thermal/qcom/tsens.h
-> @@ -35,6 +35,7 @@ enum tsens_ver {
->  	VER_0_1,
->  	VER_1_X,
->  	VER_2_X,
-> +	VER_2_X_NO_RPM,
->  };
->  
->  enum tsens_irq_type {
-> @@ -168,6 +169,8 @@ enum regfield_ids {
->  	TSENS_SW_RST,
->  	SENSOR_EN,
->  	CODE_OR_TEMP,
-> +	/* MEASURE_PERIOD */
-> +	MAIN_MEASURE_PERIOD,
->  
->  	/* ----- TM ------ */
->  	/* TRDY */
