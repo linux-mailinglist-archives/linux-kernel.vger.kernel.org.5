@@ -2,131 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 953577545AC
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 02:47:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF7767545B7
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 02:54:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230093AbjGOAqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 20:46:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58464 "EHLO
+        id S229473AbjGOAyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 20:54:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbjGOAqn (ORCPT
+        with ESMTP id S229482AbjGOAyN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 20:46:43 -0400
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2065.outbound.protection.outlook.com [40.107.237.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E32682D51;
-        Fri, 14 Jul 2023 17:46:41 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CstvVxjatYTDi8ewkDDld2MtACgxu1IJVpfv8WkREgbMsyYvUaS/oJVnvYh1X9FdEl7gKWvPUu6EFqezM3LIlORVSQXHt9Bplh92EHV0As9q88QgCJv/09kMXuj6f6jxxmPt03ocqJb0XidwS7qC7b93zYl3d/9LloZZw3sa0plscWcC7OQaEcQCpNM03+wzl0N0Zv651NZ67HL8JZnZxqxG1iy0KkOLCzSfTphzeJdZMnsjN8ZVpkONE1X0KGM3zRiItsUk9VHJ3gAKOKa8FFN+p75PkquDZ1IMmWsfkD2929N9rj5NlYZKWi/sLXXXWYp/5hxHa3BynFqv1a9B+g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=MNKZmNHWS117SpTRpYMD89dPlN9DL+w5ILiePP2niW8=;
- b=j79M2GYh9BIcm+iNiLX1scJme4Y660I6aHAxF8avPs5nfcpcL0g7L/Zv8+gWl5e44Dg/uDYAIMUUQYDY2oOVOBd5/gry1DLdZ5WXLNkkx6U4R5wLe8+UO+mPYUWd8FQDeLOotaDZ+w8IRd1WI9h1CgMTnMpTpNsPSJBmoIWkCyeKVOgmzHUz2DHyhOjVL2pgCKoULi82MS6Wr+xbV5G+9HAnvATlUL02YpW9RTiyIcS8OsNELGCyIf2tfKlVcmQ736gIQnr6QZU807sIMUjDRN+1uXzOKrYz+bKfjBRvosXmh2sYo+exVX1dD5cKNik1QbxRCaTrCJqwkpTDj5SfyQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MNKZmNHWS117SpTRpYMD89dPlN9DL+w5ILiePP2niW8=;
- b=Biz5CCkVyGK8yx+DE0LdNOavYUw70mJjdXcmAS4wvJK7nhZU2OSuWwzf5yTV5R/GWCZsfYo3kCMviRpITwRVfOJDHC5ldjmbmQHIosZl/4DngmPB0rhyz3HwVDVlWl/t0Jq4bvS4vZ/KNX6waIdnbkW1ClqUFdj+hXLu+1grKCs=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
- by DS0PR12MB7702.namprd12.prod.outlook.com (2603:10b6:8:130::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.27; Sat, 15 Jul
- 2023 00:46:37 +0000
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::bce4:716a:8303:efcf]) by MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::bce4:716a:8303:efcf%4]) with mapi id 15.20.6588.028; Sat, 15 Jul 2023
- 00:46:37 +0000
-Message-ID: <37b005d5-68fb-f8dd-67e2-c953d677fca2@amd.com>
-Date:   Fri, 14 Jul 2023 19:46:34 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 2/2] PCI: Don't put non-power manageable PCIe root
- ports into D3
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Len Brown <lenb@kernel.org>,
-        linux-acpi@vger.kernel.org, Iain Lane <iain@orangesquash.org.uk>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-References: <20230711221427.GA250962@bhelgaas>
- <b82a50eb-8182-84ca-5b24-dbe8870fa871@amd.com>
- <CAJZ5v0i6PviqW7u3i8hmvSCvR_VHqP-mWRy3Da8Ev_1vi9qBQA@mail.gmail.com>
- <a309e3fe-b1f9-e269-cb97-8af87c8d483b@amd.com>
- <CAJZ5v0jvxrDMR6YHFpYZ4yYpp82-3TtrH==SMRFtUMJsv7=i=g@mail.gmail.com>
-Content-Language: en-US
-From:   "Limonciello, Mario" <mario.limonciello@amd.com>
-In-Reply-To: <CAJZ5v0jvxrDMR6YHFpYZ4yYpp82-3TtrH==SMRFtUMJsv7=i=g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SA0PR11CA0183.namprd11.prod.outlook.com
- (2603:10b6:806:1bc::8) To MN0PR12MB6101.namprd12.prod.outlook.com
- (2603:10b6:208:3cb::10)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|DS0PR12MB7702:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6b35f79d-9431-45cb-54f4-08db84ccf188
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: EROSiJP0Es5oKGHrWYARrnfyLFsAuV5SaArDM+QmcxlG6/Ag55pZEnZ4k2XEd0T0bnEADkQ8LoDdgG4WNoabxN2ynfRM/TM1HG3QtYViCKQuaU/OnDmBCej2Rr9N41v9U7z7pgN3WqsJdiHr+5JMl9WrQeRETRB6z64zWm1A04vkC53Im1W4spen1Z5KUv589fEOIGDO7nMy3S4ejuL4N5qcZ1urEly9I7Uzul83c5nYnjYjsjG5vAAgPLOoxsmre90Xk0ETgy9g9MbJoHK6GbVSogzRavBCs3J/vnUvFH991vZntgk4fpbB4PxauxEfyCYUGJJ8e0BECTKxGygfCwn0SdzFrxB8/WWeHB5IhCAVCI7/Ws1B4lOEghKDkVzK77zwWBxYB3oeLasTgIQf2jAHjlknka4PorvsseX/laItA8j+qxPg4tht2R4+Gv4F3AIzXmvwl4CONvM8pnfsGQ66S/XEutBAjIJpPV2Frr+UKIeIM4XVPu61LquK+vu6SjC7TWKR2jp7V6sEytoOcUlQIPkcBXlyGvhYb8sQFVH3HZvBTYrrI/1X229sMn3Fq7hJ9kkNsKWBgeS/4cw3H3GgwCVykRoKp3w9GknrFJColdt+ZLn5G9I1C04kaQegGLUdO7KmNHxuh0tr1PqWpQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(366004)(136003)(346002)(396003)(376002)(451199021)(6512007)(6486002)(6666004)(83380400001)(186003)(2616005)(38100700002)(36756003)(31696002)(86362001)(6506007)(26005)(53546011)(66556008)(66476007)(4326008)(66946007)(7416002)(54906003)(41300700001)(6916009)(31686004)(5660300002)(316002)(8936002)(8676002)(2906002)(478600001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SDJpL0VlaVgyWmRSVFcyeUJaMGNZbDNDemtXeC9tRVlEZlRZU0Z6ZmFjZlhX?=
- =?utf-8?B?d0IrWEhxV3ovazBKYTl1KzdQUDh4TzZZOVhNVTF2d04zY3Z2WUJyZlo0RFYr?=
- =?utf-8?B?Y0VqcXYzVWNQWGl4ZVkxV1Z1cy9IREY4b0JCcXNJUmpHZFBwNC9tamcvRHJx?=
- =?utf-8?B?ZGVVOTJrRjIydSt5MzVjczZmY2ZyeEdQbWZzVFBJWGR1eVAvZkRjdkxrOHVs?=
- =?utf-8?B?R3FlUGRCN0d1eWtNUExsK2xPd2dCdlkrVlRFb25RRE1FaXJvSEQ3eHFTWk8v?=
- =?utf-8?B?cWVkZzJnYlNHWmlLNklmR2hLY0huZnpzcVd0aEtyK1FPck03cTdQbXQ4Yk9q?=
- =?utf-8?B?U2JOV2tsNUxGdUxHcnlTUzhuNjNuTHNBR3hlZ3VJR04xdVV0bUdmcUs2anZk?=
- =?utf-8?B?cVRpSFN5U3cvQjVQSEkwWFJWNEFPMXZmcTR4VkVaQTgvaFlrd0tEUUhYRlc5?=
- =?utf-8?B?QXBMU1lmbFp4WUMxQzhXaDZGdkVWdWRwZ1pmTklWTTRJS0xnVWVtNk00M3Ro?=
- =?utf-8?B?cmRLSWV5YUp1TjRUbXZZcWRkM0xmMXI4NEZpS3ZrbzBDa0o2dTlmelRHQ1VM?=
- =?utf-8?B?cy85eG92VkRKM3lpMjBZTjUrQ3pSaFIvNFk5dlhUNXBzbXI1dVZ6Umd0cWYv?=
- =?utf-8?B?ekZJUXJKQnc1dnJFL29VVHUrU2NpT1VSTkZneUV1d3ZyTkl5dCtsRmgzOFhV?=
- =?utf-8?B?OFcxQUoxazk1MlhPcktPRk9JS00yNDZHTjUrUkt0REdDVVIyRTN6TndVbHlr?=
- =?utf-8?B?bnYvUzlhMGE0QXJCQVQxYUtsdDV4MFZzZU80WGxsYWFzekliaGFraVJTeW5M?=
- =?utf-8?B?dEE0VlF3ZDdoUlVNaW90ZDBzU1NOV05Xejg5ZUxhM2NybndxRGJzZ1UzeTZm?=
- =?utf-8?B?ZkNPZDd0RGZ2V2lrNlphbnRlQkVrV09YejBNc2NYRnQrUTFBUnRaK1h2WndN?=
- =?utf-8?B?RlJQVGlsVkp3dVVQZTJkb3FxRnhOTUdTKytUcG55TlpsYU5sOUpjQk4xSU45?=
- =?utf-8?B?QXBVRDRVZUErZlZpbE5udDMyc3hGa2hEYVd0QXNiaERrcXZTUkNjUkFnaGNv?=
- =?utf-8?B?dlJOWFZDZ3FLOVR2NGFMaEV2V2J6RjlsblFGb0dpcndRdzBDMU5ra3BPWU9j?=
- =?utf-8?B?OHJSS3JrM3VXSUd5RUFPenVpL0hQakVBZDR1U01DKytLYjN6YnNJSUlCWFlT?=
- =?utf-8?B?QndwNUF0QlVoVDJCUVNxT2pueW90WWdndFhMNDhhUFBRUEMvdUFia0dCQm4x?=
- =?utf-8?B?V0FDaUU3c3NDVW9MVnAxOWJnVndVZ2twRmtMNURpRCtZMHd0a09mKzdUa1lJ?=
- =?utf-8?B?bWNBTnFKcHJmakljaHI0SzNhR0Y4b051VStZM1hlZXROUzJoUnFWbDBEWVZq?=
- =?utf-8?B?U2JBcmFORDRJZmxCaVl4cnpETVhGQjlTZmgzL2lwU05jdFh3S0dKUmQ3YUh5?=
- =?utf-8?B?OEhzYXhTcklwR0tmcjVNYkI4SFNnd0tRSUdJN2ZaaFhDaURxSHhVY0hIQy9k?=
- =?utf-8?B?bzBBTytIaHFhbVhRM09UeW96MS9MaDlwK3dVUURja1pUeTIrM2tpaVd0NVhp?=
- =?utf-8?B?ZXIxWWUxLzh3UklaaVZ2eldPNUVVWEVBOUJPZW9hTld3MlA2SzhscHlSTXdR?=
- =?utf-8?B?UE04ZGcxaUxDQ1B1MitWV0QrZ3RwR3hlRTFMaDNRVWl4VE43citJVUx0YVlR?=
- =?utf-8?B?emFTbGpoTElWOVpWNktHYVJZY2cxV3JVUWdnNVBtTk1WeWY5MUZYY21rN1ZJ?=
- =?utf-8?B?L0EyUFg4M1M4UkpTbDZCd3ZoQlZvYXJoZytlbWZkazFtYTQ2V1pvTWVvQUFt?=
- =?utf-8?B?TWQ1UEE1bmhTaUIwemtmYVNsWUVnUHZDcEo1OEpya2RvSllTNzJ3elA2ZTh0?=
- =?utf-8?B?OVNiZzkycHluOVFwMFh4d1kxY0lPdnlDMC9sWURQcTQ0enlWT2lJbWZWNHlm?=
- =?utf-8?B?bnlCbXBzVlNVczc1andGL1hSYlVUcTZXNklWUUtjd0h6UjBIOHp3QzlraktX?=
- =?utf-8?B?ei9YeHNXT25YeTVIZk5LNW5wMVE1OU5BTlZuK2ZQdzMzcGhhVnRxOEVEUDlG?=
- =?utf-8?B?blJHdWE2d3lnK241aVZPWkl1VXkxWEYxUmEzYUlmNm5Ma0tWaHl6UE45TkJF?=
- =?utf-8?Q?MlBDScfSDdmxWkzMTzT5O0NDa?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6b35f79d-9431-45cb-54f4-08db84ccf188
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jul 2023 00:46:36.6662
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: eLf5HiBTljc1+p1UJoPvjbtaYUVMRT3flMAzkSoh0ON3CvwMWL7e2kFKO73RJicPvVwPGHkH4x3zfEbVjz9s0Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB7702
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        Fri, 14 Jul 2023 20:54:13 -0400
+Received: from mail-oi1-x24a.google.com (mail-oi1-x24a.google.com [IPv6:2607:f8b0:4864:20::24a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1AA42D57
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 17:54:10 -0700 (PDT)
+Received: by mail-oi1-x24a.google.com with SMTP id 5614622812f47-3a1c2d69709so4011304b6e.1
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 17:54:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689382450; x=1689987250;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=fi+TwRqHTqTHaY4uhx8GFr/g2CT/sHva523JfrUN8no=;
+        b=Rl7X15zVroDB0ax0MJN2lZBc/WPRpLpDMUM7EuyisoyXekMEHnmY8kblO437Stldob
+         NRQ13DeHVXcnT/uGF5FjR2omWPA47JdtZJROchOq4bdpe9F3S/Qn0fUysQUwn2n/AlAn
+         q+ayvcztcaK8mcrKvxZVG9fL10ZkKq9O0wsui7dB86tceUFs56QcTIaN6M5TvmB6Zbj8
+         DHk5fsvk2D4C2nnIm/MnFznnti/l2Tj1GMZOUeUdbZ31oO1TMbkPZYxu2AwzNbJZ43CO
+         nzMBbPuwqvJm4bGVJcsgcKT2C7TENxp1oEBpywTZDw1EmdnuhhWZea6El3v6xC6fGLvq
+         NvzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689382450; x=1689987250;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fi+TwRqHTqTHaY4uhx8GFr/g2CT/sHva523JfrUN8no=;
+        b=XhUtmsBO06vpEwu8N4DDGJyRGj1ZGm9i5815HQIiiHTAa+KGmbu+DlxgnevrDAS9Hc
+         DwObtKRrUYPRDo5xKVCIXY4Xc/OGGwSD4fLYCbkqrSXOJK4qa9+oA0Vnz4ie7yLHpIL7
+         j12qIcyVkJhdg7/X1U285VG4wSM0Km66xfGds1Ias6eEBHZM0x7dao8pr7YcqfiBWqQY
+         RACxNKfFbP52zrSV/p+9DQlM7icdzLN/vxb3KkD7SQICruqmFzETTc5/h3Op9eBoJTLO
+         RqVcygLFoO1V7J4L1Ptq3vgXvs6Md3d2wRK+yeNwYkrwFcTvBZd7Kgj5K9IGC0L4srNf
+         6ZdQ==
+X-Gm-Message-State: ABy/qLZTTqhRfWQO78eW6xMAT0GPok3UpC1Jb8i0eyPRfWbZUgrtFc2E
+        AfzSe18uA5pN2b4u9FKabOLy/RTdA9oG
+X-Google-Smtp-Source: APBJJlEEzQLfcb+JylE9pMUOTTxKo1aYJJPd6a5wJe9I41rw2KLxcTWA8MtWjz+XA/7jf+mrmLrc0y779meX
+X-Received: from rananta-linux.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:22b5])
+ (user=rananta job=sendgmr) by 2002:a05:6808:1520:b0:3a3:a8d1:1aa1 with SMTP
+ id u32-20020a056808152000b003a3a8d11aa1mr8165676oiw.2.1689382450142; Fri, 14
+ Jul 2023 17:54:10 -0700 (PDT)
+Date:   Sat, 15 Jul 2023 00:53:54 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.41.0.455.g037347b96a-goog
+Message-ID: <20230715005405.3689586-1-rananta@google.com>
+Subject: [PATCH v6 00/11] KVM: arm64: Add support for FEAT_TLBIRANGE
+From:   Raghavendra Rao Ananta <rananta@google.com>
+To:     Oliver Upton <oliver.upton@linux.dev>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        Raghavendra Rao Anata <rananta@google.com>,
+        David Matlack <dmatlack@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED,USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -134,44 +82,247 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In certain code paths, KVM/ARM currently invalidates the entire VM's
+page-tables instead of just invalidating a necessary range. For example,
+when collapsing a table PTE to a block PTE, instead of iterating over
+each PTE and flushing them, KVM uses 'vmalls12e1is' TLBI operation to
+flush all the entries. This is inefficient since the guest would have
+to refill the TLBs again, even for the addresses that aren't covered
+by the table entry. The performance impact would scale poorly if many
+addresses in the VM is going through this remapping.
 
-On 7/14/2023 2:17 PM, Rafael J. Wysocki wrote:
->>> Generally speaking, pci_bridge_d3_possible() is there to prevent
->>> bridges (and PCIe ports in particular) from being put into D3hot/cold
->>> if there are reasons to believe that it may not work.
->>> acpi_pci_bridge_d3() is part of that.
->>>
->>> Even if it returns 'true', the _SxD/_SxW check should still be applied
->>> via pci_target_state() to determine whether or not the firmware allows
->>> this particular bridge to go into D3hot/cold.  So arguably, the _SxW
->>> check in acpi_pci_bridge_d3() should not be necessary and if it makes
->>> any functional difference, there is a bug somewhere else.
->> But only if it was power manageable would the _SxD/_SxW check be
->> applied.  This issue is around the branch of pci_target_state() where
->> it's not power manageable and so it uses PME or it falls back to D3hot.
-> Well, this looks like a spec interpretation difference.
->
-> We thought that _SxD/_SxW would only be relevant for devices with ACPI
-> PM support, but the firmware people seem to think that those objects
-> are also relevant for PCI devices that don't have ACPI PM support
-> (because those devices are still power-manageable via PMCSR).  If
-> Windows agrees with that viewpoint, we'll need to adjust, but not
-> through adding _SxW checks in random places.
-I think that depends upon how you want to handle the lack of _S0W.
+For architectures that implement FEAT_TLBIRANGE, KVM can replace such
+inefficient paths by performing the invalidations only on the range of
+addresses that are in scope. This series tries to achieve the same in
+the areas of stage-2 map, unmap and write-protecting the pages.
 
-On these problematic devices there is no _S0W under the PCIe
-root port.  As I said; Windows puts them into D0 in this case though.
+As suggested by Oliver in the original v5 of the series [1], I'm
+reposting the series by including v2 of David Matlack's 'KVM: Add a
+common API for range-based TLB invalidation' series [2].
 
-So acpi_dev_power_state_for_wake should return ACPI_STATE_UNKNOWN.
+Patches 1-4 includes David M.'s patches 1, 2, 6, and 7 from [2].
 
-Can you suggest where you think adding a acpi_dev_power_state_for_wake() 
-does make sense?
+Patch-5 refactors the core arm64's __flush_tlb_range() to be used by
+other entities.
 
-Two areas that I think would work would be in: pci_pm_suspend_noirq() 
-(to avoid calling pci_prepare_to_sleep)
+Patch-6,7 adds a range-based TLBI mechanism for KVM (VHE and nVHE).
 
-or
+Patch-8 implements the kvm_arch_flush_remote_tlbs_range() for arm64.
 
-directly in pci_prepare_to_sleep() to check that value in lieu of 
-pci_target_state().
+Patch-9 aims to flush only the memslot that undergoes a write-protect,
+instead of the entire VM.
+
+Patch-10 operates on stage2_try_break_pte() to use the range based
+TLBI instructions when collapsing a table entry. The map path is the
+immediate consumer of this when KVM remaps a table entry into a block.
+
+Patch-11 modifies the stage-2 unmap path in which, if the system
+supports
+FEAT_TLBIRANGE, the TLB invalidations are skipped during the page-table.
+walk. Instead it's done in one go after the entire walk is finished.
+
+The series is based off of upstream v6.5-rc1.
+
+The performance evaluation was done on a hardware that supports
+FEAT_TLBIRANGE, on a VHE configuration, using a modified
+kvm_page_table_test.
+The modified version updates the guest code in the ADJUST_MAPPINGS case
+to not only access this page but also to access up to 512 pages
+backwards
+for every new page it iterates through. This is done to test the effect
+of TLBI misses after KVM has handled a fault.
+
+The series captures the impact in the map and unmap paths as described
+above.
+
+$ kvm_page_table_test -m 2 -v 128 -s anonymous_hugetlb_2mb -b $i
+
++--------+------------------------------+------------------------------+
+| mem_sz |    ADJUST_MAPPINGS (s)       |      Unmap VM (s)            |
+|  (GB)  | Baseline | Baseline + series | Baseline | Baseline + series |
++--------+----------|-------------------+------------------------------+
+|   1    |   3.33   |   3.22            | 0.009     | 0.005            |
+|   2    |   7.39   |   7.32            | 0.012     | 0.006            |
+|   4    |  13.49   |  10.50            | 0.017     | 0.008            |
+|   8    |  21.60   |  21.50            | 0.027     | 0.011            |
+|  16    |  57.02   |  43.63            | 0.046     | 0.018            |
+|  32    |  95.92   |  83.26            | 0.087     | 0.030            |
+|  64    | 199.57   | 165.14            | 0.146     | 0.055            |
+| 128    | 423.65   | 349.37            | 0.280     | 0.100            |
++--------+----------+-------------------+----------+-------------------+
+
+$ kvm_page_table_test -m 2 -b 128G -s anonymous_hugetlb_2mb -v $i
+
++--------+------------------------------+
+| vCPUs  |    ADJUST_MAPPINGS (s)       |
+|        | Baseline | Baseline + series |
++--------+----------|-------------------+
+|   1    | 111.44   | 114.63            |
+|   2    | 102.88   |  74.64            |
+|   4    | 134.83   |  98.78            |
+|   8    |  98.81   |  95.01            |
+|  16    | 127.41   |  99.05            |
+|  32    | 105.35   |  91.75            |
+|  64    | 201.13   | 163.63            |
+| 128    | 423.65   | 349.37            |   
++--------+----------+-------------------+
+
+For the ADJUST_MAPPINGS cases, which maps back the 4K table entries to
+2M hugepages, the series sees an average improvement of ~15%. For
+unmapping 2M hugepages, we see a gain of 2x to 3x.
+
+$ kvm_page_table_test -m 2 -b $i
+
++--------+------------------------------+
+| mem_sz |      Unmap VM (s)            |
+|  (GB)  | Baseline | Baseline + series |
++--------+------------------------------+
+|   1    |  0.54    |  0.13             |
+|   2    |  1.07    |  0.25             |
+|   4    |  2.10    |  0.47             |
+|   8    |  4.19    |  0.92             |
+|  16    |  8.35    |  1.92             |
+|  32    | 16.66    |  3.61             |
+|  64    | 32.36    |  7.62             |
+| 128    | 64.65    | 14.39             |   
++--------+----------+-------------------+
+
+The series sees an average gain of 4x when the guest backed by
+PAGE_SIZE (4K) pages.
+
+Other testing:
+ - Booted on x86_64 and ran KVM selftests.
+ - Build tested for MIPS and RISCV architectures against defconfig.
+
+Cc: David Matlack <dmatlack@google.com>
+
+v6:
+Thanks, Gavin for the suggestions:
+- Adjusted the comment on patch-2 to align with the code.
+- Fixed checkpatch.pl warning on patch-5.
+
+v5:
+https://lore.kernel.org/all/20230606192858.3600174-1-rananta@google.com/
+Thank you, Marc and Oliver for the comments
+- Introduced a helper, kvm_tlb_flush_vmid_range(), to handle
+  the decision of using range-based TLBI instructions or
+  invalidating the entire VMID, rather than depending on
+  __kvm_tlb_flush_vmid_range() for it.
+- kvm_tlb_flush_vmid_range() splits the range-based invalidations
+  if the requested range exceeds MAX_TLBI_RANGE_PAGES.
+- All the users in need of invalidating the TLB upon a range
+  now depends on kvm_tlb_flush_vmid_range() rather than directly
+  on __kvm_tlb_flush_vmid_range().
+- stage2_unmap_defer_tlb_flush() introduces a WARN_ON() to
+  track if there's any change in TLBIRANGE or FWB support
+  during the unmap process as the features are based on
+  alternative patching and the TLBI operations solely depend
+  on this check.
+- Corrected an incorrect hunk being present on v4's patch-3.
+- Updated the patches changelog and code comments as per the
+  suggestions.
+
+v4:
+https://lore.kernel.org/all/20230519005231.3027912-1-rananta@google.com/
+Thanks again, Oliver for all the comments
+- Updated the __kvm_tlb_flush_vmid_range() implementation for
+  nVHE to adjust with the modfied __tlb_switch_to_guest() that
+  accepts a new 'bool nsh' arg.
+- Renamed stage2_put_pte() to stage2_unmap_put_pte() and removed
+  the 'skip_flush' argument.
+- Defined stage2_unmap_defer_tlb_flush() to check if the PTE
+  flushes can be deferred during the unmap table walk. It's
+  being called from stage2_unmap_put_pte() and
+  kvm_pgtable_stage2_unmap().
+- Got rid of the 'struct stage2_unmap_data'.
+
+v3:
+https://lore.kernel.org/all/20230414172922.812640-1-rananta@google.com/
+Thanks, Oliver for all the suggestions.
+- The core flush API (__kvm_tlb_flush_vmid_range()) now checks if
+  the system support FEAT_TLBIRANGE or not, thus elimiating the
+  redundancy in the upper layers.
+- If FEAT_TLBIRANGE is not supported, the implementation falls
+  back to invalidating all the TLB entries with the VMID, instead
+  of doing an iterative flush for the range.
+- The kvm_arch_flush_remote_tlbs_range() doesn't return -EOPNOTSUPP
+  if the system doesn't implement FEAT_TLBIRANGE. It depends on
+  __kvm_tlb_flush_vmid_range() to do take care of the decisions
+  and return 0 regardless of the underlying feature support.
+- __kvm_tlb_flush_vmid_range() doesn't take 'level' as input to
+  calculate the 'stride'. Instead, it always assumes PAGE_SIZE.
+- Fast unmap path is eliminated. Instead, the existing unmap walker
+  is modified to skip the TLBIs during the walk, and do it all at
+  once after the walk, using the range-based instructions.
+
+v2:
+https://lore.kernel.org/all/20230206172340.2639971-1-rananta@google.com/
+- Rebased the series on top of David Matlack's series for common
+  TLB invalidation API[1].
+- Implement kvm_arch_flush_remote_tlbs_range() for arm64, by extending
+  the support introduced by [1].
+- Use kvm_flush_remote_tlbs_memslot() introduced by [1] to flush
+  only the current memslot after write-protect.
+- Modified the __kvm_tlb_flush_range() macro to accepts 'level' as an
+  argument to calculate the 'stride' instead of just using PAGE_SIZE.
+- Split the patch that introduces the range-based TLBI to KVM and the
+  implementation of IPA-based invalidation into its own patches.
+- Dropped the patch that tries to optimize the mmu notifiers paths.
+- Rename the function kvm_table_pte_flush() to
+  kvm_pgtable_stage2_flush_range(), and accept the range of addresses to
+  flush. [Oliver]
+- Drop the 'tlb_level' argument for stage2_try_break_pte() and directly
+  pass '0' as 'tlb_level' to kvm_pgtable_stage2_flush_range(). [Oliver]
+
+v1:
+https://lore.kernel.org/all/20230109215347.3119271-1-rananta@google.com/
+
+Thank you.
+Raghavendra
+
+[1]: https://lore.kernel.org/all/ZIrONR6cSegiK1e2@linux.dev/
+[2]:
+https://lore.kernel.org/linux-arm-kernel/20230126184025.2294823-1-dmatlack@google.com/
+
+David Matlack (4):
+  KVM: Rename kvm_arch_flush_remote_tlb() to
+    kvm_arch_flush_remote_tlbs()
+  KVM: arm64: Use kvm_arch_flush_remote_tlbs()
+  KVM: Allow range-based TLB invalidation from common code
+  KVM: Move kvm_arch_flush_remote_tlbs_memslot() to common code
+
+Raghavendra Rao Ananta (7):
+  arm64: tlb: Refactor the core flush algorithm of __flush_tlb_range
+  KVM: arm64: Implement  __kvm_tlb_flush_vmid_range()
+  KVM: arm64: Define kvm_tlb_flush_vmid_range()
+  KVM: arm64: Implement kvm_arch_flush_remote_tlbs_range()
+  KVM: arm64: Flush only the memslot after write-protect
+  KVM: arm64: Invalidate the table entries upon a range
+  KVM: arm64: Use TLBI range-based intructions for unmap
+
+ arch/arm64/include/asm/kvm_asm.h     |   3 +
+ arch/arm64/include/asm/kvm_host.h    |   6 ++
+ arch/arm64/include/asm/kvm_pgtable.h |  10 +++
+ arch/arm64/include/asm/tlbflush.h    | 109 ++++++++++++++-------------
+ arch/arm64/kvm/Kconfig               |   1 -
+ arch/arm64/kvm/arm.c                 |   6 --
+ arch/arm64/kvm/hyp/nvhe/hyp-main.c   |  11 +++
+ arch/arm64/kvm/hyp/nvhe/tlb.c        |  30 ++++++++
+ arch/arm64/kvm/hyp/pgtable.c         |  90 +++++++++++++++++++---
+ arch/arm64/kvm/hyp/vhe/tlb.c         |  23 ++++++
+ arch/arm64/kvm/mmu.c                 |  15 +++-
+ arch/mips/include/asm/kvm_host.h     |   4 +-
+ arch/mips/kvm/mips.c                 |  12 +--
+ arch/riscv/kvm/mmu.c                 |   6 --
+ arch/x86/include/asm/kvm_host.h      |   7 +-
+ arch/x86/kvm/mmu/mmu.c               |  25 ++----
+ arch/x86/kvm/mmu/mmu_internal.h      |   3 -
+ arch/x86/kvm/x86.c                   |   2 +-
+ include/linux/kvm_host.h             |  20 +++--
+ virt/kvm/Kconfig                     |   3 -
+ virt/kvm/kvm_main.c                  |  35 +++++++--
+ 21 files changed, 290 insertions(+), 131 deletions(-)
+
+-- 
+2.41.0.455.g037347b96a-goog
 
