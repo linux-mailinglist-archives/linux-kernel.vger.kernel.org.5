@@ -2,112 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEF7B754700
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 08:23:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71F3F754704
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 08:28:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229709AbjGOGXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 02:23:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54290 "EHLO
+        id S229904AbjGOG2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 02:28:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbjGOGXf (ORCPT
+        with ESMTP id S229482AbjGOG2C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 02:23:35 -0400
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A73D4107;
-        Fri, 14 Jul 2023 23:23:33 -0700 (PDT)
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id F3F771C0DC0; Sat, 15 Jul 2023 08:23:30 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
-        t=1689402211;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=h3LfdKGs0UxPjzB0BynU4i+zXf5U8uBunZusMAra21g=;
-        b=LSLSS9A97dd9uMgAE65BakTS7lZ91g6yS/VGEcPg9pI2t8StKF/F6T+gpZQX7xBPwT9bM7
-        3q5JmGTlicHewhE7yBDaIUWe2206dct+xIFvW7R2mBsEimcBXORu0a+STYjj2wyLiRRfq/
-        gm0rlVliRJ2WFoxFYEOHVEwJNN4zaag=
-Date:   Sat, 15 Jul 2023 08:23:30 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Mario Limonciello <mario.limonciello@amd.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-crypto@vger.kernel.org,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        John Allen <john.allen@amd.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/10] Add dynamic boost control support
-Message-ID: <ZLI7YpMhJjU7Xe0g@duo.ucw.cz>
-References: <20230420163140.14940-1-mario.limonciello@amd.com>
- <ZEkrZ83fFwiweCTz@localhost>
- <e3e2d438-6d97-57c8-90e0-8fec874ad43d@amd.com>
+        Sat, 15 Jul 2023 02:28:02 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0189F2726;
+        Fri, 14 Jul 2023 23:28:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689402481; x=1720938481;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=E4dw5jTyrhJfmTFYFax04Yvl6K/d06zT/oytzRcJ5aA=;
+  b=E7CgKL41W84x7OUnZcsK5BLzZGK2jtiUrgPT7XmpD8LCbYrp4ekMvQM8
+   gn42Oqz6u9iL3q5mhmfK//UYs73CY1RpZuDKiFfNotAA/eF1nFwBoD+zP
+   DDmrqiPxFj86q1VmPWrUkP68YwwLw6+utfoQbJIfraP8UV22+RnfaHpip
+   xgP7lh0YwCuYg5HEM+sFL4yJt+dHn79+OAl+AnMJLwXklhL+oYpvdlBnG
+   qMoxHMSz6G1rmVIJGuYZIX3fM6NIfxcv0Sv/KAEJm3yGBX9smZrWgMJBB
+   w3ARsi6RbmOQ7SXctUCZ1OALgq1ECrI6wLnbI5McfWGqRMzOTC6KjCjuw
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10771"; a="345949299"
+X-IronPort-AV: E=Sophos;i="6.01,207,1684825200"; 
+   d="scan'208";a="345949299"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 23:28:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10771"; a="812680999"
+X-IronPort-AV: E=Sophos;i="6.01,207,1684825200"; 
+   d="scan'208";a="812680999"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
+  by FMSMGA003.fm.intel.com with ESMTP; 14 Jul 2023 23:27:58 -0700
+Message-ID: <db554c27-f663-0146-5e5f-b319547757c3@linux.intel.com>
+Date:   Sat, 15 Jul 2023 14:26:10 +0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="ZvntLkCFVhX5QPPV"
-Content-Disposition: inline
-In-Reply-To: <e3e2d438-6d97-57c8-90e0-8fec874ad43d@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Cc:     baolu.lu@linux.intel.com, opensource.kernel@vivo.com
+Subject: Re: [PATCH v5] iommu: Fix an error check in tegra_smmu_debugfs_init()
+Content-Language: en-US
+To:     Minjie Du <duminjie@vivo.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        "open list:TEGRA IOMMU DRIVERS" <linux-tegra@vger.kernel.org>,
+        "open list:IOMMU SUBSYSTEM" <iommu@lists.linux.dev>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20230714081320.1998-1-duminjie@vivo.com>
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <20230714081320.1998-1-duminjie@vivo.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 7/14/23 4:13 PM, Minjie Du wrote:
+> debugfs_create_dir() function returns an error value(PTR_ERR).
+> We need to evaluate the return value using IS_ERR,
+> rather than checking for NULL.
+> 
+> Fixes: d1313e7896e9 ("iommu/tegra-smmu: Add debugfs support")
+> Signed-off-by: Minjie Du<duminjie@vivo.com>
+> ---
+> V4 -> V5: debugfs needs to have error checking, so use IS_ERR() to error check.
 
---ZvntLkCFVhX5QPPV
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Why?
 
-On Wed 2023-04-26 09:43:43, Mario Limonciello wrote:
->=20
-> On 4/26/23 08:47, Pavel Machek wrote:
-> > Hi!
-> >=20
-> > > Dynamic boost control is a feature of some SoCs that allows
-> > > an authenticated entity to send commands to the security processor
-> > > to control certain SOC characteristics with the intention to improve
-> > > performance.
-> > >=20
-> > > This is implemented via a mechanism that a userspace application would
-> > > authenticate using a nonce and key exchange over an IOCTL interface.
-> > >=20
-> > > After authentication is complete an application can exchange signed
-> > > messages with the security processor and both ends can validate the
-> > > data transmitted.
-> > Why is this acceptable? This precludes cross-platform interfaces,
-> > right? Why would application want to validate data from PSP? That
-> > precludes virtualization, right?
-> >=20
-> > Just put the key in kernel. Users have right to control their own
-> > hardware.
-> > 							Pavel
->=20
-> This matches exactly how the interface works in Windows as well.
+[...]
+  * NOTE: it's expected that most callers should _ignore_ the errors 
+returned
+  * by this function. Other debugfs functions handle the fact that the 
+"dentry"
+  * passed to them could be an error and they don't crash in that case.
+  * Drivers should generally work fine even if debugfs fails to init anyway.
+  */
+struct dentry *debugfs_create_dir(const char *name, struct dentry *parent)
+{
+         struct dentry *dentry = start_creating(name, parent);
+         struct inode *inode;
 
-Windows has different design constrants.
+         if (IS_ERR(dentry))
+                 return dentry;
 
-> The reason for validating the data from the PSP is because the data
-> crosses multiple trust boundaries and this ensures that the application
-> can trust it to make informed decisions.
+[...]
 
-If the application can not trust kernel, you are already doomed on
-Linux.
-
-									Pavel
-
---=20
-People of Russia, stop Putin before his war on Ukraine escalates.
-
---ZvntLkCFVhX5QPPV
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZLI7YgAKCRAw5/Bqldv6
-8h10AJ9TRbzD34klcp52yn4ZUhUWuRE2nACdG7WaPnyMrL14KJu0Hm/iFjkn3IY=
-=NzZ5
------END PGP SIGNATURE-----
-
---ZvntLkCFVhX5QPPV--
+Best regards,
+baolu
