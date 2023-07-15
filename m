@@ -2,118 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7FC27547BC
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 11:20:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 593E67547E2
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 11:23:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230381AbjGOJUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 05:20:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50194 "EHLO
+        id S230355AbjGOJXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 05:23:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230248AbjGOJUY (ORCPT
+        with ESMTP id S229881AbjGOJXh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 05:20:24 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49EBA3A97
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 02:19:49 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2b935316214so28391fa.1
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 02:19:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689412782; x=1692004782;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=uU8z7MQTAseycVhm4xqzUABfIdWki0oWoHTG+Qvxumg=;
-        b=E/QxtJJg7rHSK74wng1uBblyEJAvHyi9rIbOgRvmnrOqdTePkkIc2d2L1EsBjf+7/w
-         szSVY+/9ELsj/2AW7y0eBokhMRI6+cyyLOIcrNNRy9G4Y6ysojkjK05kfoWIqYilKlgU
-         EEjI4dtteU2DbNPNWQ47hWuu7jAVoaoR1PN5SfXGBKMzpie0KKFwsScCi2kf9Cd/tFRo
-         CNGiQ0rWp5O2EBVdN+jfPBwJpzhAtT2MMxcsiGZ39PMQ0SyqUXSJh4/gk/7Gyl8DUtFF
-         JucZWGefkiibHvhP6VY+B2C0LxJj7uOvPTlTKa2lhyzLhNIw3fZ1I8/sbGg84wA0SunG
-         mokQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689412782; x=1692004782;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uU8z7MQTAseycVhm4xqzUABfIdWki0oWoHTG+Qvxumg=;
-        b=d0lCWHyV45ftp9HvdwaCBE6yMGI/9tvOoIn+09E4dZYRB5EnXG3b/ijpRTTC9Bkaqm
-         /kT12uArs3H7BzFR9DqjkdcO4uQBmSalMOlfEwFZumupHCcrOq68fdkFO5blEw6nBu+J
-         HdfI9SZIkcW9pfyKy+dJYuK/AZdAE49Uod0JbW92SEt4wsafypdOc1Fv3YYyuGFHr0sg
-         RNXwQnft3NeHcfjCzrdGPNV/98vq0WF18xzcq1G4y65FyjFxMnAklZFt2E0wpfi7XYQB
-         MTDMtD1iQpcta7axhFCoGC7hTfjyz9nnAKtwxOwlRMz3WItGCbpSV8lZFzvLWvyd/8HL
-         UAIw==
-X-Gm-Message-State: ABy/qLZLLbeRzDVYwFqm3fOgcYQ2MMnoBG3uqcJ91BcaVnnLFtB4t0Q7
-        sjFvse965aWec6Ma/+HucUq/cw==
-X-Google-Smtp-Source: APBJJlH5qiMARhz72CyMoSOuAfv7V2ZINmpLIFogNEf03pLosGVr8PzBltaLAaiBJUlBF7z/ficHOQ==
-X-Received: by 2002:a2e:9f46:0:b0:2b7:18ff:946e with SMTP id v6-20020a2e9f46000000b002b718ff946emr1564213ljk.25.1689412781998;
-        Sat, 15 Jul 2023 02:19:41 -0700 (PDT)
-Received: from [192.168.1.101] (abxi167.neoplus.adsl.tpnet.pl. [83.9.2.167])
-        by smtp.gmail.com with ESMTPSA id z13-20020a2e9b8d000000b002b70206cd45sm2391907lji.90.2023.07.15.02.19.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 15 Jul 2023 02:19:41 -0700 (PDT)
-Message-ID: <de6b5727-e15a-5d59-9b79-6ca7b01c8d63@linaro.org>
-Date:   Sat, 15 Jul 2023 11:19:39 +0200
+        Sat, 15 Jul 2023 05:23:37 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EC103AB1;
+        Sat, 15 Jul 2023 02:23:15 -0700 (PDT)
+X-QQ-mid: bizesmtp89t1689412983tno1gxiu
+Received: from linux-lab-host.localdomain ( [119.123.131.162])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Sat, 15 Jul 2023 17:23:01 +0800 (CST)
+X-QQ-SSF: 01200000000000D0W000000A0000000
+X-QQ-FEAT: q+EIYT+FhZrAovjZxRoSnSnHnPax2IuslwuJRGRN5fECtY6fP4y4nhEUwUr/c
+        0bUAu3pmDk1aSDl4lKKLg/ti7sgCj9P1l9zM7AlbSwJ9g1kmLPDAv7iBZaL7RVeJg2OAGsd
+        Q3g+9mb1+8fYLInhCmAesMAPF0dyndoVARHSEkyG5j75YuiVCHIa9ljZXUB60Kves7wTdtK
+        +g9HISe8gYOHfbGwfbnntiU5x79dPmmm7PI6lMjuYKcxEXkS25r7nNeCk8rbHRUO478mvRG
+        wjVA7qrK1isT0gBDvlf/mfn8sPPDY2DT1UBycINpobsCb8RB2Y6zCCwoTlA7/Wla4DEo35o
+        x50tunzZrYf50+kTeFX2f8Q7jx9zg==
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 5920392168960088624
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     thomas@t-8ch.de
+Cc:     arnd@arndb.de, falcon@tinylab.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, w@1wt.eu
+Subject: Re: [PATCH v3 02/11] tools/nolibc: add new crt.h with _start_c
+Date:   Sat, 15 Jul 2023 17:23:01 +0800
+Message-Id: <20230715092301.339180-1-falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <34b21ba5-7b59-4b3b-9ed6-ef9a3a5e06f7@t-8ch.de>
+References: <34b21ba5-7b59-4b3b-9ed6-ef9a3a5e06f7@t-8ch.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 1/2] serial: qcom-geni: fix opp vote on shutdown
-Content-Language: en-US
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Johan Hovold <johan+linaro@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Rajendra Nayak <quic_rjendra@quicinc.com>,
-        Matthias Kaehlcke <mka@chromium.org>
-References: <20230714130214.14552-1-johan+linaro@kernel.org>
- <20230714130214.14552-2-johan+linaro@kernel.org>
- <e99b5975-b770-5460-1ce4-cd4eb1a50291@linaro.org>
- <ZLFk1Q0pTfYmB5EU@hovoldconsulting.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <ZLFk1Q0pTfYmB5EU@hovoldconsulting.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.07.2023 17:08, Johan Hovold wrote:
-> On Fri, Jul 14, 2023 at 04:29:08PM +0200, Konrad Dybcio wrote:
->> On 14.07.2023 15:02, Johan Hovold wrote:
->>> The operating-performance-point vote needs to be dropped when shutting
->>> down the port to avoid wasting power by keeping resources like power
->>> domains in an unnecessarily high performance state (e.g. when a UART
->>> connected Bluetooth controller is not in use).
->>>
->>> Fixes: a5819b548af0 ("tty: serial: qcom_geni_serial: Use OPP API to set clk/perf state")
->>> Cc: stable@vger.kernel.org      # 5.9
->>> Cc: Rajendra Nayak <quic_rjendra@quicinc.com>
->>> Cc: Matthias Kaehlcke <mka@chromium.org>
->>> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
->>> ---
->> I don't know a whole lot about this subsystem, but the PM call has
->> a pointer to uport which already contains this clock rate.. Is it
->> zeroed out by the core before we reach it, which would prevent us
->> from reusing it?
+> On 2023-07-14 17:47:23+0800, Zhangjin Wu wrote:
+> > > On 2023-07-14 13:58:13+0800, Zhangjin Wu wrote:
 > 
-> No, but this driver has other issues and I couldn't be arsed fixing them
-> before addressing this bug.
+> > [..]
 > 
-> Specifically that uartclk variable can currently be set by userspace...
+> > > I was also not able to reproduce the issue.
+> > >
+> > 
+> > Thanks very much for your 'reproduce' result, It is so weird, just
+> > rechecked the toolchain, 13.1.0 from https://mirrors.edge.kernel.org/ is
+> > ok, gcc 9, gcc 10.3 not work.
+> > 
+> > But even in the page of 13.1.0 [1], we still see this line:
+> > 
+> >     Most optimizations are completely disabled at -O0 or if an -O level is not set on the command line, even if individual optimization flags are specified.
+> > 
+> > Not sure if "individual optimization flags" also means the optimize()
+> > flags in gcc attributes. or the doc is not updated yet?
+> > 
+> > And further found gcc 11.1.0 is ok, gcc 10.4 still not work, so, gcc
+> > 11.1.0 may changed something to let the "individual optimization flags"
+> > work with -O0.
+> > 
+> > We may need to at least document this issue in some files, -O0 is not such a
+> > frequently-used option, not sure if we still need -O0 work with the older gcc <
+> > 11.1.0 ;-)
 > 
-> I'll fix that up next week.
-OK sounds good
+> It seems we can avoid the issue by enforcing optimizations for _start:
+> 
+> diff --git a/tools/include/nolibc/arch-x86_64.h b/tools/include/nolibc/arch-x86_64.h
+> index f5614a67f05a..b9d8b8861dc4 100644
+> --- a/tools/include/nolibc/arch-x86_64.h
+> +++ b/tools/include/nolibc/arch-x86_64.h
+> @@ -161,12 +161,9 @@
+>   * 2) The deepest stack frame should be zero (the %rbp).
+>   *
+>   */
+> -void __attribute__((weak, noreturn, optimize("omit-frame-pointer"))) __no_stack_protector _start(void)
+> +void __attribute__((weak, noreturn, optimize("Os", "omit-frame-pointer"))) __no_stack_protector _start(void)
+>
 
-Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Great, it works and it is minimal enough ;-)
 
-Konrad
+Thanks very much.
+
+> > 
+> > Willy, I'm not sure if the issues solved by the commit 7f8548589661
+> > ("tools/nolibc: make compiler and assembler agree on the section around
+> > _start") still exist after we using _start_c()?
+> > 
+> > Thomas, because we plan to move the stackprotector init to _start_c(), If using
+> > pure assembly _start, we may also not need the __no_stack_protector macro too?
 > 
-> Johan
+> It would probably not needed anymore in this case.
+>
+
+Yeah, but let's reserve it as-is for we have the working
+omit-frame-pointer now.
+
+Best regards,
+Zhangjin
+
+> Thomas
