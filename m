@@ -2,115 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFFED754AAA
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 20:26:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70393754AAC
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 20:26:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230183AbjGOS0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 14:26:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43156 "EHLO
+        id S230190AbjGOS04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 14:26:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbjGOS0F (ORCPT
+        with ESMTP id S229632AbjGOS0y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 14:26:05 -0400
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8B4630E2
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 11:26:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689445560; x=1720981560;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=TiANDhvFKHNYarBo0f5b7OHT2MfFmM6d6+cbcqZYhXU=;
-  b=CYrmDcb/Wi6HHq3kYBYVieYOZobSCBUF+YV8OplWNxsCI408Wy56qXWW
-   ib3yameH8kQjMmeAewFtXyeQcSrpBXGAM78uVcvCxGnpfQ6I0TCAHaE77
-   3EzOmRnCLAXDWKU3U+p8h6fPF7I+TU3aYI2FuOdAPT20q/3qOgvdnqJQs
-   sH5xvaG+lQR1FHihZFjRQ1eBNPgDL/0sdCCAAgmp4cpLhPjVZAGKha9KZ
-   qOL67kkw1aaWFbWdVekidElr77hN2QqyOKm/Mu3yFE3kdLzHFD9jySST0
-   24uqo6aV6Ptl9iLTSrY7bJKIVUV/IIyDZcyE8QbmUw3EZ2u2gd1+sIi39
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10772"; a="363148382"
-X-IronPort-AV: E=Sophos;i="6.01,208,1684825200"; 
-   d="scan'208";a="363148382"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2023 11:26:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10772"; a="812791063"
-X-IronPort-AV: E=Sophos;i="6.01,208,1684825200"; 
-   d="scan'208";a="812791063"
-Received: from nsbhole-mobl1.amr.corp.intel.com (HELO [10.251.11.90]) ([10.251.11.90])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2023 11:25:59 -0700
-Message-ID: <ec2fdae5f574e407308ba7746fe18a69542b7c1d.camel@linux.intel.com>
-Subject: Re: [Patch v3 1/6] sched/fair: Determine active load balance for
- SMT sched groups
-From:   Tim Chen <tim.c.chen@linux.intel.com>
-To:     Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
-Cc:     Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Ricardo Neri <ricardo.neri@intel.com>,
-        "Ravi V . Shankar" <ravi.v.shankar@intel.com>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Len Brown <len.brown@intel.com>, Mel Gorman <mgorman@suse.de>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Ionela Voinescu <ionela.voinescu@arm.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        naveen.n.rao@linux.vnet.ibm.com,
-        Yicong Yang <yangyicong@hisilicon.com>,
-        Barry Song <v-songbaohua@oppo.com>,
-        Chen Yu <yu.c.chen@intel.com>, Hillf Danton <hdanton@sina.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Date:   Sat, 15 Jul 2023 11:25:58 -0700
-In-Reply-To: <a399af19aa8e1291558724509a1de2f52b3bad0a.camel@linux.intel.com>
-References: <cover.1688770494.git.tim.c.chen@linux.intel.com>
-         <e24f35d142308790f69be65930b82794ef6658a2.1688770494.git.tim.c.chen@linux.intel.com>
-         <165778ce-7b8f-1966-af02-90ef481455b9@linux.vnet.ibm.com>
-         <a399af19aa8e1291558724509a1de2f52b3bad0a.camel@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
+        Sat, 15 Jul 2023 14:26:54 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D77A1B6;
+        Sat, 15 Jul 2023 11:26:52 -0700 (PDT)
+X-QQ-mid: bizesmtp82t1689445603tsgi0gsl
+Received: from linux-lab-host.localdomain ( [119.123.131.162])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Sun, 16 Jul 2023 02:26:42 +0800 (CST)
+X-QQ-SSF: 01200000002000D0W000B00A0000000
+X-QQ-FEAT: qOAV9bwDT/kSqlse5e4lug4VHat/aabuEX5Xe9QzvVHXgMbvO7tddyAjjH/68
+        xTd05Ua+5kRzIU5qS1j5MKyAqWhZyjT91W5Oi6Bmglyi5TVZajNBXqoYE/oDVBrueWFhwz7
+        WMmg8VfRnNbuOfHL5euQK/qBWuOCcOKUEizedUGzSr795imKLa69WK2Wlx6gLhqllep1ALC
+        iOlC5LPc8IjWcCrdAvX0M3Jcryn00W04sAN04OWwN2Bv0DC/aUns7qmZvcyjbgJJQ5SFLko
+        9DCcTYm/Fj7VatdK1Aqi8fnm3SPUhp/Ze4x8Hq2vJXBF8eUrFVql7n5ja1/V/f62aPvSIhr
+        7ZpmSgWV0UxpglS68tAFjWNsHsEpkFSdxtEpx6yHUG0tkLZ5RJ7KYCYUtzMNg==
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 1089036118975101126
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     w@1wt.eu
+Cc:     arnd@arndb.de, falcon@tinylab.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, thomas@t-8ch.de
+Subject: [PATCH v4 09/18] tools/nolibc: i386: shrink _start with _start_c
+Date:   Sun, 16 Jul 2023 02:26:42 +0800
+Message-Id: <d8e0da4a25e9f9d0fd234cd00de9b787e233f250.1689444638.git.falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1689444638.git.falcon@tinylab.org>
+References: <cover.1689444638.git.falcon@tinylab.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+move most of the _start operations to _start_c(), include the
+stackprotector initialization.
 
->=20
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 294a662c9410..3fc8d3a3bd22 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -9588,6 +9588,17 @@ static bool update_sd_pick_busiest(struct lb_env *=
-env,
->                 break;
-> =20
->         case group_smt_balance:
-> +               /* no idle cpus on both groups handled by group_fully_bus=
-y below */
-> +               if (sgs->idle_cpus !=3D 0 || busiest->idle_cpus !=3D 0) {
-> +                       if (sgs->idle_cpus > busiest->idle_cpus)
-> +                               return false;
-> +                       if (sgs->idle_cpus < busiest->idle_cpus)
-> +                               return true;
-> +                       if (sgs->sum_nr_running <=3D busiest_sum_nr_runni=
-ng)
+Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+---
+ tools/include/nolibc/arch-i386.h | 34 +++++++-------------------------
+ 1 file changed, 7 insertions(+), 27 deletions(-)
 
-typo: should be busiest->sum->nr_running
+diff --git a/tools/include/nolibc/arch-i386.h b/tools/include/nolibc/arch-i386.h
+index fe0b73f032c3..64415b9fac77 100644
+--- a/tools/include/nolibc/arch-i386.h
++++ b/tools/include/nolibc/arch-i386.h
+@@ -8,6 +8,7 @@
+ #define _NOLIBC_ARCH_I386_H
+ 
+ #include "compiler.h"
++#include "crt.h"
+ 
+ /* Syscalls for i386 :
+  *   - mostly similar to x86_64
+@@ -154,9 +155,6 @@
+ 	_eax;							\
+ })
+ 
+-char **environ __attribute__((weak));
+-const unsigned long *_auxv __attribute__((weak));
+-
+ /* startup code */
+ /*
+  * i386 System V ABI mandates:
+@@ -167,30 +165,12 @@ const unsigned long *_auxv __attribute__((weak));
+ void __attribute__((weak, noreturn, optimize("Os", "omit-frame-pointer"))) __no_stack_protector _start(void)
+ {
+ 	__asm__ volatile (
+-#ifdef _NOLIBC_STACKPROTECTOR
+-		"call __stack_chk_init\n"   /* initialize stack protector                    */
+-#endif
+-		"pop %eax\n"                /* argc   (first arg, %eax)                      */
+-		"mov %esp, %ebx\n"          /* argv[] (second arg, %ebx)                     */
+-		"lea 4(%ebx,%eax,4),%ecx\n" /* then a NULL then envp (third arg, %ecx)       */
+-		"mov %ecx, environ\n"       /* save environ                                  */
+-		"xor %ebp, %ebp\n"          /* zero the stack frame                          */
+-		"mov %ecx, %edx\n"          /* search for auxv (follows NULL after last env) */
+-		"0:\n"
+-		"add $4, %edx\n"            /* search for auxv using edx, it follows the     */
+-		"cmp -4(%edx), %ebp\n"      /* ... NULL after last env (ebp is zero here)    */
+-		"jnz 0b\n"
+-		"mov %edx, _auxv\n"         /* save it into _auxv                            */
+-		"and $-16, %esp\n"          /* x86 ABI : esp must be 16-byte aligned before  */
+-		"sub $4, %esp\n"            /* the call instruction (args are aligned)       */
+-		"push %ecx\n"               /* push all registers on the stack so that we    */
+-		"push %ebx\n"               /* support both regparm and plain stack modes    */
+-		"push %eax\n"
+-		"call main\n"               /* main() returns the status code in %eax        */
+-		"mov %eax, %ebx\n"          /* retrieve exit code (32-bit int)               */
+-		"movl $1, %eax\n"           /* NR_exit == 1                                  */
+-		"int $0x80\n"               /* exit now                                      */
+-		"hlt\n"                     /* ensure it does not                            */
++		"xor  %ebp, %ebp\n"       /* zero the stack frame                                */
++		"mov  %esp, %eax\n"       /* save stack pointer to %eax, as arg1 of _start_c     */
++		"and  $-16, %esp\n"       /* last pushed argument must be 16-byte aligned        */
++		"push %eax\n"             /* push arg1 on stack to support plain stack modes too */
++		"call _start_c\n"         /* transfer to c runtime                               */
++		"hlt\n"                   /* ensure it does not return                           */
+ 	);
+ 	__builtin_unreachable();
+ }
+-- 
+2.25.1
 
-> +                               return false;
-> +                       else
-> +                               return true;
-> +               }
->=20
-
-Tim
