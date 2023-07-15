@@ -2,92 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D942F754BD8
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 21:49:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1511754BD9
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 21:51:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229725AbjGOTt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 15:49:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39094 "EHLO
+        id S229824AbjGOTvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 15:51:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjGOTtz (ORCPT
+        with ESMTP id S229500AbjGOTvW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 15:49:55 -0400
-Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4DB31B6
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 12:49:54 -0700 (PDT)
-Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-576a9507a9bso63735537b3.1
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 12:49:54 -0700 (PDT)
+        Sat, 15 Jul 2023 15:51:22 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07BB41B6
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 12:51:21 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3fbea14700bso28021335e9.3
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 12:51:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689450594; x=1692042594;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2yEv6eKAuSe0Kz+0k8MmuU8ikB8Aj5bM/CELpHQ0gMM=;
-        b=wYv+ZsaTaEP2A45rv1sjNOeHYAFX2V0lVgEyE07Ojf6YAntYV0YxIwcZgZQ7u+0os3
-         UKm6yT3m/YgrqDsFcgGd+XE/cnUs3fa3sNGaUepi+7z89dAwLGd5aM82qa4azsAuqutb
-         hUtKd5pQPj9lJ/uBRW7c188TFADSyr5OQlKUZlVD3wRfHhZs7mqXSEwbnmmQK4ZVDMSf
-         94q54nBE5JsAa3nEoodOwy/KE430zsTqvO4RiyRCRpUU5Tug6ww42eekYYJzC/4za8mC
-         YmQJ12Bnt8pbzEVelvSL9wo/W81t/XB/0uUea0OYK+t5TqypS8LsfKGrpQFaaQziN+wS
-         QbIw==
+        d=gmail.com; s=20221208; t=1689450679; x=1692042679;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=4GbW45t2bxRqivhDRu5jFgHelCXhxmoAea6VVpAeTN0=;
+        b=OkCSid7w3zQ8n9XG+ty/DBDeXbbHXgFbTU1GzROa+YeHcrLizyat7fs4fyJJUrTRNE
+         idnyHoxq3aemDupzHnxC3xC0WM6w9e86klwGP60qVAJUdrwvNGaKtAkb+B1zUmCtP30A
+         LpmBCK7Ojy6xNLX5PZMYhMieP41QRhiAkuzmj+/0OO7hkJZu9Zxi40oPHfQ6+AtKjWGr
+         K1xxA0EETGR0QPIYBEBKaSIVtxEQ8jvmeKOTKh638LrenmdhgSZ2QoU39RY1IXfdCsWt
+         8gZxMTkp2OE72B2ax1rz0Bze7LPypWXRbLHeSdTWetPFfGARkUdTITPD0cP/UlinEx4M
+         i4OQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689450594; x=1692042594;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2yEv6eKAuSe0Kz+0k8MmuU8ikB8Aj5bM/CELpHQ0gMM=;
-        b=dpTwmyx1W5p70ZBq6z6yxM9iv16Rs0ufrszAH9TVVRjz3sCN4dx+cpMahgVP2ZXok2
-         D3XS8gsuUzJ+/hYUNVKX6H4bxVgt9ryfRR6re2/mv0wbDY2Wm5cKpcwpFKb4VSQF4fDA
-         h2uGv6uNQPsXwkaHoOdGkHSB6fsDfoDXYuz022tZud302cBv5McoO/Jpw/G5gegUGkX6
-         Uuf0Sp0ABad2O3EDjl/dBqhPGzhcKrSYBnzoQpi1wR8ImKUzrgmVDc+Bb1Sl9N40BADS
-         0wukwQwy2LIIpstpsGIWSD2D3hAovMCmhAT06CKuwRNUjjEHHvoC4fKSUmxPuwFDNRqN
-         Ny4Q==
-X-Gm-Message-State: ABy/qLbFR3gLDBSC2Uy3uTpRXOKuhdZfn1YcjuxFhuKjRnBlVPGnt2L/
-        SBUDzB0ATW1b4QosNkg6BnN5kSITajpN/mRwFbJ07YJO9Ko4rR257aE=
-X-Google-Smtp-Source: APBJJlHDX1l/02CkrPB4AA+mf1Cf9BnpPzp8eeatR/+0KdBd23LlTWLRqBFXzkUgceXyN3+q+M2QVQIfXwJjTJmfsD8=
-X-Received: by 2002:a0d:e645:0:b0:579:e6e4:a165 with SMTP id
- p66-20020a0de645000000b00579e6e4a165mr6926436ywe.10.1689450594020; Sat, 15
- Jul 2023 12:49:54 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689450679; x=1692042679;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4GbW45t2bxRqivhDRu5jFgHelCXhxmoAea6VVpAeTN0=;
+        b=K9CKFf/kItBk4qZ8H3GtxQCRBanFF1BqhjY0/2a99DYgQwHt/NTtwWG/qH47Dhewai
+         i4RfzStDKL0X0naGpI3IKv5kAW/GrOpyksj51I033kDAw5V3NgDX+sxcCGwEcV9FfBOa
+         En1z9fnQfUflmbpBziG2ghw397z7NOP0y2Iy2/kRM8SwkwXxJ0MwgMA5LTzkzy7HKh6U
+         KGs3vN+khMep8wdSycpzUKRIRTz91uUy8EXCnmnFzNzNJup8DBgD3HWO1zMDEKUchJng
+         PHgfEAbqyiRcH1NSh5GIwYnXjdO6BswWwNGUEWowSmeBSGHpmcjKv1vNWVFwQe5fy+65
+         SJSQ==
+X-Gm-Message-State: ABy/qLZdIhHK27IKXSFcKmFT5iDZbmd9CWqAL79P/Z7DwlpdBXgTmRLi
+        TmzqiAsuuPyXUmkBpas6cI4cArdK456LlKoV2A7Ny+IQ
+X-Google-Smtp-Source: APBJJlHqWVTA+9SG6L77IdZXuhu7jmxz21Mewb9S2j+9MVzrKtg3Ph7sd0MG4SdT1vjP+iei0u7gfmSKA4MAjQA89kA=
+X-Received: by 2002:a05:600c:290:b0:3fb:a506:5656 with SMTP id
+ 16-20020a05600c029000b003fba5065656mr6250570wmk.32.1689450679159; Sat, 15 Jul
+ 2023 12:51:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230713002519.109392-1-david@ixit.cz>
-In-Reply-To: <20230713002519.109392-1-david@ixit.cz>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sat, 15 Jul 2023 21:49:42 +0200
-Message-ID: <CACRpkdY8LqRsjSbHX+fPhUrCswOHYiOHuGovCbVz6=LjFtG6iQ@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: extcon: extcon-usb-gpio: convert to yaml format
-To:     David Heidelberg <david@ixit.cz>, Rob Herring <robh+dt@kernel.org>
-Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Received: by 2002:a05:6020:de5b:b0:290:25e9:9dde with HTTP; Sat, 15 Jul 2023
+ 12:51:18 -0700 (PDT)
+From:   Budi <budikusasi@gmail.com>
+Date:   Sun, 16 Jul 2023 02:51:18 +0700
+Message-ID: <CAH0GyZD4GkpYaVXNNkiNmBNs1HwFdR36Nwm3MbXJzoFPyfvKQg@mail.gmail.com>
+Subject: Anyone help in a sudden build error
+To:     linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 2:25=E2=80=AFAM David Heidelberg <david@ixit.cz> wr=
-ote:
+Used to be perfect for make to build/process module but suddenly just type:
 
-> +maintainers:
-> +  - Linus Walleij <linus.walleij@linaro.org>
+$ sudo make modules
+  CALL    scripts/checksyscalls.sh
+  DESCEND objtool
+make[4]: *** No rule to make target
+'/usr/lib/gcc/x86_64-pc-linux-gnu/12.2.1/include/stdbool.h', needed by
+'/home/budi/Downloads/KERNEL-linux-6.3.9/tools/objtool/libsubcmd/exec-cmd.o'.
+Stop.
+..
 
-I don't see why I should be listed for this? I have nothing to
-do with it, I think.
-
-On the topic:
-Can't this just reuse Rob's excellent binding in
-Documentation/devicetree/bindings/connector/usb-connector.yaml
-just add id-gpios to it and list const: linux,extcon-usb-gpio as a
-deprecated compatible.
-
-(Then we should make the Linux driver probe from the existing
-and better compatibles from that file, but it's a whole other issue.)
-
-Yours,
-Linus Walleij
+Anyone please help shed a light what actually it is
