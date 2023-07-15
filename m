@@ -2,56 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99C1F754CB7
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 00:10:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E01ED754CB8
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 00:10:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230199AbjGOWK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 18:10:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55876 "EHLO
+        id S230184AbjGOWKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 18:10:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229872AbjGOWKT (ORCPT
+        with ESMTP id S229981AbjGOWKT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 15 Jul 2023 18:10:19 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFD7E272B;
-        Sat, 15 Jul 2023 15:10:16 -0700 (PDT)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFBDD2723;
+        Sat, 15 Jul 2023 15:10:18 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4A51160C4E;
-        Sat, 15 Jul 2023 22:10:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC4F7C433CC;
-        Sat, 15 Jul 2023 22:10:14 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 640A460C50;
+        Sat, 15 Jul 2023 22:10:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3F7BC433CD;
+        Sat, 15 Jul 2023 22:10:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689459015;
-        bh=1Tvx5XWVRaZW9cpQ7hdXR0QaZDjW8M1hvrSwLrX4P5g=;
+        s=k20201202; t=1689459016;
+        bh=fzXa2Uoxmo5Pv7nm/8+pm9wLcvtWAWr1jggWVxuBw00=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CbWIulcbbNuV3BIlxXBRRtAd9Bum/dq3r3+4aCEq6bVE2t9vcZzyY/8KNBzf6MyEX
-         3bBxqmzm/QkMhu2kXWdACkhZanQ9KJAT8JKp8zM8WCJrj5hIBMsB9hXJvjfeRHi3uQ
-         pRFwU1QVKLtSFAtv7lxI/MIVmi2FP68se6urG8La2Re9jDa1aINmtmI+Lt80kiFdeF
-         HDWMZ1Dk/H1Hfv0r2LGEmLPAZaVRto8GgowhdPpwwD2lnbCJw7X6ejO1yYlHXuSMsG
-         YfnM24eauUymHvK5MnjoqxPiykATUyNMlardQSkrMAqwVmbu9Iz4yy9TYu1RY/vCay
-         3YHVwwN0tD9Yg==
+        b=b1pagmP32wtVHiXPU+YIl4NOlKlY2I60P+Ef+Zh1ztvzV/A59jXBMnjXPdyN9qJO8
+         8pLuv8Rz3y2Wk70v/Pmmi7Bg+rDyItime+rIBWZmX8JnZGFo4Ztp6N5GTXRioj3Lqt
+         mT67SL4SVs2nAHLib464zKmgZoZarxnoLV3UXysQ+BtL50PIkC1TlLyK1cuumGi3DD
+         KDo4ZPXaCbFkLS2FHHjc9SEmiXhkVlQczKl+M8AcO+pawmKT5lH/lEsgYaP/HYrDZA
+         6TKLNSA/uusSaT8EpaueLvgzEZM2rHLtLOaEHWhm2LU4do0z7pfxGyEN2cNdPIWomp
+         3sgtTkQk7oJRQ==
 From:   Bjorn Andersson <andersson@kernel.org>
 To:     Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
         Mathieu Poirier <mathieu.poirier@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Dylan Van Assche <me@dylanvanassche.be>
+Cc:     Konrad Dybcio <konrad.dybcio@linaro.org>,
         Manivannan Sadhasivam <mani@kernel.org>,
-        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
         linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Rob Herring <robh@kernel.org>
-Subject: Re: (subset) [RESEND PATCH 1/3] dt-bindings: remoteproc: qcom,pas: correct memory-region constraints
-Date:   Sat, 15 Jul 2023 15:13:31 -0700
-Message-ID: <168945921475.1805013.9506103419243222480.b4-ty@kernel.org>
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
+Subject: Re: (subset) [PATCH v3 0/3] remoteproc: qcom: pas: Support SDM845 SLPI
+Date:   Sat, 15 Jul 2023 15:13:32 -0700
+Message-ID: <168945921474.1805013.11097249554000566257.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230331092125.44885-1-krzysztof.kozlowski@linaro.org>
-References: <20230331092125.44885-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230330164633.117335-1-me@dylanvanassche.be>
+References: <20230330164633.117335-1-me@dylanvanassche.be>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -66,21 +64,28 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Fri, 31 Mar 2023 11:21:23 +0200, Krzysztof Kozlowski wrote:
-> Qualcomm PAS devices expect exactly one memory region, not many.  Also,
-> the memory-region is now defined in device specific binding, not in
-> qcom,pas-common.yaml, thus also require it in the same place.
+On Thu, 30 Mar 2023 18:46:30 +0200, Dylan Van Assche wrote:
+> * About *
 > 
+> The Qualcomm SDM845 SoC has a separate SLPI (Sensor Low Power Island)
+> DSP for sensors connected to the SoC which is responsible for exposing
+> sensors to userspace, power saving, and other features.
+> While sensors are connected to GPIOs of the SoC, they cannot be used
+> because the hypervisor blocks direct access to the sensors, thus the
+> DSP must be used to access any sensor on this SoC. The SLPI DSP uses a
+> GLink edge (dsps) to communicate with the host and has a FastRPC interface
+> to load files from the host filesystem such as sensor configuration files.
+> The FastRPC interface does not use regular FastRPC Compute Banks
+> but instead uses an allocated CMA region through which communication happens.
 > 
+> [...]
 
 Applied, thanks!
 
-[1/3] dt-bindings: remoteproc: qcom,pas: correct memory-region constraints
-      commit: 1e5c6933483b7cf8eab9e2b1c8a12af1451df4fa
-[2/3] dt-bindings: remoteproc: qcom,sm6115-pas: correct memory-region constraints
-      commit: 66530ffe964ce35da6e8d3787c5620b4fba5a9f9
-[3/3] dt-bindings: remoteproc: qcom,sm8550-pas: require memory-region
-      commit: ed8503220bdd86840eadc5795ae4583c62dd9739
+[1/3] dt-bindings: remoteproc: qcom: adsp: add qcom,sdm845-slpi-pas compatible
+      commit: 242a626870eb453934b75749f8dbab997556b555
+[2/3] remoteproc: qcom: pas: refactor SLPI remoteproc init
+      commit: 637e98bfe20b2c6866cd79b8d487430af09dc8ac
 
 Best regards,
 -- 
