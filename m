@@ -2,204 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F07F77545A7
+	by mail.lfdr.de (Postfix) with ESMTP id 125B77545A4
 	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 02:36:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230151AbjGOAal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 20:30:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56380 "EHLO
+        id S230183AbjGOAf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 20:35:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbjGOAak (ORCPT
+        with ESMTP id S229515AbjGOAfz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 20:30:40 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66E073A99
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 17:30:39 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-c5cea5773e8so2072666276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 17:30:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689381038; x=1691973038;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FHKwfmmmzPP47eD0/lc7LkRrZ2d2K2NzwRoC7JoUoLc=;
-        b=a+FzRVPiZrW0fqmlFJABpuG8Y6bGxU0TqA8TqCxHRZGgObxX5SSgo0oB/FUgNQLgEV
-         FnKY6jtRfmR6N1X2EdhsLXkGnsOs5ZX7WY1Np2nRkJAroDmflKvdxidI2RA22XtNjA7S
-         ksvMF2+/gACQLm2dupXD7q6eHQmmgjM8GptqORnXW/68I+uw58SCs66dnsWzhIGYjvbQ
-         IsviHBtVGyoohHaiivukhm9S1lT7rHdyuzDrUT1pxzIq/A0h3zTVBEFp4Nq3vjtaY6SN
-         LSMvKFW154ElxAMDejVexeo7imsNyG9vqc4KbPWDP7Iw7AU5YCYD86+eG+Sr5oohd97d
-         PbTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689381038; x=1691973038;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=FHKwfmmmzPP47eD0/lc7LkRrZ2d2K2NzwRoC7JoUoLc=;
-        b=S8Dueaq259rmYGWlwgjvVUGG9VI9P6bi8yKBhXh9AfV/TcsLoQQuEK9BYEta9Xq4bk
-         lN4cUZikFMJIgq/ebufQ9fNYIKu8SibG6mlpVJvOHfj+eltXMOwucAHWchgr7B5FJm0Y
-         YKaFBrkvrrAhWtMkIjrvyZ4kEMKMS90Hbm6MEiHaLrHP30DjJOesb4+Zhpy2TcmH8Oj0
-         VXltOo1bgFazNabttRMA7e8A8H3Z50lhrH0cXvXXAaQ5ZLn8LrPbzUAOXiesZ2FcxYBq
-         LpvzmIItWsgUup39EJ0+fDjEV41l5i5XXyYQZPxjU4S5fMwwEFqXIpDWhJr37jWhm9Rk
-         kRZg==
-X-Gm-Message-State: ABy/qLa4dJXu40vFZ3t/WxoTWBvRgvWmKsWo8f7qnCNx8PT9w+4Nf8j+
-        tdkmpLyi8ky3YFTDqVUdVhbGn2Oze6Q=
-X-Google-Smtp-Source: APBJJlH9VCWaKch8qFYSR3IiJohKql/mJpccdhRIVYnUmRBlU/7KMw9WMaI3a/IEBvC+TXTYx41QlaSaT0E=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:ab81:0:b0:c5f:85f5:a0e5 with SMTP id
- v1-20020a25ab81000000b00c5f85f5a0e5mr12471ybi.5.1689381038652; Fri, 14 Jul
- 2023 17:30:38 -0700 (PDT)
-Date:   Fri, 14 Jul 2023 17:30:37 -0700
-In-Reply-To: <CAGtprH-VCqUgqK8gk40KaQZD8trXbWYk8KmA612Og1ep1Dko=Q@mail.gmail.com>
-Mime-Version: 1.0
-References: <ZFWli2/H5M8MZRiY@google.com> <diqzr0pb2zws.fsf@ackerleytng-ctop.c.googlers.com>
- <ZLGiEfJZTyl7M8mS@google.com> <CAGtprH-VCqUgqK8gk40KaQZD8trXbWYk8KmA612Og1ep1Dko=Q@mail.gmail.com>
-Message-ID: <ZLHorQjmNe1Qe5Ne@google.com>
-Subject: Re: Rename restrictedmem => guardedmem? (was: Re: [PATCH v10 0/9]
- KVM: mm: fd-based approach for supporting KVM)
-From:   Sean Christopherson <seanjc@google.com>
-To:     Vishal Annapurve <vannapurve@google.com>
-Cc:     Ackerley Tng <ackerleytng@google.com>, david@redhat.com,
-        chao.p.peng@linux.intel.com, pbonzini@redhat.com,
-        vkuznets@redhat.com, jmattson@google.com, joro@8bytes.org,
-        mail@maciej.szmigiero.name, vbabka@suse.cz,
-        yu.c.zhang@linux.intel.com, kirill.shutemov@linux.intel.com,
-        dhildenb@redhat.com, qperret@google.com, tabba@google.com,
-        michael.roth@amd.com, wei.w.wang@intel.com, rppt@kernel.org,
-        liam.merwick@oracle.com, isaku.yamahata@gmail.com,
-        jarkko@kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, hughd@google.com, brauner@kernel.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 14 Jul 2023 20:35:55 -0400
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2061.outbound.protection.outlook.com [40.107.93.61])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 968703A95
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 17:35:52 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aGDz6Fjt1p9FsTJk179bzMVLgN9dlvwllIdYtwierWJeCOY7SX80Zc8L2e4A87mfX13XEYaqVenTwK0/25DkJZ4zLskz0/hmxrHFYerYKFb4Nzrrmzi7P8yniqaRnnxek0C2ICRBkdJjS4HNdklpdbghhOUodxGTzjkk87zc4nTRhcEb+2dzzLlMGPRqsYzqaK8TPUDcm95srHFH7YERqCiCgYJ2bkL62oSvCZ0tUXHbj+ueM9wrM7peYypw0s5s3r0zqnWkHR7pISRYTvYnDb71wMvrSYfNeH371PRUQs3WVpw1O0t8r+c9n2uNiDpJ+UsIMO+vrjGKGSNxt1x6hw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rzoGl0N6KVOxGFauCUz/zRB+q6KFSHGa1YU6/prPehk=;
+ b=IMfkHgzKeG9ZRTj3HmbS+x2d0UPMLADyXmCw9/OkkOS1xMHr3CPzelyhquzIIc9M/PxhJhUT4vi3lFJ3H5rPR5Y5WMwmQSVaJ0LxiWBnz/2GpUd0+VnS87n1Tgqizlh0/gi3gL/QvumHXYdsbcSOF8CsklzXJ+Dpsm7ESZJf7ZrdhKzvG0L0ps+qQ3y6XHNP+HiLjqB5etRW8Nlu7eIYkxSnOTam8mDWfCxSqqBskMTCGc8kusizf4EpjQEtD3oR4PPJWKaNr+J3MEt1hw+8icvvLlZJa/FFGcF8g0dAipFoPCOahTInJb/AiCLyz8Frw+KEw2Ix129eYNfX+1wT4Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rzoGl0N6KVOxGFauCUz/zRB+q6KFSHGa1YU6/prPehk=;
+ b=TozAtZa5ZLwGk7VlF9oRvUXQpNSSVSdvUQs1gXS7AjgXIsrLIE82Ln9JmYmnhKU4OnGu7faTWgMK1aVtG+ixeUmKAEHFy0QOXFG1jsVxtOWFXVlsB4TXcTFG0WrGUyRjbykqeFfTROgvXgAhvJyoRZ8xDzS3MshBuGjZhflTjckgzNq8xGu70nlSCSeOczfg++eMEX5/9uKq35+EEwIlX826/N/fw4WnhgIary5Yc+Oa9nHiEwBT+SGAW8UbVUnU0WxTsPZkOSK26V0Tk20auyFpTbzFPmC+VvhUZNs/vqUZEBtudsPcZXogARucUTCZB/8SNpDnRBrC9BnQeg0m9g==
+Received: from MW4PR04CA0286.namprd04.prod.outlook.com (2603:10b6:303:89::21)
+ by PH7PR12MB6393.namprd12.prod.outlook.com (2603:10b6:510:1ff::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6565.31; Sat, 15 Jul
+ 2023 00:35:50 +0000
+Received: from CO1NAM11FT110.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:303:89:cafe::44) by MW4PR04CA0286.outlook.office365.com
+ (2603:10b6:303:89::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.27 via Frontend
+ Transport; Sat, 15 Jul 2023 00:35:50 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ CO1NAM11FT110.mail.protection.outlook.com (10.13.175.125) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6588.27 via Frontend Transport; Sat, 15 Jul 2023 00:35:49 +0000
+Received: from rnnvmail205.nvidia.com (10.129.68.10) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Fri, 14 Jul 2023
+ 17:35:32 -0700
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail205.nvidia.com
+ (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Fri, 14 Jul
+ 2023 17:35:32 -0700
+Received: from Asurada-Nvidia (10.127.8.13) by mail.nvidia.com (10.129.68.7)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37 via Frontend
+ Transport; Fri, 14 Jul 2023 17:35:31 -0700
+Date:   Fri, 14 Jul 2023 17:35:30 -0700
+From:   Nicolin Chen <nicolinc@nvidia.com>
+To:     Michael Shavit <mshavit@google.com>
+CC:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        "Joerg Roedel" <joro@8bytes.org>, <jean-philippe@linaro.org>,
+        <jgg@nvidia.com>, <baolu.lu@linux.intel.com>,
+        <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 07/13] iommu/arm-smmu-v3: Keep track of attached ssids
+Message-ID: <ZLHp0r1g1lroGYlN@Asurada-Nvidia>
+References: <20230621063825.268890-1-mshavit@google.com>
+ <20230621063825.268890-8-mshavit@google.com>
+ <ZK+BZhwbo8JLMPI2@Asurada-Nvidia>
+ <CAKHBV27idVJ-8YgpekezaQP2n+Oz6OpKnDmYiu_cSOFh6z1S+Q@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <CAKHBV27idVJ-8YgpekezaQP2n+Oz6OpKnDmYiu_cSOFh6z1S+Q@mail.gmail.com>
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1NAM11FT110:EE_|PH7PR12MB6393:EE_
+X-MS-Office365-Filtering-Correlation-Id: 027fecd2-93d6-4e9a-9901-08db84cb705b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: CgUK8ksEeoUzyGmhKhqC5WQDvPML7KZYZvdBYu/BUwUiFCG8/oAhbdbkqoYLJfDZlsysPuK3vgL2WJJk9kLdOlyBaxYGZp+8eI8vlWuyERXetn2Brd05xYtnWo8AmRMzfEUA/gmgQuFB3/ZUHeNVcEX+9CzZsT6veZf526GTo/V3qFSXQBSrRfwZidkdbP+vWPTuJrF52EP7+92DPaaa6ZUZFQxPeJECtFeskLQYUnjtBQVvmph5mFVieynzwPF08hzihy+979CIL1RsFlAVtWaQO9OpbkjwXiAYZ4x537sduYCMSJcjscp+Ez7CDQAiVwjSRYs+8/hyNmrOVtFe79nbFzc1ceze/1LcoMCxlVKSF5A3f9jw5yekfl4U3uRdktm9CPdrN4HXm2E6Fe/ohoSZJaYHSaV8m2+iw0Pseb6LWffecFgXCt4hHBMRoHdHGayVUdxsZC8rNw3JJaGhb1YqG5CH5aDUbXhZ7uIy1qKdJGYXzqf3gkXx0YmGqjy+CQ2qmc2aOxcbwwycA+QHzs1qzpQ2cO4VrZv95NA9wsibZGUtta23rYDTyzd07/Yu66NTgzxlHGwq8BztQKEHepaQXOxVGYPmoXUeJEVtSKGfc5E564xQ/hxLr1KjxCZSPgq56d949+iondP5ZhMsKw8LnSdIlAC9jc6H5mVuzN8KhdYJssZczbY2LgbHbJyLq9h3SisVwPNbExipdN5qOPj14Xua7d/0CMyfmO3VAFaxW1YhUqUkjPXvBkglOYYN
+X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(346002)(39860400002)(136003)(396003)(376002)(451199021)(82310400007)(46966006)(36840700001)(40470700004)(86362001)(8936002)(5660300002)(8676002)(41300700001)(4326008)(7636003)(316002)(2906002)(356005)(6916009)(70206006)(70586007)(82740400003)(54906003)(83380400001)(478600001)(47076005)(9686003)(33716001)(36860700001)(186003)(26005)(40460700003)(336012)(40480700001)(426003)(55016003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jul 2023 00:35:49.9617
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 027fecd2-93d6-4e9a-9901-08db84cb705b
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT110.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6393
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023, Vishal Annapurve wrote:
-> On Fri, Jul 14, 2023 at 12:29=E2=80=AFPM Sean Christopherson <seanjc@goog=
-le.com> wrote:
-> > ...
-> > And _if_ there is a VMM that instantiates memory before KVM_CREATE_VM, =
-IMO making
-> > the ioctl() /dev/kvm scoped would have no meaningful impact on adapting=
- userspace
-> > to play nice with the required ordering.  If userspace can get at /dev/=
-kvm, then
-> > it can do KVM_CREATE_VM, because the only input to KVM_CREATE_VM is the=
- type, i.e.
-> > the only dependencies for KVM_CREATE_VM should be known/resolved long b=
-efore the
-> > VMM knows it wants to use gmem.
->=20
-> I am not sure about the benefits of tying gmem creation to any given
-> kvm instance.
+On Fri, Jul 14, 2023 at 05:30:42PM +0800, Michael Shavit wrote:
+ 
+> > And I don't quite get this part. Prior to this change, it issues
+> > one ATC_INV command covering all ATC entries per comments inside
+> > arm_smmu_atc_inv_to_cmd(). But now we replace that single command
+> > with all attached subdomains in the list? Any reason for such a
+> > change here?
+> 
+> Because we don't necessarily want to invalidate all PASID-domains
+> attached to a master. If arm_smmu_atc_inv_domain() is called on a
+> domain that is only attached with Pasid, we can restrict the
+> invalidations to those specific PASID by looping over them.
+>
+> But yeah,
+> you're right that we could potentially optimize this?
+> * Skip the per-pasid invalidations if the domain is also attached to
+> this master without PASID as we have to invalidate all its pasids in
+> that case anyways. It's hard to imagine clients attaching a domain
+> both with pasid and without pasid to the same device but could be
+> possible.
+> * Always invalidate all pasids by issuing atc invalidations on SSID 0.
+> This sounds like the wrong trade-off??
 
-IMO, making gmem->kvm immutable is very nice to have, e.g. gmem->kvm will a=
-lways be
-valid and the refcounting rules are fairly straightforward. =20
+Well, firstly it's kinda odd to have this optimization hidden in
+a big rework patch. And I am not sure if it alone would work for
+all use cases, as it impacts the arm_smmu_atc_inv_domain() that
+passes in a zero ssid, in which case the affected function is not
+used by a pasid case all the time:
+	/*
+	 * ATS and PASID:
+...
+	 * When using STRTAB_STE_1_S1DSS_SSID0 (reserving CD 0 for non-PASID
+	 * traffic), translation requests without PASID create ATC entries
+	 * without PASID, which must be invalidated with substream_valid clear.
+	 * This has the unpleasant side-effect of invalidating all PASID-tagged
+	 * ATC entries within the address range.
+	 */
 
-> I think the most important requirement here is that a given gmem range is=
- always
-> tied to a single VM=20
-
-I'm not convinced that that requirement will always hold true (see below).
-
-> This can be enforced when memslots are bound to the gmem files.
-
-Yeah, but TBH, waiting until the guest faults in memory to detect an invali=
-d memslot
-is gross.  And looking more closely, taking filemap_invalidate_lock(), i.e.=
- taking
-a semaphore for write, in the page fault path is a complete non-starter.  T=
-he
-"if (existing_slot =3D=3D slot)" check is likely a non-starter, because KVM=
- handles
-FLAGS_ONLY memslot updates, e.g. toggling dirty logging, by duplicating and
-replacing the memslot, not by updating the live memslot.
-
-> I believe "Required ordering" is that gmem files are created first and
-> then supplied while creating the memslots whose gpa ranges can
-> generate private memory accesses.
-> Is there any other ordering we want to enforce here?
-
-I wasn't talking about enforcing arbitrary ordering, I was simply talking a=
-bout
-what userspace literally needs to be able to do KVM_CREATE_GUEST_MEMFD.
-
-> > Practically, I think that gives us a clean, intuitive way to handle int=
-ra-host
-> > migration.  Rather than transfer ownership of the file, instantiate a n=
-ew file
-> > for the target VM, using the gmem inode from the source VM, i.e. create=
- a hard
-> > link.  That'd probably require new uAPI, but I don't think that will be=
- hugely
-> > problematic.  KVM would need to ensure the new VM's guest_memfd can't b=
-e mapped
-> > until KVM_CAP_VM_MOVE_ENC_CONTEXT_FROM (which would also need to verify=
- the
-> > memslots/bindings are identical), but that should be easy enough to enf=
-orce.
-> >
-> > That way, a VM, its memslots, and its SPTEs are tied to the file, while=
- allowing
-> > the memory and the *contents* of memory to outlive the VM, i.e. be effe=
-ctively
-> > transfered to the new target VM.  And we'll maintain the invariant that=
- each
-> > guest_memfd is bound 1:1 with a single VM.
-> >
-> > As above, that should also help us draw the line between mapping memory=
- into a
-> > VM (file), and freeing/reclaiming the memory (inode).
-> >
-> > There will be extra complexity/overhead as we'll have to play nice with=
- the
-> > possibility of multiple files per inode, e.g. to zap mappings across al=
-l files
-> > when punching a hole, but the extra complexity is quite small, e.g. we =
-can use
-> > address_space.private_list to keep track of the guest_memfd instances a=
-ssociated
-> > with the inode.
->=20
-> Are we talking about a different usecase of sharing gmem fd across VMs
-> other than intra-host migration?
-
-Well, I am :-)  I don't want to build all of this on an assumption that we'=
-ll
-never ever want to share a guest_memfd across multiple VMs.  E.g. SEV (and =
-SEV-ES?)
-already have the migration helper concept, and I've heard more than a few r=
-umblings
-of TDX utilizing helper TDs.  IMO, it's not far fetched at all to think tha=
-t there
-will eventually be a need to let multiple VMs share a guest_memfd.
-
-> If not, ideally only one of the files should be catering to the guest
-> memory mappings at any given time. i.e. any inode should be ideally
-> bound to (through the file) a single kvm instance,
-
-Why?  Honest question, what does it buy us?
-
-For TDX and SNP intra-host migration, it should be easy enough to ensure th=
-e new
-VM can't create mappings before migration, and that the old VM can't create=
- mappings
-or run after migration.  I don't see that being any harder if the source an=
-d
-dest use different files.
-
-FWIW, it might be easier to hold off on this discussion until I post the RF=
-C
-(which is going to happen on Monday at this point), as then we'll have actu=
-al code
-to discuss.
-
-> as we we are planning to ensure that guest_memfd can't be mapped until
-> KVM_CAP_VM_MOVE_ENC_CONTEXT_FROM is invoked on the target side.
+Thanks
+Nicolin
