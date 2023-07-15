@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FAE475485F
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 13:07:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDBCD75485A
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 13:07:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230411AbjGOLHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 07:07:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45266 "EHLO
+        id S230272AbjGOLHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 07:07:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229768AbjGOLHK (ORCPT
+        with ESMTP id S229483AbjGOLHK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 15 Jul 2023 07:07:10 -0400
 Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFCD135AA;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED56BB5;
         Sat, 15 Jul 2023 04:07:06 -0700 (PDT)
 Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id D7A1F100005;
-        Sat, 15 Jul 2023 14:07:02 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru D7A1F100005
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 14FC2100006;
+        Sat, 15 Jul 2023 14:07:03 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 14FC2100006
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-        s=mail; t=1689419222;
-        bh=DW++SCgcxwIjmRUMsxVsWA8vee4FRUorFqSKgGAnm5g=;
+        s=mail; t=1689419223;
+        bh=uzjZyhESz+VGISOfZsao53vOWFInLG46m6Rl5JmIEbE=;
         h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-        b=RAVAdQgyO96POnt/ovs5pN3Xx70UA5jxwWI3bLfn0GJagZ2V+jz1cCwKl4JSgehtI
-         8FVflHNL3jRqS7UCpiMgOz4A3cQMPE9kNTw2CiK+M5IXNpAJToy8OoPAPzra6iZVvg
-         amGSIA/W2rout6hgBVUg+Rkem85+SHODE8rmpAQiS2WfOwM+xrrIQUHkM5vkM8QHv3
-         y1HtjPAKAa4KZETc2wDrFBm0sxJpw2LCEAEXa62nUNtKL1SckxwdaJVAzP31zXtyyq
-         eh3O/2+brGdKVulnH08pAbZzKkVcOf3q6gc8gRLfUgFAO5HlOl4ONdw409pLXAvsj3
-         3dRWRVjLolMtg==
+        b=q8uuya69cupVj+K0t6x1FUP95DZwX6Loeg0Uthv+GfUE6GNVZtT4gAYKlEZJrksFA
+         cNarILwtoLQP+L7v/kUV0QT/qLGutLarQM3eJxC9dyDcDNQj+N9Zaq3RiQ5f3StT9R
+         S3GMfNFK6B+pxjn3jbWE7Hqa4iq8IkIXFPWR7rwAx8PUDjtIgSG5guyfBGHitmoRRx
+         WYYPqtVVhlnpBTxat8q+2mrF0tIUMiTdXCJNZdDxQuA7ipP3aPff9x0nr9gz1RohlG
+         zS/JLpUhAYKN2B5Pxh7WBbIZ+9fg34BnezG1w+yQh5PS/JwUNmtJWx9jFDwdQSWA7p
+         1fhlY7Qv5hm8w==
 Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
@@ -37,7 +37,7 @@ Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [1
 Received: from localhost.localdomain (100.64.160.123) by
  p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Sat, 15 Jul 2023 14:06:22 +0300
+ 15.2.1118.30; Sat, 15 Jul 2023 14:06:23 +0300
 From:   George Stark <gnstark@sberdevices.ru>
 To:     <jic23@kernel.org>, <lars@metafoo.de>, <neil.armstrong@linaro.org>,
         <khilman@baylibre.com>, <jbrunet@baylibre.com>,
@@ -48,10 +48,12 @@ CC:     <linux-iio@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>,
         <linux-amlogic@lists.infradead.org>, <kernel@sberdevices.ru>
-Subject: [PATCH v1 0/3] iio: adc: meson: tune init sequence
-Date:   Sat, 15 Jul 2023 14:05:57 +0300
-Message-ID: <20230715110654.6035-1-gnstark@sberdevices.ru>
+Subject: [PATCH v1 1/3] iio: adc: meson: init channels 0,1 input muxes
+Date:   Sat, 15 Jul 2023 14:05:58 +0300
+Message-ID: <20230715110654.6035-2-gnstark@sberdevices.ru>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230715110654.6035-1-gnstark@sberdevices.ru>
+References: <20230715110654.6035-1-gnstark@sberdevices.ru>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -84,30 +86,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is a part of effort to support meson a1 SoC and make meson saradc driver
-independent from vendor boot code initialization in common.
+Set up input channels 0,1 muxes in the same way as for the channels 2-7
+later in the code.
 
-Information was taken from vendor kernel 5.4, 4.19 and vendor uboot 2019.
-Most of the bits are undocumented at all or it's not said how they affect measuring.
+Signed-off-by: George Stark <gnstark@sberdevices.ru>
+---
+ drivers/iio/adc/meson_saradc.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-All those bits are already initialized in bl* code and since kernel driver dosn't
-rewrite or reset any registers but only changes some bits at init stage everything
-works fine.
-
-Test procedure is rather simple - one can change those bits in runtime
-(e.g. using devmem) and try to read channels (cat /sys/bus/platform/drivers/meson-saradc/.../iio:device0/*)
-changing some of those bits leads to measure procedure errors or abnormal results.
-Another test is build meson saradc as module, reset adc by reset bit, reload module
-and compare measure results to those got before reset.
-
-George Stark (3):
-  iio: adc: meson: init channels 0,1 input muxes
-  iio: adc: meson: init internal continuous ring counter
-  iio: adc: meson: init voltage control bits
-
- drivers/iio/adc/meson_saradc.c | 73 ++++++++++++++++++++++++++++++++++
- 1 file changed, 73 insertions(+)
-
+diff --git a/drivers/iio/adc/meson_saradc.c b/drivers/iio/adc/meson_saradc.c
+index 2411cc864ccd..524e5569381e 100644
+--- a/drivers/iio/adc/meson_saradc.c
++++ b/drivers/iio/adc/meson_saradc.c
+@@ -899,6 +899,22 @@ static int meson_sar_adc_init(struct iio_dev *indio_dev)
+ 			   MESON_SAR_ADC_CHAN_10_SW_CHAN1_MUX_SEL_MASK,
+ 			   regval);
+ 
++	regmap_update_bits(priv->regmap, MESON_SAR_ADC_CHAN_10_SW,
++			   MESON_SAR_ADC_CHAN_10_SW_CHAN0_XP_DRIVE_SW,
++			   MESON_SAR_ADC_CHAN_10_SW_CHAN0_XP_DRIVE_SW);
++
++	regmap_update_bits(priv->regmap, MESON_SAR_ADC_CHAN_10_SW,
++			   MESON_SAR_ADC_CHAN_10_SW_CHAN0_YP_DRIVE_SW,
++			   MESON_SAR_ADC_CHAN_10_SW_CHAN0_YP_DRIVE_SW);
++
++	regmap_update_bits(priv->regmap, MESON_SAR_ADC_CHAN_10_SW,
++			   MESON_SAR_ADC_CHAN_10_SW_CHAN1_XP_DRIVE_SW,
++			   MESON_SAR_ADC_CHAN_10_SW_CHAN1_XP_DRIVE_SW);
++
++	regmap_update_bits(priv->regmap, MESON_SAR_ADC_CHAN_10_SW,
++			   MESON_SAR_ADC_CHAN_10_SW_CHAN1_YP_DRIVE_SW,
++			   MESON_SAR_ADC_CHAN_10_SW_CHAN1_YP_DRIVE_SW);
++
+ 	/*
+ 	 * set up the input channel muxes in MESON_SAR_ADC_AUX_SW
+ 	 * (2 = SAR_ADC_CH2, 3 = SAR_ADC_CH3, ...) and enable
 -- 
 2.38.4
 
