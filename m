@@ -2,115 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 593E67547E2
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 11:23:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5DFF7547E4
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 11:24:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230355AbjGOJXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 05:23:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50074 "EHLO
+        id S229918AbjGOJYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 05:24:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229881AbjGOJXh (ORCPT
+        with ESMTP id S229506AbjGOJYV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 05:23:37 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EC103AB1;
-        Sat, 15 Jul 2023 02:23:15 -0700 (PDT)
-X-QQ-mid: bizesmtp89t1689412983tno1gxiu
-Received: from linux-lab-host.localdomain ( [119.123.131.162])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Sat, 15 Jul 2023 17:23:01 +0800 (CST)
-X-QQ-SSF: 01200000000000D0W000000A0000000
-X-QQ-FEAT: q+EIYT+FhZrAovjZxRoSnSnHnPax2IuslwuJRGRN5fECtY6fP4y4nhEUwUr/c
-        0bUAu3pmDk1aSDl4lKKLg/ti7sgCj9P1l9zM7AlbSwJ9g1kmLPDAv7iBZaL7RVeJg2OAGsd
-        Q3g+9mb1+8fYLInhCmAesMAPF0dyndoVARHSEkyG5j75YuiVCHIa9ljZXUB60Kves7wTdtK
-        +g9HISe8gYOHfbGwfbnntiU5x79dPmmm7PI6lMjuYKcxEXkS25r7nNeCk8rbHRUO478mvRG
-        wjVA7qrK1isT0gBDvlf/mfn8sPPDY2DT1UBycINpobsCb8RB2Y6zCCwoTlA7/Wla4DEo35o
-        x50tunzZrYf50+kTeFX2f8Q7jx9zg==
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 5920392168960088624
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     thomas@t-8ch.de
-Cc:     arnd@arndb.de, falcon@tinylab.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, w@1wt.eu
-Subject: Re: [PATCH v3 02/11] tools/nolibc: add new crt.h with _start_c
-Date:   Sat, 15 Jul 2023 17:23:01 +0800
-Message-Id: <20230715092301.339180-1-falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <34b21ba5-7b59-4b3b-9ed6-ef9a3a5e06f7@t-8ch.de>
-References: <34b21ba5-7b59-4b3b-9ed6-ef9a3a5e06f7@t-8ch.de>
+        Sat, 15 Jul 2023 05:24:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFCE73A82
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 02:23:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689412997;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=T67vF7lK28TebQE5iDVY482spLCTkCO2SL9TUb1C5Xo=;
+        b=cvakwiVGNEbmv6c2hlmId7WQNDwueS0EfRvIwYyEXSQMl7hvwH0QC7Ri7ZDvHx0xQDnxc+
+        8waxNQgxDY3zUbrE9AiaLnq9ShOWjWy/y6EOl9FD1Y9FoPbOCnKCudbecEB+RIrDme2386
+        4mXQKKa4FLj1u0OohjhSRT8Xwq7t/9Y=
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
+ [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-65-GKL0dW94NUCkWM_23n4nLw-1; Sat, 15 Jul 2023 05:23:14 -0400
+X-MC-Unique: GKL0dW94NUCkWM_23n4nLw-1
+Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2b04d5ed394so4834941fa.1
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 02:23:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689412992; x=1690017792;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=T67vF7lK28TebQE5iDVY482spLCTkCO2SL9TUb1C5Xo=;
+        b=jgIHcgwqd0PsT/E6rDihHO2nKyJCm5CJufstHxTDuBrxcIu1uFukkUzz1Cu6NPEQRk
+         QX2isdumFI3wwP2ZMLz7MPeErGe5q+vtnt2ypkU0A3Y24gfuLH3ShOORrx3cCNvSuoJP
+         cs9T0trbCLOs2ibaOR0m7y2YhIsenEDzupGIpVl3eg5/haH9lAN+x704QE0fYzPsEleN
+         h5MpB8L1TkjQyHWxDD+hR9MMXWXdSoWewcMmrJ75haAuUj1C8Or9J1OMjd5E3+oTud2w
+         cPyAcTBhXXelpHkVJTqszDQkKLfqBt21xnqMVaWrdJy1hb3yvkDuLjScKnO77EZ/BLmQ
+         M1sg==
+X-Gm-Message-State: ABy/qLZSc9egNRAk2coPCh7UcptDwJ/qcdi5aUYbRzTphrifwFLvKFn5
+        2UilDE+d1be32j7B2HZ4RlqEWCWuDei6XySY2v+9HdfuD5h8Yn5CVv//OywMAw2155jHt7CLzOf
+        tcoyERY+rq/41JV+jsmBxZ7z4rU5y1thzeRXwZSlE
+X-Received: by 2002:a05:651c:2123:b0:2b6:a662:b879 with SMTP id a35-20020a05651c212300b002b6a662b879mr964535ljq.3.1689412992752;
+        Sat, 15 Jul 2023 02:23:12 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlFalwUBzCDIhgeQM4PgOEFdZlcRiXI5UE3UZbzH859X91WuS1+9/Njeg/b/sg7vTRMDlagQb8LNWaQla49OP5g=
+X-Received: by 2002:a05:651c:2123:b0:2b6:a662:b879 with SMTP id
+ a35-20020a05651c212300b002b6a662b879mr964525ljq.3.1689412992377; Sat, 15 Jul
+ 2023 02:23:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <5c894d0a8a178628ca200d054004be3c@208suo.com> <f25017a660f8a3a4e49258a1d96003dc@208suo.com>
+ <2f4a7303e305d07fdd9c15a9dc95dc5f@208suo.com> <d0d767fb0dd3a9b7642559f379dbb0d6@208suo.com>
+ <0ad4154429aaa41ca26da859c3f35784@208suo.com> <856d1130fad58062ea454da297fa64348382bda2.camel@redhat.com>
+In-Reply-To: <856d1130fad58062ea454da297fa64348382bda2.camel@redhat.com>
+From:   Karol Herbst <kherbst@redhat.com>
+Date:   Sat, 15 Jul 2023 11:23:01 +0200
+Message-ID: <CACO55tu08XTx=TZQK=RyCGRdFVDQN9m+X+y3F3V0H7nuwyycRw@mail.gmail.com>
+Subject: Re: [PATCH] drm/nouveau/fifo:Fix Nineteen occurrences of the gk104.c
+ error: ERROR: : trailing statements should be on next line
+To:     Lyude Paul <lyude@redhat.com>
+Cc:     huzhi001@208suo.com, bskeggs@redhat.com, airlied@gmail.com,
+        daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On 2023-07-14 17:47:23+0800, Zhangjin Wu wrote:
-> > > On 2023-07-14 13:58:13+0800, Zhangjin Wu wrote:
-> 
-> > [..]
-> 
-> > > I was also not able to reproduce the issue.
-> > >
-> > 
-> > Thanks very much for your 'reproduce' result, It is so weird, just
-> > rechecked the toolchain, 13.1.0 from https://mirrors.edge.kernel.org/ is
-> > ok, gcc 9, gcc 10.3 not work.
-> > 
-> > But even in the page of 13.1.0 [1], we still see this line:
-> > 
-> >     Most optimizations are completely disabled at -O0 or if an -O level is not set on the command line, even if individual optimization flags are specified.
-> > 
-> > Not sure if "individual optimization flags" also means the optimize()
-> > flags in gcc attributes. or the doc is not updated yet?
-> > 
-> > And further found gcc 11.1.0 is ok, gcc 10.4 still not work, so, gcc
-> > 11.1.0 may changed something to let the "individual optimization flags"
-> > work with -O0.
-> > 
-> > We may need to at least document this issue in some files, -O0 is not such a
-> > frequently-used option, not sure if we still need -O0 work with the older gcc <
-> > 11.1.0 ;-)
-> 
-> It seems we can avoid the issue by enforcing optimizations for _start:
-> 
-> diff --git a/tools/include/nolibc/arch-x86_64.h b/tools/include/nolibc/arch-x86_64.h
-> index f5614a67f05a..b9d8b8861dc4 100644
-> --- a/tools/include/nolibc/arch-x86_64.h
-> +++ b/tools/include/nolibc/arch-x86_64.h
-> @@ -161,12 +161,9 @@
->   * 2) The deepest stack frame should be zero (the %rbp).
->   *
->   */
-> -void __attribute__((weak, noreturn, optimize("omit-frame-pointer"))) __no_stack_protector _start(void)
-> +void __attribute__((weak, noreturn, optimize("Os", "omit-frame-pointer"))) __no_stack_protector _start(void)
+On Sat, Jul 15, 2023 at 1:07=E2=80=AFAM Lyude Paul <lyude@redhat.com> wrote=
+:
+>
+> NAK - checkpatch.pl is a (strongish) guideline, but not a rule. In the ca=
+ses
+> corrected in the patch series here, we format the switch cases on single =
+lines
+> as it dramatically improves the readability of what is otherwise just a /=
+long/
+> list of slightly different static mappings. I don't believe we're the onl=
+y
+> part of the kernel to do this either.
 >
 
-Great, it works and it is minimal enough ;-)
+I wished there was a place to document something like "patches whose
+only reason is 'checkpatch.pl' said so" will be rejected.
 
-Thanks very much.
+I think following some checkpatch rules are sane, but then the
+argument should be "makes code more clear" or "converts risky coding
+practises to less risky ones". Or do we have such a place? Maybe we
+should patch checkpatch.pl instead to throw a warning
 
-> > 
-> > Willy, I'm not sure if the issues solved by the commit 7f8548589661
-> > ("tools/nolibc: make compiler and assembler agree on the section around
-> > _start") still exist after we using _start_c()?
-> > 
-> > Thomas, because we plan to move the stackprotector init to _start_c(), If using
-> > pure assembly _start, we may also not need the __no_stack_protector macro too?
-> 
-> It would probably not needed anymore in this case.
+> On Fri, 2023-07-14 at 14:58 +0800, huzhi001@208suo.com wrote:
+> > Signed-off-by: ZhiHu <huzhi001@208suo.com>
+> > ---
+> >   .../gpu/drm/nouveau/nvkm/engine/fifo/gk104.c  | 40 ++++++++++++++----=
+-
+> >   1 file changed, 29 insertions(+), 11 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/fifo/gk104.c
+> > b/drivers/gpu/drm/nouveau/nvkm/engine/fifo/gk104.c
+> > index d8a4d773a58c..b99e0a7c96bb 100644
+> > --- a/drivers/gpu/drm/nouveau/nvkm/engine/fifo/gk104.c
+> > +++ b/drivers/gpu/drm/nouveau/nvkm/engine/fifo/gk104.c
+> > @@ -137,15 +137,29 @@ gk104_ectx_bind(struct nvkm_engn *engn, struct
+> > nvkm_cctx *cctx, struct nvkm_chan
+> >       u64 addr =3D 0ULL;
+> >
+> >       switch (engn->engine->subdev.type) {
+> > -    case NVKM_ENGINE_SW    : return;
+> > -    case NVKM_ENGINE_GR    : ptr0 =3D 0x0210; break;
+> > -    case NVKM_ENGINE_SEC   : ptr0 =3D 0x0220; break;
+> > -    case NVKM_ENGINE_MSPDEC: ptr0 =3D 0x0250; break;
+> > -    case NVKM_ENGINE_MSPPP : ptr0 =3D 0x0260; break;
+> > -    case NVKM_ENGINE_MSVLD : ptr0 =3D 0x0270; break;
+> > -    case NVKM_ENGINE_VIC   : ptr0 =3D 0x0280; break;
+> > -    case NVKM_ENGINE_MSENC : ptr0 =3D 0x0290; break;
+> > -    case NVKM_ENGINE_NVDEC :
+> > +    case NVKM_ENGINE_SW:
+> > +        return;
+> > +    case NVKM_ENGINE_GR:
+> > +        ptr0 =3D 0x0210;
+> > +        break;
+> > +    case NVKM_ENGINE_SEC:
+> > +        ptr0 =3D 0x0220;
+> > +        break;
+> > +    case NVKM_ENGINE_MSPDEC:
+> > +        ptr0 =3D 0x0250;
+> > +        break;
+> > +    case NVKM_ENGINE_MSPPP:
+> > +        ptr0 =3D 0x0260;
+> > +        break;
+> > +    case NVKM_ENGINE_MSVLD:
+> > +        ptr0 =3D 0x0270;
+> > +        break;
+> > +    case NVKM_ENGINE_VIC:
+> > +        ptr0 =3D 0x0280; break;
+> > +    case NVKM_ENGINE_MSENC:
+> > +        ptr0 =3D 0x0290;
+> > +        break;
+> > +    case NVKM_ENGINE_NVDEC:
+> >           ptr1 =3D 0x0270;
+> >           ptr0 =3D 0x0210;
+> >           break;
+> > @@ -435,8 +449,12 @@ gk104_runl_commit(struct nvkm_runl *runl, struct
+> > nvkm_memory *memory, u32 start,
+> >       int target;
+> >
+> >       switch (nvkm_memory_target(memory)) {
+> > -    case NVKM_MEM_TARGET_VRAM: target =3D 0; break;
+> > -    case NVKM_MEM_TARGET_NCOH: target =3D 3; break;
+> > +    case NVKM_MEM_TARGET_VRAM:
+> > +        target =3D 0;
+> > +        break;
+> > +    case NVKM_MEM_TARGET_NCOH:
+> > +        target =3D 3;
+> > +        break;
+>
+> This one isn't very long, but I'd still say it's definitely a lot easier =
+to
+> read in the compact form. If anything, the only change I would make here =
+is
+> formatting the default: case to be on a single line as well
+>
+> >       default:
+> >           WARN_ON(1);
+> >           return;
+>
+> --
+> Cheers,
+>  Lyude Paul (she/her)
+>  Software Engineer at Red Hat
 >
 
-Yeah, but let's reserve it as-is for we have the working
-omit-frame-pointer now.
-
-Best regards,
-Zhangjin
-
-> Thomas
