@@ -2,94 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9772C754C19
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 23:24:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57F0B754C1B
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 23:30:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229817AbjGOVYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 17:24:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50992 "EHLO
+        id S229870AbjGOVa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 17:30:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbjGOVYc (ORCPT
+        with ESMTP id S229530AbjGOVa0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 17:24:32 -0400
-Received: from mail-40131.protonmail.ch (mail-40131.protonmail.ch [185.70.40.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C21E62738
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 14:24:31 -0700 (PDT)
-Date:   Sat, 15 Jul 2023 21:24:16 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail3; t=1689456269; x=1689715469;
-        bh=D16/wC9ybg52jiDQV5+eLtWgvfFQ5TkNWX0NVbvr7UM=;
-        h=Date:To:From:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-         Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-        b=HEgOvr1gXJfy3G3zyZiPwPxBdoD7tktehWXIfQl+Sm1e2Hm0s/k6GRcV8TV+XeZNz
-         hh8E2Eq8rjgZURZ0ZRfjRfW072M6VW2tbTnwUmR68cifj5lxylUJ4SuXjdwjbtzp4j
-         m6TA4hW/B4Qm7a7kCNlzCvAarU8o9HHaytB9V9zCCUOo/iBXBKSccN4t4deV7xOzig
-         BZhJaXNO8bYWBO4lGuqrWPg1+ySeA2MC5iYBCsq9yDmYF218ldwWyH8bj4V7Z2Mh5b
-         GB2iE57fDk0zm0nOV1dMfg4J7FiTD4WUwn7GeTo+TqAtbz0eo2NLOwFHVfCouI3faf
-         ikSm1Ec7BpaIA==
-To:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        Mark Gross <markgross@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Armin Wolf <W_Armin@gmx.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-From:   =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
-Subject: [RFC PATCH v1] platform/x86: wmi: Do not register driver with invalid GUID
-Message-ID: <20230715211604.1272227-1-pobrn@protonmail.com>
-Feedback-ID: 20568564:user:proton
+        Sat, 15 Jul 2023 17:30:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00077270A;
+        Sat, 15 Jul 2023 14:30:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7A00560BB8;
+        Sat, 15 Jul 2023 21:30:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10AC5C433C9;
+        Sat, 15 Jul 2023 21:30:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689456621;
+        bh=XMEb/elm+pgGpMlhnXd5GXTk4SB+tgLImFkGqaygzss=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WIm6gh+Fv2agAUROjp8kseDzWfHI4jD7Jyn/PrfLqxFcLC0bhO92GuHh0C5Mad4Qz
+         GHhoerD/v8U3rJGA2xNa/i81RyX67HHtAY85W/Dcft4cpcvO7EuRzhOQgrgE7+6vg1
+         dyJhusDgdwikr1OUIK2bJiL8gvsg4zZpKqdLa/gG0Cn6px9hivkePv1z9ZuDy6lKN5
+         skyuM8WL5txjJJet+HtSwSrq1/wyWpuFtdG8bDl+WtaJQ7DVKzKF8nAfQ2NYkZilIs
+         NUS8/Qz5fvTGZL/2dn3K+1UZEke566yeHnGmo3+NzW4jfm76/+rM9X64vACyPEVgxY
+         IlVQzbdNBazHw==
+Date:   Sat, 15 Jul 2023 14:33:49 -0700
+From:   Bjorn Andersson <andersson@kernel.org>
+To:     Gokul krishna Krishnakumar <quic_gokukris@quicinc.com>
+Cc:     linux-remoteproc@vger.kernel.org,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linux-kernel@vger.kernel.org, Trilok Soni <quic_tsoni@quicinc.com>,
+        Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com>,
+        Rajendra Nayak <quic_rjendra@quicinc.com>,
+        Elliot Berman <quic_eberman@quicinc.com>,
+        Guru Das Srinagesh <quic_gurus@quicinc.com>,
+        Sibi Sankar <quic_sibis@quicinc.com>,
+        Melody Olvera <quic_molvera@quicinc.com>
+Subject: Re: [PATCH v3 1/2] remoteproc: Introduce traces for remoteproc events
+Message-ID: <g4aei4ro6nf7o2pgw4hvzrbdf6e5ipaelqj4gn6woodpjg2tu5@voytlrf2b337>
+References: <cover.1683741283.git.quic_gokukris@quicinc.com>
+ <5c7c2657d12808e211942d71ad79e3846f4e70bb.1683741283.git.quic_gokukris@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5c7c2657d12808e211942d71ad79e3846f4e70bb.1683741283.git.quic_gokukris@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since a WMI driver's ID table contains strings it is relatively
-easy to make mistakes. At the moment, there is no feedback
-if any of the specified GUIDs are invalid (since
-028e6e204ace1f080cfeacd72c50397eb8ae8883).
+On Wed, May 10, 2023 at 11:05:03AM -0700, Gokul krishna Krishnakumar wrote:
+> Adding Traces for the following remoteproc events:
+> 	rproc_subdev_event,
+> 	rproc_interrupt_event,
+> 	rproc_load_event,
+> 	rproc_start_event,
+> 	rproc_stop_event
 
-So check if the GUIDs in the driver's ID table are valid,
-print all invalid ones, and refuse to register the driver
-if any of the GUIDs are invalid.
+No need to list the individual trace events, instead please use the
+commit message do capture what problem(s) you intend you have for these
+trace events - so that someone reading this can understand why these
+particular events was added (and why others weren't).
 
-Signed-off-by: Barnab=C3=A1s P=C5=91cze <pobrn@protonmail.com>
----
- drivers/platform/x86/wmi.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+> 
+> Signed-off-by: Gokul krishna Krishnakumar <quic_gokukris@quicinc.com>
+> ---
+>  drivers/remoteproc/Makefile           |   1 +
+>  drivers/remoteproc/qcom_tracepoints.c |  12 +++
+>  include/trace/events/rproc_qcom.h     | 128 ++++++++++++++++++++++++++
+>  3 files changed, 141 insertions(+)
+>  create mode 100644 drivers/remoteproc/qcom_tracepoints.c
+>  create mode 100644 include/trace/events/rproc_qcom.h
+> 
+> diff --git a/drivers/remoteproc/Makefile b/drivers/remoteproc/Makefile
+> index 91314a9b43ce..3399fcaba39b 100644
+> --- a/drivers/remoteproc/Makefile
+> +++ b/drivers/remoteproc/Makefile
+> @@ -10,6 +10,7 @@ remoteproc-y				+= remoteproc_debugfs.o
+>  remoteproc-y				+= remoteproc_sysfs.o
+>  remoteproc-y				+= remoteproc_virtio.o
+>  remoteproc-y				+= remoteproc_elf_loader.o
+> +remoteproc-y				+= qcom_tracepoints.o
+>  obj-$(CONFIG_REMOTEPROC_CDEV)		+= remoteproc_cdev.o
+>  obj-$(CONFIG_IMX_REMOTEPROC)		+= imx_rproc.o
+>  obj-$(CONFIG_IMX_DSP_REMOTEPROC)	+= imx_dsp_rproc.o
+> diff --git a/drivers/remoteproc/qcom_tracepoints.c b/drivers/remoteproc/qcom_tracepoints.c
+> new file mode 100644
+> index 000000000000..1b587ef54aa7
+> --- /dev/null
+> +++ b/drivers/remoteproc/qcom_tracepoints.c
+> @@ -0,0 +1,12 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
+> + */
+> +
+> +#define CREATE_TRACE_POINTS
+> +#include <trace/events/rproc_qcom.h>
+> +EXPORT_TRACEPOINT_SYMBOL(rproc_load_event);
+> +EXPORT_TRACEPOINT_SYMBOL(rproc_start_event);
+> +EXPORT_TRACEPOINT_SYMBOL(rproc_stop_event);
+> +EXPORT_TRACEPOINT_SYMBOL(rproc_interrupt_event);
+> +EXPORT_TRACEPOINT_SYMBOL(rproc_subdev_event);
+> diff --git a/include/trace/events/rproc_qcom.h b/include/trace/events/rproc_qcom.h
+> new file mode 100644
+> index 000000000000..48ad26ce18a3
+> --- /dev/null
+> +++ b/include/trace/events/rproc_qcom.h
+> @@ -0,0 +1,128 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
+> + */
+> +
+> +#undef TRACE_SYSTEM
+> +#define TRACE_SYSTEM rproc_qcom
+> +
+> +#if !defined(_TRACE_RPROC_QCOM_H) || defined(TRACE_HEADER_MULTI_READ)
+> +#define _TRACE_RPROC_QCOM_H
+> +#include <linux/tracepoint.h>
+> +#include <linux/remoteproc.h>
+> +
+> +/*
+> + * Tracepoints for remoteproc and subdevice events
+> + */
+> +TRACE_EVENT(rproc_load_event,
 
-diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
-index a78ddd83cda0..bf0be40b418a 100644
---- a/drivers/platform/x86/wmi.c
-+++ b/drivers/platform/x86/wmi.c
-@@ -1513,6 +1513,19 @@ static int acpi_wmi_probe(struct platform_device *de=
-vice)
- int __must_check __wmi_driver_register(struct wmi_driver *driver,
- =09=09=09=09       struct module *owner)
- {
-+=09bool any_id_invalid =3D false;
-+
-+=09for (const struct wmi_device_id *id =3D driver->id_table; *id->guid_str=
-ing; id++) {
-+=09=09if (!uuid_is_valid(id->guid_string)) {
-+=09=09=09pr_err("driver '%s' has invalid GUID: %s",
-+=09=09=09       driver->driver.name, id->guid_string);
-+=09=09=09any_id_invalid =3D true;
-+=09=09}
-+=09}
-+
-+=09if (any_id_invalid)
-+=09=09return -EINVAL;
-+
- =09driver->driver.owner =3D owner;
- =09driver->driver.bus =3D &wmi_bus_type;
-=20
---=20
-2.41.0
+Please split these into more specific events, so that one can easily
+enable specific events depending on which answers one is looking for.
 
+Please avoid the _event suffix.
 
+Regards,
+Bjorn
