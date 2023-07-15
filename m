@@ -2,201 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57041754A9B
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 20:19:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99582754A99
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 20:19:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230093AbjGOSTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 14:19:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39842 "EHLO
+        id S230075AbjGOSTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 14:19:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjGOSTH (ORCPT
+        with ESMTP id S229500AbjGOSTC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 14:19:07 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DDF426AF;
-        Sat, 15 Jul 2023 11:19:05 -0700 (PDT)
-X-QQ-mid: bizesmtp82t1689445135tgk85grb
-Received: from linux-lab-host.localdomain ( [119.123.131.162])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Sun, 16 Jul 2023 02:18:54 +0800 (CST)
-X-QQ-SSF: 01200000002000D0W000B00A0000000
-X-QQ-FEAT: 7jw2iSiCazq340DjDdEZiMhlBe2vl+0NITWIEc5WkzpS4tH5riGZQoC3SIEqa
-        SsnIvE5sirfAViFzUf4xtboEfVBzLVmCgo2VzbvbND5R9PvmD4iX3xV1ZEA+boiNZE8of4h
-        ELzEHCOXeDggBwc6UDlbbjCfKcEiL432bL7HQqN/erfXNmi6yHC8hyroz4DhxjViDYqZXa3
-        79VFtvadw2lfISIZp+TWh/Xz16Z15HiJdR6V6IgUNgeX5GIq9fs7rLcczeFopDZCkRrpkGs
-        6aPZTGSs6RtjkEH5//KOpARzRzGXrZ6qkNsKHWqfoczMIdqskxL/rzRR/5pIxcMvkStBbio
-        pQIRac8+WKwWg1b0F2fDLuRmKBo/1HAnKv0klQ8whW2ITk6KvVSri3sXp7GtmPpPxb1vI8T
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 12656723689235740385
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     w@1wt.eu
-Cc:     arnd@arndb.de, falcon@tinylab.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, thomas@t-8ch.de,
-        =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Subject: [PATCH v4 02/18] tools/nolibc: fix up startup failures for -O0 under gcc < 11.1.0
-Date:   Sun, 16 Jul 2023 02:18:54 +0800
-Message-Id: <ac46d4fd8cec20a14706f3eed169e570f98024ad.1689444638.git.falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1689444638.git.falcon@tinylab.org>
-References: <cover.1689444638.git.falcon@tinylab.org>
+        Sat, 15 Jul 2023 14:19:02 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0AD726AF
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 11:19:01 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 35F9860B86
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 18:19:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43084C433C8;
+        Sat, 15 Jul 2023 18:19:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689445140;
+        bh=y4xCwqqsWYpomCA81KuGvnRmLLhlaq1VED7TNDAo9AE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SAl3TKLzKs/6Ytp+Md1HFeWLgvML80NyWqMg6v1CVo2q2T8Nw+65pzTkZWKKrt7PV
+         X043Hv31Qdj8AIz/yGiK2P0H1oU1O2i5Uz7UIvSmBMPy9NskC2zyowXgwx9UXGvIUL
+         WNEw78BSDA6W7ZdxntiikPELKHQsaRAzphE67lpNjLsETWVa/vBA7tMb0f9mEE7WuG
+         SDeZzq9sxXzN2mj9mcnRf1PZdMe0FhuQFI5IzSh2RmR+cl7NSjvPux5SvhuchRnGNA
+         pnyB2weKuLjjTrCdS6nYExv0k2ATdGSsFi37wDGcKVuhVuyKwd3b12PPumyhivSwjw
+         OzHUmjhtlTthw==
+Date:   Sat, 15 Jul 2023 20:18:57 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/3] tick/nohz: Don't shutdown the lowres tick from itself
+Message-ID: <ZLLjEVxM+kf84vgI@lothringen>
+References: <20230714120852.23573-1-frederic@kernel.org>
+ <20230714120852.23573-4-frederic@kernel.org>
+ <9347e3d4-e774-f75f-22c4-6c2dba294423@joelfernandes.org>
+ <ZLHh71KIIioR85aa@lothringen>
+ <CAEXW_YRTtvq0_YZiN=V9DZi2QxrC4hQFeUC9=JrgAKkg8KAnmw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <CAEXW_YRTtvq0_YZiN=V9DZi2QxrC4hQFeUC9=JrgAKkg8KAnmw@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As gcc doc [1] shows:
+On Fri, Jul 14, 2023 at 09:02:43PM -0400, Joel Fernandes wrote:
+> On Fri, Jul 14, 2023 at 8:01 PM Frederic Weisbecker <frederic@kernel.org> wrote:
+> >
+> > On Fri, Jul 14, 2023 at 02:44:49PM -0400, Joel Fernandes wrote:
+> > > On 7/14/23 08:08, Frederic Weisbecker wrote:
+> > > One slight concern here though, where in the idle loop is the removed
+> > > statement "tick_program_event(KTIME_MAX, 1);" happening if the tick was
+> > > already stopped before? If it is happening in tick_nohz_stop_tick(), don't
+> > > we early return from there and avoid doing that
+> > > "tick_program_event(KTIME_MAX, 1);" altogether, if the tick was already
+> > > stopped and the next event has not changed?
+> > >
+> > >         /* Skip reprogram of event if its not changed */
+> > >         if (ts->tick_stopped && (expires == ts->next_tick)) {
+> > >                 /* Sanity check: make sure clockevent is actually programmed */
+> > >                 if (tick == KTIME_MAX || ts->next_tick ==  [...]
+> > >                         return;
+> > >               [...]
+> > >       }
+> >
+> > Sure, if tick_program_event(KTIME_MAX, 1) was already called in the
+> > previous idle loop iteration, then there is no need to call that again.
+> >
+> > Or am I missing something else?
+> 
+> Just take it with a grain of salt but I think you need to still call
+> tick_program_event(KTIME_MAX, 1) here for the case where the tick was
+> previously stopped, and then when the next tick fires (say after a
+> long time T), but that tick is a one-off and does not result in
+> restarting the tick -- then there is no one to call
+> "tick_program_event(KTIME_MAX, 1)".
 
-  Most optimizations are completely disabled at -O0 or if an -O level is
-  not set on the command line, even if individual optimization flags are
-  specified.
+I'm a bit confused about that one-off thing. What can trigger that timer
+interrupt if it has been stopped?
 
-Test result [2] shows, gcc>=11.1.0 deviates from the above description,
-but before gcc 11.1.0, "-O0" still forcely uses frame pointer in the
-_start function even if the individual optimize("omit-frame-pointer")
-flag is specified.
+One thing can happen though: a pending timer IRQ while we are stopping the
+tick (IRQs are disabled in that idle loop portion). But then that pending timer
+interrupt is not going to reprogram another one. So it remains stopped.
 
-The frame pointer related operations will change the stack pointer (e.g.
-In x86_64, an extra "push %rbp" will be inserted at the beginning of
-_start) and make it differs from the one we expected, as a result, break
-the whole startup function.
-
-To fix up this issue, as suggested by Thomas, the individual "Os" and
-"omit-frame-pointer" optimize flags are used together on _start function
-to disable frame pointer completely even if the -O0 is set on the
-command line.
-
-[1]: https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html
-[2]: https://lore.kernel.org/lkml/20230714094723.140603-1-falcon@tinylab.org/
-
-Suggested-by: Thomas Weißschuh <linux@weissschuh.net>
-Link: https://lore.kernel.org/lkml/34b21ba5-7b59-4b3b-9ed6-ef9a3a5e06f7@t-8ch.de/
-Fixes: 7f8548589661 ("tools/nolibc: make compiler and assembler agree on the section around _start")
-Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
----
- tools/include/nolibc/arch-aarch64.h   | 2 +-
- tools/include/nolibc/arch-arm.h       | 2 +-
- tools/include/nolibc/arch-i386.h      | 2 +-
- tools/include/nolibc/arch-loongarch.h | 2 +-
- tools/include/nolibc/arch-mips.h      | 2 +-
- tools/include/nolibc/arch-riscv.h     | 2 +-
- tools/include/nolibc/arch-s390.h      | 2 +-
- tools/include/nolibc/arch-x86_64.h    | 2 +-
- 8 files changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/tools/include/nolibc/arch-aarch64.h b/tools/include/nolibc/arch-aarch64.h
-index 6151be6cd7a9..21e9482a4235 100644
---- a/tools/include/nolibc/arch-aarch64.h
-+++ b/tools/include/nolibc/arch-aarch64.h
-@@ -175,7 +175,7 @@ char **environ __attribute__((weak));
- const unsigned long *_auxv __attribute__((weak));
- 
- /* startup code */
--void __attribute__((weak, noreturn, optimize("omit-frame-pointer"))) __no_stack_protector _start(void)
-+void __attribute__((weak, noreturn, optimize("Os", "omit-frame-pointer"))) __no_stack_protector _start(void)
- {
- 	__asm__ volatile (
- #ifdef _NOLIBC_STACKPROTECTOR
-diff --git a/tools/include/nolibc/arch-arm.h b/tools/include/nolibc/arch-arm.h
-index 5b12b6e1c83e..4451bef5f94d 100644
---- a/tools/include/nolibc/arch-arm.h
-+++ b/tools/include/nolibc/arch-arm.h
-@@ -225,7 +225,7 @@ char **environ __attribute__((weak));
- const unsigned long *_auxv __attribute__((weak));
- 
- /* startup code */
--void __attribute__((weak, noreturn, optimize("omit-frame-pointer"))) __no_stack_protector _start(void)
-+void __attribute__((weak, noreturn, optimize("Os", "omit-frame-pointer"))) __no_stack_protector _start(void)
- {
- 	__asm__ volatile (
- #ifdef _NOLIBC_STACKPROTECTOR
-diff --git a/tools/include/nolibc/arch-i386.h b/tools/include/nolibc/arch-i386.h
-index 35680b4a25d4..4c94a81e860f 100644
---- a/tools/include/nolibc/arch-i386.h
-+++ b/tools/include/nolibc/arch-i386.h
-@@ -190,7 +190,7 @@ const unsigned long *_auxv __attribute__((weak));
-  * 2) The deepest stack frame should be set to zero
-  *
-  */
--void __attribute__((weak, noreturn, optimize("omit-frame-pointer"))) __no_stack_protector _start(void)
-+void __attribute__((weak, noreturn, optimize("Os", "omit-frame-pointer"))) __no_stack_protector _start(void)
- {
- 	__asm__ volatile (
- #ifdef _NOLIBC_STACKPROTECTOR
-diff --git a/tools/include/nolibc/arch-loongarch.h b/tools/include/nolibc/arch-loongarch.h
-index ada5a69e3fcc..590155a4e543 100644
---- a/tools/include/nolibc/arch-loongarch.h
-+++ b/tools/include/nolibc/arch-loongarch.h
-@@ -167,7 +167,7 @@ const unsigned long *_auxv __attribute__((weak));
- #endif
- 
- /* startup code */
--void __attribute__((weak, noreturn, optimize("omit-frame-pointer"))) __no_stack_protector _start(void)
-+void __attribute__((weak, noreturn, optimize("Os", "omit-frame-pointer"))) __no_stack_protector _start(void)
- {
- 	__asm__ volatile (
- #ifdef _NOLIBC_STACKPROTECTOR
-diff --git a/tools/include/nolibc/arch-mips.h b/tools/include/nolibc/arch-mips.h
-index dd0f12131b55..d3f0bf4c4245 100644
---- a/tools/include/nolibc/arch-mips.h
-+++ b/tools/include/nolibc/arch-mips.h
-@@ -205,7 +205,7 @@ char **environ __attribute__((weak));
- const unsigned long *_auxv __attribute__((weak));
- 
- /* startup code, note that it's called __start on MIPS */
--void __attribute__((weak, noreturn, optimize("omit-frame-pointer"))) __no_stack_protector __start(void)
-+void __attribute__((weak, noreturn, optimize("Os", "omit-frame-pointer"))) __no_stack_protector __start(void)
- {
- 	__asm__ volatile (
- 		/*".set nomips16\n"*/
-diff --git a/tools/include/nolibc/arch-riscv.h b/tools/include/nolibc/arch-riscv.h
-index 1dd7083c2ac8..322c96f4acdb 100644
---- a/tools/include/nolibc/arch-riscv.h
-+++ b/tools/include/nolibc/arch-riscv.h
-@@ -180,7 +180,7 @@ char **environ __attribute__((weak));
- const unsigned long *_auxv __attribute__((weak));
- 
- /* startup code */
--void __attribute__((weak, noreturn, optimize("omit-frame-pointer"))) __no_stack_protector _start(void)
-+void __attribute__((weak, noreturn, optimize("Os", "omit-frame-pointer"))) __no_stack_protector _start(void)
- {
- 	__asm__ volatile (
- 		".option push\n"
-diff --git a/tools/include/nolibc/arch-s390.h b/tools/include/nolibc/arch-s390.h
-index 8254caff8bfa..587cc91295fa 100644
---- a/tools/include/nolibc/arch-s390.h
-+++ b/tools/include/nolibc/arch-s390.h
-@@ -166,7 +166,7 @@ char **environ __attribute__((weak));
- const unsigned long *_auxv __attribute__((weak));
- 
- /* startup code */
--void __attribute__((weak, noreturn, optimize("omit-frame-pointer"))) __no_stack_protector _start(void)
-+void __attribute__((weak, noreturn, optimize("Os", "omit-frame-pointer"))) __no_stack_protector _start(void)
- {
- 	__asm__ volatile (
- 		"lg	%r2,0(%r15)\n"		/* argument count */
-diff --git a/tools/include/nolibc/arch-x86_64.h b/tools/include/nolibc/arch-x86_64.h
-index fb00ab2e9274..5e950a04bc77 100644
---- a/tools/include/nolibc/arch-x86_64.h
-+++ b/tools/include/nolibc/arch-x86_64.h
-@@ -190,7 +190,7 @@ const unsigned long *_auxv __attribute__((weak));
-  * 2) The deepest stack frame should be zero (the %rbp).
-  *
-  */
--void __attribute__((weak, noreturn, optimize("omit-frame-pointer"))) __no_stack_protector _start(void)
-+void __attribute__((weak, noreturn, optimize("Os", "omit-frame-pointer"))) __no_stack_protector _start(void)
- {
- 	__asm__ volatile (
- #ifdef _NOLIBC_STACKPROTECTOR
--- 
-2.25.1
-
+Thanks.
