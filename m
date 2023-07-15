@@ -2,559 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 704747545E1
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 02:59:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 055FB7545E3
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 03:00:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229604AbjGOA7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 20:59:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36766 "EHLO
+        id S229632AbjGOBAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 21:00:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbjGOA7U (ORCPT
+        with ESMTP id S229534AbjGOBAa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 20:59:20 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA1083AB8;
-        Fri, 14 Jul 2023 17:59:12 -0700 (PDT)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36EMsAva022000;
-        Sat, 15 Jul 2023 00:59:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=hQAsDVApGQSA+gjXKy7bgEAV2z086dP9pJWXLxoG32A=;
- b=it7C5iEIGm8nV3h1fhKdfoGdEcClBhzWDa8YmccSENJvhxHVHRZRT2neLraUsJ7tg7ka
- shLl77/al2sF3GC1mOxvNl0tR+RZa2ZYs8Tia+E/uIAF1NUD99vW4TW5mw4zhehWteHO
- p5X98o7uarANchf9PrQlRDL7ONGXBIlpX2LMMcpnN/exP6IVoIAJOqlfxZt2qGId6RgT
- TbJs+wwfpmdCj8ewEo3T2fab1xaiPQjA3yf2t02Fd80QOFcYmhMnnUYRXSZSjgC1fVdr
- NAA5hU52bSe1dIXjZMX9TnIgTYQOJb826JshX92hJRLjgXb2MlS/zw1Dt9neJSAUysL4 fA== 
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3rtptr34q0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 15 Jul 2023 00:59:05 +0000
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36F0x4uJ001495
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 15 Jul 2023 00:59:04 GMT
-Received: from [10.71.109.168] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Fri, 14 Jul
- 2023 17:59:03 -0700
-Message-ID: <19ff3766-a73e-761d-8965-015817fa9c0c@quicinc.com>
-Date:   Fri, 14 Jul 2023 17:59:03 -0700
+        Fri, 14 Jul 2023 21:00:30 -0400
+Received: from m1340.mail.163.com (m1340.mail.163.com [220.181.13.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 35C022D68;
+        Fri, 14 Jul 2023 18:00:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
+        Message-ID; bh=kkZ9RjR7KQKJrM1KYMvj+FXbCavvmVv0K3K41WkQlag=; b=K
+        Oae8Z7TYJZLw0zBGtoGX8QlWVRMvewvs9I93wcXNrwPOLiRV45WHCiKxqVPB6jEp
+        owLue/BEfiCTTIfkytTzzrowdjgHoLWUirBn8DS1YTc8OGGRP+IIxE9Px0FMiuy+
+        dVnYWD+ttNLxSx/FyUK0p5hDHwgIpzr9c43NYalkro=
+Received: from xingxg2008$163.com ( [221.218.137.29] ) by
+ ajax-webmail-wmsvr40 (Coremail) ; Sat, 15 Jul 2023 08:59:32 +0800 (CST)
+X-Originating-IP: [221.218.137.29]
+Date:   Sat, 15 Jul 2023 08:59:32 +0800 (CST)
+From:   xingxg2008 <xingxg2008@163.com>
+To:     guoren@kernel.org
+Cc:     palmer@rivosinc.com, paul.walmsley@sifive.com, zong.li@sifive.com,
+        atishp@atishpatra.org, alex@ghiti.fr, jszhang@kernel.org,
+        bjorn@kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        "Guo Ren" <guoren@linux.alibaba.com>,
+        "Alexandre Ghiti" <alexghiti@rivosinc.com>
+Subject: Re:[PATCH V4] riscv: kexec: Fixup synchronization problem between
+ init_mm and active_mm
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20230109(dcb5de15)
+ Copyright (c) 2002-2023 www.mailtech.cn 163com
+In-Reply-To: <20230714103659.3146949-1-guoren@kernel.org>
+References: <20230714103659.3146949-1-guoren@kernel.org>
+X-NTES-SC: AL_QuyTC/+TvU8s5CScbOkXmUcahe83XMKzuPsm3o9SPZE0gink4CQqd31DGlzJwsGUMji2shq6YAhk9spDZbdUQZjRdzE5JbEfzzBDQn1lL58r
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=GBK
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2] drm/msm/dsi: Enable DATABUS_WIDEN for DSI command mode
-Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        "Marijn Suijten" <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, <quic_abhinavk@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <freedreno@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-References: <20230713-add-widebus-support-v2-1-ad0added17b6@quicinc.com>
- <91bc6348-2030-85dd-1492-1609b392793f@linaro.org>
- <05996344-0e43-7f37-c99a-42c04f91dc83@quicinc.com>
- <CAA8EJppFDcrVdegskSD0TJPOdSzVw_50+Bq+u8LKn26jdKE=tw@mail.gmail.com>
-From:   Jessica Zhang <quic_jesszhan@quicinc.com>
-In-Reply-To: <CAA8EJppFDcrVdegskSD0TJPOdSzVw_50+Bq+u8LKn26jdKE=tw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: BoMSh8fpJE-OuZNJpI0jXkWk9sJUyCOV
-X-Proofpoint-GUID: BoMSh8fpJE-OuZNJpI0jXkWk9sJUyCOV
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-14_12,2023-07-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
- phishscore=0 mlxscore=0 lowpriorityscore=0 spamscore=0 impostorscore=0
- priorityscore=1501 bulkscore=0 adultscore=0 suspectscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2307150007
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Message-ID: <6b766b2b.2e5.189570f5ee6.Coremail.xingxg2008@163.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: KMGowADHCmZ077FkZVEDAA--.26192W
+X-CM-SenderInfo: p0lqw5bjsqimi6rwjhhfrp/xtbBbBStM1c7PxAewQAAs6
+X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+X-Spam-Status: No, score=0.5 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SORBS_HTTP,RCVD_IN_SORBS_SOCKS,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/14/2023 3:30 PM, Dmitry Baryshkov wrote:
-> On Fri, 14 Jul 2023 at 22:03, Jessica Zhang <quic_jesszhan@quicinc.com> wrote:
->>
->>
->>
->> On 7/13/2023 6:23 PM, Dmitry Baryshkov wrote:
->>> On 14/07/2023 03:21, Jessica Zhang wrote:
->>>> DSI 6G v2.5.x+ and DPU 7.x+ support a data-bus widen mode that allows DSI
->>>> to send 48 bits of compressed data per pclk instead of 24.
->>>>
->>>> For all chipsets that support this mode, enable it whenever DSC is
->>>> enabled as recommended by the hardware programming guide.
->>>>
->>>> Only enable this for command mode as we are currently unable to validate
->>>> it for video mode.
->>>>
->>>> Signed-off-by: Jessica Zhang <quic_jesszhan@quicinc.com>
->>>> ---
->>>> Note: The dsi.xml.h changes were generated using the headergen2 script in
->>>> envytools [2], but the changes to the copyright and rules-ng-ng source
->>>> file
->>>> paths were dropped.
->>>
->>> Separate commit please, so that it can be replaced by headers sync with
->>> Mesa3d.
->>
->> Hi Dmitry,
->>
->> Acked.
->>
->>>
->>>>
->>>> [1] https://patchwork.freedesktop.org/series/120580/
->>>> [2] https://github.com/freedreno/envytools/
->>>>
->>>> --
->>>> Changes in v2:
->>>> - Rebased on top of "drm/msm/dpu: Re-introduce dpu core revision"
->>>> - Squashed all commits to avoid breaking feature if the series is only
->>>> partially applied
->>>
->>> No. Please unsquash it. Please design the series so that the patches
->>> work even if it is only partially applied.
->>
->> Acked.
->>
->>>
->>>> - Moved DATABUS_WIDEN bit setting to dsi_ctr_enable() (Marijn)
->>>> - Have DPU check if wide bus is requested by output driver (Dmitry)
->>>> - Introduced bytes_per_pclk variable for dsi_timing_setup() hdisplay
->>>> adjustment (Marijn)
->>>> - Link to v1:
->>>> https://lore.kernel.org/r/20230525-add-widebus-support-v1-0-c7069f2efca1@quicinc.com
->>>> ---
->>>>    drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c        | 10 ++++++----
->>>>    .../gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c   |  4 +++-
->>>>    drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c        |  3 +++
->>>>    drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h        |  1 +
->>>>    drivers/gpu/drm/msm/dsi/dsi.c                      |  5 +++++
->>>>    drivers/gpu/drm/msm/dsi/dsi.h                      |  1 +
->>>>    drivers/gpu/drm/msm/dsi/dsi.xml.h                  |  1 +
->>>>    drivers/gpu/drm/msm/dsi/dsi_host.c                 | 23
->>>> +++++++++++++++++++++-
->>>>    drivers/gpu/drm/msm/msm_drv.h                      |  6 ++++++
->>>>    9 files changed, 48 insertions(+), 6 deletions(-)
->>>>
->>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
->>>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
->>>> index f0a2a1dca741..6aed63c06c1d 100644
->>>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
->>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
->>>> @@ -2411,6 +2411,7 @@ struct drm_encoder *dpu_encoder_init(struct
->>>> drm_device *dev,
->>>>        struct dpu_kms *dpu_kms = to_dpu_kms(priv->kms);
->>>>        struct drm_encoder *drm_enc = NULL;
->>>>        struct dpu_encoder_virt *dpu_enc = NULL;
->>>> +    int index = disp_info->h_tile_instance[0];
->>>>        int ret = 0;
->>>>        dpu_enc = devm_kzalloc(dev->dev, sizeof(*dpu_enc), GFP_KERNEL);
->>>> @@ -2439,13 +2440,14 @@ struct drm_encoder *dpu_encoder_init(struct
->>>> drm_device *dev,
->>>>        timer_setup(&dpu_enc->frame_done_timer,
->>>>                dpu_encoder_frame_done_timeout, 0);
->>>> -    if (disp_info->intf_type == INTF_DSI)
->>>> +    if (disp_info->intf_type == INTF_DSI) {
->>>>            timer_setup(&dpu_enc->vsync_event_timer,
->>>>                    dpu_encoder_vsync_event_handler,
->>>
->>> While you are touching this part, could you please drop
->>> dpu_encoder_vsync_event_handler() and
->>> dpu_encoder_vsync_event_work_handler(), they are useless?
->>
->> Since these calls aren't related to widebus, I don't think I'll include
->> it in this series. However, I can post this cleanup as a separate patch
->> and add that as a dependency if that's ok.
-> 
-> Sure, that will work for me. Thank you!
-> 
->>
->>>
->>>>                    0);
->>>> -    else if (disp_info->intf_type == INTF_DP)
->>>> -        dpu_enc->wide_bus_en = msm_dp_wide_bus_available(
->>>> -                priv->dp[disp_info->h_tile_instance[0]]);
->>>> +        dpu_enc->wide_bus_en =
->>>> msm_dsi_is_widebus_enabled(priv->dsi[index]);
->>>> +    } else if (disp_info->intf_type == INTF_DP) {
->>>> +        dpu_enc->wide_bus_en =
->>>> msm_dp_wide_bus_available(priv->dp[index]);
->>>> +    }
->>>>        INIT_DELAYED_WORK(&dpu_enc->delayed_off_work,
->>>>                dpu_encoder_off_work);
->>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
->>>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
->>>> index df88358e7037..dace6168be2d 100644
->>>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
->>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
->>>> @@ -69,8 +69,10 @@ static void _dpu_encoder_phys_cmd_update_intf_cfg(
->>>>                    phys_enc->hw_intf,
->>>>                    phys_enc->hw_pp->idx);
->>>> -    if (intf_cfg.dsc != 0)
->>>> +    if (intf_cfg.dsc != 0) {
->>>>            cmd_mode_cfg.data_compress = true;
->>>> +        cmd_mode_cfg.wide_bus_en =
->>>> dpu_encoder_is_widebus_enabled(phys_enc->parent);
->>>> +    }
->>>>        if (phys_enc->hw_intf->ops.program_intf_cmd_cfg)
->>>>
->>>> phys_enc->hw_intf->ops.program_intf_cmd_cfg(phys_enc->hw_intf,
->>>> &cmd_mode_cfg);
->>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
->>>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
->>>> index 8ec6505d9e78..dc6f3febb574 100644
->>>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
->>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
->>>> @@ -521,6 +521,9 @@ static void
->>>> dpu_hw_intf_program_intf_cmd_cfg(struct dpu_hw_intf *ctx,
->>>>        if (cmd_mode_cfg->data_compress)
->>>>            intf_cfg2 |= INTF_CFG2_DCE_DATA_COMPRESS;
->>>> +    if (cmd_mode_cfg->wide_bus_en)
->>>> +        intf_cfg2 |= INTF_CFG2_DATABUS_WIDEN;
->>>> +
->>>>        DPU_REG_WRITE(&ctx->hw, INTF_CONFIG2, intf_cfg2);
->>>>    }
->>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h
->>>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h
->>>> index 77f80531782b..c539025c418b 100644
->>>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h
->>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h
->>>> @@ -50,6 +50,7 @@ struct dpu_hw_intf_status {
->>>>    struct dpu_hw_intf_cmd_mode_cfg {
->>>>        u8 data_compress;    /* enable data compress between dpu and dsi */
->>>> +    u8 wide_bus_en;        /* enable databus widen mode */
->>>>    };
->>>>    /**
->>>> diff --git a/drivers/gpu/drm/msm/dsi/dsi.c
->>>> b/drivers/gpu/drm/msm/dsi/dsi.c
->>>> index baab79ab6e74..e3cc06c94397 100644
->>>> --- a/drivers/gpu/drm/msm/dsi/dsi.c
->>>> +++ b/drivers/gpu/drm/msm/dsi/dsi.c
->>>> @@ -17,6 +17,11 @@ struct drm_dsc_config
->>>> *msm_dsi_get_dsc_config(struct msm_dsi *msm_dsi)
->>>>        return msm_dsi_host_get_dsc_config(msm_dsi->host);
->>>>    }
->>>> +bool msm_dsi_is_widebus_enabled(struct msm_dsi *msm_dsi)
->>>> +{
->>>> +    return msm_dsi_host_is_widebus_supported(msm_dsi->host);
->>>
->>> This is incorrect. It will enable widebus even for non-DSC cases.
->>
->> FWIW, all calls for msm_dsi_is_widebus_enabled() and
->> msm_dsi_host_is_widebus_supported() are guarded by a DSC check.
->>
->> That being said, I also see your point that msm_dsi_is_widebus_enabled()
->> is an incorrect name since this will only check if widebus is supported.
->>
->> Maybe a better change would be to change msm_dsi_is_widebus_enabled to
->> *_is_widebus_supported(), move the setting of dpu_enc->wide_bus_en for
->> both DP and DSI to dpu_encoder_virt_atomic_enable(), then for DSI set
->> wide_bus_en = dpu_enc->dsc && dsi_is_widebus_supported().
-> 
-> I think we should change msm_dp_wide_bus_available() to
-> msm_dp_wide_bus_enabled(). We don't have a way to tell DP (or DSI) if
-> widebus really should be enabled or not. So it would be better to make
-> DP and DSI drivers provide is_widebus_enabled function.
-
-I think making changes to the DP API is outside the scope of this series 
-since these changes are focused on supporting widebus for DSI specifically.
-
-> 
->>
->>>
->>>> +}
->>>> +
->>>>    static int dsi_get_phy(struct msm_dsi *msm_dsi)
->>>>    {
->>>>        struct platform_device *pdev = msm_dsi->pdev;
->>>> diff --git a/drivers/gpu/drm/msm/dsi/dsi.h
->>>> b/drivers/gpu/drm/msm/dsi/dsi.h
->>>> index bd3763a5d723..219a9f756759 100644
->>>> --- a/drivers/gpu/drm/msm/dsi/dsi.h
->>>> +++ b/drivers/gpu/drm/msm/dsi/dsi.h
->>>> @@ -134,6 +134,7 @@ int dsi_calc_clk_rate_6g(struct msm_dsi_host
->>>> *msm_host, bool is_bonded_dsi);
->>>>    void msm_dsi_host_snapshot(struct msm_disp_state *disp_state, struct
->>>> mipi_dsi_host *host);
->>>>    void msm_dsi_host_test_pattern_en(struct mipi_dsi_host *host);
->>>>    struct drm_dsc_config *msm_dsi_host_get_dsc_config(struct
->>>> mipi_dsi_host *host);
->>>> +bool msm_dsi_host_is_widebus_supported(struct mipi_dsi_host *host);
->>>>    /* dsi phy */
->>>>    struct msm_dsi_phy;
->>>> diff --git a/drivers/gpu/drm/msm/dsi/dsi.xml.h
->>>> b/drivers/gpu/drm/msm/dsi/dsi.xml.h
->>>> index a4a154601114..2a7d980e12c3 100644
->>>> --- a/drivers/gpu/drm/msm/dsi/dsi.xml.h
->>>> +++ b/drivers/gpu/drm/msm/dsi/dsi.xml.h
->>>> @@ -664,6 +664,7 @@ static inline uint32_t
->>>> DSI_CMD_MODE_MDP_CTRL2_INPUT_RGB_SWAP(enum dsi_rgb_swap v
->>>>        return ((val) << DSI_CMD_MODE_MDP_CTRL2_INPUT_RGB_SWAP__SHIFT) &
->>>> DSI_CMD_MODE_MDP_CTRL2_INPUT_RGB_SWAP__MASK;
->>>>    }
->>>>    #define DSI_CMD_MODE_MDP_CTRL2_BURST_MODE            0x00010000
->>>> +#define DSI_CMD_MODE_MDP_CTRL2_DATABUS_WIDEN            0x00100000
->>>>    #define REG_DSI_CMD_MODE_MDP_STREAM2_CTRL            0x000001b8
->>>>    #define DSI_CMD_MODE_MDP_STREAM2_CTRL_DATA_TYPE__MASK        0x0000003f
->>>> diff --git a/drivers/gpu/drm/msm/dsi/dsi_host.c
->>>> b/drivers/gpu/drm/msm/dsi/dsi_host.c
->>>> index 645927214871..6ea3476acf0d 100644
->>>> --- a/drivers/gpu/drm/msm/dsi/dsi_host.c
->>>> +++ b/drivers/gpu/drm/msm/dsi/dsi_host.c
->>>> @@ -710,6 +710,14 @@ static void dsi_ctrl_disable(struct msm_dsi_host
->>>> *msm_host)
->>>>        dsi_write(msm_host, REG_DSI_CTRL, 0);
->>>>    }
->>>> +bool msm_dsi_host_is_widebus_supported(struct mipi_dsi_host *host)
->>>> +{
->>>> +    struct msm_dsi_host *msm_host = to_msm_dsi_host(host);
->>>> +
->>>> +    return msm_host->cfg_hnd->major == MSM_DSI_VER_MAJOR_6G &&
->>>> +            msm_host->cfg_hnd->minor >= MSM_DSI_6G_VER_MINOR_V2_5_0;
->>>
->>> Would it be better to push it to the config data, like we did for DP?
->>
->> I don't think so -- I think adding it to the config data as a feature
->> flag would bloat dsi_cfg.c. It would be simpler and cleaner (IMO) to
->> keep this as a version check.
-> 
-> Ok.
-> 
->>
->>>
->>>> +}
->>>> +
->>>>    static void dsi_ctrl_enable(struct msm_dsi_host *msm_host,
->>>>                struct msm_dsi_phy_shared_timings *phy_shared_timings,
->>>> struct msm_dsi_phy *phy)
->>>>    {
->>>> @@ -757,6 +765,11 @@ static void dsi_ctrl_enable(struct msm_dsi_host
->>>> *msm_host,
->>>>                msm_host->cfg_hnd->minor >= MSM_DSI_6G_VER_MINOR_V1_3) {
->>>>                data = dsi_read(msm_host, REG_DSI_CMD_MODE_MDP_CTRL2);
->>>>                data |= DSI_CMD_MODE_MDP_CTRL2_BURST_MODE;
->>>> +
->>>> +            /* TODO: Allow for video-mode support once tested/fixed */
->>>> +            if (msm_host->cfg_hnd->minor >=
->>>> MSM_DSI_6G_VER_MINOR_V2_5_0 && msm_host->dsc)
->>>
->>> msm_dsi_is_widebus_enabled() && msm_host->dsc
->>
->> *_is_widebus_enabled() also checks for major version >= 6G, so calling
->> it here would be a bit redundant as we're already checking for that earlier.
-> 
-> However now you have different checks in two different places.
-> 
-> My suggestion is to have the function msm_dsi_is_widebus_supported(),
-> which the rest of the code uses to check if wide bus is actually
-> enabled in the HW. If at some point DSI 2.11 drops wide bus support,
-> I'd like to see a change at a single place, rather than having changes
-> all over the code.
-
-Ok, I think this is a fair point. The main reason I just had the minor 
-version check here was to avoid the redundant major version check from 
-the BURST_MODE conditional [1].
-
-What if we just move the MDP_CTRL2 configuration to a separate function 
-and do the BURST_MODE and DATABUS_WIDEN checks separately?
-
-So, something like:
-
-```
-bool burst_supported()
-{
-     return major >= 6g && minor >= 1.3;
-}
-
-
-bool widebus_supported()
-{
-     return major >= 6g && minor >= 2.5;
-}
-
-
-void program_cmd_mdp_ctrl2()
-{
-     if (major < 6g)
-         return;
-
-     data = read(mdp_ctrl2);
-     if (burst_supported)
-         data |= burst;
-     if (widebus_supported)
-         data |= widebus;
-
-     write(mdp_ctrl2, data);
-}
-
-void dsi_ctrl_enable()
-{
-
-     ...
-
-     program_cmd_mdp_ctrl2();
-
-     ...
-}
-
-```
-
-> 
-> Likewise I'd like to have the function msm_dsi_is_widebus_enabled(),
-> which is used by the rest of the code to check if the widebus should
-> be actually enabled.
-> 
-> Actually I think we can even drop the is_supported at all() and use
-> the following code:
-> 
-> bool msm_dsi_is_widebus_enabled()
-> {
->     if (major < 6G || minor < V2_5_0)
->       return false;
-> 
->     return !!msm_host->dsc;
-
-I'd rather keep this API as *_is_widebus_supported() or 
-*_is_widebus_available() (if you'd like it to match DP) and have the DSC 
-check outside.
-
-This is because we already guard for DSC in DSI for the 
-dsi_timing_setup() hdisplay adjustments and for the DPU hw_intf widebus 
-register configuration. The only place where a DSC check needed to be 
-added was for the MDP_CTRL2 configuration.
-
-So, since most places can already use preexisting DSC checks, having 
-another DSC check within msm_dsi_is_widebus_enabled() would either be 
-redundant or require extensive refactoring to justify adding the check here.
-
-Thanks,
-
-Jessica Zhang
-
-> }
-> 
-> Then the rest of the code should call this function only.
-> 
->>
->> FWIW, I've nested the widebus configuration within the burst mode
->> configuration to keep it so that we only have to read/write the
->> MDP_CTRL2 once.
->>
->>>
->>>> +                data |= DSI_CMD_MODE_MDP_CTRL2_DATABUS_WIDEN;
->>>> +
->>>>                dsi_write(msm_host, REG_DSI_CMD_MODE_MDP_CTRL2, data);
->>>>            }
->>>>        }
->>>> @@ -894,6 +907,7 @@ static void dsi_timing_setup(struct msm_dsi_host
->>>> *msm_host, bool is_bonded_dsi)
->>>>        u32 hdisplay = mode->hdisplay;
->>>>        u32 wc;
->>>>        int ret;
->>>> +    bool widebus_supported =
->>>> msm_dsi_host_is_widebus_supported(&msm_host->base);
->>>
->>> s/supported/enabled for this function.
->>
->> I would like to keep the name as *_is_widebus_supported() since it
->> better reflects the functionality of the helper.
->>
->> FWIW, the widebus hdisplay adjustments are already guarded by a DSC check.
-> 
-> See my previous comment.
-> 
->>
->> Thanks,
->>
->> Jessica Zhang
->>
->>>
->>>>        DBG("");
->>>> @@ -914,6 +928,7 @@ static void dsi_timing_setup(struct msm_dsi_host
->>>> *msm_host, bool is_bonded_dsi)
->>>>        if (msm_host->dsc) {
->>>>            struct drm_dsc_config *dsc = msm_host->dsc;
->>>> +        u32 bytes_per_pclk;
->>>>            /* update dsc params with timing params */
->>>>            if (!dsc || !mode->hdisplay || !mode->vdisplay) {
->>>> @@ -937,7 +952,13 @@ static void dsi_timing_setup(struct msm_dsi_host
->>>> *msm_host, bool is_bonded_dsi)
->>>>             * pulse width same
->>>>             */
->>>>            h_total -= hdisplay;
->>>> -        hdisplay =
->>>> DIV_ROUND_UP(msm_dsc_get_bytes_per_line(msm_host->dsc), 3);
->>>> +        if (widebus_supported && !(msm_host->mode_flags &
->>>> MIPI_DSI_MODE_VIDEO))
->>>> +            bytes_per_pclk = 6;
->>>> +        else
->>>> +            bytes_per_pclk = 3;
->>>> +
->>>> +        hdisplay =
->>>> DIV_ROUND_UP(msm_dsc_get_bytes_per_line(msm_host->dsc), bytes_per_pclk);
->>>> +
->>>>            h_total += hdisplay;
->>>>            ha_end = ha_start + hdisplay;
->>>>        }
->>>> diff --git a/drivers/gpu/drm/msm/msm_drv.h
->>>> b/drivers/gpu/drm/msm/msm_drv.h
->>>> index 9d9d5e009163..7ff56d09014c 100644
->>>> --- a/drivers/gpu/drm/msm/msm_drv.h
->>>> +++ b/drivers/gpu/drm/msm/msm_drv.h
->>>> @@ -344,6 +344,7 @@ void msm_dsi_snapshot(struct msm_disp_state
->>>> *disp_state, struct msm_dsi *msm_dsi
->>>>    bool msm_dsi_is_cmd_mode(struct msm_dsi *msm_dsi);
->>>>    bool msm_dsi_is_bonded_dsi(struct msm_dsi *msm_dsi);
->>>>    bool msm_dsi_is_master_dsi(struct msm_dsi *msm_dsi);
->>>> +bool msm_dsi_is_widebus_enabled(struct msm_dsi *msm_dsi);
->>>>    struct drm_dsc_config *msm_dsi_get_dsc_config(struct msm_dsi *msm_dsi);
->>>>    #else
->>>>    static inline void __init msm_dsi_register(void)
->>>> @@ -374,6 +375,11 @@ static inline bool msm_dsi_is_master_dsi(struct
->>>> msm_dsi *msm_dsi)
->>>>        return false;
->>>>    }
->>>> +static inline bool msm_dsi_is_widebus_enabled(struct msm_dsi *msm_dsi)
->>>> +{
->>>> +    return false;
->>>> +}
->>>> +
->>>>    static inline struct drm_dsc_config *msm_dsi_get_dsc_config(struct
->>>> msm_dsi *msm_dsi)
->>>>    {
->>>>        return NULL;
->>>>
->>>> ---
->>>> base-commit: 9445fc2942a890e84c74e170ebd7dfb9566e3357
->>>> change-id: 20230525-add-widebus-support-f785546ee751
->>>>
->>>> Best regards,
->>>
->>> --
->>> With best wishes
->>> Dmitry
->>>
-> 
-> 
-> 
-> -- 
-> With best wishes
-> Dmitry
+ClRlc3RlZC1ieTogWGluZyBYaWFvZ3VhbmcgPHhpbmd4ZzIwMDhAMTYzLmNvbT4KClRoZSBwYXRj
+aCB3b3JrcyBmaW5lIG9uIExpbnV4IDYuNS1SQzEgd2hpY2ggcnVucyBvbiBTT1BIR08KU0cyMDQy
+IEVWQiB0aGF0IGhhcyA2NCBSSVNDLVYgY29yZXMuCgoKCgpBdCAyMDIzLTA3LTE0IDE4OjM2OjU5
+LCBndW9yZW5Aa2VybmVsLm9yZyB3cm90ZToKPkZyb206IEd1byBSZW4gPGd1b3JlbkBsaW51eC5h
+bGliYWJhLmNvbT4KPgo+VGhlIG1hY2hpbmVfa2V4ZWMoKSB1c2VzIHNldF9tZW1vcnlfeCB0byBt
+b2RpZnkgdGhlIGRpcmVjdCBtYXBwaW5nCj5hdHRyaWJ1dGVzIGZyb20gUlcgdG8gUldYLiBUaGUg
+Y3VycmVudCBpbXBsZW1lbnRhdGlvbiBvZiBzZXRfbWVtb3J5X3gKPmRvZXMgbm90IHNwbGl0IGh1
+Z2VwYWdlcyBpbiB0aGUgbGluZWFyIG1hcHBpbmcgYW5kIHRoZW4gd2hlbiBhIFBHRAo+bWFwcGlu
+ZyBpcyB1c2VkLCB0aGUgd2hvbGUgUEdEIGlzIG1hcmtlZCBhcyBleGVjdXRhYmxlLiBCdXQgY2hh
+bmdpbmcKPnRoZSBwZXJtaXNzaW9ucyBhdCB0aGUgUEdEIGxldmVsIG11c3QgYmUgcHJvcGFnYXRl
+ZCB0byBhbGwgdGhlIHBhZ2UKPnRhYmxlcy4gV2hlbiBrZXhlYyBqdW1wcyBpbnRvIGNvbnRyb2xf
+YnVmZmVyLCB0aGUgaW5zdHJ1Y3Rpb24gcGFnZQo+ZmF1bHQgaGFwcGVucywgYW5kIHRoZXJlIGlz
+IG5vIG1pbm9yX3BhZ2VmYXVsdCBmb3IgaXQsIHRoZW4gcGFuaWMuCj4KPlRoZSBidWcgaXMgZm91
+bmQgb24gYW4gTU1VX3N2MzkgbWFjaGluZSwgYW5kIHRoZSBkaXJlY3QgbWFwcGluZyB1c2VkIGEK
+PjFHQiBQVUQsIHRoZSBwZ2QgZW50cmllcy4gSGVyZSBpcyB0aGUgYnVnIG91dHB1dDoKPgo+IGtl
+eGVjX2NvcmU6IFN0YXJ0aW5nIG5ldyBrZXJuZWwKPiBXaWxsIGNhbGwgbmV3IGtlcm5lbCBhdCAw
+MDMwMDAwMCBmcm9tIGhhcnQgaWQgMAo+IEZEVCBpbWFnZSBhdCA3NDdjNzAwMAo+IEJ5ZS4uLgo+
+IFVuYWJsZSB0byBoYW5kbGUga2VybmVsIHBhZ2luZyByZXF1ZXN0IGF0IHZpcnR1YWwgYWRkcmVz
+cyBmZmZmZmZkYTIzYjBkMDAwCj4gT29wcyBbIzFdCj4gTW9kdWxlcyBsaW5rZWQgaW46Cj4gQ1BV
+OiAwIFBJRDogNTMgQ29tbTogdWluaXQgTm90IHRhaW50ZWQgNi40LjAtcmM2ICMxNQo+IEhhcmR3
+YXJlIG5hbWU6IFNvcGhnbyBNYW5nbyAoRFQpCj4gZXBjIDogMHhmZmZmZmZkYTIzYjBkMDAwCj4g
+IHJhIDogbWFjaGluZV9rZXhlYysweGE2LzB4YjAKPiBlcGMgOiBmZmZmZmZkYTIzYjBkMDAwIHJh
+IDogZmZmZmZmZmY4MDAwODI3MiBzcCA6IGZmZmZmZmM4MGMxNzNkMTAKPiAgZ3AgOiBmZmZmZmZm
+ZjgxNTBlMWUwIHRwIDogZmZmZmZmZDkwNzNkMmM0MCB0MCA6IDAwMDAwMDAwMDAwMDAwMDAKPiAg
+dDEgOiAwMDAwMDAwMDAwMDAwMDQyIHQyIDogNjU2NzYxNmQ2OTIwNTQ0NCBzMCA6IGZmZmZmZmM4
+MGMxNzNkNTAKPiAgczEgOiBmZmZmZmZkOTA3NmM0ODAwIGEwIDogZmZmZmZmZDkwNzZjNDgwMCBh
+MSA6IDAwMDAwMDAwMDAzMDAwMDAKPiAgYTIgOiAwMDAwMDAwMDc0N2M3MDAwIGEzIDogMDAwMDAw
+MDAwMDAwMDAwMCBhNCA6IGZmZmZmZmQ4MDAwMDAwMDAKPiAgYTUgOiAwMDAwMDAwMDAwMDAwMDAw
+IGE2IDogZmZmZmZmZDkwMzYxOWM0MCBhNyA6IGZmZmZmZmZmZmZmZmZmZmYKPiAgczIgOiBmZmZm
+ZmZkYTIzYjBkMDAwIHMzIDogMDAwMDAwMDAwMDMwMDAwMCBzNCA6IDAwMDAwMDAwNzQ3YzcwMDAK
+PiAgczUgOiAwMDAwMDAwMDAwMDAwMDAwIHM2IDogMDAwMDAwMDAwMDAwMDAwMCBzNyA6IDAwMDAw
+MDAwMDAwMDAwMDAKPiAgczggOiAwMDAwMDAwMDAwMDAwMDAwIHM5IDogMDAwMDAwMDAwMDAwMDAw
+MCBzMTA6IDAwMDAwMDAwMDAwMDAwMDAKPiAgczExOiAwMDAwMDAzZjk0MDAwMWEwIHQzIDogZmZm
+ZmZmZmY4MTUzNTFhZiB0NCA6IGZmZmZmZmZmODE1MzUxYWYKPiAgdDUgOiBmZmZmZmZmZjgxNTM1
+MWIwIHQ2IDogZmZmZmZmYzgwYzE3M2I1MAo+IHN0YXR1czogMDAwMDAwMDIwMDAwMDEwMCBiYWRh
+ZGRyOiBmZmZmZmZkYTIzYjBkMDAwIGNhdXNlOiAwMDAwMDAwMDAwMDAwMDBjCj4KPkdpdmVuIHRo
+ZSBjdXJyZW50IGZsYXcgaW4gdGhlIHNldF9tZW1vcnlfeCBpbXBsZW1lbnRhdGlvbiwgdGhlIHNp
+bXBsZXN0Cj5zb2x1dGlvbiBpcyB0byBmaXggbWFjaGluZV9rZXhlYygpIHRvIHJlbWFwIGNvbnRy
+b2wgY29kZSBwYWdlIG91dHNpZGUKPnRoZSBsaW5lYXIgbWFwcGluZy4gQmVjYXVzZSB0aGUgY29u
+dHJvbCBjb2RlIGJ1ZmZlciB3YXMgbW92ZWQgZnJvbSB0aGUKPmRpcmVjdCBtYXBwaW5nIGFyZWEg
+dG8gdGhlIHZtYWxsb2MgbG9jYXRpb24sIHdlIG5lZWQgYW4gYWRkaXRpb25hbAo+dmFfdmFfb2Zm
+c2V0IHRvIGZpeCB1cCB2YV9wYV9vZmZzZXQuCj4KPkZpeGVzOiAzMzM1MDY4Zjg3MjEgKCJyaXNj
+djogVXNlIFBVRC9QNEQvUEdEIHBhZ2VzIGZvciB0aGUgbGluZWFyIG1hcHBpbmciKQo+UmV2aWV3
+ZWQtYnk6IEFsZXhhbmRyZSBHaGl0aSA8YWxleGdoaXRpQHJpdm9zaW5jLmNvbT4KPlJlcG9ydGVk
+LWJ5OiBYaW5nIFhpYW9HdWFuZyA8eGluZ3hnMjAwOEAxNjMuY29tPgo+U2lnbmVkLW9mZi1ieTog
+R3VvIFJlbiA8Z3VvcmVuQGxpbnV4LmFsaWJhYmEuY29tPgo+U2lnbmVkLW9mZi1ieTogR3VvIFJl
+biA8Z3VvcmVuQGtlcm5lbC5vcmc+Cj4tLS0KPkNoYW5nZWxvZzoKPlY0Ogo+IC0gRml4dXAgdmFf
+cGFfb2Zmc2V0IHdpdGggYWRkaXRpb25hbCB2YV92YV9vZmZzZXQuCj4gLSBBZGQgUmVwb3J0ZWQt
+YnkgdGFnLgo+Cj5WMzoKPiAtIFJlc3VtZSBzZXRfbWVtb3J5X3ggdG8gc2V0IHRoZSBfUEFHRV9F
+WEVDIGF0dHJpYnV0ZQo+IC0gT3B0aW1pemUgdGhlIGNvbW1pdCBsb2cgd2l0aCBBbGV4YW5kcmUg
+YWR2aWNlCj4KPlYyOgo+IC0gVXNlIHZtX21hcF9yYW0gaW5zdGVhZCBvZiBtb2RpZnlpbmcgc2V0
+X21lbW9yeV94Cj4gLSBDb3JyZWN0IEZpeGVzIHRhZwo+LS0tCj4gYXJjaC9yaXNjdi9pbmNsdWRl
+L2FzbS9rZXhlYy5oICAgIHwgIDEgKwo+IGFyY2gvcmlzY3Yva2VybmVsL21hY2hpbmVfa2V4ZWMu
+YyB8IDE4ICsrKysrKysrKysrKysrKy0tLQo+IDIgZmlsZXMgY2hhbmdlZCwgMTYgaW5zZXJ0aW9u
+cygrKSwgMyBkZWxldGlvbnMoLSkKPgo+ZGlmZiAtLWdpdCBhL2FyY2gvcmlzY3YvaW5jbHVkZS9h
+c20va2V4ZWMuaCBiL2FyY2gvcmlzY3YvaW5jbHVkZS9hc20va2V4ZWMuaAo+aW5kZXggMmI1Njc2
+OWNiNTMwLi4xNzQ1NmU5MTQ3NmUgMTAwNjQ0Cj4tLS0gYS9hcmNoL3Jpc2N2L2luY2x1ZGUvYXNt
+L2tleGVjLmgKPisrKyBiL2FyY2gvcmlzY3YvaW5jbHVkZS9hc20va2V4ZWMuaAo+QEAgLTQxLDYg
+KzQxLDcgQEAgY3Jhc2hfc2V0dXBfcmVncyhzdHJ1Y3QgcHRfcmVncyAqbmV3cmVncywKPiBzdHJ1
+Y3Qga2ltYWdlX2FyY2ggewo+IAl2b2lkICpmZHQ7IC8qIEZvciBDT05GSUdfS0VYRUNfRklMRSAq
+Lwo+IAl1bnNpZ25lZCBsb25nIGZkdF9hZGRyOwo+Kwl2b2lkICpjb250cm9sX2NvZGVfYnVmZmVy
+Owo+IH07Cj4gCj4gZXh0ZXJuIGNvbnN0IHVuc2lnbmVkIGNoYXIgcmlzY3Zfa2V4ZWNfcmVsb2Nh
+dGVbXTsKPmRpZmYgLS1naXQgYS9hcmNoL3Jpc2N2L2tlcm5lbC9tYWNoaW5lX2tleGVjLmMgYi9h
+cmNoL3Jpc2N2L2tlcm5lbC9tYWNoaW5lX2tleGVjLmMKPmluZGV4IDJkMTM5YjcyNGJjOC4uNjBj
+MWVmM2MyMjMyIDEwMDY0NAo+LS0tIGEvYXJjaC9yaXNjdi9rZXJuZWwvbWFjaGluZV9rZXhlYy5j
+Cj4rKysgYi9hcmNoL3Jpc2N2L2tlcm5lbC9tYWNoaW5lX2tleGVjLmMKPkBAIC04Niw3ICs4Niwx
+NCBAQCBtYWNoaW5lX2tleGVjX3ByZXBhcmUoc3RydWN0IGtpbWFnZSAqaW1hZ2UpCj4gCj4gCS8q
+IENvcHkgdGhlIGFzc2VtYmxlciBjb2RlIGZvciByZWxvY2F0aW9uIHRvIHRoZSBjb250cm9sIHBh
+Z2UgKi8KPiAJaWYgKGltYWdlLT50eXBlICE9IEtFWEVDX1RZUEVfQ1JBU0gpIHsKPi0JCWNvbnRy
+b2xfY29kZV9idWZmZXIgPSBwYWdlX2FkZHJlc3MoaW1hZ2UtPmNvbnRyb2xfY29kZV9wYWdlKTsK
+PisJCWNvbnRyb2xfY29kZV9idWZmZXIgPSB2bV9tYXBfcmFtKCZpbWFnZS0+Y29udHJvbF9jb2Rl
+X3BhZ2UsCj4rCQkJCQkJIEtFWEVDX0NPTlRST0xfUEFHRV9TSVpFL1BBR0VfU0laRSwKPisJCQkJ
+CQkgTlVNQV9OT19OT0RFKTsKPisJCWlmIChjb250cm9sX2NvZGVfYnVmZmVyID09IE5VTEwpIHsK
+PisJCQlwcl9lcnIoIkZhaWxlZCB0byB2bV9tYXAgY29udHJvbCBwYWdlXG4iKTsKPisJCQlyZXR1
+cm4gLUVOT01FTTsKPisJCX0KPisKPiAJCWNvbnRyb2xfY29kZV9idWZmZXJfc3ogPSBwYWdlX3Np
+emUoaW1hZ2UtPmNvbnRyb2xfY29kZV9wYWdlKTsKPiAKPiAJCWlmICh1bmxpa2VseShyaXNjdl9r
+ZXhlY19yZWxvY2F0ZV9zaXplID4gY29udHJvbF9jb2RlX2J1ZmZlcl9zeikpIHsKPkBAIC05OSw2
+ICsxMDYsOCBAQCBtYWNoaW5lX2tleGVjX3ByZXBhcmUoc3RydWN0IGtpbWFnZSAqaW1hZ2UpCj4g
+Cj4gCQkvKiBNYXJrIHRoZSBjb250cm9sIHBhZ2UgZXhlY3V0YWJsZSAqLwo+IAkJc2V0X21lbW9y
+eV94KCh1bnNpZ25lZCBsb25nKSBjb250cm9sX2NvZGVfYnVmZmVyLCAxKTsKPisKPisJCWludGVy
+bmFsLT5jb250cm9sX2NvZGVfYnVmZmVyID0gY29udHJvbF9jb2RlX2J1ZmZlcjsKPiAJfQo+IAo+
+IAlyZXR1cm4gMDsKPkBAIC0yMTEsNyArMjIwLDEwIEBAIG1hY2hpbmVfa2V4ZWMoc3RydWN0IGtp
+bWFnZSAqaW1hZ2UpCj4gCXVuc2lnbmVkIGxvbmcgdGhpc19jcHVfaWQgPSBfX3NtcF9wcm9jZXNz
+b3JfaWQoKTsKPiAJdW5zaWduZWQgbG9uZyB0aGlzX2hhcnRfaWQgPSBjcHVpZF90b19oYXJ0aWRf
+bWFwKHRoaXNfY3B1X2lkKTsKPiAJdW5zaWduZWQgbG9uZyBmZHRfYWRkciA9IGludGVybmFsLT5m
+ZHRfYWRkcjsKPi0Jdm9pZCAqY29udHJvbF9jb2RlX2J1ZmZlciA9IHBhZ2VfYWRkcmVzcyhpbWFn
+ZS0+Y29udHJvbF9jb2RlX3BhZ2UpOwo+Kwl2b2lkICpjb250cm9sX2NvZGVfYnVmZmVyID0gaW50
+ZXJuYWwtPmNvbnRyb2xfY29kZV9idWZmZXI7Cj4rCXVuc2lnbmVkIGxvbmcgdmFfdmFfb2Zmc2V0
+ID0KPisJCQkodW5zaWduZWQgbG9uZykgcGFnZV9hZGRyZXNzKGltYWdlLT5jb250cm9sX2NvZGVf
+cGFnZSkKPisJCSAgICAgIC0gKHVuc2lnbmVkIGxvbmcpIGNvbnRyb2xfY29kZV9idWZmZXI7Cj4g
+CXJpc2N2X2tleGVjX21ldGhvZCBrZXhlY19tZXRob2QgPSBOVUxMOwo+IAo+ICNpZmRlZiBDT05G
+SUdfU01QCj5AQCAtMjM0LDYgKzI0Niw2IEBAIG1hY2hpbmVfa2V4ZWMoc3RydWN0IGtpbWFnZSAq
+aW1hZ2UpCj4gCS8qIEp1bXAgdG8gdGhlIHJlbG9jYXRpb24gY29kZSAqLwo+IAlwcl9ub3RpY2Uo
+IkJ5ZS4uLlxuIik7Cj4gCWtleGVjX21ldGhvZChmaXJzdF9pbmRfZW50cnksIGp1bXBfYWRkciwg
+ZmR0X2FkZHIsCj4tCQkgICAgIHRoaXNfaGFydF9pZCwga2VybmVsX21hcC52YV9wYV9vZmZzZXQp
+Owo+KwkJICAgICB0aGlzX2hhcnRfaWQsIGtlcm5lbF9tYXAudmFfcGFfb2Zmc2V0IC0gdmFfdmFf
+b2Zmc2V0KTsKPiAJdW5yZWFjaGFibGUoKTsKPiB9Cj4tLSAKPjIuMzYuMQo=
