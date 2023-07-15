@@ -2,288 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8498754BDC
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 21:52:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5788F754BE0
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 21:55:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229891AbjGOTwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 15:52:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39934 "EHLO
+        id S230081AbjGOTzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 15:55:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjGOTwG (ORCPT
+        with ESMTP id S229500AbjGOTy7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 15:52:06 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE09F1B6
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 12:52:04 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qKlJA-00044x-JJ; Sat, 15 Jul 2023 21:52:00 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qKlJ9-00Edgc-2g; Sat, 15 Jul 2023 21:51:59 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qKlJ7-0058U7-RP; Sat, 15 Jul 2023 21:51:57 +0200
-Date:   Sat, 15 Jul 2023 21:51:56 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Ben Dooks <ben.dooks@sifive.com>
-Cc:     linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ben.dooks@codethink.co.uk,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        jarkko.nikula@linux.intel.com,
-        William Salmon <william.salmon@sifive.com>,
-        Jude Onyenegecha <jude.onyenegecha@sifive.com>
-Subject: Re: [PATCH v8 5/5] pwm: dwc: add of/platform support
-Message-ID: <20230715195156.fahd2btntvbqpd66@pengutronix.de>
-References: <20230614171457.69191-1-ben.dooks@sifive.com>
- <20230614171457.69191-6-ben.dooks@sifive.com>
+        Sat, 15 Jul 2023 15:54:59 -0400
+Received: from mail-oi1-f208.google.com (mail-oi1-f208.google.com [209.85.167.208])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4E7AE5C
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 12:54:57 -0700 (PDT)
+Received: by mail-oi1-f208.google.com with SMTP id 5614622812f47-3a3a8ceb0e3so4960386b6e.3
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 12:54:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689450897; x=1692042897;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XFv0/MCAgWYbwzr1AKVJ7Am8jiOtEnsgKi71vMY8H/U=;
+        b=IrV8CXzE0PUp+dwA71hZI7crNxiigD8Tx9D9sjxLyTseu3Uz3eCEJ9lfomQ8mTfYg4
+         GpDhUru2DzSbCL02+mSnbORdoAawGxqx4izWiEBhqnyeSt2lh4YCbc7jwTq6srzpJZxm
+         9KLFO4Q5I/K7r3E1k6nQQGzjEb8O06YZnS6uGN7WBVLxVazzQMYQ2/Pohjt3blDlZI50
+         NUL+BLfHadjPkXGrt/nkd2R5ErWc+JZqvFThTIIMHvp3rdkfdcI7Kb6UKcoW4cq3iWMB
+         6liVgtHPVLEScGTtIdO8A3D/2qYxm5WMK67SLxoy9DqrE4uIX3rOSN0+T4EfaZfKifWu
+         qD7Q==
+X-Gm-Message-State: ABy/qLbjksZ7hKh6mqgIccEnBzcuRWywo8DFBgZsQnCz/SgvNAYsdR2q
+        5qZG71CEOltbAO2+IzjlQaZbWMY5y3pKokY0gOmYBgmmgn1c
+X-Google-Smtp-Source: APBJJlHuY2LNRCk3xLW9DVN/E1ALINkKR6qSnqp86Gy9fLvMeVbI9W5yuzHtrEbZYrjwdx30U7mR1R0ebrftv5VL/3HFBK+a8kq3
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="uk3g2pfod6i5g7sl"
-Content-Disposition: inline
-In-Reply-To: <20230614171457.69191-6-ben.dooks@sifive.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6808:189a:b0:3a3:b8ab:c211 with SMTP id
+ bi26-20020a056808189a00b003a3b8abc211mr10570514oib.4.1689450897018; Sat, 15
+ Jul 2023 12:54:57 -0700 (PDT)
+Date:   Sat, 15 Jul 2023 12:54:56 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000095141106008bf0b5@google.com>
+Subject: [syzbot] [ext4?] [reiserfs?] kernel BUG in __phys_addr (2)
+From:   syzbot <syzbot+daa1128e28d3c3961cb2@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, jack@suse.com,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, reiserfs-devel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
---uk3g2pfod6i5g7sl
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+syzbot found the following issue on:
 
-On Wed, Jun 14, 2023 at 06:14:57PM +0100, Ben Dooks wrote:
-> The dwc pwm controller can be used in non-PCI systems, so allow
-> either platform or OF based probing.
+HEAD commit:    8e4b7f2f3d60 Add linux-next specific files for 20230711
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=132602caa80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=eaa6217eed71d333
+dashboard link: https://syzkaller.appspot.com/bug?extid=daa1128e28d3c3961cb2
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11605074a80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14f723e2a80000
 
-A document describing the binding is needed here.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/52debf037744/disk-8e4b7f2f.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/7b4580012911/vmlinux-8e4b7f2f.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/79b0de8a559f/bzImage-8e4b7f2f.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/c865e2933fcf/mount_0.gz
 
->=20
-> Signed-off-by: Ben Dooks <ben.dooks@sifive.com>
-> ---
-> v8:
->  - add compile test for of-case
->  - add module namespace
->  - move later in the series
-> v7:
->  - fixup kconfig from previous pcie changes
-> v5:
->  - fix missing " in kconfig
->  - remove .remove method, devm already sorts this.
->  - merge pwm-number code
->  - split the of code out of the core
->  - get bus clock
-> v4:
->  - moved the compile test code earlier
->  - fixed review comments
->  - used NS_PER_SEC
->  - use devm_clk_get_enabled
->  - ensure we get the bus clock
-> v3:
->  - changed compatible name
-> ---
->  drivers/pwm/Kconfig        | 10 +++++
->  drivers/pwm/Makefile       |  1 +
->  drivers/pwm/pwm-dwc-core.c |  6 +++
->  drivers/pwm/pwm-dwc-of.c   | 78 ++++++++++++++++++++++++++++++++++++++
->  drivers/pwm/pwm-dwc.c      |  1 +
->  drivers/pwm/pwm-dwc.h      |  1 +
->  6 files changed, 97 insertions(+)
->  create mode 100644 drivers/pwm/pwm-dwc-of.c
->=20
-> diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
-> index 7c54cdcb97a0..61f5d3f30fd7 100644
-> --- a/drivers/pwm/Kconfig
-> +++ b/drivers/pwm/Kconfig
-> @@ -205,6 +205,16 @@ config PWM_DWC
->  	  To compile this driver as a module, choose M here: the module
->  	  will be called pwm-dwc.
-> =20
-> +config PWM_DWC_OF
-> +	tristate "DesignWare PWM Controller (OF bus)"
-> +	depends on HAS_IOMEM && (OF || COMPILE_TEST)
-> +	select PWM_DWC_CORE
-> +	help
-> +	  PWM driver for Synopsys DWC PWM Controller on an OF bus.
-> +
-> +	  To compile this driver as a module, choose M here: the module
-> +	  will be called pwm-dwc-of.
-> +
->  config PWM_EP93XX
->  	tristate "Cirrus Logic EP93xx PWM support"
->  	depends on ARCH_EP93XX || COMPILE_TEST
-> diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
-> index de3ed77e8d7c..d27dfbb850b7 100644
-> --- a/drivers/pwm/Makefile
-> +++ b/drivers/pwm/Makefile
-> @@ -17,6 +17,7 @@ obj-$(CONFIG_PWM_CRC)		+=3D pwm-crc.o
->  obj-$(CONFIG_PWM_CROS_EC)	+=3D pwm-cros-ec.o
->  obj-$(CONFIG_PWM_DWC_CORE)	+=3D pwm-dwc-core.o
->  obj-$(CONFIG_PWM_DWC)		+=3D pwm-dwc.o
-> +obj-$(CONFIG_PWM_DWC_OF)	+=3D pwm-dwc-of.o
->  obj-$(CONFIG_PWM_EP93XX)	+=3D pwm-ep93xx.o
->  obj-$(CONFIG_PWM_FSL_FTM)	+=3D pwm-fsl-ftm.o
->  obj-$(CONFIG_PWM_HIBVT)		+=3D pwm-hibvt.o
-> diff --git a/drivers/pwm/pwm-dwc-core.c b/drivers/pwm/pwm-dwc-core.c
-> index 0f07e26e6c30..ed102fc4b30a 100644
-> --- a/drivers/pwm/pwm-dwc-core.c
-> +++ b/drivers/pwm/pwm-dwc-core.c
-> @@ -16,6 +16,7 @@
->  #include <linux/kernel.h>
->  #include <linux/module.h>
->  #include <linux/pci.h>
-> +#include <linux/clk.h>
->  #include <linux/pm_runtime.h>
->  #include <linux/pwm.h>
-> =20
-> @@ -44,6 +45,9 @@ static int __dwc_pwm_configure_timer(struct dwc_pwm *dw=
-c,
->  	u32 high;
->  	u32 low;
-> =20
-> +	if (dwc->clk)
-> +		dwc->clk_rate =3D clk_get_rate(dwc->clk);
-> +
->  	/*
->  	 * Calculate width of low and high period in terms of input clock
->  	 * periods and check are the result within HW limits between 1 and
-> @@ -128,6 +132,8 @@ static int dwc_pwm_get_state(struct pwm_chip *chip, s=
-truct pwm_device *pwm,
-> =20
->  	pm_runtime_get_sync(chip->dev);
-> =20
-> +	if (dwc->clk)
-> +		dwc->clk_rate =3D clk_get_rate(dwc->clk);
->  	clk_rate =3D dwc->clk_rate;
-> =20
->  	ctrl =3D dwc_pwm_readl(dwc, DWC_TIM_CTRL(pwm->hwpwm));
-> diff --git a/drivers/pwm/pwm-dwc-of.c b/drivers/pwm/pwm-dwc-of.c
-> new file mode 100644
-> index 000000000000..13a0b534b383
-> --- /dev/null
-> +++ b/drivers/pwm/pwm-dwc-of.c
-> @@ -0,0 +1,78 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * DesignWare PWM Controller driver OF
-> + *
-> + * Copyright (C) 2022 SiFive, Inc.
-> + */
-> +
-> +#define DEFAULT_MODULE_NAMESACE dwc_pwm
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+daa1128e28d3c3961cb2@syzkaller.appspotmail.com
 
-missing P? I'd have put this into drivers/pwm/pwm-dwc.h.
+------------[ cut here ]------------
+kernel BUG at arch/x86/mm/physaddr.c:28!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 5041 Comm: syz-executor387 Not tainted 6.5.0-rc1-next-20230711-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/03/2023
+RIP: 0010:__phys_addr+0xd7/0x140 arch/x86/mm/physaddr.c:28
+Code: e3 44 89 e9 31 ff 48 d3 eb 48 89 de e8 02 ec 4a 00 48 85 db 75 0f e8 b8 ef 4a 00 4c 89 e0 5b 5d 41 5c 41 5d c3 e8 a9 ef 4a 00 <0f> 0b e8 a2 ef 4a 00 48 c7 c0 10 e0 79 8c 48 ba 00 00 00 00 00 fc
+RSP: 0018:ffffc900039feeb0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 06100164000013b6 RCX: 0000000000000000
+RDX: ffff88807e7f1dc0 RSI: ffffffff813a2f67 RDI: 0000000000000006
+RBP: 06100164800013b6 R08: 0000000000000006 R09: 06100164800013b6
+R10: 061078e4000013b6 R11: 0000000000000001 R12: 061078e4000013b6
+R13: ffffc900039fef18 R14: 06100164000013b6 R15: 0000000000000000
+FS:  000055555695c480(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055fb6fc92f18 CR3: 0000000074063000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ virt_to_folio include/linux/mm.h:1263 [inline]
+ virt_to_slab mm/kasan/../slab.h:213 [inline]
+ qlink_to_cache mm/kasan/quarantine.c:129 [inline]
+ qlist_free_all+0x86/0x170 mm/kasan/quarantine.c:182
+ kasan_quarantine_reduce+0x195/0x220 mm/kasan/quarantine.c:292
+ __kasan_slab_alloc+0x63/0x90 mm/kasan/common.c:305
+ kasan_slab_alloc include/linux/kasan.h:186 [inline]
+ slab_post_alloc_hook mm/slab.h:762 [inline]
+ slab_alloc_node mm/slub.c:3470 [inline]
+ slab_alloc mm/slub.c:3478 [inline]
+ __kmem_cache_alloc_lru mm/slub.c:3485 [inline]
+ kmem_cache_alloc+0x173/0x390 mm/slub.c:3494
+ kmem_cache_zalloc include/linux/slab.h:693 [inline]
+ jbd2_alloc_handle include/linux/jbd2.h:1602 [inline]
+ new_handle fs/jbd2/transaction.c:476 [inline]
+ jbd2__journal_start+0x190/0x850 fs/jbd2/transaction.c:503
+ __ext4_journal_start_sb+0x411/0x5d0 fs/ext4/ext4_jbd2.c:111
+ __ext4_journal_start fs/ext4/ext4_jbd2.h:326 [inline]
+ ext4_dirty_inode+0xa5/0x130 fs/ext4/inode.c:5919
+ __mark_inode_dirty+0x1e0/0xd60 fs/fs-writeback.c:2430
+ mark_inode_dirty include/linux/fs.h:2150 [inline]
+ generic_write_end+0x354/0x440 fs/buffer.c:2317
+ ext4_da_write_end+0x1f9/0xb50 fs/ext4/inode.c:2988
+ generic_perform_write+0x331/0x5d0 mm/filemap.c:3936
+ ext4_buffered_write_iter+0x123/0x3d0 fs/ext4/file.c:299
+ ext4_file_write_iter+0x8f2/0x1880 fs/ext4/file.c:722
+ __kernel_write_iter+0x262/0x7e0 fs/read_write.c:517
+ dump_emit_page fs/coredump.c:888 [inline]
+ dump_user_range+0x23c/0x710 fs/coredump.c:915
+ elf_core_dump+0x27f4/0x3790 fs/binfmt_elf.c:2142
+ do_coredump+0x2f44/0x4050 fs/coredump.c:764
+ get_signal+0x1c16/0x2650 kernel/signal.c:2875
+ arch_do_signal_or_restart+0x79/0x5c0 arch/x86/kernel/signal.c:309
+ exit_to_user_mode_loop kernel/entry/common.c:168 [inline]
+ exit_to_user_mode_prepare+0x11f/0x240 kernel/entry/common.c:204
+ irqentry_exit_to_user_mode+0x9/0x40 kernel/entry/common.c:310
+ exc_page_fault+0xc0/0x170 arch/x86/mm/fault.c:1568
+ asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:570
+RIP: 0033:0x7f92da04d4f3
+Code: 3f 00 00 77 02 c3 90 48 89 77 20 31 c0 c3 66 0f 1f 84 00 00 00 00 00 41 55 41 54 55 53 48 83 ec 08 64 48 8b 04 25 10 00 00 00 <4c> 8b a0 98 06 00 00 4c 03 a0 90 06 00 00 4c 29 e6 64 48 8b 1c 25
+RSP: 002b:00007fffbd381320 EFLAGS: 00010202
+RAX: 0000000000000001 RBX: 0000000000000001 RCX: 00007f92da0a4af5
+RDX: 0000000000000006 RSI: 00007fffbd381348 RDI: 00007f92da1025b0
+RBP: 00007f92da1025b0 R08: 0000000000000000 R09: 00007fffbd588080
+R10: 0000000000000000 R11: 0000000000000293 R12: 00007fffbd47ebf0
+R13: 000000000001ef5f R14: 00007fffbd47ec30 R15: 0000000000000004
+ </TASK>
+Modules linked in:
 
-> +
-> +#include <linux/bitops.h>
-> +#include <linux/export.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/clk.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/pm_runtime.h>
-> +#include <linux/pwm.h>
-> +#include <linux/io.h>
-> +
-> +#include "pwm-dwc.h"
-> +
-> +static int dwc_pwm_plat_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev =3D &pdev->dev;
-> +	struct dwc_pwm *dwc;
-> +	struct clk *bus;
-> +	u32 nr_pwm;
-> +
-> +	dwc =3D dwc_pwm_alloc(dev);
-> +	if (!dwc)
-> +		return -ENOMEM;
-> +
-> +	if (!device_property_read_u32(dev, "snps,pwm-number", &nr_pwm)) {
-> +		if (nr_pwm > DWC_TIMERS_TOTAL)
-> +			dev_err(dev, "too many PWMs (%d) specified, capping at %d\n",
-> +				nr_pwm, dwc->chip.npwm);
-> +		else
-> +			dwc->chip.npwm =3D nr_pwm;
-> +	}
-> +
-> +	dwc->base =3D devm_platform_ioremap_resource(pdev, 0);
-> +	if (IS_ERR(dwc->base))
-> +		return PTR_ERR(dwc->base);
-> +
-> +	bus =3D devm_clk_get_enabled(dev, NULL);
-> +	if (IS_ERR(bus))
-> +		return dev_err_probe(dev, PTR_ERR(bus),
-> +				     "failed to get clock\n");
-> +
-> +	dwc->clk =3D devm_clk_get_enabled(dev, "timer");
-> +	if (IS_ERR(dwc->clk))
-> +		return dev_err_probe(dev, PTR_ERR(dwc->clk),
-> +				     "failed to get timer clock\n");
-> +
-> +	dwc->clk_rate =3D clk_get_rate(dwc->clk);
 
-Do you need this here? Isn't clk_rate assigned each time it's used when
-clk !=3D NULL?
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-> +	return devm_pwmchip_add(dev, &dwc->chip);
-> +}
-> +
-> +static const struct of_device_id dwc_pwm_dt_ids[] =3D {
-> +	{ .compatible =3D "snps,dw-apb-timers-pwm2" },
-> +	{ },
-> +};
-> +MODULE_DEVICE_TABLE(of, dwc_pwm_dt_ids);
-> +
-> +static struct platform_driver dwc_pwm_plat_driver =3D {
-> +	.driver =3D {
-> +		.name		=3D "dwc-pwm",
-> +		.of_match_table  =3D dwc_pwm_dt_ids,
-> +	},
-> +	.probe	=3D dwc_pwm_plat_probe,
-> +};
-> +
-> +module_platform_driver(dwc_pwm_plat_driver);
-> +
-> +MODULE_ALIAS("platform:dwc-pwm-of");
-> +MODULE_AUTHOR("Ben Dooks <ben.dooks@sifive.com>");
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-Given that this email address is (or soon will be) unavailable, maybe
-better put your codethink address here?
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-Best regards
-Uwe
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
---uk3g2pfod6i5g7sl
-Content-Type: application/pgp-signature; name="signature.asc"
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmSy+NsACgkQj4D7WH0S
-/k4BVQgAgfQrkmy+1RRLl6Zk0usiTE06K0JbHbbmLLWB3uN8Cvs93wmS6zP+Fj87
-rvkghgOBWnxYNK85RLDvG7ywrEsahkXJhfgJlVtqYsT4JysZCTwqUzr8Ewd7id75
-mCrdJbEOfHENR7C0TvJ5Zg4sW+TDDTnNCAm4p6wvb9Wkj3+F7IUwnQ0SFqWlaGt0
-2ORJsKR/bLjK3389fIhBCuU0XMrAg+7l6ypk2Q4nqrfqzFYP7+w+oQhJU1TFcli3
-4Be0CErhKkiTfzWiVSatzRYWtM4ylvH7O7hwgC8FEG2PwbuzoQKjJtCKeQf1qT/p
-jpfiiIGI/5LFOguflEhupNKS6DGO5g==
-=22Se
------END PGP SIGNATURE-----
-
---uk3g2pfod6i5g7sl--
+If you want to undo deduplication, reply with:
+#syz undup
