@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3CFF75485E
+	by mail.lfdr.de (Postfix) with ESMTP id 7CA5F75485D
 	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 13:07:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230321AbjGOLHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 07:07:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45264 "EHLO
+        id S230371AbjGOLHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 07:07:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229639AbjGOLHK (ORCPT
+        with ESMTP id S229919AbjGOLHK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 15 Jul 2023 07:07:10 -0400
 Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEFA1269D;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF1852702;
         Sat, 15 Jul 2023 04:07:06 -0700 (PDT)
 Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 45C82100009;
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 6E90310000A;
         Sat, 15 Jul 2023 14:07:03 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 45C82100009
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 6E90310000A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
         s=mail; t=1689419223;
-        bh=dZOh2J+PejsEqvr9CEyYrAsUac8NNrLT8A1ago5/XVo=;
+        bh=3mmX30I0FwXOJ51SYCtTE0imFkDvARZbsiRbScj96a4=;
         h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-        b=L254plI7N+aHYEHu1aptAhg3pCJmrU35E7F27SK1G8PLwgqDhPlpeD2mNOCo1jAnA
-         N/4ySi56FUGA+FlEXlxf7UAHlKithRa2IXnwl3uo9OJDDIHhUUG+yXXHYF5fq45CI0
-         DN3z1DYUv+0Xm507TZwHNjHEvGU8rFhrbWO4xLv3r69guwKlG//PqAvVidtGUADaoW
-         sjSFmzE2B/gOkGy4hodhUeeJwWxKMStWZRRuP5w17r4UQ2aXAkCiATYAE6vojRwwwG
-         IhZ4y2WP/Il7cSncXP4KoWUWAv3h/NmN5PCBqb+WclbaFF9Ec2306S0cuaaQtAMmvg
-         IUPCgaWoZMJ4A==
+        b=fxK9S0yGCJ66oe6he9tWrrxdTp0sj5iR3ghXAL1UZDufz/Yo53ZQjCXs8OhlV7ctF
+         +qFtfma4MKpl5o7El7xbt5Y7mjPIuxivPTgJ+gXcrxJWA3L482Vaa2a/N6JV+kONXY
+         n2/NXM4XTQD+fyeMZPuwD1t6DcBY4/3nARfYxG2hmvBa8ImcagiK8GEuRKLi7X89oM
+         /UuP8+kbmGI48eTwalZsXh3wxduRQny8vMAOo6KvVuwASEow55LbXJ2INyzEyM4VRQ
+         7QgPv7XQFQ8xZLBsXtiXHY9WVmQk7dUOPIAWL9rLC2FlvB69yFiX2mZRla+Ma3uy8x
+         Wzziy6SvKSLdw==
 Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
@@ -48,9 +48,9 @@ CC:     <linux-iio@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>,
         <linux-amlogic@lists.infradead.org>, <kernel@sberdevices.ru>
-Subject: [PATCH v1 2/3] iio: adc: meson: init internal continuous ring counter
-Date:   Sat, 15 Jul 2023 14:05:59 +0300
-Message-ID: <20230715110654.6035-3-gnstark@sberdevices.ru>
+Subject: [PATCH v1 3/3] iio: adc: meson: init voltage control bits
+Date:   Sat, 15 Jul 2023 14:06:00 +0300
+Message-ID: <20230715110654.6035-4-gnstark@sberdevices.ru>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230715110654.6035-1-gnstark@sberdevices.ru>
 References: <20230715110654.6035-1-gnstark@sberdevices.ru>
@@ -86,54 +86,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Disable internal continuous ring counter at init stage. Disable value
-depends on SoC family: gxl and later SoCs write 1, others write 0.
-This bit are inited in vendor boot code (bl2, bl33) already so do it
-in the driver to not depend on other code.
+Define and init voltage configuration bits. Those bits are inited in
+vendor boot code (bl2, bl33) already so do it in the driver to not depend
+on other code.
+
+Introduced bits:
+REG11[0] - selects Vref. 0 - calibration voltage, 1 - VDDA. txlx and later
+           SoCs support VDDA or calibration voltage as Vref, but others
+           support only calibration voltage. For newer platforms vendor
+	   uses VDDA as default.
+REG11[1] - reserved bit. g12a and later SoCs must write 1, others SoCs
+           write 0.
+REG11[5] - Vref voltage. 0 - 0.9v, 1 - 1.8v. g12a and later SoCs must
+           write 0, others SoCs write 1.
+REG11[6] - selects common-mode voltage, 0: from AVDD, 1: from Vref.
+           g12a and later SoCs must write 0, others SoCs write 1.
 
 Signed-off-by: George Stark <gnstark@sberdevices.ru>
 ---
- drivers/iio/adc/meson_saradc.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/iio/adc/meson_saradc.c | 48 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 48 insertions(+)
 
 diff --git a/drivers/iio/adc/meson_saradc.c b/drivers/iio/adc/meson_saradc.c
-index 524e5569381e..806ba7cd7320 100644
+index 806ba7cd7320..05fb30b81b8d 100644
 --- a/drivers/iio/adc/meson_saradc.c
 +++ b/drivers/iio/adc/meson_saradc.c
-@@ -313,6 +313,7 @@ struct meson_sar_adc_param {
- 	u8					temperature_trimming_bits;
+@@ -156,6 +156,10 @@
+  */
+ #define MESON_SAR_ADC_REG11					0x2c
+ 	#define MESON_SAR_ADC_REG11_BANDGAP_EN			BIT(13)
++	#define MESON_SAR_ADC_REG11_CMV_SEL                     BIT(6)
++	#define MESON_SAR_ADC_REG11_VREF_VOLTAGE                BIT(5)
++	#define MESON_SAR_ADC_REG11_EOC                         BIT(1)
++	#define MESON_SAR_ADC_REG11_VREF_SEL                    BIT(0)
+ 
+ #define MESON_SAR_ADC_REG13					0x34
+ 	#define MESON_SAR_ADC_REG13_12BIT_CALIBRATION_MASK	GENMASK(13, 8)
+@@ -216,6 +220,11 @@
+ 	.datasheet_name = "SAR_ADC_MUX_"#_sel,				\
+ }
+ 
++enum meson_sar_adc_vref_sel {
++	VREF_CALIBATION_VOLTAGE = 0,
++	VREF_VDDA = 1,
++};
++
+ enum meson_sar_adc_avg_mode {
+ 	NO_AVERAGING = 0x0,
+ 	MEAN_AVERAGING = 0x1,
+@@ -314,6 +323,12 @@ struct meson_sar_adc_param {
  	unsigned int				temperature_multiplier;
  	unsigned int				temperature_divider;
-+	u8					disable_ring_counter;
+ 	u8					disable_ring_counter;
++	bool					has_reg11;
++	bool					has_vref_select;
++	u8					vref_select;
++	u8					cmv_select;
++	u8					adc_eoc;
++	enum meson_sar_adc_vref_sel		vref_volatge;
  };
  
  struct meson_sar_adc_data {
-@@ -967,6 +968,12 @@ static int meson_sar_adc_init(struct iio_dev *indio_dev)
- 				   MESON_SAR_ADC_DELTA_10_TS_REVE0, 0);
- 	}
+@@ -974,6 +989,29 @@ static int meson_sar_adc_init(struct iio_dev *indio_dev)
+ 			   MESON_SAR_ADC_REG3_CTRL_CONT_RING_COUNTER_EN,
+ 			   regval);
  
-+	regval = FIELD_PREP(MESON_SAR_ADC_REG3_CTRL_CONT_RING_COUNTER_EN,
-+			    priv->param->disable_ring_counter);
-+	regmap_update_bits(priv->regmap, MESON_SAR_ADC_REG3,
-+			   MESON_SAR_ADC_REG3_CTRL_CONT_RING_COUNTER_EN,
-+			   regval);
++	if (priv->param->has_reg11) {
++		regval = FIELD_PREP(MESON_SAR_ADC_REG11_EOC, priv->param->adc_eoc);
++		regmap_update_bits(priv->regmap, MESON_SAR_ADC_REG11,
++				   MESON_SAR_ADC_REG11_EOC, regval);
++
++		if (priv->param->has_vref_select) {
++			regval = FIELD_PREP(MESON_SAR_ADC_REG11_VREF_SEL,
++					    priv->param->vref_select);
++			regmap_update_bits(priv->regmap, MESON_SAR_ADC_REG11,
++					   MESON_SAR_ADC_REG11_VREF_SEL, regval);
++		}
++
++		regval = FIELD_PREP(MESON_SAR_ADC_REG11_VREF_VOLTAGE,
++				    priv->param->vref_volatge);
++		regmap_update_bits(priv->regmap, MESON_SAR_ADC_REG11,
++				   MESON_SAR_ADC_REG11_VREF_VOLTAGE, regval);
++
++		regval = FIELD_PREP(MESON_SAR_ADC_REG11_CMV_SEL,
++				    priv->param->cmv_select);
++		regmap_update_bits(priv->regmap, MESON_SAR_ADC_REG11,
++				   MESON_SAR_ADC_REG11_CMV_SEL, regval);
++	}
 +
  	ret = clk_set_parent(priv->adc_sel_clk, priv->clkin);
  	if (ret)
  		return dev_err_probe(dev, ret, "failed to set adc parent to clkin\n");
-@@ -1196,6 +1203,7 @@ static const struct meson_sar_adc_param meson_sar_adc_gxl_param = {
+@@ -1195,6 +1233,9 @@ static const struct meson_sar_adc_param meson_sar_adc_gxbb_param = {
  	.bandgap_reg = MESON_SAR_ADC_REG11,
  	.regmap_config = &meson_sar_adc_regmap_config_gxbb,
+ 	.resolution = 10,
++	.has_reg11 = true,
++	.vref_volatge = 1,
++	.cmv_select = 1,
+ };
+ 
+ static const struct meson_sar_adc_param meson_sar_adc_gxl_param = {
+@@ -1204,6 +1245,9 @@ static const struct meson_sar_adc_param meson_sar_adc_gxl_param = {
+ 	.regmap_config = &meson_sar_adc_regmap_config_gxbb,
  	.resolution = 12,
-+	.disable_ring_counter = 1,
+ 	.disable_ring_counter = 1,
++	.has_reg11 = true,
++	.vref_volatge = 1,
++	.cmv_select = 1,
  };
  
  static const struct meson_sar_adc_param meson_sar_adc_g12a_param = {
-@@ -1204,6 +1212,7 @@ static const struct meson_sar_adc_param meson_sar_adc_g12a_param = {
- 	.bandgap_reg = MESON_SAR_ADC_REG11,
+@@ -1213,6 +1257,10 @@ static const struct meson_sar_adc_param meson_sar_adc_g12a_param = {
  	.regmap_config = &meson_sar_adc_regmap_config_gxbb,
  	.resolution = 12,
-+	.disable_ring_counter = 1,
+ 	.disable_ring_counter = 1,
++	.has_reg11 = true,
++	.adc_eoc = 1,
++	.has_vref_select = true,
++	.vref_select = VREF_VDDA,
  };
  
  static const struct meson_sar_adc_data meson_sar_adc_meson8_data = {
