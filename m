@@ -2,127 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93E3F754599
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 02:11:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 281B775459B
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 02:14:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230012AbjGOALt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 20:11:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54588 "EHLO
+        id S230092AbjGOAOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 20:14:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbjGOALq (ORCPT
+        with ESMTP id S229455AbjGOAOd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 20:11:46 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 619153A84
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 17:11:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689379905; x=1720915905;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=77qiGRubk75GY4oTDZJb3XK2FFdx14QYxTnO6rGu+SQ=;
-  b=NQevYCMnOBZx4rnUbgQ5/3Gfg+sUGq35UzB+sb/DTTTRLaOZ83vd/qjy
-   H8BdKWIxw11za1Iw1Zjdk2IOAkyMTVTjy/CmDH60gS8j9EZAE94zdAsE8
-   krr3AetTVvsGx8+p6iPcLm3sgHA5E3tV8MKxlzJva9L41l0kZO6mIZxiO
-   57I95j4S3j/YRJP/JgYgRKIjeuEiDRFdsyuedrfDckSvModFbTOnMblFB
-   oUDcznUNzAk69PBrwKfSFD0pmZfjE7KRPwBSSOrurSCzQuoyP6CF4pCzj
-   5e3eCRzoacLV8s9mD1Xntm7s74nedsGc9rEd1dLMhQKBBVjmv+obBCd21
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10771"; a="365647631"
-X-IronPort-AV: E=Sophos;i="6.01,206,1684825200"; 
-   d="scan'208";a="365647631"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 17:11:44 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10771"; a="672868380"
-X-IronPort-AV: E=Sophos;i="6.01,206,1684825200"; 
-   d="scan'208";a="672868380"
-Received: from bmuller-mobl.amr.corp.intel.com (HELO [10.209.37.94]) ([10.209.37.94])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2023 17:11:43 -0700
-Message-ID: <04c369a9087353270a17ab474dd6ba88cf3a3df9.camel@linux.intel.com>
-Subject: Re: [Patch v3 3/6] sched/fair: Implement prefer sibling imbalance
- calculation between asymmetric groups
-From:   Tim Chen <tim.c.chen@linux.intel.com>
-To:     Shrikanth Hegde <sshegde@linux.vnet.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Ricardo Neri <ricardo.neri@intel.com>,
-        "Ravi V . Shankar" <ravi.v.shankar@intel.com>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Len Brown <len.brown@intel.com>, Mel Gorman <mgorman@suse.de>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Ionela Voinescu <ionela.voinescu@arm.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        naveen.n.rao@linux.vnet.ibm.com,
-        Yicong Yang <yangyicong@hisilicon.com>,
-        Barry Song <v-songbaohua@oppo.com>,
-        Chen Yu <yu.c.chen@intel.com>, Hillf Danton <hdanton@sina.com>,
-        Tobias Huschle <huschle@linux.ibm.com>
-Date:   Fri, 14 Jul 2023 17:11:42 -0700
-In-Reply-To: <c5a49136-3549-badd-ec8f-3de4e7bb7b7d@linux.vnet.ibm.com>
-References: <cover.1688770494.git.tim.c.chen@linux.intel.com>
-         <4eacbaa236e680687dae2958378a6173654113df.1688770494.git.tim.c.chen@linux.intel.com>
-         <c5a49136-3549-badd-ec8f-3de4e7bb7b7d@linux.vnet.ibm.com>
+        Fri, 14 Jul 2023 20:14:33 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E77E3A91
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 17:14:32 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-3159da54e95so2452565f8f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 17:14:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google; t=1689380070; x=1691972070;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rHB6MmDpW6mOW/AgkDp+ObJjFMKRQPqgz5eDHwER+yU=;
+        b=W6GGyrjngXNyfkKbzBP757uoR9/rxEagoiMv4f1IGMSJeGCDSjINCa5zj4OukJxmlx
+         v8tWhz33W130IhEua5jQxOvZvUXYTWOPem8PhPVPjpiqqQoGCgraF3LsNYGKV4SQ/+Xn
+         SbbRovXFK1Nzj4i3EBYMzf5xIjum6gRDURoHo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689380070; x=1691972070;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rHB6MmDpW6mOW/AgkDp+ObJjFMKRQPqgz5eDHwER+yU=;
+        b=X0dedOMR6j+jVrmJBmcxK+B9ENraahFkckjHzd4Jymb7Y1mXS0bUL1pJkSfGz+gPF7
+         26aU4sPLI+WGWbnE/KKyip3vn0DssbXbOm+WbFGlMlSGddUfFbXzEHcb4pGjhCuQ/jTb
+         CQgkS3Y4bNsmuuDazRz7wksY/fRF+HGZ+9BYzuNXQR7KuuhBbf2IrFKHaTp89TWh2J1O
+         V9w1kaMRTfsSGygwD656hzkNmhSpH6RQeh+/4C0OjGvZHNdj4o0MEmqWGSKL9pNOUs/i
+         jW0qhDRo34O+GLjVG0Kyxn2R6s1g+M2dOoUCW8Qp2CqpUTJO0qO8IdwiuYASgSge2f59
+         qV5g==
+X-Gm-Message-State: ABy/qLZyUlykl7T4N9Ob5s6K6M7nSHjB1WpYJhT04hKXo6X8o1xro0SZ
+        3GiTvMjXLf4o97bBlYFYhALp10ADJL1zpYFcU+mXkKykMixezuPKHq8ahA==
+X-Google-Smtp-Source: APBJJlElw7WGo7L2Nkp8lIMM55qTMGczq+eOnpcSfNh0ZomFN+VdPKiCMfC1jCJnc1H+zHib3xVakiXNH9CD0E0N8Dw=
+X-Received: by 2002:a5d:5485:0:b0:313:ee69:fb21 with SMTP id
+ h5-20020a5d5485000000b00313ee69fb21mr5399250wrv.62.1689380070674; Fri, 14 Jul
+ 2023 17:14:30 -0700 (PDT)
+MIME-Version: 1.0
+References: <CABWYdi0c6__rh-K7dcM_pkf9BJdTRtAU08M43KO9ME4-dsgfoQ@mail.gmail.com>
+ <20230706062045.xwmwns7cm4fxd7iu@google.com> <CABWYdi2pBaCrdKcM37oBomc+5W8MdRp1HwPpOExBGYfZitxyWA@mail.gmail.com>
+In-Reply-To: <CABWYdi2pBaCrdKcM37oBomc+5W8MdRp1HwPpOExBGYfZitxyWA@mail.gmail.com>
+From:   Ivan Babrou <ivan@cloudflare.com>
+Date:   Fri, 14 Jul 2023 17:14:19 -0700
+Message-ID: <CABWYdi2L_qp8SmZ_w3pSSracYHEVku3TaBoXL7E0Nzn7CN3neg@mail.gmail.com>
+Subject: Re: Expensive memory.stat + cpu.stat reads
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     cgroups@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
-MIME-Version: 1.0
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-07-14 at 18:44 +0530, Shrikanth Hegde wrote:
->=20
-> > +	/* Take advantage of resource in an empty sched group */
-> > +	if (imbalance =3D=3D 0 && local->sum_nr_running =3D=3D 0 &&
-> > +	    busiest->sum_nr_running > 1)
-> > +		imbalance =3D 2;
-> > +
->=20
-> I don't see how this case would be true. When there are unequal number of=
- cores and local->sum_nr_ruuning=20
-> is 0, and busiest->sum_nr_running is atleast 2, imbalance will be atleast=
- 1.=20
+On Mon, Jul 10, 2023 at 4:21=E2=80=AFPM Ivan Babrou <ivan@cloudflare.com> w=
+rote:
+> The fast one is v6.1.37 and the slow one is v6.1.25. I'm not sure if
+> the kernel version makes a difference or if it's a matter of uptime /
+> traffic profile. The data is from two different locations. The fast
+> location has gone through an expansion, which meant a full reboot with
+> a kernel upgrade, so maybe that affected things:
+>
+> * https://i.imgur.com/x8uyMaF.png
+>
+> Let me try to reboot the slow location and see if there's any lasting
+> improvement.
 
-I think you are correct.  With at least 2 task in the busiest group,
-imbalance will be at least 1.  This is the effect of doing rounding
-when adding the (ncores_local + ncores_busy) rounding factor. =20
+There is no correlation with the kernel version, v6.1.38 is slow too:
 
-Returning an imbalance value of 1 will not be correct as we
-will be dividing imbalance by 2 and we will still not move task
-to the empty group as intended.=20
-
-So this code should be updated as below:
-
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 3fc8d3a3bd22..16bf75e6a775 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -9400,7 +9400,7 @@ static inline long sibling_imbalance(struct lb_env *e=
-nv,
-        imbalance /=3D ncores_local + ncores_busiest;
-=20
-        /* Take advantage of resource in an empty sched group */
--       if (imbalance =3D=3D 0 && local->sum_nr_running =3D=3D 0 &&
-+       if (imbalance <=3D 1 && local->sum_nr_running =3D=3D 0 &&
-            busiest->sum_nr_running > 1)
-                imbalance =3D 2;
-=20
-
-Tim
-
-
+completed: 23.09s [manual / cpu-stat + mem-stat]
+completed:  0.30s [manual / mem-stat]
+completed:  0.64s [manual / cpu-stat]
