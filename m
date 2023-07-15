@@ -2,60 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B10D7546F2
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 07:39:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91A4C7546F4
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 07:40:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229808AbjGOFjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 01:39:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51094 "EHLO
+        id S229991AbjGOFkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 01:40:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbjGOFjq (ORCPT
+        with ESMTP id S229482AbjGOFkV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 01:39:46 -0400
+        Sat, 15 Jul 2023 01:40:21 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4FA13AA1;
-        Fri, 14 Jul 2023 22:39:45 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DB893A9E;
+        Fri, 14 Jul 2023 22:40:21 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 46F2C60304;
-        Sat, 15 Jul 2023 05:39:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A55E5C433CC;
-        Sat, 15 Jul 2023 05:39:44 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C0F6D602DE;
+        Sat, 15 Jul 2023 05:40:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31BA8C433C8;
+        Sat, 15 Jul 2023 05:40:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689399584;
-        bh=EoC7y3rLdsTfdggC5ynHU58rMj0H+USBvF2tf7JCyGc=;
+        s=k20201202; t=1689399620;
+        bh=EAL17cAw4V35DWAkUTEzrz4O8Jfxf/ncW1164/QpSe4=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Miy423FMByR4Mt9Mua6XH9tmYZvsLJslHdxjnKySlfbtmniZQXalrENN/Fxix3Vet
-         CFLXEuE0apDpD+Q18wTAMJb8LOajcHeDDs86flbTYZHRDHAkgtqHQ2Sryavowta+eW
-         Rkhz0aU0pWIw+HjP9MiNU6VVUQJkaa/PaSpiMMYoUHhfocXHFvpehwV1c7T8j0iD8q
-         8xtxeaJAeuMeRfdyXGbS4lYe7uqQN8QjvBTk5BpcCDnpsJ8VmLRlUA14Rft0lXsgeZ
-         XvKaT+aLuUgoRgWSzkGEzcYvkIZ9M1p+Ghl4HrT8CohNDtEP3Vm6/ZYG1JqPnARoX5
-         jataUoLhDvmZw==
-Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-56347da4a50so1797261eaf.2;
-        Fri, 14 Jul 2023 22:39:44 -0700 (PDT)
-X-Gm-Message-State: ABy/qLbg7GbEqV/AMkelfn9jw5qLJ/lwSKBizpTAxOZO82KYXQUiRQlp
-        Kn7svz2sCF5dZIcaDPz+JzAX18jhyXmR8Dn/MbA=
-X-Google-Smtp-Source: APBJJlH+rK8S6u2KM7p7YAxOaFaTck4jBygqc6Df57rcB1UhTIYwDXWuRAWE79tRtcn0Ok3nSryS8fx6ETzofuUbWQ4=
-X-Received: by 2002:a4a:86cd:0:b0:566:6971:9379 with SMTP id
- y13-20020a4a86cd000000b0056669719379mr800864ooh.1.1689399583837; Fri, 14 Jul
- 2023 22:39:43 -0700 (PDT)
+        b=FmFrahlGdBnNpVp8+uTaOXsgxTffyDsWnk6nsUEnnlngLtu6IN8nzZqUlsu2Z3Kn2
+         Z8CKXxs4RC7fUommyYID/T4BER4UUM61yYwzBO1xsINiIBCL+QWNH74lBK5gWU/8LG
+         zwopUkTcQqcExK2JrAXVggN7TsR6IQZBd3AoKfA1tkLtRHuxgys2zM86vmLjchK8iO
+         QYHJ5X7ofn8yJ7aMaRNcR07OIWfE0byKCN1DIDwdzVpQ/HwMwzrCBicv6DD+39qyZj
+         cttN0no/82Cj1BQIbZX4VqfKJAbrPoEqTTYoRJQBvN7SPYJOCm2ZR5OXQpEVu+o+dP
+         8xhiCm1+vje9Q==
+Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-5633b7e5f90so1796640eaf.1;
+        Fri, 14 Jul 2023 22:40:20 -0700 (PDT)
+X-Gm-Message-State: ABy/qLZ+LkJjFeQxrjqMXlUK976VzPpZPNHLC68k7zDAs2XUhaFezWfG
+        qFcO+S5PKpG2rinnIs1ecxnHVb5ygUqh56GSMkA=
+X-Google-Smtp-Source: APBJJlGVhDGcPhnXqm7PrAnRyZNY/VVT+YH/LPgawJ5N6Kw2bdP5TxWjIUBWbmOi/KfP94O0atj8uxP3IR/QaUT9F7E=
+X-Received: by 2002:a4a:9019:0:b0:563:49fd:e772 with SMTP id
+ i25-20020a4a9019000000b0056349fde772mr630122oog.4.1689399619489; Fri, 14 Jul
+ 2023 22:40:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230704000120.8098-1-rdunlap@infradead.org> <87mszyz4lc.fsf@meer.lwn.net>
-In-Reply-To: <87mszyz4lc.fsf@meer.lwn.net>
+References: <20230711042859.17927-1-rdunlap@infradead.org>
+In-Reply-To: <20230711042859.17927-1-rdunlap@infradead.org>
 From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sat, 15 Jul 2023 14:39:07 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASXk28=uxS4ENz7w5hCahseN8HLcbJaAbLVU7=78vThTw@mail.gmail.com>
-Message-ID: <CAK7LNASXk28=uxS4ENz7w5hCahseN8HLcbJaAbLVU7=78vThTw@mail.gmail.com>
-Subject: Re: [PATCH] kconfig: docs: mention gconfig at top of kconfig.rst
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
-        Jesse Taube <mr.bossman075@gmail.com>,
-        linux-kbuild@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>, linux-doc@vger.kernel.org
+Date:   Sat, 15 Jul 2023 14:39:43 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQO7oB9vkW+T1EdhZ7Q43Uo5s02FgGDN6fr2nv+-RZcXA@mail.gmail.com>
+Message-ID: <CAK7LNAQO7oB9vkW+T1EdhZ7Q43Uo5s02FgGDN6fr2nv+-RZcXA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] kconfig: gconfig: drop the Show Debug Info help text
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -68,37 +63,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 15, 2023 at 4:16=E2=80=AFAM Jonathan Corbet <corbet@lwn.net> wr=
-ote:
+On Tue, Jul 11, 2023 at 1:29=E2=80=AFPM Randy Dunlap <rdunlap@infradead.org=
+> wrote:
 >
-> Randy Dunlap <rdunlap@infradead.org> writes:
+> The Show Debug Info option was removed eons ago. Now finish the job
+> by removing the help text for it also.
 >
-> > Jesse mentioned that gconfig is missing from the top of the
-> > kconfig.rst file, so add it for completeness.
-> >
-> > Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> > Link: lore.kernel.org/r/CAJFTR8QgYykuEq_AkODEWPUYXncKgRBHOncxT=3DypZTQO=
-Dkyarw@mail.gmail.com
-> > Cc: Jesse Taube <mr.bossman075@gmail.com>
-> > Cc: Masahiro Yamada <masahiroy@kernel.org>
-> > Cc: linux-kbuild@vger.kernel.org
-> > Cc: Nathan Chancellor <nathan@kernel.org>
-> > Cc: Nick Desaulniers <ndesaulniers@google.com>
-> > Cc: Nicolas Schier <nicolas@fjasle.eu>
-> > Cc: Jonathan Corbet <corbet@lwn.net>
-> > Cc: linux-doc@vger.kernel.org
-> > ---
-> >  Documentation/kbuild/kconfig.rst |    2 ++
-> >  1 file changed, 2 insertions(+)
->
-> Applied, thanks.
->
-> jon
+> Fixes: 7b5d87215b38 ("gconfig: remove show_debug option")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Masahiro Yamada <masahiroy@kernel.org>
+> Cc: linux-kbuild@vger.kernel.org
+> ---
 
 
-Unless it is too late,
+Both applied.
+Thanks.
 
-Acked: Masahiro Yamada <masahiroy@kernel.org>
+
+>  scripts/kconfig/gconf.c |    5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
+>
+> diff -- a/scripts/kconfig/gconf.c b/scripts/kconfig/gconf.c
+> --- a/scripts/kconfig/gconf.c
+> +++ b/scripts/kconfig/gconf.c
+> @@ -647,10 +647,7 @@ void on_introduction1_activate(GtkMenuIt
+>             "Although there is no cross reference yet to help you figure =
+out\n"
+>             "what other options must be enabled to support the option you=
+\n"
+>             "are interested in, you can still view the help of a grayed-o=
+ut\n"
+> -           "option.\n"
+> -           "\n"
+> -           "Toggling Show Debug Info under the Options menu will show \n=
+"
+> -           "the dependencies, which you can then match by examining othe=
+r options.";
+> +           "option.";
+>
+>         dialog =3D gtk_message_dialog_new(GTK_WINDOW(main_wnd),
+>                                         GTK_DIALOG_DESTROY_WITH_PARENT,
+
 
 
 --=20
