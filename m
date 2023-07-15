@@ -2,149 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EE5C7547F8
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 11:26:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 033BA7547FE
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 11:34:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230358AbjGOJ0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 05:26:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55718 "EHLO
+        id S230029AbjGOJeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 05:34:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229665AbjGOJ0w (ORCPT
+        with ESMTP id S229490AbjGOJee (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 05:26:52 -0400
-Received: from mail-oa1-x32.google.com (mail-oa1-x32.google.com [IPv6:2001:4860:4864:20::32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A156B2D75;
-        Sat, 15 Jul 2023 02:26:50 -0700 (PDT)
-Received: by mail-oa1-x32.google.com with SMTP id 586e51a60fabf-1ba4460f0a4so1016438fac.0;
-        Sat, 15 Jul 2023 02:26:50 -0700 (PDT)
+        Sat, 15 Jul 2023 05:34:34 -0400
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2116.outbound.protection.outlook.com [40.107.95.116])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80959FC;
+        Sat, 15 Jul 2023 02:34:32 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ov39GhzkhLK2l2VtknaaEjT/mkUvJU33YE0YLWUqwCDlzDi9G/ATwdRwzp0eAX0d8m5nZ6TCMi56CPKmKJwqvRI1mhfUPtxF8XyO7nSgnE33HcEDlMNfjRy2oihkHVL28Ozb2/81+fPnEZwMZ/OdKwA6CLm+ruEQx784m72TFZbV7A0DBrZ0mBYbX1HeBZAWXbQtPE/VQkUX1sLwvUB3BreWEEXyzYF1kbvHk6UKse0B79rQudZptRztOxSfkeIWbshox/5KZMX/sNlyVfvglQo+yczjvyYNa5+6pazEwE1T8HHpmrCUK4iCB9qOvI6l0T7CGxWKzz0eJkyIWLjtgg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6krfjLK8ZhGIwy76jwzMu++CvrifaXZJHh+KgkOZMI8=;
+ b=YfMjwErgmw8v1dLXEnQuEz7JSt7vKTu/UzvDCrUG1Jq+htP4msRJQba9VGHYX4u36Jct6hM6+FpMIpoPFGGxG6xRUfdTw9FdkrMRml8whtFDdFxlS0TyIyTtrZbMrWLHChfOodjIlS+p+2hM4btqR6Blo3xVUBb3uM7ykBwpn1wwd80YoONTiZcM2xx5La5Qpu9v+wzDDapaDzjSy9bEftT1l3nC1pihnFywAexChXWtS8d5pG7dogr3C3myO07Gu1/WcZNoHX6335dNy5B5072q94XJYhLg07dYXsQcoGrKUg2jNmRHX4xkSP2/eK9LFpZ8dxdjx0Ll8qUlw7Qcsg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
+ dkim=pass header.d=corigine.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689413210; x=1692005210;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wHphB4LnIXM8B5KTzxaE1knTLhvmv4UUsDUmEXJtUjc=;
-        b=KNtkg40Donc1RJ+Y/N6bMmujMSl9cywEa6fXVSQYqV4W4lT8G1IFlO5DKCTqezy9NY
-         lefwY54PRhNWProidCgY7SJny7AEfavu3g+BjFgAL5dZzNMIElbAwgo4QZnm4OLwjy+V
-         CVJWSo1L7gWOhYkpGKP0r9oukax6+UlfkfofBx8xxPcLUf3ek7zbTjABn/JHDdvTWXCu
-         WWDX31kpkxyfmd7Q/WE+0i7y3grMAoIl2p8ABV+V0g6ZwAueUBzPNbjvXwLF4/1Voo58
-         THpoQ4ecU8W2lHElPdLC420Acx2PDSK/3KkrYlQGhj1Cbwmy3bV4wSFCbbKfSoIqtJyV
-         8cKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689413210; x=1692005210;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wHphB4LnIXM8B5KTzxaE1knTLhvmv4UUsDUmEXJtUjc=;
-        b=JiGU52lQ8FfyJkp6QjJQSRzyHbk7kqyAUFscruPUEYIw7RNWvZZ21NHMBrIeQbhqD1
-         6GtMln/NTVUZw49joEErfXV/f6tgMdbGdAZnOfAP2YKB4uuCv6bIGP4HTyjTqlGjSoac
-         grXLh0eefJph+lUq1Z4xoT1vHI8tR8OZP223JRtIXP5ozuQBw1UGNmT266Qc7uFcqybh
-         vajWY4OVbOaEcuuvLzlH5too7GCT7CssvOXAt81dSvNxxrimlcQBf3SlZbhnQKh3/LCx
-         DHTC23/Jwgn4onqFXjA+V5CvyStnfidFSV8/OCeIFgGH00MADcc+bbkWEbELFNACTjkj
-         NYRA==
-X-Gm-Message-State: ABy/qLaY+efmPdXrwZqHx79HVnpLXMlNT08ZV5WWBpmQIssnVrzkVTFm
-        vcyCdAU0RNP7yc8sKOtjzkCWTdpLZNeNCQprWPM=
-X-Google-Smtp-Source: APBJJlGwdJmxyzGjSGIAgoqFi7CGlWiMJBmcsPBzo9lxW5BLyYxxPOYfHlixbBaupkZxkAV8b0mEWpZJ8j8VMX6oWRI=
-X-Received: by 2002:a05:6870:328d:b0:177:a158:9ef6 with SMTP id
- q13-20020a056870328d00b00177a1589ef6mr6679986oac.52.1689413209848; Sat, 15
- Jul 2023 02:26:49 -0700 (PDT)
+ d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6krfjLK8ZhGIwy76jwzMu++CvrifaXZJHh+KgkOZMI8=;
+ b=SIv9FRRebaDaNqZBgLW+bo/JD6CNFDu5ix/oOv/VbVYdADQ3Z6pxiTNas+KvfOKoyd0O2AiZE4w2Zu0EQSY4BOh2cUtgXQ5yUrvtWSJwsBpMBYWWymJD+gxL+hs0Cll0kdIDZ17MVZvaooCXIEH+PuZieaGEKcT+h5dGAZESXe8=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=corigine.com;
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
+ by PH0PR13MB5329.namprd13.prod.outlook.com (2603:10b6:510:f8::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6565.30; Sat, 15 Jul
+ 2023 09:34:28 +0000
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::d23a:8c12:d561:470]) by PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::d23a:8c12:d561:470%6]) with mapi id 15.20.6588.028; Sat, 15 Jul 2023
+ 09:34:28 +0000
+Date:   Sat, 15 Jul 2023 10:34:21 +0100
+From:   Simon Horman <simon.horman@corigine.com>
+To:     Minjie Du <duminjie@vivo.com>
+Cc:     Horatiu Vultur <horatiu.vultur@microchip.com>,
+        "maintainer:MICROCHIP LAN966X ETHERNET DRIVER" 
+        <UNGLinuxDriver@microchip.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        "open list:MICROCHIP LAN966X ETHERNET DRIVER" 
+        <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
+        opensource.kernel@vivo.com
+Subject: Re: [PATCH net v3] net: lan966x: fix parameter check in two functions
+Message-ID: <ZLJoHV+gdBMQrnfJ@corigine.com>
+References: <20230714085115.2379-1-duminjie@vivo.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230714085115.2379-1-duminjie@vivo.com>
+X-ClientProxiedBy: LO2P265CA0192.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:a::36) To PH0PR13MB4842.namprd13.prod.outlook.com
+ (2603:10b6:510:78::6)
 MIME-Version: 1.0
-References: <20230714174841.4061919-1-robh@kernel.org>
-In-Reply-To: <20230714174841.4061919-1-robh@kernel.org>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Sat, 15 Jul 2023 11:26:38 +0200
-Message-ID: <CAMhs-H-6tAV-+U-4zZDKs47eKCJr+kZ-Op8vR4SyJyE5LK_2aw@mail.gmail.com>
-Subject: Re: [PATCH] phy: Explicitly include correct DT includes
-To:     Rob Herring <robh@kernel.org>
-Cc:     Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Justin Chen <justin.chen@broadcom.com>,
-        Al Cooper <alcooperx@gmail.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Yu Chen <chenyu56@huawei.com>,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Alban Bedel <albeu@free.fr>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Robert Marko <robert.marko@sartura.hr>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Vincent Shih <vincent.sunplus@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        JC Kuo <jckuo@nvidia.com>, devicetree@vger.kernel.org,
-        linux-phy@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        netdev@vger.kernel.org, linux-usb@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, linux-can@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-tegra@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR13MB4842:EE_|PH0PR13MB5329:EE_
+X-MS-Office365-Filtering-Correlation-Id: 92573e67-589a-4db3-030e-08db8516aeda
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: qasxhXa+r3Q3RRm0+kESP40sOSKMFYIYaktzuq+cWF5BA95ieITZDiC48I1yRYa7vamZAXEnryM/WLFXB3KcUVzcVlltes75FPhlcErMkYxdaVF0LK4bceAzrWOk+2qgtWIRjmk4lcYSiM31lTwqO+7OiUvJZRHFAzr+fRcmpwriSiM2J6nNkpXr5inpcHQxiWpRXCG4XTdZQPfVneInYPPe8UJXKHyQQ4TlSJN0Emmo3p9seOuMKTNFJRQICNv4QOpxd+VrHyZ5ugFs55SZtDROT6vLWDBv9FKoqGbx3mJtW8jdK5oo2zvgaEpBhFz2HYpYh+vHI+6ISyPSaEj/gLShbHwpr34Tp8wztoNNMZSIi7qe8NFhFtYL+/xotuxcNpYDGaBmig+bMu2F3n8NrymrTiXW7r0tI7FdMcmSX6ZdZrvbyATI/aaTPHlk7+6lnA3O16+zwTSXg4+nDA5afarp9G/qSTVdzBPZZWE6xw8A2+Z233eFLmqIfEvM+c9q6vZArO80jFsGxAb8LG6zkFMKb2r3wSO4MfPhdm6jT672kJY5IiHB8CrORgiWS8VtPBJyV1n0ujAH7A1L7pKrIWwC16Oy6/w1YoZrdrxRjXd/rIZNbhnCqIp17R7BoTv68JQbAwhfq+YawVfdyRSzYRhcQ4wOgaexQ4JjORR1a38=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(39830400003)(136003)(346002)(396003)(366004)(451199021)(186003)(5660300002)(6506007)(6666004)(2616005)(6916009)(26005)(6512007)(4326008)(8936002)(2906002)(41300700001)(66556008)(4744005)(66946007)(316002)(7416002)(478600001)(8676002)(66476007)(44832011)(54906003)(36756003)(6486002)(86362001)(38100700002)(67856001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?3d4picd2H+17jn886rJ4M0tOZ19pImwfgrCaMp/06dV3/tuRZrpV8x97lQWG?=
+ =?us-ascii?Q?CiR4LTGkjRztgAgeuk+WPNNk5hya7ptntRxo8aQWF8LIEkEvDJujyRjwmc8W?=
+ =?us-ascii?Q?RXZ7eqoI11Vu8J8USAgRJ1LpSyR8f91A7HnxlY91o05dwj//MVEdBbdfQ73P?=
+ =?us-ascii?Q?g1JPqEJBBDKp0kVfdKB0dndr/hZczX9abul4jxW9sG/21tqve1SvAuRoKXnf?=
+ =?us-ascii?Q?VgD6o27EfCLEQezZYT7eUdEA+KlgzTIGoSJGv00wXYwOMg2Mu4LZWuwzE6CK?=
+ =?us-ascii?Q?pDjnskwj7t8fTvS++00VyMF9mM+YMyeB/0oxI9713MApLIKiA+UJCr0gNNPx?=
+ =?us-ascii?Q?w9I1geY8RXqjgjkgrEIwarUmkW4V+Gga8/Wagm48dB685nqxgcU/T4A5SdRv?=
+ =?us-ascii?Q?yPrP3klTef0TzKazYbxBPjbafFv1JuwtBrpLHbEYVaqtr8wSbyGWzs7Uj72V?=
+ =?us-ascii?Q?eAS1d/ilB5IE8PrtlD+HRkjdJWvW+vA8gWddYi7F5Bn4K6Nw8/89U1bCZFab?=
+ =?us-ascii?Q?FZftTtOIsPqBhpUlBVOLMSFkBcEZeWHRMxWCnJUTcrlstMgi+SjTYJEmLTXk?=
+ =?us-ascii?Q?tWhBEERSNmHcunu4vk/XVTXt6k6j2bPZ4wC12iPhjFeINfiTrVm8ha1OiJs1?=
+ =?us-ascii?Q?76jUTNCiT433rsReBwAqNroI0RWVefCWk1DPvGybEskQ8B3R2TGKyHTN6GT1?=
+ =?us-ascii?Q?wkcKDaRgjzfFO7ybykySNTaqK9nIQrq/WnqOjB50MyxPbh9VHIzK+KsYByhJ?=
+ =?us-ascii?Q?5IzwyzgGjBMBaj+Q9f/C0XVqum3gagnn4bL9uJz6uDnDkvMy94DhyQbzbW3a?=
+ =?us-ascii?Q?kh1G/HpRXHrs2+xClFcF60Tst2G/IobqReMchTSIxQ7Z3uNjxuJPJpFwrjjz?=
+ =?us-ascii?Q?ZW3RKc8trS3Z+1okPT7XdR++p7XRHvCrIxp5d6j70l/WQeibnnua7Vapi2rh?=
+ =?us-ascii?Q?m9tSWnpliRw+W5xylMD8fWQMjYijpWWJMZLUtGCfGvRtv7ip1kplhT0BecYt?=
+ =?us-ascii?Q?PiNrM7EiTbtblXVaXH/MdFERSC3l5cYNmLfesQOnq6UUXK6R2IiYCtAIXt3m?=
+ =?us-ascii?Q?p1g7wEOBTkrDPkIAxrEwsP3xr9wp6DQOVMbpytcrhqLFw+zPD9fqNPnnGqLB?=
+ =?us-ascii?Q?r5l3fCNnp8Gwa5NDCXKJYtBHKX6N+7h/h02FYZLhj4OAt6vux15S2LWxSRXe?=
+ =?us-ascii?Q?uoYOjlEWCpzvpdXpWXkDOCr7wfFEt+u67HS3USrD5LniyVKXYL37f+L4OZF+?=
+ =?us-ascii?Q?ldV9WIH2dlPFY+Kjwr+hIiHjLV4ze2KQnNDeYMq2+gHEFsf3bR0Bk+sW2Bwy?=
+ =?us-ascii?Q?pMMw8uBaYAth4WslwD5+2N8Vb6BLL/EQLsb2iWVy0+jp/HBWAqHrFIG7nIMo?=
+ =?us-ascii?Q?m/Z++CYJGTtQ5ODf4gU/kisNLAUaDJow8k7xCQAtSKiLv/U8zYSasb38+K+C?=
+ =?us-ascii?Q?MDn09BzOxHTdMLBdxCF+zR52QfIOLZJd9Sopf77HFeTQ20YWy1J4t/VhorP1?=
+ =?us-ascii?Q?hrAnRQo1/HMZzncPsG9NhU3opFcEGamraSXGi97TRlDSNRkyyVg/BXxt9CoL?=
+ =?us-ascii?Q?OE/2rF5O1zag+ED2VZx1vayG6paXyCfgk+LNN2RP/IYX+siyNOx4vguYMLgY?=
+ =?us-ascii?Q?dg=3D=3D?=
+X-OriginatorOrg: corigine.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 92573e67-589a-4db3-030e-08db8516aeda
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jul 2023 09:34:27.3781
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: EXkH6dmfM5hhyiEZTgOzNCDpUybuusA60+uz/31Q6fCWTz9P6sfVWO8WNvzXP8JzISHnB9k6s0VeDX4Aht0KZWlABrUtsHftai+zWbJzwN0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR13MB5329
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 7:49=E2=80=AFPM Rob Herring <robh@kernel.org> wrote=
-:
->
-> The DT of_device.h and of_platform.h date back to the separate
-> of_platform_bus_type before it as merged into the regular platform bus.
-> As part of that merge prepping Arm DT support 13 years ago, they
-> "temporarily" include each other. They also include platform_device.h
-> and of.h. As a result, there's a pretty much random mix of those include
-> files used throughout the tree. In order to detangle these headers and
-> replace the implicit includes with struct declarations, users need to
-> explicitly include the correct includes.
->
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  drivers/phy/ralink/phy-mt7621-pci.c                   | 3 +--
+On Fri, Jul 14, 2023 at 04:51:15PM +0800, Minjie Du wrote:
+> Make IS_ERR_OR_NULL() judge the vcap_get_rule() function return.
+> in lan966x_ptp_add_trap() and lan966x_ptp_del_trap().
+> 
+> Fixes: 72df3489fb10 ("net: lan966x: Add ptp trap rules")
+> Signed-off-by: Minjie Du <duminjie@vivo.com>
+> Reviewed-by: Horatiu Vultur <horatiu.vultur@microchip.com>
 
-Acked-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Reviewed-by: Simon Horman <simon.horman@corigine.com>
 
-Thanks,
-    Sergio Paracuellos
