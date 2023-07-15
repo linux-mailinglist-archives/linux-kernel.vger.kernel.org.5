@@ -2,293 +2,348 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FF947549E0
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 17:46:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E8A47549E4
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 17:48:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230168AbjGOPqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 11:46:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37304 "EHLO
+        id S230177AbjGOPrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 11:47:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjGOPqG (ORCPT
+        with ESMTP id S229441AbjGOPrx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 11:46:06 -0400
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E8462D7B
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 08:46:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689435965; x=1720971965;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=TdOFQx8Xw8wGYYZnQLWKR6xssjx8vw+ImsQnbjJdtIg=;
-  b=TNvI8483sirnZ5iamQDxnvWoFzWNQSMXWFmi8LS641BMiIGpULuqMDyy
-   /K3I0wNf3Gd7lzgHc5AXFrK2+dzih9ZKDTV58sZlUokMigZPBCahOKt0R
-   ati2LVfS3hSLqYbK0aKDqpq70FCY4mD7lya74zDMhPZObehy19Q9AGlSn
-   BMRyUjfaBU/JiLgChE8uR9iXZcECIbNGDBX5FexecSlmvlK3ReE7sweEZ
-   PbBAO1T7gmOLpV14RW5O+a+FygdHAfvSSG9ckqmGyilPhIHDMCd6/7tib
-   HAzqP43QBsBeoxXdOm2fVujFe66+kBF/9iDu+6dXIPZHTDhTWgkItulOx
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10772"; a="368315028"
-X-IronPort-AV: E=Sophos;i="6.01,208,1684825200"; 
-   d="scan'208";a="368315028"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2023 08:46:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10772"; a="722725472"
-X-IronPort-AV: E=Sophos;i="6.01,208,1684825200"; 
-   d="scan'208";a="722725472"
-Received: from sbint17x-mobl.gar.corp.intel.com (HELO thellstr-mobl1.intel.com) ([10.249.254.142])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2023 08:46:01 -0700
-From:   =?UTF-8?q?Thomas=20Hellstr=C3=B6m?= 
-        <thomas.hellstrom@linux.intel.com>
-To:     intel-xe@lists.freedesktop.org
-Cc:     =?UTF-8?q?Thomas=20Hellstr=C3=B6m?= 
-        <thomas.hellstrom@linux.intel.com>,
-        Nirmoy Das <nirmoy.das@intel.com>,
-        Matthew Brost <matthew.brost@intel.com>,
-        Danilo Krummrich <dakr@redhat.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Oak Zeng <oak.zeng@intel.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Francois Dugast <francois.dugast@intel.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v5] Documentation/gpu: Add a VM_BIND async draft document
-Date:   Sat, 15 Jul 2023 17:45:43 +0200
-Message-ID: <20230715154543.13183-1-thomas.hellstrom@linux.intel.com>
-X-Mailer: git-send-email 2.41.0
+        Sat, 15 Jul 2023 11:47:53 -0400
+Received: from GBR01-CWL-obe.outbound.protection.outlook.com (mail-cwlgbr01on2109.outbound.protection.outlook.com [40.107.11.109])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C14902691;
+        Sat, 15 Jul 2023 08:47:51 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cHPswnRb9tuAUBLULj5rrTID2UbevJ6v8pAEk0creS8jIYvKheRMXY+wv/mEvCm4Rzcb/wqQcvxJJh8YFxJrqshAs1aHGdQyi+K38xdKY4D/rowtbnV9JDTWIv3M1VGWv/4X40VICQwhblQa0eH69cUQtFtaOu+vcz2JONhqYk42I+GOxrnkn4SbUneXCJhLNG3AEOAnB2yIeRqHXHl7lpnTVrxLulF/dFutU0mP8oxGSOvjchLxzf8D3W0zqwgUA+hF8Fk8kswSSMI/3gN1GtWszHj2JVNEDXIaeYCGnyyB+dR++Fe0y/kew1SmH3V+7pDDTkwo4imj24tjvyxVjA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vd092fvSDWydGFLfQuY9jxv3QRB3jCUMnL7OD944cnI=;
+ b=ndFBkiIpjUHiDHrNjNAgHpnGbZzgyak161SwSca6KrYOm6nH3iKRLlaAwunvW+s7rmSTGhUjIKLXKo/NT3sYXXhmW2tv3AK55SgGeRjhXg7ere4ig06ekimzM4Q8fQyD4yu+4SMdF6guamLnNQ7q5qrkjSGw4xSsx0blUydhAh+I2iSfXTXthxrDVpkHD3UUJGSnz4e5VjijufduS9cEv9FgO9OuUAq4extMhOHjVO7D/oMXoccmy5gd7atE9Tc7Yab+E2CBLUD01XJD5valJ5EUSUli6USmOF4ZLoOhtjtjA1QNOKEMqIMuImMSJRC4NCpvxmBI8WFxL2nxIz8MGg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=garyguo.net; dmarc=pass action=none header.from=garyguo.net;
+ dkim=pass header.d=garyguo.net; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=garyguo.net;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vd092fvSDWydGFLfQuY9jxv3QRB3jCUMnL7OD944cnI=;
+ b=jMrA9dCNdCkNHfQAdrC7XYwVJ26Eywx8ATi0ToWlL73njN/EZOpcZljcaElj/Pcswj5GKCzG3eMxBWNgheE5PMs7rN0RpOIYQn8Vy/uYwIEnDysJ5CBcj1QKIYXKt1ziYRHJD7vmJW3AtH6KKL4lMJ9R+VYTAFsGtXKssdnXTR0=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=garyguo.net;
+Received: from LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:253::10)
+ by LO4P265MB7284.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:2f0::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.28; Sat, 15 Jul
+ 2023 15:47:49 +0000
+Received: from LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::25e2:a08b:cd9c:c3c9]) by LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::25e2:a08b:cd9c:c3c9%3]) with mapi id 15.20.6588.028; Sat, 15 Jul 2023
+ 15:47:49 +0000
+Date:   Sat, 15 Jul 2023 16:47:47 +0100
+From:   Gary Guo <gary@garyguo.net>
+To:     Asahi Lina <lina@asahilina.net>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        =?UTF-8?B?QmrDtnJu?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>, Tom Rix <trix@redhat.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Hector Martin <marcan@marcan.st>,
+        Sven Peter <sven@svenpeter.dev>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        asahi@lists.linux.dev, rust-for-linux@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH RFC 07/11] rust: sync: Implement dynamic lockdep class
+ creation
+Message-ID: <20230715164747.7ba23b36.gary@garyguo.net>
+In-Reply-To: <20230714-classless_lockdep-v1-7-229b9671ce31@asahilina.net>
+References: <20230714-classless_lockdep-v1-0-229b9671ce31@asahilina.net>
+        <20230714-classless_lockdep-v1-7-229b9671ce31@asahilina.net>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: LO4P123CA0052.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:152::21) To LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:253::10)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LO2P265MB5183:EE_|LO4P265MB7284:EE_
+X-MS-Office365-Filtering-Correlation-Id: d9ed79ed-77ba-4d4c-1b22-08db854ad77a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: kSjYL7ByM2X4MniQJujwm+ArcgKZl/zuuN7BXtKr5yFds4t6jcSw6KRHzZ9CmzaJ/8QGdRU+YTopSiOMyXeRH8rwUhhOwK9QBEnVTp33TaJVs0R3yuygV7VjZdimwyFFwU8zXAZD30yTy8MncAk/+QIMpUjJm0T5CRIK+8ILiPl9lUxr/jCdLKAJe/LK07ZGRSZp9y+kr5xz4t023SFdOhCqYcyRM6qx1IMa2KUZx7ESlh+uSy1Y0xAtg9ucvOMm6sjPxHrns5iZefGxdTPcy3v3HeZPWzyNdGxc46WlDz10HWHZZBqP9L+STaFpWA5lihBwtz6IqfjQhpEzRXgw+YzX7YorulBwL4Ioe1NPs20FEOMMrT5AyFDXh7Y7MB/X3+1KjDEO14UXqBNir8uP97HPiwa7Y50HoDiFXZsXNCiHuRboQCoIHUhQ82Ay+eSQcMlA8oOGLP/2J7yNZSkCG8uzCLKjB5gwdfsoq4f7Sfe9CR7zw8rui98R8ESzzKA+DLV+381pYner2HF0Z+Ae78oh0m79eEoB+rhRBxCvScjuUIAYHaqm/oQCmwsxMV1L
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230028)(376002)(346002)(396003)(136003)(366004)(39840400004)(451199021)(1076003)(38100700002)(26005)(6506007)(186003)(2616005)(83380400001)(2906002)(36756003)(5660300002)(7416002)(478600001)(54906003)(86362001)(316002)(41300700001)(6486002)(8676002)(6512007)(4326008)(66946007)(66556008)(66476007)(6916009)(8936002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?atS8ngO67Ev7qhqaCRkzo6/ZnsMn70wmkWZ0Wc5SOVGeANAxeUJ+XCPCzHhL?=
+ =?us-ascii?Q?bEHFX2XN4MyjiZcY3UY8q+B+eQzXDT/kYx8JMLpoiKXhqPi4AXJopgtLtk6x?=
+ =?us-ascii?Q?ug7oIV3MIySGbvHzOePMztXI025KfizOyMUaeAHRZL1u9SbyHwt9wyEaC9tU?=
+ =?us-ascii?Q?Q/I56O7cU1/q40JXqkyfH5L48/0D6LcZMvEsEPYuWDtdIWJ66WvhWjjB38gT?=
+ =?us-ascii?Q?nKmxv35wPr5v7srUwQ2hCcTg3I0XrXBkpEcNzTXZrWEd9XqHimbu59aKgU+C?=
+ =?us-ascii?Q?vYuxGaVpXmw9fgiSL1fLg6VPTKle+jREl+RZ/Pt91unPY7Vbp780q5lW2E3S?=
+ =?us-ascii?Q?BnXh9mExElLnsI+CAg8x+zqcsC6YscwVkGCnoo5lvEZCA5j6+O+4RMparHLb?=
+ =?us-ascii?Q?kli3nVSqMAkFY2eqCtNM9g7esWIDJWnVRAzkKwwgGppbtI2qq2YKzis1UyAv?=
+ =?us-ascii?Q?hkpcHxki6DoYOy+LjjEDq5vHcRau+4THxDSeGVLW1yX9MQh70hgTGd0dnpeY?=
+ =?us-ascii?Q?ItDgBqw93PQPn4vu7VVM9cwHF3sW3b+edlQoFFwa1pxToinRfTcX3F1wbgmJ?=
+ =?us-ascii?Q?0NNILgxNt/tu9Xne27baHxJFIx9pbMFHJ/ORqRTt+8besOFrMWK7rfnvDFXe?=
+ =?us-ascii?Q?czRWl/xI9Qugb18LKtvGYVJzXbkZrhg4VWtHfD+II6Nxom9EQPgYPCqSZy3p?=
+ =?us-ascii?Q?crYbRAnieQIKVlDOScx2Q7420QD/jD2p0HTkiQ6qWgx0NckuuF3Cuq7JS5TH?=
+ =?us-ascii?Q?Lnd+aljP1KEouikfW/8Wu/Qx/iSjW2XxxAWl44e+ac7g294BBprslwwVkMiL?=
+ =?us-ascii?Q?nhhsp91bO0ygePJYP2dtNz4i3t5W6A5B8PPSF6ZOs0xqXt5FvO5UIPJm+X7x?=
+ =?us-ascii?Q?Xh2Z0PrWYg0YZMlUVF5w1wFwBKsgXDj4XzeT27MJI5YROrCsQBuTlQK177R5?=
+ =?us-ascii?Q?yuADlNBqhUY2lNq+RZ/zB+o5wfXSKG0WJnAczhGUYxwd7uIJcia/ZFTxxISm?=
+ =?us-ascii?Q?wi4MXZz8P+JH146SG4+3jtDSbOoJKz77G8MkxVvr7XSuvBl5BHe98wikjd2Q?=
+ =?us-ascii?Q?KhMAgYZVhXavujEXM2OtnU5icln5wn0Nb1mDgMjNb/PZQnwIip/ckp7kyoq3?=
+ =?us-ascii?Q?XOb95BayxolL7ePw90tmespcbK58Io1vgygUxeTEgFiBP0M7v9Khtl1o0PUa?=
+ =?us-ascii?Q?qrfUB4hsRgwEYeffOrbG5jfmFG50nfjzbHRRDUEIeN/yvfk2C1RDkXkBm0To?=
+ =?us-ascii?Q?XwwucqIITKEyie5h/Lj+nqT8Dy+lH9Ievqi4B8CZ4Pm1/J5SYyEpUIctNtnL?=
+ =?us-ascii?Q?JbkMOADIzx7Bp+OKlB8rdvbJXdB5jfkXj86hoAXbJVX+2T2NPpXidye5AGYr?=
+ =?us-ascii?Q?MA2ZMfdpgqAcHjigBy+EGQz3XSeXw94NytjP4qTEJGGdYQIn4gB7vOTOFBJi?=
+ =?us-ascii?Q?83C/tW+eB/6IISQf6SUu1p7WOzsWuoET/UNVVojOP9uSLqWqLR0i+4ly86OM?=
+ =?us-ascii?Q?Pm9TpdfmK9zvNTSggljJuQPm6nht4E4CsvM+/mrMKEjarnQCS7Jk6d3/PhM2?=
+ =?us-ascii?Q?LVQ6huG4a/7OCFOn8h38x6z2ljuE0Xzl7mAbKpsQ?=
+X-OriginatorOrg: garyguo.net
+X-MS-Exchange-CrossTenant-Network-Message-Id: d9ed79ed-77ba-4d4c-1b22-08db854ad77a
+X-MS-Exchange-CrossTenant-AuthSource: LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jul 2023 15:47:49.3616
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: bbc898ad-b10f-4e10-8552-d9377b823d45
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: V6AWZCfaN0Ea7Hez9RNuVmwM26UuitHpwyonwJLpZ3/aaCTMmgBHsfQnQ4yq7ZF1gATbfeUyVceVe5+SBDjzgQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LO4P265MB7284
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a motivation for and description of asynchronous VM_BIND operation
+On Fri, 14 Jul 2023 18:13:59 +0900
+Asahi Lina <lina@asahilina.net> wrote:
 
-v2:
-- Fix typos (Nirmoy Das)
-- Improve the description of a memory fence (Oak Zeng)
-- Add a reference to the document in the Xe RFC.
-- Add pointers to sample uAPI suggestions
-v3:
-- Address review comments (Danilo Krummrich)
-- Formatting fixes
-v4:
-- Address typos (Francois Dugast)
-- Explain why in-fences are not allowed for VM_BIND operations for long-
-  running workloads (Matthew Brost)
-v5:
-- More typo- and style fixing
-- Further clarify the implications of disallowing in-fences for VM_BIND
-  operations for long-running workloads (Matthew Brost)
+> Using macros to create lock classes all over the place is unergonomic,
+> and makes it impossible to add new features that require lock classes to
+> code such as Arc<> without changing all callers.
+> 
+> Rust has the ability to track the caller's identity by file/line/column
+> number, and we can use that to dynamically generate lock classes
+> instead.
+> 
+> Signed-off-by: Asahi Lina <lina@asahilina.net>
+> ---
+>  rust/kernel/sync/lockdep.rs    | 147 ++++++++++++++++++++++++++++++++++++++++-
+>  rust/kernel/sync/no_lockdep.rs |   8 +++
+>  2 files changed, 154 insertions(+), 1 deletion(-)
+> 
+> diff --git a/rust/kernel/sync/lockdep.rs b/rust/kernel/sync/lockdep.rs
+> index d8328f4275fb..fbf9f6ed403d 100644
+> --- a/rust/kernel/sync/lockdep.rs
+> +++ b/rust/kernel/sync/lockdep.rs
+> @@ -5,7 +5,19 @@
+>  //! This module abstracts the parts of the kernel lockdep API relevant to Rust
+>  //! modules, including lock classes.
+>  
+> -use crate::types::Opaque;
+> +use crate::{
+> +    c_str, fmt,
+> +    init::InPlaceInit,
+> +    new_mutex,
+> +    prelude::{Box, Result, Vec},
+> +    str::{CStr, CString},
+> +    sync::Mutex,
+> +    types::Opaque,
+> +};
+> +
+> +use core::hash::{Hash, Hasher};
+> +use core::pin::Pin;
+> +use core::sync::atomic::{AtomicPtr, Ordering};
+>  
+>  /// Represents a lockdep class. It's a wrapper around C's `lock_class_key`.
+>  #[repr(transparent)]
+> @@ -42,3 +54,136 @@ pub(crate) fn as_ptr(&self) -> *mut bindings::lock_class_key {
+>  // actually dereferenced.
+>  unsafe impl Send for LockClassKey {}
+>  unsafe impl Sync for LockClassKey {}
+> +
+> +// Location is 'static but not really, since module unloads will
+> +// invalidate existing static Locations within that module.
+> +// To avoid breakage, we maintain our own location struct which is
+> +// dynamically allocated on first reference. We store a hash of the
+> +// whole location (including the filename string), as well as the
+> +// line and column separately. The assumption is that this whole
+> +// struct is highly unlikely to ever collide with a reasonable
+> +// hash (this saves us from having to check the filename string
+> +// itself).
+> +#[derive(PartialEq, Debug)]
+> +struct LocationKey {
+> +    hash: u64,
+> +    line: u32,
+> +    column: u32,
+> +}
+> +
+> +struct DynLockClassKey {
+> +    key: Opaque<bindings::lock_class_key>,
+> +    loc: LocationKey,
+> +    name: CString,
+> +}
+> +
+> +impl LocationKey {
+> +    fn new(loc: &'static core::panic::Location<'static>) -> Self {
+> +        let mut hasher = crate::siphash::SipHasher::new();
+> +        loc.hash(&mut hasher);
+> +
+> +        LocationKey {
+> +            hash: hasher.finish(),
+> +            line: loc.line(),
+> +            column: loc.column(),
+> +        }
+> +    }
+> +}
+> +
+> +impl DynLockClassKey {
+> +    fn key(&'static self) -> LockClassKey {
+> +        LockClassKey(self.key.get())
+> +    }
 
-Signed-off-by: Thomas Hellström <thomas.hellstrom@linux.intel.com>
-Acked-by: Nirmoy Das <nirmoy.das@intel.com>
----
- Documentation/gpu/drm-vm-bind-async.rst | 171 ++++++++++++++++++++++++
- Documentation/gpu/rfc/xe.rst            |   4 +-
- 2 files changed, 173 insertions(+), 2 deletions(-)
- create mode 100644 Documentation/gpu/drm-vm-bind-async.rst
+I don't understand why PATCH 06 is needed. If we keep the current
+`LockClassKey` definition this could just be returning `'static
+LockClassKey`, which is a simple `&self.key`.
 
-diff --git a/Documentation/gpu/drm-vm-bind-async.rst b/Documentation/gpu/drm-vm-bind-async.rst
-new file mode 100644
-index 000000000000..d2b02a38198a
---- /dev/null
-+++ b/Documentation/gpu/drm-vm-bind-async.rst
-@@ -0,0 +1,171 @@
-+====================
-+Asynchronous VM_BIND
-+====================
-+
-+Nomenclature:
-+=============
-+
-+* ``VRAM``: On-device memory. Sometimes referred to as device local memory.
-+
-+* ``gpu_vm``: A GPU address space. Typically per process, but can be shared by
-+  multiple processes.
-+
-+* ``VM_BIND``: An operation or a list of operations to modify a gpu_vm using
-+  an IOCTL. The operations include mapping and unmapping system- or
-+  VRAM memory.
-+
-+* ``syncobj``: A container that abstracts synchronization objects. The
-+  synchronization objects can be either generic, like dma-fences or
-+  driver specific. A syncobj typically indicates the type of the
-+  underlying synchronization object.
-+
-+* ``in-syncobj``: Argument to a VM_BIND IOCTL, the VM_BIND operation waits
-+  for these before starting.
-+
-+* ``out-syncobj``: Argument to a VM_BIND_IOCTL, the VM_BIND operation
-+  signals these when the bind operation is complete.
-+
-+* ``memory fence``: A synchronization object, different from a dma-fence.
-+  A memory fence uses the value of a specified memory location to determine
-+  signaled status. A memory fence can be awaited and signaled by both
-+  the GPU and CPU. Memory fences are sometimes referred to as
-+  user-fences, userspace-fences or gpu futexes and do not necessarily obey
-+  the dma-fence rule of signaling within a "reasonable amount of time".
-+  The kernel should thus avoid waiting for memory fences with locks held.
-+
-+* ``long-running workload``: A workload that may take more than the
-+  current stipulated dma-fence maximum signal delay to complete and
-+  which therefore needs to set the gpu_vm or the GPU execution context in
-+  a certain mode that disallows completion dma-fences.
-+
-+* ``exec function``: An exec function is a function that revalidates all
-+  affected gpu_vmas, submits a GPU command batch and registers the
-+  dma_fence representing the GPU command's activity with all affected
-+  dma_resvs. For completeness, although not covered by this document,
-+  it's worth mentioning that an exec function may also be the
-+  revalidation worker that is used by some drivers in compute /
-+  long-running mode.
-+
-+* ``bind context``: A context identifier used for the VM_BIND
-+  operation. VM_BIND operations that use the same bind context can be
-+  assumed, where it matters, to complete in order of submission. No such
-+  assumptions can be made for VM_BIND operations using separate bind contexts.
-+
-+* ``UMD``: User-mode driver.
-+
-+* ``KMD``: Kernel-mode driver.
-+
-+
-+Synchronous / Asynchronous VM_BIND operation
-+============================================
-+
-+Synchronous VM_BIND
-+___________________
-+With Synchronous VM_BIND, the VM_BIND operations all complete before the
-+IOCTL returns. A synchronous VM_BIND takes neither in-fences nor
-+out-fences. Synchronous VM_BIND may block and wait for GPU operations;
-+for example swap-in or clearing, or even previous binds.
-+
-+Asynchronous VM_BIND
-+____________________
-+Asynchronous VM_BIND accepts both in-syncobjs and out-syncobjs. While the
-+IOCTL may return immediately, the VM_BIND operations wait for the in-syncobjs
-+before modifying the GPU page-tables, and signal the out-syncobjs when
-+the modification is done in the sense that the next exec function that
-+awaits for the out-syncobjs will see the change. Errors are reported
-+synchronously assuming that the asynchronous part of the job never errors.
-+In low-memory situations the implementation may block, performing the
-+VM_BIND synchronously, because there might not be enough memory
-+immediately available for preparing the asynchronous operation.
-+
-+If the VM_BIND IOCTL takes a list or an array of operations as an argument,
-+the in-syncobjs needs to signal before the first operation starts to
-+execute, and the out-syncobjs signal after the last operation
-+completes. Operations in the operation list can be assumed, where it
-+matters, to complete in order.
-+
-+Since asynchronous VM_BIND operations may use dma-fences embedded in
-+out-syncobjs and internally in KMD to signal bind completion,  any
-+memory fences given as VM_BIND in-fences need to be awaited
-+synchronously before the VM_BIND ioctl returns, since dma-fences,
-+required to signal in a reasonable amount of time, can never be made
-+to depend on memory fences that don't have such a restriction.
-+
-+To aid in supporting user-space queues, the VM_BIND may take a bind context.
-+
-+The purpose of an Asynchronous VM_BIND operation is for user-mode
-+drivers to be able to pipeline interleaved gpu_vm modifications and
-+exec functions. For long-running workloads, such pipelining of a bind
-+operation is not allowed and any in-fences need to be awaited
-+synchronously. The reason for this is twofold. First, any memory
-+fences gated by a long-running workload and used as in-syncobjs for the
-+VM_BIND operation will need to be awaited synchronously anyway (see
-+above). Second, any dma-fences used as in-syncobjs for VM_BIND
-+operations for long-running workloads will not allow for pipelining
-+anyway since long-running workloads don't allow for dma-fences as
-+out-syncobjs, so while theoretically possible the use of them is
-+questionable and should be rejected until there is a valuable use-case.
-+Note that this is not a limitation imposed by dma-fence rules, but
-+rather a limitation imposed to keep KMD implementation simple. It does
-+not affect using dma-fences as dependencies for the long-running
-+workload itself, which is allowed by dma-fence rules, but rather for
-+the VM_BIND operation only.
-+
-+Also for VM_BINDS for long-running gpu_vms the user-mode driver should typically
-+select memory fences as out-fences since that gives greater flexibility for
-+the kernel mode driver to inject other operations into the bind /
-+unbind operations. Like for example inserting breakpoints into batch
-+buffers. The workload execution can then easily be pipelined behind
-+the bind completion using the memory out-fence as the signal condition
-+for a GPU semaphore embedded by UMD in the workload.
-+
-+Multi-operation VM_BIND IOCTL error handling and interrupts
-+===========================================================
-+
-+The VM_BIND operations of the IOCTL may error due to lack of resources
-+to complete and also due to interrupted waits. In both situations UMD
-+should preferably restart the IOCTL after taking suitable action. If
-+UMD has over-committed a memory resource, an -ENOSPC error will be
-+returned, and UMD may then unbind resources that are not used at the
-+moment and restart the IOCTL. On -EINTR, UMD should simply restart the
-+IOCTL and on -ENOMEM user-space may either attempt to free known
-+system memory resources or abort the operation. If aborting as a
-+result of a failed operation in a list of operations, some operations
-+may still have completed, and to get back to a known state, user-space
-+should therefore attempt to unbind all virtual memory regions touched
-+by the failing IOCTL.
-+Unbind operations are guaranteed not to cause any errors due to
-+resource constraints.
-+In between a failed VM_BIND IOCTL and a successful restart there may
-+be implementation defined restrictions on the use of the gpu_vm. For a
-+description why, please see KMD implementation details under `error
-+state saving`_.
-+
-+Sample uAPI implementations
-+===========================
-+Suggested uAPI implementations at the moment of writing can be found for
-+the Nouveau driver `here
-+<https://patchwork.freedesktop.org/patch/543260/?series=112994&rev=6>`_.
-+and for the Xe driver `here
-+<https://cgit.freedesktop.org/drm/drm-xe/diff/include/uapi/drm/xe_drm.h?h=drm-xe-next&id=9cb016ebbb6a275f57b1cb512b95d5a842391ad7>`_.
-+
-+KMD implementation details
-+==========================
-+
-+Error state saving
-+__________________
-+Open: When the VM_BIND IOCTL returns an error, some or even parts of
-+an operation may have been completed. If the IOCTL is restarted, in
-+order to know where to restart, the KMD can either put the gpu_vm in
-+an error state and save one instance of the needed restart state
-+internally. In this case, KMD needs to block further modifications of
-+the gpu_vm state that may cause additional failures requiring a
-+restart state save, until the error has been fully resolved. If the
-+uAPI instead defines a pointer to a UMD allocated cookie in the IOCTL
-+struct, it could also choose to store the restart state in that cookie.
-+
-+The restart state may, for example, be the number of successfully
-+completed operations.
-+
-+Easiest for UMD would of course be if KMD did a full unwind on error
-+so that no error state needs to be saved.
-diff --git a/Documentation/gpu/rfc/xe.rst b/Documentation/gpu/rfc/xe.rst
-index 2516fe141db6..0f062e1346d2 100644
---- a/Documentation/gpu/rfc/xe.rst
-+++ b/Documentation/gpu/rfc/xe.rst
-@@ -138,8 +138,8 @@ memory fences. Ideally with helper support so people don't get it wrong in all
- possible ways.
- 
- As a key measurable result, the benefits of ASYNC VM_BIND and a discussion of
--various flavors, error handling and a sample API should be documented here or in
--a separate document pointed to by this document.
-+various flavors, error handling and sample API suggestions are documented in
-+Documentation/gpu/drm-vm-bind-async.rst
- 
- Userptr integration and vm_bind
- -------------------------------
--- 
-2.40.1
+> +
+> +    fn name(&'static self) -> &CStr {
+> +        &self.name
+> +    }
+> +}
+> +
+> +const LOCK_CLASS_BUCKETS: usize = 1024;
+> +
+> +#[track_caller]
+> +fn caller_lock_class_inner() -> Result<&'static DynLockClassKey> {
+> +    // This is just a hack to make the below static array initialization work.
+> +    #[allow(clippy::declare_interior_mutable_const)]
+> +    const ATOMIC_PTR: AtomicPtr<Mutex<Vec<&'static DynLockClassKey>>> =
+> +        AtomicPtr::new(core::ptr::null_mut());
+> +
+> +    #[allow(clippy::complexity)]
+> +    static LOCK_CLASSES: [AtomicPtr<Mutex<Vec<&'static DynLockClassKey>>>; LOCK_CLASS_BUCKETS] =
+> +        [ATOMIC_PTR; LOCK_CLASS_BUCKETS];
+> +
+> +    let loc = core::panic::Location::caller();
+> +    let loc_key = LocationKey::new(loc);
+> +
+> +    let index = (loc_key.hash % (LOCK_CLASS_BUCKETS as u64)) as usize;
+> +    let slot = &LOCK_CLASSES[index];
+> +
+> +    let mut ptr = slot.load(Ordering::Relaxed);
+> +    if ptr.is_null() {
+> +        let new_element = Box::pin_init(new_mutex!(Vec::new()))?;
+> +
+> +        if let Err(e) = slot.compare_exchange(
+> +            core::ptr::null_mut(),
+> +            // SAFETY: We never move out of this Box
+> +            Box::into_raw(unsafe { Pin::into_inner_unchecked(new_element) }),
+> +            Ordering::Relaxed,
+> +            Ordering::Relaxed,
+> +        ) {
+> +            // SAFETY: We just got this pointer from `into_raw()`
+> +            unsafe { Box::from_raw(e) };
+> +        }
+> +
+> +        ptr = slot.load(Ordering::Relaxed);
+> +        assert!(!ptr.is_null());
+> +    }
+> +
+> +    // SAFETY: This mutex was either just created above or previously allocated,
+> +    // and we never free these objects so the pointer is guaranteed to be valid.
+> +    let mut guard = unsafe { (*ptr).lock() };
+> +
+> +    for i in guard.iter() {
+> +        if i.loc == loc_key {
+> +            return Ok(i);
+> +        }
+> +    }
+> +
+> +    // We immediately leak the class, so it becomes 'static
+> +    let new_class = Box::leak(Box::try_new(DynLockClassKey {
+> +        key: Opaque::zeroed(),
+> +        loc: loc_key,
+> +        name: CString::try_from_fmt(fmt!("{}:{}:{}", loc.file(), loc.line(), loc.column()))?,
+> +    })?);
+> +
+> +    // SAFETY: This is safe to call with a pointer to a dynamically allocated lockdep key,
+> +    // and we never free the objects so it is safe to never unregister the key.
+> +    unsafe { bindings::lockdep_register_key(new_class.key.get()) };
+> +
+> +    guard.try_push(new_class)?;
+> +
+> +    Ok(new_class)
+> +}
+> +
+> +#[track_caller]
+> +pub(crate) fn caller_lock_class() -> (LockClassKey, &'static CStr) {
+> +    match caller_lock_class_inner() {
+> +        Ok(a) => (a.key(), a.name()),
+> +        Err(_) => {
+> +            crate::pr_err!(
+> +                "Failed to dynamically allocate lock class, lockdep may be unreliable.\n"
+> +            );
+> +
+> +            let loc = core::panic::Location::caller();
+> +            // SAFETY: LockClassKey is opaque and the lockdep implementation only needs
+> +            // unique addresses for statically allocated keys, so it is safe to just cast
+> +            // the Location reference directly into a LockClassKey. However, this will
+> +            // result in multiple keys for the same callsite due to monomorphization,
+> +            // as well as spuriously destroyed keys when the static key is allocated in
+> +            // the wrong module, which is what makes this unreliable.
+
+If the only purpose of introducing `StaticLockClassKey` and change
+`LockClassKey` is to make this fallback path work, then I don't think
+that change is worth it. I don't really see an issue with forging a
+`'static LockClassKey' from a `'static Location`, especially since you
+can't really do any memory access with `LockClassKey`.
+
+> +            (
+> +                LockClassKey(loc as *const _ as *mut _),
+> +                c_str!("fallback_lock_class"),
+> +            )
+> +        }
+> +    }
+> +}
+> diff --git a/rust/kernel/sync/no_lockdep.rs b/rust/kernel/sync/no_lockdep.rs
+> index 518ec0bf9a7d..de53c4de7fbe 100644
+> --- a/rust/kernel/sync/no_lockdep.rs
+> +++ b/rust/kernel/sync/no_lockdep.rs
+> @@ -4,6 +4,8 @@
+>  //!
+>  //! Takes the place of the `lockdep` module when lockdep is disabled.
+>  
+> +use crate::{c_str, str::CStr};
+> +
+>  /// A dummy, zero-sized lock class.
+>  pub struct StaticLockClassKey();
+>  
+> @@ -28,3 +30,9 @@ pub(crate) fn as_ptr(&self) -> *mut bindings::lock_class_key {
+>          core::ptr::null_mut()
+>      }
+>  }
+> +
+> +pub(crate) fn caller_lock_class() -> (LockClassKey, &'static CStr) {
+> +    static DUMMY_LOCK_CLASS: StaticLockClassKey = StaticLockClassKey::new();
+> +
+> +    (DUMMY_LOCK_CLASS.key(), c_str!("dummy"))
+> +}
+> 
 
