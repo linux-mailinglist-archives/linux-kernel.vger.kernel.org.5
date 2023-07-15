@@ -2,165 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A45B75483A
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 12:40:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1738175483D
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 12:43:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230469AbjGOKkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 06:40:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39336 "EHLO
+        id S229593AbjGOKnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 06:43:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229854AbjGOKka (ORCPT
+        with ESMTP id S229448AbjGOKnC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 06:40:30 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C49753A88;
-        Sat, 15 Jul 2023 03:40:29 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 59D1560303;
-        Sat, 15 Jul 2023 10:40:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB3F1C433C8;
-        Sat, 15 Jul 2023 10:40:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689417628;
-        bh=wTBz1S2hSZwl9POKXMBD1OXuh1TzdFtjpS1qwGx+jkU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AzOsA2qFOz4tvHXjRervo3hsjJMpV6Wh6vmXrC9HBvJufqG5Rxd2QWn4Ytf9WmKT3
-         ujHHRaZ6EHvH9eJq5Bo2tUdsmlaScYysaiAgNR5GV/wUns4qUKnTOnwwuRUszRu1mj
-         4qvEGI7Q96XZXeehYXzyZx/h+k8lBAetCYLTvmZoAJuV5oqUtFL/b5h5rDuBdToy79
-         LlOPbpvXntlRlSlMzqmc1z6eguAX/wxLQFmPbaLavZ+57NQu0BY6V2btUGLmjFKQek
-         vDqhRkXReWmtyZWxzFjTYSctCOWNIJE4N1xbj3OiHtccADkleRhF4jBxF2aF3HsgF3
-         RgCDKpsDhMdRA==
-Date:   Sat, 15 Jul 2023 11:40:22 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Sarah Walker <sarah.walker@imgtec.com>
-Cc:     dri-devel@lists.freedesktop.org, frank.binns@imgtec.com,
-        donald.robson@imgtec.com, boris.brezillon@collabora.com,
-        faith.ekstrand@collabora.com, airlied@gmail.com, daniel@ffwll.ch,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, afd@ti.com, hns@goldelico.com,
-        matthew.brost@intel.com, christian.koenig@amd.com,
-        luben.tuikov@amd.com, dakr@redhat.com,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 02/17] dt-bindings: gpu: Add Imagination Technologies
- PowerVR GPU
-Message-ID: <20230715-paramount-straining-6a486f8af20d@spud>
-References: <20230714142526.111569-1-sarah.walker@imgtec.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="PGVJVVq7kVn9L8A9"
+        Sat, 15 Jul 2023 06:43:02 -0400
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2132.outbound.protection.outlook.com [40.107.94.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C612B35AA;
+        Sat, 15 Jul 2023 03:43:00 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ph2148X3VsYzP62JUuijoqxLpB34hfZ6FrPmvqJZ0ovQxVZNkFpjr/dLGt8NrEIgwn5HE3MkziQtUMpQRaEqHPAVR13+zAZcgqgTQrq+IEFmbtFlR2mInOXgCw8vJjIVTT7JWpiepS58PxCa9nOgHSafOX3R2nCAkniwFdF7RHUCqPIJpVIQ9oEoMYNBGe3i1KpEEGz8zWytUeOoiSHhrQFypD4ab2jjGHmL874fC0xefdNWWET1uw313QvJaP+Q21L/AjssQWD8ZiLJwNMZ/gDvJLIPi6JH+EwZ9VEB6o5l6uu5uaePJx1MvOs3Cs/9Qv/1Y/CK91A601TXHhzgwg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=3NrbvjnZ09eds1Ix+BiXvxXp5KFnXuS5dKi9jQGEuHU=;
+ b=aVWn+JtRuSXnxIt5hzRNZaKl0AVsHIsAAlCFyE+bfnXaI2ARqdzeTC8bcz3XzLy5S7I0Pvy6GN8TjzSnf50N1As9giUGT5bcylcNHf5q6FC/CbtM63AL+jYGO2ypH0CiuOco2hJnmzbbXq2LPu5qw7tW/0r1S4xWjg4jEFmyA2AfXHEkOfFo6RqzCQjrs2mVK7nQTwXdkPE6X8p0jkAsTSct5CPMHrkc21xpOEpesMMp5s1VBjIojvyf1Sb9nB+sz44re6+wtK5XiRyr+ZSFJVn2k4TgF2Lx3/ee5GnYsWVHyQDQ0MXmM+xeEqHF3UDu/xc0EB/o/kizfQa7KAFJ4A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
+ dkim=pass header.d=corigine.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3NrbvjnZ09eds1Ix+BiXvxXp5KFnXuS5dKi9jQGEuHU=;
+ b=CtQr/ex+AxlYxKB9ZuyKS23sbGYfejVGKEWvITIX9K4fIHPhjyGjZOgR9VoCRWU6+l6xp9xJQF2MzFv4ULuz5ORd1KKDWDGjIhK7jQMUlb3p1iHBH4QTR4tiofM5sQ47Xe7TXCTRRlaGqOAthgbTgADuYnb1rF+aC3A3omDaDeg=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=corigine.com;
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
+ by SA1PR13MB4942.namprd13.prod.outlook.com (2603:10b6:806:1a5::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.28; Sat, 15 Jul
+ 2023 10:42:57 +0000
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::d23a:8c12:d561:470]) by PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::d23a:8c12:d561:470%6]) with mapi id 15.20.6588.028; Sat, 15 Jul 2023
+ 10:42:57 +0000
+Date:   Sat, 15 Jul 2023 11:42:51 +0100
+From:   Simon Horman <simon.horman@corigine.com>
+To:     Ivan Vecera <ivecera@redhat.com>
+Cc:     netdev@vger.kernel.org,
+        Rafal Romanowski <rafal.romanowski@intel.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, Ma Yuying <yuma@redhat.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "moderated list:INTEL ETHERNET DRIVERS" 
+        <intel-wired-lan@lists.osuosl.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next v3 1/2] i40e: Add helper for VF inited state
+ check with timeout
+Message-ID: <ZLJ4K8tRdvwR4aAc@corigine.com>
+References: <20230713145755.1629442-1-ivecera@redhat.com>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230714142526.111569-1-sarah.walker@imgtec.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230713145755.1629442-1-ivecera@redhat.com>
+X-ClientProxiedBy: LO2P265CA0419.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:a0::23) To PH0PR13MB4842.namprd13.prod.outlook.com
+ (2603:10b6:510:78::6)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR13MB4842:EE_|SA1PR13MB4942:EE_
+X-MS-Office365-Filtering-Correlation-Id: 173f4147-9f67-42c4-8b96-08db8520409f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: iSJ6/HiDkU8K3bkDMEj/O/DVDP+UNi+CG44BDsvz6o6nmGLVipl0KplyY/ZXbzbBiY//TUrScTQD0u+zY5IxsQ/m4wczZ4m439LpiVFLnxCzCBilAq2N7BD9L2adz2P+nRHkDkHop07zOjS/ynaHkd4/mKznCup38P4eAJcmMhKtraZ46y06Kfoa/8KZij2gAL69poMQIXUChebGxXGprnxrmyBkuoCCeQ/J7V0FY03pVgIpLQUxhxJp1yZvO/02rDQPCAp0xQuNZ+YEgNiCNgX+Pd8yECx8lu+NRdIYD3duulkouGVvu8yIbDvT6QzZflGbsxCqUitXZ7zOrEBCR/ohv6Klmkbx4E1g94SqB3ONiz3OCOBNPEzBihd9be/zSyLR6Jm0hn9hPTuxLrImwTdJQ78DoUZOjzgUNMykJztniJaKbwmhMsVTeqNnT22hZytSGRGUzb4r5Bw6u2JtnUzo9dDF4odZtteSePFosdp2EgiH/UFS5vcnHCm9YRKVcU5nTUSiZhxDSjGyoB9j+fWaruJlV/F/8GPsBAyD6yBWq5yQ3kHvlW5Cv4m3ln3T6tjhqhJXhKbFcCG5DFWsnBNTEM5J9tjqSoXns3JmBsU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(366004)(39830400003)(376002)(136003)(346002)(451199021)(38100700002)(86362001)(36756003)(6666004)(6512007)(6486002)(4744005)(478600001)(2906002)(26005)(6506007)(316002)(5660300002)(8676002)(8936002)(44832011)(54906003)(6916009)(4326008)(41300700001)(66476007)(66556008)(2616005)(7416002)(66946007)(186003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?UaWA+XFXuElvca5OKRY7olpyElI5+he7ba0yNGUSxtGnEq13ihpyDUi771C0?=
+ =?us-ascii?Q?9iSlOLqQq/Xm6LasItqKWpeFQHyFrQkqnn1CinYTZ/6gFIpdeeAEUX/xWoLa?=
+ =?us-ascii?Q?DLkJSuG5YwMxVYUDmiK7wadszWR4nBzrP/+qmJeawxBqLTYI3+bk7A8YJ804?=
+ =?us-ascii?Q?gF3B04NXpoIYiD/4NIEj4viGchSQw935cuLUafOJ2X2RIk4dcVNTpDNx3v4G?=
+ =?us-ascii?Q?ZU1nMMncjJSjHcCYrAGok3fF377DBje88mRdGDkFHl1N1Lz+5iyeQjCzo6b4?=
+ =?us-ascii?Q?itxda9CUGAqRjB9L7gdBG8QFdHh2/16/qRhf1T/evtHLZj/O3gveWL1Sfo0Z?=
+ =?us-ascii?Q?DLz4fOddAEIkJuQ6T8SUT+iHtEZxdjKKwq5BCFsA5TdwgRxxJCe37tBgonYB?=
+ =?us-ascii?Q?MUo4mqm75eqRZEnq8wNpCVQeZIqzBKvDY4rwYFZ5105brI+ILb45qomj65TC?=
+ =?us-ascii?Q?E00uKV9VhI4YmThiq4o77Fnr4IRQv/PfQenoutABheDBUGgZcG9zfCIJg8xC?=
+ =?us-ascii?Q?TEsAcB+SKyHXFq1+IRveI1jbKOlbROKybOcjRsbeVMdPpZ7c0mDHQ6dmhch+?=
+ =?us-ascii?Q?t110guAO1fBYZgb0cUISKainbcpZ/xf4dEPoXgohiIi4DduwgKNzCbO6+Lzi?=
+ =?us-ascii?Q?cSCtRMEAiqrDo+Di+BmU/t8ypiEfK+W9WSTuv82WzDVyJsg5WTX7k4YleiYs?=
+ =?us-ascii?Q?pcMkcYq3zaYj/LZOA97hH9Vrvwd6ZKlYoXFCUdqeJtWvUj323LRREu6xtZYi?=
+ =?us-ascii?Q?gtfNwd0Z8EX8nMnP9vfGCcANHdvXErT531hZES5jPSsrrhqVhHVr1pMl4nyv?=
+ =?us-ascii?Q?PgB0fx3saIQIkUdXg6SCRbott0Yq3/1o4Z6DDfW3zlWVDRzBfwHDfiEkZxcx?=
+ =?us-ascii?Q?Bqb31oZk1QNfyu0J8ckwH68/TsRdNag5zvAZGdrCUIoq7MV4a04C3aQglbaC?=
+ =?us-ascii?Q?wi+sE+s19UiQ6L2jguElh5btqmryc1C8vpgp+/tuCbVrXCxSzZa4yZLNxkgr?=
+ =?us-ascii?Q?o3cqU9m1bbHE3aT8klcaHDzvOvxIryxAHnqWav9NU4ZKRQL20sB12wBPHZ+C?=
+ =?us-ascii?Q?l4hiFqnfdRLPX6l5BiCjggMRtm5QMvgbYrF4xfrXzP22vJrc3rAa8YGKHPfm?=
+ =?us-ascii?Q?nicnzUn8r+/eiG6C53IrHAfBsLckE0994pWHTeLi9EDdO3IAhnmVoFOB4nAK?=
+ =?us-ascii?Q?Ow0ZYkb+ArUWGIHTNyX/Ld9Jzf+fcrNSoRvcIdgbIyu4oRiu22Qo22sGupJf?=
+ =?us-ascii?Q?/LQ9RC+fDrTxWg+R2+PN57blam2nscg8hS4uVBuozdY5mFLveXOrqcdB+IDL?=
+ =?us-ascii?Q?tl+FYywF2KCx4L1ZtwBTXL/Nm89yRf+nXOH3mzgE8c7+8S/V6JuSc1gLhK7E?=
+ =?us-ascii?Q?3nDw7UySsYaWrkefFer3Ry/AXGh2fKhPS1AD9eO179EpGOB+VeonypANhI8k?=
+ =?us-ascii?Q?txi8/WUfeT3YousmIW4/9Qd1hZ+b8jS8GgdVEpqY6Z5gNA4phZ4EQSVZkuLj?=
+ =?us-ascii?Q?miT04oN4SVOQ19ZV5nDPq21JQSWIPXQc/NiuClW6DKf5Hu5qEFdsS3VZ0Q5l?=
+ =?us-ascii?Q?UhrjrS6fHB8ny0uHDl+Z2tRNYp6tGiz6n70p+SBArBs1gu3PrvUkbZJniolY?=
+ =?us-ascii?Q?qg=3D=3D?=
+X-OriginatorOrg: corigine.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 173f4147-9f67-42c4-8b96-08db8520409f
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jul 2023 10:42:57.4032
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Oq4kEdcQut20Bi6XGilN0qc3CFC1tIhpiZs8QdfbhTt0xJa6vZXcvc2d2jGom/GC/TkmS0hv2MSMfxfuTsjkqn4cKBjWBKb4yTWE+RxjkGU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR13MB4942
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 13, 2023 at 04:57:54PM +0200, Ivan Vecera wrote:
+> Move the check for VF inited state (with optional up-to 300ms
+> timeout to separate helper i40e_check_vf_init_timeout() that
+> will be used in the following commit.
+> 
+> Tested-by: Ma Yuying <yuma@redhat.com>
+> Signed-off-by: Ivan Vecera <ivecera@redhat.com>
 
---PGVJVVq7kVn9L8A9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Simon Horman <simon.horman@corigine.com>
 
-Hey Sarah,
-
-Your series does not appear to be threaded. `git send-email` can be
-passed, for example, a directory containing a whole series & will set
-the correct in-reply-to headers so that the series is in a single
-thread.
-
-On Fri, Jul 14, 2023 at 03:25:26PM +0100, Sarah Walker wrote:
-> Add the device tree binding documentation for the Series AXE GPU used in
-> TI AM62 SoCs.
-
-> Changes since v3:
-> - Remove oneOf in compatible property
-> - Remove power-supply (not used on AM62)
->=20
-> Changes since v2:
-> - Add commit message description
-> - Remove mt8173-gpu support (not currently supported)
-> - Drop quotes from $id and $schema
-> - Remove reg: minItems
-> - Drop _clk suffixes from clock-names
-> - Remove operating-points-v2 property and cooling-cells (not currently
->   used)
-> - Add additionalProperties: false
-> - Remove stray blank line at the end of file
-
-The changelog should go below the --- line.
-
-> Signed-off-by: Sarah Walker <sarah.walker@imgtec.com>
-> ---
->  .../devicetree/bindings/gpu/img,powervr.yaml  | 68 +++++++++++++++++++
->  MAINTAINERS                                   |  7 ++
->  2 files changed, 75 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/gpu/img,powervr.yaml
-
-> diff --git a/Documentation/devicetree/bindings/gpu/img,powervr.yaml b/Doc=
-umentation/devicetree/bindings/gpu/img,powervr.yaml
-> new file mode 100644
-> index 000000000000..3292a0440465
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/gpu/img,powervr.yaml
-> @@ -0,0 +1,68 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +# Copyright (c) 2022 Imagination Technologies Ltd.
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/gpu/img,powervr.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Imagination Technologies PowerVR GPU
-> +
-> +maintainers:
-> +  - Sarah Walker <sarah.walker@imgtec.com>
-
-> +  interrupts:
-> +    items:
-> +      - description: GPU interrupt
-
-The description here doesn't add any value, since there is only one
-interrupt, so you can drop it and do maxItems: 1 as you have done
-elsewhere.
-
-> +  interrupt-names:
-> +    items:
-> +      - const: gpu
-
-And this
-items:
-  - const: gpu
-can just be
-const: gpu
-
-Although, if there is only one interrupt this is probably not
-particularly helpful. Are there other implementations of this IP that
-have more interrupts?
-
-Otherwise, this looks good to me.
-
-Thanks,
-Conor.
-
---PGVJVVq7kVn9L8A9
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZLJ3lgAKCRB4tDGHoIJi
-0j3aAQDVMC24k6fauiEV0VhEg6EVlCN4u/NEO2bgeg06XEa29wD/RMfmf/un5KW6
-LVpJKv8SHRhzcCHfOR387DPgS+VIDgE=
-=XdJ6
------END PGP SIGNATURE-----
-
---PGVJVVq7kVn9L8A9--
