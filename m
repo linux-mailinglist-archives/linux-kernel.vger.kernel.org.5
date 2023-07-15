@@ -2,136 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84F14754A8B
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 19:54:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAA3D754A8F
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 19:57:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230083AbjGORyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 13:54:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37110 "EHLO
+        id S230111AbjGOR5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 13:57:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229502AbjGORyA (ORCPT
+        with ESMTP id S230027AbjGOR5S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 13:54:00 -0400
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3164430DC;
-        Sat, 15 Jul 2023 10:53:58 -0700 (PDT)
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id AE9E0100005;
-        Sat, 15 Jul 2023 20:53:56 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru AE9E0100005
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-        s=mail; t=1689443636;
-        bh=5ttxEKcHawm3oRMYZ4Ouli2azKIL2gurED8PaIq7bWA=;
-        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-        b=R2R/SIo3MEqcWoNlvoAXJv2SJgfTyQ9c3kYcrQW2CbowGylAD5qmxiIeujrGS4Uhv
-         mfLQct59SUVaJc3L4lTUW9gizgm3j0jd0us1Y1CaPJaYSI7vpI+mY5/sjYe/nQEKcG
-         b0WB+lKWPH6Qo3guhnb+JuWC7F9uTrfPSDZPaF2lzADbtPjvpYpu50u76ENwKDbEaR
-         4AbMgeo91OsiM3J9jskPKHk/cJZ+E/r05A2vkKzzBxouRdUtDAAGR86e+pI2R126vx
-         gCaDs0IopaJaOq+fIA+dWTIFEMeKdf/DWcq8kpCKbMpJewwT8TyLFfVEnsaflywiSU
-         r8/7UgUpiqWcw==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Sat, 15 Jul 2023 20:53:56 +0300 (MSK)
-Received: from [192.168.0.12] (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Sat, 15 Jul 2023 20:53:13 +0300
-Message-ID: <672e6a2f-21b3-77cd-fe83-04d4aa79f68e@sberdevices.ru>
-Date:   Sat, 15 Jul 2023 20:48:34 +0300
+        Sat, 15 Jul 2023 13:57:18 -0400
+Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5E221FC0
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 10:57:16 -0700 (PDT)
+Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-57012b2973eso29289237b3.2
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 10:57:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689443836; x=1692035836;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MWfuaj908ezvTCArkn3iKuZY57pS5DEGCvs818aKT1g=;
+        b=hXFWx/7V2ilUSpF3voEEHL3miMi68ZScjxXTYKsraLjLXai5wQQF4WPMOEwKknT73Z
+         TosQJPQ0jcS9mV4PZ/Hrjat87xHfW1QZJJvKse42oBPzZB+EGbp2N3i5id7JTxjUsgtN
+         WDL0fBXFgAJ7IwzYFb0eaIrxQI4wqfHa1Tk5UXF4g6QhSgtnbN6HAd5LXyrsoH093BeZ
+         dnzHSgUdn7weBlTbCB7MsfNkTRHFyDdDqy3vayXALCvXkwp2xHLINAeKis0MHStT3gGB
+         zSRQipZgpEoUedpY9iX8KSuraRlyBWdrTzGFZ/p6RBKPRCTekMb8kbzZG2seChNlsEGP
+         QXtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689443836; x=1692035836;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MWfuaj908ezvTCArkn3iKuZY57pS5DEGCvs818aKT1g=;
+        b=dpA8NFhrwYDkSa3mo2sxtt9wvlP2z+pcuP5smxmdAeYVHv64QlNI2irCRW7mDLD0EO
+         NNXgdnzYJUphiFtiUdYgj4yOAk+2OWULjE3sqTezj3vOggTpNRsplOyRegqQxw3DiIWU
+         zzvzyngfKIXny32YmUgK/3oNqOJXmL/fj6Gct6BBQqCNF5dmvjFtQYmXPGDRfxeeDoPu
+         UOOlkq9QO/HPM3UkOxVGtJR4ZGXFqnoItyNPl3RGCoImyjLoZA7rtGXAVjqGufPVSsnc
+         ZFKMRzvqYG7jhxc/p3Xm+fu92gyJPAlzhIPrvRAbu89CZ2mtzxghnabnW4Uylyx8afTh
+         9H9w==
+X-Gm-Message-State: ABy/qLYoIiCPDAyArd+1B8dbnxWVgOoPaMFC7Tyfj1WhvCsBiE3SoA1W
+        eCu00XGiEwevWM62pj9heTvz4cDp7MpdBY9x6eG8Dg==
+X-Google-Smtp-Source: APBJJlEOgFSlT/aTEORmFdIMvrXhSvSNS+ivT8OhWO9TBnbzSoXq3K3OfZ5ITuyPBt0YYAqSQP7aCMjSrPWQ6SLmwFM=
+X-Received: by 2002:a81:4ec2:0:b0:573:cacd:3b6e with SMTP id
+ c185-20020a814ec2000000b00573cacd3b6emr7407493ywb.30.1689443836031; Sat, 15
+ Jul 2023 10:57:16 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [RFC PATCH v3 0/3] support 512B ECC step size for Meson NAND
-Content-Language: en-US
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-CC:     Liang Yang <liang.yang@amlogic.com>,
+References: <20230714174751.4060439-1-robh@kernel.org>
+In-Reply-To: <20230714174751.4060439-1-robh@kernel.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sat, 15 Jul 2023 19:57:04 +0200
+Message-ID: <CACRpkdaxqeZH_SOhmuZ2rhoU73uDVNPmzGFpCEuk636Jb2qMsw@mail.gmail.com>
+Subject: Re: [PATCH] mtd: Explicitly include correct DT includes
+To:     Rob Herring <robh@kernel.org>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
         Richard Weinberger <richard@nod.at>,
         Vignesh Raghavendra <vigneshr@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Han Xu <han.xu@nxp.com>,
+        Harvey Hunt <harveyhuntnexus@gmail.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Liang Yang <liang.yang@amlogic.com>,
         Neil Armstrong <neil.armstrong@linaro.org>,
         Kevin Hilman <khilman@baylibre.com>,
         Jerome Brunet <jbrunet@baylibre.com>,
         Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        <oxffffaa@gmail.com>, <kernel@sberdevices.ru>,
-        <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <20230711122129.2635558-1-AVKrasnov@sberdevices.ru>
- <20230715181553.1d2b5637@xps-13>
-From:   Arseniy Krasnov <avkrasnov@sberdevices.ru>
-In-Reply-To: <20230715181553.1d2b5637@xps-13>
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Michal Simek <michal.simek@amd.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Tudor Ambarus <tudor.ambarus@linaro.org>,
+        Pratyush Yadav <pratyush@kernel.org>,
+        Michael Walle <michael@walle.cc>, devicetree@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-amlogic@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 178635 [Jul 15 2023]
-X-KSMG-AntiSpam-Version: 5.9.59.0
-X-KSMG-AntiSpam-Envelope-From: AVKrasnov@sberdevices.ru
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 523 523 523027ce26ed1d9067f7a52a4756a876e54db27c, {Tracking_from_domain_doesnt_match_to}, sberdevices.ru:7.1.1,5.0.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;100.64.160.123:7.1.2, FromAlignment: s, {Tracking_white_helo}, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/07/15 16:31:00 #21619439
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Miquel!
+On Fri, Jul 14, 2023 at 7:48=E2=80=AFPM Rob Herring <robh@kernel.org> wrote=
+:
 
-On 15.07.2023 19:15, Miquel Raynal wrote:
-> Hi Arseniy,
-> 
-> AVKrasnov@sberdevices.ru wrote on Tue, 11 Jul 2023 15:21:26 +0300:
-> 
->> Hello,
->>
->> this patchset adds support for 512B ECC step size for Meson NAND. Current
->> implementation only supports 1024B. There are three patches:
->>
->> 1) Update for device tree bindings to replace 'const' type of field
->>    'nand-ecc-step-size' with 'enum' which contains 512 and 1024.
->>
->> 2) Update for device tree bindings to add dependency between properties
->>    'nand-ecc-strength' and 'nand-ecc-step-size'.
->>
->> 3) Update for Meson driver - new enum value for 512B ECC and reworked
->>    ECC capabilities structure to support both 512B and 1024B ECC. By
->>    default this driver uses 1024B ECC, 512B could be enabled in device
->>    tree.
-> 
-> This series does not apply correctly on nand/next, would you mind
-> rebasing (nand/next on linux-mtd) and sending it again?
+> The DT of_device.h and of_platform.h date back to the separate
+> of_platform_bus_type before it as merged into the regular platform bus.
+> As part of that merge prepping Arm DT support 13 years ago, they
+> "temporarily" include each other. They also include platform_device.h
+> and of.h. As a result, there's a pretty much random mix of those include
+> files used throughout the tree. In order to detangle these headers and
+> replace the implicit includes with struct declarations, users need to
+> explicitly include the correct includes.
+>
+> Signed-off-by: Rob Herring <robh@kernel.org>
 
-Sure, as I see 0001 was applied to nand/next, so I can resend only 0002 and 0003,
-as 0002 is the first patch which fails to apply?
+Thanks for going back and fixing up this!
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-> 
-> BTW the "rfc" prefix is only needed for the "first" submission, when
-> you try something "new", otherwise it is no longer required.
-
-Ok, got it
-
-> 
-> Thanks,
-> Miquèl
-
-Thanks, Arseniy
+Yours,
+Linus Walleij
