@@ -2,63 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C670D754775
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 10:17:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 726D5754778
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 10:22:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230051AbjGOIRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 04:17:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42180 "EHLO
+        id S230108AbjGOIWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 04:22:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjGOIRE (ORCPT
+        with ESMTP id S229436AbjGOIWU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 04:17:04 -0400
-Received: from out203-205-221-240.mail.qq.com (out203-205-221-240.mail.qq.com [203.205.221.240])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAD4A3A8E
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 01:17:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1689409019;
-        bh=IYNA/T8SwiQPcz1b4CrLywjEfP8ocEm4NvLV8lNv8kw=;
-        h=From:To:Cc:Subject:Date;
-        b=a2KV8qJ/rZstBzEyA8bb5wjb0f/kT13+dgI0iua3ubOBo7RA1CjoioH4GaOW27rcS
-         Ew7gvnsMvdGNTIZaO5sOnSb+TQyVDZ86L9HKPo5UbCTY2wqkgbefSKiuZIEVfm617t
-         HeNlXEBpVuOGuwsreWcTX+zW6kzNyYqKHqtz+XxI=
-Received: from KernelDevBox.byted.org ([180.184.51.40])
-        by newxmesmtplogicsvrsza10-0.qq.com (NewEsmtp) with SMTP
-        id 4391A0B9; Sat, 15 Jul 2023 16:16:57 +0800
-X-QQ-mid: xmsmtpt1689409017twy3nsj2q
-Message-ID: <tencent_DB7525706E9A6B13B7E6C1C43C36145A5009@qq.com>
-X-QQ-XMAILINFO: MRhkIe3mT0C6m1ATvlVQLha9jUu1RBv3lzuVv1YxAOKDB3WzREnvbushfWNJ4e
-         TPizoQAkpPBgxOsIBCf1fJG9we38ZE0kvpkyObiG9DDQZJ+S/tRdcDNMJUn3ivMKfkSeGGJCd9Ep
-         aOP52SiMeeYENmT8QbcdNN2wPIWxfdKryjv+29RPGpkVgv3hcoZ15umTZBE3iQMZOMVm09IEWv6j
-         qj+tHb/0w6w0gPkbCbtEQv6xEBGtwDz4/0kMTvkhKyRAuDFnNaeqGz0ufSB3MLl3/sWHCTX/3Uu0
-         IxW58m+Nch/pnUJDTGkzmDWDRIsNyPaJnZTnB8NO62aF0juZtNe+8+yVCs6TdPM/rGmbQ7Rh6vdL
-         eTlj/7dCNVoi40r77ojn1DClMGlrda1uYoOpkYK3h3LU46B7TYro9kS3TpGBjCaNP40akCSmtqL2
-         Mswu/kozly/H34ojBu1OEoO1pmlvfabOXsrX2HygpqSapV3f3w+KtprXJXuUDCzI+wOBZ90Mjfs9
-         +p9kNMzJDLw5ptzsz7jpv6316AwOwA3ORm9oICVgMZx2+WnqH9qDRePh19RCaBMgtkQFrWKl7oJ9
-         2bbx77sMkZe0sFVs3HtfwtpYlg1tMUE2i2ekWgaeS7l4D5YfkjoMUDh5uWkUDZcMTw5tYr4Rv/n1
-         LZyZdfSACCvqfDPNCpdA/NuHNInwOU9HJyppB6SOXYhiPR3cH45lAZ5Lrua7i6qzctcEEKxcDR8r
-         8VjhKVWm3P5Yf0ScRmg0jHrG2oebD3WrPe+S4cYTx99lFb9g0lYb0DyYtGYTa9vbFDOKbuiC07BL
-         DI3tFvfuYn3WJOGdexsKemvDBJx3OT8CSD1VBQcKavH0+4F0tdGU1jykxEMslNrfFFx6pEEoiirZ
-         ypOIfSBZgaQxkQuVE+/DAoTU+rexlAl3lZ6GhdX8bESitcRiU3q8TCvmNzK7FpxjyfTaazn0O7cH
-         rMt6jxwjwpx1tZcomNVPgy+DQp7JoD/KQNO9TSG+cw9XZiI5jJs1TeNrciFOGJ2aO2nRmrL+NHM2
-         OsFI/ZSA==
-X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
-From:   Zhang Shurong <zhang_shurong@foxmail.com>
-To:     deller@gmx.de
-Cc:     linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        Zhang Shurong <zhang_shurong@foxmail.com>
-Subject: [PATCH] fbdev: au1200fb: Fix missing IRQ check in au1200fb_drv_probe
-Date:   Sat, 15 Jul 2023 16:16:56 +0800
-X-OQ-MSGID: <20230715081656.1266601-1-zhang_shurong@foxmail.com>
-X-Mailer: git-send-email 2.30.2
+        Sat, 15 Jul 2023 04:22:20 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A71E10EA;
+        Sat, 15 Jul 2023 01:22:19 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-55bac17b442so2062503a12.3;
+        Sat, 15 Jul 2023 01:22:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689409338; x=1692001338;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=duMfgCIVZguOpNbI5H3U3sRMxh3NajpqrJJgjIxlh80=;
+        b=MZ8j0ij93zXF3W3UTnAe6nnwk+9oqv2cx/rm/8NLStnAIIy8kGlVamIFOfnOBlDtb7
+         jCn7hkrd2E980AZmssVFqht/5vjsLe7X2iJ437H1qc6Ad66xhdhEK4seZ3c6T5p8ISVh
+         Kow3tZc4QcbZ6jc/qtyT6+O0HWzZaZhGSxIi5pFPJjLy50ujTUcNSJ/PRhl4kTVTYaeD
+         VOak0N6SWDXhH55/5R4C7Xl9ngc+jtVFH4+Wn1uS3G+9H6FU+e3gtUGTiPnHjQYOy29C
+         eEknovIyqAyzExCUd8oAK3UzbSBi9LAdLFz1z6PCg+ll/P8kubSdSTCorDMarCPY0OJ0
+         cb0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689409338; x=1692001338;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=duMfgCIVZguOpNbI5H3U3sRMxh3NajpqrJJgjIxlh80=;
+        b=eCXI/Da4n1AdEp9HqGFrt1GbjUvrFBj9r5hYgRZyh221g1UwNieXtXVVOxbEGgrYgG
+         L4k8XpO1jTboG+kbQb7wka5ViWqbewjHcyrkgPC0f335EUn9QIed5bhhRoUEASgdyc+0
+         w/kJS4rDcyD+GbiIJLNhNArhtJGi4JbCSFp27N/8ty3qUaDz2Nl3E5JsWr60ITCJZlvK
+         fHi35Rp4nROjNf0QyvSs23ZKZpM+1jhUGuWnbVMUrR6pWQJ51fpvu9E3TIfkMtDyVND6
+         qN8fw2wFpIqQONEb5qZr70h1f7ivjV4N4U7eVsDvFIbNQVQm4tqi2nW9OSNDOTzEZuGx
+         4UmQ==
+X-Gm-Message-State: ABy/qLafNyip5AYTdL3BL3jpAie/EGoHCXVd9Ztr4WiZ2Sb4UFkoeJvn
+        cz4wI5e2xTDmx0BBZESDSQtT/UQYSdZoiA==
+X-Google-Smtp-Source: APBJJlEID4EUVjQa2syhpieWlxFb1XXFjXlLSZXWJiHFaWlbyo8z4NV2OMt3JmGXod9ZXjiyrlB8Dg==
+X-Received: by 2002:a17:90a:4592:b0:256:2efc:270e with SMTP id v18-20020a17090a459200b002562efc270emr6451406pjg.5.1689409338527;
+        Sat, 15 Jul 2023 01:22:18 -0700 (PDT)
+Received: from sandbox.. ([115.178.65.130])
+        by smtp.googlemail.com with ESMTPSA id e28-20020a63371c000000b0051b7d83ff22sm8743483pga.80.2023.07.15.01.22.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 15 Jul 2023 01:22:18 -0700 (PDT)
+Sender: Leesoo Ahn <yisooan.dev@gmail.com>
+From:   Leesoo Ahn <lsahn@ooseel.net>
+X-Google-Original-From: Leesoo Ahn <lsahn@wewakecorp.com>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Leesoo Ahn <lsahn@wewakecorp.com>
+Subject: [PATCH v2] fs: inode: return proper error code in bmap()
+Date:   Sat, 15 Jul 2023 17:22:04 +0900
+Message-Id: <20230715082204.1598206-1-lsahn@wewakecorp.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,32 +73,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This func misses checking for platform_get_irq()'s call and may passes the
-negative error codes to request_irq(), which takes unsigned IRQ #,
-causing it to fail with -EINVAL, overriding an original error code.
+Return -EOPNOTSUPP instead of -EINVAL which has the meaning of
+the argument is an inappropriate value. The current error code doesn't
+make sense to represent that a file system doesn't support bmap operation.
 
-Fix this by stop calling request_irq() with invalid IRQ #s.
-
-Fixes: 1630d85a8312 ("au1200fb: fix hardcoded IRQ")
-Signed-off-by: Zhang Shurong <zhang_shurong@foxmail.com>
+Signed-off-by: Leesoo Ahn <lsahn@wewakecorp.com>
 ---
- drivers/video/fbdev/au1200fb.c | 3 +++
- 1 file changed, 3 insertions(+)
+Changes since v1:
+- Modify the comments of bmap()
+- Modify subject and description requested by Markus Elfring
+https://lore.kernel.org/lkml/20230715060217.1469690-1-lsahn@wewakecorp.com/
 
-diff --git a/drivers/video/fbdev/au1200fb.c b/drivers/video/fbdev/au1200fb.c
-index 5c232eb13724..c137d6afe484 100644
---- a/drivers/video/fbdev/au1200fb.c
-+++ b/drivers/video/fbdev/au1200fb.c
-@@ -1732,6 +1732,9 @@ static int au1200fb_drv_probe(struct platform_device *dev)
+ fs/inode.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/fs/inode.c b/fs/inode.c
+index 8fefb69e1f84..697c51ed226a 100644
+--- a/fs/inode.c
++++ b/fs/inode.c
+@@ -1831,13 +1831,13 @@ EXPORT_SYMBOL(iput);
+  *	4 in ``*block``, with disk block relative to the disk start that holds that
+  *	block of the file.
+  *
+- *	Returns -EINVAL in case of error, 0 otherwise. If mapping falls into a
++ *	Returns -EOPNOTSUPP in case of error, 0 otherwise. If mapping falls into a
+  *	hole, returns 0 and ``*block`` is also set to 0.
+  */
+ int bmap(struct inode *inode, sector_t *block)
+ {
+ 	if (!inode->i_mapping->a_ops->bmap)
+-		return -EINVAL;
++		return -EOPNOTSUPP;
  
- 	/* Now hook interrupt too */
- 	irq = platform_get_irq(dev, 0);
-+	if (irq < 0)
-+		return irq;
-+
- 	ret = request_irq(irq, au1200fb_handle_irq,
- 			  IRQF_SHARED, "lcd", (void *)dev);
- 	if (ret) {
+ 	*block = inode->i_mapping->a_ops->bmap(inode->i_mapping, *block);
+ 	return 0;
 -- 
-2.30.2
+2.34.1
 
