@@ -2,102 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD70E75497F
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 16:52:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE75D75497D
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 16:51:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229729AbjGOOwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 10:52:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53230 "EHLO
+        id S229708AbjGOOvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 10:51:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbjGOOw3 (ORCPT
+        with ESMTP id S229448AbjGOOvi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 10:52:29 -0400
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5889A2715;
-        Sat, 15 Jul 2023 07:52:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689432748; x=1720968748;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=d6WEpFZuPlPo7XMEqofr+HqNzzQ2DFei4agOjq1eyUg=;
-  b=AylkoyvrE0umCJ9X+8JuMU4O7ILA9z5ofFdlhA5KcdiXOL3TgVppCBEH
-   rNZp4BJ7/IN9WV+IYQVqOd7QQtixhmUdnizrFJhGPJt85WR8Rvelbxf+S
-   a7WK60CJNC2vVV7/kH2vVayk4iRno9pEFxYu3Q9qL0bc0XcACrdqA4Ymy
-   55P0X/RUiRW+WkF6cKy4piRzdMzWdtQN/eMSwceL7FtLkwMIayEs6zuEG
-   u2+3x/54+OSwEs0y1n96Nk2bi6OBqNwL/U0tu2L7OsB/4OuIac5Uh0W7o
-   AFSVLJENHqjwTpkYrvr62+FwY24VZMIesl/lGGu7YelPtbPDkiKhA9FVY
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10772"; a="355600673"
-X-IronPort-AV: E=Sophos;i="6.01,208,1684825200"; 
-   d="scan'208";a="355600673"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2023 07:52:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10772"; a="722713529"
-X-IronPort-AV: E=Sophos;i="6.01,208,1684825200"; 
-   d="scan'208";a="722713529"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by orsmga002.jf.intel.com with ESMTP; 15 Jul 2023 07:52:26 -0700
-Date:   Sat, 15 Jul 2023 22:50:51 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Yangtao Li <frank.li@vivo.com>
-Cc:     Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
-        Tom Rix <trix@redhat.com>, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] fpga: fpga-mgr: altera-pr-ip: Convert to
- devm_platform_ioremap_resource()
-Message-ID: <ZLKyS3CAtdgl+Oyu@yilunxu-OptiPlex-7050>
-References: <20230710133830.65631-1-frank.li@vivo.com>
+        Sat, 15 Jul 2023 10:51:38 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D7B9D3;
+        Sat, 15 Jul 2023 07:51:37 -0700 (PDT)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36FEU0Px019590;
+        Sat, 15 Jul 2023 14:51:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=sR+6w+TyfRpBvpuJZSw75v/cgQGr9NGQpIDgesINvf0=;
+ b=nTBlUU87yoeNibSqr4sOPs96GFSNtGW5bJ7cek63XK6Sh46bF/E5ZbbZbuaM803+9HsF
+ Wiga2oSlnKmjATabYwJqS48wA6gy8JKkJQ8IVP3VdNhMWjxAwIssPyaFSA4/H5W35tdD
+ zLBcG1kUOHfbiJddfTd2yU2IvpH4wZyGpqGrNEBET5wenoizGDpwoni++MOD2qZpomW4
+ xTU1sdtG8IvzuJFV8/pRTNb8P4Y3Hm+eO9knMmWF6A7dHAO0ME13iCpUVJOwlDGNhqNH
+ NHFRrau1LSi299OlEdenPb8j4RvW91BudYhzcRuRMxVkSw1AyY9/GKJaMVgvUj18aDFR gg== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3run1ggfhr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 15 Jul 2023 14:51:19 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36FEpIP2031601
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 15 Jul 2023 14:51:18 GMT
+Received: from [10.253.38.208] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Sat, 15 Jul
+ 2023 07:51:15 -0700
+Message-ID: <d8fbe5ba-64b6-a03e-d554-558192f7b9f7@quicinc.com>
+Date:   Sat, 15 Jul 2023 22:51:13 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230710133830.65631-1-frank.li@vivo.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 2/6] net: phy: at803x: merge qca8081 salve seed
+ function
+Content-Language: en-US
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+CC:     <andrew@lunn.ch>, <hkallweit1@gmail.com>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20230714063136.21368-1-quic_luoj@quicinc.com>
+ <20230714063136.21368-3-quic_luoj@quicinc.com>
+ <ZLEn7OhlX9X609eh@shell.armlinux.org.uk>
+From:   Jie Luo <quic_luoj@quicinc.com>
+In-Reply-To: <ZLEn7OhlX9X609eh@shell.armlinux.org.uk>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: X6P44GqUhztbbEOnFP62FfxLw_ggYaf8
+X-Proofpoint-GUID: X6P44GqUhztbbEOnFP62FfxLw_ggYaf8
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-15_08,2023-07-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
+ priorityscore=1501 impostorscore=0 suspectscore=0 phishscore=0
+ malwarescore=0 clxscore=1015 bulkscore=0 adultscore=0 lowpriorityscore=0
+ mlxlogscore=386 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307150140
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-07-10 at 21:38:28 +0800, Yangtao Li wrote:
-> Use devm_platform_ioremap_resource() to simplify code.
-> 
-> Signed-off-by: Yangtao Li <frank.li@vivo.com>
 
-Acked-by: Xu Yilun <yilun.xu@intel.com>
 
-Applied.
+On 7/14/2023 6:48 PM, Russell King (Oracle) wrote:
+> "merge qca8081 salve seed function"
+> 
+> I'm not sure what salve has to do with the seed... seems like a typo?
+> 
+> Otherwise,
+> 
+> Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+> 
+> Thanks!
+> 
 
-> ---
-> v2:
-> -keep comment
->  drivers/fpga/altera-pr-ip-core-plat.c | 6 +-----
->  1 file changed, 1 insertion(+), 5 deletions(-)
-> 
-> diff --git a/drivers/fpga/altera-pr-ip-core-plat.c b/drivers/fpga/altera-pr-ip-core-plat.c
-> index b008a6b8d2d3..06c6a4721205 100644
-> --- a/drivers/fpga/altera-pr-ip-core-plat.c
-> +++ b/drivers/fpga/altera-pr-ip-core-plat.c
-> @@ -15,13 +15,9 @@ static int alt_pr_platform_probe(struct platform_device *pdev)
->  {
->  	struct device *dev = &pdev->dev;
->  	void __iomem *reg_base;
-> -	struct resource *res;
->  
->  	/* First mmio base is for register access */
-> -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> -
-> -	reg_base = devm_ioremap_resource(dev, res);
-> -
-> +	reg_base = devm_platform_ioremap_resource(pdev, 0);
->  	if (IS_ERR(reg_base))
->  		return PTR_ERR(reg_base);
->  
-> -- 
-> 2.39.0
-> 
+yes, Russell, it is a typo, will update it in next patch set, thanks.
