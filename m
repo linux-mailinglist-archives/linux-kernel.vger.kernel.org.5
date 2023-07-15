@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE6CC7547CD
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 11:20:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CE427547D7
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 11:20:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231182AbjGOJUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 05:20:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50086 "EHLO
+        id S231279AbjGOJUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 05:20:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbjGOJU2 (ORCPT
+        with ESMTP id S230321AbjGOJU2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 15 Jul 2023 05:20:28 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12A4D3C03;
-        Sat, 15 Jul 2023 02:20:05 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-31434226a2eso2901566f8f.1;
-        Sat, 15 Jul 2023 02:20:04 -0700 (PDT)
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DAE33C04;
+        Sat, 15 Jul 2023 02:20:06 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3fbca8935bfso24938235e9.3;
+        Sat, 15 Jul 2023 02:20:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689412803; x=1692004803;
+        d=gmail.com; s=20221208; t=1689412805; x=1692004805;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=R8V9jbWrkBD6li8Ss0Ga4cRkbrGO/YOXZLHgGgY4Tpc=;
-        b=WA3D4vJ6DdaktgKjCxj8Qv4Yp7ZHpCbyqHre06LdNGhh9wkgSH5ervHghkKWJCH/An
-         Asdj2F/Oog06UcvVvgoydksFXy/pm/tXfnTdl3H9ogLsA/tAMvpclok9gQ7JuHExMZgZ
-         SCzY47YelnEf3AdG0rkgffHU71MrOACRG/I2PUfbK5tJB1gE6DzkpzMBV6Wax2SGJ4gK
-         OrWEBHHaHAaAVl+5SnWm2dhmmFyXERxd8hVUMfoyYnDQW1irpL4snpbXN+L2ke6XnwcJ
-         vkLUZruQKbfXW9/OWYtyW0wX1XmuQ8Hx+PpfwcKx4Sry1MEPcq3Ey+Pw/zMO3omRRu16
-         D8yA==
+        bh=BTMQVQh48oncaObvCwMPfvKa0bWzXZnBK799pHg2Dv0=;
+        b=OFu9BuALKJBZ4n3EogoL7nsJNvnyesWVGC/L6lnk9wsFPZKW8sL2ag8AMcIyg1sUiK
+         +oW0aLrFNsQWBJfLLo4A5yY4keb6z6S9nESDOfzP3q0hFRs1VHYrkXaF3ieDIaVYotYY
+         JJMdP4Nn+bNc4JkwzDpE8smQ7Ek/+91skCYH6Yfm7fRQGiTbcn4PcTp6BWX1WsBHDlPo
+         xH6Os0z6Yetw9jMgyC3GesSh8cZ31eO9/E/gN6T1CxLm6sNkbFXZF4m9H7rM6jWu8hBK
+         X92G4vDun8SgBNnOZQ9j2FIoqxcgZ9Bm1gr33cyTZBHOnHCmgiRj7mVLv7nLxqh/IfPm
+         zilg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689412803; x=1692004803;
+        d=1e100.net; s=20221208; t=1689412805; x=1692004805;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=R8V9jbWrkBD6li8Ss0Ga4cRkbrGO/YOXZLHgGgY4Tpc=;
-        b=GI4pJJqADDu4szHbt/vDR+g0ZPoNH2Uy2O3KmfNXCDMaEl5r0srMdHTPZZX5nCNzxi
-         ILiJKmQEnIEyAEI2RL1evQd8jwPnSJmS09+Y+6YZpJXqKOul66tTQeqpNvmha0Z5Kd/q
-         CoyukrPVQ8bkfIcDjoojwmbJLlPHeYREbme6scQrqVpFf4wDYb57ZaYY3hh5/2uNHXRi
-         wFoBJRoMB2rI7oes+vP9o/1RcDV1uGzI9zmdsW39RybsJNnDSuHNXBd25+k3mb3zUilx
-         ffvXrpJwMz9srmvL3rk0BIRw0dwBQHcAM6T9G7aryFVbif9nEM65ky6oarTSBGbD0gtT
-         ZaPg==
-X-Gm-Message-State: ABy/qLZuZM/fWxfll8g2JTIN7UYCdnMGZzSDlWEifO9vYGToDzJudxzh
-        +KFsAA16DmF9wkMWgthd1eE=
-X-Google-Smtp-Source: APBJJlGpCrsDeSmRkVSdUlcYFb9+bZKqeCEnnDzhSZco4W141np5iaGtH/emMEltDuBtCILgvsjhaA==
-X-Received: by 2002:adf:ed85:0:b0:313:f5f8:b6d2 with SMTP id c5-20020adfed85000000b00313f5f8b6d2mr6722235wro.48.1689412803493;
-        Sat, 15 Jul 2023 02:20:03 -0700 (PDT)
+        bh=BTMQVQh48oncaObvCwMPfvKa0bWzXZnBK799pHg2Dv0=;
+        b=Xh0hxEJzfCPJNz+KbPmQW4NZ3m1SPfpk8hTDTxKuaOigjUjCncfTQmHFZOx8zsL2f5
+         gomwztQFfev92Cla8SBs1ShHAn8UrrfOVT/fKsZ51ECptgHSrIVuUFB8IqLE2legno3d
+         vdxVAR0WqqqEwFP+cbCLZRVgHi1B3o3fBdx04SFjEUE6rqLiAHlN7rRwCg1koUhsnH15
+         2UVi5XnlTdNlnmiUWNT2s/u9OeywqINgNtaVJaQG8O6xJ1lGkNUMEA1N61gSfGfCOhKL
+         ogsmrIlboBD3wc54WrYf5cvzw3bJMBTdj5eT3p4ztV9ey0qQlJZMYukUQmdY3eQDlV/z
+         Vw5Q==
+X-Gm-Message-State: ABy/qLaxcKzm0tZMmAQtnFRqDU/rbevi6jXLK6MaZPpe6O3A/uzzVxKA
+        cNUdqRC9l72Gb52Lds3scZ4=
+X-Google-Smtp-Source: APBJJlGe5WNlzAnZQnjWkBYvOFkemYCghTl7dvPK7vHmlZd5JnAx/H1GUb56PQkGy7CW4yfbMSjROA==
+X-Received: by 2002:a05:600c:247:b0:3fb:b6fa:9871 with SMTP id 7-20020a05600c024700b003fbb6fa9871mr5184620wmj.14.1689412804527;
+        Sat, 15 Jul 2023 02:20:04 -0700 (PDT)
 Received: from david-ryuzu.fritz.box ([188.195.202.152])
-        by smtp.googlemail.com with ESMTPSA id f22-20020a7bc8d6000000b003fbb5142c4bsm3238133wml.18.2023.07.15.02.20.02
+        by smtp.googlemail.com with ESMTPSA id f22-20020a7bc8d6000000b003fbb5142c4bsm3238133wml.18.2023.07.15.02.20.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 Jul 2023 02:20:03 -0700 (PDT)
+        Sat, 15 Jul 2023 02:20:04 -0700 (PDT)
 From:   David Wronek <davidwronek@gmail.com>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
@@ -66,9 +66,9 @@ Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         cros-qcom-dts-watchers@chromium.org,
         David Wronek <davidwronek@gmail.com>,
         Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v3 3/7] dt-bindings: arm: qcom: Document SM7125 and xiaomi,joyeuse board
-Date:   Sat, 15 Jul 2023 11:16:09 +0200
-Message-ID: <20230715091932.161507-4-davidwronek@gmail.com>
+Subject: [PATCH v3 4/7] soc: qcom: socinfo: Add SoC ID for SM7125
+Date:   Sat, 15 Jul 2023 11:16:10 +0200
+Message-ID: <20230715091932.161507-5-davidwronek@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230715091932.161507-1-davidwronek@gmail.com>
 References: <20230715091932.161507-1-davidwronek@gmail.com>
@@ -84,46 +84,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the xiaomi,joyeuse board based on the Qualcomm SM7125 SoC.
+Add the SoC ID entry for Qualcomm SM7125.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Signed-off-by: David Wronek <davidwronek@gmail.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- Documentation/devicetree/bindings/arm/qcom.yaml | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/soc/qcom/socinfo.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
-index 450f616774e0..a403c433e9b5 100644
---- a/Documentation/devicetree/bindings/arm/qcom.yaml
-+++ b/Documentation/devicetree/bindings/arm/qcom.yaml
-@@ -77,6 +77,7 @@ description: |
-         sm6125
-         sm6350
-         sm6375
-+        sm7125
-         sm7225
-         sm8150
-         sm8250
-@@ -929,6 +930,11 @@ properties:
-               - sony,pdx225
-           - const: qcom,sm6375
- 
-+      - items:
-+          - enum:
-+              - xiaomi,joyeuse
-+          - const: qcom,sm7125
-+
-       - items:
-           - enum:
-               - fairphone,fp4
-@@ -1072,6 +1078,7 @@ allOf:
-               - qcom,sm6115
-               - qcom,sm6125
-               - qcom,sm6350
-+              - qcom,sm7125
-               - qcom,sm7225
-               - qcom,sm8150
-               - qcom,sm8250
+diff --git a/drivers/soc/qcom/socinfo.c b/drivers/soc/qcom/socinfo.c
+index 4d49945b3a35..785b88e2da54 100644
+--- a/drivers/soc/qcom/socinfo.c
++++ b/drivers/soc/qcom/socinfo.c
+@@ -371,6 +371,7 @@ static const struct soc_id soc_id[] = {
+ 	{ qcom_board_id(SDA429W) },
+ 	{ qcom_board_id(SM8350) },
+ 	{ qcom_board_id(QCM2290) },
++	{ qcom_board_id(SM7125) },
+ 	{ qcom_board_id(SM6115) },
+ 	{ qcom_board_id(IPQ5010) },
+ 	{ qcom_board_id(IPQ5018) },
 -- 
 2.41.0
 
