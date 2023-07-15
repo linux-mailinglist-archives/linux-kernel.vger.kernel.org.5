@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CE427547D7
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 11:20:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B2797547DC
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 11:21:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231279AbjGOJUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 05:20:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50516 "EHLO
+        id S230452AbjGOJVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 05:21:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230321AbjGOJU2 (ORCPT
+        with ESMTP id S230328AbjGOJU3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 05:20:28 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DAE33C04;
-        Sat, 15 Jul 2023 02:20:06 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3fbca8935bfso24938235e9.3;
-        Sat, 15 Jul 2023 02:20:06 -0700 (PDT)
+        Sat, 15 Jul 2023 05:20:29 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 161543C05;
+        Sat, 15 Jul 2023 02:20:07 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fbc6ab5ff5so24484465e9.1;
+        Sat, 15 Jul 2023 02:20:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20221208; t=1689412805; x=1692004805;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=BTMQVQh48oncaObvCwMPfvKa0bWzXZnBK799pHg2Dv0=;
-        b=OFu9BuALKJBZ4n3EogoL7nsJNvnyesWVGC/L6lnk9wsFPZKW8sL2ag8AMcIyg1sUiK
-         +oW0aLrFNsQWBJfLLo4A5yY4keb6z6S9nESDOfzP3q0hFRs1VHYrkXaF3ieDIaVYotYY
-         JJMdP4Nn+bNc4JkwzDpE8smQ7Ek/+91skCYH6Yfm7fRQGiTbcn4PcTp6BWX1WsBHDlPo
-         xH6Os0z6Yetw9jMgyC3GesSh8cZ31eO9/E/gN6T1CxLm6sNkbFXZF4m9H7rM6jWu8hBK
-         X92G4vDun8SgBNnOZQ9j2FIoqxcgZ9Bm1gr33cyTZBHOnHCmgiRj7mVLv7nLxqh/IfPm
-         zilg==
+        bh=16dil7uZ1WaYzCMze6Rz4ebNuwh6PjdbRucSC4l5wwA=;
+        b=PQ5HwDQAstwI8XvaYHRCnN5BPDOq3/zF/9r/cDfT7McPHFhmG+Z6SwIkBWvp5/lSLR
+         ru7sUyy4zDkce54S/UJk1eGyDpS0ym4THJQtJjoQiuLjAL0195zE4YCU8ee/s8/mGlwB
+         6XYnZkI8xD804+jk7R7mlTt/LN7ov6GuaVGDI43cr0nN3Q3jJFKZdbcu/8XoB/52qiId
+         h3cDKeMmCvyFgu018zO46oZVe+bD+ifPz8fqTAwBY10QgkCWXt/6V3RwclJanXqIrYMn
+         Oh8p8JTQhGA28pn6Iq9H2IzgYLxuFyEZpIR5/xrmflE4+6KhlkowDq85dUcTZH2xuuGr
+         AKcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20221208; t=1689412805; x=1692004805;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BTMQVQh48oncaObvCwMPfvKa0bWzXZnBK799pHg2Dv0=;
-        b=Xh0hxEJzfCPJNz+KbPmQW4NZ3m1SPfpk8hTDTxKuaOigjUjCncfTQmHFZOx8zsL2f5
-         gomwztQFfev92Cla8SBs1ShHAn8UrrfOVT/fKsZ51ECptgHSrIVuUFB8IqLE2legno3d
-         vdxVAR0WqqqEwFP+cbCLZRVgHi1B3o3fBdx04SFjEUE6rqLiAHlN7rRwCg1koUhsnH15
-         2UVi5XnlTdNlnmiUWNT2s/u9OeywqINgNtaVJaQG8O6xJ1lGkNUMEA1N61gSfGfCOhKL
-         ogsmrIlboBD3wc54WrYf5cvzw3bJMBTdj5eT3p4ztV9ey0qQlJZMYukUQmdY3eQDlV/z
-         Vw5Q==
-X-Gm-Message-State: ABy/qLaxcKzm0tZMmAQtnFRqDU/rbevi6jXLK6MaZPpe6O3A/uzzVxKA
-        cNUdqRC9l72Gb52Lds3scZ4=
-X-Google-Smtp-Source: APBJJlGe5WNlzAnZQnjWkBYvOFkemYCghTl7dvPK7vHmlZd5JnAx/H1GUb56PQkGy7CW4yfbMSjROA==
-X-Received: by 2002:a05:600c:247:b0:3fb:b6fa:9871 with SMTP id 7-20020a05600c024700b003fbb6fa9871mr5184620wmj.14.1689412804527;
-        Sat, 15 Jul 2023 02:20:04 -0700 (PDT)
+        bh=16dil7uZ1WaYzCMze6Rz4ebNuwh6PjdbRucSC4l5wwA=;
+        b=RRFlh+HdJRUOntNxW0iOT7l9i/ODl9oQzKEYpKu2SNp4WLd7zCBx9i8qHAM2Fcl8Mn
+         G3ROQ7LVo8EAQFAt+skznMN84SaZ9U3rAmZz8CNmwQXffBbP9aCRWLXPsivqrkjl09JJ
+         7UOjCMorpN3G6Cw/i7MavB0Q15qTq9OD3Hc+K5XTtM9ykH7QEfSRkaNvFN0hgmXQPs1s
+         IRlYHlv7PNwxvi+eiSpnzTcIfUSw5aXfqn9/JuTYgP/dxnhPJjl50q9FDk41xBN7XN6r
+         xIoTwz3cl+kb03J24cDeLTNnrMRp+PgZ5gEyZ2fV62lgLBeuiMsR2219I7N861Ccm7o2
+         k69A==
+X-Gm-Message-State: ABy/qLa1x11e+zos5yW2AIQOUUyIFCSJ1YKOEAsnIuknJQkPUJmBWH1J
+        gPvdW0IMZhKkkyvmz0SgZmk=
+X-Google-Smtp-Source: APBJJlHYP7HEns13EOIHz08VVyobQchPqzj3s+RZ6iWGV5V8JDGaWqeub3CgPcfCln225Ss0QmS8TA==
+X-Received: by 2002:a05:600c:22c4:b0:3fa:9767:c816 with SMTP id 4-20020a05600c22c400b003fa9767c816mr5339647wmg.39.1689412805593;
+        Sat, 15 Jul 2023 02:20:05 -0700 (PDT)
 Received: from david-ryuzu.fritz.box ([188.195.202.152])
-        by smtp.googlemail.com with ESMTPSA id f22-20020a7bc8d6000000b003fbb5142c4bsm3238133wml.18.2023.07.15.02.20.03
+        by smtp.googlemail.com with ESMTPSA id f22-20020a7bc8d6000000b003fbb5142c4bsm3238133wml.18.2023.07.15.02.20.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 Jul 2023 02:20:04 -0700 (PDT)
+        Sat, 15 Jul 2023 02:20:05 -0700 (PDT)
 From:   David Wronek <davidwronek@gmail.com>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
@@ -65,10 +65,10 @@ Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
         cros-qcom-dts-watchers@chromium.org,
         David Wronek <davidwronek@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v3 4/7] soc: qcom: socinfo: Add SoC ID for SM7125
-Date:   Sat, 15 Jul 2023 11:16:10 +0200
-Message-ID: <20230715091932.161507-5-davidwronek@gmail.com>
+        Nikita Travkin <nikita@trvn.ru>
+Subject: [PATCH v3 5/7] arm64: dts: qcom: pm6150: Add resin and rtc nodes
+Date:   Sat, 15 Jul 2023 11:16:11 +0200
+Message-ID: <20230715091932.161507-6-davidwronek@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230715091932.161507-1-davidwronek@gmail.com>
 References: <20230715091932.161507-1-davidwronek@gmail.com>
@@ -84,26 +84,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the SoC ID entry for Qualcomm SM7125.
+Add support for the RTC which is the same as on other PMICs and add the
+resin child node to the PM6150 PON device, both disabled by default.
 
 Signed-off-by: David Wronek <davidwronek@gmail.com>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Tested-by: Nikita Travkin <nikita@trvn.ru>
 ---
- drivers/soc/qcom/socinfo.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/boot/dts/qcom/pm6150.dtsi | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/drivers/soc/qcom/socinfo.c b/drivers/soc/qcom/socinfo.c
-index 4d49945b3a35..785b88e2da54 100644
---- a/drivers/soc/qcom/socinfo.c
-+++ b/drivers/soc/qcom/socinfo.c
-@@ -371,6 +371,7 @@ static const struct soc_id soc_id[] = {
- 	{ qcom_board_id(SDA429W) },
- 	{ qcom_board_id(SM8350) },
- 	{ qcom_board_id(QCM2290) },
-+	{ qcom_board_id(SM7125) },
- 	{ qcom_board_id(SM6115) },
- 	{ qcom_board_id(IPQ5010) },
- 	{ qcom_board_id(IPQ5018) },
+diff --git a/arch/arm64/boot/dts/qcom/pm6150.dtsi b/arch/arm64/boot/dts/qcom/pm6150.dtsi
+index 2e6afa296141..af51eb0646ba 100644
+--- a/arch/arm64/boot/dts/qcom/pm6150.dtsi
++++ b/arch/arm64/boot/dts/qcom/pm6150.dtsi
+@@ -53,6 +53,14 @@ pm6150_pwrkey: pwrkey {
+ 				bias-pull-up;
+ 				linux,code = <KEY_POWER>;
+ 			};
++
++			pm6150_resin: resin {
++				compatible = "qcom,pm8941-resin";
++				interrupts = <0x0 0x8 1 IRQ_TYPE_EDGE_BOTH>;
++				debounce = <15625>;
++				bias-pull-up;
++				status = "disabled";
++			};
+ 		};
+ 
+ 		pm6150_temp: temp-alarm@2400 {
+@@ -88,6 +96,14 @@ pm6150_adc_tm: adc-tm@3500 {
+ 			status = "disabled";
+ 		};
+ 
++		pm6150_rtc: rtc@6000 {
++			compatible = "qcom,pm8941-rtc";
++			reg = <0x6000>, <0x6100>;
++			reg-names = "rtc", "alarm";
++			interrupts = <0x0 0x61 0x1 IRQ_TYPE_EDGE_RISING>;
++			status = "disabled";
++		};
++
+ 		pm6150_gpios: gpio@c000 {
+ 			compatible = "qcom,pm6150-gpio", "qcom,spmi-gpio";
+ 			reg = <0xc000>;
 -- 
 2.41.0
 
