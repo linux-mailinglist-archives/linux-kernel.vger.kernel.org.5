@@ -2,148 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57F0B754C1B
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 23:30:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E4E7754C1F
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 23:41:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229870AbjGOVa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 17:30:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51566 "EHLO
+        id S229919AbjGOVlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 17:41:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbjGOVa0 (ORCPT
+        with ESMTP id S229530AbjGOVlR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 17:30:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00077270A;
-        Sat, 15 Jul 2023 14:30:22 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7A00560BB8;
-        Sat, 15 Jul 2023 21:30:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10AC5C433C9;
-        Sat, 15 Jul 2023 21:30:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689456621;
-        bh=XMEb/elm+pgGpMlhnXd5GXTk4SB+tgLImFkGqaygzss=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WIm6gh+Fv2agAUROjp8kseDzWfHI4jD7Jyn/PrfLqxFcLC0bhO92GuHh0C5Mad4Qz
-         GHhoerD/v8U3rJGA2xNa/i81RyX67HHtAY85W/Dcft4cpcvO7EuRzhOQgrgE7+6vg1
-         dyJhusDgdwikr1OUIK2bJiL8gvsg4zZpKqdLa/gG0Cn6px9hivkePv1z9ZuDy6lKN5
-         skyuM8WL5txjJJet+HtSwSrq1/wyWpuFtdG8bDl+WtaJQ7DVKzKF8nAfQ2NYkZilIs
-         NUS8/Qz5fvTGZL/2dn3K+1UZEke566yeHnGmo3+NzW4jfm76/+rM9X64vACyPEVgxY
-         IlVQzbdNBazHw==
-Date:   Sat, 15 Jul 2023 14:33:49 -0700
-From:   Bjorn Andersson <andersson@kernel.org>
-To:     Gokul krishna Krishnakumar <quic_gokukris@quicinc.com>
-Cc:     linux-remoteproc@vger.kernel.org,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-kernel@vger.kernel.org, Trilok Soni <quic_tsoni@quicinc.com>,
-        Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com>,
-        Rajendra Nayak <quic_rjendra@quicinc.com>,
-        Elliot Berman <quic_eberman@quicinc.com>,
-        Guru Das Srinagesh <quic_gurus@quicinc.com>,
-        Sibi Sankar <quic_sibis@quicinc.com>,
-        Melody Olvera <quic_molvera@quicinc.com>
-Subject: Re: [PATCH v3 1/2] remoteproc: Introduce traces for remoteproc events
-Message-ID: <g4aei4ro6nf7o2pgw4hvzrbdf6e5ipaelqj4gn6woodpjg2tu5@voytlrf2b337>
-References: <cover.1683741283.git.quic_gokukris@quicinc.com>
- <5c7c2657d12808e211942d71ad79e3846f4e70bb.1683741283.git.quic_gokukris@quicinc.com>
+        Sat, 15 Jul 2023 17:41:17 -0400
+Received: from mail-40137.protonmail.ch (mail-40137.protonmail.ch [185.70.40.137])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DCEBD7;
+        Sat, 15 Jul 2023 14:41:16 -0700 (PDT)
+Date:   Sat, 15 Jul 2023 21:41:01 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail3; t=1689457274; x=1689716474;
+        bh=KldUTfmyH7/OUpsrrZmHdmob6ZlwyWT4KOLC0g0vHYA=;
+        h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+         Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+        b=rzjtXkmDbqrZHq9J+SPg3VzRUFhU2UzD1Kwd+b3aeA/9DFixM1vtljplQlY4PyTB6
+         o0kRMQ6PvfNRR1B2ylnusPKU/JkwG85zB1F3gdNRMcDOPdAyxQV1xcyEThezL4dR4J
+         QWHMpDFJa3Tu0JzkSCVqfQKE0htDmOaUGwvGBI24u4o4c/cn6dvmOI5DWug6rb0c8p
+         bXyJcKpCkGpGW0pQRu3bGOJpQIRnHfvZrvn6JuZegV1UlKEnc/d11GAZRNjAcBwRE3
+         DtQ3n+teHuBA22o6QtSDWHSrzKZmRxksBz11BUK0e1OKzth9hE/eanp0HSeMx3jwNJ
+         Wi2OSZHwQk/+Q==
+To:     linux-kernel@vger.kernel.org
+From:   "Lin, Meng-Bo" <linmengbo0689@protonmail.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Nikita Travkin <nikita@trvn.ru>, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
+Subject: [PATCH] arm64: dts: qcom: msm8916-samsung-j5-common: Add touchscreen
+Message-ID: <20230715214046.14902-1-linmengbo0689@protonmail.com>
+Feedback-ID: 40467236:user:proton
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5c7c2657d12808e211942d71ad79e3846f4e70bb.1683741283.git.quic_gokukris@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 10, 2023 at 11:05:03AM -0700, Gokul krishna Krishnakumar wrote:
-> Adding Traces for the following remoteproc events:
-> 	rproc_subdev_event,
-> 	rproc_interrupt_event,
-> 	rproc_load_event,
-> 	rproc_start_event,
-> 	rproc_stop_event
+J5 and J5X use an Imagis IST3038C touchscreen that is connected to
+blsp_i2c5. Add it to the device tree.
 
-No need to list the individual trace events, instead please use the
-commit message do capture what problem(s) you intend you have for these
-trace events - so that someone reading this can understand why these
-particular events was added (and why others weren't).
+MFD driver for SM5703 is unavailable at the moment, which is required
+to power up the touchscreen on J5, so it's disabled on J5 for now.
 
-> 
-> Signed-off-by: Gokul krishna Krishnakumar <quic_gokukris@quicinc.com>
-> ---
->  drivers/remoteproc/Makefile           |   1 +
->  drivers/remoteproc/qcom_tracepoints.c |  12 +++
->  include/trace/events/rproc_qcom.h     | 128 ++++++++++++++++++++++++++
->  3 files changed, 141 insertions(+)
->  create mode 100644 drivers/remoteproc/qcom_tracepoints.c
->  create mode 100644 include/trace/events/rproc_qcom.h
-> 
-> diff --git a/drivers/remoteproc/Makefile b/drivers/remoteproc/Makefile
-> index 91314a9b43ce..3399fcaba39b 100644
-> --- a/drivers/remoteproc/Makefile
-> +++ b/drivers/remoteproc/Makefile
-> @@ -10,6 +10,7 @@ remoteproc-y				+= remoteproc_debugfs.o
->  remoteproc-y				+= remoteproc_sysfs.o
->  remoteproc-y				+= remoteproc_virtio.o
->  remoteproc-y				+= remoteproc_elf_loader.o
-> +remoteproc-y				+= qcom_tracepoints.o
->  obj-$(CONFIG_REMOTEPROC_CDEV)		+= remoteproc_cdev.o
->  obj-$(CONFIG_IMX_REMOTEPROC)		+= imx_rproc.o
->  obj-$(CONFIG_IMX_DSP_REMOTEPROC)	+= imx_dsp_rproc.o
-> diff --git a/drivers/remoteproc/qcom_tracepoints.c b/drivers/remoteproc/qcom_tracepoints.c
-> new file mode 100644
-> index 000000000000..1b587ef54aa7
-> --- /dev/null
-> +++ b/drivers/remoteproc/qcom_tracepoints.c
-> @@ -0,0 +1,12 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
-> + */
-> +
-> +#define CREATE_TRACE_POINTS
-> +#include <trace/events/rproc_qcom.h>
-> +EXPORT_TRACEPOINT_SYMBOL(rproc_load_event);
-> +EXPORT_TRACEPOINT_SYMBOL(rproc_start_event);
-> +EXPORT_TRACEPOINT_SYMBOL(rproc_stop_event);
-> +EXPORT_TRACEPOINT_SYMBOL(rproc_interrupt_event);
-> +EXPORT_TRACEPOINT_SYMBOL(rproc_subdev_event);
-> diff --git a/include/trace/events/rproc_qcom.h b/include/trace/events/rproc_qcom.h
-> new file mode 100644
-> index 000000000000..48ad26ce18a3
-> --- /dev/null
-> +++ b/include/trace/events/rproc_qcom.h
-> @@ -0,0 +1,128 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
-> + */
-> +
-> +#undef TRACE_SYSTEM
-> +#define TRACE_SYSTEM rproc_qcom
-> +
-> +#if !defined(_TRACE_RPROC_QCOM_H) || defined(TRACE_HEADER_MULTI_READ)
-> +#define _TRACE_RPROC_QCOM_H
-> +#include <linux/tracepoint.h>
-> +#include <linux/remoteproc.h>
-> +
-> +/*
-> + * Tracepoints for remoteproc and subdevice events
-> + */
-> +TRACE_EVENT(rproc_load_event,
+Signed-off-by: Lin, Meng-Bo <linmengbo0689@protonmail.com>
+---
+ .../dts/qcom/msm8916-samsung-j5-common.dtsi   | 29 +++++++++++++++++++
+ .../boot/dts/qcom/msm8916-samsung-j5.dts      |  8 +++++
+ .../boot/dts/qcom/msm8916-samsung-j5x.dts     | 26 +++++++++++++++++
+ 3 files changed, 63 insertions(+)
 
-Please split these into more specific events, so that one can easily
-enable specific events depending on which answers one is looking for.
+diff --git a/arch/arm64/boot/dts/qcom/msm8916-samsung-j5-common.dtsi b/arch=
+/arm64/boot/dts/qcom/msm8916-samsung-j5-common.dtsi
+index f4fd5d72b28b..cb0e4a7faf91 100644
+--- a/arch/arm64/boot/dts/qcom/msm8916-samsung-j5-common.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8916-samsung-j5-common.dtsi
+@@ -86,6 +86,26 @@ muic: extcon@25 {
+ =09};
+ };
+=20
++&blsp_i2c5 {
++=09status =3D "okay";
++
++=09touchscreen: touchscreen@50 {
++=09=09compatible =3D "imagis,ist3038c";
++=09=09reg =3D <0x50>;
++
++=09=09interrupt-parent =3D <&tlmm>;
++=09=09interrupts =3D <13 IRQ_TYPE_EDGE_FALLING>;
++
++=09=09touchscreen-size-x =3D <720>;
++=09=09touchscreen-size-y =3D <1280>;
++
++=09=09vddio-supply =3D <&pm8916_l6>;
++
++=09=09pinctrl-0 =3D <&tsp_int_default>;
++=09=09pinctrl-names =3D "default";
++=09};
++};
++
+ &blsp_uart2 {
+ =09status =3D "okay";
+ };
+@@ -162,6 +182,15 @@ muic_int_default: muic-int-default-state {
+ =09sdc2_cd_default: sdc2-cd-default-state {
+ =09=09pins =3D "gpio38";
+ =09=09function =3D "gpio";
++
++=09=09drive-strength =3D <2>;
++=09=09bias-disable;
++=09};
++
++=09tsp_int_default: tsp-int-default-state {
++=09=09pins =3D "gpio13";
++=09=09function =3D "gpio";
++
+ =09=09drive-strength =3D <2>;
+ =09=09bias-disable;
+ =09};
+diff --git a/arch/arm64/boot/dts/qcom/msm8916-samsung-j5.dts b/arch/arm64/b=
+oot/dts/qcom/msm8916-samsung-j5.dts
+index 0a32d33e9778..3e1ff5b4d2d7 100644
+--- a/arch/arm64/boot/dts/qcom/msm8916-samsung-j5.dts
++++ b/arch/arm64/boot/dts/qcom/msm8916-samsung-j5.dts
+@@ -10,6 +10,14 @@ / {
+ =09chassis-type =3D "handset";
+ };
+=20
++&blsp_i2c5 {
++=09status =3D "disabled";
++};
++
++&touchscreen {
++=09/* FIXME: Missing sm5703-mfd driver to power up vdd-supply */
++};
++
+ &usb_hs_phy {
+ =09qcom,init-seq =3D /bits/ 8 <0x1 0x19 0x2 0x0b>;
+ };
+diff --git a/arch/arm64/boot/dts/qcom/msm8916-samsung-j5x.dts b/arch/arm64/=
+boot/dts/qcom/msm8916-samsung-j5x.dts
+index 7e1326cc13c5..b2fe109723d8 100644
+--- a/arch/arm64/boot/dts/qcom/msm8916-samsung-j5x.dts
++++ b/arch/arm64/boot/dts/qcom/msm8916-samsung-j5x.dts
+@@ -8,12 +8,38 @@ / {
+ =09model =3D "Samsung Galaxy J5 (2016)";
+ =09compatible =3D "samsung,j5x", "qcom,msm8916";
+ =09chassis-type =3D "handset";
++
++=09reg_vdd_tsp_a: regulator-vdd-tsp-a {
++=09=09compatible =3D "regulator-fixed";
++=09=09regulator-name =3D "vdd_tsp_a";
++=09=09regulator-min-microvolt =3D <3000000>;
++=09=09regulator-max-microvolt =3D <3000000>;
++
++=09=09gpio =3D <&tlmm 108 GPIO_ACTIVE_HIGH>;
++=09=09enable-active-high;
++
++=09=09pinctrl-0 =3D <&tsp_ldo_en_default>;
++=09=09pinctrl-names =3D "default";
++=09};
+ };
+=20
+ &muic {
+ =09interrupts =3D <121 IRQ_TYPE_EDGE_FALLING>;
+ };
+=20
++&touchscreen {
++=09vdd-supply =3D <&reg_vdd_tsp_a>;
++};
++
++&tlmm {
++=09tsp_ldo_en_default: tsp-ldo-en-default-state {
++=09=09pins =3D "gpio108";
++=09=09function =3D "gpio";
++=09=09drive-strength =3D <2>;
++=09=09bias-disable;
++=09};
++};
++
+ &muic_int_default {
+ =09pins =3D "gpio121";
+ };
+--=20
+2.39.2
 
-Please avoid the _event suffix.
 
-Regards,
-Bjorn
