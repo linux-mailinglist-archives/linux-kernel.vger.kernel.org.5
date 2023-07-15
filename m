@@ -2,154 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD34A75475F
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 09:54:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABBEF754764
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 09:55:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230511AbjGOHx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 03:53:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36532 "EHLO
+        id S230514AbjGOHzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 03:55:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230399AbjGOHxq (ORCPT
+        with ESMTP id S229986AbjGOHzk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 03:53:46 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1E6935B3;
-        Sat, 15 Jul 2023 00:53:45 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-3fbef8ad9bbso24223965e9.0;
-        Sat, 15 Jul 2023 00:53:45 -0700 (PDT)
+        Sat, 15 Jul 2023 03:55:40 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20C173A87;
+        Sat, 15 Jul 2023 00:55:26 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9891c73e0fbso547883366b.1;
+        Sat, 15 Jul 2023 00:55:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689407624; x=1691999624;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cO8MaIrmzLIgpAh79j/PTcb6h7we+UptA1d76S5ZSws=;
-        b=S0yWZlEfOXQCIdfQ7MJ/pLor2v4HmMmfN9UlsoKQIFHefBL4zXFQXlEFgONXXWVska
-         yQev/sBOgNu08yX6LX/1S1dWqBlm9HVCLPnbVNUbi5RtP18YMGtiLxjcOA4jViUCfD28
-         Ek7fKcPmlKPSEIOgJ+Uaq3iKtPnB/P936EDPHSo7JaeMAZ1fm1jyZSKE++/1XSDTce/w
-         uzvdU7nc/SdoK5kfjpF/r/8cbNFkE85OeSFlbztuRFmCCimEswkNMV2af8AM/4ziq9xe
-         CRCFl2qBwDBxVo54zLGeTEhT5HVF11+7yZ2slZ21TocaPHIfDAnoutrPXOd0xEkBxyTX
-         t+AQ==
+        d=gmail.com; s=20221208; t=1689407724; x=1691999724;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DZVljmN8gKzVihzv67m8xWAZ45voGqqmcvosG919a8Q=;
+        b=gMDSLsP0AjtZZVd/MA0X86nT6x4fPQkWW96WRsOO/IkhyMXwhTBxdVSI/FgM2nXrUp
+         klNAi2o0Uty8fqAmGQ3ao8LYO5EUUOVxOBSEs9AiXswl5RSZ/OM3L6U9zZo20QxF1cU7
+         SZRGT2clfqi0sgzeElkw9CJqAjU4EXJizzPhEA0WdpQpH930nrMaTz14GcKgM/G/+6Al
+         gpBMgOIQgwqooGljzsyAnDzDKTaCiSkCPMH9pahBC+PE6e0weErt2Z30WIa1PVmSJHSh
+         4IjR5v7P09/Auqg8yWKTu8bDi4KHpTcguykl0ptuWXi0nJp1thJI6WrIB6LP886mpo5T
+         n0zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689407624; x=1691999624;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1689407724; x=1691999724;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=cO8MaIrmzLIgpAh79j/PTcb6h7we+UptA1d76S5ZSws=;
-        b=XG8APEn6gt6GVcoYBFjlKb++LuKoJERvTTITFzqixMAFe9zVnl6v27F0nIQa9LZKpq
-         k8z1aums1zSvxlAwpjdpYN9qBJTlkuZf3E3yIFoWcAm1+C1GG8XgfUmr+lnGP9l9hF5n
-         iqht54BCiPd9nA1v8oeAJ3i72GYGFllnJNrj3WlSzvacctuepHmlUMj6pREWP+Y0cAb6
-         m17iISO/pIN9hCfzsAjg4uaGp/HsmP+jjWjKB0it2ff7aCDhBDtVVwfdE30FMGAjZ8Ri
-         1m8VBRIJru9SLMmGrTFD7u0CuQvC05/8O02lVEEEFtp0VD6QlDalsZn+b1rzMsGIUFry
-         aS4A==
-X-Gm-Message-State: ABy/qLYlN4/OKdhyVK6a2//aZPle8AJtef81sD1NpgqEPj7osYXaQ08i
-        L25CN3WoXtrzubSXTY8H1OA=
-X-Google-Smtp-Source: APBJJlGro5VHrnSJt5gm25Ax8kAN55eHOQJS1zTEspa+DjFeZWNzb+DbAda48F6OBIRsbIG1wX1WEg==
-X-Received: by 2002:a1c:cc15:0:b0:3fc:48e:581e with SMTP id h21-20020a1ccc15000000b003fc048e581emr5990254wmb.24.1689407624088;
-        Sat, 15 Jul 2023 00:53:44 -0700 (PDT)
-Received: from [127.0.1.1] ([91.230.2.244])
-        by smtp.gmail.com with ESMTPSA id f6-20020adff586000000b003142eb75724sm13001271wro.24.2023.07.15.00.53.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 Jul 2023 00:53:43 -0700 (PDT)
-From:   Benjamin Bara <bbara93@gmail.com>
-Date:   Sat, 15 Jul 2023 09:53:27 +0200
-Subject: [PATCH v7 5/5] mfd: tps6586x: register restart handler
+        bh=DZVljmN8gKzVihzv67m8xWAZ45voGqqmcvosG919a8Q=;
+        b=fm9gg91n+t1ZRF6AE+qE8gsynjVOiNId6uioR8dhp4O5I8Try7ph12GA3B0HQhRmwR
+         65CLacCdpDqs+eqzUo/2S6+LIft287kvmSXJtQ+TOT5OubWPnJtXTnMb7EbVfLCJTscc
+         TAr9qpgtQUR0DOXOOQCf4mTILPkKdzMBOuAbVyhKovCE8J2UV4QtrNV5QNyD48CpATyZ
+         /9fK2Rf9LJ6Z5Hb2C16sYrwBAf0y/sjmUaEeIvUhO5cxwplkpmrU7B6E6iUicefEEIKH
+         MPFnfz/FljgvE7lydxQJJvzuNuScEmtiC/ULzqjaAqd51vrENyNZnHI1Qtp+3MQcmGMS
+         S+Hw==
+X-Gm-Message-State: ABy/qLZR8T7trJLuIKdoCVf/NQLS6L0oDmeu5O4W/bi/iyQYFzfU6Esk
+        3NMneTf8LBy1RwWSU7YDGy9ESAEzPy2mAN6Mk3dXUuflDSE=
+X-Google-Smtp-Source: APBJJlG25DuLYvRiAJwCiIKNT6BG1olipljfJ1brsg8juTeUW2lriWZlpXFwWUzGZ15I0DS+CkowlFQBZW0WP5BrriM=
+X-Received: by 2002:a17:906:109e:b0:98e:1a0c:12c0 with SMTP id
+ u30-20020a170906109e00b0098e1a0c12c0mr5665527eju.7.1689407724430; Sat, 15 Jul
+ 2023 00:55:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230327-tegra-pmic-reboot-v7-5-18699d5dcd76@skidata.com>
-References: <20230327-tegra-pmic-reboot-v7-0-18699d5dcd76@skidata.com>
-In-Reply-To: <20230327-tegra-pmic-reboot-v7-0-18699d5dcd76@skidata.com>
-To:     Wolfram Sang <wsa@kernel.org>, Lee Jones <lee@kernel.org>,
-        rafael.j.wysocki@intel.com,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     dmitry.osipenko@collabora.com, peterz@infradead.org,
-        jonathanh@nvidia.com, richard.leitner@linux.dev,
-        treding@nvidia.com, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
-        Benjamin Bara <benjamin.bara@skidata.com>
-X-Mailer: b4 0.12.2
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230715010407.1751715-1-fabrizio.castro.jz@renesas.com> <20230715010407.1751715-7-fabrizio.castro.jz@renesas.com>
+In-Reply-To: <20230715010407.1751715-7-fabrizio.castro.jz@renesas.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sat, 15 Jul 2023 10:54:48 +0300
+Message-ID: <CAHp75VdyUhvk9JA4oW6iYjK=YdatjG3OVa0APMQrc+un2EyadQ@mail.gmail.com>
+Subject: Re: [PATCH 06/10] spi: rzv2m-csi: Squash timing settings into one statement
+To:     Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chris Paterson <Chris.Paterson2@renesas.com>,
+        Biju Das <biju.das@bp.renesas.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        linux-renesas-soc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Benjamin Bara <benjamin.bara@skidata.com>
+On Sat, Jul 15, 2023 at 4:04=E2=80=AFAM Fabrizio Castro
+<fabrizio.castro.jz@renesas.com> wrote:
+>
+> Register CLKSEL hosts the configuration for both clock polarity
+> and data phase, and both values can be set in one write operation.
+>
+> Squash the clock polarity and data phase register writes into
+> one statement, for efficiency.
 
-There are a couple of boards which use a tps6586x as
-"ti,system-power-controller", e.g. the tegra20-tamonten.dtsi.
-For these, the only registered restart handler is the warm reboot via
-tegra's PMC. As the bootloader of the tegra20 requires the VDE, it must
-be ensured that VDE is enabled (which is the case after a cold reboot).
-For the "normal reboot", this is basically the case since 8f0c714ad9be.
-However, this workaround is not executed in case of an emergency restart.
-In case of an emergency restart, the system now simply hangs in the
-bootloader, as VDE is not enabled (because it is not used).
+...
 
-The TPS658629-Q1 provides a SOFT RST bit in the SUPPLYENE reg to request
-a (cold) reboot, which takes at least 20ms (as the data sheet states).
-This avoids the hang-up.
+>         /* Setup clock polarity and phase timing */
+> -       rzv2m_csi_reg_write_bit(csi, CSI_CLKSEL, CSI_CLKSEL_CKP,
+> -                               !(spi->mode & SPI_CPOL));
+> -       rzv2m_csi_reg_write_bit(csi, CSI_CLKSEL, CSI_CLKSEL_DAP,
+> -                               !(spi->mode & SPI_CPHA));
+> +       rzv2m_csi_reg_write_bit(csi, CSI_CLKSEL, CSI_CLKSEL_MODE,
+> +                               ~spi->mode & SPI_MODE_X_MASK);
 
-Tested on a TPS658640.
+I think this now regresses due to the absence of parentheses.
 
-Reviewed-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
-Acked-for-MFD-by: Lee Jones <lee@kernel.org>
-Signed-off-by: Benjamin Bara <benjamin.bara@skidata.com>
----
- drivers/mfd/tps6586x.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
-
-diff --git a/drivers/mfd/tps6586x.c b/drivers/mfd/tps6586x.c
-index b12c9e18970a..1777d8d3a990 100644
---- a/drivers/mfd/tps6586x.c
-+++ b/drivers/mfd/tps6586x.c
-@@ -30,6 +30,7 @@
- #include <linux/mfd/tps6586x.h>
- 
- #define TPS6586X_SUPPLYENE	0x14
-+#define SOFT_RST_BIT		BIT(0)
- #define EXITSLREQ_BIT		BIT(1)
- #define SLEEP_MODE_BIT		BIT(3)
- 
-@@ -475,6 +476,19 @@ static int tps6586x_power_off_handler(struct sys_off_data *data)
- 	return notifier_from_errno(-ETIME);
- }
- 
-+static int tps6586x_restart_handler(struct sys_off_data *data)
-+{
-+	int ret;
-+
-+	/* Put the PMIC into hard reboot state. This takes at least 20ms. */
-+	ret = tps6586x_set_bits(data->dev, TPS6586X_SUPPLYENE, SOFT_RST_BIT);
-+	if (ret)
-+		return notifier_from_errno(ret);
-+
-+	mdelay(50);
-+	return notifier_from_errno(-ETIME);
-+}
-+
- static void tps6586x_print_version(struct i2c_client *client, int version)
- {
- 	const char *name;
-@@ -575,6 +589,13 @@ static int tps6586x_i2c_probe(struct i2c_client *client)
- 			dev_err(&client->dev, "register power off handler failed: %d\n", ret);
- 			goto err_add_devs;
- 		}
-+
-+		ret = devm_register_restart_handler(&client->dev, &tps6586x_restart_handler,
-+						    NULL);
-+		if (ret) {
-+			dev_err(&client->dev, "register restart handler failed: %d\n", ret);
-+			goto err_add_devs;
-+		}
- 	}
- 
- 	return 0;
-
--- 
-2.34.1
-
+--=20
+With Best Regards,
+Andy Shevchenko
