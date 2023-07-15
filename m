@@ -2,104 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79444754A32
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 18:51:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D5A7754A35
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 18:52:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230056AbjGOQvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 12:51:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52226 "EHLO
+        id S230093AbjGOQw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 12:52:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjGOQvr (ORCPT
+        with ESMTP id S229483AbjGOQwy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 12:51:47 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02B9C2120;
-        Sat, 15 Jul 2023 09:51:47 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8A90760BB1;
-        Sat, 15 Jul 2023 16:51:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1D1DC433C8;
-        Sat, 15 Jul 2023 16:51:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689439906;
-        bh=YlFK3AHkaic1SjsI95VZzhKDCOhIMferUe25/lIzgeI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=lxRIPk2TJiryZ5c5zEwpaL3ln/exBHBaXxHSQ6dOS5b+H1yedjsaTfaLSGepgYC67
-         BbSzY8EckW1OnIlEX9cHumPwrx82JdFtTkRh6SEV//Vl9cCA+Pg+wO7IXiYVuLmYJk
-         4hoboHrWn3MX4YxwVTRrxuFIkjVIrhf7Vfsgp68QjY5n7jE7BJuq0x1bR4INmSUHt0
-         Z9jHXGddicgKVn418mVeOJXQ6X8AIfqMfTgwjFahRnZApf0u2E92Cb8Y4D+/Bis+7Q
-         18i/F+3QX1tGgSsLyXXhEWDLrf3mUOvWoZjzwxeEZ85I9S/iXCTZzcBPr2kzT2ghPn
-         vPgg/bIW1627A==
-Date:   Sat, 15 Jul 2023 17:51:39 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Waqar Hameed <waqar.hameed@axis.com>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <kernel@axis.com>
-Subject: Re: [PATCH 2/2] iio: Add driver for Murata IRS-D200
-Message-ID: <20230715175139.2b0ebaae@jic23-huawei>
-In-Reply-To: <pndcz0xkuka.fsf@axis.com>
-References: <cover.1686926857.git.waqarh@axis.com>
-        <d2d8f34c09a2ba0504eaba4f451412de41db2f37.1686926857.git.waqarh@axis.com>
-        <20230617143508.28309834@jic23-huawei>
-        <pndo7lb1mes.fsf@axis.com>
-        <20230625120604.3ecc54bf@jic23-huawei>
-        <pndcz0xkuka.fsf@axis.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Sat, 15 Jul 2023 12:52:54 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F35B5FD;
+        Sat, 15 Jul 2023 09:52:53 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1b9d80e33fbso18874155ad.0;
+        Sat, 15 Jul 2023 09:52:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689439973; x=1692031973;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zklUF3t+wgeuuJ5wKVxFMVZbSHxpuwzj+yAFx67meI4=;
+        b=UBkUcEL5Kch4QJK25VCJ/SbudlpqpohPaCDJsi3O/HCt7NHkaIxooPeezFlU4oy8PK
+         BbkjK80uunSYUS6msSHliQx8w6paWmphpR6PV2zEd9zAdj6cDvvRtonGoXt3KUQLpaVg
+         i1kM06AhZPilAFWuZ1HpssQ/fK4aHRCDWVV+yqriyV9RRUFimsO/menh3R8+F6JcA3wS
+         v7gAaQsrESkVBIYAkjYWzEAxhZ7fpuprJyAo5F26+YpEsNI0IOMKRT4gCGXDFtQwP6KR
+         TwtfUHLcks9WxAHCva+s8jtdVcL9+RA2Ywtk6j20QpJ/dYpsOjdbtw0Gbo1T3RzfszjN
+         JSTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689439973; x=1692031973;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zklUF3t+wgeuuJ5wKVxFMVZbSHxpuwzj+yAFx67meI4=;
+        b=W2JMzV7nNKZEH6Pj9hpwbFTKjm1xz+QWSvfejTuLSyitDAZDQTmYu4JCdfQmDKzGV6
+         hsjOEIgF8tpFUECFY85JfeDX8WmxN/HRuOXPVZk1gd6DCCyLh6aGo0MsIMNCAuYj01eU
+         4KJr+LvWLJST8Y78uDt7sZHRGk+dtOUHYFbn8c34Q/LGBQT4jm6f0x2bC6IOxLm19Kix
+         wBtRt5C3JhTBzpF/LWNIc5EpHlPNkLxBZ5/RTXdKyO4dCBtOM5a/1EQCWukngiVD4Jre
+         WcbthtmdEv2I5h/o0Hn8YxHy6HNB/EtFM9lD3uwZMh9SDxssJFXWKRMEHN8zUXgOrjQy
+         VkLA==
+X-Gm-Message-State: ABy/qLa/MQQuW18S02G8r4hY53dWO5wEmQrm0No31wbJqhIYEgbmY6Ll
+        yg8+48syh3Wmo+sJnQbnL/ZznqDkcVU=
+X-Google-Smtp-Source: APBJJlHwf5iQVqpPUZk9nG/eSQNHZuhoh+emme0qVcomwtnLtu6YobsTJ0CFwzxFT8v7LmNdd4A3uw==
+X-Received: by 2002:a17:902:ea05:b0:1b8:9b17:f63d with SMTP id s5-20020a170902ea0500b001b89b17f63dmr8720295plg.23.1689439973371;
+        Sat, 15 Jul 2023 09:52:53 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id ik25-20020a170902ab1900b001b54a88e4a6sm9898642plb.51.2023.07.15.09.52.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 15 Jul 2023 09:52:52 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Sat, 15 Jul 2023 09:52:52 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     Jean Delvare <jdelvare@suse.com>, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-hwmon@vger.kernel.org
+Subject: Re: [PATCH] hwmon: lan966x: Use the devm_clk_get_enabled() helper
+ function
+Message-ID: <f4674073-d670-42cc-986d-cbee5d3afc40@roeck-us.net>
+References: <25f2ab4c61d4fc48e8200f8754bb446f2b89ea89.1688795527.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <25f2ab4c61d4fc48e8200f8754bb446f2b89ea89.1688795527.git.christophe.jaillet@wanadoo.fr>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 12 Jul 2023 17:33:09 +0200
-Waqar Hameed <waqar.hameed@axis.com> wrote:
+On Sat, Jul 08, 2023 at 07:52:31AM +0200, Christophe JAILLET wrote:
+> Use the devm_clk_get_enabled() helper function instead of hand-writing it.
+> It saves some line of codes.
+> 
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-> On Sun, Jun 25, 2023 at 12:06 +0100 Jonathan Cameron <jic23@kernel.org> wrote:
-> 
-> [...]
-> 
-> >> >> +		dev_err(data->dev, "Could not write hp filter frequency (%d)\n",
-> >> >> +			ret);
-> >> >> +		return ret;    
-> >> >
-> >> > drop this return ret out of the if block here.
-> >> >
-> >> > In general being able to ignore possibility of ret > 0 simplifies handling.    
-> >> 
-> >> I try to be consistent and it also "helps" the next person potentially
-> >> adding code after the `if`-statement and forgetting about adding
-> >> `return`. We can drop the `return here, but then we should do the same
-> >> in other places with a check just before the last `return` (like
-> >> `irsd200_write_timer()`, `irsd200_read_nr_count()`,
-> >> `irsd200_write_nr_count()` and many more), right?  
-> >
-> > I don't feel particulartly strongly about this, but there are scripts
-> > that get used to scan for this pattern to simplify the code.
-> >
-> > Sure on the other cases. I don't tend to try and label all cases of things
-> > pointed out, just pick on one and rely on the patch author to generalise.  
-> 
-> I started to remove the returns but then realized that it got a little
-> messy. For example, in some cases we can't drop the return (side effects
-> after the return etc.). 
-> 
-> Since you didn't have any strong opinions on this, I kept them in v2.
-> Hope that's fine!
-
-Absolutely.   I wasn't advocating removing separate returns in general, just this
-cases where there was nothing after the if check.
+Applied.
 
 Thanks,
-
-Jonathan
+Guenter
