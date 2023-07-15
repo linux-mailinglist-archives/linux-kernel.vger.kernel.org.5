@@ -2,59 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B56175480D
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 11:55:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3A9975480F
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 11:56:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230093AbjGOJyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 05:54:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59588 "EHLO
+        id S230141AbjGOJ43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 05:56:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbjGOJyD (ORCPT
+        with ESMTP id S229482AbjGOJ42 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 05:54:03 -0400
-Received: from out203-205-221-149.mail.qq.com (out203-205-221-149.mail.qq.com [203.205.221.149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4799A268F
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 02:54:01 -0700 (PDT)
+        Sat, 15 Jul 2023 05:56:28 -0400
+Received: from out203-205-251-82.mail.qq.com (out203-205-251-82.mail.qq.com [203.205.251.82])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1A8A26BC;
+        Sat, 15 Jul 2023 02:56:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1689414840;
-        bh=UpVM55kDs942KIyIZCbP7/8cjNZBSlpLjQ3vWtUWbAI=;
-        h=From:To:Cc:Subject:Date;
-        b=W6JbsmJObdcaQdvewf/8RwUKllu/6mjri9scVorkj7AGD1aMhMYl56X4bqO9iZMOD
-         gl+QePoz3LP7U3U+IEHu7+FfnphAa6fn/5Pqxd3N1Z0A911fY8HOjzr96AfsfxblBv
-         SBmJmzjKpMYOCG1/+1MuF36qdv54PiyUzyqXKAh0=
-Received: from KernelDevBox.byted.org ([180.184.49.4])
-        by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
-        id D792BC5A; Sat, 15 Jul 2023 17:53:57 +0800
-X-QQ-mid: xmsmtpt1689414837tvr97vcsh
-Message-ID: <tencent_4D4974DE0CD4266C25819179B42888A3E20A@qq.com>
-X-QQ-XMAILINFO: Mdc3TkmnJyI/P5bMlDWHt42XZlbuAP7IOtLgcr56S2b6SFl47cFJLKPDw3Zd8x
-         p72EqDQVEnDzcOZQqqmhByqXK8hxcSLfaPCRg4e9rhEtnRxG3BFTa8JlgI9gUga4gTdY6aAMJgjb
-         uO73jir/95rKCRCGaMBS1O/u72LcaEqkhsUUIJ6kLCxYNCVihnxZqi1dSdGGxFTuWAWg5XhX4uYz
-         NLLFfBRIsz5lXGqeUYTGu8Z4jG49IggTtTRsuiSJy+bQ/d1GVy2Sr/YYpsGTMub3zwA4RCg3AuKE
-         vXPfbuwpaaBuWZnmDI2o8D898OVekZXDffwdFe/lPrZJ+0wzXcbfVrG9DsgsmNel4EfKZpKuScy0
-         kgy63qaTX3XM3xLqbS9tQjrUQBe9jRKGoW1BCHvte7lbUOE/v+DZckCncnuodiPdDYy8ftk5mK+a
-         e1IuXipIcPalRtYDtS4O7gr+6UQ02TU6F2uu4ld8hDT3qCOcX8nnvl9wPOmmjcabau6wnvztLXsd
-         HGDN9IOORlBtFktWBI1u5RXGBaLUSyCPdKRVtHSjS54F46u7aeCfvl3GPjRc6XdcT7WTD3NHtDQI
-         7O+mcRLN58lxMaScCByj3HR/TrITaM0Dwqe8/pbC+cbzAK+pAdzu+mcGlRzBZBsbS+A6NMiw5AQ8
-         nT5eCBk4GWKkn8Tl2kiPrGpXnrc9Ys9F5kQ41+U0pMXk91/1OK2TCZloIVnxNY27umx/1w081Ewl
-         NsZXUYuoOtFVO0JdYFUS62CwGJaXiY1RWXrk8Mr+HCK8aSRRGJOIAauFrAuRmnh/w7JBpdTRqOxK
-         7AeMQFm6VWs67FEqJ2h6gHhhxvQ5oka3tMz+LyQDEKv1xcc9gIxMg/ZB2z7j9K2beJhyTFxiO0WN
-         tea16zM+YjzZHGi3a+LKx5/SsKLjX93iF5GF3V4Pr5RuioilrEGkFEGup/sL/aNOHGtEf2ltbxNf
-         9cTN4AAnomRfGfmD5S47CFu23xOIOPYHt/GWJ0mAD0+ClDPapn8+Ruo8gCS1LwgC+KgRA07UC9Oa
-         T2La0xSw==
-X-QQ-XMRINFO: NS+P29fieYNw95Bth2bWPxk=
+        s=s201512; t=1689414973;
+        bh=JpDCCEP/8aNDbjWStl7V/1DHXjS0bFNz+rqHDxrKpuk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=VstwCYvtKqUXCxgOt60w+O655qL4wwfbwkr0CC6EjGQvgiNptIxAsN/tWsk6p/b5N
+         3K8MLNsu00HsY7/3UUTb5SRAmDogyY223Ke/RdcrrScvcgIpokBtlw5EYvnGXwoZYp
+         oG3MXXUw3KkcyJ5zWg0jsPRhh34ofxIDOzTl2TL4=
+Received: from localhost.localdomain ([220.243.191.12])
+        by newxmesmtplogicsvrszc2-0.qq.com (NewEsmtp) with SMTP
+        id E0AA9045; Sat, 15 Jul 2023 17:56:10 +0800
+X-QQ-mid: xmsmtpt1689414970tnk2wq92o
+Message-ID: <tencent_283F851E543C098B9BC8DAA32D79B00A0F07@qq.com>
+X-QQ-XMAILINFO: N7xt/Xavkw6SPgp6fMF86Ya0b7fRfpshou9aHNkYNeG1Lo+iWmEXJqDEFpx8mn
+         R53G9Kqvzuxpp4AivDQQAkcq3WEnyYs161XP9+s9urcpHOeJugw1hxAtzEURchfp9Ok/vdljHukV
+         PRKGW3UHHKnAAQOnTuuwZCOs4iRIr7z0Gof+gdnd6w/ZWrZeTxpVraEbyzDBzExC+5B1T9WqORo+
+         7dFG6M9QyffDAmzFWZ74FRz0MUjZ4iinjBVj6q6aVq29taxGUHhfh4uCALPPaRzZpvgF6Xnuivad
+         c2ZF2f+Coo7UsvsMYllMNSp057dMyrfkbkhp7mRAMPQVB9TgsWNL0taZQmdbUrpcxbbwGJ8WHrpd
+         MULh4pKppfqaZgjYWFQ24wV+n2PsirV4wAmqMBT97rXQTUu+eTnZb8dYep1KnTqiazjJaNKh+6hl
+         RQl3bh9/CnF2Adb/U5ziSsd+LxT9BOkUcGTevMVoeJCw5bZ+QUS0oC0/BS1/d9eu6OPj1cptKt0X
+         +NUzcSD6YtNQljpGr9xgzoW68D6difgy7vJHYFFnhd0H5JjZWdVmDOScrcNaDdFVBlMJLa88LlCQ
+         iqnhi9v3pgd/nomO0vXRQ2M8LEXxATM2ytMgTh4EuxrWD/ZCmGuHqUE0WmwzLjMbexkRtEmVtUY6
+         3f5NOTwZy1z4iJ34OEE9xwJ9S7lSfAgrvSZ1LlBxulgvOdo25Sj+LJ7uG4Ki1togfTZUdN9osOp+
+         sxRraaBgHi+lQXTg2ZKDs+CeI4sRDyhCyrtyGfdR1ifsVi5Qe7pVdP+dj5TXJqp7rtcpeJxVtBRH
+         76q86plXVMOq/DpoBTuuDvr/UjILgGz62wLQlZgB1UTP90tkXwj4vjWtXhefZU5vWp8feAuwO81J
+         29H9NvnDvf8OUFPFhwAicuNa9hIe/MOLP5/OMKiZZs++ahGV3wKumdOdU0mqzrhHSNPMHsdgmcw3
+         A7UAj+M2KBpEls0OQkBVUpCzuCdJcI01iR9jkMY3alxG6ScR8eumxC7OYJjtAm
+X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
 From:   Zhang Shurong <zhang_shurong@foxmail.com>
-To:     ldewangan@nvidia.com
-Cc:     broonie@kernel.org, thierry.reding@gmail.com, jonathanh@nvidia.com,
-        p.zabel@pengutronix.de, linux-spi@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zhang Shurong <zhang_shurong@foxmail.com>
-Subject: [PATCH] spi: tegra20-sflash: Fix signedness bug in tegra_sflash_probe
-Date:   Sat, 15 Jul 2023 17:53:56 +0800
-X-OQ-MSGID: <20230715095356.1507787-1-zhang_shurong@foxmail.com>
-X-Mailer: git-send-email 2.30.2
+To:     linux-wireless@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kalle Valo <kvalo@kernel.org>,
+        Ping-Ke Shih <pkshih@realtek.com>,
+        Markus Elfring <Markus.Elfring@web.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] wifi: rtw89: debug: fix error code in
+ rtw89_debug_priv_btc_manual_set
+Date:   Sat, 15 Jul 2023 17:56:10 +0800
+X-OQ-MSGID: <4849586.31r3eYUQgx@localhost.localdomain>
+In-Reply-To: <a97b0b0c-8141-5391-727a-aa29fedc016b@web.de>
+References: <tencent_7C09B91B925AF62D7CB0280F028563540807@qq.com>
+ <a97b0b0c-8141-5391-727a-aa29fedc016b@web.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,
@@ -66,34 +70,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The "tsd->irq" variable is unsigned so this error handling
-code will not work.
+=E5=9C=A8 2023=E5=B9=B47=E6=9C=8815=E6=97=A5=E6=98=9F=E6=9C=9F=E5=85=AD CST=
+ =E4=B8=8B=E5=8D=885:22:08=EF=BC=8CMarkus Elfring =E5=86=99=E9=81=93=EF=BC=
+=9A
+> > If there is a failure during kstrtobool_from_user()
+> > rtw89_debug_priv_btc_manual_set should return negative error code
+> > instead of returning the count driectly.
+> >=20
+> > Fix this bug by returning the correct error code.
+>=20
+> How do you think about to use an other wording approach
+> (like the following) for an improved change description?
+>=20
+>=20
+>   Return an error code instead of a count after a failed call
+>   of the function =E2=80=9Ckstrtobool_from_user=E2=80=9D.
+>   Omit the label =E2=80=9Cout=E2=80=9D with this source code correction.
+>=20
+>=20
+> Regards,
+> Markus
+Thanks for your kindness reply and advice and I will change my description
+in the next version.
 
-Fix this by adding error handling statement
+Regards,
+Shurong
 
-Fixes: 8528547bcc33 ("spi: tegra: add spi driver for sflash controller")
-Signed-off-by: Zhang Shurong <zhang_shurong@foxmail.com>
----
- drivers/spi/spi-tegra20-sflash.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-tegra20-sflash.c b/drivers/spi/spi-tegra20-sflash.c
-index 4286310628a2..4c18337de813 100644
---- a/drivers/spi/spi-tegra20-sflash.c
-+++ b/drivers/spi/spi-tegra20-sflash.c
-@@ -455,7 +455,11 @@ static int tegra_sflash_probe(struct platform_device *pdev)
- 		goto exit_free_master;
- 	}
- 
--	tsd->irq = platform_get_irq(pdev, 0);
-+	ret = platform_get_irq(pdev, 0);
-+	if (ret < 0)
-+		goto exit_free_master;
-+
-+	tsd->irq = ret;
- 	ret = request_irq(tsd->irq, tegra_sflash_isr, 0,
- 			dev_name(&pdev->dev), tsd);
- 	if (ret < 0) {
--- 
-2.30.2
 
