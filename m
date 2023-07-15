@@ -2,158 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 055FB7545E3
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 03:00:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AF497545E6
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 03:03:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229632AbjGOBAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 21:00:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37394 "EHLO
+        id S229784AbjGOBDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 21:03:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbjGOBAa (ORCPT
+        with ESMTP id S230390AbjGOBC5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 21:00:30 -0400
-Received: from m1340.mail.163.com (m1340.mail.163.com [220.181.13.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 35C022D68;
-        Fri, 14 Jul 2023 18:00:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
-        Message-ID; bh=kkZ9RjR7KQKJrM1KYMvj+FXbCavvmVv0K3K41WkQlag=; b=K
-        Oae8Z7TYJZLw0zBGtoGX8QlWVRMvewvs9I93wcXNrwPOLiRV45WHCiKxqVPB6jEp
-        owLue/BEfiCTTIfkytTzzrowdjgHoLWUirBn8DS1YTc8OGGRP+IIxE9Px0FMiuy+
-        dVnYWD+ttNLxSx/FyUK0p5hDHwgIpzr9c43NYalkro=
-Received: from xingxg2008$163.com ( [221.218.137.29] ) by
- ajax-webmail-wmsvr40 (Coremail) ; Sat, 15 Jul 2023 08:59:32 +0800 (CST)
-X-Originating-IP: [221.218.137.29]
-Date:   Sat, 15 Jul 2023 08:59:32 +0800 (CST)
-From:   xingxg2008 <xingxg2008@163.com>
-To:     guoren@kernel.org
-Cc:     palmer@rivosinc.com, paul.walmsley@sifive.com, zong.li@sifive.com,
-        atishp@atishpatra.org, alex@ghiti.fr, jszhang@kernel.org,
-        bjorn@kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        "Guo Ren" <guoren@linux.alibaba.com>,
-        "Alexandre Ghiti" <alexghiti@rivosinc.com>
-Subject: Re:[PATCH V4] riscv: kexec: Fixup synchronization problem between
- init_mm and active_mm
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20230109(dcb5de15)
- Copyright (c) 2002-2023 www.mailtech.cn 163com
-In-Reply-To: <20230714103659.3146949-1-guoren@kernel.org>
-References: <20230714103659.3146949-1-guoren@kernel.org>
-X-NTES-SC: AL_QuyTC/+TvU8s5CScbOkXmUcahe83XMKzuPsm3o9SPZE0gink4CQqd31DGlzJwsGUMji2shq6YAhk9spDZbdUQZjRdzE5JbEfzzBDQn1lL58r
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=GBK
+        Fri, 14 Jul 2023 21:02:57 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B27713A9C
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 18:02:56 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2b70bfc8db5so38734181fa.2
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 18:02:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1689382975; x=1691974975;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BaQZCie538sj4krllk6/qjbG50accgvQVGSms7oqFVs=;
+        b=SqqRhesNIM9U2HFUGXehPvzNYVQyZEYtbRbVRh1ZXiYBsNT4lrJZgwupXE+NNbs23N
+         zVMKsDNT1QxOwO0gh585ZONx9DbQgh1s7TPH/U3KtA530+XDxC45FA76WyifbabVZmwy
+         5jqbm0tuFy3moCN33xVNMXdprmC8RzEDsKPa4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689382975; x=1691974975;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BaQZCie538sj4krllk6/qjbG50accgvQVGSms7oqFVs=;
+        b=a2gJYbtXF/8MzGtwRHBZBlCEw2v4+xW6eFQNl3vGuvO/cTlKBb2Rpc4aPpfIpOiz6U
+         eENiR0ynxUjgkwFRWFnjrHu8I9RnPzVU7LcnzZq70l32FJ2x6psH2zIpyLmh1iXkNspH
+         b98aLIjlAD2YVRo5HApoLa2DRiqoymwfGMVXfLSm985gFxNf5Yha7PdHFTqzDKLpM/cF
+         F+a8itFksz3u1nHXvmoUc6ylkxmsy/Vv+gBIFjg7vnLtdI23CjJN11vQuOHwSjTkz+yj
+         0ssC/pCv+petf7hiJpuAqgz3XCN7gbJcc11g66zCNxLbxIG8/9eY6F4oYUyGKWOpzxQd
+         hzeQ==
+X-Gm-Message-State: ABy/qLYR/GRhyW9NP8VKWxHBTnrjr9PSJY2FFY0VorFL+4XUTuybuDXW
+        Pof6veg1gbUKA47QsIsimIWP4+SOTdgzWie5g5Y45A==
+X-Google-Smtp-Source: APBJJlEpaNw20C2rJJr5qWIgD6GIDGTuQjIjmfDbVmotFEyJqN9C2k3xXcaPHMkPie5yYDJYotx16CWEy3QxglDRzfo=
+X-Received: by 2002:a2e:900c:0:b0:2b6:e7b7:a163 with SMTP id
+ h12-20020a2e900c000000b002b6e7b7a163mr4858296ljg.27.1689382974779; Fri, 14
+ Jul 2023 18:02:54 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <6b766b2b.2e5.189570f5ee6.Coremail.xingxg2008@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: KMGowADHCmZ077FkZVEDAA--.26192W
-X-CM-SenderInfo: p0lqw5bjsqimi6rwjhhfrp/xtbBbBStM1c7PxAewQAAs6
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
-X-Spam-Status: No, score=0.5 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SORBS_HTTP,RCVD_IN_SORBS_SOCKS,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+References: <20230714120852.23573-1-frederic@kernel.org> <20230714120852.23573-4-frederic@kernel.org>
+ <9347e3d4-e774-f75f-22c4-6c2dba294423@joelfernandes.org> <ZLHh71KIIioR85aa@lothringen>
+In-Reply-To: <ZLHh71KIIioR85aa@lothringen>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Fri, 14 Jul 2023 21:02:43 -0400
+Message-ID: <CAEXW_YRTtvq0_YZiN=V9DZi2QxrC4hQFeUC9=JrgAKkg8KAnmw@mail.gmail.com>
+Subject: Re: [PATCH 3/3] tick/nohz: Don't shutdown the lowres tick from itself
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ClRlc3RlZC1ieTogWGluZyBYaWFvZ3VhbmcgPHhpbmd4ZzIwMDhAMTYzLmNvbT4KClRoZSBwYXRj
-aCB3b3JrcyBmaW5lIG9uIExpbnV4IDYuNS1SQzEgd2hpY2ggcnVucyBvbiBTT1BIR08KU0cyMDQy
-IEVWQiB0aGF0IGhhcyA2NCBSSVNDLVYgY29yZXMuCgoKCgpBdCAyMDIzLTA3LTE0IDE4OjM2OjU5
-LCBndW9yZW5Aa2VybmVsLm9yZyB3cm90ZToKPkZyb206IEd1byBSZW4gPGd1b3JlbkBsaW51eC5h
-bGliYWJhLmNvbT4KPgo+VGhlIG1hY2hpbmVfa2V4ZWMoKSB1c2VzIHNldF9tZW1vcnlfeCB0byBt
-b2RpZnkgdGhlIGRpcmVjdCBtYXBwaW5nCj5hdHRyaWJ1dGVzIGZyb20gUlcgdG8gUldYLiBUaGUg
-Y3VycmVudCBpbXBsZW1lbnRhdGlvbiBvZiBzZXRfbWVtb3J5X3gKPmRvZXMgbm90IHNwbGl0IGh1
-Z2VwYWdlcyBpbiB0aGUgbGluZWFyIG1hcHBpbmcgYW5kIHRoZW4gd2hlbiBhIFBHRAo+bWFwcGlu
-ZyBpcyB1c2VkLCB0aGUgd2hvbGUgUEdEIGlzIG1hcmtlZCBhcyBleGVjdXRhYmxlLiBCdXQgY2hh
-bmdpbmcKPnRoZSBwZXJtaXNzaW9ucyBhdCB0aGUgUEdEIGxldmVsIG11c3QgYmUgcHJvcGFnYXRl
-ZCB0byBhbGwgdGhlIHBhZ2UKPnRhYmxlcy4gV2hlbiBrZXhlYyBqdW1wcyBpbnRvIGNvbnRyb2xf
-YnVmZmVyLCB0aGUgaW5zdHJ1Y3Rpb24gcGFnZQo+ZmF1bHQgaGFwcGVucywgYW5kIHRoZXJlIGlz
-IG5vIG1pbm9yX3BhZ2VmYXVsdCBmb3IgaXQsIHRoZW4gcGFuaWMuCj4KPlRoZSBidWcgaXMgZm91
-bmQgb24gYW4gTU1VX3N2MzkgbWFjaGluZSwgYW5kIHRoZSBkaXJlY3QgbWFwcGluZyB1c2VkIGEK
-PjFHQiBQVUQsIHRoZSBwZ2QgZW50cmllcy4gSGVyZSBpcyB0aGUgYnVnIG91dHB1dDoKPgo+IGtl
-eGVjX2NvcmU6IFN0YXJ0aW5nIG5ldyBrZXJuZWwKPiBXaWxsIGNhbGwgbmV3IGtlcm5lbCBhdCAw
-MDMwMDAwMCBmcm9tIGhhcnQgaWQgMAo+IEZEVCBpbWFnZSBhdCA3NDdjNzAwMAo+IEJ5ZS4uLgo+
-IFVuYWJsZSB0byBoYW5kbGUga2VybmVsIHBhZ2luZyByZXF1ZXN0IGF0IHZpcnR1YWwgYWRkcmVz
-cyBmZmZmZmZkYTIzYjBkMDAwCj4gT29wcyBbIzFdCj4gTW9kdWxlcyBsaW5rZWQgaW46Cj4gQ1BV
-OiAwIFBJRDogNTMgQ29tbTogdWluaXQgTm90IHRhaW50ZWQgNi40LjAtcmM2ICMxNQo+IEhhcmR3
-YXJlIG5hbWU6IFNvcGhnbyBNYW5nbyAoRFQpCj4gZXBjIDogMHhmZmZmZmZkYTIzYjBkMDAwCj4g
-IHJhIDogbWFjaGluZV9rZXhlYysweGE2LzB4YjAKPiBlcGMgOiBmZmZmZmZkYTIzYjBkMDAwIHJh
-IDogZmZmZmZmZmY4MDAwODI3MiBzcCA6IGZmZmZmZmM4MGMxNzNkMTAKPiAgZ3AgOiBmZmZmZmZm
-ZjgxNTBlMWUwIHRwIDogZmZmZmZmZDkwNzNkMmM0MCB0MCA6IDAwMDAwMDAwMDAwMDAwMDAKPiAg
-dDEgOiAwMDAwMDAwMDAwMDAwMDQyIHQyIDogNjU2NzYxNmQ2OTIwNTQ0NCBzMCA6IGZmZmZmZmM4
-MGMxNzNkNTAKPiAgczEgOiBmZmZmZmZkOTA3NmM0ODAwIGEwIDogZmZmZmZmZDkwNzZjNDgwMCBh
-MSA6IDAwMDAwMDAwMDAzMDAwMDAKPiAgYTIgOiAwMDAwMDAwMDc0N2M3MDAwIGEzIDogMDAwMDAw
-MDAwMDAwMDAwMCBhNCA6IGZmZmZmZmQ4MDAwMDAwMDAKPiAgYTUgOiAwMDAwMDAwMDAwMDAwMDAw
-IGE2IDogZmZmZmZmZDkwMzYxOWM0MCBhNyA6IGZmZmZmZmZmZmZmZmZmZmYKPiAgczIgOiBmZmZm
-ZmZkYTIzYjBkMDAwIHMzIDogMDAwMDAwMDAwMDMwMDAwMCBzNCA6IDAwMDAwMDAwNzQ3YzcwMDAK
-PiAgczUgOiAwMDAwMDAwMDAwMDAwMDAwIHM2IDogMDAwMDAwMDAwMDAwMDAwMCBzNyA6IDAwMDAw
-MDAwMDAwMDAwMDAKPiAgczggOiAwMDAwMDAwMDAwMDAwMDAwIHM5IDogMDAwMDAwMDAwMDAwMDAw
-MCBzMTA6IDAwMDAwMDAwMDAwMDAwMDAKPiAgczExOiAwMDAwMDAzZjk0MDAwMWEwIHQzIDogZmZm
-ZmZmZmY4MTUzNTFhZiB0NCA6IGZmZmZmZmZmODE1MzUxYWYKPiAgdDUgOiBmZmZmZmZmZjgxNTM1
-MWIwIHQ2IDogZmZmZmZmYzgwYzE3M2I1MAo+IHN0YXR1czogMDAwMDAwMDIwMDAwMDEwMCBiYWRh
-ZGRyOiBmZmZmZmZkYTIzYjBkMDAwIGNhdXNlOiAwMDAwMDAwMDAwMDAwMDBjCj4KPkdpdmVuIHRo
-ZSBjdXJyZW50IGZsYXcgaW4gdGhlIHNldF9tZW1vcnlfeCBpbXBsZW1lbnRhdGlvbiwgdGhlIHNp
-bXBsZXN0Cj5zb2x1dGlvbiBpcyB0byBmaXggbWFjaGluZV9rZXhlYygpIHRvIHJlbWFwIGNvbnRy
-b2wgY29kZSBwYWdlIG91dHNpZGUKPnRoZSBsaW5lYXIgbWFwcGluZy4gQmVjYXVzZSB0aGUgY29u
-dHJvbCBjb2RlIGJ1ZmZlciB3YXMgbW92ZWQgZnJvbSB0aGUKPmRpcmVjdCBtYXBwaW5nIGFyZWEg
-dG8gdGhlIHZtYWxsb2MgbG9jYXRpb24sIHdlIG5lZWQgYW4gYWRkaXRpb25hbAo+dmFfdmFfb2Zm
-c2V0IHRvIGZpeCB1cCB2YV9wYV9vZmZzZXQuCj4KPkZpeGVzOiAzMzM1MDY4Zjg3MjEgKCJyaXNj
-djogVXNlIFBVRC9QNEQvUEdEIHBhZ2VzIGZvciB0aGUgbGluZWFyIG1hcHBpbmciKQo+UmV2aWV3
-ZWQtYnk6IEFsZXhhbmRyZSBHaGl0aSA8YWxleGdoaXRpQHJpdm9zaW5jLmNvbT4KPlJlcG9ydGVk
-LWJ5OiBYaW5nIFhpYW9HdWFuZyA8eGluZ3hnMjAwOEAxNjMuY29tPgo+U2lnbmVkLW9mZi1ieTog
-R3VvIFJlbiA8Z3VvcmVuQGxpbnV4LmFsaWJhYmEuY29tPgo+U2lnbmVkLW9mZi1ieTogR3VvIFJl
-biA8Z3VvcmVuQGtlcm5lbC5vcmc+Cj4tLS0KPkNoYW5nZWxvZzoKPlY0Ogo+IC0gRml4dXAgdmFf
-cGFfb2Zmc2V0IHdpdGggYWRkaXRpb25hbCB2YV92YV9vZmZzZXQuCj4gLSBBZGQgUmVwb3J0ZWQt
-YnkgdGFnLgo+Cj5WMzoKPiAtIFJlc3VtZSBzZXRfbWVtb3J5X3ggdG8gc2V0IHRoZSBfUEFHRV9F
-WEVDIGF0dHJpYnV0ZQo+IC0gT3B0aW1pemUgdGhlIGNvbW1pdCBsb2cgd2l0aCBBbGV4YW5kcmUg
-YWR2aWNlCj4KPlYyOgo+IC0gVXNlIHZtX21hcF9yYW0gaW5zdGVhZCBvZiBtb2RpZnlpbmcgc2V0
-X21lbW9yeV94Cj4gLSBDb3JyZWN0IEZpeGVzIHRhZwo+LS0tCj4gYXJjaC9yaXNjdi9pbmNsdWRl
-L2FzbS9rZXhlYy5oICAgIHwgIDEgKwo+IGFyY2gvcmlzY3Yva2VybmVsL21hY2hpbmVfa2V4ZWMu
-YyB8IDE4ICsrKysrKysrKysrKysrKy0tLQo+IDIgZmlsZXMgY2hhbmdlZCwgMTYgaW5zZXJ0aW9u
-cygrKSwgMyBkZWxldGlvbnMoLSkKPgo+ZGlmZiAtLWdpdCBhL2FyY2gvcmlzY3YvaW5jbHVkZS9h
-c20va2V4ZWMuaCBiL2FyY2gvcmlzY3YvaW5jbHVkZS9hc20va2V4ZWMuaAo+aW5kZXggMmI1Njc2
-OWNiNTMwLi4xNzQ1NmU5MTQ3NmUgMTAwNjQ0Cj4tLS0gYS9hcmNoL3Jpc2N2L2luY2x1ZGUvYXNt
-L2tleGVjLmgKPisrKyBiL2FyY2gvcmlzY3YvaW5jbHVkZS9hc20va2V4ZWMuaAo+QEAgLTQxLDYg
-KzQxLDcgQEAgY3Jhc2hfc2V0dXBfcmVncyhzdHJ1Y3QgcHRfcmVncyAqbmV3cmVncywKPiBzdHJ1
-Y3Qga2ltYWdlX2FyY2ggewo+IAl2b2lkICpmZHQ7IC8qIEZvciBDT05GSUdfS0VYRUNfRklMRSAq
-Lwo+IAl1bnNpZ25lZCBsb25nIGZkdF9hZGRyOwo+Kwl2b2lkICpjb250cm9sX2NvZGVfYnVmZmVy
-Owo+IH07Cj4gCj4gZXh0ZXJuIGNvbnN0IHVuc2lnbmVkIGNoYXIgcmlzY3Zfa2V4ZWNfcmVsb2Nh
-dGVbXTsKPmRpZmYgLS1naXQgYS9hcmNoL3Jpc2N2L2tlcm5lbC9tYWNoaW5lX2tleGVjLmMgYi9h
-cmNoL3Jpc2N2L2tlcm5lbC9tYWNoaW5lX2tleGVjLmMKPmluZGV4IDJkMTM5YjcyNGJjOC4uNjBj
-MWVmM2MyMjMyIDEwMDY0NAo+LS0tIGEvYXJjaC9yaXNjdi9rZXJuZWwvbWFjaGluZV9rZXhlYy5j
-Cj4rKysgYi9hcmNoL3Jpc2N2L2tlcm5lbC9tYWNoaW5lX2tleGVjLmMKPkBAIC04Niw3ICs4Niwx
-NCBAQCBtYWNoaW5lX2tleGVjX3ByZXBhcmUoc3RydWN0IGtpbWFnZSAqaW1hZ2UpCj4gCj4gCS8q
-IENvcHkgdGhlIGFzc2VtYmxlciBjb2RlIGZvciByZWxvY2F0aW9uIHRvIHRoZSBjb250cm9sIHBh
-Z2UgKi8KPiAJaWYgKGltYWdlLT50eXBlICE9IEtFWEVDX1RZUEVfQ1JBU0gpIHsKPi0JCWNvbnRy
-b2xfY29kZV9idWZmZXIgPSBwYWdlX2FkZHJlc3MoaW1hZ2UtPmNvbnRyb2xfY29kZV9wYWdlKTsK
-PisJCWNvbnRyb2xfY29kZV9idWZmZXIgPSB2bV9tYXBfcmFtKCZpbWFnZS0+Y29udHJvbF9jb2Rl
-X3BhZ2UsCj4rCQkJCQkJIEtFWEVDX0NPTlRST0xfUEFHRV9TSVpFL1BBR0VfU0laRSwKPisJCQkJ
-CQkgTlVNQV9OT19OT0RFKTsKPisJCWlmIChjb250cm9sX2NvZGVfYnVmZmVyID09IE5VTEwpIHsK
-PisJCQlwcl9lcnIoIkZhaWxlZCB0byB2bV9tYXAgY29udHJvbCBwYWdlXG4iKTsKPisJCQlyZXR1
-cm4gLUVOT01FTTsKPisJCX0KPisKPiAJCWNvbnRyb2xfY29kZV9idWZmZXJfc3ogPSBwYWdlX3Np
-emUoaW1hZ2UtPmNvbnRyb2xfY29kZV9wYWdlKTsKPiAKPiAJCWlmICh1bmxpa2VseShyaXNjdl9r
-ZXhlY19yZWxvY2F0ZV9zaXplID4gY29udHJvbF9jb2RlX2J1ZmZlcl9zeikpIHsKPkBAIC05OSw2
-ICsxMDYsOCBAQCBtYWNoaW5lX2tleGVjX3ByZXBhcmUoc3RydWN0IGtpbWFnZSAqaW1hZ2UpCj4g
-Cj4gCQkvKiBNYXJrIHRoZSBjb250cm9sIHBhZ2UgZXhlY3V0YWJsZSAqLwo+IAkJc2V0X21lbW9y
-eV94KCh1bnNpZ25lZCBsb25nKSBjb250cm9sX2NvZGVfYnVmZmVyLCAxKTsKPisKPisJCWludGVy
-bmFsLT5jb250cm9sX2NvZGVfYnVmZmVyID0gY29udHJvbF9jb2RlX2J1ZmZlcjsKPiAJfQo+IAo+
-IAlyZXR1cm4gMDsKPkBAIC0yMTEsNyArMjIwLDEwIEBAIG1hY2hpbmVfa2V4ZWMoc3RydWN0IGtp
-bWFnZSAqaW1hZ2UpCj4gCXVuc2lnbmVkIGxvbmcgdGhpc19jcHVfaWQgPSBfX3NtcF9wcm9jZXNz
-b3JfaWQoKTsKPiAJdW5zaWduZWQgbG9uZyB0aGlzX2hhcnRfaWQgPSBjcHVpZF90b19oYXJ0aWRf
-bWFwKHRoaXNfY3B1X2lkKTsKPiAJdW5zaWduZWQgbG9uZyBmZHRfYWRkciA9IGludGVybmFsLT5m
-ZHRfYWRkcjsKPi0Jdm9pZCAqY29udHJvbF9jb2RlX2J1ZmZlciA9IHBhZ2VfYWRkcmVzcyhpbWFn
-ZS0+Y29udHJvbF9jb2RlX3BhZ2UpOwo+Kwl2b2lkICpjb250cm9sX2NvZGVfYnVmZmVyID0gaW50
-ZXJuYWwtPmNvbnRyb2xfY29kZV9idWZmZXI7Cj4rCXVuc2lnbmVkIGxvbmcgdmFfdmFfb2Zmc2V0
-ID0KPisJCQkodW5zaWduZWQgbG9uZykgcGFnZV9hZGRyZXNzKGltYWdlLT5jb250cm9sX2NvZGVf
-cGFnZSkKPisJCSAgICAgIC0gKHVuc2lnbmVkIGxvbmcpIGNvbnRyb2xfY29kZV9idWZmZXI7Cj4g
-CXJpc2N2X2tleGVjX21ldGhvZCBrZXhlY19tZXRob2QgPSBOVUxMOwo+IAo+ICNpZmRlZiBDT05G
-SUdfU01QCj5AQCAtMjM0LDYgKzI0Niw2IEBAIG1hY2hpbmVfa2V4ZWMoc3RydWN0IGtpbWFnZSAq
-aW1hZ2UpCj4gCS8qIEp1bXAgdG8gdGhlIHJlbG9jYXRpb24gY29kZSAqLwo+IAlwcl9ub3RpY2Uo
-IkJ5ZS4uLlxuIik7Cj4gCWtleGVjX21ldGhvZChmaXJzdF9pbmRfZW50cnksIGp1bXBfYWRkciwg
-ZmR0X2FkZHIsCj4tCQkgICAgIHRoaXNfaGFydF9pZCwga2VybmVsX21hcC52YV9wYV9vZmZzZXQp
-Owo+KwkJICAgICB0aGlzX2hhcnRfaWQsIGtlcm5lbF9tYXAudmFfcGFfb2Zmc2V0IC0gdmFfdmFf
-b2Zmc2V0KTsKPiAJdW5yZWFjaGFibGUoKTsKPiB9Cj4tLSAKPjIuMzYuMQo=
+On Fri, Jul 14, 2023 at 8:01=E2=80=AFPM Frederic Weisbecker <frederic@kerne=
+l.org> wrote:
+>
+> On Fri, Jul 14, 2023 at 02:44:49PM -0400, Joel Fernandes wrote:
+> > On 7/14/23 08:08, Frederic Weisbecker wrote:
+> > One slight concern here though, where in the idle loop is the removed
+> > statement "tick_program_event(KTIME_MAX, 1);" happening if the tick was
+> > already stopped before? If it is happening in tick_nohz_stop_tick(), do=
+n't
+> > we early return from there and avoid doing that
+> > "tick_program_event(KTIME_MAX, 1);" altogether, if the tick was already
+> > stopped and the next event has not changed?
+> >
+> >         /* Skip reprogram of event if its not changed */
+> >         if (ts->tick_stopped && (expires =3D=3D ts->next_tick)) {
+> >                 /* Sanity check: make sure clockevent is actually progr=
+ammed */
+> >                 if (tick =3D=3D KTIME_MAX || ts->next_tick =3D=3D  [...=
+]
+> >                         return;
+> >               [...]
+> >       }
+>
+> Sure, if tick_program_event(KTIME_MAX, 1) was already called in the
+> previous idle loop iteration, then there is no need to call that again.
+>
+> Or am I missing something else?
+
+Just take it with a grain of salt but I think you need to still call
+tick_program_event(KTIME_MAX, 1) here for the case where the tick was
+previously stopped, and then when the next tick fires (say after a
+long time T), but that tick is a one-off and does not result in
+restarting the tick -- then there is no one to call
+"tick_program_event(KTIME_MAX, 1)".
+
+I think that's the concern Nick was addressing in [1] so that it
+resets the tick device correctly?
+
+[1] https://lore.kernel.org/lkml/165089105607.4207.3022534114716811208.tip-=
+bot2@tip-bot2/
+
+> >
+> > Also just a nit, here you can remove indent by doing:
+> >
+> > if (unlikely(ts->tick_stopped))
+> >     return;
+> > hrtimer_forward(&ts->sched_timer, now, TICK_NSEC);
+> > tick_program_event(hrtimer_get_expires(&ts->sched_timer), 1);
+> >
+> > Which is pretty much the original code except for the tick_program_even=
+t().
+>
+> Either I remove an indent or I remove a statement. I guess it's a matter =
+of
+> personal taste. I don't mind either way :-)
+
+Ah true, in defense of the "less indent" way, the original code was
+also using that style. ;-) But I am also Ok with either way. :-)
+
+thanks,
+
+ - Joel
