@@ -2,124 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77CDC754692
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 05:32:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BBB2754695
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 05:36:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230297AbjGODcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 23:32:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33252 "EHLO
+        id S230085AbjGODgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 23:36:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230024AbjGODbi (ORCPT
+        with ESMTP id S229510AbjGODgV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 23:31:38 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 715EB1BF9;
-        Fri, 14 Jul 2023 20:31:37 -0700 (PDT)
-Received: from kwepemm600003.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4R2v4x0KFyz18LrJ;
-        Sat, 15 Jul 2023 11:30:57 +0800 (CST)
-Received: from localhost.localdomain (10.67.174.95) by
- kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Sat, 15 Jul 2023 11:31:34 +0800
-From:   Yang Jihong <yangjihong1@huawei.com>
-To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
-        <jolsa@kernel.org>, <namhyung@kernel.org>, <irogers@google.com>,
-        <adrian.hunter@intel.com>, <kan.liang@linux.intel.com>,
-        <james.clark@arm.com>, <tmricht@linux.ibm.com>,
-        <ak@linux.intel.com>, <anshuman.khandual@arm.com>,
-        <linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>
-CC:     <yangjihong1@huawei.com>
-Subject: [PATCH v2 7/7] perf test: Add test case for record sideband events
-Date:   Sat, 15 Jul 2023 03:29:15 +0000
-Message-ID: <20230715032915.97146-8-yangjihong1@huawei.com>
-X-Mailer: git-send-email 2.30.GIT
-In-Reply-To: <20230715032915.97146-1-yangjihong1@huawei.com>
-References: <20230715032915.97146-1-yangjihong1@huawei.com>
+        Fri, 14 Jul 2023 23:36:21 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FB38131
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 20:36:20 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0DCFD61D9C
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 03:36:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F285C433C8;
+        Sat, 15 Jul 2023 03:36:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689392179;
+        bh=c3tslDX7l0mK6db/sbQQSGrMSv0gZmxNU8aa2qw8Exw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=lH8cEjJgrHWp90asOlEIXOLgBx+AxBeW+J0hbuFVxUmlG78xQor+z1BUWToZ1CA7r
+         cn1o8Jc7NKEbU1HT7ArlrBCCfJYvwNQupFLPc4kgws4ypai1Ypr4XzLhaJ2bZLeOdH
+         Gg7AeK3fBXDF8T9k+rOop6SM+4keVwFP0w24t2f3IwyYkzMr/kjo9HOKUrA/LSO7i9
+         m6OLEWszrWqQXhVnZ0UlXEG00ej1IXteKgMST95UOGVjtD5EJavIfZWvnAinP7GaeA
+         KEdJvTMUTYbsXFgo6nGgGYmBp7W+4pCLtJPLWUTtAU3ZIv/sNyQ0AVTwpH2CWVbVOr
+         VoE1+eFU5IyIA==
+Date:   Fri, 14 Jul 2023 20:36:18 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     hanyu001@208suo.com
+Cc:     davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drivers/net/slip: Add space after that ','
+Message-ID: <20230714203618.2e19e8ed@kernel.org>
+In-Reply-To: <4b922e9203381b3411696feae9ee02da@208suo.com>
+References: <tencent_C824D439C8CE96AD83779E068967114FF105@qq.com>
+        <4b922e9203381b3411696feae9ee02da@208suo.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.174.95]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600003.china.huawei.com (7.193.23.202)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new test case to record sideband events for all CPUs when tracing
-selected CPUs
+On Fri, 14 Jul 2023 16:02:13 +0800 hanyu001@208suo.com wrote:
+> Fix Error reported by checkpatch.pl
+> 
+> ./drivers/net/slip/slhc.c:381: ERROR: space required after that ',' 
+> (ctx:VxV)
 
-Test result:
-
-  # ./perf test list 2>&1 | grep 'perf record sideband tests'
-   95: perf record sideband tests
-  # ./perf test 95
-   95: perf record sideband tests                                      : Ok
-
-Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
----
- tools/perf/tests/shell/record_tracking.sh | 44 +++++++++++++++++++++++
- 1 file changed, 44 insertions(+)
- create mode 100755 tools/perf/tests/shell/record_tracking.sh
-
-diff --git a/tools/perf/tests/shell/record_tracking.sh b/tools/perf/tests/shell/record_tracking.sh
-new file mode 100755
-index 000000000000..44fc0af92f81
---- /dev/null
-+++ b/tools/perf/tests/shell/record_tracking.sh
-@@ -0,0 +1,44 @@
-+#!/bin/sh
-+# perf record sideband tests
-+# SPDX-License-Identifier: GPL-2.0
-+
-+set -e
-+
-+err=0
-+perfdata=$(mktemp /tmp/__perf_test.perf.data.XXXXX)
-+
-+can_cpu_wide()
-+{
-+    if ! perf record -o ${perfdata} -BN --no-bpf-event -e dummy:u -C $1 true 2>&1 >/dev/null
-+    then
-+        echo "record sideband test [Skipped cannot record cpu$1]"
-+        err=2
-+    fi
-+
-+    rm -f ${perfdata}
-+    return $err
-+}
-+
-+test_system_wide_tracking()
-+{
-+    # Need CPU 0 and CPU 1
-+    can_cpu_wide 0 || return 0
-+    can_cpu_wide 1 || return 0
-+
-+    # Record on CPU 0 a task running on CPU 1
-+    perf record -BN --no-bpf-event -o ${perfdata} -e dummy:u -C 0 -- taskset --cpu-list 1 true
-+
-+    # Should get MMAP events from CPU 1
-+    mmap_cnt=`perf script -i ${perfdata} --show-mmap-events -C 1 2>/dev/null | grep MMAP | wc -l`
-+
-+    rm -f ${perfdata}
-+
-+    if [ ${mmap_cnt} -gt 0 ] ; then
-+        return 0
-+    fi
-+
-+    echo "Failed to record MMAP events on CPU 1 when tracing CPU 0"
-+    return 1
-+}
-+
-+test_system_wide_tracking
--- 
-2.30.GIT
-
+Don't send checkpatch fixes to networking, thanks.
