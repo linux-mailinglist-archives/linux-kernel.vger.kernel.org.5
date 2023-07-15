@@ -2,98 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59C197546EE
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 07:25:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B10D7546F2
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 07:39:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230090AbjGOFZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 01:25:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50356 "EHLO
+        id S229808AbjGOFjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 01:39:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbjGOFZq (ORCPT
+        with ESMTP id S229482AbjGOFjq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 01:25:46 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F11D53A9D;
-        Fri, 14 Jul 2023 22:25:44 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36F5PIhO013304;
-        Sat, 15 Jul 2023 00:25:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1689398718;
-        bh=3S2X2tz6GMb/LEBYroRqxU/r/eV423Lk4Fh4pKxefnw=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=tc4+KoWdoUtVFHL9N+ZC03JGG8QCcQ8aF2njTe9lq4puv5HL7ZYKSRbFp7xVFKWy1
-         XnI3pG68uwyauRrfCIitqLDuu1IlCXx9AIxbzBbOzdXPsEPzx6uBoYgX6hpo3l0FPy
-         cfy188fzWuOOtX2FUgBzoiRsgyG+3eXq3Sqlg9Nw=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36F5PISJ024632
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sat, 15 Jul 2023 00:25:18 -0500
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sat, 15
- Jul 2023 00:25:17 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Sat, 15 Jul 2023 00:25:17 -0500
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36F5PHiI012539;
-        Sat, 15 Jul 2023 00:25:17 -0500
-Date:   Sat, 15 Jul 2023 00:25:17 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-CC:     <huaqian.li@siemens.com>, <wim@linux-watchdog.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <huaqianlee@gmail.com>, <vigneshr@ti.com>,
-        <kristo@kernel.org>, <linux-watchdog@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <jan.kiszka@siemens.com>,
-        <baocheng.su@siemens.com>
-Subject: Re: [PATCH v3 2/3] arm64: dts: ti: Add reserved memory for watchdog
-Message-ID: <20230715052517.dinbn25ivsg4ocx2@subtitle>
-References: <20230713095127.1230109-1-huaqian.li@siemens.com>
- <20230713095127.1230109-3-huaqian.li@siemens.com>
- <20230714225240.dvlwqaodp2l3cczm@disfigure>
- <0b0e6961-1211-4765-2a63-4b69789dbbb3@roeck-us.net>
+        Sat, 15 Jul 2023 01:39:46 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4FA13AA1;
+        Fri, 14 Jul 2023 22:39:45 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 46F2C60304;
+        Sat, 15 Jul 2023 05:39:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A55E5C433CC;
+        Sat, 15 Jul 2023 05:39:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689399584;
+        bh=EoC7y3rLdsTfdggC5ynHU58rMj0H+USBvF2tf7JCyGc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Miy423FMByR4Mt9Mua6XH9tmYZvsLJslHdxjnKySlfbtmniZQXalrENN/Fxix3Vet
+         CFLXEuE0apDpD+Q18wTAMJb8LOajcHeDDs86flbTYZHRDHAkgtqHQ2Sryavowta+eW
+         Rkhz0aU0pWIw+HjP9MiNU6VVUQJkaa/PaSpiMMYoUHhfocXHFvpehwV1c7T8j0iD8q
+         8xtxeaJAeuMeRfdyXGbS4lYe7uqQN8QjvBTk5BpcCDnpsJ8VmLRlUA14Rft0lXsgeZ
+         XvKaT+aLuUgoRgWSzkGEzcYvkIZ9M1p+Ghl4HrT8CohNDtEP3Vm6/ZYG1JqPnARoX5
+         jataUoLhDvmZw==
+Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-56347da4a50so1797261eaf.2;
+        Fri, 14 Jul 2023 22:39:44 -0700 (PDT)
+X-Gm-Message-State: ABy/qLbg7GbEqV/AMkelfn9jw5qLJ/lwSKBizpTAxOZO82KYXQUiRQlp
+        Kn7svz2sCF5dZIcaDPz+JzAX18jhyXmR8Dn/MbA=
+X-Google-Smtp-Source: APBJJlH+rK8S6u2KM7p7YAxOaFaTck4jBygqc6Df57rcB1UhTIYwDXWuRAWE79tRtcn0Ok3nSryS8fx6ETzofuUbWQ4=
+X-Received: by 2002:a4a:86cd:0:b0:566:6971:9379 with SMTP id
+ y13-20020a4a86cd000000b0056669719379mr800864ooh.1.1689399583837; Fri, 14 Jul
+ 2023 22:39:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <0b0e6961-1211-4765-2a63-4b69789dbbb3@roeck-us.net>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20230704000120.8098-1-rdunlap@infradead.org> <87mszyz4lc.fsf@meer.lwn.net>
+In-Reply-To: <87mszyz4lc.fsf@meer.lwn.net>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sat, 15 Jul 2023 14:39:07 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASXk28=uxS4ENz7w5hCahseN8HLcbJaAbLVU7=78vThTw@mail.gmail.com>
+Message-ID: <CAK7LNASXk28=uxS4ENz7w5hCahseN8HLcbJaAbLVU7=78vThTw@mail.gmail.com>
+Subject: Re: [PATCH] kconfig: docs: mention gconfig at top of kconfig.rst
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
+        Jesse Taube <mr.bossman075@gmail.com>,
+        linux-kbuild@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>, linux-doc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16:27-20230714, Guenter Roeck wrote:
-> On 7/14/23 15:52, Nishanth Menon wrote:
-> > On 17:51-20230713, huaqian.li@siemens.com wrote:
-> > > From: Li Hua Qian <huaqian.li@siemens.com>
-> > 
-> > I guess I should be explicit about this: Lets keep this dts patch as
-> > "DONOTMERGE" in subject line for driver subsystem maintainer (I don't
-> > want a repeat of cpufreq maintainers picking up dts and associated
-> > warnings that are now pending fixes), resubmit at next rc1 and I can
-> > queue up the dts once the maintainers pick up the driver and bindings.
-> > 
-> 
-> FWIW, I never pick up patches outside drivers/hwmon without explicit Ack
-> from responsible maintainers (and most definitely not dts patches unless
-> a maintainer responsible for the file(s) specifically asks me to do it
-> (which I think never happened).
+On Sat, Jul 15, 2023 at 4:16=E2=80=AFAM Jonathan Corbet <corbet@lwn.net> wr=
+ote:
+>
+> Randy Dunlap <rdunlap@infradead.org> writes:
+>
+> > Jesse mentioned that gconfig is missing from the top of the
+> > kconfig.rst file, so add it for completeness.
+> >
+> > Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> > Link: lore.kernel.org/r/CAJFTR8QgYykuEq_AkODEWPUYXncKgRBHOncxT=3DypZTQO=
+Dkyarw@mail.gmail.com
+> > Cc: Jesse Taube <mr.bossman075@gmail.com>
+> > Cc: Masahiro Yamada <masahiroy@kernel.org>
+> > Cc: linux-kbuild@vger.kernel.org
+> > Cc: Nathan Chancellor <nathan@kernel.org>
+> > Cc: Nick Desaulniers <ndesaulniers@google.com>
+> > Cc: Nicolas Schier <nicolas@fjasle.eu>
+> > Cc: Jonathan Corbet <corbet@lwn.net>
+> > Cc: linux-doc@vger.kernel.org
+> > ---
+> >  Documentation/kbuild/kconfig.rst |    2 ++
+> >  1 file changed, 2 insertions(+)
+>
+> Applied, thanks.
+>
+> jon
 
-Oops Guenter, didn't mean to indicate your tree :( -> just wanted
-to ensure that developers are clearly aware of what happens with
-cross posting series involving multiple maintainers and level set
-their expectations. Saves a bunch of private pings later on :)
 
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+Unless it is too late,
+
+Acked: Masahiro Yamada <masahiroy@kernel.org>
+
+
+--=20
+Best Regards
+Masahiro Yamada
