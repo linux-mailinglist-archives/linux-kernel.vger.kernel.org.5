@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 110F5754937
+	by mail.lfdr.de (Postfix) with ESMTP id 588F5754938
 	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 16:14:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230179AbjGOON6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 10:13:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41458 "EHLO
+        id S230206AbjGOON7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 10:13:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229967AbjGOONv (ORCPT
+        with ESMTP id S230077AbjGOONw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 10:13:51 -0400
+        Sat, 15 Jul 2023 10:13:52 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 559E81BD4;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A4121BFA;
         Sat, 15 Jul 2023 07:13:50 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E8DFF60BB8;
-        Sat, 15 Jul 2023 14:13:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59555C433C7;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1F17160BBB;
+        Sat, 15 Jul 2023 14:13:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 852F9C433CB;
         Sat, 15 Jul 2023 14:13:49 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.96)
         (envelope-from <rostedt@goodmis.org>)
-        id 1qKg1s-00103S-12;
+        id 1qKg1s-001040-1h;
         Sat, 15 Jul 2023 10:13:48 -0400
-Message-ID: <20230715141348.135792275@goodmis.org>
+Message-ID: <20230715141348.341887497@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Sat, 15 Jul 2023 10:12:14 -0400
+Date:   Sat, 15 Jul 2023 10:12:15 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
 Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH v2 1/2] tracing: Remove unnecessary copying of tr->current_trace
+Subject: [PATCH v2 2/2] tracing: Add free_trace_iter_content() helper function
 References: <20230715141213.970003974@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -51,78 +51,80 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-The iterator allocated a descriptor to copy the current_trace. This was done
-with the assumption that the function pointers might change. But this was a
-false assuption, as it does not change. There's no reason to make a copy of the
-current_trace and just use the pointer it points to. This removes needing to
-manage freeing the descriptor. Worse yet, there's locations that the iterator
-is used but does make a copy and just uses the pointer. This could cause the
-actual pointer to the trace descriptor to be freed and not the allocated copy.
+As the trace iterator is created and used by various interfaces, the clean
+up of it needs to be consistent. Create a free_trace_iter_content() helper
+function that frees the content of the iterator and use that to clean it
+up in all places that it is used.
 
-This is more of a clean up than a fix.
-
-Fixes: d7350c3f45694 ("tracing/core: make the read callbacks reentrants")
-Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- kernel/trace/trace.c | 22 +++-------------------
- 1 file changed, 3 insertions(+), 19 deletions(-)
+ kernel/trace/trace.c | 33 ++++++++++++++++++++++-----------
+ 1 file changed, 22 insertions(+), 11 deletions(-)
 
 diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index be847d45d81c..1c370ffbe062 100644
+index 1c370ffbe062..8775930aa545 100644
 --- a/kernel/trace/trace.c
 +++ b/kernel/trace/trace.c
-@@ -4205,15 +4205,9 @@ static void *s_start(struct seq_file *m, loff_t *pos)
- 	loff_t l = 0;
- 	int cpu;
+@@ -4815,6 +4815,25 @@ static const struct seq_operations tracer_seq_ops = {
+ 	.show		= s_show,
+ };
  
--	/*
--	 * copy the tracer to avoid using a global lock all around.
--	 * iter->trace is a copy of current_trace, the pointer to the
--	 * name may be used instead of a strcmp(), as iter->trace->name
--	 * will point to the same string as current_trace->name.
--	 */
- 	mutex_lock(&trace_types_lock);
--	if (unlikely(tr->current_trace && iter->trace->name != tr->current_trace->name))
--		*iter->trace = *tr->current_trace;
-+	if (unlikely(tr->current_trace != iter->trace))
-+		iter->trace = tr->current_trace;
- 	mutex_unlock(&trace_types_lock);
- 
- #ifdef CONFIG_TRACER_MAX_TRACE
-@@ -4862,16 +4856,8 @@ __tracing_open(struct inode *inode, struct file *file, bool snapshot)
- 	iter->fmt = NULL;
- 	iter->fmt_size = 0;
- 
--	/*
--	 * We make a copy of the current tracer to avoid concurrent
--	 * changes on it while we are reading.
--	 */
- 	mutex_lock(&trace_types_lock);
--	iter->trace = kzalloc(sizeof(*iter->trace), GFP_KERNEL);
--	if (!iter->trace)
--		goto fail;
--
--	*iter->trace = *tr->current_trace;
-+	iter->trace = tr->current_trace;
- 
- 	if (!zalloc_cpumask_var(&iter->started, GFP_KERNEL))
- 		goto fail;
-@@ -4936,7 +4922,6 @@ __tracing_open(struct inode *inode, struct file *file, bool snapshot)
++/*
++ * Note, as iter itself can be allocated and freed in different
++ * ways, this function is only used to free its content, and not
++ * the iterator itself. The only requirement to all the allocations
++ * is that it must zero all fields (kzalloc), as freeing works with
++ * ethier allocated content or NULL.
++ */
++static void free_trace_iter_content(struct trace_iterator *iter)
++{
++	/* The fmt is either NULL, allocated or points to static_fmt_buf */
++	if (iter->fmt != static_fmt_buf)
++		kfree(iter->fmt);
++
++	kfree(iter->temp);
++	kfree(iter->buffer_iter);
++	mutex_destroy(&iter->mutex);
++	free_cpumask_var(iter->started);
++}
++
+ static struct trace_iterator *
+ __tracing_open(struct inode *inode, struct file *file, bool snapshot)
+ {
+@@ -4922,8 +4941,7 @@ __tracing_open(struct inode *inode, struct file *file, bool snapshot)
  
   fail:
  	mutex_unlock(&trace_types_lock);
--	kfree(iter->trace);
- 	kfree(iter->temp);
- 	kfree(iter->buffer_iter);
+-	kfree(iter->temp);
+-	kfree(iter->buffer_iter);
++	free_trace_iter_content(iter);
  release:
-@@ -5021,7 +5006,6 @@ static int tracing_release(struct inode *inode, struct file *file)
- 	free_cpumask_var(iter->started);
- 	kfree(iter->fmt);
- 	kfree(iter->temp);
--	kfree(iter->trace);
- 	kfree(iter->buffer_iter);
+ 	seq_release_private(inode, file);
+ 	return ERR_PTR(-ENOMEM);
+@@ -5002,11 +5020,7 @@ static int tracing_release(struct inode *inode, struct file *file)
+ 
+ 	mutex_unlock(&trace_types_lock);
+ 
+-	mutex_destroy(&iter->mutex);
+-	free_cpumask_var(iter->started);
+-	kfree(iter->fmt);
+-	kfree(iter->temp);
+-	kfree(iter->buffer_iter);
++	free_trace_iter_content(iter);
  	seq_release_private(inode, file);
  
+ 	return 0;
+@@ -6763,10 +6777,7 @@ static int tracing_release_pipe(struct inode *inode, struct file *file)
+ 
+ 	mutex_unlock(&trace_types_lock);
+ 
+-	free_cpumask_var(iter->started);
+-	kfree(iter->fmt);
+-	kfree(iter->temp);
+-	mutex_destroy(&iter->mutex);
++	free_trace_iter_content(iter);
+ 	kfree(iter);
+ 
+ 	trace_array_put(tr);
 -- 
 2.40.1
