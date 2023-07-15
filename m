@@ -2,179 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7257F754A4A
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 18:59:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 153D7754A4D
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 18:59:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230201AbjGOQ7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 12:59:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55762 "EHLO
+        id S230198AbjGOQ7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 12:59:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbjGOQ7A (ORCPT
+        with ESMTP id S229918AbjGOQ7D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 12:59:00 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DD62211F;
-        Sat, 15 Jul 2023 09:58:59 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-676f16e0bc4so2035122b3a.0;
-        Sat, 15 Jul 2023 09:58:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689440338; x=1692032338;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pU7ac+9pDZ4Mqla5h1KE9SHucYdisyawSiO9AoaaMOY=;
-        b=YPyf3URfcAVoWfNhouyN06BfQSeWKGhVshmAFjprQgqP0aVjYzlHsKAuWbQ6M408er
-         ozqNNU4EBQ0pU+u1mwGpkirEbHIuMaecgkwmwkaZb+va43pCHQZ9l5KsVl7G0stqurd8
-         604OsGM1zO9mZ/YD7aHP4wipGR6db0OsRlg4T3FAVqqdHESwa/Nn/fqglQilg7hniTOj
-         lXB8TAGkJ4P3Os7+aVLgI9DFQESLd9TklIjRXaEZCmjpY764FYbb/JmE52C1igdJKFf+
-         4V48OKsjkVRpcI13S789vjHwz88m3QkINZm+5rIWt3OgbZDwiEAJdq15lCTnA9phFav3
-         WEmA==
+        Sat, 15 Jul 2023 12:59:03 -0400
+Received: from mail-oa1-f78.google.com (mail-oa1-f78.google.com [209.85.160.78])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ED1226B2
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 09:59:01 -0700 (PDT)
+Received: by mail-oa1-f78.google.com with SMTP id 586e51a60fabf-1b743cee7faso4570613fac.0
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 09:59:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689440338; x=1692032338;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pU7ac+9pDZ4Mqla5h1KE9SHucYdisyawSiO9AoaaMOY=;
-        b=hTmeFJRzcEtKLg/+GbHePq58YtiwNRwcpRf4gV1TdEomN+TQ3ZeJnThmYGiBghGDGP
-         Tw1up0UuEHPHxVVIKs+RpYxIqdL1sL+pgTKmSLJp4uzejMT3ki6bYBFJHAv8zdMKSXqB
-         77ISc8ezSrw86FdXR7yM5dFC5MvZcXC7Ap/Ef/IQ1DeVmrLvdA0FXKLfdfFqT3SckDti
-         JH47jFOVquCZFDPX4z2xBg3zBvGxY7lbt7q8d2lvLHl/qsPxftS/D5e50e/PJlNpTYMr
-         2XPcv0Rb0BCM3eskZ6RkYHZoZFOoI4dWDbmenNiTaJHd1ciVmu0FG3ZMpshCOqtqpn/U
-         IuNg==
-X-Gm-Message-State: ABy/qLYkc2hh8JbnR5Q7nYwh4NOAQfzKfc/KTnVPFI8mLShDbPzWgiFn
-        BcBrfUe+ZfTgC7pYTQsd4oo=
-X-Google-Smtp-Source: APBJJlFhMaVLXopI1t7xBtWfMwS6HNPY/DVNEZC5AjOCySjMncZRNjzaYJJTicjtzpQh5n7vXXhB2g==
-X-Received: by 2002:a05:6a00:23c2:b0:680:fa5f:4ed6 with SMTP id g2-20020a056a0023c200b00680fa5f4ed6mr8781186pfc.27.1689440338466;
-        Sat, 15 Jul 2023 09:58:58 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id m17-20020a637111000000b0051b8172fa68sm9521718pgc.38.2023.07.15.09.58.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 Jul 2023 09:58:58 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sat, 15 Jul 2023 09:58:57 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Naresh Solanki <naresh.solanki@9elements.com>
-Cc:     devicetree@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
-        Iwona Winiarska <iwona.winiarska@intel.com>,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        Patrick Rudolph <patrick.rudolph@9elements.com>
-Subject: Re: [PATCH] hwmon: (dimmtemp) Support more than 32 DIMMs
-Message-ID: <16080951-743c-4f3c-bec2-153ff38d922f@roeck-us.net>
-References: <20230711152144.755177-1-Naresh.Solanki@9elements.com>
+        d=1e100.net; s=20221208; t=1689440340; x=1692032340;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VVggWaxW/y//zbxzMj5Up/8PG70H1D3JvD8YAt+BrH8=;
+        b=S4PXDKALAqdWdClJC97+3px0rFoC/ILUPiOPtEf0cX8Mvp9CHI1HuiXDJwuiRqPPRz
+         ayhQDqM2MNCGq8ieaLf60hulyrSr9f+Z35wExbayzOZZkQSrQN/Ar5+FCXbVcmRTrzVX
+         J4WgSNrVGUtZ0IogSdtAFD07a8l06NDpKPuGr2/NJuDcuDSC2IQYmOQ1GU762/OJrh4w
+         j/zUOpCnGFruz+mLhC123+cpLvZ+94Q0R0EZHilxmcF7Jg4pU77Z8Aw7F9CV5z5dOAlu
+         PUM0uE+iMqx4L8HD0S0i3jAhX1ueZlQI1wL9jGLBlo/M74QT4nJSOUDtg7govVuDv2Qf
+         a3kQ==
+X-Gm-Message-State: ABy/qLaq0W6aMhj1vbQg1kbzVmumoa8lf2F0IYmdK3nIYrz/Hk9flJdJ
+        P68dzlMh8embBtb+dUo9EmdrSk7OAZkw2zDi6kPffQnTGH/K
+X-Google-Smtp-Source: APBJJlHiIE+UxfTCFUslPbf6t9y+2TdEnS71GrV0V7tk323+8NpCl1UrA6V7rN5jD9rPYQDzSuqQxp3UUDohHVfgDch0q2r+qg3N
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230711152144.755177-1-Naresh.Solanki@9elements.com>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6870:5b35:b0:1b0:3f7f:673e with SMTP id
+ ds53-20020a0568705b3500b001b03f7f673emr6699714oab.6.1689440340161; Sat, 15
+ Jul 2023 09:59:00 -0700 (PDT)
+Date:   Sat, 15 Jul 2023 09:59:00 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000005839700600897be6@google.com>
+Subject: [syzbot] [wireless?] WARNING in sta_info_insert_rcu (3)
+From:   syzbot <syzbot+2676771ed06a6df166ad@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, ebiederm@xmission.com, edumazet@google.com,
+        hbh25y@gmail.com, johannes@sipsolutions.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, pabeni@redhat.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 11, 2023 at 05:21:43PM +0200, Naresh Solanki wrote:
-> From: Patrick Rudolph <patrick.rudolph@9elements.com>
-> 
-> This patch introduces support for handling more than 32 DIMMs by
-> utilizing bitmap operations. The changes ensure that the driver can
-> handle a higher number of DIMMs efficiently.
-> 
-> Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
+Hello,
 
-Applied to hwmon-next.
+syzbot found the following issue on:
 
-Note: I got multiple versions of this patch. In the future
-please version your patches and provide change logs.
+HEAD commit:    3f01e9fed845 Merge tag 'linux-watchdog-6.5-rc2' of git://w..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=11089df2a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=150188feee7071a7
+dashboard link: https://syzkaller.appspot.com/bug?extid=2676771ed06a6df166ad
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=122f5682a80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=158dbaeca80000
 
-Thanks,
-Guenter
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/47d90db1f2d1/disk-3f01e9fe.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/266e07b43566/vmlinux-3f01e9fe.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/62efdb874ac7/bzImage-3f01e9fe.xz
 
-> ---
->  drivers/hwmon/peci/dimmtemp.c | 26 +++++++++++++++-----------
->  1 file changed, 15 insertions(+), 11 deletions(-)
-> 
-> 
-> base-commit: 4dbbaf8fbdbd13adc80731b2452257857e4c2d8b
-> 
-> diff --git a/drivers/hwmon/peci/dimmtemp.c b/drivers/hwmon/peci/dimmtemp.c
-> index ed968401f93c..ce89da3937a0 100644
-> --- a/drivers/hwmon/peci/dimmtemp.c
-> +++ b/drivers/hwmon/peci/dimmtemp.c
-> @@ -219,19 +219,21 @@ static int check_populated_dimms(struct peci_dimmtemp *priv)
->  {
->  	int chan_rank_max = priv->gen_info->chan_rank_max;
->  	int dimm_idx_max = priv->gen_info->dimm_idx_max;
-> -	u32 chan_rank_empty = 0;
-> -	u32 dimm_mask = 0;
-> -	int chan_rank, dimm_idx, ret;
-> +	DECLARE_BITMAP(dimm_mask, DIMM_NUMS_MAX);
-> +	DECLARE_BITMAP(chan_rank_empty, CHAN_RANK_MAX);
-> +
-> +	int chan_rank, dimm_idx, ret, i;
->  	u32 pcs;
->  
-> -	BUILD_BUG_ON(BITS_PER_TYPE(chan_rank_empty) < CHAN_RANK_MAX);
-> -	BUILD_BUG_ON(BITS_PER_TYPE(dimm_mask) < DIMM_NUMS_MAX);
->  	if (chan_rank_max * dimm_idx_max > DIMM_NUMS_MAX) {
->  		WARN_ONCE(1, "Unsupported number of DIMMs - chan_rank_max: %d, dimm_idx_max: %d",
->  			  chan_rank_max, dimm_idx_max);
->  		return -EINVAL;
->  	}
->  
-> +	bitmap_zero(dimm_mask, DIMM_NUMS_MAX);
-> +	bitmap_zero(chan_rank_empty, CHAN_RANK_MAX);
-> +
->  	for (chan_rank = 0; chan_rank < chan_rank_max; chan_rank++) {
->  		ret = peci_pcs_read(priv->peci_dev, PECI_PCS_DDR_DIMM_TEMP, chan_rank, &pcs);
->  		if (ret) {
-> @@ -242,7 +244,7 @@ static int check_populated_dimms(struct peci_dimmtemp *priv)
->  			 * detection to be performed at a later point in time.
->  			 */
->  			if (ret == -EINVAL) {
-> -				chan_rank_empty |= BIT(chan_rank);
-> +				bitmap_set(chan_rank_empty, chan_rank, 1);
->  				continue;
->  			}
->  
-> @@ -251,7 +253,7 @@ static int check_populated_dimms(struct peci_dimmtemp *priv)
->  
->  		for (dimm_idx = 0; dimm_idx < dimm_idx_max; dimm_idx++)
->  			if (__dimm_temp(pcs, dimm_idx))
-> -				dimm_mask |= BIT(chan_rank * dimm_idx_max + dimm_idx);
-> +				bitmap_set(dimm_mask, chan_rank * dimm_idx_max + dimm_idx, 1);
->  	}
->  
->  	/*
-> @@ -260,7 +262,7 @@ static int check_populated_dimms(struct peci_dimmtemp *priv)
->  	 * host platform boot. Retrying a couple of times lets us make sure
->  	 * that the state is persistent.
->  	 */
-> -	if (chan_rank_empty == GENMASK(chan_rank_max - 1, 0)) {
-> +	if (bitmap_full(chan_rank_empty, chan_rank_max)) {
->  		if (priv->no_dimm_retry_count < NO_DIMM_RETRY_COUNT_MAX) {
->  			priv->no_dimm_retry_count++;
->  
-> @@ -274,14 +276,16 @@ static int check_populated_dimms(struct peci_dimmtemp *priv)
->  	 * It's possible that memory training is not done yet. In this case we
->  	 * defer the detection to be performed at a later point in time.
->  	 */
-> -	if (!dimm_mask) {
-> +	if (bitmap_empty(dimm_mask, DIMM_NUMS_MAX)) {
->  		priv->no_dimm_retry_count = 0;
->  		return -EAGAIN;
->  	}
->  
-> -	dev_dbg(priv->dev, "Scanned populated DIMMs: %#x\n", dimm_mask);
-> +	for_each_set_bit(i, dimm_mask, DIMM_NUMS_MAX) {
-> +		dev_dbg(priv->dev, "Found DIMM%#x\n", i);
-> +	}
->  
-> -	bitmap_from_arr32(priv->dimm_mask, &dimm_mask, DIMM_NUMS_MAX);
-> +	bitmap_copy(priv->dimm_mask, dimm_mask, DIMM_NUMS_MAX);
->  
->  	return 0;
->  }
+The issue was bisected to:
+
+commit c579d60f0d0cd87552f64fdebe68b5d941d20309
+Author: Hangyu Hua <hbh25y@gmail.com>
+Date:   Fri Jul 15 06:23:01 2022 +0000
+
+    ipc: mqueue: fix possible memory leak in init_mqueue_fs()
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14a40b58a80000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=16a40b58a80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=12a40b58a80000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+2676771ed06a6df166ad@syzkaller.appspotmail.com
+Fixes: c579d60f0d0c ("ipc: mqueue: fix possible memory leak in init_mqueue_fs()")
+
+wlan1: authenticate with 08:02:11:00:00:01
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 1148 at net/mac80211/sta_info.c:728 sta_info_insert_check net/mac80211/sta_info.c:728 [inline]
+WARNING: CPU: 1 PID: 1148 at net/mac80211/sta_info.c:728 sta_info_insert_rcu+0x25e/0x1af0 net/mac80211/sta_info.c:940
+Modules linked in:
+CPU: 1 PID: 1148 Comm: kworker/1:2 Not tainted 6.5.0-rc1-syzkaller-00006-g3f01e9fed845 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/03/2023
+Workqueue: events cfg80211_conn_work
+RIP: 0010:sta_info_insert_check net/mac80211/sta_info.c:728 [inline]
+RIP: 0010:sta_info_insert_rcu+0x25e/0x1af0 net/mac80211/sta_info.c:940
+Code: e8 a7 14 ef f7 44 89 e0 31 ff 83 e0 01 89 c6 88 44 24 08 e8 74 10 ef f7 0f b6 44 24 08 84 c0 0f 84 19 01 00 00 e8 82 14 ef f7 <0f> 0b c7 44 24 08 ea ff ff ff e8 73 14 ef f7 48 8b 7c 24 28 4c 89
+RSP: 0018:ffffc90005bff1f0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff888027478c80 RCX: 0000000000000000
+RDX: ffff888021f78000 RSI: ffffffff8995cd3e RDI: 0000000000000005
+RBP: 0000000000000100 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000000000000 R11: 000000000000000f R12: 0000000000110208
+R13: ffff8880768fc048 R14: ffff88807d171730 R15: ffff8880768fc000
+FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f8913442270 CR3: 000000000c775000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ sta_info_insert+0x17/0xd0 net/mac80211/sta_info.c:953
+ ieee80211_prep_connection+0x5fd/0x14a0 net/mac80211/mlme.c:7047
+ ieee80211_mgd_auth+0x891/0x1170 net/mac80211/mlme.c:7205
+ rdev_auth net/wireless/rdev-ops.h:481 [inline]
+ cfg80211_mlme_auth+0x3b3/0x8c0 net/wireless/mlme.c:284
+ cfg80211_conn_do_work+0xd3c/0xff0 net/wireless/sme.c:181
+ cfg80211_conn_work+0x27f/0x3d0 net/wireless/sme.c:273
+ process_one_work+0xa34/0x16f0 kernel/workqueue.c:2597
+ worker_thread+0x67d/0x10c0 kernel/workqueue.c:2748
+ kthread+0x344/0x440 kernel/kthread.c:389
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
