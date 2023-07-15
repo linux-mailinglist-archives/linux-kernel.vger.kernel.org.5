@@ -2,129 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 588F5754938
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 16:14:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A288754934
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 16:13:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230206AbjGOON7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 10:13:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41462 "EHLO
+        id S229895AbjGOONX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 10:13:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230077AbjGOONw (ORCPT
+        with ESMTP id S229621AbjGOONW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 10:13:52 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A4121BFA;
-        Sat, 15 Jul 2023 07:13:50 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1F17160BBB;
-        Sat, 15 Jul 2023 14:13:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 852F9C433CB;
-        Sat, 15 Jul 2023 14:13:49 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.96)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1qKg1s-001040-1h;
-        Sat, 15 Jul 2023 10:13:48 -0400
-Message-ID: <20230715141348.341887497@goodmis.org>
-User-Agent: quilt/0.66
-Date:   Sat, 15 Jul 2023 10:12:15 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH v2 2/2] tracing: Add free_trace_iter_content() helper function
-References: <20230715141213.970003974@goodmis.org>
+        Sat, 15 Jul 2023 10:13:22 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C2E91BFA
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 07:13:20 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4fb73ba3b5dso4875757e87.1
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 07:13:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689430398; x=1692022398;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5pjJI9w8CFYJrlO278g5PFbKv5pKnn17lMTGBT+3ydM=;
+        b=cJn5Gz01cO+cq0uBVhD8cZf87mpRtNHRLa84O3sHr2CyzmT62tYv1SEEstzuGV0AUx
+         AJLfnGpA8LikdPUZ94WAgSgqiBZpTlUdU5w6Uto6C401wyW2UCHEN+24KtlaYE6zPsiv
+         1BYP/BqKUTzPOsZ0YYqfWrRlXq6idmUF9iVkPHMVJZcn/ZHYuzsAMkeDQD6z/tdXyr/4
+         CIayY8suMp3JlBf4vGwSj8zHNZUHVl0jXkf5DWPV8j6JgBrbBlVA91QbUq+4cQQYV8Oq
+         hlf7g2vtSMQf3qX1/9rZyAatfHFueuOQY7VSB3NfgU7Dih/3H9hRfLbtYqCeLq6cv5h6
+         Iatw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689430398; x=1692022398;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5pjJI9w8CFYJrlO278g5PFbKv5pKnn17lMTGBT+3ydM=;
+        b=aqwjxvJQshBRFL/oe2WNcIUmglUew70wQM5nI+ocnIc4nbS67vSZJ3UnpLl/XkQ6qO
+         e4P9shDZGBKblYYoRCi+F5iN0BxwCdH2yk4X2ulDKKt++myGu33/Mk5M4cJVN0kkf42J
+         5u7PobJ2PjG4Fhkw2tx3Tm3nv4bHyqQAeuFqWvcTtffrIKGawYclq7FrA9KX+om70q6Q
+         OJa56xm+w8M/jzQvRILGxjulrDvw4d9KNpVkd8x0PtZQ+yIwYipsy2rgYdAhCmItAM1e
+         3a9Yw8Y18OiKUE/dB4SrB74FnXxPQfNZMs35ewAR+5cVvRZ4vnLVogTGq1vo6eOuJMzW
+         czLQ==
+X-Gm-Message-State: ABy/qLag945kk/6f5MfK979Wc/WaM+GrREzrN5Xw7pevRW+RCRUvDhcK
+        5rWh+rQXQljECeAXD3MA9pteIA==
+X-Google-Smtp-Source: APBJJlH0xNy2URzHQZxZqhffBIQMXcMWLWBBCQv1AQehwlwJCbmBo/SZSG2sdKsAziqgWPIw0tE9+w==
+X-Received: by 2002:a05:6512:39d2:b0:4f6:3000:94a0 with SMTP id k18-20020a05651239d200b004f6300094a0mr6428959lfu.61.1689430398238;
+        Sat, 15 Jul 2023 07:13:18 -0700 (PDT)
+Received: from [192.168.1.101] (abxi167.neoplus.adsl.tpnet.pl. [83.9.2.167])
+        by smtp.gmail.com with ESMTPSA id t19-20020ac243b3000000b004fbc0da55b4sm1905515lfl.112.2023.07.15.07.13.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 15 Jul 2023 07:13:17 -0700 (PDT)
+Message-ID: <bb80d65e-b6e5-37ac-b4eb-01166af6f39c@linaro.org>
+Date:   Sat, 15 Jul 2023 16:13:16 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 1/2] arm64: dts: qcom: qdu1000-idp: Update reserved
+ memory region
+Content-Language: en-US
+To:     Komal Bajaj <quic_kbajaj@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230706125129.20969-1-quic_kbajaj@quicinc.com>
+ <20230706125129.20969-2-quic_kbajaj@quicinc.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20230706125129.20969-2-quic_kbajaj@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On 6.07.2023 14:51, Komal Bajaj wrote:
+> Add missing reserved regions as described in QDU1000 memory map.
+> 
+> Signed-off-by: Komal Bajaj <quic_kbajaj@quicinc.com>
+> ---
+Are you sure you want to reserve 4352 MiB?
 
-As the trace iterator is created and used by various interfaces, the clean
-up of it needs to be consistent. Create a free_trace_iter_content() helper
-function that frees the content of the iterator and use that to clean it
-up in all places that it is used.
-
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- kernel/trace/trace.c | 33 ++++++++++++++++++++++-----------
- 1 file changed, 22 insertions(+), 11 deletions(-)
-
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 1c370ffbe062..8775930aa545 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -4815,6 +4815,25 @@ static const struct seq_operations tracer_seq_ops = {
- 	.show		= s_show,
- };
- 
-+/*
-+ * Note, as iter itself can be allocated and freed in different
-+ * ways, this function is only used to free its content, and not
-+ * the iterator itself. The only requirement to all the allocations
-+ * is that it must zero all fields (kzalloc), as freeing works with
-+ * ethier allocated content or NULL.
-+ */
-+static void free_trace_iter_content(struct trace_iterator *iter)
-+{
-+	/* The fmt is either NULL, allocated or points to static_fmt_buf */
-+	if (iter->fmt != static_fmt_buf)
-+		kfree(iter->fmt);
-+
-+	kfree(iter->temp);
-+	kfree(iter->buffer_iter);
-+	mutex_destroy(&iter->mutex);
-+	free_cpumask_var(iter->started);
-+}
-+
- static struct trace_iterator *
- __tracing_open(struct inode *inode, struct file *file, bool snapshot)
- {
-@@ -4922,8 +4941,7 @@ __tracing_open(struct inode *inode, struct file *file, bool snapshot)
- 
-  fail:
- 	mutex_unlock(&trace_types_lock);
--	kfree(iter->temp);
--	kfree(iter->buffer_iter);
-+	free_trace_iter_content(iter);
- release:
- 	seq_release_private(inode, file);
- 	return ERR_PTR(-ENOMEM);
-@@ -5002,11 +5020,7 @@ static int tracing_release(struct inode *inode, struct file *file)
- 
- 	mutex_unlock(&trace_types_lock);
- 
--	mutex_destroy(&iter->mutex);
--	free_cpumask_var(iter->started);
--	kfree(iter->fmt);
--	kfree(iter->temp);
--	kfree(iter->buffer_iter);
-+	free_trace_iter_content(iter);
- 	seq_release_private(inode, file);
- 
- 	return 0;
-@@ -6763,10 +6777,7 @@ static int tracing_release_pipe(struct inode *inode, struct file *file)
- 
- 	mutex_unlock(&trace_types_lock);
- 
--	free_cpumask_var(iter->started);
--	kfree(iter->fmt);
--	kfree(iter->temp);
--	mutex_destroy(&iter->mutex);
-+	free_trace_iter_content(iter);
- 	kfree(iter);
- 
- 	trace_array_put(tr);
--- 
-2.40.1
+Konrad
+>  arch/arm64/boot/dts/qcom/qdu1000-idp.dts | 22 ++++++++++++++++++++++
+>  1 file changed, 22 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/qdu1000-idp.dts b/arch/arm64/boot/dts/qcom/qdu1000-idp.dts
+> index 1d22f87fd238..8446eb438a34 100644
+> --- a/arch/arm64/boot/dts/qcom/qdu1000-idp.dts
+> +++ b/arch/arm64/boot/dts/qcom/qdu1000-idp.dts
+> @@ -448,6 +448,28 @@ &qupv3_id_0 {
+>  	status = "okay";
+>  };
+> 
+> +&reserved_memory {
+> +	ecc_meta_data_mem: ecc-meta-data@e0000000 {
+> +		reg = <0x0 0xe0000000 0x0 0x20000000>;
+> +		no-map;
+> +	};
+> +
+> +	harq_buffer_mem: harq-buffer@800000000 {
+> +		reg = <0x8 0x0 0x0 0x80000000>;
+> +		no-map;
+> +	};
+> +
+> +	tenx_sp_buffer_mem: tenx-sp-buffer@880000000 {
+> +		reg = <0x8 0x80000000 0x0 0x50000000>;
+> +		no-map;
+> +	};
+> +
+> +	fapi_buffer_mem: fapi-buffer@8d0000000 {
+> +		reg = <0x8 0xd0000000 0x0 0x20000000>;
+> +		no-map;
+> +	};
+> +};
+> +
+>  &sdhc {
+>  	pinctrl-0 = <&sdc_on_state>;
+>  	pinctrl-1 = <&sdc_off_state>;
+> --
+> 2.40.1
+> 
