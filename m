@@ -2,72 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6296D7546BE
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 06:07:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC13F7546D8
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 06:24:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230330AbjGOEH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 00:07:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43118 "EHLO
+        id S230453AbjGOEYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 00:24:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbjGOEH2 (ORCPT
+        with ESMTP id S230390AbjGOEYE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 00:07:28 -0400
-Received: from out-55.mta1.migadu.com (out-55.mta1.migadu.com [95.215.58.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D42835A9
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 21:07:24 -0700 (PDT)
-Date:   Sat, 15 Jul 2023 13:07:13 +0900
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1689394042;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=U2Q7rt32186jYQFvLUEX++gzKm12n7FO2FEO9lwjWmk=;
-        b=DT9marXLx4M1KVinOFTWRRs5dX/E24SD5s4hwxm+uHKeuIyMfuNOmRK5HwMF1kHveBDm/N
-        ibJyvwV8VZD2jd9WyRIXHobeWUJ4P1YNav1dsyFMLcpveLmDEKUIrzIM7p2WKVdE7bYj1r
-        YDPx0NaI6zxR+0xRytxg5LwS/Z43dEU=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Naoya Horiguchi <naoya.horiguchi@linux.dev>
-To:     Jiaqi Yan <jiaqiyan@google.com>
-Cc:     naoya.horiguchi@nec.com, linmiaohe@huawei.com,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, willy@infradead.org
-Subject: Re: [PATCH v1] mm/hwpoison: rename hwp_walk* to hwpoison_walk*
-Message-ID: <20230715040713.GA2352837@u2004>
-References: <20230713235553.4121855-1-jiaqiyan@google.com>
+        Sat, 15 Jul 2023 00:24:04 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F5033A96
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 21:24:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description;
+        bh=DYlo/gupkfT8+nCJZO3u+QA1Fw3ZJMI4hDJgV++oyYA=; b=uPbNQDRuLMTYTNh4IPN0k4nXyf
+        cztJQO56loYyT6Fmevl7HukuGMK7EDfp1TBNB1n00xT4UqNMmsf1J2qrIWIY27H9Kn1tc+l/oGwXG
+        PpJiNknsWfWetPjqRYVdfBiSTH7aAXV6k5lPpUeXoSR4GbMGu6Uu/V7GcykkoMhWm39ygJygemRtp
+        i07UZ32O4VQ6Pn2L+CtHKF7iGN+oXfkwXd5e/do2oeGCRnYiVBXbT/+GkBb8bq8s1nLn9FEqJ2R1U
+        P8Vy5AooOOLqLyYEMiZ2XWIiE9AvU9tsjtZy7F22UJ8Zk3Be9dWagJX/YFKONxGBrwd5T/ZuwcCK4
+        W3RBPAcQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qKWos-001p3m-5e; Sat, 15 Jul 2023 04:23:46 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        vitaly.wool@konsulko.com, cerasuolodomenico@gmail.com,
+        nphamcs@gmail.com, hch@infradead.org, yosryahmed@google.com,
+        akpm@linux-foundation.org
+Subject: [PATCH 0/5] Followup folio conversions for zswap
+Date:   Sat, 15 Jul 2023 05:23:38 +0100
+Message-Id: <20230715042343.434588-1-willy@infradead.org>
+X-Mailer: git-send-email 2.37.1
+In-Reply-To: <20230714194610.828210-1-hannes@cmpxchg.org>
+References: <20230714194610.828210-1-hannes@cmpxchg.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230713235553.4121855-1-jiaqiyan@google.com>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 11:55:53PM +0000, Jiaqi Yan wrote:
-> In the discussion of "Improve hugetlbfs read on HWPOISON hugepages",
-> Matthew Wilcox suggests hwp is a bad abbreviation of hwpoison, as hwp
-> is already used as "an acronym by acpi, intel_pstate, some clock
-> drivers, an ethernet driver, and a scsi driver"[1].
-> 
-> So rename hwp_walk and hwp_walk_ops to hwpoison_walk and
-> hwpoison_walk_ops respectively.
-> 
-> raw_hwp_(page|list), *_raw_hwp, and raw_hwp_unreliable flag are other
-> major appearances of "hwp". However, given the "raw" hint in the name,
-> it is easy to differentiate them from other "hwp" acronyms. Since
-> renaming them is not as straightforward as renaming hwp_walk*, they
-> are not covered by this commit.
-> 
-> [1] https://lore.kernel.org/lkml/20230707201904.953262-5-jiaqiyan@google.com/T/#me6fecb8ce1ad4d5769199c9e162a44bc88f7bdec
-> 
-> Signed-off-by: Jiaqi Yan <jiaqiyan@google.com>
+With frontswap killed, it's worth converting the zswap_load() and
+zswap_store() functions to take a folio instead of a page pointer.
+They aren't converted to support large folios, but there are a lot of
+unnecessary calls to compound_head() that are removed by these patches.
 
-Looks good to me.  Thank you.
+Matthew Wilcox (Oracle) (5):
+  fix-frontswap
+  zswap: Make zswap_store() take a folio
+  memcg: Convert get_obj_cgroup_from_page to get_obj_cgroup_from_folio
+  swap: Remove some calls to compound_head() in swap_readpage()
+  zswap: Make zswap_load() take a folio
 
-Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+ include/linux/memcontrol.h |  4 ++--
+ include/linux/zswap.h      |  8 ++++----
+ mm/memcontrol.c            |  8 ++++----
+ mm/page_io.c               | 17 +++++++++--------
+ mm/zswap.c                 | 27 +++++++++++++++------------
+ 5 files changed, 34 insertions(+), 30 deletions(-)
+
+-- 
+2.39.2
+
