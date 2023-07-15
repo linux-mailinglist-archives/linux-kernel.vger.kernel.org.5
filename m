@@ -2,59 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC57275469A
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 05:46:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D16A75469D
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 05:48:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230192AbjGODqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 23:46:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37202 "EHLO
+        id S230158AbjGODsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 23:48:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230176AbjGODqV (ORCPT
+        with ESMTP id S229536AbjGODsQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 23:46:21 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D4642113
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 20:46:20 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C510461DEF
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 03:46:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 2A740C433C8;
-        Sat, 15 Jul 2023 03:46:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689392779;
-        bh=ndV0xs9b5Yz27xvcW8OA4T5bCHsVUJAg7LMx3qXj/tQ=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=XiLi/dLKLUxemHO8ZHGlj1pgVo4ElruiG4iwxrTU3GQ8wuEdaH4zw+BNxWYGykJMp
-         mzv0pnwI7AZwTjtxsOreTIxnpfwku0YRojEcIPOJYOOMu6qtH7+eDDJn0z6TbE3cXm
-         IQTBiT1Zfza/aXyuozrCN/0eIeMfpI+viL5v/tUMHd7oeKUR4xJlQ1lOzmWtoz+wXt
-         eQLRkUhLusPqzIMEcZlsPyPV/the2dfZEOeUUEp3mokn5jMpCEVLOSthm/qKjPBejS
-         6euGc+jcDP6KgibLq1Sj+HNoOuq7ko25Tl3mhHmFaw8GC5Uzy2QwcFiewcXmdqUZMu
-         2yKL89FZ8oNMw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 15E62C4167B;
-        Sat, 15 Jul 2023 03:46:19 +0000 (UTC)
-Subject: Re: [GIT PULL] x86/urgent for v6.5-rc2
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20230714203722.GA3273303@hirez.programming.kicks-ass.net>
-References: <20230714203722.GA3273303@hirez.programming.kicks-ass.net>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20230714203722.GA3273303@hirez.programming.kicks-ass.net>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_urgent_for_6.5_rc2
-X-PR-Tracked-Commit-Id: 535d0ae39185a266536a1e97ff9a8956d7fbb9df
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: b6e6cc1f78c772e952495b7416c9ac9029f9390c
-Message-Id: <168939277908.22484.16914685212363607611.pr-tracker-bot@kernel.org>
-Date:   Sat, 15 Jul 2023 03:46:19 +0000
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        Fri, 14 Jul 2023 23:48:16 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0589530FB;
+        Fri, 14 Jul 2023 20:48:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=8aCWMj77QZ8ONW03YRtoGFYKcph9Q/SLzHgp+bEd3EY=; b=J3CzbnJ5LuguUHhMs7M3kxNxmE
+        qHha+Wga7hF6k//BYHTBnvdKTTFV+SXANERUEA31UAcWIUyVzjXI6u4zDR9WIIKpkwqLHYKC9ZF0M
+        2QCFNv7qVrp/1UrZ8XtVO7ntplNj5r7kWz3nnXWoqNbRG5dwcuizS2PavkdNDwaHLjuOVvX2vfCuT
+        tFh45e26UUVv4JD5vkaXtAZp0ko6xOVnydjIj8EVSlqHdQRUfgPyeabbtbZ+qzIsSV0Wi+bEmS/mq
+        ICCSjnDVR4O4Z+Bui39d9NEk9k5AjezfcicrVFhDNp4fJKiMY/ELbjxQJNoTr0f073XLt16FCHDFB
+        r/+8ejOQ==;
+Received: from [2601:1c2:980:9ec0::2764] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qKWGT-007pkC-1Z;
+        Sat, 15 Jul 2023 03:48:13 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Subject: [PATCH v2] docs: panic: cleanups for panic params
+Date:   Fri, 14 Jul 2023 20:48:11 -0700
+Message-ID: <20230715034811.9665-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.41.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,15 +49,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 14 Jul 2023 22:37:22 +0200:
+Move 'panic_print' to its correct place in alphabetical order.
+Add parameter format for 'pause_on_oops'.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_urgent_for_6.5_rc2
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: linux-doc@vger.kernel.org
+---
+v2: rebase/resend since v1 did not apply cleanly;
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/b6e6cc1f78c772e952495b7416c9ac9029f9390c
+ Documentation/admin-guide/kernel-parameters.txt |   30 +++++++-------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+diff -- a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -4037,20 +4037,6 @@
+ 			timeout < 0: reboot immediately
+ 			Format: <timeout>
+ 
+-	panic_print=	Bitmask for printing system info when panic happens.
+-			User can chose combination of the following bits:
+-			bit 0: print all tasks info
+-			bit 1: print system memory info
+-			bit 2: print timer info
+-			bit 3: print locks info if CONFIG_LOCKDEP is on
+-			bit 4: print ftrace buffer
+-			bit 5: print all printk messages in buffer
+-			bit 6: print all CPUs backtrace (if available in the arch)
+-			*Be aware* that this option may print a _lot_ of lines,
+-			so there are risks of losing older messages in the log.
+-			Use this option carefully, maybe worth to setup a
+-			bigger log buffer with "log_buf_len" along with this.
+-
+ 	panic_on_taint=	Bitmask for conditionally calling panic() in add_taint()
+ 			Format: <hex>[,nousertaint]
+ 			Hexadecimal bitmask representing the set of TAINT flags
+@@ -4067,6 +4053,20 @@
+ 	panic_on_warn=1	panic() instead of WARN().  Useful to cause kdump
+ 			on a WARN().
+ 
++	panic_print=	Bitmask for printing system info when panic happens.
++			User can chose combination of the following bits:
++			bit 0: print all tasks info
++			bit 1: print system memory info
++			bit 2: print timer info
++			bit 3: print locks info if CONFIG_LOCKDEP is on
++			bit 4: print ftrace buffer
++			bit 5: print all printk messages in buffer
++			bit 6: print all CPUs backtrace (if available in the arch)
++			*Be aware* that this option may print a _lot_ of lines,
++			so there are risks of losing older messages in the log.
++			Use this option carefully, maybe worth to setup a
++			bigger log buffer with "log_buf_len" along with this.
++
+ 	parkbd.port=	[HW] Parallel port number the keyboard adapter is
+ 			connected to, default is 0.
+ 			Format: <parport#>
+@@ -4186,7 +4186,7 @@
+ 			mode 0, bit 1 is for mode 1, and so on.  Mode 0 only
+ 			allowed by default.
+ 
+-	pause_on_oops=
++	pause_on_oops=<int>
+ 			Halt all CPUs after the first oops has been printed for
+ 			the specified number of seconds.  This is to be used if
+ 			your oopses keep scrolling off the screen.
