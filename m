@@ -2,62 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AAAB754678
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 05:14:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5F2975467C
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 05:17:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229577AbjGODOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 23:14:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58004 "EHLO
+        id S229675AbjGODR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 23:17:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjGODOa (ORCPT
+        with ESMTP id S229483AbjGODRX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 23:14:30 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9BD635BD
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 20:14:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=rzzcvrMOZmLVJ3qqStCtg2gxmWnvYjv7H4zS+C4FIDY=; b=Sb7I+uOzGR99xPAR8LAErP730X
-        Z8e1zIay5znOBrHBHXZom0u0uBbafOb9DATBYqK5lzNYQyBI0eeY18elonLDyLCKM+57aiZl71qXN
-        i46XEAHq+li/aWDJbuECA8XTMmMC+UeTadV159WB7UpoFW9hOQI9F0bKIOGpdI4IrlxfpE1hkefZZ
-        jwVliNT4jvjFTP5sgssUcpIkvhd6EuJU4bit65WevOiHb6VxuhDDuf16pcy7dc19XL2Kim2oeMPNI
-        b5Zw6aJFrsOJDM2ahcn5kHp+HvAIWjv8NNapWy9T/KSQ7y6858TqKueNaw5cxbI7ssrMi6F1InTU0
-        Z9wF700g==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qKVjh-001lqt-23; Sat, 15 Jul 2023 03:14:21 +0000
-Date:   Sat, 15 Jul 2023 04:14:21 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Tom Rix <trix@redhat.com>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] shmem: set variable shmem_mark_dquot_dirty and
- shmem_dquot_write_info storage-class-specifier to static
-Message-ID: <ZLIPDVIw/6cZfKrz@casper.infradead.org>
-References: <20230714215113.3919026-1-trix@redhat.com>
+        Fri, 14 Jul 2023 23:17:23 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C074C1BEB
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 20:17:21 -0700 (PDT)
+Received: from canpemm500002.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R2tjj3GrDztR9j;
+        Sat, 15 Jul 2023 11:14:17 +0800 (CST)
+Received: from huawei.com (10.174.151.185) by canpemm500002.china.huawei.com
+ (7.192.104.244) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Sat, 15 Jul
+ 2023 11:17:19 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <akpm@linux-foundation.org>, <naoya.horiguchi@nec.com>
+CC:     <shy828301@gmail.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <linmiaohe@huawei.com>
+Subject: [PATCH 0/4] A few fixup and cleanup patches for memory-failure
+Date:   Sat, 15 Jul 2023 11:17:25 +0800
+Message-ID: <20230715031729.2420338-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230714215113.3919026-1-trix@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.151.185]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ canpemm500002.china.huawei.com (7.192.104.244)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 05:51:13PM -0400, Tom Rix wrote:
-> smatch reports
-> mm/shmem_quota.c:318:5: warning: symbol 'shmem_mark_dquot_dirty'
->   was not declared. Should it be static?
-> mm/shmem_quota.c:323:5: warning: symbol 'shmem_dquot_write_info'
->   was not declared. Should it be static?
-> 
-> These variables are only used in their defining file, so it should be static.
+Hi everyone,
+This series contains a few fixup patches to fix potential unexpected
+return value, fix wrong swap entry type for hwpoisoned swapcache page
+and so on. More details can be found in the respective changelogs.
+Thanks!
 
-These are functions, not variables, and you're the third person to send
-this patch today.
+Miaohe Lin (4):
+  mm/swapfile: fix wrong swap entry type for hwpoisoned swapcache page
+  mm: memory-failure: fix potential unexpected return value from
+    unpoison_memory()
+  mm: memory-failure: avoid false hwpoison page mapped error info
+  mm: memory-failure: add PageOffline() check
+
+ mm/memory-failure.c | 15 ++++++++++-----
+ mm/swapfile.c       |  3 ++-
+ 2 files changed, 12 insertions(+), 6 deletions(-)
+
+-- 
+2.33.0
+
