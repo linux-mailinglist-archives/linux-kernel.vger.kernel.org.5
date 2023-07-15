@@ -2,196 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A2A3754ABE
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 20:34:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22580754AC1
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 20:34:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230323AbjGOSeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 14:34:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46694 "EHLO
+        id S230329AbjGOSeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 14:34:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjGOSeM (ORCPT
+        with ESMTP id S229500AbjGOSep (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 14:34:12 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2DE22702;
-        Sat, 15 Jul 2023 11:34:10 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 2CA3321A71;
-        Sat, 15 Jul 2023 18:34:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1689446049; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RYeCd7HoR8uEw1k7ZVr0OZS9nvGsn4cIaqKR0z4Onsc=;
-        b=fQJ8Ed37zO2h2xpVGJHgeXgbFlMYWZiQyR2E1Vj6U9o3crxeMk6Dolw/GHlDs3gCiDCgEg
-        XjM6dYEHOsZpNig4WvurwGD2dKKAXItEsx1ugA2u1eeSyvSjJgOSdhbKIZ2/Z56MXGxR1q
-        r2BHnxcno8Eubp53rXNArviIQXb9i5I=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1689446049;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RYeCd7HoR8uEw1k7ZVr0OZS9nvGsn4cIaqKR0z4Onsc=;
-        b=yP408vg2SsLg1wW8YSLEtC9aqf9lJsv3y5D2L3sOOFaAgOiRrUy+nW21jIkbG7JG9RUM9X
-        Yua0AAwib+ee/1Dg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E3F5D133F7;
-        Sat, 15 Jul 2023 18:34:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id HExLNqDmsmQlfwAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Sat, 15 Jul 2023 18:34:08 +0000
-Message-ID: <317a9fd8-0ae9-daa0-012b-3908ca248b74@suse.de>
-Date:   Sat, 15 Jul 2023 20:34:08 +0200
+        Sat, 15 Jul 2023 14:34:45 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0ACE271E;
+        Sat, 15 Jul 2023 11:34:43 -0700 (PDT)
+X-QQ-mid: bizesmtp86t1689446074thn87dje
+Received: from linux-lab-host.localdomain ( [119.123.131.162])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Sun, 16 Jul 2023 02:34:33 +0800 (CST)
+X-QQ-SSF: 01200000002000D0W000B00A0000000
+X-QQ-FEAT: wPivafIDGPNnE4pgBteeGjfO4VitGccVNTEgGVrjyg0S3lkSPswFvUfEC3oYD
+        lR/yUIvjnDtW9NVv0uFM2R+RdQk8VwJyFfBHaiQxbmxNK7GvzScYpqPtEbdH8hf8UaZ6ocU
+        W9OIDjPXpG7lEOK8SZdxqOMXUWqRFMvzFxOtqBN1CcbXNmz1bj3D3b6vZ5/stbHDzDaynkm
+        mb6T48L4NKMzGDgW3F46hFNKVVZQ2NGVpPn4kM7dWVJ38RkRIEOXwQJRAiEHS3xi8FNJeYl
+        xZaLvacE8y2isu6V+Z7ViWKjJFmvUKQmedpKBzUtE89FJGx4mJn3Ssw1KhDN3XIFJoAs0vW
+        jhrKySOJPajkDqNyEwWGXqPNd8pl0FJRIHjdZooVyEoUkvrDuX38US3435PeLzETAE2q1hT
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 1900254662054636365
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     w@1wt.eu
+Cc:     arnd@arndb.de, falcon@tinylab.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, thomas@t-8ch.de
+Subject: [PATCH v4 16/18] selftests/nolibc: add testcases for startup code
+Date:   Sun, 16 Jul 2023 02:34:32 +0800
+Message-Id: <f6b11dfc844fbbd231739bcab9d71e7b7710845d.1689444638.git.falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1689444638.git.falcon@tinylab.org>
+References: <cover.1689444638.git.falcon@tinylab.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH] fb: Explicitly include correct DT includes
-To:     Rob Herring <robh@kernel.org>, Helge Deller <deller@gmx.de>,
-        Michal Simek <michal.simek@amd.com>
-Cc:     devicetree@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20230714175035.4065508-1-robh@kernel.org>
-Content-Language: en-US
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-In-Reply-To: <20230714175035.4065508-1-robh@kernel.org>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------fKlGCpVLu7rfpmAw9xHrErQE"
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------fKlGCpVLu7rfpmAw9xHrErQE
-Content-Type: multipart/mixed; boundary="------------Aa0Mf3WyZj0EdxJytzy7LFbU";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Rob Herring <robh@kernel.org>, Helge Deller <deller@gmx.de>,
- Michal Simek <michal.simek@amd.com>
-Cc: devicetree@vger.kernel.org, linux-fbdev@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Message-ID: <317a9fd8-0ae9-daa0-012b-3908ca248b74@suse.de>
-Subject: Re: [PATCH] fb: Explicitly include correct DT includes
-References: <20230714175035.4065508-1-robh@kernel.org>
-In-Reply-To: <20230714175035.4065508-1-robh@kernel.org>
+The startup code is critical to get the right argc, argv, envp/environ
+and _auxv, let's add a startup test group and the corresponding
+testcases.
 
---------------Aa0Mf3WyZj0EdxJytzy7LFbU
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+The "environ" test case is also moved from the stdlib test group to this
+new startup test group and it is renamed to "environ_envp".
 
-SGkNCg0KQW0gMTQuMDcuMjMgdW0gMTk6NTAgc2NocmllYiBSb2IgSGVycmluZzoNCj4gVGhl
-IERUIG9mX2RldmljZS5oIGFuZCBvZl9wbGF0Zm9ybS5oIGRhdGUgYmFjayB0byB0aGUgc2Vw
-YXJhdGUNCj4gb2ZfcGxhdGZvcm1fYnVzX3R5cGUgYmVmb3JlIGl0IGFzIG1lcmdlZCBpbnRv
-IHRoZSByZWd1bGFyIHBsYXRmb3JtIGJ1cy4NCj4gQXMgcGFydCBvZiB0aGF0IG1lcmdlIHBy
-ZXBwaW5nIEFybSBEVCBzdXBwb3J0IDEzIHllYXJzIGFnbywgdGhleQ0KPiAidGVtcG9yYXJp
-bHkiIGluY2x1ZGUgZWFjaCBvdGhlci4gVGhleSBhbHNvIGluY2x1ZGUgcGxhdGZvcm1fZGV2
-aWNlLmgNCj4gYW5kIG9mLmguIEFzIGEgcmVzdWx0LCB0aGVyZSdzIGEgcHJldHR5IG11Y2gg
-cmFuZG9tIG1peCBvZiB0aG9zZSBpbmNsdWRlDQo+IGZpbGVzIHVzZWQgdGhyb3VnaG91dCB0
-aGUgdHJlZS4gSW4gb3JkZXIgdG8gZGV0YW5nbGUgdGhlc2UgaGVhZGVycyBhbmQNCj4gcmVw
-bGFjZSB0aGUgaW1wbGljaXQgaW5jbHVkZXMgd2l0aCBzdHJ1Y3QgZGVjbGFyYXRpb25zLCB1
-c2VycyBuZWVkIHRvDQo+IGV4cGxpY2l0bHkgaW5jbHVkZSB0aGUgY29ycmVjdCBpbmNsdWRl
-cy4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IFJvYiBIZXJyaW5nIDxyb2JoQGtlcm5lbC5vcmc+
-DQpbLi4uXQ0KPiAgIA0KPiBAQCAtNDgsNyArNDgsNyBAQCBpbnQgc2J1c2ZiX21tYXBfaGVs
-cGVyKHN0cnVjdCBzYnVzX21tYXBfbWFwICptYXAsDQo+ICAgCXVuc2lnbmVkIGxvbmcgbWFw
-X29mZnNldCA9IDA7DQo+ICAgCXVuc2lnbmVkIGxvbmcgb2ZmOw0KPiAgIAlpbnQgaTsNCj4g
-LQ0KPiArDQoNClRoZSB2YXJpb3VzIHdoaXRlc3BhY2UgZml4ZXMgc2hvdWxkIHJhdGhlciBn
-byBpbnRvIGEgc2VwYXJhdGUgcGF0Y2guIFlvdSANCmNhbiBhZGQNCg0KUmV2aWV3ZWQtYnk6
-IFRob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPg0KDQp0byB0aGUgd2hp
-dGVzcGFjZSBmaXggYW5kIHRoZSBpbmNsdWRlIGNsZWFudXAuDQoNCkJlc3QgcmVnYXJkcw0K
-VGhvbWFzDQoNCj4gICAJaWYgKCEodm1hLT52bV9mbGFncyAmIChWTV9TSEFSRUQgfCBWTV9N
-QVlTSEFSRSkpKQ0KPiAgIAkJcmV0dXJuIC1FSU5WQUw7DQo+ICAgDQo+IEBAIC03Miw3ICs3
-Miw3IEBAIGludCBzYnVzZmJfbW1hcF9oZWxwZXIoc3RydWN0IHNidXNfbW1hcF9tYXAgKm1h
-cCwNCj4gICAjZGVmaW5lIFBPRkZfTUFTSwkoUEFHRV9NQVNLfDB4MVVMKQ0KPiAgICNlbHNl
-DQo+ICAgI2RlZmluZSBQT0ZGX01BU0sJKFBBR0VfTUFTSykNCj4gLSNlbmRpZgkJCQkNCj4g
-KyNlbmRpZg0KPiAgIAkJCQltYXBfb2Zmc2V0ID0gKHBoeXNiYXNlICsgbWFwW2ldLnBvZmYp
-ICYgUE9GRl9NQVNLOw0KPiAgIAkJCQlicmVhazsNCj4gICAJCQl9DQo+IGRpZmYgLS1naXQg
-YS9kcml2ZXJzL3ZpZGVvL2ZiZGV2L3N1bnh2cjEwMDAuYyBiL2RyaXZlcnMvdmlkZW8vZmJk
-ZXYvc3VueHZyMTAwMC5jDQo+IGluZGV4IDQ5MGJkOWExNDc2My4uMTdkNjFlMWQxMWE2IDEw
-MDY0NA0KPiAtLS0gYS9kcml2ZXJzL3ZpZGVvL2ZiZGV2L3N1bnh2cjEwMDAuYw0KPiArKysg
-Yi9kcml2ZXJzL3ZpZGVvL2ZiZGV2L3N1bnh2cjEwMDAuYw0KPiBAQCAtOCw3ICs4LDggQEAN
-Cj4gICAjaW5jbHVkZSA8bGludXgva2VybmVsLmg+DQo+ICAgI2luY2x1ZGUgPGxpbnV4L2Zi
-Lmg+DQo+ICAgI2luY2x1ZGUgPGxpbnV4L2luaXQuaD4NCj4gLSNpbmNsdWRlIDxsaW51eC9v
-Zl9kZXZpY2UuaD4NCj4gKyNpbmNsdWRlIDxsaW51eC9vZi5oPg0KPiArI2luY2x1ZGUgPGxp
-bnV4L3BsYXRmb3JtX2RldmljZS5oPg0KPiAgIA0KPiAgIHN0cnVjdCBnZmJfaW5mbyB7DQo+
-ICAgCXN0cnVjdCBmYl9pbmZvCQkqaW5mbzsNCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvdmlk
-ZW8vZmJkZXYvc3VueHZyMjUwMC5jIGIvZHJpdmVycy92aWRlby9mYmRldi9zdW54dnIyNTAw
-LmMNCj4gaW5kZXggMmNhYjRiOWJlNjhhLi5lNjRlYzdkMGNhZjkgMTAwNjQ0DQo+IC0tLSBh
-L2RyaXZlcnMvdmlkZW8vZmJkZXYvc3VueHZyMjUwMC5jDQo+ICsrKyBiL2RyaXZlcnMvdmlk
-ZW8vZmJkZXYvc3VueHZyMjUwMC5jDQo+IEBAIC0xMCw3ICsxMCw3IEBADQo+ICAgI2luY2x1
-ZGUgPGxpbnV4L2ZiLmg+DQo+ICAgI2luY2x1ZGUgPGxpbnV4L3BjaS5oPg0KPiAgICNpbmNs
-dWRlIDxsaW51eC9pbml0Lmg+DQo+IC0jaW5jbHVkZSA8bGludXgvb2ZfZGV2aWNlLmg+DQo+
-ICsjaW5jbHVkZSA8bGludXgvb2YuaD4NCj4gICANCj4gICAjaW5jbHVkZSA8YXNtL2lvLmg+
-DQo+ICAgDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3ZpZGVvL2ZiZGV2L3N1bnh2cjUwMC5j
-IGIvZHJpdmVycy92aWRlby9mYmRldi9zdW54dnI1MDAuYw0KPiBpbmRleCA2ZWMzNThhZjEy
-NTYuLmM0ZTAxZTg3MTQ4MyAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy92aWRlby9mYmRldi9z
-dW54dnI1MDAuYw0KPiArKysgYi9kcml2ZXJzL3ZpZGVvL2ZiZGV2L3N1bnh2cjUwMC5jDQo+
-IEBAIC0xMCw3ICsxMCw3IEBADQo+ICAgI2luY2x1ZGUgPGxpbnV4L2ZiLmg+DQo+ICAgI2lu
-Y2x1ZGUgPGxpbnV4L3BjaS5oPg0KPiAgICNpbmNsdWRlIDxsaW51eC9pbml0Lmg+DQo+IC0j
-aW5jbHVkZSA8bGludXgvb2ZfZGV2aWNlLmg+DQo+ICsjaW5jbHVkZSA8bGludXgvb2YuaD4N
-Cj4gICANCj4gICAjaW5jbHVkZSA8YXNtL2lvLmg+DQo+ICAgDQo+IGRpZmYgLS1naXQgYS9k
-cml2ZXJzL3ZpZGVvL2ZiZGV2L3RjeC5jIGIvZHJpdmVycy92aWRlby9mYmRldi90Y3guYw0K
-PiBpbmRleCBmYzNhYzIzMDFiNDUuLjI1NWViNTdhZWZhMiAxMDA2NDQNCj4gLS0tIGEvZHJp
-dmVycy92aWRlby9mYmRldi90Y3guYw0KPiArKysgYi9kcml2ZXJzL3ZpZGVvL2ZiZGV2L3Rj
-eC5jDQo+IEBAIC0xNyw3ICsxNyw4IEBADQo+ICAgI2luY2x1ZGUgPGxpbnV4L2luaXQuaD4N
-Cj4gICAjaW5jbHVkZSA8bGludXgvZmIuaD4NCj4gICAjaW5jbHVkZSA8bGludXgvbW0uaD4N
-Cj4gLSNpbmNsdWRlIDxsaW51eC9vZl9kZXZpY2UuaD4NCj4gKyNpbmNsdWRlIDxsaW51eC9v
-Zi5oPg0KPiArI2luY2x1ZGUgPGxpbnV4L3BsYXRmb3JtX2RldmljZS5oPg0KPiAgIA0KPiAg
-ICNpbmNsdWRlIDxhc20vaW8uaD4NCj4gICAjaW5jbHVkZSA8YXNtL2ZiaW8uaD4NCj4gZGlm
-ZiAtLWdpdCBhL2RyaXZlcnMvdmlkZW8vZmJkZXYveGlsaW54ZmIuYyBiL2RyaXZlcnMvdmlk
-ZW8vZmJkZXYveGlsaW54ZmIuYw0KPiBpbmRleCAyYWEzYTUyODI3N2YuLjU0MmJhZGRkNTRh
-ZCAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy92aWRlby9mYmRldi94aWxpbnhmYi5jDQo+ICsr
-KyBiL2RyaXZlcnMvdmlkZW8vZmJkZXYveGlsaW54ZmIuYw0KPiBAQCAtMjQsMTQgKzI0LDEz
-IEBADQo+ICAgI2luY2x1ZGUgPGxpbnV4L21vZHVsZS5oPg0KPiAgICNpbmNsdWRlIDxsaW51
-eC9rZXJuZWwuaD4NCj4gICAjaW5jbHVkZSA8bGludXgvZXJybm8uaD4NCj4gKyNpbmNsdWRl
-IDxsaW51eC9wbGF0Zm9ybV9kZXZpY2UuaD4NCj4gICAjaW5jbHVkZSA8bGludXgvc3RyaW5n
-Lmg+DQo+ICAgI2luY2x1ZGUgPGxpbnV4L21tLmg+DQo+ICAgI2luY2x1ZGUgPGxpbnV4L2Zi
-Lmg+DQo+ICAgI2luY2x1ZGUgPGxpbnV4L2luaXQuaD4NCj4gICAjaW5jbHVkZSA8bGludXgv
-ZG1hLW1hcHBpbmcuaD4NCj4gLSNpbmNsdWRlIDxsaW51eC9vZl9kZXZpY2UuaD4NCj4gLSNp
-bmNsdWRlIDxsaW51eC9vZl9wbGF0Zm9ybS5oPg0KPiAtI2luY2x1ZGUgPGxpbnV4L29mX2Fk
-ZHJlc3MuaD4NCj4gKyNpbmNsdWRlIDxsaW51eC9vZi5oPg0KPiAgICNpbmNsdWRlIDxsaW51
-eC9pby5oPg0KPiAgICNpbmNsdWRlIDxsaW51eC9zbGFiLmg+DQo+ICAgDQoNCi0tIA0KVGhv
-bWFzIFppbW1lcm1hbm4NCkdyYXBoaWNzIERyaXZlciBEZXZlbG9wZXINClNVU0UgU29mdHdh
-cmUgU29sdXRpb25zIEdlcm1hbnkgR21iSA0KRnJhbmtlbnN0cmFzc2UgMTQ2LCA5MDQ2MSBO
-dWVybmJlcmcsIEdlcm1hbnkNCkdGOiBJdm8gVG90ZXYsIEFuZHJldyBNeWVycywgQW5kcmV3
-IE1jRG9uYWxkLCBCb3VkaWVuIE1vZXJtYW4NCkhSQiAzNjgwOSAoQUcgTnVlcm5iZXJnKQ0K
+Since argv0 has been used by many other test cases, let's add testcases
+to gurantee it too.
 
+Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+---
+ tools/testing/selftests/nolibc/nolibc-test.c | 56 +++++++++++++++++++-
+ 1 file changed, 55 insertions(+), 1 deletion(-)
 
---------------Aa0Mf3WyZj0EdxJytzy7LFbU--
+diff --git a/tools/testing/selftests/nolibc/nolibc-test.c b/tools/testing/selftests/nolibc/nolibc-test.c
+index 3ff706078fbd..03b1d30f5507 100644
+--- a/tools/testing/selftests/nolibc/nolibc-test.c
++++ b/tools/testing/selftests/nolibc/nolibc-test.c
+@@ -15,6 +15,7 @@
+ #include <string.h>
+ #ifndef _NOLIBC_STDIO_H
+ /* standard libcs need more includes */
++#include <sys/auxv.h>
+ #include <sys/io.h>
+ #include <sys/ioctl.h>
+ #include <sys/mman.h>
+@@ -47,6 +48,12 @@
+ /* will be used to test initialization of environ */
+ static char **test_envp;
+ 
++/* will be used to test initialization of argv */
++static char **test_argv;
++
++/* will be used to test initialization of argc */
++static int test_argc;
++
+ /* will be used by some test cases as readable file, please don't write it */
+ static const char *argv0;
+ 
+@@ -561,6 +568,51 @@ static int expect_strne(const char *expr, int llen, const char *cmp)
+ #define CASE_TEST(name) \
+ 	case __LINE__: llen += printf("%d %s", test, #name);
+ 
++int run_startup(int min, int max)
++{
++	int test;
++	int ret = 0;
++	/* kernel at least passes HOME and TERM, shell passes more */
++	int env_total = 2;
++	/* checking NULL for argv/argv0, environ and _auxv is not enough, let's compare with sbrk(0) or &end */
++	extern char end;
++	char *brk = sbrk(0) != (void *)-1 ? sbrk(0) : &end;
++	/* differ from nolibc, both glibc and musl have no global _auxv */
++	const unsigned long *test_auxv = (void *)-1;
++#ifdef NOLIBC
++	test_auxv = _auxv;
++#endif
++
++	for (test = min; test >= 0 && test <= max; test++) {
++		int llen = 0; /* line length */
++
++		/* avoid leaving empty lines below, this will insert holes into
++		 * test numbers.
++		 */
++		switch (test + __LINE__ + 1) {
++		CASE_TEST(argc);             EXPECT_GE(1, test_argc, 1); break;
++		CASE_TEST(argv_addr);        EXPECT_PTRGT(1, test_argv, brk); break;
++		CASE_TEST(argv_environ);     EXPECT_PTRLT(1, test_argv, environ); break;
++		CASE_TEST(argv_total);       EXPECT_EQ(1, environ - test_argv - 1, test_argc ?: 1); break;
++		CASE_TEST(argv0_addr);       EXPECT_PTRGT(1, argv0, brk); break;
++		CASE_TEST(argv0_str);        EXPECT_STRNZ(1, argv0 > brk ? argv0 : NULL); break;
++		CASE_TEST(argv0_len);        EXPECT_GE(1,  argv0 > brk ? strlen(argv0) : 0, 1); break;
++		CASE_TEST(environ_addr);     EXPECT_PTRGT(1, environ, brk); break;
++		CASE_TEST(environ_envp);     EXPECT_PTREQ(1, environ, test_envp); break;
++		CASE_TEST(environ_auxv);     EXPECT_PTRLT(test_auxv != (void *)-1, environ, test_auxv); break;
++		CASE_TEST(environ_total);    EXPECT_GE(test_auxv != (void *)-1, (void *)test_auxv - (void *)environ - 1, env_total); break;
++		CASE_TEST(environ_HOME);     EXPECT_PTRNZ(1, getenv("HOME")); break;
++		CASE_TEST(auxv_addr);        EXPECT_PTRGT(test_auxv != (void *)-1, test_auxv, brk); break;
++		CASE_TEST(auxv_AT_UID);      EXPECT_EQ(1, getauxval(AT_UID), getuid()); break;
++		CASE_TEST(auxv_AT_PAGESZ);   EXPECT_GE(1, getauxval(AT_PAGESZ), 4096); break;
++		case __LINE__:
++			return ret; /* must be last */
++		/* note: do not set any defaults so as to permit holes above */
++		}
++	}
++	return ret;
++}
++
+ 
+ /* used by some syscall tests below */
+ int test_getdents64(const char *dir)
+@@ -844,7 +896,6 @@ int run_stdlib(int min, int max)
+ 		 * test numbers.
+ 		 */
+ 		switch (test + __LINE__ + 1) {
+-		CASE_TEST(environ);            EXPECT_PTREQ(1, environ, test_envp); break;
+ 		CASE_TEST(getenv_TERM);        EXPECT_STRNZ(1, getenv("TERM")); break;
+ 		CASE_TEST(getenv_blah);        EXPECT_STRZR(1, getenv("blah")); break;
+ 		CASE_TEST(setcmp_blah_blah);   EXPECT_EQ(1, strcmp("blah", "blah"), 0); break;
+@@ -1128,6 +1179,7 @@ int prepare(void)
+ /* This is the definition of known test names, with their functions */
+ static const struct test test_names[] = {
+ 	/* add new tests here */
++	{ .name = "startup",    .func = run_startup    },
+ 	{ .name = "syscall",    .func = run_syscall    },
+ 	{ .name = "stdlib",     .func = run_stdlib     },
+ 	{ .name = "vfprintf",   .func = run_vfprintf   },
+@@ -1174,6 +1226,8 @@ int main(int argc, char **argv, char **envp)
+ 	char *test;
+ 
+ 	argv0 = argv[0];
++	test_argc = argc;
++	test_argv = argv;
+ 	test_envp = envp;
+ 
+ 	/* when called as init, it's possible that no console was opened, for
+-- 
+2.25.1
 
---------------fKlGCpVLu7rfpmAw9xHrErQE
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmSy5qAFAwAAAAAACgkQlh/E3EQov+DV
-hg//Xw0qaGOqIuiMoHIxPoO8/jbT0356p1A2GRp52n9+r+rHkHF4HBkb7K4W9jjF+5tjpd7chkiB
-8qEqheekrCWZ6Vg8ZqIDmJPes4pHsd56bExm6Jk8yTa7rShbN9Jdogm44a3TVOXcOVM+gHl0h3Jh
-GbksvdQX1g+l4EzK4UlFOBJit/oLHofORyKyki0I4a0kVyPbYj6ynVvwVIlFQbocybEUVTLfTGz7
-cHPzSdv7hsngyXhdqjzGNX4EMEwktcP42IXHv4Jrcxu2e4rILtJvmXvK5ku5t/FX6yMpxSU3oaaP
-t13+3PS/JVSt/S3X+kyQwazL2Jx4BBrWNRNlL1Dbm80OzdntELHprVOCvB+ZTq6Yz5OUfJbdh+00
-3SU6nfvCKNtOmEhaYyGE5XSlQPcjs43SABM5lqIZbdozKVB0EUPsRkOfa05ZrAykwha36qgUjDqf
-z4u9moi7/bPNo7REdwXW0ogALg+q3FFq3HfW2umUmh3Pu+YdMVBr7FF0yzzdyBN4IRrv0QljXhgl
-XjJgXl7r9Ize6S5GzfCVM7QUuR/LTL6vcP/wUy/Awemx6odLnVvxnKQipgrP6/dATviNyXPB5IrK
-5E32NfllUy4qk3XvVBbRV8Yr7OsXq0tn6jSQFvwDbU8QpeyPt+ERYjqMD1S+hDHoars/jf8eFkUb
-qtw=
-=Utls
------END PGP SIGNATURE-----
-
---------------fKlGCpVLu7rfpmAw9xHrErQE--
