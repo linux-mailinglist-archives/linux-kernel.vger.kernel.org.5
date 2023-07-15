@@ -2,125 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6297C754CD1
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 01:36:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E823754CD3
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 01:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229729AbjGOXgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 19:36:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36650 "EHLO
+        id S229756AbjGOXvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 19:51:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229679AbjGOXgs (ORCPT
+        with ESMTP id S229665AbjGOXvL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 19:36:48 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35DFB271E
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 16:36:47 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-2657d405ad5so2184893a91.1
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 16:36:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1689464206; x=1692056206;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=t/mkW0jGzSqPxmGw9V0X5RkM5ItEmfXI12w10A2Eres=;
-        b=ASLyRtXp8Yh09OikOhVYeIlu5bNpY1KPbFNZmvzee+mQSlD1a4yuBjIeYrCHl6OWro
-         SRX0mHttxJTRKFZy6ihmc+Q20IlDS2cBlDSmGuITxJ0dNZrwqmDnvXQ8skguRkgzU1dU
-         yMO2S2RQnxdwQErxmQH1R4cx0C5ST3d5RpqoM80FQwgMl0xIcr3iXBu2xdAHRi34mDkg
-         cREPVv8GpoB47rP/7MJ1WrymktFTRyxN7c30Ih5exBOGdb03bK9UUgyppXmDWGlJAd/Q
-         0IXYjXeCTDTJhg0GXlQyjPUPIuBfEXfOyaMGZTv9cSchPM0wUQV+W0c1YRYro1Juz+3G
-         Z1DA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689464206; x=1692056206;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=t/mkW0jGzSqPxmGw9V0X5RkM5ItEmfXI12w10A2Eres=;
-        b=NGENVrL9Av7p7+CopsdqpAouUNh1d3JQGZJe+2nqPhrpvq3Pgxu3d8wNNceK8+giHN
-         m7GxoCElBdXXKORp+iX6MvKXLwm2nlhsjrppd2yE6OFxkjixgpb/x3pkMUq7FKWoE8dV
-         XEgLE8sfQW712Jzm4Dz1kPtkuRIdAhYJUz1ExQqRaXBpcnT59WIbq7UqM2O+QIGWP/mE
-         hmnXCSFgKSj5Hg3oayUIFZc+w9gVcKHiRUt4UK+m5wOnNLk4/xKLyXFa5xnomyUnohV4
-         LgPB1F7M+s5c69uVUmr/PC6CPYB/jr6H4BHtVg4KQ7YK0taY3Z4t2phhxWaWMpuF3eNS
-         8tIg==
-X-Gm-Message-State: ABy/qLbEuR9IP/giMgUwpEFH8O0K1EV6fgYIHmS9yeR6T77RuBQXhY7+
-        dpv5NkIrRwRdA/DHCrscFmeZKA==
-X-Google-Smtp-Source: APBJJlHBHNn9ic8rlAZHn4iUhijf/z7EF3FUM1bqEZgsTAkGKX1Rp8C01GUKBrM4SByqZu0DMgo+aw==
-X-Received: by 2002:a17:90b:482:b0:263:41d2:4e2 with SMTP id bh2-20020a17090b048200b0026341d204e2mr8518613pjb.32.1689464206607;
-        Sat, 15 Jul 2023 16:36:46 -0700 (PDT)
-Received: from dread.disaster.area (pa49-186-119-116.pa.vic.optusnet.com.au. [49.186.119.116])
-        by smtp.gmail.com with ESMTPSA id 4-20020a17090a19c400b00263e4dc33aasm3103081pjj.11.2023.07.15.16.36.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 Jul 2023 16:36:45 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-        (envelope-from <david@fromorbit.com>)
-        id 1qKoob-006YsO-27;
-        Sun, 16 Jul 2023 09:36:41 +1000
-Date:   Sun, 16 Jul 2023 09:36:41 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Leesoo Ahn <lsahn@ooseel.net>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Leesoo Ahn <lsahn@wewakecorp.com>
-Subject: Re: [PATCH v2] fs: inode: return proper error code in bmap()
-Message-ID: <ZLMtifV5ta5VTQ2e@dread.disaster.area>
-References: <20230715082204.1598206-1-lsahn@wewakecorp.com>
+        Sat, 15 Jul 2023 19:51:11 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 596501FEE;
+        Sat, 15 Jul 2023 16:51:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=XGMqHpO0IlQS1LESo07MXYq+MnOltcI0tcyM9SWJvEI=; b=Am8FYRPKSaiEweeMhkF+bLVIdL
+        l652zTjdr/Wm69ZmkQ+DBFqTH65RCw9Otp3c+NTPxPbshFxzp8V7ZXAlO7HA3YtPhSCqYMmasJZH3
+        J/zZ61MYRRXemt0bQxZkfiLXQqUWqPOhYFfESDKdY+Sk9rC68IK+xLx3a85pK+Gr7yUSFcSJ/TKpR
+        hoQgJuWw65YaHOW/hRAh6IrVwXghPj7v6I9es8vQNuwv7iHgfpb+gqQvIY6vNM1OgDYfI/2fHMFYQ
+        xca24EDTeNnBWrXQ8x3jTUopFoP3nYJu3DNb4RysB0qG99H3F2eoUYZfwOn3s8paZIL6yHjbLl8Yw
+        F8A4YQzA==;
+Received: from 50-198-160-193-static.hfc.comcastbusiness.net ([50.198.160.193] helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qKp2Y-009h5w-2J;
+        Sat, 15 Jul 2023 23:51:06 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH] Docs: kernel-parameters: sort arm64 entries
+Date:   Sat, 15 Jul 2023 16:51:05 -0700
+Message-ID: <20230715235105.17966-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230715082204.1598206-1-lsahn@wewakecorp.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 15, 2023 at 05:22:04PM +0900, Leesoo Ahn wrote:
-> Return -EOPNOTSUPP instead of -EINVAL which has the meaning of
-> the argument is an inappropriate value. The current error code doesn't
-> make sense to represent that a file system doesn't support bmap operation.
-> 
-> Signed-off-by: Leesoo Ahn <lsahn@wewakecorp.com>
-> ---
-> Changes since v1:
-> - Modify the comments of bmap()
-> - Modify subject and description requested by Markus Elfring
-> https://lore.kernel.org/lkml/20230715060217.1469690-1-lsahn@wewakecorp.com/
-> 
->  fs/inode.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/inode.c b/fs/inode.c
-> index 8fefb69e1f84..697c51ed226a 100644
-> --- a/fs/inode.c
-> +++ b/fs/inode.c
-> @@ -1831,13 +1831,13 @@ EXPORT_SYMBOL(iput);
->   *	4 in ``*block``, with disk block relative to the disk start that holds that
->   *	block of the file.
->   *
-> - *	Returns -EINVAL in case of error, 0 otherwise. If mapping falls into a
-> + *	Returns -EOPNOTSUPP in case of error, 0 otherwise. If mapping falls into a
->   *	hole, returns 0 and ``*block`` is also set to 0.
->   */
->  int bmap(struct inode *inode, sector_t *block)
->  {
->  	if (!inode->i_mapping->a_ops->bmap)
-> -		return -EINVAL;
-> +		return -EOPNOTSUPP;
->  
->  	*block = inode->i_mapping->a_ops->bmap(inode->i_mapping, *block);
->  	return 0;
+Put the arm64 kernel-parameters entries into alphabetical order.
 
-What about the CONFIG_BLOCK=n wrapper?
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: linux-doc@vger.kernel.org
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org
+---
+ Documentation/admin-guide/kernel-parameters.txt |   12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-Also, all the in kernel consumers squash this error back to 0, -EIO
-or -EINVAL, so this change only ever propagates out to userspace via
-the return from ioctl(FIBMAP).  Do we really need to change this and
-risk breaking userspace that handles -EINVAL correctly but not
--EOPNOTSUPP?
-
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+--- linux-next-20230714.orig/Documentation/admin-guide/kernel-parameters.txt
++++ linux-next-20230714/Documentation/admin-guide/kernel-parameters.txt
+@@ -418,20 +418,20 @@
+ 	arm64.nobti	[ARM64] Unconditionally disable Branch Target
+ 			Identification support
+ 
+-	arm64.nopauth	[ARM64] Unconditionally disable Pointer Authentication
+-			support
++	arm64.nomops	[ARM64] Unconditionally disable Memory Copy and Memory
++			Set instructions support
+ 
+ 	arm64.nomte	[ARM64] Unconditionally disable Memory Tagging Extension
+ 			support
+ 
+-	arm64.nosve	[ARM64] Unconditionally disable Scalable Vector
+-			Extension support
++	arm64.nopauth	[ARM64] Unconditionally disable Pointer Authentication
++			support
+ 
+ 	arm64.nosme	[ARM64] Unconditionally disable Scalable Matrix
+ 			Extension support
+ 
+-	arm64.nomops	[ARM64] Unconditionally disable Memory Copy and Memory
+-			Set instructions support
++	arm64.nosve	[ARM64] Unconditionally disable Scalable Vector
++			Extension support
+ 
+ 	ataflop=	[HW,M68k]
+ 
