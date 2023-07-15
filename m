@@ -2,211 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 070C5752F20
-	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 03:59:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0698F752EEE
+	for <lists+linux-kernel@lfdr.de>; Fri, 14 Jul 2023 03:53:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234396AbjGNB7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 13 Jul 2023 21:59:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45086 "EHLO
+        id S234349AbjGNBxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 13 Jul 2023 21:53:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234567AbjGNB7p (ORCPT
+        with ESMTP id S234317AbjGNBxg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 13 Jul 2023 21:59:45 -0400
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5400B30DB
-        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 18:59:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689299959; x=1720835959;
-  h=date:from:to:cc:subject:message-id;
-  bh=W7wdcKjRu/dwmfKpFJ8HkKuVujmNZctIB9sDsevZ8k8=;
-  b=bj8xY1ffSlTP3WlhNVxw+bUIDTLXDcSy+TwGReo7UwV64/09zZzX4hjA
-   nWrAqRhwEyBwwOTU7vxbc2q/nXk1bao6qvm/jdu37RsDptNfJWBiEBRlL
-   +6hrYYLWKAmDEEphK6+uP81cLkZr32SD5Sxrffnrv7EV+GHwOshaxo12o
-   WuFTl018JltKZxCB8oBqcEFlJSf+5fdy8CX4iyqmuDBfLtNHjzBqOgysL
-   UzflGv5oGddxfu7yaSqsNuiQxhA7A2paBfBN5dTkUe205QLlmk1y9/UuH
-   tO06Hf/JkEPcGYUYiSRSPE2IyqmR07CXjG1rI7zjEB8v9gHs/lLIfX1vk
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="431537738"
-X-IronPort-AV: E=Sophos;i="6.01,204,1684825200"; 
-   d="scan'208";a="431537738"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2023 18:59:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10770"; a="716164740"
-X-IronPort-AV: E=Sophos;i="6.01,204,1684825200"; 
-   d="scan'208";a="716164740"
-Received: from lkp-server01.sh.intel.com (HELO c544d7fc5005) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 13 Jul 2023 18:59:17 -0700
-Received: from kbuild by c544d7fc5005 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qK85U-00073r-31;
-        Fri, 14 Jul 2023 01:59:16 +0000
-Date:   Fri, 14 Jul 2023 09:59:11 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:sched/core] BUILD SUCCESS
- 7ee7642c91410fb90cc45e799a3a46e1607ecd79
-Message-ID: <202307140909.uCONinNm-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 13 Jul 2023 21:53:36 -0400
+Received: from mail.nfschina.com (unknown [42.101.60.195])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id 0E65E2D60
+        for <linux-kernel@vger.kernel.org>; Thu, 13 Jul 2023 18:53:30 -0700 (PDT)
+Received: from localhost.localdomain (unknown [219.141.250.2])
+        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPA id 151E86062C7C7;
+        Fri, 14 Jul 2023 09:53:09 +0800 (CST)
+X-MD-Sfrom: kunyu@nfschina.com
+X-MD-SrcIP: 219.141.250.2
+From:   Li kunyu <kunyu@nfschina.com>
+To:     dan.j.williams@intel.com, gregkh@linuxfoundation.org,
+        Jonathan.Cameron@huawei.com, ira.weiny@intel.com,
+        bhelgaas@google.com, andriy.shevchenko@linux.intel.com
+Cc:     linux-kernel@vger.kernel.org, Li kunyu <kunyu@nfschina.com>
+Subject: [PATCH v2] =?UTF-8?q?kernel:=20resource:=20Remove=20unnecessary=20?= =?UTF-8?q?=E2=80=980=E2=80=99=20values=20from=20err?=
+Date:   Sun, 16 Jul 2023 02:24:28 +0800
+Message-Id: <20230715182428.3348-1-kunyu@nfschina.com>
+X-Mailer: git-send-email 2.18.2
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_24_48,
+        RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
-branch HEAD: 7ee7642c91410fb90cc45e799a3a46e1607ecd79  sched/fair: Stabilize asym cpu capacity system idle cpu selection
+err is assigned first, so it does not need to initialize the assignment.
+Modify __find_resource execution syntax to make it more in line with
+commonly used styles.
 
-elapsed time: 724m
+Signed-off-by: Li kunyu <kunyu@nfschina.com>
+---
+ v2:
+   Modify __find_resource Execution Syntax.
 
-configs tested: 134
-configs skipped: 4
+ kernel/resource.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                            alldefconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-alpha                randconfig-r006-20230713   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                        nsimosci_defconfig   gcc  
-arc                  randconfig-r043-20230713   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                       aspeed_g5_defconfig   gcc  
-arm                     davinci_all_defconfig   clang
-arm                                 defconfig   gcc  
-arm                            mmp2_defconfig   clang
-arm                            qcom_defconfig   gcc  
-arm                  randconfig-r034-20230713   gcc  
-arm                  randconfig-r046-20230713   clang
-arm                           sunxi_defconfig   gcc  
-arm                        vexpress_defconfig   clang
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                randconfig-r011-20230713   gcc  
-arm64                randconfig-r013-20230713   gcc  
-csky                                defconfig   gcc  
-hexagon              randconfig-r014-20230713   clang
-hexagon              randconfig-r022-20230713   clang
-hexagon              randconfig-r041-20230713   clang
-hexagon              randconfig-r045-20230713   clang
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-r004-20230713   clang
-i386         buildonly-randconfig-r005-20230713   clang
-i386         buildonly-randconfig-r006-20230713   clang
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                 randconfig-i001-20230713   clang
-i386                 randconfig-i002-20230713   clang
-i386                 randconfig-i003-20230713   clang
-i386                 randconfig-i004-20230713   clang
-i386                 randconfig-i005-20230713   clang
-i386                 randconfig-i006-20230713   clang
-i386                 randconfig-i011-20230713   gcc  
-i386                 randconfig-i012-20230713   gcc  
-i386                 randconfig-i013-20230713   gcc  
-i386                 randconfig-i014-20230713   gcc  
-i386                 randconfig-i015-20230713   gcc  
-i386                 randconfig-i016-20230713   gcc  
-i386                 randconfig-r003-20230713   clang
-i386                 randconfig-r035-20230713   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-m68k                             allmodconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze           randconfig-r002-20230713   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                  decstation_64_defconfig   gcc  
-mips                     loongson1b_defconfig   gcc  
-mips                      maltasmvp_defconfig   gcc  
-mips                           rs90_defconfig   clang
-mips                        vocore2_defconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                randconfig-r023-20230713   gcc  
-openrisc             randconfig-r024-20230713   gcc  
-openrisc             randconfig-r031-20230713   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc               randconfig-r012-20230713   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                      ep88xc_defconfig   gcc  
-powerpc                          g5_defconfig   clang
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv             nommu_k210_sdcard_defconfig   gcc  
-riscv                randconfig-r032-20230713   clang
-riscv                randconfig-r042-20230713   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                 randconfig-r044-20230713   gcc  
-s390                       zfcpdump_defconfig   gcc  
-sh                               allmodconfig   gcc  
-sh                                  defconfig   gcc  
-sh                          rsk7269_defconfig   gcc  
-sh                           se7722_defconfig   gcc  
-sh                        sh7763rdp_defconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                randconfig-r004-20230713   gcc  
-sparc                randconfig-r016-20230713   gcc  
-sparc                randconfig-r033-20230713   gcc  
-sparc64              randconfig-r005-20230713   gcc  
-sparc64              randconfig-r021-20230713   gcc  
-sparc64              randconfig-r036-20230713   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-r001-20230713   clang
-x86_64       buildonly-randconfig-r002-20230713   clang
-x86_64       buildonly-randconfig-r003-20230713   clang
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64               randconfig-r015-20230713   gcc  
-x86_64               randconfig-x001-20230713   gcc  
-x86_64               randconfig-x002-20230713   gcc  
-x86_64               randconfig-x003-20230713   gcc  
-x86_64               randconfig-x004-20230713   gcc  
-x86_64               randconfig-x005-20230713   gcc  
-x86_64               randconfig-x006-20230713   gcc  
-x86_64               randconfig-x011-20230713   clang
-x86_64               randconfig-x012-20230713   clang
-x86_64               randconfig-x013-20230713   clang
-x86_64               randconfig-x014-20230713   clang
-x86_64               randconfig-x015-20230713   clang
-x86_64               randconfig-x016-20230713   clang
-x86_64                           rhel-8.3-bpf   gcc  
-x86_64                          rhel-8.3-func   gcc  
-x86_64                    rhel-8.3-kselftests   gcc  
-x86_64                         rhel-8.3-kunit   gcc  
-x86_64                           rhel-8.3-ltp   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa               randconfig-r025-20230713   gcc  
-xtensa               randconfig-r026-20230713   gcc  
-
+diff --git a/kernel/resource.c b/kernel/resource.c
+index b1763b2fd7ef..ee79e8f4f422 100644
+--- a/kernel/resource.c
++++ b/kernel/resource.c
+@@ -656,13 +656,14 @@ static int reallocate_resource(struct resource *root, struct resource *old,
+ 			       resource_size_t newsize,
+ 			       struct resource_constraint *constraint)
+ {
+-	int err=0;
++	int err;
+ 	struct resource new = *old;
+ 	struct resource *conflict;
+ 
+ 	write_lock(&resource_lock);
+ 
+-	if ((err = __find_resource(root, old, &new, newsize, constraint)))
++	err = __find_resource(root, old, &new, newsize, constraint);
++	if (err)
+ 		goto out;
+ 
+ 	if (resource_contains(&new, old)) {
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.18.2
+
