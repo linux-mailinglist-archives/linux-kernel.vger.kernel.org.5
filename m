@@ -2,109 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72B0E7549F0
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 17:56:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDDCF7549F3
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 17:57:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230217AbjGOP4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 11:56:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39566 "EHLO
+        id S229597AbjGOP5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 11:57:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230084AbjGOP4D (ORCPT
+        with ESMTP id S229549AbjGOP5g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 11:56:03 -0400
-Received: from out203-205-251-66.mail.qq.com (out203-205-251-66.mail.qq.com [203.205.251.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA56030E4
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 08:55:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1689436554;
-        bh=Q4AIE3ORkFkez9a9uTEasaw5aPDPog8DGCyhlYhijtQ=;
-        h=From:To:Cc:Subject:Date;
-        b=GMWOWCEdxyejehSeGxTCRvzUMZwIhu9T9aiQ1nVL+8sqyLNglqhdWuEAt3pVdNLcm
-         pAFEtt97vhItDuKe7KToiipwerj1PxkMVxUqSsjTkE7A4LNPQWbj/BEwBUZ08+ZD/2
-         XiyZ5bdHyQWCkZ2KrPXsH2RxDEXdE2buIxQ7uD2E=
-Received: from KernelDevBox.byted.org ([180.184.49.4])
-        by newxmesmtplogicsvrszb9-0.qq.com (NewEsmtp) with SMTP
-        id DF305C36; Sat, 15 Jul 2023 23:55:51 +0800
-X-QQ-mid: xmsmtpt1689436551toyuslagu
-Message-ID: <tencent_994DA85912C937E3B5405BA960B31ED90A08@qq.com>
-X-QQ-XMAILINFO: Mh1dUllL/+A2vhqHkhb7/gbp7caHWu3yMPEaqAyj5XA8papyHBSXtvAfD/ZjW3
-         C4kT0qRyiZZKbdkqCYuxPuM9KQO8fzJ/ju1Ab8Pds4sdFaTl3RnLpBWT7mFN3HJaq9Bo/MPvh31B
-         VfUEXkWQR6WzB2VrYboWIhWpWuwmnZSIIpn0ZFVQqcxixa3Iam3ai8+k1ZrCM/tZwAQF328cdCNi
-         zM6z6E0JnfFqyAPER780NcHNyGGxIbhabC4r674y17MelD9RJRL74b2TFr60cvR1ZthrcGfn1GFP
-         UGkGu++cyhOF37to76jS4umSneMTn4JmLH33y7G1yO6x1HpynmCNj+G8Oc3dRXQux2/kcP8MXKRx
-         15jmN5YKDvnjstk4WGF6GJCcGT0oZ9VnyQOdt6ikh+RzjPMM/L8C8JcEM+FbeMIUba2giTmurVj+
-         REJnfM3DiZH5YrTNUvIR0zeZVjwJGNjkGRlMZkY6aQnzXsb8wthhjdBlHYMxHNDS5FPElAESdN5+
-         /tp0YWENXjW/F1vn7FhBxor7suyS6+UdXy8+gYu8wA8NpEXjoIfRBhQDpX1ZoQc3b537VxBR5IUu
-         uF+Ke1KSmyuMSYY/KnCzLPCBmOAXvJb8IOUH5CScml1b7Xh9BujIqIGK792Q6lgH7A9UddFC9AzB
-         TAEXPefm+fLuN6Y3mC/ek0jjWgpgVN30AZgR3BW9WB5Gq/PfOggAgzcVLRpqthSzqUaY0GAkXMho
-         zxMQTeuGFc9aX3I3cFmTWODlrX69jiO5+eap74ZB2NeMnH93qKhK79o267XTzhnK8z7S/+xzz1VT
-         oUxa1pYgGLmT5l/4FHiBTIrrFlRFNOQrf4fo78r+Cha5Zy3km/qSULIqXl8LsLGu8MTr8j+hzChM
-         tKUuUcUe/xhWmPv3Hy7YVfnwa/vWSowwY+gR1CeYGoAL/CwIqEugA3m5945C883OYJ/fON0b3L3t
-         0zTxRDb/JE+35a3SbEPet/LUVTXHPsr5U187AvQTrktEn0jD01flhEtxGgcXnPdJzfCgV+/gqlLz
-         pL2Cqzuw==
-X-QQ-XMRINFO: NI4Ajvh11aEj8Xl/2s1/T8w=
-From:   Zhang Shurong <zhang_shurong@foxmail.com>
-To:     jic23@kernel.org
-Cc:     lars@metafoo.de, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@foss.st.com, lgirdwood@gmail.com,
-        broonie@kernel.org, linux-iio@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Zhang Shurong <zhang_shurong@foxmail.com>
-Subject: [PATCH] io: adc: stm32-adc: fix potential NULL pointer dereference in stm32_adc_probe()
-Date:   Sat, 15 Jul 2023 23:55:50 +0800
-X-OQ-MSGID: <20230715155550.2306245-1-zhang_shurong@foxmail.com>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+        Sat, 15 Jul 2023 11:57:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 145492D7B;
+        Sat, 15 Jul 2023 08:57:36 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A724260BC5;
+        Sat, 15 Jul 2023 15:57:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 14744C433CB;
+        Sat, 15 Jul 2023 15:57:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689436655;
+        bh=RWJwEhnf9ue0Z+WjssyNBHzxXS5l1v9lxxuTPPH+4Y4=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=QXWDWAmMz4KGHGg0K/gKMR316/TumTdW2hhoWLFR1Lit0/i838bJWpL5FK072GfSy
+         AopyzVgTwBenha5kWuEbgsugyer8rLhV4rLC/0k3IS64Te1LdGuykRgYZ3a0zNcD0z
+         RAnZzcUE3WWigMKNiR149Z/stFRz7FWAkwrxLeSXod8EhYibAKRz7YX6dSu3igAg6G
+         0g10+j+y0bXo7GXV7M4UJ0kBmyjGCxBDidIf97yiLKL0NW55TxbW4QcovJAURq+Gg2
+         UErn9UzPDZz1X9/jyXm2aBCG/fsACGcje0Es2QhUzdVxbz1R0hekB7vgDEEd5VziEx
+         1sYHwxf7jsbvw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id EFE29E4508D;
+        Sat, 15 Jul 2023 15:57:34 +0000 (UTC)
+Subject: Re: [GIT PULL] SPI fixes for v6.5-rc1
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20230715115326.333B8C433C8@smtp.kernel.org>
+References: <20230715115326.333B8C433C8@smtp.kernel.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20230715115326.333B8C433C8@smtp.kernel.org>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-fix-v6.5-rc1
+X-PR-Tracked-Commit-Id: 54ccc8758ef4d29de9e8fdb711c852abbdd4103a
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 831fe284d8275987596b7d640518dddba5735f61
+Message-Id: <168943665497.17130.8459550455688557328.pr-tracker-bot@kernel.org>
+Date:   Sat, 15 Jul 2023 15:57:34 +0000
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-of_match_device() may fail and returns a NULL pointer.
+The pull request you sent on Sat, 15 Jul 2023 12:53:19 +0100:
 
-Fix this by checking the return value of of_match_device().
+> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-fix-v6.5-rc1
 
-Fixes: 64ad7f6438f3 ("iio: adc: stm32: introduce compatible data cfg")
-Signed-off-by: Zhang Shurong <zhang_shurong@foxmail.com>
----
- drivers/iio/adc/stm32-adc-core.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/831fe284d8275987596b7d640518dddba5735f61
 
-diff --git a/drivers/iio/adc/stm32-adc-core.c b/drivers/iio/adc/stm32-adc-core.c
-index 48f02dcc81c1..70011fdbf5f6 100644
---- a/drivers/iio/adc/stm32-adc-core.c
-+++ b/drivers/iio/adc/stm32-adc-core.c
-@@ -706,6 +706,8 @@ static int stm32_adc_probe(struct platform_device *pdev)
- 	struct stm32_adc_priv *priv;
- 	struct device *dev = &pdev->dev;
- 	struct device_node *np = pdev->dev.of_node;
-+	const struct of_device_id *of_id;
-+
- 	struct resource *res;
- 	u32 max_rate;
- 	int ret;
-@@ -718,8 +720,11 @@ static int stm32_adc_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 	platform_set_drvdata(pdev, &priv->common);
- 
--	priv->cfg = (const struct stm32_adc_priv_cfg *)
--		of_match_device(dev->driver->of_match_table, dev)->data;
-+	of_id = of_match_device(dev->driver->of_match_table, dev);
-+	if (!of_id)
-+		return -ENODEV;
-+
-+	priv->cfg = (const struct stm32_adc_priv_cfg *)of_id->data;
- 	priv->nb_adc_max = priv->cfg->num_adcs;
- 	spin_lock_init(&priv->common.lock);
- 
+Thank you!
+
 -- 
-2.30.2
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
