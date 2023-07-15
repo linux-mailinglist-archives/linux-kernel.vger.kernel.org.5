@@ -2,153 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 158F7754662
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 04:47:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 935E2754666
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 04:47:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230181AbjGOCrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 22:47:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53556 "EHLO
+        id S229502AbjGOCrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 22:47:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbjGOCrQ (ORCPT
+        with ESMTP id S229981AbjGOCrd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 22:47:16 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30C741980;
-        Fri, 14 Jul 2023 19:47:15 -0700 (PDT)
+        Fri, 14 Jul 2023 22:47:33 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DD9735AC;
+        Fri, 14 Jul 2023 19:47:30 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BBDB561E19;
-        Sat, 15 Jul 2023 02:47:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B65F7C433C8;
-        Sat, 15 Jul 2023 02:47:12 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D05F361E26;
+        Sat, 15 Jul 2023 02:47:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05EEFC433C7;
+        Sat, 15 Jul 2023 02:47:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689389234;
-        bh=cSL9tSXE1IYkMTAzMwc2gHb95tSzr+oNTr7zMsZ9vDE=;
+        s=k20201202; t=1689389249;
+        bh=u85/vf6ROEFLRTj+zJXTL4S/kz2IqkicsRjV13SwxbA=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CqCnKzlOw+c5jOXlp0PuUA0EL9dIzvtBPSgh8F0gOLHJ/jgfYWhBDXBs9q3iQIqdJ
-         kPmdeohANF8QOE26tIyLiEkzmqXEMQ7Xgh4Sb4F9RzhElqnbv/DXRg7Xglt8+8F5Tx
-         AmI3tC8lfFdDxA3Ji80o83oRFLu3/YA1tpIEmnqzmWVGM+ge7225yZRy9gkjW94U0w
-         Ms0+LAxH6W0GtpEk360OpAUPHpNDjbBYmouNOpiKDoLnfz/1D+lm8W9BfVCdjokevN
-         6JAeg/62rVzsY/jP2tTyDd94I9lAIuTPzoyHUDt+/5jLKK+qqURCrVk3k3M2QMyl3S
-         viiIK1nEz4k+w==
-Received: (nullmailer pid 875753 invoked by uid 1000);
-        Sat, 15 Jul 2023 02:47:11 -0000
-Date:   Fri, 14 Jul 2023 20:47:11 -0600
+        b=WeNH8yJolg21n1tVQQVHUeBZAnvLt6lrhqi08lI7fnAAQSpaWSlFUJQif62xNnTPj
+         rrsDErxyeXnYu73dOKHYseuMrj8N9hG1qyJTIBsBvlX2/Im8veciZfCPtMLW4dALYI
+         CAV1v1GrGepq0lVv87YbScJrHJrUesjWgTXaq8M7UkPSwXJ9TWu0HkVDz8EyTWNkBS
+         0s7xU3JIn/rO+Qy5ARWQq8bYv8Bv5qwj0FvFnlrw3fAmblw9eAnkB5MISm2wOdylED
+         7G7V484ng2piTFbUhovkSFl4wjOKHbjIL90Q40UCUFPW2SHaBzVIcDNlsXv67oilAC
+         9XJRavlfgd6qw==
+Received: (nullmailer pid 876115 invoked by uid 1000);
+        Sat, 15 Jul 2023 02:47:27 -0000
+Date:   Fri, 14 Jul 2023 20:47:27 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Samin Guo <samin.guo@starfivetech.com>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        netdev@vger.kernel.org, Peter Geis <pgwipeout@gmail.com>,
-        Frank <Frank.Sae@motor-comm.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Conor Dooley <conor@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Yanhong Wang <yanhong.wang@starfivetech.com>
-Subject: Re: [PATCH v4 1/2] dt-bindings: net: motorcomm: Add pad driver
- strength cfg
-Message-ID: <20230715024711.GB872287-robh@kernel.org>
-References: <20230714101406.17686-1-samin.guo@starfivetech.com>
- <20230714101406.17686-2-samin.guo@starfivetech.com>
+To:     Huqiang Qin <huqiang.qin@amlogic.com>
+Cc:     neil.armstrong@linaro.org, linux-gpio@vger.kernel.org,
+        robh+dt@kernel.org, brgl@bgdev.pl, andy@kernel.org,
+        linus.walleij@linaro.org, linux-amlogic@lists.infradead.org,
+        khilman@baylibre.com, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, linux-kernel@vger.kernel.org,
+        martin.blumenstingl@googlemail.com, jbrunet@baylibre.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH V3 1/2] dt-bindings: pinctrl: Add compatibles for Amlogic
+ C3 SoCs
+Message-ID: <20230715024727.GC872287-robh@kernel.org>
+References: <20230714122441.3098337-1-huqiang.qin@amlogic.com>
+ <20230714122441.3098337-2-huqiang.qin@amlogic.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230714101406.17686-2-samin.guo@starfivetech.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230714122441.3098337-2-huqiang.qin@amlogic.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 06:14:05PM +0800, Samin Guo wrote:
-> The motorcomm phy (YT8531) supports the ability to adjust the drive
-> strength of the rx_clk/rx_data.
+
+On Fri, 14 Jul 2023 20:24:40 +0800, Huqiang Qin wrote:
+> Add a new compatible name for Amlogic C3 pin controller, and add
+> a new dt-binding header file which document the detail pin names.
 > 
-> The YT8531 RGMII LDO voltage supports 1.8V/3.3V, and the
-> LDO voltage can be configured with hardware pull-up resistors to match
-> the SOC voltage (usually 1.8V). The software can read the registers
-> 0xA001 obtain the current LDO voltage value.
-> 
-> When we configure the drive strength, we need to read the current LDO
-> voltage value to ensure that it is a legal value at that LDO voltage.
-> 
-> Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
-> Signed-off-by: Samin Guo <samin.guo@starfivetech.com>
+> Signed-off-by: Huqiang Qin <huqiang.qin@amlogic.com>
 > ---
->  .../bindings/net/motorcomm,yt8xxx.yaml        | 46 +++++++++++++++++++
->  1 file changed, 46 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/net/motorcomm,yt8xxx.yaml b/Documentation/devicetree/bindings/net/motorcomm,yt8xxx.yaml
-> index 157e3bbcaf6f..097bf143af35 100644
-> --- a/Documentation/devicetree/bindings/net/motorcomm,yt8xxx.yaml
-> +++ b/Documentation/devicetree/bindings/net/motorcomm,yt8xxx.yaml
-> @@ -52,6 +52,52 @@ properties:
->        for a timer.
->      type: boolean
->  
-> +  motorcomm,rx-clk-driver-strength:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-
-As the units are uA, drop the type and add '-microamp' suffix. 
-'motorcomm,rx-clk-drv-microamp' is probably sufficient.
-
-> +    description: |
-> +      drive strength of rx_clk rgmii pad.
-> +      |----------------------------------|
-> +      |        rx_clk ds map table       |
-> +      |----------------------------------|
-> +      | DS(3b) |  wol@1.8v  |  wol@3.3v  |
-> +      |________|_________________________|
-> +      |        | current(uA)| current(uA)|
-> +      |   000  |     1200   |    3070    |
-> +      |   001  |     2100   |    4080    |
-> +      |   010  |     2700   |    4370    |
-> +      |   011  |     2910   |    4680    |
-> +      |   100  |     3110   |    5020    |
-> +      |   101  |     3600   |    5450    |
-> +      |   110  |     3970   |    5740    |
-> +      |   111  |     4350   |    6140    |
-> +      |--------|------------|------------|
-> +    enum: [ 1200, 2100, 2700, 2910, 3070, 3110, 3600, 3970,
-> +            4080, 4350, 4370, 4680, 5020, 5450, 5740, 6140 ]
-> +    default: 2910
-> +
-> +  motorcomm,rx-data-driver-strength:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: |
-> +      drive strength of rx_data/rx_ctl rgmii pad.
-> +      |----------------------------------|
-> +      |        rx_data ds map table      |
-> +      |----------------------------------|
-> +      | DS(3b) |  wol@1.8v  |  wol@3.3v  |
-> +      |________|_________________________|
-> +      |        | current(uA)| current(uA)|
-> +      |   000  |     1200   |    3070    |
-> +      |   001  |     2100   |    4080    |
-> +      |   010  |     2700   |    4370    |
-> +      |   011  |     2910   |    4680    |
-> +      |   100  |     3110   |    5020    |
-> +      |   101  |     3600   |    5450    |
-> +      |   110  |     3970   |    5740    |
-> +      |   111  |     4350   |    6140    |
-> +      |--------|------------|------------|
-> +    enum: [ 1200, 2100, 2700, 2910, 3070, 3110, 3600, 3970,
-> +            4080, 4350, 4370, 4680, 5020, 5450, 5740, 6140 ]
-> +    default: 2910
-> +
->    motorcomm,tx-clk-adj-enabled:
->      description: |
->        This configuration is mainly to adapt to VF2 with JH7110 SoC.
-> -- 
-> 2.17.1
+> V1 -> V2:
+>   Unchanged.
+> V2 -> V3:
+>   Updated commit message, and compatible are sorted alphabetically.
 > 
+>  .../pinctrl/amlogic,meson-pinctrl-a1.yaml     |  1 +
+>  include/dt-bindings/gpio/amlogic-c3-gpio.h    | 72 +++++++++++++++++++
+>  2 files changed, 73 insertions(+)
+>  create mode 100644 include/dt-bindings/gpio/amlogic-c3-gpio.h
+> 
+
+Reviewed-by: Rob Herring <robh@kernel.org>
+
