@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54B3D754767
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 09:57:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0F2B75476A
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 09:59:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230029AbjGOH5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 03:57:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39378 "EHLO
+        id S230085AbjGOH7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 03:59:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229709AbjGOH5j (ORCPT
+        with ESMTP id S229473AbjGOH7S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 03:57:39 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 190473593;
-        Sat, 15 Jul 2023 00:57:38 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-991fe70f21bso367630966b.3;
-        Sat, 15 Jul 2023 00:57:38 -0700 (PDT)
+        Sat, 15 Jul 2023 03:59:18 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3471535B3;
+        Sat, 15 Jul 2023 00:59:17 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-52173d4e9f9so470587a12.0;
+        Sat, 15 Jul 2023 00:59:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689407856; x=1691999856;
+        d=gmail.com; s=20221208; t=1689407955; x=1691999955;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1n7E0eBFrZXOyOxg2KTx80+Vuh2zZMToGT9fecLUZls=;
-        b=UzSxv0Gj3nPmFxJzUfAMXFAYdoY+QBzH2c6TS3EAOlMAjQe7zJKQX7NOeWCCzdtUG8
-         e41KjvlUuMGLSicG4a+xRGTnzNbVETJTkAlbfQRTEGpCpQ3a6ffYNk8A7qdzMAMsnlbk
-         MF0y+UIXYovVpnNDAvugzOntaMmlGlBG4ytTOUo1Vnqe2w53wB1UINvupsm2bxKULsGj
-         bSKiW1xe8tZGkeGQcmDcEIsoZ+fZFjFyRhPyKYpp291gCyIfn757xSTRp/XhfbIjgcFC
-         /jVUTs+Col+uUzD8RyvxcTl8wHlShD2MihGIpPwGFSCYnvpZKHwg/ClGMEWmf7uWaOdJ
-         pqvg==
+        bh=ZNEqhSaxQJgR+PH3sB9F83nBN4e0Vd3/2Q8uF01FsmA=;
+        b=pzLUv5prOZRQXGNtnR6gzKRQlsR2o/bhYUTfemUgusrYU1ID44kDVnka+/EMEroHRk
+         Ck+xXSfK7v9gwxTJ3dvsMh/wp8pFMvEqf5DR2AxOaka5qHzWp/Xm826mWfU5scFPkWrS
+         9G9cHXo9kUhsKscMVVPL1HapobQyiaRr13arTig1b/sCanyvWeZDEvSIoPItxJL0+iWQ
+         zUjYQKoWPsonol8gWruRTrGxDKHXPyQi1IuwrCdqdpJIIA70pY22SpR43bAZRMIXVXEP
+         OX+9WsBLO618dWfPhY2KO8ZPWhmCbCdwQGVGtCvXDb42YNcQglwXUpHh52JM8tP+/+uZ
+         xbuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689407856; x=1691999856;
+        d=1e100.net; s=20221208; t=1689407955; x=1691999955;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1n7E0eBFrZXOyOxg2KTx80+Vuh2zZMToGT9fecLUZls=;
-        b=anT8huo0YdcC8gYsOv/q5MCoEWqj8UH4P+4SsxrYgfh6mKmXAULcR1c/jivRELosfs
-         eE/eUeGIt0Sz9NZIPH7JH6MxhwuQz148Q2FrW3CSuHwhhxlWZAcKFdsdVcZJzjCyh/mn
-         PYhX6RWShnt1HBIfdIQBBiv4AYCEX5oZRS2bYUUmiPEmork4HEuSijVaz0U6EqON3xdP
-         qQKAw+jVum/8mnr7i5TVQ9i7YePlJ1RhsY4CECVIpIh8MISKXrX+ggw9q/Ru1tc1Hf6C
-         BdWBqlCMe4x8+uJ5SSYmz57vzQwUlwvB+GVk8sxOjGITHBru91A5/4kwfUTDJZDVE06J
-         8fRg==
-X-Gm-Message-State: ABy/qLZBDqF7fjIOuaV/BDIMTUy0WMfs+4fqyv7gT0QVVukQhldfrcPf
-        7Sg3+nKogyqCROLdWYJvjCkgW1JhPjcg8K6qFvs=
-X-Google-Smtp-Source: APBJJlF+bq9EMD3kISbfhZApaeacBx43bZSftShN+8aU/Hj1mYhuTatXvgzQFPg7cp4sGZUBefWwE43f+lTDLDdwmpM=
-X-Received: by 2002:a17:907:2ceb:b0:982:45ca:ac06 with SMTP id
- hz11-20020a1709072ceb00b0098245caac06mr6407189ejc.60.1689407856374; Sat, 15
- Jul 2023 00:57:36 -0700 (PDT)
+        bh=ZNEqhSaxQJgR+PH3sB9F83nBN4e0Vd3/2Q8uF01FsmA=;
+        b=WEam1OU3Kapx8XcIJE2MithHBtQ/anzZzGbnRAAuq81Nm9qFk1W74KqhmAtqCnw4BG
+         bz1O9JAwWh/EezH1klZuVHRXdY/zAw3u75ANUnGvVo95DqXdMy1ib2FNRy4rqmrpBAfI
+         JhLl5R2ytN6xtCsaqOp4/CyRGTM5sOp9DDomHdsnsoN/d8/CyEuCy3Cb26ukeC37Pd9B
+         djAZl8tTf4cHrb0Q1P/gyBURxNrJJsG0By2GmVRi610fDRiwwTeWqa+d6gYnLC6PbJK5
+         jn7X1ILQpcrGLZ2Q4Q1gVFhgRBg6cIVoPMs1X8Yf0JQPqHwJVQZog3eumVOTHBuYAK6c
+         3/uA==
+X-Gm-Message-State: ABy/qLYtxX9I1rulOG2nS67OyUzq23cOJwj2n91F+leqWtfG0hv+kLjp
+        Sq4aNv3HMMOvTHYnubt39P+FtJ5q7dVYnkMZoBw=
+X-Google-Smtp-Source: APBJJlGOf08UJbJMLlmC5hVxMxwOrYp1gReM9BViYZmDAGEAfjqIN8Il7xBKePQ62d+Im/7k5IAz9gT8+o/29wVQZfI=
+X-Received: by 2002:aa7:c3d6:0:b0:518:6a99:cac3 with SMTP id
+ l22-20020aa7c3d6000000b005186a99cac3mr6460062edr.31.1689407955625; Sat, 15
+ Jul 2023 00:59:15 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230715010407.1751715-1-fabrizio.castro.jz@renesas.com> <20230715010407.1751715-10-fabrizio.castro.jz@renesas.com>
-In-Reply-To: <20230715010407.1751715-10-fabrizio.castro.jz@renesas.com>
+References: <20230715010407.1751715-1-fabrizio.castro.jz@renesas.com> <20230715010407.1751715-11-fabrizio.castro.jz@renesas.com>
+In-Reply-To: <20230715010407.1751715-11-fabrizio.castro.jz@renesas.com>
 From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sat, 15 Jul 2023 10:57:00 +0300
-Message-ID: <CAHp75VdEyYM4LgH2WpwoUteBogDKguSyT8E=e4P21sTr0tRoJQ@mail.gmail.com>
-Subject: Re: [PATCH 09/10] spi: rzv2m-csi: Get rid of the x_trg{_words} tables
+Date:   Sat, 15 Jul 2023 10:58:39 +0300
+Message-ID: <CAHp75Vc5UAec05TKF2A21YoNtvMz160v4SeOkDAsrU+i8b88YA@mail.gmail.com>
+Subject: Re: [PATCH 10/10] spi: rzv2m-csi: Make use of device_set_node
 To:     Fabrizio Castro <fabrizio.castro.jz@renesas.com>
 Cc:     Mark Brown <broonie@kernel.org>,
         Geert Uytterhoeven <geert+renesas@glider.be>,
@@ -77,12 +77,12 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On Sat, Jul 15, 2023 at 4:04=E2=80=AFAM Fabrizio Castro
 <fabrizio.castro.jz@renesas.com> wrote:
 >
-> Table x_trg can be replaced with ilog2(), and table x_trg_words
-> can be replaced with rounddown_pow_of_two().
-> Replace the tables usage with the corresponding macros.
-> While at it, remove a couple of unnecessary empty lines.
+> Use device_set_node instead of assigning controller->dev.of_node
+> directly.
 
-Suggested-by: ?
+"...because it also sets the firmware node."
+
+You probably need to add property.h, if not added yet.
 
 --=20
 With Best Regards,
