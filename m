@@ -2,327 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A97E57545A6
+	by mail.lfdr.de (Postfix) with ESMTP id F07F77545A7
 	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 02:36:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230056AbjGOAad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 20:30:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56332 "EHLO
+        id S230151AbjGOAal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 20:30:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbjGOAab (ORCPT
+        with ESMTP id S229455AbjGOAak (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 20:30:31 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5892E3A98
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 17:30:29 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-3159d75606dso2517135f8f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 17:30:29 -0700 (PDT)
+        Fri, 14 Jul 2023 20:30:40 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66E073A99
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 17:30:39 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-c5cea5773e8so2072666276.1
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 17:30:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google; t=1689381028; x=1691973028;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9ptAxBcW7aHFl51V3a6EjybWpG1k8jXl2fJumuPzCWI=;
-        b=OKBWZD7hUGWSmN+3mpSUHI7/TIUCwtTCSVhJFhqPPb2/YEUL9MtgCkWbZCQbhlPV26
-         ZU9n46fYO9n14gKdH9pdnznVF3xxgsNFqBTEzlvYTseWX2rakSjIVOCOVJv8Woyh/P6/
-         wutIaHQINaqQLf1SxDMmwhv/hdu/yneXvriNw=
+        d=google.com; s=20221208; t=1689381038; x=1691973038;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FHKwfmmmzPP47eD0/lc7LkRrZ2d2K2NzwRoC7JoUoLc=;
+        b=a+FzRVPiZrW0fqmlFJABpuG8Y6bGxU0TqA8TqCxHRZGgObxX5SSgo0oB/FUgNQLgEV
+         FnKY6jtRfmR6N1X2EdhsLXkGnsOs5ZX7WY1Np2nRkJAroDmflKvdxidI2RA22XtNjA7S
+         ksvMF2+/gACQLm2dupXD7q6eHQmmgjM8GptqORnXW/68I+uw58SCs66dnsWzhIGYjvbQ
+         IsviHBtVGyoohHaiivukhm9S1lT7rHdyuzDrUT1pxzIq/A0h3zTVBEFp4Nq3vjtaY6SN
+         LSMvKFW154ElxAMDejVexeo7imsNyG9vqc4KbPWDP7Iw7AU5YCYD86+eG+Sr5oohd97d
+         PbTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689381028; x=1691973028;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9ptAxBcW7aHFl51V3a6EjybWpG1k8jXl2fJumuPzCWI=;
-        b=W4LfkvGbJDGyGgl0Un8d7AC22RSDftcGLX9YYRWos46kXk+6gkQHE5T5CH+bLNFDYO
-         U5o0IrMn1eI6u6/BGo0AZSUHFLknXM40RAdmwlKMzKIPEkupDF/0MYCwEgsa2BPlVVDa
-         tzZ0kxETc/So2BFDwMmVu5KM+ibqWniOiwDtK51ftsZqC5XXA3CHsZhgkhHHQe+YyDqL
-         S7ZqsEDaY9zXaVoodw3NXBh0NjBDfqO3TLAGWrH79i4+EyDaFPJofsbkUP3V7HsPIrJw
-         GAgBhGrthjvHCdxPGiMo8oyQVqO0CcYQ0U4VTFWPrOkUn8jaG1SzhTit2FoTIQCMCiZT
-         TUuA==
-X-Gm-Message-State: ABy/qLZLZZqXw3VlpyPWICVIDUfBKJ8jLRrqGIDW4fwGiqWuV5KHQRty
-        aBjAhhRG+ko/+ylzl/KpYFoY8A5E/up7noZJ7eVYmtdR3JgwW4c3T0v/oA==
-X-Google-Smtp-Source: APBJJlHfci5eY4p/RZE6lnI2l2YdLECrCtLHmAVkgLDkkj7nPdNt5HWBvk0PfmPVd1Sc0Jzre1QRlRPaQxHbfFnP7I0=
-X-Received: by 2002:a5d:514b:0:b0:313:e9d7:108f with SMTP id
- u11-20020a5d514b000000b00313e9d7108fmr4937042wrt.33.1689381027716; Fri, 14
- Jul 2023 17:30:27 -0700 (PDT)
-MIME-Version: 1.0
-References: <CABWYdi0c6__rh-K7dcM_pkf9BJdTRtAU08M43KO9ME4-dsgfoQ@mail.gmail.com>
- <20230706062045.xwmwns7cm4fxd7iu@google.com> <CABWYdi2pBaCrdKcM37oBomc+5W8MdRp1HwPpOExBGYfZitxyWA@mail.gmail.com>
- <d3f3a7bc-b181-a408-af1d-dd401c172cbf@redhat.com> <CABWYdi2iWYT0sHpK74W6=Oz6HA_3bAqKQd4h+amK0n3T3nge6g@mail.gmail.com>
-In-Reply-To: <CABWYdi2iWYT0sHpK74W6=Oz6HA_3bAqKQd4h+amK0n3T3nge6g@mail.gmail.com>
-From:   Ivan Babrou <ivan@cloudflare.com>
-Date:   Fri, 14 Jul 2023 17:30:16 -0700
-Message-ID: <CABWYdi3YNwtPDwwJWmCO-ER50iP7CfbXkCep5TKb-9QzY-a40A@mail.gmail.com>
-Subject: Re: Expensive memory.stat + cpu.stat reads
-To:     Waiman Long <longman@redhat.com>
-Cc:     Shakeel Butt <shakeelb@google.com>, cgroups@vger.kernel.org,
-        Linux MM <linux-mm@kvack.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        d=1e100.net; s=20221208; t=1689381038; x=1691973038;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=FHKwfmmmzPP47eD0/lc7LkRrZ2d2K2NzwRoC7JoUoLc=;
+        b=S8Dueaq259rmYGWlwgjvVUGG9VI9P6bi8yKBhXh9AfV/TcsLoQQuEK9BYEta9Xq4bk
+         lN4cUZikFMJIgq/ebufQ9fNYIKu8SibG6mlpVJvOHfj+eltXMOwucAHWchgr7B5FJm0Y
+         YKaFBrkvrrAhWtMkIjrvyZ4kEMKMS90Hbm6MEiHaLrHP30DjJOesb4+Zhpy2TcmH8Oj0
+         VXltOo1bgFazNabttRMA7e8A8H3Z50lhrH0cXvXXAaQ5ZLn8LrPbzUAOXiesZ2FcxYBq
+         LpvzmIItWsgUup39EJ0+fDjEV41l5i5XXyYQZPxjU4S5fMwwEFqXIpDWhJr37jWhm9Rk
+         kRZg==
+X-Gm-Message-State: ABy/qLa4dJXu40vFZ3t/WxoTWBvRgvWmKsWo8f7qnCNx8PT9w+4Nf8j+
+        tdkmpLyi8ky3YFTDqVUdVhbGn2Oze6Q=
+X-Google-Smtp-Source: APBJJlH9VCWaKch8qFYSR3IiJohKql/mJpccdhRIVYnUmRBlU/7KMw9WMaI3a/IEBvC+TXTYx41QlaSaT0E=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:ab81:0:b0:c5f:85f5:a0e5 with SMTP id
+ v1-20020a25ab81000000b00c5f85f5a0e5mr12471ybi.5.1689381038652; Fri, 14 Jul
+ 2023 17:30:38 -0700 (PDT)
+Date:   Fri, 14 Jul 2023 17:30:37 -0700
+In-Reply-To: <CAGtprH-VCqUgqK8gk40KaQZD8trXbWYk8KmA612Og1ep1Dko=Q@mail.gmail.com>
+Mime-Version: 1.0
+References: <ZFWli2/H5M8MZRiY@google.com> <diqzr0pb2zws.fsf@ackerleytng-ctop.c.googlers.com>
+ <ZLGiEfJZTyl7M8mS@google.com> <CAGtprH-VCqUgqK8gk40KaQZD8trXbWYk8KmA612Og1ep1Dko=Q@mail.gmail.com>
+Message-ID: <ZLHorQjmNe1Qe5Ne@google.com>
+Subject: Re: Rename restrictedmem => guardedmem? (was: Re: [PATCH v10 0/9]
+ KVM: mm: fd-based approach for supporting KVM)
+From:   Sean Christopherson <seanjc@google.com>
+To:     Vishal Annapurve <vannapurve@google.com>
+Cc:     Ackerley Tng <ackerleytng@google.com>, david@redhat.com,
+        chao.p.peng@linux.intel.com, pbonzini@redhat.com,
+        vkuznets@redhat.com, jmattson@google.com, joro@8bytes.org,
+        mail@maciej.szmigiero.name, vbabka@suse.cz,
+        yu.c.zhang@linux.intel.com, kirill.shutemov@linux.intel.com,
+        dhildenb@redhat.com, qperret@google.com, tabba@google.com,
+        michael.roth@amd.com, wei.w.wang@intel.com, rppt@kernel.org,
+        liam.merwick@oracle.com, isaku.yamahata@gmail.com,
+        jarkko@kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, hughd@google.com, brauner@kernel.org
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 4:25=E2=80=AFPM Ivan Babrou <ivan@cloudflare.com> w=
-rote:
-> > My understanding of mem-stat and cpu-stat is that they are independent
-> > of each other. In theory, reading one shouldn't affect the performance
-> > of reading the others. Since you are doing mem-stat and cpu-stat readin=
-g
-> > repetitively in a loop, it is likely that all the data are in the cache
-> > most of the time resulting in very fast processing time. If it happens
-> > that the specific memory location of mem-stat and cpu-stat data are suc=
-h
-> > that reading one will cause the other data to be flushed out of the
-> > cache and have to be re-read from memory again, you could see
-> > significant performance regression.
+On Fri, Jul 14, 2023, Vishal Annapurve wrote:
+> On Fri, Jul 14, 2023 at 12:29=E2=80=AFPM Sean Christopherson <seanjc@goog=
+le.com> wrote:
+> > ...
+> > And _if_ there is a VMM that instantiates memory before KVM_CREATE_VM, =
+IMO making
+> > the ioctl() /dev/kvm scoped would have no meaningful impact on adapting=
+ userspace
+> > to play nice with the required ordering.  If userspace can get at /dev/=
+kvm, then
+> > it can do KVM_CREATE_VM, because the only input to KVM_CREATE_VM is the=
+ type, i.e.
+> > the only dependencies for KVM_CREATE_VM should be known/resolved long b=
+efore the
+> > VMM knows it wants to use gmem.
+>=20
+> I am not sure about the benefits of tying gmem creation to any given
+> kvm instance.
+
+IMO, making gmem->kvm immutable is very nice to have, e.g. gmem->kvm will a=
+lways be
+valid and the refcounting rules are fairly straightforward. =20
+
+> I think the most important requirement here is that a given gmem range is=
+ always
+> tied to a single VM=20
+
+I'm not convinced that that requirement will always hold true (see below).
+
+> This can be enforced when memslots are bound to the gmem files.
+
+Yeah, but TBH, waiting until the guest faults in memory to detect an invali=
+d memslot
+is gross.  And looking more closely, taking filemap_invalidate_lock(), i.e.=
+ taking
+a semaphore for write, in the page fault path is a complete non-starter.  T=
+he
+"if (existing_slot =3D=3D slot)" check is likely a non-starter, because KVM=
+ handles
+FLAGS_ONLY memslot updates, e.g. toggling dirty logging, by duplicating and
+replacing the memslot, not by updating the live memslot.
+
+> I believe "Required ordering" is that gmem files are created first and
+> then supplied while creating the memslots whose gpa ranges can
+> generate private memory accesses.
+> Is there any other ordering we want to enforce here?
+
+I wasn't talking about enforcing arbitrary ordering, I was simply talking a=
+bout
+what userspace literally needs to be able to do KVM_CREATE_GUEST_MEMFD.
+
+> > Practically, I think that gives us a clean, intuitive way to handle int=
+ra-host
+> > migration.  Rather than transfer ownership of the file, instantiate a n=
+ew file
+> > for the target VM, using the gmem inode from the source VM, i.e. create=
+ a hard
+> > link.  That'd probably require new uAPI, but I don't think that will be=
+ hugely
+> > problematic.  KVM would need to ensure the new VM's guest_memfd can't b=
+e mapped
+> > until KVM_CAP_VM_MOVE_ENC_CONTEXT_FROM (which would also need to verify=
+ the
+> > memslots/bindings are identical), but that should be easy enough to enf=
+orce.
 > >
-> > It is one of the possible causes, but I may be wrong.
->
-> Do you think it's somewhat similar to how iterating a matrix in rows
-> is faster than in columns due to sequential vs random memory reads?
->
-> * https://stackoverflow.com/q/9936132
-> * https://en.wikipedia.org/wiki/Row-_and_column-major_order
-> * https://en.wikipedia.org/wiki/Loop_interchange
->
-> I've had a similar suspicion and it would be good to confirm whether
-> it's that or something else. I can probably collect perf counters for
-> different runs, but I'm not sure which ones I'll need.
->
-> In a similar vein, if we could come up with a tracepoint that would
-> tell us the amount of work done (or any other relevant metric that
-> would help) during rstat flushing, I can certainly collect that
-> information as well for every reading combination.
+> > That way, a VM, its memslots, and its SPTEs are tied to the file, while=
+ allowing
+> > the memory and the *contents* of memory to outlive the VM, i.e. be effe=
+ctively
+> > transfered to the new target VM.  And we'll maintain the invariant that=
+ each
+> > guest_memfd is bound 1:1 with a single VM.
+> >
+> > As above, that should also help us draw the line between mapping memory=
+ into a
+> > VM (file), and freeing/reclaiming the memory (inode).
+> >
+> > There will be extra complexity/overhead as we'll have to play nice with=
+ the
+> > possibility of multiple files per inode, e.g. to zap mappings across al=
+l files
+> > when punching a hole, but the extra complexity is quite small, e.g. we =
+can use
+> > address_space.private_list to keep track of the guest_memfd instances a=
+ssociated
+> > with the inode.
+>=20
+> Are we talking about a different usecase of sharing gmem fd across VMs
+> other than intra-host migration?
 
-Since cgroup_rstat_flush_locked appears in flamegraphs for both fast
-(discrete) and slow (combined) cases, I grabbed some stats for it:
+Well, I am :-)  I don't want to build all of this on an assumption that we'=
+ll
+never ever want to share a guest_memfd across multiple VMs.  E.g. SEV (and =
+SEV-ES?)
+already have the migration helper concept, and I've heard more than a few r=
+umblings
+of TDX utilizing helper TDs.  IMO, it's not far fetched at all to think tha=
+t there
+will eventually be a need to let multiple VMs share a guest_memfd.
 
-* Slow:
+> If not, ideally only one of the files should be catering to the guest
+> memory mappings at any given time. i.e. any inode should be ideally
+> bound to (through the file) a single kvm instance,
 
-completed: 19.43s [manual / mem-stat + cpu-stat]
+Why?  Honest question, what does it buy us?
 
-$ sudo /usr/share/bcc/tools/funclatency -uT cgroup_rstat_flush_locked
-Tracing 1 functions for "cgroup_rstat_flush_locked"... Hit Ctrl-C to end.
-^C
-00:12:55
-     usecs               : count     distribution
-         0 -> 1          : 0        |                                      =
-  |
-         2 -> 3          : 0        |                                      =
-  |
-         4 -> 7          : 0        |                                      =
-  |
-         8 -> 15         : 0        |                                      =
-  |
-        16 -> 31         : 0        |                                      =
-  |
-        32 -> 63         : 0        |                                      =
-  |
-        64 -> 127        : 1        |                                      =
-  |
-       128 -> 255        : 191      |************                          =
-  |
-       256 -> 511        : 590      |**************************************=
-**|
-       512 -> 1023       : 186      |************                          =
-  |
-      1024 -> 2047       : 2        |                                      =
-  |
-      2048 -> 4095       : 0        |                                      =
-  |
-      4096 -> 8191       : 0        |                                      =
-  |
-      8192 -> 16383      : 504      |**********************************    =
-  |
-     16384 -> 32767      : 514      |**********************************    =
-  |
-     32768 -> 65535      : 3        |                                      =
-  |
-     65536 -> 131071     : 1        |                                      =
-  |
+For TDX and SNP intra-host migration, it should be easy enough to ensure th=
+e new
+VM can't create mappings before migration, and that the old VM can't create=
+ mappings
+or run after migration.  I don't see that being any harder if the source an=
+d
+dest use different files.
 
-avg =3D 8852 usecs, total: 17633268 usecs, count: 1992
+FWIW, it might be easier to hold off on this discussion until I post the RF=
+C
+(which is going to happen on Monday at this point), as then we'll have actu=
+al code
+to discuss.
 
-* Fast:
-
-completed:  0.95s [manual / mem-stat]
-completed:  0.05s [manual / cpu-stat]
-
-$ sudo /usr/share/bcc/tools/funclatency -uT cgroup_rstat_flush_locked
-Tracing 1 functions for "cgroup_rstat_flush_locked"... Hit Ctrl-C to end.
-^C
-00:13:27
-     usecs               : count     distribution
-         0 -> 1          : 0        |                                      =
-  |
-         2 -> 3          : 0        |                                      =
-  |
-         4 -> 7          : 499      |**************************************=
-**|
-         8 -> 15         : 253      |********************                  =
-  |
-        16 -> 31         : 191      |***************                       =
-  |
-        32 -> 63         : 41       |***                                   =
-  |
-        64 -> 127        : 12       |                                      =
-  |
-       128 -> 255        : 2        |                                      =
-  |
-       256 -> 511        : 2        |                                      =
-  |
-       512 -> 1023       : 0        |                                      =
-  |
-      1024 -> 2047       : 0        |                                      =
-  |
-      2048 -> 4095       : 0        |                                      =
-  |
-      4096 -> 8191       : 0        |                                      =
-  |
-      8192 -> 16383      : 34       |**                                    =
-  |
-     16384 -> 32767      : 21       |*                                     =
-  |
-
-avg =3D 857 usecs, total: 904762 usecs, count: 1055
-
-There's a different number of calls into cgroup_rstat_flush_locked and
-they are much slower in the slow case. There are also two bands in the
-slow case, with 8ms..32ms having the half of the calls.
-
-For mem_cgroup_css_rstat_flush:
-
-* Slow:
-
-completed: 32.77s [manual / mem-stat + cpu-stat]
-
-$ sudo /usr/share/bcc/tools/funclatency -uT mem_cgroup_css_rstat_flush
-Tracing 1 functions for "mem_cgroup_css_rstat_flush"... Hit Ctrl-C to end.
-^C
-00:21:25
-     usecs               : count     distribution
-         0 -> 1          : 93078    |*                                     =
-  |
-         2 -> 3          : 3397714  |**************************************=
-**|
-         4 -> 7          : 1009440  |***********                           =
-  |
-         8 -> 15         : 168013   |*                                     =
-  |
-        16 -> 31         : 93       |                                      =
-  |
-
-avg =3D 3 usecs, total: 17189289 usecs, count: 4668338
-
-* Fast:
-
-completed:  0.16s [manual / mem-stat]
-completed:  0.04s [manual / cpu-stat]
-
-$ sudo /usr/share/bcc/tools/funclatency -uT mem_cgroup_css_rstat_flush
-Tracing 1 functions for "mem_cgroup_css_rstat_flush"... Hit Ctrl-C to end.
-^C
-00:21:57
-     usecs               : count     distribution
-         0 -> 1          : 1441     |***                                   =
-  |
-         2 -> 3          : 18780    |**************************************=
-**|
-         4 -> 7          : 4826     |**********                            =
-  |
-         8 -> 15         : 732      |*                                     =
-  |
-        16 -> 31         : 1        |                                      =
-  |
-
-avg =3D 3 usecs, total: 89174 usecs, count: 25780
-
-There's an 181x difference in the number of calls into
-mem_cgroup_css_rstat_flush.
-
-Does this provide a clue? Perhaps cgroup_rstat_cpu_pop_updated is
-yielding a ton more iterations for some reason here?
-
-* https://elixir.bootlin.com/linux/v6.1/source/kernel/cgroup/rstat.c#L196
-
-It's inlined, but I can place a probe into the loop:
-
-      7         for_each_possible_cpu(cpu) {
-      8                 raw_spinlock_t *cpu_lock =3D
-per_cpu_ptr(&cgroup_rstat_cpu_lock,
-                                                               cpu);
-     10                 struct cgroup *pos =3D NULL;
-                        unsigned long flags;
-
-                        /*
-                         * The _irqsave() is needed because cgroup_rstat_lo=
-ck is
-                         * spinlock_t which is a sleeping lock on
-PREEMPT_RT. Acquiring
-                         * this lock with the _irq() suffix only
-disables interrupts on
-                         * a non-PREEMPT_RT kernel. The raw_spinlock_t
-below disables
-                         * interrupts on both configurations. The
-_irqsave() ensures
-                         * that interrupts are always disabled and
-later restored.
-                         */
-                        raw_spin_lock_irqsave(cpu_lock, flags);
-                        while ((pos =3D
-cgroup_rstat_cpu_pop_updated(pos, cgrp, cpu))) {
-                                struct cgroup_subsys_state *css;
-
-                                cgroup_base_stat_flush(pos, cpu);
-     26                         bpf_rstat_flush(pos, cgroup_parent(pos), cp=
-u);
-
-     28                         rcu_read_lock();
-     29                         list_for_each_entry_rcu(css,
-&pos->rstat_css_list,
-                                                        rstat_css_node)
-     31                                 css->ss->css_rstat_flush(css, cpu);
-     32                         rcu_read_unlock();
-                        }
-     34                 raw_spin_unlock_irqrestore(cpu_lock, flags);
-
-I added probes on both line 26 and line 31 to catch the middle and inner lo=
-ops.
-
-* Slow:
-
-completed: 32.97s [manual / mem-stat + cpu-stat]
-
- Performance counter stats for '/tmp/derp':
-
-         4,702,570      probe:cgroup_rstat_flush_locked_L26
-         9,301,436      probe:cgroup_rstat_flush_locked_L31
-
-* Fast:
-
-completed:  0.17s [manual / mem-stat]
-completed:  0.34s [manual / cpu-stat]
-
- Performance counter stats for '/tmp/derp':
-
-            31,769      probe:cgroup_rstat_flush_locked_L26
-            62,849      probe:cgroup_rstat_flush_locked_L31
-
-It definitely looks like cgroup_rstat_cpu_pop_updated is yielding a
-lot more positions.
-
-I'm going to sign off for the week, but let me know if I should place
-any more probes to nail this down.
+> as we we are planning to ensure that guest_memfd can't be mapped until
+> KVM_CAP_VM_MOVE_ENC_CONTEXT_FROM is invoked on the target side.
