@@ -2,158 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2788B754C04
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 22:23:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF636754C06
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 22:24:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229628AbjGOUXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 16:23:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44062 "EHLO
+        id S229986AbjGOUYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 16:24:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229805AbjGOUW6 (ORCPT
+        with ESMTP id S229632AbjGOUYB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 16:22:58 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D58D2707
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 13:22:57 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id 5614622812f47-3a1c162cdfeso2286686b6e.2
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 13:22:57 -0700 (PDT)
+        Sat, 15 Jul 2023 16:24:01 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2589F2707
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 13:24:00 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-682ae5d4184so791477b3a.1
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 13:24:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1689452576; x=1692044576;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=STm6LkRTWi6KPP077fUx+V22dGnylBXk6BWjTWf9c5Q=;
-        b=UplMPPtxWpR+M1tc1YmgYZwfsstBdqB/7ya0NgKvoPH4uS5+eZiyNMUGtlcCT/WGE5
-         Kkg95bU2jd6uaDNX09hN0jQhgcbYc7s6lslyObvmy1tzZlNJviIo5ZpqtGGfBkESlwDJ
-         hdpx9DywYD9wI9/lT2z44nS+iIVB0Gl7hEdLM=
+        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1689452639; x=1692044639;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=C5ipTEk38+I5oBx7wAgIhZddOYCjUGaNqRFhqSapiek=;
+        b=mJ9RNhgdcgY6iizvRIySM7HDyaRC9d2F2pJJy5ae+6N9O5a1uSjXAyLPh2E/lUHMOi
+         AcKAryYFkfJQIhR1LR7wrRnnz9PBea1HQHftWSBeUc884+A4/6WUjH03zaWAqExla86b
+         aleLbwNQmabnq3rlRD4X9xP0UjQ3yYnQFynkEMUGv4XR49GkU0+2O6yHKmdAqlw3YoMX
+         QAaH/2521yrQQfvUOiyafFzKEg0Fi0Mvak2lkDpi61jvyTXxdZBXCVztGiFWQuleWZCZ
+         uJRvY4ZzUHYWpQqzLnn3OxP7cmwPgpkCmbyKQ2VYxNDJM6Y1ePEoXQn9ULjSQqhk6YRr
+         pS3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689452576; x=1692044576;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=STm6LkRTWi6KPP077fUx+V22dGnylBXk6BWjTWf9c5Q=;
-        b=IyEsVRM7Fff7MVwUcOia4nRH6VaY7+bBFxD2RXSaTCWs9ogXh/Y5IkXWzjJqIEldZw
-         fRuP1E7ln0wXid+OD3puIcRvet/tNZRjsehkcYXthPjp0XCRuKFD+k8qEEqa/Yw2cwuj
-         YkS+TKa3+YyHNdTjpZxUCpjbszXructu8GD8rSIE1DLasoJgiEBXXCaIJzi/lCLzlhpW
-         ybkCsx2fuS8iAXNrSYEyUpxno3nxtN3XxyvRLMN3JmdCiIFHIKjRont600l4/7dzD2N1
-         HcuzRJh6b74rL6fvZSR/GOWEi4fm5sMsI0Fs7mVnoad5Za2PIjAJkQCin4jjGq8dBgyr
-         cpaA==
-X-Gm-Message-State: ABy/qLZDiJIY0v4yb3ZsduJh5eYBoJzeYnfarEOCmCAherkuZqotc7Nb
-        5nNct4KT+MhIbmI8AskSSuXafEIKx8bMnsOVh+8+6w==
-X-Google-Smtp-Source: APBJJlHJdHTFo7V2BQV74YAeVfMeCZgqlAxzMn625VyvO6ThFwBrne1mLIXfJmPujhAa+DkO3pLnXiid3t6cyJpMyFw=
-X-Received: by 2002:a05:6808:bd1:b0:38e:a824:27d3 with SMTP id
- o17-20020a0568080bd100b0038ea82427d3mr10093062oik.27.1689452576704; Sat, 15
- Jul 2023 13:22:56 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689452639; x=1692044639;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=C5ipTEk38+I5oBx7wAgIhZddOYCjUGaNqRFhqSapiek=;
+        b=Sjognd2XmEJnwihlgoNAbfg9dTw2UhX+5FR8T2FTyzY+vpHKWB2aJin52ylyAfQgEw
+         GOdYAEQpnMkb1q4yU+6BVDnE006Pe18S020XBqM0UaFJhNjiUWfFBX3wHHI5rugm5054
+         FjZHrrahZlO6kwGBABfwQccPOydfnpzFYcwu2Zhm5/OavTK6Dwfjhd2q4jxuNUOJPRdS
+         jLiEtzh3EhdPUXE8vl9idqpC1FDW7r/aeIY7UFRnJvnShuqMxdQFEN8IJoBlPebK5UAX
+         NS9XqAMwnH75mPiCIgCsC7CbD8K/NTV4e+c5H1yEmf6Df0e8pGDiXkgN60AanuGsmHDs
+         JTRg==
+X-Gm-Message-State: ABy/qLYnqmt4HFiWczpVLdce8CIAEtz2RYLRE3YyG9NYviYto/9rSshO
+        3Cw4JPz9nsRDsqTk1kzxfXC7rfJqb6Q/OVNOBvI=
+X-Google-Smtp-Source: APBJJlG55zwJP6OYGCnLkqE+WoYQ0lerl7qrGDRdfAU/AaQCuna9efk20gFxwgD9xS11rWNSioMIbQ==
+X-Received: by 2002:a05:6a20:4415:b0:134:76d5:d3fd with SMTP id ce21-20020a056a20441500b0013476d5d3fdmr909515pzb.0.1689452639549;
+        Sat, 15 Jul 2023 13:23:59 -0700 (PDT)
+Received: from [192.168.1.136] ([198.8.77.157])
+        by smtp.gmail.com with ESMTPSA id o17-20020a639211000000b00553ad4ae5e5sm9740941pgd.22.2023.07.15.13.23.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 15 Jul 2023 13:23:58 -0700 (PDT)
+Message-ID: <f58c25ac-4179-06e5-4110-06982ae34d86@kernel.dk>
+Date:   Sat, 15 Jul 2023 14:23:57 -0600
 MIME-Version: 1.0
-References: <20230714224809.3929539-1-pinkperfect2021@gmail.com>
-In-Reply-To: <20230714224809.3929539-1-pinkperfect2021@gmail.com>
-From:   Matthew Wang <matthewmwang@chromium.org>
-Date:   Sat, 15 Jul 2023 22:22:45 +0200
-Message-ID: <CABRiz0qR6j51QXZvNG2iZCK4__rB2w3VZ5kX+ZPWrVhuK02CyA@mail.gmail.com>
-Subject: Re: [PATCH v6] wifi: mwifiex: Fix OOB and integer underflow when rx packets
-To:     Polaris Pi <pinkperfect2021@gmail.com>
-Cc:     kuba@kernel.org, kuabhs@chromium.org, amitkarwar@gmail.com,
-        kvalo@kernel.org, ganapathi017@gmail.com,
-        sharvari.harisangam@nxp.com, huxinming820@gmail.com,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 5/5] io_uring: add IORING_OP_WAITID support
+Content-Language: en-US
+From:   Jens Axboe <axboe@kernel.dk>
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Christian Brauner <brauner@kernel.org>
+Cc:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230711204352.214086-1-axboe@kernel.dk>
+ <20230711204352.214086-6-axboe@kernel.dk>
+ <8431d207-5e52-4f8c-a12d-276836174bad@app.fastmail.com>
+ <048cfbce-5238-2580-2d53-2ca740e72d79@kernel.dk>
+ <bbc5f3cf-99f8-0695-1367-979301c64ecb@kernel.dk>
+ <20230714-grummeln-sitzgelegenheit-1157c2feac71@brauner>
+ <d53ed71a-3f57-4c5e-9117-82535aae7855@app.fastmail.com>
+ <ca82bd8b-5868-8fbb-6701-061220a1ff97@kernel.dk>
+ <57926544-3936-410f-ae0e-6eff266ea59c@app.fastmail.com>
+ <509f35fc-72dc-8676-4e3a-6bbc8d7eefb4@kernel.dk>
+In-Reply-To: <509f35fc-72dc-8676-4e3a-6bbc8d7eefb4@kernel.dk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Matthew Wang <matthewmwang@chromium.org>
+On 7/15/23 8:06?AM, Jens Axboe wrote:
+> On 7/15/23 1:12?AM, Arnd Bergmann wrote:
+>> On Fri, Jul 14, 2023, at 22:14, Jens Axboe wrote:
+>>> On 7/14/23 12:33?PM, Arnd Bergmann wrote:
+>>>> On Fri, Jul 14, 2023, at 17:47, Christian Brauner wrote:
+>>>>> On Tue, Jul 11, 2023 at 04:18:13PM -0600, Jens Axboe wrote:
+>>>>>>>> Does this require argument conversion for compat tasks?
+>>>>>>>>
+>>>>>>>> Even without the rusage argument, I think the siginfo
+>>>>>>>> remains incompatible with 32-bit tasks, unfortunately.
+>>>>>>>
+>>>>>>> Hmm yes good point, if compat_siginfo and siginfo are different, then it
+>>>>>>> does need handling for that. Would be a trivial addition, I'll make that
+>>>>>>> change. Thanks Arnd!
+>>>>>>
+>>>>>> Should be fixed in the current version:
+>>>>>>
+>>>>>> https://git.kernel.dk/cgit/linux/commit/?h=io_uring-waitid&id=08f3dc9b7cedbd20c0f215f25c9a7814c6c601cc
+>>>>>
+>>>>> In kernel/signal.c in pidfd_send_signal() we have
+>>>>> copy_siginfo_from_user_any() it seems that a similar version
+>>>>> copy_siginfo_to_user_any() might be something to consider. We do have
+>>>>> copy_siginfo_to_user32() and copy_siginfo_to_user(). But I may lack
+>>>>> context why this wouldn't work here.
+>>>>
+>>>> We could add a copy_siginfo_to_user_any(), but I think open-coding
+>>>> it is easier here, since the in_compat_syscall() check does not
+>>>> work inside of the io_uring kernel thread, it has to be
+>>>> "if (req->ctx->compat)" in order to match the wordsize of the task
+>>>> that started the request.
+>>>
+>>> Yeah, unifying this stuff did cross my mind when adding another one.
+>>> Which I think could still be done, you'd just need to pass in a 'compat'
+>>> parameter similar to how it's done for iovec importing.
+>>>
+>>> But if it's ok with everybody I'd rather do that as a cleanup post this.
+>>
+>> Sure, keeping that separate seem best.
+>>
+>> Looking at what copy_siginfo_from_user_any() actually does, I don't
+>> even think it's worth adapting copy_siginfo_to_user_any() for io_uring,
+>> since it's already just a trivial wrapper, and adding another
+>> argument would add more complexity overall than it saves.
+> 
+> Yeah, took a look too this morning, and not sure there's much to reduce
+> here that would make it cleaner. I'm going to send out a v2 with this
+> unchanged, holler if people disagree.
 
-On Sat, Jul 15, 2023 at 12:48=E2=80=AFAM Polaris Pi <pinkperfect2021@gmail.=
-com> wrote:
->
-> Make sure mwifiex_process_mgmt_packet and its callers
-> mwifiex_process_sta_rx_packet and mwifiex_process_uap_rx_packet
-> not out-of-bounds access the skb->data buffer.
->
-> Fixes: 2dbaf751b1de ("mwifiex: report received management frames to cfg80=
-211")
-> Signed-off-by: Polaris Pi <pinkperfect2021@gmail.com>
-> ---
-> V5: Follow chromeos comments: preserve the original flow of mwifiex_proce=
-ss_uap_rx_packet
-> V6: Simplify check in mwifiex_process_uap_rx_packet
-> ---
->  drivers/net/wireless/marvell/mwifiex/sta_rx.c   |  3 ++-
->  drivers/net/wireless/marvell/mwifiex/uap_txrx.c | 10 ++++++++++
->  drivers/net/wireless/marvell/mwifiex/util.c     |  5 +++++
->  3 files changed, 17 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/net/wireless/marvell/mwifiex/sta_rx.c b/drivers/net/=
-wireless/marvell/mwifiex/sta_rx.c
-> index 13659b02ba88..88aaec645291 100644
-> --- a/drivers/net/wireless/marvell/mwifiex/sta_rx.c
-> +++ b/drivers/net/wireless/marvell/mwifiex/sta_rx.c
-> @@ -194,7 +194,8 @@ int mwifiex_process_sta_rx_packet(struct mwifiex_priv=
-ate *priv,
->
->         rx_pkt_hdr =3D (void *)local_rx_pd + rx_pkt_offset;
->
-> -       if ((rx_pkt_offset + rx_pkt_length) > (u16) skb->len) {
-> +       if ((rx_pkt_offset + rx_pkt_length) > (u16)skb->len ||
-> +           skb->len - rx_pkt_offset < sizeof(*rx_pkt_hdr)) {
->                 mwifiex_dbg(adapter, ERROR,
->                             "wrong rx packet: len=3D%d, rx_pkt_offset=3D%=
-d, rx_pkt_length=3D%d\n",
->                             skb->len, rx_pkt_offset, rx_pkt_length);
-> diff --git a/drivers/net/wireless/marvell/mwifiex/uap_txrx.c b/drivers/ne=
-t/wireless/marvell/mwifiex/uap_txrx.c
-> index e495f7eaea03..f0711b73ba3e 100644
-> --- a/drivers/net/wireless/marvell/mwifiex/uap_txrx.c
-> +++ b/drivers/net/wireless/marvell/mwifiex/uap_txrx.c
-> @@ -367,6 +367,16 @@ int mwifiex_process_uap_rx_packet(struct mwifiex_pri=
-vate *priv,
->         rx_pkt_type =3D le16_to_cpu(uap_rx_pd->rx_pkt_type);
->         rx_pkt_hdr =3D (void *)uap_rx_pd + le16_to_cpu(uap_rx_pd->rx_pkt_=
-offset);
->
-> +       if (le16_to_cpu(uap_rx_pd->rx_pkt_offset) + sizeof(*rx_pkt_hdr) >=
- skb->len) {
-> +               mwifiex_dbg(adapter, ERROR,
-> +                           "wrong rx packet offset: len=3D%d, offset=3D%=
-d\n",
-> +                           skb->len, le16_to_cpu(uap_rx_pd->rx_pkt_offse=
-t));
-> +               priv->stats.rx_dropped++;
-> +
-> +               dev_kfree_skb_any(skb);
-> +               return 0;
-> +       }
-> +
->         ether_addr_copy(ta, rx_pkt_hdr->eth803_hdr.h_source);
->
->         if ((le16_to_cpu(uap_rx_pd->rx_pkt_offset) +
-> diff --git a/drivers/net/wireless/marvell/mwifiex/util.c b/drivers/net/wi=
-reless/marvell/mwifiex/util.c
-> index 94c2d219835d..31e1a82883e4 100644
-> --- a/drivers/net/wireless/marvell/mwifiex/util.c
-> +++ b/drivers/net/wireless/marvell/mwifiex/util.c
-> @@ -399,6 +399,11 @@ mwifiex_process_mgmt_packet(struct mwifiex_private *=
-priv,
->
->         pkt_len =3D le16_to_cpu(rx_pd->rx_pkt_length);
->
-> +       if (pkt_len < sizeof(struct ieee80211_hdr) || skb->len < pkt_len)=
+One thing we could do is the below, but honestly not sure it's worth the
+hassle?
+
+
+diff --git a/io_uring/waitid.c b/io_uring/waitid.c
+index 14ffa07e161a..6de1041c4784 100644
+--- a/io_uring/waitid.c
++++ b/io_uring/waitid.c
+@@ -43,6 +43,8 @@ static bool io_waitid_compat_copy_si(struct io_waitid *iw, int signo)
+ 	bool ret;
+ 
+ 	infop = (struct compat_siginfo __user *) iw->infop;
++	if (!infop)
++		return true;
+ 
+ 	if (!user_write_access_begin(infop, sizeof(*infop)))
+ 		return false;
+@@ -66,32 +68,13 @@ static bool io_waitid_compat_copy_si(struct io_waitid *iw, int signo)
+ static bool io_waitid_copy_si(struct io_kiocb *req, int signo)
  {
-> +               mwifiex_dbg(priv->adapter, ERROR, "invalid rx_pkt_length"=
-);
-> +               return -1;
-> +       }
-> +
->         ieee_hdr =3D (void *)skb->data;
->         if (ieee80211_is_mgmt(ieee_hdr->frame_control)) {
->                 if (mwifiex_parse_mgmt_packet(priv, (u8 *)ieee_hdr,
-> --
-> 2.25.1
->
+ 	struct io_waitid *iw = io_kiocb_to_cmd(req, struct io_waitid);
+-	bool ret;
+-
+-	if (!iw->infop)
+-		return true;
+ 
+ #ifdef CONFIG_COMPAT
+ 	if (req->ctx->compat)
+ 		return io_waitid_compat_copy_si(iw, signo);
+ #endif
+ 
+-	if (!user_write_access_begin(iw->infop, sizeof(*iw->infop)))
+-		return false;
+-
+-	unsafe_put_user(signo, &iw->infop->si_signo, Efault);
+-	unsafe_put_user(0, &iw->infop->si_errno, Efault);
+-	unsafe_put_user(iw->info.cause, &iw->infop->si_code, Efault);
+-	unsafe_put_user(iw->info.pid, &iw->infop->si_pid, Efault);
+-	unsafe_put_user(iw->info.uid, &iw->infop->si_uid, Efault);
+-	unsafe_put_user(iw->info.status, &iw->infop->si_status, Efault);
+-	ret = true;
+-done:
+-	user_write_access_end();
+-	return ret;
+-Efault:
+-	ret = false;
+-	goto done;
++	return siginfo_put_user(iw->infop, &iw->info, signo);
+ }
+ 
+ static int io_waitid_finish(struct io_kiocb *req, int ret)
+diff --git a/kernel/exit.c b/kernel/exit.c
+index 1c9d1cbadcd0..e3a0b6699a23 100644
+--- a/kernel/exit.c
++++ b/kernel/exit.c
+@@ -1723,6 +1723,28 @@ static long kernel_waitid(int which, pid_t upid, struct waitid_info *infop,
+ 	return ret;
+ }
+ 
++bool siginfo_put_user(struct siginfo __user *infop, struct waitid_info *wi,
++		      int signo)
++{
++	if (!infop)
++		return true;
++
++	if (!user_write_access_begin(infop, sizeof(*infop)))
++		return false;
++
++	unsafe_put_user(signo, &infop->si_signo, Efault);
++	unsafe_put_user(0, &infop->si_errno, Efault);
++	unsafe_put_user(wi->cause, &infop->si_code, Efault);
++	unsafe_put_user(wi->pid, &infop->si_pid, Efault);
++	unsafe_put_user(wi->uid, &infop->si_uid, Efault);
++	unsafe_put_user(wi->status, &infop->si_status, Efault);
++	user_write_access_end();
++	return true;
++Efault:
++	user_write_access_end();
++	return false;
++}
++
+ SYSCALL_DEFINE5(waitid, int, which, pid_t, upid, struct siginfo __user *,
+ 		infop, int, options, struct rusage __user *, ru)
+ {
+@@ -1737,23 +1759,9 @@ SYSCALL_DEFINE5(waitid, int, which, pid_t, upid, struct siginfo __user *,
+ 		if (ru && copy_to_user(ru, &r, sizeof(struct rusage)))
+ 			return -EFAULT;
+ 	}
+-	if (!infop)
+-		return err;
+-
+-	if (!user_write_access_begin(infop, sizeof(*infop)))
++	if (siginfo_put_user(infop, &info, signo))
+ 		return -EFAULT;
+-
+-	unsafe_put_user(signo, &infop->si_signo, Efault);
+-	unsafe_put_user(0, &infop->si_errno, Efault);
+-	unsafe_put_user(info.cause, &infop->si_code, Efault);
+-	unsafe_put_user(info.pid, &infop->si_pid, Efault);
+-	unsafe_put_user(info.uid, &infop->si_uid, Efault);
+-	unsafe_put_user(info.status, &infop->si_status, Efault);
+-	user_write_access_end();
+ 	return err;
+-Efault:
+-	user_write_access_end();
+-	return -EFAULT;
+ }
+ 
+ long kernel_wait4(pid_t upid, int __user *stat_addr, int options,
+diff --git a/kernel/exit.h b/kernel/exit.h
+index f10207ba1341..b7e0e32133fa 100644
+--- a/kernel/exit.h
++++ b/kernel/exit.h
+@@ -27,4 +27,6 @@ long __do_wait(struct wait_opts *wo);
+ int kernel_waitid_prepare(struct wait_opts *wo, int which, pid_t upid,
+ 			  struct waitid_info *infop, int options,
+ 			  struct rusage *ru, unsigned int *f_flags);
++bool siginfo_put_user(struct siginfo __user *infop, struct waitid_info *wi,
++		      int signo);
+ #endif
+
+-- 
+Jens Axboe
+
