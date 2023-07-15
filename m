@@ -2,198 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7FBE75458E
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 02:01:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AE4C75458F
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 02:02:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230112AbjGOABG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 20:01:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52956 "EHLO
+        id S229854AbjGOAB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 20:01:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbjGOABE (ORCPT
+        with ESMTP id S229455AbjGOAB4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 20:01:04 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 000893A84
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 17:01:02 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-3142a9ffa89so2699468f8f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 17:01:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google; t=1689379261; x=1691971261;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9qCsYq5AfQu15dBgFcUhM5i+Y9hdaw4Di+rchoqRa1A=;
-        b=w1so6/uRCSkF2JfOE4Lp7UEUm7H2/SnJOrUe5GP0/6Hoc5lu/q59ef2oEAIUdNGlPu
-         1oBomtwOZE28hBXuVf9l6r3h/U7PyWOeBibY6Emk7xzVuyXK6RJfTioxx73MA4Ej67Ft
-         gK1kNyPKvTTQneIkrmuHgWBjmDfq96bq6Y21Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689379261; x=1691971261;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9qCsYq5AfQu15dBgFcUhM5i+Y9hdaw4Di+rchoqRa1A=;
-        b=bv+P5BhSVrjXwFyGiJGlBNYX1n7nBAF9+gaNLKRlnUW1nunob7yx1E8iTXamKFKmWn
-         w7GsWCSDefRI98aGJGkq/CQry+Mtjb4/O+xfm6o2jJHmhzstiNhPqJTm5XehNYWFE/cX
-         8Ixi5vjFu4QzyAH9oxdpqElew/HUevMDDjNpYr8yXKKuaI5yS2sW2YY9V0xjBvFfQ4j7
-         G8z4PYV0xmfJlJbv+IyOQpWQKEn21H39H6GnT6cGutRHIPFViyN2YLcgGNRYjc8Ei19u
-         S9NI4fkYFVys0Yg/Z2QOUZEMnwhD78uBZzKsOWr5e5leVFNY4fzACu9hwv54hn0SqwvZ
-         akDA==
-X-Gm-Message-State: ABy/qLaacNDdnmqjFQBGTOCfQ3rADxoNm0VeHXOc6FO7LXG7mtr7FY31
-        9VEU9kNcZ2H7dsP3v38pFo94wPxYHQfUAzTh7ObaIQ==
-X-Google-Smtp-Source: APBJJlEvCf0BSl7GtqyQou6Cs0GD8ZpzFZvUUaUmW+z6ihNa4/16dJUC5WbYXRU1+zLyptJm0Uqq3GnsW0ohBqtQtKI=
-X-Received: by 2002:a5d:66c5:0:b0:316:e073:e547 with SMTP id
- k5-20020a5d66c5000000b00316e073e547mr5135314wrw.28.1689379261115; Fri, 14 Jul
- 2023 17:01:01 -0700 (PDT)
+        Fri, 14 Jul 2023 20:01:56 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E0CF1BFA
+        for <linux-kernel@vger.kernel.org>; Fri, 14 Jul 2023 17:01:55 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3297D61152
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 00:01:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EC96C433C8;
+        Sat, 15 Jul 2023 00:01:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689379314;
+        bh=48z9z9MmpXB6cr2JS9/1wpOyf340RvMqtEV/mvOeGk4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HtiCKLWtwsdwvqkDrLAi/4oAfTRZ3TKJ19fLMfeH2XAvpgEUHEc4yMP4z0T080prY
+         4+2AbU/WTu+smvT+ApJUV/o3UKDXi6JU/s7Y984SNc5P60s2KDCPVEMJdLOHPitQ/z
+         7vUHYm6spzLOtrT23SSaafWeybdDpVcBA3SY3H529yw603nsjPdjzrK1aF1xhsSQca
+         OxRiyZNN5683hpl68ZfvUG5PYYDRLS9VD5cnG5+sWjVjF/rSpH3fF2G9Jn7/V+pZON
+         Qdc4OJ2/8tmMdMf8RvsphBeXpiqQ1ZGmw+pRUn22Bo0yWbJVSY2W5eb+ta2jYm/+iD
+         NM52xWooaXwRg==
+Date:   Sat, 15 Jul 2023 02:01:51 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/3] tick/nohz: Don't shutdown the lowres tick from itself
+Message-ID: <ZLHh71KIIioR85aa@lothringen>
+References: <20230714120852.23573-1-frederic@kernel.org>
+ <20230714120852.23573-4-frederic@kernel.org>
+ <9347e3d4-e774-f75f-22c4-6c2dba294423@joelfernandes.org>
 MIME-Version: 1.0
-References: <CABWYdi0c6__rh-K7dcM_pkf9BJdTRtAU08M43KO9ME4-dsgfoQ@mail.gmail.com>
- <20230706062045.xwmwns7cm4fxd7iu@google.com> <CABWYdi2pBaCrdKcM37oBomc+5W8MdRp1HwPpOExBGYfZitxyWA@mail.gmail.com>
- <d3f3a7bc-b181-a408-af1d-dd401c172cbf@redhat.com> <CABWYdi2iWYT0sHpK74W6=Oz6HA_3bAqKQd4h+amK0n3T3nge6g@mail.gmail.com>
- <fea3587a-ca6a-6930-bd3d-c4f7f330be67@redhat.com>
-In-Reply-To: <fea3587a-ca6a-6930-bd3d-c4f7f330be67@redhat.com>
-From:   Ivan Babrou <ivan@cloudflare.com>
-Date:   Fri, 14 Jul 2023 17:00:50 -0700
-Message-ID: <CABWYdi2mBWsaEJXDEKeYaSCuikNbjBBU1yo+Yai+vM=rf2=LVQ@mail.gmail.com>
-Subject: Re: Expensive memory.stat + cpu.stat reads
-To:     Waiman Long <longman@redhat.com>
-Cc:     Shakeel Butt <shakeelb@google.com>, cgroups@vger.kernel.org,
-        Linux MM <linux-mm@kvack.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9347e3d4-e774-f75f-22c4-6c2dba294423@joelfernandes.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 10:23=E2=80=AFAM Waiman Long <longman@redhat.com> w=
-rote:
->
-> On 7/13/23 19:25, Ivan Babrou wrote:
-> > On Mon, Jul 10, 2023 at 5:44=E2=80=AFPM Waiman Long <longman@redhat.com=
-> wrote:
-> >> On 7/10/23 19:21, Ivan Babrou wrote:
-> >>> On Wed, Jul 5, 2023 at 11:20=E2=80=AFPM Shakeel Butt <shakeelb@google=
-.com> wrote:
-> >>>> On Fri, Jun 30, 2023 at 04:22:28PM -0700, Ivan Babrou wrote:
-> >>>>> Hello,
-> >>>>>
-> >>>>> We're seeing CPU load issues with cgroup stats retrieval. I made a
-> >>>>> public gist with all the details, including the repro code (which
-> >>>>> unfortunately requires heavily loaded hardware) and some flamegraph=
-s:
-> >>>>>
-> >>>>> * https://gist.github.com/bobrik/5ba58fb75a48620a1965026ad30a0a13
-> >>>>>
-> >>>>> I'll repeat the gist of that gist here. Our repro has the following
-> >>>>> output after a warm-up run:
-> >>>>>
-> >>>>> completed:  5.17s [manual / mem-stat + cpu-stat]
-> >>>>> completed:  5.59s [manual / cpu-stat + mem-stat]
-> >>>>> completed:  0.52s [manual / mem-stat]
-> >>>>> completed:  0.04s [manual / cpu-stat]
-> >>>>>
-> >>>>> The first two lines do effectively the following:
-> >>>>>
-> >>>>> for _ in $(seq 1 1000); do cat /sys/fs/cgroup/system.slice/memory.s=
-tat
-> >>>>> /sys/fs/cgroup/system.slice/cpu.stat > /dev/null
-> >>>>>
-> >>>>> The latter two are the same thing, but via two loops:
-> >>>>>
-> >>>>> for _ in $(seq 1 1000); do cat /sys/fs/cgroup/system.slice/cpu.stat=
- >
-> >>>>> /dev/null; done
-> >>>>> for _ in $(seq 1 1000); do cat /sys/fs/cgroup/system.slice/memory.s=
-tat
-> >>>>>> /dev/null; done
-> >>>>> As you might've noticed from the output, splitting the loop into tw=
-o
-> >>>>> makes the code run 10x faster. This isn't great, because most
-> >>>>> monitoring software likes to get all stats for one service before
-> >>>>> reading the stats for the next one, which maps to the slow and
-> >>>>> expensive way of doing this.
-> >>>>>
-> >>>>> We're running Linux v6.1 (the output is from v6.1.25) with no patch=
-es
-> >>>>> that touch the cgroup or mm subsystems, so you can assume vanilla
-> >>>>> kernel.
-> >>>>>
-> >>>>>   From the flamegraph it just looks like rstat flushing takes longe=
-r. I
-> >>>>> used the following flags on an AMD EPYC 7642 system (our usual pick
-> >>>>> cpu-clock was blaming spinlock irqrestore, which was questionable):
-> >>>>>
-> >>>>> perf -e cycles -g --call-graph fp -F 999 -- /tmp/repro
-> >>>>>
-> >>>>> Naturally, there are two questions that arise:
-> >>>>>
-> >>>>> * Is this expected (I guess not, but good to be sure)?
-> >>>>> * What can we do to make this better?
-> >>>>>
-> >>>>> I am happy to try out patches or to do some tracing to help underst=
-and
-> >>>>> this better.
-> >>>> Hi Ivan,
-> >>>>
-> >>>> Thanks a lot, as always, for reporting this. This is not expected an=
-d
-> >>>> should be fixed. Is the issue easy to repro or some specific workloa=
-d or
-> >>>> high load/traffic is required? Can you repro this with the latest li=
-nus
-> >>>> tree? Also do you see any difference of root's cgroup.stat where thi=
-s
-> >>>> issue happens vs good state?
-> >>> I'm afraid there's no easy way to reproduce. We see it from time to
-> >>> time in different locations. The one that I was looking at for the
-> >>> initial email does not reproduce it anymore:
-> >> My understanding of mem-stat and cpu-stat is that they are independent
-> >> of each other. In theory, reading one shouldn't affect the performance
-> >> of reading the others. Since you are doing mem-stat and cpu-stat readi=
-ng
-> >> repetitively in a loop, it is likely that all the data are in the cach=
-e
-> >> most of the time resulting in very fast processing time. If it happens
-> >> that the specific memory location of mem-stat and cpu-stat data are su=
-ch
-> >> that reading one will cause the other data to be flushed out of the
-> >> cache and have to be re-read from memory again, you could see
-> >> significant performance regression.
-> >>
-> >> It is one of the possible causes, but I may be wrong.
-> > Do you think it's somewhat similar to how iterating a matrix in rows
-> > is faster than in columns due to sequential vs random memory reads?
-> >
-> > * https://stackoverflow.com/q/9936132
-> > * https://en.wikipedia.org/wiki/Row-_and_column-major_order
-> > * https://en.wikipedia.org/wiki/Loop_interchange
->
-> Yes, it is similar to what is being described in those articles.
->
->
-> >
-> > I've had a similar suspicion and it would be good to confirm whether
-> > it's that or something else. I can probably collect perf counters for
-> > different runs, but I'm not sure which ones I'll need.
-> >
-> > In a similar vein, if we could come up with a tracepoint that would
-> > tell us the amount of work done (or any other relevant metric that
-> > would help) during rstat flushing, I can certainly collect that
-> > information as well for every reading combination.
->
-> The perf-c2c tool may be able to help. The data to look for is how often
-> the data is from caches vs direct memory load/store.
+On Fri, Jul 14, 2023 at 02:44:49PM -0400, Joel Fernandes wrote:
+> On 7/14/23 08:08, Frederic Weisbecker wrote:
+> One slight concern here though, where in the idle loop is the removed
+> statement "tick_program_event(KTIME_MAX, 1);" happening if the tick was
+> already stopped before? If it is happening in tick_nohz_stop_tick(), don't
+> we early return from there and avoid doing that
+> "tick_program_event(KTIME_MAX, 1);" altogether, if the tick was already
+> stopped and the next event has not changed?
+> 
+>         /* Skip reprogram of event if its not changed */
+>         if (ts->tick_stopped && (expires == ts->next_tick)) {
+>                 /* Sanity check: make sure clockevent is actually programmed */
+>                 if (tick == KTIME_MAX || ts->next_tick ==  [...]
+>                         return;
+> 		[...]
+> 	}
 
-It looks like c2c only works for the whole system, not individual
-treads. There's a lot of noise from the rest of the system.
+Sure, if tick_program_event(KTIME_MAX, 1) was already called in the
+previous idle loop iteration, then there is no need to call that again.
+
+Or am I missing something else?
+
+> 
+> Also just a nit, here you can remove indent by doing:
+> 
+> if (unlikely(ts->tick_stopped))
+>     return;
+> hrtimer_forward(&ts->sched_timer, now, TICK_NSEC);
+> tick_program_event(hrtimer_get_expires(&ts->sched_timer), 1);
+> 
+> Which is pretty much the original code except for the tick_program_event().
+
+Either I remove an indent or I remove a statement. I guess it's a matter of
+personal taste. I don't mind either way :-)
+
+Thanks.
+
