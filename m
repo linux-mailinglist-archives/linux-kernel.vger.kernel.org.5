@@ -2,60 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D88F5754670
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 05:08:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50D36754672
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 05:08:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230029AbjGODIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 14 Jul 2023 23:08:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56640 "EHLO
+        id S229806AbjGODI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 14 Jul 2023 23:08:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229800AbjGODIT (ORCPT
+        with ESMTP id S229909AbjGODIZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 14 Jul 2023 23:08:19 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CCEE35BD;
-        Fri, 14 Jul 2023 20:08:18 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0B48C61DEF;
-        Sat, 15 Jul 2023 03:08:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 6FC51C433C7;
-        Sat, 15 Jul 2023 03:08:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689390497;
-        bh=66oHfPnq8yInzPZAL0kUCTKqrxQ0Kuzph8s4Mcxulis=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=JogOq51PhYUD867NQO7KArb86pEf9zn7lqDfMcJbT8eAemZiFEo8wnBVDKEC+c7YA
-         fP2QUmcxkFMYvtivC7vtPLYhkCPaIgb2WjbBJ2k6dgY2sYDadD5svF+HtUbkEK2KuP
-         HtqtBIfSMcP5FmtAL1SwYerzAhVmCrxsDwWYq3s1XdinisioXrpa5X6MfjlHM8Jy5j
-         L4uqv2xbmIaJmCexMiwicLICE0kVC4T6Jhuo4mSVawe6xtyHoTAo2+Nw1JB2hw+A0c
-         BHwdkpekJMyw0hZbWstp7NSibSncFGuq1pRNaYHczajWRfeweGf0osjf7QD2aCXt4d
-         Fxpsu52QlExnQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 5C0D3E4508D;
-        Sat, 15 Jul 2023 03:08:17 +0000 (UTC)
-Subject: Re: [GIT PULL] SCSI fixes for 6.5-rc1
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <256ab3441824d3c22930c3341492119ccfc1b701.camel@HansenPartnership.com>
-References: <256ab3441824d3c22930c3341492119ccfc1b701.camel@HansenPartnership.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <256ab3441824d3c22930c3341492119ccfc1b701.camel@HansenPartnership.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
-X-PR-Tracked-Commit-Id: f4d1a8e011909fee24643f84bd1196e1366c26f2
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: be522ac7cdcc1b7dd19fa348205363041ab65a98
-Message-Id: <168939049736.3346.1353349838971150134.pr-tracker-bot@kernel.org>
-Date:   Sat, 15 Jul 2023 03:08:17 +0000
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        Fri, 14 Jul 2023 23:08:25 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 917EA3A81;
+        Fri, 14 Jul 2023 20:08:23 -0700 (PDT)
+Received: from canpemm500002.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R2tZ51qmgzhYj0;
+        Sat, 15 Jul 2023 11:07:41 +0800 (CST)
+Received: from huawei.com (10.174.151.185) by canpemm500002.china.huawei.com
+ (7.192.104.244) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Sat, 15 Jul
+ 2023 11:08:19 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <tj@kernel.org>, <hannes@cmpxchg.org>, <lizefan.x@bytedance.com>
+CC:     <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linmiaohe@huawei.com>
+Subject: [PATCH] cgroup: use cached local variable parent in for loop
+Date:   Sat, 15 Jul 2023 11:08:29 +0800
+Message-ID: <20230715030829.2343109-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.33.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.151.185]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ canpemm500002.china.huawei.com (7.192.104.244)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -64,15 +47,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 14 Jul 2023 14:24:20 -0400:
+Use local variable parent to initialize iter tcgrp in for loop so the size
+of cgroup.o can be reduced by 64 bytes. No functional change intended.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+---
+ kernel/cgroup/cgroup.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/be522ac7cdcc1b7dd19fa348205363041ab65a98
-
-Thank you!
-
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 6225d5829459..033f38fb5cef 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -5894,7 +5894,7 @@ static int cgroup_destroy_locked(struct cgroup *cgrp)
+ 		parent->nr_threaded_children--;
+ 
+ 	spin_lock_irq(&css_set_lock);
+-	for (tcgrp = cgroup_parent(cgrp); tcgrp; tcgrp = cgroup_parent(tcgrp)) {
++	for (tcgrp = parent; tcgrp; tcgrp = cgroup_parent(tcgrp)) {
+ 		tcgrp->nr_descendants--;
+ 		tcgrp->nr_dying_descendants++;
+ 		/*
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.33.0
+
