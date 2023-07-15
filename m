@@ -2,137 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8FC67547A4
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 11:10:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E33847547C5
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 11:20:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229930AbjGOJKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 05:10:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48942 "EHLO
+        id S231129AbjGOJUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 05:20:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbjGOJKe (ORCPT
+        with ESMTP id S230308AbjGOJU2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 05:10:34 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A0D268B;
-        Sat, 15 Jul 2023 02:10:31 -0700 (PDT)
-Received: from kwepemi500020.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4R32Y96HpxztR8t;
-        Sat, 15 Jul 2023 17:07:25 +0800 (CST)
-Received: from [10.67.109.184] (10.67.109.184) by
- kwepemi500020.china.huawei.com (7.221.188.8) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Sat, 15 Jul 2023 17:10:27 +0800
-Message-ID: <56a6a35c-7320-4569-71e3-c4daffee78f3@huawei.com>
-Date:   Sat, 15 Jul 2023 17:10:26 +0800
+        Sat, 15 Jul 2023 05:20:28 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27B013AB3;
+        Sat, 15 Jul 2023 02:20:02 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fbc12181b6so27313735e9.2;
+        Sat, 15 Jul 2023 02:20:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689412800; x=1692004800;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=CtItNqjBVn5PI+StR7IJKfR6iwBSQjGA7AnuIe8qRq0=;
+        b=siCyPYvpFnYxVs/6cfKs4mW/x6v8Po/m38KkjHn8LW3O5h4I+RemL/52fqK0YxCnh4
+         Si4q7ak74BLTV2KhRdHswNdQnMZvKAOnbuR+DcDraOnaeT2DG1hd/XcRI/P2TM72xz3m
+         G0RRaWkhUH4AAoKLuRpAJP+3hN/4WuHxnovoFM0+rVKKK25tyTAc5+gWM6Yz0M9jSgXP
+         WYg6LswZqxsYEeP8VQuZQECaVuhJBHZ5eUP1lNZiy81Ob4mIfwP5EPbvmHM441gstqrK
+         tNvJNZtjf8tctaEYpVLIsyGLiNmAVwKXl4avS9k1cNZqQRoUW/VRx2FQ72RCFSuW3etw
+         Ln9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689412800; x=1692004800;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CtItNqjBVn5PI+StR7IJKfR6iwBSQjGA7AnuIe8qRq0=;
+        b=jUMM7uFW5LlSWJXxAPjJ6e51qb3k/uN81zI794QVLTS+/4Vh9DOcswETRer0jTUG4r
+         nrU+jnVNwWxGbWA8n6mgBaNMzvU8J4rJ2babAJ3pg2S3FM4sIHchyaOoJl8bzRkMbeNP
+         7VOmRNfE3XiHCe750lyxb82Mzqg+CMhdGNu98WerVIOTUYIIJs6O/0P1b4pMboXFa4ot
+         fXbmmOvuq51c/FzRnQlU3WE93kBfgLtwCSNVIKN1A7ZvLUSmQ/U67O3oxYS4cQip7JFl
+         dpsVfM5Iq8ydfa0xMbIMeMBFrwYYR7rMm7Le141Yd+xLnft+IsiCp6vsVCCbkcSeSeMJ
+         axGQ==
+X-Gm-Message-State: ABy/qLYkwwL9b4uBS3tfhT47tp8w6ehznQahsgD3unuEO2tjdgzItGaf
+        V+KUFir/Kv4+VacPJ3/OWxs=
+X-Google-Smtp-Source: APBJJlHCKz1fZwLXEPTXAakK8h5aESw4UuZcOfxiyhysFIL84ZITXWzqpTjLJ2xFO8OG6XLbh4ahUg==
+X-Received: by 2002:adf:dec9:0:b0:314:327:2ece with SMTP id i9-20020adfdec9000000b0031403272ecemr5789214wrn.61.1689412800433;
+        Sat, 15 Jul 2023 02:20:00 -0700 (PDT)
+Received: from david-ryuzu.fritz.box ([188.195.202.152])
+        by smtp.googlemail.com with ESMTPSA id f22-20020a7bc8d6000000b003fbb5142c4bsm3238133wml.18.2023.07.15.02.19.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 15 Jul 2023 02:19:59 -0700 (PDT)
+From:   David Wronek <davidwronek@gmail.com>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Taniya Das <quic_tdas@quicinc.com>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        cros-qcom-dts-watchers@chromium.org,
+        David Wronek <davidwronek@gmail.com>
+Subject: [PATCH v3 0/7] Add initial support for SM7125 and Xiaomi SM7125 platform
+Date:   Sat, 15 Jul 2023 11:16:06 +0200
+Message-ID: <20230715091932.161507-1-davidwronek@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.0
-Subject: Re: [PATCH V11 0/5] riscv: Optimize function trace
-Content-Language: en-US
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Song Shuai <suagrfillet@gmail.com>, <paul.walmsley@sifive.com>,
-        <palmer@dabbelt.com>, <aou@eecs.berkeley.edu>,
-        <rostedt@goodmis.org>, <mhiramat@kernel.org>,
-        <mark.rutland@arm.com>, <guoren@kernel.org>, <bjorn@rivosinc.com>,
-        <jszhang@kernel.org>, <conor.dooley@microchip.com>,
-        <palmer@rivosinc.com>
-CC:     <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>, <songshuaishuai@tinylab.org>,
-        <bpf@vger.kernel.org>
-References: <20230627111612.761164-1-suagrfillet@gmail.com>
- <87jzv5q9tv.fsf@all.your.base.are.belong.to.us>
-From:   Pu Lehui <pulehui@huawei.com>
-In-Reply-To: <87jzv5q9tv.fsf@all.your.base.are.belong.to.us>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.109.184]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemi500020.china.huawei.com (7.221.188.8)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series introduces support for the Qualcomm SM7125 SoC and the
+Xiaomi SM7125 platform.
 
+Signed-off-by: David Wronek <davidwronek@gmail.com>
+---
+Changes in v2:
+- Allow qcom,board-id and qcom,msm-id properties
+- Use QCOM_SCM_VMID_MSS_MSA definition
+- Change initial regulator modes from LPM to HPM
+- Move status to the bottom of nodes
+- Fix up PM6150 interrupts
+- Move clk patch to beginning of series
+- Fix up copyright
+- Take ownership of all commits with permission
+- Link to v1: https://lore.kernel.org/all/20230704163848.169853-2-davidwronek@gmail.com/
 
-On 2023/7/13 2:11, Björn Töpel wrote:
-> Song Shuai <suagrfillet@gmail.com> writes:
-> 
-> [...]
-> 
->> Add WITH_DIRECT_CALLS support [3] (patch 3, 4)
->> ==============================================
-> 
-> We've had some offlist discussions, so here's some input for a wider
-> audience! Most importantly, this is for Palmer, so that this series is
-> not merged until a proper BPF trampoline fix is in place.
-> 
-> Note that what's currently usable from BPF trampoline *works*. It's
-> when this series is added that it breaks.
-> 
-> TL;DR This series adds DYNAMIC_FTRACE_WITH_DIRECT_CALLS, which enables
-> fentry/fexit BPF trampoline support. Unfortunately the
-> fexit/BPF_TRAMP_F_SKIP_FRAME parts of the RV BPF trampoline breaks
-> with this addition, and need to be addressed *prior* merging this
-> series. An easy way to reproduce, is just calling any of the kselftest
-> tests that uses fexit patching.
-> 
-> The issue is around the nop seld, and how a call is done; The nop sled
-> (patchable-function-entry) size changed from 16B to 8B in commit
-> 6724a76cff85 ("riscv: ftrace: Reduce the detour code size to half"), but
-> BPF code still uses the old 16B. So it'll work for BPF programs, but not
-> for regular kernel functions.
-> 
-> An example:
-> 
->    | ffffffff80fa4150 <bpf_fentry_test1>:
->    | ffffffff80fa4150:       0001                    nop
->    | ffffffff80fa4152:       0001                    nop
->    | ffffffff80fa4154:       0001                    nop
->    | ffffffff80fa4156:       0001                    nop
->    | ffffffff80fa4158:       1141                    add     sp,sp,-16
->    | ffffffff80fa415a:       e422                    sd      s0,8(sp)
->    | ffffffff80fa415c:       0800                    add     s0,sp,16
->    | ffffffff80fa415e:       6422                    ld      s0,8(sp)
->    | ffffffff80fa4160:       2505                    addw    a0,a0,1
->    | ffffffff80fa4162:       0141                    add     sp,sp,16
->    | ffffffff80fa4164:       8082                    ret
-> 
-> is patched to:
-> 
->    | ffffffff80fa4150:  f70c0297                     auipc   t0,-150208512
->    | ffffffff80fa4154:  eb0282e7                     jalr    t0,t0,-336
-> 
-> The return address to bpf_fentry_test1 is stored in t0 at BPF
-> trampoline entry. Return to the *parent* is in ra. The trampline has
-> to deal with this.
-> 
-> For BPF_TRAMP_F_SKIP_FRAME/CALL_ORIG, the BPF trampoline will skip too
-> many bytes, and not correctly handle parent calls.
-> 
-> Further; The BPF trampoline currently has a different way of patching
-> the nops for BPF programs, than what ftrace does. That should be changed
-> to match what ftrace does (auipc/jalr t0).
-> 
-> To summarize:
->   * Align BPF nop sled with patchable-function-entry: 8B.
->   * Adapt BPF trampoline for 8B nop sleds.
->   * Adapt BPF trampoline t0 return, ra parent scheme.
-> 
+Changes in v3:
+- Disable pm6150 rtc by default
+- Fix wrong pm8150l PMIC in joyeuse dts
+- Link to v2: https://lore.kernel.org/all/20230706124339.134272-1-davidwronek@gmail.com/
 
-Thanks Björn, I make a adaptation as follows, looking forward to your 
-review.
+---
+David Wronek (7):
+  clk: qcom: gcc-sc7180: Fix up gcc_sdcc2_apps_clk_src
+  dt-bindings: arm: qcom,ids: Add SoC ID for SM7125
+  dt-bindings: arm: qcom: Document SM7125 and xiaomi,joyeuse board
+  soc: qcom: socinfo: Add SoC ID for SM7125
+  arm64: dts: qcom: pm6150: Add resin and rtc nodes
+  arm64: dts: qcom: Add SM7125 device tree
+  arm64: dts: qcom: Add support for the Xiaomi SM7125 platform
 
-https://lore.kernel.org/bpf/20230715090137.2141358-1-pulehui@huaweicloud.com/
+ .../devicetree/bindings/arm/qcom.yaml         |   7 +
+ arch/arm64/boot/dts/qcom/Makefile             |   1 +
+ arch/arm64/boot/dts/qcom/pm6150.dtsi          |  16 +
+ .../boot/dts/qcom/sm7125-xiaomi-joyeuse.dts   |  16 +
+ .../boot/dts/qcom/sm7125-xiaomi-miatoll.dtsi  | 423 ++++++++++++++++++
+ arch/arm64/boot/dts/qcom/sm7125.dtsi          |  16 +
+ drivers/clk/qcom/gcc-sc7180.c                 |   1 +
+ drivers/soc/qcom/socinfo.c                    |   1 +
+ include/dt-bindings/arm/qcom,ids.h            |   1 +
+ 9 files changed, 482 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/qcom/sm7125-xiaomi-joyeuse.dts
+ create mode 100644 arch/arm64/boot/dts/qcom/sm7125-xiaomi-miatoll.dtsi
+ create mode 100644 arch/arm64/boot/dts/qcom/sm7125.dtsi
 
-> 
-> Cheers,
-> Björn
-> 
-> 
+-- 
+2.41.0
+
