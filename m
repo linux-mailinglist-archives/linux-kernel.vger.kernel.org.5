@@ -2,99 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5C4B754A7F
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 19:35:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84F14754A8B
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 19:54:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230070AbjGORfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 13:35:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35708 "EHLO
+        id S230083AbjGORyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 13:54:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbjGORfX (ORCPT
+        with ESMTP id S229502AbjGORyA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 13:35:23 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D365172C;
-        Sat, 15 Jul 2023 10:35:23 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Sat, 15 Jul 2023 13:54:00 -0400
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3164430DC;
+        Sat, 15 Jul 2023 10:53:58 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id AE9E0100005;
+        Sat, 15 Jul 2023 20:53:56 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru AE9E0100005
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
+        s=mail; t=1689443636;
+        bh=5ttxEKcHawm3oRMYZ4Ouli2azKIL2gurED8PaIq7bWA=;
+        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+        b=R2R/SIo3MEqcWoNlvoAXJv2SJgfTyQ9c3kYcrQW2CbowGylAD5qmxiIeujrGS4Uhv
+         mfLQct59SUVaJc3L4lTUW9gizgm3j0jd0us1Y1CaPJaYSI7vpI+mY5/sjYe/nQEKcG
+         b0WB+lKWPH6Qo3guhnb+JuWC7F9uTrfPSDZPaF2lzADbtPjvpYpu50u76ENwKDbEaR
+         4AbMgeo91OsiM3J9jskPKHk/cJZ+E/r05A2vkKzzBxouRdUtDAAGR86e+pI2R126vx
+         gCaDs0IopaJaOq+fIA+dWTIFEMeKdf/DWcq8kpCKbMpJewwT8TyLFfVEnsaflywiSU
+         r8/7UgUpiqWcw==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A0EE960BD6;
-        Sat, 15 Jul 2023 17:35:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE8E0C433C8;
-        Sat, 15 Jul 2023 17:35:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689442522;
-        bh=oawNHOu6cEn/o8yHbi2Ylqw7LxrIWJEIsGhh23eVmII=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=YT4fzAdMOWprMWZIVOz97OS+Wa7N2wEak7qCKwnAzLRT/3EtP09nnCT9cTcMOs56B
-         9I/7FGLw7lEwwql7W3FrP2un/jI3t5dO/tnWry0oONO9EoLvVuux95g4YXcAlGLkpy
-         /8TvsR4x74NmA+OEkFHDyLaA1lNqKgs0jaASXNJo3ZcyF2qzpP+1cncFWx4o7SJ59x
-         5iGKC+SADuegKU9s9VvfPZXMHxO7dKqvvtkIKy7od6aZn3dm7+mKC4+shryCNDStms
-         iRpFkWShtmiiYKHfokJn3jOBko7m9V/lwG/CX71tf3gulZGeiSD3U02ToY0lhDtDLA
-         6Vk62nR/eM5Dw==
-Date:   Sat, 15 Jul 2023 18:35:15 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alejandro Tafalla <atafalla@dnyon.com>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] iio: imu: lsm6dsx: Fix mount matrix retrieval
-Message-ID: <20230715183515.56deaa1d@jic23-huawei>
-In-Reply-To: <20230714153132.27265-1-atafalla@dnyon.com>
-References: <20230714153132.27265-1-atafalla@dnyon.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Sat, 15 Jul 2023 20:53:56 +0300 (MSK)
+Received: from [192.168.0.12] (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Sat, 15 Jul 2023 20:53:13 +0300
+Message-ID: <672e6a2f-21b3-77cd-fe83-04d4aa79f68e@sberdevices.ru>
+Date:   Sat, 15 Jul 2023 20:48:34 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [RFC PATCH v3 0/3] support 512B ECC step size for Meson NAND
+Content-Language: en-US
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+CC:     Liang Yang <liang.yang@amlogic.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        <oxffffaa@gmail.com>, <kernel@sberdevices.ru>,
+        <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <20230711122129.2635558-1-AVKrasnov@sberdevices.ru>
+ <20230715181553.1d2b5637@xps-13>
+From:   Arseniy Krasnov <avkrasnov@sberdevices.ru>
+In-Reply-To: <20230715181553.1d2b5637@xps-13>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 178635 [Jul 15 2023]
+X-KSMG-AntiSpam-Version: 5.9.59.0
+X-KSMG-AntiSpam-Envelope-From: AVKrasnov@sberdevices.ru
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 523 523 523027ce26ed1d9067f7a52a4756a876e54db27c, {Tracking_from_domain_doesnt_match_to}, sberdevices.ru:7.1.1,5.0.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;100.64.160.123:7.1.2, FromAlignment: s, {Tracking_white_helo}, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/07/15 16:31:00 #21619439
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 14 Jul 2023 17:31:26 +0200
-Alejandro Tafalla <atafalla@dnyon.com> wrote:
+Hello Miquel!
 
-> The function lsm6dsx_get_acpi_mount_matrix should return an error when ACPI
-> support is not enabled to allow executing iio_read_mount_matrix in the
-> probe function.
+On 15.07.2023 19:15, Miquel Raynal wrote:
+> Hi Arseniy,
 > 
-> Fixes: dc3d25f22b88 ("iio: imu: lsm6dsx: Add ACPI mount matrix retrieval")
+> AVKrasnov@sberdevices.ru wrote on Tue, 11 Jul 2023 15:21:26 +0300:
 > 
+>> Hello,
+>>
+>> this patchset adds support for 512B ECC step size for Meson NAND. Current
+>> implementation only supports 1024B. There are three patches:
+>>
+>> 1) Update for device tree bindings to replace 'const' type of field
+>>    'nand-ecc-step-size' with 'enum' which contains 512 and 1024.
+>>
+>> 2) Update for device tree bindings to add dependency between properties
+>>    'nand-ecc-strength' and 'nand-ecc-step-size'.
+>>
+>> 3) Update for Meson driver - new enum value for 512B ECC and reworked
+>>    ECC capabilities structure to support both 512B and 1024B ECC. By
+>>    default this driver uses 1024B ECC, 512B could be enabled in device
+>>    tree.
+> 
+> This series does not apply correctly on nand/next, would you mind
+> rebasing (nand/next on linux-mtd) and sending it again?
 
-I can fix it up whilst applying if no other issues, but there must not be
-a blank line here.  All tags need to be in a single block for some tooling
-that is used with the kernel tree (and some of the checking scripts warn
-about this so it won't get applied with the blank line here).
+Sure, as I see 0001 was applied to nand/next, so I can resend only 0002 and 0003,
+as 0002 is the first patch which fails to apply?
 
-> Signed-off-by: Alejandro Tafalla <atafalla@dnyon.com>
-> ---
-> Changes in v3:
-> - Removed unneeded check for err == -EOPNOTSUPP.
 > 
-> Changes in v2:
-> - Use of error codes instead of true/false
-> 
->  drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c b/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c
-> index 6a18b363cf73..b6e6b1df8a61 100644
-> --- a/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c
-> +++ b/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c
-> @@ -2687,7 +2687,7 @@ static int lsm6dsx_get_acpi_mount_matrix(struct device *dev,
->  static int lsm6dsx_get_acpi_mount_matrix(struct device *dev,
->  					  struct iio_mount_matrix *orientation)
->  {
-> -	return false;
-> +	return -EOPNOTSUPP;
->  }
->  
->  #endif
+> BTW the "rfc" prefix is only needed for the "first" submission, when
+> you try something "new", otherwise it is no longer required.
 
+Ok, got it
+
+> 
+> Thanks,
+> Miquèl
+
+Thanks, Arseniy
