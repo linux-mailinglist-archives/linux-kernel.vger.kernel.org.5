@@ -2,60 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C79F754CC6
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 00:19:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 071B3754CC8
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 00:27:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229805AbjGOWTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 18:19:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60198 "EHLO
+        id S229587AbjGOW1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 18:27:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjGOWTy (ORCPT
+        with ESMTP id S229481AbjGOW1N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 18:19:54 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E93511C;
-        Sat, 15 Jul 2023 15:19:53 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AC9DF60C52;
-        Sat, 15 Jul 2023 22:19:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25E26C433C8;
-        Sat, 15 Jul 2023 22:19:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689459592;
-        bh=cPSD/msIwpbAtGZBWD1hHdsevZO1x68F7ugLJt7drlo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RFCJR5xGY1+op40JzY3qUpD+hjKHTlXxEQwPl8h6nkEyjmh1R6PEUWf1IaLTcBcN9
-         21f+BSDYqJcHod2KW9DCmZzhWQbu5Vb89H4AUxey07gEC5oYIbtBy+9QH0p+vFtSZA
-         9vE3LtvMMygOBHDGwl/fLAsbjDvhkvEI/dS6VP35TDf4I9bWzXUiq6LFQ6+Nh3b1/u
-         q9H+0hrv6pzTtp9xOpV1nlXdmFRs8efL5kaZWOwetdKOufv/CuIQHF/LJX2xG457MA
-         VMwUBRSphl4zwOYgMNipmbRFJuNO2hUpnmcIzWCcw+567WTMgJlyLLuzwefgumObWJ
-         Q49B/pMp/qOzw==
-From:   Bjorn Andersson <andersson@kernel.org>
-To:     Andy Gross <agross@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Dylan Van Assche <me@dylanvanassche.be>
-Cc:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
-Subject: Re: [PATCH v3 0/3] remoteproc: qcom: pas: Support SDM845 SLPI
-Date:   Sat, 15 Jul 2023 15:23:15 -0700
-Message-ID: <168945977672.1841372.3215501922819767032.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230330164633.117335-1-me@dylanvanassche.be>
-References: <20230330164633.117335-1-me@dylanvanassche.be>
+        Sat, 15 Jul 2023 18:27:13 -0400
+Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9FA191993;
+        Sat, 15 Jul 2023 15:27:11 -0700 (PDT)
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 36FMQw5g028157;
+        Sun, 16 Jul 2023 00:26:58 +0200
+Date:   Sun, 16 Jul 2023 00:26:58 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Zhangjin Wu <falcon@tinylab.org>
+Cc:     arnd@arndb.de, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, thomas@t-8ch.de
+Subject: Re: [PATCH v4 00/18] tools/nolibc: shrink arch support
+Message-ID: <20230715222658.GA27708@1wt.eu>
+References: <cover.1689444638.git.falcon@tinylab.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1689444638.git.falcon@tinylab.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,32 +40,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Zhangjin,
 
-On Thu, 30 Mar 2023 18:46:30 +0200, Dylan Van Assche wrote:
-> * About *
+On Sun, Jul 16, 2023 at 02:16:36AM +0800, Zhangjin Wu wrote:
+> Hi, Willy, Thomas
 > 
-> The Qualcomm SDM845 SoC has a separate SLPI (Sensor Low Power Island)
-> DSP for sensors connected to the SoC which is responsible for exposing
-> sensors to userspace, power saving, and other features.
-> While sensors are connected to GPIOs of the SoC, they cannot be used
-> because the hypervisor blocks direct access to the sensors, thus the
-> DSP must be used to access any sensor on this SoC. The SLPI DSP uses a
-> GLink edge (dsps) to communicate with the host and has a FastRPC interface
-> to load files from the host filesystem such as sensor configuration files.
-> The FastRPC interface does not use regular FastRPC Compute Banks
-> but instead uses an allocated CMA region through which communication happens.
+> Thanks very much for your careful review and great suggestions, now, we
+> get v4 revision of the arch shrink series [1], it mainly include a new
+> fixup for -O0 under gcc < 11.1.0, the stackprotector support for
+> _start_c(), new testcases for startup code and two new test targets.
 > 
-> [...]
+> All of the tests passed or skipped (tinyconfig + few options +
+> qemu-system) for both -Os and -O0:
+(...)
 
-Applied, thanks!
+First, good news, it looks OK from the nolibc-test perspective and
+by looking at the code, so I merged all this into branch
 
-[1/3] dt-bindings: remoteproc: qcom: adsp: add qcom,sdm845-slpi-pas compatible
-      commit: 242a626870eb453934b75749f8dbab997556b555
-[2/3] remoteproc: qcom: pas: refactor SLPI remoteproc init
-      commit: 637e98bfe20b2c6866cd79b8d487430af09dc8ac
-[3/3] remoteproc: qcom: pas: add SDM845 SLPI compatible
-      commit: ba3125b47016cdc66454cf720f899b3bf806debc
+  20230715-nolibc-next-1
 
-Best regards,
--- 
-Bjorn Andersson <andersson@kernel.org>
+Second, bad news, my preinit code doesn't build anymore due to missing
+definitions for statx. It's built using the default method which involves
+just including nolibc.h (and getting linux includes from the default path).
+I could simplify it to this one-liner:
+
+  $ printf "int test_stat(const char *p, struct stat *b) { return stat(p,b); }\n" |
+    gcc -c -o test.o -xc - -nostdlib -include ./sysroot/x86/include/nolibc.h
+
+  In file included from ././sysroot/x86/include/nolibc.h:98:0,
+                   from <command-line>:32:
+  ././sysroot/x86/include/sys.h:952:78: warning: 'struct statx' declared inside parameter list will not be visible outside of this definition or declaration
+   int sys_statx(int fd, const char *path, int flags, unsigned int mask, struct statx *buf)
+                                                                                ^~~~~
+  ././sysroot/x86/include/sys.h:962:74: warning: 'struct statx' declared inside parameter list will not be visible outside of this definition or declaration
+   int statx(int fd, const char *path, int flags, unsigned int mask, struct statx *buf)
+                                                                            ^~~~~
+  ././sysroot/x86/include/sys.h: In function 'statx':
+  ././sysroot/x86/include/sys.h:964:51: warning: passing argument 5 of 'sys_statx' from incompatible pointer type [-Wincompatible-pointer-types]
+    return __sysret(sys_statx(fd, path, flags, mask, buf));
+                                                     ^~~
+  ././sysroot/x86/include/sys.h:952:5: note: expected 'struct statx *' but argument is of type 'struct statx *'
+   int sys_statx(int fd, const char *path, int flags, unsigned int mask, struct statx *buf)
+       ^~~~~~~~~
+  ././sysroot/x86/include/sys.h: In function 'stat':
+  ././sysroot/x86/include/sys.h:971:15: error: storage size of 'statx' isn't known
+    struct statx statx;
+                 ^~~~~
+  ././sysroot/x86/include/sys.h:974:60: error: 'STATX_BASIC_STATS' undeclared (first use in this function)
+    ret = __sysret(sys_statx(AT_FDCWD, path, AT_NO_AUTOMOUNT, STATX_BASIC_STATS, &statx));
+                                                              ^~~~~~~~~~~~~~~~~
+  ././sysroot/x86/include/sys.h:974:60: note: each undeclared identifier is reported only once for each function it appears in
+
+I finally found that it's due to the lack of -Isysroot/x86/include, so
+it used to get linux includes from those provided by glibc and these ones
+were missing statx since packaged for an older kernel.
+
+I knew that sooner or later I'd have to reinstall this machine but I
+can't get out of my head that to date I have yet not been convinced by
+the absolute necessity of this modification which is progressively adding
+more burden :-/  Time will tell...
+
+Cheers,
+Willy
