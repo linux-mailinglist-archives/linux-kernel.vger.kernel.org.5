@@ -2,104 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85B07754C3E
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 23:49:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11B19754C3C
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 23:47:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229881AbjGOVtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 17:49:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54906 "EHLO
+        id S229919AbjGOVrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 17:47:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbjGOVtK (ORCPT
+        with ESMTP id S229567AbjGOVrP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 17:49:10 -0400
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59D6D1FFC
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 14:49:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689457748; x=1720993748;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=dWbob4Vhsn6kbSP2Xy0DcGFHiJMC4Zqa0BnJAm8qAyU=;
-  b=LBcJvUvMHTyRr2G1GuUls4wOcj29qVKaNfdwpVoUQ8p7jDb8Lma8HKXL
-   Fa8tCilfGoLe4B16e0DE6w7NUkQLEDsWJbR2wfolXziq7kzDKdKQfYtkm
-   KgRAgt+JGOC46S5t8hwFh+gvKGtXntCFWjI8iSaUGbE6MzGmP7I1PBnDo
-   uM9Y3qfq/F25jtblLDkI2wecCfe/+Q7DC1QGKn8oHGii3dGGf0r49cYUc
-   g14qGCZ0/CyrCmgDrDQ+WJOit0CpBfI5KjIfTxSwHGlatN80avo5uiQSs
-   iYnoG5Vlt6G+r5X80eIl4yhwk9Lk9KvCTn8J4Xy1BBogqC/8twOT6OHHC
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10772"; a="350569831"
-X-IronPort-AV: E=Sophos;i="6.01,209,1684825200"; 
-   d="scan'208";a="350569831"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2023 14:49:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10772"; a="969386258"
-X-IronPort-AV: E=Sophos;i="6.01,209,1684825200"; 
-   d="scan'208";a="969386258"
-Received: from lkp-server01.sh.intel.com (HELO c544d7fc5005) ([10.239.97.150])
-  by fmsmga006.fm.intel.com with ESMTP; 15 Jul 2023 14:49:07 -0700
-Received: from kbuild by c544d7fc5005 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qKn8U-0008Ne-0M;
-        Sat, 15 Jul 2023 21:49:06 +0000
-Date:   Sun, 16 Jul 2023 05:48:29 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Johannes Berg <johannes.berg@intel.com>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>
-Subject: net/mac80211/rx.c:4062:13: warning: stack frame size (10656) exceeds
- limit (8192) in 'ieee80211_rx_handlers'
-Message-ID: <202307160536.eNpCzzGh-lkp@intel.com>
+        Sat, 15 Jul 2023 17:47:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE788213F;
+        Sat, 15 Jul 2023 14:47:14 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4274260ACE;
+        Sat, 15 Jul 2023 21:47:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CAED7C433C7;
+        Sat, 15 Jul 2023 21:47:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689457633;
+        bh=0ym6BumiF8nCUMugy8PoUi1Eqilv5DUripcU8/IgzN4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hq+0jPzICfhKbIt5EGXlVGPHu/7Id2j2H7y2z/sg10dTDOYulbHHbNx6DcrR3K20F
+         kL8Hmzdd/P/R4ZVwCxRMsd+w8wWknU4tsAt7OfLx4iSt1Ve6s62DHxmz7hG+bAf+gX
+         KFNvY5QCAMqNDltC+NDnxxh6BDIbak6HNLr9NFmAKh3Ynt/pWbQ6rq6iNrkfkGtEZO
+         0mHpuC5LrSFxoQYiO7FnLgHvHcOGmfnLQ3rJAPQylTj+q86x1WEpsDa0DyjmO3Xc9e
+         /V3RPUQ5b4pauvJibckDN2rKg15bI5oZfiurLf6dip1vkUf8JywculA21r8nWMd65a
+         oAvCLXS4quNhg==
+Date:   Sat, 15 Jul 2023 14:50:41 -0700
+From:   Bjorn Andersson <andersson@kernel.org>
+To:     Manikanta Mylavarapu <quic_mmanikan@quicinc.com>
+Cc:     agross@kernel.org, konrad.dybcio@linaro.org,
+        mathieu.poirier@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_srichara@quicinc.com, quic_sjaganat@quicinc.com,
+        quic_kathirav@quicinc.com, quic_anusha@quicinc.com,
+        quic_varada@quicinc.com
+Subject: Re: [PATCH 2/2] rpmsg: glink: change intent work queue type
+Message-ID: <5tll34ehog7smsenaskcd7j2uqgcpgmobvortf6no4ebu6ylqr@vkqtajhuri2t>
+References: <20230607121731.26958-1-quic_mmanikan@quicinc.com>
+ <20230607121731.26958-3-quic_mmanikan@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20230607121731.26958-3-quic_mmanikan@quicinc.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   831fe284d8275987596b7d640518dddba5735f61
-commit: baa951a1c1771810f3a378a95fc93e81953027d5 mac80211: use the new drop reasons infrastructure
-date:   3 months ago
-config: riscv-randconfig-r021-20230716 (https://download.01.org/0day-ci/archive/20230716/202307160536.eNpCzzGh-lkp@intel.com/config)
-compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
-reproduce: (https://download.01.org/0day-ci/archive/20230716/202307160536.eNpCzzGh-lkp@intel.com/reproduce)
+On Wed, Jun 07, 2023 at 05:47:31PM +0530, Manikanta Mylavarapu wrote:
+> QDSP6 will clear heap memory once it's received
+> RX_DONE event from APPS. Under heavy cpu load
+> intent worker thread not able to get cpu slot
+> because it's bound to kernel global work queue.
+> Due to this QDSP6 firmware faces OOM and it leads
+> to Q6 crash. Changing intent work queue type to
+> UNBOUND workqueue ensures intent worker thread
+> will be executed as early as possible.
+> 
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307160536.eNpCzzGh-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> net/mac80211/rx.c:4062:13: warning: stack frame size (10656) exceeds limit (8192) in 'ieee80211_rx_handlers' [-Wframe-larger-than]
-   static void ieee80211_rx_handlers(struct ieee80211_rx_data *rx,
-               ^
-   1 warning generated.
+This commit message is specific and the motivation is clear, thank you!
 
 
-vim +/ieee80211_rx_handlers +4062 net/mac80211/rx.c
+I was hoping to move the rx_done generation directly to
+qcom_glink_rx_data(), but I got side tracked on my verification of my
+patches for this.
 
-aa0c86364f925c Christian Lamparter 2010-08-05  4061  
-f9e124fbd8cbea Christian Lamparter 2013-02-04 @4062  static void ieee80211_rx_handlers(struct ieee80211_rx_data *rx,
-f9e124fbd8cbea Christian Lamparter 2013-02-04  4063  				  struct sk_buff_head *frames)
-aa0c86364f925c Christian Lamparter 2010-08-05  4064  {
-aa0c86364f925c Christian Lamparter 2010-08-05  4065  	ieee80211_rx_result res = RX_DROP_MONITOR;
-aa0c86364f925c Christian Lamparter 2010-08-05  4066  	struct sk_buff *skb;
-8944b79fe9b1fe Johannes Berg       2008-01-31  4067  
+Please update the alloc_workqueue() and we can merge this first, if I
+haven't gotten favourable test results until then.
 
-:::::: The code at line 4062 was first introduced by commit
-:::::: f9e124fbd8cbea974b5dc7e9dafddd17d21df7e2 mac80211: protect rx-path with spinlock
 
-:::::: TO: Christian Lamparter <chunkeey@googlemail.com>
-:::::: CC: Johannes Berg <johannes.berg@intel.com>
+PS. 75 character commit messages please.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Regards,
+Bjorn
+
+> Signed-off-by: Manikanta Mylavarapu <quic_mmanikan@quicinc.com>
+> ---
+>  drivers/rpmsg/qcom_glink_native.c | 13 ++++++++++++-
+>  1 file changed, 12 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/rpmsg/qcom_glink_native.c b/drivers/rpmsg/qcom_glink_native.c
+> index 6f9a439e5046..c3e076bb863f 100644
+> --- a/drivers/rpmsg/qcom_glink_native.c
+> +++ b/drivers/rpmsg/qcom_glink_native.c
+> @@ -140,6 +140,7 @@ enum {
+>   * @liids:	idr of all local intents
+>   * @riids:	idr of all remote intents
+>   * @intent_work: worker responsible for transmitting rx_done packets
+> + * @intent_wq:	work queue of intent_work
+>   * @done_intents: list of intents that needs to be announced rx_done
+>   * @buf:	receive buffer, for gathering fragments
+>   * @buf_offset:	write offset in @buf
+> @@ -169,6 +170,7 @@ struct glink_channel {
+>  	struct idr liids;
+>  	struct idr riids;
+>  	struct work_struct intent_work;
+> +	struct workqueue_struct *intent_wq;
+>  	struct list_head done_intents;
+>  
+>  	struct glink_core_rx_intent *buf;
+> @@ -231,6 +233,14 @@ static struct glink_channel *qcom_glink_alloc_channel(struct qcom_glink *glink,
+>  	INIT_LIST_HEAD(&channel->done_intents);
+>  	INIT_WORK(&channel->intent_work, qcom_glink_rx_done_work);
+>  
+> +	channel->intent_wq = alloc_workqueue("intent_wq", WQ_UNBOUND, 1);
+> +	if (!channel->intent_wq) {
+> +		pr_err("failed to create %s channel intent work queue\n",
+> +		       channel->name);
+> +		kfree(channel);
+> +		return ERR_PTR(-ENOMEM);
+> +	}
+> +
+>  	idr_init(&channel->liids);
+>  	idr_init(&channel->riids);
+>  	kref_init(&channel->refcount);
+> @@ -270,6 +280,7 @@ static void qcom_glink_channel_release(struct kref *ref)
+>  	idr_destroy(&channel->riids);
+>  	spin_unlock_irqrestore(&channel->intent_lock, flags);
+>  
+> +	destroy_workqueue(channel->intent_wq);
+>  	kfree(channel->name);
+>  	kfree(channel);
+>  }
+> @@ -573,7 +584,7 @@ static void qcom_glink_rx_done(struct qcom_glink *glink,
+>  	list_add_tail(&intent->node, &channel->done_intents);
+>  	spin_unlock(&channel->intent_lock);
+>  
+> -	schedule_work(&channel->intent_work);
+> +	queue_work(channel->intent_wq, &channel->intent_work);
+>  }
+>  
+>  /**
+> -- 
+> 2.17.1
+> 
