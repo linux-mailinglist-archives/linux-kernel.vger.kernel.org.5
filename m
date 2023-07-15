@@ -2,100 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AB40754817
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 12:00:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1772B754819
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 12:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230387AbjGOKAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 06:00:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33698 "EHLO
+        id S230389AbjGOKCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 06:02:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230359AbjGOKAr (ORCPT
+        with ESMTP id S229549AbjGOKB6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 06:00:47 -0400
-Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFECB2701
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 03:00:45 -0700 (PDT)
-Date:   Sat, 15 Jul 2023 10:00:34 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-        s=protonmail; t=1689415244; x=1689674444;
-        bh=QnF59vl5+yCYRQpMrd2L/uF0PGzIplpwVi1jkdKlyBY=;
-        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID:BIMI-Selector;
-        b=Q6UkrPgLIIJU7b8/F8r0FqjyX9koF7x8ThbaXuvrSa7L4b74Qox63R8l+kmRz1f/j
-         9+yOUhlEaqz4mkzyHnHVStt4Sakh07G3jaOIJ4FnNQRb5pLXdP8Wx2J6+CUnN5r8Xv
-         b1dvJYa0D1OWk7CmYnMXJUI1fbT6naJlSsTB2PJwNM9fSgTu+WOTyKHri8Huy2XAUy
-         L3becJS07dyXOF1lBcc2o1lDqFn1yTKJAuRN+ckEe5jI1X+EnRFl34xSGBB+rqRDLv
-         VH0lNDVEwwau/55u820bNeTME6csSA4DBU+wjnc9/LZj0C7WPIjEq6CxqW64iE9Pn3
-         sIVvdspHn0G3g==
-To:     Asahi Lina <lina@asahilina.net>
-From:   Benno Lossin <benno.lossin@proton.me>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        asahi@lists.linux.dev
-Subject: Re: [PATCH] rust: kernel: str: Implement Debug for CString
-Message-ID: <Fri3hO6JBOzZwR7YKGQqy8HYwzn_ciV2HgjLNm36zwf1p8BsWCSrecnz-00K2dsztvOI1c2PP7cd_Kh6xjFVjbsX6U7qAPqvsdsi7WaaVow=@proton.me>
-In-Reply-To: <20230714-cstring-debug-v1-1-4e7c3018dd4f@asahilina.net>
-References: <20230714-cstring-debug-v1-1-4e7c3018dd4f@asahilina.net>
-Feedback-ID: 71780778:user:proton
+        Sat, 15 Jul 2023 06:01:58 -0400
+Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2D3B8CE;
+        Sat, 15 Jul 2023 03:01:54 -0700 (PDT)
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 36FA1YHU025601;
+        Sat, 15 Jul 2023 12:01:34 +0200
+Date:   Sat, 15 Jul 2023 12:01:34 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Zhangjin Wu <falcon@tinylab.org>
+Cc:     arnd@arndb.de, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, thomas@t-8ch.de
+Subject: Re: [PATCH v3 00/11] tools/nolibc: shrink arch support
+Message-ID: <20230715100134.GD24086@1wt.eu>
+References: <cover.1689150149.git.falcon@tinylab.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1689150149.git.falcon@tinylab.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.07.23 11:19, Asahi Lina wrote:
-> Trivial implementation.
->=20
-> Signed-off-by: Asahi Lina <lina@asahilina.net>
-
-With a better commit message you can add
-
-Reviewed-by: Benno Lossin <benno.lossin@proton.me>
-
---=20
-Cheers,
-Benno
-
-> ---
->   rust/kernel/str.rs | 6 ++++++
->   1 file changed, 6 insertions(+)
->=20
-> diff --git a/rust/kernel/str.rs b/rust/kernel/str.rs
-> index c9dd3bf59e34..a94e396d39e1 100644
-> --- a/rust/kernel/str.rs
-> +++ b/rust/kernel/str.rs
-> @@ -606,6 +606,12 @@ fn try_from(cstr: &'a CStr) -> Result<CString, Alloc=
-Error> {
->       }
->   }
->=20
-> +impl fmt::Debug for CString {
-> +    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-> +        fmt::Debug::fmt(&**self, f)
-> +    }
-> +}
-> +
->   /// A convenience alias for [`core::format_args`].
->   #[macro_export]
->   macro_rules! fmt {
->=20
-> ---
-> base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
-> change-id: 20230714-cstring-debug-ca021fe0ad78
->=20
-> Thank you,
-> ~~ Lina
+On Wed, Jul 12, 2023 at 05:15:28PM +0800, Zhangjin Wu wrote:
+> Hi, Willy, Thomas
 > 
+> Here is the revision of the v2 arch support shrink patchset [1], it
+> mainly applies suggestions from you.
+> 
+> It is based on the 20230710-nolibc-ser2-tom-syscall-configv4-report
+> branch of nolibc repo.
+> 
+> Tested for all of the supported archs:
+> 
+>            arch/board | result
+>           ------------|------------
+>       arm/versatilepb | 151 test(s): 144 passed,   7 skipped,   0 failed => status: warning.
+>       arm/vexpress-a9 | 151 test(s): 144 passed,   7 skipped,   0 failed => status: warning.
+>              arm/virt | 151 test(s): 144 passed,   7 skipped,   0 failed => status: warning.
+>          aarch64/virt | 151 test(s): 144 passed,   7 skipped,   0 failed => status: warning.
+>               i386/pc | 151 test(s): 144 passed,   7 skipped,   0 failed => status: warning.
+>             x86_64/pc | 151 test(s): 144 passed,   7 skipped,   0 failed => status: warning.
+>          mipsel/malta | 151 test(s): 144 passed,   7 skipped,   0 failed => status: warning.
+>      loongarch64/virt | 151 test(s): 144 passed,   7 skipped,   0 failed => status: warning.
+>          riscv64/virt | 151 test(s): 144 passed,   7 skipped,   0 failed => status: warning.
+>          riscv32/virt | 151 test(s): 122 passed,   7 skipped,  22 failed => status: failure.
+> s390x/s390-ccw-virtio | 151 test(s): 144 passed,   7 skipped,   0 failed => status: warning.
+
+Thanks for all this work. So I've checked a few random archs and trust
+your tests above to confirm they're correct ;-)  I'd just like to get
+your confirmation regarding statx() support in 4.14 and 4.19, and likely
+adjust _start_c() according to the last few tests. Also please do prepend
+to the list the patch that adds the optimize("-Os") to fix _start, and we
+should be good.
+
+Thanks!
+Willy
