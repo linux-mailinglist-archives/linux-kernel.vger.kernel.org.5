@@ -2,145 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDAE1754838
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 12:40:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A45B75483A
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 12:40:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230456AbjGOKkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 06:40:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39008 "EHLO
+        id S230469AbjGOKkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 06:40:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230445AbjGOKj7 (ORCPT
+        with ESMTP id S229854AbjGOKka (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 06:39:59 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3073B3A8E;
-        Sat, 15 Jul 2023 03:39:54 -0700 (PDT)
-X-QQ-mid: bizesmtp67t1689417583tms82huj
-Received: from linux-lab-host.localdomain ( [119.123.131.162])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Sat, 15 Jul 2023 18:39:42 +0800 (CST)
-X-QQ-SSF: 01200000000000D0W000000A0000000
-X-QQ-FEAT: CR3LFp2JE4nK18uNrjmdV9g1LWuVN/HuTB5VcUN/LSXQmVHH627ibbLWF3EoP
-        jxg1SUQtg8Ab/3irnsRim8wkPy2/94whnTf54sTuaEQqYU7bDRxq1snain4OiUEAhU92fEG
-        hD8HopxqfsmvfWh0GZmu4NvUwtCTvR0wjZxyLiQYnij+wDMhlqK5QI9+RCajsflCFzXA3qw
-        ueVx7yCIXLzwTTSmxkRf9fhhT35aZL8RdS987B+bJzU6GxalyspKHrQcKY/LaVScl70GFyd
-        lSOaIEEUeZz7SL3HUqhVH1JPDqbzXEnYpKCBnbFbVbDmVlnV09z/hCy6S9usq34RfSEvSeO
-        vn/MOI6yNemB9eHR7jIlZI7a1eb6gB+565+vQPQKBxKs2ZUxajuXHxK+zjhuw==
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 3909186012897845147
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     w@1wt.eu
-Cc:     arnd@arndb.de, falcon@tinylab.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, thomas@t-8ch.de
-Subject: Re: [PATCH v3 01/11] tools/nolibc: remove the old sys_stat support
-Date:   Sat, 15 Jul 2023 18:39:41 +0800
-Message-Id: <20230715103941.341262-1-falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230715085942.GB24086@1wt.eu>
-References: <20230715085942.GB24086@1wt.eu>
+        Sat, 15 Jul 2023 06:40:30 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C49753A88;
+        Sat, 15 Jul 2023 03:40:29 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 59D1560303;
+        Sat, 15 Jul 2023 10:40:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB3F1C433C8;
+        Sat, 15 Jul 2023 10:40:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689417628;
+        bh=wTBz1S2hSZwl9POKXMBD1OXuh1TzdFtjpS1qwGx+jkU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AzOsA2qFOz4tvHXjRervo3hsjJMpV6Wh6vmXrC9HBvJufqG5Rxd2QWn4Ytf9WmKT3
+         ujHHRaZ6EHvH9eJq5Bo2tUdsmlaScYysaiAgNR5GV/wUns4qUKnTOnwwuRUszRu1mj
+         4qvEGI7Q96XZXeehYXzyZx/h+k8lBAetCYLTvmZoAJuV5oqUtFL/b5h5rDuBdToy79
+         LlOPbpvXntlRlSlMzqmc1z6eguAX/wxLQFmPbaLavZ+57NQu0BY6V2btUGLmjFKQek
+         vDqhRkXReWmtyZWxzFjTYSctCOWNIJE4N1xbj3OiHtccADkleRhF4jBxF2aF3HsgF3
+         RgCDKpsDhMdRA==
+Date:   Sat, 15 Jul 2023 11:40:22 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Sarah Walker <sarah.walker@imgtec.com>
+Cc:     dri-devel@lists.freedesktop.org, frank.binns@imgtec.com,
+        donald.robson@imgtec.com, boris.brezillon@collabora.com,
+        faith.ekstrand@collabora.com, airlied@gmail.com, daniel@ffwll.ch,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, afd@ti.com, hns@goldelico.com,
+        matthew.brost@intel.com, christian.koenig@amd.com,
+        luben.tuikov@amd.com, dakr@redhat.com,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v4 02/17] dt-bindings: gpu: Add Imagination Technologies
+ PowerVR GPU
+Message-ID: <20230715-paramount-straining-6a486f8af20d@spud>
+References: <20230714142526.111569-1-sarah.walker@imgtec.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="PGVJVVq7kVn9L8A9"
+Content-Disposition: inline
+In-Reply-To: <20230714142526.111569-1-sarah.walker@imgtec.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Hi Zhangjin,
-> 
-> On Wed, Jul 12, 2023 at 05:16:34PM +0800, Zhangjin Wu wrote:
-> > __NR_statx has been added from v4.10:
-> > 
-> >     commit a528d35e8bfc ("statx: Add a system call to make enhanced file info available")
-> > 
-> > It has been supported by all of the platforms since at least from v4.20
-> > and glibc 2.28.
-> > 
-> > Let's remove the old arch related and dependent sys_stat support
-> > completely.
-> > 
-> > This is friendly to the future new architecture porting.
-> 
-> As I previously said, I'd like that we at least preserve compatibility
-> with supported stable branches. 4.14 and 4.19 are still supported, so
-> does this mean that if I rebuild my preinit against the updated nolibc
-> it will fail to boot on such older systems for the archs that we support?
->
-> Because if it means that in order to support all currently active
-> kernels, one must only build from an older copy of the lib, that becomes
-> a disservice to its development and usage. Thus if you checked that aarch64,
-> arm, i386, mips, riscv, s390 and x86_64 had already adopted statx by 4.14,
-> then I'm fine and we can drop stat(), but then it must be mentioned in
-> the commit message, because here it's not explicit.
->
 
-Yeah, we used 'git blame' before and found the last related change is
-v4.20, but it is not really the first change.
+--PGVJVVq7kVn9L8A9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Just read the statx manpage again:
+Hey Sarah,
 
-    https://man7.org/linux/man-pages/man2/statx.2.html
+Your series does not appear to be threaded. `git send-email` can be
+passed, for example, a directory containing a whole series & will set
+the correct in-reply-to headers so that the series is in a single
+thread.
 
-It shows something about "Linux 4.11, glibc 2.28.
+On Fri, Jul 14, 2023 at 03:25:26PM +0100, Sarah Walker wrote:
+> Add the device tree binding documentation for the Series AXE GPU used in
+> TI AM62 SoCs.
 
-And 'git grep' shows it is true:
+> Changes since v3:
+> - Remove oneOf in compatible property
+> - Remove power-supply (not used on AM62)
+>=20
+> Changes since v2:
+> - Add commit message description
+> - Remove mt8173-gpu support (not currently supported)
+> - Drop quotes from $id and $schema
+> - Remove reg: minItems
+> - Drop _clk suffixes from clock-names
+> - Remove operating-points-v2 property and cooling-cells (not currently
+>   used)
+> - Add additionalProperties: false
+> - Remove stray blank line at the end of file
 
-    $ git grep -r statx v4.11 arch/ include/uapi/asm-generic/unistd.h | grep -E "aarch64|arm|mips|s390|x86|:include/uapi"
-    v4.11:arch/arm/tools/syscall.tbl:397	common	statx			sys_statx
-    v4.11:arch/arm64/include/asm/unistd32.h:#define __NR_statx 397
-    v4.11:arch/arm64/include/asm/unistd32.h:__SYSCALL(__NR_statx, sys_statx)
-    v4.11:arch/mips/include/uapi/asm/unistd.h:#define __NR_statx			(__NR_Linux + 366)
-    v4.11:arch/mips/include/uapi/asm/unistd.h:#define __NR_statx			(__NR_Linux + 326)
-    v4.11:arch/mips/include/uapi/asm/unistd.h:#define __NR_statx			(__NR_Linux + 330)
-    v4.11:arch/mips/kernel/scall32-o32.S:	PTR	sys_statx
-    v4.11:arch/mips/kernel/scall64-64.S:	PTR	sys_statx
-    v4.11:arch/mips/kernel/scall64-n32.S:	PTR	sys_statx			/* 6330 */
-    v4.11:arch/mips/kernel/scall64-o32.S:	PTR	sys_statx
-    v4.11:arch/s390/include/uapi/asm/unistd.h:#define __NR_statx		379
-    v4.11:arch/s390/kernel/compat_wrapper.c:COMPAT_SYSCALL_WRAP5(statx, int, dfd, const char __user *, path, unsigned, flags, unsigned, mask, struct statx __user *, buffer);
-    v4.11:arch/s390/kernel/syscalls.S:SYSCALL(sys_statx,compat_sys_statx)
-    v4.11:arch/x86/entry/syscalls/syscall_32.tbl:383	i386	statx			sys_statx
-    v4.11:arch/x86/entry/syscalls/syscall_64.tbl:332	common	statx			sys_statx
-    v4.11:include/uapi/asm-generic/unistd.h:#define __NR_statx 291
-    v4.11:include/uapi/asm-generic/unistd.h:__SYSCALL(__NR_statx,     sys_statx)
+The changelog should go below the --- line.
 
-both riscv and loongarch use the generic unistd.h, so, all of our
-supported archs should work as-is. riscv itself is added from v4.15,
-loongarch itself is added from v5.19.
+> Signed-off-by: Sarah Walker <sarah.walker@imgtec.com>
+> ---
+>  .../devicetree/bindings/gpu/img,powervr.yaml  | 68 +++++++++++++++++++
+>  MAINTAINERS                                   |  7 ++
+>  2 files changed, 75 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/gpu/img,powervr.yaml
 
-The powerpc we plan to support is from v4.11:
+> diff --git a/Documentation/devicetree/bindings/gpu/img,powervr.yaml b/Doc=
+umentation/devicetree/bindings/gpu/img,powervr.yaml
+> new file mode 100644
+> index 000000000000..3292a0440465
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/gpu/img,powervr.yaml
+> @@ -0,0 +1,68 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +# Copyright (c) 2022 Imagination Technologies Ltd.
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/gpu/img,powervr.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Imagination Technologies PowerVR GPU
+> +
+> +maintainers:
+> +  - Sarah Walker <sarah.walker@imgtec.com>
 
-    $ git grep -r statx v4.11 arch/powerpc/
-    v4.11:arch/powerpc/include/asm/systbl.h:SYSCALL(statx)
-    v4.11:arch/powerpc/include/uapi/asm/unistd.h:#define __NR_statx         383
+> +  interrupts:
+> +    items:
+> +      - description: GPU interrupt
 
-So, let's simply correct the commit message (the old v4.10 has a wrong -1
-offset, I wrongly used 'git show a528d35e8bfc:Makefile' before).
+The description here doesn't add any value, since there is only one
+interrupt, so you can drop it and do maxItems: 1 as you have done
+elsewhere.
 
-    sys_statx has been supported from Linux v4.11 and glibc 2.28:
+> +  interrupt-names:
+> +    items:
+> +      - const: gpu
 
-        $ git grep -r statx v4.11 arch/ include/uapi/asm-generic/unistd.h
+And this
+items:
+  - const: gpu
+can just be
+const: gpu
 
-    Both riscv (firstly added from v4.15) and loongarch (firstly added from
-    v5.19) use the generic unistd.h, the others are supported from arch/.
- 
-    Let's remove the old arch related and dependent sys_stat support
-    completely.
+Although, if there is only one interrupt this is probably not
+particularly helpful. Are there other implementations of this IP that
+have more interrupts?
 
-    Since the current oldest stable branch is v4.14, so, using statx
-    instead of sys_stat preserves compatibility with all of the
-    supported stable branches.
-    
-    This is friendly to the future new architecture porting.
+Otherwise, this looks good to me.
 
-Best regards,
-Zhangjin
+Thanks,
+Conor.
 
-> Thanks!
-> Willy
+--PGVJVVq7kVn9L8A9
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZLJ3lgAKCRB4tDGHoIJi
+0j3aAQDVMC24k6fauiEV0VhEg6EVlCN4u/NEO2bgeg06XEa29wD/RMfmf/un5KW6
+LVpJKv8SHRhzcCHfOR387DPgS+VIDgE=
+=XdJ6
+-----END PGP SIGNATURE-----
+
+--PGVJVVq7kVn9L8A9--
