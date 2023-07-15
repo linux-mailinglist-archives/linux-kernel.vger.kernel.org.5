@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BC647547AC
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 11:18:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7752F7547AF
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 11:18:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229729AbjGOJSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 05:18:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49566 "EHLO
+        id S230079AbjGOJSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 05:18:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbjGOJSc (ORCPT
+        with ESMTP id S229482AbjGOJSf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 05:18:32 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6902C35B7;
-        Sat, 15 Jul 2023 02:18:31 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2b701e1ca63so42149921fa.1;
-        Sat, 15 Jul 2023 02:18:31 -0700 (PDT)
+        Sat, 15 Jul 2023 05:18:35 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A194235B7;
+        Sat, 15 Jul 2023 02:18:34 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2b9352ff1aeso28381fa.1;
+        Sat, 15 Jul 2023 02:18:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689412709; x=1692004709;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=68KK9nMb/YMaoape6Ajka+6g2rtnhepcU3LV7qa+nM8=;
-        b=bfn57QW6XodUliCuFKdi9Wt3QhFAThlbWatDzeTGyjXfTyWb6U3wEBLqkjU8ocesc+
-         Ru6FipAGz7YCj7l8Mv7hMa0gA5IZ36ieYug0HyIwuuOtlCAVdZyl6vwqkNGDMq33JqOc
-         AypdOp+/6MKch8NmyGnbHNSEQEmch7tov55O01gCCuQDNyuhZ4ufyME2gSg+Rblo+uWL
-         oMNH0P/xS+JVu2tHBkEjsUw2+d6lMcrim55vfTaUo7kQIDdVBCFIG8+KxmBYPG6hepGE
-         YLzLLyjMT4qz0zLSlDbApejjyWvIdYjO4d1pj149ohceqVJYbAXYRgUiYUT0yBtpjIld
-         ZHhg==
+        d=gmail.com; s=20221208; t=1689412712; x=1692004712;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ml0O9v4adwaXBJEIaQ084479cQpZdd+qXOYWMXt4ElA=;
+        b=XXh3zvoVnJjyw+Vw1oB7KtQZbYBRIaUkMaa2x991IFW0s/OZ/kSSYGNrCDOxKTKYSS
+         ZL8VA1Eu8gzIpmqN46PkaZpKdMzSsNwWOOYDfbN2WMv5nLEcrIJZPdhk5Apgva7LqSvX
+         Mep8qlq7D+CRYNI+eWLfM1wLJIyhu41m9AnwXuNl0sjNWTtoCDbXVO1Eeii8QIXK+4FO
+         v+TMjRBVlMlfwrL8USiNrcmwZcVnsFD12XaaKAARJlULo4cqpaYlLtUmKaK2d6Nkekka
+         Uc7865qWaLXql6ZXEjTwVN+E0gH+luOuNY6Nur8QLI1EoasrBJax258VzZHzgw+gi8Vw
+         N3cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689412709; x=1692004709;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=68KK9nMb/YMaoape6Ajka+6g2rtnhepcU3LV7qa+nM8=;
-        b=kJIWylUl2DdKKwcTfCDQBk4XyPxW9k4DYiabnmIxf2pjJ/SN6VZkGA9RyI0Zq6pBB1
-         SC9Fsr5RqmHk6DhVSjjIyW3xX0QY4fG7lWcXS2EcyrZfdwjv+8MI++kZem+wvBUI6Y8e
-         R2iEAJzpnyhMnLaOCx9dkTF7Bb6TICP9byH9hlY3CpIwiUna/SwTtSMtTgu5YYTItueZ
-         SxOOftRoigI72zMJOUf82aSkYwN5EvHr6TX8paFINqSYN89E4NYpeHKvhS+NlHO7McYr
-         9LDOzVVMuAzQZWJyKkPgxDozyJK3XmlPBJs6FZOAFfLfrjtah33qGqZCSxxeaZouvWjI
-         bPHg==
-X-Gm-Message-State: ABy/qLa78bNg+3TPwt4kh4V253e0IXbkodcrnNdhL/p1qNUCyILBz3VZ
-        EQBc7iteUsLyEIZhThI34/JRG0uHcWVLLg==
-X-Google-Smtp-Source: APBJJlFGNRjxeR4VqbwtcC7QCL/trfcaEw9mhlBfy0pd8SJcEXD8F41MebiZaa0xN5qVjoHQABdRoA==
-X-Received: by 2002:a05:651c:157:b0:2b5:9f54:e290 with SMTP id c23-20020a05651c015700b002b59f54e290mr5276895ljd.0.1689412709072;
-        Sat, 15 Jul 2023 02:18:29 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689412712; x=1692004712;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ml0O9v4adwaXBJEIaQ084479cQpZdd+qXOYWMXt4ElA=;
+        b=hF6/jojYZ/Dfiqndh5Pyixkw75MlHRhTFxg4s7MHRZ5gUhVT+cnzHCQIuMFAUyYrI8
+         mwHr2YjYngbCaBKCWOHAq12boyp8C9S6fvIX+rPPeskvZDwTmN7kARI6kEsZwztYh0ns
+         82BNK8hSzgFOazzaYd+IBqzPHthcOv08fW4V9OYljzdnTPx81sqQnLdLlaROzrnPQxLU
+         UJnTSP6Pb2emctp7VLLFt7Ub+HiEDucR1p0BSs08EwBhYJTwNJ2DBIPD9Qtgv7Ca+zyg
+         ikhpF4L8Yl6kBLUWTwaSolRRqKbMNsNqISgRNnH9E/7VCvqvczxfSap/6LrQX/U4mcp4
+         FrxA==
+X-Gm-Message-State: ABy/qLawXi7S1A+i6NESpEVyFlHvYeh0rH/iRHDlcQiwOw/U2UclJFkP
+        6BafeZI85nNYskVYjor/FgVCdiR2Jj8mhQ==
+X-Google-Smtp-Source: APBJJlH2MjuUkNhIv3D5y271CR9dnERIGeG6VJrEdFCX/0Z5fkvnvbXOAyVQ9MxF3mJap1rTA1eULA==
+X-Received: by 2002:a2e:9bcb:0:b0:2b6:dec9:2813 with SMTP id w11-20020a2e9bcb000000b002b6dec92813mr5993004ljj.29.1689412712645;
+        Sat, 15 Jul 2023 02:18:32 -0700 (PDT)
 Received: from user-PC.. ([92.51.95.194])
-        by smtp.gmail.com with ESMTPSA id b17-20020a2e9891000000b002b840f283a7sm561784ljj.36.2023.07.15.02.18.26
+        by smtp.gmail.com with ESMTPSA id b17-20020a2e9891000000b002b840f283a7sm561784ljj.36.2023.07.15.02.18.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 Jul 2023 02:18:28 -0700 (PDT)
+        Sat, 15 Jul 2023 02:18:32 -0700 (PDT)
 From:   Maksim Kiselev <bigunclemax@gmail.com>
 To:     linux-iio@vger.kernel.org
 Cc:     Maksim Kiselev <bigunclemax@gmail.com>,
@@ -67,10 +68,12 @@ Cc:     Maksim Kiselev <bigunclemax@gmail.com>,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
         linux-riscv@lists.infradead.org
-Subject: [PATCH v9 0/4] Add support for Allwinner GPADC on D1/T113s/R329/T507 SoCs
-Date:   Sat, 15 Jul 2023 12:18:12 +0300
-Message-Id: <20230715091816.3074375-1-bigunclemax@gmail.com>
+Subject: [PATCH v9 1/4] iio: adc: Kconfig change description for Allwinner GPADC
+Date:   Sat, 15 Jul 2023 12:18:13 +0300
+Message-Id: <20230715091816.3074375-2-bigunclemax@gmail.com>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230715091816.3074375-1-bigunclemax@gmail.com>
+References: <20230715091816.3074375-1-bigunclemax@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -83,72 +86,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series adds support for general purpose ADC (GPADC) on new
-Allwinner's SoCs, such as D1, T113s, T507 and R329. The implemented driver
-provides basic functionality for getting ADC channels data.
+Add SoCs names to Allwinner GPADC description to make it more informative.
 
-Change History:
-v9:
-- Dropped fixes tag
-- Reworded commits to remove 'This patch'
+Signed-off-by: Maksim Kiselev <bigunclemax@gmail.com>
+---
+ drivers/iio/adc/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-v8:
-- Added patch that changes Kconfig description for previous Allwinner GPADC
-- Changed Kconfig description for this GPADC driver
-- Fixed 'reg' range for gpadc node in 'sunxi-d1s-t113.dtsi'
-
-v7:
-- Fixed typo in DT bindings property
-
-v6:
-- Fixed DT bindings regexp for channel properties
-- Dropped checking the max number of channels from the drivers code
-  (This is redundant as we raly on DT bindings check)
-
-v5:
-- Fixed DT bindings properties for child nodes
-
-v4:
-- Fixed DT bindings warnings
-- Used GENMASK to clear the irq register
-- Minor formatting fixes
-
-v3:
-- Added DT bindings dual license, fixed property order and example formatting
-- Added explanations comments for timeout and mutex
-- Dropped unnecessary regmap and used readl/writel instead
-- Added error message about getting channel number
-- Renamed labels and variables to make them self-explanatory
-
-v2:
-- Added lastch flag to avoid addition work for already selected channel
-- Added reset assertion on module remove
-- Added dynamic channel allocation and dropped iio_chan_spec arrays
-- Changed IIO_CHAN_INFO_SCALE type to FRACTIONAL_LOG2
-- Dropped separate compatible strings and configs for T113s and R329
-- Fixed includes
-- Fixed Kconfig description
-- Removed duplicate probe error messages
-- Used FIELD_PREP for bit setup
-
-v1:
-- Initial version
-
-Maksim Kiselev (4):
-  iio: adc: Kconfig change description for Allwinner GPADC
-  iio: adc: Add Allwinner D1/T113s/R329/T507 SoCs GPADC
-  dt-bindings: iio: adc: Add Allwinner D1/T113s/R329/T507 SoCs GPADC
-  riscv: dts: allwinner: d1: Add GPADC node
-
- .../iio/adc/allwinner,sun20i-d1-gpadc.yaml    |  91 ++++++
- .../boot/dts/allwinner/sunxi-d1s-t113.dtsi    |  10 +
- drivers/iio/adc/Kconfig                       |  12 +-
- drivers/iio/adc/Makefile                      |   1 +
- drivers/iio/adc/sun20i-gpadc-iio.c            | 276 ++++++++++++++++++
- 5 files changed, 389 insertions(+), 1 deletion(-)
- create mode 100644 Documentation/devicetree/bindings/iio/adc/allwinner,sun20i-d1-gpadc.yaml
- create mode 100644 drivers/iio/adc/sun20i-gpadc-iio.c
-
+diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
+index dc14bde31ac1..5f1e9bb59623 100644
+--- a/drivers/iio/adc/Kconfig
++++ b/drivers/iio/adc/Kconfig
+@@ -1116,7 +1116,7 @@ config STMPE_ADC
+ 	  built-in ADC block (stmpe811).
+ 
+ config SUN4I_GPADC
+-	tristate "Support for the Allwinner SoCs GPADC"
++	tristate "Allwinner A10/A13/A31 and similar GPADCs driver"
+ 	depends on IIO
+ 	depends on MFD_SUN4I_GPADC || MACH_SUN8I
+ 	depends on THERMAL || !THERMAL_OF
 -- 
 2.39.2
 
