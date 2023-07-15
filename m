@@ -2,171 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27D29754716
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 08:37:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9434B754717
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 08:38:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230136AbjGOGha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 02:37:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55628 "EHLO
+        id S230173AbjGOGiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 02:38:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230024AbjGOGh2 (ORCPT
+        with ESMTP id S229555AbjGOGiT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 02:37:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF2A6358E;
-        Fri, 14 Jul 2023 23:37:27 -0700 (PDT)
+        Sat, 15 Jul 2023 02:38:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAD1A358E;
+        Fri, 14 Jul 2023 23:38:17 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 49FFC6092A;
-        Sat, 15 Jul 2023 06:37:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7665C433C7;
-        Sat, 15 Jul 2023 06:37:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689403046;
-        bh=28KkXXydks0YVAuGGcxT7Uv8avQHc6CF+wMoi/BVCVA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=TRpQSythwInhINm81lMZh3cQi4rlZZAyk7pLJIXuQFNdtadJtYBaM8MW6brMm9Bj2
-         52AXs3qLUk5PVZrAAS+IN8KVEPjWnv7364IdNxfsG/jkK7qz0GSmW051QaaZ4sUZPv
-         wFcCOUXDLwA16ZVcyFyuSrLmqBnc2Af8uYSFusbmD9l4eG8OCLAajQrFbl1vrIjmpV
-         M/wYLmA8E0WcYtWbSSAx8YHMOODK1NRjPyoLYPrgoXJVOwJOF4BZOVjuYTtWG1x3WS
-         WCKD4HbF8kTeksLHGcp+RmhgN+GBd4f3/jtw+m60RRQ93e8QLQwl1GoMLTdpVcv0JJ
-         cau2zFN2Uja7Q==
-Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-3a3c78ede4bso2004188b6e.2;
-        Fri, 14 Jul 2023 23:37:26 -0700 (PDT)
-X-Gm-Message-State: ABy/qLZriypHLL7pJwaVj5JvMQrHq7iXswv7TUMn5rPq5eKB67VfKrMW
-        wShQtwhtOfuXnXnpDX+43r0s12GBP7S7IKjsFCY=
-X-Google-Smtp-Source: APBJJlFp7nbzd8uDAVqcgzgy5GRnnYUdqE8yOpQlP+Z+az+qgEmTWQS1EB8pxuJCnpOMdHC+ZScm2Zm/lq9Bwa7mxB8=
-X-Received: by 2002:a05:6808:1384:b0:3a4:1f76:bdfb with SMTP id
- c4-20020a056808138400b003a41f76bdfbmr7753259oiw.14.1689403045890; Fri, 14 Jul
- 2023 23:37:25 -0700 (PDT)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 508B5600BE;
+        Sat, 15 Jul 2023 06:38:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4CACC433C7;
+        Sat, 15 Jul 2023 06:38:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1689403096;
+        bh=uRlIl+vbdu2QDLuqivP4y8zF+71MOCAvYoUKfpnosCc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ucZdyl0ekP17LSlYQl20XnwxkfjrKusvXBqL5aS3aQ7EOagl3MTDzTh7nTZvtDm3G
+         7wjEP//NUajY+2c+mvFIPoX1SPB91hbDrX7U/4ybPVKxFKRrE1rwT/k4fBX8+Ksg/a
+         E5gpVu//lE0YohivXiMBMt9B3VZ88wBINLN8SrQA=
+Date:   Sat, 15 Jul 2023 08:38:10 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     corbet@lwn.net, workflows@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH docs] docs: maintainer: document expectations of small
+ time maintainers
+Message-ID: <2023071542-startup-everyone-eb5d@gregkh>
+References: <20230713223432.1501133-1-kuba@kernel.org>
 MIME-Version: 1.0
-References: <4f414a87-0c54-44bd-b218-f6f0b22c57ef@p183> <ZLEmgxm73zzmffWD@fjasle.eu>
- <4dc7e56c-6692-4d4c-a8d2-05abe4501e66@p183> <ZLGiQxF5ffbWR7tR@fjasle.eu>
-In-Reply-To: <ZLGiQxF5ffbWR7tR@fjasle.eu>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sat, 15 Jul 2023 15:36:49 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARMT_RfCw3_Tv7VzdYJJFitMqrDG95pWeUTpcMZEr2Txg@mail.gmail.com>
-Message-ID: <CAK7LNARMT_RfCw3_Tv7VzdYJJFitMqrDG95pWeUTpcMZEr2Txg@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: flatten KBUILD_CFLAGS
-To:     Nicolas Schier <nicolas@fjasle.eu>
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>, akpm@linux-foundation.org,
-        nathan@kernel.org, ndesaulniers@google.com,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230713223432.1501133-1-kuba@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 15, 2023 at 4:30=E2=80=AFAM Nicolas Schier <nicolas@fjasle.eu> =
-wrote:
->
-> On Fri, Jul 14, 2023 at 08:45:00PM +0300 Alexey Dobriyan wrote:
-> > On Fri, Jul 14, 2023 at 12:42:11PM +0200, Nicolas Schier wrote:
-> > > On Thu, Jul 13, 2023 at 09:52:28PM +0300, Alexey Dobriyan wrote:
-> > > > Make it slightly easier to see which compiler options are added and
-> > > > removed (and not worry about column limit too!).
-> > > >
-> > > > Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
-> > > > ---
-> > > >
-> > > >  Makefile |   22 +++++++++++++++++-----
-> > > >  1 file changed, 17 insertions(+), 5 deletions(-)
-> > > >
-> > > > --- a/Makefile
-> > > > +++ b/Makefile
-> > > > @@ -555,11 +555,23 @@ LINUXINCLUDE    :=3D \
-> > > >           $(USERINCLUDE)
-> > > >
-> > > >  KBUILD_AFLAGS   :=3D -D__ASSEMBLY__ -fno-PIE
-> > > > -KBUILD_CFLAGS   :=3D -Wall -Wundef -Werror=3Dstrict-prototypes -Wn=
-o-trigraphs \
-> > > > -            -fno-strict-aliasing -fno-common -fshort-wchar -fno-PI=
-E \
-> > > > -            -Werror=3Dimplicit-function-declaration -Werror=3Dimpl=
-icit-int \
-> > > > -            -Werror=3Dreturn-type -Wno-format-security -funsigned-=
-char \
-> > > > -            -std=3Dgnu11
-> > > > +
-> > > > +KBUILD_CFLAGS :=3D
-> > > > +KBUILD_CFLAGS +=3D -std=3Dgnu11
-> > >
-> > > If you want to put -std at top, on contrast to the sorted options bel=
-ow,
-> > > you could also merge the two lines above.
-> >
-> > I don't know. Standard choice is arguably the most important option
-> > so I put it first.
->
-> yes, I think I would have put it on top, too.  I just would write it this=
- way:
->
->     KBUILD_CFLAGS :=3D -std=3Dgnu11
->
->     KBUILD_CFLAGS +=3D ...
->
-> But it is bike-shedding, ignore it if you're not convinced.
->
-> Kind regards,
-> Nicolas
+On Thu, Jul 13, 2023 at 03:34:32PM -0700, Jakub Kicinski wrote:
+> We appear to have a gap in our process docs. We go into detail
+> on how to contribute code to the kernel, and how to be a subsystem
+> maintainer. I can't find any docs directed towards the thousands
+> of small scale maintainers, like folks maintaining a single driver
+> or a single network protocol.
+> 
+> Document our expectations and best practices. I'm hoping this doc
+> will be particularly useful to set expectations with HW vendors.
+> 
+> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> ---
+> Please consider this more of a draft than a statement of my opinion.
+> IOW prefer suggesting edits over arguing about correctness, hope
+> that makes sense.
 
+This looks great to me, thanks for putting it together.
 
+But I do have one objection on the timeline portion:
 
+> ---
+>  .../feature-and-driver-maintainers.rst        | 159 ++++++++++++++++++
+>  Documentation/maintainer/index.rst            |   1 +
+>  2 files changed, 160 insertions(+)
+>  create mode 100644 Documentation/maintainer/feature-and-driver-maintainers.rst
+> 
+> diff --git a/Documentation/maintainer/feature-and-driver-maintainers.rst b/Documentation/maintainer/feature-and-driver-maintainers.rst
+> new file mode 100644
+> index 000000000000..ee8ccc22b16a
+> --- /dev/null
+> +++ b/Documentation/maintainer/feature-and-driver-maintainers.rst
+> @@ -0,0 +1,159 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +==============================
+> +Feature and driver maintainers
+> +==============================
+> +
+> +The term "maintainer" spans a very wide range of levels of engagement
+> +from people handling patches and pull requests as almost a full time job
+> +to people responsible for a small feature or a driver.
+> +
+> +Unlike most of the chapter, this section is meant for the latter (more
+> +populous) group. It provides tips and describes the expectations and
+> +responsibilities of maintainers of a small(ish) section of the code.
+> +
+> +Driver and alike most often do not have their own mailing lists and
+> +git trees but instead send and review patches on the list of a larger
+> +subsystem.
+> +
+> +Responsibilities
+> +================
+> +
+> +The amount of maintenance work is usually proportional to the size
+> +and popularity of the code base. Small features and drivers should
+> +require relatively small amount of care and feeding. Nonetheless
+> +when the work does arrive (in form of patches which need review,
+> +user bug reports etc.) it has to be acted upon very promptly.
+> +Even when single driver only sees one patch a month, or a quarter,
+> +a subsystem could well have a hundred such drivers. Subsystem
+> +maintainers cannot afford to wait a long time to hear from reviewers.
+> +
+> +The exact expectations on the review time will vary by subsystem
+> +from 1 day (e.g. networking) to a week in smaller subsystems.
 
+"to a few weeks".
 
-Starting line 813, we have more and more
-"KBUILD_CFLAGS +=3D" lines.
+I can't do 1 day, or even 1 week for the subsystems I maintain
+(especially during merge windows or vacations.)  How about that line
+being:
+	from 1 day (e.g. networking) to a few weeks for smaller subsystems.
 
+And then add a link to "For specific subsystem response times, please
+see the document in [insert link here to where we keep the subsystem
+expectations]"
 
-I thought we perhaps could merge them in a single place.
-(but "KBUILD_CFLAGS :=3D " still must come before "export KBUILD_CFLAGS")
+And yeah, I do need to go add some process/maintainer-* files for the
+subsystems I maintain, it might be a good idea to also say that any new
+subsystems also provide this so we can start catching up on that.
 
+thanks,
 
-[move everything to line 813]
-
-KBUILD_CFLAGS +=3D -std=3Dgnu11
-KBUILD_CFLAGS +=3D -fshort-wchar
-KBUILD_CFLAGS +=3D -funsigned-char
-KBUILD_CFLAGS +=3D -fno-common
-KBUILD_CFLAGS +=3D -fno-PIE
-KBUILD_CFLAGS +=3D -fno-strict-aliasing
-KBUILD_CFLAGS +=3D -Wall
-KBUILD_CFLAGS +=3D -Wundef
-KBUILD_CFLAGS +=3D -Werror=3Dimplicit-function-declaration
-KBUILD_CFLAGS +=3D -Werror=3Dimplicit-int
-KBUILD_CFLAGS +=3D -Werror=3Dreturn-type
-KBUILD_CFLAGS +=3D -Werror=3Dstrict-prototypes
-KBUILD_CFLAGS +=3D -Wno-format-security
-KBUILD_CFLAGS +=3D -Wno-trigraphs
-KBUILD_CFLAGS +=3D -fno-delete-null-pointer-checks
-KBUILD_CFLAGS +=3D $(call cc-disable-warning,frame-address,)
-KBUILD_CFLAGS +=3D $(call cc-disable-warning, format-truncation)
-KBUILD_CFLAGS +=3D $(call cc-disable-warning, format-overflow)
-KBUILD_CFLAGS +=3D $(call cc-disable-warning, address-of-packed-member)
- ...
-
-
-
-
-That will change the order of compiler options
-because they cross line 760
-
-  include $(srctree)/arch/$(SRCARCH)/Makefile
-
-
-So, I think the patch is fine if we try to be safe.
-
-
-
---=20
-Best Regards
-Masahiro Yamada
+greg k-h
