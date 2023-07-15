@@ -2,187 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 400A0754B9A
-	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 21:02:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB42D754BAA
+	for <lists+linux-kernel@lfdr.de>; Sat, 15 Jul 2023 21:12:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230401AbjGOTCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 15:02:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58966 "EHLO
+        id S229680AbjGOTMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 15:12:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230024AbjGOTB7 (ORCPT
+        with ESMTP id S229549AbjGOTMV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 15:01:59 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 572F22D49;
-        Sat, 15 Jul 2023 12:01:30 -0700 (PDT)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36FJ1ItB028844;
-        Sat, 15 Jul 2023 19:01:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : from : to : cc : references : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=GHZDtCCaXPH7ayZiRfFMPdHWVDbpPIityn2fMXU4IB8=;
- b=Mt92L3tsJyoYrAwY1xwFMpWXNAEvdv+lmDO/JdIHvEBN7b3NVN9aWV7ypz8Cdr2JiXUP
- xwZ9E/tOe9TckYyGK0qk9H2ZObz3XOIK0tev6uky4EfgN0tZyPIX+N2+Fk9gzqNYmO1y
- AFCfRxANIR70JD1SDNMyuC+eF5ia6zY1JbA+WiZYTzvJzzirdM/We9hGIRsDbkrL5X2g
- B1e/zIFHxpkgfkHYmlrTLJ+yOT6YJzXYKKlhLeedShPeCdZS9H3xf8CXUWc8Xx9Mi6Eq
- jjuUu4KYWq/7CsjVrYnnbn55RYf/5IkAeUQP+kK2/lAVEt1c4oIsdcjvLUAjHa8TQkIS pQ== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3run0c8nte-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 15 Jul 2023 19:01:17 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36FJ1GAZ013242
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 15 Jul 2023 19:01:16 GMT
-Received: from [10.216.31.137] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Sat, 15 Jul
- 2023 12:01:10 -0700
-Message-ID: <9a304650-0360-5509-4922-0818e8e306f5@quicinc.com>
-Date:   Sun, 16 Jul 2023 00:31:05 +0530
+        Sat, 15 Jul 2023 15:12:21 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 022F9B3;
+        Sat, 15 Jul 2023 12:12:20 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6A09360BDC;
+        Sat, 15 Jul 2023 19:12:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BBC2C433C7;
+        Sat, 15 Jul 2023 19:12:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689448338;
+        bh=fvmfkQe7xASbExr7Qwq+ClgfzOJeaaWctwssh0Qdv+8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=im7jN0iZ/HRLgRjG+EeJrLdmJvNlRgFDMRvOqZAU0ZPt6OOkF4uZb4DgQCQMr89Ia
+         jB06hdxpZ3qR7hA/h/jw/LqAkB2TEeV5+NqmOWRW0VCJjLwMR7rwuojB2+uyFR3Siz
+         3AnYrkBRpLPrKH981T/0y/gxKbPsAvmZSfhZXKJ+RKH0PDlrEMCcyH/1UTAr0/0vAI
+         MmTaLHSf5XA6AJXtbqZkuSMjdASy9zOAQWMSiL1hXI3fwjpRzkwF83UOmII4+E/Ud+
+         OHzMYrrwIrXfyeYD6XqUw1pwrVroR5yLqRuhFuIljO3Znbq3QW8zFExDvZU05YwBKA
+         AWNtBdeJlqA7w==
+Date:   Sat, 15 Jul 2023 14:12:16 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kees Cook <keescook@chromium.org>, linux-pci@vger.kernel.org,
+        jesse.brandeburg@intel.com, linux-kernel@vger.kernel.org,
+        "Guilherme G . Piccoli" <gpiccoli@igalia.com>,
+        Eric Dumazet <edumazet@google.com>, netdev@vger.kernel.org,
+        anthony.l.nguyen@intel.com, linux-hardening@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [Intel-wired-lan] [PATCH v2] igc: Ignore AER reset when device
+ is suspended
+Message-ID: <20230715191216.GA364070@bhelgaas>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.1
-Subject: Re: [PATCH v9 06/10] usb: dwc3: qcom: Add support to read IRQ's
- related to multiport
-From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-To:     Johan Hovold <johan@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        <quic_jackp@quicinc.com>, Wesley Cheng <quic_wcheng@quicinc.com>
-CC:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "Andy Gross" <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <quic_pkondeti@quicinc.com>,
-        <quic_ppratap@quicinc.com>, <ahalaney@redhat.com>,
-        <quic_shazhuss@quicinc.com>
-References: <20230621043628.21485-1-quic_kriskura@quicinc.com>
- <20230621043628.21485-7-quic_kriskura@quicinc.com>
- <ZK6YrLMn9r39zEeB@hovoldconsulting.com>
- <ef29e520-7b9c-f581-e70a-250df80d3821@quicinc.com>
- <ZLEP6Ekh3unSTiCL@hovoldconsulting.com>
- <7c04ebd9-4def-87d6-0640-35fd0ccd20f5@quicinc.com>
-Content-Language: en-US
-In-Reply-To: <7c04ebd9-4def-87d6-0640-35fd0ccd20f5@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: sfimaeKRdlwO-WlUvFYxLopECNJKwbrz
-X-Proofpoint-ORIG-GUID: sfimaeKRdlwO-WlUvFYxLopECNJKwbrz
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-15_08,2023-07-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=790 spamscore=0
- priorityscore=1501 phishscore=0 malwarescore=0 suspectscore=0 bulkscore=0
- clxscore=1015 lowpriorityscore=0 impostorscore=0 mlxscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2307150181
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <874jm6nsd0.fsf@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/14/2023 4:10 PM, Krishna Kurapati PSSNV wrote:
+On Fri, Jul 14, 2023 at 01:35:55PM -0700, Vinicius Costa Gomes wrote:
+> Bjorn Helgaas <helgaas@kernel.org> writes:
+> > On Fri, Jul 14, 2023 at 01:05:41PM +0800, Kai-Heng Feng wrote:
+> >> When a system that connects to a Thunderbolt dock equipped with I225,
+> >> like HP Thunderbolt Dock G4, I225 stops working after S3 resume:
+> >> ...
+> >
+> >> The issue is that the PTM requests are sending before driver resumes the
+> >> device. Since the issue can also be observed on Windows, it's quite
+> >> likely a firmware/hardware limitation.
+> >
+> > Does this mean we didn't disable PTM correctly on suspend?  Or is the
+> > device defective and sending PTM requests even though PTM is disabled?
 > 
-> 
-> On 7/14/2023 2:35 PM, Johan Hovold wrote:
->> On Wed, Jul 12, 2023 at 11:56:33PM +0530, Krishna Kurapati PSSNV wrote:
->>> On 7/12/2023 5:42 PM, Johan Hovold wrote:
->>>> On Wed, Jun 21, 2023 at 10:06:24AM +0530, Krishna Kurapati wrote:
->>>>> Add support to read Multiport IRQ's related to quad port controller
->>>>> of SA8295 Device.
->>>>>
->>>>> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
->>>>> ---
->>>>>    drivers/usb/dwc3/dwc3-qcom.c | 108 
->>>>> +++++++++++++++++++++++++++++------
->>>>>    1 file changed, 91 insertions(+), 17 deletions(-)
->>>>
->>>>> +static int dwc3_qcom_setup_mp_irq(struct platform_device *pdev)
->>>>> +{
->>>>> +    struct dwc3_qcom *qcom = platform_get_drvdata(pdev);
->>>>> +    char irq_name[15];
->>>>
->>>> The interrupt device-name string can not be allocated on the stack or
->>>> reused as it is stored directly in each irqaction structure.
->>>>
->>>> This can otherwise lead to random crashes when accessing
->>>> /proc/interrupts:
->>>>
->>>>     https://lore.kernel.org/lkml/ZK6IV_jJPICX5r53@hovoldconsulting.com/
->>
->>>     Sure, will create a static array of names if possible in global
->>> section of file and use it to read interrupts.
->>
->> Or just use devm_kasprintf(), which should allow for a cleaner
->> implementation.
->>
->> I've fixed it up like this for my X13s wip branches:
->>
->>     https://github.com/jhovold/linux/commit/0898b54456bc2f4bd4d420480db98e6758771ace
->>>     Are you fine with seperating out setup_irq and setup_mp_irq 
->>> functions
->>> ? Can you please review comments and suggestion on [1].
->>
->> I haven't had time to look at your latest replies yet, but as I already
->> said when reviewing v9, it seems you should be using a common helper for
->> non-mp and mp.
->>
-> Hi Johan,
-> 
->   The gist of my mail was to see if I can defer qcom probe when dwc3 
-> probe fails/or doesn't happen on of_plat_pop (which is logical) so that 
-> we can move setup_irq to after dwc3_register_core so that we know 
-> whether we are MP capable or not. This would help us move all IRQ 
-> reading into one function.
-> 
-Hi Johan,
+> The way I understand the hardware bug, the device is defective, as you
+> said, the device sends PTM messages when "busmastering" is disabled.
 
-  I see it is difficult to write a common helper. To do so, we need to 
-know whether the device is MP capable or not in advance. And since it is 
-not possible to know it before of_plat_pop is done, I see only few ways 
-to do it:
+Bus Master Enable controls the ability of a Function to issue Memory
+and I/O Read/Write Requests (PCIe r6.0, sec 7.5.1.1.3).  PTM uses
+Messages, and I don't think they should be affected by Bus Master
+Enable.
 
-1. Based on qcom node compatible string, I can read whether the device 
-is MP capable or not and get IRQ's accordingly.
+I also don't understand the I225 connection.  We have these
+Uncorrected Non-Fatal errors:
 
-2. Read the port_info in advance but it needs me to go through some DT 
-props and try getting this info. Or read xhci regs like we are doing in 
-core (which is not good). Also since some Dt props can be missing, is it 
-difficult to get the MP capability info before of_plat_pop is done.
+> >> [  606.527931] pcieport 0000:00:1d.0: AER: Multiple Uncorrected (Non-Fatal) error received: 0000:00:1d.0
+> >> [  606.528064] pcieport 0000:00:1d.0: PCIe Bus Error: severity=Uncorrected (Non-Fatal), type=Transaction Layer, (Requester ID)
+> >> [  606.528068] pcieport 0000:00:1d.0:   device [8086:7ab0] error status/mask=00100000/00004000
+> >> [  606.528072] pcieport 0000:00:1d.0:    [20] UnsupReq               (First)
+> >> [  606.528075] pcieport 0000:00:1d.0: AER:   TLP Header: 34000000 0a000052 00000000 00000000
+> >> [  606.528079] pcieport 0000:00:1d.0: AER:   Error of this Agent is reported first
+> >> [  606.528098] pcieport 0000:04:01.0: PCIe Bus Error: severity=Uncorrected (Non-Fatal), type=Transaction Layer, (Requester ID)
+> >> [  606.528101] pcieport 0000:04:01.0:   device [8086:1136] error status/mask=00300000/00000000
+> >> [  606.528105] pcieport 0000:04:01.0:    [20] UnsupReq               (First)
+> >> [  606.528107] pcieport 0000:04:01.0:    [21] ACSViol
+> >> [  606.528110] pcieport 0000:04:01.0: AER:   TLP Header: 34000000 04000052 00000000 00000000
 
-3. Remove IRQ handling completely. Just because the device has IRQ's 
-present, I don't see a point in adding them to bindings, and because we 
-added them to bindings, we are making a patch to read them (and since 
-this is a little challenging, the whole of multiport series is blocked 
-although I don't need wakeup support on these interrupts right away).
+They are clearly Unsupported Request errors caused by PTM Requests
+(decoding at https://bugzilla.kernel.org/show_bug.cgi?id=216850#c9),
+but they were logged by 00:1d.0 and 04:01.0.
 
-Can't we let the rest of the patches go through and let interrupt 
-handling for 2nd, 3rd and 4rth ports be taken care later ? I am asking 
-this because I want the rest of the patches which are in good shape now 
-(after fixing the nits mentioned) to get merged atleast. I will make 
-sure to add interrupt handling later in a different series once this is 
-merged once I send v10.
+The hierarchy is this:
 
-Or if there is a simpler way to do it, I would be happy to take any 
-suggestions and complete this missing part in this series itself.
+  00:1d.0 Root Port to [bus 03-6c]
+  03:00.0 Switch Upstream Port to [bus 04-6c]
+  04:01.0 Switch Downstream Port to [bus 06-38]
+  06:00.0 Switch Upstream Port to [bus 07-38]
+  07:04.0 Switch Downstream Port to [bus 38]
+  38:00.0 igc I225 NIC
 
-Regards,
-Krishna,
+If I225 sent a PTM request when it shouldn't have, i.e., when 07:04.0
+didn't have PTM enabled, the error would have been logged by 07:04.0.
+
+The fact that the errors were logged by 00:1d.0 and 04:01.0 means that
+they were caused by PTM requests from 03:00.0 and 06:00.0.
+
+Bjorn
