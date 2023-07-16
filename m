@@ -2,74 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0979C754E9C
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 14:50:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5836D754EA0
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 14:51:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229495AbjGPMtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Jul 2023 08:49:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50722 "EHLO
+        id S229579AbjGPMvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Jul 2023 08:51:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjGPMtX (ORCPT
+        with ESMTP id S229449AbjGPMvU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Jul 2023 08:49:23 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 170B490
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 05:49:22 -0700 (PDT)
+        Sun, 16 Jul 2023 08:51:20 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 841E590;
+        Sun, 16 Jul 2023 05:51:19 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id AD8811F8BB;
-        Sun, 16 Jul 2023 12:49:19 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id EEE01218A4;
+        Sun, 16 Jul 2023 12:51:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1689511759; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1689511877; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=5iMTPDb4EAC5F/3a1KEzow3eeMPXGxYwXkQm53JlpR0=;
-        b=U6GnsSjkB8EA2oqYEdpn9YsPhisH99afJCxcs2lQcOCQjwMKp+sY9lNIiSN3JZ5Gibkp8A
-        UW3NaYJvNU7WpQVJfCGfYw1T1OPwE9KScUvdIHIMgBzyv0aYwzuFOlHNt/kDZmIwgJkFs8
-        EG8lHV/zBT8JU5A9r+J2ZQZ4j3+4Ohk=
+        bh=pTgYLQ4ad9IB/Yu1E37o5RXuA6baPlc9A+S8dEgD75E=;
+        b=euueRuJPc+eL916yydqRQf1G9GDz3DiVWLvMez8YmLQw+VgfgwF3YFzv2+5NT2S6hZeLhL
+        Ue1Xo+WXHsYIpjl2fPVzlPSDcA2LTJ3aS2uPfM+ACJl0LAMFzaKjOhuO038N/IeIr/RLq+
+        HuG51GCbzgjs0+6fageReeAApl0GU5U=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1689511759;
+        s=susede2_ed25519; t=1689511877;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=5iMTPDb4EAC5F/3a1KEzow3eeMPXGxYwXkQm53JlpR0=;
-        b=kM/QMplGPX+11kosa/FGDTR6+A+YQeOCk7EzKmYXxppia6ZkgqIC3FU5BswNIKuHK7QTbB
-        hjdsLTVTrXpzb4Ag==
+        bh=pTgYLQ4ad9IB/Yu1E37o5RXuA6baPlc9A+S8dEgD75E=;
+        b=8lbz9SSgph++w+w6HrnJgCgbXsOqnMw8glJKtfsm2tN/6hD1a6BX6qF4Lytc7KCBEEFGO2
+        ZFw9VfLvgP+4lYCA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5E4D313252;
-        Sun, 16 Jul 2023 12:49:19 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A4AA513252;
+        Sun, 16 Jul 2023 12:51:17 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id n88vFk/ns2RyeQAAMHmgww
-        (envelope-from <tiwai@suse.de>); Sun, 16 Jul 2023 12:49:19 +0000
-Date:   Sun, 16 Jul 2023 14:49:18 +0200
-Message-ID: <87zg3waunl.wl-tiwai@suse.de>
+        id 3lYDJ8Xns2Q8egAAMHmgww
+        (envelope-from <tiwai@suse.de>); Sun, 16 Jul 2023 12:51:17 +0000
+Date:   Sun, 16 Jul 2023 14:51:17 +0200
+Message-ID: <87y1jgauka.wl-tiwai@suse.de>
 From:   Takashi Iwai <tiwai@suse.de>
-To:     David Xu <xuwd1@hotmail.com>
-Cc:     James Schulman <james.schulman@cirrus.com>,
-        David Rhodes <david.rhodes@cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        "Luke D. Jones" <luke@ljones.dev>,
-        Stefan Binding <sbinding@opensource.cirrus.com>,
-        Andy Chi <andy.chi@canonical.com>,
-        Tim Crawford <tcrawford@system76.com>,
-        Philipp Jungkamp <p.jungkamp@gmx.net>,
-        Kacper =?ISO-8859-2?Q?Michaj=B3ow?= <kasper93@gmail.com>,
-        Matthew Anderson <ruinairas1992@gmail.com>,
-        Yuchi Yang <yangyuchi66@gmail.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] Fix CSC3551 speaker sound problem for machines without a valid ACPI _DSD
-In-Reply-To: <SY4P282MB18352D4FD343A2E8290EA9BEE037A@SY4P282MB1835.AUSP282.PROD.OUTLOOK.COM>
-References: <SY4P282MB18352D4FD343A2E8290EA9BEE037A@SY4P282MB1835.AUSP282.PROD.OUTLOOK.COM>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+Subject: Re: [PATCH] ALSA: Explicitly include correct DT includes
+In-Reply-To: <20230714175109.4066599-1-robh@kernel.org>
+References: <20230714175109.4066599-1-robh@kernel.org>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
@@ -83,63 +76,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 13 Jul 2023 18:29:53 +0200,
-David Xu wrote:
+On Fri, 14 Jul 2023 19:51:08 +0200,
+Rob Herring wrote:
 > 
+> The DT of_device.h and of_platform.h date back to the separate
+> of_platform_bus_type before it as merged into the regular platform bus.
+> As part of that merge prepping Arm DT support 13 years ago, they
+> "temporarily" include each other. They also include platform_device.h
+> and of.h. As a result, there's a pretty much random mix of those include
+> files used throughout the tree. In order to detangle these headers and
+> replace the implicit includes with struct declarations, users need to
+> explicitly include the correct includes.
 > 
-> As the comments added in commit 4d4c4bff4f8ed79d95e05 ("ALSA: hda:
-> cs35l41: Clarify support for CSC3551 without _DSD Properties"), CSC3551
-> requires a valid _DSD to work and the current implementation just
-> fails when no _DSD can be found for CSC3551. However it is a fact
-> that many OEMs hardcoded the configurations needed by CSC3551 into their
-> proprietary software for various 2022 and later laptop models,
-> and this makes the Linux installations on these models cannot make
-> any speaker sound. Meanwhile, at this point of time, we see no hope
-> that these OEMs would ever fix this problem via a BIOS update. 
-> 
-> To address the problem, this patch series contains two patches: 
-> 
-> Patch 1 for cs35l41 hda driver: a fixup mechanism is introduced that 
-> when the driver found there is no valid _DSD that contains the 
-> configurations, a fixup function would try to find a fixup entry that
-> contains a proper cs35l41 configuration from a pre-defined fixup table
-> by matching the CSC3551 ACPI _SUB id. If found, the fixup function
-> would apply the cs35l41 configurations retrived from the entry. 
-> In this patch the fixup table only contains some entries for three 
-> Lenovo laptop models: namely 16IAH7, 16IAX7 and 16ARHA7. However 
-> as is known, several other laptop models from ASUS and HP also suffer
-> from this no valid _DSD problem and could have it addressed with this 
-> fixup mechanism when proper fixup entries are inserted.
-> 
-> 
-> Patch 2 for realtek hda driver: add quirks for Lenovo 16IAH7, 16IAX7 
-> and 16ARHA7 so that cs35l41 playback hook could be registered. Please 
-> note that for these quirks to work patch 1 has to be applied.
+> Signed-off-by: Rob Herring <robh@kernel.org>
 
-Thanks for the patches.
-
-I've seen the lots of pains with CS35L41 codec stuff on the recent
-machines.  But, first of all, it still needs to be agreed by Cirrus
-people whether this approach is acceptable.  Judging from the current 
-situation, such workaround appears inevitable, but we need a
-consensus.
-
-So, Cirrus people, please check this.
-
-
-Also, some ideas about the current patch set:
-
-- Do we need yet another listing and check of each ID in another
-  place?  The existing entry in the SSID quirk table is already unique
-  enough to identify which configuration is taken, I suppose.
-
-- The quirk entries can be gathered in patch_realtek.c, and the hw_cfg
-  and other items are overwritten in cs35l41_no_acpi_dsd() when no
-  _DSD is found.  In that way, we can avoid fixing two places for each
-  update.
-
-- The workaround is a workaround, and it's fundamentally dangerous.
-  We should warn it in a kernel message.
+Applied to for-next branch now.  Thanks.
 
 
 Takashi
