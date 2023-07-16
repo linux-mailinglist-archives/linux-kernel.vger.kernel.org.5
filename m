@@ -2,128 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FDF7754CE3
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 02:18:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23C9B754CEB
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 02:40:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229891AbjGPASh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 20:18:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40406 "EHLO
+        id S229827AbjGPAjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 20:39:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229631AbjGPASf (ORCPT
+        with ESMTP id S229563AbjGPAjx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 20:18:35 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E645812D;
-        Sat, 15 Jul 2023 17:18:34 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6850760C4E;
-        Sun, 16 Jul 2023 00:18:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5BEAC433C8;
-        Sun, 16 Jul 2023 00:18:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689466713;
-        bh=418o5psNdMRdFlKcUS6XKpTnTtdjq3bya0znIgig6+A=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=nKRdrLu8bv5eYAJ2c5iKAM16xzr7Ue5vgO7pVwpFxT7Vms+/WnOwFUaEhqsj6db3M
-         TRmxINruQbTjtN7VeyujDj3dNERtdMd1JMAFFvwdBSlgiB0o0nUg8gpe6iIgom9Vr5
-         KqG/zIZyo0nXgQGNcB49jSvS5Zy1CsYvl2030kGlWnC3n/7BZ4+a4FQyr8vqv2ybMV
-         naL5FxDCer9WSF9PkfqHrIU4OxW+voC5TW8S8zwkz2FjdsVHKfnf4FRxx3DmLMdldg
-         gKXnakElPq1PJb83oeaTpXvy/kfpFlyUzkC9hHiLV0bjnmVcBp1QIFR0qd0hjyjqAd
-         lOBzCTqElYc4g==
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-52165886aa3so2551713a12.3;
-        Sat, 15 Jul 2023 17:18:33 -0700 (PDT)
-X-Gm-Message-State: ABy/qLb22KoG7Q0bTNCAgDiWpd5Gd3zbs7RdV7YyCmaUidygO5vDYrBu
-        ODX/00bZUhjc7cIrNU4jhTUX5FsgZIe95k1FEYI=
-X-Google-Smtp-Source: APBJJlHzxbR/lWTU76n+iCQzgJcyerhJDEeEMmfSWflH4fXXmY1WbVAGXQc9ps6hIg7/+8l7CUvwffdlnZUJTVsGn+Y=
-X-Received: by 2002:aa7:d684:0:b0:51d:e7b5:547d with SMTP id
- d4-20020aa7d684000000b0051de7b5547dmr8017511edr.34.1689466712015; Sat, 15 Jul
- 2023 17:18:32 -0700 (PDT)
+        Sat, 15 Jul 2023 20:39:53 -0400
+Received: from mail-oa1-f79.google.com (mail-oa1-f79.google.com [209.85.160.79])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3AB22718
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 17:39:51 -0700 (PDT)
+Received: by mail-oa1-f79.google.com with SMTP id 586e51a60fabf-1ba5121da9eso2124442fac.1
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 17:39:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689467991; x=1692059991;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2HRENWUX6473hWOYfvczN63G7wz7qzxxc9sTMX76Qkk=;
+        b=iGqJvpCP8NrUiVkd+BIhsFQYmH3OymajqBi/eKqY8XTXBBjOjHma8h7OFLjoXZCvmu
+         tcfnsDOJQfAuTSa+6vsfufE0I9LIlFHNbkN4MBfbLp1yV3/nV4v/nFxH6mBy3fUqrCon
+         8BRchKpneFYb3cL4YS0pnsOIuXcbnJxLAycoR5JxdZBM5b50q3Q1Tsn6TgBciOo4X4B/
+         MpkUSxdQBFl3kKCVYcdIOWWfJKVbdowOb4grJOnz5gflHjyPqJdGjiglcLKeYwDh6+Rm
+         Es+JP7gi1zt8yaLwbKBUMcaxiUtNOMH65PlpqG3KtdQFoDVfQvFErD6AtY0/bGiYs2+C
+         1vGw==
+X-Gm-Message-State: ABy/qLaVFAx6D+3zY7nBrnbEhMVmWGOmoW0ykj4Hm3oJEWCF2QILoSUB
+        Rb62AMsreBzyZPJH5HvbavhpujBz+6uzrJxpI9F2wWn6376A
+X-Google-Smtp-Source: APBJJlFWfKTYuvIOAsszfL9DrcUI56VvQS5qJlyU+vqlkFsCpMxoySifryMf7F2v6fiIrN/bJNLnflZmnz8yXbS0iEJmDIWQ/Avd
 MIME-Version: 1.0
-References: <20230715134552.3437933-1-guoren@kernel.org>
-In-Reply-To: <20230715134552.3437933-1-guoren@kernel.org>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Sun, 16 Jul 2023 08:18:20 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTQ3CLatagXuSE-W4yZA=8XWJcNXRo8+mJN5iofMHdct3w@mail.gmail.com>
-Message-ID: <CAJF2gTQ3CLatagXuSE-W4yZA=8XWJcNXRo8+mJN5iofMHdct3w@mail.gmail.com>
-Subject: Re: [PATCH 0/2] riscv: stack: Fixup independent softirq/irq stack for CONFIG_FRAME_POINTER=n
-To:     guoren@kernel.org, palmer@rivosinc.com, paul.walmsley@sifive.com,
-        falcon@tinylab.org, bjorn@kernel.org, conor.dooley@microchip.com
-Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, stable@vger.kernel.org,
-        Guo Ren <guoren@linux.alibaba.com>
+X-Received: by 2002:a05:6871:6a97:b0:1ba:5296:a97f with SMTP id
+ zf23-20020a0568716a9700b001ba5296a97fmr3041132oab.9.1689467991100; Sat, 15
+ Jul 2023 17:39:51 -0700 (PDT)
+Date:   Sat, 15 Jul 2023 17:39:51 -0700
+In-Reply-To: <000000000000459c6205ea318e35@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000078172f06008febc9@google.com>
+Subject: Re: [syzbot] [jfs?] UBSAN: array-index-out-of-bounds in xtSearch
+From:   syzbot <syzbot+76a072c2f8a60280bd70@syzkaller.appspotmail.com>
+To:     jfs-discussion@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        shaggy@kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'm sorry, this patch would break CONFIG_FRAME_POINTER=3Dy, so please aband=
-on it.
+syzbot has found a reproducer for the following issue on:
 
-I've updated a v2 with the stable@ver.kernel.org tag fixed:
-https://lore.kernel.org/linux-riscv/20230716001506.3506041-1-guoren@kernel.=
-org/
+HEAD commit:    b6e6cc1f78c7 Merge tag 'x86_urgent_for_6.5_rc2' of git://g..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=11f40fa2a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4a9506b1ca57ae9f
+dashboard link: https://syzkaller.appspot.com/bug?extid=76a072c2f8a60280bd70
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=172c5646a80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13360a92a80000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/3dfa34d80a41/disk-b6e6cc1f.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/778e016c7229/vmlinux-b6e6cc1f.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/c8001018a584/bzImage-b6e6cc1f.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/36bab007b655/mount_0.gz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+76a072c2f8a60280bd70@syzkaller.appspotmail.com
+
+================================================================================
+UBSAN: array-index-out-of-bounds in fs/jfs/jfs_xtree.c:360:4
+index 18 is out of range for type 'xad_t [18]'
+CPU: 0 PID: 5017 Comm: syz-executor116 Not tainted 6.5.0-rc1-syzkaller-00248-gb6e6cc1f78c7 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/03/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x125/0x1b0 lib/dump_stack.c:106
+ ubsan_epilogue lib/ubsan.c:217 [inline]
+ __ubsan_handle_out_of_bounds+0x111/0x150 lib/ubsan.c:348
+ xtSearch+0x12e2/0x1650 fs/jfs/jfs_xtree.c:360
+ xtLookup+0x273/0x840 fs/jfs/jfs_xtree.c:152
+ jfs_get_block+0x325/0xb20 fs/jfs/inode.c:218
+ do_mpage_readpage+0x6f8/0x1ab0 fs/mpage.c:234
+ mpage_readahead+0x344/0x580 fs/mpage.c:382
+ read_pages+0x1d1/0xda0 mm/readahead.c:160
+ page_cache_ra_unbounded+0x457/0x5e0 mm/readahead.c:269
+ do_page_cache_ra mm/readahead.c:299 [inline]
+ page_cache_ra_order+0x72b/0xa80 mm/readahead.c:559
+ ondemand_readahead+0x540/0x1150 mm/readahead.c:681
+ page_cache_sync_ra+0x174/0x1d0 mm/readahead.c:708
+ page_cache_sync_readahead include/linux/pagemap.h:1213 [inline]
+ filemap_get_pages+0xc05/0x1820 mm/filemap.c:2563
+ filemap_splice_read+0x3d0/0x9f0 mm/filemap.c:2925
+ vfs_splice_read fs/splice.c:994 [inline]
+ vfs_splice_read+0x2c8/0x3b0 fs/splice.c:963
+ splice_direct_to_actor+0x2a5/0xa30 fs/splice.c:1070
+ do_splice_direct+0x1af/0x280 fs/splice.c:1195
+ do_sendfile+0xb88/0x1390 fs/read_write.c:1254
+ __do_sys_sendfile64 fs/read_write.c:1322 [inline]
+ __se_sys_sendfile64 fs/read_write.c:1308 [inline]
+ __x64_sys_sendfile64+0x1d6/0x220 fs/read_write.c:1308
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f9707d0abc9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 81 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f97008a5168 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
+RAX: ffffffffffffffda RBX: 00007f9707d97718 RCX: 00007f9707d0abc9
+RDX: 0000000000000000 RSI: 0000000000000007 RDI: 0000000000000006
+RBP: 00007f9707d97710 R08: 00007f97008a56c0 R09: 0000000000000000
+R10: 0001000000201004 R11: 0000000000000246 R12: 00007f9707d9771c
+R13: 000000000000006e R14: 00007ffe2c345d70 R15: 00007ffe2c345e58
+ </TASK>
+================================================================================
 
 
-On Sat, Jul 15, 2023 at 9:46=E2=80=AFPM <guoren@kernel.org> wrote:
->
-> From: Guo Ren <guoren@linux.alibaba.com>
->
-> The independent softirq/irq stack uses s0 to save & restore sp, but s0
-> would be corrupted when CONFIG_FRAME_POINTER=3Dn. So add s0 in the clobbe=
-r
-> list to fix the problem.
->
-> <+0>:     addi    sp,sp,-32
-> <+2>:     sd      s0,16(sp)
-> <+4>:     sd      s1,8(sp)
-> <+6>:     sd      ra,24(sp)
-> <+8>:     sd      s2,0(sp)
-> <+10>:    mv      s0,a0         --> compiler allocate s0 for a0 when CONF=
-IG_FRAME_POINTER=3Dn
-> <+12>:    jal     ra,0xffffffff800bc0ce <irqentry_enter>
-> <+16>:    ld      a5,56(tp) # 0x38
-> <+20>:    lui     a4,0x4
-> <+22>:    mv      s1,a0
-> <+24>:    xor     a5,a5,sp
-> <+28>:    bgeu    a5,a4,0xffffffff800bc092 <do_irq+88>
-> <+32>:    auipc   s2,0x5d
-> <+36>:    ld      s2,1118(s2) # 0xffffffff801194b8 <irq_stack_ptr>
-> <+40>:    add     s2,s2,a4
-> <+42>:    addi    sp,sp,-8
-> <+44>:    sd      ra,0(sp)
-> <+46>:    addi    sp,sp,-8
-> <+48>:    sd      s0,0(sp)
-> <+50>:    addi    s0,sp,16      --> our code clobber the s0
-> <+52>:    mv      sp,s2
-> <+54>:    mv      a0,s0         --> a0 got wrong value for handle_riscv_i=
-rq
-> <+56>:    jal     ra,0xffffffff800bbb3a <handle_riscv_irq>
->
-> Guo Ren (2):
->   riscv: stack: Fixup independent irq stack for CONFIG_FRAME_POINTER=3Dn
->   riscv: stack: Fixup independent softirq stack for
->     CONFIG_FRAME_POINTER=3Dn
->
->  arch/riscv/kernel/irq.c   | 2 +-
->  arch/riscv/kernel/traps.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
->
-> --
-> 2.36.1
->
-
-
---
-Best Regards
-
- Guo Ren
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
