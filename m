@@ -2,38 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBDB2754E0A
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 11:19:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E374D754E0C
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 11:20:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229743AbjGPJT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Jul 2023 05:19:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57056 "EHLO
+        id S229875AbjGPJUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Jul 2023 05:20:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjGPJTx (ORCPT
+        with ESMTP id S229462AbjGPJUX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Jul 2023 05:19:53 -0400
-Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99984B9
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 02:19:50 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0VnSJuoX_1689499181;
-Received: from e18g06460.et15sqa.tbsite.net(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0VnSJuoX_1689499181)
-          by smtp.aliyun-inc.com;
-          Sun, 16 Jul 2023 17:19:47 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     linux-erofs@lists.ozlabs.org
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Gao Xiang <hsiangkao@linux.alibaba.com>
-Subject: [PATCH v4] erofs: DEFLATE compression support
-Date:   Sun, 16 Jul 2023 17:19:40 +0800
-Message-Id: <20230716091940.40899-1-hsiangkao@linux.alibaba.com>
-X-Mailer: git-send-email 2.24.4
-In-Reply-To: <20230713001441.30462-1-hsiangkao@linux.alibaba.com>
-References: <20230713001441.30462-1-hsiangkao@linux.alibaba.com>
+        Sun, 16 Jul 2023 05:20:23 -0400
+Received: from mail.marcansoft.com (marcansoft.com [212.63.210.85])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B279D19BA;
+        Sun, 16 Jul 2023 02:20:13 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: lina@asahilina.net)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 8A2D34212E;
+        Sun, 16 Jul 2023 09:20:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=asahilina.net;
+        s=default; t=1689499209;
+        bh=RvtuONHxMD/ZuJdUaeGGTHUhbKkZrSzqRQIoqmU01DY=;
+        h=Date:From:Subject:To:Cc:References:In-Reply-To;
+        b=PwkjPMefbVkwucRe6o1ZDMtbaQGU+pNuvcqpP/UOgfOFIYafyM3cVx2dVmXF3RcVW
+         LeAUki4Sl2bEqqa/dMlC5TuxX5GYj+OwXSrr8PKPGoHRZz5CJrW/GaVInqU3Mdr6Ly
+         ojIjy4wlFyne6ap07W1BRz9u7/O3GTPMZXnJ2DGwNg5y6C4Njs8Hl7BRhRL8NL1aey
+         YBWlx8WR8vU9izrJmnn0R0z++6ruGBKdJv07gJFjL1oCLWUHY4yyLSTQshoDfPu4HO
+         WBsfbYQtYp4pRcS/TYelJE8uVJjrW30Ofywz7tUq2sAyIu8fok2LnLBAwQAoBwsFZo
+         sQKwTY1gV9OgQ==
+Message-ID: <5780e4c4-b0a0-382f-d659-9c4722a3582c@asahilina.net>
+Date:   Sun, 16 Jul 2023 18:20:02 +0900
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+From:   Asahi Lina <lina@asahilina.net>
+Subject: Re: [PATCH v2] rust: time: New module for timekeeping functions
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=c3=b6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        John Stultz <jstultz@google.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Josh Stone <jistone@redhat.com>,
+        Gaelan Steele <gbs@canishe.com>,
+        Heghedus Razvan <heghedus.razvan@protonmail.com>
+Cc:     linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org,
+        asahi@lists.linux.dev
+References: <20230714-rust-time-v2-1-f5aed84218c4@asahilina.net>
+ <87r0pax9a6.ffs@tglx>
+Content-Language: en-US
+In-Reply-To: <87r0pax9a6.ffs@tglx>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -41,480 +68,238 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add DEFLATE compression as the 3rd supported algorithm.
+On 15/07/2023 10.17, Thomas Gleixner wrote:
+> Lina!
+> 
+> On Fri, Jul 14 2023 at 16:55, Asahi Lina wrote:
+>> +ktime_t rust_helper_ktime_get_real(void) {
+>> +	return ktime_get_real();
+>> +}
+>> +EXPORT_SYMBOL_GPL(rust_helper_ktime_get_real);
+> 
+> Colour me confused. But why does this need another export?
 
-DEFLATE is a popular generic-purpose compression algorithm for quite
-long time (many advanced formats like gzip, zlib, zip, png are all
-based on that) as Apple documentation written "If you require
-interoperability with non-Apple devices, use COMPRESSION_ZLIB. [1]".
+Static inline functions aren't exported, so Rust can't call them.
 
-Due to its popularity, there are several hardware on-market DEFLATE
-accelerators, such as (s390) DFLTCC, (Intel) IAA/QAT, (HiSilicon) ZIP
-accelerator, etc.  In addition, there are also several high-performence
-IP cores and even open-source FPGA approches available for DEFLATE.
-Therefore, it's useful to support DEFLATE compression in order to find
-a way to utilize these accelerators for asynchronous I/Os and get
-benefits from these later.
+> This just creates yet another layer of duct tape. If it's unsafe from
+> the rust perspective then wrapping it into rust_"unsafe_function" does not
+> make it any better.
+> 
+> Why on earth can't you use the actual C interfaces diretly which are
+> already exported?
 
-Besides, it's a good choice to trade off between compression ratios
-and performance compared to LZ4 and LZMA.  The DEFLATE core format is
-simple as well as easy to understand, therefore the code size of its
-decompressor is small even for the bootloader use cases.  The runtime
-memory consumption is quite limited too (e.g. 32K + ~7K for each zlib
-stream).  As usual, EROFS ourperforms similar approaches too.
+Because Rust isn't C and can't compile static inline C code...
 
-Alternatively, DEFLATE could still be used for some specific files
-since EROFS supports multiple compression algorithms in one image.
+Bindgen very recently gained a feature to autogenerate these wrappers, 
+but we're not on that version yet. But there's no reasonable way around 
+the wrappers, whether they are automatically generated or not, unless 
+someone wants to write a whole C->Rust transpiler...
 
-[1] https://developer.apple.com/documentation/compression/compression_algorithm
----
-changes since v3:
- - fix 'insz' mis-calculation, which leads to failure on 4k pclusters.
+>> +use crate::{bindings, pr_err};
+>> +use core::marker::PhantomData;
+>> +use core::time::Duration;
+>> +
+>> +/// Represents a clock, that is, a unique time source.
+>> +pub trait Clock: Sized {}
+>> +
+>> +/// A time source that can be queried for the current time.
+> 
+> I doubt you can read anything else than current time from a time
+> source. At least the C side does not provide time traveling interfaces
+> unless the underlying hardware goes south.
 
- fs/erofs/Kconfig                |  15 ++
- fs/erofs/Makefile               |   1 +
- fs/erofs/compress.h             |   2 +
- fs/erofs/decompressor.c         |   6 +
- fs/erofs/decompressor_deflate.c | 250 ++++++++++++++++++++++++++++++++
- fs/erofs/erofs_fs.h             |   7 +
- fs/erofs/internal.h             |  20 +++
- fs/erofs/super.c                |  10 ++
- fs/erofs/zmap.c                 |   5 +-
- 9 files changed, 314 insertions(+), 2 deletions(-)
- create mode 100644 fs/erofs/decompressor_deflate.c
+My thought was that we might have time sources (think some kind of 
+hardware clock) which might want to use these types but cannot be 
+queried for the current time globally (e.g. they are bound to a specific 
+device and need state to query the time, so you can't just have a global 
+read function with no arguments). Those would probably be declared 
+within other subsystems or drivers, so they don't belong here, but the 
+idea that a clock source and the ability to query it statically at any 
+time are distinct concepts does, to enable that use case with this 
+common API.
 
-diff --git a/fs/erofs/Kconfig b/fs/erofs/Kconfig
-index f259d92c9720..56a99ba8ce22 100644
---- a/fs/erofs/Kconfig
-+++ b/fs/erofs/Kconfig
-@@ -99,6 +99,21 @@ config EROFS_FS_ZIP_LZMA
- 
- 	  If unsure, say N.
- 
-+config EROFS_FS_ZIP_DEFLATE
-+	bool "EROFS DEFLATE compressed data support"
-+	depends on EROFS_FS_ZIP
-+	select ZLIB_INFLATE
-+	help
-+	  Saying Y here includes support for reading EROFS file systems
-+	  containing DEFLATE compressed data.  It gives better compression
-+	  ratios than the default LZ4 format, while it costs more CPU
-+	  overhead.
-+
-+	  DEFLATE support is an experimental feature for now and so most
-+	  file systems will be readable without selecting this option.
-+
-+	  If unsure, say N.
-+
- config EROFS_FS_ONDEMAND
- 	bool "EROFS fscache-based on-demand read support"
- 	depends on CACHEFILES_ONDEMAND && (EROFS_FS=m && FSCACHE || EROFS_FS=y && FSCACHE=y)
-diff --git a/fs/erofs/Makefile b/fs/erofs/Makefile
-index a3a98fc3e481..994d0b9deddf 100644
---- a/fs/erofs/Makefile
-+++ b/fs/erofs/Makefile
-@@ -5,4 +5,5 @@ erofs-objs := super.o inode.o data.o namei.o dir.o utils.o sysfs.o
- erofs-$(CONFIG_EROFS_FS_XATTR) += xattr.o
- erofs-$(CONFIG_EROFS_FS_ZIP) += decompressor.o zmap.o zdata.o pcpubuf.o
- erofs-$(CONFIG_EROFS_FS_ZIP_LZMA) += decompressor_lzma.o
-+erofs-$(CONFIG_EROFS_FS_ZIP_DEFLATE) += decompressor_deflate.o
- erofs-$(CONFIG_EROFS_FS_ONDEMAND) += fscache.o
-diff --git a/fs/erofs/compress.h b/fs/erofs/compress.h
-index b1b846504027..349c3316ae6b 100644
---- a/fs/erofs/compress.h
-+++ b/fs/erofs/compress.h
-@@ -94,4 +94,6 @@ extern const struct z_erofs_decompressor erofs_decompressors[];
- /* prototypes for specific algorithms */
- int z_erofs_lzma_decompress(struct z_erofs_decompress_req *rq,
- 			    struct page **pagepool);
-+int z_erofs_deflate_decompress(struct z_erofs_decompress_req *rq,
-+			       struct page **pagepool);
- #endif
-diff --git a/fs/erofs/decompressor.c b/fs/erofs/decompressor.c
-index cfad1eac7fd9..332ec5f74002 100644
---- a/fs/erofs/decompressor.c
-+++ b/fs/erofs/decompressor.c
-@@ -379,4 +379,10 @@ const struct z_erofs_decompressor erofs_decompressors[] = {
- 		.name = "lzma"
- 	},
- #endif
-+#ifdef CONFIG_EROFS_FS_ZIP_DEFLATE
-+	[Z_EROFS_COMPRESSION_DEFLATE] = {
-+		.decompress = z_erofs_deflate_decompress,
-+		.name = "deflate"
-+	},
-+#endif
- };
-diff --git a/fs/erofs/decompressor_deflate.c b/fs/erofs/decompressor_deflate.c
-new file mode 100644
-index 000000000000..c34e29b15465
---- /dev/null
-+++ b/fs/erofs/decompressor_deflate.c
-@@ -0,0 +1,250 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+#include <linux/module.h>
-+#include <linux/zlib.h>
-+#include "compress.h"
-+
-+struct z_erofs_deflate {
-+	struct z_erofs_deflate *next;
-+	struct z_stream_s z;
-+	u8 bounce[PAGE_SIZE];
-+};
-+
-+static DEFINE_SPINLOCK(z_erofs_deflate_lock);
-+static unsigned int z_erofs_deflate_nstrms, z_erofs_deflate_avail_strms;
-+static struct z_erofs_deflate *z_erofs_deflate_head;
-+static DECLARE_WAIT_QUEUE_HEAD(z_erofs_deflate_wq);
-+
-+module_param_named(deflate_streams, z_erofs_deflate_nstrms, uint, 0444);
-+
-+void z_erofs_deflate_exit(void)
-+{
-+	/* there should be no running fs instance */
-+	while (z_erofs_deflate_avail_strms) {
-+		struct z_erofs_deflate *strm;
-+
-+		spin_lock(&z_erofs_deflate_lock);
-+		strm = z_erofs_deflate_head;
-+		if (!strm) {
-+			spin_unlock(&z_erofs_deflate_lock);
-+			DBG_BUGON(1);
-+			return;
-+		}
-+		z_erofs_deflate_head = NULL;
-+		spin_unlock(&z_erofs_deflate_lock);
-+
-+		while (strm) {
-+			struct z_erofs_deflate *n = strm->next;
-+
-+			vfree(strm->z.workspace);
-+			kfree(strm);
-+			--z_erofs_deflate_avail_strms;
-+			strm = n;
-+		}
-+	}
-+}
-+
-+int __init z_erofs_deflate_init(void)
-+{
-+	/* by default, use # of possible CPUs instead */
-+	if (!z_erofs_deflate_nstrms)
-+		z_erofs_deflate_nstrms = num_possible_cpus();
-+
-+	for (; z_erofs_deflate_avail_strms < z_erofs_deflate_nstrms;
-+	     ++z_erofs_deflate_avail_strms) {
-+		struct z_erofs_deflate *strm;
-+
-+		strm = kzalloc(sizeof(*strm), GFP_KERNEL);
-+		if (!strm)
-+			goto out_failed;
-+
-+		/* XXX: in-kernel zlib cannot shrink windowbits currently */
-+		strm->z.workspace = vmalloc(zlib_inflate_workspacesize());
-+		if (!strm->z.workspace)
-+			goto out_failed;
-+
-+		spin_lock(&z_erofs_deflate_lock);
-+		strm->next = z_erofs_deflate_head;
-+		z_erofs_deflate_head = strm;
-+		spin_unlock(&z_erofs_deflate_lock);
-+	}
-+	return 0;
-+
-+out_failed:
-+	pr_err("failed to allocate zlib workspace\n");
-+	z_erofs_deflate_exit();
-+	return -ENOMEM;
-+}
-+
-+int z_erofs_load_deflate_config(struct super_block *sb,
-+				struct erofs_super_block *dsb,
-+				struct z_erofs_deflate_cfgs *dfl, int size)
-+{
-+	if (!dfl || size < sizeof(struct z_erofs_deflate_cfgs)) {
-+		erofs_err(sb, "invalid deflate cfgs, size=%u", size);
-+		return -EINVAL;
-+	}
-+
-+	if (dfl->windowbits > MAX_WBITS) {
-+		erofs_err(sb, "unsupported windowbits %u", dfl->windowbits);
-+		return -EOPNOTSUPP;
-+	}
-+
-+	erofs_info(sb, "EXPERIMENTAL DEFLATE feature in use. Use at your own risk!");
-+	return 0;
-+}
-+
-+int z_erofs_deflate_decompress(struct z_erofs_decompress_req *rq,
-+			       struct page **pagepool)
-+{
-+	static u8 skipped[PAGE_SIZE];
-+	const unsigned int nrpages_out =
-+		PAGE_ALIGN(rq->pageofs_out + rq->outputsize) >> PAGE_SHIFT;
-+	const unsigned int nrpages_in =
-+		PAGE_ALIGN(rq->inputsize) >> PAGE_SHIFT;
-+	struct super_block *sb = rq->sb;
-+	unsigned int insz, outsz, pofs;
-+	struct z_erofs_deflate *strm;
-+	u8 *kin, *kout = NULL;
-+	bool bounced = false;
-+	int no = -1, ni = 0, j = 0, zerr, err;
-+
-+	/* 1. get the exact DEFLATE compressed size */
-+	kin = kmap_local_page(*rq->in);
-+	err = z_erofs_fixup_insize(rq, kin + rq->pageofs_in,
-+			min_t(unsigned int, rq->inputsize,
-+			      sb->s_blocksize - rq->pageofs_in));
-+	if (err) {
-+		kunmap_local(kin);
-+		return err;
-+	}
-+
-+	/* 2. get an available DEFLATE context */
-+again:
-+	spin_lock(&z_erofs_deflate_lock);
-+	strm = z_erofs_deflate_head;
-+	if (!strm) {
-+		spin_unlock(&z_erofs_deflate_lock);
-+		wait_event(z_erofs_deflate_wq, READ_ONCE(z_erofs_deflate_head));
-+		goto again;
-+	}
-+	z_erofs_deflate_head = strm->next;
-+	spin_unlock(&z_erofs_deflate_lock);
-+
-+	/* 3. multi-call decompress */
-+	insz = rq->inputsize;
-+	outsz = rq->outputsize;
-+	zerr = zlib_inflateInit2(&strm->z, -MAX_WBITS);
-+	if (zerr != Z_OK) {
-+		err = -EIO;
-+		goto failed_zinit;
-+	}
-+
-+	pofs = rq->pageofs_out;
-+	strm->z.avail_in = min_t(u32, insz, PAGE_SIZE - rq->pageofs_in);
-+	insz -= strm->z.avail_in;
-+	strm->z.next_in = kin + rq->pageofs_in;
-+	strm->z.avail_out = 0;
-+
-+	while (1) {
-+		if (!strm->z.avail_out) {
-+			if (++no >= nrpages_out || !outsz) {
-+				erofs_err(sb, "insufficient space for decompressed data");
-+				err = -EFSCORRUPTED;
-+				break;
-+			}
-+
-+			if (kout)
-+				kunmap_local(kout);
-+			strm->z.avail_out = min_t(u32, outsz, PAGE_SIZE - pofs);
-+			outsz -= strm->z.avail_out;
-+			if (rq->out[no] && rq->fillgaps) /* deduped data */
-+				rq->out[no] = erofs_allocpage(pagepool,
-+						GFP_KERNEL | __GFP_NOFAIL);
-+			if (rq->out[no]) {
-+				kout = kmap_local_page(rq->out[no]) + pofs;
-+				strm->z.next_out = kout;
-+			} else {
-+				kout = NULL;
-+				strm->z.next_out = skipped;
-+			}
-+			pofs = 0;
-+		}
-+
-+		if (!strm->z.avail_in && insz) {
-+			if (++ni >= nrpages_in) {
-+				erofs_err(sb, "compressed data was invalid");
-+				err = -EFSCORRUPTED;
-+				break;
-+			}
-+
-+			if (kout) { /* unlike kmap(), take care of the orders */
-+				j = strm->z.next_out - kout;
-+				kunmap_local(kout);
-+			}
-+			kunmap_local(kin);
-+			strm->z.avail_in = min_t(u32, insz, PAGE_SIZE);
-+			insz -= strm->z.avail_in;
-+			kin = kmap_local_page(rq->in[ni]);
-+			strm->z.next_in = kin;
-+			bounced = false;
-+			if (kout) {
-+				kout = kmap_local_page(rq->out[no]);
-+				strm->z.next_out = kout + j;
-+			}
-+		}
-+
-+		/*
-+		 * Handle overlapping: Use bounced buffer if the compressed
-+		 * data is under processing; Or use short-lived pages from the
-+		 * on-stack pagepool where pages share among the same request
-+		 * and not _all_ inplace I/O pages are needed to be doubled.
-+		 */
-+		if (!bounced && rq->out[no] == rq->in[ni]) {
-+			memcpy(strm->bounce, strm->z.next_in, strm->z.avail_in);
-+			strm->z.next_in = strm->bounce;
-+			bounced = true;
-+		}
-+
-+		for (j = ni + 1; j < nrpages_in; ++j) {
-+			struct page *tmppage;
-+
-+			if (rq->out[no] != rq->in[j])
-+				continue;
-+
-+			DBG_BUGON(erofs_page_is_managed(EROFS_SB(sb),
-+							rq->in[j]));
-+			tmppage = erofs_allocpage(pagepool,
-+						  GFP_KERNEL | __GFP_NOFAIL);
-+			set_page_private(tmppage, Z_EROFS_SHORTLIVED_PAGE);
-+			copy_highpage(tmppage, rq->in[j]);
-+			rq->in[j] = tmppage;
-+		}
-+
-+		zerr = zlib_inflate(&strm->z, Z_SYNC_FLUSH);
-+		if (zerr != Z_OK || !outsz) {
-+			if (zerr == Z_OK && rq->partial_decoding)
-+				break;
-+			if (zerr == Z_STREAM_END && !outsz)
-+				break;
-+			erofs_err(sb, "failed to decompress %d in[%u] out[%u]",
-+				  zerr, rq->inputsize, rq->outputsize);
-+			err = -EFSCORRUPTED;
-+			break;
-+		}
-+	}
-+
-+	if (zlib_inflateEnd(&strm->z) != Z_OK && !err)
-+		err = -EIO;
-+	if (kout)
-+		kunmap_local(kout);
-+failed_zinit:
-+	if (kin)
-+		kunmap_local(kin);
-+	/* 4. push back DEFLATE stream context to the global list */
-+	spin_lock(&z_erofs_deflate_lock);
-+	strm->next = z_erofs_deflate_head;
-+	z_erofs_deflate_head = strm;
-+	spin_unlock(&z_erofs_deflate_lock);
-+	wake_up(&z_erofs_deflate_wq);
-+	return err;
-+}
-diff --git a/fs/erofs/erofs_fs.h b/fs/erofs/erofs_fs.h
-index 2c7b16e340fe..364f51171c13 100644
---- a/fs/erofs/erofs_fs.h
-+++ b/fs/erofs/erofs_fs.h
-@@ -289,6 +289,7 @@ struct erofs_dirent {
- enum {
- 	Z_EROFS_COMPRESSION_LZ4		= 0,
- 	Z_EROFS_COMPRESSION_LZMA	= 1,
-+	Z_EROFS_COMPRESSION_DEFLATE	= 2,
- 	Z_EROFS_COMPRESSION_MAX
- };
- #define Z_EROFS_ALL_COMPR_ALGS		((1 << Z_EROFS_COMPRESSION_MAX) - 1)
-@@ -309,6 +310,12 @@ struct z_erofs_lzma_cfgs {
- 
- #define Z_EROFS_LZMA_MAX_DICT_SIZE	(8 * Z_EROFS_PCLUSTER_MAX_SIZE)
- 
-+/* 6 bytes (+ length field = 8 bytes) */
-+struct z_erofs_deflate_cfgs {
-+	u8 windowbits;			/* 8..15 for DEFLATE */
-+	u8 reserved[5];
-+} __packed;
-+
- /*
-  * bit 0 : COMPACTED_2B indexes (0 - off; 1 - on)
-  *  e.g. for 4k logical cluster size,      4B        if compacted 2B is off;
-diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
-index 36e32fa542f0..fb45855cfd5d 100644
---- a/fs/erofs/internal.h
-+++ b/fs/erofs/internal.h
-@@ -519,6 +519,26 @@ static inline int z_erofs_load_lzma_config(struct super_block *sb,
- }
- #endif	/* !CONFIG_EROFS_FS_ZIP_LZMA */
- 
-+#ifdef CONFIG_EROFS_FS_ZIP_DEFLATE
-+int __init z_erofs_deflate_init(void);
-+void z_erofs_deflate_exit(void);
-+int z_erofs_load_deflate_config(struct super_block *sb,
-+				struct erofs_super_block *dsb,
-+				struct z_erofs_deflate_cfgs *dfl, int size);
-+#else
-+static inline int z_erofs_deflate_init(void) { return 0; }
-+static inline int z_erofs_deflate_exit(void) { return 0; }
-+static inline int z_erofs_load_deflate_config(struct super_block *sb,
-+			struct erofs_super_block *dsb,
-+			struct z_erofs_deflate_cfgs *dfl, int size) {
-+	if (dfl) {
-+		erofs_err(sb, "deflate algorithm isn't enabled");
-+		return -EINVAL;
-+	}
-+	return 0;
-+}
-+#endif	/* !CONFIG_EROFS_FS_ZIP_DEFLATE */
-+
- #ifdef CONFIG_EROFS_FS_ONDEMAND
- int erofs_fscache_register_fs(struct super_block *sb);
- void erofs_fscache_unregister_fs(struct super_block *sb);
-diff --git a/fs/erofs/super.c b/fs/erofs/super.c
-index 9d6a3c6158bd..832f9fdef712 100644
---- a/fs/erofs/super.c
-+++ b/fs/erofs/super.c
-@@ -201,6 +201,9 @@ static int erofs_load_compr_cfgs(struct super_block *sb,
- 		case Z_EROFS_COMPRESSION_LZMA:
- 			ret = z_erofs_load_lzma_config(sb, dsb, data, size);
- 			break;
-+		case Z_EROFS_COMPRESSION_DEFLATE:
-+			ret = z_erofs_load_deflate_config(sb, dsb, data, size);
-+			break;
- 		default:
- 			DBG_BUGON(1);
- 			ret = -EFAULT;
-@@ -966,6 +969,10 @@ static int __init erofs_module_init(void)
- 	if (err)
- 		goto lzma_err;
- 
-+	err = z_erofs_deflate_init();
-+	if (err)
-+		goto deflate_err;
-+
- 	erofs_pcpubuf_init();
- 	err = z_erofs_init_zip_subsystem();
- 	if (err)
-@@ -986,6 +993,8 @@ static int __init erofs_module_init(void)
- sysfs_err:
- 	z_erofs_exit_zip_subsystem();
- zip_err:
-+	z_erofs_deflate_exit();
-+deflate_err:
- 	z_erofs_lzma_exit();
- lzma_err:
- 	erofs_exit_shrinker();
-@@ -1003,6 +1012,7 @@ static void __exit erofs_module_exit(void)
- 
- 	erofs_exit_sysfs();
- 	z_erofs_exit_zip_subsystem();
-+	z_erofs_deflate_exit();
- 	z_erofs_lzma_exit();
- 	erofs_exit_shrinker();
- 	kmem_cache_destroy(erofs_inode_cachep);
-diff --git a/fs/erofs/zmap.c b/fs/erofs/zmap.c
-index 1909ddafd9c7..7b55111fd533 100644
---- a/fs/erofs/zmap.c
-+++ b/fs/erofs/zmap.c
-@@ -561,8 +561,9 @@ static int z_erofs_do_map_blocks(struct inode *inode,
- 
- 	if ((flags & EROFS_GET_BLOCKS_FIEMAP) ||
- 	    ((flags & EROFS_GET_BLOCKS_READMORE) &&
--	     map->m_algorithmformat == Z_EROFS_COMPRESSION_LZMA &&
--	     map->m_llen >= i_blocksize(inode))) {
-+	     (map->m_algorithmformat == Z_EROFS_COMPRESSION_LZMA ||
-+	      map->m_algorithmformat == Z_EROFS_COMPRESSION_DEFLATE) &&
-+	      map->m_llen >= i_blocksize(inode))) {
- 		err = z_erofs_get_extent_decompressedlen(&m);
- 		if (!err)
- 			map->m_flags |= EROFS_MAP_FULL_MAPPED;
--- 
-2.24.4
+>> +pub trait Now: Clock {
+>> +impl<T: Clock> Instant<T> {
+>> +    fn new(nanoseconds: i64) -> Self {
+>> +        Instant {
+>> +            nanoseconds,
+>> +            _type: PhantomData,
+>> +        }
+>> +    }
+>> +
+>> +    /// Returns the time elapsed since an earlier Instant<t>, or
+>> +    /// None if the argument is a later Instant.
+>> +    pub fn since(&self, earlier: Instant<T>) -> Option<Duration> {
+>> +        if earlier.nanoseconds > self.nanoseconds {
+>> +            None
+>> +        } else {
+>> +            // Casting to u64 and subtracting is guaranteed to give the right
+>> +            // result for all inputs, as long as the condition we checked above
+>> +            // holds.
+>> +            Some(Duration::from_nanos(
+>> +                self.nanoseconds as u64 - earlier.nanoseconds as u64,
+> 
+> Clever, but any timestamp greater than KTIME_MAX or less than 0 for such
+> a comparison is invalid. I'm too lazy to do the math for you..
+
+This is computing a Rust Duration (which is unsigned and always 
+positive) from the difference between two ktimes. As long as the two 
+ktimes have the right >= relationship, the difference will always lie 
+within the representable range of an unsigned 64-bit integer, which is 
+itself a subset of the representable range of a Rust Duration (which is 
+u64 seconds + u32 nanoseconds). This is trivially true, since the types 
+have the same size and the absolute difference between two values can 
+never exceed the number of values representable in that number of bits, 
+regardless of whether the types are signed or unsigned. Feel free to do 
+the math ^^
+
+Or are you saying ktime timestamps can never be negative anyway, or that 
+those conditions should be special-cased somehow?
+
+> 
+>> +            ))
+>> +        }
+>> +    }
+>> +}
+>> +
+>> +impl<T: Clock + Now + Monotonic> Instant<T> {
+>> +    /// Returns the time elapsed since this Instant<T>.
+>> +    ///
+>> +    /// This is guaranteed to return a positive result, since
+>> +    /// it is only implemented for monotonic clocks.
+>> +    pub fn elapsed(&self) -> Duration {
+>> +        T::now().since(*self).unwrap_or_else(|| {
+>> +            pr_err!(
+>> +                "Monotonic clock {} went backwards!",
+>> +                core::any::type_name::<T>()
+> 
+> Can you please write this in one line?
+> 
+>   +            pr_err!("Monotonic clock {} went backwards!", core::any::type_name::<T>()
+> 
+> The above is unreadable gunk for no reason.
+
+We use rustfmt style for all Rust code in the kernel, and this code 
+follows that. See Documentation/rust/coding-guidelines.rst.
+
+>> +/// Contains the various clock source types available to the kernel.
+>> +pub mod clock {
+>> +    use super::*;
+>> +
+>> +    /// A clock representing the default kernel time source.
+>> +    ///
+>> +    /// This is `CLOCK_MONOTONIC` (though it is not the only
+>> +    /// monotonic clock) and also the default clock used by
+>> +    /// `ktime_get()` in the C API.
+> 
+> This "(though it is not the only monotonic clock)" phrase is irritating
+> at best. CLOCK_MONOTONIC is well defined as the other CLOCK_* variants.
+
+The issue I ran into here is what to call this clock when "Monotonic" is 
+both a trait that a clock can have and the name of the canonical default 
+clock. CLOCK_BOOTTIME is also monotonic and therefore implements the 
+Monotonic trait. That's why I called it KernelTime and why I made a 
+point that, while this one is called CLOCK_MONOTONIC in C, it's not the 
+*only* monotonic clock.
+
+I'm open to suggestions for the naming, I just think we might as well 
+try to make things clear since clock selection can be a confusing thing.
+
+>> +    ///
+>> +    /// This is like `BootTime`, but does not include time
+>> +    /// spent sleeping.
+>> +
+>> +    pub struct KernelTime;
+>> +
+>> +    impl Clock for KernelTime {}
+>> +    impl Monotonic for KernelTime {}
+>> +    impl Now for KernelTime {
+>> +        fn now() -> Instant<Self> {
+>> +            Instant::<Self>::new(unsafe { bindings::ktime_get() })
+>> +        }
+>> +    }
+>> +
+>> +    /// A clock representing the time elapsed since boot.
+>> +    ///
+>> +    /// This is `CLOCK_MONOTONIC` (though it is not the only
+>> +    /// monotonic clock) and also the default clock used by
+>> +    /// `ktime_get()` in the C API.
+> 
+> The wonders of copy and pasta...
+
+Oops, sorry... I'll fix it for v2.
+
+> 
+>> +    ///
+>> +    /// This is like `KernelTime`, but does include time
+>> +    /// spent sleeping.
+> 
+> Can you please expand your editors line wrap limit to the year 2023
+> standards? This looks like a IBM 2260 terminal.
+
+I think I manually wrapped this, I can rewrap it up to the rustfmt limit 
+for v2.
+
+>> +    /// A clock representing TAI time.
+>> +    ///
+>> +    /// This clock is not monotonic and can be changed from userspace.
+>> +    /// However, it is not affected by leap seconds.
+> 
+> I'm not impressed by this at all.
+> 
+> Lots of copy and pasta with zero content. I don't see how this is an
+> improvement over the admittedly lousy or non-existant kernel interface
+> documentations.
+> 
+> I thought Rust is set out to be better, but obviously it's just another
+> variant of copy & pasta and sloppy wrappers with useless documentation
+> around some admittedly not well documented, but well understood C
+> interfaces.
+
+At least the API doesn't conflate all clock sources as well as intervals 
+derived from them into a single type, like the C API does... I thought 
+that was what we were aiming to fix here, based on the previous discussion.
+
+I can definitely improve the docs, but I don't think it's fair to call 
+this "copy & pasta sloppy wrappers"...
+
+> So the right approach to this is:
+> 
+>   1) Extend the kernel C-API documentations first if required
+
+I am not comfortable further documenting the Linux timekeeping 
+subsystem, since I am not an expert in that area... if you think the 
+docs should be improved across the board, I'm afraid you'll have to do 
+that yourself first. It doesn't make any sense for me to become a 
+timekeeping expert just to write some missing C docs.
+
+I'm trying to upstream abstractions for a whole bunch of Linux 
+subsystems, I can't become an expert in all of them to improve the C 
+docs just because the people writing the C code didn't document it 
+properly themselves... it's hard enough wrapping my head around the 
+lifetime constraints and all that stuff already (which is almost never 
+documented), just to make sure the Rust abstraction is safe. Thankfully 
+that one isn't an issue for timekeeping, since there are no objects with 
+lifetimes...
+
+>   2) Build your wrapper so that it can refer to the documentation which
+>      was either there already or got refined/added in #1
+
+The Rust documentation needs to at least cover the Rust API. I can link 
+to Documentation/core-api/timekeeping.rst for reference, but we still 
+need module/function docs in the Rust code.
+
+What I can certainly do is expand on the current docs with more details 
+from that file, to try to get things more consistent. I'll look it over 
+for v2.
+
+>   3) Add one clock per patch with a proper changelog and not some
+>      wholesale drop it all.
+
+The whole file is 151 lines of code... do you really want me to break it 
+up into 5 patches where the last 4 add 10 lines each? What does that 
+accomplish? I don't get it... it's just a bunch of clock options, it's 
+not like there's any logic to review or actual clock implementations here.
+
+~~ Lina
 
