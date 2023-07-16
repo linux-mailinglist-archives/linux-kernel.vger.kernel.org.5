@@ -2,96 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16303754FFD
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 19:03:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD6FB754FE8
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 19:00:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230161AbjGPRDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Jul 2023 13:03:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57050 "EHLO
+        id S230078AbjGPQ6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Jul 2023 12:58:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230078AbjGPRD2 (ORCPT
+        with ESMTP id S229687AbjGPQ6v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Jul 2023 13:03:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABFF2E7C
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 10:03:25 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 33E1F60DD7
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 17:03:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DD4AC433C9;
-        Sun, 16 Jul 2023 17:03:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689527004;
-        bh=61mHo/GoVFw4VYteCT18+1hTq6UHmH6Xpf8WnsgzgCo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vO6eZga+ienruHXDg35BGubyuIUJiAL1YyXmXrYs1J5+HGDaEcPgHQZd8pwxYrooU
-         WokiyETebjl6dNFeWMDBANeTWTKKK6r0xK2LOim7QQeW4ErwbKkDrz3HE7rYqIsGQk
-         i0+0+5tduLOS9s/+jgt7iU/eO+2VuQqCXZ2SpN52nQi2K/MzM/a61y1a+6wK3qO4Le
-         4pexAyiwFbgLLRhsLBwnC9qkmh3m4onCefHfdZQk+I8w/86gLggnnFDVKOjBvY+Z0w
-         VxLqk81TpI5mzF8M6jbMYXlurSAViV5kZBzTVsN+YwB7k8XDmTSVDYglr7b807mbpZ
-         7cXMcynUHNwLg==
-From:   Jisheng Zhang <jszhang@kernel.org>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] riscv: enable DMA_BOUNCE_UNALIGNED_KMALLOC for !dma_coherent
-Date:   Mon, 17 Jul 2023 00:51:47 +0800
-Message-Id: <20230716165147.1897-3-jszhang@kernel.org>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20230716165147.1897-1-jszhang@kernel.org>
-References: <20230716165147.1897-1-jszhang@kernel.org>
+        Sun, 16 Jul 2023 12:58:51 -0400
+Received: from mail-oa1-f78.google.com (mail-oa1-f78.google.com [209.85.160.78])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F36D1B1
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 09:58:49 -0700 (PDT)
+Received: by mail-oa1-f78.google.com with SMTP id 586e51a60fabf-1b439698cd8so5534234fac.2
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 09:58:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689526728; x=1692118728;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ZuRwkV+sclDSaSk0CwVjw1z7ZfOsLFRuWm/Ymue/4OU=;
+        b=Ckh+y3pRbn4wJnW6+Amy/q0nzqT+5dUitqX+AzTBtdf/dPRQA/TsGqjJke1Z49USmX
+         CMu6byeNIKV7XWZ7Q749M9RcdSY2THClTj2H/qwvvfP1yVsa+fuijk1NiXpJzttafzse
+         olvFC4bTd0bhiuMlil7sl4OlDoA1EszBXUIP/BeXs8tAocntKOsiLOFi0Nmhjye2gukC
+         4ttozfFMJaUwkn+cOQvBings/HIIZZLwx+YXSQ7rK7d6ZGAJn+fGKCdt75BC43aXfVeh
+         RkOepIjzEMkF0tD0wfcHLr4XlKD3SZ2QeKDuiV69PrOueI1C4wqsbYNpGd+QJZEz+EdQ
+         lWBw==
+X-Gm-Message-State: ABy/qLZ/FTTgcvQdI6P/V7NCVehQ+HhI0CmfJBhNVyNQfNXGW1q+Q9LD
+        vppm1SYrPh8UehnkM37HW4JilgIG1LtOeEObnufDkl9O9Hz0
+X-Google-Smtp-Source: APBJJlHjbCVIWEyHRn5AR43gg99sjqW8TTlT47cpC5MNc7M+FZ4jJGCaFQyG1wOYVFG7GB05RNcFwVPeHEehIxI8XC5EFyKUtMZ5
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6870:93d5:b0:1b0:814b:78f1 with SMTP id
+ c21-20020a05687093d500b001b0814b78f1mr8433461oal.2.1689526728673; Sun, 16 Jul
+ 2023 09:58:48 -0700 (PDT)
+Date:   Sun, 16 Jul 2023 09:58:48 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000804fb406009d9880@google.com>
+Subject: [syzbot] [btrfs?] WARNING in btrfs_finish_one_ordered
+From:   syzbot <syzbot+6e54e639e7b934d64304@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the DMA bouncing of unaligned kmalloc() buffers now in place,
-enable it for riscv when RISCV_DMA_NONCOHERENT=y to allow the
-kmalloc-{8,16,32,96} caches. Since RV32 doesn't enable SWIOTLB
-yet, and I didn't see any dma noncoherent RV32 platforms in the
-mainline, so skip RV32 now by only enabling
-DMA_BOUNCE_UNALIGNED_KMALLOC if SWIOTLB is available. Once we see
-such requirement on RV32, we can enable it then.
+Hello,
 
-NOTE: we didn't force to create the swiotlb buffer even when the
-end of RAM is within the 32-bit physical address range. That's to
-say:
-For RV64 with > 4GB memory, the feature is enabled.
-For RV64 with <= 4GB memory, the feature isn't enabled by default. We
-rely on users to pass "swiotlb=mmnn,force" where mmnn is the Number of
-I/O TLB slabs, see kernel-parameters.txt for details.
+syzbot found the following issue on:
 
-Tested on Sipeed Lichee Pi 4A with 8GB DDR and Sipeed M1S BL808 Dock
-board.
+HEAD commit:    3f01e9fed845 Merge tag 'linux-watchdog-6.5-rc2' of git://w..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1124c2daa80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=29fd3392a08741ef
+dashboard link: https://syzkaller.appspot.com/bug?extid=6e54e639e7b934d64304
+compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
 
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/d8b0db7be621/disk-3f01e9fe.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/e54c8d8a4367/vmlinux-3f01e9fe.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/a266546d6979/bzImage-3f01e9fe.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+6e54e639e7b934d64304@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+BTRFS: Transaction aborted (error -28)
+WARNING: CPU: 1 PID: 4101 at fs/btrfs/inode.c:3279 btrfs_finish_one_ordered+0x1948/0x1c80 fs/btrfs/inode.c:3279
+Modules linked in:
+CPU: 1 PID: 4101 Comm: kworker/u4:9 Not tainted 6.5.0-rc1-syzkaller-00006-g3f01e9fed845 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/03/2023
+Workqueue: btrfs-endio-write btrfs_work_helper
+RIP: 0010:btrfs_finish_one_ordered+0x1948/0x1c80 fs/btrfs/inode.c:3279
+Code: 48 c7 c7 80 62 4a 8b 44 89 fe e8 73 db c6 fd 0f 0b e9 11 ff ff ff e8 07 be ff fd 48 c7 c7 80 62 4a 8b 44 89 fe e8 58 db c6 fd <0f> 0b e9 2b ff ff ff e8 ec bd ff fd 48 c7 c7 80 62 4a 8b 44 89 fe
+RSP: 0018:ffffc900039bf9e0 EFLAGS: 00010246
+RAX: 254f043ec951b800 RBX: ffff888088c63ad0 RCX: ffff888036f81dc0
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
+RBP: ffffc900039bfbb8 R08: ffffffff815323a2 R09: 1ffff92000737eb4
+R10: dffffc0000000000 R11: fffff52000737eb5 R12: 1ffff1101118c75a
+R13: ffff888088c63ad0 R14: 0000000000000000 R15: 00000000ffffffe4
+FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055a229778008 CR3: 0000000077545000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ btrfs_work_helper+0x380/0xbe0 fs/btrfs/async-thread.c:314
+ process_one_work+0x92c/0x12c0 kernel/workqueue.c:2597
+ worker_thread+0xa63/0x1210 kernel/workqueue.c:2748
+ kthread+0x2b8/0x350 kernel/kthread.c:389
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
+ </TASK>
+
+
 ---
- arch/riscv/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 4c07b9189c86..6681bd6ed2d7 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -267,6 +267,7 @@ config RISCV_DMA_NONCOHERENT
- 	select ARCH_HAS_SETUP_DMA_OPS
- 	select ARCH_HAS_SYNC_DMA_FOR_CPU
- 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
-+	select DMA_BOUNCE_UNALIGNED_KMALLOC if SWIOTLB
- 	select DMA_DIRECT_REMAP
- 
- config AS_HAS_INSN
--- 
-2.40.1
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
