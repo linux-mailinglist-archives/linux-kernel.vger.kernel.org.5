@@ -2,100 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28E24754E74
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 13:29:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F415754E78
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 13:41:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229731AbjGPL3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Jul 2023 07:29:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45570 "EHLO
+        id S229805AbjGPLl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Jul 2023 07:41:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjGPL3B (ORCPT
+        with ESMTP id S229449AbjGPLly (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Jul 2023 07:29:01 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A7BBE52;
-        Sun, 16 Jul 2023 04:29:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=GOnYVx5YAK+ziErge/1x9HGyqYnguAw6jCerx1KHHb4=; b=lHQYkapWUxpmBZVezHRrXRy+HR
-        pn1BNgG2r6jVTEqLOhK18KRo/D9WG3nPHWJJUhuaHWR1UEdc+maI+AavFMkzfcxfxQQjaZBUxHuLq
-        GLCOKkIR1vYeBxwttP8yMFvjmqeRUnycRgiTXtIqdfVPVdAR+EdHxfk9md6cuwjM5SwdcOKGtan+I
-        +dtzOgPYIRQyjwKNoehOszgu8B8yAz+KV2UdNTjQJFaKw7/ok3MBVm3/e/32AId35uBuoAf/IplkL
-        RVKkjbrrSKBeBjdvhra+giB+TlkPxIf3AbrPi8VgM+Tob9QXq1K7BLnJytzo64UmqyLLwCcFnzPil
-        mIKAGnQw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qKzvS-0032Ta-B6; Sun, 16 Jul 2023 11:28:30 +0000
-Date:   Sun, 16 Jul 2023 12:28:30 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Rudi Heitbaum <rudi@heitbaum.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Linux Networking <netdev@vger.kernel.org>,
-        Linux Wireless <linux-wireless@vger.kernel.org>
-Subject: Re: Fwd: mm/page_alloc.c:4453 with cfg80211_wiphy_work [cfg80211]
-Message-ID: <ZLPUXlR30DjNaWqO@casper.infradead.org>
-References: <51e53417-cfad-542c-54ee-0fb9e26c4a38@gmail.com>
+        Sun, 16 Jul 2023 07:41:54 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCC23B9;
+        Sun, 16 Jul 2023 04:41:53 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6329F60C90;
+        Sun, 16 Jul 2023 11:41:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F639C433C7;
+        Sun, 16 Jul 2023 11:41:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689507712;
+        bh=hVDmewweJfDc5tEE7Fyg0pSV8XDSV8JX9s6RfaSTEKQ=;
+        h=From:To:In-Reply-To:References:Subject:Date:From;
+        b=DQHb7/rRYpBb3Df+ckQ499GbkNK9EMF9pAwqD/oPc/Q0Qcz8tgZdmFJc+2WS8gSfL
+         ZJK7A7EENO7owMmzqkyTjbUo4e6CFnaaNiHuAoEAvV/L8QkOgXdVNSmiKRb7L9f5Le
+         hxmgk20skihBTaRKGIvC06s7C4Rjj9waNEubEgb3LQDNUnDMXdYESPT2z1sukxsPFq
+         medkQbtBH7zrmMADD5i5V+mpVWIJ3GPRTj0w7uuEqTXTPe7iw628cykHG4XakWpagt
+         djA/TlUfBXZIAK8gOG16yUsNzAK/XmcYWhsvpXRvVEv2oyLjYg9ZcohSRLZcjvGCzN
+         uvN5w6jmI3Gyw==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Thomas Bogendoerfer <tbogendoerfer@suse.de>
+In-Reply-To: <20230713141658.9426-1-tbogendoerfer@suse.de>
+References: <20230713141658.9426-1-tbogendoerfer@suse.de>
+Subject: Re: [PATCH] RDMA/mthca: Fix crash when polling CQ for shared QPs
+Message-Id: <168950770903.219939.14813629640192938544.b4-ty@kernel.org>
+Date:   Sun, 16 Jul 2023 14:41:49 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <51e53417-cfad-542c-54ee-0fb9e26c4a38@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12-dev-a055d
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 16, 2023 at 06:10:44PM +0700, Bagas Sanjaya wrote:
-> Hi,
+
+On Thu, 13 Jul 2023 16:16:58 +0200, Thomas Bogendoerfer wrote:
+> Commit 21c2fe94abb2 ("RDMA/mthca: Combine special QP struct with mthca QP")
+> introduced a new struct mthca_sqp which doesn't contain struct mthca_qp
+> any longer. Placing a pointer of this new struct into qptable leads
+> to crashes, because mthca_poll_one() expects a qp pointer. Fix this
+> by putting the correct pointer into qptable.
 > 
-> I notice a regression report on Bugzilla [1]. Quoting from it:
+> 
+> [...]
 
-Maybe you could try doing some work on this bug before just spamming
-people with it?
+Applied, thanks!
 
-        if (WARN_ON_ONCE_GFP(order > MAX_ORDER, gfp))
-                return NULL;
+[1/1] RDMA/mthca: Fix crash when polling CQ for shared QPs
+      https://git.kernel.org/rdma/rdma/c/5ceccabbdcf805
 
-This is the page allocator telling the caller that they've asked for an
-unreasonably large allocation.
-
-Now, this bug is actually interesting to the MM because the caller
-called kmalloc() with a ridiculous size.  Arguable kmalloc should
-protect callers from themselves (alloc_pages() is more low level
-and can presume its users know what they're doing).
-
-Vlastimil, what do you think?  Something like ...
-
-+++ b/mm/slab_common.c
-@@ -1119,6 +1119,8 @@ static void *__kmalloc_large_node(size_t size, gfp_t flags, int node)
-        void *ptr = NULL;
-        unsigned int order = get_order(size);
-
-+       if (order > MAX_ORDER)
-+               return NULL;
-        if (unlikely(flags & GFP_SLAB_BUG_MASK))
-                flags = kmalloc_fix_flags(flags);
-
-
+Best regards,
+-- 
+Leon Romanovsky <leon@kernel.org>
