@@ -2,136 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 854BA7550F2
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 21:25:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A98D47550F6
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 21:25:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229970AbjGPTZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Jul 2023 15:25:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47266 "EHLO
+        id S229999AbjGPTZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Jul 2023 15:25:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229886AbjGPTZI (ORCPT
+        with ESMTP id S229591AbjGPTZz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Jul 2023 15:25:08 -0400
-X-Greylist: delayed 302 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 16 Jul 2023 12:25:05 PDT
-Received: from abi149hd126.arn1.oracleemaildelivery.com (abi149hd126.arn1.oracleemaildelivery.com [129.149.84.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFF69E4C
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 12:25:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; s=oci-arn1-20220924;
- d=augustwikerfors.se;
- h=Date:To:From:Subject:Message-Id:MIME-Version:Sender;
- bh=vhgu6g5YOVEL+bJ5PxdEHK2qtn3eZn9eR/zLiwfZlaw=;
- b=P9lof9HpebDSDc+dr53P7w+3+JDFVCVdkKbxjf7k7Gu2pZKFdwed2wDWWdpCW0arOajdxpsWPLfQ
-   75Ba7m9812h8XqdZK+9rQugmGU9imufmoQnUdNMIWK81EmB+t+e8kmGJktZ1zFFnYCTP4gpIjrv7
-   h9jsi5riGHbUWdh15fHr+wIOTU66r6sgEua4P6TXLXs0b8Vm1BIuXZiY/aV+wl7Z0rcLnhaFU5dr
-   Zmn3JgH7aIMEP0F8VbqJ6CsFaWXgAiPdninjtvm+e1+kd9un5hZpa7rRK5mJ3V2A5y+F/kbQQqtD
-   aUwbwuo4oUA0Sbz7TIYyFG0CPec4MaO68MbRdg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; s=prod-arn-20211201;
- d=arn1.rp.oracleemaildelivery.com;
- h=Date:To:From:Subject:Message-Id:MIME-Version:Sender;
- bh=vhgu6g5YOVEL+bJ5PxdEHK2qtn3eZn9eR/zLiwfZlaw=;
- b=fXol21WpT09sXeHr0iRWb36UzH2rcKW4jwdaK69PIjLTop8+Ojs5XRqc9T1ls8+MfHoIQWqs6OO/
-   Cjuk4Ksv+HRIt1Tries36yusEIjiUAiF9LIqrYSgcEejCUnig2Ca3zzpZTFyqeFieTWyNVd8dS8O
-   ZJtbK4Dj5wb+me6y78J41eOsYXAP4HKG2uibbYqflot79tSAiIeGs/d7PWG6AORoVr8HAAyDRfn/
-   IWqj26LzGgjewYzQKO8Sda8d7ZHaBYnAftMBlpAZJM7KB8v87BgwdkWh550E4avzW2I8SDYoB3J4
-   TeeDe9qVJknI3VS0gEH7o3w30Sl83tIAuCkYaA==
-Received: by omta-ad1-fd3-401-eu-stockholm-1.omtaad1.vcndparn.oraclevcn.com
- (Oracle Communications Messaging Server 8.1.0.1.20230629 64bit (built Jun 29
- 2023))
- with ESMTPS id <0RXW007UCLPCV720@omta-ad1-fd3-401-eu-stockholm-1.omtaad1.vcndparn.oraclevcn.com>
- for linux-kernel@vger.kernel.org; Sun, 16 Jul 2023 19:20:00 +0000 (GMT)
-Message-id: <d0ce0f3b-9407-9207-73a4-3536f0948653@augustwikerfors.se>
-Date:   Sun, 16 Jul 2023 21:19:56 +0200
-MIME-version: 1.0
-From:   August Wikerfors <git@augustwikerfors.se>
-Subject: Re: Fwd: Need NVME QUIRK BOGUS for SAMSUNG MZ1WV480HCGL-000MV (Samsung
- SM-953 Datacenter SSD)
-To:     Pankaj Raghav <p.raghav@samsung.com>
-Cc:     Keith Busch <kbusch@kernel.org>,
-        Linux regressions mailing list <regressions@lists.linux.dev>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        "Clemens S." <cspringsguth@gmail.com>,
-        Martin Belanger <martin.belanger@dell.com>,
-        Chaitanya Kulkarni <kch@nvidia.com>,
-        John Meneghini <jmeneghi@redhat.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux NVMe <linux-nvme@lists.infradead.org>,
-        Kanchan Joshi <joshi.k@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>,
-        =?UTF-8?B?67CV7KeE7ZmY?= <jh.i.park@samsung.com>
-References: <d18d2a08-9d24-0209-c2cf-baf60bbf5048@gmail.com>
- <ZJsKBkPqoWzYyngS@kbusch-mbp.dhcp.thefacebook.com>
- <6f333133-2cc4-406a-d6c2-642ac6ccabca@leemhuis.info>
- <CGME20230710155902eucas1p2b464a29adc35e983c73b00d18ab5344c@eucas1p2.samsung.com>
- <ZKwqvTMPVmhnkZjS@kbusch-mbp.dhcp.thefacebook.com>
- <f0fdf86e-4293-8e07-835d-b5a866252068@samsung.com>
-Content-language: en-US
-In-reply-to: <f0fdf86e-4293-8e07-835d-b5a866252068@samsung.com>
-Content-type: text/plain; charset=UTF-8; format=flowed
-Content-transfer-encoding: 7bit
-Reporting-Meta: AAET+Clyr9vC9JSs59PNNgJ3bR0x5ue9VFjv5oHhEYeaYfKHXsjMXts9hrb6tWeU
- 2lKXLDIjDyswKdI7ODl2Sy6Uejyk2PwirMox5k1amJtObCMmjVcSafeZK/xrEVIo
- MMSZrQupb9nNJa8RLZjWnhqMh0kygZOUtdcTOyBaVkjl8kuuad0yf8ObQE2WgZnR
- wt+O+q9xC/rvX3FMBKEEuaI/XutZE5C5Oz/t6miNzTwjN/XjhwV27z5bZFs+OoQM
- DFLKQO461accRDEcK1EePLLMQD2w7jV4oJOzL0iFq2oWUC5JdXwvAFiDBhspVvQ2
- MoN35HNsAHM6blYXaH6gqCZLiy7V5yx5Ph/yBSmHz1ILg7k5P3s9TnWy1Iba99Ys
- XxSWDkjB/JCr0yexO+8RYedZZtnCvDRWhADwcVA7dib6RpdHp6aCO+HO0afcBHrT 8bETdTg=
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        Sun, 16 Jul 2023 15:25:55 -0400
+Received: from mail-vk1-xa33.google.com (mail-vk1-xa33.google.com [IPv6:2607:f8b0:4864:20::a33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6959D98
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 12:25:54 -0700 (PDT)
+Received: by mail-vk1-xa33.google.com with SMTP id 71dfb90a1353d-48165cd918dso973033e0c.0
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 12:25:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689535553; x=1692127553;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=SSAuqt+s4WpqnMkPR0UJ8Xay9OvKHBk6xAfxVDPkGGQ=;
+        b=GCfnrMXYxp6tDgtZAagG8EKzfgEUkVMqLXnYtg5sUR5EMzDvuVV7JWq8MfFipjIqwp
+         rQWsJLvKS3lRUTIoET8y9ScSg8YJkueRQBIMPFKiK5Ht8RCUrUCsCLc30sRywisgwuYa
+         nLb0CvZurNsuecbNXH5SJbeg2xgpy3fZtgWFcqmbw0/QSt6XTJrrtiNePq+1g15mwoq3
+         WKeQ2nYtg8zriWqSdiThh58oCfl9O7kfNJ9WM0qNKbHZOhFWomvLC5fXwqNHmGT/3QDv
+         wuUdHkzD/emtDWaae5ODNqd9uqDeVuBXwmdmZwhAIZK+jJ5OMfLVLDFs9WzLS02quVZp
+         LSSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689535553; x=1692127553;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SSAuqt+s4WpqnMkPR0UJ8Xay9OvKHBk6xAfxVDPkGGQ=;
+        b=cd+sMzbxARxtQrVC3fEQllS7RVN+rFl/hA9+3dDfxEKxOqHXYQu1IdUBhll7styJTM
+         Aw0AiRSkm8ijTjxZj7Rr3BNKztH35s5lFaSLYddRl1hzGYanmBB5NpNlsYa0E7wu467H
+         HZKsUbsS1+anMUpvOVawI2B5Gw5fKLXaTzJn/MXOqpsA6nC0zVS/Padr8FV9TAc2K82X
+         nmxdP9UrJyhS4fUPcqvQAyjC3ZdwWENz3amsML3HQixfOiVoSLoDZK5Mg23LsKErE3JA
+         Lf4Ulr1PYGKmTJIY1GYSB0xed+i6hJZRog1MSksG4hzhKafjV4j3VmJh5jZykQ/kJ7oq
+         658g==
+X-Gm-Message-State: ABy/qLY1Um3m8sUe7KIhFvhOgVLRUeNtSq0xUSapRwKFDMwI0q9Ku2Wg
+        3tqpmsxKCzhqwC4QhkZ81A5/i/JYk91g1sSPFBjYVYRWNQc7091FNhc=
+X-Google-Smtp-Source: APBJJlHvGNUdX+Ovjs7gI07fwd/iRKlv+A+q7ObU+aBtLpCouxGSumprEh+gumIKhAED0yGvDqX1C9BaAGBFEGGRinY=
+X-Received: by 2002:a1f:db86:0:b0:481:90c6:d059 with SMTP id
+ s128-20020a1fdb86000000b0048190c6d059mr855078vkg.2.1689535553336; Sun, 16 Jul
+ 2023 12:25:53 -0700 (PDT)
+MIME-Version: 1.0
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 17 Jul 2023 00:55:42 +0530
+Message-ID: <CA+G9fYs5n6aobE04YZy3Qy1ZMhAvH6-uQRqidgFmSoei91iW8g@mail.gmail.com>
+Subject: stable-rc 6.1: x86: clang build failed - block/blk-cgroup.c:1237:6:
+ error: variable 'ret' is used uninitialized whenever 'if' condition is true
+To:     linux-stable <stable@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        clang-built-linux <llvm@lists.linux.dev>,
+        lkft-triage@lists.linaro.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Anders Roxell <anders.roxell@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-07-11 08:54, Pankaj Raghav wrote:
->>> Another request came in today, even with a pseudo-patch:
->>> https://bugzilla.kernel.org/show_bug.cgi?id=217649
->>>
->>> To quote:
->>> ```
->>> As with numerous NVMe controllers these days, Samsung's
->>> MZAL41T0HBLB-00BL2, which Lenovo builds into their 16ARP8 also suffers
->>> from invalid IDs, breaking suspend and hibernate also on the latest
->>> kernel 6.4.2.
->>>
->>> The following change restores this functionality:
->>>
->>> File: root/drivers/nvme/host/pci.c
->>> Change:
->>>
->>> -	{ PCI_DEVICE(0x144d, 0xa80b),   /* Samsung PM9B1 256G and 512G */
->>> -		.driver_data = NVME_QUIRK_DISABLE_WRITE_ZEROES, },
->>>
->>> +	{ PCI_DEVICE(0x144d, 0xa80b),   /* Samsung PM9B1 256G, 512G and 1TB */
->>> +		.driver_data = NVME_QUIRK_BOGUS_NID |
->>> +				NVME_QUIRK_DISABLE_WRITE_ZEROES, },
->>
->> Panjaj, okay with this one too?
-> 
-> This looks a like a new device that might have a firmware update. I will ping
-> internally first.
+Linux stable-rc 6.1 build failed x86 and i386 with clang.
 
-(Note that this is a different issue from the regression in this thread)
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-I reported this back in November [1] and was told by Kanchan Joshi at
-Samsung that it was fixed in new firmware [2]. Lenovo was also contacted
-and said they were working on the update in December [3]. I'm not sure
-what happened then, but in March, Mark Pearson at Lenovo wrote [4]:
+Build log:
+-----------
+block/blk-cgroup.c:1237:6: error: variable 'ret' is used uninitialized
+whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
+        if (init_blkcg_llists(blkcg))
+            ^~~~~~~~~~~~~~~~~~~~~~~~
+block/blk-cgroup.c:1287:9: note: uninitialized use occurs here
+        return ret;
+               ^~~
+block/blk-cgroup.c:1237:2: note: remove the 'if' if its condition is
+always false
+        if (init_blkcg_llists(blkcg))
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+block/blk-cgroup.c:1222:33: note: initialize the variable 'ret' to
+silence this warning
+        struct cgroup_subsys_state *ret;
+                                       ^
+                                        = NULL
+1 error generated.
 
-> I'm stuck on this one - the FW team reached out to Samsung to see if 
-> there were fixes that we should be picking up and Samsung reported back 
-> that there are no Linux issues reported against this part :(
+Links,
+ - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.1.y-sanity/build/v6.1.38-599-g5071846d06ef/testrun/18327562/suite/build/test/clang-lkftconfig/history/
+ - https://storage.tuxsuite.com/public/linaro/lkft/builds/2SfFoWj9NmKWHRijR0hcoXGjLhr/
 
-The release process then seems to have started over [5] and the latest
-update as of May is that the update is supposed to be released this month.
+ tuxmake \
+ --runtime podman --target-arch x86_64 \
+ --toolchain clang-16 \
+ --kconfig https://storage.tuxsuite.com/public/linaro/lkft/builds/2SfFoWj9NmKWHRijR0hcoXGjLhr/config
+\
+ LLVM=1 LLVM_IAS=1
 
-[1] https://lore.kernel.org/all/20221116171727.4083-1-git@augustwikerfors.se/
-[2] https://lore.kernel.org/all/20221206055928.GB24451@test-zns/
-[3] https://github.com/tomsom/yoga-linux/issues/9#issuecomment-1368013293
-[4] https://github.com/fwupd/firmware-lenovo/issues/308#issuecomment-1466631468
-[5] https://forums.lenovo.com/topic/findpost/27/5196929/5984302
+--
+Linaro LKFT
+https://lkft.linaro.org
