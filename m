@@ -2,48 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9DA2754D03
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 03:18:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3ED8754D11
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 03:42:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230024AbjGPBSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 21:18:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46756 "EHLO
+        id S229599AbjGPBmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 21:42:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbjGPBSG (ORCPT
+        with ESMTP id S229460AbjGPBmc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 21:18:06 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 303D2271E;
-        Sat, 15 Jul 2023 18:18:01 -0700 (PDT)
-X-QQ-mid: bizesmtp83t1689470269tl6qvxpu
-Received: from linux-lab-host.localdomain ( [119.123.131.162])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Sun, 16 Jul 2023 09:17:48 +0800 (CST)
-X-QQ-SSF: 01200000000000D0W000000A0000000
-X-QQ-FEAT: /rrU+puPB7R3dUIHlO09/AeIT/VkiUr5cQOQzyFr2/vxxa2PE0PG2BOpgp/mr
-        +hSKy28g2oDqzqG+0la4SaV0sz4yYYw/l3wam333PAU2cl5cOoXataat8Asw1sJVTYh2CS2
-        q2sJxmdp6Fx+PDXznUTV+aFsWct1yOOQEs2w4R1rjYCZWYpwZW++yD+h6EBhmraRRd7OgBo
-        14OiYcyh2QpLK/vLvcJh0oTZt6NTkVzGHz6K/X3c95YythlyGSw/z0cVTvFrRcgv0F3p5/P
-        3WAe3tBxnsRQk7AWo5a4evzItD7KYotUcIlt3IfuGbj2ZF+2OYUNlGTFRHK52iu9dwzaFrd
-        7Dl5LYyzv3z6MAkKpvqvvz1GMSLZ0fwrdhXmbZkSpdGCtB7J42nShh3v7w2Rjm7HqZA7Nrk
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 2171079884746672651
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     w@1wt.eu
-Cc:     arnd@arndb.de, falcon@tinylab.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, thomas@t-8ch.de
-Subject: Re: [PATCH v4 00/18] tools/nolibc: shrink arch support
-Date:   Sun, 16 Jul 2023 09:17:44 +0800
-Message-Id: <20230716011744.499597-1-falcon@tinylab.org>
+        Sat, 15 Jul 2023 21:42:32 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C62C426B6
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 18:42:29 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2b74fa5e7d7so49536251fa.2
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 18:42:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=layalina-io.20221208.gappssmtp.com; s=20221208; t=1689471748; x=1692063748;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Vy8lHu+9aTKEHsLqATnFWjg+0GsO2SOZlCCuELJGI+s=;
+        b=AJcDIt4BpVuvCKPiOHKI2v9J53LnqJTBBaBorsrPes+1X96Os+TGgWVyO/OEa5F7rp
+         dJ4PRX6YqlJ9JHvBVAnSzLB5dnfvWS61qFhUTQBbPmAI5V+3mCf7w0MbzbOtIC+41SAW
+         kGetuWg4F4lMmgmK6O9I/GN1BHeFhXECYC5Ih/uR2mAT/F7h+IX741Qd/ubmVOUso7gT
+         znDGCdpzLAA9aKAzdyEkpNowXQ4tFk7zHi+Hpb9w1oyglJD1eShFUVX9cGaYe1oE9Jrb
+         ukxMWXOD7dDxSD2v1DlkfgfZmPT23pCBnfcxOpk+Mwtg3ZuRYgBnPFdgcDk7EX2MglID
+         Jfdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689471748; x=1692063748;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Vy8lHu+9aTKEHsLqATnFWjg+0GsO2SOZlCCuELJGI+s=;
+        b=GK3vs6CEuOCqTXEfccO0qi81OgeYB6BrLiWa0mBSq3GrGbd5JGaHFtvZ50ScFcSLFJ
+         U+v4zBAm6tsxjLw8MGBnjwy1gogG2yBtgcj7QAWj2bceYXfjqiZWvl1xLIEn+c8wqQx3
+         M0w3w9pHngcrVOUU79MY24tVMIFsTTFnR0rYtM5j7KWnTKzcrgN9R/bwnIFfq9jG7lXq
+         Gr42SUv416HOCkhFXwHSdABFk8a8MxOMHBjjEumtP1UaMsFMOFwUC9p5fcKs4U5c9f4B
+         UOybSqOtskfe1z+oJtSuXl5ajma+Xti+romXoa9PblACs0HB/5FfdVF+P3S0vRHn+W6w
+         +3ow==
+X-Gm-Message-State: ABy/qLYiO0V3Hn9q5aS67H0PCc8szq5HDP4tN077tYiuUHRxG8Ny4/o9
+        aodjVzT7NLTYKa0qIR8UuSyGNA==
+X-Google-Smtp-Source: APBJJlEL5lB9/VY3sgL1r1fT/jKXqhC3SV7cNe0+T3IvdhZw9pXqBaAPuFyegIy/GMLBPVZKTbQoUA==
+X-Received: by 2002:a2e:8753:0:b0:2b8:3ac9:e201 with SMTP id q19-20020a2e8753000000b002b83ac9e201mr4107846ljj.40.1689471747923;
+        Sat, 15 Jul 2023 18:42:27 -0700 (PDT)
+Received: from localhost.localdomain (host86-163-217-97.range86-163.btcentralplus.com. [86.163.217.97])
+        by smtp.gmail.com with ESMTPSA id v9-20020a05600c214900b003fbc9371193sm4751856wml.13.2023.07.15.18.42.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 15 Jul 2023 18:42:27 -0700 (PDT)
+From:   Qais Yousef <qyousef@layalina.io>
+To:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     linux-kernel@vger.kernel.org, Qais Yousef <qyousef@layalina.io>
+Subject: [RFC PATCH] sched/fair: Fix impossible migrate_util scenario in load balance
+Date:   Sun, 16 Jul 2023 02:41:25 +0100
+Message-Id: <20230716014125.139577-1-qyousef@layalina.io>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230715222658.GA27708@1wt.eu>
-References: <20230715222658.GA27708@1wt.eu>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,163 +70,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Willy
+We've seen cases while running geekbench that an idle little core never
+pulls a task from a bigger overloaded cluster for 100s of ms and
+sometimes over a second.
 
-> Hi Zhangjin,
-> 
-> On Sun, Jul 16, 2023 at 02:16:36AM +0800, Zhangjin Wu wrote:
-> > Hi, Willy, Thomas
-> > 
-> > Thanks very much for your careful review and great suggestions, now, we
-> > get v4 revision of the arch shrink series [1], it mainly include a new
-> > fixup for -O0 under gcc < 11.1.0, the stackprotector support for
-> > _start_c(), new testcases for startup code and two new test targets.
-> > 
-> > All of the tests passed or skipped (tinyconfig + few options +
-> > qemu-system) for both -Os and -O0:
-> (...)
-> 
-> First, good news, it looks OK from the nolibc-test perspective and
-> by looking at the code, so I merged all this into branch
-> 
->   20230715-nolibc-next-1
->
+It turned out that the load balance identifies this as a migrate_util
+type since the local group (little cluster) has a spare capacity and
+will try to pull a task. But the little cluster capacity is very small
+nowadays (around 200 or less) and if two busy tasks are stuck on a mid
+core which has a capacity of over 700, this means the util of each tasks
+will be around 350+ range. Which is always bigger than the spare
+capacity of the little group with a single idle core.
 
-Thanks very much.
+When trying to detach_tasks() we bail out then because of the comparison
+of:
 
-> Second, bad news, my preinit code doesn't build anymore due to missing
-> definitions for statx. It's built using the default method which involves
-> just including nolibc.h (and getting linux includes from the default path).
-> I could simplify it to this one-liner:
-> 
->   $ printf "int test_stat(const char *p, struct stat *b) { return stat(p,b); }\n" |
->     gcc -c -o test.o -xc - -nostdlib -include ./sysroot/x86/include/nolibc.h
-> 
->   In file included from ././sysroot/x86/include/nolibc.h:98:0,
->                    from <command-line>:32:
->   ././sysroot/x86/include/sys.h:952:78: warning: 'struct statx' declared inside parameter list will not be visible outside of this definition or declaration
->    int sys_statx(int fd, const char *path, int flags, unsigned int mask, struct statx *buf)
->                                                                                 ^~~~~
->   ././sysroot/x86/include/sys.h:962:74: warning: 'struct statx' declared inside parameter list will not be visible outside of this definition or declaration
->    int statx(int fd, const char *path, int flags, unsigned int mask, struct statx *buf)
->                                                                             ^~~~~
->   ././sysroot/x86/include/sys.h: In function 'statx':
->   ././sysroot/x86/include/sys.h:964:51: warning: passing argument 5 of 'sys_statx' from incompatible pointer type [-Wincompatible-pointer-types]
->     return __sysret(sys_statx(fd, path, flags, mask, buf));
->                                                      ^~~
->   ././sysroot/x86/include/sys.h:952:5: note: expected 'struct statx *' but argument is of type 'struct statx *'
->    int sys_statx(int fd, const char *path, int flags, unsigned int mask, struct statx *buf)
->        ^~~~~~~~~
->   ././sysroot/x86/include/sys.h: In function 'stat':
->   ././sysroot/x86/include/sys.h:971:15: error: storage size of 'statx' isn't known
->     struct statx statx;
->                  ^~~~~
->   ././sysroot/x86/include/sys.h:974:60: error: 'STATX_BASIC_STATS' undeclared (first use in this function)
->     ret = __sysret(sys_statx(AT_FDCWD, path, AT_NO_AUTOMOUNT, STATX_BASIC_STATS, &statx));
->                                                               ^~~~~~~~~~~~~~~~~
->   ././sysroot/x86/include/sys.h:974:60: note: each undeclared identifier is reported only once for each function it appears in
-> 
-> I finally found that it's due to the lack of -Isysroot/x86/include, so
-> it used to get linux includes from those provided by glibc and these ones
-> were missing statx since packaged for an older kernel.
->
+	if (util > env->imbalance)
+		goto next;
 
-So, your local glibc may be older than 2.28 (The one we mentioned in the
-commit message who supports statx)? mine 2.31 glibc is ok:
+In calculate_imbalance() we convert a migrate_util into migrate_task
+type if the CPU trying to do the pull is idle. But we only do this if
+env->imbalance is 0; which I can't understand. AFAICT env->imbalance
+contains the local group's spare capacity. If it is 0, this means it's
+fully busy.
 
-    $ ldd --version
-    ldd (Ubuntu GLIBC 2.31-0ubuntu9.2) 2.31
-    Copyright (C) 2020 Free Software Foundation, Inc.
-    This is free software; see the source for copying conditions.  There is NO
-    warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    Written by Roland McGrath and Ulrich Drepper.
-    
-    // anyone of the following commands work
-    $ echo -e "int test_stat(const char *p, struct stat *b) { return stat(p,b); }\n" | gcc -c -o test.o -xc - -nostdlib -include sysroot/x86/include/nolibc.h 
-    $ echo -e "int test_stat(const char *p, struct stat *b) { return stat(p,b); }\n" | gcc -c -o test.o -xc - -nostdlib -Isysroot/x86/include -include ../../../include/nolibc/nolibc.h 
-    $ echo -e "int test_stat(const char *p, struct stat *b) { return stat(p,b); }\n" | gcc -c -o test.o -xc - -nostdlib -include ../../../include/nolibc/nolibc.h
+Removing this condition fixes the problem, but since I can't fully
+understand why it checks for 0, sending this as RFC. It could be a typo
+and meant to check for
 
-For older Linux systems without a newer libc may really require the
-installation of the linux sysroot (linux/uapi).
+	env->imbalance != 0
 
-In Ubuntu 20.04, the "struct statx" is provided by the linux-libc-dev
-package:
+instead?
 
-    $ dpkg -S /usr/include/linux/
-    linux-libc-dev:amd64: /usr/include/linux
-    $ dpkg -l | grep linux-libc-dev
-    ii  linux-libc-dev:amd64                     5.4.0-88.99                                                    amd64        Linux Kernel Headers for development
-    ii  linux-libc-dev-arm64-cross               5.4.0-59.65cross1                                              all          Linux Kernel Headers for development (for cross-compiling)
-    ii  linux-libc-dev-armel-cross               5.4.0-59.65cross1                                              all          Linux Kernel Headers for development (for cross-compiling)
-    ii  linux-libc-dev-i386-cross                5.4.0-59.65cross1                                              all          Linux Kernel Headers for development (for cross-compiling)
-    ii  linux-libc-dev-riscv64-cross             5.4.0-21.25cross1                                              all          Linux Kernel Headers for development (for cross-compiling)
-    $ grep "struct statx" -ur /usr/include/linux/
-    /usr/include/linux/stat.h: * Timestamp structure for the timestamps in struct statx.
-    /usr/include/linux/stat.h:struct statx_timestamp {
-    /usr/include/linux/stat.h:struct statx {
-    /usr/include/linux/stat.h:	struct statx_timestamp	stx_atime;	/* Last access time */
-    /usr/include/linux/stat.h:	struct statx_timestamp	stx_btime;	/* File creation time */
-    /usr/include/linux/stat.h:	struct statx_timestamp	stx_ctime;	/* Last attribute change time */
-    /usr/include/linux/stat.h:	struct statx_timestamp	stx_mtime;	/* Last data modification time */
-    /usr/include/linux/stat.h: * Query request/result mask for statx() and struct statx::stx_mask.
-    /usr/include/linux/stat.h:#define STATX__RESERVED		0x80000000U	/* Reserved for future struct statx expansion */
+Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
+---
+ kernel/sched/fair.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-This may be relative to glibc version, it is a dep of libc package:
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index a80a73909dc2..682d9d6a8691 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -10288,7 +10288,7 @@ static inline void calculate_imbalance(struct lb_env *env, struct sd_lb_stats *s
+ 			 * waiting task in this overloaded busiest group. Let's
+ 			 * try to pull it.
+ 			 */
+-			if (env->idle != CPU_NOT_IDLE && env->imbalance == 0) {
++			if (env->idle != CPU_NOT_IDLE) {
+ 				env->migration_type = migrate_task;
+ 				env->imbalance = 1;
+ 			}
+-- 
+2.25.1
 
-    Package: libc6-dev
-    Source: glibc
-    Version: 2.36-9
-    Architecture: amd64
-    Maintainer: GNU Libc Maintainers <debian-glibc@lists.debian.org>
-    Installed-Size: 11954
-    Depends: libc6 (= 2.36-9), libc-dev-bin (= 2.36-9), linux-libc-dev, libcrypt-dev, libnsl-dev, rpcsvc-proto
-
-> I knew that sooner or later I'd have to reinstall this machine but I
-> can't get out of my head that to date I have yet not been convinced by
-> the absolute necessity of this modification which is progressively adding
-> more burden :-/  Time will tell...
->
-
-This may also let us think about the removing of <linux/xxx.h> from our
-nolibc headers? just like musl does ;-)
-
-    $ grep "include <linux" -ur ../../../include/nolibc/
-    ../../../include/nolibc/stdlib.h:#include <linux/auxvec.h>
-    ../../../include/nolibc/sys.h:#include <linux/fs.h>
-    ../../../include/nolibc/sys.h:#include <linux/loop.h>
-    ../../../include/nolibc/sys.h:#include <linux/time.h>
-    ../../../include/nolibc/sys.h:#include <linux/auxvec.h>
-    ../../../include/nolibc/sys.h:#include <linux/fcntl.h> /* for O_* and AT_* */
-    ../../../include/nolibc/sys.h:#include <linux/stat.h>  /* for statx() */
-    ../../../include/nolibc/sys.h:#include <linux/prctl.h>
-    ../../../include/nolibc/types.h:#include <linux/mman.h>
-    ../../../include/nolibc/types.h:#include <linux/reboot.h> /* for LINUX_REBOOT_* */
-    ../../../include/nolibc/types.h:#include <linux/stat.h>
-    ../../../include/nolibc/types.h:#include <linux/time.h>
-
-If simply put all of them to types.h, it may be too much, a new "sys/"
-directory with almost the same Linux type files may be required, but as
-an in-kernel libc, this duplication may be a "big" issue too, so, adding
-minimal required macros and structs in types.h may be another choice.
-
-After removing the duplicated ones, it is not that much:
-
-    ../../../include/nolibc/stdlib.h:#include <linux/auxvec.h>
-    ../../../include/nolibc/sys.h:#include <linux/fs.h>
-    ../../../include/nolibc/sys.h:#include <linux/loop.h>
-    ../../../include/nolibc/sys.h:#include <linux/time.h>
-    ../../../include/nolibc/sys.h:#include <linux/fcntl.h> /* for O_* and AT_* */
-    ../../../include/nolibc/sys.h:#include <linux/stat.h>  /* for statx() */
-    ../../../include/nolibc/sys.h:#include <linux/prctl.h>
-    ../../../include/nolibc/types.h:#include <linux/mman.h>
-    ../../../include/nolibc/types.h:#include <linux/reboot.h> /* for LINUX_REBOOT_* */
-
-The required new macros and structs may be around 100-300 lines? but it may
-help to avoid the installation of sysroot completely and also avoid the cross
-including the linux-libc-dev package used by glibc?
-
-Best regards,
-Zhangjin
-
-> Cheers,
-> Willy
