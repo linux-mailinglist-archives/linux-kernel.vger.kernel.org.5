@@ -2,160 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85C5C7558A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 00:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EE887558A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 01:33:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230087AbjGPW4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Jul 2023 18:56:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43390 "EHLO
+        id S229793AbjGPXXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Jul 2023 19:23:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbjGPW4o (ORCPT
+        with ESMTP id S229461AbjGPXXt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Jul 2023 18:56:44 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FE301BC
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 15:56:43 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id C20351FD80;
-        Sun, 16 Jul 2023 22:56:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1689548201; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ys6h1vzSSIaVlocCSqGhavDDv/6uvxE6L3vdhd2vrHU=;
-        b=PWntyDKakwSLMFInmJ+7M0/XbQdZfYmju+55r0dP1mW0uLHtGVPTK+PrdNDEYQJEB7uXUP
-        CUhJC/5KngSu3bg2WkciXAsOjrekWDBEa5v38iEoPt5+NBSKF8UpamYmzSXQIwu3VDeJhk
-        Ob6qLEWZ9TiorznFmaNAIIREnrg1kxI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1689548201;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ys6h1vzSSIaVlocCSqGhavDDv/6uvxE6L3vdhd2vrHU=;
-        b=tVHZ8DnJNgYMPlWL9jq6IDcqJQXb7D85Av55qDaaOCq4k1fVOIT0v382BqaDqget93lIoV
-        DHRRktctJYkWukBA==
-Received: from lion.mk-sys.cz (unknown [10.100.225.114])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id A38EA2C142;
-        Sun, 16 Jul 2023 22:56:41 +0000 (UTC)
-Received: by lion.mk-sys.cz (Postfix, from userid 1000)
-        id 68C9B604DF; Mon, 17 Jul 2023 00:56:41 +0200 (CEST)
-Date:   Mon, 17 Jul 2023 00:56:41 +0200
-From:   Michal Kubecek <mkubecek@suse.cz>
-To:     Josh Poimboeuf <jpoimboe@kernel.org>
-Cc:     Linux regressions mailing list <regressions@lists.linux.dev>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: build failure after commit eb0481bbc4ce ("objtool: Fix
- reloc_hash size")
-Message-ID: <20230716225641.un3p3wvtpqldgy6f@lion.mk-sys.cz>
-References: <20230628115825.ahqejf5y4hgxhyqj@lion.mk-sys.cz>
- <fb93d107-c834-1849-2b14-1dd33c4f9955@leemhuis.info>
- <20230709140929.5sdcvyqquotkn752@carpenter>
- <20230710171628.vo4azoabe26kepij@treble>
+        Sun, 16 Jul 2023 19:23:49 -0400
+Received: from mail-oa1-x2e.google.com (mail-oa1-x2e.google.com [IPv6:2001:4860:4864:20::2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6EBEDF;
+        Sun, 16 Jul 2023 16:23:48 -0700 (PDT)
+Received: by mail-oa1-x2e.google.com with SMTP id 586e51a60fabf-1b03ec2015fso2583171fac.3;
+        Sun, 16 Jul 2023 16:23:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689549828; x=1692141828;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=4yytGRS+CQEs/+jmTTJDYXQvpm4WXNvWJVJlTlZI5mA=;
+        b=Crx1m28LQXNW6sUjuoefYItFZqB17pkTPm4jxOJjC/vduKQ4vJq4DX/dX/hOiodeXn
+         rVU9GFQE/MoJnHzyLc0tYbZ6kWDrUfFS8XuWrEXnNb4mIsUj8QFGfXiZRHkomSb0v+YC
+         PCACzzF38jeoebqIwspeCnv/Bzg7sSso3LjyGuzo0vnvgFfVExjqSZH6QJ/8FmWy5tNd
+         7XIj8Kmh7yLSl9WbmJ1MKuFuDLR8QVIUgaBx8yxiJUYk5EwOE8S9cGV7cwfrIPBZUy4E
+         AwG+JQ+7eRKzm43HRCuH9KPhkj68LhW+lz9+hqajI9N0qgpLuisJcbX515J3jGng3uMn
+         uSqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689549828; x=1692141828;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4yytGRS+CQEs/+jmTTJDYXQvpm4WXNvWJVJlTlZI5mA=;
+        b=AbZXLguK1rizV0RTIS79ssLVIepQ0WBeqUSvJabodrQiM9UhT2DT+b556Wh/aVmWva
+         pQlP64L7oP9ssA6nUwligSfBnxuiHqRb1EWw1zaCu45h3UCtcxrJOk5fKlcMX8UUXeoK
+         n7PftjN8/12d2MaN4OWlX1fb43Np4ADjOTEbvPkkDwdocQuXwqz85WePXMtfukRhWPMY
+         NV3V4qOpKBpoth+zxmE1/TkoJthPNl8P8RdAI6G/yynymCW7EEy6apgy3TWH4pffhRWE
+         7jmshT2YYHhWzAZqYU4QUOMxLhHryZJhQWoPaI121usZNfAVZlQ6heJQatUOM8yxdw3S
+         S5ZQ==
+X-Gm-Message-State: ABy/qLb5t6cM4H9gWpLwE3ZTb+uN1KipuGk7J0UdHn8si3IJxkk0v6qV
+        wROIMvUCq0vbGo5uLZoOHRAB65DsgfJiyxe6Nxo=
+X-Google-Smtp-Source: APBJJlGZ7YeKMy93BxUuY4vsM9u1/SiDFU1/qhK9def0dOjmsTNnvyjS6Y4fygTqj7MniyyvAjIT55RHZAHzOsiqRZo=
+X-Received: by 2002:a05:6808:f87:b0:3a0:6949:c884 with SMTP id
+ o7-20020a0568080f8700b003a06949c884mr10602961oiw.34.1689549827645; Sun, 16
+ Jul 2023 16:23:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="75t4gryvpwcuroiv"
-Content-Disposition: inline
-In-Reply-To: <20230710171628.vo4azoabe26kepij@treble>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+References: <a35a5881c3280bd7a4fd1943a8b40b890e3bf280.1689316697.git.jamie.bainbridge@gmail.com>
+ <30997.1689374702@famine>
+In-Reply-To: <30997.1689374702@famine>
+From:   Jamie Bainbridge <jamie.bainbridge@gmail.com>
+Date:   Mon, 17 Jul 2023 09:23:36 +1000
+Message-ID: <CAAvyFNgzqQgG7BEMd69h572ORtVqg_TuSND44sH20F6VTAk9tQ@mail.gmail.com>
+Subject: Re: [PATCH] tcp: Add memory pressure flag to sockstat
+To:     Jay Vosburgh <jay.vosburgh@canonical.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, 15 Jul 2023 at 08:45, Jay Vosburgh <jay.vosburgh@canonical.com> wrote:
+>
+> Jamie Bainbridge <jamie.bainbridge@gmail.com> wrote:
+>
+> >When tuning a system it can be helpful to know whether the protocol is
+> >in memory pressure state or not. This can be determined by corresponding
+> >the number of pages in "net.ipv4.tcp_mem" with the current allocation,
+> >but a global variable already tracks this as the source of truth.
+> >
+> >Expose that variable in sockstat where other protocol memory usage is
+> >already reported.
+> >
+> >Add "pressure" which is 0 in normal state and 1 under pressure:
+> >
+> > # grep TCP /proc/net/sockstat
+> > TCP: inuse 5 orphan 0 tw 0 alloc 7 mem 1 pressure 0
+> >
+> > # grep TCP /proc/net/sockstat
+> > TCP: inuse 5 orphan 0 tw 0 alloc 7 mem 1 pressure 1
+>
+>         Isn't this already available in /proc/net/protocols?
+>
+> protocol  size sockets  memory press maxhdr  slab module     cl co di ac io in de sh ss gs se re sp bi br ha uh gp em
+> [...]
+> UDP       1472      7       6   NI       0   yes  kernel      y  y  y  n  y  y  y  n  y  y  y  y  y  n  n  y  y  y  n
+> TCP       2512      5       1   no     320   yes  kernel      y  y  y  y  y  y  y  y  y  y  y  y  y  n  y  y  y  y  y
 
---75t4gryvpwcuroiv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I was not aware of this, I was only looking for symbol usage of TCP
+and not the generic.
 
-On Mon, Jul 10, 2023 at 10:16:28AM -0700, Josh Poimboeuf wrote:
-> On Sun, Jul 09, 2023 at 05:09:29PM +0300, Michal Kubecek wrote:
-> > On Sat, Jul 08, 2023 at 03:40:50PM +0200, Linux regression tracking (Th=
-orsten Leemhuis) wrote:
-> > > On 28.06.23 13:58, Michal Kubecek wrote:
-> > > >=20
-> > > > this morning, mainline kernel builds started to fail on my desktop =
-like
-> > > > this:
-> > > >=20
-> > > >   mike@lion:~/work/git/kernel-upstream> mkdir /srv/ram/kobj
-> > > >   mike@lion:~/work/git/kernel-upstream> make -j24 CC=3Dgcc-13 O=3D/=
-srv/ram/kobj defconfig >/dev/null
-> > > >   mike@lion:~/work/git/kernel-upstream> make -j24 CC=3Dgcc-13 O=3D/=
-srv/ram/kobj all >/dev/null
-> > > >   net/ipv4/netfilter/iptable_nat.o: warning: objtool: mmap fail rel=
-oc
-> > > >   net/netfilter/xt_mark.o: warning: objtool: mmap fail reloc
-> > > >   net/netfilter/xt_nat.o: warning: objtool: mmap fail reloc
-> > > >   net/netfilter/xt_LOG.o: warning: objtool: mmap fail reloc
-> > > >   net/netfilter/xt_MASQUERADE.o: warning: objtool: mmap fail reloc
-> > > >   net/netfilter/nf_log_syslog.o: warning: objtool: mmap fail reloc
-> > > >   net/netfilter/xt_addrtype.o: warning: objtool: mmap fail reloc
-> > > >   fs/efivarfs/efivarfs.o: warning: objtool: mmap fail reloc
-> > > >   drivers/thermal/intel/x86_pkg_temp_thermal.o: warning: objtool: m=
-map fail reloc
-> > > >   vmlinux.o: warning: objtool: mmap fail reloc
-> > > >   incomplete ORC unwind tables in file: vmlinux
-> > > >   Failed to sort kernel tables
-> > > >   make[2]: *** [/home/mike/work/git/kernel-upstream/scripts/Makefil=
-e.vmlinux:35: vmlinux] Error 1
-> > > >   make[2]: *** Deleting file 'vmlinux'
-> > > >   make[1]: *** [/home/mike/work/git/kernel-upstream/Makefile:1256: =
-vmlinux] Error 2
-> > > >   make: *** [Makefile:226: __sub-make] Error 2
-> > > >=20
-> > > > I bisected the failure to commit
-> > > >=20
-> > > >   eb0481bbc4ce ("objtool: Fix reloc_hash size")
-> > > >=20
-> > > > I also tried gcc11 and building on a normal filesystem (rather than
-> > > > tmpfs) but the result is still the same. Different configurations (=
-e.g.
-> > > > allmodconfig) only show more modules with "mmap fail reloc". The ma=
-chine
-> > > > has 64 GB of RAM and both ulimit -m and ulimit -v show "unlimited".
-> > > > Anything idea what else I should try?
-> > >=20
-> > > Michal, thx for the report. Please correct me if I'm wrong: this as of
-> > > now is unfixed, as your patch to fix is afaics wasn't merged yet (at
-> > > least I can't see it even in next, but I might be missing something).
-> >=20
-> > Yes, the fix has not been merged yet and current master (commit
-> > 1c7873e33645) still shows the issue.
->=20
-> Should be fixed in the tip tree with the following patch:
->=20
-> https://lkml.kernel.org/lkml/168897683429.404.6801969953192508868.tip-bot=
-2@tip-bot2
+This is perfect, thank you very much!
 
-The fix reached mainline now as
+Jamie
 
-  9f71fbcde282 ("objtool: initialize all of struct elf")
-
-and is present in 6.5-rc2 so that it no longer exhibits the issue.
-
-Michal
-
---75t4gryvpwcuroiv
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEWN3j3bieVmp26mKO538sG/LRdpUFAmS0daUACgkQ538sG/LR
-dpVH1QgAu3oi5xk/rao2uXTc8HkpITK4aYMlv5bZSQxgS6fJn2pAtlItDmY/Pijf
-lths1Gf2+xgFSEWCilYiGRsSxR9y5AN1yoRNKnxKghOuRpIHHjZWGy86CNlMcJOn
-vmgzW+HlelHrZQ22STQPDFDsRrUM4/nCehfDWSPnu/vAUHczZstHovpXPqTF4cpF
-fwFCRhUeW9zQUNSGuOtqpEFJHsKgDswekXVhHrHNGrqBKb00TdcvftYnREX8Eus6
-TwxM+HZcpqB3q9DROMoVfRv2Dm8LinXfCLRbp8EUx1RiBNLfy0YuoKojBH/TJOYM
-TPigoGMbNaqBl+Y63I+1OWe8KtgGfg==
-=ZHsS
------END PGP SIGNATURE-----
-
---75t4gryvpwcuroiv--
+> >Tested by writing a large value to global variable tcp_memory_pressure
+> >(it usually stores jiffies when memory pressure was entered) and not
+> >just by code review or editing example output.
+> >
+> >Signed-off-by: Jamie Bainbridge <jamie.bainbridge@gmail.com>
+> >---
+> > net/ipv4/proc.c | 7 ++++---
+> > 1 file changed, 4 insertions(+), 3 deletions(-)
+> >
+> >diff --git a/net/ipv4/proc.c b/net/ipv4/proc.c
+> >index eaf1d3113b62f7dc93fdc7b7c4041140ac63bf69..f4c5ced2de49d5c6d7f5d7ccdaa76c89dcf8c932 100644
+> >--- a/net/ipv4/proc.c
+> >+++ b/net/ipv4/proc.c
+> >@@ -51,16 +51,17 @@
+> > static int sockstat_seq_show(struct seq_file *seq, void *v)
+> > {
+> >       struct net *net = seq->private;
+> >-      int orphans, sockets;
+> >+      int orphans, sockets, tcp_pressure;
+> >
+> >       orphans = tcp_orphan_count_sum();
+> >       sockets = proto_sockets_allocated_sum_positive(&tcp_prot);
+> >+      tcp_pressure = READ_ONCE(tcp_memory_pressure) ? 1 : 0;
+> >
+> >       socket_seq_show(seq);
+> >-      seq_printf(seq, "TCP: inuse %d orphan %d tw %d alloc %d mem %ld\n",
+> >+      seq_printf(seq, "TCP: inuse %d orphan %d tw %d alloc %d mem %ld pressure %d\n",
+> >                  sock_prot_inuse_get(net, &tcp_prot), orphans,
+> >                  refcount_read(&net->ipv4.tcp_death_row.tw_refcount) - 1,
+> >-                 sockets, proto_memory_allocated(&tcp_prot));
+> >+                 sockets, proto_memory_allocated(&tcp_prot), tcp_pressure);
+> >       seq_printf(seq, "UDP: inuse %d mem %ld\n",
+> >                  sock_prot_inuse_get(net, &udp_prot),
+> >                  proto_memory_allocated(&udp_prot));
+> >--
+> >2.41.0
+> >
+> >
+>
+> ---
+>         -Jay Vosburgh, jay.vosburgh@canonical.com
