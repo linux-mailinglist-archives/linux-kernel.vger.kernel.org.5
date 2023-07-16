@@ -2,56 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85FA3754E82
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 13:55:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0979C754E9C
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 14:50:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229846AbjGPLzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Jul 2023 07:55:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48078 "EHLO
+        id S229495AbjGPMtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Jul 2023 08:49:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjGPLzk (ORCPT
+        with ESMTP id S229449AbjGPMtX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Jul 2023 07:55:40 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29667132;
-        Sun, 16 Jul 2023 04:55:40 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Sun, 16 Jul 2023 08:49:23 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 170B490
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 05:49:22 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A281360C86;
-        Sun, 16 Jul 2023 11:55:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EEC1C433C8;
-        Sun, 16 Jul 2023 11:55:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689508539;
-        bh=onrgGfezSZ78zkV6GkuuBBoVKrb8pSR1afTXmN0TJ3M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Wq7e4dOKQ1LcuxmWoNyPCsvQflML6pA4/VU59zX8ym43ANJ17t05MnRSQ7n781RtP
-         BVv2eDLXgawyPls2svjRIYW+P4pew4FS8awr5bx/CnxbNCBU2JmIOIH2IoqmIgHhEL
-         r69RSoNlJbTX6dkVENM9muWYcNfhBSGNvMIDsEPNqAZujn6T9mJjINb5wTzScj150m
-         w73ZxpISQWmINZQWHfVVv6nF4Qd/an/am/fNET0y3iquk5iftZhj6J71IndMmWfD84
-         8CFsPGBzjV6ZbkN+iLy8Su5996kyd/9Ve4XdlNUxgn6euUOTSCTGdTMSb+qfpNnCAm
-         av670DaEcsNOA==
-Date:   Sun, 16 Jul 2023 19:55:29 +0800
-From:   Peter Chen <peter.chen@kernel.org>
-To:     Pawel Laszczak <pawell@cadence.com>
-Cc:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: [PATCH] usb: cdnsp: Fixes issue with dequeuing not queued
- requests
-Message-ID: <20230716115529.GA2529084@nchen-desktop>
-References: <20230713081429.326660-1-pawell@cadence.com>
- <20230714021436.GA2520702@nchen-desktop>
- <BYAPR07MB5381BA3F7A34D18BC16B86DFDD34A@BYAPR07MB5381.namprd07.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BYAPR07MB5381BA3F7A34D18BC16B86DFDD34A@BYAPR07MB5381.namprd07.prod.outlook.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        by smtp-out2.suse.de (Postfix) with ESMTPS id AD8811F8BB;
+        Sun, 16 Jul 2023 12:49:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1689511759; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5iMTPDb4EAC5F/3a1KEzow3eeMPXGxYwXkQm53JlpR0=;
+        b=U6GnsSjkB8EA2oqYEdpn9YsPhisH99afJCxcs2lQcOCQjwMKp+sY9lNIiSN3JZ5Gibkp8A
+        UW3NaYJvNU7WpQVJfCGfYw1T1OPwE9KScUvdIHIMgBzyv0aYwzuFOlHNt/kDZmIwgJkFs8
+        EG8lHV/zBT8JU5A9r+J2ZQZ4j3+4Ohk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1689511759;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5iMTPDb4EAC5F/3a1KEzow3eeMPXGxYwXkQm53JlpR0=;
+        b=kM/QMplGPX+11kosa/FGDTR6+A+YQeOCk7EzKmYXxppia6ZkgqIC3FU5BswNIKuHK7QTbB
+        hjdsLTVTrXpzb4Ag==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5E4D313252;
+        Sun, 16 Jul 2023 12:49:19 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id n88vFk/ns2RyeQAAMHmgww
+        (envelope-from <tiwai@suse.de>); Sun, 16 Jul 2023 12:49:19 +0000
+Date:   Sun, 16 Jul 2023 14:49:18 +0200
+Message-ID: <87zg3waunl.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     David Xu <xuwd1@hotmail.com>
+Cc:     James Schulman <james.schulman@cirrus.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        "Luke D. Jones" <luke@ljones.dev>,
+        Stefan Binding <sbinding@opensource.cirrus.com>,
+        Andy Chi <andy.chi@canonical.com>,
+        Tim Crawford <tcrawford@system76.com>,
+        Philipp Jungkamp <p.jungkamp@gmx.net>,
+        Kacper =?ISO-8859-2?Q?Michaj=B3ow?= <kasper93@gmail.com>,
+        Matthew Anderson <ruinairas1992@gmail.com>,
+        Yuchi Yang <yangyuchi66@gmail.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] Fix CSC3551 speaker sound problem for machines without a valid ACPI _DSD
+In-Reply-To: <SY4P282MB18352D4FD343A2E8290EA9BEE037A@SY4P282MB1835.AUSP282.PROD.OUTLOOK.COM>
+References: <SY4P282MB18352D4FD343A2E8290EA9BEE037A@SY4P282MB1835.AUSP282.PROD.OUTLOOK.COM>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -60,49 +83,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23-07-14 07:19:21, Pawel Laszczak wrote:
-> >
-> >On 23-07-13 04:14:29, Pawel Laszczak wrote:
-> >> Gadget ACM while unloading module try to dequeue not queued usb
-> >> request which causes the kernel to crash.
-> >> Patch adds extra condition to check whether usb request is processed
-> >> by CDNSP driver.
-> >>
-> >
-> >Why ACM does that?
-
-Would you please explain which situation triggers it?
-
-> >
-> >> cc: <stable@vger.kernel.org>
-> >> Fixes: 3d82904559f4 ("usb: cdnsp: cdns3 Add main part of Cadence
-> >> USBSSP DRD Driver")
-> >> Signed-off-by: Pawel Laszczak <pawell@cadence.com>
-> >> ---
-> >>  drivers/usb/cdns3/cdnsp-gadget.c | 3 +++
-> >>  1 file changed, 3 insertions(+)
-> >>
-> >> diff --git a/drivers/usb/cdns3/cdnsp-gadget.c
-> >> b/drivers/usb/cdns3/cdnsp-gadget.c
-> >> index fff9ec9c391f..3a30c2af0c00 100644
-> >> --- a/drivers/usb/cdns3/cdnsp-gadget.c
-> >> +++ b/drivers/usb/cdns3/cdnsp-gadget.c
-> >> @@ -1125,6 +1125,9 @@ static int cdnsp_gadget_ep_dequeue(struct
-> >usb_ep *ep,
-> >>  	unsigned long flags;
-> >>  	int ret;
-> >>
-> >> +	if (request->status != -EINPROGRESS)
-> >> +		return 0;
-> >> +
-> >
-> >Why not you use pending list which used at cdnsp_ep_enqueue to do this?
+On Thu, 13 Jul 2023 18:29:53 +0200,
+David Xu wrote:
 > 
-> It's just simpler and faster way - no other reasons. 
+> 
+> As the comments added in commit 4d4c4bff4f8ed79d95e05 ("ALSA: hda:
+> cs35l41: Clarify support for CSC3551 without _DSD Properties"), CSC3551
+> requires a valid _DSD to work and the current implementation just
+> fails when no _DSD can be found for CSC3551. However it is a fact
+> that many OEMs hardcoded the configurations needed by CSC3551 into their
+> proprietary software for various 2022 and later laptop models,
+> and this makes the Linux installations on these models cannot make
+> any speaker sound. Meanwhile, at this point of time, we see no hope
+> that these OEMs would ever fix this problem via a BIOS update. 
+> 
+> To address the problem, this patch series contains two patches: 
+> 
+> Patch 1 for cs35l41 hda driver: a fixup mechanism is introduced that 
+> when the driver found there is no valid _DSD that contains the 
+> configurations, a fixup function would try to find a fixup entry that
+> contains a proper cs35l41 configuration from a pre-defined fixup table
+> by matching the CSC3551 ACPI _SUB id. If found, the fixup function
+> would apply the cs35l41 configurations retrived from the entry. 
+> In this patch the fixup table only contains some entries for three 
+> Lenovo laptop models: namely 16IAH7, 16IAX7 and 16ARHA7. However 
+> as is known, several other laptop models from ASUS and HP also suffer
+> from this no valid _DSD problem and could have it addressed with this 
+> fixup mechanism when proper fixup entries are inserted.
+> 
+> 
+> Patch 2 for realtek hda driver: add quirks for Lenovo 16IAH7, 16IAX7 
+> and 16ARHA7 so that cs35l41 playback hook could be registered. Please 
+> note that for these quirks to work patch 1 has to be applied.
 
-Okay, get it.
+Thanks for the patches.
 
--- 
+I've seen the lots of pains with CS35L41 codec stuff on the recent
+machines.  But, first of all, it still needs to be agreed by Cirrus
+people whether this approach is acceptable.  Judging from the current 
+situation, such workaround appears inevitable, but we need a
+consensus.
 
-Thanks,
-Peter Chen
+So, Cirrus people, please check this.
+
+
+Also, some ideas about the current patch set:
+
+- Do we need yet another listing and check of each ID in another
+  place?  The existing entry in the SSID quirk table is already unique
+  enough to identify which configuration is taken, I suppose.
+
+- The quirk entries can be gathered in patch_realtek.c, and the hw_cfg
+  and other items are overwritten in cs35l41_no_acpi_dsd() when no
+  _DSD is found.  In that way, we can avoid fixing two places for each
+  update.
+
+- The workaround is a workaround, and it's fundamentally dangerous.
+  We should warn it in a kernel message.
+
+
+Takashi
