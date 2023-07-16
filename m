@@ -2,109 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80282754D15
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 03:54:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B777754D1A
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 04:04:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229601AbjGPByD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 21:54:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49314 "EHLO
+        id S229703AbjGPCEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 22:04:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbjGPByC (ORCPT
+        with ESMTP id S229460AbjGPCD6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 21:54:02 -0400
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2091.outbound.protection.outlook.com [40.107.215.91])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAD3526BC
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 18:54:00 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=P/kWHnhQQ1HEsegXhibbnWnJiMZG+Pc6/bcoaD8xsuJmBvfmVg4qcgdvnNtoULkwNrs04ch6Fb4kp1uCocB9JQtiwANi7nPKeThoYmMxSopSx78BFbo2XR1vyLDQZHElSYi0qV15OwMa3xTrz3LKbOMNocl7AndKvc1KOkzgFQTHLcVFvXN4BNRc/4aVDIyxXmAueKr0nVg+lBQ0NiCb4AQox56dvlzgXhsJRbmeiCOk2sbXcbLoAZMEZk8Xr3G63WtvOO8zel37+znCZf4h3DvosDyngMCgwOfIcoxMLtHhLDIFJ1MvnQn4qtMUkgp+MTc+ZLozZu1EaiI6Uqtj4w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=fWYuoVpWhhKQL5VwsgR8Kf/sFEPwBvDwTW8j9Bz6Rfo=;
- b=N9AsiSnZN7OBSiXLhQ8KmuRgyXmSf2yceZUNh6U/Jmjrxq6EMPPNnS8SywalvtjcgNQj79Nev3C6tb7iXF/6icY4DL52rlp4scEG5qAFUnqUvutXeFWytsHYr8zdIDy4gsyQBWgW5Cxm/M+TmRwE3pLPIvu6mXeFAlYlp049KuiXBioUQ6x2pT5VPfSkH53vTwfrXywXlP9+zoRHAKASoFfDv7eOHU1Yot6CfcmfmGE481rSZ4RUN9Ae4+GQd2T5k6asX73zql+9wekQi1tCm5oh9nIBbt27HyXh7NCMJ5AUh3Pvs7mWprOSFZ2CxATKUFTDiB0cS6Pz4z/RWW/fgw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fWYuoVpWhhKQL5VwsgR8Kf/sFEPwBvDwTW8j9Bz6Rfo=;
- b=Oll1S2Us/GE2vUt6WmZm/3CHxNNhpjf3lSIz1ISQly84wJWBKbhJbyw+SHmxgZxa/U10L5cfOiothFsMMJBd3AI74WwYj2chdGHsg2MzYtBL2k2u6Dde0EahYV7YpkX+Y/4njbRHRhLHl6Pr22WF5ttxuiMumkBs+wFK18qDWbt+pVxicKHVlRuDevSmy1hd+oSW55nDwRX1I/pnA4pfhtRqeNdNEOYr7eMpaTf+jrKzYZGCbrntcfOynvDfUh79wg7wNvj43DjkMwnjhTK1QtcbEsbdyko0INVbArrS4fpiDVbtuKJM3jW5KJuTHz21EiY72Bg2fL9VU2Kh3xIHcA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from SG2PR06MB3743.apcprd06.prod.outlook.com (2603:1096:4:d0::18) by
- TYZPR06MB6514.apcprd06.prod.outlook.com (2603:1096:400:454::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.28; Sun, 16 Jul
- 2023 01:53:56 +0000
-Received: from SG2PR06MB3743.apcprd06.prod.outlook.com
- ([fe80::2a86:a42:b60a:470c]) by SG2PR06MB3743.apcprd06.prod.outlook.com
- ([fe80::2a86:a42:b60a:470c%4]) with mapi id 15.20.6588.031; Sun, 16 Jul 2023
- 01:53:55 +0000
-From:   Wang Ming <machel@vivo.com>
-To:     Dinh Nguyen <dinguyen@kernel.org>, Alan Tull <atull@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Richard Gong <richard.gong@intel.com>,
-        linux-kernel@vger.kernel.org
-Cc:     opensource.kernel@vivo.com, Wang Ming <machel@vivo.com>
-Subject: [PATCH v2] firmware: Fix an NULL vs IS_ERR() bug in probe
-Date:   Sun, 16 Jul 2023 09:52:57 +0800
-Message-Id: <20230716015310.12293-1-machel@vivo.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SGAP274CA0011.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b6::23)
- To SG2PR06MB3743.apcprd06.prod.outlook.com (2603:1096:4:d0::18)
+        Sat, 15 Jul 2023 22:03:58 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B6BC26BC;
+        Sat, 15 Jul 2023 19:03:57 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-66767d628e2so2177517b3a.2;
+        Sat, 15 Jul 2023 19:03:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689473037; x=1692065037;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fN1+B9rujjxMw1qUBg2KMt93qZtXYxGTcSrggvR1cyI=;
+        b=DMTq/CDj5lnEkF5AI7MFu46NGv6cH1/1r3J7Ms1dTQJ3u2E8P3Cr+XYKLm5Mk2bJdz
+         mBAYZx8jwR+Ac62jHV/299RhG0Lh5eO/nf1wEKY6OkJL+Uvvn0/wRIUQ9Jse6OMzi9aT
+         BsnozozdfUNxbXvpgsqlJc2dGcy8JMxODu8iTkii2JNHAXKSU6MpYmoM7uVDj8q1qt+c
+         PA4yxwDTp9NTCuVoIKCRERPe952oHSHaRJAXC/dKyoOuW9xb3eeJcSLpjD+iaCDAC986
+         C300uyjnJg1GcgbRXaX9VNsPBLIHdNmH1Wx2Hw5h71j+hjrvikOOPY9ThiCEjMR7UiY0
+         G5bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689473037; x=1692065037;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fN1+B9rujjxMw1qUBg2KMt93qZtXYxGTcSrggvR1cyI=;
+        b=D+hwdauKAh1ReU3p8P+CBPTk1aR3ppAGB1cp0Kk4m/2JtjEfk1XnR/tIcSxrZnjRVE
+         yz7tI3J78YQtOWHRCJBdz/LUeMDW64bLSuNcmlUKjxdgXTHryisn6jNVX5ytuctaz+/6
+         lgaeGY82nnfQFoVKHaK3c+7gBktZJ7nAeukGrmxxjjxvXEvwTGK3hE/sqxwwFiyVyGnd
+         J7iw5xiPadwfemgB/BhrmOm7uMgOJvfqxDIuSCs7qtfcLRmj5CN201noSjcuhB7oWTgU
+         xTbOOeXTN7sixruVuEQF7J/Cd1Vq+BTRXQvp/qDsKqSPdpy2oeOkZcHXTsE+/hoNIxLQ
+         kwew==
+X-Gm-Message-State: ABy/qLbVi8RfRSwkwlEw1FhN6N1ASdc0rH11yvdBCNnz6SMI10CfzCCS
+        aFAjL/PSsI2nQNoqBoWDdc8=
+X-Google-Smtp-Source: APBJJlHh3l7nMx/Z3ghRrpGo+77oJordFcXeo2vYt64bsJ5/5fmPdoyk6ruDCTHKMbsulGIDe0ixig==
+X-Received: by 2002:a05:6a00:2d01:b0:66d:263f:d923 with SMTP id fa1-20020a056a002d0100b0066d263fd923mr10153782pfb.20.1689473036830;
+        Sat, 15 Jul 2023 19:03:56 -0700 (PDT)
+Received: from [192.168.1.5] ([121.32.71.42])
+        by smtp.gmail.com with ESMTPSA id q1-20020a656a81000000b00553dcfc2179sm9129942pgu.52.2023.07.15.19.03.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 15 Jul 2023 19:03:56 -0700 (PDT)
+Message-ID: <db6ba884-7125-c2bb-de65-83b2f980e7a1@gmail.com>
+Date:   Sun, 16 Jul 2023 10:03:30 +0800
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SG2PR06MB3743:EE_|TYZPR06MB6514:EE_
-X-MS-Office365-Filtering-Correlation-Id: da88161e-776e-4ec5-9df0-08db859f8325
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: pAaXu6oFY2d4l3xhtG3aQ1nnDZL3LGMcfZGyKQAQg7OwNEp/asQFOgGou8zU73oGfDiNdldzTLUe8P8R/bHpFOExRft/SFKoB8MwnrbY+U+eDuLNSZnplas0ROnVeHHpjjOkUC68M7KTeDNBVYE1BXAUmmIiSbnGk/mtUAQXdGcDmFx9gPSeuVUMWpdJ7FTGxdEm+771QsZQ5nwpvvQr3o392E1SkZ1/PVmujOjw7uBngUgH1qNyGc5MndvUM2PflnrJsDdEDJJxKwh3QTvh43kFqpgegPVEyNUiPL43bOVPTBfIheWdBxeuuAcg4TpPW5W75pnKSzeoHKQdViaSG9NlwUMLZTyv9TSHSwIgICJkCRrAKOpQa/FSxg1k2BmlVSjPfcTKSs/n6Pzm4jD4CeTuznKwl+egkh8eSXGiGrtYJ1nQryD/es3HalVz55MvV+rmCN3HHstC2dswNuk2myhG51P9fV97be2ctHNOXls0AceXqrOJ/uNTUNZxQV1P2qPrWQcKZE6E0QSYs8g/4oOH46vgy6Fd9o5y3Q7kMpwwBUWKyfs2t0aAHqviIhnjz08v0omZ0quWBEk9d9DU0XOKb1a7+PAvZKuiNoZXWm1Xf/Y6CJlQqo/ogvFgj6Ak
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB3743.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39850400004)(136003)(346002)(396003)(366004)(376002)(451199021)(83380400001)(2616005)(110136005)(38350700002)(2906002)(4326008)(4744005)(38100700002)(8936002)(8676002)(316002)(5660300002)(41300700001)(66476007)(66946007)(186003)(66556008)(6512007)(52116002)(86362001)(478600001)(6486002)(26005)(1076003)(36756003)(6506007)(107886003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?+nswH9lyi/d/To5WMJgDMPow2qp8ETAaUmvNfovL84fbaQjXDlKHG2qGtuzK?=
- =?us-ascii?Q?Gqvq5Ihgc2r0CuZHOgeqHGow0j5b23df05jgl8vMBDAYZu36posXKg6phT1U?=
- =?us-ascii?Q?yfAsFWzWRCFMkHKj/64fBu7giTQ2RGnPEZbRkQkiMg78pAafSkjhBwLMvtNL?=
- =?us-ascii?Q?Cuwq1BGG3LhNOjc9QoCQuvPvXc7urZUpKSiMlPerUsevlI5tsDnoSd9YKIzH?=
- =?us-ascii?Q?R4XgDKCpaLUw1HoSd6oID/5iJPgSX2E9oIYrZndDRuvGpdjEC3WI6lOjDKUx?=
- =?us-ascii?Q?2WYmhWlqFb0aDK0P0p60t+6xdIvk5C5Nl11CJOOA/yb5eHZuyz6YUmzV51T7?=
- =?us-ascii?Q?7fx3ltkiHoUPMeNeGXvOpXPI3hWtVmhKUIiYRFVlD1DAz/ah3GfKDw7wg/+L?=
- =?us-ascii?Q?oGSF+u33DYlfe8GOnGeLYOCexQ+m8pvJ6y/W+pp+Ub4ydR5OgdsaL4XM6w6P?=
- =?us-ascii?Q?wm9IZOgq27Sd1vkiDhpv2rPrasIhqt1NEiL/llSaEyBYHG1OIq1LCKyuam+r?=
- =?us-ascii?Q?q96IjGHi+K+ZQK3N5LSAbVPwDJDU2OdBRuKZ5xYYOqdnGWrjt7zHGvZlql6u?=
- =?us-ascii?Q?BCQVDYF4GdKPKHT1b/Vzg0B0uRn2kWRUTx31aEXF4QrvC3nxG2T4HxL6UsUN?=
- =?us-ascii?Q?5BVgOyLjyLzba07MMK96RjNI5Mx/vFSVhA6aHVuE0i1qRp7Kc+olvF8PCDdt?=
- =?us-ascii?Q?BqzYH1kfYR6TiODRLG2onVzL1An0YB0L98J527XAeLgQBzCr5BWkmSr3O1u+?=
- =?us-ascii?Q?hvjBb22RGuj8eFZzAAd1Y8/W5xeRGtxsNSZPIWuZo5H5g029Hr/bTQFYtpFO?=
- =?us-ascii?Q?tsCACjmejS4NV8XGSqcgb0vhZrQzMDjY2peZij53oG8q3kCSVtoGJAFSH0Wh?=
- =?us-ascii?Q?UWeUiBiHctkLXLqZgyo1nVQBRktV0K1oiGrp7fhVlOcjw2WWPBFYU2F5c8bO?=
- =?us-ascii?Q?KG5Fmm54IFf5l1J1HF5LalwkAxH2KJt0SVtKICaTfV+dh78uEMvE+3qNf2g8?=
- =?us-ascii?Q?9coyHcEQ3G0XsSA67Z+HE0s+VCRy0X6GMS4/BTVr1MW2Y6ZagJAEUngflXjA?=
- =?us-ascii?Q?1Ztm46zAzO7A4DEuq30Bmk6ISFFH4bp9ey2w+oCebN6oN/gxr8gJPKsbhBux?=
- =?us-ascii?Q?zTkB6183DZs5XA1LdfrF9xux8bt7F0g2LVvW62UDnWILxUNWRSBTJTchYH7j?=
- =?us-ascii?Q?46c3dN5LCk401VAA4fB/VAuHmTaox+VyfjRI7d4Z+V85oPZ0Zs3pCWJQLPJE?=
- =?us-ascii?Q?5HwaBfXw74N5E9G8ihBmsS7Vz6+0kprQIOjYr3mxlq+N+sklb6LdKmn+jQBv?=
- =?us-ascii?Q?rz0GLDi2ErmC4kIzvjA22gwoNAbi8zOnRhh76+BCV6l/VPVD+qaVTSeVZdSs?=
- =?us-ascii?Q?Y/qh/3Vtj+Q4g0xPCeYoue5mlJ3zDUNL5/r38MQvtu5YSxnpiQ2I2z1EkjIQ?=
- =?us-ascii?Q?5ABezBrGhLoHhIZ9ZY8W6cxb8yHJjmQ9wctq3lAqnSWChwO1o0ZZ6Y9BFc8B?=
- =?us-ascii?Q?6hSICWtAc3hoJBePSBDWJKWbZnLIc3eLxuIodVSdpazeDn8MQD4ePiAOXHty?=
- =?us-ascii?Q?HtHSU73nFuD/Va1PYU8tVdIFR5LsSCcglx8ueRiL?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: da88161e-776e-4ec5-9df0-08db859f8325
-X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB3743.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jul 2023 01:53:55.4795
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: aOEOWvOuUpE0pQSjGdHBTfusA5cDRzhpXyK2e0kp+vkzbOTWXhMYmW832D44OmoUIOT1UQ0SGPu6N23e9NjVrA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR06MB6514
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v5] pwm: atmel: Enable clk when pwm already enabled in
+ bootloader
+Content-Language: en-US
+To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>
+Cc:     claudiu.beznea@microchip.com, thierry.reding@gmail.com,
+        nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
+        linux-arm-kernel@lists.infradead.org, linux-pwm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230715023653.56872-1-aarongt.shen@gmail.com>
+ <20230715121253.gvhcszjoqxwh4gjz@pengutronix.de>
+From:   Guiting Shen <aarongt.shen@gmail.com>
+In-Reply-To: <20230715121253.gvhcszjoqxwh4gjz@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -112,29 +79,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The devm_memremap() function returns error pointers.
-It never returns NULL. Fix the check.
 
-Fixes: 7ca5ce896524 ("firmware: add Intel Stratix10 service layer driver")
-Signed-off-by: Wang Ming <machel@vivo.com>
----
- drivers/firmware/stratix10-svc.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/firmware/stratix10-svc.c b/drivers/firmware/stratix10-svc.c
-index 2d674126160f..935bc0cf913f 100644
---- a/drivers/firmware/stratix10-svc.c
-+++ b/drivers/firmware/stratix10-svc.c
-@@ -756,7 +756,8 @@ svc_create_memory_pool(struct platform_device *pdev,
- 	paddr = begin;
- 	size = end - begin;
- 	va = devm_memremap(dev, paddr, size, MEMREMAP_WC);
--	if (!va) {
-+
-+	if (IS_ERR(va)) {
- 		dev_err(dev, "fail to remap shared memory\n");
- 		return ERR_PTR(-EINVAL);
- 	}
+On Sat,Jul 15,2023 at 20:12:53PM GMT+8, Uwe Kleine-König wrote:
+> On Sat, Jul 15, 2023 at 10:36:53AM +0800, Guiting Shen wrote:
+>> The driver would never call clk_enable() if the PWM channel was already
+>> enabled in bootloader which lead to dump the warning message "the PWM
+>> clock already disabled" when turning off the PWM channel.
+>>
+>> Add atmel_pwm_enable_clk_if_on() in probe function to enable clock if
+>> the PWM channel was already enabled in bootloader.
+>>
+>> Signed-off-by: Guiting Shen <aarongt.shen@gmail.com>
+>> ---
+>>   drivers/pwm/pwm-atmel.c | 50 +++++++++++++++++++++++++++++++++++++++--
+>>   1 file changed, 48 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/pwm/pwm-atmel.c b/drivers/pwm/pwm-atmel.c
+>> index cdbc23649032..4dd6e1319343 100644
+>> --- a/drivers/pwm/pwm-atmel.c
+>> +++ b/drivers/pwm/pwm-atmel.c
+>> @@ -36,7 +36,7 @@
+>>   #define PWM_SR			0x0C
+>>   #define PWM_ISR			0x1C
+>>   /* Bit field in SR */
+>> -#define PWM_SR_ALL_CH_ON	0x0F
+>> +#define PWM_SR_ALL_CH_MASK	0x0F
+>>   
+>>   /* The following register is PWM channel related registers */
+>>   #define PWM_CH_REG_OFFSET	0x200
+>> @@ -464,6 +464,45 @@ static const struct of_device_id atmel_pwm_dt_ids[] = {
+>>   };
+>>   MODULE_DEVICE_TABLE(of, atmel_pwm_dt_ids);
+>>   
+>> +static int atmel_pwm_enable_clk_if_on(struct atmel_pwm_chip *atmel_pwm, bool on)
+>> +{
+>> +	unsigned int i, cnt = 0;
+>> +	int ret = 0;
+>> +	u32 sr;
+>> +
+>> +	sr = atmel_pwm_readl(atmel_pwm, PWM_SR) & PWM_SR_ALL_CH_MASK;
+>> +	if (!sr)
+>> +		return 0;
+>> +
+>> +	for (i = 0; i < atmel_pwm->chip.npwm; i++) {
+>> +		if (sr & (1 << i))
+>> +			cnt++;
+>> +	}
+> 
+> If it's just about counting the set bits, there is the function
+> bitmap_weight().
+
+Got it, Thank you.
+
+
+>> +	if (!on)
+>> +		goto disable_clk;
+>> +
+>> +	for (i = 0; i < cnt; i++) {
+>> +		ret = clk_enable(atmel_pwm->clk);
+>> +		if (ret) {
+>> +			dev_err(atmel_pwm->chip.dev,
+>> +				"failed to enable clock for pwm #%d: %pe\n",
+>> +							i, ERR_PTR(ret));
+> 
+> The output is bogus here. If SR is say 0xc, and the second enable
+> fails, it's about pwm #3, but then i is 1.
+
+I would just output the error clock message like this to fix it:
+	dev_err(atmel_pwm->chip.dev,
+		"failed to enable clock for pwm %pe\n", ERR_PTR(ret));
+
+
+>> +			cnt = i;
+>> +			goto disable_clk;
+>> +		}
+>> +	}
+>> +
+>> +	return 0;
+>> +
+>> +disable_clk:
+>> +	while (cnt--)
+>> +		clk_disable(atmel_pwm->clk);
+>> +
+>> +	return ret;
+>> +}
+>> +
+>>   static int atmel_pwm_probe(struct platform_device *pdev)
+>>   {
+>>   	struct atmel_pwm_chip *atmel_pwm;
+> 
+> Best regards
+> Uwe
+> 
+
 -- 
-2.25.1
-
+Best regards,
+Guiting Shen
