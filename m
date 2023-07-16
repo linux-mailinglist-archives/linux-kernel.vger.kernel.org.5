@@ -2,73 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D21E9754CEC
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 02:42:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BB63754CEE
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 02:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229935AbjGPAmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 20:42:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42218 "EHLO
+        id S229956AbjGPAqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 20:46:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbjGPAmg (ORCPT
+        with ESMTP id S229528AbjGPAqT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 20:42:36 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF5DE101
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 17:42:35 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-263036d4bc3so2268952a91.2
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 17:42:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1689468155; x=1692060155;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AAaGB1X6RygPg8U02LFiZuYkbefG8qTpwEsQCQX7xEY=;
-        b=UfPATQBTYcKeHUD0z4Rmm35SobEX5Hfj1yTAeU9epG0mxGURcVMfCXxbd74iHOfI1u
-         ZXbeMbfoQbiSijPJk6SeDbSioFhSRUBeUHSGcCL9xX3o32pC3G4ZJ6qrBop6mng4gzjX
-         sLw4QHxrhqNhhBRqk1xTHeeN40IJ7gU7SHXd4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689468155; x=1692060155;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AAaGB1X6RygPg8U02LFiZuYkbefG8qTpwEsQCQX7xEY=;
-        b=l5rlpHQNiusX3iu5wOjSRVjqK+JZxo4JMi/YF00VpNRW9TSb6Fgfl02zHW6EIz1wMM
-         8HfEMKuvaS3RdSlpMaQdv+3vPgFrV5neUfOGb0yZONmAdWxi+AqPJnU12V/4gnYaMVeV
-         4XkOvk4QQ+YPRxNftHgBwEmK7JB+218t5zS//Mt19BdQDZWC9HlQ55nK0cvp2g+Po3lZ
-         5x4mU35XgrDcYFlS9L+Adj5H4K3NM/XxqiCWau2FArsbeAyTKwvhS8c0hqvDY9CPX/xp
-         syz/bJilKcGsXVZm4pV25+rluyPTFbXG/JinnoKnRbv8z9Zz4rps/8D/WAqi3z2NYciF
-         egNw==
-X-Gm-Message-State: ABy/qLYiYvaZ5Yr05m/7vGkaO8akRu97+Sflmt3ttJobxBan9aMzQqlq
-        4/O8t5AlTj1PnHh9inBiIi87aQ==
-X-Google-Smtp-Source: APBJJlE8gsKYVfeITsL0y52M9jiq1vcBbeR2lAmW9CEF/SmXU8duSr7qR9T5J3xpByl5fsFxslHzTg==
-X-Received: by 2002:a17:90a:a38d:b0:261:2a59:dc38 with SMTP id x13-20020a17090aa38d00b002612a59dc38mr7968107pjp.25.1689468154854;
-        Sat, 15 Jul 2023 17:42:34 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id d14-20020a17090ad98e00b002630bfd35b0sm2888301pjv.7.2023.07.15.17.42.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 Jul 2023 17:42:33 -0700 (PDT)
-Date:   Sat, 15 Jul 2023 17:42:32 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Andi Shyti <andi.shyti@linux.intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Palmer Dabbelt <palmer@rivosinc.com>,
-        Petr Pavlu <petr.pavlu@suse.com>,
-        Sam Ravnborg <sam@ravnborg.org>, Song Liu <song@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [GIT PULL] hardening fixes for v6.5-rc2
-Message-ID: <202307151737.BF9E8B84@keescook>
+        Sat, 15 Jul 2023 20:46:19 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F0F1101
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 17:46:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=vCDJzaPXRVCO/UvhiEs9IHkx1kgQ8KEzMrH/C6KGEU0=; b=b7ClRTC6xGPUfPjg3DfYY1xxDk
+        J3IwUzmdemoCyRwI1hiw/UFxBG9Nc9tqI1e9ahGdgGni3OdqfAzU9D4rBjo2f8a14GXaWFTL8AKC6
+        g3XXKCTByv78lQYd7LRpHmjSHdcZGBGa+7YYhXofQUKQnxBjv7vhd5ruCbnV1wghR5/jU07soME/F
+        bCfM2LI+RaQxuigE+wISZEqQ/cu3zBOpOexyddGJldJndOS7P27AFORezLol2tj7RFy6Fw5sOvvZz
+        bUMDZLVEqz2oe0IS5BCGSt6NRku+WjGsNbyj9wWo9dMgm/hfCZBrKB93jcPgX27lj5OeMa7nEnBYe
+        tWxamYXg==;
+Received: from 50-198-160-193-static.hfc.comcastbusiness.net ([50.198.160.193] helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qKptx-009lWB-2x;
+        Sun, 16 Jul 2023 00:46:18 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org,
+        Harry Wentland <harry.wentland@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        amd-gfx@lists.freedesktop.org
+Subject: [PATCH] drm/connector: mark enum counter value as private
+Date:   Sat, 15 Jul 2023 17:46:16 -0700
+Message-ID: <20230716004616.21838-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,62 +57,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Mark the DRM_MODE_COLORIMETRY_COUNT enum value as private in
+kernel-doc to prevent a build warning:
 
-Please pull this odd collection of hardening fixes for v6.5-rc2. I
-included the somewhat unrelated sparc fix[1] since no one else had picked
-it up yet, it was Acked, it had been pinged by the regression tracker,
-and I was on CC. :)
+include/drm/drm_connector.h:527: warning: Enum value 'DRM_MODE_COLORIMETRY_COUNT' not described in enum 'drm_colorspace'
 
-Thanks!
+Fixes: c627087cb164 ("drm/connector: Use common colorspace_names array")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: David Airlie <airlied@gmail.com>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc: Maxime Ripard <mripard@kernel.org>
+Cc: Thomas Zimmermann <tzimmermann@suse.de>
+Cc: dri-devel@lists.freedesktop.org
+Cc: Harry Wentland <harry.wentland@amd.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: amd-gfx@lists.freedesktop.org
+---
+ include/drm/drm_connector.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
--Kees
-
-[1] https://lore.kernel.org/lkml/20230628094938.2318171-1-arnd@kernel.org/
-
-The following changes since commit 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5:
-
-  Linux 6.5-rc1 (2023-07-09 13:53:13 -0700)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/hardening-v6.5-rc2
-
-for you to fetch changes up to ec7633de404e7ce704d8f79081b97bca5b616c23:
-
-  sparc: mark __arch_xchg() as __always_inline (2023-07-13 09:54:32 -0700)
-
-----------------------------------------------------------------
-hardening fixes for v6.5-rc2
-
-- Remove LTO-only suffixes from promoted global function symbols (Yonghong Song)
-
-- Remove unused .text..refcount section from vmlinux.lds.h (Petr Pavlu)
-
-- Add missing __always_inline to sparc __arch_xchg() (Arnd Bergmann)
-
-- Claim maintainership of string routines
-
-----------------------------------------------------------------
-Arnd Bergmann (1):
-      sparc: mark __arch_xchg() as __always_inline
-
-Kees Cook (1):
-      MAINTAINERS: Foolishly claim maintainership of string routines
-
-Petr Pavlu (1):
-      vmlinux.lds.h: Remove a reference to no longer used sections .text..refcount
-
-Yonghong Song (1):
-      kallsyms: strip LTO-only suffixes from promoted global functions
-
- MAINTAINERS                         | 5 ++++-
- arch/sparc/include/asm/cmpxchg_32.h | 2 +-
- arch/sparc/include/asm/cmpxchg_64.h | 2 +-
- include/asm-generic/vmlinux.lds.h   | 1 -
- kernel/kallsyms.c                   | 5 ++---
- scripts/kallsyms.c                  | 6 +++---
- 6 files changed, 11 insertions(+), 10 deletions(-)
-
--- 
-Kees Cook
+--- linux-next-20230714.orig/include/drm/drm_connector.h
++++ linux-next-20230714/include/drm/drm_connector.h
+@@ -522,7 +522,7 @@ enum drm_colorspace {
+ 	DRM_MODE_COLORIMETRY_RGB_WIDE_FIXED	= 13,
+ 	DRM_MODE_COLORIMETRY_RGB_WIDE_FLOAT	= 14,
+ 	DRM_MODE_COLORIMETRY_BT601_YCC		= 15,
+-	/* not a valid value; merely used for counting */
++	/* private: not a valid value; merely used for counting */
+ 	DRM_MODE_COLORIMETRY_COUNT
+ };
+ 
