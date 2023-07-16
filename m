@@ -2,175 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97898754DB9
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 09:49:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78E08754DC1
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 09:51:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229809AbjGPHtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Jul 2023 03:49:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46086 "EHLO
+        id S229462AbjGPHvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Jul 2023 03:51:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229705AbjGPHtE (ORCPT
+        with ESMTP id S229670AbjGPHvT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Jul 2023 03:49:04 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94541E46
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 00:49:02 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fbf1b82dc7so30117425e9.2
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 00:49:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1689493741; x=1692085741;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=bxPvz8cMswTTAWRzifMWMC21fRi3cQcESIrQBlKCw1E=;
-        b=abLxdzFHoEflYGrY949ZeA1zKxAU5gyMFSG5PNf+O78DPaTYBMsuPv61KaJd2XwxEP
-         NK++3V4bs6+MaGINrv7wG8cV/btv+ihU6vA9/ex8xdkGS1NH6CXWS73IvVAPXRt6s0Eh
-         2JrVcicR7qRhVPMCnrmGyyQdPF0lbHlRVA8xrcxiPLe29WvDuKx59OgogIlb9HfsLYfM
-         fiIYkO1LThA/kYYQFl5yk9daBv05bQAxSDnRuOmugvIc4SgMN/0c9P7z8klOWyuUfWDP
-         iOVF7fcC0gWtfkbMNxAZlYYcVEROxr7wVFuPlxv0ESqnsnw5KI70b1S6nW+BNAUydu0z
-         G2qw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689493741; x=1692085741;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bxPvz8cMswTTAWRzifMWMC21fRi3cQcESIrQBlKCw1E=;
-        b=YN1njO9uuPY5O51r/PeTEV8iw7Rfv/1l8egGmuXVj/CGYPS4zAA9UV5iM+LaeV/hi/
-         m0Rzs0auiwvElKeHll64AXRxvTqOYY/ZVIxhfET2/IeBS2TmwpxNpVciQqVsSfJpHvfv
-         K6mEZsDUHYTjEk81yiEsQAfe5ktPc/JSjwAnUf1VlyFUeGz5amI2xf0BGCijbCeUSdLX
-         NxZ8NMHLzZlCByny3C10gza1K+wLBBq2neVVdrPL5PD7tO49Ngr0ijeSjYoFcXfT5Y0G
-         yzIZol7LiQQwZi3vKF7cDAXCr451it9D6aQ5evwYoa1sHpvW6dv7gr+cg7HvIDWZilHb
-         E+oQ==
-X-Gm-Message-State: ABy/qLZjhykjH7vUmAYlhhAnP8IFK5ff6vFrh+lPLgqXiB3APowShRXE
-        Y5fv3dlWDJKjLwCFjr0VScFNTg==
-X-Google-Smtp-Source: APBJJlFLUp12727mVwnd5MY2IOu6lNOcUA55USqhYdE6mHTm3sENZgCDk8CTh51otCxV6LINvVk4wA==
-X-Received: by 2002:a1c:ed1a:0:b0:3fc:5a3:367c with SMTP id l26-20020a1ced1a000000b003fc05a3367cmr7388693wmh.32.1689493740389;
-        Sun, 16 Jul 2023 00:49:00 -0700 (PDT)
-Received: from zh-lab-node-5 ([2a02:168:f656:0:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id v7-20020a05600c214700b003fbc681c8d1sm5142870wml.36.2023.07.16.00.48.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 16 Jul 2023 00:48:59 -0700 (PDT)
-Date:   Sun, 16 Jul 2023 07:50:08 +0000
-From:   Anton Protopopov <aspsk@isovalent.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Martin KaFai Lau <martin.lau@linux.dev>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Hou Tao <houtao1@huawei.com>, Joe Stringer <joe@isovalent.com>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 1/3] bpf: consider CONST_PTR_TO_MAP as trusted
- pointer to struct bpf_map
-Message-ID: <ZLOhMDZIjikWdWf5@zh-lab-node-5>
-References: <20230714141747.41560-1-aspsk@isovalent.com>
- <20230714142100.42265-1-aspsk@isovalent.com>
- <20230714142100.42265-2-aspsk@isovalent.com>
- <CAADnVQJztACtOx8UEyWJqTXd95DBDWsNEAG284Ci4N7Ma8Fqgw@mail.gmail.com>
+        Sun, 16 Jul 2023 03:51:19 -0400
+Received: from mail.marcansoft.com (marcansoft.com [212.63.210.85])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 120A11BF3;
+        Sun, 16 Jul 2023 00:51:14 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: lina@asahilina.net)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 976C45BC8B;
+        Sun, 16 Jul 2023 07:51:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=asahilina.net;
+        s=default; t=1689493872;
+        bh=gYedBdij8EEj4bxFgU0IbfRjRyKP5k9HHjXwlINja/A=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=TMo85PN5gOQ3hHQ3yWJV2Zg+x3Z9jjizP8YVug1tfKZcvCsICpS+WBOemybd3WLDb
+         KVmSJss87jmRovNPhIuyS0VTo6HyVnQ4AWclvC9e/6d2fYhRYYiNj57Xn23qKTVLby
+         SmXBlBcKwfskhvVcOcnlpJqz/GULG6Dl/vUu6DpVUjj399S77i8bCyrEFxYUmWOhjK
+         n15xl1DyULI+7eYw1m6UCvliBW3kpRjXuiEB55Rb0Sl7Xh+Yb7RTjryGPKbGcGPZR9
+         6gozKuAMKT3+xHDHg/TB8cKw59u6I9/IqcmkmJnr6mHU+CwSpmucwYQjb+SqhIut4p
+         fl3lLaFv081UA==
+Message-ID: <99f9003f-d959-fff3-361a-25b2f47efc88@asahilina.net>
+Date:   Sun, 16 Jul 2023 16:51:06 +0900
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQJztACtOx8UEyWJqTXd95DBDWsNEAG284Ci4N7Ma8Fqgw@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH 3/3] drm/scheduler: Clean up jobs when the scheduler is
+ torn down.
+Content-Language: en-US
+To:     Luben Tuikov <luben.tuikov@amd.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Cc:     Faith Ekstrand <faith.ekstrand@collabora.com>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, asahi@lists.linux.dev
+References: <20230714-drm-sched-fixes-v1-0-c567249709f7@asahilina.net>
+ <20230714-drm-sched-fixes-v1-3-c567249709f7@asahilina.net>
+ <9343165f-2533-f363-4942-719ee9b7d2a4@amd.com>
+From:   Asahi Lina <lina@asahilina.net>
+In-Reply-To: <9343165f-2533-f363-4942-719ee9b7d2a4@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 10:56:00AM -0700, Alexei Starovoitov wrote:
-> On Fri, Jul 14, 2023 at 7:20 AM Anton Protopopov <aspsk@isovalent.com> wrote:
-> >
-> > Patch verifier to regard values of type CONST_PTR_TO_MAP as trusted
-> > pointers to struct bpf_map. This allows kfuncs to work with `struct
-> > bpf_map *` arguments.
-> >
-> > Save some bytes by defining btf_bpf_map_id as BTF_ID_LIST_GLOBAL_SINGLE
-> > (which is u32[1]), not as BTF_ID_LIST (which is u32[64]).
-> >
-> > Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
-> > ---
-> >  include/linux/btf_ids.h | 1 +
-> >  kernel/bpf/map_iter.c   | 3 +--
-> >  kernel/bpf/verifier.c   | 5 ++++-
-> >  3 files changed, 6 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
-> > index 00950cc03bff..a3462a9b8e18 100644
-> > --- a/include/linux/btf_ids.h
-> > +++ b/include/linux/btf_ids.h
-> > @@ -267,5 +267,6 @@ MAX_BTF_TRACING_TYPE,
-> >  extern u32 btf_tracing_ids[];
-> >  extern u32 bpf_cgroup_btf_id[];
-> >  extern u32 bpf_local_storage_map_btf_id[];
-> > +extern u32 btf_bpf_map_id[];
-> >
-> >  #endif
-> > diff --git a/kernel/bpf/map_iter.c b/kernel/bpf/map_iter.c
-> > index d06d3b7150e5..b67996147895 100644
-> > --- a/kernel/bpf/map_iter.c
-> > +++ b/kernel/bpf/map_iter.c
-> > @@ -78,8 +78,7 @@ static const struct seq_operations bpf_map_seq_ops = {
-> >         .show   = bpf_map_seq_show,
-> >  };
-> >
-> > -BTF_ID_LIST(btf_bpf_map_id)
-> > -BTF_ID(struct, bpf_map)
-> > +BTF_ID_LIST_GLOBAL_SINGLE(btf_bpf_map_id, struct, bpf_map)
-> >
-> >  static const struct bpf_iter_seq_info bpf_map_seq_info = {
-> >         .seq_ops                = &bpf_map_seq_ops,
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 0b9da95331d7..5663f97ef292 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -5419,6 +5419,9 @@ static bool is_trusted_reg(const struct bpf_reg_state *reg)
-> >         if (reg->ref_obj_id)
-> >                 return true;
-> >
-> > +       if (reg->type == CONST_PTR_TO_MAP)
-> > +               return true;
-> > +
+On 15/07/2023 16.14, Luben Tuikov wrote:
+> On 2023-07-14 04:21, Asahi Lina wrote:
+>> drm_sched_fini() currently leaves any pending jobs dangling, which
+>> causes segfaults and other badness when job completion fences are
+>> signaled after the scheduler is torn down.
 > 
-> Overall it looks great.
-> Instead of above, how about the following instead:
-> 
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 0b9da95331d7..cd08167dc347 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -10775,7 +10775,7 @@ static int check_kfunc_args(struct
-> bpf_verifier_env *env, struct bpf_kfunc_call_
->                         if (!is_kfunc_trusted_args(meta) && !is_kfunc_rcu(meta))
->                                 break;
-> 
-> -                       if (!is_trusted_reg(reg)) {
-> +                       if (!is_trusted_reg(reg) &&
-> !reg2btf_ids[base_type(reg->type)]) {
-> 
-> 
-> This way we won't need to list every convertible type in is_trusted_reg.
-> 
-> I'm a bit hesitant to put reg2btf_ids[] check directly into is_trusted_reg().
-> Maybe it's ok, but it needs more analysis.
+> If there are pending jobs, ideally we want to call into the driver,
+> so that it can release resources it may be holding for those.
+> The idea behind "pending" is that they are pending in the hardware
+> and we don't know their state until signalled/the callback called.
+> (Or unless the device is reset and we get a notification of that fact.)
 
-I am not sure I see a difference in adding a check you proposed above and
-adding the reg2btf_ids[] check directly into the is_trusted_reg() function.
-Basically, we say "if type is in reg2btf_ids[], then consider it trusted" in
-both cases. AFAIS, currently the reg2btf_ids[] contains only trusted types,
-however, could it happen that we add a non-trusted type there?
+That's what the job->free_job() callback does, then the driver is free 
+to do whatever it wants with those jobs. A driver could opt to 
+synchronously kill those jobs (if it can) or account for them 
+separately/asynchronously.
 
-So, I would leave the patch as is (which also makes sense because the
-const-ptr-to-map is a special case), or add the "reg2btf_ids[] check" 
-directly into the is_trusted_reg() function.
+What this patch basically says is that if you destroy a scheduler with 
+pending jobs, it immediately considers them terminated with an error, 
+and returns ownership back to the driver for freeing. Then the driver 
+can decide how to handle the rest and whatever the underlying hardware 
+state is.
+
+>> Explicitly detach all jobs from their completion callbacks and free
+>> them. This makes it possible to write a sensible safe abstraction for
+>> drm_sched, without having to externally duplicate the tracking of
+>> in-flight jobs.
+>>
+>> This shouldn't regress any existing drivers, since calling
+>> drm_sched_fini() with any pending jobs is broken and this change should
+>> be a no-op if there are no pending jobs.
+> 
+> While this statement is true on its own, it kind of contradicts
+> the premise of the first paragraph.
+
+I mean right *now* it's broken, before this patch. I'm trying to make it 
+safe, but it shouldn't regress any exiting drivers since if they trigger 
+this code path they are broken today.
+
+> 
+>> Signed-off-by: Asahi Lina <lina@asahilina.net>
+>> ---
+>>   drivers/gpu/drm/scheduler/sched_main.c | 32 ++++++++++++++++++++++++++++++--
+>>   1 file changed, 30 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/scheduler/sched_main.c b/drivers/gpu/drm/scheduler/sched_main.c
+>> index 1f3bc3606239..a4da4aac0efd 100644
+>> --- a/drivers/gpu/drm/scheduler/sched_main.c
+>> +++ b/drivers/gpu/drm/scheduler/sched_main.c
+>> @@ -1186,10 +1186,38 @@ EXPORT_SYMBOL(drm_sched_init);
+>>   void drm_sched_fini(struct drm_gpu_scheduler *sched)
+>>   {
+>>   	struct drm_sched_entity *s_entity;
+>> +	struct drm_sched_job *s_job, *tmp;
+>>   	int i;
+>>   
+>> -	if (sched->thread)
+>> -		kthread_stop(sched->thread);
+>> +	if (!sched->thread)
+>> +		return;
+>> +
+>> +	/*
+>> +	 * Stop the scheduler, detaching all jobs from their hardware callbacks
+>> +	 * and cleaning up complete jobs.
+>> +	 */
+>> +	drm_sched_stop(sched, NULL);
+>> +
+>> +	/*
+>> +	 * Iterate through the pending job list and free all jobs.
+>> +	 * This assumes the driver has either guaranteed jobs are already stopped, or that
+>> +	 * otherwise it is responsible for keeping any necessary data structures for
+>> +	 * in-progress jobs alive even when the free_job() callback is called early (e.g. by
+>> +	 * putting them in its own queue or doing its own refcounting).
+>> +	 */
+>> +	list_for_each_entry_safe(s_job, tmp, &sched->pending_list, list) {
+>> +		spin_lock(&sched->job_list_lock);
+>> +		list_del_init(&s_job->list);
+>> +		spin_unlock(&sched->job_list_lock);
+>> +
+>> +		dma_fence_set_error(&s_job->s_fence->finished, -ESRCH);
+>> +		drm_sched_fence_finished(s_job->s_fence);
+> 
+> I'd imagine it's better to rebase this on top of drm-misc-next where
+> drm_sched_fence_finished() takes one more parameter--the error.
+
+Ah, sure! I can do that.
+
+> 
+>> +
+>> +		WARN_ON(s_job->s_fence->parent);
+>> +		sched->ops->free_job(s_job);
+>> +	}
+>> +
+>> +	kthread_stop(sched->thread);
+>>   
+>>   	for (i = DRM_SCHED_PRIORITY_COUNT - 1; i >= DRM_SCHED_PRIORITY_MIN; i--) {
+>>   		struct drm_sched_rq *rq = &sched->sched_rq[i];
+>>
+> 
+> Conceptually I don't mind this patch--I see what it is trying to achieve,
+> but technically, we want the driver to detect GPU removal and return shared
+> resources back, such as "jobs", which DRM is also aware of.
+
+I think you missed the context of why I'm doing this, so in short: my 
+use case (like Xe's) involves using a separate drm_sched instance *per 
+file* since these queues are scheduled directly by the firmware. So this 
+isn't about GPU removal, but rather about a GPU context going away while 
+jobs are in flight (e.g. the process got killed). We want that to 
+quickly kill the "DRM view" of the world, including signaling all the 
+fences with an error and freeing resources like the scheduler itself.
+
+In the case of this particular GPU, there is no known way to actively 
+and synchronously abort GPU jobs, so we need to let them run to 
+completion (or failure), but we don't want that to block process cleanup 
+and freeing a bunch of high-level resources. The driver is architected 
+roughly along the lines of a firmware abstraction layer that maps to the 
+firmware shared memory structures, and then a layer on top that 
+implements the DRM view. When a process gets killed, the DRM side (which 
+includes the scheduler, etc.) gets torn down immediately, and it makes 
+sense to handle this cleanup inside drm_sched since it already has a 
+view into what jobs are in flight. Otherwise, I would have to duplicate 
+job tracking in the driver (actually worse: in the Rust abstraction for 
+safety), which doesn't make much sense.
+
+But what I *do* have in the driver is tracking of the firmware 
+structures. So when the drm_sched gets torn down and all the jobs 
+killed, the underlying firmware jobs do run to completion, and the 
+resources they use are all cleaned up after that (it's all reference 
+counted). The primitive involved here is that in-flight firmware jobs 
+are assigned an event completion slot, and that keeps a reference to 
+them from a global array until the events fire and all the jobs are 
+known to have completed. This keeps things memory-safe, since we 
+absolutely cannot free/destroy firmware structures while they are in use 
+(otherwise the firmware crashes, which is fatal on these GPUs - requires 
+a full system reboot to recover).
+
+In practice, with the VM map model that we use, what ends up happening 
+when a process gets killed is that all the user objects for in-flight 
+jobs get unmapped, which usually causes the GPU hardware (not firmware) 
+to fault. This then triggers early termination of jobs anyway via the 
+firmware fault recovery flow. But even that takes some short amount of 
+time, and by then all the drm_sched stuff is long gone and we're just 
+dealing with the in-flight firmware stuff.
+
+> In the case where we're initiating the tear, we should notify the driver that
+> we're about to forget jobs (resources), so that it knows to return them back
+> or that it shouldn't notify us for them (since we've notified we're forgetting them.)
+
+That contradicts Christian's comment. I tried to document that (after 
+this patch) the scheduler no longer cares about hw fences and whether 
+they are signaled or not after it's destroyed, and I got a strongly 
+worded NAK for it. Sooo... which is it? Is it okay for drivers not to 
+signal the hw fence after a scheduler teardown, or not?
+
+But really, I don't see a use case for an explicit "about to forget job" 
+callback. The job free callback already serves the purpose of telling 
+the driver to clean up resources associated with a job. If it wants to 
+synchronously abort things there, it could easily take over its own 
+fence signaling and do something with the underlying stuff if the fence 
+is not signaled yet.
+
+In my case, since the driver is written in Rust and free_job() just maps 
+to the destructor (Drop impl), that just ends up freeing a bunch of 
+memory and other objects, and I don't particularly care about the state 
+of the firmware side any more after that. The flow is the same whether 
+it was a successful job completion, a failure, or an early destruction 
+due to the drm_sched getting torn down.
+
+> (Note also that in this latter case, traditionally, the device would be reset,
+> so that we can guarantee that it has forgotten all shared resources which
+> we are to tear up. This is somewhat more complicated with GPUs, thus the method
+> pointed out above.)
+
+Yeah, in the firmware scheduling case we can't do this at all unless the 
+firmware has an explicit teardown/forget op (which I'm not aware of) and 
+a full GPU reset isn't something we can do either. Hence we just let the 
+underlying jobs complete. In practice they tend to die pretty quickly 
+anyway once all the buffers are unmapped.
+
+~~ Lina
+
