@@ -2,752 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96C4C755055
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 20:27:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC43A755057
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 20:28:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229986AbjGPS1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Jul 2023 14:27:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37954 "EHLO
+        id S229687AbjGPS2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Jul 2023 14:28:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229877AbjGPS1G (ORCPT
+        with ESMTP id S229450AbjGPS2R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Jul 2023 14:27:06 -0400
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27563E5D;
-        Sun, 16 Jul 2023 11:27:04 -0700 (PDT)
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36GIHWLm032465;
-        Sun, 16 Jul 2023 11:26:57 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=pfpt0220; bh=SoB2sI7LlSvmbnOCRZlyQ90tlYCHs2IMIDMrqPyyHhM=;
- b=UWA30rZBzTSBi9MtXKk4ZDq0Psa0hJkiF/ARZ1HxHFrH1TiheQI037OvX8J9Is0VfpnK
- 3+/T8Lgl+zr99TiXnmE5E681T8HVW3dOPEMU40/urG5QrzGTreybgnZoc0dnwS1Jp0mK
- guDN57pOCA4k7zm9HuLq5LBLUgnCIpl9ctli+Yhf/lmYbrd1uf2ftePRguFXI02ZQU5/
- C0GwzBUl6M7+XV8pCUrmnUCVoWPsrxSpqeYJ2YP7OLJ0qbm66CQViEpWNE46RUwaU9+S
- L71ZqpTWIr6A0UGSwdacG5JpaWv1+I3I5D4R2itREVeAcP4WxhZFTH8Z5GvOi9Mxmvom 4g== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3rus6dau0y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Sun, 16 Jul 2023 11:26:57 -0700
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 16 Jul
- 2023 11:26:55 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Sun, 16 Jul 2023 11:26:55 -0700
-Received: from localhost.localdomain (unknown [10.28.36.166])
-        by maili.marvell.com (Postfix) with ESMTP id 359D95E6869;
-        Sun, 16 Jul 2023 11:26:51 -0700 (PDT)
-From:   Suman Ghosh <sumang@marvell.com>
-To:     <sgoutham@marvell.com>, <gakula@marvell.com>,
-        <sbhatta@marvell.com>, <hkelam@marvell.com>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Suman Ghosh <sumang@marvell.com>
-Subject: [net-next PATCH V2] octeontx2-af: Install TC filter rules in hardware based on priority
-Date:   Sun, 16 Jul 2023 23:56:49 +0530
-Message-ID: <20230716182649.2467419-1-sumang@marvell.com>
-X-Mailer: git-send-email 2.25.1
+        Sun, 16 Jul 2023 14:28:17 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE0041B1
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 11:28:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 363F260DFF
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 18:28:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16C58C433C7;
+        Sun, 16 Jul 2023 18:28:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1689532093;
+        bh=TvSLpSoyWHgy9Op/xWVPjCIyr4yFCkIKFdtCM5zapDA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=j4UTepLBcgQjpmKzy8qyTMVTz0M5JN4EgwuH4PPMsaaagVtPYAGNzOHQrER/Buddy
+         D8BBmlTmdQskdtGrD/nM1hG8GWqfItj2R4DWroeH7UBLsEQlmejUlSDGko6mG9szV/
+         X4zQ9UAHFagv5NPNblONUXaPNAi7Jr/03ltwgtiI=
+Date:   Sun, 16 Jul 2023 20:28:10 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Luca Boccassi <bluca@debian.org>
+Cc:     Daniel =?iso-8859-1?Q?P=2E_Berrang=E9?= <berrange@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>, lennart@poettering.net,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v2] x86/boot: add .sbat section to the bzImage
+Message-ID: <2023071643-broiler-level-afbf@gregkh>
+References: <2023071229-dusk-repacking-da3a@gregkh>
+ <CAMw=ZnSmZTBs+bJsQ_Y2CVO8K3OTuHOZDKW4cbxKpGbo4Vgs7Q@mail.gmail.com>
+ <2023071226-crafty-deviator-12e2@gregkh>
+ <CAMw=ZnRjnxWnmoFuw2prxFS55vAGQ1hpfKeHYFfG5Oa0LB_jYA@mail.gmail.com>
+ <2023071233-empirical-overturn-744c@gregkh>
+ <CAMw=ZnRRviBNi_LK9VOSUV9PNHe3jurUcLfgLpbTOsp_eE4WyA@mail.gmail.com>
+ <2023071350-specked-botanist-6ba8@gregkh>
+ <CAMw=ZnQZ9ds3xsa2AZv_F13dB6rR4XzGPrBjJHSga1oU5xRezQ@mail.gmail.com>
+ <2023071552-quilt-tranquil-b7bf@gregkh>
+ <CAMw=ZnROWgDOiAr1iikTWa7Qm81HoE17NuEdLt8hwGnkKSnoCg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: 5Yw8iaAGPvAZmjxzuYgddnys9u-vwWDC
-X-Proofpoint-ORIG-GUID: 5Yw8iaAGPvAZmjxzuYgddnys9u-vwWDC
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-16_05,2023-07-13_01,2023-05-22_02
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMw=ZnROWgDOiAr1iikTWa7Qm81HoE17NuEdLt8hwGnkKSnoCg@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As of today, hardware does not support installing tc filter
-rules based on priority. This patch adds support to install
-the hardware rules based on priority. The final hardware rules
-will not be dependent on rule installation order, it will be strictly
-priority based, same as software.
+On Sun, Jul 16, 2023 at 06:41:04PM +0100, Luca Boccassi wrote:
+> On Sat, 15 Jul 2023 at 07:52, Greg KH <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Fri, Jul 14, 2023 at 01:29:20AM +0100, Luca Boccassi wrote:
+> > > On Thu, 13 Jul 2023 at 07:09, Greg KH <gregkh@linuxfoundation.org> wrote:
+> > > >
+> > > > On Wed, Jul 12, 2023 at 10:50:45PM +0100, Luca Boccassi wrote:
+> > > > > > Who is going to be responsible for determining that this number needs to
+> > > > > > be updated?
+> > > > >
+> > > > > Most likely those who understand the problem space - largely the group
+> > > > > of people maintaining the EFI stack, with various inputs, I imagine.
+> > > > > That's how it currently works for various bootloaders.
+> > > >
+> > > > We need specifics and to have people agree to do this, otherwise, again,
+> > > > this patch is useless.
+> > >
+> > > Not really, as this is about mechanism, not process.
+> >
+> > And this right here is why everyone is both so mad at this patch from
+> > our side, and so confused about patch from the developer's side.
+> >
+> > To think that "let's add a security canary to the kernel image" is
+> > anything other than a process issue, shows a lack of understanding about
+> > exactly how the kernel is released, how the existing kernel security
+> > response team works, and who does any of this work.  To ignore that
+> > means that there is no way in the world this can ever be accepted.
+> 
+> This _question_ was about mechanism, not process. As already
+> mentioned, nobody asked you to sign up for any extra work.
 
-Signed-off-by: Suman Ghosh <sumang@marvell.com>
----
-Changes since v1:
-- Rebased the patch on top of current 'main' branch
+And that is the disconnect.  To think that this magic "security canary
+number" is somehow not going to affect my work is not correct.  See
+below for details...
 
- .../net/ethernet/marvell/octeontx2/af/mbox.h  |   9 +-
- .../marvell/octeontx2/af/rvu_npc_fs.c         |   9 +-
- .../marvell/octeontx2/af/rvu_switch.c         |   6 +-
- .../marvell/octeontx2/nic/otx2_common.h       |  11 +-
- .../marvell/octeontx2/nic/otx2_devlink.c      |   1 -
- .../marvell/octeontx2/nic/otx2_ethtool.c      |   1 +
- .../marvell/octeontx2/nic/otx2_flows.c        |   2 +
- .../ethernet/marvell/octeontx2/nic/otx2_tc.c  | 313 +++++++++++++-----
- 8 files changed, 248 insertions(+), 104 deletions(-)
+> > > > > > How long will this feature have to be maintained?
+> > > > >
+> > > > > Until something else supplants EFI, I'd imagine
+> > > >
+> > > > So 40+ years, great, who is going to fund that?
+> > >
+> > > Who funds EFI work?
+> >
+> > UEFI the spec is funded by various companies (Intel, et-all).  So you
+> > are saying that these companies also need to do this development too?
+> > Have you got them to agree to this?  If so, great, let's get their
+> > signed-off-by on it please.
+> >
+> > Otherwise you all are saying "someone else will do all of this process
+> > work", which frankly, is totally insulting to those of us who _do_ do
+> > all of the process work for security issues and kernel releases.
+> 
+> Nobody asked you to do any process work.
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-index eba307eee2b2..ed66c5989102 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-@@ -235,7 +235,7 @@ M(NPC_GET_KEX_CFG,	  0x600c, npc_get_kex_cfg,			\
- M(NPC_INSTALL_FLOW,	  0x600d, npc_install_flow,			       \
- 				  npc_install_flow_req, npc_install_flow_rsp)  \
- M(NPC_DELETE_FLOW,	  0x600e, npc_delete_flow,			\
--				  npc_delete_flow_req, msg_rsp)		\
-+				  npc_delete_flow_req, npc_delete_flow_rsp)		\
- M(NPC_MCAM_READ_ENTRY,	  0x600f, npc_mcam_read_entry,			\
- 				  npc_mcam_read_entry_req,		\
- 				  npc_mcam_read_entry_rsp)		\
-@@ -1491,6 +1491,8 @@ struct npc_install_flow_req {
- 	u8  vtag0_op;
- 	u16 vtag1_def;
- 	u8  vtag1_op;
-+	/* old counter value */
-+	u16 cntr_val;
- };
- 
- struct npc_install_flow_rsp {
-@@ -1506,6 +1508,11 @@ struct npc_delete_flow_req {
- 	u8 all; /* PF + VFs */
- };
- 
-+struct npc_delete_flow_rsp {
-+	struct mbox_msghdr hdr;
-+	u16 cntr_val;
-+};
-+
- struct npc_mcam_read_entry_req {
- 	struct mbox_msghdr hdr;
- 	u16 entry;	 /* MCAM entry to read */
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
-index 952319453701..9c365cc3e736 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
-@@ -1192,7 +1192,7 @@ static int npc_install_flow(struct rvu *rvu, int blkaddr, u16 target,
- 	write_req.enable_entry = (u8)enable;
- 	/* if counter is available then clear and use it */
- 	if (req->set_cntr && rule->has_cntr) {
--		rvu_write64(rvu, blkaddr, NPC_AF_MATCH_STATX(rule->cntr), 0x00);
-+		rvu_write64(rvu, blkaddr, NPC_AF_MATCH_STATX(rule->cntr), req->cntr_val);
- 		write_req.set_cntr = 1;
- 		write_req.cntr = rule->cntr;
- 	}
-@@ -1407,12 +1407,13 @@ static int npc_delete_flow(struct rvu *rvu, struct rvu_npc_mcam_rule *rule,
- 
- int rvu_mbox_handler_npc_delete_flow(struct rvu *rvu,
- 				     struct npc_delete_flow_req *req,
--				     struct msg_rsp *rsp)
-+				     struct npc_delete_flow_rsp *rsp)
- {
- 	struct npc_mcam *mcam = &rvu->hw->mcam;
- 	struct rvu_npc_mcam_rule *iter, *tmp;
- 	u16 pcifunc = req->hdr.pcifunc;
- 	struct list_head del_list;
-+	int blkaddr;
- 
- 	INIT_LIST_HEAD(&del_list);
- 
-@@ -1428,6 +1429,10 @@ int rvu_mbox_handler_npc_delete_flow(struct rvu *rvu,
- 				list_move_tail(&iter->list, &del_list);
- 			/* single rule */
- 			} else if (req->entry == iter->entry) {
-+				blkaddr = rvu_get_blkaddr(rvu, BLKTYPE_NPC, 0);
-+				if (blkaddr)
-+					rsp->cntr_val = rvu_read64(rvu, blkaddr,
-+								   NPC_AF_MATCH_STATX(iter->cntr));
- 				list_move_tail(&iter->list, &del_list);
- 				break;
- 			}
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_switch.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_switch.c
-index 592b317f4637..854045ed3b06 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_switch.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_switch.c
-@@ -158,6 +158,7 @@ void rvu_switch_enable(struct rvu *rvu)
- 	struct npc_mcam_alloc_entry_req alloc_req = { 0 };
- 	struct npc_mcam_alloc_entry_rsp alloc_rsp = { 0 };
- 	struct npc_delete_flow_req uninstall_req = { 0 };
-+	struct npc_delete_flow_rsp uninstall_rsp = { 0 };
- 	struct npc_mcam_free_entry_req free_req = { 0 };
- 	struct rvu_switch *rswitch = &rvu->rswitch;
- 	struct msg_rsp rsp;
-@@ -197,7 +198,7 @@ void rvu_switch_enable(struct rvu *rvu)
- uninstall_rules:
- 	uninstall_req.start = rswitch->start_entry;
- 	uninstall_req.end =  rswitch->start_entry + rswitch->used_entries - 1;
--	rvu_mbox_handler_npc_delete_flow(rvu, &uninstall_req, &rsp);
-+	rvu_mbox_handler_npc_delete_flow(rvu, &uninstall_req, &uninstall_rsp);
- 	kfree(rswitch->entry2pcifunc);
- free_entries:
- 	free_req.all = 1;
-@@ -209,6 +210,7 @@ void rvu_switch_enable(struct rvu *rvu)
- void rvu_switch_disable(struct rvu *rvu)
- {
- 	struct npc_delete_flow_req uninstall_req = { 0 };
-+	struct npc_delete_flow_rsp uninstall_rsp = { 0 };
- 	struct npc_mcam_free_entry_req free_req = { 0 };
- 	struct rvu_switch *rswitch = &rvu->rswitch;
- 	struct rvu_hwinfo *hw = rvu->hw;
-@@ -250,7 +252,7 @@ void rvu_switch_disable(struct rvu *rvu)
- 	uninstall_req.start = rswitch->start_entry;
- 	uninstall_req.end =  rswitch->start_entry + rswitch->used_entries - 1;
- 	free_req.all = 1;
--	rvu_mbox_handler_npc_delete_flow(rvu, &uninstall_req, &rsp);
-+	rvu_mbox_handler_npc_delete_flow(rvu, &uninstall_req, &uninstall_rsp);
- 	rvu_mbox_handler_npc_mcam_free_entry(rvu, &free_req, &rsp);
- 	rswitch->used_entries = 0;
- 	kfree(rswitch->entry2pcifunc);
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-index ba8091131ec0..67715fc906b5 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-@@ -360,13 +360,8 @@ struct otx2_flow_config {
- 	struct list_head	flow_list;
- 	u32			dmacflt_max_flows;
- 	u16                     max_flows;
--};
--
--struct otx2_tc_info {
--	/* hash table to store TC offloaded flows */
--	struct rhashtable		flow_table;
--	struct rhashtable_params	flow_ht_params;
--	unsigned long			*tc_entries_bitmap;
-+	struct list_head	flow_list_tc;
-+	bool			ntuple;
- };
- 
- struct dev_hw_ops {
-@@ -491,7 +486,6 @@ struct otx2_nic {
- 	/* NPC MCAM */
- 	struct otx2_flow_config	*flow_cfg;
- 	struct otx2_mac_table	*mac_table;
--	struct otx2_tc_info	tc_info;
- 
- 	u64			reset_count;
- 	struct work_struct	reset_task;
-@@ -1063,7 +1057,6 @@ int otx2_init_tc(struct otx2_nic *nic);
- void otx2_shutdown_tc(struct otx2_nic *nic);
- int otx2_setup_tc(struct net_device *netdev, enum tc_setup_type type,
- 		  void *type_data);
--int otx2_tc_alloc_ent_bitmap(struct otx2_nic *nic);
- /* CGX/RPM DMAC filters support */
- int otx2_dmacflt_get_max_cnt(struct otx2_nic *pf);
- int otx2_dmacflt_add(struct otx2_nic *pf, const u8 *mac, u32 bit_pos);
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_devlink.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_devlink.c
-index 63ef7c41d18d..4e1130496573 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_devlink.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_devlink.c
-@@ -41,7 +41,6 @@ static int otx2_dl_mcam_count_set(struct devlink *devlink, u32 id,
- 		return 0;
- 
- 	otx2_alloc_mcam_entries(pfvf, ctx->val.vu16);
--	otx2_tc_alloc_ent_bitmap(pfvf);
- 
- 	return 0;
- }
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c
-index c47d91da32dc..9efcec549834 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c
-@@ -764,6 +764,7 @@ static int otx2_set_rxnfc(struct net_device *dev, struct ethtool_rxnfc *nfc)
- 	struct otx2_nic *pfvf = netdev_priv(dev);
- 	int ret = -EOPNOTSUPP;
- 
-+	pfvf->flow_cfg->ntuple = ntuple;
- 	switch (nfc->cmd) {
- 	case ETHTOOL_SRXFH:
- 		ret = otx2_set_rss_hash_opts(pfvf, nfc);
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_flows.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_flows.c
-index 2d7713a1a153..4762dbea64a1 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_flows.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_flows.c
-@@ -276,6 +276,7 @@ int otx2vf_mcam_flow_init(struct otx2_nic *pfvf)
- 
- 	flow_cfg = pfvf->flow_cfg;
- 	INIT_LIST_HEAD(&flow_cfg->flow_list);
-+	INIT_LIST_HEAD(&flow_cfg->flow_list_tc);
- 	flow_cfg->max_flows = 0;
- 
- 	return 0;
-@@ -298,6 +299,7 @@ int otx2_mcam_flow_init(struct otx2_nic *pf)
- 		return -ENOMEM;
- 
- 	INIT_LIST_HEAD(&pf->flow_cfg->flow_list);
-+	INIT_LIST_HEAD(&pf->flow_cfg->flow_list_tc);
- 
- 	/* Allocate bare minimum number of MCAM entries needed for
- 	 * unicast and ntuple filters.
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-index 5e56b6c3e60a..32d59d6a1256 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-@@ -34,9 +34,8 @@ struct otx2_tc_flow_stats {
- };
- 
- struct otx2_tc_flow {
--	struct rhash_head		node;
-+	struct list_head		list;
- 	unsigned long			cookie;
--	unsigned int			bitpos;
- 	struct rcu_head			rcu;
- 	struct otx2_tc_flow_stats	stats;
- 	spinlock_t			lock; /* lock for stats */
-@@ -44,31 +43,10 @@ struct otx2_tc_flow {
- 	u16				entry;
- 	u16				leaf_profile;
- 	bool				is_act_police;
-+	u32				prio;
-+	struct npc_install_flow_req	req;
- };
- 
--int otx2_tc_alloc_ent_bitmap(struct otx2_nic *nic)
--{
--	struct otx2_tc_info *tc = &nic->tc_info;
--
--	if (!nic->flow_cfg->max_flows)
--		return 0;
--
--	/* Max flows changed, free the existing bitmap */
--	kfree(tc->tc_entries_bitmap);
--
--	tc->tc_entries_bitmap =
--			kcalloc(BITS_TO_LONGS(nic->flow_cfg->max_flows),
--				sizeof(long), GFP_KERNEL);
--	if (!tc->tc_entries_bitmap) {
--		netdev_err(nic->netdev,
--			   "Unable to alloc TC flow entries bitmap\n");
--		return -ENOMEM;
--	}
--
--	return 0;
--}
--EXPORT_SYMBOL(otx2_tc_alloc_ent_bitmap);
--
- static void otx2_get_egress_burst_cfg(struct otx2_nic *nic, u32 burst,
- 				      u32 *burst_exp, u32 *burst_mantissa)
- {
-@@ -707,8 +685,117 @@ static int otx2_tc_prepare_flow(struct otx2_nic *nic, struct otx2_tc_flow *node,
- 	return otx2_tc_parse_actions(nic, &rule->action, req, f, node);
- }
- 
--static int otx2_del_mcam_flow_entry(struct otx2_nic *nic, u16 entry)
-+static void otx2_destroy_tc_flow_list(struct otx2_nic *pfvf)
-+{
-+	struct otx2_flow_config *flow_cfg = pfvf->flow_cfg;
-+	struct otx2_tc_flow *iter, *tmp;
-+
-+	if (!(pfvf->flags & OTX2_FLAG_MCAM_ENTRIES_ALLOC))
-+		return;
-+
-+	list_for_each_entry_safe(iter, tmp, &flow_cfg->flow_list_tc, list) {
-+		list_del(&iter->list);
-+		kfree(iter);
-+		flow_cfg->nr_flows--;
-+	}
-+}
-+
-+static struct otx2_tc_flow *otx2_tc_get_entry_by_cookie(struct otx2_flow_config *flow_cfg,
-+							unsigned long cookie)
-+{
-+	struct otx2_tc_flow *tmp;
-+
-+	list_for_each_entry(tmp, &flow_cfg->flow_list_tc, list) {
-+		if (tmp->cookie == cookie)
-+			return tmp;
-+	}
-+
-+	return NULL;
-+}
-+
-+static struct otx2_tc_flow *otx2_tc_get_entry_by_index(struct otx2_flow_config *flow_cfg,
-+						       int index)
-+{
-+	struct otx2_tc_flow *tmp;
-+	int i = 0;
-+
-+	list_for_each_entry(tmp, &flow_cfg->flow_list_tc, list) {
-+		if (i == index)
-+			return tmp;
-+		i++;
-+	}
-+
-+	return NULL;
-+}
-+
-+static void otx2_tc_del_from_flow_list(struct otx2_flow_config *flow_cfg,
-+				       struct otx2_tc_flow *node)
- {
-+	struct otx2_tc_flow *tmp;
-+	struct list_head *pos, *n;
-+
-+	list_for_each_safe(pos, n, &flow_cfg->flow_list_tc) {
-+		tmp = list_entry(pos, struct otx2_tc_flow, list);
-+		if (node == tmp) {
-+			list_del(&node->list);
-+			return;
-+		}
-+	}
-+}
-+
-+static int otx2_tc_add_to_flow_list(struct otx2_flow_config *flow_cfg,
-+				    struct otx2_tc_flow *node)
-+{
-+	struct otx2_tc_flow *tmp;
-+	struct list_head *pos, *n;
-+	int index = 0;
-+
-+	/* If the flow list is empty then add the new node */
-+	if (list_empty(&flow_cfg->flow_list_tc)) {
-+		list_add(&node->list, &flow_cfg->flow_list_tc);
-+		return index;
-+	}
-+
-+	list_for_each_safe(pos, n, &flow_cfg->flow_list_tc) {
-+		tmp = list_entry(pos, struct otx2_tc_flow, list);
-+		if (node->prio < tmp->prio)
-+			break;
-+		index++;
-+	}
-+
-+	list_add(&node->list, pos->prev);
-+	return index;
-+}
-+
-+static int otx2_add_mcam_flow_entry(struct otx2_nic *nic, struct npc_install_flow_req *req)
-+{
-+	struct npc_install_flow_req *tmp_req;
-+	int err;
-+
-+	mutex_lock(&nic->mbox.lock);
-+	tmp_req = otx2_mbox_alloc_msg_npc_install_flow(&nic->mbox);
-+	if (!tmp_req) {
-+		mutex_unlock(&nic->mbox.lock);
-+		return -ENOMEM;
-+	}
-+
-+	memcpy(tmp_req, req, sizeof(struct npc_install_flow_req));
-+	/* Send message to AF */
-+	err = otx2_sync_mbox_msg(&nic->mbox);
-+	if (err) {
-+		netdev_err(nic->netdev, "Failed to install MCAM flow entry %d\n",
-+			   req->entry);
-+		mutex_unlock(&nic->mbox.lock);
-+		return -EFAULT;
-+	}
-+
-+	mutex_unlock(&nic->mbox.lock);
-+	return 0;
-+}
-+
-+static int otx2_del_mcam_flow_entry(struct otx2_nic *nic, u16 entry, u16 *cntr_val)
-+{
-+	struct npc_delete_flow_rsp __maybe_unused *rsp;
- 	struct npc_delete_flow_req *req;
- 	int err;
- 
-@@ -729,22 +816,106 @@ static int otx2_del_mcam_flow_entry(struct otx2_nic *nic, u16 entry)
- 		mutex_unlock(&nic->mbox.lock);
- 		return -EFAULT;
- 	}
-+
-+	if (cntr_val) {
-+		rsp = (struct npc_delete_flow_rsp *)otx2_mbox_get_rsp(&nic->mbox.mbox,
-+								      0, &req->hdr);
-+		*cntr_val = rsp->cntr_val;
-+	}
-+
- 	mutex_unlock(&nic->mbox.lock);
-+	return 0;
-+}
-+
-+static int otx2_tc_update_mcam_table_del_req(struct otx2_nic *nic,
-+					     struct otx2_flow_config *flow_cfg,
-+					     struct otx2_tc_flow *node)
-+{
-+	struct list_head *pos, *n;
-+	struct otx2_tc_flow *tmp;
-+	int i = 0, index = 0;
-+	u16 cntr_val;
-+
-+	/* Find and delete the entry from the list and re-install
-+	 * all the entries from beginning to the index of the
-+	 * deleted entry to higher mcam indexes.
-+	 */
-+	list_for_each_safe(pos, n, &flow_cfg->flow_list_tc) {
-+		tmp = list_entry(pos, struct otx2_tc_flow, list);
-+		if (node == tmp) {
-+			list_del(&tmp->list);
-+			break;
-+		}
-+
-+		otx2_del_mcam_flow_entry(nic, tmp->entry, &cntr_val);
-+		tmp->entry++;
-+		tmp->req.entry = tmp->entry;
-+		tmp->req.cntr_val = cntr_val;
-+		index++;
-+	}
-+
-+	list_for_each_safe(pos, n, &flow_cfg->flow_list_tc) {
-+		if (i == index)
-+			break;
-+
-+		tmp = list_entry(pos, struct otx2_tc_flow, list);
-+		otx2_add_mcam_flow_entry(nic, &tmp->req);
-+		i++;
-+	}
- 
- 	return 0;
- }
- 
-+static int otx2_tc_update_mcam_table_add_req(struct otx2_nic *nic,
-+					     struct otx2_flow_config *flow_cfg,
-+					     struct otx2_tc_flow *node)
-+{
-+	int mcam_idx = flow_cfg->max_flows - flow_cfg->nr_flows - 1;
-+	struct otx2_tc_flow *tmp;
-+	int list_idx, i;
-+	u16 cntr_val;
-+
-+	/* Find the index of the entry(list_idx) whose priority
-+	 * is greater than the new entry and re-install all
-+	 * the entries from beginning to list_idx to higher
-+	 * mcam indexes.
-+	 */
-+	list_idx = otx2_tc_add_to_flow_list(flow_cfg, node);
-+	for (i = 0; i < list_idx; i++) {
-+		tmp = otx2_tc_get_entry_by_index(flow_cfg, i);
-+		if (!tmp)
-+			return -ENOMEM;
-+
-+		otx2_del_mcam_flow_entry(nic, tmp->entry, &cntr_val);
-+		tmp->entry = flow_cfg->flow_ent[mcam_idx];
-+		tmp->req.entry = tmp->entry;
-+		tmp->req.cntr_val = cntr_val;
-+		otx2_add_mcam_flow_entry(nic, &tmp->req);
-+		mcam_idx++;
-+	}
-+
-+	return mcam_idx;
-+}
-+
-+static int otx2_tc_update_mcam_table(struct otx2_nic *nic,
-+				     struct otx2_flow_config *flow_cfg,
-+				     struct otx2_tc_flow *node,
-+				     bool add_req)
-+{
-+	if (add_req)
-+		return otx2_tc_update_mcam_table_add_req(nic, flow_cfg, node);
-+
-+	return otx2_tc_update_mcam_table_del_req(nic, flow_cfg, node);
-+}
-+
- static int otx2_tc_del_flow(struct otx2_nic *nic,
- 			    struct flow_cls_offload *tc_flow_cmd)
- {
- 	struct otx2_flow_config *flow_cfg = nic->flow_cfg;
--	struct otx2_tc_info *tc_info = &nic->tc_info;
- 	struct otx2_tc_flow *flow_node;
- 	int err;
- 
--	flow_node = rhashtable_lookup_fast(&tc_info->flow_table,
--					   &tc_flow_cmd->cookie,
--					   tc_info->flow_ht_params);
-+	flow_node = otx2_tc_get_entry_by_cookie(flow_cfg, tc_flow_cmd->cookie);
- 	if (!flow_node) {
- 		netdev_err(nic->netdev, "tc flow not found for cookie 0x%lx\n",
- 			   tc_flow_cmd->cookie);
-@@ -772,16 +943,10 @@ static int otx2_tc_del_flow(struct otx2_nic *nic,
- 		mutex_unlock(&nic->mbox.lock);
- 	}
- 
--	otx2_del_mcam_flow_entry(nic, flow_node->entry);
--
--	WARN_ON(rhashtable_remove_fast(&nic->tc_info.flow_table,
--				       &flow_node->node,
--				       nic->tc_info.flow_ht_params));
-+	otx2_del_mcam_flow_entry(nic, flow_node->entry, NULL);
-+	otx2_tc_update_mcam_table(nic, flow_cfg, flow_node, false);
- 	kfree_rcu(flow_node, rcu);
--
--	clear_bit(flow_node->bitpos, tc_info->tc_entries_bitmap);
- 	flow_cfg->nr_flows--;
--
- 	return 0;
- }
- 
-@@ -790,15 +955,14 @@ static int otx2_tc_add_flow(struct otx2_nic *nic,
- {
- 	struct netlink_ext_ack *extack = tc_flow_cmd->common.extack;
- 	struct otx2_flow_config *flow_cfg = nic->flow_cfg;
--	struct otx2_tc_info *tc_info = &nic->tc_info;
- 	struct otx2_tc_flow *new_node, *old_node;
- 	struct npc_install_flow_req *req, dummy;
--	int rc, err;
-+	int rc, err, mcam_idx;
- 
- 	if (!(nic->flags & OTX2_FLAG_TC_FLOWER_SUPPORT))
- 		return -ENOMEM;
- 
--	if (bitmap_full(tc_info->tc_entries_bitmap, flow_cfg->max_flows)) {
-+	if (flow_cfg->nr_flows == flow_cfg->max_flows) {
- 		NL_SET_ERR_MSG_MOD(extack,
- 				   "Free MCAM entry not available to add the flow");
- 		return -ENOMEM;
-@@ -810,6 +974,7 @@ static int otx2_tc_add_flow(struct otx2_nic *nic,
- 		return -ENOMEM;
- 	spin_lock_init(&new_node->lock);
- 	new_node->cookie = tc_flow_cmd->cookie;
-+	new_node->prio = tc_flow_cmd->common.prio;
- 
- 	memset(&dummy, 0, sizeof(struct npc_install_flow_req));
- 
-@@ -820,12 +985,11 @@ static int otx2_tc_add_flow(struct otx2_nic *nic,
- 	}
- 
- 	/* If a flow exists with the same cookie, delete it */
--	old_node = rhashtable_lookup_fast(&tc_info->flow_table,
--					  &tc_flow_cmd->cookie,
--					  tc_info->flow_ht_params);
-+	old_node = otx2_tc_get_entry_by_cookie(flow_cfg, tc_flow_cmd->cookie);
- 	if (old_node)
- 		otx2_tc_del_flow(nic, tc_flow_cmd);
- 
-+	mcam_idx = otx2_tc_update_mcam_table(nic, flow_cfg, new_node, true);
- 	mutex_lock(&nic->mbox.lock);
- 	req = otx2_mbox_alloc_msg_npc_install_flow(&nic->mbox);
- 	if (!req) {
-@@ -836,11 +1000,8 @@ static int otx2_tc_add_flow(struct otx2_nic *nic,
- 
- 	memcpy(&dummy.hdr, &req->hdr, sizeof(struct mbox_msghdr));
- 	memcpy(req, &dummy, sizeof(struct npc_install_flow_req));
--
--	new_node->bitpos = find_first_zero_bit(tc_info->tc_entries_bitmap,
--					       flow_cfg->max_flows);
- 	req->channel = nic->hw.rx_chan_base;
--	req->entry = flow_cfg->flow_ent[flow_cfg->max_flows - new_node->bitpos - 1];
-+	req->entry = flow_cfg->flow_ent[mcam_idx];
- 	req->intf = NIX_INTF_RX;
- 	req->set_cntr = 1;
- 	new_node->entry = req->entry;
-@@ -850,26 +1011,18 @@ static int otx2_tc_add_flow(struct otx2_nic *nic,
- 	if (rc) {
- 		NL_SET_ERR_MSG_MOD(extack, "Failed to install MCAM flow entry");
- 		mutex_unlock(&nic->mbox.lock);
--		kfree_rcu(new_node, rcu);
- 		goto free_leaf;
- 	}
--	mutex_unlock(&nic->mbox.lock);
- 
--	/* add new flow to flow-table */
--	rc = rhashtable_insert_fast(&nic->tc_info.flow_table, &new_node->node,
--				    nic->tc_info.flow_ht_params);
--	if (rc) {
--		otx2_del_mcam_flow_entry(nic, req->entry);
--		kfree_rcu(new_node, rcu);
--		goto free_leaf;
--	}
-+	mutex_unlock(&nic->mbox.lock);
-+	memcpy(&new_node->req, req, sizeof(struct npc_install_flow_req));
- 
--	set_bit(new_node->bitpos, tc_info->tc_entries_bitmap);
- 	flow_cfg->nr_flows++;
--
- 	return 0;
- 
- free_leaf:
-+	otx2_tc_del_from_flow_list(flow_cfg, new_node);
-+	kfree_rcu(new_node, rcu);
- 	if (new_node->is_act_police) {
- 		mutex_lock(&nic->mbox.lock);
- 
-@@ -896,16 +1049,13 @@ static int otx2_tc_add_flow(struct otx2_nic *nic,
- static int otx2_tc_get_flow_stats(struct otx2_nic *nic,
- 				  struct flow_cls_offload *tc_flow_cmd)
- {
--	struct otx2_tc_info *tc_info = &nic->tc_info;
- 	struct npc_mcam_get_stats_req *req;
- 	struct npc_mcam_get_stats_rsp *rsp;
- 	struct otx2_tc_flow_stats *stats;
- 	struct otx2_tc_flow *flow_node;
- 	int err;
- 
--	flow_node = rhashtable_lookup_fast(&tc_info->flow_table,
--					   &tc_flow_cmd->cookie,
--					   tc_info->flow_ht_params);
-+	flow_node = otx2_tc_get_entry_by_cookie(nic->flow_cfg, tc_flow_cmd->cookie);
- 	if (!flow_node) {
- 		netdev_info(nic->netdev, "tc flow not found for cookie %lx",
- 			    tc_flow_cmd->cookie);
-@@ -1053,12 +1203,20 @@ static int otx2_setup_tc_block_ingress_cb(enum tc_setup_type type,
- 					  void *type_data, void *cb_priv)
- {
- 	struct otx2_nic *nic = cb_priv;
-+	bool ntuple;
- 
- 	if (!tc_cls_can_offload_and_chain0(nic->netdev, type_data))
- 		return -EOPNOTSUPP;
- 
-+	ntuple = !!(nic->netdev->features & NETIF_F_NTUPLE);
- 	switch (type) {
- 	case TC_SETUP_CLSFLOWER:
-+		if (ntuple) {
-+			netdev_warn(nic->netdev,
-+				    "Can't install TC flower offload rule when NTUPLE is active");
-+			return -EOPNOTSUPP;
-+		}
-+
- 		return otx2_setup_tc_cls_flower(nic, type_data);
- 	case TC_SETUP_CLSMATCHALL:
- 		return otx2_setup_tc_ingress_matchall(nic, type_data);
-@@ -1143,18 +1301,8 @@ int otx2_setup_tc(struct net_device *netdev, enum tc_setup_type type,
- }
- EXPORT_SYMBOL(otx2_setup_tc);
- 
--static const struct rhashtable_params tc_flow_ht_params = {
--	.head_offset = offsetof(struct otx2_tc_flow, node),
--	.key_offset = offsetof(struct otx2_tc_flow, cookie),
--	.key_len = sizeof(((struct otx2_tc_flow *)0)->cookie),
--	.automatic_shrinking = true,
--};
--
- int otx2_init_tc(struct otx2_nic *nic)
- {
--	struct otx2_tc_info *tc = &nic->tc_info;
--	int err;
--
- 	/* Exclude receive queue 0 being used for police action */
- 	set_bit(0, &nic->rq_bmap);
- 
-@@ -1164,25 +1312,12 @@ int otx2_init_tc(struct otx2_nic *nic)
- 		return -EINVAL;
- 	}
- 
--	err = otx2_tc_alloc_ent_bitmap(nic);
--	if (err)
--		return err;
--
--	tc->flow_ht_params = tc_flow_ht_params;
--	err = rhashtable_init(&tc->flow_table, &tc->flow_ht_params);
--	if (err) {
--		kfree(tc->tc_entries_bitmap);
--		tc->tc_entries_bitmap = NULL;
--	}
--	return err;
-+	return 0;
- }
- EXPORT_SYMBOL(otx2_init_tc);
- 
- void otx2_shutdown_tc(struct otx2_nic *nic)
- {
--	struct otx2_tc_info *tc = &nic->tc_info;
--
--	kfree(tc->tc_entries_bitmap);
--	rhashtable_destroy(&tc->flow_table);
-+	otx2_destroy_tc_flow_list(nic);
- }
- EXPORT_SYMBOL(otx2_shutdown_tc);
--- 
-2.25.1
+Great, so who will be doing this process work?
 
+Seriously, we have to know this before we could accept this type of
+thing.  To not do so would mean this value means nothing.
+
+> > > > > > We have a plethora of kernel changes in our history to learn from here,
+> > > > > > please do so and show how this will affect us going forward based on our
+> > > > > > past, otherwise we have no way of knowing how any of this is going to
+> > > > > > work.
+> > > > >
+> > > > > I am not aware of anything similar enough, but please do point those
+> > > > > out if you are.
+> > > >
+> > > > Audit our past history and document when the number would have changed
+> > > > please.
+> > >
+> > > Sure, where do I send the invoice?
+> >
+> > If you are not willing to take the time to determine how this proposed
+> > change will affect the kernel developers and infrastructure by doing
+> > some modeling based on our past history, then we have no reason to even
+> > consider accepting this change as you are stating that you have no idea
+> > how it will affect us.
+> 
+> There's no need for that to tell you how this will affect you: it will
+> not. Every now and then you'll receive a one-liner patch to apply.
+> What's so terrible about that?
+
+And who will be sending that to me?  For what releases?  For how long
+will they be agreeing to do this work for?  How will it be tracked?
+What will they be using to determine when the number will be changed?
+How will they know it should be changed?
+
+None of this has been answered, and that's the real issue here.  This
+"magic number" is saying it is going to reflect some specific "security
+issue" yet no one is saying how those issues are going to be determined,
+or anything else about it.
+
+Again, as I've repeated numerous times, tell us how often this number
+would have changed in the past X years to give us an idea of how you
+will be changing it going forward.  To not provide any of this means
+this patch adding this magic number means nothing as no one knows what
+it actually means.
+
+thanks,
+
+greg k-h
