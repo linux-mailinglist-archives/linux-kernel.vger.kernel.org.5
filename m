@@ -2,110 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A98D47550F6
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 21:25:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA7437550FF
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 21:30:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229999AbjGPTZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Jul 2023 15:25:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47710 "EHLO
+        id S229468AbjGPTaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Jul 2023 15:30:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbjGPTZz (ORCPT
+        with ESMTP id S229774AbjGPTac (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Jul 2023 15:25:55 -0400
-Received: from mail-vk1-xa33.google.com (mail-vk1-xa33.google.com [IPv6:2607:f8b0:4864:20::a33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6959D98
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 12:25:54 -0700 (PDT)
-Received: by mail-vk1-xa33.google.com with SMTP id 71dfb90a1353d-48165cd918dso973033e0c.0
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 12:25:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689535553; x=1692127553;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=SSAuqt+s4WpqnMkPR0UJ8Xay9OvKHBk6xAfxVDPkGGQ=;
-        b=GCfnrMXYxp6tDgtZAagG8EKzfgEUkVMqLXnYtg5sUR5EMzDvuVV7JWq8MfFipjIqwp
-         rQWsJLvKS3lRUTIoET8y9ScSg8YJkueRQBIMPFKiK5Ht8RCUrUCsCLc30sRywisgwuYa
-         nLb0CvZurNsuecbNXH5SJbeg2xgpy3fZtgWFcqmbw0/QSt6XTJrrtiNePq+1g15mwoq3
-         WKeQ2nYtg8zriWqSdiThh58oCfl9O7kfNJ9WM0qNKbHZOhFWomvLC5fXwqNHmGT/3QDv
-         wuUdHkzD/emtDWaae5ODNqd9uqDeVuBXwmdmZwhAIZK+jJ5OMfLVLDFs9WzLS02quVZp
-         LSSQ==
+        Sun, 16 Jul 2023 15:30:32 -0400
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1134810C8;
+        Sun, 16 Jul 2023 12:30:23 -0700 (PDT)
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-51e344efd75so7839383a12.1;
+        Sun, 16 Jul 2023 12:30:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689535553; x=1692127553;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SSAuqt+s4WpqnMkPR0UJ8Xay9OvKHBk6xAfxVDPkGGQ=;
-        b=cd+sMzbxARxtQrVC3fEQllS7RVN+rFl/hA9+3dDfxEKxOqHXYQu1IdUBhll7styJTM
-         Aw0AiRSkm8ijTjxZj7Rr3BNKztH35s5lFaSLYddRl1hzGYanmBB5NpNlsYa0E7wu467H
-         HZKsUbsS1+anMUpvOVawI2B5Gw5fKLXaTzJn/MXOqpsA6nC0zVS/Padr8FV9TAc2K82X
-         nmxdP9UrJyhS4fUPcqvQAyjC3ZdwWENz3amsML3HQixfOiVoSLoDZK5Mg23LsKErE3JA
-         Lf4Ulr1PYGKmTJIY1GYSB0xed+i6hJZRog1MSksG4hzhKafjV4j3VmJh5jZykQ/kJ7oq
-         658g==
-X-Gm-Message-State: ABy/qLY1Um3m8sUe7KIhFvhOgVLRUeNtSq0xUSapRwKFDMwI0q9Ku2Wg
-        3tqpmsxKCzhqwC4QhkZ81A5/i/JYk91g1sSPFBjYVYRWNQc7091FNhc=
-X-Google-Smtp-Source: APBJJlHvGNUdX+Ovjs7gI07fwd/iRKlv+A+q7ObU+aBtLpCouxGSumprEh+gumIKhAED0yGvDqX1C9BaAGBFEGGRinY=
-X-Received: by 2002:a1f:db86:0:b0:481:90c6:d059 with SMTP id
- s128-20020a1fdb86000000b0048190c6d059mr855078vkg.2.1689535553336; Sun, 16 Jul
- 2023 12:25:53 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689535822; x=1692127822;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EYgTh4UluVTTQv27Q2ko0QEvRe4/XHgdd+kzU79fnVQ=;
+        b=EJIQTv0K5PWMAg95jSR91rtam0EY5dRXgeOr6suNt3qran9oY+c/OJOA85mNIWEZpc
+         Ft1qpb+f5rneKZQIGSnFng2TwsF05ml74x8nIin8UaCer+w3WRXqIkruiEfQAx3oA+mV
+         o+xTo/7PGU6TmEuOk0r0MdVV5OVUOpM6JhLWDaPxeHfG6no7E6l9TygE9HFEQ2siWnUK
+         N+6BFzlvV0NTjdOLLTK2k7UD+DH9s8BdjHtPX0rUGD8c8u+1G5FDuEE19vXmkN8HdsZB
+         wjF+xqBDYLi3PUWSeCtCfhT/IDAaGh/W3FhhZsdP7auB99y55B7gZK77yPIGEXN1yhW9
+         zxMQ==
+X-Gm-Message-State: ABy/qLaCoeltpg2FVicjCAGpMU9porgbPM4Bj7jgRX8XpYNoko78w592
+        IPfdaxF6dN9WFB5dPyA4uCPXi9udr+OBarsX
+X-Google-Smtp-Source: APBJJlFbFBmIatukk4wR0sEnnn06fxBdrEH6eEw3rDI6U9lb/4+hi3X9YdulVLhtSzmkSly9eU7itw==
+X-Received: by 2002:a05:6402:524e:b0:51d:cf7b:c9f0 with SMTP id t14-20020a056402524e00b0051dcf7bc9f0mr10707316edd.12.1689535821755;
+        Sun, 16 Jul 2023 12:30:21 -0700 (PDT)
+Received: from costa-tp.bos2.lab ([2a00:a040:1a3:c11b:3ae6:1732:e587:a81f])
+        by smtp.gmail.com with ESMTPSA id q6-20020aa7cc06000000b00521953ce6e0sm119846edt.93.2023.07.16.12.30.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 16 Jul 2023 12:30:20 -0700 (PDT)
+From:   Costa Shulyupin <costa.shul@redhat.com>
+To:     linux-rt-users@vger.kernel.org,
+        Daniel Bristot de Oliveira <bristot@kernel.org>
+Cc:     Costa Shulyupin <costa.shul@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        linux-kernel@vger.kernel.org (open list:TRACING),
+        linux-trace-kernel@vger.kernel.org (open list:TRACING),
+        linux-doc@vger.kernel.org (open list:DOCUMENTATION)
+Subject: [PATCH] tracing/timerlat: Add latency threshold
+Date:   Sun, 16 Jul 2023 22:30:00 +0300
+Message-ID: <20230716193000.231406-1-costa.shul@redhat.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Mon, 17 Jul 2023 00:55:42 +0530
-Message-ID: <CA+G9fYs5n6aobE04YZy3Qy1ZMhAvH6-uQRqidgFmSoei91iW8g@mail.gmail.com>
-Subject: stable-rc 6.1: x86: clang build failed - block/blk-cgroup.c:1237:6:
- error: variable 'ret' is used uninitialized whenever 'if' condition is true
-To:     linux-stable <stable@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        clang-built-linux <llvm@lists.linux.dev>,
-        lkft-triage@lists.linaro.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Anders Roxell <anders.roxell@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linux stable-rc 6.1 build failed x86 and i386 with clang.
+The timerlat tracer generates a huge amount of traces.
+This affects the performance of the system and
+the delays we are trying to measure with timerlat.
+However, we are often interested in spikes of delay
+rather than small values.
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+The patch effectively filters out irrelevant traces
+before they are generated and produces more reliable
+data.
 
-Build log:
------------
-block/blk-cgroup.c:1237:6: error: variable 'ret' is used uninitialized
-whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
-        if (init_blkcg_llists(blkcg))
-            ^~~~~~~~~~~~~~~~~~~~~~~~
-block/blk-cgroup.c:1287:9: note: uninitialized use occurs here
-        return ret;
-               ^~~
-block/blk-cgroup.c:1237:2: note: remove the 'if' if its condition is
-always false
-        if (init_blkcg_llists(blkcg))
-        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-block/blk-cgroup.c:1222:33: note: initialize the variable 'ret' to
-silence this warning
-        struct cgroup_subsys_state *ret;
-                                       ^
-                                        = NULL
-1 error generated.
+This patch helped to debug a very big problem
+and find this solution:
+https://lore.kernel.org/lkml/20221208075604.811710-1-junxiao.chang@intel.com/
 
-Links,
- - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.1.y-sanity/build/v6.1.38-599-g5071846d06ef/testrun/18327562/suite/build/test/clang-lkftconfig/history/
- - https://storage.tuxsuite.com/public/linaro/lkft/builds/2SfFoWj9NmKWHRijR0hcoXGjLhr/
+Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
+---
+ Documentation/trace/timerlat-tracer.rst |  1 +
+ kernel/trace/trace_osnoise.c            | 17 +++++++++++++++++
+ 2 files changed, 18 insertions(+)
 
- tuxmake \
- --runtime podman --target-arch x86_64 \
- --toolchain clang-16 \
- --kconfig https://storage.tuxsuite.com/public/linaro/lkft/builds/2SfFoWj9NmKWHRijR0hcoXGjLhr/config
-\
- LLVM=1 LLVM_IAS=1
+diff --git a/Documentation/trace/timerlat-tracer.rst b/Documentation/trace/timerlat-tracer.rst
+index 53a56823e903..71b1c63ca403 100644
+--- a/Documentation/trace/timerlat-tracer.rst
++++ b/Documentation/trace/timerlat-tracer.rst
+@@ -68,6 +68,7 @@ directory. The timerlat configs are:
+ 
+  - cpus: CPUs at which a timerlat thread will execute.
+  - timerlat_period_us: the period of the timerlat thread.
++ - timerlat_threshold_ns: filter out timer latencies below the threshold
+  - stop_tracing_us: stop the system tracing if a
+    timer latency at the *irq* context higher than the configured
+    value happens. Writing 0 disables this option.
+diff --git a/kernel/trace/trace_osnoise.c b/kernel/trace/trace_osnoise.c
+index bd0d01d00fb9..43284a1e8bea 100644
+--- a/kernel/trace/trace_osnoise.c
++++ b/kernel/trace/trace_osnoise.c
+@@ -346,6 +346,7 @@ static struct osnoise_data {
+ 	u64	stop_tracing_total;	/* stop trace in the final operation (report/thread) */
+ #ifdef CONFIG_TIMERLAT_TRACER
+ 	u64	timerlat_period;	/* timerlat period */
++	u64	timerlat_threshold_ns;
+ 	u64	print_stack;		/* print IRQ stack if total > */
+ 	int	timerlat_tracer;	/* timerlat tracer */
+ #endif
+@@ -358,6 +359,7 @@ static struct osnoise_data {
+ #ifdef CONFIG_TIMERLAT_TRACER
+ 	.print_stack			= 0,
+ 	.timerlat_period		= DEFAULT_TIMERLAT_PERIOD,
++	.timerlat_threshold_ns		= 0,
+ 	.timerlat_tracer		= 0,
+ #endif
+ };
+@@ -597,6 +599,10 @@ static void trace_timerlat_sample(struct timerlat_sample *sample)
+ 	struct osnoise_instance *inst;
+ 	struct trace_buffer *buffer;
+ 
++	if (osnoise_data.timerlat_threshold_ns &&
++	    sample->timer_latency < osnoise_data.timerlat_threshold_ns)
++		return;
++
+ 	rcu_read_lock();
+ 	list_for_each_entry_rcu(inst, &osnoise_instances, list) {
+ 		buffer = inst->tr->array_buffer.buffer;
+@@ -2663,6 +2669,11 @@ static struct trace_min_max_param timerlat_period = {
+ 	.min	= &timerlat_min_period,
+ };
+ 
++static struct trace_min_max_param timerlat_threshold = {
++	.lock	= &interface_lock,
++	.val	= &osnoise_data.timerlat_threshold_ns,
++};
++
+ static const struct file_operations timerlat_fd_fops = {
+ 	.open		= timerlat_fd_open,
+ 	.read		= timerlat_fd_read,
+@@ -2759,6 +2770,12 @@ static int init_timerlat_tracefs(struct dentry *top_dir)
+ 	if (!tmp)
+ 		return -ENOMEM;
+ 
++	tmp = tracefs_create_file("timerlat_threshold_ns", TRACE_MODE_WRITE,
++				  top_dir, &timerlat_threshold,
++				  &trace_min_max_fops);
++	if (!tmp)
++		return -ENOMEM;
++
+ 	retval = osnoise_create_cpu_timerlat_fd(top_dir);
+ 	if (retval)
+ 		return retval;
+-- 
+2.41.0
 
---
-Linaro LKFT
-https://lkft.linaro.org
