@@ -2,93 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7E3575575F
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 23:23:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AA93755764
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 23:27:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230288AbjGPVW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Jul 2023 17:22:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49614 "EHLO
+        id S230363AbjGPV0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Jul 2023 17:26:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbjGPVW4 (ORCPT
+        with ESMTP id S229469AbjGPV0s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Jul 2023 17:22:56 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 959061B4
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 14:22:55 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-cae0ad435b6so4149562276.0
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 14:22:55 -0700 (PDT)
+        Sun, 16 Jul 2023 17:26:48 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72A721B5;
+        Sun, 16 Jul 2023 14:26:47 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-993d1f899d7so569658466b.2;
+        Sun, 16 Jul 2023 14:26:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689542575; x=1692134575;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1689542806; x=1692134806;
+        h=content-transfer-encoding:cc:to:content-language:subject:from
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ehHFd2i1D4cdxDgZXxDtxev4s/OtFUIBV9R8JH1GczI=;
-        b=TUANb1xdwg4ApfDT153qsO6QCznb5nxHBKEhNirqqCNXAE2sRkK2qbvW49vqxIsAj2
-         o2d0ZFedzmRDzUrDHmn0LcAsYOg6z8ZPD+RX6Vqg3LesLA6K8FweiqJ6RiNjb507yS7J
-         mdzOgTJygiJIrBrFtehvMOuu6AhkSN0LytONWTRC2sSOQeK9jfjBPxGgmtKU3x5wVAuk
-         pGIeeLly8iAwYCG5ts7WPiV6nwFJ9jkDCjgu5w3cFHMpcmzUjp6oCkVNsHui7JD8NlYY
-         /naJzYS/oBC+CDcx7XIUGGVbOkDCjT84b8RociW+eusq3Wx7Uvgx9u/SPNpIoF3bfmLH
-         gjcg==
+        bh=r9fUriBNhyXlFqH896tCKceodeOZncM96JEwNdZlGmY=;
+        b=nnIYBAC8QvA7YAUa4Vzzqe5yckDs8Z498G+x/Kq3QIoULdgv0aoANmELok8XkG84Bf
+         WSuw46lDKWrE2RdDOuuZAAJbgNLSkKtFIMVxifvZOzVPtxyxZckD+qnNtf/Lqjlh1Rjv
+         F2eBNx8tqsL/juliwMDHuOrTtPA+Z23xBMGBIHANbHzzjplW6itXOin70Qotxg9YZRoj
+         peNLcGuhkEvsNYudvkFcDYHYMkn39canCPVSFkLZ7vBqGyE7FAtYkPuBhosJCk+TiDvl
+         BXCtwA9MnaMLcnTeSYVmz+BcCtyqUePF7cZCKiuhUu1wtXBOvdLs0be6usDS5+RQtxG+
+         mC4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689542575; x=1692134575;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ehHFd2i1D4cdxDgZXxDtxev4s/OtFUIBV9R8JH1GczI=;
-        b=Ln65yZt8X8elEFmynpJGps4rDZ6ZcYFkI74Gp9BXnN+MpEe2zBFlqnxiYjbbOCsS5/
-         ZCz9+y9csyaas98+6wiLSO6Tzxfk6dVUqrRvzdGuR2stwdrmJHKHO5DaNaYPdLsvCT5z
-         zpyFhR2rUY97O4RkmlWSaCG6AA3FYBuSBBJdukYzdK2ZlLfNMKYLykwlYm8hjq38ECM4
-         u58flWP4Cw2OvvyFH9QrBNa599dwgklxhbEqeWS2GIUXX3lsYeOcjVBXLx622lyP1i6U
-         gDd/o5WbBZX6XDPsfS/kZsPE5UlFpwV+Qmt0tnLGbO2/Qpvp4oeItE4qNBzQh7PvEp8r
-         eOhg==
-X-Gm-Message-State: ABy/qLZwIm4/hq5nLo5Ld62Op5bCy9iCkammoC1D6fA75KxLiIJ5NIk/
-        O6/BD1PviuS5A09XAwz7b4BSBKHvLLwsBSEYVye3WA==
-X-Google-Smtp-Source: APBJJlErNg8Oc3PPMT7Mk+Lfx5QAC/OC92g4sKDGGNguhpK28xKdYtC3K+IjcJQWqeu8+LMrged+MnE1lM++5T7GyW0=
-X-Received: by 2002:a0d:eec3:0:b0:577:3fb4:f245 with SMTP id
- x186-20020a0deec3000000b005773fb4f245mr12710224ywe.19.1689542574879; Sun, 16
- Jul 2023 14:22:54 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689542806; x=1692134806;
+        h=content-transfer-encoding:cc:to:content-language:subject:from
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=r9fUriBNhyXlFqH896tCKceodeOZncM96JEwNdZlGmY=;
+        b=fFdMo9dZv0//DzQLFpkZ0UQPxHyjPGlONeyOKCNWkWc1IctUYeEx71TCnIL3e5g/ER
+         qG3Zs/2CVJ0b88RPxxwrAO+hvJD/+EFQEK9lqgu33gALNqInbk3xOPxBDrCza3hF+R04
+         SRUmdFFemlv/dz6tzWZJwd1jFS5oJHes9SydAOwbBHuy2fVzdashh+LKvcJRqpPNX8ZP
+         ZQMmpBY9ZEcHDChzjV9djgcaBmQHshSL9A+4Rt74QS52Yc3jii2F+BeimmabYFKp9PWd
+         73Tm1EEZ32UqziVKW7nHLpsvsg5ndwOD2LiSBTk4t/q9IlsRQ4zSWadKNm14EJ0QgiQe
+         qHXw==
+X-Gm-Message-State: ABy/qLbZFPQEU1uvYqzKWhu9F35eN89jMoeYUG4LlWqRc99oJrnp7rWF
+        iAFbQj+TAKwMCjVZ8LL65ys=
+X-Google-Smtp-Source: APBJJlFB+YxCHXbGHtsl4KGzq9AcRZqCuCujF7+0ct5y7H2DgRNPXht5p00ijnzk8gso+SpqYa/jAw==
+X-Received: by 2002:a17:906:7397:b0:994:18c4:3303 with SMTP id f23-20020a170906739700b0099418c43303mr10188827ejl.18.1689542805589;
+        Sun, 16 Jul 2023 14:26:45 -0700 (PDT)
+Received: from [192.168.4.4] (host-95-237-109-246.retail.telecomitalia.it. [95.237.109.246])
+        by smtp.gmail.com with ESMTPSA id la16-20020a170906ad9000b0098d2261d189sm8498147ejb.19.2023.07.16.14.26.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 16 Jul 2023 14:26:45 -0700 (PDT)
+Message-ID: <0414e2e4-a17d-3435-e9e7-35b110233a6d@gmail.com>
+Date:   Sun, 16 Jul 2023 23:26:43 +0200
 MIME-Version: 1.0
-References: <20230707095415.1449376-1-arnd@kernel.org> <20230707095415.1449376-3-arnd@kernel.org>
- <CACRpkdbiDUomH8HLkk_jyJZYc+mEmRaFL8-JasDmd=ooSB62Qw@mail.gmail.com> <1c0119cc-7787-4f95-870e-da1c5894625d@app.fastmail.com>
-In-Reply-To: <1c0119cc-7787-4f95-870e-da1c5894625d@app.fastmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sun, 16 Jul 2023 23:22:43 +0200
-Message-ID: <CACRpkdYVQa-p_tA5reK1Biniz6xf9gWm3K8JKCbjr4fO3=GHZQ@mail.gmail.com>
-Subject: Re: [PATCH 3/4] dummycon: limit Arm console size hack to footbridge
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>,
-        dri-devel@lists.freedesktop.org, Ard Biesheuvel <ardb@kernel.org>,
-        Helge Deller <deller@gmx.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+From:   Andrea Collamati <andrea.collamati@gmail.com>
+Subject: =?UTF-8?Q?=5bPATCH_v2_0/2=5d_add_mcp4728_I2C_DAC_driver=e2=80=8b?=
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        William Breathitt Gray <william.gray@linaro.org>,
+        Angelo Dureghello <angelo.dureghello@timesys.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "andrea.collamati@gmail.com" <andrea.collamati@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 7, 2023 at 4:28=E2=80=AFPM Arnd Bergmann <arnd@arndb.de> wrote:
+Dear Krzysztof
 
-> Since you have already spent the time to build and test a kernel with
-> this patch, can you do one more test here and check the text size
-> reported in the atags on this machine and the actual text sizes you
-> get from both vgacon and cyber2000fb?
+I release a V2 version. I hope I have understood all your requests.
+See below.
 
-Heh I tested this then walked out of the office for vacation.
+> 2. Please use scripts/get_maintainers.pl to get a list of necessary
+> people and lists to CC (and consider --no-git-fallback argument). It
+> might happen, that command when run on an older kernel, gives you
+> outdated entries. Therefore please be sure you base your patches on
+> recent Linux kernel.
+>
+I was using branch master git://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git but
 
-But I can put a note in my calendar to test it when I return to
-my equipment!
+I saw it was too old. I switched to branch testing.
+> 6. mcp or MCP? What is this? Proper title is missing... also no
+> description.
+>
+I don't know whether using small o capital letters. Usually manufacturers use capital letter to identify the component
+but kernel drivers use lowercase in code.
+>
+> Shouldn't this binding be just merged with existing mcp4725? Are you
+> sure it's not similar device, IOW, are you sure you do not have vref supply?
+>
+Unfortunately they are not that similar. MCP4728 has two vref choices:
 
-Yours,
-Linus Walleij
+- Use Vdd (power supply) as Vref
+
+- User Internal 2.048 V Vref source.
+
+
+Andrea Collamati (2):
+  dt-bindings: iio: dac: add mcp4728.yaml
+  iio: add mcp4728 I2C DAC driver
+
+ .../bindings/iio/dac/microchip,mcp4728.yaml   | 42 +++++++++
+ drivers/iio/dac/mcp4728.c                     | 93 +++++++++----------
+ 2 files changed, 86 insertions(+), 49 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/iio/dac/microchip,mcp4728.yaml
+
+-- 
+2.34.1
+
