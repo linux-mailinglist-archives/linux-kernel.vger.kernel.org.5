@@ -2,148 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EE887558A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 01:33:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87C4B7558A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 01:33:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229793AbjGPXXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Jul 2023 19:23:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44952 "EHLO
+        id S230092AbjGPXdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Jul 2023 19:33:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbjGPXXt (ORCPT
+        with ESMTP id S229461AbjGPXdl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Jul 2023 19:23:49 -0400
-Received: from mail-oa1-x2e.google.com (mail-oa1-x2e.google.com [IPv6:2001:4860:4864:20::2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6EBEDF;
-        Sun, 16 Jul 2023 16:23:48 -0700 (PDT)
-Received: by mail-oa1-x2e.google.com with SMTP id 586e51a60fabf-1b03ec2015fso2583171fac.3;
-        Sun, 16 Jul 2023 16:23:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689549828; x=1692141828;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=4yytGRS+CQEs/+jmTTJDYXQvpm4WXNvWJVJlTlZI5mA=;
-        b=Crx1m28LQXNW6sUjuoefYItFZqB17pkTPm4jxOJjC/vduKQ4vJq4DX/dX/hOiodeXn
-         rVU9GFQE/MoJnHzyLc0tYbZ6kWDrUfFS8XuWrEXnNb4mIsUj8QFGfXiZRHkomSb0v+YC
-         PCACzzF38jeoebqIwspeCnv/Bzg7sSso3LjyGuzo0vnvgFfVExjqSZH6QJ/8FmWy5tNd
-         7XIj8Kmh7yLSl9WbmJ1MKuFuDLR8QVIUgaBx8yxiJUYk5EwOE8S9cGV7cwfrIPBZUy4E
-         AwG+JQ+7eRKzm43HRCuH9KPhkj68LhW+lz9+hqajI9N0qgpLuisJcbX515J3jGng3uMn
-         uSqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689549828; x=1692141828;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4yytGRS+CQEs/+jmTTJDYXQvpm4WXNvWJVJlTlZI5mA=;
-        b=AbZXLguK1rizV0RTIS79ssLVIepQ0WBeqUSvJabodrQiM9UhT2DT+b556Wh/aVmWva
-         pQlP64L7oP9ssA6nUwligSfBnxuiHqRb1EWw1zaCu45h3UCtcxrJOk5fKlcMX8UUXeoK
-         n7PftjN8/12d2MaN4OWlX1fb43Np4ADjOTEbvPkkDwdocQuXwqz85WePXMtfukRhWPMY
-         NV3V4qOpKBpoth+zxmE1/TkoJthPNl8P8RdAI6G/yynymCW7EEy6apgy3TWH4pffhRWE
-         7jmshT2YYHhWzAZqYU4QUOMxLhHryZJhQWoPaI121usZNfAVZlQ6heJQatUOM8yxdw3S
-         S5ZQ==
-X-Gm-Message-State: ABy/qLb5t6cM4H9gWpLwE3ZTb+uN1KipuGk7J0UdHn8si3IJxkk0v6qV
-        wROIMvUCq0vbGo5uLZoOHRAB65DsgfJiyxe6Nxo=
-X-Google-Smtp-Source: APBJJlGZ7YeKMy93BxUuY4vsM9u1/SiDFU1/qhK9def0dOjmsTNnvyjS6Y4fygTqj7MniyyvAjIT55RHZAHzOsiqRZo=
-X-Received: by 2002:a05:6808:f87:b0:3a0:6949:c884 with SMTP id
- o7-20020a0568080f8700b003a06949c884mr10602961oiw.34.1689549827645; Sun, 16
- Jul 2023 16:23:47 -0700 (PDT)
+        Sun, 16 Jul 2023 19:33:41 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C6A3D1;
+        Sun, 16 Jul 2023 16:33:40 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9840160EE9;
+        Sun, 16 Jul 2023 23:33:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2567C43395;
+        Sun, 16 Jul 2023 23:33:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689550419;
+        bh=Ja9IYjqwNzmeISofK1hhZQkSnGHcbD0jYQgPpeuxanI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=KPedHonJ+1xUSpZC+ZJSrhK2jIwbYYKVbiPMKpYSv4IL0MiL6siOsXnqw+/xzA7+q
+         lfvdor5Cbw2vewFsyp34mOQLyiQtZTC2tusnrYIhlc1EGfBd/+VxBh3fD67SMuNLso
+         pV8S+REUQIE5/NFGCVLMhr7hi0oSOGkNvw+eRDAwHYuu+cQ5hTV1aaTsjWeN8tE5na
+         PC2lUeWK6tLqdR5XvGETNXi56UsoXGWCsUoiTsh3GLekmJ/1nkcJIJt5yhpPZKGHjn
+         wWeaZJuNM5gJWC9ksjdpXZcc64tIX21zGaxmoEqcxpnF9N2zgZMwMl44QfnJ0l9tY9
+         RtrRsd8lABtWg==
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-51cff235226so8115760a12.0;
+        Sun, 16 Jul 2023 16:33:38 -0700 (PDT)
+X-Gm-Message-State: ABy/qLZQxX+wY34Wd2i2cDJEr7tqrDOxYVIygcV0osdI2EW85AbD1vNk
+        v8F3BDK0xL30BJtT1WkO1pjEqgOm4wDo0OeRbcw=
+X-Google-Smtp-Source: APBJJlEcBvXJxvd+KrBJuk0Vi8K5mZ3tcQx3JefAFzqKUbu1AoQrNc3PHaoeV7oErHoCHJMGuTnhuYfeFD4/gBGxpk0=
+X-Received: by 2002:a05:6402:524e:b0:51d:cf7b:c9f0 with SMTP id
+ t14-20020a056402524e00b0051dcf7bc9f0mr11056350edd.12.1689550417039; Sun, 16
+ Jul 2023 16:33:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <a35a5881c3280bd7a4fd1943a8b40b890e3bf280.1689316697.git.jamie.bainbridge@gmail.com>
- <30997.1689374702@famine>
-In-Reply-To: <30997.1689374702@famine>
-From:   Jamie Bainbridge <jamie.bainbridge@gmail.com>
-Date:   Mon, 17 Jul 2023 09:23:36 +1000
-Message-ID: <CAAvyFNgzqQgG7BEMd69h572ORtVqg_TuSND44sH20F6VTAk9tQ@mail.gmail.com>
-Subject: Re: [PATCH] tcp: Add memory pressure flag to sockstat
-To:     Jay Vosburgh <jay.vosburgh@canonical.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20230702025708.784106-1-guoren@kernel.org> <20230704164003.GB83892@hirez.programming.kicks-ass.net>
+ <CAJF2gTTc0Gyo=K-0dCW6wu7q=Wq34hgTB69qJ7VSF_KAgKhavA@mail.gmail.com> <20230710080152.GA3028865@hirez.programming.kicks-ass.net>
+In-Reply-To: <20230710080152.GA3028865@hirez.programming.kicks-ass.net>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Mon, 17 Jul 2023 07:33:25 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTTt23iSDG_m4ihPhXhYDrz3Xnih=KGLx_ayBLbzPqaTaQ@mail.gmail.com>
+Message-ID: <CAJF2gTTt23iSDG_m4ihPhXhYDrz3Xnih=KGLx_ayBLbzPqaTaQ@mail.gmail.com>
+Subject: Re: [PATCH] riscv: entry: Fixup do_trap_break from kernel side
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     arnd@arndb.de, palmer@rivosinc.com, tglx@linutronix.de,
+        luto@kernel.org, conor.dooley@microchip.com, heiko@sntech.de,
+        jszhang@kernel.org, lazyparser@gmail.com, falcon@tinylab.org,
+        chenhuacai@kernel.org, apatel@ventanamicro.com,
+        atishp@atishpatra.org, mark.rutland@arm.com, bjorn@kernel.org,
+        palmer@dabbelt.com, bjorn@rivosinc.com, daniel.thompson@linaro.org,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, stable@vger.kernel.org,
+        Guo Ren <guoren@linux.alibaba.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 15 Jul 2023 at 08:45, Jay Vosburgh <jay.vosburgh@canonical.com> wrote:
+On Mon, Jul 10, 2023 at 4:02=E2=80=AFPM Peter Zijlstra <peterz@infradead.or=
+g> wrote:
 >
-> Jamie Bainbridge <jamie.bainbridge@gmail.com> wrote:
+> On Sun, Jul 09, 2023 at 10:30:22AM +0800, Guo Ren wrote:
+> > On Wed, Jul 5, 2023 at 12:40=E2=80=AFAM Peter Zijlstra <peterz@infradea=
+d.org> wrote:
+> > >
+> > > On Sat, Jul 01, 2023 at 10:57:07PM -0400, guoren@kernel.org wrote:
+> > > > From: Guo Ren <guoren@linux.alibaba.com>
+> > > >
+> > > > The irqentry_nmi_enter/exit would force the current context into in=
+_interrupt.
+> > > > That would trigger the kernel to dead panic, but the kdb still need=
+s "ebreak" to
+> > > > debug the kernel.
+> > > >
+> > > > Move irqentry_nmi_enter/exit to exception_enter/exit could correct =
+handle_break
+> > > > of the kernel side.
+> > >
+> > > This doesn't explain much if anything :/
+> > >
+> > > I'm confused (probably because I don't know RISC-V very well), what's
+> > > EBREAK and how does it happen?
+> > EBREAK is just an instruction of riscv which would rise breakpoint exce=
+ption.
+> >
+> >
+> > >
+> > > Specifically, if EBREAK can happen inside an local_irq_disable() regi=
+on,
+> > > then the below change is actively wrong. Any exception/interrupt that
+> > > can happen while local_irq_disable() must be treated like an NMI.
+> > When the ebreak happend out of local_irq_disable region, but
+> > __nmi_enter forces handle_break() into in_interupt() state. So how
 >
-> >When tuning a system it can be helpful to know whether the protocol is
-> >in memory pressure state or not. This can be determined by corresponding
-> >the number of pages in "net.ipv4.tcp_mem" with the current allocation,
-> >but a global variable already tracks this as the source of truth.
-> >
-> >Expose that variable in sockstat where other protocol memory usage is
-> >already reported.
-> >
-> >Add "pressure" which is 0 in normal state and 1 under pressure:
-> >
-> > # grep TCP /proc/net/sockstat
-> > TCP: inuse 5 orphan 0 tw 0 alloc 7 mem 1 pressure 0
-> >
-> > # grep TCP /proc/net/sockstat
-> > TCP: inuse 5 orphan 0 tw 0 alloc 7 mem 1 pressure 1
->
->         Isn't this already available in /proc/net/protocols?
->
-> protocol  size sockets  memory press maxhdr  slab module     cl co di ac io in de sh ss gs se re sp bi br ha uh gp em
-> [...]
-> UDP       1472      7       6   NI       0   yes  kernel      y  y  y  n  y  y  y  n  y  y  y  y  y  n  n  y  y  y  n
-> TCP       2512      5       1   no     320   yes  kernel      y  y  y  y  y  y  y  y  y  y  y  y  y  n  y  y  y  y  y
+> And why is that a problem? I think I'm missing something fundamental
+> here...
+The irqentry_nmi_enter() would force the current context to get
+in_interrupt=3Dtrue, although ebreak happens in the context which is
+in_interrupt=3Dfalse.
+A lot of checking codes, such as:
+        if (in_interrupt())
+                panic("Fatal exception in interrupt");
+It would make the kernel panic, but we don't panic; we want back to the she=
+ll.
+eg:
+echo BUG > /sys/kernel/debug/provoke-crash/DIRECT
 
-I was not aware of this, I was only looking for symbol usage of TCP
-and not the generic.
-
-This is perfect, thank you very much!
-
-Jamie
-
-> >Tested by writing a large value to global variable tcp_memory_pressure
-> >(it usually stores jiffies when memory pressure was entered) and not
-> >just by code review or editing example output.
-> >
-> >Signed-off-by: Jamie Bainbridge <jamie.bainbridge@gmail.com>
-> >---
-> > net/ipv4/proc.c | 7 ++++---
-> > 1 file changed, 4 insertions(+), 3 deletions(-)
-> >
-> >diff --git a/net/ipv4/proc.c b/net/ipv4/proc.c
-> >index eaf1d3113b62f7dc93fdc7b7c4041140ac63bf69..f4c5ced2de49d5c6d7f5d7ccdaa76c89dcf8c932 100644
-> >--- a/net/ipv4/proc.c
-> >+++ b/net/ipv4/proc.c
-> >@@ -51,16 +51,17 @@
-> > static int sockstat_seq_show(struct seq_file *seq, void *v)
-> > {
-> >       struct net *net = seq->private;
-> >-      int orphans, sockets;
-> >+      int orphans, sockets, tcp_pressure;
-> >
-> >       orphans = tcp_orphan_count_sum();
-> >       sockets = proto_sockets_allocated_sum_positive(&tcp_prot);
-> >+      tcp_pressure = READ_ONCE(tcp_memory_pressure) ? 1 : 0;
-> >
-> >       socket_seq_show(seq);
-> >-      seq_printf(seq, "TCP: inuse %d orphan %d tw %d alloc %d mem %ld\n",
-> >+      seq_printf(seq, "TCP: inuse %d orphan %d tw %d alloc %d mem %ld pressure %d\n",
-> >                  sock_prot_inuse_get(net, &tcp_prot), orphans,
-> >                  refcount_read(&net->ipv4.tcp_death_row.tw_refcount) - 1,
-> >-                 sockets, proto_memory_allocated(&tcp_prot));
-> >+                 sockets, proto_memory_allocated(&tcp_prot), tcp_pressure);
-> >       seq_printf(seq, "UDP: inuse %d mem %ld\n",
-> >                  sock_prot_inuse_get(net, &udp_prot),
-> >                  proto_memory_allocated(&udp_prot));
-> >--
-> >2.41.0
-> >
-> >
 >
-> ---
->         -Jay Vosburgh, jay.vosburgh@canonical.com
+> > about:
+> >
+> > diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
+> > index f910dfccbf5d..69f7043a98b9 100644
+> > --- a/arch/riscv/kernel/traps.c
+> > +++ b/arch/riscv/kernel/traps.c
+> > @@ -18,6 +18,7 @@
+> >  #include <linux/irq.h>
+> >  #include <linux/kexec.h>
+> >  #include <linux/entry-common.h>
+> > +#include <linux/context_tracking.h>
+> >
+> >  #include <asm/asm-prototypes.h>
+> >  #include <asm/bug.h>
+> > @@ -285,12 +286,18 @@ asmlinkage __visible __trap_section void
+> > do_trap_break(struct pt_regs *regs)
+> >                 handle_break(regs);
+> >
+> >                 irqentry_exit_to_user_mode(regs);
+> > -       } else {
+> > +       } else if (in_interrupt()){
+> >                 irqentry_state_t state =3D irqentry_nmi_enter(regs);
+> >
+> >                 handle_break(regs);
+> >
+> >                 irqentry_nmi_exit(regs, state);
+> > +       } else {
+> > +               enum ctx_state prev_state =3D exception_enter();
+> > +
+> > +               handle_break(regs);
+> > +
+> > +               exception_exit(prev_state);
+> >         }
+> >  }
+>
+> That's wrong. If you want to make it conditional, you have to look at
+> !(regs->status & SR_IE) (that's the interrupt enable flag of the
+> interrupted context, right?)
+>
+> When you hit an EBREAK when IRQs were disabled, you must be NMI like.
+>
+> But making it conditional like this makes it really hard to write a
+> handler though, it basically must assume it will be NMI contetx (because
+> it can't know) so there is no point in sometimes not doing NMI context.
+
+
+
+
+
+
+--=20
+Best Regards
+ Guo Ren
