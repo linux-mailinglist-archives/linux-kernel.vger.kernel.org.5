@@ -2,135 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24F64754CFD
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 03:09:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9DA2754D03
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 03:18:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230075AbjGPBJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 15 Jul 2023 21:09:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45586 "EHLO
+        id S230024AbjGPBSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 15 Jul 2023 21:18:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230043AbjGPBJf (ORCPT
+        with ESMTP id S229539AbjGPBSG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 15 Jul 2023 21:09:35 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18D2C271E
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 18:09:35 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AA8AA60C53
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 01:09:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6A64C433CB;
-        Sun, 16 Jul 2023 01:09:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689469774;
-        bh=ynG3uNudPw4EsmIgbd5wO/+ejwNGpxxg7axI66LyiMk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c6LZpv+XdvwV51008/a0gH39M+APPgJM1D7EOMzHvhYSMZ4+D9rHkfJmYJBPT690F
-         I3n665Knoij7AITE//UPgEmnmhA7iRcmfJegbBSEp5mz7BYNtVNLLwqy5mck6iN/q7
-         5t3JmblHrXTGgqVwEP/wr8WRgHZjjGBu2YSC2lJRRUDPLWljHtK661ebqE4RNG4Kin
-         3D2+YeCk+ylACT8MLGW6/FRiwMxULxnhCHSZsBTNlC3BekaP5OpZC6/EqQH5Pm70Ti
-         z3QbEtEwUtMhcsPLOZttOBKif81QBovz2Cvfrl/aQ3gtLvYqki3F0QTi0/PqfzK4Vu
-         FouNsEgrezM9w==
-From:   Chao Yu <chao@kernel.org>
-To:     sj@kernel.org, akpm@linux-foundation.org, damon@lists.linux.dev
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Chao Yu <chao@kernel.org>
-Subject: [PATCH 2/2] mm/mm/damon/sysfs-schemes: reduce stack usage in damon_sysfs_mk_scheme()
-Date:   Sun, 16 Jul 2023 09:09:27 +0800
-Message-Id: <20230716010927.3010606-2-chao@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230716010927.3010606-1-chao@kernel.org>
-References: <20230716010927.3010606-1-chao@kernel.org>
+        Sat, 15 Jul 2023 21:18:06 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 303D2271E;
+        Sat, 15 Jul 2023 18:18:01 -0700 (PDT)
+X-QQ-mid: bizesmtp83t1689470269tl6qvxpu
+Received: from linux-lab-host.localdomain ( [119.123.131.162])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Sun, 16 Jul 2023 09:17:48 +0800 (CST)
+X-QQ-SSF: 01200000000000D0W000000A0000000
+X-QQ-FEAT: /rrU+puPB7R3dUIHlO09/AeIT/VkiUr5cQOQzyFr2/vxxa2PE0PG2BOpgp/mr
+        +hSKy28g2oDqzqG+0la4SaV0sz4yYYw/l3wam333PAU2cl5cOoXataat8Asw1sJVTYh2CS2
+        q2sJxmdp6Fx+PDXznUTV+aFsWct1yOOQEs2w4R1rjYCZWYpwZW++yD+h6EBhmraRRd7OgBo
+        14OiYcyh2QpLK/vLvcJh0oTZt6NTkVzGHz6K/X3c95YythlyGSw/z0cVTvFrRcgv0F3p5/P
+        3WAe3tBxnsRQk7AWo5a4evzItD7KYotUcIlt3IfuGbj2ZF+2OYUNlGTFRHK52iu9dwzaFrd
+        7Dl5LYyzv3z6MAkKpvqvvz1GMSLZ0fwrdhXmbZkSpdGCtB7J42nShh3v7w2Rjm7HqZA7Nrk
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 2171079884746672651
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     w@1wt.eu
+Cc:     arnd@arndb.de, falcon@tinylab.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, thomas@t-8ch.de
+Subject: Re: [PATCH v4 00/18] tools/nolibc: shrink arch support
+Date:   Sun, 16 Jul 2023 09:17:44 +0800
+Message-Id: <20230716011744.499597-1-falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230715222658.GA27708@1wt.eu>
+References: <20230715222658.GA27708@1wt.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-struct damos_quota quota caused the stack usage of damon_sysfs_mk_scheme()
-to grow beyond the warning limit on 32-bit architectures w/ gcc.
+Hi, Willy
 
-mm/damon/sysfs-schemes.c: In function ‘damon_sysfs_mk_scheme’:
-mm/damon/sysfs-schemes.c:1526:1: warning: the frame size of 1280 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+> Hi Zhangjin,
+> 
+> On Sun, Jul 16, 2023 at 02:16:36AM +0800, Zhangjin Wu wrote:
+> > Hi, Willy, Thomas
+> > 
+> > Thanks very much for your careful review and great suggestions, now, we
+> > get v4 revision of the arch shrink series [1], it mainly include a new
+> > fixup for -O0 under gcc < 11.1.0, the stackprotector support for
+> > _start_c(), new testcases for startup code and two new test targets.
+> > 
+> > All of the tests passed or skipped (tinyconfig + few options +
+> > qemu-system) for both -Os and -O0:
+> (...)
+> 
+> First, good news, it looks OK from the nolibc-test perspective and
+> by looking at the code, so I merged all this into branch
+> 
+>   20230715-nolibc-next-1
+>
 
-Allocating dynamic memory in damon_sysfs_mk_scheme() to fix this issue.
+Thanks very much.
 
-Signed-off-by: Chao Yu <chao@kernel.org>
----
- mm/damon/sysfs-schemes.c | 29 +++++++++++++++++++----------
- 1 file changed, 19 insertions(+), 10 deletions(-)
+> Second, bad news, my preinit code doesn't build anymore due to missing
+> definitions for statx. It's built using the default method which involves
+> just including nolibc.h (and getting linux includes from the default path).
+> I could simplify it to this one-liner:
+> 
+>   $ printf "int test_stat(const char *p, struct stat *b) { return stat(p,b); }\n" |
+>     gcc -c -o test.o -xc - -nostdlib -include ./sysroot/x86/include/nolibc.h
+> 
+>   In file included from ././sysroot/x86/include/nolibc.h:98:0,
+>                    from <command-line>:32:
+>   ././sysroot/x86/include/sys.h:952:78: warning: 'struct statx' declared inside parameter list will not be visible outside of this definition or declaration
+>    int sys_statx(int fd, const char *path, int flags, unsigned int mask, struct statx *buf)
+>                                                                                 ^~~~~
+>   ././sysroot/x86/include/sys.h:962:74: warning: 'struct statx' declared inside parameter list will not be visible outside of this definition or declaration
+>    int statx(int fd, const char *path, int flags, unsigned int mask, struct statx *buf)
+>                                                                             ^~~~~
+>   ././sysroot/x86/include/sys.h: In function 'statx':
+>   ././sysroot/x86/include/sys.h:964:51: warning: passing argument 5 of 'sys_statx' from incompatible pointer type [-Wincompatible-pointer-types]
+>     return __sysret(sys_statx(fd, path, flags, mask, buf));
+>                                                      ^~~
+>   ././sysroot/x86/include/sys.h:952:5: note: expected 'struct statx *' but argument is of type 'struct statx *'
+>    int sys_statx(int fd, const char *path, int flags, unsigned int mask, struct statx *buf)
+>        ^~~~~~~~~
+>   ././sysroot/x86/include/sys.h: In function 'stat':
+>   ././sysroot/x86/include/sys.h:971:15: error: storage size of 'statx' isn't known
+>     struct statx statx;
+>                  ^~~~~
+>   ././sysroot/x86/include/sys.h:974:60: error: 'STATX_BASIC_STATS' undeclared (first use in this function)
+>     ret = __sysret(sys_statx(AT_FDCWD, path, AT_NO_AUTOMOUNT, STATX_BASIC_STATS, &statx));
+>                                                               ^~~~~~~~~~~~~~~~~
+>   ././sysroot/x86/include/sys.h:974:60: note: each undeclared identifier is reported only once for each function it appears in
+> 
+> I finally found that it's due to the lack of -Isysroot/x86/include, so
+> it used to get linux includes from those provided by glibc and these ones
+> were missing statx since packaged for an older kernel.
+>
 
-diff --git a/mm/damon/sysfs-schemes.c b/mm/damon/sysfs-schemes.c
-index 50cf89dcd898..35fa1b421c26 100644
---- a/mm/damon/sysfs-schemes.c
-+++ b/mm/damon/sysfs-schemes.c
-@@ -1486,6 +1486,7 @@ static struct damos *damon_sysfs_mk_scheme(
- 	struct damon_sysfs_scheme_filters *sysfs_filters =
- 		sysfs_scheme->filters;
- 	struct damos *scheme;
-+	struct damos_quota *quota;
- 	int err;
- 
- 	struct damos_access_pattern pattern = {
-@@ -1496,14 +1497,6 @@ static struct damos *damon_sysfs_mk_scheme(
- 		.min_age_region = access_pattern->age->min,
- 		.max_age_region = access_pattern->age->max,
- 	};
--	struct damos_quota quota = {
--		.ms = sysfs_quotas->ms,
--		.sz = sysfs_quotas->sz,
--		.reset_interval = sysfs_quotas->reset_interval_ms,
--		.weight_sz = sysfs_weights->sz,
--		.weight_nr_accesses = sysfs_weights->nr_accesses,
--		.weight_age = sysfs_weights->age,
--	};
- 	struct damos_watermarks wmarks = {
- 		.metric = sysfs_wmarks->metric,
- 		.interval = sysfs_wmarks->interval_us,
-@@ -1512,16 +1505,32 @@ static struct damos *damon_sysfs_mk_scheme(
- 		.low = sysfs_wmarks->low,
- 	};
- 
--	scheme = damon_new_scheme(&pattern, sysfs_scheme->action, &quota,
-+	quota = kmalloc(sizeof(struct damos_quota), GFP_KERNEL);
-+	if (!quota)
-+		return NULL;
-+
-+	quota->ms = sysfs_quotas->ms;
-+	quota->sz = sysfs_quotas->sz;
-+	quota->reset_interval = sysfs_quotas->reset_interval_ms;
-+	quota->weight_sz = sysfs_weights->sz;
-+	quota->weight_nr_accesses = sysfs_weights->nr_accesses;
-+	quota->weight_age = sysfs_weights->age;
-+
-+	scheme = damon_new_scheme(&pattern, sysfs_scheme->action, quota,
- 			&wmarks);
--	if (!scheme)
-+	if (!scheme) {
-+		kfree(quota);
- 		return NULL;
-+	}
- 
- 	err = damon_sysfs_set_scheme_filters(scheme, sysfs_filters);
- 	if (err) {
-+		kfree(quota);
- 		damon_destroy_scheme(scheme);
- 		return NULL;
- 	}
-+
-+	kfree(quota);
- 	return scheme;
- }
- 
--- 
-2.40.1
+So, your local glibc may be older than 2.28 (The one we mentioned in the
+commit message who supports statx)? mine 2.31 glibc is ok:
 
+    $ ldd --version
+    ldd (Ubuntu GLIBC 2.31-0ubuntu9.2) 2.31
+    Copyright (C) 2020 Free Software Foundation, Inc.
+    This is free software; see the source for copying conditions.  There is NO
+    warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+    Written by Roland McGrath and Ulrich Drepper.
+    
+    // anyone of the following commands work
+    $ echo -e "int test_stat(const char *p, struct stat *b) { return stat(p,b); }\n" | gcc -c -o test.o -xc - -nostdlib -include sysroot/x86/include/nolibc.h 
+    $ echo -e "int test_stat(const char *p, struct stat *b) { return stat(p,b); }\n" | gcc -c -o test.o -xc - -nostdlib -Isysroot/x86/include -include ../../../include/nolibc/nolibc.h 
+    $ echo -e "int test_stat(const char *p, struct stat *b) { return stat(p,b); }\n" | gcc -c -o test.o -xc - -nostdlib -include ../../../include/nolibc/nolibc.h
+
+For older Linux systems without a newer libc may really require the
+installation of the linux sysroot (linux/uapi).
+
+In Ubuntu 20.04, the "struct statx" is provided by the linux-libc-dev
+package:
+
+    $ dpkg -S /usr/include/linux/
+    linux-libc-dev:amd64: /usr/include/linux
+    $ dpkg -l | grep linux-libc-dev
+    ii  linux-libc-dev:amd64                     5.4.0-88.99                                                    amd64        Linux Kernel Headers for development
+    ii  linux-libc-dev-arm64-cross               5.4.0-59.65cross1                                              all          Linux Kernel Headers for development (for cross-compiling)
+    ii  linux-libc-dev-armel-cross               5.4.0-59.65cross1                                              all          Linux Kernel Headers for development (for cross-compiling)
+    ii  linux-libc-dev-i386-cross                5.4.0-59.65cross1                                              all          Linux Kernel Headers for development (for cross-compiling)
+    ii  linux-libc-dev-riscv64-cross             5.4.0-21.25cross1                                              all          Linux Kernel Headers for development (for cross-compiling)
+    $ grep "struct statx" -ur /usr/include/linux/
+    /usr/include/linux/stat.h: * Timestamp structure for the timestamps in struct statx.
+    /usr/include/linux/stat.h:struct statx_timestamp {
+    /usr/include/linux/stat.h:struct statx {
+    /usr/include/linux/stat.h:	struct statx_timestamp	stx_atime;	/* Last access time */
+    /usr/include/linux/stat.h:	struct statx_timestamp	stx_btime;	/* File creation time */
+    /usr/include/linux/stat.h:	struct statx_timestamp	stx_ctime;	/* Last attribute change time */
+    /usr/include/linux/stat.h:	struct statx_timestamp	stx_mtime;	/* Last data modification time */
+    /usr/include/linux/stat.h: * Query request/result mask for statx() and struct statx::stx_mask.
+    /usr/include/linux/stat.h:#define STATX__RESERVED		0x80000000U	/* Reserved for future struct statx expansion */
+
+This may be relative to glibc version, it is a dep of libc package:
+
+    Package: libc6-dev
+    Source: glibc
+    Version: 2.36-9
+    Architecture: amd64
+    Maintainer: GNU Libc Maintainers <debian-glibc@lists.debian.org>
+    Installed-Size: 11954
+    Depends: libc6 (= 2.36-9), libc-dev-bin (= 2.36-9), linux-libc-dev, libcrypt-dev, libnsl-dev, rpcsvc-proto
+
+> I knew that sooner or later I'd have to reinstall this machine but I
+> can't get out of my head that to date I have yet not been convinced by
+> the absolute necessity of this modification which is progressively adding
+> more burden :-/  Time will tell...
+>
+
+This may also let us think about the removing of <linux/xxx.h> from our
+nolibc headers? just like musl does ;-)
+
+    $ grep "include <linux" -ur ../../../include/nolibc/
+    ../../../include/nolibc/stdlib.h:#include <linux/auxvec.h>
+    ../../../include/nolibc/sys.h:#include <linux/fs.h>
+    ../../../include/nolibc/sys.h:#include <linux/loop.h>
+    ../../../include/nolibc/sys.h:#include <linux/time.h>
+    ../../../include/nolibc/sys.h:#include <linux/auxvec.h>
+    ../../../include/nolibc/sys.h:#include <linux/fcntl.h> /* for O_* and AT_* */
+    ../../../include/nolibc/sys.h:#include <linux/stat.h>  /* for statx() */
+    ../../../include/nolibc/sys.h:#include <linux/prctl.h>
+    ../../../include/nolibc/types.h:#include <linux/mman.h>
+    ../../../include/nolibc/types.h:#include <linux/reboot.h> /* for LINUX_REBOOT_* */
+    ../../../include/nolibc/types.h:#include <linux/stat.h>
+    ../../../include/nolibc/types.h:#include <linux/time.h>
+
+If simply put all of them to types.h, it may be too much, a new "sys/"
+directory with almost the same Linux type files may be required, but as
+an in-kernel libc, this duplication may be a "big" issue too, so, adding
+minimal required macros and structs in types.h may be another choice.
+
+After removing the duplicated ones, it is not that much:
+
+    ../../../include/nolibc/stdlib.h:#include <linux/auxvec.h>
+    ../../../include/nolibc/sys.h:#include <linux/fs.h>
+    ../../../include/nolibc/sys.h:#include <linux/loop.h>
+    ../../../include/nolibc/sys.h:#include <linux/time.h>
+    ../../../include/nolibc/sys.h:#include <linux/fcntl.h> /* for O_* and AT_* */
+    ../../../include/nolibc/sys.h:#include <linux/stat.h>  /* for statx() */
+    ../../../include/nolibc/sys.h:#include <linux/prctl.h>
+    ../../../include/nolibc/types.h:#include <linux/mman.h>
+    ../../../include/nolibc/types.h:#include <linux/reboot.h> /* for LINUX_REBOOT_* */
+
+The required new macros and structs may be around 100-300 lines? but it may
+help to avoid the installation of sysroot completely and also avoid the cross
+including the linux-libc-dev package used by glibc?
+
+Best regards,
+Zhangjin
+
+> Cheers,
+> Willy
