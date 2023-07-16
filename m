@@ -2,85 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12000755119
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 21:42:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38CA7755124
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 21:52:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230184AbjGPTmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Jul 2023 15:42:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53364 "EHLO
+        id S230173AbjGPTv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Jul 2023 15:51:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbjGPTmt (ORCPT
+        with ESMTP id S229461AbjGPTv4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Jul 2023 15:42:49 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28C9610F
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 12:42:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1689536566;
-        bh=H5pt+y6pcwX39WqrqaNgBbqvV2os5H+dMqLl8EyOF6s=;
-        h=From:Date:Subject:To:Cc:From;
-        b=A9hIkOJncP9i6MGRUbnBk/j3T5R0iA1nw+reEsMgDa5GdZAvmsDZhIa7C6+bKtEeP
-         hSG7qsGyNUCtw7j3/T7WrEhG54hEuWJae3a0759SbR258McIeRqY+Z9sylKVBJgVyr
-         Ra7t0l5KLmZWnAGicfEiR/Om9iZQjwDHv8YNlgCI=
-From:   =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Date:   Sun, 16 Jul 2023 21:42:36 +0200
-Subject: [PATCH] pgpkeys: use full keyid to trust Linus' key
+        Sun, 16 Jul 2023 15:51:56 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04F2F116;
+        Sun, 16 Jul 2023 12:51:55 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 80D2660EAA;
+        Sun, 16 Jul 2023 19:51:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82D1AC433C7;
+        Sun, 16 Jul 2023 19:51:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689537113;
+        bh=QdXpkPclnK4lAqXxNcl60QtzTf94NQuVLe8JOwaCt6E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JxAZwT70NVGlbZwQfXs3bRxY95QOyNb56ICJHT63Ik/34d1A11athkHOPz1rJPaK9
+         rstt+VVVi58wSaEN6phoRt7kp1/3OX3JRRbqt8AnKdDybNqwG/PXsudab/5ZNhSWvU
+         Eco80gOdIg6oZzLZYaqLBWQIvDPnjgFDEa1/P+KmFYaDJxXFSGeMathB2cWyGq964Q
+         cCM0oJaH6fGCBh5przmwdRWODurk63sOAT1UVfh6zoXTfi00mPl/qK0d6+/g+YZVsn
+         UOr3COFNiHaG9jbE8fVJaI2yVBG4NxcWfhjkoF0LqGs4ZpGF8bS1+WOpDkoBvyLMpx
+         PDl1ITKjsvn4g==
+Received: by pali.im (Postfix)
+        id A645C70C; Sun, 16 Jul 2023 21:51:50 +0200 (CEST)
+Date:   Sun, 16 Jul 2023 21:51:50 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Greg KH <greg@kroah.com>
+Cc:     Aurelien Jarno <aurelien@aurel32.net>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        stable@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: Backporting commits for generating rpi dtb symbols to stable
+Message-ID: <20230716195150.ppa6vdjogjevlzgq@pali>
+References: <20230716162444.zzvkm4rh7s7lu37x@pali>
+ <2023071644-earflap-amazingly-3989@gregkh>
+ <20230716163852.jnd4u4ylvifgmpby@pali>
+ <2023071611-lustiness-rename-8b47@gregkh>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Message-Id: <20230716-keyid-v1-1-bf14426a8279@weissschuh.net>
-X-B4-Tracking: v=1; b=H4sIACtItGQC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2MDc0Mz3ezUyswUXYskgzRTAzMLyxQjYyWg2oKi1LTMCrA50bG1tQAe+TZ
- OVwAAAA==
-To:     Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1689536565; l=906;
- i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=H5pt+y6pcwX39WqrqaNgBbqvV2os5H+dMqLl8EyOF6s=;
- b=fHp58NK+ihG4SNoxviGM9C69gymzd/OueJZiiw/5oP9vRKv5q/5uQ0JakqmdsbTJ1PjmvSBbR
- Rbh3HRdGjomCijXQzbKOPNY9wGJMyadoa09gvbp83RPjMQqt9PvyDyb
-X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
- pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <2023071611-lustiness-rename-8b47@gregkh>
+User-Agent: NeoMutt/20180716
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's possible for fingerprints to collide.
-To avoid that people accidentally trust an impersonated key document the
-full key fingerprint.
+On Sunday 16 July 2023 21:08:38 Greg KH wrote:
+> On Sun, Jul 16, 2023 at 06:38:52PM +0200, Pali Rohár wrote:
+> > On Sunday 16 July 2023 18:32:42 Greg KH wrote:
+> > > On Sun, Jul 16, 2023 at 06:24:44PM +0200, Pali Rohár wrote:
+> > > > Hello,
+> > > > 
+> > > > I see that raspberry pi bootloader throws ton of warnings when supplied
+> > > > DTB file does not contain /__symbols__/ node.
+> > > > 
+> > > > On RPI 1B rev1 it looks like this:
+> > > > 
+> > > > dterror: no symbols found
+> > > > dterror: no symbols found
+> > > > dterror: no symbols found
+> > > > dterror: no symbols found
+> > > > dterror: no symbols found
+> > > > dterror: no symbols found
+> > > > dterror: no symbols found
+> > > > dterror: no symbols found
+> > > > dterror: no symbols found
+> > > > dterror: no symbols found
+> > > > 
+> > > > Bootloader also propagates these warnings to kernel via dtb property
+> > > > chosen/user-warnings and they can be read by simple command:
+> > > > 
+> > > > $ cat /sys/firmware/devicetree/base/chosen/user-warnings
+> > > > ...
+> > > > 
+> > > > Upstream Linux kernel build process by default does not generate
+> > > > /__symbols__/ node for DTB files, but DTB files provided by raspberrypi
+> > > > foundation have them for a longer time.
+> > > > 
+> > > > I wanted to look at this issue, but I figured out that it is already
+> > > > solved by just recent Aurelien's patches:
+> > > > 
+> > > > e925743edc0d ("arm: dts: bcm: Enable device-tree overlay support for RPi devices")
+> > > > 3cdba279c5e9 ("arm64: dts: broadcom: Enable device-tree overlay support for RPi devices")
+> > > > 
+> > > > My testing showed that /__symbols__/ node is required by rpi bootloader
+> > > > for overlay support even when overlayed DTB file does not use any DTB
+> > > > symbol (and reference everything via full node path). So seems that
+> > > > /__symbols__/ node is crucial for rpi bootloader even when symbols from
+> > > > them are not used at all.
+> > > > 
+> > > > So I would like to ask, would you consider backporting these two
+> > > > raspberry pi specific patches to stable kernel trees? Upstream kernel
+> > > > would get rid of those bootloader warnings and also allow users to use
+> > > > overlayed dtbs...
+> > > 
+> > > What kernel tree(s) should these be applied to?  What trees did you test
+> > > them for?
+> > > 
+> > > Also, adding dt-overlay support does not seem like a stable kernel fix,
+> > > as this isn't a bugfix from what I can tell, right?
+> > > 
+> > > thanks,
+> > > 
+> > > greg k-h
+> > 
+> > I wanted to discuss what do you think about it. As I wrote my motivation
+> > was to understood and get rid of those warnings "dterror: no symbols
+> > found" from bootloader when using DTB files from mainline kernel (as
+> > opposite of the DTB files from rpi foundation). And fix for it was just
+> > to generate DTB files from kernel via dtc's -@ parameter, same what are
+> > doing those mentioned patches (but they describe different problem for
+> > which is same fix). I thought that fixing those bootloader warnings is a
+> > bugfix.
+> 
+> Why not just use the next kernel version instead?  What's forcing you to
+> use an older stable kernel that didn't have dt-overlay support?
+> 
+> thanks,
+> 
+> greg k-h
 
-Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
----
- source/pgpkeys.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/source/pgpkeys.rst b/source/pgpkeys.rst
-index 78ba703ff42b..d036686c51dc 100644
---- a/source/pgpkeys.rst
-+++ b/source/pgpkeys.rst
-@@ -41,7 +41,7 @@ First, you should assign full trust to Linus's key (after importing it
- into your keyring)::
- 
-     $ gpg --import keys/79BE3E4300411886.asc
--    $ gpg --edit-key 79BE3E4300411886
-+    $ gpg --edit-key ABAF11C65A2970B130ABE3C479BE3E4300411886
-     gpg> trust
-     gpg> 4
-     gpg> q
-
----
-base-commit: 8196a3c298d9b1f11be305c87eb890f44f7c8cc5
-change-id: 20230716-keyid-8b0f50689d23
-
-Best regards,
--- 
-Thomas Weißschuh <linux@weissschuh.net>
-
+Why not use the next kernel? It is pretty simple, next is the
+development tree, not for production. And as I wrote in previous email,
+I do not need here dt-overlay support. I wanted to get rid off that
+warning messages.
