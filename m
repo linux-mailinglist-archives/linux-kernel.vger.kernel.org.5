@@ -2,59 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43CE275529D
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 22:09:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB2D5755470
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 22:30:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231404AbjGPUJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Jul 2023 16:09:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38172 "EHLO
+        id S232142AbjGPUaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Jul 2023 16:30:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231381AbjGPUJx (ORCPT
+        with ESMTP id S232120AbjGPUaT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Jul 2023 16:09:53 -0400
-X-Greylist: delayed 1312 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 16 Jul 2023 13:09:51 PDT
-Received: from hall.aurel32.net (hall.aurel32.net [IPv6:2001:bc8:30d7:100::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9CD89B;
-        Sun, 16 Jul 2023 13:09:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=aurel32.net
-        ; s=202004.hall; h=In-Reply-To:Content-Transfer-Encoding:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:Reply-To:
-        Subject:Content-ID:Content-Description:X-Debbugs-Cc;
-        bh=bFvTW3Yd75y+NV7uvVkN7aJtnUibmYPb1BvWy4H8H44=; b=MzxXa9UDH9iTVZHrPCYBXP29gr
-        3DFhgIGuBisHzO6iic7qwrsy3fQ3DIHWhv9q6KRW0y10iAcI6SamH/wg7VOG4dRAzkw1JqiBO5uA4
-        ihGNLGx9iNMV4Vwq2/Y6iApxg1k/gfbnfMnH/s4oAzp5SjIkirRFsAgtNysUBwXTIZVFQZqdSeoqS
-        wz+PVhyBJFpybKVHy1VLLW7TJN7gBY1ywyy6PZcyODWFWJA8wReDbs31rfH5xOQkBy6LI/4Mj6TUP
-        K/CLVPc5iDlzgkKZIMGYVa0ve29YbbcJuselLKSsUwZz4USnDgmVv1vTLk8MbE0c0X8L/IKfwE0cn
-        d4Xg3g3A==;
-Received: from [2a01:e34:ec5d:a741:8a4c:7c4e:dc4c:1787] (helo=ohm.rr44.fr)
-        by hall.aurel32.net with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <aurelien@aurel32.net>)
-        id 1qL7ik-009yRM-Pd; Sun, 16 Jul 2023 21:47:54 +0200
-Received: from aurel32 by ohm.rr44.fr with local (Exim 4.96)
-        (envelope-from <aurelien@aurel32.net>)
-        id 1qL7ik-008uSg-0U;
-        Sun, 16 Jul 2023 21:47:54 +0200
-Date:   Sun, 16 Jul 2023 21:47:54 +0200
-From:   Aurelien Jarno <aurelien@aurel32.net>
-To:     Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
-        stable@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: Backporting commits for generating rpi dtb symbols to stable
-Message-ID: <ZLRJaiIfPtqEB9Vb@aurel32.net>
-Mail-Followup-To: Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        stable@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230716162444.zzvkm4rh7s7lu37x@pali>
+        Sun, 16 Jul 2023 16:30:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E7D4E46;
+        Sun, 16 Jul 2023 13:30:15 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A12AC60EAE;
+        Sun, 16 Jul 2023 20:30:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF745C433C7;
+        Sun, 16 Jul 2023 20:30:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1689539414;
+        bh=ExzEbA/RIzTxjKUcd5Ih5Si564HbUIS8oZ/FuVczb5g=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=UANksxT4i2gk58mCdpEjB/JIRdD+KqDeUfEMyEsliBgk+GGhzyYYrPRTuBannQ6VV
+         +bqW/b8oWQ8nh2Mbs0ue0SJTtyX+z1Rl/i6ucvIU2woSmCL4FGmLNgQBIcbkl+X+4r
+         vepNY1w8q8m0LkFIZDFiLWtx2ACnkIuOVVRgdOS0=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     stable@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        patches@lists.linux.dev, Pavel Begunkov <asml.silence@gmail.com>,
+        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andres Freund <andres@anarazel.de>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 6.4 800/800] io_uring: Use io_schedule* in cqring wait
+Date:   Sun, 16 Jul 2023 21:50:53 +0200
+Message-ID: <20230716195007.731909670@linuxfoundation.org>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230716194949.099592437@linuxfoundation.org>
+References: <20230716194949.099592437@linuxfoundation.org>
+User-Agent: quilt/0.67
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20230716162444.zzvkm4rh7s7lu37x@pali>
-User-Agent: Mutt/2.2.9 (2022-11-12)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,39 +57,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Andres Freund <andres@anarazel.de>
 
-On 2023-07-16 18:24, Pali Roh=C3=A1r wrote:
-> Hello,
->=20
-> I see that raspberry pi bootloader throws ton of warnings when supplied
-> DTB file does not contain /__symbols__/ node.
->=20
-> On RPI 1B rev1 it looks like this:
->=20
-> dterror: no symbols found
-> dterror: no symbols found
-> dterror: no symbols found
-> dterror: no symbols found
-> dterror: no symbols found
-> dterror: no symbols found
-> dterror: no symbols found
-> dterror: no symbols found
-> dterror: no symbols found
-> dterror: no symbols found
+commit 8a796565cec3601071cbbd27d6304e202019d014 upstream.
 
-Do you have those errors with the default configuration? On a RPI 4,
-this only happens when setting uart_2ndstage to 1 in config.txt.
-According to the documentation, this option enables diagnostic
-information from the main firmware.
+I observed poor performance of io_uring compared to synchronous IO. That
+turns out to be caused by deeper CPU idle states entered with io_uring,
+due to io_uring using plain schedule(), whereas synchronous IO uses
+io_schedule().
 
-Unless this is different on RPI 1B, this means we are talking about a
-warning that happens when enabling diagnostic information, so I am not
-sure it warrants a change to stable kernels.
+The losses due to this are substantial. On my cascade lake workstation,
+t/io_uring from the fio repository e.g. yields regressions between 20%
+and 40% with the following command:
+./t/io_uring -r 5 -X0 -d 1 -s 1 -c 1 -p 0 -S$use_sync -R 0 /mnt/t2/fio/write.0.0
 
-Regards
-Aurelien
+This is repeatable with different filesystems, using raw block devices
+and using different block devices.
 
---=20
-Aurelien Jarno                          GPG: 4096R/1DDD8C9B
-aurelien@aurel32.net                     http://aurel32.net
+Use io_schedule_prepare() / io_schedule_finish() in
+io_cqring_wait_schedule() to address the difference.
+
+After that using io_uring is on par or surpassing synchronous IO (using
+registered files etc makes it reliably win, but arguably is a less fair
+comparison).
+
+There are other calls to schedule() in io_uring/, but none immediately
+jump out to be similarly situated, so I did not touch them. Similarly,
+it's possible that mutex_lock_io() should be used, but it's not clear if
+there are cases where that matters.
+
+Cc: stable@vger.kernel.org # 5.10+
+Cc: Pavel Begunkov <asml.silence@gmail.com>
+Cc: io-uring@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Andres Freund <andres@anarazel.de>
+Link: https://lore.kernel.org/r/20230707162007.194068-1-andres@anarazel.de
+[axboe: minor style fixup]
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ io_uring/io_uring.c |   15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
+
+--- a/io_uring/io_uring.c
++++ b/io_uring/io_uring.c
+@@ -2575,6 +2575,8 @@ int io_run_task_work_sig(struct io_ring_
+ static inline int io_cqring_wait_schedule(struct io_ring_ctx *ctx,
+ 					  struct io_wait_queue *iowq)
+ {
++	int token, ret;
++
+ 	if (unlikely(READ_ONCE(ctx->check_cq)))
+ 		return 1;
+ 	if (unlikely(!llist_empty(&ctx->work_llist)))
+@@ -2585,11 +2587,20 @@ static inline int io_cqring_wait_schedul
+ 		return -EINTR;
+ 	if (unlikely(io_should_wake(iowq)))
+ 		return 0;
++
++	/*
++	 * Use io_schedule_prepare/finish, so cpufreq can take into account
++	 * that the task is waiting for IO - turns out to be important for low
++	 * QD IO.
++	 */
++	token = io_schedule_prepare();
++	ret = 0;
+ 	if (iowq->timeout == KTIME_MAX)
+ 		schedule();
+ 	else if (!schedule_hrtimeout(&iowq->timeout, HRTIMER_MODE_ABS))
+-		return -ETIME;
+-	return 0;
++		ret = -ETIME;
++	io_schedule_finish(token);
++	return ret;
+ }
+ 
+ /*
+
+
