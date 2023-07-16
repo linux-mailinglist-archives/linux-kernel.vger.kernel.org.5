@@ -2,131 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45721754DE7
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 10:50:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA93F754DF2
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 11:04:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230168AbjGPIub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Jul 2023 04:50:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51958 "EHLO
+        id S229722AbjGPJCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Jul 2023 05:02:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230081AbjGPIu0 (ORCPT
+        with ESMTP id S229483AbjGPJCd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Jul 2023 04:50:26 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 430D61986;
-        Sun, 16 Jul 2023 01:50:18 -0700 (PDT)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36G8kKmB031908;
-        Sun, 16 Jul 2023 08:50:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=qcppdkim1;
- bh=gKyyEjKOmIK56IjH0QQRMlIBK+WruELXAfpFleSezto=;
- b=BmpZCkoNx04vvTkQmmp9PqdbCf8WbWbeiP8pHcxecPbj4afz97abkUAmMAer+f6AHrz9
- C0ozTyIgBwxw/J1er5CbOxQGRPKRBSrp3/Hp36vIMQh6UnHRmmlDJDd0ZWmT98ZEjEKw
- hDCzbCYbxhA0atutgfQwq9x5HtEFzFBp3s/u7GqTc2uVhVl0is/EozNLaH5WURNM02P8
- Wfb/6o576VG8nFbilz6/xNCqxzb01u1AXPOTj3RrHTQl5Df8qAFxQwmvvJhmwghH8Rnc
- EKyn9W91lJyMFng8Kx/tBN66a16fr9/c3cWMHJGMKxv7jmjOEMscphwd2xJCb+0WUBDJ pw== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3run0asade-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 16 Jul 2023 08:50:07 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36G8o69O025308
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 16 Jul 2023 08:50:06 GMT
-Received: from akronite-sh-dev02.qualcomm.com (10.80.80.8) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Sun, 16 Jul 2023 01:50:03 -0700
-From:   Luo Jie <quic_luoj@quicinc.com>
-To:     <andrew@lunn.ch>, <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Luo Jie <quic_luoj@quicinc.com>
-Subject: [PATCH v3 6/6] net: phy: at803x: add qca8081 fifo reset on the link changed
-Date:   Sun, 16 Jul 2023 16:49:24 +0800
-Message-ID: <20230716084924.9714-7-quic_luoj@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230716084924.9714-1-quic_luoj@quicinc.com>
-References: <20230716084924.9714-1-quic_luoj@quicinc.com>
+        Sun, 16 Jul 2023 05:02:33 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 470FADF;
+        Sun, 16 Jul 2023 02:02:32 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-314417861b9so3160930f8f.0;
+        Sun, 16 Jul 2023 02:02:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689498151; x=1692090151;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=HrdUA5P1+t589TrebUiC2lW0ShZ+14JLZPgMTM8GsxI=;
+        b=ng97L1ohCssjPItL/rKiYp78ZqIw9DjJ1sdRnkJTHr2reexTr8D1dHEe9W20BQFud7
+         uxBSdNQza/+6TrQNphfP33jMKfXs/yc9X5D1KaVfnPKXQGii4NE/iLzpWnHxdCxg+PfR
+         kcfqmrEmge7McjzQcnJCoNKYm/SCKiSs0l4h4zR2QrYn8IfMMmZ+/Zzc3J8tMmcy8/R2
+         FHRVsOoTHPioaC9+y8VDxI/vV5NKQazeQYrwd+kdIHGMEMBjO9GKILfMlmzjmvRIelR6
+         cmtOlbHqfkGwBtYu+u4HsWpM9MakVVGg0eLTnnrfmlVKyP15PQj7CWqwL4TRetqGWGB7
+         TOLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689498151; x=1692090151;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HrdUA5P1+t589TrebUiC2lW0ShZ+14JLZPgMTM8GsxI=;
+        b=KmXN/BxticgMVkdnHC815VyJ352ajLn2O4txtr7cu7QQcJz/cFm047uua8mPj6ke3e
+         p/papOJBtZy61zAiGpJxN07cab3QR8uDrOztOFhNQfLXcALlgxKYUIWijkGUqXZv1DmY
+         aDq6B+SWQOgFc8ejuAljNgvuLsolK5uDPUeUZs4XWEc1ElA5mCmzKCXU3tANqEo8U5mW
+         M8w209tXOCnjGfSuNcPgkD4oKJJLx64Lofmd5Y+p9m0o9gfY5WX0SgLy46L5YG6jmYpO
+         toDfqNggQgQQqiyLEY7z2jBTgKiv8Dzpd2XMlWuRxrFeX99r8gDz7s409BV4xfO1lF8r
+         5PtQ==
+X-Gm-Message-State: ABy/qLZGP5qtfpoVC8Ab/OupeaDh2Ht0J77hpq6NTx0HEEGwAXDXMJid
+        Tz8bEoIpqI1SWuJifQTc4OU=
+X-Google-Smtp-Source: APBJJlH61HQQgQ7O2iGO+dkeIj69YMi8lsSkjoffaLhYC9aeEgCD+XO9MLow3vD3oPbNJr1ENrgrnQ==
+X-Received: by 2002:a5d:4d8c:0:b0:314:91d:58b5 with SMTP id b12-20020a5d4d8c000000b00314091d58b5mr7858184wru.65.1689498150405;
+        Sun, 16 Jul 2023 02:02:30 -0700 (PDT)
+Received: from mmaatuq-HP-Laptop-15-dy2xxx.. ([2001:8f8:1163:535c:e1af:2d96:1960:a57d])
+        by smtp.gmail.com with ESMTPSA id y3-20020a056000108300b003141f96ed36sm15935903wrw.0.2023.07.16.02.02.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 16 Jul 2023 02:02:29 -0700 (PDT)
+From:   Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, shuah@kernel.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>
+Subject: [PATCH v2] selftests/net: replace manual array size calc with ARRAYSIZE macro.
+Date:   Sun, 16 Jul 2023 13:02:00 +0400
+Message-Id: <20230716090200.1947107-1-mahmoudmatook.mm@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: _KKP5TfHYCSwr6QJDufH2mUGA8szGo_r
-X-Proofpoint-ORIG-GUID: _KKP5TfHYCSwr6QJDufH2mUGA8szGo_r
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-15_14,2023-07-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
- mlxlogscore=999 bulkscore=0 priorityscore=1501 mlxscore=0 suspectscore=0
- impostorscore=0 lowpriorityscore=0 clxscore=1015 spamscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307160081
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The qca8081 sgmii fifo needs to be reset on link down and
-released on the link up in case of any abnormal issue
-such as the packet blocked on the PHY.
+fixes coccinelle WARNING: Use ARRAY_SIZE
 
-Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+changelog since v1:
+ - remove unnecessary extra new line
+
+changelog since v0:
+ - update net/Makefile to include kselftest.h
+ - remove redefinition of ARRAYSIZE.
+
+Signed-off-by: Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>
 ---
- drivers/net/phy/at803x.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ tools/testing/selftests/net/Makefile          | 2 ++
+ tools/testing/selftests/net/csum.c            | 6 ++----
+ tools/testing/selftests/net/hwtstamp_config.c | 4 +---
+ 3 files changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
-index a141f133b8aa..13c4121fa309 100644
---- a/drivers/net/phy/at803x.c
-+++ b/drivers/net/phy/at803x.c
-@@ -276,6 +276,9 @@
- #define QCA808X_PHY_MMD7_CHIP_TYPE		0x901d
- #define QCA808X_PHY_CHIP_TYPE_1G		BIT(0)
+diff --git a/tools/testing/selftests/net/Makefile b/tools/testing/selftests/net/Makefile
+index 7f3ab2a93ed6..a06cc25489f9 100644
+--- a/tools/testing/selftests/net/Makefile
++++ b/tools/testing/selftests/net/Makefile
+@@ -3,6 +3,8 @@
  
-+#define QCA8081_PHY_SERDES_MMD1_FIFO_CTRL	0x9072
-+#define QCA8081_PHY_FIFO_RSTN			BIT(11)
+ CFLAGS =  -Wall -Wl,--no-as-needed -O2 -g
+ CFLAGS += -I../../../../usr/include/ $(KHDR_INCLUDES)
++# Additional include paths needed by kselftest.h
++CFLAGS += -I../
+ 
+ TEST_PROGS := run_netsocktests run_afpackettests test_bpf.sh netdevice.sh \
+ 	      rtnetlink.sh xfrm_policy.sh test_blackhole_dev.sh
+diff --git a/tools/testing/selftests/net/csum.c b/tools/testing/selftests/net/csum.c
+index 702f34a9d506..90eb06fefa59 100644
+--- a/tools/testing/selftests/net/csum.c
++++ b/tools/testing/selftests/net/csum.c
+@@ -91,6 +91,8 @@
+ #include <sys/types.h>
+ #include <unistd.h>
+ 
++#include "kselftest.h"
 +
- MODULE_DESCRIPTION("Qualcomm Atheros AR803x and QCA808X PHY driver");
- MODULE_AUTHOR("Matus Ujhelyi");
- MODULE_LICENSE("GPL");
-@@ -2032,6 +2035,16 @@ static int qca808x_get_features(struct phy_device *phydev)
- 	return 0;
- }
+ static bool cfg_bad_csum;
+ static int cfg_family = PF_INET6;
+ static int cfg_num_pkt = 4;
+@@ -123,10 +125,6 @@ static struct sockaddr_in6 cfg_saddr6 = {.sin6_family = AF_INET6};
+ #define MAX_HEADER_LEN	(sizeof(struct ipv6hdr) + ENC_HEADER_LEN + sizeof(struct tcphdr))
+ #define MAX_PAYLOAD_LEN 1024
  
-+static void qca808x_link_change_notify(struct phy_device *phydev)
-+{
-+	/* Assert interface sgmii fifo on link down, deassert it on link up,
-+	 * the interface device address is always phy address added by 1.
-+	 */
-+	mdiobus_c45_modify_changed(phydev->mdio.bus, phydev->mdio.addr + 1,
-+			MDIO_MMD_PMAPMD, QCA8081_PHY_SERDES_MMD1_FIFO_CTRL,
-+			QCA8081_PHY_FIFO_RSTN, phydev->link ? QCA8081_PHY_FIFO_RSTN : 0);
-+}
-+
- static struct phy_driver at803x_driver[] = {
- {
- 	/* Qualcomm Atheros AR8035 */
-@@ -2210,6 +2223,7 @@ static struct phy_driver at803x_driver[] = {
- 	.soft_reset		= qca808x_soft_reset,
- 	.cable_test_start	= qca808x_cable_test_start,
- 	.cable_test_get_status	= qca808x_cable_test_get_status,
-+	.link_change_notify	= qca808x_link_change_notify,
- }, };
+-#ifndef ARRAY_SIZE
+-#define ARRAY_SIZE(x)	(sizeof(x) / sizeof((x)[0]))
+-#endif
+-
+ /* Trivial demo encap. Stand-in for transport layer protocols like ESP or PSP */
+ struct udp_encap_hdr {
+ 	uint8_t nexthdr;
+diff --git a/tools/testing/selftests/net/hwtstamp_config.c b/tools/testing/selftests/net/hwtstamp_config.c
+index 263cc1c34165..60970d98eb9b 100644
+--- a/tools/testing/selftests/net/hwtstamp_config.c
++++ b/tools/testing/selftests/net/hwtstamp_config.c
+@@ -16,9 +16,7 @@
+ #include <linux/net_tstamp.h>
+ #include <linux/sockios.h>
  
- module_phy_driver(at803x_driver);
+-#ifndef ARRAY_SIZE
+-#define ARRAY_SIZE(x)	(sizeof(x) / sizeof((x)[0]))
+-#endif
++#include "kselftest.h"
+ 
+ static int
+ lookup_value(const char **names, int size, const char *name)
 -- 
-2.17.1
+2.34.1
 
