@@ -2,129 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B43F7550E1
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 21:13:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 854BA7550F2
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 21:25:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230033AbjGPTNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Jul 2023 15:13:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46144 "EHLO
+        id S229970AbjGPTZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Jul 2023 15:25:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbjGPTNW (ORCPT
+        with ESMTP id S229886AbjGPTZI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Jul 2023 15:13:22 -0400
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04hn2203.outbound.protection.outlook.com [52.100.163.203])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D26EE4B;
-        Sun, 16 Jul 2023 12:13:18 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AeHDYQtHXsAUZZK3RwxGCmUCo0gU9BXWH3CM3YDOWHYyQVpY/iVBc5Mwzl4E50CVDNzuNZpGO6Pm6ZhO9qIWLma73JIUMPvwlLmLqzri5CLYoS2261MmoKFZ9RARqEsbMePJZszZS2NNxJGEMROOVnzVtaRRQoNn/RAfFQH5h5vnTn7f1sRXSuAqD0To4gxphUztc4pQiXqf04gyFyoyIWwOoXmQuzTdxlsYJ6s2BDXH0+gQo3rcY/9E7R76pgqucVckhrnvOKzfBt4gosMTA0GZ9QZFduP5jj2Kiz3lPiYjWWYCDkkC+66AWgKT5CY/c4xCsZQxdu7Yh7C5nDsCrA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=p/PeuBOnf5dYVxGl3ciVpz37qiwzVVT3w8y5MbyXetw=;
- b=gG8NXnq4buzgAI/iMTOB4dVa8xI5ZIo5Ea2LwID7qlWrmnv5J4+ZxdNx7eJmfGYSwgaGr5fx013WK1K1UhqJFAxdEeCBY+C5YQC3ogSGrnlozIpolAFNq34Hx0WjrfsUYfbZQAL89DzKe83qnH07DRvnMhalBDzl5A2XWZgmFL1SClbXXRKC49m2H7x11PyYYHK99JxJFFU3D2dVw1Py3nCG6x52V7xsTDdW9hNEBd3/6o6K0tg6I8DBk0DKwWG2Anh43sbPHjuKq8DS5H2sgku1J/uQchWWZ+P7tN9Et6sFEX509emPG+sW51nZv0eUbU3bqAl5GSxMTK0cNQhdUw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 201.217.50.26) smtp.rcpttodomain=tmd.ac smtp.mailfrom=ips.gov.py;
- dmarc=bestguesspass action=none header.from=ips.gov.py; dkim=none (message
- not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ipspy.onmicrosoft.com;
- s=selector2-ipspy-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=p/PeuBOnf5dYVxGl3ciVpz37qiwzVVT3w8y5MbyXetw=;
- b=1IvSiFUjqwR1B2+js2XOmQMR6Dv9Wg7W95Vppaqbwx6iH8CykOtLo6N8HF/IyEAIMiQVu6CAXCe4//cNsr1X3sEYy8D2yqKzq1gPPzC88hs6CEwEdOk7RE/zxBiBbIZQb4PPgV7JW8XZLH86b1ug0Vn5AupZ74DyFoXwREzlByk=
-Received: from DS7PR03CA0357.namprd03.prod.outlook.com (2603:10b6:8:55::10) by
- CPWP152MB5370.LAMP152.PROD.OUTLOOK.COM (2603:10d6:103:175::8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6588.31; Sun, 16 Jul 2023 19:13:12 +0000
-Received: from DM6NAM10FT085.eop-nam10.prod.protection.outlook.com
- (2603:10b6:8:55:cafe::12) by DS7PR03CA0357.outlook.office365.com
- (2603:10b6:8:55::10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.32 via Frontend
- Transport; Sun, 16 Jul 2023 19:13:11 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 201.217.50.26)
- smtp.mailfrom=ips.gov.py; dkim=none (message not signed)
- header.d=none;dmarc=bestguesspass action=none header.from=ips.gov.py;
-Received-SPF: Pass (protection.outlook.com: domain of ips.gov.py designates
- 201.217.50.26 as permitted sender) receiver=protection.outlook.com;
- client-ip=201.217.50.26; helo=mail.ips.gov.py; pr=C
-Received: from mail.ips.gov.py (201.217.50.26) by
- DM6NAM10FT085.mail.protection.outlook.com (10.13.152.97) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.6588.13 via Frontend Transport; Sun, 16 Jul 2023 19:13:10 +0000
-Received: from vs-w12-exch-02.ips.intranet.local (10.20.11.162) by
- vs-w12-exch-02.ips.intranet.local (10.20.11.162) with Microsoft SMTP Server
- (TLS) id 15.0.1497.42; Sun, 16 Jul 2023 15:12:32 -0400
-Received: from vs-w12-exch-02.ips.intranet.local ([fe80::4132:32db:6b34:3eb2])
- by vs-w12-exch-02.ips.intranet.local ([fe80::4132:32db:6b34:3eb2%14]) with
- mapi id 15.00.1497.042; Sun, 16 Jul 2023 15:12:32 -0400
-From:   Silvana Lorena Verza Petters <slverza@ips.gov.py>
-To:     "t@hotmail.com" <t@hotmail.com>
-Subject: !!!!!@
-Thread-Topic: !!!!!@
-Thread-Index: AQHZuBl4AIiFm/4VuU6e3DMORFm9fA==
-Date:   Sun, 16 Jul 2023 19:12:32 +0000
-Message-ID: <f546819ef1fa4c1f83fc50ff25a13bfb@vs-w12-exch-02.ips.intranet.local>
-Accept-Language: es-PY, en-US
-Content-Language: es-PY
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [154.6.13.18]
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6NAM10FT085:EE_|CPWP152MB5370:EE_
-X-MS-Office365-Filtering-Correlation-Id: e778bd06-bc32-4106-693e-08db8630b232
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: =?iso-8859-1?Q?8jrHifhpWaE8rBoDCMO1/NIaYvGzwJxEObASfspd2CAOr8iL3Eev8NaQU+?=
- =?iso-8859-1?Q?ZbZlbZkRbjRYkfAcMAgGaX3BMwzNWIzdoVM+33S/bX1HjeaulWxjZp3sbB?=
- =?iso-8859-1?Q?PJDWfAlII60tpYSsv6235qd4wBOiwdfbaWsfXDWZncw7VfXHdnRrb5e1yE?=
- =?iso-8859-1?Q?fVb9WhNSLecYflx1H+Iydp18E362KpOHaolZ9Pd2Ptau7gFi7Ys+AXGlmX?=
- =?iso-8859-1?Q?Wht5Xwmnw4jvl3P980KIHBsiNy21CcDIG2x59oSD+kesV9qGbbgugky85K?=
- =?iso-8859-1?Q?dq4mYT0ENYd5T5isPts3a7S6cffCMjCO7Gz8bHUnRPHJwsDZIxjhA5MMmN?=
- =?iso-8859-1?Q?jtI/4p7FWv+2x3znRL067hJDVHMAdsiYO4DQ8s29pT+JjR6Kn9KKYHD62z?=
- =?iso-8859-1?Q?DzeexrkxmeILs17ovJ3Rkb6QdrwMVXNeljo8Uk5z9JX1dpoJvzPe7DgUos?=
- =?iso-8859-1?Q?INOvheX/1wMTN5+FWT3ZZvcZXTWEenr1t9Lma42IB4CR6QJFb5k4fZG4BQ?=
- =?iso-8859-1?Q?i26QdmIySZRlfRHuTm7CwS9tZxymMsJpVpRrsx+WQzh5bpyvBXn5pTeCWK?=
- =?iso-8859-1?Q?ocu29GE+7VwsPyEIivC5BJ1ZHKdq5tWBHSWLFLPFaL7I+9Rq3F4zVNr6EW?=
- =?iso-8859-1?Q?POFpMN8GAkpDmNWdbFVWRY1nYpT4RrtKAOITHEmcVsFP29/mn/EW/3HNK+?=
- =?iso-8859-1?Q?QYvwtDh5YmrvMjBIOKvVcio70/1BbBqcOeWIWjycAC/QaJ+iP/K3NHVmgE?=
- =?iso-8859-1?Q?bStCTgRDjyajQ9ws8nAcQ5SkW6sYvHMvdcGSRp7htyeDUQ5X2VctIoh3P7?=
- =?iso-8859-1?Q?zyCJktxY3Tq8GQF6lrvZpX+XZCVNN3ZWObRL50G9RBERF15ko5UXKI4WeP?=
- =?iso-8859-1?Q?UBBmoptWv9Sk4wEwq8n7JWDz2ApvuAtN1wlDs/dbXIht4EobXLOV+p2/ON?=
- =?iso-8859-1?Q?R7eoAoHxKl7MqXzm0jfZAq+75rGZm+/W3/BNOtYIIk2AbMwPlacLBu3iJi?=
- =?iso-8859-1?Q?60SDoqxPLd9mSWTOSxRVvEjU9Ww+hwp/uX0dAaNb94231hV7FmRCvw3v9h?=
- =?iso-8859-1?Q?OLeuPtzhtake9pnFKdWpptEM0SSXhdW4BGJO1GUEEVeWmLn3dkYHLEJIm4?=
- =?iso-8859-1?Q?FNUlD226TXCANevqvIVB0pIHl1zkF4ysnCfssa/pMEyYS9zl+b4ZAbYDDn?=
- =?iso-8859-1?Q?+D81lgC2bilWPQ9zgQVACUb/0wKIUfHlMl8=3D?=
-X-Forefront-Antispam-Report: CIP:201.217.50.26;CTRY:PY;LANG:en;SCL:5;SRV:;IPV:NLI;SFV:SPM;H:mail.ips.gov.py;PTR:mail.ips.gov.py;CAT:OSPM;SFS:(13230028)(396003)(376002)(346002)(39860400002)(136003)(451199021)(82310400008)(36840700001)(40480700001)(55016003)(9686003)(567454004)(108616005)(7696005)(24736004)(70586007)(70206006)(478600001)(82740400003)(356005)(7596003)(83380400001)(336012)(186003)(32650700002)(26005)(36860700001)(86362001)(558084003)(6862004)(2906002)(5660300002)(8676002)(8936002)(7416002)(7406005)(7366002)(7336002)(41300700001)(316002)(16050700002);DIR:OUT;SFP:1501;
-X-OriginatorOrg: ips.gov.py
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jul 2023 19:13:10.3789
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e778bd06-bc32-4106-693e-08db8630b232
-X-MS-Exchange-CrossTenant-Id: 601d630b-0433-4b64-9f43-f0b9b1dcab7f
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=601d630b-0433-4b64-9f43-f0b9b1dcab7f;Ip=[201.217.50.26];Helo=[mail.ips.gov.py]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM10FT085.eop-nam10.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CPWP152MB5370
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        Sun, 16 Jul 2023 15:25:08 -0400
+X-Greylist: delayed 302 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 16 Jul 2023 12:25:05 PDT
+Received: from abi149hd126.arn1.oracleemaildelivery.com (abi149hd126.arn1.oracleemaildelivery.com [129.149.84.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFF69E4C
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 12:25:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; s=oci-arn1-20220924;
+ d=augustwikerfors.se;
+ h=Date:To:From:Subject:Message-Id:MIME-Version:Sender;
+ bh=vhgu6g5YOVEL+bJ5PxdEHK2qtn3eZn9eR/zLiwfZlaw=;
+ b=P9lof9HpebDSDc+dr53P7w+3+JDFVCVdkKbxjf7k7Gu2pZKFdwed2wDWWdpCW0arOajdxpsWPLfQ
+   75Ba7m9812h8XqdZK+9rQugmGU9imufmoQnUdNMIWK81EmB+t+e8kmGJktZ1zFFnYCTP4gpIjrv7
+   h9jsi5riGHbUWdh15fHr+wIOTU66r6sgEua4P6TXLXs0b8Vm1BIuXZiY/aV+wl7Z0rcLnhaFU5dr
+   Zmn3JgH7aIMEP0F8VbqJ6CsFaWXgAiPdninjtvm+e1+kd9un5hZpa7rRK5mJ3V2A5y+F/kbQQqtD
+   aUwbwuo4oUA0Sbz7TIYyFG0CPec4MaO68MbRdg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; s=prod-arn-20211201;
+ d=arn1.rp.oracleemaildelivery.com;
+ h=Date:To:From:Subject:Message-Id:MIME-Version:Sender;
+ bh=vhgu6g5YOVEL+bJ5PxdEHK2qtn3eZn9eR/zLiwfZlaw=;
+ b=fXol21WpT09sXeHr0iRWb36UzH2rcKW4jwdaK69PIjLTop8+Ojs5XRqc9T1ls8+MfHoIQWqs6OO/
+   Cjuk4Ksv+HRIt1Tries36yusEIjiUAiF9LIqrYSgcEejCUnig2Ca3zzpZTFyqeFieTWyNVd8dS8O
+   ZJtbK4Dj5wb+me6y78J41eOsYXAP4HKG2uibbYqflot79tSAiIeGs/d7PWG6AORoVr8HAAyDRfn/
+   IWqj26LzGgjewYzQKO8Sda8d7ZHaBYnAftMBlpAZJM7KB8v87BgwdkWh550E4avzW2I8SDYoB3J4
+   TeeDe9qVJknI3VS0gEH7o3w30Sl83tIAuCkYaA==
+Received: by omta-ad1-fd3-401-eu-stockholm-1.omtaad1.vcndparn.oraclevcn.com
+ (Oracle Communications Messaging Server 8.1.0.1.20230629 64bit (built Jun 29
+ 2023))
+ with ESMTPS id <0RXW007UCLPCV720@omta-ad1-fd3-401-eu-stockholm-1.omtaad1.vcndparn.oraclevcn.com>
+ for linux-kernel@vger.kernel.org; Sun, 16 Jul 2023 19:20:00 +0000 (GMT)
+Message-id: <d0ce0f3b-9407-9207-73a4-3536f0948653@augustwikerfors.se>
+Date:   Sun, 16 Jul 2023 21:19:56 +0200
+MIME-version: 1.0
+From:   August Wikerfors <git@augustwikerfors.se>
+Subject: Re: Fwd: Need NVME QUIRK BOGUS for SAMSUNG MZ1WV480HCGL-000MV (Samsung
+ SM-953 Datacenter SSD)
+To:     Pankaj Raghav <p.raghav@samsung.com>
+Cc:     Keith Busch <kbusch@kernel.org>,
+        Linux regressions mailing list <regressions@lists.linux.dev>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        "Clemens S." <cspringsguth@gmail.com>,
+        Martin Belanger <martin.belanger@dell.com>,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        John Meneghini <jmeneghi@redhat.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux NVMe <linux-nvme@lists.infradead.org>,
+        Kanchan Joshi <joshi.k@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>,
+        =?UTF-8?B?67CV7KeE7ZmY?= <jh.i.park@samsung.com>
+References: <d18d2a08-9d24-0209-c2cf-baf60bbf5048@gmail.com>
+ <ZJsKBkPqoWzYyngS@kbusch-mbp.dhcp.thefacebook.com>
+ <6f333133-2cc4-406a-d6c2-642ac6ccabca@leemhuis.info>
+ <CGME20230710155902eucas1p2b464a29adc35e983c73b00d18ab5344c@eucas1p2.samsung.com>
+ <ZKwqvTMPVmhnkZjS@kbusch-mbp.dhcp.thefacebook.com>
+ <f0fdf86e-4293-8e07-835d-b5a866252068@samsung.com>
+Content-language: en-US
+In-reply-to: <f0fdf86e-4293-8e07-835d-b5a866252068@samsung.com>
+Content-type: text/plain; charset=UTF-8; format=flowed
+Content-transfer-encoding: 7bit
+Reporting-Meta: AAET+Clyr9vC9JSs59PNNgJ3bR0x5ue9VFjv5oHhEYeaYfKHXsjMXts9hrb6tWeU
+ 2lKXLDIjDyswKdI7ODl2Sy6Uejyk2PwirMox5k1amJtObCMmjVcSafeZK/xrEVIo
+ MMSZrQupb9nNJa8RLZjWnhqMh0kygZOUtdcTOyBaVkjl8kuuad0yf8ObQE2WgZnR
+ wt+O+q9xC/rvX3FMBKEEuaI/XutZE5C5Oz/t6miNzTwjN/XjhwV27z5bZFs+OoQM
+ DFLKQO461accRDEcK1EePLLMQD2w7jV4oJOzL0iFq2oWUC5JdXwvAFiDBhspVvQ2
+ MoN35HNsAHM6blYXaH6gqCZLiy7V5yx5Ph/yBSmHz1ILg7k5P3s9TnWy1Iba99Ys
+ XxSWDkjB/JCr0yexO+8RYedZZtnCvDRWhADwcVA7dib6RpdHp6aCO+HO0afcBHrT 8bETdTg=
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-=0A=
-=0A=
-I have an urgent communication with you Contact me privately.=0A=
-=0A=
-E-mail: rccrc00@gmail.com=0A=
-=0A=
-for details.=0A=
+On 2023-07-11 08:54, Pankaj Raghav wrote:
+>>> Another request came in today, even with a pseudo-patch:
+>>> https://bugzilla.kernel.org/show_bug.cgi?id=217649
+>>>
+>>> To quote:
+>>> ```
+>>> As with numerous NVMe controllers these days, Samsung's
+>>> MZAL41T0HBLB-00BL2, which Lenovo builds into their 16ARP8 also suffers
+>>> from invalid IDs, breaking suspend and hibernate also on the latest
+>>> kernel 6.4.2.
+>>>
+>>> The following change restores this functionality:
+>>>
+>>> File: root/drivers/nvme/host/pci.c
+>>> Change:
+>>>
+>>> -	{ PCI_DEVICE(0x144d, 0xa80b),   /* Samsung PM9B1 256G and 512G */
+>>> -		.driver_data = NVME_QUIRK_DISABLE_WRITE_ZEROES, },
+>>>
+>>> +	{ PCI_DEVICE(0x144d, 0xa80b),   /* Samsung PM9B1 256G, 512G and 1TB */
+>>> +		.driver_data = NVME_QUIRK_BOGUS_NID |
+>>> +				NVME_QUIRK_DISABLE_WRITE_ZEROES, },
+>>
+>> Panjaj, okay with this one too?
+> 
+> This looks a like a new device that might have a firmware update. I will ping
+> internally first.
+
+(Note that this is a different issue from the regression in this thread)
+
+I reported this back in November [1] and was told by Kanchan Joshi at
+Samsung that it was fixed in new firmware [2]. Lenovo was also contacted
+and said they were working on the update in December [3]. I'm not sure
+what happened then, but in March, Mark Pearson at Lenovo wrote [4]:
+
+> I'm stuck on this one - the FW team reached out to Samsung to see if 
+> there were fixes that we should be picking up and Samsung reported back 
+> that there are no Linux issues reported against this part :(
+
+The release process then seems to have started over [5] and the latest
+update as of May is that the update is supposed to be released this month.
+
+[1] https://lore.kernel.org/all/20221116171727.4083-1-git@augustwikerfors.se/
+[2] https://lore.kernel.org/all/20221206055928.GB24451@test-zns/
+[3] https://github.com/tomsom/yoga-linux/issues/9#issuecomment-1368013293
+[4] https://github.com/fwupd/firmware-lenovo/issues/308#issuecomment-1466631468
+[5] https://forums.lenovo.com/topic/findpost/27/5196929/5984302
