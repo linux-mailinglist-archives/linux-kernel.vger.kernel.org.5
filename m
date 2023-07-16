@@ -2,117 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AF8E755089
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 20:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB81A755095
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 20:44:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230000AbjGPSmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Jul 2023 14:42:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40610 "EHLO
+        id S230107AbjGPSoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Jul 2023 14:44:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbjGPSmN (ORCPT
+        with ESMTP id S229503AbjGPSoM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Jul 2023 14:42:13 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77029116
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 11:42:12 -0700 (PDT)
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2486E1EC096C;
-        Sun, 16 Jul 2023 20:42:11 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1689532931;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:references;
-        bh=GxGezcAwkBcGtUwyX+J8v7tcHhZV47pZ7EUlmh0zRns=;
-        b=F8j1ZJUhTdfWLVST64hzEpk498a97DOBXNoaGkvD1V/qAzSueZF2Lxd81JcjHZrYFIyb6z
-        6ww1mmRNHInqjNLTVqKb5nlkDDmf9qRRmZ7o4R6ZJZDLrYWEyzxYynIg1Dgln+8mHsay9Q
-        LVFqQFVIgZVhgBWi2ff6uPfQ1OoY1+M=
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 0bR7prrroyNn; Sun, 16 Jul 2023 18:42:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1689532928; bh=GxGezcAwkBcGtUwyX+J8v7tcHhZV47pZ7EUlmh0zRns=;
-        h=Date:From:To:Cc:Subject:From;
-        b=dRu7xOZ5olELO/yRSIVQr9GqSMJ9BiM+63KdtEt7aAaYSlB5IFAqDd6zoJb1s2fmb
-         jKI+R5ZdNY+9JMOLVneY4QFf+7fYkWnflHTIhkP2bU7laRvaUQteJW8WNoZr4jAC4/
-         dCbLn7hxoOqZO3+oC20S96Zo2wB1lOYE/VL/na96PnOJ3XmIuFkXUqp3Kt4UB4/rtl
-         FChaV71l7ayvU/OZMRCHIxueZm/M6CRSuW1sMNnH9slHkUy+cioOEHyu8h9owY1a6T
-         m+N2yHUE2FSSEeWSusqnV4BaRpsM6H30wZdyla1UfrbGomWYGJGlrXUuErINcEgeac
-         Uozv0fkVVj9jA1Sq/IrT3p5VWV3ARus25yowqgpAS036cxEQsywX7Wob5mmQlZIdcb
-         9zr/1PyCKQ4xaSjJKIC9qaUNQvm7ZMx97rN65fdVF5K5zJlCWfLJoh/iZHBhbjiWQ1
-         2aQDk5sY7pGJuxinLRyUo2b4bgDr8w1qPY85qzoSOvpfdRAVDt6s96G+yNF4gYmt2y
-         Ay7shiSU8CsVr+cMc1nQIOn9QJaltu1XDj5JZ+oGrvBWxwZJPP4+smx9a8+7iNjFS/
-         IcGdJ13ma7nG1TntSTMbhRmzY2x1X+LFEcQ0ebNYbUwJwhi6X7firphsiQGhA1VoaU
-         k7TmIFfqewM5zkP0y8DfLAmY=
-Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 860C440E00F4;
-        Sun, 16 Jul 2023 18:42:05 +0000 (UTC)
-Date:   Sun, 16 Jul 2023 20:42:04 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] objtool/urgent for v6.5-rc2
-Message-ID: <20230716184204.GFZLQ5/DJ1+q8vpuuN@fat_crate.local>
+        Sun, 16 Jul 2023 14:44:12 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49EF71B5;
+        Sun, 16 Jul 2023 11:44:11 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fb4146e8deso38690245e9.0;
+        Sun, 16 Jul 2023 11:44:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689533050; x=1692125050;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Iw9rxMmy489xUbQwxOXNVFRR34rAPTUVmC3dh4HsQWw=;
+        b=HeTYsvujwYrQwwXDp0WMfX5PfsFlIaj6iOyQIXfhYDOXQFOXAymdjg45DuXKHpZVdJ
+         T0aeNJd7Ukr89zC6YK00llwOXwwMwhYEvmhru6R/6shzkJ+Ukd7y+DIIZvnwnJX/J3I3
+         lzlwAHp1rxIOasiaWGaNKZtkhzOFqAEO4USZ5UpVmpIrBKJ++StYna4dQjao6RT3DY3z
+         jZ030yFpCTFSV/R5E2TwYhm4lrnd2utaZEcbhOPlI0c0I6IGQyGLT7QllT2zMfiqmACc
+         W8IWNxCpZmfjezbzCziIQLwUl1CWTwNc0IUxRR7LEYPdb+MZJkH+B+Unu+t4e3s6mEOc
+         FsAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689533050; x=1692125050;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Iw9rxMmy489xUbQwxOXNVFRR34rAPTUVmC3dh4HsQWw=;
+        b=dYx3bkzh0He/Nt1xlb851vDcjmjD+2ibHbUYKtTTjT+OgDneBuyRS7b2oUvWqDSmuv
+         X1t/8JvR6FwECphjfMwpdtnXlqfUcmBAULGD9MVvnLt8YR0RLAn8O9NilbFWUAj8A7fL
+         BoKf8rAHdO0ioh/gg6k/PQInHcYCJqO+jWXz7HfLfohr5vgwo3pDs8qw6hDsaUDoM9P/
+         tuKPyUvjm63kr/Qohf4zQ3nWnDNsBzBbFRjkHAXIoHbl9sby9JJuYHpx4bRgEkh/uQ/x
+         h8yYyx9oOS6Key8BFLA+oVa4RtTw8Sje4AIQtSL/Ad/948ANRK2emKM7jfGMowu9Jq3v
+         cCYQ==
+X-Gm-Message-State: ABy/qLavzldO1bpCq1NIZa9Qm8K67pfU9NQzMox7pLNe8QbawMhZpfLN
+        oN8Ay/wH9h6SAgQezPM6iy3oKoVGUJaJedrD
+X-Google-Smtp-Source: APBJJlGqrk4/ImODOjlE2fM0n8aEqgTPPtq8oeBjobvCf+cVue7GW3rAT7MupfI6Rwb2vIto6QFSbw==
+X-Received: by 2002:adf:ffd2:0:b0:313:eb81:d2f6 with SMTP id x18-20020adfffd2000000b00313eb81d2f6mr11309115wrs.4.1689533049498;
+        Sun, 16 Jul 2023 11:44:09 -0700 (PDT)
+Received: from mmaatuq-HP-Laptop-15-dy2xxx.. ([2001:8f8:1163:535c:e1af:2d96:1960:a57d])
+        by smtp.gmail.com with ESMTPSA id v7-20020a05600c214700b003fbc681c8d1sm6212956wml.36.2023.07.16.11.44.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 16 Jul 2023 11:44:08 -0700 (PDT)
+From:   Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, shuah@kernel.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>
+Subject: [PATCH v4] selftests/net: replace manual array size calc with ARRAYSIZE macro.
+Date:   Sun, 16 Jul 2023 22:43:49 +0400
+Message-Id: <20230716184349.2124858-1-mahmoudmatook.mm@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+fixes coccinelle WARNING: Use ARRAY_SIZE
 
-please pull two urgent objtool fixes for 6.5.
-
-Thx.
-
+Signed-off-by: Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>
 ---
+changelog since v3:
+ - move changelog outside commit message.
 
-The following changes since commit 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5:
+changelog since v2:
+ - integrat a commit that contains actual replacement for ARRAY_SIZE.
+ - use ARRAY_SIZE for net/psock_lib.h
 
-  Linux 6.5-rc1 (2023-07-09 13:53:13 -0700)
+changelog since v1:
+ - remove unnecessary extra new line
 
-are available in the Git repository at:
+changelog since v0:
+ - update net/Makefile to include kselftest.h
+ - remove redefinition of ARRAYSIZE.
+---
+ tools/testing/selftests/net/Makefile          | 2 ++
+ tools/testing/selftests/net/csum.c            | 6 ++++--
+ tools/testing/selftests/net/hwtstamp_config.c | 6 ++++--
+ tools/testing/selftests/net/psock_lib.h       | 4 +++-
+ 4 files changed, 13 insertions(+), 5 deletions(-)
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/objtool_urgent_for_v6.5_rc2
-
-for you to fetch changes up to 719a937b7003933de1298ffa4b881dd6a234e244:
-
-  iov_iter: Mark copy_iovec_from_user() noclone (2023-07-10 09:52:28 +0200)
-
-----------------------------------------------------------------
-- Mark copy_iovec_from_user() __noclone in order to  prevent gcc from
-  doing an inter-procedural optimization and confuse objtool
-
-- Initialize struct elf fully to avoid build failures
-
-----------------------------------------------------------------
-Michal Kubecek (1):
-      objtool: initialize all of struct elf
-
-Peter Zijlstra (1):
-      iov_iter: Mark copy_iovec_from_user() noclone
-
- lib/iov_iter.c      | 2 +-
- tools/objtool/elf.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
+diff --git a/tools/testing/selftests/net/Makefile b/tools/testing/selftests/net/Makefile
+index 7f3ab2a93ed6..a06cc25489f9 100644
+--- a/tools/testing/selftests/net/Makefile
++++ b/tools/testing/selftests/net/Makefile
+@@ -3,6 +3,8 @@
+ 
+ CFLAGS =  -Wall -Wl,--no-as-needed -O2 -g
+ CFLAGS += -I../../../../usr/include/ $(KHDR_INCLUDES)
++# Additional include paths needed by kselftest.h
++CFLAGS += -I../
+ 
+ TEST_PROGS := run_netsocktests run_afpackettests test_bpf.sh netdevice.sh \
+ 	      rtnetlink.sh xfrm_policy.sh test_blackhole_dev.sh
+diff --git a/tools/testing/selftests/net/csum.c b/tools/testing/selftests/net/csum.c
+index 82a1c1839da6..90eb06fefa59 100644
+--- a/tools/testing/selftests/net/csum.c
++++ b/tools/testing/selftests/net/csum.c
+@@ -91,6 +91,8 @@
+ #include <sys/types.h>
+ #include <unistd.h>
+ 
++#include "kselftest.h"
++
+ static bool cfg_bad_csum;
+ static int cfg_family = PF_INET6;
+ static int cfg_num_pkt = 4;
+@@ -450,7 +452,7 @@ static void send_packet(int fd, const char *buf, int len)
+ 	iov[2].iov_len = len;
+ 
+ 	msg.msg_iov = iov;
+-	msg.msg_iovlen = sizeof(iov) / sizeof(iov[0]);
++	msg.msg_iovlen = ARRAY_SIZE(iov);
+ 
+ 	msg.msg_name = &addr;
+ 	msg.msg_namelen = sizeof(addr);
+@@ -505,7 +507,7 @@ static void __recv_prepare_packet_filter(int fd, int off_nexthdr, int off_dport)
+ 	struct sock_fprog prog = {};
+ 
+ 	prog.filter = filter;
+-	prog.len = sizeof(filter) / sizeof(struct sock_filter);
++	prog.len = ARRAY_SIZE(filter);
+ 	if (setsockopt(fd, SOL_SOCKET, SO_ATTACH_FILTER, &prog, sizeof(prog)))
+ 		error(1, errno, "setsockopt filter");
+ }
+diff --git a/tools/testing/selftests/net/hwtstamp_config.c b/tools/testing/selftests/net/hwtstamp_config.c
+index e1fdee841021..170728c96c46 100644
+--- a/tools/testing/selftests/net/hwtstamp_config.c
++++ b/tools/testing/selftests/net/hwtstamp_config.c
+@@ -16,6 +16,8 @@
+ #include <linux/net_tstamp.h>
+ #include <linux/sockios.h>
+ 
++#include "kselftest.h"
++
+ static int
+ lookup_value(const char **names, int size, const char *name)
+ {
+@@ -50,7 +52,7 @@ static const char *tx_types[] = {
+ 	TX_TYPE(ONESTEP_SYNC)
+ #undef TX_TYPE
+ };
+-#define N_TX_TYPES ((int)(sizeof(tx_types) / sizeof(tx_types[0])))
++#define N_TX_TYPES ((int)(ARRAY_SIZE(tx_types)))
+ 
+ static const char *rx_filters[] = {
+ #define RX_FILTER(name) [HWTSTAMP_FILTER_ ## name] = #name
+@@ -71,7 +73,7 @@ static const char *rx_filters[] = {
+ 	RX_FILTER(PTP_V2_DELAY_REQ),
+ #undef RX_FILTER
+ };
+-#define N_RX_FILTERS ((int)(sizeof(rx_filters) / sizeof(rx_filters[0])))
++#define N_RX_FILTERS ((int)(ARRAY_SIZE(rx_filters)))
+ 
+ static void usage(void)
+ {
+diff --git a/tools/testing/selftests/net/psock_lib.h b/tools/testing/selftests/net/psock_lib.h
+index faa884385c45..6e4fef560873 100644
+--- a/tools/testing/selftests/net/psock_lib.h
++++ b/tools/testing/selftests/net/psock_lib.h
+@@ -14,6 +14,8 @@
+ #include <arpa/inet.h>
+ #include <unistd.h>
+ 
++#include "kselftest.h"
++
+ #define DATA_LEN			100
+ #define DATA_CHAR			'a'
+ #define DATA_CHAR_1			'b'
+@@ -63,7 +65,7 @@ static __maybe_unused void pair_udp_setfilter(int fd)
+ 	struct sock_fprog bpf_prog;
+ 
+ 	bpf_prog.filter = bpf_filter;
+-	bpf_prog.len = sizeof(bpf_filter) / sizeof(struct sock_filter);
++	bpf_prog.len = ARRAY_SIZE(bpf_filter);
+ 
+ 	if (setsockopt(fd, SOL_SOCKET, SO_ATTACH_FILTER, &bpf_prog,
+ 		       sizeof(bpf_prog))) {
 -- 
-Regards/Gruss,
-    Boris.
+2.34.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
