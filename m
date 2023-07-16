@@ -2,106 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E169754E1A
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 11:31:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FF72754E1E
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 11:39:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229746AbjGPJb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Jul 2023 05:31:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60420 "EHLO
+        id S229553AbjGPJh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Jul 2023 05:37:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbjGPJb1 (ORCPT
+        with ESMTP id S229449AbjGPJhz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Jul 2023 05:31:27 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 696A5BA;
-        Sun, 16 Jul 2023 02:31:26 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1b89d47ffb6so19158685ad.2;
-        Sun, 16 Jul 2023 02:31:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689499886; x=1692091886;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=PAEW5pBQpGEQa8+u+L9FSRTp3sQn8Q/V86sBZoZsPWQ=;
-        b=l6RwRWzaknd6B76niiuL3tAR63PuV1iQSjFKFJXxADmQb4HesnoyQ447/WNd4TUcO6
-         XATKCziG9vWxMed+uSYI0nDY901HvvRQdJlAETW6bwI+GaFGfsR6yJpEQqdJ+U0ay0+W
-         0CwrvCc3JTkBzqTM/gPZOgHYYgVf/TnJDOCxKIXFO3EgW5HKFXKYnrDdPkP3tN//SC5o
-         rE7IIgz7ANUGNYdgbKHmLhxbJj5Hg+Q+Ai9AvZ2m/qLmj8HfNj5ddXWulXeOSXHc/WGU
-         os6aCBAz8ugrM3R+5w/KlXe2yoPjQ2jOpjxBoiy8/BIdbvRnBCBsk4ab5hfJVly6J/wV
-         R8gg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689499886; x=1692091886;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PAEW5pBQpGEQa8+u+L9FSRTp3sQn8Q/V86sBZoZsPWQ=;
-        b=eR+7hxRHsU4HY7JdmCVXr03PcIqKVvwhZEoU8BeHu8PrejFD3xASUmUIhlZ9JOoZm+
-         r6ubkXSrzdT1z9AeQpXsEE7Syp08CZc0zqYDubPzg5/Jj6KONJ59qnz2bCk6bldi9Web
-         PTIBO2jTNq/7Go/WwQa6RceBKbZwudVabfMWH2Zfxxdcz447AX02Q6eKrC1kbuq6aRU6
-         M85nNOc5+hYjCZsk/j/sddq3jGp2VHchCuSRgbpKpLiD34dVTYf2GFBDy59DVVodGOel
-         D+oWAEt7k9ynvNjO9P41DqNFfWZeHarcvEbixQ//is9JBlQTK1Q7QvXN6dLk5GWp04mR
-         9Pig==
-X-Gm-Message-State: ABy/qLbiuiU/EgFbGVXh+m8PIV64+IWUEqW9RYFDZVhqBvXrKQOvJcYt
-        iV3b4fiehkFbaT6OXtEsEXQ=
-X-Google-Smtp-Source: APBJJlF/U3P4PPfKm/yTvfoD3FH7ic/HtRrlLwsE4DFcJwxy9JLajQ6TfObSOFUhHXjL9WuuDR2T7g==
-X-Received: by 2002:a17:902:ec88:b0:1b7:fef7:d578 with SMTP id x8-20020a170902ec8800b001b7fef7d578mr7533075plg.41.1689499885772;
-        Sun, 16 Jul 2023 02:31:25 -0700 (PDT)
-Received: from zephyrusG14 ([103.251.210.195])
-        by smtp.gmail.com with ESMTPSA id q9-20020a170902dac900b001b89f6550d1sm10662211plx.16.2023.07.16.02.31.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 16 Jul 2023 02:31:25 -0700 (PDT)
-Date:   Sun, 16 Jul 2023 15:01:19 +0530
-From:   Yogesh Hegde <yogi.kernel@gmail.com>
-To:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, heiko@sntech.de, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        skhan@linuxfoundation.org, ivan.orlov0322@gmail.com
-Subject: [PATCH] arm64: dts: rockchip: Fix Wifi/Bluetooth on ROCK Pi 4 boards
-Message-ID: <ZLO450xOIQ29VoBT@zephyrusG14>
+        Sun, 16 Jul 2023 05:37:55 -0400
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AE74E45;
+        Sun, 16 Jul 2023 02:37:54 -0700 (PDT)
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36G71xRc019606;
+        Sun, 16 Jul 2023 02:37:47 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=u3UVgM7x4wqx72JKmwETgwQbtQ4974KGNu1bjFcRfuw=;
+ b=i6ZB06yQ3/eZu/aTesEH+z7Br5RPXApFMSVOzjrmLfi5Ixf8isksBGogYLhjbXDPzRBM
+ T96AZVlU03ySiQgU9ZKL6fvlEKx6kts0Bz0R+Gy//1z4BRVm0yRobVeKuCsI5Blf14SJ
+ 9XPWw2y5hQgH7w+BCQBMO+r6UIr4iFQKV8ejQ0RxBDV1Q6uDT2Wje0tx66oXibHQF4qy
+ Fl2BoMAk7kfBUG11amjceoTvmpeA9swsIejRhnNig6BPiOI0rjHACONFOnL6T+aTIwBm
+ Ef3mwR0d0Yaf3+wXBUcwnO1dmfUKra2dOEkhi0vDj1W0ZbnA3/IdkzjJkDxohpKjUgfG lw== 
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3rutygsmgv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Sun, 16 Jul 2023 02:37:47 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 16 Jul
+ 2023 02:37:45 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Sun, 16 Jul 2023 02:37:45 -0700
+Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
+        by maili.marvell.com (Postfix) with ESMTP id 91A275E686A;
+        Sun, 16 Jul 2023 02:37:42 -0700 (PDT)
+From:   Geetha sowjanya <gakula@marvell.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <kuba@kernel.org>, <davem@davemloft.net>, <pabeni@redhat.com>,
+        <edumazet@google.com>, <sgoutham@marvell.com>,
+        <gakula@marvell.com>, <sbhatta@marvell.com>, <hkelam@marvell.com>
+Subject: [net PATCH] octeontx2-pf: Dont allocate BPIDs for LBK interfaces
+Date:   Sun, 16 Jul 2023 15:07:41 +0530
+Message-ID: <20230716093741.28063-1-gakula@marvell.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Proofpoint-GUID: 7ShzuYIFd5bswaevYpk2JoVeC0DorjhH
+X-Proofpoint-ORIG-GUID: 7ShzuYIFd5bswaevYpk2JoVeC0DorjhH
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-15_14,2023-07-13_01,2023-05-22_02
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes an issue affecting the Wifi/Bluetooth connectivity on
-ROCK Pi 4 boards. Commit f471b1b2db08 ("arm64: dts: rockchip: Fix Bluetooth
-on ROCK Pi 4 boards") introduced a problem with the clock configuration.
-Specifically, the clock-names property of the sdio-pwrseq node was not
-updated to 'lpo', causing the driver to wait indefinitely for the wrong clock
-signal 'ext_clock' instead of the expected one 'lpo'. This prevented the proper
-initialization of Wifi/Bluetooth chip on ROCK Pi 4 boards.
+Current driver enables backpressure for LBK interfaces.
+But these interfaces do not support this feature.
+Hence, this patch fixes the issue by skipping the
+backpressure configuration for these interfaces.
 
-To address this, this patch updates the clock-names property of the
-sdio-pwrseq node to "lpo" to align with the changes made to the bluetooth node.
-
-This patch has been tested on ROCK Pi 4B.
-
-Signed-off-by: Yogesh Hegde <yogi.kernel@gmail.com>
+Fixes: 75f36270990c ("octeontx2-pf: Support to enable/disable pause frames via ethtool").
+Signed-off-by: Geetha sowjanya <gakula@marvell.com>
+Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
 ---
- arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
-index 907071d4fe80..795a70948d9a 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
-@@ -45,7 +45,7 @@ led-0 {
- 	sdio_pwrseq: sdio-pwrseq {
- 		compatible = "mmc-pwrseq-simple";
- 		clocks = <&rk808 1>;
--		clock-names = "ext_clock";
-+		clock-names = "lpo";
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&wifi_enable_h>;
- 		reset-gpios = <&gpio0 RK_PB2 GPIO_ACTIVE_LOW>;
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
+index fe8ea4e531b7..9551b422622a 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
+@@ -1454,8 +1454,9 @@ static int otx2_init_hw_resources(struct otx2_nic *pf)
+ 	if (err)
+ 		goto err_free_npa_lf;
+ 
+-	/* Enable backpressure */
+-	otx2_nix_config_bp(pf, true);
++	/* Enable backpressure for CGX mapped PF/VFs */
++	if (!is_otx2_lbkvf(pf->pdev))
++		otx2_nix_config_bp(pf, true);
+ 
+ 	/* Init Auras and pools used by NIX RQ, for free buffer ptrs */
+ 	err = otx2_rq_aura_pool_init(pf);
 -- 
-2.34.1
+2.25.1
 
