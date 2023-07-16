@@ -2,118 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 709AA754D59
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 06:50:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5206E754D5B
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 06:54:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229617AbjGPEub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Jul 2023 00:50:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60906 "EHLO
+        id S229776AbjGPEx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Jul 2023 00:53:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjGPEu2 (ORCPT
+        with ESMTP id S229541AbjGPEx5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Jul 2023 00:50:28 -0400
-Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4A77E10F8;
-        Sat, 15 Jul 2023 21:50:27 -0700 (PDT)
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 36G4oFVC028846;
-        Sun, 16 Jul 2023 06:50:15 +0200
-Date:   Sun, 16 Jul 2023 06:50:15 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Zhangjin Wu <falcon@tinylab.org>
-Cc:     arnd@arndb.de, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, thomas@t-8ch.de
-Subject: Re: [PATCH v4 00/18] tools/nolibc: shrink arch support
-Message-ID: <20230716045015.GA28761@1wt.eu>
-References: <20230715222658.GA27708@1wt.eu>
- <20230716011744.499597-1-falcon@tinylab.org>
+        Sun, 16 Jul 2023 00:53:57 -0400
+Received: from mail.208.org (unknown [183.242.55.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A4841729
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 21:53:55 -0700 (PDT)
+Received: from mail.208.org (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTP id 4R3Xt75DVgzBHXgq
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 12:53:51 +0800 (CST)
+Authentication-Results: mail.208.org (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=208.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
+        content-transfer-encoding:content-type:message-id:user-agent
+        :references:in-reply-to:subject:to:from:date:mime-version; s=
+        dkim; t=1689483231; x=1692075232; bh=gS2d9ombR8HAaNSLxJlzXEer9Xo
+        +jbEvrJ0SW3gBj2s=; b=y9/JfScVJ/D5Cpp9k4D2mvUxKZJ+lAAha06XxZwBjsj
+        qboodizJgFIxwupW4MshAGdvNI+aRlKq9mUdouX3E8Cf60i1kDKsN+aIxDOcLj7w
+        6nBZ0+xYebEoTm67OzJ7At/h5KNbQrS0bOEErdbG0NwMwgRLkMdsgjqYQgatHM57
+        b4u+uHhaAMZ2ds8yU9mRJIAYcjRnKCr0hQntXC9pHj+vBFQgUG1hbXTazqoXH5HI
+        K4cP3ScmM6xKFbisyTy6G77LHywgq/kUINGoWD9NpYLAS78b52sNf6ruPt8hCAQO
+        LycWhs5iCLTZTwJ1m5dxjFyfida1c6gHJswdc62cecA==
+X-Virus-Scanned: amavisd-new at mail.208.org
+Received: from mail.208.org ([127.0.0.1])
+        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id w89UBzFDSCrk for <linux-kernel@vger.kernel.org>;
+        Sun, 16 Jul 2023 12:53:51 +0800 (CST)
+Received: from localhost (email.208.org [127.0.0.1])
+        by mail.208.org (Postfix) with ESMTPSA id 4R3Xt73RpXzBHXgf;
+        Sun, 16 Jul 2023 12:53:51 +0800 (CST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230716011744.499597-1-falcon@tinylab.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Date:   Sun, 16 Jul 2023 12:53:51 +0800
+From:   wuyonggang001@208suo.com
+To:     m@bues.ch
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ssb: Modify Format
+In-Reply-To: <20230716045151.26193-1-zhanglibing@cdjrlc.com>
+References: <20230716045151.26193-1-zhanglibing@cdjrlc.com>
+User-Agent: Roundcube Webmail
+Message-ID: <09e3401881baccc7c535fb9f92b4cca8@208suo.com>
+X-Sender: wuyonggang001@208suo.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 16, 2023 at 09:17:44AM +0800, Zhangjin Wu wrote:
-> > I finally found that it's due to the lack of -Isysroot/x86/include, so
-> > it used to get linux includes from those provided by glibc and these ones
-> > were missing statx since packaged for an older kernel.
-> >
-> 
-> So, your local glibc may be older than 2.28 (The one we mentioned in the
-> commit message who supports statx)? mine 2.31 glibc is ok:
+Fix the following checkpatch error(s):
 
-Oh definitely! It's a 2.23, and on another machine I'm having a 2.27
-on an ubuntu 18 but it was built against a more recent kernel so its
-linux/stat.h has the required entries, and on another one I'm having
-a 2.17 which was built against a 3.10 kernel.
+ERROR: "foo * bar" should be "foo *bar"
 
-> For older Linux systems without a newer libc may really require the
-> installation of the linux sysroot (linux/uapi).
+Signed-off-by: Yonggang Wu <wuyonggang001@208suo.com>
+---
+  drivers/ssb/driver_chipcommon_pmu.c | 4 ++--
+  1 file changed, 2 insertions(+), 2 deletions(-)
 
-Yes. My point was that it wasn't very hard to already spot breakage
-on existing code built on existing setups.
+diff --git a/drivers/ssb/driver_chipcommon_pmu.c 
+b/drivers/ssb/driver_chipcommon_pmu.c
+index 888069e10659..058d70ac6ec8 100644
+--- a/drivers/ssb/driver_chipcommon_pmu.c
++++ b/drivers/ssb/driver_chipcommon_pmu.c
+@@ -72,7 +72,7 @@ static const struct pmu0_plltab_entry pmu0_plltab[] = 
+{
+  };
+  #define SSB_PMU0_DEFAULT_XTALFREQ    20000
 
-> > I knew that sooner or later I'd have to reinstall this machine but I
-> > can't get out of my head that to date I have yet not been convinced by
-> > the absolute necessity of this modification which is progressively adding
-> > more burden :-/  Time will tell...
-> >
-> 
-> This may also let us think about the removing of <linux/xxx.h> from our
-> nolibc headers? just like musl does ;-)
-> 
->     $ grep "include <linux" -ur ../../../include/nolibc/
->     ../../../include/nolibc/stdlib.h:#include <linux/auxvec.h>
->     ../../../include/nolibc/sys.h:#include <linux/fs.h>
->     ../../../include/nolibc/sys.h:#include <linux/loop.h>
->     ../../../include/nolibc/sys.h:#include <linux/time.h>
->     ../../../include/nolibc/sys.h:#include <linux/auxvec.h>
->     ../../../include/nolibc/sys.h:#include <linux/fcntl.h> /* for O_* and AT_* */
->     ../../../include/nolibc/sys.h:#include <linux/stat.h>  /* for statx() */
->     ../../../include/nolibc/sys.h:#include <linux/prctl.h>
->     ../../../include/nolibc/types.h:#include <linux/mman.h>
->     ../../../include/nolibc/types.h:#include <linux/reboot.h> /* for LINUX_REBOOT_* */
->     ../../../include/nolibc/types.h:#include <linux/stat.h>
->     ../../../include/nolibc/types.h:#include <linux/time.h>
-> 
-> If simply put all of them to types.h, it may be too much, a new "sys/"
-> directory with almost the same Linux type files may be required, but as
-> an in-kernel libc, this duplication may be a "big" issue too, so, adding
-> minimal required macros and structs in types.h may be another choice.
-(...)
-> The required new macros and structs may be around 100-300 lines? but it may
-> help to avoid the installation of sysroot completely and also avoid the cross
-> including the linux-libc-dev package used by glibc?
+-static const struct pmu0_plltab_entry * pmu0_plltab_find_entry(u32 
+crystalfreq)
++static const struct pmu0_plltab_entry *pmu0_plltab_find_entry(u32 
+crystalfreq)
+  {
+      const struct pmu0_plltab_entry *e;
+      unsigned int i;
+@@ -203,7 +203,7 @@ static const struct pmu1_plltab_entry pmu1_plltab[] 
+= {
 
-No, really, that's what we used to do previously. If you remember we
-recently removed lots of structs and defines from various files because
-they used to regularly conflict with linux/foo.h (that we can't prevent
-users from including), while not always being 100% up-to-date. It's
-particularly annoying when there are typedefs for example because it's
-difficult to detect them, and if you redefine them you end up with build
-errors. We should only keep that for absolute necessity. In fact, maybe
-we could have these few ones precisely for statx, right after including
-linux/stat.h (which is supposed to provide them):
+  #define SSB_PMU1_DEFAULT_XTALFREQ    15360
 
-  #ifndef STATX_BASIC_STATS
-    /* pre-4.10 linux uapi headers present, missing statx that we need */
-    #define STATX_BASIC_STATS xxx
-    struct statx {
-        ...
-    };
-  #endif
-
-I may give this a try to see if it's sufficient to fix the build on
-these machines. But it's not critical anyway. I might try once I'm
-bored of seeing build failures.
-
-Cheers,
-Willy
+-static const struct pmu1_plltab_entry * pmu1_plltab_find_entry(u32 
+crystalfreq)
++static const struct pmu1_plltab_entry *pmu1_plltab_find_entry(u32 
+crystalfreq)
+  {
+      const struct pmu1_plltab_entry *e;
+      unsigned int i;
