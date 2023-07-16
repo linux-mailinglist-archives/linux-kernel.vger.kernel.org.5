@@ -2,104 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 169B9754F0D
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 16:44:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69269754F0F
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 16:47:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229790AbjGPOo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Jul 2023 10:44:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35100 "EHLO
+        id S229823AbjGPOrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Jul 2023 10:47:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229710AbjGPOoz (ORCPT
+        with ESMTP id S229558AbjGPOrq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Jul 2023 10:44:55 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0A2CFA;
-        Sun, 16 Jul 2023 07:44:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=SVZM4PFndxxCcq66T7tUspDKRLmLt+kbA9O41zp70/o=; b=oGDUJcA4aEU6/rxu5VxEYiuq4Z
-        QeF7R8Cy24XDCcxbvD+5MahvthcCdw0eFFVBWBjalgoZ03jiQr4QKLyicPSb6jk4TWOMR2nUrgh8H
-        r01JYDQ2KDY53FH1ldTxyeHoc+N6gnMxp6iPiNNyjNILD5F0CZNTKeLjyFGqT22w6RiY=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qL2zI-001U0x-2c; Sun, 16 Jul 2023 16:44:40 +0200
-Date:   Sun, 16 Jul 2023 16:44:40 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Alexandru Ardelean <alex@shruggie.ro>
-Cc:     Rob Herring <robh@kernel.org>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        olteanv@gmail.com, marius.muresan@mxt.ro
-Subject: Re: [PATCH v2 2/2] dt-bindings: net: phy: vsc8531: document
- 'vsc8531,clkout-freq-mhz' property
-Message-ID: <7fa2d457-4ae9-42f5-be73-80549aae558c@lunn.ch>
-References: <20230713202123.231445-1-alex@shruggie.ro>
- <20230713202123.231445-2-alex@shruggie.ro>
- <20230714172444.GA4003281-robh@kernel.org>
- <CAH3L5Qoj+sue=QnR2Lp12x3Hz2t2BNnarZHJiqxL3Gtf6M=bsA@mail.gmail.com>
+        Sun, 16 Jul 2023 10:47:46 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 312D51A1
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 07:47:45 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-51d95aed33aso4763682a12.3
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 07:47:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689518863; x=1692110863;
+        h=content-transfer-encoding:from:to:content-language:subject:reply-to
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uHMPfaSl9jKwSiF3RAZuU0OvxFWigdTYjgEMP/YkWwM=;
+        b=i6y9CIgqun4QivoDxfNwYSYh1q1nuAvL0wEMYxHrOQGR1gU1bUQBJovswCLiJNDsxZ
+         HmZTTa8rmRRApo2T5Ef7GWojcKFoovmptDYmCencYrvsj9mrJjSEpnLvTPasrvq4hUkJ
+         COl8Sb+m7HlhuNdVPtoJKFCoGCK0JBFx8OyMWVNidEETQpH/KYeqFwN7ild34THt0oKm
+         Sm+mWj9pHKwpbupH5WlUA6zu+BnyNpSzrdWE2+xpHpUu8twF2QXp5eTvrCKRTBBGyJmC
+         EsaKhuHBg6bNeRbVGU9Az51zfBKUARBReW2XueOYtLqNCgiRVo85PGK9/xnbRIW0CIua
+         mmQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689518863; x=1692110863;
+        h=content-transfer-encoding:from:to:content-language:subject:reply-to
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=uHMPfaSl9jKwSiF3RAZuU0OvxFWigdTYjgEMP/YkWwM=;
+        b=L86S6kncNssK4rNAXApc1rgfIu1OkwBC5FN0Sk68gwbCokLfRfGIsWLRVWvOjm8+zC
+         RRQJJLST2Mzwz+mGAfoWqUAcxrn5qDBEomt+rp48tUa5dplzqgPm+xEgP8Avy8wG3vBI
+         6//RULzIVUHQNemRmzI6iOLypuKUvGgAUTbW/HH8Zgd5XhqVhzAvvagGhSQsgj8BZ2OR
+         ccu9gHN/twNo5CF+dglGtHhbQWRrI+WWSq7wDU9saoIFA6Cs7Jb8X5/EmLC4fkVBlkgF
+         +F5EltvgHNrLE8yme+FNhpiZ2weJNytaV76wAR6iVRIiON+lo/kkVVUxy43Y/8q9sPKK
+         F6dw==
+X-Gm-Message-State: ABy/qLaUHejG7sNOCddSAEgTdGoUZ2iLo0e8fte6RKfQDAY7+X4d0UZg
+        gOAmEC7OHXvNeeco4TS+I67DkxT79U2patSq
+X-Google-Smtp-Source: APBJJlHe90niz6zUU0mCo3V42t1NPOO4vtrQOb6T15yJJBP1glI1dlBBj/Pkv4SuBIjGn96ackdMlA==
+X-Received: by 2002:aa7:d751:0:b0:51f:e92a:62ba with SMTP id a17-20020aa7d751000000b0051fe92a62bamr8644981eds.9.1689518862880;
+        Sun, 16 Jul 2023 07:47:42 -0700 (PDT)
+Received: from [10.5.0.2] ([176.97.206.225])
+        by smtp.gmail.com with ESMTPSA id dy23-20020a05640231f700b0051e22d3f328sm8426330edb.96.2023.07.16.07.47.42
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 16 Jul 2023 07:47:42 -0700 (PDT)
+Message-ID: <d8e72d86-1dac-cc15-f559-99db89d52749@gmail.com>
+Date:   Sun, 16 Jul 2023 17:47:38 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAH3L5Qoj+sue=QnR2Lp12x3Hz2t2BNnarZHJiqxL3Gtf6M=bsA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Reply-To: yigw@mail.lv
+Subject: Re: Proposal to consider
+Content-Language: en-US
+To:     linux-kernel@vger.kernel.org
+From:   GongWang <margtkenn@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_20,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> So, there's the adin.c PHY driver which has a similar functionality
-> with the adin_config_clk_out().
-> Something in the micrel.c PHY driver (with
-> micrel,rmii-reference-clock-select-25-mhz); hopefully I did not
-> misread the code about that one.
-> And the at803x.c PHY driver has a 'qca,clk-out-frequency' property too.
-> 
-> Now with the mscc.c driver, there is a common-ality that could use a framework.
-> 
-> @Rob are you suggesting something like registering a clock provider
-> (somewhere in the PHY framework) and let the PHY drivers use it?
-> Usually, these clock signals (once enabled on startup), don't get
-> turned off; but I've worked mostly on reference designs; somewhere
-> down the line some people get different requirements.
-> These clocks get connected back to the MAC (usually), and are usually
-> like a "fixed-clock" driver.
+To Whom It May Concern,
 
-They are not necessarily fixed clocks. The clock you are adding here
-has three frequencies. Two frequencies is common for PHY devices. So
-you need to use something more than clk-fixed-rate.c. Also, mostly
-PHYs allows the clock to be gated.
+I hope this email finds you well amidst your busy schedule. I wanted to 
+reach out to you with a business proposition that I believe might 
+capture your interest.
 
-> In our case, turning off the clock would be needed if the PHY
-> negotiates a non-gigabit link; i.e 100 or 10 Mbps; in that case, the
-> CLKOUT signal is not needed and it can be turned off.
+I am confident that we can collaborate on this proposition that can 
+yield us great returns. If you are intrigued by this message, I kindly 
+request a moment of your time to discuss the details further.
 
-Who does not need it? The PHY, or the MAC? If it is the MAC, it should
-really be the MAC driver which uses the common clock API to turn it
-off. Just watch out for deadlocks with phydev->lock.
+Once you express your interest, I will provide you with comprehensive 
+insights and all the necessary information regarding this proposition. I 
+assure you that it is an opportunity worth considering.
 
-> Maybe start out with a hook in 'struct phy_driver'?
-> Like "int (*config_clk_out)(struct phy_device *dev);" or something?
-> And underneath, this delegates to the CLK framework?
+Please let me know if you consider hearing this offer so that we can 
+delve into the specifics and explore the potential of working together.
 
-Yes, have phy_device.c implement that registration/unregister of the
-clock, deal with locking, and call into the PHY driver to actually
-manipulate the clock. You missed the requested frequency in the
-function prototype. I would also call it refclk. Three is sometimes
-confusion about the different clocks.
+Thank you for considering my proposal, and I eagerly await your positive 
+response.
 
-Traditionally, clk_enable() can be called in atomic context, but that
-is not allowed with phylib, it always assume thread context. I don't
-know if the clock framework has some helpers for that, but i also
-don't see there being a real need for MAC to enable the clock in
-atomic context.
+Best regards,
+Gong Wang
 
-	Andrew
