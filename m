@@ -2,57 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD56B754FD5
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 18:39:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3917754FEF
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 19:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230040AbjGPQi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Jul 2023 12:38:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54120 "EHLO
+        id S230118AbjGPRBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Jul 2023 13:01:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229559AbjGPQi5 (ORCPT
+        with ESMTP id S229515AbjGPRBA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Jul 2023 12:38:57 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D60418B;
-        Sun, 16 Jul 2023 09:38:56 -0700 (PDT)
+        Sun, 16 Jul 2023 13:01:00 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40E661B1;
+        Sun, 16 Jul 2023 10:00:59 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 01C3A60DB7;
-        Sun, 16 Jul 2023 16:38:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41CC6C433C9;
-        Sun, 16 Jul 2023 16:38:55 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D294360C63;
+        Sun, 16 Jul 2023 17:00:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E623C433C8;
+        Sun, 16 Jul 2023 17:00:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689525535;
-        bh=8kkZrwmxu+YyVqOyI41RWS0Nx6uKCfRObOki5FZXhoY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sAPyMk/3PLUrAvI8WWFjtN/WTUX3J2/Q/fYHTGbRWJAhjFzirvwiHDZo8lrhslLxu
-         dL3lyRAQXiAJ1i7UnrXJziihIH7g9dl72HW+pR4NBb0qVKoZ7nO5I/aluC83jCnGy/
-         E9mqmA4rihuNq71vffa59JvnWuKQqSOHl3MD07zl+nWEzdv1AsRhCLo4ovsCizbnx3
-         yQOnJJrKp8WUMpr9olLhBoM2QT6EukZJ6FQj3Q9TyxMplIsvYNzbnpvBdESmb1wJtj
-         SVaCj1OCw/RAnljHVJkzWYFBGQ2uYbbkffR5Ah8iYzRoy7/BRoAFvEQSS/YHvq7oMR
-         L67Xc+W6+S0Bg==
-Received: by pali.im (Postfix)
-        id 81B0E70C; Sun, 16 Jul 2023 18:38:52 +0200 (CEST)
-Date:   Sun, 16 Jul 2023 18:38:52 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Greg KH <greg@kroah.com>
-Cc:     Aurelien Jarno <aurelien@aurel32.net>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        stable@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: Backporting commits for generating rpi dtb symbols to stable
-Message-ID: <20230716163852.jnd4u4ylvifgmpby@pali>
-References: <20230716162444.zzvkm4rh7s7lu37x@pali>
- <2023071644-earflap-amazingly-3989@gregkh>
+        s=k20201202; t=1689526858;
+        bh=sO+ETVQWwYmOPn5mUIbEvZ8OhqTGaw4+3C16oa1rjoY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=D9WTZ//zIycNG2Zu7PGosYaEot35CiRW0/6tu5BYDDX0BJiybw2teSY/UupPPP3O4
+         F13Qqp0KRsPkUJ8YIGJsPnS9J967sf9o4YNeKD9fbDPMCNMqw27Uh+cMmIRvXSK0tY
+         cCQ9R2a5H54xVQZWGvw7d5xl8Y+0DuXvB2RoyETmpCI6CJa5sWsfK3GebTvZyQYmtZ
+         gglw5j6oZj1Q+3j7oCdAvKBZIPpmAn9obwu8mFK8KjDsKAoNl9wuDttRXJRSMKmUfh
+         aW6tJI6+c3xqYi/EK3YdJErbBKinpfXloKd2jBlbsLXHp7TwBToQvoBjfhtWokgeCS
+         PmW8po/y6zc4w==
+From:   Jisheng Zhang <jszhang@kernel.org>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org
+Subject: [PATCH v2] riscv: support PREEMPT_DYNAMIC with static keys
+Date:   Mon, 17 Jul 2023 00:49:25 +0800
+Message-Id: <20230716164925.1858-1-jszhang@kernel.org>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <2023071644-earflap-amazingly-3989@gregkh>
-User-Agent: NeoMutt/20180716
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -61,68 +56,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sunday 16 July 2023 18:32:42 Greg KH wrote:
-> On Sun, Jul 16, 2023 at 06:24:44PM +0200, Pali Rohár wrote:
-> > Hello,
-> > 
-> > I see that raspberry pi bootloader throws ton of warnings when supplied
-> > DTB file does not contain /__symbols__/ node.
-> > 
-> > On RPI 1B rev1 it looks like this:
-> > 
-> > dterror: no symbols found
-> > dterror: no symbols found
-> > dterror: no symbols found
-> > dterror: no symbols found
-> > dterror: no symbols found
-> > dterror: no symbols found
-> > dterror: no symbols found
-> > dterror: no symbols found
-> > dterror: no symbols found
-> > dterror: no symbols found
-> > 
-> > Bootloader also propagates these warnings to kernel via dtb property
-> > chosen/user-warnings and they can be read by simple command:
-> > 
-> > $ cat /sys/firmware/devicetree/base/chosen/user-warnings
-> > ...
-> > 
-> > Upstream Linux kernel build process by default does not generate
-> > /__symbols__/ node for DTB files, but DTB files provided by raspberrypi
-> > foundation have them for a longer time.
-> > 
-> > I wanted to look at this issue, but I figured out that it is already
-> > solved by just recent Aurelien's patches:
-> > 
-> > e925743edc0d ("arm: dts: bcm: Enable device-tree overlay support for RPi devices")
-> > 3cdba279c5e9 ("arm64: dts: broadcom: Enable device-tree overlay support for RPi devices")
-> > 
-> > My testing showed that /__symbols__/ node is required by rpi bootloader
-> > for overlay support even when overlayed DTB file does not use any DTB
-> > symbol (and reference everything via full node path). So seems that
-> > /__symbols__/ node is crucial for rpi bootloader even when symbols from
-> > them are not used at all.
-> > 
-> > So I would like to ask, would you consider backporting these two
-> > raspberry pi specific patches to stable kernel trees? Upstream kernel
-> > would get rid of those bootloader warnings and also allow users to use
-> > overlayed dtbs...
-> 
-> What kernel tree(s) should these be applied to?  What trees did you test
-> them for?
-> 
-> Also, adding dt-overlay support does not seem like a stable kernel fix,
-> as this isn't a bugfix from what I can tell, right?
-> 
-> thanks,
-> 
-> greg k-h
+Currently, each architecture can support PREEMPT_DYNAMIC through
+either static calls or static keys. To support PREEMPT_DYNAMIC on
+riscv, we face three choices:
 
-I wanted to discuss what do you think about it. As I wrote my motivation
-was to understood and get rid of those warnings "dterror: no symbols
-found" from bootloader when using DTB files from mainline kernel (as
-opposite of the DTB files from rpi foundation). And fix for it was just
-to generate DTB files from kernel via dtc's -@ parameter, same what are
-doing those mentioned patches (but they describe different problem for
-which is same fix). I thought that fixing those bootloader warnings is a
-bugfix.
+1. only add static calls support to riscv
+As Mark pointed out in commit 99cf983cc8bc ("sched/preempt: Add
+PREEMPT_DYNAMIC using static keys"), static keys "...should have
+slightly lower overhead than non-inline static calls, as this
+effectively inlines each trampoline into the start of its callee. This
+may avoid redundant work, and may integrate better with CFI schemes."
+So even we add static calls(without inline static calls) to riscv,
+static keys is still a better choice.
+
+2. add static calls and inline static calls to riscv
+Per my understanding, inline static calls requires objtool support
+which is not easy.
+
+3. use static keys
+
+While riscv doesn't have static calls support, it supports static keys
+perfectly. So this patch selects HAVE_PREEMPT_DYNAMIC_KEY to enable
+support for PREEMPT_DYNAMIC on riscv, so that the preemption model can
+be chosen at boot time. It also patches asm-generic/preempt.h, mainly
+to add __preempt_schedule() and __preempt_schedule_notrace() macros
+for PREEMPT_DYNAMIC case. Other architectures which use generic
+preempt.h can also benefit from this patch by simply selecting
+HAVE_PREEMPT_DYNAMIC_KEY to enable PREEMPT_DYNAMIC if they supports
+static keys.
+
+Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+---
+since v1:
+ - keep Kconfig entries sorted
+ - group asm-generic modifications under CONFIG_PREEMPT_DYNAMIC &&
+   CONFIG_HAVE_PREEMPT_DYNAMIC_KEY)
+
+ arch/riscv/Kconfig            |  1 +
+ include/asm-generic/preempt.h | 14 +++++++++++++-
+ 2 files changed, 14 insertions(+), 1 deletion(-)
+
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index 4c07b9189c86..686df6902947 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -130,6 +130,7 @@ config RISCV
+ 	select HAVE_PERF_REGS
+ 	select HAVE_PERF_USER_STACK_DUMP
+ 	select HAVE_POSIX_CPU_TIMERS_TASK_WORK
++	select HAVE_PREEMPT_DYNAMIC_KEY if !XIP_KERNEL
+ 	select HAVE_REGS_AND_STACK_ACCESS_API
+ 	select HAVE_RETHOOK if !XIP_KERNEL
+ 	select HAVE_RSEQ
+diff --git a/include/asm-generic/preempt.h b/include/asm-generic/preempt.h
+index b4d43a4af5f7..51f8f3881523 100644
+--- a/include/asm-generic/preempt.h
++++ b/include/asm-generic/preempt.h
+@@ -80,9 +80,21 @@ static __always_inline bool should_resched(int preempt_offset)
+ 
+ #ifdef CONFIG_PREEMPTION
+ extern asmlinkage void preempt_schedule(void);
+-#define __preempt_schedule() preempt_schedule()
+ extern asmlinkage void preempt_schedule_notrace(void);
++
++#if defined(CONFIG_PREEMPT_DYNAMIC) && defined(CONFIG_HAVE_PREEMPT_DYNAMIC_KEY)
++
++void dynamic_preempt_schedule(void);
++void dynamic_preempt_schedule_notrace(void);
++#define __preempt_schedule()		dynamic_preempt_schedule()
++#define __preempt_schedule_notrace()	dynamic_preempt_schedule_notrace()
++
++#else /* !CONFIG_PREEMPT_DYNAMIC || !CONFIG_HAVE_PREEMPT_DYNAMIC_KEY*/
++
++#define __preempt_schedule() preempt_schedule()
+ #define __preempt_schedule_notrace() preempt_schedule_notrace()
++
++#endif /* CONFIG_PREEMPT_DYNAMIC && CONFIG_HAVE_PREEMPT_DYNAMIC_KEY*/
+ #endif /* CONFIG_PREEMPTION */
+ 
+ #endif /* __ASM_PREEMPT_H */
+-- 
+2.40.1
+
