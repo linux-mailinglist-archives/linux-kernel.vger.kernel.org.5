@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2495E755889
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 00:08:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF0CC755883
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 00:08:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230282AbjGPWId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Jul 2023 18:08:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35982 "EHLO
+        id S230286AbjGPWIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Jul 2023 18:08:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231163AbjGPWIE (ORCPT
+        with ESMTP id S231236AbjGPWIF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Jul 2023 18:08:04 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 591F1FE;
-        Sun, 16 Jul 2023 15:08:03 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-4fb7373dd35so6304751e87.1;
-        Sun, 16 Jul 2023 15:08:03 -0700 (PDT)
+        Sun, 16 Jul 2023 18:08:05 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94D74DD;
+        Sun, 16 Jul 2023 15:08:04 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2b9338e4695so16638801fa.2;
+        Sun, 16 Jul 2023 15:08:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689545281; x=1692137281;
+        d=gmail.com; s=20221208; t=1689545283; x=1692137283;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
         bh=iHngaqCrQ0FneY3+XbEOWJuLApZy3bmRMZLz2KpBf1c=;
-        b=ENfeZFXfbFdTAhHwUcejne2kgnWjt3QCatDMZAiOB2QmHQlzV4Z+D1gkXDNMlOG0Q4
-         uFWkgIPCHB7NvnvtCzok7p2/ab2kPauN8lo+YYW2Yr9R0LYspHiabBHAU259sMKB/0Kj
-         x6EzoWabJ7KNZ4LykRU69cNs/4/JiDvV0vTl0Z/2Mn1JcQYpLSjtBcChdZkptYaoeunT
-         yG7cv4Bk5WGQGXkGBHg0aLzbz3uzF/OjoKLdJURDweImnTUOj1kA42+ZGy6A+akX7kMh
-         Kpw77Y1ovClJS2glWrrQpsuoRk2mKCMM4rg6UZRq+Yx+9/c6JOqfalg3A7rdnyW7qEpA
-         B+4g==
+        b=L4GI92GU6vM/1ZQXffG1IjEVmcWipHn8WGI40hwXgxkf8kvrWinRd2GroRzEj2qN0c
+         xBuxSiY1Fo8mrcc3Ter7T7tSiuqxQHX5YX3GklL3bCI6z8eN29/rOvtw/0oSzv+XHg5h
+         kcHxTN/flFBRJAM/w0HDVncdHSz7snH42641QDKTt3fAW77sQxIFWU9z0jsaBPwflaQU
+         2l4lZT7TSpTBq2QWh6Zj2FOSTP3jJl+Q+tR0j1XizpLMSgk6Y55leg4xEcO3dx5sfvcx
+         XzmTGx6+U/BmAfqSYorOSPLZVF1NNt5peOAZ7OGi84VK3SyNVSNgV2UXynPSsvnpEGc/
+         5Rrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689545281; x=1692137281;
+        d=1e100.net; s=20221208; t=1689545283; x=1692137283;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
         bh=iHngaqCrQ0FneY3+XbEOWJuLApZy3bmRMZLz2KpBf1c=;
-        b=JcaeszZZskNBU5uyP0i5P16pbXnHjsNOs5F8tKjJ1AxIxJ6Zoz/sn2WWvQjr4ZEWQf
-         aMydI04w+vtNRyTaOi5Erfq6HDoJo55tKipF1ddIqIkMnKQtxlPEhhHBM+MrPvqvFQsp
-         fH1kd9dVGomi7MSWYYI1Oo6NUVmqy+etRVWlDZZZGOOx1Wh9iy7tU1RC5jS3Z4WBfK+H
-         Xsc9V9bZh9FUARHDrI2iZYYMpQlTozectA7SLeAOtRfiRlY9l3p0G/9DEUEZja8tvtJq
-         mg3M7heL874GwqovAJA2DJRhKJM6cKascGKrVvu3j1/1dBbU8weS/hCwfevDvj2JaM8Z
-         7fbQ==
-X-Gm-Message-State: ABy/qLYw3RFFmO7D7mRJOAyv9ISY8Xjm+CV/r7SXuVoOjISA35R0rREW
-        Bm1o4Yx88fdZVQ5Ocdq378g=
-X-Google-Smtp-Source: APBJJlFdTGOJjV77YehFgSdWX+e70CQdgXv1R+rqWI4JKHgHA4XS20L0eqPhcB7MSYeWuOglrIGX0w==
-X-Received: by 2002:a05:6512:1590:b0:4f8:453f:732f with SMTP id bp16-20020a056512159000b004f8453f732fmr3584726lfb.2.1689545281527;
-        Sun, 16 Jul 2023 15:08:01 -0700 (PDT)
+        b=OFsiVsZ8REL7LtpYRRvs/N97cz4Jx8vWrLS4drSj1z+6whtOhH4aCkg8yZfCxt4ATX
+         AhSb2Rw5WFZwtBDV2/r08bnt1GsTKX023kQDYnYjYIS2OLxjeDXh+TZp9zX+H+FLAvmY
+         AyMRI6aps6s1RKhIm8JyZ5demhycwCXekJZDKnWGy0V+oBBo2qznaem4lAAfXlZigisD
+         bedbpDcBIHTfxCJUWcuQMAUGA8/srCPJOeDtMW5bDoLRSOQU1I57M8z5+Y6XDTU0+1G9
+         BomSVwOK5x0e8FoZcLZu90HjtMwFebYl3VEc2+PVqGnFsV4pkqS9/aewuKxexNJBBL/H
+         SR3Q==
+X-Gm-Message-State: ABy/qLbX9b7BICOOdisSFMWh01tCM3HejIP60QIhzfWCsf9B9ZhZVEt2
+        ecNKY+aRBedutbL8jW+NwcI=
+X-Google-Smtp-Source: APBJJlGWtrMFmsvq6yAnusvLwDBJwvhynCdN12nafWVo6Zc0QEnz1uUV5LT5R0XhkZ/t+4yNJpF/Sg==
+X-Received: by 2002:a05:6512:340b:b0:4fb:9f24:bba9 with SMTP id i11-20020a056512340b00b004fb9f24bba9mr8627430lfr.5.1689545282702;
+        Sun, 16 Jul 2023 15:08:02 -0700 (PDT)
 Received: from localhost.localdomain ([62.122.67.26])
-        by smtp.gmail.com with ESMTPSA id h24-20020a197018000000b004fb9c625b4asm2464091lfc.210.2023.07.16.15.08.00
+        by smtp.gmail.com with ESMTPSA id h24-20020a197018000000b004fb9c625b4asm2464091lfc.210.2023.07.16.15.08.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 16 Jul 2023 15:08:01 -0700 (PDT)
+        Sun, 16 Jul 2023 15:08:02 -0700 (PDT)
 From:   Markuss Broks <markuss.broks@gmail.com>
 To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Cc:     Markuss Broks <markuss.broks@gmail.com>,
@@ -59,9 +59,9 @@ Cc:     Markuss Broks <markuss.broks@gmail.com>,
         Alim Akhtar <alim.akhtar@samsung.com>,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/7] ARM: dts: exynos: Add GPIO keys support for k3g
-Date:   Mon, 17 Jul 2023 01:05:03 +0300
-Message-ID: <20230716220644.22158-3-markuss.broks@gmail.com>
+Subject: [PATCH 2/7] ARM: dts: exynos: k3g: Add GPIO keys support
+Date:   Mon, 17 Jul 2023 01:05:04 +0300
+Message-ID: <20230716220644.22158-4-markuss.broks@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230716220644.22158-1-markuss.broks@gmail.com>
 References: <20230716220644.22158-1-markuss.broks@gmail.com>
