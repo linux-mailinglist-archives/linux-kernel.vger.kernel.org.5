@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0BB2755628
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 22:48:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 431F575562A
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 22:48:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232760AbjGPUsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Jul 2023 16:48:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37138 "EHLO
+        id S232785AbjGPUsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Jul 2023 16:48:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232757AbjGPUsE (ORCPT
+        with ESMTP id S232758AbjGPUsE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 16 Jul 2023 16:48:04 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6020EE9
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BABAEE45
         for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 13:48:03 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F1F0F60DFD
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 20:48:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 66E2CC433C7;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2A91D60EC4
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 20:48:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 8A2B9C433CB;
         Sun, 16 Jul 2023 20:48:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1689540482;
-        bh=UxuYHOEEHMag0rikQCVYoGZ85SULksxfyG8r+xhXNSE=;
+        bh=EKBYH/te/v2p3+djDuaCEbtWFr0F+IZUqYCZm3zpO/4=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=QX+j9vC4Jym5zA0bvI6WSxaDZFPtnN+93C/y0YrPaqcg+7RWgcobWdeGrdB/C2k06
-         TN2UAiBuySynoV8R14hAaSogIJqIrm0y0Mp5l7DAE7EmPaOaq8ovoOt7pKT1qAWKLE
-         p9LqiU3swhyStRGCPqurQDPLoVFoK4XGzVlXGlbOrt82jyBi9+EbfgIGqUuQFHQOFg
-         yLK1LgbK2dW9dytqaDexzNmpDEbFaAZAQdA48+d+mj/k8th+HZV3LE9G9ZNebpU8nV
-         XZnQQEXqAM3nailE4YtfLyGLqA2i+GPQIJOcAAM0OApzYVVkiSAuPHLyQUzihGsrd+
-         djhxFYDgGPGBQ==
+        b=eSUv2gt9CMmlaH4W6T6Kq8YorX3buTITd4c2WNS/EFpWvshPYyXnkRoOrKtzUsnLR
+         tf1lO7U+L7H62F7sOg86jglDUlr5DWDuXTwkRw8gyusxBYfaXzEqh/SQXUGzKW+1rt
+         qHxKE4Guk7xzkssCRP/4miMUTJtjiGNLpn5Xh6bDYHXQYXYLSI0FEGQxe93wCJMGhF
+         UK30E3DztBTWbObNpnR9uF8uPWcDLI9stMddBLXhDljdRzeel1+6jCz4OuY1C77ODe
+         IlekLZNknx1GqwaB56hFF3+qc1rkY1jcDBpEdxGbGcdQkiS8Pg9CrZPo6Z1Z/jfFMI
+         oiu4FQDpmHeYw==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 52FA8C40C5E;
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 73EA8C691EF;
         Sun, 16 Jul 2023 20:48:02 +0000 (UTC)
-Subject: Re: [GIT PULL] sched/urgent for v6.5-rc2
+Subject: Re: [GIT PULL] perf/urgent for v6.5-rc2
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20230716183726.GEZLQ45tOt9L548BJ4@fat_crate.local>
-References: <20230716183726.GEZLQ45tOt9L548BJ4@fat_crate.local>
+In-Reply-To: <20230716184943.GGZLQ7x4VZlQZb4aWq@fat_crate.local>
+References: <20230716184943.GGZLQ7x4VZlQZb4aWq@fat_crate.local>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20230716183726.GEZLQ45tOt9L548BJ4@fat_crate.local>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/sched_urgent_for_v6.5_rc2
-X-PR-Tracked-Commit-Id: aff037078ecaecf34a7c2afab1341815f90fba5e
+X-PR-Tracked-Message-Id: <20230716184943.GGZLQ7x4VZlQZb4aWq@fat_crate.local>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/perf_urgent_for_v6.5_rc2
+X-PR-Tracked-Commit-Id: 27c68c216ee1f1b086e789a64486e6511e380b8a
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: f61a89ca1182c43aa7a141c40f4063be81bd2562
-Message-Id: <168954048233.28685.3040924643533281272.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 1667e630c228ca2e7577de7a404c89de3d9f7772
+Message-Id: <168954048247.28685.3479345181392091356.pr-tracker-bot@kernel.org>
 Date:   Sun, 16 Jul 2023 20:48:02 +0000
 To:     Borislav Petkov <bp@alien8.de>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
@@ -62,12 +62,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 16 Jul 2023 20:37:26 +0200:
+The pull request you sent on Sun, 16 Jul 2023 20:49:43 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/sched_urgent_for_v6.5_rc2
+> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/perf_urgent_for_v6.5_rc2
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/f61a89ca1182c43aa7a141c40f4063be81bd2562
+https://git.kernel.org/torvalds/c/1667e630c228ca2e7577de7a404c89de3d9f7772
 
 Thank you!
 
