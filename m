@@ -2,196 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB81A755095
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 20:44:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B40B47550AA
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 20:48:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230107AbjGPSoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Jul 2023 14:44:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41026 "EHLO
+        id S230136AbjGPSsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Jul 2023 14:48:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbjGPSoM (ORCPT
+        with ESMTP id S229503AbjGPSsK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Jul 2023 14:44:12 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49EF71B5;
-        Sun, 16 Jul 2023 11:44:11 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fb4146e8deso38690245e9.0;
-        Sun, 16 Jul 2023 11:44:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689533050; x=1692125050;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Iw9rxMmy489xUbQwxOXNVFRR34rAPTUVmC3dh4HsQWw=;
-        b=HeTYsvujwYrQwwXDp0WMfX5PfsFlIaj6iOyQIXfhYDOXQFOXAymdjg45DuXKHpZVdJ
-         T0aeNJd7Ukr89zC6YK00llwOXwwMwhYEvmhru6R/6shzkJ+Ukd7y+DIIZvnwnJX/J3I3
-         lzlwAHp1rxIOasiaWGaNKZtkhzOFqAEO4USZ5UpVmpIrBKJ++StYna4dQjao6RT3DY3z
-         jZ030yFpCTFSV/R5E2TwYhm4lrnd2utaZEcbhOPlI0c0I6IGQyGLT7QllT2zMfiqmACc
-         W8IWNxCpZmfjezbzCziIQLwUl1CWTwNc0IUxRR7LEYPdb+MZJkH+B+Unu+t4e3s6mEOc
-         FsAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689533050; x=1692125050;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Iw9rxMmy489xUbQwxOXNVFRR34rAPTUVmC3dh4HsQWw=;
-        b=dYx3bkzh0He/Nt1xlb851vDcjmjD+2ibHbUYKtTTjT+OgDneBuyRS7b2oUvWqDSmuv
-         X1t/8JvR6FwECphjfMwpdtnXlqfUcmBAULGD9MVvnLt8YR0RLAn8O9NilbFWUAj8A7fL
-         BoKf8rAHdO0ioh/gg6k/PQInHcYCJqO+jWXz7HfLfohr5vgwo3pDs8qw6hDsaUDoM9P/
-         tuKPyUvjm63kr/Qohf4zQ3nWnDNsBzBbFRjkHAXIoHbl9sby9JJuYHpx4bRgEkh/uQ/x
-         h8yYyx9oOS6Key8BFLA+oVa4RtTw8Sje4AIQtSL/Ad/948ANRK2emKM7jfGMowu9Jq3v
-         cCYQ==
-X-Gm-Message-State: ABy/qLavzldO1bpCq1NIZa9Qm8K67pfU9NQzMox7pLNe8QbawMhZpfLN
-        oN8Ay/wH9h6SAgQezPM6iy3oKoVGUJaJedrD
-X-Google-Smtp-Source: APBJJlGqrk4/ImODOjlE2fM0n8aEqgTPPtq8oeBjobvCf+cVue7GW3rAT7MupfI6Rwb2vIto6QFSbw==
-X-Received: by 2002:adf:ffd2:0:b0:313:eb81:d2f6 with SMTP id x18-20020adfffd2000000b00313eb81d2f6mr11309115wrs.4.1689533049498;
-        Sun, 16 Jul 2023 11:44:09 -0700 (PDT)
-Received: from mmaatuq-HP-Laptop-15-dy2xxx.. ([2001:8f8:1163:535c:e1af:2d96:1960:a57d])
-        by smtp.gmail.com with ESMTPSA id v7-20020a05600c214700b003fbc681c8d1sm6212956wml.36.2023.07.16.11.44.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 16 Jul 2023 11:44:08 -0700 (PDT)
-From:   Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>
-To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, shuah@kernel.org, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>
-Subject: [PATCH v4] selftests/net: replace manual array size calc with ARRAYSIZE macro.
-Date:   Sun, 16 Jul 2023 22:43:49 +0400
-Message-Id: <20230716184349.2124858-1-mahmoudmatook.mm@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Sun, 16 Jul 2023 14:48:10 -0400
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2059.outbound.protection.outlook.com [40.107.220.59])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E35B1B6;
+        Sun, 16 Jul 2023 11:48:09 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=USs6QbggMLCfmHd+0bKG8N9ZN61hYH5OQJ32EhVa1XN2Hc8AXcB8AEKPCBGP5ex4hgM9nRyHFKFiySpSkDju87tYQKOJrEmDvXfAK5rqpsLZrt025o2fZMnDIM9p2G034Y2gP8HZpmIiTB363q2mI6LaCKft7NAad0U/eLhAlrzarFpsTbBn0nvXS8qcMeCIhXxuO1+eW+uoFAPFXtwsT+VHk9RM2OiE9xdyXohbtxq1UxDhXPwkarvToee7vWKWEsluKBBXtY8l78U3qcKZPuiGp5HWwqD0/gYkzM4650cJo1q3E6OM7LzAbeCauYFBK3lQuKdwB9ujC7oSHbgS2w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=n9ssFtvhQq7c+DujNZ+hJJIlGpN2akyLL7xbURZ2Ptg=;
+ b=AhZv3oyD0cbcQC3w8+La0Sno4UknUV+WtZRqOZ+gcc3k/1PyLQcMNyn9nielju9moaf6e6NKxKSJr+alvAbnYojrk9+72j7/Xh25bGNyDpeztmnIJ02VYh5sGgIxf2HK0xIMkQHbQYVZFSuIH9Zzy8spR0RV3vqIiw6x45+bSuz1vzcE1+8oCq2lQYaRboPjz0224oxIa0j1E+I7e+g9BunY/UhPPHP9OGO5yImGnwRNA235qYu/OFwWYFkVqFJFZtem71Zsi+KYlaSEkhQ+Y+s+60L1z/ROALzaNvd7FX8MkIbwVqsrX53+vvXfAiB/79DawycA801WLbVdxDxU1w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=n9ssFtvhQq7c+DujNZ+hJJIlGpN2akyLL7xbURZ2Ptg=;
+ b=f7h/ZL9B4Ub++9Wf6a+MtHsTwHySlbkyYYhaJtC86dBtYboKFDFytocQPa+6n3pSWL+sv0U0Q48q5/enSWWZz9egQ+mKoCcS5ebXu0euVN7V2N6L3SSKNoe6iloAIN4AThO4XEwZ7v0VPaZx5MHe4DJ30EJxqyFCSG1mfpnYCyvXte6IPldFjy3b/+/fjCGHn5tNsjMsTdz6wfIzg0Fmv7rw7k2SRz6ke4Wq8AAdlVyBDRRDBdE3Qv52akav4rVcKv8AbgtL5v/LT/TLdI5dsh7MvK+E9KRpnBPdZQxix6khHvp0CfLftJFnV4rXkUg1l4tFOrs8V1lUI/dv7m40IA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from BN7PR12MB2740.namprd12.prod.outlook.com (2603:10b6:408:23::16)
+ by CH2PR12MB4293.namprd12.prod.outlook.com (2603:10b6:610:7e::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.31; Sun, 16 Jul
+ 2023 18:48:07 +0000
+Received: from BN7PR12MB2740.namprd12.prod.outlook.com
+ ([fe80::d658:fc9e:6893:bd6]) by BN7PR12MB2740.namprd12.prod.outlook.com
+ ([fe80::d658:fc9e:6893:bd6%3]) with mapi id 15.20.6588.031; Sun, 16 Jul 2023
+ 18:48:06 +0000
+From:   Rahul Rameshbabu <rrameshbabu@nvidia.com>
+To:     Fabio Baltieri <fabiobaltieri@chromium.org>
+Cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] HID: hid-google-stadiaff: add support for Stadia
+ force feedback
+References: <20230709214410.3676224-1-fabiobaltieri@chromium.org>
+        <878rbidwn5.fsf@nvidia.com> <ZLQ5XMobES0r6Fel@google.com>
+Date:   Sun, 16 Jul 2023 11:47:53 -0700
+In-Reply-To: <ZLQ5XMobES0r6Fel@google.com> (Fabio Baltieri's message of "Sun,
+        16 Jul 2023 18:39:24 +0000")
+Message-ID: <87zg3vr8va.fsf@nvidia.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+Content-Type: text/plain
+X-ClientProxiedBy: BY5PR17CA0054.namprd17.prod.outlook.com
+ (2603:10b6:a03:167::31) To BN7PR12MB2740.namprd12.prod.outlook.com
+ (2603:10b6:408:23::16)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN7PR12MB2740:EE_|CH2PR12MB4293:EE_
+X-MS-Office365-Filtering-Correlation-Id: e080de3e-47d9-4519-339d-08db862d3142
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hq8EF5PSd7aTYqdBgSDYIaSQH3dWYua3NEy8M6+3NqMuSUa7Wt8KvDFa+fasOZ0RDK1gOwMmfB+NUpnxF/018DRT6exmtMrN2Hk16mZidape/QDbgQzI6nomXWXGUljw84CXzWt0aQH2muvybEtMqYUfVnV2io6QS34AWpI6HqG1fdyNTYUcqaeb4BRiZAF93k3kLCUCXpJAPfnVn7pVAN/1LZ/UprYEPEbGO0gFzfCY1W2pn4EMaXZLPoRrx7pmAJyvsvstKDogmbOouF+MxGHbXsVR9gNJnrtn4ROLTv5Ym4FxGSBrs7gKylLtczwwGgaZM3xeXMb0dsRSm8hp03bW1a063vAGTn5qVs6hGHyHCP96eEU9LngdZNp0s9igjlCff3GJ0/6Ma0JePKPHpTIDHuObQ02M0zGp+rZn2dwVuWWMlakJ/vk5B356Mdc/7LFAVA7n5KEgM90g9FqIVDGqGgLoHLPhEJZCstZPqZQtCvS6sz3PMVZ3988Sl4j+iYAfwn/RkUDaODjuwgBBIoCXfAQR0voPH6LALhqB+T8mjV4XiWq30Bo3EeCw8bZ6
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN7PR12MB2740.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(346002)(136003)(39860400002)(396003)(376002)(451199021)(478600001)(6486002)(6666004)(54906003)(186003)(6506007)(36756003)(26005)(6512007)(2906002)(316002)(41300700001)(6916009)(4326008)(66946007)(66476007)(5660300002)(8936002)(8676002)(66556008)(38100700002)(86362001)(2616005)(83380400001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Ie46plRmAafgYEvYGpjQG52qOUpS+ErqAl0C+sm+A6OPTEACy/Dg3kV4f2He?=
+ =?us-ascii?Q?laOhz24rCebi5jxJjSlcC+fL27nskhj0m4ZhIr4jQpRoK/ZHrwNZGB+9GaFJ?=
+ =?us-ascii?Q?L9XquZgL7UqjFabawA8jTtAG/djnX0Kl51WMRHRiI76QG0OKRlwT3O+HH7H+?=
+ =?us-ascii?Q?9mC18FoG6/m5Rgu0T2xiLNThyFBiGg0AYAQauK6BxRqmG+X6AU8O7lQ8ja8J?=
+ =?us-ascii?Q?tghp7Y1Ah6zKznnkjehWP1C8IERzpEdBWNp4LjifGGgbB1ht13kECs2EIGnl?=
+ =?us-ascii?Q?rT45yxmBF6eNzUbJzy/JnZ5l+fWGVz5f0OuR8hr9Z5h6eUgnHX0p8N2kk1pn?=
+ =?us-ascii?Q?gndx24SO4/6wGqgsJUKzG2fdr2JRiMk+FraF/pMC6v1GhViGezrITc7IIOaN?=
+ =?us-ascii?Q?pWVzewjWk4lznP/2TvkhF7g4lmzb6RW5XK+kgQuCQZYg1DvmH1KWxPJ6HQnt?=
+ =?us-ascii?Q?0hztyFPlgCbmmqs+VIHBFUTZPMHB7VFgolUt1ONDorzbk0sZRTyxTtfHRJwW?=
+ =?us-ascii?Q?+dO7AHMEgJ+Gx+lYnULGOY5XzbY+1tI35c1HE7QAJWOwjbxoYPGt3dTN+oUJ?=
+ =?us-ascii?Q?gxkIwLZdGd5EhsFj2xDFmOkd0deIhwXUNBRXQ3IiIuTPUJdkHacURyqU0ftI?=
+ =?us-ascii?Q?7/LTypQIf8WoCHqwWhDutexlItfAzGwMycwaDXV79KQUn8hrAH7QM4sqqmRF?=
+ =?us-ascii?Q?xj59L90G572fcM1tnTUaiNyHDNHyuyorpVjA89OVAioLr05e+073PVyrCtgV?=
+ =?us-ascii?Q?zqmlZluY7gKphJwApdfBjiOIi0zd2GOU8MFciWh78DUFqyfqwWvP7k13xiXv?=
+ =?us-ascii?Q?YYV29GHnvYj/TL5iBrSpaSpqyTbKjiRoDjy6myl2IZVFOjX6cSi4wXaRChFT?=
+ =?us-ascii?Q?53T/Pcj1k5aoCOrn/7+AVhYSdZvgJZytXnQc/jpwX+GMlbX0i8NmshXvOXCx?=
+ =?us-ascii?Q?PgDBN9LGHwncUx4KYwxyp7WHRBDo1Z81TfsDoP66HjEdO8bmbzEh9DgddQYk?=
+ =?us-ascii?Q?eyJkVZ+/5+pNdy7abUgVTaE4BAPjd60co1+E/RJWpKZdqSbK+L5/sShqHpJX?=
+ =?us-ascii?Q?nWRyEfvG+4pJCpILxMzMolY8/Vl5/9GQiLdSnZ4yOLaGLBbjLkYnl/vgfWV9?=
+ =?us-ascii?Q?svmpZ7a0hsKqSgSB01Zbmt3adFsNApfGIMdbCQvQn3xf7V9jr/Kyh2ulwGtT?=
+ =?us-ascii?Q?CM8I2Aizdy+1BTPStGFPnsOc/qugLNhlMkZiYoeRZwIMFAHCf9CBF7GIUUIQ?=
+ =?us-ascii?Q?4t+VBfeIao+hzIBLbpLvaJVWt/8uviWlyFuwkBRzeUy3R5AiWpzqrEKfO1GF?=
+ =?us-ascii?Q?O6IynYMF6zv6H6Lr6nspm43SFSNKmkaxStLVBJ3OFzaQHu52Eg2k1bddIJ2m?=
+ =?us-ascii?Q?X+tRuRscsTndS5iG7uOYlvWJskdgY1clK6T9qGhKhCUAYBjH1GgIZNpX+XMg?=
+ =?us-ascii?Q?X5HvouNWVfHAfXfmfxUgm9mj22UNGwtYQlGWCN6yFsFaQfVUPN7jd9XQ0tAW?=
+ =?us-ascii?Q?S5czBaPtn7dMZ7VHDixPXPriRnJQvapaVHMNXX7ACQ7ng+DkCDO5ZwZEiBgA?=
+ =?us-ascii?Q?dKFOq/vgNbGY+sLeTdTmS1T8y1F03n5QrHCuV4JVnbprZ7QCrzKzL4Vn6Q1C?=
+ =?us-ascii?Q?Bw=3D=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e080de3e-47d9-4519-339d-08db862d3142
+X-MS-Exchange-CrossTenant-AuthSource: BN7PR12MB2740.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jul 2023 18:48:06.3483
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: qBR/khCxNj8zlSDqQwJNHaYx5cxv98eaaVw84kpZz6836IkLBCyyg8J2CMo7oCbfsCv00b+FaSItUABtdVqPkQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4293
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fixes coccinelle WARNING: Use ARRAY_SIZE
+On Sun, 16 Jul, 2023 18:39:24 +0000 Fabio Baltieri <fabiobaltieri@chromium.org> wrote:
+> Hi Rahul,
+>
+> On Fri, Jul 14, 2023 at 02:13:34PM -0700, Rahul Rameshbabu wrote:
+>> On Sun, 09 Jul, 2023 21:44:10 +0000 Fabio Baltieri <fabiobaltieri@chromium.org> wrote:
+>> > Add a hid-stadiaff module to support rumble based force feedback on the
+>> > Google Stadia controller. This works using the HID output endpoint
+>> > exposed on both the USB and BLE interface.
+>> >
+>> > Signed-off-by: Fabio Baltieri <fabiobaltieri@chromium.org>
+>> > ---
+>> > +static int stadia_probe(struct hid_device *hdev, const struct hid_device_id *id)
+>> > +{
+>> > +	int ret;
+>> > +
+>> > +	ret = hid_parse(hdev);
+>> > +	if (ret) {
+>> > +		hid_err(hdev, "parse failed\n");
+>> > +		return ret;
+>> > +	}
+>> > +
+>> > +	ret = hid_hw_start(hdev, HID_CONNECT_DEFAULT & ~HID_CONNECT_FF);
+>> > +	if (ret) {
+>> > +		hid_err(hdev, "hw start failed\n");
+>> > +		return ret;
+>> > +	}
+>> > +
+>> > +	ret = stadiaff_init(hdev);
+>> > +	if (ret) {
+>> > +		dev_err(&hdev->dev, "force feedback init failed\n");
+>> 
+>> Error handling looks good to me now. Is there any particular reason you
+>> use dev_err here instead of hid_err here?
+>
+> Not really, copied from another hid driver and did not realize the
+> inconsistency. I'll fix that up and send a v4.
+>
+> Thanks again for spotting this!
 
-Signed-off-by: Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>
----
-changelog since v3:
- - move changelog outside commit message.
+No worries. Btw, in your commit message body, you might want to change
+hid-stadiaff to hid-google-stadiaff as well for your v4 submission.
 
-changelog since v2:
- - integrat a commit that contains actual replacement for ARRAY_SIZE.
- - use ARRAY_SIZE for net/psock_lib.h
+Thanks,
 
-changelog since v1:
- - remove unnecessary extra new line
-
-changelog since v0:
- - update net/Makefile to include kselftest.h
- - remove redefinition of ARRAYSIZE.
----
- tools/testing/selftests/net/Makefile          | 2 ++
- tools/testing/selftests/net/csum.c            | 6 ++++--
- tools/testing/selftests/net/hwtstamp_config.c | 6 ++++--
- tools/testing/selftests/net/psock_lib.h       | 4 +++-
- 4 files changed, 13 insertions(+), 5 deletions(-)
-
-diff --git a/tools/testing/selftests/net/Makefile b/tools/testing/selftests/net/Makefile
-index 7f3ab2a93ed6..a06cc25489f9 100644
---- a/tools/testing/selftests/net/Makefile
-+++ b/tools/testing/selftests/net/Makefile
-@@ -3,6 +3,8 @@
- 
- CFLAGS =  -Wall -Wl,--no-as-needed -O2 -g
- CFLAGS += -I../../../../usr/include/ $(KHDR_INCLUDES)
-+# Additional include paths needed by kselftest.h
-+CFLAGS += -I../
- 
- TEST_PROGS := run_netsocktests run_afpackettests test_bpf.sh netdevice.sh \
- 	      rtnetlink.sh xfrm_policy.sh test_blackhole_dev.sh
-diff --git a/tools/testing/selftests/net/csum.c b/tools/testing/selftests/net/csum.c
-index 82a1c1839da6..90eb06fefa59 100644
---- a/tools/testing/selftests/net/csum.c
-+++ b/tools/testing/selftests/net/csum.c
-@@ -91,6 +91,8 @@
- #include <sys/types.h>
- #include <unistd.h>
- 
-+#include "kselftest.h"
-+
- static bool cfg_bad_csum;
- static int cfg_family = PF_INET6;
- static int cfg_num_pkt = 4;
-@@ -450,7 +452,7 @@ static void send_packet(int fd, const char *buf, int len)
- 	iov[2].iov_len = len;
- 
- 	msg.msg_iov = iov;
--	msg.msg_iovlen = sizeof(iov) / sizeof(iov[0]);
-+	msg.msg_iovlen = ARRAY_SIZE(iov);
- 
- 	msg.msg_name = &addr;
- 	msg.msg_namelen = sizeof(addr);
-@@ -505,7 +507,7 @@ static void __recv_prepare_packet_filter(int fd, int off_nexthdr, int off_dport)
- 	struct sock_fprog prog = {};
- 
- 	prog.filter = filter;
--	prog.len = sizeof(filter) / sizeof(struct sock_filter);
-+	prog.len = ARRAY_SIZE(filter);
- 	if (setsockopt(fd, SOL_SOCKET, SO_ATTACH_FILTER, &prog, sizeof(prog)))
- 		error(1, errno, "setsockopt filter");
- }
-diff --git a/tools/testing/selftests/net/hwtstamp_config.c b/tools/testing/selftests/net/hwtstamp_config.c
-index e1fdee841021..170728c96c46 100644
---- a/tools/testing/selftests/net/hwtstamp_config.c
-+++ b/tools/testing/selftests/net/hwtstamp_config.c
-@@ -16,6 +16,8 @@
- #include <linux/net_tstamp.h>
- #include <linux/sockios.h>
- 
-+#include "kselftest.h"
-+
- static int
- lookup_value(const char **names, int size, const char *name)
- {
-@@ -50,7 +52,7 @@ static const char *tx_types[] = {
- 	TX_TYPE(ONESTEP_SYNC)
- #undef TX_TYPE
- };
--#define N_TX_TYPES ((int)(sizeof(tx_types) / sizeof(tx_types[0])))
-+#define N_TX_TYPES ((int)(ARRAY_SIZE(tx_types)))
- 
- static const char *rx_filters[] = {
- #define RX_FILTER(name) [HWTSTAMP_FILTER_ ## name] = #name
-@@ -71,7 +73,7 @@ static const char *rx_filters[] = {
- 	RX_FILTER(PTP_V2_DELAY_REQ),
- #undef RX_FILTER
- };
--#define N_RX_FILTERS ((int)(sizeof(rx_filters) / sizeof(rx_filters[0])))
-+#define N_RX_FILTERS ((int)(ARRAY_SIZE(rx_filters)))
- 
- static void usage(void)
- {
-diff --git a/tools/testing/selftests/net/psock_lib.h b/tools/testing/selftests/net/psock_lib.h
-index faa884385c45..6e4fef560873 100644
---- a/tools/testing/selftests/net/psock_lib.h
-+++ b/tools/testing/selftests/net/psock_lib.h
-@@ -14,6 +14,8 @@
- #include <arpa/inet.h>
- #include <unistd.h>
- 
-+#include "kselftest.h"
-+
- #define DATA_LEN			100
- #define DATA_CHAR			'a'
- #define DATA_CHAR_1			'b'
-@@ -63,7 +65,7 @@ static __maybe_unused void pair_udp_setfilter(int fd)
- 	struct sock_fprog bpf_prog;
- 
- 	bpf_prog.filter = bpf_filter;
--	bpf_prog.len = sizeof(bpf_filter) / sizeof(struct sock_filter);
-+	bpf_prog.len = ARRAY_SIZE(bpf_filter);
- 
- 	if (setsockopt(fd, SOL_SOCKET, SO_ATTACH_FILTER, &bpf_prog,
- 		       sizeof(bpf_prog))) {
--- 
-2.34.1
-
+-- Rahul Rameshbabu
