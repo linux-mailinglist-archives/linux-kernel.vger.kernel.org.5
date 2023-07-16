@@ -2,119 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0CF8755076
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 20:38:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4411D75507B
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 20:39:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229809AbjGPShm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Jul 2023 14:37:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39794 "EHLO
+        id S229936AbjGPSjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Jul 2023 14:39:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjGPShl (ORCPT
+        with ESMTP id S229877AbjGPSja (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Jul 2023 14:37:41 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6696E1B5
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 11:37:39 -0700 (PDT)
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A90291EC0749;
-        Sun, 16 Jul 2023 20:37:37 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1689532657;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:references;
-        bh=okesFLEEOyn70sSxHf50dIjdCRuTwlZ1vZGa/Ncp/TI=;
-        b=LM/tzl2LFuZk3r3m5U1GbxpOsfuI8uif0kQTlEJfBgoD42eKjHnOqrxFoO/RPe2+uBJnYb
-        aTigchcYd1hK8nTmHVpvaDSt6dYSF1D8OKHPesvJt2IxkvGzQBpKO6M8dcrG23A3Jd5Bnv
-        hCdoCmjndkQ7EZ9aCsZexAyTtvwOTks=
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id I9RxKh7pjR-C; Sun, 16 Jul 2023 18:37:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1689532654; bh=okesFLEEOyn70sSxHf50dIjdCRuTwlZ1vZGa/Ncp/TI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=F+R2HJ2swB008qFVNlwFNYd/fo33+ay+vFMdGPEDc3WVC+1+eTl3OrsLbEOGstLq/
-         48MNhsxF05GefEvn/+Y4u9LT2MpW1XuCAU0DsMGX6eoeL1ou2pTTVo7B2nS5ki10vy
-         zXOsrQtQVgOuhacdM5W3M8fFbAj/MA+bwHEcBeiMd47ffbnA6/075TjcCpf/z3S6IS
-         d4lApi6VJOVjmodpUiFWRzmm+Z5JmzBl/I4Lgdq8eP9HN+4jNDHMXISs8Kz+ZEzenP
-         eiNCiqQA+DaVD3U+3EfLMkkWmkEj0EIfv5CNvLotF6GtWSh2SeTYW057gBGXW1kdS1
-         68Jk1ht/lQCvlwRDqumiHAoOgg654nJkDXdL9QbIIXiiv+O3sI6Xl0pBYD5FzpCclu
-         o5UHT3Lpo6M79j6B2RbaB8S4NEbAFU3tQWToy+zg79iLXcfCFz3WHB8balqx9clahv
-         iIM6KcvAe2MFOFTo6onzMJFacpLvCn7APIKr+oxkZ0On5dU1EDYG9TYMo94XWwbTgZ
-         yuaoVSp6XGRhng2cjq8FuBpzEJtvMBFEES5G9FYTclghg1HcHXckHBO1fYxTKJxpMc
-         bgsoxWnzzYDBjUbBvZyvmOZ4le2TYXNqukR0edz8H4S43MJR2NoBmT1cT5GvlLqw2Q
-         cmHldDxQKKdj3xIbEq5xtXlk=
-Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8706C40E00F4;
-        Sun, 16 Jul 2023 18:37:31 +0000 (UTC)
-Date:   Sun, 16 Jul 2023 20:37:26 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] sched/urgent for v6.5-rc2
-Message-ID: <20230716183726.GEZLQ45tOt9L548BJ4@fat_crate.local>
+        Sun, 16 Jul 2023 14:39:30 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF94B1B6
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 11:39:28 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-51de9c2bc77so4908100a12.3
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 11:39:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1689532767; x=1692124767;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=1HYXnA9/S/l0W40c9PuJgfTW0gfrS1Cr5dI7gZsJAL4=;
+        b=ValUvzS+2cWVIILD1r+8UeRpYZ8QjjO085E5o+uRhnEjBqQ2bt/1wFu/vovXUv2o7V
+         A9Xya+05e3o+BvifZQXpPlO5lZeMcNwEJ/xjTNnXALXpCRDUjZEqc4JnSBYWuwtnhbpy
+         2Hu5ZKo76NsSWWG7r7HVUv9hJaX6uDs+ZWguI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689532767; x=1692124767;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1HYXnA9/S/l0W40c9PuJgfTW0gfrS1Cr5dI7gZsJAL4=;
+        b=lPy53NDQimFH5J91PjfU6r9W9j3SXTsRMdVF5TxqO6WsHkCNBlIoH2LP6C5B5dlRyq
+         ZsYrV/pDu6Wofv83IrdfX1SVBmnncsFH4IyQ4Y4p5LFr93HqoA9nLyHfzwVPuzZsJDRc
+         cpgT+PRpdGZRvEwRzcrpmE5dyM97uWLbB51kMBtHQwbrpRzeW3Lu6ANHc/XXeJ//lsgn
+         Hm4YdphYQcujtnNcoXiBo9u7+hXit+SCrATB7QgR85W1GLUZpf/VgAEGHmez1DDKZ6tD
+         LTtSithrP6eotfxdnLu0nrhnkrDb5cyo50JlTdbW3hWgsYLQmNlynnb6zLNPvQ94ylsZ
+         ua2g==
+X-Gm-Message-State: ABy/qLbwyW3NkFu8ocOV3IdbqjB2e49Pjp2xxkbNt1FF3dak9FY4CgLK
+        YHo2odaotGZn/9jlFtkzD2Xgjg==
+X-Google-Smtp-Source: APBJJlFgAO6Ll6zSlQL5y78I0Z0BYy4FDVsKnLPAz6tjqGRjXtsal6lAdhWGAeXKhPSKpg/mwzthCA==
+X-Received: by 2002:a05:6402:12d9:b0:51d:94d2:ffd2 with SMTP id k25-20020a05640212d900b0051d94d2ffd2mr11368613edx.2.1689532766850;
+        Sun, 16 Jul 2023 11:39:26 -0700 (PDT)
+Received: from google.com (64.227.90.34.bc.googleusercontent.com. [34.90.227.64])
+        by smtp.gmail.com with ESMTPSA id n7-20020aa7c447000000b0051e22660835sm8794749edr.46.2023.07.16.11.39.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 16 Jul 2023 11:39:26 -0700 (PDT)
+Date:   Sun, 16 Jul 2023 18:39:24 +0000
+From:   Fabio Baltieri <fabiobaltieri@chromium.org>
+To:     Rahul Rameshbabu <rrameshbabu@nvidia.com>
+Cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] HID: hid-google-stadiaff: add support for Stadia
+ force feedback
+Message-ID: <ZLQ5XMobES0r6Fel@google.com>
+References: <20230709214410.3676224-1-fabiobaltieri@chromium.org>
+ <878rbidwn5.fsf@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <878rbidwn5.fsf@nvidia.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FSL_HELO_FAKE,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi Rahul,
 
-please pull two urgent scheduler fixes for 6.5.
+On Fri, Jul 14, 2023 at 02:13:34PM -0700, Rahul Rameshbabu wrote:
+> On Sun, 09 Jul, 2023 21:44:10 +0000 Fabio Baltieri <fabiobaltieri@chromium.org> wrote:
+> > Add a hid-stadiaff module to support rumble based force feedback on the
+> > Google Stadia controller. This works using the HID output endpoint
+> > exposed on both the USB and BLE interface.
+> >
+> > Signed-off-by: Fabio Baltieri <fabiobaltieri@chromium.org>
+> > ---
+> > +static int stadia_probe(struct hid_device *hdev, const struct hid_device_id *id)
+> > +{
+> > +	int ret;
+> > +
+> > +	ret = hid_parse(hdev);
+> > +	if (ret) {
+> > +		hid_err(hdev, "parse failed\n");
+> > +		return ret;
+> > +	}
+> > +
+> > +	ret = hid_hw_start(hdev, HID_CONNECT_DEFAULT & ~HID_CONNECT_FF);
+> > +	if (ret) {
+> > +		hid_err(hdev, "hw start failed\n");
+> > +		return ret;
+> > +	}
+> > +
+> > +	ret = stadiaff_init(hdev);
+> > +	if (ret) {
+> > +		dev_err(&hdev->dev, "force feedback init failed\n");
+> 
+> Error handling looks good to me now. Is there any particular reason you
+> use dev_err here instead of hid_err here?
 
-Thx.
+Not really, copied from another hid driver and did not realize the
+inconsistency. I'll fix that up and send a v4.
 
----
+Thanks again for spotting this!
 
-The following changes since commit 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5:
-
-  Linux 6.5-rc1 (2023-07-09 13:53:13 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/sched_urgent_for_v6.5_rc2
-
-for you to fetch changes up to aff037078ecaecf34a7c2afab1341815f90fba5e:
-
-  sched/psi: use kernfs polling functions for PSI trigger polling (2023-07-10 09:52:30 +0200)
-
-----------------------------------------------------------------
-- Remove a cgroup from under a polling process properly
-
-- Fix the idle sibling selection
-
-----------------------------------------------------------------
-Miaohe Lin (1):
-      sched/fair: Use recent_used_cpu to test p->cpus_ptr
-
-Suren Baghdasaryan (1):
-      sched/psi: use kernfs polling functions for PSI trigger polling
-
- include/linux/psi.h       |  5 +++--
- include/linux/psi_types.h |  3 +++
- kernel/cgroup/cgroup.c    |  2 +-
- kernel/sched/fair.c       |  2 +-
- kernel/sched/psi.c        | 29 +++++++++++++++++++++--------
- 5 files changed, 29 insertions(+), 12 deletions(-)
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Fabio
