@@ -2,64 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F478754F65
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 17:26:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DC3A754F6C
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 17:37:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230169AbjGPP0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Jul 2023 11:26:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46130 "EHLO
+        id S230184AbjGPPh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Jul 2023 11:37:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjGPP0v (ORCPT
+        with ESMTP id S230173AbjGPPhZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Jul 2023 11:26:51 -0400
-Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E35C212E
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 08:26:48 -0700 (PDT)
-Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-5768a7e3adbso71610267b3.0
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 08:26:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689521208; x=1692113208;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Ij9R2Z06Y24vfZ3xZGQuB/hd5tnY6d6rJhNbcQ7ZzmA=;
-        b=OG5pf6zzYcwxOGd2/rZY4B/CzoE8/HEVedwT6RPZkCe9QfHLny6WGGE1d/ciioNsmi
-         qL5Ut06P6rrWjJ/ukdo7F/FSpickKKpejr/JopMcm3E9l0zvo6Tqwonpt7ziBpDc2HwD
-         9OAwyP/cTaoNjigukc7eDk8qrYpieYMRSdGW+6llHlbO4xAu9OkrLOm8BRdrNC6TCi5j
-         bWj8aSXEMPM8mYLH0tvSJTlam40OqdIo0aEgnT3gv3xz2+fYdBKEPuUDxoJUeRxsYzyU
-         GugIiSdAew5O0z5BaC4o4nEHEmfC8jfwm75oU6HS2a44fClJDRLvF4K1x++pEoErE1EW
-         W5Ug==
+        Sun, 16 Jul 2023 11:37:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9AB0E5D
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 08:36:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689521800;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SjKpqR/un+xqnmH4u/xs4cWkynkrba3RxsIKpUmzl5A=;
+        b=e4goNhhTIF7jP7Saio+B9w5kryDdEBKXTi8lBWA4wBWRRUGw3NfcEQqh9xcWw1Tb8v5F+4
+        Tw+KsrtcXA80xE/Xsducrf+Z1EPX7gzcg8gWwQ/YYSHCxo60YhwVow3fogWErmHmbI+cd5
+        bzNTwqPOHKdF/gkz65C8WHEGnwISKy0=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-350-8aE3dtpfOvO2MBFtdIlY6A-1; Sun, 16 Jul 2023 11:36:39 -0400
+X-MC-Unique: 8aE3dtpfOvO2MBFtdIlY6A-1
+Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-7679e5ebad2so561706385a.3
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 08:36:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689521208; x=1692113208;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Ij9R2Z06Y24vfZ3xZGQuB/hd5tnY6d6rJhNbcQ7ZzmA=;
-        b=WUDzGD6OM+bc3aSYRa0r1a8P1xuDDZmcbe0kWNfufs/59MGgTrcQaIjCUA73RQPWFX
-         qpjmvAKZuqRV0vOCHWjSPUfPZs5e4/Uoly/29VE5SsV4/pTFzeTLbRaI1UXeh5FKPusn
-         B0jVXbdurDV0mBJB2u8HEyr7ttZqEzNYOPnbSufmbv9Ak41mpaTSHAm2drPNXPm1/0Dv
-         kBxF4OreRy1SEMiguUhYDWEn76gWi6iYw8TCEFLZIunZKIl8occ/gokw2P53TCUXvP6l
-         uG3kGliAFTSXy8OSTlw+0+GBw1TKNkvJAQve7SocXmG4agxO6vRi8NmKt/fdY5863d0b
-         ++oA==
-X-Gm-Message-State: ABy/qLZq/tR2BkbcILSXCtUEL//kCS4J2hwVOXiXGIq/FcMpIA/P0L3v
-        3PE1Ei0D8Tku70A3SbheMhYIha+8DtRsN/eunDRyFg==
-X-Google-Smtp-Source: APBJJlFtlleXDrak9K321xWoTyzRr580cVKyg6iV9qhBzfhWa+614ayqE48xQj8U/60RsHxxKpah/u5+I4/AhUXZmRU=
-X-Received: by 2002:a0d:ea87:0:b0:577:38a8:38be with SMTP id
- t129-20020a0dea87000000b0057738a838bemr8638151ywe.23.1689521208127; Sun, 16
- Jul 2023 08:26:48 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689521799; x=1692113799;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SjKpqR/un+xqnmH4u/xs4cWkynkrba3RxsIKpUmzl5A=;
+        b=CQBr+Ks90BZCeUR1aAsQO5fjYLmOwh9Jbj2cpYZK6M2s5J58vy0sJTirLWuOPD2AFh
+         dKwhlrRiMQz/paUyt88Vb/7Q3p/J6PUWVvdEhdervrrjTwSrf1t4+atmEElQoEoto3vt
+         TxHEeRDG6x7UjYcVBgAtsX03biU33E5bdWjIrVqB9YheYPkLe0M7JZZX7Q44m6FpztX5
+         99cxSI9p6BeXEMYLaiZpqQRfOp32eA1MH7Z3i1lP9YUJPkTY7owK+qXKOuy9zjddiWCk
+         Pxrtt6DYYiwWikbn5dm4tA1wRvZVOWRmFGFNnydYUjuBA4DI9XjofuUSb+wUjP4rMQ4X
+         HJHQ==
+X-Gm-Message-State: ABy/qLahv/w3khUGuqOglHy9ySGqNFyneiXD1Bo+pO38aJs6nFGDILqf
+        nKRDforQJyZyrOa6a4KBzbD4mlF4gRwke8/fB2s4580CzDv8CZjSfoZQoEhtszmvi+gOra5dvaO
+        RqZPz/HhjpNa85p6XlkgXzjs=
+X-Received: by 2002:a05:620a:e1b:b0:767:f130:8f8a with SMTP id y27-20020a05620a0e1b00b00767f1308f8amr11678569qkm.49.1689521798779;
+        Sun, 16 Jul 2023 08:36:38 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGf+9RMl8b0IZ7BAM8vVkiIbftoUFL/qQ02Lwshk7jN2Z9DSLREpZmbP00aTzB4D/vKmJjFrA==
+X-Received: by 2002:a05:620a:e1b:b0:767:f130:8f8a with SMTP id y27-20020a05620a0e1b00b00767f1308f8amr11678558qkm.49.1689521798519;
+        Sun, 16 Jul 2023 08:36:38 -0700 (PDT)
+Received: from localhost (pool-68-160-166-30.bstnma.fios.verizon.net. [68.160.166.30])
+        by smtp.gmail.com with ESMTPSA id g7-20020ae9e107000000b0075cd80fde9esm5405203qkm.89.2023.07.16.08.36.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 16 Jul 2023 08:36:37 -0700 (PDT)
+Date:   Sun, 16 Jul 2023 11:36:36 -0400
+From:   Mike Snitzer <snitzer@redhat.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Mark-PK Tsai <mark-pk.tsai@mediatek.com>,
+        Alasdair Kergon <agk@redhat.com>,
+        "development, device-mapper" <dm-devel@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        yj.chiang@mediatek.com, Peter Korsgaard <peter@korsgaard.com>,
+        Mike Snitzer <snitzer@kernel.org>, stable@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH 5.15] dm init: add dm-mod.waitfor to wait for
+ asynchronously probed block devices
+Message-ID: <CAH6w=aztzhm3Sa-afN2Xk-7mp1BVtTKNXJ=JyXqJvm3wtEnd3Q@mail.gmail.com>
+References: <20230713055841.24815-1-mark-pk.tsai@mediatek.com>
+ <2023071603-lustily-defraud-2149@gregkh>
 MIME-Version: 1.0
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sun, 16 Jul 2023 17:26:36 +0200
-Message-ID: <CACRpkdYNOMEUTJ-=N9ZR5w+mAKcTGLCoz7kgUgioC9Ytz9TZKg@mail.gmail.com>
-Subject: [GIT PULL] pin control fixes for v6.5
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2023071603-lustily-defraud-2149@gregkh>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,62 +89,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Sun, Jul 16, 2023, 11:16 AM Greg KH <gregkh@linuxfoundation.org> wrote:
 
-I'm mostly on vacation but what would vacation be without a
-few critical fixes so people can use their gaming laptops when
-hiding away from the sun (or rain)?
+> On Thu, Jul 13, 2023 at 01:58:37PM +0800, Mark-PK Tsai wrote:
+> > From: Peter Korsgaard <peter@korsgaard.com>
+> > 
+> > Just calling wait_for_device_probe() is not enough to ensure that
+> > asynchronously probed block devices are available (E.G. mmc, usb), so
+> > add a "dm-mod.waitfor=<device1>[,..,<deviceN>]" parameter to get
+> > dm-init to explicitly wait for specific block devices before
+> > initializing the tables with logic similar to the rootwait logic that
+> > was introduced with commit  cc1ed7542c8c ("init: wait for
+> > asynchronously scanned block devices").
+> > 
+> > E.G. with dm-verity on mmc using:
+> > dm-mod.waitfor="PARTLABEL=hash-a,PARTLABEL=root-a"
+> > 
+> > [    0.671671] device-mapper: init: waiting for all devices to be 
+> available before creating mapped devices
+> > [    0.671679] device-mapper: init: waiting for device PARTLABEL=hash-a 
+> ...
+> > [    0.710695] mmc0: new HS200 MMC card at address 0001
+> > [    0.711158] mmcblk0: mmc0:0001 004GA0 3.69 GiB
+> > [    0.715954] mmcblk0boot0: mmc0:0001 004GA0 partition 1 2.00 MiB
+> > [    0.722085] mmcblk0boot1: mmc0:0001 004GA0 partition 2 2.00 MiB
+> > [    0.728093] mmcblk0rpmb: mmc0:0001 004GA0 partition 3 512 KiB, 
+> chardev (249:0)
+> > [    0.738274]  mmcblk0: p1 p2 p3 p4 p5 p6 p7
+> > [    0.751282] device-mapper: init: waiting for device PARTLABEL=root-a 
+> ...
+> > [    0.751306] device-mapper: init: all devices available
+> > [    0.751683] device-mapper: verity: sha256 using implementation 
+> "sha256-generic"
+> > [    0.759344] device-mapper: ioctl: dm-0 (vroot) is ready
+> > [    0.766540] VFS: Mounted root (squashfs filesystem) readonly on 
+> device 254:0.
+> > 
+> > Signed-off-by: Peter Korsgaard <peter@korsgaard.com>
+> > Signed-off-by: Mike Snitzer <snitzer@kernel.org>
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+> > ---
+> >  .../admin-guide/device-mapper/dm-init.rst     |  8 +++++++
+> >  drivers/md/dm-init.c                          | 22 ++++++++++++++++++-
+> >  2 files changed, 29 insertions(+), 1 deletion(-)
+>
+> What is the git commit id of this change in Linus's tree?
+>
+> thanks,
+>
+> greg k-h
+>
+>
 
-Details in the signed tag as usual.
+Hey Greg,
 
-Please pull it in at your convenience!
+This change shouldn't be backported to stable@. It is a feature, if
+Mark-PK feels they need it older kernels they need to carry the change
+in their own tree. Or at a minimum they need to explain why this
+change is warranted in stable@.
 
-Yours,
-Linus Walleij
+But to answer your original question the upstream commit is:
 
-The following changes since commit 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5:
+035641b01e72 dm init: add dm-mod.waitfor to wait for asynchronously probed block devices
 
-  Linux 6.5-rc1 (2023-07-09 13:53:13 -0700)
+Thanks,
+Mike
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git
-tags/pinctrl-v6.5-2
-
-for you to fetch changes up to 04e601f2a71c804422a91df813e19fda5f4b845e:
-
-  Merge tag 'renesas-pinctrl-fixes-for-v6.5-tag1' of
-git://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-drivers
-into fixes (2023-07-13 00:05:52 +0200)
-
-----------------------------------------------------------------
-Pin control fixes for the v6.5 series:
-
-- Fix a really annoying interrupt storm in the AMD driver
-  affecting Asus TUF gaming notebooks.
-
-- Fix device tree parsing in the Renesas driver.
-
-----------------------------------------------------------------
-Biju Das (1):
-      pinctrl: renesas: rzg2l: Handle non-unique subnode names
-
-Geert Uytterhoeven (1):
-      pinctrl: renesas: rzv2m: Handle non-unique subnode names
-
-Linus Walleij (1):
-      Merge tag 'renesas-pinctrl-fixes-for-v6.5-tag1' of
-git://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-drivers
-into fixes
-
-Mario Limonciello (4):
-      pinctrl: amd: Only use special debounce behavior for GPIO 0
-      pinctrl: amd: Use amd_pinconf_set() for all config options
-      pinctrl: amd: Drop pull up select configuration
-      pinctrl: amd: Unify debounce handling into amd_pinconf_set()
-
- drivers/pinctrl/pinctrl-amd.c           | 61 +++++++++++++--------------------
- drivers/pinctrl/pinctrl-amd.h           |  1 -
- drivers/pinctrl/renesas/pinctrl-rzg2l.c | 28 ++++++++++-----
- drivers/pinctrl/renesas/pinctrl-rzv2m.c | 28 ++++++++++-----
- 4 files changed, 63 insertions(+), 55 deletions(-)
