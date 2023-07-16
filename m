@@ -2,78 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6556E754E6A
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 13:14:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F877754E6D
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 13:14:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229731AbjGPLKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Jul 2023 07:10:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43646 "EHLO
+        id S229760AbjGPLOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Jul 2023 07:14:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjGPLKx (ORCPT
+        with ESMTP id S229483AbjGPLON (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Jul 2023 07:10:53 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A88E10D1;
-        Sun, 16 Jul 2023 04:10:52 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-666edfc50deso2089531b3a.0;
-        Sun, 16 Jul 2023 04:10:52 -0700 (PDT)
+        Sun, 16 Jul 2023 07:14:13 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76B2810DC;
+        Sun, 16 Jul 2023 04:14:12 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-31297125334so2075422f8f.0;
+        Sun, 16 Jul 2023 04:14:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689505851; x=1692097851;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YFFypmJqYDlXT8DHon/Exdv4NWww0xZmQQjLVgcz49Y=;
-        b=QFl6oFb15jbkHZ57TZO+bqkiy5Bo9Cgp8H8oFcmuLIty60Cjj+2ZcdFYK4gfqnJHto
-         PUZpDRZBrVFDVfR/54aOgaCsr3lMZIfFBGSi5UIm5Co+ynssR0yDvrgJpxKBCFgwmogm
-         /QlJYbvkFmvt6YSNqEWPYX8vlzmwLnfbBzW7Y0e6BhGr7rNAg+YiB2s2Ri6js2qIEDEU
-         MKNnRFLRsMDGGc7f9l8J1hnK4fYCyqR3NaX3aZ1S+pAt5Nyd9xQ9KEU2XvTANCjiKcbb
-         05gnJX20PU0kFbjOXS5cGpgxalgkGxMwr5fgTrIVSx+D6mq5AhVGXTZc7MriQwt+cTMr
-         /VtA==
+        d=gmail.com; s=20221208; t=1689506051; x=1692098051;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=fJQklSgRDtjW4Ode2wf7c9W28AbDdJShuTTGI9JAU1c=;
+        b=UpZN0iccvhUd7rjms9gLP2XYOL5s4+cwGUDBk+LwLhrTSOKstpHjtnRcgRNJwvdlSV
+         CQQNby0pCTD5sWkeN6vmCurMZaofunPd/NrhIX7gRHLyXNJVAx3kGtPUEHx9YLD8A4nK
+         h1sXg4TAkC8+oSpAbi92LhD0Dp9E061EsD9HQJUORe1DDvBBriid48mE2C965g/ebQ5V
+         RtPvvd7Fq/hLkLe5zpJDwVT3yrrhix1b7zQztvH0kwFNQwlU7c1Rf4wysl71ar5Y2Fqq
+         ZRNtwFlg+gP9Bl7AF2V5CKwwMGxjVyGf1vxNpQ74o9R/oAXKYVTyHMhheZNmcDRMnHuB
+         hxLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689505851; x=1692097851;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=YFFypmJqYDlXT8DHon/Exdv4NWww0xZmQQjLVgcz49Y=;
-        b=D+rjKXaEK0up/zcbkxzV4nv0xhItPFownKOfN67y+p1azbyOkic/QFunATdHizh3+F
-         j0Cs1qJtZJtOPLSpLcyQlHK/jp76LzS6B6QRTZWcMzKCC4UlzIG+3KMch99cfXoOrdFD
-         akaydgmO5/9hHbXb12KaCtOWyXSlf4lFJKc8LvM57bKS37F8KnL9xBMJYmBE4XRaphka
-         UZnB4z/jHZU7/aFf02cXQJalX5FMrharq59WJst8Cd7RrXWRIjZL2omkYEefSSXyUvy3
-         HjSNnQniVdmqy7SNPtwckZw8Axei+P+zEentskIfB4vb0gLdpGfRixwWPI4cdARTkO2k
-         80qw==
-X-Gm-Message-State: ABy/qLY3edW8PxwO+Kv5xdDLqkriOu1qLGndHzStCDb3hj+PqMCoOpXP
-        jNTzdoc0F91lA6wrOd5cuhU=
-X-Google-Smtp-Source: APBJJlHnHmyzKIUhy1NjL61Ihqjq4SxH+BnDn6KGxOMsuvj2zzx0TBvs2xKNjJTnh1KlaHxCQNEE7A==
-X-Received: by 2002:a05:6a20:4405:b0:10b:bf2d:71bb with SMTP id ce5-20020a056a20440500b0010bbf2d71bbmr9949349pzb.27.1689505851474;
-        Sun, 16 Jul 2023 04:10:51 -0700 (PDT)
-Received: from [192.168.0.104] ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id d11-20020aa78e4b000000b00678159eacecsm10085573pfr.121.2023.07.16.04.10.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 16 Jul 2023 04:10:50 -0700 (PDT)
-Message-ID: <51e53417-cfad-542c-54ee-0fb9e26c4a38@gmail.com>
-Date:   Sun, 16 Jul 2023 18:10:44 +0700
+        d=1e100.net; s=20221208; t=1689506051; x=1692098051;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fJQklSgRDtjW4Ode2wf7c9W28AbDdJShuTTGI9JAU1c=;
+        b=id+GQXDnnKQcRNIAHw8oHPQ8awNvktF/zhuoWikAXrZvt1rUlKlvX160+V9uMAX6xg
+         5YRZkbvqcqINIArtIf2IAXBuaqlh/bhXgd8aO7729D9e3BrBIsDJdmsXQGSHtffEj54k
+         /fsffOYwKWBGAHPhicPxk6f4bLvs0ueyhWtiq3QeaNrp2AZs39Vuv5xXHdlLaCYd+XFf
+         AIyGpzoA6SMFPmB8c6VO1CHAWnDdoFLg7i2hXHiAip3xb0BOLagqfmSSc+wscuuad+bX
+         kWIBgKAlrTDd8hPkBJqi+XADDMrB7H/MG04LOhXFWTxL4cNw5w7jtO3oqhmGafUvlK1l
+         uLJw==
+X-Gm-Message-State: ABy/qLaiVOZM4Ij4nHdStzenJyi2Zv7ESKf0K58JTHwEcyitFjSI34Xg
+        6A+vRxGLen7y6gCsu9FqG2Q=
+X-Google-Smtp-Source: APBJJlH9e4hEEhLa09qFfmmnpo60zTix0naiAqzdGgAcqId8zWt2qeTcgtDRu/Kn/RCpSm9I2H/7Vg==
+X-Received: by 2002:a5d:6505:0:b0:314:98f:2495 with SMTP id x5-20020a5d6505000000b00314098f2495mr6397493wru.12.1689506050569;
+        Sun, 16 Jul 2023 04:14:10 -0700 (PDT)
+Received: from mmaatuq-HP-Laptop-15-dy2xxx.. ([2001:8f8:1163:535c:e1af:2d96:1960:a57d])
+        by smtp.gmail.com with ESMTPSA id k8-20020a5d5188000000b00314172ba213sm16028975wrv.108.2023.07.16.04.14.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 16 Jul 2023 04:14:10 -0700 (PDT)
+From:   Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, shuah@kernel.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>
+Subject: [PATCH v3] selftests/net: replace manual array size calc with ARRAYSIZE macro.
+Date:   Sun, 16 Jul 2023 15:13:48 +0400
+Message-Id: <20230716111348.2036930-1-mahmoudmatook.mm@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US
-To:     Rudi Heitbaum <rudi@heitbaum.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Linux Networking <netdev@vger.kernel.org>,
-        Linux Wireless <linux-wireless@vger.kernel.org>
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-Subject: Fwd: mm/page_alloc.c:4453 with cfg80211_wiphy_work [cfg80211]
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -84,73 +71,124 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+fixes coccinelle WARNING: Use ARRAY_SIZE
 
-I notice a regression report on Bugzilla [1]. Quoting from it:
+changelog since v2:
+ - integrat a commit that contains actual replacement for ARRAY_SIZE.
+ - use ARRAY_SIZE for net/psock_lib.h
 
-> Linux version 6.5.0-rc1+ - up to 831fe284d8275987596b7d640518dddba5735f61
-> 
-> [    7.312665] ------------[ cut here ]------------
-> [    7.312671] WARNING: CPU: 8 PID: 659 at mm/page_alloc.c:4453 __alloc_pages+0x329/0x340
-> [    7.312683] Modules linked in: exfat ntfs3 bnep btusb btrtl btbcm btintel btmtk bluetooth ecdh_generic ecc iwlmvm mac80211 libarc4 snd_hda_codec_hdmi iwlwifi snd_hda_codec_realtek snd_hda_codec_generic ledtrig_audio cfg80211 snd_hda_intel snd_hda_codec snd_hwdep intel_rapl_msr x86_pkg_temp_thermal intel_powerclamp snd_hda_core tpm_tis intel_rapl_common snd_intel_dspcfg tpm_tis_core idma64 rfkill tpm_crb tpm rng_core pkcs8_key_parser fuse dmi_sysfs
-> [    7.312725] CPU: 8 PID: 659 Comm: kworker/8:2 Not tainted 6.5.0-rc1 #1
-> [    7.312729] Hardware name: Intel(R) Client Systems NUC12WSKi7/NUC12WSBi7, BIOS WSADL357.0087.2023.0306.1931 03/06/2023
-> [    7.312731] Workqueue: events cfg80211_wiphy_work [cfg80211]
-> [    7.312785] RIP: 0010:__alloc_pages+0x329/0x340
-> [    7.312791] Code: a8 44 89 e6 89 df c6 45 c8 00 4c 89 6d b0 41 89 de e8 0b ef ff ff 49 89 c7 e9 90 fe ff ff 80 e3 3f eb c0 c6 05 69 49 f7 09 01 <0f> 0b eb 98 e8 1e ec 6d 01 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f
-> [    7.312794] RSP: 0018:ffffad8e80defbf8 EFLAGS: 00010246
-> [    7.312798] RAX: 0000000000000000 RBX: 0000000000040dc0 RCX: 0000000000000000
-> [    7.312800] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000040dc0
-> [    7.312802] RBP: ffffad8e80defc50 R08: 0000000000000005 R09: 0000000000000018
-> [    7.312804] R10: ffff938899d4a800 R11: ffff938891a9c800 R12: 0000000000000034
-> [    7.312806] R13: 0000000000000000 R14: ffffffffc02b150d R15: fffffffffffffc90
-> [    7.312808] FS:  0000000000000000(0000) GS:ffff938fb6600000(0000) knlGS:0000000000000000
-> [    7.312811] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [    7.312813] CR2: 00007f540c94b710 CR3: 000000059502c000 CR4: 0000000000f50ea0
-> [    7.312815] PKRU: 55555554
-> [    7.312817] Call Trace:
-> [    7.312819]  <TASK>
-> [    7.312822]  ? show_regs+0x69/0x80
-> [    7.312827]  ? __warn+0x89/0x140
-> [    7.312833]  ? __alloc_pages+0x329/0x340
-> [    7.312837]  ? report_bug+0x15d/0x180
-> [    7.312843]  ? handle_bug+0x42/0x80
-> [    7.312848]  ? exc_invalid_op+0x1c/0x70
-> [    7.312852]  ? asm_exc_invalid_op+0x1f/0x30
-> [    7.312857]  ? cfg80211_scan_6ghz+0x12d/0xcb0 [cfg80211]
-> [    7.312911]  ? __alloc_pages+0x329/0x340
-> [    7.312916]  ? cfg80211_scan_6ghz+0x12d/0xcb0 [cfg80211]
-> [    7.312968]  __kmalloc_large_node+0x7e/0x170
-> [    7.312973]  __kmalloc+0xb9/0x120
-> [    7.312976]  cfg80211_scan_6ghz+0x12d/0xcb0 [cfg80211]
-> [    7.313028]  ? sched_clock_noinstr+0xd/0x20
-> [    7.313034]  ? sched_clock_cpu+0x14/0x190
-> [    7.313040]  ? raw_spin_rq_lock_nested+0x12/0x20
-> [    7.313046]  ___cfg80211_scan_done+0x1e0/0x250 [cfg80211]
-> [    7.313099]  __cfg80211_scan_done+0x23/0x30 [cfg80211]
-> [    7.313153]  cfg80211_wiphy_work+0xae/0xd0 [cfg80211]
-> [    7.313201]  process_one_work+0x1f1/0x3e0
-> [    7.313204]  worker_thread+0x51/0x3f0
-> [    7.313207]  ? _raw_spin_unlock_irqrestore+0x26/0x30
-> [    7.313212]  ? __pfx_worker_thread+0x10/0x10
-> [    7.313217]  kthread+0xdb/0x110
-> [    7.313222]  ? __pfx_kthread+0x10/0x10
-> [    7.313226]  ret_from_fork+0x3e/0x60
-> [    7.313229]  ? __pfx_kthread+0x10/0x10
-> [    7.313233]  ret_from_fork_asm+0x1b/0x30
-> [    7.313237]  </TASK>
-> [    7.313239] ---[ end trace 0000000000000000 ]---
+changelog since v1:
+ - remove unnecessary extra new line
 
-See Bugzilla for the full thread.
+changelog since v0:
+ - update net/Makefile to include kselftest.h
+ - remove redefinition of ARRAYSIZE.
 
-Anyway, I'm adding it to regzbot to make sure it doesn't fall through
-cracks unnoticed:
+Signed-off-by: Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>
+---
+ tools/testing/selftests/net/Makefile          | 2 ++
+ tools/testing/selftests/net/csum.c            | 6 ++++--
+ tools/testing/selftests/net/hwtstamp_config.c | 6 ++++--
+ tools/testing/selftests/net/psock_lib.h       | 4 +++-
+ 4 files changed, 13 insertions(+), 5 deletions(-)
 
-#regzbot introduced: v6.5-rc1..831fe284d82759 https://bugzilla.kernel.org/show_bug.cgi?id=217675
-
-Thanks.
-
-[1]: https://bugzilla.kernel.org/show_bug.cgi?id=217675
-
+diff --git a/tools/testing/selftests/net/Makefile b/tools/testing/selftests/net/Makefile
+index 7f3ab2a93ed6..a06cc25489f9 100644
+--- a/tools/testing/selftests/net/Makefile
++++ b/tools/testing/selftests/net/Makefile
+@@ -3,6 +3,8 @@
+ 
+ CFLAGS =  -Wall -Wl,--no-as-needed -O2 -g
+ CFLAGS += -I../../../../usr/include/ $(KHDR_INCLUDES)
++# Additional include paths needed by kselftest.h
++CFLAGS += -I../
+ 
+ TEST_PROGS := run_netsocktests run_afpackettests test_bpf.sh netdevice.sh \
+ 	      rtnetlink.sh xfrm_policy.sh test_blackhole_dev.sh
+diff --git a/tools/testing/selftests/net/csum.c b/tools/testing/selftests/net/csum.c
+index 82a1c1839da6..90eb06fefa59 100644
+--- a/tools/testing/selftests/net/csum.c
++++ b/tools/testing/selftests/net/csum.c
+@@ -91,6 +91,8 @@
+ #include <sys/types.h>
+ #include <unistd.h>
+ 
++#include "kselftest.h"
++
+ static bool cfg_bad_csum;
+ static int cfg_family = PF_INET6;
+ static int cfg_num_pkt = 4;
+@@ -450,7 +452,7 @@ static void send_packet(int fd, const char *buf, int len)
+ 	iov[2].iov_len = len;
+ 
+ 	msg.msg_iov = iov;
+-	msg.msg_iovlen = sizeof(iov) / sizeof(iov[0]);
++	msg.msg_iovlen = ARRAY_SIZE(iov);
+ 
+ 	msg.msg_name = &addr;
+ 	msg.msg_namelen = sizeof(addr);
+@@ -505,7 +507,7 @@ static void __recv_prepare_packet_filter(int fd, int off_nexthdr, int off_dport)
+ 	struct sock_fprog prog = {};
+ 
+ 	prog.filter = filter;
+-	prog.len = sizeof(filter) / sizeof(struct sock_filter);
++	prog.len = ARRAY_SIZE(filter);
+ 	if (setsockopt(fd, SOL_SOCKET, SO_ATTACH_FILTER, &prog, sizeof(prog)))
+ 		error(1, errno, "setsockopt filter");
+ }
+diff --git a/tools/testing/selftests/net/hwtstamp_config.c b/tools/testing/selftests/net/hwtstamp_config.c
+index e1fdee841021..170728c96c46 100644
+--- a/tools/testing/selftests/net/hwtstamp_config.c
++++ b/tools/testing/selftests/net/hwtstamp_config.c
+@@ -16,6 +16,8 @@
+ #include <linux/net_tstamp.h>
+ #include <linux/sockios.h>
+ 
++#include "kselftest.h"
++
+ static int
+ lookup_value(const char **names, int size, const char *name)
+ {
+@@ -50,7 +52,7 @@ static const char *tx_types[] = {
+ 	TX_TYPE(ONESTEP_SYNC)
+ #undef TX_TYPE
+ };
+-#define N_TX_TYPES ((int)(sizeof(tx_types) / sizeof(tx_types[0])))
++#define N_TX_TYPES ((int)(ARRAY_SIZE(tx_types)))
+ 
+ static const char *rx_filters[] = {
+ #define RX_FILTER(name) [HWTSTAMP_FILTER_ ## name] = #name
+@@ -71,7 +73,7 @@ static const char *rx_filters[] = {
+ 	RX_FILTER(PTP_V2_DELAY_REQ),
+ #undef RX_FILTER
+ };
+-#define N_RX_FILTERS ((int)(sizeof(rx_filters) / sizeof(rx_filters[0])))
++#define N_RX_FILTERS ((int)(ARRAY_SIZE(rx_filters)))
+ 
+ static void usage(void)
+ {
+diff --git a/tools/testing/selftests/net/psock_lib.h b/tools/testing/selftests/net/psock_lib.h
+index faa884385c45..6e4fef560873 100644
+--- a/tools/testing/selftests/net/psock_lib.h
++++ b/tools/testing/selftests/net/psock_lib.h
+@@ -14,6 +14,8 @@
+ #include <arpa/inet.h>
+ #include <unistd.h>
+ 
++#include "kselftest.h"
++
+ #define DATA_LEN			100
+ #define DATA_CHAR			'a'
+ #define DATA_CHAR_1			'b'
+@@ -63,7 +65,7 @@ static __maybe_unused void pair_udp_setfilter(int fd)
+ 	struct sock_fprog bpf_prog;
+ 
+ 	bpf_prog.filter = bpf_filter;
+-	bpf_prog.len = sizeof(bpf_filter) / sizeof(struct sock_filter);
++	bpf_prog.len = ARRAY_SIZE(bpf_filter);
+ 
+ 	if (setsockopt(fd, SOL_SOCKET, SO_ATTACH_FILTER, &bpf_prog,
+ 		       sizeof(bpf_prog))) {
 -- 
-An old man doll... just what I always wanted! - Clara
+2.34.1
+
