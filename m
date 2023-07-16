@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 183B1754D45
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 06:11:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE2C4754D50
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 06:32:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229621AbjGPELY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Jul 2023 00:11:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57834 "EHLO
+        id S229584AbjGPEcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Jul 2023 00:32:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbjGPELU (ORCPT
+        with ESMTP id S229462AbjGPEcd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Jul 2023 00:11:20 -0400
+        Sun, 16 Jul 2023 00:32:33 -0400
 Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A61C11B8
-        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 21:11:16 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85C5E194
+        for <linux-kernel@vger.kernel.org>; Sat, 15 Jul 2023 21:32:31 -0700 (PDT)
 Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R3Www4dhnzBHXgr
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 12:11:12 +0800 (CST)
+        by mail.208.org (Postfix) with ESMTP id 4R3XPT1c0ZzBHXgq
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 12:32:29 +0800 (CST)
 Authentication-Results: mail.208.org (amavisd-new); dkim=pass
         reason="pass (just generated, assumed good)" header.d=208.org
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
         content-transfer-encoding:content-type:message-id:user-agent
         :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689480672; x=1692072673; bh=CTsBTIbqlmVhMmez/i4F5aY/S0M
-        mIqeeOyo3GPyqXvE=; b=yNMsw7veH00TsIuaSCzXFFTM5aScBa4csay0FbWMpKw
-        IlsrTW3POpoX6A01zS1jB4gCcfgqvhPg2V6UYtCLYdlD85+BqUA8GVb0WDQIDOy1
-        IG1ZPlvlHsex2xRNgLvVV2EqW9sDSxU3sogrVIWNz5N0vPk/jFqm/xYVSrZn8Pvk
-        2SaDFe7gUbMUoI06er3XSvUv4QPGaMAsYv788JMaV6OaPQvde/YmyT8z0aYEYdCk
-        AELc18GkSpsniIfkQO62uYarXMTgekpV9Szx8A+mt7f5W97Ee6GwRjADsK/GQyZ/
-        OpHbVufCk3Yn/ONjt07Xgsu1d8nOvhEdO0s9DWHhf3A==
+        dkim; t=1689481949; x=1692073950; bh=xBqQ8RrtpjxGaqUbrdAplKRwJil
+        9/d/wO5QQxP+8MIo=; b=TW8X2kb0wGv9r+NwjdQ7C/cP0ShIKK2y7yiPmTOufxa
+        pPwOCoCMLIQ3VZhsXO468Z2LBqzL4XskBabIU/b3H88+t30vYIP0NN+yb0530Bs6
+        fcrQjyHw28wiOcUr1EXVRTCmPQuXPRs4a7iooEnH8eWSF+VSTX3mPkpvZ14V6PkI
+        Cm2iI8zP8pfhiZHhHMbVe5sb7Xxi08iw3/x/WTVb6f8A5U6RZo1cw6fRYe51JIEH
+        ytjA3HNQ1RdB+WCDihovglczQ/u8CA7CX9EusjPQATTQ9jFBVmbV3wPCbjozEeXG
+        w7n4k1vcmP7MZ6fWTHfLAl7iXks8QSHeCwqoU2ngULw==
 X-Virus-Scanned: amavisd-new at mail.208.org
 Received: from mail.208.org ([127.0.0.1])
         by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id mZ-YJC6lwl6q for <linux-kernel@vger.kernel.org>;
-        Sun, 16 Jul 2023 12:11:12 +0800 (CST)
+        with ESMTP id SF33a3LSkrWi for <linux-kernel@vger.kernel.org>;
+        Sun, 16 Jul 2023 12:32:29 +0800 (CST)
 Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R3Www0JPTzBHXgf;
-        Sun, 16 Jul 2023 12:11:11 +0800 (CST)
+        by mail.208.org (Postfix) with ESMTPSA id 4R3XPS5vtmzBHXgf;
+        Sun, 16 Jul 2023 12:32:28 +0800 (CST)
 MIME-Version: 1.0
-Date:   Sun, 16 Jul 2023 12:11:11 +0800
+Date:   Sun, 16 Jul 2023 12:32:28 +0800
 From:   wuyonggang001@208suo.com
-To:     jikos@kernel.org, benjamin.tissoires@redhat.com
-Cc:     linux-usb@vger.kernel.org, linux-input@vger.kernel.org,
+To:     sathya.prakash@broadcom.com, sreekanth.reddy@broadcom.com,
+        suganath-prabu.subramani@broadcom.com
+Cc:     linux-scsi@vger.kernel.org, MPT-FusionLinux.pdl@broadcom.com,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] HID: hiddev: Modify Format
-In-Reply-To: <20230716040716.25980-1-zhanglibing@cdjrlc.com>
-References: <20230716040716.25980-1-zhanglibing@cdjrlc.com>
+Subject: [PATCH] scsi: message: fusion: Modify Format
+In-Reply-To: <20230716042651.12582-1-zhanglibing@cdjrlc.com>
+References: <20230716042651.12582-1-zhanglibing@cdjrlc.com>
 User-Agent: Roundcube Webmail
-Message-ID: <755134062a3e4f74ef781cb8593b0f1e@208suo.com>
+Message-ID: <f4c6415590fdeb514fbcb3f3beb82375@208suo.com>
 X-Sender: wuyonggang001@208suo.com
 Content-Type: text/plain; charset=US-ASCII;
  format=flowed
@@ -64,25 +65,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fix the following checkpatch error(s):
 
-ERROR: "inode * inode" should be "inode *inode"
-ERROR: "file * file" should be "file *file"
+ERROR: "scsi_cmnd * SCpnt" should be "scsi_cmnd *SCpnt"
+ERROR: "MPT_SCSI_HOST   * hd" should be "MPT_SCSI_HOST   *hd"
 
-Signed-off-by: Libing Zhang <zhanglibing@cdjrlc.com>
+Signed-off-by: Yonggang Wu <wuyonggang001@208suo.com>
 ---
-  drivers/hid/usbhid/hiddev.c | 2 +-
-  1 file changed, 1 insertion(+), 1 deletion(-)
+  drivers/message/fusion/mptscsih.c | 4 ++--
+  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/hid/usbhid/hiddev.c b/drivers/hid/usbhid/hiddev.c
-index 59cf3ddfdf78..581dc33197d0 100644
---- a/drivers/hid/usbhid/hiddev.c
-+++ b/drivers/hid/usbhid/hiddev.c
-@@ -213,7 +213,7 @@ static int hiddev_fasync(int fd, struct file *file, 
-int on)
-  /*
-   * release file op
-   */
--static int hiddev_release(struct inode * inode, struct file * file)
-+static int hiddev_release(struct inode *inode, struct file *file)
+diff --git a/drivers/message/fusion/mptscsih.c 
+b/drivers/message/fusion/mptscsih.c
+index 2bc17087d17d..60323f73337e 100644
+--- a/drivers/message/fusion/mptscsih.c
++++ b/drivers/message/fusion/mptscsih.c
+@@ -1861,7 +1861,7 @@ mptscsih_dev_reset(struct scsi_cmnd * SCpnt)
+   *    Returns SUCCESS or FAILED.
+   **/
+  int
+-mptscsih_bus_reset(struct scsi_cmnd * SCpnt)
++mptscsih_bus_reset(struct scsi_cmnd *SCpnt)
   {
-      struct hiddev_list *list = file->private_data;
-      unsigned long flags;
+      MPT_SCSI_HOST    *hd;
+      int         retval;
+@@ -1913,7 +1913,7 @@ mptscsih_bus_reset(struct scsi_cmnd * SCpnt)
+  int
+  mptscsih_host_reset(struct scsi_cmnd *SCpnt)
+  {
+-    MPT_SCSI_HOST *  hd;
++    MPT_SCSI_HOST   *hd;
+      int              status = SUCCESS;
+      MPT_ADAPTER    *ioc;
+      int        retval;
