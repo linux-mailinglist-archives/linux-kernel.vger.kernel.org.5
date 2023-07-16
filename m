@@ -2,122 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6ECE754ECA
-	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 15:24:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 923AA754ED3
+	for <lists+linux-kernel@lfdr.de>; Sun, 16 Jul 2023 15:31:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229850AbjGPNYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Jul 2023 09:24:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55684 "EHLO
+        id S229915AbjGPNbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Jul 2023 09:31:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjGPNYN (ORCPT
+        with ESMTP id S229450AbjGPNba (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Jul 2023 09:24:13 -0400
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC7AFE6B;
-        Sun, 16 Jul 2023 06:24:10 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 395481C0005;
-        Sun, 16 Jul 2023 13:24:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1689513849;
+        Sun, 16 Jul 2023 09:31:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97422198
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 06:30:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689514237;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ZlAJuoojWBheC8JWE/2d5ZWEyMAatM5WLPn8urq2pfs=;
-        b=pxlpXq30z8NQhVbblNWq1AJDPI30WimwJl1hF8f6qibGV5xcoD05V90VqdTf841xQE9pX8
-        navcvSLTkpk3oYJkRjoCJM697aaFOkRsFlge77hLR1gr8UkgdbdOlRvjHsKOBmrB6+C35h
-        tlT7+2v6o2Hwvw67jotDSktY0H5h/Gbtiv41Ld8T4fLjcZLtEqhtp9BiHFxNF6YjM3Qpsy
-        XgiK8+9sGlyZqfNJHXF+blxpC8obu9KL391CUHCfrgfiOVEh+0jNBvb8BCRQv7ZNz9wKBJ
-        79M+ecl7Bm03bS84Pkby9io5YgZ8ZMWa7htwxwwtha5AqeLQwKqbyJLGmNIOIw==
-Date:   Sun, 16 Jul 2023 15:24:05 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Arseniy Krasnov <avkrasnov@sberdevices.ru>
-Cc:     Liang Yang <liang.yang@amlogic.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        <oxffffaa@gmail.com>, <kernel@sberdevices.ru>,
-        <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH v3 0/3] support 512B ECC step size for Meson NAND
-Message-ID: <20230716152405.729e0922@xps-13>
-In-Reply-To: <672e6a2f-21b3-77cd-fe83-04d4aa79f68e@sberdevices.ru>
-References: <20230711122129.2635558-1-AVKrasnov@sberdevices.ru>
-        <20230715181553.1d2b5637@xps-13>
-        <672e6a2f-21b3-77cd-fe83-04d4aa79f68e@sberdevices.ru>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        bh=CjuXrLpE5fZ4kMeORkkTJX0Um/Y7BBe3dNlC2HaYSoU=;
+        b=X8snGem+gcYRwACxX1FNLN5Ew9D+hoQdg6z4DuFlqZzyFCiTQMSTrcE5bqMkldvyNYVlj2
+        r7UglPQVK69KPOAjuSDtnDB/h9HpLjMErhjgCHYnJACrqJiVwzzB0FeqMMYEJMeFQCtWZT
+        BQBUn3kXgI11EYNQk2dcNwC//sq48f0=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-417-eB2DbsDbOBev2N4B_FkZ-g-1; Sun, 16 Jul 2023 09:30:36 -0400
+X-MC-Unique: eB2DbsDbOBev2N4B_FkZ-g-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-3fbb0c01e71so19297485e9.0
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 06:30:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689514234; x=1692106234;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CjuXrLpE5fZ4kMeORkkTJX0Um/Y7BBe3dNlC2HaYSoU=;
+        b=G+//KKDNS2YhsoFZiNgVgGbptbxIgWFGFJgjm4SA6Dwj3LNRxdBpcL6BPgJNpUSTem
+         1hGe13LVUqgLrKH6xORzUAxRyoN96hV61vY2lyzgSwdzSip5+2sXyQT76dO85hKVW7Z5
+         acE7WVsucmJaG0r+umMTVsioSaHZQCzovGuWBeyb6PhegtF207xG7tNWT/Bu7iSXXD7I
+         T1rribCJOBBW4znmwGzPDBjnXWchnLVmDCGY70FPTAj2IRMzI0Ci9X6sfQ3B7lKg1XYR
+         OO8wPEUqNh9NsRoUD0F3YZxkYzMjfxWoPnBPrWvKTA5xZXUHltrkhARH4rPNYow8gh8q
+         RxMw==
+X-Gm-Message-State: ABy/qLYtTExwxzK1lekd7NP8fKYDUHS8imv9CxO1kRbeaxYuLv1uo4nE
+        cvILMk9+EozylmO7Fzb5c7FwkKaxh17M+Hp84R9ozJMonzlJYVJhYWbhStMGAyZD+w0f/TFbsFU
+        PhWNpKPXH5TrLQNKPf1G1qaaLtiELjojz
+X-Received: by 2002:a7b:cbcb:0:b0:3f9:b1e7:8a4b with SMTP id n11-20020a7bcbcb000000b003f9b1e78a4bmr7679357wmi.21.1689514234768;
+        Sun, 16 Jul 2023 06:30:34 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlF9RdEhJ0TAEWePY7ifDIJ9OBUgAG5cpiZ6Um+wUYdwWLf1n30CjRuAHN3tQL7HMIYTidQoXg==
+X-Received: by 2002:a7b:cbcb:0:b0:3f9:b1e7:8a4b with SMTP id n11-20020a7bcbcb000000b003f9b1e78a4bmr7679337wmi.21.1689514234418;
+        Sun, 16 Jul 2023 06:30:34 -0700 (PDT)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id y13-20020a05600c364d00b003f819faff24sm5580532wmq.40.2023.07.16.06.30.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 16 Jul 2023 06:30:33 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 0/8] drm: fb-helper/ssd130x: Add support for DRM_FORMAT_R1
+In-Reply-To: <cover.1689252746.git.geert@linux-m68k.org>
+References: <cover.1689252746.git.geert@linux-m68k.org>
+Date:   Sun, 16 Jul 2023 15:30:32 +0200
+Message-ID: <87zg3w7zlz.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arseniy,
+Geert Uytterhoeven <geert@linux-m68k.org> writes:
 
-avkrasnov@sberdevices.ru wrote on Sat, 15 Jul 2023 20:48:34 +0300:
+Hello Geert,
 
-> Hello Miquel!
->=20
-> On 15.07.2023 19:15, Miquel Raynal wrote:
-> > Hi Arseniy,
-> >=20
-> > AVKrasnov@sberdevices.ru wrote on Tue, 11 Jul 2023 15:21:26 +0300:
-> >  =20
-> >> Hello,
-> >>
-> >> this patchset adds support for 512B ECC step size for Meson NAND. Curr=
-ent
-> >> implementation only supports 1024B. There are three patches:
-> >>
-> >> 1) Update for device tree bindings to replace 'const' type of field
-> >>    'nand-ecc-step-size' with 'enum' which contains 512 and 1024.
-> >>
-> >> 2) Update for device tree bindings to add dependency between properties
-> >>    'nand-ecc-strength' and 'nand-ecc-step-size'.
-> >>
-> >> 3) Update for Meson driver - new enum value for 512B ECC and reworked
-> >>    ECC capabilities structure to support both 512B and 1024B ECC. By
-> >>    default this driver uses 1024B ECC, 512B could be enabled in device
-> >>    tree. =20
-> >=20
-> > This series does not apply correctly on nand/next, would you mind
-> > rebasing (nand/next on linux-mtd) and sending it again? =20
->=20
-> Sure, as I see 0001 was applied to nand/next, so I can resend only 0002 a=
-nd 0003,
-> as 0002 is the first patch which fails to apply?
+> 	Hi all,
+>
+> The native display format of ssd1306 OLED displays is monochrome
+> light-on-dark (R1).  This patch series adds support for the R1 buffer
+> format to both the ssd130x DRM driver and the FB helpers, so monochrome
+> applications (including fbdev emulation and the text console) can avoid
+> the overhead of back-and-forth conversions between R1 and XR24.
+>
 
-Yes indeed.
+I've tested your series on a ssd1306 I2C OLED panel and fbcon did work for
+me, but had some issues when trying to run your fbtest suite. Because the
+test005 gets killed with a SIGSEGV.
 
->=20
-> >=20
-> > BTW the "rfc" prefix is only needed for the "first" submission, when
-> > you try something "new", otherwise it is no longer required. =20
->=20
-> Ok, got it
->=20
-> >=20
-> > Thanks,
-> > Miqu=C3=A8l =20
->=20
-> Thanks, Arseniy
+$ ./fbtest -d 
+fb_init()
+fb_open()
+fb_get_var()
+fb_get_fix()
+fb_map()
+fb_start = 0, fb_offset = 0, fb_len = 1000
+fb_save()
+fb_clear()
+Using drawops planar (monochrome and (interleaved) bitplanes)
+Available visuals:
+  Monochrome
+  Grayscale 2
+Using visops monochrome
+Running all tests
+Running test test001
+test001: PASSED
+Running test test002
+test002: PASSED
+Running test test003
+Requirement num_colors >= 16 not met
+Running test test004
+test004: PASSED
+Running test test005
+Caught signal 11. Exiting
+fb_cleanup()
+fb_restore()
+fb_unmap()
+fb_set_var()
+fb_get_var()
+fb_get_fix()
+fb_close()
 
+Maybe more tests are missing the minimum num_colors requirement? Also, the
+penguin in test004 is not displayed correctly. I was expecting that to be
+working correctly since you mentioned to be using the Linux logo on boot.
 
-Thanks,
-Miqu=C3=A8l
+Another question, do you know if is possible to change the default format?
+I believe that fbset won't work because the DRM fbdev emulation layer does
+not implement mode settings but I thought that changing the mode using the
+atomic KMS API would work.
+
+$ modetest -M ssd130x -P 31@33:128x64@XR24 -a
+$ echo $?
+0
+
+but after that I still get:
+
+$ fbset -i
+
+mode "128x64"
+    geometry 128 64 128 64 1
+    timings 0 0 0 0 0 0 0
+    rgba 1/0,1/0,1/0,0/0
+endmode
+
+Frame buffer device information:
+    Name        : ssd130xdrmfb
+    Address     : (nil)
+    Size        : 4096
+    Type        : PACKED PIXELS
+    Visual      : MONO10
+    XPanStep    : 1
+    YPanStep    : 1
+    YWrapStep   : 0
+    LineLength  : 16
+    Accelerator : No
+
+Maybe I'm doing something wrong or misunderstading about how should work?
+
+-- 
+Best regards,
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
+
