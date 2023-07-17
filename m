@@ -2,100 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D65F756963
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 18:40:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A9E6756966
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 18:41:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231286AbjGQQko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 12:40:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47906 "EHLO
+        id S231987AbjGQQlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 12:41:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230116AbjGQQkm (ORCPT
+        with ESMTP id S231951AbjGQQlW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 12:40:42 -0400
-Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4F0CA9;
-        Mon, 17 Jul 2023 09:40:41 -0700 (PDT)
-Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-57a8080e4a7so47447217b3.0;
-        Mon, 17 Jul 2023 09:40:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689612041; x=1692204041;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dMb9H4PkmkiPa0FVYqc3RLn9o2P2FrhAS3xYXAFVgv8=;
-        b=iwI61PncG4Y3Zzb2Zm6QxwurzzIJc/IRk72CpUeXExIe5JmlGi28GseD9dT/g1gQlF
-         hmiIZi0JD1BWJZvxWxup0d6oFd87nHipIRPqquXqb2dLQ3ewE++qic5bGzt7G6FB8mJE
-         8JgOgdrur0OsbCiMNZpnNehsSlCxWtzQP/rEA+XARRsijNVWa/sYRfguLY2Ekqx2WOFU
-         VsDSaQwZnTi3fv8/+Ca/caWoq4KEEt4aG6Hii4cKL+LNuhAd4VV5oCgnLVkECB0p3Qfc
-         zJikZUQ0QMn2+OITKj8kv5gEv7ypfbiO0rAvDJR7xy0ozhwmDm+ehzPOM4rCrcYm9+wc
-         Iimg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689612041; x=1692204041;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dMb9H4PkmkiPa0FVYqc3RLn9o2P2FrhAS3xYXAFVgv8=;
-        b=VlPMHic73jwsHrJsv3yB0XyvT0R881HYjdzLk/pQMV6Ywb8eILQ+N5v8r7xd6D+jH5
-         8uA/3DMfgz9xmgy+lxZcuxVAjA7wRGGyOLFvkdXSxudlqxC9teHODutuPSA+g1TYJ22P
-         teah0ZTRoG1DEGU91UHx4fkxvZlw+Hd+2EaN+Yizr1TQPJWecg8fvYd1F65OUwib7nTK
-         7DSnZNW+qEko+8yKKUdCLGpSBP1ABhY83TPGkAWT4zBJ8/UD1jXI/BRcBEQXnMKQmsHv
-         jXeFH2bqOHP8wR50PkLkKVgiXJx3hj4ehM6U6j5X8QDqcq3JrolPiqnO4/hz83bNelH1
-         YzHg==
-X-Gm-Message-State: ABy/qLYCPpWlhv48w6+flzFqqS74wxWygV3oJlPxdAfGJ5Fxdvon3sgk
-        +/zcv+uQFuHHcKpwdaJu/ypi6abHq0FJ/RFo4HUE0tWdbAw=
-X-Google-Smtp-Source: APBJJlG43/bsUgpNQRfJ8+xO2X2ZbFkaLTVO+ZbD9D9VGw0BO5K7aCt7Lc+Ou1w0D6mDt5je9+KWjaOJpCJo3DSZZ9I=
-X-Received: by 2002:a81:c30b:0:b0:56d:2e22:8b31 with SMTP id
- r11-20020a81c30b000000b0056d2e228b31mr11778471ywk.41.1689612041047; Mon, 17
- Jul 2023 09:40:41 -0700 (PDT)
+        Mon, 17 Jul 2023 12:41:22 -0400
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A7E3E4F
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 09:41:21 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 0969AC0005;
+        Mon, 17 Jul 2023 16:41:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1689612079;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2ntiN7SsvoF79NXtnrae3KdAeOHGP8txeV8hSDxhhoQ=;
+        b=Su0Ppg32m1IFar8DkANJRXcN0lMBDk5Vu92hwIrd5TFPUv6ux+pyS0JgYjKugeek06zbZl
+        A5G/YaMq9rFlTU//uYutfCyYn35/bhu3ssRF0s24Qb0+75bcXGFTVZeHhB3ZnegaGOSEVS
+        cc26X12wy2nOfVeE64xRkxU9RM/JN2izt5a1M7ulUOeKGH4fEFZ/lO2enVl4MQpYnOp5nQ
+        GoQxgqcyc2Dn59n7Bck2Bsvd7tecbakc6Xs0IB87x5W/5kNRRLtPemraeX9bfOxWjSW5uN
+        2kmTEW3wjmKkAPAF4xg2QJJl6s2vwMgQvyYc2OS4QP3R6yjiv9ceDI5U/eKRAQ==
+Date:   Mon, 17 Jul 2023 18:41:17 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Michael Walle <michael@walle.cc>
+Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Robert Marko <robert.marko@sartura.hr>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH v6 3/3] nvmem: core: Expose cells through sysfs
+Message-ID: <20230717184117.065e9585@xps-13>
+In-Reply-To: <f85f117a59586dc2e5df33e11b39c69f@walle.cc>
+References: <20230717075147.43326-1-miquel.raynal@bootlin.com>
+        <20230717075147.43326-4-miquel.raynal@bootlin.com>
+        <f85f117a59586dc2e5df33e11b39c69f@walle.cc>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20230717124013.38796-2-samsagax@gmail.com> <20230717124013.38796-5-samsagax@gmail.com>
- <2023071739-remedy-sloping-64f6@gregkh> <89c6c7e8-0407-b6bb-7085-be11efce2524@roeck-us.net>
-In-Reply-To: <89c6c7e8-0407-b6bb-7085-be11efce2524@roeck-us.net>
-From:   Joaquin Aramendia <samsagax@gmail.com>
-Date:   Mon, 17 Jul 2023 13:40:30 -0300
-Message-ID: <CABgtM3i9__CghL1ikLDRRL3n+kSU2K7jCiQouNTjyZZdAbTVew@mail.gmail.com>
-Subject: Re: [PATCH 3/3] hwmon: (oxp-sensors) Refactor init() and remove probe()
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Guenter and Greg:
+Hi Michael,
 
-> > Again, as in patch 2/3, you forgot a signed-off-by line.
+michael@walle.cc wrote on Mon, 17 Jul 2023 14:24:45 +0200:
 
-Will resubmit with proper Sign-off
+> Hi,
+>=20
+> > There is one limitation though: if a layout is built as a module but is
+> > not properly installed in the system and loaded manually with insmod
+> > while the nvmem device driver was built-in, the cells won't appear in
+> > sysfs. But if done like that, the cells won't be usable by the built-in
+> > kernel drivers anyway. =20
+>=20
+> What is the difference between manual loading with insmod and automatic
+> module loading? Or is the limitation, layout as M and device driver as Y
+> doesn't work?
 
-> > You are creating a fake platform device out of no where here, which is
-> > tied to nothing, which isn't ok.  Keep it in the proper device tree and
-> > have it be passed to you by the driver core in the probe() function.
-> >
->
-> This is a system with dmi data, so it won't support devicetree. Other
-> than that, you are correct, this patch is definitely not a good idea
-> and needs to be dropped.
->
-> Thanks,
-> Guenter
->
-> > I think you will see that this changed where in /sys/devices/ your
-> > device is now, right?
+The nvmem core uses usermodehelper to load the relevant layout
+module, but that only works if the module was installed correctly (make
+modules_install).
 
-The attribute is created in the same place as before this patch. And
-works the same as before this patch.
+The limitation is:
+* Any storage device driver that registers an nvmem interface =3Dy (or =3Dm
+  but loaded before the nvmem layout)
+* The relevant nvmem layout =3Dm *and* not installed with make
+  modules_install
 
-I can drop this patch and only resubmit 1 and 2. Thanks for the review
-to both of you.
+If you see a way to workaround this, let me know, but there is no way
+we can enforce Kconfig dependencies between storage drivers and nvmem
+layouts IMHO.
 
---=20
-Joaqu=C3=ADn I. Aramend=C3=ADa
+Thanks,
+Miqu=C3=A8l
