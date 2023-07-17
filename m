@@ -2,175 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FC55756E86
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 22:46:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD641756E84
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 22:46:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231211AbjGQUq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 16:46:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40440 "EHLO
+        id S231147AbjGQUqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 16:46:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230397AbjGQUqX (ORCPT
+        with ESMTP id S230397AbjGQUqS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 16:46:23 -0400
-Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FCED10C7
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 13:46:22 -0700 (PDT)
-Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-57722942374so52661487b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 13:46:22 -0700 (PDT)
+        Mon, 17 Jul 2023 16:46:18 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFC0F10CC
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 13:46:16 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id ca18e2360f4ac-785ccd731a7so51666739f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 13:46:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1689626781; x=1692218781;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nEdcEcIb3INTfFcQiUk0YSKaQiTgc3Kskp0pp8FOXTk=;
-        b=JWD3XIdVT+GpokCpDezMxA5qSflvlS2Tl/XIK/P3zokCNIE8IsLwFXHZODC/dXPPkA
-         639sg3K1ISUjHT1umjBfRimeLMgfeLGDmIdmQ1TCENOQ/H0Mb2AvZRn5rGDObI6lNoV1
-         Wz86nTYUxWQRKblpl0osV3xUgq+l3PuwIHHSS+tvy6CMB0udcdnk36NTKPklgdo0fbDd
-         inX3vV0SQemh+3ZcVSdO/DhFXYkbnFNsl2YRtpif5vedqQs0a+Z8/5ce8ryKg6+KYlcQ
-         Rq1ZsAChTPCgyeovI4V6+w3HAJN+MCFY/jQU1uaEzEH2noIK6CBkV/jo8n0qRHn4GfXE
-         Q45A==
+        d=linuxfoundation.org; s=google; t=1689626776; x=1690231576;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=sxgp2mwlv26YsfH69lRjIjxF5UskIkFR70oX6AS3GJs=;
+        b=Y61QceVKdQIJKsar7XFQV/CaFS90R4bca2nGRuvsmf1lRexRt9E9pWQ68rXcbKHE0Z
+         y274BCu/HTQganiSFr9veh79rMHykmo7ZYKGZSttNRxjGHYsiW8dCce1pihg2kbN4R7I
+         czKxf4r87JW3TUYg9u0vKJ/YCLP6fl2qwO7J8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689626781; x=1692218781;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nEdcEcIb3INTfFcQiUk0YSKaQiTgc3Kskp0pp8FOXTk=;
-        b=HJFGevvZqVErvNz7Nb3E4szhdmdbFS44F6yp/83I7uCuan0vRfs/rChvuOy0l8yOjC
-         HGDm/2oigUqZIOaaNUtH72dZOZsmkF7XnsyNQACqaTh1a7wuJ33QIfjrOOw1mj4kq73K
-         xvRw634x8eLu1K5P10sUcXNl/xzCrcdkLx/U3D1jNk4N4G26ocVglH4jKWYiMMHkCEGD
-         uUyETnWrjVzdZzWYAVahCzFYi9F1UAK7VQGwTFO0Xm+0sRtBaL9AUzj5utoRswGs/UqW
-         fq84jQ2K04LmEp7hwf8dxJyiV1/CdvPBG7VUJpiU+clzyOHA1uTD0EjMV3vzudqG+f3b
-         qYkw==
-X-Gm-Message-State: ABy/qLacvf9L3EwLcJfFIb+GKCffIQXgQKk+RzsDhI75ARtv4wHTvehJ
-        sRoXIHwOU2CEEKxqsNYZGwq81d/XPakfpHq8q7SC
-X-Google-Smtp-Source: APBJJlFXvlWe55QM5YJhg5GUjTrvMhqBVX+o3OiftGPE9hM+2FUj2AVtjmH00pTMqyPP3xaY8BVDYaML4FGEVXSm81Q=
-X-Received: by 2002:a81:6c55:0:b0:57a:8ecb:11ad with SMTP id
- h82-20020a816c55000000b0057a8ecb11admr14789633ywc.43.1689626781235; Mon, 17
- Jul 2023 13:46:21 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1689626776; x=1690231576;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sxgp2mwlv26YsfH69lRjIjxF5UskIkFR70oX6AS3GJs=;
+        b=C+7fwWt2hbHifGCu5mzdQ9f2OuWa08HSF+rJC+3NBqj+lbKfnuERYnZKWKFl2HAoEb
+         jEpRt79OYsB4xu7yJcNbMmrRSDsNl4hMf+s55J5mAI6fg39A7OkA3HpagZqOJGW1nxht
+         VIfSmjS3fvNlg0bdp3CR9F43Ska/8CUVGaOW7pJzLlEMxw3gp2+a6LlLbIi/+lJ/g0JA
+         YYuMHItdzw8rjQ3mZOh1EVgZ1rJ+B+ILzXgUoQAQ3fJaN1LxRxnfKoL+1vCaFK5B2RSX
+         Kr1z/usBCp2DQVzh362Hlpx0zPgHQW5+nO2HFlVF58+tw6eEubKtJZ0WA/AzUoD1CcPf
+         YPhg==
+X-Gm-Message-State: ABy/qLZ0lg6conk144jCjnh/T+K32eVbc6nr5IxN9AW+M01UxWMwlT3Z
+        wQ5LQShlOnjeiI/ErS7HTovbsg==
+X-Google-Smtp-Source: APBJJlG6MFdMmtlsKtO6W9vfx8X+L1SO5x7xZilm+7U95hMbQfsDp+fQmSAqCf0o9C5oDSYSdCjL7A==
+X-Received: by 2002:a92:2609:0:b0:346:10c5:2949 with SMTP id n9-20020a922609000000b0034610c52949mr647458ile.1.1689626776218;
+        Mon, 17 Jul 2023 13:46:16 -0700 (PDT)
+Received: from [192.168.1.128] ([38.15.45.1])
+        by smtp.gmail.com with ESMTPSA id m7-20020a924b07000000b00345d2845c42sm181319ilg.57.2023.07.17.13.46.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 Jul 2023 13:46:15 -0700 (PDT)
+Message-ID: <519168de-b559-186b-41d4-3659e0551c10@linuxfoundation.org>
+Date:   Mon, 17 Jul 2023 14:46:15 -0600
 MIME-Version: 1.0
-References: <20230706133004.19064-1-cgzones@googlemail.com>
-In-Reply-To: <20230706133004.19064-1-cgzones@googlemail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Mon, 17 Jul 2023 16:46:10 -0400
-Message-ID: <CAHC9VhS=DzORJHPH+ObJJ8HpsnBqcDw0_PzzP1=TNL9gvaPgsg@mail.gmail.com>
-Subject: Re: [RFC PATCH] selinux: implement avtab_search() via avtab_search_node()
-To:     =?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>
-Cc:     selinux@vger.kernel.org,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 6.1 000/591] 6.1.39-rc1 review
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20230716194923.861634455@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20230716194923.861634455@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 6, 2023 at 9:30=E2=80=AFAM Christian G=C3=B6ttsche
-<cgzones@googlemail.com> wrote:
->
-> Deduplicate avtab_search() by using the identical implementation from
-> avtab_search_node().
->
-> Signed-off-by: Christian G=C3=B6ttsche <cgzones@googlemail.com>
-> ---
->  security/selinux/ss/avtab.c | 32 --------------------------------
->  security/selinux/ss/avtab.h | 11 ++++++++++-
->  2 files changed, 10 insertions(+), 33 deletions(-)
+On 7/16/23 13:42, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.39 release.
+> There are 591 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Tue, 18 Jul 2023 19:48:07 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.39-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-I only see three avtab_search() callers, and only one that actually
-cares about a return value other than NULL/non-NULL.  With that in
-mind, how about we remove avtab_search() entirely and update
-security_compute_sid() to use avtab_search_node()?  After all, it
-already uses it for the conditional rules lookup ... not sure why it
-doesn't use it everywhere?
+Compiled and booted on my test system. No dmesg regressions.
 
-> diff --git a/security/selinux/ss/avtab.c b/security/selinux/ss/avtab.c
-> index 6766edc0fe68..33a54fbd989b 100644
-> --- a/security/selinux/ss/avtab.c
-> +++ b/security/selinux/ss/avtab.c
-> @@ -180,38 +180,6 @@ struct avtab_node *avtab_insert_nonunique(struct avt=
-ab *h,
->         return avtab_insert_node(h, hvalue, prev, key, datum);
->  }
->
-> -struct avtab_datum *avtab_search(struct avtab *h, const struct avtab_key=
- *key)
-> -{
-> -       int hvalue;
-> -       struct avtab_node *cur;
-> -       u16 specified =3D key->specified & ~(AVTAB_ENABLED|AVTAB_ENABLED_=
-OLD);
-> -
-> -       if (!h || !h->nslot)
-> -               return NULL;
-> -
-> -       hvalue =3D avtab_hash(key, h->mask);
-> -       for (cur =3D h->htable[hvalue]; cur;
-> -            cur =3D cur->next) {
-> -               if (key->source_type =3D=3D cur->key.source_type &&
-> -                   key->target_type =3D=3D cur->key.target_type &&
-> -                   key->target_class =3D=3D cur->key.target_class &&
-> -                   (specified & cur->key.specified))
-> -                       return &cur->datum;
-> -
-> -               if (key->source_type < cur->key.source_type)
-> -                       break;
-> -               if (key->source_type =3D=3D cur->key.source_type &&
-> -                   key->target_type < cur->key.target_type)
-> -                       break;
-> -               if (key->source_type =3D=3D cur->key.source_type &&
-> -                   key->target_type =3D=3D cur->key.target_type &&
-> -                   key->target_class < cur->key.target_class)
-> -                       break;
-> -       }
-> -
-> -       return NULL;
-> -}
-> -
->  /* This search function returns a node pointer, and can be used in
->   * conjunction with avtab_search_next_node()
->   */
-> diff --git a/security/selinux/ss/avtab.h b/security/selinux/ss/avtab.h
-> index d6742fd9c560..16238c7bcbba 100644
-> --- a/security/selinux/ss/avtab.h
-> +++ b/security/selinux/ss/avtab.h
-> @@ -90,7 +90,6 @@ struct avtab {
->  void avtab_init(struct avtab *h);
->  int avtab_alloc(struct avtab *, u32);
->  int avtab_alloc_dup(struct avtab *new, const struct avtab *orig);
-> -struct avtab_datum *avtab_search(struct avtab *h, const struct avtab_key=
- *k);
->  void avtab_destroy(struct avtab *h);
->  void avtab_hash_eval(struct avtab *h, const char *tag);
->
-> @@ -110,6 +109,16 @@ struct avtab_node *avtab_insert_nonunique(struct avt=
-ab *h,
->
->  struct avtab_node *avtab_search_node(struct avtab *h,
->                                      const struct avtab_key *key);
-> +static inline struct avtab_datum *avtab_search(struct avtab *h,
-> +                                              const struct avtab_key *ke=
-y)
-> +{
-> +       struct avtab_node *cur =3D avtab_search_node(h, key);
-> +
-> +       if (cur)
-> +               return &cur->datum;
-> +
-> +       return NULL;
-> +}
->
->  struct avtab_node *avtab_search_node_next(struct avtab_node *node, int s=
-pecified);
->
-> --
-> 2.40.1
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
---=20
-paul-moore.com
+thanks,
+-- Shuah
+
