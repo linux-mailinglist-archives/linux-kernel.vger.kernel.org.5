@@ -2,76 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7A2E75636A
+	by mail.lfdr.de (Postfix) with ESMTP id 976D9756369
 	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 14:55:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230432AbjGQMzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 08:55:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36124 "EHLO
+        id S229937AbjGQMzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 08:55:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230097AbjGQMz1 (ORCPT
+        with ESMTP id S230263AbjGQMz2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 08:55:27 -0400
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01736E47;
-        Mon, 17 Jul 2023 05:55:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689598527; x=1721134527;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=TFjSGVzAb16V95A9zQhmH/l3kdP7s0g4O6C6hLY90VQ=;
-  b=PeIVtbi5B63FMyemJI+BPCTjLzEHfhfsgf7c22qIQO5Ji5vYGS7+41RP
-   BXud/9DHpujTHk1E/eTqDrv8qIk1kWu3lGhvZ3DxBOE7i0Oyazpiv0zsR
-   /o6nQ5y5bx9m8P4eZI0igHXLafmqwyrkOh7CbTSkc+yfMUsO9ypqnUKdM
-   QM0I54YPwY9xbb0hcdr6GL8dOMQ915d3QtgNhmDaGB9Ux4FtBVvH2yZlt
-   h8s9ZVHyfXaiHQ9BpKNF0HJt1iuEDuvo4gqMmgmJNuK9D8lNmOlm3g49H
-   zPg2jfMQL9f2e9XSYVxqgOQ3CPHFUf9Fl3ZkClOOK5vpU9Zy7RQJxheJb
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="429680689"
-X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
-   d="scan'208";a="429680689"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 05:55:25 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="793234538"
-X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
-   d="scan'208";a="793234538"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga004.fm.intel.com with ESMTP; 17 Jul 2023 05:55:17 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id E84D5516; Mon, 17 Jul 2023 15:55:23 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        David Gow <davidgow@google.com>,
-        Daniel Latypov <dlatypov@google.com>,
-        "Steven Rostedt (Google)" <rostedt@goodmis.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-pci@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Brendan Higgins <brendan.higgins@linux.dev>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH v3 3/4] arm64: smccc: Replace custom COUNT_ARGS() & CONCATENATE() implementations
-Date:   Mon, 17 Jul 2023 15:55:20 +0300
-Message-Id: <20230717125521.43176-4-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
-In-Reply-To: <20230717125521.43176-1-andriy.shevchenko@linux.intel.com>
-References: <20230717125521.43176-1-andriy.shevchenko@linux.intel.com>
+        Mon, 17 Jul 2023 08:55:28 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E235E49
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 05:55:27 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id F08BA61038
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 12:55:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18DB5C433C8;
+        Mon, 17 Jul 2023 12:55:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689598526;
+        bh=Iqh7TfjijModD1NwjJzA82R/SnUFVzZQQvN3iUdM0Dw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cqxtSMHeVaOO2y+5T7XvfymkK6ZiMuedPIKRkPc7kZ9pVnWDBY2HBK+wDsN53yylv
+         s5GLwxI0ftOyPwsJcIqnGzeGNPUuQ+jlhngpUgzqdlA4rGdKxeTjsP5V1RCLp4LfJY
+         ICOTTmXoJYPGBTJiXJ73iT/WbmIkOia21Eybua6b79PomacrGD6uPmyeE5gOy2znNQ
+         L3mgvj27TR3Qx+jTbphosG7wrF6TRG0HTAM+IjG5/Z75NRGyC7vZNHdewK/rT863FD
+         C8D8jblHKb4vGXwarkv/u5Wk4wSfeviBjcOW6yuC6+49sbSPihS2kIKmSbdXyzlXdt
+         XM0QSQqyU1rTQ==
+Date:   Mon, 17 Jul 2023 13:55:20 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Fabio Estevam <festevam@gmail.com>
+Cc:     Matus Gajdos <matuszpd@gmail.com>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ASoC: fsl_sai: Disable bit clock with transmitter
+Message-ID: <d2cbf249-32e1-4e19-8362-7087d6b7d3d8@sirena.org.uk>
+References: <20230712124934.32232-1-matuszpd@gmail.com>
+ <CAOMZO5ATTK7UsTRPTF_7r86WbNmAhtpEphO2u896QqARTk2kpA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="PksENF3NvhBOBXfu"
+Content-Disposition: inline
+In-Reply-To: <CAOMZO5ATTK7UsTRPTF_7r86WbNmAhtpEphO2u896QqARTk2kpA@mail.gmail.com>
+X-Cookie: Not a flying toy.
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,82 +64,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace custom implementation of the macros from args.h.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- include/linux/arm-smccc.h | 27 ++++++++++-----------------
- 1 file changed, 10 insertions(+), 17 deletions(-)
+--PksENF3NvhBOBXfu
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/include/linux/arm-smccc.h b/include/linux/arm-smccc.h
-index f196c19f8e55..2865b14c2bba 100644
---- a/include/linux/arm-smccc.h
-+++ b/include/linux/arm-smccc.h
-@@ -5,6 +5,7 @@
- #ifndef __LINUX_ARM_SMCCC_H
- #define __LINUX_ARM_SMCCC_H
- 
-+#include <linux/args.h>
- #include <linux/init.h>
- #include <uapi/linux/const.h>
- 
-@@ -413,11 +414,6 @@ asmlinkage void __arm_smccc_hvc(unsigned long a0, unsigned long a1,
- 
- #endif
- 
--#define ___count_args(_0, _1, _2, _3, _4, _5, _6, _7, _8, x, ...) x
--
--#define __count_args(...)						\
--	___count_args(__VA_ARGS__, 7, 6, 5, 4, 3, 2, 1, 0)
--
- #define __constraint_read_0	"r" (arg0)
- #define __constraint_read_1	__constraint_read_0, "r" (arg1)
- #define __constraint_read_2	__constraint_read_1, "r" (arg2)
-@@ -475,14 +471,6 @@ asmlinkage void __arm_smccc_hvc(unsigned long a0, unsigned long a1,
- 	__declare_arg_6(a0, a1, a2, a3, a4, a5, a6, res);		\
- 	register typeof(a7) arg7 asm("r7") = __a7
- 
--#define ___declare_args(count, ...) __declare_arg_ ## count(__VA_ARGS__)
--#define __declare_args(count, ...)  ___declare_args(count, __VA_ARGS__)
--
--#define ___constraints(count)						\
--	: __constraint_read_ ## count					\
--	: smccc_sve_clobbers "memory"
--#define __constraints(count)	___constraints(count)
--
- /*
-  * We have an output list that is not necessarily used, and GCC feels
-  * entitled to optimise the whole sequence away. "volatile" is what
-@@ -494,11 +482,13 @@ asmlinkage void __arm_smccc_hvc(unsigned long a0, unsigned long a1,
- 		register unsigned long r1 asm("r1");			\
- 		register unsigned long r2 asm("r2");			\
- 		register unsigned long r3 asm("r3"); 			\
--		__declare_args(__count_args(__VA_ARGS__), __VA_ARGS__);	\
-+		CONCATENATE(__declare_arg_, COUNT_ARGS(__VA_ARGS__));	\
- 		asm volatile(SMCCC_SVE_CHECK				\
- 			     inst "\n" :				\
- 			     "=r" (r0), "=r" (r1), "=r" (r2), "=r" (r3)	\
--			     __constraints(__count_args(__VA_ARGS__)));	\
-+			     : CONCATENATE(__constraint_read_,		\
-+					   COUNT_ARGS(__VA_ARGS__))	\
-+			     : smccc_sve_clobbers "memory");		\
- 		if (___res)						\
- 			*___res = (typeof(*___res)){r0, r1, r2, r3};	\
- 	} while (0)
-@@ -542,8 +532,11 @@ asmlinkage void __arm_smccc_hvc(unsigned long a0, unsigned long a1,
-  */
- #define __fail_smccc_1_1(...)						\
- 	do {								\
--		__declare_args(__count_args(__VA_ARGS__), __VA_ARGS__);	\
--		asm ("" : __constraints(__count_args(__VA_ARGS__)));	\
-+		CONCATENATE(__declare_arg_, COUNT_ARGS(__VA_ARGS__));	\
-+		asm ("" :						\
-+		     : CONCATENATE(__constraint_read_,			\
-+				   COUNT_ARGS(__VA_ARGS__))		\
-+		     : smccc_sve_clobbers "memory");			\
- 		if (___res)						\
- 			___res->a0 = SMCCC_RET_NOT_SUPPORTED;		\
- 	} while (0)
--- 
-2.40.0.1.gaa8946217a0b
+On Mon, Jul 17, 2023 at 09:31:38AM -0300, Fabio Estevam wrote:
+> On Wed, Jul 12, 2023 at 9:53=E2=80=AFAM Matus Gajdos <matuszpd@gmail.com>=
+ wrote:
+> >
+> > Otherwise bit clock remains running writing invalid data to the DAC.
+> >
+> > Signed-off-by: Matus Gajdos <matuszpd@gmail.com>
+>=20
+> Should this contain a Fixes tag so that it could be backported to
+> stable kernels?
 
+I'll just put a non-specific Cc stable tag on it, that should be enough
+to get it backported.
+
+--PksENF3NvhBOBXfu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmS1OjcACgkQJNaLcl1U
+h9DS1wf/c16EisoD6DHiFlMXL2USTW4POzR71yM0WbVK9sShUOKNMw++l2llTr8F
++2lfuS0cGsgEJxtBPRJnWJlUleMwVRHpZJ9Vhl7TdwFQF7X2G6jXGFO6EFg7aBqz
+knhGCxOTfYZO3MqD3ppBKGhcaNJdoWOWi8Dre2NNh6StSURThYv+hSIwp92OQP3W
+09ssoeCBkrVkOmvWoxIJ8fgkr0b2ySIXi0dDLeeTAhZ73xydCGq9GehXiJphnshX
+iSAYkBqrD6ioCD+8n1kO4a4Jp18sTF1IVvGEonzv9sVpSavKrqWIohI5Kiu318TP
+lVKVvYs/7EH4FswQ2FztkW7ksidFZQ==
+=3WHI
+-----END PGP SIGNATURE-----
+
+--PksENF3NvhBOBXfu--
