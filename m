@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 518EF756BED
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 20:24:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 157D0756BF3
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 20:25:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231405AbjGQSYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 14:24:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56156 "EHLO
+        id S230445AbjGQSY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 14:24:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231329AbjGQSYF (ORCPT
+        with ESMTP id S229863AbjGQSYQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 14:24:05 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AACE910F8;
-        Mon, 17 Jul 2023 11:23:53 -0700 (PDT)
+        Mon, 17 Jul 2023 14:24:16 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E48F9FC;
+        Mon, 17 Jul 2023 11:23:57 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D755B61212;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DAD0961210;
         Mon, 17 Jul 2023 18:23:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DA44C4166B;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E18EC611A2;
         Mon, 17 Jul 2023 18:23:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1689618220;
-        bh=3SlSO2EdZjLKsVLxRk72FEmGSeV0baDSzGnzmAsGLsY=;
+        bh=jmrnz++/EcvgINfY2j7V/y9cLT5lrTwNhewPXob4+Wc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l/OP8ZTjzoPEGKO04yM1zc6mT+fOkxi5aXozyqsu5jlsMv5exGYDCiIyRpdcrxTQA
-         wg3eVol23uQ1diLiFxybHI4NLidIJT09O6CVx1Xtm1c2tZj8ZNvXl34fXrZupbsvdT
-         msHDuNxKb9fodoX+pq7HVOiqvWaTm0cGdBxXVm0PdSiJVmAqo5rvR3HhBxrao2t5M5
-         5um1aB/nWmJKgRndPydTv8/L87FdSq8Fqc0rrSQnzyYRm4qt3MtZJ5z659L0tomoBd
-         Lr6TF9cSRyMtdL45OStsAmk/nz2wCx/lkJOpjHRzX+wUvT0jpZL1k7sZk3k6B8EPlE
-         rRfL8Y7irlAPQ==
+        b=n5Y9SiTaypxxAts2TNaDhaQQ0eXIVHQ0mytcm67ENSvL1F939yw7h9p1bFLO0N4qM
+         oYxr+x2Uc1ehtuMXmBna5LdlU+8d355OW5x+VZYsTcvt70Qju15Gs4LyfKyMWbmpGG
+         jYsWiRqz6Yvcu9hTstfYUPtACLRbdK0GyJxKV+gdhKSMoEVt650cr1GgJ1CwzU3O42
+         +sFa554VipYJya6f6RWdEziQ8h5efKxHIamShftwajR+xsYo0AiqRZB3uS97Fn34Ku
+         f42pfRKRyClGALtM2eelwXhNQr0ERoklRBypnHZI02fPg60npJHL9uCwaoXMLePMb3
+         BtwwMxRKWsxzQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 431B1CE0AD3; Mon, 17 Jul 2023 11:23:39 -0700 (PDT)
+        id 45531CE0AD7; Mon, 17 Jul 2023 11:23:39 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
         rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 17/18] torture: Make init program dump command-line arguments
-Date:   Mon, 17 Jul 2023 11:23:36 -0700
-Message-Id: <20230717182337.1098991-17-paulmck@kernel.org>
+Subject: [PATCH rcu 18/18] torture: Cause mkinitrd.sh to indicate failure on compile errors
+Date:   Mon, 17 Jul 2023 11:23:37 -0700
+Message-Id: <20230717182337.1098991-18-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <d03c7482-acde-4f33-a7fb-fa7c58fdc9a2@paulmck-laptop>
 References: <d03c7482-acde-4f33-a7fb-fa7c58fdc9a2@paulmck-laptop>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -57,37 +57,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit causes the init program generated by mkinitrd.sh dump out
-its parameters.  Although this is in some sense redundant given that
-the kernel already dumps them out, confirmation can be a good thing.
+Currently, if the C program created by mkinitrd.sh has compile errors,
+the errors are printed, but kvm.sh soldiers on, building kernels that
+have init-less initrd setups.  The kernels then fail on boot when they
+attempt to mount non-existent root filesystems.
+
+This commit therefore improves user friendliness by making mkinitrd.sh
+return non-zero exit status on compile errors, which in turn causes kvm.sh
+to take an early exit, with the compile errors still clearly visible.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/mkinitrd.sh | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ tools/testing/selftests/rcutorture/bin/mkinitrd.sh | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
 diff --git a/tools/testing/selftests/rcutorture/bin/mkinitrd.sh b/tools/testing/selftests/rcutorture/bin/mkinitrd.sh
-index e7e23615dbe3..a5a483efa5ba 100755
+index a5a483efa5ba..3e2d4ac9f338 100755
 --- a/tools/testing/selftests/rcutorture/bin/mkinitrd.sh
 +++ b/tools/testing/selftests/rcutorture/bin/mkinitrd.sh
-@@ -33,12 +33,16 @@ cat > init.c << '___EOF___'
+@@ -75,8 +75,16 @@ if echo -e "#if __x86_64__||__i386__||__i486__||__i586__||__i686__" \
+         ${CROSS_COMPILE}gcc -fno-asynchronous-unwind-tables -fno-ident \
+ 		-nostdlib -include ../../../../include/nolibc/nolibc.h \
+ 		-s -static -Os -o init init.c -lgcc
++	ret=$?
+ else
+ 	${CROSS_COMPILE}gcc -s -static -Os -o init init.c
++	ret=$?
++fi
++
++if [ "$ret" -ne 0 ]
++then
++	echo "Failed to create a statically linked C-language initrd"
++	exit "$ret"
+ fi
  
- volatile unsigned long delaycount;
- 
--int main(int argc, int argv[])
-+int main(int argc, char *argv[])
- {
- 	int i;
- 	struct timeval tv;
- 	struct timeval tvb;
- 
-+	printf("Torture-test rudimentary init program started, command line:\n");
-+	for (i = 0; i < argc; i++)
-+		printf(" %s", argv[i]);
-+	printf("\n");
- 	for (;;) {
- 		sleep(1);
- 		/* Need some userspace time. */
+ rm init.c
 -- 
 2.40.1
 
