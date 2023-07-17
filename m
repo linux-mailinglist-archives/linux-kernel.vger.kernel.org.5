@@ -2,54 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DCBD755EF7
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 11:06:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BA42755EF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 11:07:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230139AbjGQJGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 05:06:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58620 "EHLO
+        id S230163AbjGQJHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 05:07:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbjGQJGI (ORCPT
+        with ESMTP id S229555AbjGQJHU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 05:06:08 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABD6AE55;
-        Mon, 17 Jul 2023 02:06:07 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3FC3B60FB2;
-        Mon, 17 Jul 2023 09:06:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91122C433C7;
-        Mon, 17 Jul 2023 09:06:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689584766;
-        bh=fhM1KduE6ZQDroJeRpiYq4l0t19a4aXckDMswbOdBgI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=F66K6fjDAf2xcToYsuW06p/Qlv56O4e2lKamtmqt93ze69JvAsAJ+JuIRrcAXJkO1
-         t14Han71dq89yGFvFvl5GE3qQYXyErweFYn/u6WyBd5yLUmZVu8P2xxE40KQv6JGNC
-         pNIi+u/qQHHwM/M2fDtM8s4jPxnX/tcuKh85Q10MFhegStUR79AhuxbKlabdcnXEd0
-         2rr6LSnp9WoJDFtPxnrXIMOQp5Il4KlCOJpesXart2Wg22S0rmMP/yO9SqEZ/JJSkg
-         GNonHbdRa2X1lINVJOcKLaKXyyMv3vfqH0+hI6N51ZToxW8dhIKbVmd6iPPzmnFN6x
-         NIjUGDhFs8sPg==
-Date:   Mon, 17 Jul 2023 10:06:01 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: Explicitly include correct DT includes
-Message-ID: <20230717090601.GA7868@willie-the-truck>
-References: <20230714174021.4039807-1-robh@kernel.org>
+        Mon, 17 Jul 2023 05:07:20 -0400
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::225])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE201E55;
+        Mon, 17 Jul 2023 02:07:18 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 9DA961C0012;
+        Mon, 17 Jul 2023 09:07:13 +0000 (UTC)
+Message-ID: <bb296a8e-4f84-f45d-8f46-5acfa73022d9@ghiti.fr>
+Date:   Mon, 17 Jul 2023 11:07:13 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230714174021.4039807-1-robh@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] riscv: Add HAVE_IOREMAP_PROT support
+To:     guoren@kernel.org, palmer@rivosinc.com, paul.walmsley@sifive.com,
+        falcon@tinylab.org, bjorn@kernel.org, conor.dooley@microchip.com
+Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, Guo Ren <guoren@linux.alibaba.com>
+References: <20230716152033.3713581-1-guoren@kernel.org>
+Content-Language: en-US
+From:   Alexandre Ghiti <alex@ghiti.fr>
+In-Reply-To: <20230716152033.3713581-1-guoren@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: alex@ghiti.fr
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,35 +43,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 11:40:20AM -0600, Rob Herring wrote:
-> The DT of_device.h and of_platform.h date back to the separate
-> of_platform_bus_type before it as merged into the regular platform bus.
-> As part of that merge prepping Arm DT support 13 years ago, they
-> "temporarily" include each other. They also include platform_device.h
-> and of.h. As a result, there's a pretty much random mix of those include
-> files used throughout the tree. In order to detangle these headers and
-> replace the implicit includes with struct declarations, users need to
-> explicitly include the correct includes.
-> 
-> Signed-off-by: Rob Herring <robh@kernel.org>
+Hi Guo,
+
+On 16/07/2023 17:20, guoren@kernel.org wrote:
+> From: Guo Ren <guoren@linux.alibaba.com>
+>
+> Add pte_pgprot macro, then riscv could have HAVE_IOREMAP_PROT,
+> which will enable generic_access_phys() code, it is useful for
+> debug, eg, gdb.
+
+
+I don't understand, we already have the generic ioremap_prot() 
+implementation since we select GENERIC_IOREMAP: shouldn't 
+HAVE_IOREMAP_PROT imply that we have our own implementation?
+
+Thanks,
+
+Alex
+
+
+> Because generic_access_phys() would call ioremap_prot()->
+> pgprot_nx() to disable excutable attribute, add definition
+> of pgprot_nx() for riscv.
+>
+> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> Signed-off-by: Guo Ren <guoren@kernel.org>
 > ---
->  arch/arm64/kernel/cpuidle.c | 2 --
->  arch/arm64/kernel/pci.c     | 2 --
->  2 files changed, 4 deletions(-)
-> 
-> diff --git a/arch/arm64/kernel/cpuidle.c b/arch/arm64/kernel/cpuidle.c
-> index d1f68599c29f..f372295207fb 100644
-> --- a/arch/arm64/kernel/cpuidle.c
-> +++ b/arch/arm64/kernel/cpuidle.c
-> @@ -9,8 +9,6 @@
->  #include <linux/acpi.h>
->  #include <linux/cpuidle.h>
->  #include <linux/cpu_pm.h>
-> -#include <linux/of.h>
-> -#include <linux/of_device.h>
->  #include <linux/psci.h>
-
-I don't grok how dropping 'linux/of.h' follows from the commit message.
-Is it simply not needed by this file?
-
-Will
+>   .../features/vm/ioremap_prot/arch-support.txt     |  2 +-
+>   arch/riscv/Kconfig                                |  1 +
+>   arch/riscv/include/asm/pgtable.h                  | 15 +++++++++++++++
+>   3 files changed, 17 insertions(+), 1 deletion(-)
+>
+> diff --git a/Documentation/features/vm/ioremap_prot/arch-support.txt b/Documentation/features/vm/ioremap_prot/arch-support.txt
+> index a24149e59d73..ea8c8a361455 100644
+> --- a/Documentation/features/vm/ioremap_prot/arch-support.txt
+> +++ b/Documentation/features/vm/ioremap_prot/arch-support.txt
+> @@ -21,7 +21,7 @@
+>       |    openrisc: | TODO |
+>       |      parisc: | TODO |
+>       |     powerpc: |  ok  |
+> -    |       riscv: | TODO |
+> +    |       riscv: |  ok  |
+>       |        s390: |  ok  |
+>       |          sh: |  ok  |
+>       |       sparc: | TODO |
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index 4c07b9189c86..15900fa20797 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -117,6 +117,7 @@ config RISCV
+>   	select HAVE_FUNCTION_ERROR_INJECTION
+>   	select HAVE_GCC_PLUGINS
+>   	select HAVE_GENERIC_VDSO if MMU && 64BIT
+> +	select HAVE_IOREMAP_PROT
+>   	select HAVE_IRQ_TIME_ACCOUNTING
+>   	select HAVE_KPROBES if !XIP_KERNEL
+>   	select HAVE_KPROBES_ON_FTRACE if !XIP_KERNEL
+> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+> index 75970ee2bda2..c9552a161f90 100644
+> --- a/arch/riscv/include/asm/pgtable.h
+> +++ b/arch/riscv/include/asm/pgtable.h
+> @@ -415,6 +415,11 @@ static inline pte_t pte_mkhuge(pte_t pte)
+>   	return pte;
+>   }
+>   
+> +static inline pgprot_t pte_pgprot(pte_t pte)
+> +{
+> +	return __pgprot(pte_val(pte) & ~_PAGE_PFN_MASK);
+> +}
+> +
+>   #ifdef CONFIG_NUMA_BALANCING
+>   /*
+>    * See the comment in include/asm-generic/pgtable.h
+> @@ -573,6 +578,16 @@ static inline int ptep_clear_flush_young(struct vm_area_struct *vma,
+>   	return ptep_test_and_clear_young(vma, address, ptep);
+>   }
+>   
+> +#define pgprot_nx pgprot_nx
+> +static inline pgprot_t pgprot_nx(pgprot_t _prot)
+> +{
+> +	unsigned long prot = pgprot_val(_prot);
+> +
+> +	prot &= ~_PAGE_EXEC;
+> +
+> +	return __pgprot(prot);
+> +}
+> +
+>   #define pgprot_noncached pgprot_noncached
+>   static inline pgprot_t pgprot_noncached(pgprot_t _prot)
+>   {
