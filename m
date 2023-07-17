@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3626075705B
+	by mail.lfdr.de (Postfix) with ESMTP id 7C48175705C
 	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 01:15:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231384AbjGQXPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 19:15:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35168 "EHLO
+        id S231352AbjGQXPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 19:15:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjGQXPj (ORCPT
+        with ESMTP id S229724AbjGQXPk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 19:15:39 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5072B198B
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 16:15:00 -0700 (PDT)
-Message-ID: <20230717223223.971994770@linutronix.de>
+        Mon, 17 Jul 2023 19:15:40 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2301A1BCF
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 16:15:01 -0700 (PDT)
+Message-ID: <20230717223224.030628920@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1689635697;
+        s=2020; t=1689635699;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=8u5DJ4HOBNg4NQW33fRGAZF4EOI10KBFaQA+4tROpKs=;
-        b=QLI6o7zZfUJ6uEVO0T/AOaNQcFm6gfKddASqWmV7W5RXFSwy+nUSFe+jExElnmyMygYN6h
-        O+A5BETXOY1qqqEmS9oY4XobPnGU8HRsrbtcHv5Dn94m867kCJI7J+ttmS9qV65vU6Vssm
-        FsumQO6gxgYEnklbeiHdvqw0/jtVCo/zvPRZ9UXkKY2VfzJlu/StHZP59Sn0pHK3a8g24R
-        BjRFse4HgOgghai1BtadP3xVsgPMXnCBCavZHPnwdRl+ZHOfRdGz/Ev2KB4az9ANz9MAnQ
-        FKYADvdw62f6MK9bCryiUKZcK/pPQbhyeq/Ju/O8+m534u8J+HoKFD3u44SOuQ==
+         references:references; bh=rxQN3La4uHdTmHXWvnEPxqt3sCLh4RNMZmN6BFMgny4=;
+        b=NcyMzc1SpuMYk05jsCRG2BlucobaDGGxjcwIrVbflUWp+DfMWiCjUrOP+3T+SHBItpDnJz
+        JQr/UwH+IrAWFgJHt+49ROFOgVq7XMwdrqWa3LoPyQNrsokPM2L/hm6rOLOxye6alIHXNu
+        d+in5MQswN9Xf2J5maeJBeEjIlAiNDVaybk/8iFq9y+Pl7tX9B26CTM/jkG2tCTAzAxfex
+        1gAqexir7pwpa8+ntX2jez7qrxyTZQjDNTsyGVvwhm3gQvaaOYMA5Q7jUuQ249K0aqwulA
+        VuQ0imijJyYSAG6hb74CJdYn7kMHxSPWQEFrohzQ+t675BzWo6RSomjFTM4RHg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1689635697;
+        s=2020e; t=1689635699;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=8u5DJ4HOBNg4NQW33fRGAZF4EOI10KBFaQA+4tROpKs=;
-        b=6oIKa1QrGezq5SuZ1jAJQe+seQVOmDV0SoWdTq18WSUjH1qD+gBOI2S4ha/qprGXeVBtCz
-        C8rL0lbTGf5dxABA==
+         references:references; bh=rxQN3La4uHdTmHXWvnEPxqt3sCLh4RNMZmN6BFMgny4=;
+        b=B6sKhRrWrOBnzZ3M5Uk7oINAy9QWuQJLDHj4bnToS+GnxoWP+NoHkWASgNtcqo603IhS08
+        YD51KKO/6iFbZLCw==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Linus Torvalds <torvalds@linux-foundation.org>,
@@ -42,11 +42,11 @@ Cc:     x86@kernel.org, Linus Torvalds <torvalds@linux-foundation.org>,
         Wei Liu <wei.liu@kernel.org>,
         Arjan van de Ven <arjan@linux.intel.com>,
         Juergen Gross <jgross@suse.com>
-Subject: [patch 15/58] x86/apic: Sanitize APIC address setup
+Subject: [patch 16/58] x86/apic: Sanitize num_processors handling
 References: <20230717223049.327865981@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Tue, 18 Jul 2023 01:14:57 +0200 (CEST)
+Date:   Tue, 18 Jul 2023 01:14:59 +0200 (CEST)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -57,99 +57,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert places which just write mp_lapic_addr and let them register the
-local APIC address directly instead of relying on magic other code to do
-so.
+num_processors is 0 by default and only gets incremented when local APICs
+are registered.
 
-Add a WARN_ON() into register_lapic_address() which is raised when
-register_lapic_address() is invoked more than once during boot.
+Make init_apic_mappings(), which tries to enable the local APIC in the case
+that no SMP configuration was found set num_processors to 1.
+
+This allows to remove yet another check for the local APIC and yet another
+place which registers the boot CPUs local APIC ID.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/x86/kernel/apic/apic.c |   25 ++++++++-----------------
- 1 file changed, 8 insertions(+), 17 deletions(-)
+ arch/x86/kernel/apic/apic.c |    9 ++++++---
+ arch/x86/kernel/smpboot.c   |   18 ------------------
+ 2 files changed, 6 insertions(+), 21 deletions(-)
 
 --- a/arch/x86/kernel/apic/apic.c
 +++ b/arch/x86/kernel/apic/apic.c
-@@ -2009,12 +2009,12 @@ static bool __init detect_init_APIC(void
- 		return false;
- 	}
- 
--	mp_lapic_addr = APIC_DEFAULT_PHYS_BASE;
-+	register_lapic_address(APIC_DEFAULT_PHYS_BASE);
- 	return true;
- }
- #else
- 
--static bool __init apic_verify(void)
-+static bool __init apic_verify(unsigned long addr)
- {
- 	u32 features, h, l;
- 
-@@ -2028,15 +2028,15 @@ static bool __init apic_verify(void)
- 		return false;
- 	}
- 	set_cpu_cap(&boot_cpu_data, X86_FEATURE_APIC);
--	mp_lapic_addr = APIC_DEFAULT_PHYS_BASE;
- 
- 	/* The BIOS may have set up the APIC at some other address */
- 	if (boot_cpu_data.x86 >= 6) {
- 		rdmsr(MSR_IA32_APICBASE, l, h);
- 		if (l & MSR_IA32_APICBASE_ENABLE)
--			mp_lapic_addr = l & MSR_IA32_APICBASE_BASE;
-+			addr = l & MSR_IA32_APICBASE_BASE;
- 	}
- 
-+	register_lapic_address(addr);
- 	pr_info("Found and enabled local APIC!\n");
- 	return true;
- }
-@@ -2063,7 +2063,7 @@ bool __init apic_force_enable(unsigned l
- 			enabled_via_apicbase = 1;
- 		}
- 	}
--	return apic_verify();
-+	return apic_verify(addr);
- }
- 
- /*
-@@ -2105,7 +2105,7 @@ static bool __init detect_init_APIC(void
- 		if (!apic_force_enable(APIC_DEFAULT_PHYS_BASE))
- 			return false;
- 	} else {
--		if (!apic_verify())
-+		if (!apic_verify(APIC_DEFAULT_PHYS_BASE))
- 			return false;
- 	}
- 
-@@ -2130,20 +2130,9 @@ void __init init_apic_mappings(void)
+@@ -2130,9 +2130,12 @@ void __init init_apic_mappings(void)
  	if (x2apic_mode)
  		return;
  
--	/* If no local APIC can be found return early */
- 	if (!smp_found_config && !detect_init_APIC()) {
--		/* lets NOP'ify apic operations */
- 		pr_info("APIC: disable apic facility\n");
- 		apic_disable();
--	} else {
--		apic_phys = mp_lapic_addr;
--
--		/*
--		 * If the system has ACPI MADT tables or MP info, the LAPIC
--		 * address is already registered.
--		 */
--		if (!acpi_lapic && !smp_found_config)
--			register_lapic_address(apic_phys);
+-	if (!smp_found_config && !detect_init_APIC()) {
+-		pr_info("APIC: disable apic facility\n");
+-		apic_disable();
++	if (!smp_found_config) {
++		if (!detect_init_APIC()) {
++			pr_info("APIC: disable apic facility\n");
++			apic_disable();
++		}
++		num_processors = 1;
  	}
  }
  
-@@ -2158,6 +2147,8 @@ static __init void apic_set_fixmap(void)
- 
- void __init register_lapic_address(unsigned long address)
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -1389,24 +1389,6 @@ early_param("possible_cpus", _setup_poss
  {
-+	/* This should only happen once */
-+	WARN_ON_ONCE(mp_lapic_addr);
- 	mp_lapic_addr = address;
+ 	int i, possible;
  
- 	if (!x2apic_mode)
+-	/* No processor was found in mptable or ACPI MADT */
+-	if (!num_processors) {
+-		if (boot_cpu_has(X86_FEATURE_APIC)) {
+-			int apicid = boot_cpu_physical_apicid;
+-			int cpu = read_apic_id();
+-
+-			pr_warn("Boot CPU (id %d) not listed by BIOS\n", cpu);
+-
+-			/* Make sure boot cpu is enumerated */
+-			if (apic->cpu_present_to_apicid(0) == BAD_APICID &&
+-			    apic->apic_id_valid(apicid))
+-				generic_processor_info(apicid);
+-		}
+-
+-		if (!num_processors)
+-			num_processors = 1;
+-	}
+-
+ 	i = setup_max_cpus ?: 1;
+ 	if (setup_possible_cpus == -1) {
+ 		possible = num_processors;
 
