@@ -2,71 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C0E7756504
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 15:30:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F941756508
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 15:32:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230325AbjGQNaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 09:30:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36634 "EHLO
+        id S229665AbjGQNb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 09:31:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229967AbjGQNaZ (ORCPT
+        with ESMTP id S229767AbjGQNbl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 09:30:25 -0400
-Received: from mail-oa1-x31.google.com (mail-oa1-x31.google.com [IPv6:2001:4860:4864:20::31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 025F310EB
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 06:29:29 -0700 (PDT)
-Received: by mail-oa1-x31.google.com with SMTP id 586e51a60fabf-1b0249f1322so3367596fac.3
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 06:29:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689600567; x=1692192567;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=BlOZsND84SciXvANY0CY+bWfRMfFwSqDhQDkgMJyHW4=;
-        b=su28WUHted4y2Oj1pXVgib331DwEKro8z6itNDd1Gm7nZ7vM4mFGUgtCZ6hjaFA1r/
-         rPdTUuAEI+TjHhMPJKU1aBdFopNIKdPu6iynDtH/E5kYJQ+MSHq4qafbcAKzHVreO/wW
-         Bh+yaNL9wGR+5ps8uqFyk9qfcKSDCclbqZyILiq04EvOqQcOmNZKV+9SOSmXXIf5GVYe
-         ETLudOUUrfVDc2rnQZO0nxKOlKo8sC1b36Q/AVOuJ+ti4WRM1xpkrB7Z5L/N9tassJB8
-         uHlOfUWNJI5TLHM3m3orCV59FMoxoYLwuaTZinupE+IufuDDWA9q6GS/WjmC/pil9MvC
-         vOgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689600567; x=1692192567;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BlOZsND84SciXvANY0CY+bWfRMfFwSqDhQDkgMJyHW4=;
-        b=Ve/PQ9wwmD1Iv0Bo4tnOrVdtG5PYGfQZCD2/W1l0I2uu+DF11GZzbmUDTWizPJrzGB
-         SicLUr1KQRlDT80m/EadTZRIVDU8ozWAV6hG6ymEbaWYxnXBfMvmryyUWEaaGog/aovp
-         Yk0JHB1K3AAnH0h2yE3y0X/d9zC2oZKbR3FOmNtGJns3X3aAuqGVYBSXhotsksQr0lI2
-         lTEbLjQzSfnmNlfRlegYGboKJInzkqVDs7axzIEY1d3R85kz5skjlztu8Sooz6/yC8Wi
-         1ETv7TOvCTWO/YCj7UJHyKBaqCtowLUQk69SS2z0QAospRWPUPdQgoeQBgRroSgUHMEi
-         wXhg==
-X-Gm-Message-State: ABy/qLbftuRWutVko1AoozwyKdp05QH03heQhd1QaByEhPxarTfpOXHu
-        LL0QmdD+MnMzF8q1HrCylDnGc5tuMmU=
-X-Google-Smtp-Source: APBJJlHa1ZtqPyW2vqUQ0hrrWHDJPQkicBRVi7Xdr6CGCwyTOreQeweeePubn5yzkH8ZlyomftM08w==
-X-Received: by 2002:a05:6870:1494:b0:1b0:3b98:50e4 with SMTP id k20-20020a056870149400b001b03b9850e4mr13065013oab.58.1689600566997;
-        Mon, 17 Jul 2023 06:29:26 -0700 (PDT)
-Received: from geday ([2804:7f2:8006:9379:516e:42c5:d582:55d9])
-        by smtp.gmail.com with ESMTPSA id g8-20020a9d6488000000b006b9cb784553sm2127424otl.36.2023.07.17.06.29.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jul 2023 06:29:26 -0700 (PDT)
-Date:   Mon, 17 Jul 2023 10:29:22 -0300
-From:   Geraldo Nascimento <geraldogabriel@gmail.com>
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     syzbot <syzbot+cf8e7fa4eeec59b3d485@syzkaller.appspotmail.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        perex@perex.cz, syzkaller-bugs@googlegroups.com, tiwai@suse.com
-Subject: Re: [syzbot] [alsa?] memory leak in snd_seq_create_port
-Message-ID: <ZLVCMoC0nLAXCMUS@geday>
-References: <00000000000098ed3a0600965f89@google.com>
- <87v8ekattg.wl-tiwai@suse.de>
- <ZLQ/zKgTGMHy/6Jn@geday>
- <87y1jfjbmj.wl-tiwai@suse.de>
+        Mon, 17 Jul 2023 09:31:41 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1717213F
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 06:31:14 -0700 (PDT)
+Received: from [192.168.2.126] (109-252-154-2.dynamic.spd-mgts.ru [109.252.154.2])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: dmitry.osipenko)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id DE0C66606EF9;
+        Mon, 17 Jul 2023 14:30:53 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1689600654;
+        bh=3r44yMGopZswD/4MCovJLODOOOfJODbmEllLZPplAYU=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=RpFjy4UM1kol+ZAsvt1ZNWWfZZeaoWF6BEdkRkxHLSLiB+0oU6tu5WMsILTnxjcxv
+         FOW2P7aOKEEppbsWZTXu2x4aspd+8mnQuvIcqvagFjDyTXAil+xvMzuScsajZLHK36
+         LIq6gQrpnxyPoBRFUN4C+UyZEmuPTPy8cy4vPb8ryxbyMG9zYBU7Xumsq3t+wuRLtN
+         htg0q42eDRVOXdRc/3OVUeK140k9fGrJYAOevgXGrBJyQgXrUyOnVDzPg+iVWk33Mp
+         6N4OefvXSxD0/cszqbyIva19b+c0j/Ae3VbttFO1x7SBJ19WKK8ET7IWaSAR1+t7qM
+         T4SU8VmNrvHzA==
+Message-ID: <f567b685-0155-a317-1786-cc8267d15612@collabora.com>
+Date:   Mon, 17 Jul 2023 16:30:51 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87y1jfjbmj.wl-tiwai@suse.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.1
+Subject: Re: [PATCH v1] drm/panfrost: Sync IRQ by job's timeout handler
+To:     Steven Price <steven.price@arm.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     Rob Herring <robh@kernel.org>, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, kernel@collabora.com
+References: <20230717065254.1061033-1-dmitry.osipenko@collabora.com>
+ <20230717090506.2ded4594@collabora.com>
+ <80de081a-e443-85a2-1a61-6a8885e8d529@collabora.com>
+ <20230717094905.7a1ee007@collabora.com>
+ <0b527996-342b-da44-61dd-38743db80cda@arm.com>
+ <20230717104955.268d84a8@collabora.com>
+ <31f04dca-f7b7-e899-07ee-8c5f2dd55494@arm.com>
+Content-Language: en-US
+From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
+In-Reply-To: <31f04dca-f7b7-e899-07ee-8c5f2dd55494@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -75,17 +64,134 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 08:27:48AM +0200, Takashi Iwai wrote:
+17.07.2023 11:59, Steven Price пишет:
+> On 17/07/2023 09:49, Boris Brezillon wrote:
+>> On Mon, 17 Jul 2023 09:06:56 +0100
+>> Steven Price <steven.price@arm.com> wrote:
+>>
+>>> On 17/07/2023 08:49, Boris Brezillon wrote:
+>>>> On Mon, 17 Jul 2023 10:20:02 +0300
+>>>> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+>>>>   
+>>>>> Hi,
+>>>>>
+>>>>> On 7/17/23 10:05, Boris Brezillon wrote:  
+>>>>>> Hi Dmitry,
+>>>>>>
+>>>>>> On Mon, 17 Jul 2023 09:52:54 +0300
+>>>>>> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+>>>>>>     
+>>>>>>> Panfrost IRQ handler may stuck for a long time, for example this happens
+>>>>>>> when there is a bad HDMI connection and HDMI handler takes a long time to
+>>>>>>> finish processing, holding Panfrost. Make Panfrost's job timeout handler
+>>>>>>> to sync IRQ before checking fence signal status in order to prevent
+>>>>>>> spurious job timeouts due to a slow IRQ processing.    
+>>>>>>
+>>>>>> Feels like the problem should be fixed in the HDMI encoder driver
+>>>>>> instead, so it doesn't stall the whole system when processing its
+>>>>>> IRQs (use threaded irqs, maybe). I honestly don't think blocking in the
+>>>>>> job timeout path to flush IRQs is a good strategy.    
+>>>>>
+>>>>> The syncing is necessary to have for correctness regardless of whether
+>>>>> it's HDMI problem or something else, there could be other reasons for
+>>>>> CPU to delay IRQ processing. It's wrong to say that hw is hung, while
+>>>>> it's not.  
+>>>>
+>>>> Well, hardware is effectively hung, if not indefinitely, at least
+>>>> temporarily. All you do here is block in the timeout handler path
+>>>> waiting for the GPU interrupt handlers to finish, handler that's
+>>>> probably waiting in the queue, because the raw HDMI handler is blocking
+>>>> it somehow. So, in the end, you might just be delaying the time of HWR a
+>>>> bit more. I know it's not GPU's fault in that case, and the job could
+>>>> have finished in time if the HDMI encoder hadn't stall the interrupt
+>>>> handling pipeline, but I'm not sure we should care for that specific
+>>>> situation. And more importantly, if it took more than 500ms to get a
+>>>> frame rendered (or, in that case, to get the event that a frame is
+>>>> rendered), you already lost, so I'm not sure correctness matters:
+>>>> rendering didn't make it in time, and the watchdog kicked in to try and
+>>>> unblock the situation. Feels like we're just papering over an HDMI
+>>>> encoder driver bug here, really.  
+>>>
+>>> TLDR; I don't see any major downsides and it stops the GPU getting the 
+>>> blame for something that isn't its fault.
+>>
+>> True, but doing that will also give the impression that things run fine,
+>> but very slowly, which would put the blame on the userspace driver :P.
 > 
-> It's a bug that happened only on 6.5-rc1, so no need to bother too
-> much with security issue fiasco for distros.
-
-Thanks Takashi. I tried to create a DoS to exhaust all memory through
-this bug but ran on other unrelated issues with 6.5-rc1. Glad syzbot
-caught this. Thanks!
-
-Geraldo Nascimento
-
+> Maybe I'm tainted by years of the kernel driver getting the blame
+> because it was the one that printed the message ;p
 > 
+>>>
+>>> I guess the question is whether panfrost should work on a system which 
+>>> has terrible IRQ latency. At the moment we have a synchronize_irq() call 
+>>> in panfrost_reset() which effectively does the same thing, but with all 
+>>> the overhead/spew of resetting the GPU.
+>>
+>> Unless I'm mistaken, the synchronize_irq() in panfrost_reset() is
+>> mostly here to make sure there's no race between the interrupt
+>> handler and the reset logic (we mask interrupts, and then synchronize,
+>> guaranteeing that the interrupt handler won't be running after that
+>> point), and it happens after we've printed the error message, so the
+>> user knows something was blocked at least.
 > 
-> Takashi
+> Yes the synchronize_irq() in panfrost_reset() is there to avoid a real
+> race - but it has the side effect of flushing out the IRQ and therefore
+> the job gets completed successfully. And in the high IRQ latency
+> situation makes the actual reset redundant.
+> 
+>>>
+>>> Of course in the case Dmitry is actually talking about - it does seem 
+>>> like the HDMI encoder has a bug which needs fixing. There are plenty of 
+>>> other things that will break if IRQ latency gets that bad.
+>>
+>> Yes, that's my point. The GPU driver is the only one to complain right
+>> now, but the HDMI encoder behavior could be impacting other parts of
+>> the system. Silently ignoring those weirdnesses sounds like a terrible
+>> idea.
+> 
+> Agreed - but making it look like a GPU driver bug isn't good either.
+> 
+>>>
+>>> I do wonder if it makes sense to only synchronize when it's needed, 
+>>> e.g.:
+>>>
+>>> ----8<---
+>>> diff --git a/drivers/gpu/drm/panfrost/panfrost_job.c b/drivers/gpu/drm/panfrost/panfrost_job.c
+>>> index dbc597ab46fb..d96266b74e5c 100644
+>>> --- a/drivers/gpu/drm/panfrost/panfrost_job.c
+>>> +++ b/drivers/gpu/drm/panfrost/panfrost_job.c
+>>> @@ -720,6 +720,12 @@ static enum drm_gpu_sched_stat panfrost_job_timedout(struct drm_sched_job
+>>>  	if (dma_fence_is_signaled(job->done_fence))
+>>>  		return DRM_GPU_SCHED_STAT_NOMINAL;
+>>>  
+>>> +	/* Synchronize with the IRQ handler in case the IRQ latency is bad */
+>>> +	synchronize_irq(pfdev->js->irq);
+>>> +	/* Recheck if the job is now complete */
+>>> +	if (dma_fence_is_signaled(job->done_fence))
+>>> +		return DRM_GPU_SCHED_STAT_NOMINAL;
+>>> +
+>>>  	dev_err(pfdev->dev, "gpu sched timeout, js=%d, config=0x%x, status=0x%x, head=0x%x, tail=0x%x, sched_job=%p",
+>>>  		js,
+>>>  		job_read(pfdev, JS_CONFIG(js)),
+>>> ----8<---
+>>>
+>>> I don't have any data as to how often we hit the case where the DRM 
+>>> scheduler calls the timeout but we've already signalled - so the extra 
+>>> check might be overkill.
+>>
+>> Right, it's not so much about the overhead of the synchronize_irq()
+>> call (even though my first reply complained about that :-)), but more
+>> about silently ignoring system misbehaviors. So I guess I'd be fine with
+>> a version printing a dev_warn("Unexpectedly high interrupt latency")
+>> when synchronize_irq() unblocks the situation, which means you'd still
+>> have to do it in two steps.
+> 
+> I like this idea - it still warns so it's obvious there's something
+> wrong with the system, and it makes it clear it's not the GPU's fault.
+
+Like that idea too, thanks for the suggestions! Will prepare v2
+
+-- 
+Best regards,
+Dmitry
+
