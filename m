@@ -2,58 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 721BF756F3C
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 23:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21FF0756F97
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 00:04:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229954AbjGQV7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 17:59:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34330 "EHLO
+        id S230013AbjGQWEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 18:04:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjGQV7l (ORCPT
+        with ESMTP id S229379AbjGQWEl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 17:59:41 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1794E4F;
-        Mon, 17 Jul 2023 14:59:40 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5CFAF61291;
-        Mon, 17 Jul 2023 21:59:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E28A5C433C8;
-        Mon, 17 Jul 2023 21:59:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689631179;
-        bh=L4LNILElwEJuIvZsN9V0NhiSCNz4Ki8cQsqwvuJykvo=;
-        h=From:To:In-Reply-To:References:Subject:Date:From;
-        b=QXKgOwmHlEVnNI7mc/TIk7h7m85AZuTRJ2zI7MzW+kUSv8nw7c0nIfPZw3GdADPXM
-         h6mhCp1iMdTp6ujNMJLWw5wicHgBYOvLa8XCqRzRf3ne0F67BCEovoP2CyOxQo74Rf
-         NIKJ8cHBUKFWgD4CTxM9rbPnQvQjZWcDWiXNchnNHdygR5a0fLkLTJENfTpkG/DAuM
-         v9Y9X7zw9FmaRvTGBTmTR0zH/zlVWhn/P/GjoVdxhhK/2198ujTP/u2Mjms92yQf0D
-         OvkNTk/a9dJgWA9Nm/xUqEZXcBvY6FQJK/qJcKZ5eNGEOhjTf1Fz1PWSsJPj0fCLIa
-         GCvfo8sCDBS6w==
-From:   Mark Brown <broonie@kernel.org>
-To:     lgirdwood@gmail.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
-        nicoleotsuka@gmail.com, perex@perex.cz, tiwai@suse.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
-        Chancel Liu <chancel.liu@nxp.com>
-In-Reply-To: <20230714092913.1591195-1-chancel.liu@nxp.com>
-References: <20230714092913.1591195-1-chancel.liu@nxp.com>
-Subject: Re: [PATCH 0/2] Add support for rpmsg sound card on i.MX93
- platform
-Message-Id: <168963117664.522208.15403610708641093351.b4-ty@kernel.org>
-Date:   Mon, 17 Jul 2023 22:59:36 +0100
+        Mon, 17 Jul 2023 18:04:41 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF53EE56
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 15:04:40 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-66872d4a141so3242731b3a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 15:04:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689631480; x=1692223480;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=QbBg1qhK9YTZ0sKHzhZcMzAk3NkTTX/1n/b9teLLE3k=;
+        b=pKFC50AyGRPQt1B/FTQKbvTlG//MP6daamMY17PhBKatjdHCUeynXF4qBlwgQPcHVD
+         TLFNA7cRdDtojThrqzBaWXlUCsdMtdUdn0l/JdVSr8DggO+cwEheGGBtXpoqO27wTpgG
+         lcpAKzHO5Eqt64RiqkoXawdbWNm83QOqETOTH3+qgkY5VognwfniWLv/x5susfsMr5xL
+         rostPYGWZzPTuWowdSXGmiLsqMLsQuHuFsxmDpbDjjc0MkltVAojPpNaqvuf+9VM2/+X
+         ZTyQrgIrMaxuwaNRi+2UkzMzM421+DKJAWn1t6Ai4BDCbcRYA4R26PBNkKH6qgJYnuR8
+         m4Iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689631480; x=1692223480;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QbBg1qhK9YTZ0sKHzhZcMzAk3NkTTX/1n/b9teLLE3k=;
+        b=QCagg85K5tC4gl2t8L9KQiZ4WTTU6P5+JvcvJuF34ZmCi67pZCcPWmmXVcjALpeq3S
+         MfvPoMg8KH01BuUNOgkSjf5k/LV580wgnTpk+2J61CoK8kpP/oXtNEOugNP6Of+0h/8p
+         JLNDrBj2MHLSkyWiqRAoG9+FfPt0G1RIUlY4HaXBBF3jAPoyP2Yu1VI+mgakZHtGVVYV
+         Btb2TkMTs27dg8GuJE3sX5+3ZU2m87xVZEcCPW2JCbCsP7xr2TqkTdiaC03evbiRihPI
+         7A3thSy3TkHsB2X87Eg+BH9U5ddM/4MGBWIshrq2ebufsvigRAl9X/FVaLvR5MMDLrTu
+         1NwA==
+X-Gm-Message-State: ABy/qLZp30+/j3Zp3ccJWyBP+A1cIrEkpP6NGmzBDQD++InPINQtApO7
+        zT+IVJodvAO9LEhHTe4/JfKARrlB+rqdDw==
+X-Google-Smtp-Source: APBJJlHFav2HOy8yjaRTEjXbSFfJfB9R1L/v4XNmRQpLXJlO1CBfmH3qkIvoVRo9thSlgIkXMaicIg==
+X-Received: by 2002:a05:6a20:8406:b0:104:ad71:f080 with SMTP id c6-20020a056a20840600b00104ad71f080mr14161794pzd.34.1689631479922;
+        Mon, 17 Jul 2023 15:04:39 -0700 (PDT)
+Received: from localhost ([216.228.127.128])
+        by smtp.gmail.com with ESMTPSA id z68-20020a633347000000b0054fe7736ac1sm251622pgz.76.2023.07.17.15.04.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Jul 2023 15:04:39 -0700 (PDT)
+From:   Yury Norov <yury.norov@gmail.com>
+To:     linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Yury Norov <yury.norov@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Tom Rix <trix@redhat.com>, oe-kbuild-all@lists.linux.dev,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH v2] lib/bitmap: workaround const_eval test build failure
+Date:   Mon, 17 Jul 2023 15:04:35 -0700
+Message-Id: <20230717220435.57640-1-yury.norov@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-099c9
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,46 +76,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 14 Jul 2023 17:29:11 +0800, Chancel Liu wrote:
-> Support rpmsg sound card on i.MX93 platform.
-> 
-> Chancel Liu (2):
->   ASoC: dt-bindings: fsl_rpmsg: Add compatible string for i.MX93
->   ASoC: fsl_rpmsg: Add support for i.MX93 platform
-> 
->  Documentation/devicetree/bindings/sound/fsl,rpmsg.yaml | 1 +
->  sound/soc/fsl/fsl_rpmsg.c                              | 8 ++++++++
->  2 files changed, 9 insertions(+)
-> 
-> [...]
+When building with Clang, and when KASAN and GCOV_PROFILE_ALL are both
+enabled, the test fails to build [1]:
 
-Applied to
+>> lib/test_bitmap.c:920:2: error: call to '__compiletime_assert_239' declared with 'error' attribute: BUILD_BUG_ON failed: !__builtin_constant_p(res)
+           BUILD_BUG_ON(!__builtin_constant_p(res));
+           ^
+   include/linux/build_bug.h:50:2: note: expanded from macro 'BUILD_BUG_ON'
+           BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
+           ^
+   include/linux/build_bug.h:39:37: note: expanded from macro 'BUILD_BUG_ON_MSG'
+   #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+                                       ^
+   include/linux/compiler_types.h:352:2: note: expanded from macro 'compiletime_assert'
+           _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+           ^
+   include/linux/compiler_types.h:340:2: note: expanded from macro '_compiletime_assert'
+           __compiletime_assert(condition, msg, prefix, suffix)
+           ^
+   include/linux/compiler_types.h:333:4: note: expanded from macro '__compiletime_assert'
+                           prefix ## suffix();                             \
+                           ^
+   <scratch space>:185:1: note: expanded from here
+   __compiletime_assert_239
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Originally it was attributed to s390, which now looks seemingly wrong. The
+issue is not related to bitmap code itself, but it breaks build for a given
+configuration.
 
-Thanks!
+Disabling the const_eval test under that config may potentially hide other
+bugs. Instead, workaround it by disabling GCOV for the test_bitmap unless
+the compiler will get fixed.
 
-[1/2] ASoC: dt-bindings: fsl_rpmsg: Add compatible string for i.MX93
-      commit: 143f8c69a27f3fa8ed30c7f6790ea039fff57cfe
-[2/2] ASoC: fsl_rpmsg: Add support for i.MX93 platform
-      commit: 60f38a592efe08e5ced454e8a05f6814e6e221ec
+[1] https://github.com/ClangBuiltLinux/linux/issues/1874
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202307171254.yFcH97ej-lkp@intel.com/
+Fixes: dc34d5036692 ("lib: test_bitmap: add compile-time optimization/evaluations assertions")
+Co-developed-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Yury Norov <yury.norov@gmail.com>
+---
+ lib/Makefile      | 6 ++++++
+ lib/test_bitmap.c | 8 ++++----
+ 2 files changed, 10 insertions(+), 4 deletions(-)
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+diff --git a/lib/Makefile b/lib/Makefile
+index 42d307ade225..1ffae65bb7ee 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -82,7 +82,13 @@ obj-$(CONFIG_TEST_STATIC_KEYS) += test_static_key_base.o
+ obj-$(CONFIG_TEST_DYNAMIC_DEBUG) += test_dynamic_debug.o
+ obj-$(CONFIG_TEST_PRINTF) += test_printf.o
+ obj-$(CONFIG_TEST_SCANF) += test_scanf.o
++
+ obj-$(CONFIG_TEST_BITMAP) += test_bitmap.o
++ifeq ($(CONFIG_CC_IS_CLANG)$(CONFIG_KASAN),yy)
++# FIXME: Clang breaks test_bitmap_const_eval when KASAN and GCOV are enabled
++GCOV_PROFILE_test_bitmap.o := n
++endif
++
+ obj-$(CONFIG_TEST_UUID) += test_uuid.o
+ obj-$(CONFIG_TEST_XARRAY) += test_xarray.o
+ obj-$(CONFIG_TEST_MAPLE_TREE) += test_maple_tree.o
+diff --git a/lib/test_bitmap.c b/lib/test_bitmap.c
+index 187f5b2db4cf..4a678de9c350 100644
+--- a/lib/test_bitmap.c
++++ b/lib/test_bitmap.c
+@@ -1161,6 +1161,10 @@ static void __init test_bitmap_print_buf(void)
+ 	}
+ }
+ 
++/*
++ * FIXME: Clang breaks compile-time evaluations when KASAN and GCOV are enabled.
++ * To workaround it, GCOV is force-disabled in Makefile for this configuration.
++ */
+ static void __init test_bitmap_const_eval(void)
+ {
+ 	DECLARE_BITMAP(bitmap, BITS_PER_LONG);
+@@ -1186,11 +1190,7 @@ static void __init test_bitmap_const_eval(void)
+ 	 * the compiler is fixed.
+ 	 */
+ 	bitmap_clear(bitmap, 0, BITS_PER_LONG);
+-#if defined(__s390__) && defined(__clang__)
+-	if (!const_test_bit(7, bitmap))
+-#else
+ 	if (!test_bit(7, bitmap))
+-#endif
+ 		bitmap_set(bitmap, 5, 2);
+ 
+ 	/* Equals to `unsigned long bitopvar = BIT(20)` */
+-- 
+2.39.2
 
