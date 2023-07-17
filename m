@@ -2,146 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0407175666A
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 16:32:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AC5875665C
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 16:30:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232057AbjGQOcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 10:32:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54206 "EHLO
+        id S231300AbjGQOa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 10:30:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231551AbjGQOcA (ORCPT
+        with ESMTP id S229496AbjGQOay (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 10:32:00 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2070.outbound.protection.outlook.com [40.107.220.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA61C19A9;
-        Mon, 17 Jul 2023 07:31:45 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ehPbu+nIkrHFUEpbCVWV4e2gWphnInTlTTZOTPsZ89O3tMBPYEUfHWqmzJG26YkmqWqFIgxB5T/LrMvblGPTDt306yR7AeEk9SaQcFH/LOxyeTxNFW1awIZ98faPOVa+mYewfgMWhbo0u+NtYdXbrwCT7mSAh81WqNALRn8yuMHaOYevuY7SxfDUoOgu/P8eflsS+GIpftemvC+LMCHcxGZ2DytlWnwJ0dq/i10L5Lj2cVa0scbHpz6QBWloTbSzUigv4Ja1PhhVs63cBjwx/7Yd2XrEMlKAKOlI72S5p+jDSv4ppjxi5D3r7zxW1Ql1vu0bahkhtp9wKVol59f6VQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TmThAU2YAJOzFnTrzw7PawSekE5lC5HJVtIHKCP6/YM=;
- b=nmroQyDvqgG6Ebm+uaW6Xa1cDAsYMmQFjnv5as9sbK391aXbNTCW8Hul/xR426RZQuMpJvRp5QCGW5DtnsRv64AuKQc3RFh7dmIHJzNNBJ0JORHmW4xNH65neSR+qQMXWBomjb6dTdhloM7WA+XKce3mRwl/cwvFecSLE7A0orCSgqoawU4viykcfpcXna0ATWx8zLstoX3+sX/+2y6rOrebDVz8I4+9N7SGGX9AMK7qrX8ZFGqd7F8b1jdhFy1EHibyunEdWXo4DnIUYKNQb5Wd/fkUzAfcRPvJjirQMu/Y8hQpRBBwvoYIStoeXgtdQx6zLcW3HCn1womCINpdzQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TmThAU2YAJOzFnTrzw7PawSekE5lC5HJVtIHKCP6/YM=;
- b=N2uBzeogGTRDU6PHqGavQ4Yu2LyVBCZM+71gNXw6SOZwVVSJoX7REUa5s6/MsStcBmEZhOaAViLuy+T8xKpJVYpJruxdkJk5lP8mNHf6tNTDC7XBSGw6yzKOnoDdOhEc4/PcVfAp7KT0T1bOGgEEKJ7zuInKZsy2MfYJvOxFpvTve/Cr85HbMB39zcY6DhXhlDVqqITzLu68nba2D4tKnvlydp8/YjRtBc+zNr/DTWWTgUBSMPcWT/qOPo6rRnGHp4ga6YJ8+WYrW1daNyXOxNbShFvznoCAEN1YRKYq+jf7Tgx7/qaDKC81+fmvso29VmAFEPihB4IgkODAeoysrw==
-Received: from MW3PR05CA0017.namprd05.prod.outlook.com (2603:10b6:303:2b::22)
- by BN9PR12MB5243.namprd12.prod.outlook.com (2603:10b6:408:100::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.31; Mon, 17 Jul
- 2023 14:31:42 +0000
-Received: from CO1NAM11FT055.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:2b:cafe::ee) by MW3PR05CA0017.outlook.office365.com
- (2603:10b6:303:2b::22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6609.22 via Frontend
- Transport; Mon, 17 Jul 2023 14:31:41 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- CO1NAM11FT055.mail.protection.outlook.com (10.13.175.129) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6588.33 via Frontend Transport; Mon, 17 Jul 2023 14:31:41 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Mon, 17 Jul 2023
- 07:31:29 -0700
-Received: from nvidia.com (10.126.231.35) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Mon, 17 Jul
- 2023 07:31:24 -0700
-From:   Gavin Li <gavinl@nvidia.com>
-To:     <mst@redhat.com>, <jasowang@redhat.com>,
-        <xuanzhuo@linux.alibaba.com>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <ast@kernel.org>, <daniel@iogearbox.net>, <hawk@kernel.org>,
-        <john.fastabend@gmail.com>, <jiri@nvidia.com>,
-        <dtatulea@nvidia.com>
-CC:     <gavi@nvidia.com>, <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bpf@vger.kernel.org>
-Subject: [PATCH net-next V2 4/4] virtio_net: enable per queue interrupt coalesce feature
-Date:   Mon, 17 Jul 2023 17:30:37 +0300
-Message-ID: <20230717143037.21858-5-gavinl@nvidia.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230717143037.21858-1-gavinl@nvidia.com>
-References: <20230717143037.21858-1-gavinl@nvidia.com>
+        Mon, 17 Jul 2023 10:30:54 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BDFFE4F;
+        Mon, 17 Jul 2023 07:30:53 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 20DFC66020AE;
+        Mon, 17 Jul 2023 15:30:51 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1689604251;
+        bh=JZ9CqbZe62FM8un3k54BF5lgTvBzK8Bjpc1+KbmZsgQ=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=PEO+xjEj4b6bNuktP1A7EAt68PSO8uqRhM9P528Ijn4bYzt+lhKv+aXxX1TSphMyG
+         v1YezT2c1wQXELGEZeZGt5/QwKb7GnlM31K+se6IdJZ9H2fh26GVJPUG/6ef12es8P
+         +zyr7/xHhx2zgnVyP2rwFZuP0cGcpVxgtAoXzJebrOz6PDFtrId3xd75cBJzpJY/JH
+         sUImzhdJNWPpWGhktrPNZPaM5BkOkRnOU2dGq4LJod56u39aIOpZ0skmpri2HAQCt5
+         9Hb73sU7zYoY1NMxrOvIl+laug25d5fU3o35RZUjoThkxN3UvDpRqLapqVVKtDGCoc
+         d9vZwsgxe6npA==
+Message-ID: <24d17b07-1e8d-05f6-46b7-9da1ff1bed7a@collabora.com>
+Date:   Mon, 17 Jul 2023 16:30:48 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH 2/2] clk: mediatek: mt8195-topckgen: Refactor parents for
+ top_dp/edp muxes
+Content-Language: en-US
+To:     Maxime Ripard <mripard@kernel.org>
+Cc:     Chen-Yu Tsai <wenst@chromium.org>,
+        Alexandre Mergnat <amergnat@baylibre.com>, sboyd@kernel.org,
+        mturquette@baylibre.com, matthias.bgg@gmail.com, msp@baylibre.com,
+        yangyingliang@huawei.com, u.kleine-koenig@pengutronix.de,
+        miles.chen@mediatek.com, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, kernel@collabora.com
+References: <20230713072138.84117-1-angelogioacchino.delregno@collabora.com>
+ <20230713072138.84117-3-angelogioacchino.delregno@collabora.com>
+ <9a0817c2-4101-5c21-977d-77ac0d83a067@baylibre.com>
+ <CAGXv+5E7YYdkG7GtxG90KzdAG8Kke+74Amtbw4mmyVNZgDZHRA@mail.gmail.com>
+ <jv6daj2w3pwjtde3m3m26yg4wyxbbio4zqra5yqc4gb32ri5ub@noinbbkjovwm>
+ <25724ee3-858a-01eb-352b-3edbfad31c8e@collabora.com>
+ <jxgy2pvns4ri2aj5nmdhb4zbluseuzdejbplh2avwz63df2cfx@grrrdm6ujzi4>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <jxgy2pvns4ri2aj5nmdhb4zbluseuzdejbplh2avwz63df2cfx@grrrdm6ujzi4>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.126.231.35]
-X-ClientProxiedBy: rnnvmail202.nvidia.com (10.129.68.7) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1NAM11FT055:EE_|BN9PR12MB5243:EE_
-X-MS-Office365-Filtering-Correlation-Id: a896d7df-6c00-4baf-9c77-08db86d289b4
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: C5PKW1rwcysZJ7ek+aZ3FdTdSlaNAsJI0F4gtYXr4ab6Q3slmTWsSukyPkM0oGBwDj0H9HIiZjXxtlrOhpLea1PhIqcErsRyhnO3suaIWxP5QNXhMkpf+ymx7W0Cw87+DjUKJ/E1ceNiA5MMmg91wom9hWrVIGoPyPeMpYGWfvs1l6nIsOdi69w2dg1Sa6i8RXoqFnC8MOH/dgbWFYnZP1mjds60HiH+aacu7VY/cUSTQrN+DKT2WJVUcuGzHt23kAGU6Nisjtaf0Ibs3HVQm2kIb8kIEx3L+Zt51u8pth5dFE0RtY5btbOtl/jwmaakd39J1Wi6UYlpFYwgOXaeSD+uZ2TGI9mEt3OAWsDqO80qJBHUkmJwqXBgDhKsrKgvoCZYNDKxGFndOUWvc3CxtkZVnnyHzv8VEBl+oK4XxUUr5YvxMxHo0L19o6S+ULfxKcUQ6cxF4/hWEenhyNyUguNIOEUO/XRRJnyLEsQczDn08K/UeiG6QT3vVAGl60atbifVc4vcBq3lnBGvLjnNga1E49oUdf4PIDMXSYM3NIHKes7yLxfs3dHruX3VLWSwgObt7faS82Is4ETGb/OcBVoGkWMosE6YySuwFjFrzoaNiPI97BDVJKMjEHejdfRB8k2s8T3A7rZzOZvQS/cVB5ZCj2vxscp3NeVFnYvy4Q1I+TDKfwZ6UsnRGfxcSMciqMV6fkq1dqrPWaSFHvv32ShnYV1QUmfbtXmJ2DPs1tCNyx6gNFvBH9dcjqSzjUFdZeVddojZoN1Un4wnMTOMwtadkA3SUGyJIiFGOCRw1kWsbs0JIqgOobZCUo7pdaJ2
-X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(396003)(39860400002)(346002)(376002)(136003)(82310400008)(451199021)(36840700001)(40470700004)(46966006)(478600001)(70586007)(70206006)(54906003)(5660300002)(4326008)(7416002)(6636002)(316002)(8936002)(55016003)(2906002)(40480700001)(41300700001)(8676002)(6666004)(110136005)(1076003)(26005)(40460700003)(7696005)(356005)(82740400003)(6286002)(7636003)(186003)(16526019)(921005)(2616005)(336012)(47076005)(426003)(83380400001)(36756003)(36860700001)(86362001)(83996005)(2101003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jul 2023 14:31:41.3532
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a896d7df-6c00-4baf-9c77-08db86d289b4
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT055.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5243
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable per queue interrupt coalesce feature bit in driver and validate its
-dependency with control queue.
+Il 17/07/23 13:24, Maxime Ripard ha scritto:
+> On Mon, Jul 17, 2023 at 11:13:26AM +0200, AngeloGioacchino Del Regno wrote:
+>> Il 17/07/23 09:48, Maxime Ripard ha scritto:
+>>> Hi,
+>>>
+>>> On Fri, Jul 14, 2023 at 12:19:00PM +0800, Chen-Yu Tsai wrote:
+>>>> On Thu, Jul 13, 2023 at 9:22 PM Alexandre Mergnat <amergnat@baylibre.com> wrote:
+>>>>> On 13/07/2023 09:21, AngeloGioacchino Del Regno wrote:
+>>>>>> The top_dp and top_edp muxes can be both parented to either TVDPLL1
+>>>>>> or TVDPLL2, two identically specced PLLs for the specific purpose of
+>>>>>> giving out pixel clock: this becomes a problem when the MediaTek
+>>>>>> DisplayPort Interface (DPI) driver tries to set the pixel clock rate.
+>>>>>>
+>>>>>> In the usecase of two simultaneous outputs (using two controllers),
+>>>>>> it was seen that one of the displays would sometimes display garbled
+>>>>>> output (if any at all) and this was because:
+>>>>>>     - top_edp was set to TVDPLL1, outputting X GHz
+>>>>>>     - top_dp was set to TVDPLL2, outputting Y GHz
+>>>>>>       - mtk_dpi calls clk_set_rate(top_edp, Z GHz)
+>>>>>>         - top_dp is switched to TVDPLL1
+>>>>>>         - TVDPLL1 changes its rate, top_edp outputs the wrong rate.
+>>>>>>         - eDP display is garbled
+>>>>>>
+>>>>>> To solve this issue, remove all TVDPLL1 parents from `top_dp` and
+>>>>>> all TVDPLL2 parents from `top_edp`, plus, necessarily switch both
+>>>>>> clocks to use the new MUX_GATE_CLR_SET_UPD_INDEXED() macro to be
+>>>>>> able to use the right bit index for the new parents list.
+>>>>>>
+>>>>>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+>>>>>> ---
+>>>>>>     drivers/clk/mediatek/clk-mt8195-topckgen.c | 22 ++++++++++++++--------
+>>>>>>     1 file changed, 14 insertions(+), 8 deletions(-)
+>>>>>>
+>>>>>> diff --git a/drivers/clk/mediatek/clk-mt8195-topckgen.c b/drivers/clk/mediatek/clk-mt8195-topckgen.c
+>>>>>> index 81daa24cadde..abb3721f6e1b 100644
+>>>>>> --- a/drivers/clk/mediatek/clk-mt8195-topckgen.c
+>>>>>> +++ b/drivers/clk/mediatek/clk-mt8195-topckgen.c
+>>>>>> @@ -417,15 +417,21 @@ static const char * const pwrmcu_parents[] = {
+>>>>>>
+>>>>>>     static const char * const dp_parents[] = {
+>>>>>>         "clk26m",
+>>>>>> -     "tvdpll1_d2",
+>>>>>>         "tvdpll2_d2",
+>>>>>> -     "tvdpll1_d4",
+>>>>>>         "tvdpll2_d4",
+>>>>>> -     "tvdpll1_d8",
+>>>>>>         "tvdpll2_d8",
+>>>>>> -     "tvdpll1_d16",
+>>>>>>         "tvdpll2_d16"
+>>>>>>     };
+>>>>>> +static const u8 dp_parents_idx[] = { 0, 2, 4, 6, 8 };
+>>>>>> +
+>>>>>> +static const char * const edp_parents[] = {
+>>>>>> +     "clk26m",
+>>>>>> +     "tvdpll1_d2",
+>>>>>> +     "tvdpll1_d4",
+>>>>>> +     "tvdpll1_d8",
+>>>>>> +     "tvdpll1_d16"
+>>>>>> +};
+>>>>>> +static const u8 edp_parents_idx[] = { 0, 1, 3, 5, 7 };
+>>>>>
+>>>>> AFAII your solution is to force a specific TVDPLLX for each display, and
+>>>>> it isn't dynamic.
+>>>>>
+>>>>> Do you think it's possible to do that using the DTS ? I'm asking
+>>>>> because, IMHO, this kind of setup is more friendly/readable/flexible in
+>>>>> the DTS than hardcoded into the driver.
+>>>>
+>>>> (CC-ing Maxime, who has some experience in the matter.)
+>>>
+>>> It's not clear to me what the context is, but I'll try my best :)
+>>>
+>>
+>> I'll try to explain briefly.
+>>
+>> On *some* MediaTek platforms, there are two *identical* PLLs for HDMI/(e)DP,
+>> which are internal to the SoC; clocks for HDMI/eDP/DP controller*s* can be
+>> parented either PLL (as you see from this commit)
+> 
+> So the HDMI controller can be parented either to the first or second PLL
+> (and same thing for the (e)DP controllers)?
+> 
 
-Signed-off-by: Gavin Li <gavinl@nvidia.com>
-Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
----
- drivers/net/virtio_net.c | 3 +++
- 1 file changed, 3 insertions(+)
+We're talking about DP/eDP specifically here, but yeah, you got it! :-)
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 1566c7de9436..6d9de7c74961 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -4066,6 +4066,8 @@ static bool virtnet_validate_features(struct virtio_device *vdev)
- 	     VIRTNET_FAIL_ON(vdev, VIRTIO_NET_F_HASH_REPORT,
- 			     "VIRTIO_NET_F_CTRL_VQ") ||
- 	     VIRTNET_FAIL_ON(vdev, VIRTIO_NET_F_NOTF_COAL,
-+			     "VIRTIO_NET_F_CTRL_VQ") ||
-+	     VIRTNET_FAIL_ON(vdev, VIRTIO_NET_F_VQ_NOTF_COAL,
- 			     "VIRTIO_NET_F_CTRL_VQ"))) {
- 		return false;
- 	}
-@@ -4490,6 +4492,7 @@ static struct virtio_device_id id_table[] = {
- 	VIRTIO_NET_F_MTU, VIRTIO_NET_F_CTRL_GUEST_OFFLOADS, \
- 	VIRTIO_NET_F_SPEED_DUPLEX, VIRTIO_NET_F_STANDBY, \
- 	VIRTIO_NET_F_RSS, VIRTIO_NET_F_HASH_REPORT, VIRTIO_NET_F_NOTF_COAL, \
-+	VIRTIO_NET_F_VQ_NOTF_COAL, \
- 	VIRTIO_NET_F_GUEST_HDRLEN
- 
- static unsigned int features[] = {
--- 
-2.39.1
+>> The PLL's rate can be changed in runtime and you want to use PLL dividers to
+>> get the final pixel clock (that's to obviously reduce the PLL jitter).
+>>
+>>>> assigned-parents doesn't prevent your system from reparenting the clocks
+>>>> back to a conflicting configuration.
+>>>
+>>> Yep, it's very much a one-off thing. There's no guarantee at the moment,
+>>> and semantics-wise we could change the whole thing at probe time and it
+>>> would be fine.
+>>>
+>>
+>> Would be fine... but more complicated I think?
+> 
+> My point wasn't that you should do it, but that you can't rely on the
+> parent or rate sticking around.
+> 
+
+Cool, I'm happy that we think alike. That's also my point...
+
+>>>> AFAIK the recommended way to deal with this is to use
+>>>> clk_set_rate_exclusive() and co. in whatever consumer driver that
+>>>> needs exclusive control on the clock rate.
+>>>
+>>> I guess it works, but it looks to me like the issue here is that the
+>>> provider should disable it entirely? My expectation for
+>>> clk_set_rate_exclusive() is that one user needs to lock the clock rate
+>>> to operate properly.
+>>>
+>>> If the provider expectation is that the rate or parent should never
+>>> changed, then that needs to be dealt with at the provider level, ie
+>>> through the clk_ops.
+>>>
+>>>> However I'm not sure if that works for parents. It should, given the
+>>>> original use case was for the sunxi platforms, which like the MediaTek
+>>>> platform here has 2 PLLs for video related consumers, but I couldn't
+>>>> find code verifying it.
+>>>
+>>> If you want to prevent clocks from ever being reparented, you can use
+>>> the new clk_hw_determine_rate_no_reparent() determine_rate
+>>> implementation.
+>>>
+>>
+>> We want the clocks to be reparented, as we need them to switch parents as
+>> explained before... that's more or less how the tree looks:
+>>
+>> TVDPLL(x) -> PLL Divider (fixed) -> MUX -> Gate -> Controller
+>>
+>> Besides, I think that forcing *one* parent to the dp/edp mux would produce a
+>> loss of the flexibility that the clock framework provides.
+>>
+>> I again want to emphasize on the fact that TVDPLL1 and TVDPLL2 are *identical*
+>> in specs, and on that there will never be a MT8195 SoC that has only one of
+>> the two PLLs, for obvious reasons...
+>>
+>> P.S.: If you need more context, I'll be glad to answer to any other question!
+> 
+> Then I have no idea what the question is :)
+> 
+> What are you trying to achieve / fix, and how can I help you ? :)
+> 
+
+Chen-Yu, Alexandre had/have questions about if there was any other solution instead
+of using the solution of *this* commit, so, if there's any other better solution
+than the one that I've sent as this commit.
+
+I'm the one saying that this commit is the best solution :-P
+
+Cheers,
+Angelo
 
