@@ -2,170 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AF20756141
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 13:09:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F007F75614A
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 13:11:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229514AbjGQLJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 07:09:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34160 "EHLO
+        id S229825AbjGQLLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 07:11:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbjGQLJA (ORCPT
+        with ESMTP id S229665AbjGQLLd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 07:09:00 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1807FB9
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 04:08:59 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2b70404a5a0so69040821fa.2
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 04:08:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689592137; x=1692184137;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=eQuNLrwbJ2AdsFbKd9SBZgt7zHVZW51vp7qPZgcDweg=;
-        b=MtFO/Mvc0xspnkoMEh5fsDNS+VVWirzNRAvB3fitk0Dm1zi/YTGv2jOL7Uk8ZI/7B1
-         Y6xasr3dN+h4JKJOdCQLyigRLxdVVZmSpRwZlVCIzZ4dh5hXKGqTmVkPzvKR0dJV2o6a
-         EwepnhROHZ3tM6JAqt/PxVT3mwA4Ue+IjCJWFwI6spHEqNVvKTBiMdIvwTzydidas5Kc
-         PNKkM8pVa+21nvblq8PkjAdVhSDpEWe6PwVA2Hsyd1jXaENlfmfekeWdHfLssfI0dNmd
-         ROb5AZnYMr7mpnhw+TycOgiWldFHoWZpw8KGneC8ulwk8pm/gC2WYUJbbPnufoiIa4RC
-         85Tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689592137; x=1692184137;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eQuNLrwbJ2AdsFbKd9SBZgt7zHVZW51vp7qPZgcDweg=;
-        b=AXipBPn3hNbECag0qJHpvMDZaMFFxPC0V2abOfDFxEOipDKD5EoqsfOhPi5y9SO9RR
-         cggKBpVYgN08Moz8vpCCqxvdLZMdxEWP68y7+TtJOwySvtrXoJAtooVEfG33ZkYohomI
-         xKYo5TGmtnjNUwipOTvtaKArDCiPXhH9aTG+lHax8ywZ+tilb3NNKxrk1GqkpmamSrs7
-         Y2zkw+4BMrF9gfGGzaS1JGfOHm3taMDt2ASZ92WJkmq4c4LeLvetUNd/dyVgFh6Rd6W2
-         RD3wBHcnc61g4y4JUoNIaolKNnzDVKpC1jlHRLknkAG6iweqG4VO019GW7OccgLA5SEP
-         Jqtw==
-X-Gm-Message-State: ABy/qLZiHAPpl4HYsuEIygna52PPa3EpHGOm1cVhJrlXym2qvL6TiogU
-        vioGVm4Zb3AyRH9c+amZKxsKlqm1wyCWP/3GQPs=
-X-Google-Smtp-Source: APBJJlErSTd9piiodlW+ToCtAf2Q4Jwxz8C8FI1Iin32AwNZNKHAg7wzx7U496d2ZHQO+2dysJbLUw==
-X-Received: by 2002:a05:651c:20a:b0:2b6:d8d4:161 with SMTP id y10-20020a05651c020a00b002b6d8d40161mr10907844ljn.43.1689592137230;
-        Mon, 17 Jul 2023 04:08:57 -0700 (PDT)
-Received: from linaro.org ([82.78.74.213])
-        by smtp.gmail.com with ESMTPSA id z3-20020a1709064e0300b00992afee724bsm8989196eju.76.2023.07.17.04.08.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jul 2023 04:08:56 -0700 (PDT)
-Date:   Mon, 17 Jul 2023 14:08:54 +0300
-From:   Abel Vesa <abel.vesa@linaro.org>
-To:     Taniya Das <quic_tdas@quicinc.com>
-Cc:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        avel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Mike Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Taniya Das <tdas@qti.qualcomm.com>, linux-pm@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH 2/2] clk: qcom: gdsc: Add support for set_hwmode_dev
-Message-ID: <ZLUhRlm20xlZ3OJj@linaro.org>
-References: <20230628105652.1670316-1-abel.vesa@linaro.org>
- <20230628105652.1670316-3-abel.vesa@linaro.org>
- <42b1167d-da60-f6c3-67b6-3f6857327396@linaro.org>
- <e94f187e-e444-d18d-eba9-b9a699abdb95@quicinc.com>
+        Mon, 17 Jul 2023 07:11:33 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E65EE1
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 04:11:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=CTMOEue5i+/+41KVpYou8hDhTmtQ6MkXTaitTVQIf0M=; b=N5UGq2Nvp2MIe+qtMwFQQ36oHk
+        B3/PLiEnp9C87SwS4KYBnLhhdCoJD8VNg3C6ByPsYxbPxGvT8CgWCyZ+BkYG+Gt096NfzgXRv03Nq
+        WbsrrQtJD4Qt2JELbuU+TNkIgblScH6Y/+xJs8iQ1PpFlBuA7f6lK7FTz4zQu20J88cpfMDu0HHOB
+        WOprEYLrK5RoEsyLta2VNHWSy1INXbXnR6B+SLzPn018qKJgxDTZHkFvwhf/DHHmuBlIhRrqBvM1S
+        UmNg+bQ/0dwVyeBIBg+ST2PjBTWqLAK20YXW40S//phD6xbUbsIGakPDAdTzXy9Olt2qjSi9Ln9Uu
+        wala5pQw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qLM80-00962A-2g;
+        Mon, 17 Jul 2023 11:10:56 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5460130049D;
+        Mon, 17 Jul 2023 13:10:53 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 3CB0E2463D7F2; Mon, 17 Jul 2023 13:10:53 +0200 (CEST)
+Date:   Mon, 17 Jul 2023 13:10:53 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+Cc:     Tim Chen <tim.c.chen@linux.intel.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Ricardo Neri <ricardo.neri@intel.com>,
+        "Ravi V . Shankar" <ravi.v.shankar@intel.com>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Len Brown <len.brown@intel.com>, Mel Gorman <mgorman@suse.de>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Ionela Voinescu <ionela.voinescu@arm.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        naveen.n.rao@linux.vnet.ibm.com,
+        Yicong Yang <yangyicong@hisilicon.com>,
+        Barry Song <v-songbaohua@oppo.com>,
+        Chen Yu <yu.c.chen@intel.com>, Hillf Danton <hdanton@sina.com>
+Subject: Re: [Patch v3 1/6] sched/fair: Determine active load balance for SMT
+ sched groups
+Message-ID: <20230717111053.GI4253@hirez.programming.kicks-ass.net>
+References: <cover.1688770494.git.tim.c.chen@linux.intel.com>
+ <e24f35d142308790f69be65930b82794ef6658a2.1688770494.git.tim.c.chen@linux.intel.com>
+ <165778ce-7b8f-1966-af02-90ef481455b9@linux.vnet.ibm.com>
+ <a399af19aa8e1291558724509a1de2f52b3bad0a.camel@linux.intel.com>
+ <05ed4537-e79b-0ff3-5be5-92cbffaab3ee@linux.vnet.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e94f187e-e444-d18d-eba9-b9a699abdb95@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <05ed4537-e79b-0ff3-5be5-92cbffaab3ee@linux.vnet.ibm.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23-07-10 09:40:14, Taniya Das wrote:
-> Hi Abel,
+On Mon, Jul 17, 2023 at 01:06:59AM +0530, Shrikanth Hegde wrote:
 > 
-> Thanks for the patch.
 > 
-> On 6/28/2023 10:48 PM, Konrad Dybcio wrote:
-> > On 28.06.2023 12:56, Abel Vesa wrote:
-> > > Implement the GDSC specific genpd set_hwmode_dev callback in order to
-> > > switch the HW control on or off. For any GDSC that supports HW control
-> > > set this callback in order to allow its consumers to control it.
-> > > 
-> > > Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
-> > > ---
-> > This still does nothing to prevent the HW_CTRL state being changed in
-> > init, enable and disable functions.
+> On 7/15/23 4:35 AM, Tim Chen wrote:
+> > On Fri, 2023-07-14 at 18:36 +0530, Shrikanth Hegde wrote:
 > > 
-> > Konrad
-> > >   drivers/clk/qcom/gdsc.c | 22 ++++++++++++++++++++++
-> > >   1 file changed, 22 insertions(+)
-> > > 
-> > > diff --git a/drivers/clk/qcom/gdsc.c b/drivers/clk/qcom/gdsc.c
-> > > index 5358e28122ab..9a04bf2e4379 100644
-> > > --- a/drivers/clk/qcom/gdsc.c
-> > > +++ b/drivers/clk/qcom/gdsc.c
-> > > @@ -314,6 +314,26 @@ static int gdsc_enable(struct generic_pm_domain *domain)
-> > >   	return 0;
-> > >   }
-> > > +static int gdsc_set_hwmode_dev(struct generic_pm_domain *domain,
-> > > +			       struct device *dev, bool enable)
-> > > +{
-> > > +	int ret = gdsc_hwctrl(domain_to_gdsc(domain), enable);
-> > > +
-> > > +	if (ret)
-> > > +		goto out;
-> > > +
-> > > +	/*
-> > > +	 * Wait for the GDSC to go through a power down and
-> > > +	 * up cycle.  In case there is a status polling going on
-> > > +	 * before the power cycle is completed it might read an
-> > > +	 * wrong status value.
-> > > +	 */
-> > > +	udelay(1);
-> > > +
-> > > +out:
-> > > +	return ret;
-> > > +}
-> > > +
-> > >   static int gdsc_disable(struct generic_pm_domain *domain)
-> > >   {
-> > >   	struct gdsc *sc = domain_to_gdsc(domain);
-> > > @@ -451,6 +471,8 @@ static int gdsc_init(struct gdsc *sc)
-> > >   		sc->pd.power_off = gdsc_disable;
-> > >   	if (!sc->pd.power_on)
-> > >   		sc->pd.power_on = gdsc_enable;
-> > > +	if (sc->flags & HW_CTRL)
-> > > +		sc->pd.set_hwmode_dev = gdsc_set_hwmode_dev;
-> We do not want to move to SW mode without consumers wanting to move to this
-> mode.
+> >>
+> >>
+> >> If we consider symmetric platforms which have SMT4 such as power10. 
+> >> we have a topology like below. multiple such MC will form DIE(PKG)
+> >>
+> >>
+> >> [0 2 4 6][1 3 5 7][8 10 12 14][9 11 13 15]
+> >> [--SMT--][--SMT--][----SMT---][---SMT----]
+> >> [--sg1--][--sg1--][---sg1----][---sg1----]
+> >> [--------------MC------------------------]
+> >>
+> >> In case of SMT4, if there is any group which has 2 or more tasks, that 
+> >> group will be marked as group_smt_balance. previously, if that group had 2
+> >> or 3 tasks, it would have been marked as group_has_spare. Since all the groups have 
+> >> SMT that means behavior would be same fully busy right? That can cause some 
+> >> corner cases. No?
+> > 
+> > You raised a good point. I was looking from SMT2
+> > perspective so group_smt_balance implies group_fully_busy.
+> > That is no longer true for SMT4.
+> > 
+> > I am thinking of the following fix on the current patch
+> > to take care of SMT4. Do you think this addresses
 > 
-> We want a new flag for the consumers wanting to move to this mode. The mode
-> in which the GDSC would be enabled would be in SW mode only.
-> +	if (sc->flags & HW_CTRL_TRIGGER) {
-> +		sc->pd.set_hwmode_dev = gdsc_set_mode;
-> +	}
+> Thanks Tim for taking a look at it again. 
+> 
+> Yes. I think this would address some of the corner cases. 
+> Any SMT4 group having 2,3,4 will have smt_balance as the group type, and busiest one 
+> is the one which has least number of idle cpu's. (same conditions as group_has_spare)
+> 
+> 
+> 
+> 
+> > concerns from you and Tobias?
+> > 
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index 294a662c9410..3fc8d3a3bd22 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -9588,6 +9588,17 @@ static bool update_sd_pick_busiest(struct lb_env *env,
+> >                 break;
+> >  
+> >         case group_smt_balance:
+> > +               /* no idle cpus on both groups handled by group_fully_busy below */
+> > +               if (sgs->idle_cpus != 0 || busiest->idle_cpus != 0) {
+> > +                       if (sgs->idle_cpus > busiest->idle_cpus)
+> > +                               return false;
+> > +                       if (sgs->idle_cpus < busiest->idle_cpus)
+> > +                               return true;
+> > +                       if (sgs->sum_nr_running <= busiest_sum_nr_running)
+> > +                               return false;
+> > +                       else
+> > +                               return true;
+> > +               }
+> > 
+> > 
+> > I will be on vacation next three weeks so my response will be slow.
+> > 
+> > Tim
+> > 
+> >>
+> 
+> Small suggestion to above code to avoid compiler warning of switch case falling
+> through and else case can be removed, since update_sd_pick_busiest by default returns true.
+> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index e5a75c76bcaa..ae364ac6f22e 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -9728,9 +9728,9 @@ static bool update_sd_pick_busiest(struct lb_env *env,
+>                                 return true;
+>                         if (sgs->sum_nr_running <= busiest->sum_nr_running)
+>                                 return false;
+> -                       else
+> -                               return true;
+>                 }
+> +               break;
 > +
-
-OK, maybe I'm missing something here.
-
-Do you suggest we have GDSCs that, even though they support HW ctrl,
-should not be controllable by the consumer?
-
-Why isn't dev_pm_genpd_set_hwmode good enough? If a consumer doesn't
-want to control it then the consumer can just skip calling the mentioned
-function.
-
-Or maybe you want this all hidden into the genpd provider?
-
+>         case group_fully_busy:
+>                 /*
+>                  * Select the fully busy group with highest avg_load. In
 > 
-> > >   	ret = pm_genpd_init(&sc->pd, NULL, !on);
-> > >   	if (ret)
 > 
-> -- 
-> Thanks & Regards,
-> Taniya Das.
+
+Can someone please send a full patch for this? I've already queued Tim's
+patches in tip/sched/core (tip-bot seems to have died somewhere last
+week, it's being worked on).
