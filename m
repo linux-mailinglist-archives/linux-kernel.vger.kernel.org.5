@@ -2,330 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3D637566E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 16:55:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4872E7566E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 16:55:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230084AbjGQOzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 10:55:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38454 "EHLO
+        id S230116AbjGQOzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 10:55:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229923AbjGQOzC (ORCPT
+        with ESMTP id S229923AbjGQOzw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 10:55:02 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD35CE60
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 07:55:00 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id 6a1803df08f44-6348a8045a2so28725166d6.1
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 07:55:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20221208.gappssmtp.com; s=20221208; t=1689605700; x=1692197700;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=okcqMdVJPvttpfaCtDyFAC5JgGUGiUE8bqJ2YnmapIA=;
-        b=dSMjRG1xXeIpAWJIRFcUGnqRpFCyi9zPVPWb3/NjxOC+wh872BTFzO9juIQqz8Hlny
-         e6KXjPaDYCldVv5v9fVLoG/unNJKuGnz88FzGoIZzIv7LFiJ476+MzlOZcVcaF/Bj4p1
-         1dYbecf6chhcZ89kTIu5E67wCo98UkCokexncUG0OqaWOsdBbrXan3GOskLmTsiL8ahK
-         oldztOGZdzTfc6RqaUwWOtIrSxjxTk+WCweI8dfpAtAuzHierUhQ7apykPjI28U+voZS
-         Vk0uzWNjRSe5S6b2YriilOt+ZBtphWEfQbEeoBoPgsWIilwdOiUB+BA2t40C5M0ZNLIG
-         RECQ==
+        Mon, 17 Jul 2023 10:55:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47C3B10C0
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 07:55:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689605708;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=p7ysILThYmwPo2e7W26OOfi15jGsDbCppOEO86p+TmM=;
+        b=OYH1wHxtcW3ILRa2V7kE8KeJOKN69eJpTRmMrUHgRbfLV21ePq5wfkOGcxJqNoUVAkDFup
+        YrJc5ACbmp7FYQOpUS3q85lxpYO31SWSdFbSMMySGuNmWBJ1d8kxc8QpOvTcr4b0P9/KJK
+        KLOMlnR/oqLrHZjFQ9Y0Fo+GoS51gNg=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-231-lRnnD6DgNeW3qEzOhh1TBQ-1; Mon, 17 Jul 2023 10:55:06 -0400
+X-MC-Unique: lRnnD6DgNeW3qEzOhh1TBQ-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-3fc07d4c2f4so27081845e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 07:55:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689605700; x=1692197700;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=okcqMdVJPvttpfaCtDyFAC5JgGUGiUE8bqJ2YnmapIA=;
-        b=lYxihSywtceHjfZKu+xeCx9lz7nlebtrMjBvSAbj4oBF6TGgFg0wSd4DfnNLnmpjeH
-         6BUlOhAA9xLDhOoaW5pRoqpRSAssdvYmaoHBoAYis5C8V2zh4nTyXrHu9zOrV33EePW5
-         LZ01CrTN1CGCNw38vRQB3izJBAn4+eYYyFe9DjeGCmyzbI8XPeIJphH0MaK+1X3uFvfE
-         GPGgYDAMGbS2SlVIeQ4RAYLMqt2slTCN68q/rSoaJ4HT3sQVNu/+tV5fJvS9FqE7/abg
-         uO1B9be0G2a5AnHQbAcY1OHs+BaNaofWckoE/OqzZG+dvFMYUd6C1LZzUA8Lcv0tWoYt
-         i7lQ==
-X-Gm-Message-State: ABy/qLbNXJaybJNj2q25Wkm7z/gaN+g5k2B3KQGRBGC319AxjMcQQNii
-        osu4Oqzp3Puba3a3b6stdI8xCA==
-X-Google-Smtp-Source: APBJJlGij9+chSVFLc0V26YeVKRUuyjkGAKuN0uayk/MIBlJXxcw+FTvYkNn34lWPL82JnPoEL4OSA==
-X-Received: by 2002:a0c:f2c9:0:b0:62d:ef66:ff1c with SMTP id c9-20020a0cf2c9000000b0062def66ff1cmr9702016qvm.24.1689605699760;
-        Mon, 17 Jul 2023 07:54:59 -0700 (PDT)
-Received: from nicolas-tpx395.localdomain ([2606:6d00:11:83d4::7a9])
-        by smtp.gmail.com with ESMTPSA id p5-20020a0ce185000000b00631ecb1052esm6429441qvl.74.2023.07.17.07.54.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jul 2023 07:54:59 -0700 (PDT)
-Message-ID: <a40c81a39de214c756a36fde535bfc775d82b922.camel@ndufresne.ca>
-Subject: Re: [PATCH] media: amphion: fix some issues reported by coverity
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Ming Qian <ming.qian@nxp.com>, mchehab@kernel.org,
-        hverkuil-cisco@xs4all.nl
-Cc:     shawnguo@kernel.org, robh+dt@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        xiahong.bao@nxp.com, eagle.zhou@nxp.com, tao.jiang_2@nxp.com,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Date:   Mon, 17 Jul 2023 10:54:58 -0400
-In-Reply-To: <20230717074006.22372-1-ming.qian@nxp.com>
-References: <20230717074006.22372-1-ming.qian@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        d=1e100.net; s=20221208; t=1689605702; x=1692197702;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=p7ysILThYmwPo2e7W26OOfi15jGsDbCppOEO86p+TmM=;
+        b=jpeITQxF2dobl9YDinkQlRFI63saa1xqGf/LdIJQMWkY9we1B2MievVf7PcGZiQwcP
+         jxqaxW339eKbRbeMIE9Z6Gb+HhXDCarNsOyhVHg1rwGOR+a3UOo561RR1VUir9oJTC9p
+         IdVIDuxsxjiZ/9OWOMp8wUj3HXmOGsaoNdEAiJCoV8s+cawrmsHbi16PJAVQV+uF6T4N
+         XRVJn3nhe43pe/hDiw04ei4vMk8ieQQpj869y5sBI6rAXP2fshsPDV/Eg5hMjuIMtwIx
+         Rf4qoVODu1uv0eH/EWQlmOWbtXDO/80sr7gUfjcRK4R2XnR3EaiuB3EmY3sZ+cecU5tu
+         zpKw==
+X-Gm-Message-State: ABy/qLaadbiI0ToQ8EOc2yCNv3Yy758NOdVn2TDdNbTidP3eZRGJa+gX
+        WCa1kUGqsmhyPC2DtaCERQg6eyibPti78oCwORm+/cxPC1h/HRiBOfSatuSGTbXCJ/jfoP5YJjU
+        1Kmt+5Y5NAfVeUzlIfX5h+1rf
+X-Received: by 2002:a05:600c:286:b0:3fb:a1d9:ede8 with SMTP id 6-20020a05600c028600b003fba1d9ede8mr10441872wmk.10.1689605702634;
+        Mon, 17 Jul 2023 07:55:02 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGc8KK/Y8awGtA4287mNNnPwJsKgJsu1+GjznfksXzwtT/LrPcTQbk8rkbPxRyWx63N/CBNTw==
+X-Received: by 2002:a05:600c:286:b0:3fb:a1d9:ede8 with SMTP id 6-20020a05600c028600b003fba1d9ede8mr10441856wmk.10.1689605702205;
+        Mon, 17 Jul 2023 07:55:02 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c735:400:2501:5a2e:13c6:88da? (p200300cbc735040025015a2e13c688da.dip0.t-ipconnect.de. [2003:cb:c735:400:2501:5a2e:13c6:88da])
+        by smtp.gmail.com with ESMTPSA id v3-20020a05600c470300b003f7f475c3bcsm15571413wmo.1.2023.07.17.07.55.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 Jul 2023 07:55:01 -0700 (PDT)
+Message-ID: <eae81a83-f8df-3619-612c-b74282da1f0b@redhat.com>
+Date:   Mon, 17 Jul 2023 16:55:00 +0200
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v3 3/4] mm: FLEXIBLE_THP for improved performance
+Content-Language: en-US
+To:     Ryan Roberts <ryan.roberts@arm.com>, Yu Zhao <yuzhao@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20230714160407.4142030-1-ryan.roberts@arm.com>
+ <20230714161733.4144503-3-ryan.roberts@arm.com>
+ <CAOUHufacQ8Vx9WQ3BVjGGWKGhcRkL7u79UMX=O7oePDwZ0iNxw@mail.gmail.com>
+ <82c934af-a777-3437-8d87-ff453ad94bfd@redhat.com>
+ <2c4b2a41-1c98-0782-ac30-80e65bdb2b0c@arm.com>
+ <2e7d5692-8ba7-1e56-a03f-449f1671b100@redhat.com>
+ <4f89d7bf-2fe2-fa53-c7ca-e4f152ca0edf@arm.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <4f89d7bf-2fe2-fa53-c7ca-e4f152ca0edf@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ming,
+On 17.07.23 16:47, Ryan Roberts wrote:
+> On 17/07/2023 14:56, David Hildenbrand wrote:
+>> On 17.07.23 15:20, Ryan Roberts wrote:
+>>> On 17/07/2023 14:06, David Hildenbrand wrote:
+>>>> On 14.07.23 19:17, Yu Zhao wrote:
+>>>>> On Fri, Jul 14, 2023 at 10:17 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>>>>>
+>>>>>> Introduce FLEXIBLE_THP feature, which allows anonymous memory to be
+>>>>>> allocated in large folios of a determined order. All pages of the large
+>>>>>> folio are pte-mapped during the same page fault, significantly reducing
+>>>>>> the number of page faults. The number of per-page operations (e.g. ref
+>>>>>> counting, rmap management lru list management) are also significantly
+>>>>>> reduced since those ops now become per-folio.
+>>>>>>
+>>>>>> The new behaviour is hidden behind the new FLEXIBLE_THP Kconfig, which
+>>>>>> defaults to disabled for now; The long term aim is for this to defaut to
+>>>>>> enabled, but there are some risks around internal fragmentation that
+>>>>>> need to be better understood first.
+>>>>>>
+>>>>>> When enabled, the folio order is determined as such: For a vma, process
+>>>>>> or system that has explicitly disabled THP, we continue to allocate
+>>>>>> order-0. THP is most likely disabled to avoid any possible internal
+>>>>>> fragmentation so we honour that request.
+>>>>>>
+>>>>>> Otherwise, the return value of arch_wants_pte_order() is used. For vmas
+>>>>>> that have not explicitly opted-in to use transparent hugepages (e.g.
+>>>>>> where thp=madvise and the vma does not have MADV_HUGEPAGE), then
+>>>>>> arch_wants_pte_order() is limited by the new cmdline parameter,
+>>>>>> `flexthp_unhinted_max`. This allows for a performance boost without
+>>>>>> requiring any explicit opt-in from the workload while allowing the
+>>>>>> sysadmin to tune between performance and internal fragmentation.
+>>>>>>
+>>>>>> arch_wants_pte_order() can be overridden by the architecture if desired.
+>>>>>> Some architectures (e.g. arm64) can coalsece TLB entries if a contiguous
+>>>>>> set of ptes map physically contigious, naturally aligned memory, so this
+>>>>>> mechanism allows the architecture to optimize as required.
+>>>>>>
+>>>>>> If the preferred order can't be used (e.g. because the folio would
+>>>>>> breach the bounds of the vma, or because ptes in the region are already
+>>>>>> mapped) then we fall back to a suitable lower order; first
+>>>>>> PAGE_ALLOC_COSTLY_ORDER, then order-0.
+>>>>>>
+>>>>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+>>>>>> ---
+>>>>>>     .../admin-guide/kernel-parameters.txt         |  10 +
+>>>>>>     mm/Kconfig                                    |  10 +
+>>>>>>     mm/memory.c                                   | 187 ++++++++++++++++--
+>>>>>>     3 files changed, 190 insertions(+), 17 deletions(-)
+>>>>>>
+>>>>>> diff --git a/Documentation/admin-guide/kernel-parameters.txt
+>>>>>> b/Documentation/admin-guide/kernel-parameters.txt
+>>>>>> index a1457995fd41..405d624e2191 100644
+>>>>>> --- a/Documentation/admin-guide/kernel-parameters.txt
+>>>>>> +++ b/Documentation/admin-guide/kernel-parameters.txt
+>>>>>> @@ -1497,6 +1497,16 @@
+>>>>>>                            See Documentation/admin-guide/sysctl/net.rst for
+>>>>>>                            fb_tunnels_only_for_init_ns
+>>>>>>
+>>>>>> +       flexthp_unhinted_max=
+>>>>>> +                       [KNL] Requires CONFIG_FLEXIBLE_THP enabled. The
+>>>>>> maximum
+>>>>>> +                       folio size that will be allocated for an anonymous vma
+>>>>>> +                       that has neither explicitly opted in nor out of using
+>>>>>> +                       transparent hugepages. The size must be a
+>>>>>> power-of-2 in
+>>>>>> +                       the range [PAGE_SIZE, PMD_SIZE). A larger size
+>>>>>> improves
+>>>>>> +                       performance by reducing page faults, while a smaller
+>>>>>> +                       size reduces internal fragmentation. Default: max(64K,
+>>>>>> +                       PAGE_SIZE). Format: size[KMG].
+>>>>>> +
+>>>>>
+>>>>> Let's split this parameter into a separate patch.
+>>>>>
+>>>>
+>>>> Just a general comment after stumbling over patch #2, let's not start splitting
+>>>> patches into things that don't make any sense on their own; that just makes
+>>>> review a lot harder.
+>>>
+>>> ACK
+>>>
+>>>>
+>>>> For this case here, I'd suggest first adding the general infrastructure and then
+>>>> adding tunables we want to have on top.
+>>>
+>>> OK, so 1 patch for the main infrastructure, then a patch to disable for
+>>> MADV_NOHUGEPAGE and friends, then a further patch to set flexthp_unhinted_max
+>>> via a sysctl?
+>>
+>> MADV_NOHUGEPAGE handling for me falls under the category "required for
+>> correctness to not break existing workloads" and has to be there initially.
+>>
+>> Anything that is rather a performance tunable (e.g., a sysctl to optimize) can
+>> be added on top and discussed separately.>
+>> At least IMHO :)
+>>
+>>>
+>>>>
+>>>> I agree that toggling that at runtime (for example via sysfs as raised by me
+>>>> previously) would be nicer.
+>>>
+>>> OK, I clearly misunderstood, I thought you were requesting a boot parameter.
+>>
+>> Oh, sorry about that. I wanted to actually express
+>> "/sys/kernel/mm/transparent_hugepage/" sysctls where we can toggle that later at
+>> runtime as well.
+>>
+>>> What's the ABI compat guarrantee for sysctls? I assumed that for a boot
+>>> parameter it would be easier to remove in future if we wanted, but for sysctl,
+>>> its there forever?
+>>
+>> sysctl are hard/impossible to remove, yes. So we better make sure what we add
+>> has clear semantics.
+>>
+>> If we ever want some real auto-tunable mode (and can actually implement it
+>> without harming performance; and I am skeptical), we might want to allow for
+>> setting such a parameter to "auto", for example.
+>>
+>>>
+>>> Also, how do you feel about the naming and behavior of the parameter?
+>>
+>> Very good question. "flexthp_unhinted_max" naming is a bit suboptimal.
+>>
+>> For example, I'm not so sure if we should expose the feature to user space as
+>> "flexthp" at all. I think we should find a clearer feature name to begin with.
+>>
+>> ... maybe we can initially get away with dropping that parameter and default to
+>> something reasonably small (i.e., 64k as you have above)?
+> 
+> That would certainly get my vote. But it was you who was arguing for a tunable
+> previously ;-). I propose we use the following as the "unhinted ceiling" for
 
-Le lundi 17 juillet 2023 =C3=A0 15:40 +0800, Ming Qian a =C3=A9crit=C2=A0:
-> CHECKED_RETURN: 4 case
-> REVERSE_INULL: 2 case
-> UNINIT: 6 case
-> UNUSED_VALUE: 1 case
->=20
-> Fixes: 9f599f351e86 ("media: amphion: add vpu core driver")
-> Signed-off-by: Ming Qian <ming.qian@nxp.com>
-> ---
->  drivers/media/platform/amphion/vdec.c     |  5 ++++-
->  drivers/media/platform/amphion/venc.c     |  6 ++++--
->  drivers/media/platform/amphion/vpu_cmds.c |  5 +++--
->  drivers/media/platform/amphion/vpu_core.c |  2 ++
->  drivers/media/platform/amphion/vpu_dbg.c  | 11 +++++++++--
->  drivers/media/platform/amphion/vpu_msgs.c | 12 ++++++------
->  6 files changed, 28 insertions(+), 13 deletions(-)
->=20
-> diff --git a/drivers/media/platform/amphion/vdec.c b/drivers/media/platfo=
-rm/amphion/vdec.c
-> index eeb2ef72df5b..133d77d1ea0c 100644
-> --- a/drivers/media/platform/amphion/vdec.c
-> +++ b/drivers/media/platform/amphion/vdec.c
-> @@ -1019,6 +1019,7 @@ static int vdec_response_frame_abnormal(struct vpu_=
-inst *inst)
->  {
->  	struct vdec_t *vdec =3D inst->priv;
->  	struct vpu_fs_info info;
-> +	int ret;
-> =20
->  	if (!vdec->req_frame_count)
->  		return 0;
-> @@ -1026,7 +1027,9 @@ static int vdec_response_frame_abnormal(struct vpu_=
-inst *inst)
->  	memset(&info, 0, sizeof(info));
->  	info.type =3D MEM_RES_FRAME;
->  	info.tag =3D vdec->seq_tag + 0xf0;
-> -	vpu_session_alloc_fs(inst, &info);
-> +	ret =3D vpu_session_alloc_fs(inst, &info);
-> +	if (ret)
-> +		return ret;
->  	vdec->req_frame_count--;
-> =20
->  	return 0;
-> diff --git a/drivers/media/platform/amphion/venc.c b/drivers/media/platfo=
-rm/amphion/venc.c
-> index 58480e2755ec..4eb57d793a9c 100644
-> --- a/drivers/media/platform/amphion/venc.c
-> +++ b/drivers/media/platform/amphion/venc.c
-> @@ -268,7 +268,7 @@ static int venc_g_parm(struct file *file, void *fh, s=
-truct v4l2_streamparm *parm
->  {
->  	struct vpu_inst *inst =3D to_inst(file);
->  	struct venc_t *venc =3D inst->priv;
-> -	struct v4l2_fract *timeperframe =3D &parm->parm.capture.timeperframe;
-> +	struct v4l2_fract *timeperframe;
+Yes, I still think having tunables makes sense.
 
-Could be just me, but I feel I'm missing some context to understand why thi=
-s
-change. Perhaps the commit message could be improved ?
 
-All other changes looks like improvement to me, so with a good explanation =
-on
-this one (and the change seems to be equivalent), you can add:
+But it's certainly something to add separately, especially if it makes 
+your work here easier.
 
-Reviewed-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+As long as it can be disabled, good enough for me for the initial version.
 
-> =20
->  	if (!parm)
->  		return -EINVAL;
-> @@ -279,6 +279,7 @@ static int venc_g_parm(struct file *file, void *fh, s=
-truct v4l2_streamparm *parm
->  	if (!vpu_helper_check_type(inst, parm->type))
->  		return -EINVAL;
-> =20
-> +	timeperframe =3D &parm->parm.capture.timeperframe;
->  	parm->parm.capture.capability =3D V4L2_CAP_TIMEPERFRAME;
->  	parm->parm.capture.readbuffers =3D 0;
->  	timeperframe->numerator =3D venc->params.frame_rate.numerator;
-> @@ -291,7 +292,7 @@ static int venc_s_parm(struct file *file, void *fh, s=
-truct v4l2_streamparm *parm
->  {
->  	struct vpu_inst *inst =3D to_inst(file);
->  	struct venc_t *venc =3D inst->priv;
-> -	struct v4l2_fract *timeperframe =3D &parm->parm.capture.timeperframe;
-> +	struct v4l2_fract *timeperframe;
->  	unsigned long n, d;
-> =20
->  	if (!parm)
-> @@ -303,6 +304,7 @@ static int venc_s_parm(struct file *file, void *fh, s=
-truct v4l2_streamparm *parm
->  	if (!vpu_helper_check_type(inst, parm->type))
->  		return -EINVAL;
-> =20
-> +	timeperframe =3D &parm->parm.capture.timeperframe;
->  	if (!timeperframe->numerator)
->  		timeperframe->numerator =3D venc->params.frame_rate.numerator;
->  	if (!timeperframe->denominator)
-> diff --git a/drivers/media/platform/amphion/vpu_cmds.c b/drivers/media/pl=
-atform/amphion/vpu_cmds.c
-> index 647d94554fb5..235b71398d40 100644
-> --- a/drivers/media/platform/amphion/vpu_cmds.c
-> +++ b/drivers/media/platform/amphion/vpu_cmds.c
-> @@ -306,7 +306,8 @@ static void vpu_core_keep_active(struct vpu_core *cor=
-e)
-> =20
->  	dev_dbg(core->dev, "try to wake up\n");
->  	mutex_lock(&core->cmd_lock);
-> -	vpu_cmd_send(core, &pkt);
-> +	if (vpu_cmd_send(core, &pkt))
-> +		dev_err(core->dev, "fail to keep active\n");
->  	mutex_unlock(&core->cmd_lock);
->  }
-> =20
-> @@ -314,7 +315,7 @@ static int vpu_session_send_cmd(struct vpu_inst *inst=
-, u32 id, void *data)
->  {
->  	unsigned long key;
->  	int sync =3D false;
-> -	int ret =3D -EINVAL;
-> +	int ret;
-> =20
->  	if (inst->id < 0)
->  		return -EINVAL;
-> diff --git a/drivers/media/platform/amphion/vpu_core.c b/drivers/media/pl=
-atform/amphion/vpu_core.c
-> index 43d85a54268b..6f054700d5db 100644
-> --- a/drivers/media/platform/amphion/vpu_core.c
-> +++ b/drivers/media/platform/amphion/vpu_core.c
-> @@ -88,6 +88,8 @@ static int vpu_core_boot_done(struct vpu_core *core)
-> =20
->  		core->supported_instance_count =3D min(core->supported_instance_count,=
- count);
->  	}
-> +	if (core->supported_instance_count >=3D BITS_PER_TYPE(core->instance_ma=
-sk))
-> +		core->supported_instance_count =3D BITS_PER_TYPE(core->instance_mask);
->  	core->fw_version =3D fw_version;
->  	vpu_core_set_state(core, VPU_CORE_ACTIVE);
-> =20
-> diff --git a/drivers/media/platform/amphion/vpu_dbg.c b/drivers/media/pla=
-tform/amphion/vpu_dbg.c
-> index adc523b95061..982c2c777484 100644
-> --- a/drivers/media/platform/amphion/vpu_dbg.c
-> +++ b/drivers/media/platform/amphion/vpu_dbg.c
-> @@ -50,6 +50,13 @@ static char *vpu_stat_name[] =3D {
->  	[VPU_BUF_STATE_ERROR] =3D "error",
->  };
-> =20
-> +static inline const char *to_vpu_stat_name(int state)
-> +{
-> +	if (state <=3D VPU_BUF_STATE_ERROR)
-> +		return vpu_stat_name[state];
-> +	return "unknown";
-> +}
-> +
->  static int vpu_dbg_instance(struct seq_file *s, void *data)
->  {
->  	struct vpu_inst *inst =3D s->private;
-> @@ -141,7 +148,7 @@ static int vpu_dbg_instance(struct seq_file *s, void =
-*data)
->  		num =3D scnprintf(str, sizeof(str),
->  				"output [%2d] state =3D %10s, %8s\n",
->  				i, vb2_stat_name[vb->state],
-> -				vpu_stat_name[vpu_get_buffer_state(vbuf)]);
-> +				to_vpu_stat_name(vpu_get_buffer_state(vbuf)));
->  		if (seq_write(s, str, num))
->  			return 0;
->  	}
-> @@ -156,7 +163,7 @@ static int vpu_dbg_instance(struct seq_file *s, void =
-*data)
->  		num =3D scnprintf(str, sizeof(str),
->  				"capture[%2d] state =3D %10s, %8s\n",
->  				i, vb2_stat_name[vb->state],
-> -				vpu_stat_name[vpu_get_buffer_state(vbuf)]);
-> +				to_vpu_stat_name(vpu_get_buffer_state(vbuf)));
->  		if (seq_write(s, str, num))
->  			return 0;
->  	}
-> diff --git a/drivers/media/platform/amphion/vpu_msgs.c b/drivers/media/pl=
-atform/amphion/vpu_msgs.c
-> index f9eb488d1b5e..d0ead051f7d1 100644
-> --- a/drivers/media/platform/amphion/vpu_msgs.c
-> +++ b/drivers/media/platform/amphion/vpu_msgs.c
-> @@ -32,7 +32,7 @@ static void vpu_session_handle_start_done(struct vpu_in=
-st *inst, struct vpu_rpc_
-> =20
->  static void vpu_session_handle_mem_request(struct vpu_inst *inst, struct=
- vpu_rpc_event *pkt)
->  {
-> -	struct vpu_pkt_mem_req_data req_data;
-> +	struct vpu_pkt_mem_req_data req_data =3D { 0 };
-> =20
->  	vpu_iface_unpack_msg_data(inst->core, pkt, (void *)&req_data);
->  	vpu_trace(inst->dev, "[%d] %d:%d %d:%d %d:%d\n",
-> @@ -80,7 +80,7 @@ static void vpu_session_handle_resolution_change(struct=
- vpu_inst *inst, struct v
-> =20
->  static void vpu_session_handle_enc_frame_done(struct vpu_inst *inst, str=
-uct vpu_rpc_event *pkt)
->  {
-> -	struct vpu_enc_pic_info info;
-> +	struct vpu_enc_pic_info info =3D { 0 };
-> =20
->  	vpu_iface_unpack_msg_data(inst->core, pkt, (void *)&info);
->  	dev_dbg(inst->dev, "[%d] frame id =3D %d, wptr =3D 0x%x, size =3D %d\n"=
-,
-> @@ -90,7 +90,7 @@ static void vpu_session_handle_enc_frame_done(struct vp=
-u_inst *inst, struct vpu_
-> =20
->  static void vpu_session_handle_frame_request(struct vpu_inst *inst, stru=
-ct vpu_rpc_event *pkt)
->  {
-> -	struct vpu_fs_info fs;
-> +	struct vpu_fs_info fs =3D { 0 };
-> =20
->  	vpu_iface_unpack_msg_data(inst->core, pkt, &fs);
->  	call_void_vop(inst, event_notify, VPU_MSG_ID_FRAME_REQ, &fs);
-> @@ -107,7 +107,7 @@ static void vpu_session_handle_frame_release(struct v=
-pu_inst *inst, struct vpu_r
->  		info.type =3D inst->out_format.type;
->  		call_void_vop(inst, buf_done, &info);
->  	} else if (inst->core->type =3D=3D VPU_CORE_TYPE_DEC) {
-> -		struct vpu_fs_info fs;
-> +		struct vpu_fs_info fs =3D { 0 };
-> =20
->  		vpu_iface_unpack_msg_data(inst->core, pkt, &fs);
->  		call_void_vop(inst, event_notify, VPU_MSG_ID_FRAME_RELEASE, &fs);
-> @@ -122,7 +122,7 @@ static void vpu_session_handle_input_done(struct vpu_=
-inst *inst, struct vpu_rpc_
-> =20
->  static void vpu_session_handle_pic_decoded(struct vpu_inst *inst, struct=
- vpu_rpc_event *pkt)
->  {
-> -	struct vpu_dec_pic_info info;
-> +	struct vpu_dec_pic_info info =3D { 0 };
-> =20
->  	vpu_iface_unpack_msg_data(inst->core, pkt, (void *)&info);
->  	call_void_vop(inst, get_one_frame, &info);
-> @@ -130,7 +130,7 @@ static void vpu_session_handle_pic_decoded(struct vpu=
-_inst *inst, struct vpu_rpc
-> =20
->  static void vpu_session_handle_pic_done(struct vpu_inst *inst, struct vp=
-u_rpc_event *pkt)
->  {
-> -	struct vpu_dec_pic_info info;
-> +	struct vpu_dec_pic_info info =3D { 0 };
->  	struct vpu_frame_info frame;
-> =20
->  	memset(&frame, 0, sizeof(frame));
+-- 
+Cheers,
+
+David / dhildenb
 
