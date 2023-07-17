@@ -2,271 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 872257567D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 17:25:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA8217567DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 17:26:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232100AbjGQPZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 11:25:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57724 "EHLO
+        id S230285AbjGQP0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 11:26:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231861AbjGQPYx (ORCPT
+        with ESMTP id S231671AbjGQP0Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 11:24:53 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57B8E1735;
-        Mon, 17 Jul 2023 08:24:34 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 893F0610F4;
-        Mon, 17 Jul 2023 15:24:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ECED0C433C8;
-        Mon, 17 Jul 2023 15:24:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689607452;
-        bh=HNw7NmAJWJoLfuOb7lcwr0tG/Yg91E6W1MXYrCfkES8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BUWZzB8ih/Pn17MNMbs4bLT6F3qq7F/IIIg66MNQnM/DH93rG0K9UG221F0zupoZZ
-         O8oW/qK3mGyNFuNNcZkDuie4iQeVW++xBPymTfa82sLjllXjEsGcNw5l2PsHu/PRvx
-         wF05Fc0Ew3ZII0weMaCacrFY2FKt74DBReB0ND1/u87o8reC3fXiDsXcraOkeRYLGK
-         GqGnDPhFHYD1elbCbub6fi9URBamkp6az5E8dpcjqCzL+r13FIzSxRRUbdxMHXsKyJ
-         QnfxwukYukf9m52v9zeqdsOAM7niAy1zWZ0hxrqZEeaI5gtH3xyW8K9mb1kbkFMScI
-         VYQVMZlWdIX6w==
-From:   "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To:     linux-trace-kernel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        mhiramat@kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>
-Subject: [PATCH v2 5/9] tracing/probes: Support BTF field access from $retval
-Date:   Tue, 18 Jul 2023 00:24:07 +0900
-Message-Id: <168960744719.34107.443329109565685838.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <168960739768.34107.15145201749042174448.stgit@devnote2>
-References: <168960739768.34107.15145201749042174448.stgit@devnote2>
-User-Agent: StGit/0.19
+        Mon, 17 Jul 2023 11:26:16 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D9FFF30D7
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 08:25:24 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.43])
+        by gateway (Coremail) with SMTP id _____8CxtPBTXbVkDv4FAA--.16296S3;
+        Mon, 17 Jul 2023 23:25:07 +0800 (CST)
+Received: from [10.20.42.43] (unknown [10.20.42.43])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxB81NXbVkeaUxAA--.64669S3;
+        Mon, 17 Jul 2023 23:25:05 +0800 (CST)
+Message-ID: <6a92cbb7-e98b-e93c-6e62-ceddd0dfbc06@loongson.cn>
+Date:   Mon, 17 Jul 2023 23:24:13 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 00/11] drm: kunit: Switch to kunit actions
+Content-Language: en-US
+To:     Maxime Ripard <mripard@kernel.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Emma Anholt <emma@anholt.net>
+Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+References: <20230710-kms-kunit-actions-rework-v1-0-722c58d72c72@kernel.org>
+From:   suijingfeng <suijingfeng@loongson.cn>
+In-Reply-To: <20230710-kms-kunit-actions-rework-v1-0-722c58d72c72@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf8BxB81NXbVkeaUxAA--.64669S3
+X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBj93XoW7tr15Ww45XF4xCryruFW7Awc_yoW8tFyrpr
+        43JFy3trW8tFsxJwnxuw40y3Wfua1kt34Svr97Zw15Ars0yF9xArn3Kw15WFW5GrWrZrn2
+        vw1ftry3C3WDAFXCm3ZEXasCq-sJn29KB7ZKAUJUUUUx529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUPSb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+        xVWxJr0_GcWln4kS14v26r126r1DM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12
+        xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r12
+        6r1DMcIj6I8E87Iv67AKxVWxJVW8Jr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
+        8JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vI
+        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_JF0_Jw1lx2IqxVAqx4xG67
+        AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIY
+        rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14
+        v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWxJVW8
+        Jr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU8oGQD
+        UUUUU==
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Hi,
 
-Support BTF argument on '$retval' for function return events including
-kretprobe and fprobe for accessing the return value.
-This also allows user to access its fields if the return value is a
-pointer of a data structure.
+On 2023/7/10 15:47, Maxime Ripard wrote:
+> Hi,
+>
+> Since v6.5-rc1, kunit gained a devm/drmm-like mechanism that makes tests
+> resources much easier to cleanup.
+>
+> This series converts the existing tests to use those new actions were
+> relevant.
 
-E.g.
- # echo 'f getname_flags%return +0($retval->name):string' \
-   > dynamic_events
- # echo 1 > events/fprobes/getname_flags__exit/enable
- # ls > /dev/null
- # head -n 40 trace | tail
-              ls-87      [000] ...1.  8067.616101: getname_flags__exit: (vfs_fstatat+0x3c/0x70 <- getname_flags) arg1="./function_profile_enabled"
-              ls-87      [000] ...1.  8067.616108: getname_flags__exit: (vfs_fstatat+0x3c/0x70 <- getname_flags) arg1="./trace_stat"
-              ls-87      [000] ...1.  8067.616115: getname_flags__exit: (vfs_fstatat+0x3c/0x70 <- getname_flags) arg1="./set_graph_notrace"
-              ls-87      [000] ...1.  8067.616122: getname_flags__exit: (vfs_fstatat+0x3c/0x70 <- getname_flags) arg1="./set_graph_function"
-              ls-87      [000] ...1.  8067.616129: getname_flags__exit: (vfs_fstatat+0x3c/0x70 <- getname_flags) arg1="./set_ftrace_notrace"
-              ls-87      [000] ...1.  8067.616135: getname_flags__exit: (vfs_fstatat+0x3c/0x70 <- getname_flags) arg1="./set_ftrace_filter"
-              ls-87      [000] ...1.  8067.616143: getname_flags__exit: (vfs_fstatat+0x3c/0x70 <- getname_flags) arg1="./touched_functions"
-              ls-87      [000] ...1.  8067.616237: getname_flags__exit: (vfs_fstatat+0x3c/0x70 <- getname_flags) arg1="./enabled_functions"
-              ls-87      [000] ...1.  8067.616245: getname_flags__exit: (vfs_fstatat+0x3c/0x70 <- getname_flags) arg1="./available_filter_functions"
-              ls-87      [000] ...1.  8067.616253: getname_flags__exit: (vfs_fstatat+0x3c/0x70 <- getname_flags) arg1="./set_ftrace_notrace_pid"
+Is the word 'were' here means that 'where' relevant ?
+
+Or it is means that it were relevant, after applied you patch it is not 
+relevant anymore ?
+
+> Let me know what you think,
+> Maxime
+>
+> Signed-off-by: Maxime Ripard <mripard@kernel.org>
+> ---
+> Maxime Ripard (11):
+>        drm/tests: helpers: Switch to kunit actions
+>        drm/tests: client-modeset: Remove call to drm_kunit_helper_free_device()
+>        drm/tests: modes: Remove call to drm_kunit_helper_free_device()
+>        drm/tests: probe-helper: Remove call to drm_kunit_helper_free_device()
+>        drm/tests: helpers: Create an helper to allocate a locking ctx
+>        drm/tests: helpers: Create an helper to allocate an atomic state
+
+a helper or an helper ?
+
+Should this two patch be re-titled as following ?
+
+I search it on the internet[1], mostly using a helper.
 
 
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
----
- Changes in v2:
-  - Use '$retval' instead of 'retval' because it is confusing.
----
- kernel/trace/trace_probe.c |   98 +++++++++++++++++---------------------------
- 1 file changed, 37 insertions(+), 61 deletions(-)
+       drm/tests: helpers: Create a helper to allocate a locking ctx
+       drm/tests: helpers: Create a helper to allocate an atomic state
 
-diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
-index dd646d35637d..4442ff9c2728 100644
---- a/kernel/trace/trace_probe.c
-+++ b/kernel/trace/trace_probe.c
-@@ -536,6 +536,22 @@ static int parse_btf_arg(char *varname,
- 		return -EOPNOTSUPP;
- 	}
- 
-+	if (ctx->flags & TPARG_FL_RETURN) {
-+		if (strcmp(varname, "$retval") != 0) {
-+			trace_probe_log_err(ctx->offset, NO_BTFARG);
-+			return -ENOENT;
-+		}
-+		/* Check whether the function return type is not void */
-+		type = btf_find_func_proto(btf, ctx->funcname);
-+		if (!IS_ERR_OR_NULL(type) && type->type == 0) {
-+			trace_probe_log_err(ctx->offset, NO_RETVAL);
-+			return -ENOENT;
-+		}
-+		code->op = FETCH_OP_RETVAL;
-+		tid = type->type;
-+		goto found;
-+	}
-+
- 	if (!ctx->params) {
- 		params = find_btf_func_param(ctx->funcname, &ctx->nr_params,
- 					     ctx->flags & TPARG_FL_TPOINT);
-@@ -556,7 +572,6 @@ static int parse_btf_arg(char *varname,
- 				code->param = i + 1;
- 			else
- 				code->param = i;
--
- 			tid = params[i].type;
- 			goto found;
- 		}
-@@ -581,7 +596,7 @@ static int parse_btf_arg(char *varname,
- 	return 0;
- }
- 
--static const struct fetch_type *parse_btf_arg_type(
-+static const struct fetch_type *find_fetch_type_from_btf_type(
- 					struct traceprobe_parse_context *ctx)
- {
- 	struct btf *btf = traceprobe_get_btf();
-@@ -593,26 +608,6 @@ static const struct fetch_type *parse_btf_arg_type(
- 	return find_fetch_type(typestr, ctx->flags);
- }
- 
--static const struct fetch_type *parse_btf_retval_type(
--					struct traceprobe_parse_context *ctx)
--{
--	struct btf *btf = traceprobe_get_btf();
--	const char *typestr = NULL;
--	const struct btf_type *type;
--	s32 tid;
--
--	if (btf && ctx->funcname) {
--		type = btf_find_func_proto(btf, ctx->funcname);
--		if (!IS_ERR_OR_NULL(type)) {
--			type = btf_type_skip_modifiers(btf, type->type, &tid);
--			if (!IS_ERR_OR_NULL(type))
--				typestr = fetch_type_from_btf_type(btf, type, ctx);
--		}
--	}
--
--	return find_fetch_type(typestr, ctx->flags);
--}
--
- static int parse_btf_bitfield(struct fetch_insn **pcode,
- 			      struct traceprobe_parse_context *ctx)
- {
-@@ -635,20 +630,6 @@ static int parse_btf_bitfield(struct fetch_insn **pcode,
- 	return 0;
- }
- 
--static bool is_btf_retval_void(const char *funcname)
--{
--	struct btf *btf = traceprobe_get_btf();
--	const struct btf_type *t;
--
--	if (!btf)
--		return false;
--
--	t = btf_find_func_proto(btf, funcname);
--	if (IS_ERR_OR_NULL(t))
--		return false;
--
--	return t->type == 0;
--}
- #else
- static struct btf *traceprobe_get_btf(void)
- {
-@@ -676,24 +657,23 @@ static int parse_btf_bitfield(struct fetch_insn **pcode,
- 	return -EOPNOTSUPP;
- }
- 
--#define parse_btf_arg_type(ctx)		\
--	find_fetch_type(NULL, ctx->flags)
--
--#define parse_btf_retval_type(ctx)		\
-+#define find_fetch_type_from_btf_type(ctx)		\
- 	find_fetch_type(NULL, ctx->flags)
- 
--#define is_btf_retval_void(funcname)	(false)
--
- #endif
- 
- #define PARAM_MAX_STACK (THREAD_SIZE / sizeof(unsigned long))
- 
--static int parse_probe_vars(char *arg, const struct fetch_type *t,
--			    struct fetch_insn *code,
-+/* Parse $vars. @orig_arg points '$', which syncs to @ctx->offset */
-+static int parse_probe_vars(char *orig_arg, const struct fetch_type *t,
-+			    struct fetch_insn **pcode,
-+			    struct fetch_insn *end,
- 			    struct traceprobe_parse_context *ctx)
- {
--	unsigned long param;
-+	struct fetch_insn *code = *pcode;
- 	int err = TP_ERR_BAD_VAR;
-+	char *arg = orig_arg + 1;
-+	unsigned long param;
- 	int ret = 0;
- 	int len;
- 
-@@ -712,18 +692,17 @@ static int parse_probe_vars(char *arg, const struct fetch_type *t,
- 		goto inval;
- 	}
- 
--	if (strcmp(arg, "retval") == 0) {
--		if (ctx->flags & TPARG_FL_RETURN) {
--			if ((ctx->flags & TPARG_FL_KERNEL) &&
--			    is_btf_retval_void(ctx->funcname)) {
--				err = TP_ERR_NO_RETVAL;
--				goto inval;
--			}
-+	if (str_has_prefix(arg, "retval")) {
-+		if (!(ctx->flags & TPARG_FL_RETURN)) {
-+			err = TP_ERR_RETVAL_ON_PROBE;
-+			goto inval;
-+		}
-+		if (!(ctx->flags & TPARG_FL_KERNEL) ||
-+		    !IS_ENABLED(CONFIG_PROBE_EVENTS_BTF_ARGS)) {
- 			code->op = FETCH_OP_RETVAL;
- 			return 0;
- 		}
--		err = TP_ERR_RETVAL_ON_PROBE;
--		goto inval;
-+		return parse_btf_arg(orig_arg, pcode, end, ctx);
- 	}
- 
- 	len = str_has_prefix(arg, "stack");
-@@ -825,7 +804,7 @@ parse_probe_arg(char *arg, const struct fetch_type *type,
- 
- 	switch (arg[0]) {
- 	case '$':
--		ret = parse_probe_vars(arg + 1, type, code, ctx);
-+		ret = parse_probe_vars(arg, type, pcode, end, ctx);
- 		break;
- 
- 	case '%':	/* named register */
-@@ -1122,12 +1101,9 @@ static int traceprobe_parse_probe_arg_body(const char *argv, ssize_t *size,
- 		goto fail;
- 
- 	/* Update storing type if BTF is available */
--	if (IS_ENABLED(CONFIG_PROBE_EVENTS_BTF_ARGS) && !t) {
--		if (ctx->last_type)
--			parg->type = parse_btf_arg_type(ctx);
--		else if (ctx->flags & TPARG_FL_RETURN)
--			parg->type = parse_btf_retval_type(ctx);
--	}
-+	if (IS_ENABLED(CONFIG_PROBE_EVENTS_BTF_ARGS) &&
-+	    !t && ctx->last_type)
-+		parg->type = find_fetch_type_from_btf_type(ctx);
- 
- 	ret = -EINVAL;
- 	/* Store operation */
+[1] https://www.a-or-an.com/a_an/helper
+
+Sorry about the noise if I'm wrong.
+
+>        drm/vc4: tests: pv-muxing: Remove call to drm_kunit_helper_free_device()
+>        drm/vc4: tests: mock: Use a kunit action to unregister DRM device
+>        drm/vc4: tests: pv-muxing: Switch to managed locking init
+>        drm/vc4: tests: Switch to atomic state allocation helper
+>        drm/vc4: tests: pv-muxing: Document test scenario
+>
+>   drivers/gpu/drm/tests/drm_client_modeset_test.c |   8 --
+>   drivers/gpu/drm/tests/drm_kunit_helpers.c       | 112 ++++++++++++++++++++++-
+>   drivers/gpu/drm/tests/drm_modes_test.c          |   8 --
+>   drivers/gpu/drm/tests/drm_probe_helper_test.c   |   8 --
+>   drivers/gpu/drm/vc4/tests/vc4_mock.c            |   5 ++
+>   drivers/gpu/drm/vc4/tests/vc4_test_pv_muxing.c  | 115 +++++++++---------------
+>   include/drm/drm_kunit_helpers.h                 |   7 ++
+>   7 files changed, 162 insertions(+), 101 deletions(-)
+> ---
+> base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
+> change-id: 20230710-kms-kunit-actions-rework-5d163762c93b
+>
+> Best regards,
 
