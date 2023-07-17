@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1EF5756801
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 17:29:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFABE7567FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 17:29:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230482AbjGQP3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 11:29:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57748 "EHLO
+        id S232230AbjGQP3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 11:29:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232453AbjGQP2T (ORCPT
+        with ESMTP id S232449AbjGQP2T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 17 Jul 2023 11:28:19 -0400
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2054.outbound.protection.outlook.com [40.107.7.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83BBC10DD;
-        Mon, 17 Jul 2023 08:28:07 -0700 (PDT)
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2082.outbound.protection.outlook.com [40.107.7.82])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 015BF10F1;
+        Mon, 17 Jul 2023 08:28:08 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=O03xGqhpvLZhOkyPM0bBiwgt44x9z3zEKmI9v8cKh7QVuBfLWPIUt1K7tKm2AERUILLkgkB8G+FdbEq0LAmYowh9JFQuwHEZzeiVEvK33SbrHShEIO++BoRvsLkDnk7N65GG1I61StGxnN5+rmqgecP9H/4o2BXPPV6zQT1G5xfLzEcWCteSw1uzq/EHiRr4SG1Wz7UvQStkviEHvAUyz3uE2mw4bw0mLp8CFnXPXqzNOvSSzxjXZUFs1pxX5D4cE2NHkAg2ENArdOh7YO2kkLRtQSyi5lZfOVEV3TmEExvwCE44gRcq8WTTb2enDl6mHgMdaZz1GjJ7wYcaaN0xUg==
+ b=Vr2WcPMui2vtcw0Iyuijimks+bAvVGLqJVFPckQaHvUmZjkQ5Qbud1djkxR374AgPM9laY/PpjvI02pSsA7/NuXom6MTNO11PGDzPKa7R2YhlAJh63lmvyLsBiAqO2iu0kC/3pT6aIQBd7Ywkg1Zj+RbKzwnXp/q7yBYKomBCdll0RFoVOVsL7G1kca4/XGonqxy79c6CuX5WYUPZib18WrH/BwsA90RZdnWEVHRxAdwtmrdWxzlZjBcURthAyj2uTCGa5Jk7O/a+bDe4627kVdVXSPW+9n/BFkBidH/SXsIEzJHMPRDtC2ZPiT6818RlPZnsq4ISaWy1BNXGOHoQA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HUtSGkapv7OUjcIv8IKaB+k5i8nfs7VHcZWEItKQ6/c=;
- b=JdevS0XXrH3ML4QWFrzj/NxMOtUEQloILfZYCne1c4NPRDPC1Pyj8eZCbEWGU7vE2sZsvlKOcGnFOzVvc4SOOqmhk+AOXNiHwT/HL4lY847/XseyEml4P8h8gyaCPbRI+PNSeI6IA888eoigwNjbHbRRFXfvvytdlmTCeCaMSXY5c6Qli7nlpmOZUoU1W+9AfbVanFugqiF1/REqDwmgYTT+8dEX/UMzExDqD3K+OyyaF3JgrbwZCHQNuJRvE97AbEJQ2e0HPscL8JQ7IzOzHg4/Mzv+JKr/M9F7sGne3h/Tb/aUmIhXsL0P0cMVgzlbUd3NAIwpAd22mG6Gi9lx3g==
+ bh=zzc7E6CfYK2zrLX0w9MQWTufyjGs6lAs5lxehq134N0=;
+ b=ZgyQdC7JMwEVUcR39tlyJLZ7M+VCRUN343Ay6N5Af8lzz6dazwk/rSKU5Zz8BDZawUxsDtqg4vN1B/amWKfzSy4JR/dP/z7Df4oz9Skf+Rc2DEvjwCVIcAoWuzDzbvbIXOTvqVyvNR3J9pstnlW7A+z3SB1Op5UXXtSCcZPN1u5ReN1AMdP6Qecm9O4HRZuTqdNctg8gl0HAmKfCJisdzeBYlFWKrrP1wKSh261lwuUssliJ8RN5utuA9J+dsOEYd9rl1fGI04JtfuC4pOxBQrRrKYwMeI4MEW+wSy5rNUt8+dip/SHo5CcuuLg1lrE3jvkAt+6o5pto6enfGeibMg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
  header.d=nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HUtSGkapv7OUjcIv8IKaB+k5i8nfs7VHcZWEItKQ6/c=;
- b=iTaG05ZOBDudjkPkz4GyLJdWoyDK/2EqNCv+RdiWldci3Zv/mfHXcVkI6Yy0/7VUyApQxtgFPUcPlSjgecx9pUKWF77ODrNGadw2N1+cJw0q3Mus0cAyrKZECiu5gpomgEkKk+mCAMoun6iC5TTtGTpHx/2TNECFD96ksOnT8uI=
+ bh=zzc7E6CfYK2zrLX0w9MQWTufyjGs6lAs5lxehq134N0=;
+ b=QzdivViPK9znGAsSR9Tdb3vgdeT9KGZJZJvi6jWGo6N/E1tah4TUUpetex6pAlZdiyUBoR/ncJvU+s1nv08yE0b0WMln5zDAl0CfZk/DZlVfKVgmstNj15TJRDR/iFjBIc1faGrJa7MDY6kZnhAqUQqP8lpOc+ra/9XwkDzNq7o=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nxp.com;
 Received: from AM0PR04MB6452.eurprd04.prod.outlook.com (2603:10a6:208:16d::21)
  by VE1PR04MB7245.eurprd04.prod.outlook.com (2603:10a6:800:1b1::10) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.31; Mon, 17 Jul
- 2023 15:27:41 +0000
+ 2023 15:27:43 +0000
 Received: from AM0PR04MB6452.eurprd04.prod.outlook.com
  ([fe80::c680:1128:9d53:24ae]) by AM0PR04MB6452.eurprd04.prod.outlook.com
  ([fe80::c680:1128:9d53:24ae%4]) with mapi id 15.20.6588.031; Mon, 17 Jul 2023
- 15:27:41 +0000
+ 15:27:43 +0000
 From:   Vladimir Oltean <vladimir.oltean@nxp.com>
 To:     netdev@vger.kernel.org
 Cc:     "David S. Miller" <davem@davemloft.net>,
@@ -73,9 +73,9 @@ Cc:     "David S. Miller" <davem@davemloft.net>,
         Sergey Organov <sorganov@gmail.com>,
         Michal Kubecek <mkubecek@suse.cz>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v8 net-next 09/12] net: lan966x: convert to ndo_hwtstamp_get() and ndo_hwtstamp_set()
-Date:   Mon, 17 Jul 2023 18:27:06 +0300
-Message-Id: <20230717152709.574773-10-vladimir.oltean@nxp.com>
+Subject: [PATCH v8 net-next 10/12] net: transfer rtnl_lock() requirement from ethtool_set_ethtool_phy_ops() to caller
+Date:   Mon, 17 Jul 2023 18:27:07 +0300
+Message-Id: <20230717152709.574773-11-vladimir.oltean@nxp.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230717152709.574773-1-vladimir.oltean@nxp.com>
 References: <20230717152709.574773-1-vladimir.oltean@nxp.com>
@@ -87,51 +87,51 @@ X-ClientProxiedBy: VE1PR03CA0035.eurprd03.prod.outlook.com
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: AM0PR04MB6452:EE_|VE1PR04MB7245:EE_
-X-MS-Office365-Filtering-Correlation-Id: 744c6b5b-5794-458b-5378-08db86da5c7b
+X-MS-Office365-Filtering-Correlation-Id: ab8b09c6-9f9d-4860-f33b-08db86da5da2
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: BEfZGwZfll5NHXNMrV4OiE1lXvUPDu8+MT4TTnVlYDxb5lQzDQHt/SYMNmD1Xy4oFLlxbIag7Ceh4JkX668uCsD7xmxe9A4DxJUyPgnsRVVHb+UIS6n25BCnYcf/UBGCmFuqK6trC+rrQWX687qWF/jDf05P4Vr3q4npVA0JAQC4yDW2s4V+u/TqhNRCngqLP9dxpR2/7JxPxbkcsdJ4sxBMPf0jjCPpZkFEKYRrCiMrRLPjmLu8scQew/XUtJXW2NB9i2UW3hiGPYBzUJYFYfp8w6fwNiw308nl1DhvXybL+uQ7RNA3W2oO6TSZ/XWwlzMADC0NbRUqz0FToj+OukHyvKry23cWLP/GY6mVZzFXX+POaBwCF2ioulQWxikeD4l0kEbCxwHwv/I25szhokSOOWitvreTWwAPd6fC/ZrCuYl7V6ee1H1BW3BtZw7Sb+REhs6iov/htMVeZbQPJcs2lDrxKjjmXfJlRMfKvgJBwV95CtS8ZWxx0ycPsErOBafHrzHUhBTt9kdNN9FrHw02DZAygXX98L0GRuGitYSdFXWKcMk2dDzWoTLPy9F1H8ZQJiIauhtsZprOv51cA2EQfxu4P1iIPFJA4dpQJSN6UnJZu4anziq+u9EKWIuy
+X-Microsoft-Antispam-Message-Info: hNKNeyk3KvtwhfV1WFaF/8uhAGxov6c6Xy0IqoMc8j8qEObksh+mdZKHWEuHKRp83W7EcUg7tmUS1NDdR/siQ4gsXWuz6JI62SoUnBMRoH3qfeqrn9Ni6m6qte7JUtWvPQ4octiyG7QozMHDkdw09MKdUoqpTytlI10AM3xeQ2u4L26yhhX6sAvm2bE6jAnNvBlKr+LMvI7sqO6mVfbf6FlC0mh4MSdbLtY3lWrLAVE3lsECjcDNGhEhPH/rCCBUS0CN02r2uUuOMUhso/ehdt+EwOvHhZRL6WrZ3a5XGrtUgKjCxw7+L/NhyxBl+NgyujSceXZHObSuKKMQ8NO2+FF0QV/ilXQ4gg9BQLtMqeF2Ao4DXNBGJvRljwmFMMdCcESY4vIshiRDvBNvm4jGThdY1OXikFjTwDGlS4VAt/l0YLiE80VqzHkR7xGvWQp5aJSgghVpavEhlNRLNbyWWgQikZ9Sr1bVdwrG4itozTXwdgNjFnyxMoAeeE+Wj8mp0AttWoccXNFnH+Mz1hLsxNd2qMMt80RlpW5zSXLOuSCtiyrGDTxXncrIuQHCPCJRvUiqjxYqZ4a8r22cEdxTH932mlTmzypfa9NJ+ZjOgxlG1xQi//X1Kuh4FkTBJC96
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6452.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(376002)(136003)(39860400002)(346002)(396003)(451199021)(2906002)(38100700002)(86362001)(6512007)(83380400001)(2616005)(1076003)(186003)(26005)(6506007)(38350700002)(5660300002)(36756003)(8676002)(8936002)(7416002)(44832011)(7406005)(66556008)(478600001)(6486002)(54906003)(52116002)(6666004)(316002)(41300700001)(66476007)(6916009)(4326008)(66946007);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?G0PmKMffhpfpuV0cmRZohLDTMY3T6yEhQLxuTCA9qWAb8gEqRoaJSTRqunHP?=
- =?us-ascii?Q?U/uefAZlE4H0rtPNfG2dhn0ULHnn2pBtFyEGnY3SRpF9WtEXpuRY0/CLlUWG?=
- =?us-ascii?Q?aFQS98NW3WkC2Sljr43ADAFcGh9KQbzo+TzuN5jJbzSXRsst5FFQcUddRWEb?=
- =?us-ascii?Q?GrtNpeo0Ri+PeYNjtzm0mdiUrFwRfUh+2wtxWoBlifw4/6zelWfcVMa7OL5p?=
- =?us-ascii?Q?tCAEFsSqlmKRzCEU/7mo+T9ETqqnTjOGmSUUOJw2oWQeZ4yqk9GY4hHH7Z/j?=
- =?us-ascii?Q?SC4qEfmomqPQ7Xu72UdHeHQ+i+nBgCkKw9y0+bstrx8oveaSnY+azJWbEz84?=
- =?us-ascii?Q?fX6QOsBqlQZwn3xhmHJMtBziHcMRGGjMlVzqgNjVnuy8qYUmsOTPDnw56gIW?=
- =?us-ascii?Q?Dge3rkCxFXqQPEUOclgh4RWwAVzBjAfR3dj8dGvaDmw55g9JNxt7KfIypPs0?=
- =?us-ascii?Q?f3O9EIF/ODfnIM4avm052q08OfxhxrtYg8vnHxFj9GVvtzvu1BZBeY4g3A5l?=
- =?us-ascii?Q?G4Ew6YeLj9kzsV+FLlyVug2ZZlYGXHAW/Hk8rOI9CkDfxvn3FT0cyEekcpyl?=
- =?us-ascii?Q?hrZYqOC8BW4I39R2AleSn/ZHyrHQdDl+UwjWUQ3/5g5HpFMNBDnz62NUMXH6?=
- =?us-ascii?Q?Xa9LVyf3FEmctvM3/ijo2pBAupE36kQgLIWNOeU/QGH0gt+dt91RNP/F5Zkn?=
- =?us-ascii?Q?3WVj3tfF2TwdhGMeu6MZnyHv3L6Qy4iA39qAq6Smx94wIW+FATLDrms21KhJ?=
- =?us-ascii?Q?ftdZE1G6QpIpF+YgSyEFb8+SDkmSEnBfo+27TbFpEsnBoaQJMiea+VInlpS1?=
- =?us-ascii?Q?KuQZVpkgRpHJRTrtAIXUA7jFt9ekZNu4dDsv1Y9uQaWB9+T1lrSDTWhKHALl?=
- =?us-ascii?Q?rjvh/AShy7yQwJfdK6l2NQNx/aQlFmvPPTTf3CPxvMfJGydK/jJ2CP7AfSK7?=
- =?us-ascii?Q?JSUB1LXCZpYTKvPxBIIu2aN+ekSve+FWOQsHBDxm0msoyWVbWsFEdBBTfA/1?=
- =?us-ascii?Q?XnLI2jGkqtweJdUEb9DNH2jNdNZFUoWA+1CbdTihGtoGlxGyedwMI9QV0b2M?=
- =?us-ascii?Q?b5MaVDUUDIFH4+F0IrX3zsby8QPdUVzIw0CWGZmBz364mc8YzuLQdgoVtSt2?=
- =?us-ascii?Q?YHhcwmehqXZVqj7guML+heMl9xDu6OWt+n4JiaCnq7xGkzvyBakzpPGtrwe1?=
- =?us-ascii?Q?bLJM7XeeRgEmJKzL97sQhW2pAxp/mstXeyTz9KycK/u/4w8qgFdZwtMa211D?=
- =?us-ascii?Q?XS3ST3BQRdld7CcxSHkCFlFN320clsp1XKl1TOp7s0CfHDJvw8Bt/UtED2Rn?=
- =?us-ascii?Q?XpeRbpgI3GdvQY8XuF7ka1ClHQ0K3/Pm4u+bS2TaL9f+Z5UIOe4QKSTNkwXW?=
- =?us-ascii?Q?hgp0lLWYaYYbhBuhjBqXLr+UnKxBX1c8EOfT5EbT+knabxjw0f5l0KjKmBN3?=
- =?us-ascii?Q?LrSBv/n7qHiyhxI4TkVVVQToRk9ocGbAw5Z7xUx42CzEVMTcCt91f5f8RVeB?=
- =?us-ascii?Q?0qUfpIndwdJlFcKGWozxU8S/uITv+0zol6XbpOfqp0JHCEkYCC4uBsiWdNcv?=
- =?us-ascii?Q?Fib2XicB0s0qF1PiBB0Ukoa40laeqSXdiCs94IaJWqBMaOkCoXMj2XWtbVzB?=
- =?us-ascii?Q?Wg=3D=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?TTLYsPvzgDE5o6bMJ7XgVJ3gLxbb3r0eOCCqrdPqvqHZLTwsCBC4S/f8VCgF?=
+ =?us-ascii?Q?GCGQKqnNeF2LaWxepyFtgbCfJ7Me6azBrhP4iO+39ErTU1NmmwD5WXCLD5Xb?=
+ =?us-ascii?Q?1qgVryqzELmeixO4x5h/gas0GSpgGJuajpY+UOvRDnveJIgBIlWJh0auBtpH?=
+ =?us-ascii?Q?0JPnvf2pIUtbAyKjoruXcbQkr3bivRYmVXUjjpf6ZdB/LTEW8rcokVijtc51?=
+ =?us-ascii?Q?uYprnEPRhpWcwTfYtPqOCOdgs+rT3KbVA+zLTSjxM7SVUC4h6gMYIslLGoPq?=
+ =?us-ascii?Q?FdEBAEmU4UbjjfL8fV8QfbH1ZTp6NyghOgVEPZ9DlpIBiRXxnVj9tYr3KaWy?=
+ =?us-ascii?Q?eVbVBNFDF4wz0NNKiy1jTFy2mAX98//7HOALb27k+JRs+sxaKKdq7EGnpX3C?=
+ =?us-ascii?Q?gXeSJQ96hjezbdOu51IJnfDoBJnK2e0kdreKVftRsFUpZHn7Gi+IXdv12US2?=
+ =?us-ascii?Q?5PxVL7eNkmPTal4FV1yMS8JPZH2+s5d+RSg7hzOLJ7djy/19gcVeNLIZQp+e?=
+ =?us-ascii?Q?+vA9AjyzXhuLuMKGgdYAlbruTGI5YjTs45cS9dsMARSvVqDFi1bSgUVbii6y?=
+ =?us-ascii?Q?KJZcPSyhIvoEHjwMCxGyZuRU2Vjzt3PhCtViF7zHi4lwkzuGbGQntEz3GtWo?=
+ =?us-ascii?Q?YH5k3BwmXeVyPKySBeG40v2YSkeklDqf3LXIV23Lv+Hb/MDNtCAAUh+VaV3X?=
+ =?us-ascii?Q?Pmuh0tnMmatTkEoSEn9SIsKX0aMVgL4rBFvII9Rz8YipPrHkqh/qHB6BPsmd?=
+ =?us-ascii?Q?qtSLYTi1QCoIoxxqxWPVH3FUFs4U0T8iDtELkmxExh3o3crKIeP+qeSWPr1T?=
+ =?us-ascii?Q?kFbNOf4yC0MkedxusEJXI/MQJJftmONs5MtqLiud6SazW9UtNcYT8JhXePzr?=
+ =?us-ascii?Q?oOVAHSopiREUzl+8BUoCLSzVG4fM0MfA3mnvwZ/fmS+4jgH3pjJl6PcVT1xp?=
+ =?us-ascii?Q?ldN/fvXEOkoLdU10SbwxWi5LSC7wIuP//ZV7LMrTBU3Zv3qPCk7XTOP5SvoQ?=
+ =?us-ascii?Q?AmNDeEpoxEVQ/wm8UclnQnkt0CDHe9STfLsoddGzo84xe8rU0ICfoEsP/Dge?=
+ =?us-ascii?Q?cZARyfDKbsdgkeymbQ2lPu4MuIM1uWwba4JnyJQTIl/DZTqfxavYbXyIO/u3?=
+ =?us-ascii?Q?Kc2s+qVD06SdKvSW2O1k0JJBR6f8FF3hqXoA8plwccKY8ic7dSTAr8DHIEaz?=
+ =?us-ascii?Q?nB659yvZyfJInRFOQo68+RjQgv7OPcY2uxkNL9l+h82h1iSRN7JSzJR6Q4c/?=
+ =?us-ascii?Q?OvPG3OO/nloPlIO4blX776Yh3odo6xMM03Buf5wTKXuzhVGi/m6bz82RNT0t?=
+ =?us-ascii?Q?OplgWIVlS98nQxMskr1SS120mIkZfxp9NWXp0oG62Rl4zVgVZGokMm2sychs?=
+ =?us-ascii?Q?CK4WnX9LG3SO9D14sLBTBw+952yqZPgbC7ugbDz/TruLUJnAc2eZFU7qWxfs?=
+ =?us-ascii?Q?GuiIn0QjAHHNo39F79xLbowIQlEQnKhaQk52QUCSvOHxgltR5aLMnJemsLSJ?=
+ =?us-ascii?Q?o1s0opE5gHddzpqBcvv4Z7ffX1DFzzE/DWqETipYCdnPY8xMLIEMp1w+Mnya?=
+ =?us-ascii?Q?C9gJa6Md/dLL9hPkhn3tLKnE5q4XbNP1hlXRw3c7kr0AmLmOOBkeVVSkAW5x?=
+ =?us-ascii?Q?dA=3D=3D?=
 X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 744c6b5b-5794-458b-5378-08db86da5c7b
+X-MS-Exchange-CrossTenant-Network-Message-Id: ab8b09c6-9f9d-4860-f33b-08db86da5da2
 X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6452.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jul 2023 15:27:41.6990
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jul 2023 15:27:43.6584
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: eEd4qtEQ7MwGZDBW1S08zRN6x+IMiolB71WEogLsgsPUl4CqInIZqHzNVuGipYGnejLEO71wsvkElGMaBHyv4Q==
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5R5jCZdD8wkPjSWjau3Pjmh3FisCrNXLD1yx4ySLZEwG/gWy4NDIFu59y2pRmBnTNQFTDBeZEFxUJJ83H4J4gQ==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7245
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -143,236 +143,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The hardware timestamping through ndo_eth_ioctl() is going away.
-Convert the lan966x driver to the new API before that can be removed.
+phy_init() and phy_exit() will have to do more stuff under rtnl_lock()
+in a future change. Since rtnl_unlock() -> netdev_run_todo() does a lot
+of stuff under the hood, it's a pity to lock and unlock the rtnetlink
+mutex twice in a row.
 
-After removing the timestamping logic from lan966x_port_ioctl(), the
-rest is equivalent to phy_do_ioctl().
+Change the calling convention such that the only caller of
+ethtool_set_ethtool_phy_ops(), phy_device.c, provides a context where
+the rtnl_mutex is already acquired.
+
+Note that phy_exit() wasn't performing the opposite teardown of
+phy_init(). Reverse mdio_bus_init() with ethtool_set_ethtool_phy_ops(),
+so that this is now the case.
 
 Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
-Tested-by: Horatiu Vultur <horatiu.vultur@microchip.com>
 ---
 Changes in v8:
-- Use phy_do_ioctl()
-Changes in v7:
 - Patch is new
 
- .../ethernet/microchip/lan966x/lan966x_main.c | 59 +++++++++++--------
- .../ethernet/microchip/lan966x/lan966x_main.h | 12 ++--
- .../ethernet/microchip/lan966x/lan966x_ptp.c  | 34 +++++------
- 3 files changed, 55 insertions(+), 50 deletions(-)
+ drivers/net/phy/phy_device.c | 8 +++++++-
+ net/ethtool/common.c         | 3 +--
+ 2 files changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_main.c b/drivers/net/ethernet/microchip/lan966x/lan966x_main.c
-index fbb0bb4594cd..b0f614fbc5db 100644
---- a/drivers/net/ethernet/microchip/lan966x/lan966x_main.c
-+++ b/drivers/net/ethernet/microchip/lan966x/lan966x_main.c
-@@ -449,39 +449,44 @@ static int lan966x_port_get_parent_id(struct net_device *dev,
- 	return 0;
- }
- 
--static int lan966x_port_ioctl(struct net_device *dev, struct ifreq *ifr,
--			      int cmd)
-+static int lan966x_port_hwtstamp_get(struct net_device *dev,
-+				     struct kernel_hwtstamp_config *cfg)
+diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+index 0c2014accba7..ab53d10f1844 100644
+--- a/drivers/net/phy/phy_device.c
++++ b/drivers/net/phy/phy_device.c
+@@ -30,6 +30,7 @@
+ #include <linux/phy_led_triggers.h>
+ #include <linux/pse-pd/pse.h>
+ #include <linux/property.h>
++#include <linux/rtnetlink.h>
+ #include <linux/sfp.h>
+ #include <linux/skbuff.h>
+ #include <linux/slab.h>
+@@ -3451,11 +3452,14 @@ static int __init phy_init(void)
  {
- 	struct lan966x_port *port = netdev_priv(dev);
--	int err;
+ 	int rc;
  
--	if (cmd == SIOCSHWTSTAMP) {
--		err = lan966x_ptp_setup_traps(port, ifr);
--		if (err)
--			return err;
--	}
-+	if (phy_has_hwtstamp(dev->phydev))
-+		return phy_mii_ioctl(dev->phydev, cfg->ifr, SIOCGHWTSTAMP);
- 
--	if (!phy_has_hwtstamp(dev->phydev) && port->lan966x->ptp) {
--		switch (cmd) {
--		case SIOCSHWTSTAMP:
--			err = lan966x_ptp_hwtstamp_set(port, ifr);
--			if (err)
--				lan966x_ptp_del_traps(port);
-+	if (!port->lan966x->ptp)
-+		return -EOPNOTSUPP;
- 
--			return err;
--		case SIOCGHWTSTAMP:
--			return lan966x_ptp_hwtstamp_get(port, ifr);
--		}
--	}
-+	lan966x_ptp_hwtstamp_get(port, cfg);
- 
--	if (!dev->phydev)
--		return -ENODEV;
-+	return 0;
-+}
- 
--	err = phy_mii_ioctl(dev->phydev, ifr, cmd);
--	if (err && cmd == SIOCSHWTSTAMP)
--		lan966x_ptp_del_traps(port);
-+static int lan966x_port_hwtstamp_set(struct net_device *dev,
-+				     struct kernel_hwtstamp_config *cfg,
-+				     struct netlink_ext_ack *extack)
-+{
-+	struct lan966x_port *port = netdev_priv(dev);
-+	int err;
- 
--	return err;
-+	err = lan966x_ptp_setup_traps(port, cfg);
-+	if (err)
-+		return err;
++	rtnl_lock();
++	ethtool_set_ethtool_phy_ops(&phy_ethtool_phy_ops);
++	rtnl_unlock();
 +
-+	if (phy_has_hwtstamp(dev->phydev)) {
-+		err = phy_mii_ioctl(dev->phydev, cfg->ifr, SIOCSHWTSTAMP);
-+		if (err)
-+			lan966x_ptp_del_traps(port);
-+		return err;
-+	}
-+
-+	if (!port->lan966x->ptp)
-+		return -EOPNOTSUPP;
-+
-+	return lan966x_ptp_hwtstamp_set(port, cfg, extack);
+ 	rc = mdio_bus_init();
+ 	if (rc)
+ 		return rc;
+ 
+-	ethtool_set_ethtool_phy_ops(&phy_ethtool_phy_ops);
+ 	features_init();
+ 
+ 	rc = phy_driver_register(&genphy_c45_driver, THIS_MODULE);
+@@ -3477,7 +3481,9 @@ static void __exit phy_exit(void)
+ 	phy_driver_unregister(&genphy_c45_driver);
+ 	phy_driver_unregister(&genphy_driver);
+ 	mdio_bus_exit();
++	rtnl_lock();
+ 	ethtool_set_ethtool_phy_ops(NULL);
++	rtnl_unlock();
  }
  
- static const struct net_device_ops lan966x_port_netdev_ops = {
-@@ -494,10 +499,12 @@ static const struct net_device_ops lan966x_port_netdev_ops = {
- 	.ndo_get_stats64		= lan966x_stats_get,
- 	.ndo_set_mac_address		= lan966x_port_set_mac_address,
- 	.ndo_get_port_parent_id		= lan966x_port_get_parent_id,
--	.ndo_eth_ioctl			= lan966x_port_ioctl,
-+	.ndo_eth_ioctl			= phy_do_ioctl,
- 	.ndo_setup_tc			= lan966x_tc_setup,
- 	.ndo_bpf			= lan966x_xdp,
- 	.ndo_xdp_xmit			= lan966x_xdp_xmit,
-+	.ndo_hwtstamp_get		= lan966x_port_hwtstamp_get,
-+	.ndo_hwtstamp_set		= lan966x_port_hwtstamp_set,
- };
+ subsys_initcall(phy_init);
+diff --git a/net/ethtool/common.c b/net/ethtool/common.c
+index 5fb19050991e..f5598c5f50de 100644
+--- a/net/ethtool/common.c
++++ b/net/ethtool/common.c
+@@ -665,9 +665,8 @@ const struct ethtool_phy_ops *ethtool_phy_ops;
  
- bool lan966x_netdevice_check(const struct net_device *dev)
-diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_main.h b/drivers/net/ethernet/microchip/lan966x/lan966x_main.h
-index 27f272831ea5..b538d496e8d7 100644
---- a/drivers/net/ethernet/microchip/lan966x/lan966x_main.h
-+++ b/drivers/net/ethernet/microchip/lan966x/lan966x_main.h
-@@ -298,7 +298,7 @@ struct lan966x_phc {
- 	struct ptp_clock *clock;
- 	struct ptp_clock_info info;
- 	struct ptp_pin_desc pins[LAN966X_PHC_PINS_NUM];
--	struct hwtstamp_config hwtstamp_config;
-+	struct kernel_hwtstamp_config hwtstamp_config;
- 	struct lan966x *lan966x;
- 	u8 index;
- };
-@@ -578,8 +578,11 @@ void lan966x_mdb_restore_entries(struct lan966x *lan966x);
- 
- int lan966x_ptp_init(struct lan966x *lan966x);
- void lan966x_ptp_deinit(struct lan966x *lan966x);
--int lan966x_ptp_hwtstamp_set(struct lan966x_port *port, struct ifreq *ifr);
--int lan966x_ptp_hwtstamp_get(struct lan966x_port *port, struct ifreq *ifr);
-+int lan966x_ptp_hwtstamp_set(struct lan966x_port *port,
-+			     struct kernel_hwtstamp_config *cfg,
-+			     struct netlink_ext_ack *extack);
-+void lan966x_ptp_hwtstamp_get(struct lan966x_port *port,
-+			      struct kernel_hwtstamp_config *cfg);
- void lan966x_ptp_rxtstamp(struct lan966x *lan966x, struct sk_buff *skb,
- 			  u64 src_port, u64 timestamp);
- int lan966x_ptp_txtstamp_request(struct lan966x_port *port,
-@@ -590,7 +593,8 @@ irqreturn_t lan966x_ptp_irq_handler(int irq, void *args);
- irqreturn_t lan966x_ptp_ext_irq_handler(int irq, void *args);
- u32 lan966x_ptp_get_period_ps(void);
- int lan966x_ptp_gettime64(struct ptp_clock_info *ptp, struct timespec64 *ts);
--int lan966x_ptp_setup_traps(struct lan966x_port *port, struct ifreq *ifr);
-+int lan966x_ptp_setup_traps(struct lan966x_port *port,
-+			    struct kernel_hwtstamp_config *cfg);
- int lan966x_ptp_del_traps(struct lan966x_port *port);
- 
- int lan966x_fdma_xmit(struct sk_buff *skb, __be32 *ifh, struct net_device *dev);
-diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_ptp.c b/drivers/net/ethernet/microchip/lan966x/lan966x_ptp.c
-index 266a21a2d124..60bd0cff6677 100644
---- a/drivers/net/ethernet/microchip/lan966x/lan966x_ptp.c
-+++ b/drivers/net/ethernet/microchip/lan966x/lan966x_ptp.c
-@@ -248,29 +248,23 @@ int lan966x_ptp_del_traps(struct lan966x_port *port)
- 	return err;
- }
- 
--int lan966x_ptp_setup_traps(struct lan966x_port *port, struct ifreq *ifr)
-+int lan966x_ptp_setup_traps(struct lan966x_port *port,
-+			    struct kernel_hwtstamp_config *cfg)
+ void ethtool_set_ethtool_phy_ops(const struct ethtool_phy_ops *ops)
  {
--	struct hwtstamp_config cfg;
--
--	if (copy_from_user(&cfg, ifr->ifr_data, sizeof(cfg)))
--		return -EFAULT;
--
--	if (cfg.rx_filter == HWTSTAMP_FILTER_NONE)
-+	if (cfg->rx_filter == HWTSTAMP_FILTER_NONE)
- 		return lan966x_ptp_del_traps(port);
- 	else
- 		return lan966x_ptp_add_traps(port);
+-	rtnl_lock();
++	ASSERT_RTNL();
+ 	ethtool_phy_ops = ops;
+-	rtnl_unlock();
  }
+ EXPORT_SYMBOL_GPL(ethtool_set_ethtool_phy_ops);
  
--int lan966x_ptp_hwtstamp_set(struct lan966x_port *port, struct ifreq *ifr)
-+int lan966x_ptp_hwtstamp_set(struct lan966x_port *port,
-+			     struct kernel_hwtstamp_config *cfg,
-+			     struct netlink_ext_ack *extack)
- {
- 	struct lan966x *lan966x = port->lan966x;
--	struct hwtstamp_config cfg;
- 	struct lan966x_phc *phc;
- 
--	if (copy_from_user(&cfg, ifr->ifr_data, sizeof(cfg)))
--		return -EFAULT;
--
--	switch (cfg.tx_type) {
-+	switch (cfg->tx_type) {
- 	case HWTSTAMP_TX_ON:
- 		port->ptp_tx_cmd = IFH_REW_OP_TWO_STEP_PTP;
- 		break;
-@@ -284,7 +278,7 @@ int lan966x_ptp_hwtstamp_set(struct lan966x_port *port, struct ifreq *ifr)
- 		return -ERANGE;
- 	}
- 
--	switch (cfg.rx_filter) {
-+	switch (cfg->rx_filter) {
- 	case HWTSTAMP_FILTER_NONE:
- 		port->ptp_rx_cmd = false;
- 		break;
-@@ -303,7 +297,7 @@ int lan966x_ptp_hwtstamp_set(struct lan966x_port *port, struct ifreq *ifr)
- 	case HWTSTAMP_FILTER_PTP_V2_DELAY_REQ:
- 	case HWTSTAMP_FILTER_NTP_ALL:
- 		port->ptp_rx_cmd = true;
--		cfg.rx_filter = HWTSTAMP_FILTER_ALL;
-+		cfg->rx_filter = HWTSTAMP_FILTER_ALL;
- 		break;
- 	default:
- 		return -ERANGE;
-@@ -312,20 +306,20 @@ int lan966x_ptp_hwtstamp_set(struct lan966x_port *port, struct ifreq *ifr)
- 	/* Commit back the result & save it */
- 	mutex_lock(&lan966x->ptp_lock);
- 	phc = &lan966x->phc[LAN966X_PHC_PORT];
--	memcpy(&phc->hwtstamp_config, &cfg, sizeof(cfg));
-+	phc->hwtstamp_config = *cfg;
- 	mutex_unlock(&lan966x->ptp_lock);
- 
--	return copy_to_user(ifr->ifr_data, &cfg, sizeof(cfg)) ? -EFAULT : 0;
-+	return 0;
- }
- 
--int lan966x_ptp_hwtstamp_get(struct lan966x_port *port, struct ifreq *ifr)
-+void lan966x_ptp_hwtstamp_get(struct lan966x_port *port,
-+			      struct kernel_hwtstamp_config *cfg)
- {
- 	struct lan966x *lan966x = port->lan966x;
- 	struct lan966x_phc *phc;
- 
- 	phc = &lan966x->phc[LAN966X_PHC_PORT];
--	return copy_to_user(ifr->ifr_data, &phc->hwtstamp_config,
--			    sizeof(phc->hwtstamp_config)) ? -EFAULT : 0;
-+	*cfg = phc->hwtstamp_config;
- }
- 
- static int lan966x_ptp_classify(struct lan966x_port *port, struct sk_buff *skb)
 -- 
 2.34.1
 
