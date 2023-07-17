@@ -2,174 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5346D75652C
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 15:37:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92BAB75652F
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 15:38:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231474AbjGQNhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 09:37:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45146 "EHLO
+        id S230017AbjGQNiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 09:38:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231744AbjGQNg5 (ORCPT
+        with ESMTP id S231160AbjGQNh6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 09:36:57 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1ECE8E76
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 06:36:38 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EAE3EC15;
-        Mon, 17 Jul 2023 06:36:50 -0700 (PDT)
-Received: from [10.57.76.30] (unknown [10.57.76.30])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E99A93F67D;
-        Mon, 17 Jul 2023 06:36:04 -0700 (PDT)
-Message-ID: <5df787a0-8e69-2472-cdd6-f96a3f7dfaaf@arm.com>
-Date:   Mon, 17 Jul 2023 14:36:03 +0100
+        Mon, 17 Jul 2023 09:37:58 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 996658F
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 06:37:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=533J8q09bdBVgsSwgi5fjA/3C2Ga+QfLswMcOtH+Swk=; b=mjiuohBcL19EX4pyeKTYv2DSgT
+        zZMpUgEltG9nwunrNMkKpw1yvMFX3pMpLy/2/o6AKYNfMq9hTTvbAYxjjTFGJXsiBog3nRpdQNt7Z
+        FSAHmnkyZtnIEI71h5yG0r89OHRYLQNpphbpD3qlmccWlln8yjzgIsOU5JuhpE6wR8gk/owbkvBla
+        +LRUSsSbNu4+UUJQGlC3RK6ufIqwY0yl9U+6JBPzKRdFHvqAIy9bpzJhgqOpvUVXjemfPHRdqFgFK
+        RybXTt4g8o4ulAIEgNd+qBF4uc9gktjq7Dx5qvNwxTzISOpMNZH+uroEcQ4pjdr46oBgUXAxanxpE
+        VJ4TUFcg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qLOPh-003x82-HK; Mon, 17 Jul 2023 13:37:21 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E6D1630019C;
+        Mon, 17 Jul 2023 15:37:18 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C41AF24BB537A; Mon, 17 Jul 2023 15:37:18 +0200 (CEST)
+Date:   Mon, 17 Jul 2023 15:37:18 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+Cc:     Tim Chen <tim.c.chen@linux.intel.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Ricardo Neri <ricardo.neri@intel.com>,
+        "Ravi V . Shankar" <ravi.v.shankar@intel.com>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Len Brown <len.brown@intel.com>, Mel Gorman <mgorman@suse.de>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Ionela Voinescu <ionela.voinescu@arm.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        naveen.n.rao@linux.vnet.ibm.com,
+        Yicong Yang <yangyicong@hisilicon.com>,
+        Barry Song <v-songbaohua@oppo.com>,
+        Chen Yu <yu.c.chen@intel.com>, Hillf Danton <hdanton@sina.com>
+Subject: Re: [Patch v3 1/6] sched/fair: Determine active load balance for SMT
+ sched groups
+Message-ID: <20230717133718.GJ4253@hirez.programming.kicks-ass.net>
+References: <cover.1688770494.git.tim.c.chen@linux.intel.com>
+ <e24f35d142308790f69be65930b82794ef6658a2.1688770494.git.tim.c.chen@linux.intel.com>
+ <165778ce-7b8f-1966-af02-90ef481455b9@linux.vnet.ibm.com>
+ <a399af19aa8e1291558724509a1de2f52b3bad0a.camel@linux.intel.com>
+ <05ed4537-e79b-0ff3-5be5-92cbffaab3ee@linux.vnet.ibm.com>
+ <20230717111053.GI4253@hirez.programming.kicks-ass.net>
+ <eba3aa23-99ca-ce72-4933-940b8dd6ff6b@linux.vnet.ibm.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH v3 3/4] mm: FLEXIBLE_THP for improved performance
-To:     Yu Zhao <yuzhao@google.com>, Hugh Dickins <hughd@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-References: <20230714160407.4142030-1-ryan.roberts@arm.com>
- <20230714161733.4144503-3-ryan.roberts@arm.com>
- <CAOUHufacQ8Vx9WQ3BVjGGWKGhcRkL7u79UMX=O7oePDwZ0iNxw@mail.gmail.com>
- <432490d1-8d1e-1742-295a-d6e60a054ab6@arm.com>
- <CAOUHufaDfJwF_-zb6zV5COG-KaaGcSyrNmbaEzaWz2UjcGGgHQ@mail.gmail.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <CAOUHufaDfJwF_-zb6zV5COG-KaaGcSyrNmbaEzaWz2UjcGGgHQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <eba3aa23-99ca-ce72-4933-940b8dd6ff6b@linux.vnet.ibm.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>>> +static int alloc_anon_folio(struct vm_fault *vmf, struct folio **folio)
->>>> +{
->>>> +       int i;
->>>> +       gfp_t gfp;
->>>> +       pte_t *pte;
->>>> +       unsigned long addr;
->>>> +       struct vm_area_struct *vma = vmf->vma;
->>>> +       int prefer = anon_folio_order(vma);
->>>> +       int orders[] = {
->>>> +               prefer,
->>>> +               prefer > PAGE_ALLOC_COSTLY_ORDER ? PAGE_ALLOC_COSTLY_ORDER : 0,
->>>> +               0,
->>>> +       };
->>>> +
->>>> +       *folio = NULL;
->>>> +
->>>> +       if (vmf_orig_pte_uffd_wp(vmf))
->>>> +               goto fallback;
->>>> +
->>>> +       for (i = 0; orders[i]; i++) {
->>>> +               addr = ALIGN_DOWN(vmf->address, PAGE_SIZE << orders[i]);
->>>> +               if (addr >= vma->vm_start &&
->>>> +                   addr + (PAGE_SIZE << orders[i]) <= vma->vm_end)
->>>> +                       break;
->>>> +       }
->>>> +
->>>> +       if (!orders[i])
->>>> +               goto fallback;
->>>> +
->>>> +       pte = pte_offset_map(vmf->pmd, vmf->address & PMD_MASK);
->>>> +       if (!pte)
->>>> +               return -EAGAIN;
->>>
->>> It would be a bug if this happens. So probably -EINVAL?
->>
->> Not sure what you mean? Hugh Dickins' series that went into v6.5-rc1 makes it
->> possible for pte_offset_map() to fail (if I understood correctly) and we have to
->> handle this. The intent is that we will return from the fault without making any
->> change, then we will refault and try again.
-> 
-> Thanks for checking that -- it's very relevant. One detail is that
-> that series doesn't affect anon. IOW, collapsing PTEs into a PMD can't
-> happen while we are holding mmap_lock for read here, and therefore,
-> the race that could cause pte_offset_map() on shmem/file PTEs to fail
-> doesn't apply here.
+On Mon, Jul 17, 2023 at 05:48:02PM +0530, Shrikanth Hegde wrote:
 
-But Hugh's patches have changed do_anonymous_page() to handle failure from
-pte_offset_map_lock(). So I was just following that pattern. If this really
-can't happen, then I'd rather WARN/BUG on it, and simplify alloc_anon_folio()'s
-prototype to just return a `struct folio *` (and if it's null that means ENOMEM).
+> Hi Peter. 
+> 
+> Sending on behalf of tim. I have included my suggestion as well. Hope
+> that's ok.  Please find below the patch as of now. it includes the
+> couple of changes that are discussed. (in 1/6 and in 3/6)
 
-Hugh, perhaps you can comment?
+Could you please add a Changelog and SoB thingies such that I can apply
+the thing?
 
-As an aside, it was my understanding from LWN, that we are now using a per-VMA
-lock so presumably we don't hold mmap_lock for read here? Or perhaps that only
-applies to file-backed memory?
+Given Tim is on holidays, perhaps do something like:
 
-> 
-> +Hugh Dickins for further consultation if you need it.
-> 
->>>> +
->>>> +       for (; orders[i]; i++) {
->>>> +               addr = ALIGN_DOWN(vmf->address, PAGE_SIZE << orders[i]);
->>>> +               vmf->pte = pte + pte_index(addr);
->>>> +               if (!vmf_pte_range_changed(vmf, 1 << orders[i]))
->>>> +                       break;
->>>> +       }
->>>> +
->>>> +       vmf->pte = NULL;
->>>> +       pte_unmap(pte);
->>>> +
->>>> +       gfp = vma_thp_gfp_mask(vma);
->>>> +
->>>> +       for (; orders[i]; i++) {
->>>> +               addr = ALIGN_DOWN(vmf->address, PAGE_SIZE << orders[i]);
->>>> +               *folio = vma_alloc_folio(gfp, orders[i], vma, addr, true);
->>>> +               if (*folio) {
->>>> +                       clear_huge_page(&(*folio)->page, addr, 1 << orders[i]);
->>>> +                       return 0;
->>>> +               }
->>>> +       }
->>>> +
->>>> +fallback:
->>>> +       *folio = vma_alloc_zeroed_movable_folio(vma, vmf->address);
->>>> +       return *folio ? 0 : -ENOMEM;
->>>> +}
->>>> +#else
->>>> +static inline int alloc_anon_folio(struct vm_fault *vmf, struct folio **folio)
->>>
->>> Drop "inline" (it doesn't do anything in .c).
->>
->> There are 38 instances of inline in memory.c alone, so looks like a well used
->> convention, even if the compiler may choose to ignore. Perhaps you can educate
->> me; what's the benefit of dropping it?
-> 
-> I'll let Willy and Andrew educate both of us :)
-> 
-> +Matthew Wilcox +Andrew Morton please. Thank you.
-> 
->>> The rest looks good to me.
->>
->> Great - just incase it wasn't obvious, I decided not to overwrite vmf->address
->> with the aligned version, as you suggested
-> 
-> Yes, I've noticed. Not overwriting has its own merits for sure.
-> 
->> for 2 reasons; 1) address is const
->> in the struct, so would have had to change that. 2) there is a uffd path that
->> can be taken after the vmf->address fixup would have occured and the path
->> consumes that member, so it would have had to be un-fixed-up making it more
->> messy than the way I opted for.
->>
->> Thanks for the quick review as always!
+Originally-by: Tim Chen <...>
 
+After all, you did some changes and verified it actually works etc..
+
+
+> ---
+>  kernel/sched/fair.c | 13 ++++++++++++-
+>  1 file changed, 12 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 932e7b78894a..9502013abe33 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -9532,7 +9532,7 @@ static inline long sibling_imbalance(struct lb_env *env,
+>  	imbalance /= ncores_local + ncores_busiest;
+>  
+>  	/* Take advantage of resource in an empty sched group */
+> -	if (imbalance == 0 && local->sum_nr_running == 0 &&
+> +	if (imbalance <= 1 && local->sum_nr_running == 0 &&
+>  	    busiest->sum_nr_running > 1)
+>  		imbalance = 2;
+>  
+> @@ -9720,6 +9720,17 @@ static bool update_sd_pick_busiest(struct lb_env *env,
+>  		break;
+>  
+>  	case group_smt_balance:
+> +		/* no idle cpus on both groups handled by group_fully_busy below */
+> +		if (sgs->idle_cpus != 0 || busiest->idle_cpus != 0) {
+> +			if (sgs->idle_cpus > busiest->idle_cpus)
+> +				return false;
+> +			if (sgs->idle_cpus < busiest->idle_cpus)
+> +				return true;
+> +			if (sgs->sum_nr_running <= busiest->sum_nr_running)
+> +				return false;
+> +		}
+> +		break;
+> +
+>  	case group_fully_busy:
+>  		/*
+>  		 * Select the fully busy group with highest avg_load. In
+> -- 
+> 2.31.1
