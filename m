@@ -2,158 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EEEB755D36
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 09:43:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CA2B755D3D
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 09:44:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230172AbjGQHnt convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 17 Jul 2023 03:43:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45542 "EHLO
+        id S230317AbjGQHod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 03:44:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjGQHnr (ORCPT
+        with ESMTP id S230413AbjGQHoV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 03:43:47 -0400
-Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE290FE;
-        Mon, 17 Jul 2023 00:43:46 -0700 (PDT)
-Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-635e0e6b829so30051486d6.0;
-        Mon, 17 Jul 2023 00:43:46 -0700 (PDT)
+        Mon, 17 Jul 2023 03:44:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1B1010C0
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 00:43:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689579812;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PQVhAdPhMy3kA8WlEpRTBlp68XeaAscXbJ2l6phyeAs=;
+        b=SYr3r2Nj4FBGnSRa6g05KqleWMjMhOm3Hv9ycPKHQZ/YGCopTbyqF/6e/SxTHdSMb9n3T9
+        1eIPSu+utg1poV+lFXTpKy1tvyRWqPK8Bj0LiOuZsqUwqk4PFxE0JU4dFvS2bFOxmkap7C
+        xe5z4lhxNfAKvRphmGF+NSBjllkpEgM=
+Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
+ [209.85.161.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-546-Rm9MVVwYPH-LFRm0VjdIPw-1; Mon, 17 Jul 2023 03:43:31 -0400
+X-MC-Unique: Rm9MVVwYPH-LFRm0VjdIPw-1
+Received: by mail-oo1-f72.google.com with SMTP id 006d021491bc7-565d30b4311so5547482eaf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 00:43:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689579825; x=1692171825;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1689579810; x=1692171810;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5LWJf53shp0viE9TAbmwOxmgVvdOZl/M9mic33WO7Jo=;
-        b=jicA2NoVDvuNU2zQuob2Km7LnEuNhCoXF4m96iiv4fJCJTYiylGaeOaEdG7IN3+Esq
-         cKQ2Z+8rZx8nwQsLVugi5hFgkvO2Y8NKJB8t8mXxqmYM0j5Qtja0ufeP8M8/GYtFf7WV
-         E3VGAFhG+N+DQs/HrZmwgvKVD4M8NAyiJGwx0xwnjImr18Cc0tnavJjBoHoDyK3pP/Xa
-         1tRSm3KmdRqEJcTXGQHL2VFSDYVWNXVGYW2zdC1pX6STMRRKTAmZljbZmuyL0DFyXG6e
-         nXDhHhaLs3C/P64b2Y1SYYHosaNU5umbAGUbhPgLmZ7QpID+BOIICDoLBANvYMVT5sL1
-         eqAA==
-X-Gm-Message-State: ABy/qLbqBXk3jUbQIaWi2HK+DV2vlZVmQPT0rqYAksQ5UaUMLWl9cF0t
-        ZYEVr/4d/GbozF06SwW8jvfdLhzfp5TP4w==
-X-Google-Smtp-Source: APBJJlEG5NUi4cYO92qKx8Mr1uGDbzFpPh1ZZJ5f31be6u4InjhyEjUwpON4eQXK3SkN0ld9KgEVOQ==
-X-Received: by 2002:a0c:b31b:0:b0:635:dbb4:853e with SMTP id s27-20020a0cb31b000000b00635dbb4853emr10008229qve.54.1689579825644;
-        Mon, 17 Jul 2023 00:43:45 -0700 (PDT)
-Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com. [209.85.160.177])
-        by smtp.gmail.com with ESMTPSA id t2-20020a0cb702000000b0061a68b5a8c4sm6296520qvd.134.2023.07.17.00.43.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Jul 2023 00:43:45 -0700 (PDT)
-Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-403af7dfa3aso36291641cf.0;
-        Mon, 17 Jul 2023 00:43:45 -0700 (PDT)
-X-Received: by 2002:a25:2945:0:b0:c21:caaf:bd47 with SMTP id
- p66-20020a252945000000b00c21caafbd47mr10530962ybp.2.1689579804817; Mon, 17
- Jul 2023 00:43:24 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230714174901.4062397-1-robh@kernel.org>
-In-Reply-To: <20230714174901.4062397-1-robh@kernel.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 17 Jul 2023 09:43:13 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUOUAPoBcSqHLTCKh8_PqyAiuGFEXedEPS48X=oc8SqDA@mail.gmail.com>
-Message-ID: <CAMuHMdUOUAPoBcSqHLTCKh8_PqyAiuGFEXedEPS48X=oc8SqDA@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: Explicitly include correct DT includes
-To:     Rob Herring <robh@kernel.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>, Jacky Bai <ping.bai@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sean Wang <sean.wang@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Chester Lin <clin@suse.com>, NXP S32 Linux Team <s32@nxp.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Tony Lindgren <tony@atomide.com>,
-        Haojian Zhuang <haojian.zhuang@linaro.org>,
-        Daniel Mack <daniel@zonque.org>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Shiraz Hashim <shiraz.linux.kernel@gmail.com>, soc@kernel.org,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Jianlong Huang <jianlong.huang@starfivetech.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Dvorkin Dmitry <dvorkin@tibbo.com>,
-        Wells Lu <wellslutw@gmail.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-oxnas@groups.io, linux-rockchip@lists.infradead.org,
-        linux-omap@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+        bh=PQVhAdPhMy3kA8WlEpRTBlp68XeaAscXbJ2l6phyeAs=;
+        b=IzjuU/u4p7I745y7z+OMnsQn9CEng4HuDJ/4S2uN9dBPS4p9YBG476mIoT7j8wURFg
+         KDOkxGqxu9c1SrFKHk5jnVP7tbz/eI7PbdwVPIl1CfQN97ur+3G6noNa2q65GK3T0DLB
+         VaGg+u8CM7UQbdBm+33ORn5wJ5mMu+fa8mqImaTcKIR+NnuS7Ar0u5Jh9RPOvQ2QSJsO
+         D/w8ePNQV3eVe57qupvGm9zXr5vlqCkGk/B8guQtpUhF614TEGwsiXEKknkc8wpPck3t
+         NXWR4bqDmg8IyKKgxtM0hMsWoW9eA+9EMvNnSUILNs6Bd4gFuLa/VXBGDsg/tdfMghvd
+         9yfQ==
+X-Gm-Message-State: ABy/qLZf5tsRA3gD8PO9avLaj5YsRC19KnquZ0a477wNHazRaCoAJV+U
+        9Q4xAeGd4eyecJyxZTZKXo1qWT6/TMNAuuPWD/2ihEop7sbBKNW89bNN2HvhfjjyvAEH5yyBdKy
+        DkxOLGLwtn63VcTYSJ2fx6ZXz
+X-Received: by 2002:a05:6358:90f:b0:134:c37f:4b63 with SMTP id r15-20020a056358090f00b00134c37f4b63mr10463397rwi.2.1689579810585;
+        Mon, 17 Jul 2023 00:43:30 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlFK36ibipM0G2rzToLTfIecoh81m8Px1hLNcEbl1T9WmTowhFWmHY6w0sOGmKuUZwVeblBkeQ==
+X-Received: by 2002:a05:6358:90f:b0:134:c37f:4b63 with SMTP id r15-20020a056358090f00b00134c37f4b63mr10463390rwi.2.1689579810286;
+        Mon, 17 Jul 2023 00:43:30 -0700 (PDT)
+Received: from smtpclient.apple ([203.212.242.27])
+        by smtp.gmail.com with ESMTPSA id t2-20020a17090a950200b00263f33eef41sm4377184pjo.37.2023.07.17.00.43.27
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 17 Jul 2023 00:43:29 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3696.120.41.1.3\))
+Subject: Re: [PATCH] vmbus_testing: fix wrong python syntax for integer value
+ comparison
+From:   Ani Sinha <anisinha@redhat.com>
+In-Reply-To: <20230705134408.6302-1-anisinha@redhat.com>
+Date:   Mon, 17 Jul 2023 13:13:25 +0530
+Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <761F02E9-7A80-486B-8CB4-B5E067D7F587@redhat.com>
+References: <20230705134408.6302-1-anisinha@redhat.com>
+To:     "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>
+X-Mailer: Apple Mail (2.3696.120.41.1.3)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 7:52 PM Rob Herring <robh@kernel.org> wrote:
-> The DT of_device.h and of_platform.h date back to the separate
-> of_platform_bus_type before it as merged into the regular platform bus.
-> As part of that merge prepping Arm DT support 13 years ago, they
-> "temporarily" include each other. They also include platform_device.h
-> and of.h. As a result, there's a pretty much random mix of those include
-> files used throughout the tree. In order to detangle these headers and
-> replace the implicit includes with struct declarations, users need to
-> explicitly include the correct includes.
->
-> Signed-off-by: Rob Herring <robh@kernel.org>
 
->  drivers/pinctrl/renesas/core.c                         | 1 -
->  drivers/pinctrl/renesas/pinctrl-rza1.c                 | 3 +--
->  drivers/pinctrl/renesas/pinctrl-rza2.c                 | 3 ++-
->  drivers/pinctrl/renesas/pinctrl-rzg2l.c                | 3 ++-
->  drivers/pinctrl/renesas/pinctrl-rzv2m.c                | 3 ++-
 
-Acked-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> On 05-Jul-2023, at 7:14 PM, Ani Sinha <anisinha@redhat.com> wrote:
+>=20
+> It is incorrect in python to compare integer values using the "is" =
+keyword.
+> The "is" keyword in python is used to compare references to two =
+objects,
+> not their values. Newer version of python3 (version 3.8) throws a =
+warning
+> when such incorrect comparison is made. For value comparison, "=3D=3D" =
+should
+> be used.
+>=20
+> Fix this in the code and suppress the following warning:
+>=20
+> /usr/sbin/vmbus_testing:167: SyntaxWarning: "is" with a literal. Did =
+you mean "=3D=3D"?
 
-Gr{oetje,eeting}s,
+Ping =E2=80=A6
 
-                        Geert
+>=20
+> Signed-off-by: Ani Sinha <anisinha@redhat.com>
+> ---
+> tools/hv/vmbus_testing | 4 ++--
+> 1 file changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/tools/hv/vmbus_testing b/tools/hv/vmbus_testing
+> index e7212903dd1d..4467979d8f69 100755
+> --- a/tools/hv/vmbus_testing
+> +++ b/tools/hv/vmbus_testing
+> @@ -164,7 +164,7 @@ def recursive_file_lookup(path, file_map):
+> def get_all_devices_test_status(file_map):
+>=20
+>         for device in file_map:
+> -                if (get_test_state(locate_state(device, file_map)) is =
+1):
+> +                if (get_test_state(locate_state(device, file_map)) =3D=3D=
+ 1):
+>                         print("Testing =3D ON for: {}"
+>                               .format(device.split("/")[5]))
+>                 else:
+> @@ -203,7 +203,7 @@ def write_test_files(path, value):
+> def set_test_state(state_path, state_value, quiet):
+>=20
+>         write_test_files(state_path, state_value)
+> -        if (get_test_state(state_path) is 1):
+> +        if (get_test_state(state_path) =3D=3D 1):
+>                 if (not quiet):
+>                         print("Testing =3D ON for device: {}"
+>                               .format(state_path.split("/")[5]))
+> --=20
+> 2.39.1
+>=20
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
