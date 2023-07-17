@@ -2,80 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C5DE755FEB
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 11:59:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77C43755FEF
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 12:00:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231217AbjGQJ7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 05:59:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55844 "EHLO
+        id S231278AbjGQKAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 06:00:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230093AbjGQJ7t (ORCPT
+        with ESMTP id S231301AbjGQKAK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 05:59:49 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BDFE194
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 02:59:48 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id 98e67ed59e1d1-263374f2f17so2198265a91.0
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 02:59:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689587988; x=1692179988;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eaUgBVDv8XJC9KwT1nYw3VO0329gUyssPKGDQaCxM90=;
-        b=iC/D6ZsM38CS6miHODbMpdoodSLBiKdD7KtTbanYvras/ceEuqaveWZvI93Z5mFaaM
-         8UM/AdxLG+mJTTfZ0SaO0ShyUqBpHMaG5+aRjnXio/wujWip+lyO1CEuk2/a2dA4dUlc
-         /taS6xA1JKson2VMIa95pBSRlMboFePHD/qMXvlzvdhCPQAKo3uPFsTMKHprHUpsNAf5
-         94HLcrGSNmqIfLb1brvHyqh52EjnKgA7g5u2EQN21NBxH4dUUmZEvgI/2aURpsyeyQl2
-         q+CytRr7CMONSGEkoWqBwlX0awMy00wZhUkOYXK9GxzgFlmi6uzGaah7crhUIaKmNY3v
-         AkSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689587988; x=1692179988;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eaUgBVDv8XJC9KwT1nYw3VO0329gUyssPKGDQaCxM90=;
-        b=Bwd5BAgzYgKkb6IA1sE1SSX35N7AURNnyomzmTNLmw7Bd+OP5+W6EZNhEJ1Q109+R4
-         mCrECMNq9DNHK+RIGqXoFeYImhijR9DVR6gUf/pdpaEXwMYnDf8wcIl3hjQlfnAVYRYw
-         5G5J5t8wPTlhINplAL7g/kDQCelVLosS24nYejL31st/J4o2+/hAna7S7rniBSEWFi3k
-         6ipHxF4w1227IFEtYvSfAWsE/cjy991zaIZiuSh0yVuJdea4uPJu/SjhZ9ckL4DU+d0m
-         o97iszk/KaAFtgbJgDl7eNX1FvQ7z94V0uTfKXIvGrXQ/5VzOA0x4cKIn+8nSv2pNulw
-         +e6Q==
-X-Gm-Message-State: ABy/qLaT76MgndG+elD63X9PFBVytsbl1L0YJ9eCNXc14u8nQXxkOWOS
-        m+KSd+OooP40F8U8u8Y86ZGyyj5KjfmIgOzLYWw=
-X-Google-Smtp-Source: APBJJlG3JzoNOLnsFn6mtfJA0Lw+YP9SC4OnUQSjkqUL0Rt4d/Z9PlTIgl3mOwRmKYL55olK0njRIVk45wvRnGdeHC4=
-X-Received: by 2002:a17:90a:e38e:b0:25c:1397:3c0b with SMTP id
- b14-20020a17090ae38e00b0025c13973c0bmr9283321pjz.37.1689587987721; Mon, 17
- Jul 2023 02:59:47 -0700 (PDT)
+        Mon, 17 Jul 2023 06:00:10 -0400
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB28A10D3;
+        Mon, 17 Jul 2023 03:00:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689588003; x=1721124003;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=0/4YfnWj7uZZvcBnfx2vVS2SmTppJGml5QU6wI2Ls2E=;
+  b=ec1w6SSpDWjz2aQ6KbmuzXoz1RtMxP15rwtZgJ7yJQbQt0h0VaWngsr8
+   GtiNcHv3a+e01j4jD1N91FWj38kdA1No1zQdTmZ7c7QA6wy3tUc1+YQIp
+   1aotsNHOHBrTDWMXGIKxCNVaXPhvMgKMxozfQt5gm5KhefWG1ufHJPDGd
+   karlOB+mYgEopeqjmn10kgdM2eEv6jOb1nhLzFXOjr1ak7a4I4TQF9iWf
+   c3FPDo+8mTa8DeV/IJ9dt7p/IV90xVIiIodhrqeosqZI1KqKglbFItNgu
+   Z4B3sC+5hdcujYZI0qvSq3Lwkz6LR+vO1D0JtHV70/nL8/8DFW22EUl2R
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10773"; a="452264270"
+X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
+   d="scan'208";a="452264270"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 03:00:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10773"; a="788595459"
+X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
+   d="scan'208";a="788595459"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga008.fm.intel.com with ESMTP; 17 Jul 2023 03:00:00 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 82458256; Mon, 17 Jul 2023 13:00:06 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Steve French <stfrench@microsoft.com>, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org, linux-kernel@vger.kernel.org
+Cc:     Steve French <sfrench@samba.org>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Tom Talpey <tom@talpey.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/1] smb: client: Rework memcpy() to avoid compilation error
+Date:   Mon, 17 Jul 2023 13:00:03 +0300
+Message-Id: <20230717100003.11824-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:8c07:b0:4d9:6458:66e8 with HTTP; Mon, 17 Jul 2023
- 02:59:47 -0700 (PDT)
-Reply-To: zongokatyh@gmail.com
-From:   kathryn zongo <westafricafundrecovery@gmail.com>
-Date:   Mon, 17 Jul 2023 09:59:47 +0000
-Message-ID: <CAOT=_FyGMD8y1kp6bbiHxanqUWmOP-DGwJHXzvdDNZ17_KjuDQ@mail.gmail.com>
-Subject: For your kind consideration!!
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=4.3 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ****
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Dear,
+In function ‘fortify_memcpy_chk’,
+    inlined from ‘CIFS_open’ at fs/smb/client/cifssmb.c:1249:3:
+include/linux/fortify-string.h:592:25: error: call to ‘__read_overflow2_field’ declared with attribute warning: detected read beyond size of field (2nd parameter); maybe use struct_group()? [-Werror=attribute-warning]
+  592 |                         __read_overflow2_field(q_size_field, size);
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc1: all warnings being treated as errors
 
-Nice to meet you, i am miss katyh zongo, very sorry for the informal
-manner in which this letter is reaching you as it was necessitated by
-my urgent need to get your response. I came across your email from my
-personal search and I decided to contact you and I've something very
-important which I would like to discuss with you and I would
-appreciate if you respond back to me through this my email address as
-to tell you more about me with my photos, my private email is as
-follows (zongokatyh@gmail.com)
+Instead of memcpy() use member-by-member copy. Let compiler do its job
+on optimisation.
 
-Thanks
-Miss katyh zongo
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ fs/smb/client/cifssmb.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/fs/smb/client/cifssmb.c b/fs/smb/client/cifssmb.c
+index 9dee267f1893..33ebb63826d3 100644
+--- a/fs/smb/client/cifssmb.c
++++ b/fs/smb/client/cifssmb.c
+@@ -1245,8 +1245,11 @@ CIFS_open(const unsigned int xid, struct cifs_open_parms *oparms, int *oplock,
+ 		*oplock |= CIFS_CREATE_ACTION;
+ 
+ 	if (buf) {
+-		/* copy from CreationTime to Attributes */
+-		memcpy((char *)buf, (char *)&rsp->CreationTime, 36);
++		buf->CreationTime = rsp->CreationTime;
++		buf->LastAccessTime = rsp->LastAccessTime;
++		buf->LastWriteTime = rsp->LastWriteTime;
++		buf->ChangeTime = rsp->ChangeTime;
++		buf->FileAttributes = rsp->FileAttributes;
+ 		/* the file_info buf is endian converted by caller */
+ 		buf->AllocationSize = rsp->AllocationSize;
+ 		buf->EndOfFile = rsp->EndOfFile;
+-- 
+2.40.0.1.gaa8946217a0b
+
