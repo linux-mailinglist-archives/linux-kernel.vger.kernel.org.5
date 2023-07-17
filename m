@@ -2,226 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB7A7756AC8
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 19:35:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59FEE756AD2
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 19:39:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231360AbjGQRfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 13:35:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51828 "EHLO
+        id S229925AbjGQRjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 13:39:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230203AbjGQRfl (ORCPT
+        with ESMTP id S229655AbjGQRjH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 13:35:41 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC887170D;
-        Mon, 17 Jul 2023 10:35:17 -0700 (PDT)
-Received: from jupiter.universe (dyndsl-091-248-189-171.ewe-ip-backbone.de [91.248.189.171])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: sre)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id DB88E660297B;
-        Mon, 17 Jul 2023 18:35:15 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1689615316;
-        bh=8oFJad9r/GlAEavQIAU1wTEML33q2mHg++XmmQwX2kM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DqGDoIY9y0wEE76avTYGCDjg2nvy3cTzIABdofTOtlqWP1xQHEbxkKh2SywY2DXdy
-         I3c0Tyemq4nHkprM5BJmufjc7d5OCgmnE6mzpUL0oMEr0uFgbW/dfdgWj3gisyiJcD
-         QuLNaYfxr79Hu9EvXE9Tf0PAySjLwpCq80Xn5Jiy7Kehe3xYDoNyPlzoy/69QH+aRB
-         AHchTHWkCNtvtTzvR75r59HZfQhYwabEiABq8dqffMvk8iIt6vZ30m1/JRBk8t9bz7
-         uN4OwQWin4TairUPZKBG/4MEqd698US7snTj8zu4++s/22NMqoIYN+VjDZ3tkrtkSV
-         aHOgrRb5jMZiA==
-Received: by jupiter.universe (Postfix, from userid 1000)
-        id D4FCD480C78; Mon, 17 Jul 2023 19:35:12 +0200 (CEST)
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     linux-phy@lists.infradead.org, linux-rockchip@lists.infradead.org
-Cc:     Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Simon Xue <xxm@rock-chips.com>, John Clark <inindev@gmail.com>,
-        Qu Wenruo <wqu@suse.com>, devicetree@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        kernel@collabora.com
-Subject: [PATCH v2 2/2] arm64: dts: rockchip: rk3588: add PCIe3 support
-Date:   Mon, 17 Jul 2023 19:35:12 +0200
-Message-Id: <20230717173512.65169-3-sebastian.reichel@collabora.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230717173512.65169-1-sebastian.reichel@collabora.com>
-References: <20230717173512.65169-1-sebastian.reichel@collabora.com>
+        Mon, 17 Jul 2023 13:39:07 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F017DFB
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 10:39:05 -0700 (PDT)
+Received: from ptz.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::77] helo=[127.0.0.1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1qLSBT-00044D-9i; Mon, 17 Jul 2023 19:38:55 +0200
+Message-ID: <8c91fd56-a815-d2ff-6f62-168eb76ae6c1@pengutronix.de>
+Date:   Mon, 17 Jul 2023 19:38:52 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.2
+Subject: Re: [PATCH v2 2/4] dt-bindings: arm: fsl: fix DEBIX binding
+Content-Language: en-US
+To:     Marco Felsch <m.felsch@pengutronix.de>
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, shawnguo@kernel.org, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com,
+        laurent.pinchart@ideasonboard.com, dan.scally@ideasonboard.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20230717165127.2882535-1-m.felsch@pengutronix.de>
+ <20230717165127.2882535-2-m.felsch@pengutronix.de>
+ <66b096e1-fcdc-8af7-63ea-9b74013eb667@pengutronix.de>
+ <20230717172424.yru3qqfz4xd7qw3a@pengutronix.de>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+In-Reply-To: <20230717172424.yru3qqfz4xd7qw3a@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:1d::77
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add both PCIe3 controllers together with the shared PHY.
+On 17.07.23 19:24, Marco Felsch wrote:
+> On 23-07-17, Ahmad Fatoum wrote:
+>> On 17.07.23 18:51, Marco Felsch wrote:
+>>> The current imx8mp-debix-model-a.dts uses all three compatibles. Fix the
+>>> corresponding bindings by adding an own entry for it. Mark
+>>> polyhex,imx8mp-debix as deprecated but keep it within the dts file since
+>>> we already have a user for it [1].
+>>>
+>>> [1] https://elixir.bootlin.com/barebox/v2023.07.1/source/arch/arm/ \
+>>>     boards/polyhex-debix/board.c#L38
+>>>
+>>> Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
+>>> ---
+>>> Changelog:
+>>>
+>>> v2:
+>>> - deprecate polyhex,imx8mp-debix
+>>>
+>>>  Documentation/devicetree/bindings/arm/fsl.yaml | 10 ++++++++--
+>>>  1 file changed, 8 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+>>> index 15d4110840654..b29974e3c30b3 100644
+>>> --- a/Documentation/devicetree/bindings/arm/fsl.yaml
+>>> +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+>>> @@ -1019,8 +1019,6 @@ properties:
+>>>                - dmo,imx8mp-data-modul-edm-sbc # i.MX8MP eDM SBC
+>>>                - fsl,imx8mp-evk            # i.MX8MP EVK Board
+>>>                - gateworks,imx8mp-gw74xx   # i.MX8MP Gateworks Board
+>>> -              - polyhex,imx8mp-debix      # Polyhex Debix boards
+>>> -              - polyhex,imx8mp-debix-model-a # Polyhex Debix Model A Board
+>>>                - toradex,verdin-imx8mp     # Verdin iMX8M Plus Modules
+>>>                - toradex,verdin-imx8mp-nonwifi  # Verdin iMX8M Plus Modules without Wi-Fi / BT
+>>>                - toradex,verdin-imx8mp-wifi  # Verdin iMX8M Plus Wi-Fi / BT Modules
+>>> @@ -1054,6 +1052,14 @@ properties:
+>>>            - const: phytec,imx8mp-phycore-som         # phyCORE-i.MX8MP SoM
+>>>            - const: fsl,imx8mp
+>>>  
+>>> +      - description: Polyhex DEBIX i.MX8MP based SBCs
+>>> +        items:
+>>> +          - enum:
+>>> +              - polyhex,imx8mp-debix-model-a        # Polyhex Debix Model A Board
+>>> +          - const: polyhex,imx8mp-debix             # Polyhex Debix boards
+>>> +            deprecated: true
+>>
+>> I don't see why you need to deprecate this. Can't you just change the comment
+>> to read "Polyhex i.MX8MP SBCs" or similar?
+> 
+> This was suggested by Krzysztof, since polyhex,imx8mp-debix was to
+> generic. I can keep it without the deprecation notice and just change
+> the comment since we need to keep dts compatible anyway.
 
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
----
- arch/arm64/boot/dts/rockchip/rk3588.dtsi | 120 +++++++++++++++++++++++
- 1 file changed, 120 insertions(+)
+I agree that using it as compatible for both SBC and SoMs, when the boards
+aren't based on the SoM isn't useful. I still think it's useful to have
+a compatible for "Debix i.MX8MP SBCs" that spans current lineup of Model A,
+Model B, B SE and possible future compatibles.
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3588.dtsi b/arch/arm64/boot/dts/rockchip/rk3588.dtsi
-index 88d702575db2..8f210f002fac 100644
---- a/arch/arm64/boot/dts/rockchip/rk3588.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3588.dtsi
-@@ -7,6 +7,11 @@
- #include "rk3588-pinctrl.dtsi"
- 
- / {
-+	pcie30_phy_grf: syscon@fd5b8000 {
-+		compatible = "rockchip,rk3588-pcie3-phy-grf", "syscon";
-+		reg = <0x0 0xfd5b8000 0x0 0x10000>;
-+	};
-+
- 	pipe_phy1_grf: syscon@fd5c0000 {
- 		compatible = "rockchip,rk3588-pipe-phy-grf", "syscon";
- 		reg = <0x0 0xfd5c0000 0x0 0x100>;
-@@ -80,6 +85,108 @@ i2s10_8ch: i2s@fde00000 {
- 		status = "disabled";
- 	};
- 
-+	pcie3x4: pcie@fe150000 {
-+		compatible = "rockchip,rk3588-pcie", "rockchip,rk3568-pcie";
-+		#address-cells = <3>;
-+		#size-cells = <2>;
-+		bus-range = <0x00 0x0f>;
-+		clocks = <&cru ACLK_PCIE_4L_MSTR>, <&cru ACLK_PCIE_4L_SLV>,
-+			 <&cru ACLK_PCIE_4L_DBI>, <&cru PCLK_PCIE_4L>,
-+			 <&cru CLK_PCIE_AUX0>, <&cru CLK_PCIE4L_PIPE>;
-+		clock-names = "aclk_mst", "aclk_slv",
-+			      "aclk_dbi", "pclk",
-+			      "aux", "pipe";
-+		device_type = "pci";
-+		interrupts = <GIC_SPI 263 IRQ_TYPE_LEVEL_HIGH 0>,
-+			     <GIC_SPI 262 IRQ_TYPE_LEVEL_HIGH 0>,
-+			     <GIC_SPI 261 IRQ_TYPE_LEVEL_HIGH 0>,
-+			     <GIC_SPI 260 IRQ_TYPE_LEVEL_HIGH 0>,
-+			     <GIC_SPI 259 IRQ_TYPE_LEVEL_HIGH 0>;
-+		interrupt-names = "sys", "pmc", "msg", "legacy", "err";
-+		#interrupt-cells = <1>;
-+		interrupt-map-mask = <0 0 0 7>;
-+		interrupt-map = <0 0 0 1 &pcie3x4_intc 0>,
-+				<0 0 0 2 &pcie3x4_intc 1>,
-+				<0 0 0 3 &pcie3x4_intc 2>,
-+				<0 0 0 4 &pcie3x4_intc 3>;
-+		linux,pci-domain = <0>;
-+		max-link-speed = <3>;
-+		msi-map = <0x0000 &its1 0x0000 0x1000>;
-+		num-lanes = <4>;
-+		phys = <&pcie30phy>;
-+		phy-names = "pcie-phy";
-+		power-domains = <&power RK3588_PD_PCIE>;
-+		ranges = <0x01000000 0x0 0xf0100000 0x0 0xf0100000 0x0 0x00100000>,
-+			 <0x02000000 0x0 0xf0200000 0x0 0xf0200000 0x0 0x00e00000>,
-+			 <0x03000000 0x0 0x40000000 0x9 0x00000000 0x0 0x40000000>;
-+		reg = <0xa 0x40000000 0x0 0x00400000>,
-+		      <0x0 0xfe150000 0x0 0x00010000>,
-+		      <0x0 0xf0000000 0x0 0x00100000>;
-+		reg-names = "dbi", "apb", "config";
-+		resets = <&cru SRST_PCIE0_POWER_UP>, <&cru SRST_P_PCIE0>;
-+		reset-names = "pwr", "pipe";
-+		status = "disabled";
-+
-+		pcie3x4_intc: legacy-interrupt-controller {
-+			interrupt-controller;
-+			#address-cells = <0>;
-+			#interrupt-cells = <1>;
-+			interrupt-parent = <&gic>;
-+			interrupts = <GIC_SPI 260 IRQ_TYPE_EDGE_RISING 0>;
-+		};
-+	};
-+
-+	pcie3x2: pcie@fe160000 {
-+		compatible = "rockchip,rk3588-pcie", "rockchip,rk3568-pcie";
-+		#address-cells = <3>;
-+		#size-cells = <2>;
-+		bus-range = <0x10 0x1f>;
-+		clocks = <&cru ACLK_PCIE_2L_MSTR>, <&cru ACLK_PCIE_2L_SLV>,
-+			 <&cru ACLK_PCIE_2L_DBI>, <&cru PCLK_PCIE_2L>,
-+			 <&cru CLK_PCIE_AUX1>, <&cru CLK_PCIE2L_PIPE>;
-+		clock-names = "aclk_mst", "aclk_slv",
-+			      "aclk_dbi", "pclk",
-+			      "aux", "pipe";
-+		device_type = "pci";
-+		interrupts = <GIC_SPI 258 IRQ_TYPE_LEVEL_HIGH 0>,
-+			     <GIC_SPI 257 IRQ_TYPE_LEVEL_HIGH 0>,
-+			     <GIC_SPI 256 IRQ_TYPE_LEVEL_HIGH 0>,
-+			     <GIC_SPI 255 IRQ_TYPE_LEVEL_HIGH 0>,
-+			     <GIC_SPI 254 IRQ_TYPE_LEVEL_HIGH 0>;
-+		interrupt-names = "sys", "pmc", "msg", "legacy", "err";
-+		#interrupt-cells = <1>;
-+		interrupt-map-mask = <0 0 0 7>;
-+		interrupt-map = <0 0 0 1 &pcie3x2_intc 0>,
-+				<0 0 0 2 &pcie3x2_intc 1>,
-+				<0 0 0 3 &pcie3x2_intc 2>,
-+				<0 0 0 4 &pcie3x2_intc 3>;
-+		linux,pci-domain = <1>;
-+		max-link-speed = <3>;
-+		msi-map = <0x1000 &its1 0x1000 0x1000>;
-+		num-lanes = <2>;
-+		phys = <&pcie30phy>;
-+		phy-names = "pcie-phy";
-+		power-domains = <&power RK3588_PD_PCIE>;
-+		ranges = <0x01000000 0x0 0xf1100000 0x0 0xf1100000 0x0 0x00100000>,
-+			 <0x02000000 0x0 0xf1200000 0x0 0xf1200000 0x0 0x00e00000>,
-+			 <0x03000000 0x0 0x40000000 0x9 0x40000000 0x0 0x40000000>;
-+		reg = <0xa 0x40400000 0x0 0x00400000>,
-+		      <0x0 0xfe160000 0x0 0x00010000>,
-+		      <0x0 0xf1000000 0x0 0x00100000>;
-+		reg-names = "dbi", "apb", "config";
-+		resets = <&cru SRST_PCIE1_POWER_UP>, <&cru SRST_P_PCIE1>;
-+		reset-names = "pwr", "pipe";
-+		status = "disabled";
-+
-+		pcie3x2_intc: legacy-interrupt-controller {
-+			interrupt-controller;
-+			#address-cells = <0>;
-+			#interrupt-cells = <1>;
-+			interrupt-parent = <&gic>;
-+			interrupts = <GIC_SPI 255 IRQ_TYPE_EDGE_RISING 0>;
-+		};
-+	};
-+
- 	pcie2x1l0: pcie@fe170000 {
- 		compatible = "rockchip,rk3588-pcie", "rockchip,rk3568-pcie";
- 		#address-cells = <3>;
-@@ -218,4 +325,17 @@ combphy1_ps: phy@fee10000 {
- 		rockchip,pipe-phy-grf = <&pipe_phy1_grf>;
- 		status = "disabled";
- 	};
-+
-+	pcie30phy: phy@fee80000 {
-+		compatible = "rockchip,rk3588-pcie3-phy";
-+		reg = <0x0 0xfee80000 0x0 0x20000>;
-+		#phy-cells = <0>;
-+		clocks = <&cru PCLK_PCIE_COMBO_PIPE_PHY>;
-+		clock-names = "pclk";
-+		resets = <&cru SRST_PCIE30_PHY>;
-+		reset-names = "phy";
-+		rockchip,pipe-grf = <&php_grf>;
-+		rockchip,phy-grf = <&pcie30_phy_grf>;
-+		status = "disabled";
-+	};
- };
+Cheers,
+Ahmad
+
+> 
+> Regards,
+>   Marco
+> 
+
 -- 
-2.40.1
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
