@@ -2,173 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BAC3755BE1
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 08:38:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A92CB755BC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 08:34:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229766AbjGQGir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 02:38:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39750 "EHLO
+        id S229522AbjGQGek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 02:34:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229752AbjGQGil (ORCPT
+        with ESMTP id S229379AbjGQGej (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 02:38:41 -0400
-Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BA6311C
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 23:38:40 -0700 (PDT)
-Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20230717063838epoutp031a9e30f25675d511cf200fbf6ce3afdd~ylFijfD8J2127521275epoutp03T
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 06:38:38 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20230717063838epoutp031a9e30f25675d511cf200fbf6ce3afdd~ylFijfD8J2127521275epoutp03T
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1689575918;
-        bh=7IlN+/vOFpy/kZO8jlCQ1rWIEH+D8SX1OhK9NB37YCk=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=X0zpziFk2gwcHXZHdcfH64MdFNpkvMeFvr6Ic9KEQLxI10Y7w9MtfboxTh0fRJXZ0
-         bCbKwmCFNwlHbw+2S/itKoUsSKDS8r4ieIdIwZE4n4CycxocBhs1eu4JucCUuEf1Eb
-         Utd/Q6GSiCphnoLqkb+6mZ945K5tqdHEZzHqRLmw=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas2p3.samsung.com (KnoxPortal) with ESMTP id
-        20230717063837epcas2p37b528d9a3d00d4a148c41b90d4917c9e~ylFh779rH1900219002epcas2p3U;
-        Mon, 17 Jul 2023 06:38:37 +0000 (GMT)
-Received: from epsmges2p1.samsung.com (unknown [182.195.36.92]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4R4C8Y4XWPz4x9Q1; Mon, 17 Jul
-        2023 06:38:37 +0000 (GMT)
-Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
-        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        4F.4D.49913.DE1E4B46; Mon, 17 Jul 2023 15:38:37 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas2p3.samsung.com (KnoxPortal) with ESMTPA id
-        20230717063837epcas2p3780fbf0f8c12ca070aa296766d0eb5e8~ylFhEBG441900219002epcas2p3P;
-        Mon, 17 Jul 2023 06:38:37 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20230717063837epsmtrp10579e02b2b7977c549a5225cf3a1414c~ylFhDBuos1682716827epsmtrp1B;
-        Mon, 17 Jul 2023 06:38:36 +0000 (GMT)
-X-AuditID: b6c32a45-5cfff7000000c2f9-93-64b4e1ed0f2c
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        DC.60.34491.CE1E4B46; Mon, 17 Jul 2023 15:38:36 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.229.9.55]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20230717063836epsmtip2d0ed344014d8d5ae2e73c3633f2a756b~ylFgx2w2U2665326653epsmtip2J;
-        Mon, 17 Jul 2023 06:38:36 +0000 (GMT)
-From:   Jaewon Kim <jaewon02.kim@samsung.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jaewon Kim <jaewon02.kim@samsung.com>
-Subject: [PATCH v3] arm64: dts: exynos: add pwm node for exynosautov9-sadk
-Date:   Mon, 17 Jul 2023 15:33:19 +0900
-Message-Id: <20230717063319.19974-1-jaewon02.kim@samsung.com>
-X-Mailer: git-send-email 2.17.1
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrBKsWRmVeSWpSXmKPExsWy7bCmhe7bh1tSDBY8UrJ4MG8bm8WaveeY
-        LOYfOcdqsaPhCKtF34uHzBabHl9jtbi8aw6bxYzz+5gsWvceYXfg9Ni0qpPN4861PWwem5fU
-        e/RtWcXo8XmTXABrVLZNRmpiSmqRQmpecn5KZl66rZJ3cLxzvKmZgaGuoaWFuZJCXmJuqq2S
-        i0+ArltmDtA9SgpliTmlQKGAxOJiJX07m6L80pJUhYz84hJbpdSClJwC8wK94sTc4tK8dL28
-        1BIrQwMDI1OgwoTsjMe33jEXXOepWHHsC2MD4y6uLkZODgkBE4mp/56zdjFycQgJ7GCUOLh9
-        GiNIQkjgE6NE53weiMQ3RonGlftYYDr61nUyQyT2MkqsnP6TBcL5yChxrmEnWDubgLbE9/WL
-        weaKCKxhlFj9aTNYFbPABkaJY/tfsIJUCQt4Sdw/9pUdxGYRUJW4uekWWDevgK3E6U0v2CD2
-        yUus3nCAGcLexy7xeW8ohO0i8fVyC1RcWOLV8S3sELaUxMv+Nig7W6J9+h9WCLtC4uKG2VAz
-        jSVmPWsH2sUBdJCmxPpd+iCmhICyxJFbYF8yC/BJdBz+yw4R5pXoaBOCaFSTuD/1HNQQGYlJ
-        R1YyQdgeEn19p6EhFytx9+Jj1gmMsrMQ5i9gZFzFKJZaUJybnlpsVGAIj6Tk/NxNjOAkpuW6
-        g3Hy2w96hxiZOBgPMUpwMCuJ8H5ftSlFiDclsbIqtSg/vqg0J7X4EKMpMLQmMkuJJucD02he
-        SbyhiaWBiZmZobmRqYG5kjjvvda5KUIC6YklqdmpqQWpRTB9TBycUg1MNe2OHw58+d5S6OW/
-        qv8cY1/WKS0x1tUrPzK/1zwf9ijQ+/Ck2qcCcs2F2xzW9Zs982Q9oRyw+GFz8xSdnKj2iwZS
-        WkKdqyMEz7yYMGXR401dT9fqyRy66fyoZunTu1lMRhG/17auXXKqpTBWtX15lvLcvJ3z6t7P
-        mfQ7qY+zZf2cEM5pi6aw/SxXqfh9KjAm+gfXq4g7h+sP/OU+xXhlclF95h/2yTW/MupPy1sf
-        m7E6lqXthMvnqU6y07q/FgRXsPRXOki5tkc2nzlgfv1Q8ZXnvQ5cx02rgyfNVWUrMvWPeGk8
-        W/TN0Rmr7C+KvFt33cLt3VbrBP9jEQ0z1/VsbwmsUKrmt413FL0oXCOoxFKckWioxVxUnAgA
-        YIAfFusDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupiluLIzCtJLcpLzFFi42LZdlhJXvfNwy0pBk13TCwezNvGZrFm7zkm
-        i/lHzrFa7Gg4wmrR9+Ihs8Wmx9dYLS7vmsNmMeP8PiaL1r1H2B04PTat6mTzuHNtD5vH5iX1
-        Hn1bVjF6fN4kF8AaxWWTkpqTWZZapG+XwJXx+NY75oLrPBUrjn1hbGDcxdXFyMkhIWAi0beu
-        k7mLkYtDSGA3o8T15ctYIRIyEsuf9bFB2MIS91uOsEIUvWeUmH9yGQtIgk1AW+L7+sVgCRGB
-        dYwSLd9eMoI4zAJbGCUuHn8G1i4s4CVx/9hXdhCbRUBV4uamW4wgNq+ArcTpTS+gVshLrN5w
-        gHkCI88CRoZVjJKpBcW56bnFhgWGeanlesWJucWleel6yfm5mxjBwaWluYNx+6oPeocYmTgY
-        DzFKcDArifB+X7UpRYg3JbGyKrUoP76oNCe1+BCjNAeLkjiv+IveFCGB9MSS1OzU1ILUIpgs
-        EwenVAOTRJmhZrAo82Hd96vmNjnkK4TdPLn4Enu2XUteXF6fobr8uTNal691Ciw785Tz1Gcm
-        l6Wf/03cN1dz3fcVhrH15oy8+fs/ZH3Y27+FfaJfWKx6QWO1qcDmkoRyds7jx0v9bjul+Ldk
-        Hdx7O3dNq8ijfZ/cDEv+mi65p/h408QmKQnBNJXbf7MM1hntfBk8xfmvDPelW7MeCtefPLzl
-        xPfJXdIB2tJ+WzJnFV6f0iocn1PsdfDAQp8Ph9eKnSia+13oZIfd9xu7fRxuen3vaLySbbRJ
-        86dG8czyiwouIos+V4RJKPYWH+0qs+381ddu83V+am3E8pgjllUr9B+W14lsf35svhyfnkhz
-        3KffGcxKLMUZiYZazEXFiQDIcj6nnQIAAA==
-X-CMS-MailID: 20230717063837epcas2p3780fbf0f8c12ca070aa296766d0eb5e8
-X-Msg-Generator: CA
+        Mon, 17 Jul 2023 02:34:39 -0400
+Received: from EUR01-VE1-obe.outbound.protection.outlook.com (mail-ve1eur01on2074.outbound.protection.outlook.com [40.107.14.74])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 733DED9;
+        Sun, 16 Jul 2023 23:34:37 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mg591heIiU74FDgGRtqHlhl/BoNzsYDu9PUdJ9YrGlyzdASFLkPky+Meg95k1XmP7MhkllTDMlRGTn8HOU0UU3F1eUvRv2bOsUpbH7HRuA/ERR42lfoFusZnhIS5P/g5dgIuIkvaYzUSwGxV9I6CNqWq6c3/lgm8jkwXdBSYrifFWIZbt4ZdHG1gu2T0HZ99mDOE3qwuMVu72+GU/EqU3kO1Swf9gayB9mO4Qz1TLHnd7RHOEAwWhw+7Nn9FzQUkvVU1t1Bu75lVsjjsZWyqX8BLtS7srkzsA4xIk9lEn5vC+OxR/t0WAHbvpI9RIBB1BiyTCSJqqZCr/sWcSmwdQA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=b6yR5bKG0Rp3XLnuqlIJ1EGpHGr+e0i4APjs7GC+N48=;
+ b=CIy0lEvQ9m7GGbUH/51xsz1grA0NuMDx3UZ0eIs0uv820QjUyRy4UfIZy/jVZytMvFn/ka/YrWaqmCfBSCEY7bJMjG1eOuOiwtvu7A73yVNbBJ2h6RHJn9C5boY+75o4THyLBM4GQybTN3KVZRyif29w8p9dY1uOWSIa7Wh24A0IwOaebwn+obN3KNaiY1Yb2Rs0/8H+NkL/6x/aBN/+G50xzEGaMae4+hab+ISSr6tPqD0gl3WuR4XXOahwvIhIRS5aJD+N2fMGonX2DXzaICyP0cddBo9Iea1mbDP4ATUzvDL3ACOBvaDjvj/S/WE+LaCXp181UXCjytjaRqYKkg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 194.138.21.75) smtp.rcpttodomain=linux-watchdog.org
+ smtp.mailfrom=siemens.com; dmarc=pass (p=reject sp=reject pct=100)
+ action=none header.from=siemens.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=siemens.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=b6yR5bKG0Rp3XLnuqlIJ1EGpHGr+e0i4APjs7GC+N48=;
+ b=wNV+pCx99dIoWBcAdPVqvALtoEFRPOg7SHinxXN2en+ZeqrdfEvxCNuoW6BmYNTUA5I4pHDl/as9BiSQsdYGMFRyWtUmQDmmvuC27AQrsNFNFARQudWvu6KpIRH8evSYNqLpHl0Jbv9GEvks6oskDjj24fZm65QJ+RrqPzbYjBkWVpeO8M/XJ3Zsat0q0FmimFh689YofvfAhnY7G6XHTRn31UBYa6zb21HizeQWOukJEJZo5+MiVJUSI3Isj07Eda+nEK5ZMx6p5HWLQCz4KLRC5pFsin/reGyKle9BYyPePxFKlIAF+h8r9dkGCTCBrr4fcRgpAYWZZK287uvrkA==
+Received: from GVYP280CA0029.SWEP280.PROD.OUTLOOK.COM (2603:10a6:150:f9::7) by
+ AS2PR10MB7108.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:60f::7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6565.32; Mon, 17 Jul 2023 06:34:35 +0000
+Received: from HE1EUR01FT077.eop-EUR01.prod.protection.outlook.com
+ (2603:10a6:150:f9:cafe::45) by GVYP280CA0029.outlook.office365.com
+ (2603:10a6:150:f9::7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.33 via Frontend
+ Transport; Mon, 17 Jul 2023 06:34:35 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 194.138.21.75)
+ smtp.mailfrom=siemens.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=siemens.com;
+Received-SPF: Pass (protection.outlook.com: domain of siemens.com designates
+ 194.138.21.75 as permitted sender) receiver=protection.outlook.com;
+ client-ip=194.138.21.75; helo=hybrid.siemens.com; pr=C
+Received: from hybrid.siemens.com (194.138.21.75) by
+ HE1EUR01FT077.mail.protection.outlook.com (10.152.0.209) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6609.20 via Frontend Transport; Mon, 17 Jul 2023 06:34:34 +0000
+Received: from CNPEK01M02MSX.ad011.siemens.net (139.24.237.215) by
+ DEMCHDC8VRA.ad011.siemens.net (194.138.21.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Mon, 17 Jul 2023 08:34:33 +0200
+Received: from CNPEK01M03MSX.ad011.siemens.net (139.24.237.220) by
+ CNPEK01M02MSX.ad011.siemens.net (139.24.237.215) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Mon, 17 Jul 2023 14:34:30 +0800
+Received: from CNPEK01M03MSX.ad011.siemens.net ([139.24.237.220]) by
+ CNPEK01M03MSX.ad011.siemens.net ([139.24.237.220]) with mapi id
+ 15.01.2507.027; Mon, 17 Jul 2023 14:34:30 +0800
+From:   "Li, Hua Qian" <HuaQian.Li@siemens.com>
+To:     "wim@linux-watchdog.org" <wim@linux-watchdog.org>,
+        "linux@roeck-us.net" <linux@roeck-us.net>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "krzysztof.kozlowski@linaro.org" <krzysztof.kozlowski@linaro.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>
+CC:     "Su, Bao Cheng" <baocheng.su@siemens.com>,
+        "kristo@kernel.org" <kristo@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "huaqianlee@gmail.com" <huaqianlee@gmail.com>,
+        "nm@ti.com" <nm@ti.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "Kiszka, Jan" <jan.kiszka@siemens.com>,
+        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
+        "vigneshr@ti.com" <vigneshr@ti.com>
+Subject: Re: [PATCH v4 0/3] Add support for WDIOF_CARDRESET on TI AM65x
+Thread-Topic: [PATCH v4 0/3] Add support for WDIOF_CARDRESET on TI AM65x
+Thread-Index: AQHZuGQ+yWzLgdq38k6AjTC46fileq+89ZKAgAACDgCAAAEkgIAAAcyA
+Date:   Mon, 17 Jul 2023 06:34:30 +0000
+Message-ID: <b82847f51ec00d873a38eab21b7ada885593aeb8.camel@siemens.com>
+References: <20230717040723.1306374-1-huaqian.li@siemens.com>
+         <f5ff9616-c71c-f71e-ce4a-7b9fa7055bb4@linaro.org>
+         <e57e5d8efc3107b5f2c4e66492650b9d0c17b898.camel@siemens.com>
+         <625a92b8-b629-a4ef-6176-635e1b7885db@linaro.org>
+In-Reply-To: <625a92b8-b629-a4ef-6176-635e1b7885db@linaro.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [139.24.108.35]
 Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20230717063837epcas2p3780fbf0f8c12ca070aa296766d0eb5e8
-References: <CGME20230717063837epcas2p3780fbf0f8c12ca070aa296766d0eb5e8@epcas2p3.samsung.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-ID: <926E4A268060DB46B1C8AA34319DA660@siemens.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: HE1EUR01FT077:EE_|AS2PR10MB7108:EE_
+X-MS-Office365-Filtering-Correlation-Id: 672bf754-2e98-4be9-98a4-08db868fe2d9
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: XJd9X9MMTIYlhieJPMVHw+HmaQyybpXw2hJJs40+YuD3WgiY4Jkzdj+1qdR9aYaYFSzClE4Ir0UCATeBZ5mWt5f4rTnXoRDMBVm100iP1BgDR5WnWNX0vWRA9FTdtXpW4kn5C2bsD4XAFqN2Tyx+7EBSyQRm2P0Ao4WCQMkTtvQ9Cqleobe4Xtqt5RfXGkw/kxIFmmkvI54P4KWLjctUwGH7dIltdjtmgrYiBUIijQUKE+GB2vXTb0EMTBB/G8dNFaVNuoPCRAJwMwdH6fe3BYeMKY1R5s2t/eIm0xd/dtwGrVpB6yTlExBDBcUt0TEPZ+fo7XKKt8nK1azuyZ0o9GpYr9Ig8sqgLVruxmgCn348Il37V5nrrkq5I0VO+knBNsIi+f8dmjnbLOdJ83sw3ZM+0oZlWIIxDHFYYyPyLZ8WXPPyTSNLP+RfQDv/Sgnvob7zIYQ4+iqQTo3OJvPuvo58WsDw6+UfiHl/4YBLp+Ivfi06MtOtWeaFfNzCbH9xOpOyL/tn4gM2dhwXlhHxcCpYwHx41E8pl/b1FQTL17kLTT6Xs+z8dOdVi4hzbja+wxRPOO0WfJP8OIugoSv8ZMJvkgdyh2p7PMw+rCEqplkY/g5NrPQaXBeR0/D2UAGPLS6RS/3P7i0lu9ArkZiQlOns+LfTdyPh4denDSVGKCNEuk9nx34nb6My7aaG49vmqsWoB1z/OA9Z79CU92glhwP1FapVlrB6q99WJXaUVPrMkz9rkfkqIdzOoL+XxUyjhmxw3b1R/qnFC4c1N+9O3A==
+X-Forefront-Antispam-Report: CIP:194.138.21.75;CTRY:DE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:hybrid.siemens.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(136003)(396003)(346002)(376002)(451199021)(82310400008)(40470700004)(46966006)(36840700001)(8676002)(478600001)(45080400002)(8936002)(5660300002)(41300700001)(40480700001)(966005)(4326008)(316002)(26005)(186003)(7416002)(53546011)(110136005)(54906003)(70206006)(70586007)(956004)(2616005)(336012)(40460700003)(36860700001)(47076005)(2906002)(82960400001)(81166007)(356005)(82740400003)(36756003)(86362001)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: siemens.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jul 2023 06:34:34.6420
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 672bf754-2e98-4be9-98a4-08db868fe2d9
+X-MS-Exchange-CrossTenant-Id: 38ae3bcd-9579-4fd4-adda-b42e1495d55a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=38ae3bcd-9579-4fd4-adda-b42e1495d55a;Ip=[194.138.21.75];Helo=[hybrid.siemens.com]
+X-MS-Exchange-CrossTenant-AuthSource: HE1EUR01FT077.eop-EUR01.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS2PR10MB7108
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add pwm node to support fan on exynosautov9-sadk board.
-PWM channel 3 of ExynosAutov9 is connected to fan for SoC cooling
-in SADK board.
-
-Signed-off-by: Jaewon Kim <jaewon02.kim@samsung.com>
----
-Changes in v3:
- - removed adding compatible to driver.
-
-Changes in v2:
- - add compatible string to driver.
----
- arch/arm64/boot/dts/exynos/exynosautov9-sadk.dts |  6 ++++++
- arch/arm64/boot/dts/exynos/exynosautov9.dtsi     | 10 ++++++++++
- 2 files changed, 16 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/exynos/exynosautov9-sadk.dts b/arch/arm64/boot/dts/exynos/exynosautov9-sadk.dts
-index 898c2fc345ed..e717bb1cad81 100644
---- a/arch/arm64/boot/dts/exynos/exynosautov9-sadk.dts
-+++ b/arch/arm64/boot/dts/exynos/exynosautov9-sadk.dts
-@@ -50,6 +50,12 @@
- 	};
- };
- 
-+&pwm {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pwm_tout3>;
-+	status = "okay";
-+};
-+
- &serial_0 {
- 	pinctrl-0 = <&uart0_bus_dual>;
- 	status = "okay";
-diff --git a/arch/arm64/boot/dts/exynos/exynosautov9.dtsi b/arch/arm64/boot/dts/exynos/exynosautov9.dtsi
-index d3c5cdeff47f..3b906f4db907 100644
---- a/arch/arm64/boot/dts/exynos/exynosautov9.dtsi
-+++ b/arch/arm64/boot/dts/exynos/exynosautov9.dtsi
-@@ -1560,6 +1560,16 @@
- 			samsung,syscon-phandle = <&pmu_system_controller>;
- 			samsung,cluster-index = <1>;
- 		};
-+
-+		pwm: pwm@103f0000 {
-+			compatible = "samsung,exynosautov9-pwm",
-+				     "samsung,exynos4210-pwm";
-+			reg = <0x103f0000 0x100>;
-+			samsung,pwm-outputs = <0>, <1>, <2>, <3>;
-+			#pwm-cells = <3>;
-+			clocks = <&xtcxo>;
-+			clock-names = "timers";
-+		};
- 	};
- };
- 
--- 
-2.17.1
-
+T24gTW9uLCAyMDIzLTA3LTE3IGF0IDA4OjI3ICswMjAwLCBLcnp5c3p0b2YgS296bG93c2tpIHdy
+b3RlOg0KPiBPbiAxNy8wNy8yMDIzIDA4OjI0LCBMaSwgSHVhIFFpYW4gd3JvdGU6DQo+ID4gT24g
+TW9uLCAyMDIzLTA3LTE3IGF0IDA4OjE2ICswMjAwLCBLcnp5c3p0b2YgS296bG93c2tpIHdyb3Rl
+Og0KPiA+ID4gT24gMTcvMDcvMjAyMyAwNjowNywgaHVhcWlhbi5saUBzaWVtZW5zLmNvbcKgd3Jv
+dGU6DQo+ID4gPiA+IEZyb206IExpIEh1YSBRaWFuIDxodWFxaWFuLmxpQHNpZW1lbnMuY29tPg0K
+PiA+ID4gPiANCj4gPiA+ID4gVGhlIHdhdGNoZG9nIGhhcmR3YXJlIG9mIFRJIEFNNjVYIHBsYXRm
+b3JtIGRvZXMgbm90IHN1cHBvcnQNCj4gPiA+ID4gV0RJT0ZfQ0FSRFJFU0VUIGZlYXR1cmUsIGFk
+ZCBhIHJlc2VydmVkIG1lbW9yeSB0byBzYXZlIHRoZQ0KPiA+ID4gPiB3YXRjaGRvZw0KPiA+ID4g
+PiByZXNldCBjYXVzZSwgdG8ga25vdyBpZiB0aGUgYm9hcmQgcmVib290IGlzIGR1ZSB0byBhIHdh
+dGNoZG9nDQo+ID4gPiA+IHJlc2V0Lg0KPiA+ID4gPiANCj4gPiA+ID4gU2lnbmVkLW9mZi1ieTog
+TGkgSHVhIFFpYW4gPGh1YXFpYW4ubGlAc2llbWVucy5jb20+DQo+ID4gPiA+IC0tLQ0KPiA+ID4g
+PiBDaGFuZ2VzIGluIHY0Og0KPiA+ID4gPiAtIEZpeCB0aGUgY29kaW5nIHN0eWxlLg0KPiA+ID4g
+PiAtIEFkZCB1c2FnZSBub3RlIGZvciB0aGUgcmVzZXJ2ZWQgbWVtb3J5Lg0KPiA+ID4gPiAtIExp
+bmsgdG8gdjM6DQo+ID4gPiA+IMKgDQo+ID4gPiA+IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xp
+bnV4LXdhdGNoZG9nLzIwMjMwNzEzMDk1MTI3LjEyMzAxMDktMS1odWFxaWFuLmxpQHNpZW1lbnMu
+Y29tDQo+ID4gPiANCj4gPiA+IE11Y2ggbW9yZSBjaGFuZ2VkLiBZb3UgYWRkZWQgZXhhbXBsZSBp
+biB0aGUgYmluZGluZ3Mgd2hpY2ggbm8gb25lDQo+ID4gPiBhc2tlZA0KPiA+ID4gZm9yLiBUaGVu
+IHlvdSBhZGRlZCBtdWx0aXBsZSBmYWtlIHJldmlldyB0YWdzIHRvIGFsbCB0aGUgcGF0Y2hlcy4N
+Cj4gPiA+IA0KPiA+ID4gQmVzdCByZWdhcmRzLA0KPiA+ID4gS3J6eXN6dG9mDQo+ID4gPiANCj4g
+PiBIaSwNCj4gPiANCj4gPiBTb3JyeSBmb3IgdGhlIHdyb25nIHN0YXRlbWVudC4gSSBtaXNzZWQg
+c29tZSBrZXkgaW5mb3JtYXRpb24gYW5kDQo+ID4gbWlzc3VuZGVyc3Rvb2QgYFJldmlld2VkLWJ5
+YCwgSSB0cmVhdGVkIGBSZXZpZXdlZC1ieWAgYXMgYFdobw0KPiA+IGhhcyByZXZpZXdlZGAuDQo+
+IA0KPiBCdXQgeW91IGRvbid0IGhhdmUgZXZlbiB0aGF0IGluZm9ybWF0aW9uIHdobyBoYXMgcmV2
+aWV3ZWQhIFdoZXJlIGRvDQo+IHlvdQ0KPiBzZWUgYW55IHJldmlld3MgY29taW5nIGZyb20gbWUg
+Zm9yIHBhdGNoICMyPyBXaGVyZSBkbyB5b3Ugc2VlIHJldmlld3MNCj4gZnJvbSBSb2IgZm9yIHBh
+dGNoICMzPw0KPiANCj4gQmVzdCByZWdhcmRzLA0KPiBLcnp5c3p0b2YNCj4gDQpJIGdvdCB0aGVz
+ZSBpbmZvcm1hdGlvbiBmcm9tIG15IGVtYWlsIHRocmVhZC4gQW55d2F5IEkgbWFkZSBhIHN0dXBp
+ZA0KbWlzdGFrZSwgc29ycnkgZm9yIHdhc3RpbmcgeW91ciB0aW1lLg0KDQpCeSB0aGUgd2F5LCB3
+aGVuIHlvdSB3cm90ZSB0aGUgZm9sbG93aW5nIGluICdbUEFUQ0ggdjMgMS8zXSBkdC0NCmJpbmRp
+bmdzOiB3YXRjaGRvZzogdGkscnRpLXdkdDogQWRkIHN1cHBvcnQgZm9yIFdESU9GX0NBUkRSRVNF
+VCcsIHlvdQ0Kd2VyZSBraW5kIG9mIHNheWluZyB0aGF0IGl0IGxvb2tzIGdvb2QgdG8geW91IGlm
+IEkgcmVtb3ZlIHRoZSBleHRyYQ0KZW1wdHkgbGluZSwgcmlnaHQ/DQoNCkluIGFueSBjYXNlOg0K
+UmV2aWV3ZWQtYnk6IEtyenlzenRvZiBLb3psb3dza2kgPGtyenlzenRvZi5rb3psb3dza2lAbGlu
+YXJvLm9yZz4NCg0KQmVzdCByZWdhcmRzLA0KTGkgSHVhIFFpYW4NCg==
