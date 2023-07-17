@@ -2,45 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 724F9757021
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 01:00:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD712757032
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 01:04:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229708AbjGQXAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 19:00:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52074 "EHLO
+        id S231168AbjGQXEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 19:04:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230494AbjGQXAZ (ORCPT
+        with ESMTP id S229946AbjGQXEI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 19:00:25 -0400
+        Mon, 17 Jul 2023 19:04:08 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6986C1712
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 15:59:51 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 805D7EE
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 16:03:24 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0243761168
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 22:59:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 531E3C433C8;
-        Mon, 17 Jul 2023 22:59:48 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5AE746131B
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 23:01:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7C7AC433C8;
+        Mon, 17 Jul 2023 23:01:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689634789;
-        bh=w16O/p1JmAQil+GKF+Te1GDFLCerOtCeggV7C++Q+oM=;
+        s=k20201202; t=1689634885;
+        bh=/kwANh+mU41sYBL/f/GaQRVCEPcgNtHVKDIA6DCSsZ0=;
         h=From:To:Cc:Subject:Date:From;
-        b=e9DltCNVrYMkE3KNchvO4i/D/fExd0Pd6WQdPFyt3s2hDKoPHpDKzUr+Xwzu3KN8w
-         BzWz0GPZnr8+j7bzrLnioCYW1DH6P8UgZnVCvAgQU534J0u9fYpHmWPAXplrr2esxh
-         A+XyigJg2epZLWC4PoHZQWKvhMxKcRVySwY+O8cB36PmcR3+btCLzAgva2YcATTGNM
-         FpYUBX+dnEVkbjs4P59TlLy3AGW2hIfreWn/WiMvyu5+DkaLenJ84dSCNDnRc1EXvR
-         Ckio+YKWsRTyxumfpb2pMPZlm9Zc33KUKHXxpzBY6xsi+zR4jQADlweEUOcC+Mm5ym
-         NJZlrkLpvwfjA==
-Received: (nullmailer pid 3214909 invoked by uid 1000);
-        Mon, 17 Jul 2023 22:56:41 -0000
+        b=rxt7lYKaBGrbPMbfRK8TG1v+/ApFv7RbzKZnykQIiUKGGxmwzuPiHD2S/iWtGfyND
+         5thMQSIJjcKqIu18SdTHqibpIKnXGHsFABieXIxDI8h0R0MTeqTMRop0+2R6z80P8e
+         SSto36nGI9R3FNR1HKq4tO9CNdqujx1n18ggoH9m68C2zLYGuz/70tamCka46VBx3G
+         tyWfQ8w1Z9H9udIx/kHEKbsxAzh75EVKpsmCyynwhIKITUJsFm6fVyClrFoDcVNq+x
+         ZdoDMCgLmZeUXc/xbby7sR6b1nHv4P1MnWpm83P3m+mKfF9vxg7yQ/AXwszrYEopFg
+         ffMBSPt6TFFEQ==
+Received: (nullmailer pid 3215170 invoked by uid 1000);
+        Mon, 17 Jul 2023 22:56:51 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Wei Xu <xuwei5@hisilicon.com>, Russell King <linux@armlinux.org.uk>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Russell King <linux@armlinux.org.uk>
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ARM: hisi: Drop unused includes
-Date:   Mon, 17 Jul 2023 16:56:38 -0600
-Message-Id: <20230717225639.3214794-1-robh@kernel.org>
+Subject: [PATCH] ARM: dove: Drop unused includes
+Date:   Mon, 17 Jul 2023 16:56:45 -0600
+Message-Id: <20230717225645.3214989-1-robh@kernel.org>
 X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -54,25 +57,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-of_platform.h is not needed, so drop it.
+Several includes are not needed, so drop them.
 
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- arch/arm/mach-hisi/hotplug.c | 1 -
- 1 file changed, 1 deletion(-)
+ arch/arm/mach-dove/common.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/arch/arm/mach-hisi/hotplug.c b/arch/arm/mach-hisi/hotplug.c
-index c517941416f1..f5655ad1c351 100644
---- a/arch/arm/mach-hisi/hotplug.c
-+++ b/arch/arm/mach-hisi/hotplug.c
-@@ -8,7 +8,6 @@
- #include <linux/delay.h>
+diff --git a/arch/arm/mach-dove/common.c b/arch/arm/mach-dove/common.c
+index cd4ae7e4768d..3aea90bbb41a 100644
+--- a/arch/arm/mach-dove/common.c
++++ b/arch/arm/mach-dove/common.c
+@@ -9,8 +9,6 @@
+ #include <linux/dma-mapping.h>
+ #include <linux/init.h>
  #include <linux/io.h>
- #include <linux/of_address.h>
+-#include <linux/of.h>
 -#include <linux/of_platform.h>
- #include <asm/cacheflush.h>
- #include <asm/smp_plat.h>
- #include "core.h"
+ #include <linux/platform_data/dma-mv_xor.h>
+ #include <linux/platform_data/usb-ehci-orion.h>
+ #include <linux/platform_device.h>
 -- 
 2.40.1
 
