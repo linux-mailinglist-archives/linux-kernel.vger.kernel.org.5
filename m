@@ -2,48 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCB297563D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 15:08:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 453497563ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 15:12:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231441AbjGQNIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 09:08:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49268 "EHLO
+        id S229458AbjGQNMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 09:12:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231423AbjGQNIs (ORCPT
+        with ESMTP id S229621AbjGQNMK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 09:08:48 -0400
-Received: from smtp1.axis.com (smtp1.axis.com [195.60.68.17])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44831DE;
-        Mon, 17 Jul 2023 06:08:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1689599326;
-  x=1721135326;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:references:in-reply-to:to:cc;
-  bh=Q3mm2Qg7ryGUghj23XfvWG3rKzBCiU7ABu9S+xftYUM=;
-  b=AVzS57I9695p8X5gxTxlaftppG+6aq+uzoLpUKj872ssAsSyhg3D8XRq
-   w+5i2jh1u+NVCI636xjKcAdGhgWtG4Ek4WWxF0Lae3XEmXS4EZn6skVmS
-   U0uZ5jCV8+y5nQSaM+K/4lGocWR/6uKCTX6H3WlT1Lp5rYAl56N6IQML5
-   RsxKDURo00k161S0d4UkxXRSC3tBbmKJjFE/SdUt97Zvu1cMIxObwzdpt
-   fPn8f3Q+Ii1z+VXtnn46DmUU4lRzQLhFVn12E0mxoVTlbIiv9iqFZj95o
-   KjsyX/mu9nWpq/c9fwEy55lecqpI8yVtVFtG38PlUZm6u3jD2mrMTfzeK
-   g==;
-From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
-Date:   Mon, 17 Jul 2023 15:08:41 +0200
-Subject: [PATCH 2/2] dmaengine: Add dummy DMA controller driver
+        Mon, 17 Jul 2023 09:12:10 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8C97C7;
+        Mon, 17 Jul 2023 06:12:07 -0700 (PDT)
+Received: from canpemm500009.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4R4Msk3BL7z18LY9;
+        Mon, 17 Jul 2023 21:11:22 +0800 (CST)
+Received: from localhost.localdomain (10.50.163.32) by
+ canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Mon, 17 Jul 2023 21:12:03 +0800
+From:   Yicong Yang <yangyicong@huawei.com>
+To:     <akpm@linux-foundation.org>, <catalin.marinas@arm.com>,
+        <linux-mm@kvack.org>, <linux-arm-kernel@lists.infradead.org>,
+        <x86@kernel.org>, <mark.rutland@arm.com>, <ryan.roberts@arm.com>,
+        <will@kernel.org>, <anshuman.khandual@arm.com>,
+        <linux-doc@vger.kernel.org>
+CC:     <corbet@lwn.net>, <peterz@infradead.org>, <arnd@arndb.de>,
+        <punit.agrawal@bytedance.com>, <linux-kernel@vger.kernel.org>,
+        <darren@os.amperecomputing.com>, <yangyicong@hisilicon.com>,
+        <huzhanyuan@oppo.com>, <lipeifeng@oppo.com>,
+        <zhangshiming@oppo.com>, <guojian@oppo.com>, <realmz6@gmail.com>,
+        <linux-mips@vger.kernel.org>, <openrisc@lists.librecores.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <linux-riscv@lists.infradead.org>,
+        <linux-s390@vger.kernel.org>, Barry Song <21cnbao@gmail.com>,
+        <wangkefeng.wang@huawei.com>, <xhao@linux.alibaba.com>,
+        <prime.zeng@hisilicon.com>, <Jonathan.Cameron@Huawei.com>
+Subject: [PATCH v11 0/4] arm64: support batched/deferred tlb shootdown during page reclamation/migration
+Date:   Mon, 17 Jul 2023 21:10:00 +0800
+Message-ID: <20230717131004.12662-1-yangyicong@huawei.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20230717-dummy-dmac-v1-2-24348b6fb56b@axis.com>
-References: <20230717-dummy-dmac-v1-0-24348b6fb56b@axis.com>
-In-Reply-To: <20230717-dummy-dmac-v1-0-24348b6fb56b@axis.com>
-To:     Vinod Koul <vkoul@kernel.org>
-CC:     <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@axis.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.50.163.32]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ canpemm500009.china.huawei.com (7.192.105.203)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,319 +59,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for a dummy DMA controller which performs transfers using
-the CPU, which could be useful for testing the DMA engine framework or
-client drivers on systems where no real DMA controller is available.
+From: Yicong Yang <yangyicong@hisilicon.com>
 
-Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
----
- drivers/dma/Kconfig      |  14 +++
- drivers/dma/Makefile     |   1 +
- drivers/dma/dummy-dmac.c | 258 +++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 273 insertions(+)
+Though ARM64 has the hardware to do tlb shootdown, the hardware broadcasting is
+not free. A simplest micro benchmark shows even on snapdragon 888 with only
+8 cores, the overhead for ptep_clear_flush is huge even for paging out one page
+mapped by only one process:
+5.36%  a.out    [kernel.kallsyms]  [k] ptep_clear_flush
 
-diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
-index 644c188d6a11..68abc6be8d41 100644
---- a/drivers/dma/Kconfig
-+++ b/drivers/dma/Kconfig
-@@ -179,6 +179,20 @@ config DMA_SUN6I
- 	help
- 	  Support for the DMA engine first found in Allwinner A31 SoCs.
- 
-+config DUMMY_DMAC
-+	tristate "Dummy DMA controller"
-+	depends on DEBUG_KERNEL
-+	depends on !HIGHMEM
-+	select DMA_ENGINE
-+	select DMA_VIRTUAL_CHANNELS
-+	help
-+	  Enable support for a dummy DMA controller which performs transfers
-+	  using the CPU, which could be useful for testing the DMA engine
-+	  framework or client drivers on systems where no real DMA controller
-+	  is available.
-+
-+	  If unsure, say N.
-+
- config DW_AXI_DMAC
- 	tristate "Synopsys DesignWare AXI DMA support"
- 	depends on OF
-diff --git a/drivers/dma/Makefile b/drivers/dma/Makefile
-index a4fd1ce29510..23a8a62dd390 100644
---- a/drivers/dma/Makefile
-+++ b/drivers/dma/Makefile
-@@ -27,6 +27,7 @@ obj-$(CONFIG_DMA_JZ4780) += dma-jz4780.o
- obj-$(CONFIG_DMA_SA11X0) += sa11x0-dma.o
- obj-$(CONFIG_DMA_SUN4I) += sun4i-dma.o
- obj-$(CONFIG_DMA_SUN6I) += sun6i-dma.o
-+obj-$(CONFIG_DUMMY_DMAC) += dummy-dmac.o
- obj-$(CONFIG_DW_AXI_DMAC) += dw-axi-dmac/
- obj-$(CONFIG_DW_DMAC_CORE) += dw/
- obj-$(CONFIG_DW_EDMA) += dw-edma/
-diff --git a/drivers/dma/dummy-dmac.c b/drivers/dma/dummy-dmac.c
-new file mode 100644
-index 000000000000..a41ee20939ab
---- /dev/null
-+++ b/drivers/dma/dummy-dmac.c
-@@ -0,0 +1,258 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright Axis Communications
-+
-+#include <linux/dmaengine.h>
-+#include <linux/dma-mapping.h>
-+#include <linux/workqueue.h>
-+#include <linux/list.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+
-+#include "virt-dma.h"
-+
-+struct dummy_desc {
-+	struct virt_dma_desc vdesc;
-+	dma_addr_t src;
-+	dma_addr_t dst;
-+	size_t len;
-+};
-+
-+struct dummy_chan {
-+	struct virt_dma_chan vchan;
-+	struct virt_dma_desc *ongoing;
-+	struct work_struct work;
-+};
-+
-+struct dummy_dmac {
-+	struct dma_device dma;
-+	struct dummy_chan channels[8];
-+};
-+
-+static struct platform_device *dummy_dmac_pdev;
-+
-+static struct dummy_chan *to_dummy_chan(struct virt_dma_chan *vchan)
-+{
-+	return container_of(vchan, struct dummy_chan, vchan);
-+}
-+
-+static struct dummy_desc *to_dummy_desc(struct virt_dma_desc *vdesc)
-+{
-+	return container_of(vdesc, struct dummy_desc, vdesc);
-+}
-+
-+static struct dma_async_tx_descriptor *
-+dummy_dmac_prep_memcpy(struct dma_chan *chan, dma_addr_t dst, dma_addr_t src,
-+		       size_t len, unsigned long flags)
-+{
-+	struct virt_dma_chan *vchan = to_virt_chan(chan);
-+	struct dummy_desc *desc;
-+
-+	desc = kzalloc(sizeof(*desc), GFP_NOWAIT);
-+	if (!desc)
-+		return NULL;
-+
-+	desc->src = src;
-+	desc->dst = dst;
-+	desc->len = len;
-+
-+	return vchan_tx_prep(vchan, &desc->vdesc, flags);
-+}
-+
-+static void dummy_dmac_start(struct dummy_chan *dchan)
-+{
-+	struct virt_dma_desc *vdesc;
-+
-+	vdesc = vchan_next_desc(&dchan->vchan);
-+	if (!vdesc)
-+		return;
-+
-+	list_del(&vdesc->node);
-+
-+	dchan->ongoing = vdesc;
-+	schedule_work(&dchan->work);
-+}
-+
-+static void dummy_dmac_issue_pending(struct dma_chan *chan)
-+{
-+	struct virt_dma_chan *vchan = to_virt_chan(chan);
-+	struct dummy_chan *dchan = to_dummy_chan(vchan);
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&vchan->lock, flags);
-+
-+	if (vchan_issue_pending(vchan) && !dchan->ongoing)
-+		dummy_dmac_start(dchan);
-+
-+	spin_unlock_irqrestore(&vchan->lock, flags);
-+}
-+
-+static void dummy_dmac_synchronize(struct dma_chan *chan)
-+{
-+	struct virt_dma_chan *vchan = to_virt_chan(chan);
-+	struct dummy_chan *dchan = to_dummy_chan(vchan);
-+
-+	flush_work(&dchan->work);
-+	vchan_synchronize(to_virt_chan(chan));
-+}
-+
-+static int dummy_dmac_terminate_all(struct dma_chan *chan)
-+{
-+	struct virt_dma_chan *vchan = to_virt_chan(chan);
-+	struct dummy_chan *dchan = to_dummy_chan(vchan);
-+	unsigned long flags;
-+	LIST_HEAD(head);
-+
-+	spin_lock_irqsave(&vchan->lock, flags);
-+
-+	cancel_work(&dchan->work);
-+
-+	if (dchan->ongoing) {
-+		vchan_terminate_vdesc(dchan->ongoing);
-+		dchan->ongoing = NULL;
-+	}
-+
-+	vchan_get_all_descriptors(vchan, &head);
-+
-+	spin_unlock_irqrestore(&vchan->lock, flags);
-+
-+	vchan_dma_desc_free_list(vchan, &head);
-+
-+	return 0;
-+}
-+
-+static void dummy_dmac_work(struct work_struct *work)
-+{
-+	struct dummy_chan *dchan = container_of(work, struct dummy_chan, work);
-+	struct virt_dma_chan *vchan = &dchan->vchan;
-+	struct virt_dma_desc *vdesc;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&vchan->lock, flags);
-+
-+	vdesc = dchan->ongoing;
-+	if (vdesc) {
-+		struct dummy_desc *desc = to_dummy_desc(vdesc);
-+
-+		/*
-+		 * No DMA translation, so the addresses are CPU physical.  We
-+		 * depend on !HIGHMEM so phys_to_virt() should be safe as long
-+		 * as the addresses are in RAM.
-+		 */
-+		memcpy(phys_to_virt(desc->dst), phys_to_virt(desc->src),
-+		       desc->len);
-+		vchan_cookie_complete(vdesc);
-+		dchan->ongoing = NULL;
-+	}
-+
-+	dummy_dmac_start(dchan);
-+
-+	spin_unlock_irqrestore(&vchan->lock, flags);
-+}
-+
-+static void dummy_dmac_free_chan_resources(struct dma_chan *chan)
-+{
-+	vchan_free_chan_resources(to_virt_chan(chan));
-+}
-+
-+static void dummy_dmac_desc_free(struct virt_dma_desc *vdesc)
-+{
-+	struct dummy_desc *desc = to_dummy_desc(vdesc);
-+
-+	kfree(desc);
-+}
-+
-+static void dummy_dmac_release(struct dma_device *dma_dev)
-+{
-+	struct dummy_dmac *dummy = container_of(dma_dev, struct dummy_dmac, dma);
-+
-+	put_device(dma_dev->dev);
-+	kfree(dummy);
-+}
-+
-+static int dummy_dmac_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct dummy_dmac *dummy;
-+	struct dma_device *dma;
-+	int ret;
-+	int i;
-+
-+	dummy = kzalloc(sizeof(*dummy), GFP_KERNEL);
-+	if (!dummy)
-+		return -ENOMEM;
-+
-+	dma = &dummy->dma;
-+	dma->owner = THIS_MODULE;
-+	dma->dev = get_device(dev);
-+
-+	dma_cap_set(DMA_MEMCPY, dma->cap_mask);
-+
-+	dma->src_addr_widths = 0xff;
-+	dma->dst_addr_widths = 0xff;
-+	dma->device_prep_dma_memcpy = dummy_dmac_prep_memcpy;
-+	dma->device_issue_pending = dummy_dmac_issue_pending;
-+	dma->device_terminate_all = dummy_dmac_terminate_all;
-+	dma->device_synchronize = dummy_dmac_synchronize;
-+	dma->device_tx_status = dma_cookie_status;
-+	dma->device_free_chan_resources = dummy_dmac_free_chan_resources;
-+	dma->device_release = dummy_dmac_release;
-+
-+	INIT_LIST_HEAD(&dma->channels);
-+
-+	for (i = 0; i < ARRAY_SIZE(dummy->channels); i++) {
-+		struct dummy_chan *chan = &dummy->channels[i];
-+
-+		INIT_WORK(&chan->work, dummy_dmac_work);
-+
-+		chan->vchan.desc_free = dummy_dmac_desc_free;
-+		vchan_init(&chan->vchan, &dummy->dma);
-+	}
-+
-+	platform_set_drvdata(pdev, dummy);
-+
-+	ret = dma_async_device_register(dma);
-+	if (ret)
-+		kfree(dummy);
-+
-+	return ret;
-+}
-+
-+static void dummy_dmac_remove(struct platform_device *pdev)
-+{
-+	struct dummy_dmac *dummy = platform_get_drvdata(pdev);
-+
-+	dma_async_device_unregister(&dummy->dma);
-+}
-+
-+static struct platform_driver dummy_dmac_driver = {
-+	.probe = dummy_dmac_probe,
-+	.remove_new = dummy_dmac_remove,
-+	.driver = {
-+		.name = "dummy-dmac",
-+	},
-+};
-+
-+static int __init dummy_dmac_init(void)
-+{
-+	struct platform_device *pdev;
-+
-+	pdev = platform_device_register_simple("dummy-dmac", -1, NULL, 0);
-+	if (IS_ERR(pdev))
-+		return PTR_ERR(pdev);
-+
-+	dma_coerce_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
-+	dummy_dmac_pdev = pdev;
-+
-+	return platform_driver_register(&dummy_dmac_driver);
-+}
-+module_init(dummy_dmac_init);
-+
-+static void dummy_dmac_exit(void)
-+{
-+	platform_driver_unregister(&dummy_dmac_driver);
-+	platform_device_unregister(dummy_dmac_pdev);
-+}
-+module_exit(dummy_dmac_exit);
-+
-+MODULE_LICENSE("GPL");
+While pages are mapped by multiple processes or HW has more CPUs, the cost should
+become even higher due to the bad scalability of tlb shootdown. The same benchmark
+can result in 16.99% CPU consumption on ARM64 server with around 100 cores
+according to the test on patch 4/4.
+
+This patchset leverages the existing BATCHED_UNMAP_TLB_FLUSH by
+1. only send tlbi instructions in the first stage -
+	arch_tlbbatch_add_mm()
+2. wait for the completion of tlbi by dsb while doing tlbbatch
+	sync in arch_tlbbatch_flush()
+
+Testing on snapdragon shows the overhead of ptep_clear_flush is removed by the
+patchset. The micro benchmark becomes 5% faster even for one page mapped by
+single process on snapdragon 888.
+
+Since BATCHED_UNMAP_TLB_FLUSH is implemented only on x86, the patchset does some
+renaming/extension for the current implementation first (Patch 1-3), then add the
+support on arm64 (Patch 4).
+
+-v11:
+- Enable ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH config unconditionally on arm64.
+Link: https://lore.kernel.org/linux-mm/20230710083914.18336-1-yangyicong@huawei.com/T/#mc343b7e7c4a090392ef43b620af85a3eea76abad
+
+-v10:
+1. Enable BATCHED_UNMAP_TLB_FLUSH regardless of CPU numbers, per Catalin.
+2. Split the renaming/extension works in a separate PATCH 2, per Catalin. Since
+   it's split from PATCH 2/2 in v9, so inherit the tags.
+3. Add arch_flush_tlb_batched_pending() to allow arch-specific implementation,
+   per Catalin. Since it's some kind of an optimization on arm64 so a separate
+   Patch 3/4.
+Link: https://lore.kernel.org/linux-mm/20230518065934.12877-1-yangyicong@huawei.com/
+
+-v9:
+1. Using a runtime tunable to control batched TLB flush, per Catalin in v7.
+   Sorry for missing this on v8.
+Link: https://lore.kernel.org/all/20230329035512.57392-1-yangyicong@huawei.com/
+
+-v8:
+1. Rebase on 6.3-rc4
+2. Tested the optimization on page migration and mentioned it in the commit
+3. Thanks the review from Anshuman.
+Link: https://lore.kernel.org/linux-mm/20221117082648.47526-1-yangyicong@huawei.com/
+
+-v7:
+1. rename arch_tlbbatch_add_mm() to arch_tlbbatch_add_pending() as suggested, since it
+   takes an extra address for arm64, per Nadav and Anshuman. Also mentioned in the commit.
+2. add tags from Xin Hao, thanks.
+Link: https://lore.kernel.org/lkml/20221115031425.44640-1-yangyicong@huawei.com/
+
+-v6:
+1. comment we don't defer TLB flush on platforms affected by ARM64_WORKAROUND_REPEAT_TLBI
+2. use cpus_have_const_cap() instead of this_cpu_has_cap()
+3. add tags from Punit, Thanks.
+4. default enable the feature when cpus >= 8 rather than > 8, since the original
+   improvement is observed on snapdragon 888 with 8 cores.
+Link: https://lore.kernel.org/lkml/20221028081255.19157-1-yangyicong@huawei.com/
+
+-v5:
+1. Make ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH depends on EXPERT for this stage on arm64.
+2. Make a threshold of CPU numbers for enabling batched TLP flush on arm64
+Link: https://lore.kernel.org/linux-arm-kernel/20220921084302.43631-1-yangyicong@huawei.com/T/
+
+-v4:
+1. Add tags from Kefeng and Anshuman, Thanks.
+2. Limit the TLB batch/defer on systems with >4 CPUs, per Anshuman
+3. Merge previous Patch 1,2-3 into one, per Anshuman
+Link: https://lore.kernel.org/linux-mm/20220822082120.8347-1-yangyicong@huawei.com/
+
+-v3:
+1. Declare arch's tlbbatch defer support by arch_tlbbatch_should_defer() instead
+   of ARCH_HAS_MM_CPUMASK, per Barry and Kefeng
+2. Add Tested-by from Xin Hao
+Link: https://lore.kernel.org/linux-mm/20220711034615.482895-1-21cnbao@gmail.com/
+
+-v2:
+1. Collected Yicong's test result on kunpeng920 ARM64 server;
+2. Removed the redundant vma parameter in arch_tlbbatch_add_mm()
+   according to the comments of Peter Zijlstra and Dave Hansen
+3. Added ARCH_HAS_MM_CPUMASK rather than checking if mm_cpumask
+   is empty according to the comments of Nadav Amit
+
+Thanks, Peter, Dave and Nadav for your testing or reviewing
+, and comments.
+
+-v1:
+https://lore.kernel.org/lkml/20220707125242.425242-1-21cnbao@gmail.com/
+
+Anshuman Khandual (1):
+  mm/tlbbatch: Introduce arch_tlbbatch_should_defer()
+
+Barry Song (2):
+  mm/tlbbatch: Rename and extend some functions
+  arm64: support batched/deferred tlb shootdown during page
+    reclamation/migration
+
+Yicong Yang (1):
+  mm/tlbbatch: Introduce arch_flush_tlb_batched_pending()
+
+ .../features/vm/TLB/arch-support.txt          |  2 +-
+ arch/arm64/Kconfig                            |  1 +
+ arch/arm64/include/asm/tlbbatch.h             | 12 +++++
+ arch/arm64/include/asm/tlbflush.h             | 44 +++++++++++++++++--
+ arch/x86/include/asm/tlbflush.h               | 22 +++++++++-
+ include/linux/mm_types_task.h                 |  4 +-
+ mm/rmap.c                                     | 23 ++++------
+ 7 files changed, 86 insertions(+), 22 deletions(-)
+ create mode 100644 arch/arm64/include/asm/tlbbatch.h
 
 -- 
-2.34.1
+2.24.0
 
