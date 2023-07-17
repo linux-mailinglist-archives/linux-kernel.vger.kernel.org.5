@@ -2,241 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62AC9755C6D
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 09:07:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18C73755C6C
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 09:07:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230286AbjGQHHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 03:07:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55138 "EHLO
+        id S230240AbjGQHHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 03:07:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230215AbjGQHHW (ORCPT
+        with ESMTP id S230201AbjGQHHT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 03:07:22 -0400
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FA081AE;
-        Mon, 17 Jul 2023 00:07:21 -0700 (PDT)
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-51f90f713b2so6329224a12.1;
-        Mon, 17 Jul 2023 00:07:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689577640; x=1692169640;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BK34qhMsmNxAvU6AATspLEoQD1LgYJ16sQOnvySU0Tk=;
-        b=L9f810MvBcRXGkxjXA+eVigVNRHFQfkIsRRuBSxKVpNDMXXplgZ3g9TBFlyHOZ8oes
-         sIU3ULDI8B5Bk1qMUmyu21hxbvh5VIOV7Jkg6Gj2AkmrLx87HSzDJO1877ZkmRQJYCBI
-         A+GcwdhqnhtK6dLN85kTtL3lyxIwYIX6te1MESw6gZ1cTdJLvaFpBaIiB4hdtiG+ucic
-         WAhzXSCAixFvKVp5Zz/cWFltzNEXg4J1m4urdZjt1qBG772GtGrCrx95QeEU56QqkUPD
-         hxYqkVvXA0ThUwa4y837Oc6waxEvgr+5MNbdht9oLfZBe6afwDVV+xjjN57Dn1c3B/76
-         /G+A==
-X-Gm-Message-State: ABy/qLb3YmVnjEkp8uCbJn18XsGlqYWcys+Lh0Pf7T7muvIuVGy+T/C4
-        Ed9PtornbVEnlPjR3ad958g=
-X-Google-Smtp-Source: APBJJlFDRZd4z0vXM1uFEVX+Tzb98q56LccSwBq3J5YUVfGWisydG4D+RmxfN/eezcIik1xYEHSjxQ==
-X-Received: by 2002:a50:fc1a:0:b0:51b:fbf3:d9a7 with SMTP id i26-20020a50fc1a000000b0051bfbf3d9a7mr10667509edr.39.1689577639646;
-        Mon, 17 Jul 2023 00:07:19 -0700 (PDT)
-Received: from costa-tp.bos2.lab ([5.29.20.9])
-        by smtp.gmail.com with ESMTPSA id a19-20020a50ff13000000b0051bed498851sm9513311edu.54.2023.07.17.00.07.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jul 2023 00:07:19 -0700 (PDT)
-From:   Costa Shulyupin <costa.shul@redhat.com>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>, Alex Shi <alexs@kernel.org>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Alexandre TORGUE <alexandre.torgue@foss.st.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Costa Shulyupin <costa.shul@redhat.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Wu XiangCheng <bobwxc@email.cn>,
-        linux-doc@vger.kernel.org (open list:DOCUMENTATION),
-        linux-kernel@vger.kernel.org (open list),
-        loongarch@lists.linux.dev (open list:LOONGARCH)
-Subject: [PATCH] docs: move loongarch under arch
-Date:   Mon, 17 Jul 2023 10:06:02 +0300
-Message-ID: <20230717070643.313689-1-costa.shul@redhat.com>
-X-Mailer: git-send-email 2.41.0
+        Mon, 17 Jul 2023 03:07:19 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DE95131
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 00:07:18 -0700 (PDT)
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1qLIK1-00012q-9t; Mon, 17 Jul 2023 09:07:05 +0200
+Received: from pengutronix.de (unknown [172.20.34.65])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 144561F3074;
+        Mon, 17 Jul 2023 07:07:03 +0000 (UTC)
+Date:   Mon, 17 Jul 2023 09:07:02 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Wu Yunchuan <yunchuan@nfschina.com>
+Cc:     wg@grandegger.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, uttenthaler@ems-wuensche.com,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH net-next v3 8/9] can: ems_pci: Remove unnecessary (void*)
+ conversions
+Message-ID: <20230717-clash-kerchief-afdf910e2ce6-mkl@pengutronix.de>
+References: <20230717031221.55073-1-yunchuan@nfschina.com>
+ <20230717-staple-uninjured-26bfd8cde5e0-mkl@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=true
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=1.9 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: *
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="5dxaakn7dnfa335u"
+Content-Disposition: inline
+In-Reply-To: <20230717-staple-uninjured-26bfd8cde5e0-mkl@pengutronix.de>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:b01:1d::7b
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-and fix all in-tree references.
 
-Architecture-specific documentation is being moved into Documentation/arch/
-as a way of cleaning up the top-level documentation directory and making
-the docs hierarchy more closely match the source hierarchy.
+--5dxaakn7dnfa335u
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
----
- Documentation/arch/index.rst                                  | 2 +-
- Documentation/{ => arch}/loongarch/booting.rst                | 0
- Documentation/{ => arch}/loongarch/features.rst               | 0
- Documentation/{ => arch}/loongarch/index.rst                  | 0
- Documentation/{ => arch}/loongarch/introduction.rst           | 0
- Documentation/{ => arch}/loongarch/irq-chip-model.rst         | 0
- Documentation/translations/zh_CN/arch/index.rst               | 2 +-
- .../translations/zh_CN/{ => arch}/loongarch/booting.rst       | 4 ++--
- .../translations/zh_CN/{ => arch}/loongarch/features.rst      | 4 ++--
- .../translations/zh_CN/{ => arch}/loongarch/index.rst         | 4 ++--
- .../translations/zh_CN/{ => arch}/loongarch/introduction.rst  | 4 ++--
- .../zh_CN/{ => arch}/loongarch/irq-chip-model.rst             | 4 ++--
- 12 files changed, 12 insertions(+), 12 deletions(-)
- rename Documentation/{ => arch}/loongarch/booting.rst (100%)
- rename Documentation/{ => arch}/loongarch/features.rst (100%)
- rename Documentation/{ => arch}/loongarch/index.rst (100%)
- rename Documentation/{ => arch}/loongarch/introduction.rst (100%)
- rename Documentation/{ => arch}/loongarch/irq-chip-model.rst (100%)
- rename Documentation/translations/zh_CN/{ => arch}/loongarch/booting.rst (94%)
- rename Documentation/translations/zh_CN/{ => arch}/loongarch/features.rst (61%)
- rename Documentation/translations/zh_CN/{ => arch}/loongarch/index.rst (78%)
- rename Documentation/translations/zh_CN/{ => arch}/loongarch/introduction.rst (99%)
- rename Documentation/translations/zh_CN/{ => arch}/loongarch/irq-chip-model.rst (98%)
+On 17.07.2023 08:52:42, Marc Kleine-Budde wrote:
+> On 17.07.2023 11:12:21, Wu Yunchuan wrote:
+> > No need cast (void*) to (struct ems_pci_card *).
+> >=20
+> > Signed-off-by: Wu Yunchuan <yunchuan@nfschina.com>
+> > Acked-by: Marc Kleine-Budde<mkl@pengutronix.de>
+>=20
+> Please add a space between my name and my e-mail address, so that it
+> reads:
+>=20
+> Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
+>=20
+> nitpick:
+> You should add your S-o-b as the last trailer.
 
-diff --git a/Documentation/arch/index.rst b/Documentation/arch/index.rst
-index 8458b88e9b79..4b6b1beebad6 100644
---- a/Documentation/arch/index.rst
-+++ b/Documentation/arch/index.rst
-@@ -13,7 +13,7 @@ implementation.
-    arm/index
-    arm64/index
-    ia64/index
--   ../loongarch/index
-+   loongarch/index
-    m68k/index
-    ../mips/index
-    nios2/index
-diff --git a/Documentation/loongarch/booting.rst b/Documentation/arch/loongarch/booting.rst
-similarity index 100%
-rename from Documentation/loongarch/booting.rst
-rename to Documentation/arch/loongarch/booting.rst
-diff --git a/Documentation/loongarch/features.rst b/Documentation/arch/loongarch/features.rst
-similarity index 100%
-rename from Documentation/loongarch/features.rst
-rename to Documentation/arch/loongarch/features.rst
-diff --git a/Documentation/loongarch/index.rst b/Documentation/arch/loongarch/index.rst
-similarity index 100%
-rename from Documentation/loongarch/index.rst
-rename to Documentation/arch/loongarch/index.rst
-diff --git a/Documentation/loongarch/introduction.rst b/Documentation/arch/loongarch/introduction.rst
-similarity index 100%
-rename from Documentation/loongarch/introduction.rst
-rename to Documentation/arch/loongarch/introduction.rst
-diff --git a/Documentation/loongarch/irq-chip-model.rst b/Documentation/arch/loongarch/irq-chip-model.rst
-similarity index 100%
-rename from Documentation/loongarch/irq-chip-model.rst
-rename to Documentation/arch/loongarch/irq-chip-model.rst
-diff --git a/Documentation/translations/zh_CN/arch/index.rst b/Documentation/translations/zh_CN/arch/index.rst
-index 6fa0cb671009..d4c1c729dde2 100644
---- a/Documentation/translations/zh_CN/arch/index.rst
-+++ b/Documentation/translations/zh_CN/arch/index.rst
-@@ -13,7 +13,7 @@
-    ../riscv/index
-    openrisc/index
-    parisc/index
--   ../loongarch/index
-+   loongarch/index
- 
- TODOList:
- 
-diff --git a/Documentation/translations/zh_CN/loongarch/booting.rst b/Documentation/translations/zh_CN/arch/loongarch/booting.rst
-similarity index 94%
-rename from Documentation/translations/zh_CN/loongarch/booting.rst
-rename to Documentation/translations/zh_CN/arch/loongarch/booting.rst
-index fb6440c438f0..d2f55872904e 100644
---- a/Documentation/translations/zh_CN/loongarch/booting.rst
-+++ b/Documentation/translations/zh_CN/arch/loongarch/booting.rst
-@@ -1,8 +1,8 @@
- .. SPDX-License-Identifier: GPL-2.0
- 
--.. include:: ../disclaimer-zh_CN.rst
-+.. include:: ../../disclaimer-zh_CN.rst
- 
--:Original: Documentation/loongarch/booting.rst
-+:Original: Documentation/arch/loongarch/booting.rst
- 
- :翻译:
- 
-diff --git a/Documentation/translations/zh_CN/loongarch/features.rst b/Documentation/translations/zh_CN/arch/loongarch/features.rst
-similarity index 61%
-rename from Documentation/translations/zh_CN/loongarch/features.rst
-rename to Documentation/translations/zh_CN/arch/loongarch/features.rst
-index 3886e635ec06..82bfac180bdc 100644
---- a/Documentation/translations/zh_CN/loongarch/features.rst
-+++ b/Documentation/translations/zh_CN/arch/loongarch/features.rst
-@@ -1,8 +1,8 @@
- .. SPDX-License-Identifier: GPL-2.0
- 
--.. include:: ../disclaimer-zh_CN.rst
-+.. include:: ../../disclaimer-zh_CN.rst
- 
--:Original: Documentation/loongarch/features.rst
-+:Original: Documentation/arch/loongarch/features.rst
- :Translator: Huacai Chen <chenhuacai@loongson.cn>
- 
- .. kernel-feat:: $srctree/Documentation/features loongarch
-diff --git a/Documentation/translations/zh_CN/loongarch/index.rst b/Documentation/translations/zh_CN/arch/loongarch/index.rst
-similarity index 78%
-rename from Documentation/translations/zh_CN/loongarch/index.rst
-rename to Documentation/translations/zh_CN/arch/loongarch/index.rst
-index 0273a08342f7..4bd24f5ffed1 100644
---- a/Documentation/translations/zh_CN/loongarch/index.rst
-+++ b/Documentation/translations/zh_CN/arch/loongarch/index.rst
-@@ -1,8 +1,8 @@
- .. SPDX-License-Identifier: GPL-2.0
- 
--.. include:: ../disclaimer-zh_CN.rst
-+.. include:: ../../disclaimer-zh_CN.rst
- 
--:Original: Documentation/loongarch/index.rst
-+:Original: Documentation/arch/loongarch/index.rst
- :Translator: Huacai Chen <chenhuacai@loongson.cn>
- 
- =================
-diff --git a/Documentation/translations/zh_CN/loongarch/introduction.rst b/Documentation/translations/zh_CN/arch/loongarch/introduction.rst
-similarity index 99%
-rename from Documentation/translations/zh_CN/loongarch/introduction.rst
-rename to Documentation/translations/zh_CN/arch/loongarch/introduction.rst
-index 470c38ae2caf..cba04befc950 100644
---- a/Documentation/translations/zh_CN/loongarch/introduction.rst
-+++ b/Documentation/translations/zh_CN/arch/loongarch/introduction.rst
-@@ -1,8 +1,8 @@
- .. SPDX-License-Identifier: GPL-2.0
- 
--.. include:: ../disclaimer-zh_CN.rst
-+.. include:: ../../disclaimer-zh_CN.rst
- 
--:Original: Documentation/loongarch/introduction.rst
-+:Original: Documentation/arch/loongarch/introduction.rst
- :Translator: Huacai Chen <chenhuacai@loongson.cn>
- 
- =============
-diff --git a/Documentation/translations/zh_CN/loongarch/irq-chip-model.rst b/Documentation/translations/zh_CN/arch/loongarch/irq-chip-model.rst
-similarity index 98%
-rename from Documentation/translations/zh_CN/loongarch/irq-chip-model.rst
-rename to Documentation/translations/zh_CN/arch/loongarch/irq-chip-model.rst
-index fb5d23b49ed5..f1e9ab18206c 100644
---- a/Documentation/translations/zh_CN/loongarch/irq-chip-model.rst
-+++ b/Documentation/translations/zh_CN/arch/loongarch/irq-chip-model.rst
-@@ -1,8 +1,8 @@
- .. SPDX-License-Identifier: GPL-2.0
- 
--.. include:: ../disclaimer-zh_CN.rst
-+.. include:: ../../disclaimer-zh_CN.rst
- 
--:Original: Documentation/loongarch/irq-chip-model.rst
-+:Original: Documentation/arch/loongarch/irq-chip-model.rst
- :Translator: Huacai Chen <chenhuacai@loongson.cn>
- 
- ==================================
--- 
-2.41.0
+BTW: The threading of this series is still broken. Make sure you send
+the whole patch series with one single "git send-email" command. For
+regular contribution you might have a look at the "b4" [1] tool.
 
+regards,
+Marc
+
+[1] https://people.kernel.org/monsieuricon/sending-a-kernel-patch-with-b4-p=
+art-1
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+--5dxaakn7dnfa335u
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmS06JMACgkQvlAcSiqK
+BOhunAgAq7HhqkHTxzfDvHIyljEnoxxDKpnB50lo14yvrgK7CjVNC0EMdtrE7+7e
+B8M9yaSCN5jOnXAMX/kc0w5nxe8rdR1r13UUoY6gnO8+NiP0k5X3DnWpVVEYWOaY
+gh8WuC7B2hFE1ZhICcDMI7xyUtsfs7FjoblBiTSPxt22umW8Viath5NQRWf1DbJO
+N+KJnHCPseaOC3YMOtWhFVfSkfvS03NpmpBbp50saBpo/9fcVKNAnlfFaN9uQZS2
+70PGkPxbMbeaXqva0TbHBkLoHU564Az/zY2ScKg9Qu1LCO+kb78vTNoGjggHUEge
+JS/C7tEFt766dMJGJ2ZRxnYAoeWxxQ==
+=PR62
+-----END PGP SIGNATURE-----
+
+--5dxaakn7dnfa335u--
