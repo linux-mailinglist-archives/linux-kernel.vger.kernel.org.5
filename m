@@ -2,150 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79315756E37
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 22:29:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 924BE756E3A
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 22:31:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230285AbjGQU3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 16:29:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32858 "EHLO
+        id S230369AbjGQUbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 16:31:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbjGQU3k (ORCPT
+        with ESMTP id S229496AbjGQUbM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 16:29:40 -0400
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEE2C188;
-        Mon, 17 Jul 2023 13:29:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1689625779; x=1721161779;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=X8jjGorvvakFNZSiXbU5g+XQSAuUt8rUfwsivIw+/D4=;
-  b=ItJ1Dy1niyG7hjHIbgFk/+ao9cg+xuuEfllINT6qFABopX/zytE+9GWC
-   2rgxulZUYU2JW8IH7G8lZSoRJh4/27sQFZg2JZ3IclvAMWe5vhi8eJItg
-   nX4jtR7ewYjPGQi8Eq1a/kxNK2kzpKUj+bxY3hz/G+dfnuZuOrSm789xS
-   +GzcMhLX/DHES3ZrkMetuq59AaFJKNkR+Rw31QIv6KOmGmhIRSBpXARAU
-   maHjF+Y3HK0njKD4Tq0HIpukeCc5GW/ijfD2Mpqx7YsvMk1SpJw9W7qP+
-   bsAU83pWsMUOvdQ2dM9EtZsXYsMoackEJ/1U/pa4aUVw9o8kn7JMgQCgb
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="345625644"
-X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
-   d="scan'208";a="345625644"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 13:29:39 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="866838387"
-Received: from b4969161e530.jf.intel.com ([10.165.56.46])
-  by fmsmga001.fm.intel.com with ESMTP; 17 Jul 2023 13:29:39 -0700
-From:   Haitao Huang <haitao.huang@linux.intel.com>
-To:     "Jarkko Sakkinen" <jarkko@kernel.org>,
-        "Haitao Huang" <haitao.huang@linux.intel.com>,
-        dave.hansen@linux.intel.com, linux-kernel@vger.kernel.org,
-        linux-sgx@vger.kernel.org, "Thomas Gleixner" <tglx@linutronix.de>,
-        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-Cc:     kai.huang@intel.com, reinette.chatre@intel.com,
-        kristen@linux.intel.com, seanjc@google.com, stable@vger.kernel.org
-Subject: [PATCH] x86/sgx: fix a NULL pointer
-Date:   Mon, 17 Jul 2023 13:29:38 -0700
-Message-Id: <20230717202938.94989-1-haitao.huang@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <CU4OBQ8MQ2LK.2GRBPLQGVTZ3@seitikki>
-References: <CU4OBQ8MQ2LK.2GRBPLQGVTZ3@seitikki>
+        Mon, 17 Jul 2023 16:31:12 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2FF9188
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 13:31:10 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6FF346124A
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 20:31:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 478B5C433C8;
+        Mon, 17 Jul 2023 20:31:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689625867;
+        bh=speJUgxSauJb1B97mFzBthgQeNkIXMJQ46d1kG1IBpc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=m5yuNuQ1k00JkD9oSP99xNX3im7OVU9ke1O/ZJxzB5liJ3nS6KJ2q72BNShSb8I7N
+         xppmSyS3mUTrvFrkFzJ6J5Yw3LZXsB9RD6iUirXgxE3ablVVioaCTngcISqjmlozVU
+         gM5C0SHbQBOzZ3Ij/zMvrL9c8QRxdOFSMi+Qp5Zckvnne5ZjBFWrgeyni0U8xyxxok
+         fU7tH/sJXbgeCL7j5rOm0FP8u9kTsuCKd92YiIpBjzWUk2xb01vmp7Ypw8dMNf1LN0
+         dNIGJJxYGwf1mnzOR0t44YMDNIxi2jaFUurlzb8nT6xsXEEMOkm/MQ+LdvDLIWoA+L
+         X4btRRdqJSTvQ==
+Date:   Mon, 17 Jul 2023 13:31:05 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Tom Rix <trix@redhat.com>, oe-kbuild-all@lists.linux.dev
+Subject: Re: [PATCH] lib/bitmap: waive const_eval test as it breaks the build
+Message-ID: <20230717203105.GA2212488@dev-arch.thelio-3990X>
+References: <20230717195813.29059-1-yury.norov@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230717195813.29059-1-yury.norov@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Under heavy load, the SGX EPC reclaimers (current ksgxd or future EPC
-cgroup worker) may reclaim the SECS EPC page for an enclave and set
-encl->secs.epc_page to NULL. But the SECS EPC page is used for EAUG in
-the SGX #PF handler without checking for NULL and reloading.
+Hi Yury,
 
-Fix this by checking if SECS is loaded before EAUG and load it if it was
-reclaimed.
+On Mon, Jul 17, 2023 at 12:58:13PM -0700, Yury Norov wrote:
+> When building with clang, and when KASAN and GCOV_PROFILE_ALL are both
+> enabled, the test fails to build [1]:
+> 
+> >> lib/test_bitmap.c:920:2: error: call to '__compiletime_assert_239' declared with 'error' attribute: BUILD_BUG_ON failed: !__builtin_constant_p(res)
+>            BUILD_BUG_ON(!__builtin_constant_p(res));
+>            ^
+>    include/linux/build_bug.h:50:2: note: expanded from macro 'BUILD_BUG_ON'
+>            BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
+>            ^
+>    include/linux/build_bug.h:39:37: note: expanded from macro 'BUILD_BUG_ON_MSG'
+>    #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+>                                        ^
+>    include/linux/compiler_types.h:352:2: note: expanded from macro 'compiletime_assert'
+>            _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+>            ^
+>    include/linux/compiler_types.h:340:2: note: expanded from macro '_compiletime_assert'
+>            __compiletime_assert(condition, msg, prefix, suffix)
+>            ^
+>    include/linux/compiler_types.h:333:4: note: expanded from macro '__compiletime_assert'
+>                            prefix ## suffix();                             \
+>                            ^
+>    <scratch space>:185:1: note: expanded from here
+>    __compiletime_assert_239
+> 
+> Originally it was attributed to s390, which now looks seemingly wrong. The
+> issue is also not related to bitmap code itself, but it breaks build for
+> a given configuration. So, disabling the test unless the compiler will
+> get fixed.
+> 
+> [1] https://github.com/ClangBuiltLinux/linux/issues/1874
+> 
+> Fixes: dc34d5036692 ("lib: test_bitmap: add compile-time optimization/evaluations assertions")
+> Signed-off-by: Yury Norov <yury.norov@gmail.com>
+> ---
+>  lib/test_bitmap.c | 17 +++++------------
+>  1 file changed, 5 insertions(+), 12 deletions(-)
+> 
+> diff --git a/lib/test_bitmap.c b/lib/test_bitmap.c
+> index 187f5b2db4cf..a791fdb7a8c9 100644
+> --- a/lib/test_bitmap.c
+> +++ b/lib/test_bitmap.c
+> @@ -1163,6 +1163,9 @@ static void __init test_bitmap_print_buf(void)
+>  
+>  static void __init test_bitmap_const_eval(void)
+>  {
+> +#if defined(CONFIG_CC_IS_CLANG) && defined(CONFIG_KASAN) && defined(CONFIG_GCOV_PROFILE_ALL)
+> +#warning "FIXME: Clang breaks compile time evaluations when KASAN and GCOV are enabled"
 
-Fixes: 5a90d2c3f5ef8 ("x86/sgx: Support adding of pages to an initialized enclave")
-Cc: stable@vger.kernel.org
-Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
----
- arch/x86/kernel/cpu/sgx/encl.c | 25 ++++++++++++++++++++-----
- arch/x86/kernel/cpu/sgx/main.c |  4 ++++
- 2 files changed, 24 insertions(+), 5 deletions(-)
+Making this a '#warning' will basically just replace the current error
+with a different one in the face of CONFIG_WERROR, which seems pointless
+to me:
 
-diff --git a/arch/x86/kernel/cpu/sgx/encl.c b/arch/x86/kernel/cpu/sgx/encl.c
-index 2a0e90fe2abc..2ab544da1664 100644
---- a/arch/x86/kernel/cpu/sgx/encl.c
-+++ b/arch/x86/kernel/cpu/sgx/encl.c
-@@ -235,6 +235,16 @@ static struct sgx_epc_page *sgx_encl_eldu(struct sgx_encl_page *encl_page,
- 	return epc_page;
- }
- 
-+static struct sgx_epc_page *sgx_encl_load_secs(struct sgx_encl *encl)
-+{
-+	struct sgx_epc_page *epc_page = encl->secs.epc_page;
-+
-+	if (!epc_page)
-+		epc_page = sgx_encl_eldu(&encl->secs, NULL);
-+
-+	return epc_page;
-+}
-+
- static struct sgx_encl_page *__sgx_encl_load_page(struct sgx_encl *encl,
- 						  struct sgx_encl_page *entry)
- {
-@@ -248,11 +258,9 @@ static struct sgx_encl_page *__sgx_encl_load_page(struct sgx_encl *encl,
- 		return entry;
- 	}
- 
--	if (!(encl->secs.epc_page)) {
--		epc_page = sgx_encl_eldu(&encl->secs, NULL);
--		if (IS_ERR(epc_page))
--			return ERR_CAST(epc_page);
--	}
-+	epc_page = sgx_encl_load_secs(encl);
-+	if (IS_ERR(epc_page))
-+		return ERR_CAST(epc_page);
- 
- 	epc_page = sgx_encl_eldu(entry, encl->secs.epc_page);
- 	if (IS_ERR(epc_page))
-@@ -339,6 +347,13 @@ static vm_fault_t sgx_encl_eaug_page(struct vm_area_struct *vma,
- 
- 	mutex_lock(&encl->lock);
- 
-+	epc_page = sgx_encl_load_secs(encl);
-+	if (IS_ERR(epc_page)) {
-+		if (PTR_ERR(epc_page) == -EBUSY)
-+			vmret =  VM_FAULT_NOPAGE;
-+		goto err_out_unlock;
-+	}
-+
- 	epc_page = sgx_alloc_epc_page(encl_page, false);
- 	if (IS_ERR(epc_page)) {
- 		if (PTR_ERR(epc_page) == -EBUSY)
-diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-index 166692f2d501..4662a364ce62 100644
---- a/arch/x86/kernel/cpu/sgx/main.c
-+++ b/arch/x86/kernel/cpu/sgx/main.c
-@@ -257,6 +257,10 @@ static void sgx_reclaimer_write(struct sgx_epc_page *epc_page,
- 
- 	mutex_lock(&encl->lock);
- 
-+	/* Should not be possible */
-+	if (WARN_ON(!(encl->secs.epc_page)))
-+		goto out;
-+
- 	sgx_encl_ewb(epc_page, backing);
- 	encl_page->epc_page = NULL;
- 	encl->secs_child_cnt--;
--- 
-2.25.1
+  lib/test_bitmap.c:1167:2: error: "FIXME: Clang breaks compile time evaluations when KASAN and GCOV are enabled" [-Werror,-W#warnings]
+   1167 | #warning "FIXME: Clang breaks compile time evaluations when KASAN and GCOV are enabled"
+        |  ^
+  1 error generated.
 
+Could we just opt out of GCOV for test_bitmap.c if KASAN is enabled with
+clang? That does not seem too bad of a workaround. I highly doubt there
+are many people who are interested in debugging test_bitmap.c with KASAN
+while profiling it with GCOV when building with clang, since they would
+have hit this already and reported it already; as far as I can tell,
+only the Intel robot has reported this with a randconfig.
+
+diff --git a/lib/Makefile b/lib/Makefile
+index 42d307ade225..c6f60ae42769 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -83,6 +83,10 @@ obj-$(CONFIG_TEST_DYNAMIC_DEBUG) += test_dynamic_debug.o
+ obj-$(CONFIG_TEST_PRINTF) += test_printf.o
+ obj-$(CONFIG_TEST_SCANF) += test_scanf.o
+ obj-$(CONFIG_TEST_BITMAP) += test_bitmap.o
++# https://github.com/ClangBuiltLinux/linux/issues/1874
++ifeq ($(CONFIG_CC_IS_CLANG)$(CONFIG_KASAN),yy)
++GCOV_PROFILE_test_bitmap.o := n
++endif
+ obj-$(CONFIG_TEST_UUID) += test_uuid.o
+ obj-$(CONFIG_TEST_XARRAY) += test_xarray.o
+ obj-$(CONFIG_TEST_MAPLE_TREE) += test_maple_tree.o
+
+Cheers,
+Nathan
+
+> +#else
+>  	DECLARE_BITMAP(bitmap, BITS_PER_LONG);
+>  	unsigned long initvar = BIT(2);
+>  	unsigned long bitopvar = 0;
+> @@ -1177,20 +1180,9 @@ static void __init test_bitmap_const_eval(void)
+>  	 * in runtime.
+>  	 */
+>  
+> -	/*
+> -	 * Equals to `unsigned long bitmap[1] = { GENMASK(6, 5), }`.
+> -	 * Clang on s390 optimizes bitops at compile-time as intended, but at
+> -	 * the same time stops treating @bitmap and @bitopvar as compile-time
+> -	 * constants after regular test_bit() is executed, thus triggering the
+> -	 * build bugs below. So, call const_test_bit() there directly until
+> -	 * the compiler is fixed.
+> -	 */
+> +	/* Equals to `unsigned long bitmap[1] = { GENMASK(6, 5), }` */
+>  	bitmap_clear(bitmap, 0, BITS_PER_LONG);
+> -#if defined(__s390__) && defined(__clang__)
+> -	if (!const_test_bit(7, bitmap))
+> -#else
+>  	if (!test_bit(7, bitmap))
+> -#endif
+>  		bitmap_set(bitmap, 5, 2);
+>  
+>  	/* Equals to `unsigned long bitopvar = BIT(20)` */
+> @@ -1220,6 +1212,7 @@ static void __init test_bitmap_const_eval(void)
+>  	/* ~BIT(25) */
+>  	BUILD_BUG_ON(!__builtin_constant_p(~var));
+>  	BUILD_BUG_ON(~var != ~BIT(25));
+> +#endif
+>  }
+>  
+>  static void __init selftest(void)
+> -- 
+> 2.39.2
+> 
