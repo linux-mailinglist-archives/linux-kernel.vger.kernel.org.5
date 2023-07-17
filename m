@@ -2,263 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEF11755B65
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 08:18:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 620CB755B97
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 08:26:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231462AbjGQGSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 02:18:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55614 "EHLO
+        id S231585AbjGQG0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 02:26:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231419AbjGQGSh (ORCPT
+        with ESMTP id S231661AbjGQGZw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 02:18:37 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C22B11C
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 23:18:34 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R4BjN0YWszBHXhQ
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 14:18:32 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689574711; x=1692166712; bh=oVZePtAPC3fqwCLp67FFuqYQqHm
-        SMXChT2dSFjfiNgM=; b=f9PBpLEvFF7pj+m6iqfzgDlO3V/jRhRjBUq1Dq9GwYS
-        XJoNGRaUF9qsMFa4xW8yJxmlXKL8/r78EbpCBKefbaO1/goTWHL6Q+mXXlai1ydK
-        gYewFrmxyw5LOSh1WmtgGXCvimlyp7Sq23cFMDS4EH8JdgP2R4D/pA4zJFxtkYjg
-        nSngh3Y6dSp7CRbXq+tFKs0LxZzeJqNOpTDVSan9maacuyZdR2aovIG6aUV6Ewga
-        vI10r+jYK9WuhYTTWWkc7ijOU7WZNAW/gH0AEZCppyn4AC0MQ71YfncORN3zNNat
-        mhBExsW0JzEF3E8UMIXHvieDt0dzMlcLN/imLwO6edw==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id okXOQfCU0eD8 for <linux-kernel@vger.kernel.org>;
-        Mon, 17 Jul 2023 14:18:31 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R4BjM5btfzBHXgf;
-        Mon, 17 Jul 2023 14:18:31 +0800 (CST)
+        Mon, 17 Jul 2023 02:25:52 -0400
+Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 499F2170C
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 23:25:30 -0700 (PDT)
+Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20230717062439epoutp01e14578fe33e7d7b348d32d649954d9e4~yk5VFziEp2401024010epoutp01E
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 06:24:39 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20230717062439epoutp01e14578fe33e7d7b348d32d649954d9e4~yk5VFziEp2401024010epoutp01E
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1689575079;
+        bh=EVI2S727mJ4PMA5lU03bgnJnLMSMGGnnOXiGWXlih98=;
+        h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
+        b=XHJTZZHUEIQsv4LRbioTKathlmoxAm08fXqTpSgT8Bne03cP2w/sxfBWsNpN0frIf
+         414FdMJkmFt3ay7kPCTzL8MDrl+zJ8uFtpaTafNjt9+DenOfIi8Bu3gWQjCAasyS/S
+         84MfvIoqWWPqJ87QW+pIOztoV9AaAVPevcW34ZXQ=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
+        20230717062438epcas2p156365b4166d8172d70ed84a913c3abef~yk5UjQHuv2022020220epcas2p1c;
+        Mon, 17 Jul 2023 06:24:38 +0000 (GMT)
+Received: from epsmges2p4.samsung.com (unknown [182.195.36.92]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4R4BrQ4TTjz4x9QH; Mon, 17 Jul
+        2023 06:24:38 +0000 (GMT)
+Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
+        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        24.DE.32393.6AED4B46; Mon, 17 Jul 2023 15:24:38 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTPA id
+        20230717062438epcas2p1846e5f0b23af60d2cd2cea9dd349f056~yk5TzYX8U0894908949epcas2p1u;
+        Mon, 17 Jul 2023 06:24:38 +0000 (GMT)
+Received: from epsmgmcp1.samsung.com (unknown [182.195.42.82]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20230717062438epsmtrp1e44239a2e2aaaff00037086ad20b27e2~yk5TynO_S0786807868epsmtrp1k;
+        Mon, 17 Jul 2023 06:24:38 +0000 (GMT)
+X-AuditID: b6c32a48-adffa70000007e89-10-64b4dea6dfc8
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgmcp1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        24.75.64355.6AED4B46; Mon, 17 Jul 2023 15:24:38 +0900 (KST)
+Received: from [10.229.8.168] (unknown [10.229.8.168]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20230717062437epsmtip28e6e659cc949c8d2b82b7abd7893f8b0~yk5ThGKPO1750017500epsmtip2O;
+        Mon, 17 Jul 2023 06:24:37 +0000 (GMT)
+Message-ID: <2615b892-bbe1-240e-6717-0bde8f3dd4c8@samsung.com>
+Date:   Mon, 17 Jul 2023 15:22:04 +0900
 MIME-Version: 1.0
-Date:   Mon, 17 Jul 2023 14:18:31 +0800
-From:   hanyu001@208suo.com
-To:     jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] scsi: qla4xxx: Convert snprintf to scnprintf
-In-Reply-To: <tencent_F14720A15AAC92683C94E88876A876E7FC05@qq.com>
-References: <tencent_F14720A15AAC92683C94E88876A876E7FC05@qq.com>
-User-Agent: Roundcube Webmail
-Message-ID: <4a69897245577acfb2f095501b21cd78@208suo.com>
-X-Sender: hanyu001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+        Thunderbird/102.11.0
+Subject: Re: [PATCH v2 2/3] pwm: samsung: Add compatible for ExynosAutov9
+ SoC
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>
+Cc:     linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        Chanho Park <chanho61.park@samsung.com>
+From:   Jaewon Kim <jaewon02.kim@samsung.com>
+In-Reply-To: <31af3a96-7e98-8bb1-f9e9-53ccb0441310@linaro.org>
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrHJsWRmVeSWpSXmKPExsWy7bCmhe6ye1tSDF5PUbZ4MG8bm8Xl/doW
+        a/aeY7KYf+Qcq0Xfi4fMFntfb2W32PT4GqvF5V1z2Czu3l3FaDHj/D4mi9a9R9gtfu6ax2Jx
+        e+JkRgdej52z7rJ7bFrVyeZx59oeNo/NS+o9+v8aePRtWcXo8XmTXAB7VLZNRmpiSmqRQmpe
+        cn5KZl66rZJ3cLxzvKmZgaGuoaWFuZJCXmJuqq2Si0+ArltmDtCtSgpliTmlQKGAxOJiJX07
+        m6L80pJUhYz84hJbpdSClJwC8wK94sTc4tK8dL281BIrQwMDI1OgwoTsjKV9z1kLXnBUvH/0
+        mrWBcSZ7FyMnh4SAicSFvp/MXYxcHEICOxglTv3ezQLhfGKUOHTpLRucc/X4U7iW/febmCAS
+        OxklWk++gep/zSgx9ewvNpAqXgE7iaMT/zCD2CwCqhI/1m5ngYgLSpyc+QTMFhWIlmhddh+s
+        XljAX2LirVVMIDazgLjErSfzwTaICFxlkji8eRPYBmaBs4wSDyfcZQWpYhPQlvi+fjGYzQm0
+        beK5e1Dd8hLb384Ba5AQOMIhcWLHDGaIw10k+vveskHYwhKvjm+BekhK4mV/G5SdLdE+/Q8r
+        hF0hcXHDbKh6Y4lZz9oZuxg5gBZoSqzfpQ9iSggoSxy5xQKxlk+i4/Bfdogwr0RHmxBEo5rE
+        /annoIbISEw6spIJwvaQOHHgDusERsVZSMEyC8n7s5A8Mwth7wJGllWMYqkFxbnpqcVGBSbw
+        6E7Oz93ECE7IWh47GGe//aB3iJGJg/EQowQHs5II7/dVm1KEeFMSK6tSi/Lji0pzUosPMZoC
+        I2cis5Rocj4wJ+SVxBuaWBqYmJkZmhuZGpgrifPea52bIiSQnliSmp2aWpBaBNPHxMEp1cBU
+        /pPlyf7lu1dzb+TLFfftXPhSfOZ8ndL43IiVOzwFbsf+C3zrmcK1Vc7YM6Dy735PWYOMsIOr
+        spQPuO15l6M6e2PG1msPfsqzOYfNnuF0y6Z10q6b06sE1EyOq17I/Lzw7lPna7oFb3IEt6y4
+        7/xge++JuHn5P3eGLpGY9PMcD8uCrafV1UtWbuMQ3bujp6B41vJv0w1DWpjPNdjK1fQvvvRx
+        9a6TKn7T5V1npMYeynioeqbj3gu2mwFHfKTunbb8nKphsPNE2te88JBShllrq76qmKxVWZZe
+        nvRlu/uSL6/3r992fMev2RpXZoRclDrVfLyQR33hkhshcrPKm5o1Zimsl+ALrUs8YDAhLSPn
+        phJLcUaioRZzUXEiAD0tvuZRBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprJIsWRmVeSWpSXmKPExsWy7bCSvO6ye1tSDL6/ZbZ4MG8bm8Xl/doW
+        a/aeY7KYf+Qcq0Xfi4fMFntfb2W32PT4GqvF5V1z2Czu3l3FaDHj/D4mi9a9R9gtfu6ax2Jx
+        e+JkRgdej52z7rJ7bFrVyeZx59oeNo/NS+o9+v8aePRtWcXo8XmTXAB7FJdNSmpOZllqkb5d
+        AlfG0r7nrAUvOCreP3rN2sA4k72LkZNDQsBEYv/9JqYuRi4OIYHtjBI7Lh5lhUjISCx/1scG
+        YQtL3G85AhYXEnjJKDFpciyIzStgJ3F04h9mEJtFQFXix9rtLBBxQYmTM5+A2aIC0RKrP18A
+        6uXgEBbwlZixjxskzCwgLnHryXywvSIC15kkzp25zQjiMAucZZR42PMd6qKfjBLrLu5kBGlh
+        E9CW+L5+MdgVnECbJ567xwQxykyia2sXI4QtL7H97RzmCYxCs5AcMgvJxllIWmYhaVnAyLKK
+        UTS1oDg3PTe5wFCvODG3uDQvXS85P3cTIzj2tIJ2MC5b/1fvECMTB+MhRgkOZiUR3u+rNqUI
+        8aYkVlalFuXHF5XmpBYfYpTmYFES51XO6UwREkhPLEnNTk0tSC2CyTJxcEo1ME39KsS+asu2
+        KU+atCYpMtY8NBWc98B8m/XFqbvCff3endVPEKqxX+Vq1sDm4DyL+VNdRPbGMwvtembvuXs+
+        xOJmqIhf1aRtOXWvDU4v91obkSjgrDWnabag/sQg6RsPTkrtX8PxZYnTYtabHRZNDhzmC7c+
+        4J/zZkkSt7fO3a8HS9JOnH7BcnKrirLT09ZUFec707eaNHzvfhz4//U547hMo5bVcbe3JXBd
+        7bZUmJi1h+vs5UNMBy7cmeGftJezNLq4asfyhNqL8ttWP7+yutCRYfttI6cHX37KF/Xm1BwL
+        f6pkFXS7mfngbw67tK9OXNr35+0J3XtqRvLeipUuRqvOKGi2fmlep/JDvN7p430lluKMREMt
+        5qLiRACYGzbuLAMAAA==
+X-CMS-MailID: 20230717062438epcas2p1846e5f0b23af60d2cd2cea9dd349f056
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20230714101434epcas2p3e2475698c527ca72dee797225d3dad37
+References: <20230714100929.94563-1-jaewon02.kim@samsung.com>
+        <CGME20230714101434epcas2p3e2475698c527ca72dee797225d3dad37@epcas2p3.samsung.com>
+        <20230714100929.94563-3-jaewon02.kim@samsung.com>
+        <31af3a96-7e98-8bb1-f9e9-53ccb0441310@linaro.org>
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warnings:
 
-./drivers/scsi/qla4xxx/ql4_attr.c:200:8-16: WARNING: use scnprintf or 
-sprintf
-./drivers/scsi/qla4xxx/ql4_attr.c:273:8-16: WARNING: use scnprintf or 
-sprintf
-./drivers/scsi/qla4xxx/ql4_attr.c:281:8-16: WARNING: use scnprintf or 
-sprintf
-./drivers/scsi/qla4xxx/ql4_attr.c:303:8-16: WARNING: use scnprintf or 
-sprintf
-./drivers/scsi/qla4xxx/ql4_attr.c:210:8-16: WARNING: use scnprintf or 
-sprintf
-./drivers/scsi/qla4xxx/ql4_attr.c:264:8-16: WARNING: use scnprintf or 
-sprintf
-./drivers/scsi/qla4xxx/ql4_attr.c:312:8-16: WARNING: use scnprintf or 
-sprintf
-./drivers/scsi/qla4xxx/ql4_attr.c:159:9-17: WARNING: use scnprintf or 
-sprintf
-./drivers/scsi/qla4xxx/ql4_attr.c:256:8-16: WARNING: use scnprintf or 
-sprintf
-./drivers/scsi/qla4xxx/ql4_attr.c:247:8-16: WARNING: use scnprintf or 
-sprintf
-./drivers/scsi/qla4xxx/ql4_attr.c:181:8-16: WARNING: use scnprintf or 
-sprintf
-./drivers/scsi/qla4xxx/ql4_attr.c:190:8-16: WARNING: use scnprintf or 
-sprintf
-./drivers/scsi/qla4xxx/ql4_attr.c:223:8-16: WARNING: use scnprintf or 
-sprintf
-./drivers/scsi/qla4xxx/ql4_attr.c:235:8-16: WARNING: use scnprintf or 
-sprintf
-./drivers/scsi/qla4xxx/ql4_attr.c:173:8-16: WARNING: use scnprintf or 
-sprintf
+On 23. 7. 17. 14:58, Krzysztof Kozlowski wrote:
+> On 14/07/2023 12:09, Jaewon Kim wrote:
+>> Add new compatible string to support ExynosAutov9 SoC.
+>>
+>> Signed-off-by: Jaewon Kim <jaewon02.kim@samsung.com>
+>> ---
+>>   drivers/pwm/pwm-samsung.c | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/pwm/pwm-samsung.c b/drivers/pwm/pwm-samsung.c
+>> index e8828f57ab15..50a88565c440 100644
+>> --- a/drivers/pwm/pwm-samsung.c
+>> +++ b/drivers/pwm/pwm-samsung.c
+>> @@ -513,6 +513,7 @@ static const struct of_device_id samsung_pwm_matches[] = {
+>>   	{ .compatible = "samsung,s5p6440-pwm", .data = &s5p64x0_variant },
+>>   	{ .compatible = "samsung,s5pc100-pwm", .data = &s5pc100_variant },
+>>   	{ .compatible = "samsung,exynos4210-pwm", .data = &s5p64x0_variant },
+>> +	{ .compatible = "samsung,exynosautov9-pwm", .data = &s5p64x0_variant },
+> That's not what I asked for. You do not need entry here. Devices are
+> compatible.
 
-Signed-off-by: ztt <1549089851@qq.com>
----
-  drivers/scsi/qla4xxx/ql4_attr.c | 30 +++++++++++++++---------------
-  1 file changed, 15 insertions(+), 15 deletions(-)
+I misunderstood your intent.
 
-diff --git a/drivers/scsi/qla4xxx/ql4_attr.c 
-b/drivers/scsi/qla4xxx/ql4_attr.c
-index abfa6ef60480..6ab578443e12 100644
---- a/drivers/scsi/qla4xxx/ql4_attr.c
-+++ b/drivers/scsi/qla4xxx/ql4_attr.c
-@@ -156,7 +156,7 @@ qla4xxx_fw_version_show(struct device *dev,
-      struct scsi_qla_host *ha = to_qla_host(class_to_shost(dev));
+I will add only this compatible to DT and send it again with v3 patch.
 
-      if (is_qla80XX(ha))
--        return snprintf(buf, PAGE_SIZE, "%d.%02d.%02d (%x)\n",
-+        return scnprintf(buf, PAGE_SIZE, "%d.%02d.%02d (%x)\n",
-                  ha->fw_info.fw_major, ha->fw_info.fw_minor,
-                  ha->fw_info.fw_patch, ha->fw_info.fw_build);
-      else
-@@ -170,7 +170,7 @@ qla4xxx_serial_num_show(struct device *dev, struct 
-device_attribute *attr,
-              char *buf)
-  {
-      struct scsi_qla_host *ha = to_qla_host(class_to_shost(dev));
--    return snprintf(buf, PAGE_SIZE, "%s\n", ha->serial_number);
-+    return scnprintf(buf, PAGE_SIZE, "%s\n", ha->serial_number);
-  }
+> Best regards,
+> Krzysztof
+>
+>
 
-  static ssize_t
-@@ -178,7 +178,7 @@ qla4xxx_iscsi_version_show(struct device *dev, 
-struct device_attribute *attr,
-                 char *buf)
-  {
-      struct scsi_qla_host *ha = to_qla_host(class_to_shost(dev));
--    return snprintf(buf, PAGE_SIZE, "%d.%02d\n", 
-ha->fw_info.iscsi_major,
-+    return scnprintf(buf, PAGE_SIZE, "%d.%02d\n", 
-ha->fw_info.iscsi_major,
-              ha->fw_info.iscsi_minor);
-  }
+Thanks
 
-@@ -187,7 +187,7 @@ qla4xxx_optrom_version_show(struct device *dev, 
-struct device_attribute *attr,
-                  char *buf)
-  {
-      struct scsi_qla_host *ha = to_qla_host(class_to_shost(dev));
--    return snprintf(buf, PAGE_SIZE, "%d.%02d.%02d.%02d\n",
-+    return scnprintf(buf, PAGE_SIZE, "%d.%02d.%02d.%02d\n",
-              ha->fw_info.bootload_major, ha->fw_info.bootload_minor,
-              ha->fw_info.bootload_patch, ha->fw_info.bootload_build);
-  }
-@@ -197,7 +197,7 @@ qla4xxx_board_id_show(struct device *dev, struct 
-device_attribute *attr,
-                char *buf)
-  {
-      struct scsi_qla_host *ha = to_qla_host(class_to_shost(dev));
--    return snprintf(buf, PAGE_SIZE, "0x%08X\n", ha->board_id);
-+    return scnprintf(buf, PAGE_SIZE, "0x%08X\n", ha->board_id);
-  }
+Jaewon Kim
 
-  static ssize_t
-@@ -207,7 +207,7 @@ qla4xxx_fw_state_show(struct device *dev, struct 
-device_attribute *attr,
-      struct scsi_qla_host *ha = to_qla_host(class_to_shost(dev));
-
-      qla4xxx_get_firmware_state(ha);
--    return snprintf(buf, PAGE_SIZE, "0x%08X%8X\n", ha->firmware_state,
-+    return scnprintf(buf, PAGE_SIZE, "0x%08X%8X\n", ha->firmware_state,
-              ha->addl_fw_state);
-  }
-
-@@ -220,7 +220,7 @@ qla4xxx_phy_port_cnt_show(struct device *dev, struct 
-device_attribute *attr,
-      if (is_qla40XX(ha))
-          return -ENOSYS;
-
--    return snprintf(buf, PAGE_SIZE, "0x%04X\n", ha->phy_port_cnt);
-+    return scnprintf(buf, PAGE_SIZE, "0x%04X\n", ha->phy_port_cnt);
-  }
-
-  static ssize_t
-@@ -232,7 +232,7 @@ qla4xxx_phy_port_num_show(struct device *dev, struct 
-device_attribute *attr,
-      if (is_qla40XX(ha))
-          return -ENOSYS;
-
--    return snprintf(buf, PAGE_SIZE, "0x%04X\n", ha->phy_port_num);
-+    return scnprintf(buf, PAGE_SIZE, "0x%04X\n", ha->phy_port_num);
-  }
-
-  static ssize_t
-@@ -244,7 +244,7 @@ qla4xxx_iscsi_func_cnt_show(struct device *dev, 
-struct device_attribute *attr,
-      if (is_qla40XX(ha))
-          return -ENOSYS;
-
--    return snprintf(buf, PAGE_SIZE, "0x%04X\n", 
-ha->iscsi_pci_func_cnt);
-+    return scnprintf(buf, PAGE_SIZE, "0x%04X\n", 
-ha->iscsi_pci_func_cnt);
-  }
-
-  static ssize_t
-@@ -253,7 +253,7 @@ qla4xxx_hba_model_show(struct device *dev, struct 
-device_attribute *attr,
-  {
-      struct scsi_qla_host *ha = to_qla_host(class_to_shost(dev));
-
--    return snprintf(buf, PAGE_SIZE, "%s\n", ha->model_name);
-+    return scnprintf(buf, PAGE_SIZE, "%s\n", ha->model_name);
-  }
-
-  static ssize_t
-@@ -261,7 +261,7 @@ qla4xxx_fw_timestamp_show(struct device *dev, struct 
-device_attribute *attr,
-                char *buf)
-  {
-      struct scsi_qla_host *ha = to_qla_host(class_to_shost(dev));
--    return snprintf(buf, PAGE_SIZE, "%s %s\n", 
-ha->fw_info.fw_build_date,
-+    return scnprintf(buf, PAGE_SIZE, "%s %s\n", 
-ha->fw_info.fw_build_date,
-              ha->fw_info.fw_build_time);
-  }
-
-@@ -270,7 +270,7 @@ qla4xxx_fw_build_user_show(struct device *dev, 
-struct device_attribute *attr,
-                 char *buf)
-  {
-      struct scsi_qla_host *ha = to_qla_host(class_to_shost(dev));
--    return snprintf(buf, PAGE_SIZE, "%s\n", ha->fw_info.fw_build_user);
-+    return scnprintf(buf, PAGE_SIZE, "%s\n", 
-ha->fw_info.fw_build_user);
-  }
-
-  static ssize_t
-@@ -278,7 +278,7 @@ qla4xxx_fw_ext_timestamp_show(struct device *dev, 
-struct device_attribute *attr,
-                    char *buf)
-  {
-      struct scsi_qla_host *ha = to_qla_host(class_to_shost(dev));
--    return snprintf(buf, PAGE_SIZE, "%s\n", 
-ha->fw_info.extended_timestamp);
-+    return scnprintf(buf, PAGE_SIZE, "%s\n", 
-ha->fw_info.extended_timestamp);
-  }
-
-  static ssize_t
-@@ -300,7 +300,7 @@ qla4xxx_fw_load_src_show(struct device *dev, struct 
-device_attribute *attr,
-          break;
-      }
-
--    return snprintf(buf, PAGE_SIZE, "%s\n", load_src);
-+    return scnprintf(buf, PAGE_SIZE, "%s\n", load_src);
-  }
-
-  static ssize_t
-@@ -309,7 +309,7 @@ qla4xxx_fw_uptime_show(struct device *dev, struct 
-device_attribute *attr,
-  {
-      struct scsi_qla_host *ha = to_qla_host(class_to_shost(dev));
-      qla4xxx_about_firmware(ha);
--    return snprintf(buf, PAGE_SIZE, "%u.%u secs\n", ha->fw_uptime_secs,
-+    return scnprintf(buf, PAGE_SIZE, "%u.%u secs\n", 
-ha->fw_uptime_secs,
-              ha->fw_uptime_msecs);
-  }
