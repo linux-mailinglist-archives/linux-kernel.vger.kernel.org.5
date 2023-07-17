@@ -2,99 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71302756D6C
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 21:36:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43F23756D74
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 21:37:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231643AbjGQTgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 15:36:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36620 "EHLO
+        id S231153AbjGQThP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 15:37:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230056AbjGQTfz (ORCPT
+        with ESMTP id S229863AbjGQThN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 15:35:55 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E435ABE;
-        Mon, 17 Jul 2023 12:35:54 -0700 (PDT)
-Received: by linux.microsoft.com (Postfix, from userid 1004)
-        id 74E7921C7A03; Mon, 17 Jul 2023 12:35:54 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 74E7921C7A03
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
-        s=default; t=1689622554;
-        bh=XYVYgOirAsauRpIsvXixfB6J0evqIQh9opQ7LMpeBYg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OTGZ63aKpVdiObPnWxlrtfW3yuiycFmIC1TMO5NpnDGQWVNEYqaMuBnfdW0yxyWf/
-         d10Ag5aFp1R8bnomNulbwL9ag3CVAsyx6VuRhD1oDE4ILLKoauQp9RDn5AQ6AedqPy
-         onH5hYPH7JDTMAQv2jf7Q+YevKdEUUFV6G3AQXhQ=
-From:   longli@linuxonhyperv.com
-To:     "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Shradha Gupta <shradhagupta@linux.microsoft.com>,
-        Ajay Sharma <sharmaajay@microsoft.com>,
-        Shachar Raindel <shacharr@microsoft.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     linux-rdma@vger.kernel.org, Long Li <longli@microsoft.com>
-Subject: [PATCH net-next v5 2/2] net: mana: Use the correct WQE count for ringing RQ doorbell
-Date:   Mon, 17 Jul 2023 12:35:39 -0700
-Message-Id: <1689622539-5334-3-git-send-email-longli@linuxonhyperv.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1689622539-5334-1-git-send-email-longli@linuxonhyperv.com>
-References: <1689622539-5334-1-git-send-email-longli@linuxonhyperv.com>
-X-Spam-Status: No, score=-9.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_SPF_WL autolearn=no autolearn_force=no version=3.4.6
+        Mon, 17 Jul 2023 15:37:13 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F83A9D;
+        Mon, 17 Jul 2023 12:37:12 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-991c786369cso641204066b.1;
+        Mon, 17 Jul 2023 12:37:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1689622630; x=1692214630;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7I8tWuOCSAKoVEcr3ABsrBviosGy8IVjZCqtWlU4uYU=;
+        b=Xn8/9u6umMxdhgyMQrkVzTfwZbVc3CSoo01rUE0MOFuZoIqDsjCe35rMOqsc7u/U8d
+         NgZ/n//yzSKJwZYlQauLDrzecOJpB+a2wLgqD7B5FU1EKRQhzucEFmSjIs4nAHGqREW0
+         h4VYQ/1Mtq86XhqjxCqWBQrdZoeE5Gm7kVnZ48vJViIi6zgBhcxXbika88j9GZjxVDiP
+         x9zH4ECmS8gWniDjEp2Xyomj9lyBEQ6q1xY/m8CzhsMrmzmMTgZMDg2jWnO1udo1/blr
+         KQHhAFB8ZoCE9oS0c4M7xQaZLYfHNhCH9ulj2RCcRz5KJQV3TP0EKRRMUfw0uw0OZJKG
+         dlFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689622630; x=1692214630;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7I8tWuOCSAKoVEcr3ABsrBviosGy8IVjZCqtWlU4uYU=;
+        b=Z8c05kUYBshFXjp8Ry35X9vRH53rYJweNb6TFmbYjVPeMBC0O9wAuDArxVLAAUSHMn
+         cR8vUmR9MJE9gvTVMbDkBsvRGzgBnes4fhbAaAJK8MZDEl5isHAI+oQ9Kjw/1ibvRhCY
+         XLThz+hcNJaTRa2W/Hln+e/MGMU4+U5Sp6L6KzuYCA8I4oeOA/1U/Pf7tBRnBChRXL5o
+         IsGsse4jVYgvGnz7xDjDEm8WfOJQkZvIhBSp6T0225/xNMDUWulXrzLDpSFna/qNdj41
+         HL3RDDanlBKPBjTMgZmevHSP9ZaYeSSw4H3Jpraw+HRS97/bGblOmikpys80w/78qOzL
+         5rHA==
+X-Gm-Message-State: ABy/qLZTmho+/67lopHdgWFb5CkwjZsocXMDsH6SkpdeGNI2Zdx48cvA
+        OS4HklrtydoOmvnqN80vluLd6A5CeVkswXDA0vM=
+X-Google-Smtp-Source: APBJJlEDMaQglJp0zHLnSAANuJWSE2xOez2T+ELk8R/+NG+8JrC1cfjD9INONXiEfrURSQaDOsm7LxITDgeIeKE9KAI=
+X-Received: by 2002:a17:907:3c1e:b0:993:d6e8:2381 with SMTP id
+ gh30-20020a1709073c1e00b00993d6e82381mr10091030ejc.23.1689622630101; Mon, 17
+ Jul 2023 12:37:10 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230717172821.62827-1-andriy.shevchenko@linux.intel.com>
+ <20230717172821.62827-8-andriy.shevchenko@linux.intel.com> <f48a35d596694839665bc5883260cbae3ae01d9c.camel@crapouillou.net>
+In-Reply-To: <f48a35d596694839665bc5883260cbae3ae01d9c.camel@crapouillou.net>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 17 Jul 2023 22:36:33 +0300
+Message-ID: <CAHp75VfSd6giH0Hvt4m_cai5+qhhBfMa6R0fDhzpN4U7WxYzSw@mail.gmail.com>
+Subject: Re: [PATCH v2 07/10] pinctrl: mediatek: Switch to use
+ DEFINE_NOIRQ_DEV_PM_OPS() helper
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Balsam CHIHI <bchihi@baylibre.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org, Andy Shevchenko <andy@kernel.org>,
+        Sean Wang <sean.wang@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Long Li <longli@microsoft.com>
+On Mon, Jul 17, 2023 at 10:07=E2=80=AFPM Paul Cercueil <paul@crapouillou.ne=
+t> wrote:
+> Le lundi 17 juillet 2023 =C3=A0 20:28 +0300, Andy Shevchenko a =C3=A9crit=
+ :
 
-The hardware specification specifies that WQE_COUNT should set to 0 for
-the Receive Queue. Although currently the hardware doesn't enforce the
-check, in the future releases it may check on this value.
+...
 
-Fixes: ca9c54d2d6a5 ("net: mana: Add a driver for Microsoft Azure Network Adapter (MANA)")
-Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
-Reviewed-by: Dexuan Cui <decui@microsoft.com>
-Signed-off-by: Long Li <longli@microsoft.com>
----
-Change log:
-v4:
-Split the original patch into two: one for batching doorbell, one for setting the correct wqe count
+> > +DEFINE_NOIRQ_DEV_PM_OPS(mtk_paris_pinctrl_pm_ops, mtk_paris_suspend,
+> > mtk_paris_resume);
+>
+> It's a bit more work, but I think you should use EXPORT_GPL_DEV_PM_OPS
+> (or even better, EXPORT_NS_GPL_DEV_PM_OPS) so that the dev_pm_ops is
+> conditionally exported. All callers would have to be updated to use
+> pm_ptr().
 
-v5:
-Drop Cc: stable and use net-next
+Why pm_ptr()? What did I miss?
+The rest is OK.
 
- drivers/net/ethernet/microsoft/mana/gdma_main.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-index 8f3f78b68592..3765d3389a9a 100644
---- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-+++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-@@ -300,8 +300,11 @@ static void mana_gd_ring_doorbell(struct gdma_context *gc, u32 db_index,
- 
- void mana_gd_wq_ring_doorbell(struct gdma_context *gc, struct gdma_queue *queue)
- {
-+	/* Hardware Spec specifies that software client should set 0 for
-+	 * wqe_cnt for Receive Queues. This value is not used in Send Queues.
-+	 */
- 	mana_gd_ring_doorbell(gc, queue->gdma_dev->doorbell, queue->type,
--			      queue->id, queue->head * GDMA_WQE_BU_SIZE, 1);
-+			      queue->id, queue->head * GDMA_WQE_BU_SIZE, 0);
- }
- 
- void mana_gd_ring_cq(struct gdma_queue *cq, u8 arm_bit)
--- 
-2.34.1
-
+--=20
+With Best Regards,
+Andy Shevchenko
