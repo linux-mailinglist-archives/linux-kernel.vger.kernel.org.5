@@ -2,108 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2494675590C
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 03:29:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B6DC75590E
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 03:33:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229589AbjGQB3B convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 16 Jul 2023 21:29:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37298 "EHLO
+        id S229626AbjGQBdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Jul 2023 21:33:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbjGQB3A (ORCPT
+        with ESMTP id S229461AbjGQBdu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Jul 2023 21:29:00 -0400
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 71217E48;
-        Sun, 16 Jul 2023 18:28:57 -0700 (PDT)
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 36H1SVLz8029388, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
-        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 36H1SVLz8029388
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Mon, 17 Jul 2023 09:28:31 +0800
-Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Mon, 17 Jul 2023 09:28:39 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Mon, 17 Jul 2023 09:28:39 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d]) by
- RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d%5]) with mapi id
- 15.01.2375.007; Mon, 17 Jul 2023 09:28:39 +0800
-From:   Ping-Ke Shih <pkshih@realtek.com>
-To:     Zhang Shurong <zhang_shurong@foxmail.com>,
-        "Markus.Elfring@web.de" <Markus.Elfring@web.de>,
-        "kuba@kernel.org" <kuba@kernel.org>
-CC:     "kvalo@kernel.org" <kvalo@kernel.org>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v4] wifi: rtw89: debug: Fix error handling in rtw89_debug_priv_btc_manual_set()
-Thread-Topic: [PATCH v4] wifi: rtw89: debug: Fix error handling in
- rtw89_debug_priv_btc_manual_set()
-Thread-Index: AQHZtyJP/JJ+WUOdGEKPFTonbmCFAq+9LKkw
-Date:   Mon, 17 Jul 2023 01:28:39 +0000
-Message-ID: <96af917c4c8d46438da1e703b2276185@realtek.com>
-References: <tencent_1C09B99BD7DA9CAD18B00C8F0F050F540607@qq.com>
-In-Reply-To: <tencent_1C09B99BD7DA9CAD18B00C8F0F050F540607@qq.com>
-Accept-Language: en-US, zh-TW
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.69.188]
-x-kse-serverinfo: RTEXMBS01.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Sun, 16 Jul 2023 21:33:50 -0400
+Received: from mail.nfschina.com (unknown [42.101.60.195])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id 227E8B2;
+        Sun, 16 Jul 2023 18:33:47 -0700 (PDT)
+Received: from [172.30.11.106] (unknown [180.167.10.98])
+        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPSA id E21B960108C45;
+        Mon, 17 Jul 2023 09:33:31 +0800 (CST)
+Message-ID: <9880bad7-66b5-4d73-7464-8be859d8b56f@nfschina.com>
+Date:   Mon, 17 Jul 2023 09:33:30 +0800
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+Subject: Re: [PATCH net-next v2 03/10] net: ppp: Remove unnecessary (void*)
+ conversions
+Content-Language: en-US
+To:     Guillaume Nault <gnault@redhat.com>
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, xeb@mail.ru, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+X-MD-Sfrom: yunchuan@nfschina.com
+X-MD-SrcIP: 180.167.10.98
+From:   yunchuan <yunchuan@nfschina.com>
+In-Reply-To: <ZLEQSivEvfpWXrdr@debian>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2023/7/14 17:07, Guillaume Nault wrote:
+> On Mon, Jul 10, 2023 at 02:40:27PM +0800, Su Hui wrote:
+>> From: wuych <yunchuan@nfschina.com>
+>>
+>> Pointer variables of void * type do not require type cast.
+>>
+>> Signed-off-by: wuych <yunchuan@nfschina.com>
+>> ---
+>>   drivers/net/ppp/pppoe.c | 4 ++--
+>>   drivers/net/ppp/pptp.c  | 4 ++--
+>>   2 files changed, 4 insertions(+), 4 deletions(-)
+> Reviewed-by: Guillaume Nault <gnault@redhat.com>
+>
+> While there, you might want to also remove the useless casts in
+> net/l2tp/l2tp_ppp.c and net/atm/pppoatm.c.
 
+Hi,
 
-> -----Original Message-----
-> From: Zhang Shurong <zhang_shurong@foxmail.com>
-> Sent: Saturday, July 15, 2023 9:43 PM
-> To: Ping-Ke Shih <pkshih@realtek.com>; Markus.Elfring@web.de; kuba@kernel.org
-> Cc: kvalo@kernel.org; linux-wireless@vger.kernel.org; linux-kernel@vger.kernel.org; Zhang Shurong
-> <zhang_shurong@foxmail.com>
-> Subject: [PATCH v4] wifi: rtw89: debug: Fix error handling in rtw89_debug_priv_btc_manual_set()
-> 
-> If there is a failure during kstrtobool_from_user()
-> rtw89_debug_priv_btc_manual_set should return a negative error code
-> instead of returning the count directly.
-> 
-> Fix this bug by returning an error code instead of a count after
-> a failed call of the function "kstrtobool_from_user". Moreover
-> I omitted the label "out" with this source code correction.
-> 
-> Fixes: e3ec7017f6a2 ("rtw89: add Realtek 802.11ax driver")
-> Signed-off-by: Zhang Shurong <zhang_shurong@foxmail.com>
+Thanks four your reminder! There are about 20 useless casts in net.
+I will remove all of them.
 
-Acked-by: Ping-Ke Shih <pkshih@realtek.com>
+Wu Yunchuan
 
-> ---
-> Changes in v2:
-> - Corrected the format of this patch
-> - Used variable ret instead of goto out
-> Changes in v3:
-> - Improved change description
-> Changes in v4:
-> - Improved change description
-> 
-
-Normally, we preserve three '-' as delimiter here. I tried to use pwclient to 
-apply this patch, and fortunately it works. So, I think no need to resend because
-of this.
-
-[...]
-
+>> diff --git a/drivers/net/ppp/pppoe.c b/drivers/net/ppp/pppoe.c
+>> index 3b79c603b936..ba8b6bd8233c 100644
+>> --- a/drivers/net/ppp/pppoe.c
+>> +++ b/drivers/net/ppp/pppoe.c
+>> @@ -968,7 +968,7 @@ static int __pppoe_xmit(struct sock *sk, struct sk_buff *skb)
+>>    ***********************************************************************/
+>>   static int pppoe_xmit(struct ppp_channel *chan, struct sk_buff *skb)
+>>   {
+>> -	struct sock *sk = (struct sock *)chan->private;
+>> +	struct sock *sk = chan->private;
+>>   	return __pppoe_xmit(sk, skb);
+>>   }
+>>   
+>> @@ -976,7 +976,7 @@ static int pppoe_fill_forward_path(struct net_device_path_ctx *ctx,
+>>   				   struct net_device_path *path,
+>>   				   const struct ppp_channel *chan)
+>>   {
+>> -	struct sock *sk = (struct sock *)chan->private;
+>> +	struct sock *sk = chan->private;
+>>   	struct pppox_sock *po = pppox_sk(sk);
+>>   	struct net_device *dev = po->pppoe_dev;
+>>   
+>> diff --git a/drivers/net/ppp/pptp.c b/drivers/net/ppp/pptp.c
+>> index 32183f24e63f..6b3d3df99549 100644
+>> --- a/drivers/net/ppp/pptp.c
+>> +++ b/drivers/net/ppp/pptp.c
+>> @@ -148,7 +148,7 @@ static struct rtable *pptp_route_output(struct pppox_sock *po,
+>>   
+>>   static int pptp_xmit(struct ppp_channel *chan, struct sk_buff *skb)
+>>   {
+>> -	struct sock *sk = (struct sock *) chan->private;
+>> +	struct sock *sk = chan->private;
+>>   	struct pppox_sock *po = pppox_sk(sk);
+>>   	struct net *net = sock_net(sk);
+>>   	struct pptp_opt *opt = &po->proto.pptp;
+>> @@ -575,7 +575,7 @@ static int pptp_create(struct net *net, struct socket *sock, int kern)
+>>   static int pptp_ppp_ioctl(struct ppp_channel *chan, unsigned int cmd,
+>>   	unsigned long arg)
+>>   {
+>> -	struct sock *sk = (struct sock *) chan->private;
+>> +	struct sock *sk = chan->private;
+>>   	struct pppox_sock *po = pppox_sk(sk);
+>>   	struct pptp_opt *opt = &po->proto.pptp;
+>>   	void __user *argp = (void __user *)arg;
+>> -- 
+>> 2.30.2
+>>
+>>
