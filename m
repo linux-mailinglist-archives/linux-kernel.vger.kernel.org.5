@@ -2,94 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D881755DE7
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 10:08:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04C81755E19
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 10:15:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230352AbjGQIIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 04:08:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35202 "EHLO
+        id S230256AbjGQIPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 04:15:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230321AbjGQIIH (ORCPT
+        with ESMTP id S231292AbjGQIPJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 04:08:07 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E19E171F;
-        Mon, 17 Jul 2023 01:07:29 -0700 (PDT)
-Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36H7kg05007367;
-        Mon, 17 Jul 2023 08:07:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : in-reply-to : references : date : message-id : mime-version :
- content-type; s=pp1; bh=xITvjzT9g3XvstpA3uEElVkGk4s6oFe09DTaR2+xwIg=;
- b=eyn1bEtW8R3+p25YWN7rnfUVSEY0DLsEvCo5m6EnAuCTT5isZknGPkGfHGY5946x1yoV
- 5ZJ33oRQ6YK38BN2LoZ5DEO/uxe0ty0587Hlucge/R81UDYkzDcLSqK/yU/IMdooz0Ak
- +XKLXagnxE83BpjM4YiP9UosNhTNh21wsQ2YOaJ+vbDXb3ahLcwW9z+lQfdwqE29LM3c
- LOzfLJCdiIpdpyc2WBqOUHpW8lJcyJBBTBxnB9FqLMQDut+ycuzUnu38i6qE+MVfvgQ3
- 2k7Eqq6Etz8PjiwrTiiWUQPuk+XZ/VQImlQ3y39HWK2VtokZf2nnk9SSkBa/+RfJH5DP mA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3rw1j7rh5j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 17 Jul 2023 08:07:07 +0000
-Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36H7xFOu018439;
-        Mon, 17 Jul 2023 08:07:06 GMT
-Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3rw1j7rh52-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 17 Jul 2023 08:07:06 +0000
-Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
-        by ppma05wdc.us.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36H3ehHE016244;
-        Mon, 17 Jul 2023 08:07:05 GMT
-Received: from smtprelay02.dal12v.mail.ibm.com ([9.208.130.97])
-        by ppma05wdc.us.ibm.com (PPS) with ESMTPS id 3ruk35hpxt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 17 Jul 2023 08:07:05 +0000
-Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
-        by smtprelay02.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36H8746S25494034
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 17 Jul 2023 08:07:04 GMT
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4754758056;
-        Mon, 17 Jul 2023 08:07:04 +0000 (GMT)
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C4B8458060;
-        Mon, 17 Jul 2023 08:07:00 +0000 (GMT)
-Received: from skywalker.linux.ibm.com (unknown [9.109.212.144])
-        by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Mon, 17 Jul 2023 08:07:00 +0000 (GMT)
-X-Mailer: emacs 29.0.91 (via feedmail 11-beta-1 I)
-From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
-To:     Kautuk Consul <kconsul@linux.vnet.ibm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Kautuk Consul <kconsul@linux.vnet.ibm.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v2] KVM: ppc64: Enable ring-based dirty memory tracking
- on ppc64: enable config options and implement relevant functions
-In-Reply-To: <20230717071208.1134783-1-kconsul@linux.vnet.ibm.com>
-References: <20230717071208.1134783-1-kconsul@linux.vnet.ibm.com>
-Date:   Mon, 17 Jul 2023 13:36:58 +0530
-Message-ID: <87pm4rarml.fsf@linux.ibm.com>
+        Mon, 17 Jul 2023 04:15:09 -0400
+X-Greylist: delayed 459 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 17 Jul 2023 01:15:05 PDT
+Received: from mail.a-eberle.de (mail.a-eberle.de [213.95.140.213])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 783811AA
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 01:15:05 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.a-eberle.de (Postfix) with ESMTP id B8A8C38049D
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 10:07:10 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at aeberle-mx.softwerk.noris.de
+Received: from mail.a-eberle.de ([127.0.0.1])
+        by localhost (ebl-mx-02.a-eberle.de [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id dnwL5IOpbizT for <linux-kernel@vger.kernel.org>;
+        Mon, 17 Jul 2023 10:07:08 +0200 (CEST)
+Received: from gateway.a-eberle.de (unknown [178.15.155.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "sg310.eberle.local", Issuer "A. Eberle GmbH & Co. KG WebAdmin CA" (not verified))
+        (Authenticated sender: postmaster@a-eberle.de)
+        by mail.a-eberle.de (Postfix) with ESMTPSA
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 10:07:08 +0200 (CEST)
+Received: from svr-exch2019.eberle.local ([192.168.1.17]:9494 helo=webmail.a-eberle.de)
+        by gateway.a-eberle.de with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <Stephan.Wurm@a-eberle.de>)
+        id 1qLJG5-0007xJ-2e;
+        Mon, 17 Jul 2023 10:07:05 +0200
+Received: from PC-LX-Wurm (10.10.30.11) by Svr-Exch2019.eberle.local
+ (192.168.1.17) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.42; Mon, 17 Jul
+ 2023 10:07:05 +0200
+Date:   Mon, 17 Jul 2023 10:07:04 +0200
+From:   Stephan Wurm <stephan.wurm@a-eberle.de>
+To:     Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+CC:     Johannes Eigner <johannes.eigner@a-eberle.de>
+Subject: ubiblock: null pointer dereference using scatterlist in work_queue
+Message-ID: <ZLT2qEYjaWgSpRD6@PC-LX-Wurm>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: nQNAlqLU-sTEJiZxt1rr2OtNIaj7kE_Q
-X-Proofpoint-ORIG-GUID: zPMtmFIrGic2UyunelEsJMUS4ltseuET
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-17_05,2023-07-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1011
- priorityscore=1501 suspectscore=0 impostorscore=0 adultscore=0
- lowpriorityscore=0 bulkscore=0 phishscore=0 mlxscore=0 mlxlogscore=761
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307170072
-X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+X-Originating-IP: [10.10.30.11]
+X-ClientProxiedBy: Svr-Exch2019.eberle.local (192.168.1.17) To
+ Svr-Exch2019.eberle.local (192.168.1.17)
+X-EsetResult: clean, is OK
+X-EsetId: 37303A298E357D5B677565
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -97,189 +66,147 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kautuk Consul <kconsul@linux.vnet.ibm.com> writes:
+Hello!
 
-> - Enable CONFIG_HAVE_KVM_DIRTY_RING_ACQ_REL as ppc64 is weakly
->   ordered.
-> - Enable CONFIG_NEED_KVM_DIRTY_RING_WITH_BITMAP because the
->   kvmppc_xive_native_set_attr is called in the context of an ioctl
->   syscall and will call kvmppc_xive_native_eq_sync for setting the
->   KVM_DEV_XIVE_EQ_SYNC attribute which will call mark_dirty_page()
->   when there isn't a running vcpu. Implemented the
->   kvm_arch_allow_write_without_running_vcpu to always return true
->   to allow mark_page_dirty_in_slot to mark the page dirty in the
->   memslot->dirty_bitmap in this case.
-> - Set KVM_DIRTY_LOG_PAGE_OFFSET for the ring buffer's physical page
->   offset.
-> - Implement the kvm_arch_mmu_enable_log_dirty_pt_masked function required
->   for the generic KVM code to call.
-> - Add a check to kvmppc_vcpu_run_hv for checking whether the dirty
->   ring is soft full.
-> - Implement the kvm_arch_flush_remote_tlbs_memslot function to support
->   the CONFIG_KVM_GENERIC_DIRTYLOG_READ_PROTECT config option.
->
-> Test Results
-> ============
-> On testing with live migration it was found that there is around
-> 150-180 ms improvment in overall migration time with this patch.
->
-> Bare Metal P9 testing with patch:
-> --------------------------------
-> (qemu) info migrate
-> globals:
-> store-global-state: on
-> only-migratable: off
-> send-configuration: on
-> send-section-footer: on
-> decompress-error-check: on
-> clear-bitmap-shift: 18
-> Migration status: completed
-> total time: 20694 ms
-> downtime: 73 ms
-> setup: 23 ms
-> transferred ram: 2604370 kbytes
-> throughput: 1033.55 mbps
-> remaining ram: 0 kbytes
-> total ram: 16777216 kbytes
-> duplicate: 3555398 pages
-> skipped: 0 pages
-> normal: 642026 pages
-> normal bytes: 2568104 kbytes
-> dirty sync count: 3
-> page size: 4 kbytes
-> multifd bytes: 0 kbytes
-> pages-per-second: 32455
-> precopy ram: 2581549 kbytes
-> downtime ram: 22820 kbytes
->
-> Bare Metal P9 testing without patch:
-> -----------------------------------
-> (qemu) info migrate
-> globals:
-> store-global-state: on
-> only-migratable: off
-> send-configuration: on
-> send-section-footer: on
-> decompress-error-check: on
-> clear-bitmap-shift: 18
-> Migration status: completed
-> total time: 20873 ms
-> downtime: 62 ms
-> setup: 19 ms
-> transferred ram: 2612900 kbytes
-> throughput: 1027.83 mbps
-> remaining ram: 0 kbytes
-> total ram: 16777216 kbytes
-> duplicate: 3553329 pages
-> skipped: 0 pages
-> normal: 644159 pages
-> normal bytes: 2576636 kbytes
-> dirty sync count: 4
-> page size: 4 kbytes
-> multifd bytes: 0 kbytes
-> pages-per-second: 88297
-> precopy ram: 2603645 kbytes
-> downtime ram: 9254 kbytes
->
-> Signed-off-by: Kautuk Consul <kconsul@linux.vnet.ibm.com>
-> ---
->  Documentation/virt/kvm/api.rst      |  2 +-
->  arch/powerpc/include/uapi/asm/kvm.h |  2 ++
->  arch/powerpc/kvm/Kconfig            |  2 ++
->  arch/powerpc/kvm/book3s.c           | 46 +++++++++++++++++++++++++++++
->  arch/powerpc/kvm/book3s_hv.c        |  3 ++
->  include/linux/kvm_dirty_ring.h      |  5 ++++
->  virt/kvm/dirty_ring.c               |  1 +
->  7 files changed, 60 insertions(+), 1 deletion(-)
->
-> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-> index c0ddd3035462..84c180ccd178 100644
-> --- a/Documentation/virt/kvm/api.rst
-> +++ b/Documentation/virt/kvm/api.rst
-> @@ -8114,7 +8114,7 @@ regardless of what has actually been exposed through the CPUID leaf.
->  8.29 KVM_CAP_DIRTY_LOG_RING/KVM_CAP_DIRTY_LOG_RING_ACQ_REL
->  ----------------------------------------------------------
->  
-> -:Architectures: x86, arm64
-> +:Architectures: x86, arm64, ppc64
->  :Parameters: args[0] - size of the dirty log ring
->  
->  KVM is capable of tracking dirty memory using ring buffers that are
-> diff --git a/arch/powerpc/include/uapi/asm/kvm.h b/arch/powerpc/include/uapi/asm/kvm.h
-> index 9f18fa090f1f..f722309ed7fb 100644
-> --- a/arch/powerpc/include/uapi/asm/kvm.h
-> +++ b/arch/powerpc/include/uapi/asm/kvm.h
-> @@ -33,6 +33,8 @@
->  /* Not always available, but if it is, this is the correct offset.  */
->  #define KVM_COALESCED_MMIO_PAGE_OFFSET 1
->  
-> +#define KVM_DIRTY_LOG_PAGE_OFFSET 64
-> +
->  struct kvm_regs {
->  	__u64 pc;
->  	__u64 cr;
-> diff --git a/arch/powerpc/kvm/Kconfig b/arch/powerpc/kvm/Kconfig
-> index 902611954200..c93354ec3bd5 100644
-> --- a/arch/powerpc/kvm/Kconfig
-> +++ b/arch/powerpc/kvm/Kconfig
-> @@ -26,6 +26,8 @@ config KVM
->  	select IRQ_BYPASS_MANAGER
->  	select HAVE_KVM_IRQ_BYPASS
->  	select INTERVAL_TREE
-> +	select HAVE_KVM_DIRTY_RING_ACQ_REL
-> +	select NEED_KVM_DIRTY_RING_WITH_BITMAP
->  
->  config KVM_BOOK3S_HANDLER
->  	bool
-> diff --git a/arch/powerpc/kvm/book3s.c b/arch/powerpc/kvm/book3s.c
-> index 686d8d9eda3e..01aa4fe2c424 100644
-> --- a/arch/powerpc/kvm/book3s.c
-> +++ b/arch/powerpc/kvm/book3s.c
-> @@ -32,6 +32,7 @@
->  #include <asm/mmu_context.h>
->  #include <asm/page.h>
->  #include <asm/xive.h>
-> +#include <asm/book3s/64/radix.h>
->  
->  #include "book3s.h"
->  #include "trace.h"
-> @@ -1070,6 +1071,51 @@ int kvm_irq_map_chip_pin(struct kvm *kvm, unsigned irqchip, unsigned pin)
->  
->  #endif /* CONFIG_KVM_XICS */
->  
-> +/*
-> + * kvm_arch_mmu_enable_log_dirty_pt_masked - enable dirty logging for selected
-> + * dirty pages.
-> + *
-> + * It write protects selected pages to enable dirty logging for them.
-> + */
-> +void kvm_arch_mmu_enable_log_dirty_pt_masked(struct kvm *kvm,
-> +					     struct kvm_memory_slot *slot,
-> +					     gfn_t gfn_offset,
-> +					     unsigned long mask)
-> +{
-> +	phys_addr_t base_gfn = slot->base_gfn + gfn_offset;
-> +	phys_addr_t start = (base_gfn +  __ffs(mask)) << PAGE_SHIFT;
-> +	phys_addr_t end = (base_gfn + __fls(mask) + 1) << PAGE_SHIFT;
-> +
-> +	while (start < end) {
-> +		pte_t *ptep;
-> +		unsigned int shift;
-> +
-> +		ptep = find_kvm_secondary_pte(kvm, start, &shift);
-> +
-> +		if (radix_enabled())
-> +			__radix_pte_update(ptep, _PAGE_WRITE, 0);
-> +		else
-> +			*ptep = __pte(pte_val(*ptep) & ~(_PAGE_WRITE));
-> +
-> +		start += PAGE_SIZE;
-> +	}
->
+We struggle with a weird problem accessing an ubiblock device for quite some
+time now. As we are running out of ideas, I reach out for your help.
+
+The device we develop has an i.MX6 Solo SoC equipped with gpmi-nand flash
+(Micron MT29F8G08ABACA, 1GB). The flash is partitioned into five UBI volumes,
+forming an A/B boot setup, consisting of two pairs with each a UBIFS volume
+holding a FIT image and a ubiblock volume containing a SQUASHFS root filesystem
+with dm-verity hashes attached, and the fifth UBIFS volume for common data.
+The bootloader (barebox 2022.06.0) is stored on an additional spi-nor flash.
+
+In order to mount the root filesystem, the FIT image contains an initramfs,
+calling cryptsetup (tried v2.4.3 and v2.6.1) on the ubiblock device,
+followed by mount of the root filesystem.
+MTD attach and creation of the ubiblock device is triggered by kernel
+arguments:
+
+  commandline: console=ttymxc1,115200n8   ubi.block=0,root0 root=/dev/ubiblock0_2 rootfstype=squashfs ubi.mtd=nand
+
+This fails to boot with a null pointer dereference when calling cryptsetup:
+
+  [    5.637207] ubi0: default fastmap pool size: 200
+  [    5.642020] ubi0: default fastmap WL pool size: 100
+  [    5.647000] ubi0: attaching mtd0
+  [    6.450307] ubi0: scanning is finished
+  [    6.472816] ubi0: attached mtd0 (name "nand", size 1024 MiB)
+  [    6.478561] ubi0: PEB size: 262144 bytes (256 KiB), LEB size: 253952 bytes
+  [    6.485508] ubi0: min./max. I/O unit sizes: 4096/4096, sub-page size 4096
+  [    6.492395] ubi0: VID header offset: 4096 (aligned 4096), data offset: 8192
+  [    6.499378] ubi0: good PEBs: 4092, bad PEBs: 4, corrupted PEBs: 0
+  [    6.505518] ubi0: user volume: 5, internal volumes: 1, max. volumes count: 128
+  [    6.512810] ubi0: max/mean erase counter: 14/8, WL threshold: 4096, image sequence number: 228025450
+  [    6.521965] ubi0: available PEBs: 177, total reserved PEBs: 3915, PEBs reserved for bad PEB handling: 76
+  [    6.531750] ubi0: background thread "ubi_bgt0d" started, PID 163
+  [   12.919477] block ubiblock0_2: created from ubi0:2(root0)
+  [   12.929687] ALSA device list:
+  [   12.932750]   #0: sgtl5000
+  [   12.940024] Freeing unused kernel image (initmem) memory: 1024K
+  [   12.946926] Run /init as init process
+  Starting version 250.5+
+  [   15.601749] mtdblock: MTD device 'nand' is NAND, please consider using UBI block devices instead.
+  realpath: /dev/disk/by-partuuid//dev/ubiblock0_2: No such file or directory
+  [   26.127460] 8<--- cut here ---
+  [   26.130689] Unable to handle kernel NULL pointer dereference at virtual address 00000000
+  [   26.138886] [00000000] *pgd=00000000
+  [   26.142523] Internal error: Oops: 5 [#1] ARM
+  [   26.146804] Modules linked in:
+  [   26.149868] CPU: 0 PID: 18 Comm: kworker/0:3 Not tainted 6.1.38 #1
+  [   26.156060] Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
+  [   26.162592] Workqueue: ubiblock0_2 ubiblock_do_work
+  [   26.167498] PC is at ubi_io_read+0x78/0x2fc
+  [   26.171693] LR is at ubi_eba_read_leb+0xe8/0x4a4
+  [   26.176320] pc : [<c075f508>]    lr : [<c075cd0c>]    psr: 60070013
+  [   26.182591] sp : f0961dc8  ip : 00000000  fp : 00002000
+  [   26.187819] r10: c81c6000  r9 : 00000000  r8 : c81c7000
+  [   26.193046] r7 : 00000200  r6 : 000008e0  r5 : 00002000  r4 : 00000000
+  [   26.199578] r3 : 00000000  r2 : 00000000  r1 : 00000000  r0 : c81c6000
+  [   26.206108] Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
+  [   26.213250] Control: 10c53c7d  Table: 1824c059  DAC: 00000051
+  [   26.218998] Register r0 information: slab kmalloc-8k start c81c6000 pointer offset 0 size 8192
+  [   26.227638] Register r1 information: NULL pointer
+  [   26.232352] Register r2 information: NULL pointer
+  [   26.237062] Register r3 information: NULL pointer
+  [   26.241772] Register r4 information: NULL pointer
+  [   26.246481] Register r5 information: non-paged memory
+  [   26.251537] Register r6 information: non-paged memory
+  [   26.256594] Register r7 information: non-paged memory
+  [   26.261651] Register r8 information: slab kmalloc-8k start c81c6000 pointer offset 4096 size 8192
+  [   26.270545] Register r9 information: NULL pointer
+  [   26.275254] Register r10 information: slab kmalloc-8k start c81c6000 pointer offset 0 size 8192
+  [   26.283977] Register r11 information: non-paged memory
+  [   26.289120] Register r12 information: NULL pointer
+  [   26.293916] Process kworker/0:3 (pid: 18, stack limit = 0x1a047662)
+  [   26.300194] Stack: (0xf0961dc8 to 0xf0962000)
+  [   26.304559] 1dc0:                   c1d50ec0 c075cc64 00000001 00000000 00000000 c1d50ec0
+  [   26.312744] 1de0: 00000001 24c676fe c075cc64 00000000 000008e0 c81c6000 c80c4000 00000000
+  [   26.320928] 1e00: c1d50ec0 00000002 c81c7000 c075cd0c 00000200 c01d3930 60070013 00000000
+  [   26.329111] 1e20: 60070013 c1b43208 000008e0 24c676fe 00000000 c830f5cc c830f5cc 00000200
+  [   26.337294] 1e40: 00000000 00000001 00000200 c80c4000 00000000 c075d124 00000000 00000200
+  [   26.345477] 1e60: 00000000 c13e0ec0 c81c6000 c1d50ec0 00000000 00000000 00000000 c80c4000
+  [   26.353661] 1e80: c830f5cc c1e52c00 00000200 c81c6000 00000002 c075b748 00000000 00000200
+  [   26.361844] 1ea0: 00000000 c1312e58 ef7d3c00 0003e000 00000000 00000200 ef7d3c00 c1e52c00
+  [   26.370027] 1ec0: c830f5a8 c830f5cc 00000000 c076b228 00000200 00000000 c830f500 c1d50ec0
+  [   26.378211] 1ee0: c830f5d4 24c676fe c0c0e608 c830f5a8 c1ed3800 c1312e58 ef7d3c00 c1d50ec0
+  [   26.386394] 1f00: 00000000 c14e59c0 ef7d3c05 c013c06c 00000001 00000000 c013bff4 00000000
+  [   26.394577] 1f20: c1312e68 24c676fe c1b5f698 c19642b8 00000000 c101b390 00000000 24c676fe
+  [   26.402760] 1f40: c1d50ec0 c1ed3800 c1312e58 c1ed3818 c1312e94 c13dfc30 c1d50ec0 00000008
+  [   26.410944] 1f60: c1312e58 c013c3f0 00000000 c1f16880 c1d50ec0 c013c3b0 c1ed3800 c1ed3880
+  [   26.419126] 1f80: f095de9c 00000000 00000000 c0143654 c1f16880 c0143588 00000000 00000000
+  [   26.427309] 1fa0: 00000000 00000000 00000000 c0100128 00000000 00000000 00000000 00000000
+  [   26.435491] 1fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+  [   26.443673] 1fe0: 00000000 00000000 00000000 00000000 00000013 00000000 00000000 00000000
+  [   26.451855]  ubi_io_read from ubi_eba_read_leb+0xe8/0x4a4
+  [   26.457277]  ubi_eba_read_leb from ubi_eba_read_leb_sg+0x5c/0x154
+  [   26.463390]  ubi_eba_read_leb_sg from ubi_leb_read_sg+0x70/0xb0
+  [   26.469325]  ubi_leb_read_sg from ubiblock_do_work+0x104/0x238
+  [   26.475180]  ubiblock_do_work from process_one_work+0x238/0x57c
+  [   26.481130]  process_one_work from worker_thread+0x40/0x4f8
+  [   26.486724]  worker_thread from kthread+0xcc/0xf0
+  [   26.491449]  kthread from ret_from_fork+0x14/0x2c
+  [   26.496168] Exception stack(0xf0961fb0 to 0xf0961ff8)
+  [   26.501225] 1fa0:                                     00000000 00000000 00000000 00000000
+  [   26.509410] 1fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+  [   26.517592] 1fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+  [   26.524215] Code: 1a000041 e59d2010 e1a09fc5 e1a0b005 (e5d23000)
+  [   26.530367] ---[ end trace 0000000000000000 ]---
+
+This kernel Oops happens both on patched or vanilla kernels, of which we tried
+several releases in 5.15.y and 6.1.y branches. We also tried with several of
+our devices.
+Upgrading to the latest mainline kernel did not work out-of-the-box, hence we
+did not follow that track (yet).
+
+We tried with full debugging output for the whole ubi driver and used several
+additional printks. That way we were able to see, that the first scatterlist
+entry already pointed to virtual address zero when the first read request
+caused by cryptsetup was added to ubiblock's work_queue.
+
+  sg_virt(pdu->usgl.sg[0]) => page_address(sg) => 0x0000000
+
+We also tried to use hw_breakpoints to gather more information on (maybe)
+another module interfering, but did not succeed (yet).
+
+But we were not able to narrow down the root cause until now.
 
 
-I am not sure about that. You are walking partition scoped table here
-and you are checking for hypervisor translation mode and doing pte
-updates. That doesn't look correct.
+As an additional twist, the system is able to boot when we mount the ubiblock
+root filesystem without calling cryptsetup, hence skipping the dm-verity hash
+verification. And we can verify the root filesystem with cryptsetup once the
+system boot is finished.
 
--aneesh
+It is also possible to boot the same system image, including dm-verity, when
+using a sdcard instead of the nand flash. Loading the FIT from sdcard but
+calling cryptsetup on the ubiblock device again leads to the described oops.
+
+
+Is there something we have overlooked?
+Do you have further ideas to get behind this issue?
+
+
+Thanks!
+--
+Stephan Wurm <stephan.wurm@a-eberle.de>
