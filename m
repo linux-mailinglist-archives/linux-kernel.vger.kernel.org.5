@@ -2,103 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E716C755E24
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 10:15:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB6F0755E4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 10:17:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231297AbjGQIPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 04:15:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40596 "EHLO
+        id S231335AbjGQIRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 04:17:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230496AbjGQIPi (ORCPT
+        with ESMTP id S229863AbjGQIRf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 04:15:38 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B4A3136
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 01:15:37 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-4fb7b2e3dacso6562537e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 01:15:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689581735; x=1692173735;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AxftnQ3CNTrVOjYH5VYYCvLOpYPsnqVN2ihvqFHedaY=;
-        b=OaVyt1x/nakusfj9bPvL0EcjR/vJkisACkK7ke8H60mvPHsrvxgoGQ8bdW/Lx5uHth
-         gtM8yXWDIjieGQYIHC4esKxgVf/2Hc+Qeyy0+T0kF6FKWgfmA2niCjj0l7wzQ8GCalfu
-         8V5/sPuLDMmZxgIVo+n4tvdDXLHEV9dsUWUOGN80egP+FK5f8+rctieFRPq2JJclgdT8
-         +SxnIKYiEPXDso4Qsp5WAKUwPmL+J25e83BGsfZg9uqyMWFfx6+spg7NMVzeJJxMncbl
-         9zTltd/XjzlF3MfHZbyF4N2mDdLYoJJls7JY+a/3l/I0Uh5YKglHiQ4ZRerCnmaey/Du
-         yjIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689581735; x=1692173735;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AxftnQ3CNTrVOjYH5VYYCvLOpYPsnqVN2ihvqFHedaY=;
-        b=WgfcjIwdzTsrypULYuBspTZs2IPsvHeYfLj98Yk5RT378HYuzXIerOXP2NoLMWO4nj
-         illfl7o2N0F1zTGTPSD11uJyZxZimdeMOsPXaZUUnTmCuV87nWsAMfQFIMdZJxPJHn92
-         dHWgGR+bXM/FrsaP4VwABSoicIo7Kri++iWT7LSqx9BK4RSUqGpViCaJXNfNz6hHcETS
-         ZSvC93zJDuYu7pC3/YwA0rAl2n+YzE5jVzjDPH8KXtPlpINQW8vCmQHG9zAv0T2s1x1p
-         AHnPXW3Ek3VnsCNU46vBacWEJNcZzctxDwiG1NiPwHFothFJtB3lh+0Gm18jSyqfjsf2
-         cKYw==
-X-Gm-Message-State: ABy/qLZl6pCcHy9N43w6TVloE4xMiy1rvboOfeMEPD6xDi5ReDlc6NxR
-        4/rQd0csS7Qr4OCdpClxddI4giwdPTHTcqwFslA=
-X-Google-Smtp-Source: APBJJlHTmB2ZXqSG2Z7ZQZs43rQgaUnAYkwbYO1fUQdKuwiQICnK30oLhvBIZeIvvQfOxDto3Ng5Sw==
-X-Received: by 2002:ac2:4da3:0:b0:4f8:6e52:68ae with SMTP id h3-20020ac24da3000000b004f86e5268aemr6790640lfe.31.1689581735260;
-        Mon, 17 Jul 2023 01:15:35 -0700 (PDT)
-Received: from [192.168.69.115] ([176.176.144.39])
-        by smtp.gmail.com with ESMTPSA id e14-20020a5d65ce000000b0031437ec7ec1sm18700656wrw.2.2023.07.17.01.15.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Jul 2023 01:15:34 -0700 (PDT)
-Message-ID: <045467d8-1122-b1d3-07b6-bddd92bfa9b3@linaro.org>
-Date:   Mon, 17 Jul 2023 10:15:33 +0200
+        Mon, 17 Jul 2023 04:17:35 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B123130
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 01:17:34 -0700 (PDT)
+Received: from workpc.. (109-252-154-2.dynamic.spd-mgts.ru [109.252.154.2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: dmitry.osipenko)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 33A456603203;
+        Mon, 17 Jul 2023 09:17:32 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1689581852;
+        bh=cDQ2vNJdynhbZflqAFsbK6vZklSq9Zi8ClehMpPtBBs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=gQcSPD210Nl413tX4EN9AKxAjl2Lu3jVl6iygQmOQ+d6udO7PTzMFmqu7SraPlMM4
+         vX/IxYjmG1QqY7pZZegi5w3aSJyQgbDXthOZpem7w75Mtt7v5iUThLyQJsp+KFa6W7
+         GWaLGifts77smDhMnNTGWKRC9WlWnlrdOEfhUrZe5rmVsQTKXh8/JG0MQoK2NoYJcS
+         X9u9ZtbmfTkzOQDMg2J54xV1Sm8KyIaHEH8jQT/nr1WCaxT6SdVz8oWpN8oMUcSxWS
+         40UfLI1qbcfVDyEEEaEbY54kV5xj3Z2QxGf/v/sSE0q6Fm/kLwnUX0NxT/U8by3OXv
+         AgigAAND7l0sw==
+From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
+To:     Rob Herring <robh@kernel.org>, Steven Price <steven.price@arm.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com
+Subject: [PATCH v1] MAINTAINERS: Add Boris Brezillon as Panfrost driver maintainer
+Date:   Mon, 17 Jul 2023 11:15:44 +0300
+Message-ID: <20230717081544.1068254-1-dmitry.osipenko@collabora.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH] soc: bcm: Explicitly include correct DT includes
-Content-Language: en-US
-To:     Rob Herring <robh@kernel.org>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>
-Cc:     devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230714175130.4067236-1-robh@kernel.org>
-From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
-In-Reply-To: <20230714175130.4067236-1-robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+Add Boris Brezillon as Panfrost driver maintainer. Boris is a new lead
+developer of the Panfrost Mesa driver and main developer behind the
+upcoming Panthor kernel driver that will serve next-gen Mali GPUs.
 
-On 14/7/23 19:51, Rob Herring wrote:
-> The DT of_device.h and of_platform.h date back to the separate
-> of_platform_bus_type before it as merged into the regular platform bus.
+Remove Tomeu and Alyssa, who left Collabora and stepped down from working
+on Panfrost.
 
-"before it was"?
+Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+---
+ MAINTAINERS | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-> As part of that merge prepping Arm DT support 13 years ago, they
-> "temporarily" include each other. They also include platform_device.h
-> and of.h. As a result, there's a pretty much random mix of those include
-> files used throughout the tree. In order to detangle these headers and
-> replace the implicit includes with struct declarations, users need to
-> explicitly include the correct includes.
-> 
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->   drivers/soc/bcm/bcm63xx/bcm-pmb.c       | 1 -
->   drivers/soc/bcm/bcm63xx/bcm63xx-power.c | 1 -
->   2 files changed, 2 deletions(-)
-
-Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 5d6536fef2fc..08dc75916148 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -1615,9 +1615,8 @@ F:	drivers/gpu/drm/arm/display/komeda/
+ 
+ ARM MALI PANFROST DRM DRIVER
+ M:	Rob Herring <robh@kernel.org>
+-M:	Tomeu Vizoso <tomeu.vizoso@collabora.com>
++M:	Boris Brezillon <boris.brezillon@collabora.com>
+ R:	Steven Price <steven.price@arm.com>
+-R:	Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
+ L:	dri-devel@lists.freedesktop.org
+ S:	Supported
+ T:	git git://anongit.freedesktop.org/drm/drm-misc
+-- 
+2.41.0
 
