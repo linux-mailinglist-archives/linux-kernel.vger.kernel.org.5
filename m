@@ -2,137 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B04E6755BD8
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 08:37:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E69F755BDB
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 08:38:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229718AbjGQGhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 02:37:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38582 "EHLO
+        id S229723AbjGQGiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 02:38:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229528AbjGQGhP (ORCPT
+        with ESMTP id S229528AbjGQGiK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 02:37:15 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7D8593;
-        Sun, 16 Jul 2023 23:37:14 -0700 (PDT)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36H5pcVl028723;
-        Mon, 17 Jul 2023 06:36:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=DgQvj7P9SKd+4vVK23Z5kicrESGlyfKetsdyqYrWP4Y=;
- b=b8rr18dkArFi7/ETMxqT7NPoGdT+zplC+bCgdTHt6cDy0drRRFo2WQkwZqng6CtUYYM0
- w3T8EFpMbiiISJUecaqAlBYNbKuuyL7upDDI/RHlkEXUYzD0SDwrLRpLpYRgbZHG5h4N
- pJ9M8exepJKDuwTikXOemA1z+VnxvUL1UYCO+U3Lt5hns91TKMxCFuhyZY5vpYccfy06
- Kk8UAUvqd+SW1n+9BY3toWTA+z7adw6vhprGHrido+hEPcQ6m69vH9NHjz7kZrSY82z4
- leEcaMjHjXj0+wDg2TmRRAsbL+hgbG8fzKJrGXLONMpGARYKJfo3dyN0QlrujAX76eNc 8w== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3run0cak6r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 17 Jul 2023 06:36:45 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36H6ahvk004461
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 17 Jul 2023 06:36:43 GMT
-Received: from [10.216.50.105] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Sun, 16 Jul
- 2023 23:36:36 -0700
-Message-ID: <52156f94-5bb0-93af-52ed-7cbb14492393@quicinc.com>
-Date:   Mon, 17 Jul 2023 12:06:32 +0530
+        Mon, 17 Jul 2023 02:38:10 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92A3F93;
+        Sun, 16 Jul 2023 23:38:09 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 275CB60F5D;
+        Mon, 17 Jul 2023 06:38:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE6BBC433C7;
+        Mon, 17 Jul 2023 06:38:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689575888;
+        bh=C3jRACdteb4/FJI80ETxr0hg06nuLiMOWlWqtcyyR88=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=qbSlPk4UFm5zuVpO6zjcXmheQkuQ7VBPv8x/2t6tJ8kndEi0RTVBQ9fyb1O99+wz7
+         8nN0z7eObRyzLX0L8+YcmlRr4zmRj4EltFwAgcvI2ipxWoNH2FZxKIKE1q2rZ6h4BZ
+         wVhDwDoasBXGpf24aIYMKUyjRi8T0Zx4KRSiXVjHOld5DOfugrt+46f5gtBU4MEyLo
+         CIUsNLCDqAHbnZPvIYs5rKdt4foNDRJvfOZSFd4LIdsSicTDpj6elb6H1qqltTRKYm
+         TIH8ItBJj/r8+aKyhX9BSvYBa5MlMADs4sAfn6rXFkIRqaabAMtGZUZDaSCxM14rfQ
+         svcAFm0OYIpWg==
+Message-ID: <bd3890e4-3880-b292-5b9f-e9443185681c@kernel.org>
+Date:   Mon, 17 Jul 2023 08:38:00 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH 4/6] clk: qcom: Add NSS clock Controller driver for
- IPQ9574
+Subject: Re: [PATCH v2 2/2] iio: add mcp4728 I2C DAC driver
 Content-Language: en-US
-To:     Simon Horman <simon.horman@corigine.com>
-CC:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <mturquette@baylibre.com>,
-        <sboyd@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <catalin.marinas@arm.com>, <will@kernel.org>,
-        <p.zabel@pengutronix.de>, <richardcochran@gmail.com>,
-        <arnd@arndb.de>, <geert+renesas@glider.be>,
-        <neil.armstrong@linaro.org>, <nfraprado@collabora.com>,
-        <rafal@milecki.pl>, <linux-arm-msm@vger.kernel.org>,
-        <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <netdev@vger.kernel.org>,
-        <quic_saahtoma@quicinc.com>
-References: <20230711093529.18355-1-quic_devipriy@quicinc.com>
- <20230711093529.18355-5-quic_devipriy@quicinc.com>
- <ZK+NnWadQcmUDp0A@corigine.com>
-From:   Devi Priya <quic_devipriy@quicinc.com>
-In-Reply-To: <ZK+NnWadQcmUDp0A@corigine.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To:     Andrea Collamati <andrea.collamati@gmail.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        William Breathitt Gray <william.gray@linaro.org>,
+        Angelo Dureghello <angelo.dureghello@timesys.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <cover.1689541455.git.andrea.collamati@gmail.com>
+ <75145a12-a85e-e553-d32f-3212357c4a7e@gmail.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+In-Reply-To: <75145a12-a85e-e553-d32f-3212357c4a7e@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: kQYvtwfe5s0BgfS4IKtY760RPTpIrRUJ
-X-Proofpoint-ORIG-GUID: kQYvtwfe5s0BgfS4IKtY760RPTpIrRUJ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-17_05,2023-07-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=909 spamscore=0
- priorityscore=1501 phishscore=0 malwarescore=0 suspectscore=0 bulkscore=0
- clxscore=1011 lowpriorityscore=0 impostorscore=0 mlxscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2307170059
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 16/07/2023 23:26, Andrea Collamati wrote:
+> mcp4728 is a 12-bit quad channel DAC with I2C interface.
+> 
+> support for:
+>   * per-channel gain
+>   * per-channel power state
+>   * per-channel power down mode control
+>   * per-channel vref selection internal/vdd
+>   * store current state to on-chip EEPROM
+> 
+> Signed-off-by: Andrea Collamati <andrea.collamati@gmail.com>
+> ---
 
+What changed? Are you saying you ignored entire review you got?
 
-On 7/13/2023 11:07 AM, Simon Horman wrote:
-> On Tue, Jul 11, 2023 at 03:05:27PM +0530, Devi Priya wrote:
->> Add Networking Sub System Clock Controller(NSSCC) driver for ipq9574 based
->> devices.
->>
->> Signed-off-by: Devi Priya <quic_devipriy@quicinc.com>
+>  drivers/iio/dac/Kconfig   |  12 +
+>  drivers/iio/dac/Makefile  |   1 +
+>  drivers/iio/dac/mcp4728.c | 635 ++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 648 insertions(+)
+>  create mode 100644 drivers/iio/dac/mcp4728.c
 > 
-> ...
-> 
->> +static const struct qcom_reset_map nss_cc_ipq9574_resets[] = {
->> +	[NSS_CC_CE_BCR] = { 0x28400, 0 },
->> +	[NSS_CC_CLC_BCR] = { 0x28600, 0 },
->> +	[NSS_CC_EIP197_BCR] = { 0x16004, 0 },
->> +	[NSS_CC_HAQ_BCR] = { 0x28300, 0 },
->> +	[NSS_CC_IMEM_BCR] = { 0xe004, 0 },
->> +	[NSS_CC_MAC_BCR] = { 0x28100, 0 },
->> +	[NSS_CC_PPE_BCR] = { 0x28200, 0 },
->> +	[NSS_CC_UBI_BCR] = { 0x28700, 0 },
->> +	[NSS_CC_UNIPHY_BCR] = { 0x28900, 0 },
->> +	[UBI3_CLKRST_CLAMP_ENABLE] = { 0x28A04, 9 },
->> +	[UBI3_CORE_CLAMP_ENABLE] = { 0x28A04, 8 },
->> +	[UBI2_CLKRST_CLAMP_ENABLE] = { 0x28A04, 7 },
->> +	[UBI2_CORE_CLAMP_ENABLE] = { 0x28A04, 6 },
->> +	[UBI1_CLKRST_CLAMP_ENABLE] = { 0x28A04, 5 },
->> +	[UBI1_CORE_CLAMP_ENABLE] = { 0x28A04, 4 },
->> +	[UBI0_CLKRST_CLAMP_ENABLE] = { 0x28A04, 3 },
->> +	[UBI0_CORE_CLAMP_ENABLE] = { 0x28A04, 2 },
->> +	[NSSNOC_NSS_CSR_ARES] = { 0x28A04, 1 },
->> +	[NSS_CSR_ARES]  { 0x28A04, 0 },
-> 
-> Hi Devi,
-> 
-> There appears to be an '=' missing in the line above.
+> diff --git a/drivers/iio/dac/Kconfig b/drivers/iio/dac/Kconfig
+> index 3acd9c3f388e..fa1516f6a285 100644
+> --- a/drivers/iio/dac/Kconfig
+> +++ b/drivers/iio/dac/Kconfig
+> @@ -389,6 +389,18 @@ config MCP4725
+>  	  To compile this driver as a module, choose M here: the module
+>  	  will be called mcp4725.
+>  
+> +config MCP4728
+> +	tristate "MCP4728 DAC driver"
+> +	depends on I2C
+> +	help
+> +	  Say Y here if you want to build a driver for the Microchip
+> +	  MCP4728 quad channel, 12-bit digital-to-analog converter (DAC)
+> +	  with I2C interface.
+> +
+> +	  To compile this driver as a module, choose M here: the module
+> +	  will be called mcp4728.
+> +
+> +
 
-Hi Simon,
-Thanks for catching it! will update it in V2.
+Why two blank lines?
 
-Regards,
-Devi Priya
-> 
-> ...
+>  config MCP4922
+>  	tristate "MCP4902, MCP4912, MCP4922 DAC driver"
+>  	depends on SPI
+> diff --git a/drivers/iio/dac/Makefile b/drivers/iio/dac/Makefile
+> index addd97a78838..5b2bac900d5a 100644
+
+...
+
+> +
+> +static void mcp4728_remove(struct i2c_client *client)
+> +{
+> +	struct iio_dev *indio_dev = i2c_get_clientdata(client);
+> +	struct mcp4728_data *data = iio_priv(indio_dev);
+> +
+> +	iio_device_unregister(indio_dev);
+> +	regulator_disable(data->vdd_reg);
+> +}
+> +
+> +static const struct i2c_device_id mcp4728_id[] = { { "mcp4728", MCP4728 }, {} };
+> +MODULE_DEVICE_TABLE(i2c, mcp4728_id);
+
+Yeah, my feedback was ignored.
+
+That's not how it works. Anyway, I doubt that it should be a new driver.
+
+If Jonathan agrees to have new/duplicated drivers, then fine with me,
+but then don't ignore the comments. Instead:
+
+It seems my previous comments were not fully addressed. Maybe my
+feedback got lost between the quotes, maybe you just forgot to apply it.
+Please go back to the previous discussion and either implement all
+requested changes or keep discussing them.
+
+Best regards,
+Krzysztof
+
