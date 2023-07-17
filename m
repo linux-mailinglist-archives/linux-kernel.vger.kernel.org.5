@@ -2,96 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 026DD756293
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 14:14:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B00EA756294
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 14:15:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229564AbjGQMOM convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 17 Jul 2023 08:14:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45896 "EHLO
+        id S229652AbjGQMPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 08:15:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229608AbjGQMOK (ORCPT
+        with ESMTP id S229379AbjGQMPX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 08:14:10 -0400
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A96BC118;
-        Mon, 17 Jul 2023 05:14:09 -0700 (PDT)
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-57688a146ecso44931387b3.2;
-        Mon, 17 Jul 2023 05:14:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689596049; x=1692188049;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zbTeCS9i8dp1Bn3oI7/rX6Wt2FAP3Mlu1K2EnaY7mGE=;
-        b=Yo3zC71I6R5RgBn5/yS2dOaHvqHWHY6jWziE92HQ3UVKNNaqwTokuGUuskd/Txu/7F
-         S6dFRbIktWfGnFtgD4YO69OXhTsz2eCY+uXE6A0rlchHWLv9AI2GcLVa/TbEXoNaHete
-         ZB6BBvdh8DGfmhouMBeV8GeSR9JlEdX8vPZ04n8WyUWTqoZThHd9IKjZa+phUXrXl2uP
-         zpvIe1Ap745Dr2Sa/YcaxMkhHkVTt+rORV2PoSoJbM95+AAPggsPzGPCsfCrqX6JXWck
-         Kh9HImiEUNF5EUpi1PF1grxvdRUwvk+iUdbCcK786w21aN2WhkPe+ODdt61cU5oWhXJc
-         a+hQ==
-X-Gm-Message-State: ABy/qLZv31izG3Oe6qKeGCl4e08SJh6QqjkkKUnsghCa5zGJT8qs/eaI
-        Tdoa3HLtC3FhqPYH/kfARoYTwXzxy+Db3g==
-X-Google-Smtp-Source: APBJJlEGXgiwwnaOfsd781OC8hrEPJeuNs0J8kVPKtb3rHR3RvCcEuzqCgL4EMsazc74+9Y76I3foA==
-X-Received: by 2002:a81:5455:0:b0:577:3b66:441 with SMTP id i82-20020a815455000000b005773b660441mr12011672ywb.50.1689596048796;
-        Mon, 17 Jul 2023 05:14:08 -0700 (PDT)
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com. [209.85.219.178])
-        by smtp.gmail.com with ESMTPSA id e1-20020a0df501000000b0057085b18cddsm3815456ywf.54.2023.07.17.05.14.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Jul 2023 05:14:08 -0700 (PDT)
-Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-c15a5ed884dso4474602276.2;
-        Mon, 17 Jul 2023 05:14:08 -0700 (PDT)
-X-Received: by 2002:a25:3491:0:b0:c85:d8b6:c21d with SMTP id
- b139-20020a253491000000b00c85d8b6c21dmr10139859yba.31.1689596048265; Mon, 17
- Jul 2023 05:14:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <cda2b9ee52a49fa3904d209097754cd757728a4f.1675160668.git.geert+renesas@glider.be>
- <c82c6308-2b32-fe19-e40b-5853544e1c9d@linaro.org>
-In-Reply-To: <c82c6308-2b32-fe19-e40b-5853544e1c9d@linaro.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 17 Jul 2023 14:13:57 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWLzRL3_3ae3Y+xyN8QQRA0do95T9QhqkCGPa93QZ1LRQ@mail.gmail.com>
-Message-ID: <CAMuHMdWLzRL3_3ae3Y+xyN8QQRA0do95T9QhqkCGPa93QZ1LRQ@mail.gmail.com>
-Subject: Re: [PATCH] thermal: Drop spaces before TABs
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+        Mon, 17 Jul 2023 08:15:23 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 282DB130
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 05:15:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 99BDE61033
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 12:15:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05B4BC433C7;
+        Mon, 17 Jul 2023 12:15:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689596121;
+        bh=BiCDsyUlgBVwwo5xDN71eLLu5PGYOGmjWwwo6GQF6YI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=nPGE6NL/9wvRdjAXNkXbcn6kpbwSeEB4INcqOSnz9XsBBNIwuffz+iuAwSC++jAVu
+         kqJY9w0mC6o/0ydaSJBKGydAPM6VemC5hY4WYRSA2mM16XabGFtJU8Pw0cJ982BupU
+         6BLXUlzjhVpGKq1SuYqcegOBKdRUOAsbV3+254J3M6e94bd0faLWLLFfq38QMwP59W
+         FT2Xq3JKVClBqZWQqPmUL/NrRyfPn0O9BXpN0iUSIoOvRW1oNAjiQWuFtjU0GgJ/R1
+         bQnpkkZXX4PAop8LcWwl2Yd6pFCcxhpbTL9gUs70Ww1ne7TSIG9MWpV7GXnOkzP/Mq
+         oqPTHlLzCkXBg==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qLN8I-00Dj4J-KQ;
+        Mon, 17 Jul 2023 13:15:18 +0100
+Date:   Mon, 17 Jul 2023 13:15:18 +0100
+Message-ID: <864jm2vind.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] arm64: enable dead code elimination
+In-Reply-To: <23d94414-b819-eaef-6fac-638bf713d341@huawei.com>
+References: <20230717080739.1000460-1-wangkefeng.wang@huawei.com>
+        <801e30a093e41c3eebd675f0d224f8d7@kernel.org>
+        <23d94414-b819-eaef-6fac-638bf713d341@huawei.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: wangkefeng.wang@huawei.com, catalin.marinas@arm.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+On Mon, 17 Jul 2023 12:56:39 +0100,
+Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
+>=20
+>=20
+>=20
+> On 2023/7/17 17:42, Marc Zyngier wrote:
+> > On 2023-07-17 09:07, Kefeng Wang wrote:
+> >> Select CONFIG_HAVE_LD_DEAD_CODE_DATA_ELIMINATION for arm64, allowing t=
+he
+> >> user to enable dead code elimination. In order for this to work, ensure
+> >> that we keep the necessary tables by annotating them with KEEP, also it
+> >> requires further changes to linker script to KEEP some tables and
+> >> wildcard
+> >> compiler generated sections into the right place.
+> >>=20
+> >> The following comparison is based 6.5-rc2 with defconfig,
+> >>=20
+> >> $ ./scripts/bloat-o-meter vmlinux-base vmlinux-new
+> >> add/remove: 3/1106 grow/shrink: 4102/6964 up/down: 35704/-99980 (-6427=
+6)
+> >> Function=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 old=C2=A0=C2=A0=C2=A0=C2=A0 new=C2=A0=C2=A0 delta
+> >> ...
+> >> Total: Before=3D17888959, After=3D17824683, chg -0.36%
+> >>=20
+> >> add/remove: 0/1 grow/shrink: 0/1 up/down: 0/-44 (-44)
+> >> Data=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 old=C2=A0=C2=A0=C2=A0=C2=A0 new=C2=A0=C2=A0 delta
+> >> ...
+> >> Total: Before=3D4820808, After=3D4820764, chg -0.00%
+> >>=20
+> >> add/remove: 0/1 grow/shrink: 0/1 up/down: 0/-1096 (-1096)
+> >> RO Data=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 old=C2=A0=C2=A0=C2=A0=C2=A0 new=C2=A0=C2=A0 delta
+> >> ...
+> >> Total: Before=3D5179123, After=3D5178027, chg -0.02%
+> >>=20
+> >> $ size vmlinux-base vmlinux
+> >> =C2=A0=C2=A0 text=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 data=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bss=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 dec=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 hex=C2=A0=C2=A0=C2=A0 filename
+> >> 25433734=C2=A0 15385766=C2=A0 630656=C2=A0 41450156=C2=A0 2787aac=C2=
+=A0=C2=A0=C2=A0 vmlinux-base
+> >> 24756738=C2=A0 15360870=C2=A0 629888=C2=A0 40747496=C2=A0 26dc1e8=C2=
+=A0=C2=A0=C2=A0 vmlinux-new
+> >>=20
+> >> Memory available after booting, saving 704k on qemu,
+> >> base: 8084532K/8388608K
+> >> new:=C2=A0 8085236K/8388608K
+> >>=20
+> >> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> >=20
+> > I took this patch for a spin in my tree, and ended up with:
+> >=20
+> >  =C2=A0 CC=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .vmlinux.export.o
+> >  =C2=A0 UPD=C2=A0=C2=A0=C2=A0=C2=A0 include/generated/utsversion.h
+> >  =C2=A0 CC=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 init/version-timestamp.o
+> >  =C2=A0 LD=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .tmp_vmlinux.kallsyms1
+> > ld: init/main.o(__patchable_function_entries): error: need linked-to
+> > section for --gc-sections
+> > make[2]: *** [scripts/Makefile.vmlinux:36: vmlinux] Error 1
+> > make[1]: *** [/home/maz/hot-poop/arm-platforms/Makefile:1238:
+> > vmlinux] Error 2
+> > make: *** [Makefile:234: __sub-make] Error 2
+>=20
+> I don't find this error with CONFIG_FTRACE_MCOUNT_RECORD or
+> allyesconfig, does it need special config or gcc version?
 
-On Tue, Jan 31, 2023 at 2:15 PM Daniel Lezcano
-<daniel.lezcano@linaro.org> wrote:
-> On 31/01/2023 11:26, Geert Uytterhoeven wrote:
-> > There is never a need to have a space before a TAB, but they hurt the
-> > eyes of vim users.
-> >
-> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> > ---
->
-> Applied, thanks
+You tell me!
 
-I still don't see it in linux-next, though. Shall I resend?
-Thanks!
+gcc (Debian 10.2.1-6) 10.2.1 20210110
+Copyright (C) 2020 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-Gr{oetje,eeting}s,
+so hardly something special. This is built with the current state of
+my NV tree, available here[1] As for the configuration, have a look
+here[2].
 
-                        Geert
+	M.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git/l=
+og/?h=3Dkvm-arm64/nv-6.6-WIP
+[2] https://paste.debian.net/1286106/
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+--=20
+Without deviation from the norm, progress is not possible.
