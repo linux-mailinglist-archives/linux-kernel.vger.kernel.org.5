@@ -2,72 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09305756628
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 16:16:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7847756623
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 16:15:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229621AbjGQOQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 10:16:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42552 "EHLO
+        id S230512AbjGQOPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 10:15:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230033AbjGQOQV (ORCPT
+        with ESMTP id S232253AbjGQOPc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 10:16:21 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4419310DF
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 07:15:55 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id ca18e2360f4ac-7835971026fso185735139f.3
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 07:15:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689603334; x=1692195334;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Q/Etr5ln7V9qJYgR+jYHUosTrycy9bCbiREFEh6ojkU=;
-        b=HyV4wuTniDMbcFSK2QBPfJAjUzNwJO36NBbC2zZzM4XH1s9wP1Ylq3TY10VKISDb2m
-         hMtGz7nh93CC+6ZviadaYgWRo26EDCQxxGf8jjxjVsU6pexiNHp9aHTF4VYrmbQfki3l
-         v1gl4/zR5SFXs/709m7To+Zh2O82oIT6ZYUeajeZ5j8OY+HptQ9Xkdc42QBw9hDYtdzu
-         gqgsx53R/PndUEdA6R29Qs4BuBHbDnkb1K1dI5Lg/F3udhft0MzuV3yA+JAjoys0fywq
-         fwK+RX+eH0oA8yM3j0c+c33/Nb/TrrsCeNz8+qTIqmARQ7qyVNwbS4Dfb9/4UqYi15PJ
-         1uUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689603334; x=1692195334;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Q/Etr5ln7V9qJYgR+jYHUosTrycy9bCbiREFEh6ojkU=;
-        b=G+zuR+9Oi/gx6CrtUXCg8o0RSwxAQ8PkrnbHTlB/L/UsAhEm/9p/x2CPKbmGdGKCMJ
-         dYvK7iTHCsaDcxAmQfEqtHMBAmw1IV8jfWUXYoPxHk2ltrVnV1Gy5P62HsVgLbRf9glV
-         Ih37c4G7HOOZluKBXF83LSfly4lORhMQ5V3D7TKHpo+wB2/oaek3tERa+4aF9uEK+dev
-         njik3wZRMpO4Xqz1+790oRxv7N2JNd/6xSksNiz2IBNJYP5Lga5m23m9bnrwGXFAiIk8
-         XO0YnRyuSxz8QzrZZIssxmlwKcQs5O1EsVA0AypwFMilMo7kJ2v00XfMiQeM82ZCM6yw
-         AZ/A==
-X-Gm-Message-State: ABy/qLbeHxWVLg7RCkZ16vdFv2lUnzV5kBdlH+Zc/p4ZubiFzzSPnCOt
-        zMBHuj0iqzM0AGmQD4InLWXA66F7EwIcNO8jWxZIHg==
-X-Google-Smtp-Source: APBJJlGyiVthTHnd3Lbdq9FfE+vz0TSwKhDJ3weCw6vrvclqK+qmW68GyaqAZjLKUa73gZpBusbA4r3SeLTGlwuNaD8=
-X-Received: by 2002:a6b:d608:0:b0:787:a73:b411 with SMTP id
- w8-20020a6bd608000000b007870a73b411mr9656710ioa.17.1689603334563; Mon, 17 Jul
- 2023 07:15:34 -0700 (PDT)
+        Mon, 17 Jul 2023 10:15:32 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A209F172C;
+        Mon, 17 Jul 2023 07:15:02 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C6C1B6109E;
+        Mon, 17 Jul 2023 14:15:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D65AFC433C9;
+        Mon, 17 Jul 2023 14:15:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689603301;
+        bh=nsWvvpLCGQi1ccr8r5WQcrvwg055b3qqd0VTtJE2RIA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DlSQ9lmB+krwPk+ZP5rB8v7kqNrBCr14yNsqm4MJmIDBXpmnVjkdNVKERsuUtv8Nf
+         I27gHAYJvvKbd9xQgZMVB+n0nEXn6SUobobjXeGEdgh7Li2ogPo92qJh0d13FyI2LS
+         DjGCgIj1VLqfJFXytbRMFxWPfx63ugap6czTLhUPDdH8BcsjuVxfhD5Xdwi8Mu7Zdc
+         nLOzOTCFn2vywaNJqmgnlIpFzi6pLOQZRUxQqOLAPstM8JzHoWfgvPga26xqz6XeA1
+         cMDPagw9cdi16sKdzigKtdSsWBOWjWR6Y9fNMz86+mgJlzr7f9pjKYHOa2E/XxDoO2
+         43IHcK746lPrA==
+Date:   Mon, 17 Jul 2023 16:14:58 +0200
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Frank Oltmanns <frank@oltmanns.dev>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Roman Beranek <me@crly.cz>, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 08/11] clk: sunxi-ng: nkm: Support finding closest rate
+Message-ID: <ho2bblo2hzizst74hfqog3ga4cjf7eead2ntbl4e7xi5c32bhq@qpttu7ayv7vy>
+References: <20230717-pll-mipi_set_rate_parent-v4-0-04acf1d39765@oltmanns.dev>
+ <20230717-pll-mipi_set_rate_parent-v4-8-04acf1d39765@oltmanns.dev>
 MIME-Version: 1.0
-References: <20230717113709.328671-1-glider@google.com> <20230717113709.328671-2-glider@google.com>
- <ZLU7mkhUiDQodaw1@smile.fi.intel.com>
-In-Reply-To: <ZLU7mkhUiDQodaw1@smile.fi.intel.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Mon, 17 Jul 2023 16:14:57 +0200
-Message-ID: <CAG_fn=XNYQC8gKKQr3Mz7CVw8H=Ubmr+QaUu-jraoT4sN550rA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/5] lib/bitmap: add bitmap_{set,get}_value()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, pcc@google.com,
-        andreyknvl@gmail.com, linux@rasmusvillemoes.dk,
-        yury.norov@gmail.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, eugenis@google.com,
-        syednwaris@gmail.com, william.gray@linaro.org,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ltjkxvuoqd4wy6uu"
+Content-Disposition: inline
+In-Reply-To: <20230717-pll-mipi_set_rate_parent-v4-8-04acf1d39765@oltmanns.dev>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,91 +63,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->
-> > Cc: Arnd Bergmann <arnd@arndb.de>
->
-> You can use --cc to `git send-email` instead of polluting the commit mess=
-age.
 
-Right. But as far as I can tell, certain kernel devs prefer to be CCed
-on the whole series, whereas others do not want to see anything but
-the actual patch they were interested in.
-I am not sure about Arnd's preferences, so I just decided to keep the
-tag from the original patch by Syed Nayyar Waris (which I also
-consider to be an indication of the fact "that potentially interested
-parties have been included in the discussion" per
-https://www.kernel.org/doc/html/v4.17/process/submitting-patches.html#when-=
-to-use-acked-by-cc-and-co-developed-by)
+--ltjkxvuoqd4wy6uu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > Signed-off-by: Syed Nayyar Waris <syednwaris@gmail.com>
-> > Signed-off-by: William Breathitt Gray <william.gray@linaro.org>
-> > Link: https://lore.kernel.org/lkml/fe12eedf3666f4af5138de0e70b67a07c7f4=
-0338.1592224129.git.syednwaris@gmail.com/
-> > Suggested-by: Yury Norov <yury.norov@gmail.com>
-> > Signed-off-by: Alexander Potapenko <glider@google.com>
->
-> With above, I think you can also add Co-developed-by (as the changes were
-> made).
+On Mon, Jul 17, 2023 at 03:34:32PM +0200, Frank Oltmanns wrote:
+> When finding the best rate for a NKM clock, consider rates that are
+> higher than the requested rate, if the CCU_FEATURE_CLOSEST_RATE flag is
+> set by using the helper function ccu_is_better_rate().
+>=20
+> Accommodate ccu_mux_helper_determine_rate to this change.
+>=20
+> Signed-off-by: Frank Oltmanns <frank@oltmanns.dev>
+> ---
+>  drivers/clk/sunxi-ng/ccu_mux.c |  2 +-
+>  drivers/clk/sunxi-ng/ccu_nkm.c | 18 ++++++++----------
+>  2 files changed, 9 insertions(+), 11 deletions(-)
+>=20
+> diff --git a/drivers/clk/sunxi-ng/ccu_mux.c b/drivers/clk/sunxi-ng/ccu_mu=
+x.c
+> index 1d557e323169..3ca695439620 100644
+> --- a/drivers/clk/sunxi-ng/ccu_mux.c
+> +++ b/drivers/clk/sunxi-ng/ccu_mux.c
+> @@ -139,7 +139,7 @@ int ccu_mux_helper_determine_rate(struct ccu_common *=
+common,
+>  			goto out;
+>  		}
+> =20
+> -		if ((req->rate - tmp_rate) < (req->rate - best_rate)) {
+> +		if (ccu_is_better_rate(common, req->rate, tmp_rate, best_rate)) {
+>  			best_rate =3D tmp_rate;
+>  			best_parent_rate =3D parent_rate;
+>  			best_parent =3D parent;
+> diff --git a/drivers/clk/sunxi-ng/ccu_nkm.c b/drivers/clk/sunxi-ng/ccu_nk=
+m.c
+> index 793160bc2d47..5439b9351cd7 100644
+> --- a/drivers/clk/sunxi-ng/ccu_nkm.c
+> +++ b/drivers/clk/sunxi-ng/ccu_nkm.c
+> @@ -39,6 +39,7 @@ static unsigned long ccu_nkm_optimal_parent_rate(unsign=
+ed long rate, unsigned lo
+>  }
+> =20
+>  static unsigned long ccu_nkm_find_best_with_parent_adj(struct clk_hw *ph=
+w, struct _ccu_nkm *nkm,
+> +						       struct ccu_common *common,
+>  						       unsigned long *parent, unsigned long rate)
+>  {
+>  	unsigned long best_rate =3D 0, best_parent_rate =3D *parent, tmp_parent=
+ =3D *parent;
+> @@ -54,10 +55,8 @@ static unsigned long ccu_nkm_find_best_with_parent_adj=
+(struct clk_hw *phw, struc
+>  				tmp_parent =3D clk_hw_round_rate(phw, tmp_parent);
+> =20
+>  				tmp_rate =3D tmp_parent * _n * _k / _m;
+> -				if (tmp_rate > rate)
+> -					continue;
+> =20
+> -				if ((rate - tmp_rate) < (rate - best_rate)) {
+> +				if (ccu_is_better_rate(common, rate, tmp_rate, best_rate)) {
+>  					best_rate =3D tmp_rate;
+>  					best_parent_rate =3D tmp_parent;
+>  					best_n =3D _n;
+> @@ -78,7 +77,7 @@ static unsigned long ccu_nkm_find_best_with_parent_adj(=
+struct clk_hw *phw, struc
+>  }
+> =20
+>  static unsigned long ccu_nkm_find_best(unsigned long parent, unsigned lo=
+ng rate,
+> -				       struct _ccu_nkm *nkm)
+> +				       struct _ccu_nkm *nkm, struct ccu_common *common)
 
-Ok, will do.
+Same comment than on patch 7, common should be first in those two functions.
 
-> ...
->
-> > +static inline void bitmap_set_value(unsigned long *map,
-> > +                                 unsigned long value,
-> > +                                 unsigned long start, unsigned long nb=
-its)
-> > +{
-> > +     const size_t index =3D BIT_WORD(start);
-> > +     const unsigned long offset =3D start % BITS_PER_LONG;
-> > +     const unsigned long space =3D BITS_PER_LONG - offset;
-> > +
-> > +     value &=3D GENMASK(nbits - 1, 0);
-> > +
-> > +     if (space >=3D nbits) {
->
-> > +             map[index] &=3D ~(GENMASK(nbits + offset - 1, offset));
->
-> I remember that this construction may bring horrible code on some archite=
-ctures
-> with some version(s) of the compiler (*).
+Once fixed,
+Acked-by: Maxime Ripard <mripard@kernel.org>
 
-Wow, even the trunk Clang and GCC seem to generate better code for
-your version of this line: https://godbolt.org/z/36Kqxhe6j
+Maxime
 
-> To fix that I found an easy refactoring:
->
->                 map[index] &=3D ~(GENMASK(nbits, 0) << offset));
->
+--ltjkxvuoqd4wy6uu
+Content-Type: application/pgp-signature; name="signature.asc"
 
-I'll take this one.
+-----BEGIN PGP SIGNATURE-----
 
-> (*) don't remember the actual versions, though, but anyway...
->
-> > +             map[index] |=3D value << offset;
-> > +             return;
-> > +     }
-> > +     map[index] &=3D ~BITMAP_FIRST_WORD_MASK(start);
-> > +     map[index] |=3D value << offset;
-> > +     map[index + 1] &=3D ~BITMAP_LAST_WORD_MASK(start + nbits);
-> > +     map[index + 1] |=3D (value >> space);
-> > +}
->
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZLVM4gAKCRDj7w1vZxhR
+xe3MAP91I0ZzxUancNCs7HLzHo0db7XK9PtoglojJhbl4zmzfwD/TGAZwQgTuyQC
+ZRkmfnDku6BwZjl8MM3AwBNJxpC6rAs=
+=/klU
+-----END PGP SIGNATURE-----
 
-
---=20
-Alexander Potapenko
-Software Engineer
-
-Google Germany GmbH
-Erika-Mann-Stra=C3=9Fe, 33
-80636 M=C3=BCnchen
-
-Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Liana Sebastian
-Registergericht und -nummer: Hamburg, HRB 86891
-Sitz der Gesellschaft: Hamburg
+--ltjkxvuoqd4wy6uu--
