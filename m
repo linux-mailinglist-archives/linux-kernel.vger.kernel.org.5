@@ -2,109 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3B1D75599E
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 04:33:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E9A075599F
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 04:33:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230367AbjGQCdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Jul 2023 22:33:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54874 "EHLO
+        id S230284AbjGQCdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Jul 2023 22:33:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229753AbjGQCd2 (ORCPT
+        with ESMTP id S230440AbjGQCdg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Jul 2023 22:33:28 -0400
-Received: from mail.208.org (unknown [183.242.55.162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE0F0103
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 19:33:07 -0700 (PDT)
-Received: from mail.208.org (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTP id 4R45j81nxgzBHXhg
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 10:33:00 +0800 (CST)
-Authentication-Results: mail.208.org (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=208.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=208.org; h=
-        content-transfer-encoding:content-type:message-id:user-agent
-        :references:in-reply-to:subject:to:from:date:mime-version; s=
-        dkim; t=1689561180; x=1692153181; bh=kLMGLgzlpWUylD1aig+WRk76Wr1
-        qG/HTlfr/E2irSOo=; b=oRFLzKxOMnEy4EJmQ5LpqjYi8w7g+VN3/i268zKI5QP
-        2BUjWv5gGfwP5yp2LBHyfyYNjGjzCr0RDSNH0Br/gpMi6hKy9hCBAjAH991GfQiZ
-        ri9F1aBQNb7MFCi/j+LBvoXCUsVsp99iyYczsqD1XBjL4KdRJDO50JR3m9gjFHBA
-        xacmspR9d9MyyagtjQJ18fRVLurDugQiF5Tf1RG7PRAMP6vCdh0ou+xjwgUgS9j1
-        vm3WV7RIOpuGxO7QFnH0oZsXpqjw+D2lLHDFCurFPh6vzOQ2XzU3yp6RgsGQfLXO
-        EmJLX8XZLOyGzOgFBXFa4Kch1c14muRxYVAzzhU16aw==
-X-Virus-Scanned: amavisd-new at mail.208.org
-Received: from mail.208.org ([127.0.0.1])
-        by mail.208.org (mail.208.org [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id UVHflj9JtaeR for <linux-kernel@vger.kernel.org>;
-        Mon, 17 Jul 2023 10:33:00 +0800 (CST)
-Received: from localhost (email.208.org [127.0.0.1])
-        by mail.208.org (Postfix) with ESMTPSA id 4R45j76jyZzBHXR9;
-        Mon, 17 Jul 2023 10:32:59 +0800 (CST)
+        Sun, 16 Jul 2023 22:33:36 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C623E71
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 19:33:17 -0700 (PDT)
+Received: from canpemm500002.china.huawei.com (unknown [172.30.72.56])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4R45ff19TzzLnm8;
+        Mon, 17 Jul 2023 10:30:50 +0800 (CST)
+Received: from [10.174.151.185] (10.174.151.185) by
+ canpemm500002.china.huawei.com (7.192.104.244) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Mon, 17 Jul 2023 10:33:14 +0800
+Subject: Re: [PATCH 1/4] mm/swapfile: fix wrong swap entry type for hwpoisoned
+ swapcache page
+To:     Matthew Wilcox <willy@infradead.org>
+CC:     <akpm@linux-foundation.org>, <naoya.horiguchi@nec.com>,
+        <shy828301@gmail.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20230715031729.2420338-1-linmiaohe@huawei.com>
+ <20230715031729.2420338-2-linmiaohe@huawei.com>
+ <ZLIXg7BPPAoUYUGV@casper.infradead.org>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <33748ced-5fd3-f3f7-f358-ca016ca8ba36@huawei.com>
+Date:   Mon, 17 Jul 2023 10:33:14 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Date:   Mon, 17 Jul 2023 10:32:59 +0800
-From:   hanyu001@208suo.com
-To:     jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Fwd: [PATCH] scsi: Convert snprintf to scnprintf
-In-Reply-To: <tencent_1B9669556AF9CF690462AB7F2A47C7378809@qq.com>
-References: <tencent_1B9669556AF9CF690462AB7F2A47C7378809@qq.com>
-User-Agent: Roundcube Webmail
-Message-ID: <0130702c160ac0e88f3fd3e2ef02dfbc@208suo.com>
-X-Sender: hanyu001@208suo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <ZLIXg7BPPAoUYUGV@casper.infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_FAIL,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Originating-IP: [10.174.151.185]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ canpemm500002.china.huawei.com (7.192.104.244)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the coccicheck warnings:
+On 2023/7/15 11:50, Matthew Wilcox wrote:
+> On Sat, Jul 15, 2023 at 11:17:26AM +0800, Miaohe Lin wrote:
+>> Hwpoisoned dirty swap cache page is kept in the swap cache and there's
+>> simple interception code in do_swap_page() to catch it. But when trying
+>> to swapoff, unuse_pte() will wrongly install a general sense of "future
+>> accesses are invalid" swap entry for hwpoisoned swap cache page due to
+>> unaware of such type of page. The user will receive SIGBUS signal without
+>> expected BUS_MCEERR_AR payload.
+> 
+> Have you observed this, or do you just think it's true?
+> 
+>> +++ b/mm/swapfile.c
+>> @@ -1767,7 +1767,8 @@ static int unuse_pte(struct vm_area_struct *vma, pmd_t *pmd,
+>>  		swp_entry_t swp_entry;
+>>  
+>>  		dec_mm_counter(vma->vm_mm, MM_SWAPENTS);
+>> -		if (hwposioned) {
+>> +		/* Hwpoisoned swapcache page is also !PageUptodate. */
+>> +		if (hwposioned || PageHWPoison(page)) {
+> 
+> This line makes no sense to me.  How do we get here with PageHWPoison()
+> being true and hwposioned being false?
 
-./drivers/scsi/scsi_transport_sas.c:525:9-17: WARNING: use scnprintf or 
-sprintf
-./drivers/scsi/scsi_transport_sas.c:572:8-16: WARNING: use scnprintf or 
-sprintf
-./drivers/scsi/scsi_transport_sas.c:1180:9-17: WARNING: use scnprintf or 
-sprintf
+hwposioned will be true iff ksm_might_need_to_copy returns -EHWPOISON.
+And there's PageUptodate check in ksm_might_need_to_copy before we can return -EHWPOISON:
 
-Signed-off-by: ztt <1549089851@qq.com>
----
-  drivers/scsi/scsi_transport_sas.c | 6 +++---
-  1 file changed, 3 insertions(+), 3 deletions(-)
+  ksm_might_need_to_copy
+    if (!PageUptodate(page))
+      return page;		/* let do_swap_page report the error */
+    ^^^
+    Will return here because hwpoisoned swapcache page is !PageUptodate(cleared via me_swapcache_dirty()).
 
-diff --git a/drivers/scsi/scsi_transport_sas.c 
-b/drivers/scsi/scsi_transport_sas.c
-index d704c484a251..bbbe6ff28b34 100644
---- a/drivers/scsi/scsi_transport_sas.c
-+++ b/drivers/scsi/scsi_transport_sas.c
-@@ -522,7 +522,7 @@ show_sas_device_type(struct device *dev,
-      struct sas_phy *phy = transport_class_to_phy(dev);
+Or am I miss something?
 
-      if (!phy->identify.device_type)
--        return snprintf(buf, 20, "none\n");
-+        return scnprintf(buf, 20, "none\n");
-      return get_sas_device_type_names(phy->identify.device_type, buf);
-  }
-  static DEVICE_ATTR(device_type, S_IRUGO, show_sas_device_type, NULL);
-@@ -569,7 +569,7 @@ show_sas_phy_enable(struct device *dev, struct 
-device_attribute *attr,
-  {
-      struct sas_phy *phy = transport_class_to_phy(dev);
-
--    return snprintf(buf, 20, "%d\n", phy->enabled);
-+    return scnprintf(buf, 20, "%d\n", phy->enabled);
-  }
-
-  static DEVICE_ATTR(enable, S_IRUGO | S_IWUSR, show_sas_phy_enable,
-@@ -1177,7 +1177,7 @@ show_sas_rphy_device_type(struct device *dev,
-      struct sas_rphy *rphy = transport_class_to_rphy(dev);
-
-      if (!rphy->identify.device_type)
--        return snprintf(buf, 20, "none\n");
-+        return scnprintf(buf, 20, "none\n");
-      return get_sas_device_type_names(
-              rphy->identify.device_type, buf);
-  }
+Thanks.
