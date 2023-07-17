@@ -2,46 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78956756B31
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 20:03:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA7FF756B32
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 20:03:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230022AbjGQSDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 14:03:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34554 "EHLO
+        id S229982AbjGQSD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 14:03:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229868AbjGQSDU (ORCPT
+        with ESMTP id S229562AbjGQSDV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 14:03:20 -0400
+        Mon, 17 Jul 2023 14:03:21 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86C8BB3;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD4C7E4C;
         Mon, 17 Jul 2023 11:03:19 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1B95C61063;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2D9C16119D;
         Mon, 17 Jul 2023 18:03:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E373C433C8;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E093C433C9;
         Mon, 17 Jul 2023 18:03:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1689616998;
-        bh=Ll8sW1RjttvaLOWSpYGmiHDsZNfDqJfD+od6jxaPQrA=;
+        bh=v7j+4/RDCywUwH0JVY5YSjpILugIRR8+kpY9IyawFFE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S0RMFCjkONoOuMxS9wbNLk3KMgyDCBwGCX+WPfnD+5EYKbt6/ucnLgi5R8siUgpll
-         W/6Y3RIP1LGm04ZLXoCHRtcLXM4ICJ9Nwr8100cyoH8CAnlUZzsTyx929Gj1WGg42r
-         4IJUwSiBKfnw+X8IebGMKsl0zMKY8h4to7O1yWmVbwJevFbhel1AuM2yVi9BXWQoQ3
-         pB3/YRFMK0wjQj3VEL0v2o9LuvpQ9SBrielyTypx3CpivMgW97EJeI5DNm1GLokb1v
-         I0ond5XpzKMLCkuOYM0aghvvuqvmT0Udt/q33jKPHxmkxRXTV0riv1U2ji6c7OTC66
-         A/LpxD4wRu66A==
+        b=RA/y3TFUBbF+jj4qXI5cAWvGTAEUWF8bE2wU5hgIC3hnyJaC1899+YYO0wMnVFP96
+         dG2kZN61Uzgx8U4QpAByTA4JhEdt9K9ZEfBGar8/r6gc5n9jDFCSmwoU3dILafVC6X
+         IStR1cWC30coigyp2eW1S9B62ajApXZ7zT+pvpxbCR/NOcKQ23Qvfmq3lNbrh2R+U3
+         Nh3JGGIbwnkdChC5uNZU+oggLbR3SkhwX7lJdpe0pvBjHc/qO3607gZ5VGaEbsX2jR
+         19bTlHkQ6XrOKvo6N+HXoRGzl1bj4QKpbO0rS4tjotG/UlU0c1lWooxQkCmnwz1Azh
+         1A1+N8q6CchvQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 363F1CE03F1; Mon, 17 Jul 2023 11:03:18 -0700 (PDT)
+        id 3A439CE04CD; Mon, 17 Jul 2023 11:03:18 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 1/6] rcu: Update synchronize_rcu_mult() comment for call_rcu_hurry()
-Date:   Mon, 17 Jul 2023 11:03:12 -0700
-Message-Id: <20230717180317.1097590-1-paulmck@kernel.org>
+        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: [PATCH rcu 2/6] rcu: Clarify rcu_is_watching() kernel-doc comment
+Date:   Mon, 17 Jul 2023 11:03:13 -0700
+Message-Id: <20230717180317.1097590-2-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <6127192c-da9b-4599-9738-6e8f92e6c75c@paulmck-laptop>
 References: <6127192c-da9b-4599-9738-6e8f92e6c75c@paulmck-laptop>
@@ -57,33 +58,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Those who have worked with RCU for some time will naturally think in
-terms of the long-standing call_rcu() API rather than the much newer
-call_rcu_hurry() API.  But it is call_rcu_hurry() that you should normally
-pass to synchronize_rcu_mult().  This commit therefore updates the header
-comment to point this out.
+Make it clear that this function always returns either true or false
+without other planned failure modes.
 
+Reported-by: Masami Hiramatsu <mhiramat@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/rcupdate_wait.h | 5 +++++
- 1 file changed, 5 insertions(+)
+ kernel/rcu/tree.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/rcupdate_wait.h b/include/linux/rcupdate_wait.h
-index 699b938358bf..5e0f74f2f8ca 100644
---- a/include/linux/rcupdate_wait.h
-+++ b/include/linux/rcupdate_wait.h
-@@ -42,6 +42,11 @@ do {									\
-  * call_srcu() function, with this wrapper supplying the pointer to the
-  * corresponding srcu_struct.
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 1449cb69a0e0..fae9b4e29c93 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -679,10 +679,14 @@ static void rcu_disable_urgency_upon_qs(struct rcu_data *rdp)
+ /**
+  * rcu_is_watching - see if RCU thinks that the current CPU is not idle
   *
-+ * Note that call_rcu_hurry() should be used instead of call_rcu()
-+ * because in kernels built with CONFIG_RCU_LAZY=y the delay between the
-+ * invocation of call_rcu() and that of the corresponding RCU callback
-+ * can be multiple seconds.
+- * Return true if RCU is watching the running CPU, which means that this
+- * CPU can safely enter RCU read-side critical sections.  In other words,
+- * if the current CPU is not in its idle loop or is in an interrupt or
+- * NMI handler, return true.
++ * Return @true if RCU is watching the running CPU and @false otherwise.
++ * An @true return means that this CPU can safely enter RCU read-side
++ * critical sections.
 + *
-  * The first argument tells Tiny RCU's _wait_rcu_gp() not to
-  * bother waiting for RCU.  The reason for this is because anywhere
-  * synchronize_rcu_mult() can be called is automatically already a full
++ * More specifically, if the current CPU is not deep within its idle
++ * loop, return @true.  Note that rcu_is_watching() will return @true if
++ * invoked from an interrupt or NMI handler, even if that interrupt or
++ * NMI interrupted the CPU while it was deep within its idle loop.
+  *
+  * Make notrace because it can be called by the internal functions of
+  * ftrace, and making this notrace removes unnecessary recursion calls.
 -- 
 2.40.1
 
