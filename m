@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 084877567F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 17:28:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8265D7567F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 17:29:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231972AbjGQP2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 11:28:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57868 "EHLO
+        id S232115AbjGQP2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 11:28:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232382AbjGQP2O (ORCPT
+        with ESMTP id S232428AbjGQP2R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 11:28:14 -0400
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2054.outbound.protection.outlook.com [40.107.7.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C628B107;
-        Mon, 17 Jul 2023 08:27:54 -0700 (PDT)
+        Mon, 17 Jul 2023 11:28:17 -0400
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2040.outbound.protection.outlook.com [40.107.20.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 570CE10DF;
+        Mon, 17 Jul 2023 08:28:00 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=W/AisSpow/4fx6BZ7Jc5p/6SqnDHf251C1LaZLXO49S1y6tcMVrfa3POmwVp9X/H7DEx3S4h7sXOtuL6VF4WUFbaU9wYkZg6BHLAYWbL9QTS5gPHmcGvK9jhPc2JPixHcTRUrgdZW/8x8rT4i//etjgptUgQVcMYbA8YcngorZo0fEoKYMjNxfp2DGYqBTqCveIuEnTETaMry448AaMRFtiS6VXvUN23ojHcOZ/0v/ZZgDQ9KG+LE8RR/37c/NXV/DFzWIHU2EPSu+SBwwGnBkQ5pwLnfZmWy4CFcYPtG4WWGsjQroxGNk5K1iybi4iZv0UfHnCRyrbYF10zbp7RaA==
+ b=N3phavZv7qyw8VfShr+tLn4VUctxbMcW5VaRwDEYUVWKveov17ofBBkS7lCAVSiZQijY98x13kVP12rMZ6QlV6fLRFCaHObeSLwvcI2wkT07lYMxctXGSDEu8ZTozoLqlgaa558Tzgs5Zca68ayxaQE+bpZXIWg2IG0KhExSWK7tDjcaN1cLMgRz7/gOcyYuqkrqnnXqwc2luFfBK63y5yhs0lCKBhVsNQZ8/FA+wt0SHO3wjUTywIOTU6jJzFLIpBVWi1inY2CYDIS9AvuMl6TZsxAosswVK5bufC4stnOJwelrc2NZLRFcgOoxZTJmtOeuwAcI73nKaEqWfjsInA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=OWwXS83P2zx4yIhHQw8PDkfdP1vWtRYXe3Yz4X1NgAk=;
- b=jurowIO9tdeS/4PhQzgUxCM4OGOktRHIHENLAr9655MC2s7I3AKBshqyx8FU0DltaLVp849b3SyaBYLoqkMspnLzq34fAHPhiqvu4xHL83UX8BGZtQDFiakpXq3wWf5RytAh6mnHUFXkhHahW/+/fzs9ZWOtnC9ZUmdy0+x9y2bTqpObSKzO2kvY/KgPcymyWpxshqM8pjV/gS0HYBcZNA1TTtaIVXw45S9WIarp049A4x/6KhYmaEtwZZ/5wjfRh08HcHezjwv/JdJsno+QTFIrJzK1ha6zhxXXiHmEgmJdI87iLWI5S9rghsZ8p+QVR4OGzC15U4Yl57FkDQVvNQ==
+ bh=BC0nTl8AHj9lufMrAhgkWMIdvAxRAnDTbH8XIbBzuMc=;
+ b=d9gm5vLtKkFMkUoCnTMglITk0UEV4dRZ43/+zfI3FojtJbd0z4zo487DT/cHD+BXhIzAI16hxZwKO+vNN+YuktNjSSr1SR1fjsFp0N11h85f5pByFB4vWhnjdNlqkk06ZnA8gLoufQjyQVO7u/ZSsa4L+7EhZyWLzKjCKAzMj6Fa5ifmpjCpCYxrKWXjrzzg2GMaFLUJdx0MLiaU4/z7LOFU2mcIS9z52mAJ389QqnbwelE/IhDmo8/uZEbXd5qRMO0UdXGGHLqtRAPXngXBGpFk88bXFbtpsLYkb0J2Jlgx8JvfNVdCE9+FdQ7k++jV0nL9qEBYFRoKr1KIOGV7Yw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
  header.d=nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OWwXS83P2zx4yIhHQw8PDkfdP1vWtRYXe3Yz4X1NgAk=;
- b=kpvN9DYW5l7HUrwNIU8ACL4mKJsIZMKGvTF9NJ0Pvs72zUlod6etsVA3QdV67/dwoOMsUQnJ6C2/NLHUcNuxZn8BFkl5z9a4olxXTwA5zPezMvrOBVX/sloC4/77fKlugoGDEHbC22RWpfAfM9IwAVRRD+/qGZMyhVN5W6iLkjA=
+ bh=BC0nTl8AHj9lufMrAhgkWMIdvAxRAnDTbH8XIbBzuMc=;
+ b=lET/6FfnYZXPFGyr428cRQNGkw9p3FiuR2/MolO+5cjqLjigs+/1sRyxzVkOlCXH/G6TCa1qtJ6QPEf9gVZg5O4lqXVc8gyCMPL5NlAzEOHsBNDY115tQyMIz7Jp47T9TPYxo2vnzbs6yR/bGHe3jjrhWJ2Chd0tIYg2XLgrsc4=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nxp.com;
 Received: from AM0PR04MB6452.eurprd04.prod.outlook.com (2603:10a6:208:16d::21)
  by VE1PR04MB7245.eurprd04.prod.outlook.com (2603:10a6:800:1b1::10) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.31; Mon, 17 Jul
- 2023 15:27:31 +0000
+ 2023 15:27:33 +0000
 Received: from AM0PR04MB6452.eurprd04.prod.outlook.com
  ([fe80::c680:1128:9d53:24ae]) by AM0PR04MB6452.eurprd04.prod.outlook.com
  ([fe80::c680:1128:9d53:24ae%4]) with mapi id 15.20.6588.031; Mon, 17 Jul 2023
- 15:27:31 +0000
+ 15:27:33 +0000
 From:   Vladimir Oltean <vladimir.oltean@nxp.com>
 To:     netdev@vger.kernel.org
 Cc:     "David S. Miller" <davem@davemloft.net>,
@@ -73,9 +73,9 @@ Cc:     "David S. Miller" <davem@davemloft.net>,
         Sergey Organov <sorganov@gmail.com>,
         Michal Kubecek <mkubecek@suse.cz>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v8 net-next 04/12] net: macvlan: convert to ndo_hwtstamp_get() / ndo_hwtstamp_set()
-Date:   Mon, 17 Jul 2023 18:27:01 +0300
-Message-Id: <20230717152709.574773-5-vladimir.oltean@nxp.com>
+Subject: [PATCH v8 net-next 05/12] net: bonding: convert to ndo_hwtstamp_get() / ndo_hwtstamp_set()
+Date:   Mon, 17 Jul 2023 18:27:02 +0300
+Message-Id: <20230717152709.574773-6-vladimir.oltean@nxp.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230717152709.574773-1-vladimir.oltean@nxp.com>
 References: <20230717152709.574773-1-vladimir.oltean@nxp.com>
@@ -87,51 +87,51 @@ X-ClientProxiedBy: VE1PR03CA0035.eurprd03.prod.outlook.com
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: AM0PR04MB6452:EE_|VE1PR04MB7245:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5dd41a24-c833-4e81-9c76-08db86da565a
+X-MS-Office365-Filtering-Correlation-Id: b73d49b3-1fb6-47d9-b124-08db86da5797
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: A0EKb3cMTvGRF0UDsQaD5egdEYv3NqgXPIjIYboQj4e1rhQ5LlZ+dnv3K8R8YDCBB1TZixY0BUgYUNVhdSWAaK0j7c4CiSxNeyVPVdOIuO0cbu8+vfGaBvylJZrSbtN4O81XIZK0kBoj19sB8DeEc27hWy9vNnjQH/Ew/jqij0GXygYGJEXqYnfOCY0tI1VIfTu+lWAKW2TRAoKRNhRbQ1+t5g9Umxyj1erRBBW8ejdp/LytcgHIbW7r+ln6pZeDzJfzxBvel2ydw/Dr2JqmH2aiWD5fKcxAeRdtSFGA2yKbnzbSPQk6hDMFm5J63dOh8u/0jN/5HCjuIve6RuViRoxcOaTZuuGU8qa0Vi88Orc1uZK9ZT7XXgfDa6/ko7GN7d1mbg+onXOL5djjAQHsr912mjjIMD2VzWuExxDd2aQoR/ZGVIHE5JKxHE3lzfbbV6ar3B+lSIVYEA7SMyMgStj/TL2bkgaTEVqAl8D7LCYPQ3n+3A1us6p7+NHJLoKaB7C/HYKMLLzCjUxkhDkbIvNNmS9aVErC0ih7RegIhM8tzavJ5Ez7qVO5rTAJfhx7Jp7wz6x/eQnJbCzlAaruEVCNJp4Me4yOMf3enUwcydA++J0sXiZW4fyK40V35FUQ
+X-Microsoft-Antispam-Message-Info: SjyFXwFL8NpWLSDzCtuQltPPgt81QDld9e8chkxivG+sD/dP6NE9YTD16ipEEGoTDgG+mPILCC47XcIQwxjhDlidZH04a9Ps09Birblr7aT0WVC/iz9h+09Qr+w7lHXkcUH295LlzdRlila7w1TGeQrqQr5Ip8Bvfv1qkBfgBEG2uMKoZ0C+UgS5Goibyi/SX0fK8yvTkD6PfmvVevUgS0M1W7Pra0eiwxWouR7kLWbNmUXt36b1O9epPiTd2lYn1fJXEC4EQOQJBuJYAuV30IYkaCruK6PdyX27zgovOH58yhFEzom/qn6oIDA6cCDc8KrldeS0Rd6YipIWPZZnIkq54lILWye1/ZFSw8ZD/y+hkd3rQ1QtPNSJEk5Lnmcb57OD1wxnmFY1FTK6jSzTbdEIEWUDAhGIsEaPaqmGEbQKPBGZ0j7zfh0/IX21B5o9aOrq+v+kmqPvyHS78IOP0ApblTqI7X9ak55Zql0O8Q8J7WPztWsG4yP14kUBknf8xpotkag0O6dH3SqmVimXSKtkz6UrzSeIcojMlZbcD7fkgVKBS3hN5eQ8MZo02wZwbGF6Vq8fCt002PwgBXeuJqPl8naXL707spJMvY9golNvit+ajAWQYHX0UaiTj3H/
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6452.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(376002)(136003)(39860400002)(346002)(396003)(451199021)(2906002)(38100700002)(86362001)(6512007)(83380400001)(2616005)(1076003)(186003)(26005)(6506007)(38350700002)(5660300002)(36756003)(8676002)(8936002)(7416002)(44832011)(7406005)(66556008)(478600001)(6486002)(54906003)(52116002)(6666004)(316002)(41300700001)(66476007)(6916009)(4326008)(66946007);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?VgxkbN96rUVOdHsOc5SeKXjnI+UKEe7cOnr9DKctYrkHK38dxrSXZ6xe85KJ?=
- =?us-ascii?Q?GoAl65O9RNoeVCESXz6QOHFPX5h1905sdXDXhQGq6kJPw4KxXT7hpuGZ/Jo4?=
- =?us-ascii?Q?FzHN470ol9cPj4Dn3ud9i9+NgbilpEhwWv84puP6kTlB3zc/F7Z9Aj9lWDAe?=
- =?us-ascii?Q?jrxVgrOofuHnTw8ALbXKds/UeZfb1Zag+zgXeJY0YZ8jVd3Nmv/9AIMiLVcX?=
- =?us-ascii?Q?ShePLEm7WmPHHrnIpkagU47DwnS/2w+7TrxEN2kW/KHOwHG+djNXlmxaTgn7?=
- =?us-ascii?Q?/FhVansSm0LrXqK7nFewe9lIbGVqJNlOIST44TL3W7vkELzK3VL9YZcOUAWM?=
- =?us-ascii?Q?SSIk8X3Dto+VO+MrVeC7tYNJOXypS83ilKqLj8fUZVA/G11UuMk16qY0vutX?=
- =?us-ascii?Q?0LhnRgEaHw/Zac5cnKAMeCptPz4Vfs+df+t1Ga7Y+7/0ExvF7xqzF/A76JCT?=
- =?us-ascii?Q?Xd40YdCETHqIgwNaQv2HC7Jh3uHKHEgZ96hplpOkJnbpPjzvXe32etmiytdr?=
- =?us-ascii?Q?EgEH3QgvfByVi/Ejosz++fVNdqXCVntECxW3rNc610UnrIIbz3B5EF5kEasm?=
- =?us-ascii?Q?3wGCMShPfQsi5ikTOq/4CzzyTh4GRvupdGPIB2DYvDYpOSdpmjDvV+ISOUrl?=
- =?us-ascii?Q?0WjemSVKQifs2/VdfrBPJDSv7UT4GmQe8kAvk0WBGNLiJHMBiH6M3d0orPBE?=
- =?us-ascii?Q?1Uekiz29pzSo9U0CC8zOoV/IPsdBHEi4byOxFz7pXPw/tn+7bqjcmrGiWABd?=
- =?us-ascii?Q?VMSZRGGRExkS7PDgSrVsPT4iEthkXJHwYJzuOvgu4sWS2C7cHQJBS3RZxGX3?=
- =?us-ascii?Q?2pNk3Ljj//Sbvg5Zw8L6wDYHLQqkFEty736rjFmD0JSpWlgf1PRyYLbCmzl5?=
- =?us-ascii?Q?fJ+wsUnDbCVPOZSZPrhjIakEEa++Nwvqm8uXK/l/hDA0aIK51S/nJVX+tqBz?=
- =?us-ascii?Q?vHCrf4qd9mr8EnPk3503s3+/QEOZy4a9WutqpVadey2AJv6tEW3LFyhWtlB5?=
- =?us-ascii?Q?OkVBwEzeVlMuloQ8yraOsy6W1c+Om52bFsB5e2C7pZE51Yjqs5M9k3qPsmaP?=
- =?us-ascii?Q?TV//YcsWP2ike9PT3yhheF6VtGO9IAQyIve76n/EHF0QvHTW1IRccbGwvqjE?=
- =?us-ascii?Q?n8Wg09uzw8bB+zkCR0zM+RGeWq7FwIqlzr+IcXINmekHbkj0ghWFfDCPVUVz?=
- =?us-ascii?Q?kbvLHKIdymfd42mv8i6BdSstz7AIb70qwzAYNN4UYASK/vpuogfFMiPOqnNO?=
- =?us-ascii?Q?qNK6s9Y9ZIQ8YalWXLHkw7XYBy6Z6yhx7qsHV3NpDXHuDlYOdJZzg9goCJiD?=
- =?us-ascii?Q?0j2jXs/gJJDXZNS3319hTfBn5XJgbiQX2v/ae/9nVArqU4HfjNE7j5LDEL+c?=
- =?us-ascii?Q?TTZ69IaAiypC5+bFlIu2ME9Ro2ov1C7ou3Ir080sUfBfn6qLnu3AAbOSvDko?=
- =?us-ascii?Q?8yC9DkLQ2W2hbeVNrhK5Yg39yaTPrQ8vsqrv+4b06ObITBNVvPVTweSA/9nc?=
- =?us-ascii?Q?ywoq4ZV2MfMuZ/v00RmIGvD4RUi5jc3SQqkraTePIP/0d+gVFSrMtL/DuCft?=
- =?us-ascii?Q?BRRS73BeJR+CVj4R7uDObb1eH0yNSFh5hFMa9nZkRU4y05aD3hA2TWlm2HLX?=
- =?us-ascii?Q?cQ=3D=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?PiEEIjZ929Szfc51CioV/4fsPcciz/nzJef0RuFacz9GTWUBw85AfI+mnWPX?=
+ =?us-ascii?Q?cqEKWGlKyfoZVFEOrnKoRyLT1T1U8J7d6TEcU03fMnO5jlddFIWpd4WRKg1a?=
+ =?us-ascii?Q?Ytundhn83e4E0780MU5LHflesrfOqn3VJgOXG135TNudtnAm/eGT2FhjGlMi?=
+ =?us-ascii?Q?5oX5IN5CRcp9sCtR0w/DxbP2ADL2LNBCf0yDbCtQuasAdfwyUZUDl0eUr9Om?=
+ =?us-ascii?Q?17lWzZca5c4Ff5i5R7DbSgRH8zBVDti8nhYCfs7tJCE5QD4BJNpTWl2g6LFg?=
+ =?us-ascii?Q?lLoVKYPnvD7ejM/SaGCuQ2qIQBctF6przoCloPgmvKTBkTBPDvetaK3RWcJy?=
+ =?us-ascii?Q?OxOW3j6uiy4jyV1Yg6hJ8n+KtWSzq6qZDhZI+L+PcFmdnSJSpKn4A+oehwK9?=
+ =?us-ascii?Q?QvPFeO0Tbf08KG0OwfghRdUfxgDPY8GzeLvA4M2AN/OXCNcXMEcIKnhcpUnj?=
+ =?us-ascii?Q?i/ezlTVjkpxBjztaQAoN7fYOXhWQDQqfmm1It7p8quIbnno3hJnOGdggfOya?=
+ =?us-ascii?Q?e+jsNXAx/9+VYxpZNz6Xz23ON3hhYAUAHrXF0cwD/xxUc4nUrj1KDM4av9SN?=
+ =?us-ascii?Q?CKqciCZnR9Eah/qbEpZUy2bIk20soTgAkfTMTpghFxYFZbIVzItVAKC8PpDf?=
+ =?us-ascii?Q?IkriOOsxA+/BNc2Jriqc1WhWL18umT1FaJF0gh4zdHEbREa80l7hLoliOlbM?=
+ =?us-ascii?Q?ZdI4i8cPyATHD90Qf/brs23zeoFQu9HBe0PgqiQkbSymtrJDUHinZJBIPacx?=
+ =?us-ascii?Q?GWDsz0rYXdxcTCnNDgsDVYKueSvtu7pk+yv2SKGh5sQX8p3YoiiaPcnglyUS?=
+ =?us-ascii?Q?ybq/2fYIkEVnnybiMAoHsgZsLnAKQ/3hIajJfqZsfcsozDbTCYpBAj5Ff4IA?=
+ =?us-ascii?Q?dLVWfWFHkgx04jwSQ6d1P1VhNSVly3DnrMujK7Nggr5sznlLhItgDAlSsEwi?=
+ =?us-ascii?Q?tG8hlPex14CClGRdqRhEZ3GFsBuDQYyfZcFIowLXCzftxudHjRLR6iGvuxzX?=
+ =?us-ascii?Q?JqkY35ReIYI8guzzmYrSERtM8eYvREwfr0LhtUYnL8Ve7e2ovCr9soy9b97w?=
+ =?us-ascii?Q?STJAm1zsnQ5R1IPypTJIDv7LqtmOuBnok/o12x+wU0jjZTmDB/f0Oa/DpWe9?=
+ =?us-ascii?Q?O07USkYbzK4bOzjuId/lNFZpLgsoGGG+zX+xGjNazcg3k03UhvmXAYLAEShZ?=
+ =?us-ascii?Q?TLbMp6nyBPC69JmZumpH33bZ3i/mBWuo2nRaBXWGwssdWYEI9uXquigyY+iB?=
+ =?us-ascii?Q?Oo9vIzmhcPhuj+csjSR9X5/zisDpjKR5zoniu1N5idsgJRe7HwfT+y3gGOwp?=
+ =?us-ascii?Q?w2HfkZChKGFg7vVK2qu91M11Lq9mRPlhCLMxRxoGXjCbLkXhM6qmxBdsbnvV?=
+ =?us-ascii?Q?woM6lSP+XMzOT/wyzQPtImgX1zH5f+iAYoobRM4MNE2HNMfL5BmwyQ6gwzCX?=
+ =?us-ascii?Q?KKxXp1e91Wl8HItKnQaz2iSre7BOEG3KLf3uRvQsqmTgg6zZOq9RSkh6oTbM?=
+ =?us-ascii?Q?KNHomvgY83OnKx7PCVmhfulRVpkQmDtNc0Jkro4QYFJdoSNDS6JoIi+C29lO?=
+ =?us-ascii?Q?exf7YxwuCpZawM1dhON4fOyfqPiZCtYIZVXNFtA3CpMqOaxVb1eDgW8zfJhP?=
+ =?us-ascii?Q?Cw=3D=3D?=
 X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5dd41a24-c833-4e81-9c76-08db86da565a
+X-MS-Exchange-CrossTenant-Network-Message-Id: b73d49b3-1fb6-47d9-b124-08db86da5797
 X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6452.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jul 2023 15:27:31.5134
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jul 2023 15:27:33.5571
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: DC7AY6hNaaYCOK2bAHXq9MUFVOAIS1XBljCxET//10uF9t2wxDuqG+SdPIr+2Ki03WvMyS1zFeLAAuSKhGjCbw==
+X-MS-Exchange-CrossTenant-UserPrincipalName: SP+5rQY5WgSp26YhCsDYotR1s+S5ubDg5VkDk/69L1n1iKSh8iQIv0gEXQ41JNdYudQR7XoVrNSDClWWoEvY4w==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7245
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -145,17 +145,14 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Maxim Georgiev <glipus@gmail.com>
 
-macvlan is one of the stackable net devices which pass the hardware
+bonding is one of the stackable net devices which pass the hardware
 timestamping ops to the real device through ndo_eth_ioctl(). This
 prevents converting any device driver to the new hwtimestamping API
 without regressions.
 
-Remove that limitation in macvlan by using the newly introduced helpers
+Remove that limitation in bonding by using the newly introduced helpers
 for timestamping through lower devices, that handle both the new and the
 old driver API.
-
-macvlan only implements ndo_eth_ioctl() for these 2 operations, so
-delete that method.
 
 Signed-off-by: Maxim Georgiev <glipus@gmail.com>
 Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
@@ -164,88 +161,154 @@ Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
 Changes in v8:
 - None.
 Changes in v7:
-- Split vlan and macvlan to separate patches
+- Use copied_to_user instead of KERNEL_HWTSTAMP_FLAG_IFR_RESULT
 - Reword commit message
 Changes in v6:
 - Patch title was updated. No code changes.
-Changes in v5:
-- Re-introduced the net namespace check which
-  was dropped in v4.
-Changes in v4:
-- Moved hw timestamp get/set request processing logic
-  from vlan_dev_ioctl() to .ndo_hwtstamp_get/set callbacks.
-- Use the shared generic_hwtstamp_get/set_lower() functions
-  to handle ndo_hwtstamp_get/set requests.
-- Apply the same changes to macvlan driver.
 
- drivers/net/macvlan.c | 34 ++++++++++++++--------------------
- 1 file changed, 14 insertions(+), 20 deletions(-)
+ drivers/net/bonding/bond_main.c | 105 ++++++++++++++++++++------------
+ 1 file changed, 65 insertions(+), 40 deletions(-)
 
-diff --git a/drivers/net/macvlan.c b/drivers/net/macvlan.c
-index 4a53debf9d7c..01acb57aa40c 100644
---- a/drivers/net/macvlan.c
-+++ b/drivers/net/macvlan.c
-@@ -868,31 +868,24 @@ static int macvlan_change_mtu(struct net_device *dev, int new_mtu)
- 	return 0;
- }
- 
--static int macvlan_eth_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
-+static int macvlan_hwtstamp_get(struct net_device *dev,
-+				struct kernel_hwtstamp_config *cfg)
+diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
+index 7a0f25301f7e..d591992e3eda 100644
+--- a/drivers/net/bonding/bond_main.c
++++ b/drivers/net/bonding/bond_main.c
+@@ -4441,11 +4441,6 @@ static int bond_eth_ioctl(struct net_device *bond_dev, struct ifreq *ifr, int cm
  {
- 	struct net_device *real_dev = macvlan_dev_real_dev(dev);
--	const struct net_device_ops *ops = real_dev->netdev_ops;
+ 	struct bonding *bond = netdev_priv(bond_dev);
+ 	struct mii_ioctl_data *mii = NULL;
+-	const struct net_device_ops *ops;
+-	struct net_device *real_dev;
+-	struct hwtstamp_config cfg;
 -	struct ifreq ifrr;
--	int err = -EOPNOTSUPP;
+-	int res = 0;
  
--	strscpy(ifrr.ifr_name, real_dev->name, IFNAMSIZ);
--	ifrr.ifr_ifru = ifr->ifr_ifru;
-+	return generic_hwtstamp_get_lower(real_dev, cfg);
-+}
+ 	netdev_dbg(bond_dev, "bond_eth_ioctl: cmd=%d\n", cmd);
  
--	switch (cmd) {
+@@ -4472,44 +4467,11 @@ static int bond_eth_ioctl(struct net_device *bond_dev, struct ifreq *ifr, int cm
+ 		}
+ 
+ 		break;
 -	case SIOCSHWTSTAMP:
--		if (!net_eq(dev_net(dev), &init_net))
--			break;
+-		if (copy_from_user(&cfg, ifr->ifr_data, sizeof(cfg)))
+-			return -EFAULT;
+-
+-		if (!(cfg.flags & HWTSTAMP_FLAG_BONDED_PHC_INDEX))
+-			return -EOPNOTSUPP;
+-
 -		fallthrough;
 -	case SIOCGHWTSTAMP:
--		if (netif_device_present(real_dev) && ops->ndo_eth_ioctl)
--			err = ops->ndo_eth_ioctl(real_dev, &ifrr, cmd);
--		break;
--	}
-+static int macvlan_hwtstamp_set(struct net_device *dev,
-+				struct kernel_hwtstamp_config *cfg,
-+				struct netlink_ext_ack *extack)
-+{
-+	struct net_device *real_dev = macvlan_dev_real_dev(dev);
- 
--	if (!err)
--		ifr->ifr_ifru = ifrr.ifr_ifru;
-+	if (!net_eq(dev_net(dev), &init_net))
+-		real_dev = bond_option_active_slave_get_rcu(bond);
+-		if (!real_dev)
+-			return -EOPNOTSUPP;
+-
+-		strscpy_pad(ifrr.ifr_name, real_dev->name, IFNAMSIZ);
+-		ifrr.ifr_ifru = ifr->ifr_ifru;
+-
+-		ops = real_dev->netdev_ops;
+-		if (netif_device_present(real_dev) && ops->ndo_eth_ioctl) {
+-			res = ops->ndo_eth_ioctl(real_dev, &ifrr, cmd);
+-			if (res)
+-				return res;
+-
+-			ifr->ifr_ifru = ifrr.ifr_ifru;
+-			if (copy_from_user(&cfg, ifr->ifr_data, sizeof(cfg)))
+-				return -EFAULT;
+-
+-			/* Set the BOND_PHC_INDEX flag to notify user space */
+-			cfg.flags |= HWTSTAMP_FLAG_BONDED_PHC_INDEX;
+-
+-			return copy_to_user(ifr->ifr_data, &cfg, sizeof(cfg)) ?
+-				-EFAULT : 0;
+-		}
+-		fallthrough;
+ 	default:
+-		res = -EOPNOTSUPP;
 +		return -EOPNOTSUPP;
+ 	}
  
--	return err;
-+	return generic_hwtstamp_set_lower(real_dev, cfg, extack);
+-	return res;
++	return 0;
  }
  
- /*
-@@ -1193,7 +1186,6 @@ static const struct net_device_ops macvlan_netdev_ops = {
- 	.ndo_stop		= macvlan_stop,
- 	.ndo_start_xmit		= macvlan_start_xmit,
- 	.ndo_change_mtu		= macvlan_change_mtu,
--	.ndo_eth_ioctl		= macvlan_eth_ioctl,
- 	.ndo_fix_features	= macvlan_fix_features,
- 	.ndo_change_rx_flags	= macvlan_change_rx_flags,
- 	.ndo_set_mac_address	= macvlan_set_mac_address,
-@@ -1212,6 +1204,8 @@ static const struct net_device_ops macvlan_netdev_ops = {
- #endif
- 	.ndo_get_iflink		= macvlan_dev_get_iflink,
- 	.ndo_features_check	= passthru_features_check,
-+	.ndo_hwtstamp_get	= macvlan_hwtstamp_get,
-+	.ndo_hwtstamp_set	= macvlan_hwtstamp_set,
+ static int bond_do_ioctl(struct net_device *bond_dev, struct ifreq *ifr, int cmd)
+@@ -5683,6 +5645,67 @@ static u32 bond_mode_bcast_speed(struct slave *slave, u32 speed)
+ 	return speed;
+ }
+ 
++/* Set the BOND_PHC_INDEX flag to notify user space */
++static int bond_set_phc_index_flag(struct kernel_hwtstamp_config *kernel_cfg)
++{
++	struct ifreq *ifr = kernel_cfg->ifr;
++	struct hwtstamp_config cfg;
++
++	if (kernel_cfg->copied_to_user) {
++		/* Lower device has a legacy implementation */
++		if (copy_from_user(&cfg, ifr->ifr_data, sizeof(cfg)))
++			return -EFAULT;
++
++		cfg.flags |= HWTSTAMP_FLAG_BONDED_PHC_INDEX;
++		if (copy_to_user(ifr->ifr_data, &cfg, sizeof(cfg)))
++			return -EFAULT;
++	} else {
++		kernel_cfg->flags |= HWTSTAMP_FLAG_BONDED_PHC_INDEX;
++	}
++
++	return 0;
++}
++
++static int bond_hwtstamp_get(struct net_device *dev,
++			     struct kernel_hwtstamp_config *cfg)
++{
++	struct bonding *bond = netdev_priv(dev);
++	struct net_device *real_dev;
++	int err;
++
++	real_dev = bond_option_active_slave_get_rcu(bond);
++	if (!real_dev)
++		return -EOPNOTSUPP;
++
++	err = generic_hwtstamp_get_lower(real_dev, cfg);
++	if (err)
++		return err;
++
++	return bond_set_phc_index_flag(cfg);
++}
++
++static int bond_hwtstamp_set(struct net_device *dev,
++			     struct kernel_hwtstamp_config *cfg,
++			     struct netlink_ext_ack *extack)
++{
++	struct bonding *bond = netdev_priv(dev);
++	struct net_device *real_dev;
++	int err;
++
++	if (!(cfg->flags & HWTSTAMP_FLAG_BONDED_PHC_INDEX))
++		return -EOPNOTSUPP;
++
++	real_dev = bond_option_active_slave_get_rcu(bond);
++	if (!real_dev)
++		return -EOPNOTSUPP;
++
++	err = generic_hwtstamp_set_lower(real_dev, cfg, extack);
++	if (err)
++		return err;
++
++	return bond_set_phc_index_flag(cfg);
++}
++
+ static int bond_ethtool_get_link_ksettings(struct net_device *bond_dev,
+ 					   struct ethtool_link_ksettings *cmd)
+ {
+@@ -5831,6 +5854,8 @@ static const struct net_device_ops bond_netdev_ops = {
+ 	.ndo_bpf		= bond_xdp,
+ 	.ndo_xdp_xmit           = bond_xdp_xmit,
+ 	.ndo_xdp_get_xmit_slave = bond_xdp_get_xmit_slave,
++	.ndo_hwtstamp_get	= bond_hwtstamp_get,
++	.ndo_hwtstamp_set	= bond_hwtstamp_set,
  };
  
- static void macvlan_dev_free(struct net_device *dev)
+ static const struct device_type bond_type = {
 -- 
 2.34.1
 
