@@ -2,201 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9237755A1C
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 05:34:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB303755A27
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 05:43:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230256AbjGQDea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Jul 2023 23:34:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45140 "EHLO
+        id S230237AbjGQDlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Jul 2023 23:41:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbjGQDe0 (ORCPT
+        with ESMTP id S229461AbjGQDlH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Jul 2023 23:34:26 -0400
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4667BEC
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 20:34:25 -0700 (PDT)
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com [209.85.160.197])
+        Sun, 16 Jul 2023 23:41:07 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB51AF1
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 20:41:06 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 0FAC83F1C6
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 03:34:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1689564863;
-        bh=DnRdLOx1Ivb7fT2g6W01ng/Xf0iUV7nR0rj9XNZC/LM=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=kLPh7o4uKOF3cFVFLER/SNzh0npZ37TN4KWCy1/fbTwp40uiW2KK+vjyqKtQXBwkL
-         bBt3egiM6OJJIEwQNg3SjK4U53r29xERObxZILm0ideAy9R77NRg4iI2eLgNAdmAf1
-         4jPDcUasKx0MUbE/IMufY7vd6BTwfl5uAPcAHAY/0EUQYRYQ6Pt1n49mlA2X9iQ8eG
-         qCPL52VBwquQ9UbK3AAtVi+nPlUf5W3auZ5lRqumiQdKfZaRP3QTlM/gaiENzwfyfX
-         1hJtwKNNmLhUqLT/KQlE6+MknpRa81tbD+WSM3284bSnQyBgp2kw43NDGhMnP2p5nE
-         lLLQSVfmEff8w==
-Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-40355a81f5aso51108681cf.3
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 20:34:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689564862; x=1692156862;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DnRdLOx1Ivb7fT2g6W01ng/Xf0iUV7nR0rj9XNZC/LM=;
-        b=LDcwKGBtn7WTN+0cplomzgyipKbInoAN6l3KzpVMgynTrJgQpu5qrpHFJxtSBTEArD
-         /5ehKYe2tAzdc2m8/X/LW10yKvDMNY6WGVBhhUiNQSRUNDAF+sfA0L5CdJQjWWPyOWM6
-         xvJkFD9UI3K3cPOwA4pLGrgmFgGva89PqOyTJETv8h4ViRuP3V+4jXsn5jdHDnqbVPcS
-         8nJGzQQcXxByiivNWzcGGiG2xUuZygwl+E5MKBNy7tUvn89jZvBw2VTWrqWPDTygsgnA
-         YxUFamAtjiVVvpWVIaRLOzhbJ8W66hZrX3wmSArMMU1rFAKtV1v44F0fqFKf/ohDy82T
-         /hYQ==
-X-Gm-Message-State: ABy/qLYpGXgPv1vWcKB/fsE9XEtLbq583HttzNMgX1rMazFePgaT/lx/
-        4lQk6+Yo26ZY2vylMud4UBzPnRDrR6DGg2REs3IgWNyEY5fVsfIy0sJKReF1NG2ywJKYIWXAO7t
-        dmTBhg034xJDafS8QciuRPfqwiqaDmbPFyXgu7fBtX65RSBq0mJlKrZfCDw==
-X-Received: by 2002:a05:622a:1113:b0:403:eb71:1fa6 with SMTP id e19-20020a05622a111300b00403eb711fa6mr3643088qty.5.1689564861894;
-        Sun, 16 Jul 2023 20:34:21 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFL0RrWSbm/eHaMFX84hG1Bm9HWdXpoOqnEIJ9bXrUWpBRxfKw3w6Qjf11YyL6jSsCIllYQFoOjL4W9r/AWpug=
-X-Received: by 2002:a05:622a:1113:b0:403:eb71:1fa6 with SMTP id
- e19-20020a05622a111300b00403eb711fa6mr3643069qty.5.1689564861653; Sun, 16 Jul
- 2023 20:34:21 -0700 (PDT)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BD28660F04
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 03:41:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6C5CC433C7;
+        Mon, 17 Jul 2023 03:41:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689565265;
+        bh=hA/g9aS2y5CIfLc5yFsDNhX8Ew8lu1YlZr0MxnMf2e4=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=JIRmxvodRVVUPrkNKLuPrh42JXKHsE1uTAf/t6aF0TMVxlI3PWT+y0lVHXHr1DBOC
+         8IFOcY1NypBmnR5GUsVCspKUFfUNL2S+ouwHfTPy+AAeLpQRKCmyAIa+ThnWjG2+j5
+         5vKMzS9hFXqw7PhXojROzT5Q+0Lv4MfBDYEDGLTpt64BNRPcIYXgmki7nlVwue9PET
+         +jrjlbNJgVAlr4Kww5DwF2pHlv74iD0BRer6pCXXnYfpuTWHyFj0vr9DeUuCVgkhrt
+         dy0PWtIWro0UplZHL1ONG9hyGcMWQ5mDQem+SyjDXJdZv3Hj0PdHUWBCiHno76cg1H
+         xnpDlbX446Nag==
+Message-ID: <c7a050b2-4ceb-9888-5e69-36aeec0989cc@kernel.org>
+Date:   Mon, 17 Jul 2023 11:41:01 +0800
 MIME-Version: 1.0
-References: <20230705200617.GA72825@bhelgaas> <9d1095ab-23e5-3df3-58d6-b2974f87ee72@amd.com>
- <CAAd53p7L27dkzwb_Q9vhENhBye-JTcx2AuCG_YXAgb0F6MG-9w@mail.gmail.com> <60b2f5fb-8294-d104-16d8-0acfc70426c1@amd.com>
-In-Reply-To: <60b2f5fb-8294-d104-16d8-0acfc70426c1@amd.com>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Mon, 17 Jul 2023 11:34:10 +0800
-Message-ID: <CAAd53p42jiTCOsRZwEY0jtBejMDs1FbTOBNEknijnVNk3ENxuA@mail.gmail.com>
-Subject: Re: [Intel-wired-lan] [PATCH] PCI/ASPM: Enable ASPM on external PCIe devices
-To:     Mario Limonciello <mario.limonciello@amd.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        linux-pci@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-kernel@vger.kernel.org, Vidya Sagar <vidyas@nvidia.com>,
-        Michael Bottini <michael.a.bottini@linux.intel.com>,
-        intel-wired-lan@osuosl.org, bhelgaas@google.com,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 1/2] mm/damon/dbgfs: reduce stack usage in
+ str_to_schemes()
+Content-Language: en-US
+To:     sj@kernel.org, akpm@linux-foundation.org, damon@lists.linux.dev
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20230716010927.3010606-1-chao@kernel.org>
+From:   Chao Yu <chao@kernel.org>
+In-Reply-To: <20230716010927.3010606-1-chao@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 15, 2023 at 12:37=E2=80=AFAM Mario Limonciello
-<mario.limonciello@amd.com> wrote:
->
-> On 7/14/23 03:17, Kai-Heng Feng wrote:
-> > On Thu, Jul 6, 2023 at 12:07=E2=80=AFPM Mario Limonciello
-> > <mario.limonciello@amd.com> wrote:
-> >>
-> >> On 7/5/23 15:06, Bjorn Helgaas wrote:
-> >>> On Wed, Jun 28, 2023 at 01:09:49PM +0800, Kai-Heng Feng wrote:
-> >>>> On Wed, Jun 28, 2023 at 4:54=E2=80=AFAM Bjorn Helgaas <helgaas@kerne=
-l.org> wrote:
-> >>>>> On Tue, Jun 27, 2023 at 04:35:25PM +0800, Kai-Heng Feng wrote:
-> >>>>>> On Fri, Jun 23, 2023 at 7:06=E2=80=AFAM Bjorn Helgaas <helgaas@ker=
-nel.org> wrote:
-> >>>>>>> On Tue, Jun 20, 2023 at 01:36:59PM -0500, Limonciello, Mario wrot=
-e:
-> >>>
-> >>>>> It's perfectly fine for the IP to support PCI features that are not
-> >>>>> and can not be enabled in a system design.  But I expect that
-> >>>>> strapping or firmware would disable those features so they are not
-> >>>>> advertised in config space.
-> >>>>>
-> >>>>> If BIOS leaves features disabled because they cannot work, but at t=
-he
-> >>>>> same time leaves them advertised in config space, I'd say that's a
-> >>>>> BIOS defect.  In that case, we should have a DMI quirk or something=
- to
-> >>>>> work around the defect.
-> >>>>
-> >>>> That means most if not all BIOS are defected.
-> >>>> BIOS vendors and ODM never bothered (and probably will not) to chang=
-e
-> >>>> the capabilities advertised by config space because "it already work=
-s
-> >>>> under Windows".
-> >>>
-> >>> This is what seems strange to me.  Are you saying that Windows never
-> >>> enables these power-saving features?  Or that Windows includes quirks
-> >>> for all these broken BIOSes?  Neither idea seems very convincing.
-> >>>
-> >>
-> >> I see your point.  I was looking through Microsoft documentation for
-> >> hints and came across this:
-> >>
-> >> https://learn.microsoft.com/en-us/windows-hardware/customize/power-set=
-tings/pci-express-settings-link-state-power-management
-> >>
-> >> They have a policy knob to globally set L0 or L1 for PCIe links.
-> >>
-> >> They don't explicitly say it, but surely it's based on what the device=
-s
-> >> advertise in the capabilities registers.
-> >
-> > So essentially it can be achieved via boot time kernel parameter
-> > and/or sysfs knob.
-> >
-> > The main point is OS should stick to the BIOS default, which is the
-> > only ASPM setting tested before putting hardware to the market.
->
-> Unfortunately; I don't think you can jump to this conclusion.
->
-> A big difference in the Windows world to Linux world is that OEMs ship
-> with a factory Windows image that may set policies like this.  OEM
-> "platform" drivers can set registry keys too.
+Hi all,
 
-Thanks. This is new to me.
+It warned because my config is wrong, sorry for the mistake, please
+ignore the patchset. :-P
 
->
-> I think the next ASPM issue that comes up what we (collectively) need to
-> do is compare ASPM policy and PCI registers for:
-> 1) A "clean" Windows install from Microsoft media before all the OEM
-> drivers are installed.
-> 2) A Windows install that the drivers have been installed.
-> 3) A up to date mainline Linux kernel.
->
-> Actually as this thread started for determining policy for external PCIe
-> devices, maybe that would be good to check with those.
+Thanks,
 
-Did that before submitting the patch.
-From very limited devices I tested, ASPM is enabled for external
-connected PCIe device via TBT ports.
-
-I wonder if there's any particular modification should be improved for
-this patch?
-
-Kai-Heng
-
->
-> >
-> > Kai-Heng
-> >
-> >>
-> >>>>>> So the logic is to ignore the capability and trust the default set
-> >>>>>> by BIOS.
-> >>>>>
-> >>>>> I think limiting ASPM support to whatever BIOS configured at boot-t=
-ime
-> >>>>> is problematic.  I don't think we can assume that all platforms hav=
-e
-> >>>>> firmware that configures ASPM as aggressively as possible, and
-> >>>>> obviously firmware won't configure hot-added devices at all (in
-> >>>>> general; I know ACPI _HPX can do some of that).
-> >>>>
-> >>>> Totally agree. I was not suggesting to limiting the setting at all.
-> >>>> A boot-time parameter to flip ASPM setting is very useful. If none h=
-as
-> >>>> been set, default to BIOS setting.
-> >>>
-> >>> A boot-time parameter for debugging and workarounds is fine.  IMO,
-> >>> needing a boot-time parameter in the course of normal operation is
-> >>> not OK.
-> >>>
-> >>> Bjorn
-> >>
->
+On 2023/7/16 9:09, Chao Yu wrote:
+> struct damos_quota quota caused the stack usage of str_to_schemes() to
+> grow beyond the warning limit on 32-bit architectures w/ gcc.
+> 
+> mm/damon/dbgfs.c: In function ‘str_to_schemes’:
+> mm/damon/dbgfs.c:292:1: warning: the frame size of 1496 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+> 
+> Allocating dynamic memory in str_to_schemes() to fix this issue.
+> 
+> Signed-off-by: Chao Yu <chao@kernel.org>
+> ---
+>   mm/damon/dbgfs.c | 22 ++++++++++++++++------
+>   1 file changed, 16 insertions(+), 6 deletions(-)
+> 
+> diff --git a/mm/damon/dbgfs.c b/mm/damon/dbgfs.c
+> index 124f0f8c97b7..78acc7366895 100644
+> --- a/mm/damon/dbgfs.c
+> +++ b/mm/damon/dbgfs.c
+> @@ -237,18 +237,26 @@ static struct damos **str_to_schemes(const char *str, ssize_t len,
+>   	int pos = 0, parsed, ret;
+>   	unsigned int action_input;
+>   	enum damos_action action;
+> +	struct damos_quota *quota;
+>   
+>   	schemes = kmalloc_array(max_nr_schemes, sizeof(scheme),
+>   			GFP_KERNEL);
+>   	if (!schemes)
+>   		return NULL;
+>   
+> +	quota = kmalloc(sizeof(struct damos_quota), GFP_KERNEL);
+> +	if (!quota) {
+> +		kfree(schemes);
+> +		return NULL;
+> +	}
+> +
+>   	*nr_schemes = 0;
+>   	while (pos < len && *nr_schemes < max_nr_schemes) {
+>   		struct damos_access_pattern pattern = {};
+> -		struct damos_quota quota = {};
+>   		struct damos_watermarks wmarks;
+>   
+> +		memset(quota, 0, sizeof(struct damos_quota));
+> +
+>   		ret = sscanf(&str[pos],
+>   				"%lu %lu %u %u %u %u %u %lu %lu %lu %u %u %u %u %lu %lu %lu %lu%n",
+>   				&pattern.min_sz_region, &pattern.max_sz_region,
+> @@ -256,10 +264,10 @@ static struct damos **str_to_schemes(const char *str, ssize_t len,
+>   				&pattern.max_nr_accesses,
+>   				&pattern.min_age_region,
+>   				&pattern.max_age_region,
+> -				&action_input, &quota.ms,
+> -				&quota.sz, &quota.reset_interval,
+> -				&quota.weight_sz, &quota.weight_nr_accesses,
+> -				&quota.weight_age, &wmarks.metric,
+> +				&action_input, &quota->ms,
+> +				&quota->sz, &quota->reset_interval,
+> +				&quota->weight_sz, &quota->weight_nr_accesses,
+> +				&quota->weight_age, &wmarks.metric,
+>   				&wmarks.interval, &wmarks.high, &wmarks.mid,
+>   				&wmarks.low, &parsed);
+>   		if (ret != 18)
+> @@ -278,15 +286,17 @@ static struct damos **str_to_schemes(const char *str, ssize_t len,
+>   			goto fail;
+>   
+>   		pos += parsed;
+> -		scheme = damon_new_scheme(&pattern, action, &quota, &wmarks);
+> +		scheme = damon_new_scheme(&pattern, action, quota, &wmarks);
+>   		if (!scheme)
+>   			goto fail;
+>   
+>   		schemes[*nr_schemes] = scheme;
+>   		*nr_schemes += 1;
+>   	}
+> +	kfree(quota);
+>   	return schemes;
+>   fail:
+> +	kfree(quota);
+>   	free_schemes_arr(schemes, *nr_schemes);
+>   	return NULL;
+>   }
