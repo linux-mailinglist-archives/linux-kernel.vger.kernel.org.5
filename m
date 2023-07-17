@@ -2,255 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47616756E5E
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 22:36:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A8B1756E64
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 22:37:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229718AbjGQUg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 16:36:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36760 "EHLO
+        id S230139AbjGQUhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 16:37:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229582AbjGQUg0 (ORCPT
+        with ESMTP id S229582AbjGQUhM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 16:36:26 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AAA91A5
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 13:36:25 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id d75a77b69052e-401d1d967beso87991cf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 13:36:25 -0700 (PDT)
+        Mon, 17 Jul 2023 16:37:12 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1796103;
+        Mon, 17 Jul 2023 13:37:10 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id e9e14a558f8ab-34884a8f285so10380015ab.0;
+        Mon, 17 Jul 2023 13:37:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689626184; x=1692218184;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XG3UloC6pPSvkIYL8rMmu+UHUcjJ8ZWmhMAzCruBxHE=;
-        b=iRjdQMzCwzc8zxaE0VcML8ZQquEPicxVIyConz1X5vBJjg/j+HWQsY18+JfB3kDuL+
-         t5UnYN0JVwbPAEvQxmPu6bCCDcavRFvllYcEEo0PzEAHIASq0B0UeU89StmjD6IeCi5y
-         7Nuz3q8fM+mNxNHbHPppbhX5z++/7eUsCrGsoiHtj05zuA1Vray53MUyG0p9Ef78eAPO
-         LRMAwvVIrop1vzNigqNhcoTl2u3/h9DnrzFxoImhhK45lbHz95EMbHb8c5UvqEOBKsn6
-         3wUaRsEC2VwSo/gq6N0DUwr3X6zxqXIBfsg99qfpbsJiKdSzsVzxsbmWKPm9+S27okgo
-         Db4A==
+        d=gmail.com; s=20221208; t=1689626230; x=1692218230;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2kAwJHiR+H4GDqr7e6nXyr8bmo5EmU5aiLGkOZNmvaM=;
+        b=kmeBqa5MdbvFwdthLNdn6x5K0aMOzpJkcGZV6u06eY00afZa0fY9RvCh6intNP8pXp
+         ova0U7D4MjTIHFXVKb77udj94AQogskNUHixxA7OnLXGJPqGQg6Ye8E8Nr80P7xmVjtH
+         AT+CNgtY69k3C9UANOeU+fLg0WgCyuVlNL42ktb03Tr4Ttm67yY0eM3nIU9UTMc/OHvx
+         59KCftrig2iDJHxr3GXZJA7GmYbli/hP5Gfi8PyDKfKvTV/Uc6F+p1auVV2NYVy0z5kj
+         3RopdAE1ZYsq0E5J5tInZWS6tPHLNKqw1jaKxPBBsjVes2aS1YV/KBTdgWJzhzxViEOO
+         segw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689626184; x=1692218184;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1689626230; x=1692218230;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=XG3UloC6pPSvkIYL8rMmu+UHUcjJ8ZWmhMAzCruBxHE=;
-        b=F07aXOz8nNblv0BSvCevEi0resN0svbIhAjtFSzHmn5L3X6BwauJ5/ML5+1umRbXx0
-         RJl1/GisiZPcKcigYhezm+6evhjJEtRx9Uwqrj3NHoLDLnuNc7Nys11FHCgbtSpfZETF
-         M8p+EE+AJFEo1lQFBV9VCjZbyPE22BvqGiWnipob5pRrBwrKC2K/qJYPVXThPP+kLKZH
-         wBQTFoPT2/EaiTlywhLRi/2ZZkmZUqpGYcCG9gOS9kSc09z7jJBMcnhlaPF0UzTlR6tR
-         rF5xVHgIT8/ZtdNzQOQ2rZxMyG+HZ5sGivl4iHeB60rUGoEO9fU4IDEW0tjDcojSS8St
-         vb+A==
-X-Gm-Message-State: ABy/qLajOVbgA7TyCcC6OqDRJZ2iL17UuKCBjVpa+efEbfplhpKDuS4U
-        Oy37f5V8uCAtdcBklhpr3eYnbzXNHoYG/dtZd6UxuyiSL6vxoafxzenOQA==
-X-Google-Smtp-Source: APBJJlHoQ1hCZX4jmZcqjxUm4/c4z+1Rlze98VqSxDFJSoPTZ6il6ivy3Eok+/OrcTOc6/5Njnh1y/+9N/I2a0i07hg=
-X-Received: by 2002:a05:622a:34c:b0:403:ac17:c18a with SMTP id
- r12-20020a05622a034c00b00403ac17c18amr74135qtw.14.1689626184158; Mon, 17 Jul
- 2023 13:36:24 -0700 (PDT)
+        bh=2kAwJHiR+H4GDqr7e6nXyr8bmo5EmU5aiLGkOZNmvaM=;
+        b=QPpwyUtlxd+3/M46cPFcTUr5s41naeuwDX2qra/T0d+MjQf6WhX5an5Vf/2+A5DzwC
+         o5MyVi7cnDoLMAAyb7ernvdZeR/+F4KfM6R85R//UZwI1Y6m4dVH2KEKawEVW9Mc/Ii9
+         MMifR3CrB5WTGEaXsunekiajs7ShtJhQWj0tjPdL5aupEFPpa/xQFP4ySyzY0EnVpSC7
+         BBOxHplYVonVTDajdp1DSuP4v3pMYnSjqlq9h2BtWg6xYdvKcfJtWYNyX5P6gGlQcifr
+         EygUxwQ2/sJ1osOv7oCY4JDdjjlKZObwOKAlV1rYpLl6xmr5v2hmdKyfnzHnVCCB0kzB
+         UPqg==
+X-Gm-Message-State: ABy/qLbh/sTRckKyzlbVPFyKIfAurNbn4YR6h5LRSTfih4QmA02ethDS
+        arXAmG+ISWygXwfN4nAWl4g=
+X-Google-Smtp-Source: APBJJlEKXWlw+c5R6v5A6AbZDdFfolPCLTWSYnbtuLHMsBAPUBd5oy2WlAN/RWB7XzfShnMndpZc1w==
+X-Received: by 2002:a92:c943:0:b0:348:7c4e:2959 with SMTP id i3-20020a92c943000000b003487c4e2959mr644960ilq.23.1689626229961;
+        Mon, 17 Jul 2023 13:37:09 -0700 (PDT)
+Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
+        by smtp.gmail.com with ESMTPSA id a12-20020a92d34c000000b003426356a35asm199726ilh.0.2023.07.17.13.37.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Jul 2023 13:37:09 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 17 Jul 2023 10:37:08 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Haitao Huang <haitao.huang@linux.intel.com>
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>, dave.hansen@linux.intel.com,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
+        cgroups@vger.kernel.org, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, vipinsh@google.com,
+        kai.huang@intel.com, reinette.chatre@intel.com,
+        zhiquan1.li@intel.com, kristen@linux.intel.com
+Subject: Re: [PATCH] cgroup/misc: Fix an overflow
+Message-ID: <ZLWmdBfcuPUBtk1K@slm.duckdns.org>
+References: <20230717184719.85523-1-haitao.huang@linux.intel.com>
+ <CU4OCLEHU1S5.359W394902648@seitikki>
+ <ZLWPN_xyGFrqqJkV@slm.duckdns.org>
+ <op.178pr1qewjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <op.178te0tbwjvjmi@hhuan26-mobl.amr.corp.intel.com>
 MIME-Version: 1.0
-References: <20230714160407.4142030-1-ryan.roberts@arm.com>
- <20230714161733.4144503-3-ryan.roberts@arm.com> <CAOUHufacQ8Vx9WQ3BVjGGWKGhcRkL7u79UMX=O7oePDwZ0iNxw@mail.gmail.com>
- <432490d1-8d1e-1742-295a-d6e60a054ab6@arm.com> <CAOUHufaDfJwF_-zb6zV5COG-KaaGcSyrNmbaEzaWz2UjcGGgHQ@mail.gmail.com>
- <5df787a0-8e69-2472-cdd6-f96a3f7dfaaf@arm.com> <CAOUHufb3Ugh_eZ7kPxuGyHFgPCVecMAU6hEAaWYrb7f6h7-0LQ@mail.gmail.com>
-In-Reply-To: <CAOUHufb3Ugh_eZ7kPxuGyHFgPCVecMAU6hEAaWYrb7f6h7-0LQ@mail.gmail.com>
-From:   Yu Zhao <yuzhao@google.com>
-Date:   Mon, 17 Jul 2023 14:35:47 -0600
-Message-ID: <CAOUHufa+4DVjLWRa_zVRHQ0yVF_h9mfSaqmn7VJ6bArSw49S+g@mail.gmail.com>
-Subject: Re: [PATCH v3 3/4] mm: FLEXIBLE_THP for improved performance
-To:     Ryan Roberts <ryan.roberts@arm.com>
-Cc:     Hugh Dickins <hughd@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <op.178te0tbwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 1:31=E2=80=AFPM Yu Zhao <yuzhao@google.com> wrote:
->
-> On Mon, Jul 17, 2023 at 7:36=E2=80=AFAM Ryan Roberts <ryan.roberts@arm.co=
-m> wrote:
-> >
-> > >>>> +static int alloc_anon_folio(struct vm_fault *vmf, struct folio **=
-folio)
-> > >>>> +{
-> > >>>> +       int i;
-> > >>>> +       gfp_t gfp;
-> > >>>> +       pte_t *pte;
-> > >>>> +       unsigned long addr;
-> > >>>> +       struct vm_area_struct *vma =3D vmf->vma;
-> > >>>> +       int prefer =3D anon_folio_order(vma);
-> > >>>> +       int orders[] =3D {
-> > >>>> +               prefer,
-> > >>>> +               prefer > PAGE_ALLOC_COSTLY_ORDER ? PAGE_ALLOC_COST=
-LY_ORDER : 0,
-> > >>>> +               0,
-> > >>>> +       };
-> > >>>> +
-> > >>>> +       *folio =3D NULL;
-> > >>>> +
-> > >>>> +       if (vmf_orig_pte_uffd_wp(vmf))
-> > >>>> +               goto fallback;
-> > >>>> +
-> > >>>> +       for (i =3D 0; orders[i]; i++) {
-> > >>>> +               addr =3D ALIGN_DOWN(vmf->address, PAGE_SIZE << ord=
-ers[i]);
-> > >>>> +               if (addr >=3D vma->vm_start &&
-> > >>>> +                   addr + (PAGE_SIZE << orders[i]) <=3D vma->vm_e=
-nd)
-> > >>>> +                       break;
-> > >>>> +       }
-> > >>>> +
-> > >>>> +       if (!orders[i])
-> > >>>> +               goto fallback;
-> > >>>> +
-> > >>>> +       pte =3D pte_offset_map(vmf->pmd, vmf->address & PMD_MASK);
-> > >>>> +       if (!pte)
-> > >>>> +               return -EAGAIN;
-> > >>>
-> > >>> It would be a bug if this happens. So probably -EINVAL?
-> > >>
-> > >> Not sure what you mean? Hugh Dickins' series that went into v6.5-rc1=
- makes it
-> > >> possible for pte_offset_map() to fail (if I understood correctly) an=
-d we have to
-> > >> handle this. The intent is that we will return from the fault withou=
-t making any
-> > >> change, then we will refault and try again.
-> > >
-> > > Thanks for checking that -- it's very relevant. One detail is that
-> > > that series doesn't affect anon. IOW, collapsing PTEs into a PMD can'=
-t
-> > > happen while we are holding mmap_lock for read here, and therefore,
-> > > the race that could cause pte_offset_map() on shmem/file PTEs to fail
-> > > doesn't apply here.
-> >
-> > But Hugh's patches have changed do_anonymous_page() to handle failure f=
-rom
-> > pte_offset_map_lock(). So I was just following that pattern. If this re=
-ally
-> > can't happen, then I'd rather WARN/BUG on it, and simplify alloc_anon_f=
-olio()'s
-> > prototype to just return a `struct folio *` (and if it's null that mean=
-s ENOMEM).
-> >
-> > Hugh, perhaps you can comment?
-> >
-> > As an aside, it was my understanding from LWN, that we are now using a =
-per-VMA
-> > lock so presumably we don't hold mmap_lock for read here? Or perhaps th=
-at only
-> > applies to file-backed memory?
->
-> For anon under mmap_lock for read:
-> 1. pte_offset_map[_lock]() fails when a parallel PF changes PMD from
-> none to leaf.
-> 2. changing PMD from non-leaf to leaf is a bug. See the comments in
-> the "else" branch in handle_pte_fault().
->
-> So for do_anonymous_page(), there is only one case
-> pte_offset_map[_lock]() can fail.
+Hello,
 
-=3D=3D=3D
-> For the code above, this case was
-> ruled out by vmf_orig_pte_uffd_wp().
+On Mon, Jul 17, 2023 at 03:19:38PM -0500, Haitao Huang wrote:
+> Actually, we are using atomic_long_t for 'current' which is the same width
+> as long defined by arch/compiler. So new_usage should be long to be
+> consistent?
 
-Actually I was wrong about this part.
-=3D=3D=3D
+We can use atomic64_t, right? It's slower on 32bit machines but I think it'd
+be better to guarantee resource counter range than micro-optimizing charge
+operations. None of the current users are hot enough for this to matter and
+if somebody becomes that hot, the difference between atomic_t and atomic64_t
+isn't gonna matter that much. We'd need to batch allocations per-cpu and so
+on.
 
-> Checking the return value from pte_offset_map[_lock]() is a good
-> practice. What I'm saying is that -EAGAIN would mislead people to
-> think, in our case, !pte is legitimate, and hence the suggestion of
-> replacing it with -EINVAL.
+> ditto for event counter. Only max is plain unsigned long but I think it is
+> also OK as it only compared with 'current' without any arithmetic ops
+> involved.
+> Did I miss something here?
 
-Yes, -EAGAIN is suitable.
+I'm saying that it'd be better to make everything explicitly 64bit.
 
-> No BUG_ON() please. As I've previously mentioned, it's against
-> Documentation/process/coding-style.rst.
->
-> > > +Hugh Dickins for further consultation if you need it.
-> > >
-> > >>>> +
-> > >>>> +       for (; orders[i]; i++) {
-> > >>>> +               addr =3D ALIGN_DOWN(vmf->address, PAGE_SIZE << ord=
-ers[i]);
-> > >>>> +               vmf->pte =3D pte + pte_index(addr);
-> > >>>> +               if (!vmf_pte_range_changed(vmf, 1 << orders[i]))
-> > >>>> +                       break;
-> > >>>> +       }
-> > >>>> +
-> > >>>> +       vmf->pte =3D NULL;
-> > >>>> +       pte_unmap(pte);
-> > >>>> +
-> > >>>> +       gfp =3D vma_thp_gfp_mask(vma);
-> > >>>> +
-> > >>>> +       for (; orders[i]; i++) {
-> > >>>> +               addr =3D ALIGN_DOWN(vmf->address, PAGE_SIZE << ord=
-ers[i]);
-> > >>>> +               *folio =3D vma_alloc_folio(gfp, orders[i], vma, ad=
-dr, true);
-> > >>>> +               if (*folio) {
-> > >>>> +                       clear_huge_page(&(*folio)->page, addr, 1 <=
-< orders[i]);
-> > >>>> +                       return 0;
-> > >>>> +               }
-> > >>>> +       }
-> > >>>> +
-> > >>>> +fallback:
-> > >>>> +       *folio =3D vma_alloc_zeroed_movable_folio(vma, vmf->addres=
-s);
-> > >>>> +       return *folio ? 0 : -ENOMEM;
-> > >>>> +}
-> > >>>> +#else
-> > >>>> +static inline int alloc_anon_folio(struct vm_fault *vmf, struct f=
-olio **folio)
-> > >>>
-> > >>> Drop "inline" (it doesn't do anything in .c).
-> > >>
-> > >> There are 38 instances of inline in memory.c alone, so looks like a =
-well used
-> > >> convention, even if the compiler may choose to ignore. Perhaps you c=
-an educate
-> > >> me; what's the benefit of dropping it?
-> > >
-> > > I'll let Willy and Andrew educate both of us :)
-> > >
-> > > +Matthew Wilcox +Andrew Morton please. Thank you.
-> > >
-> > >>> The rest looks good to me.
-> > >>
-> > >> Great - just incase it wasn't obvious, I decided not to overwrite vm=
-f->address
-> > >> with the aligned version, as you suggested
-> > >
-> > > Yes, I've noticed. Not overwriting has its own merits for sure.
-> > >
-> > >> for 2 reasons; 1) address is const
-> > >> in the struct, so would have had to change that. 2) there is a uffd =
-path that
-> > >> can be taken after the vmf->address fixup would have occured and the=
- path
-> > >> consumes that member, so it would have had to be un-fixed-up making =
-it more
-> > >> messy than the way I opted for.
-> > >>
-> > >> Thanks for the quick review as always!
+Thanks.
+
+-- 
+tejun
