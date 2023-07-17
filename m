@@ -2,127 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A1ED755AAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 06:47:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03294755AB2
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 06:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230319AbjGQErj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 00:47:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58782 "EHLO
+        id S230424AbjGQEsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 00:48:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbjGQErh (ORCPT
+        with ESMTP id S229476AbjGQEsX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 00:47:37 -0400
-Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D19A9E52
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 21:47:32 -0700 (PDT)
-Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20230717044727epoutp03376aafc092c93bf0fbad04c492a4fe49~yjkdghdEe1198411984epoutp03U
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 04:47:27 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20230717044727epoutp03376aafc092c93bf0fbad04c492a4fe49~yjkdghdEe1198411984epoutp03U
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1689569247;
-        bh=s0aIP7eq2+shllEHO2v+rEDaAu63Qjj2b7EetgnQbPk=;
-        h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
-        b=Gv+nMTYBXFWgcDASd8OtHrdqVBWsI2yIG4eji0danZLor0j2lXPX5ckil/MYGm35t
-         Cm59cNb8F9BP0t0j44uJqJkmiID6q8+OxaWDv0t9NtBOo76XzPGPCJpPm4EDI2Ff6n
-         7raaBVBlIEfIMMVWW+o3jn6vEzCErGvQmM/3/YN8=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
-        20230717044726epcas2p4a4c6d4267b55a4e852756fd1a1db1596~yjkcZUp2F3089930899epcas2p4J;
-        Mon, 17 Jul 2023 04:47:26 +0000 (GMT)
-Received: from epsmges2p3.samsung.com (unknown [182.195.36.70]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4R48hF5Gmrz4x9QD; Mon, 17 Jul
-        2023 04:47:25 +0000 (GMT)
-Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
-        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        B7.34.32606.DD7C4B46; Mon, 17 Jul 2023 13:47:25 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas2p1.samsung.com (KnoxPortal) with ESMTPA id
-        20230717044725epcas2p1d4c5ff831ec6de5d53600a595b1d68f0~yjkbh1ooC2360423604epcas2p1V;
-        Mon, 17 Jul 2023 04:47:25 +0000 (GMT)
-Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20230717044725epsmtrp2723f77300b0360fe2b9751c00198f75f~yjkbg1A9z1719217192epsmtrp2L;
-        Mon, 17 Jul 2023 04:47:25 +0000 (GMT)
-X-AuditID: b6c32a47-9cbff70000007f5e-c3-64b4c7dd7dd6
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        D2.79.30535.DD7C4B46; Mon, 17 Jul 2023 13:47:25 +0900 (KST)
-Received: from [10.229.8.168] (unknown [10.229.8.168]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20230717044724epsmtip276bed577e8f137c2e8eb8ff408add66d~yjkbObyVt2206022060epsmtip2d;
-        Mon, 17 Jul 2023 04:47:24 +0000 (GMT)
-Message-ID: <ef5341dc-3539-ef20-84bb-b32c0b76be2b@samsung.com>
-Date:   Mon, 17 Jul 2023 13:44:51 +0900
+        Mon, 17 Jul 2023 00:48:23 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8CC3E55;
+        Sun, 16 Jul 2023 21:48:21 -0700 (PDT)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36H3uIB4007843;
+        Mon, 17 Jul 2023 04:48:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=cGwmHD8+T91qYYMYUM0G0clisp+LZ1ofLajeygGLwrU=;
+ b=CNC0fU6OKDTIv+OUNCvS54fyQd4bA2c2zI/OASkx6c4N2PP6WpULp8QPgCQVQVoKj2Fo
+ i1Tb7wO+FJURSLGSoaUYqIWkKY/wQPSTr1yLI7BKxxXVA3v9+W43Vq7CIM2fqDd7bnuu
+ Rjf4OGkLDBoOqg2F9nlhbaGdVD7kul3Xe/bk56HlaLaak3lT4KvoCEn1vDj7Xt4yLdYF
+ G3PmBhtr7/5JoDl8wjrgBI7s2DWhwbzrJqlObEuP49zfvsDpgD+68AcPfyHzwsVhK+mT
+ LIRAhRTTt1D5gGHosoPhFIQzMraSRFeRv7cLYwJUnItZhoLIZcIwcNf1SMB3P2KMCVQg pA== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3run1jjebp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 17 Jul 2023 04:48:15 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36H4mErk007691
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 17 Jul 2023 04:48:14 GMT
+Received: from [10.216.12.245] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Sun, 16 Jul
+ 2023 21:48:09 -0700
+Message-ID: <faf315ee-bc5a-bd02-9d3c-0312989a24b3@quicinc.com>
+Date:   Mon, 17 Jul 2023 10:18:06 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
-        Thunderbird/102.11.0
-Subject: Re: [PATCH v2 2/3] pwm: samsung: Add compatible for ExynosAutov9
- SoC
-To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org,
-        Chanho Park <chanho61.park@samsung.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 5/5] thermal/drivers/tsens: Add IPQ5332 support
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>, <amitk@kernel.org>,
+        <thara.gopinath@gmail.com>, <agross@kernel.org>,
+        <andersson@kernel.org>, <rafael@kernel.org>,
+        <daniel.lezcano@linaro.org>, <rui.zhang@intel.com>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <linux-pm@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <quic_varada@quicinc.com>
+References: <20230713052732.787853-1-quic_ipkumar@quicinc.com>
+ <20230713052732.787853-6-quic_ipkumar@quicinc.com>
+ <adc04328-d9c5-1c67-8396-08137334af1e@linaro.org>
 Content-Language: en-US
-From:   Jaewon Kim <jaewon02.kim@samsung.com>
-In-Reply-To: <20230715072203.ecz7wg4novvhpyuj@pengutronix.de>
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrOJsWRmVeSWpSXmKPExsWy7bCmue7d41tSDH490LB4MG8bm8Xl/doW
-        a/aeY7KYf+Qcq0Xfi4fMFpseX2O1uLxrDpvF3burGC1mnN/HZNG69wi7xc9d81gsbk+czOjA
-        47Fz1l12j02rOtk87lzbw+axeUm9R/9fA4++LasYPT5vkgtgj8q2yUhNTEktUkjNS85PycxL
-        t1XyDo53jjc1MzDUNbS0MFdSyEvMTbVVcvEJ0HXLzAE6U0mhLDGnFCgUkFhcrKRvZ1OUX1qS
-        qpCRX1xiq5RakJJTYF6gV5yYW1yal66Xl1piZWhgYGQKVJiQnbH73SfWgo8sFVc2HmBuYHzE
-        3MXIySEhYCJxZnozexcjF4eQwA5Gidn/ZzBDOJ8YJZacWcIC4XxjlHjQsZYNpmX/ixdMEIm9
-        jBKH759ig3BeM0r0PHnAClLFK2Ancar7IhOIzSKgKnH48UU2iLigxMmZT1hAbFGBaInWZffB
-        4sIC/hITb60CqufgEBFwk/i4ThJkJrPAMmaJZSfvg81hFhCXuPVkPpjNJqAt8X39YrBdnAK2
-        EhMP9DFD1MhLNG+dDfaDhMABDomONedYIM52kTi/dxnU18ISr45vYYewpSQ+v9sL9Vq2RPv0
-        P6wQdoXExQ2zoeLGErOetTOCHMcsoCmxfpc+iCkhoCxx5BYLxFo+iY7Df9khwrwSHW1CEI1q
-        EvennoMaIiMx6chKJgjbQ+LEgTusExgVZyEFyiwkT85C8swshL0LGFlWMYqlFhTnpqcWGxUY
-        wyM7OT93EyM4BWu572Cc8faD3iFGJg7GQ4wSHMxKIrzfV21KEeJNSaysSi3Kjy8qzUktPsRo
-        CoyaicxSosn5wCyQVxJvaGJpYGJmZmhuZGpgriTOe691boqQQHpiSWp2ampBahFMHxMHp1QD
-        0z7fiTaGWxs/zQqRarxkFPnI83PbgpurDDdsj+pqs1a3vB3Gt+jKChuWHVX8nQuDXKX9FdTr
-        XT/M5dvLeKio42r09phDnAaxZ1f7PLpx8mWLNsdOp+YC+zVrii6+4ObzyWWdl7Fblpd3dtmi
-        FTFbuBs8Zz0pFa9tSjRTE7OvadrlkCNy3rpmxlX12W1a+2Y2hF2z2OlWX/L9vynvGcFz/UfS
-        OhsclF+pXejZyXhVyflc97eHf/Mjk3+ePJJTW19x+8eqEob35yaYc56/delQ71V/z+c8zYyM
-        AiuiFRUe6zJtVBP/M8Xl07+sN7InnNQy9OYv5Zp5l1N5TadWy4o/8bqKZYxXyrg+BJsVfTiv
-        xFKckWioxVxUnAgAOYUNNEoEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprGIsWRmVeSWpSXmKPExsWy7bCSvO7d41tSDNqf8Vo8mLeNzeLyfm2L
-        NXvPMVnMP3KO1aLvxUNmi02Pr7FaXN41h83i7t1VjBYzzu9jsmjde4Td4ueueSwWtydOZnTg
-        8dg56y67x6ZVnWwed67tYfPYvKTeo/+vgUffllWMHp83yQWwR3HZpKTmZJalFunbJXBl7H73
-        ibXgI0vFlY0HmBsYHzF3MXJySAiYSOx/8YKpi5GLQ0hgN6PEqUm32CESMhLLn/WxQdjCEvdb
-        jrBCFL1klLi6ZgMrSIJXwE7iVPdFJhCbRUBV4vDji2wQcUGJkzOfsIDYogLREqs/XwCq5+AQ
-        FvCVmLGPG8QUEXCT+LhOEmQks8AyZonvX/eCjRQS+MEocekeL4jNLCAucevJfLDxbALaEt/X
-        Lwar4RSwlZh4oI8ZosZMomtrFyOELS/RvHU28wRGoVlIrpiFZNQsJC2zkLQsYGRZxSiZWlCc
-        m55bbFhglJdarlecmFtcmpeul5yfu4kRHHVaWjsY96z6oHeIkYmD8RCjBAezkgjv91WbUoR4
-        UxIrq1KL8uOLSnNSiw8xSnOwKInzfnvdmyIkkJ5YkpqdmlqQWgSTZeLglGpg2p94MrOlMGbR
-        HFPlwryKN2+0NawEry1jnfz0lLvxjZyjX7eda41e731gR8Q08cZsTyUd8e3u+57M6X7RNGvm
-        rzN2T/99LTtfqZQRxPVZjq/+nndOALfjzB/d3gr1f+fNia/Jjq/3m29Vc3DhVi/5PNMlKdeO
-        S9j+eX/VooKJ9dxvzv0y7X6zvVlkp95lFmuPfqBzr36/XJLF1h+L7h2deJiv5yNHvnLNhmmz
-        nv1n2n7v7tZyvklVXE29j33myS6Rc7L8zm/v//W3S/ELkb6l9l7/jF0vO3C7bk/5oLI3odPt
-        +jEJloJ0/UoueQ8u6SYRFmO2s6ZCxlaT/3SIXtshYLGeIUnBTKP6ncZxjxIlluKMREMt5qLi
-        RAD4fQK8KQMAAA==
-X-CMS-MailID: 20230717044725epcas2p1d4c5ff831ec6de5d53600a595b1d68f0
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20230714101434epcas2p3e2475698c527ca72dee797225d3dad37
-References: <20230714100929.94563-1-jaewon02.kim@samsung.com>
-        <CGME20230714101434epcas2p3e2475698c527ca72dee797225d3dad37@epcas2p3.samsung.com>
-        <20230714100929.94563-3-jaewon02.kim@samsung.com>
-        <20230715072203.ecz7wg4novvhpyuj@pengutronix.de>
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+From:   Praveenkumar I <quic_ipkumar@quicinc.com>
+In-Reply-To: <adc04328-d9c5-1c67-8396-08137334af1e@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: f1WjR0T1d-pW_XyxHpjyr61Q7p_GRaIu
+X-Proofpoint-GUID: f1WjR0T1d-pW_XyxHpjyr61Q7p_GRaIu
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-17_03,2023-07-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
+ bulkscore=0 mlxlogscore=999 priorityscore=1501 mlxscore=0 spamscore=0
+ phishscore=0 lowpriorityscore=0 impostorscore=0 malwarescore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307170043
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -130,34 +87,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-
-On 23. 7. 15. 16:22, Uwe Kleine-König wrote:
-> Hello,
->
-> On Fri, Jul 14, 2023 at 07:09:28PM +0900, Jaewon Kim wrote:
->> Add new compatible string to support ExynosAutov9 SoC.
+On 7/15/2023 7:36 PM, Konrad Dybcio wrote:
+> On 13.07.2023 07:27, Praveenkumar I wrote:
+>> IPQ5332 uses tsens v2.3.3 IP and it is having combined interrupt.
+>> It does not have RPM and kernel needs to take care of sensor
+>> enablement, calibration. Hence introduced new feature_config,
+>> ops and data for IPQ5332.
 >>
->> Signed-off-by: Jaewon Kim <jaewon02.kim@samsung.com>
-> Looks good to me:
->
-> Acked-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
->
-> What are the merge plans here? The whole series via pwm or a samsung
-> tree? Or a mixture?
-
-It would be nice to be merged whole series in the samsung tree.
-
-Krzysztof could you apply all patch after your review?
-
-
->
-> Best regards
-> Uwe
->
-
-Thanks
-
-Jaewon Kim
-
+>> Signed-off-by: Praveenkumar I <quic_ipkumar@quicinc.com>
+>> ---
+>> [v3]:
+>> 	No changes.
+>> [v2]:
+>> 	Added tsens_features for ipq5332 with VER_2_X_NO_RPM. Used
+>> 	hw_ids to mention the available sensors. Dropped v2 in
+>> 	ops_ipq5332.
+>>
+>>   drivers/thermal/qcom/tsens-v2.c | 25 +++++++++++++++++++++++++
+>>   drivers/thermal/qcom/tsens.c    |  3 +++
+>>   drivers/thermal/qcom/tsens.h    |  2 +-
+>>   3 files changed, 29 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/thermal/qcom/tsens-v2.c b/drivers/thermal/qcom/tsens-v2.c
+>> index 781595a9a622..e25d9d34e519 100644
+>> --- a/drivers/thermal/qcom/tsens-v2.c
+>> +++ b/drivers/thermal/qcom/tsens-v2.c
+>> @@ -62,6 +62,17 @@ static struct tsens_features ipq8074_feat = {
+>>   	.trip_max_temp	= 204000,
+>>   };
+>>   
+>> +static struct tsens_features ipq5332_feat = {
+>> +	.ver_major	= VER_2_X_NO_RPM,
+>> +	.crit_int	= 1,
+>> +	.combo_int	= 1,
+>> +	.adc		= 0,
+>> +	.srot_split	= 1,
+>> +	.max_sensors	= 16,
+>> +	.trip_min_temp	= 0,
+>> +	.trip_max_temp	= 204000,
+> 204 degrees Celcius?
+Yes, it is 204 degrees celcius as like ipq8074.
+> Konrad
+>> +};
+>> +
+>>   static const struct reg_field tsens_v2_regfields[MAX_REGFIELDS] = {
+>>   	/* ----- SROT ------ */
+>>   	/* VERSION */
+>> @@ -262,6 +273,20 @@ struct tsens_plat_data data_ipq8074 = {
+>>   	.fields	= tsens_v2_regfields,
+>>   };
+>>   
+>> +static const struct tsens_ops ops_ipq5332 = {
+>> +	.init		= init_tsens_v2_no_rpm,
+>> +	.get_temp	= get_temp_tsens_valid,
+>> +	.calibrate	= tsens_v2_calibration,
+>> +};
+>> +
+>> +struct tsens_plat_data data_ipq5332 = {
+>> +	.num_sensors	= 5,
+>> +	.ops		= &ops_ipq5332,
+>> +	.hw_ids		= (unsigned int []){11, 12, 13, 14, 15},
+>> +	.feat		= &ipq5332_feat,
+>> +	.fields		= tsens_v2_regfields,
+>> +};
+>> +
+>>   /* Kept around for backward compatibility with old msm8996.dtsi */
+>>   struct tsens_plat_data data_8996 = {
+>>   	.num_sensors	= 13,
+>> diff --git a/drivers/thermal/qcom/tsens.c b/drivers/thermal/qcom/tsens.c
+>> index 9dc0c2150948..af58a94628a8 100644
+>> --- a/drivers/thermal/qcom/tsens.c
+>> +++ b/drivers/thermal/qcom/tsens.c
+>> @@ -1106,6 +1106,9 @@ static const struct of_device_id tsens_table[] = {
+>>   	}, {
+>>   		.compatible = "qcom,ipq8074-tsens",
+>>   		.data = &data_ipq8074,
+>> +	}, {
+>> +		.compatible = "qcom,ipq5332-tsens",
+>> +		.data = &data_ipq5332,
+>>   	}, {
+>>   		.compatible = "qcom,mdm9607-tsens",
+>>   		.data = &data_9607,
+>> diff --git a/drivers/thermal/qcom/tsens.h b/drivers/thermal/qcom/tsens.h
+>> index b2e8f0f2b466..1dde363914cd 100644
+>> --- a/drivers/thermal/qcom/tsens.h
+>> +++ b/drivers/thermal/qcom/tsens.h
+>> @@ -648,6 +648,6 @@ extern struct tsens_plat_data data_8226, data_8909, data_8916, data_8939, data_8
+>>   extern struct tsens_plat_data data_tsens_v1, data_8976, data_8956;
+>>   
+>>   /* TSENS v2 targets */
+>> -extern struct tsens_plat_data data_8996, data_ipq8074, data_tsens_v2;
+>> +extern struct tsens_plat_data data_8996, data_ipq8074, data_ipq5332, data_tsens_v2;
+>>   
+>>   #endif /* __QCOM_TSENS_H__ */
