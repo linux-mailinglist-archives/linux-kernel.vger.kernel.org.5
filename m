@@ -2,160 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B32D755F9C
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 11:43:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B52F3755F9F
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 11:43:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230235AbjGQJnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 05:43:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45594 "EHLO
+        id S230290AbjGQJnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 05:43:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230348AbjGQJmf (ORCPT
+        with ESMTP id S230256AbjGQJnT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 05:42:35 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D6471BE3
+        Mon, 17 Jul 2023 05:43:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E138A4
         for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 02:42:23 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-51e344efd75so8839972a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 02:42:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1689586941; x=1692178941;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jCDAGW2zq1t7/jPzA/fgOnsdSvQf00Y9+7qWRffe9fk=;
-        b=YQpq3KyVlRs3zZwrdMaJspv9qlA3D8BuY+DwXmoIKajt5fTqGLf+QSAZZyyhs82RSN
-         xEgdgoyKHay1QMqkPiG0Ugqgjmm8DSrier9hFO/t83+QPaVQqQupS/dsQQUT5LPiG0mi
-         r4GR6mbRKhyocW0NdKhgNk/6Ub+AHt0nEsrHBvmW4wLwIuvcZmQjL98Sgvo2hZ2B+b5B
-         pe4eRZ9rKcWQTKdNPVWGNOndXXzjW1GrMM5GBDicW8JEZ58fKPfm8H6NyuqSDpymc0Q9
-         UNUWMGlyR+s9MC34KF1v9kDhCTVWZEFQ1X0OGsRo2x9Wy8e6mlK8spIPuGkIIiL7R1db
-         MiAw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689586943;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ceQGhU3Q6lPXE1UkwKN4clGf/gwccYZAeCnjr8dMuvU=;
+        b=gP/5HLz5kSJtiaAVzYzBWwD6usPtC5FC7PqSYIr8AQKyYNnfbtVQ9QZbsnD0YgW46sgsCK
+        apm/YlNGdgRPMr32WF0GYl9OAPqGpzp9yVyMwZ9eszJIG1x9KbIBXLk3QeqzEPNb3wGfWL
+        MYJP4wjHxqMYiQEyWsxKJT9fE2ApMrk=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-361-oKbGejfEMXeXGBRIL83CxA-1; Mon, 17 Jul 2023 05:42:21 -0400
+X-MC-Unique: oKbGejfEMXeXGBRIL83CxA-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-3fbe590234aso24597985e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 02:42:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689586941; x=1692178941;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jCDAGW2zq1t7/jPzA/fgOnsdSvQf00Y9+7qWRffe9fk=;
-        b=Z8S/6agOLHSdKM/hTor12v/40xOSz7gVN/r3Mk8L6PkVqSw3Va4ADESylVrLFPDuMa
-         ZWLCwmO50R/rdatnS+kP0LJLYdmV8xDcujYLBjLizOh8oKKXAB+73IqFh4JEtBStTrso
-         FNKQGfibtNQdpqB8BJLcDtP6nHAQ78V7GQ8w93PXaEpTcQaBxitnr/ClbZCMoYHH9Exd
-         58dYorHNOW1TDwizT1HZHVnb0I7ttuo38cQ3eKP0Resifv7RKOeQhmz0SZLsSg22QwJz
-         QAaE6uqT7Z13ThlTHzquiOXomscDUl8f4oAu5pyDvR1MWFXgLpanlDakNF2V9hZI5Gsr
-         UCUg==
-X-Gm-Message-State: ABy/qLZqVh5FA9MXmGk9a9t0LfIU89lIWG/GR6BZZE/yQI0HMWjdVfei
-        hTr4Rm9DH41X5KwfuKlIlKolQQUqLROd7Usuf6jmTA==
-X-Google-Smtp-Source: APBJJlHbgWepWBWj84txt0/Slx87FDXphJzB1ZHPwKsQE0Dqov00G0ZBqyHLIMdatfRuuxL4VcSOoQ==
-X-Received: by 2002:a05:6402:524e:b0:51d:cf7b:c9f0 with SMTP id t14-20020a056402524e00b0051dcf7bc9f0mr12003216edd.12.1689586941388;
-        Mon, 17 Jul 2023 02:42:21 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.104])
-        by smtp.gmail.com with ESMTPSA id j4-20020a50ed04000000b0051e2a6cef4fsm9734491eds.36.2023.07.17.02.42.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        d=1e100.net; s=20221208; t=1689586940; x=1692178940;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ceQGhU3Q6lPXE1UkwKN4clGf/gwccYZAeCnjr8dMuvU=;
+        b=aGyEEkt/AHOOusxhKYTbKNcUdXjb8XqsiHaM9lrqm6E+Ae9I2qYouRCzMuGU27IP1s
+         8SXfZHYl1xI1mT5ouNl32OHmvKUgIi2V01YlEZVWg6oRJnCZt4Hqg7HCYrIzJgVoEodR
+         5mkheyvzXxSc6tNCQ1kJ5TLh+LLpAowUgqiOSS9nzi4V9K+U4xLJM5g5jM6iu7XZDc9n
+         qrAIJL4RogVgN5RtPe9crAcTNnr+4wgrk17YdrcEb1X0bps0e6+KxCDa/3gnaahbRWy6
+         ogn0FH5o6DhgjJlmGv5mH4BggInEq1kPE3wXLoQu8mi4bfBK/DDMQhOg0ZrOtRzAIZ9d
+         KX5Q==
+X-Gm-Message-State: ABy/qLby+rrUBApdx4D4X46YHs9vLUibqHPYJ0ztoINTVd1KPgxgR2xx
+        d9oPjcmUYbCRzFi/iPq7YE4kTjBpFj6veZv2lT624isTW4LV5U1r1WTN0kW9/3gJRxMvKgQhA6j
+        lUKAJB0y0IDUXAP3mD9CszUJG
+X-Received: by 2002:a05:600c:28c:b0:3fb:ff8f:2db0 with SMTP id 12-20020a05600c028c00b003fbff8f2db0mr10562564wmk.39.1689586940620;
         Mon, 17 Jul 2023 02:42:20 -0700 (PDT)
-Message-ID: <9a3dc092-7278-cda1-cd4e-c157e0e2c431@linaro.org>
-Date:   Mon, 17 Jul 2023 11:42:18 +0200
+X-Google-Smtp-Source: APBJJlHTJJG5upVMicqzpVz8fvJdGooqvgGRv53FMhG+ent1E5fHJyLuOsJImrX+EIolD7UCawPm2Q==
+X-Received: by 2002:a05:600c:28c:b0:3fb:ff8f:2db0 with SMTP id 12-20020a05600c028c00b003fbff8f2db0mr10562552wmk.39.1689586940260;
+        Mon, 17 Jul 2023 02:42:20 -0700 (PDT)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id 2-20020a05600c248200b003faef96ee78sm7662349wms.33.2023.07.17.02.42.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Jul 2023 02:42:20 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH] drm/ssd130x: Fix an oops when attempting to update a
+ disabled plane
+In-Reply-To: <CAMuHMdVuLBTBymfEXDgHsDVavH6Ggq53fPep0T=dEWbztBWkjw@mail.gmail.com>
+References: <20230713163213.1028952-1-javierm@redhat.com>
+ <bbbb18e0-5de1-5155-c6b2-52a2b1d75898@suse.de>
+ <CAMuHMdVuLBTBymfEXDgHsDVavH6Ggq53fPep0T=dEWbztBWkjw@mail.gmail.com>
+Date:   Mon, 17 Jul 2023 11:42:19 +0200
+Message-ID: <87h6q2kh6s.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] usb: dwc2: combine platform specific data for Intel
- Agilex and Stratix10
-Content-Language: en-US
-To:     Meng Li <Meng.Li@windriver.com>, gregkh@linuxfoundation.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, dinguyen@kernel.org, hminas@synopsys.com,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-References: <20230717085053.1075077-1-Meng.Li@windriver.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230717085053.1075077-1-Meng.Li@windriver.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/07/2023 10:50, Meng Li wrote:
-> Intel Stratix10 is very the same with Agilex platform, the DWC2 IP on
-> the Stratix platform also does not support clock-gating. So, based on
-> commit 3d8d3504d233("usb: dwc2: Add platform specific data for
-> Intel's Agilex"), combine platform specific data for Intel Agilex and
-> Stratix10 together. In additional, in order to avoid breaking the old
-> device tree, keep compatible string "intel,socfpga-agilex-hsotg" unchanged.
-> 
-> Signed-off-by: Meng Li <Meng.Li@windriver.com>
-> ---
->  Documentation/devicetree/bindings/usb/dwc2.yaml   | 2 ++
+Geert Uytterhoeven <geert@linux-m68k.org> writes:
 
-Bindings are always separate patch.
+Hello Geert and Thomas,
 
->  arch/arm64/boot/dts/altera/socfpga_stratix10.dtsi | 4 ++--
+> Hi Thomas,
+>
+> On Mon, Jul 17, 2023 at 10:48=E2=80=AFAM Thomas Zimmermann <tzimmermann@s=
+use.de> wrote:
 
-As DTS is.
+[...]
 
->  drivers/usb/dwc2/params.c                         | 6 ++++--
->  3 files changed, 8 insertions(+), 4 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/usb/dwc2.yaml b/Documentation/devicetree/bindings/usb/dwc2.yaml
-> index dc4988c0009c..c98ca98d5033 100644
-> --- a/Documentation/devicetree/bindings/usb/dwc2.yaml
-> +++ b/Documentation/devicetree/bindings/usb/dwc2.yaml
-> @@ -51,6 +51,7 @@ properties:
->                - amlogic,meson-gxbb-usb
->                - amlogic,meson-g12a-usb
->                - intel,socfpga-agilex-hsotg
-> +              - intel,socfpga-hsotg
+>>
+>> After some discussion on IRC, I'd suggest to allocate the buffer
+>> somewhere within probe. So it will always be there when the plane code r=
+uns.
+>>
+>> A full fix would be to allocate the buffer memory as part of the plane
+>> state and/or the plane's atomic_check. That's a bit more complicated if
+>> you want to shared the buffer memory across plane updates.
+>
+> Note that actually two buffers are involved: data_array (monochrome,
+> needed for each update), and buffer (R8, only needed when converting
+> from XR24 to R1).
+>
+> For the former, I agree, as it's always needed.
+> For the latter, I'm afraid it would set a bad example: while allocating
+> a possibly-unused buffer doesn't hurt for small displays, it would
+> mean wasting 1 MiB in e.g. the repaper driver (once it has gained
+> support for R1 ;^).
+>
 
-Where is SoC specific compatible?
+Maybe another option is to allocate on the struct drm_mode_config_funcs
+.fb_create callback? That way, we can get the mode_cmd->pixel_format and
+determine if only "data_array" buffer must be allocated or also "buffer".
 
->            - const: snps,dwc2
->        - const: amcc,dwc-otg
->        - const: apm,apm82181-dwc-otg
-> @@ -64,6 +65,7 @@ properties:
->            - const: snps,dwc2
->        - const: samsung,s3c6400-hsotg
->        - const: intel,socfpga-agilex-hsotg
-> +      - const: intel,socfpga-hsotg
->  
->    reg:
->      maxItems: 1
-> diff --git a/arch/arm64/boot/dts/altera/socfpga_stratix10.dtsi b/arch/arm64/boot/dts/altera/socfpga_stratix10.dtsi
-> index ea788a920eab..c5a51636f657 100644
-> --- a/arch/arm64/boot/dts/altera/socfpga_stratix10.dtsi
-> +++ b/arch/arm64/boot/dts/altera/socfpga_stratix10.dtsi
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --=20
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m6=
+8k.org
+>
+> In personal conversations with technical people, I call myself a hacker. =
+But
+> when I'm talking to journalists I just say "programmer" or something like=
+ that.
+>                                 -- Linus Torvalds
+>
 
-...
-
-> diff --git a/drivers/usb/dwc2/params.c b/drivers/usb/dwc2/params.c
-> index 8eab5f38b110..6bb27a24e9e1 100644
-> --- a/drivers/usb/dwc2/params.c
-> +++ b/drivers/usb/dwc2/params.c
-> @@ -93,7 +93,7 @@ static void dwc2_set_s3c6400_params(struct dwc2_hsotg *hsotg)
->  	p->phy_utmi_width = 8;
->  }
->  
-> -static void dwc2_set_socfpga_agilex_params(struct dwc2_hsotg *hsotg)
-> +static void dwc2_set_socfpga_params(struct dwc2_hsotg *hsotg)
-
-Why? Old name was ok...
-
->  {
->  	struct dwc2_core_params *p = &hsotg->params;
->  
-> @@ -266,7 +266,9 @@ const struct of_device_id dwc2_of_match_table[] = {
->  	{ .compatible = "st,stm32mp15-hsotg",
->  	  .data = dwc2_set_stm32mp15_hsotg_params },
->  	{ .compatible = "intel,socfpga-agilex-hsotg",
-> -	  .data = dwc2_set_socfpga_agilex_params },
-> +	  .data = dwc2_set_socfpga_params },
-> +	{ .compatible = "intel,socfpga-hsotg",
-> +	  .data = dwc2_set_socfpga_params },
-
-Aren't they compatible? Why do you need new entry for compatible devices?
-
+--=20
 Best regards,
-Krzysztof
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
 
