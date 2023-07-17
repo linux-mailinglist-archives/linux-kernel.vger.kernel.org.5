@@ -2,132 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 692C1757004
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 00:51:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 729E275700D
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 00:53:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229969AbjGQWu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 18:50:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48746 "EHLO
+        id S230371AbjGQWwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 18:52:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229907AbjGQWuK (ORCPT
+        with ESMTP id S229585AbjGQWwy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 18:50:10 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88858115;
-        Mon, 17 Jul 2023 15:50:09 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id 98e67ed59e1d1-26309247002so2973625a91.0;
-        Mon, 17 Jul 2023 15:50:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689634209; x=1692226209;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=R16wYXJMzLsEsj3FtQgk/CvxzmydOiyAt9JWzQt8uoI=;
-        b=BiRNYGFnwAYfIznKKt9FOgRGm5RuU/GMsOekFTRwD5/ies/HlrT1t6cqP6E6zr0+qI
-         i6WJvatIh0quRDU3EUiLVxMVqYpJq7WiW64j35gqQ5kHaCMwTBzolkY5amKFFf6lQoZt
-         hR6AKx/KyEah19OAxfqtT1SILtRugoDkDSxRYNvkI6TyrElqjbL9Fbrc+F8JFC3+nG/0
-         TWLnWdg5x5969gkruFmZywVN8SciJB7HTMPlOCA0szFhGFAY9LOgx9srpCj7HZZALOiO
-         SEX+yGro0YOHWYbUb9e5UAhfSJaGwgkWFjqgGTI67k//nD2IX2kbU78qtOYQcj9mIenY
-         XmTQ==
+        Mon, 17 Jul 2023 18:52:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBFD2128
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 15:52:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1689634329;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8wy84DSSq8n2YYiK0mWellsvoswCFp/2kMAmdZ+UHHc=;
+        b=WSU35uqKWX5qXsL9Eqi4qqS9SCAvtRdUoP1pqlX2O/1cZK2gLwhVZqB5eExNH9bGJCaIvz
+        BDObKB9Pjgy9nnNWI0Mg64rgQFu1m48ni/wL21sFRtdMbxZw6ZsGTbH7RccOeY6fV1KDLB
+        hn5FNoggx6POG5Pi2hj0zNHisqxMXTQ=
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com
+ [209.85.166.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-100-SRcjj7x4NJyNjIzHw-p1LA-1; Mon, 17 Jul 2023 18:52:07 -0400
+X-MC-Unique: SRcjj7x4NJyNjIzHw-p1LA-1
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-786596bc0a6so317826839f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 15:52:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689634209; x=1692226209;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=R16wYXJMzLsEsj3FtQgk/CvxzmydOiyAt9JWzQt8uoI=;
-        b=MAOyMSbiSEKSXwGlyyTxRI19XcCc0E3OT5mNubKMyccC2disj5k1kj/JYN2r6Wckk1
-         w5BE1McLIKrslfJtM3YpQ7lg98phjXwoorliwPhEFfj/la1nKy//+tQYTS1rR3ckGk4c
-         5nihG7orru0Kb1ymhe0tpd0GuIivmuCpcMq2SFKmdR744prJzciBuyXLwMcChri8t+nH
-         WDtLP9tyeboICy4stG+B4II+1uqUBy0Lhgx9MdJD6bY3MTQcC5eAgthURVNIq4d/yZZL
-         RbUzzSouzbR9WAKgx28wA0uDvAw4XpqDIp8iHgcrGPHmrgHyzQP87+xMK6wAwSZgR6J5
-         Z+gg==
-X-Gm-Message-State: ABy/qLagC4+/qq9OhR5fj8i6Bfy5iezdUhDZc1d5Z0jnbgULw6bKExO0
-        cLc0JsYgHcJdpFvXJ+NF1u8=
-X-Google-Smtp-Source: APBJJlEXGgThbxa04zY5Ja8vhwJhXfm/sbZHKWKosW+tHnHT8l0v/jmiwi9K0QzqLXj9Frb/0e/6KA==
-X-Received: by 2002:a17:90a:f189:b0:262:ff1c:bc33 with SMTP id bv9-20020a17090af18900b00262ff1cbc33mr387194pjb.13.1689634208919;
-        Mon, 17 Jul 2023 15:50:08 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id me13-20020a17090b17cd00b00263dccf96a3sm261125pjb.54.2023.07.17.15.50.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Jul 2023 15:50:08 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <9705c130-997d-6356-18bc-ee5ce5d8b325@roeck-us.net>
-Date:   Mon, 17 Jul 2023 15:50:06 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 6.1 000/589] 6.1.39-rc3 review
-Content-Language: en-US
-To:     Paul Barker <paul.barker.ct@bp.renesas.com>,
+        d=1e100.net; s=20221208; t=1689634327; x=1692226327;
+        h=content-transfer-encoding:mime-version:organization:references
+         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8wy84DSSq8n2YYiK0mWellsvoswCFp/2kMAmdZ+UHHc=;
+        b=QXqEBP1YVJE22WE8LOaNq789jZElqPOSl2VMo6/W+9ivFz3NV4ytbagiVZE8mngbXq
+         KWiCnHfhBf2MaTUQJrDsBLj3KteAxHwfKfT9D6a8ccAxQamX73AApV2yqjhVL1l7E+iz
+         sMSLKHcv54nRDfY99/wBhBZ6xhh27U4rsbwUUsNWmj85EYkrp8ZY89d+SBt11gk9taN5
+         eifdEr+XhrDhH5MN8lSyjgOxoNjahc2FYXHawz1FuEWJkVJr+xPxta1RF7hfyhhMh3DX
+         OKnvfthZ/OxKDm2GOFis99ohsI9L2hHwWfGnx0FCxVdn5Rxqb2wqzEK7p1OOkrk7t19J
+         XeaQ==
+X-Gm-Message-State: ABy/qLbRApyfBSo5WMDlbcHRNK71exrmyRB1ApGOw5Nr1X/MSiZ63lFn
+        MjNSP3FqIpDQrHzB9lrwWkv8+kvLD+I1dGq+pwm6lJaleHga54RFzfxnv1TyaPCWnKc8qG7clsW
+        jjlecrC/LJDF20yMRhhaGyg2I
+X-Received: by 2002:a92:c651:0:b0:347:693a:7300 with SMTP id 17-20020a92c651000000b00347693a7300mr1012026ill.26.1689634327046;
+        Mon, 17 Jul 2023 15:52:07 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGlBYmCdY1EaUds5QDcX7E6PqePOm9wJTOwk2wgOBkeJp+9wxIVvWJlHjSTuTXhWw/m+atXtQ==
+X-Received: by 2002:a92:c651:0:b0:347:693a:7300 with SMTP id 17-20020a92c651000000b00347693a7300mr1012015ill.26.1689634326829;
+        Mon, 17 Jul 2023 15:52:06 -0700 (PDT)
+Received: from redhat.com ([38.15.36.239])
+        by smtp.gmail.com with ESMTPSA id d10-20020a92ddca000000b00341c0710169sm242627ilr.46.2023.07.17.15.52.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Jul 2023 15:52:06 -0700 (PDT)
+Date:   Mon, 17 Jul 2023 16:52:03 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Grzegorz Jaszczyk <jaz@semihalf.com>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-aio@kvack.org,
+        linux-usb@vger.kernel.org, Matthew Rosato <mjrosato@linux.ibm.com>,
+        Paul Durrant <paul@xen.org>, Tom Rix <trix@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        dri-devel@lists.freedesktop.org, Michal Hocko <mhocko@kernel.org>,
+        linux-mm@kvack.org, Kirti Wankhede <kwankhede@nvidia.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Vineeth Vijayan <vneethv@linux.ibm.com>,
+        Diana Craciun <diana.craciun@oss.nxp.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Harald Freudenberger <freude@linux.ibm.com>,
+        Fei Li <fei1.li@intel.com>, x86@kernel.org,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        intel-gfx@lists.freedesktop.org,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        linux-fpga@vger.kernel.org, Zhi Wang <zhi.a.wang@intel.com>,
+        Wu Hao <hao.wu@intel.com>, Jason Herne <jjherne@linux.ibm.com>,
+        Eric Farman <farman@linux.ibm.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-s390@vger.kernel.org,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        linuxppc-dev@lists.ozlabs.org, Eric Auger <eric.auger@redhat.com>,
+        Borislav Petkov <bp@alien8.de>, kvm@vger.kernel.org,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>, cgroups@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        virtualization@lists.linux-foundation.org,
+        intel-gvt-dev@lists.freedesktop.org, io-uring@vger.kernel.org,
+        netdev@vger.kernel.org, Tony Krowiak <akrowiak@linux.ibm.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        Muchun Song <muchun.song@linux.dev>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Benjamin LaHaise <bcrl@kvack.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-References: <20230717201547.359923764@linuxfoundation.org>
- <9da5f8cb-5ed0-1854-0a0a-252794e01ce3@bp.renesas.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-In-Reply-To: <9da5f8cb-5ed0-1854-0a0a-252794e01ce3@bp.renesas.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        Moritz Fischer <mdf@kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Dominik Behr <dbehr@chromium.org>,
+        Marcin Wojtas <mw@semihalf.com>
+Subject: Re: [PATCH 0/2] eventfd: simplify signal helpers
+Message-ID: <20230717165203.4ee6b1e6.alex.williamson@redhat.com>
+In-Reply-To: <ZLW8wEzkhBxd0O0L@ziepe.ca>
+References: <20230630155936.3015595-1-jaz@semihalf.com>
+        <20230714-gauner-unsolidarisch-fc51f96c61e8@brauner>
+        <CAH76GKPF4BjJLrzLBW8k12ATaAGADeMYc2NQ9+j0KgRa0pomUw@mail.gmail.com>
+        <20230717130831.0f18381a.alex.williamson@redhat.com>
+        <ZLW8wEzkhBxd0O0L@ziepe.ca>
+Organization: Red Hat
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/17/23 15:39, Paul Barker wrote:
-> Hi Greg,
-> 
-> On 17/07/2023 21:34, Greg Kroah-Hartman wrote:
->> This is the start of the stable review cycle for the 6.1.39 release.
->> There are 589 patches in this series, all will be posted as a response
->> to this one.  If anyone has any issues with these being applied, please
->> let me know.
->>
->> Responses should be made by Wed, 19 Jul 2023 20:14:46 +0000.
->> Anything received after that time might be too late.
->>
->> The whole patch series can be found in one patch at:
->>     https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.39-rc3.gz
->> or in the git tree and branch at:
->>     git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
->> and the diffstat can be found below.
->>
->> thanks,
->>
->> greg k-h
->>
-> 
-> Building i386_defconfig in my Yocto Project environment (with gcc 13) fails:
-> 
-> | /.../kernel/workqueue.c: In function 'get_work_pwq':
-> | /.../kernel/workqueue.c:706:24: error: cast to pointer from integer of different size [-Werror=int-to-pointer-cast]
-> |   706 |                 return (void *)(data & WORK_STRUCT_WQ_DATA_MASK);
-> |       |                        ^
-> | /.../kernel/workqueue.c: In function 'get_work_pool':
-> | /.../kernel/workqueue.c:734:25: error: cast to pointer from integer of different size [-Werror=int-to-pointer-cast]
-> |   734 |                 return ((struct pool_workqueue *)
-> |       |                         ^
-> | /.../kernel/workqueue.c: In function 'get_work_pool_id':
-> | /.../kernel/workqueue.c:756:25: error: cast to pointer from integer of different size [-Werror=int-to-pointer-cast]
-> |   756 |                 return ((struct pool_workqueue *)
-> |       |                         ^
-> 
-> Cherry-picking afa4bb778e48d79e4a642ed41e3b4e0de7489a6c from mainline fixes the build for me.
-> 
+On Mon, 17 Jul 2023 19:12:16 -0300
+Jason Gunthorpe <jgg@ziepe.ca> wrote:
 
-That is not a new problem, though. I see the same problem with v6.1.38
-and with v6.1 if I try to build with gcc 13.1.
+> On Mon, Jul 17, 2023 at 01:08:31PM -0600, Alex Williamson wrote:
+> 
+> > What would that mechanism be?  We've been iterating on getting the
+> > serialization and buffering correct, but I don't know of another means
+> > that combines the notification with a value, so we'd likely end up with
+> > an eventfd only for notification and a separate ring buffer for
+> > notification values.  
+> 
+> All FDs do this. You just have to make a FD with custom
+> file_operations that does what this wants. The uAPI shouldn't be able
+> to tell if the FD is backing it with an eventfd or otherwise. Have the
+> kernel return the FD instead of accepting it. Follow the basic design
+> of eg mlx5vf_save_fops
 
-Guenter
+Sure, userspace could poll on any fd and read a value from it, but at
+that point we're essentially duplicating a lot of what eventfd provides
+for a minor(?) semantic difference over how the counter value is
+interpreted.  Using an actual eventfd allows the ACPI notification to
+work as just another interrupt index within the existing vfio IRQ uAPI.
+Thanks,
+
+Alex
 
