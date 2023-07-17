@@ -2,60 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6FC075592F
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 03:47:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5192375593D
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 03:50:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230214AbjGQBrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 16 Jul 2023 21:47:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40638 "EHLO
+        id S230231AbjGQBuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 16 Jul 2023 21:50:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbjGQBro (ORCPT
+        with ESMTP id S229496AbjGQBuf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 16 Jul 2023 21:47:44 -0400
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD21CE6B
-        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 18:47:36 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4R44hg2qtNz4f3mJ1
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 09:47:31 +0800 (CST)
-Received: from [10.174.178.129] (unknown [10.174.178.129])
-        by APP4 (Coremail) with SMTP id gCh0CgC3Z6udnbRkEECWOA--.220S2;
-        Mon, 17 Jul 2023 09:47:33 +0800 (CST)
-Subject: Re: [PATCH 2/3] mm/page_ext: remove rollback for untouched
- mem_section in online_page_ext
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20230714114749.1743032-1-shikemeng@huaweicloud.com>
- <20230714114749.1743032-3-shikemeng@huaweicloud.com>
- <20230714105422.648d17f9ba6141f26e469423@linux-foundation.org>
-From:   Kemeng Shi <shikemeng@huaweicloud.com>
-Message-ID: <af36016f-6143-ad66-385e-bb64a6205863@huaweicloud.com>
-Date:   Mon, 17 Jul 2023 09:47:08 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.0
+        Sun, 16 Jul 2023 21:50:35 -0400
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F690E52
+        for <linux-kernel@vger.kernel.org>; Sun, 16 Jul 2023 18:50:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689558631; x=1721094631;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=qB3NAj30rPuoPNG68khmlzX8qOwByr0gr+9AcMglQPQ=;
+  b=NL6dScHYdOI865zNwnakreFWQYOfQzgqNhO+pHAQxN8Hh23zL9eoQGNh
+   lwcdpW3kBkf9uJQawhAYjLjH2pg/od0mn9afdHZTj6VGoSuDBDTP+UeKe
+   bNpPFZbwBCkYexYsj11brrnW+llD4oSIqtBno6EfvopaKBiWaEhcGo8RS
+   mNwZOQDqpsC5om1jIEBtvrReVoREYb2ySSo/zRh9yLWMnR+GLow6VmgQB
+   2G7/YjL5jeb4pzxMhmiKMgCRiDi6Q0F6U7qnqA1HLjejkPBUQzQSzN6M9
+   6e0xvBomjObLjE7gz05PCJQcQM9govECSToCEfvEi37BEX9YW6SKimW5h
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10773"; a="364691895"
+X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
+   d="scan'208";a="364691895"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2023 18:50:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10773"; a="836721119"
+X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
+   d="scan'208";a="836721119"
+Received: from unknown (HELO localhost.localdomain) ([10.226.216.117])
+  by fmsmga002.fm.intel.com with ESMTP; 16 Jul 2023 18:50:29 -0700
+From:   kah.jing.lee@intel.com
+To:     dinguyen@kernel.org
+Cc:     linux-kernel@vger.kernel.org, radu.bacrau@intel.com,
+        tien.sung.ang@intel.com, Kah Jing Lee <kah.jing.lee@intel.com>
+Subject: [PATCH v3 0/2] Query the RSU SPT table offset to determine RSU page size
+Date:   Mon, 17 Jul 2023 09:49:01 +0800
+Message-Id: <cover.1689524302.git.kah.jing.lee@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20230714105422.648d17f9ba6141f26e469423@linux-foundation.org>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: gCh0CgC3Z6udnbRkEECWOA--.220S2
-X-Coremail-Antispam: 1UD129KBjvdXoWruF1UGF1xCr1rZFWfWFyxuFg_yoWkAFb_Ja
-        1Sv3WkXw4jqFnxtFWDtwn7XFnrWrWkCw1jgF1kGw4YyFyfJ395Cw1DtrnxXr1kXr4avr9F
-        kws3ur4vqry2qjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbzAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20E
-        Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-        A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
-        67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0E
-        wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
-        80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jrv_JF1lIxkGc2Ij64vIr41lIxAIcVC0
-        I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04
-        k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
-        1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUzsqWUUUUU
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -64,39 +59,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Kah Jing Lee <kah.jing.lee@intel.com>
+
+Hi,
+This patchset is to add the generic mailbox command in the svc driver
+to enable the rsu driver to query spt address.
+SPT0 address - lower range & SPT1 address - upper range address will be
+queried in order to determine the page size of RSU, whether it is
+32kB or 64kB that is supported.
+
+Thanks,
+KJ
+
+changelog v2:
+- Update the comment on svc COMMAND_MBOX_SEND_CMD
+- Update the rsu mailbox cmd ret_val to use already defined ret
+
+changelog v3:
+- Check for IS_ERR on stratix10_svc_allocate_memory return
+
+Radu Bacrau (1):
+  firmware: stratix10-rsu: query spt addresses
+
+Teh Wen Ping (1):
+  firmware: stratix10-svc: Generic Mailbox Command
+
+ drivers/firmware/stratix10-rsu.c              | 100 +++++++++++++++++-
+ drivers/firmware/stratix10-svc.c              |  18 ++++
+ include/linux/firmware/intel/stratix10-smc.h  |  25 +++++
+ .../firmware/intel/stratix10-svc-client.h     |   5 +
+ 4 files changed, 147 insertions(+), 1 deletion(-)
 
 
-on 7/15/2023 1:54 AM, Andrew Morton wrote:
-> On Fri, 14 Jul 2023 19:47:48 +0800 Kemeng Shi <shikemeng@huaweicloud.com> wrote:
-> 
->> If init_section_page_ext failed, we only need rollback for mem_section
->> before failed mem_section. Make rollback end point to failed mem_section
->> to remove unnecessary rollback.
->>
->> As pfn += PAGES_PER_SECTION will be executed even if init_section_page_ext
->> failed. So pfn points to mem_section after failed mem_section. Subtract
->> one mem_section from pfn to get failed mem_section.
->>
->> ...
->>
->> --- a/mm/page_ext.c
->> +++ b/mm/page_ext.c
->> @@ -424,6 +424,7 @@ static int __meminit online_page_ext(unsigned long start_pfn,
->>  		return 0;
->>  
->>  	/* rollback */
->> +	end = pfn - PAGES_PER_SECTION;
->>  	for (pfn = start; pfn < end; pfn += PAGES_PER_SECTION)
->>  		__free_page_ext(pfn);
->>  
-> 
-> This is a bugfix, yes?
-> 
-> I guess init_section_page_ext() never fails for anyone...
-I marked this as cleanup because __free_page_ext can handle NULL page_ext
-from uninitialized mem_section. Then no real bug will be triggered even
-if init_section_page_ext failed.
+base-commit: 5133c9e51de41bfa902153888e11add3342ede18
 -- 
-Best wishes
-Kemeng Shi
+2.25.1
 
