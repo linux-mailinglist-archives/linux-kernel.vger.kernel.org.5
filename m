@@ -2,171 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB654756094
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 12:36:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A7D2756096
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 12:36:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229621AbjGQKgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 06:36:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45964 "EHLO
+        id S229767AbjGQKgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 06:36:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjGQKgd (ORCPT
+        with ESMTP id S229461AbjGQKgn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 06:36:33 -0400
-Received: from out-51.mta1.migadu.com (out-51.mta1.migadu.com [IPv6:2001:41d0:203:375::33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4A6CA6
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 03:36:28 -0700 (PDT)
-Message-ID: <59365758-a14a-feb6-6a17-729c5b43e581@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1689590187;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qkMjuh1v+2sdz1CZtDe1vdfKbs4DnmbzZ54ExQuiBD0=;
-        b=AnX3rHXJKdWUgnb5Bn5ywZJfJbOtkR6Ij/4aELIBsviIyHp0J99iiSthhNGSuHpdj06Qp2
-        mLz1nDwqr0SjJSZZMuTs2QKAPsX89UWMeSs2NxjIx/CiNdxXNqUTIUl2VMmtDfxVv0L7x1
-        SXF8WtA75aY0V483zNtYXvHLh78yj4Q=
-Date:   Mon, 17 Jul 2023 18:36:23 +0800
+        Mon, 17 Jul 2023 06:36:43 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09728E5A
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 03:36:42 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3fba8e2aa52so45494675e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 03:36:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1689590200; x=1692182200;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hQ7PNN0asI/i839sW3EbNjmcJ7buFzqatBShkv/7H+Y=;
+        b=waj29Xi7wU96x2L+L8f1UMx8Hi5xFuqnIWWI35l02Ybgf1BbBH071A+6e9xnTPfH6G
+         CnG/QXPA650ZmLU5LE1nZHc6oqac08RmevwCdCVLLS5X6PHJ0EIADb3eCEKjo1eNZm4j
+         Z8j5j+eJWqsKpPpyribk/vAp048Ij1X5Xib5Jegkw9E9OU0HCoEM7wDiadIkWIf64AwB
+         apVIx8ymO/vdugRcwxIh2pJZAl1qXBpYpbmZok03/0Z+SrP61DyFZ7RwnI72ccTX7A9Z
+         hONMBLhAsTAP0CvhQ+pUTN2uNNY6VjeiTHEyZVIBejSWtS5QS46JZM80KRFu+mEf8oHe
+         OmnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689590200; x=1692182200;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hQ7PNN0asI/i839sW3EbNjmcJ7buFzqatBShkv/7H+Y=;
+        b=XOHg4xXWOvBbZEfXXt6F9ETDBusTUbwuuTPpO6YrlkYDgHuN/mHR4IIf79e/m9DX3I
+         XTAaRMQgPuXQrpJzLePQd3Bke4+RZcZOtvAS4K/A3qr3lQRHLGycjb7tMLrwIC15J6L+
+         s+REAFk19fAv1a3VnC7RenU38+ubHrR0+WBT+gYIxN/99YwC4y0DNrM5C6AphINlCCdb
+         Fu7VaiEd41kdBEeFUPl1stAsO1NJgF0PYZ6CpZ2f/DcN8T8Bz+nzkC7LPiIHybMoY0UH
+         2zdk5Krr1KdRkqZPrkwPyY8y3rR+mdKSM+iwQOGITim1dYk5T6cUhfsmoGqS3A77Qg/h
+         WVhQ==
+X-Gm-Message-State: ABy/qLazMADxW5YXUcXPC1hw3OmrImYgeE85RFb+5BWJvIwdRrR+vtgK
+        1n2SIyGjRtFeujRNYYKF4FD3Sg==
+X-Google-Smtp-Source: APBJJlElle/nL2NAUBnF7cDf+eAc4GrVNZ4mC3HHJlY612jFSfNo9g05yqh4YJezf0Ac4Cg6zlQKJA==
+X-Received: by 2002:a05:600c:22d7:b0:3fb:e2af:49f6 with SMTP id 23-20020a05600c22d700b003fbe2af49f6mr9129486wmg.39.1689590200412;
+        Mon, 17 Jul 2023 03:36:40 -0700 (PDT)
+Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
+        by smtp.googlemail.com with ESMTPSA id p14-20020a05600c204e00b003fbdd9c72aasm7714436wmg.21.2023.07.17.03.36.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 Jul 2023 03:36:39 -0700 (PDT)
+Message-ID: <f3a4f113-e470-4bc3-1d77-0b9646c6a4af@linaro.org>
+Date:   Mon, 17 Jul 2023 12:36:39 +0200
 MIME-Version: 1.0
-Subject: Re: [PATCH v1 8/8] drm/etnaviv: Add a helper to get a pointer to the
- first available node
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH V5] thermal/core/power_allocator: reset thermal governor
+ when trip point is changed
 Content-Language: en-US
-To:     Lucas Stach <l.stach@pengutronix.de>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     loongson-kernel@lists.loongnix.cn,
-        Sui Jingfeng <suijingfeng@loongson.cn>,
-        etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20230623100822.274706-1-sui.jingfeng@linux.dev>
- <20230623100822.274706-9-sui.jingfeng@linux.dev>
- <66749b1b4523d2859b9fbc6e9120e5f1e887d531.camel@pengutronix.de>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Sui Jingfeng <sui.jingfeng@linux.dev>
-In-Reply-To: <66749b1b4523d2859b9fbc6e9120e5f1e887d531.camel@pengutronix.de>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     Di Shen <di.shen@unisoc.com>, rafael@kernel.org, amitk@kernel.org,
+        rui.zhang@intel.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, xuewen.yan@unisoc.com,
+        jeson.gao@unisoc.com, orsonzhai@gmail.com, zhanglyra@gmail.com,
+        Di Shen <cindygm567@gmail.com>
+References: <20230710033234.28641-1-di.shen@unisoc.com>
+ <6d3f24a4-ae70-49eb-6e41-86baa1db6bed@linaro.org>
+ <CAHYJL4og14kQ4ev6QtDQeknJELME7URTN_HmR01P5+2RhpthzQ@mail.gmail.com>
+ <f7cf2153-aa22-d376-f776-54ea940a5e35@linaro.org>
+ <CAHYJL4p7FEjLTZURA6fvVPCmwKodmxWS7fNpi_c0ZFBX7yjDZQ@mail.gmail.com>
+ <33508f0e-414f-a990-29ad-58e43d20374b@linaro.org>
+ <0844022b-cf2a-dadb-9340-9107cd40169b@arm.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <0844022b-cf2a-dadb-9340-9107cd40169b@arm.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 2023/7/17 18:07, Lucas Stach wrote:
-> Am Freitag, dem 23.06.2023 um 18:08 +0800 schrieb Sui Jingfeng:
->> From: Sui Jingfeng <suijingfeng@loongson.cn>
+Hi Lukasz,
+
+On 17/07/2023 12:07, Lukasz Luba wrote:
+
+[ ... ]
+
+>> int ipa_trip_update(struct thermal_zone_device *tz,
+>>              struct thermal_trip *trip)
+>> {
+>>      // Do more IPA crazy stuff or return -EPERM
+>> }
 >>
->> This make the code in etnaviv_pdev_probe() less twisted, drop the reference
->> to device node after finished. Also kill a double blank line.
 >>
-> I can't spot the double blank line you claim to remove.
->
->> Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
->> ---
->>   drivers/gpu/drm/etnaviv/etnaviv_drv.c | 32 ++++++++++++++++++---------
->>   1 file changed, 22 insertions(+), 10 deletions(-)
+>>>> Lukasz ?
 >>
->> diff --git a/drivers/gpu/drm/etnaviv/etnaviv_drv.c b/drivers/gpu/drm/etnaviv/etnaviv_drv.c
->> index 7d0eeab3e8b7..3446f8eabf59 100644
->> --- a/drivers/gpu/drm/etnaviv/etnaviv_drv.c
->> +++ b/drivers/gpu/drm/etnaviv/etnaviv_drv.c
->> @@ -27,6 +27,19 @@
->>    * DRM operations:
->>    */
->>   
->> +/* If the DT contains at least one available GPU, return a pointer to it */
->> +
-> I think the code in the function is simple enough that we don't need a
-> comment explaining what it does.
+>> Lukasz? what do you think?
+>>
+>>
+> 
+> My apologies for delay, I was on 2-weeks vacation. I'll catch up and
+> respond to those questions.
 
-Because the DT could disable GPU cores by add "status=disabled" property.
+No worries, I hope you enjoyed your vacations
 
-So, only the word *available* in this comments is deserved.
+The main thing is to know you got the info ;)
 
-But I'm fine to delete the comment for this function, will be fixed at 
-the next version.
+Thanks
 
-Thanks for reviewing.
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-> Regards,
-> Lucas
->
->> +static struct device_node *etnaviv_of_first_node(void)
->> +{
->> +	struct device_node *np;
->> +
->> +	for_each_compatible_node(np, NULL, "vivante,gc") {
->> +		if (of_device_is_available(np))
->> +			return np;
->> +	}
->> +
->> +	return NULL;
->> +}
->>   
->>   static void load_gpu(struct drm_device *dev)
->>   {
->> @@ -587,7 +600,7 @@ static const struct component_master_ops etnaviv_master_ops = {
->>   static int etnaviv_pdev_probe(struct platform_device *pdev)
->>   {
->>   	struct device *dev = &pdev->dev;
->> -	struct device_node *first_node = NULL;
->> +	struct device_node *first_node;
->>   	struct component_match *match = NULL;
->>   
->>   	if (!dev->platform_data) {
->> @@ -597,11 +610,10 @@ static int etnaviv_pdev_probe(struct platform_device *pdev)
->>   			if (!of_device_is_available(core_node))
->>   				continue;
->>   
->> -			if (!first_node)
->> -				first_node = core_node;
->> -
->>   			drm_of_component_match_add(&pdev->dev, &match,
->>   						   component_compare_of, core_node);
->> +
->> +			of_node_put(core_node);
->>   		}
->>   	} else {
->>   		char **names = dev->platform_data;
->> @@ -634,8 +646,11 @@ static int etnaviv_pdev_probe(struct platform_device *pdev)
->>   	 * device as the GPU we found. This assumes that all Vivante
->>   	 * GPUs in the system share the same DMA constraints.
->>   	 */
->> -	if (first_node)
->> +	first_node = etnaviv_of_first_node();
->> +	if (first_node) {
->>   		of_dma_configure(&pdev->dev, first_node, true);
->> +		of_node_put(first_node);
->> +	}
->>   
->>   	return component_master_add_with_match(dev, &etnaviv_master_ops, match);
->>   }
->> @@ -709,17 +724,14 @@ static int __init etnaviv_init(void)
->>   	 * If the DT contains at least one available GPU device, instantiate
->>   	 * the DRM platform device.
->>   	 */
->> -	for_each_compatible_node(np, NULL, "vivante,gc") {
->> -		if (!of_device_is_available(np))
->> -			continue;
->> +	np = etnaviv_of_first_node();
->> +	if (np) {
->>   		of_node_put(np);
->>   
->>   		ret = etnaviv_create_platform_device("etnaviv",
->>   						     &etnaviv_platform_device);
->>   		if (ret)
->>   			goto unregister_platform_driver;
->> -
->> -		break;
->>   	}
->>   
->>   	return 0;
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
+
