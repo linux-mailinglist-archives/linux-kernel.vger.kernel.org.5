@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 854B975660F
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 16:15:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C82A75660B
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 16:14:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230425AbjGQOO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 10:14:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42258 "EHLO
+        id S232147AbjGQOOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 10:14:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232140AbjGQOOw (ORCPT
+        with ESMTP id S232139AbjGQOOw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 17 Jul 2023 10:14:52 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8E17E56
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 07:14:44 -0700 (PDT)
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EBE01A2
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 07:14:46 -0700 (PDT)
 Received: from IcarusMOD.eternityproject.eu (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id C30146606FC8;
-        Mon, 17 Jul 2023 15:14:42 +0100 (BST)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id A4BF16607014;
+        Mon, 17 Jul 2023 15:14:43 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1689603283;
-        bh=Q4HPiSYOmkoIPgF+rGlTLj93wrF/ANybvzT6KO8OyD8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=nLS5D4dYhx22ds1BMwMhee0pcviP4/9asFclVstHL6dfcKqS1X456/ppQhrzvJDWo
-         LJ1Kltf54heseL8T+gaMyoRn+gin86e7gqPipg4d/xzeqRPij+06gp2ptSnLZNpiFH
-         b4AQa1UiFsqMar/ZiCkV7yT3wWsv6rLMi3KhTFtm30i/+ZHGEpNA1eBI3WA3lLYSJ1
-         ZDld9G5Spwq5o9Z86KJablku9uGp3ZRBEFH5QsnOTkgmmeYMbloXzHAH9EKKSHtnCW
-         gP862bhZfaqlIzgfZVqT8iSbsFWYMZyAy59l2zcCjXJWApx/hbpDS30EDsgSpyLvvD
-         FJ9YafJ5drxVA==
+        s=mail; t=1689603284;
+        bh=9oUBdhJxcjM5c8eCCSSOcqllo9ke9sPNjeRntNkLNoM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=TeYzdmgz451EjrdZo/zdtYmOyZJdAqLoIhaELRWmIqur4GlMcs3zKmEo90E72X8Ty
+         3HVRCAt2HIi3mYzFGcG808hwhyH2r3PVBb78RQ8gRjoOzHlNdFReAc1xMiudCTe3ph
+         1tFbXQLW3OpziaEM8CIatOvs/QJerwnhFza1tA4RtdQ9cc/yOA621C+xxGk7ztRUpe
+         /wYMEc7oK6M0TRiPp8Bk2ds0C7RBLmpaGKd/iC0iFjt/KsJvWCG+ugSc8g4P3wNo6d
+         u5vQfYYh7hc3HDfWv53eyb+5WwQzF+Km0k0CZZaaoZncB246/sYKB8FAvAYiqRc8+k
+         mCnkzDomm7B4Q==
 From:   AngeloGioacchino Del Regno 
         <angelogioacchino.delregno@collabora.com>
 To:     chunkuang.hu@kernel.org
@@ -41,10 +41,12 @@ Cc:     p.zabel@pengutronix.de, airlied@gmail.com, daniel@ffwll.ch,
         linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, kernel@collabora.com,
         wenst@chromium.org, nfraprado@collabora.com
-Subject: [PATCH v6 00/11] MediaTek DisplayPort: support eDP and aux-bus
-Date:   Mon, 17 Jul 2023 16:14:27 +0200
-Message-Id: <20230717141438.274419-1-angelogioacchino.delregno@collabora.com>
+Subject: [PATCH v6 01/11] drm/mediatek: dp: Add missing error checks in mtk_dp_parse_capabilities
+Date:   Mon, 17 Jul 2023 16:14:28 +0200
+Message-Id: <20230717141438.274419-2-angelogioacchino.delregno@collabora.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230717141438.274419-1-angelogioacchino.delregno@collabora.com>
+References: <20230717141438.274419-1-angelogioacchino.delregno@collabora.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -57,160 +59,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changes in v6:
- - Added some previously missing error checking (patch [01/11])
- - Added error checks for devm_drm_bridge_add()
- - Made sure that cable_plugged_in is set to false if HPD assertion
-   polling fails (timeout)
- - Support panel as module (tested with panel-edp on MT8195 Tomato)
- - Rebased over next-20230717
+If reading the RX capabilities fails the training pattern will be set
+wrongly: add error checking for drm_dp_read_dpcd_caps() and return if
+anything went wrong with it.
 
-Changes in v5:
- - Added .wait_hpd_asserted() callback for aux-bus
- - Avoid enabling and registering HPD interrupt + handlers for
-   eDP case only (keeps HPD interrupts enabled for full DP case)
- - Support not always-on eDP panels (boot with regulator off,
-   suspend with regulator off) for power saving in PM suspend.
+While at it, also add a less critical error check when writing to
+clear the ESI0 IRQ vector.
 
-Changes in v4:
- - Set data lanes to idle to prevent stalls if bootloader didn't
-   properly close the eDP port
- - Now using the .done_probing() callback for AUX bus to prevent
-   probe deferral loops in case the panel-edp driver is a module
-   as previously seen with another bridge driver (ANX7625) on
-   some other SoCs (MT8192 and others)
- - Rebased over next-20230706
- - Dropped Chen-Yu's T-b tag on last patch as some logic changed
-   (before, I wasn't using the .done_probing() callback).
+Fixes: f70ac097a2cf ("drm/mediatek: Add MT8195 Embedded DisplayPort driver")
+Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+---
+ drivers/gpu/drm/mediatek/mtk_dp.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
 
-Changes in v3:
- - Added DPTX AUX block initialization before trying to communicate
-   to stop relying on the bootloader keeping it initialized before
-   booting Linux.
- - Fixed commit description for patch [09/09] and removed commented
-   out code (that slipped from dev phase.. sorry!).
-
-This series adds "real" support for eDP in the mtk-dp DisplayPort driver.
-
-Explaining the "real":
-Before this change, the DisplayPort driver did support eDP to some
-extent, but it was treating it entirely like a regular DP interface
-which is partially fine, after all, embedded DisplayPort *is* actually
-DisplayPort, but there might be some differences to account for... and
-this is for both small performance improvements and, more importantly,
-for correct functionality in some systems.
-
-Functionality first:
-
-One of the common differences found in various boards implementing eDP
-and machines using an eDP panel is that many times the HPD line is not
-connected. This *must* be accounted for: at startup, this specific IP
-will raise a HPD interrupt (which should maybe be ignored... as it does
-not appear to be a "real" event...) that will make the eDP panel to be
-detected and to actually work but, after a suspend-resume cycle, there
-will be no HPD interrupt (as there's no HPD line in my case!) producing
-a functionality issue - specifically, the DP Link Training fails because
-the panel doesn't get powered up, then it stays black and won't work
-until rebooting the machine (or removing and reinserting the module I
-think, but I haven't tried that).
-
-Now for.. both:
-eDP panels are *e*DP because they are *not* removable (in the sense that
-you can't unplug the cable without disassembling the machine, in which
-case, the machine shall be powered down..!): this (correct) assumption
-makes us able to solve some issues and to also gain a little performance
-during PM operations.
-
-What was done here is:
- - Caching the EDID if the panel is eDP: we're always going to read the
-   same data everytime, so we can just cache that (as it's small enough)
-   shortening PM resume times for the eDP driver instance;
- - Always return connector_status_connected if it's eDP: non-removable
-   means connector_status_disconnected can't happen during runtime...
-   this also saves us some time and even power, as we won't have to
-   perform yet another power cycle of the HW;
- - Added aux-bus support!
-   This makes us able to rely on panel autodetection from the EDID,
-   avoiding to add more and more panel timings to panel-edp and, even
-   better, allowing to use one panel node in devicetrees for multiple
-   variants of the same machine since, at that point, it's not important
-   to "preventively know" what panel we have (eh, it's autodetected...!).
-
-This was tested on a MT8195 Cherry Tomato Chromebook (panel-edp on aux-bus)
-
-
-P.S.: For your own testing commodity, here's a reference devicetree:
-
-pp3300_disp_x: regulator-pp3300-disp-x {
-	compatible = "regulator-fixed";
-	regulator-name = "pp3300_disp_x";
-	regulator-min-microvolt = <3300000>;
-	regulator-max-microvolt = <3300000>;
-	enable-active-high;
-	gpio = <&pio 55 GPIO_ACTIVE_HIGH>;
-	pinctrl-names = "default";
-	pinctrl-0 = <&panel_fixed_pins>;
-};
-
-&edp_tx {
-	status = "okay";
-
-	pinctrl-names = "default";
-	pinctrl-0 = <&edptx_pins_default>;
-
-	ports {
-		#address-cells = <1>;
-		#size-cells = <0>;
-
-		port@0 {
-			reg = <0>;
-			edp_in: endpoint {
-				remote-endpoint = <&dp_intf0_out>;
-			};
-		};
-
-		port@1 {
-			reg = <1>;
-			edp_out: endpoint {
-				data-lanes = <0 1 2 3>;
-				remote-endpoint = <&panel_in>;
-			};
-		};
-	};
-
-	aux-bus {
-		panel: panel {
-			compatible = "edp-panel";
-			power-supply = <&pp3300_disp_x>;
-			backlight = <&backlight_lcd0>;
-			port {
-				panel_in: endpoint {
-					remote-endpoint = <&edp_out>;
-				};
-			};
-		};
-	};
-};
-
-AngeloGioacchino Del Regno (11):
-  drm/mediatek: dp: Add missing error checks in
-    mtk_dp_parse_capabilities
-  drm/mediatek: dp: Move AUX and panel poweron/off sequence to function
-  drm/mediatek: dp: Change logging to dev for mtk_dp_aux_transfer()
-  drm/mediatek: dp: Use devm variant of drm_bridge_add()
-  drm/mediatek: dp: Move AUX_P0 setting to
-    mtk_dp_initialize_aux_settings()
-  drm/mediatek: dp: Enable event interrupt only when bridge attached
-  drm/mediatek: dp: Avoid mutex locks if audio is not supported/enabled
-  drm/mediatek: dp: Move PHY registration to new function
-  drm/mediatek: dp: Add support for embedded DisplayPort aux-bus
-  drm/mediatek: dp: Add .wait_hpd_asserted() for AUX bus
-  drm/mediatek: dp: Don't register HPD interrupt handler for eDP case
-
- drivers/gpu/drm/mediatek/Kconfig  |   1 +
- drivers/gpu/drm/mediatek/mtk_dp.c | 360 ++++++++++++++++++++----------
- 2 files changed, 242 insertions(+), 119 deletions(-)
-
+diff --git a/drivers/gpu/drm/mediatek/mtk_dp.c b/drivers/gpu/drm/mediatek/mtk_dp.c
+index 64eee77452c0..c58b775877a3 100644
+--- a/drivers/gpu/drm/mediatek/mtk_dp.c
++++ b/drivers/gpu/drm/mediatek/mtk_dp.c
+@@ -1588,7 +1588,9 @@ static int mtk_dp_parse_capabilities(struct mtk_dp *mtk_dp)
+ 	u8 val;
+ 	ssize_t ret;
+ 
+-	drm_dp_read_dpcd_caps(&mtk_dp->aux, mtk_dp->rx_cap);
++	ret = drm_dp_read_dpcd_caps(&mtk_dp->aux, mtk_dp->rx_cap);
++	if (ret < 0)
++		return ret;
+ 
+ 	if (drm_dp_tps4_supported(mtk_dp->rx_cap))
+ 		mtk_dp->train_info.channel_eq_pattern = DP_TRAINING_PATTERN_4;
+@@ -1615,10 +1617,13 @@ static int mtk_dp_parse_capabilities(struct mtk_dp *mtk_dp)
+ 			return ret == 0 ? -EIO : ret;
+ 		}
+ 
+-		if (val)
+-			drm_dp_dpcd_writeb(&mtk_dp->aux,
+-					   DP_DEVICE_SERVICE_IRQ_VECTOR_ESI0,
+-					   val);
++		if (val) {
++			ret = drm_dp_dpcd_writeb(&mtk_dp->aux,
++						 DP_DEVICE_SERVICE_IRQ_VECTOR_ESI0,
++						 val);
++			if (ret < 0)
++				return ret;
++		}
+ 	}
+ 
+ 	return 0;
 -- 
 2.40.1
 
