@@ -2,187 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AA37756A57
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 19:28:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92D3F756A7E
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 19:29:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229742AbjGQR23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 13:28:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43192 "EHLO
+        id S231479AbjGQR34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 13:29:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230322AbjGQR2Y (ORCPT
+        with ESMTP id S231347AbjGQR3r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 13:28:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1BE91710
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 10:27:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1689614838;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=w5WtHncCWF3+ygwdoPe907VvBow+yKOAvExoyl7spoY=;
-        b=D++w7+50s3+TzPcD8DRF3B8mgAg8tdzEHy3L8b4eSy0f4ewAA2p35iBPFLoS1OpGiavWYK
-        SPeMoUstpY7wTc7mYoF+ncHJCSUjTKKmR79su4kxx4TRXxEuaus4vjtXiFlNTjOoIKC9jt
-        yrrOGruE4UzaZfIINLtBGM9aqWe+q3o=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-644-B6Pty0smM3yoZVLEZ9iQHw-1; Mon, 17 Jul 2023 13:27:17 -0400
-X-MC-Unique: B6Pty0smM3yoZVLEZ9iQHw-1
-Received: by mail-lf1-f72.google.com with SMTP id 2adb3069b0e04-4f76712f950so3767224e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 10:27:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689614835; x=1692206835;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=w5WtHncCWF3+ygwdoPe907VvBow+yKOAvExoyl7spoY=;
-        b=hTEeh4Gsj+PH26kgrruB+r1cyoo6mruYTkmqitCUzfKSAHmyZLhek/Y0a900AK+vO2
-         VdJ8FWJeeDhmJ5dlqhJdHT7XdOZRD4iKBRC8qifc7QmS6kAQnKqr8gUA6bXIPvhbTXSN
-         3shKkkYglxDOon8JXEHPKVl3YZp/LveFy3VF0OdK1gfhN0N0QhrRlIrg4BttqPipAFGo
-         wiWQHCcs29X3R3mFp6bXI5tN5O7I9jrWgt/FR4IWIyvnEkE533crPNkroLjlWeJxJKJ+
-         C5sAZqWfm4wHOouI40jTWTb4sKW2L0H0ibT542r4Zf8qLs0WFSNcM045EkOJffa40UCq
-         wNUg==
-X-Gm-Message-State: ABy/qLZB5c4ME3SLU1CE6a4d70bTq3dkPuAIoIqdRnyk4IUPcQtZv5tn
-        7Fp6jKwrIyZmeOzwvwV4qFXR4NMY+bdJActEgrmWOdCVF6Xilb0zYQgpGklq8uz608uMZxiPjAh
-        sYbSFTvZ2BaPZG+q3Bi5RP6Do
-X-Received: by 2002:a05:6512:acc:b0:4fb:8492:83fb with SMTP id n12-20020a0565120acc00b004fb849283fbmr9203914lfu.68.1689614835693;
-        Mon, 17 Jul 2023 10:27:15 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlENfHmen2cNCbd2icPUMMHdFvRR1Wfpqdk+4Ck+wP3t30aPgs1aZcy9uL2FIxVFjUn1iDZz8Q==
-X-Received: by 2002:a05:6512:acc:b0:4fb:8492:83fb with SMTP id n12-20020a0565120acc00b004fb849283fbmr9203886lfu.68.1689614835294;
-        Mon, 17 Jul 2023 10:27:15 -0700 (PDT)
-Received: from [192.168.3.108] (p5b0c62d6.dip0.t-ipconnect.de. [91.12.98.214])
-        by smtp.gmail.com with ESMTPSA id r1-20020adfdc81000000b0031412b685d2sm36662wrj.32.2023.07.17.10.27.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Jul 2023 10:27:14 -0700 (PDT)
-Message-ID: <5a12536a-2e33-7a68-6cfd-fd991ddf875a@redhat.com>
-Date:   Mon, 17 Jul 2023 19:27:13 +0200
+        Mon, 17 Jul 2023 13:29:47 -0400
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40C3F1716;
+        Mon, 17 Jul 2023 10:29:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689614965; x=1721150965;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=cfXxY8OSt6dnoWrqrmzF+bK5umSU80545NZ+VPDZ5MY=;
+  b=jUWdOK7rZE+3FkhptycuE6fFmLvh1SnUGqEf0Euh9UUpUBsMdsHSBgJP
+   1rCePC+IjMsA8QdILB6JT7WiOjIOFW57NT8B//JemO6Gwjg0NwvRpnwIm
+   LvxoFEDUNG74rSPNEnrCCX6EjDf7ehY0zijtHmBWdA2zpN1GdVurIqUCT
+   mvEmMOvwq4YPtLzkoNcLMAdEusA+Yy6N7xDdWfnLwhVhjFuQO3vuOQdOE
+   csf5a7wI9885m6xKtt1H0yHyj0kVy5O+wvjr8Mjw3DH5DHpIN5+O4MP8t
+   1isJggQgjwx7kDc3Sva4qi4z8NtHpElgR8OWqXMLEbiZD5jy9lQqDtnb7
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="350854485"
+X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
+   d="scan'208";a="350854485"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 10:28:40 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="813426654"
+X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
+   d="scan'208";a="813426654"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by FMSMGA003.fm.intel.com with ESMTP; 17 Jul 2023 10:28:33 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id CBFC1256; Mon, 17 Jul 2023 20:28:39 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Balsam CHIHI <bchihi@baylibre.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Cc:     Andy Shevchenko <andy@kernel.org>,
+        Sean Wang <sean.wang@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>
+Subject: [PATCH v2 00/10] pinctrl: Provide NOIRQ PM helper and use it
+Date:   Mon, 17 Jul 2023 20:28:11 +0300
+Message-Id: <20230717172821.62827-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v2 8/8] selftests/mm: Run all tests from run_vmtests.sh
-Content-Language: en-US
-To:     Ryan Roberts <ryan.roberts@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Mark Brown <broonie@kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Florent Revest <revest@chromium.org>,
-        Peter Xu <peterx@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org
-References: <20230717103152.202078-1-ryan.roberts@arm.com>
- <20230717103152.202078-9-ryan.roberts@arm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20230717103152.202078-9-ryan.roberts@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17.07.23 12:31, Ryan Roberts wrote:
-> It is very unclear to me how one is supposed to run all the mm selftests
-> consistently and get clear results.
-> 
-> Most of the test programs are launched by both run_vmtests.sh and
-> run_kselftest.sh:
-> 
->    hugepage-mmap
->    hugepage-shm
->    map_hugetlb
->    hugepage-mremap
->    hugepage-vmemmap
->    hugetlb-madvise
->    map_fixed_noreplace
->    gup_test
->    gup_longterm
->    uffd-unit-tests
->    uffd-stress
->    compaction_test
->    on-fault-limit
->    map_populate
->    mlock-random-test
->    mlock2-tests
->    mrelease_test
->    mremap_test
->    thuge-gen
->    virtual_address_range
->    va_high_addr_switch
->    mremap_dontunmap
->    hmm-tests
->    madv_populate
->    memfd_secret
->    ksm_tests
->    ksm_functional_tests
->    soft-dirty
->    cow
-> 
-> However, of this set, when launched by run_vmtests.sh, some of the
-> programs are invoked multiple times with different arguments. When
-> invoked by run_kselftest.sh, they are invoked without arguments (and as
-> a consequence, some fail immediately).
-> 
-> Some test programs are only launched by run_vmtests.sh:
-> 
->    test_vmalloc.sh
-> 
-> And some test programs and only launched by run_kselftest.sh:
-> 
->    khugepaged
->    migration
->    mkdirty
->    transhuge-stress
->    split_huge_page_test
->    mdwe_test
->    write_to_hugetlbfs
-> 
-> Furthermore, run_vmtests.sh is invoked by run_kselftest.sh, so in this
-> case all the test programs invoked by both scripts are run twice!
-> 
-> Needless to say, this is a bit of a mess. In the absence of fully
-> understanding the history here, it looks to me like the best solution is
-> to launch ALL test programs from run_vmtests.sh, and ONLY invoke
-> run_vmtests.sh from run_kselftest.sh. This way, we get full control over
-> the parameters, each program is only invoked the intended number of
-> times, and regardless of which script is used, the same tests get run in
-> the same way.
-> 
-> The only drawback is that if using run_kselftest.sh, it's top-level tap
-> result reporting reports only a single test and it fails if any of the
-> contained tests fail. I don't see this as a big deal though since we
-> still see all the nested reporting from multiple layers. The other issue
-> with this is that all of run_vmtests.sh must execute within a single
-> kselftest timeout period, so let's increase that to something more
-> suitable.
-> 
-> In the Makefile, TEST_GEN_PROGS will compile and install the tests and
-> will add them to the list of tests that run_kselftest.sh will run.
-> TEST_GEN_FILES will compile and install the tests but will not add them
-> to the test list. So let's move all the programs from TEST_GEN_PROGS to
-> TEST_GEN_FILES so that they are built but not executed by
-> run_kselftest.sh. Note that run_vmtests.sh is added to TEST_PROGS, which
-> means it ends up in the test list. (the lack of "_GEN" means it won't be
-> compiled, but simply copied).
-> 
-> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
-> ---
+Intel pin control drivers use NOIRQ variant of the PM callbacks.
+Besides that several other drivers do similar. Provide a helper
+to make them smaller and less error prone against different
+kernel configurations (with possible defined but not used variables).
 
-Acked-by: David Hildenbrand <david@redhat.com>
+The idea is to have an immutable branch that PM tree can pull as well as
+main pin control one. We also can do other way around, if Rafael prefers
+that.
+
+Changelog v2:
+- rewritten commit message in patch 1 (Rafael)
+- converted non-Intel pin control drivers as well
+- added couple of kinda related patches to use pm_ptr()
+
+Andy Shevchenko (10):
+  pm: Introduce DEFINE_NOIRQ_DEV_PM_OPS() helper
+  pinctrl: baytrail: Make use of pm_ptr()
+  pinctrl: cherryview: Switch to use DEFINE_NOIRQ_DEV_PM_OPS() helper
+  pinctrl: intel: Switch to use DEFINE_NOIRQ_DEV_PM_OPS() helper
+  pinctrl: lynxpoint: Make use of pm_ptr()
+  pinctrl: at91: Switch to use DEFINE_NOIRQ_DEV_PM_OPS() helper
+  pinctrl: mediatek: Switch to use DEFINE_NOIRQ_DEV_PM_OPS() helper
+  pinctrl: mvebu: Switch to use DEFINE_NOIRQ_DEV_PM_OPS() helper
+  pinctrl: renesas: Switch to use DEFINE_NOIRQ_DEV_PM_OPS() helper
+  pinctrl: tegra: Switch to use DEFINE_NOIRQ_DEV_PM_OPS() helper
+
+ drivers/pinctrl/intel/pinctrl-baytrail.c      | 11 +++--------
+ drivers/pinctrl/intel/pinctrl-cherryview.c    |  9 ++-------
+ drivers/pinctrl/intel/pinctrl-intel.c         |  5 +----
+ drivers/pinctrl/intel/pinctrl-intel.h         |  9 ++-------
+ drivers/pinctrl/intel/pinctrl-lynxpoint.c     |  7 +++----
+ drivers/pinctrl/mediatek/pinctrl-mtk-common.c |  5 +----
+ drivers/pinctrl/mediatek/pinctrl-paris.c      |  9 +++------
+ drivers/pinctrl/mvebu/pinctrl-armada-37xx.c   | 14 +++-----------
+ drivers/pinctrl/pinctrl-at91.c                | 10 ++++------
+ drivers/pinctrl/renesas/core.c                | 16 +++++++---------
+ drivers/pinctrl/tegra/pinctrl-tegra.c         |  5 +----
+ include/linux/pm.h                            |  9 +++++++++
+ 12 files changed, 39 insertions(+), 70 deletions(-)
 
 -- 
-Cheers,
-
-David / dhildenb
+2.40.0.1.gaa8946217a0b
 
