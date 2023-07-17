@@ -2,67 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B55E2756873
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 17:57:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C05BF75687A
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 17:58:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230396AbjGQP5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 11:57:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51038 "EHLO
+        id S231549AbjGQP6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 11:58:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230100AbjGQP5e (ORCPT
+        with ESMTP id S229731AbjGQP6k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 11:57:34 -0400
+        Mon, 17 Jul 2023 11:58:40 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 694D61A8
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 08:57:33 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65F8CD8;
+        Mon, 17 Jul 2023 08:58:39 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EA6D161146
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 15:57:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C433C433CD
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 15:57:32 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 03C1960F12;
+        Mon, 17 Jul 2023 15:58:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51822C433C9;
+        Mon, 17 Jul 2023 15:58:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689609452;
-        bh=tvDXX50eV0510jxsIGXoT/FDUwk5Yt+r7BtNl9UglPk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=l0JMfhsyT/TjCvHj86lEa2Opnrt4GzAGkH83Z8tUl3CL0qsUKMdnK/EaZNxBbmHg3
-         8ulPDN9HOY1KL2Dn4x07yoIoa0YA+TFtI+tqx2ytx/VzkP5Dd4+5aISNz/QrIKVVQA
-         DStAns0ALunKPxBmx/OcrUw+ynA4FPAuyjw/S5IZShkPtkceQ9YuxTsEBD0GahrGTH
-         J79fyIWaXOr+TRkNCfrbpjrMvRFVuQsr6rQMv29fZOCebeyA5ypx9scl0cJp6VvfUw
-         FkK4UOpKOl8agWbRsXf8GtZ8gpBF6fHsLE3pGeE2Buh3EZ8Kn/i0IZ1yNZoj7NDRkX
-         ZHKgRfQL022Tg==
-Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-3459baa237bso29512365ab.3
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 08:57:32 -0700 (PDT)
-X-Gm-Message-State: ABy/qLZVhy3/yAsdxy2SHgnitj+Mx9GURS/kEGg3ARAesd35BpYGKYSQ
-        Hed5QrVc0nVJgdqg9gBVSclWBSQaOiV8ITxy0NTP5A==
-X-Google-Smtp-Source: APBJJlEl+sYXDXAF+Ig7ijzeSXsJd0KXiL2sFKWdFkS2p73/g9jU12eFPg+kJhmtwCUDDxPUdk16MFd/8j/syDLB56I=
-X-Received: by 2002:a05:6e02:1e07:b0:346:5a8b:53f3 with SMTP id
- g7-20020a056e021e0700b003465a8b53f3mr189745ila.26.1689609451630; Mon, 17 Jul
- 2023 08:57:31 -0700 (PDT)
+        s=k20201202; t=1689609518;
+        bh=oxc0wIrykUcV4lXikRU9sbRAnt1ysqKy15IEX0mqF/Y=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+        b=UbNh4IekhjGWhrn4gvGQf61ZiY2gkxSLo98gAjJ8w8sUTRcyESEZx9fCfW2mEmhCX
+         xb4x3PcxoUlV9iCYsVm/iCyndzYMMx6YSBgKISeXi+Yt64qwvIJGBGto4Ia+5NXAc1
+         +T7DbHWA3ndowqUH0jq5xFTg+6P3HgCLsTELsB/37XY4SQT5JZ8wNubjT6bXYxzqxo
+         CG+24S8iRFy7Hw3TZ3dnIsGdsOnu4/FpK4JPmtTzchaD19cPMZO0y14lD7nxI2g3ZA
+         hN2tRFYVGNMY1v8YiQ2CuEMrO5We3Pnf2nCTgcaD9Go5+PtRGIKuUzLMtOemRVR0VD
+         KKdg6Hua/kt+Q==
+From:   Kalle Valo <kvalo@kernel.org>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Fixes tag needs some work in the v4l-dvb-fixes tree
+References: <20230714083645.4e587f71@canb.auug.org.au>
+        <ZLTsXUFZy4Iggk5u@kekkonen.localdomain>
+Date:   Mon, 17 Jul 2023 18:58:28 +0300
+In-Reply-To: <ZLTsXUFZy4Iggk5u@kekkonen.localdomain> (Sakari Ailus's message
+        of "Mon, 17 Jul 2023 07:23:09 +0000")
+Message-ID: <87jzuy34yj.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-References: <20230710085922.1871465-1-wenst@chromium.org>
-In-Reply-To: <20230710085922.1871465-1-wenst@chromium.org>
-From:   Robert Foss <rfoss@kernel.org>
-Date:   Mon, 17 Jul 2023 17:57:20 +0200
-X-Gmail-Original-Message-ID: <CAN6tsi508WALxzza5VEjm5wiwZrafJa32=+R8SS4vmg-ybqHig@mail.gmail.com>
-Message-ID: <CAN6tsi508WALxzza5VEjm5wiwZrafJa32=+R8SS4vmg-ybqHig@mail.gmail.com>
-Subject: Re: [PATCH v2] drm/bridge: anx7625: Drop device lock before drm_helper_hpd_irq_event()
-To:     Chen-Yu Tsai <wenst@chromium.org>
-Cc:     Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Xin Ji <xji@analogixsemi.com>,
-        =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
-        <nfraprado@collabora.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -73,78 +59,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 10, 2023 at 10:59=E2=80=AFAM Chen-Yu Tsai <wenst@chromium.org> =
-wrote:
->
-> The device lock is used to serialize the low level power sequencing
-> operations. Since drm_helper_hpd_irq_event() could end up calling
-> .atomic_enable, which also calls power sequencing functions through
-> runtime PM, this results in a real deadlock. This was observed on an
-> MT8192-based Chromebook's external display (with appropriate patches [1]
-> and DT changes applied).
->
-> Move the drm_helper_hpd_irq_event() call outside of the lock range. The
-> lock only needs to be held so that the device status can be read back.
-> This is the bare minimum change to avoid the deadlock. The lock could
-> be dropped completely and have pm_runtime_get_if_in_use() increase the
-> reference count, but this is not the same as pm_runtime_suspended().
->
-> Dropping the lock completely also causes the internal display of the
-> same device to not function correctly if the internal bridge's
-> interrupt line is added in the device tree. Both the internal and
-> external display of said device each use one anx7625 bridge.
->
-> [1] https://lore.kernel.org/dri-devel/20230112042104.4107253-1-treapking@=
-chromium.org/
->
-> Fixes: 60487584a79a ("drm/bridge: anx7625: refactor power control to use =
-runtime PM framework")
-> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
-> ---
-> Changes since v1:
-> - restore early return if event < 0
->
->  drivers/gpu/drm/bridge/analogix/anx7625.c | 14 ++++++++------
->  1 file changed, 8 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/=
-bridge/analogix/anx7625.c
-> index 866d018f4bb1..e93eba89d5ee 100644
-> --- a/drivers/gpu/drm/bridge/analogix/anx7625.c
-> +++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
-> @@ -1593,18 +1593,20 @@ static void anx7625_work_func(struct work_struct =
-*work)
->
->         mutex_lock(&ctx->lock);
->
-> -       if (pm_runtime_suspended(&ctx->client->dev))
-> -               goto unlock;
-> +       if (pm_runtime_suspended(&ctx->client->dev)) {
-> +               mutex_unlock(&ctx->lock);
-> +               return;
-> +       }
->
->         event =3D anx7625_hpd_change_detect(ctx);
-> +
-> +       mutex_unlock(&ctx->lock);
-> +
->         if (event < 0)
-> -               goto unlock;
-> +               return;
->
->         if (ctx->bridge_attached)
->                 drm_helper_hpd_irq_event(ctx->bridge.dev);
-> -
-> -unlock:
-> -       mutex_unlock(&ctx->lock);
->  }
->
->  static irqreturn_t anx7625_intr_hpd_isr(int irq, void *data)
-> --
-> 2.41.0.255.g8b1d071c50-goog
->
+Sakari Ailus <sakari.ailus@linux.intel.com> writes:
 
-LGTM, let's snooze this until next week, incase someone comes up with an is=
-sue.
+> On Fri, Jul 14, 2023 at 08:38:25AM +1000, Stephen Rothwell wrote:
+>> Hi all,
+>> 
+>> In commit
+>> 
+>>   b0b43354c345 ("media: tc358746: Address compiler warnings")
+>> 
+>> Fixes tag
+>> 
+>>   Fixes: 80a21da3605 ("media: tc358746: add Toshiba TC358746 Parallel to CSI-2 bridge driver")
+>> 
+>> has these problem(s):
+>> 
+>>   - SHA1 should be at least 12 digits long
+>>     This can be fixed for the future by setting core.abbrev to 12 (or
+>>     more) or (for git v2.11 or later) just making sure it is not set
+>>     (or set to "auto").
+>> 
+>> Also, please keep all the commit message tags together at the end of
+>> the commit message.
+>
+> Apologies for this, I guess I've removed one character too many from the
+> hash.
+>
+> I'll switch to a script (or alias) to do this. It'd be, though, helpful if
+> git could do this on its own.
 
-Reviewed-by: Robert Foss <rfoss@kernel.org>
+Are you asking for git to create the Fixes tag? The documentation has
+has a tip using --pretty=fixes which is quite handy:
+
+https://docs.kernel.org/process/submitting-patches.html#describe-your-changes
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
