@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63F7A756B34
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 20:03:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27561756B36
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 20:03:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230219AbjGQSDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 14:03:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34566 "EHLO
+        id S229562AbjGQSDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 14:03:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229937AbjGQSDV (ORCPT
+        with ESMTP id S229970AbjGQSDV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 17 Jul 2023 14:03:21 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14D90E60;
-        Mon, 17 Jul 2023 11:03:19 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D49B499;
+        Mon, 17 Jul 2023 11:03:20 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6A458611CF;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AA8A9611C5;
         Mon, 17 Jul 2023 18:03:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8EEBC433CD;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E07CAC4339A;
         Mon, 17 Jul 2023 18:03:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1689616998;
-        bh=faENVi6cC50zYs1JsPUdeoJna1PA0xy0tmxx8qvTGUs=;
+        bh=vEUUOY6M/3b2MdG2PW8TiiGilUJqe947oj/T9vFTNTA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gwsgXiGGyLxGtlNnGaH4qkO5xQ+pXbWqFQn67T/rhn/Kk9ilaql1M1NQwI5VTfXtz
-         favsZTYWhw/fpKAmN13CT5s+9eRGKUzzI4WrJDUtw7HjFEGdD7kJa4BiIue7QiMA6i
-         lWZXDSmmOIXMHOrJg9slg6rosvhwhRiQWiKKSu62ipxsDMyegCMPKp7OHMeovFcbQT
-         +F2h1r8TaOcpEfRwQqmWq/bp4x9Z+IGUt9si8blRDYzOwi+vYU9f5pUx5Q1S8+XQI8
-         FOukS7Y9EIb569hDIMCtl38Tm63De0QF2Kfk059vU3q0YYfdaWiwuSg6Ep3ODSoZx8
-         Q8UStCGfAqAlw==
+        b=dwsvUF/M6y1htH9x4F8FD9RJ7dMM3iqjK0L9G/KO/bHFbfAbvKW9LQqgdffTCkrJ8
+         Q3VAWs2tJvzYG01qCc+I0khfxeLsX5IXuA1qB7E7B6bmN6KzPvg0NDwchVgnJZIkRt
+         l/BgTtbHEtZ8VzJoDXONq4GP1/9sdbeAh16Ap3IUrKuqUoEdH5IIJkkIX1TXbu5hZI
+         ZMocGgOmJXnGa8S6m/1xMih1P4I3vb6g6tBoxrHzFJD1HGwLxm8KgklhyGYt0jh8x3
+         PoBhOvFNITxVPY0ovU5TqzlWXzTrJ9FCy1Vy3qu9PymxoGgX6Z0t1iYAQmHbcobG8s
+         ZyVrbtuztfxPw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 41D52CE0902; Mon, 17 Jul 2023 11:03:18 -0700 (PDT)
+        id 441F6CE092F; Mon, 17 Jul 2023 11:03:18 -0700 (PDT)
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
-        rostedt@goodmis.org, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH rcu 5/6] rcu: Make the rcu_nocb_poll boot parameter usable via boot config
-Date:   Mon, 17 Jul 2023 11:03:16 -0700
-Message-Id: <20230717180317.1097590-5-paulmck@kernel.org>
+        rostedt@goodmis.org, Alan Huang <mmpgouride@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH rcu 6/6] rcu: Use WRITE_ONCE() for assignments to ->next for rculist_nulls
+Date:   Mon, 17 Jul 2023 11:03:17 -0700
+Message-Id: <20230717180317.1097590-6-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <6127192c-da9b-4599-9738-6e8f92e6c75c@paulmck-laptop>
 References: <6127192c-da9b-4599-9738-6e8f92e6c75c@paulmck-laptop>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
@@ -58,46 +58,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The rcu_nocb_poll kernel boot parameter is defined via early_param(),
-whose parsing functions are invoked from parse_early_param() which
-is in turn invoked by setup_arch(), which is very early indeed.  It
-is invoked so early that the console output timestamps read 0.000000,
-in other words, before time begins.
+From: Alan Huang <mmpgouride@gmail.com>
 
-This use of early_param() means that the rcu_nocb_poll kernel boot
-parameter cannot usefully be embedded into the kernel image.  Yes, you
-can embed it, but setup_boot_config() is invoked from start_kernel()
-too late for it to be parsed.
+When the objects managed by rculist_nulls are allocated with
+SLAB_TYPESAFE_BY_RCU, old readers may still hold references to an object
+even though it is just now being added, which means the modification of
+->next is visible to readers.  This patch therefore uses WRITE_ONCE()
+for assignments to ->next.
 
-But it makes no sense to parse this parameter so early.  After all,
-it cannot do anything until the rcuog kthreads are created, which is
-long after rcu_init() time, let alone setup_boot_config() time.
-
-This commit therefore switches the rcu_nocb_poll kernel boot parameter
-from early_param() to __setup(), which allows boot-config parsing of
-this parameter, in turn allowing it to be embedded into the kernel image.
-
+Signed-off-by: Alan Huang <mmpgouride@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_nocb.h | 4 ++--
+ include/linux/rculist_nulls.h | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index 43229d2b0c44..5598212d1f27 100644
---- a/kernel/rcu/tree_nocb.h
-+++ b/kernel/rcu/tree_nocb.h
-@@ -77,9 +77,9 @@ __setup("rcu_nocbs", rcu_nocb_setup);
- static int __init parse_rcu_nocb_poll(char *arg)
+diff --git a/include/linux/rculist_nulls.h b/include/linux/rculist_nulls.h
+index ba4c00dd8005..89186c499dd4 100644
+--- a/include/linux/rculist_nulls.h
++++ b/include/linux/rculist_nulls.h
+@@ -101,7 +101,7 @@ static inline void hlist_nulls_add_head_rcu(struct hlist_nulls_node *n,
  {
- 	rcu_nocb_poll = true;
--	return 0;
-+	return 1;
- }
--early_param("rcu_nocb_poll", parse_rcu_nocb_poll);
-+__setup("rcu_nocb_poll", parse_rcu_nocb_poll);
+ 	struct hlist_nulls_node *first = h->first;
  
- /*
-  * Don't bother bypassing ->cblist if the call_rcu() rate is low.
+-	n->next = first;
++	WRITE_ONCE(n->next, first);
+ 	WRITE_ONCE(n->pprev, &h->first);
+ 	rcu_assign_pointer(hlist_nulls_first_rcu(h), n);
+ 	if (!is_a_nulls(first))
+@@ -137,7 +137,7 @@ static inline void hlist_nulls_add_tail_rcu(struct hlist_nulls_node *n,
+ 		last = i;
+ 
+ 	if (last) {
+-		n->next = last->next;
++		WRITE_ONCE(n->next, last->next);
+ 		n->pprev = &last->next;
+ 		rcu_assign_pointer(hlist_nulls_next_rcu(last), n);
+ 	} else {
 -- 
 2.40.1
 
