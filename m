@@ -2,53 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9CA275701F
-	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 01:00:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 313DD757019
+	for <lists+linux-kernel@lfdr.de>; Tue, 18 Jul 2023 00:58:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230470AbjGQXAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 19:00:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51900 "EHLO
+        id S230399AbjGQW6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 18:58:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229862AbjGQXAM (ORCPT
+        with ESMTP id S229919AbjGQW6q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 19:00:12 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A8C6198A
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 15:59:31 -0700 (PDT)
+        Mon, 17 Jul 2023 18:58:46 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABE2210EF;
+        Mon, 17 Jul 2023 15:58:45 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E2AE4612B4
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 22:59:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D90C3C433C8;
-        Mon, 17 Jul 2023 22:59:21 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4017C612B4;
+        Mon, 17 Jul 2023 22:58:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1F80C433C7;
+        Mon, 17 Jul 2023 22:58:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1689634765;
-        bh=59X3yR/EgoAgz3Bwg/uGveK+/kUZJPeJEkI0bce8PH0=;
+        s=k20201202; t=1689634724;
+        bh=rM26BLazDBsUWhbicT5Xil9vOWS3Rtw9EQvF4oPqBU4=;
         h=From:To:Cc:Subject:Date:From;
-        b=Evr8V0aHxUcMHX6RTsprPl0j9IxHvVbeJY7/iJGy/YVjzkYVrXcujcbvfsfFI/fys
-         /QY+Icwoubh28+VOGYIvLHKnUYKivsyE8Igcf+Rm6iHs8PXkV1PGKAVCtLUt+0/NiC
-         aRq8xDujB7mlkG9TY4HnrGBq17NtjNnJAQuz4ieFxhabi80vtI3KSAyRJSOtLKzO0X
-         vCGvsQJyzNpAb0G0PpyUm+nXw4AlDIphysbV57nwc+VA8xiEeH63CjRLoaOTruHtPt
-         MPg3FOAG7ef1oJ7cvq7X17pqFofhcMEf3xexF9iIvVVh0jNHAJhuSYV3sF1wjmGcx8
-         /lcfUwtPvQoJQ==
-Received: (nullmailer pid 3211693 invoked by uid 1000);
-        Mon, 17 Jul 2023 22:54:44 -0000
+        b=d+xnaUrzFHksDRaRYvhXNRgDZX1mSPr8+8T2JlAVzjfLb5Ydem2RGjv/HG/6XV4q7
+         yndeBtrZtuOOy3WeWki60J1w7TicdtV2hdl9UHfxGS70DlD9BDkXLeyGGG5INGvs7J
+         KHWMBTmDTWRNpRF4Sx3urZKpXpy4WBXb8Ngvw6NcACdYu7gCDxtSOY0fwDRszrjorB
+         rHe/qr1/3cYHG+HwtW1iQOc3LuoOjhofWJvBgxCGYk0SPbUyw8rwnsU1INhXZRcp8k
+         pgwjn3wBS96h2SJhv9juWlGzzwN+agtw9ScLFQM51oIoN+792a0PdyVE3oLKLzdjE4
+         V7t1LsOU3SNpA==
+Received: (nullmailer pid 3211848 invoked by uid 1000);
+        Mon, 17 Jul 2023 22:54:49 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Dinh Nguyen <dinguyen@kernel.org>,
-        Russell King <linux@armlinux.org.uk>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ARM: socfpga: Explicitly include correct DT includes
-Date:   Mon, 17 Jul 2023 16:54:40 -0600
-Message-Id: <20230717225440.3211576-1-robh@kernel.org>
+To:     Russell King <linux@armlinux.org.uk>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ARM: s5pv210: Explicitly include correct DT includes
+Date:   Mon, 17 Jul 2023 16:54:46 -0600
+Message-Id: <20230717225446.3211738-1-robh@kernel.org>
 X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -63,79 +65,23 @@ and of.h. As a result, there's a pretty much random mix of those include
 files used throughout the tree. In order to detangle these headers and
 replace the implicit includes with struct declarations, users need to
 explicitly include the correct includes.
-
-A couple of other includes are unused and can be dropped too.
-
-Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- arch/arm/mach-socfpga/l2_cache.c | 2 +-
- arch/arm/mach-socfpga/ocram.c    | 4 +---
- arch/arm/mach-socfpga/pm.c       | 2 ++
- arch/arm/mach-socfpga/socfpga.c  | 4 +---
- 4 files changed, 5 insertions(+), 7 deletions(-)
+ arch/arm/mach-s5pv210/s5pv210.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/mach-socfpga/l2_cache.c b/arch/arm/mach-socfpga/l2_cache.c
-index 99fb95361590..86e011eeb444 100644
---- a/arch/arm/mach-socfpga/l2_cache.c
-+++ b/arch/arm/mach-socfpga/l2_cache.c
-@@ -3,7 +3,7 @@
-  * Copyright Altera Corporation (C) 2016. All rights reserved.
-  */
- #include <linux/io.h>
+diff --git a/arch/arm/mach-s5pv210/s5pv210.c b/arch/arm/mach-s5pv210/s5pv210.c
+index a21ed3bb992a..7d4a10184160 100644
+--- a/arch/arm/mach-s5pv210/s5pv210.c
++++ b/arch/arm/mach-s5pv210/s5pv210.c
+@@ -7,7 +7,7 @@
+ // Tomasz Figa <t.figa@samsung.com>
+ 
+ #include <linux/of_fdt.h>
 -#include <linux/of_platform.h>
-+#include <linux/of.h>
- #include <linux/of_address.h>
- 
- #include "core.h"
-diff --git a/arch/arm/mach-socfpga/ocram.c b/arch/arm/mach-socfpga/ocram.c
-index b4d397e834a0..9f1a249debf6 100644
---- a/arch/arm/mach-socfpga/ocram.c
-+++ b/arch/arm/mach-socfpga/ocram.c
-@@ -4,10 +4,8 @@
-  */
- #include <linux/delay.h>
- #include <linux/io.h>
--#include <linux/genalloc.h>
--#include <linux/module.h>
-+#include <linux/of.h>
- #include <linux/of_address.h>
--#include <linux/of_platform.h>
- 
- #include "core.h"
- 
-diff --git a/arch/arm/mach-socfpga/pm.c b/arch/arm/mach-socfpga/pm.c
-index 365c0428b21b..ab1c08f971f0 100644
---- a/arch/arm/mach-socfpga/pm.c
-+++ b/arch/arm/mach-socfpga/pm.c
-@@ -13,7 +13,9 @@
- #include <linux/genalloc.h>
- #include <linux/init.h>
- #include <linux/io.h>
-+#include <linux/of.h>
- #include <linux/of_platform.h>
 +#include <linux/platform_device.h>
- #include <linux/suspend.h>
- #include <asm/suspend.h>
- #include <asm/fncpy.h>
-diff --git a/arch/arm/mach-socfpga/socfpga.c b/arch/arm/mach-socfpga/socfpga.c
-index 9e4cb2ffd580..4332af2d8b86 100644
---- a/arch/arm/mach-socfpga/socfpga.c
-+++ b/arch/arm/mach-socfpga/socfpga.c
-@@ -3,13 +3,11 @@
-  *  Copyright (C) 2012-2015 Altera Corporation
-  */
- #include <linux/irqchip.h>
-+#include <linux/of.h>
- #include <linux/of_address.h>
--#include <linux/of_irq.h>
--#include <linux/of_platform.h>
- #include <linux/reboot.h>
- #include <linux/reset/socfpga.h>
  
--#include <asm/hardware/cache-l2x0.h>
  #include <asm/mach/arch.h>
  #include <asm/mach/map.h>
- #include <asm/cacheflush.h>
 -- 
 2.40.1
 
