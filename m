@@ -2,70 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A04D7566A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 16:40:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B8B17566A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 16:40:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231420AbjGQOkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 10:40:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32884 "EHLO
+        id S231702AbjGQOkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 10:40:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230339AbjGQOkO (ORCPT
+        with ESMTP id S229603AbjGQOkA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 10:40:14 -0400
-Received: from mx1.veeam.com (mx1.veeam.com [216.253.77.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ADB210DF;
-        Mon, 17 Jul 2023 07:40:11 -0700 (PDT)
-Received: from mail.veeam.com (prgmbx01.amust.local [172.24.128.102])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Mon, 17 Jul 2023 10:40:00 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5393EC0
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 07:39:58 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by mx1.veeam.com (Postfix) with ESMTPS id 55C5741D18;
-        Mon, 17 Jul 2023 10:40:08 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=veeam.com;
-        s=mx1-2022; t=1689604808;
-        bh=Pwh+6BKATXlzMY/0vs5/6BSZ4BXrZSlQNcFaAamt3eU=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To:From;
-        b=Adq03v/jALeVIjYIT0f7+HUydl+LQABSjOpd1ZRRqWEflsvaQqDTH3HXaIoeR1wdd
-         9/BWuq6Q5UJsTXskcJwbtKxqDxgUVxZ73zXINy7uEZg/bH2Erb1PKPgs3sAvIOjgL8
-         Z8ZzUWeajvsygdgqOSelPoqbyL2NTpWotf0WmkL7lspgFrgSJsRpAUe9pYAf88bNSd
-         ueYVJVkjRGjGB0yL3fhsm8LEIhJZzUYqQOhQc+NMFEj++3YOs0g5hputoTUW4+5W+G
-         m018T4ShEQn44ZF2q8ASes4XifNIkdi1vKtpe1ltZj6VDONFfCM1Cnf5Ltypp87h4p
-         DnZceBUr5c8Bg==
-Received: from [172.24.10.107] (172.24.10.107) by prgmbx01.amust.local
- (172.24.128.102) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.16; Mon, 17 Jul
- 2023 16:40:01 +0200
-Message-ID: <90f79cf3-86a2-02c0-1887-d3490f9848bb@veeam.com>
-Date:   Mon, 17 Jul 2023 16:39:52 +0200
+        by smtp-out2.suse.de (Postfix) with ESMTPS id E50231FDA5;
+        Mon, 17 Jul 2023 14:39:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1689604796; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Rs9uvcUebUMYsasQ832t98i+yhYyEHbW41JV9UaUcj4=;
+        b=QBXM1k8OERxN0iaIwVOM7k5vhYNab1sinEWQWfyhUl83K/x9qG83y7igJixZYo0pXzkdRI
+        5HkMcCS+exn3+XJT8TeD1ciqGABcwi54XE0gtVhYEEzIfHl3cXGChEHXcjhR0a5c2RS2RZ
+        FDmEsmwHRLip1xKgrlls4W7GMu2tHp8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1689604796;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Rs9uvcUebUMYsasQ832t98i+yhYyEHbW41JV9UaUcj4=;
+        b=KGjA6IXE8LIozekVLTJtjAkJ34AIUvQdps2KI5hNIjXUFlrW2wcysOtF5nQqqbWl6GfK9R
+        MJAIbtaXHkBP/pCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C5D67138F8;
+        Mon, 17 Jul 2023 14:39:56 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id w2FkLrxStWS4dQAAMHmgww
+        (envelope-from <chrubis@suse.cz>); Mon, 17 Jul 2023 14:39:56 +0000
+Date:   Mon, 17 Jul 2023 16:41:00 +0200
+From:   Cyril Hrubis <chrubis@suse.cz>
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     Waiman Long <longman@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Brent Rowsell <browsell@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Phil Auld <pauld@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        yu.c.chen@intel.com, Peter Zijlstra <peterz@infradead.org>,
+        aubrey.li@linux.intel.com, linux-kernel@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Peter Hunt <pehunt@redhat.com>, Ingo Molnar <mingo@redhat.com>,
+        Mel Gorman <mgorman@suse.de>, oe-lkp@lists.linux.dev,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        ltp@lists.linux.it, lkp@intel.com
+Subject: Re: [LTP] [PATCH] sched/core: Use empty mask to reset cpumasks in
+ sched_setaffinity()
+Message-ID: <ZLVS_ANORaZO_ZIE@yuki>
+References: <20230628211637.1679348-1-longman@redhat.com>
+ <202307171539.3d8d0e8-oliver.sang@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v5 02/11] block: Block Device Filtering Mechanism
-Content-Language: en-US
-To:     Yu Kuai <yukuai1@huaweicloud.com>, <axboe@kernel.dk>,
-        <hch@infradead.org>, <corbet@lwn.net>, <snitzer@kernel.org>
-CC:     <viro@zeniv.linux.org.uk>, <brauner@kernel.org>,
-        <dchinner@redhat.com>, <willy@infradead.org>, <dlemoal@kernel.org>,
-        <linux@weissschuh.net>, <jack@suse.cz>, <ming.lei@redhat.com>,
-        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        Donald Buczek <buczek@molgen.mpg.de>,
-        "yukuai (C)" <yukuai3@huawei.com>
-References: <20230612135228.10702-1-sergei.shtepa@veeam.com>
- <20230612135228.10702-3-sergei.shtepa@veeam.com>
- <f935840e-12a7-c37b-183c-27e2d83990ea@huaweicloud.com>
-From:   Sergei Shtepa <sergei.shtepa@veeam.com>
-In-Reply-To: <f935840e-12a7-c37b-183c-27e2d83990ea@huaweicloud.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.24.10.107]
-X-ClientProxiedBy: colmbx01.amust.local (172.31.112.31) To
- prgmbx01.amust.local (172.24.128.102)
-X-EsetResult: clean, is OK
-X-EsetId: 37303A292403155B677461
-X-Veeam-MMEX: True
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202307171539.3d8d0e8-oliver.sang@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -74,21 +84,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi!
+> Running tests.......
+> <<<test_start>>>
+> tag=sched_setaffinity01 stime=1689382567
+> cmdline="sched_setaffinity01"
+> contacts=""
+> analysis=exit
+> <<<test_output>>>
+> tst_test.c:1558: TINFO: Timeout per run is 0h 02m 30s
+> sched_setaffinity01.c:83: TPASS: sched_setaffinity() failed: EFAULT (14)
+> sched_setaffinity01.c:73: TFAIL: sched_setaffinity() succeded unexpectedly
+> tst_test.c:1612: TINFO: If you are running on slow machine, try exporting LTP_TIMEOUT_MUL > 1
+> tst_test.c:1614: TBROK: Test killed! (timeout?)
 
+So what the test does is that it sets empty affinity mask to
+sched_setaffinity() and expects EINVAL. Instead it looks like the call
+now succeeeds, the test stops getting schedulled and is killed by
+timeout.
 
-On 7/11/23 04:02, Yu Kuai wrote:
-> bdev_disk_changed() is not handled, where delete_partition() and
-> add_partition() will be called, this means blkfilter for partiton will
-> be removed after partition rescan. Am I missing something?
-
-Yes, when the bdev_disk_changed() is called, all disk block devices
-are deleted and new ones are re-created. Therefore, the information
-about the attached filters will be lost. This is equivalent to
-removing the disk and adding it back.
-
-For the blksnap module, partition rescan will mean the loss of the
-change trackers data. If a snapshot was created, then such
-a partition rescan will cause the snapshot to be corrupted.
-
-There was an idea to do filtering at the disk level,
-but I abandoned it.
+-- 
+Cyril Hrubis
+chrubis@suse.cz
