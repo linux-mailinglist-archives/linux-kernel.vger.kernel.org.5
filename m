@@ -2,152 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA1B575691D
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 18:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09574756921
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 18:29:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231824AbjGQQ33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 12:29:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39342 "EHLO
+        id S231473AbjGQQ3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 12:29:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231917AbjGQQ3L (ORCPT
+        with ESMTP id S231736AbjGQQ3H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 12:29:11 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB1641B6
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 09:29:10 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1b9ed206018so217525ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 09:29:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689611350; x=1690216150;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JdC3m+V++Z/viiPrZylihhrytj8yYzk3mKF8HaNWKR8=;
-        b=JLAgLws9Ph8sZXiXZU9MF05DdRh4lVloJ4eCxbv6I29WMR5L0rCOLPelFSDEOZhJvt
-         64+osbhlLyTLpW/D92uvfSJaEL4sFuEBmrpVS+xj6clTrIc2+bVJGwfbs5n6gHdnEr5B
-         YqzqSMwfqaSo3XeFvoWjfbHeM4Cc/MTNc1ecF1B0hr875jx1ozJYDOrdZfwkabhTY752
-         2VHpkMBORHmHuzxFkO6mdxouWf2WD6zFkfGAabLUwljGiTe44J/tuB2YOVMzpNsZ9p1i
-         sch2dY3rkukgapyWRdaAtY7ju3lclvSIthC+kC+tP83bYfSBV/VxQM9FDLFKyUC+qfpE
-         iEPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689611350; x=1690216150;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JdC3m+V++Z/viiPrZylihhrytj8yYzk3mKF8HaNWKR8=;
-        b=ILkNtsDypjRB0h1vwj3ZAa95A86j6WddEmBhmxzefatcxnKyKA3Py03fZhTMQG26sc
-         vQVrd6xr05of43cV3E5zfXoLkn4p5umSxI5Cm6xQbktwv3Ikviu/CUY9Ql7Apxqo95rs
-         O/LAGlgdiDs6lEGWBgothkBo6LTTo60U2cvYyB27k6hfkBhE9xAYkzRNoEuZ6Sj/Z2Wh
-         Ag2zkKOQcoO8ZR6vkUtYstgAIwPDbMl96e5RmGzaPpB/MA6zW9Jtpfe/JL4+Lotfxw/b
-         IAdA1Ox8spqLZOuhCJfWILeICt2yAqHeI3qC6CVhZj+HIyjq4i1ZrGpB78+oATBMwgqw
-         WTUQ==
-X-Gm-Message-State: ABy/qLb9Ue8qLPfMMfvwNKiBT6LJoxCK+W5VpMSDBNujksiME5jCuf/A
-        VVYlFrBY0LiWcA2loLVgxP6Yg//QDK1YgzVBgFwCtQ==
-X-Google-Smtp-Source: APBJJlEyymDBpyl7ABeHnCX+wEYEjlMXNDWxLVm6reu3PBE3OUW35nPR5bmepa4Nhj9vtn4nG7ITVPmZXkRqcZH8h0M=
-X-Received: by 2002:a17:903:41c4:b0:1b8:5857:ea9a with SMTP id
- u4-20020a17090341c400b001b85857ea9amr1012512ple.23.1689611350208; Mon, 17 Jul
- 2023 09:29:10 -0700 (PDT)
+        Mon, 17 Jul 2023 12:29:07 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0A0F191
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 09:29:05 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 87CB561158
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 16:29:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39ECFC433C9;
+        Mon, 17 Jul 2023 16:29:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689611344;
+        bh=ir2LRgwhWi4ddtv8rgCcqYVWlrMeJGpwfocr8iIy/p0=;
+        h=From:Subject:Date:To:Cc:From;
+        b=mnk12LJ8GBaji2fyDjGy+8fAySY4YwyOjBpW0oaXHYjvUU0iAhY8oK/Ez39XgP1T/
+         7X+zqaN2yT42eTvUffoghcIhRycYipGSmSswS9D8E0TdmajM0rj45UypsKuuuFgpqU
+         AoX8/0gP/zxHnCrf33cLp6elS1hKdr4D5aUx/oZK+jYhT824dn9TIWeIN4IfNWr0km
+         trvEEOU0UhIs/IpjCmr17UdeYz4AKb+QIBIQ+/Jg837igJbximk3ExrouShyMghYFd
+         Z+qFAw+2DpA30MLWjYLy1xWMHdXSgjPApCAOiEtwuUJUCvTumQHGRzs0dnjO0BAuKj
+         XwLOOTOS+G8AQ==
+From:   Eric Van Hensbergen <ericvh@kernel.org>
+Subject: [PATCH 0/3] fs/9p: fix mmap regression
+Date:   Mon, 17 Jul 2023 16:28:59 +0000
+Message-Id: <20230716-fixes-overly-restrictive-mmap-v1-0-0683b283b932@kernel.org>
 MIME-Version: 1.0
-References: <20230715005405.3689586-1-rananta@google.com> <20230715005405.3689586-3-rananta@google.com>
- <ef2dddcd-f4dd-da9b-c03f-ccd852bb8543@linaro.org>
-In-Reply-To: <ef2dddcd-f4dd-da9b-c03f-ccd852bb8543@linaro.org>
-From:   Raghavendra Rao Ananta <rananta@google.com>
-Date:   Mon, 17 Jul 2023 09:28:58 -0700
-Message-ID: <CAJHc60xbPoTeX4oKeg45U6QjBw3CS=ZU0PEVCE1zaoAX4Ex7Vw@mail.gmail.com>
-Subject: Re: [PATCH v6 02/11] KVM: arm64: Use kvm_arch_flush_remote_tlbs()
-To:     =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= <philmd@linaro.org>
-Cc:     Oliver Upton <oliver.upton@linux.dev>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Zenghui Yu <zenghui.yu@linux.dev>,
-        Gavin Shan <gshan@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAEtstWQC/x2NywrCMBBFf6XM2sE80Ii/Ii7SODUDNimTECql/
+ 27q8nAu525QSJgK3IcNhBoXzqmDPg0Qok9vQn51BqOMVU5fceKVCuZG8vmiUKnCoXIjnGe/oFX
+ e2IvS5G4OemP0hXAUn0I8Kv0rtHiesmCitR6LReif7Prx3PcfZ2pKZpEAAAA=
+To:     Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>
+Cc:     v9fs@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de, Robert Schwebel <r.schwebel@pengutronix.de>,
+        Eric Van Hensbergen <ericvh@kernel.org>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3483; i=ericvh@kernel.org;
+ h=from:subject:message-id; bh=ir2LRgwhWi4ddtv8rgCcqYVWlrMeJGpwfocr8iIy/p0=;
+ b=owEBbQKS/ZANAwAKAYj/1ftKX/+YAcsmYgBktWxPQJSgRV4xsEEKPHjs0tbPSygZninqK7doV
+ eyCkR+8stuJAjMEAAEKAB0WIQSWlvDRlqWQmKTK0VGI/9X7Sl//mAUCZLVsTwAKCRCI/9X7Sl//
+ mB9mD/9RXa+T/k/O9N2lPCYTgxbX0W1ZFhGcx2k8wdrzF+wmcRd6/P2nWPaXyd8gs7SqgFik5iN
+ D4K8La5WWZzIXhpoKrBWb8GoN3x0s59fHvoQ1gonxZk9/2OOUDUNyjdUClp0P60jfz0fIuEKeM8
+ H69ib/nC7mdT4dZiBOFvdASU8ZhnLVE9Aeq0AxlzweK1n903BTlI07j36kCX4gZhml8lD6YVBAe
+ TnrDnbxaLgysdKGbVayWyRG6FCkeTMPTUj7y33thzFKCqvmSysDu52LqyObGBNGMf3UyBgPdGyi
+ 9Kd4qn5WangonqrENWg0triLY1GmYxFwzsV6t3Q4n3GAY96+wk+rfonvt+sQFMQcXbikqRbElvQ
+ 7nYED1WuxawH/GqJZsMEdWMg3RcYIrqY6Iexw/ZT5X2VTtz0mUdGUj367nzGUOzRfHWB2F16E7W
+ JddWvB190ub2NQ+fa3Gl4SQk3a76lwxHQtodYa+QoUzl39YRJ6IOj5DD+2uNpvkYn2m/K7yiQ80
+ 9Xb/ZNyNxGtHfcMeJDH45NmV7Ma3dzmw3xAqu0lG00nArsL0bz8QyqmQi/4lrRZEGwG/8Ak9/6L
+ t1P7PTstKI7oJPREw5xdQWp7zIosPtbhk6PWbcwx6eyW7kZSR+hIbJU1HHLIjCATUAHmLPyWad1
+ ZyxutFZKkv/rmGA==
+X-Developer-Key: i=ericvh@kernel.org; a=openpgp;
+ fpr=9696F0D196A59098A4CAD15188FFD5FB4A5FFF98
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Philippe,
+This series attempts to fix a reported exception with mmap
+on newer kernels. 
 
-On Mon, Jul 17, 2023 at 1:13=E2=80=AFAM Philippe Mathieu-Daud=C3=A9
-<philmd@linaro.org> wrote:
->
-> Hi Raghavendra, David,
->
-> On 15/7/23 02:53, Raghavendra Rao Ananta wrote:
-> > From: David Matlack <dmatlack@google.com>
-> >
-> > Use kvm_arch_flush_remote_tlbs() instead of
-> > CONFIG_HAVE_KVM_ARCH_TLB_FLUSH_ALL. The two mechanisms solve the same
-> > problem, allowing architecture-specific code to provide a non-IPI
-> > implementation of remote TLB flushing.
-> >
-> > Dropping CONFIG_HAVE_KVM_ARCH_TLB_FLUSH_ALL allows KVM to standardize
-> > all architectures on kvm_arch_flush_remote_tlbs() instead of maintainin=
-g
-> > two mechanisms.
-> >
-> > Opt to standardize on kvm_arch_flush_remote_tlbs() since it avoids
-> > duplicating the generic TLB stats across architectures that implement
-> > their own remote TLB flush.
-> >
-> > This adds an extra function call to the ARM64 kvm_flush_remote_tlbs()
-> > path, but that is a small cost in comparison to flushing remote TLBs.
-> >
-> > In addition, instead of just incrementing remote_tlb_flush_requests
-> > stat, the generic interface would also increment the
-> > remote_tlb_flush stat.
-> >
-> > Signed-off-by: David Matlack <dmatlack@google.com>
-> > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> > Reviewed-by: Zenghui Yu <zenghui.yu@linux.dev>
-> > Acked-by: Oliver Upton <oliver.upton@linux.dev>
-> > Reviewed-by: Gavin Shan <gshan@redhat.com>
-> > ---
-> >   arch/arm64/include/asm/kvm_host.h | 3 +++
-> >   arch/arm64/kvm/Kconfig            | 1 -
-> >   arch/arm64/kvm/mmu.c              | 6 +++---
-> >   virt/kvm/Kconfig                  | 3 ---
-> >   virt/kvm/kvm_main.c               | 2 --
-> >   5 files changed, 6 insertions(+), 9 deletions(-)
->
-> You are doing 2 changes in the same patch:
->
-> - Have ARM use kvm_arch_flush_remote_tlbs() instead of
->    HAVE_KVM_ARCH_TLB_FLUSH_ALL,
-> - Drop the now unused HAVE_KVM_ARCH_TLB_FLUSH_ALL.
->
-> Commits should be atomic, to allow partial
-> revert or cherry-pick.
->
-> Preferably splitting this patch in 2:
-> Reviewed-by: Philippe Mathieu-Daud=C3=A9 <philmd@linaro.org>
->
-Thanks for the suggestion. I guess that makes sense. I'll split the
-patch in two for v7.
+-- original regression report --
 
-- Raghavendra
-> Regards,
->
-> Phil.
->
+TL;DR: mmap() seems to be broken on 9pfs on Linux 6.4. setting
+"rootflags=ignoreqv" fixes it as well, but it feels like a regression.
+
+I'm tracking down an issue which recently turned up in DistroKit [1] (an
+embedded Linux distro based on the ptxdist build system). The issue was a bit
+uggly, as my CI didn't find it (systems boot up normally after a while, and I
+only use 9p for virtual qemu machines, while most of the test farm is real
+hardware).
+
+The qemu machine in question is qemu-system-arm, emulating an ARM v7a machine.
+
+When starting the systems interactively, I get a lot of error output from
+ldconfig, like this:
+
+[   17.412964] systemd-rc-once[127]: ldconfig: Cannot mmap file /lib/libgcc_s.so.1.
+[   17.418851] systemd-rc-once[127]: ldconfig: Cannot mmap file /lib/libstdc++.so.
+[   17.425009] systemd-rc-once[127]: ldconfig: Cannot mmap file /lib/libstdc++.so.6.0.30.
+[   17.436671] systemd-rc-once[127]: ldconfig: Cannot mmap file /lib/libstdc++.so.6.
+[   17.448451] systemd-rc-once[127]: ldconfig: Cannot mmap file /lib/libatomic.so.
+[   17.456418] systemd-rc-once[127]: ldconfig: Cannot mmap file /lib/libatomic.so.1.2.0.
+...
+
+Running ldconfig with strace shows this, for all libraries::
+
+| statx(AT_FDCWD, "/lib/libnm.so.0", AT_STATX_SYNC_AS_STAT|AT_SYMLINK_NOFOLLOW|AT_NO_AUTOMOUNT, STATX_BASIC_STATS, {stx_mask=STATX_BASIC_STATS|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFLNK|0777, stx_size=14, ...}) = 0
+| statx(AT_FDCWD, "/lib/libnm.so.0", AT_STATX_SYNC_AS_STAT|AT_NO_AUTOMOUNT, STATX_BASIC_STATS, {stx_mask=STATX_BASIC_STATS|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFREG|064 4, stx_size=862228, ...}) = 0
+| openat(AT_FDCWD, "/lib/libnm.so.0", O_RDONLY|O_LARGEFILE) = 4
+| statx(4, "", AT_STATX_SYNC_AS_STAT|AT_NO_AUTOMOUNT|AT_EMPTY_PATH, STATX_BASIC_STATS, {stx_mask=STATX_BASIC_STATS|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFREG|0644, stx_s ize=862228, ...}) = 0
+| mmap2(NULL, 862228, PROT_READ, MAP_SHARED, 4, 0) = -1 ENODEV (No such device)
+| write(2, "ldconfig: ", 10ldconfig: )              = 10
+| write(2, "Cannot mmap file /lib/libnm.so.0"..., 34Cannot mmap file /lib/libnm.so.0.) = 34
+| write(2, "\n", 1)                       = 1
+| close(4)                                = 0
+
+I could track down the breakage to
+
+  1543b4c5071c54d76aad7a7a26a6e43082269b0c
+
+My test setup has, in addition to the patch above, the following patches also
+reverted on top of a vanilla 6.4 kernel:
+
+  4eb3117888a923f6b9b1ad2dd093641c49a63ae5
+  21e26d5e54ab7cfe6b488fd27d4d70956d07e03b
+
+as 1543b cannot be reverted without those; however, the effect only goes away
+when I also revert 1543b. The kernel has no other patches applied, only these
+three reverts.
+
+-- end bug report --
+
+Reported-by: Robert Schwebel <r.schwebel@pengutronix.de>
+Signed-off-by: Eric Van Hensbergen <ericvh@kernel.org>
+---
+Eric Van Hensbergen (3):
+      fs/9p: remove unecessary and overrestrictive check
+      fs/9p: fix typo in comparison logic for cache mode
+      fs/9p: fix type mismatch in file cache mode helper
+
+ fs/9p/fid.h      | 6 +++---
+ fs/9p/vfs_file.c | 2 --
+ 2 files changed, 3 insertions(+), 5 deletions(-)
+---
+base-commit: 95f41d87810083d8b3dedcce46a4e356cf4a9673
+change-id: 20230716-fixes-overly-restrictive-mmap-30a23501e787
+
+Best regards,
+-- 
+Eric Van Hensbergen <ericvh@kernel.org>
+
