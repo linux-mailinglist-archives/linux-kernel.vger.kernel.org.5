@@ -2,101 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17549756568
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 15:48:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 951F3756566
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 15:47:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231199AbjGQNsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 09:48:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54354 "EHLO
+        id S229736AbjGQNr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 09:47:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231861AbjGQNru (ORCPT
+        with ESMTP id S231164AbjGQNrY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 09:47:50 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC6441720
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 06:47:43 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-573cacf4804so40124927b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 06:47:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689601663; x=1690206463;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=j3SxyETf8ddszKx/ZhEs13N7fJ1p21U4RjlqamH3wRM=;
-        b=Ps+rAGyMV9qWxjfyp3bnC4WvVcq8X5T25dqQ025faVPUbZWlN2fAoDNDfXAcv0qXQO
-         2rVh/F+CEbd9tCHAujfRsQGuKMmSyiBZjs2eOW67e3+9f8kDZtdM0UP/nRbGDOfC8bXs
-         17XAdkMOpYNQtBfbzsnCgX9mGrtMoO6Ou2sMGzQtb3EsgH06Xpaq6QVx4+eIMb+N/843
-         gPnkEHOnUVw6yoiaH8h0F3c8OwlT5WkmTQDkb9f7s3mPN7IWIFg75VFKueOM6dFG5j+J
-         gv/odE6hDve5rsonG898yH44kzvxYYypt00MA0hqgIFkexFHlypO+5r2oufxg9SMk6+U
-         ydMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689601663; x=1690206463;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=j3SxyETf8ddszKx/ZhEs13N7fJ1p21U4RjlqamH3wRM=;
-        b=MfgJpvqHCHbPcjfHTqhDqVTEbGEDOOIFyugG2FCMN472bQUm3MCxTtc5EZ0rX1njVw
-         OoxnB56kmORSUGXE/Jk9wpg+CGh5ReruXUbykKt3+t95MUA+YtfHjNd/nKisNhozvKWn
-         9fMCdHGkBBlVfmyijiA0mx8YMatRTP/rHSCrxwc6VmfKxbFCHVW24bDl4vW9pQJa+KrB
-         YFGLTJPWhNKtPdFqAbofjH72UlwaFjBw0AXyIj8+ENxmQ/AUzweEdCeM4kpzi3mRW4fZ
-         40A5nrlB0diTqlhWtdcUBOsUTbrAMi8xIL74Gpc187I4W207yP5ayLuqMt9LfVYKRkol
-         ZXug==
-X-Gm-Message-State: ABy/qLZCsSDal69p5p/y3Da7AwnqOfSvHmp62W82ZNH5/oDG0hRtBj27
-        dRTsBajr7Mz+8ZWFpOmiecad0kMcBTJQn60=
-X-Google-Smtp-Source: APBJJlEwhdE5N/SzORH8cVNDBC2/w2CMWD9t0WmrCmMaq52fjxnqtqHEqHMehOn8c5v5sI2WIAd0lhlO7YkmMnA=
-X-Received: from aliceryhl.c.googlers.com ([fda3:e722:ac3:cc00:31:98fb:c0a8:6c8])
- (user=aliceryhl job=sendgmr) by 2002:a81:bc14:0:b0:565:9e73:f937 with SMTP id
- a20-20020a81bc14000000b005659e73f937mr153880ywi.4.1689601662979; Mon, 17 Jul
- 2023 06:47:42 -0700 (PDT)
-Date:   Mon, 17 Jul 2023 13:47:40 +0000
-In-Reply-To: <CUqkSCKfZbSOwonbc1HECGB3ah_8k404uGJFaebLi2oD8GScDzqRxZ350YdmljslxqUC4mqdvqpbBhD1wFSmCvpA4MhklUGnN6RB0Y8YlFo=@proton.me>
-Mime-Version: 1.0
-References: <CUqkSCKfZbSOwonbc1HECGB3ah_8k404uGJFaebLi2oD8GScDzqRxZ350YdmljslxqUC4mqdvqpbBhD1wFSmCvpA4MhklUGnN6RB0Y8YlFo=@proton.me>
-X-Mailer: git-send-email 2.41.0.255.g8b1d071c50-goog
-Message-ID: <20230717134740.1840206-1-aliceryhl@google.com>
-Subject: Re: [PATCH v3 2/9] rust: sync: add `Arc::{from_raw, into_raw}`
-From:   Alice Ryhl <aliceryhl@google.com>
-To:     benno.lossin@proton.me
-Cc:     alex.gaynor@gmail.com, aliceryhl@google.com,
-        bjorn3_gh@protonmail.com, boqun.feng@gmail.com, gary@garyguo.net,
-        jiangshanlai@gmail.com, linux-kernel@vger.kernel.org,
-        ojeda@kernel.org, patches@lists.linux.dev,
-        rust-for-linux@vger.kernel.org, tj@kernel.org,
-        walmeida@microsoft.com, wedsonaf@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 17 Jul 2023 09:47:24 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E4501126;
+        Mon, 17 Jul 2023 06:47:22 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 089BEC15;
+        Mon, 17 Jul 2023 06:48:06 -0700 (PDT)
+Received: from [10.57.31.114] (unknown [10.57.31.114])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 162893F67D;
+        Mon, 17 Jul 2023 06:47:20 -0700 (PDT)
+Message-ID: <aa4a22b8-fc23-8c67-bdea-b6aac8f7e250@arm.com>
+Date:   Mon, 17 Jul 2023 14:47:50 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v6 2/2] cpuidle: teo: Introduce util-awareness
+Content-Language: en-US
+To:     Qais Yousef <qyousef@layalina.io>
+Cc:     rafael@kernel.org, daniel.lezcano@linaro.org,
+        Kajetan Puchalski <kajetan.puchalski@arm.com>,
+        Dietmar.Eggemann@arm.com, dsmythies@telus.net,
+        yu.chen.surf@gmail.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230105145159.1089531-1-kajetan.puchalski@arm.com>
+ <20230105145159.1089531-3-kajetan.puchalski@arm.com>
+ <20230711175814.zfavcn7xn3ia5va4@airbuntu>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+In-Reply-To: <20230711175814.zfavcn7xn3ia5va4@airbuntu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Benno Lossin <benno.lossin@proton.me> writes:
->> +    /// This code relies on the `repr(C)` layout of structs as described in
->> +    /// <https://doc.rust-lang.org/reference/type-layout.html#reprc-structs>.
+Hi Qais,
+
+The rule is 'one size doesn't fit all', please see below.
+
+On 7/11/23 18:58, Qais Yousef wrote:
+> Hi Kajetan
 > 
-> Why is this in the documentation? I feel like it should be a normal code
-> comment at the very start of the function.
-
-In fact, I think we can drop this comment entirely. The motivation
-behind using `Layout::extend` for computing `val_offset` is that its
-correctness does not rely on how the repr(C) layout algorithm works.
-
-(As opposed to how the previous implementation's correctness *does*
-depend on knowing the repr(C) layout algorithm:
-    Layout::new::<ArcInner<()>>().align_to(align).unwrap().pad_to_align().size()
-)
-
->> +    ///
->> +    /// # Safety
->> +    ///
->> +    /// `ptr` must have been returned by a previous call to [`Arc::into_raw`]. Additionally, it
->> +    /// can only be called once for each previous call to [`Arc::into_raw`].
+> On 01/05/23 14:51, Kajetan Puchalski wrote:
 > 
-> "it can only" -> "it must only"
+> [...]
+> 
+>> @@ -510,9 +598,11 @@ static int teo_enable_device(struct cpuidle_driver *drv,
+>>   			     struct cpuidle_device *dev)
+>>   {
+>>   	struct teo_cpu *cpu_data = per_cpu_ptr(&teo_cpus, dev->cpu);
+>> +	unsigned long max_capacity = arch_scale_cpu_capacity(dev->cpu);
+>>   	int i;
+>>   
+>>   	memset(cpu_data, 0, sizeof(*cpu_data));
+>> +	cpu_data->util_threshold = max_capacity >> UTIL_THRESHOLD_SHIFT;
+> 
+> Given that utilization is invariant, why do we set the threshold based on
+> cpu capacity?
 
-Sounds good. I'll change it to use "must" in the next version.
 
-Alice
+To treat CPUs differently, not with the same policy.
 
+
+> 
+> I'm not sure if this is a problem, but on little cores this threshold would be
+> too low. Given that util is invariant - I wondered if we need to have a single
+> threshold for all type of CPUs instead. Have you tried something like that
+
+A single threshold for all CPUs might be biased towards some CPUs. Let's
+pick the value 15 - which was tested to work really good in benchmarks
+for the big CPUs. On the other hand when you set that value to little
+CPUs, with max_capacity = 124, than you have 15/124 ~= 13% threshold.
+That means you prefer to enter deeper idle state ~9x times (at max
+freq). What if the Little's freq is set to e.g. < ~20% fmax, which
+corresponds to capacity < ~25? Let's try to simulate such scenario.
+
+In a situation we could have utilization 14 on Little CPU, than CPU 
+capacity (effectively frequency) voting based on utilization would be
+1.2 * 14 = ~17 so let's pick OPP corresponding to 17 capacity.
+In such condition the little CPU would run the 14-util-periodic-task for
+14/17= ~82% of wall-clock time. That's a lot, and not suited for
+entering deeper idle state on that CPU, isn't it?
+
+Apart from that, the little CPUs are tiny in terms of silicon area
+and are less leaky in WFI than big cores. Therefore, they don't need
+aggressive entries into deeper idle state. At the same time, they
+are often used for serving interrupts, where the latency is important
+factor.
+
+> while developing the patch?
+
+We have tried different threshold values in terms of %, but for all CPUs
+(at the same time) not per-cluster. The reason was to treat those CPUs
+differently as described above.
+
+Regards,
+Lukasz
