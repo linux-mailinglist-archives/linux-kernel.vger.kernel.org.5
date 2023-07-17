@@ -2,64 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 736DC756A28
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 19:24:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BF43756A30
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 19:25:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230477AbjGQRYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 13:24:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40868 "EHLO
+        id S230518AbjGQRY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 13:24:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230339AbjGQRYf (ORCPT
+        with ESMTP id S230490AbjGQRYy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 13:24:35 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A55C71B4
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 10:24:32 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.43])
-        by gateway (Coremail) with SMTP id _____8CxLOtOebVk+goGAA--.10766S3;
-        Tue, 18 Jul 2023 01:24:30 +0800 (CST)
-Received: from [10.20.42.43] (unknown [10.20.42.43])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxriNNebVke7oxAA--.31760S3;
-        Tue, 18 Jul 2023 01:24:29 +0800 (CST)
-Message-ID: <c1184f26-ac80-8138-6501-de0609d16004@loongson.cn>
-Date:   Tue, 18 Jul 2023 01:24:29 +0800
+        Mon, 17 Jul 2023 13:24:54 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10FBD10E0;
+        Mon, 17 Jul 2023 10:24:48 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 827E6611AB;
+        Mon, 17 Jul 2023 17:24:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7D02C433AD;
+        Mon, 17 Jul 2023 17:24:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689614686;
+        bh=7K1NrqOEnIsov6LNPMbWxEcmOTQ8DoOSUXf5nazDWnY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=d87713swd+8flnDOEBdwYxJh+zPcc7RahC04ehtpicfiWxmDmyXavKTgMxupa9u60
+         uE518sCiopXnFJ5xCs8ps7AxbLJpCW4AptGYKBTNIiQidXwSpvzEB5cKMRJ/MBlDoP
+         opnSkxxGtXA14auVA+sh/vudr8u275YmFGfUA91zf1AAcmAnxNFFf4fGJAdedgjWnV
+         ZSPzv/UMDBMpnzH2k96dEQ49n2MCVBSEQXB7YPqF3SeCNKY52z3KHOXEeRgekW2mOH
+         tDzxWE8RyIllj4sJeBybKdla3Urx8w4VbLFEfAhwfym2dc21ty7k7xWjwKiODqmKZK
+         phjNQroLqJXQg==
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2b73564e98dso71283361fa.3;
+        Mon, 17 Jul 2023 10:24:46 -0700 (PDT)
+X-Gm-Message-State: ABy/qLaVSJKbwmzxBEVN4XOnzoEk7OnHeIzGYorUmotJIRl4kXFh5PKs
+        HjkeUKtxkKACACYw5E1v7OqzWCZ6Q/4tWuz2og==
+X-Google-Smtp-Source: APBJJlG8mEK4npwacHnkZf+THmzcOFSnKgn7HaAY1ey1gKBCNN6LRJvR5ho/gv5Qa7cQ6Y9pK6LCgVvVrpJDCMni1K8=
+X-Received: by 2002:a2e:9f17:0:b0:2b6:cb0d:56ae with SMTP id
+ u23-20020a2e9f17000000b002b6cb0d56aemr8218837ljk.11.1689614684790; Mon, 17
+ Jul 2023 10:24:44 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [09/11] drm/vc4: tests: pv-muxing: Switch to managed locking init
-Content-Language: en-US
-To:     Maxime Ripard <mripard@kernel.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Emma Anholt <emma@anholt.net>
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-References: <20230710-kms-kunit-actions-rework-v1-9-722c58d72c72@kernel.org>
-From:   suijingfeng <suijingfeng@loongson.cn>
-In-Reply-To: <20230710-kms-kunit-actions-rework-v1-9-722c58d72c72@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf8CxriNNebVke7oxAA--.31760S3
-X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBj93XoW3XFW7KF4rZFy8tF4DXF43Arc_yoW3Jw45pr
-        1kJFyUKFW5Jr4kWasrJayv9r9akw4UtryfKr97Ww4SvF1jgFyYy3Wvq34UZFW5ArZ5XFs3
-        Aw1ayw15Xw4DAwbCm3ZEXasCq-sJn29KB7ZKAUJUUUU3529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUPFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-        Gr0_Gr1UM2kKe7AKxVWUAVWUtwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYI
-        kI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUAVWU
-        twAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMx
-        k0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vIr41l
-        4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_JF0_Jw1lx2IqxVAqx4xG67AKxV
-        WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI
-        7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r
-        1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI
-        42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU4SoGDUUUU
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+References: <20230714174607.4057185-1-robh@kernel.org> <e0e1b465-8419-419e-90ae-4b72f5189469@roeck-us.net>
+In-Reply-To: <e0e1b465-8419-419e-90ae-4b72f5189469@roeck-us.net>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 17 Jul 2023 11:24:32 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJZcxoQEhaGr34Mk1P_8vc8wctcfzswWc8VbRrsv0S7zg@mail.gmail.com>
+Message-ID: <CAL_JsqJZcxoQEhaGr34Mk1P_8vc8wctcfzswWc8VbRrsv0S7zg@mail.gmail.com>
+Subject: Re: [PATCH] hwmon: Explicitly include correct DT includes
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Jean Delvare <jdelvare@suse.com>, Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Jean-Marie Verdun <verdun@hpe.com>,
+        Nick Hawkins <nick.hawkins@hpe.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Robert Marko <robert.marko@sartura.hr>,
+        Saravanan Sekar <sravanhome@gmail.com>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Liviu Dudau <liviu.dudau@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        devicetree@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, patches@opensource.cirrus.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -68,204 +77,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-
-On 2023/7/10 15:47, Maxime Ripard wrote:
-> The new helper to init the locking context allows to remove some
-> boilerplate.
+On Sat, Jul 15, 2023 at 10:55=E2=80=AFAM Guenter Roeck <linux@roeck-us.net>=
+ wrote:
 >
-> Signed-off-by: Maxime Ripard <mripard@kernel.org>
-> ---
->   drivers/gpu/drm/vc4/tests/vc4_test_pv_muxing.c | 42 ++++++++++++--------------
->   1 file changed, 19 insertions(+), 23 deletions(-)
+> On Fri, Jul 14, 2023 at 11:46:04AM -0600, Rob Herring wrote:
+> > The DT of_device.h and of_platform.h date back to the separate
+> > of_platform_bus_type before it as merged into the regular platform bus.
+> > As part of that merge prepping Arm DT support 13 years ago, they
+> > "temporarily" include each other. They also include platform_device.h
+> > and of.h. As a result, there's a pretty much random mix of those includ=
+e
+> > files used throughout the tree. In order to detangle these headers and
+> > replace the implicit includes with struct declarations, users need to
+> > explicitly include the correct includes.
+> >
+> > Signed-off-by: Rob Herring <robh@kernel.org>
 >
-> diff --git a/drivers/gpu/drm/vc4/tests/vc4_test_pv_muxing.c b/drivers/gpu/drm/vc4/tests/vc4_test_pv_muxing.c
-> index 776a7b01608f..ff1deaed0cab 100644
-> --- a/drivers/gpu/drm/vc4/tests/vc4_test_pv_muxing.c
-> +++ b/drivers/gpu/drm/vc4/tests/vc4_test_pv_muxing.c
-> @@ -20,7 +20,6 @@
->   
->   struct pv_muxing_priv {
->   	struct vc4_dev *vc4;
-> -	struct drm_modeset_acquire_ctx ctx;
->   	struct drm_atomic_state *state;
->   };
->   
-> @@ -725,6 +724,7 @@ static void drm_vc4_test_pv_muxing_invalid(struct kunit *test)
->   static int vc4_pv_muxing_test_init(struct kunit *test)
->   {
->   	const struct pv_muxing_param *params = test->param_value;
-> +	struct drm_modeset_acquire_ctx *ctx;
->   	struct drm_atomic_state *state;
->   	struct pv_muxing_priv *priv;
->   	struct drm_device *drm;
-> @@ -738,13 +738,14 @@ static int vc4_pv_muxing_test_init(struct kunit *test)
->   	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, vc4);
->   	priv->vc4 = vc4;
->   
-> -	drm_modeset_acquire_init(&priv->ctx, 0);
-> +	ctx = drm_kunit_helper_acquire_ctx_alloc(test);
+> Applied to hwmon-next.
 
-> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx);
->   
+I found there's a double include of of.h in lm75.c. Can you fix that
+up or do you want me to send a fix?
 
-The pointer returned by drm_kunit_helper_acquire_ctx_alloc() function 
-can't be NULL,
-
-if ctx is NULL, the current kthread will be terminated by the 
-KUNIT_ASSERT_NOT_NULL() in the drm_kunit_helper_acquire_ctx_alloc().
-
-so only a PTR_ERR is possible, right?
-
-If so, probably invent a KUNIT_ASSERT_NOT_ERR() function to call is enough.
-
-I'm fine with this patch, but I feel the checking if the ctx is NULL is 
-redundant.
-
->   	drm = &vc4->base;
->   	state = drm_atomic_state_alloc(drm);
->   	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, state);
->   
-> -	state->acquire_ctx = &priv->ctx;
-> +	state->acquire_ctx = ctx;
->   
->   	priv->state = state;
->   
-> @@ -757,8 +758,6 @@ static void vc4_pv_muxing_test_exit(struct kunit *test)
->   	struct drm_atomic_state *state = priv->state;
->   
->   	drm_atomic_state_put(state);
-> -	drm_modeset_drop_locks(&priv->ctx);
-> -	drm_modeset_acquire_fini(&priv->ctx);
->   }
->   
->   static struct kunit_case vc4_pv_muxing_tests[] = {
-> @@ -798,7 +797,7 @@ static struct kunit_suite vc5_pv_muxing_test_suite = {
->    */
->   static void drm_test_vc5_pv_muxing_bugs_subsequent_crtc_enable(struct kunit *test)
->   {
-> -	struct drm_modeset_acquire_ctx ctx;
-> +	struct drm_modeset_acquire_ctx *ctx;
->   	struct drm_atomic_state *state;
->   	struct vc4_crtc_state *new_vc4_crtc_state;
->   	struct vc4_hvs_state *new_hvs_state;
-> @@ -811,13 +810,14 @@ static void drm_test_vc5_pv_muxing_bugs_subsequent_crtc_enable(struct kunit *tes
->   	vc4 = vc5_mock_device(test);
->   	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, vc4);
->   
-> -	drm_modeset_acquire_init(&ctx, 0);
-> +	ctx = drm_kunit_helper_acquire_ctx_alloc(test);
-> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx);
->   
->   	drm = &vc4->base;
->   	state = drm_atomic_state_alloc(drm);
->   	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, state);
->   
-> -	state->acquire_ctx = &ctx;
-> +	state->acquire_ctx = ctx;
->   
->   	ret = vc4_mock_atomic_add_output(test, state, VC4_ENCODER_TYPE_HDMI0);
->   	KUNIT_ASSERT_EQ(test, ret, 0);
-> @@ -844,7 +844,7 @@ static void drm_test_vc5_pv_muxing_bugs_subsequent_crtc_enable(struct kunit *tes
->   	state = drm_atomic_state_alloc(drm);
->   	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, state);
->   
-> -	state->acquire_ctx = &ctx;
-> +	state->acquire_ctx = ctx;
->   
->   	ret = vc4_mock_atomic_add_output(test, state, VC4_ENCODER_TYPE_HDMI1);
->   	KUNIT_ASSERT_EQ(test, ret, 0);
-> @@ -866,13 +866,11 @@ static void drm_test_vc5_pv_muxing_bugs_subsequent_crtc_enable(struct kunit *tes
->   	KUNIT_EXPECT_NE(test, hdmi0_channel, hdmi1_channel);
->   
->   	drm_atomic_state_put(state);
-> -	drm_modeset_drop_locks(&ctx);
-> -	drm_modeset_acquire_fini(&ctx);
->   }
->   
->   static void drm_test_vc5_pv_muxing_bugs_stable_fifo(struct kunit *test)
->   {
-> -	struct drm_modeset_acquire_ctx ctx;
-> +	struct drm_modeset_acquire_ctx *ctx;
->   	struct drm_atomic_state *state;
->   	struct vc4_crtc_state *new_vc4_crtc_state;
->   	struct vc4_hvs_state *new_hvs_state;
-> @@ -885,13 +883,14 @@ static void drm_test_vc5_pv_muxing_bugs_stable_fifo(struct kunit *test)
->   	vc4 = vc5_mock_device(test);
->   	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, vc4);
->   
-> -	drm_modeset_acquire_init(&ctx, 0);
-> +	ctx = drm_kunit_helper_acquire_ctx_alloc(test);
-> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx);
->   
->   	drm = &vc4->base;
->   	state = drm_atomic_state_alloc(drm);
->   	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, state);
->   
-> -	state->acquire_ctx = &ctx;
-> +	state->acquire_ctx = ctx;
->   
->   	ret = vc4_mock_atomic_add_output(test, state, VC4_ENCODER_TYPE_HDMI0);
->   	KUNIT_ASSERT_EQ(test, ret, 0);
-> @@ -929,7 +928,7 @@ static void drm_test_vc5_pv_muxing_bugs_stable_fifo(struct kunit *test)
->   	state = drm_atomic_state_alloc(drm);
->   	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, state);
->   
-> -	state->acquire_ctx = &ctx;
-> +	state->acquire_ctx = ctx;
->   
->   	ret = vc4_mock_atomic_del_output(test, state, VC4_ENCODER_TYPE_HDMI0);
->   	KUNIT_ASSERT_EQ(test, ret, 0);
-> @@ -954,14 +953,12 @@ static void drm_test_vc5_pv_muxing_bugs_stable_fifo(struct kunit *test)
->   	}
->   
->   	drm_atomic_state_put(state);
-> -	drm_modeset_drop_locks(&ctx);
-> -	drm_modeset_acquire_fini(&ctx);
->   }
->   
->   static void
->   drm_test_vc5_pv_muxing_bugs_subsequent_crtc_enable_too_many_crtc_state(struct kunit *test)
->   {
-> -	struct drm_modeset_acquire_ctx ctx;
-> +	struct drm_modeset_acquire_ctx *ctx;
->   	struct drm_atomic_state *state;
->   	struct vc4_crtc_state *new_vc4_crtc_state;
->   	struct drm_device *drm;
-> @@ -971,13 +968,14 @@ drm_test_vc5_pv_muxing_bugs_subsequent_crtc_enable_too_many_crtc_state(struct ku
->   	vc4 = vc5_mock_device(test);
->   	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, vc4);
->   
-> -	drm_modeset_acquire_init(&ctx, 0);
-> +	ctx = drm_kunit_helper_acquire_ctx_alloc(test);
-> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx);
->   
->   	drm = &vc4->base;
->   	state = drm_atomic_state_alloc(drm);
->   	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, state);
->   
-> -	state->acquire_ctx = &ctx;
-> +	state->acquire_ctx = ctx;
->   
->   	ret = vc4_mock_atomic_add_output(test, state, VC4_ENCODER_TYPE_HDMI0);
->   	KUNIT_ASSERT_EQ(test, ret, 0);
-> @@ -993,7 +991,7 @@ drm_test_vc5_pv_muxing_bugs_subsequent_crtc_enable_too_many_crtc_state(struct ku
->   	state = drm_atomic_state_alloc(drm);
->   	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, state);
->   
-> -	state->acquire_ctx = &ctx;
-> +	state->acquire_ctx = ctx;
->   
->   	ret = vc4_mock_atomic_add_output(test, state, VC4_ENCODER_TYPE_HDMI1);
->   	KUNIT_ASSERT_EQ(test, ret, 0);
-> @@ -1006,8 +1004,6 @@ drm_test_vc5_pv_muxing_bugs_subsequent_crtc_enable_too_many_crtc_state(struct ku
->   	KUNIT_EXPECT_NULL(test, new_vc4_crtc_state);
->   
->   	drm_atomic_state_put(state);
-> -	drm_modeset_drop_locks(&ctx);
-> -	drm_modeset_acquire_fini(&ctx);
->   }
->   
->   static struct kunit_case vc5_pv_muxing_bugs_tests[] = {
-
+Rob
