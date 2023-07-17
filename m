@@ -2,78 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C43E07563AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 15:01:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA45F7563B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 15:02:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229917AbjGQNBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 09:01:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42798 "EHLO
+        id S231308AbjGQNCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 09:02:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229823AbjGQNA7 (ORCPT
+        with ESMTP id S231135AbjGQNBz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 09:00:59 -0400
-Received: from smtp-fw-52005.amazon.com (smtp-fw-52005.amazon.com [52.119.213.156])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9CAAE47;
-        Mon, 17 Jul 2023 06:00:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1689598833; x=1721134833;
-  h=from:to:cc:subject:references:date:in-reply-to:
-   message-id:mime-version;
-  bh=V2IvuJXOfmhoPksJdsTV2u6WeOptT8UYUa+NgoJE45M=;
-  b=t2cwfzSrRvelu9EQ+le8JKPKDKumIXfw24lsrkNo+zQO3Qy+qXdVMvr4
-   eEmfHfqhw6ffDZL/hBhHoKGw2jxxJN+42XOfGve30Dtndw+NIQ9MIkyFZ
-   FeXhi3umyjOtDaqnBhL5jbUIpjkHWkzVtx/IgHngzOUKU+d826WODrZIL
-   Q=;
-X-IronPort-AV: E=Sophos;i="6.01,211,1684800000"; 
-   d="scan'208";a="593338174"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1a-m6i4x-93c3b254.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-52005.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 13:00:31 +0000
-Received: from EX19MTAUWC002.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-iad-1a-m6i4x-93c3b254.us-east-1.amazon.com (Postfix) with ESMTPS id 4FDFFE0E21;
-        Mon, 17 Jul 2023 13:00:30 +0000 (UTC)
-Received: from EX19MTAUWC001.ant.amazon.com (10.250.64.174) by
- EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Mon, 17 Jul 2023 13:00:29 +0000
-Received: from dev-dsk-mngyadam-1c-a2602c62.eu-west-1.amazon.com (10.15.1.225)
- by mail-relay.amazon.com (10.250.64.145) with Microsoft SMTP Server id
- 15.2.1118.30 via Frontend Transport; Mon, 17 Jul 2023 13:00:29 +0000
-Received: by dev-dsk-mngyadam-1c-a2602c62.eu-west-1.amazon.com (Postfix, from userid 23907357)
-        id 341BE200A; Mon, 17 Jul 2023 13:00:29 +0000 (UTC)
-From:   Mahmoud Adam <mngyadam@amazon.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-CC:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Linux Crypto List <linux-crypto@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Signed-off-by missing for commit in the crypto tree
-References: <20230717075545.28f93630@canb.auug.org.au>
-Date:   Mon, 17 Jul 2023 13:00:29 +0000
-In-Reply-To: <20230717075545.28f93630@canb.auug.org.au> (Stephen Rothwell's
-        message of "Mon, 17 Jul 2023 07:55:45 +1000")
-Message-ID: <lrkyqmszuitg2.fsf@dev-dsk-mngyadam-1c-a2602c62.eu-west-1.amazon.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Mon, 17 Jul 2023 09:01:55 -0400
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCB2910D3
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 06:01:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689598901; x=1721134901;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=tzfUG3T9R5xA1Az/0hFpDgAGrXYHZyUOT9AfXcFaeG8=;
+  b=BSE8225G4aaA5I/YrzbEGSkwjBN/By4nPRe7HNe6gDMZcDrYOJqj7Ko3
+   MNkFjLEoLqFUYU4Wm2NP1RLP8f0DaA9pTjU5Rd0ZexUaH+M+s5flF/7aB
+   /rajoa+pR4EPDa3P/1l5yaLd1faKF9ocjHnIY3jINpwc3npL1axiUDFvM
+   xaIboxEnmZ7pfLJ1HPS6sMRUZMx9/hdSLp8/YMAGIOyXtC/zOEzbxzYxG
+   FCU1i7nN+Wc6q/6cna0RFWPUc7igh9HTc0zT6QvPqpNpirOy6rt/7Yrp8
+   y7MtreVtlDVPPzUtihZI18Z9kGI6A3KBSO8qFYyWC+lSGbv3xThNviTjI
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="363386074"
+X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
+   d="scan'208";a="363386074"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 06:01:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10774"; a="752888414"
+X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
+   d="scan'208";a="752888414"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga008.jf.intel.com with ESMTP; 17 Jul 2023 06:01:16 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qLNqk-00F7Nq-1r;
+        Mon, 17 Jul 2023 16:01:14 +0300
+Date:   Mon, 17 Jul 2023 16:01:14 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Alexander Potapenko <glider@google.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org, pcc@google.com,
+        andreyknvl@gmail.com, linux@rasmusvillemoes.dk,
+        yury.norov@gmail.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, eugenis@google.com,
+        syednwaris@gmail.com, william.gray@linaro.org,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v3 1/5] lib/bitmap: add bitmap_{set,get}_value()
+Message-ID: <ZLU7mkhUiDQodaw1@smile.fi.intel.com>
+References: <20230717113709.328671-1-glider@google.com>
+ <20230717113709.328671-2-glider@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230717113709.328671-2-glider@google.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stephen Rothwell <sfr@canb.auug.org.au> writes:
+On Mon, Jul 17, 2023 at 01:37:04PM +0200, Alexander Potapenko wrote:
+> The two new functions allow setting/getting values of length up to
+> BITS_PER_LONG bits at arbitrary position in the bitmap.
+> 
+> The code was taken from "bitops: Introduce the for_each_set_clump macro"
+> by Syed Nayyar Waris with a couple of minor changes:
 
-> Hi all,
->
-> Commit
->
->   a0459d277b1b ("KEYS: use kfree_sensitive with key")
->
-> is missing a Signed-off-by from its author.
+Since changes are minor, please make sure that the authorship is kept
+untouched.
 
-Sorry for that, sent Patch v4 with the correction
+>  - instead of using roundup(), which adds an unnecessary dependency
+>    on <linux/math.h>, we calculate space as BITS_PER_LONG-offset;
+>  - indentation is reduced by not using else-clauses (suggested by
+>    checkpatch for bitmap_get_value())
+
+> Cc: Arnd Bergmann <arnd@arndb.de>
+
+You can use --cc to `git send-email` instead of polluting the commit message.
+
+> Signed-off-by: Syed Nayyar Waris <syednwaris@gmail.com>
+> Signed-off-by: William Breathitt Gray <william.gray@linaro.org>
+> Link: https://lore.kernel.org/lkml/fe12eedf3666f4af5138de0e70b67a07c7f40338.1592224129.git.syednwaris@gmail.com/
+> Suggested-by: Yury Norov <yury.norov@gmail.com>
+> Signed-off-by: Alexander Potapenko <glider@google.com>
+
+With above, I think you can also add Co-developed-by (as the changes were
+made).
+
+...
+
+> +static inline void bitmap_set_value(unsigned long *map,
+> +				    unsigned long value,
+> +				    unsigned long start, unsigned long nbits)
+> +{
+> +	const size_t index = BIT_WORD(start);
+> +	const unsigned long offset = start % BITS_PER_LONG;
+> +	const unsigned long space = BITS_PER_LONG - offset;
+> +
+> +	value &= GENMASK(nbits - 1, 0);
+> +
+> +	if (space >= nbits) {
+
+> +		map[index] &= ~(GENMASK(nbits + offset - 1, offset));
+
+I remember that this construction may bring horrible code on some architectures
+with some version(s) of the compiler (*).
+
+To fix that I found an easy refactoring:
+
+		map[index] &= ~(GENMASK(nbits, 0) << offset));
+
+
+(*) don't remember the actual versions, though, but anyway...
+
+> +		map[index] |= value << offset;
+> +		return;
+> +	}
+> +	map[index] &= ~BITMAP_FIRST_WORD_MASK(start);
+> +	map[index] |= value << offset;
+> +	map[index + 1] &= ~BITMAP_LAST_WORD_MASK(start + nbits);
+> +	map[index + 1] |= (value >> space);
+> +}
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
