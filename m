@@ -2,65 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAACA755F48
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 11:32:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D821755F49
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 11:32:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229590AbjGQJcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 05:32:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39750 "EHLO
+        id S230273AbjGQJc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 05:32:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230257AbjGQJcT (ORCPT
+        with ESMTP id S230293AbjGQJcV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 05:32:19 -0400
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4CA010E7;
-        Mon, 17 Jul 2023 02:32:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1689586335; x=1721122335;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=LFS6LLLj+IF5o3ypMHoQlPtEJ6gln3IM45y+5jIYUmM=;
-  b=n22E6DKPO9GXByWsT8eFx6tz5UhvDOZzHZsxZWDEFyYVWOdCRbkj0LcN
-   f/aSU0dcF+dvaHLgvmFq3UFT24o8W9dGUZTPspi3Fq04l1dP6DOwf3uLk
-   cc3jZX7C4KsCvkY5DPNNbsyrgLr2+tuOSlu8ERHR/6bZKNHliGonxOfgh
-   9TSh1c6Ars7zsjYYXMRnlV6a1xKRvOXD0g6l8AJNKmGlMeTAuGVjCF5qG
-   uxRTywm9spdTlxmV3FzZn/8XWlRWFYImJs6S/qFSq5PYldsbnqUaqPDnn
-   I0ylr8J6WXtUyHOJOHcxUrKbM6fD5Qmfn0dx26iT2rkWNayLDHiS36Rpt
-   g==;
-X-IronPort-AV: E=Sophos;i="6.01,211,1684792800"; 
-   d="scan'208";a="31959527"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 17 Jul 2023 11:32:12 +0200
-Received: from steina-w.localnet (unknown [10.123.53.21])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 5EA1A280078;
-        Mon, 17 Jul 2023 11:32:12 +0200 (CEST)
-From:   Alexander Stein <alexander.stein@ew.tq-group.com>
-To:     andrzej.hajda@intel.com, neil.armstrong@linaro.org,
-        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
-        jernej.skrabec@gmail.com, airlied@gmail.com, daniel@ffwll.ch,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
-        vkoul@kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
-        Sandor Yu <Sandor.yu@nxp.com>
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com, Sandor.yu@nxp.com,
-        oliver.brown@nxp.com, sam@ravnborg.org
-Subject: Re: [PATCH v7 0/7] Initial support Cadence MHDP8501(HDMI/DP) for i.MX8MQ
-Date:   Mon, 17 Jul 2023 11:32:12 +0200
-Message-ID: <2690465.mvXUDI8C0e@steina-w>
-Organization: TQ-Systems GmbH
-In-Reply-To: <cover.1689580812.git.Sandor.yu@nxp.com>
-References: <cover.1689580812.git.Sandor.yu@nxp.com>
+        Mon, 17 Jul 2023 05:32:21 -0400
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 593F512D;
+        Mon, 17 Jul 2023 02:32:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1689586340; x=1721122340;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=k1VttNSjGVJlFU/THPyMisX2NJIoBk9nmTtj2yhOEFA=;
+  b=go3ljCfCyaMJpN+8PgyX88Jf+88RTn7eZCDTk3hZO0LEhb0+c7N+eQYc
+   7s7FIF1RmM+bnHF7H6INSKclTVcg3LUG2x6crG1vZNPQG8nOwb7KVygsm
+   lkxOkvarqQJi8R82kpVym0E5hQYnpbrdWOz0Mpx5F3tlv2ymhP0p8tAGb
+   E5PsTM2Nctq5f2MGpCvzZ8BTU8boq4JL+IUiPxpFLeDYETjMUNrRzjn5+
+   7cC5pOfT6miGcFHlDY/wD/SQReDZMwnt3aE06g2eElA0HEHXMjd6MA2tH
+   ElRMeBhvwtwTVBd0lEpKp/BnX3VX0RIDwE8tjL5G/hnMu2LqThcNP6ebY
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10773"; a="355823768"
+X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
+   d="scan'208";a="355823768"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jul 2023 02:32:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10773"; a="723139813"
+X-IronPort-AV: E=Sophos;i="6.01,211,1684825200"; 
+   d="scan'208";a="723139813"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga002.jf.intel.com with ESMTP; 17 Jul 2023 02:32:18 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 64F80256; Mon, 17 Jul 2023 12:32:24 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/1] Bluetooth: MGMT: Use correct address for memcpy()
+Date:   Mon, 17 Jul 2023 12:32:14 +0300
+Message-Id: <20230717093214.82102-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,163 +65,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sandor,
+In function ‘fortify_memcpy_chk’,
+    inlined from ‘get_conn_info_complete’ at net/bluetooth/mgmt.c:7281:2:
+include/linux/fortify-string.h:592:25: error: call to ‘__read_overflow2_field’ declared with attribute warning: detected read beyond size of field (2nd parameter); maybe use struct_group()? [-Werror=attribute-warning]
+  592 |                         __read_overflow2_field(q_size_field, size);
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc1: all warnings being treated as errors
 
-Am Montag, 17. Juli 2023, 10:03:46 CEST schrieb Sandor Yu:
-> The patch set initial support Cadence MHDP8501(HDMI/DP) DRM bridge
-> drivers and Cadence HDP-TX PHY(HDMI/DP) drivers for Freescale i.MX8MQ.
->=20
-> The patch set compose of DRM bridge drivers and PHY drivers.
->=20
-> Both of them need the followed two patches to pass build.
->   drm: bridge: Cadence: convert mailbox functions to macro functions
->   phy: Add HDMI configuration options
->=20
-> DRM bridges driver patches:
->   dt-bindings: display: bridge: Add Cadence MHDP850
->   drm: bridge: Cadence: Add MHDP8501 DP/HDMI driver
->=20
-> PHY driver patches:
->   dt-bindings: phy: Add Freescale iMX8MQ DP and HDMI PHY
->   phy: freescale: Add DisplayPort PHY driver for i.MX8MQ
->   phy: freescale: Add HDMI PHY driver for i.MX8MQ
->=20
-> v6->v7:
-> MHDP8501 HDMI/DP:
-> - Combine HDMI and DP driver into one mhdp8501 driver.
->   Use the connector type to load the corresponding functions.
-> - Remove connector init functions.
-> - Add <linux/hdmi.h> in phy_hdmi.h to reuse =E2=80=98enum hdmi_colorspace=
-=E2=80=99.
+This is due to the wrong member is used for memcpy(). Use correct one.
 
-Thanks for the update. This still works as before on my TQMa8Mx/MBa8Mx=20
-platform using HDMI output. I only had to address the compatible for the=20
-combined driver.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ net/bluetooth/mgmt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Tested-by: Alexander Stein <alexander.stein@ew.tq-group.com>
-
-> HDMI/DP PHY:
-> - Lowercase hex values
-> - Fix parameters indent issue on some functions
-> - Replace =E2=80=98udelay=E2=80=99 with =E2=80=98usleep_range=E2=80=99
->=20
-> v5->v6:
-> HDMI/DP bridge driver
-> - 8501 is the part number of Cadence MHDP on i.MX8MQ.
->   Use MHDP8501 to name hdmi/dp drivers and files.
-> - Add compatible "fsl,imx8mq-mhdp8501-dp" for i.MX8MQ DP driver
-> - Add compatible "fsl,imx8mq-mhdp8501-hdmi" for i.MX8MQ HDMI driver
-> - Combine HDMI and DP dt-bindings into one file cdns,mhdp8501.yaml
-> - Fix HDMI scrambling is not enable issue when driver working in 4Kp60
->   mode.
-> - Add HDMI/DP PHY API mailbox protect.
->=20
-> HDMI/DP PHY driver:
-> - Rename DP and HDMI PHY files and move to folder phy/freescale/
-> - Remove properties num_lanes and link_rate from DP PHY driver.
-> - Combine HDMI and DP dt-bindings into one file fsl,imx8mq-dp-hdmi-phy.ya=
-ml
-> - Update compatible string to "fsl,imx8mq-dp-phy".
-> - Update compatible string to "fsl,imx8mq-hdmi-phy".
->=20
-> v4->v5:
-> - Drop "clk" suffix in clock name.
-> - Add output port property in the example of hdmi/dp.
->=20
-> v3->v4:
-> dt-bindings:
-> - Correct dt-bindings coding style and address review comments.
-> - Add apb_clk description.
-> - Add output port for HDMI/DP connector
-> PHY:
-> - Alphabetically sorted in Kconfig and Makefile for DP and HDMI PHY
-> - Remove unused registers define from HDMI and DP PHY drivers.
-> - More description in phy_hdmi.h.
-> - Add apb_clk to HDMI and DP phy driver.
-> HDMI/DP:
-> - Use get_unaligned_le32() to replace hardcode type conversion
->   in HDMI AVI infoframe data fill function.
-> - Add mailbox mutex lock in HDMI/DP driver for phy functions
->   to reslove race conditions between HDMI/DP and PHY drivers.
-> - Add apb_clk to both HDMI and DP driver.
-> - Rename some function names and add prefix with "cdns_hdmi/cdns_dp".
-> - Remove bpc 12 and 16 optional that not supported.
->=20
-> v2->v3:
-> Address comments for dt-bindings files.
-> - Correct dts-bindings file names
->   Rename phy-cadence-hdptx-dp.yaml to cdns,mhdp-imx8mq-dp.yaml
->   Rename phy-cadence-hdptx-hdmi.yaml to cdns,mhdp-imx8mq-hdmi.yaml
-> - Drop redundant words and descriptions.
-> - Correct hdmi/dp node name.
->=20
-> v2 is a completely different version compared to v1.
-> Previous v1 can be available here [1].
->=20
-> v1->v2:
-> - Reuse Cadence mailbox access functions from mhdp8546 instead of
->   rockchip DP.
-> - Mailbox access functions be convert to marco functions
->   that will be referenced by HDP-TX PHY(HDMI/DP) driver too.
-> - Plain bridge instead of component driver.
-> - Standalone Cadence HDP-TX PHY(HDMI/DP) driver.
-> - Audio driver are removed from the patch set, it will be add in another
->   patch set later.
->=20
-> [1]
-> https://patchwork.kernel.org/project/linux-rockchip/cover/cover.159098288=
-1.
-> git.Sandor.yu@nxp.com/
->=20
-> Sandor Yu (7):
->   drm: bridge: Cadence: convert mailbox functions to macro functions
->   phy: Add HDMI configuration options
->   dt-bindings: display: bridge: Add Cadence MHDP850
->   drm: bridge: Cadence: Add MHDP8501 DP/HDMI driver
->   dt-bindings: phy: Add Freescale iMX8MQ DP and HDMI PHY
->   phy: freescale: Add DisplayPort PHY driver for i.MX8MQ
->   phy: freescale: Add HDMI PHY driver for i.MX8MQ
->=20
->  .../display/bridge/cdns,mhdp8501.yaml         | 105 ++
->  .../bindings/phy/fsl,imx8mq-dp-hdmi-phy.yaml  |  53 +
->  drivers/gpu/drm/bridge/cadence/Kconfig        |  15 +
->  drivers/gpu/drm/bridge/cadence/Makefile       |   2 +
->  .../drm/bridge/cadence/cdns-mhdp8501-core.c   | 313 ++++++
->  .../drm/bridge/cadence/cdns-mhdp8501-core.h   | 410 ++++++++
->  .../gpu/drm/bridge/cadence/cdns-mhdp8501-dp.c | 780 +++++++++++++++
->  .../drm/bridge/cadence/cdns-mhdp8501-hdmi.c   | 674 +++++++++++++
->  .../drm/bridge/cadence/cdns-mhdp8546-core.c   | 195 +---
->  .../drm/bridge/cadence/cdns-mhdp8546-core.h   |   1 -
->  drivers/phy/freescale/Kconfig                 |  18 +
->  drivers/phy/freescale/Makefile                |   2 +
->  drivers/phy/freescale/phy-fsl-imx8mq-dp.c     | 698 ++++++++++++++
->  drivers/phy/freescale/phy-fsl-imx8mq-hdmi.c   | 907 ++++++++++++++++++
->  include/drm/bridge/cdns-mhdp-mailbox.h        | 240 +++++
->  include/linux/phy/phy-hdmi.h                  |  24 +
->  include/linux/phy/phy.h                       |   7 +-
->  17 files changed, 4248 insertions(+), 196 deletions(-)
->  create mode 100644
-> Documentation/devicetree/bindings/display/bridge/cdns,mhdp8501.yaml create
-> mode 100644
-> Documentation/devicetree/bindings/phy/fsl,imx8mq-dp-hdmi-phy.yaml create
-> mode 100644 drivers/gpu/drm/bridge/cadence/cdns-mhdp8501-core.c create mo=
-de
-> 100644 drivers/gpu/drm/bridge/cadence/cdns-mhdp8501-core.h create mode
-> 100644 drivers/gpu/drm/bridge/cadence/cdns-mhdp8501-dp.c create mode 1006=
-44
-> drivers/gpu/drm/bridge/cadence/cdns-mhdp8501-hdmi.c create mode 100644
-> drivers/phy/freescale/phy-fsl-imx8mq-dp.c
->  create mode 100644 drivers/phy/freescale/phy-fsl-imx8mq-hdmi.c
->  create mode 100644 include/drm/bridge/cdns-mhdp-mailbox.h
->  create mode 100644 include/linux/phy/phy-hdmi.h
-
-
-=2D-=20
-TQ-Systems GmbH | M=C3=BChlstra=C3=9Fe 2, Gut Delling | 82229 Seefeld, Germ=
-any
-Amtsgericht M=C3=BCnchen, HRB 105018
-Gesch=C3=A4ftsf=C3=BChrer: Detlef Schneider, R=C3=BCdiger Stahl, Stefan Sch=
-neider
-http://www.tq-group.com/
-
+diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
+index 33c06f7c7641..d6c9b7bc8592 100644
+--- a/net/bluetooth/mgmt.c
++++ b/net/bluetooth/mgmt.c
+@@ -7278,7 +7278,7 @@ static void get_conn_info_complete(struct hci_dev *hdev, void *data, int err)
+ 
+ 	bt_dev_dbg(hdev, "err %d", err);
+ 
+-	memcpy(&rp.addr, &cp->addr.bdaddr, sizeof(rp.addr));
++	memcpy(&rp.addr, &cp->addr, sizeof(rp.addr));
+ 
+ 	status = mgmt_status(err);
+ 	if (status == MGMT_STATUS_SUCCESS) {
+-- 
+2.40.0.1.gaa8946217a0b
 
