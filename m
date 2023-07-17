@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE3E5756F34
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 23:57:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11364756F35
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 23:57:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230266AbjGQV5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 17:57:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32874 "EHLO
+        id S230294AbjGQV5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 17:57:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230242AbjGQV5j (ORCPT
+        with ESMTP id S230260AbjGQV5k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 17:57:39 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAFBFE4C
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 14:57:37 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-3fbf1b82de7so31609945e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 14:57:37 -0700 (PDT)
+        Mon, 17 Jul 2023 17:57:40 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A12DAE4C
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 14:57:39 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fc04692e20so51360285e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 14:57:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20221208.gappssmtp.com; s=20221208; t=1689631056; x=1692223056;
+        d=layalina-io.20221208.gappssmtp.com; s=20221208; t=1689631058; x=1692223058;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LnEU7IyPXcZt92+8oUCYiT+upo6fdJ63NnSG75EIHJo=;
-        b=sWpR9vlwo4Vjsmd/o4NAYCuZ967dRZ9yiQRE4cVUO5bp1VMmgBmDoND0iXLoyvJJqX
-         UqHtLfK7LFDtJ7VR/WiXySJOKb+Kl4E1ruINwrQwG6sOPQBgUhyOeDYaOLcT0kNJ8KFB
-         h6xdjA37+r+hydQ9KqUZJ0bbC6amDSVqb9uycdYc+jRzhVB+pclfa8t/pHVdTbDQFCs/
-         CfDfU466bd009AdWslJtR5pVUVjk5UBir55HIqXmYCAfwG+/ygvgv9M0dzoP/4lMxkcH
-         Mmz/btk64wkHp3WCWhwmXa18R261N7pFw/oJypM/cfG4pFFWUkr4qmWdULlwgiBQbGCx
-         giVQ==
+        bh=TO1uwXv0rKYcU5XA4mBEnIS/I8OBYJT4uTImWwVx+iU=;
+        b=u5VC9bPjM31LYY49sGBAq8cfSSsUJ2m9npkn3SUXvvL4fW+is7gT4uWJq6lgN10szp
+         ENKkbaj8hJM//vVfoDIbRWmu2blikdUxhGKqhYlE40qqbav3U4VoS6HeoXtSRxkN1KvD
+         MWYEBQJea/s+SYzjdOZRHAlujbDJu0I3resYXVD4iBZUpuG343nMYodFuU3vixolhRC6
+         +x8im6SPAZZnSsFrhvEHiYcqCNzSSZh/Mrr1s5t18cEbhqsz9uwM4Xo01uhMYKDsksaw
+         HmuaDHCuyoGLGESMA/CqTLgA2om5qGPENkWdk+BGymYUj3aeHUpDuNUQldR0GDeHzpLm
+         p0Ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689631056; x=1692223056;
+        d=1e100.net; s=20221208; t=1689631058; x=1692223058;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=LnEU7IyPXcZt92+8oUCYiT+upo6fdJ63NnSG75EIHJo=;
-        b=QWPqHsWHUtwNUKFCagr9WxR0GGWeg3b7ChfAKnTm9RNOy9uL6OWLHb1nxUm0asokxg
-         SJ+0DX2YmQd0lx+3qd1zJl2UjfziOvnUzeZismcvjiZmXyxfUxWV/rLN1nZcesfVfgY2
-         uU606XPcGKobchxWXus5mv6e1P9zQ/FyLFt5+bovJ2LE+m/LiNJtYpzYHl7RB7TJdnyR
-         B+QzIe/tGK5MDL4qllBX43rAOUm4UJfWm+ja1sx2LsxqV/hnlMs9xyrx+ZxYaishYDkj
-         ccKr8AHjUkTbzM7XnYslTPkE6bUA7MhAGGL8Op9K+/0HD5xi500xkO/cEo+McYeYTOFN
-         LGmA==
-X-Gm-Message-State: ABy/qLYAgsm+W3FHXJFn0bUwdEHKKGo9sA4Ch2qucdTxQhTFmYdSIE5I
-        pUkXQynaZyL3Fvr4rwYwmuWqSg==
-X-Google-Smtp-Source: APBJJlHlEKhbOU+MWBX8IaREz4d9Dl4JzeGAI5jS1ox5TLtlX382zFGNHBX7vBeqO53d4ZTVw6QQXA==
-X-Received: by 2002:a05:600c:54c3:b0:3f9:68f:9c1a with SMTP id iw3-20020a05600c54c300b003f9068f9c1amr359377wmb.15.1689631056310;
-        Mon, 17 Jul 2023 14:57:36 -0700 (PDT)
+        bh=TO1uwXv0rKYcU5XA4mBEnIS/I8OBYJT4uTImWwVx+iU=;
+        b=Nj0BjXSVCJ9Idx/4D2tVDCCrGaX+MYrjQBmwsuNItAfe7fW30xIlDGcE7NG0Vgdx+B
+         EDgH3ahZqRT79l0ScrTBJOGBMLRGWaw5NJzqW2k2UWE6kapRFkFwg2+NJNi2dMRUO06T
+         GAvNjrhfufMlB3+R4U94AJtn8CvK6cvjfmIac2P8nYDLeVKEl4nj4P/DLBBYvuoWsDwK
+         Xs7uauMgaVa1zPTLDpBOVjZihuMrXQbSZ+oBu6USQLoXm4M4Ll4T839dfR6phhV1wMoA
+         6FanVXsMPSwAf+5IzCLzh8AjK9g4prXm7V29df2CxIA9TSqT2oJCNXU9QVLPmG8xMV8+
+         YJeA==
+X-Gm-Message-State: ABy/qLba+zGpIdYG1fQ/RFDR/hjRxHiThxHGuLuSif8daNJ7HqQStnvh
+        PKqPGoQILfVOpZQjh6E+x1G0aA==
+X-Google-Smtp-Source: APBJJlFfofHxFcS82r5U72ZGyKbpx7Lnz/PTgxlIK/+6xOqfs/GRKZszhI7PjgLWINrbDHg1I7rOkw==
+X-Received: by 2002:a7b:c85a:0:b0:3fb:b56b:470f with SMTP id c26-20020a7bc85a000000b003fbb56b470fmr405904wml.14.1689631058214;
+        Mon, 17 Jul 2023 14:57:38 -0700 (PDT)
 Received: from localhost.localdomain (host86-163-217-97.range86-163.btcentralplus.com. [86.163.217.97])
-        by smtp.gmail.com with ESMTPSA id m13-20020a7bce0d000000b003fbaa2903f4sm671285wmc.19.2023.07.17.14.57.35
+        by smtp.gmail.com with ESMTPSA id m13-20020a7bce0d000000b003fbaa2903f4sm671285wmc.19.2023.07.17.14.57.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jul 2023 14:57:36 -0700 (PDT)
+        Mon, 17 Jul 2023 14:57:37 -0700 (PDT)
 From:   Qais Yousef <qyousef@layalina.io>
 To:     Ingo Molnar <mingo@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -61,9 +61,9 @@ Cc:     linux-kernel@vger.kernel.org, Lukasz Luba <lukasz.luba@arm.com>,
         Jonathan JMChen <Jonathan.JMChen@mediatek.com>,
         Hongyan Xia <hongyan.xia2@arm.com>,
         Qais Yousef <qyousef@layalina.io>
-Subject: [PATCH v3 2/3] sched/uclamp: Ignore (util == 0) optimization in feec() when p_util_max = 0
-Date:   Mon, 17 Jul 2023 22:57:16 +0100
-Message-Id: <20230717215717.309174-3-qyousef@layalina.io>
+Subject: [PATCH v3 3/3] sched/tp: Add new tracepoint to track compute energy computation
+Date:   Mon, 17 Jul 2023 22:57:17 +0100
+Message-Id: <20230717215717.309174-4-qyousef@layalina.io>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230717215717.309174-1-qyousef@layalina.io>
 References: <20230717215717.309174-1-qyousef@layalina.io>
@@ -78,60 +78,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-find_energy_efficient_cpu() bails out early if effective util of the
-task is 0 as the delta at this point will be zero and there's nothing
-for EAS to do. When uclamp is being used, this could lead to wrong
-decisions when uclamp_max is set to 0. In this case the task is capped
-to performance point 0, but it is actually running and consuming energy
-and we can benefit from EAS energy calculations.
+It was useful to track feec() placement decision and debug the spare
+capacity and optimization issues vs uclamp_max.
 
-Rework the condition so that it bails out for when util is actually 0 or
-uclamp_min is requesting a higher performance point.
-
-We can do that without needing to use uclamp_task_util(); remove it.
-
-Fixes: d81304bc6193 ("sched/uclamp: Cater for uclamp in find_energy_efficient_cpu()'s early exit condition")
 Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
 ---
- kernel/sched/fair.c | 18 +-----------------
- 1 file changed, 1 insertion(+), 17 deletions(-)
+ include/trace/events/sched.h | 4 ++++
+ kernel/sched/core.c          | 1 +
+ kernel/sched/fair.c          | 7 ++++++-
+ 3 files changed, 11 insertions(+), 1 deletion(-)
 
+diff --git a/include/trace/events/sched.h b/include/trace/events/sched.h
+index fbb99a61f714..20cc884f72ff 100644
+--- a/include/trace/events/sched.h
++++ b/include/trace/events/sched.h
+@@ -735,6 +735,10 @@ DECLARE_TRACE(sched_update_nr_running_tp,
+ 	TP_PROTO(struct rq *rq, int change),
+ 	TP_ARGS(rq, change));
+ 
++DECLARE_TRACE(sched_compute_energy_tp,
++	TP_PROTO(struct task_struct *p, int dst_cpu, unsigned long energy),
++	TP_ARGS(p, dst_cpu, energy));
++
+ #endif /* _TRACE_SCHED_H */
+ 
+ /* This part must be outside protection */
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 83e36547af17..2deca2dca625 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -114,6 +114,7 @@ EXPORT_TRACEPOINT_SYMBOL_GPL(sched_overutilized_tp);
+ EXPORT_TRACEPOINT_SYMBOL_GPL(sched_util_est_cfs_tp);
+ EXPORT_TRACEPOINT_SYMBOL_GPL(sched_util_est_se_tp);
+ EXPORT_TRACEPOINT_SYMBOL_GPL(sched_update_nr_running_tp);
++EXPORT_TRACEPOINT_SYMBOL_GPL(sched_compute_energy_tp);
+ 
+ DEFINE_PER_CPU_SHARED_ALIGNED(struct rq, runqueues);
+ 
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index d489eece5a0d..c701f490ca4c 100644
+index c701f490ca4c..23e026393210 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -4348,22 +4348,6 @@ static inline unsigned long task_util_est(struct task_struct *p)
- 	return max(task_util(p), _task_util_est(p));
+@@ -7493,11 +7493,16 @@ compute_energy(struct energy_env *eenv, struct perf_domain *pd,
+ {
+ 	unsigned long max_util = eenv_pd_max_util(eenv, pd_cpus, p, dst_cpu);
+ 	unsigned long busy_time = eenv->pd_busy_time;
++	unsigned long energy;
+ 
+ 	if (dst_cpu >= 0)
+ 		busy_time = min(eenv->pd_cap, busy_time + eenv->task_busy_time);
+ 
+-	return em_cpu_energy(pd->em_pd, max_util, busy_time, eenv->cpu_cap);
++	energy = em_cpu_energy(pd->em_pd, max_util, busy_time, eenv->cpu_cap);
++
++	trace_sched_compute_energy_tp(p, dst_cpu, energy);
++
++	return energy;
  }
  
--#ifdef CONFIG_UCLAMP_TASK
--static inline unsigned long uclamp_task_util(struct task_struct *p,
--					     unsigned long uclamp_min,
--					     unsigned long uclamp_max)
--{
--	return clamp(task_util_est(p), uclamp_min, uclamp_max);
--}
--#else
--static inline unsigned long uclamp_task_util(struct task_struct *p,
--					     unsigned long uclamp_min,
--					     unsigned long uclamp_max)
--{
--	return task_util_est(p);
--}
--#endif
--
- static inline void util_est_enqueue(struct cfs_rq *cfs_rq,
- 				    struct task_struct *p)
- {
-@@ -7588,7 +7572,7 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
- 	target = prev_cpu;
- 
- 	sync_entity_load_avg(&p->se);
--	if (!uclamp_task_util(p, p_util_min, p_util_max))
-+	if (!task_util_est(p) && p_util_min == 0)
- 		goto unlock;
- 
- 	eenv_task_busy_time(&eenv, p, prev_cpu);
+ /*
 -- 
 2.25.1
 
