@@ -2,52 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B507F756729
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 17:06:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10E0C75672C
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 17:08:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230451AbjGQPGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 11:06:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44718 "EHLO
+        id S230187AbjGQPIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 11:08:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjGQPGV (ORCPT
+        with ESMTP id S229470AbjGQPIN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 11:06:21 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 412FCE7F;
-        Mon, 17 Jul 2023 08:06:20 -0700 (PDT)
-Received: from benjamin-XPS-13-9310.. (unknown [IPv6:2a01:e0a:120:3210:4be:84ed:4a71:a2ea])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: benjamin.gaignard)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 8AAE96602329;
-        Mon, 17 Jul 2023 16:06:18 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1689606378;
-        bh=FRTZXCxmrhmbJigySAGoMfBq+46yLv4nhFi0T5kqD10=;
-        h=From:To:Cc:Subject:Date:From;
-        b=HkCE/fpXN6izquRUoL7dKUqu1EjdsbGb6dTk2T9oNGfO5AAimaMt1sjvo0rsXZivk
-         CXIXOE9NrFuP5WO52RGZwfeJ17ETh2YPEr8d5nNAc6BJwFqrd1sQD6551bFWnkUIPQ
-         bXHcnr81zCsh6YwrYUbrEisFgZc9fc0niAxNYOkKReHNUrOa6V4joqwpXSmS8Z44Qy
-         CiRKl5XL4WfjxOzU4bgNsjvXvbhYm3hP1BG2Fd+osNRitMu6sr12RdWsb60tpqEYnc
-         2EF+h8ZaoXoiu2lh1ja7YJEIoyduKUExGP0DoQ+ep5XGm4jnxgFJAsrIgjj6GuxhmE
-         e9kFtmK1NHAlg==
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-To:     ezequiel@vanguardiasur.com.ar, mchehab@kernel.org,
-        gregkh@linuxfoundation.org
-Cc:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        nicolas.dufresne@collabora.com, kernel@collabora.com,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Subject: [PATCH] media: rkvdec: increase max supported height for H.264
-Date:   Mon, 17 Jul 2023 17:06:11 +0200
-Message-Id: <20230717150611.42832-1-benjamin.gaignard@collabora.com>
-X-Mailer: git-send-email 2.39.2
+        Mon, 17 Jul 2023 11:08:13 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 413CE10A
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 08:08:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=FJkSRlbAeg25OoqNJbBYzrKlW5abpmAKEGRQ5wp9m/c=; b=i7uXwN53gJ7/TWcMQ7ax1brcRZ
+        X97cwzXOome2gz1cGC1Ti+JSjx4ULqsRRZ8CMtlgskl7e1oRbHszVktBmmlowPyp6wqEZrIMXSpz6
+        Hub85H6Oejj6R4Wu9KOdPYIZC95EWoE0nz2PgsbYRKD+gxMlYW3RKQ7Pq/zb9s7qPGS6tYoBcFxy+
+        kd2K2tboShXKJ9qY5fOZT+pI4USgLoRdkl46wlyQ6d6DOY63QEcpDSkZF5cqXMvlUBYj1u8ZO/Out
+        WJae5/mCI0Tu7tpX3VTg/GwahqzFR8sChFZI8Smm/sB6+uZy9uxgTGTbYOZJDqvadRMBOUcCSk5WX
+        qWgIDfPg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qLPpO-0041Jy-Fb; Mon, 17 Jul 2023 15:07:58 +0000
+Date:   Mon, 17 Jul 2023 16:07:58 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Ryan Roberts <ryan.roberts@arm.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Yu Zhao <yuzhao@google.com>, Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v1 2/3] mm: Implement folio_remove_rmap_range()
+Message-ID: <ZLVZTupQXt7pAqt8@casper.infradead.org>
+References: <20230717143110.260162-1-ryan.roberts@arm.com>
+ <20230717143110.260162-3-ryan.roberts@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230717143110.260162-3-ryan.roberts@arm.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,27 +54,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After testing it is possible for the hardware to decode H264
-bistream with a height up to 2560.
+On Mon, Jul 17, 2023 at 03:31:09PM +0100, Ryan Roberts wrote:
+> +/*
+> + * folio_remove_rmap_range - take down pte mappings from a range of pages
+> + * belonging to a folio. All pages are accounted as small pages.
+> + * @folio:	folio that all pages belong to
+> + * @page:       first page in range to remove mapping from
+> + * @nr:		number of pages in range to remove mapping from
+> + * @vma:        the vm area from which the mapping is removed
+> + *
+> + * The caller needs to hold the pte lock.
+> + */
 
-Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
----
- drivers/staging/media/rkvdec/rkvdec.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This could stand a little reworking.  How about this?
 
-diff --git a/drivers/staging/media/rkvdec/rkvdec.c b/drivers/staging/media/rkvdec/rkvdec.c
-index 134e2b9fa7d9..84a41792cb4b 100644
---- a/drivers/staging/media/rkvdec/rkvdec.c
-+++ b/drivers/staging/media/rkvdec/rkvdec.c
-@@ -120,7 +120,7 @@ static const struct rkvdec_coded_fmt_desc rkvdec_coded_fmts[] = {
- 			.max_width = 4096,
- 			.step_width = 16,
- 			.min_height = 48,
--			.max_height = 2304,
-+			.max_height = 2560,
- 			.step_height = 16,
- 		},
- 		.ctrls = &rkvdec_h264_ctrls,
--- 
-2.39.2
+/**
+ * folio_remove_rmap_range - Take down PTE mappings from a range of pages.
+ * @folio: Folio containing all pages in range.
+ * @page: First page in range to unmap.
+ * @nr: Number of pages to unmap.
+ * @vma: The VM area containing the range.
+ *
+ * All pages in the range must belong to the same VMA & folio.  They
+ * must be mapped with PTEs, not a PMD.
+ *
+ * Context: Caller holds the pte lock.
+ */
+
+> +void folio_remove_rmap_range(struct folio *folio, struct page *page,
+> +					int nr, struct vm_area_struct *vma)
+> +{
+> +	atomic_t *mapped = &folio->_nr_pages_mapped;
+> +	int nr_unmapped = 0;
+> +	int nr_mapped;
+> +	bool last;
+> +	enum node_stat_item idx;
+> +
+> +	if (unlikely(folio_test_hugetlb(folio))) {
+> +		VM_WARN_ON_FOLIO(1, folio);
+> +		return;
+> +	}
+> +
+> +	if (!folio_test_large(folio)) {
+> +		/* Is this the page's last map to be removed? */
+> +		last = atomic_add_negative(-1, &page->_mapcount);
+> +		nr_unmapped = last;
+> +	} else {
+> +		for (; nr != 0; nr--, page++) {
+> +			/* Is this the page's last map to be removed? */
+> +			last = atomic_add_negative(-1, &page->_mapcount);
+> +			if (last) {
+> +				/* Page still mapped if folio mapped entirely */
+> +				nr_mapped = atomic_dec_return_relaxed(mapped);
+
+We're still doing one atomic op per page on the folio's nr_pages_mapped
+... is it possible to batch this and use atomic_sub_return_relaxed()?
 
