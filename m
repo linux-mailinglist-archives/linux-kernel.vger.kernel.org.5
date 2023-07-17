@@ -2,229 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 532A4756621
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 16:15:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09305756628
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 16:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231142AbjGQOPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 10:15:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42398 "EHLO
+        id S229621AbjGQOQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 10:16:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232080AbjGQOO6 (ORCPT
+        with ESMTP id S230033AbjGQOQV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 10:14:58 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 313FFE56
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 07:14:54 -0700 (PDT)
-Received: from IcarusMOD.eternityproject.eu (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 40DAB6607067;
-        Mon, 17 Jul 2023 15:14:52 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1689603292;
-        bh=J2LXqbhqDnB0oQhrTOcYs4nhQoquh9K8gXsYFc7oo4U=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j1ny1loxOHOf9zcl/KK79tj3NsJz0oPSmAlAkp1qPQ2NYXQOfWrVJYlLXuekgp8J2
-         RTXY8WejsO1muPaJINn1hZueTEyLeLThMn8hLPj3meKOHj/uBJ8u5TgY1Uc+aUqYQ+
-         BILTe48I8ifL4h9AvEr9NmIdw4AlNIi4F6OiM2uG/OWF4FuV8QyXMRum9D3lDjNNcx
-         SenSDurFDMFaCyRJXh9XGnnYIWF8eZHb1Ic4WKDvoWBgtEYb3Qjy7sGmxJf98TmqJP
-         IaxK+xxz57OG4NUNyoSjNn9eoTlURsfOVcdRLwEz4WOx8gf3vMLDIgqzVXKBepvMNr
-         x5A3kvwkoG2zw==
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-To:     chunkuang.hu@kernel.org
-Cc:     p.zabel@pengutronix.de, airlied@gmail.com, daniel@ffwll.ch,
-        matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
-        dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel@collabora.com,
-        wenst@chromium.org, nfraprado@collabora.com
-Subject: [PATCH v6 11/11] drm/mediatek: dp: Don't register HPD interrupt handler for eDP case
-Date:   Mon, 17 Jul 2023 16:14:38 +0200
-Message-Id: <20230717141438.274419-12-angelogioacchino.delregno@collabora.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230717141438.274419-1-angelogioacchino.delregno@collabora.com>
-References: <20230717141438.274419-1-angelogioacchino.delregno@collabora.com>
+        Mon, 17 Jul 2023 10:16:21 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4419310DF
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 07:15:55 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id ca18e2360f4ac-7835971026fso185735139f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 07:15:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689603334; x=1692195334;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Q/Etr5ln7V9qJYgR+jYHUosTrycy9bCbiREFEh6ojkU=;
+        b=HyV4wuTniDMbcFSK2QBPfJAjUzNwJO36NBbC2zZzM4XH1s9wP1Ylq3TY10VKISDb2m
+         hMtGz7nh93CC+6ZviadaYgWRo26EDCQxxGf8jjxjVsU6pexiNHp9aHTF4VYrmbQfki3l
+         v1gl4/zR5SFXs/709m7To+Zh2O82oIT6ZYUeajeZ5j8OY+HptQ9Xkdc42QBw9hDYtdzu
+         gqgsx53R/PndUEdA6R29Qs4BuBHbDnkb1K1dI5Lg/F3udhft0MzuV3yA+JAjoys0fywq
+         fwK+RX+eH0oA8yM3j0c+c33/Nb/TrrsCeNz8+qTIqmARQ7qyVNwbS4Dfb9/4UqYi15PJ
+         1uUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689603334; x=1692195334;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Q/Etr5ln7V9qJYgR+jYHUosTrycy9bCbiREFEh6ojkU=;
+        b=G+zuR+9Oi/gx6CrtUXCg8o0RSwxAQ8PkrnbHTlB/L/UsAhEm/9p/x2CPKbmGdGKCMJ
+         dYvK7iTHCsaDcxAmQfEqtHMBAmw1IV8jfWUXYoPxHk2ltrVnV1Gy5P62HsVgLbRf9glV
+         Ih37c4G7HOOZluKBXF83LSfly4lORhMQ5V3D7TKHpo+wB2/oaek3tERa+4aF9uEK+dev
+         njik3wZRMpO4Xqz1+790oRxv7N2JNd/6xSksNiz2IBNJYP5Lga5m23m9bnrwGXFAiIk8
+         XO0YnRyuSxz8QzrZZIssxmlwKcQs5O1EsVA0AypwFMilMo7kJ2v00XfMiQeM82ZCM6yw
+         AZ/A==
+X-Gm-Message-State: ABy/qLbeHxWVLg7RCkZ16vdFv2lUnzV5kBdlH+Zc/p4ZubiFzzSPnCOt
+        zMBHuj0iqzM0AGmQD4InLWXA66F7EwIcNO8jWxZIHg==
+X-Google-Smtp-Source: APBJJlGyiVthTHnd3Lbdq9FfE+vz0TSwKhDJ3weCw6vrvclqK+qmW68GyaqAZjLKUa73gZpBusbA4r3SeLTGlwuNaD8=
+X-Received: by 2002:a6b:d608:0:b0:787:a73:b411 with SMTP id
+ w8-20020a6bd608000000b007870a73b411mr9656710ioa.17.1689603334563; Mon, 17 Jul
+ 2023 07:15:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230717113709.328671-1-glider@google.com> <20230717113709.328671-2-glider@google.com>
+ <ZLU7mkhUiDQodaw1@smile.fi.intel.com>
+In-Reply-To: <ZLU7mkhUiDQodaw1@smile.fi.intel.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Mon, 17 Jul 2023 16:14:57 +0200
+Message-ID: <CAG_fn=XNYQC8gKKQr3Mz7CVw8H=Ubmr+QaUu-jraoT4sN550rA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/5] lib/bitmap: add bitmap_{set,get}_value()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org, pcc@google.com,
+        andreyknvl@gmail.com, linux@rasmusvillemoes.dk,
+        yury.norov@gmail.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, eugenis@google.com,
+        syednwaris@gmail.com, william.gray@linaro.org,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The interrupt handler for HPD is useful only if a display is actually
-supposed to be hotpluggable, as that manages the machinery to perform
-cable (un)plug detection, debouncing and setup for re-training.
+>
+> > Cc: Arnd Bergmann <arnd@arndb.de>
+>
+> You can use --cc to `git send-email` instead of polluting the commit mess=
+age.
 
-Since eDP panels are not supposed to be hotpluggable we can avoid
-using the HPD interrupts altogether and rely on HPD polling only
-for the suspend/resume case, saving us some spinlocking action and
-the overhead of interrupts firing at every suspend/resume cycle,
-achieving a faster (even if just slightly) display resume.
+Right. But as far as I can tell, certain kernel devs prefer to be CCed
+on the whole series, whereas others do not want to see anything but
+the actual patch they were interested in.
+I am not sure about Arnd's preferences, so I just decided to keep the
+tag from the original patch by Syed Nayyar Waris (which I also
+consider to be an indication of the fact "that potentially interested
+parties have been included in the discussion" per
+https://www.kernel.org/doc/html/v4.17/process/submitting-patches.html#when-=
+to-use-acked-by-cc-and-co-developed-by)
 
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
----
- drivers/gpu/drm/mediatek/mtk_dp.c | 81 ++++++++++++++++++-------------
- 1 file changed, 46 insertions(+), 35 deletions(-)
+> > Signed-off-by: Syed Nayyar Waris <syednwaris@gmail.com>
+> > Signed-off-by: William Breathitt Gray <william.gray@linaro.org>
+> > Link: https://lore.kernel.org/lkml/fe12eedf3666f4af5138de0e70b67a07c7f4=
+0338.1592224129.git.syednwaris@gmail.com/
+> > Suggested-by: Yury Norov <yury.norov@gmail.com>
+> > Signed-off-by: Alexander Potapenko <glider@google.com>
+>
+> With above, I think you can also add Co-developed-by (as the changes were
+> made).
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_dp.c b/drivers/gpu/drm/mediatek/mtk_dp.c
-index e74295ba9707..c06fcc7318e7 100644
---- a/drivers/gpu/drm/mediatek/mtk_dp.c
-+++ b/drivers/gpu/drm/mediatek/mtk_dp.c
-@@ -2182,9 +2182,11 @@ static int mtk_dp_bridge_attach(struct drm_bridge *bridge,
- 
- 	mtk_dp->drm_dev = bridge->dev;
- 
--	irq_clear_status_flags(mtk_dp->irq, IRQ_NOAUTOEN);
--	enable_irq(mtk_dp->irq);
--	mtk_dp_hwirq_enable(mtk_dp, true);
-+	if (mtk_dp->bridge.type != DRM_MODE_CONNECTOR_eDP) {
-+		irq_clear_status_flags(mtk_dp->irq, IRQ_NOAUTOEN);
-+		enable_irq(mtk_dp->irq);
-+		mtk_dp_hwirq_enable(mtk_dp, true);
-+	}
- 
- 	return 0;
- 
-@@ -2199,8 +2201,10 @@ static void mtk_dp_bridge_detach(struct drm_bridge *bridge)
- {
- 	struct mtk_dp *mtk_dp = mtk_dp_from_bridge(bridge);
- 
--	mtk_dp_hwirq_enable(mtk_dp, false);
--	disable_irq(mtk_dp->irq);
-+	if (mtk_dp->bridge.type != DRM_MODE_CONNECTOR_eDP) {
-+		mtk_dp_hwirq_enable(mtk_dp, false);
-+		disable_irq(mtk_dp->irq);
-+	}
- 	mtk_dp->drm_dev = NULL;
- 	mtk_dp_poweroff(mtk_dp);
- 	drm_dp_aux_unregister(&mtk_dp->aux);
-@@ -2579,40 +2583,44 @@ static int mtk_dp_probe(struct platform_device *pdev)
- 	mtk_dp->dev = dev;
- 	mtk_dp->data = (struct mtk_dp_data *)of_device_get_match_data(dev);
- 
--	mtk_dp->irq = platform_get_irq(pdev, 0);
--	if (mtk_dp->irq < 0)
--		return dev_err_probe(dev, mtk_dp->irq,
--				     "failed to request dp irq resource\n");
--
--	mtk_dp->next_bridge = devm_drm_of_get_bridge(dev, dev->of_node, 1, 0);
--	if (IS_ERR(mtk_dp->next_bridge) &&
--	    PTR_ERR(mtk_dp->next_bridge) == -ENODEV)
--		mtk_dp->next_bridge = NULL;
--	else if (IS_ERR(mtk_dp->next_bridge))
--		return dev_err_probe(dev, PTR_ERR(mtk_dp->next_bridge),
--				     "Failed to get bridge\n");
--
- 	ret = mtk_dp_dt_parse(mtk_dp, pdev);
- 	if (ret)
- 		return dev_err_probe(dev, ret, "Failed to parse dt\n");
- 
-+	/*
-+	 * Request the interrupt and install service routine only if we are
-+	 * on full DisplayPort.
-+	 * For eDP, polling the HPD instead is more convenient because we
-+	 * don't expect any (un)plug events during runtime, hence we can
-+	 * avoid some locking.
-+	 */
-+	if (mtk_dp->data->bridge_type != DRM_MODE_CONNECTOR_eDP) {
-+		mtk_dp->irq = platform_get_irq(pdev, 0);
-+		if (mtk_dp->irq < 0)
-+			return dev_err_probe(dev, mtk_dp->irq,
-+					     "failed to request dp irq resource\n");
-+
-+		spin_lock_init(&mtk_dp->irq_thread_lock);
-+
-+		irq_set_status_flags(mtk_dp->irq, IRQ_NOAUTOEN);
-+		ret = devm_request_threaded_irq(dev, mtk_dp->irq, mtk_dp_hpd_event,
-+						mtk_dp_hpd_event_thread,
-+						IRQ_TYPE_LEVEL_HIGH, dev_name(dev),
-+						mtk_dp);
-+		if (ret)
-+			return dev_err_probe(dev, ret,
-+					     "failed to request mediatek dptx irq\n");
-+
-+		mtk_dp->need_debounce = true;
-+		timer_setup(&mtk_dp->debounce_timer, mtk_dp_debounce_timer, 0);
-+	}
-+
- 	mtk_dp->aux.name = "aux_mtk_dp";
- 	mtk_dp->aux.dev = dev;
- 	mtk_dp->aux.transfer = mtk_dp_aux_transfer;
- 	mtk_dp->aux.wait_hpd_asserted = mtk_dp_wait_hpd_asserted;
- 	drm_dp_aux_init(&mtk_dp->aux);
- 
--	spin_lock_init(&mtk_dp->irq_thread_lock);
--
--	irq_set_status_flags(mtk_dp->irq, IRQ_NOAUTOEN);
--	ret = devm_request_threaded_irq(dev, mtk_dp->irq, mtk_dp_hpd_event,
--					mtk_dp_hpd_event_thread,
--					IRQ_TYPE_LEVEL_HIGH, dev_name(dev),
--					mtk_dp);
--	if (ret)
--		return dev_err_probe(dev, ret,
--				     "failed to request mediatek dptx irq\n");
--
- 	platform_set_drvdata(pdev, mtk_dp);
- 
- 	if (mtk_dp->data->audio_supported) {
-@@ -2634,9 +2642,6 @@ static int mtk_dp_probe(struct platform_device *pdev)
- 	mtk_dp->bridge.of_node = dev->of_node;
- 	mtk_dp->bridge.type = mtk_dp->data->bridge_type;
- 
--	mtk_dp->need_debounce = true;
--	timer_setup(&mtk_dp->debounce_timer, mtk_dp_debounce_timer, 0);
--
- 	if (mtk_dp->bridge.type == DRM_MODE_CONNECTOR_eDP) {
- 		/*
- 		 * Set the data lanes to idle in case the bootloader didn't
-@@ -2647,6 +2652,9 @@ static int mtk_dp_probe(struct platform_device *pdev)
- 		mtk_dp_initialize_aux_settings(mtk_dp);
- 		mtk_dp_power_enable(mtk_dp);
- 
-+		/* Disable HW interrupts: we don't need any for eDP */
-+		mtk_dp_hwirq_enable(mtk_dp, false);
-+
- 		/*
- 		 * Power on the AUX to allow reading the EDID from aux-bus:
- 		 * please note that it is necessary to call power off in the
-@@ -2692,7 +2700,8 @@ static int mtk_dp_remove(struct platform_device *pdev)
- 
- 	pm_runtime_put(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
--	del_timer_sync(&mtk_dp->debounce_timer);
-+	if (mtk_dp->data->bridge_type != DRM_MODE_CONNECTOR_eDP)
-+		del_timer_sync(&mtk_dp->debounce_timer);
- 	platform_device_unregister(mtk_dp->phy_dev);
- 	if (mtk_dp->audio_pdev)
- 		platform_device_unregister(mtk_dp->audio_pdev);
-@@ -2706,7 +2715,8 @@ static int mtk_dp_suspend(struct device *dev)
- 	struct mtk_dp *mtk_dp = dev_get_drvdata(dev);
- 
- 	mtk_dp_power_disable(mtk_dp);
--	mtk_dp_hwirq_enable(mtk_dp, false);
-+	if (mtk_dp->bridge.type != DRM_MODE_CONNECTOR_eDP)
-+		mtk_dp_hwirq_enable(mtk_dp, false);
- 	pm_runtime_put_sync(dev);
- 
- 	return 0;
-@@ -2718,7 +2728,8 @@ static int mtk_dp_resume(struct device *dev)
- 
- 	pm_runtime_get_sync(dev);
- 	mtk_dp_init_port(mtk_dp);
--	mtk_dp_hwirq_enable(mtk_dp, true);
-+	if (mtk_dp->bridge.type != DRM_MODE_CONNECTOR_eDP)
-+		mtk_dp_hwirq_enable(mtk_dp, true);
- 	mtk_dp_power_enable(mtk_dp);
- 
- 	return 0;
--- 
-2.40.1
+Ok, will do.
 
+> ...
+>
+> > +static inline void bitmap_set_value(unsigned long *map,
+> > +                                 unsigned long value,
+> > +                                 unsigned long start, unsigned long nb=
+its)
+> > +{
+> > +     const size_t index =3D BIT_WORD(start);
+> > +     const unsigned long offset =3D start % BITS_PER_LONG;
+> > +     const unsigned long space =3D BITS_PER_LONG - offset;
+> > +
+> > +     value &=3D GENMASK(nbits - 1, 0);
+> > +
+> > +     if (space >=3D nbits) {
+>
+> > +             map[index] &=3D ~(GENMASK(nbits + offset - 1, offset));
+>
+> I remember that this construction may bring horrible code on some archite=
+ctures
+> with some version(s) of the compiler (*).
+
+Wow, even the trunk Clang and GCC seem to generate better code for
+your version of this line: https://godbolt.org/z/36Kqxhe6j
+
+> To fix that I found an easy refactoring:
+>
+>                 map[index] &=3D ~(GENMASK(nbits, 0) << offset));
+>
+
+I'll take this one.
+
+> (*) don't remember the actual versions, though, but anyway...
+>
+> > +             map[index] |=3D value << offset;
+> > +             return;
+> > +     }
+> > +     map[index] &=3D ~BITMAP_FIRST_WORD_MASK(start);
+> > +     map[index] |=3D value << offset;
+> > +     map[index + 1] &=3D ~BITMAP_LAST_WORD_MASK(start + nbits);
+> > +     map[index + 1] |=3D (value >> space);
+> > +}
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
+
+
+--=20
+Alexander Potapenko
+Software Engineer
+
+Google Germany GmbH
+Erika-Mann-Stra=C3=9Fe, 33
+80636 M=C3=BCnchen
+
+Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Liana Sebastian
+Registergericht und -nummer: Hamburg, HRB 86891
+Sitz der Gesellschaft: Hamburg
