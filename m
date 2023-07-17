@@ -2,129 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98B62756E04
-	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 22:13:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDD8C756E02
+	for <lists+linux-kernel@lfdr.de>; Mon, 17 Jul 2023 22:13:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230527AbjGQUNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 17 Jul 2023 16:13:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55282 "EHLO
+        id S230349AbjGQUNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 17 Jul 2023 16:13:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230086AbjGQUNv (ORCPT
+        with ESMTP id S229541AbjGQUNo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 17 Jul 2023 16:13:51 -0400
-Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DB57137
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 13:13:48 -0700 (PDT)
-Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-56fff21c2ebso49489247b3.3
-        for <linux-kernel@vger.kernel.org>; Mon, 17 Jul 2023 13:13:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1689624828; x=1692216828;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pvmX32zU8Nu+p0waGNgOm71AAY+i07Pz66RGGQaXTI4=;
-        b=TW2a91JW8lK5lF2iBDyb423VMHB7QMlgmU4F+iQGe2w8EbUik3ZYW9UKlKomjOj4tf
-         sQRhV1SAUZKvdLDOAn9hVyYiY2C6Hf/lbAJWjZ8sP5qq9nKX0DCjzab/WCl8z27bGzxE
-         kF2QdhKoABhJfwzkWjD2UFsaFxAQl6krAVfT2GSVtTO7HyX0Gzo3zwwaCOa4Cx6mDIoA
-         qYzzplJpNvI1KX+Wm2zmJ0eFlMphPTbZq04g9LOyj8h+LNU7wx0qEnFd8LifFNQW4gdi
-         cRsLvXvqtIxRtqdEczKI+eofyQfyE//gDa2HYXAY/pWt9SfPL4gaWExTCVNv+hOIeL28
-         ph9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689624828; x=1692216828;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pvmX32zU8Nu+p0waGNgOm71AAY+i07Pz66RGGQaXTI4=;
-        b=QmGBqR4IaWXwduCu+CMeJSY89M78R0ygRH64rHC09c45D2JRlKBweKWCWcpvQDqfDT
-         ubYMJPfo6BJA5dZ1xh3uUx2fVwuSdaeTIAVJxhTUCQK9g4JOBLdT2kYYz6jLa7A81bof
-         ktw44kZBcv4mFHoU7p67vX9bNPOSjlOUX881J705yOxb2mUX8Os1ZSlEt4aBlzbhschW
-         PLfN3dK4INNqUrqB91S5LP7vvO4jtYTE2rnikCarUAgquBjp/7cYbIJRtlkhQQKuEw4W
-         vx1+DFS9O5m1iYEAmsr0hjUW0QnjrQZbqgSDjFa4cgmOVsuPac4cyQoUUaT+RX9B0vlV
-         oIKQ==
-X-Gm-Message-State: ABy/qLZfqfxQ2b8aNd2N4NM+rMi2cTzI5VSx3tCZ6Ij4NRxaVakU+6Um
-        yLaA9WzQ2hegRY+8Mcyhys1N/Cvo2PvjBfr0V7OJ
-X-Google-Smtp-Source: APBJJlGhTds1F4H7StCSwQsY4qTQeDMOf+WNZ+mPKJNceWZyCzdFeKNXKO5Qm7EYDdTG4lnOzurlRAja2C9Ltt/7bfU=
-X-Received: by 2002:a0d:ca0b:0:b0:577:2340:605f with SMTP id
- m11-20020a0dca0b000000b005772340605fmr12508948ywd.2.1689624827830; Mon, 17
- Jul 2023 13:13:47 -0700 (PDT)
+        Mon, 17 Jul 2023 16:13:44 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 197EB123;
+        Mon, 17 Jul 2023 13:13:43 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A2A1E61248;
+        Mon, 17 Jul 2023 20:13:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0F31C433C7;
+        Mon, 17 Jul 2023 20:13:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1689624822;
+        bh=reGWOw1zaIBmN1HJn1jgl6IT8kaZg+aTKCsct6D9QoM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gWIcM5ugv3qbf9chkKtpx0QC5+O6exp28KztSGb0JRGxWWqGvG2ghLKS5BOKIuhEr
+         rWMYg5rz7WIRRDdzvD0Q25T5LYk2vJVZSGNSiZiuj9F2+a5BjCSROmobo9VBqNt0jQ
+         k9j41Z0LiSYO39G5srQsneQGje71vNoKV2PmHM+E=
+Date:   Mon, 17 Jul 2023 22:13:39 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+Subject: Re: [PATCH 6.1 000/585] 6.1.39-rc2 review
+Message-ID: <2023071758-sizzling-cake-92bf@gregkh>
+References: <20230717185609.886113843@linuxfoundation.org>
+ <5f514ecc-a0ae-ece1-a212-e392c128fb35@roeck-us.net>
+ <2023071742-jailhouse-rambling-7311@gregkh>
 MIME-Version: 1.0
-References: <20230710082500.1838896-1-lsahn@wewakecorp.com>
-In-Reply-To: <20230710082500.1838896-1-lsahn@wewakecorp.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Mon, 17 Jul 2023 16:13:37 -0400
-Message-ID: <CAHC9VhQY0Uq_xQ_AwAuZ8gJbS52nQvRONHvCxiR-dGDg3BviRw@mail.gmail.com>
-Subject: Re: [PATCH] selinux: optimize major part with a kernel config in selinux_mmap_addr()
-To:     Leesoo Ahn <lsahn@ooseel.net>
-Cc:     lsahn@wewakecorp.com,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>, selinux@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2023071742-jailhouse-rambling-7311@gregkh>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 10, 2023 at 4:25=E2=80=AFAM Leesoo Ahn <lsahn@ooseel.net> wrote=
-:
->
-> The major part, the conditional branch in selinux_mmap_addr() is always t=
-o be
-> false so long as CONFIG_LSM_MMAP_MIN_ADDR is set to zero at compile time.
->
-> This usually happens in some linux distros, for instance Ubuntu, which
-> the config is set to zero in release version. Therefore it could be a bit
-> optimized with '#if <expr>' at compile time.
->
-> Signed-off-by: Leesoo Ahn <lsahn@wewakecorp.com>
-> ---
->  security/selinux/hooks.c | 2 ++
->  1 file changed, 2 insertions(+)
+On Mon, Jul 17, 2023 at 09:31:11PM +0200, Greg Kroah-Hartman wrote:
+> On Mon, Jul 17, 2023 at 12:18:05PM -0700, Guenter Roeck wrote:
+> > On 7/17/23 11:57, Greg Kroah-Hartman wrote:
+> > > This is the start of the stable review cycle for the 6.1.39 release.
+> > > There are 585 patches in this series, all will be posted as a response
+> > > to this one.  If anyone has any issues with these being applied, please
+> > > let me know.
+> > > 
+> > > Responses should be made by Wed, 19 Jul 2023 18:55:09 +0000.
+> > > Anything received after that time might be too late.
+> > > 
+> > > The whole patch series can be found in one patch at:
+> > > 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.39-rc2.gz
+> > > or in the git tree and branch at:
+> > > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> > > and the diffstat can be found below.
+> > > 
+> > > thanks,
+> > > 
+> > > greg k-h
+> > > 
+> > > -------------
+> > > Pseudo-Shortlog of commits:
+> > > 
+> > [ ... ]
+> > 
+> > > Sergey Shtylyov <s.shtylyov@omp.ru>
+> > >      sh: Avoid using IRQ0 on SH3 and SH4
+> > > 
+> > 
+> > This patch is applied without its fixes. That means almost all sh boards,
+> > including the one testable with qemu, are broken. Fixes are (at least):
+> > 
+> > 7c28a35e19fa sh: hd64461: Handle virq offset for offchip IRQ base and HD64461 IRQ
+> > 3d20f7a6eb76 sh: mach-dreamcast: Handle virq offset in cascaded IRQ demux
+> > a2601b8d8f07 sh: mach-highlander: Handle virq offset in cascaded IRL demux
+> > ab8aa4f0956d sh: mach-r2d: Handle virq offset in cascaded IRL demux
+> > 
+> > That list may be incomplete.
+> 
+> Oh wow, something went wrong with my "find the fixes for the patches in
+> the queue" script, let me go figure it out and run it again here...
 
-First, I agree with Stephen's comments that you should ask your distro
-(you mentioned Debian) to move MIN_ADDR higher.  Beyond that, I have
-one request, see below ...
+Yes, I didn't run it against what is in v6.5-rc1..v6.5-rc2, so it caught
+fixes for this.  I'll push out -rc3 versions now.
 
-> diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-> index d06e350fedee..a049aab6524b 100644
-> --- a/security/selinux/hooks.c
-> +++ b/security/selinux/hooks.c
-> @@ -3723,11 +3723,13 @@ static int selinux_mmap_addr(unsigned long addr)
->  {
->         int rc =3D 0;
->
-> +#if CONFIG_LSM_MMAP_MIN_ADDR > 0
->         if (addr < CONFIG_LSM_MMAP_MIN_ADDR) {
->                 u32 sid =3D current_sid();
->                 rc =3D avc_has_perm(sid, sid, SECCLASS_MEMPROTECT,
->                                   MEMPROTECT__MMAP_ZERO, NULL);
->         }
-> +#endif
->
->         return rc;
->  }
+thanks,
 
-Pre-processor conditionals inside a function are generally something
-we don't recommend.  In this case I would suggest doing something like
-this:
-
-#if (MMAP_MIN_ADDR > 0)
-static int selinux_mmap_addr(...)
-{
-  /* current func definition */
-}
-#else /* MMAP_MIN_ADDR > 0 */
-static int selinux_mmap_addr(...)
-{
-  return 0;
-}
-#endif /* MMAP_MIN_ADDR > 0 */
-
---=20
-paul-moore.com
+greg k-h
